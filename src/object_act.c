@@ -247,7 +247,7 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t 
 	pcb_undo_inc_serial();
 
 	rnd_hid_redraw(pcb);
-	pcb_board_set_changed_flag(pcb_true);
+	pcb_board_set_changed_flag(rnd_true);
 
 	return 0;
 }
@@ -330,7 +330,7 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (type == PCB_OBJ_SUBC)
 		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 	pcb_move_obj_and_rubberband(type, ptr1, ptr2, ptr3, nx->c[0], ny->c[0]);
-	pcb_board_set_changed_flag(pcb_true);
+	pcb_board_set_changed_flag(rnd_true);
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -378,8 +378,8 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 					ly = ptr1;
 					if (((pcb_any_obj_t *)ptr2)->parent_type == PCB_PARENT_LAYER)
 						ly = ((pcb_any_obj_t *)ptr2)->parent.layer; /* might be a bound layer, and ptr1 is a resolved one; we don't want undo to put the object back on the resolved layer instead of the original bound layer */
-					if (pcb_move_obj_to_layer(type, ly, ptr2, ptr3, target, pcb_false))
-						pcb_board_set_changed_flag(pcb_true);
+					if (pcb_move_obj_to_layer(type, ly, ptr2, ptr3, target, rnd_false))
+						pcb_board_set_changed_flag(rnd_true);
 				}
 				break;
 			}
@@ -387,7 +387,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 		case F_SelectedObjects:
 		case F_Selected:
 			if (pcb_move_selected_objs_to_layer(PCB_CURRLAYER(pcb)))
-				pcb_board_set_changed_flag(pcb_true);
+				pcb_board_set_changed_flag(rnd_true);
 			break;
 	}
 	return 0;
@@ -675,8 +675,8 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		/* Place components onto center of board. */
 		pcb_crosshair.Y = py; /* flipping side depends on the crosshair unfortunately */
-		if (pcb_buffer_copy_to_layout(pcb, px, py, pcb_false))
-			pcb_board_set_changed_flag(pcb_true);
+		if (pcb_buffer_copy_to_layout(pcb, px, py, rnd_false))
+			pcb_board_set_changed_flag(rnd_true);
 	}
 	else if (sc && subc_differs(sc, footprint)) {
 #ifdef DEBUG
@@ -726,7 +726,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				op.move.dx = orig_cx;
 				op.move.dy = orig_cy;
 				op.move.dst_layer = NULL;
-				op.move.more_to_come = pcb_true;
+				op.move.more_to_come = rnd_true;
 				pcb_subcop_move(&op, psc);
 */
 				paste_ok = 1;
@@ -736,8 +736,8 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		if (paste_ok) {
 			if (sc != NULL)
 				pcb_subc_remove(sc);
-			if (pcb_buffer_copy_to_layout(pcb, orig_cx, orig_cy, pcb_false))
-				pcb_board_set_changed_flag(pcb_true);
+			if (pcb_buffer_copy_to_layout(pcb, orig_cx, orig_cy, rnd_false))
+				pcb_board_set_changed_flag(rnd_true);
 		}
 	}
 
@@ -797,7 +797,7 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int op;
-	rnd_bool changed = pcb_false;
+	rnd_bool changed = rnd_false;
 
 	RND_PCB_ACT_CONVARG(1, FGW_KEYWORD, RipUp, op = fgw_keyword(&argv[1]));
 
@@ -807,7 +807,7 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, line) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
 					pcb_remove_object(PCB_OBJ_LINE, layer, line, line);
-					changed = pcb_true;
+					changed = rnd_true;
 				}
 			}
 			PCB_ENDALL_LOOP;
@@ -815,7 +815,7 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, arc) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)) {
 					pcb_remove_object(PCB_OBJ_ARC, layer, arc, arc);
-					changed = pcb_true;
+					changed = rnd_true;
 				}
 			}
 			PCB_ENDALL_LOOP;
@@ -824,14 +824,14 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			{
 				if (PCB_FLAG_TEST(PCB_FLAG_AUTO, padstack) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)) {
 					pcb_remove_object(PCB_OBJ_PSTK, padstack, padstack, padstack);
-					changed = pcb_true;
+					changed = rnd_true;
 				}
 			}
 			PCB_END_LOOP;
 
 			if (changed) {
 				pcb_undo_inc_serial();
-				pcb_board_set_changed_flag(pcb_true);
+				pcb_board_set_changed_flag(rnd_true);
 			}
 			break;
 		case F_Selected:
@@ -840,7 +840,7 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, line)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)) {
 					pcb_remove_object(PCB_OBJ_LINE, layer, line, line);
-					changed = pcb_true;
+					changed = rnd_true;
 				}
 			}
 			PCB_ENDALL_LOOP;
@@ -850,13 +850,13 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (PCB_FLAGS_TEST(PCB_FLAG_AUTO | PCB_FLAG_SELECTED, padstack)
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)) {
 					pcb_remove_object(PCB_OBJ_PSTK, padstack, padstack, padstack);
-					changed = pcb_true;
+					changed = rnd_true;
 				}
 			}
 			PCB_END_LOOP;
 			if (changed) {
 				pcb_undo_inc_serial();
-				pcb_board_set_changed_flag(pcb_true);
+				pcb_board_set_changed_flag(rnd_true);
 			}
 			break;
 	}

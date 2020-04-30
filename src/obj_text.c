@@ -308,7 +308,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	rnd_coord_t minx, miny, maxx, maxy, tx;
 	rnd_coord_t min_final_radius;
 	rnd_coord_t min_unscaled_radius;
-	rnd_bool first_time = pcb_true;
+	rnd_bool first_time = rnd_true;
 	pcb_poly_t *poly;
 	double sc = (double)Text->Scale / 100.0;
 	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
@@ -351,7 +351,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 				if (first_time) {
 					minx = maxx = line->Point1.X;
 					miny = maxy = line->Point1.Y;
-					first_time = pcb_false;
+					first_time = rnd_false;
 				}
 
 				minx = MIN(minx, line->Point1.X - unscaled_radius + tx);
@@ -607,13 +607,13 @@ void *pcb_textop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 		return NULL;
 	pcb_text_invalidate_erase(Layer, Text);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text)) {
-		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_TEXT, Layer, Text, Text, pcb_false);
+		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_TEXT, Layer, Text, Text, rnd_false);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	}
 	pcb_undo_add_obj_to_flag(Text);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Text);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Text)) {
-		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_TEXT, Layer, Text, Text, pcb_true);
+		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_TEXT, Layer, Text, Text, rnd_true);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
 	}
 	pcb_text_invalidate_draw(Layer, Text);
@@ -1363,14 +1363,14 @@ void pcb_text_name_invalidate_draw(pcb_text_t *text)
 {
 	if (text->term != NULL)
 		pcb_term_label_invalidate((text->BoundingBox.X1 + text->BoundingBox.X2)/2, (text->BoundingBox.Y1 + text->BoundingBox.Y2)/2,
-			100.0, is_text_term_vert(text), pcb_true, (pcb_any_obj_t *)text);
+			100.0, is_text_term_vert(text), rnd_true, (pcb_any_obj_t *)text);
 }
 
 void pcb_text_draw_label(pcb_draw_info_t *info, pcb_text_t *text)
 {
 	if (text->term != NULL)
 		pcb_term_label_draw(info, (text->BoundingBox.X1 + text->BoundingBox.X2)/2, (text->BoundingBox.Y1 + text->BoundingBox.Y2)/2,
-			conf_core.appearance.term_label_size, is_text_term_vert(text), pcb_true, (pcb_any_obj_t *)text);
+			conf_core.appearance.term_label_size, is_text_term_vert(text), rnd_true, (pcb_any_obj_t *)text);
 	if (text->noexport)
 		pcb_obj_noexport_mark(text, (text->BoundingBox.X1 + text->BoundingBox.X2)/2, (text->BoundingBox.Y1 + text->BoundingBox.Y2)/2);
 }

@@ -335,7 +335,7 @@ static void stat_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	if (pcb_has_explicit_outline(PCB)) {
 		rnd_rnd_box_t bb;
-		pcb_data_bbox_naked(&bb, PCB->Data, pcb_true);
+		pcb_data_bbox_naked(&bb, PCB->Data, rnd_true);
 		width = bb.X2 - bb.X1;
 		height = bb.Y2 - bb.Y1;
 	}

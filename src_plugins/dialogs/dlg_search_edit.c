@@ -347,7 +347,7 @@ static int srchedit_window(search_expr_t *expr)
 	RND_DAD_END(ctx->dlg);
 
 	RND_DAD_DEFSIZE(ctx->dlg, 450, 450);
-	RND_DAD_NEW("search_expr", ctx->dlg, "pcb-rnd search expression", ctx, pcb_true, NULL);
+	RND_DAD_NEW("search_expr", ctx->dlg, "pcb-rnd search expression", ctx, rnd_true, NULL);
 
 	if (fill_in_left(ctx) != 1) {
 		srch_expr_set_ops(ctx, op_tab, 1); /* just to get the initial tree widget width */

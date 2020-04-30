@@ -84,9 +84,9 @@ rnd_bool pcb_r_delete_entry_free_data(rnd_rtree_t *rtree, rnd_rnd_box_t *box, vo
 	void *obj = box; /* assumes first field is the bounding box */
 	assert(obj != NULL);
 	if (rnd_rtree_delete(rtree, obj, (rnd_rtree_box_t *)box) != 0)
-		return pcb_false;
+		return rnd_false;
 	free_data(obj);
-	return pcb_true;
+	return rnd_true;
 }
 
 typedef struct {

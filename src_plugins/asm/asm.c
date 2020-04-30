@@ -361,8 +361,8 @@ static void asm_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid
 	box.Y1 = -RND_MAX_COORD;
 	box.X2 = RND_MAX_COORD;
 	box.Y2 = RND_MAX_COORD;
-	if (pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
-			pcb_board_set_changed_flag(pcb_true);
+	if (pcb_select_block(PCB, &box, rnd_false, rnd_false, rnd_false))
+			pcb_board_set_changed_flag(rnd_true);
 
 	if (row == NULL) {
 		goto skip;
@@ -615,7 +615,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_DAD_END(asm_ctx.dlg);
 
 	asm_ctx.active = 1;
-	RND_DAD_NEW("asm", asm_ctx.dlg, "Hand assembly with pcb-rnd", &asm_ctx, pcb_false, asm_close_cb);
+	RND_DAD_NEW("asm", asm_ctx.dlg, "Hand assembly with pcb-rnd", &asm_ctx, rnd_false, asm_close_cb);
 
 	/* expand all groups by default */
 	for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++)

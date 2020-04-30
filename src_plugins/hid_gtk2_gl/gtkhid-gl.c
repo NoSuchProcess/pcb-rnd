@@ -154,7 +154,7 @@ int ghid_gl_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char 
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
 
-	priv->trans_lines = pcb_true;
+	priv->trans_lines = rnd_true;
 	return 1;
 }
 
@@ -671,7 +671,7 @@ static void ghid_gl_drawing_area_configure_hook(void *port)
 	pcb_gtk_port_t *p = port;
 	render_priv_t *priv = p->render_priv;
 
-	ghidgui->port.drawing_allowed = pcb_true;
+	ghidgui->port.drawing_allowed = rnd_true;
 
 	if (!done_once) {
 		priv->bg_color = rnd_conf.appearance.color.background;
@@ -692,7 +692,7 @@ static gboolean ghid_gl_start_drawing(pcb_gtk_port_t *port)
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext))
 		return FALSE;
 
-	port->render_priv->in_context = pcb_true;
+	port->render_priv->in_context = rnd_true;
 
 	return TRUE;
 }
@@ -707,7 +707,7 @@ static void ghid_gl_end_drawing(pcb_gtk_port_t *port)
 	else
 		glFlush();
 
-	port->render_priv->in_context = pcb_false;
+	port->render_priv->in_context = rnd_false;
 
 	/* end drawing to current GL-context */
 	gdk_gl_drawable_gl_end(pGlDrawable);
@@ -867,7 +867,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 	if (!gdk_gl_drawable_gl_begin(pGlDrawable, pGlContext)) {
 		return FALSE;
 	}
-	ghidgui->port.render_priv->in_context = pcb_true;
+	ghidgui->port.render_priv->in_context = rnd_true;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -910,7 +910,7 @@ static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, 
 		glFlush();
 
 	/* end drawing to current GL-context */
-	ghidgui->port.render_priv->in_context = pcb_false;
+	ghidgui->port.render_priv->in_context = rnd_false;
 	gdk_gl_drawable_gl_end(pGlDrawable);
 
 	/* restore the original context and priv */

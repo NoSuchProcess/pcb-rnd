@@ -1350,7 +1350,7 @@ void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, rn
 		proto->tr.array[n].shape[d].layer_mask = mask;
 		proto->tr.array[n].shape[d].comb = comb;
 		if (bloat != 0)
-			pcb_pstk_shape_grow(proto, n, d, pcb_false, bloat, undoable);
+			pcb_pstk_shape_grow(proto, n, d, rnd_false, bloat, undoable);
 	}
 	pcb_pstk_proto_update(proto);
 }

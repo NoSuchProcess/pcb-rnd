@@ -239,7 +239,7 @@ pcb_poly_t *contour2poly(pcb_board_t *pcb, vtp0_t *objs, vti0_t *ends, pcb_topol
 		pcb_poly_init_clip(pcb->Data, layer, poly);
 		pcb_poly_invalidate_draw(layer, poly);
 TODO(": use pcb_board_set_changed_flag(), but decouple that from PCB")
-		pcb->Changed = pcb_true;
+		pcb->Changed = rnd_true;
 	}
 
 	return poly;

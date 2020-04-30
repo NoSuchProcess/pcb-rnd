@@ -230,7 +230,7 @@ rnd_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, rnd_bool *need_full)
 	pcb_vector_t v;
 	int hole = 0;
 
-	*need_full = pcb_false;
+	*need_full = rnd_false;
 
 	np1 = np = pcb_polyarea_create();
 	if (np == NULL)
@@ -253,7 +253,7 @@ rnd_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, rnd_bool *need_full)
 
 		/* Is current point last in contour? If so process it. */
 		if (n == p->PointN - 1 || (hole < p->HoleIndexN && n == p->HoleIndex[hole] - 1)) {
-			pcb_poly_contour_pre(contour, pcb_true);
+			pcb_poly_contour_pre(contour, rnd_true);
 
 			/* make sure it is a positive contour (outer) or negative (hole) */
 			if (contour->Flags.orient != (hole ? PCB_PLF_INV : PCB_PLF_DIR))
@@ -269,7 +269,7 @@ TODO("multiple plines within the returned polyarea np does not really work\n");
 				rnd_cardinal_t cnt = pcb_polyarea_split_selfint(np);
 				rnd_message(RND_MSG_ERROR, "Had to split up self-intersecting polygon into %ld parts\n", (long)cnt);
 				if (cnt > 1)
-					*need_full = pcb_true;
+					*need_full = rnd_true;
 				assert(pcb_poly_valid(np));
 			}
 #else
@@ -362,7 +362,7 @@ static int SubtractPadstack(pcb_data_t *d, pcb_pstk_t *ps, pcb_layer_t *l, pcb_p
 	if (np == 0)
 		return 0;
 
-	return Subtract(np, p, pcb_true);
+	return Subtract(np, p, rnd_true);
 }
 
 /* return the clearance polygon for a line */
@@ -381,7 +381,7 @@ static int SubtractLine(pcb_line_t * line, pcb_poly_t * p)
 		return 0;
 	if (!(np = line_clearance_poly(-1, NULL, line)))
 		return -1;
-	return Subtract(np, p, pcb_true);
+	return Subtract(np, p, rnd_true);
 }
 
 static int SubtractArc(pcb_arc_t * arc, pcb_poly_t * p)
@@ -392,7 +392,7 @@ static int SubtractArc(pcb_arc_t * arc, pcb_poly_t * p)
 		return 0;
 	if (!(np = pcb_poly_from_pcb_arc(arc, arc->Thickness + arc->Clearance)))
 		return -1;
-	return Subtract(np, p, pcb_true);
+	return Subtract(np, p, rnd_true);
 }
 
 typedef struct {
@@ -421,7 +421,7 @@ static void poly_sub_text_cb(void *ctx_, pcb_any_obj_t *obj)
 	}
 
 	if (np != NULL) {
-		Subtract(np, ctx->poly, pcb_true);
+		Subtract(np, ctx->poly, rnd_true);
 		ctx->poly->NoHolesValid = 0;
 	}
 }
@@ -440,7 +440,7 @@ static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 		rnd_polyarea_t *np;
 		if (!(np = RoundRect(b->X1 + conf_core.design.bloat, b->X2 - conf_core.design.bloat, b->Y1 + conf_core.design.bloat, b->Y2 - conf_core.design.bloat, conf_core.design.bloat)))
 			return -1;
-		return Subtract(np, p, pcb_true);
+		return Subtract(np, p, rnd_true);
 	}
 
 	/* new method: detailed clearance */
@@ -465,7 +465,7 @@ static void subtract_accumulated(struct cpInfo *info, pcb_poly_t *polygon)
 {
 	if (info->accumulate == NULL)
 		return;
-	Subtract(info->accumulate, polygon, pcb_true);
+	Subtract(info->accumulate, polygon, rnd_true);
 	info->accumulate = NULL;
 	info->batch_size = 0;
 }
@@ -652,7 +652,7 @@ static int SubtractPolyPoly(pcb_poly_t *subpoly, pcb_poly_t *frompoly)
 	if (pa == NULL)
 		return -1;
 
-	Subtract(pa, frompoly, pcb_true);
+	Subtract(pa, frompoly, rnd_true);
 	frompoly->NoHolesValid = 0;
 	return 0;
 }
@@ -924,7 +924,7 @@ static int UnsubtractText(pcb_text_t * text, pcb_layer_t * l, pcb_poly_t * p)
 	return 1;
 }
 
-static rnd_bool inhibit = pcb_false;
+static rnd_bool inhibit = rnd_false;
 
 int pcb_poly_init_clip_prog(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p, void (*cb)(void *ctx), void *ctx, int force)
 {
@@ -1012,17 +1012,17 @@ rnd_cardinal_t pcb_poly_num_clears(pcb_data_t *data, pcb_layer_t *layer, pcb_pol
 /* --------------------------------------------------------------------------
  * remove redundant polygon points. Any point that lies on the straight
  * line between the points on either side of it is redundant.
- * returns pcb_true if any points are removed
+ * returns rnd_true if any points are removed
  */
 rnd_bool pcb_poly_remove_excess_points(pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	rnd_point_t *p;
 	rnd_cardinal_t n, prev, next;
 	pcb_line_t line;
-	rnd_bool changed = pcb_false;
+	rnd_bool changed = rnd_false;
 
 	if (pcb_undoing())
-		return pcb_false;
+		return rnd_false;
 
 	for (n = 0; n < Polygon->PointN; n++) {
 		prev = pcb_poly_contour_prev_point(Polygon, n);
@@ -1034,7 +1034,7 @@ rnd_bool pcb_poly_remove_excess_points(pcb_layer_t *Layer, pcb_poly_t *Polygon)
 		line.Thickness = 0;
 		if (pcb_is_point_on_line(p->X, p->Y, 0.0, &line)) {
 			pcb_remove_object(PCB_OBJ_POLY_POINT, Layer, Polygon, p);
-			changed = pcb_true;
+			changed = rnd_true;
 		}
 	}
 	return changed;
@@ -1178,7 +1178,7 @@ static void poly_copy_data(pcb_poly_t *dst, pcb_poly_t *src)
  */
 void pcb_polygon_copy_attached_to_layer(void)
 {
-	pcb_layer_t *layer = pcb_loose_subc_layer(PCB, PCB_CURRLAYER(PCB), pcb_true);
+	pcb_layer_t *layer = pcb_loose_subc_layer(PCB, PCB_CURRLAYER(PCB), rnd_true);
 	pcb_poly_t *polygon;
 	int saveID;
 
@@ -1200,7 +1200,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 
 	pcb_poly_init_clip(PCB->Data, layer, polygon);
 	pcb_poly_invalidate_draw(layer, polygon);
-	pcb_board_set_changed_flag(pcb_true);
+	pcb_board_set_changed_flag(rnd_true);
 
 	/* reset state of attached line */
 	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
@@ -1509,7 +1509,7 @@ rnd_bool pcb_poly_is_point_in_p(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t r, pcb
 	v[0] = X;
 	v[1] = Y;
 	if (pcb_polyarea_contour_inside(p->Clipped, v))
-		return pcb_true;
+		return rnd_true;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, p)) {
 		pcb_poly_t tmp = *p;
@@ -1517,14 +1517,14 @@ rnd_bool pcb_poly_is_point_in_p(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t r, pcb
 		/* Check all clipped-away regions that are now drawn because of full-poly */
 		for (tmp.Clipped = p->Clipped->f; tmp.Clipped != p->Clipped; tmp.Clipped = tmp.Clipped->f)
 			if (pcb_polyarea_contour_inside(tmp.Clipped, v))
-				return pcb_true;
+				return rnd_true;
 	}
 
 	if (r < 1)
-		return pcb_false;
+		return rnd_false;
 	if (!(c = pcb_poly_from_circle(X, Y, r)))
-		return pcb_false;
-	return pcb_poly_isects_poly(c, p, pcb_true);
+		return rnd_false;
+	return pcb_poly_isects_poly(c, p, rnd_true);
 }
 
 
@@ -1540,8 +1540,8 @@ rnd_bool pcb_poly_is_rect_in_p(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, r
 {
 	rnd_polyarea_t *s;
 	if (!(s = pcb_poly_from_rect(min(X1, X2), max(X1, X2), min(Y1, Y2), max(Y1, Y2))))
-		return pcb_false;
-	return pcb_poly_isects_poly(s, p, pcb_true);
+		return rnd_false;
+	return pcb_poly_isects_poly(s, p, rnd_true);
 }
 
 void pcb_poly_no_holes_dicer(pcb_poly_t *p, const rnd_rnd_box_t *clip, void (*emit)(pcb_pline_t *, void *), void *user_data)
@@ -1562,13 +1562,13 @@ void pcb_poly_no_holes_dicer(pcb_poly_t *p, const rnd_rnd_box_t *clip, void (*em
 rnd_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 {
 	rnd_polyarea_t *p, *start;
-	rnd_bool many = pcb_false;
+	rnd_bool many = rnd_false;
 	pcb_flag_t flags;
 
 	if (!poly->Clipped || PCB_FLAG_TEST(PCB_FLAG_LOCK, poly))
-		return pcb_false;
+		return rnd_false;
 	if (poly->Clipped->f == poly->Clipped)
-		return pcb_false;
+		return rnd_false;
 	pcb_poly_invalidate_erase(poly);
 	start = p = poly->Clipped;
 	/* This is ugly. The creation of the new polygons can cause
@@ -1585,7 +1585,7 @@ rnd_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 	poly->NoHoles = NULL;
 	flags = poly->Flags;
 	pcb_poly_remove(layer, poly);
-	inhibit = pcb_true;
+	inhibit = rnd_true;
 	do {
 		pcb_vnode_t *v;
 		pcb_poly_t *newone;
@@ -1593,8 +1593,8 @@ rnd_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 		if (p->contours->area > conf_core.design.poly_isle_area) {
 			newone = pcb_poly_new(layer, poly->Clearance, flags);
 			if (!newone)
-				return pcb_false;
-			many = pcb_true;
+				return rnd_false;
+			many = rnd_true;
 			v = p->contours->head;
 			pcb_poly_point_new(newone, v->point[0], v->point[1]);
 			for (v = v->next; v != p->contours->head; v = v->next)
@@ -1619,7 +1619,7 @@ rnd_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 		}
 	}
 	while (p != start);
-	inhibit = pcb_false;
+	inhibit = rnd_false;
 	pcb_undo_inc_serial();
 	return many;
 }
@@ -1688,12 +1688,12 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 		Polygon = pcb_poly_new(Layer, 2 * conf_core.design.clearance, Flags);
 
 		pline = pa->contours;
-		outer = pcb_true;
+		outer = rnd_true;
 
 		do {
 			if (!outer)
 				pcb_poly_hole_new(Polygon);
-			outer = pcb_false;
+			outer = rnd_false;
 
 			node = pline->head;
 			do {
@@ -1716,7 +1716,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 	}
 	while ((pa = pa->f) != Input);
 
-	pcb_board_set_changed_flag(pcb_true);
+	pcb_board_set_changed_flag(rnd_true);
 }
 
 rnd_bool pcb_pline_is_rectangle(pcb_pline_t *pl)
@@ -1735,11 +1735,11 @@ rnd_bool pcb_pline_is_rectangle(pcb_pline_t *pl)
 	} while((n < 4) && (v != pl->head->next));
 	
 	if (n != 4)
-		return pcb_false;
+		return rnd_false;
 
 	if (sqr(x[0] - x[2]) + sqr(y[0] - y[2]) == sqr(x[1] - x[3]) + sqr(y[1] - y[3]))
-		return pcb_true;
+		return rnd_true;
 
-	return pcb_false;
+	return rnd_false;
 }
 

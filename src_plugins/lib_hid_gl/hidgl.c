@@ -50,7 +50,7 @@ void hidgl_init(void)
 }
 
 static rnd_composite_op_t composite_op = RND_HID_COMP_RESET;
-static rnd_bool direct_mode = pcb_true;
+static rnd_bool direct_mode = rnd_true;
 static int comp_stencil_bit = 0;
 
 static GLfloat *grid_points = NULL;
@@ -142,7 +142,7 @@ rnd_composite_op_t hidgl_get_drawing_mode()
 
 void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
-	rnd_bool xor_mode = (composite_op == RND_HID_COMP_POSITIVE_XOR ? pcb_true : pcb_false);
+	rnd_bool xor_mode = (composite_op == RND_HID_COMP_POSITIVE_XOR ? rnd_true : rnd_false);
 
 	/* If the previous mode was NEGATIVE then all of the primitives drawn
 	 * in that mode were used only for creating the stencil and will not be 

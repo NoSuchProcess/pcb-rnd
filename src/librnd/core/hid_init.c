@@ -663,7 +663,7 @@ int rnd_main_args_setup2(rnd_main_args_t *ga, int *exitval)
 	rnd_conf_update(NULL, -1);
 
 	if (ga->main_action != NULL) {
-		int res = rnd_parse_command(NULL, ga->main_action, pcb_true); /* hidlib is NULL because there is no context yet */
+		int res = rnd_parse_command(NULL, ga->main_action, rnd_true); /* hidlib is NULL because there is no context yet */
 		if ((res != 0) && (ga->main_action_hint != NULL))
 			rnd_message(RND_MSG_ERROR, "\nHint: %s\n", ga->main_action_hint);
 		rnd_log_print_uninit_errs("main_action parse error");

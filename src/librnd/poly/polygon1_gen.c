@@ -62,7 +62,7 @@ static void init_rotate_cache(void)
 rnd_polyarea_t *pcb_poly_from_contour(pcb_pline_t * contour)
 {
 	rnd_polyarea_t *p;
-	pcb_poly_contour_pre(contour, pcb_true);
+	pcb_poly_contour_pre(contour, rnd_true);
 	assert(contour->Flags.orient == PCB_PLF_DIR);
 	if (!(p = pcb_polyarea_create()))
 		return NULL;
@@ -74,7 +74,7 @@ rnd_polyarea_t *pcb_poly_from_contour(pcb_pline_t * contour)
 rnd_polyarea_t *pcb_poly_from_contour_autoinv(pcb_pline_t *contour)
 {
 	rnd_polyarea_t *p;
-	pcb_poly_contour_pre(contour, pcb_true);
+	pcb_poly_contour_pre(contour, rnd_true);
 	if (contour->Flags.orient != PCB_PLF_DIR)
 		pcb_poly_contour_inv(contour);
 	if (!(p = pcb_polyarea_create()))
@@ -310,7 +310,7 @@ rnd_polyarea_t *pcb_poly_from_circle(rnd_coord_t x, rnd_coord_t y, rnd_coord_t r
 	if ((contour = pcb_poly_contour_new(v)) == NULL)
 		return NULL;
 	pcb_poly_frac_circle(contour, x, y, v, 1);
-	contour->is_round = pcb_true;
+	contour->is_round = rnd_true;
 	contour->cx = x;
 	contour->cy = y;
 	contour->radius = radius;

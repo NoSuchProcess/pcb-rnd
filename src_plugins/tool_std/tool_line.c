@@ -64,7 +64,7 @@ static pcb_layer_t *last_layer;
 
 void pcb_tool_line_init(void)
 {
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	if (pcb_tool_prev_id == pcb_crosshair.tool_arc && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
@@ -80,20 +80,20 @@ void pcb_tool_line_init(void)
 			}
 		}
 	}
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
 void pcb_tool_line_uninit(void)
 {
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	pcb_added_lines = 0;
 	pcb_route_reset(&pcb_crosshair.Route);
 	if (pcb_tool_next_id != pcb_crosshair.tool_arc) {
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		if (!pcb_marked.user_placed)
-			pcb_crosshair_set_local_ref(0, 0, pcb_false);
+			pcb_crosshair_set_local_ref(0, 0, rnd_false);
 	}
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
 /* creates points of a line (when clicked) */
@@ -104,7 +104,7 @@ static void notify_line(rnd_hidlib_t *hl)
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
 	if ((!pcb_marked.status || conf_core.editor.local_ref) && !pcb_marked.user_placed)
-			pcb_crosshair_set_local_ref(pcb_crosshair.X, pcb_crosshair.Y, pcb_true);
+			pcb_crosshair_set_local_ref(pcb_crosshair.X, pcb_crosshair.Y, rnd_true);
 	switch (pcb_crosshair.AttachedLine.State) {
 	case PCB_CH_STATE_FIRST:						/* first point */
 TODO("subc: this should work on heavy terminals too!")
@@ -198,7 +198,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 															pcb_crosshair.AttachedLine.Point1.X,
 															pcb_crosshair.AttachedLine.Point1.Y,
 				conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
-			0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL)) {
+			0, PCB_PSTK_COMPAT_ROUND, rnd_true)) != NULL)) {
 					pcb_obj_add_attribs((pcb_any_obj_t *)ps, pcb->pen_attr, NULL);
 					pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 		}
@@ -220,7 +220,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 			/* set the mark to the new starting point so ortho works as expected and we can draw a perpendicular line from here */
 			hl->tool_grabbed.X = pcb_crosshair.Route.end_point.X;
 			hl->tool_grabbed.Y = pcb_crosshair.Route.end_point.Y;
-			hl->tool_grabbed.status = pcb_true;
+			hl->tool_grabbed.status = rnd_true;
 		}
 
 		if (ps)
@@ -258,7 +258,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		if ((pcb_crosshair.AttachedLine.Point1.X !=
 				 pcb_crosshair.AttachedLine.Point2.X || pcb_crosshair.AttachedLine.Point1.Y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
-						pcb_line_new_merge(pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), pcb_true),
+						pcb_line_new_merge(pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), rnd_true),
 																	 pcb_crosshair.AttachedLine.Point1.X,
 																	 pcb_crosshair.AttachedLine.Point1.Y,
 																	 pcb_crosshair.AttachedLine.Point2.X,
@@ -290,7 +290,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 															pcb_crosshair.AttachedLine.Point1.X,
 															pcb_crosshair.AttachedLine.Point1.Y,
 															conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
-															0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL)) {
+															0, PCB_PSTK_COMPAT_ROUND, rnd_true)) != NULL)) {
 				pcb_obj_add_attribs((pcb_any_obj_t *)ps, pcb->pen_attr, NULL);
 				pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 				pcb_pstk_invalidate_draw(ps);
@@ -304,7 +304,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		}
 		if (conf_core.editor.line_refraction && (hl->tool_x != pcb_crosshair.AttachedLine.Point2.X || hl->tool_y != pcb_crosshair.AttachedLine.Point2.Y)
 				&& (line =
-						pcb_line_new_merge(pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), pcb_true),
+						pcb_line_new_merge(pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), rnd_true),
 																	 pcb_crosshair.AttachedLine.Point2.X,
 																	 pcb_crosshair.AttachedLine.Point2.Y,
 																	 hl->tool_x, hl->tool_y,
@@ -342,10 +342,10 @@ void pcb_tool_line_adjust_attached_objects(rnd_hidlib_t *hl)
 {
 	/* don't draw outline when ctrl key is pressed */
 	if (rnd_gui->control_is_pressed(rnd_gui)) {
-		pcb_crosshair.AttachedLine.draw = pcb_false;
+		pcb_crosshair.AttachedLine.draw = rnd_false;
 	}
 	else {
-		pcb_crosshair.AttachedLine.draw = pcb_true;
+		pcb_crosshair.AttachedLine.draw = rnd_true;
 		pcb_line_adjust_attached();
 	}
 }
@@ -395,12 +395,12 @@ rnd_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
 
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND) {
 		if (conf_core.editor.auto_drc)
-			pcb_undo(pcb_true);	  /* undo the connection find */
+			pcb_undo(rnd_true);	  /* undo the connection find */
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		pcb_route_reset(&pcb_crosshair.Route);
 		if (!pcb_marked.user_placed)
-			pcb_crosshair_set_local_ref(0, 0, pcb_false);
-		return pcb_false;
+			pcb_crosshair_set_local_ref(0, 0, rnd_false);
+		return rnd_false;
 	}
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_THIRD) {
 		int type;
@@ -415,14 +415,14 @@ rnd_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
 		/* save both ends of line */
 		pcb_crosshair.AttachedLine.Point2.X = ptr2->Point1.X;
 		pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point1.Y;
-		if ((type = pcb_undo(pcb_true)) == 0)
-			pcb_board_set_changed_flag(pcb_true);
+		if ((type = pcb_undo(rnd_true)) == 0)
+			pcb_board_set_changed_flag(rnd_true);
 		/* check that the undo was of the right type */
 		if ((type & PCB_UNDO_CREATE) == 0) {
 			/* wrong undo type, restore anchor points */
 			pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.AttachedLine.Point1.X;
 			pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.AttachedLine.Point1.Y;
-			return pcb_false;
+			return rnd_false;
 		}
 		/* move to new anchor */
 		pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X;
@@ -452,9 +452,9 @@ rnd_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
 			ptr2 = (pcb_line_t *) ptrtmp;
 			last_layer = (pcb_layer_t *) ptr1;
 		}
-		return pcb_false;
+		return rnd_false;
 	}
-	return pcb_true;
+	return rnd_true;
 }
 
 rnd_bool pcb_tool_line_redo_act(rnd_hidlib_t *hl)
@@ -462,9 +462,9 @@ rnd_bool pcb_tool_line_redo_act(rnd_hidlib_t *hl)
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND)
-		return pcb_false;
-	if (pcb_redo(pcb_true)) {
-		pcb_board_set_changed_flag(pcb_true);
+		return rnd_false;
+	if (pcb_redo(rnd_true)) {
+		pcb_board_set_changed_flag(rnd_true);
 		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
 			pcb_line_t *line = linelist_last(&PCB_CURRLAYER(pcb)->Line);
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = line->Point2.X;
@@ -472,7 +472,7 @@ rnd_bool pcb_tool_line_redo_act(rnd_hidlib_t *hl)
 			pcb_added_lines++;
 		}
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 void pcb_tool_line_escape(rnd_hidlib_t *hl)

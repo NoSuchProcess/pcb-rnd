@@ -144,7 +144,7 @@ static void batch_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 			uninit_batch();
 			goto quit;
 		}
-		rnd_parse_command(hid->hid_data, line, pcb_false);
+		rnd_parse_command(hid->hid_data, line, rnd_false);
 	}
 
 	quit:;

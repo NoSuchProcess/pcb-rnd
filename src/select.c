@@ -69,11 +69,11 @@ rnd_bool pcb_select_object(pcb_board_t *pcb)
 	pcb_layer_t *layer;
 	int type;
 
-	rnd_bool changed = pcb_true;
+	rnd_bool changed = rnd_true;
 
 	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC(PCB) | PCB_OBJ_FLOATER, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_OBJ_VOID || PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
-		return pcb_false;
+		return rnd_false;
 	switch (type) {
 
 	case PCB_OBJ_PSTK:
@@ -424,7 +424,7 @@ static pcb_r_dir_t pcb_select_block_cb(const rnd_rnd_box_t *box, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 
 	/* do not let locked object selected, but allow deselection */
-	if ((PCB_FLAG_TEST(PCB_FLAG_LOCK, obj) == pcb_true) && (ctx->flag))
+	if ((PCB_FLAG_TEST(PCB_FLAG_LOCK, obj) == rnd_true) && (ctx->flag))
 		return PCB_R_DIR_NOT_FOUND;
 
 	if (!pcb_obj_near_box(obj, &ctx->box)) /* detailed box matching */
@@ -443,7 +443,7 @@ static pcb_r_dir_t pcb_select_block_cb(const rnd_rnd_box_t *box, void *cl)
 /* ----------------------------------------------------------------------
  * selects/unselects all visible objects within the passed box
  * Flag determines if the block is to be selected or unselected
- * returns pcb_true if the state of any object has changed
+ * returns rnd_true if the state of any object has changed
  */
 rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_rnd_box_t *Box, rnd_bool flag, rnd_bool vis_only, rnd_bool invert)
 {
@@ -472,13 +472,13 @@ long int *pcb_list_block(pcb_board_t *pcb, rnd_rnd_box_t *Box, int *len)
 /* ----------------------------------------------------------------------
  * selects/unselects all objects which were found during a connection scan
  * Flag determines if they are to be selected or unselected
- * returns pcb_true if the state of any object has changed
+ * returns rnd_true if the state of any object has changed
  *
  * text objects and subcircuits cannot be selected by this routine
  */
 static rnd_bool pcb_select_connection_(pcb_data_t *data, rnd_bool Flag)
 {
-	rnd_bool changed = pcb_false;
+	rnd_bool changed = rnd_false;
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
 
@@ -487,10 +487,10 @@ static rnd_bool pcb_select_connection_(pcb_data_t *data, rnd_bool Flag)
 			pcb_undo_add_obj_to_flag(o);
 			PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, o);
 			pcb_draw_obj(o);
-			changed = pcb_true;
+			changed = rnd_true;
 		}
 		if ((o->type == PCB_OBJ_SUBC) && (pcb_select_connection_(((pcb_subc_t *)o)->data, Flag)))
-			changed = pcb_true;
+			changed = rnd_true;
 	}
 
 	return changed;
@@ -504,7 +504,7 @@ rnd_bool pcb_select_connection(pcb_board_t *pcb, rnd_bool Flag)
 /* ---------------------------------------------------------------------------
  * selects objects as defined by Type by name;
  * it's a case insensitive match
- * returns pcb_true if any object has been selected
+ * returns rnd_true if any object has been selected
  */
 #define REGEXEC(arg) \
 	(method == PCB_SM_REGEX ? regexec_match_all(regex, (arg)) : strlst_match(pat, (arg)))

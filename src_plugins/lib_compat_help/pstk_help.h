@@ -16,11 +16,11 @@ pcb_pstk_t *pcb_pstk_new_from_shape(pcb_data_t *data, rnd_coord_t x, rnd_coord_t
    placed back in objs. Quiet controls log messages. Return the number
    of padstacks created. Return -1 on error.
    WARNING: O(n^2) loops, assuming there are only a dozen of objects passed. */
-int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet); /* thru-hole pins only */
-int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet); /* smd pads only */
+int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet); /* thru-hole pins only */
+int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet); /* smd pads only */
 
 /* Same as above, but convert both; returns -1 only if both failed */
-int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet);
+int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet);
 
 /*** shape generators ***/
 void pcb_shape_rect(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t height);

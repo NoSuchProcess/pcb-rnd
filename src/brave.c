@@ -237,7 +237,7 @@ static int brave_interact(void)
 	RND_DAD_END(dlg);
 
 
-	RND_DAD_NEW("brave", dlg, "Brave features", dlg, pcb_true, NULL);
+	RND_DAD_NEW("brave", dlg, "Brave features", dlg, rnd_true, NULL);
 	brave2dlg(dlg_hid_ctx);
 	RND_DAD_RUN(dlg);
 	RND_DAD_FREE(dlg);

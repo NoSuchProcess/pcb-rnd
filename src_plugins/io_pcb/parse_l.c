@@ -2600,7 +2600,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	char *tmps;
 	size_t l;
 #ifdef FLEX_SCANNER
-	static rnd_bool firsttime = pcb_true;
+	static rnd_bool firsttime = rnd_true;
 #endif
 	pcb_io_pcb_usty_seen = 0;
 	if (Pipe == NULL) {
@@ -2653,7 +2653,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	/* reset parser if not called the first time */
 	if (!firsttime)
 		yyrestart(yyin);
-	firsttime = pcb_false;
+	firsttime = rnd_false;
 #endif
 
 	/* init linenumber and filename for yyerror() */
@@ -2666,7 +2666,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	 * on termination.
 	 */
 
-	pcb_create_be_lenient(pcb_true);
+	pcb_create_be_lenient(rnd_true);
 
 #if !defined(RND_HAS_ATEXIT)
 	if (PCB && PCB->Data)
@@ -2679,7 +2679,7 @@ static int Parse(FILE *Pipe, const char *Executable, const char *Path, const cha
 	/* clean up parse buffer */
 	yy_delete_buffer(YY_CURRENT_BUFFER);
 
-	pcb_create_be_lenient(pcb_false);
+	pcb_create_be_lenient(rnd_false);
 
 	if (Pipe != NULL)
 		return returncode;
@@ -2708,7 +2708,7 @@ int io_pcb_ParseElement(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, c
 	yyData = Ptr;
 	pcb_data_set_layer_parents(Ptr);
 	yyFont = pcb_font(PCB, 0, 1);
-	yyFontReset = pcb_false;
+	yyFontReset = rnd_false;
 	yyFontkitValid = NULL;
 	yysubc = NULL;
 	yyElemFixLayers = 1;
@@ -2758,7 +2758,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	yyPCB = Ptr;
 	yyData = NULL;
 	yyFont = NULL;
-	yyFontReset = pcb_true;
+	yyFontReset = rnd_true;
 	yyFontkitValid = NULL;
 	yysubc = NULL;
 	yy_settings_dest = settings_dest;
@@ -2867,7 +2867,7 @@ int io_pcb_ParseFont(pcb_plug_io_t *ctx, pcb_font_t *Ptr, const char *Filename)
 	yyFont = Ptr;
 	yyFontkitValid = &valid;
 	yysubc = NULL;
-	yyFontReset = pcb_false;
+	yyFontReset = rnd_false;
 
 	yy_settings_dest = RND_CFR_invalid;
 	fcmd = conf_core.rc.font_command;

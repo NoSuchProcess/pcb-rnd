@@ -44,10 +44,10 @@
 
 void pcb_tool_poly_uninit(void)
 {
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	pcb_crosshair.AttachedPolygon.PointN = 0;
 	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
 TODO("remove this when pcb_tool_poly_notify_mode() loses PCB")
@@ -94,7 +94,7 @@ void pcb_tool_poly_notify_mode(rnd_hidlib_t *hl)
 		/* set the mark to the new starting point so ortho works */
 		hl->tool_grabbed.X = hl->tool_x;
 		hl->tool_grabbed.Y = hl->tool_y;
-		hl->tool_grabbed.status = pcb_true;
+		hl->tool_grabbed.status = rnd_true;
 	}
 }
 
@@ -103,11 +103,11 @@ void pcb_tool_poly_adjust_attached_objects(rnd_hidlib_t *hl)
 	pcb_attached_line_t *line = &pcb_crosshair.AttachedLine;
 
 	if (rnd_gui->control_is_pressed(rnd_gui)) {
-		line->draw = pcb_false;
+		line->draw = rnd_false;
 		return;
 	}
 	else
-		line->draw = pcb_true;
+		line->draw = rnd_true;
 	if (conf_core.editor.all_direction_lines) {
 		line->Point2.X = pcb_crosshair.X;
 		line->Point2.Y = pcb_crosshair.Y;
@@ -135,19 +135,19 @@ rnd_bool pcb_tool_poly_undo_act(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedPolygon.PointN) {
 		pcb_polygon_go_to_prev_point();
-		return pcb_false;
+		return rnd_false;
 	}
-	return pcb_true;
+	return rnd_true;
 }
 
 rnd_bool pcb_tool_poly_redo_act(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedPolygon.PointN) {
 		pcb_polygon_go_to_next_point();
-		return pcb_false;
+		return rnd_false;
 	}
 	else
-		return pcb_true;
+		return rnd_true;
 }
 
 void pcb_tool_poly_escape(rnd_hidlib_t *hl)

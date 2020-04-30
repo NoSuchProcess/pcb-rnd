@@ -177,7 +177,7 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 								if ((lx == x) && (ly == y)) {
 									pcb_pstk_t *ps = pcb_pstk_new_compat_via(pcb->Data, -1, x, y,
 										conf_core.design.via_drilling_hole, via_dia, conf_core.design.clearance,
-										0, PCB_PSTK_COMPAT_ROUND, pcb_true);
+										0, PCB_PSTK_COMPAT_ROUND, rnd_true);
 								}
 								else
 									rnd_message(RND_MSG_ERROR, "Invalid via: not vertical, in line %ld:%ld\n", (long)nl->line, (long)nl->col);

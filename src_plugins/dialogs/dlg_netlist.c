@@ -304,7 +304,7 @@ static void netlist_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 
 static rnd_bool netlist_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
-	return pcb_false;
+	return rnd_false;
 }
 
 static void pcb_dlg_netlist(pcb_board_t *pcb)
@@ -430,7 +430,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 	netlist_ctx.active = 1;
 
 	RND_DAD_DEFSIZE(netlist_ctx.dlg, 300, 350);
-	RND_DAD_NEW("netlist", netlist_ctx.dlg, "pcb-rnd netlist", &netlist_ctx, pcb_false, netlist_close_cb);
+	RND_DAD_NEW("netlist", netlist_ctx.dlg, "pcb-rnd netlist", &netlist_ctx, rnd_false, netlist_close_cb);
 
 	{
 		rnd_hid_attr_val_t hv;

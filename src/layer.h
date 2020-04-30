@@ -211,11 +211,11 @@ pcb_layer_t *pcb_get_layer(pcb_data_t *data, rnd_layer_id_t id);
    slow linear search */
 rnd_layer_id_t pcb_layer_by_name(pcb_data_t *data, const char *name);
 
-/* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
+/* Returns rnd_true if the given layer is empty (there are no objects on the layer) */
 rnd_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *ly);
 rnd_bool pcb_layer_is_empty(pcb_board_t *pcb, rnd_layer_id_t ly);
 
-/* Returns pcb_true if the given layer is empty - non-recursive variant (doesn't deal with side effects) */
+/* Returns rnd_true if the given layer is empty - non-recursive variant (doesn't deal with side effects) */
 rnd_bool pcb_layer_is_pure_empty(pcb_layer_t *layer);
 
 

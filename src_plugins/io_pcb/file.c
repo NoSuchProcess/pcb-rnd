@@ -782,7 +782,7 @@ void PostLoadElementPCB()
 	pcb_layer_group_setup_default(yyPCB);
 	PCB = yyPCB;
 	pcb_layer_group_setup_silks(yyPCB);
-	pcb_data_bbox(&dbb, yyPCB->Data, pcb_false);
+	pcb_data_bbox(&dbb, yyPCB->Data, rnd_false);
 	pcb_data_normalize_(yyPCB->Data, &dbb);
 	PCB = pcb_save;
 	yyPCB->hidlib.size_x = dbb.X2*2;
@@ -1080,7 +1080,7 @@ static pcb_layer_t *subc_silk_layer(pcb_subc_t *subc)
 {
 	pcb_layer_type_t side = yysubc_bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 	const char *name = yysubc_bottom ? "bottom-silk" : "top-silk";
-	return pcb_subc_get_layer(subc, PCB_LYT_SILK | side, /*PCB_LYC_AUTO*/0, pcb_true, name, pcb_false);
+	return pcb_subc_get_layer(subc, PCB_LYT_SILK | side, /*PCB_LYC_AUTO*/0, rnd_true, name, rnd_false);
 }
 
 pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness)
@@ -1093,7 +1093,7 @@ pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, rnd_coord_t X, rnd_coord_t Y
 	rnd_coord_t Width, rnd_coord_t Height, rnd_angle_t angle, rnd_angle_t delta, rnd_coord_t Thickness)
 {
 	pcb_layer_t *ly = subc_silk_layer(subc);
-	return pcb_arc_new(ly, X, Y, Width, Height, angle, delta, Thickness, 0, pcb_no_flags(), pcb_true);
+	return pcb_arc_new(ly, X, Y, Width, Height, angle, delta, Thickness, 0, pcb_no_flags(), rnd_true);
 }
 
 pcb_pstk_t *io_pcb_element_pin_new(pcb_subc_t *subc, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, rnd_coord_t DrillingHole, const char *Name, const char *Number, pcb_flag_t Flags)
@@ -1193,7 +1193,7 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 void pcb_tmp_data_save(void)
 {
 	char *fn = rnd_build_fn(&PCB->hidlib, conf_core.rc.emergency_name);
-	pcb_write_pcb_file(fn, pcb_true, NULL, pcb_true, pcb_false, -1, 0);
+	pcb_write_pcb_file(fn, rnd_true, NULL, rnd_true, rnd_false, -1, 0);
 	if (TMPFilename != NULL)
 		free(TMPFilename);
 	TMPFilename = fn;

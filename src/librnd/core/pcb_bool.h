@@ -24,38 +24,38 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_BOOL_H
-#define PCB_BOOL_H
+#ifndef RND_BOOL_H
+#define RND_BOOL_H
 /* Because stdbool is not c89 */
 typedef int rnd_bool;
-typedef enum pcb_bool_e {
-	pcb_false = 0,
-	pcb_true = 1
-} pcb_bool_t;
+typedef enum rnd_bool_e {
+	rnd_false = 0,
+	rnd_true = 1
+} rnd_bool_t;
 
 
 	/* for arguments optionally changing the value of a bool */
-typedef enum pcb_bool_op_e {
-	PCB_BOOL_CLEAR = 0,
-	PCB_BOOL_SET = 1,
-	PCB_BOOL_TOGGLE = -1,
-	PCB_BOOL_PRESERVE = -2,
-	PCB_BOOL_INVALID = -8
-} pcb_bool_op_t;
+typedef enum rnd_bool_op_e {
+	RND_BOOL_CLEAR = 0,
+	RND_BOOL_SET = 1,
+	RND_BOOL_TOGGLE = -1,
+	RND_BOOL_PRESERVE = -2,
+	RND_BOOL_INVALID = -8
+} rnd_bool_op_t;
 
-/* changes the value of rnd_bool dst as requested by pcb_bool_op_t op
+/* changes the value of rnd_bool dst as requested by rnd_bool_op_t op
    WARNING: evaluates dst multiple times */
-#define pcb_bool_op(dst, op) \
+#define rnd_bool_op(dst, op) \
 do { \
 	switch(op) { \
-		case PCB_BOOL_CLEAR:   (dst) = 0; break; \
-		case PCB_BOOL_SET:     (dst) = 1; break; \
-		case PCB_BOOL_TOGGLE:  (dst) = !(dst); break; \
-		case PCB_BOOL_INVALID: \
-		case PCB_BOOL_PRESERVE: break; \
+		case RND_BOOL_CLEAR:   (dst) = 0; break; \
+		case RND_BOOL_SET:     (dst) = 1; break; \
+		case RND_BOOL_TOGGLE:  (dst) = !(dst); break; \
+		case RND_BOOL_INVALID: \
+		case RND_BOOL_PRESERVE: break; \
 	} \
 } while(0)
 
-pcb_bool_op_t pcb_str2boolop(const char *s);
+rnd_bool_op_t rnd_str2boolop(const char *s);
 
 #endif

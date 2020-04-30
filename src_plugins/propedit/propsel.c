@@ -650,10 +650,10 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 		}
 
 		if (st->d_valid && (strcmp(pn, "rotation") == 0) &&
-			pcb_chg_obj_rot(PCB_OBJ_TEXT, text->parent.layer, text, text, st->d, st->d_absolute, pcb_true)) DONE;
+			pcb_chg_obj_rot(PCB_OBJ_TEXT, text->parent.layer, text, text, st->d, st->d_absolute, rnd_true)) DONE;
 
 		if (st->c_valid && (strcmp(pn, "thickness") == 0) &&
-			pcb_chg_obj_2nd_size(PCB_OBJ_TEXT, text->parent.layer, text, text, st->c, st->c_absolute, pcb_true)) DONE;
+			pcb_chg_obj_2nd_size(PCB_OBJ_TEXT, text->parent.layer, text, text, st->c, st->c_absolute, rnd_true)) DONE;
 
 		memset(&op, 0, sizeof(op));
 		op.move.pcb = st->pcb;
@@ -877,7 +877,7 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 	if (ctx->board)
 		set_board(sctx, ctx->pcb);
 
-	pcb_board_set_changed_flag(pcb_true);
+	pcb_board_set_changed_flag(rnd_true);
 	pcb_undo_inc_serial();
 	return sctx->set_cnt;
 }
@@ -994,7 +994,7 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 	if (ctx->board)
 		del_cnt += del_board(&ctx, ctx->pcb, key);
 
-	pcb_board_set_changed_flag(pcb_true);
+	pcb_board_set_changed_flag(rnd_true);
 	return del_cnt;
 }
 

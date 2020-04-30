@@ -75,13 +75,13 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_layer_combining_t comb = 0;
 		if (strcmp(ly->name, dlg[wname].val.str) != 0) {
 			ar |= pcb_layer_rename_(ly, (char *)dlg[wname].val.str, 1);
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		}
 		if (dlg[wsub].val.lng) comb |= PCB_LYC_SUB;
 		if (dlg[wauto].val.lng) comb |= PCB_LYC_AUTO;
 		if (ly->comb != comb) {
 			ly->comb = comb;
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		}
 	}
 	else
@@ -168,7 +168,7 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (strcmp(g->name, dlg[wname].val.str) != 0) {
 			ar |= pcb_layergrp_rename_(g, (char *)dlg[wname].val.str, 1);
 			dlg[wname].val.str = NULL;
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		}
 
 		if (dlg[wtype].val.lng != orig_type) {
@@ -207,7 +207,7 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		if (changed) {
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 			rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 		}
 	}

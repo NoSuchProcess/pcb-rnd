@@ -79,7 +79,7 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
 	RND_DAD_END(dlg);
 
-	RND_DAD_NEW("plugins", dlg, "Manage plugins", NULL, pcb_true, NULL);
+	RND_DAD_NEW("plugins", dlg, "Manage plugins", NULL, rnd_true, NULL);
 	RND_DAD_RUN(dlg);
 	RND_DAD_FREE(dlg);
 

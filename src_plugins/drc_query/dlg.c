@@ -315,7 +315,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 	free(info);
 
 	RND_DAD_DEFSIZE(ctx->dlg, 200, 400);
-	RND_DAD_NEW("drc_query_rule_edit", ctx->dlg, "drc_query: rule editor", ctx, pcb_false, rule_edit_close_cb);
+	RND_DAD_NEW("drc_query_rule_edit", ctx->dlg, "drc_query: rule editor", ctx, rnd_false, rule_edit_close_cb);
 
 	drc_rule_pcb2dlg(ctx);
 
@@ -619,7 +619,7 @@ static int pcb_dlg_drc_rlist(void)
 	drc_rlist_ctx.active = 1;
 
 	RND_DAD_DEFSIZE(drc_rlist_ctx.dlg, 550, 400);
-	RND_DAD_NEW("drc_query_list", drc_rlist_ctx.dlg, "drc_query: list of rules", &drc_rlist_ctx, pcb_false, drc_rlist_close_cb);
+	RND_DAD_NEW("drc_query_list", drc_rlist_ctx.dlg, "drc_query: list of rules", &drc_rlist_ctx, rnd_false, drc_rlist_close_cb);
 	RND_DAD_SET_VALUE(drc_rlist_ctx.dlg_hid_ctx, wpane,    dbl, 0.5);
 	drc_rlist_pcb2dlg();
 	return 0;

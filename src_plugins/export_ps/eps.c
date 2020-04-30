@@ -230,7 +230,7 @@ void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xf
 	region.Y2 = PCB->hidlib.size_y;
 
 	if (options[HA_only_visible].lng)
-		bounds = pcb_data_bbox(&tmp, PCB->Data, pcb_false);
+		bounds = pcb_data_bbox(&tmp, PCB->Data, rnd_false);
 	else
 		bounds = &region;
 

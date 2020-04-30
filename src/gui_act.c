@@ -148,7 +148,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_CycleClip:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 			if (conf_core.editor.all_direction_lines) {
 				rnd_conf_toggle_editor(all_direction_lines);
 				rnd_conf_setf(RND_CFR_DESIGN,"editor/line_refraction",-1,"%d",0);
@@ -157,27 +157,27 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_conf_setf(RND_CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
 			}
 			pcb_tool_adjust_attached(RND_ACT_HIDLIB);
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
 		case F_CycleCrosshair:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 			rnd_conf_setf(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "%d", CrosshairShapeIncrement(rnd_conf.editor.crosshair_shape_idx));
 			if (rnd_ch_shape_NUM == rnd_conf.editor.crosshair_shape_idx)
 				rnd_conf_set(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "0", RND_POL_OVERWRITE);
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
 		case F_ToggleRubberBandMode:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 			rnd_conf_toggle_editor(rubber_band_mode);
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
 		case F_ToggleStartDirection:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 			rnd_conf_toggle_editor(swap_start_direction);
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
 		case F_ToggleUniqueNames:
@@ -185,21 +185,21 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_ToggleSnapPin:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 			rnd_conf_toggle_editor(snap_pin);
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
 		case F_ToggleSnapOffGridLine:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 			rnd_conf_toggle_editor(snap_offgrid_line);
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
 		case F_ToggleHighlightOnPoint:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 			rnd_conf_toggle_editor(highlight_on_point);
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
 		case F_ToggleLocalRef:
@@ -244,7 +244,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_ToggleAutoDRC:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 			rnd_conf_toggle_editor(auto_drc);
 			if (conf_core.editor.auto_drc && rnd_conf.editor.mode == pcb_crosshair.tool_line) {
 				if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_FOUND, 1, 1) > 0) {
@@ -260,7 +260,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_find_free(&fctx);
 				}
 			}
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
 		case F_ToggleCheckPlanes:
@@ -292,8 +292,8 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 				RND_ACT_HIDLIB->grid = 1;
 				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
-					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true); /* first notify was in MoveCrosshairAbs */
-				rnd_hidlib_set_grid(RND_ACT_HIDLIB, oldGrid, pcb_true, pcb_crosshair.X, pcb_crosshair.Y);
+					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true); /* first notify was in MoveCrosshairAbs */
+				rnd_hidlib_set_grid(RND_ACT_HIDLIB, oldGrid, rnd_true, pcb_crosshair.X, pcb_crosshair.Y);
 				rnd_grid_inval();
 			}
 			break;
@@ -345,7 +345,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 					pcb_undo_add_obj_to_flag(ptr2);
 					PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, obj);
-					pcb_board_set_changed_flag(pcb_true);
+					pcb_board_set_changed_flag(rnd_true);
 					pcb_undo_inc_serial();
 					pcb_draw();
 				}
@@ -479,14 +479,14 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	}
 	else if (id == -2) { /* empty */
 		if (pcb_marked.status) {
-			pcb_notify_mark_change(pcb_false);
-			pcb_marked.status = pcb_false;
+			pcb_notify_mark_change(rnd_false);
+			pcb_marked.status = rnd_false;
 			pcb_marked.user_placed = 0;
-			pcb_notify_mark_change(pcb_true);
+			pcb_notify_mark_change(rnd_true);
 		}
 		else {
-			pcb_notify_mark_change(pcb_false);
-			pcb_marked.status = pcb_true;
+			pcb_notify_mark_change(rnd_false);
+			pcb_marked.status = rnd_true;
 			pcb_marked.user_placed = 1;
 			if (conf_core.editor.marker_snaps) {
 				pcb_marked.X = pcb_crosshair.X;
@@ -494,19 +494,19 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			}
 			else
 				rnd_hid_get_coords("Click on new mark", &pcb_marked.X, &pcb_marked.Y, 0);
-			pcb_notify_mark_change(pcb_true);
+			pcb_notify_mark_change(rnd_true);
 		}
 	}
 	else if (id == F_Center) {
-		pcb_notify_mark_change(pcb_false);
-		pcb_marked.status = pcb_true;
+		pcb_notify_mark_change(rnd_false);
+		pcb_marked.status = rnd_true;
 		if (conf_core.editor.marker_snaps) {
 			pcb_marked.X = pcb_crosshair.X;
 			pcb_marked.Y = pcb_crosshair.Y;
 		}
 		else
 			rnd_hid_get_coords("Click on new mark", &pcb_marked.X, &pcb_marked.Y, 0);
-		pcb_notify_mark_change(pcb_true);
+		pcb_notify_mark_change(rnd_true);
 		pcb_marked.user_placed = 1;
 	}
 	return 0;
@@ -543,8 +543,8 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (number > 0 && number <= vtroutestyle_len(&PCB->RouteStyle)) {
 		rts = &PCB->RouteStyle.array[number - 1];
 		pcb_board_set_line_width(rts->Thick);
-		pcb_board_set_via_size(rts->Diameter, pcb_true);
-		pcb_board_set_via_drilling_hole(rts->Hole, pcb_true);
+		pcb_board_set_via_size(rts->Diameter, rnd_true);
+		pcb_board_set_via_drilling_hole(rts->Hole, rnd_true);
 		pcb_board_set_clearance(rts->Clearance);
 	}
 	else {
@@ -588,22 +588,22 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* set layer current and size from line or arc */
 	switch (type) {
 	case PCB_OBJ_LINE:
-		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (rnd_conf.editor.mode != pcb_crosshair.tool_line)
 			pcb_tool_select_by_name(RND_ACT_HIDLIB, "line");
-		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
 
 	case PCB_OBJ_ARC:
-		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (rnd_conf.editor.mode != pcb_crosshair.tool_arc)
 			pcb_tool_select_by_name(RND_ACT_HIDLIB, "arc");
-		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
 
@@ -616,7 +616,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 	if (layer != PCB_CURRLAYER(PCB_ACT_BOARD)) {
-		pcb_layervis_change_group_vis(RND_ACT_HIDLIB, pcb_layer_id(PCB_ACT_BOARD->Data, layer), pcb_true, pcb_true);
+		pcb_layervis_change_group_vis(RND_ACT_HIDLIB, pcb_layer_id(PCB_ACT_BOARD->Data, layer), rnd_true, rnd_true);
 		rnd_hid_redraw(PCB);
 	}
 	RND_ACT_IRES(0);
@@ -647,7 +647,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else if (strncmp(arg, "name=", 5) == 0) {
 			interactive = 0;
 			ret |= pcb_layer_rename_(ly, rnd_strdup(arg+5), 1);
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		}
 		else if (strncmp(arg, "auto=", 5) == 0) {
 			interactive = 0;
@@ -655,7 +655,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				ly->comb |= PCB_LYC_AUTO;
 			else
 				ly->comb &= ~PCB_LYC_AUTO;
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		}
 		else if (strncmp(arg, "sub=", 4) == 0) {
 			interactive = 0;
@@ -663,7 +663,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				ly->comb |= PCB_LYC_SUB;
 			else
 				ly->comb &= ~PCB_LYC_SUB;
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		}
 		else if (strncmp(arg, "attrib", 6) == 0) {
 			char *key, *val;
@@ -686,7 +686,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else
 				ret |= rnd_attribute_put(&ly->Attributes, key, val);
 			free(key);
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		}
 		else {
 			rnd_message(RND_MSG_ERROR, "Invalid EditLayer() command: %s\n", arg);
@@ -753,7 +753,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else if (strncmp(arg, "name=", 5) == 0) {
 			interactive = 0;
 			ret |= pcb_layergrp_rename_(g, rnd_strdup(arg+5), 1);
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		}
 		else if (strncmp(arg, "type=", 5) == 0) {
 			const char *sbit = arg+5;
@@ -772,7 +772,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				case '-': g->ltype &= ~bit; break;
 			}
 			interactive = 0;
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		}
 		else if (strncmp(arg, "attrib", 6) == 0) {
 			char *key, *val;
@@ -1134,13 +1134,13 @@ static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_IRES(0);
 
 	if (rnd_strcasecmp(name, "all") == 0) {
-		pcb_bool_op_t open = PCB_BOOL_PRESERVE, vis = PCB_BOOL_PRESERVE, user = PCB_BOOL_PRESERVE;
+		rnd_bool_op_t open = RND_BOOL_PRESERVE, vis = RND_BOOL_PRESERVE, user = RND_BOOL_PRESERVE;
 		const char *cmd, *suser;
 		RND_PCB_ACT_CONVARG(2, FGW_STR, toggleview, cmd = argv[2].val.str);
 		RND_PCB_ACT_CONVARG(3, FGW_STR, toggleview, suser = argv[3].val.str);
 
-		user = pcb_str2boolop(suser);
-		if (user == PCB_BOOL_INVALID)
+		user = rnd_str2boolop(suser);
+		if (user == RND_BOOL_INVALID)
 			RND_ACT_FAIL(toggleview);
 		if (rnd_strcasecmp(cmd, "open") == 0)
 			open = user;

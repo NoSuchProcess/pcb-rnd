@@ -313,18 +313,18 @@ static pcb_opfunc_t InvalLabelFunctions = {
 
 /* ----------------------------------------------------------------------
  * changes the thermals on all selected and visible padstacks.
- * Returns pcb_true if anything has changed
+ * Returns rnd_true if anything has changed
  */
 rnd_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgtherm.pcb = PCB;
 	ctx.chgtherm.style = therm_style;
 	ctx.chgtherm.lid = lid;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeThermalFunctions, &ctx, pcb_false, types, pcb_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeThermalFunctions, &ctx, rnd_false, types, rnd_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -334,11 +334,11 @@ rnd_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid
 
 /* ----------------------------------------------------------------------
  * changes the size of all selected and visible object types
- * returns pcb_true if anything has changed
+ * returns rnd_true if anything has changed
  */
 rnd_bool pcb_chg_selected_size(int types, rnd_coord_t Difference, rnd_bool fixIt)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -346,7 +346,7 @@ rnd_bool pcb_chg_selected_size(int types, rnd_coord_t Difference, rnd_bool fixIt
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeSizeFunctions, &ctx, pcb_false, types, pcb_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeSizeFunctions, &ctx, rnd_false, types, rnd_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -356,11 +356,11 @@ rnd_bool pcb_chg_selected_size(int types, rnd_coord_t Difference, rnd_bool fixIt
 
 /* ----------------------------------------------------------------------
  * changes the clearance size of all selected and visible objects
- * returns pcb_true if anything has changed
+ * returns rnd_true if anything has changed
  */
 rnd_bool pcb_chg_selected_clear_size(int types, rnd_coord_t Difference, rnd_bool fixIt)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -368,7 +368,7 @@ rnd_bool pcb_chg_selected_clear_size(int types, rnd_coord_t Difference, rnd_bool
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeClearSizeFunctions, &ctx, pcb_false, types, pcb_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeClearSizeFunctions, &ctx, rnd_false, types, rnd_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -378,11 +378,11 @@ rnd_bool pcb_chg_selected_clear_size(int types, rnd_coord_t Difference, rnd_bool
 
 /* --------------------------------------------------------------------------
  * changes the 2nd size (drilling hole) of all selected and visible objects
- * returns pcb_true if anything has changed
+ * returns rnd_true if anything has changed
  */
 rnd_bool pcb_chg_selected_2nd_size(int types, rnd_coord_t Difference, rnd_bool fixIt)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -390,7 +390,7 @@ rnd_bool pcb_chg_selected_2nd_size(int types, rnd_coord_t Difference, rnd_bool f
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &Change2ndSizeFunctions, &ctx, pcb_false, types, pcb_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &Change2ndSizeFunctions, &ctx, rnd_false, types, rnd_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -400,11 +400,11 @@ rnd_bool pcb_chg_selected_2nd_size(int types, rnd_coord_t Difference, rnd_bool f
 
 /* --------------------------------------------------------------------------
  * changes the internal/self rotation all selected and visible objects
- * returns pcb_true if anything has changed
+ * returns rnd_true if anything has changed
  */
 rnd_bool pcb_chg_selected_rot(int types, double Difference, rnd_bool fixIt)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -412,7 +412,7 @@ rnd_bool pcb_chg_selected_rot(int types, double Difference, rnd_bool fixIt)
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeRotFunctions, &ctx, pcb_false, types, pcb_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeRotFunctions, &ctx, rnd_false, types, rnd_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -422,16 +422,16 @@ rnd_bool pcb_chg_selected_rot(int types, double Difference, rnd_bool fixIt)
 
 /* ----------------------------------------------------------------------
  * changes the clearance flag (join) of all selected and visible lines
- * and/or arcs. Returns pcb_true if anything has changed
+ * and/or arcs. Returns rnd_true if anything has changed
  */
 rnd_bool pcb_chg_selected_join(int types)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeJoinFunctions, &ctx, pcb_false, types, pcb_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeJoinFunctions, &ctx, rnd_false, types, rnd_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -441,16 +441,16 @@ rnd_bool pcb_chg_selected_join(int types)
 
 /* ----------------------------------------------------------------------
  * changes the clearance flag (join) of all selected and visible lines
- * and/or arcs. Returns pcb_true if anything has changed
+ * and/or arcs. Returns rnd_true if anything has changed
  */
 rnd_bool pcb_set_selected_join(int types)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &SetJoinFunctions, &ctx, pcb_false, types, pcb_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &SetJoinFunctions, &ctx, rnd_false, types, rnd_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -460,16 +460,16 @@ rnd_bool pcb_set_selected_join(int types)
 
 /* ----------------------------------------------------------------------
  * changes the clearance flag (join) of all selected and visible lines
- * and/or arcs. Returns pcb_true if anything has changed
+ * and/or arcs. Returns rnd_true if anything has changed
  */
 rnd_bool pcb_clr_selected_join(int types)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ClrJoinFunctions, &ctx, pcb_false, types, pcb_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ClrJoinFunctions, &ctx, rnd_false, types, rnd_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -479,16 +479,16 @@ rnd_bool pcb_clr_selected_join(int types)
 
 /* ----------------------------------------------------------------------
  * changes the nonetlist-flag of all selected and visible subcircuits
- * returns pcb_true if anything has changed
+ * returns rnd_true if anything has changed
  */
 rnd_bool pcb_chg_selected_nonetlist(int types)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeNonetlistFunctions, &ctx, pcb_false, types, pcb_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeNonetlistFunctions, &ctx, rnd_false, types, rnd_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -498,11 +498,11 @@ rnd_bool pcb_chg_selected_nonetlist(int types)
 
 /* ----------------------------------------------------------------------
  * changes the angle of all selected and visible object types
- * returns pcb_true if anything has changed
+ * returns rnd_true if anything has changed
  */
 rnd_bool pcb_chg_selected_angle(int types, int is_start, rnd_angle_t Difference, rnd_bool fixIt)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgangle.pcb = PCB;
@@ -510,7 +510,7 @@ rnd_bool pcb_chg_selected_angle(int types, int is_start, rnd_angle_t Difference,
 	ctx.chgangle.is_absolute = fixIt;
 	ctx.chgangle.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeAngleFunctions, &ctx, pcb_false, types, pcb_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeAngleFunctions, &ctx, rnd_false, types, rnd_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -520,11 +520,11 @@ rnd_bool pcb_chg_selected_angle(int types, int is_start, rnd_angle_t Difference,
 
 /* ----------------------------------------------------------------------
  * changes the radius of all selected and visible object types
- * returns pcb_true if anything has changed
+ * returns rnd_true if anything has changed
  */
 rnd_bool pcb_chg_selected_radius(int types, int is_start, rnd_angle_t Difference, rnd_bool fixIt)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 	pcb_opctx_t ctx;
 
 	ctx.chgsize.pcb = PCB;
@@ -532,7 +532,7 @@ rnd_bool pcb_chg_selected_radius(int types, int is_start, rnd_angle_t Difference
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeRadiusFunctions, &ctx, pcb_false, types, pcb_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeRadiusFunctions, &ctx, rnd_false, types, rnd_false);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -543,7 +543,7 @@ rnd_bool pcb_chg_selected_radius(int types, int is_start, rnd_angle_t Difference
 TODO("subc: check if it is true:")
 /* ---------------------------------------------------------------------------
  * changes the size of the passed object; subc size is silk size (TODO: check if it is true)
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt)
 {
@@ -566,7 +566,7 @@ rnd_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coor
 TODO("subc: check if it is true:")
 /* ---------------------------------------------------------------------------
  * changes the size of the passed object; element size is pin ring sizes
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_chg_obj_1st_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt)
 {
@@ -588,7 +588,7 @@ rnd_bool pcb_chg_obj_1st_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_
 
 /* ---------------------------------------------------------------------------
  * changes the radius of the passed object (e.g. arc width/height)
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, rnd_coord_t r, rnd_bool fixIt)
 {
@@ -610,7 +610,7 @@ rnd_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
 
 /* ---------------------------------------------------------------------------
  * changes the angles of the passed object (e.g. arc start/ctx->chgsize.value)
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, rnd_angle_t a, rnd_bool fixIt)
 {
@@ -633,7 +633,7 @@ rnd_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_
 
 /* ---------------------------------------------------------------------------
  * changes the clearance size of the passed object
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt)
 {
@@ -655,7 +655,7 @@ rnd_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rn
 
 /* ---------------------------------------------------------------------------
  * changes the thermal of the passed object
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  *
  */
 rnd_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type, unsigned long lid)
@@ -677,7 +677,7 @@ rnd_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int t
 
 /* ---------------------------------------------------------------------------
  * changes the 2nd size of the passed object
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt, rnd_bool incundo)
 {
@@ -700,7 +700,7 @@ rnd_bool pcb_chg_obj_2nd_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_
 
 /* ---------------------------------------------------------------------------
  * changes the internal/self rotation of the passed object
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_chg_obj_rot(int Type, void *Ptr1, void *Ptr2, void *Ptr3, double Difference, rnd_bool fixIt, rnd_bool incundo)
 {
@@ -743,7 +743,7 @@ void *pcb_chg_obj_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *Name)
 
 /* ---------------------------------------------------------------------------
  * changes the clearance-flag of the passed object
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_chg_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
@@ -754,14 +754,14 @@ rnd_bool pcb_chg_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&ChangeJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
  * sets the clearance-flag of the passed object
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_set_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
@@ -772,14 +772,14 @@ rnd_bool pcb_set_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&SetJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
  * clears the clearance-flag of the passed object
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_clr_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
@@ -790,14 +790,14 @@ rnd_bool pcb_clr_obj_join(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&ClrJoinFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
  * changes the square-flag of the passed object
- * Returns pcb_true if anything is changed
+ * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
@@ -808,9 +808,9 @@ rnd_bool pcb_chg_obj_nonetlist(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (pcb_object_operation(&ChangeNonetlistFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL) {
 		pcb_draw();
 		pcb_undo_inc_serial();
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)

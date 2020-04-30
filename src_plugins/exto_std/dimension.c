@@ -426,7 +426,7 @@ static void pcb_dimension_gui_propedit(pcb_subc_t *subc)
 	/* set up the context */
 	dim->gui_active = 1;
 
-	RND_DAD_NEW("dimension", dim->dlg, "Dimension line", subc, pcb_false, pcb_dimension_close_cb);
+	RND_DAD_NEW("dimension", dim->dlg, "Dimension line", subc, rnd_false, pcb_dimension_close_cb);
 }
 
 static pcb_extobj_t pcb_dimension = {

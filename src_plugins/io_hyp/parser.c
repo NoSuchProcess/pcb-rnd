@@ -68,8 +68,8 @@ typedef struct outline_s {
 	rnd_coord_t xc;
 	rnd_coord_t yc;
 	rnd_coord_t r;
-	pcb_bool_t is_arc;						/* arc or line */
-	pcb_bool_t used;							/* already included in outline */
+	rnd_bool_t is_arc;						/* arc or line */
+	rnd_bool_t used;							/* already included in outline */
 	struct outline_s *next;
 } outline_t;
 
@@ -81,7 +81,7 @@ void hyp_perimeter();						/* add board outline to pcb */
 void hyp_draw_polygons();				/* add all hyperlynx polygons to pcb */
 static void hyp_subcs_fin(void);
 void hyp_resize_board();				/* resize board to fit outline */
-pcb_bool_t hyp_is_bottom_layer(char *);	/* true if bottom layer */
+rnd_bool_t hyp_is_bottom_layer(char *);	/* true if bottom layer */
 
 /* layer creation */
 int layer_count;
@@ -184,8 +184,8 @@ typedef struct hyp_vertex_s {
 	rnd_coord_t xc;
 	rnd_coord_t yc;
 	rnd_coord_t r;
-	pcb_bool_t is_first;					/* true if first vertex of contour */
-	pcb_bool_t is_arc;						/* true if arc */
+	rnd_bool_t is_first;					/* true if first vertex of contour */
+	rnd_bool_t is_arc;						/* true if arc */
 	struct hyp_vertex_s *next;
 } hyp_vertex_t;
 
@@ -193,7 +193,7 @@ typedef struct hyp_vertex_s {
 typedef struct hyp_polygon_s {
 	int hyp_poly_id;							/* hyperlynx polygon/polyline id */
 	polygon_type_enum hyp_poly_type;	/* pour, copper, ... */
-	pcb_bool_t is_polygon;				/* true if polygon, false if polyline */
+	rnd_bool_t is_polygon;				/* true if polygon, false if polyline */
 	char *layer_name;							/* layer of polygon */
 	rnd_coord_t line_width;				/* line width of edge */
 	rnd_coord_t clearance;				/* clearance with other copper */
@@ -258,7 +258,7 @@ void hyp_init(void)
 
 	unit = 1;
 	metal_thickness_unit = 1;
-	use_die_for_metal = pcb_false;
+	use_die_for_metal = rnd_false;
 
 	inches = 0.0254;							/* inches to m */
 	copper_imperial_weight = 1.341;	/* metal thickness in ounces/ft2. 1 oz/ft2 copper = 1.341 mil */
@@ -276,7 +276,7 @@ void hyp_init(void)
 
 	/* clear layer info */
 	for (n = 1; n < PCB_MAX_LAYER; n++) {
-		layer_is_plane[n] = pcb_false;	/* signal layer */
+		layer_is_plane[n] = rnd_false;	/* signal layer */
 		layer_clearance[n] = -1;		/* no separation between fill copper and signals on layer */
 	}
 	layer_count = 0;
@@ -494,7 +494,7 @@ static void hyp_subcs_fin(void)
  * add segment to board outline
  */
 
-void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
+void hyp_perimeter_segment_add(outline_t * s, rnd_bool_t forward)
 {
 	rnd_layer_id_t outline_id;
 	pcb_layer_t *outline_layer;
@@ -512,7 +512,7 @@ void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
 	}
 
 	/* mark segment as used, so we don't use it twice */
-	s->used = pcb_true;
+	s->used = rnd_true;
 
 	/* debugging */
 	if (hyp_debug) {
@@ -525,7 +525,7 @@ void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
 
 	if (s->is_arc) {
 		/* counterclockwise arc from (x1, y1) to (x2, y2) */
-		hyp_arc_new(outline_layer, s->x1, s->y1, s->x2, s->y2, s->xc, s->yc, s->r, s->r, pcb_false, 1, 0, pcb_no_flags());
+		hyp_arc_new(outline_layer, s->x1, s->y1, s->x2, s->y2, s->xc, s->yc, s->r, s->r, rnd_false, 1, 0, pcb_no_flags());
 	}
 	else
 		/* line from (x1, y1) to (x2, y2) */
@@ -538,16 +538,16 @@ void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
  * Check whether point (end_x, end_y) is connected to point (begin_x, begin_y) via un-used segment s and other un-used segments.
  */
 
-pcb_bool_t hyp_segment_connected(rnd_coord_t begin_x, rnd_coord_t begin_y, rnd_coord_t end_x, rnd_coord_t end_y, outline_t * s)
+rnd_bool_t hyp_segment_connected(rnd_coord_t begin_x, rnd_coord_t begin_y, rnd_coord_t end_x, rnd_coord_t end_y, outline_t * s)
 {
 	outline_t *i;
-	pcb_bool_t connected;
+	rnd_bool_t connected;
 
 	connected = (begin_x == end_x) && (begin_y == end_y);	/* trivial case */
 
 	if (!connected) {
 		/* recursive descent */
-		s->used = pcb_true;
+		s->used = rnd_true;
 
 		for (i = outline_head; i != NULL; i = i->next) {
 			if (i->used)
@@ -565,7 +565,7 @@ pcb_bool_t hyp_segment_connected(rnd_coord_t begin_x, rnd_coord_t begin_y, rnd_c
 			}
 		}
 
-		s->used = pcb_false;
+		s->used = rnd_false;
 	}
 
 	return connected;
@@ -670,14 +670,14 @@ void hyp_resize_board()
 
 void hyp_perimeter()
 {
-	pcb_bool_t warn_not_closed;
-	pcb_bool_t segment_found;
-	pcb_bool_t polygon_closed;
+	rnd_bool_t warn_not_closed;
+	rnd_bool_t segment_found;
+	rnd_bool_t polygon_closed;
 	rnd_coord_t begin_x, begin_y, last_x, last_y;
 	outline_t *i;
 	outline_t *j;
 
-	warn_not_closed = pcb_false;
+	warn_not_closed = rnd_false;
 
 	/* iterate over perimeter segments and adjust origin */
 	for (i = outline_head; i != NULL; i = i->next) {
@@ -693,11 +693,11 @@ void hyp_perimeter()
 	}
 
 	/* iterate over perimeter polygons */
-	while (pcb_true) {
+	while (rnd_true) {
 
 		/* find first free segment */
 		for (i = outline_head; i != NULL; i = i->next)
-			if (i->used == pcb_false)
+			if (i->used == rnd_false)
 				break;
 
 		/* exit if no segments found */
@@ -713,10 +713,10 @@ void hyp_perimeter()
 		last_y = i->y2;
 
 		/* add segment */
-		hyp_perimeter_segment_add(i, pcb_true);
+		hyp_perimeter_segment_add(i, rnd_true);
 
 		/* add polygon segments until the polygon is closed */
-		polygon_closed = pcb_false;
+		polygon_closed = rnd_false;
 		while (!polygon_closed) {
 
 #undef XXX
@@ -729,7 +729,7 @@ void hyp_perimeter()
 #endif
 
 			/* find segment to add to current polygon */
-			segment_found = pcb_false;
+			segment_found = rnd_false;
 
 			/* XXX prefer closed polygon over open polyline */
 
@@ -741,8 +741,8 @@ void hyp_perimeter()
 					if (!hyp_segment_connected(i->x2, i->y2, begin_x, begin_y, i))
 						continue;
 					/* first point of segment is last point of current edge: add segment to edge */
-					segment_found = pcb_true;
-					hyp_perimeter_segment_add(i, pcb_true);
+					segment_found = rnd_true;
+					hyp_perimeter_segment_add(i, rnd_true);
 					last_x = i->x2;
 					last_y = i->y2;
 				}
@@ -750,9 +750,9 @@ void hyp_perimeter()
 					if (!hyp_segment_connected(i->x1, i->y1, begin_x, begin_y, i))
 						continue;
 					/* last point of segment is last point of current edge: add segment to edge back to front */
-					segment_found = pcb_true;
+					segment_found = rnd_true;
 					/* add segment back to front */
-					hyp_perimeter_segment_add(i, pcb_false);
+					hyp_perimeter_segment_add(i, rnd_false);
 					last_x = i->x1;
 					last_y = i->y1;
 				}
@@ -770,7 +770,7 @@ void hyp_perimeter()
 		else {
 			if (hyp_debug)
 				rnd_message(RND_MSG_DEBUG, "outline: open\n");
-			warn_not_closed = pcb_true;
+			warn_not_closed = rnd_true;
 		}
 	}
 
@@ -934,18 +934,18 @@ pcb_layer_t *hyp_get_layer(parse_param * h)
  * True if solder side 
  */
 
-pcb_bool_t hyp_is_bottom_layer(char *layer_name)
+rnd_bool_t hyp_is_bottom_layer(char *layer_name)
 {
 	return ((layer_name != NULL) && (pcb_layer_flags(PCB, pcb_layer_by_name(PCB->Data, layer_name)) & PCB_LYT_BOTTOM));
 }
 
 /*
  * Draw arc from (x1, y1) to (x2, y2) with center (xc, yc) and radius r. 
- * Direction of arc is clockwise or counter-clockwise, depending upon value of pcb_bool_t Clockwise.
+ * Direction of arc is clockwise or counter-clockwise, depending upon value of rnd_bool_t Clockwise.
  */
 
 pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t XC,
-											 rnd_coord_t YC, rnd_coord_t Width, rnd_coord_t Height, pcb_bool_t Clockwise, rnd_coord_t Thickness,
+											 rnd_coord_t YC, rnd_coord_t Width, rnd_coord_t Height, rnd_bool_t Clockwise, rnd_coord_t Thickness,
 											 rnd_coord_t Clearance, pcb_flag_t Flags)
 {
 	rnd_angle_t start_angle;
@@ -974,7 +974,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_
 
 	delta = end_angle - start_angle;
 
-	new_arc = pcb_arc_new(Layer, XC, YC, Width, Height, start_angle, delta, Thickness, Clearance, Flags, pcb_true);
+	new_arc = pcb_arc_new(Layer, XC, YC, Width, Height, start_angle, delta, Thickness, Clearance, Flags, rnd_true);
 
 	return new_arc;
 }
@@ -984,7 +984,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_
  * Arc may be clockwise or counterclockwise. Note pcb-rnd y-axis points downward.
  */
 void hyp_arc2contour(pcb_pline_t * contour, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t xc,
-										 rnd_coord_t yc, rnd_coord_t r, pcb_bool_t clockwise)
+										 rnd_coord_t yc, rnd_coord_t r, rnd_bool_t clockwise)
 {
 	rnd_coord_t arc_precision = PCB_MM_TO_COORD(0.254);	/* mm */
 	int min_circle_segments = 8;	/* 8 seems minimal, 16 seems more than sufficient. */
@@ -1113,7 +1113,7 @@ void hyp_draw_polyline(hyp_polygon_t * polyline)
 		}
 		else {
 			/* draw clockwise arc from (x1, y2) to (x2, y2) */
-			hyp_arc_new(layer, vrtx->x1, vrtx->y1, vrtx->x2, vrtx->y2, vrtx->xc, vrtx->yc, vrtx->r, vrtx->r, pcb_false,
+			hyp_arc_new(layer, vrtx->x1, vrtx->y1, vrtx->x2, vrtx->y2, vrtx->xc, vrtx->yc, vrtx->r, vrtx->r, rnd_false,
 									polyline->line_width, polyline->clearance, pcb_no_flags());
 			/* move on */
 			if ((xpos == vrtx->x1) && (ypos == vrtx->y1)) {
@@ -1136,7 +1136,7 @@ void hyp_draw_polyline(hyp_polygon_t * polyline)
 void hyp_draw_polygon(hyp_polygon_t * polygon)
 {
 	pcb_layer_t *layer;
-	pcb_bool_t outer_contour;
+	rnd_bool_t outer_contour;
 	hyp_vertex_t *vrtx;
 
 	rnd_polyarea_t *polyarea = NULL;
@@ -1154,7 +1154,7 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 
 	layer = pcb_get_layer(PCB->Data, hyp_create_layer(polygon->layer_name));
 
-	outer_contour = pcb_true;
+	outer_contour = rnd_true;
 
 	for (vrtx = polygon->vertex; vrtx != NULL; vrtx = vrtx->next) {
 		pcb_vector_t v;
@@ -1163,7 +1163,7 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 		if ((vrtx->is_first) || (vrtx->next == NULL)) {
 			if (contour != NULL) {
 				/* add contour to polyarea */
-				pcb_poly_contour_pre(contour, pcb_false);
+				pcb_poly_contour_pre(contour, rnd_false);
 
 				/* check contour valid */
 				if (pcb_polyarea_contour_check(contour) && hyp_debug)
@@ -1177,7 +1177,7 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 				pcb_polyarea_contour_include(polyarea, contour);
 
 				/* first contour is outer contour, remainder are holes */
-				outer_contour = pcb_false;
+				outer_contour = rnd_false;
 			}
 			/* create new contour */
 			contour = pcb_poly_contour_new(v);
@@ -1190,7 +1190,7 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 				pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
 			else
 				/* arc. pcb polyarea contains line segments, not arc segments. convert arc segment to line segments. */
-				hyp_arc2contour(contour, vrtx->x1, vrtx->y1, vrtx->x2, vrtx->y2, vrtx->xc, vrtx->yc, vrtx->r, pcb_false);
+				hyp_arc2contour(contour, vrtx->x1, vrtx->y1, vrtx->x2, vrtx->y2, vrtx->xc, vrtx->yc, vrtx->r, rnd_false);
 		}
 	}
 
@@ -1394,8 +1394,8 @@ rnd_bool exec_perimeter_segment(parse_param * h)
 	peri_seg->xc = 0;
 	peri_seg->yc = 0;
 	peri_seg->r = 0;
-	peri_seg->is_arc = pcb_false;
-	peri_seg->used = pcb_false;
+	peri_seg->is_arc = rnd_false;
+	peri_seg->used = rnd_false;
 	peri_seg->next = NULL;
 
 	if (hyp_debug)
@@ -1440,8 +1440,8 @@ rnd_bool exec_perimeter_arc(parse_param * h)
 	peri_arc->xc = xy2coord(h->xc);
 	peri_arc->yc = xy2coord(h->yc);
 	peri_arc->r = xy2coord(h->r);
-	peri_arc->is_arc = pcb_true;
-	peri_arc->used = pcb_false;
+	peri_arc->is_arc = rnd_true;
+	peri_arc->used = rnd_false;
 	peri_arc->next = NULL;
 
 	if (hyp_debug)
@@ -1527,7 +1527,7 @@ rnd_bool exec_options(parse_param * h)
 	if (hyp_debug)
 		rnd_message(RND_MSG_DEBUG, "options: use_die_for_metal = %f\n", h->use_die_for_metal);
 	if (h->use_die_for_metal)
-		use_die_for_metal = pcb_true;
+		use_die_for_metal = rnd_true;
 	return 0;
 }
 
@@ -1545,7 +1545,7 @@ rnd_bool exec_signal(parse_param * h)
 
 	signal_layer_id = hyp_create_layer(h->layer_name);
 
-	layer_is_plane[signal_layer_id] = pcb_false;
+	layer_is_plane[signal_layer_id] = rnd_false;
 	if (h->plane_separation_set)
 		layer_clearance[signal_layer_id] = xy2coord(h->plane_separation);
 
@@ -1584,7 +1584,7 @@ rnd_bool exec_plane(parse_param * h)
 
 	plane_layer_id = hyp_create_layer(h->layer_name);
 
-	layer_is_plane[plane_layer_id] = pcb_true;
+	layer_is_plane[plane_layer_id] = rnd_true;
 	if (h->plane_separation_set)
 		layer_clearance[plane_layer_id] = xy2coord(h->plane_separation);
 
@@ -2018,7 +2018,7 @@ rnd_bool exec_arc(parse_param * h)
 	}
 
 	hyp_arc_new(hyp_get_layer(h), x2coord(h->x1), y2coord(h->y1), x2coord(h->x2), y2coord(h->y2), x2coord(h->xc),
-							y2coord(h->yc), xy2coord(h->r), xy2coord(h->r), pcb_true, xy2coord(h->width), hyp_clearance(h), pcb_no_flags());
+							y2coord(h->yc), xy2coord(h->r), xy2coord(h->r), rnd_true, xy2coord(h->width), hyp_clearance(h), pcb_no_flags());
 
 	return 0;
 }
@@ -2341,12 +2341,12 @@ rnd_bool exec_polygon_begin(parse_param * h)
 
 	if (!h->layer_name_set) {
 		hyp_error("expected polygon layer L = ");
-		return pcb_true;
+		return rnd_true;
 	}
 
 	if (!h->id_set) {
 		hyp_error("expected polygon id ID = ");
-		return pcb_true;
+		return rnd_true;
 	}
 
 	/* make sure layer exists */
@@ -2369,15 +2369,15 @@ rnd_bool exec_polygon_begin(parse_param * h)
 	new_vertex->xc = 0;
 	new_vertex->yc = 0;
 	new_vertex->r = 0;
-	new_vertex->is_arc = pcb_false;
-	new_vertex->is_first = pcb_true;
+	new_vertex->is_arc = rnd_false;
+	new_vertex->is_first = rnd_true;
 	new_vertex->next = NULL;
 
 	/* create new polygon */
 	new_poly = malloc(sizeof(hyp_polygon_t));
 	new_poly->hyp_poly_id = h->id;	/* hyperlynx polygon/polyline id */
 	new_poly->hyp_poly_type = h->polygon_type;
-	new_poly->is_polygon = pcb_true;
+	new_poly->is_polygon = rnd_true;
 	new_poly->layer_name = h->layer_name;
 	new_poly->line_width = xy2coord(h->width);
 	new_poly->clearance = hyp_clearance(h);
@@ -2424,7 +2424,7 @@ rnd_bool exec_polyvoid_begin(parse_param * h)
 
 	if (!h->id_set) {
 		hyp_error("expected polygon id ID = ");
-		return pcb_true;
+		return rnd_true;
 	}
 
 	/* look up polygon with this id */
@@ -2454,8 +2454,8 @@ rnd_bool exec_polyvoid_begin(parse_param * h)
 	new_vertex->xc = 0;
 	new_vertex->yc = 0;
 	new_vertex->r = 0;
-	new_vertex->is_arc = pcb_false;
-	new_vertex->is_first = pcb_true;
+	new_vertex->is_arc = rnd_false;
+	new_vertex->is_first = rnd_true;
 	new_vertex->next = NULL;
 
 	/* bookkeeping */
@@ -2520,17 +2520,17 @@ rnd_bool exec_polyline_begin(parse_param * h)
 
 	if (!h->layer_name_set) {
 		hyp_error("expected polygon layer L = ");
-		return pcb_true;
+		return rnd_true;
 	}
 
 	if (!h->width_set) {
 		hyp_error("expected polygon width W = ");
-		return pcb_true;
+		return rnd_true;
 	}
 
 	if (!h->id_set) {
 		hyp_error("expected polygon id ID = ");
-		return pcb_true;
+		return rnd_true;
 	}
 
 	/* make sure layer exists */
@@ -2553,15 +2553,15 @@ rnd_bool exec_polyline_begin(parse_param * h)
 	new_vertex->xc = 0;
 	new_vertex->yc = 0;
 	new_vertex->r = 0;
-	new_vertex->is_arc = pcb_false;
-	new_vertex->is_first = pcb_true;
+	new_vertex->is_arc = rnd_false;
+	new_vertex->is_first = rnd_true;
 	new_vertex->next = NULL;
 
 	/* create new polyline */
 	new_poly = malloc(sizeof(hyp_polygon_t));
 	new_poly->hyp_poly_id = h->id;	/* hyperlynx polygon/polyline id */
 	new_poly->hyp_poly_type = h->polygon_type;
-	new_poly->is_polygon = pcb_false;
+	new_poly->is_polygon = rnd_false;
 	new_poly->layer_name = h->layer_name;
 	new_poly->line_width = xy2coord(h->width);
 	new_poly->clearance = hyp_clearance(h);
@@ -2614,8 +2614,8 @@ rnd_bool exec_line(parse_param * h)
 	new_vertex->xc = 0;
 	new_vertex->yc = 0;
 	new_vertex->r = 0;
-	new_vertex->is_arc = pcb_false;
-	new_vertex->is_first = pcb_false;
+	new_vertex->is_arc = rnd_false;
+	new_vertex->is_first = rnd_false;
 	new_vertex->next = NULL;
 
 	/* bookkeeping */
@@ -2652,8 +2652,8 @@ rnd_bool exec_curve(parse_param * h)
 	new_vertex->xc = x2coord(h->xc);
 	new_vertex->yc = y2coord(h->yc);
 	new_vertex->r = xy2coord(h->r);
-	new_vertex->is_arc = pcb_true;
-	new_vertex->is_first = pcb_false;
+	new_vertex->is_arc = rnd_true;
+	new_vertex->is_first = rnd_false;
 	new_vertex->next = NULL;
 
 	/* bookkeeping */

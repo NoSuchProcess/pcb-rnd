@@ -74,7 +74,7 @@ pcb_drill_info_t *drill_get_info(pcb_data_t *top)
 {
 	pcb_drill_info_t *AllDrills;
 	pcb_drill_t *Drill = NULL;
-	rnd_bool DrillFound = pcb_false;
+	rnd_bool DrillFound = rnd_false;
 	rnd_rtree_it_t it;
 	rnd_rnd_box_t *pb;
 
@@ -86,7 +86,7 @@ pcb_drill_info_t *drill_get_info(pcb_data_t *top)
 		if (proto->hdia <= 0)
 			continue;
 		if (!DrillFound) {
-			DrillFound = pcb_true;
+			DrillFound = rnd_true;
 			Drill = drill_info_alloc(AllDrills);
 			Drill->DrillSize = proto->hdia;
 			drill_fill(Drill, (pcb_any_obj_t *)ps, !proto->hplated);

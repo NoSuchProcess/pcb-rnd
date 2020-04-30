@@ -109,7 +109,7 @@ unsigned int pcb_pstk_hash(const pcb_host_trans_t *tr, const pcb_pstk_t *p);
 
 
 void pcb_pstk_set_thermal(pcb_pstk_t *ps, unsigned long lid, unsigned char shape, int undoable);
-unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, pcb_bool_t alloc);
+unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, rnd_bool_t alloc);
 
 pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID);
 

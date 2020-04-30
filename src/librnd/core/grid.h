@@ -51,23 +51,23 @@ typedef struct {
 rnd_coord_t rnd_grid_fit(rnd_coord_t x, rnd_coord_t grid_spacing, rnd_coord_t grid_offset);
 
 /* Parse packed string format src into dst; allocat dst->name on success */
-pcb_bool_t rnd_grid_parse(rnd_grid_t *dst, const char *src);
+rnd_bool_t rnd_grid_parse(rnd_grid_t *dst, const char *src);
 
 /* Free all allocated fields of a grid struct */
 void rnd_grid_free(rnd_grid_t *dst);
 
 /* Convert src into packed string format */
-pcb_bool_t rnd_grid_append_print(gds_t *dst, const rnd_grid_t *src);
+rnd_bool_t rnd_grid_append_print(gds_t *dst, const rnd_grid_t *src);
 char *rnd_grid_print(const rnd_grid_t *src);
 
 /* Apply grid settings from src to the pcb */
 void rnd_grid_set(rnd_hidlib_t *hidlib, const rnd_grid_t *src);
 
 /* Jump to grid index dst (clamped); absolute set */
-pcb_bool_t rnd_grid_list_jump(rnd_hidlib_t *hidlib, int dst);
+rnd_bool_t rnd_grid_list_jump(rnd_hidlib_t *hidlib, int dst);
 
 /* Step stp steps (can be 0) on the grids list and set the resulting grid; relative set */
-pcb_bool_t rnd_grid_list_step(rnd_hidlib_t *hidlib, int stp);
+rnd_bool_t rnd_grid_list_step(rnd_hidlib_t *hidlib, int stp);
 
 /* invalidate the grid index; call this when changing the grid settings */
 void rnd_grid_inval(void);

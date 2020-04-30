@@ -283,7 +283,7 @@ fgw_error_t pcb_act_ExportOldConn(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (f != NULL) {
 				pcb_lookup_unused_pins(f, 1);
 				fclose(f);
-				pcb_board_set_changed_flag(pcb_true);
+				pcb_board_set_changed_flag(rnd_true);
 			}
 			return 0;
 

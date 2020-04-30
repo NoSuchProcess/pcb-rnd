@@ -448,12 +448,12 @@ static pcb_layer_t **subc_get_layer(pcb_subc_t *subc, const char *lloc, const ch
 
 	if (strcmp(lloc, "all") == 0) {
 		sprintf(name, "top_%s", ltyp);
-		layers[0] = pcb_subc_get_layer(subc, lyt | PCB_LYT_TOP, -1, pcb_true, name, pcb_false);
+		layers[0] = pcb_subc_get_layer(subc, lyt | PCB_LYT_TOP, -1, rnd_true, name, rnd_false);
 		sprintf(name, "bottom_%s", ltyp);
-		layers[1] = pcb_subc_get_layer(subc, lyt | PCB_LYT_BOTTOM, -1, pcb_true, name, pcb_false);
+		layers[1] = pcb_subc_get_layer(subc, lyt | PCB_LYT_BOTTOM, -1, rnd_true, name, rnd_false);
 		if (lyt == PCB_LYT_COPPER) {
 			sprintf(name, "intern_%s", ltyp);
-			layers[2] = pcb_subc_get_layer(subc, lyt | PCB_LYT_INTERN, -1, pcb_true, name, pcb_false);
+			layers[2] = pcb_subc_get_layer(subc, lyt | PCB_LYT_INTERN, -1, rnd_true, name, rnd_false);
 		}
 		return layers;
 	}
@@ -467,7 +467,7 @@ static pcb_layer_t **subc_get_layer(pcb_subc_t *subc, const char *lloc, const ch
 	}
 
 	sprintf(name, "%s_%s", lloc, ltyp);
-	layers[0] = pcb_subc_get_layer(subc, lyt, -1, pcb_true, name, pcb_false);
+	layers[0] = pcb_subc_get_layer(subc, lyt, -1, rnd_true, name, rnd_false);
 	return layers;
 }
 
@@ -548,7 +548,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			load_val(w, argv[9], "invalid arc width");
 
 			for(; *ly != NULL; ly++) {
-				a = pcb_arc_new(*ly, cx, cy, r, r, sa, da, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE), pcb_true);
+				a = pcb_arc_new(*ly, cx, cy, r, r, sa, da, w, clr, pcb_flag_make(PCB_FLAG_CLEARLINE), rnd_true);
 				load_term(a, argv[3], "invalid term ID for arc: '%s', skipping footprint\n");
 			}
 		}
@@ -591,14 +591,14 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 	   into one or more padstacks */
 	for (ei = htip_first(&terms); ei; ei = htip_next(&terms, ei)) {
 		term = ei->value;
-		pcb_pstk_vect2pstk(subc->data, &term->objs, pcb_true);
+		pcb_pstk_vect2pstk(subc->data, &term->objs, rnd_true);
 		term_destroy(term);
 	}
 	htip_uninit(&terms);
 
 	rnd_attribute_put(&subc->Attributes, "refdes", "X1");
-	pcb_subc_add_refdes_text(subc, 0, 0, 0, 100, pcb_false);
-	pcb_subc_create_aux(subc, 0, 0, 0.0, pcb_false);
+	pcb_subc_add_refdes_text(subc, 0, 0, 0, 100, rnd_false);
+	pcb_subc_create_aux(subc, 0, 0, 0.0, rnd_false);
 
 	return res;
 }

@@ -45,10 +45,10 @@
 
 void pcb_tool_move_uninit(void)
 {
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 	pcb_crosshair.extobj_edit = NULL;
 }
 
@@ -73,7 +73,7 @@ void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 					pcb_crosshair.extobj_edit = NULL;
 				}
 				else
-					pcb_tool_attach_for_copy(hl, hl->tool_x, hl->tool_y, pcb_true);
+					pcb_tool_attach_for_copy(hl, hl->tool_x, hl->tool_y, rnd_true);
 			}
 			break;
 		}
@@ -86,9 +86,9 @@ void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 			pcb_any_obj_t *newo = pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, dx, dy);
 			pcb_extobj_float_geo(newo);
 			if (!pcb_marked.user_placed)
-				pcb_crosshair_set_local_ref(0, 0, pcb_false);
+				pcb_crosshair_set_local_ref(0, 0, rnd_false);
 			pcb_subc_as_board_update(PCB);
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		}
 		else if (pcb_crosshair.extobj_edit != NULL)
 			pcb_extobj_float_geo(pcb_crosshair.extobj_edit);
@@ -124,8 +124,8 @@ rnd_bool pcb_tool_move_undo_act(rnd_hidlib_t *hl)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedObject.State != PCB_CH_STATE_FIRST)
-		return pcb_false;
-	return pcb_true;
+		return rnd_false;
+	return rnd_true;
 }
 
 pcb_tool_t pcb_tool_move = {

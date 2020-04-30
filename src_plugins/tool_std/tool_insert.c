@@ -54,11 +54,11 @@ static rnd_cardinal_t polyIndex = 0;
 
 void pcb_tool_insert_uninit(void)
 {
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.extobj_edit = NULL;
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
 void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
@@ -90,16 +90,16 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 				}
 				if (!(pcb_brave & PCB_BRAVE_OLDINSERT)) {
 					InsertedPoint = *pcb_adjust_insert_point();
-					pcb_crosshair_set_local_ref(InsertedPoint.X, InsertedPoint.Y, pcb_true);
+					pcb_crosshair_set_local_ref(InsertedPoint.X, InsertedPoint.Y, rnd_true);
 					if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_POLY)
 						pcb_insert_point_in_object(PCB_OBJ_POLY,
 																	pcb_crosshair.AttachedObject.Ptr1, fake.poly,
-																	&polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
+																	&polyIndex, InsertedPoint.X, InsertedPoint.Y, rnd_false, rnd_false);
 					else
 						pcb_insert_point_in_object(pcb_crosshair.AttachedObject.Type,
 																	pcb_crosshair.AttachedObject.Ptr1,
-																	pcb_crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
-					pcb_board_set_changed_flag(pcb_true);
+																	pcb_crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, rnd_false, rnd_false);
+					pcb_board_set_changed_flag(rnd_true);
 
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
@@ -118,12 +118,12 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 		if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_POLY)
 			pcb_insert_point_in_object(PCB_OBJ_POLY,
 														pcb_crosshair.AttachedObject.Ptr1, fake.poly,
-														&polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
+														&polyIndex, InsertedPoint.X, InsertedPoint.Y, rnd_false, rnd_false);
 		else
 			pcb_insert_point_in_object(pcb_crosshair.AttachedObject.Type,
 														pcb_crosshair.AttachedObject.Ptr1,
-														pcb_crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, pcb_false, pcb_false);
-		pcb_board_set_changed_flag(pcb_true);
+														pcb_crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, rnd_false, rnd_false);
+		pcb_board_set_changed_flag(rnd_true);
 
 		/* reset identifiers */
 		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
@@ -150,8 +150,8 @@ rnd_bool pcb_tool_insert_undo_act(rnd_hidlib_t *hl)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedObject.State != PCB_CH_STATE_FIRST)
-		return pcb_false;
-	return pcb_true;
+		return rnd_false;
+	return rnd_true;
 }
 
 /* XPM */

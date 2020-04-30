@@ -125,7 +125,7 @@ int rnd_attribute_dialog_(const char *id, rnd_hid_attribute_t *attrs, int n_attr
 	if ((rnd_gui == NULL) || (rnd_gui->attr_dlg_new == NULL))
 		return -1;
 
-	hid_ctx = rnd_gui->attr_dlg_new(rnd_gui, id, attrs, n_attrs, title, caller_data, pcb_true, NULL, defx, defy, minx, miny);
+	hid_ctx = rnd_gui->attr_dlg_new(rnd_gui, id, attrs, n_attrs, title, caller_data, rnd_true, NULL, defx, defy, minx, miny);
 	if (hid_ctx_out != NULL)
 		*hid_ctx_out = hid_ctx;
 	rv = rnd_gui->attr_dlg_run(hid_ctx);

@@ -1050,3 +1050,16 @@
 #define pcb_strdup_subst_t rnd_strdup_subst_t
 #define pcb_subst_append rnd_subst_append
 #define pcb_strdup_subst rnd_strdup_subst
+#define pcb_bool_e rnd_bool_e
+#define pcb_bool_t rnd_bool_t
+#define pcb_false rnd_false
+#define pcb_true rnd_true
+#define PCB_BOOL_CLEAR RND_BOOL_CLEAR
+#define PCB_BOOL_SET RND_BOOL_SET
+#define PCB_BOOL_TOGGLE RND_BOOL_TOGGLE
+#define PCB_BOOL_PRESERVE RND_BOOL_PRESERVE
+#define PCB_BOOL_INVALID RND_BOOL_INVALID
+#define pcb_bool_op rnd_bool_op
+#define pcb_str2boolop rnd_str2boolop
+#define pcb_bool_op_t rnd_bool_op_t
+#define pcb_bool_op_e rnd_bool_op_e

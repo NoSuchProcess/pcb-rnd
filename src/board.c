@@ -88,7 +88,7 @@ pcb_board_t *pcb_board_new_(rnd_bool SetDefaultNames)
 
 	rnd_conf_set(RND_CFR_INTERNAL, "design/poly_isle_area", -1, "200000000", RND_POL_OVERWRITE);
 
-	ptr->RatDraw = pcb_false;
+	ptr->RatDraw = rnd_false;
 
 	/* NOTE: we used to set all the pcb flags on ptr here, but we don't need to do that anymore due to the new conf system */
 	ptr->hidlib.grid = rnd_conf.editor.grid;
@@ -115,7 +115,7 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 
 	dpcb = -1;
 	pcb_io_err_inhibit_inc();
-	rnd_conf_list_foreach_path_first(NULL, dpcb, &conf_core.rc.default_pcb_file, pcb_load_pcb(__path__, NULL, pcb_false, 1 | 0x10 | inh));
+	rnd_conf_list_foreach_path_first(NULL, dpcb, &conf_core.rc.default_pcb_file, pcb_load_pcb(__path__, NULL, rnd_false, 1 | 0x10 | inh));
 	pcb_io_err_inhibit_dec();
 
 	if (dpcb != 0) { /* no default PCB in file, use embedded version */
@@ -128,7 +128,7 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 		if (f != NULL) {
 			fwrite(default_pcb_internal, strlen(default_pcb_internal), 1, f);
 			fclose(f);
-			dpcb = pcb_load_pcb(efn, NULL, pcb_false, 1 | 0x10);
+			dpcb = pcb_load_pcb(efn, NULL, rnd_false, 1 | 0x10);
 			if (dpcb == 0)
 				rnd_message(RND_MSG_WARNING, "Couldn't find default.pcb - using the embedded fallback\n");
 			else
@@ -258,7 +258,7 @@ rnd_bool pcb_board_change_name(char *Name)
 	free(PCB->hidlib.name);
 	PCB->hidlib.name = Name;
 	pcb_board_changed(0);
-	return pcb_true;
+	return rnd_true;
 }
 
 static void pcb_board_resize_(pcb_board_t *pcb, rnd_coord_t Width, rnd_coord_t Height)
@@ -320,7 +320,7 @@ void pcb_board_resize(rnd_coord_t width, rnd_coord_t height, int undoable)
 
 void pcb_board_remove(pcb_board_t *Ptr)
 {
-	pcb_undo_clear_list(pcb_true);
+	pcb_undo_clear_list(rnd_true);
 	pcb_board_free(Ptr);
 	free(Ptr);
 }
@@ -391,7 +391,7 @@ int pcb_board_normalize(pcb_board_t *pcb)
 	rnd_rnd_box_t b;
 	int chg = 0;
 	
-	if (pcb_data_bbox(&b, pcb->Data, pcb_false) == NULL)
+	if (pcb_data_bbox(&b, pcb->Data, rnd_false) == NULL)
 		return -1;
 
 	if ((b.X2 - b.X1) > pcb->hidlib.size_x) {

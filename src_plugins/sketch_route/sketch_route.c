@@ -77,8 +77,8 @@ typedef struct {
 } sketch_t;
 
 static htip_t sketches;
-static pcb_bool_t show_spokes = pcb_true; /* TODO: make this a config node */
-static pcb_bool_t check_net = pcb_false; /* TODO: make this a config node */
+static rnd_bool_t show_spokes = rnd_true; /* TODO: make this a config node */
+static rnd_bool_t check_net = rnd_false; /* TODO: make this a config node */
 
 
 static point_t *sketch_get_point_at_terminal(sketch_t *sk, pcb_any_obj_t *term)
@@ -298,7 +298,7 @@ repeat_current_point:
 static rnd_bool sketch_check_path(point_t *from_p, edge_t *from_e, edge_t *to_e, point_t *to_p)
 {
 	/* TODO */
-	return pcb_true;
+	return rnd_true;
 }
 
 #ifdef SK_DEBUG
@@ -719,7 +719,7 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 
 	rnd_snprintf(name, sizeof(name), "%s: CDT", layer->name);
 	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, &layer->meta.real.color);
-	sk->ui_layer_cdt->meta.real.vis = pcb_false;
+	sk->ui_layer_cdt->meta.real.vis = rnd_false;
 	sketch_update_cdt_layer(sk);
 
 	rnd_snprintf(name, sizeof(name), "%s: ERBS", layer->name);
@@ -827,7 +827,7 @@ static rnd_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term
 	attached_path.start_term = start_term;
 	attached_path.net = term != NULL ? term->parent.net : NULL;
 	if (check_net && attached_path.net == NULL)
-		return pcb_false;
+		return rnd_false;
 
 	vtp0_init(&attached_path.lines);
 	start_l = attached_path_new_line();
@@ -840,7 +840,7 @@ static rnd_bool attached_path_init(pcb_layer_t *layer, pcb_any_obj_t *start_term
 	wire_init(&attached_path.corridor);
 	wire_push_point(&attached_path.corridor, attached_path.start_p, SIDE_TERM);
 
-	return pcb_true;
+	return rnd_true;
 }
 
 static void attached_path_uninit()
@@ -885,8 +885,8 @@ static rnd_bool attached_path_next_point(point_t *end_p)
 				for (i = 0; i < 3; i++)
 					if (t->e[i]->endp[0] != attached_path.start_p && t->e[i]->endp[1] != attached_path.start_p
 							&& t->e[i] != entrance_e && line_intersects_edge(attached_line, t->e[i])) {
-						if (sketch_check_path(attached_path.start_p, NULL, t->e[i], NULL) == pcb_false)
-							RETURN(pcb_false);
+						if (sketch_check_path(attached_path.start_p, NULL, t->e[i], NULL) == rnd_false)
+							RETURN(rnd_false);
 						attached_path.current_t = t->adj_t[i];
 						wire_push_point(&corridor_ops, t->p[i], SIDE_RIGHT);
 						wire_push_point(&corridor_ops, t->p[(i+1)%3], SIDE_LEFT);
@@ -904,8 +904,8 @@ static rnd_bool attached_path_next_point(point_t *end_p)
 					entrance_e = t->e[i];
 					attached_path.current_t = t->adj_t[i];
 					if (t->e[i] != last_entrance_e) { /* going forward */
-						if (sketch_check_path(NULL, attached_path.visited_edges->item, t->e[i], NULL) == pcb_false)
-							RETURN(pcb_false);
+						if (sketch_check_path(NULL, attached_path.visited_edges->item, t->e[i], NULL) == rnd_false)
+							RETURN(rnd_false);
 						wire_push_point(&corridor_ops,
 														t->p[t->e[(i+2)%3] == last_entrance_e ? (i+1)%3 : i],
 														t->e[(i+1)%3] == last_entrance_e ? SIDE_RIGHT : SIDE_LEFT);
@@ -931,11 +931,11 @@ next_triangle:
 
 	if (end_p != NULL) { /* connecting to the last point? */
 		if (attached_path.visited_edges == NULL) {
-			if (sketch_check_path(attached_path.start_p, NULL, NULL, end_p) == pcb_false)
-				RETURN(pcb_false);
+			if (sketch_check_path(attached_path.start_p, NULL, NULL, end_p) == rnd_false)
+				RETURN(rnd_false);
 		}
-		else if (sketch_check_path(NULL, attached_path.visited_edges->item, NULL, end_p) == pcb_false)
-			RETURN(pcb_false);
+		else if (sketch_check_path(NULL, attached_path.visited_edges->item, NULL, end_p) == rnd_false)
+			RETURN(rnd_false);
 		wire_push_point(&corridor_ops, end_p, SIDE_TERM);
 	}
 
@@ -963,30 +963,30 @@ next_triangle:
 	}
 
 	attached_path_next_line();
-	return pcb_true;
+	return rnd_true;
 #undef RETURN
 }
 
 static rnd_bool attached_path_finish(pcb_any_obj_t *end_term)
 {
-	rnd_bool net_valid = pcb_false;
+	rnd_bool net_valid = rnd_false;
 
 	if (check_net) {
 		if(end_term != attached_path.start_term) {
 			if (pcb_net_term_get_by_obj(attached_path.net, end_term) != NULL)
-				net_valid = pcb_true;
+				net_valid = rnd_true;
 		}
 	}
 	else
-		net_valid = pcb_true;
+		net_valid = rnd_true;
 
 	if (net_valid) {
 		point_t *end_p;
 		wire_t *path, *new_wire;
 
 		end_p = sketch_get_point_at_terminal(attached_path.sketch, end_term);
-		if (attached_path_next_point(end_p) == pcb_false)
-			return pcb_false;
+		if (attached_path_next_point(end_p) == rnd_false)
+			return rnd_false;
 
 		path = sketch_find_shortest_path(&attached_path.corridor);
 		path->thickness = conf_core.design.line_thickness;
@@ -996,10 +996,10 @@ static rnd_bool attached_path_finish(pcb_any_obj_t *end_term)
 		sketch_update_cdt_layer(attached_path.sketch);
 		sketch_update_erbs_layer(attached_path.sketch);
 		wire_uninit(path);
-		return pcb_true;
+		return rnd_true;
 	}
 
-	return pcb_false;
+	return rnd_false;
 }
 
 static void tool_skline_init(void)
@@ -1010,11 +1010,11 @@ static void tool_skline_init(void)
 
 static void tool_skline_uninit(void)
 {
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	attached_path_uninit();
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
 static void tool_skline_notify_mode(rnd_hidlib_t *hl)
@@ -1049,7 +1049,7 @@ static void tool_skline_notify_mode(rnd_hidlib_t *hl)
 			if (term_obj->term != NULL
 					&& ((type == PCB_OBJ_PSTK && pcb_pstk_shape_at(PCB, (pcb_pstk_t *) term_obj, PCB_CURRLAYER(PCB)) != NULL)
 							|| type != PCB_OBJ_PSTK)) {
-				if (attached_path_finish(term_obj) == pcb_true) {
+				if (attached_path_finish(term_obj) == rnd_true) {
 					attached_path_uninit();
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
@@ -1060,7 +1060,7 @@ static void tool_skline_notify_mode(rnd_hidlib_t *hl)
 				break;
 			}
 		}
-		if (attached_path_next_point(NULL) == pcb_false)
+		if (attached_path_next_point(NULL) == rnd_false)
 			rnd_message(RND_MSG_WARNING, "Cannot route the wire this way\n");
 
 		break;
@@ -1091,7 +1091,7 @@ static void tool_skline_draw_attached(rnd_hidlib_t *hl)
 rnd_bool tool_skline_undo_act(rnd_hidlib_t *hl)
 {
 	/* TODO */
-	return pcb_false;
+	return rnd_false;
 }
 
 /* XPM */
@@ -1135,7 +1135,7 @@ static pcb_tool_t tool_skline = {
 	NULL,
 	NULL, /* escape */
 
-	pcb_false
+	rnd_false
 };
 
 

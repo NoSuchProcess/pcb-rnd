@@ -28,11 +28,11 @@
 #include <librnd/core/pcb_bool.h>
 #include <librnd/core/compat_misc.h>
 
-pcb_bool_op_t pcb_str2boolop(const char *s)
+rnd_bool_op_t rnd_str2boolop(const char *s)
 {
-	if (rnd_strcasecmp(s, "set") == 0)       return PCB_BOOL_SET;
-	if (rnd_strcasecmp(s, "clear") == 0)     return PCB_BOOL_CLEAR;
-	if (rnd_strcasecmp(s, "toggle") == 0)    return PCB_BOOL_TOGGLE;
-	if (rnd_strcasecmp(s, "preserve") == 0)  return PCB_BOOL_PRESERVE;
-	return PCB_BOOL_INVALID;
+	if (rnd_strcasecmp(s, "set") == 0)       return RND_BOOL_SET;
+	if (rnd_strcasecmp(s, "clear") == 0)     return RND_BOOL_CLEAR;
+	if (rnd_strcasecmp(s, "toggle") == 0)    return RND_BOOL_TOGGLE;
+	if (rnd_strcasecmp(s, "preserve") == 0)  return RND_BOOL_PRESERVE;
+	return RND_BOOL_INVALID;
 }

@@ -60,10 +60,10 @@ pcb_output_t pcb_draw_out; /* global context used for drawing */
 rnd_rnd_box_t pcb_draw_invalidated = { RND_COORD_MAX, RND_COORD_MAX, -RND_COORD_MAX, -RND_COORD_MAX };
 
 int pcb_draw_force_termlab = 0;
-rnd_bool pcb_draw_doing_assy = pcb_false;
+rnd_bool pcb_draw_doing_assy = rnd_false;
 static vtp0_t delayed_labels, delayed_objs, annot_objs;
-rnd_bool delayed_labels_enabled = pcb_false;
-rnd_bool delayed_terms_enabled = pcb_false;
+rnd_bool delayed_labels_enabled = rnd_false;
+rnd_bool delayed_terms_enabled = rnd_false;
 
 static void draw_everything(pcb_draw_info_t *info);
 static void pcb_draw_layer_grp(pcb_draw_info_t *info, int, int);
@@ -106,7 +106,7 @@ void pcb_lighten_color(const rnd_color_t *orig, rnd_color_t *dst, double factor)
 	rnd_color_load_int(dst, MIN(255, orig->r * factor), MIN(255, orig->g * factor), MIN(255, orig->b * factor), 255);
 }
 
-void pcb_draw_dashed_line(pcb_draw_info_t *info, rnd_hid_gc_t GC, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned int segs, pcb_bool_t cheap)
+void pcb_draw_dashed_line(pcb_draw_info_t *info, rnd_hid_gc_t GC, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned int segs, rnd_bool_t cheap)
 {
 /* TODO: we need a real geo lib... using double here is plain wrong */
 	double dx = x2-x1, dy = y2-y1;
@@ -741,11 +741,11 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 
 		/* print the non-clearing polys */
 	if (lflg & PCB_LYT_COPPER) {
-		delayed_terms_enabled = pcb_true;
+		delayed_terms_enabled = rnd_true;
 		rnd_hid_set_line_width(pcb_draw_out.fgGC, 1);
 		rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
 		pcb_r_search(Layer->polygon_tree, info->drawn_area, NULL, pcb_poly_draw_term_callback, info, NULL);
-		delayed_terms_enabled = pcb_false;
+		delayed_terms_enabled = rnd_false;
 		may_have_delayed = 1;
 	}
 	else {
@@ -757,12 +757,12 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 
 	/* draw all visible layer objects (with terminal gfx on copper) */
 	if (lflg & PCB_LYT_COPPER) {
-		delayed_terms_enabled = pcb_true;
+		delayed_terms_enabled = rnd_true;
 		pcb_r_search(Layer->line_tree, info->drawn_area, NULL, pcb_line_draw_term_callback, info, NULL);
 		pcb_r_search(Layer->arc_tree, info->drawn_area, NULL, pcb_arc_draw_term_callback, info, NULL);
 		pcb_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_term_callback, info, NULL);
 		pcb_r_search(Layer->gfx_tree, info->drawn_area, NULL, pcb_gfx_draw_callback, info, NULL);
-		delayed_terms_enabled = pcb_false;
+		delayed_terms_enabled = rnd_false;
 		may_have_delayed = 1;
 	}
 	else {
@@ -1071,7 +1071,7 @@ static void expose_begin(pcb_output_t *save, rnd_hid_t *hid)
 	memcpy(save, &pcb_draw_out, sizeof(pcb_output_t));
 	save->hid = rnd_render;
 
-	delayed_labels_enabled = pcb_true;
+	delayed_labels_enabled = rnd_true;
 	vtp0_truncate(&delayed_labels, 0);
 	vtp0_truncate(&delayed_objs, 0);
 
@@ -1112,7 +1112,7 @@ static void expose_end(pcb_output_t *save)
 
 	pcb_draw_out.fgGC = NULL;
 
-	delayed_labels_enabled = pcb_false;
+	delayed_labels_enabled = rnd_false;
 	vtp0_truncate(&delayed_labels, 0);
 	vtp0_truncate(&delayed_objs, 0);
 

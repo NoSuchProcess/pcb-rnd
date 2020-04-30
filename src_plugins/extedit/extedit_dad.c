@@ -42,7 +42,7 @@ static void ee_data2dialog(ee_t *ee)
 	RND_DAD_SET_VALUE(ee->dlg_hid_ctx, ee->wcmd, str, rnd_strdup(methods[ee->mthi].command));
 
 	/* we have only one format, so disable the combo box for selecting it */
-	rnd_gui->attr_dlg_widget_state(ee->dlg_hid_ctx, ee->wfmt, pcb_false);
+	rnd_gui->attr_dlg_widget_state(ee->dlg_hid_ctx, ee->wfmt, rnd_false);
 }
 
 static void ee_chg_method(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -117,7 +117,7 @@ static extedit_method_t *extedit_interactive(void)
 		RND_DAD_BUTTON_CLOSES(ee.dlg, clbtn);
 	RND_DAD_END(ee.dlg);
 
-	RND_DAD_NEW("extedit", ee.dlg, "External editor", &ee, pcb_true, NULL);
+	RND_DAD_NEW("extedit", ee.dlg, "External editor", &ee, rnd_true, NULL);
 
 	ee_data2dialog(&ee);
 	res = RND_DAD_RUN(ee.dlg);

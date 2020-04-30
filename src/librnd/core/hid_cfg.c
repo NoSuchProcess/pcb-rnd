@@ -149,7 +149,7 @@ rnd_hid_cfg_t *rnd_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_
 		int fn_len = strlen(fn);
 
 		doc = NULL;
-		rnd_paths_resolve_all(hidlib, rnd_menu_file_paths, paths, fn_len+32, pcb_false);
+		rnd_paths_resolve_all(hidlib, rnd_menu_file_paths, paths, fn_len+32, rnd_false);
 		for(p = paths; *p != NULL; p++) {
 			if (doc == NULL) {
 				char *end = *p + strlen(*p);

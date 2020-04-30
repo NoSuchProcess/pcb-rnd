@@ -147,7 +147,7 @@ void pcb_bxl_set_layer(pcb_bxl_ctx_t *ctx, const char *layer_name)
 		const pcb_dflgmap_t *lm = bcl_layer_resolve_name(layer_name);
 		pcb_layer_t *ly;
 
-		ly = pcb_subc_get_layer(ctx->subc, lm->lyt, lm->comb, 1, layer_name, pcb_true);
+		ly = pcb_subc_get_layer(ctx->subc, lm->lyt, lm->comb, 1, layer_name, rnd_true);
 		htsp_set(&ctx->layer_name2ly, rnd_strdup(layer_name), ly);
 		ctx->state.layer = ly;
 	}

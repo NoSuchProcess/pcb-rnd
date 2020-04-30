@@ -68,12 +68,12 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch (op) {
 		case F_AllRats:
 			if (pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE | PCB_RATACC_INFO) > 0)
-				pcb_board_set_changed_flag(pcb_true);
+				pcb_board_set_changed_flag(rnd_true);
 			break;
 		case F_SelectedRats:
 		case F_Selected:
 			if (pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE | PCB_RATACC_INFO | PCB_RATACC_ONLY_SELECTED) > 0)
-				pcb_board_set_changed_flag(pcb_true);
+				pcb_board_set_changed_flag(rnd_true);
 			break;
 		case F_Close:
 			small = RND_SQUARE(RND_MAX_COORD);
@@ -178,13 +178,13 @@ static fgw_error_t pcb_act_DeleteRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	switch(op) {
 		case F_AllRats:
-			if (pcb_rats_destroy(pcb_false))
-				pcb_board_set_changed_flag(pcb_true);
+			if (pcb_rats_destroy(rnd_false))
+				pcb_board_set_changed_flag(rnd_true);
 			break;
 		case F_SelectedRats:
 		case F_Selected:
-			if (pcb_rats_destroy(pcb_true))
-				pcb_board_set_changed_flag(pcb_true);
+			if (pcb_rats_destroy(rnd_true))
+				pcb_board_set_changed_flag(rnd_true);
 			break;
 
 		default:

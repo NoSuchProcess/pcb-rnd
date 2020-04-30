@@ -133,7 +133,7 @@ pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, rnd_coord_t X1, rnd_coord_
 rnd_bool pcb_rats_destroy(rnd_bool selected)
 {
 	pcb_opctx_t ctx;
-	rnd_bool changed = pcb_false;
+	rnd_bool changed = rnd_false;
 
 	ctx.remove.pcb = PCB;
 	ctx.remove.destroy_target = NULL;
@@ -141,7 +141,7 @@ rnd_bool pcb_rats_destroy(rnd_bool selected)
 	PCB_RAT_LOOP(PCB->Data);
 	{
 		if ((!selected) || PCB_FLAG_TEST(PCB_FLAG_SELECTED, line)) {
-			changed = pcb_true;
+			changed = rnd_true;
 			pcb_ratop_remove(&ctx, line);
 		}
 	}
@@ -160,8 +160,8 @@ static rnd_bool rat_meets_line(pcb_line_t *line, rnd_coord_t x, rnd_coord_t y, r
 		if ((ly == NULL) || (ly->meta.real.grp != gid))
 			return 0;
 	}
-	if ((line->Point1.X == x) && (line->Point1.Y == y)) return pcb_true;
-	if ((line->Point2.X == x) && (line->Point2.Y == y)) return pcb_true;
+	if ((line->Point1.X == x) && (line->Point1.Y == y)) return rnd_true;
+	if ((line->Point2.X == x) && (line->Point2.Y == y)) return rnd_true;
 	return pcb_is_point_on_line(x, y, 1, line);
 }
 
@@ -194,16 +194,16 @@ static rnd_bool rat_meets_pstk(pcb_data_t *data, pcb_pstk_t *pstk, rnd_coord_t x
 	pcb_layergrp_t *g = pcb_get_layergrp(PCB, gid);
 	pcb_layer_t *ly;
 	if (g == NULL)
-		return pcb_false;
+		return rnd_false;
 
 	ly = pcb_get_layer(data, g->lid[0]);
 	if (ly != NULL)
 		ly = pcb_layer_get_real(ly);
 	if (ly == NULL)
-		return pcb_false;
+		return rnd_false;
 
 	if ((pstk->x == x) && (pstk->y == y))
-		return pcb_true;
+		return rnd_true;
 
 	return pcb_is_point_in_pstk(x, y, 1, pstk, ly);
 }
@@ -344,8 +344,8 @@ void pcb_rat_all_anchor_guess(pcb_data_t *data)
 	pcb_rat_t *rat;
 	gdl_iterator_t it;
 	ratlist_foreach(&data->Rat, &it, rat) {
-		pcb_rat_anchor_guess(rat, 0, pcb_true);
-		pcb_rat_anchor_guess(rat, 1, pcb_true);
+		pcb_rat_anchor_guess(rat, 0, rnd_true);
+		pcb_rat_anchor_guess(rat, 1, rnd_true);
 	}
 }
 

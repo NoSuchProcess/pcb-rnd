@@ -77,10 +77,10 @@ rnd_bool rnd_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict
 		start++;
 		ulo = 1;
 		if (absolute != NULL)
-			*absolute = pcb_false;
+			*absolute = rnd_false;
 	}
 	else if (absolute != NULL)
-		*absolute = pcb_true;
+		*absolute = rnd_true;
 
 	ul = strspn(start, "0123456789.");
 	if (ul > 0)
@@ -106,7 +106,7 @@ rnd_bool rnd_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict
 			if (succ) {
 				*val_out = crd;
 				*unit_out = u;
-				return pcb_true;
+				return rnd_true;
 			}
 		}
 	}
@@ -114,7 +114,7 @@ rnd_bool rnd_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict
 	err:;
 		*val_out = 0;
 		*unit_out = NULL;
-		return pcb_false;
+		return rnd_false;
 }
 
 
@@ -133,15 +133,15 @@ double rnd_get_value_ex(const char *val, const char *units, rnd_bool * absolute,
 	 * value to the current one
 	 */
 	if (*val == '=') {
-		*absolute = pcb_true;
+		*absolute = rnd_true;
 		sscanf(val + 1, "%lf%n", &value, &n);
 		n++;
 	}
 	else {
 		if (isdigit((int) *val))
-			*absolute = pcb_true;
+			*absolute = rnd_true;
 		else
-			*absolute = pcb_false;
+			*absolute = rnd_false;
 		sscanf(val, "%lf%n", &value, &n);
 	}
 	if (n <= 0)

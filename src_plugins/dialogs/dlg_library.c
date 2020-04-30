@@ -381,7 +381,7 @@ static void library_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 	library_ctx_t *ctx = prv->user_ctx;
 	int orig_po = pcb_draw_force_termlab;
 	if (ctx->sc != NULL) {
-		pcb_draw_force_termlab = pcb_false;
+		pcb_draw_force_termlab = rnd_false;
 		pcb_subc_draw_preview(ctx->sc, &e->view);
 		pcb_draw_force_termlab = orig_po;
 	}
@@ -635,7 +635,7 @@ static void library_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 
 static rnd_bool library_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
-	return pcb_false;
+	return rnd_false;
 }
 
 static void pcb_dlg_library(void)
@@ -709,7 +709,7 @@ static void pcb_dlg_library(void)
 	/* set up the context */
 	library_ctx.active = 1;
 
-	RND_DAD_NEW("library", library_ctx.dlg, "pcb-rnd Footprint Library", &library_ctx, pcb_false, library_close_cb);
+	RND_DAD_NEW("library", library_ctx.dlg, "pcb-rnd Footprint Library", &library_ctx, rnd_false, library_close_cb);
 
 	library_lib2dlg(&library_ctx);
 	rnd_gui->attr_dlg_widget_state(library_ctx.dlg_hid_ctx, library_ctx.wedit, 0);

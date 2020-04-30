@@ -609,7 +609,7 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	}
 	pcb_pclose(f);
 
-	RND_DAD_NEW("lib_param", library_ctx.pdlg, "pcb-rnd parametric footprint", ctx, pcb_false, library_param_close_cb);
+	RND_DAD_NEW("lib_param", library_ctx.pdlg, "pcb-rnd parametric footprint", ctx, rnd_false, library_param_close_cb);
 
 	update_edit_button(ctx);
 	pcb_library_param_fillin(ctx, l);

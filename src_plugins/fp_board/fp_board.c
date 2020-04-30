@@ -34,7 +34,7 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 
 	/* load file */
 	memset(&buff, 0, sizeof(buff));
-	if (pcb_buffer_load_layout(PCB, &buff, fpath, NULL) != pcb_true) {
+	if (pcb_buffer_load_layout(PCB, &buff, fpath, NULL) != rnd_true) {
 		rnd_message(RND_MSG_ERROR, "Warning: failed to load %s\n", fpath);
 		return -1;
 	}
@@ -106,7 +106,7 @@ static FILE *fp_board_fopen(pcb_plug_fp_t *ctx, const char *path, const char *na
 
 	/* load file */
 	memset(&buff, 0, sizeof(buff));
-	if (pcb_buffer_load_layout(PCB, &buff, fpath, NULL) != pcb_true) {
+	if (pcb_buffer_load_layout(PCB, &buff, fpath, NULL) != rnd_true) {
 		rnd_message(RND_MSG_ERROR, "Warning: failed to load %s\n", fpath);
 		goto err;
 	}

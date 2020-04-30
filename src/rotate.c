@@ -164,7 +164,7 @@ void pcb_screen_obj_rotate90(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, uns
 		if (type == PCB_OBJ_SUBC)
 			rnd_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 		pcb_obj_rotate90(pcb, obj, X, Y, Steps);
-		pcb_board_set_changed_flag(pcb_true);
+		pcb_board_set_changed_flag(rnd_true);
 	}
 }
 
@@ -184,6 +184,6 @@ void pcb_screen_obj_rotate(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, rnd_a
 		if (type == PCB_OBJ_SUBC)
 			rnd_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 		pcb_obj_rotate(PCB, obj, X, Y, angle);
-		pcb_board_set_changed_flag(pcb_true);
+		pcb_board_set_changed_flag(rnd_true);
 	}
 }

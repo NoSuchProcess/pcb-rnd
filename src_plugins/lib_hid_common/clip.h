@@ -33,7 +33,7 @@
 
 #include <librnd/core/global_typedefs.h>
 
-/* Clip X,Y to the given bounding box, plus a margin.  Returns pcb_true if
+/* Clip X,Y to the given bounding box, plus a margin.  Returns rnd_true if
    there is something left to be drawn.  */
 RND_INLINE rnd_bool pcb_line_clip(double minx, double miny, double maxx, double maxy, double *x1, double *y1, double *x2, double *y2, double margin)
 {
@@ -47,7 +47,7 @@ RND_INLINE rnd_bool pcb_line_clip(double minx, double miny, double maxx, double 
 	/* clip first point on left side */
 	if (*x1 < minx) {
 		if (*x2 < minx)
-			return pcb_false;
+			return rnd_false;
 		d = *x2 - *x1;
 		r = (minx - *x1) / d;
 		*x1 = minx;
@@ -63,7 +63,7 @@ RND_INLINE rnd_bool pcb_line_clip(double minx, double miny, double maxx, double 
 	/* clip first point on right side */
 	if (*x1 > maxx) {
 		if (*x2 > maxx)
-			return pcb_false;
+			return rnd_false;
 		d = *x2 - *x1;
 		r = (maxx - *x1) / d;
 		*x1 = maxx;
@@ -80,7 +80,7 @@ RND_INLINE rnd_bool pcb_line_clip(double minx, double miny, double maxx, double 
 	/* clip first point on top */
 	if (*y1 < miny) {
 		if (*y2 < miny)
-			return pcb_false;
+			return rnd_false;
 		d = *y2 - *y1;
 		r = (miny - *y1) / d;
 		*y1 = miny;
@@ -96,7 +96,7 @@ RND_INLINE rnd_bool pcb_line_clip(double minx, double miny, double maxx, double 
 	/* clip first point on bottom */
 	if (*y1 > maxy) {
 		if (*y2 > maxy)
-			return pcb_false;
+			return rnd_false;
 		d = *y2 - *y1;
 		r = (maxy - *y1) / d;
 		*y1 = maxy;
@@ -109,7 +109,7 @@ RND_INLINE rnd_bool pcb_line_clip(double minx, double miny, double maxx, double 
 		*y2 = maxy;
 		*x2 += r * (*x1 - *x2);
 	}
-	return pcb_true;
+	return rnd_true;
 }
 
 #endif

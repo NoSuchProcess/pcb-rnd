@@ -100,7 +100,7 @@ static void rdialog(const char *name, const char *content)
 		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	RND_DAD_END(ctx->dlg);
 
-	RND_DAD_NEW("report", ctx->dlg, name, ctx, pcb_false, rdialog_close_cb);
+	RND_DAD_NEW("report", ctx->dlg, name, ctx, rnd_false, rdialog_close_cb);
 }
 
 

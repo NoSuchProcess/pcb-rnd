@@ -142,12 +142,12 @@ static rnd_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
 
 	/* cheap test: they need to have valid and matching intnoconn */
 	if ((a->intnoconn == 0) || (a->intnoconn != b->intnoconn))
-		return pcb_false;
+		return rnd_false;
 
 	/* expensive tests: they need to be in the same subc */
 	pa = pcb_obj_parent_subc(a);
 	if (pa == NULL)
-		return pcb_false;
+		return rnd_false;
 
 	pb = pcb_obj_parent_subc(b);
 

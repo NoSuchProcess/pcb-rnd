@@ -30,7 +30,7 @@ typedef struct {								/* information about moves between layers */
 } MoveToLayer;
 
 typedef struct {								/* information about poly clear/restore */
-	rnd_bool Clear;										/* pcb_true was clear, pcb_false was restore */
+	rnd_bool Clear;										/* rnd_true was clear, rnd_false was restore */
 	pcb_layer_t *Layer;
 } ClearPolyType, *ClearPolyTypePtr;
 

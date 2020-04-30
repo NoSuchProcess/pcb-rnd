@@ -576,13 +576,13 @@ void *pcb_lineop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *L
 		return NULL;
 	pcb_line_invalidate_erase(Line);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line)) {
-		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_LINE, Layer, Line, Line, pcb_false);
+		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_LINE, Layer, Line, Line, rnd_false);
 		pcb_poly_restore_to_poly(ctx->chgsize.pcb->Data, PCB_OBJ_LINE, Layer, Line);
 	}
 	pcb_undo_add_obj_to_flag(Line);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Line);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Line)) {
-		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_LINE, Layer, Line, Line, pcb_true);
+		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_LINE, Layer, Line, Line, rnd_true);
 		pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_OBJ_LINE, Layer, Line);
 	}
 	pcb_line_invalidate_draw(Layer, Line);
@@ -768,7 +768,7 @@ static pcb_r_dir_t moveline_callback(const rnd_rnd_box_t * b, void *cl)
 	pcb_pstk_t *ps;
 
 TODO("pdstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
-	if ((ps = pcb_pstk_new_compat_via(PCB->Data, -1, i->X, i->Y, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance, 0, PCB_PSTK_COMPAT_ROUND, pcb_true)) != NULL) {
+	if ((ps = pcb_pstk_new_compat_via(PCB->Data, -1, i->X, i->Y, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance, 0, PCB_PSTK_COMPAT_ROUND, rnd_true)) != NULL) {
 		pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 		pcb_pstk_invalidate_draw(ps);
 	}
@@ -1148,7 +1148,7 @@ void pcb_line_name_invalidate_draw(pcb_line_t *line)
 {
 	if (line->term != NULL) {
 		pcb_term_label_invalidate((line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
-			100.0, is_line_term_vert(line), pcb_true, (pcb_any_obj_t *)line);
+			100.0, is_line_term_vert(line), rnd_true, (pcb_any_obj_t *)line);
 	}
 }
 
@@ -1156,7 +1156,7 @@ void pcb_line_draw_label(pcb_draw_info_t *info, pcb_line_t *line)
 {
 	if (line->term != NULL)
 		pcb_term_label_draw(info, (line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
-			conf_core.appearance.term_label_size, is_line_term_vert(line), pcb_true, (pcb_any_obj_t *)line);
+			conf_core.appearance.term_label_size, is_line_term_vert(line), rnd_true, (pcb_any_obj_t *)line);
 	if (line->noexport)
 		pcb_obj_noexport_mark(line, (line->Point1.X+line->Point2.X)/2, (line->Point1.Y+line->Point2.Y)/2);
 }

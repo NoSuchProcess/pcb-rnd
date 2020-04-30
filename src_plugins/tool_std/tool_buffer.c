@@ -63,14 +63,14 @@ static void pcb_tool_buffer_notify_mode_(rnd_hidlib_t *hl, rnd_bool keep_ids)
 	}
 
 	if (pcb_buffer_copy_to_layout(pcb, pcb_crosshair.AttachedObject.tx, pcb_crosshair.AttachedObject.ty, keep_ids)) {
-		pcb_board_set_changed_flag(pcb_true);
+		pcb_board_set_changed_flag(rnd_true);
 		rnd_gui->invalidate_all(rnd_gui);
 	}
 }
 
 void pcb_tool_buffer_notify_mode(rnd_hidlib_t *hl)
 {
-	pcb_tool_buffer_notify_mode_(hl, pcb_false);
+	pcb_tool_buffer_notify_mode_(hl, rnd_false);
 }
 
 void pcb_tool_buffer_release_mode(rnd_hidlib_t *hl)
@@ -79,10 +79,10 @@ void pcb_tool_buffer_release_mode(rnd_hidlib_t *hl)
 
 	if (pcb_crosshair_note.Moving) {
 		pcb_undo_restore_serial();
-		pcb_tool_buffer_notify_mode_(hl, pcb_true);
+		pcb_tool_buffer_notify_mode_(hl, rnd_true);
 		pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
 		pcb_buffer_set_number(pcb_crosshair_note.Buffer);
-		pcb_crosshair_note.Moving = pcb_false;
+		pcb_crosshair_note.Moving = rnd_false;
 		hl->tool_hit = 0;
 	}
 }

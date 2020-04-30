@@ -171,10 +171,10 @@ void pcb_layer_free_fields(pcb_layer_t *layer, rnd_bool undoable)
 rnd_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 {
 	/* if any local list is non-empty, the layer is non-empty */
-	if (layer->Line.lst.length > 0) return pcb_false;
-	if (layer->Arc.lst.length > 0) return pcb_false;
-	if (layer->Polygon.lst.length > 0) return pcb_false;
-	if (layer->Text.lst.length > 0) return pcb_false;
+	if (layer->Line.lst.length > 0) return rnd_false;
+	if (layer->Arc.lst.length > 0) return rnd_false;
+	if (layer->Polygon.lst.length > 0) return rnd_false;
+	if (layer->Text.lst.length > 0) return rnd_false;
 
 	/* if the layer is locally empty, it might be a board layer that has
 	   objects from subcircuits so also check the rtrees */
@@ -239,7 +239,7 @@ rnd_bool pcb_layer_is_empty(pcb_board_t *pcb, rnd_layer_id_t num)
 {
 	if ((num >= 0) && (num < pcb->Data->LayerN))
 		return pcb_layer_is_empty_(pcb, pcb->Data->Layer + num);
-	return pcb_false;
+	return rnd_false;
 }
 
 rnd_layer_id_t pcb_layer_id(const pcb_data_t *Data, const pcb_layer_t *Layer)

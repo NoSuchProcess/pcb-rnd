@@ -114,7 +114,7 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 	rnd_conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
 		char *tmp;
 		cell[0] = rnd_strdup(i->payload);
-		rnd_path_resolve(&PCB->hidlib, cell[0], &tmp, 0, pcb_false);
+		rnd_path_resolve(&PCB->hidlib, cell[0], &tmp, 0, rnd_false);
 		cell[1] = rnd_strdup(tmp == NULL ? "" : tmp);
 		cell[2] = rnd_strdup(pref_node_src(i->prop.src));
 		cell[3] = NULL;
@@ -262,7 +262,7 @@ static void lib_cell_edit_update(void *hid_ctx, void *caller_data, rnd_hid_attri
 	cell_edit_ctx_t *ctx = caller_data;
 	char *tmp;
 
-	rnd_path_resolve(&PCB->hidlib, ctx->dlg[ctx->wpath].val.str, &tmp, 0, pcb_true);
+	rnd_path_resolve(&PCB->hidlib, ctx->dlg[ctx->wpath].val.str, &tmp, 0, rnd_true);
 	if (tmp != NULL)
 		RND_DAD_SET_VALUE(hid_ctx, ctx->wexp, str, tmp);
 }
@@ -295,7 +295,7 @@ static int lib_cell_edit(pref_ctx_t *pctx, char **cell)
 		RND_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
 	RND_DAD_END(ctx.dlg);
 
-	RND_DAD_NEW("pref_lib_path", ctx.dlg, "Edit library path", &ctx, pcb_true, NULL);
+	RND_DAD_NEW("pref_lib_path", ctx.dlg, "Edit library path", &ctx, rnd_true, NULL);
 	if (RND_DAD_RUN(ctx.dlg) != 0) {
 		RND_DAD_FREE(ctx.dlg);
 		return -1;
@@ -420,7 +420,7 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 	RND_DAD_END(ctx->dlg);
 
 	ctx->active = 1;
-	RND_DAD_NEW("pref_lib_path_help", ctx->dlg, "pcb-rnd preferences: library help", ctx, pcb_true, pref_libhelp_close_cb);
+	RND_DAD_NEW("pref_lib_path_help", ctx->dlg, "pcb-rnd preferences: library help", ctx, rnd_true, pref_libhelp_close_cb);
 
 	RND_DAD_RUN(ctx->dlg);
 	RND_DAD_FREE(ctx->dlg);

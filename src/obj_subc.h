@@ -84,7 +84,7 @@ void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, rnd_coord_t y_offs, rnd
    if recurse is non-zero, descend in subc-in-subc */
 void pcb_subc_scale(pcb_data_t *data, pcb_subc_t *subc, double sx, double sy, double sth, int recurse);
 
-/* changes the side of the board a subc is on; returns pcb_true if done */
+/* changes the side of the board a subc is on; returns rnd_true if done */
 rnd_bool pcb_subc_change_side(pcb_subc_t *subc, rnd_coord_t yoff);
 
 void pcb_subc_rotate(pcb_subc_t *subc, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina, double angle);
@@ -93,7 +93,7 @@ void pcb_subc_rotate90(pcb_subc_t *subc, rnd_coord_t cx, rnd_coord_t cy, int ste
 /* High level move (op wrapper; no undo) */
 void pcb_subc_move(pcb_subc_t *sc, rnd_coord_t dx, rnd_coord_t dy, rnd_bool more_to_come);
 
-/* changes the side of all selected and visible subcs; returns pcb_true if anything has changed */
+/* changes the side of all selected and visible subcs; returns rnd_true if anything has changed */
 rnd_bool pcb_selected_subc_change_side(void);
 
 /* Draw a subcircuit for a preview (silk, copper and outline only) */
@@ -116,7 +116,7 @@ long pcb_subc_unbind_all(pcb_board_t *pcb, pcb_layer_t *brdly, int undoable);
 /* Look up a layer by lyt and comb (and name, if req_name_match is true);
    if not found and alloc is true, allocate a new layer with the given name.
    Return NULL on error. */
-pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_bool_t alloc, const char *name, rnd_bool req_name_match);
+pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, rnd_bool_t alloc, const char *name, rnd_bool req_name_match);
 
 #include <librnd/poly/rtree.h>
 pcb_r_dir_t pcb_draw_subc_mark(const rnd_rnd_box_t *b, void *cl); /* low level version, does not do extobj */
@@ -179,7 +179,7 @@ void pcb_subc_create_aux(pcb_subc_t *sc, rnd_coord_t ox, rnd_coord_t oy, double 
 /* Create a new point on the aux layer using a given role string in attribute */
 void pcb_subc_create_aux_point(pcb_subc_t *sc, rnd_coord_t x, rnd_coord_t y, const char *role);
 
-/* Look up an aux point and return pcb_true if found; when found, load x and y
+/* Look up an aux point and return rnd_true if found; when found, load x and y
    with the coords of the point. */
 rnd_bool pcb_subc_find_aux_point(pcb_subc_t *sc, const char *role, rnd_coord_t *x, rnd_coord_t *y);
 

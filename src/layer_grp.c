@@ -50,7 +50,7 @@ do { \
 		rnd_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); \
 		if ((rnd_gui != NULL) && (rnd_exporter == NULL)) \
 			rnd_gui->invalidate_all(rnd_gui); \
-		pcb_board_set_changed_flag(pcb_true); \
+		pcb_board_set_changed_flag(rnd_true); \
 	} \
 } while(0)
 
@@ -224,15 +224,15 @@ rnd_bool pcb_layergrp_is_empty(pcb_board_t *pcb, rnd_layergrp_id_t num)
 
 	/* some layers are never empty */
 	if (g->ltype & PCB_LYT_MASK)
-		return pcb_false;
+		return rnd_false;
 
 	if (!pcb_pstk_is_group_empty(pcb, num))
-		return pcb_false;
+		return rnd_false;
 
 	for (i = 0; i < g->len; i++)
 		if (!pcb_layer_is_empty(pcb, g->lid[i]))
-			return pcb_false;
-	return pcb_true;
+			return rnd_false;
+	return rnd_true;
 }
 
 rnd_bool pcb_layergrp_is_pure_empty(pcb_board_t *pcb, rnd_layergrp_id_t num)
@@ -242,8 +242,8 @@ rnd_bool pcb_layergrp_is_pure_empty(pcb_board_t *pcb, rnd_layergrp_id_t num)
 
 	for (i = 0; i < g->len; i++)
 		if (!pcb_layer_is_pure_empty(pcb_get_layer(pcb->Data, g->lid[i])))
-			return pcb_false;
-	return pcb_true;
+			return rnd_false;
+	return rnd_true;
 }
 
 static void pcb_layergrp_free_fields(pcb_layergrp_t *g)

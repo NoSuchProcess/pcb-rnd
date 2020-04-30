@@ -683,7 +683,7 @@ int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_
 	/* no backend or forced action mode: classic pcb-rnd action parse */
 	if (force_action_mode || (rnd_conf.rc.cli_backend == NULL) || (*rnd_conf.rc.cli_backend == '\0')) {
 		rnd_event(NULL, RND_EVENT_CLI_ENTER, "s", str_);
-		return hid_parse_actionstring(hl, str_, pcb_false);
+		return hid_parse_actionstring(hl, str_, rnd_false);
 	}
 
 	/* backend: let the backend action handle it */
@@ -720,7 +720,7 @@ int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_
 
 int rnd_parse_actions(rnd_hidlib_t *hl, const char *str_)
 {
-	return hid_parse_actionstring(hl, str_, pcb_true);
+	return hid_parse_actionstring(hl, str_, rnd_true);
 }
 
 /*** custom fungw types ***/

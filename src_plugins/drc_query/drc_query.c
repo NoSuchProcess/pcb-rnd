@@ -262,13 +262,13 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 		if (rnd_conf_get_field(path) == NULL) {
 			const char *sdesc;
 			rnd_conf_native_t *nat;
-			pcb_bool_t *b;
+			rnd_bool_t *b;
 			lht_node_t *ndesc;
 
 			ndesc = lht_dom_hash_get(nd, "desc");
 			if ((ndesc != NULL) && (ndesc->type == LHT_TEXT)) sdesc = ndesc->data.text.value;
 
-			b = calloc(sizeof(pcb_bool_t), 1);
+			b = calloc(sizeof(rnd_bool_t), 1);
 			nat = rnd_conf_reg_field_(b, 1, RND_CFN_BOOLEAN, path, rnd_strdup(sdesc), 0);
 			if (nat == NULL) {
 				free(b);

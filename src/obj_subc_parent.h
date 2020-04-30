@@ -84,21 +84,21 @@ RND_INLINE pcb_subc_t *pcb_obj_parent_subc(const pcb_any_obj_t *obj)
 	return 0;
 }
 
-RND_INLINE pcb_bool_t pcb_obj_is_under(pcb_any_obj_t *obj, pcb_data_t *data)
+RND_INLINE rnd_bool_t pcb_obj_is_under(pcb_any_obj_t *obj, pcb_data_t *data)
 {
 	for(;;) {
 		switch(obj->parent_type) {
-			case PCB_PARENT_INVALID: return pcb_false;
-			case PCB_PARENT_BOARD:   return pcb_false;
-			case PCB_PARENT_UI:      return pcb_false; /* shouldn't happen */
-			case PCB_PARENT_LAYER:   if (obj->parent.layer->parent.data == data) return pcb_true; break;
-			case PCB_PARENT_SUBC:    if (obj->parent.subc->data == data) return pcb_true; break;
-			case PCB_PARENT_DATA:    if (obj->parent.data == data) return pcb_true; break;
-			case PCB_PARENT_NET:     if (obj->parent.data == data) return pcb_true; break;
+			case PCB_PARENT_INVALID: return rnd_false;
+			case PCB_PARENT_BOARD:   return rnd_false;
+			case PCB_PARENT_UI:      return rnd_false; /* shouldn't happen */
+			case PCB_PARENT_LAYER:   if (obj->parent.layer->parent.data == data) return rnd_true; break;
+			case PCB_PARENT_SUBC:    if (obj->parent.subc->data == data) return rnd_true; break;
+			case PCB_PARENT_DATA:    if (obj->parent.data == data) return rnd_true; break;
+			case PCB_PARENT_NET:     if (obj->parent.data == data) return rnd_true; break;
 		}
 		obj = (pcb_any_obj_t *)pcb_obj_parent_subc(obj);
 		if (obj == NULL)
-			return pcb_false;
+			return rnd_false;
 	}
 }
 

@@ -29,11 +29,11 @@
 
 
 TODO(": implement text intersections")
-rnd_bool pcb_isc_text_line(const pcb_find_t *ctx, pcb_text_t *a, pcb_line_t *b) { return pcb_false; }
-rnd_bool pcb_isc_text_text(const pcb_find_t *ctx, pcb_text_t *a, pcb_text_t *b) { return pcb_false; }
-rnd_bool pcb_isc_text_poly(const pcb_find_t *ctx, pcb_text_t *a, pcb_poly_t *b) { return pcb_false; }
-rnd_bool pcb_isc_text_arc(const pcb_find_t *ctx, pcb_text_t *a, pcb_arc_t *b) { return pcb_false; }
-rnd_bool pcb_isc_text_pstk(const pcb_find_t *ctx, pcb_text_t *a, pcb_pstk_t *b) { return pcb_false; }
+rnd_bool pcb_isc_text_line(const pcb_find_t *ctx, pcb_text_t *a, pcb_line_t *b) { return rnd_false; }
+rnd_bool pcb_isc_text_text(const pcb_find_t *ctx, pcb_text_t *a, pcb_text_t *b) { return rnd_false; }
+rnd_bool pcb_isc_text_poly(const pcb_find_t *ctx, pcb_text_t *a, pcb_poly_t *b) { return rnd_false; }
+rnd_bool pcb_isc_text_arc(const pcb_find_t *ctx, pcb_text_t *a, pcb_arc_t *b) { return rnd_false; }
+rnd_bool pcb_isc_text_pstk(const pcb_find_t *ctx, pcb_text_t *a, pcb_pstk_t *b) { return rnd_false; }
 
 rnd_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_obj_t *b)
 {
@@ -47,10 +47,10 @@ rnd_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_
 	   graphics can't contribute to galvanic connections */
 
 	switch(a->type) {
-		case PCB_OBJ_VOID: return pcb_false;
+		case PCB_OBJ_VOID: return rnd_false;
 		case PCB_OBJ_LINE:
 			switch(b->type) {
-				case PCB_OBJ_VOID: return pcb_false;
+				case PCB_OBJ_VOID: return rnd_false;
 				case PCB_OBJ_LINE: return pcb_isc_line_line(ctx, (pcb_line_t *)a, (pcb_line_t *)b);
 				case PCB_OBJ_TEXT: return pcb_isc_text_line(ctx, (pcb_text_t *)b, (pcb_line_t *)a);
 				case PCB_OBJ_POLY: return pcb_isc_line_poly(ctx, (pcb_line_t *)a, (pcb_poly_t *)b);
@@ -63,21 +63,21 @@ rnd_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_
 			break;
 		case PCB_OBJ_TEXT:
 			switch(b->type) {
-				case PCB_OBJ_VOID: return pcb_false;
+				case PCB_OBJ_VOID: return rnd_false;
 				case PCB_OBJ_LINE: return pcb_isc_text_line(ctx, (pcb_text_t *)a, (pcb_line_t *)b);
 				case PCB_OBJ_TEXT: return pcb_isc_text_text(ctx, (pcb_text_t *)a, (pcb_text_t *)b);
 				case PCB_OBJ_POLY: return pcb_isc_text_poly(ctx, (pcb_text_t *)a, (pcb_poly_t *)b);
 				case PCB_OBJ_ARC:  return pcb_isc_text_arc(ctx, (pcb_text_t *)a, (pcb_arc_t *)b);
 /*				case PCB_OBJ_GFX:  return pcb_isc_text_gfx(ctx, (pcb_text_t *)a, (pcb_gfx_t *)b);*/
 				case PCB_OBJ_PSTK: return pcb_isc_text_pstk(ctx, (pcb_text_t *)a, (pcb_pstk_t *)b);
-				case PCB_OBJ_RAT:  return pcb_false; /* text is invisible to find for now */
+				case PCB_OBJ_RAT:  return rnd_false; /* text is invisible to find for now */
 				default:;
 			}
 			break;
 
 		case PCB_OBJ_POLY:
 			switch(b->type) {
-				case PCB_OBJ_VOID: return pcb_false;
+				case PCB_OBJ_VOID: return rnd_false;
 				case PCB_OBJ_LINE: return pcb_isc_line_poly(ctx, (pcb_line_t *)b, (pcb_poly_t *)a);
 				case PCB_OBJ_TEXT: return pcb_isc_text_poly(ctx, (pcb_text_t *)b, (pcb_poly_t *)a);
 				case PCB_OBJ_POLY: return pcb_isc_poly_poly(ctx, (pcb_poly_t *)a, (pcb_poly_t *)b);
@@ -90,7 +90,7 @@ rnd_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_
 			break;
 		case PCB_OBJ_ARC:
 			switch(b->type) {
-				case PCB_OBJ_VOID: return pcb_false;
+				case PCB_OBJ_VOID: return rnd_false;
 				case PCB_OBJ_LINE: return pcb_isc_line_arc(ctx, (pcb_line_t *)b, (pcb_arc_t *)a);
 				case PCB_OBJ_TEXT: return pcb_isc_text_arc(ctx, (pcb_text_t *)b, (pcb_arc_t *)a);
 				case PCB_OBJ_POLY: return pcb_isc_arc_poly(ctx, (pcb_arc_t *)a, (pcb_poly_t *)b);
@@ -103,7 +103,7 @@ rnd_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_
 			break;
 /*		case PCB_OBJ_GFX:
 			switch(b->type) {
-				case PCB_OBJ_VOID: return pcb_false;
+				case PCB_OBJ_VOID: return rnd_false;
 				case PCB_OBJ_LINE: return pcb_isc_line_gfx(ctx, (pcb_line_t *)b, (pcb_gfx_t *)a);
 				case PCB_OBJ_TEXT: return pcb_isc_text_gfx(ctx, (pcb_text_t *)b, (pcb_gfx_t *)a);
 				case PCB_OBJ_POLY: return pcb_isc_gfx_poly(ctx, (pcb_gfx_t *)a, (pcb_poly_t *)b);
@@ -116,7 +116,7 @@ rnd_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_
 			break;*/
 		case PCB_OBJ_PSTK:
 			switch(b->type) {
-				case PCB_OBJ_VOID: return pcb_false;
+				case PCB_OBJ_VOID: return rnd_false;
 				case PCB_OBJ_LINE: return pcb_isc_pstk_line(ctx, (pcb_pstk_t *)a, (pcb_line_t *)b);
 				case PCB_OBJ_TEXT: return pcb_isc_text_pstk(ctx, (pcb_text_t *)b, (pcb_pstk_t *)a);
 				case PCB_OBJ_POLY: return pcb_isc_pstk_poly(ctx, (pcb_pstk_t *)a, (pcb_poly_t *)b);
@@ -129,9 +129,9 @@ rnd_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_
 			break;
 		case PCB_OBJ_RAT:
 			switch(b->type) {
-				case PCB_OBJ_VOID: return pcb_false;
+				case PCB_OBJ_VOID: return rnd_false;
 				case PCB_OBJ_LINE: return pcb_isc_rat_line(ctx, (pcb_rat_t *)a, (pcb_line_t *)b);
-				case PCB_OBJ_TEXT: return pcb_false; /* text is invisible to find for now */
+				case PCB_OBJ_TEXT: return rnd_false; /* text is invisible to find for now */
 				case PCB_OBJ_POLY: return pcb_isc_rat_poly(ctx, (pcb_rat_t *)a, (pcb_poly_t *)b);
 				case PCB_OBJ_ARC:  return pcb_isc_rat_arc(ctx, (pcb_rat_t *)a, (pcb_arc_t *)b);
 /*				case PCB_OBJ_GFX:  return pcb_isc_rat_gfx(ctx, (pcb_rat_t *)a, (pcb_gfx_t *)b);*/
@@ -143,7 +143,7 @@ rnd_bool pcb_intersect_obj_obj(const pcb_find_t *ctx, pcb_any_obj_t *a, pcb_any_
 		default:;
 	}
 	assert(!"Don't know how to check intersection of these objet types");
-	return pcb_false;
+	return rnd_false;
 }
 
 

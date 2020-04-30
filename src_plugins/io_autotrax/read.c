@@ -144,7 +144,7 @@ static pcb_layer_t *autotrax_get_layer(read_state_t *st, pcb_subc_t *subc, int a
 
 	lyt = pcb_layer_flags(st->pcb, lid);
 	comb = 0;
-	return pcb_subc_get_layer(subc, lyt, comb, 1, st->pcb->Data->Layer[lid].name, pcb_true);
+	return pcb_subc_get_layer(subc, lyt, comb, 1, st->pcb->Data->Layer[lid].name, rnd_true);
 }
 
 /* autotrax_free_text/component_text */
@@ -360,13 +360,13 @@ document used reflects actual outputs from protel autotrax
 	if (segments == 10) { /* LU + RL quadrants */
 		start_angle = 180.0;
 		delta = 90.0;
-		pcb_arc_new(&st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags, pcb_true);
+		pcb_arc_new(&st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags, rnd_true);
 		start_angle = 0.0;
 	}
 	else if (segments == 5) { /* RU + LL quadrants */
 		start_angle = 270.0;
 		delta = 90.0;
-		pcb_arc_new(&st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags, pcb_true);
+		pcb_arc_new(&st->pcb->Data->Layer[PCB_layer], centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags, rnd_true);
 		start_angle = 90.0;
 	}
 	else if (segments >= 15) { /* whole circle */
@@ -426,7 +426,7 @@ document used reflects actual outputs from protel autotrax
 	if (ly == NULL)
 		return 0;
 
-	if (pcb_arc_new(ly, centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags, pcb_true) != 0)
+	if (pcb_arc_new(ly, centreX, centreY, width, height, start_angle, delta, Thickness, Clearance, Flags, rnd_true) != 0)
 		return 1;
 	return -1;
 }
@@ -1152,7 +1152,7 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 		rnd_actionva(&Ptr->hidlib, "ElementList", "Done", NULL);
 	}
 	fclose(FP);
-	box = pcb_data_bbox(&board_size, Ptr->Data, pcb_false);
+	box = pcb_data_bbox(&board_size, Ptr->Data, rnd_false);
 	if (st.ignored_keepout_element) {
 		rnd_message(RND_MSG_ERROR, "Ignored %d keepout track(s) on auto/easytrax layer 12\n", st.ignored_keepout_element);
 	}

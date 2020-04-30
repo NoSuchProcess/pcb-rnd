@@ -122,11 +122,11 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
  * performs several operations on selected objects which are also visible
  * The lowlevel procedures are passed together with additional information
  * resets the selected flag if requested
- * returns pcb_true if anything has changed
+ * returns rnd_true if anything has changed
  */
 rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, rnd_bool on_locked_too)
 {
-	rnd_bool changed = pcb_false;
+	rnd_bool changed = rnd_false;
 	pcb_any_obj_t *exto;
 
 	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH) && (data != NULL))
@@ -154,7 +154,7 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 			F->Line(ctx, layer, line);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)line, NULL);
-			changed = pcb_true;
+			changed = rnd_true;
 		}
 		PCB_ENDALL_LOOP;
 	}
@@ -180,7 +180,7 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 			F->Arc(ctx, layer, arc);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)arc, NULL);
-			changed = pcb_true;
+			changed = rnd_true;
 		}
 		PCB_ENDALL_LOOP;
 	}
@@ -206,7 +206,7 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 			F->Text(ctx, layer, text);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)text, NULL);
-			changed = pcb_true;
+			changed = rnd_true;
 		}
 		PCB_ENDALL_LOOP;
 	}
@@ -232,7 +232,7 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 			F->Polygon(ctx, layer, polygon);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)polygon, NULL);
-			changed = pcb_true;
+			changed = rnd_true;
 		}
 		PCB_ENDALL_LOOP;
 	}
@@ -258,7 +258,7 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 			F->Gfx(ctx, layer, gfx);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)gfx, NULL);
-			changed = pcb_true;
+			changed = rnd_true;
 		}
 		PCB_ENDALL_LOOP;
 	}
@@ -282,11 +282,11 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				F->subc(ctx, subc);
 				if (exto != NULL) pcb_extobj_float_geo(exto);
 				if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)subc, NULL);
-				changed = pcb_true;
+				changed = rnd_true;
 			}
 			else if ((pcb->loose_subc) || (type & PCB_OBJ_SUBC_PART) || (subc->extobj != NULL)) {
 				if (pcb_selected_operation(pcb, subc->data, F, ctx, Reset, type, on_locked_too))
-					changed = pcb_true;
+					changed = rnd_true;
 			}
 		}
 		PCB_END_LOOP;
@@ -313,7 +313,7 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 			F->padstack(ctx, padstack);
 			if (exto != NULL) pcb_extobj_float_geo(exto);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)padstack, NULL);
-			changed = pcb_true;
+			changed = rnd_true;
 		}
 		PCB_END_LOOP;
 	}
@@ -334,7 +334,7 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				if (F->common_pre(ctx, (pcb_any_obj_t *)line, NULL) == 1) continue;
 			F->Rat(ctx, line);
 			if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)line, NULL);
-			changed = pcb_true;
+			changed = rnd_true;
 		}
 		PCB_END_LOOP;
 	}

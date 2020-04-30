@@ -180,12 +180,12 @@ char *pcb_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	if (pcb_ltf_wait_for_dialog_noclose(pctx.dialog)) {
 		res = pcb_ltf_get_path(&pctx);
 		if ((sub != NULL) && (sub->on_close != NULL))
-			sub->on_close(sub, pcb_true);
+			sub->on_close(sub, rnd_true);
 	}
 	else {
 		res = NULL;
 		if ((sub != NULL) && (sub->on_close != NULL))
-			sub->on_close(sub, pcb_false);
+			sub->on_close(sub, rnd_false);
 	}
 
 	if ((pcb_ltf_ok != DAD_CLOSED) && (XtIsManaged(pctx.dialog)))

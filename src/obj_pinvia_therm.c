@@ -111,9 +111,9 @@ rnd_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd
 				/* t is the theoretically required length, but we use twice that
 				 * to avoid discretisation errors in our circle approximation.
 				 */
-				pa = pcb_pa_diag_line(cx, cy, t * 2, w, pcb_true);
+				pa = pcb_pa_diag_line(cx, cy, t * 2, w, rnd_true);
 				pcb_polyarea_boolean_free(m, pa, &arc, PCB_PBO_SUB);
-				pa = pcb_pa_diag_line(cx, cy, t * 2, w, pcb_false);
+				pa = pcb_pa_diag_line(cx, cy, t * 2, w, rnd_false);
 			}
 			pcb_polyarea_boolean_free(arc, pa, &m, PCB_PBO_SUB);
 			return m;

@@ -151,7 +151,7 @@ void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t 
 	pcb_crosshair.AttachedObject.X = PlaceX - mx;
 	pcb_crosshair.AttachedObject.Y = PlaceY - my;
 	if ((!pcb_marked.status || conf_core.editor.local_ref) && !pcb_marked.user_placed)
-		pcb_crosshair_set_local_ref(PlaceX - mx, PlaceY - my, pcb_true);
+		pcb_crosshair_set_local_ref(PlaceX - mx, PlaceY - my, rnd_true);
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 
 	/* get all attached objects if necessary */
@@ -166,7 +166,7 @@ void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t 
 
 void pcb_tool_notify_block(void)
 {
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	switch (pcb_crosshair.AttachedBox.State) {
 	case PCB_CH_STATE_FIRST:						/* setup first point */
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
@@ -178,7 +178,7 @@ void pcb_tool_notify_block(void)
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
 		break;
 	}
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
 /*** old helpers ***/
@@ -194,7 +194,7 @@ static void pcb_press_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_
 
 	if (conf_core.temp.rat_warn) {
 		if (pcb_data_clear_flag(pcb->Data, PCB_FLAG_WARN, 1, 0) > 0)
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 	}
 	pcb_draw();
 }

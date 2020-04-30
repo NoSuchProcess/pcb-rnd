@@ -89,7 +89,7 @@ rnd_cardinal_t pcb_poly_num_clears(pcb_data_t *data, pcb_layer_t *layer, pcb_pol
 
 rnd_bool pcb_poly_is_point_in_p(rnd_coord_t, rnd_coord_t, rnd_coord_t, pcb_poly_t *);
 rnd_bool pcb_poly_is_point_in_p_ignore_holes(rnd_coord_t, rnd_coord_t, pcb_poly_t *);
-pcb_bool_t pcb_is_point_in_convex_quad(pcb_vector_t p, pcb_vector_t *q);
+rnd_bool_t pcb_is_point_in_convex_quad(pcb_vector_t p, pcb_vector_t *q);
 rnd_bool pcb_poly_is_rect_in_p(rnd_coord_t, rnd_coord_t, rnd_coord_t, rnd_coord_t, pcb_poly_t *);
 rnd_bool pcb_poly_isects_poly(rnd_polyarea_t *, pcb_poly_t *, rnd_bool);
 rnd_bool pcb_pline_isect_line(pcb_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy);

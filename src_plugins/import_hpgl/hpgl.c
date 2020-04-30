@@ -97,7 +97,7 @@ static int load_arc(uhpgl_ctx_t *ctx, uhpgl_arc_t *arc)
 		HPGL2CRD_D(arc->r), HPGL2CRD_D(arc->r),
 		arc->starta+180, arc->deltaa,
 		conf_core.design.line_thickness, 2 * conf_core.design.clearance,
-		pcb_flag_make((conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)), pcb_true);
+		pcb_flag_make((conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)), rnd_true);
 
 	return 0;
 }

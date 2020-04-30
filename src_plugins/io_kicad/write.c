@@ -693,11 +693,11 @@ TODO(": this should be a safe lookup, merged with kicad_sexpr_layer_to_text()")
 		kly.lyt = pcb_layer_flags_(ly);
 		if (data->parent_type != PCB_PARENT_SUBC) {
 			kly.type = ctx->layer[klayer].is_sig ? KLYT_COPPER : KLYT_GR;
-			kly.skip_term = pcb_false;
+			kly.skip_term = rnd_false;
 		}
 		else {
 			kly.type = KLYT_FP;
-			kly.skip_term = pcb_true;
+			kly.skip_term = rnd_true;
 		}
 
 		kicad_print_layer(ctx, ly, &kly, ind, dx, dy);

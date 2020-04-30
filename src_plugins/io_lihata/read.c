@@ -1265,7 +1265,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	{
 		pcb_layer_type_t silk_side = onsld ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 		const char *name = onsld ? "bottom-silk" : "top-silk";
-		silk = pcb_subc_get_layer(subc, PCB_LYT_SILK | silk_side, /*PCB_LYC_AUTO*/0, pcb_true, name, pcb_false);
+		silk = pcb_subc_get_layer(subc, PCB_LYT_SILK | silk_side, /*PCB_LYC_AUTO*/0, rnd_true, name, rnd_false);
 	}
 
 	lst = lht_dom_hash_get(obj, "objects");
@@ -1345,8 +1345,8 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 	for(n = 0; n < sc->data->LayerN; n++)
 		sc->data->Layer[n].is_bound = 1;
 
-	pcb_data_bbox(&sc->BoundingBox, sc->data, pcb_true);
-	pcb_data_bbox_naked(&sc->bbox_naked, sc->data, pcb_true);
+	pcb_data_bbox(&sc->BoundingBox, sc->data, rnd_true);
+	pcb_data_bbox_naked(&sc->bbox_naked, sc->data, rnd_true);
 
 	if (!dt->subc_tree)
 		dt->subc_tree = pcb_r_create_tree();
@@ -2278,11 +2278,11 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 
 	sub = lht_dom_hash_get(nd, "data");
 	if (sub == NULL) {
-		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
+		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 		return iolht_error(nd, "Lihata board without data\n");
 	}
 	if (parse_data(pcb, pcb->Data, sub, NULL) == NULL) {
-		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
+		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 		return -1;
 	}
 
@@ -2291,19 +2291,19 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 
 	sub = lht_dom_hash_get(nd, "styles");
 	if ((sub != NULL) && (parse_styles(pcb->Data, &pcb->RouteStyle, sub) != 0)) {
-		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
+		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 		return -1;
 	}
 
 	sub = lht_dom_hash_get(nd, "netlists");
 	if ((sub != NULL) && (parse_netlists(pcb, sub) != 0)) {
-		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
+		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 		return -1;
 	}
 
 	post_ids_assign(&post_ids);
 	if (post_thermal_assign(pcb, &post_thermal_old, &post_thermal_heavy) != 0) {
-		pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
+		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 		return -1;
 	}
 
@@ -2334,7 +2334,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 			parse_meta(pcb, sub);
 	}
 
-	pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
+	pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 
 	pcb->Data->loader = loader; /* set this manually so the version is remembered */
 	return 0;

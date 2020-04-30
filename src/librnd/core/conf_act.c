@@ -307,9 +307,9 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		rnd_grid_inval();
 		if (val[0] == '*')
-			rnd_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid * d), pcb_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid * d), rnd_false, 0, 0);
 		else
-			rnd_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid / d), pcb_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid / d), rnd_false, 0, 0);
 		return 0;
 	}
 
@@ -317,15 +317,15 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	rnd_grid_inval();
 	if (absolute)
-		rnd_hidlib_set_grid(RND_ACT_HIDLIB, value, pcb_false, 0, 0);
+		rnd_hidlib_set_grid(RND_ACT_HIDLIB, value, rnd_false, 0, 0);
 	else {
 		/* On the way down, until the minimum unit (1) */
 		if ((value + RND_ACT_HIDLIB->grid) < 1)
-			rnd_hidlib_set_grid(RND_ACT_HIDLIB, 1, pcb_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_HIDLIB, 1, rnd_false, 0, 0);
 		else if (RND_ACT_HIDLIB->grid == 1)
-			rnd_hidlib_set_grid(RND_ACT_HIDLIB, value, pcb_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_HIDLIB, value, rnd_false, 0, 0);
 		else
-			rnd_hidlib_set_grid(RND_ACT_HIDLIB, value + RND_ACT_HIDLIB->grid, pcb_false, 0, 0);
+			rnd_hidlib_set_grid(RND_ACT_HIDLIB, value + RND_ACT_HIDLIB->grid, rnd_false, 0, 0);
 	}
 	return 0;
 }

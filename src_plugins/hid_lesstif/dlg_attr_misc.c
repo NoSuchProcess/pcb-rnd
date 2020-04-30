@@ -60,7 +60,7 @@ static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent)
 	stdarg(XmNmaximum, (int)PB_SCALE_UP+1);
 	stdarg(XmNsliderSize, 1);
 	stdarg(XmNorientation, XmHORIZONTAL);
-	stdarg(XmNshowArrows, pcb_false);
+	stdarg(XmNshowArrows, rnd_false);
 	stdarg_do_color_str("#000099", XmNforeground);
 	stdarg(XmNsliderVisual, XmFOREGROUND_COLOR);
 	

@@ -2442,7 +2442,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, DJopt, arg = argv[1].val.str);
 
 #ifdef ENDIF
-	SwitchDrawingWindow(PCB->Zoom, Output.drawing_area->window, conf_core.editor.show_solder_side, pcb_false);
+	SwitchDrawingWindow(PCB->Zoom, Output.drawing_area->window, conf_core.editor.show_solder_side, rnd_false);
 #endif
 
 	rnd_hid_busy(PCB, 1);

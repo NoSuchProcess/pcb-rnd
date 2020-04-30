@@ -285,16 +285,16 @@ serpentine_calculate_route(	pcb_route_t * route,
 
 static void tool_serpentine_init(void)
 {
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
 static void tool_serpentine_uninit(void)
 {
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
 static void tool_serpentine_notify_mode(rnd_hidlib_t *hl)
@@ -402,8 +402,8 @@ rnd_bool tool_serpentine_undo_act()
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedObject.State != PCB_CH_STATE_FIRST)
-		return pcb_false;
-	return pcb_true;
+		return rnd_false;
+	return rnd_true;
 }
 
 static pcb_tool_t tool_serpentine = {
@@ -419,7 +419,7 @@ static pcb_tool_t tool_serpentine = {
 	NULL,
 	NULL, /* escape */
 	
-	pcb_false
+	rnd_false
 };
 
 

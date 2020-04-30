@@ -113,7 +113,7 @@ int pcb_intersect_cline_cline(pcb_line_t *Line1, pcb_line_t *Line2, rnd_rnd_box_
 	}
 
 	/* intersection is at least on CD */
-	/* [removed this case since it always returns pcb_false --asp] */
+	/* [removed this case since it always returns rnd_false --asp] */
 	return 0;
 }
 

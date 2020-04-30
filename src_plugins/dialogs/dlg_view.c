@@ -258,7 +258,7 @@ static void view_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 
 static rnd_bool view_mouse_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
-	return pcb_false; /* don't redraw */
+	return rnd_false; /* don't redraw */
 }
 
 void view_refresh(view_ctx_t *ctx)
@@ -519,7 +519,7 @@ static void view_select_obj(view_ctx_t *ctx, pcb_view_t *v)
 	}
 
 	if (chg) {
-		pcb_board_set_changed_flag(pcb_true);
+		pcb_board_set_changed_flag(rnd_true);
 		view_preview_update(ctx);
 	}
 }
@@ -654,7 +654,7 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 		RND_DAD_END(ctx->dlg);
 	RND_DAD_END(ctx->dlg);
 
-	RND_DAD_NEW(id, ctx->dlg, title, ctx, pcb_false, view_close_cb);
+	RND_DAD_NEW(id, ctx->dlg, title, ctx, rnd_false, view_close_cb);
 
 	ctx->active = 1;
 }
@@ -712,7 +712,7 @@ static void pcb_dlg_view_simplified(const char *id, view_ctx_t *ctx, const char 
 
 	RND_DAD_END(ctx->dlg);
 
-	RND_DAD_NEW(id, ctx->dlg, title, ctx, pcb_false, view_close_cb);
+	RND_DAD_NEW(id, ctx->dlg, title, ctx, rnd_false, view_close_cb);
 
 	ctx->active = 1;
 

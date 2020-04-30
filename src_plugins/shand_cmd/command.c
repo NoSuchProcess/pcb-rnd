@@ -78,7 +78,7 @@ static fgw_error_t pcb_act_LoadLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadLayout, format = argv[2].val.str);
 
 	if (!PCB->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Load data lose", "OK to override layout data?", "cancel", 0, "ok", 1, NULL) == 1))
-		pcb_load_pcb(filename, format, pcb_true, 0);
+		pcb_load_pcb(filename, format, rnd_true, 0);
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -167,14 +167,14 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (filename == NULL) {
 		if (PCB->hidlib.filename) {
 			if (pcb_save_pcb(PCB->hidlib.filename, NULL) == 0)
-				pcb_board_set_changed_flag(pcb_false);
+				pcb_board_set_changed_flag(rnd_false);
 		}
 		else
 			rnd_message(RND_MSG_ERROR, "No filename to save to yet\n");
 	}
 	else {
 		if (pcb_save_pcb(filename, NULL) == 0) {
-			pcb_board_set_changed_flag(pcb_false);
+			pcb_board_set_changed_flag(rnd_false);
 			free(PCB->hidlib.filename);
 			PCB->hidlib.filename = rnd_strdup(filename);
 			rnd_event(&PCB->hidlib, RND_EVENT_BOARD_FN_CHANGED, NULL);

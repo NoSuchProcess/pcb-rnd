@@ -106,7 +106,7 @@ rnd_bool pcb_net_integrity(pcb_board_t *pcb, pcb_any_obj_t *from, rnd_coord_t sh
 		pcb_find_free(&ctx.fb);
 	}
 
-	return pcb_false;
+	return rnd_false;
 }
 
 

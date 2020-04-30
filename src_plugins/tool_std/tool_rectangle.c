@@ -48,9 +48,9 @@
 
 void pcb_tool_rectangle_uninit(void)
 {
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
 void pcb_tool_rectangle_notify_mode(rnd_hidlib_t *hl)
@@ -67,7 +67,7 @@ void pcb_tool_rectangle_notify_mode(rnd_hidlib_t *hl)
 			pcb_crosshair.AttachedBox.Point1.X != pcb_crosshair.AttachedBox.Point2.X &&
 			pcb_crosshair.AttachedBox.Point1.Y != pcb_crosshair.AttachedBox.Point2.Y) {
 		pcb_poly_t *polygon;
-		pcb_layer_t *layer = pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), pcb_true);
+		pcb_layer_t *layer = pcb_loose_subc_layer(pcb, PCB_CURRLAYER(pcb), rnd_true);
 
 		int flags = PCB_FLAG_CLEARPOLY;
 		if (conf_core.editor.full_poly)
@@ -111,8 +111,8 @@ rnd_bool pcb_tool_rectangle_anydo_act(rnd_hidlib_t *hl)
 {
 	/* don't allow undo in the middle of an operation */
 	if (pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST)
-		return pcb_false;
-	return pcb_true;
+		return rnd_false;
+	return rnd_true;
 }
 
 void pcb_tool_rectangle_escape(rnd_hidlib_t *hl)

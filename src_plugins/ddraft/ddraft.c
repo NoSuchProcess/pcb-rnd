@@ -513,7 +513,7 @@ static pcb_tool_t tool_ddraft = {
 	NULL,
 	NULL,
 	NULL, /* escape */
-	pcb_false
+	rnd_false
 };
 
 

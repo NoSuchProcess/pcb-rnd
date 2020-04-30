@@ -393,7 +393,7 @@ static void pstklib_proto_switch(void *hid_ctx, void *caller_data, rnd_hid_attri
 		return;
 
 	from_pid = strtol(r->cell[0], NULL, 10);
-	to_pid = pcb_dlg_pstklib(ctx->pcb, ctx->subc_id, pcb_true, "Select a prototype to switch to");
+	to_pid = pcb_dlg_pstklib(ctx->pcb, ctx->subc_id, rnd_true, "Select a prototype to switch to");
 	if ((to_pid == PCB_PADSTACK_INVALID) || (to_pid == from_pid))
 		return;
 
@@ -432,7 +432,7 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, rnd_hid_attri
 	box.Y1 = -RND_MAX_COORD;
 	box.X2 = RND_MAX_COORD;
 	box.Y2 = RND_MAX_COORD;
-	if (pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
+	if (pcb_select_block(PCB, &box, rnd_false, rnd_false, rnd_false))
 		changed = 1;
 
 	for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
@@ -444,7 +444,7 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, rnd_hid_attri
 	}
 
 	if (changed) {
-		pcb_board_set_changed_flag(pcb_true);
+		pcb_board_set_changed_flag(rnd_true);
 		rnd_gui->invalidate_all(rnd_gui);
 	}
 }
@@ -648,7 +648,7 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else
 		rnd_PCB_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
-	if (pcb_dlg_pstklib(PCB, id, pcb_false, NULL) == PCB_PADSTACK_INVALID)
+	if (pcb_dlg_pstklib(PCB, id, rnd_false, NULL) == PCB_PADSTACK_INVALID)
 		RND_ACT_IRES(-1);
 	else
 		RND_ACT_IRES(0);

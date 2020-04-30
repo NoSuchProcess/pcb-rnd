@@ -138,15 +138,15 @@ void pcb_layervis_reset_stack(rnd_hidlib_t *hl)
 		if (grp != NULL)
 			PCB->Data->Layer[i].meta.real.vis = !grp->init_invis;
 		else
-			PCB->Data->Layer[i].meta.real.vis = pcb_true;
+			PCB->Data->Layer[i].meta.real.vis = rnd_true;
 	}
-	PCB->InvisibleObjectsOn = pcb_true;
-	PCB->pstk_on = pcb_true;
-	PCB->SubcOn = pcb_true;
-	PCB->SubcPartsOn = pcb_true;
-	PCB->RatOn = pcb_true;
-	PCB->padstack_mark_on = pcb_true;
-	PCB->hole_on = pcb_true;
+	PCB->InvisibleObjectsOn = rnd_true;
+	PCB->pstk_on = rnd_true;
+	PCB->SubcOn = rnd_true;
+	PCB->SubcPartsOn = rnd_true;
+	PCB->RatOn = rnd_true;
+	PCB->padstack_mark_on = rnd_true;
+	PCB->hole_on = rnd_true;
 
 	/* Bring the top copper group to the front and make it active.  */
 	if (pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp, 1) > 0)
@@ -159,11 +159,11 @@ void pcb_layervis_reset_stack(rnd_hidlib_t *hl)
 void pcb_layervis_save_stack(void)
 {
 	rnd_cardinal_t i;
-	static rnd_bool run = pcb_false;
+	static rnd_bool run = rnd_false;
 
-	if (run == pcb_false) {
+	if (run == rnd_false) {
 		SavedStack.cnt = 0;
-		run = pcb_true;
+		run = rnd_true;
 	}
 
 	if (SavedStack.cnt != 0)
@@ -233,7 +233,7 @@ void layer_vis_chg_mask(rnd_conf_native_t *cfg, int arr_idx)
 	in = 0;
 }
 
-void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_t vis)
+void pcb_layer_vis_change_all(pcb_board_t *pcb, rnd_bool_op_t open, rnd_bool_op_t vis)
 {
 	rnd_layergrp_id_t gid;
 	int n;
@@ -241,9 +241,9 @@ void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_
 	for(gid = 0; gid < pcb_max_group(pcb); gid++) {
 		pcb_layergrp_t *g = &pcb->LayerGroups.grp[gid];
 
-		pcb_bool_op(g->open, open);
+		rnd_bool_op(g->open, open);
 
-		if (vis == PCB_BOOL_PRESERVE) {
+		if (vis == RND_BOOL_PRESERVE) {
 			/* the group is visible exactly if if any layer is visible */
 			g->vis = 0;
 			for(n = 0; n < g->len; n++) {
@@ -255,10 +255,10 @@ void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_
 			}
 		}
 		else {
-			pcb_bool_op(g->vis, vis);
+			rnd_bool_op(g->vis, vis);
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *l = pcb_get_layer(pcb->Data, g->lid[n]);
-				pcb_bool_op(l->meta.real.vis, vis);
+				rnd_bool_op(l->meta.real.vis, vis);
 			}
 		}
 	}
@@ -274,7 +274,7 @@ void pcb_layer_vis_historical_hides(pcb_board_t *pcb)
 		pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
 		if ((g->ltype & PCB_LYT_MASK) || (g->ltype & PCB_LYT_PASTE)) {
 			int n;
-			g->vis = pcb_false;
+			g->vis = rnd_false;
 			for(n = 0; n < g->len; n++) {
 				pcb_layer_t *l = pcb_get_layer(PCB->Data, g->lid[n]);
 				if (l == NULL)
@@ -289,7 +289,7 @@ void pcb_layer_vis_historical_hides(pcb_board_t *pcb)
 static void layer_vis_grp_defaults(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
-	pcb_layer_vis_change_all(pcb, PCB_BOOL_SET, PCB_BOOL_PRESERVE);
+	pcb_layer_vis_change_all(pcb, RND_BOOL_SET, RND_BOOL_PRESERVE);
 	pcb_layer_vis_historical_hides(pcb);
 
 	rnd_event(hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */

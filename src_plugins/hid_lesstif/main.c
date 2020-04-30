@@ -141,7 +141,7 @@ static rnd_coord_t view_left_x = 0, view_top_y = 0;
    board.  */
 static double view_zoom = PCB_MIL_TO_COORD(10);
 static rnd_bool autofade = 0;
-static rnd_bool crosshair_on = pcb_true;
+static rnd_bool crosshair_on = rnd_true;
 
 static void lesstif_reg_attrs(void);
 static void lesstif_begin(void);
@@ -229,15 +229,15 @@ static void ShowCrosshair(rnd_bool show)
 	if (crosshair_on == show)
 		return;
 
-	rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(ltf_hidlib, rnd_false);
 	if (pcb_marked.status)
-		pcb_notify_mark_change(pcb_false);
+		pcb_notify_mark_change(rnd_false);
 
 	crosshair_on = show;
 
-	rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(ltf_hidlib, rnd_true);
 	if (pcb_marked.status)
-		pcb_notify_mark_change(pcb_true);
+		pcb_notify_mark_change(rnd_true);
 }
 
 /* This is the size of the current PCB work area.  */
@@ -438,7 +438,7 @@ static void command_callback(Widget w, XtPointer uptr, XmTextVerifyCallbackStruc
 		s = XmTextGetString(w);
 		lesstif_show_crosshair(0);
 		pcb_clihist_append(s, NULL, NULL, NULL);
-		rnd_parse_command(ltf_hidlib, s, pcb_false);
+		rnd_parse_command(ltf_hidlib, s, rnd_false);
 		XtFree(s);
 		XmTextSetString(w, XmStrCast(""));
 
@@ -483,12 +483,12 @@ static void ltf_mod_key(XKeyEvent *e, int set, int mainloop)
 		return;
 
 	in_move_event = 1;
-	rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(ltf_hidlib, rnd_false);
 	if (panning)
 		Pan(2, e->x, e->y);
 	rnd_hidcore_crosshair_move_to(ltf_hidlib, Px(e->x), Py(e->y), 1);
 	rnd_hidlib_adjust_attached_objects(ltf_hidlib);
-	rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(ltf_hidlib, rnd_true);
 	in_move_event = 0;
 }
 
@@ -1023,7 +1023,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			if (lesstif_button_event(w, e))
 				return;
 
-			rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_false);
+			rnd_hid_notify_crosshair_change(ltf_hidlib, rnd_false);
 			pressed_button = e->xbutton.button;
 			mods = ((e->xbutton.state & ShiftMask) ? RND_M_Shift : 0)
 				+ ((e->xbutton.state & ControlMask) ? RND_M_Ctrl : 0)
@@ -1034,7 +1034,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #endif
 			rnd_hid_cfg_mouse_action(ltf_hidlib, &lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
 
-			rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_true);
+			rnd_hid_notify_crosshair_change(ltf_hidlib, rnd_true);
 			break;
 		}
 
@@ -1044,7 +1044,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			if (e->xbutton.button != pressed_button)
 				return;
 			lesstif_button_event(w, e);
-			rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_false);
+			rnd_hid_notify_crosshair_change(ltf_hidlib, rnd_false);
 			pressed_button = 0;
 			mods = ((e->xbutton.state & ShiftMask) ? RND_M_Shift : 0)
 				+ ((e->xbutton.state & ControlMask) ? RND_M_Ctrl : 0)
@@ -1055,7 +1055,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 #endif
 				+ RND_M_Release;
 			rnd_hid_cfg_mouse_action(ltf_hidlib, &lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
-			rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_true);
+			rnd_hid_notify_crosshair_change(ltf_hidlib, rnd_true);
 			break;
 		}
 
@@ -1088,7 +1088,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 		if (crosshair_on)
 			rnd_draw_attached(ltf_hidlib, 1);
 		rnd_draw_marks(ltf_hidlib, 1);
-		ShowCrosshair(pcb_false);
+		ShowCrosshair(rnd_false);
 		need_idle_proc();
 		break;
 
@@ -1096,7 +1096,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 		crosshair_in_window = 1;
 		in_move_event = 1;
 		rnd_hidcore_crosshair_move_to(ltf_hidlib, Px(e->xcrossing.x), Py(e->xcrossing.y), 1);
-		ShowCrosshair(pcb_true);
+		ShowCrosshair(rnd_true);
 		in_move_event = 0;
 		need_redraw = 1;
 		need_idle_proc();
@@ -2105,7 +2105,7 @@ static void lesstif_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_com
 
 	if (invalidate_depth < 0) {
 		invalidate_depth = 0;
-		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
+		/* A mismatch of changes_complete == rnd_false and == rnd_true notifications
 		 * is not expected to occur, but we will try to handle it gracefully.
 		 * As we know the crosshair will have been shown already, we must
 		 * repaint the entire view to be sure not to leave an artaefact.
@@ -2136,7 +2136,7 @@ static void lesstif_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete
 
 	if (invalidate_depth < 0) {
 		invalidate_depth = 0;
-		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
+		/* A mismatch of changes_complete == rnd_false and == rnd_true notifications
 		 * is not expected to occur, but we will try to handle it gracefully.
 		 * As we know the mark will have been shown already, we must
 		 * repaint the entire view to be sure not to leave an artaefact.

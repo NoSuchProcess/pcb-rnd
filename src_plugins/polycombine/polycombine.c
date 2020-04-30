@@ -39,7 +39,7 @@ static rnd_polyarea_t *original_poly(pcb_poly_t *p, rnd_bool *forward)
 	pcb_vector_t v;
 	int hole = 0;
 
-	*forward = pcb_true;
+	*forward = rnd_true;
 
 	if ((np = pcb_polyarea_create()) == NULL)
 		return NULL;
@@ -61,7 +61,7 @@ static rnd_polyarea_t *original_poly(pcb_poly_t *p, rnd_bool *forward)
 
 		/* Is current point last in contour? If so process it. */
 		if (n == p->PointN - 1 || (hole < p->HoleIndexN && n == p->HoleIndex[hole] - 1)) {
-			pcb_poly_contour_pre(contour, pcb_true);
+			pcb_poly_contour_pre(contour, rnd_true);
 
 			/* Log the direction in which the outer contour was specified */
 			if (hole == 0)
@@ -136,7 +136,7 @@ static poly_tree *insert_node_recursive(poly_tree * start_point, poly_tree * to_
 /*  bool to_insert_isects_cur_node;    Intersection */
 	rnd_bool to_insert_contains_cur_node;	/* Containment */
 	rnd_bool cur_node_contains_to_insert;	/* Containment */
-	rnd_bool placed_to_insert = pcb_false;
+	rnd_bool placed_to_insert = rnd_false;
 
 	poly_tree *return_root = start_point;
 
@@ -179,7 +179,7 @@ static poly_tree *insert_node_recursive(poly_tree * start_point, poly_tree * to_
 					to_insert->prev->next = to_insert;
 				if (to_insert->next)
 					to_insert->next->prev = to_insert;
-				placed_to_insert = pcb_true;
+				placed_to_insert = rnd_true;
 
 				if (cur_node == start_point)
 					return_root = to_insert;

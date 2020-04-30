@@ -67,7 +67,7 @@ pcb_layer_type_t lyts[] = {
 #define NUM_LYTS (sizeof(lyts) / sizeof(lyts[0]))
 
 
-static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet, pcb_any_obj_t **cand, int *num_cand, rnd_coord_t cx, rnd_coord_t cy, int plated, pcb_any_obj_t *extrao)
+static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet, pcb_any_obj_t **cand, int *num_cand, rnd_coord_t cx, rnd_coord_t cy, int plated, pcb_any_obj_t *extrao)
 {
 	pcb_pstk_proto_t proto;
 	int l, ci, res = -1;
@@ -117,7 +117,7 @@ static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet,
 	return res;
 }
 
-int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
+int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet)
 {
 	int l, n, plated, done = 0, ci;
 	pcb_pstk_proto_t *p;
@@ -203,7 +203,7 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 	return done;
 }
 
-int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
+int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet)
 {
 	int l, n, done = 0, ci;
 	rnd_coord_t cx, cy;
@@ -271,7 +271,7 @@ int pcb_pstk_vect2pstk_smd(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
 	return done;
 }
 
-int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, pcb_bool_t quiet)
+int pcb_pstk_vect2pstk(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet)
 {
 	int t = pcb_pstk_vect2pstk_thr(data, objs, quiet);
 	int s = pcb_pstk_vect2pstk_smd(data, objs, quiet);

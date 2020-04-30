@@ -354,7 +354,7 @@ static int do_dialog(void)
 	isch_ctx.active = 1;
 
 	RND_DAD_DEFSIZE(isch_ctx.dlg, 360, 400);
-	RND_DAD_NEW("import_sch", isch_ctx.dlg, "Import schematics/netlist", &isch_ctx, pcb_false, isch_close_cb);
+	RND_DAD_NEW("import_sch", isch_ctx.dlg, "Import schematics/netlist", &isch_ctx, rnd_false, isch_close_cb);
 	isch_pcb2dlg();
 	return 0;
 }

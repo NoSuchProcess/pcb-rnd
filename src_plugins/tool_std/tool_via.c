@@ -69,7 +69,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 	{
 		pcb_pstk_t *ps = pcb_pstk_new_compat_via(pcb->Data, -1, hl->tool_x, hl->tool_y,
 			conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
-			0, PCB_PSTK_COMPAT_ROUND, pcb_true);
+			0, PCB_PSTK_COMPAT_ROUND, rnd_true);
 		if (ps == NULL)
 			return;
 

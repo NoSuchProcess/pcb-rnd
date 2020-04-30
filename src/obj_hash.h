@@ -90,8 +90,8 @@ RND_INLINE rnd_bool pcb_neq_tr_coords(const pcb_host_trans_t *tr1, rnd_coord_t x
 {
 	pcb_hash_tr_coords(tr1, &x1, &y1, x1, y1);
 	pcb_hash_tr_coords(tr2, &x2, &y2, x2, y2);
-	if (x1 != x2) return pcb_true;
-	if (y1 != y2) return pcb_true;
-	return pcb_false;
+	if (x1 != x2) return rnd_true;
+	if (y1 != y2) return rnd_true;
+	return rnd_false;
 }
 

@@ -182,16 +182,16 @@ RND_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, const pcb_pstk_t *ps,
 
 /* return whether a given padstack drills a given group
   (does not consider plating, only drill!) */
-RND_INLINE pcb_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, const pcb_pstk_t *ps, rnd_layergrp_id_t grp, pcb_pstk_proto_t **proto_out)
+RND_INLINE rnd_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, const pcb_pstk_t *ps, rnd_layergrp_id_t grp, pcb_pstk_proto_t **proto_out)
 {
 	rnd_layergrp_id_t top, bot;
 	pcb_bb_type_t res = pcb_pstk_bbspan(pcb, ps, &top, &bot, proto_out);
 	switch(res) {
-		case PCB_BB_THRU: return pcb_true;
+		case PCB_BB_THRU: return rnd_true;
 		case PCB_BB_NONE: case PCB_BB_INVALID: return 0;
 		case PCB_BB_BB: return (grp <= bot) && (grp >= top);
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* returns the shape the padstack has on the given layer group;

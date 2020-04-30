@@ -260,7 +260,7 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 	RND_DAD_DEFSIZE(lvs->dlg, 300, 500);
 
 	title = rnd_concat("Live Scripting: ", name, NULL);
-	RND_DAD_NEW("live_script", lvs->dlg, title, lvs, pcb_false, lvs_close_cb);
+	RND_DAD_NEW("live_script", lvs->dlg, title, lvs, rnd_false, lvs_close_cb);
 	free(title);
 	rnd_gui->attr_dlg_widget_state(lvs->dlg_hid_ctx, lvs->wstop, 0);
 	return lvs;

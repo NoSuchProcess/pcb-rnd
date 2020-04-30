@@ -338,7 +338,7 @@ void pcb_route_calculate_to(pcb_route_t *route, rnd_point_t *point, int mod1, in
 		/* Refraction is non-zero so add multiple lines (horizontal, vertical and/or 45 degrees). */
 		rnd_coord_t dx, dy;
 		rnd_point_t target;
-		rnd_bool way = (conf_core.editor.line_refraction == 1 ? pcb_false : pcb_true);
+		rnd_bool way = (conf_core.editor.line_refraction == 1 ? rnd_false : rnd_true);
 
 		/* swap the 'way' if mod1 is set (typically the shift key) */
 		if (mod1)
@@ -434,7 +434,7 @@ static pcb_layer_t *get_route_layer(pcb_board_t *pcb, const pcb_any_obj_t *apply
 			return apply_to->parent.layer;
 		}
 	}
-	return pcb_loose_subc_layer(PCB, pcb_get_layer(PCB->Data, p_obj->layer), pcb_true);
+	return pcb_loose_subc_layer(PCB, pcb_get_layer(PCB->Data, p_obj->layer), rnd_true);
 }
 
 int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_line_layer, pcb_line_t *apply_to_line)
@@ -521,7 +521,7 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 																			 p_obj->delta_angle,
 																			 p_route->thickness,
 																			 p_route->clearance,
-																			 p_route->flags, pcb_true);
+																			 p_route->flags, rnd_true);
 					if (arc) {
 						pcb_added_lines++;
 						pcb_obj_add_attribs((pcb_any_obj_t *)arc, PCB->pen_attr, NULL);
@@ -633,7 +633,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 																			 p_obj->delta_angle,
 																			 p_route->thickness,
 																			 p_route->clearance,
-																			 p_route->flags, pcb_true);
+																			 p_route->flags, rnd_true);
 					if (arc) {
 						pcb_added_lines++;
 						pcb_obj_add_attribs((pcb_any_obj_t *)arc, PCB->pen_attr, NULL);

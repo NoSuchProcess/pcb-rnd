@@ -282,7 +282,7 @@ static pcb_subc_t *pcb_line_of_vias_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb
 TODO("pstk #21: do not work in comp mode, use a pstk proto + remove the plugin dependency when done")
 	pcb_pstk_new_compat_via(subc->data, -1, l->Point1.X, l->Point1.Y,
 		conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
-		0, PCB_PSTK_COMPAT_ROUND, pcb_true);
+		0, PCB_PSTK_COMPAT_ROUND, rnd_true);
 
 	line_of_vias_unpack(subc);
 	line_of_vias_gen(subc, NULL);
@@ -326,7 +326,7 @@ static void pcb_line_of_vias_gui_propedit(pcb_subc_t *subc)
 	/* set up the context */
 	lov->gui_active = 1;
 
-	RND_DAD_NEW("line_of_vias", lov->dlg, "Line of vias", subc, pcb_false, pcb_line_of_vias_close_cb);
+	RND_DAD_NEW("line_of_vias", lov->dlg, "Line of vias", subc, rnd_false, pcb_line_of_vias_close_cb);
 }
 
 static pcb_extobj_t pcb_line_of_vias = {

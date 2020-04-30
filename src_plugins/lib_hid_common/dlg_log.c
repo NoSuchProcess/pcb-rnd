@@ -169,7 +169,7 @@ static void log_window_create(rnd_hidlib_t *hidlib)
 	ctx->last_added = -1;
 	RND_DAD_DEFSIZE(ctx->dlg, 200, 300);
 	title = rnd_concat(rnd_app_package, " message log", NULL);
-	RND_DAD_NEW("log", ctx->dlg, title, ctx, pcb_false, log_close_cb);
+	RND_DAD_NEW("log", ctx->dlg, title, ctx, rnd_false, log_close_cb);
 	free(title);
 
 	{

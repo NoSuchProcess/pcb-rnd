@@ -345,55 +345,55 @@ rnd_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, rnd_coord_t *x, rnd_coord_t 
 
 	proto = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
 	if ((proto == NULL) || (proto->tr.used < 1))
-		return pcb_false;
+		return rnd_false;
 
 	tshp = &proto->tr.array[0];
 
 	if ((tshp->len != 3) && (tshp->len != 5))
-		return pcb_false; /* allow only 3 coppers + optionally 2 masks */
+		return rnd_false; /* allow only 3 coppers + optionally 2 masks */
 
 	for(n = 0; n < tshp->len; n++) {
 		if (tshp->shape[n].shape != tshp->shape[0].shape)
-			return pcb_false; /* all shapes must be the same */
+			return rnd_false; /* all shapes must be the same */
 		if ((tshp->shape[n].layer_mask & PCB_LYT_ANYWHERE) == 0)
-			return pcb_false;
+			return rnd_false;
 		if (tshp->shape[n].layer_mask & PCB_LYT_COPPER) {
 			coppern = n;
 			continue;
 		}
 		if (tshp->shape[n].layer_mask & PCB_LYT_INTERN)
-			return pcb_false; /* accept only copper as intern */
+			return rnd_false; /* accept only copper as intern */
 		if (tshp->shape[n].layer_mask & PCB_LYT_MASK) {
 			maskn = n;
 			continue;
 		}
-		return pcb_false; /* refuse anything else */
+		return rnd_false; /* refuse anything else */
 	}
 
 	/* we must have copper shapes */
 	if (coppern < 0)
-		return pcb_false;
+		return rnd_false;
 
 	if (tshp->shape[0].shape == PCB_PSSH_POLY)
 		for(n = 1; n < tshp->len; n++)
 			if (tshp->shape[n].data.poly.len != tshp->shape[0].data.poly.len)
-				return pcb_false; /* all polygons must have the same number of corners */
+				return rnd_false; /* all polygons must have the same number of corners */
 
 	for(n = 0; n < tshp->len; n++) {
 		old_shape[n] = get_old_shape(&old_dia[n], &tshp->shape[n]);
 		if (old_shape[n] == PCB_PSTK_COMPAT_INVALID)
-			return pcb_false;
+			return rnd_false;
 		if (old_shape[n] != old_shape[0])
-			return pcb_false;
+			return rnd_false;
 	}
 
 	/* all copper sizes must be the same, all mask sizes must be the same */
 	for(n = 0; n < tshp->len; n++) {
 		if ((tshp->shape[n].layer_mask & PCB_LYT_COPPER) && (RND_ABS(old_dia[n] - old_dia[coppern]) > 10))
-			return pcb_false;
+			return rnd_false;
 		if (maskn >= 0)
 			if ((tshp->shape[n].layer_mask & PCB_LYT_MASK) && (RND_ABS(old_dia[n] - old_dia[maskn]) > 10))
-				return pcb_false;
+				return rnd_false;
 	}
 
 	/* all went fine, collect and return data */
@@ -410,7 +410,7 @@ rnd_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, rnd_coord_t *x, rnd_coord_t 
 	if (*pad_dia < *drill_dia)
 		*clearance -= (*drill_dia - *pad_dia)/2;
 
-	return pcb_true;
+	return rnd_true;
 }
 
 /* emulate the old 'square flag' pad */
@@ -535,29 +535,29 @@ rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t
 
 	proto = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
 	if ((proto == NULL) || (proto->tr.used < 1))
-		return pcb_false;
+		return rnd_false;
 
 	tshp = &proto->tr.array[0];
 
 	if ((tshp->len < 2) || (tshp->len > 3))
-		return pcb_false; /* allow at most a copper, a mask and a paste */
+		return rnd_false; /* allow at most a copper, a mask and a paste */
 
 	/* determine whether we are on top or bottom */
 	side = tshp->shape[0].layer_mask & (PCB_LYT_TOP | PCB_LYT_BOTTOM);
 	if ((side == 0) || (side == (PCB_LYT_TOP | PCB_LYT_BOTTOM)))
-		return pcb_false;
+		return rnd_false;
 
 	for(n = 0; n < tshp->len; n++) {
 		if (tshp->shape[n].shape != tshp->shape[0].shape)
-			return pcb_false; /* all shapes must be the same */
+			return rnd_false; /* all shapes must be the same */
 		if ((tshp->shape[n].layer_mask & PCB_LYT_ANYWHERE) != side)
-			return pcb_false; /* all shapes must be the same side */
+			return rnd_false; /* all shapes must be the same side */
 		if (tshp->shape[n].layer_mask & PCB_LYT_COPPER) {
 			coppern = n;
 			continue;
 		}
 		if (tshp->shape[n].layer_mask & PCB_LYT_INTERN)
-			return pcb_false; /* accept only copper as intern */
+			return rnd_false; /* accept only copper as intern */
 		if (tshp->shape[n].layer_mask & PCB_LYT_MASK) {
 			maskn = n;
 			continue;
@@ -566,12 +566,12 @@ rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t
 			pasten = n;
 			continue;
 		}
-		return pcb_false; /* refuse anything else */
+		return rnd_false; /* refuse anything else */
 	}
 
 	/* require copper and mask shapes */
 	if ((coppern < 0) || (maskn < 0))
-		return pcb_false;
+		return rnd_false;
 
 	/* if the shape is poly, convert to line to make the rest of the code simpler */
 	if (tshp->shape[0].shape == PCB_PSSH_POLY) {
@@ -584,13 +584,13 @@ rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t
 				continue;
 
 			if (tshp->shape[n].data.poly.len != 4)
-				return pcb_false;
+				return rnd_false;
 
 			stepd = ps->rot / 90.0;
 			step = stepd;
 			step2 = (double)step * 90.0;
 			if (fabs(ps->rot - step2) > 0.01)
-				return pcb_false;
+				return rnd_false;
 
 			x1 = tshp->shape[n].data.poly.x[0];
 			x2 = tshp->shape[n].data.poly.x[2];
@@ -624,32 +624,32 @@ rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t
 	for(n = 1; n < tshp->len; n++) {
 		switch(tshp->shape[0].shape) {
 			case PCB_PSSH_HSHADOW:
-				return pcb_false;
+				return rnd_false;
 			case PCB_PSSH_LINE:
 				if (tshp->shape[0].data.line.x1 != tshp->shape[n].data.line.x1)
-					return pcb_false;
+					return rnd_false;
 				if (tshp->shape[0].data.line.y1 != tshp->shape[n].data.line.y1)
-					return pcb_false;
+					return rnd_false;
 				if (tshp->shape[0].data.line.x2 != tshp->shape[n].data.line.x2)
-					return pcb_false;
+					return rnd_false;
 				if (tshp->shape[0].data.line.y2 != tshp->shape[n].data.line.y2)
-					return pcb_false;
+					return rnd_false;
 				break;
 			case PCB_PSSH_CIRC:
 				if (tshp->shape[0].data.circ.x != tshp->shape[n].data.circ.x)
-					return pcb_false;
+					return rnd_false;
 				if (tshp->shape[0].data.circ.y != tshp->shape[n].data.circ.y)
-					return pcb_false;
+					return rnd_false;
 				break;
 			case PCB_PSSH_POLY:
 				if (lx1[0] != lx1[n])
-					return pcb_false;
+					return rnd_false;
 				if (ly1[0] != ly1[n])
-					return pcb_false;
+					return rnd_false;
 				if (lx2[0] != lx2[n])
-					return pcb_false;
+					return rnd_false;
 				if (ly2[0] != ly2[n])
-					return pcb_false;
+					return rnd_false;
 				break;
 		}
 	}
@@ -688,7 +688,7 @@ rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t
 	*clearance = (ps->Clearance > 0 ? ps->Clearance : tshp->shape[0].clearance) * 2;
 	*nopaste = pasten < 0;
 
-	return pcb_true;
+	return rnd_true;
 }
 
 pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t cshape, pcb_pstk_compat_t compat)

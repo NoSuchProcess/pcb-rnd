@@ -488,7 +488,7 @@ static void png_head(void)
 static void png_foot(void)
 {
 	const char *fmt;
-	rnd_bool format_error = pcb_false;
+	rnd_bool format_error = rnd_false;
 
 	if (photo_mode)
 		png_photo_foot();
@@ -497,27 +497,27 @@ static void png_foot(void)
 	fmt = filetypes[png_options[HA_filetype].lng];
 
 	if (fmt == NULL)
-		format_error = pcb_true;
+		format_error = rnd_true;
 	else if (strcmp(fmt, FMT_gif) == 0)
 #ifdef RND_HAVE_GDIMAGEGIF
 		gdImageGif(im, f);
 #else
-		format_error = pcb_true;
+		format_error = rnd_true;
 #endif
 	else if (strcmp(fmt, FMT_jpg) == 0)
 #ifdef RND_HAVE_GDIMAGEJPEG
 		gdImageJpeg(im, f, -1);
 #else
-		format_error = pcb_true;
+		format_error = rnd_true;
 #endif
 	else if (strcmp(fmt, FMT_png) == 0)
 #ifdef RND_HAVE_GDIMAGEPNG
 		gdImagePng(im, f);
 #else
-		format_error = pcb_true;
+		format_error = rnd_true;
 #endif
 	else
-		format_error = pcb_true;
+		format_error = rnd_true;
 
 	if (format_error)
 		fprintf(stderr, "Error:  Invalid graphic file format." "  This is a bug.  Please report it.\n");
@@ -538,7 +538,7 @@ void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xfo
 
 	png_options = options;
 	if (options[HA_only_visible].lng)
-		bounds = pcb_data_bbox(&tmp, PCB->Data, pcb_false);
+		bounds = pcb_data_bbox(&tmp, PCB->Data, rnd_false);
 	else
 		bounds = &region;
 
@@ -630,7 +630,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	/* figure out width and height of the board */
 	if (options[HA_only_visible].lng) {
-		bbox = pcb_data_bbox(&tmp, PCB->Data, pcb_false);
+		bbox = pcb_data_bbox(&tmp, PCB->Data, rnd_false);
 		x_shift = bbox->X1;
 		y_shift = bbox->Y1;
 		h = bbox->Y2 - bbox->Y1;

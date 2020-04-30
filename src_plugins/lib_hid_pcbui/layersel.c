@@ -248,7 +248,7 @@ static void locked_layervis_ev(layersel_ctx_t *ls)
 	ls->lock_vis--;
 }
 
-static void lys_update_vis(ls_layer_t *lys, pcb_bool_t vis)
+static void lys_update_vis(ls_layer_t *lys, rnd_bool_t vis)
 {
 	rnd_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on_open, !vis);
 	rnd_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on_closed, !vis);

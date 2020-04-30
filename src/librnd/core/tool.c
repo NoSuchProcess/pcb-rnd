@@ -38,7 +38,7 @@
 
 #define PCB_MAX_MODESTACK_DEPTH         16  /* maximum depth of mode stack */
 
-rnd_bool pcb_tool_is_saved = pcb_false;
+rnd_bool pcb_tool_is_saved = rnd_false;
 
 vtp0_t pcb_tools;
 
@@ -121,7 +121,7 @@ int pcb_tool_select_by_name(rnd_hidlib_t *hidlib, const char *name)
 int pcb_tool_select_by_id(rnd_hidlib_t *hidlib, pcb_toolid_t id)
 {
 	char id_s[32];
-	static rnd_bool recursing = pcb_false;
+	static rnd_bool recursing = rnd_false;
 	int ok = 1;
 	
 	if ((id < 0) || (id > vtp0_len(&pcb_tools)))
@@ -139,7 +139,7 @@ int pcb_tool_select_by_id(rnd_hidlib_t *hidlib, pcb_toolid_t id)
 	if (ok == 0)
 		id = rnd_conf.editor.mode;
 
-	recursing = pcb_true;
+	recursing = rnd_true;
 
 	pcb_tool_prev_id = rnd_conf.editor.mode;
 	pcb_tool_next_id = id;
@@ -150,7 +150,7 @@ int pcb_tool_select_by_id(rnd_hidlib_t *hidlib, pcb_toolid_t id)
 	tool_select_lock = 0;
 	init_current_tool();
 
-	recursing = pcb_false;
+	recursing = rnd_false;
 
 	if (rnd_gui != NULL)
 		rnd_gui->set_mouse_cursor(rnd_gui, id);
@@ -252,12 +252,12 @@ void pcb_tool_draw_attached(rnd_hidlib_t *hl)
 
 rnd_bool pcb_tool_undo_act(rnd_hidlib_t *hl)
 {
-	wrap_retv(undo_act, return pcb_true, (hl));
+	wrap_retv(undo_act, return rnd_true, (hl));
 }
 
 rnd_bool pcb_tool_redo_act(rnd_hidlib_t *hl)
 {
-	wrap_retv(redo_act, return pcb_true, (hl));
+	wrap_retv(redo_act, return rnd_true, (hl));
 }
 
 static void do_release(rnd_hidlib_t *hidlib)
@@ -265,13 +265,13 @@ static void do_release(rnd_hidlib_t *hidlib)
 	if (rnd_conf.temp.click_cmd_entry_active && (rnd_cli_mouse(hidlib, 0) == 0))
 		return;
 
-	hidlib->tool_grabbed.status = pcb_false;
+	hidlib->tool_grabbed.status = rnd_false;
 
 	pcb_tool_release(hidlib);
 
 	if (pcb_tool_is_saved)
 		pcb_tool_restore(hidlib);
-	pcb_tool_is_saved = pcb_false;
+	pcb_tool_is_saved = rnd_false;
 	rnd_event(hidlib, RND_EVENT_TOOL_RELEASE, NULL);
 }
 
@@ -304,7 +304,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
 	hidlib->tool_x = hidlib->ch_x;
 	hidlib->tool_y = hidlib->ch_y;
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 	if (rnd_strcasecmp(cmd, "Cancel") == 0) {
 		pcb_tool_select_by_id(RND_ACT_HIDLIB, rnd_conf.editor.mode);
 	}
@@ -331,7 +331,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			   action script, so actions after this one could do things
 			   that would be executed only after non-recognized gestures */
 				do_release(RND_ACT_HIDLIB);
-				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 				return 1;
 			}
 		}
@@ -353,7 +353,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pcb_tool_select_by_name(RND_ACT_HIDLIB, cmd) != 0)
 			rnd_message(RND_MSG_ERROR, "No such tool: '%s'\n", cmd);
 	}
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 	return 0;
 }
 

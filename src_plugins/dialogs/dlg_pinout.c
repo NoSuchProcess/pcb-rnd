@@ -65,7 +65,7 @@ static void pinout_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, r
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = r2;
 		int orig_po = pcb_draw_force_termlab;
-		pcb_draw_force_termlab = pcb_true;
+		pcb_draw_force_termlab = rnd_true;
 		pcb_subc_draw_preview(sc, &e->view);
 		pcb_draw_force_termlab = orig_po;
 	}
@@ -121,7 +121,7 @@ static rnd_bool pinout_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv
 
 		type = pcb_search_obj_by_id_(ctx->data, &r1, &r2, &r3, ctx->subc_id, PCB_OBJ_SUBC);
 		if (type != PCB_OBJ_SUBC)
-			return pcb_false;
+			return rnd_false;
 		ctx->tempsc = r2;
 
 		b.X1 = x;
@@ -132,7 +132,7 @@ static rnd_bool pinout_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv
 		ctx->tempsc = NULL;
 	}
 	
-	return pcb_false;
+	return rnd_false;
 }
 
 static void pcb_dlg_pinout(pcb_board_t *pcb, pcb_data_t *data, pcb_subc_t *sc)
@@ -168,7 +168,7 @@ static void pcb_dlg_pinout(pcb_board_t *pcb, pcb_data_t *data, pcb_subc_t *sc)
 		sprintf(title, "Subcircuit #%ld (%s) pinout", sc->ID, sc->refdes);
 	else
 		sprintf(title, "Subcircuit #%ld pinout", sc->ID);
-	RND_DAD_NEW("pinout", ctx->dlg, title, ctx, pcb_false, pinout_close_cb);
+	RND_DAD_NEW("pinout", ctx->dlg, title, ctx, rnd_false, pinout_close_cb);
 }
 
 static const char pcb_acts_Pinout[] = "Pinout()\n";

@@ -243,7 +243,7 @@ void hyp_error(const char *msg);
 
 	/* create arc, hyperlynx-style */
 pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t XC,
-											 rnd_coord_t YC, rnd_coord_t Width, rnd_coord_t Height, pcb_bool_t Clockwise, rnd_coord_t Thickness,
+											 rnd_coord_t YC, rnd_coord_t Width, rnd_coord_t Height, rnd_bool_t Clockwise, rnd_coord_t Thickness,
 											 rnd_coord_t Clearance, pcb_flag_t Flags);
 
 #endif

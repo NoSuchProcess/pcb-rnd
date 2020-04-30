@@ -218,7 +218,7 @@ static void prop_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *p
 
 static rnd_bool prop_prv_mouse_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
-	return pcb_false; /* don't redraw */
+	return rnd_false; /* don't redraw */
 }
 
 static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *pv)
@@ -640,7 +640,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 		RND_DAD_END(ctx->dlg);
 	RND_DAD_END(ctx->dlg);
 
-	RND_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, pcb_false, propdlgclose_cb);
+	RND_DAD_NEW("propedit", ctx->dlg, "Property editor", ctx, rnd_false, propdlgclose_cb);
 
 	prop_refresh(ctx);
 	gdl_append(&propdlgs, ctx, link);

@@ -88,7 +88,7 @@ static int remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3)
 
 /* ----------------------------------------------------------------------
  * removes all selected and visible objects
- * returns pcb_true if any objects have been removed
+ * returns rnd_true if any objects have been removed
  */
 rnd_bool pcb_remove_selected(rnd_bool locked_too)
 {
@@ -97,12 +97,12 @@ rnd_bool pcb_remove_selected(rnd_bool locked_too)
 	ctx.remove.pcb = PCB;
 	ctx.remove.destroy_target = NULL;
 
-	if (pcb_selected_operation(PCB, PCB->Data, &pcb_RemoveFunctions, &ctx, pcb_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), locked_too)) {
+	if (pcb_selected_operation(PCB, PCB->Data, &pcb_RemoveFunctions, &ctx, rnd_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), locked_too)) {
 		pcb_undo_inc_serial();
 		pcb_draw();
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------

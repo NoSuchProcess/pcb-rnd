@@ -71,7 +71,7 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		title = rnd_concat(rnd_app_package, " user input", NULL);
 		ft = 1;
 	}
-	RND_DAD_NEW("prompt_for", dlg, title, NULL, pcb_true, NULL);
+	RND_DAD_NEW("prompt_for", dlg, title, NULL, rnd_true, NULL);
 	if (ft)
 		free(title);
 
@@ -194,7 +194,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 		RND_DAD_END(ctx.dlg);
 	RND_DAD_END(ctx.dlg);
 
-	RND_DAD_NEW("fallback_color_pick", ctx.dlg, "Change color", &ctx, pcb_true, NULL);
+	RND_DAD_NEW("fallback_color_pick", ctx.dlg, "Change color", &ctx, rnd_true, NULL);
 
 
 	val.lng = ctx.clr.r;

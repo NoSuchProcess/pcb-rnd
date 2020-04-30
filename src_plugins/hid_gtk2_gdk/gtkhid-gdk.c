@@ -1027,14 +1027,14 @@ static void redraw_region(rnd_hidlib_t *hidlib, GdkRectangle *rect)
 
 	if (rect != NULL) {
 		priv->clip_rect = *rect;
-		priv->clip_rect_valid = pcb_true;
+		priv->clip_rect_valid = rnd_true;
 	}
 	else {
 		priv->clip_rect.x = 0;
 		priv->clip_rect.y = 0;
 		priv->clip_rect.width = ghidgui->port.view.canvas_width;
 		priv->clip_rect.height = ghidgui->port.view.canvas_height;
-		priv->clip_rect_valid = pcb_false;
+		priv->clip_rect_valid = rnd_false;
 	}
 
 	set_clip(priv, priv->bg_gc);
@@ -1098,7 +1098,7 @@ static void redraw_region(rnd_hidlib_t *hidlib, GdkRectangle *rect)
 	if (priv->mark_invalidate_depth == 0)
 		rnd_draw_marks(hidlib, 0);
 
-	priv->clip_rect_valid = pcb_false;
+	priv->clip_rect_valid = rnd_false;
 
 	/* Rest the clip for bg_gc, as it is used outside this function */
 	gdk_gc_set_clip_mask(priv->bg_gc, NULL);
@@ -1167,7 +1167,7 @@ static void ghid_gdk_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_co
 	assert(priv->attached_invalidate_depth >= 0);
 	if (priv->attached_invalidate_depth < 0) {
 		priv->attached_invalidate_depth = 0;
-		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
+		/* A mismatch of changes_complete == rnd_false and == rnd_true notifications
 		   is not expected to occur, but we will try to handle it gracefully.
 		   As we know the crosshair will have been shown already, we must
 		   repaint the entire view to be sure not to leave an artaefact. */
@@ -1201,7 +1201,7 @@ static void ghid_gdk_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complet
 
 	if (priv->mark_invalidate_depth < 0) {
 		priv->mark_invalidate_depth = 0;
-		/* A mismatch of changes_complete == pcb_false and == pcb_true notifications
+		/* A mismatch of changes_complete == rnd_false and == rnd_true notifications
 		   is not expected to occur, but we will try to handle it gracefully.
 		   As we know the mark will have been shown already, we must
 		   repaint the entire view to be sure not to leave an artaefact. */
@@ -1386,7 +1386,7 @@ static void ghid_gdk_drawing_area_configure_hook(void *vport)
 
 	priv->base_pixel = gdk_pixmap_new(gtkc_widget_get_window(ghidgui->port.drawing_area), ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height, -1);
 	priv->out_pixel = priv->base_pixel;
-	ghidgui->port.drawing_allowed = pcb_true;
+	ghidgui->port.drawing_allowed = rnd_true;
 
 	if (!done_once) {
 		priv->bg_gc = gdk_gc_new(priv->out_pixel);

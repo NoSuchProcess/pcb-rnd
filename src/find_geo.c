@@ -35,7 +35,7 @@
  * - calculate the signed distance from the line to the center,
  *   return false if abs(distance) > R
  * - get the distance from the line <--> distancevector intersection to
- *   (X1,Y1) in range [0,1], return pcb_true if 0 <= distance <= 1
+ *   (X1,Y1) in range [0,1], return rnd_true if 0 <= distance <= 1
  * - depending on (r > 1.0 or r < 0.0) check the distance of X2,Y2 or X1,Y1
  *   to X,Y
  *
@@ -163,7 +163,7 @@ static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 
 	/* too thin arc */
 	if (t < 0 || t1 < 0)
-		return pcb_false;
+		return rnd_false;
 
 	/* try the end points first */
 	get_arc_ends(&box[0], Arc1);
@@ -172,7 +172,7 @@ static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 			|| pcb_is_point_on_arc(box[2], box[3], t, Arc2)
 			|| pcb_is_point_on_arc(box[4], box[5], t, Arc1)
 			|| pcb_is_point_on_arc(box[6], box[7], t, Arc1))
-		return pcb_true;
+		return rnd_true;
 
 	pdx = Arc2->X - Arc1->X;
 	pdy = Arc2->Y - Arc1->Y;
@@ -191,12 +191,12 @@ static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 			/* sa1 == sa2 was caught when checking endpoints */
 			if (sa1 > sa2)
 				if (sa1 < sa2 + d2 || sa1 + d1 - 360 > sa2)
-					return pcb_true;
+					return rnd_true;
 			if (sa2 > sa1)
 				if (sa2 < sa1 + d1 || sa2 + d2 - 360 > sa1)
-					return pcb_true;
+					return rnd_true;
 		}
-		return pcb_false;
+		return rnd_false;
 	}
 	r1 = Arc1->Width;
 	r2 = Arc2->Width;
@@ -212,7 +212,7 @@ static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 
 		if (radius_crosses_arc(Arc1->X + dx, Arc1->Y + dy, Arc1)
 				&& pcb_is_point_on_arc(Arc1->X + dx, Arc1->Y + dy, t, Arc2))
-			return pcb_true;
+			return rnd_true;
 
 		dx = -pdx * r2 / dl;
 		dy = -pdy * r2 / dl;
@@ -223,8 +223,8 @@ static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 
 		if (radius_crosses_arc(Arc2->X + dx, Arc2->Y + dy, Arc2)
 				&& pcb_is_point_on_arc(Arc2->X + dx, Arc2->Y + dy, t1, Arc1))
-			return pcb_true;
-		return pcb_false;
+			return rnd_true;
+		return rnd_false;
 	}
 
 	l = dl * dl;
@@ -245,18 +245,18 @@ static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 	dy = d * pdy;
 	if (radius_crosses_arc(x + dy, y - dx, Arc1)
 			&& pcb_is_point_on_arc(x + dy, y - dx, t, Arc2))
-		return pcb_true;
+		return rnd_true;
 	if (radius_crosses_arc(x + dy, y - dx, Arc2)
 			&& pcb_is_point_on_arc(x + dy, y - dx, t1, Arc1))
-		return pcb_true;
+		return rnd_true;
 
 	if (radius_crosses_arc(x - dy, y + dx, Arc1)
 			&& pcb_is_point_on_arc(x - dy, y + dx, t, Arc2))
-		return pcb_true;
+		return rnd_true;
 	if (radius_crosses_arc(x - dy, y + dx, Arc2)
 			&& pcb_is_point_on_arc(x - dy, y + dx, t1, Arc1))
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -269,14 +269,14 @@ static rnd_bool pcb_isc_ratp_line(const pcb_find_t *ctx, rnd_point_t *Point, pcb
 	/* either end */
 	if ((Point->X == Line->Point1.X && Point->Y == Line->Point1.Y)
 			|| (Point->X == Line->Point2.X && Point->Y == Line->Point2.Y))
-		return pcb_true;
+		return rnd_true;
 
 	/* middle point */
 	pcb_obj_center((pcb_any_obj_t *)Line, &cx, &cy);
 	if ((Point->X == cx) && (Point->Y == cy))
-		return pcb_true;
+		return rnd_true;
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* Tests any end of a rat line is on the line */
@@ -285,11 +285,11 @@ static rnd_bool pcb_isc_rat_line(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_line
 	rnd_layergrp_id_t gid = pcb_layer_get_group_(line->parent.layer);
 
 	if ((rat->group1 == gid) && pcb_isc_ratp_line(ctx, &rat->Point1, line))
-		return pcb_true;
+		return rnd_true;
 	if ((rat->group2 == gid) && pcb_isc_ratp_line(ctx, &rat->Point2, line))
-		return pcb_true;
+		return rnd_true;
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -302,18 +302,18 @@ static rnd_bool pcb_isc_ratp_arc(const pcb_find_t *ctx, rnd_point_t *Point, pcb_
 	/* either end */
 	pcb_arc_get_end(arc, 0, &cx, &cy);
 	if ((Point->X == cx) && (Point->Y == cy))
-		return pcb_true;
+		return rnd_true;
 
 	pcb_arc_get_end(arc, 1, &cx, &cy);
 	if ((Point->X == cx) && (Point->Y == cy))
-		return pcb_true;
+		return rnd_true;
 
 	/* middle point */
 	pcb_arc_middle(arc, &cx, &cy);
 	if ((Point->X == cx) && (Point->Y == cy))
-		return pcb_true;
+		return rnd_true;
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* Tests any end of a rat line is on the arc */
@@ -322,11 +322,11 @@ static rnd_bool pcb_isc_rat_arc(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_arc_t
 	rnd_layergrp_id_t gid = pcb_layer_get_group_(arc->parent.layer);
 
 	if ((rat->group1 == gid) && pcb_isc_ratp_arc(ctx, &rat->Point1, arc))
-		return pcb_true;
+		return rnd_true;
 	if ((rat->group2 == gid) && pcb_isc_ratp_arc(ctx, &rat->Point2, arc))
-		return pcb_true;
+		return rnd_true;
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -340,7 +340,7 @@ static rnd_bool pcb_isc_ratp_poly(const pcb_find_t *ctx, rnd_point_t *Point, pcb
 
 	/* clipped out of existence... */
 	if (polygon->Clipped == NULL)
-		return pcb_false;
+		return rnd_false;
 
 	/* special case: zero length connection */
 	if (donut)
@@ -350,12 +350,12 @@ static rnd_bool pcb_isc_ratp_poly(const pcb_find_t *ctx, rnd_point_t *Point, pcb
 	cx = polygon->Clipped->contours->head->point[0];
 	cy = polygon->Clipped->contours->head->point[1];
 	if ((Point->X == cx) && (Point->Y == cy))
-		return pcb_true;
+		return rnd_true;
 
 	/* middle point */
 	pcb_obj_center((pcb_any_obj_t *)polygon, &cx, &cy);
 	if ((Point->X == cx) && (Point->Y == cy))
-		return pcb_true;
+		return rnd_true;
 
 	/* expensive test: the rat can end on any contour point */
 	for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
@@ -368,19 +368,19 @@ static rnd_bool pcb_isc_ratp_poly(const pcb_find_t *ctx, rnd_point_t *Point, pcb
 			/* contour of the island */
 			for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
 				if ((Point->X == x) && (Point->Y == y))
-					return pcb_true;
+					return rnd_true;
 
 			/* iterate over all holes within this island */
 			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
 				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
 					if ((Point->X == x) && (Point->Y == y))
-						return pcb_true;
+						return rnd_true;
 		}
 		if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, polygon))
 			break;
 	}
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* Tests any end of a rat line is on the poly */
@@ -390,25 +390,25 @@ static rnd_bool pcb_isc_rat_poly(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_poly
 	int donut = PCB_FLAG_TEST(PCB_FLAG_VIA, rat);
 
 	if ((rat->group1 == gid) && pcb_isc_ratp_poly(ctx, &rat->Point1, poly, donut))
-		return pcb_true;
+		return rnd_true;
 	if ((rat->group2 == gid) && pcb_isc_ratp_poly(ctx, &rat->Point2, poly, donut))
-		return pcb_true;
+		return rnd_true;
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* Tests any end of a rat line is on the other rat */
 static rnd_bool pcb_isc_rat_rat(const pcb_find_t *ctx, pcb_rat_t *r1, pcb_rat_t *r2)
 {
 	if ((r1->group1 == r2->group1) && (r1->Point1.X == r2->Point1.X) && (r1->Point1.Y == r2->Point1.Y))
-		return pcb_true;
+		return rnd_true;
 	if ((r1->group2 == r2->group2) && (r1->Point2.X == r2->Point2.X) && (r1->Point2.Y == r2->Point2.Y))
-		return pcb_true;
+		return rnd_true;
 	if ((r1->group1 == r2->group2) && (r1->Point1.X == r2->Point2.X) && (r1->Point1.Y == r2->Point2.Y))
-		return pcb_true;
+		return rnd_true;
 	if ((r1->group2 == r2->group1) && (r1->Point2.X == r2->Point1.X) && (r1->Point2.Y == r2->Point1.Y))
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 static void form_slanted_rectangle(rnd_point_t p[4], pcb_line_t *l)
@@ -517,7 +517,7 @@ rnd_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t 
 			|| pcb_is_point_in_line(Line2->Point2.X, Line2->Point2.Y, MAX(Line2->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line1)
 			|| pcb_is_point_in_line(Line1->Point1.X, Line1->Point1.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line2)
 			|| pcb_is_point_in_line(Line1->Point2.X, Line1->Point2.Y, MAX(Line1->Thickness / 2 + Bloat, 0), (pcb_any_line_t *) Line2))
-		return pcb_true;
+		return rnd_true;
 
 	/* setup some constants */
 	line1_dx = Line1->Point2.X - Line1->Point1.X;
@@ -531,7 +531,7 @@ rnd_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t 
 	 *   endpoint check above will have caught an "intersection". */
 	if ((line1_dx == 0 && line1_dy == 0)
 			|| (line2_dx == 0 && line2_dy == 0))
-		return pcb_false;
+		return rnd_false;
 
 	/* set s to cross product of Line1 and the line
 	 *   Line1.Point1--Line2.Point1 (as vectors) */
@@ -545,7 +545,7 @@ rnd_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t 
 	 *  check before getting here, the above pcb_is_point_in_line() checks
 	 *  will have caught any intersections. */
 	if (r == 0.0)
-		return pcb_false;
+		return rnd_false;
 
 	s /= r;
 	r = (point1_dy * line2_dx - point1_dx * line2_dy) / r;
@@ -555,8 +555,8 @@ rnd_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t 
 		return (s >= 0.0 && s <= 1.0);
 
 	/* intersection is at least on CD */
-	/* [removed this case since it always returns pcb_false --asp] */
-	return pcb_false;
+	/* [removed this case since it always returns rnd_false --asp] */
+	return rnd_false;
 }
 
 /*---------------------------------------------------
@@ -607,35 +607,35 @@ rnd_bool pcb_isc_line_arc(const pcb_find_t *ctx, pcb_line_t *Line, pcb_arc_t *Ar
 	r2 = Radius * l - d;
 	/* projection doesn't even intersect circle when r2 < 0 */
 	if (r2 < 0)
-		return pcb_false;
+		return rnd_false;
 	/* check the ends of the line in case the projected point */
 	/* of intersection is beyond the line end */
 	if (pcb_is_point_on_arc(Line->Point1.X, Line->Point1.Y, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
-		return pcb_true;
+		return rnd_true;
 	if (pcb_is_point_on_arc(Line->Point2.X, Line->Point2.Y, MAX(0.5 * Line->Thickness + Bloat, 0.0), Arc))
-		return pcb_true;
+		return rnd_true;
 	if (l == 0.0)
-		return pcb_false;
+		return rnd_false;
 	r2 = sqrt(r2);
 	Radius = -(dx * dx1 + dy * dy1);
 	r = (Radius + r2) / l;
 	if (r >= 0 && r <= 1
 			&& pcb_is_point_on_arc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0) + 1, Arc))
-		return pcb_true;
+		return rnd_true;
 	r = (Radius - r2) / l;
 	if (r >= 0 && r <= 1
 			&& pcb_is_point_on_arc(Line->Point1.X + r * dx, Line->Point1.Y + r * dy, MAX(0.5 * Line->Thickness + Bloat, 0.0) + 1, Arc))
-		return pcb_true;
+		return rnd_true;
 
 	/* check arc end points */
 	pcb_arc_get_end(Arc, 0, &ex, &ey);
 	if (pcb_is_point_in_line(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_any_line_t *) Line))
-		return pcb_true;
+		return rnd_true;
 
 	pcb_arc_get_end(Arc, 1, &ex, &ey);
 	if (pcb_is_point_in_line(ex, ey, Arc->Thickness * 0.5 + Bloat, (pcb_any_line_t *) Line))
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -652,23 +652,23 @@ rnd_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Pol
 
 	/* arcs with clearance never touch polys */
 	if (!ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Arc))
-		return pcb_false;
+		return rnd_false;
 	if (!Polygon->Clipped)
-		return pcb_false;
+		return rnd_false;
 	if (box_isc_poly_any_island_bbox(ctx, Box, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon))) {
 		rnd_polyarea_t *ap;
 
 		if (!(ap = pcb_poly_from_pcb_arc(Arc, Arc->Thickness + Bloat)))
-			return pcb_false;							/* error */
+			return rnd_false;							/* error */
 		return box_isc_poly_any_island_free(ap, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon));
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, rnd_polyarea_t *pa)
 {
 	rnd_rnd_box_t *Box = (rnd_rnd_box_t *) Arc;
-	rnd_bool res = pcb_false;
+	rnd_bool res = rnd_false;
 
 	/* arcs with clearance never touch polys */
 	if ((Box->X1 <= pa->contours->xmax + Bloat) && (Box->X2 >= pa->contours->xmin - Bloat)
@@ -676,7 +676,7 @@ rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, rnd_polyare
 		rnd_polyarea_t *arcp;
 
 		if (!(arcp = pcb_poly_from_pcb_arc(Arc, Arc->Thickness + Bloat)))
-			return pcb_false; /* error */
+			return rnd_false; /* error */
 		res = pcb_polyarea_touching(arcp, pa);
 		pcb_polyarea_free(&arcp);
 	}
@@ -699,9 +699,9 @@ rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *
 
 	/* lines with clearance never touch polygons */
 	if (!ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Line))
-		return pcb_false;
+		return rnd_false;
 	if (!Polygon->Clipped)
-		return pcb_false;
+		return rnd_false;
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line) && (Line->Point1.X == Line->Point2.X || Line->Point1.Y == Line->Point2.Y)) {
 		rnd_coord_t wid = (Line->Thickness + Bloat + 1) / 2;
 		rnd_coord_t x1, x2, y1, y2;
@@ -714,10 +714,10 @@ rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *
 	}
 	if (box_isc_poly_any_island_bbox(ctx, Box, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon))) {
 		if (!(lp = pcb_poly_from_pcb_line(Line, Line->Thickness + Bloat)))
-			return pcb_false;							/* error */
+			return rnd_false;							/* error */
 		return box_isc_poly_any_island_free(lp, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon));
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -734,7 +734,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 	rnd_polyarea_t *pa1, *pa2;
 
 	if (!P1->Clipped || !P2->Clipped)
-		return pcb_false;
+		return rnd_false;
 	assert(P1->Clipped->contours);
 	assert(P2->Clipped->contours);
 
@@ -751,7 +751,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 		if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, P1))
 			break;
 	}
-	return pcb_false;
+	return rnd_false;
 
 	do_check:;
 
@@ -767,8 +767,8 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 	}
 	if (pcp_cnt == 1) {
 		if (pcp_gap >= Bloat)
-			return pcb_false;
-		return pcb_true;
+			return rnd_false;
+		return rnd_true;
 	}
 
 	/* first check un-bloated case (most common) */
@@ -776,7 +776,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 		for(pa1 = pcb_poly_island_first(P1, &it1); pa1 != NULL; pa1 = pcb_poly_island_next(&it1)) {
 			for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
 				if (pcb_polyarea_touching(pa1, pa2))
-					return pcb_true;
+					return rnd_true;
 				if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, P2))
 					break;
 			}
@@ -810,7 +810,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 							line.Point2.Y = v->point[1];
 							pcb_line_bbox(&line);
 							if (pcb_isc_line_poly(ctx, &line, P2))
-								return pcb_true;
+								return rnd_true;
 							line.Point1.X = line.Point2.X;
 							line.Point1.Y = line.Point2.Y;
 						}
@@ -824,12 +824,12 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 		}
 	}
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* returns whether a round-cap pcb line touches a polygon; assumes bounding
    boxes do touch */
-RND_INLINE pcb_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *pl, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick)
+RND_INLINE rnd_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *pl, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick)
 {
 	rnd_coord_t ox, oy, vx, vy;
 	double dx, dy, h, l;
@@ -842,8 +842,8 @@ RND_INLINE pcb_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *
 		return pcb_pline_overlaps_circ(pl, x1, y1, thick/2);
 
 	/* long line - check ends */
-	if (pcb_pline_overlaps_circ(pl, x1, y1, thick/2)) return pcb_true;
-	if (pcb_pline_overlaps_circ(pl, x2, y2, thick/2)) return pcb_true;
+	if (pcb_pline_overlaps_circ(pl, x1, y1, thick/2)) return rnd_true;
+	if (pcb_pline_overlaps_circ(pl, x2, y2, thick/2)) return rnd_true;
 
 	dx = x2 - x1;
 	dy = y2 - y1;
@@ -855,8 +855,8 @@ RND_INLINE pcb_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *
 	vy = (double)dy / -l * ((double)Bloat/2.0);
 
 	/* long line - consider edge intersection */
-	if (pcb_pline_isect_line(pl, x1 + ox + vx, y1 + oy + vy, x2 + ox - vx, y2 + oy - vy, NULL, NULL)) return pcb_true;
-	if (pcb_pline_isect_line(pl, x1 - ox + vx, y1 - oy + vy, x2 - ox - vx, y2 - oy - vy, NULL, NULL)) return pcb_true;
+	if (pcb_pline_isect_line(pl, x1 + ox + vx, y1 + oy + vy, x2 + ox - vx, y2 + oy - vy, NULL, NULL)) return rnd_true;
+	if (pcb_pline_isect_line(pl, x1 - ox + vx, y1 - oy + vy, x2 - ox - vx, y2 - oy - vy, NULL, NULL)) return rnd_true;
 
 	/* A corner case is when the polyline is fully within the line. By now we
 	   are sure there's no contour intersection, so if any of the polyline points
@@ -884,7 +884,7 @@ RND_INLINE pcb_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *
 		pcb_line.Flags = shape_line.square ? pcb_flag_make(PCB_FLAG_SQUARE) : pcb_no_flags(); \
 	} while(0)
 
-static pcb_bool_t pcb_isc_pstk_line_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line, pcb_pstk_shape_t *shape)
+static rnd_bool_t pcb_isc_pstk_line_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line, pcb_pstk_shape_t *shape)
 {
 	if (shape == NULL) goto noshape;
 
@@ -921,34 +921,34 @@ static pcb_bool_t pcb_isc_pstk_line_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, p
 
 			slshape = pcb_pstk_shape_mech_or_hole_at(PCB, ps, line->parent.layer, &sltmp);
 			if (slshape == NULL)
-				return pcb_false;
+				return rnd_false;
 			return pcb_isc_pstk_line_shp(ctx, ps, line, slshape);
 		}
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
-pcb_bool_t pcb_isc_pstk_line(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line)
+rnd_bool_t pcb_isc_pstk_line(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line)
 {
 	pcb_pstk_shape_t *shape;
 	pcb_pstk_proto_t *proto;
 
 	shape = pcb_pstk_shape_at(PCB, ps, line->parent.layer);
 	if (pcb_isc_pstk_line_shp(ctx, ps, line, shape))
-		return pcb_true;
+		return rnd_true;
 
 	proto = pcb_pstk_get_proto(ps);
 	if (proto->hplated) {
 		shape = pcb_pstk_shape_mech_at(PCB, ps, line->parent.layer);
 		if (pcb_isc_pstk_line_shp(ctx, ps, line, shape))
-			return pcb_true;
+			return rnd_true;
 	}
 
-	return pcb_false;
+	return rnd_false;
 }
 
 
-RND_INLINE pcb_bool_t pcb_isc_pstk_arc_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_arc_t *arc, pcb_pstk_shape_t *shape)
+RND_INLINE rnd_bool_t pcb_isc_pstk_arc_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_arc_t *arc, pcb_pstk_shape_t *shape)
 {
 	if (shape == NULL) goto noshape;
 
@@ -991,30 +991,30 @@ RND_INLINE pcb_bool_t pcb_isc_pstk_arc_shp(const pcb_find_t *ctx, pcb_pstk_t *ps
 
 			slshape = pcb_pstk_shape_mech_or_hole_at(PCB, ps, arc->parent.layer, &sltmp);
 			if (slshape == NULL)
-				return pcb_false;
+				return rnd_false;
 			return pcb_isc_pstk_arc_shp(ctx, ps, arc, slshape);
 		}
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
-RND_INLINE pcb_bool_t pcb_isc_pstk_arc(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_arc_t *arc)
+RND_INLINE rnd_bool_t pcb_isc_pstk_arc(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_arc_t *arc)
 {
 	pcb_pstk_shape_t *shape;
 	pcb_pstk_proto_t *proto;
 
 	shape = pcb_pstk_shape_at(PCB, ps, arc->parent.layer);
 	if (pcb_isc_pstk_arc_shp(ctx, ps, arc, shape))
-		return pcb_true;
+		return rnd_true;
 
 	proto = pcb_pstk_get_proto(ps);
 	if (proto->hplated) {
 		shape = pcb_pstk_shape_mech_at(PCB, ps, arc->parent.layer);
 		if (pcb_isc_pstk_arc_shp(ctx, ps, arc, shape))
-			return pcb_true;
+			return rnd_true;
 	}
 
-	return pcb_false;
+	return rnd_false;
 }
 
 
@@ -1043,7 +1043,7 @@ RND_INLINE rnd_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape
 	return shp;
 }
 
-RND_INLINE pcb_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly, pcb_pstk_shape_t *shape)
+RND_INLINE rnd_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly, pcb_pstk_shape_t *shape)
 {
 	if (shape == NULL) goto noshape;
 
@@ -1087,42 +1087,42 @@ RND_INLINE pcb_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *p
 
 			slshape = pcb_pstk_shape_mech_or_hole_at(PCB, ps, poly->parent.layer, &sltmp);
 			if (slshape == NULL)
-				return pcb_false;
+				return rnd_false;
 			return pcb_isc_pstk_poly_shp(ctx, ps, poly, slshape);
 		}
 
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
-RND_INLINE pcb_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly)
+RND_INLINE rnd_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly)
 {
 	pcb_pstk_shape_t *shape;
 	pcb_pstk_proto_t *proto;
 
 	shape = pcb_pstk_shape_at(PCB, ps, poly->parent.layer);
 	if (pcb_isc_pstk_poly_shp(ctx, ps, poly, shape))
-		return pcb_true;
+		return rnd_true;
 
 	proto = pcb_pstk_get_proto(ps);
 	if (proto->hplated) {
 		shape = pcb_pstk_shape_mech_at(PCB, ps, poly->parent.layer);
 		if (pcb_isc_pstk_poly_shp(ctx, ps, poly, shape))
-			return pcb_true;
+			return rnd_true;
 	}
 
-	return pcb_false;
+	return rnd_false;
 }
 
 
-RND_INLINE pcb_bool_t pstk_shape_isc_circ_poly(const pcb_find_t *ctx, pcb_pstk_t *p, pcb_pstk_shape_t *sp, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
+RND_INLINE rnd_bool_t pstk_shape_isc_circ_poly(const pcb_find_t *ctx, pcb_pstk_t *p, pcb_pstk_shape_t *sp, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
 {
 	rnd_coord_t px = sc->data.circ.x + c->x - p->x;
 	rnd_coord_t py = sc->data.circ.y + c->y - p->y;
 	return pcb_isc_line_polyline(ctx, sp->data.poly.pa->contours,  px, py, px, py, sc->data.circ.dia);
 }
 
-RND_INLINE pcb_bool_t pstk_shape_isc_circ_line(const pcb_find_t *ctx, pcb_pstk_t *l, pcb_pstk_shape_t *sl, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
+RND_INLINE rnd_bool_t pstk_shape_isc_circ_line(const pcb_find_t *ctx, pcb_pstk_t *l, pcb_pstk_shape_t *sl, pcb_pstk_t *c, pcb_pstk_shape_t *sc)
 {
 	pcb_any_line_t tmp;
 	tmp.Point1.X = sl->data.line.x1 + l->x;
@@ -1134,7 +1134,7 @@ RND_INLINE pcb_bool_t pstk_shape_isc_circ_line(const pcb_find_t *ctx, pcb_pstk_t
 	return pcb_is_point_in_line(sc->data.circ.x + c->x, sc->data.circ.y + c->y, sc->data.circ.dia/2, &tmp);
 }
 
-RND_INLINE pcb_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2)
+RND_INLINE rnd_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2)
 {
 	if ((shape1->shape == PCB_PSSH_POLY) && (shape1->data.poly.pa == NULL))
 		pcb_pstk_shape_update_pa(&shape1->data.poly);
@@ -1201,10 +1201,10 @@ RND_INLINE pcb_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t
 		case PCB_PSSH_HSHADOW:
 			return 0; /* non-object won't intersect */
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
-RND_INLINE pcb_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_t *ps2)
+RND_INLINE rnd_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_t *ps2)
 {
 	pcb_layer_t *ly;
 	pcb_pstk_proto_t *proto1, *proto2;
@@ -1224,36 +1224,36 @@ RND_INLINE pcb_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, 
 		shape1 = pcb_pstk_shape_at(PCB, ps1, ly);
 		shape2 = pcb_pstk_shape_at(PCB, ps2, ly);
 
-		if ((shape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect(ctx, ps1, shape1, ps2, shape2)) return pcb_true;
+		if ((shape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect(ctx, ps1, shape1, ps2, shape2)) return rnd_true;
 
 		if (proto1->hplated)
 			slshape1 = pcb_pstk_shape_mech_or_hole_at(PCB, ps1, ly, &sltmp1);
 		if (proto2->hplated)
 			slshape2 = pcb_pstk_shape_mech_or_hole_at(PCB, ps2, ly, &sltmp2);
 
-		if ((slshape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect(ctx, ps1, slshape1, ps2, shape2)) return pcb_true;
-		if ((slshape2 != NULL) && (shape1 != NULL) && pcb_pstk_shape_intersect(ctx, ps2, slshape2, ps1, shape1)) return pcb_true;
-		if ((slshape1 != NULL) && (slshape2 != NULL) && pcb_pstk_shape_intersect(ctx, ps1, slshape1, ps2, slshape2)) return pcb_true;
+		if ((slshape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect(ctx, ps1, slshape1, ps2, shape2)) return rnd_true;
+		if ((slshape2 != NULL) && (shape1 != NULL) && pcb_pstk_shape_intersect(ctx, ps2, slshape2, ps1, shape1)) return rnd_true;
+		if ((slshape1 != NULL) && (slshape2 != NULL) && pcb_pstk_shape_intersect(ctx, ps1, slshape1, ps2, slshape2)) return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 
-RND_INLINE pcb_bool_t pcb_isc_pstk_rat(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_rat_t *rat)
+RND_INLINE rnd_bool_t pcb_isc_pstk_rat(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_rat_t *rat)
 {
 	pcb_board_t *pcb = PCB;
 
 	if ((rat->Point1.X == ps->x) && (rat->Point1.Y == ps->y)) {
 		pcb_layer_t *layer = pcb_get_layer(pcb->Data, pcb->LayerGroups.grp[rat->group1].lid[0]);
 		if ((layer != NULL) && (pcb_pstk_shape_at(pcb, ps, layer) != NULL))
-			return pcb_true;
+			return rnd_true;
 	}
 
 	if ((rat->Point2.X == ps->x) && (rat->Point2.Y == ps->y)) {
 		pcb_layer_t *layer = pcb_get_layer(pcb->Data, pcb->LayerGroups.grp[rat->group2].lid[0]);
 		if ((layer != NULL) && (pcb_pstk_shape_at(pcb, ps, layer) != NULL))
-			return pcb_true;
+			return rnd_true;
 	}
 
-	return pcb_false;
+	return rnd_false;
 }

@@ -125,7 +125,7 @@ static rnd_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_
 
 	/* search only if via-layer is visible */
 	if (!PCB->pstk_on)
-		return pcb_false;
+		return rnd_false;
 
 	info.ptr1 = (void **)ps;
 	info.ptr2 = (void **)Dummy1;
@@ -136,8 +136,8 @@ static rnd_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_
 	info.on_lyt = on_lyt;
 
 	if (pcb_r_search(PCB->Data->padstack_tree, &SearchBox, NULL, padstack_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -179,9 +179,9 @@ static rnd_bool SearchLineByLocation(unsigned long objst, unsigned long req_flag
 
 	*Layer = SearchLayer;
 	if (pcb_r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
-		return pcb_true;
+		return rnd_true;
 
-	return pcb_false;
+	return rnd_false;
 }
 
 static pcb_r_dir_t rat_callback(const rnd_rnd_box_t * box, void *cl)
@@ -214,8 +214,8 @@ static rnd_bool SearchRatLineByLocation(unsigned long objst, unsigned long req_f
 	info.req_flag = req_flag;
 
 	if (pcb_r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -254,8 +254,8 @@ static rnd_bool SearchArcByLocation(unsigned long objst, unsigned long req_flag,
 
 	*Layer = SearchLayer;
 	if (pcb_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -292,8 +292,8 @@ static rnd_bool SearchGfxByLocation(unsigned long objst, unsigned long req_flag,
 
 	*Layer = SearchLayer;
 	if (pcb_r_search(SearchLayer->gfx_tree, &SearchBox, NULL, gfx_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 static pcb_r_dir_t text_callback(const rnd_rnd_box_t * box, void *cl)
@@ -324,8 +324,8 @@ static rnd_bool SearchTextByLocation(unsigned long objst, unsigned long req_flag
 	info.req_flag = req_flag;
 
 	if (pcb_r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 static pcb_r_dir_t polygon_callback(const rnd_rnd_box_t * box, void *cl)
@@ -360,8 +360,8 @@ static rnd_bool SearchPolygonByLocation(unsigned long objst, unsigned long req_f
 	info.req_flag = req_flag;
 
 	if (pcb_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 static pcb_r_dir_t linepoint_callback(const rnd_rnd_box_t * b, void *cl)
@@ -439,8 +439,8 @@ static rnd_bool SearchLinePointByLocation(unsigned long objst, unsigned long req
 	info.req_flag = req_flag;
 
 	if (pcb_r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -458,8 +458,8 @@ static rnd_bool SearchArcPointByLocation(unsigned long objst, unsigned long req_
 	info.req_flag = req_flag;
 
 	if (pcb_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arcpoint_callback, &info, NULL))
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -501,7 +501,7 @@ static pcb_r_dir_t polypoint_callback(const rnd_rnd_box_t *box, void *cl)
 			ctx->least = d;
 			*ctx->Polygon = polygon;
 			*ctx->Point = point;
-			ctx->found = pcb_true;
+			ctx->found = rnd_true;
 		}
 	}
 	PCB_END_LOOP;
@@ -517,14 +517,14 @@ static rnd_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	ctx.Type = Type;
 	ctx.Polygon = Polygon;
 	ctx.Point = Point;
-	ctx.found = pcb_false;;
+	ctx.found = rnd_false;;
 	ctx.least = SearchRadius + RND_MAX_POLYGON_POINT_DISTANCE;
 	ctx.least = ctx.least * ctx.least;
 	pcb_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polypoint_callback, &ctx, NULL);
 
 	if (ctx.found)
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 
@@ -579,8 +579,8 @@ SearchSubcByLocation(unsigned long objst, unsigned long req_flag, pcb_subc_t **s
 	info.req_flag = req_flag;
 
 	if (pcb_r_search(PCB->Data->subc_tree, &SearchBox, NULL, subc_callback, &info, NULL))
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 /* find the first floater on any layer */
@@ -623,19 +623,19 @@ static rnd_bool SearchSubcFloaterByLocation(unsigned long objst, unsigned long r
 			*out_subc = subc;
 			*out_txt = txt;
 			*dummy = txt;
-			return pcb_true;
+			return rnd_true;
 		}
 	}
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* for checking if a rat-line end is on a PV */
 rnd_bool pcb_is_point_on_line_end(rnd_coord_t X, rnd_coord_t Y, pcb_rat_t *Line)
 {
 	if (((X == Line->Point1.X) && (Y == Line->Point1.Y)) || ((X == Line->Point2.X) && (Y == Line->Point2.Y)))
-		return pcb_true;
-	return pcb_false;
+		return rnd_true;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -720,15 +720,15 @@ rnd_bool pcb_is_point_on_thinline( rnd_coord_t X, rnd_coord_t Y, rnd_coord_t X1,
 	const rnd_coord_t cross = ((X-X1) * ly) - ((Y-Y1) * lx);
 
 	if(cross != 0)
-		return pcb_false;
+		return rnd_false;
 
 	/* If the point does lie on the line then we do a simple check to see if the point is
 	 * between the end points. Use the longest side of the line to perform the check.
 	 */
 	if(abs(lx) > abs(ly))
-		return (X >= MIN(X1,X2)) && (X <= MAX(X1,X2)) ? pcb_true : pcb_false;
+		return (X >= MIN(X1,X2)) && (X <= MAX(X1,X2)) ? rnd_true : rnd_false;
 
-	return (Y >= MIN(Y1,Y2)) && (Y <= MAX(Y1,Y2)) ? pcb_true : pcb_false;
+	return (Y >= MIN(Y1,Y2)) && (Y <= MAX(Y1,Y2)) ? rnd_true : rnd_false;
 }
 
 /* checks if a line crosses a rectangle or is within the rectangle */
@@ -739,7 +739,7 @@ rnd_bool pcb_is_line_in_rectangle(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2
 	/* first, see if point 1 is inside the rectangle */
 	/* in case the whole line is inside the rectangle */
 	if (X1 < Line->Point1.X && X2 > Line->Point1.X && Y1 < Line->Point1.Y && Y2 > Line->Point1.Y)
-		return pcb_true;
+		return rnd_true;
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
 	line.Flags = pcb_no_flags();
@@ -749,30 +749,30 @@ rnd_bool pcb_is_line_in_rectangle(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (pcb_isc_line_line(pcb_find0, &line, Line))
-		return pcb_true;
+		return rnd_true;
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = X2;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (pcb_isc_line_line(pcb_find0, &line, Line))
-		return pcb_true;
+		return rnd_true;
 
 	/* lower-right to lower-left corner */
 	line.Point1.Y = Y2;
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (pcb_isc_line_line(pcb_find0, &line, Line))
-		return pcb_true;
+		return rnd_true;
 
 	/* lower-left to upper-left corner */
 	line.Point2.X = X1;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (pcb_isc_line_line(pcb_find0, &line, Line))
-		return pcb_true;
+		return rnd_true;
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /*checks if a point (of null radius) is in a slanted rectangle */
@@ -797,9 +797,9 @@ static int IsPointInQuadrangle(rnd_point_t p[4], rnd_point_t *l)
 		y = l->Y - p[2].Y;
 		prod1 = (double) x *dx + (double) y *dy;
 		if (prod0 * prod1 <= 0)
-			return pcb_true;
+			return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -814,9 +814,9 @@ rnd_bool pcb_is_line_in_quadrangle(rnd_point_t p[4], pcb_line_t *Line)
 	/* first, see if point 1 is inside the rectangle */
 	/* in case the whole line is inside the rectangle */
 	if (IsPointInQuadrangle(p, &(Line->Point1)))
-		return pcb_true;
+		return rnd_true;
 	if (IsPointInQuadrangle(p, &(Line->Point2)))
-		return pcb_true;
+		return rnd_true;
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
 	line.Flags = pcb_no_flags();
@@ -827,27 +827,27 @@ rnd_bool pcb_is_line_in_quadrangle(rnd_point_t p[4], pcb_line_t *Line)
 	line.Point2.X = p[1].X;
 	line.Point2.Y = p[1].Y;
 	if (pcb_isc_line_line(pcb_find0, &line, Line))
-		return pcb_true;
+		return rnd_true;
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = p[2].X;
 	line.Point1.Y = p[2].Y;
 	if (pcb_isc_line_line(pcb_find0, &line, Line))
-		return pcb_true;
+		return rnd_true;
 
 	/* lower-right to lower-left corner */
 	line.Point2.X = p[3].X;
 	line.Point2.Y = p[3].Y;
 	if (pcb_isc_line_line(pcb_find0, &line, Line))
-		return pcb_true;
+		return rnd_true;
 
 	/* lower-left to upper-left corner */
 	line.Point1.X = p[0].X;
 	line.Point1.Y = p[0].Y;
 	if (pcb_isc_line_line(pcb_find0, &line, Line))
-		return pcb_true;
+		return rnd_true;
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -864,10 +864,10 @@ rnd_bool pcb_is_arc_in_rectangle(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2,
 	box.X2 = X2; box.Y2 = Y2;
 	pcb_arc_get_end (Arc, 0, &x, &y);
 	if (PCB_POINT_IN_BOX(x, y, &box))
-		return pcb_true;
+		return rnd_true;
 	pcb_arc_get_end (Arc, 1, &x, &y);
 	if (PCB_POINT_IN_BOX(x, y, &box))
-		return pcb_true;
+		return rnd_true;
 
 	/* construct a set of dummy lines and check each of them */
 	line.Thickness = 0;
@@ -878,30 +878,30 @@ rnd_bool pcb_is_arc_in_rectangle(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2,
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (pcb_isc_line_arc(pcb_find0, &line, Arc))
-		return pcb_true;
+		return rnd_true;
 
 	/* upper-right to lower-right corner */
 	line.Point1.X = line.Point2.X = X2;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (pcb_isc_line_arc(pcb_find0, &line, Arc))
-		return pcb_true;
+		return rnd_true;
 
 	/* lower-right to lower-left corner */
 	line.Point1.Y = line.Point2.Y = Y2;
 	line.Point1.X = X1;
 	line.Point2.X = X2;
 	if (pcb_isc_line_arc(pcb_find0, &line, Arc))
-		return pcb_true;
+		return rnd_true;
 
 	/* lower-left to upper-left corner */
 	line.Point1.X = line.Point2.X = X1;
 	line.Point1.Y = Y1;
 	line.Point2.Y = Y2;
 	if (pcb_isc_line_arc(pcb_find0, &line, Arc))
-		return pcb_true;
+		return rnd_true;
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -920,10 +920,10 @@ rnd_bool pcb_is_gfx_in_rectangle(const rnd_rnd_box_t *b, const pcb_gfx_t *gfx)
 		l.Point1.X = gfx->cox[n]; l.Point1.Y = gfx->coy[n];
 		l.Point2.X = gfx->cox[m]; l.Point2.Y = gfx->coy[m];
 		if (PCB_LINE_TOUCHES_BOX(&l, b))
-			return pcb_true;
+			return rnd_true;
 	}
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1036,7 +1036,7 @@ rnd_bool pcb_is_point_in_box(rnd_coord_t X, rnd_coord_t Y, rnd_rnd_box_t *box, r
 		else if (Y > height)
 			range = Y - height;
 		else
-			return pcb_true;
+			return rnd_true;
 	}
 
 	return range < Radius;
@@ -1054,9 +1054,9 @@ rnd_bool pcb_gfx_in_box(pcb_gfx_t *gfx, rnd_rnd_box_t *b)
 
 	for(n = 0; n < 4; n++)
 		if (!PCB_POINT_IN_BOX(gfx->cox[n], gfx->coy[n], b))
-			return pcb_false;
+			return rnd_false;
 
-	return pcb_true;
+	return rnd_true;
 }
 
 /* TODO: this code is BROKEN in the case of non-circular arcs,
@@ -1102,13 +1102,13 @@ rnd_bool pcb_is_point_on_arc(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, p
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + 180) / RND_RAD_TO_DEG);
 		ArcY = Arc->Y - Arc->Height * sin((Arc->StartAngle + 180) / RND_RAD_TO_DEG);
 		if (rnd_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
-			return pcb_true;
+			return rnd_true;
 
 		ArcX = Arc->X + Arc->Width * cos((Arc->StartAngle + Arc->Delta + 180) / RND_RAD_TO_DEG);
 		ArcY = Arc->Y - Arc->Height * sin((Arc->StartAngle + Arc->Delta + 180) / RND_RAD_TO_DEG);
 		if (rnd_distance(X, Y, ArcX, ArcY) < Radius + Arc->Thickness / 2)
-			return pcb_true;
-		return pcb_false;
+			return rnd_true;
+		return rnd_false;
 	}
 
 	if ((Arc->Width == Arc->Height) || (fabs(Arc->Width - Arc->Height) < PCB_MM_TO_COORD(0.1))) {
@@ -1146,11 +1146,11 @@ rnd_bool pcb_is_point_in_gfx(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, p
 
 	c[0] = gfx->cox[1]; c[1] = gfx->coy[1];
 	if (rnd_point_in_triangle(a, b, c, pt))
-		return pcb_true;
+		return rnd_true;
 
 	c[0] = gfx->cox[3]; c[1] = gfx->coy[3];
 	if (rnd_point_in_triangle(a, b, c, pt))
-		return pcb_true;
+		return rnd_true;
 
 	/* the above triangle checks will miss points that are exactly on the triangle edges */
 	for(n = 0; n < 4; n++) {
@@ -1158,14 +1158,14 @@ rnd_bool pcb_is_point_in_gfx(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, p
 		if (m == 4)
 			m = 0;
 		if (pcb_is_point_on_thinline(X, Y, gfx->cox[n], gfx->coy[n], gfx->cox[m], gfx->coy[m]))
-			return pcb_true;
+			return rnd_true;
 	}
 	if (pcb_is_point_on_thinline(X, Y, gfx->cox[0], gfx->coy[0], gfx->cox[2], gfx->coy[2]))
-		return pcb_true;
+		return rnd_true;
 	if (pcb_is_point_on_thinline(X, Y, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]))
-		return pcb_true;
+		return rnd_true;
 
-	return pcb_false;
+	return rnd_false;
 }
 
 
@@ -1353,7 +1353,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		return PCB_OBJ_PSTK;
 
 	if (!HigherAvail && (Type & PCB_OBJ_FLOATER) && (Type & PCB_OBJ_TEXT) &&
-			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, pr3, pcb_false)) {
+			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, pr3, rnd_false)) {
 		*Result1 = ((pcb_text_t *)r2)->parent.layer;
 		*Result2 = r2;
 		*Result3 = r3;
@@ -1361,7 +1361,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	}
 
 	if (!HigherAvail && Type & PCB_OBJ_SUBC && PCB->SubcOn &&
-			SearchSubcByLocation(objst, req_flag, (pcb_subc_t **) pr1, (pcb_subc_t **) pr2, (pcb_subc_t **) pr3, pcb_false)) {
+			SearchSubcByLocation(objst, req_flag, (pcb_subc_t **) pr1, (pcb_subc_t **) pr2, (pcb_subc_t **) pr3, rnd_false)) {
 		rnd_rnd_box_t *box = &((pcb_subc_t *) r1)->BoundingBox;
 		HigherBound = (double) (box->X2 - box->X1) * (double) (box->Y2 - box->Y1);
 		HigherAvail = PCB_OBJ_SUBC;
@@ -1417,7 +1417,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 		return PCB_OBJ_VOID;
 
 	if ((Type & PCB_OBJ_FLOATER) && (Type & PCB_OBJ_TEXT) &&
-			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, pr3, pcb_true)) {
+			SearchSubcFloaterByLocation(objst, req_flag, (pcb_subc_t **)pr1, (pcb_text_t **) pr2, pr3, rnd_true)) {
 		*Result1 = ((pcb_text_t *)r2)->parent.layer;
 		*Result2 = r2;
 		*Result3 = r3;
@@ -1425,7 +1425,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 	}
 
 	if (Type & PCB_OBJ_SUBC && PCB->SubcOn &&
-			SearchSubcByLocation(objst, req_flag, (pcb_subc_t **) Result1, (pcb_subc_t **) Result2, (pcb_subc_t **) Result3, pcb_true))
+			SearchSubcByLocation(objst, req_flag, (pcb_subc_t **) Result1, (pcb_subc_t **) Result2, (pcb_subc_t **) Result3, rnd_true))
 		return PCB_OBJ_SUBC;
 
 	return PCB_OBJ_VOID;

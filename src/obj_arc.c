@@ -263,14 +263,14 @@ static pcb_arc_t *pcb_arc_copy_meta(pcb_arc_t *dst, pcb_arc_t *src)
 
 pcb_arc_t *pcb_arc_dup(pcb_layer_t *dst, pcb_arc_t *src)
 {
-	pcb_arc_t *a = pcb_arc_new(dst, src->X, src->Y, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags, pcb_false);
+	pcb_arc_t *a = pcb_arc_new(dst, src->X, src->Y, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags, rnd_false);
 	pcb_arc_copy_meta(a, src);
 	return a;
 }
 
 pcb_arc_t *pcb_arc_dup_at(pcb_layer_t *dst, pcb_arc_t *src, rnd_coord_t dx, rnd_coord_t dy)
 {
-	pcb_arc_t *a = pcb_arc_new(dst, src->X+dx, src->Y+dy, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags, pcb_false);
+	pcb_arc_t *a = pcb_arc_new(dst, src->X+dx, src->Y+dy, src->Width, src->Height, src->StartAngle, src->Delta, src->Thickness, src->Clearance, src->Flags, rnd_false);
 	pcb_arc_copy_meta(a, src);
 	return a;
 }
@@ -443,7 +443,7 @@ void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *A
 	layer = &ctx->buffer.dst->Layer[lid];
 	a = pcb_arc_new(layer, Arc->X, Arc->Y,
 		Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
-		Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg), pcb_false);
+		Arc->Thickness, Arc->Clearance, pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg), rnd_false);
 
 	pcb_arc_copy_meta(a, Arc);
 	if (ctx->buffer.keep_id) pcb_obj_change_id((pcb_any_obj_t *)a, Arc->ID);
@@ -614,13 +614,13 @@ void *pcb_arcop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc
 	pcb_arc_invalidate_erase(Arc);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc)) {
 		pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_ARC, Layer, Arc);
-		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_ARC, Layer, Arc, Arc, pcb_false);
+		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_ARC, Layer, Arc, Arc, rnd_false);
 	}
 	pcb_undo_add_obj_to_flag(Arc);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARLINE, Arc);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, Arc)) {
 		pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_ARC, Layer, Arc);
-		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_ARC, Layer, Arc, Arc, pcb_true);
+		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_ARC, Layer, Arc, Arc, rnd_true);
 	}
 	pcb_arc_invalidate_draw(Layer, Arc);
 	return Arc;
@@ -650,7 +650,7 @@ void *pcb_arcop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	arc = pcb_arc_new(Layer, Arc->X + ctx->copy.DeltaX, Arc->Y + ctx->copy.DeltaY,
 		Arc->Width, Arc->Height, Arc->StartAngle, Arc->Delta,
 		Arc->Thickness, Arc->Clearance,
-		pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND), pcb_true);
+		pcb_flag_mask(Arc->Flags, PCB_FLAG_FOUND), rnd_true);
 	if (!arc)
 		return arc;
 	if (ctx->copy.keep_id)
@@ -899,9 +899,9 @@ void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc)
 		end_ang += 360.0;
 
 	if ((arc->Delta < 0) || (arc->Delta > 180))
-		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle + 360.0, arc->Thickness, arc->Clearance, arc->Flags, pcb_true);
+		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle + 360.0, arc->Thickness, arc->Clearance, arc->Flags, rnd_true);
 	else
-		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle, arc->Thickness, arc->Clearance, arc->Flags, pcb_true);
+		new_arc = pcb_arc_new(Layer, arc->X, arc->Y, arc->Width, arc->Height, angle, end_ang - angle, arc->Thickness, arc->Clearance, arc->Flags, rnd_true);
 
 	if (new_arc != NULL) {
 		pcb_arc_copy_meta(new_arc, arc);
@@ -946,7 +946,7 @@ void *pcb_arcop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_arc_t
 
 /*** draw ***/
 
-static void arc_label_pos(const pcb_arc_t *arc, rnd_coord_t *x0, rnd_coord_t *y0, pcb_bool_t *vert)
+static void arc_label_pos(const pcb_arc_t *arc, rnd_coord_t *x0, rnd_coord_t *y0, rnd_bool_t *vert)
 {
 	double da, ea, la;
 
@@ -964,7 +964,7 @@ static void arc_label_pos(const pcb_arc_t *arc, rnd_coord_t *x0, rnd_coord_t *y0
 
 void pcb_arc_middle(const pcb_arc_t *arc, rnd_coord_t *x, rnd_coord_t *y)
 {
-	pcb_bool_t waste;
+	rnd_bool_t waste;
 	arc_label_pos(arc, x, y, &waste);
 }
 
@@ -1020,10 +1020,10 @@ void pcb_arc_name_invalidate_draw(pcb_arc_t *arc)
 {
 	if (arc->term != NULL) {
 		rnd_coord_t x0, y0;
-		pcb_bool_t vert;
+		rnd_bool_t vert;
 
 		arc_label_pos(arc, &x0, &y0, &vert);
-		pcb_term_label_invalidate(x0, y0, 100.0, vert, pcb_true, (pcb_any_obj_t *)arc);
+		pcb_term_label_invalidate(x0, y0, 100.0, vert, rnd_true, (pcb_any_obj_t *)arc);
 	}
 }
 
@@ -1031,10 +1031,10 @@ void pcb_arc_draw_label(pcb_draw_info_t *info, pcb_arc_t *arc)
 {
 	if (arc->term != NULL) {
 		rnd_coord_t x0, y0;
-		pcb_bool_t vert;
+		rnd_bool_t vert;
 
 		arc_label_pos(arc, &x0, &y0, &vert);
-		pcb_term_label_draw(info, x0, y0, conf_core.appearance.term_label_size, vert, pcb_true, (pcb_any_obj_t *)arc);
+		pcb_term_label_draw(info, x0, y0, conf_core.appearance.term_label_size, vert, rnd_true, (pcb_any_obj_t *)arc);
 	}
 	if (arc->noexport) {
 		rnd_coord_t cx, cy;

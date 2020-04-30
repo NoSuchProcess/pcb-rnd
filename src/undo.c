@@ -66,12 +66,12 @@
 
 #include "obj_poly_draw.h"
 
-static rnd_bool between_increment_and_restore = pcb_false;
-static rnd_bool added_undo_between_increment_and_restore = pcb_false;
+static rnd_bool between_increment_and_restore = rnd_false;
+static rnd_bool added_undo_between_increment_and_restore = rnd_false;
 
 pcb_data_t *pcb_removelist = NULL; /* lists of removed objects */
-static rnd_bool Locked = pcb_false; /* do not add entries if */
-rnd_bool pcb_undo_and_draw = pcb_true; /* flag is set; prevents from infinite loops */
+static rnd_bool Locked = rnd_false; /* do not add entries if */
+rnd_bool pcb_undo_and_draw = rnd_true; /* flag is set; prevents from infinite loops */
 uundo_list_t pcb_uundo; /* only the undo dialog box should have access to it */
 
 void *pcb_undo_alloc(pcb_board_t *pcb, const uundo_oper_t *oper, size_t data_len)
@@ -182,8 +182,8 @@ void pcb_undo_restore_serial(void)
 {
 	if (added_undo_between_increment_and_restore)
 		rnd_message(RND_MSG_ERROR, "ERROR: Operations were added to the Undo stack with an incorrect serial number\n");
-	between_increment_and_restore = pcb_false;
-	added_undo_between_increment_and_restore = pcb_false;
+	between_increment_and_restore = rnd_false;
+	added_undo_between_increment_and_restore = rnd_false;
 	uundo_restore_serial(&pcb_uundo);
 }
 
@@ -192,9 +192,9 @@ void pcb_undo_restore_serial(void)
  */
 void pcb_undo_save_serial(void)
 {
-	pcb_bumped = pcb_false;
-	between_increment_and_restore = pcb_false;
-	added_undo_between_increment_and_restore = pcb_false;
+	pcb_bumped = rnd_false;
+	between_increment_and_restore = rnd_false;
+	added_undo_between_increment_and_restore = rnd_false;
 	uundo_save_serial(&pcb_uundo);
 }
 
@@ -208,11 +208,11 @@ void pcb_undo_inc_serial(void)
 	if (!Locked) {
 		/* Set the changed flag if anything was added prior to this bump */
 		if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->serial == pcb_uundo.serial))
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 
 		uundo_inc_serial(&pcb_uundo);
-		pcb_bumped = pcb_true;
-		between_increment_and_restore = pcb_true;
+		pcb_bumped = rnd_true;
+		between_increment_and_restore = rnd_true;
 	}
 }
 
@@ -232,7 +232,7 @@ void pcb_undo_clear_list(rnd_bool Force)
  */
 void pcb_undo_lock(void)
 {
-	Locked = pcb_true;
+	Locked = rnd_true;
 }
 
 /* ---------------------------------------------------------------------------
@@ -240,7 +240,7 @@ void pcb_undo_lock(void)
  */
 void pcb_undo_unlock(void)
 {
-	Locked = pcb_false;
+	Locked = rnd_false;
 }
 
 /* ---------------------------------------------------------------------------

@@ -152,13 +152,13 @@ int pcb_set_buffer_bbox(pcb_buffer_t *Buffer)
 	rnd_rnd_box_t tmp, *box;
 	int res = 0;
 	
-	box = pcb_data_bbox(&tmp, Buffer->Data, pcb_false);
+	box = pcb_data_bbox(&tmp, Buffer->Data, rnd_false);
 	if (box)
 		Buffer->BoundingBox = *box;
 	else
 		res = -1;
 
-	box = pcb_data_bbox_naked(&tmp, Buffer->Data, pcb_false);
+	box = pcb_data_bbox_naked(&tmp, Buffer->Data, rnd_false);
 	if (box)
 		Buffer->bbox_naked = *box;
 	else
@@ -187,7 +187,7 @@ static void pcb_buffer_clear_(pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_bool b
 
 void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
-	pcb_buffer_clear_(pcb, Buffer, pcb_true);
+	pcb_buffer_clear_(pcb, Buffer, rnd_true);
 }
 
 /* add (or move) selected */
@@ -208,10 +208,10 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 	else
 		ctx.buffer.extraflg =  0;
 
-	rnd_hid_notify_crosshair_change(hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(hidlib, rnd_false);
 	ctx.buffer.src = pcb->Data;
 	ctx.buffer.dst = Buffer->Data;
-	pcb_selected_operation(pcb, pcb->Data, fnc, &ctx, pcb_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), on_locked_too);
+	pcb_selected_operation(pcb, pcb->Data, fnc, &ctx, rnd_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), on_locked_too);
 
 	/* set origin to passed or current position */
 	if (X || Y) {
@@ -224,19 +224,19 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 	}
 	Buffer->from_outside = 0;
 	free(Buffer->source_path); Buffer->source_path = NULL;
-	rnd_hid_notify_crosshair_change(hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(hidlib, rnd_true);
 }
 
 void pcb_buffer_add_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_coord_t X, rnd_coord_t Y, rnd_bool LeaveSelected, rnd_bool keep_id)
 {
-	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
+	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, rnd_false, keep_id);
 }
 
 extern pcb_opfunc_t pcb_RemoveFunctions;
 void pcb_buffer_move_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_coord_t X, rnd_coord_t Y, rnd_bool LeaveSelected, rnd_bool keep_id)
 {
-	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
-	pcb_buffer_toss_selected(&pcb_RemoveFunctions, pcb, Buffer, X, Y, LeaveSelected, pcb_false, keep_id);
+	pcb_buffer_toss_selected(&AddBufferFunctions, pcb, Buffer, X, Y, LeaveSelected, rnd_false, keep_id);
+	pcb_buffer_toss_selected(&pcb_RemoveFunctions, pcb, Buffer, X, Y, LeaveSelected, rnd_false, keep_id);
 	pcb_undo_inc_serial();
 }
 
@@ -283,7 +283,7 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 rnd_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const char *Filename, const char *fmt)
 {
-	pcb_board_t *orig, *newPCB = pcb_board_new_(pcb_false);
+	pcb_board_t *orig, *newPCB = pcb_board_new_(rnd_false);
 
 	orig = PCB;
 	PCB = newPCB;
@@ -309,7 +309,7 @@ rnd_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		free(Buffer->source_path); Buffer->source_path = rnd_strdup(Filename);
 		PCB = orig;
 		pcb_layergrp_inhibit_dec();
-		return pcb_true;
+		return rnd_true;
 	}
 
 	/* release unused memory */
@@ -321,7 +321,7 @@ rnd_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 	pcb_layergrp_inhibit_dec();
 	Buffer->from_outside = 0;
 	free(Buffer->source_path); Buffer->source_path = NULL;
-	return pcb_false;
+	return rnd_false;
 }
 
 void pcb_buffer_rotate90(pcb_buffer_t *Buffer, unsigned int Number)
@@ -478,9 +478,9 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 	pcb_buffer_rotate(PCB_PASTEBUFFER, ang);
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 	return 0;
 }
 
@@ -544,7 +544,7 @@ static int pcb_actgui_ScaleBuffer(rnd_hidlib_t *hidlib, double *x, double *y)
 		RND_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
 	RND_DAD_END(ctx.dlg);
 
-	RND_DAD_NEW("buffer_scale", ctx.dlg, "Buffer scale factors", &ctx, pcb_true, NULL);
+	RND_DAD_NEW("buffer_scale", ctx.dlg, "Buffer scale factors", &ctx, rnd_true, NULL);
 	res = RND_DAD_RUN(ctx.dlg);
 	*x = ctx.dlg[ctx.wx].val.dbl;
 	*y = ctx.dlg[ctx.wy].val.dbl;
@@ -593,9 +593,9 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_ACT_IRES(0);
 
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 	pcb_buffer_scale(PCB_PASTEBUFFER, x, y, th, recurse);
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 	return 0;
 }
 
@@ -613,7 +613,7 @@ void pcb_uninit_buffers(pcb_board_t *pcb)
 	int i;
 
 	for (i = 0; i < PCB_MAX_BUFFER; i++) {
-		pcb_buffer_clear_(pcb, pcb_buffers+i, pcb_false);
+		pcb_buffer_clear_(pcb, pcb_buffers+i, rnd_false);
 		pcb_data_uninit(pcb_buffers[i].Data);
 		free(pcb_buffers[i].Data);
 	}
@@ -638,7 +638,7 @@ void pcb_buffer_mirror(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	Buffer->X = PCB_SWAP_X(Buffer->X);
 	Buffer->Y = PCB_SWAP_Y(Buffer->Y);
 	pcb_undo_freeze_add();
-	pcb_data_mirror(Buffer->Data, 0, PCB_TXM_COORD, pcb_false, 0);
+	pcb_data_mirror(Buffer->Data, 0, PCB_TXM_COORD, rnd_false, 0);
 	pcb_undo_unfreeze_add();
 	pcb_set_buffer_bbox(Buffer);
 }
@@ -765,7 +765,7 @@ void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, rnd_bool keep_id)
 {
 	rnd_cardinal_t i;
-	rnd_bool changed = pcb_false;
+	rnd_bool changed = rnd_false;
 	pcb_opctx_t ctx;
 	int num_layers;
 
@@ -799,7 +799,7 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 			continue;
 		}
 
-		destlayer = pcb_loose_subc_layer(PCB, destlayer, pcb_true);
+		destlayer = pcb_loose_subc_layer(PCB, destlayer, rnd_true);
 
 		if (destlayer->meta.real.vis) {
 			PCB_LINE_LOOP(sourcelayer);
@@ -912,7 +912,7 @@ TODO("subc: fix this after the element removal")
 	printf("  .... Leaving CopyPastebufferToLayout.\n");
 #endif
 
-	pcb_data_clip_inhibit_dec(pcb->Data, pcb_true);
+	pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 
 	return changed;
 }
@@ -924,7 +924,7 @@ void pcb_buffer_set_number(int Number)
 }
 
 /* loads footprint data from file/library into buffer (as subcircuit)
- * returns pcb_false on error
+ * returns rnd_false on error
  * if successful, update some other stuff and reposition the pastebuffer */
 rnd_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const char *fmt)
 {
@@ -947,12 +947,12 @@ rnd_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const
 		/* the loader may have created new layers */
 		pcb_data_binding_update(PCB, Buffer->Data);
 
-		return pcb_true;
+		return rnd_true;
 	}
 
 	/* release memory which might have been acquired */
 	pcb_buffer_clear(PCB, Buffer);
-	return pcb_false;
+	return rnd_false;
 }
 
 
@@ -976,7 +976,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	int op, force;
 	const char *sbufnum = "", *fmt = NULL, *forces = NULL, *name, *tmp;
 	static char *default_file = NULL;
-	rnd_bool free_name = pcb_false;
+	rnd_bool free_name = rnd_false;
 	static int stack[32];
 	static int sp = 0;
 	int number, rv;
@@ -990,7 +990,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 	force = (forces != NULL) && ((*forces == '1') || (*forces == 'y') || (*forces == 'Y'));
 
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 	switch (op) {
 			/* clear contents of paste buffer */
 		case F_Clear:
@@ -1013,7 +1013,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 			/* copies objects to paste buffer */
 		case F_AddSelected:
-			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false, pcb_false);
+			pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, 0, 0, rnd_false, rnd_false);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
 				rnd_message(RND_MSG_WARNING, "Nothing buffer-movable is selected, nothing copied to the paste buffer\n");
 				goto error;
@@ -1022,7 +1022,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 			/* cuts objects to paste buffer; it's different from AddSelected+RemoveSelected in extobj side effects */
 		case F_MoveSelected:
-			pcb_buffer_move_selected(PCB, PCB_PASTEBUFFER, 0, 0, pcb_false, pcb_false);
+			pcb_buffer_move_selected(PCB, PCB_PASTEBUFFER, 0, 0, rnd_false, rnd_false);
 			if (pcb_data_is_empty(PCB_PASTEBUFFER->Data)) {
 				rnd_message(RND_MSG_WARNING, "Nothing buffer-movable is selected, nothing moved to the paste buffer\n");
 				goto error;
@@ -1056,7 +1056,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			break;
 
 		case F_SaveAll:
-			free_name = pcb_false;
+			free_name = rnd_false;
 			if (argc <= 2) {
 				name = rnd_gui->fileselect(rnd_gui, "Save Paste Buffer As ...",
 					"Choose a file to save the contents of the\npaste buffer to.\n",
@@ -1068,7 +1068,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				}
 				if (name && *name)
 					default_file = rnd_strdup(name);
-				free_name = pcb_true;
+				free_name = rnd_true;
 			}
 			else
 				name = sbufnum;
@@ -1090,7 +1090,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			break;
 
 		case F_LoadAll:
-			free_name = pcb_false;
+			free_name = rnd_false;
 			if (argc <= 2) {
 				name = rnd_gui->fileselect(rnd_gui, "Load Paste Buffer ...",
 					"Choose a file to load the contents of the\npaste buffer from.\n",
@@ -1102,7 +1102,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				}
 				if (name && *name)
 					default_file = rnd_strdup(name);
-				free_name = pcb_true;
+				free_name = rnd_true;
 			}
 			else
 				name = sbufnum;
@@ -1118,7 +1118,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		case F_Save:
 			name = sbufnum;
 			rv = rnd_actionva(RND_ACT_HIDLIB, "SaveTo", "PasteBuffer", name, fmt, NULL);
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			return rv;
 
 		case F_ToLayout:
@@ -1143,14 +1143,14 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				}
 
 				else {
-					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 					RND_ACT_FAIL(PasteBuffer);
 				}
 
 				oldx = x;
 				oldy = y;
-				if (pcb_buffer_copy_to_layout(PCB, x, y, pcb_false))
-					pcb_board_set_changed_flag(pcb_true);
+				if (pcb_buffer_copy_to_layout(PCB, x, y, rnd_false))
+					pcb_board_set_changed_flag(rnd_true);
 			}
 			break;
 
@@ -1166,13 +1166,13 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				number = strtol(sbufnum, &end, 10);
 				if (*end != 0) {
 					rnd_message(RND_MSG_ERROR, "invalid buffer number '%s': should be an integer\n", sbufnum);
-					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 					return FGW_ERR_ARG_CONV;
 				}
 				number--;
 				if ((number < 0) || (number >= PCB_MAX_BUFFER)) {
 					rnd_message(RND_MSG_ERROR, "invalid buffer number '%d': out of range 1..%d\n", number+1, PCB_MAX_BUFFER);
-					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 					return FGW_ERR_ARG_CONV;
 				}
 			}
@@ -1180,7 +1180,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				number = conf_core.editor.buffer_number;
 			res->type = FGW_STR;
 			res->val.str = pcb_buffers[number].source_path;
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			return 0;
 
 			/* set number */
@@ -1194,12 +1194,12 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			}
 	}
 
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 	RND_ACT_IRES(0);
 	return 0;
 
 	error:;
-	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 	RND_ACT_IRES(-1);
 	return 0;
 }

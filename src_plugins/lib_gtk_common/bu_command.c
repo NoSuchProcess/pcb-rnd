@@ -238,7 +238,7 @@ void ghid_handle_user_command(rnd_hidlib_t *hl, pcb_gtk_command_t *ctx, rnd_bool
 	command = ghid_command_entry_get(ctx, rnd_cli_prompt(":"), (gchar *)"");
 	if (command != NULL) {
 		/* copy new command line to save buffer */
-		rnd_parse_command(hl, command, pcb_false);
+		rnd_parse_command(hl, command, rnd_false);
 		g_free(command);
 	}
 }

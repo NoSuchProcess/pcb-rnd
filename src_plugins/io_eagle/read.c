@@ -425,11 +425,11 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 				rnd_message(RND_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", ly->name);
 				lyt = PCB_LYT_VIRTUAL;
 				comb = 0;
-				return pcb_subc_get_layer(subc, lyt, comb, 1, ly->name, pcb_true);
+				return pcb_subc_get_layer(subc, lyt, comb, 1, ly->name, rnd_true);
 			}
 			lyt = pcb_layer_flags(st->pcb, ly->lid);
 			comb = 0;
-			return pcb_subc_get_layer(subc, lyt, comb, 1, ly->name, pcb_true);
+			return pcb_subc_get_layer(subc, lyt, comb, 1, ly->name, rnd_true);
 	}
 	return NULL;
 }
@@ -1438,7 +1438,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				back = 1;
 			}
 
-			new_subc = pcb_subc_dup_at(st->pcb, st->pcb->Data, subc, x, y, pcb_false);
+			new_subc = pcb_subc_dup_at(st->pcb, st->pcb->Data, subc, x, y, rnd_false);
 			new_subc->Flags = pcb_no_flags();
 			new_subc->ID = pcb_create_ID_get();
 

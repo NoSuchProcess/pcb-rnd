@@ -110,7 +110,7 @@ const struct {
 		20,													/* move on when each module has been profitably moved 20 times */
 		0.75,												/* annealing schedule constant: 0.85 */
 		40,													/* halt when there are 60 times as many moves as good moves */
-		pcb_false,											/* don't ignore SMD/pin conflicts */
+		rnd_false,											/* don't ignore SMD/pin conflicts */
 		PCB_MIL_TO_COORD(100),					/* coarse grid is 100 mils */
 		PCB_MIL_TO_COORD(10),						/* fine grid is 10 mils */
 };
@@ -347,7 +347,7 @@ static double ComputeCost(double T0, double T)
 			miny = maxy;
 			thegroup = obj_layergrp(obj);
 			allpads = pstk_ispad((pcb_pstk_t *)obj);
-			allsameside = pcb_true;
+			allsameside = rnd_true;
 
 			for(t = pcb_termlist_next(t); t != NULL; t = pcb_termlist_next(t)) {
 				rnd_coord_t X, Y;
@@ -358,9 +358,9 @@ static double ComputeCost(double T0, double T)
 				RND_MAKE_MIN(miny, Y);
 				RND_MAKE_MAX(maxy, Y);
 				if (!pstk_ispad((pcb_pstk_t *)obj))
-					allpads = pcb_false;
+					allpads = rnd_false;
 				if (obj_layergrp(obj) != thegroup)
-					allsameside = pcb_false;
+					allsameside = rnd_false;
 			}
 			/* okay, add half-perimeter to cost! */
 			W += PCB_COORD_TO_MIL(maxx - minx) + PCB_COORD_TO_MIL(maxy - miny) + ((allpads && !allsameside) ? CostParameter.via_cost : 0);
@@ -736,7 +736,7 @@ rnd_bool AutoPlaceSelected(void)
 	vtp0_t Selected;
 	PerturbationType pt;
 	double C00, C0, T0;
-	rnd_bool changed = pcb_false;
+	rnd_bool changed = rnd_false;
 
 	vtp0_init(&Selected);
 
@@ -755,9 +755,9 @@ rnd_bool AutoPlaceSelected(void)
 		C00 = C0 = ComputeCost(Tx, Tx);
 		for (i = 0; i < TRIALS; i++) {
 			pt = createPerturbation(&Selected, PCB_INCH_TO_COORD(1));
-			doPerturb(&Selected, &pt, pcb_false);
+			doPerturb(&Selected, &pt, rnd_false);
 			Cs += fabs(ComputeCost(Tx, Tx) - C0);
-			doPerturb(&Selected, &pt, pcb_true);
+			doPerturb(&Selected, &pt, rnd_true);
 		}
 		T0 = -(Cs / TRIALS) / log(P);
 		printf("Initial T: %f\n", T0);
@@ -774,7 +774,7 @@ rnd_bool AutoPlaceSelected(void)
 		while (1) {
 			double Cprime;
 			pt = createPerturbation(&Selected, T);
-			doPerturb(&Selected, &pt, pcb_false);
+			doPerturb(&Selected, &pt, rnd_false);
 			Cprime = ComputeCost(T0, T);
 			if (Cprime < C0) {				/* good move! */
 				C0 = Cprime;
@@ -787,7 +787,7 @@ rnd_bool AutoPlaceSelected(void)
 				steps++;
 			}
 			else
-				doPerturb(&Selected, &pt, pcb_true);		/* undo last change */
+				doPerturb(&Selected, &pt, rnd_true);		/* undo last change */
 			moves++;
 			/* are we at the end of a stage? */
 			if (good_moves >= good_move_cutoff || moves >= move_cutoff) {
@@ -810,7 +810,7 @@ rnd_bool AutoPlaceSelected(void)
 done:
 	rnd_hid_progress(0, 0, NULL);
 	if (changed) {
-		pcb_rats_destroy(pcb_false);
+		pcb_rats_destroy(rnd_false);
 		pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE);
 		rnd_hid_redraw(PCB);
 	}

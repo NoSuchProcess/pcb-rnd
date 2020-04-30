@@ -110,7 +110,7 @@ static int ReadNetlist(const char *filename)
 			else
 				inputline[len] = '\0';
 		}
-		continued = (inputline[len - 1] == '\\') ? pcb_true : pcb_false;
+		continued = (inputline[len - 1] == '\\') ? rnd_true : rnd_false;
 		if (continued)
 			inputline[len - 1] = '\0';
 		lines++;

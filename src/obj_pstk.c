@@ -213,13 +213,13 @@ static void pcb_pstk_bbox_(rnd_rnd_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_o
 
 void pcb_pstk_bbox(pcb_pstk_t *ps)
 {
-	pcb_pstk_bbox_(&ps->BoundingBox, ps, pcb_false);
-	pcb_pstk_bbox_(&ps->bbox_naked, ps, pcb_true);
+	pcb_pstk_bbox_(&ps->BoundingBox, ps, rnd_false);
+	pcb_pstk_bbox_(&ps->bbox_naked, ps, rnd_true);
 }
 
 void pcb_pstk_copper_bbox(rnd_rnd_box_t *dst, pcb_pstk_t *ps)
 {
-	pcb_pstk_bbox_(dst, ps, pcb_true);
+	pcb_pstk_bbox_(dst, ps, rnd_true);
 }
 
 /* hash */
@@ -782,9 +782,9 @@ void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
 	proto = pcb_pstk_get_proto(ps);
 	if ((proto != NULL) && (proto->hdia > 0))
 		offs = proto->hdia/2;
-	pcb_term_label_draw(info, ps->x + offs, ps->y, conf_core.appearance.term_label_size, vert, pcb_false, (pcb_any_obj_t *)ps);
+	pcb_term_label_draw(info, ps->x + offs, ps->y, conf_core.appearance.term_label_size, vert, rnd_false, (pcb_any_obj_t *)ps);
 #endif
-	pcb_term_label_draw(info, ps->x, ps->y, conf_core.appearance.term_label_size, vert, pcb_true, (pcb_any_obj_t *)ps);
+	pcb_term_label_draw(info, ps->x, ps->y, conf_core.appearance.term_label_size, vert, rnd_true, (pcb_any_obj_t *)ps);
 }
 
 static rnd_xform_t dummy_xform;
@@ -1278,7 +1278,7 @@ void pcb_pstk_scale(pcb_pstk_t *ps, double sx, double sy, int undoable)
 	pcb_pstk_post(ps);
 }
 
-unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, pcb_bool_t alloc)
+unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, rnd_bool_t alloc)
 {
 	if (ps->thermals.used <= lid) {
 		unsigned long oldu = ps->thermals.used;
@@ -1517,10 +1517,10 @@ rnd_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, rnd_layergrp_id_t gid)
 		rnd_cardinal_t n;
 		for(n = 0; n < g->len; n++)
 			if (pcb_pstk_shape_at(pcb, padstack, &pcb->Data->Layer[g->lid[n]]))
-				return pcb_false;
+				return rnd_false;
 	}
 	PCB_END_LOOP;
-	return pcb_true;
+	return rnd_true;
 }
 
 

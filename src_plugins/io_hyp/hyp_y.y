@@ -161,8 +161,8 @@ data_mode
   : '{' H_DATA_MODE '=' mode '}' { if (exec_data_mode(&h)) YYERROR; };
 
 mode
-  : H_SIMPLIFIED { h.detailed = pcb_false; }
-  | H_DETAILED   { h.detailed = pcb_true; } ;
+  : H_SIMPLIFIED { h.detailed = rnd_false; }
+  | H_DETAILED   { h.detailed = rnd_true; } ;
 
   /* units */
 
@@ -170,12 +170,12 @@ units
   : '{' H_UNITS '=' unit_system metal_thickness_unit '}' { if (exec_units(&h)) YYERROR; } ;
 
 unit_system
-  : H_ENGLISH { h.unit_system_english = pcb_true; }
-  | H_METRIC  { h.unit_system_english = pcb_false; };
+  : H_ENGLISH { h.unit_system_english = rnd_true; }
+  | H_METRIC  { h.unit_system_english = rnd_false; };
 
 metal_thickness_unit
-  : H_WEIGHT  { h.metal_thickness_weight = pcb_true; }
-  | H_LENGTH  { h.metal_thickness_weight = pcb_false; } ;
+  : H_WEIGHT  { h.metal_thickness_weight = rnd_true; }
+  | H_LENGTH  { h.metal_thickness_weight = rnd_false; } ;
 
   /* plane_sep */
 plane_sep
@@ -245,7 +245,7 @@ signal_paramlist
 signal_param
   : thickness
   | plating_thickness
-  | H_C  '=' H_FLOAT { h.bulk_resistivity = yylval.floatval; h.bulk_resistivity_set = pcb_true; }
+  | H_C  '=' H_FLOAT { h.bulk_resistivity = yylval.floatval; h.bulk_resistivity_set = rnd_true; }
   | bulk_resistivity
   | temperature_coefficient
   | epsilon_r
@@ -263,7 +263,7 @@ dielectric_paramlist
 
 dielectric_param
   : thickness
-  | H_C '=' H_FLOAT { h.epsilon_r = yylval.floatval; h.epsilon_r_set = pcb_true; }
+  | H_C '=' H_FLOAT { h.epsilon_r = yylval.floatval; h.epsilon_r_set = rnd_true; }
   | epsilon_r
   | loss_tangent
   | conformal
@@ -281,7 +281,7 @@ plane_paramlist
 
 plane_param
   : thickness
-  | H_C  '=' H_FLOAT { h.bulk_resistivity = yylval.floatval; h.bulk_resistivity_set = pcb_true; }
+  | H_C  '=' H_FLOAT { h.bulk_resistivity = yylval.floatval; h.bulk_resistivity_set = rnd_true; }
   | bulk_resistivity
   | temperature_coefficient
   | epsilon_r
@@ -291,37 +291,37 @@ plane_param
   | plane_separation ;
 
 thickness
-  : H_T  '=' H_FLOAT  { h.thickness = yylval.floatval; h.thickness_set = pcb_true; }
+  : H_T  '=' H_FLOAT  { h.thickness = yylval.floatval; h.thickness_set = rnd_true; }
 
 plating_thickness
-  : H_P  '=' H_FLOAT  { h.plating_thickness = yylval.floatval; h.plating_thickness_set = pcb_true; }
+  : H_P  '=' H_FLOAT  { h.plating_thickness = yylval.floatval; h.plating_thickness_set = rnd_true; }
 
 bulk_resistivity
-  : H_BR '=' H_FLOAT  { h.bulk_resistivity = yylval.floatval; h.bulk_resistivity_set = pcb_true; }
+  : H_BR '=' H_FLOAT  { h.bulk_resistivity = yylval.floatval; h.bulk_resistivity_set = rnd_true; }
 
 temperature_coefficient
-  : H_TC '=' H_FLOAT  { h.temperature_coefficient = yylval.floatval; h.temperature_coefficient_set = pcb_true; }
+  : H_TC '=' H_FLOAT  { h.temperature_coefficient = yylval.floatval; h.temperature_coefficient_set = rnd_true; }
 
 epsilon_r
-  : H_ER '=' H_FLOAT  { h.epsilon_r = yylval.floatval; h.epsilon_r_set = pcb_true; }
+  : H_ER '=' H_FLOAT  { h.epsilon_r = yylval.floatval; h.epsilon_r_set = rnd_true; }
 
 loss_tangent
-  : H_LT '=' H_FLOAT  { h.loss_tangent = yylval.floatval; h.loss_tangent_set = pcb_true; }
+  : H_LT '=' H_FLOAT  { h.loss_tangent = yylval.floatval; h.loss_tangent_set = rnd_true; }
 
 layer_name
-  : H_L '=' H_STRING { h.layer_name = yylval.strval; h.layer_name_set = pcb_true; }
+  : H_L '=' H_STRING { h.layer_name = yylval.strval; h.layer_name_set = rnd_true; }
 
 material_name
-  : H_M  '=' H_STRING { h.material_name = yylval.strval; h.material_name_set = pcb_true; }
+  : H_M  '=' H_STRING { h.material_name = yylval.strval; h.material_name_set = rnd_true; }
 
 plane_separation
-  : H_PS '=' H_FLOAT  { h.plane_separation = yylval.floatval; h.plane_separation_set = pcb_true; }
+  : H_PS '=' H_FLOAT  { h.plane_separation = yylval.floatval; h.plane_separation_set = rnd_true; }
 
 conformal
-  : H_CO_QM '=' H_BOOL { h.conformal = yylval.boolval; h.conformal_set = pcb_true; }
+  : H_CO_QM '=' H_BOOL { h.conformal = yylval.boolval; h.conformal_set = rnd_true; }
 
 prepreg
-  : H_PR_QM '=' H_BOOL { h.prepreg = yylval.boolval; h.prepreg_set = pcb_true; }
+  : H_PR_QM '=' H_BOOL { h.prepreg = yylval.boolval; h.prepreg_set = rnd_true; }
 
   /* devices */
 
@@ -353,7 +353,7 @@ device_layer
   ;
 
 name
-  : H_NAME '=' H_STRING { h.name = yylval.strval; h.name_set = pcb_true; } ;
+  : H_NAME '=' H_STRING { h.name = yylval.strval; h.name_set = rnd_true; } ;
 
 value
   : value_float
@@ -361,13 +361,13 @@ value
   ;
 
 value_float
-  : H_VAL '=' H_FLOAT   { h.value_float = yylval.floatval; h.value_float_set = pcb_true; } ;
+  : H_VAL '=' H_FLOAT   { h.value_float = yylval.floatval; h.value_float_set = rnd_true; } ;
 
 value_string
-  : H_VAL '=' H_STRING  { h.value_string = yylval.strval; h.value_string_set = pcb_true; } ;
+  : H_VAL '=' H_STRING  { h.value_string = yylval.strval; h.value_string_set = rnd_true; } ;
 
 package
-  : H_PKG '=' H_STRING  { h.package = yylval.strval; h.package_set = pcb_true; } ;
+  : H_PKG '=' H_STRING  { h.package = yylval.strval; h.package_set = rnd_true; } ;
 
   /* supplies */
 
@@ -391,10 +391,10 @@ conversion
   /* padstack */
 
 padstack
-  : '{' H_PADSTACK { new_record(); } '=' H_STRING { h.padstack_name = yylval.strval; h.padstack_name_set = pcb_true; } drill_size '}' { if (exec_pstk_end(&h)) YYERROR; } ;
+  : '{' H_PADSTACK { new_record(); } '=' H_STRING { h.padstack_name = yylval.strval; h.padstack_name_set = rnd_true; } drill_size '}' { if (exec_pstk_end(&h)) YYERROR; } ;
 
 drill_size 
-  : ',' H_FLOAT { h.drill_size = yylval.floatval; h.drill_size_set = pcb_true; } padstack_list
+  : ',' H_FLOAT { h.drill_size = yylval.floatval; h.drill_size_set = rnd_true; } padstack_list
   | ',' padstack_list ;
   | padstack_list ;
 
@@ -403,7 +403,7 @@ padstack_list
   | padstack_def ;
 
 padstack_def
-  : '(' H_STRING { h.layer_name = yylval.strval; h.layer_name_set = pcb_true; } ',' pad_shape pad_coord pad_type { if (exec_pstk_element(&h)) YYERROR; new_record(); }
+  : '(' H_STRING { h.layer_name = yylval.strval; h.layer_name_set = rnd_true; } ',' pad_shape pad_coord pad_type { if (exec_pstk_element(&h)) YYERROR; new_record(); }
   | '(' error ')' ;
 
 pad_shape
@@ -416,13 +416,13 @@ pad_coord
 
 pad_type
   : ')' 
-  | ',' H_M ')' { h.pad_type = PAD_TYPE_METAL; h.pad_type_set = pcb_true; } 
-  | ',' H_A ')' { h.pad_type = PAD_TYPE_ANTIPAD; h.pad_type_set = pcb_true; } 
+  | ',' H_M ')' { h.pad_type = PAD_TYPE_METAL; h.pad_type_set = rnd_true; } 
+  | ',' H_A ')' { h.pad_type = PAD_TYPE_ANTIPAD; h.pad_type_set = rnd_true; } 
   | ',' H_FLOAT { h.thermal_clear_shape = yylval.floatval; } 
     ',' H_FLOAT { h.thermal_clear_sx = yylval.floatval; } 
     ',' H_FLOAT { h.thermal_clear_sy = yylval.floatval; } 
     ',' H_FLOAT { h.thermal_clear_angle = yylval.floatval; } 
-    ',' H_T ')' { h.pad_type = PAD_TYPE_THERMAL_RELIEF; h.pad_type_set = pcb_true; } 
+    ',' H_T ')' { h.pad_type = PAD_TYPE_THERMAL_RELIEF; h.pad_type_set = rnd_true; } 
   ;
 
   /* net */
@@ -476,10 +476,10 @@ lps_param
   ;
 
 width
-  : H_W '=' H_FLOAT    { h.width = yylval.floatval; h.width_set = pcb_true; } ;
+  : H_W '=' H_FLOAT    { h.width = yylval.floatval; h.width_set = rnd_true; } ;
   
 left_plane_separation
-  : H_LPS '=' H_FLOAT { h.left_plane_separation = yylval.floatval; h.left_plane_separation_set = pcb_true; } ;
+  : H_LPS '=' H_FLOAT { h.left_plane_separation = yylval.floatval; h.left_plane_separation_set = rnd_true; } ;
 
 via
   : '(' H_VIA { new_record(); } coord_point via_param_list ')' { if (exec_via(&h)) YYERROR; } ; 
@@ -493,31 +493,31 @@ via_param_list
 via_param
   : padstack_name
   /* parameters below are for deprecated v1.0 via format */
-  | H_D '=' H_FLOAT   { h.drill_size = yylval.floatval; h.drill_size_set = pcb_true; } 
+  | H_D '=' H_FLOAT   { h.drill_size = yylval.floatval; h.drill_size_set = rnd_true; } 
   | layer1_name
   | layer2_name
-  | H_S '=' H_STRING  { h.via_pad_shape = yylval.strval; h.via_pad_shape_set = pcb_true; }
-  | H_SX '=' H_FLOAT  { h.via_pad_sx = yylval.floatval; h.via_pad_sx_set = pcb_true; }
-  | H_SY '=' H_FLOAT  { h.via_pad_sy = yylval.floatval; h.via_pad_sy_set = pcb_true; }
-  | H_A '=' H_FLOAT   { h.via_pad_angle = yylval.floatval; h.via_pad_angle_set = pcb_true; }
-  | H_S1 '=' H_STRING { h.via_pad1_shape = yylval.strval; h.via_pad1_shape_set = pcb_true; } 
-  | H_S1X '=' H_FLOAT { h.via_pad1_sx = yylval.floatval; h.via_pad1_sx_set = pcb_true; }
-  | H_S1Y '=' H_FLOAT { h.via_pad1_sy = yylval.floatval; h.via_pad1_sy_set = pcb_true; }
-  | H_A1 '=' H_FLOAT  { h.via_pad1_angle = yylval.floatval; h.via_pad1_angle_set = pcb_true; }
-  | H_S2 '=' H_STRING { h.via_pad2_shape = yylval.strval; h.via_pad2_shape_set = pcb_true; } 
-  | H_S2X '=' H_FLOAT { h.via_pad2_sx = yylval.floatval; h.via_pad2_sx_set = pcb_true; }
-  | H_S2Y '=' H_FLOAT { h.via_pad2_sy = yylval.floatval; h.via_pad2_sy_set = pcb_true; }
-  | H_A2 '=' H_FLOAT  { h.via_pad2_angle  = yylval.floatval; h.via_pad2_angle_set = pcb_true; }
+  | H_S '=' H_STRING  { h.via_pad_shape = yylval.strval; h.via_pad_shape_set = rnd_true; }
+  | H_SX '=' H_FLOAT  { h.via_pad_sx = yylval.floatval; h.via_pad_sx_set = rnd_true; }
+  | H_SY '=' H_FLOAT  { h.via_pad_sy = yylval.floatval; h.via_pad_sy_set = rnd_true; }
+  | H_A '=' H_FLOAT   { h.via_pad_angle = yylval.floatval; h.via_pad_angle_set = rnd_true; }
+  | H_S1 '=' H_STRING { h.via_pad1_shape = yylval.strval; h.via_pad1_shape_set = rnd_true; } 
+  | H_S1X '=' H_FLOAT { h.via_pad1_sx = yylval.floatval; h.via_pad1_sx_set = rnd_true; }
+  | H_S1Y '=' H_FLOAT { h.via_pad1_sy = yylval.floatval; h.via_pad1_sy_set = rnd_true; }
+  | H_A1 '=' H_FLOAT  { h.via_pad1_angle = yylval.floatval; h.via_pad1_angle_set = rnd_true; }
+  | H_S2 '=' H_STRING { h.via_pad2_shape = yylval.strval; h.via_pad2_shape_set = rnd_true; } 
+  | H_S2X '=' H_FLOAT { h.via_pad2_sx = yylval.floatval; h.via_pad2_sx_set = rnd_true; }
+  | H_S2Y '=' H_FLOAT { h.via_pad2_sy = yylval.floatval; h.via_pad2_sy_set = rnd_true; }
+  | H_A2 '=' H_FLOAT  { h.via_pad2_angle  = yylval.floatval; h.via_pad2_angle_set = rnd_true; }
   ;
 
 padstack_name
-  : H_P '=' H_STRING  { h.padstack_name = yylval.strval; h.padstack_name_set = pcb_true; } ;
+  : H_P '=' H_STRING  { h.padstack_name = yylval.strval; h.padstack_name_set = rnd_true; } ;
 
 layer1_name
-  : H_L1 '=' H_STRING { h.layer1_name = yylval.strval; h.layer1_name_set = pcb_true; } ;
+  : H_L1 '=' H_STRING { h.layer1_name = yylval.strval; h.layer1_name_set = rnd_true; } ;
 
 layer2_name
-  : H_L2 '=' H_STRING { h.layer2_name = yylval.strval; h.layer2_name_set = pcb_true; } ;
+  : H_L2 '=' H_STRING { h.layer2_name = yylval.strval; h.layer2_name_set = rnd_true; } ;
 
 pin
   : '(' H_PIN { new_record(); } coord_point pin_reference pin_param { if (exec_pin(&h)) YYERROR; } ;
@@ -533,13 +533,13 @@ pin_function_param
   ;
 
 pin_reference
-  : H_R '=' H_STRING  { h.pin_reference = yylval.strval; h.pin_reference_set = pcb_true; } ;
+  : H_R '=' H_STRING  { h.pin_reference = yylval.strval; h.pin_reference_set = rnd_true; } ;
 
 pin_function
-  : H_F '=' H_SIM_OUT  { h.pin_function = PIN_SIM_OUT; h.pin_function_set = pcb_true; }
-  | H_F '=' H_SIM_IN   { h.pin_function = PIN_SIM_IN; h.pin_function_set = pcb_true; }
-  | H_F '=' H_SIM_BOTH { h.pin_function = PIN_SIM_BOTH; h.pin_function_set = pcb_true; }
-  | H_F '=' H_STRING   { h.pin_function = PIN_SIM_BOTH; h.pin_function_set = pcb_true; hyyerror("warning: SIM_BOTH assumed"); }
+  : H_F '=' H_SIM_OUT  { h.pin_function = PIN_SIM_OUT; h.pin_function_set = rnd_true; }
+  | H_F '=' H_SIM_IN   { h.pin_function = PIN_SIM_IN; h.pin_function_set = rnd_true; }
+  | H_F '=' H_SIM_BOTH { h.pin_function = PIN_SIM_BOTH; h.pin_function_set = rnd_true; }
+  | H_F '=' H_STRING   { h.pin_function = PIN_SIM_BOTH; h.pin_function_set = rnd_true; hyyerror("warning: SIM_BOTH assumed"); }
   ;
 
 pad /* deprecated hyperlynx v1.x only */
@@ -552,10 +552,10 @@ pad_param_list
 
 pad_param
   : layer_name
-  | H_S '=' H_STRING  { h.via_pad_shape = yylval.strval; h.via_pad_shape_set = pcb_true; }
-  | H_SX '=' H_FLOAT  { h.via_pad_sx = yylval.floatval; h.via_pad_sx_set = pcb_true; }
-  | H_SY '=' H_FLOAT  { h.via_pad_sy = yylval.floatval; h.via_pad_sy_set = pcb_true; }
-  | H_A '=' H_FLOAT   { h.via_pad_angle = yylval.floatval; h.via_pad_angle_set = pcb_true; }
+  | H_S '=' H_STRING  { h.via_pad_shape = yylval.strval; h.via_pad_shape_set = rnd_true; }
+  | H_SX '=' H_FLOAT  { h.via_pad_sx = yylval.floatval; h.via_pad_sx_set = rnd_true; }
+  | H_SY '=' H_FLOAT  { h.via_pad_sy = yylval.floatval; h.via_pad_sy_set = rnd_true; }
+  | H_A '=' H_FLOAT   { h.via_pad_angle = yylval.floatval; h.via_pad_angle_set = rnd_true; }
   ;
 
 useg
@@ -567,19 +567,19 @@ useg_param
   ;
 
 useg_stackup
-  : H_ZL '=' H_STRING  { h.zlayer_name = yylval.strval; h.zlayer_name_set = pcb_true; } 
+  : H_ZL '=' H_STRING  { h.zlayer_name = yylval.strval; h.zlayer_name_set = rnd_true; } 
     H_ZW '=' H_FLOAT   { h.width = yylval.floatval; }
     H_ZLEN '=' H_FLOAT { h.length = yylval.floatval; }
     ')'
   ;
 
 useg_impedance
-  : H_Z '=' H_FLOAT    { h.impedance = yylval.floatval; h.impedance_set = pcb_true; }
+  : H_Z '=' H_FLOAT    { h.impedance = yylval.floatval; h.impedance_set = rnd_true; }
     H_D '=' H_FLOAT    { h.delay = yylval.floatval; }
     useg_resistance;
 
 useg_resistance 
-  : H_R '=' H_FLOAT    { h.resistance = yylval.floatval; h.resistance_set = pcb_true;}
+  : H_R '=' H_FLOAT    { h.resistance = yylval.floatval; h.resistance_set = rnd_true;}
     ')'
   | ')'
   ;
@@ -601,13 +601,13 @@ polygon_param
   ;
 
 polygon_id
-  : H_ID '=' H_POSINT { h.id = yylval.intval; h.id_set = pcb_true; } /* polygon id is a non-negative integer */
+  : H_ID '=' H_POSINT { h.id = yylval.intval; h.id_set = rnd_true; } /* polygon id is a non-negative integer */
   ;
 
 polygon_type
-  : H_T '=' H_POUR    { h.polygon_type = POLYGON_TYPE_POUR; h.polygon_type_set = pcb_true; }
-  | H_T '=' H_PLANE   { h.polygon_type = POLYGON_TYPE_PLANE; h.polygon_type_set = pcb_true; }
-  | H_T '=' H_COPPER  { h.polygon_type = POLYGON_TYPE_COPPER; h.polygon_type_set = pcb_true; }
+  : H_T '=' H_POUR    { h.polygon_type = POLYGON_TYPE_POUR; h.polygon_type_set = rnd_true; }
+  | H_T '=' H_PLANE   { h.polygon_type = POLYGON_TYPE_PLANE; h.polygon_type_set = rnd_true; }
+  | H_T '=' H_COPPER  { h.polygon_type = POLYGON_TYPE_COPPER; h.polygon_type_set = rnd_true; }
   ;
 
 polyvoid
@@ -723,44 +723,44 @@ void hyyprint(FILE *file, int type, YYSTYPE value)
 static void new_record()
 {
   h.vers = 0;
-  h.detailed = pcb_false;
-  h.unit_system_english = pcb_false;
-  h.metal_thickness_weight = pcb_false;
+  h.detailed = rnd_false;
+  h.unit_system_english = rnd_false;
+  h.metal_thickness_weight = rnd_false;
   h.default_plane_separation = 0;
-  h.use_die_for_metal = pcb_false;
+  h.use_die_for_metal = rnd_false;
   h.bulk_resistivity = 0;
-  h.conformal = pcb_false;
+  h.conformal = rnd_false;
   h.epsilon_r = 0;
   h.layer_name = NULL;
   h.loss_tangent = 0;
   h.material_name = NULL;
   h.plane_separation = 0;
   h.plating_thickness = 0;
-  h.prepreg = pcb_false;
+  h.prepreg = rnd_false;
   h.temperature_coefficient = 0;
   h.thickness = 0;
-  h.bulk_resistivity_set = pcb_false;
-  h.conformal_set = pcb_false;
-  h.epsilon_r_set = pcb_false;
-  h.layer_name_set = pcb_false;
-  h.loss_tangent_set = pcb_false;
-  h.material_name_set = pcb_false;
-  h.plane_separation_set = pcb_false;
-  h.plating_thickness_set = pcb_false;
-  h.prepreg_set = pcb_false;
-  h.temperature_coefficient_set = pcb_false;
-  h.thickness_set = pcb_false;
+  h.bulk_resistivity_set = rnd_false;
+  h.conformal_set = rnd_false;
+  h.epsilon_r_set = rnd_false;
+  h.layer_name_set = rnd_false;
+  h.loss_tangent_set = rnd_false;
+  h.material_name_set = rnd_false;
+  h.plane_separation_set = rnd_false;
+  h.plating_thickness_set = rnd_false;
+  h.prepreg_set = rnd_false;
+  h.temperature_coefficient_set = rnd_false;
+  h.thickness_set = rnd_false;
   h.device_type = NULL;
   h.ref = NULL;
   h.value_float = 0;
   h.value_string = NULL;
   h.package = NULL;
-  h.name_set = pcb_false;
-  h.value_float_set = pcb_false;
-  h.value_string_set = pcb_false;
-  h.package_set = pcb_false;
-  h.voltage_specified = pcb_false;
-  h.conversion = pcb_false;
+  h.name_set = rnd_false;
+  h.value_float_set = rnd_false;
+  h.value_string_set = rnd_false;
+  h.package_set = rnd_false;
+  h.voltage_specified = rnd_false;
+  h.conversion = rnd_false;
   h.padstack_name = NULL;
   h.drill_size = 0;
   h.pad_shape = 0;
@@ -772,57 +772,57 @@ static void new_record()
   h.thermal_clear_sy = 0;
   h.thermal_clear_angle = 0;
   h.pad_type = PAD_TYPE_METAL;
-  h.padstack_name_set = pcb_false;
-  h.drill_size_set = pcb_false;
-  h.pad_type_set = pcb_false;
+  h.padstack_name_set = rnd_false;
+  h.drill_size_set = rnd_false;
+  h.pad_type_set = rnd_false;
   h.width = 0;
   h.left_plane_separation = 0;
-  h.width_set = pcb_false;
-  h.left_plane_separation_set = pcb_false;
+  h.width_set = rnd_false;
+  h.left_plane_separation_set = rnd_false;
   h.layer1_name = NULL;
-  h.layer1_name_set = pcb_false;
+  h.layer1_name_set = rnd_false;
   h.layer2_name = NULL;
-  h.layer2_name_set = pcb_false;
+  h.layer2_name_set = rnd_false;
   h.via_pad_shape = NULL;
-  h.via_pad_shape_set = pcb_false;
+  h.via_pad_shape_set = rnd_false;
   h.via_pad_sx = 0;
-  h.via_pad_sx_set = pcb_false;
+  h.via_pad_sx_set = rnd_false;
   h.via_pad_sy = 0;
-  h.via_pad_sy_set = pcb_false;
+  h.via_pad_sy_set = rnd_false;
   h.via_pad_angle = 0;
-  h.via_pad_angle_set = pcb_false;
+  h.via_pad_angle_set = rnd_false;
   h.via_pad1_shape = NULL;
-  h.via_pad1_shape_set = pcb_false;
+  h.via_pad1_shape_set = rnd_false;
   h.via_pad1_sx = 0;
-  h.via_pad1_sx_set = pcb_false;
+  h.via_pad1_sx_set = rnd_false;
   h.via_pad1_sy = 0;
-  h.via_pad1_sy_set = pcb_false;
+  h.via_pad1_sy_set = rnd_false;
   h.via_pad1_angle = 0;
-  h.via_pad1_angle_set = pcb_false;
+  h.via_pad1_angle_set = rnd_false;
   h.via_pad2_shape = NULL;
-  h.via_pad2_shape_set = pcb_false;
+  h.via_pad2_shape_set = rnd_false;
   h.via_pad2_sx = 0;
-  h.via_pad2_sx_set = pcb_false;
+  h.via_pad2_sx_set = rnd_false;
   h.via_pad2_sy = 0;
-  h.via_pad2_sy_set = pcb_false;
+  h.via_pad2_sy_set = rnd_false;
   h.via_pad2_angle = 0;
-  h.via_pad2_angle_set = pcb_false;
+  h.via_pad2_angle_set = rnd_false;
   h.pin_reference = NULL;
-  h.pin_reference_set = pcb_false;
+  h.pin_reference_set = rnd_false;
   h.pin_function = PIN_SIM_BOTH;
-  h.pin_function_set = pcb_false;
+  h.pin_function_set = rnd_false;
   h.zlayer_name = NULL;
-  h.zlayer_name_set = pcb_false;
+  h.zlayer_name_set = rnd_false;
   h.length = 0;
   h.impedance = 0;
-  h.impedance_set = pcb_false;
+  h.impedance_set = rnd_false;
   h.delay = 0;
   h.resistance = 0;
-  h.resistance_set = pcb_false;
+  h.resistance_set = rnd_false;
   h.id = -1;
-  h.id_set = pcb_false;
+  h.id_set = rnd_false;
   h.polygon_type = POLYGON_TYPE_PLANE;
-  h.polygon_type_set = pcb_false;
+  h.polygon_type_set = rnd_false;
   h.net_class_name = NULL;
   h.net_name = NULL;
   h.key = NULL;

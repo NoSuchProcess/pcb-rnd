@@ -214,7 +214,7 @@ static double det(double a, double b, double c, double d)
 	return a * d - b * c;
 }
 
-/* The lines are x1y1-x2y2 and x3y3-x4y4.  Returns pcb_true if they
+/* The lines are x1y1-x2y2 and x3y3-x4y4.  Returns rnd_true if they
    intersect.  */
 static int intersection_of_lines(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, int *xr, int *yr)
 {
@@ -1459,9 +1459,9 @@ static pcb_arc_t *create_arc(pcb_line_t *sample, int x, int y, int r, int sa, in
 #if TRACE1
 	rnd_printf("create_arc at %#mD r %#mS sa %d delta %d\n", x, y, r, sa, da);
 #endif
-	arc = pcb_arc_new(PCB_CURRLAYER(PCB), x, y, r, r, sa, da, sample->Thickness, sample->Clearance, sample->Flags, pcb_true);
+	arc = pcb_arc_new(PCB_CURRLAYER(PCB), x, y, r, r, sa, da, sample->Thickness, sample->Clearance, sample->Flags, rnd_true);
 	if (arc == 0) {
-		arc = pcb_arc_new(PCB_CURRLAYER(PCB), x, y, r, r, sa, da * 2, sample->Thickness, sample->Clearance, sample->Flags, pcb_true);
+		arc = pcb_arc_new(PCB_CURRLAYER(PCB), x, y, r, r, sa, da * 2, sample->Thickness, sample->Clearance, sample->Flags, rnd_true);
 	}
 	pcb_undo_add_obj_to_create(PCB_OBJ_ARC, PCB_CURRLAYER(PCB), arc, arc);
 

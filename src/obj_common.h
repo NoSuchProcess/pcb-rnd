@@ -188,8 +188,8 @@ do { \
 } while(0) \
 
 
-/* pcb_true during file loads, for example to allow overlapping vias.
-   pcb_false otherwise, to stop the user from doing normally dangerous
+/* rnd_true during file loads, for example to allow overlapping vias.
+   rnd_false otherwise, to stop the user from doing normally dangerous
    things.  */
 void pcb_create_be_lenient(rnd_bool);
 extern rnd_bool pcb_create_being_lenient;

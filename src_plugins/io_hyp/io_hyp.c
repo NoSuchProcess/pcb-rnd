@@ -74,7 +74,7 @@ fgw_error_t pcb_act_LoadhypFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL;
 	int debug = 0;
-	pcb_bool_t retval;
+	rnd_bool_t retval;
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, LoadhypFrom, fname = argv[1].val.str);
 

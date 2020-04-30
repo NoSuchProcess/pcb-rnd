@@ -94,7 +94,7 @@ rnd_bool pcb_gtk_coords_pcb2event(const pcb_gtk_view_t *v, rnd_coord_t pcb_x, rn
 	*event_x = DRAW_X(v, pcb_x);
 	*event_y = DRAW_Y(v, pcb_y);
 
-	return pcb_true;
+	return rnd_true;
 }
 
 rnd_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int event_y, rnd_coord_t * pcb_x, rnd_coord_t * pcb_y)
@@ -102,7 +102,7 @@ rnd_bool pcb_gtk_coords_event2pcb(const pcb_gtk_view_t *v, int event_x, int even
 	*pcb_x = rnd_round(EVENT_TO_PCB_X(v, event_x));
 	*pcb_y = rnd_round(EVENT_TO_PCB_Y(v, event_y));
 
-	return pcb_true;
+	return rnd_true;
 }
 
 void pcb_gtk_zoom_post(pcb_gtk_view_t *v)

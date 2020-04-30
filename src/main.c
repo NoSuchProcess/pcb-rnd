@@ -518,7 +518,7 @@ int main(int argc, char *argv[])
 		command_line_pcb = ga.hid_argv[0];
 	if (command_line_pcb) {
 		int how = conf_core.rc.silently_create_on_load ? 0x10 : 0;
-		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, how) != 0) {
+		if (pcb_load_pcb(command_line_pcb, NULL, rnd_true, how) != 0) {
 			if (rnd_main_exporting) {
 				rnd_message(RND_MSG_ERROR, "Can not load file '%s' (specified on command line) for exporting or printing\n", command_line_pcb);
 				rnd_log_print_uninit_errs("Export load error");

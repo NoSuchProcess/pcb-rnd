@@ -502,7 +502,7 @@ static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_polyarea_boolean_free(info.brush, expand, &info.brush, PCB_PBO_UNITE);
 		}
 	} while (found);
-	pcb_board_set_changed_flag(pcb_true);
+	pcb_board_set_changed_flag(rnd_true);
 	pcb_undo_inc_serial();
 
 	RND_ACT_IRES(0);

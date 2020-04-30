@@ -76,22 +76,22 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_SubcToBuffer:
 		case F_Subcircuit:
 		case F_Footprint:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, format))
 				pcb_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
 		case F_LayoutToBuffer:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 			if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, name, format))
 				pcb_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
 		case F_Layout:
 			if (!PCB->Changed ||  rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
-				pcb_load_pcb(name, format, pcb_true, 0);
+				pcb_load_pcb(name, format, rnd_true, 0);
 			break;
 
 		case F_Netlist:
@@ -148,7 +148,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* PCB usgae: at the moment, while having only one global PCB, this function
    legitimately uses that */
 
-		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 		/* do emergency saving
 		 * clear the old struct and allocate memory for the new one
 		 */
@@ -176,7 +176,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_center_display(PCB->hidlib.size_x / 2, PCB->hidlib.size_y / 2);
 		pcb_board_changed(0);
 		rnd_hid_redraw(PCB);
-		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 		RND_ACT_IRES(0);
 		return 0;
 	}
@@ -255,13 +255,13 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				return FGW_ERR_ARGC;
 			}
 			if (pcb_save_pcb(RND_ACT_HIDLIB->filename, NULL) == 0)
-				pcb_board_set_changed_flag(pcb_false);
+				pcb_board_set_changed_flag(rnd_false);
 			rnd_event(RND_ACT_HIDLIB, RND_EVENT_BOARD_FN_CHANGED, NULL);
 			return 0;
 
 		case F_LayoutAs:
 			if (pcb_save_pcb(name, fmt) == 0) {
-				pcb_board_set_changed_flag(pcb_false);
+				pcb_board_set_changed_flag(rnd_false);
 				free(RND_ACT_HIDLIB->filename);
 				RND_ACT_HIDLIB->filename = rnd_strdup(name);
 				rnd_event(RND_ACT_HIDLIB, RND_EVENT_BOARD_FN_CHANGED, NULL);

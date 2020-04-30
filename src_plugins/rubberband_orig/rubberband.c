@@ -616,8 +616,8 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 				PCB_LINE_LOOP(layer);
 				{
 					pcb_rb_line_t *have_line = NULL;
-					rnd_bool touches1 = pcb_false;
-					rnd_bool touches2 = pcb_false;
+					rnd_bool touches1 = rnd_false;
+					rnd_bool touches2 = rnd_false;
 					int l;
 
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
@@ -748,8 +748,8 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *La
 				PCB_LINE_LOOP(layer);
 				{
 					pcb_rb_line_t *have_line = NULL;
-					rnd_bool touches1 = pcb_false;
-					rnd_bool touches2 = pcb_false;
+					rnd_bool touches1 = rnd_false;
+					rnd_bool touches2 = rnd_false;
 					int l;
 
 					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
@@ -807,8 +807,8 @@ static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pstk_t 
 					PCB_LINE_LOOP(layer);
 					{
 						pcb_rb_line_t *have_line = NULL;
-						rnd_bool touches1 = pcb_false;
-						rnd_bool touches2 = pcb_false;
+						rnd_bool touches1 = rnd_false;
+						rnd_bool touches2 = rnd_false;
 						int l;
 
 						if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
@@ -902,8 +902,8 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point1, 0);
 				CheckLinePointForRubberbandConnection(rbnd, layer, line, &line->Point2, 1);
 				if (conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0) {
-					CheckLinePointForRubberbandArcConnection(rbnd, layer, line, &line->Point1, pcb_true);
-					CheckLinePointForRubberbandArcConnection(rbnd, layer, line, &line->Point2, pcb_true);
+					CheckLinePointForRubberbandArcConnection(rbnd, layer, line, &line->Point1, rnd_true);
+					CheckLinePointForRubberbandArcConnection(rbnd, layer, line, &line->Point2, rnd_true);
 				}
 				break;
 			}
@@ -911,15 +911,15 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 		case PCB_OBJ_LINE_POINT:
 			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (rnd_point_t *) Ptr3, 0);
 			if (conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0)
-				CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (rnd_point_t *) Ptr3, pcb_true);
+				CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (rnd_point_t *) Ptr3, rnd_true);
 			break;
 
 		case PCB_OBJ_ARC_POINT:
-			CheckArcPointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *)Ptr3, pcb_true);
+			CheckArcPointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, (int *)Ptr3, rnd_true);
 			break;
 
 		case PCB_OBJ_ARC:
-			CheckArcForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, pcb_true);
+			CheckArcForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_arc_t *) Ptr2, rnd_true);
 			break;
 
 		case PCB_OBJ_POLY:

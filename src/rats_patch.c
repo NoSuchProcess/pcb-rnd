@@ -524,7 +524,7 @@ static int act_replace_footprint(int op, pcb_subc_t *olds, pcb_subc_t *news, cha
 
 				if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) || (subc->refdes == NULL))
 					continue;
-				placed = pcb_subc_replace(PCB, subc, news, pcb_true, dumb);
+				placed = pcb_subc_replace(PCB, subc, news, rnd_true, dumb);
 				if (placed != NULL) {
 					if (!dumb)
 						pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);
@@ -534,7 +534,7 @@ static int act_replace_footprint(int op, pcb_subc_t *olds, pcb_subc_t *news, cha
 			PCB_END_LOOP;
 			break;
 		case F_Object:
-			placed = pcb_subc_replace(PCB, olds, news, pcb_true, dumb);
+			placed = pcb_subc_replace(PCB, olds, news, rnd_true, dumb);
 			if (placed != NULL) {
 				if (!dumb)
 					pcb_ratspatch_append_optimize(PCB, RATP_CHANGE_ATTRIB, placed->refdes, "footprint", fpname);

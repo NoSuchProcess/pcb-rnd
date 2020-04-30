@@ -221,7 +221,7 @@ static void pse_chg_protoid(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 		return;
 
 	subc = pcb_obj_parent_subc((pcb_any_obj_t *)pse->ps);
-	proto_id = pcb_dlg_pstklib(pse->pcb, (subc == NULL ? 0 : subc->ID), pcb_true, "Select a new prototype to be used on the padstack");
+	proto_id = pcb_dlg_pstklib(pse->pcb, (subc == NULL ? 0 : subc->ID), rnd_true, "Select a new prototype to be used on the padstack");
 	if (proto_id == PCB_PADSTACK_INVALID)
 		return;
 
@@ -366,7 +366,7 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		pcb_pstkop_clip(&ctx, pse->ps);
 
 		for(n = 0; n < proto->tr.used; n++)
-			pcb_pstk_shape_clr_grow(proto, n, sidx, pcb_true, pse->attrs[pse->proto_clr[idx]].val.crd, 1);
+			pcb_pstk_shape_clr_grow(proto, n, sidx, rnd_true, pse->attrs[pse->proto_clr[idx]].val.crd, 1);
 
 		ctx.clip.clear = 1;
 		ctx.clip.restore = 0;
@@ -538,7 +538,7 @@ static void pse_shape_bloat(void *hid_ctx, void *caller_data, rnd_coord_t sign)
 
 	bloat *= sign;
 	for(n = 0; n < proto->tr.used; n++)
-		pcb_pstk_shape_grow(proto, n, dst_idx, pcb_false, bloat, 1);
+		pcb_pstk_shape_grow(proto, n, dst_idx, rnd_false, bloat, 1);
 
 	pcb_pstk_proto_update(proto);
 
@@ -630,7 +630,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
 	RND_DAD_END(dlg);
 
-	RND_DAD_NEW("padstack_shape", dlg, "Edit padstack shape", pse, pcb_true, NULL);
+	RND_DAD_NEW("padstack_shape", dlg, "Edit padstack shape", pse, rnd_true, NULL);
 	pse->shape_chg = dlg;
 
 /*	pse_ps2dlg(dlg_hid_ctx, pse);*/
@@ -987,7 +987,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
 	RND_DAD_END(dlg);
 
-	RND_DAD_NEW("padstack", dlg, "Edit padstack", pse, pcb_true, NULL);
+	RND_DAD_NEW("padstack", dlg, "Edit padstack", pse, rnd_true, NULL);
 	pse->attrs = dlg;
 	pse_ps2dlg(dlg_hid_ctx, pse);
 	if (target_tab > 0)

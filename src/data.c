@@ -220,13 +220,13 @@ rnd_bool pcb_data_is_empty(pcb_data_t *Data)
 {
 	rnd_cardinal_t i;
 
-	if (padstacklist_length(&Data->padstack) != 0) return pcb_false;
-	if (pcb_subclist_length(&Data->subc) != 0) return pcb_false;
+	if (padstacklist_length(&Data->padstack) != 0) return rnd_false;
+	if (pcb_subclist_length(&Data->subc) != 0) return rnd_false;
 	for (i = 0; i < Data->LayerN; i++)
 		if (!pcb_layer_is_pure_empty(&(Data->Layer[i])))
-			return pcb_false;
+			return rnd_false;
 
-	return pcb_true;
+	return rnd_true;
 }
 
 rnd_rnd_box_t *pcb_data_bbox(rnd_rnd_box_t *out, pcb_data_t *Data, rnd_bool ignore_floaters)
@@ -494,7 +494,7 @@ void pcb_data_scale(pcb_data_t *data, double sx, double sy, double sth, int recu
 			if (pcb_subc_get_origin(subc, &ox, &oy) == 0) {
 				nx = rnd_round((double)ox * sx);
 				ny = rnd_round((double)oy * sy);
-				pcb_subc_move(subc, nx - ox, ny - oy, pcb_true);
+				pcb_subc_move(subc, nx - ox, ny - oy, rnd_true);
 			}
 		}
 		PCB_END_LOOP;
@@ -529,7 +529,7 @@ int pcb_data_normalize_(pcb_data_t *data, rnd_rnd_box_t *data_bbox)
 
 	if (data_bbox == NULL) {
 		data_bbox = &tmp;
-		if (pcb_data_bbox(data_bbox, data, pcb_false) == NULL)
+		if (pcb_data_bbox(data_bbox, data, rnd_false) == NULL)
 			return -1;
 	}
 
@@ -815,12 +815,12 @@ void pcb_data_clip_all_poly(pcb_data_t *data, rnd_bool enable_progbar, rnd_bool 
 
 void pcb_data_clip_dirty(pcb_data_t *data, rnd_bool enable_progbar)
 {
-	pcb_data_clip_all_poly(data, enable_progbar, pcb_false);
+	pcb_data_clip_all_poly(data, enable_progbar, rnd_false);
 }
 
 void pcb_data_clip_all(pcb_data_t *data, rnd_bool enable_progbar)
 {
-	pcb_data_clip_all_poly(data, enable_progbar, pcb_true);
+	pcb_data_clip_all_poly(data, enable_progbar, rnd_true);
 }
 
 
@@ -866,7 +866,7 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 	unsigned long cnt = 0;
 
 	if (flag & PCB_FLAG_WARN)
-		conf_core.temp.rat_warn = pcb_false;
+		conf_core.temp.rat_warn = rnd_false;
 
 	if (tmask & PCB_OBJ_PSTK) {
 		for(n = pcb_r_first(data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it))

@@ -409,7 +409,7 @@ static void search_window_create(void)
 	RND_DAD_END(ctx->dlg);
 
 	RND_DAD_DEFSIZE(ctx->dlg, 300, 350);
-	RND_DAD_NEW("search", ctx->dlg, "pcb-rnd search", ctx, pcb_false, search_close_cb);
+	RND_DAD_NEW("search", ctx->dlg, "pcb-rnd search", ctx, rnd_false, search_close_cb);
 
 	ctx->visible[0][0] = 1;
 	update_vis(ctx);

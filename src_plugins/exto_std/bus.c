@@ -390,7 +390,7 @@ static void pcb_bus_gui_propedit(pcb_subc_t *subc)
 	/* set up the context */
 	bus->gui_active = 1;
 
-	RND_DAD_NEW("bus", bus->dlg, "Bus", subc, pcb_false, pcb_bus_close_cb);
+	RND_DAD_NEW("bus", bus->dlg, "Bus", subc, rnd_false, pcb_bus_close_cb);
 }
 
 static pcb_extobj_t pcb_bus = {

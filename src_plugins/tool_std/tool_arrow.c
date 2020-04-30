@@ -52,11 +52,11 @@
 
 void pcb_tool_arrow_uninit(void)
 {
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
 /* Called some time after the click if there was a release but no second click
@@ -68,26 +68,26 @@ static void click_timer_cb(rnd_hidval_t hv)
 	pcb_board_t *pcb = hv.ptr;
 
 	if (hl->tool_click) {
-		rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
-		hl->tool_click = pcb_false;
+		rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
+		hl->tool_click = rnd_false;
 		if (pcb_crosshair_note.Moving && !rnd_gui->shift_is_pressed(rnd_gui)) {
-			hl->tool_grabbed.status = pcb_true;
+			hl->tool_grabbed.status = rnd_true;
 			pcb_crosshair_note.Buffer = conf_core.editor.buffer_number;
 			pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
 			pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
-			pcb_buffer_add_selected(pcb, PCB_PASTEBUFFER, hl->tool_x, hl->tool_y, pcb_true, pcb_true);
+			pcb_buffer_add_selected(pcb, PCB_PASTEBUFFER, hl->tool_x, hl->tool_y, rnd_true, rnd_true);
 			pcb_undo_save_serial();
-			pcb_remove_selected(pcb_false);
+			pcb_remove_selected(rnd_false);
 			pcb_tool_save(hl);
-			pcb_tool_is_saved = pcb_true;
+			pcb_tool_is_saved = rnd_true;
 			pcb_tool_select_by_name(hl, "buffer");
 		}
 		else if (hl->tool_hit && !rnd_gui->shift_is_pressed(rnd_gui)) {
 			rnd_rnd_box_t box;
 
-			hl->tool_grabbed.status = pcb_true;
+			hl->tool_grabbed.status = rnd_true;
 			pcb_tool_save(hl);
-			pcb_tool_is_saved = pcb_true;
+			pcb_tool_is_saved = rnd_true;
 			pcb_tool_select_by_name(hl, rnd_gui->control_is_pressed(rnd_gui)? "copy" : "move");
 			pcb_crosshair.AttachedObject.Ptr1 = pcb_crosshair_note.ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = pcb_crosshair_note.ptr2;
@@ -106,26 +106,26 @@ static void click_timer_cb(rnd_hidval_t hv)
 			box.Y2 = hl->tool_y - PCB_SLOP * rnd_pixel_slop;
 			pcb_crosshair.drags = pcb_list_block(pcb, &box, &pcb_crosshair.drags_len);
 			pcb_crosshair.drags_current = 0;
-			pcb_tool_attach_for_copy(hl, hl->tool_x, hl->tool_y, pcb_true);
+			pcb_tool_attach_for_copy(hl, hl->tool_x, hl->tool_y, rnd_true);
 		}
 		else {
 			rnd_rnd_box_t box;
 
 			hl->tool_hit = 0;
-			pcb_crosshair_note.Moving = pcb_false;
+			pcb_crosshair_note.Moving = rnd_false;
 			pcb_undo_save_serial();
 			box.X1 = -RND_MAX_COORD;
 			box.Y1 = -RND_MAX_COORD;
 			box.X2 = RND_MAX_COORD;
 			box.Y2 = RND_MAX_COORD;
 			/* unselect first if shift key not down */
-			if (!rnd_gui->shift_is_pressed(rnd_gui) && pcb_select_block(pcb, &box, pcb_false, pcb_false, pcb_false))
-				pcb_board_set_changed_flag(pcb_true);
+			if (!rnd_gui->shift_is_pressed(rnd_gui) && pcb_select_block(pcb, &box, rnd_false, rnd_false, rnd_false))
+				pcb_board_set_changed_flag(rnd_true);
 			pcb_tool_notify_block();
 			pcb_crosshair.AttachedBox.Point1.X = hl->tool_x;
 			pcb_crosshair.AttachedBox.Point1.Y = hl->tool_y;
 		}
-		rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+		rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 	}
 
 	if (pcb_crosshair.extobj_edit != NULL) {
@@ -141,7 +141,7 @@ void pcb_tool_arrow_notify_mode(rnd_hidlib_t *hl)
 	int test;
 	rnd_hidval_t hv;
 
-	hl->tool_click = pcb_true;
+	hl->tool_click = rnd_true;
 	/* do something after click time */
 	hv.ptr = hl;
 	rnd_gui->add_timer(rnd_gui, click_timer_cb, conf_core.editor.click_time, hv);
@@ -167,7 +167,7 @@ void pcb_tool_arrow_notify_mode(rnd_hidlib_t *hl)
 			pcb_crosshair.AttachedObject.ty = hl->tool_y;
 		}
 		if (!pcb_crosshair_note.Moving && (type & (PCB_SELECT_TYPES | PCB_LOOSE_SUBC(PCB))) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, (pcb_any_obj_t *) ptr2)) {
-			pcb_crosshair_note.Moving = pcb_true;
+			pcb_crosshair_note.Moving = rnd_true;
 			/* remember where the user clicked to start this op */
 			pcb_crosshair.AttachedObject.tx = pcb_crosshair.AttachedObject.X = hl->tool_x;
 			pcb_crosshair.AttachedObject.ty = pcb_crosshair.AttachedObject.Y = hl->tool_y;
@@ -190,12 +190,12 @@ void pcb_tool_arrow_release_mode(rnd_hidlib_t *hl)
 		box.X2 = RND_MAX_COORD;
 		box.Y2 = RND_MAX_COORD;
 
-		hl->tool_click = pcb_false;					/* inhibit timer action */
+		hl->tool_click = rnd_false;					/* inhibit timer action */
 		pcb_undo_save_serial();
 		/* unselect first if shift key not down */
 		if (!rnd_gui->shift_is_pressed(rnd_gui)) {
-			if (pcb_select_block(pcb, &box, pcb_false, pcb_false, pcb_false))
-				pcb_board_set_changed_flag(pcb_true);
+			if (pcb_select_block(pcb, &box, rnd_false, rnd_false, rnd_false))
+				pcb_board_set_changed_flag(rnd_true);
 			if (pcb_crosshair_note.Moving) {
 				pcb_crosshair_note.Moving = 0;
 				hl->tool_hit = 0;
@@ -206,7 +206,7 @@ void pcb_tool_arrow_release_mode(rnd_hidlib_t *hl)
 		   gets the same SN. */
 		pcb_undo_restore_serial();
 		if (pcb_select_object(PCB))
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		else
 			pcb_undo_inc_serial(); /* We didn't select anything new, so, the deselection should get its  own SN. */
 		hl->tool_hit = 0;
@@ -219,8 +219,8 @@ void pcb_tool_arrow_release_mode(rnd_hidlib_t *hl)
 		box.Y2 = pcb_crosshair.AttachedBox.Point2.Y;
 
 		pcb_undo_restore_serial();
-		if (pcb_select_block(pcb, &box, pcb_true, pcb_true, pcb_false)) {
-			pcb_board_set_changed_flag(pcb_true);
+		if (pcb_select_block(pcb, &box, rnd_true, rnd_true, rnd_false)) {
+			pcb_board_set_changed_flag(rnd_true);
 			pcb_undo_inc_serial();
 		}
 		else if (pcb_bumped)

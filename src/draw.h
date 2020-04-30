@@ -124,7 +124,7 @@ void pcb_lighten_color(const rnd_color_t *orig, rnd_color_t *dst, double factor)
    the number of on/off segment pairs. It is guaranteed that the line starts
    and ends with an "on" line segment. If cheap is true, allow drawing less
    segments if the line is short */
-void pcb_draw_dashed_line(pcb_draw_info_t *info, rnd_hid_gc_t GC, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned int segs, pcb_bool_t cheap);
+void pcb_draw_dashed_line(pcb_draw_info_t *info, rnd_hid_gc_t GC, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned int segs, rnd_bool_t cheap);
 
 
 void pcb_draw(void);

@@ -234,7 +234,7 @@ int pcb_poly_is_valid(pcb_poly_t *p)
 
 		/* Is current point last in contour? If so process it. */
 		if (n == p->PointN - 1) {
-			pcb_poly_contour_pre(contour, pcb_true);
+			pcb_poly_contour_pre(contour, rnd_true);
 
 			if (contour->Count == 0) {
 				pcb_poly_contours_free(&contour);
@@ -721,7 +721,7 @@ void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *
 {
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Polygon))
 		return NULL;
-	pcb_undo_add_obj_to_clear_poly(PCB_OBJ_POLY, Layer, Polygon, Polygon, pcb_true);
+	pcb_undo_add_obj_to_clear_poly(PCB_OBJ_POLY, Layer, Polygon, Polygon, rnd_true);
 	pcb_undo_add_obj_to_flag(Polygon);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARPOLY, Polygon);
 	pcb_poly_init_clip(PCB->Data, Layer, Polygon);
@@ -763,7 +763,7 @@ void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *
 			Polygon->HoleIndex[n]++;
 
 	Polygon->Points[ctx->insert.idx] = save;
-	pcb_board_set_changed_flag(pcb_true);
+	pcb_board_set_changed_flag(rnd_true);
 	pcb_undo_add_obj_to_insert_point(PCB_OBJ_POLY_POINT, Layer, Polygon, &Polygon->Points[ctx->insert.idx]);
 
 	pcb_poly_bbox(Polygon);
@@ -784,13 +784,13 @@ void *pcb_polyop_change_join(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *p
 		return NULL;
 	pcb_poly_invalidate_erase(poly);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, poly)) {
-		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_POLY, Layer, poly, poly, pcb_false);
+		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_POLY, Layer, poly, poly, rnd_false);
 		pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_POLY, Layer, poly);
 	}
 	pcb_undo_add_obj_to_flag(poly);
 	PCB_FLAG_TOGGLE(PCB_FLAG_CLEARPOLYPOLY, poly);
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, poly)) {
-		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_POLY, Layer, poly, poly, pcb_true);
+		pcb_undo_add_obj_to_clear_poly(PCB_OBJ_POLY, Layer, poly, poly, rnd_true);
 		pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_POLY, Layer, poly);
 	}
 	pcb_poly_invalidate_draw(Layer, poly);
@@ -1217,7 +1217,7 @@ void pcb_poly_name_invalidate_draw(pcb_poly_t *poly)
 {
 	if (poly->term != NULL) {
 		pcb_term_label_invalidate((poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
-			100.0, is_poly_term_vert(poly), pcb_true, (pcb_any_obj_t *)poly);
+			100.0, is_poly_term_vert(poly), rnd_true, (pcb_any_obj_t *)poly);
 	}
 }
 
@@ -1225,7 +1225,7 @@ void pcb_poly_draw_label(pcb_draw_info_t *info, pcb_poly_t *poly)
 {
 	if (poly->term != NULL)
 		pcb_term_label_draw(info, (poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
-			conf_core.appearance.term_label_size, is_poly_term_vert(poly), pcb_true, (pcb_any_obj_t *)poly);
+			conf_core.appearance.term_label_size, is_poly_term_vert(poly), rnd_true, (pcb_any_obj_t *)poly);
 
 	if (poly->noexport)
 		pcb_obj_noexport_mark(poly, (poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2);

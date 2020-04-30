@@ -108,19 +108,19 @@ rnd_bool pcb_pline_is_aligned(const pcb_pline_t *src)
 	do {
 		n = v->next;
 		if ((v->point[0] != n->point[0]) && (v->point[1] != n->point[1]))
-			return pcb_false;
+			return rnd_false;
 	}
 	while((v = v->next) != src->head);
-	return pcb_true;
+	return rnd_true;
 }
 
 
 rnd_bool pcb_cpoly_is_simple_rect(const pcb_poly_t *p)
 {
 	if (p->Clipped->f != p->Clipped)
-		return pcb_false; /* more than one islands */
+		return rnd_false; /* more than one islands */
 	if (p->Clipped->contours->next != NULL)
-		return pcb_false; /* has holes */
+		return rnd_false; /* has holes */
 	return pcb_pline_is_rectangle(p->Clipped->contours);
 }
 
@@ -411,7 +411,7 @@ static int polyhatch_gui(rnd_coord_t *period, pcb_cpoly_hatchdir_t *dir, pcb_fla
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
 	RND_DAD_END(dlg);
 
-	RND_DAD_NEW("poly_hatch", dlg, "Polygon hatch", NULL, pcb_true, NULL);
+	RND_DAD_NEW("poly_hatch", dlg, "Polygon hatch", NULL, rnd_true, NULL);
 	if (RND_DAD_RUN(dlg) != 0) {
 	/* cancel */
 		RND_DAD_FREE(dlg);

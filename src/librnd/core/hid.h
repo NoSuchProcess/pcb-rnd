@@ -259,7 +259,7 @@ struct rnd_hid_s {
 	   keyword/function version; layer is the first layer in the group.
 	   TODO: The group may be -1 until the layer rewrite is finished.
 	   If it returns false (zero), the HID does not want that layer, and none of
-	   the drawing functions should be called.  If it returns pcb_true (nonzero),
+	   the drawing functions should be called.  If it returns rnd_true (nonzero),
 	   the items in that layer [group] should be drawn using the various drawing
 	   functions.  In addition to the copper layer groups, you may select virtual
 	   layers. The is_empty argument is a hint - if set, the layer is empty, if
@@ -358,7 +358,7 @@ struct rnd_hid_s {
 	/* Causes func_ to be called when some condition occurs on the file
 	   descriptor passed. Conditions include data for reading, writing,
 	   hangup, and errors. user_data_ can be anything, it's just passed
-	   to func. If the watch function returns pcb_true, the watch is kept, else
+	   to func. If the watch function returns rnd_true, the watch is kept, else
 	   it is removed. */
 	rnd_hidval_t (*watch_file)(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data), rnd_hidval_t user_data);
 
@@ -632,14 +632,14 @@ do { \
 
 /* Notify the GUI that data relating to the crosshair is being changed.
  *
- * The argument passed is pcb_false to notify "changes are about to happen",
- * and pcb_true to notify "changes have finished".
+ * The argument passed is rnd_false to notify "changes are about to happen",
+ * and rnd_true to notify "changes have finished".
  *
- * Each call with a 'pcb_false' parameter must be matched with a following one
- * with a 'pcb_true' parameter. Unmatched 'pcb_true' calls are currently not permitted,
+ * Each call with a 'rnd_false' parameter must be matched with a following one
+ * with a 'rnd_true' parameter. Unmatched 'rnd_true' calls are currently not permitted,
  * but might be allowed in the future.
  *
- * GUIs should not complain if they receive extra calls with 'pcb_true' as parameter.
+ * GUIs should not complain if they receive extra calls with 'rnd_true' as parameter.
  * They should initiate a redraw of the crosshair attached objects - which may
  * (if necessary) mean repainting the whole screen if the GUI hasn't tracked the
  * location of existing attached drawing. */

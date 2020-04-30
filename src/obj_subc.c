@@ -247,16 +247,16 @@ rnd_bool pcb_subc_find_aux_point(pcb_subc_t *sc, const char *role, rnd_coord_t *
 	if (sc->aux_layer == NULL)
 		pcb_subc_cache_update(sc);
 	if (sc->aux_layer == NULL)
-		return pcb_false;
+		return rnd_false;
 
 	l = find_aux_line(sc->aux_layer, role);
 	if (l == NULL)
-		return pcb_false;
+		return rnd_false;
 
 	*x = l->Point1.X;
 	*y = l->Point1.Y;
 
-	return pcb_true;
+	return rnd_true;
 }
 
 int pcb_subc_get_origin(pcb_subc_t *sc, rnd_coord_t *x, rnd_coord_t *y)
@@ -664,7 +664,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	vtp0_uninit(&mask_pads);
 	vtp0_uninit(&paste_pads);
 
-	pcb_subc_create_aux(sc, buffer->X, buffer->Y, 0.0, pcb_false);
+	pcb_subc_create_aux(sc, buffer->X, buffer->Y, 0.0, rnd_false);
 
 	/* Add refdes */
 	if ((conf_core.editor.subc_conv_refdes != NULL) && (*conf_core.editor.subc_conv_refdes != '\0')) {
@@ -1027,13 +1027,13 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 {
-	return pcb_subc_dup_at(pcb, dst, src, 0, 0, pcb_false);
+	return pcb_subc_dup_at(pcb, dst, src, 0, 0, rnd_false);
 }
 
 void pcb_subc_bbox(pcb_subc_t *sc)
 {
-	pcb_data_bbox(&sc->BoundingBox, sc->data, pcb_true);
-	pcb_data_bbox_naked(&sc->bbox_naked, sc->data, pcb_true);
+	pcb_data_bbox(&sc->BoundingBox, sc->data, rnd_true);
+	pcb_data_bbox_naked(&sc->bbox_naked, sc->data, rnd_true);
 }
 
 
@@ -1278,7 +1278,7 @@ void pcb_subc_move(pcb_subc_t *sc, rnd_coord_t dx, rnd_coord_t dy, rnd_bool more
 
 rnd_bool pcb_selected_subc_change_side(void)
 {
-	rnd_bool change = pcb_false;
+	rnd_bool change = rnd_false;
 
 	if (PCB->pstk_on) {
 		PCB_SUBC_LOOP(PCB->Data);
@@ -1583,7 +1583,7 @@ rnd_bool pcb_subc_smash_buffer(pcb_buffer_t *buff)
 	}
 	if (warn)
 		rnd_message(RND_MSG_WARNING, "There are %ld layers that got lost in the smash because they were on unbound subc layers\nThis normally happens if your subcircuits in buffer refer to layers that do not exist on your board.\n", warn);
-	return pcb_true;
+	return rnd_true;
 }
 
 int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
@@ -1908,7 +1908,7 @@ rnd_bool pcb_subc_change_side(pcb_subc_t *subc, rnd_coord_t yoff)
 	pcb_data_t *data;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, subc))
-		return pcb_false;
+		return rnd_false;
 
 	pcb_data_clip_inhibit_inc(PCB->Data);
 
@@ -1941,7 +1941,7 @@ rnd_bool pcb_subc_change_side(pcb_subc_t *subc, rnd_coord_t yoff)
 
 	pcb_data_clip_inhibit_dec(PCB->Data, 0);
 
-	return pcb_true;
+	return rnd_true;
 }
 
 
@@ -1996,10 +1996,10 @@ pcb_r_dir_t pcb_draw_subc_mark(const rnd_rnd_box_t *b, void *cl)
 	}
 
 	if (freq >= 0) {
-		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1, freq, pcb_true);
-		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X1, bb->Y2, freq, pcb_true);
-		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X2, bb->Y1, freq, pcb_true);
-		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2, freq, pcb_true);
+		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X2, bb->Y1, freq, rnd_true);
+		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X1, bb->Y1, bb->X1, bb->Y2, freq, rnd_true);
+		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X2, bb->Y1, freq, rnd_true);
+		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2, freq, rnd_true);
 	}
 
 	return PCB_R_DIR_FOUND_CONTINUE;
@@ -2173,7 +2173,7 @@ rnd_bool pcb_subc_is_empty(pcb_subc_t *subc)
 	return pcb_data_is_empty(subc->data);
 }
 
-pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, pcb_bool_t alloc, const char *name, rnd_bool req_name_match)
+pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, rnd_bool_t alloc, const char *name, rnd_bool req_name_match)
 {
 	int n;
 

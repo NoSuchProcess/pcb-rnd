@@ -1121,11 +1121,11 @@ static routedata_t *CreateRouteData()
 			/* layer must be 1) copper and 2) on */
 			if ((pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER) && PCB->Data->Layer[lid].meta.real.vis) {
 				routing_layers++;
-				is_layer_group_active[group] = pcb_true;
+				is_layer_group_active[group] = rnd_true;
 				break;
 			}
 			else
-				is_layer_group_active[group] = pcb_false;
+				is_layer_group_active[group] = rnd_false;
 		}
 	}
 	/* if via visibility is turned off, don't use them */
@@ -1182,14 +1182,14 @@ static routedata_t *CreateRouteData()
 		PCB_COPPER_GROUP_LOOP(PCB->Data, i);
 		{
 			if (!PCB_RTREE_EMPTY(layer->line_tree) || !PCB_RTREE_EMPTY(layer->arc_tree))
-				usedGroup[i] = pcb_true;
+				usedGroup[i] = rnd_true;
 			else
-				usedGroup[i] = pcb_false;
+				usedGroup[i] = rnd_false;
 		}
 		PCB_END_LOOP;
 	}
-	usedGroup[front] = pcb_true;
-	usedGroup[back] = pcb_true;
+	usedGroup[front] = rnd_true;
+	usedGroup[back] = rnd_true;
 
 	CreateRouteData_nets(rd, layergroupboxes);
 
@@ -1324,11 +1324,11 @@ rnd_bool TargetPoint(rnd_cheap_point_t * nextpoint, const routebox_t * target)
 /*	if (target->type == PIN) {
 		nextpoint->X = target->parent.pin->X;
 		nextpoint->Y = target->parent.pin->Y;
-		return pcb_true;
+		return rnd_true;
 	}*/
 	nextpoint->X = RND_BOX_CENTER_X(target->sbox);
 	nextpoint->Y = RND_BOX_CENTER_Y(target->sbox);
-	return pcb_false;
+	return rnd_false;
 }
 
 /* return the *minimum cost* from a point to a route box, including possible
@@ -1673,7 +1673,7 @@ static edge_t *CreateViaEdge(const rnd_rnd_box_t * area, rnd_cardinal_t group,
 
 	assert(rnd_box_is_good(area));
 	assert(AutoRouteParameters.with_conflicts || (to_site_conflict == NO_CONFLICT && through_site_conflict == NO_CONFLICT));
-	rb = CreateExpansionArea(area, group, parent, pcb_true, previous_edge);
+	rb = CreateExpansionArea(area, group, parent, rnd_true, previous_edge);
 	rb->flags.is_via = 1;
 	rb->came_from = RND_ANY_DIR;
 #if defined(ROUTE_DEBUG) && defined(DEBUG_SHOW_VIA_BOXES)
@@ -1737,8 +1737,8 @@ static edge_t *CreateEdgeWithConflicts(const rnd_rnd_box_t * interior_edge,
 	assert(container->flags.touched == 0);
 	assert(previous_edge->rb->group == container->group);
 	/* use the caller's idea of what this box should be */
-	rb = CreateExpansionArea(interior_edge, previous_edge->rb->group, previous_edge->rb, pcb_true, previous_edge);
-	path_conflicts(rb, container, pcb_true);	/* crucial! */
+	rb = CreateExpansionArea(interior_edge, previous_edge->rb->group, previous_edge->rb, rnd_true, previous_edge);
+	path_conflicts(rb, container, rnd_true);	/* crucial! */
 	costpoint = rnd_closest_cheap_point_in_box(&previous_edge->cost_point, interior_edge);
 	d = pcb_cost_to_point_on_layer(&costpoint, &previous_edge->cost_point, previous_edge->rb->group);
 	d *= cost_penalty_to_box;
@@ -2037,18 +2037,18 @@ static rnd_bool boink_box(routebox_t * rb, struct E_result *res, rnd_direction_t
 	case RND_NORTH:
 	case RND_SOUTH:
 		if (rb->sbox.X2 <= res->inflated.X1 + bloat || rb->sbox.X1 >= res->inflated.X2 - bloat)
-			return pcb_false;
-		return pcb_true;
+			return rnd_false;
+		return rnd_true;
 	case RND_EAST:
 	case RND_WEST:
 		if (rb->sbox.Y1 >= res->inflated.Y2 - bloat || rb->sbox.Y2 <= res->inflated.Y1 + bloat)
-			return pcb_false;
-		return pcb_true;
+			return rnd_false;
+		return rnd_true;
 		break;
 	default:
 		assert(0);
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* main Expand routine.
@@ -2392,7 +2392,7 @@ moveable_edge(vector_t * result, const rnd_rnd_box_t * box, rnd_direction_t dir,
 		vector_append(area_vec, nrb);
 		nrb->flags.homeless = 0;		/* not homeless any more */
 		/* mark this one as conflicted */
-		path_conflicts(nrb, blocker, pcb_true);
+		path_conflicts(nrb, blocker, rnd_true);
 		/* and make an expansion edge */
 		nrb->cost_point = rnd_closest_cheap_point_in_box(&nrb->cost_point, &blocker->sbox);
 		nrb->cost +=
@@ -2933,7 +2933,7 @@ TODO("padstack: when style contains proto, remove this")
 		rb->flags.is_odd = AutoRouteParameters.is_odd;
 		rb->flags.is_bad = is_bad;
 		rb->came_from = RND_ANY_DIR;
-		rb->flags.circular = pcb_true;
+		rb->flags.circular = rnd_true;
 		rb->style = AutoRouteParameters.style;
 		rb->pass = AutoRouteParameters.pass;
 		if (first_via == NULL) {
@@ -3055,7 +3055,7 @@ RD_DrawLine(routedata_t * rd,
 	/* and to the via space structures */
 	if (AutoRouteParameters.use_vias)
 		mtspace_add(rd->mtspace, &rb->box, rb->flags.is_odd ? ODD : EVEN, rb->style->Clearance);
-	usedGroup[rb->group] = pcb_true;
+	usedGroup[rb->group] = rnd_true;
 	/* and queue this one */
 	qX1 = X1;
 	qY1 = Y1;
@@ -3076,12 +3076,12 @@ RD_DrawManhattanLine(routedata_t * rd,
 {
 	rnd_cheap_point_t knee = start;
 	if (end.X == start.X) {
-		RD_DrawLine(rd, start.X, start.Y, end.X, end.Y, halfthick, group, subnet, is_bad, pcb_false);
-		return pcb_false;
+		RD_DrawLine(rd, start.X, start.Y, end.X, end.Y, halfthick, group, subnet, is_bad, rnd_false);
+		return rnd_false;
 	}
 	else if (end.Y == start.Y) {
-		RD_DrawLine(rd, start.X, start.Y, end.X, end.Y, halfthick, group, subnet, is_bad, pcb_false);
-		return pcb_true;
+		RD_DrawLine(rd, start.X, start.Y, end.X, end.Y, halfthick, group, subnet, is_bad, rnd_false);
+		return rnd_true;
 	}
 	/* find where knee belongs */
 	if (rnd_point_in_box(box1, end.X, start.Y)
@@ -3103,8 +3103,8 @@ RD_DrawManhattanLine(routedata_t * rd,
 
 	if (1 || !AutoRouteParameters.is_smoothing) {
 		/* draw standard manhattan paths */
-		RD_DrawLine(rd, start.X, start.Y, knee.X, knee.Y, halfthick, group, subnet, is_bad, pcb_false);
-		RD_DrawLine(rd, knee.X, knee.Y, end.X, end.Y, halfthick, group, subnet, is_bad, pcb_false);
+		RD_DrawLine(rd, start.X, start.Y, knee.X, knee.Y, halfthick, group, subnet, is_bad, rnd_false);
+		RD_DrawLine(rd, knee.X, knee.Y, end.X, end.Y, halfthick, group, subnet, is_bad, rnd_false);
 	}
 	else {
 		/* draw 45-degree path across knee */
@@ -3118,9 +3118,9 @@ RD_DrawManhattanLine(routedata_t * rd,
 			kneeend.Y += (kneeend.Y > end.Y) ? -len45 : len45;
 		else
 			kneeend.X += (kneeend.X > end.X) ? -len45 : len45;
-		RD_DrawLine(rd, start.X, start.Y, kneestart.X, kneestart.Y, halfthick, group, subnet, is_bad, pcb_false);
-		RD_DrawLine(rd, kneestart.X, kneestart.Y, kneeend.X, kneeend.Y, halfthick, group, subnet, is_bad, pcb_true);
-		RD_DrawLine(rd, kneeend.X, kneeend.Y, end.X, end.Y, halfthick, group, subnet, is_bad, pcb_false);
+		RD_DrawLine(rd, start.X, start.Y, kneestart.X, kneestart.Y, halfthick, group, subnet, is_bad, rnd_false);
+		RD_DrawLine(rd, kneestart.X, kneestart.Y, kneeend.X, kneeend.Y, halfthick, group, subnet, is_bad, rnd_true);
+		RD_DrawLine(rd, kneeend.X, kneeend.Y, end.X, end.Y, halfthick, group, subnet, is_bad, rnd_false);
 	}
 	return (knee.X != end.X);
 }
@@ -3170,7 +3170,7 @@ static void add_clearance(rnd_cheap_point_t * nextpoint, const rnd_rnd_box_t * b
 
 static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * target, routebox_t * subnet, rnd_bool is_bad)
 {
-	rnd_bool last_x = pcb_false;
+	rnd_bool last_x = rnd_false;
 	rnd_coord_t halfwidth = HALF_THICK(AutoRouteParameters.style->Thick);
 	rnd_coord_t radius = HALF_THICK(AutoRouteParameters.style->Diameter);
 	rnd_cheap_point_t lastpoint, nextpoint;
@@ -3221,7 +3221,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 			b = rnd_shrink_box(&b, MIN(b.X2 - b.X1, b.Y2 - b.Y1) / 5);
 		nextpoint = rnd_closest_cheap_point_in_box(&lastpoint, &b);
 		if (AutoRouteParameters.last_smooth)
-			RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, pcb_true);
+			RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, rnd_true);
 		else
 			last_x = RD_DrawManhattanLine(rd, &target->sbox, &path->sbox,
 																		lastpoint, nextpoint, halfwidth, path->group, subnet, is_bad, last_x);
@@ -3265,7 +3265,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 		/* knee is placed in lastpath box */
 		/* should never cause line to leave union of lastpath/path boxes */
 		if (AutoRouteParameters.last_smooth)
-			RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, pcb_true);
+			RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, rnd_true);
 		else
 			last_x = RD_DrawManhattanLine(rd, &lastpath->sbox, &path->sbox,
 																		lastpoint, nextpoint, halfwidth, path->group, subnet, is_bad, last_x);
@@ -3296,7 +3296,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 					add_clearance(&lastpoint, &b);
 #else
 				if (AutoRouteParameters.last_smooth)
-					RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, pcb_true);
+					RD_DrawLine(rd, lastpoint.X, lastpoint.Y, nextpoint.X, nextpoint.Y, halfwidth, path->group, subnet, is_bad, rnd_true);
 				else
 #endif
 					last_x = RD_DrawManhattanLine(rd, &b, &b, nextpoint, lastpoint, halfwidth, path->group, subnet, is_bad, last_x);
@@ -3314,7 +3314,7 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 	}
 	while (!path->flags.source);
 	/* flush the line queue */
-	RD_DrawLine(rd, -1, 0, 0, 0, 0, 0, NULL, pcb_false, pcb_false);
+	RD_DrawLine(rd, -1, 0, 0, 0, 0, 0, NULL, rnd_false, rnd_false);
 
 	if (conf_core.editor.live_routing)
 		pcb_draw();
@@ -3524,9 +3524,9 @@ static rnd_bool net_id(routebox_t * rb, long int id)
 	routebox_t *p;
 	LIST_LOOP(rb, same_net, p);
 	if (p->flags.source && p->parent.pad->ID == id)
-		return pcb_true;
+		return rnd_true;
 	PCB_END_LOOP;
-	return pcb_false;
+	return rnd_false;
 }
 
 static void trace_parents(routebox_t * rb)
@@ -3580,7 +3580,7 @@ static pcb_r_dir_t __conflict_source(const rnd_rnd_box_t * box, void *cl)
 		return PCB_R_DIR_NOT_FOUND;
 	else {
 		routebox_t *dis = (routebox_t *) cl;
-		path_conflicts(dis, rb, pcb_false);
+		path_conflicts(dis, rb, rnd_false);
 		touch_conflicts(dis->conflicts_with, 1);
 	}
 	return PCB_R_DIR_FOUND_CONTINUE;
@@ -3672,14 +3672,14 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 		LIST_LOOP(from, same_net, p);
 		p->flags.source = p->flags.target = p->flags.nobloat = 0;
 		PCB_END_LOOP;
-		result.found_route = pcb_false;
-		result.net_completely_routed = pcb_true;
+		result.found_route = rnd_false;
+		result.net_completely_routed = rnd_true;
 		result.best_route_cost = 0;
 		result.route_had_conflicts = 0;
 
 		return result;
 	}
-	result.net_completely_routed = pcb_false;
+	result.net_completely_routed = rnd_false;
 
 	/* okay, there's stuff to route */
 	assert(!from->flags.target);
@@ -3798,7 +3798,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 				edge_t *ne;
 				routebox_t *nrb;
 				assert(pin->flags.target);
-				nrb = CreateExpansionArea(&b, e->rb->group, e->rb, pcb_true, e);
+				nrb = CreateExpansionArea(&b, e->rb->group, e->rb, rnd_true, e);
 				nrb->flags.is_thermal = 1;
 				/* moving through the plane is free */
 				e->cost_point.X = b.X1;
@@ -3812,11 +3812,11 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 				if (AutoRouteParameters.use_vias && e->cost + AutoRouteParameters.ViaCost < s.best_cost) {
 					/* we need a giant thermal */
 					routebox_t *nrb = CreateExpansionArea(&e->rb->sbox, e->rb->group, e->rb,
-																								pcb_true, e);
+																								rnd_true, e);
 					edge_t *ne = CreateEdge2(nrb, e->expand_dir, e, NULL,
 																	 e->minpcb_cost_target);
 					nrb->flags.is_thermal = 1;
-					add_via_sites(&s, &vss, rd->mtspace, nrb, NO_CONFLICT, ne, targets, e->rb->style->Diameter, pcb_true);
+					add_via_sites(&s, &vss, rd->mtspace, nrb, NO_CONFLICT, ne, targets, e->rb->style->Diameter, rnd_true);
 				}
 			}
 			goto dontexpand;					/* planes only connect via thermals */
@@ -3840,7 +3840,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 				rnd_rnd_box_t b = shrink_routebox(e->rb);
 				/* limit via region to that inside the plane */
 				rnd_clip_box(&b, &intersecting->sbox);
-				nrb = CreateExpansionArea(&b, e->rb->group, e->rb, pcb_true, e);
+				nrb = CreateExpansionArea(&b, e->rb->group, e->rb, rnd_true, e);
 				nrb->flags.is_thermal = 1;
 				ne = CreateEdge2(nrb, e->expand_dir, e, NULL, intersecting);
 				best_path_candidate(&s, ne, intersecting);
@@ -3990,7 +3990,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 
 			if (!rnd_box_is_good(&ans->inflated))
 				goto dontexpand;
-			nrb = CreateExpansionArea(&ans->inflated, e->rb->group, e->rb, pcb_true, e);
+			nrb = CreateExpansionArea(&ans->inflated, e->rb->group, e->rb, rnd_true, e);
 			pcb_r_insert_entry(rd->layergrouptree[nrb->group], &nrb->box);
 			vector_append(area_vec, nrb);
 			nrb->flags.homeless = 0;	/* not homeless any more */
@@ -4003,7 +4003,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 
 			/* add in possible via sites in nrb */
 			if (AutoRouteParameters.use_vias && !e->rb->flags.is_via && e->cost + AutoRouteParameters.ViaCost < s.best_cost)
-				add_via_sites(&s, &vss, rd->mtspace, nrb, NO_CONFLICT, e, targets, 0, pcb_false);
+				add_via_sites(&s, &vss, rd->mtspace, nrb, NO_CONFLICT, e, targets, 0, rnd_false);
 			goto dontexpand;
 		}
 	dontexpand:
@@ -4021,7 +4021,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 #ifdef ROUTE_VERBOSE
 		printf("%d:%d RC %.0f", ro++, seen, s.best_cost);
 #endif
-		result.found_route = pcb_true;
+		result.found_route = rnd_true;
 		result.best_route_cost = s.best_cost;
 		/* determine if the best path had conflicts */
 		result.route_had_conflicts = 0;
@@ -4045,7 +4045,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 #ifdef ROUTE_VERBOSE
 			printf(" (too many in fact)");
 #endif
-			result.found_route = pcb_false;
+			result.found_route = rnd_false;
 		}
 #ifdef ROUTE_VERBOSE
 		printf("\n");
@@ -4056,7 +4056,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 		printf("%d:%d NO PATH FOUND.\n", ro++, seen);
 #endif
 		result.best_route_cost = s.best_cost;
-		result.found_route = pcb_false;
+		result.found_route = rnd_false;
 	}
 	/* now remove all expansion areas from the r-tree. */
 	while (!vector_is_empty(area_vec)) {
@@ -4130,9 +4130,9 @@ rnd_bool no_expansion_boxes(routedata_t * rd)
 	big.Y2 = RND_MAX_COORD;
 	for (i = 0; i < pcb_max_group(PCB); i++) {
 		if (pcb_r_search(rd->layergrouptree[i], &big, NULL, bad_boy, NULL, NULL))
-			return pcb_false;
+			return rnd_false;
 	}
-	return pcb_true;
+	return rnd_true;
 }
 #endif
 
@@ -4248,12 +4248,12 @@ struct routeall_status RouteAll(routedata_t * rd)
 			if (i > 0) {
 				/* rip up all unfixed traces in this net ? */
 				if (AutoRouteParameters.rip_always)
-					rip = pcb_true;
+					rip = rnd_true;
 				else {
-					rip = pcb_false;
+					rip = rnd_false;
 					LIST_LOOP(net, same_net, p);
 					if (p->flags.is_bad) {
-						rip = pcb_true;
+						rip = rnd_true;
 						break;
 					}
 					PCB_END_LOOP;
@@ -4484,10 +4484,10 @@ static int FindPin(const rnd_rnd_box_t *box, pcb_pstk_t **ps_out)
 
 
 /* paths go on first 'on' layer in group */
-/* returns 'pcb_true' if any paths were added. */
+/* returns 'rnd_true' if any paths were added. */
 rnd_bool IronDownAllUnfixedPaths(routedata_t * rd)
 {
-	rnd_bool changed = pcb_false;
+	rnd_bool changed = rnd_false;
 	pcb_layer_t *layer;
 	routebox_t *net, *p;
 	int i;
@@ -4533,7 +4533,7 @@ rnd_bool IronDownAllUnfixedPaths(routedata_t * rd)
 
 					if (p->parent.line) {
 						pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, p->parent.line, p->parent.line);
-						changed = pcb_true;
+						changed = rnd_true;
 					}
 				}
 				else if (p->type == VIA || p->type == VIA_SHADOW) {
@@ -4553,7 +4553,7 @@ TODO("padstack: when style contains proto, remove this")
 						PCB_FLAG_SET(PCB_FLAG_AUTO, pp->parent.via);
 						if (pp->parent.via) {
 							pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, pp->parent.via, pp->parent.via, pp->parent.via);
-							changed = pcb_true;
+							changed = rnd_true;
 						}
 					}
 					assert(pp->parent.via);
@@ -4577,13 +4577,13 @@ TODO("padstack: when style contains proto, remove this")
 				/* thermals are alread a single point search, no need to shrink */
 				int type = FindPin(&p->box, &pin);
 				if (pin) {
-					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, pcb_false);
+					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, rnd_false);
 					pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_PSTK, pcb_get_layer(PCB->Data, p->layer), pin);
 					pcb_undo_add_obj_to_flag(pin);
 					PCB_FLAG_THERM_ASSIGN(p->layer, autoroute_therm_style, pin);
-					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, pcb_true);
+					pcb_undo_add_obj_to_clear_poly(type, pin->parent.data, pin, pin, rnd_true);
 					pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_PSTK, pcb_get_layer(PCB->Data, p->layer), pin);
-					changed = pcb_true;
+					changed = rnd_true;
 				}
 			}
 		}
@@ -4595,7 +4595,7 @@ TODO("padstack: when style contains proto, remove this")
 
 rnd_bool AutoRoute(rnd_bool selected)
 {
-	rnd_bool changed = pcb_false;
+	rnd_bool changed = rnd_false;
 	routedata_t *rd;
 	int i;
 
@@ -4614,15 +4614,15 @@ rnd_bool AutoRoute(rnd_bool selected)
 		if (PCB->RouteStyle.array[i].Thick == 0 ||
 				PCB->RouteStyle.array[i].Diameter == 0 || PCB->RouteStyle.array[i].Hole == 0 || PCB->RouteStyle.array[i].Clearance == 0) {
 			rnd_message(RND_MSG_ERROR, "You must define proper routing styles\n" "before auto-routing.\n");
-			return pcb_false;
+			return rnd_false;
 		}
 	}
 	if (ratlist_length(&PCB->Data->Rat) == 0)
-		return pcb_false;
+		return rnd_false;
 	rd = CreateRouteData();
 	if (rd == NULL) {
 		rnd_message(RND_MSG_ERROR, "Failed to initialize data; might be missing\n" "top or bottom copper layer.\n");
-		return pcb_false;
+		return rnd_false;
 	}
 
 	if (1) {
@@ -4660,7 +4660,7 @@ rnd_bool AutoRoute(rnd_bool selected)
 	        }
 */
 				/* route exactly one net, without allowing conflicts */
-				InitAutoRouteParameters(0, a->style, pcb_false, pcb_true, pcb_true);
+				InitAutoRouteParameters(0, a->style, rnd_false, rnd_true, rnd_true);
 				/* hace planes work better as sources than targets */
 				changed = RouteOne(rd, a, b, 150000).found_route || changed;
 				goto donerouting;
@@ -4708,7 +4708,7 @@ rnd_bool AutoRoute(rnd_bool selected)
 			if (!a || !b) {
 #ifdef DEBUG_STALE_RATS
 				pcb_undo_add_obj_to_flag(line);
-				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, pcb_true, line);
+				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, rnd_true, line);
 				pcb_rat_invalidate_draw(line, 0);
 #endif /* DEBUG_STALE_RATS */
 				rnd_message(RND_MSG_ERROR, "The rats nest is stale! Aborting autoroute...\n");
@@ -4767,7 +4767,7 @@ donerouting:
 		pcb_undo_save_serial();
 
 		/* optimize rats, we've changed connectivity a lot. */
-		pcb_rats_destroy(pcb_false /*all rats */ );
+		pcb_rats_destroy(rnd_false /*all rats */ );
 		pcb_undo_restore_serial();
 		pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE);
 		pcb_undo_restore_serial();

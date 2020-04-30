@@ -322,7 +322,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 	/* set up the context */
 	pref_ctx.active = 1;
 
-	RND_DAD_NEW("preferences", pref_ctx.dlg, "pcb-rnd preferences", &pref_ctx, pcb_false, pref_close_cb);
+	RND_DAD_NEW("preferences", pref_ctx.dlg, "pcb-rnd preferences", &pref_ctx, rnd_false, pref_close_cb);
 
 	RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wrole, lng, 2);
 	pref_ctx.role = RND_CFR_DESIGN;

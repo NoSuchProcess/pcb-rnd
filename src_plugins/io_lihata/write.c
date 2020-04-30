@@ -663,7 +663,7 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 	for(ps = padstacklist_first(&subc->data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
 		lht_node_t *nps;
 
-		nps = build_pstk_pinvia(subc->data, ps, pcb_false, -ox, -oy);
+		nps = build_pstk_pinvia(subc->data, ps, rnd_false, -ox, -oy);
 		if (nps == NULL)
 			nps = build_pstk_pad(subc->data, ps, -ox, -oy);
 		if (nps != NULL)
@@ -1106,7 +1106,7 @@ static lht_node_t *build_data(pcb_data_t *data)
 	}
 	else {
 		for(ps = padstacklist_first(&data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
-			lht_node_t *p = build_pstk_pinvia(data, ps, pcb_true, 0, 0);
+			lht_node_t *p = build_pstk_pinvia(data, ps, rnd_true, 0, 0);
 			if (p != NULL)
 				lht_dom_list_append(grp, p);
 		}
@@ -1355,7 +1355,7 @@ static lht_node_t *build_net_patch(pcb_board_t *pcb, pcb_ratspatch_line_t *pat, 
 	pn = lht_dom_node_alloc(LHT_LIST, "netlist_patch");
 
 	ctx.patch = pn;
-	pcb_rats_patch_export(pcb, pat, pcb_false, build_net_patch_cb, &ctx);
+	pcb_rats_patch_export(pcb, pat, rnd_false, build_net_patch_cb, &ctx);
 
 	if (pn->data.list.first == NULL) {
 		lht_dom_node_free(pn);

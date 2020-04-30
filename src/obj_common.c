@@ -104,7 +104,7 @@ int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_rnd
 /* current object ID; incremented after each creation of an object */
 long int ID = 1;
 
-rnd_bool pcb_create_being_lenient = pcb_false;
+rnd_bool pcb_create_being_lenient = rnd_false;
 
 void pcb_create_be_lenient(rnd_bool v)
 {

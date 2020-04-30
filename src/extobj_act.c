@@ -61,7 +61,7 @@ static int extobj_pick_gui(void)
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
 	RND_DAD_END(dlg);
 
-	RND_DAD_NEW("extobj_select", dlg, "Select extended object", NULL, pcb_true, NULL);
+	RND_DAD_NEW("extobj_select", dlg, "Select extended object", NULL, rnd_true, NULL);
 	res = RND_DAD_RUN(dlg);
 	RND_DAD_FREE(dlg);
 	if (res > 0)

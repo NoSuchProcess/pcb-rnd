@@ -49,11 +49,11 @@ static void shp_chg_regpoly(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 
 	/* elliptical logics */
 	if (!shp->dlg[shp->pell].val.lng) {
-		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->pry, pcb_false);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->pry, rnd_false);
 		RND_DAD_SET_VALUE(hid_ctx, shp->pry, crd, shp->dlg[shp->prx].val.crd);
 	}
 	else
-		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->pry, pcb_true);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->pry, rnd_true);
 
 	del_obj(shp);
 	shp->obj = (pcb_any_obj_t *)regpoly_place(
@@ -71,19 +71,19 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 	/* elliptical logics */
 	if (!shp->dlg[shp->rell].val.lng) {
-		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_false);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->ry, rnd_false);
 		RND_DAD_SET_VALUE(hid_ctx, shp->ry, crd, shp->dlg[shp->rx].val.crd);
 	}
 	else
-		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->ry, pcb_true);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->ry, rnd_true);
 
 	/* rectangular logics */
 	if (!shp->dlg[shp->rrect].val.lng) {
-		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_false);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->h, rnd_false);
 		RND_DAD_SET_VALUE(hid_ctx, shp->h, crd, shp->dlg[shp->w].val.crd);
 	}
 	else
-		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->h, pcb_true);
+		rnd_gui->attr_dlg_widget_state(hid_ctx, shp->h, rnd_true);
 
 	for(n = 0; n < 4; n++)
 		corner[n] = shp->dlg[shp->corner[n]].val.lng;
@@ -399,7 +399,7 @@ static const char pcb_acts_shape[] = "shape()";
 static const char pcb_acth_shape[] = "Interactive shape generator.";
 fgw_error_t pcb_act_shape(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_shape_dialog(PCB, PCB_PASTEBUFFER->Data, pcb_shape_current_layer, pcb_false);
+	pcb_shape_dialog(PCB, PCB_PASTEBUFFER->Data, pcb_shape_current_layer, rnd_false);
 	RND_ACT_IRES(0);
 	return 0;
 }

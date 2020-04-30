@@ -148,7 +148,7 @@ static void DrawRecoveredObject(pcb_any_obj_t *obj)
 
 /* ---------------------------------------------------------------------------
  * recovers an object from a 90 deg 'rotate' operation
- * returns pcb_true if anything has been recovered
+ * returns rnd_true if anything has been recovered
  */
 static rnd_bool UndoRotate90(UndoListTypePtr Entry)
 {
@@ -160,14 +160,14 @@ static rnd_bool UndoRotate90(UndoListTypePtr Entry)
 	if (type != PCB_OBJ_VOID) {
 		pcb_obj_rotate90(PCB, ptr2, Entry->Data.Rotate.CenterX, Entry->Data.Rotate.CenterY, (4 - Entry->Data.Rotate.Steps) & 0x03);
 		Entry->Data.Rotate.Steps = (4 - Entry->Data.Rotate.Steps) & 0x03;
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
  * recovers an object from an arbitrary angle 'rotate' operation
- * returns pcb_true if anything has been recovered
+ * returns rnd_true if anything has been recovered
  */
 static rnd_bool UndoRotate(UndoListTypePtr Entry)
 {
@@ -179,14 +179,14 @@ static rnd_bool UndoRotate(UndoListTypePtr Entry)
 	if (type != PCB_OBJ_VOID) {
 		pcb_obj_rotate(PCB, ptr2, Entry->Data.Rotate.CenterX, Entry->Data.Rotate.CenterY, -(Entry->Data.Angle));
 		Entry->Data.Angle = -(Entry->Data.Angle);
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
  * recovers an object from a clear/restore poly operation
- * returns pcb_true if anything has been recovered
+ * returns rnd_true if anything has been recovered
  */
 static rnd_bool UndoClearPoly(UndoListTypePtr Entry)
 {
@@ -200,14 +200,14 @@ static rnd_bool UndoClearPoly(UndoListTypePtr Entry)
 		else
 			pcb_poly_clear_from_poly(PCB->Data, type, Entry->Data.ClearPoly.Layer, ptr3);
 		Entry->Data.ClearPoly.Clear = !Entry->Data.ClearPoly.Clear;
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
  * recovers an object from a 'change name' operation
- * returns pcb_true if anything has been recovered
+ * returns rnd_true if anything has been recovered
  */
 static rnd_bool UndoChangeName(UndoListTypePtr Entry)
 {
@@ -218,9 +218,9 @@ static rnd_bool UndoChangeName(UndoListTypePtr Entry)
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_OBJ_VOID) {
 		Entry->Data.ChangeName.Name = (char *) (pcb_chg_obj_name(type, ptr1, ptr2, ptr3, Entry->Data.ChangeName.Name));
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -251,9 +251,9 @@ static rnd_bool UndoChangeAngles(UndoListTypePtr Entry)
 		Entry->Data.AngleChange.angle[0] = old_sa;
 		Entry->Data.AngleChange.angle[1] = old_da;
 		pcb_draw_obj((pcb_any_obj_t *)a);
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -282,9 +282,9 @@ static rnd_bool UndoChangeRadii(UndoListTypePtr Entry)
 		Entry->Data.Move.DX = old_w;
 		Entry->Data.Move.DY = old_h;
 		pcb_draw_obj((pcb_any_obj_t *)a);
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -308,9 +308,9 @@ static rnd_bool UndoChangeClearSize(UndoListTypePtr Entry)
 		Entry->Data.Size = swap;
 		if (pcb_undo_and_draw)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -337,9 +337,9 @@ static rnd_bool UndoChangeSize(UndoListTypePtr Entry)
 		pcb_poly_clear_from_poly(PCB->Data, type, ptr1, ptr2);
 		if (pcb_undo_and_draw)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -360,9 +360,9 @@ static rnd_bool UndoChange2ndSize(UndoListTypePtr Entry)
 		((pcb_text_t *)ptr2)->thickness = Entry->Data.Size;
 		Entry->Data.Size = swap;
 		pcb_text_post((pcb_text_t *)ptr2);
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
@@ -373,7 +373,7 @@ static rnd_bool UndoChangeRot(UndoListTypePtr Entry)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 	double swap;
-	rnd_bool ret = pcb_false;
+	rnd_bool ret = rnd_false;
 
 	/* lookup entry by ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
@@ -388,7 +388,7 @@ static rnd_bool UndoChangeRot(UndoListTypePtr Entry)
 			((pcb_pstk_t *)ptr2)->rot = Entry->Data.Size;
 			Entry->Data.Size = swap;
 			pcb_pstk_post(((pcb_pstk_t *)ptr2));
-			ret = pcb_true;
+			ret = rnd_true;
 			break;
 
 		case PCB_OBJ_TEXT:
@@ -397,7 +397,7 @@ static rnd_bool UndoChangeRot(UndoListTypePtr Entry)
 			((pcb_text_t *)ptr2)->rot = Entry->Data.Size;
 			Entry->Data.Size = swap;
 			pcb_text_post(((pcb_text_t *)ptr2));
-			ret = pcb_true;
+			ret = rnd_true;
 			break;
 	}
 
@@ -458,16 +458,16 @@ static rnd_bool UndoFlag(UndoListTypePtr Entry)
 
 		if (pcb_undo_and_draw && must_redraw)
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
-		return pcb_true;
+		return rnd_true;
 	}
 	rnd_message(RND_MSG_ERROR, "hace Internal error: Can't find ID %d type %08x\n", Entry->ID, Entry->Kind);
 	rnd_message(RND_MSG_ERROR, "for UndoFlag Operation. Previous flags: %s\n", pcb_strflg_f2s(Entry->Data.Flags, 0, NULL, 0));
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
  * recovers a subc from an other-side  operation
- * returns pcb_true if anything has been recovered
+ * returns rnd_true if anything has been recovered
  */
 static rnd_bool UndoOtherSide(UndoListTypePtr Entry)
 {
@@ -483,10 +483,10 @@ static rnd_bool UndoOtherSide(UndoListTypePtr Entry)
 		pcb_subc_change_side(subc, Entry->Data.Move.DY);
 		if (pcb_undo_and_draw)
 			DrawSubc(subc);
-		return pcb_true;
+		return rnd_true;
 	}
 	rnd_message(RND_MSG_ERROR, "hace Internal error: UndoOtherside on object type %x\n", type);
-	return pcb_false;
+	return rnd_false;
 }
 
 static void get_subc_parent_data(long subcid, rnd_layer_id_t subclayer, pcb_subc_t **subc, pcb_data_t **data, void **ptr1)
@@ -505,7 +505,7 @@ static void get_subc_parent_data(long subcid, rnd_layer_id_t subclayer, pcb_subc
 
 /* ---------------------------------------------------------------------------
  * recovers an object from a 'copy' or 'create' operation
- * returns pcb_true if anything has been recovered
+ * returns rnd_true if anything has been recovered
  */
 static rnd_bool UndoCopyOrCreate(UndoListTypePtr Entry)
 {
@@ -530,14 +530,14 @@ static rnd_bool UndoCopyOrCreate(UndoListTypePtr Entry)
 			pcb_term_del(&subc->terminals, ((pcb_any_obj_t *)ptr2)->term, (pcb_any_obj_t *)ptr2);
 
 		Entry->Type = PCB_UNDO_REMOVE;
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
  * recovers an object from a 'move' operation
- * returns pcb_true if anything has been recovered
+ * returns rnd_true if anything has been recovered
  */
 static rnd_bool UndoMove(UndoListTypePtr Entry)
 {
@@ -550,14 +550,14 @@ static rnd_bool UndoMove(UndoListTypePtr Entry)
 		pcb_move_obj(type, ptr1, ptr2, ptr3, -Entry->Data.Move.DX, -Entry->Data.Move.DY);
 		Entry->Data.Move.DX *= -1;
 		Entry->Data.Move.DY *= -1;
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ----------------------------------------------------------------------
  * recovers an object from a 'remove' operation
- * returns pcb_true if anything has been recovered
+ * returns rnd_true if anything has been recovered
  */
 static rnd_bool UndoRemove(UndoListTypePtr Entry)
 {
@@ -588,18 +588,18 @@ static rnd_bool UndoRemove(UndoListTypePtr Entry)
 		if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH))
 			pcb_data_clip_inhibit_dec(PCB->Data, 1);
 
-		return pcb_true;
+		return rnd_true;
 	}
 
 	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH))
 		pcb_data_clip_inhibit_dec(PCB->Data, 1);
 
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ----------------------------------------------------------------------
  * recovers an object from a 'move to another layer' operation
- * returns pcb_true if anything has been recovered
+ * returns rnd_true if anything has been recovered
  */
 static rnd_bool UndoMoveToLayer(UndoListTypePtr Entry)
 {
@@ -617,16 +617,16 @@ static rnd_bool UndoMoveToLayer(UndoListTypePtr Entry)
 		assert(o->parent.layer->parent_type == PCB_PARENT_DATA);
 		data = o->parent.layer->parent.data;
 		swap = pcb_layer_id(data, o->parent.layer);
-		pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, pcb_get_layer(data, Entry->Data.MoveToLayer.OriginalLayer), pcb_true);
+		pcb_move_obj_to_layer(type, ptr1, ptr2, ptr3, pcb_get_layer(data, Entry->Data.MoveToLayer.OriginalLayer), rnd_true);
 		Entry->Data.MoveToLayer.OriginalLayer = swap;
-		return pcb_true;
+		return rnd_true;
 	}
-	return pcb_false;
+	return rnd_false;
 }
 
 /* ---------------------------------------------------------------------------
  * recovers a removed polygon point
- * returns pcb_true on success
+ * returns rnd_true on success
  */
 static rnd_bool UndoRemovePoint(UndoListTypePtr Entry)
 {
@@ -647,7 +647,7 @@ static rnd_bool UndoRemovePoint(UndoListTypePtr Entry)
 			pcb_insert_point_in_object(PCB_OBJ_POLY, layer, polygon,
 														&Entry->Data.RemovedPoint.Index,
 														Entry->Data.RemovedPoint.X,
-														Entry->Data.RemovedPoint.Y, pcb_true, Entry->Data.RemovedPoint.last_in_contour);
+														Entry->Data.RemovedPoint.Y, rnd_true, Entry->Data.RemovedPoint.last_in_contour);
 
 			polygon->Points[Entry->Data.RemovedPoint.Index].ID = Entry->Data.RemovedPoint.ID;
 			if (pcb_undo_and_draw && layer->meta.real.vis)
@@ -655,17 +655,17 @@ static rnd_bool UndoRemovePoint(UndoListTypePtr Entry)
 			Entry->Type = PCB_UNDO_INSERT_POINT;
 			Entry->ID = Entry->Data.RemovedPoint.ID;
 			Entry->Kind = PCB_OBJ_POLY_POINT;
-			return pcb_true;
+			return rnd_true;
 		}
 
 	default:
-		return pcb_false;
+		return rnd_false;
 	}
 }
 
 /* ---------------------------------------------------------------------------
  * recovers an inserted polygon point
- * returns pcb_true on success
+ * returns rnd_true on success
  */
 static rnd_bool UndoInsertPoint(UndoListTypePtr Entry)
 {
@@ -675,7 +675,7 @@ static rnd_bool UndoInsertPoint(UndoListTypePtr Entry)
 	int type;
 	rnd_cardinal_t point_idx;
 	rnd_cardinal_t hole;
-	rnd_bool last_in_contour = pcb_false;
+	rnd_bool last_in_contour = rnd_false;
 
 	assert((long int)Entry->Kind == PCB_OBJ_POLY_POINT);
 	/* lookup entry by it's ID */
@@ -693,9 +693,9 @@ static rnd_bool UndoInsertPoint(UndoListTypePtr Entry)
 			point_idx = pcb_poly_point_idx(polygon, pnt);
 			for (hole = 0; hole < polygon->HoleIndexN; hole++)
 				if (point_idx == polygon->HoleIndex[hole] - 1)
-					last_in_contour = pcb_true;
+					last_in_contour = rnd_true;
 			if (point_idx == polygon->PointN - 1)
-				last_in_contour = pcb_true;
+				last_in_contour = rnd_true;
 			Entry->Data.RemovedPoint.last_in_contour = last_in_contour;
 
 			Entry->Data.RemovedPoint.X = pnt->X;
@@ -708,11 +708,11 @@ static rnd_bool UndoInsertPoint(UndoListTypePtr Entry)
 			pcb_destroy_object(PCB->Data, PCB_OBJ_POLY_POINT, layer, polygon, pnt);
 			if (pcb_undo_and_draw && layer->meta.real.vis)
 				pcb_poly_invalidate_draw(layer, polygon);
-			return pcb_true;
+			return rnd_true;
 		}
 
 	default:
-		return pcb_false;
+		return rnd_false;
 	}
 }
 
@@ -727,11 +727,11 @@ static rnd_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(pcb_removelist, &ptr1, &ptr2, &ptr3, Entry->Data.CopyID, Entry->Kind);
 	if (type == PCB_OBJ_VOID)
-		return pcb_false;
+		return rnd_false;
 
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1b, &ptr2b, &ptr3b, Entry->ID, Entry->Kind);
 	if (type == PCB_OBJ_VOID)
-		return pcb_false;
+		return rnd_false;
 
 	obj = (pcb_any_obj_t *) ptr2;
 	obj2 = (pcb_any_obj_t *) ptr2b;
@@ -748,12 +748,12 @@ static rnd_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 	obj = (pcb_any_obj_t *) pcb_move_obj_to_buffer(PCB, PCB->Data, pcb_removelist, type, ptr1, ptr2, ptr3);
 	if (Entry->Kind == PCB_OBJ_POLY)
 		pcb_poly_init_clip(PCB->Data, (pcb_layer_t *) ptr1b, (pcb_poly_t *) obj);
-	return pcb_true;
+	return rnd_true;
 }
 
 /* ---------------------------------------------------------------------------
  * recovers an removed polygon point
- * returns pcb_true on success
+ * returns rnd_true on success
  */
 static rnd_bool UndoRemoveContour(UndoListTypePtr Entry)
 {
@@ -763,7 +763,7 @@ static rnd_bool UndoRemoveContour(UndoListTypePtr Entry)
 
 /* ---------------------------------------------------------------------------
  * recovers an inserted polygon point
- * returns pcb_true on success
+ * returns rnd_true on success
  */
 static rnd_bool UndoInsertContour(UndoListTypePtr Entry)
 {
@@ -993,7 +993,7 @@ void pcb_undo_add_obj_to_remove_point(int Type, void *Ptr1, void *Ptr2, rnd_card
 	UndoListTypePtr undo;
 	pcb_poly_t *polygon = (pcb_poly_t *) Ptr2;
 	rnd_cardinal_t hole;
-	rnd_bool last_in_contour = pcb_false;
+	rnd_bool last_in_contour = rnd_false;
 
 	if (!Locked) {
 		switch (Type) {
@@ -1014,9 +1014,9 @@ void pcb_undo_add_obj_to_remove_point(int Type, void *Ptr1, void *Ptr2, rnd_card
 				 */
 				for (hole = 0; hole < polygon->HoleIndexN; hole++)
 					if (index == polygon->HoleIndex[hole] - 1)
-						last_in_contour = pcb_true;
+						last_in_contour = rnd_true;
 				if (index == polygon->PointN - 1)
-					last_in_contour = pcb_true;
+					last_in_contour = rnd_true;
 				undo->Data.RemovedPoint.last_in_contour = last_in_contour;
 			}
 			break;

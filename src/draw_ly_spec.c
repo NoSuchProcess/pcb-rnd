@@ -343,12 +343,12 @@ static void pcb_draw_assembly(pcb_draw_info_t *info, pcb_layer_type_t lyt_side)
 	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | lyt_side, &side_group, 1) != 1)
 		return;
 
-	pcb_draw_doing_assy = pcb_true;
+	pcb_draw_doing_assy = rnd_true;
 	rnd_hid_set_draw_faded(pcb_draw_out.fgGC, 1);
 	pcb_draw_layer_grp(info, side_group, 0);
 	rnd_hid_set_draw_faded(pcb_draw_out.fgGC, 0);
 
 	/* draw package */
 	pcb_draw_silk_doc(info, lyt_side, PCB_LYT_SILK, 0, 0);
-	pcb_draw_doing_assy = pcb_false;
+	pcb_draw_doing_assy = rnd_false;
 }

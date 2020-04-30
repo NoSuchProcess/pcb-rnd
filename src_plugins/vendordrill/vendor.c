@@ -137,7 +137,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *sval;
 	lht_doc_t *doc;
 	lht_node_t *drlres;
-	rnd_bool free_fname = pcb_false;
+	rnd_bool free_fname = rnd_false;
 
 	cached_drill = -1;
 
@@ -154,7 +154,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 		}
 
-		free_fname = pcb_true;
+		free_fname = rnd_true;
 
 		free(default_file);
 		default_file = NULL;
@@ -292,7 +292,7 @@ static int apply_vendor_pstk1(pcb_pstk_t *pstk, rnd_cardinal_t *tot)
 
 	target = vendorDrillMap(proto->hdia);
 	if (proto->hdia != target) {
-		if (pcb_chg_obj_2nd_size(PCB_OBJ_PSTK, pstk, pstk, pstk, target, pcb_true, pcb_false))
+		if (pcb_chg_obj_2nd_size(PCB_OBJ_PSTK, pstk, pstk, pstk, target, rnd_true, rnd_false))
 			res = 1;
 		else {
 			rnd_message(RND_MSG_WARNING,
@@ -371,7 +371,7 @@ static void apply_vendor_map(void)
 		 * file, redraw things, and make sure we can undo.
 		 */
 		if (changed) {
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 			rnd_hid_redraw(PCB);
 			pcb_undo_inc_serial();
 		}
@@ -537,7 +537,7 @@ static rnd_bool vendorIsSubcMappable(pcb_subc_t *subc)
 	int noskip;
 
 	if (!conf_vendor.plugins.vendor.enable)
-		return pcb_false;
+		return rnd_false;
 
 TODO(": these 3 loops should be wrapped in a single loop that iterates over attribute keys")
 	noskip = 1;
@@ -578,9 +578,9 @@ TODO(": these 3 loops should be wrapped in a single loop that iterates over attr
 	}
 
 	if (noskip)
-		return pcb_true;
+		return rnd_true;
 	else
-		return pcb_false;
+		return rnd_false;
 }
 
 static rnd_bool rematch(const char *re, const char *s)
@@ -593,16 +593,16 @@ static rnd_bool rematch(const char *re, const char *s)
 	if (re_sei_errno(regex) != 0) {
 		rnd_message(RND_MSG_ERROR, "regexp error: %s\n", re_error_str(re_sei_errno(regex)));
 		re_sei_free(regex);
-		return pcb_false;
+		return rnd_false;
 	}
 
 	result = re_sei_exec(regex, s);
 	re_sei_free(regex);
 
 	if (result != 0)
-		return pcb_true;
+		return rnd_true;
 	else
-		return pcb_false;
+		return rnd_false;
 }
 
 static const char *vendor_cookie = "vendor drill mapping";

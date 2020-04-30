@@ -82,12 +82,12 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_undo_add_obj_to_flag(obj);
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, obj);
 				pcb_draw_invalidate(obj);
-				pcb_board_set_changed_flag(pcb_true);
+				pcb_board_set_changed_flag(rnd_true);
 			}
 			else {
 		case F_ToggleObject:
 				if (pcb_select_object(PCB)) {
-					pcb_board_set_changed_flag(pcb_true);
+					pcb_board_set_changed_flag(rnd_true);
 					rnd_gui->invalidate_all(rnd_gui);
 				}
 			}
@@ -102,13 +102,13 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y1 = MIN(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				box.X2 = MAX(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
-				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 				pcb_tool_notify_block();
-				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_true, pcb_true, pcb_false)) {
-					pcb_board_set_changed_flag(pcb_true);
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, rnd_true, rnd_true, rnd_false)) {
+					pcb_board_set_changed_flag(rnd_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
-				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 				rnd_gui->invalidate_all(rnd_gui);
 				break;
 			}
@@ -122,8 +122,8 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y1 = -RND_MAX_COORD;
 				box.X2 = RND_MAX_COORD;
 				box.Y2 = RND_MAX_COORD;
-				if (pcb_select_block(PCB, &box, pcb_true, pcb_true, pcb_false)) {
-					pcb_board_set_changed_flag(pcb_true);
+				if (pcb_select_block(PCB, &box, rnd_true, rnd_true, rnd_false)) {
+					pcb_board_set_changed_flag(rnd_true);
 					rnd_gui->invalidate_all(rnd_gui);
 				}
 				break;
@@ -137,8 +137,8 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y1 = -RND_MAX_COORD;
 				box.X2 = RND_MAX_COORD;
 				box.Y2 = RND_MAX_COORD;
-				if (pcb_select_block(PCB, &box, pcb_true, pcb_true, pcb_true)) {
-					pcb_board_set_changed_flag(pcb_true);
+				if (pcb_select_block(PCB, &box, rnd_true, rnd_true, rnd_true)) {
+					pcb_board_set_changed_flag(rnd_true);
 					rnd_gui->invalidate_all(rnd_gui);
 				}
 				break;
@@ -146,10 +146,10 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* all found connections */
 		case F_Connection:
-			if (pcb_select_connection(PCB, pcb_true)) {
+			if (pcb_select_connection(PCB, rnd_true)) {
 				pcb_draw();
 				pcb_undo_inc_serial();
-				pcb_board_set_changed_flag(pcb_true);
+				pcb_board_set_changed_flag(rnd_true);
 			}
 			break;
 
@@ -163,12 +163,12 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_hid_get_coords("Select the Subcircuit's Origin (mark) Location", &x, &y, 0);
 				x = rnd_grid_fit(x, RND_ACT_HIDLIB->grid, RND_ACT_HIDLIB->grid_ox);
 				y = rnd_grid_fit(y, RND_ACT_HIDLIB->grid, RND_ACT_HIDLIB->grid_oy);
-				pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, x, y, pcb_true, pcb_false);
+				pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, x, y, rnd_true, rnd_false);
 				pcb_undo_save_serial();
-				pcb_remove_selected(pcb_false);
+				pcb_remove_selected(rnd_false);
 				pcb_subc_convert_from_buffer(PCB_PASTEBUFFER);
 				pcb_undo_restore_serial();
-				pcb_buffer_copy_to_layout(PCB, x, y, pcb_false);
+				pcb_buffer_copy_to_layout(PCB, x, y, rnd_false);
 				pcb_buffer_set_number(pcb_crosshair_note.Buffer);
 			}
 			break;
@@ -203,13 +203,13 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y1 = MIN(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
 				box.X2 = MAX(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
 				box.Y2 = MAX(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
-				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 				pcb_tool_notify_block();
-				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, pcb_false, pcb_true, pcb_false)) {
-					pcb_board_set_changed_flag(pcb_true);
+				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, rnd_false, rnd_true, rnd_false)) {
+					pcb_board_set_changed_flag(rnd_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
-				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 				break;
 			}
 
@@ -222,17 +222,17 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.Y1 = -RND_MAX_COORD;
 				box.X2 = RND_MAX_COORD;
 				box.Y2 = RND_MAX_COORD;
-				if (pcb_select_block(PCB, &box, pcb_false, pcb_false, pcb_false))
-					pcb_board_set_changed_flag(pcb_true);
+				if (pcb_select_block(PCB, &box, rnd_false, rnd_false, rnd_false))
+					pcb_board_set_changed_flag(rnd_true);
 				break;
 			}
 
 			/* all found connections */
 		case F_Connection:
-			if (pcb_select_connection(PCB, pcb_false)) {
+			if (pcb_select_connection(PCB, rnd_false)) {
 				pcb_draw();
 				pcb_undo_inc_serial();
-				pcb_board_set_changed_flag(pcb_true);
+				pcb_board_set_changed_flag(rnd_true);
 			}
 			break;
 

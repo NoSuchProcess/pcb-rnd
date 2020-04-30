@@ -69,7 +69,7 @@ static rnd_bool ghid_preview_mouse(void *widget, void *draw_data, rnd_hid_mouse_
 	rnd_hid_preview_t *prv = draw_data;
 	if (prv->user_mouse_cb != NULL)
 		return prv->user_mouse_cb(prv->attrib, prv, kind, x, y);
-	return pcb_false;
+	return rnd_false;
 }
 
 void ghid_preview_zoomto(rnd_hid_attribute_t *attrib, void *hid_ctx, const rnd_rnd_box_t *view)

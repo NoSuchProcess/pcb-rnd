@@ -234,7 +234,7 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 	GtkTreeModel *model;
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	rnd_bool key_handled, arrow_key, enter_key, force_activate = pcb_false;
+	rnd_bool key_handled, arrow_key, enter_key, force_activate = rnd_false;
 	GtkClipboard *clipboard;
 	guint default_mod_mask = gtk_accelerator_get_default_mod_mask();
 
@@ -306,7 +306,7 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 			}
 			else { /* automatic decision: only leaf nodes activate */
 				if (gdl_first(&r->children) == NULL)
-					force_activate = pcb_true;
+					force_activate = rnd_true;
 			}
 		}
 	}

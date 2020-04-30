@@ -170,7 +170,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	   ask for coord if the scrollwheel triggered the event, it may cause strange
 	   GUI lockups when done outside of the drawing area */
 	if ((getting_loc) || (ghid_wheel_zoom))
-		return pcb_false;
+		return rnd_false;
 
 	getting_loc = 1;
 	rnd_actionva(ctx->hidlib, "StatusSetText", message, NULL);

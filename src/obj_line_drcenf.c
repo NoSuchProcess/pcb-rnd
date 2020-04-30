@@ -148,11 +148,11 @@ void pcb_line_adjust_attached_2lines(rnd_bool way)
 
 	/* don't draw outline when ctrl key is pressed */
 	if (rnd_gui->control_is_pressed(rnd_gui)) {
-		line->draw = pcb_false;
+		line->draw = rnd_false;
 		return;
 	}
 	else
-		line->draw = pcb_true;
+		line->draw = rnd_true;
 
 	if (conf_core.editor.all_direction_lines) {
 		line->Point2.X = pcb_crosshair.X;
@@ -252,11 +252,11 @@ double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *en
 	dx = end->X - line1.Point1.X;
 
 	if (coord_abs(dx) > coord_abs(dy)) {
-		x_is_long = pcb_true;
+		x_is_long = rnd_true;
 		length = coord_abs(dx);
 	}
 	else {
-		x_is_long = pcb_false;
+		x_is_long = rnd_false;
 		length = coord_abs(dy);
 	}
 
@@ -264,9 +264,9 @@ double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *en
 	comp = PCB->LayerGroups.len + 10; /* this out-of-range group might save a call */
 
 	if (pcb_layergrp_flags(PCB, group) & PCB_LYT_BOTTOM)
-		info.solder = pcb_true;
+		info.solder = rnd_true;
 	else {
-		info.solder = pcb_false;
+		info.solder = rnd_false;
 		pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, &comp, 1);
 	}
 	temp = length;
@@ -291,13 +291,13 @@ double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *en
 		f2 = 1.0;
 		s2 = 0.5;
 		last2 = -1;
-		blocker = pcb_true;
+		blocker = rnd_true;
 		while (length2 != last2) {
 			if (x_is_long)
 				dy = SGN(dy) * length2;
 			else
 				dx = SGN(dx) * length2;
-			two_lines = pcb_true;
+			two_lines = rnd_true;
 			if (coord_abs(dx) > coord_abs(dy) && x_is_long) {
 				line1.Point2.X = line1.Point1.X + (way ? SGN(dx) * coord_abs(dy) : dx - SGN(dx) * coord_abs(dy));
 				line1.Point2.Y = line1.Point1.Y + (way ? dy : 0);
@@ -310,13 +310,13 @@ double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *en
 				/* we've changed which axis is long, so only do one line */
 				line1.Point2.X = line1.Point1.X + dx;
 				line1.Point2.Y = line1.Point1.Y + (way ? SGN(dy) * coord_abs(dx) : 0);
-				two_lines = pcb_false;
+				two_lines = rnd_false;
 			}
 			else {
 				/* we've changed which axis is long, so only do one line */
 				line1.Point2.Y = line1.Point1.Y + dy;
 				line1.Point2.X = line1.Point1.X + (way ? SGN(dx) * coord_abs(dy) : 0);
-				two_lines = pcb_false;
+				two_lines = rnd_false;
 			}
 			line2.Point1.X = line1.Point2.X;
 			line2.Point1.Y = line1.Point2.Y;
@@ -351,7 +351,7 @@ double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *en
 				}
 				PCB_END_LOOP;
 				/* no intersector! */
-				blocker = pcb_false;
+				blocker = rnd_false;
 				f2 += s2;
 				len = (line2.Point2.X - line1.Point1.X);
 				len *= len;
@@ -428,9 +428,9 @@ static void drc_line(rnd_point_t *end)
 	group = pcb_layer_get_group(PCB, PCB_CURRLID(pcb));
 	comp = PCB->LayerGroups.len + 10;  /* this out-of-range group might save a call */
 	if (pcb_layergrp_flags(PCB, group) & PCB_LYT_BOTTOM)
-		info.solder = pcb_true;
+		info.solder = rnd_true;
 	else {
-		info.solder = pcb_false;
+		info.solder = rnd_false;
 		pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, &comp, 1);
 	}
 
@@ -480,9 +480,9 @@ void pcb_line_enforce_drc(pcb_board_t *pcb)
 
 	if (conf_core.editor.line_refraction != 0) {
 		/* first try starting straight */
-		r1 = pcb_drc_lines(pcb, &start, &rs, NULL, pcb_false, pcb_true);
+		r1 = pcb_drc_lines(pcb, &start, &rs, NULL, rnd_false, rnd_true);
 		/* then try starting at 45 */
-		r2 = pcb_drc_lines(pcb, &start, &r45, NULL, pcb_true, pcb_true);
+		r2 = pcb_drc_lines(pcb, &start, &r45, NULL, rnd_true, rnd_true);
 	}
 	else {
 		drc_line(&rs);

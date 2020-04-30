@@ -60,7 +60,7 @@ static const char *or_empty(const char *s)
 
 static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_bool changed = pcb_false;
+	rnd_bool changed = rnd_false;
 	pcb_subc_t **subc_list;
 	pcb_subc_t **locked_subc_list;
 	rnd_coord_t *ox_list, *oy_list;
@@ -79,7 +79,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	char **was, **is;
 	unsigned int c_cnt = 0, numsubc;
 	int ok;
-	rnd_bool free_name = pcb_false;
+	rnd_bool free_name = rnd_false;
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Renumber, name = argv[1].val.str);
 
@@ -93,7 +93,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 														 "This file may be used to back annotate the\n"
 														 "change to the schematics.\n", default_file, ".eco", NULL, "eco", 0, NULL);
 
-		free_name = pcb_true;
+		free_name = rnd_true;
 	}
 
 	if (default_file) {
@@ -281,7 +281,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_undo_add_obj_to_change_name(PCB_OBJ_SUBC, NULL, NULL, subc_list[i], (char *)or_empty(subc_list[i]->refdes));
 
 				pcb_chg_obj_name(PCB_OBJ_SUBC, subc_list[i], NULL, NULL, tmps);
-				changed = pcb_true;
+				changed = rnd_true;
 
 				/* we don't free tmps in this case because it is used */
 			}
@@ -331,7 +331,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		pcb_netlist_changed(0);
 		pcb_undo_inc_serial();
-		pcb_board_set_changed_flag(pcb_true);
+		pcb_board_set_changed_flag(rnd_true);
 	}
 
 	free(locked_subc_list);

@@ -70,6 +70,6 @@ void pcb_layer_vis_init(void);
 void pcb_layer_vis_uninit(void);
 
 /* Open/close, on/off all layers and groups; does NOT generate an event */
-void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_t vis);
+void pcb_layer_vis_change_all(pcb_board_t *pcb, rnd_bool_op_t open, rnd_bool_op_t vis);
 
 #endif

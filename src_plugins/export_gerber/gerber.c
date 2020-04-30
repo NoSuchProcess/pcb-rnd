@@ -720,7 +720,7 @@ static void use_gc(rnd_hid_gc_t gc, int radius)
 
 static void gerber_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
-	rnd_bool m = pcb_false;
+	rnd_bool m = rnd_false;
 	int i;
 	int firstTime = 1;
 	rnd_coord_t startX = 0, startY = 0;
@@ -734,12 +734,12 @@ static void gerber_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t 
 	fprintf(f, "G36*\r\n");
 	for (i = 0; i < n_coords; i++) {
 		if (x[i]+dx != lastX) {
-			m = pcb_true;
+			m = rnd_true;
 			lastX = x[i]+dx;
 			rnd_fprintf(f, "X%[4]", gerberX(PCB, lastX));
 		}
 		if (y[i]+dy != lastY) {
-			m = pcb_true;
+			m = rnd_true;
 			lastY = y[i]+dy;
 			rnd_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
 		}
@@ -752,15 +752,15 @@ static void gerber_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t 
 		}
 		else if (m)
 			fprintf(f, "D01*\r\n");
-		m = pcb_false;
+		m = rnd_false;
 	}
 	if (startX != lastX) {
-		m = pcb_true;
+		m = rnd_true;
 		lastX = startX;
 		rnd_fprintf(f, "X%[4]", gerberX(PCB, startX));
 	}
 	if (startY != lastY) {
-		m = pcb_true;
+		m = rnd_true;
 		lastY = startY;
 		rnd_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
 	}
@@ -776,7 +776,7 @@ static void gerber_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, r
 
 static void gerber_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	rnd_bool m = pcb_false;
+	rnd_bool m = rnd_false;
 
 	if (line_slots) {
 		rnd_coord_t dia = gc->width/2;
@@ -817,12 +817,12 @@ static void gerber_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rn
 		return;
 
 	if (x1 != lastX) {
-		m = pcb_true;
+		m = rnd_true;
 		lastX = x1;
 		rnd_fprintf(f, "X%[4]", gerberX(PCB, lastX));
 	}
 	if (y1 != lastY) {
-		m = pcb_true;
+		m = rnd_true;
 		lastY = y1;
 		rnd_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
 	}
@@ -854,7 +854,7 @@ static void gerber_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rn
 
 static void gerber_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
-	rnd_bool m = pcb_false;
+	rnd_bool m = rnd_false;
 	double arcStartX, arcStopX, arcStartY, arcStopY;
 
 	/* we never draw zero-width lines */
@@ -933,12 +933,12 @@ static void gerber_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd
 	arcStopX = cx - width * cos(RND_TO_RADIANS(start_angle + delta_angle));
 	arcStopY = cy + height * sin(RND_TO_RADIANS(start_angle + delta_angle));
 	if (arcStartX != lastX) {
-		m = pcb_true;
+		m = rnd_true;
 		lastX = arcStartX;
 		rnd_fprintf(f, "X%[4]", gerberX(PCB, lastX));
 	}
 	if (arcStartY != lastY) {
-		m = pcb_true;
+		m = rnd_true;
 		lastY = arcStartY;
 		rnd_fprintf(f, "Y%[4]", gerberY(PCB, lastY));
 	}

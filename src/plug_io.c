@@ -75,7 +75,7 @@
 pcb_plug_io_t *pcb_plug_io_chain = NULL;
 int pcb_io_err_inhibit = 0;
 pcb_view_list_t pcb_io_incompat_lst;
-static rnd_bool pcb_io_incompat_lst_enable = pcb_false;
+static rnd_bool pcb_io_incompat_lst_enable = rnd_false;
 
 void pcb_plug_io_err(rnd_hidlib_t *hidlib, int res, const char *what, const char *filename)
 {
@@ -510,13 +510,13 @@ static int pcb_write_pcb(FILE *f, const char *old_filename, const char *new_file
 }
 
 /* load PCB: parse the file with enabled 'PCB mode' (see parser); if
-   successful, update some other stuff. If revert is pcb_true, we pass
+   successful, update some other stuff. If revert is rnd_true, we pass
    "revert" as a parameter to the pcb changed event. */
 static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert, rnd_bool require_font, int how)
 {
 	const char *unit_suffix;
 	char *new_filename;
-	pcb_board_t *newPCB = pcb_board_new_(pcb_false);
+	pcb_board_t *newPCB = pcb_board_new_(rnd_false);
 	pcb_board_t *oldPCB;
 	rnd_conf_role_t settings_dest;
 #ifdef DEBUG
@@ -526,13 +526,13 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 	start = clock();
 #endif
 
-	rnd_path_resolve(&PCB->hidlib, Filename, &new_filename, 0, pcb_false);
+	rnd_path_resolve(&PCB->hidlib, Filename, &new_filename, 0, rnd_false);
 
 	oldPCB = PCB;
 	PCB = newPCB;
 
 	/* mark the default font invalid to know if the file has one */
-	newPCB->fontkit.valid = pcb_false;
+	newPCB->fontkit.valid = rnd_false;
 
 	switch(how & 0x0F) {
 		case 0: settings_dest = RND_CFR_DESIGN; break;
@@ -563,14 +563,14 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 		if (!PCB->fontkit.valid) {
 			if ((require_font) && (!PCB->is_footprint))
 				rnd_message(RND_MSG_WARNING, "File '%s' has no font information, using default font\n", new_filename);
-			PCB->fontkit.valid = pcb_true;
+			PCB->fontkit.valid = rnd_true;
 		}
 
 		/* footprint edition: let the user directly manipulate subc parts */
 		PCB->loose_subc = PCB->is_footprint;
 
 		/* clear 'changed flag' */
-		pcb_board_set_changed_flag(pcb_false);
+		pcb_board_set_changed_flag(rnd_false);
 		PCB->hidlib.filename = new_filename;
 		/* just in case a bad file saved file is loaded */
 
@@ -605,7 +605,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 		rnd_message(RND_MSG_INFO, "Loading file %s took %f seconds of CPU time\n", new_filename, elapsed);
 #endif
 
-		conf_core.temp.rat_warn = pcb_true; /* make sure the first click can remove warnings */
+		conf_core.temp.rat_warn = rnd_true; /* make sure the first click can remove warnings */
 		pcb_tool_select_by_name(&PCB->hidlib, "arrow");
 
 		return 0;
@@ -615,7 +615,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 	PCB = oldPCB;
 	if (PCB == NULL) {
 		/* bozo: we are trying to revert back to a non-existing pcb... create one to avoid a segfault */
-		PCB = pcb_board_new_(pcb_false);
+		PCB = pcb_board_new_(rnd_false);
 		if (PCB == NULL) {
 			rnd_message(RND_MSG_ERROR, "FATAL: can't create a new empty pcb!");
 			exit(1);
@@ -653,7 +653,7 @@ static int pcb_write_pipe(const char *Filename, rnd_bool thePcb, const char *fmt
 	const char *save_cmd;
 
 	if (RND_EMPTY_STRING_P(conf_core.rc.save_command))
-		return pcb_write_pcb_file(Filename, thePcb, fmt, pcb_false, subc_only, subc_idx, askovr);
+		return pcb_write_pcb_file(Filename, thePcb, fmt, rnd_false, subc_only, subc_idx, askovr);
 
 	save_cmd = conf_core.rc.save_command;
 	/* setup commandline */
@@ -675,7 +675,7 @@ static int pcb_write_pipe(const char *Filename, rnd_bool thePcb, const char *fmt
 		return (-1);
 	}
 
-	result = pcb_write_file(fp, thePcb, NULL, NULL, fmt, pcb_false, subc_only, subc_idx);
+	result = pcb_write_file(fp, thePcb, NULL, NULL, fmt, rnd_false, subc_only, subc_idx);
 
 	return (pcb_pclose(fp) ? (-1) : result);
 }
@@ -692,7 +692,7 @@ int pcb_save_buffer_subcs(const char *Filename, const char *fmt, long subc_idx)
 
 	if (conf_core.editor.show_solder_side)
 		pcb_buffers_flip_side(PCB);
-	result = pcb_write_pipe(Filename, pcb_false, fmt, pcb_true, subc_idx, 1);
+	result = pcb_write_pipe(Filename, rnd_false, fmt, rnd_true, subc_idx, 1);
 	if (conf_core.editor.show_solder_side)
 		pcb_buffers_flip_side(PCB);
 	return result;
@@ -700,20 +700,20 @@ int pcb_save_buffer_subcs(const char *Filename, const char *fmt, long subc_idx)
 
 int pcb_save_buffer(const char *Filename, const char *fmt)
 {
-	return pcb_write_pipe(Filename, pcb_false, fmt, pcb_false, -1, 1);
+	return pcb_write_pipe(Filename, rnd_false, fmt, rnd_false, -1, 1);
 }
 
 int pcb_save_pcb(const char *file, const char *fmt)
 {
 	int retcode;
 
-	pcb_io_incompat_lst_enable = pcb_true;
+	pcb_io_incompat_lst_enable = rnd_true;
 	if (conf_core.editor.io_incomp_popup)
 		pcb_view_list_free_fields(&pcb_io_incompat_lst);
 
-	retcode = pcb_write_pipe(file, pcb_true, fmt, pcb_false, -1, 0);
+	retcode = pcb_write_pipe(file, rnd_true, fmt, rnd_false, -1, 0);
 
-	pcb_io_incompat_lst_enable = pcb_false;
+	pcb_io_incompat_lst_enable = rnd_false;
 	if (conf_core.editor.io_incomp_popup) {
 		long int len = pcb_view_list_length(&pcb_io_incompat_lst);
 		if (len > 0) {
@@ -727,7 +727,7 @@ int pcb_save_pcb(const char *file, const char *fmt)
 
 int pcb_load_pcb(const char *file, const char *fmt, rnd_bool require_font, int how)
 {
-	int res = real_load_pcb(file, fmt, pcb_false, require_font, how);
+	int res = real_load_pcb(file, fmt, rnd_false, require_font, how);
 	if (res == 0) {
 		rnd_file_loaded_set_at("design", "main", file, PCB->is_footprint ? "footprint" : "board");
 		if (PCB->is_footprint) {
@@ -747,7 +747,7 @@ int pcb_load_pcb(const char *file, const char *fmt, rnd_bool require_font, int h
 
 int pcb_revert_pcb(void)
 {
-	return real_load_pcb(PCB->hidlib.filename, NULL, pcb_true, pcb_true, 0);
+	return real_load_pcb(PCB->hidlib.filename, NULL, rnd_true, rnd_true, 0);
 }
 
 int pcb_load_buffer(rnd_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt)
@@ -816,24 +816,24 @@ void pcb_save_in_tmp(void)
 		const char *fmt = conf_core.rc.emergency_format == NULL ? DEFAULT_EMERGENCY_FMT : conf_core.rc.emergency_format;
 		sprintf(filename, conf_core.rc.emergency_name, (long int)rnd_getpid());
 		rnd_message(RND_MSG_INFO, "Trying to save your layout in '%s'\n", filename);
-		pcb_write_pcb_file(filename, pcb_true, fmt, pcb_true, pcb_false, -1, 0);
+		pcb_write_pcb_file(filename, rnd_true, fmt, rnd_true, rnd_false, -1, 0);
 	}
 }
 
 /* front-end for pcb_save_in_tmp() to makes sure it is only called once */
-static rnd_bool dont_save_any_more = pcb_false;
+static rnd_bool dont_save_any_more = rnd_false;
 void pcb_emergency_save(void)
 {
 
 	if (!dont_save_any_more) {
-		dont_save_any_more = pcb_true;
+		dont_save_any_more = rnd_true;
 		pcb_save_in_tmp();
 	}
 }
 
 void pcb_disable_emergency_save(void)
 {
-	dont_save_any_more = pcb_true;
+	dont_save_any_more = rnd_true;
 }
 
 /*** Autosave ***/
@@ -887,7 +887,7 @@ void pcb_backup(void)
 		fmt = conf_core.rc.backup_format;
 
 	orig = PCB->Data->loader;
-	pcb_write_pcb_file(filename, pcb_true, fmt, pcb_true, pcb_false, -1, 0);
+	pcb_write_pcb_file(filename, rnd_true, fmt, rnd_true, rnd_false, -1, 0);
 	PCB->Data->loader = orig;
 
 	free(filename);

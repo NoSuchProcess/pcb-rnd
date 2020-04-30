@@ -263,10 +263,10 @@ rnd_bool pcb_net_name_valid(const char *netname)
 		switch(*netname) {
 			case '_':
 				break;
-			return pcb_false;
+			return rnd_false;
 		}
 	}
-	return pcb_true;
+	return rnd_true;
 }
 
 static pcb_net_t *pcb_net_alloc_(pcb_board_t *pcb, pcb_netlist_t *nl, const char *netname)
@@ -501,7 +501,7 @@ void pcb_net_short_ctx_uninit(pcb_short_ctx_t *sctx)
 	htsp_uninit(&sctx->found);
 	if (sctx->changed) {
 		rnd_gui->invalidate_all(rnd_gui);
-		conf_core.temp.rat_warn = pcb_true;
+		conf_core.temp.rat_warn = rnd_true;
 	}
 }
 

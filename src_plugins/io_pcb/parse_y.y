@@ -164,7 +164,7 @@ parsepcb
 					YYABORT;
 				}
 				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
-					LayerFlag[i] = pcb_false;
+					LayerFlag[i] = rnd_false;
 				yyFont = &yyPCB->fontkit.dflt;
 				yyFontkitValid = &yyPCB->fontkit.valid;
 				yyData = yyPCB->Data;
@@ -194,7 +194,7 @@ parsepcb
 					rnd_conf_set(yy_settings_dest, "design/groups", -1, layer_group_string, RND_POL_OVERWRITE);
 			  pcb_board_new_postproc(yyPCB, 0);
 			  if (layer_group_string == NULL) {
-			     if (pcb_layer_improvise(yyPCB, pcb_true) != 0) {
+			     if (pcb_layer_improvise(yyPCB, rnd_true) != 0) {
 			        rnd_message(RND_MSG_ERROR, "missing layer-group string, failed to improvise the groups\n");
 			        YYABORT;
 			     }
@@ -207,7 +207,7 @@ parsepcb
 			      YYABORT;
 			    }
 			    else {
-			     if (pcb_layer_improvise(yyPCB, pcb_false) != 0) {
+			     if (pcb_layer_improvise(yyPCB, rnd_false) != 0) {
 			        rnd_message(RND_MSG_ERROR, "failed to extend-improvise the groups\n");
 			        YYABORT;
 			     }
@@ -229,8 +229,8 @@ parsepcb
 		| { PreLoadElementPCB ();
 		    layer_group_string = NULL; }
 		  element
-		  { LayerFlag[0] = pcb_true;
-		    LayerFlag[1] = pcb_true;
+		  { LayerFlag[0] = rnd_true;
+		    LayerFlag[1] = rnd_true;
 		    if (yyElemFixLayers) {
 		    	yyData->LayerN = 2;
 		    	free((char *)yyData->Layer[0].name);
@@ -263,7 +263,7 @@ parsedata
 					YYABORT;
 				}
 				for (i = 0; i < PCB_MAX_LAYER + 2; i++)
-					LayerFlag[i] = pcb_false;
+					LayerFlag[i] = rnd_false;
 				yyData->LayerN = 0;
 			}
 		 pcbdata
@@ -287,11 +287,11 @@ parsefont
 					pcb_font_free (yyFont);
 					yyFont->id = 0;
 				}
-				*yyFontkitValid = pcb_false;
+				*yyFontkitValid = rnd_false;
 			}
 		  symbols
 			{
-				*yyFontkitValid = pcb_true;
+				*yyFontkitValid = rnd_true;
 		  		pcb_font_set_info(yyFont);
 			}
 		;
@@ -614,7 +614,7 @@ layer
 				if (Layer->name != NULL)
 					free((char*)Layer->name);
 				Layer->name = $4;   /* shouldn't this be strdup()'ed ? */
-				LayerFlag[$3-1] = pcb_true;
+				LayerFlag[$3-1] = rnd_true;
 				if (yyData->LayerN < $3)
 				  yyData->LayerN = $3;
 				if ($5 != NULL)
@@ -686,7 +686,7 @@ arc_hi_format
 		: T_ARC '[' measure measure measure measure measure measure number number flags ']'
 			{
 			  pcb_arc_new(Layer, NU ($3), NU ($4), NU ($5), NU ($6), $9, $10,
-			                             NU ($7), NU ($8), $11, pcb_true);
+			                             NU ($7), NU ($8), $11, rnd_true);
 			}
 		;
 
@@ -695,7 +695,7 @@ arc_1.7_format
 		: T_ARC '(' measure measure measure measure measure measure number number INTEGER ')'
 			{
 				pcb_arc_new(Layer, OU ($3), OU ($4), OU ($5), OU ($6), $9, $10,
-						    OU ($7), OU ($8), pcb_flag_old($11), pcb_true);
+						    OU ($7), OU ($8), pcb_flag_old($11), rnd_true);
 			}
 		;
 
@@ -704,7 +704,7 @@ arc_oldformat
 		: T_ARC '(' measure measure measure measure measure measure number INTEGER ')'
 			{
 				pcb_arc_new(Layer, OU ($3), OU ($4), OU ($5), OU ($5), IV ($8), $9,
-					OU ($7), 200*PCB_GROUNDPLANEFRAME, pcb_flag_old($10), pcb_true);
+					OU ($7), 200*PCB_GROUNDPLANEFRAME, pcb_flag_old($10), rnd_true);
 			}
 		;
 
@@ -770,7 +770,7 @@ polygon_format
 		  polygonholes ')'
 			{
 				rnd_cardinal_t contour, contour_start, contour_end;
-				rnd_bool bad_contour_found = pcb_false;
+				rnd_bool bad_contour_found = rnd_false;
 				/* ignore junk */
 				for (contour = 0; contour <= Polygon->HoleIndexN; contour++)
 				  {
@@ -780,7 +780,7 @@ polygon_format
 						 Polygon->PointN :
 						 Polygon->HoleIndex[contour];
 				    if (contour_end - contour_start < 3)
-				      bad_contour_found = pcb_true;
+				      bad_contour_found = rnd_true;
 				  }
 
 				if (bad_contour_found)
@@ -846,7 +846,7 @@ element_oldformat
 		: T_ELEMENT '(' STRING STRING measure measure INTEGER ')' '('
 			{
 				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_no_flags(),
-					$3, $4, NULL, OU ($5), OU ($6), $7, 100, pcb_no_flags(), pcb_false);
+					$3, $4, NULL, OU ($5), OU ($6), $7, 100, pcb_no_flags(), rnd_false);
 				free ($3);
 				free ($4);
 				pin_num = 1;
@@ -864,7 +864,7 @@ element_1.3.4_format
 		: T_ELEMENT '(' INTEGER STRING STRING measure measure measure measure INTEGER ')' '('
 			{
 				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old($3),
-					$4, $5, NULL, OU ($6), OU ($7), IV ($8), IV ($9), pcb_flag_old($10), pcb_false);
+					$4, $5, NULL, OU ($6), OU ($7), IV ($8), IV ($9), pcb_flag_old($10), rnd_false);
 				free ($4);
 				free ($5);
 				pin_num = 1;
@@ -882,7 +882,7 @@ element_newformat
 		: T_ELEMENT '(' INTEGER STRING STRING STRING measure measure measure measure INTEGER ')' '('
 			{
 				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old($3),
-					$4, $5, $6, OU ($7), OU ($8), IV ($9), IV ($10), pcb_flag_old($11), pcb_false);
+					$4, $5, $6, OU ($7), OU ($8), IV ($9), IV ($10), pcb_flag_old($11), rnd_false);
 				free ($4);
 				free ($5);
 				free ($6);
@@ -903,7 +903,7 @@ element_1.7_format
 			{
 				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, pcb_flag_old($3),
 					$4, $5, $6, OU ($7) + OU ($9), OU ($8) + OU ($10),
-					$11, $12, pcb_flag_old($13), pcb_false);
+					$11, $12, pcb_flag_old($13), rnd_false);
 				yysubc_ox = OU ($7);
 				yysubc_oy = OU ($8);
 				free ($4);
@@ -925,7 +925,7 @@ element_hi_format
 			{
 				yysubc = io_pcb_element_new(yyData, yysubc, yyFont, $3,
 					$4, $5, $6, NU ($7) + NU ($9), NU ($8) + NU ($10),
-					$11, $12, $13, pcb_false);
+					$11, $12, $13, rnd_false);
 				yysubc_ox = NU ($7);
 				yysubc_oy = NU ($8);
 				free ($4);
@@ -1174,7 +1174,7 @@ symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 					yyerror("symbol ID used twice");
 					YYABORT;
 				}
-				Symbol->Valid = pcb_true;
+				Symbol->Valid = rnd_true;
 				Symbol->Delta = NU ($4);
 			}
 		| T_SYMBOL '(' symbolid measure ')' '('
@@ -1190,7 +1190,7 @@ symbolhead	: T_SYMBOL '[' symbolid measure ']' '('
 					yyerror("symbol ID used twice");
 					YYABORT;
 				}
-				Symbol->Valid = pcb_true;
+				Symbol->Valid = rnd_true;
 				Symbol->Delta = OU ($4);
 			}
 		;

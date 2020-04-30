@@ -329,7 +329,7 @@ static int get_where(const char *arg, pcb_data_t **data, rnd_coord_t *x, rnd_coo
 	if (end != NULL) {
 		char *sx, *sy, *tmp;
 		int offs = end - dst;
-		*have_coords = pcb_true;
+		*have_coords = rnd_true;
 		a = 1;
 		
 		tmp = rnd_strdup(dst);
@@ -355,7 +355,7 @@ static rnd_bool parse2coords(const char *arg, rnd_coord_t *rx, rnd_coord_t *ry)
 	rnd_bool succ;
 
 	if (arg == NULL)
-		return pcb_false;
+		return rnd_false;
 
 	dst = arg;
 	end = strchr(dst, ';');
@@ -382,7 +382,7 @@ fgw_error_t pcb_act_regpoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *args[6];
 	double rot = 0;
 	rnd_coord_t x = 0, y = 0, rx, ry = 0;
-	rnd_bool succ, have_coords = pcb_false;
+	rnd_bool succ, have_coords = rnd_false;
 	int corners = 0, a, n;
 	pcb_data_t *data;
 	char *end;
@@ -452,7 +452,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *args[8];
 	int n, a;
 	pcb_data_t *data;
-	rnd_bool succ, have_coords = pcb_false;
+	rnd_bool succ, have_coords = rnd_false;
 	rnd_coord_t x = 0, y = 0, w, h, rx, ry;
 	double rot = 0.0, roundres = 1.0;
 	char *end;
@@ -567,7 +567,7 @@ fgw_error_t pcb_act_circle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *args[6];
 	int n, a;
 	pcb_data_t *data;
-	rnd_bool succ, have_coords = pcb_false;
+	rnd_bool succ, have_coords = rnd_false;
 	rnd_coord_t x = 0, y = 0, dia;
 
 	if (argc < 2) {

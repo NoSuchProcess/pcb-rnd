@@ -440,7 +440,7 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
 	RND_DAD_END(dlg);
 
-	RND_DAD_NEW("pcbway_quote", dlg, "PCBWay: quote", NULL, pcb_true, NULL);
+	RND_DAD_NEW("pcbway_quote", dlg, "PCBWay: quote", NULL, rnd_true, NULL);
 	RND_DAD_RUN(dlg);
 	RND_DAD_FREE(dlg);
 

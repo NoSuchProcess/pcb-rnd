@@ -224,11 +224,11 @@ char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, 
 
 		update_history(hi, path);
 		if ((pctx.active) && (sub != NULL) && (sub->on_close != NULL))
-			sub->on_close(sub, pcb_true);
+			sub->on_close(sub, rnd_true);
 	}
 	else {
 		if ((pctx.active) && (sub != NULL) && (sub->on_close != NULL))
-			sub->on_close(sub, pcb_false);
+			sub->on_close(sub, rnd_false);
 	}
 	
 	if (pctx.active) {

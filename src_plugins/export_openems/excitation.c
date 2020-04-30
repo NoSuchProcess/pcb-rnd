@@ -60,7 +60,7 @@ static void ser_save(const char *data, const char *attrkey)
 	const char *orig = rnd_attribute_get(&PCB->Attributes, attrkey);
 	if ((orig == NULL) || (strcmp(orig, data) != 0)) {
 		rnd_attribute_put(&PCB->Attributes, attrkey, data);
-		pcb_board_set_changed_flag(pcb_true);
+		pcb_board_set_changed_flag(rnd_true);
 	}
 }
 
@@ -148,11 +148,11 @@ static rnd_bool to_hz(const char *s, double *out)
 	const rnd_unit_t *u;
 	double d;
 	if (!rnd_get_value_unit(s, NULL, 0, &d, &u))
-		return pcb_false;
+		return rnd_false;
 	if (u->family != PCB_UNIT_FREQ)
-		return pcb_false;
+		return rnd_false;
 	*out = d;
-	return pcb_true;
+	return rnd_true;
 }
 
 /*** excitation "micro-plugins" ***/
@@ -381,7 +381,7 @@ static void select_update(int setattr)
 		const char *orig = rnd_attribute_get(&PCB->Attributes, "openems::excitation::type");
 		if ((orig == NULL) || (strcmp(orig, excitations[exc_ctx.selected].name) != 0)) {
 			rnd_attribute_put(&PCB->Attributes, "openems::excitation::type", excitations[exc_ctx.selected].name);
-			pcb_board_set_changed_flag(pcb_true);
+			pcb_board_set_changed_flag(rnd_true);
 		}
 	}
 }
@@ -442,7 +442,7 @@ static void pcb_dlg_exc(void)
 	/* set up the context */
 	exc_ctx.active = 1;
 
-	RND_DAD_NEW("openems_excitation", exc_ctx.dlg, "openems: excitation", &exc_ctx, pcb_false, exc_close_cb);
+	RND_DAD_NEW("openems_excitation", exc_ctx.dlg, "openems: excitation", &exc_ctx, rnd_false, exc_close_cb);
 
 	load_selector();
 	select_update(1);

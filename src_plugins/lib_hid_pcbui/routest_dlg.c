@@ -187,7 +187,7 @@ static int rst_edit_attr(char **key, char **val)
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
 	RND_DAD_END(dlg);
 
-	RND_DAD_NEW("route_style_attr", dlg, "Edit route style attribute", NULL, pcb_true, NULL);
+	RND_DAD_NEW("route_style_attr", dlg, "Edit route style attribute", NULL, rnd_true, NULL);
 	res = RND_DAD_RUN(dlg);
 	if (res == 0) {
 		*key = rnd_strdup(dlg[wkey].val.str);
@@ -322,7 +322,7 @@ static int pcb_dlg_rstdlg(int rst_idx)
 	/* set up the context */
 	rstdlg_ctx.active = 1;
 
-	RND_DAD_NEW("route_style", rstdlg_ctx.dlg, "Edit route style", &rstdlg_ctx, pcb_false, rstdlg_close_cb);
+	RND_DAD_NEW("route_style", rstdlg_ctx.dlg, "Edit route style", &rstdlg_ctx, rnd_false, rstdlg_close_cb);
 
 	rstdlg_pcb2dlg(rst_idx);
 	return 0;

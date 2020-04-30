@@ -50,17 +50,17 @@ static void undo_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 static void cb_undo(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_undo(pcb_true);
+	pcb_undo(rnd_true);
 }
 
 static void cb_redo(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_redo(pcb_true);
+	pcb_redo(rnd_true);
 }
 
 static void cb_clear(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_undo_clear_list(pcb_true);
+	pcb_undo_clear_list(rnd_true);
 }
 
 
@@ -144,7 +144,7 @@ static void pcb_dlg_undo(void)
 	undo_ctx.active = 1;
 
 	RND_DAD_DEFSIZE(undo_ctx.dlg, 300, 400);
-	RND_DAD_NEW("undo", undo_ctx.dlg, "pcb-rnd undo list", &undo_ctx, pcb_false, undo_close_cb);
+	RND_DAD_NEW("undo", undo_ctx.dlg, "pcb-rnd undo list", &undo_ctx, rnd_false, undo_close_cb);
 	undo_data2dlg(&undo_ctx);
 }
 

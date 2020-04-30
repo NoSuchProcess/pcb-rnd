@@ -92,14 +92,14 @@ rnd_bool extedit_fd_watch(rnd_hidval_t watch, int fd, unsigned int condition, rn
 
 	/* excess callbacks */
 	if (!ctx->stay)
-		return pcb_true;
+		return rnd_true;
 
 	res = fread(tmp, 1, sizeof(tmp), ctx->fc);
 	if (res <= 0) {
 		ctx->stay = 0;
-		return pcb_false; /* also disables/removes the watch */
+		return rnd_false; /* also disables/removes the watch */
 	}
-	return pcb_true;
+	return rnd_true;
 }
 
 /* Invoke the child process, display a "progress bar" or some other indication
@@ -200,7 +200,7 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if ((argc > 1) && (rnd_strcasecmp(cmd, "selected") == 0)) {
 		pcb_buffer_set_number(bn);
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
-		pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, pcb_crosshair.X, pcb_crosshair.Y, pcb_false, pcb_false);
+		pcb_buffer_add_selected(PCB, PCB_PASTEBUFFER, pcb_crosshair.X, pcb_crosshair.Y, rnd_false, rnd_false);
 		pastex = pcb_crosshair.X;
 		pastey = pcb_crosshair.Y;
 		del_selected = 1;
@@ -309,10 +309,10 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 
 				if (del_selected)
-					pcb_remove_selected(pcb_true);
+					pcb_remove_selected(rnd_true);
 				if (paste) {
 					pcb_undo_save_serial();
-					pcb_buffer_copy_to_layout(PCB, pastex, pastey, pcb_false);
+					pcb_buffer_copy_to_layout(PCB, pastex, pastey, rnd_false);
 					pcb_undo_restore_serial();
 					pcb_remove_object(type, ptr1, ptr2, ptr3);
 					pcb_undo_inc_serial();

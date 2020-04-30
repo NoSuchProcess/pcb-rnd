@@ -111,7 +111,7 @@ int pcb_hid_get_flag(rnd_hidlib_t *hidlib, const char *name)
 			}
 			else {
 				/* slower but more generic way */
-				return rnd_parse_command(hidlib, name, pcb_true);
+				return rnd_parse_command(hidlib, name, rnd_true);
 			}
 		}
 		else {

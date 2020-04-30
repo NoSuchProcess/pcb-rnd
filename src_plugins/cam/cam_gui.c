@@ -337,7 +337,7 @@ static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 		RND_DAD_END(ctx->dlg);
 	RND_DAD_END(ctx->dlg);
 
-	RND_DAD_NEW("cam", ctx->dlg, "CAM export", ctx, pcb_false, cam_close_cb);
+	RND_DAD_NEW("cam", ctx->dlg, "CAM export", ctx, rnd_false, cam_close_cb);
 
 	{ /* set default outfile */
 		rnd_hid_attr_val_t hv;

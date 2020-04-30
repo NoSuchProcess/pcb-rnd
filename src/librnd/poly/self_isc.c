@@ -144,7 +144,7 @@ static int pcb_pline_add_isectp(vtp0_t *hubs, pcb_vnode_t *v)
 
 	v->Flags.in_hub = 1;
 	if (hubs->array != NULL) {
-		if (hub_find(hubs, v, pcb_true) != NULL) /* already on the list (... by now) */
+		if (hub_find(hubs, v, rnd_true) != NULL) /* already on the list (... by now) */
 				return 0;
 	}
 
@@ -220,11 +220,11 @@ rnd_bool pcb_pline_is_selfint(pcb_pline_t *pl)
 		for(vb = va->next->next; vb->next != va; vb = vb->next) {
 			pcb_vector_t i, tmp;
 			if (pcb_vect_inters2(va->point, va->next->point, vb->point, vb->next->point, i, tmp) > 0)
-				return pcb_true;
+				return rnd_true;
 		}
 		va = va->next;
 	} while (va != pl->head);
-	return pcb_false;
+	return rnd_false;
 }
 
 
@@ -314,7 +314,7 @@ rnd_cardinal_t pcb_polyarea_split_selfint(rnd_polyarea_t *pa)
 
 			for(n = 0; n < pls.used; n++) {
 				pln = (pcb_pline_t *)pls.array[n];
-				pcb_poly_contour_pre(pln, pcb_true);
+				pcb_poly_contour_pre(pln, rnd_true);
 				if (pln->Flags.orient != pl->Flags.orient)
 					pcb_poly_contour_inv(pln);
 				pcb_poly_contour_pre(pln, 0);

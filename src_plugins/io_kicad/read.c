@@ -506,7 +506,7 @@ static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, con
 			rnd_message(RND_MSG_ERROR, "\tfp_* layer '%s' not found for module object, using unbound subc layer instead.\n", layer_name);
 			lyt = PCB_LYT_VIRTUAL;
 			comb = 0;
-			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
+			return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, rnd_true);
 		}
 	}
 	else {
@@ -529,7 +529,7 @@ static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, con
 	comb = 0;
 	if (lyt & PCB_LYT_MASK)
 		comb |= PCB_LYC_SUB;
-	return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, pcb_true);
+	return pcb_subc_get_layer(subc, lyt, comb, 1, lnm, rnd_true);
 }
 
 #define SEEN_NO_DUP(bucket, bit) \
@@ -1280,7 +1280,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 				cy += sy;
 			}
 		}
-		arc = pcb_arc_new(ly, cx, cy, width, height, start_angle, delta, thickness, clearance, flg, pcb_true);
+		arc = pcb_arc_new(ly, cx, cy, width, height, start_angle, delta, thickness, clearance, flg, rnd_true);
 		if (st->primitive_term != NULL)
 			rnd_attribute_put(&arc->Attributes, "term", st->primitive_term);
 	}
@@ -1369,7 +1369,7 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	if ((blind_cnt != 0) && (blind_cnt != 2))
 		return kicad_error(subtree, "Contradiction in blind via parameters: the \"blind\" node must present and the via needs to end on an inner layer");
 
-	ps = pcb_pstk_new_compat_via(st->pcb->Data, -1, x, y, drill, thickness, clearance, mask, PCB_PSTK_COMPAT_ROUND, pcb_true);
+	ps = pcb_pstk_new_compat_via(st->pcb->Data, -1, x, y, drill, thickness, clearance, mask, PCB_PSTK_COMPAT_ROUND, rnd_true);
 	if (ps == NULL)
 		return kicad_error(subtree, "failed to create via-padstack");
 
@@ -1750,7 +1750,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_rect_trdelta(&sh[len++], padXsize, padYsize, dx, dy);}
 		if (len == 0) goto no_layer;
 		sh[len++].layer_mask = 0;
-		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, clearance, sh);
+		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, rnd_false, clearance, sh);
 	}
 	else if ((strcmp(pad_shape, "oval") == 0) || (strcmp(pad_shape, "circle") == 0)) {
 		pcb_pstk_shape_t sh[4];
@@ -1760,7 +1760,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_oval(&sh[len++], padXsize, padYsize);}
 		if (len == 0) goto no_layer;
 		sh[len++].layer_mask = 0;
-		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, clearance, sh);
+		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, rnd_false, clearance, sh);
 	}
 	else if (strcmp(pad_shape, "roundrect") == 0) {
 		pcb_pstk_shape_t sh[4];
@@ -1776,7 +1776,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 		if (LYSHS(side, COPPER))    {sh[len].layer_mask = side | PCB_LYT_COPPER; pcb_shape_roundrect(&sh[len++], padXsize, padYsize, shape_arg);}
 		if (len == 0) goto no_layer;
 		sh[len++].layer_mask = 0;
-		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, pcb_false, clearance, sh);
+		return pcb_pstk_new_from_shape(subc->data, X, Y, 0, rnd_false, clearance, sh);
 	}
 
 	kicad_error(subtree, "unsupported pad shape '%s'.", pad_shape);
@@ -2063,7 +2063,7 @@ static int kicad_parse_primitives(read_state_t *st, gsxl_node_t *primitives, pcb
 				pcb_layer_combining_t comb = 0;
 				if ((*typ) & (PCB_LYT_PASTE | PCB_LYT_MASK | PCB_LYT_SILK)) comb |= PCB_LYC_AUTO;
 				if ((*typ) & (PCB_LYT_MASK)) comb |= PCB_LYC_SUB;
-				st->primitive_ly = pcb_subc_get_layer(subc, loc | *typ, comb, 1, "pad", pcb_false);
+				st->primitive_ly = pcb_subc_get_layer(subc, loc | *typ, comb, 1, "pad", rnd_false);
 				if (st->primitive_ly != NULL) {
 					res = kicad_parse_primitives_(st, primitives);
 					if (!warned && ((*typ) & PCB_LYT_INTERN)) {
@@ -2789,7 +2789,7 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 
 	/* enable fallback to the default font picked up when creating the based
 	   PCB (loading the default PCB), because we won't get a font from KiCad. */
-	st.pcb->fontkit.valid = pcb_true;
+	st.pcb->fontkit.valid = rnd_true;
 
 	return readres;
 }
