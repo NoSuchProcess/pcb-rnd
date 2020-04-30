@@ -40,7 +40,7 @@ extern int n_deleted, n_added_ef, n_fixed, n_PKG_removed_new,
 
 extern int bak_done, need_PKG_purge;
 
-const char *local_project_pcb_name; /* file name of the design from which the local project file name shall be derived */
+extern const char *local_project_pcb_name; /* file name of the design from which the local project file name shall be derived */
 
 char *fix_spaces(char * str);
 void require_gnetlist_backend(const char *dir, const char *backend);
