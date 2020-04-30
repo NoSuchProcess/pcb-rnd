@@ -252,7 +252,7 @@ void rnd_event(rnd_hidlib_t *hidlib, rnd_event_id_t ev, const char *fmt, ...)
 	fgw_ucall_all(&rnd_fgw, hidlib, rnd_event_name(ev), argc, fargv);
 }
 
-void pcb_events_init(void)
+void rnd_events_init(void)
 {
 	if ((sizeof(rnd_evnames_lib) / sizeof(rnd_evnames_lib[0])) != RND_EVENT_last) {
 		fprintf(stderr, "INTERNAL ERROR: event.c: rnd_evnames_lib and rnd_event_id_t are out of sync\n");
@@ -274,7 +274,7 @@ void pcb_events_uninit_(event_t **events, long last)
 }
 
 
-void pcb_events_uninit(void)
+void rnd_events_uninit(void)
 {
 	pcb_events_uninit_(rnd_events_lib, RND_EVENT_last);
 	if (rnd_event_app_last > 0)

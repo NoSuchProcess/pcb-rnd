@@ -304,7 +304,7 @@ void pcbhl_conf_postproc(void)
 
 void rnd_hidlib_init1(void (*conf_core_init)(void))
 {
-	pcb_events_init();
+	rnd_events_init();
 	rnd_file_loaded_init();
 	rnd_conf_init();
 	conf_core_init();
@@ -387,7 +387,7 @@ void rnd_hidlib_uninit(void)
 		rnd_conf_save_file(NULL, NULL, NULL, RND_CFR_USER, NULL);
 
 	rnd_hid_uninit();
-	pcb_events_uninit();
+	rnd_events_uninit();
 	rnd_conf_uninit();
 	rnd_plugin_uninit();
 	rnd_actions_uninit();

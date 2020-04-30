@@ -1207,3 +1207,5 @@
 #define PCB_SAFEPRINT_COORD_ONLY RND_SAFEPRINT_COORD_ONLY
 #define pcb_hid_export_opt_func_dad_s rnd_hid_export_opt_func_dad_s
 #define pcb_hid_export_opt_func_dad_t rnd_hid_export_opt_func_dad_t
+#define pcb_events_init rnd_events_init
+#define pcb_events_uninit rnd_events_uninit

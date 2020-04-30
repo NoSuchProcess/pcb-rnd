@@ -100,10 +100,10 @@ struct rnd_event_arg_s {
 };
 
 /* Initialize the event system */
-void pcb_events_init(void);
+void rnd_events_init(void);
 
 /* Uninitialize the event system and remove all events */
-void pcb_events_uninit(void);
+void rnd_events_uninit(void);
 
 
 /* Event callback prototype; user_data is the same as in rnd_event_bind().
