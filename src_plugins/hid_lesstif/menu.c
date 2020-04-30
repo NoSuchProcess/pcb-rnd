@@ -216,7 +216,7 @@ static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * p
 	}
 
 	lesstif_need_idle_proc();
-	pcb_hid_cfg_action(ltf_hidlib, node);
+	rnd_hid_cfg_action(ltf_hidlib, node);
 }
 
 static void note_accelerator(const lht_node_t *node)

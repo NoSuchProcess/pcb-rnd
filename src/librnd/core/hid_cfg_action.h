@@ -28,4 +28,4 @@
 #include <librnd/core/hid_cfg.h>
 /* Run an action node. The node is either a list of text nodes or a text node;
    returns non-zero on error, the first action that fails in a chain breaks the chain */
-int pcb_hid_cfg_action(rnd_hidlib_t *hl, const lht_node_t *node);
+int rnd_hid_cfg_action(rnd_hidlib_t *hl, const lht_node_t *node);

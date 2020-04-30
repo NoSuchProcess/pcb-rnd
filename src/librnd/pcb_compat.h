@@ -694,3 +694,4 @@
 #define pcb_hid_cfg_error rnd_hid_cfg_error
 #define pcb_hid_cfg_map_anchor_menus rnd_hid_cfg_map_anchor_menus
 #define pcb_hid_cfg_del_anchor_menus rnd_hid_cfg_del_anchor_menus
+#define pcb_hid_cfg_action rnd_hid_cfg_action
