@@ -1063,3 +1063,12 @@
 #define pcb_str2boolop rnd_str2boolop
 #define pcb_bool_op_t rnd_bool_op_t
 #define pcb_bool_op_e rnd_bool_op_e
+#define pcb_pixmap_import_s rnd_pixmap_import_s
+#define pcb_pixmap_import_t rnd_pixmap_import_t
+#define pcb_pixmap_reg_import rnd_pixmap_reg_import
+#define pcb_pixmap_unreg_import_all rnd_pixmap_unreg_import_all
+#define pcb_pixmap_load rnd_old_pixmap_load
+#define pcb_pixmap_hash_meta rnd_pixmap_hash_meta
+#define pcb_pixmap_hash_pixels rnd_pixmap_hash_pixels
+#define pcb_pixmap_eq_meta rnd_pixmap_eq_meta
+#define pcb_pixmap_eq_pixels rnd_pixmap_eq_pixels

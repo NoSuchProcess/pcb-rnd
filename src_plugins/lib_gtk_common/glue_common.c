@@ -290,7 +290,7 @@ static void ghid_load_bg_image(void)
 	ghidgui->bg_pixmap.pxm = NULL;
 	ghidgui->bg_pixmap.image = NULL;
 	if (pcb_conf_hid_gtk.plugins.hid_gtk.bg_image != NULL) {
-		if (pcb_pixmap_load(ghidgui->hidlib, &pxm, pcb_conf_hid_gtk.plugins.hid_gtk.bg_image) != 0) {
+		if (rnd_old_pixmap_load(ghidgui->hidlib, &pxm, pcb_conf_hid_gtk.plugins.hid_gtk.bg_image) != 0) {
 			rnd_message(RND_MSG_ERROR, "Failed to load pixmap %s for background image\n", pcb_conf_hid_gtk.plugins.hid_gtk.bg_image);
 			return;
 		}

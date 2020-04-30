@@ -144,7 +144,7 @@ TODO("Pick up transparent pixel from comment");
 	return 0;
 }
 
-static const pcb_pixmap_import_t pxm_pnm_imp = {
+static const rnd_pixmap_import_t pxm_pnm_imp = {
 	"pnm",
 	pnm_load
 };
@@ -153,12 +153,12 @@ int pplg_check_ver_import_pxm_pnm(int ver_needed) { return 0; }
 
 void pplg_uninit_import_pxm_pnm(void)
 {
-	pcb_pixmap_unreg_import_all(import_pxm_pnm_cookie);
+	rnd_pixmap_unreg_import_all(import_pxm_pnm_cookie);
 }
 
 int pplg_init_import_pxm_pnm(void)
 {
 	PCB_API_CHK_VER;
-	pcb_pixmap_reg_import(&pxm_pnm_imp, import_pxm_pnm_cookie);
+	rnd_pixmap_reg_import(&pxm_pnm_imp, import_pxm_pnm_cookie);
 	return 0;
 }

@@ -799,7 +799,7 @@ static void DrawBackgroundImage()
 
 static void LoadBackgroundImage(const char *fn)
 {
-	if (pcb_pixmap_load(ltf_hidlib, &ltf_bg_img, fn) != 0)
+	if (rnd_old_pixmap_load(ltf_hidlib, &ltf_bg_img, fn) != 0)
 		rnd_message(RND_MSG_ERROR, "Failed to load pixmap %s for background image\n", fn);
 }
 

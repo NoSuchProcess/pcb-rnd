@@ -56,12 +56,12 @@ static unsigned int pixmap_hash_(const void *key_, int pixels)
 	return i;
 }
 
-unsigned int pcb_pixmap_hash_meta(const void *key)
+unsigned int rnd_pixmap_hash_meta(const void *key)
 {
 	return pixmap_hash_(key, 0);
 }
 
-unsigned int pcb_pixmap_hash_pixels(const void *key)
+unsigned int rnd_pixmap_hash_pixels(const void *key)
 {
 	return pixmap_hash_(key, 1);
 }
@@ -88,29 +88,29 @@ static int pixmap_eq_(const void *keya_, const void *keyb_, int pixels)
 		return (keya->neutral_oid == keyb->neutral_oid);
 }
 
-int pcb_pixmap_eq_meta(const void *keya, const void *keyb)
+int rnd_pixmap_eq_meta(const void *keya, const void *keyb)
 {
 	return pixmap_eq_(keya, keyb, 0);
 }
 
-int pcb_pixmap_eq_pixels(const void *keya, const void *keyb)
+int rnd_pixmap_eq_pixels(const void *keya, const void *keyb)
 {
 	return pixmap_eq_(keya, keyb, 1);
 }
 
 
-static pcb_pixmap_import_t *pcb_pixmap_chain;
+static rnd_pixmap_import_t *pcb_pixmap_chain;
 
-void pcb_pixmap_reg_import(const pcb_pixmap_import_t *imp, const char *cookie)
+void rnd_pixmap_reg_import(const rnd_pixmap_import_t *imp, const char *cookie)
 {
-	pcb_pixmap_import_t *i = malloc(sizeof(pcb_pixmap_import_t));
-	memcpy(i, imp, sizeof(pcb_pixmap_import_t));
+	rnd_pixmap_import_t *i = malloc(sizeof(rnd_pixmap_import_t));
+	memcpy(i, imp, sizeof(rnd_pixmap_import_t));
 	i->cookie = cookie;
 	i->next = pcb_pixmap_chain;
 	pcb_pixmap_chain = i;
 }
 
-static void pcb_pixmap_unreg_(pcb_pixmap_import_t *i, pcb_pixmap_import_t *prev)
+static void pcb_pixmap_unreg_(rnd_pixmap_import_t *i, rnd_pixmap_import_t *prev)
 {
 	if (prev == NULL)
 		pcb_pixmap_chain = i->next;
@@ -119,9 +119,9 @@ static void pcb_pixmap_unreg_(pcb_pixmap_import_t *i, pcb_pixmap_import_t *prev)
 	free(i);
 }
 
-void pcb_pixmap_unreg_import_all(const char *cookie)
+void rnd_pixmap_unreg_import_all(const char *cookie)
 {
-	pcb_pixmap_import_t *i, *prev = NULL, *next;
+	rnd_pixmap_import_t *i, *prev = NULL, *next;
 	for(i = pcb_pixmap_chain; i != NULL; i = next) {
 		next = i->next;
 		if (i->cookie == cookie)
@@ -133,14 +133,14 @@ void pcb_pixmap_unreg_import_all(const char *cookie)
 
 void rnd_pixmap_uninit(void)
 {
-	pcb_pixmap_import_t *i;
+	rnd_pixmap_import_t *i;
 	for(i = pcb_pixmap_chain; i != NULL; i = i->next)
 		rnd_message(RND_MSG_ERROR, "pcb_pixmap_chain is not empty: %s. Fix your plugins!\n", i->cookie);
 }
 
-int pcb_pixmap_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
+int rnd_old_pixmap_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 {
-	pcb_pixmap_import_t *i;
+	rnd_pixmap_import_t *i;
 	for(i = pcb_pixmap_chain; i != NULL; i = i->next)
 		if (i->load(hidlib, pxm, fn) == 0)
 			return 0;
@@ -150,7 +150,7 @@ int pcb_pixmap_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 rnd_pixmap_t *rnd_pixmap_load(rnd_hidlib_t *hidlib, const char *fn)
 {
 	rnd_pixmap_t *p = calloc(sizeof(rnd_pixmap_t), 1);
-	if (pcb_pixmap_load(hidlib, p, fn) == 0)
+	if (rnd_old_pixmap_load(hidlib, p, fn) == 0)
 		return p;
 	free(p);
 	return NULL;

@@ -38,8 +38,8 @@ pcb_pixmap_hash_t pcb_pixmaps;
 
 void pcb_pixmap_hash_init(pcb_pixmap_hash_t *pmhash)
 {
-	htpp_init(&pmhash->meta, pcb_pixmap_hash_meta, pcb_pixmap_eq_meta);
-	htpp_init(&pmhash->pixels, pcb_pixmap_hash_pixels, pcb_pixmap_eq_pixels);
+	htpp_init(&pmhash->meta, rnd_pixmap_hash_meta, rnd_pixmap_eq_meta);
+	htpp_init(&pmhash->pixels, rnd_pixmap_hash_pixels, rnd_pixmap_eq_pixels);
 }
 
 void pcb_pixmap_hash_uninit(pcb_pixmap_hash_t *pmhash)
