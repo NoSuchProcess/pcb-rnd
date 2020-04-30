@@ -156,7 +156,7 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_
 				sprintf(end, pcbhl_menu_name_fmt, fn);
 				doc = pcb_hid_cfg_load_lht(hidlib, *p);
 				if (doc != NULL)
-					pcb_file_loaded_set_at("menu", "HID main", *p, "main menu system");
+					rnd_file_loaded_set_at("menu", "HID main", *p, "main menu system");
 			}
 			free(*p);
 		}
@@ -167,7 +167,7 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_
 
 	if (doc == NULL) {
 		doc = pcb_hid_cfg_load_str(embedded_fallback);
-		pcb_file_loaded_set_at("menu", "HID main", "<internal>", "main menu system");
+		rnd_file_loaded_set_at("menu", "HID main", "<internal>", "main menu system");
 	}
 	if (doc == NULL)
 		return NULL;

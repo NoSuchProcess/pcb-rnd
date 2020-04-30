@@ -174,7 +174,7 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 		lht_dom_uninit(pcb_conf_main_root[role]);
 		pcb_conf_main_root[role] = NULL;
 		if (role_name != NULL)
-			pcb_file_loaded_del_at(flcat, role_name);
+			rnd_file_loaded_del_at(flcat, role_name);
 	}
 	if (fn_is_text) {
 		d = pcb_hid_cfg_load_str(fn);
@@ -208,14 +208,14 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 		d->root = prjroot;
 		pcb_conf_main_root[role] = d;
 		if (role_name != NULL)
-			pcb_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
+			rnd_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
 		return 0;
 	}
 
 	if ((d->root->type == LHT_LIST) && (strcmp(d->root->name, "pcb-rnd-conf-v1") == 0)) {
 		pcb_conf_main_root[role] = d;
 		if (role_name != NULL)
-			pcb_file_loaded_set_at(flcat, role_name, ifn, "conf");
+			rnd_file_loaded_set_at(flcat, role_name, ifn, "conf");
 		return 0;
 	}
 
@@ -224,7 +224,7 @@ int rnd_conf_load_as(rnd_conf_role_t role, const char *fn, int fn_is_text)
 		confroot = lht_tree_path_(d, d->root, "pcb-rnd-conf-v1", 1, 0, NULL);
 
 		if (role_name != NULL)
-			pcb_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
+			rnd_file_loaded_set_at(flcat, role_name, ifn, "project/conf");
 
 		if ((confroot != NULL)  && (confroot->type == LHT_LIST) && (strcmp(confroot->name, "li:pcb-rnd-conf-v1") == 0)) {
 			pcb_conf_main_root[role] = d;
@@ -292,7 +292,7 @@ static int conf_load_plug_files(rnd_conf_role_t role, const char *dir)
 				if (res) {
 					char id[256];
 					pcb_snprintf(id, sizeof(id), "%s:%s", rnd_conf_role_name(role), fn);
-					pcb_file_loaded_set_at("conf/plugin", id, path, NULL);
+					rnd_file_loaded_set_at("conf/plugin", id, path, NULL);
 				}
 				cnt += res;
 			}

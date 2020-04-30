@@ -28,23 +28,23 @@
 
 /* info on where files are loaded from */
 
-#ifndef PCB_FILE_LOADED_H
-#define PCB_FILE_LOADED_H
+#ifndef RND_FILE_LOADED_H
+#define RND_FILE_LOADED_H
 
 #include <genht/htsp.h>
 
 /* Hash-in-hash tree with the top tree being categories. */
 
-typedef enum pcb_file_loaded_type_e {
-	PCB_FLT_CATEGORY,
-	PCB_FLT_FILE
-} pcb_file_loaded_type_t;
+typedef enum rnd_file_loaded_type_e {
+	RND_FLT_CATEGORY,
+	RND_FLT_FILE
+} rnd_file_loaded_type_t;
 
-typedef struct pcb_file_loaded_s pcb_file_loaded_t;
+typedef struct rnd_file_loaded_s rnd_file_loaded_t;
 
-struct pcb_file_loaded_s {
+struct rnd_file_loaded_s {
 	char *name; /* same as the hash key; strdup'd */
-	pcb_file_loaded_type_t type;
+	rnd_file_loaded_type_t type;
 	union {
 		struct {
 			htsp_t children;
@@ -56,27 +56,27 @@ struct pcb_file_loaded_s {
 	} data;
 };
 
-extern htsp_t pcb_file_loaded;
+extern htsp_t rnd_file_loaded;
 
 /* Return the category called name; if doesn't exist and alloc is 1,
    allocate it it (else return NULL) */
-pcb_file_loaded_t *pcb_file_loaded_category(const char *name, int alloc);
+rnd_file_loaded_t *rnd_file_loaded_category(const char *name, int alloc);
 
 /* clear the subtree of a category, keeping the category; return 0 on success */
-int pcb_file_loaded_clear(pcb_file_loaded_t *cat);
-int pcb_file_loaded_clear_at(const char *catname);
+int rnd_file_loaded_clear(rnd_file_loaded_t *cat);
+int rnd_file_loaded_clear_at(const char *catname);
 
 /* clear the subtree of a category, keeping the category; return 0 on success */
-int pcb_file_loaded_set(pcb_file_loaded_t *cat, const char *name, const char *path, const char *desc);
-int pcb_file_loaded_set_at(const char *catname, const char *name, const char *path, const char *desc);
+int rnd_file_loaded_set(rnd_file_loaded_t *cat, const char *name, const char *path, const char *desc);
+int rnd_file_loaded_set_at(const char *catname, const char *name, const char *path, const char *desc);
 
 /* remove an entry */
-int pcb_file_loaded_del(pcb_file_loaded_t *cat, const char *name);
-int pcb_file_loaded_del_at(const char *catname, const char *name);
+int rnd_file_loaded_del(rnd_file_loaded_t *cat, const char *name);
+int rnd_file_loaded_del_at(const char *catname, const char *name);
 
 
 /* called once, from main */
-void pcb_file_loaded_init(void);
-void pcb_file_loaded_uninit(void);
+void rnd_file_loaded_init(void);
+void rnd_file_loaded_uninit(void);
 
 #endif

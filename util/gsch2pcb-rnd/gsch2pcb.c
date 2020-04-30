@@ -398,7 +398,7 @@ int main(int argc, char ** argv)
 	pcbhl_menu_file_paths[2] = pcb_concat(PCBCONFDIR, "/", NULL);
 	pcbhl_menu_file_paths[3] = NULL;
 
-	pcb_file_loaded_init();
+	rnd_file_loaded_init();
 	rnd_conf_init();
 	conf_core_init();
 	pcb_hidlib_conf_init();

@@ -79,13 +79,13 @@ static void pcb_dlg_about(void)
 			PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
 				PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_SCROLL);
 				gds_init(&s);
-				for (e = htsp_first(&pcb_file_loaded); e; e = htsp_next(&pcb_file_loaded, e)) {
+				for (e = htsp_first(&rnd_file_loaded); e; e = htsp_next(&rnd_file_loaded, e)) {
 					htsp_entry_t *e2;
-					pcb_file_loaded_t *cat = e->value;
+					rnd_file_loaded_t *cat = e->value;
 					PCB_DAD_LABEL(about_ctx.dlg, cat->name);
 					gds_truncate(&s, 0);
 					for (e2 = htsp_first(&cat->data.category.children); e2; e2 = htsp_next(&cat->data.category.children, e2)) {
-						pcb_file_loaded_t *file = e2->value;
+						rnd_file_loaded_t *file = e2->value;
 						pcb_append_printf(&s, "  %s\t%s\t%s\n", file->name, file->data.file.path, file->data.file.desc);
 					}
 					PCB_DAD_LABEL(about_ctx.dlg, s.array);

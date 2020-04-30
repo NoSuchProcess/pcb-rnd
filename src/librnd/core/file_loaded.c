@@ -32,23 +32,23 @@
 #include <librnd/core/file_loaded.h>
 #include <librnd/core/compat_misc.h>
 
-htsp_t pcb_file_loaded;
+htsp_t rnd_file_loaded;
 
-pcb_file_loaded_t *pcb_file_loaded_category(const char *name, int alloc)
+rnd_file_loaded_t *rnd_file_loaded_category(const char *name, int alloc)
 {
-	pcb_file_loaded_t *cat = htsp_get(&pcb_file_loaded, name);
+	rnd_file_loaded_t *cat = htsp_get(&rnd_file_loaded, name);
 
 	if ((cat == NULL) && (alloc)) {
-		cat = calloc(sizeof(pcb_file_loaded_t), 1);
-		cat->type = PCB_FLT_CATEGORY;
+		cat = calloc(sizeof(rnd_file_loaded_t), 1);
+		cat->type = RND_FLT_CATEGORY;
 		cat->name = rnd_strdup(name);
 		htsp_init(&cat->data.category.children, strhash, strkeyeq);
-		htsp_set(&pcb_file_loaded, cat->name, cat);
+		htsp_set(&rnd_file_loaded, cat->name, cat);
 	}
 	return cat;
 }
 
-int pcb_file_loaded_file_free(pcb_file_loaded_t *file)
+int pcb_file_loaded_file_free(rnd_file_loaded_t *file)
 {
 	free(file->data.file.path);
 	free(file->data.file.desc);
@@ -57,11 +57,11 @@ int pcb_file_loaded_file_free(pcb_file_loaded_t *file)
 	return 0;
 }
 
-int pcb_file_loaded_clear(pcb_file_loaded_t *cat)
+int rnd_file_loaded_clear(rnd_file_loaded_t *cat)
 {
 	htsp_entry_t *e;
 
-	assert(cat->type == PCB_FLT_CATEGORY);
+	assert(cat->type == RND_FLT_CATEGORY);
 
 	for (e = htsp_first(&cat->data.category.children); e; e = htsp_next(&cat->data.category.children, e)) {
 		pcb_file_loaded_file_free(e->value);
@@ -70,27 +70,27 @@ int pcb_file_loaded_clear(pcb_file_loaded_t *cat)
 	return 0;
 }
 
-int pcb_file_loaded_clear_at(const char *catname)
+int rnd_file_loaded_clear_at(const char *catname)
 {
-	pcb_file_loaded_t *cat = pcb_file_loaded_category(catname, 0);
+	rnd_file_loaded_t *cat = rnd_file_loaded_category(catname, 0);
 	if (cat != NULL)
-		return pcb_file_loaded_clear(cat);
+		return rnd_file_loaded_clear(cat);
 	return 0;
 }
 
-int pcb_file_loaded_set(pcb_file_loaded_t *cat, const char *name, const char *path, const char *desc)
+int rnd_file_loaded_set(rnd_file_loaded_t *cat, const char *name, const char *path, const char *desc)
 {
-	pcb_file_loaded_t *file;
+	rnd_file_loaded_t *file;
 
-	assert(cat->type == PCB_FLT_CATEGORY);
+	assert(cat->type == RND_FLT_CATEGORY);
 	file = htsp_get(&cat->data.category.children, name);
 	if (file != NULL) {
 		free(file->data.file.path);
 		free(file->data.file.desc);
 	}
 	else {
-		file = malloc(sizeof(pcb_file_loaded_t));
-		file->type = PCB_FLT_FILE;
+		file = malloc(sizeof(rnd_file_loaded_t));
+		file->type = RND_FLT_FILE;
 		file->name = rnd_strdup(name);
 		htsp_set(&cat->data.category.children, file->name, file);
 	}
@@ -106,50 +106,50 @@ int pcb_file_loaded_set(pcb_file_loaded_t *cat, const char *name, const char *pa
 	return 0;
 }
 
-int pcb_file_loaded_set_at(const char *catnam, const char *name, const char *path, const char *desc)
+int rnd_file_loaded_set_at(const char *catnam, const char *name, const char *path, const char *desc)
 {
-	pcb_file_loaded_t *cat = pcb_file_loaded_category(catnam, 1);
-	return pcb_file_loaded_set(cat, name, path, desc);
+	rnd_file_loaded_t *cat = rnd_file_loaded_category(catnam, 1);
+	return rnd_file_loaded_set(cat, name, path, desc);
 }
 
-int pcb_file_loaded_del(pcb_file_loaded_t *cat, const char *name)
+int rnd_file_loaded_del(rnd_file_loaded_t *cat, const char *name)
 {
-	pcb_file_loaded_t *file;
-	assert(cat->type == PCB_FLT_CATEGORY);
+	rnd_file_loaded_t *file;
+	assert(cat->type == RND_FLT_CATEGORY);
 	file = htsp_pop(&cat->data.category.children, name);
 	if (file != NULL) {
-		if (file->type != PCB_FLT_FILE)
+		if (file->type != RND_FLT_FILE)
 			return -1;
 		pcb_file_loaded_file_free(file);
 	}
 	return 0;
 }
 
-int pcb_file_loaded_del_at(const char *catname, const char *name)
+int rnd_file_loaded_del_at(const char *catname, const char *name)
 {
-	pcb_file_loaded_t *cat = pcb_file_loaded_category(catname, 1);
-	return pcb_file_loaded_del(cat, name);
+	rnd_file_loaded_t *cat = rnd_file_loaded_category(catname, 1);
+	return rnd_file_loaded_del(cat, name);
 }
 
-void pcb_file_loaded_init(void)
+void rnd_file_loaded_init(void)
 {
-	htsp_init(&pcb_file_loaded, strhash, strkeyeq);
+	htsp_init(&rnd_file_loaded, strhash, strkeyeq);
 }
 
-void pcb_file_loaded_uninit(void)
+void rnd_file_loaded_uninit(void)
 {
 	htsp_entry_t *e;
 
-	for (e = htsp_first(&pcb_file_loaded); e; e = htsp_next(&pcb_file_loaded, e)) {
-		pcb_file_loaded_t *cat = e->value;
-		pcb_file_loaded_clear(cat);
+	for (e = htsp_first(&rnd_file_loaded); e; e = htsp_next(&rnd_file_loaded, e)) {
+		rnd_file_loaded_t *cat = e->value;
+		rnd_file_loaded_clear(cat);
 		free(cat->name);
 		htsp_uninit(&cat->data.category.children);
 		free(cat);
-		htsp_delentry(&pcb_file_loaded, e);
+		htsp_delentry(&rnd_file_loaded, e);
 	}
 
-	htsp_uninit(&pcb_file_loaded);
+	htsp_uninit(&rnd_file_loaded);
 }
 
 

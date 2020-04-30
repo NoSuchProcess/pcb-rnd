@@ -64,12 +64,12 @@ fgw_error_t pcb_act_DumpActions(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_PrintFiles[] = "PrintFiles()";
 static const char pcb_acth_PrintFiles[] = "Print files currently loaded.";
-static void print_cat(pcb_file_loaded_t *cat)
+static void print_cat(rnd_file_loaded_t *cat)
 {
 	htsp_entry_t *e;
 	printf("%s\n", cat->name);
 	for (e = htsp_first(&cat->data.category.children); e; e = htsp_next(&cat->data.category.children, e)) {
-		pcb_file_loaded_t *file = e->value;
+		rnd_file_loaded_t *file = e->value;
 		printf(" %s\t%s\t%s\n", file->name, file->data.file.path, file->data.file.desc);
 	}
 }
@@ -77,7 +77,7 @@ fgw_error_t pcb_act_PrintFiles(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	htsp_entry_t *e;
 	printf("# Data files loaded\n");
-	for (e = htsp_first(&pcb_file_loaded); e; e = htsp_next(&pcb_file_loaded, e))
+	for (e = htsp_first(&rnd_file_loaded); e; e = htsp_next(&rnd_file_loaded, e))
 		print_cat(e->value);
 	RND_ACT_IRES(0);
 	return 0;

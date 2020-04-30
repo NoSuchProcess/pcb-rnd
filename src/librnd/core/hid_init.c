@@ -305,7 +305,7 @@ void pcbhl_conf_postproc(void)
 void pcb_hidlib_init1(void (*conf_core_init)(void))
 {
 	pcb_events_init();
-	pcb_file_loaded_init();
+	rnd_file_loaded_init();
 	rnd_conf_init();
 	conf_core_init();
 	pcbhl_conf_postproc();

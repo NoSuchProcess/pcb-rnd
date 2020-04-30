@@ -89,7 +89,7 @@ static int pcb_parse_font_default(pcb_font_t *ptr, const char *filename)
 {
 	int res = pcb_parse_font(ptr, filename);
 	if (res == 0)
-		pcb_file_loaded_set_at("font", "default", filename, "original default font");
+		rnd_file_loaded_set_at("font", "default", filename, "original default font");
 	return res;
 }
 
@@ -109,7 +109,7 @@ void pcb_font_create_default(pcb_board_t *pcb)
 		s = rnd_conf_concat_strlist(&conf_core.rc.default_font_file, &buff, NULL, ':');
 		rnd_message(RND_MSG_WARNING, "Can't find font-symbol-file. Searched: '%s'; falling back to the embedded default font\n", s);
 		pcb_font_load_internal(&pcb->fontkit.dflt);
-		pcb_file_loaded_set_at("font", "default", "<internal>", "original default font");
+		rnd_file_loaded_set_at("font", "default", "<internal>", "original default font");
 		gds_uninit(&buff);
 	}
 }

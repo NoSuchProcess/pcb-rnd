@@ -348,7 +348,7 @@ void pcb_main_uninit(void)
 	pcb_hidlib_uninit(); /* plugin unload */
 
 	pcb_funchash_uninit();
-	pcb_file_loaded_uninit();
+	rnd_file_loaded_uninit();
 	pcb_uilayer_uninit();
 	rnd_cli_uninit();
 	pcb_dynflag_uninit();
