@@ -14,7 +14,7 @@
 	} while(0)
 #else
 #	define NUMREP 1
-#	define PCB_PRINTF pcb_printf
+#	define PCB_PRINTF rnd_printf
 #endif
 
 int main()
@@ -63,7 +63,7 @@ int main()
 #ifdef SPEED
 	{
 		double spent = (double)clock() / (double)CLOCKS_PER_SEC;
-		printf("total number of pcb_printf calls:  %d\n", pc);
+		printf("total number of rnd_printf calls:  %d\n", pc);
 		printf("total number of CPU seconds spent: %.4f\n", spent);
 		printf("Average prints per second: %.4f\n", (double)pc/spent);
 	}
