@@ -282,19 +282,19 @@ do { \
 
 #define RND_DAD_INTEGER(table, label) \
 do { \
-	PCB_DAD_SPIN_INT(table); \
+	RND_DAD_SPIN_INT(table); \
 	RND_DAD_SET_ATTR_FIELD(table, name, label); \
 } while(0)
 
 #define RND_DAD_REAL(table, label) \
 do { \
-	PCB_DAD_SPIN_DOUBLE(table); \
+	RND_DAD_SPIN_DOUBLE(table); \
 	RND_DAD_SET_ATTR_FIELD(table, name, label); \
 } while(0)
 
 #define RND_DAD_COORD(table, label) \
 do { \
-	PCB_DAD_SPIN_COORD(table); \
+	RND_DAD_SPIN_COORD(table); \
 	RND_DAD_SET_ATTR_FIELD(table, name, label); \
 } while(0)
 

@@ -38,9 +38,9 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hidlib_conf.h>
 
-gdl_list_t pcb_dad_coord_spins;
+gdl_list_t rnd_dad_coord_spins;
 
-const char *pcb_hid_dad_spin_up[] = {
+const char *rnd_hid_dad_spin_up[] = {
 "5 3 2 1",
 " 	c None",
 "+	c #000000",
@@ -49,7 +49,7 @@ const char *pcb_hid_dad_spin_up[] = {
 "+++++",
 };
 
-const char *pcb_hid_dad_spin_down[] = {
+const char *rnd_hid_dad_spin_down[] = {
 "5 3 2 1",
 " 	c None",
 "+	c #000000",
@@ -58,7 +58,7 @@ const char *pcb_hid_dad_spin_down[] = {
 "  +  ",
 };
 
-const char *pcb_hid_dad_spin_unit[] = {
+const char *rnd_hid_dad_spin_unit[] = {
 "4 4 2 1",
 " 	c None",
 "+	c #000000",
@@ -68,7 +68,7 @@ const char *pcb_hid_dad_spin_unit[] = {
 " ++ ",
 };
 
-const char *pcb_hid_dad_spin_warn[] = {
+const char *rnd_hid_dad_spin_warn[] = {
 "9 9 3 1",
 " 	c None",
 "+	c #000000",
@@ -84,7 +84,7 @@ const char *pcb_hid_dad_spin_warn[] = {
 " ******* ",
 };
 
-static void spin_changed(void *hid_ctx, void *caller_data, pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t *end)
+static void spin_changed(void *hid_ctx, void *caller_data, rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *end)
 {
 	const char *s;
 	rnd_hid_attribute_t *str = end - spin->cmp.wend + spin->wstr;
@@ -101,14 +101,14 @@ static void spin_changed(void *hid_ctx, void *caller_data, pcb_hid_dad_spin_t *s
 		end->change_cb(hid_ctx, caller_data, end);
 }
 
-static void spin_warn(void *hid_ctx, pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, const char *msg)
+static void spin_warn(void *hid_ctx, rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, const char *msg)
 {
 	rnd_gui->attr_dlg_widget_hide(hid_ctx, spin->wwarn, (msg == NULL));
 	if (rnd_gui->attr_dlg_set_help != NULL)
 		rnd_gui->attr_dlg_set_help(hid_ctx, spin->wwarn, msg);
 }
 
-static char *gen_str_coord(pcb_hid_dad_spin_t *spin, rnd_coord_t c, char *buf, int buflen)
+static char *gen_str_coord(rnd_hid_dad_spin_t *spin, rnd_coord_t c, char *buf, int buflen)
 {
 	const rnd_unit_t *unit;
 	if (spin->unit != NULL)
@@ -163,7 +163,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	su->valid = 1;
 }
 
-static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_hid_attribute_t *str)
+static void spin_unit_dialog(void *spin_hid_ctx, rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_hid_attribute_t *str)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	spin_unit_t ctx;
@@ -251,7 +251,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, rnd_h
 	RND_DAD_FREE(ctx.dlg);
 }
 
-static double get_step(pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_hid_attribute_t *str)
+static double get_step(rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_hid_attribute_t *str)
 {
 	double v, step;
 	const rnd_unit_t *unit;
@@ -260,16 +260,16 @@ static double get_step(pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_h
 		return spin->step;
 
 	switch(spin->type) {
-		case PCB_DAD_SPIN_INT:
+		case RND_DAD_SPIN_INT:
 			step = pow(10, floor(log10(fabs((double)end->val.lng)) - 1.0));
 			if (step < 1)
 				step = 1;
 			break;
-		case PCB_DAD_SPIN_DOUBLE:
-		case PCB_DAD_SPIN_FREQ:
+		case RND_DAD_SPIN_DOUBLE:
+		case RND_DAD_SPIN_FREQ:
 			step = pow(10, floor(log10(fabs((double)end->val.dbl)) - 1.0));
 			break;
-		case PCB_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_COORD:
 			if (spin->unit == NULL) {
 				rnd_bool succ = 0;
 				if (str->val.str != NULL)
@@ -303,25 +303,25 @@ static double get_step(pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_h
 		} \
 	} while(0)
 
-static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t *str, rnd_hid_attribute_t *end, double step)
+static void do_step(void *hid_ctx, rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *str, rnd_hid_attribute_t *end, double step)
 {
 	rnd_hid_attr_val_t hv;
 	const char *warn = NULL;
 	char buf[128];
 
 	switch(spin->type) {
-		case PCB_DAD_SPIN_INT:
+		case RND_DAD_SPIN_INT:
 			end->val.lng += step;
 			SPIN_CLAMP(end->val.lng);
 			sprintf(buf, "%ld", end->val.lng);
 			break;
-		case PCB_DAD_SPIN_DOUBLE:
-		case PCB_DAD_SPIN_FREQ:
+		case RND_DAD_SPIN_DOUBLE:
+		case RND_DAD_SPIN_FREQ:
 			end->val.dbl += step;
 			SPIN_CLAMP(end->val.dbl);
 			sprintf(buf, "%f", end->val.dbl);
 			break;
-		case PCB_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_COORD:
 			end->val.crd += step;
 			SPIN_CLAMP(end->val.crd);
 			spin->last_good_crd = end->val.crd;
@@ -336,35 +336,35 @@ static void do_step(void *hid_ctx, pcb_hid_dad_spin_t *spin, rnd_hid_attribute_t
 	spin->set_writeback_lock--;
 }
 
-void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+void rnd_dad_spin_up_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
+	rnd_hid_dad_spin_t *spin = (rnd_hid_dad_spin_t *)attr->user_data;
 	rnd_hid_attribute_t *str = attr - spin->wup + spin->wstr;
 	rnd_hid_attribute_t *end = attr - spin->wup + spin->cmp.wend;
 
-	pcb_dad_spin_txt_enter_cb_dry(hid_ctx, caller_data, str); /* fix up missing unit */
+	rnd_dad_spin_txt_enter_cb_dry(hid_ctx, caller_data, str); /* fix up missing unit */
 
 	do_step(hid_ctx, spin, str, end, get_step(spin, end, str));
 	spin_changed(hid_ctx, caller_data, spin, end);
-	pcb_dad_spin_txt_enter_call_users(hid_ctx, end);
+	rnd_dad_spin_txt_enter_call_users(hid_ctx, end);
 }
 
-void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+void rnd_dad_spin_down_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
+	rnd_hid_dad_spin_t *spin = (rnd_hid_dad_spin_t *)attr->user_data;
 	rnd_hid_attribute_t *str = attr - spin->wdown + spin->wstr;
 	rnd_hid_attribute_t *end = attr - spin->wdown + spin->cmp.wend;
 
-	pcb_dad_spin_txt_enter_cb_dry(hid_ctx, caller_data, str); /* fix up missing unit */
+	rnd_dad_spin_txt_enter_cb_dry(hid_ctx, caller_data, str); /* fix up missing unit */
 
 	do_step(hid_ctx, spin, str, end, -get_step(spin, end, str));
 	spin_changed(hid_ctx, caller_data, spin, end);
-	pcb_dad_spin_txt_enter_call_users(hid_ctx, end);
+	rnd_dad_spin_txt_enter_call_users(hid_ctx, end);
 }
 
-void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+void rnd_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
+	rnd_hid_dad_spin_t *spin = (rnd_hid_dad_spin_t *)attr->user_data;
 	rnd_hid_attribute_t *str = attr;
 	rnd_hid_attribute_t *end = attr - spin->wstr + spin->cmp.wend;
 	char *ends, *warn = NULL;
@@ -377,21 +377,21 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 		return;
 
 	switch(spin->type) {
-		case PCB_DAD_SPIN_INT:
+		case RND_DAD_SPIN_INT:
 			l = strtol(str->val.str, &ends, 10);
 			SPIN_CLAMP(l);
 			if (*ends != '\0')
 				warn = "Invalid integer - result is truncated";
 			end->val.lng = l;
 			break;
-		case PCB_DAD_SPIN_DOUBLE:
+		case RND_DAD_SPIN_DOUBLE:
 			d = strtod(str->val.str, &ends);
 			SPIN_CLAMP(d);
 			if (*ends != '\0')
 				warn = "Invalid numeric - result is truncated";
 			end->val.dbl = d;
 			break;
-		case PCB_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_COORD:
 			succ = pcb_get_value_unit(str->val.str, &absolute, 0, &d, &unit);
 			if (succ) {
 				SPIN_CLAMP(d);
@@ -412,9 +412,9 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 	spin_changed(hid_ctx, caller_data, spin, end);
 }
 
-void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+void rnd_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
+	rnd_hid_dad_spin_t *spin = (rnd_hid_dad_spin_t *)attr->user_data;
 	rnd_hid_attribute_t *str = attr;
 	rnd_hid_attribute_t *end = attr - spin->wstr + spin->cmp.wend;
 	const char *inval;
@@ -428,7 +428,7 @@ void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, rnd_hid_att
 		return;
 
 	switch(spin->type) {
-		case PCB_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_COORD:
 			inval = str->val.str;
 			while(isspace(*inval)) inval++;
 			if (*inval == '\0')
@@ -466,7 +466,7 @@ void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, rnd_hid_att
 	}
 }
 
-void pcb_dad_spin_txt_enter_call_users(void *hid_ctx, rnd_hid_attribute_t *end)
+void rnd_dad_spin_txt_enter_call_users(void *hid_ctx, rnd_hid_attribute_t *end)
 {
 	struct {
 		void *caller_data;
@@ -476,41 +476,41 @@ void pcb_dad_spin_txt_enter_call_users(void *hid_ctx, rnd_hid_attribute_t *end)
 		end->enter_cb(hid_ctx, hc->caller_data, end);
 }
 
-void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+void rnd_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
+	rnd_hid_dad_spin_t *spin = (rnd_hid_dad_spin_t *)attr->user_data;
 	rnd_hid_attribute_t *end = attr - spin->wstr + spin->cmp.wend;
 
-	pcb_dad_spin_txt_enter_cb_dry(hid_ctx, caller_data, attr);
-	pcb_dad_spin_txt_enter_call_users(hid_ctx, end);
+	rnd_dad_spin_txt_enter_cb_dry(hid_ctx, caller_data, attr);
+	rnd_dad_spin_txt_enter_call_users(hid_ctx, end);
 }
 
 
-void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+void rnd_dad_spin_unit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_dad_spin_t *spin = (pcb_hid_dad_spin_t *)attr->user_data;
+	rnd_hid_dad_spin_t *spin = (rnd_hid_dad_spin_t *)attr->user_data;
 	rnd_hid_attribute_t *str = attr - spin->wunit + spin->wstr;
 	rnd_hid_attribute_t *end = attr - spin->wunit + spin->cmp.wend;
 	spin_unit_dialog(hid_ctx, spin, end, str);
 }
 
-void pcb_dad_spin_set_num(rnd_hid_attribute_t *attr, long l, double d, rnd_coord_t c)
+void rnd_dad_spin_set_num(rnd_hid_attribute_t *attr, long l, double d, rnd_coord_t c)
 {
-	pcb_hid_dad_spin_t *spin = attr->wdata;
+	rnd_hid_dad_spin_t *spin = attr->wdata;
 	rnd_hid_attribute_t *str = attr - spin->cmp.wend + spin->wstr;
 
 	switch(spin->type) {
-		case PCB_DAD_SPIN_INT:
+		case RND_DAD_SPIN_INT:
 			attr->val.lng = l;
 			free((char *)str->val.str);
 			str->val.str = pcb_strdup_printf("%ld", l);
 			break;
-		case PCB_DAD_SPIN_DOUBLE:
+		case RND_DAD_SPIN_DOUBLE:
 			attr->val.dbl = d;
 			free((char *)str->val.str);
 			str->val.str = pcb_strdup_printf("%f", d);
 			break;
-		case PCB_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_COORD:
 			attr->val.crd = c;
 			spin->last_good_crd = c;
 			spin->unit = NULL;
@@ -521,47 +521,47 @@ void pcb_dad_spin_set_num(rnd_hid_attribute_t *attr, long l, double d, rnd_coord
 	}
 }
 
-void pcb_dad_spin_free(rnd_hid_attribute_t *attr)
+void rnd_dad_spin_free(rnd_hid_attribute_t *attr)
 {
 	if (attr->type == RND_HATT_END) {
-		pcb_hid_dad_spin_t *spin = attr->wdata;
-		if (spin->type == PCB_DAD_SPIN_COORD)
-			gdl_remove(&pcb_dad_coord_spins, spin, link);
+		rnd_hid_dad_spin_t *spin = attr->wdata;
+		if (spin->type == RND_DAD_SPIN_COORD)
+			gdl_remove(&rnd_dad_coord_spins, spin, link);
 		free(spin);
 	}
 }
 
-int pcb_dad_spin_widget_state(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled)
+int rnd_dad_spin_widget_state(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled)
 {
-	pcb_hid_dad_spin_t *spin = end->wdata;
+	rnd_hid_dad_spin_t *spin = end->wdata;
 	return rnd_gui->attr_dlg_widget_state(hid_ctx, spin->wall, enabled);
 }
 
-int pcb_dad_spin_widget_hide(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide)
+int rnd_dad_spin_widget_hide(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide)
 {
-	pcb_hid_dad_spin_t *spin = end->wdata;
+	rnd_hid_dad_spin_t *spin = end->wdata;
 	return rnd_gui->attr_dlg_widget_hide(hid_ctx, spin->wall, hide);
 }
 
-int pcb_dad_spin_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
+int rnd_dad_spin_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
 {
-	pcb_hid_dad_spin_t *spin = end->wdata;
+	rnd_hid_dad_spin_t *spin = end->wdata;
 	rnd_hid_attribute_t *str = end - spin->cmp.wend + spin->wstr;
 
 	/* do not modify the text field if the value is the same */
 	switch(spin->type) {
-		case PCB_DAD_SPIN_INT:
+		case RND_DAD_SPIN_INT:
 			if (val->lng == end->val.lng)
 				return 0;
 			end->val.lng = val->lng;
 			break;
-		case PCB_DAD_SPIN_DOUBLE:
-		case PCB_DAD_SPIN_FREQ:
+		case RND_DAD_SPIN_DOUBLE:
+		case RND_DAD_SPIN_FREQ:
 			if (val->dbl == end->val.dbl)
 				return 0;
 			end->val.dbl = val->dbl;
 			break;
-		case PCB_DAD_SPIN_COORD:
+		case RND_DAD_SPIN_COORD:
 			if (val->crd == end->val.crd)
 				return 0;
 			end->val.crd = val->crd;
@@ -572,9 +572,9 @@ int pcb_dad_spin_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, con
 	return 0;
 }
 
-void pcb_dad_spin_set_help(rnd_hid_attribute_t *end, const char *help)
+void rnd_dad_spin_set_help(rnd_hid_attribute_t *end, const char *help)
 {
-	pcb_hid_dad_spin_t *spin = end->wdata;
+	rnd_hid_dad_spin_t *spin = end->wdata;
 	rnd_hid_attribute_t *str = end - spin->cmp.wend + spin->wstr;
 
 	if ((spin->hid_ctx == NULL) || (*spin->hid_ctx == NULL)) /* while building */
@@ -585,10 +585,10 @@ void pcb_dad_spin_set_help(rnd_hid_attribute_t *end, const char *help)
 
 void pcb_dad_spin_update_global_coords(void)
 {
-	pcb_hid_dad_spin_t *spin;
+	rnd_hid_dad_spin_t *spin;
 
 
-	for(spin = gdl_first(&pcb_dad_coord_spins); spin != NULL; spin = gdl_next(&pcb_dad_coord_spins, spin)) {
+	for(spin = gdl_first(&rnd_dad_coord_spins); spin != NULL; spin = gdl_next(&rnd_dad_coord_spins, spin)) {
 		rnd_hid_attribute_t *dlg;
 		void *hid_ctx;
 
@@ -601,7 +601,7 @@ void pcb_dad_spin_update_global_coords(void)
 	}
 }
 
-void pcb_dad_spin_update_internal(pcb_hid_dad_spin_t *spin)
+void rnd_dad_spin_update_internal(rnd_hid_dad_spin_t *spin)
 {
 	rnd_hid_attribute_t *dlg = *spin->attrs, *end = dlg+spin->cmp.wend;
 	rnd_hid_attribute_t *str = dlg + spin->wstr;
@@ -614,9 +614,9 @@ void pcb_dad_spin_update_internal(pcb_hid_dad_spin_t *spin)
 		do_step(hid_ctx, spin, &dlg[spin->wstr], &dlg[spin->cmp.wend], 0); /* cheap conversion*/
 }
 
-void pcb_dad_spin_set_geo(rnd_hid_attribute_t *end, rnd_hatt_compflags_t flg, int geo)
+void rnd_dad_spin_set_geo(rnd_hid_attribute_t *end, rnd_hatt_compflags_t flg, int geo)
 {
-	pcb_hid_dad_spin_t *spin = end->wdata;
+	rnd_hid_dad_spin_t *spin = end->wdata;
 	rnd_hid_attribute_t *str = end - spin->cmp.wend + spin->wstr;
 
 	if (flg == RND_HATF_HEIGHT_CHR) {

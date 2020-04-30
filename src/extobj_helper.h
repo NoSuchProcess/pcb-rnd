@@ -173,7 +173,7 @@ RND_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, rnd_hid_
 
 #define pcb_exto_dlg_coord(dlg, subc, vis_name, attr_name, help) \
 do { \
-	pcb_hid_dad_spin_t *spin; \
+	rnd_hid_dad_spin_t *spin; \
 	double d; \
 	rnd_coord_t currval = 0; \
 	const rnd_unit_t *unit_out = NULL; \
@@ -193,11 +193,11 @@ do { \
 		spin = dlg[wid].wdata; \
 		spin->unit = unit_out; \
 		spin->no_unit_chg = 1; \
-		pcb_dad_spin_update_internal(spin); \
+		rnd_dad_spin_update_internal(spin); \
 } while(0)
 
 /*		hv.crd = currval; \*/
-/*		pcb_dad_spin_set_value(spin->cmp.wend, NULL, wid, &hv); \*/
+/*		rnd_dad_spin_set_value(spin->cmp.wend, NULL, wid, &hv); \*/
 
 
 RND_INLINE void pcb_exto_dlg_str_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)

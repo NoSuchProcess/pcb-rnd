@@ -125,7 +125,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 					RND_DAD_BEGIN_HBOX(ctx.dlg);
 						RND_DAD_LABEL(ctx.dlg, "INT:");
-						PCB_DAD_SPIN_INT(ctx.dlg);
+						RND_DAD_SPIN_INT(ctx.dlg);
 							ctx.wspin_int = RND_DAD_CURRENT(ctx.dlg);
 							RND_DAD_DEFAULT_NUM(ctx.dlg, 42);
 							RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);
@@ -136,7 +136,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 					RND_DAD_BEGIN_HBOX(ctx.dlg);
 						RND_DAD_LABEL(ctx.dlg, "DBL:");
-						PCB_DAD_SPIN_DOUBLE(ctx.dlg);
+						RND_DAD_SPIN_DOUBLE(ctx.dlg);
 							ctx.wspin_double = RND_DAD_CURRENT(ctx.dlg);
 							RND_DAD_DEFAULT_NUM(ctx.dlg, 42);
 							RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);
@@ -147,7 +147,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 					RND_DAD_BEGIN_HBOX(ctx.dlg);
 						RND_DAD_LABEL(ctx.dlg, "CRD:");
-						PCB_DAD_SPIN_COORD(ctx.dlg);
+						RND_DAD_SPIN_COORD(ctx.dlg);
 							ctx.wspin_coord = RND_DAD_CURRENT(ctx.dlg);
 							RND_DAD_DEFAULT_NUM(ctx.dlg, PCB_MM_TO_COORD(42));
 							RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);

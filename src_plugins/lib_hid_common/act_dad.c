@@ -457,7 +457,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		wtype = dad->dlg[wid].type;
 		if (dad->dlg[wid].type == RND_HATT_END) /* composite widget's end or real end - the spin macro handles both */
-			wtype = PCB_DAD_SPIN_GET_TYPE(&dad->dlg[wid]);
+			wtype = RND_DAD_SPIN_GET_TYPE(&dad->dlg[wid]);
 
 		switch(wtype) {
 			case RND_HATT_COORD:
@@ -499,7 +499,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		wtype = dad->dlg[wid].type;
 		if (dad->dlg[wid].type == RND_HATT_END) /* composite widget's end or real end - the spin macro handles both */
-			wtype = PCB_DAD_SPIN_GET_TYPE(&dad->dlg[wid]);
+			wtype = RND_DAD_SPIN_GET_TYPE(&dad->dlg[wid]);
 
 		switch(wtype) {
 			case RND_HATT_COORD:
