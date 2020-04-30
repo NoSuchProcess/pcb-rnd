@@ -48,13 +48,13 @@
 #include "in_keyboard.h"
 #include "glue_common.h"
 
-pcb_hid_cfg_mouse_t ghid_mouse;
+rnd_hid_cfg_mouse_t ghid_mouse;
 int ghid_wheel_zoom = 0;
 
-pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button)
+rnd_hid_cfg_mod_t ghid_mouse_button(int ev_button)
 {
 	/* GDK numbers buttons from 1..5, there seems to be no symbolic names */
-	return (PCB_MB_LEFT << (ev_button - 1));
+	return (RND_MB_LEFT << (ev_button - 1));
 }
 
 static GdkCursorType cursor_override;
@@ -235,15 +235,15 @@ gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, voi
 	 * special mouse scroll events, so this may conflict with a mouse
 	 * who has buttons 4 - 7 that aren't the scroll wheel? */
 	switch (ev->direction) {
-		case GDK_SCROLL_UP:    button = PCB_MB_SCROLL_UP; break;
-		case GDK_SCROLL_DOWN:  button = PCB_MB_SCROLL_DOWN; break;
-		case GDK_SCROLL_LEFT:  button = PCB_MB_SCROLL_LEFT; break;
-		case GDK_SCROLL_RIGHT: button = PCB_MB_SCROLL_RIGHT; break;
+		case GDK_SCROLL_UP:    button = RND_MB_SCROLL_UP; break;
+		case GDK_SCROLL_DOWN:  button = RND_MB_SCROLL_DOWN; break;
+		case GDK_SCROLL_LEFT:  button = RND_MB_SCROLL_LEFT; break;
+		case GDK_SCROLL_RIGHT: button = RND_MB_SCROLL_RIGHT; break;
 		default: return FALSE;
 	}
 
 	ghid_wheel_zoom = 1;
-	hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, button | mk, ctx->topwin.cmd.command_entry_status_line_active);
+	rnd_hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, button | mk, ctx->topwin.cmd.command_entry_status_line_active);
 	ghid_wheel_zoom = 0;
 
 	return TRUE;
@@ -268,7 +268,7 @@ gboolean ghid_port_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev, 
 
 	gdkc_window_get_pointer(drawing_area, NULL, NULL, &mask);
 
-	hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, ghid_mouse_button(ev->button) | mk, ctx->topwin.cmd.command_entry_status_line_active);
+	rnd_hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, ghid_mouse_button(ev->button) | mk, ctx->topwin.cmd.command_entry_status_line_active);
 
 	rnd_gui->invalidate_all(rnd_gui);
 	if (!ctx->port.view.panning)
@@ -287,7 +287,7 @@ gboolean ghid_port_button_release_cb(GtkWidget *drawing_area, GdkEventButton *ev
 	state = (GdkModifierType) (ev->state);
 	mk = ghid_modifier_keys_state(drawing_area, &state);
 
-	hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, ghid_mouse_button(ev->button) | mk | PCB_M_Release, ctx->topwin.cmd.command_entry_status_line_active);
+	rnd_hid_cfg_mouse_action(ctx->hidlib, &ghid_mouse, ghid_mouse_button(ev->button) | mk | RND_M_Release, ctx->topwin.cmd.command_entry_status_line_active);
 
 	pcb_hidlib_adjust_attached_objects(ctx->hidlib);
 	rnd_gui->invalidate_all(rnd_gui);

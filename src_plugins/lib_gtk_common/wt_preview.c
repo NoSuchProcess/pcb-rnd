@@ -311,7 +311,7 @@ static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure *ev, 
 }
 
 
-static gboolean button_press_(GtkWidget *w, pcb_hid_cfg_mod_t btn)
+static gboolean button_press_(GtkWidget *w, rnd_hid_cfg_mod_t btn)
 {
 	pcb_gtk_preview_t *preview = (pcb_gtk_preview_t *) w;
 	rnd_coord_t cx, cy;
@@ -322,24 +322,24 @@ static gboolean button_press_(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 	draw_data = preview->expose_data.draw_data;
 
 	switch (btn) {
-	case PCB_MB_LEFT:
+	case RND_MB_LEFT:
 		if (preview->mouse_cb != NULL) {
 /*				pcb_printf("bp %mm %mm\n", cx, cy); */
 			if (preview->mouse_cb(w, draw_data, RND_HID_MOUSE_PRESS, cx, cy))
 				gtk_widget_queue_draw(w);
 		}
 		break;
-	case PCB_MB_MIDDLE:
+	case RND_MB_MIDDLE:
 		preview->view.panning = 1;
 		preview->grabx = cx;
 		preview->graby = cy;
 		preview->grabt = time(NULL);
 		preview->grabmot = 0;
 		break;
-	case PCB_MB_SCROLL_UP:
+	case RND_MB_SCROLL_UP:
 		pcb_gtk_preview_zoom_cursor_rel(preview, cx, cy, wx, wy, 0.8);
 		goto do_zoom;
-	case PCB_MB_SCROLL_DOWN:
+	case RND_MB_SCROLL_DOWN:
 		pcb_gtk_preview_zoom_cursor_rel(preview, cx, cy, wx, wy, 1.25);
 		goto do_zoom;
 	default:
@@ -354,7 +354,7 @@ do_zoom:;
 	return FALSE;
 }
 
-static gboolean button_press(GtkWidget *w, pcb_hid_cfg_mod_t btn)
+static gboolean button_press(GtkWidget *w, rnd_hid_cfg_mod_t btn)
 {
 	int save_fx, save_fy;
 	gboolean r;
@@ -381,9 +381,9 @@ static gboolean preview_scroll_cb(GtkWidget *w, GdkEventScroll *ev, gpointer dat
 {
 	switch (ev->direction) {
 	case GDK_SCROLL_UP:
-		return button_press(w, PCB_MB_SCROLL_UP);
+		return button_press(w, RND_MB_SCROLL_UP);
 	case GDK_SCROLL_DOWN:
-		return button_press(w, PCB_MB_SCROLL_DOWN);
+		return button_press(w, RND_MB_SCROLL_DOWN);
 	default:;
 	}
 	return FALSE;
@@ -407,14 +407,14 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 	get_ptr(preview, &cx, &cy, &wx, &wy);
 
 	switch (ghid_mouse_button(ev->button)) {
-	case PCB_MB_MIDDLE:
+	case RND_MB_MIDDLE:
 		preview->view.panning = 0;
 		break;
-	case PCB_MB_RIGHT:
+	case RND_MB_RIGHT:
 		if ((preview->mouse_cb != NULL) && (preview->mouse_cb(w, draw_data, RND_HID_MOUSE_POPUP, cx, cy)))
 			gtk_widget_queue_draw(w);
 		break;
-	case PCB_MB_LEFT:
+	case RND_MB_LEFT:
 		if (preview->mouse_cb != NULL) {
 /*				pcb_printf("br %mm %mm\n", cx, cy); */
 			if (preview->mouse_cb(w, draw_data, RND_HID_MOUSE_RELEASE, cx, cy))

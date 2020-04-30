@@ -62,8 +62,8 @@ const char *lesstif_cookie = "lesstif HID";
 
 rnd_hidlib_t *ltf_hidlib;
 
-pcb_hid_cfg_mouse_t lesstif_mouse;
-pcb_hid_cfg_keys_t lesstif_keymap;
+rnd_hid_cfg_mouse_t lesstif_mouse;
+rnd_hid_cfg_keys_t lesstif_keymap;
 int lesstif_active = 0;
 
 static int idle_proc_set = 0;
@@ -986,14 +986,14 @@ static void mod_changed(XKeyEvent *e, int set)
 	ltf_mod_key(e, set, 1);
 }
 
-static pcb_hid_cfg_mod_t lesstif_mb2cfg(int but)
+static rnd_hid_cfg_mod_t lesstif_mb2cfg(int but)
 {
 	switch(but) {
-		case 1: return PCB_MB_LEFT;
-		case 2: return PCB_MB_MIDDLE;
-		case 3: return PCB_MB_RIGHT;
-		case 4: return PCB_MB_SCROLL_UP;
-		case 5: return PCB_MB_SCROLL_DOWN;
+		case 1: return RND_MB_LEFT;
+		case 2: return RND_MB_MIDDLE;
+		case 3: return RND_MB_RIGHT;
+		case 4: return RND_MB_SCROLL_UP;
+		case 5: return RND_MB_SCROLL_DOWN;
 	}
 	return 0;
 }
@@ -1025,14 +1025,14 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 
 			rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_false);
 			pressed_button = e->xbutton.button;
-			mods = ((e->xbutton.state & ShiftMask) ? PCB_M_Shift : 0)
-				+ ((e->xbutton.state & ControlMask) ? PCB_M_Ctrl : 0)
+			mods = ((e->xbutton.state & ShiftMask) ? RND_M_Shift : 0)
+				+ ((e->xbutton.state & ControlMask) ? RND_M_Ctrl : 0)
 #ifdef __APPLE__
-				+ ((e->xbutton.state & (1 << 13)) ? PCB_M_Alt : 0);
+				+ ((e->xbutton.state & (1 << 13)) ? RND_M_Alt : 0);
 #else
-				+ ((e->xbutton.state & Mod1Mask) ? PCB_M_Alt : 0);
+				+ ((e->xbutton.state & Mod1Mask) ? RND_M_Alt : 0);
 #endif
-			hid_cfg_mouse_action(ltf_hidlib, &lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
+			rnd_hid_cfg_mouse_action(ltf_hidlib, &lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
 
 			rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_true);
 			break;
@@ -1046,15 +1046,15 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			lesstif_button_event(w, e);
 			rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_false);
 			pressed_button = 0;
-			mods = ((e->xbutton.state & ShiftMask) ? PCB_M_Shift : 0)
-				+ ((e->xbutton.state & ControlMask) ? PCB_M_Ctrl : 0)
+			mods = ((e->xbutton.state & ShiftMask) ? RND_M_Shift : 0)
+				+ ((e->xbutton.state & ControlMask) ? RND_M_Ctrl : 0)
 #ifdef __APPLE__
-				+ ((e->xbutton.state & (1 << 13)) ? PCB_M_Alt : 0)
+				+ ((e->xbutton.state & (1 << 13)) ? RND_M_Alt : 0)
 #else
-				+ ((e->xbutton.state & Mod1Mask) ? PCB_M_Alt : 0)
+				+ ((e->xbutton.state & Mod1Mask) ? RND_M_Alt : 0)
 #endif
-				+ PCB_M_Release;
-			hid_cfg_mouse_action(ltf_hidlib, &lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
+				+ RND_M_Release;
+			rnd_hid_cfg_mouse_action(ltf_hidlib, &lesstif_mouse, lesstif_mb2cfg(e->xbutton.button) | mods, cmd_is_active);
 			rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_true);
 			break;
 		}
@@ -1407,11 +1407,11 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	lesstif_begin();
 
-	pcb_hid_cfg_keys_init(&lesstif_keymap);
+	rnd_hid_cfg_keys_init(&lesstif_keymap);
 	lesstif_keymap.translate_key = lesstif_translate_key;
 	lesstif_keymap.key_name = lesstif_key_name;
 	lesstif_keymap.auto_chr = 1;
-	lesstif_keymap.auto_tr = hid_cfg_key_default_trans;
+	lesstif_keymap.auto_tr = rnd_hid_cfg_key_default_trans;
 
 	stdarg_n = 0;
 	stdarg(XtNwidth, &width);
@@ -1554,7 +1554,7 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	XtAppMainLoop(app_context);
 
-	pcb_hid_cfg_keys_uninit(&lesstif_keymap);
+	rnd_hid_cfg_keys_uninit(&lesstif_keymap);
 	lesstif_end();
 }
 

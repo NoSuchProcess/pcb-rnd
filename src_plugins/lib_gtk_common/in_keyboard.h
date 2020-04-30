@@ -9,13 +9,13 @@
 
 typedef enum {
 	NONE_PRESSED = 0,
-	SHIFT_PRESSED = PCB_M_Shift,
-	CONTROL_PRESSED = PCB_M_Ctrl,
-	MOD1_PRESSED = PCB_M_Mod1,
-	SHIFT_CONTROL_PRESSED = PCB_M_Shift | PCB_M_Ctrl,
-	SHIFT_MOD1_PRESSED = PCB_M_Shift | PCB_M_Mod1,
-	CONTROL_MOD1_PRESSED = PCB_M_Ctrl | PCB_M_Mod1,
-	SHIFT_CONTROL_MOD1_PRESSED = PCB_M_Shift | PCB_M_Ctrl | PCB_M_Mod1
+	SHIFT_PRESSED = RND_M_Shift,
+	CONTROL_PRESSED = RND_M_Ctrl,
+	MOD1_PRESSED = RND_M_Mod1,
+	SHIFT_CONTROL_PRESSED = RND_M_Shift | RND_M_Ctrl,
+	SHIFT_MOD1_PRESSED = RND_M_Shift | RND_M_Mod1,
+	CONTROL_MOD1_PRESSED = RND_M_Ctrl | RND_M_Mod1,
+	SHIFT_CONTROL_MOD1_PRESSED = RND_M_Shift | RND_M_Ctrl | RND_M_Mod1
 } ModifierKeysState;
 
 /* return TRUE ksym is SHIFT or CTRL modifier key. */
@@ -27,7 +27,7 @@ ModifierKeysState ghid_modifier_keys_state(GtkWidget *drawing_area, GdkModifierT
 /* Handle user key events of the output drawing area. */
 gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpointer data);
 
-extern pcb_hid_cfg_keys_t ghid_keymap;
+extern rnd_hid_cfg_keys_t ghid_keymap;
 
 extern GdkModifierType pcb_gtk_glob_mask;
 

@@ -116,8 +116,8 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 	/* Resolve accelerator and save it */
 	if (n_keydesc != NULL) {
 		if (n_action != NULL) {
-			pcb_hid_cfg_keys_add_by_desc(&ghid_keymap, n_keydesc, n_action);
-			accel = pcb_hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, 1, NULL);
+			rnd_hid_cfg_keys_add_by_desc(&ghid_keymap, n_keydesc, n_action);
+			accel = rnd_hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, 1, NULL);
 		}
 		else
 			rnd_hid_cfg_error(sub_res, "No action specified for key accel\n");
@@ -203,7 +203,7 @@ static GtkAction *ghid_add_menu(pcb_gtk_menu_ctx_t *ctx, GHidMainMenu *menu, Gtk
 			if ((tip != NULL) || (n_keydesc != NULL)) {
 				char *acc = NULL, *s;
 				if (n_keydesc != NULL)
-					acc = pcb_hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, -1, "\nhotkey: ");
+					acc = rnd_hid_cfg_keys_gen_accel(&ghid_keymap, n_keydesc, -1, "\nhotkey: ");
 				s = pcb_concat((tip == NULL ? "" : tip), "\nhotkey: ", (acc == NULL ? "" : acc), NULL);
 				gtk_widget_set_tooltip_text(item, s);
 				free(s);
@@ -419,7 +419,7 @@ int ghid_remove_menu_widget(void *ctx, lht_node_t * nd)
 		lht_node_t *n_keydesc = pcb_hid_cfg_menu_field(nd, PCB_MF_ACCELERATOR, NULL);
 		menu->actions = g_list_remove(menu->actions, h->action);
 		if (n_keydesc != NULL)
-			pcb_hid_cfg_keys_del_by_desc(&ghid_keymap, n_keydesc);
+			rnd_hid_cfg_keys_del_by_desc(&ghid_keymap, n_keydesc);
 		gtk_widget_destroy(h->destroy);
 		free(h);
 		nd->user_data = NULL;
@@ -495,7 +495,7 @@ GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, rnd_h
 	}
 
 	mr = rnd_hid_cfg_get_menu(*cfg_out, "/mouse");
-	if (hid_cfg_mouse_init(*cfg_out, &ghid_mouse) != 0)
+	if (rnd_hid_cfg_mouse_init(*cfg_out, &ghid_mouse) != 0)
 		rnd_message(RND_MSG_ERROR, "Error: failed to load mouse actions from the hid config lihata - mouse input will not work.");
 
 	return menu_bar;

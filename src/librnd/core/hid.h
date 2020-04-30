@@ -509,7 +509,7 @@ struct rnd_hid_s {
 	/* run redraw-benchmark and return an FPS value (optional) */
 	double (*benchmark)(rnd_hid_t *hid);
 
-	/* (pcb_hid_cfg_keys_t *): key state */
+	/* (rnd_hid_cfg_keys_t *): key state */
 	void *key_state;
 
 	/*** zoom/pan calls ***/

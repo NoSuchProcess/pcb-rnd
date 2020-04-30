@@ -61,17 +61,17 @@ static void build_st_line1(void)
 {
 	char kbd[128];
 	const char *flag = conf_core.editor.all_direction_lines ? "*" : (conf_core.editor.line_refraction == 0 ? "X" : (conf_core.editor.line_refraction == 1 ? "_/" : "\\_"));
-	pcb_hid_cfg_keys_t *kst = rnd_gui->key_state;
+	rnd_hid_cfg_keys_t *kst = rnd_gui->key_state;
 
 	if (kst != NULL) {
 		if (kst->seq_len_action > 0) {
 			int len;
 			memcpy(kbd, "(last: ", 7);
-			len = pcb_hid_cfg_keys_seq(kst, kbd+7, sizeof(kbd)-9);
+			len = rnd_hid_cfg_keys_seq(kst, kbd+7, sizeof(kbd)-9);
 			memcpy(kbd+len+7, ")", 2);
 		}
 		else
-			pcb_hid_cfg_keys_seq(kst, kbd, sizeof(kbd));
+			rnd_hid_cfg_keys_seq(kst, kbd, sizeof(kbd));
 	}
 	else
 		*kbd = '\0';

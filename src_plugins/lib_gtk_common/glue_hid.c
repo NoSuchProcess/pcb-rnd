@@ -25,7 +25,7 @@
 #include "glue_common.h"
 #include "../src_plugins/lib_hid_common/menu_helper.h"
 
-extern pcb_hid_cfg_keys_t ghid_keymap;
+extern rnd_hid_cfg_keys_t ghid_keymap;
 
 static gint ghid_port_window_enter_cb(GtkWidget *widget, GdkEventCrossing *ev, void *ctx_)
 {
@@ -143,11 +143,11 @@ static void gtkhid_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	gctx->hid_active = 1;
 
-	pcb_hid_cfg_keys_init(&ghid_keymap);
+	rnd_hid_cfg_keys_init(&ghid_keymap);
 	ghid_keymap.translate_key = ghid_translate_key;
 	ghid_keymap.key_name = ghid_key_name;
 	ghid_keymap.auto_chr = 1;
-	ghid_keymap.auto_tr = hid_cfg_key_default_trans;
+	ghid_keymap.auto_tr = rnd_hid_cfg_key_default_trans;
 
 	ghid_create_pcb_widgets(gctx, &gctx->topwin, gctx->port.top_window);
 
@@ -179,7 +179,7 @@ TODO(": move this to render init")
 	gtk_widget_grab_focus(gctx->port.drawing_area);
 
 	gtk_main();
-	pcb_hid_cfg_keys_uninit(&ghid_keymap);
+	rnd_hid_cfg_keys_uninit(&ghid_keymap);
 
 	gctx->hid_active = 0;
 	gctx->gui_is_up = 0;

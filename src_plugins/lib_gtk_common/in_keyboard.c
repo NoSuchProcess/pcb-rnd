@@ -38,7 +38,7 @@
 #include <librnd/core/compat_misc.h>
 #include "glue_common.h"
 
-pcb_hid_cfg_keys_t ghid_keymap;
+rnd_hid_cfg_keys_t ghid_keymap;
 GdkModifierType pcb_gtk_glob_mask;
 
 gboolean ghid_is_modifier_key_sym(gint ksym)
@@ -103,9 +103,9 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 
 		pcb_gtk_glob_mask = state;
 
-		if (state & GDK_MOD1_MASK)    mods |= PCB_M_Alt;
-		if (state & GDK_CONTROL_MASK) mods |= PCB_M_Ctrl;
-		if (state & GDK_SHIFT_MASK)   mods |= PCB_M_Shift;
+		if (state & GDK_MOD1_MASK)    mods |= RND_M_Alt;
+		if (state & GDK_CONTROL_MASK) mods |= RND_M_Ctrl;
+		if (state & GDK_SHIFT_MASK)   mods |= RND_M_Shift;
 
 		/* Retrieve the basic character (level 0) corresponding to physical key stroked. */
 		if (gdk_keymap_get_entries_for_keycode(gdk_keymap_get_default(), kev->hardware_keycode, &keys, &keyvals, &n_entries)) {
@@ -121,9 +121,9 @@ gboolean ghid_port_key_press_cb(GtkWidget *drawing_area, GdkEventKey *kev, gpoin
 		if (kv == PCB_GTK_KEY(KP_Divide)) key_raw = kv = '/';
 		if (kv == PCB_GTK_KEY(KP_Enter)) key_raw = kv = PCB_GTK_KEY(Return);
 
-		slen = pcb_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv);
+		slen = rnd_hid_cfg_keys_input(&ghid_keymap, mods, key_raw, kv);
 		if (slen > 0) {
-			pcb_hid_cfg_keys_action(gctx->hidlib, &ghid_keymap);
+			rnd_hid_cfg_keys_action(gctx->hidlib, &ghid_keymap);
 			return TRUE;
 		}
 	}

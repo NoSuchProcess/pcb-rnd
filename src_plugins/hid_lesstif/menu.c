@@ -226,7 +226,7 @@ static void note_accelerator(const lht_node_t *node)
 	anode = pcb_hid_cfg_menu_field(node, PCB_MF_ACTION, NULL);
 	knode = pcb_hid_cfg_menu_field(node, PCB_MF_ACCELERATOR, NULL);
 	if ((anode != NULL) && (knode != NULL))
-		pcb_hid_cfg_keys_add_by_desc(&lesstif_keymap, knode, anode);
+		rnd_hid_cfg_keys_add_by_desc(&lesstif_keymap, knode, anode);
 	else
 		rnd_hid_cfg_error(node, "No action specified for key accel\n");
 }
@@ -239,11 +239,11 @@ int lesstif_key_event(XKeyEvent * e)
 	int mods = 0;
 
 	if (e->state & ShiftMask)
-		mods |= PCB_M_Shift;
+		mods |= RND_M_Shift;
 	if (e->state & ControlMask)
-		mods |= PCB_M_Ctrl;
+		mods |= RND_M_Ctrl;
 	if (e->state & Mod1Mask)
-		mods |= PCB_M_Alt;
+		mods |= RND_M_Alt;
 
 	e->state &= ~(ControlMask | Mod1Mask);
 
@@ -271,7 +271,7 @@ int lesstif_key_event(XKeyEvent * e)
 	}
 
 /* TODO#3: this works only on US keyboard */
-	if (mods & PCB_M_Shift) {
+	if (mods & RND_M_Shift) {
 		static const char *lower = "`1234567890-=[]\\;',./";
 		static const char *upper = "~!@#$%^&*()_+{}|:\"<>?";
 		char *l;
@@ -279,13 +279,13 @@ int lesstif_key_event(XKeyEvent * e)
 			sym = tolower(sym);
 		else if ((l = strchr(lower, sym)) != NULL) {
 			sym = upper[l - lower];
-			mods &= ~PCB_M_Shift;
+			mods &= ~RND_M_Shift;
 		}
 	}
 
 /*	printf("KEY lookup: mod=%x sym=%x/%d\n", mods, sym, slen); */
 TODO("TODO#3: pass on raw and translated keys")
-	slen = pcb_hid_cfg_keys_input(&lesstif_keymap, mods, sym, sym);
+	slen = rnd_hid_cfg_keys_input(&lesstif_keymap, mods, sym, sym);
 	if (slen <= 0)
 		return 1;
 
@@ -299,7 +299,7 @@ TODO("TODO#3: pass on raw and translated keys")
 
 	/* Parsing actions may not return until more user interaction
 	   happens.  */
-	pcb_hid_cfg_keys_action(ltf_hidlib, &lesstif_keymap);
+	rnd_hid_cfg_keys_action(ltf_hidlib, &lesstif_keymap);
 
 	return 1;
 }
@@ -329,7 +329,7 @@ static int del_menu(void *ctx, lht_node_t *node)
 
 	knode = pcb_hid_cfg_menu_field(node, PCB_MF_ACCELERATOR, NULL);
 	if (knode != NULL)
-		pcb_hid_cfg_keys_del_by_desc(&lesstif_keymap, knode);
+		rnd_hid_cfg_keys_del_by_desc(&lesstif_keymap, knode);
 
 
 	if (md->wflag_idx >= 0)
@@ -427,7 +427,7 @@ static void add_res2menu_named(Widget menu, lht_node_t *ins_after, lht_node_t *n
 
 	kacc = pcb_hid_cfg_menu_field(node, PCB_MF_ACCELERATOR, NULL);
 	if (kacc != NULL) {
-		char *acc_str = pcb_hid_cfg_keys_gen_accel(&lesstif_keymap, kacc, 1, NULL);
+		char *acc_str = rnd_hid_cfg_keys_gen_accel(&lesstif_keymap, kacc, 1, NULL);
 
 		if (acc_str != NULL) {
 			XmString as = XmStringCreatePCB(acc_str);
@@ -621,7 +621,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	}
 
 
-	hid_cfg_mouse_init(lesstif_cfg, &lesstif_mouse);
+	rnd_hid_cfg_mouse_init(lesstif_cfg, &lesstif_mouse);
 
 	return mb;
 }

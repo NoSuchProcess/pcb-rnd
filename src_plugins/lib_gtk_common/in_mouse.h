@@ -8,10 +8,10 @@
 #include <gdk/gdkevents.h>
 
 
-extern pcb_hid_cfg_mouse_t ghid_mouse;
+extern rnd_hid_cfg_mouse_t ghid_mouse;
 extern int ghid_wheel_zoom;
 
-pcb_hid_cfg_mod_t ghid_mouse_button(int ev_button);
+rnd_hid_cfg_mod_t ghid_mouse_button(int ev_button);
 
 gboolean ghid_get_user_xy(pcb_gtk_t *ctx, const char *msg);
 
