@@ -42,7 +42,7 @@
 #include <librnd/core/vtc0.h>
 #include "plug_io.h"
 
-int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layname, FILE *f)
+int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layname, FILE *f)
 {
 	char lntmp[64];
 	int lno;
@@ -124,7 +124,7 @@ int tedax_layer_fsave(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layna
 	return 0;
 }
 
-int tedax_layer_save(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *layname, const char *fn)
+int tedax_layer_save(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layname, const char *fn)
 {
 	int res;
 	FILE *f;

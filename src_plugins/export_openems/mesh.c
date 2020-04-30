@@ -618,7 +618,7 @@ static pcb_range_t *mesh_find_range(const vtr0_t *v, rnd_coord_t at, rnd_coord_t
 
 static int mesh_auto_z(pcb_mesh_t *mesh)
 {
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	rnd_coord_t y = 0, ytop = 0, ybottom, top_dens, bottom_dens;
 	int n, lns, first = 1;
 
@@ -755,7 +755,7 @@ static int mesh_vis_xy(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 static int mesh_vis_z(pcb_mesh_t *mesh)
 {
 	int n;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	rnd_coord_t y0 = PCB->hidlib.size_y/3, y = y0, y2;
 	rnd_coord_t xl = PCB->hidlib.size_x/5; /* board left */
 	rnd_coord_t xr = PCB->hidlib.size_x/5*3; /* board right */
@@ -963,7 +963,7 @@ static void ia_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 }
 
 static char *default_file = NULL;
-static void ia_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void ia_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	char *fname = NULL;
 	FILE *f;
@@ -994,7 +994,7 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 	fclose(f);
 }
 
-static void ia_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void ia_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	char *fname = NULL;
 	FILE *f;
@@ -1020,7 +1020,7 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 	fclose(f);
 }
 
-static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void ia_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	mesh_layer_reset();
 	mesh.layer = PCB_CURRLAYER(PCB);

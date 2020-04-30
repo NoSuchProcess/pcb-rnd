@@ -93,7 +93,7 @@ void pcb_rat_free(pcb_rat_t *rat)
 
 /*** utility ***/
 /* creates a new rat-line */
-pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, pcb_layergrp_id_t group1, pcb_layergrp_id_t group2, rnd_coord_t Thickness, pcb_flag_t Flags, pcb_any_obj_t *anchor1, pcb_any_obj_t *anchor2)
+pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_layergrp_id_t group1, rnd_layergrp_id_t group2, rnd_coord_t Thickness, pcb_flag_t Flags, pcb_any_obj_t *anchor1, pcb_any_obj_t *anchor2)
 {
 	pcb_rat_t *Line;
 
@@ -153,7 +153,7 @@ rnd_bool pcb_rats_destroy(rnd_bool selected)
 
 /*** utility ***/
 
-static rnd_bool rat_meets_line(pcb_line_t *line, rnd_coord_t x, rnd_coord_t y, pcb_layergrp_id_t gid)
+static rnd_bool rat_meets_line(pcb_line_t *line, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid)
 {
 	if (gid >= 0) {
 		pcb_layer_t *ly = pcb_layer_get_real(line->parent.layer);
@@ -166,7 +166,7 @@ static rnd_bool rat_meets_line(pcb_line_t *line, rnd_coord_t x, rnd_coord_t y, p
 }
 
 
-static rnd_bool rat_meets_arc(pcb_arc_t *arc, rnd_coord_t x, rnd_coord_t y, pcb_layergrp_id_t gid)
+static rnd_bool rat_meets_arc(pcb_arc_t *arc, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid)
 {
 	if (gid >= 0) {
 		pcb_layer_t *ly = pcb_layer_get_real(arc->parent.layer);
@@ -177,7 +177,7 @@ static rnd_bool rat_meets_arc(pcb_arc_t *arc, rnd_coord_t x, rnd_coord_t y, pcb_
 }
 
 
-static rnd_bool rat_meets_poly(pcb_poly_t *poly, rnd_coord_t x, rnd_coord_t y, pcb_layergrp_id_t gid)
+static rnd_bool rat_meets_poly(pcb_poly_t *poly, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid)
 {
 	if (gid >= 0) {
 		pcb_layer_t *ly = pcb_layer_get_real(poly->parent.layer);
@@ -189,7 +189,7 @@ static rnd_bool rat_meets_poly(pcb_poly_t *poly, rnd_coord_t x, rnd_coord_t y, p
 	return pcb_poly_is_point_in_p(x, y, 1, poly);
 }
 
-static rnd_bool rat_meets_pstk(pcb_data_t *data, pcb_pstk_t *pstk, rnd_coord_t x, rnd_coord_t y, pcb_layergrp_id_t gid)
+static rnd_bool rat_meets_pstk(pcb_data_t *data, pcb_pstk_t *pstk, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid)
 {
 	pcb_layergrp_t *g = pcb_get_layergrp(PCB, gid);
 	pcb_layer_t *ly;
@@ -268,7 +268,7 @@ TODO("find through text");
 
 /* return the first object (the type that is most likely an endpoint of a rat)
    on a point on a layer group */
-static pcb_any_obj_t *find_obj_on_grp(pcb_data_t *data, rnd_coord_t x, rnd_coord_t y, pcb_layergrp_id_t gid)
+static pcb_any_obj_t *find_obj_on_grp(pcb_data_t *data, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid)
 {
 	int i;
 	rnd_rtree_box_t sb;
@@ -306,7 +306,7 @@ pcb_any_obj_t *pcb_rat_anchor_guess(pcb_rat_t *rat, int end, rnd_bool update)
 	pcb_idpath_t **path = &rat->anchor[!!end];
 	rnd_coord_t x = (end == 0) ? rat->Point1.X : rat->Point2.X;
 	rnd_coord_t y = (end == 0) ? rat->Point1.Y : rat->Point2.Y;
-	pcb_layergrp_id_t gid = (end == 0) ? rat->group1 : rat->group2;
+	rnd_layergrp_id_t gid = (end == 0) ? rat->group1 : rat->group2;
 	pcb_any_obj_t *ao;
 
 	/* (relatively) cheap thest if existing anchor is valid */

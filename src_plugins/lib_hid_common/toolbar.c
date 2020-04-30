@@ -42,7 +42,7 @@
 #include "toolbar.h"
 
 typedef struct {
-	pcb_hid_dad_subdialog_t sub;
+	rnd_hid_dad_subdialog_t sub;
 	int sub_inited, lock;
 	vti0_t tid2wid; /* tool ID to widget ID conversion - value 0 means no widget */
 } toolbar_ctx_t;
@@ -68,7 +68,7 @@ static void toolbar_pcb2dlg()
 	toolbar.lock = 0;
 }
 
-static void toolbar_select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void toolbar_select_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	ptrdiff_t tid;
 

@@ -45,19 +45,19 @@
 
 static const char *loghid_cookie = "loghid plugin";
 
-static pcb_hid_t loghid_gui;
-static pcb_hid_t loghid_exp;
+static rnd_hid_t loghid_gui;
+static rnd_hid_t loghid_exp;
 
-pcb_export_opt_t loghid_attribute_list[] = {
+rnd_export_opt_t loghid_attribute_list[] = {
 	{"target-hid", "the real GUI or export HID to relay calls to",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
 #define HA_target_hid 0
 };
 #define NUM_OPTIONS sizeof(loghid_attribute_list) / sizeof(loghid_attribute_list[0])
 
-static int loghid_parse_arguments_real(pcb_hid_t *hid, int *argc, char ***argv, int is_gui)
+static int loghid_parse_arguments_real(rnd_hid_t *hid, int *argc, char ***argv, int is_gui)
 {
-	pcb_hid_t *target, *me;
+	rnd_hid_t *target, *me;
 	const char *target_name;
 
 	pcb_export_register_opts(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
@@ -78,18 +78,18 @@ static int loghid_parse_arguments_real(pcb_hid_t *hid, int *argc, char ***argv, 
 	return target->parse_arguments(target, argc, argv);
 }
 
-static int loghid_parse_arguments_gui(pcb_hid_t *hid, int *argc, char ***argv)
+static int loghid_parse_arguments_gui(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	return loghid_parse_arguments_real(hid, argc, argv, 1);
 }
 
-static int loghid_parse_arguments_exp(pcb_hid_t *hid, int *argc, char ***argv)
+static int loghid_parse_arguments_exp(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	return loghid_parse_arguments_real(hid, argc, argv, 0);
 }
 
 
-static int loghid_usage(pcb_hid_t *hid, const char *topic)
+static int loghid_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nloghid command line arguments:\n\n");
 	pcb_hid_usage(loghid_attribute_list, NUM_OPTIONS);
@@ -100,7 +100,7 @@ static int loghid_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static pcb_export_opt_t *loghid_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *loghid_get_export_options(rnd_hid_t *hid, int *n)
 {
 /*	loghid_attribute_list[HA_psfile] = rnd_strdup("default?");*/
 
@@ -125,7 +125,7 @@ int pplg_init_loghid(void)
 	pcb_hid_nogui_init(&loghid_exp);
 
 	/* gui version */
-	loghid_gui.struct_size = sizeof(pcb_hid_t);
+	loghid_gui.struct_size = sizeof(rnd_hid_t);
 	loghid_gui.name = "loghid-gui";
 	loghid_gui.description = "log GUI HID calls";
 	loghid_gui.gui = 1;
@@ -136,7 +136,7 @@ int pplg_init_loghid(void)
 	pcb_hid_register_hid(&loghid_gui);
 
 	/* export version */
-	loghid_exp.struct_size = sizeof(pcb_hid_t);
+	loghid_exp.struct_size = sizeof(rnd_hid_t);
 	loghid_exp.name = "loghid-exp";
 	loghid_exp.description = "log export HID calls";
 	loghid_exp.exporter = 1;

@@ -47,7 +47,7 @@ const char *xy_cookie = "XY HID";
 #define MAX_TEMP_NAME_LEN 128
 
 
-static pcb_export_opt_t xy_options[] = {
+static rnd_export_opt_t xy_options[] = {
 /* %start-doc options "8 XY Creation"
 @ftable @code
 @item --xyfile <string>
@@ -81,7 +81,7 @@ Unit of XY dimensions. Defaults to mil.
 
 #define NUM_OPTIONS (sizeof(xy_options)/sizeof(xy_options[0]))
 
-static pcb_hid_attr_val_t xy_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t xy_values[NUM_OPTIONS];
 
 static const char *xy_filename;
 static const rnd_unit_t *xy_unit;
@@ -97,7 +97,7 @@ static void free_fmts(void)
 	}
 }
 
-static pcb_export_opt_t *xy_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
 {
 	static int last_unit_value = -1;
 	rnd_conf_listitem_t *li;
@@ -787,7 +787,7 @@ static const char *get_templ(const char *tid, const char *type)
 	return NULL;
 }
 
-static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void xy_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int i;
 	template_t templ;
@@ -830,7 +830,7 @@ static void xy_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_cam_end(&cam);
 }
 
-static int xy_usage(pcb_hid_t *hid, const char *topic)
+static int xy_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nXY exporter command line arguments:\n\n");
 	pcb_hid_usage(xy_options, sizeof(xy_options) / sizeof(xy_options[0]));
@@ -838,13 +838,13 @@ static int xy_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static int xy_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int xy_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(xy_options, sizeof(xy_options) / sizeof(xy_options[0]), xy_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-pcb_hid_t xy_hid;
+rnd_hid_t xy_hid;
 
 int pplg_check_ver_export_xy(int ver_needed) { return 0; }
 
@@ -865,7 +865,7 @@ int pplg_init_export_xy(void)
 
 	rnd_conf_reg_file(CONF_FN, export_xy_conf_internal);
 
-	memset(&xy_hid, 0, sizeof(pcb_hid_t));
+	memset(&xy_hid, 0, sizeof(rnd_hid_t));
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_xy, field,isarray,type_name,cpath,cname,desc,flags);
@@ -873,7 +873,7 @@ int pplg_init_export_xy(void)
 
 	pcb_hid_nogui_init(&xy_hid);
 
-	xy_hid.struct_size = sizeof(pcb_hid_t);
+	xy_hid.struct_size = sizeof(rnd_hid_t);
 	xy_hid.name = "XY";
 	xy_hid.description = "Exports a XY (centroid)";
 	xy_hid.exporter = 1;

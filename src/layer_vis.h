@@ -36,7 +36,7 @@
 
 /* changes the visibility of all layers in a group; returns the number of
    changed layers; on should be 0 or 1 for setting the state or -1 for toggling it */
-int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, pcb_layer_id_t Layer, int On, rnd_bool ChangeStackOrder);
+int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, rnd_layer_id_t Layer, int On, rnd_bool ChangeStackOrder);
 
 /* resets the layer visibility stack setting */
 void pcb_layervis_reset_stack(rnd_hidlib_t *hl);
@@ -52,7 +52,7 @@ void pcb_layervis_save_stack(void);
 void pcb_layervis_restore_stack(void);
 
 /* Return the last used layer (or if none, any layer) that matches target type */
-pcb_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target);
+rnd_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target);
 
 /* Use this to temporarily make all layers visible, so that they can be
    exported even if they're not currently visible.  save_array must be

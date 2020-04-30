@@ -71,12 +71,12 @@ const pcb_hid_fsd_filter_t pcb_hid_fsd_filter_any[] = {
 	{ NULL, NULL, NULL }
 };
 
-pcb_hid_t **pcb_hid_list = 0;
+rnd_hid_t **pcb_hid_list = 0;
 int pcb_hid_num_hids = 0;
 
-pcb_hid_t *pcb_gui = NULL;
-pcb_hid_t *pcb_render = NULL;
-pcb_hid_t *pcb_exporter = NULL;
+rnd_hid_t *pcb_gui = NULL;
+rnd_hid_t *pcb_render = NULL;
+rnd_hid_t *pcb_exporter = NULL;
 
 int pcb_pixel_slop = 1;
 
@@ -149,12 +149,12 @@ void pcb_hid_uninit(void)
 	pcb_plugin_dir_first = pcb_plugin_dir_last = NULL;
 }
 
-void pcb_hid_register_hid(pcb_hid_t * hid)
+void pcb_hid_register_hid(rnd_hid_t * hid)
 {
 	int i;
-	int sz = (pcb_hid_num_hids + 2) * sizeof(pcb_hid_t *);
+	int sz = (pcb_hid_num_hids + 2) * sizeof(rnd_hid_t *);
 
-	if (hid->struct_size != sizeof(pcb_hid_t)) {
+	if (hid->struct_size != sizeof(rnd_hid_t)) {
 		fprintf(stderr, "Warning: hid \"%s\" has an incompatible ABI.\n", hid->name);
 		return;
 	}
@@ -165,15 +165,15 @@ void pcb_hid_register_hid(pcb_hid_t * hid)
 
 	pcb_hid_num_hids++;
 	if (pcb_hid_list)
-		pcb_hid_list = (pcb_hid_t **) realloc(pcb_hid_list, sz);
+		pcb_hid_list = (rnd_hid_t **) realloc(pcb_hid_list, sz);
 	else
-		pcb_hid_list = (pcb_hid_t **) malloc(sz);
+		pcb_hid_list = (rnd_hid_t **) malloc(sz);
 
 	pcb_hid_list[pcb_hid_num_hids - 1] = hid;
 	pcb_hid_list[pcb_hid_num_hids] = 0;
 }
 
-void pcb_hid_remove_hid(pcb_hid_t * hid)
+void pcb_hid_remove_hid(rnd_hid_t * hid)
 {
 	int i;
 
@@ -188,13 +188,13 @@ void pcb_hid_remove_hid(pcb_hid_t * hid)
 }
 
 
-pcb_hid_t *pcb_hid_find_gui(const char *preference)
+rnd_hid_t *pcb_hid_find_gui(const char *preference)
 {
 	int i;
 
 	/* ugly hack for historical reasons: some old configs and veteran users are used to the --gui gtk option */
 	if ((preference != NULL) && (strcmp(preference, "gtk") == 0)) {
-		pcb_hid_t *g;
+		rnd_hid_t *g;
 
 		g = pcb_hid_find_gui("gtk2_gl");
 		if (g != NULL)
@@ -223,7 +223,7 @@ pcb_hid_t *pcb_hid_find_gui(const char *preference)
 	exit(1);
 }
 
-pcb_hid_t *pcb_hid_find_printer()
+rnd_hid_t *pcb_hid_find_printer()
 {
 	int i;
 
@@ -242,7 +242,7 @@ void pcb_hid_print_exporter_list(FILE *f, const char *prefix, const char *suffix
 			fprintf(f, "%s%s%s", prefix, pcb_hid_list[i]->name, suffix);
 }
 
-pcb_hid_t *pcb_hid_find_exporter(const char *which)
+rnd_hid_t *pcb_hid_find_exporter(const char *which)
 {
 	int i;
 
@@ -269,7 +269,7 @@ pcb_hid_t *pcb_hid_find_exporter(const char *which)
 	return 0;
 }
 
-pcb_hid_t **pcb_hid_enumerate()
+rnd_hid_t **pcb_hid_enumerate()
 {
 	return pcb_hid_list;
 }

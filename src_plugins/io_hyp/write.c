@@ -147,7 +147,7 @@ static int write_foot(hyp_wr_t * wr)
 
 static const char *get_layer_name(hyp_wr_t * wr, pcb_parenttype_t pt, pcb_layer_t * l)
 {
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *g;
 
 	if (pt != PCB_PARENT_LAYER)
@@ -247,7 +247,7 @@ static const char *hyp_pstk_cache(hyp_wr_t *wr, pcb_pstk_proto_t *proto, int pri
 		for(n = 0; n < tshp->len; n++) {
 			pcb_pstk_shape_t *shp = &tshp->shape[n];
 			pcb_layer_type_t loc;
-			pcb_layer_id_t l;
+			rnd_layer_id_t l;
 
 			if (!(shp->layer_mask & PCB_LYT_COPPER))
 				continue; /* hyp suppports copper only */
@@ -362,7 +362,7 @@ static void write_arc(hyp_wr_t * wr, pcb_arc_t * arc)
 static int write_board(hyp_wr_t * wr)
 {
 	int has_outline;
-	pcb_layergrp_id_t i;
+	rnd_layergrp_id_t i;
 	pcb_layergrp_t *g;
 
 	fprintf(wr->f, "{BOARD\n");

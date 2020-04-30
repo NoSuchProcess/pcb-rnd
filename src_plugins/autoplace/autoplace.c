@@ -153,9 +153,9 @@ static void pcb_box_free(rnd_rnd_box_list_t *Boxlist)
 }
 
 /* Return a terminal's preferred layer group ID or -1 on error */
-static pcb_layergrp_id_t obj_layergrp(const pcb_any_obj_t *obj)
+static rnd_layergrp_id_t obj_layergrp(const pcb_any_obj_t *obj)
 {
-	pcb_layergrp_id_t SLayer = -1;
+	rnd_layergrp_id_t SLayer = -1;
 	pcb_layer_t *layer;
 
 	switch (obj->type) {

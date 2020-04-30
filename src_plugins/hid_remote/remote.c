@@ -24,14 +24,14 @@
 
 static const char *remote_cookie = "remote HID";
 
-static pcb_hid_t remote_hid;
+static rnd_hid_t remote_hid;
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
 	int nop;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
-static pcb_export_opt_t *remote_get_export_options(pcb_hid_t *hid, int *n_ret)
+static rnd_export_opt_t *remote_get_export_options(rnd_hid_t *hid, int *n_ret)
 {
 	if (n_ret != NULL)
 		*n_ret = 0;
@@ -53,13 +53,13 @@ RND_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
 
 static void remote_send_all_layers()
 {
-	pcb_layer_id_t arr[128];
-	pcb_layergrp_id_t garr[128];
+	rnd_layer_id_t arr[128];
+	rnd_layergrp_id_t garr[128];
 	int n, used;
 
 	used = pcb_layergrp_list_any(PCB, PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, garr, sizeof(garr)/sizeof(garr[0]));
 	for(n = 0; n < used; n++) {
-		pcb_layergrp_id_t gid = garr[n];
+		rnd_layergrp_id_t gid = garr[n];
 		pcb_remote_new_layer_group(pcb_layergrp_name(PCB, gid), gid, pcb_layergrp_flags(PCB, gid));
 	}
 
@@ -68,8 +68,8 @@ static void remote_send_all_layers()
 TODO("layer: remove this temporary hack for virtual layers")
 	for(n = 0; n < used; n++) {
 		const char *name;
-		pcb_layer_id_t layer_id = arr[n];
-		pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, layer_id);
+		rnd_layer_id_t layer_id = arr[n];
+		rnd_layergrp_id_t gid = pcb_layer_get_group(PCB, layer_id);
 		name = pcb_layer_name(PCB->Data, layer_id);
 		if ((gid < 0) && (name != NULL)) {
 			pcb_remote_new_layer_group(name, layer_id, pcb_layer_flags(PCB, layer_id));
@@ -79,8 +79,8 @@ TODO("layer: remove this temporary hack for virtual layers")
 
 
 	for(n = 0; n < used; n++) {
-		pcb_layer_id_t lid = arr[n];
-		pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, lid);
+		rnd_layer_id_t lid = arr[n];
+		rnd_layergrp_id_t gid = pcb_layer_get_group(PCB, lid);
 		if (gid >= 0)
 			pcb_remote_new_layer(pcb_layer_name(PCB->Data, lid), lid, gid);
 	}
@@ -89,9 +89,9 @@ TODO("layer: remove this temporary hack for virtual layers")
 
 /* ----------------------------------------------------------------------------- */
 static int remote_stay;
-static void remote_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void remote_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
-	pcb_hid_expose_ctx_t ctx;
+	rnd_hid_expose_ctx_t ctx;
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
@@ -113,27 +113,27 @@ TODO(": wait for a connection?")
 		exit(1);
 }
 
-static void remote_do_exit(pcb_hid_t *hid)
+static void remote_do_exit(rnd_hid_t *hid)
 {
 	remote_stay = 0;
 }
 
-static int remote_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int remote_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void remote_invalidate_lr(pcb_hid_t *hid, rnd_coord_t l, rnd_coord_t r, rnd_coord_t t, rnd_coord_t b)
+static void remote_invalidate_lr(rnd_hid_t *hid, rnd_coord_t l, rnd_coord_t r, rnd_coord_t t, rnd_coord_t b)
 {
 	proto_send_invalidate(l,r, t, b);
 }
 
-static void remote_invalidate_all(pcb_hid_t *hid)
+static void remote_invalidate_all(rnd_hid_t *hid)
 {
 	proto_send_invalidate_all();
 }
 
-static int remote_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int remote_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	if (flags & PCB_LYT_UI) /* do not draw UI layers yet, we didn't create them */
 		return 0;
@@ -156,10 +156,10 @@ typedef struct {
 	rnd_coord_t line_width;
 	char cap;
 } remote_gc_cache_t;
-static hid_gc_s remote_gc[32];
+static rnd_hid_gc_s remote_gc[32];
 static remote_gc_cache_t gc_cache[32];
 
-static pcb_hid_gc_t remote_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t remote_make_gc(rnd_hid_t *hid)
 {
 	int gci = proto_send_make_gc();
 	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
@@ -172,7 +172,7 @@ static pcb_hid_gc_t remote_make_gc(pcb_hid_t *hid)
 	return remote_gc+gci;
 }
 
-static int gc2idx(pcb_hid_gc_t gc)
+static int gc2idx(rnd_hid_gc_t gc)
 {
 	int idx = gc - remote_gc;
 	int max = sizeof(remote_gc) / sizeof(remote_gc[0]);
@@ -184,7 +184,7 @@ static int gc2idx(pcb_hid_gc_t gc)
 	return idx;
 }
 
-static void remote_destroy_gc(pcb_hid_gc_t gc)
+static void remote_destroy_gc(rnd_hid_gc_t gc)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
@@ -192,7 +192,7 @@ static void remote_destroy_gc(pcb_hid_gc_t gc)
 }
 
 static const char *drawing_mode_names[] = { "reset", "positive", "negative", "flush"};
-static void remote_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
+static void remote_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
 {
 	if ((op >= 0) && (op < sizeof(drawing_mode_names) / sizeof(drawing_mode_names[0])))
 		proto_send_set_drawing_mode(drawing_mode_names[op], direct);
@@ -200,7 +200,7 @@ static void remote_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_b
 		rnd_message(RND_MSG_ERROR, "Invalid drawing mode %d\n", op);
 }
 
-static void remote_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
+static void remote_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0) {
@@ -213,7 +213,7 @@ static void remote_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 
 /* r=round, s=square, b=beveled (octagon) */
 static const char *cap_style_names = "rsrb";
-static void remote_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void remote_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 	int idx = gc2idx(gc);
 	int max = strlen(cap_style_names);
@@ -232,7 +232,7 @@ static void remote_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
 	}
 }
 
-static void remote_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void remote_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0) {
@@ -243,102 +243,102 @@ static void remote_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
 	}
 }
 
-static void remote_set_draw_xor(pcb_hid_gc_t gc, int xor_set)
+static void remote_set_draw_xor(rnd_hid_gc_t gc, int xor_set)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_set_draw_xor(idx, xor_set);
 }
 
-static void remote_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void remote_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_line(idx, x1, y1, x2, y2);
 }
 
-static void remote_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void remote_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_arc(idx, cx, cy, width, height, start_angle, delta_angle);
 }
 
-static void remote_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void remote_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_rect(idx, x1, y1, x2, y2, 0);
 }
 
-static void remote_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void remote_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_fill_circle(idx, cx, cy, radius);
 }
 
-static void remote_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y)
+static void remote_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_poly(idx, n_coords, x, y, 0, 0);
 }
 
-static void remote_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void remote_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_poly(idx, n_coords, x, y, dx, dy);
 }
 
-static void remote_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void remote_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int idx = gc2idx(gc);
 	if (idx >= 0)
 		proto_send_draw_rect(idx, x1, y1, x2, y2, 1);
 }
 
-static void remote_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void remote_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 }
 
-static int remote_shift_is_pressed(pcb_hid_t *hid)
-{
-	return 0;
-}
-
-static int remote_control_is_pressed(pcb_hid_t *hid)
+static int remote_shift_is_pressed(rnd_hid_t *hid)
 {
 	return 0;
 }
 
-static int remote_mod1_is_pressed(pcb_hid_t *hid)
+static int remote_control_is_pressed(rnd_hid_t *hid)
 {
 	return 0;
 }
 
-static void remote_get_coords(pcb_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
+static int remote_mod1_is_pressed(rnd_hid_t *hid)
+{
+	return 0;
+}
+
+static void remote_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 }
 
-static void remote_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void remote_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 
-static pcb_hidval_t remote_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+static pcb_hidval_t remote_add_timer(rnd_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	pcb_hidval_t rv;
 	rv.lval = 0;
 	return rv;
 }
 
-static void remote_stop_timer(pcb_hid_t *hid, pcb_hidval_t timer)
+static void remote_stop_timer(rnd_hid_t *hid, pcb_hidval_t timer)
 {
 }
 
 pcb_hidval_t
-remote_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+remote_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								 pcb_hidval_t user_data)
 {
 	pcb_hidval_t ret;
@@ -346,11 +346,11 @@ remote_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, rnd_bool (*fun
 	return ret;
 }
 
-void remote_unwatch_file(pcb_hid_t *hid, pcb_hidval_t data)
+void remote_unwatch_file(rnd_hid_t *hid, pcb_hidval_t data)
 {
 }
 
-static void *remote_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+static void *remote_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	return NULL;
 }
@@ -372,11 +372,11 @@ static void remote_attr_dlg_free(void *hid_ctx)
 {
 }
 
-static void remote_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val)
+static void remote_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val)
 {
 }
 
-static void remote_create_menu(pcb_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
+static void remote_create_menu(rnd_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
 {
 }
 
@@ -392,11 +392,11 @@ int pplg_init_hid_remote(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&remote_hid, 0, sizeof(pcb_hid_t));
+	memset(&remote_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&remote_hid);
 
-	remote_hid.struct_size = sizeof(pcb_hid_t);
+	remote_hid.struct_size = sizeof(rnd_hid_t);
 	remote_hid.name = "remote";
 	remote_hid.description = "remote-mode GUI for non-interactive use.";
 	remote_hid.gui = 1;

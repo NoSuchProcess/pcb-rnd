@@ -72,7 +72,7 @@
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented PNG function %s.\n", func); abort()
 
-static pcb_hid_t png_hid;
+static rnd_hid_t png_hid;
 
 const char *png_cookie = "png HID";
 
@@ -99,7 +99,7 @@ static long png_drawn_objs = 0;
 #define NOT_EDGE_Y(y) ((y) != 0 && (y) != PCB->hidlib.size_y)
 #define NOT_EDGE(x,y) (NOT_EDGE_X(x) || NOT_EDGE_Y(y))
 
-static void png_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
+static void png_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 
 /* The result of a failed gdImageColorAllocate() call */
 #define BADC -1
@@ -113,9 +113,9 @@ typedef struct color_struct {
 
 } color_struct;
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
-	pcb_hid_t *me_pointer;
+	rnd_hid_t *me_pointer;
 	pcb_cap_style_t cap;
 	int width, r, g, b;
 	color_struct *color;
@@ -165,7 +165,7 @@ static const char *filetypes[] = {
 
 #include "png_photo1.c"
 
-pcb_export_opt_t png_attribute_list[] = {
+rnd_export_opt_t png_attribute_list[] = {
 /* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 PNG Options"
@@ -374,7 +374,7 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 
 #define NUM_OPTIONS (sizeof(png_attribute_list)/sizeof(png_attribute_list[0]))
 
-static pcb_hid_attr_val_t png_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t png_values[NUM_OPTIONS];
 
 static const char *get_file_suffix(void)
 {
@@ -398,7 +398,7 @@ static const char *get_file_suffix(void)
 	return result;
 }
 
-static pcb_export_opt_t *png_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *png_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = get_file_suffix();
 
@@ -411,7 +411,7 @@ static pcb_export_opt_t *png_get_export_options(pcb_hid_t *hid, int *n)
 }
 
 
-static pcb_layergrp_id_t group_for_layer(int l)
+static rnd_layergrp_id_t group_for_layer(int l)
 {
 	if (l < pcb_max_layer(PCB) && l >= 0)
 		return pcb_layer_get_group(PCB, l);
@@ -419,15 +419,15 @@ static pcb_layergrp_id_t group_for_layer(int l)
 	return pcb_max_group(PCB) + 3 + l;
 }
 
-static int is_solder(pcb_layergrp_id_t grp)     { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_BOTTOM; }
-static int is_component(pcb_layergrp_id_t grp)  { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_TOP; }
+static int is_solder(rnd_layergrp_id_t grp)     { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_BOTTOM; }
+static int is_component(rnd_layergrp_id_t grp)  { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_TOP; }
 
 static int layer_sort(const void *va, const void *vb)
 {
 	int a = *(int *) va;
 	int b = *(int *) vb;
-	pcb_layergrp_id_t al = group_for_layer(a);
-	pcb_layergrp_id_t bl = group_for_layer(b);
+	rnd_layergrp_id_t al = group_for_layer(a);
+	rnd_layergrp_id_t bl = group_for_layer(b);
 	int d = bl - al;
 
 	if (a >= 0 && a < pcb_max_layer(PCB)) {
@@ -468,7 +468,7 @@ static void rgb(color_struct *dest, int r, int g, int b)
 	dest->b = b;
 }
 
-static pcb_hid_attr_val_t *png_options;
+static rnd_hid_attr_val_t *png_options;
 
 #include "png_photo2.c"
 
@@ -523,11 +523,11 @@ static void png_foot(void)
 		fprintf(stderr, "Error:  Invalid graphic file format." "  This is a bug.  Please report it.\n");
 }
 
-void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options, pcb_xform_t *xform)
+void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_rnd_box_t tmp, region;
-	pcb_hid_expose_ctx_t ctx;
+	rnd_hid_expose_ctx_t ctx;
 
 	f = the_file;
 
@@ -596,14 +596,14 @@ static void png_free_cache(void)
 	}
 }
 
-static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int save_ons[PCB_MAX_LAYER];
 	int i;
 	rnd_rnd_box_t tmp, *bbox;
 	int w, h;
 	int xmax, ymax, dpi;
-	pcb_xform_t xform;
+	rnd_xform_t xform;
 
 	png_free_cache();
 
@@ -791,7 +791,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 }
 
-static int png_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int png_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
@@ -800,7 +800,7 @@ static int png_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 static int is_mask;
 
-static int png_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int png_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	if (flags & PCB_LYT_UI)
 		return 0;
@@ -854,9 +854,9 @@ static int png_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 }
 
 
-static pcb_hid_gc_t png_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t png_make_gc(rnd_hid_t *hid)
 {
-	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_t), 1);
+	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(sizeof(hid_gc_t), 1);
 	rv->me_pointer = &png_hid;
 	rv->cap = pcb_cap_round;
 	rv->width = 1;
@@ -867,13 +867,13 @@ static pcb_hid_gc_t png_make_gc(pcb_hid_t *hid)
 	return rv;
 }
 
-static void png_destroy_gc(pcb_hid_gc_t gc)
+static void png_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
 static pcb_composite_op_t drawing_mode;
-static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void png_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	static gdImagePtr dst_im;
 	drawing_mode = op;
@@ -935,7 +935,7 @@ static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool
 	}
 }
 
-static void png_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
+static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	color_struct *cc;
 
@@ -983,17 +983,17 @@ static void png_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 	}
 }
 
-static void png_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void png_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void png_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void png_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
-static void png_set_draw_xor(pcb_hid_gc_t gc, int xor_)
+static void png_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
 }
@@ -1016,10 +1016,10 @@ static int brush_keyeq(const void *av, const void *bv)
 }
 
 static int unerase_override = 0;
-static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
+static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 {
 	int need_brush = 0;
-	pcb_hid_gc_t agc;
+	rnd_hid_gc_t agc;
 	gdImagePtr brp;
 
 	png_drawn_objs++;
@@ -1128,7 +1128,7 @@ static void use_gc(gdImagePtr im, pcb_hid_gc_t gc)
 }
 
 
-static void png_fill_rect_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void png_fill_rect_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(im, gc);
 	gdImageSetThickness(im, 0);
@@ -1152,7 +1152,7 @@ static void png_fill_rect_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t x1, rnd_c
 	have_outline |= doing_outline;
 }
 
-static void png_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void png_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	png_fill_rect_(im, gc, x1, y1, x2, y2);
 	if ((im != erase_im) && (erase_im != NULL)) {
@@ -1163,7 +1163,7 @@ static void png_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 }
 
 
-static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void png_draw_line_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int x1o = 0, y1o = 0, x2o = 0, y2o = 0;
 	if (x1 == x2 && y1 == y2 && !photo_mode) {
@@ -1225,7 +1225,7 @@ static void png_draw_line_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t x1, rnd_c
 	}
 }
 
-static void png_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void png_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	png_draw_line_(im, gc, x1, y1, x2, y2);
 	if ((im != erase_im) && (erase_im != NULL)) {
@@ -1235,7 +1235,7 @@ static void png_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	}
 }
 
-static void png_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void png_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	png_draw_line(gc, x1, y1, x2, y1);
 	png_draw_line(gc, x2, y1, x2, y2);
@@ -1244,7 +1244,7 @@ static void png_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 }
 
 
-static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void png_draw_arc_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_angle_t sa, ea;
 
@@ -1302,7 +1302,7 @@ static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t cx, rnd_co
 	gdImageArc(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * width), SCALE(2 * height), sa, ea, gdBrushed);
 }
 
-static void png_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void png_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	png_draw_arc_(im, gc, cx, cy, width, height, start_angle, delta_angle);
 	if ((im != erase_im) && (erase_im != NULL)) {
@@ -1312,7 +1312,7 @@ static void png_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	}
 }
 
-static void png_fill_circle_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void png_fill_circle_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	rnd_coord_t my_bloat;
 
@@ -1330,7 +1330,7 @@ static void png_fill_circle_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t cx, rnd
 	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), unerase_override ? white->c : gc->color->c);
 }
 
-static void png_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void png_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	png_fill_circle_(im, gc, cx, cy, radius);
 	if ((im != erase_im) && (erase_im != NULL)) {
@@ -1341,7 +1341,7 @@ static void png_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd
 }
 
 
-static void png_fill_polygon_offs_(gdImagePtr im, pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void png_fill_polygon_offs_(gdImagePtr im, rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i;
 	gdPoint *points;
@@ -1365,7 +1365,7 @@ static void png_fill_polygon_offs_(gdImagePtr im, pcb_hid_gc_t gc, int n_coords,
 	free(points);
 }
 
-static void png_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void png_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	png_fill_polygon_offs_(im, gc, n_coords, x, y, dx, dy);
 	if ((im != erase_im) && (erase_im != NULL)) {
@@ -1376,22 +1376,22 @@ static void png_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 }
 
 
-static void png_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+static void png_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	png_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
 
-static void png_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void png_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 	CRASH("png_calibrate");
 }
 
-static void png_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
+static void png_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
 
-static int png_usage(pcb_hid_t *hid, const char *topic)
+static int png_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\npng exporter command line arguments:\n\n");
 	pcb_hid_usage(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]));
@@ -1410,11 +1410,11 @@ int pplg_init_export_png(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&png_hid, 0, sizeof(pcb_hid_t));
+	memset(&png_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&png_hid);
 
-	png_hid.struct_size = sizeof(pcb_hid_t);
+	png_hid.struct_size = sizeof(rnd_hid_t);
 	png_hid.name = "png";
 	png_hid.description = "GIF/JPEG/PNG export";
 	png_hid.exporter = 1;

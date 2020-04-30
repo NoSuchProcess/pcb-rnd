@@ -166,8 +166,8 @@ extern lht_doc_t *pcb_conf_main_root[];
 static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = -2, g, n, used;
-	pcb_layer_id_t arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
-	pcb_layergrp_id_t garr[128]; /* WARNING: this assumes we won't have more than 128 layers */
+	rnd_layer_id_t arr[128]; /* WARNING: this assumes we won't have more than 128 layers */
+	rnd_layergrp_id_t garr[128]; /* WARNING: this assumes we won't have more than 128 layers */
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, DumpLayers, op = fgw_keyword(&argv[1]));
 
@@ -213,8 +213,8 @@ static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf("Max: theoretical=%d current_board=%d\n", PCB_MAX_LAYER, pcb_max_layer(PCB));
 	used = pcb_layer_list_any(PCB, PCB_LYT_ANYTHING | PCB_LYT_ANYWHERE | PCB_LYT_VIRTUAL, arr, sizeof(arr)/sizeof(arr[0]));
 	for(n = 0; n < used; n++) {
-		pcb_layer_id_t layer_id = arr[n];
-		pcb_layergrp_id_t grp = pcb_layer_get_group(PCB, layer_id);
+		rnd_layer_id_t layer_id = arr[n];
+		rnd_layergrp_id_t grp = pcb_layer_get_group(PCB, layer_id);
 		printf(" [%lx] %04x group=%ld %s\n", layer_id, pcb_layer_flags(PCB, layer_id), grp, pcb_layer_name(PCB->Data, layer_id));
 	}
 
@@ -222,7 +222,7 @@ static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	used = pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, arr, sizeof(arr)/sizeof(arr[0]));
 	printf("All %d bottom copper layers are:\n", used);
 	for(n = 0; n < used; n++) {
-		pcb_layer_id_t layer_id = arr[n];
+		rnd_layer_id_t layer_id = arr[n];
 		printf(" [%lx] %s \n", layer_id, PCB->Data->Layer[layer_id].name);
 	}
 
@@ -230,10 +230,10 @@ static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	used = pcb_layergrp_list(PCB, PCB_LYT_COPPER, garr, sizeof(garr)/sizeof(garr[0]));
 	printf("All %d groups containing copper layers are:\n", used);
 	for(g = 0; g < used; g++) {
-		pcb_layergrp_id_t group_id = garr[g];
+		rnd_layergrp_id_t group_id = garr[g];
 		printf(" group %ld (%d layers)\n", group_id, PCB->LayerGroups.grp[group_id].len);
 		for(n = 0; n < PCB->LayerGroups.grp[group_id].len; n++) {
-			pcb_layer_id_t layer_id = PCB->LayerGroups.grp[group_id].lid[n];
+			rnd_layer_id_t layer_id = PCB->LayerGroups.grp[group_id].lid[n];
 			printf("  [%lx] %s\n", layer_id, PCB->Data->Layer[layer_id].name);
 		}
 	}
@@ -411,7 +411,7 @@ static const char pcb_acth_d1[] = "debug action for development";
 static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	pcb_pixmap_t *pxm;
+	rnd_pixmap_t *pxm;
 	pcb_gfx_t *g = pcb_gfx_new(PCB_CURRLAYER(pcb),
 		PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(233), PCB_MIL_TO_COORD(233), 15, pcb_flag_make(0));
 

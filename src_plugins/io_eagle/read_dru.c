@@ -162,7 +162,7 @@ int io_eagle_read_pcb_dru(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	FILE *f;
 	char *efn;
 	gds_t buff;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	int n, num_layers = 0;
 	static const char prefix[] = "io_eagle::dru::";
 	char tmp[256];

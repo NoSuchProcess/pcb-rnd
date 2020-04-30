@@ -69,7 +69,7 @@ void pcb_dlg_pref_color_close(pref_ctx_t *ctx)
 	free(ctx->color.wlayer);
 }
 
-static void pref_color_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pref_color_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
 	const char *path = attr->user_data;
@@ -77,7 +77,7 @@ static void pref_color_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_gui->invalidate_all(pcb_gui);
 }
 
-static void pref_color_layer_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pref_color_layer_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
 	int idx = (int *)attr->user_data - ctx->color.wlayer;

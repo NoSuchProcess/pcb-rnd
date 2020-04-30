@@ -350,7 +350,7 @@ static void select_part(part_t *p)
 		pcb_gui->pan(pcb_gui, (sc->BoundingBox.X1+sc->BoundingBox.X2)/2, (sc->BoundingBox.Y1+sc->BoundingBox.Y2)/2, 0);
 }
 
-static void asm_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void asm_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	long n;
 	int isgrp = 0, ispart = 0;
@@ -449,7 +449,7 @@ static void done(void *hid_ctx, part_t *part, int done)
 	group_progress_update(hid_ctx, part->parent);
 }
 
-static void asm_done_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void asm_done_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 	if (*(int *)row->user_data)
@@ -458,7 +458,7 @@ static void asm_done_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	skip(hid_ctx, 0, row);
 }
 
-static void asm_undo_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void asm_undo_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 	if (*(int *)row->user_data)
@@ -467,7 +467,7 @@ static void asm_undo_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	skip(hid_ctx, 0, row);
 }
 
-static void asm_skip_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void asm_skip_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 	if (*(int *)row->user_data)
@@ -475,7 +475,7 @@ static void asm_skip_part(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	skip(hid_ctx, 0, row);
 }
 
-static void asm_done_group_(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr, int dn)
+static void asm_done_group_(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr, int dn)
 {
 	long n;
 	group_t *g;
@@ -493,18 +493,18 @@ static void asm_done_group_(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	skip(hid_ctx, 1, row);
 }
 
-static void asm_done_group(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void asm_done_group(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	asm_done_group_(hid_ctx, caller_data, attr, 1);
 }
 
-static void asm_undo_group(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void asm_undo_group(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	asm_done_group_(hid_ctx, caller_data, attr, 0);
 }
 
 
-static void asm_skip_group(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void asm_skip_group(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 

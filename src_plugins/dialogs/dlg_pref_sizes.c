@@ -42,7 +42,7 @@ static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
 }
 
 /* Dialog box to actual board size */
-static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
 
@@ -52,7 +52,7 @@ static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	ctx->sizes.lock--;
 }
 
-static void drc_rules_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void drc_rules_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_actionva(&PCB->hidlib, attr->user_data, NULL);
 }
@@ -67,7 +67,7 @@ static pref_confitem_t drc_sizes[] = {
 	{NULL, NULL, 0}
 };
 
-static void pref_sizes_drc_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pref_sizes_drc_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
 	pcb_pref_dlg2conf_table(ctx, drc_sizes, attr);
@@ -80,7 +80,7 @@ static void pref_isle_brd2dlg(rnd_conf_native_t *cfg, int arr_idx)
 	PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.sizes.wisle, dbl, conf_core.design.poly_isle_area / 1000000.0);
 }
 
-static void pref_isle_dlg2brd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pref_isle_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
 	double v = ctx->dlg[ctx->sizes.wisle].val.dbl * 1000000.0;

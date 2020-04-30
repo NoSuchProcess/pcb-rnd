@@ -276,7 +276,7 @@ static int tedax_layer_set_by_str(pcb_board_t *pcb, pcb_layergrp_t *grp, const c
 int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *stackid, FILE *f)
 {
 	int prefix = 0;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
 
 	fprintf(f, "begin stackup v1 ");

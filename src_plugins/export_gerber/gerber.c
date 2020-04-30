@@ -134,16 +134,16 @@ static aperture_list_t *set_layer_aperture_list(int layer_idx, int aper_per_file
 
 /* --------------------------------------------------------------------------- */
 
-static pcb_hid_t gerber_hid;
+static rnd_hid_t gerber_hid;
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_cap_style_t cap;
 	int width;
 	int color;
 	int erase;
 	int drill;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
 static FILE *f = NULL;
 static gds_t fn_gds;
@@ -156,7 +156,7 @@ static int lncount = 0;
 static int finding_apertures = 0;
 static int pagecount = 0;
 static int linewidth = -1;
-static pcb_layergrp_id_t lastgroup = -1;
+static rnd_layergrp_id_t lastgroup = -1;
 static int lastcap = -1;
 static int lastcolor = -1;
 static int lastX, lastY;				/* the last X and Y coordinate */
@@ -195,9 +195,9 @@ static const char *coord_format_names[NUM_COORD_FORMATS+1] = {
 	NULL
 };
 
-static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx, pcb_export_opt_t *opt);
+static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt);
 
-static pcb_export_opt_t gerber_options[] = {
+static rnd_export_opt_t gerber_options[] = {
 	{"", "WARNING",
 	 PCB_HATT_BEGIN_VBOX, 0, 0, {0, 0, 0, 0, {0}, gerber_warning}, 0, 0},
 #define HA_warning 0
@@ -256,9 +256,9 @@ Print file names and aperture counts on stdout.
 
 #define NUM_OPTIONS (sizeof(gerber_options)/sizeof(gerber_options[0]))
 
-static pcb_hid_attr_val_t gerber_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t gerber_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *gerber_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *gerber_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (gerber_options[HA_gerberfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &gerber_options[HA_gerberfile], "");
@@ -268,7 +268,7 @@ static pcb_export_opt_t *gerber_get_export_options(pcb_hid_t *hid, int *n)
 	return gerber_options;
 }
 
-static pcb_layergrp_id_t group_for_layer(int l)
+static rnd_layergrp_id_t group_for_layer(int l)
 {
 	if (l < pcb_max_layer(PCB) && l >= 0)
 		return pcb_layer_get_group(PCB, l);
@@ -296,7 +296,7 @@ static void maybe_close_f(FILE * f)
 
 static rnd_rnd_box_t region;
 
-static void append_file_suffix(gds_t *dst, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
+static void append_file_suffix(gds_t *dst, rnd_layergrp_id_t gid, rnd_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
 {
 	const char *sext = ".gbr";
 
@@ -310,14 +310,14 @@ static void append_file_suffix(gds_t *dst, pcb_layergrp_id_t gid, pcb_layer_id_t
 	filesuff = fn_gds.array + fn_baselen;
 }
 
-static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void gerber_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *fnbase;
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	int save_ons[PCB_MAX_LAYER];
-	pcb_hid_expose_ctx_t ctx;
-	pcb_xform_t xform;
+	rnd_hid_expose_ctx_t ctx;
+	rnd_xform_t xform;
 
 	gerber_ovr = 0;
 
@@ -419,7 +419,7 @@ static void gerber_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	gds_uninit(&fn_gds);
 }
 
-static int gerber_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int gerber_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
@@ -427,7 +427,7 @@ static int gerber_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 
 
-static int gerber_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int gerber_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	int want_outline;
 	char *cp;
@@ -602,7 +602,7 @@ emit_outline:
 			pcb_draw_groups(hid, PCB, PCB_LYT_BOUNDARY, F_uroute, NULL, &region, rnd_color_black, PCB_LYT_MECH, 0, 0);
 		}
 		else {
-			pcb_hid_gc_t gc = pcb_hid_make_gc();
+			rnd_hid_gc_t gc = pcb_hid_make_gc();
 			if (flags & PCB_LYT_SILK)
 				pcb_hid_set_line_width(gc, conf_core.design.min_slk);
 			else if (group >= 0)
@@ -619,26 +619,26 @@ emit_outline:
 	return 1;
 }
 
-static pcb_hid_gc_t gerber_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t gerber_make_gc(rnd_hid_t *hid)
 {
-	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(1, sizeof(*rv));
+	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(1, sizeof(*rv));
 	rv->cap = pcb_cap_round;
 	return rv;
 }
 
-static void gerber_destroy_gc(pcb_hid_gc_t gc)
+static void gerber_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-static void gerber_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
+static void gerber_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
 {
 	gerber_drawing_mode = op;
 	if ((f != NULL) && (gerber_debug))
 		fprintf(f, "G04 hid debug composite: %d*\r\n", op);
 }
 
-static void gerber_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
+static void gerber_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	if (rnd_color_is_drill(color)) {
 		gc->color = 1;
@@ -652,22 +652,22 @@ static void gerber_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 	}
 }
 
-static void gerber_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void gerber_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void gerber_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void gerber_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
-static void gerber_set_draw_xor(pcb_hid_gc_t gc, int xor_)
+static void gerber_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
 }
 
-static void use_gc(pcb_hid_gc_t gc, int radius)
+static void use_gc(rnd_hid_gc_t gc, int radius)
 {
 	gerber_drawn_objs++;
 	if ((f != NULL) && (gerber_drawing_mode != drawing_mode_issued)) {
@@ -718,7 +718,7 @@ static void use_gc(pcb_hid_gc_t gc, int radius)
 	}
 }
 
-static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void gerber_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	rnd_bool m = pcb_false;
 	int i;
@@ -769,12 +769,12 @@ static void gerber_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t 
 	fprintf(f, "G37*\r\n");
 }
 
-static void gerber_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+static void gerber_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	gerber_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
-static void gerber_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void gerber_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	rnd_bool m = pcb_false;
 
@@ -844,7 +844,7 @@ static void gerber_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rn
 	}
 }
 
-static void gerber_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void gerber_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	gerber_draw_line(gc, x1, y1, x1, y2);
 	gerber_draw_line(gc, x1, y1, x2, y1);
@@ -852,7 +852,7 @@ static void gerber_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rn
 	gerber_draw_line(gc, x2, y1, x2, y2);
 }
 
-static void gerber_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void gerber_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_bool m = pcb_false;
 	double arcStartX, arcStopX, arcStartY, arcStopY;
@@ -953,7 +953,7 @@ static void gerber_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd
 	lastY = arcStopY;
 }
 
-static void gerber_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void gerber_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	if (radius <= 0)
 		return;
@@ -979,7 +979,7 @@ static void gerber_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, 
 	fprintf(f, "D03*\r\n");
 }
 
-static void gerber_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void gerber_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	rnd_coord_t x[5];
 	rnd_coord_t y[5];
@@ -994,12 +994,12 @@ static void gerber_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rn
 	gerber_fill_polygon(gc, 5, x, y);
 }
 
-static void gerber_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void gerber_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 	CRASH("gerber_calibrate");
 }
 
-static int gerber_usage(pcb_hid_t *hid, const char *topic)
+static int gerber_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ngerber exporter command line arguments:\n\n");
 	pcb_hid_usage(gerber_options, sizeof(gerber_options) / sizeof(gerber_options[0]));
@@ -1007,7 +1007,7 @@ static int gerber_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static void gerber_go_to_cam_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void gerber_go_to_cam_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_dad_retovr_t retovr;
 	pcb_hid_dad_close(hid_ctx, &retovr, -1);
@@ -1015,7 +1015,7 @@ static void gerber_go_to_cam_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 }
 
 
-static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx, pcb_export_opt_t *opt)
+static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt)
 {
 	const char warn_txt[] =
 		"WARNING: direct gerber export is most probably NOT what\n"
@@ -1051,7 +1051,7 @@ static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx,
 }
 
 
-static void gerber_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void gerber_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 

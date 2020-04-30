@@ -126,7 +126,7 @@ int pcb_hid_message_box(rnd_hidlib_t *hl, const char *icon, const char *title, c
 	return -1;
 }
 
-void pcb_hid_iterate(pcb_hid_t *hid)
+void pcb_hid_iterate(rnd_hid_t *hid)
 {
 	if (hid->iterate != NULL)
 		hid->iterate(hid);
@@ -141,7 +141,7 @@ static void progress_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	pcb_hid_progress(0, 0, NULL);
 }
 
-static void progress_close_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void progress_close_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_hid_progress(0, 0, cancel);
 }
@@ -157,7 +157,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 	static pcb_hidval_t timer;
 	static int active = 0, cancelled = 0;
 	static int wp, have_timer = 0;
-	static pcb_hid_attr_val_t val;
+	static rnd_hid_attr_val_t val;
 	static double last = 0;
 	static int closing = 0;
 	static struct {

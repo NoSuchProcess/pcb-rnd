@@ -53,7 +53,7 @@ static void log_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	ctx->active = 0;
 }
 
-static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, rnd_logline_t *line)
+static void log_append(log_ctx_t *ctx, rnd_hid_attribute_t *atxt, rnd_logline_t *line)
 {
 	pcb_hid_text_t *txt = atxt->wdata;
 	const char *prefix = NULL;
@@ -103,19 +103,19 @@ static void log_append(log_ctx_t *ctx, pcb_hid_attribute_t *atxt, rnd_logline_t 
 static void log_import(log_ctx_t *ctx)
 {
 	rnd_logline_t *n;
-	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 
 	for(n = rnd_log_find_min(ctx->last_added); n != NULL; n = n->next)
 		log_append(ctx, atxt, n);
 }
 
-static void btn_clear_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void btn_clear_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	log_ctx_t *ctx = caller_data;
 	rnd_actionva(ctx->hidlib, "log", "clear", NULL);
 }
 
-static void btn_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void btn_export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	log_ctx_t *ctx = caller_data;
 	rnd_actionva(ctx->hidlib, "log", "export", NULL);
@@ -123,7 +123,7 @@ static void btn_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 
 static void maybe_scroll_to_bottom()
 {
-	pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
+	rnd_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
 	pcb_hid_text_t *txt = atxt->wdata;
 
 	if ((log_ctx.dlg[log_ctx.wscroll].val.lng) && (txt->hid_scroll_to_bottom != NULL))
@@ -133,7 +133,7 @@ static void maybe_scroll_to_bottom()
 static void log_window_create(rnd_hidlib_t *hidlib)
 {
 	log_ctx_t *ctx = &log_ctx;
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	char *title;
 
 	if (ctx->active)
@@ -173,7 +173,7 @@ static void log_window_create(rnd_hidlib_t *hidlib)
 	free(title);
 
 	{
-		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+		rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 		pcb_hid_text_t *txt = atxt->wdata;
 		txt->hid_set_readonly(atxt, ctx->dlg_hid_ctx, 1);
 	}
@@ -198,7 +198,7 @@ static void log_append_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_e
 	rnd_logline_t *line = argv[1].d.p;
 
 	if (log_ctx.active) {
-		pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
+		rnd_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
 
 		log_append(&log_ctx, atxt, line);
 		maybe_scroll_to_bottom();
@@ -216,7 +216,7 @@ static void log_append_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_e
 static void log_clear_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (log_ctx.active) {
-		pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
+		rnd_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
 		pcb_hid_text_t *txt = atxt->wdata;
 
 		txt->hid_set_text(atxt, log_ctx.dlg_hid_ctx, PCB_HID_TEXT_REPLACE, "");

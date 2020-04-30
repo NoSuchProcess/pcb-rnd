@@ -173,7 +173,7 @@ int tedax_etest_save(pcb_board_t *pcb, const char *etestid, const char *fn)
 
 /*** export HID ***/
 
-static pcb_export_opt_t tedax_etest_options[] = {
+static rnd_export_opt_t tedax_etest_options[] = {
 	{"outfile", "Name of the tedax etest output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_outfile 0
@@ -185,11 +185,11 @@ static pcb_export_opt_t tedax_etest_options[] = {
 
 #define NUM_OPTIONS (sizeof(tedax_etest_options)/sizeof(tedax_etest_options[0]))
 
-static pcb_hid_attr_val_t tedax_etest_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t tedax_etest_values[NUM_OPTIONS];
 
 static const char *tedax_etest_filename;
 
-static pcb_export_opt_t *tedax_etest_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *tedax_etest_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (tedax_etest_options[HA_outfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &tedax_etest_options[HA_outfile], ".etest.tdx");
@@ -199,7 +199,7 @@ static pcb_export_opt_t *tedax_etest_get_export_options(pcb_hid_t *hid, int *n)
 	return tedax_etest_options;
 }
 
-static void tedax_etest_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void tedax_etest_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int i;
 	const char *name;
@@ -226,7 +226,7 @@ static void tedax_etest_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_cam_end(&cam);
 }
 
-static int tedax_etest_usage(pcb_hid_t *hid, const char *topic)
+static int tedax_etest_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ntEDAx etest exporter command line arguments:\n\n");
 	pcb_hid_usage(tedax_etest_options, sizeof(tedax_etest_options) / sizeof(tedax_etest_options[0]));
@@ -235,13 +235,13 @@ static int tedax_etest_usage(pcb_hid_t *hid, const char *topic)
 }
 
 static const char *tedax_etest_cookie = "tEDAx etest";
-static int tedax_etest_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int tedax_etest_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(tedax_etest_options, sizeof(tedax_etest_options) / sizeof(tedax_etest_options[0]), tedax_etest_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static pcb_hid_t exp_tedax_etest;
+static rnd_hid_t exp_tedax_etest;
 
 void tedax_etest_uninit(void)
 {
@@ -250,11 +250,11 @@ void tedax_etest_uninit(void)
 
 void tedax_etest_init(void)
 {
-	memset(&exp_tedax_etest, 0, sizeof(pcb_hid_t));
+	memset(&exp_tedax_etest, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&exp_tedax_etest);
 
-	exp_tedax_etest.struct_size = sizeof(pcb_hid_t);
+	exp_tedax_etest.struct_size = sizeof(rnd_hid_t);
 	exp_tedax_etest.name = "tedax-etest";
 	exp_tedax_etest.description = "Electric test (list of exposed pads)";
 	exp_tedax_etest.exporter = 1;

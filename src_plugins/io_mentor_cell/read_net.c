@@ -28,7 +28,7 @@
  */
 
 
-static rnd_coord_t net_get_clearance_(hkp_ctx_t *ctx, pcb_layer_id_t lid, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode)
+static rnd_coord_t net_get_clearance_(hkp_ctx_t *ctx, rnd_layer_id_t lid, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode)
 {
 	if ((lid < 0) || (lid >= PCB_MAX_LAYER)) {
 		hkp_error(errnode, "failed to determine clearance, falling back to default value\n");
@@ -39,7 +39,7 @@ static rnd_coord_t net_get_clearance_(hkp_ctx_t *ctx, pcb_layer_id_t lid, const 
 
 static rnd_coord_t net_get_clearance(hkp_ctx_t *ctx, pcb_layer_t *ly, const hkp_netclass_t *nc, hkp_clearance_type_t type, node_t *errnode)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 
 	if (ly == NULL) /* typically non-copper layer: clearance is 0 */
 		return 0;
@@ -97,7 +97,7 @@ static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 
 	/* load default CLEARANCE_RULE_SET's children */
 	for(ns = ncrs->first_child; ns != NULL; ns = ns->next) {
-		pcb_layergrp_id_t gid;
+		rnd_layergrp_id_t gid;
 		pcb_layergrp_t *grp;
 		rnd_coord_t val;
 		int i;
@@ -127,7 +127,7 @@ static int io_mentor_cell_netclass(hkp_ctx_t *ctx, const char *fn)
 			else continue; /* ignore the rest for now */
 
 			for(i = 0; i < grp->len; i++) {
-				pcb_layer_id_t lid = grp->lid[i];
+				rnd_layer_id_t lid = grp->lid[i];
 				ctx->nc_dflt.clearance[lid][type] = val;
 			}
 		}

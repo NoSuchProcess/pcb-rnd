@@ -35,7 +35,7 @@ static gdImagePtr photo_silk, photo_mask, photo_drill, *photo_im;
 static gdImagePtr photo_outline;
 static int photo_groups[PCB_MAX_LAYERGRP + 2], photo_ngroups;
 static int photo_has_inners;
-static pcb_layergrp_id_t photo_last_grp;
+static rnd_layergrp_id_t photo_last_grp;
 static int is_photo_drill;
 
 static const char *mask_colour_names[] = {

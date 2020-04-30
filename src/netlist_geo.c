@@ -30,7 +30,7 @@
 typedef struct {
 	pcb_any_obj_t *o1, *o2;
 	rnd_coord_t o1x, o1y, o2x, o2y;
-	pcb_layergrp_id_t o1g, o2g;
+	rnd_layergrp_id_t o1g, o2g;
 	double dist2;
 } pcb_subnet_dist_t;
 
@@ -350,7 +350,7 @@ static pcb_subnet_dist_t pcb_obj_obj_distance(pcb_any_obj_t *o1, pcb_any_obj_t *
 	return sdist_invalid;
 }
 
-static pcb_layergrp_id_t get_obj_grp(const pcb_board_t *pcb, pcb_any_obj_t *obj)
+static rnd_layergrp_id_t get_obj_grp(const pcb_board_t *pcb, pcb_any_obj_t *obj)
 {
 	switch(obj->type) {
 		case PCB_OBJ_ARC:
@@ -361,7 +361,7 @@ static pcb_layergrp_id_t get_obj_grp(const pcb_board_t *pcb, pcb_any_obj_t *obj)
 		case PCB_OBJ_PSTK: /* return the first copper layer's group */
 			{
 				int n;
-				pcb_layergrp_id_t res;
+				rnd_layergrp_id_t res;
 				pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape((pcb_pstk_t *)obj);
 				for(n = 0; n < ts->len; n++)
 					if (ts->shape[n].layer_mask & PCB_LYT_COPPER)

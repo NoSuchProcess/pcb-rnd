@@ -30,7 +30,7 @@
 #include <librnd/core/hid_dad_tree.h>
 
 /* recursively free a row list subtree */
-static void pcb_dad_tree_free_rowlist(pcb_hid_attribute_t *attr, gdl_list_t *list)
+static void pcb_dad_tree_free_rowlist(rnd_hid_attribute_t *attr, gdl_list_t *list)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *r;
@@ -53,7 +53,7 @@ static void pcb_dad_tree_free_rowlist(pcb_hid_attribute_t *attr, gdl_list_t *lis
 }
 
 /* Internal: free all rows and caches and the tree itself */
-void pcb_dad_tree_free(pcb_hid_attribute_t *attr)
+void pcb_dad_tree_free(rnd_hid_attribute_t *attr)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 	htsp_uninit(&tree->paths);

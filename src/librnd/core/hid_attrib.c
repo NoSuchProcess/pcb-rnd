@@ -35,7 +35,7 @@
 
 pcb_hid_attr_node_t *hid_attr_nodes = 0;
 
-void pcb_export_register_opts(pcb_export_opt_t *a, int n, const char *cookie, int copy)
+void pcb_export_register_opts(rnd_export_opt_t *a, int n, const char *cookie, int copy)
 {
 	pcb_hid_attr_node_t *ha;
 
@@ -85,7 +85,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			pcb_export_opt_t *a = ha->opts + i;
+			rnd_export_opt_t *a = ha->opts + i;
 			switch (a->type) {
 			case PCB_HATT_LABEL:
 				break;
@@ -136,7 +136,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 		for (ha = hid_attr_nodes; ha; ha = ha->next)
 			for (i = 0; i < ha->n; i++)
 				if (strcmp((*argv)[0] + arg_ofs, ha->opts[i].name) == 0) {
-					pcb_export_opt_t *a = ha->opts + i;
+					rnd_export_opt_t *a = ha->opts + i;
 					char *ep;
 					const rnd_unit_t *unit;
 					switch (ha->opts[i].type) {
@@ -252,7 +252,7 @@ void pcb_hid_usage_option(const char *name, const char *help)
 	fprintf(stderr, "--%-20s %s\n", name, help);
 }
 
-void pcb_hid_usage(pcb_export_opt_t *a, int numa)
+void pcb_hid_usage(rnd_export_opt_t *a, int numa)
 {
 	for (; numa > 0; numa--,a++) {
 		const char *help;

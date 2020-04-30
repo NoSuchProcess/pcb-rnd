@@ -85,9 +85,9 @@ pcb_bool_t hyp_is_bottom_layer(char *);	/* true if bottom layer */
 
 /* layer creation */
 int layer_count;
-pcb_layer_id_t top_layer_id, bottom_layer_id;
+rnd_layer_id_t top_layer_id, bottom_layer_id;
 void hyp_reset_layers();				/* reset layer stack to minimun */
-pcb_layer_id_t hyp_create_layer(char *lname);	/* create new copper layer at bottom of stack */
+rnd_layer_id_t hyp_create_layer(char *lname);	/* create new copper layer at bottom of stack */
 
 int hyp_debug;									/* logging on/off switch */
 
@@ -496,7 +496,7 @@ static void hyp_subcs_fin(void)
 
 void hyp_perimeter_segment_add(outline_t * s, pcb_bool_t forward)
 {
-	pcb_layer_id_t outline_id;
+	rnd_layer_id_t outline_id;
 	pcb_layer_t *outline_layer;
 
 	/* get outline layer */
@@ -793,8 +793,8 @@ void hyp_perimeter()
 void hyp_reset_layers()
 {
 
-	pcb_layer_id_t id = -1;
-	pcb_layergrp_id_t gid = -1;
+	rnd_layer_id_t id = -1;
+	rnd_layergrp_id_t gid = -1;
 	pcb_layergrp_t *grp = NULL;
 
 	pcb_layergrp_inhibit_inc();
@@ -851,10 +851,10 @@ void hyp_reset_layers()
  * If the layer name is NULL, a new copper layer with a new, unused layer name is created.
  */
 
-pcb_layer_id_t hyp_create_layer(char *lname)
+rnd_layer_id_t hyp_create_layer(char *lname)
 {
-	pcb_layer_id_t layer_id;
-	pcb_layergrp_id_t gid;
+	rnd_layer_id_t layer_id;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
 	char new_layer_name[MAX_STRING];
 	int n;
@@ -1211,7 +1211,7 @@ void hyp_draw_polygons()
 {
 	hyp_polygon_t *i;
 	int l, layer_count = 0;
-	pcb_layer_id_t *layer_array = NULL;
+	rnd_layer_id_t *layer_array = NULL;
 
 #ifdef XXX
 	hyp_dump_polygons();					/* more debugging */
@@ -1221,14 +1221,14 @@ void hyp_draw_polygons()
 	layer_count = pcb_layer_list(PCB, PCB_LYT_COPPER, NULL, 0);
 	if (layer_count <= 0)
 		return;
-	layer_array = malloc(sizeof(pcb_layer_id_t) * layer_count);
+	layer_array = malloc(sizeof(rnd_layer_id_t) * layer_count);
 	if (layer_array == NULL)
 		return;
 	layer_count = pcb_layer_list(PCB, PCB_LYT_COPPER, layer_array, layer_count);
 
 	/* loop over all layers */
 	for (l = 0; l < layer_count; l++) {
-		pcb_layer_id_t layer_id = layer_array[l];
+		rnd_layer_id_t layer_id = layer_array[l];
 		if (hyp_debug)
 			rnd_message(RND_MSG_DEBUG, "draw polygons: layer %lx \"%s\"\n", layer_id, pcb_layer_name(PCB->Data, layer_id));
 
@@ -1262,7 +1262,7 @@ void hyp_draw_polygons()
 rnd_coord_t hyp_clearance(parse_param * h)
 {
 	rnd_coord_t clearance;
-	pcb_layer_id_t layr_id;
+	rnd_layer_id_t layr_id;
 
 	if (h->layer_name_set)
 		layr_id = hyp_create_layer(h->layer_name);
@@ -1538,7 +1538,7 @@ rnd_bool exec_options(parse_param * h)
 
 rnd_bool exec_signal(parse_param * h)
 {
-	pcb_layer_id_t signal_layer_id;
+	rnd_layer_id_t signal_layer_id;
 
 	if ((h->layer_name != NULL) && (pcb_layer_by_name(PCB->Data, h->layer_name) >= 0))
 		rnd_message(RND_MSG_WARNING, "duplicate SIGNAL layer name \"%s\"\n", h->layer_name);
@@ -1577,7 +1577,7 @@ rnd_bool exec_dielectric(parse_param * h)
 
 rnd_bool exec_plane(parse_param * h)
 {
-	pcb_layer_id_t plane_layer_id;
+	rnd_layer_id_t plane_layer_id;
 
 	if ((h->layer_name != NULL) && (pcb_layer_by_name(PCB->Data, h->layer_name) >= 0))
 		rnd_message(RND_MSG_WARNING, "duplicate PLANE layer name \"%s\"\n", h->layer_name);
@@ -2269,7 +2269,7 @@ rnd_bool exec_pad(parse_param * h)
 
 rnd_bool exec_useg(parse_param * h)
 {
-	pcb_layergrp_id_t layer1_grp_id, layer2_grp_id;
+	rnd_layergrp_id_t layer1_grp_id, layer2_grp_id;
 
 	if (hyp_debug) {
 		rnd_message(RND_MSG_DEBUG, "useg: x1 = %ml y1 = %ml layer1_name = \"%s\"", x2coord(h->x1), y2coord(h->y1), h->layer1_name);

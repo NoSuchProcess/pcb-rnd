@@ -117,7 +117,7 @@ pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID);
 int pcb_pstk_change_instance(pcb_pstk_t *ps, rnd_cardinal_t *proto, const rnd_coord_t *clearance, double *rot, int *xmirror, int *smirror);
 
 /* Return whether a group is empty (free of padstack shapes) */
-rnd_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid);
+rnd_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, rnd_layergrp_id_t gid);
 
 /* Copy all metadata (attributes, thermals, etc.) */
 pcb_pstk_t *pcb_pstk_copy_meta(pcb_pstk_t *dst, pcb_pstk_t *src);
@@ -291,7 +291,7 @@ extern const pcb_proto_layer_t pcb_proto_layers[pcb_proto_num_layers];
 
 /* Return the id of a board layer that matches a mask:comb pair or invalid if
    nothing matched */
-pcb_layer_id_t pcb_proto_board_layer_for(const pcb_data_t *data, pcb_layer_type_t mask, pcb_layer_combining_t comb);
+rnd_layer_id_t pcb_proto_board_layer_for(const pcb_data_t *data, pcb_layer_type_t mask, pcb_layer_combining_t comb);
 
 /*** hash ***/
 unsigned int pcb_pstk_proto_hash(const pcb_pstk_proto_t *p);

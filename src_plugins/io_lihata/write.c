@@ -920,7 +920,7 @@ static lht_node_t *build_layer_stack(pcb_board_t *pcb)
 }
 
 
-static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, pcb_layergrp_id_t layer_group, pcb_layer_id_t lid)
+static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, rnd_layergrp_id_t layer_group, rnd_layer_id_t lid)
 {
 	lht_node_t *obj, *grp, *comb;
 	pcb_line_t *li;
@@ -1018,7 +1018,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 	layers = lht_dom_node_alloc(LHT_LIST, "layers");
 
 	if (wrver == 1) { /* produce an old layer group assignment from top to bottom (needed for v1, good for other versions too) */
-		pcb_layergrp_id_t gm, grp[PCB_MAX_LAYERGRP], gtop = -1, gbottom = -1;
+		rnd_layergrp_id_t gm, grp[PCB_MAX_LAYERGRP], gtop = -1, gbottom = -1;
 
 		gm = 0;
 		for(n = 0; n < pcb_max_group(PCB); n++) {
@@ -1053,14 +1053,14 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 		/* v1 needs to have silk at the end of the list */
 		for(n = 0; n < pcb_max_layer(PCB); n++) {
 			if ((pcb_layer_flags(PCB, n) & PCB_LYT_SILK) == 0) {
-				pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, n);
+				rnd_layergrp_id_t gid = pcb_layer_get_group(PCB, n);
 				LAYER_GID_FIX_V1();
 				lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid, n));
 			}
 		}
 		for(n = 0; n < pcb_max_layer(PCB); n++) {
 			if (pcb_layer_flags(PCB, n) & PCB_LYT_SILK) {
-				pcb_layer_id_t gid = pcb_layer_get_group(PCB, n);
+				rnd_layer_id_t gid = pcb_layer_get_group(PCB, n);
 				LAYER_GID_FIX_V1();
 				lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid, n));
 			}
@@ -1069,7 +1069,7 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 	else {
 		/* keep the original order from v2, to minimize diffs */
 		for(n = 0; n < data->LayerN; n++) {
-			pcb_layergrp_id_t gid = pcb_layer_get_group(PCB, n);
+			rnd_layergrp_id_t gid = pcb_layer_get_group(PCB, n);
 			lht_dom_list_append(layers, build_data_layer(data, data->Layer+n, gid, n));
 		}
 	}
@@ -1751,7 +1751,7 @@ typedef struct {
 	int ver;
 } io_lihata_save_t;
 
-void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialog_t *sub, pcb_plug_iot_t type)
+void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, rnd_hid_dad_subdialog_t *sub, pcb_plug_iot_t type)
 {
 	io_lihata_save_t *save = calloc(sizeof(io_lihata_save_t), 1);
 
@@ -1781,7 +1781,7 @@ void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialo
 	return save;
 }
 
-void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, rnd_bool apply)
+void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, rnd_hid_dad_subdialog_t *sub, rnd_bool apply)
 {
 	io_lihata_save_t *save = plg_ctx;
 
@@ -1803,7 +1803,7 @@ void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_
 	free(save);
 }
 
-void io_lihata_save_as_fmt_changed(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub)
+void io_lihata_save_as_fmt_changed(const pcb_plug_io_t *ctx, void *plg_ctx, rnd_hid_dad_subdialog_t *sub)
 {
 	io_lihata_save_t *save = plg_ctx;
 	save->ver = plug2ver(ctx);

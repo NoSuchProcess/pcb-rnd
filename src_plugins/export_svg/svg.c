@@ -62,21 +62,21 @@
 #include "hid_cam.h"
 
 
-static pcb_hid_t svg_hid;
+static rnd_hid_t svg_hid;
 
 const char *svg_cookie = "svg HID";
 
 static pcb_cam_t svg_cam;
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
-	pcb_hid_t *me_pointer;
+	rnd_hid_t *me_pointer;
 	pcb_cap_style_t cap;
 	int width;
 	char *color;
 	int drill;
 	unsigned warned_elliptical:1;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
 static const char *CAPS(pcb_cap_style_t cap)
 {
@@ -125,7 +125,7 @@ static struct {
 	/* INNER */  { "#222222", "#111111", "#000000", PCB_MM_TO_COORD(0) }
 };
 
-pcb_export_opt_t svg_attribute_list[] = {
+rnd_export_opt_t svg_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 SVG Options"
@@ -193,9 +193,9 @@ do { \
 		y = PCB->hidlib.size_y - y; \
 } while(0)
 
-static pcb_hid_attr_val_t svg_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t svg_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *svg_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *svg_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".svg";
 
@@ -207,10 +207,10 @@ static pcb_export_opt_t *svg_get_export_options(pcb_hid_t *hid, int *n)
 	return svg_attribute_list;
 }
 
-void svg_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options, pcb_xform_t *xform)
+void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	pcb_hid_expose_ctx_t ctx;
+	rnd_hid_expose_ctx_t ctx;
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
@@ -317,12 +317,12 @@ static void svg_footer(void)
 	fprintf(f, "</svg>\n");
 }
 
-static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];
 	int i;
-	pcb_xform_t xform;
+	rnd_xform_t xform;
 
 	comp_cnt = 0;
 
@@ -377,13 +377,13 @@ static void svg_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 }
 
-static int svg_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int svg_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]), svg_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int svg_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	int opa, is_our_mask = 0, is_our_silk = 0;
 
@@ -471,9 +471,9 @@ static int svg_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 }
 
 
-static pcb_hid_gc_t svg_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t svg_make_gc(rnd_hid_t *hid)
 {
-	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
+	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(sizeof(rnd_hid_gc_s), 1);
 	rv->me_pointer = &svg_hid;
 	rv->cap = pcb_cap_round;
 	rv->width = 1;
@@ -481,12 +481,12 @@ static pcb_hid_gc_t svg_make_gc(pcb_hid_t *hid)
 	return rv;
 }
 
-static void svg_destroy_gc(pcb_hid_gc_t gc)
+static void svg_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-static void svg_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void svg_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	drawing_mode = op;
 
@@ -520,12 +520,12 @@ static void svg_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool
 	}
 }
 
-static const char *svg_color(pcb_hid_gc_t gc)
+static const char *svg_color(rnd_hid_gc_t gc)
 {
 	return gc->color;
 }
 
-static const char *svg_clip_color(pcb_hid_gc_t gc)
+static const char *svg_clip_color(rnd_hid_gc_t gc)
 {
 	if ((drawing_mode == PCB_HID_COMP_POSITIVE) || (drawing_mode == PCB_HID_COMP_POSITIVE_XOR))
 		return "#FFFFFF";
@@ -534,7 +534,7 @@ static const char *svg_clip_color(pcb_hid_gc_t gc)
 	return NULL;
 }
 
-static void svg_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
+static void svg_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	const char *name;
 	gc->drill = 0;
@@ -556,12 +556,12 @@ static void svg_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 	gc->color = rnd_strdup(name);
 }
 
-static void svg_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void svg_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void svg_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void svg_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width < PCB_MM_TO_COORD(0.01) ? PCB_MM_TO_COORD(0.01) : width;
 }
@@ -585,7 +585,7 @@ static void indent(gds_t *s)
 		pcb_append_printf(s, ind);
 }
 
-static void svg_set_draw_xor(pcb_hid_gc_t gc, int xor_)
+static void svg_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
 }
@@ -602,7 +602,7 @@ static void svg_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 		y2 = t; \
 	}
 
-static void draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t w, rnd_coord_t h, rnd_coord_t stroke)
+static void draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t w, rnd_coord_t h, rnd_coord_t stroke)
 {
 	const char *clip_color = svg_clip_color(gc);
 
@@ -616,14 +616,14 @@ static void draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord
 	}
 }
 
-static void svg_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void svg_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	svg_drawn_objs++;
 	fix_rect_coords();
 	draw_rect(gc, x1, y1, x2-x1, y2-y1, gc->width);
 }
 
-static void draw_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t w, rnd_coord_t h)
+static void draw_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t w, rnd_coord_t h)
 {
 	const char *clip_color = svg_clip_color(gc);
 	if ((photo_mode) && (clip_color == NULL)) {
@@ -650,7 +650,7 @@ static void draw_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_
 	}
 }
 
-static void svg_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void svg_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	svg_drawn_objs++;
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
@@ -658,7 +658,7 @@ static void svg_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	draw_fill_rect(gc, x1, y1, x2-x1, y2-y1);
 }
 
-static void pcb_line_draw(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void pcb_line_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	const char *clip_color = svg_clip_color(gc);
 	if ((photo_mode) && (clip_color == NULL)) {
@@ -686,14 +686,14 @@ static void pcb_line_draw(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	}
 }
 
-static void svg_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void svg_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	svg_drawn_objs++;
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 	pcb_line_draw(gc, x1, y1, x2, y2);
 }
 
-static void pcb_arc_draw(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t r, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t stroke, int large, int sweep)
+static void pcb_arc_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t r, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t stroke, int large, int sweep)
 {
 	const char *clip_color = svg_clip_color(gc);
 	if ((photo_mode) && (clip_color == NULL)) {
@@ -720,7 +720,7 @@ static void pcb_arc_draw(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 	}
 }
 
-static void svg_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void svg_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_coord_t x1, y1, x2, y2, diff = 0, diff2, maxdiff;
 	rnd_angle_t sa, ea;
@@ -779,7 +779,7 @@ static void svg_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	pcb_arc_draw(gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
 }
 
-static void draw_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, rnd_coord_t stroke)
+static void draw_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, rnd_coord_t stroke)
 {
 	const char *clip_color = svg_clip_color(gc);
 
@@ -817,14 +817,14 @@ static void draw_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 	}
 }
 
-static void svg_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void svg_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	svg_drawn_objs++;
 	TRX(cx); TRY(cy);
 	draw_fill_circle(gc, cx, cy, radius, 0);
 }
 
-static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t dx, rnd_coord_t dy, const char *clr)
+static void draw_poly(gds_t *s, rnd_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t dx, rnd_coord_t dy, const char *clr)
 {
 	int i;
 	float poly_bloat = 0.01;
@@ -839,7 +839,7 @@ static void draw_poly(gds_t *s, pcb_hid_gc_t gc, int n_coords, rnd_coord_t * x, 
 	pcb_append_printf(s, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, clr, clr);
 }
 
-static void svg_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void svg_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	const char *clip_color = svg_clip_color(gc);
 	svg_drawn_objs++;
@@ -858,23 +858,23 @@ static void svg_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 	}
 }
 
-static void svg_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+static void svg_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	svg_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
 
-static void svg_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void svg_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 	rnd_message(RND_MSG_ERROR, "svg_calibrate() not implemented");
 	return;
 }
 
-static void svg_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
+static void svg_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
 
-static int svg_usage(pcb_hid_t *hid, const char *topic)
+static int svg_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nsvg exporter command line arguments:\n\n");
 	pcb_hid_usage(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]));
@@ -893,11 +893,11 @@ int pplg_init_export_svg(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&svg_hid, 0, sizeof(pcb_hid_t));
+	memset(&svg_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&svg_hid);
 
-	svg_hid.struct_size = sizeof(pcb_hid_t);
+	svg_hid.struct_size = sizeof(rnd_hid_t);
 	svg_hid.name = "svg";
 	svg_hid.description = "Scalable Vector Graphics export";
 	svg_hid.exporter = 1;

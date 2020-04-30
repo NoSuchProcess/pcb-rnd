@@ -64,7 +64,7 @@ typedef enum pcb_order_autoload_e {
 
 typedef struct pcb_order_field_s {
 	pcb_hid_attr_type_t type;
-	pcb_hid_attr_val_t val;
+	rnd_hid_attr_val_t val;
 	char **enum_vals;
 	char *help;
 	pcb_order_autoload_t autoload;

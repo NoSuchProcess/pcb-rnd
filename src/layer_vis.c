@@ -73,9 +73,9 @@ static void PushOnTopOfLayerStack(int NewTop)
 	}
 }
 
-int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, pcb_layer_id_t Layer, int On, rnd_bool ChangeStackOrder)
+int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, rnd_layer_id_t Layer, int On, rnd_bool ChangeStackOrder)
 {
-	pcb_layergrp_id_t group;
+	rnd_layergrp_id_t group;
 	int i, changed = 1; /* at least the current layer changes */
 
 
@@ -96,7 +96,7 @@ int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, pcb_layer_id_t Layer, int On
 	/* decrement 'i' to keep stack in order of layergroup */
 	if ((group = pcb_layer_get_group(PCB, Layer)) >= 0) {
 		for (i = PCB->LayerGroups.grp[group].len; i;) {
-			pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[--i];
+			rnd_layer_id_t layer = PCB->LayerGroups.grp[group].lid[--i];
 
 			/* don't count the passed member of the group */
 			if (layer != Layer && layer < pcb_max_layer(PCB)) {
@@ -126,7 +126,7 @@ int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, pcb_layer_id_t Layer, int On
 
 void pcb_layervis_reset_stack(rnd_hidlib_t *hl)
 {
-	pcb_layer_id_t comp;
+	rnd_layer_id_t comp;
 	rnd_cardinal_t i;
 
 	assert(PCB->Data->LayerN <= PCB_MAX_LAYER);
@@ -212,7 +212,7 @@ static rnd_conf_hid_id_t layer_vis_conf_id;
 
 void layer_vis_chg_mask(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 	int chg = 0;
 	static int in = 0; /* don't run when called from the PCB_EVENT_LAYERS_CHANGED triggered from this function */
 
@@ -235,7 +235,7 @@ void layer_vis_chg_mask(rnd_conf_native_t *cfg, int arr_idx)
 
 void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_t vis)
 {
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	int n;
 
 	for(gid = 0; gid < pcb_max_group(pcb); gid++) {
@@ -267,7 +267,7 @@ void pcb_layer_vis_change_all(pcb_board_t *pcb, pcb_bool_op_t open, pcb_bool_op_
 
 void pcb_layer_vis_historical_hides(pcb_board_t *pcb)
 {
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 
 	/* do not show paste and mask by default - they are distractive */
 	for(gid = 0; gid < pcb_max_group(pcb); gid++) {
@@ -295,12 +295,12 @@ static void layer_vis_grp_defaults(rnd_hidlib_t *hidlib, void *user_data, int ar
 	rnd_event(hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
 }
 
-pcb_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target)
+rnd_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target)
 {
 	int n;
 	/* find the last used match on stack first */
 	for(n = 0; n < PCB_MAX_LAYER; n++) {
-		pcb_layer_id_t lid = pcb_layer_stack[n];
+		rnd_layer_id_t lid = pcb_layer_stack[n];
 		pcb_layer_type_t lyt = pcb_layer_flags(PCB, lid);
 		if ((lyt & target) == target)
 			return lid;
@@ -318,7 +318,7 @@ pcb_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target)
 
 void pcb_hid_save_and_show_layer_ons(int *save_array)
 {
-	pcb_layer_id_t i;
+	rnd_layer_id_t i;
 	for (i = 0; i < pcb_max_layer(PCB); i++) {
 		save_array[i] = PCB->Data->Layer[i].meta.real.vis;
 		PCB->Data->Layer[i].meta.real.vis = 1;
@@ -327,21 +327,21 @@ void pcb_hid_save_and_show_layer_ons(int *save_array)
 
 void pcb_hid_save_and_show_layergrp_ons(int *save_array)
 {
-	pcb_layergrp_id_t i;
+	rnd_layergrp_id_t i;
 	for (i = 0; i < PCB->LayerGroups.len; i++)
 		save_array[i] = PCB->LayerGroups.grp[i].vis;
 }
 
 void pcb_hid_restore_layer_ons(int *save_array)
 {
-	pcb_layer_id_t i;
+	rnd_layer_id_t i;
 	for (i = 0; i < pcb_max_layer(PCB); i++)
 		PCB->Data->Layer[i].meta.real.vis = save_array[i];
 }
 
 void pcb_hid_restore_layergrp_ons(int *save_array)
 {
-	pcb_layergrp_id_t i;
+	rnd_layergrp_id_t i;
 	for (i = 0; i < PCB->LayerGroups.len; i++)
 		PCB->LayerGroups.grp[i].vis = save_array[i];
 }

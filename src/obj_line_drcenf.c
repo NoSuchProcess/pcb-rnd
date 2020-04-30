@@ -231,7 +231,7 @@ double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *en
 	rnd_coord_t dx, dy, temp, last, length;
 	rnd_coord_t temp2, last2, length2;
 	pcb_line_t line1, line2;
-	pcb_layergrp_id_t group, comp;
+	rnd_layergrp_id_t group, comp;
 	struct drc_info info;
 	rnd_bool two_lines, x_is_long, blocker;
 	rnd_point_t ans;
@@ -401,7 +401,7 @@ double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *en
 static void drc_line(rnd_point_t *end)
 {
 	struct drc_info info;
-	pcb_layergrp_id_t group, comp;
+	rnd_layergrp_id_t group, comp;
 	pcb_line_t line;
 	pcb_attached_line_t aline;
 	static rnd_point_t last_good; /* internal state of last good endpoint - we can do this cheat, because... */
@@ -465,7 +465,7 @@ void pcb_line_enforce_drc(pcb_board_t *pcb)
 	double r1, r2;
 
 	/* Silence a bogus compiler warning by storing this in a variable */
-	pcb_layer_id_t layer_idx = PCB_CURRLID(pcb);
+	rnd_layer_id_t layer_idx = PCB_CURRLID(pcb);
 
 	if (pcb_gui->mod1_is_pressed(pcb_gui) || pcb_gui->control_is_pressed(pcb_gui) || PCB->RatDraw)
 		return;

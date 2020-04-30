@@ -60,17 +60,17 @@
 #include "hid_cam.h"
 
 
-static pcb_hid_t openscad_hid;
+static rnd_hid_t openscad_hid;
 
 const char *openscad_cookie = "openscad HID";
 
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
-	pcb_hid_t *me_pointer;
+	rnd_hid_t *me_pointer;
 	pcb_cap_style_t cap;
 	int width;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
 static FILE *f = NULL;
 static unsigned layer_open;
@@ -82,7 +82,7 @@ static const char *scad_group_color;
 static int scad_layer_cnt;
 static vti0_t scad_comp;
 
-pcb_export_opt_t openscad_attribute_list[] = {
+rnd_export_opt_t openscad_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 DXF Options"
@@ -127,9 +127,9 @@ Name of the file to be exported to. Can contain a path.
 #include "scad_draw.c"
 #include "scad_models.c"
 
-static pcb_hid_attr_val_t openscad_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t openscad_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *openscad_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *openscad_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".scad";
 
@@ -141,10 +141,10 @@ static pcb_export_opt_t *openscad_get_export_options(pcb_hid_t *hid, int *n)
 	return openscad_attribute_list;
 }
 
-void openscad_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options)
+void openscad_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	pcb_hid_expose_ctx_t ctx;
+	rnd_hid_expose_ctx_t ctx;
 
 	ctx.view.X1 = 0;
 	ctx.view.Y1 = 0;
@@ -291,7 +291,7 @@ static void scad_new_layer_group(const char *group_name, int level, const char *
 }
 
 
-static void openscad_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void openscad_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];
@@ -351,7 +351,7 @@ static void openscad_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_cam_end(&cam);
 }
 
-static int openscad_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int openscad_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(openscad_attribute_list, sizeof(openscad_attribute_list) / sizeof(openscad_attribute_list[0]), openscad_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
@@ -359,7 +359,7 @@ static int openscad_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 
 
-static int openscad_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int openscad_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	if (flags & PCB_LYT_UI)
 		return 0;
@@ -417,19 +417,19 @@ static int openscad_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, con
 }
 
 
-static pcb_hid_gc_t openscad_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t openscad_make_gc(rnd_hid_t *hid)
 {
-	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
+	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(sizeof(rnd_hid_gc_s), 1);
 	rv->me_pointer = &openscad_hid;
 	return rv;
 }
 
-static void openscad_destroy_gc(pcb_hid_gc_t gc)
+static void openscad_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-static void openscad_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void openscad_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	switch(op) {
 		case PCB_HID_COMP_RESET:
@@ -449,22 +449,22 @@ static void openscad_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd
 	}
 }
 
-static void openscad_set_color(pcb_hid_gc_t gc, const rnd_color_t *name)
+static void openscad_set_color(rnd_hid_gc_t gc, const rnd_color_t *name)
 {
 }
 
-static void openscad_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void openscad_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void openscad_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void openscad_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
 
-static void openscad_set_draw_xor(pcb_hid_gc_t gc, int xor_)
+static void openscad_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
 }
@@ -482,7 +482,7 @@ static void openscad_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 	}
 
 
-static void openscad_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void openscad_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	TRX(x1); TRY(y1);
 	TRX(x2); TRY(y2);
@@ -492,7 +492,7 @@ static void openscad_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 		x1, y1, x2, y2, 0.0, effective_layer_thickness);
 }
 
-static void openscad_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void openscad_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double length, angle;
 	const char *cap_style;
@@ -512,7 +512,7 @@ static void openscad_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 		x1, y1, (rnd_coord_t)rnd_round(length), angle * PCB_RAD_TO_DEG, gc->width, effective_layer_thickness);
 }
 
-static void openscad_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void openscad_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	TRX(x1); TRY(y1);
 	TRX(x2); TRY(y2);
@@ -524,7 +524,7 @@ static void openscad_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	openscad_draw_line(gc, x1, y2, x1, y1);
 }
 
-static void openscad_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void openscad_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	double a, step = delta_angle/10.0, end_angle = start_angle + delta_angle;
 	int first;
@@ -562,14 +562,14 @@ static void openscad_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, r
 	}
 }
 
-static void openscad_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void openscad_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	TRX(cx); TRY(cy);
 
 	pcb_fprintf(f, "			pcb_fcirc(%mm, %mm, %mm, %f);\n", cx, cy, radius, effective_layer_thickness);
 }
 
-static void openscad_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void openscad_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int n;
 	fprintf(f, "			pcb_fill_poly([");
@@ -578,22 +578,22 @@ static void openscad_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_
 	pcb_fprintf(f, "[%mm,%mm]], %f);\n", TRX_(x[n]+dx), TRY_(y[n]+dy), effective_layer_thickness);
 }
 
-static void openscad_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+static void openscad_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	openscad_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
-static void openscad_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void openscad_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 	rnd_message(RND_MSG_ERROR, "openscad_calibrate() not implemented");
 	return;
 }
 
-static void openscad_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
+static void openscad_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
 
-static int openscad_usage(pcb_hid_t *hid, const char *topic)
+static int openscad_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nopenscad exporter command line arguments:\n\n");
 	pcb_hid_usage(openscad_attribute_list, sizeof(openscad_attribute_list) / sizeof(openscad_attribute_list[0]));
@@ -669,11 +669,11 @@ int pplg_init_export_openscad(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&openscad_hid, 0, sizeof(pcb_hid_t));
+	memset(&openscad_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&openscad_hid);
 
-	openscad_hid.struct_size = sizeof(pcb_hid_t);
+	openscad_hid.struct_size = sizeof(rnd_hid_t);
 	openscad_hid.name = "openscad";
 	openscad_hid.description = "OpenSCAD exporter";
 	openscad_hid.exporter = 1;

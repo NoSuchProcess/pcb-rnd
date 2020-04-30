@@ -38,7 +38,7 @@
 
 static const char nope[] = "Do not use.";
 
-static void prompt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void prompt_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_dad_retovr_t **ro = attr->user_data;
 	pcb_hid_dad_close(hid_ctx, *ro, 0);
@@ -146,9 +146,9 @@ static int clamp(int c)
 	return c;
 }
 
-static void color_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void color_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_attr_val_t val;
+	rnd_hid_attr_val_t val;
 	clrpick_t *ctx = caller_data;
 
 	rnd_color_load_int(&ctx->clr, clamp(ctx->dlg[ctx->wr].val.lng), clamp(ctx->dlg[ctx->wg].val.lng), clamp(ctx->dlg[ctx->wb].val.lng), 255);
@@ -162,7 +162,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	const char *pcb_acts_gui_PromptFor =  nope;
 	pcb_hid_dad_buttons_t clbtn[] = {{"ok", 0}, {"cancel", 1}, {NULL, 0}};
 	clrpick_t ctx;
-	pcb_hid_attr_val_t val;
+	rnd_hid_attr_val_t val;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, gui_PromptFor, sclr = argv[1].val.str);
 

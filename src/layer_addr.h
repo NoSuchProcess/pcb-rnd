@@ -8,8 +8,8 @@
 
 /* Convert a textual layer(grp) reference into a layer ID. The text is either
    #id or a layer name. */
-pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str);
-pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str);
+rnd_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str);
+rnd_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str);
 
 /* Convert a layer(grp) into a reusable address; returns NULL on error;
    caller needs to free() the returned string */
@@ -30,7 +30,7 @@ int pcb_layergrp_append_to_addr(pcb_board_t *pcb, pcb_layergrp_t *grp, gds_t *ds
 char *pcb_parse_layergrp_address(char *curr, char **spk, char **spv, int *spc);
 extern char *pcb_parse_layergrp_err;
 
-void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpose, pcb_xform_t **xf, pcb_xform_t *xf_);
+void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpose, rnd_xform_t **xf, rnd_xform_t *xf_);
 
 /* parse addr into:
    - a list of layer group IDs
@@ -47,6 +47,6 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
   - a positive integer if 1 or more real matching groups are found
   - -1 on error (typically syntax error)
 */
-int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *addr, pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP], char **spk, char **spv, int spc, int *vid, pcb_xform_t **xf, pcb_xform_t *xf_in, const char *err_prefix);
+int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *addr, rnd_layergrp_id_t gids[PCB_MAX_LAYERGRP], char **spk, char **spv, int spc, int *vid, rnd_xform_t **xf, rnd_xform_t *xf_in, const char *err_prefix);
 
 #endif

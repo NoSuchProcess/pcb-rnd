@@ -55,7 +55,7 @@ static int confedit_node_is_uninitialized(confedit_ctx_t *ctx)
 
 static void confedit_brd2dlg(confedit_ctx_t *ctx)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	lht_node_t *nl, *nd = rnd_conf_lht_get_at(ctx->role, ctx->nat->hash_path, 1);
 	const char *val;
 
@@ -99,7 +99,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			break;
 		case RND_CFN_LIST:
 			{
-				pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
+				rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
 				pcb_hid_tree_t *tree = attr->wdata;
 			
 				pcb_dad_tree_clear(tree);
@@ -123,10 +123,10 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 	}
 }
 
-static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
+static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *trigger_attr)
 {
 	confedit_ctx_t *ctx = caller_data;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	char buf[128];
 	const char *val = buf;
 
@@ -149,7 +149,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 		case RND_CFN_COLOR:   val = attr->val.clr.str; break;
 		case RND_CFN_LIST:
 			{
-				pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
+				rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
 				pcb_hid_tree_t *tree = attr->wdata;
 				pcb_hid_row_t *r;
 				lht_node_t *nd = rnd_conf_lht_get_at(ctx->role, ctx->nat->hash_path, 0);
@@ -194,10 +194,10 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	pcb_gui->invalidate_all(pcb_gui);
 }
 
-static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
+static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *trigger_attr)
 {
 	confedit_ctx_t *ctx = caller_data;
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 
 	if (r != NULL) {
@@ -206,7 +206,7 @@ static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, pcb_hid_a
 	}
 }
 
-static void pref_conf_editval_edit(void *hid_ctx, confedit_ctx_t *ctx, pcb_hid_attribute_t *attr, pcb_hid_row_t *r)
+static void pref_conf_editval_edit(void *hid_ctx, confedit_ctx_t *ctx, rnd_hid_attribute_t *attr, pcb_hid_row_t *r)
 {
 	char *nv = pcb_hid_prompt_for(&PCB->hidlib, "list item value:", r->cell[0], "Edit config list item");
 	if (nv == NULL)
@@ -216,20 +216,20 @@ static void pref_conf_editval_edit(void *hid_ctx, confedit_ctx_t *ctx, pcb_hid_a
 		pref_conf_editval_cb(hid_ctx, ctx, attr);
 }
 
-static void pref_conf_editval_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
+static void pref_conf_editval_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *trigger_attr)
 {
 	confedit_ctx_t *ctx = caller_data;
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 
 	if (r != NULL)
 		pref_conf_editval_edit(hid_ctx, ctx, attr, r);
 }
 
-static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
+static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *trigger_attr)
 {
 	confedit_ctx_t *ctx = caller_data;
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 	char *cols[] = {NULL, NULL};
 
@@ -243,7 +243,7 @@ static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, pcb_hid_a
 		pref_conf_editval_edit(hid_ctx, ctx, attr, r);
 }
 
-static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *trigger_attr)
+static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *trigger_attr)
 {
 	confedit_ctx_t *ctx = caller_data;
 	rnd_actionva(&PCB->hidlib, ctx->nat->gui_edit_act,
@@ -252,7 +252,7 @@ static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, pcb_hid
 }
 
 
-static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	pref_ctx_t *pctx = caller_data;
@@ -407,7 +407,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	confedit_brd2dlg(ctx);
 }
 
-static void pref_conf_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pref_conf_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *pctx = caller_data;
 	pcb_hid_row_t *r;

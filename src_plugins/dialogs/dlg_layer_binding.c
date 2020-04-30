@@ -52,7 +52,7 @@ typedef struct {
 	pcb_subc_t *subc;
 	pcb_board_t *pcb;
 	int no_layer; /* the "invalid layer" in the layer names enum */
-	pcb_hid_attribute_t *attrs;
+	rnd_hid_attribute_t *attrs;
 } lb_ctx_t;
 
 int pcb_ly_type2enum(pcb_layer_type_t type)
@@ -142,7 +142,7 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 	for(n = 0; n < ctx->data->LayerN; n++) {
 		lb_widx_t *w = ctx->widx + n;
 		pcb_layer_t *layer = ctx->data->Layer + n;
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 		int ofs;
 
 		/* disable comp for copper and outline */
@@ -236,7 +236,7 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 }
 
 
-static void lb_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void lb_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	lb_ctx_t *ctx = caller_data;
 	lb_dialog2data(hid_ctx, ctx);
@@ -258,7 +258,7 @@ fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	int op = F_Object;
 	lb_ctx_t ctx;
 	int num_copper;
-	pcb_hid_attr_val_t val;
+	rnd_hid_attr_val_t val;
 
 	memset(&ctx, 0, sizeof(ctx));
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_KEYWORD, LayerBinding, op = fgw_keyword(&argv[1]));

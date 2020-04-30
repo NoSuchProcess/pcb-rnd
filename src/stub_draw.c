@@ -31,7 +31,7 @@
 #include "obj_text_draw.h"
 
 /****** common code ******/
-void dummy_draw_text(pcb_draw_info_t *info, pcb_hid_gc_t gc, const char *str)
+void dummy_draw_text(pcb_draw_info_t *info, rnd_hid_gc_t gc, const char *str)
 {
 	pcb_text_t t;
 
@@ -58,30 +58,30 @@ int dummy_DrawFab_overhang(void)
 	return 0;
 }
 
-void dummy_DrawFab(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+void dummy_DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	dummy_draw_text(info, gc, "Can't render the fab layer: the draw_fab plugin is not compiled and/or not loaded");
 }
 
 int (*pcb_stub_draw_fab_overhang)(void) = dummy_DrawFab_overhang;
-void (*pcb_stub_draw_fab)(pcb_draw_info_t *info, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dummy_DrawFab;
+void (*pcb_stub_draw_fab)(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e) = dummy_DrawFab;
 
 
 /****** csect - cross section of the board ******/
 
 
-static void dummy_draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+static void dummy_draw_csect(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	dummy_draw_text(NULL, gc, "Can't render the fab layer: the draw_csect plugin is not compiled and/or not loaded");
 }
 
 
-void (*pcb_stub_draw_csect)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e) = dummy_draw_csect;
+void (*pcb_stub_draw_csect)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e) = dummy_draw_csect;
 rnd_bool (*pcb_stub_draw_csect_mouse_ev)(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y) = dummy_mouse;
 
 
 /****** font selector GUI ******/
-static void dummy_draw_fontsel(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e, pcb_text_t *txt)
+static void dummy_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt)
 {
 	dummy_draw_text(NULL, gc, "Can't render the font selector: the draw_fontsel plugin is not compiled and/or not loaded");
 }
@@ -91,6 +91,6 @@ static rnd_bool dummy_mouse_fontsel(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_
 	return 0;
 }
 
-void (*pcb_stub_draw_fontsel)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e, pcb_text_t *txt) = dummy_draw_fontsel;
+void (*pcb_stub_draw_fontsel)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt) = dummy_draw_fontsel;
 rnd_bool (*pcb_stub_draw_fontsel_mouse_ev)(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt) = dummy_mouse_fontsel;
 

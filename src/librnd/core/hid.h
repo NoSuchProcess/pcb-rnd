@@ -42,7 +42,7 @@ degrees, with 0 being right (positive X) and 90 being up (negative Y) - unless
 flip is activated. All zoom, scaling, panning, and conversions are hidden
 inside the HIDs.
 
-The main structure is pcb_hid_t.
+The main structure is rnd_hid_t.
 */
 
 /* Line end cap styles.  The cap *always* extends beyond the
@@ -66,7 +66,7 @@ typedef struct {
 	pcb_cap_style_t cap;   /* as set by set_line_cap */
 	int xor;               /* as set by set_draw_xor */
 	int faded;             /* as set by set_draw_faded */
-	pcb_hid_t *hid;        /* the HID that owns this gc */
+	rnd_hid_t *hid;        /* the HID that owns this gc */
 } pcb_core_gc_t;
 
 
@@ -158,7 +158,7 @@ extern int pcb_dock_is_vert[PCB_HID_DOCK_max];    /* 1 if a new dock box (parent
 extern int pcb_dock_has_frame[PCB_HID_DOCK_max];  /* 1 if a new dock box (parent of a new sub-DAD) should be framed */
 
 /* This is the main HID structure.  */
-struct pcb_hid_s {
+struct rnd_hid_s {
 	/* The size of this structure.  We use this as a compatibility
 	   check; a HID built with a different hid.h than we're expecting
 	   should have a different size here.  */
@@ -214,7 +214,7 @@ struct pcb_hid_s {
 
 	/* called by core when the global hidlib context changes (e.g. board changed)
 	   The HID should store the hidlib pointer for knowing drawing area dimensions */
-	void (*set_hidlib)(pcb_hid_t *hid, rnd_hidlib_t *hidlib);
+	void (*set_hidlib)(rnd_hid_t *hid, rnd_hidlib_t *hidlib);
 
 	/* Returns a set of resources describing options the export or print
 	   HID supports.  In GUI mode, the print/export dialogs use this to
@@ -223,36 +223,36 @@ struct pcb_hid_s {
 	   the number of attributes is stored there.
 	   The caller must not free the returned table but may modify the
 	   default values in it. */
-	pcb_export_opt_t *(*get_export_options)(pcb_hid_t *hid, int *n_ret);
+	rnd_export_opt_t *(*get_export_options)(rnd_hid_t *hid, int *n_ret);
 
 	/* Exports (or print) the current PCB.  The options given represent
 	   the choices made from the options returned from
 	   get_export_options.  Call with options_ == NULL to start the
 	   primary GUI (create a main window, print, export, etc)  */
-	void (*do_export)(pcb_hid_t *hid, pcb_hid_attr_val_t *options);
+	void (*do_export)(rnd_hid_t *hid, rnd_hid_attr_val_t *options);
 
 	/* uninit a GUI hid */
-	void (*uninit)(pcb_hid_t *hid);
+	void (*uninit)(rnd_hid_t *hid);
 
 	/* uninit a GUI hid */
-	void (*do_exit)(pcb_hid_t *hid);
+	void (*do_exit)(rnd_hid_t *hid);
 
 	/* Process pending events, flush output, but never block. Called from busy
 	   loops from time to time. */
-	void (*iterate)(pcb_hid_t *hid);
+	void (*iterate)(rnd_hid_t *hid);
 
 	/* Parses the command line.  Call this early for whatever HID will be
 	   the primary HID, as it will set all the registered attributes.
 	   The HID should remove all arguments, leaving any possible file
 	   names behind. Returns 0 on success, positive for recoverable errors
 	   (no change in argc or argv) and negative for unrecoverable errors.  */
-	int (*parse_arguments)(pcb_hid_t *hid, int *argc, char ***argv);
+	int (*parse_arguments)(rnd_hid_t *hid, int *argc, char ***argv);
 
 	/* This may be called to ask the GUI to force a redraw of a given area */
-	void (*invalidate_lr)(pcb_hid_t *hid, rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom);
-	void (*invalidate_all)(pcb_hid_t *hid);
-	void (*notify_crosshair_change)(pcb_hid_t *hid, rnd_bool changes_complete);
-	void (*notify_mark_change)(pcb_hid_t *hid, rnd_bool changes_complete);
+	void (*invalidate_lr)(rnd_hid_t *hid, rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom);
+	void (*invalidate_all)(rnd_hid_t *hid);
+	void (*notify_crosshair_change)(rnd_hid_t *hid, rnd_bool changes_complete);
+	void (*notify_mark_change)(rnd_hid_t *hid, rnd_bool changes_complete);
 
 	/* During redraw or print/export cycles, this is called once per layer group
 	   (physical layer); pusrpose/purpi are the extracted purpose field and its
@@ -264,74 +264,74 @@ struct pcb_hid_s {
 	   functions.  In addition to the copper layer groups, you may select virtual
 	   layers. The is_empty argument is a hint - if set, the layer is empty, if
 	   zero it may be non-empty. */
-	int (*set_layer_group)(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
+	int (*set_layer_group)(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform);
 
 	/* Tell the GUI the layer last selected has been finished with. */
-	void (*end_layer)(pcb_hid_t *hid);
+	void (*end_layer)(rnd_hid_t *hid);
 
 	/*** Drawing Functions. ***/
 
 	/* Make an empty gc (graphics context, which is like a pen).  */
-	pcb_hid_gc_t (*make_gc)(pcb_hid_t *hid);
-	void (*destroy_gc)(pcb_hid_gc_t gc);
+	rnd_hid_gc_t (*make_gc)(rnd_hid_t *hid);
+	void (*destroy_gc)(rnd_hid_gc_t gc);
 
 	/* Composite layer drawing: manipulate the sketch canvas and set
 	   positive or negative drawing mode. The canvas covers the screen box. */
-	void (*set_drawing_mode)(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen);
+	void (*set_drawing_mode)(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen);
 
 	/* Announce start/end of a render burst for a specific screen screen box;
 	   A GUI hid should set the coord_per_pix value here for proper optimization. */
-	void (*render_burst)(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen);
+	void (*render_burst)(rnd_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen);
 
-	/*** gc vs. pcb_hid_t *: pcb_core_gc_t contains ->hid, so these calls don't
+	/*** gc vs. rnd_hid_t *: pcb_core_gc_t contains ->hid, so these calls don't
 	     need to get it as first arg. ***/
 
 	/* Sets a color. Can be one of the special colors like rnd_color_drill.
 	   (Always use the drill color to draw holes and slots).
 	   You may assume this is cheap enough to call inside the redraw
 	   callback, but not cheap enough to call for each item drawn. */
-	void (*set_color)(pcb_hid_gc_t gc, const rnd_color_t *color);
+	void (*set_color)(rnd_hid_gc_t gc, const rnd_color_t *color);
 
 	/* Sets the line style.  While calling this is cheap, calling it with
 	   different values each time may be expensive, so grouping items by
 	   line style is helpful.  */
-	void (*set_line_cap)(pcb_hid_gc_t gc, pcb_cap_style_t style);
-	void (*set_line_width)(pcb_hid_gc_t gc, rnd_coord_t width);
-	void (*set_draw_xor)(pcb_hid_gc_t gc, int xor);
+	void (*set_line_cap)(rnd_hid_gc_t gc, pcb_cap_style_t style);
+	void (*set_line_width)(rnd_hid_gc_t gc, rnd_coord_t width);
+	void (*set_draw_xor)(rnd_hid_gc_t gc, int xor);
 	/* Blends 20% or so color with 80% background.  Only used for
 	   assembly drawings so far. */
-	void (*set_draw_faded)(pcb_hid_gc_t gc, int faded);
+	void (*set_draw_faded)(rnd_hid_gc_t gc, int faded);
 
 	/* The usual drawing functions.  "draw" means to use segments of the
 	   given width, whereas "fill" means to fill to a zero-width
 	   outline.  */
-	void (*draw_line)(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
-	void (*draw_arc)(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, rnd_angle_t start_angle, rnd_angle_t delta_angle);
-	void (*draw_rect)(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
-	void (*fill_circle)(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
-	void (*fill_polygon)(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y);
-	void (*fill_polygon_offs)(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy);
-	void (*fill_rect)(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
+	void (*draw_line)(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
+	void (*draw_arc)(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, rnd_angle_t start_angle, rnd_angle_t delta_angle);
+	void (*draw_rect)(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
+	void (*fill_circle)(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
+	void (*fill_polygon)(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y);
+	void (*fill_polygon_offs)(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy);
+	void (*fill_rect)(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
 
-	void (*draw_pixmap)(pcb_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, const pcb_pixmap_t *pixmap);
-	void (*uninit_pixmap)(pcb_hid_t *hid, const pcb_pixmap_t *pixmap);
+	void (*draw_pixmap)(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, const rnd_pixmap_t *pixmap);
+	void (*uninit_pixmap)(rnd_hid_t *hid, const rnd_pixmap_t *pixmap);
 
 	/* This is for the printer. If xval_ and yval_ are
 	   zero, a calibration page is printed with instructions for
 	   calibrating your printer.  After calibrating, nonzero xval_ and
 	   yval_ are passed according to the instructions.  Metric is nonzero
 	   if the user prefers metric units, else inches are used. */
-	void (*calibrate)(pcb_hid_t *hid, double xval, double yval);
+	void (*calibrate)(rnd_hid_t *hid, double xval, double yval);
 
 
 	/*** GUI layout functions.  Not used or defined for print/export HIDs. ***/
 
 	/* Temporary */
-	int (*shift_is_pressed)(pcb_hid_t *hid);
-	int (*control_is_pressed)(pcb_hid_t *hid);
-	int (*mod1_is_pressed)(pcb_hid_t *hid);
+	int (*shift_is_pressed)(rnd_hid_t *hid);
+	int (*control_is_pressed)(rnd_hid_t *hid);
+	int (*mod1_is_pressed)(rnd_hid_t *hid);
 
-	void (*get_coords)(pcb_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
+	void (*get_coords)(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 
 	/* Sets the crosshair, which may differ from the pointer depending
 	   on grid and pad snap.  Note that the HID is responsible for
@@ -341,7 +341,7 @@ struct pcb_hid_s {
 	   or mils accordingly.  If cursor_action_ is set, the cursor or
 	   screen may be adjusted so that the cursor and the crosshair are
 	   at the same point on the screen.  */
-	void (*set_crosshair)(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int cursor_action);
+	void (*set_crosshair)(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int cursor_action);
 #define HID_SC_DO_NOTHING    0
 #define HID_SC_WARP_POINTER  1
 #define HID_SC_PAN_VIEWPORT  2
@@ -351,19 +351,19 @@ struct pcb_hid_s {
 	   timer during the callback for the first.  user_data_ can be
 	   anything, it's just passed to func.  Times are not guaranteed to
 	   be accurate.  */
-	pcb_hidval_t (*add_timer)(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data);
+	pcb_hidval_t (*add_timer)(rnd_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data);
 	/* Use this to stop a timer that hasn't triggered yet. */
-	void (*stop_timer)(pcb_hid_t *hid, pcb_hidval_t timer);
+	void (*stop_timer)(rnd_hid_t *hid, pcb_hidval_t timer);
 
 	/* Causes func_ to be called when some condition occurs on the file
 	   descriptor passed. Conditions include data for reading, writing,
 	   hangup, and errors. user_data_ can be anything, it's just passed
 	   to func. If the watch function returns pcb_true, the watch is kept, else
 	   it is removed. */
-	pcb_hidval_t (*watch_file)(pcb_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data);
+	pcb_hidval_t (*watch_file)(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data);
 
 	/* Use this to stop a file watch; must not be called from within a GUI callback! */
-	void (*unwatch_file)(pcb_hid_t *hid, pcb_hidval_t watch);
+	void (*unwatch_file)(rnd_hid_t *hid, pcb_hidval_t watch);
 
 
 	/* Run the file selection dialog. Return a string the caller needs to free().
@@ -391,7 +391,7 @@ struct pcb_hid_s {
 	 *  get_path       returns the current full path in res as an strdup'd string (caller needs to free it)
 	 *  set_file_name  replaces the file name portion of the current path from arg[0].d.s
 	 */
-	char *(*fileselect)(pcb_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub);
+	char *(*fileselect)(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
 
 	/* A generic dialog to ask for a set of attributes. If n_attrs_ is
 	   zero, attrs_(.name) must be NULL terminated. attr_dlg_run returns
@@ -402,9 +402,9 @@ struct pcb_hid_s {
 	   for window placement) and is strdup'd. If defx and defy are larger than 0,
 	   they are hints for the default (starting) window size - can be overridden
 	   by window placement. Returns opaque hid_ctx.
-	   (Hid_ctx shall save pcb_hid_t so subsequent attr_dlg_*() calls don't have
+	   (Hid_ctx shall save rnd_hid_t so subsequent attr_dlg_*() calls don't have
 	   it as an argument) */
-	void *(*attr_dlg_new)(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+	void *(*attr_dlg_new)(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_raise)(void *hid_ctx); /* raise the window to top */
 	void (*attr_dlg_close)(void *hid_ctx); /* close the GUI but do not yet free hid_ctx (results should be available) */
@@ -412,7 +412,7 @@ struct pcb_hid_s {
 
 	/* Set a property of an attribute dialog (typical call is between
 	   attr_dlg_new() and attr_dlg_run()) */
-	void (*attr_dlg_property)(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val);
+	void (*attr_dlg_property)(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val);
 
 
 	/* Disable or enable a widget of an active attribute dialog; if enabled is
@@ -424,7 +424,7 @@ struct pcb_hid_s {
 
 	/* Change the current value of a widget; same as if the user chaged it,
 	   except the value-changed callback is inhibited */
-	int (*attr_dlg_set_value)(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
+	int (*attr_dlg_set_value)(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
 
 	/* Change the help text (tooltip) string of a widget; NULL means remove it.
 	   NOTE: does _not_ change the help_text field of the attribute. */
@@ -433,13 +433,13 @@ struct pcb_hid_s {
 	/* top window docking: enter a new docked part by registering a
 	   new subdialog or leave (remove a docked part) from a subdialog. Return 0
 	   on success. */
-	int (*dock_enter)(pcb_hid_t *hid, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
-	void (*dock_leave)(pcb_hid_t *hid, pcb_hid_dad_subdialog_t *sub);
+	int (*dock_enter)(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
+	void (*dock_leave)(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub);
 
 	/* Something to alert the user.  */
-	void (*beep)(pcb_hid_t *hid);
+	void (*beep)(rnd_hid_t *hid);
 
-	void (*edit_attributes)(pcb_hid_t *hid, const char *owner, rnd_attribute_list_t *attrlist);
+	void (*edit_attributes)(rnd_hid_t *hid, const char *owner, rnd_attribute_list_t *attrlist);
 
 	/* Creates a new menu and/or submenus
 	 * menu_path is a / separated path to the new menu (parents are silently created).
@@ -449,21 +449,21 @@ struct pcb_hid_s {
 	 * and remove menu items that are no longer needed.
 	 * If action is NULL, the menu may get submenus.
 	 */
-	void (*create_menu)(pcb_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props);
+	void (*create_menu)(rnd_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props);
 
 	/* Removes a menu recursively */
-	int (*remove_menu)(pcb_hid_t *hid, const char *menu_path);
-	int (*remove_menu_node)(pcb_hid_t *hid, lht_node_t *nd);
+	int (*remove_menu)(rnd_hid_t *hid, const char *menu_path);
+	int (*remove_menu_node)(rnd_hid_t *hid, lht_node_t *nd);
 
 	/* At the moment HIDs load the menu file. Some plugin code, like the toolbar
 	   code needs to traverse the menu tree too. This call exposes the
 	   HID-internal menu struct */
-	rnd_hid_cfg_t *(*get_menu_cfg)(pcb_hid_t *hid);
+	rnd_hid_cfg_t *(*get_menu_cfg)(rnd_hid_t *hid);
 
 	/* Update the state of all checkboxed menus whose lihata
 	   node cookie matches cookie (or all checkboxed menus globally if cookie
 	   is NULL) */
-	void (*update_menu_checkbox)(pcb_hid_t *hid, const char *cookie);
+	void (*update_menu_checkbox)(rnd_hid_t *hid, const char *cookie);
 
 	/* Pointer to the hid's configuration - useful for plugins and core wanting to install menus at anchors */
 	rnd_hid_cfg_t *hid_cfg;
@@ -475,11 +475,11 @@ struct pcb_hid_s {
 	     string  print summary for the topic in string
 	   Return 0 on success.
 	*/
-	int (*usage)(pcb_hid_t *hid, const char *subtopic);
+	int (*usage)(rnd_hid_t *hid, const char *subtopic);
 
 
 	/* Optional: change cursor to indicate if an object is grabbed (or not) */
-	void (*point_cursor)(pcb_hid_t *hid, rnd_bool grabbed);
+	void (*point_cursor)(rnd_hid_t *hid, rnd_bool grabbed);
 
 	/* Optional: when non-zero, the core renderer may decide to draw cheaper
 	   (simplified) approximation of some objects that would end up being too
@@ -492,22 +492,22 @@ struct pcb_hid_s {
 	   If ovr is NULL:
 	    - if cursor is not NULL, load the value with the cursor (or -1 if not supported)
 	   Return the current command entry content in a read-only string */
-	const char *(*command_entry)(pcb_hid_t *hid, const char *ovr, int *cursor);
+	const char *(*command_entry)(rnd_hid_t *hid, const char *ovr, int *cursor);
 
 	/*** clipboard handling for GUI HIDs ***/
 	/* Place format/data/len on the clipboard; return 0 on success */
-	int (*clip_set)(pcb_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len);
+	int (*clip_set)(rnd_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len);
 
 	/* retrieve format/data/len from the clipboard; return 0 on success;
 	   data is a copy of the data, modifiable by the caller */
-	int (*clip_get)(pcb_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t *len);
+	int (*clip_get)(rnd_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t *len);
 
 	/* release the data from the last clip_get(); clip_get() and clip_free() should
 	   be called in pair */
-	void (*clip_free)(pcb_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len);
+	void (*clip_free)(rnd_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len);
 
 	/* run redraw-benchmark and return an FPS value (optional) */
-	double (*benchmark)(pcb_hid_t *hid);
+	double (*benchmark)(rnd_hid_t *hid);
 
 	/* (pcb_hid_cfg_keys_t *): key state */
 	void *key_state;
@@ -516,41 +516,41 @@ struct pcb_hid_s {
 
 	/* side-correct zoom to show a window of the board. If set_crosshair
 	   is true, also update the crosshair to be on the center of the window */
-	void (*zoom_win)(pcb_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair);
+	void (*zoom_win)(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair);
 
 	/* Zoom relative or absolute by factor; relative means current zoom is
 	   multiplied by factor */
-	void (*zoom)(pcb_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative);
+	void (*zoom)(rnd_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative);
 
 	/* Pan relative/absolute by x and y; relative means x and y are added to
 	   the current pan */
-	void (*pan)(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative);
+	void (*pan)(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative);
 
 	/* Start or stop panning at x;y - stop is mode=0, start is mode=1 */
-	void (*pan_mode)(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode);
+	void (*pan_mode)(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode);
 
 	/* Load viewbox with the extents of visible pixels translated to board coords */
-	void (*view_get)(pcb_hid_t *hid, rnd_rnd_box_t *viewbox);
+	void (*view_get)(rnd_hid_t *hid, rnd_rnd_box_t *viewbox);
 
 	/*** misc GUI ***/
 	/* Open the command line */
-	void (*open_command)(pcb_hid_t *hid);
+	void (*open_command)(rnd_hid_t *hid);
 
 	/* Open a popup menu addressed by full menu path (starting with "/popups/").
 	   Return 0 on success. */
-	int (*open_popup)(pcb_hid_t *hid, const char *menupath);
+	int (*open_popup)(rnd_hid_t *hid, const char *menupath);
 
 
 	/* Change the mouse cursor to a named cursor e.g. after the tool has changed.
 	   The list of cursors names available may depend on the HID. */
-	void (*reg_mouse_cursor)(pcb_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask);
-	void (*set_mouse_cursor)(pcb_hid_t *hid, int idx);
+	void (*reg_mouse_cursor)(rnd_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask);
+	void (*set_mouse_cursor)(rnd_hid_t *hid, int idx);
 
 	/* change top window title any time the after the GUI_INIT event */
-	void (*set_top_title)(pcb_hid_t *hid, const char *title);
+	void (*set_top_title)(rnd_hid_t *hid, const char *title);
 
 	/* OPTIONAL: override the mouse cursor to indicate busy state */
-	void (*busy)(pcb_hid_t *hid, rnd_bool busy);
+	void (*busy)(rnd_hid_t *hid, rnd_bool busy);
 
 	/* this field is used by that HID implementation to store its data */
 	void *hid_data;
@@ -559,29 +559,29 @@ struct pcb_hid_s {
 	rnd_hidlib_t *(*get_dad_hidlib)(void *hid_ctx);
 };
 
-typedef void (*pcb_hid_expose_cb_t)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
+typedef void (*pcb_hid_expose_cb_t)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
 
-struct pcb_hid_expose_ctx_s {
+struct rnd_hid_expose_ctx_s {
 	rnd_rnd_box_t view;
 	pcb_hid_expose_cb_t expose_cb;   /* function that is called on expose to get things drawn */
 	void *draw_data;                 /* user data for the expose function */
 };
 
-typedef void (*pcb_hid_expose_t)(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *ctx);
+typedef void (*pcb_hid_expose_t)(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx);
 
 /* This is initially set to a "no-gui" GUI, and later reset by
    main. It is used for on-screen GUI calls, such as dialog boxes */
-extern pcb_hid_t *pcb_gui;
+extern rnd_hid_t *pcb_gui;
 
 /* This is initially set to a "no-gui" GUI, and later reset by
    main. hid_expose_callback also temporarily set it for drawing. Normally
    matches pcb_gui, but is temporarily changed while exporting. It is used
    for drawing calls, mainly by draw*.c */
-extern pcb_hid_t *pcb_render;
+extern rnd_hid_t *pcb_render;
 
 /* This is either NULL or points to the current HID that is being called to
    do the exporting. The GUI HIDs set and unset this var.*/
-extern pcb_hid_t *pcb_exporter;
+extern rnd_hid_t *pcb_exporter;
 
 /* This is either NULL or points to the current rnd_action_t that is being
    called. The action launcher sets and unsets this variable. */
@@ -615,10 +615,10 @@ int pcb_hid_progress(long so_far, long total, const char *message);
 /* non-zero if DAD dialogs are available currently */
 #define PCB_HAVE_GUI_ATTR_DLG \
 	((pcb_gui != NULL) && (pcb_gui->gui) && (pcb_gui->attr_dlg_new != NULL) && (pcb_gui->attr_dlg_new != pcb_nogui_attr_dlg_new))
-void *pcb_nogui_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+void *pcb_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 
-int pcb_hid_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
-void pcb_hid_dock_leave(pcb_hid_dad_subdialog_t *sub);
+int pcb_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
+void pcb_hid_dock_leave(rnd_hid_dad_subdialog_t *sub);
 
 #define pcb_hid_redraw(pcb) pcb_gui->invalidate_all(pcb_gui)
 

@@ -48,9 +48,9 @@ void pcb_pixmap_hash_uninit(pcb_pixmap_hash_t *pmhash)
 	htpp_uninit(&pmhash->pixels);
 }
 
-pcb_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *pm)
+rnd_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, rnd_pixmap_t *pm)
 {
-	pcb_pixmap_t *r;
+	rnd_pixmap_t *r;
 
 	if ((pm->tr_rot != 0) || pm->tr_xmirror || pm->tr_ymirror)
 		return NULL;
@@ -67,9 +67,9 @@ pcb_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, pcb_p
 	return pm;
 }
 
-pcb_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *ipm, rnd_angle_t rot, int xmirror, int ymirror)
+rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd_pixmap_t *ipm, rnd_angle_t rot, int xmirror, int ymirror)
 {
-	pcb_pixmap_t *pm;
+	rnd_pixmap_t *pm;
 	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
 	long n, len;
 	int x, y, ix, iy, ox, oy;
@@ -78,7 +78,7 @@ pcb_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, pcb
 	if ((rot == 0) && !xmirror && !ymirror)
 		return ipm; /* xformed == neutral */
 
-	pm = calloc(sizeof(pcb_pixmap_t), 1);
+	pm = calloc(sizeof(rnd_pixmap_t), 1);
 	if (ipm->has_transp) {
 		pm->tr = ipm->tr;
 		pm->tg = ipm->tg;

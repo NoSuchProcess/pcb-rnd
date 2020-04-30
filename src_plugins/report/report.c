@@ -161,7 +161,7 @@ static const char pcb_acth_reportdialog[] = "Report on the object under the cros
 	(((obj)->term != NULL) ? (obj)->term : ""), \
 	(((obj)->term != NULL) ? "\n" : "")
 
-static const char *grpname(pcb_layergrp_id_t gid)
+static const char *grpname(rnd_layergrp_id_t gid)
 {
 	pcb_layergrp_t *grp = pcb_get_layergrp(PCB, gid);
 	if (grp == NULL)
@@ -808,7 +808,7 @@ static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	printf("Filename: %s\n", PCB->hidlib.filename);
 	pcb_printf("Size: %ml x %ml mils, %mm x %mm mm\n", PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
 	for (i = 0; i < PCB_MAX_LAYER; i++) {
-		pcb_layergrp_id_t lg = pcb_layer_get_group(PCB, i);
+		rnd_layergrp_id_t lg = pcb_layer_get_group(PCB, i);
 		unsigned int gflg = pcb_layergrp_flags(PCB, lg);
 		for (j = 0; j < PCB_MAX_LAYER; j++)
 			putchar(j == lg ? '#' : '-');

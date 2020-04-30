@@ -32,7 +32,7 @@
 typedef struct comp_ctx_s {
 	pcb_draw_info_t *info;
 	const pcb_layergrp_t *grp;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	const rnd_color_t *color;
 
 	unsigned thin:1;
@@ -129,7 +129,7 @@ static void comp_draw_layer_real(comp_ctx_t *ctx, void (*draw_auto)(comp_ctx_t *
 		}
 
 		{
-			pcb_hid_gc_t old_fg = pcb_draw_out.fgGC;
+			rnd_hid_gc_t old_fg = pcb_draw_out.fgGC;
 			pcb_draw_out.fgGC = pcb_draw_out.pmGC;
 			if ((l->comb & PCB_LYC_AUTO) && (draw_auto != NULL))
 				draw_auto(ctx, auto_data);
@@ -153,7 +153,7 @@ int pcb_draw_layergrp_is_comp(const pcb_layergrp_t *g)
 	return 0;
 }
 
-int pcb_draw_layer_is_comp(pcb_layer_id_t id)
+int pcb_draw_layer_is_comp(rnd_layer_id_t id)
 {
 	pcb_layergrp_t *g = pcb_get_layergrp(PCB, PCB->Data->Layer[id].meta.real.grp);
 	if (g == NULL) return 0;
@@ -180,13 +180,13 @@ static void pcb_draw_groups_auto(comp_ctx_t *ctx, void *lym)
 		pcb_draw_pstks(ctx->info, ctx->gid, 0, *pstk_lyt_match);
 }
 
-void pcb_draw_groups(pcb_hid_t *hid, pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const rnd_rnd_box_t *screen, const rnd_color_t *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert)
+void pcb_draw_groups(rnd_hid_t *hid, pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const rnd_rnd_box_t *screen, const rnd_color_t *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert)
 {
 	pcb_draw_info_t info;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *g;
 	comp_ctx_t cctx;
-	pcb_xform_t tmp;
+	rnd_xform_t tmp;
 
 	memset(&info, 0, sizeof(info));
 	info.pcb = pcb;

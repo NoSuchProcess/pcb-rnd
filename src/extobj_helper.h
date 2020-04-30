@@ -145,7 +145,7 @@ RND_INLINE void pcb_exto_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 
 /*** dialog box build ***/
 
-RND_INLINE void pcb_exto_dlg_gui_chg_attr(pcb_subc_t *subc, pcb_hid_attribute_t *attr, const char *newval) /* for internal use */
+RND_INLINE void pcb_exto_dlg_gui_chg_attr(pcb_subc_t *subc, rnd_hid_attribute_t *attr, const char *newval) /* for internal use */
 {
 	pcb_board_t *pcb;
 	pcb_data_t *data;
@@ -162,7 +162,7 @@ RND_INLINE void pcb_exto_dlg_gui_chg_attr(pcb_subc_t *subc, pcb_hid_attribute_t 
 	pcb_gui->invalidate_all(pcb_gui);
 }
 
-RND_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+RND_INLINE void pcb_exto_dlg_coord_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_subc_t *subc = caller_data;
 	char tmp[128];
@@ -200,7 +200,7 @@ do { \
 /*		pcb_dad_spin_set_value(spin->cmp.wend, NULL, wid, &hv); \*/
 
 
-RND_INLINE void pcb_exto_dlg_str_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+RND_INLINE void pcb_exto_dlg_str_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_subc_t *subc = caller_data;
 	pcb_exto_dlg_gui_chg_attr(subc, attr, attr->val.str);
@@ -222,7 +222,7 @@ do { \
 		PCB_DAD_DEFAULT_PTR(dlg, currval); \
 } while(0)
 
-RND_INLINE void pcb_exto_dlg_int_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+RND_INLINE void pcb_exto_dlg_int_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_subc_t *subc = caller_data;
 	char tmp[128];

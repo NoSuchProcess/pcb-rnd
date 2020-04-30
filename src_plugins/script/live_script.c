@@ -175,7 +175,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 
 #endif
 
-static void lvs_button_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+static void lvs_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	live_script_t *lvs = caller_data;
 	const char *arg;
@@ -280,7 +280,7 @@ static int live_stop(live_script_t *lvs)
 
 static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 {
-	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
+	rnd_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	pcb_hid_text_t *txt = atxt->wdata;
 	FILE *f;
 	char *src, *fn, *lang;
@@ -350,7 +350,7 @@ static int live_undo(live_script_t *lvs)
 
 static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 {
-	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
+	rnd_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	pcb_hid_text_t *txt = atxt->wdata;
 	FILE *f;
 	gds_t tmp;
@@ -391,7 +391,7 @@ static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 
 static int live_save(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 {
-	pcb_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
+	rnd_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
 	pcb_hid_text_t *txt = atxt->wdata;
 	FILE *f;
 	char *src;

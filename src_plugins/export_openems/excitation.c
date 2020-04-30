@@ -79,7 +79,7 @@ static void ser_int(int save, int widx, const char *attrkey)
 		ser_save(tmp, attrkey);
 	}
 	else {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		char *end;
 		const char *orig = ser_load(attrkey);
 
@@ -106,7 +106,7 @@ static void ser_hz(int save, int widx, const char *attrkey)
 		ser_save(tmp, attrkey);
 	}
 	else {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		char *end;
 		const char *orig = ser_load(attrkey);
 
@@ -133,7 +133,7 @@ static void ser_str(int save, int widx, const char *attrkey)
 		ser_save(exc_ctx.dlg[widx].val.str, attrkey);
 	}
 	else {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = ser_load(attrkey);
 		if (hv.str == NULL)
 			hv.str = "";
@@ -141,7 +141,7 @@ static void ser_str(int save, int widx, const char *attrkey)
 	}
 }
 
-static void exc_val_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+static void exc_val_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
 static rnd_bool to_hz(const char *s, double *out)
 {
@@ -308,7 +308,7 @@ static char *exc_user_get(int idx)
 static void exc_user_ser(int idx, int save)
 {
 	int wscript;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_text_t *txt;
 
 	wscript = exc_ctx.exc_data[idx].w[I_SCRIPT];
@@ -367,7 +367,7 @@ static int load_selector(void)
 
 static void select_update(int setattr)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	hv.lng = exc_ctx.selected;
 
 	if ((exc_ctx.selected < 0) || (exc_ctx.selected >= sizeof(excitations)/sizeof(excitations[0]))) {
@@ -386,13 +386,13 @@ static void select_update(int setattr)
 	}
 }
 
-static void select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void select_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	exc_ctx.selected = attr->val.lng;
 	select_update(1);
 }
 
-static void exc_val_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void exc_val_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	excitations[exc_ctx.selected].ser(exc_ctx.selected, 1);
 }

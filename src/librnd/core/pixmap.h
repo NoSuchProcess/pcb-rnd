@@ -35,14 +35,14 @@ typedef struct pcb_pixmap_import_s pcb_pixmap_import_t;
 
 struct pcb_pixmap_import_s {
 	const char *name;
-	int (*load)(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn);
+	int (*load)(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn);
 
 	/* filled in by code */
 	pcb_pixmap_import_t *next;
 	const char *cookie;
 };
 
-struct pcb_pixmap_s {
+struct rnd_pixmap_s {
 	long size;                 /* total size of the array in memory (sx*sy*3) */
 	long sx, sy;               /* x and y dimensions */
 	unsigned char tr, tg, tb;  /* color of the transparent pixel if has_transp is 1 */
@@ -70,16 +70,16 @@ void pcb_pixmap_reg_import(const pcb_pixmap_import_t *imp, const char *cookie);
 void pcb_pixmap_unreg_import_all(const char *cookie);
 void rnd_pixmap_uninit(void);
 
-int pcb_pixmap_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn); /* legacy API, should be removed */
-pcb_pixmap_t *rnd_pixmap_load(rnd_hidlib_t *hidlib, const char *fn);
-pcb_pixmap_t *rnd_pixmap_alloc(rnd_hidlib_t *hidlib, long sx, long sy);
+int pcb_pixmap_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn); /* legacy API, should be removed */
+rnd_pixmap_t *rnd_pixmap_load(rnd_hidlib_t *hidlib, const char *fn);
+rnd_pixmap_t *rnd_pixmap_alloc(rnd_hidlib_t *hidlib, long sx, long sy);
 
 unsigned int pcb_pixmap_hash_meta(const void *key);
 unsigned int pcb_pixmap_hash_pixels(const void *key);
 int pcb_pixmap_eq_meta(const void *keya, const void *keyb);
 int pcb_pixmap_eq_pixels(const void *keya, const void *keyb);
 
-void rnd_pixmap_free_fields(pcb_pixmap_t *pxm);
-void rnd_pixmap_free(pcb_pixmap_t *pxm);
+void rnd_pixmap_free_fields(rnd_pixmap_t *pxm);
+void rnd_pixmap_free(rnd_pixmap_t *pxm);
 
 #endif

@@ -398,7 +398,7 @@ TODO("subc: subc-in-subc")
 
 /*** export hid administration and API/glu ***/
 
-static pcb_export_opt_t ipcd356_options[] = {
+static rnd_export_opt_t ipcd356_options[] = {
 /* %start-doc options "8 IPC-D-356 Netlist Export"
 @ftable @code
 @item --netlist-file <string>
@@ -421,9 +421,9 @@ Name of the IPC-D-356 Netlist output file.
 
 #define NUM_OPTIONS (sizeof(ipcd356_options)/sizeof(ipcd356_options[0]))
 
-static pcb_hid_attr_val_t ipcd356_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t ipcd356_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *ipcd356_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *ipcd356_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if ((PCB != NULL) && (ipcd356_options[HA_ipcd356_filename].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &ipcd356_options[HA_ipcd356_filename], ".net");
@@ -434,12 +434,12 @@ static pcb_export_opt_t *ipcd356_get_export_options(pcb_hid_t *hid, int *n)
 	return ipcd356_options;
 }
 
-static int ipcd356_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int ipcd356_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void ipcd356_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void ipcd356_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int n;
 	const char *fn;
@@ -471,7 +471,7 @@ static void ipcd356_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_cam_end(&cam);
 }
 
-static pcb_hid_t ipcd356_hid;
+static rnd_hid_t ipcd356_hid;
 
 int pplg_check_ver_export_ipcd356(int ver_needed) { return 0; }
 
@@ -483,11 +483,11 @@ void pplg_uninit_export_ipcd356(void)
 int pplg_init_export_ipcd356(void)
 {
 	PCB_API_CHK_VER;
-	memset(&ipcd356_hid, 0, sizeof(pcb_hid_t));
+	memset(&ipcd356_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&ipcd356_hid);
 
-	ipcd356_hid.struct_size = sizeof(pcb_hid_t);
+	ipcd356_hid.struct_size = sizeof(rnd_hid_t);
 	ipcd356_hid.name = "IPC-D-356";
 	ipcd356_hid.description = "Exports to IPC-D-356 netlist";
 	ipcd356_hid.exporter = 1;

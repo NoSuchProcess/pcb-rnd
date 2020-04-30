@@ -133,13 +133,13 @@ static int parse_layer_type(const char *type, pcb_layer_type_t *lyt, int *offs, 
 	return 0;
 }
 
-void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpose, pcb_xform_t **xf, pcb_xform_t *xf_)
+void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpose, rnd_xform_t **xf, rnd_xform_t *xf_)
 {
 	int n;
 
 	*purpose = NULL;
 	if (xf_ != NULL)
-		memset(xf_, 0, sizeof(pcb_xform_t));
+		memset(xf_, 0, sizeof(rnd_xform_t));
 
 	for(n = 0; n < spc; n++) {
 		char *key = spk[n], *val = spv[n];
@@ -196,9 +196,9 @@ void pcb_parse_layer_supplements(char **spk, char **spv, int spc,   char **purpo
 }
 
 
-int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *curr, pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP], char **spk, char **spv, int spc, int *vid, pcb_xform_t **xf, pcb_xform_t *xf_in, const char *err_prefix)
+int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *curr, rnd_layergrp_id_t gids[PCB_MAX_LAYERGRP], char **spk, char **spv, int spc, int *vid, rnd_xform_t **xf, rnd_xform_t *xf_in, const char *err_prefix)
 {
-	pcb_layergrp_id_t gid, lgids[PCB_MAX_LAYERGRP];
+	rnd_layergrp_id_t gid, lgids[PCB_MAX_LAYERGRP];
 	int gids_max = PCB_MAX_LAYERGRP;
 	char *purpose;
 
@@ -287,10 +287,10 @@ int pcb_layergrp_list_by_addr(pcb_board_t *pcb, const char *curr, pcb_layergrp_i
 	return 0;
 }
 
-static pcb_layer_id_t layer_str2id_data(pcb_board_t *pcb, pcb_data_t *data, const char *str)
+static rnd_layer_id_t layer_str2id_data(pcb_board_t *pcb, pcb_data_t *data, const char *str)
 {
 	char *end;
-	pcb_layer_id_t id;
+	rnd_layer_id_t id;
 
 	if (*str == '#') {
 		id = strtol(str+1, &end, 10);
@@ -313,7 +313,7 @@ static pcb_layer_id_t layer_str2id_data(pcb_board_t *pcb, pcb_data_t *data, cons
 	return -1;
 }
 
-static pcb_layer_id_t layer_str2id_grp(pcb_board_t *pcb, pcb_layergrp_t *grp, const char *str)
+static rnd_layer_id_t layer_str2id_grp(pcb_board_t *pcb, pcb_layergrp_t *grp, const char *str)
 {
 	char *end;
 	long id, n;
@@ -355,7 +355,7 @@ static pcb_layer_id_t layer_str2id_grp(pcb_board_t *pcb, pcb_layergrp_t *grp, co
 	return -1;
 }
 
-pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str)
+rnd_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str)
 {
 	char *sep;
 	pcb_board_t *pcb = NULL;
@@ -365,7 +365,7 @@ pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str)
 
 	sep = strchr(str, '/');
 	if (sep != NULL) {
-		pcb_layergrp_id_t gid;
+		rnd_layergrp_id_t gid;
 		pcb_layergrp_t *grp;
 		if (pcb == NULL)
 			return -1; /* group addressing works only on a board */
@@ -379,14 +379,14 @@ pcb_layer_id_t pcb_layer_str2id(pcb_data_t *data, const char *str)
 	return layer_str2id_data(pcb, data, str);
 }
 
-pcb_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
+rnd_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
 {
 	char *end, *tmp = NULL;
 	const char *curr;
-	pcb_layer_id_t gid = -1;
+	rnd_layer_id_t gid = -1;
 	char *spk[64], *spv[64];
 	int spc = 0, numg;
-	pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
+	rnd_layergrp_id_t gids[PCB_MAX_LAYERGRP];
 
 	if (strchr(str, '(') != NULL) {
 		curr = tmp = rnd_strdup(str);
@@ -483,7 +483,7 @@ int pcb_layergrp_append_to_addr(pcb_board_t *pcb, pcb_layergrp_t *grp, gds_t *ds
 
 int pcb_layer_append_to_addr(pcb_board_t *pcb, pcb_layer_t *ly, gds_t *dst)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	pcb_layergrp_t *grp;
 	long n;
 	char buf[64];

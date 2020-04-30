@@ -86,8 +86,8 @@ const char pcb_acth_SwapSides[] = "Swaps the side of the board you're looking at
 /* DOC: swapsides.html */
 fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
-	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
+	rnd_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
+	rnd_layergrp_id_t comp_group = -1, solder_group = -1;
 	rnd_bool comp_on = pcb_false, solder_on = pcb_false;
 	rnd_rnd_box_t vb;
 	rnd_coord_t x, y;
@@ -116,7 +116,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_draw_inhibit_inc();
 	if (argc > 1) {
 		const char *a, *b = "";
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 		pcb_layer_type_t lyt;
 
 		RND_PCB_ACT_CONVARG(1, FGW_STR, SwapSides, a = argv[1].val.str);

@@ -490,11 +490,11 @@ typedef struct {
 } scale_t;
 
 /* make sure x;y values are synced when lock is active */
-static void scale_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void scale_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	scale_t *ctx = caller_data;
 	int wid = attr - ctx->dlg, locked = ctx->dlg[ctx->wlock].val.lng;
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 
 	if (!locked)
 		return;
@@ -654,8 +654,8 @@ void pcb_buffer_scale(pcb_buffer_t *Buffer, double sx, double sy, double sth, in
 void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
 	int j, k;
-	pcb_layer_id_t SLayer = -1, CLayer = -1;
-	pcb_layergrp_id_t sgroup, cgroup;
+	rnd_layer_id_t SLayer = -1, CLayer = -1;
+	rnd_layergrp_id_t sgroup, cgroup;
 	pcb_layer_t swap;
 
 #if 0
@@ -712,8 +712,8 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 TODO("layer: revise this code for the generic physical layer support; move this code to layer*.c")
 	if (pcb->LayerGroups.grp[cgroup].len == pcb->LayerGroups.grp[sgroup].len) {
 		for (j = k = 0; j < pcb->LayerGroups.grp[sgroup].len; j++) {
-			pcb_layer_id_t cnumber = pcb->LayerGroups.grp[cgroup].lid[k];
-			pcb_layer_id_t snumber = pcb->LayerGroups.grp[sgroup].lid[j];
+			rnd_layer_id_t cnumber = pcb->LayerGroups.grp[cgroup].lid[k];
+			rnd_layer_id_t snumber = pcb->LayerGroups.grp[sgroup].lid[j];
 
 			if ((pcb_layer_flags(pcb, snumber)) & PCB_LYT_SILK)
 				continue;

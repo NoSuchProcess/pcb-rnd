@@ -337,7 +337,7 @@ pcb_pstk_t *pcb_pstk_by_id(pcb_data_t *base, long int ID)
 
 /*** draw ***/
 
-static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, const pcb_layer_t *ly1, pcb_xform_t *xform)
+static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, const pcb_layer_t *ly1, rnd_xform_t *xform)
 {
 	const rnd_color_t *color, *layer_color = NULL;
 	rnd_color_t buf;
@@ -411,13 +411,13 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 	pcb_render->set_color(pcb_draw_out.fgGC, color);
 }
 
-static void set_ps_annot_color(pcb_hid_gc_t gc, pcb_pstk_t *ps)
+static void set_ps_annot_color(rnd_hid_gc_t gc, pcb_pstk_t *ps)
 {
 	pcb_render->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ?
 		&conf_core.appearance.color.selected : &conf_core.appearance.color.padstackmark);
 }
 
-static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape, int fill, rnd_coord_t dthick)
+static void pcb_pstk_draw_poly(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape, int fill, rnd_coord_t dthick)
 {
 	long n;
 
@@ -480,7 +480,7 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_
 	}
 }
 
-static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
+static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
 	rnd_coord_t r, dthick = 0;
 	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0))
@@ -505,7 +505,7 @@ static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, pcb_hid_gc_t gc, pc
 	}
 }
 
-static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
+static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
 	rnd_coord_t r, dthick = 0;
 	pcb_hid_set_line_cap(gc, pcb_cap_round);
@@ -552,7 +552,7 @@ pcb_r_dir_t pcb_pstk_draw_callback(const rnd_rnd_box_t *b, void *cl)
 	}
 	else {
 		int n;
-		pcb_layer_id_t *lid;
+		rnd_layer_id_t *lid;
 		shape = pcb_pstk_shape_gid(info->pcb, ps, info->objcb.pstk.gid, info->objcb.pstk.comb, &grp);
 		for(n = 0, lid = grp->lid; n < grp->len; n++,lid++) {
 			if (*lid < ps->thermals.used) {
@@ -737,11 +737,11 @@ pcb_r_dir_t pcb_pstk_draw_slot_callback(const rnd_rnd_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-void pcb_pstk_thindraw(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps)
+void pcb_pstk_thindraw(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps)
 {
 	pcb_pstk_shape_t *shape = NULL;
 	pcb_board_t *pcb;
-	pcb_layergrp_id_t gid = PCB_CURRLAYER(PCB)->meta.real.grp;
+	rnd_layergrp_id_t gid = PCB_CURRLAYER(PCB)->meta.real.grp;
 
 	pcb = pcb_data_get_top(ps->parent.data);
 	if (pcb != NULL) {
@@ -787,12 +787,12 @@ void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
 	pcb_term_label_draw(info, ps->x, ps->y, conf_core.appearance.term_label_size, vert, pcb_true, (pcb_any_obj_t *)ps);
 }
 
-static pcb_xform_t dummy_xform;
+static rnd_xform_t dummy_xform;
 void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, rnd_bool mark, rnd_bool label, const rnd_rnd_box_t *drawn_area)
 {
 	pcb_draw_info_t info;
 	int n, draw_hole = 0;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 
 	info.pcb = pcb;
 	info.drawn_area = drawn_area;
@@ -1294,7 +1294,7 @@ unsigned char *pcb_pstk_get_thermal(pcb_pstk_t *ps, unsigned long lid, pcb_bool_
 /*** undoable thermal change ***/
 typedef struct {
 	pcb_pstk_t *ps;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	unsigned char shape;
 } undo_pstk_thermal_t;
 
@@ -1509,7 +1509,7 @@ int pcb_pstk_change_instance(pcb_pstk_t *ps, rnd_cardinal_t *proto, const rnd_co
 	return 0;
 }
 
-rnd_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, pcb_layergrp_id_t gid)
+rnd_bool pcb_pstk_is_group_empty(pcb_board_t *pcb, rnd_layergrp_id_t gid)
 {
 	pcb_layergrp_t *g = &pcb->LayerGroups.grp[gid];
 
@@ -1578,9 +1578,9 @@ void pcb_pstk_post(pcb_pstk_t *pstk)
 	pcb_poly_clear_from_poly(data, PCB_OBJ_PSTK, NULL, pstk);
 }
 
-pcb_layer_id_t pcb_proto_board_layer_for(const pcb_data_t *data, pcb_layer_type_t mask, pcb_layer_combining_t comb)
+rnd_layer_id_t pcb_proto_board_layer_for(const pcb_data_t *data, pcb_layer_type_t mask, pcb_layer_combining_t comb)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	const pcb_layer_t *ly;
 	for(lid = 0, ly = data->Layer; lid < data->LayerN; lid++,ly++) {
 		pcb_layer_type_t typ = pcb_layer_flags_(ly);

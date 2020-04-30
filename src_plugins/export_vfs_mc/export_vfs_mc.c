@@ -24,7 +24,7 @@
 
 const char *export_vfs_mc_cookie = "export_vfs_mc HID";
 
-static pcb_export_opt_t export_vfs_mc_options[] = {
+static rnd_export_opt_t export_vfs_mc_options[] = {
 	{"cmd", "mc command",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_export_vfs_mc_cmd 0
@@ -36,9 +36,9 @@ static pcb_export_opt_t export_vfs_mc_options[] = {
 
 #define NUM_OPTIONS (sizeof(export_vfs_mc_options)/sizeof(export_vfs_mc_options[0]))
 
-static pcb_hid_attr_val_t export_vfs_mc_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t export_vfs_mc_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *export_vfs_mc_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *export_vfs_mc_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if (n)
 		*n = NUM_OPTIONS;
@@ -102,7 +102,7 @@ static void mc_copyin(const char *path)
 	}
 }
 
-static void export_vfs_mc_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void export_vfs_mc_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *cmd;
 	int i;
@@ -124,7 +124,7 @@ static void export_vfs_mc_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 }
 
-static int export_vfs_mc_usage(pcb_hid_t *hid, const char *topic)
+static int export_vfs_mc_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexport_vfs_mc exporter command line arguments:\n\n");
 	pcb_hid_usage(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]));
@@ -133,13 +133,13 @@ static int export_vfs_mc_usage(pcb_hid_t *hid, const char *topic)
 }
 
 
-static int export_vfs_mc_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int export_vfs_mc_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]), export_vfs_mc_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-pcb_hid_t export_vfs_mc_hid;
+rnd_hid_t export_vfs_mc_hid;
 
 int pplg_check_ver_export_vfs_mc(int ver_needed) { return 0; }
 
@@ -152,11 +152,11 @@ int pplg_init_export_vfs_mc(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&export_vfs_mc_hid, 0, sizeof(pcb_hid_t));
+	memset(&export_vfs_mc_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&export_vfs_mc_hid);
 
-	export_vfs_mc_hid.struct_size = sizeof(pcb_hid_t);
+	export_vfs_mc_hid.struct_size = sizeof(rnd_hid_t);
 	export_vfs_mc_hid.name = "vfs_mc";
 	export_vfs_mc_hid.description = "Handler of mc VFS calls, serving board data";
 	export_vfs_mc_hid.exporter = 1;

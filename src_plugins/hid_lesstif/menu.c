@@ -93,7 +93,7 @@ static int del_widget_flag(int idx)
 }
 
 /* WARNING: when call originaltes from the lesstif hid, hid==NULL for now */
-void lesstif_update_widget_flags(pcb_hid_t *hid, const char *cookie)
+void lesstif_update_widget_flags(rnd_hid_t *hid, const char *cookie)
 {
 	int i;
 
@@ -175,7 +175,7 @@ void lesstif_get_xy(const char *message)
 	pcb_hidlib_crosshair_restore(ltf_hidlib, chst);
 }
 
-void lesstif_get_coords(pcb_hid_t *hid, const char *msg, rnd_coord_t *px, rnd_coord_t *py, int force)
+void lesstif_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *px, rnd_coord_t *py, int force)
 {
 	if ((force || !have_xy) && msg) {
 		if (force) {
@@ -554,7 +554,7 @@ static void add_node_to_menu(Widget in_menu, lht_node_t *ins_after, lht_node_t *
 }
 
 extern char *lesstif_pcbmenu_path;
-extern pcb_hid_t lesstif_hid;
+extern rnd_hid_t lesstif_hid;
 
 Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 {
@@ -626,7 +626,7 @@ Widget lesstif_menu(Widget parent, const char *name, Arg * margs, int mn)
 	return mb;
 }
 
-int ltf_open_popup(pcb_hid_t *hid, const char *menupath)
+int ltf_open_popup(rnd_hid_t *hid, const char *menupath)
 {
 	menu_data_t *md;
 	lht_node_t *menu_node = pcb_hid_cfg_get_menu(lesstif_cfg, menupath);
@@ -651,22 +651,22 @@ static int lesstif_create_menu_widget(void *ctx, const char *path, const char *n
 }
 
 
-void lesstif_create_menu(pcb_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
+void lesstif_create_menu(rnd_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
 {
 	pcb_hid_cfg_create_menu(lesstif_cfg, menu_path, props, lesstif_create_menu_widget, NULL);
 }
 
-int lesstif_remove_menu(pcb_hid_t *hid, const char *menu_path)
+int lesstif_remove_menu(rnd_hid_t *hid, const char *menu_path)
 {
 	return pcb_hid_cfg_remove_menu(lesstif_cfg, menu_path, del_menu, NULL);
 }
 
-int lesstif_remove_menu_node(pcb_hid_t *hid, lht_node_t *node)
+int lesstif_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 {
 	return pcb_hid_cfg_remove_menu_node(lesstif_cfg, node, del_menu, NULL);
 }
 
-rnd_hid_cfg_t *lesstif_get_menu_cfg(pcb_hid_t *hid)
+rnd_hid_cfg_t *lesstif_get_menu_cfg(rnd_hid_t *hid)
 {
 	return lesstif_cfg;
 }

@@ -136,12 +136,12 @@ struct pcb_layer_s {              /* holds information about one layer */
 
 	union {
 		struct { /* A real board layer */
-			pcb_layergrp_id_t grp;         /* the group this layer is in (cross-reference) */
+			rnd_layergrp_id_t grp;         /* the group this layer is in (cross-reference) */
 			rnd_bool vis;                  /* visible flag */
 			rnd_color_t color;             /* copied */
 			int no_drc;                    /* whether to ignore the layer when checking the design rules */
 			const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
-			pcb_xform_t xform;             /* layer specified rendering transformation */
+			rnd_xform_t xform;             /* layer specified rendering transformation */
 		} real;
 		struct { /* A subcircuit layer binding; list data are local but everything else is coming from board layers */
 			pcb_layer_t *real;             /* NULL if unbound */
@@ -153,7 +153,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 			char *purpose;                 /* what the target doc/mech layer is used for */
 
 			unsigned user_specified:1;     /* 1 if the user forced the binding */
-			pcb_layer_id_t user_lid;
+			rnd_layer_id_t user_lid;
 		} bound;
 	} meta;
 
@@ -161,7 +161,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 };
 
 /* returns the layer number for the passed copper or silk layer pointer */
-pcb_layer_id_t pcb_layer_id(const pcb_data_t *Data, const pcb_layer_t *Layer);
+rnd_layer_id_t pcb_layer_id(const pcb_data_t *Data, const pcb_layer_t *Layer);
 
 
 /* the offsets of the two additional special layers (e.g. silk) for 'component'
@@ -204,33 +204,33 @@ const pcb_menu_layers_t *pcb_menu_layer_find(const char *name_or_abbrev);
 void pcb_layer_free_fields(pcb_layer_t *layer, rnd_bool undoable);
 
 /* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
-pcb_layer_t *pcb_get_layer(pcb_data_t *data, pcb_layer_id_t id);
+pcb_layer_t *pcb_get_layer(pcb_data_t *data, rnd_layer_id_t id);
 
 /* Return the name of a layer (real or virtual) or NULL on error
    NOTE: layer names may not be unique; returns the first case sensitive hit;
    slow linear search */
-pcb_layer_id_t pcb_layer_by_name(pcb_data_t *data, const char *name);
+rnd_layer_id_t pcb_layer_by_name(pcb_data_t *data, const char *name);
 
 /* Returns pcb_true if the given layer is empty (there are no objects on the layer) */
 rnd_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *ly);
-rnd_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t ly);
+rnd_bool pcb_layer_is_empty(pcb_board_t *pcb, rnd_layer_id_t ly);
 
 /* Returns pcb_true if the given layer is empty - non-recursive variant (doesn't deal with side effects) */
 rnd_bool pcb_layer_is_pure_empty(pcb_layer_t *layer);
 
 
 /* call the gui to set a virtual layer or the UI layer group */
-int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_empty, pcb_xform_t **xform);
-int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty, pcb_xform_t **xform);
+int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_empty, rnd_xform_t **xform);
+int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty, rnd_xform_t **xform);
 
 
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx or layer is invalid. */
-unsigned int pcb_layer_flags(const pcb_board_t *pcb, pcb_layer_id_t layer_idx);
+unsigned int pcb_layer_flags(const pcb_board_t *pcb, rnd_layer_id_t layer_idx);
 unsigned int pcb_layer_flags_(const pcb_layer_t *layer);
 
 /* Return the purpi of the group of a layer; if out is not NULL, also copy
    a pointer to the purpose string there (valid until a layer change) */
-int pcb_layer_purpose(const pcb_board_t *pcb, pcb_layer_id_t layer_idx, const char **out);
+int pcb_layer_purpose(const pcb_board_t *pcb, rnd_layer_id_t layer_idx, const char **out);
 int pcb_layer_purpose_(const pcb_layer_t *layer, const char **out);
 
 
@@ -265,9 +265,9 @@ void pcb_layer_auto_fixup(pcb_board_t *pcb);
    The version that ends in 'p' also matches purpose if purpi is not -1
    and/or purpose is not NULL.
 */
-int pcb_layer_list(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
-int pcb_layer_list_any(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len);
-int pcb_layer_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len, int purpi, const char *purpose);
+int pcb_layer_list(const pcb_board_t *pcb, pcb_layer_type_t mask, rnd_layer_id_t *res, int res_len);
+int pcb_layer_list_any(const pcb_board_t *pcb, pcb_layer_type_t mask, rnd_layer_id_t *res, int res_len);
+int pcb_layer_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, rnd_layer_id_t *res, int res_len, int purpi, const char *purpose);
 
 
 /**** layer creation (for load/import code) ****/
@@ -279,17 +279,17 @@ void pcb_layer_setup(pcb_layer_t *ly, pcb_data_t *parent_data);
 void pcb_layers_reset(pcb_board_t *pcb);
 
 /* Create a new layer and put it in an existing group (if grp is not -1). */
-pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const char *lname, rnd_bool undoable);
+rnd_layer_id_t pcb_layer_create(pcb_board_t *pcb, rnd_layergrp_id_t grp, const char *lname, rnd_bool undoable);
 
 /* Return the name of a layer (resolving the true name of virtual layers too) */
-const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id);
+const char *pcb_layer_name(pcb_data_t *data, rnd_layer_id_t id);
 
 /* Return the default color for a new layer from the config */
 const rnd_color_t *pcb_layer_default_color(int idx, pcb_layer_type_t lyt);
 
 /* Rename/recolor an existing layer by idx */
-int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, rnd_bool undoable);
-int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *lcolor, rnd_bool undoable);
+int pcb_layer_rename(pcb_data_t *data, rnd_layer_id_t layer, const char *lname, rnd_bool undoable);
+int pcb_layer_recolor(pcb_data_t *data, rnd_layer_id_t layer, const char *lcolor, rnd_bool undoable);
 
 /* changes the color of a layer; string has to be allocated by the caller (pcb_strdup) */
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, rnd_bool undoable);
@@ -300,7 +300,7 @@ int pcb_layer_recolor_(pcb_layer_t *Layer, const rnd_color_t *color, rnd_bool un
 /* index is 0..PCB_MAX_LAYER-1.  If old_index is -1, a new layer is
    inserted at that index.  If new_index is -1, the specified layer is
    deleted.  Returns non-zero on error, zero if OK.  */
-int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp, rnd_bool undoable);
+int pcb_layer_move(pcb_board_t *pcb, rnd_layer_id_t old_index, rnd_layer_id_t new_index, rnd_layergrp_id_t new_in_grp, rnd_bool undoable);
 
 
 /* set up dst to be a bound layer with the right offset in the stack; src_pcb
@@ -352,7 +352,7 @@ RND_INLINE pcb_layer_t *pcb_layer_get_real(const pcb_layer_t *layer)
    have a real layer in the array */
 typedef struct pcb_virt_layer_s {
 	char *name;
-	pcb_layer_id_t new_id;
+	rnd_layer_id_t new_id;
 	pcb_layer_type_t type;
 	const char *purpose;
 	int purpi;

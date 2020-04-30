@@ -761,7 +761,7 @@ static sketch_t *sketches_get_sketch_at_layer(pcb_layer_t *layer)
 
 static void sketches_init()
 {
-	pcb_layer_id_t lid[PCB_MAX_LAYER];
+	rnd_layer_id_t lid[PCB_MAX_LAYER];
 	int i, num;
 
 	num = pcb_layer_list(PCB, PCB_LYT_COPPER, lid, PCB_MAX_LAYER);

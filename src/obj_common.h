@@ -91,7 +91,7 @@ struct rnd_point_s {    /* a line/polygon point */
 typedef double pcb_xform_mx_t[9];
 #define PCB_XFORM_MX_IDENT {1,0,0,   0,1,0,   0,0,1}
 
-struct pcb_xform_s {   /* generic object transformation; all-zero means no transformation */
+struct rnd_xform_s {   /* generic object transformation; all-zero means no transformation */
 	rnd_coord_t bloat;           /* if non-zero, bloat (positive) or shrink (negative) by this value */
 
 	unsigned layer_faded:1;      /* draw layer colors faded */
@@ -110,12 +110,12 @@ struct pcb_xform_s {   /* generic object transformation; all-zero means no trans
 	/* WARNING: After adding new fields, make sure to update pcb_xform_add() and pcb_xform_is_nop() below */
 };
 
-#define pcb_xform_clear(dst)      memset(dst, 0, sizeof(pcb_xform_t))
-#define pcb_xform_copy(dst, src)  memcpy(dst, src, sizeof(pcb_xform_t))
+#define pcb_xform_clear(dst)      memset(dst, 0, sizeof(rnd_xform_t))
+#define pcb_xform_copy(dst, src)  memcpy(dst, src, sizeof(rnd_xform_t))
 #define pcb_xform_add(dst, src) \
 	do { \
-		pcb_xform_t *__dst__ = dst; \
-		const pcb_xform_t *__src__ = src; \
+		rnd_xform_t *__dst__ = dst; \
+		const rnd_xform_t *__src__ = src; \
 		__dst__->bloat += __src__->bloat; \
 		__dst__->layer_faded |= __src__->layer_faded; \
 		__dst__->omit_overlay |= __src__->omit_overlay; \
@@ -343,9 +343,9 @@ do { \
 #define PCB_OBJ_COLOR_ON_BOUND_LAYER(dst, layer, sel) \
 do { \
 	if (layer->meta.bound.type & PCB_LYT_TOP) { \
-		pcb_layer_id_t lid = -1; \
+		rnd_layer_id_t lid = -1; \
 		pcb_layergrp_t *g; \
-		pcb_layergrp_id_t grp = -1; \
+		rnd_layergrp_id_t grp = -1; \
 		if (layer->meta.bound.type & PCB_LYT_SILK) { \
 			if (sel) {\
 				dst = &conf_core.appearance.color.selected; \

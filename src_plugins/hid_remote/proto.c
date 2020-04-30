@@ -103,7 +103,7 @@ void proto_send_invalidate_all(void)
 	send_end(&pctx);
 }
 
-int proto_send_set_layer_group(pcb_layergrp_id_t group, const char *purpose, int is_empty, pcb_xform_t **xform)
+int proto_send_set_layer_group(rnd_layergrp_id_t group, const char *purpose, int is_empty, rnd_xform_t **xform)
 {
 	send_begin(&pctx, "setlg");
 	send_open(&pctx, 0, 1);
@@ -129,7 +129,7 @@ static void	pcb_remote_send_layer_flags(unsigned int flags, int first_arg)
 	send_close(&pctx);
 }
 
-int pcb_remote_new_layer_group(const char *name, pcb_layergrp_id_t idx, unsigned int flags)
+int pcb_remote_new_layer_group(const char *name, rnd_layergrp_id_t idx, unsigned int flags)
 {
 	send_begin(&pctx, "newlg");
 	send_open(&pctx, str_is_bin(name), 1);
@@ -146,7 +146,7 @@ int pcb_remote_new_layer_group(const char *name, pcb_layergrp_id_t idx, unsigned
 }
 
 
-int pcb_remote_new_layer(const char *name, pcb_layer_id_t lid, unsigned int gid)
+int pcb_remote_new_layer(const char *name, rnd_layer_id_t lid, unsigned int gid)
 {
 	send_begin(&pctx, "newly");
 	send_open(&pctx, str_is_bin(name), 1);

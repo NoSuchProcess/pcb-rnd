@@ -240,7 +240,7 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 	if ((ctx->start_layergrp == NULL) && (ctx->open.used > 0) && (ctx->pcb != NULL)) {
 		curr = ctx->open.array[0];
 		if ((curr != NULL) && (curr->parent_type == PCB_PARENT_LAYER)) {
-			pcb_layergrp_id_t gid = pcb_layer_get_group_(curr->parent.layer);
+			rnd_layergrp_id_t gid = pcb_layer_get_group_(curr->parent.layer);
 			ctx->start_layergrp = pcb_get_layergrp(ctx->pcb, gid);
 			if (!ctx->allow_noncopper) {
 				TODO("find.c: implement this; special case: starting layer object on non-copper can still jump on padstack!");

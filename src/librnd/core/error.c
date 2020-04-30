@@ -219,7 +219,7 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (rnd_strcasecmp(op, "Export") == 0) {
 		const char *fmts[] = { "text", "lihata", NULL };
-		pcb_hid_dad_subdialog_t fmtsub;
+		rnd_hid_dad_subdialog_t fmtsub;
 		char *fn;
 		int wfmt;
 

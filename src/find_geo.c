@@ -282,7 +282,7 @@ static rnd_bool pcb_isc_ratp_line(const pcb_find_t *ctx, rnd_point_t *Point, pcb
 /* Tests any end of a rat line is on the line */
 static rnd_bool pcb_isc_rat_line(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_line_t *line)
 {
-	pcb_layergrp_id_t gid = pcb_layer_get_group_(line->parent.layer);
+	rnd_layergrp_id_t gid = pcb_layer_get_group_(line->parent.layer);
 
 	if ((rat->group1 == gid) && pcb_isc_ratp_line(ctx, &rat->Point1, line))
 		return pcb_true;
@@ -319,7 +319,7 @@ static rnd_bool pcb_isc_ratp_arc(const pcb_find_t *ctx, rnd_point_t *Point, pcb_
 /* Tests any end of a rat line is on the arc */
 static rnd_bool pcb_isc_rat_arc(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_arc_t *arc)
 {
-	pcb_layergrp_id_t gid = pcb_layer_get_group_(arc->parent.layer);
+	rnd_layergrp_id_t gid = pcb_layer_get_group_(arc->parent.layer);
 
 	if ((rat->group1 == gid) && pcb_isc_ratp_arc(ctx, &rat->Point1, arc))
 		return pcb_true;
@@ -386,7 +386,7 @@ static rnd_bool pcb_isc_ratp_poly(const pcb_find_t *ctx, rnd_point_t *Point, pcb
 /* Tests any end of a rat line is on the poly */
 static rnd_bool pcb_isc_rat_poly(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_poly_t *poly)
 {
-	pcb_layergrp_id_t gid = pcb_layer_get_group_(poly->parent.layer);
+	rnd_layergrp_id_t gid = pcb_layer_get_group_(poly->parent.layer);
 	int donut = PCB_FLAG_TEST(PCB_FLAG_VIA, rat);
 
 	if ((rat->group1 == gid) && pcb_isc_ratp_poly(ctx, &rat->Point1, poly, donut))

@@ -74,10 +74,10 @@ static Widget ltf_progress_create(lesstif_attr_dlg_t *ctx, Widget parent)
 
 /* called back from core (which is called from wt_preview) to get the user
    expose function called */
-static void ltf_preview_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+static void ltf_preview_expose(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	pcb_ltf_preview_t *pd = e->draw_data;
-	pcb_hid_attribute_t *attr = pd->attr;
+	rnd_hid_attribute_t *attr = pd->attr;
 	pcb_hid_preview_t *prv = attr->wdata;
 	prv->user_expose_cb(attr, prv, gc, e);
 }
@@ -94,7 +94,7 @@ static void ltf_preview_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 	pcb_ltf_preview_redraw(pd);
 }
 
-static void ltf_preview_zoomto(pcb_hid_attribute_t *attr, void *hid_ctx, const rnd_rnd_box_t *view)
+static void ltf_preview_zoomto(rnd_hid_attribute_t *attr, void *hid_ctx, const rnd_rnd_box_t *view)
 {
 	pcb_hid_preview_t *prv = attr->wdata;
 	pcb_ltf_preview_t *pd = prv->hid_wdata;
@@ -111,7 +111,7 @@ static void ltf_preview_zoomto(pcb_hid_attribute_t *attr, void *hid_ctx, const r
 static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Boolean *ctd)
 {
 	pcb_ltf_preview_t *pd = pd_;
-	pcb_hid_attribute_t *attr = pd->attr;
+	rnd_hid_attribute_t *attr = pd->attr;
 	pcb_hid_preview_t *prv = attr->wdata;
 	rnd_coord_t x, y;
 	Window root, child;
@@ -131,7 +131,7 @@ static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Bool
 static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCallbackStruct *cbs)
 {
 	pcb_ltf_preview_t *pd = pd_;
-	pcb_hid_attribute_t *attr = pd->attr;
+	rnd_hid_attribute_t *attr = pd->attr;
 	pcb_hid_preview_t *prv = attr->wdata;
 	rnd_coord_t x, y;
 	pcb_hid_mouse_ev_t kind = -1;
@@ -162,7 +162,7 @@ static void ltf_preview_destroy(Widget w, XtPointer pd_, XmDrawingAreaCallbackSt
 	pcb_ltf_preview_del(pd);
 }
 
-static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
 	Widget pw;
 	pcb_ltf_preview_t *pd;
@@ -218,14 +218,14 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid
 }
 
 
-static Widget ltf_picture_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+static Widget ltf_picture_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
 	Widget pic = pcb_ltf_xpm_label(display, parent, XmStrCast("dad_picture"), attr->wdata);
 	XtManageChild(pic);
 	return pic;
 }
 
-static Widget ltf_picbutton_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+static Widget ltf_picbutton_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
 	Widget pic = pcb_ltf_xpm_button(display, parent, XmStrCast("dad_picture"), attr->wdata);
 	XtManageChild(pic);
@@ -281,7 +281,7 @@ static void ltf_colorbtn_valchg(Widget w, XtPointer dlg_widget_, XtPointer call_
 }
 
 
-static Widget ltf_colorbtn_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int readonly)
+static Widget ltf_colorbtn_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr, int readonly)
 {
 	Widget pic = pcb_ltf_color_button(display, parent, XmStrCast("dad_picture"), &attr->val.clr);
 	if (!readonly)
@@ -295,7 +295,7 @@ static void ltf_txt_changed_callback(Widget w, XtPointer attr_, XEvent *e, Boole
 	valchg(w, w, NULL);
 }
 
-static long ltf_text_get_offs(pcb_hid_attribute_t *attrib, void *hid_ctx)
+static long ltf_text_get_offs(rnd_hid_attribute_t *attrib, void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -308,7 +308,7 @@ static long ltf_text_get_offs(pcb_hid_attribute_t *attrib, void *hid_ctx)
 	return pos;
 }
 
-void ltf_text_set_offs(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs)
+void ltf_text_set_offs(rnd_hid_attribute_t *attrib, void *hid_ctx, long offs)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -337,7 +337,7 @@ static void ltf_text_set_text_(Widget wtxt, unsigned how, const char *txt)
 	}
 }
 
-static void ltf_text_set_text(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt)
+static void ltf_text_set_text(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -369,7 +369,7 @@ static void ltf_text_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 }
 
 
-static char *ltf_text_get_text_(pcb_hid_attribute_t *attrib, void *hid_ctx)
+static char *ltf_text_get_text_(rnd_hid_attribute_t *attrib, void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -377,7 +377,7 @@ static char *ltf_text_get_text_(pcb_hid_attribute_t *attrib, void *hid_ctx)
 	return XmTextGetString(wtxt);
 }
 
-char *ltf_text_get_text(pcb_hid_attribute_t *attrib, void *hid_ctx)
+char *ltf_text_get_text(rnd_hid_attribute_t *attrib, void *hid_ctx)
 {
 	char *orig = ltf_text_get_text_(attrib, hid_ctx);
 	char *s = rnd_strdup(orig);
@@ -385,7 +385,7 @@ char *ltf_text_get_text(pcb_hid_attribute_t *attrib, void *hid_ctx)
 	return s;
 }
 
-static void ltf_text_get_xy(pcb_hid_attribute_t *attrib, void *hid_ctx, long *x, long *y)
+static void ltf_text_get_xy(rnd_hid_attribute_t *attrib, void *hid_ctx, long *x, long *y)
 {
 	char *orig, *s = ltf_text_get_text_(attrib, hid_ctx);
 	long to, n, lines = 0, cols = 0;
@@ -411,7 +411,7 @@ static void ltf_text_get_xy(pcb_hid_attribute_t *attrib, void *hid_ctx, long *x,
 	*y = lines;
 }
 
-void ltf_text_set_xy(pcb_hid_attribute_t *attrib, void *hid_ctx, long x, long y)
+void ltf_text_set_xy(rnd_hid_attribute_t *attrib, void *hid_ctx, long x, long y)
 {
 	char *orig, *s = ltf_text_get_text_(attrib, hid_ctx);
 	long offs;
@@ -438,7 +438,7 @@ void ltf_text_set_xy(pcb_hid_attribute_t *attrib, void *hid_ctx, long x, long y)
 	XtFree(orig);
 }
 
-void ltf_text_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, rnd_bool readonly)
+void ltf_text_set_readonly(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_bool readonly)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -449,7 +449,7 @@ void ltf_text_set_readonly(pcb_hid_attribute_t *attrib, void *hid_ctx, rnd_bool 
 	XtSetValues(wtxt, stdarg_args, stdarg_n);
 }
 
-static void ltf_text_scroll_to_bottom(pcb_hid_attribute_t *attrib, void *hid_ctx)
+static void ltf_text_scroll_to_bottom(rnd_hid_attribute_t *attrib, void *hid_ctx)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -473,7 +473,7 @@ static void ltf_text_scroll_to_bottom(pcb_hid_attribute_t *attrib, void *hid_ctx
 	free(buf);
 }
 
-static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
 	Widget wtxt;
 	pcb_hid_text_t *txt = attr->wdata;

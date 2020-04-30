@@ -30,18 +30,18 @@ static void batch_end(void);
 /* This is a text-line "batch" HID, which exists for scripting and
    non-GUI needs.  */
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
-static pcb_export_opt_t *batch_get_export_options(pcb_hid_t *hid, int *n_ret)
+static rnd_export_opt_t *batch_get_export_options(rnd_hid_t *hid, int *n_ret)
 {
 	if (n_ret != NULL)
 		*n_ret = 0;
 	return NULL;
 }
 
-static int batch_usage(pcb_hid_t *hid, const char *topic)
+static int batch_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nbatch GUI command line arguments: none\n\n");
 	fprintf(stderr, "\nInvocation: pcb-rnd --gui batch [options]\n");
@@ -115,7 +115,7 @@ extern int isatty();
 
 /* ----------------------------------------------------------------------------- */
 static int batch_stay;
-static void batch_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void batch_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int interactive;
 	char line[1000];
@@ -151,123 +151,123 @@ static void batch_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	batch_end();
 }
 
-static void batch_do_exit(pcb_hid_t *hid)
+static void batch_do_exit(rnd_hid_t *hid)
 {
 	batch_stay = 0;
 }
 
-static int batch_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int batch_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void batch_invalidate_lr(pcb_hid_t *hid, rnd_coord_t l, rnd_coord_t r, rnd_coord_t t, rnd_coord_t b)
+static void batch_invalidate_lr(rnd_hid_t *hid, rnd_coord_t l, rnd_coord_t r, rnd_coord_t t, rnd_coord_t b)
 {
 }
 
-static void batch_invalidate_all(pcb_hid_t *hid)
+static void batch_invalidate_all(rnd_hid_t *hid)
 {
 }
 
-static int batch_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int batch_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	return 0;
 }
 
-static pcb_hid_gc_t batch_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t batch_make_gc(rnd_hid_t *hid)
 {
 	static pcb_core_gc_t hc;
-	return (pcb_hid_gc_t)&hc;
+	return (rnd_hid_gc_t)&hc;
 }
 
-static void batch_destroy_gc(pcb_hid_gc_t gc)
+static void batch_destroy_gc(rnd_hid_gc_t gc)
 {
 }
 
-static void batch_set_color(pcb_hid_gc_t gc, const rnd_color_t *name)
+static void batch_set_color(rnd_hid_gc_t gc, const rnd_color_t *name)
 {
 }
 
-static void batch_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void batch_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 }
 
-static void batch_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void batch_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 }
 
-static void batch_set_draw_xor(pcb_hid_gc_t gc, int xor_set)
+static void batch_set_draw_xor(rnd_hid_gc_t gc, int xor_set)
 {
 }
 
-static void batch_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void batch_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 }
 
-static void batch_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t end_angle)
+static void batch_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t end_angle)
 {
 }
 
-static void batch_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void batch_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 }
 
-static void batch_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void batch_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 }
 
-static void batch_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y)
+static void batch_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y)
 {
 }
 
-static void batch_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void batch_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 }
 
-static void batch_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void batch_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 }
 
-static void batch_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void batch_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 }
 
-static int batch_shift_is_pressed(pcb_hid_t *hid)
-{
-	return 0;
-}
-
-static int batch_control_is_pressed(pcb_hid_t *hid)
+static int batch_shift_is_pressed(rnd_hid_t *hid)
 {
 	return 0;
 }
 
-static int batch_mod1_is_pressed(pcb_hid_t *hid)
+static int batch_control_is_pressed(rnd_hid_t *hid)
 {
 	return 0;
 }
 
-static void batch_get_coords(pcb_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
+static int batch_mod1_is_pressed(rnd_hid_t *hid)
+{
+	return 0;
+}
+
+static void batch_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 }
 
-static void batch_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void batch_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 
-static pcb_hidval_t batch_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+static pcb_hidval_t batch_add_timer(rnd_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	pcb_hidval_t rv;
 	rv.lval = 0;
 	return rv;
 }
 
-static void batch_stop_timer(pcb_hid_t *hid, pcb_hidval_t timer)
+static void batch_stop_timer(rnd_hid_t *hid, pcb_hidval_t timer)
 {
 }
 
 pcb_hidval_t
-batch_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
+batch_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
 								 pcb_hidval_t user_data)
 {
 	pcb_hidval_t ret;
@@ -275,37 +275,37 @@ batch_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func
 	return ret;
 }
 
-void batch_unwatch_file(pcb_hid_t *hid, pcb_hidval_t data)
+void batch_unwatch_file(rnd_hid_t *hid, pcb_hidval_t data)
 {
 }
 
-static void batch_create_menu(pcb_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
+static void batch_create_menu(rnd_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
 {
 }
 
-static void batch_zoom_win(pcb_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair)
+static void batch_zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair)
 {
 }
 
-static void batch_zoom(pcb_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative)
+static void batch_zoom(rnd_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative)
 {
 }
 
-static void batch_pan(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative)
+static void batch_pan(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative)
 {
 }
 
-static void batch_pan_mode(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode)
+static void batch_pan_mode(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode)
 {
 }
 
-static void batch_set_hidlib(pcb_hid_t *hid, rnd_hidlib_t *hidlib)
+static void batch_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 {
 	hid->hid_data = hidlib;
 }
 
 
-static void batch_view_get(pcb_hid_t *hid, rnd_rnd_box_t *viewbox)
+static void batch_view_get(rnd_hid_t *hid, rnd_rnd_box_t *viewbox)
 {
 	rnd_hidlib_t *hidlib = hid->hid_data;
 	viewbox->X1 = 0;
@@ -314,18 +314,18 @@ static void batch_view_get(pcb_hid_t *hid, rnd_rnd_box_t *viewbox)
 	viewbox->Y2 = hidlib->size_y;
 }
 
-static void batch_open_command(pcb_hid_t *hid)
+static void batch_open_command(rnd_hid_t *hid)
 {
 
 }
 
-static int batch_open_popup(pcb_hid_t *hid, const char *menupath)
+static int batch_open_popup(rnd_hid_t *hid, const char *menupath)
 {
 	return 1;
 }
 
 
-static pcb_hid_t batch_hid;
+static rnd_hid_t batch_hid;
 
 int pplg_check_ver_hid_batch(int ver_needed) { return 0; }
 
@@ -338,11 +338,11 @@ void pplg_uninit_hid_batch(void)
 int pplg_init_hid_batch(void)
 {
 	PCB_API_CHK_VER;
-	memset(&batch_hid, 0, sizeof(pcb_hid_t));
+	memset(&batch_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&batch_hid);
 
-	batch_hid.struct_size = sizeof(pcb_hid_t);
+	batch_hid.struct_size = sizeof(rnd_hid_t);
 	batch_hid.name = "batch";
 	batch_hid.description = "Batch-mode GUI for non-interactive use.";
 	batch_hid.gui = 1;

@@ -127,7 +127,7 @@ static void update_vis(search_ctx_t *ctx)
 }
 
 /* look up row and col for a widget attr in a [row][col] widget idx array; returns 0 on success */
-static int rc_lookup(search_ctx_t *ctx, int w[MAX_ROW][MAX_COL], pcb_hid_attribute_t *attr, int *row, int *col)
+static int rc_lookup(search_ctx_t *ctx, int w[MAX_ROW][MAX_COL], rnd_hid_attribute_t *attr, int *row, int *col)
 {
 	int r, c, idx = attr - ctx->dlg;
 	for(r = 0; r < MAX_ROW; r++) {
@@ -143,7 +143,7 @@ static int rc_lookup(search_ctx_t *ctx, int w[MAX_ROW][MAX_COL], pcb_hid_attribu
 }
 
 /* look up row for a widget attr in a [row] widget idx array; returns 0 on success */
-static int r_lookup(search_ctx_t *ctx, int w[MAX_ROW], pcb_hid_attribute_t *attr, int *row)
+static int r_lookup(search_ctx_t *ctx, int w[MAX_ROW], rnd_hid_attribute_t *attr, int *row)
 {
 	int r, idx = attr - ctx->dlg;
 	for(r = 0; r < MAX_ROW; r++) {
@@ -166,7 +166,7 @@ static void append_expr(gds_t *dst, search_expr_t *e, int sepchar)
 
 static void redraw_expr(search_ctx_t *ctx, int row, int col)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	gds_t buf;
 	search_expr_t *e = &(ctx->expr[row][col]);
 
@@ -185,7 +185,7 @@ static void redraw_expr(search_ctx_t *ctx, int row, int col)
 
 static void search_recompile(search_ctx_t *ctx)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	gds_t buf;
 	int row, col;
 
@@ -212,7 +212,7 @@ static void search_recompile(search_ctx_t *ctx)
 	gds_uninit(&buf);
 }
 
-static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void search_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
 	int row, col;
@@ -234,7 +234,7 @@ static void search_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	search_recompile(ctx);
 }
 
-static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void search_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
 	int row, col;
@@ -250,7 +250,7 @@ static void search_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	}
 }
 
-static void search_enable_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void search_enable_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
 	if (WIZ(ctx))
@@ -258,7 +258,7 @@ static void search_enable_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	update_vis(ctx);
 }
 
-static void search_append_col_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void search_append_col_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
 	int row, col;
@@ -278,7 +278,7 @@ static void search_append_col_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	rnd_message(RND_MSG_ERROR, "Too many expressions in the row, can not add more\n");
 }
 
-static void search_append_row_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void search_append_row_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
 	int row;
@@ -295,7 +295,7 @@ static void search_append_row_cb(void *hid_ctx, void *caller_data, pcb_hid_attri
 	rnd_message(RND_MSG_ERROR, "Too many expression rows, can not add more\n");
 }
 
-static void search_apply_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void search_apply_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
 	if (ctx->dlg[ctx->wexpr_str].val.str != NULL)

@@ -48,17 +48,17 @@ static void undo_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(undo_ctx_t));
 }
 
-static void cb_undo(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void cb_undo(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_undo(pcb_true);
 }
 
-static void cb_redo(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void cb_redo(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_redo(pcb_true);
 }
 
-static void cb_clear(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void cb_clear(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_undo_clear_list(pcb_true);
 }
@@ -66,7 +66,7 @@ static void cb_clear(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 
 static void undo_data2dlg(undo_ctx_t *ctx)
 {
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[4], *cursor_path = NULL;
@@ -108,7 +108,7 @@ static void undo_data2dlg(undo_ctx_t *ctx)
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);

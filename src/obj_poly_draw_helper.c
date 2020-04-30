@@ -69,7 +69,7 @@ static size_t fc_alloced = 0;
 	}
 
 
-static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
+static void fill_contour(rnd_hid_gc_t gc, pcb_pline_t * pl)
 {
 	size_t n, i = 0;
 	pcb_vnode_t *v;
@@ -108,7 +108,7 @@ static void fill_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 }
 
 
-static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
+static void thindraw_contour(rnd_hid_gc_t gc, pcb_pline_t * pl)
 {
 	pcb_vnode_t *v;
 
@@ -138,14 +138,14 @@ static void thindraw_contour(pcb_hid_gc_t gc, pcb_pline_t * pl)
 
 static void fill_contour_cb(pcb_pline_t * pl, void *user_data)
 {
-	pcb_hid_gc_t gc = (pcb_hid_gc_t) user_data;
+	rnd_hid_gc_t gc = (rnd_hid_gc_t) user_data;
 	pcb_pline_t *local_pl = pl;
 
 	fill_contour(gc, pl);
 	pcb_poly_contours_free(&local_pl);
 }
 
-static void fill_clipped_contour(pcb_hid_gc_t gc, pcb_pline_t * pl, const rnd_rnd_box_t * clip_box)
+static void fill_clipped_contour(rnd_hid_gc_t gc, pcb_pline_t * pl, const rnd_rnd_box_t * clip_box)
 {
 	pcb_pline_t *pl_copy;
 	rnd_polyarea_t *clip_poly;
@@ -214,7 +214,7 @@ static int should_compute_no_holes(pcb_poly_t * poly, const rnd_rnd_box_t * clip
 
 #undef BOUNDS_INSIDE_CLIP_THRESHOLD
 
-static void pcb_dhlp_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const rnd_rnd_box_t * clip_box)
+static void pcb_dhlp_fill_pcb_polygon(rnd_hid_gc_t gc, pcb_poly_t * poly, const rnd_rnd_box_t * clip_box)
 {
 	if (!poly->NoHolesValid) {
 		/* If enough of the polygon is on-screen, compute the entire
@@ -249,12 +249,12 @@ static void pcb_dhlp_fill_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const 
 
 static int thindraw_hole_cb(pcb_pline_t * pl, void *user_data)
 {
-	pcb_hid_gc_t gc = (pcb_hid_gc_t) user_data;
+	rnd_hid_gc_t gc = (rnd_hid_gc_t) user_data;
 	thindraw_contour(gc, pl);
 	return 0;
 }
 
-static void pcb_dhlp_thindraw_pcb_polygon(pcb_hid_gc_t gc, pcb_poly_t * poly, const rnd_rnd_box_t * clip_box)
+static void pcb_dhlp_thindraw_pcb_polygon(rnd_hid_gc_t gc, pcb_poly_t * poly, const rnd_rnd_box_t * clip_box)
 {
 	thindraw_contour(gc, poly->Clipped->contours);
 	pcb_poly_holes(poly, clip_box, thindraw_hole_cb, gc);

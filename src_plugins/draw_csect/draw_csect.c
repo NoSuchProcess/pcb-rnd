@@ -44,7 +44,7 @@
 #include "obj_text_draw.h"
 #include "obj_line_draw.h"
 
-extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
+extern rnd_layergrp_id_t pcb_actd_EditGroup_gid;
 
 static const char *COLOR_COPPER_ = "#C05020";
 static const char *COLOR_SUBSTRATE_ = "#E0D090";
@@ -61,12 +61,12 @@ static rnd_color_t
 	COLOR_COPPER, COLOR_SUBSTRATE, COLOR_SILK, COLOR_MASK,
 	COLOR_PASTE, COLOR_MISC, COLOR_OUTLINE;
 
-static pcb_layer_id_t drag_lid = -1;
-static pcb_layergrp_id_t drag_gid = -1, drag_gid_subst = -1;
+static rnd_layer_id_t drag_lid = -1;
+static rnd_layergrp_id_t drag_gid = -1, drag_gid_subst = -1;
 
 #define GROUP_WIDTH_MM 75
 
-static pcb_xform_t def_xform;
+static rnd_xform_t def_xform;
 static pcb_draw_info_t def_info;
 
 /* Draw a text at x;y sized scale percentage */
@@ -106,7 +106,7 @@ static pcb_text_t *dtext_(rnd_coord_t x, rnd_coord_t y, int scale, int dir, cons
 }
 
 /* Draw a text at x;y with a background */
-static pcb_text_t *dtext_bg(pcb_hid_gc_t gc, int x, int y, int scale, int dir, const char *txt, const rnd_color_t *bgcolor, const rnd_color_t *fgcolor)
+static pcb_text_t *dtext_bg(rnd_hid_gc_t gc, int x, int y, int scale, int dir, const char *txt, const rnd_color_t *bgcolor, const rnd_color_t *fgcolor)
 {
 	static pcb_text_t t;
 
@@ -253,7 +253,7 @@ static char layer_valid[PCB_MAX_LAYER];
 static char group_valid[PCB_MAX_LAYERGRP];
 static char outline_valid;
 
-static void reg_layer_coords(pcb_layer_id_t lid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void reg_layer_coords(rnd_layer_id_t lid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	if ((lid < 0) || (lid >= PCB_MAX_LAYER))
 		return;
@@ -264,7 +264,7 @@ static void reg_layer_coords(pcb_layer_id_t lid, rnd_coord_t x1, rnd_coord_t y1,
 	layer_valid[lid] = 1;
 }
 
-static void reg_group_coords(pcb_layergrp_id_t gid, rnd_coord_t y1, rnd_coord_t y2)
+static void reg_group_coords(rnd_layergrp_id_t gid, rnd_coord_t y1, rnd_coord_t y2)
 {
 	if ((gid < 0) || (gid >= PCB_MAX_LAYER))
 		return;
@@ -289,9 +289,9 @@ static void reset_layer_coords(void)
 	outline_valid = 0;
 }
 
-static pcb_layer_id_t get_layer_coords(rnd_coord_t x, rnd_coord_t y)
+static rnd_layer_id_t get_layer_coords(rnd_coord_t x, rnd_coord_t y)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 
 	for(n = 0; n < PCB_MAX_LAYER; n++) {
 		if (!layer_valid[n]) continue;
@@ -302,9 +302,9 @@ static pcb_layer_id_t get_layer_coords(rnd_coord_t x, rnd_coord_t y)
 	return -1;
 }
 
-static pcb_layergrp_id_t get_group_coords(rnd_coord_t y, rnd_coord_t *y1, rnd_coord_t *y2)
+static rnd_layergrp_id_t get_group_coords(rnd_coord_t y, rnd_coord_t *y1, rnd_coord_t *y2)
 {
-	pcb_layergrp_id_t n;
+	rnd_layergrp_id_t n;
 
 	for(n = 0; n < PCB_MAX_LAYERGRP; n++) {
 		if (!group_valid[n]) continue;
@@ -317,7 +317,7 @@ static pcb_layergrp_id_t get_group_coords(rnd_coord_t y, rnd_coord_t *y1, rnd_co
 	return -1;
 }
 
-static rnd_coord_t create_button(pcb_hid_gc_t gc, int x, int y, const char *label, rnd_rnd_box_t *box)
+static rnd_coord_t create_button(rnd_hid_gc_t gc, int x, int y, const char *label, rnd_rnd_box_t *box)
 {
 	pcb_text_t *t;
 	t = dtext_bg(gc, x, y, 200, 0, label, &COLOR_BG, &COLOR_ANNOT);
@@ -335,13 +335,13 @@ static int is_button(int x, int y, const rnd_rnd_box_t *box)
 	return (x >= box->X1) && (x <= box->X2) && (y >= box->Y1) && (y <= box->Y2);
 }
 
-static pcb_hid_gc_t csect_gc;
+static rnd_hid_gc_t csect_gc;
 
 static rnd_coord_t ox, oy, cx, cy;
 static int drag_addgrp, drag_delgrp, drag_addlayer, drag_dellayer, drag_addoutline;
-static pcb_layergrp_id_t gactive = -1;
-static pcb_layergrp_id_t outline_gactive = -1;
-static pcb_layer_id_t lactive = -1;
+static rnd_layergrp_id_t gactive = -1;
+static rnd_layergrp_id_t outline_gactive = -1;
+static rnd_layer_id_t lactive = -1;
 int lactive_idx = -1;
 
 /* true if we are dragging somehting */
@@ -356,7 +356,7 @@ typedef enum {
 static void mark_grp(rnd_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc)
 {
 	rnd_coord_t y1, y2, x0 = -PCB_MM_TO_COORD(5);
-	pcb_layergrp_id_t g;
+	rnd_layergrp_id_t g;
 
 	g = get_group_coords(y, &y1, &y2);
 
@@ -379,7 +379,7 @@ static void mark_grp(rnd_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 		gactive = -1;
 }
 
-static void mark_outline_grp(rnd_coord_t x, rnd_coord_t y, pcb_layergrp_id_t gid)
+static void mark_outline_grp(rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid)
 {
 	if (outline_valid &&
 			(outline_crd.X1 <= x) && (outline_crd.Y1 <= y) &&
@@ -418,7 +418,7 @@ static void mark_layer_order(rnd_coord_t x)
 	ty2 = layer_crd[g->lid[0]].Y2;
 
 	for(lactive_idx = g->len-1; lactive_idx >= 0; lactive_idx--) {
-		pcb_layer_id_t lid = g->lid[lactive_idx];
+		rnd_layer_id_t lid = g->lid[lactive_idx];
 		if (x > (layer_crd[lid].X1 + layer_crd[lid].X2)/2) {
 			tx = layer_crd[lid].X2;
 			break;
@@ -429,7 +429,7 @@ static void mark_layer_order(rnd_coord_t x)
 	lactive_idx++;
 }
 
-static void draw_hover_label(pcb_hid_gc_t gc, const char *str)
+static void draw_hover_label(rnd_hid_gc_t gc, const char *str)
 {
 	int x0 = PCB_MM_TO_COORD(2.5); /* compensate for the mouse cursor (sort of random) */
 	pcb_render->set_color(gc, &COLOR_ANNOT);
@@ -437,9 +437,9 @@ static void draw_hover_label(pcb_hid_gc_t gc, const char *str)
 }
 
 /* Draw the cross-section layer */
-static void draw_csect(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+static void draw_csect(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
-	pcb_layergrp_id_t gid, outline_gid = -1;
+	rnd_layergrp_id_t gid, outline_gid = -1;
 	int ystart = 10, x, y, last_copper_step = 5;
 
 	reset_layer_coords();
@@ -510,7 +510,7 @@ TODO("layer: handle multiple outline layers")
 			x = GROUP_WIDTH_MM + 3;
 			for(i = 0; i < g->len; i++) {
 				pcb_text_t *t;
-				pcb_layer_id_t lid = g->lid[i];
+				rnd_layer_id_t lid = g->lid[i];
 				pcb_layer_t *l = &PCB->Data->Layer[lid];
 				int redraw_text = 0;
 
@@ -621,7 +621,7 @@ TODO("layer: handle multiple outline layers")
 }
 
 /* Returns 0 if gactive can be removed from its current group */
-static int check_layer_del(pcb_layer_id_t lid)
+static int check_layer_del(rnd_layer_id_t lid)
 {
 	pcb_layergrp_t *grp;
 	unsigned int tflg;
@@ -679,7 +679,7 @@ static void do_move_grp()
 static rnd_bool mouse_csect(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	rnd_bool res = 0;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 
 	switch(kind) {
 		case PCB_HID_MOUSE_PRESS:
@@ -723,7 +723,7 @@ static rnd_bool mouse_csect(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 			
 			if ((x > 0) && (x < PCB_MM_TO_COORD(GROUP_WIDTH_MM))) {
 				rnd_coord_t tmp;
-				pcb_layergrp_id_t gid;
+				rnd_layergrp_id_t gid;
 				gid = get_group_coords(y, &tmp, &tmp);
 				if ((gid >= 0) && (pcb_layergrp_flags(PCB, gid) & PCB_LYT_COPPER) && (pcb_layergrp_flags(PCB, gid) & PCB_LYT_INTERN)) {
 					drag_gid = gid;
@@ -843,7 +843,7 @@ static rnd_bool mouse_csect(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 						rnd_message(RND_MSG_INFO, "moved layer %s to group %d\n", l->name, gactive);
 						move_layer_to_its_place:;
 						if (lactive_idx < g->len-1) {
-							memmove(g->lid + lactive_idx + 1, g->lid + lactive_idx, (g->len - 1 - lactive_idx) * sizeof(pcb_layer_id_t));
+							memmove(g->lid + lactive_idx + 1, g->lid + lactive_idx, (g->len - 1 - lactive_idx) * sizeof(rnd_layer_id_t));
 							g->lid[lactive_idx] = drag_lid;
 						}
 						rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
@@ -898,7 +898,7 @@ static const char pcb_acth_dump_csect[] = "Print the cross-section of the board 
 
 static fgw_error_t pcb_act_dump_csect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 
 	for(gid = 0; gid < pcb_max_group(PCB); gid++) {
 		int i;
@@ -924,7 +924,7 @@ static fgw_error_t pcb_act_dump_csect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		printf("%s {%ld} %s\n", type_gfx, gid, g->name);
 		for(i = 0; i < g->len; i++) {
-			pcb_layer_id_t lid = g->lid[i];
+			rnd_layer_id_t lid = g->lid[i];
 			pcb_layer_t *l = &PCB->Data->Layer[lid];
 			printf("      [%ld] %s comb=", lid, l->name);
 			if (l->comb & PCB_LYC_SUB) printf(" sub");

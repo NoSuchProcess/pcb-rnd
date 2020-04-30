@@ -150,7 +150,7 @@ static void brave2dlg(void *hid_ctx)
 }
 
 /* Convert the current state of dialog box widget into brave bits, update the conf */
-static void dlg2brave(pcb_hid_attribute_t *attrs)
+static void dlg2brave(rnd_hid_attribute_t *attrs)
 {
 	desc_t *d;
 	for(d = desc; d->name != NULL; d++)
@@ -158,14 +158,14 @@ static void dlg2brave(pcb_hid_attribute_t *attrs)
 }
 
 /* If a checkbox changes, do the conversion forth and back to ensure sync */
-static void brave_dialog_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void brave_dialog_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	dlg2brave(caller_data);
 	brave2dlg(hid_ctx);
 }
 
 /* Tick in all - button callback */
-static void brave_dialog_allon(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void brave_dialog_allon(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	desc_t *d;
 	for(d = desc; d->name != NULL; d++)
@@ -174,7 +174,7 @@ static void brave_dialog_allon(void *hid_ctx, void *caller_data, pcb_hid_attribu
 }
 
 /* Tick off all - button callback  */
-static void brave_dialog_alloff(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void brave_dialog_alloff(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	desc_t *d;
 	for(d = desc; d->name != NULL; d++)
@@ -183,7 +183,7 @@ static void brave_dialog_alloff(void *hid_ctx, void *caller_data, pcb_hid_attrib
 }
 
 /* Copy the config from CLI to USER and flush the file */
-static void brave_dialog_save(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void brave_dialog_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_conf_set(RND_CFR_USER, "rc/brave", 0, conf_core.rc.brave, RND_POL_OVERWRITE);
 	if (rnd_conf_isdirty(RND_CFR_USER))

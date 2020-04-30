@@ -20,7 +20,7 @@
 
 const char *lpr_cookie = "lpr HID";
 
-static pcb_export_opt_t base_lpr_options[] = {
+static rnd_export_opt_t base_lpr_options[] = {
 
 /* %start-doc options "98 lpr Printing Options"
 @ftable @code
@@ -39,11 +39,11 @@ PDF output with a virtual PDF printer. Example: @*
 
 #define NUM_OPTIONS (sizeof(lpr_options)/sizeof(lpr_options[0]))
 
-static pcb_export_opt_t *lpr_options = 0;
+static rnd_export_opt_t *lpr_options = 0;
 static int num_lpr_options = 0;
-static pcb_hid_attr_val_t *lpr_values;
+static rnd_hid_attr_val_t *lpr_values;
 
-static pcb_export_opt_t *lpr_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 {
 	/*
 	 * We initialize the default value in this manner because the GUI
@@ -55,18 +55,18 @@ static pcb_export_opt_t *lpr_get_export_options(pcb_hid_t *hid, int *n)
 	}
 
 	if (lpr_options == 0) {
-		pcb_export_opt_t *ps_opts = ps_hid.get_export_options(&ps_hid, &num_lpr_options);
-		lpr_options = calloc(num_lpr_options, sizeof(pcb_hid_attribute_t));
-		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(pcb_hid_attribute_t));
+		rnd_export_opt_t *ps_opts = ps_hid.get_export_options(&ps_hid, &num_lpr_options);
+		lpr_options = calloc(num_lpr_options, sizeof(rnd_hid_attribute_t));
+		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
-		lpr_values = (pcb_hid_attr_val_t *) calloc(num_lpr_options, sizeof(pcb_hid_attr_val_t));
+		lpr_values = (rnd_hid_attr_val_t *) calloc(num_lpr_options, sizeof(rnd_hid_attr_val_t));
 	}
 	if (n)
 		*n = num_lpr_options;
 	return lpr_options;
 }
 
-static void lpr_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void lpr_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	FILE *f;
 	int i;
@@ -93,21 +93,21 @@ static void lpr_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_pclose(f);
 }
 
-static int lpr_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int lpr_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	lpr_get_export_options(hid, 0);
 	pcb_export_register_opts(lpr_options, num_lpr_options, lpr_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static void lpr_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void lpr_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 	ps_calibrate_1(hid, xval, yval, 1);
 }
 
-static pcb_hid_t lpr_hid;
+static rnd_hid_t lpr_hid;
 
-static int lpr_usage(pcb_hid_t *hid, const char *topic)
+static int lpr_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nlpr exporter command line arguments:\n\n");
 	pcb_hid_usage(base_lpr_options, sizeof(base_lpr_options) / sizeof(base_lpr_options[0]));
@@ -125,12 +125,12 @@ void pplg_uninit_export_lpr(void)
 int pplg_init_export_lpr(void)
 {
 	PCB_API_CHK_VER;
-	memset(&lpr_hid, 0, sizeof(pcb_hid_t));
+	memset(&lpr_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&lpr_hid);
 	ps_ps_init(&lpr_hid);
 
-	lpr_hid.struct_size = sizeof(pcb_hid_t);
+	lpr_hid.struct_size = sizeof(rnd_hid_t);
 	lpr_hid.name = "lpr";
 	lpr_hid.description = "Postscript print";
 	lpr_hid.printer = 1;

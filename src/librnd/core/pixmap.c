@@ -36,7 +36,7 @@
 
 static unsigned int pixmap_hash_(const void *key_, int pixels)
 {
-	pcb_pixmap_t *key = (pcb_pixmap_t *)key_;
+	rnd_pixmap_t *key = (rnd_pixmap_t *)key_;
 	unsigned int i;
 
 	if (pixels && key->hash_valid)
@@ -69,7 +69,7 @@ unsigned int pcb_pixmap_hash_pixels(const void *key)
 
 static int pixmap_eq_(const void *keya_, const void *keyb_, int pixels)
 {
-	const pcb_pixmap_t *keya = keya_, *keyb = keyb_;
+	const rnd_pixmap_t *keya = keya_, *keyb = keyb_;
 	if ((keya->transp_valid) || (keyb->transp_valid)) {
 		if (keya->transp_valid != keyb->transp_valid)
 			return 0;
@@ -138,7 +138,7 @@ void rnd_pixmap_uninit(void)
 		rnd_message(RND_MSG_ERROR, "pcb_pixmap_chain is not empty: %s. Fix your plugins!\n", i->cookie);
 }
 
-int pcb_pixmap_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
+int pcb_pixmap_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 {
 	pcb_pixmap_import_t *i;
 	for(i = pcb_pixmap_chain; i != NULL; i = i->next)
@@ -147,18 +147,18 @@ int pcb_pixmap_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
 	return -1;
 }
 
-pcb_pixmap_t *rnd_pixmap_load(rnd_hidlib_t *hidlib, const char *fn)
+rnd_pixmap_t *rnd_pixmap_load(rnd_hidlib_t *hidlib, const char *fn)
 {
-	pcb_pixmap_t *p = calloc(sizeof(pcb_pixmap_t), 1);
+	rnd_pixmap_t *p = calloc(sizeof(rnd_pixmap_t), 1);
 	if (pcb_pixmap_load(hidlib, p, fn) == 0)
 		return p;
 	free(p);
 	return NULL;
 }
 
-pcb_pixmap_t *rnd_pixmap_alloc(rnd_hidlib_t *hidlib, long sx, long sy)
+rnd_pixmap_t *rnd_pixmap_alloc(rnd_hidlib_t *hidlib, long sx, long sy)
 {
-	pcb_pixmap_t *p = calloc(sizeof(pcb_pixmap_t), 1);
+	rnd_pixmap_t *p = calloc(sizeof(rnd_pixmap_t), 1);
 	p->sx = sx;
 	p->sy = sy;
 	p->size = sx * sy * 3;
@@ -166,12 +166,12 @@ pcb_pixmap_t *rnd_pixmap_alloc(rnd_hidlib_t *hidlib, long sx, long sy)
 	return p;
 }
 
-void rnd_pixmap_free_fields(pcb_pixmap_t *pxm)
+void rnd_pixmap_free_fields(rnd_pixmap_t *pxm)
 {
 	free(pxm->p);
 }
 
-void rnd_pixmap_free(pcb_pixmap_t *pxm)
+void rnd_pixmap_free(rnd_pixmap_t *pxm)
 {
 	rnd_pixmap_free_fields(pxm);
 	free(pxm);

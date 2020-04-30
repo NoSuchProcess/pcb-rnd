@@ -41,8 +41,8 @@ struct pcb_gfx_s {       /* holds information about gfxs */
 	rnd_angle_t rot;
 	unsigned int xmirror:1, ymirror:1;
 
-	pcb_pixmap_t *pxm_neutral;     /* graphics is a pixmap, if not NULL - in neutral scale/rot */
-	pcb_pixmap_t *pxm_xformed;     /* transformed version from the cache */
+	rnd_pixmap_t *pxm_neutral;     /* graphics is a pixmap, if not NULL - in neutral scale/rot */
+	rnd_pixmap_t *pxm_xformed;     /* transformed version from the cache */
 
 	/* calculated/cached fields */
 	rnd_coord_t cox[4], coy[4];    /* the 4 corners */
@@ -77,7 +77,7 @@ void pcb_gfx_scale(pcb_gfx_t *gfx, double sx, double sy, double sth);
 void pcb_gfx_chg_geo(pcb_gfx_t *gfx, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy,  rnd_angle_t rot, rnd_bool undoable);
 
 /* assings pxm to gfx and free pxm (if needed) */
-void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, pcb_pixmap_t *pxm, rnd_bool undoable);
+void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, rnd_pixmap_t *pxm, rnd_bool undoable);
 
 /*** hash and eq ***/
 int pcb_gfx_eq(const pcb_host_trans_t *tr1, const pcb_gfx_t *g1, const pcb_host_trans_t *tr2, const pcb_gfx_t *g2);

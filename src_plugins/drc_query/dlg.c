@@ -37,7 +37,7 @@
 
 #define PCB dont_use
 
-static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
+static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
 
 typedef struct{
 	PCB_DAD_DECL_NOINIT(dlg)
@@ -80,7 +80,7 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 	pcb_dad_retovr_t retovr;
 	lht_node_t *nd = rnd_conf_lht_get_at_mainplug(ctx->role, ctx->path, 1, 0);
 	if (nd != NULL) {
-		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
+		rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
 		pcb_hid_text_t *txt = atxt->wdata;
 		int *dis, dis_ = 0;
 
@@ -111,10 +111,10 @@ static void drcq_open_view_win(rnd_hidlib_t *hidlib, pcb_view_list_t *view)
 
 }
 
-static void rule_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+static void rule_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	rule_edit_ctx_t *ctx = caller_data;
-	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
+	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
 	pcb_hid_text_t *txt = atxt->wdata;
 	char *script = txt->hid_get_text(atxt, hid_ctx);
 	pcb_view_list_t *view = calloc(sizeof(pcb_view_list_t), 1);
@@ -168,13 +168,13 @@ do { \
 	ntxt->data.text.value = rnd_strdup(nval == NULL ? "" : nval); \
 } while(0)
 
-static void rule_btn_save_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	rule_edit_ctx_t *ctx = caller_data;
 	int ri = ctx->dlg[ctx->wsaveroles].val.lng;
 	lht_node_t *nd;
 	rnd_conf_role_t role;
-	pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
+	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
 	pcb_hid_text_t *txt = atxt->wdata;
 
 	if ((ri < 0) || (ri >= sizeof(save_rolee)/sizeof(save_rolee[0]))) {
@@ -364,7 +364,7 @@ static void drc_rlist_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void drc_rlist_pcb2dlg(void)
 {
 	drc_rlist_ctx_t *ctx = &drc_rlist_ctx;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[5], *cursor_path = NULL;
@@ -414,7 +414,7 @@ static void drc_rlist_pcb2dlg(void)
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
@@ -424,7 +424,7 @@ static void drc_rlist_pcb2dlg(void)
 	}
 }
 
-static void rlist_btn_toggle_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+static void rlist_btn_toggle_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
@@ -469,7 +469,7 @@ do { \
 	free(path); \
 } while(0)
 
-static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
@@ -480,7 +480,7 @@ static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_dlg_rule_edit(role, row->cell[0]);
 }
 
-static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
@@ -505,9 +505,9 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	drc_rlist_pcb2dlg(); /* for the run time */
 }
 
-static void rlist_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	pcb_hid_tree_t *tree = attrib->wdata;
 	drc_rlist_ctx_t *ctx = tree->user_ctx;
 	lht_node_t *nd;

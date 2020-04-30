@@ -9,7 +9,7 @@
    HA_boolean uses lng, HA_enum sets lng to the index and
    str to the enumeration string.  PCB_HATT_LABEL just shows the
    default str. */
-struct pcb_hid_attr_val_s {
+struct rnd_hid_attr_val_s {
 	long lng;
 	const char *str;
 	double dbl;
@@ -71,16 +71,16 @@ typedef enum pcb_hid_attr_type_e {
 
 #define PCB_HAT_IS_STR(type) (type == PCB_HATT_STRING)
 
-/* alternative field names in struct pcb_hid_attribute_s */
+/* alternative field names in struct rnd_hid_attribute_s */
 #define pcb_hatt_flags       hatt_flags
 #define pcb_hatt_table_cols  wdata_aux1
 
-struct pcb_hid_attribute_s {
+struct rnd_hid_attribute_s {
 	const char *name;
 	const char *help_text;
 	pcb_hid_attr_type_t type;
 	double min_val, max_val; /* for integer and real */
-	pcb_hid_attr_val_t val; /* Also actual value for global attributes. */
+	rnd_hid_attr_val_t val; /* Also actual value for global attributes. */
 
 	/* PCB_HATT_ENUM: const char ** (NULL terminated list of values)
 	   PCB_HATT_PICTURE & PCB_HATT_PICBUTTON: const char **xpm
@@ -91,9 +91,9 @@ struct pcb_hid_attribute_s {
 	/* dynamic API */
 	unsigned changed:1; /* 0 for initial values, 1 on user change */
 	unsigned empty:1;   /* set to 1 by the widget implementation if the textual value is empty, where applicable */
-	void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr); /* called upon value change by the user */
-	void (*right_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);  /* called upon right click by the user */
-	void (*enter_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);  /* called upon the user pressed enter in a widget that handles keys */
+	void (*change_cb)(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr); /* called upon value change by the user */
+	void (*right_cb)(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);  /* called upon right click by the user */
+	void (*enter_cb)(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);  /* called upon the user pressed enter in a widget that handles keys */
 	void *user_data; /* ignored; the caller is free to use it */
 	unsigned int hatt_flags;
 
@@ -102,12 +102,12 @@ struct pcb_hid_attribute_s {
 	int geo_height;
 };
 
-struct pcb_export_opt_s {
+struct rnd_export_opt_s {
 	const char *name;
 	const char *help_text;
 	pcb_hid_attr_type_t type;
 	double min_val, max_val;        /* for integer and real */
-	pcb_hid_attr_val_t default_val;
+	rnd_hid_attr_val_t default_val;
 	const char **enumerations; /* NULL terminated list of values for a PCB_HATT_ENUM */
 
 
@@ -123,7 +123,7 @@ struct pcb_export_opt_s {
    current session won't register and the registration is lost immediately
    after the export because pcb-rnd exits. Cam or dialog box direct exporting
    won't go through this. */
-extern void pcb_export_register_opts(pcb_export_opt_t *, int, const char *cookie, int copy);
+extern void pcb_export_register_opts(rnd_export_opt_t *, int, const char *cookie, int copy);
 
 /* Remove all attributes registered with the given cookie */
 void pcb_export_remove_opts_by_cookie(const char *cookie);
@@ -133,29 +133,29 @@ void pcb_export_uninit(void);
 
 typedef struct pcb_hid_attr_node_s {
 	struct pcb_hid_attr_node_s *next;
-	pcb_export_opt_t *opts;
+	rnd_export_opt_t *opts;
 	int n;
 	const char *cookie;
 } pcb_hid_attr_node_t;
 
 extern pcb_hid_attr_node_t *hid_attr_nodes;
 
-void pcb_hid_usage(pcb_export_opt_t *a, int numa);
+void pcb_hid_usage(rnd_export_opt_t *a, int numa);
 void pcb_hid_usage_option(const char *name, const char *help);
 
 /* Count the number of direct children, start_from the first children */
-int pcb_hid_attrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int n_attrs);
+int pcb_hid_attrdlg_num_children(rnd_hid_attribute_t *attrs, int start_from, int n_attrs);
 
 /* Invoke a simple modal attribute dialog if GUI is available */
-int pcb_attribute_dialog_(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, void **retovr, int defx, int defy, int minx, int miny, void **hid_ctx_out);
-int pcb_attribute_dialog(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data);
+int pcb_attribute_dialog_(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, void **retovr, int defx, int defy, int minx, int miny, void **hid_ctx_out);
+int pcb_attribute_dialog(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data);
 
 
 /* Convert between compflag bit value and name */
 const char *pcb_hid_compflag_bit2name(pcb_hatt_compflags_t bit);
 pcb_hatt_compflags_t pcb_hid_compflag_name2bit(const char *name);
 
-/*** When an pcb_export_opt_t item is a box, the following function is called
+/*** When an rnd_export_opt_t item is a box, the following function is called
      from its ->func ***/
 
 typedef enum pcb_hid_export_opt_func_action_e {
@@ -163,6 +163,6 @@ typedef enum pcb_hid_export_opt_func_action_e {
 	PCB_HIDEOF_DAD    /* call_ctx is a pcb_hid_export_opt_func_dad_t */
 } pcb_hid_export_opt_func_action_t;
 
-typedef void (*pcb_hid_export_opt_func_t)(pcb_hid_export_opt_func_action_t act, void *call_ctx, pcb_export_opt_t *opt);
+typedef void (*pcb_hid_export_opt_func_t)(pcb_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt);
 
 #endif

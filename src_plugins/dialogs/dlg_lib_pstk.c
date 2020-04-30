@@ -85,7 +85,7 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 {
 	pcb_pstk_proto_t *proto;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[4], *cursor_path = NULL;
@@ -121,7 +121,7 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
@@ -149,7 +149,7 @@ static void pstklib_setps(pcb_pstk_t *ps, pcb_data_t *data, rnd_cardinal_t proto
 	ps->ID = -1; /* disable undo and clipping */
 }
 
-static void pstklib_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+static void pstklib_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	pstk_lib_ctx_t *ctx = prv->user_ctx;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
@@ -214,9 +214,9 @@ static void pstklib_force_redraw(pstk_lib_ctx_t *ctx, pcb_pstk_t *ps)
 	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
 }
 
-static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void pstklib_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	pcb_hid_tree_t *tree = attrib->wdata;
 	pstk_lib_ctx_t *ctx = tree->user_ctx;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
@@ -234,17 +234,17 @@ static void pstklib_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_r
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
-static void pstklib_update_prv(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pstklib_update_prv(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
 }
 
-static void pstklib_update_layerc(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pstklib_update_layerc(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	int n, idx = -1, widx = attr - ctx->dlg;
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 
 	for(n = 0; n < pcb_proto_num_layers; n++) {
 		if (ctx->wlayerc[n] == widx) {
@@ -263,11 +263,11 @@ static void pstklib_update_layerc(void *hid_ctx, void *caller_data, pcb_hid_attr
 }
 
 
-static void pstklib_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+static void pstklib_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	const char *text;
@@ -316,7 +316,7 @@ static void pstklib_proto_edit_common(pstk_lib_ctx_t *ctx, pcb_data_t *data, rnd
 }
 
 
-static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pstklib_proto_edit(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
@@ -328,12 +328,12 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pstklib_proto_edit_common(ctx, data, strtol(row->cell[0], NULL, 10), 1);
 }
 
-static void pstklib_proto_new_(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr, int dup)
+static void pstklib_proto_new_(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr, int dup)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
 	pcb_pstk_proto_t proto_, *proto;
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	char tmp[64];
 	int tab;
 
@@ -365,21 +365,21 @@ static void pstklib_proto_new_(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	pstklib_proto_edit_common(ctx, data, ctx->proto_id, tab);
 }
 
-static void pstklib_proto_new(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pstklib_proto_new(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pstklib_proto_new_(hid_ctx, caller_data, attr, 0);
 }
 
-static void pstklib_proto_dup(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pstklib_proto_dup(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pstklib_proto_new_(hid_ctx, caller_data, attr, 1);
 }
 
-static void pstklib_proto_switch(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+static void pstklib_proto_switch(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_row_t *r;
 	rnd_cardinal_t from_pid, to_pid;
 	pcb_pstk_t *ps;
@@ -406,11 +406,11 @@ static void pstklib_proto_switch(void *hid_ctx, void *caller_data, pcb_hid_attri
 }
 
 
-static void pstklib_proto_select(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+static void pstklib_proto_select(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_row_t *r;
 	long pid;
 	rnd_rnd_box_t box;
@@ -449,7 +449,7 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, pcb_hid_attri
 	}
 }
 
-static void pstklib_count_uses(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pstklib_count_uses(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_cardinal_t len;
 	pstk_lib_ctx_t *ctx = caller_data;
@@ -464,7 +464,7 @@ static void pstklib_count_uses(void *hid_ctx, void *caller_data, pcb_hid_attribu
 	ctx->stat = NULL;
 }
 
-static void pstklib_del_unused(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pstklib_del_unused(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_cardinal_t len, n;
 	pstk_lib_ctx_t *ctx = caller_data;

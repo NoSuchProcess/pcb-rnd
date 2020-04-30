@@ -65,10 +65,10 @@ static void cam_gen_fn(pcb_cam_t *dst)
 }
 
 
-char *pcb_layer_to_file_name_append(gds_t *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
+char *pcb_layer_to_file_name_append(gds_t *dest, rnd_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
 {
 	const pcb_virt_layer_t *v;
-	pcb_layergrp_id_t group;
+	rnd_layergrp_id_t group;
 	const char *res = NULL;
 	static char buf[PCB_DERIVE_FN_SUFF_LEN];
 
@@ -146,7 +146,7 @@ char *pcb_layer_to_file_name_append(gds_t *dest, pcb_layer_id_t lid, unsigned in
 	return dest->array;
 }
 
-char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
+char *pcb_layer_to_file_name(gds_t *dest, rnd_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style)
 {
 	dest->used = 0;
 	return pcb_layer_to_file_name_append(dest, lid, flags, purpose, purpi, style);
@@ -184,7 +184,7 @@ char *pcb_derive_default_filename_(const char *pcbfile, const char *suffix)
 	return buf;
 }
 
-void pcb_derive_default_filename(const char *pcbfile, pcb_export_opt_t *filename_attrib, const char *suffix)
+void pcb_derive_default_filename(const char *pcbfile, rnd_export_opt_t *filename_attrib, const char *suffix)
 {
 	if (filename_attrib->default_val.str)
 		free((char *)filename_attrib->default_val.str);
@@ -193,7 +193,7 @@ void pcb_derive_default_filename(const char *pcbfile, pcb_export_opt_t *filename
 
 static void layervis_save_and_reset(pcb_cam_t *cam)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 	for(n = 0; n < cam->pcb->Data->LayerN; n++) {
 		cam->orig_vis[n] = cam->pcb->Data->Layer[n].meta.real.vis;
 		cam->pcb->Data->Layer[n].meta.real.vis = 0;
@@ -202,14 +202,14 @@ static void layervis_save_and_reset(pcb_cam_t *cam)
 
 static void layervis_restore(pcb_cam_t *cam)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 	for(n = 0; n < cam->pcb->Data->LayerN; n++)
 		cam->pcb->Data->Layer[n].meta.real.vis = cam->orig_vis[n];
 }
 
-static void cam_xform_init(pcb_xform_t *dst_xform)
+static void cam_xform_init(rnd_xform_t *dst_xform)
 {
-	memset(dst_xform, 0, sizeof(pcb_xform_t));
+	memset(dst_xform, 0, sizeof(rnd_xform_t));
 	dst_xform->omit_overlay = 1; /* normally exporters shouldn't draw overlays */
 }
 
@@ -257,7 +257,7 @@ static void read_out_params(pcb_cam_t *dst, char **str)
 	}
 }
 
-int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const pcb_export_opt_t *attr_tbl, int numa, pcb_hid_attr_val_t *options)
+int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, rnd_xform_t *dst_xform, const char *src, const rnd_export_opt_t *attr_tbl, int numa, rnd_hid_attr_val_t *options)
 {
 	char *curr, *next;
 
@@ -295,8 +295,8 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 
 	/* parse layers */
 	for(curr = next; curr != NULL; curr = next) {
-		pcb_layergrp_id_t gids[PCB_MAX_LAYERGRP];
-		pcb_xform_t *xf = NULL, xf_;
+		rnd_layergrp_id_t gids[PCB_MAX_LAYERGRP];
+		rnd_xform_t *xf = NULL, xf_;
 		int numg, vid;
 		char *spk[64], *spv[64];
 		int spc = sizeof(spk) / sizeof(spk[0]);
@@ -314,12 +314,12 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 		else if (numg >= 1) {
 			int n;
 			for(n = 0; n < numg; n++) {
-				pcb_layergrp_id_t gid = gids[n];
+				rnd_layergrp_id_t gid = gids[n];
 				pcb_layervis_change_group_vis(&pcb->hidlib, pcb->LayerGroups.grp[gid].lid[0], 1, 0);
 				dst->grp_vis[gid] = 1;
 				if (xf != NULL) {
 					dst->xform[gid] = &dst->xform_[gid];
-					memcpy(&dst->xform_[gid], &xf_, sizeof(pcb_xform_t));
+					memcpy(&dst->xform_[gid], &xf_, sizeof(rnd_xform_t));
 				}
 			}
 		}
@@ -327,7 +327,7 @@ int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, cons
 			dst->vgrp_vis[vid] = 1;
 			if (xf != NULL) {
 				dst->vxform[vid] = &dst->vxform_[vid];
-				memcpy(&dst->vxform_[vid], &xf_, sizeof(pcb_xform_t));
+				memcpy(&dst->vxform_[vid], &xf_, sizeof(rnd_xform_t));
 			}
 		}
 	}
@@ -357,7 +357,7 @@ int pcb_cam_end(pcb_cam_t *dst)
 }
 
 
-void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const char **fn_out)
+void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, rnd_xform_t *dst_xform, const char *src, const char **fn_out)
 {
 	char *eq;
 
@@ -380,7 +380,7 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xf
 				char *tmp;
 				char *spk[64], *spv[64], *end, *purpose = NULL;
 				int spc = sizeof(spk) / sizeof(spk[0]);
-				pcb_xform_t *dummy;
+				rnd_xform_t *dummy;
 
 				tmp = rnd_strdup(start);
 				end = pcb_parse_layergrp_address(start, spk, spv, &spc);
@@ -438,7 +438,7 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 	else if (strncmp(*input, "top_offs", 8) == 0) {
 		int tune, from_top = -1;
 		pcb_layergrp_t *tcop = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
-		pcb_layergrp_id_t tcop_id = pcb_layergrp_id(PCB, tcop);
+		rnd_layergrp_id_t tcop_id = pcb_layergrp_id(PCB, tcop);
 
 		(*input) += 8;
 		tune = get_tune(input);
@@ -449,7 +449,7 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 	else if (strncmp(*input, "bot_offs", 8) == 0) {
 		int tune, from_bot = -1;
 		pcb_layergrp_t *bcop = pcb_get_grp(&PCB->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
-		pcb_layergrp_id_t bcop_id = pcb_layergrp_id(PCB, bcop);
+		rnd_layergrp_id_t bcop_id = pcb_layergrp_id(PCB, bcop);
 
 		(*input) += 8;
 		tune = get_tune(input);
@@ -487,7 +487,7 @@ static int cam_update_name_cb(void *ctx_, gds_t *s, const char **input)
 	return 0;
 }
 
-static int cam_update_name(pcb_cam_t *cam, pcb_layergrp_id_t gid, const pcb_virt_layer_t *vl)
+static int cam_update_name(pcb_cam_t *cam, rnd_layergrp_id_t gid, const pcb_virt_layer_t *vl)
 {
 	cam_name_ctx_t ctx;
 	if (cam->fn_template == NULL)
@@ -509,7 +509,7 @@ static int cam_update_name(pcb_cam_t *cam, pcb_layergrp_id_t gid, const pcb_virt
 	return 0;
 }
 
-int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char *purpose, int purpi, unsigned int flags, pcb_xform_t **xform)
+int pcb_cam_set_layer_group_(pcb_cam_t *cam, rnd_layergrp_id_t group, const char *purpose, int purpi, unsigned int flags, rnd_xform_t **xform)
 {
 	const pcb_virt_layer_t *vl;
 

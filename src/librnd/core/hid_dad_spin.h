@@ -41,7 +41,7 @@ typedef struct {
 	int wall, wstr, wup, wdown, wunit, wwarn;
 	const rnd_unit_t *unit; /* for PCB_DAD_SPIN_COORD and PCB_DAD_SPIN_FREQ only: current unit */
 	pcb_family_t unit_family;
-	pcb_hid_attribute_t **attrs;
+	rnd_hid_attribute_t **attrs;
 	void **hid_ctx;
 	int set_writeback_lock;
 	rnd_coord_t last_good_crd;
@@ -134,21 +134,21 @@ extern const char *pcb_hid_dad_spin_unit[];
 extern const char *pcb_hid_dad_spin_unit[];
 extern const char *pcb_hid_dad_spin_warn[];
 
-void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
-void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
-void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
-void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
-void pcb_dad_spin_txt_enter_call_users(void *hid_ctx, pcb_hid_attribute_t *end); /* call the user's enter_cb on end */
-void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
-void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+void pcb_dad_spin_up_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
+void pcb_dad_spin_down_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
+void pcb_dad_spin_txt_enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
+void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
+void pcb_dad_spin_txt_enter_call_users(void *hid_ctx, rnd_hid_attribute_t *end); /* call the user's enter_cb on end */
+void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
+void pcb_dad_spin_unit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
-void pcb_dad_spin_free(pcb_hid_attribute_t *attrib);
-void pcb_dad_spin_set_num(pcb_hid_attribute_t *attr, long l, double d, rnd_coord_t c);
-int pcb_dad_spin_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled);
-int pcb_dad_spin_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide);
-int pcb_dad_spin_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
-void pcb_dad_spin_set_help(pcb_hid_attribute_t *end, const char *help);
-void pcb_dad_spin_set_geo(pcb_hid_attribute_t *end, pcb_hatt_compflags_t flg, int geo);
+void pcb_dad_spin_free(rnd_hid_attribute_t *attrib);
+void pcb_dad_spin_set_num(rnd_hid_attribute_t *attr, long l, double d, rnd_coord_t c);
+int pcb_dad_spin_widget_state(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled);
+int pcb_dad_spin_widget_hide(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide);
+int pcb_dad_spin_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
+void pcb_dad_spin_set_help(rnd_hid_attribute_t *end, const char *help);
+void pcb_dad_spin_set_geo(rnd_hid_attribute_t *end, pcb_hatt_compflags_t flg, int geo);
 
 void pcb_dad_spin_update_internal(pcb_hid_dad_spin_t *spin); /* update the widget from spin, before or after the dialog is realized */
 

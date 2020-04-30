@@ -145,8 +145,8 @@ static rnd_direction_t directionIncrement(rnd_direction_t dir)
 }
 
 #ifdef ROUTE_DEBUG
-pcb_hid_t *ddraw = NULL;
-static pcb_hid_gc_t ar_gc = 0;
+rnd_hid_t *ddraw = NULL;
+static rnd_hid_gc_t ar_gc = 0;
 #endif
 
 #define EXPENSIVE 3e28
@@ -406,7 +406,7 @@ static void showroutebox(routebox_t * rb);
 #endif
 
 /* group number of groups that hold surface mount pads */
-static pcb_layergrp_id_t front, back;
+static rnd_layergrp_id_t front, back;
 static rnd_bool usedGroup[PCB_MAX_LAYERGRP];
 static int x_cost[PCB_MAX_LAYERGRP], y_cost[PCB_MAX_LAYERGRP];
 static rnd_bool is_layer_group_active[PCB_MAX_LAYERGRP];
@@ -744,7 +744,7 @@ static routebox_t *AddIrregularObstacle(vtp0_t layergroupboxes[],
 static routebox_t *AddPolygon(vtp0_t layergroupboxes[], rnd_cardinal_t layer, pcb_poly_t *polygon, pcb_route_style_t * style)
 {
 	int is_not_rectangle = 1;
-	pcb_layergrp_id_t layergroup = pcb_layer_get_group(PCB, layer);
+	rnd_layergrp_id_t layergroup = pcb_layer_get_group(PCB, layer);
 	routebox_t *rb;
 	assert(0 <= layergroup && layergroup < pcb_max_group(PCB));
 	rb = AddIrregularObstacle(layergroupboxes,
@@ -870,7 +870,7 @@ static void CreateRouteData_subc(routedata_t *rd, vtp0_t layergroupboxes[], pcb_
 	PCB_END_LOOP;
 
 	for (i = 0; i < data->LayerN; i++) {
-		pcb_layergrp_id_t layergroup;
+		rnd_layergrp_id_t layergroup;
 		pcb_layer_t *ly = &data->Layer[i];
 
 		if (!(pcb_layer_flags_(ly) & PCB_LYT_COPPER))
@@ -943,7 +943,7 @@ static void CreateRouteData_subc(routedata_t *rd, vtp0_t layergroupboxes[], pcb_
 
 }
 
-static routebox_t *crd_add_line(routedata_t *rd, vtp0_t *layergroupboxes, pcb_layergrp_id_t group, pcb_any_obj_t *obj, int j, routebox_t **last_in_net, routebox_t **last_in_subnet)
+static routebox_t *crd_add_line(routedata_t *rd, vtp0_t *layergroupboxes, rnd_layergrp_id_t group, pcb_any_obj_t *obj, int j, routebox_t **last_in_net, routebox_t **last_in_subnet)
 {
 	routebox_t *rb = NULL;
 	pcb_line_t *line = (pcb_line_t *) obj;
@@ -1039,7 +1039,7 @@ static void CreateRouteData_subnet(routedata_t *rd, vtp0_t *layergroupboxes, vtp
 			rb = AddTerm(layergroupboxes, obj, rd->styles[j]);
 		else if (obj->type == PCB_OBJ_LINE) {
 			pcb_layer_t *layer = pcb_layer_get_real(obj->parent.layer);
-			pcb_layergrp_id_t group = layer->meta.real.grp;
+			rnd_layergrp_id_t group = layer->meta.real.grp;
 			rb = crd_add_line(rd, layergroupboxes, group, obj, j, last_in_net, &last_in_subnet);
 		}
 		else
@@ -1117,7 +1117,7 @@ static routedata_t *CreateRouteData()
 	routing_layers = 0;
 	for (group = 0; group < pcb_max_group(PCB); group++) {
 		for (i = 0; i < PCB->LayerGroups.grp[group].len; i++) {
-			pcb_layer_id_t lid = PCB->LayerGroups.grp[group].lid[i];
+			rnd_layer_id_t lid = PCB->LayerGroups.grp[group].lid[i];
 			/* layer must be 1) copper and 2) on */
 			if ((pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER) && PCB->Data->Layer[lid].meta.real.vis) {
 				routing_layers++;
@@ -1381,7 +1381,7 @@ static void showbox(rnd_rnd_box_t b, pcb_dimension_t thickness, int group)
 {
 	pcb_line_t *line;
 	pcb_layer_t *csl, *SLayer = pcb_get_layer(PCB->Data, group);
-	pcb_layer_id_t cs_id;
+	rnd_layer_id_t cs_id;
 	if (showboxen < -1)
 		return;
 	if (showboxen != -1 && showboxen != group)

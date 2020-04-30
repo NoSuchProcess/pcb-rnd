@@ -52,13 +52,13 @@
 typedef struct {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
 	pcb_gtk_t *gctx;
-	pcb_hid_attribute_t *attrs;
+	rnd_hid_attribute_t *attrs;
 	GtkWidget **wl;     /* content widget */
 	GtkWidget **wltop;  /* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	int n_attrs;
 	GtkWidget *dialog;
 	int close_cb_called;
-	pcb_hid_attr_val_t property[PCB_HATP_max];
+	rnd_hid_attr_val_t property[PCB_HATP_max];
 	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
 	char *id;
 	gulong destroy_handler;
@@ -91,7 +91,7 @@ typedef struct {
 static void set_flag_cb(GtkToggleButton *button, gpointer user_data)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), PCB_OBJ_PROP);
-	pcb_hid_attribute_t *dst = user_data;
+	rnd_hid_attribute_t *dst = user_data;
 
 	dst->changed = 1;
 	if (ctx->inhibit_valchg)
@@ -101,7 +101,7 @@ static void set_flag_cb(GtkToggleButton *button, gpointer user_data)
 	change_cb(ctx, dst);
 }
 
-static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
+static void entry_changed_cb(GtkEntry *entry, rnd_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(entry), PCB_OBJ_PROP);
 
@@ -114,13 +114,13 @@ static void entry_changed_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
-static void entry_activate_cb(GtkEntry *entry, pcb_hid_attribute_t *dst)
+static void entry_activate_cb(GtkEntry *entry, rnd_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(entry), PCB_OBJ_PROP);
 	enter_cb(ctx, dst);
 }
 
-static void enum_changed_cb(GtkComboBox *combo_box, pcb_hid_attribute_t *dst)
+static void enum_changed_cb(GtkComboBox *combo_box, rnd_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(combo_box), PCB_OBJ_PROP);
 
@@ -132,7 +132,7 @@ static void enum_changed_cb(GtkComboBox *combo_box, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
-static void notebook_changed_cb(GtkNotebook *nb, GtkWidget *page, guint page_num, pcb_hid_attribute_t *dst)
+static void notebook_changed_cb(GtkNotebook *nb, GtkWidget *page, guint page_num, rnd_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(nb), PCB_OBJ_PROP);
 
@@ -148,7 +148,7 @@ static void notebook_changed_cb(GtkNotebook *nb, GtkWidget *page, guint page_num
 	}
 }
 
-static void button_changed_cb(GtkButton *button, pcb_hid_attribute_t *dst)
+static void button_changed_cb(GtkButton *button, rnd_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), PCB_OBJ_PROP);
 
@@ -159,7 +159,7 @@ static void button_changed_cb(GtkButton *button, pcb_hid_attribute_t *dst)
 	change_cb(ctx, dst);
 }
 
-static void label_click_cb(GtkButton *evbox, GdkEvent *event, pcb_hid_attribute_t *dst)
+static void label_click_cb(GtkButton *evbox, GdkEvent *event, rnd_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(evbox), PCB_OBJ_PROP);
 
@@ -176,7 +176,7 @@ static void label_click_cb(GtkButton *evbox, GdkEvent *event, pcb_hid_attribute_
 	}
 }
 
-static void color_changed_cb(GtkColorButton *button, pcb_hid_attribute_t *dst)
+static void color_changed_cb(GtkColorButton *button, rnd_hid_attribute_t *dst)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(button), PCB_OBJ_PROP);
 	pcb_gtk_color_t clr;
@@ -555,7 +555,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 	return j;
 }
 
-static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val, int *copied)
+static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val, int *copied)
 {
 	int ret, save;
 	save = ctx->inhibit_valchg;
@@ -770,7 +770,7 @@ static void ghid_initial_wstates(attr_dlg_t *ctx)
 			ghid_attr_dlg_widget_hide_(ctx, n, 1);
 }
 
-void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	GtkWidget *content_area;
 	GtkWidget *main_vbox;
@@ -833,7 +833,7 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *at
 	return ctx;
 }
 
-void *ghid_attr_sub_new(pcb_gtk_t *gctx, GtkWidget *parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data)
+void *ghid_attr_sub_new(pcb_gtk_t *gctx, GtkWidget *parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data)
 {
 	attr_dlg_t *ctx;
 
@@ -917,7 +917,7 @@ void ghid_attr_dlg_free(void *hid_ctx)
 	free(ctx);
 }
 
-void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val)
+void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
@@ -970,7 +970,7 @@ int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide)
 	return ghid_attr_dlg_widget_hide_(ctx, idx, hide);
 }
 
-int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
+int ghid_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int res, copied;

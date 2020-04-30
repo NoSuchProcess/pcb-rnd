@@ -33,11 +33,11 @@
 #include <librnd/core/hid_dad_unit.h>
 #include <librnd/core/unit.h>
 
-void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_hid_dad_unit_t *unit = (pcb_hid_dad_unit_t *)attr->user_data;
-	pcb_hid_attribute_t *enu = attr;
-	pcb_hid_attribute_t *end = attr - unit->wenum + unit->cmp.wend;
+	rnd_hid_attribute_t *enu = attr;
+	rnd_hid_attribute_t *end = attr - unit->wenum + unit->cmp.wend;
 	const char **vals = enu->wdata;
 	const rnd_unit_t *u = get_unit_by_suffix(vals[enu->val.lng]);
 	int unit_id = u == NULL ? -1 : u - pcb_units;
@@ -48,11 +48,11 @@ void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		end->change_cb(hid_ctx, caller_data, end);
 }
 
-void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long unit_id, double unused1, rnd_coord_t unused2)
+void pcb_dad_unit_set_num(rnd_hid_attribute_t *attr, long unit_id, double unused1, rnd_coord_t unused2)
 {
 	int l;
 	pcb_hid_dad_unit_t *unit = attr->wdata;
-	pcb_hid_attribute_t *enu = attr - unit->cmp.wend + unit->wenum;
+	rnd_hid_attribute_t *enu = attr - unit->cmp.wend + unit->wenum;
 	const char *target = pcb_units[unit_id].suffix;
 	const char **vals = enu->wdata;
 
@@ -64,7 +64,7 @@ void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long unit_id, double unused
 	}
 }
 
-void pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val_)
+void pcb_dad_unit_set_val_ptr(rnd_hid_attribute_t *end, void *val_)
 {
 	const rnd_unit_t *val = val_;
 	int __n__, __v__ = pcb_get_n_units(1);
@@ -78,19 +78,19 @@ void pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val_)
 	}
 }
 
-int pcb_dad_unit_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled)
+int pcb_dad_unit_widget_state(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled)
 {
 	pcb_hid_dad_unit_t *unit = end->wdata;
 	return pcb_gui->attr_dlg_widget_state(hid_ctx, unit->wenum, enabled);
 }
 
-int pcb_dad_unit_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide)
+int pcb_dad_unit_widget_hide(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide)
 {
 	pcb_hid_dad_unit_t *unit = end->wdata;
 	return pcb_gui->attr_dlg_widget_hide(hid_ctx, unit->wenum, hide);
 }
 
-int pcb_dad_unit_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
+int pcb_dad_unit_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	pcb_hid_dad_unit_t *unit = end->wdata;
 	if (pcb_gui->attr_dlg_set_value(hid_ctx, unit->wenum, val) != 0)
@@ -99,10 +99,10 @@ int pcb_dad_unit_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, con
 	return 0;
 }
 
-void pcb_dad_unit_set_help(pcb_hid_attribute_t *end, const char *help)
+void pcb_dad_unit_set_help(rnd_hid_attribute_t *end, const char *help)
 {
 	pcb_hid_dad_unit_t *unit = end->wdata;
-	pcb_hid_attribute_t *enu = end - unit->cmp.wend + unit->wenum;
+	rnd_hid_attribute_t *enu = end - unit->cmp.wend + unit->wenum;
 
 	if ((unit->hid_ctx == NULL) || (*unit->hid_ctx == NULL)) /* while building */
 		enu->help_text = help;

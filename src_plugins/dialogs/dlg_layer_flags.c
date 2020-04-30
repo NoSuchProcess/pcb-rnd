@@ -40,7 +40,7 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"OK", 0}, {NULL, 0}};
 	int wname, wsub, wauto, failed, ar = 0;
 	pcb_layer_t *ly;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_LONG, LayerPropGui, lid = argv[1].val.nat_long);
@@ -100,7 +100,7 @@ fgw_error_t pcb_act_GroupPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", 1}, {"OK", 0}, {NULL, 0}};
 	int wname, wtype, wpurp, wloc;
 	int failed, n, ar = 0, orig_type, changed = 0, omit_loc = 0, orig_loc = -1, def_loc;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *g;
 	static const char *ltypes[] = { "top", "bottom", "any intern", "global", NULL };
 	pcb_layer_type_t ltype_bits[] = { PCB_LYT_TOP, PCB_LYT_BOTTOM, PCB_LYT_INTERN, 0 };

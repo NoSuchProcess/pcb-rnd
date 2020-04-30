@@ -50,7 +50,7 @@ static int conf_tree_cmp(const void *v1, const void *v2)
 static void setup_tree(pref_ctx_t *ctx)
 {
 	char *cell[2] = {NULL};
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wtree];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wtree];
 	pcb_hid_tree_t *tree = attr->wdata;
 	htsp_entry_t *e;
 	htsp_entry_t **sorted;
@@ -139,7 +139,7 @@ static const char *pref_conf_get_val(const lht_node_t *nd, const rnd_conf_native
 static void setup_intree(pref_ctx_t *ctx, rnd_conf_native_t *nat, int idx)
 {
 	rnd_conf_role_t n;
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wintree];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wintree];
 	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *r;
 
@@ -188,7 +188,7 @@ static const char *print_conf_val(rnd_conf_native_type_t type, const rnd_confite
 
 static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_native_t *nat, int idx)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	char *tmp, buf[128];
 	const char *rolename;
 	lht_node_t *src;
@@ -232,7 +232,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 
 	if ((nat->type == RND_CFN_LIST) || (nat->type == RND_CFN_HLIST)) {
 		/* non-default: lists are manually loaded */
-		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wnatval[nat->type]];
+		rnd_hid_attribute_t *attr = &ctx->dlg[ctx->conf.wnatval[nat->type]];
 		pcb_hid_tree_t *tree = attr->wdata;
 		rnd_conf_listitem_t *n;
 		char *cell[4];
@@ -272,7 +272,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 	return;
 }
 
-static void dlg_conf_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void dlg_conf_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attrib->wdata;
 	char *end, *end2;
@@ -318,10 +318,10 @@ void pcb_pref_dlg_conf_changed_cb(pref_ctx_t *ctx, rnd_conf_native_t *cfg, int a
 }
 
 
-static void pcb_pref_dlg_conf_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+static void pcb_pref_dlg_conf_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	pref_ctx_t *ctx = caller_data;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	const char *text;
 	int have_filter_text;
@@ -481,12 +481,12 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 
 void pcb_dlg_pref_conf_open(pref_ctx_t *ctx, const char *tabarg)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	hv.dbl = 0.25;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wmainp, &hv);
 
 	if (tabarg != NULL) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = rnd_strdup(tabarg);
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wfilter, &hv);
 		pcb_pref_dlg_conf_filter_cb(ctx->dlg_hid_ctx, ctx, &ctx->dlg[ctx->conf.wfilter]);

@@ -76,9 +76,9 @@ static rnd_coord_t clearance = 8;
 static rnd_coord_t viawidth = 45;
 static rnd_coord_t viadrill = 25;
 
-static pcb_hid_t dsn_hid;
+static rnd_hid_t dsn_hid;
 
-static pcb_export_opt_t dsn_options[] = {
+static rnd_export_opt_t dsn_options[] = {
 	{"dsnfile", "SPECCTRA output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_dsnfile 0
@@ -104,11 +104,11 @@ static pcb_export_opt_t dsn_options[] = {
 
 #define NUM_OPTIONS (sizeof(dsn_options)/sizeof(dsn_options[0]))
 
-static pcb_hid_attr_val_t dsn_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t dsn_values[NUM_OPTIONS];
 
 static const char *dsn_filename;
 
-static pcb_export_opt_t *dsn_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *dsn_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (dsn_options[HA_dsnfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &dsn_options[HA_dsnfile], ".dsn");
@@ -119,7 +119,7 @@ static pcb_export_opt_t *dsn_get_export_options(pcb_hid_t *hid, int *n)
 
 static void print_structure(FILE * fp)
 {
-	pcb_layergrp_id_t group, top_group, bot_group;
+	rnd_layergrp_id_t group, top_group, bot_group;
 
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &top_group, 1);
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &bot_group, 1);
@@ -300,7 +300,7 @@ static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *p
 static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, rnd_coord_t ox, rnd_coord_t oy, int term_on_bottom, int partsidesign)
 {
 	if (poly->term != NULL) {
-		pcb_layergrp_id_t gid = term_on_bottom ? pcb_layergrp_get_bottom_copper() : pcb_layergrp_get_top_copper();
+		rnd_layergrp_id_t gid = term_on_bottom ? pcb_layergrp_get_bottom_copper() : pcb_layergrp_get_top_copper();
 		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, gid);
 		char *padstack = pcb_strdup_printf("Term_poly_%ld", poly->ID);
 		pcb_poly_it_t it;
@@ -329,7 +329,7 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, rnd_
 	}
 }
 
-void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, pcb_layergrp_id_t gid, rnd_coord_t ox, rnd_coord_t oy, int partsidesign)
+void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, rnd_layergrp_id_t gid, rnd_coord_t ox, rnd_coord_t oy, int partsidesign)
 {
 	pcb_pstk_shape_t *shp;
 	pcb_layergrp_t *grp = pcb_get_layergrp(PCB, gid);
@@ -341,7 +341,7 @@ void print_pstk_shape(gds_t *term_shapes, pcb_pstk_t *padstack, pcb_layergrp_id_
 
 	/* if the subc is placed on the other side, need to invert the output layerstack as well */
 	if (partsidesign < 0) {
-		pcb_layergrp_id_t n, offs = 0;
+		rnd_layergrp_id_t n, offs = 0;
 
 		/* determine copper offset from the top */
 		for(n = 0; (n < PCB->LayerGroups.len) && (n != gid); n++)
@@ -406,7 +406,7 @@ static void print_library(FILE * fp)
 
 		PCB_PADSTACK_LOOP(subc->data);
 		{
-			pcb_layergrp_id_t group;
+			rnd_layergrp_id_t group;
 			char *pid = pcb_strdup_printf("Pstk_shape_%ld", padstack->ID);
 
 			pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", pid, padstack->term, (padstack->x-ox)*partsidesign, -(padstack->y-oy));
@@ -571,7 +571,7 @@ static int PrintSPECCTRA(void)
 }
 
 
-static void dsn_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void dsn_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int i;
 	pcb_cam_t cam;
@@ -596,7 +596,7 @@ static void dsn_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_cam_end(&cam);
 }
 
-static int dsn_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int dsn_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	return pcb_hid_parse_command_line(argc, argv);
 }
@@ -611,10 +611,10 @@ void pplg_uninit_export_dsn(void)
 int pplg_init_export_dsn(void)
 {
 	PCB_API_CHK_VER;
-	memset(&dsn_hid, 0, sizeof(pcb_hid_t));
+	memset(&dsn_hid, 0, sizeof(rnd_hid_t));
 	pcb_hid_nogui_init(&dsn_hid);
 
-	dsn_hid.struct_size = sizeof(pcb_hid_t);
+	dsn_hid.struct_size = sizeof(rnd_hid_t);
 	dsn_hid.name = "dsn";
 	dsn_hid.description = "Exports DSN format";
 	dsn_hid.exporter = 1;

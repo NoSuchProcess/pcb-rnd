@@ -58,7 +58,7 @@ struct pcb_gtk_impl_s {
 
 	GtkWidget *(*new_drawing_widget)(pcb_gtk_impl_t *impl);
 	void (*init_drawing_widget)(GtkWidget *widget, void *gport);
-	gboolean (*preview_expose)(GtkWidget *widget, pcb_gtk_expose_t *p, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx); /* p == NULL when called from the code, not from a GUI expose event */
+	gboolean (*preview_expose)(GtkWidget *widget, pcb_gtk_expose_t *p, pcb_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx); /* p == NULL when called from the code, not from a GUI expose event */
 	void (*load_bg_image)(void);
 	void (*init_renderer)(int *argc, char ***argv, void *port);
 	void (*draw_grid_local)(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy);
@@ -141,7 +141,7 @@ struct pcb_gtk_topwin_s {
 #include <librnd/core/pcb_bool.h>
 
 struct pcb_gtk_pixmap_s {
-	pcb_pixmap_t *pxm;        /* core-side pixmap (raw input image) */
+	rnd_pixmap_t *pxm;        /* core-side pixmap (raw input image) */
 	GdkPixbuf *image;         /* input image converted to gdk */
 
 	/* backend/renderer cache */

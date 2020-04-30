@@ -714,17 +714,17 @@ int io_kicad_legacy_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_file
 	rnd_coord_t outlineThickness = PCB_MIL_TO_COORD(10);
 
 	int bottomCount;
-	pcb_layer_id_t *bottomLayers;
+	rnd_layer_id_t *bottomLayers;
 	int innerCount;
-	pcb_layer_id_t *innerLayers;
+	rnd_layer_id_t *innerLayers;
 	int topCount;
-	pcb_layer_id_t *topLayers;
+	rnd_layer_id_t *topLayers;
 	int bottomSilkCount;
-	pcb_layer_id_t *bottomSilk;
+	rnd_layer_id_t *bottomSilk;
 	int topSilkCount;
-	pcb_layer_id_t *topSilk;
+	rnd_layer_id_t *topSilk;
 	int outlineCount;
-	pcb_layer_id_t *outlineLayers;
+	rnd_layer_id_t *outlineLayers;
 
 	rnd_coord_t LayoutXOffset;
 	rnd_coord_t LayoutYOffset;
@@ -827,7 +827,7 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 	/* figure out which pcb layers are bottom copper and make a list */
 	bottomCount = pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0);
 	if (bottomCount > 0) {
-		bottomLayers = malloc(sizeof(pcb_layer_id_t) * bottomCount);
+		bottomLayers = malloc(sizeof(rnd_layer_id_t) * bottomCount);
 		pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, bottomLayers, bottomCount);
 	}
 	else {
@@ -837,7 +837,7 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 	/* figure out which pcb layers are internal copper layers and make a list */
 	innerCount = pcb_layer_list(PCB, PCB_LYT_INTERN | PCB_LYT_COPPER, NULL, 0);
 	if (innerCount > 0) {
-		innerLayers = malloc(sizeof(pcb_layer_id_t) * innerCount);
+		innerLayers = malloc(sizeof(rnd_layer_id_t) * innerCount);
 		pcb_layer_list(PCB, PCB_LYT_INTERN | PCB_LYT_COPPER, innerLayers, innerCount);
 	}
 	else {
@@ -847,7 +847,7 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 	/* figure out which pcb layers are top copper and make a list */
 	topCount = pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, NULL, 0);
 	if (topCount > 0) {
-		topLayers = malloc(sizeof(pcb_layer_id_t) * topCount);
+		topLayers = malloc(sizeof(rnd_layer_id_t) * topCount);
 		pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, topLayers, topCount);
 	}
 	else {
@@ -857,7 +857,7 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 	/* figure out which pcb layers are bottom silk and make a list */
 	bottomSilkCount = pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, NULL, 0);
 	if (bottomSilkCount > 0) {
-		bottomSilk = malloc(sizeof(pcb_layer_id_t) * bottomSilkCount);
+		bottomSilk = malloc(sizeof(rnd_layer_id_t) * bottomSilkCount);
 		pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_SILK, bottomSilk, bottomSilkCount);
 	}
 	else {
@@ -867,7 +867,7 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 	/* figure out which pcb layers are top silk and make a list */
 	topSilkCount = pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, NULL, 0);
 	if (topSilkCount > 0) {
-		topSilk = malloc(sizeof(pcb_layer_id_t) * topSilkCount);
+		topSilk = malloc(sizeof(rnd_layer_id_t) * topSilkCount);
 		pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_SILK, topSilk, topSilkCount);
 	}
 	else {
@@ -877,7 +877,7 @@ TODO(": se this from io_kicad, do not duplicate the code here")
 	/* figure out which pcb layers are outlines and make a list */
 	outlineCount = pcb_layer_list(PCB, PCB_LYT_BOUNDARY, NULL, 0);
 	if (outlineCount > 0) {
-		outlineLayers = malloc(sizeof(pcb_layer_id_t) * outlineCount);
+		outlineLayers = malloc(sizeof(rnd_layer_id_t) * outlineCount);
 		pcb_layer_list(PCB, PCB_LYT_BOUNDARY, outlineLayers, outlineCount);
 	}
 	else {

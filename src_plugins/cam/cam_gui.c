@@ -41,7 +41,7 @@ typedef struct {
 
 static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 {
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[2], *cursor_path = NULL;
@@ -73,7 +73,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wjobs, &hv);
 	}
@@ -81,7 +81,7 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 
 static void cam_gui_digest2dlg(cam_dlg_t *ctx)
 {
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_cam_code_t *c, *plugin = NULL;
 	char *cell[4], tmp[1024];
@@ -131,8 +131,8 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 {
 	htsp_t *vars = ctx->cam.vars;
 	htsp_entry_t *e;
-	pcb_hid_attr_val_t hv;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attr_val_t hv;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[3], *cursor_path = NULL;
@@ -162,22 +162,22 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wopts, &hv);
 	}
 }
 
-static void cam_gui_outfile_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+static void cam_gui_outfile_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	cam_dlg_t *ctx = caller_data;
 	cam_gui_opts2dlg(ctx);
 }
 
-static void cam_gui_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+static void cam_gui_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	cam_dlg_t *ctx = caller_data;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	const char *text;
 
@@ -190,10 +190,10 @@ static void cam_gui_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	pcb_dad_tree_update_hide(attr);
 }
 
-static void cam_gui_export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+static void cam_gui_export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	cam_dlg_t *ctx = caller_data;
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wjobs];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wjobs];
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(attr);
 
 	if (row != NULL) {
@@ -214,14 +214,14 @@ static char *kill_tabs(const char *str_in)
 	return res;
 }
 
-static void cam_job_select_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void cam_job_select_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attrib->wdata;
 	cam_dlg_t *ctx = tree->user_ctx;
 
 	if (row != NULL) {
 		char *script = kill_tabs(cam_find_job(row->cell[0]));
-		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+		rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 		pcb_hid_text_t *txt = atxt->wdata;
 
 		txt->hid_set_text(atxt, hid_ctx, PCB_HID_TEXT_REPLACE, script);
@@ -340,7 +340,7 @@ static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 	PCB_DAD_NEW("cam", ctx->dlg, "CAM export", ctx, pcb_false, cam_close_cb);
 
 	{ /* set default outfile */
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = pcb_derive_default_filename_(PCB->hidlib.filename, "");
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->woutfile, &hv);
 		free((char *)hv.str);
@@ -348,7 +348,7 @@ static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 	}
 
 	{ /* set right top text read-only */
-		pcb_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+		rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 		pcb_hid_text_t *txt = atxt->wdata;
 		txt->hid_set_readonly(atxt, ctx->dlg_hid_ctx, 1);
 	}

@@ -636,7 +636,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const char *arg;
 		RND_PCB_ACT_CONVARG(n, FGW_STR, EditLayer, arg = argv[n].val.str);
 		if (!explicit && (*arg == '@')) {
-			pcb_layer_id_t lid = pcb_layer_by_name(PCB->Data, arg+1);
+			rnd_layer_id_t lid = pcb_layer_by_name(PCB->Data, arg+1);
 			if (lid < 0) {
 				rnd_message(RND_MSG_ERROR, "Can't find layer named %s\n", arg+1);
 				return 1;
@@ -716,7 +716,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return ret;
 }
 
-pcb_layergrp_id_t pcb_actd_EditGroup_gid = -1;
+rnd_layergrp_id_t pcb_actd_EditGroup_gid = -1;
 static const char pcb_acts_EditGroup[] = "Editgroup([@group], [name=text|type=+bit|type=-bit])]\nEditlayer([@layer], attrib, key=value)";
 static const char pcb_acth_EditGroup[] = "Change a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.";
 static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -737,7 +737,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const char *arg;
 		RND_PCB_ACT_CONVARG(n, FGW_STR, EditLayer, arg = argv[n].val.str);
 		if (!explicit && (*arg == '@')) {
-			pcb_layergrp_id_t gid;
+			rnd_layergrp_id_t gid;
 			if (arg[1] == '\0')
 				gid = pcb_actd_EditGroup_gid;
 			else
@@ -832,7 +832,7 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *name = NULL;
 	pcb_layergrp_t *g = NULL;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 
 	if (PCB_CURRLAYER(PCB_ACT_BOARD) != NULL)
 		g = pcb_get_layergrp(PCB, PCB_CURRLAYER(PCB_ACT_BOARD)->meta.real.grp);
@@ -903,7 +903,7 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layergrp_inhibit_inc();
 	g = pcb_get_grp_new_misc(PCB);
 	if (g != NULL) {
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 
 		if (spurp != NULL)
 			pcb_layergrp_set_purpose__(g, rnd_strdup(spurp), 1);
@@ -979,7 +979,7 @@ static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *name = NULL;
 	pcb_layergrp_t *g = NULL;
-	pcb_layergrp_id_t gid, ng;
+	rnd_layergrp_id_t gid, ng;
 
 	if (PCB_CURRLAYER(PCB_ACT_BOARD) != NULL)
 		g = pcb_get_layergrp(PCB, PCB_CURRLAYER(PCB_ACT_BOARD)->meta.real.grp);
@@ -1008,7 +1008,7 @@ static fgw_error_t pcb_act_DupGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_undo_freeze_serial();
 	ng = pcb_layergrp_dup(PCB, gid, 1, 1);
 	if (ng >= 0) {
-		pcb_layer_id_t lid = pcb_layer_create(PCB, ng, g->name, 1);
+		rnd_layer_id_t lid = pcb_layer_create(PCB, ng, g->name, 1);
 		if (lid >= 0) {
 			RND_ACT_IRES(0);
 			PCB->Data->Layer[lid].meta.real.vis = 1;
@@ -1033,7 +1033,7 @@ const char pcb_acth_selectlayer[] = "Select which layer is the current layer.";
 /* DOC: selectlayer.html */
 static fgw_error_t pcb_act_SelectLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	const pcb_menu_layers_t *ml;
 	char *name;
 
@@ -1078,7 +1078,7 @@ const char pcb_acth_chklayer[] = "Returns 1 if the specified layer is the active
 /* DOC: chklayer.html */
 static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	pcb_layer_t *ly;
 	char *end;
 	const char *name;
@@ -1127,7 +1127,7 @@ const char pcb_acth_toggleview[] = "Toggle the visibility of the specified layer
 /* DOC: toggleview.html */
 static fgw_error_t pcb_act_ToggleView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	const char *name;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, toggleview, name = argv[1].val.str);
@@ -1211,7 +1211,7 @@ const char pcb_acth_chkview[] = "Return 1 if layerid is visible.";
 /* DOC: chkview.html */
 static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	pcb_layer_t *ly;
 	char *end;
 	const char *name;
@@ -1255,10 +1255,10 @@ static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static int layer_get_curr_pos(pcb_board_t *pcb, pcb_layer_id_t *lidout, pcb_layergrp_id_t *gid, pcb_layergrp_t **grp, int *glidx)
+static int layer_get_curr_pos(pcb_board_t *pcb, rnd_layer_id_t *lidout, rnd_layergrp_id_t *gid, pcb_layergrp_t **grp, int *glidx)
 {
 	pcb_layergrp_t *g;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	int n;
 
 	lid = PCB_CURRLID(pcb);
@@ -1285,8 +1285,8 @@ static int layer_get_curr_pos(pcb_board_t *pcb, pcb_layer_id_t *lidout, pcb_laye
 static int layer_select_delta(pcb_board_t *pcb, int d)
 {
 	pcb_layergrp_t *g;
-	pcb_layer_id_t lid;
-	pcb_layergrp_id_t gid;
+	rnd_layer_id_t lid;
+	rnd_layergrp_id_t gid;
 	int glidx;
 
 	if (layer_get_curr_pos(pcb, &lid, &gid, &g, &glidx) < 0)

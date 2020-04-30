@@ -177,13 +177,13 @@ int pcb_ltf_wait_for_dialog(Widget w)
 
 typedef struct {
 	void *caller_data; /* WARNING: for now, this must be the first field (see core spinbox enter_cb) */
-	pcb_hid_attribute_t *attrs;
+	rnd_hid_attribute_t *attrs;
 	int n_attrs;
 	Widget *wl;   /* content widget */
 	Widget *wltop;/* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	Widget **btn; /* enum value buttons */
 	Widget dialog;
-	pcb_hid_attr_val_t property[PCB_HATP_max];
+	rnd_hid_attr_val_t property[PCB_HATP_max];
 	Dimension minw, minh;
 	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
 	char *id;
@@ -484,7 +484,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 }
 
 
-static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	int save, n, copied = 0;
 
@@ -632,7 +632,7 @@ static void ltf_initial_wstates(lesstif_attr_dlg_t *ctx)
 			XtUnmanageChild(ctx->wltop[n]);
 }
 
-void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	Widget topform, main_tbl;
 	lesstif_attr_dlg_t *ctx;
@@ -707,7 +707,7 @@ void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *
 	return ctx;
 }
 
-void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data)
+void *lesstif_attr_sub_new(Widget parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data)
 {
 	lesstif_attr_dlg_t *ctx;
 
@@ -767,7 +767,7 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 	free(ctx);
 }
 
-void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val)
+void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 	if ((prop >= 0) && (prop < PCB_HATP_max))
@@ -821,7 +821,7 @@ int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide)
 	return 0;
 }
 
-int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val)
+int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
 
@@ -1091,7 +1091,7 @@ static void attributes_revert_callback(Widget w, void *v, void *cbs)
 	lesstif_attributes_revert();
 }
 
-void lesstif_attributes_dialog(pcb_hid_t *hid, const char *owner, rnd_attribute_list_t * attrs_list)
+void lesstif_attributes_dialog(rnd_hid_t *hid, const char *owner, rnd_attribute_list_t * attrs_list)
 {
 	Widget bform, sw, b_ok, b_cancel, b_revert, b_new;
 	Widget sep;

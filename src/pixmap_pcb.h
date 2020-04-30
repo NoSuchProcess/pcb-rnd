@@ -45,10 +45,10 @@ void pcb_pixmap_hash_uninit(pcb_pixmap_hash_t *pmhash);
 /* Either inserts pm in the board's pixmap hash, if pm is new there, or frees
    pm and returns the matching pixmap from the board's pixmap hash. pm must
    be in neutral position (no rotation, no mirror). Returns NULL on error. */
-pcb_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *pm);
+rnd_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, rnd_pixmap_t *pm);
 
 /* Allocate and render a transformed version of pm (or return the one from cache if already cached */
-pcb_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *pm, rnd_angle_t rot, int xmirror, int ymirror);
+rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd_pixmap_t *pm, rnd_angle_t rot, int xmirror, int ymirror);
 
 
 /*** global state ***/

@@ -53,7 +53,7 @@
 #include "../src_plugins/lib_polyhelp/topoly.h"
 #include "mesh.h"
 
-static pcb_hid_t openems_hid;
+static rnd_hid_t openems_hid;
 
 const char *openems_cookie = "openems HID";
 
@@ -61,18 +61,18 @@ const char *openems_cookie = "openems HID";
 
 #define MESH_NAME "openems"
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
-	pcb_hid_t *me_pointer;
+	rnd_hid_t *me_pointer;
 	pcb_cap_style_t cap;
 	int width;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
 typedef struct {
 	/* input/output */
 	FILE *f, *fsim;
 	pcb_board_t *pcb;
-	pcb_hid_attr_val_t *options;
+	rnd_hid_attr_val_t *options;
 
 	/* local cache */
 	const char *filename;
@@ -93,7 +93,7 @@ static int openems_ovr;
 
 #define THMAX PCB_MM_TO_COORD(100)
 
-pcb_export_opt_t openems_attribute_list[] = {
+rnd_export_opt_t openems_attribute_list[] = {
 	{"outfile", "Graphics output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_openemsfile 0
@@ -154,9 +154,9 @@ pcb_export_opt_t openems_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(openems_attribute_list)/sizeof(openems_attribute_list[0]))
 
-static pcb_hid_attr_val_t openems_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t openems_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *openems_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *openems_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".m";
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
@@ -258,7 +258,7 @@ TODO(": try openems::attr first - make a new core call for prefixed get, this wi
 
 static void openems_write_layers(wctx_t *ctx)
 {
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	int next = 1;
 
 	for(gid = 0; gid < PCB_MAX_LAYERGRP; gid++)
@@ -360,7 +360,7 @@ TODO("layer: consider multiple outline layers instead")
 	fprintf(ctx->f, "\n");
 }
 
-static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rnd_coord_t y, pcb_layergrp_id_t gid1, pcb_layergrp_id_t gid2, const char *port_name)
+static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid1, rnd_layergrp_id_t gid2, const char *port_name)
 {
 	char *end, *s, *safe_name = rnd_strdup(port_name);
 	const char *att;
@@ -399,10 +399,10 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rn
 	free(safe_name);
 }
 
-pcb_layergrp_id_t openems_vport_main_group_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, int *gstep, const char *port_name)
+rnd_layergrp_id_t openems_vport_main_group_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, int *gstep, const char *port_name)
 {
 	int top, bot, intern;
-	pcb_layergrp_id_t gid1;
+	rnd_layergrp_id_t gid1;
 
 	top = (pcb_pstk_shape(ps, PCB_LYT_COPPER | PCB_LYT_TOP, 0) != NULL);
 	bot = (pcb_pstk_shape(ps, PCB_LYT_COPPER | PCB_LYT_BOTTOM, 0) != NULL);
@@ -437,9 +437,9 @@ pcb_layergrp_id_t openems_vport_main_group_pstk(pcb_board_t *pcb, pcb_pstk_t *ps
 	return gid1;
 }
 
-pcb_layergrp_id_t openems_vport_aux_group(pcb_board_t *pcb, pcb_layergrp_id_t gid1, int gstep, const char *port_name)
+rnd_layergrp_id_t openems_vport_aux_group(pcb_board_t *pcb, rnd_layergrp_id_t gid1, int gstep, const char *port_name)
 {
-	pcb_layergrp_id_t gid2;
+	rnd_layergrp_id_t gid2;
 
 	for(gid2 = gid1 + gstep; (gid2 >= 0) && (gid2 <= pcb->LayerGroups.len); gid2 += gstep)
 		if (pcb->LayerGroups.grp[gid2].ltype & PCB_LYT_COPPER)
@@ -477,7 +477,7 @@ static void openems_write_testpoints(wctx_t *ctx, pcb_data_t *data)
 			case PCB_OBJ_PSTK:
 				{
 					int gstep;
-					pcb_layergrp_id_t gid1, gid2;
+					rnd_layergrp_id_t gid1, gid2;
 					pcb_pstk_t *ps = (pcb_pstk_t *)o;
 
 					if (port_name == NULL)
@@ -589,9 +589,9 @@ static void openems_write_sim(wctx_t *wctx)
 }
 
 
-void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim, pcb_hid_attr_val_t *options)
+void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim, rnd_hid_attr_val_t *options)
 {
-	pcb_hid_expose_ctx_t ctx;
+	rnd_hid_expose_ctx_t ctx;
 	wctx_t wctx;
 
 	memset(&wctx, 0, sizeof(wctx));
@@ -628,7 +628,7 @@ void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
 
-static void openems_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void openems_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *filename;
 	char *runfn, *end;
@@ -681,13 +681,13 @@ static void openems_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	free(runfn);
 }
 
-static int openems_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int openems_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(openems_attribute_list, sizeof(openems_attribute_list) / sizeof(openems_attribute_list[0]), openems_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int openems_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int openems_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	if (flags & PCB_LYT_COPPER) { /* export copper layers only */
 		ems_ctx->clayer = ems_ctx->lg_pcb2ems[group];
@@ -696,19 +696,19 @@ static int openems_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, cons
 	return 0;
 }
 
-static pcb_hid_gc_t openems_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t openems_make_gc(rnd_hid_t *hid)
 {
-	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
+	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(sizeof(rnd_hid_gc_s), 1);
 	rv->me_pointer = &openems_hid;
 	return rv;
 }
 
-static void openems_destroy_gc(pcb_hid_gc_t gc)
+static void openems_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-static void openems_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void openems_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	switch(op) {
 		case PCB_HID_COMP_RESET:
@@ -724,39 +724,39 @@ static void openems_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_
 	}
 }
 
-static void openems_set_color(pcb_hid_gc_t gc, const rnd_color_t *name)
+static void openems_set_color(rnd_hid_gc_t gc, const rnd_color_t *name)
 {
 }
 
-static void openems_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void openems_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void openems_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void openems_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
 
-static void openems_set_draw_xor(pcb_hid_gc_t gc, int xor_)
+static void openems_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
 }
 
-static void openems_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void openems_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 }
 
-static void openems_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void openems_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 }
 
-static void openems_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void openems_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 }
 
-static void openems_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void openems_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	wctx_t *ctx = ems_ctx;
 	long oid = ctx->oid++;
@@ -766,7 +766,7 @@ static void openems_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy,
 	pcb_fprintf(ctx->f, "CSX = AddPcbrndTrace(CSX, PCBRND, %d, points%ld, %mm, 0);\n", ctx->clayer, oid, radius*2);
 }
 
-static void openems_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void openems_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	wctx_t *ctx = ems_ctx;
 	int n;
@@ -778,12 +778,12 @@ static void openems_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t
 	fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, poly%ld_xy, 1);\n", ctx->clayer, oid);
 }
 
-static void openems_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+static void openems_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	openems_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
-static void openems_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void openems_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	wctx_t *ctx = ems_ctx;
 
@@ -806,17 +806,17 @@ static void openems_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 }
 
 
-static void openems_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void openems_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 	rnd_message(RND_MSG_ERROR, "openems_calibrate() not implemented");
 	return;
 }
 
-static void openems_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
+static void openems_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
 
-static int openems_usage(pcb_hid_t *hid, const char *topic)
+static int openems_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nopenems exporter command line arguments:\n\n");
 	pcb_hid_usage(openems_attribute_list, sizeof(openems_attribute_list) / sizeof(openems_attribute_list[0]));
@@ -842,11 +842,11 @@ int pplg_init_export_openems(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&openems_hid, 0, sizeof(pcb_hid_t));
+	memset(&openems_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&openems_hid);
 
-	openems_hid.struct_size = sizeof(pcb_hid_t);
+	openems_hid.struct_size = sizeof(rnd_hid_t);
 	openems_hid.name = "openems";
 	openems_hid.description = "OpenEMS exporter";
 	openems_hid.exporter = 1;

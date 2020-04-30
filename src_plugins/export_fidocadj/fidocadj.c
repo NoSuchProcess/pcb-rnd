@@ -61,11 +61,11 @@
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 
-static pcb_hid_t fidocadj_hid;
+static rnd_hid_t fidocadj_hid;
 
 const char *fidocadj_cookie = "fidocadj HID";
 
-pcb_export_opt_t fidocadj_attribute_list[] = {
+rnd_export_opt_t fidocadj_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 	{"outfile", "Output file name",
@@ -79,9 +79,9 @@ pcb_export_opt_t fidocadj_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(fidocadj_attribute_list)/sizeof(fidocadj_attribute_list[0]))
 
-static pcb_hid_attr_val_t fidocadj_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t fidocadj_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *fidocadj_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *fidocadj_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".fcd";
 
@@ -160,12 +160,12 @@ static void write_custom_subc(FILE *f, pcb_subc_t *sc)
 	free(msg);
 }
 
-static void fidocadj_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void fidocadj_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	FILE *f;
 	const char *filename, *libfile;
 	int n, fidoly_next, have_lib;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	htsi_t lib_names; /* hash of names found in the library, if have_lib is 1 */
 
 	if (!options) {
@@ -340,13 +340,13 @@ TODO(": figure how to store side")
 	}
 }
 
-static int fidocadj_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int fidocadj_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]), fidocadj_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int fidocadj_usage(pcb_hid_t *hid, const char *topic)
+static int fidocadj_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nfidocadj exporter command line arguments:\n\n");
 	pcb_hid_usage(fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]));
@@ -365,11 +365,11 @@ int pplg_init_export_fidocadj(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&fidocadj_hid, 0, sizeof(pcb_hid_t));
+	memset(&fidocadj_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&fidocadj_hid);
 
-	fidocadj_hid.struct_size = sizeof(pcb_hid_t);
+	fidocadj_hid.struct_size = sizeof(rnd_hid_t);
 	fidocadj_hid.name = "fidocadj";
 	fidocadj_hid.description = "export board in FidoCadJ .fcd format";
 	fidocadj_hid.exporter = 1;

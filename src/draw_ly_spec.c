@@ -42,10 +42,10 @@ static void pcb_draw_paste_auto_(comp_ctx_t *ctx, void *side)
 static void pcb_draw_paste(pcb_draw_info_t *info, int side)
 {
 	unsigned long side_lyt = side ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
-	pcb_layergrp_id_t gid = -1;
+	rnd_layergrp_id_t gid = -1;
 	comp_ctx_t cctx;
 	pcb_layer_t *ly = NULL;
-	pcb_xform_t tmp;
+	rnd_xform_t tmp;
 
 	xform_setup(info, &tmp, NULL);
 
@@ -84,10 +84,10 @@ static void pcb_draw_mask_auto(comp_ctx_t *ctx, void *side)
 static void pcb_draw_mask(pcb_draw_info_t *info, int side)
 {
 	unsigned long side_lyt = side ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
-	pcb_layergrp_id_t gid = -1;
+	rnd_layergrp_id_t gid = -1;
 	comp_ctx_t cctx;
 	pcb_layer_t *ly = NULL;
-	pcb_xform_t tmp;
+	rnd_xform_t tmp;
 
 	xform_setup(info, &tmp, NULL);
 
@@ -127,7 +127,7 @@ static void pcb_draw_silk_auto(comp_ctx_t *ctx, void *lyt_side)
 		pcb_draw_pstks(ctx->info, ctx->gid, 0, PCB_LYC_AUTO);
 }
 
-static int pcb_is_silk_old_style(comp_ctx_t *cctx, pcb_layer_id_t lid)
+static int pcb_is_silk_old_style(comp_ctx_t *cctx, rnd_layer_id_t lid)
 {
 	if (cctx->grp == NULL)
 		return 1; /* no group means no silk -> fall back to implicit */
@@ -140,8 +140,8 @@ static int pcb_is_silk_old_style(comp_ctx_t *cctx, pcb_layer_id_t lid)
 
 static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, pcb_layer_type_t lyt_type, int setgrp, int invis)
 {
-	pcb_layer_id_t lid;
-	pcb_layergrp_id_t gid[PCB_MAX_LAYERGRP];
+	rnd_layer_id_t lid;
+	rnd_layergrp_id_t gid[PCB_MAX_LAYERGRP];
 	comp_ctx_t cctx;
 	int len, n;
 
@@ -233,7 +233,7 @@ static void remember_slot(pcb_layer_t **uslot, pcb_layer_t **pslot, int *uscore,
 static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 {
 	int count = 0;
-	pcb_layergrp_id_t gid, goutid;
+	rnd_layergrp_id_t gid, goutid;
 	const pcb_layergrp_t *g, *goutl = NULL;
 	pcb_layer_t *uslot = NULL, *pslot = NULL;
 	int uscore = 0, pscore = 0;
@@ -338,7 +338,7 @@ static void pcb_draw_rats(pcb_draw_info_t *info, const rnd_rnd_box_t *drawn_area
 
 static void pcb_draw_assembly(pcb_draw_info_t *info, pcb_layer_type_t lyt_side)
 {
-	pcb_layergrp_id_t side_group;
+	rnd_layergrp_id_t side_group;
 
 	if (pcb_layergrp_list(PCB, PCB_LYT_COPPER | lyt_side, &side_group, 1) != 1)
 		return;

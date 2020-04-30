@@ -38,6 +38,6 @@ int io_lihata_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int li
 int io_lihata_write_subcs_subc(pcb_plug_io_t *ctx, void **udata, FILE *f, pcb_subc_t *subc);
 int io_lihata_write_subcs_tail(pcb_plug_io_t *ctx, void **udata, FILE *f);
 
-void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialog_t *sub, pcb_plug_iot_t type);
-void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, rnd_bool apply);
-void io_lihata_save_as_fmt_changed(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub);
+void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, rnd_hid_dad_subdialog_t *sub, pcb_plug_iot_t type);
+void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, rnd_hid_dad_subdialog_t *sub, rnd_bool apply);
+void io_lihata_save_as_fmt_changed(const pcb_plug_io_t *ctx, void *plg_ctx, rnd_hid_dad_subdialog_t *sub);

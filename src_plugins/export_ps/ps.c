@@ -32,22 +32,22 @@
 
 const char *ps_cookie = "ps HID";
 
-static int ps_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform);
-static void use_gc(pcb_hid_gc_t gc);
+static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform);
+static void use_gc(rnd_hid_gc_t gc);
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
-	pcb_hid_t *me_pointer;
+	rnd_hid_t *me_pointer;
 	pcb_cap_style_t cap;
 	rnd_coord_t width;
 	unsigned char r, g, b;
 	int erase;
 	int faded;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
 static pcb_cam_t ps_cam;
 
-pcb_export_opt_t ps_attribute_list[] = {
+rnd_export_opt_t ps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "91 Postscript Export"
@@ -324,9 +324,9 @@ static struct {
 	int has_outline;
 	double scale_factor;
 
-	pcb_hid_expose_ctx_t exps;
+	rnd_hid_expose_ctx_t exps;
 
-	pcb_hid_attr_val_t ps_values[NUM_OPTIONS];
+	rnd_hid_attr_val_t ps_values[NUM_OPTIONS];
 
 	rnd_bool is_mask;
 	rnd_bool is_drill;
@@ -339,7 +339,7 @@ static struct {
 	long drawn_objs;
 } global;
 
-static pcb_export_opt_t *ps_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *ps_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if ((PCB != NULL) && (ps_attribute_list[HA_psfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &ps_attribute_list[HA_psfile], ".ps");
@@ -349,7 +349,7 @@ static pcb_export_opt_t *ps_get_export_options(pcb_hid_t *hid, int *n)
 	return ps_attribute_list;
 }
 
-static pcb_layergrp_id_t group_for_layer(int l)
+static rnd_layergrp_id_t group_for_layer(int l)
 {
 	if (l < pcb_max_layer(PCB) && l >= 0)
 		return pcb_layer_get_group(PCB, l);
@@ -520,7 +520,7 @@ static FILE *psopen(const char *base, const char *which)
 
 /* This is used by other HIDs that use a postscript format, like lpr
    or eps.  */
-void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options, pcb_xform_t *xform)
+void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 
@@ -601,12 +601,12 @@ void ps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t * options, pcb_xf
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 }
 
-static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void ps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	FILE *fh;
 	int save_ons[PCB_MAX_LAYER];
 	int i;
-	pcb_xform_t xform;
+	rnd_xform_t xform;
 
 	global.ovr_all = 0;
 
@@ -670,7 +670,7 @@ static void ps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 
 }
 
-static int ps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int ps_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
@@ -697,7 +697,7 @@ static void corner(FILE * fh, rnd_coord_t x, rnd_coord_t y, int dx, int dy)
 	fprintf(fh, "stroke grestore\n");
 }
 
-static int ps_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	gds_t tmp_ln;
 	static int lastgroup = -1;
@@ -950,26 +950,26 @@ static int ps_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const cha
 	return 1;
 }
 
-static pcb_hid_gc_t ps_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t ps_make_gc(rnd_hid_t *hid)
 {
-	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(1, sizeof(hid_gc_s));
+	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(1, sizeof(rnd_hid_gc_s));
 	rv->me_pointer = &ps_hid;
 	rv->cap = pcb_cap_round;
 	return rv;
 }
 
-static void ps_destroy_gc(pcb_hid_gc_t gc)
+static void ps_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-static void ps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void ps_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	global.drawing_mode = op;
 }
 
 
-static void ps_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
+static void ps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	if (global.drawing_mode == PCB_HID_COMP_NEGATIVE) {
 		gc->r = gc->g = gc->b = 255;
@@ -991,27 +991,27 @@ static void ps_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 	}
 }
 
-static void ps_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void ps_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void ps_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void ps_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
-static void ps_set_draw_xor(pcb_hid_gc_t gc, int xor_)
+static void ps_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
 }
 
-static void ps_set_draw_faded(pcb_hid_gc_t gc, int faded)
+static void ps_set_draw_faded(rnd_hid_gc_t gc, int faded)
 {
 	gc->faded = faded;
 }
 
-static void use_gc(pcb_hid_gc_t gc)
+static void use_gc(rnd_hid_gc_t gc)
 {
 	static int lastcap = -1;
 	static int lastcolor = -1;
@@ -1070,16 +1070,16 @@ static void use_gc(pcb_hid_gc_t gc)
 	}
 }
 
-static void ps_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void ps_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
 	pcb_fprintf(global.f, "%mi %mi %mi %mi dr\n", x1, y1, x2, y2);
 }
 
-static void ps_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
-static void ps_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
+static void ps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
+static void ps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 
-static void ps_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void ps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 #if 0
 	/* If you're etching your own paste mask, this will reduce the
@@ -1114,7 +1114,7 @@ static void ps_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 	pcb_fprintf(global.f, "%mi %mi %mi %mi t\n", x1, y1, x2, y2);
 }
 
-static void ps_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void ps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_angle_t sa, ea;
 	double w;
@@ -1144,7 +1144,7 @@ static void ps_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coo
 							sa, ea, -width, height, cx, cy, (double)(global.linewidth) / w);
 }
 
-static void ps_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void ps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	use_gc(gc);
 	if (!gc->erase || !global.is_copper || global.drillcopper) {
@@ -1154,7 +1154,7 @@ static void ps_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_
 	}
 }
 
-static void ps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void ps_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i;
 	const char *op = "moveto";
@@ -1166,7 +1166,7 @@ static void ps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, 
 	fprintf(global.f, "fill\n");
 }
 
-static void ps_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+static void ps_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	ps_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
@@ -1221,7 +1221,7 @@ int coord_comp(const void *c1_, const void *c2_)
 	return *c1 < *c2;
 }
 
-static void ps_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void ps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
 	if (x1 > x2) {
@@ -1249,7 +1249,7 @@ static void ps_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 	pcb_fprintf(global.f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-pcb_hid_attribute_t ps_calib_attribute_list[] = {
+rnd_hid_attribute_t ps_calib_attribute_list[] = {
 	{"lprcommand", "Command to print",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 };
@@ -1339,7 +1339,7 @@ static int guess(double val, double close_to, double *calib)
 	return 1;
 }
 
-void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
+void ps_calibrate_1(rnd_hid_t *hid, double xval, double yval, int use_command)
 {
 	FILE *ps_cal_file;
 	int used_popen = 0, c;
@@ -1405,16 +1405,16 @@ void ps_calibrate_1(pcb_hid_t *hid, double xval, double yval, int use_command)
 		fclose(ps_cal_file);
 }
 
-static void ps_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void ps_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 	ps_calibrate_1(hid, xval, yval, 0);
 }
 
-static void ps_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void ps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 
-pcb_hid_t ps_hid;
+rnd_hid_t ps_hid;
 
 static fgw_error_t pcb_act_PSCalib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -1427,7 +1427,7 @@ rnd_action_t hidps_action_list[] = {
 };
 
 static int ps_inited = 0;
-void ps_ps_init(pcb_hid_t * hid)
+void ps_ps_init(rnd_hid_t * hid)
 {
 	if (ps_inited)
 		return;
@@ -1459,7 +1459,7 @@ void ps_ps_init(pcb_hid_t * hid)
 	ps_inited = 1;
 }
 
-static int ps_usage(pcb_hid_t *hid, const char *topic)
+static int ps_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nps exporter command line arguments:\n\n");
 	pcb_hid_usage(ps_attribute_list, sizeof(ps_attribute_list) / sizeof(ps_attribute_list[0]));
@@ -1485,12 +1485,12 @@ void pplg_uninit_export_ps(void)
 int pplg_init_export_ps(void)
 {
 	PCB_API_CHK_VER;
-	memset(&ps_hid, 0, sizeof(pcb_hid_t));
+	memset(&ps_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&ps_hid);
 	ps_ps_init(&ps_hid);
 
-	ps_hid.struct_size = sizeof(pcb_hid_t);
+	ps_hid.struct_size = sizeof(rnd_hid_t);
 	ps_hid.name = "ps";
 	ps_hid.description = "Postscript export";
 	ps_hid.exporter = 1;

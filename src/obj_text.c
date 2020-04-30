@@ -490,7 +490,7 @@ void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_text_t *t
 
 	assert(text->parent_type == PCB_PARENT_LAYER);
 	if ((dstly == NULL) || (dstly == srcly)) { /* auto layer in dst */
-		pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
+		rnd_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
 		if (lid < 0) {
 			rnd_message(RND_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_textop_move_buffer\n");
 			return NULL;
@@ -1064,7 +1064,7 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx
 
 
 	if (xordraw || thindraw) {
-		pcb_hid_gc_t gc = xordraw ? pcb_crosshair.GC : pcb_draw_out.fgGC;
+		rnd_hid_gc_t gc = xordraw ? pcb_crosshair.GC : pcb_draw_out.fgGC;
 		for(n = 1, p = poly->Points+1; n < max; n++,p++)
 			pcb_render->draw_line(gc, xordx + x[n-1], xordy + y[n-1], xordx + x[n], xordy + y[n]);
 		pcb_render->draw_line(gc, xordx + x[0], xordy + y[0], xordx + x[max-1], xordy + y[max-1]);
@@ -1107,7 +1107,7 @@ rnd_coord_t pcb_text_height(pcb_font_t *font, int scale, const unsigned char *st
 }
 
 
-RND_INLINE void cheap_text_line(pcb_hid_gc_t gc, pcb_xform_mx_t mx, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t xordx, rnd_coord_t xordy)
+RND_INLINE void cheap_text_line(rnd_hid_gc_t gc, pcb_xform_mx_t mx, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t xordx, rnd_coord_t xordy)
 {
 	rnd_coord_t tx1, ty1, tx2, ty2;
 
@@ -1475,7 +1475,7 @@ void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text)
 }
 
 static pcb_draw_info_t txor_info;
-static pcb_xform_t txor_xform;
+static rnd_xform_t txor_xform;
 
 void pcb_text_draw_xor(pcb_text_t *text, rnd_coord_t x, rnd_coord_t y)
 {

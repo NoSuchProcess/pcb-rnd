@@ -78,7 +78,7 @@ void pcb_pref_conf2dlg_item(rnd_conf_native_t *cn, pref_confitem_t *item)
 	}
 }
 
-void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attribute_t *attr)
+void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, rnd_hid_attribute_t *attr)
 {
 	pref_confitem_t *old = ctx->pcb_conf_lock;
 	rnd_conf_native_t *cn = rnd_conf_get_field(item->confpath);
@@ -110,7 +110,7 @@ void pcb_pref_dlg2conf_item(pref_ctx_t *ctx, pref_confitem_t *item, pcb_hid_attr
 	ctx->pcb_conf_lock = old;
 }
 
-rnd_bool pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid_attribute_t *attr)
+rnd_bool pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, rnd_hid_attribute_t *attr)
 {
 	pref_confitem_t *c;
 	int wid = attr - ctx->dlg;
@@ -125,7 +125,7 @@ rnd_bool pcb_pref_dlg2conf_table(pref_ctx_t *ctx, pref_confitem_t *list, pcb_hid
 }
 
 
-void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
+void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*change_cb)(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr))
 {
 	rnd_conf_native_t *cn = rnd_conf_get_field(item->confpath);
 
@@ -187,7 +187,7 @@ void pcb_pref_create_conf_item(pref_ctx_t *ctx, pref_confitem_t *item, void (*ch
 	rnd_conf_hid_set_data(cn, pref_hid, item);
 }
 
-void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_confitem_t *list, void (*change_cb)(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr))
+void pcb_pref_create_conftable(pref_ctx_t *ctx, pref_confitem_t *list, void (*change_cb)(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr))
 {
 	pref_confitem_t *c;
 	for(c = list; c->confpath != NULL; c++)
@@ -205,7 +205,7 @@ void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list)
 	}
 }
 
-static void pref_role_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pref_role_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
 	ctx->role = roles[attr->val.lng];

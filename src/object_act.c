@@ -954,7 +954,7 @@ static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv
 static const char pcb_acts_MoveLayer[] = "MoveLayer(old,new)\nMoveLayer(lid,group,gid)";
 static const char pcb_acth_MoveLayer[] = "Moves/Creates/Deletes Layers.";
 /* DOC: movelayer.html */
-extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
+extern rnd_layergrp_id_t pcb_actd_EditGroup_gid;
 fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *a0, *a1;

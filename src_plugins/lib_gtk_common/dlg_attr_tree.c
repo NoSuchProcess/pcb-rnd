@@ -27,7 +27,7 @@
 
 #include <gdk/gdkkeysyms.h>
 
-static GtkTreeIter *ghid_tree_table_add(pcb_hid_attribute_t *attr, GtkTreeStore *tstore, GtkTreeIter *par, pcb_hid_row_t *r, int prepend, GtkTreeIter *sibling)
+static GtkTreeIter *ghid_tree_table_add(rnd_hid_attribute_t *attr, GtkTreeStore *tstore, GtkTreeIter *par, pcb_hid_row_t *r, int prepend, GtkTreeIter *sibling)
 {
 	int c;
 	GtkTreeIter *curr = malloc(sizeof(GtkTreeIter));
@@ -68,7 +68,7 @@ static GtkTreeIter *ghid_tree_table_add(pcb_hid_attribute_t *attr, GtkTreeStore 
 }
 
 /* insert a subtree of a tree-table widget in a gtk table store reursively */
-static void ghid_tree_table_import(pcb_hid_attribute_t *attr, GtkTreeStore *tstore, gdl_list_t *lst, GtkTreeIter *par)
+static void ghid_tree_table_import(rnd_hid_attribute_t *attr, GtkTreeStore *tstore, gdl_list_t *lst, GtkTreeIter *par)
 {
 	pcb_hid_row_t *r;
 
@@ -80,7 +80,7 @@ static void ghid_tree_table_import(pcb_hid_attribute_t *attr, GtkTreeStore *tsto
 
 /* Return the tree-store data model, which is the child of the filter model
    attached to the tree widget */
-GtkTreeModel *ghid_tree_table_get_model(attr_dlg_t *ctx, pcb_hid_attribute_t *attrib, int filter)
+GtkTreeModel *ghid_tree_table_get_model(attr_dlg_t *ctx, rnd_hid_attribute_t *attrib, int filter)
 {
 	int idx = attrib - ctx->attrs;
 	GtkWidget *tt = ctx->wl[idx];
@@ -93,7 +93,7 @@ GtkTreeModel *ghid_tree_table_get_model(attr_dlg_t *ctx, pcb_hid_attribute_t *at
 	return model;
 }
 
-static void ghid_tree_table_insert_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *new_row)
+static void ghid_tree_table_insert_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *new_row)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	pcb_hid_row_t *sibling, *par = pcb_dad_tree_parent_row(attrib->wdata, new_row);
@@ -114,7 +114,7 @@ static void ghid_tree_table_insert_cb(pcb_hid_attribute_t *attrib, void *hid_ctx
 	ghid_tree_table_add(attrib, GTK_TREE_STORE(model), pariter, new_row, prepnd, sibiter);
 }
 
-static void ghid_tree_table_remove_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void ghid_tree_table_remove_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attrib, 0);
@@ -122,7 +122,7 @@ static void ghid_tree_table_remove_cb(pcb_hid_attribute_t *attrib, void *hid_ctx
 	row->hid_data = NULL;
 }
 
-static void ghid_tree_table_modify_cb(pcb_hid_attribute_t *attr, void *hid_ctx, pcb_hid_row_t *row, int col)
+static void ghid_tree_table_modify_cb(rnd_hid_attribute_t *attr, void *hid_ctx, pcb_hid_row_t *row, int col)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	GtkTreeIter *iter = row->hid_data;
@@ -143,12 +143,12 @@ static void ghid_tree_table_modify_cb(pcb_hid_attribute_t *attr, void *hid_ctx, 
 	}
 }
 
-static void ghid_tree_table_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void ghid_tree_table_free_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	free(row->hid_data);
 }
 
-static void ghid_tree_table_update_hide(pcb_hid_attribute_t *attrib, void *hid_ctx)
+static void ghid_tree_table_update_hide(rnd_hid_attribute_t *attrib, void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attrib, 1);
@@ -156,7 +156,7 @@ static void ghid_tree_table_update_hide(pcb_hid_attribute_t *attrib, void *hid_c
 }
 
 
-static pcb_hid_row_t *ghid_tree_table_get_selected(pcb_hid_attribute_t *attrib, void *hid_ctx)
+static pcb_hid_row_t *ghid_tree_table_get_selected(rnd_hid_attribute_t *attrib, void *hid_ctx)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -178,7 +178,7 @@ static pcb_hid_row_t *ghid_tree_table_get_selected(pcb_hid_attribute_t *attrib, 
 	return r;
 }
 
-static void ghid_tree_table_cursor(GtkWidget *widget, pcb_hid_attribute_t *attr)
+static void ghid_tree_table_cursor(GtkWidget *widget, rnd_hid_attribute_t *attr)
 {
 	attr_dlg_t *ctx = g_object_get_data(G_OBJECT(widget), PCB_OBJ_PROP);
 	pcb_hid_row_t *r = ghid_tree_table_get_selected(attr, ctx);
@@ -198,7 +198,7 @@ static void ghid_tree_table_cursor(GtkWidget *widget, pcb_hid_attribute_t *attr)
 
 static gboolean tree_table_filter_visible_func(GtkTreeModel *model, GtkTreeIter *iter, void *user_data)
 {
-	pcb_hid_attribute_t *attr = user_data;
+	rnd_hid_attribute_t *attr = user_data;
 	pcb_hid_row_t *r = NULL;
 
 	gtk_tree_model_get(model, iter, attr->pcb_hatt_table_cols, &r, -1);
@@ -212,7 +212,7 @@ static gboolean tree_table_filter_visible_func(GtkTreeModel *model, GtkTreeIter 
 /* Activation (e.g. double-clicking) of a footprint row. As a convenience
 to the user, GTK provides Shift-Arrow Left, Right to expand or
 contract any node with children. */
-static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, pcb_hid_attribute_t *attr)
+static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, rnd_hid_attribute_t *attr)
 {
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -228,7 +228,7 @@ static void tree_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTre
 
 /* Key pressed activation handler: CTRL-C -> copy footprint name to clipboard;
    Enter -> row-activate. */
-static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey *event, pcb_hid_attribute_t *attr)
+static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey *event, rnd_hid_attribute_t *attr)
 {
 	GtkTreeSelection *selection;
 	GtkTreeModel *model;
@@ -324,7 +324,7 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 }
 
 /* Handle the double-click to be equivalent to "row-activated" signal */
-static gboolean ghid_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *ev, pcb_hid_attribute_t *attr)
+static gboolean ghid_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *ev, rnd_hid_attribute_t *attr)
 {
 	GtkTreeView *tv = GTK_TREE_VIEW(widget);
 	GtkTreeModel *model;
@@ -343,7 +343,7 @@ static gboolean ghid_tree_table_button_press_cb(GtkWidget *widget, GdkEvent *ev,
 	return FALSE;
 }
 
-static gboolean ghid_tree_table_button_release_cb(GtkWidget *widget, GdkEvent *ev, pcb_hid_attribute_t *attr)
+static gboolean ghid_tree_table_button_release_cb(GtkWidget *widget, GdkEvent *ev, rnd_hid_attribute_t *attr)
 {
 	GtkTreeView *tv = GTK_TREE_VIEW(widget);
 	GtkTreeModel *model;
@@ -362,10 +362,10 @@ static gboolean ghid_tree_table_button_release_cb(GtkWidget *widget, GdkEvent *e
 	return FALSE;
 }
 
-static int ghid_tree_table_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+static int ghid_tree_table_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	GtkWidget *tt = ctx->wl[idx];
-	pcb_hid_attribute_t *attr = &ctx->attrs[idx];
+	rnd_hid_attribute_t *attr = &ctx->attrs[idx];
 	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attr, 0);
 	GtkTreePath *path;
 	pcb_hid_tree_t *tree = attr->wdata;
@@ -391,7 +391,7 @@ TODO("DAD: remove cursor - is it possible with gtk?")
 	return 0;
 }
 
-void ghid_tree_table_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+void ghid_tree_table_jumpto_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -414,7 +414,7 @@ void ghid_tree_table_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_h
 	gtk_tree_view_set_cursor(GTK_TREE_VIEW(tt), path, NULL, FALSE);
 }
 
-void ghid_tree_table_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row, int expanded)
+void ghid_tree_table_expcoll_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row, int expanded)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -438,7 +438,7 @@ void ghid_tree_table_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_
 }
 
 
-static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent, int j)
+static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
 {
 	int c;
 	const char **colhdr;
@@ -508,7 +508,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, pcb_hid_attribute_t *a
 	return view;
 }
 
-static void ghid_tree_pre_free(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, int j)
+static void ghid_tree_pre_free(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, int j)
 {
 	GtkWidget *tt = ctx->wl[j];
 	/* make sure the model filter functions are not called back in an async call

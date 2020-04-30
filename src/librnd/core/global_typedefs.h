@@ -54,30 +54,30 @@ typedef struct rnd_hid_cfg_s rnd_hid_cfg_t;
 typedef unsigned int rnd_cardinal_t;
 typedef struct rnd_color_s rnd_color_t;
 typedef struct rnd_clrcache_s rnd_clrcache_t;
-typedef struct pcb_pixmap_s pcb_pixmap_t;
+typedef struct rnd_pixmap_s rnd_pixmap_t;
 
 typedef struct rnd_action_s rnd_action_t;
 
-typedef struct pcb_hid_dad_subdialog_s pcb_hid_dad_subdialog_t;
+typedef struct rnd_hid_dad_subdialog_s rnd_hid_dad_subdialog_t;
 
 typedef struct rnd_event_arg_s rnd_event_arg_t;
 
-typedef struct pcb_hid_expose_ctx_s pcb_hid_expose_ctx_t;
-typedef struct pcb_hid_s pcb_hid_t;
-typedef struct pcb_xform_s pcb_xform_t; /* declared by the app */
+typedef struct rnd_hid_expose_ctx_s rnd_hid_expose_ctx_t;
+typedef struct rnd_hid_s rnd_hid_t;
+typedef struct rnd_xform_s rnd_xform_t; /* declared by the app */
 
 /* This graphics context is an opaque pointer defined by the HID.  GCs
    are HID-specific; attempts to use one HID's GC for a different HID
    will result in a fatal error.  The first field must be:
-   pcb_core_gc_t core_gc; */
-typedef struct hid_gc_s *pcb_hid_gc_t;
+   rnd_core_gc_t core_gc; */
+typedef struct rnd_hid_gc_s *rnd_hid_gc_t;
 
-typedef struct pcb_hid_attr_val_s  pcb_hid_attr_val_t;
-typedef struct pcb_hid_attribute_s pcb_hid_attribute_t;
-typedef struct pcb_export_opt_s pcb_export_opt_t;
+typedef struct rnd_hid_attr_val_s  rnd_hid_attr_val_t;
+typedef struct rnd_hid_attribute_s rnd_hid_attribute_t;
+typedef struct rnd_export_opt_s rnd_export_opt_t;
 
-typedef long int pcb_layer_id_t;
-typedef long int pcb_layergrp_id_t;
+typedef long int rnd_layer_id_t;
+typedef long int rnd_layergrp_id_t;
 
 #include <librnd/core/pcb_bool.h>
 

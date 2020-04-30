@@ -122,7 +122,7 @@ do { \
 
 
 /* copy all GUI fields into the cons struct */
-static void gui2cons(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void gui2cons(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	char *end, buff[1024];
 	rnd_bool succ;
@@ -138,7 +138,7 @@ static void gui2cons(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr
 	g2c_scalar(move_length_mod, crd);
 }
 
-static void reset_line(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void reset_line(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle, str, rnd_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.line_angle_mod, dbl, 0);
@@ -147,7 +147,7 @@ static void reset_line(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 	gui2cons(hid_ctx, caller_data, attr);
 }
 
-static void reset_move(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void reset_move(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle, str, rnd_strdup(""));
 	PCB_DAD_SET_VALUE(cnstgui_ctx.dlg_hid_ctx, cnstgui_ctx.move_angle_mod, dbl, 0);
@@ -156,18 +156,18 @@ static void reset_move(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 	gui2cons(hid_ctx, caller_data, attr);
 }
 
-static void set_paral(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void set_paral(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_actionva(&PCB->hidlib, "paral", NULL);
 }
 
-static void set_perp(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void set_perp(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_actionva(&PCB->hidlib, "perp", NULL);
 }
 
 
-static void set_tang(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void set_tang(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_actionva(&PCB->hidlib, "tang", NULL);
 }
@@ -182,7 +182,7 @@ void cons_gui_confchg(rnd_conf_native_t *cfg, int arr_idx)
 	cnstgui_ctx.inhibit_confchg--;
 }
 
-static void set_alldir(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void set_alldir(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	const char *nv;
 	if (cnstgui_ctx.inhibit_confchg)

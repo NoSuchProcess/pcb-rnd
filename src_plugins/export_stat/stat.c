@@ -64,11 +64,11 @@
 #include "hid_cam.h"
 
 
-static pcb_hid_t stat_hid;
+static rnd_hid_t stat_hid;
 
 const char *stat_cookie = "stat HID";
 
-pcb_export_opt_t stat_attribute_list[] = {
+rnd_export_opt_t stat_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 	{"outfile", "Output file name",
@@ -108,9 +108,9 @@ pcb_export_opt_t stat_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(stat_attribute_list)/sizeof(stat_attribute_list[0]))
 
-static pcb_hid_attr_val_t stat_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t stat_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *stat_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *stat_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".stat.lht";
 
@@ -128,12 +128,12 @@ typedef struct layer_stat_s {
 	unsigned long int lines, arcs, polys, elements;
 } layer_stat_t;
 
-static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void stat_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	FILE *f;
 	const char *filename;
 	int i, lid;
-	pcb_layergrp_id_t lgid;
+	rnd_layergrp_id_t lgid;
 	char buff[1024];
 	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYERGRP];
 	int nl, phg, hp, hup, group_not_empty[PCB_MAX_LAYERGRP];
@@ -371,13 +371,13 @@ static void stat_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_cam_end(&cam);
 }
 
-static int stat_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int stat_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(stat_attribute_list, sizeof(stat_attribute_list) / sizeof(stat_attribute_list[0]), stat_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int stat_usage(pcb_hid_t *hid, const char *topic)
+static int stat_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nstat exporter command line arguments:\n\n");
 	pcb_hid_usage(stat_attribute_list, sizeof(stat_attribute_list) / sizeof(stat_attribute_list[0]));
@@ -400,11 +400,11 @@ int pplg_init_export_stat(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&stat_hid, 0, sizeof(pcb_hid_t));
+	memset(&stat_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&stat_hid);
 
-	stat_hid.struct_size = sizeof(pcb_hid_t);
+	stat_hid.struct_size = sizeof(rnd_hid_t);
 	stat_hid.name = "stat";
 	stat_hid.description = "board statistics";
 	stat_hid.exporter = 1;

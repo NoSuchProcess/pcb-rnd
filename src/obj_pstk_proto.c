@@ -371,7 +371,7 @@ int pcb_pstk_proto_breakup(pcb_data_t *dst, pcb_pstk_t *src, rnd_bool remove_src
 
 	for(n = 0; n < ts->len; n++) {
 		pcb_pstk_shape_t *shp = &ts->shape[n];
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 		pcb_layer_t *ly, *ly1 = NULL, *ly2 = NULL, *ly3 = NULL;
 		rnd_coord_t clr;
 		pcb_poly_t *p;

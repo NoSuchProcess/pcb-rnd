@@ -44,7 +44,7 @@ static pref_confitem_t perf_cli[] = {
 	{NULL, NULL, 0}
 };
 
-static void pref_general_dlg2conf(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pref_general_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
 	pcb_pref_dlg2conf_table(ctx, perf_topwin, attr);

@@ -684,7 +684,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	return 0;
 }
 
-static void pcb_subc_draw_origin(pcb_hid_gc_t GC, pcb_subc_t *sc, rnd_coord_t DX, rnd_coord_t DY)
+static void pcb_subc_draw_origin(rnd_hid_gc_t GC, pcb_subc_t *sc, rnd_coord_t DX, rnd_coord_t DY)
 {
 	pcb_line_t *origin;
 	pcb_subc_cache_update(sc);
@@ -711,7 +711,7 @@ static void pcb_subc_draw_origin(pcb_hid_gc_t GC, pcb_subc_t *sc, rnd_coord_t DX
 }
 
 /* Draw a small lock on the bottom right corner at lx;ly */
-static void pcb_subc_draw_locked(pcb_hid_gc_t GC, pcb_subc_t *sc, rnd_coord_t lx, rnd_coord_t ly, int on_bottom)
+static void pcb_subc_draw_locked(rnd_hid_gc_t GC, pcb_subc_t *sc, rnd_coord_t lx, rnd_coord_t ly, int on_bottom)
 {
 	rnd_coord_t s = on_bottom ? -PCB_EMARK_SIZE : PCB_EMARK_SIZE;
 
@@ -1637,7 +1637,7 @@ TODO("subc: subc-in-subc: bind subc rtree")
 typedef struct {
 	pcb_board_t *pcb;
 	pcb_subc_t *sc;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	int slot; /* layer index within the subc */
 	unsigned int unbind:1;
 } undo_subc_unbind_t;
@@ -1673,7 +1673,7 @@ static const uundo_oper_t undo_subc_unbind = {
 };
 
 
-static void pcb_subc_unbind_(pcb_board_t *pcb, pcb_subc_t *sc, pcb_layer_id_t brdlid, int slot, int undoable)
+static void pcb_subc_unbind_(pcb_board_t *pcb, pcb_subc_t *sc, rnd_layer_id_t brdlid, int slot, int undoable)
 {
 	undo_subc_unbind_t utmp, *u = &utmp;
 
@@ -2089,7 +2089,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_rnd_box_t *drawn_area
 	pcb_draw_info_t info;
 	rnd_rtree_it_t it;
 	pcb_any_obj_t *o;
-	pcb_xform_t xf = {0};
+	rnd_xform_t xf = {0};
 	pcb_draw_setup_default_gui_xform(&xf);
 
 	/* draw copper only first - order doesn't matter */

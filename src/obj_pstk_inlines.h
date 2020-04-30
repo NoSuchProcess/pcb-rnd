@@ -104,7 +104,7 @@ RND_INLINE pcb_pstk_tshape_t *pcb_pstk_get_untshape(pcb_pstk_t *ps)
 
 /* return the type of drill and optionally fill in group IDs of drill ends ;
    if proto_out is not NULL, also load it with the proto */
-RND_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, const pcb_pstk_t *ps, pcb_layergrp_id_t *top, pcb_layergrp_id_t *bottom, pcb_pstk_proto_t **proto_out)
+RND_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, const pcb_pstk_t *ps, rnd_layergrp_id_t *top, rnd_layergrp_id_t *bottom, pcb_pstk_proto_t **proto_out)
 {
 	pcb_bb_type_t res;
 	int topi, boti;
@@ -182,9 +182,9 @@ RND_INLINE pcb_bb_type_t pcb_pstk_bbspan(pcb_board_t *pcb, const pcb_pstk_t *ps,
 
 /* return whether a given padstack drills a given group
   (does not consider plating, only drill!) */
-RND_INLINE pcb_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, const pcb_pstk_t *ps, pcb_layergrp_id_t grp, pcb_pstk_proto_t **proto_out)
+RND_INLINE pcb_bool_t pcb_pstk_bb_drills(pcb_board_t *pcb, const pcb_pstk_t *ps, rnd_layergrp_id_t grp, pcb_pstk_proto_t **proto_out)
 {
-	pcb_layergrp_id_t top, bot;
+	rnd_layergrp_id_t top, bot;
 	pcb_bb_type_t res = pcb_pstk_bbspan(pcb, ps, &top, &bot, proto_out);
 	switch(res) {
 		case PCB_BB_THRU: return pcb_true;
@@ -239,7 +239,7 @@ RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at_(pcb_board_t *pcb, pcb_pstk_t *ps
 	pcb_layer_combining_t comb = layer->comb;
 
 	if (lyt & PCB_LYT_COPPER) {
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 		if (lyt & PCB_LYT_INTERN) {
 			/* apply internal only if that layer has drill */
 			if (!pcb_pstk_bb_drills(pcb, ps, pcb_layer_get_group_(layer), NULL))
@@ -274,7 +274,7 @@ RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_at(pcb_board_t *pcb, pcb_pstk_t *ps,
 }
 
 
-RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t gid, pcb_layer_combining_t comb, pcb_layergrp_t **grp_out)
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_layergrp_id_t gid, pcb_layer_combining_t comb, pcb_layergrp_t **grp_out)
 {
 	pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
 
@@ -296,7 +296,7 @@ RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps
 
 			/* if all layers of the group says no-shape, don't have a shape */
 		for(n = 0, nosh = 0; n < grp->len; n++) {
-			pcb_layer_id_t lid = grp->lid[n];
+			rnd_layer_id_t lid = grp->lid[n];
 			if ((lid < ps->thermals.used) && (ps->thermals.shape[lid] & PCB_THERMAL_ON) && ((ps->thermals.shape[lid] & 3) == PCB_THERMAL_NOSHAPE))
 				nosh++;
 		}
@@ -309,7 +309,7 @@ RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_gid(pcb_board_t *pcb, pcb_pstk_t *ps
 }
 
 /* Returns the mech shape (slot) if it affects grp */
-RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_gid(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layergrp_id_t grp)
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_gid(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_layergrp_id_t grp)
 {
 	pcb_pstk_tshape_t *ts;
 	pcb_pstk_proto_t *proto;

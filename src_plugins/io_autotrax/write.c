@@ -74,7 +74,7 @@ typedef struct {
 
 static int wrax_layer2id(wctx_t *ctx, pcb_layer_t *ly)
 {
-	pcb_layergrp_id_t gid = pcb_layer_get_group_(ly);
+	rnd_layergrp_id_t gid = pcb_layer_get_group_(ly);
 	if ((gid >= 0) && (gid < PCB_MAX_LAYERGRP))
 		return ctx->grp2id[gid];
 	return 0;

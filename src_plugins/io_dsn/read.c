@@ -321,7 +321,7 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 static int dsn_parse_boundary(dsn_read_t *ctx, gsxl_node_t *bnd)
 {
 	int res;
-	pcb_layer_id_t olid;
+	rnd_layer_id_t olid;
 	pcb_layer_t *oly;
 
 	if (bnd == NULL)
@@ -369,7 +369,7 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	const pcb_dflgmap_t *m;
 	gsxl_node_t *n, *i;
 	pcb_layergrp_t *topcop = NULL, *botcop = NULL, *grp;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	const rnd_unit_t *old_unit;
 	const pcb_dflgmap_t doclayers[] = {
 		{"top_outline",         PCB_LYT_TOP | PCB_LYT_DOC,    "outline", PCB_LYC_AUTO, 0},

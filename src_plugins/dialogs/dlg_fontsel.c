@@ -71,7 +71,7 @@ static void fontsel_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 		memset(ctx, 0, sizeof(fontsel_ctx_t));
 }
 
-void fontsel_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+void fontsel_expose_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	fontsel_ctx_t *ctx = prv->user_ctx;
 
@@ -88,7 +88,7 @@ void fontsel_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_
 	}
 }
 
-rnd_bool fontsel_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+rnd_bool fontsel_mouse_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	fontsel_ctx_t *ctx = prv->user_ctx;
 
@@ -101,13 +101,13 @@ rnd_bool fontsel_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 	return pcb_stub_draw_fontsel_mouse_ev(kind, x, y, NULL);
 }
 
-void fontsel_free_cb(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
+void fontsel_free_cb(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
 {
 }
 
 static void fontsel_preview_update(fontsel_ctx_t *ctx)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 
 	if ((ctx == NULL) || (!ctx->active))
 		return;
@@ -117,13 +117,13 @@ static void fontsel_preview_update(fontsel_ctx_t *ctx)
 }
 
 
-static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_actionva(&PCB->hidlib, "LoadFontFrom", NULL); /* modal, blocking */
 	fontsel_preview_update((fontsel_ctx_t *)caller_data);
 }
 
-static void btn_replace_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void btn_replace_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	char file[1] = "", id[5];
 	pcb_snprintf(id, sizeof(id), "%ld", conf_core.design.text_font_id);
@@ -131,7 +131,7 @@ static void btn_replace_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	fontsel_preview_update((fontsel_ctx_t *)caller_data);
 }
 
-static void btn_remove_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void btn_remove_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	if (conf_core.design.text_font_id == 0) {
 		rnd_message(RND_MSG_ERROR, "Can not remove the default font.\n");

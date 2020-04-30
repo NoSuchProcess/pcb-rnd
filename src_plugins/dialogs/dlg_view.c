@@ -86,7 +86,7 @@ static void view_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void view2dlg_list(view_ctx_t *ctx)
 {
 	pcb_view_t *v;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[3], *cursor_path = NULL;
@@ -123,7 +123,7 @@ static void view2dlg_list(view_ctx_t *ctx)
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
@@ -191,7 +191,7 @@ void view_simple_show(view_ctx_t *ctx)
 		pcb_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &v->bbox);
 }
 
-static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void view_select(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attrib->wdata;
 	view_ctx_t *ctx = tree->user_ctx;
@@ -203,10 +203,10 @@ static void view_select(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_
 
 static vtp0_t view_color_save;
 
-static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+static void view_expose_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	view_ctx_t *ctx = prv->user_ctx;
-	pcb_xform_t xform;
+	rnd_xform_t xform;
 	int old_termlab, g;
 	static const rnd_color_t *offend_color[2];
 	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
@@ -256,7 +256,7 @@ static void view_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 }
 
 
-static rnd_bool view_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool view_mouse_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_false; /* don't redraw */
 }
@@ -270,7 +270,7 @@ void view_refresh(view_ctx_t *ctx)
 
 static void view_preview_update(view_ctx_t *ctx)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 
 	if ((ctx == NULL) || (!ctx->active) || (ctx->selected == 0))
 		return;
@@ -280,12 +280,12 @@ static void view_preview_update(view_ctx_t *ctx)
 }
 
 
-static void view_refresh_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void view_refresh_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	view_refresh((view_ctx_t *)caller_data);
 }
 
-static void view_close_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void view_close_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	view_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);
@@ -300,7 +300,7 @@ static void view_stepped(view_ctx_t *ctx, pcb_view_t *v)
 	view2dlg_pos(ctx);
 }
 
-static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+static void view_del_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	view_ctx_t *ctx = caller_data;
 	pcb_view_t *v, *newv;
@@ -317,7 +317,7 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		view2dlg_count(ctx);
 	}
 	else { /* full dialog, go by the list */
-		pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
+		rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 		pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
 
 		if (r == NULL)
@@ -343,12 +343,12 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 }
 
-static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+static void view_copy_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	view_ctx_t *ctx = caller_data;
 	pcb_view_t *v;
 	gds_t tmp;
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
 	int btn_idx = attr_btn - ctx->dlg;
 	int cut = (ctx->wbtn_cut == btn_idx);
@@ -388,14 +388,14 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 		view2dlg_list(ctx);
 }
 
-static void view_paste_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+static void view_paste_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	view_ctx_t *ctx = caller_data;
 	pcb_hid_clipfmt_t cformat;
 	void *cdata, *load_ctx;
 	size_t clen;
 	pcb_view_t *v, *vt = NULL;
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(attr);
 
 	if (r != NULL) {
@@ -433,7 +433,7 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribut
 	view2dlg_list(ctx);
 }
 
-static void view_save_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+static void view_save_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	view_ctx_t *ctx = caller_data;
 	gds_t tmp;
@@ -462,7 +462,7 @@ static void view_save_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	gds_uninit(&tmp);
 }
 
-static void view_load_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+static void view_load_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	view_ctx_t *ctx = caller_data;
 	pcb_view_t *v;
@@ -524,10 +524,10 @@ static void view_select_obj(view_ctx_t *ctx, pcb_view_t *v)
 	}
 }
 
-static void view_select_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_btn)
+static void view_select_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	view_ctx_t *ctx = caller_data;
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
 	pcb_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
 
 	if (r == NULL)
@@ -556,7 +556,7 @@ static void simple_rewind(view_ctx_t *ctx)
 		ctx->selected = 0;
 }
 
-static void view_prev_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void view_prev_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	view_ctx_t *ctx = caller_data;
 	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);
@@ -568,7 +568,7 @@ static void view_prev_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	view_stepped(ctx, v);
 }
 
-static void view_next_btn_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void view_next_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	view_ctx_t *ctx = caller_data;
 	pcb_view_t *v = pcb_view_by_uid(ctx->lst, ctx->selected);

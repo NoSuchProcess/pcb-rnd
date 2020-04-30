@@ -56,9 +56,9 @@ static void rstdlg_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 static void rstdlg_pcb2dlg(int rst_idx)
 {
 	int n;
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	pcb_route_style_t *rst;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	rnd_attribute_t *a;
 
@@ -114,11 +114,11 @@ static void rst_updated(pcb_route_style_t *rst)
 	pcb_board_set_changed_flag(1);
 }
 
-static void rst_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int idx = attr - rstdlg_ctx.dlg;
 	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 
 	if (rst == NULL) {
 		rnd_message(RND_MSG_ERROR, "route style does not exist");
@@ -197,7 +197,7 @@ static int rst_edit_attr(char **key, char **val)
 	return res;
 }
 
-static void rst_add_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void rst_add_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
 	char *key = NULL, *val = NULL;
@@ -208,10 +208,10 @@ static void rst_add_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 }
 
-static void rst_edit_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void rst_edit_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
-	pcb_hid_attribute_t *treea = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
+	rnd_hid_attribute_t *treea = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(treea);
 	char *key, *val;
 
@@ -228,10 +228,10 @@ static void rst_edit_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 	}
 }
 
-static void rst_del_attr_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void rst_del_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
-	pcb_hid_attribute_t *treea = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
+	rnd_hid_attribute_t *treea = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(treea);
 
 	if (row == NULL)

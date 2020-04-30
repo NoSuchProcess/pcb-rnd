@@ -38,7 +38,7 @@
 
 struct pcb_rat_line_s {          /* a rat-line */
 	PCB_ANYLINEFIELDS;
-	pcb_layergrp_id_t group1, group2; /* the layer group each point is on */
+	rnd_layergrp_id_t group1, group2; /* the layer group each point is on */
 	pcb_idpath_t *anchor[2];       /* endpoint object that were originally connected */
 	gdl_elem_t link;               /* a rat line is in a list on a design */
 };
@@ -51,7 +51,7 @@ void pcb_rat_reg(pcb_data_t *data, pcb_rat_t *rat);
 void pcb_rat_unreg(pcb_rat_t *rat);
 
 /* if id is <= 0, allocate a new id */
-pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, pcb_layergrp_id_t group1, pcb_layergrp_id_t group2, rnd_coord_t Thickness, pcb_flag_t Flags, pcb_any_obj_t *anchor1, pcb_any_obj_t *anchor2);
+pcb_rat_t *pcb_rat_new(pcb_data_t *Data, long int id, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_layergrp_id_t group1, rnd_layergrp_id_t group2, rnd_coord_t Thickness, pcb_flag_t Flags, pcb_any_obj_t *anchor1, pcb_any_obj_t *anchor2);
 rnd_bool pcb_rats_destroy(rnd_bool selected);
 
 /* Look up the anchor object (object the rat is connected to) for end 0 or

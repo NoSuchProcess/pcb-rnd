@@ -150,7 +150,7 @@ static rnd_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, dou
 	return pcb_poly_from_pcb_arc(&atmp, clr);
 }
 
-rnd_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, rnd_layer_id_t lid)
 {
 	rnd_polyarea_t *pa, *pb, *pc;
 	double dx, dy, len, vx, vy, nx, ny, clr, clrth, x1, y1, x2, y2, mx, my;
@@ -649,7 +649,7 @@ static void pcb_thermal_area_pa_sharp(rnd_polyarea_t **pres, pcb_poly_it_t *it, 
 	polytherm_base(pres, it->pa);
 }
 
-rnd_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, rnd_layer_id_t lid)
 {
 	rnd_polyarea_t *pa, *pres = NULL;
 	rnd_coord_t clr = poly->Clearance/2;
@@ -675,7 +675,7 @@ rnd_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 }
 
 /* Generate a clearance around a padstack shape, with no thermal */
-static rnd_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_id_t lid, pcb_pstk_shape_t *shp, rnd_coord_t clearance)
+static rnd_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_layer_id_t lid, pcb_pstk_shape_t *shp, rnd_coord_t clearance)
 {
 	pcb_poly_it_t it;
 	rnd_polyarea_t *pres = NULL;
@@ -705,7 +705,7 @@ static rnd_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pst
 	return NULL;
 }
 
-rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_layer_id_t lid)
 {
 	unsigned char thr;
 	pcb_pstk_shape_t *shp, tmpshp;
@@ -732,7 +732,7 @@ rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 
 	shp = pcb_pstk_shape_at_(pcb, ps, layer, 1);
 	if (shp == NULL) {
-		pcb_layergrp_id_t gid;
+		rnd_layergrp_id_t gid;
 		pcb_layergrp_t *grp;
 		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 		if (proto->hdia < 0)
@@ -757,7 +757,7 @@ rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 		clearance = shp->clearance/2;
 
 	if (clearance <= 0) {
-		pcb_layergrp_id_t gid = pcb_layer_get_group_(layer);
+		rnd_layergrp_id_t gid = pcb_layer_get_group_(layer);
 		pcb_layergrp_t *grp = pcb_get_layergrp(pcb, gid);
 		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 		if (grp == NULL) return NULL;
@@ -831,7 +831,7 @@ rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 	return NULL;
 }
 
-rnd_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_layer_id_t lid)
 {
 	switch(obj->type) {
 

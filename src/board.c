@@ -411,7 +411,7 @@ int pcb_board_normalize(pcb_board_t *pcb)
 
 rnd_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags)
 {
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
 	rnd_coord_t curr, total = 0;
 

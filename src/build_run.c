@@ -137,7 +137,7 @@ char *pcb_get_info_comments(void)
 
 char *pcb_get_info_compile_options(void)
 {
-	pcb_hid_t **hids;
+	rnd_hid_t **hids;
 	int i;
 	static gds_t info;
 	static int first_time = 1;

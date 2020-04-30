@@ -162,12 +162,12 @@ static void isch_pcb2dlg(void)
 	isch_switch_fmt(tab, 0);
 }
 
-static void isch_fmt_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void isch_fmt_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	isch_switch_fmt(isch_ctx.dlg[isch_ctx.wfmt].val.lng, 1);
 }
 
-static void isch_arg_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void isch_arg_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int len = rnd_conflist_length((rnd_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 	if (len > 0) {
@@ -176,7 +176,7 @@ static void isch_arg_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 }
 
-static void isch_arg_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void isch_arg_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int len = rnd_conflist_length((rnd_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 	if (len < MAX_ARGS+1) {
@@ -188,7 +188,7 @@ static void isch_arg_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	}
 }
 
-static void isch_browse_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void isch_browse_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int n, idx = -1, wid = attr - isch_ctx.dlg;
 	char *name;
@@ -218,13 +218,13 @@ static void isch_browse_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 }
 
 
-static void isch_import_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void isch_import_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	isch_flush_timer();
 	do_import();
 }
 
-static void isch_arg_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void isch_arg_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_hidval_t user_data;
 
@@ -236,7 +236,7 @@ static void isch_arg_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	isch_ctx.arg_dirty = 1;
 }
 
-static void isch_generic_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void isch_generic_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	const char *nv = isch_ctx.dlg[isch_ctx.wverbose].val.lng ? "1" : "0";
 	isch_conf_lock++;
@@ -244,7 +244,7 @@ static void isch_generic_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 	isch_conf_lock--;
 }
 
-static void isch_plc_cfg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void isch_plc_cfg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_actionva(&PCB->hidlib, "preferences", "config", "footprint_", NULL);
 }

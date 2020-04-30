@@ -47,22 +47,22 @@ typedef enum {
 
 typedef struct {
 	/* cursor manipulation callbacks */
-	void (*hid_get_xy)(pcb_hid_attribute_t *attrib, void *hid_ctx, long *x, long *y); /* can be very slow */
-	long (*hid_get_offs)(pcb_hid_attribute_t *attrib, void *hid_ctx);
-	void (*hid_set_xy)(pcb_hid_attribute_t *attrib, void *hid_ctx, long x, long y); /* can be very slow */
-	void (*hid_set_offs)(pcb_hid_attribute_t *attrib, void *hid_ctx, long offs);
-	void (*hid_scroll_to_bottom)(pcb_hid_attribute_t *attrib, void *hid_ctx);
-	void (*hid_set_text)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt);
-	char *(*hid_get_text)(pcb_hid_attribute_t *attrib, void *hid_ctx); /* caller needs to free the result */
-	void (*hid_set_readonly)(pcb_hid_attribute_t *attrib, void *hid_ctx, rnd_bool readonly); /* by default text views are not read-only */
+	void (*hid_get_xy)(rnd_hid_attribute_t *attrib, void *hid_ctx, long *x, long *y); /* can be very slow */
+	long (*hid_get_offs)(rnd_hid_attribute_t *attrib, void *hid_ctx);
+	void (*hid_set_xy)(rnd_hid_attribute_t *attrib, void *hid_ctx, long x, long y); /* can be very slow */
+	void (*hid_set_offs)(rnd_hid_attribute_t *attrib, void *hid_ctx, long offs);
+	void (*hid_scroll_to_bottom)(rnd_hid_attribute_t *attrib, void *hid_ctx);
+	void (*hid_set_text)(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_text_set_t how, const char *txt);
+	char *(*hid_get_text)(rnd_hid_attribute_t *attrib, void *hid_ctx); /* caller needs to free the result */
+	void (*hid_set_readonly)(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_bool readonly); /* by default text views are not read-only */
 
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
-	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
+	void (*user_free_cb)(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
-	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata);
+	void (*hid_free_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
 } pcb_hid_text_t;
 
 
@@ -87,31 +87,31 @@ typedef struct {
 typedef struct {
 	gdl_list_t rows; /* ordered list of first level rows (tree root) */
 	htsp_t paths;    /* translate first column paths iinto (pcb_hid_row_t *) */
-	pcb_hid_attribute_t *attrib;
+	rnd_hid_attribute_t *attrib;
 	const char **hdr; /* optional column headers (NULL means disable header) */
 
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
-	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
-	void (*user_selected_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
-	int (*user_browse_activate_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row); /* returns non-zero if the row should auto-activate while browsing (e.g. stepping with arrow keys) */
-	const char *(*user_copy_to_clip_cb)(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row); /* returns the string to copy to clipboard for the given row (if unset, first column text is used) */
+	void (*user_free_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
+	void (*user_selected_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row);
+	int (*user_browse_activate_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row); /* returns non-zero if the row should auto-activate while browsing (e.g. stepping with arrow keys) */
+	const char *(*user_copy_to_clip_cb)(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row); /* returns the string to copy to clipboard for the given row (if unset, first column text is used) */
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
-	void (*hid_insert_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row);
-	void (*hid_modify_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col); /* if col is negative, all columns have changed */
-	void (*hid_remove_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row);
-	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row);
-	pcb_hid_row_t *(*hid_get_selected_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata);
-	void (*hid_jumpto_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row); /* row = NULL means deselect all */
-	void (*hid_expcoll_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded); /* sets whether a row is expanded or collapsed */
-	void (*hid_update_hide_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata);
+	void (*hid_insert_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row);
+	void (*hid_modify_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col); /* if col is negative, all columns have changed */
+	void (*hid_remove_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row);
+	void (*hid_free_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row);
+	pcb_hid_row_t *(*hid_get_selected_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
+	void (*hid_jumpto_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row); /* row = NULL means deselect all */
+	void (*hid_expcoll_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded); /* sets whether a row is expanded or collapsed */
+	void (*hid_update_hide_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
 } pcb_hid_tree_t;
 
 typedef struct pcb_hid_preview_s pcb_hid_preview_t;
 struct pcb_hid_preview_s {
-	pcb_hid_attribute_t *attrib;
+	rnd_hid_attribute_t *attrib;
 
 	rnd_rnd_box_t initial_view;
 	unsigned initial_view_valid:1;
@@ -120,37 +120,37 @@ struct pcb_hid_preview_s {
 
 	/* optional callbacks the user set after widget creation */
 	void *user_ctx;
-	void (*user_free_cb)(pcb_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
-	void (*user_expose_cb)(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
-	rnd_bool (*user_mouse_cb)(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y); /* returns true if redraw is needed */
+	void (*user_free_cb)(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
+	void (*user_expose_cb)(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
+	rnd_bool (*user_mouse_cb)(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y); /* returns true if redraw is needed */
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
-	void (*hid_zoomto_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata, const rnd_rnd_box_t *view);
-	void (*hid_free_cb)(pcb_hid_attribute_t *attrib, void *hid_wdata);
+	void (*hid_zoomto_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, const rnd_rnd_box_t *view);
+	void (*hid_free_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
 };
 
 typedef struct {
 	int wbegin, wend; /* widget index to the correspoding PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END */
 
 	/* compound implementation callbacks */
-	int (*widget_state)(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled);
-	int (*widget_hide)(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide);
-	int (*set_value)(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val); /* set value runtime */
-	void (*set_val_num)(pcb_hid_attribute_t *attr, long l, double d, rnd_coord_t c); /* set value during creation; attr is the END */
-	void (*set_val_ptr)(pcb_hid_attribute_t *attr, void *ptr); /* set value during creation; attr is the END */
-	void (*set_help)(pcb_hid_attribute_t *attr, const char *text); /* set the tooltip help; attr is the END */
-	void (*set_field_num)(pcb_hid_attribute_t *attr, const char *fieldname, long l, double d, rnd_coord_t c); /* set value during creation; attr is the END */
-	void (*set_field_ptr)(pcb_hid_attribute_t *attr, const char *fieldname, void *ptr); /* set value during creation; attr is the END */
-	void (*set_geo)(pcb_hid_attribute_t *attr, pcb_hatt_compflags_t flg, int geo); /* set geometry during creation; attr is the END */
-	void (*free)(pcb_hid_attribute_t *attrib); /* called by DAD on free'ing the PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
+	int (*widget_state)(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled);
+	int (*widget_hide)(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide);
+	int (*set_value)(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val); /* set value runtime */
+	void (*set_val_num)(rnd_hid_attribute_t *attr, long l, double d, rnd_coord_t c); /* set value during creation; attr is the END */
+	void (*set_val_ptr)(rnd_hid_attribute_t *attr, void *ptr); /* set value during creation; attr is the END */
+	void (*set_help)(rnd_hid_attribute_t *attr, const char *text); /* set the tooltip help; attr is the END */
+	void (*set_field_num)(rnd_hid_attribute_t *attr, const char *fieldname, long l, double d, rnd_coord_t c); /* set value during creation; attr is the END */
+	void (*set_field_ptr)(rnd_hid_attribute_t *attr, const char *fieldname, void *ptr); /* set value during creation; attr is the END */
+	void (*set_geo)(rnd_hid_attribute_t *attr, pcb_hatt_compflags_t flg, int geo); /* set geometry during creation; attr is the END */
+	void (*free)(rnd_hid_attribute_t *attrib); /* called by DAD on free'ing the PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
 } pcb_hid_compound_t;
 
 #include <librnd/core/hid_dad_spin.h>
 
 /*** Helpers for building dynamic attribute dialogs (DAD) ***/
 #define PCB_DAD_DECL(table) \
-	pcb_hid_attribute_t *table = NULL; \
+	rnd_hid_attribute_t *table = NULL; \
 	int table ## _append_lock = 0; \
 	int table ## _len = 0; \
 	int table ## _alloced = 0; \
@@ -160,7 +160,7 @@ typedef struct {
 	pcb_dad_retovr_t *table ## _ret_override;
 
 #define PCB_DAD_DECL_NOINIT(table) \
-	pcb_hid_attribute_t *table; \
+	rnd_hid_attribute_t *table; \
 	int table ## _append_lock; \
 	int table ## _len; \
 	int table ## _alloced; \
@@ -442,13 +442,13 @@ do { \
 #define PCB_DAD_DUP_ATTR(table, attr) \
 do { \
 	PCB_DAD_ALLOC(table, 0); \
-	memcpy(&table[table ## _len-1], (attr), sizeof(pcb_hid_attribute_t)); \
+	memcpy(&table[table ## _len-1], (attr), sizeof(rnd_hid_attribute_t)); \
 	PCB_DAD_UPDATE_INTERNAL(table, table ## _len-1); \
 } while(0)
 
 #define PCB_DAD_DUP_EXPOPT(table, opt) \
 do { \
-	pcb_export_opt_t *__opt__ = (opt); \
+	rnd_export_opt_t *__opt__ = (opt); \
 	PCB_DAD_ALLOC(table, 0); \
 	table[table ## _len-1].name = __opt__->name; \
 	table[table ## _len-1].help_text = __opt__->help_text; \
@@ -523,7 +523,7 @@ do { \
 /* safe way to call gui->attr_dlg_set_value() - resets the unused fields */
 #define PCB_DAD_SET_VALUE(hid_ctx, wid, field, val_) \
 	do { \
-		pcb_hid_attr_val_t __val__; \
+		rnd_hid_attr_val_t __val__; \
 		memset(&__val__, 0, sizeof(__val__)); \
 		__val__.field = val_; \
 		pcb_gui->attr_dlg_set_value(hid_ctx, wid, &__val__); \
@@ -798,7 +798,7 @@ do { \
 } while(0)
 
 /* Internal: free all rows and caches and the tree itself */
-void pcb_dad_tree_free(pcb_hid_attribute_t *attr);
+void pcb_dad_tree_free(rnd_hid_attribute_t *attr);
 
 /* internal: retval override for the auto-close buttons */
 typedef struct {
@@ -813,12 +813,12 @@ typedef struct {
 } pcb_hid_dad_buttons_t;
 
 void pcb_hid_dad_close(void *hid_ctx, pcb_dad_retovr_t *retovr, int retval);
-void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr);
-void pcb_hid_iterate(pcb_hid_t *hid);
+void pcb_hid_iterate(rnd_hid_t *hid);
 
 /* sub-dialogs e.g. for the file selector dialog */
-struct pcb_hid_dad_subdialog_s {
+struct rnd_hid_dad_subdialog_s {
 	/* filled in by the sub-dialog's creator */
 	PCB_DAD_DECL_NOINIT(dlg)
 
@@ -827,12 +827,12 @@ struct pcb_hid_dad_subdialog_s {
 	   argc/argv are all specific to the given dialog. Returns 0 on success,
 	   return payload may be placed in res (if it is not NULL). Parent poke:
 	     close()                   - cancel/close the dialog */
-	int (*parent_poke)(pcb_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv);
+	int (*parent_poke)(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv);
 
 	/* OPTIONAL: filled in by the sub-dialog's creator: called by the
 	   sub-dialog's parent while the parent dialog is being closed. If
 	   ok is false, the dialog was cancelled */
-	void (*on_close)(pcb_hid_dad_subdialog_t *sub, rnd_bool ok);
+	void (*on_close)(rnd_hid_dad_subdialog_t *sub, rnd_bool ok);
 
 	void *parent_ctx; /* used by the parent dialog code */
 	void *sub_ctx;    /* used by the sub-dialog's creator */

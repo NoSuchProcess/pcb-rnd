@@ -205,12 +205,12 @@ static rnd_action_t cam_action_list[] = {
 	{"cam", pcb_act_cam, pcb_acth_cam, pcb_acts_cam}
 };
 
-static pcb_export_opt_t *export_cam_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *export_cam_get_export_options(rnd_hid_t *hid, int *n)
 {
 	return 0;
 }
 
-static int export_cam_usage(pcb_hid_t *hid, const char *topic)
+static int export_cam_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nThe cam exporter shorthand:\n\n");
 	fprintf(stderr, "\nUsage: pcb-rnd -x cam jobname [cam-opts] [pcb-rnd-options] filename");
@@ -224,7 +224,7 @@ static int export_cam_usage(pcb_hid_t *hid, const char *topic)
 static char *cam_export_job;
 static cam_ctx_t cam_export_ctx;
 static int cam_export_has_outfile;
-static int export_cam_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int export_cam_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	int d, s, oargc;
 	if (*argc < 1) {
@@ -265,7 +265,7 @@ static int export_cam_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	return 1;
 }
 
-static void export_cam_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void export_cam_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	if (!cam_export_has_outfile)
 		cam_init_inst_fn(&cam_export_ctx);
@@ -288,7 +288,7 @@ void pplg_uninit_cam(void)
 	pcb_export_remove_opts_by_cookie(cam_cookie);
 }
 
-pcb_hid_t export_cam_hid;
+rnd_hid_t export_cam_hid;
 
 int pplg_init_cam(void)
 {
@@ -300,11 +300,11 @@ int pplg_init_cam(void)
 
 	RND_REGISTER_ACTIONS(cam_action_list, cam_cookie)
 
-	memset(&export_cam_hid, 0, sizeof(pcb_hid_t));
+	memset(&export_cam_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&export_cam_hid);
 
-	export_cam_hid.struct_size = sizeof(pcb_hid_t);
+	export_cam_hid.struct_size = sizeof(rnd_hid_t);
 	export_cam_hid.name = "cam";
 	export_cam_hid.description = "Shorthand for exporting by can job name";
 	export_cam_hid.exporter = 1;

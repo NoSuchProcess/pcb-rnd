@@ -35,5 +35,5 @@
 
 /* Swap two layers in pcb; useful only in writing the old .pcb format,
    because silk layers must be the last 2 layers there */
-int pcb_layer_swap(pcb_board_t *pcb, pcb_layer_id_t lid1, pcb_layer_id_t lid2);
+int pcb_layer_swap(pcb_board_t *pcb, rnd_layer_id_t lid1, rnd_layer_id_t lid2);
 #endif

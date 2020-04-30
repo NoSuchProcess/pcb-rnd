@@ -354,7 +354,7 @@ static pcb_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl)
 
 struct rinfo {
 	int type;
-	pcb_layergrp_id_t group;
+	rnd_layergrp_id_t group;
 	pcb_pstk_t *pstk;
 	rnd_point_t *point;
 	rubber_ctx_t *rbnd;
@@ -414,7 +414,7 @@ static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, rnd_poi
  * passed line, the scanned line is added to the 'rubberband' list */
 static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, rnd_point_t *LinePoint, int delta_index)
 {
-	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	const rnd_layergrp_id_t group = pcb_layer_get_group_(Layer);
 	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
 	if (board == NULL)
@@ -439,7 +439,7 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 		info.delta_index = delta_index;
 
 		for(entry = 0; entry < length; ++entry) {
-			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+			const rnd_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
 			pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
 			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
@@ -455,7 +455,7 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
  * the scanned arc is added to the 'rubberband' list */
 static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, rnd_point_t *LinePoint, rnd_bool Exact)
 {
-	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	const rnd_layergrp_id_t group = pcb_layer_get_group_(Layer);
 	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
 	if (board == NULL)
@@ -480,7 +480,7 @@ static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_lay
 		info.delta_index = 0;
 
 		for(entry = 0; entry < length; ++entry) {
-			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+			const rnd_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
 			pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
 			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
@@ -496,7 +496,7 @@ static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_lay
  * the scanned line is added to the 'rubberband' list */
 static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc, int *end_pt, rnd_bool Exact)
 {
-	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	const rnd_layergrp_id_t group = pcb_layer_get_group_(Layer);
 	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
 	if (board == NULL)
@@ -526,7 +526,7 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
 			info.delta_index = end;
 
 			for(entry = 0; entry < length; ++entry) {
-				const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+				const rnd_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
 				pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
 				if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
@@ -546,7 +546,7 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 	struct rubber_info info;
 	int which;
 	rnd_coord_t t = Arc->Thickness / 2, ex, ey;
-	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	const rnd_layergrp_id_t group = pcb_layer_get_group_(Layer);
 	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
 	if (board == NULL)
@@ -573,7 +573,7 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 			info.delta_index = which;
 
 			for(entry = 0; entry < length; ++entry) {
-				const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+				const rnd_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
 				pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
 				if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
@@ -592,7 +592,7 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_board_t *board = pcb_data_get_top(PCB->Data);
-	pcb_layergrp_id_t group;
+	rnd_layergrp_id_t group;
 
 	if (board == NULL)
 		board = PCB;
@@ -606,7 +606,7 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 		const int comb = Layer->comb & PCB_LYC_SUB;
 
 		for(entry = 0; entry < length; ++entry) {
-			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+			const rnd_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
 			pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
 			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
@@ -659,7 +659,7 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
 	const rnd_bool clearpoly = PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon);
-	pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	rnd_layergrp_id_t group = pcb_layer_get_group_(Layer);
 	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
 	if (board == NULL)
@@ -671,7 +671,7 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 		const int comb = Layer->comb & PCB_LYC_SUB;
 
 		for(entry = 0; entry < length; ++entry) {
-			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+			const rnd_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
 			pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
 			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
@@ -726,7 +726,7 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
  * the scanned line is added to the 'rubberband' list */
 static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line)
 {
-	pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
+	rnd_layergrp_id_t group = pcb_layer_get_group_(Layer);
 	pcb_board_t *board = pcb_data_get_top(PCB->Data);
 
 	if (board == NULL)
@@ -738,7 +738,7 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *La
 		const int comb = Layer->comb & PCB_LYC_SUB;
 
 		for(entry = 0; entry < length; ++entry) {
-			const pcb_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
+			const rnd_layer_id_t layer_id = board->LayerGroups.grp[group].lid[entry];
 			pcb_layer_t *layer = &PCB->Data->Layer[layer_id];
 
 			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
@@ -790,8 +790,8 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *La
  * 'rubberband' list. */
 static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pstk_t *pstk)
 {
-	pcb_layergrp_id_t top;
-	pcb_layergrp_id_t bottom;
+	rnd_layergrp_id_t top;
+	rnd_layergrp_id_t bottom;
 	pcb_bb_type_t bb_type;
 
 	bb_type = pcb_pstk_bbspan(PCB, pstk, &top, &bottom, NULL);
@@ -1393,7 +1393,7 @@ static void calculate_route_rubber_arc_point_move(pcb_rb_arc_t *arcptr, int end,
 
 	/* TODO: Add more elaberate techniques for rubberbanding with an attached arc. */
 
-	pcb_layer_id_t layerid = pcb_layer_id(PCB->Data, arcptr->Layer);
+	rnd_layer_id_t layerid = pcb_layer_id(PCB->Data, arcptr->Layer);
 	pcb_arc_t arc = *(arcptr->Arc);
 	rnd_point_t startpoint;
 	rnd_point_t endpoint;

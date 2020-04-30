@@ -98,7 +98,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /*** Save ***/
 
 typedef struct {
-	pcb_hid_dad_subdialog_t *fmtsub;
+	rnd_hid_dad_subdialog_t *fmtsub;
 	pcb_io_formats_t *avail;
 	int *opt_tab; /* plugion options tab index for each avail[]; 0 means "no options" (the first tab) */
 	const char **fmt_tab_names;
@@ -115,22 +115,22 @@ typedef struct {
 
 static void update_opts(save_t *save)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	int selection = save->fmtsub->dlg[save->wfmt].val.lng;
 
 	hv.lng = save->opt_tab[selection];
 	pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wopts, &hv);
 }
 
-static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void fmt_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_dad_subdialog_t *fmtsub = caller_data;
+	rnd_hid_dad_subdialog_t *fmtsub = caller_data;
 	save_t *save = fmtsub->sub_ctx;
 	char *bn, *fn, *s;
 	const char *ext;
 	rnd_event_arg_t res, argv[4];
 	int selection = attr->val.lng;
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 
 	if ((save->avail == NULL) || save->fmt_chg_lock)
 		return;
@@ -179,9 +179,9 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	update_opts(save);
 }
 
-static void guess_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void guess_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_dad_subdialog_t *fmtsub = caller_data;
+	rnd_hid_dad_subdialog_t *fmtsub = caller_data;
 	save_t *save = fmtsub->sub_ctx;
 
 	if (save->fmtsub->dlg[save->wguess].val.lng) {
@@ -205,7 +205,7 @@ static void save_guess_format(save_t *save, const char *ext)
 
 	for(n = 0; n < save->num_fmts; n++) {
 		if (strcmp(save->avail->extension[n], ext) == 0) {
-			pcb_hid_attr_val_t hv;
+			rnd_hid_attr_val_t hv;
 			save->fmt_chg_lock = 1;
 			hv.lng = n;
 			pcb_gui->attr_dlg_set_value(save->fmtsub->dlg_hid_ctx, save->wfmt, &hv);
@@ -251,7 +251,7 @@ static void save_timer(pcb_hidval_t user_data)
 	}
 }
 
-static void save_on_close(pcb_hid_dad_subdialog_t *sub, rnd_bool ok)
+static void save_on_close(rnd_hid_dad_subdialog_t *sub, rnd_bool ok)
 {
 	save_t *save = sub->sub_ctx;
 	int n, i;
@@ -387,7 +387,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function = "Layout";
 	static char *cwd = NULL;
-	pcb_hid_dad_subdialog_t *fmtsub = NULL, fmtsub_local;
+	rnd_hid_dad_subdialog_t *fmtsub = NULL, fmtsub_local;
 	char *final_name, *name_in = NULL;
 	const char *prompt;
 	pcb_io_formats_t avail;

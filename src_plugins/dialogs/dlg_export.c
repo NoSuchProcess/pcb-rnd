@@ -43,32 +43,32 @@ typedef struct{
 	int tabs, len;
 
 	/* per exporter data */
-	pcb_hid_t **hid;
+	rnd_hid_t **hid;
 	const char **tab_name;
 	int **exp_attr;           /* widget IDs of the attributes holding the actual data; outer array is indexed by exporter, inner array is by exporter option index from 0*/
 	int *button;              /* widget ID of the export button for a specific exporter */
 	int *numo;                /* number of exporter options */
-	pcb_export_opt_t **ea;    /* original export option arrays */
+	rnd_export_opt_t **ea;    /* original export option arrays */
 } export_ctx_t;
 
 export_ctx_t export_ctx;
 
-static pcb_hid_attr_val_t *get_results(export_ctx_t *export_ctx, int id)
+static rnd_hid_attr_val_t *get_results(export_ctx_t *export_ctx, int id)
 {
-	pcb_hid_attr_val_t *r;
+	rnd_hid_attr_val_t *r;
 	int *exp_attr, n, numo = export_ctx->numo[id];
 
-	r = malloc(sizeof(pcb_hid_attr_val_t) * numo);
+	r = malloc(sizeof(rnd_hid_attr_val_t) * numo);
 
 	exp_attr = export_ctx->exp_attr[id];
 	for(n = 0; n < numo; n++) {
 		int src = exp_attr[n];
-		memcpy(&r[n], &(export_ctx->dlg[src].val), sizeof(pcb_hid_attr_val_t));
+		memcpy(&r[n], &(export_ctx->dlg[src].val), sizeof(rnd_hid_attr_val_t));
 	}
 	return r;
 }
 
-static void export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	export_ctx_t *export_ctx = caller_data;
 	int h, wid;
@@ -84,7 +84,7 @@ static void export_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	wid = attr - export_ctx->dlg;
 	for(h = 0; h < export_ctx->len; h++) {
 		if (export_ctx->button[h] == wid) {
-			pcb_hid_attr_val_t *results = get_results(export_ctx, h);
+			rnd_hid_attr_val_t *results = get_results(export_ctx, h);
 			rnd_event(&PCB->hidlib, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
 			export_ctx->hid[h]->do_export(export_ctx->hid[h], results);
 			rnd_event(&PCB->hidlib, RND_EVENT_EXPORT_SESSION_END, NULL);
@@ -114,10 +114,10 @@ static void copy_attrs_back(export_ctx_t *ctx)
 	for(n = 0; n < ctx->len; n++) {
 		int *exp_attr = export_ctx.exp_attr[n];
 		int numo = export_ctx.numo[n];
-		pcb_export_opt_t *opts = export_ctx.ea[n];
+		rnd_export_opt_t *opts = export_ctx.ea[n];
 
 		for(i = 0; i < numo; i++)
-			memcpy(&opts[i].default_val, &ctx->dlg[exp_attr[i]].val, sizeof(pcb_hid_attr_val_t));
+			memcpy(&opts[i].default_val, &ctx->dlg[exp_attr[i]].val, sizeof(rnd_hid_attr_val_t));
 	}
 }
 
@@ -142,7 +142,7 @@ static void export_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 
 static void pcb_dlg_export(const char *title, int exporters, int printers)
 {
-	pcb_hid_t **hids;
+	rnd_hid_t **hids;
 	int n, i, *exp_attr;
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
@@ -161,11 +161,11 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	}
 
 	export_ctx.tab_name = malloc(sizeof(char *) * (export_ctx.len+1));
-	export_ctx.hid = malloc(sizeof(pcb_hid_t *) * (export_ctx.len));
+	export_ctx.hid = malloc(sizeof(rnd_hid_t *) * (export_ctx.len));
 	export_ctx.exp_attr = malloc(sizeof(int *) * (export_ctx.len));
 	export_ctx.button = malloc(sizeof(int) * (export_ctx.len));
 	export_ctx.numo = malloc(sizeof(int) * (export_ctx.len));
-	export_ctx.ea = malloc(sizeof(pcb_hid_attribute_t *) * (export_ctx.len));
+	export_ctx.ea = malloc(sizeof(rnd_hid_attribute_t *) * (export_ctx.len));
 
 	for(i = n = 0; hids[n] != NULL; n++) {
 		if (((exporters && hids[n]->exporter) || (printers && hids[n]->printer)) && (!hids[n]->hide_from_gui)) {
@@ -184,7 +184,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 			export_ctx.tabs = PCB_DAD_CURRENT(export_ctx.dlg);
 			for(n = 0; n < export_ctx.len; n++) {
 				int numo;
-				pcb_export_opt_t *opts = export_ctx.hid[n]->get_export_options(export_ctx.hid[n], &numo);
+				rnd_export_opt_t *opts = export_ctx.hid[n]->get_export_options(export_ctx.hid[n], &numo);
 				export_ctx.numo[n] = numo;
 				export_ctx.ea[n] = opts;
 				if (numo < 1) {

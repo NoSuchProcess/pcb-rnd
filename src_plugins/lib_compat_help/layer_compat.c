@@ -47,10 +47,10 @@ static void swap_one_thermal(int lid1, int lid2, pcb_pin_t * pin)
 }
 #endif
 
-int pcb_layer_swap(pcb_board_t *pcb, pcb_layer_id_t lid1, pcb_layer_id_t lid2)
+int pcb_layer_swap(pcb_board_t *pcb, rnd_layer_id_t lid1, rnd_layer_id_t lid2)
 {
 	pcb_layer_t l1tmp, l2tmp;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 
 	if (lid1 == lid2)
 		return 0;

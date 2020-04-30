@@ -109,7 +109,7 @@ static void dad_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	dad_destroy(dad);
 }
 
-static void dad_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void dad_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	dad_t *dad = caller_data;
 	int idx = attr - dad->dlg;
@@ -118,7 +118,7 @@ static void dad_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 		rnd_parse_command(dad->hidlib, *act, 1);
 }
 
-static void dad_row_free_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void dad_row_free_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attrib->wdata;
 	dad_t *dad = tree->user_ctx;

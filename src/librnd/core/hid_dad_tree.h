@@ -116,7 +116,7 @@ RND_INLINE void pcb_dad_tree_build_path(pcb_hid_tree_t *tree, gds_t *path, pcb_h
 }
 
 /* calculate path of a row and insert it in the tree hash */
-RND_INLINE void pcb_dad_tree_set_hash(pcb_hid_attribute_t *attr, pcb_hid_row_t *row)
+RND_INLINE void pcb_dad_tree_set_hash(rnd_hid_attribute_t *attr, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 	if (attr->pcb_hatt_flags & PCB_HATF_TREE_COL) {
@@ -132,7 +132,7 @@ RND_INLINE void pcb_dad_tree_set_hash(pcb_hid_attribute_t *attr, pcb_hid_row_t *
 
 /* allocate a new row and append it after aft; if aft is NULL, the new row is appended at the
    end of the list of entries in the root (== at the bottom of the list) */
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, pcb_hid_row_t *aft, char **cols)
+RND_INLINE pcb_hid_row_t *pcb_dad_tree_append(rnd_hid_attribute_t *attr, pcb_hid_row_t *aft, char **cols)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
@@ -156,7 +156,7 @@ RND_INLINE pcb_hid_row_t *pcb_dad_tree_append(pcb_hid_attribute_t *attr, pcb_hid
 
 /* allocate a new row and inert it before bfr; if bfr is NULL, the new row is inserted at the
    beginning of the list of entries in the root (== at the top of the list) */
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid_row_t *bfr, char **cols)
+RND_INLINE pcb_hid_row_t *pcb_dad_tree_insert(rnd_hid_attribute_t *attr, pcb_hid_row_t *bfr, char **cols)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
@@ -180,7 +180,7 @@ RND_INLINE pcb_hid_row_t *pcb_dad_tree_insert(pcb_hid_attribute_t *attr, pcb_hid
 
 /* allocate a new row and append it under prn; if aft is NULL, the new row is appended at the
    end of the list of entries in the root (== at the bottom of the list) */
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(pcb_hid_attribute_t *attr, pcb_hid_row_t *prn, char **cols)
+RND_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(rnd_hid_attribute_t *attr, pcb_hid_row_t *prn, char **cols)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *nrow = pcb_dad_tree_new_row(cols);
@@ -200,7 +200,7 @@ RND_INLINE pcb_hid_row_t *pcb_dad_tree_append_under(pcb_hid_attribute_t *attr, p
 	return nrow;
 }
 
-RND_INLINE int pcb_dad_tree_remove(pcb_hid_attribute_t *attr, pcb_hid_row_t *row)
+RND_INLINE int pcb_dad_tree_remove(rnd_hid_attribute_t *attr, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *r, *rn, *par = pcb_dad_tree_parent_row(tree, row);
@@ -234,7 +234,7 @@ RND_INLINE void pcb_dad_tree_clear(pcb_hid_tree_t *tree)
 		pcb_dad_tree_remove(tree->attrib, r);
 }
 
-RND_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(pcb_hid_attribute_t *attr)
+RND_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(rnd_hid_attribute_t *attr)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 
@@ -246,7 +246,7 @@ RND_INLINE pcb_hid_row_t *pcb_dad_tree_get_selected(pcb_hid_attribute_t *attr)
 	return tree->hid_get_selected_cb(tree->attrib, tree->hid_wdata);
 }
 
-RND_INLINE void pcb_dad_tree_update_hide(pcb_hid_attribute_t *attr)
+RND_INLINE void pcb_dad_tree_update_hide(rnd_hid_attribute_t *attr)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 
@@ -256,7 +256,7 @@ RND_INLINE void pcb_dad_tree_update_hide(pcb_hid_attribute_t *attr)
 		tree->hid_update_hide_cb(tree->attrib, tree->hid_wdata);
 }
 
-RND_INLINE int pcb_dad_tree_modify_cell(pcb_hid_attribute_t *attr, pcb_hid_row_t *row, int col, char *new_val)
+RND_INLINE int pcb_dad_tree_modify_cell(rnd_hid_attribute_t *attr, pcb_hid_row_t *row, int col, char *new_val)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 
@@ -282,7 +282,7 @@ RND_INLINE int pcb_dad_tree_modify_cell(pcb_hid_attribute_t *attr, pcb_hid_row_t
 	return 0;
 }
 
-RND_INLINE void pcb_dad_tree_jumpto(pcb_hid_attribute_t *attr, pcb_hid_row_t *row)
+RND_INLINE void pcb_dad_tree_jumpto(rnd_hid_attribute_t *attr, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 
@@ -303,7 +303,7 @@ RND_INLINE void pcb_dad_tree_expcoll_(pcb_hid_tree_t *tree, pcb_hid_row_t *row, 
 		tree->hid_expcoll_cb(tree->attrib, tree->hid_wdata, row, expanded);
 }
 
-RND_INLINE void pcb_dad_tree_expcoll(pcb_hid_attribute_t *attr, pcb_hid_row_t *row, rnd_bool expanded, rnd_bool recursive)
+RND_INLINE void pcb_dad_tree_expcoll(rnd_hid_attribute_t *attr, pcb_hid_row_t *row, rnd_bool expanded, rnd_bool recursive)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
 

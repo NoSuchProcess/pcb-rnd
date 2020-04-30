@@ -56,7 +56,7 @@ static void pinout_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 }
 
 
-static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+static void pinout_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	pinout_ctx_t *ctx = prv->user_ctx;
 	void *r1, *r2, *r3;
@@ -84,7 +84,7 @@ static void pinout_expose(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, p
 static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, void *box)
 {
 	pinout_ctx_t *ctx = closure;
-	pcb_hid_attr_val_t val;
+	rnd_hid_attr_val_t val;
 
 	if ((obj->term != NULL) && (pcb_obj_parent_subc(obj) == ctx->tempsc) && (obj->term != NULL)) {
 		val.str = obj->term;
@@ -105,14 +105,14 @@ static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, voi
 	return PCB_R_DIR_NOT_FOUND;
 }
 
-static rnd_bool pinout_mouse(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool pinout_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	if (kind == PCB_HID_MOUSE_RELEASE) {
 		pinout_ctx_t *ctx = prv->user_ctx;
 		void *r1, *r2, *r3;
 		pcb_objtype_t type;
 		rnd_rnd_box_t b;
-		pcb_hid_attr_val_t val;
+		rnd_hid_attr_val_t val;
 
 		val.str = "n/a";
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->w_lab_num, &val);

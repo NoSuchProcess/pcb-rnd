@@ -199,7 +199,7 @@ static rnd_bool pcb_layer_is_empty_glob(pcb_board_t *pcb, pcb_data_t *data, pcb_
 	/* need to recurse to subc */
 	PCB_SUBC_LOOP(data);
 	{
-		pcb_layer_id_t n;
+		rnd_layer_id_t n;
 		pcb_layer_t *sl;
 
 		for(sl = subc->data->Layer, n = 0; n < subc->data->LayerN; sl++,n++) {
@@ -235,14 +235,14 @@ rnd_bool pcb_layer_is_empty_(pcb_board_t *pcb, pcb_layer_t *layer)
 	return 1;
 }
 
-rnd_bool pcb_layer_is_empty(pcb_board_t *pcb, pcb_layer_id_t num)
+rnd_bool pcb_layer_is_empty(pcb_board_t *pcb, rnd_layer_id_t num)
 {
 	if ((num >= 0) && (num < pcb->Data->LayerN))
 		return pcb_layer_is_empty_(pcb, pcb->Data->Layer + num);
 	return pcb_false;
 }
 
-pcb_layer_id_t pcb_layer_id(const pcb_data_t *Data, const pcb_layer_t *Layer)
+rnd_layer_id_t pcb_layer_id(const pcb_data_t *Data, const pcb_layer_t *Layer)
 {
 	if (Layer->parent_type == PCB_PARENT_UI)
 		return pcb_uilayer_get_id(Layer);
@@ -260,7 +260,7 @@ pcb_layer_id_t pcb_layer_id(const pcb_data_t *Data, const pcb_layer_t *Layer)
 	return -1;
 }
 
-unsigned int pcb_layer_flags(const pcb_board_t *pcb, pcb_layer_id_t layer_idx)
+unsigned int pcb_layer_flags(const pcb_board_t *pcb, rnd_layer_id_t layer_idx)
 {
 	pcb_layer_t *l;
 
@@ -283,7 +283,7 @@ unsigned int pcb_layer_flags_(const pcb_layer_t *layer)
 	/* real layer: have to do a layer stack based lookup; but at least we have a real layer ID  */
 	if (!layer->is_bound) {
 		pcb_data_t *data = layer->parent.data;
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 
 		if (data == NULL)
 			return 0;
@@ -308,7 +308,7 @@ unsigned int pcb_layer_flags_(const pcb_layer_t *layer)
 	return layer->meta.bound.type;
 }
 
-int pcb_layer_purpose(const pcb_board_t *pcb, pcb_layer_id_t layer_idx, const char **out)
+int pcb_layer_purpose(const pcb_board_t *pcb, rnd_layer_id_t layer_idx, const char **out)
 {
 	pcb_layergrp_t *grp;
 
@@ -349,7 +349,7 @@ int pcb_layer_purpose_(const pcb_layer_t *layer, const char **out)
 	/* real layer: have to do a layer stack based lookup; but at least we have a real layer ID  */
 	if (!layer->is_bound) {
 		pcb_data_t *data = layer->parent.data;
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 
 		if (data == NULL)
 			return 0;
@@ -405,7 +405,7 @@ const pcb_virt_layer_t *pcb_vlayer_get_first(pcb_layer_type_t mask, const char *
 
 
 
-int pcb_layer_list(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
+int pcb_layer_list(const pcb_board_t *pcb, pcb_layer_type_t mask, rnd_layer_id_t *res, int res_len)
 {
 	int n, used = 0;
 	pcb_virt_layer_t *v;
@@ -427,7 +427,7 @@ int pcb_layer_list(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t
 }
 
 /* optimization: code dup for speed */
-int pcb_layer_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len, int purpi, const char *purpose)
+int pcb_layer_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, rnd_layer_id_t *res, int res_len, int purpi, const char *purpose)
 {
 	int n, used = 0;
 	pcb_virt_layer_t *v;
@@ -455,7 +455,7 @@ int pcb_layer_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_
 }
 
 
-int pcb_layer_list_any(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_id_t *res, int res_len)
+int pcb_layer_list_any(const pcb_board_t *pcb, pcb_layer_type_t mask, rnd_layer_id_t *res, int res_len)
 {
 	int n, used = 0;
 	pcb_virt_layer_t *v;
@@ -476,9 +476,9 @@ int pcb_layer_list_any(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layer_
 	return used;
 }
 
-pcb_layer_id_t pcb_layer_by_name(pcb_data_t *data, const char *name)
+rnd_layer_id_t pcb_layer_by_name(pcb_data_t *data, const char *name)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 	for (n = 0; n < data->LayerN; n++)
 		if (strcmp(data->Layer[n].name, name) == 0)
 			return n;
@@ -487,7 +487,7 @@ pcb_layer_id_t pcb_layer_by_name(pcb_data_t *data, const char *name)
 
 void pcb_layers_reset(pcb_board_t *pcb)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 
 	/* reset everything to empty, even if that's invalid (no top/bottom copper)
 	   for the rest of the code: the (embedded) default design will overwrite this. */
@@ -519,9 +519,9 @@ static void layer_clear(pcb_layer_t *dst)
 }
 
 static void pcb_layer_undoable_created(pcb_board_t *pcb, pcb_layer_t *l);
-pcb_layer_id_t pcb_layer_create(pcb_board_t *pcb, pcb_layergrp_id_t grp, const char *lname, rnd_bool undoable)
+rnd_layer_id_t pcb_layer_create(pcb_board_t *pcb, rnd_layergrp_id_t grp, const char *lname, rnd_bool undoable)
 {
-	pcb_layer_id_t id;
+	rnd_layer_id_t id;
 
 	layer_if_too_many(pcb, return -1);
 
@@ -624,7 +624,7 @@ int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, rnd_bool undoable)
 	return 0;
 }
 
-int pcb_layer_rename(pcb_data_t *data, pcb_layer_id_t layer, const char *lname, rnd_bool undoable)
+int pcb_layer_rename(pcb_data_t *data, rnd_layer_id_t layer, const char *lname, rnd_bool undoable)
 {
 	return pcb_layer_rename_(&data->Layer[layer], rnd_strdup(lname), undoable);
 }
@@ -689,7 +689,7 @@ int pcb_layer_recolor_(pcb_layer_t *Layer, const rnd_color_t *color, rnd_bool un
 	return 0;
 }
 
-int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *color, rnd_bool undoable)
+int pcb_layer_recolor(pcb_data_t *data, rnd_layer_id_t layer, const char *color, rnd_bool undoable)
 {
 	rnd_color_t clr;
 	rnd_color_load_str(&clr, color);
@@ -700,8 +700,8 @@ int pcb_layer_recolor(pcb_data_t *data, pcb_layer_id_t layer, const char *color,
 
 static int is_last_top_copper_layer(pcb_board_t *pcb, int layer)
 {
-	pcb_layergrp_id_t cgroup = pcb_layer_get_group(pcb, pcb->LayerGroups.len + PCB_COMPONENT_SIDE);
-	pcb_layergrp_id_t lgroup = pcb_layer_get_group(pcb, layer);
+	rnd_layergrp_id_t cgroup = pcb_layer_get_group(pcb, pcb->LayerGroups.len + PCB_COMPONENT_SIDE);
+	rnd_layergrp_id_t lgroup = pcb_layer_get_group(pcb, layer);
 	if (cgroup == lgroup && pcb->LayerGroups.grp[lgroup].len == 1)
 		return 1;
 	return 0;
@@ -768,7 +768,7 @@ void pcb_layer_setup(pcb_layer_t *ly, pcb_data_t *parent_data)
 }
 
 /* Initialize a new layer with safe initial values */
-static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pcb_layergrp_id_t gid, pcb_data_t *parent)
+static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, rnd_layer_id_t idx, rnd_layergrp_id_t gid, pcb_data_t *parent)
 {
 	memset(lp, 0, sizeof(pcb_layer_t));
 	lp->meta.real.grp = gid;
@@ -786,11 +786,11 @@ static void layer_init(pcb_board_t *pcb, pcb_layer_t *lp, pcb_layer_id_t idx, pc
 	pcb_layer_setup(lp, parent);
 }
 
-static pcb_layer_t *pcb_layer_move_append_(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp)
+static pcb_layer_t *pcb_layer_move_append_(pcb_board_t *pcb, rnd_layer_id_t new_index, rnd_layergrp_id_t new_in_grp)
 {
 	pcb_layergrp_t *g;
 	pcb_layer_t *lp;
-	pcb_layer_id_t new_lid = pcb->Data->LayerN++;
+	rnd_layer_id_t new_lid = pcb->Data->LayerN++;
 	int grp_idx;
 
 	lp = &pcb->Data->Layer[new_lid];
@@ -812,7 +812,7 @@ static pcb_layer_t *pcb_layer_move_append_(pcb_board_t *pcb, pcb_layer_id_t new_
 
 	/* shift group members up and insert the new layer in group */
 	if ((g->len > grp_idx) && (grp_idx >= 0))
-		memmove(g->lid+grp_idx+1, g->lid+grp_idx, (g->len - grp_idx) * sizeof(pcb_layer_id_t));
+		memmove(g->lid+grp_idx+1, g->lid+grp_idx, (g->len - grp_idx) * sizeof(rnd_layer_id_t));
 	if (grp_idx < 0)
 		grp_idx = 0;
 	g->lid[grp_idx] = new_lid;
@@ -824,12 +824,12 @@ static pcb_layer_t *pcb_layer_move_append_(pcb_board_t *pcb, pcb_layer_id_t new_
 	return lp;
 }
 
-static pcb_layer_t *pcb_layer_move_insert_(pcb_board_t *pcb, pcb_layer_id_t new_lid, pcb_layergrp_id_t new_in_grp, int grp_idx)
+static pcb_layer_t *pcb_layer_move_insert_(pcb_board_t *pcb, rnd_layer_id_t new_lid, rnd_layergrp_id_t new_in_grp, int grp_idx)
 {
 	pcb_layergrp_t *g;
 	pcb_layer_t *lp;
-	pcb_layergrp_id_t gid;
-	pcb_layer_id_t lid;
+	rnd_layergrp_id_t gid;
+	rnd_layer_id_t lid;
 
 
 	/* update lids in all groups (shifting down idx) */
@@ -855,7 +855,7 @@ static pcb_layer_t *pcb_layer_move_insert_(pcb_board_t *pcb, pcb_layer_id_t new_
 	/* shift target group members up and insert the new layer in group */
 	g = pcb_get_layergrp(pcb, new_in_grp);
 	if ((g->len > grp_idx) && (grp_idx >= 0))
-		memmove(g->lid+grp_idx+1, g->lid+grp_idx, (g->len - grp_idx) * sizeof(pcb_layer_id_t));
+		memmove(g->lid+grp_idx+1, g->lid+grp_idx, (g->len - grp_idx) * sizeof(rnd_layer_id_t));
 	g->lid[grp_idx] = new_lid;
 	g->len++;
 
@@ -866,10 +866,10 @@ static pcb_layer_t *pcb_layer_move_insert_(pcb_board_t *pcb, pcb_layer_id_t new_
 	return lp;
 }
 
-static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index, rnd_bool undoable)
+static int pcb_layer_move_delete_(pcb_board_t *pcb, rnd_layer_id_t old_index, rnd_bool undoable)
 {
-	pcb_layer_id_t l;
-	pcb_layergrp_id_t gid;
+	rnd_layer_id_t l;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *g;
 	int grp_idx, remaining;
 
@@ -888,7 +888,7 @@ static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index, rn
 
 	remaining = (g->len - grp_idx - 1);
 	if (remaining > 0)
-		memmove(g->lid+grp_idx, g->lid+grp_idx+1, remaining * sizeof(pcb_layer_id_t));
+		memmove(g->lid+grp_idx, g->lid+grp_idx+1, remaining * sizeof(rnd_layer_id_t));
 	g->len--;
 
 	/* update lids in all groups (shifting down idx) */
@@ -923,13 +923,13 @@ static int pcb_layer_move_delete_(pcb_board_t *pcb, pcb_layer_id_t old_index, rn
 typedef struct {
 	pcb_board_t *pcb;
 	unsigned append:1;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	long in_grp_idx;
 
 	/* fields */
 	char *name;
 	pcb_layer_combining_t comb;
-	pcb_layergrp_id_t grp;
+	rnd_layergrp_id_t grp;
 	rnd_color_t color;
 } undo_layer_move_t;
 
@@ -981,7 +981,7 @@ static const uundo_oper_t undo_layer_move = {
 
 static long layer_idx_in_grp(pcb_board_t *pcb, pcb_layer_t *l)
 {
-	pcb_layer_id_t lid = l - pcb->Data->Layer;
+	rnd_layer_id_t lid = l - pcb->Data->Layer;
 	pcb_layergrp_t *g;
 
 	if ((lid < 0) || (lid >= pcb->Data->LayerN))
@@ -1012,7 +1012,7 @@ static void pcb_layer_undoable_created(pcb_board_t *pcb, pcb_layer_t *l)
 }
 
 
-static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp, int undoable)
+static int pcb_layer_move_append(pcb_board_t *pcb, rnd_layer_id_t new_index, rnd_layergrp_id_t new_in_grp, int undoable)
 {
 	pcb_layer_t *l;
 
@@ -1025,7 +1025,7 @@ static int pcb_layer_move_append(pcb_board_t *pcb, pcb_layer_id_t new_index, pcb
 	return 0;
 }
 
-static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, int undoable)
+static int pcb_layer_move_delete(pcb_board_t *pcb, rnd_layer_id_t old_index, int undoable)
 {
 	undo_layer_move_t *m, mtmp;
 	pcb_layer_t *l;
@@ -1057,7 +1057,7 @@ static int pcb_layer_move_delete(pcb_board_t *pcb, pcb_layer_id_t old_index, int
 }
 
 
-int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t new_index, pcb_layergrp_id_t new_in_grp, rnd_bool undoable)
+int pcb_layer_move(pcb_board_t *pcb, rnd_layer_id_t old_index, rnd_layer_id_t new_index, rnd_layergrp_id_t new_in_grp, rnd_bool undoable)
 {
 	/* sanity checks */
 	if (old_index < -1 || old_index >= pcb->Data->LayerN) {
@@ -1095,7 +1095,7 @@ int pcb_layer_move(pcb_board_t *pcb, pcb_layer_id_t old_index, pcb_layer_id_t ne
 	return 1;
 }
 
-const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id)
+const char *pcb_layer_name(pcb_data_t *data, rnd_layer_id_t id)
 {
 	if (id < 0)
 		return NULL;
@@ -1106,7 +1106,7 @@ const char *pcb_layer_name(pcb_data_t *data, pcb_layer_id_t id)
 	return NULL;
 }
 
-pcb_layer_t *pcb_get_layer(pcb_data_t *data, pcb_layer_id_t id)
+pcb_layer_t *pcb_get_layer(pcb_data_t *data, rnd_layer_id_t id)
 {
 	if ((id >= 0) && (id < data->LayerN))
 		return &data->Layer[id];
@@ -1140,8 +1140,8 @@ void pcb_layer_real2bound_offs(pcb_layer_t *dst, pcb_board_t *src_pcb, pcb_layer
 		int from_top, from_bottom, res;
 		pcb_layergrp_t *tcop = pcb_get_grp(&src_pcb->LayerGroups, PCB_LYT_TOP, PCB_LYT_COPPER);
 		pcb_layergrp_t *bcop = pcb_get_grp(&src_pcb->LayerGroups, PCB_LYT_BOTTOM, PCB_LYT_COPPER);
-		pcb_layergrp_id_t tcop_id = pcb_layergrp_id(src_pcb, tcop);
-		pcb_layergrp_id_t bcop_id = pcb_layergrp_id(src_pcb, bcop);
+		rnd_layergrp_id_t tcop_id = pcb_layergrp_id(src_pcb, tcop);
+		rnd_layergrp_id_t bcop_id = pcb_layergrp_id(src_pcb, bcop);
 
 		res = pcb_layergrp_dist(src_pcb, src->meta.real.grp, tcop_id, PCB_LYT_COPPER, &from_top);
 		res |= pcb_layergrp_dist(src_pcb, src->meta.real.grp, bcop_id, PCB_LYT_COPPER, &from_bottom);
@@ -1230,7 +1230,7 @@ void pcb_layer_resolve_best(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_t *
 
 pcb_layer_t *pcb_layer_resolve_binding(pcb_board_t *pcb, pcb_layer_t *src)
 {
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
 	int best_score = 0;
 	pcb_layer_t *best = NULL;
@@ -1437,7 +1437,7 @@ int pcb_layer_typecomb_str2bits(const char *str, pcb_layer_type_t *lyt, pcb_laye
 
 void pcb_layer_auto_fixup(pcb_board_t *pcb)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 
 	/* old silk layers are always auto */
 	for(n = 0; n < pcb->Data->LayerN; n++)
@@ -1445,7 +1445,7 @@ void pcb_layer_auto_fixup(pcb_board_t *pcb)
 			pcb->Data->Layer[n].comb |= PCB_LYC_AUTO;
 }
 
-int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_empty, pcb_xform_t **xform)
+int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_empty, rnd_xform_t **xform)
 {
 	pcb_virt_layer_t *v = &pcb_virt_layers[vid];
 	assert((vid >= 0) && (vid < PCB_VLY_end));
@@ -1459,8 +1459,8 @@ int pcb_layer_gui_set_vlayer(pcb_board_t *pcb, pcb_virtual_layer_t vid, int is_e
 
 TODO("layer: need to pass the flags of the group, not the flags of the layer once we have a group for each layer")
 	if (pcb_render->set_layer_group != NULL) {
-		pcb_layergrp_id_t grp;
-		pcb_layer_id_t lid = v->new_id;
+		rnd_layergrp_id_t grp;
+		rnd_layer_id_t lid = v->new_id;
 		grp = pcb_layer_get_group(pcb, lid);
 		return pcb_render->set_layer_group(pcb_render, grp, v->purpose, v->purpi, lid, v->type, is_empty, xform);
 	}
@@ -1469,7 +1469,7 @@ TODO("layer: need to pass the flags of the group, not the flags of the layer onc
 	return 1;
 }
 
-int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty, pcb_xform_t **xform)
+int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty, rnd_xform_t **xform)
 {
 	/* if there's no renderer, that means no draw should be done */
 	if (pcb_render == NULL)

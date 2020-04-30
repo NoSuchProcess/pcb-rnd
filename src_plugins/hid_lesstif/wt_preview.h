@@ -4,8 +4,8 @@
 
 typedef struct pcb_ltf_preview_s {
 	void *hid_ctx;
-	pcb_hid_attribute_t *attr;
-	pcb_hid_expose_ctx_t exp_ctx;
+	rnd_hid_attribute_t *attr;
+	rnd_hid_expose_ctx_t exp_ctx;
 
 	Window window;
 	Widget pw;
@@ -15,7 +15,7 @@ typedef struct pcb_ltf_preview_s {
 	double zoom;                 /* PCB units per screen pixel */
 	int v_width, v_height;       /* widget dimensions in pixels */
 
-	pcb_hid_expose_ctx_t ctx;
+	rnd_hid_expose_ctx_t ctx;
 	rnd_bool (*mouse_ev)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
 	void (*pre_close)(struct pcb_ltf_preview_s *pd);
 	pcb_hid_expose_t overlay_draw;

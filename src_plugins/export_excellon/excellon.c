@@ -138,7 +138,7 @@ void pcb_drill_export_excellon(pcb_board_t *pcb, pcb_drill_ctx_t *ctx, int force
 }
 
 /*** HID ***/
-static pcb_hid_t excellon_hid;
+static rnd_hid_t excellon_hid;
 static const char *excellon_cookie = "excellon drill/cnc exporter";
 
 #define SUFF_LEN 32
@@ -156,15 +156,15 @@ static struct {
 	unsigned comp:1;
 } warn;
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_cap_style_t style;
 	rnd_coord_t width;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
 static long exc_drawn_objs;
 
-static pcb_export_opt_t excellon_options[] = {
+static rnd_export_opt_t excellon_options[] = {
 
 /* %start-doc options "90 excellon Export"
 @ftable @code
@@ -200,9 +200,9 @@ excellon output file prefix. Can include a path.
 
 #define NUM_OPTIONS (sizeof(excellon_options)/sizeof(excellon_options[0]))
 
-static pcb_hid_attr_val_t excellon_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t excellon_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *excellon_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *excellon_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (excellon_options[HA_excellonfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &excellon_options[HA_excellonfile], "");
@@ -212,14 +212,14 @@ static pcb_export_opt_t *excellon_get_export_options(pcb_hid_t *hid, int *n)
 	return excellon_options;
 }
 
-static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void excellon_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *fnbase, *fn;
 	char *filesuff;
 	int i;
 	int save_ons[PCB_MAX_LAYER];
-	pcb_hid_expose_ctx_t ctx;
-	pcb_xform_t xform;
+	rnd_hid_expose_ctx_t ctx;
+	rnd_xform_t xform;
 
 	if (!options) {
 		excellon_get_export_options(hid, NULL);
@@ -299,13 +299,13 @@ static void excellon_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 }
 
 
-static int excellon_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int excellon_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(excellon_options, NUM_OPTIONS, excellon_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int excellon_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int excellon_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	int is_drill;
 
@@ -326,18 +326,18 @@ static int excellon_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, con
 	return 1;
 }
 
-static pcb_hid_gc_t excellon_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t excellon_make_gc(rnd_hid_t *hid)
 {
-	pcb_hid_gc_t rv = calloc(1, sizeof(*rv));
+	rnd_hid_gc_t rv = calloc(1, sizeof(*rv));
 	return rv;
 }
 
-static void excellon_destroy_gc(pcb_hid_gc_t gc)
+static void excellon_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-static void excellon_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
+static void excellon_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
 {
 	switch(op) {
 		case PCB_HID_COMP_RESET:
@@ -354,21 +354,21 @@ static void excellon_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd
 	}
 }
 
-static void excellon_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
+static void excellon_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 }
 
-static void excellon_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void excellon_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->style = style;
 }
 
-static void excellon_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void excellon_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
-static void excellon_set_draw_xor(pcb_hid_gc_t gc, int xor_)
+static void excellon_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 }
 
@@ -380,7 +380,7 @@ pcb_drill_ctx_t *get_drill_ctx(void)
 	return (is_plated ? &pdrills : &udrills);
 }
 
-static void use_gc(pcb_hid_gc_t gc, rnd_coord_t radius)
+static void use_gc(rnd_hid_gc_t gc, rnd_coord_t radius)
 {
 	exc_drawn_objs++;
 	if ((gc->style != pcb_cap_round) && (!warn.nonround)) {
@@ -402,7 +402,7 @@ static void use_gc(pcb_hid_gc_t gc, rnd_coord_t radius)
 }
 
 
-static void excellon_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void excellon_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	rnd_coord_t dia = gc->width/2;
 
@@ -412,7 +412,7 @@ static void excellon_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 		pcb_drill_new_pending(get_drill_ctx(), x1, y1, x2, y2, dia*2);
 }
 
-static void excellon_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void excellon_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	excellon_draw_line(gc, x1, y1, x1, y2);
 	excellon_draw_line(gc, x1, y1, x2, y1);
@@ -420,7 +420,7 @@ static void excellon_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	excellon_draw_line(gc, x2, y1, x2, y2);
 }
 
-static void excellon_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void excellon_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	if (!warn.arc) {
 		warn.arc = 1;
@@ -428,7 +428,7 @@ static void excellon_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, r
 	}
 }
 
-static void excellon_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void excellon_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	if (radius <= 0)
 		return;
@@ -439,7 +439,7 @@ static void excellon_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy
 		pcb_drill_new_pending(get_drill_ctx(), cx, cy, cx, cy, radius * 2);
 }
 
-static void excellon_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void excellon_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	if (!warn.poly) {
 		warn.poly = 1;
@@ -447,23 +447,23 @@ static void excellon_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_
 	}
 }
 
-static void excellon_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+static void excellon_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	excellon_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
 
-static void excellon_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void excellon_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	excellon_fill_polygon(gc, 0, NULL, NULL);
 }
 
-static void excellon_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void excellon_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 	rnd_message(RND_MSG_ERROR, "Excellon internal error: can not calibrate()\n");
 }
 
-static int excellon_usage(pcb_hid_t *hid, const char *topic)
+static int excellon_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexcellon exporter command line arguments:\n\n");
 	pcb_hid_usage(excellon_options, sizeof(excellon_options) / sizeof(excellon_options[0]));
@@ -471,7 +471,7 @@ static int excellon_usage(pcb_hid_t *hid, const char *topic)
 	return 0;
 }
 
-static void excellon_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void excellon_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 

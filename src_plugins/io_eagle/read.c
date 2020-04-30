@@ -75,7 +75,7 @@ typedef struct eagle_layer_s {
 	int visible;
 	int active;
 
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 } eagle_layer_t;
 
 typedef struct eagle_library_s {
@@ -304,7 +304,7 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 			long tmp_id;
 			eagle_layerid_t id;
 			unsigned long typ;
-			pcb_layergrp_id_t gid;
+			rnd_layergrp_id_t gid;
 			pcb_layergrp_t *grp;
 
 			ly->name    = eagle_get_attrs(st, n, "name", NULL);
@@ -377,7 +377,7 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 	   since most Eagle packages use tDocu, bDocu for some of their artwork */
 
 	eagle_layer_t *ly = htip_get(&st->layers, id);
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	pcb_subc_t *subc = obj;
 	pcb_layer_type_t lyt;
 	pcb_layer_combining_t comb;
@@ -388,7 +388,7 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 		if (id == 51 || id == 52) {
 				/* create docu on the first reference */
 			pcb_layer_type_t typ;
-			pcb_layergrp_id_t gid;
+			rnd_layergrp_id_t gid;
 			switch (id) {
 				case 51: /* = tDocu */
 					typ        = PCB_LYT_SILK | PCB_LYT_TOP;
@@ -1670,7 +1670,7 @@ TODO("{thermal} process thermals")
 
 static int post_process_polyholes(read_state_t *st)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	for(lid = 0; lid < st->pcb->Data->LayerN; lid++) {
 		pcb_poly_t *hole, *poly;
 		gdl_iterator_t ith, itp;

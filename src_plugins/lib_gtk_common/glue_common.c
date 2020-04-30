@@ -285,7 +285,7 @@ void ghid_init_pixmap_(pcb_gtk_pixmap_t *gpm)
 
 static void ghid_load_bg_image(void)
 {
-	static pcb_pixmap_t pxm;
+	static rnd_pixmap_t pxm;
 
 	ghidgui->bg_pixmap.pxm = NULL;
 	ghidgui->bg_pixmap.image = NULL;

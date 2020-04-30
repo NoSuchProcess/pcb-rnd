@@ -14,10 +14,10 @@ typedef struct pcb_cam_s {
 	int grp_vis[PCB_MAX_LAYERGRP]; /* whether a real layer group should be rendered */
 	int vgrp_vis[PCB_VLY_end];     /* whether a virtual layer group should be rendered */
 
-	pcb_xform_t *xform[PCB_MAX_LAYERGRP];
-	pcb_xform_t xform_[PCB_MAX_LAYERGRP];
-	pcb_xform_t *vxform[PCB_VLY_end];
-	pcb_xform_t vxform_[PCB_VLY_end];
+	rnd_xform_t *xform[PCB_MAX_LAYERGRP];
+	rnd_xform_t xform_[PCB_MAX_LAYERGRP];
+	rnd_xform_t *vxform[PCB_VLY_end];
+	rnd_xform_t vxform_[PCB_VLY_end];
 
 	unsigned int okempty_content:1; /* do not warn if no objects exported (but group exists) */
 	unsigned int okempty_group:1;   /* do not warn if no group exported */
@@ -31,7 +31,7 @@ typedef struct pcb_cam_s {
 	int exported_grps;
 } pcb_cam_t;
 
-int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const pcb_export_opt_t *attr_tbl, int numa, pcb_hid_attr_val_t *options);
+int pcb_cam_begin(pcb_board_t *pcb, pcb_cam_t *dst, rnd_xform_t *dst_xform, const char *src, const rnd_export_opt_t *attr_tbl, int numa, rnd_hid_attr_val_t *options);
 
 /* Finish cam export, free all memory, mark cam export inactive and report
    the number of layer groups exported */
@@ -39,7 +39,7 @@ int pcb_cam_end(pcb_cam_t *dst);
 
 /* load *fn_out with the cam-requested output file name in cam mode; useful
    for non layer based exporters */
-void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, pcb_xform_t *dst_xform, const char *src, const char **fn_out);
+void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, rnd_xform_t *dst_xform, const char *src, const char **fn_out);
 
 
 /* Shall be the first rule in a cam capable exporter's set_layer_group()
@@ -53,7 +53,7 @@ do { \
 
 /* the logics behind pcb_cam_set_layer_group(); returns non-zero if the macro
    should return (and skip the current group) */
-int pcb_cam_set_layer_group_(pcb_cam_t *cam, pcb_layergrp_id_t group, const char *purpose, int purpi, unsigned int flags, pcb_xform_t **xform);
+int pcb_cam_set_layer_group_(pcb_cam_t *cam, rnd_layergrp_id_t group, const char *purpose, int purpi, unsigned int flags, rnd_xform_t **xform);
 
 /*** CAM caller side API for global export ***/
 
@@ -84,12 +84,12 @@ typedef enum pcb_file_name_style_e {
 
 /* Returns a filename base that can be used to output the layer. The file
    name is built in dest, the returned pointer is pointing to the array of dest.  */
-char *pcb_layer_to_file_name(gds_t *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style);
-char *pcb_layer_to_file_name_append(gds_t *dest, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style);
+char *pcb_layer_to_file_name(gds_t *dest, rnd_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style);
+char *pcb_layer_to_file_name_append(gds_t *dest, rnd_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style);
 
 /* Returns a filename base that can be used to output the layer; if flags is 0,
    look it up. Copies result in dest (which should be at least PCB_DERIVE_FN_SUFF_LEN bytes wide). */
-void pcb_derive_default_filename(const char *pcbfile, pcb_export_opt_t *filename_attrib, const char *suffix);
+void pcb_derive_default_filename(const char *pcbfile, rnd_export_opt_t *filename_attrib, const char *suffix);
 
 /* Same as pcb_derive_default_filename() but returns an allocated string
    directly, instead  of manipulating an attribute */

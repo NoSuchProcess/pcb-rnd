@@ -122,7 +122,7 @@ static void subtract(color_struct * dest, double a_amount, const color_struct * 
 	clip(dest, dest);
 }
 
-static int png_set_layer_group_photo(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	/* workaround: the outline layer vs. alpha breaks if set twice and the draw
 	   code may set it twice (if there's no mech layer), but always in a row */
@@ -382,7 +382,7 @@ static void png_photo_foot(void)
 static void png_photo_as_shown()
 {
 	int i, n = 0;
-	pcb_layergrp_id_t solder_layer = -1, comp_layer = -1;
+	rnd_layergrp_id_t solder_layer = -1, comp_layer = -1;
 
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder_layer, 1);
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_layer, 1);
@@ -417,7 +417,7 @@ static void png_photo_as_shown()
 	}
 }
 
-static void png_photo_do_export(pcb_hid_attr_val_t *options)
+static void png_photo_do_export(rnd_hid_attr_val_t *options)
 {
 	options[HA_mono].lng = 1;
 	options[HA_as_shown].lng = 0;

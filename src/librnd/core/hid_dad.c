@@ -72,7 +72,7 @@ void pcb_hid_dad_close(void *hid_ctx, pcb_dad_retovr_t *retovr, int retval)
 	pcb_gui->attr_dlg_close(hid_ctx);
 }
 
-void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+void pcb_hid_dad_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_dad_retovr_t **retovr = attr->wdata;
 	pcb_hid_dad_close(hid_ctx, *retovr, attr->val.lng);
@@ -91,7 +91,7 @@ int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr)
 	return ret;
 }
 
-int pcb_hid_attrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int n_attrs)
+int pcb_hid_attrdlg_num_children(rnd_hid_attribute_t *attrs, int start_from, int n_attrs)
 {
 	int n, level = 1, cnt = 0;
 
@@ -117,7 +117,7 @@ int pcb_hid_attrdlg_num_children(pcb_hid_attribute_t *attrs, int start_from, int
 	return cnt;
 }
 
-int pcb_attribute_dialog_(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, void **retovr, int defx, int defy, int minx, int miny, void **hid_ctx_out)
+int pcb_attribute_dialog_(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, void **retovr, int defx, int defy, int minx, int miny, void **hid_ctx_out)
 {
 	int rv;
 	void *hid_ctx;
@@ -135,19 +135,19 @@ int pcb_attribute_dialog_(const char *id, pcb_hid_attribute_t *attrs, int n_attr
 	return rv ? 0 : 1;
 }
 
-int pcb_attribute_dialog(const char *id, pcb_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data)
+int pcb_attribute_dialog(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data)
 {
 	return pcb_attribute_dialog_(id, attrs, n_attrs, title, caller_data, NULL, 0, 0, 0, 0, NULL);
 }
 
-int pcb_hid_dock_enter(pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
+int pcb_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
 	if ((pcb_gui == NULL) || (pcb_gui->dock_enter == NULL))
 		return -1;
 	return pcb_gui->dock_enter(pcb_gui, sub, where, id);
 }
 
-void pcb_hid_dock_leave(pcb_hid_dad_subdialog_t *sub)
+void pcb_hid_dock_leave(rnd_hid_dad_subdialog_t *sub)
 {
 	if ((pcb_gui == NULL) || (pcb_gui->dock_leave == NULL))
 		return;

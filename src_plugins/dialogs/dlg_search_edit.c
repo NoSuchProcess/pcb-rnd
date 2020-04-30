@@ -43,7 +43,7 @@ typedef struct{
 static srchedit_ctx_t srchedit_ctx;
 
 /* Set the right side of the expression from the non-enum value of an widget attr */
-static void set_right(srchedit_ctx_t *ctx, pcb_hid_attribute_t *attr)
+static void set_right(srchedit_ctx_t *ctx, rnd_hid_attribute_t *attr)
 {
 	free(ctx->se.right);
 	ctx->se.right = NULL;
@@ -70,7 +70,7 @@ static void set_right(srchedit_ctx_t *ctx, pcb_hid_attribute_t *attr)
 static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, int click)
 {
 	pcb_hid_tree_t *tree;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_row_t *r, *cur = NULL;
 	char *cell[2], *cursor_path = NULL;
 	const char **o;
@@ -103,7 +103,7 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, i
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wop, &hv);
 		free(cursor_path);
@@ -116,7 +116,7 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, i
 static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr_t *s)
 {
 	pcb_hid_tree_t *tree;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	char *cell[2];
 	const char **o;
 
@@ -135,7 +135,7 @@ static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr
 
 	/* set cursor to last known value */
 	if ((s != NULL) && (s->right != NULL)) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = s->right;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[RIGHT_CONST], &hv);
 	}
@@ -144,7 +144,7 @@ static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr
 static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 {
 	int n, empty = 0;
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 
 	/* don't recalc if the same type; except for const, because there the same type means different set of values for each expr */
 	if ((s->expr->rtype == ctx->last_rtype) && (s->expr->rtype != RIGHT_CONST))
@@ -189,7 +189,7 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 	ctx->last_rtype = s->expr->rtype;
 }
 
-static void srch_expr_left_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void srch_expr_left_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attrib->wdata;
 	srchedit_ctx_t *ctx = tree->user_ctx;
@@ -207,7 +207,7 @@ static void srch_expr_left_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 	srch_expr_fill_in_right(ctx, &ctx->se);
 }
 
-static void srch_expr_op_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void srch_expr_op_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attrib->wdata;
 	srchedit_ctx_t *ctx = tree->user_ctx;
@@ -223,7 +223,7 @@ static void srch_expr_op_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_
 static int fill_in_left(srchedit_ctx_t *ctx)
 {
 	const expr_wizard_t *t;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_row_t *r, *parent = NULL, *cur = NULL;
 	char *cell[2];
 
@@ -259,14 +259,14 @@ static int fill_in_left(srchedit_ctx_t *ctx)
 	return 0;
 }
 
-static void srchexpr_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void srchexpr_right_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	srchedit_ctx_t *ctx = caller_data;
 
 	set_right(ctx, attr);
 }
 
-static void srch_expr_right_table_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void srch_expr_right_table_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attrib->wdata;
 	srchedit_ctx_t *ctx = tree->user_ctx;

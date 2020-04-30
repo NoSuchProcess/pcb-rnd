@@ -67,12 +67,12 @@ rnd_bool delayed_terms_enabled = pcb_false;
 
 static void draw_everything(pcb_draw_info_t *info);
 static void pcb_draw_layer_grp(pcb_draw_info_t *info, int, int);
-static void pcb_draw_obj_label(pcb_draw_info_t *info, pcb_layergrp_id_t gid, pcb_any_obj_t *obj);
+static void pcb_draw_obj_label(pcb_draw_info_t *info, rnd_layergrp_id_t gid, pcb_any_obj_t *obj);
 static void pcb_draw_pstk_marks(pcb_draw_info_t *info);
 static void pcb_draw_pstk_labels(pcb_draw_info_t *info);
-static void pcb_draw_pstk_holes(pcb_draw_info_t *info, pcb_layergrp_id_t group, pcb_pstk_draw_hole_t holetype);
-static void pcb_draw_ppv(pcb_draw_info_t *info, pcb_layergrp_id_t group);
-static void xform_setup(pcb_draw_info_t *info, pcb_xform_t *dst, const pcb_layer_t *Layer);
+static void pcb_draw_pstk_holes(pcb_draw_info_t *info, rnd_layergrp_id_t group, pcb_pstk_draw_hole_t holetype);
+static void pcb_draw_ppv(pcb_draw_info_t *info, rnd_layergrp_id_t group);
+static void xform_setup(pcb_draw_info_t *info, rnd_xform_t *dst, const pcb_layer_t *Layer);
 
 /* In draw_ly_spec.c: */
 static void pcb_draw_paste(pcb_draw_info_t *info, int side);
@@ -106,7 +106,7 @@ void pcb_lighten_color(const rnd_color_t *orig, rnd_color_t *dst, double factor)
 	rnd_color_load_int(dst, MIN(255, orig->r * factor), MIN(255, orig->g * factor), MIN(255, orig->b * factor), 255);
 }
 
-void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned int segs, pcb_bool_t cheap)
+void pcb_draw_dashed_line(pcb_draw_info_t *info, rnd_hid_gc_t GC, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned int segs, pcb_bool_t cheap)
 {
 /* TODO: we need a real geo lib... using double here is plain wrong */
 	double dx = x2-x1, dy = y2-y1;
@@ -162,7 +162,7 @@ void pcb_draw(void)
 	pcb_draw_invalidated.X2 = pcb_draw_invalidated.Y2 = -RND_COORD_MAX;
 }
 
-static void draw_everything_holes(pcb_draw_info_t *info, pcb_layergrp_id_t gid)
+static void draw_everything_holes(pcb_draw_info_t *info, rnd_layergrp_id_t gid)
 {
 	int plated, unplated;
 	pcb_board_count_holes(PCB, &plated, &unplated, info->drawn_area);
@@ -179,11 +179,11 @@ static void draw_everything_holes(pcb_draw_info_t *info, pcb_layergrp_id_t gid)
 }
 
 typedef struct {
-	pcb_layergrp_id_t top_fab, top_assy, bot_assy;
+	rnd_layergrp_id_t top_fab, top_assy, bot_assy;
 	int top_fab_enable, top_assy_enable, bot_assy_enable;
 } legacy_vlayer_t;
 
-static int set_vlayer(pcb_draw_info_t *info, pcb_layergrp_id_t gid, int enable, pcb_virtual_layer_t vly_type)
+static int set_vlayer(pcb_draw_info_t *info, rnd_layergrp_id_t gid, int enable, pcb_virtual_layer_t vly_type)
 {
 	if (gid >= 0) { /* has a doc layer */
 		if (!enable)
@@ -198,8 +198,8 @@ static int set_vlayer(pcb_draw_info_t *info, pcb_layergrp_id_t gid, int enable, 
 
 static void draw_virtual_layers(pcb_draw_info_t *info, const legacy_vlayer_t *lvly_drawn)
 {
-	pcb_hid_expose_ctx_t hid_exp;
-	pcb_xform_t tmp;
+	rnd_hid_expose_ctx_t hid_exp;
+	rnd_xform_t tmp;
 
 	hid_exp.view = *info->drawn_area;
 
@@ -305,7 +305,7 @@ static void draw_rats(pcb_draw_info_t *info, const rnd_rnd_box_t *drawn_area)
 	}
 }
 
-static void draw_pins_and_pads(pcb_draw_info_t *info, pcb_layergrp_id_t component, pcb_layergrp_id_t solder)
+static void draw_pins_and_pads(pcb_draw_info_t *info, rnd_layergrp_id_t component, rnd_layergrp_id_t solder)
 {
 	int per_side = conf_core.appearance.subc_layer_per_side;
 
@@ -339,18 +339,18 @@ static int has_auto(pcb_layergrp_t *grp)
 
 static void draw_everything(pcb_draw_info_t *info)
 {
-	pcb_layergrp_id_t backsilk_gid;
+	rnd_layergrp_id_t backsilk_gid;
 	pcb_layergrp_t *backsilk_grp;
 	rnd_color_t old_silk_color[PCB_MAX_LAYERGRP];
 	int i, ngroups;
-	pcb_layergrp_id_t component, solder, gid, side_copper_grp;
+	rnd_layergrp_id_t component, solder, gid, side_copper_grp;
 	/* This is the list of layer groups we will draw.  */
 	char do_group[PCB_MAX_LAYERGRP];
 	/* This is the reverse of the order in which we draw them.  */
-	pcb_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
+	rnd_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
 	rnd_bool paste_empty;
 	legacy_vlayer_t lvly;
-	pcb_xform_t tmp;
+	rnd_xform_t tmp;
 
 	xform_setup(info, &tmp, NULL);
 	backsilk_gid = ((!info->xform->show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
@@ -373,7 +373,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	lvly.top_assy = lvly.bot_assy = -1;
 	for (ngroups = 0, i = 0; i < pcb_max_layer(PCB); i++) {
 		pcb_layer_t *l = PCB_STACKLAYER(PCB, i);
-		pcb_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
+		rnd_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
 		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, group);
 		unsigned int gflg = 0;
 
@@ -436,11 +436,11 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	/* draw all layers in layerstack order */
 	for (i = ngroups - 1; i >= 0; i--) {
-		pcb_layergrp_id_t group = drawn_groups[i];
+		rnd_layergrp_id_t group = drawn_groups[i];
 
 		if (pcb_layer_gui_set_glayer(PCB, group, 0, &info->xform_exporter)) {
 			int is_current = 0;
-			pcb_layergrp_id_t cgrp = PCB_CURRLAYER(PCB)->meta.real.grp;
+			rnd_layergrp_id_t cgrp = PCB_CURRLAYER(PCB)->meta.real.grp;
 
 			if ((cgrp == solder) || (cgrp == component)) {
 				/* current group is top or bottom: visibility depends on side we are looking at */
@@ -465,7 +465,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 	if (pcb_render->gui) {
-		pcb_xform_t tmp;
+		rnd_xform_t tmp;
 		xform_setup(info, &tmp, NULL);
 		pcb_draw_ppv(info, info->xform->show_solder_side ? solder : component);
 		info->xform = NULL; info->layer = NULL;
@@ -523,7 +523,7 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	draw_virtual_layers(info, &lvly);
 	if ((pcb_render->gui) || (!info->xform_caller->omit_overlay)) {
-		pcb_xform_t tmp;
+		rnd_xform_t tmp;
 		xform_setup(info, &tmp, NULL);
 		draw_rats(info, info->drawn_area);
 		draw_pins_and_pads(info, component, solder);
@@ -531,7 +531,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	draw_ui_layers(info);
 
 	if (pcb_render->gui) {
-		pcb_xform_t tmp;
+		rnd_xform_t tmp;
 		xform_setup(info, &tmp, NULL);
 		draw_xor_marks(info);
 	}
@@ -547,10 +547,10 @@ static void draw_everything(pcb_draw_info_t *info)
 	}
 }
 
-static void pcb_draw_pstks(pcb_draw_info_t *info, pcb_layergrp_id_t group, int is_current, pcb_layer_combining_t comb)
+static void pcb_draw_pstks(pcb_draw_info_t *info, rnd_layergrp_id_t group, int is_current, pcb_layer_combining_t comb)
 {
 	pcb_layergrp_t *g = PCB->LayerGroups.grp + group;
-	pcb_xform_t tmp;
+	rnd_xform_t tmp;
 
 	xform_setup(info, &tmp, NULL);
 
@@ -578,9 +578,9 @@ static void pcb_draw_pstk_labels(pcb_draw_info_t *info)
 	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_label_callback, info, NULL);
 }
 
-static void pcb_draw_pstk_holes(pcb_draw_info_t *info, pcb_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)
+static void pcb_draw_pstk_holes(pcb_draw_info_t *info, rnd_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)
 {
-	pcb_xform_t tmp;
+	rnd_xform_t tmp;
 
 
 	if (!PCB->hole_on)
@@ -593,9 +593,9 @@ static void pcb_draw_pstk_holes(pcb_draw_info_t *info, pcb_layergrp_id_t group, 
 	info->xform = NULL; info->layer = NULL; 
 }
 
-static void pcb_draw_pstk_slots(pcb_draw_info_t *info, pcb_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)
+static void pcb_draw_pstk_slots(pcb_draw_info_t *info, rnd_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)
 {
-	pcb_xform_t tmp;
+	rnd_xform_t tmp;
 
 	if (!PCB->hole_on)
 		return;
@@ -611,7 +611,7 @@ static void pcb_draw_pstk_slots(pcb_draw_info_t *info, pcb_layergrp_id_t group, 
  * Draws padstacks - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->pstk_on
  */
-static void pcb_draw_ppv(pcb_draw_info_t *info, pcb_layergrp_id_t group)
+static void pcb_draw_ppv(pcb_draw_info_t *info, rnd_layergrp_id_t group)
 {
 	/* draw padstack holes - copper is drawn with each group */
 	if (PCB->pstk_on || !pcb_render->gui) {
@@ -628,7 +628,7 @@ static void pcb_draw_ppv(pcb_draw_info_t *info, pcb_layergrp_id_t group)
  * Draws padstacks' names - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->pstk_on
  */
-void pcb_draw_pstk_names(pcb_draw_info_t *info, pcb_layergrp_id_t group, const rnd_rnd_box_t *drawn_area)
+void pcb_draw_pstk_names(pcb_draw_info_t *info, rnd_layergrp_id_t group, const rnd_rnd_box_t *drawn_area)
 {
 	if (PCB->pstk_on || !pcb_render->gui) {
 		size_t n;
@@ -677,7 +677,7 @@ static void pcb_draw_annotations(pcb_draw_info_t *info)
 #include "draw_composite.c"
 #include "draw_ly_spec.c"
 
-static void xform_setup(pcb_draw_info_t *info, pcb_xform_t *dst, const pcb_layer_t *Layer)
+static void xform_setup(pcb_draw_info_t *info, rnd_xform_t *dst, const pcb_layer_t *Layer)
 {
 	info->layer = Layer;
 	if ((Layer != NULL) && (!pcb_xform_is_nop(&Layer->meta.real.xform))) {
@@ -706,7 +706,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 {
 	unsigned int lflg = 0;
 	int may_have_delayed = 0, restore_color = 0, current_grp;
-	pcb_xform_t xform;
+	rnd_xform_t xform;
 	rnd_color_t orig_color;
 	pcb_layer_t *Layer = (pcb_layer_t *)Layer_; /* ugly hack until layer color is moved into info */
 
@@ -824,14 +824,14 @@ void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *Layer, const rn
 
 /* This version is about 1% slower and used rarely, thus it's all dupped
    from pcb_draw_layer() to keep the original speed there */
-void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_rnd_box_t *screen, pcb_data_t *data, pcb_xform_t *xf)
+void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_rnd_box_t *screen, pcb_data_t *data, rnd_xform_t *xf)
 {
 	pcb_draw_info_t info;
 	rnd_rnd_box_t scr2;
 	unsigned int lflg = 0;
 	rnd_rtree_it_t it;
 	pcb_any_obj_t *o;
-	pcb_xform_t tmp;
+	rnd_xform_t tmp;
 
 	if ((screen->X2 <= screen->X1) || (screen->Y2 <= screen->Y1)) {
 		scr2 = *screen;
@@ -922,10 +922,10 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_
 static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 {
 	int i;
-	pcb_layer_id_t layernum;
+	rnd_layer_id_t layernum;
 	pcb_layer_t *Layer;
 	rnd_cardinal_t n_entries = PCB->LayerGroups.grp[group].len;
-	pcb_layer_id_t *layers = PCB->LayerGroups.grp[group].lid;
+	rnd_layer_id_t *layers = PCB->LayerGroups.grp[group].lid;
 	pcb_layergrp_t *grp = pcb_get_layergrp(PCB, group);
 	unsigned int gflg = grp->ltype;
 
@@ -940,7 +940,7 @@ static void pcb_draw_layer_grp(pcb_draw_info_t *info, int group, int is_current)
 	}
 
 	if ((gflg & PCB_LYT_COPPER) && (PCB->pstk_on)) {
-		pcb_xform_t tmp;
+		rnd_xform_t tmp;
 		const pcb_layer_t *ly1 = NULL;
 
 		/* figure first layer to get the transformations from */
@@ -1039,7 +1039,7 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 	}
 }
 
-static void pcb_draw_obj_label(pcb_draw_info_t *info, pcb_layergrp_id_t gid, pcb_any_obj_t *obj)
+static void pcb_draw_obj_label(pcb_draw_info_t *info, rnd_layergrp_id_t gid, pcb_any_obj_t *obj)
 {
 	if (pcb_hidden_floater(obj, info))
 		return;
@@ -1066,7 +1066,7 @@ static void pcb_draw_obj_label(pcb_draw_info_t *info, pcb_layergrp_id_t gid, pcb
  * HID drawing callback.
  */
 
-static void expose_begin(pcb_output_t *save, pcb_hid_t *hid)
+static void expose_begin(pcb_output_t *save, rnd_hid_t *hid)
 {
 	memcpy(save, &pcb_draw_out, sizeof(pcb_output_t));
 	save->hid = pcb_render;
@@ -1120,7 +1120,7 @@ static void expose_end(pcb_output_t *save)
 	pcb_render = pcb_draw_out.hid;
 }
 
-void pcb_draw_setup_default_gui_xform(pcb_xform_t *dst)
+void pcb_draw_setup_default_gui_xform(rnd_xform_t *dst)
 {
 	dst->wireframe = conf_core.editor.wireframe_draw;
 	dst->thin_draw = conf_core.editor.thin_draw;
@@ -1133,10 +1133,10 @@ void pcb_draw_setup_default_gui_xform(pcb_xform_t *dst)
 	dst->flag_color = 1;
 }
 
-void pcb_draw_setup_default_xform_info(pcb_hid_t *hid, pcb_draw_info_t *info)
+void pcb_draw_setup_default_xform_info(rnd_hid_t *hid, pcb_draw_info_t *info)
 {
-	static pcb_xform_t xf_def = {0};
-	static pcb_xform_t xform_main_exp;
+	static rnd_xform_t xf_def = {0};
+	static rnd_xform_t xform_main_exp;
 
 	if (info->xform_caller == NULL) {
 		if (hid->exporter) {
@@ -1155,7 +1155,7 @@ void pcb_draw_setup_default_xform_info(pcb_hid_t *hid, pcb_draw_info_t *info)
 	}
 }
 
-void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xform_t *xform_caller)
+void pcbhl_expose_main(rnd_hid_t * hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform_t *xform_caller)
 {
 	if (!pcb_draw_inhibit) {
 		pcb_output_t save;
@@ -1175,7 +1175,7 @@ void pcbhl_expose_main(pcb_hid_t * hid, const pcb_hid_expose_ctx_t *ctx, pcb_xfo
 	}
 }
 
-void pcbhl_expose_preview(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e)
+void pcbhl_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e)
 {
 	pcb_output_t save;
 	expose_begin(&save, hid);

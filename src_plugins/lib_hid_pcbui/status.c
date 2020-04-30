@@ -45,7 +45,7 @@
 #include "status.h"
 
 typedef struct {
-	pcb_hid_dad_subdialog_t stsub, rdsub; /* st is for the bottom status line, rd is for the top readouts */
+	rnd_hid_dad_subdialog_t stsub, rdsub; /* st is for the bottom status line, rd is for the top readouts */
 	int stsub_inited, rdsub_inited;
 	int wst1, wst2, wsttxt;
 	int st_has_text;
@@ -132,7 +132,7 @@ static void build_st_help(void)
 
 static void status_st_pcb2dlg(void)
 {
-	static pcb_hid_attr_val_t hv;
+	static rnd_hid_attr_val_t hv;
 
 	if (!status.stsub_inited)
 		return;
@@ -163,7 +163,7 @@ static void status_st_pcb2dlg(void)
 
 static void status_rd_pcb2dlg(void)
 {
-	static pcb_hid_attr_val_t hv;
+	static rnd_hid_attr_val_t hv;
 	const char *s1, *s2, *s3;
 	char sep;
 
@@ -239,7 +239,7 @@ static void status_rd_pcb2dlg(void)
 	}
 }
 
-static void unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void unit_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	if (pcbhl_conf.editor.grid_unit == get_unit_struct("mm"))
 		rnd_actionva(&PCB->hidlib, "SetUnits", "mil", NULL);
@@ -265,7 +265,7 @@ static void status_docked_create_st()
 }
 
 /* append an expand-vbox to eat up excess space for center-align */
-static void vpad(pcb_hid_dad_subdialog_t *sub)
+static void vpad(rnd_hid_dad_subdialog_t *sub)
 {
 	PCB_DAD_BEGIN_VBOX(sub->dlg);
 		PCB_DAD_COMPFLAG(sub->dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT);
@@ -351,7 +351,7 @@ fgw_error_t pcb_act_StatusSetText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, StatusSetText, text = argv[1].val.str);
 
 	if (text != NULL) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = text;
 		pcb_gui->attr_dlg_set_value(status.stsub.dlg_hid_ctx, status.wsttxt, &hv);
 		hv.str = "";
@@ -373,7 +373,7 @@ fgw_error_t pcb_act_StatusSetText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* The following code is used for the object tooltip hints: */
 
-static void append_obj_desc(pcb_board_t *pcb, gds_t *dst, pcb_any_obj_t *obj, pcb_layergrp_id_t gid, const char *prefix)
+static void append_obj_desc(pcb_board_t *pcb, gds_t *dst, pcb_any_obj_t *obj, rnd_layergrp_id_t gid, const char *prefix)
 {
 	pcb_layergrp_t *grp;
 

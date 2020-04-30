@@ -938,7 +938,7 @@ void pcb_netlist_copy(pcb_board_t *pcb, pcb_netlist_t *dst, pcb_netlist_t *src)
 }
 
 /* Return the (most natural) copper group the obj is in */
-static pcb_layergrp_id_t get_side_group(pcb_board_t *pcb, pcb_any_obj_t *obj)
+static rnd_layergrp_id_t get_side_group(pcb_board_t *pcb, pcb_any_obj_t *obj)
 {
 	switch(obj->type) {
 		case PCB_OBJ_ARC:
@@ -960,7 +960,7 @@ static pcb_rat_t *pcb_net_create_by_rat_(pcb_board_t *pcb, rnd_coord_t x1, rnd_c
 {
 	pcb_subc_t *sc1, *sc2, *sctmp;
 	pcb_net_t *net1 = NULL, *net2 = NULL, *ntmp, *target_net = NULL;
-	pcb_layergrp_id_t group1, group2;
+	rnd_layergrp_id_t group1, group2;
 	pcb_rat_t *res;
 	static long netname_cnt = 0;
 	char ratname_[32], *ratname, *id;

@@ -56,8 +56,8 @@ typedef struct {              /* currently attached object */
 } pcb_attached_object_t;
 
 typedef struct {                         /* holds crosshair, cursor and crosshair-attachment information */
-	pcb_hid_gc_t GC;                       /* GC for cursor drawing */
-	pcb_hid_gc_t AttachGC;                 /* and for displaying buffer contents */
+	rnd_hid_gc_t GC;                       /* GC for cursor drawing */
+	rnd_hid_gc_t AttachGC;                 /* and for displaying buffer contents */
 	rnd_coord_t ptr_x, ptr_y;              /* last seen raw mouse pointer x;y coords */
 	rnd_coord_t X, Y;                      /* (snapped) crosshair position */
 	pcb_attached_line_t AttachedLine;      /* data of new lines... */

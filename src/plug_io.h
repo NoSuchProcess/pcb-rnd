@@ -127,9 +127,9 @@ struct pcb_plug_io_s {
 	   unique; if multiple pcb_plug_io_t structs share the same init(),
 	   only one, shared format-setting-tab is created for them. If apply is
 	   true, the dialog box was closed with okay on this format selected. */
-	void *(*save_as_subd_init)(const pcb_plug_io_t *ctx, pcb_hid_dad_subdialog_t *sub, pcb_plug_iot_t type);
-	void (*save_as_subd_uninit)(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub, rnd_bool apply);
-	void (*save_as_fmt_changed)(const pcb_plug_io_t *ctx, void *plg_ctx, pcb_hid_dad_subdialog_t *sub);
+	void *(*save_as_subd_init)(const pcb_plug_io_t *ctx, rnd_hid_dad_subdialog_t *sub, pcb_plug_iot_t type);
+	void (*save_as_subd_uninit)(const pcb_plug_io_t *ctx, void *plg_ctx, rnd_hid_dad_subdialog_t *sub, rnd_bool apply);
+	void (*save_as_fmt_changed)(const pcb_plug_io_t *ctx, void *plg_ctx, rnd_hid_dad_subdialog_t *sub);
 
 	const char *default_fmt;
 	const char *description;

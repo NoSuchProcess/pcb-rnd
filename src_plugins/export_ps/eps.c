@@ -28,15 +28,15 @@
 
 static pcb_cam_t eps_cam;
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
 	pcb_cap_style_t cap;
 	rnd_coord_t width;
 	unsigned long color;
 	int erase;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
-static pcb_hid_t eps_hid;
+static rnd_hid_t eps_hid;
 
 static FILE *f = 0;
 static rnd_coord_t linewidth = -1;
@@ -48,7 +48,7 @@ static int fast_erase = -1;
 static pcb_composite_op_t drawing_mode;
 static long eps_drawn_objs;
 
-static pcb_export_opt_t eps_attribute_list[] = {
+static rnd_export_opt_t eps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "92 Encapsulated Postscript Export"
@@ -116,9 +116,9 @@ Limit the bounds of the EPS file to the visible items.
 
 #define NUM_OPTIONS (sizeof(eps_attribute_list)/sizeof(eps_attribute_list[0]))
 
-static pcb_hid_attr_val_t eps_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t eps_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *eps_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *eps_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (eps_attribute_list[HA_psfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &eps_attribute_list[HA_psfile], ".eps");
@@ -128,7 +128,7 @@ static pcb_export_opt_t *eps_get_export_options(pcb_hid_t *hid, int *n)
 	return eps_attribute_list;
 }
 
-static pcb_layergrp_id_t group_for_layer(int l)
+static rnd_layergrp_id_t group_for_layer(int l)
 {
 	if (l < pcb_max_layer(PCB) && l >= 0)
 		return pcb_layer_get_group(PCB, l);
@@ -136,15 +136,15 @@ static pcb_layergrp_id_t group_for_layer(int l)
 	return pcb_max_group(PCB) + 3 + l;
 }
 
-static int is_solder(pcb_layergrp_id_t grp)     { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_BOTTOM; }
-static int is_component(pcb_layergrp_id_t grp)  { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_TOP; }
+static int is_solder(rnd_layergrp_id_t grp)     { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_BOTTOM; }
+static int is_component(rnd_layergrp_id_t grp)  { return pcb_layergrp_flags(PCB, grp) & PCB_LYT_TOP; }
 
 static int layer_sort(const void *va, const void *vb)
 {
 	int a = *(int *) va;
 	int b = *(int *) vb;
-	pcb_layergrp_id_t al = group_for_layer(a);
-	pcb_layergrp_id_t bl = group_for_layer(b);
+	rnd_layergrp_id_t al = group_for_layer(a);
+	rnd_layergrp_id_t bl = group_for_layer(b);
 	int d = bl - al;
 
 	if (a >= 0 && a < pcb_max_layer(PCB)) {
@@ -162,7 +162,7 @@ static const char *filename;
 static rnd_rnd_box_t *bounds;
 static int in_mono, as_shown;
 
-static pcb_hid_attr_val_t *options_;
+static rnd_hid_attr_val_t *options_;
 static void eps_print_header(FILE *f, const char *outfn)
 {
 	linewidth = -1;
@@ -213,12 +213,12 @@ static void eps_print_footer(FILE *f)
 	fprintf(f, "%%%%EOF\n");
 }
 
-void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options, pcb_xform_t *xform)
+void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xform_t *xform)
 {
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_rnd_box_t tmp, region;
-	pcb_hid_expose_ctx_t ctx;
+	rnd_hid_expose_ctx_t ctx;
 
 	options_ = options;
 
@@ -258,7 +258,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options, pcb_xf
 	/* If NO layers had anything on them, at least print the component
 	   layer to get the pins.  */
 	if (fast_erase == 0) {
-		pcb_layergrp_id_t comp_copp;
+		rnd_layergrp_id_t comp_copp;
 		if (pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp_copp, 1) > 0) {
 			print_group[pcb_layer_get_group(PCB, comp_copp)] = 1;
 			fast_erase = 1;
@@ -307,11 +307,11 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options, pcb_xf
 	options_ = NULL;
 }
 
-static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void eps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int i;
 	int save_ons[PCB_MAX_LAYER];
-	pcb_xform_t xform;
+	rnd_xform_t xform;
 
 	if (!options) {
 		eps_get_export_options(hid, 0);
@@ -357,7 +357,7 @@ static void eps_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 }
 
-static int eps_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int eps_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
@@ -367,7 +367,7 @@ static int is_mask;
 static int is_paste;
 static int is_drill;
 
-static int eps_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int eps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	gds_t tmp_ln;
 	const char *name;
@@ -429,21 +429,21 @@ static int eps_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 	return 1;
 }
 
-static pcb_hid_gc_t eps_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t eps_make_gc(rnd_hid_t *hid)
 {
-	pcb_hid_gc_t rv = (pcb_hid_gc_t) malloc(sizeof(hid_gc_s));
+	rnd_hid_gc_t rv = (rnd_hid_gc_t) malloc(sizeof(rnd_hid_gc_s));
 	rv->cap = pcb_cap_round;
 	rv->width = 0;
 	rv->color = 0;
 	return rv;
 }
 
-static void eps_destroy_gc(pcb_hid_gc_t gc)
+static void eps_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-static void eps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void eps_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	if (direct)
 		return;
@@ -466,7 +466,7 @@ static void eps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool
 }
 
 
-static void eps_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
+static void eps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	if (drawing_mode == PCB_HID_COMP_NEGATIVE) {
 		gc->color = 0xffffff;
@@ -487,22 +487,22 @@ static void eps_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 		gc->color = 0;
 }
 
-static void eps_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void eps_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void eps_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void eps_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
-static void eps_set_draw_xor(pcb_hid_gc_t gc, int xor_)
+static void eps_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
 }
 
-static void use_gc(pcb_hid_gc_t gc)
+static void use_gc(rnd_hid_gc_t gc)
 {
 	eps_drawn_objs++;
 	if (linewidth != gc->width) {
@@ -533,16 +533,16 @@ static void use_gc(pcb_hid_gc_t gc)
 	}
 }
 
-static void eps_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
-static void eps_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
+static void eps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
+static void eps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 
-static void eps_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void eps_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-static void eps_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void eps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	rnd_coord_t w = gc->width / 2;
 	if (x1 == x2 && y1 == y2) {
@@ -571,7 +571,7 @@ static void eps_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	pcb_fprintf(f, "%mi %mi %mi %mi %s\n", x1, y1, x2, y2, gc->erase ? "tc" : "t");
 }
 
-static void eps_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void eps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_angle_t sa, ea;
 	double w;
@@ -600,13 +600,13 @@ static void eps_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	pcb_fprintf(f, "%ma %ma %mi %mi %mi %mi %f a\n", sa, ea, -width, height, cx, cy, (double) linewidth / w);
 }
 
-static void eps_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void eps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %s\n", cx, cy, radius, gc->erase ? "cc" : "c");
 }
 
-static void eps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void eps_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i;
 	const char *op = "moveto";
@@ -619,28 +619,28 @@ static void eps_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 	fprintf(f, "fill\n");
 }
 
-static void eps_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+static void eps_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	eps_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
 
-static void eps_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void eps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(gc);
 	pcb_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-static void eps_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void eps_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 	CRASH("eps_calibrate");
 }
 
-static void eps_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void eps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 
-static int eps_usage(pcb_hid_t *hid, const char *topic)
+static int eps_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\neps exporter command line arguments:\n\n");
 	pcb_hid_usage(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]));
@@ -650,11 +650,11 @@ static int eps_usage(pcb_hid_t *hid, const char *topic)
 
 void hid_eps_init()
 {
-	memset(&eps_hid, 0, sizeof(pcb_hid_t));
+	memset(&eps_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&eps_hid);
 
-	eps_hid.struct_size = sizeof(pcb_hid_t);
+	eps_hid.struct_size = sizeof(rnd_hid_t);
 	eps_hid.name = "eps";
 	eps_hid.description = "Encapsulated Postscript";
 	eps_hid.exporter = 1;

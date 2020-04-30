@@ -63,7 +63,7 @@ static const char *layer_names[] = {
 	NULL
 };
 
-static pcb_hid_t dxf_hid;
+static rnd_hid_t dxf_hid;
 
 const char *dxf_cookie = "dxf HID";
 
@@ -86,18 +86,18 @@ typedef struct {
 
 static dxf_ctx_t dxf_ctx;
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
-	pcb_hid_t *me_pointer;
+	rnd_hid_t *me_pointer;
 	pcb_cap_style_t cap;
 	rnd_coord_t width;
 	char *color;
 	int drill;
 	unsigned warned_elliptical:1;
 	unsigned drawing_hole:1;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
-static struct hid_gc_s thin = {
+static struct rnd_hid_gc_s thin = {
 	{0},
 	NULL,
 	0, 1,
@@ -108,7 +108,7 @@ static struct hid_gc_s thin = {
 #include "dxf_draw.c"
 
 
-pcb_export_opt_t dxf_attribute_list[] = {
+rnd_export_opt_t dxf_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 DXF Options"
@@ -196,9 +196,9 @@ Draw drill contour with thin line
 
 #define NUM_OPTIONS (sizeof(dxf_attribute_list)/sizeof(dxf_attribute_list[0]))
 
-static pcb_hid_attr_val_t dxf_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t dxf_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *dxf_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *dxf_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".dxf";
 
@@ -210,10 +210,10 @@ static pcb_export_opt_t *dxf_get_export_options(pcb_hid_t *hid, int *n)
 	return dxf_attribute_list;
 }
 
-void dxf_hid_export_to_file(dxf_ctx_t *ctx, pcb_hid_attr_val_t * options, pcb_xform_t *xform)
+void dxf_hid_export_to_file(dxf_ctx_t *ctx, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	pcb_hid_expose_ctx_t hectx;
+	rnd_hid_expose_ctx_t hectx;
 
 	hectx.view.X1 = 0;
 	hectx.view.Y1 = 0;
@@ -261,7 +261,7 @@ int insert_ftr(FILE *f, const char *prefix, char *name, lht_err_t *err)
 }
 
 extern const char dxf_templ_default_arr[];
-static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void dxf_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];
@@ -269,7 +269,7 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	const char *fn;
 	char *errmsg;
 	lht_err_t err;
-	pcb_xform_t xform;
+	rnd_xform_t xform;
 
 	if (!options) {
 		dxf_get_export_options(hid, 0);
@@ -345,13 +345,13 @@ static void dxf_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 }
 
-static int dxf_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int dxf_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]), dxf_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-static int dxf_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int dxf_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	if (flags & PCB_LYT_UI)
 		return 0;
@@ -431,19 +431,19 @@ static int dxf_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const ch
 }
 
 
-static pcb_hid_gc_t dxf_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t dxf_make_gc(rnd_hid_t *hid)
 {
-	pcb_hid_gc_t rv = (pcb_hid_gc_t) calloc(sizeof(hid_gc_s), 1);
+	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(sizeof(rnd_hid_gc_s), 1);
 	rv->me_pointer = &dxf_hid;
 	return rv;
 }
 
-static void dxf_destroy_gc(pcb_hid_gc_t gc)
+static void dxf_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-static void dxf_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void dxf_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	if (direct)
 		return;
@@ -462,24 +462,24 @@ static void dxf_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool
 	}
 }
 
-static void dxf_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
+static void dxf_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	if (rnd_color_is_drill(color) == 0)
 		gc->drawing_hole = 1;
 }
 
-static void dxf_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void dxf_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void dxf_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void dxf_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
 
-static void dxf_set_draw_xor(pcb_hid_gc_t gc, int xor_)
+static void dxf_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
 }
@@ -496,27 +496,27 @@ static void dxf_set_draw_xor(pcb_hid_gc_t gc, int xor_)
 		y2 = t; \
 	}
 
-static void dxf_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void dxf_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	fix_rect_coords();
 }
 
-static void dxf_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void dxf_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	fix_rect_coords();
 }
 
-static void dxf_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void dxf_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 	rnd_message(RND_MSG_ERROR, "dxf_calibrate() not implemented");
 	return;
 }
 
-static void dxf_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
+static void dxf_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
 
-static int dxf_usage(pcb_hid_t *hid, const char *topic)
+static int dxf_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ndxf exporter command line arguments:\n\n");
 	pcb_hid_usage(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]));
@@ -535,11 +535,11 @@ int pplg_init_export_dxf(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&dxf_hid, 0, sizeof(pcb_hid_t));
+	memset(&dxf_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&dxf_hid);
 
-	dxf_hid.struct_size = sizeof(pcb_hid_t);
+	dxf_hid.struct_size = sizeof(rnd_hid_t);
 	dxf_hid.name = "dxf";
 	dxf_hid.description = "Drawing eXchange Format exporter";
 	dxf_hid.exporter = 1;

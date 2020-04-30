@@ -47,7 +47,7 @@ void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps);
 void pcb_pstk_invalidate_erase(pcb_pstk_t *ps);
 void pcb_pstk_invalidate_draw(pcb_pstk_t *ps);
 
-void pcb_pstk_thindraw(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps);
+void pcb_pstk_thindraw(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps);
 
 /* Draw a padstack for perview; if layers is NULL, draw all layers, else
    draw the layers where it is not zero (layers are defined in pcb_proto_layers[]) */

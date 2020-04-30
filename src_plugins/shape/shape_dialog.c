@@ -43,7 +43,7 @@ static void del_obj(ctx_t *shp)
 	}
 }
 
-static void shp_chg_regpoly(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void shp_chg_regpoly(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	ctx_t *shp = caller_data;
 
@@ -63,7 +63,7 @@ static void shp_chg_regpoly(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 		shp->dlg[shp->pcx].val.crd, shp->dlg[shp->pcy].val.crd);
 }
 
-static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void shp_chg_roundrect(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	ctx_t *shp = caller_data;
 	pcb_shape_corner_t corner[4];
@@ -98,7 +98,7 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, pcb_hid_attribut
 		corner, shp->dlg[shp->rres].val.dbl);
 }
 
-static void shp_chg_circle(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void shp_chg_circle(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	ctx_t *shp = caller_data;
 	rnd_coord_t dia = shp->dlg[shp->dia].val.crd;
@@ -132,7 +132,7 @@ static void shape_layer_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd
 	}
 }
 
-static void shp_chg_tab(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void shp_chg_tab(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	shape_layer_chg(NULL, NULL, 0, NULL);
 }

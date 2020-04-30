@@ -61,10 +61,10 @@ static void propdlgclose_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	free(ctx);
 }
 
-static void prop_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_ign)
+static void prop_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_ign)
 {
 	propdlg_t *ctx = caller_data;
-	pcb_hid_attribute_t *attr, *attr_inp;
+	rnd_hid_attribute_t *attr, *attr_inp;
 	pcb_hid_tree_t *tree;
 	const char *text;
 	int have_filter_text;
@@ -86,7 +86,7 @@ static void prop_filter_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 
 static void prop_pcb2dlg(propdlg_t *ctx)
 {
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wtree];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wtree];
 	pcb_hid_tree_t *tree = attr->wdata;
 	pcb_hid_row_t *r;
 	htsp_entry_t *sorted, *e;
@@ -130,7 +130,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtree, &hv);
 		free(cursor_path);
@@ -138,7 +138,7 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 
 	/* set scope */
 	{
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		gds_t scope;
 		int n, inv;
 		long *l;
@@ -210,20 +210,20 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 	}
 }
 
-static void prop_prv_expose_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+static void prop_prv_expose_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	
 }
 
 
-static rnd_bool prop_prv_mouse_cb(pcb_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool prop_prv_mouse_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_false; /* don't redraw */
 }
 
 static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *pv)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 
 	/* do not update the value if widget is numeric and the user wants a relative value */
 	switch(p->type) {
@@ -263,8 +263,8 @@ static int sort_pv(const void *pv1_, const void *pv2_)
 
 static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 {
-	pcb_hid_attr_val_t hv;
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wvals];
+	rnd_hid_attr_val_t hv;
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wvals];
 	pcb_hid_tree_t *tree = attr->wdata;
 	htprop_entry_t *e;
 	pvsort_t *pvs;
@@ -303,7 +303,7 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 	free(pvs);
 }
 
-static void prop_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
+static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attrib->wdata;
 	propdlg_t *ctx = tree->user_ctx;
@@ -316,7 +316,7 @@ static void prop_select_node_cb(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb_
 }
 
 
-static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr, int force_update)
+static void prop_data_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr, int force_update)
 {
 	propdlg_t *ctx = caller_data;
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
@@ -370,18 +370,18 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	}
 }
 
-static void prop_data_auto_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void prop_data_auto_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	prop_data_cb(hid_ctx, caller_data, attr, 0);
 }
 
-static void prop_data_force_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void prop_data_force_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	prop_data_cb(hid_ctx, caller_data, attr, 1);
 }
 
 
-static void prop_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void prop_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	PCB_DAD_DECL(dlg)
 	propdlg_t *ctx = caller_data;
@@ -416,7 +416,7 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	PCB_DAD_FREE(dlg);
 }
 
-static void prop_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void prop_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	propdlg_t *ctx = caller_data;
 	pcb_hid_row_t *r = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
@@ -435,7 +435,7 @@ static void prop_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *a
 	prop_refresh(ctx);
 }
 
-static void prop_preset_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void prop_preset_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	propdlg_t *ctx = caller_data;
 	pcb_hid_row_t *rv = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wvals]);
@@ -451,7 +451,7 @@ static void prop_preset_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 }
 
 
-static void prop_refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void prop_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	prop_refresh((propdlg_t *)caller_data);
 }
@@ -459,7 +459,7 @@ static void prop_refresh_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 
 static void prop_refresh(propdlg_t *ctx)
 {
-	pcb_hid_attribute_t *attr = &ctx->dlg[ctx->wtree];
+	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wtree];
 	prop_pcb2dlg(ctx);
 	prop_select_node_cb(attr, ctx->dlg_hid_ctx, pcb_dad_tree_get_selected(attr));
 }
@@ -586,7 +586,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	static rnd_rnd_box_t prvbb = {0, 0, PCB_MM_TO_COORD(10), PCB_MM_TO_COORD(10)};
 	int n;
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
 		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);

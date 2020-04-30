@@ -73,7 +73,7 @@ script_dlg_t script_dlg;
 
 static void script_dlg_s2d_act(script_dlg_t *ctx)
 {
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[2];
@@ -106,7 +106,7 @@ static void script_dlg_s2d_act(script_dlg_t *ctx)
 
 static void script_dlg_s2d(script_dlg_t *ctx)
 {
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	pcb_hid_tree_t *tree;
 	pcb_hid_row_t *r;
 	char *cell[4], *cursor_path = NULL;
@@ -136,7 +136,7 @@ static void script_dlg_s2d(script_dlg_t *ctx)
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
-		pcb_hid_attr_val_t hv;
+		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
 		pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wslist, &hv);
 		free(cursor_path);
@@ -157,7 +157,7 @@ static void script_dlg_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(script_dlg_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
-static void btn_unload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void btn_unload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	script_dlg_t *ctx = caller_data;
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
@@ -168,7 +168,7 @@ static void btn_unload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	script_dlg_s2d(ctx);
 }
 
-static void btn_reload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void btn_reload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	script_dlg_t *ctx = caller_data;
 	pcb_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
@@ -179,12 +179,12 @@ static void btn_reload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	script_dlg_s2d(ctx);
 }
 
-static void slist_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void slist_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	script_dlg_s2d_act((script_dlg_t *)caller_data);
 }
 
-static void btn_load_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	script_dlg_t *ctx = caller_data;
 	int failed;

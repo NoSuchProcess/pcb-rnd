@@ -43,7 +43,7 @@
 
 const char *pcb_export_gcode_cookie = "export_gcode plugin";
 
-static pcb_hid_t gcode_hid;
+static rnd_hid_t gcode_hid;
 
 typedef struct {
 	pcb_cam_t cam;
@@ -59,7 +59,7 @@ static gcode_t gctx;
 static const char def_layer_script[] = "setup_negative; trace_contour; fix_overcuts";
 static const char def_mech_script[]  = "setup_positive; trace_contour; fix_overcuts";
 
-pcb_export_opt_t gcode_attribute_list[] = {
+rnd_export_opt_t gcode_attribute_list[] = {
 	{"outfile", "file name prefix for non-cam",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_outfile 0
@@ -100,9 +100,9 @@ pcb_export_opt_t gcode_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(gcode_attribute_list)/sizeof(gcode_attribute_list[0]))
 
-static pcb_hid_attr_val_t gcode_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t gcode_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *gcode_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *gcode_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if (n)
 		*n = NUM_OPTIONS;
@@ -249,7 +249,7 @@ static void gcode_print_lines(pcb_tlp_session_t *tctx, pcb_layergrp_t *grp, int 
 
 }
 
-static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, pcb_xform_t **xform)
+static int gcode_export_layer_group(rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, rnd_xform_t **xform)
 {
 	int script_ha, thru;
 	const char *script;
@@ -324,11 +324,11 @@ static int gcode_export_layer_group(pcb_layergrp_id_t group, const char *purpose
 	return 0;
 }
 
-static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void gcode_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int i;
-	pcb_layergrp_id_t gid;
-	pcb_xform_t xform;
+	rnd_layergrp_id_t gid;
+	rnd_xform_t xform;
 	pcb_board_t *pcb = PCB;
 
 	if (!options) {
@@ -353,7 +353,7 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	if (!gctx.cam.active || (gctx.f != NULL)) {
 		for(gid = 0; gid < pcb->LayerGroups.len; gid++) {
 			pcb_layergrp_t *grp = &pcb->LayerGroups.grp[gid];
-			pcb_xform_t *xf = &xform;
+			rnd_xform_t *xf = &xform;
 			gctx.grp = grp;
 			gcode_export_layer_group(gid, grp->purpose, grp->purpi, grp->lid[0], grp->ltype, &xf);
 			gctx.grp = NULL;
@@ -377,14 +377,14 @@ static void gcode_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	}
 }
 
-static int gcode_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int gcode_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]), pcb_export_gcode_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
 
-static int gcode_usage(pcb_hid_t *hid, const char *topic)
+static int gcode_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ngcode exporter command line arguments:\n\n");
 	pcb_hid_usage(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]));
@@ -405,11 +405,11 @@ int pplg_init_export_gcode(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&gcode_hid, 0, sizeof(pcb_hid_t));
+	memset(&gcode_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&gcode_hid);
 
-	gcode_hid.struct_size = sizeof(pcb_hid_t);
+	gcode_hid.struct_size = sizeof(rnd_hid_t);
 	gcode_hid.name = "gcode";
 	gcode_hid.description = "router g-code for removing copper, drilling and routing board outline";
 	gcode_hid.exporter = 1;

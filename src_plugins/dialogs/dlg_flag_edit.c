@@ -43,14 +43,14 @@ typedef struct{
 	int obj_type;
 	void *ptr1;
 	pcb_any_obj_t *obj;
-	pcb_hid_attribute_t *attrs;
+	rnd_hid_attribute_t *attrs;
 } fe_ctx_t;
 
 #define PCB_FLAGEDIT_TYPES \
 	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_POLY | \
 	PCB_OBJ_TEXT | PCB_OBJ_SUBC | PCB_OBJ_ARC)
 
-static void fe_attr_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void fe_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int n;
 	fe_ctx_t *ctx = caller_data;
@@ -86,7 +86,7 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = F_Object;
 	fe_ctx_t ctx;
-	pcb_hid_attr_val_t val;
+	rnd_hid_attr_val_t val;
 	int type;
 	pcb_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 

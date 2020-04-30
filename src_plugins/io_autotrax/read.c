@@ -105,7 +105,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	const char *Filename;
 	rnd_conf_role_t settings_dest;
-	pcb_layer_id_t protel_to_stackup[14];
+	rnd_layer_id_t protel_to_stackup[14];
 	int lineno;
 	rnd_coord_t mask_clearance;
 	rnd_coord_t copper_clearance;
@@ -302,7 +302,7 @@ static int rdax_arc(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	rnd_angle_t delta = 360.0;
 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
-	pcb_layer_id_t PCB_layer;
+	rnd_layer_id_t PCB_layer;
 
 	Thickness = 0;
 	Clearance = st->copper_clearance; /* start with sane default */
@@ -762,11 +762,11 @@ TODO("figure if autotrax really converts layer 1 and 6 polygons to pads")
 	return -1;
 }
 
-static pcb_layer_id_t autotrax_reg_layer(read_state_t *st, const char *autotrax_layer, unsigned int mask)
+static rnd_layer_id_t autotrax_reg_layer(read_state_t *st, const char *autotrax_layer, unsigned int mask)
 {
-	pcb_layer_id_t id;
+	rnd_layer_id_t id;
 	if (pcb_layer_list(st->pcb, mask, &id, 1) != 1) {
-		pcb_layergrp_id_t gid;
+		rnd_layergrp_id_t gid;
 		pcb_layergrp_list(st->pcb, mask, &gid, 1);
 		id = pcb_layer_create(st->pcb, gid, autotrax_layer, 0);
 	}
@@ -778,7 +778,7 @@ static int autotrax_create_layers(read_state_t *st)
 {
 
 	pcb_layergrp_t *g;
-	pcb_layer_id_t id;
+	rnd_layer_id_t id;
 
 	pcb_layer_group_setup_default(st->pcb);
 
@@ -789,7 +789,7 @@ static int autotrax_create_layers(read_state_t *st)
 	st->protel_to_stackup[6] = autotrax_reg_layer(st, "bottom copper", PCB_LYT_COPPER | PCB_LYT_BOTTOM);
 
 	if (pcb_layer_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &id, 1) == 1) {
-		pcb_layergrp_id_t gid;
+		rnd_layergrp_id_t gid;
 		pcb_layergrp_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
 		st->protel_to_stackup[11] = pcb_layer_create(st->pcb, gid, "Board", 0); /* != outline, cutouts */
 		pcb_layergrp_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);

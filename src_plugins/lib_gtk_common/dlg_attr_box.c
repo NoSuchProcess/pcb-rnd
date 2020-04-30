@@ -26,7 +26,7 @@
 
 /* Boxes and group widgets */
 
-static int ghid_pane_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+static int ghid_pane_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	GtkWidget *pane = ctx->wl[idx];
 	GtkAllocation a;

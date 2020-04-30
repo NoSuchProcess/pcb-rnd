@@ -35,9 +35,9 @@
 
 /* holds information about output window */
 typedef struct {
-	pcb_hid_t *hid;
-	pcb_hid_gc_t drillGC, fgGC, pmGC;                      /* changed from some routines */
-	pcb_hid_gc_t active_padGC, backpadGC, padGC, padselGC; /* pads are drawn with this gc */
+	rnd_hid_t *hid;
+	rnd_hid_gc_t drillGC, fgGC, pmGC;                      /* changed from some routines */
+	rnd_hid_gc_t active_padGC, backpadGC, padGC, padselGC; /* pads are drawn with this gc */
 	unsigned direct:1;                                     /* starts as 1 and becomes 0 before the first compositing layer group is reset */
 } pcb_output_t;
 
@@ -56,15 +56,15 @@ typedef struct pcb_draw_info_s {
 	const char *export_name;               /* name of the export plugin */
 	char noexport_name[64];                /* "noexport:" attribute name rendered for the current exporter */
 	const rnd_rnd_box_t *drawn_area;
-	pcb_xform_t *xform_caller;             /* the extra transformation the caller requested (the one who has initiated the rendering, e.g. throuh pcb_draw_everything()) */
-	pcb_xform_t *xform_exporter;           /* the extra transformation the exporter requested (e.g. because of cam) */
-	pcb_xform_t *xform;                    /* the final transformation applied on objects */
+	rnd_xform_t *xform_caller;             /* the extra transformation the caller requested (the one who has initiated the rendering, e.g. throuh pcb_draw_everything()) */
+	rnd_xform_t *xform_exporter;           /* the extra transformation the exporter requested (e.g. because of cam) */
+	rnd_xform_t *xform;                    /* the final transformation applied on objects */
 
 	const pcb_layer_t *layer;
 
 	union { /* fields used for specific object callbacks */
 		struct {
-			pcb_layergrp_id_t gid;
+			rnd_layergrp_id_t gid;
 			int is_current;
 			pcb_pstk_draw_hole_t holetype;
 			pcb_layer_combining_t comb;
@@ -124,7 +124,7 @@ void pcb_lighten_color(const rnd_color_t *orig, rnd_color_t *dst, double factor)
    the number of on/off segment pairs. It is guaranteed that the line starts
    and ends with an "on" line segment. If cheap is true, allow drawing less
    segments if the line is short */
-void pcb_draw_dashed_line(pcb_draw_info_t *info, pcb_hid_gc_t GC, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned int segs, pcb_bool_t cheap);
+void pcb_draw_dashed_line(pcb_draw_info_t *info, rnd_hid_gc_t GC, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, unsigned int segs, pcb_bool_t cheap);
 
 
 void pcb_draw(void);
@@ -135,14 +135,14 @@ void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *ly, const rnd_r
 /* Same as pcb_draw_layer(), but never draws an implicit outline and ignores
    objects that are not in the subtree of data - useful for drawing a subtree,
    e.g. a subc only */
-void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_rnd_box_t *screen, pcb_data_t *data, pcb_xform_t *xform);
+void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_rnd_box_t *screen, pcb_data_t *data, rnd_xform_t *xform);
 
 /* Composite draw all layer groups matching lyt/purpi/purpose */
-void pcb_draw_groups(pcb_hid_t *hid, pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const rnd_rnd_box_t *screen, const rnd_color_t *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert);
+void pcb_draw_groups(rnd_hid_t *hid, pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const rnd_rnd_box_t *screen, const rnd_color_t *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert);
 
 
 void pcb_erase_obj(int, void *, void *);
-void pcb_draw_pstk_names(pcb_draw_info_t *info, pcb_layergrp_id_t group, const rnd_rnd_box_t *drawn_area);
+void pcb_draw_pstk_names(pcb_draw_info_t *info, rnd_layergrp_id_t group, const rnd_rnd_box_t *drawn_area);
 
 /*#define PCB_BBOX_DEBUG*/
 
@@ -158,7 +158,7 @@ void pcb_draw_pstk_names(pcb_draw_info_t *info, pcb_layergrp_id_t group, const r
 
 
 /* Returns whether lay_id is part of a group that is composite-drawn */
-int pcb_draw_layer_is_comp(pcb_layer_id_t lay_id);
+int pcb_draw_layer_is_comp(rnd_layer_id_t lay_id);
 
 /* Returns whether a group is composite-drawn */
 int pcb_draw_layergrp_is_comp(const pcb_layergrp_t *g);
@@ -170,8 +170,8 @@ void pcb_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double 
 void pcb_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const char *label);
 
 
-void pcb_draw_setup_default_xform_info(pcb_hid_t *hid, pcb_draw_info_t *info);
-void pcb_draw_setup_default_gui_xform(pcb_xform_t *dst);
+void pcb_draw_setup_default_xform_info(rnd_hid_t *hid, pcb_draw_info_t *info);
+void pcb_draw_setup_default_gui_xform(rnd_xform_t *dst);
 
 
 /* Schedule an object to be called again at the end for drawing its labels 

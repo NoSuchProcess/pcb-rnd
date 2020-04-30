@@ -106,7 +106,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 {
 	htsi_t urefdes;
 	htsi_entry_t *re;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	int n;
 	rnd_attribute_t *a;
 	tedax_stackup_t ctx;

@@ -38,7 +38,7 @@ static const char *export_vfs_fuse_cookie = "export_vfs_fuse HID";
 static int pcb_fuse_changed;
 static char fuse_cwd[PCB_PATH_MAX];
 
-static pcb_export_opt_t *export_vfs_fuse_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *export_vfs_fuse_get_export_options(rnd_hid_t *hid, int *n)
 {
 	return 0;
 }
@@ -255,7 +255,7 @@ static void pcb_fuse_destroy(void *private_data)
 
 static char **fuse_argv;
 static int fuse_argc = 0;
-static void export_vfs_fuse_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void export_vfs_fuse_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	static struct fuse_operations oper;
 
@@ -275,7 +275,7 @@ static void export_vfs_fuse_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *option
 		fprintf(stderr, "fuse_main() returned error.\n");
 }
 
-static int export_vfs_fuse_usage(pcb_hid_t *hid, const char *topic)
+static int export_vfs_fuse_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexport_vfs_fuse exporter command line arguments are plain fuse aguments.\n\n");
 	fprintf(stderr, "\nUsage: pcb-rnd [pcb-rnd-options] [-o fuse-options] foo.pcb mountpoint\n\n");
@@ -302,7 +302,7 @@ do { \
 
 static char **fuse_ret_argv;
 static int fuse_ret_argc = 0;
-static int export_vfs_fuse_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int export_vfs_fuse_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	int n, in_argc = *argc;
 	char **in_argv = *argv;
@@ -350,7 +350,7 @@ static int export_vfs_fuse_parse_arguments(pcb_hid_t *hid, int *argc, char ***ar
 	return 0;
 }
 
-pcb_hid_t export_vfs_fuse_hid;
+rnd_hid_t export_vfs_fuse_hid;
 
 int pplg_check_ver_export_vfs_fuse(int ver_needed) { return 0; }
 
@@ -367,11 +367,11 @@ int pplg_init_export_vfs_fuse(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&export_vfs_fuse_hid, 0, sizeof(pcb_hid_t));
+	memset(&export_vfs_fuse_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&export_vfs_fuse_hid);
 
-	export_vfs_fuse_hid.struct_size = sizeof(pcb_hid_t);
+	export_vfs_fuse_hid.struct_size = sizeof(rnd_hid_t);
 	export_vfs_fuse_hid.name = "vfs_fuse";
 	export_vfs_fuse_hid.description = "Handler of FUSE calls, serving board data";
 	export_vfs_fuse_hid.exporter = 1;

@@ -36,13 +36,13 @@
 #include "../src_plugins/lib_hid_common/dlg_comm_m.h"
 #include "plug_io.h"
 
-static void ifb_file_chg_reload_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void ifb_file_chg_reload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pcb_revert_pcb();
 	rnd_actionva(&PCB->hidlib, "InfoBarFileChanged", "close", NULL);
 }
 
-static void ifb_file_chg_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void ifb_file_chg_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	rnd_actionva(&PCB->hidlib, "InfoBarFileChanged", "close", NULL);
 }
@@ -51,9 +51,9 @@ const char pcb_acts_InfoBarFileChanged[] = "InfoBarFileChanged(open|close)\n";
 const char pcb_acth_InfoBarFileChanged[] = "Present the \"file changed\" warning info bar with buttons to reload or cancel";
 fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	static pcb_hid_dad_subdialog_t sub;
+	static rnd_hid_dad_subdialog_t sub;
 	static int active = 0, wlab[2];
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	const char *cmd;
 
 	if (!PCB_HAVE_GUI_ATTR_DLG) {

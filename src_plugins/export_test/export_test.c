@@ -22,7 +22,7 @@
 
 const char *export_test_cookie = "export_test HID";
 
-static pcb_export_opt_t export_test_options[] = {
+static rnd_export_opt_t export_test_options[] = {
 /* %start-doc options "8 export_test Creation"
 @ftable @code
 @item --export_testfile <string>
@@ -37,11 +37,11 @@ Name of the export_test output file. Use stdout if not specified.
 
 #define NUM_OPTIONS (sizeof(export_test_options)/sizeof(export_test_options[0]))
 
-static pcb_hid_attr_val_t export_test_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t export_test_values[NUM_OPTIONS];
 
 static const char *export_test_filename;
 
-static pcb_export_opt_t *export_test_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *export_test_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if ((PCB != NULL)  && (export_test_options[HA_export_testfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &export_test_options[HA_export_testfile], ".export_test");
@@ -56,7 +56,7 @@ static int Printexport_test(void)
 	return 0;
 }
 
-static void export_test_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void export_test_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int i;
 
@@ -77,7 +77,7 @@ TODO(": set some FILE *fp to stdout")
 	Printexport_test();
 }
 
-static int export_test_usage(pcb_hid_t *hid, const char *topic)
+static int export_test_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexport_test exporter command line arguments:\n\n");
 	pcb_hid_usage(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]));
@@ -86,13 +86,13 @@ static int export_test_usage(pcb_hid_t *hid, const char *topic)
 }
 
 
-static int export_test_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int export_test_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]), export_test_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-pcb_hid_t export_test_hid;
+rnd_hid_t export_test_hid;
 
 int pplg_check_ver_export_test(int ver_needed) { return 0; }
 
@@ -104,11 +104,11 @@ int pplg_init_export_test(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&export_test_hid, 0, sizeof(pcb_hid_t));
+	memset(&export_test_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&export_test_hid);
 
-	export_test_hid.struct_size = sizeof(pcb_hid_t);
+	export_test_hid.struct_size = sizeof(rnd_hid_t);
 	export_test_hid.name = "export_test";
 	export_test_hid.description = "Exports a dump of HID calls";
 	export_test_hid.exporter = 1;

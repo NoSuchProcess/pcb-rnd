@@ -21,8 +21,8 @@ void pcb_gtk_tw_layer_vis_update(pcb_gtk_topwin_t *tw);
 
 void pcb_gtk_tw_interface_set_sensitive(pcb_gtk_topwin_t *tw, gboolean sensitive);
 
-int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
-void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub);
+int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
+void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub);
 
 void pcb_gtk_tw_set_title(pcb_gtk_topwin_t *tw, const char *title);
 

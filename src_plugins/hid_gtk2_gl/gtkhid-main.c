@@ -13,11 +13,11 @@
 
 const char *ghid_gl_cookie = "gtk2 hid, gl";
 
-pcb_hid_t gtk2_gl_hid;
+rnd_hid_t gtk2_gl_hid;
 
-extern void ghid_gl_install(pcb_gtk_impl_t *impl, pcb_hid_t *hid);
+extern void ghid_gl_install(pcb_gtk_impl_t *impl, rnd_hid_t *hid);
 
-int gtk2_gl_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+int gtk2_gl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	ghid_glue_common_init(ghid_gl_cookie);
 	ghid_gl_install(&ghidgui->impl, hid);

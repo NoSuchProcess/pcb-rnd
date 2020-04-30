@@ -285,7 +285,7 @@ do { \
 
 pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	pcb_layer_t *layer;
 	pcb_any_obj_t *best = NULL;
 	rnd_coord_t x, y;

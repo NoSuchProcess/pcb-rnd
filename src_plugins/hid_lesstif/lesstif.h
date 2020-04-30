@@ -40,10 +40,10 @@ extern int lesstif_pcbxy_to_winxy(int pcbx, int pcby, int *winx, int *winy);
 
 extern void lesstif_need_idle_proc(void);
 extern void lesstif_show_crosshair(int);
-extern void lesstif_invalidate_all(pcb_hid_t *hid);
+extern void lesstif_invalidate_all(rnd_hid_t *hid);
 extern void lesstif_coords_to_pcb(int, int, rnd_coord_t *, rnd_coord_t *);
 extern void lesstif_get_xy(const char *msg);
-extern void lesstif_update_widget_flags(pcb_hid_t *hid, const char *cookie);
+extern void lesstif_update_widget_flags(rnd_hid_t *hid, const char *cookie);
 extern int lesstif_call_action(const char *, int, char **);
 extern void lesstif_pan_fixup(void);
 extern void lesstif_show_library(void);
@@ -51,9 +51,9 @@ extern void lesstif_show_netlist(void);
 extern Pixel lesstif_parse_color(const rnd_color_t *value);
 extern void lesstif_update_layer_groups();
 extern void lesstif_update_status_line();
-extern void lesstif_attributes_dialog(pcb_hid_t *hid, const char *, rnd_attribute_list_t *);
-void *lesstif_attr_sub_new(Widget parent_box, pcb_hid_attribute_t *attrs, int n_attrs, void *caller_data);
-char *pcb_ltf_fileselect(pcb_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub);
+extern void lesstif_attributes_dialog(rnd_hid_t *hid, const char *, rnd_attribute_list_t *);
+void *lesstif_attr_sub_new(Widget parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data);
+char *pcb_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
 rnd_hidlib_t *ltf_attr_get_dad_hidlib(void *hid_ctx);
 
 extern int pcb_ltf_ok;

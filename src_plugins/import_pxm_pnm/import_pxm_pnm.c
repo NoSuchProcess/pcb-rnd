@@ -64,7 +64,7 @@ while(fgets(line, sizeof(line) - 1, f) != NULL) { \
 	break; \
 }
 
-static int pnm_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
+static int pnm_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 {
 	FILE *f;
 	char *s, line[1024];

@@ -80,18 +80,18 @@ static int ltf_ccache_inited;
 #define MAX_ZOOM_SCALE	10
 #define UUNIT	pcbhl_conf.editor.grid_unit->allow
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
-	pcb_hid_t *me_pointer;
+	rnd_hid_t *me_pointer;
 	Pixel color;
 	rnd_color_t pcolor;
 	int width;
 	pcb_cap_style_t cap;
 	char xor_set;
 	char erase;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
-pcb_hid_t lesstif_hid;
+rnd_hid_t lesstif_hid;
 
 #define CRASH(func) fprintf(stderr, "HID error: pcb called unimplemented GUI function %s\n", func), abort()
 
@@ -175,12 +175,12 @@ static Widget ltf_create_dockbox(Widget parent, pcb_hid_dock_t where, int vert)
 	return ltf_dockbox[where];
 }
 
-static int ltf_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
+static int ltf_dock_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
 {
 	return -1;
 }
 
-static int ltf_dock_enter(pcb_hid_t *hid, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
+static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
 	Widget hvbox;
@@ -247,7 +247,7 @@ static int use_private_colormap = 0;
 static int stdin_listen = 0;
 static char *background_image_file = 0;
 
-pcb_export_opt_t lesstif_attribute_list[] = {
+rnd_export_opt_t lesstif_attribute_list[] = {
 	{"install", "Install private colormap",
 		PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &use_private_colormap},
 #define HA_colormap 0
@@ -286,7 +286,7 @@ static pcb_composite_op_t lesstif_drawing_mode = 0;
 
 static void zoom_max();
 static void zoom_to(double factor, rnd_coord_t x, rnd_coord_t y);
-static void zoom_win(pcb_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, int setch);
+static void zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, int setch);
 static void zoom_by(double factor, rnd_coord_t x, rnd_coord_t y);
 static void Pan(int mode, rnd_coord_t x, rnd_coord_t y);
 
@@ -367,7 +367,7 @@ static const char *cur_clip()
 }
 
 /* Called from the core when it's busy doing something and we need to indicate that to the user.  */
-static void ltf_busy(pcb_hid_t *hid, rnd_bool busy)
+static void ltf_busy(rnd_hid_t *hid, rnd_bool busy)
 {
 	static Cursor busy_cursor = 0;
 	if (!lesstif_active)
@@ -389,7 +389,7 @@ static void ltf_busy(pcb_hid_t *hid, rnd_bool busy)
 
 /* Local actions.  */
 
-static void PointCursor(pcb_hid_t *hid, rnd_bool grabbed)
+static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
 {
 	if (grabbed > 0)
 		over_point = 1;
@@ -402,7 +402,7 @@ extern void LesstifNetlistChanged(rnd_hidlib_t *hidlib, void *user_data, int arg
 extern void LesstifLibraryChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
 
 
-static void ltf_set_hidlib(pcb_hid_t *hid, rnd_hidlib_t *hidlib)
+static void ltf_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 {
 	ltf_hidlib = hidlib;
 	if ((work_area == 0) || (hidlib == NULL))
@@ -544,7 +544,7 @@ static void command_event_handler(Widget w, XtPointer p, XEvent * e, Boolean * c
 }
 
 
-static const char *lesstif_command_entry(pcb_hid_t *hid, const char *ovr, int *cursor)
+static const char *lesstif_command_entry(rnd_hid_t *hid, const char *ovr, int *cursor)
 {
 	if (!cmd_is_active) {
 		if (cursor != NULL)
@@ -569,11 +569,11 @@ static const char *lesstif_command_entry(pcb_hid_t *hid, const char *ovr, int *c
 	return XmTextGetString(m_cmd);
 }
 
-static double ltf_benchmark(pcb_hid_t *hid)
+static double ltf_benchmark(rnd_hid_t *hid)
 {
 	int i = 0;
 	time_t start, end;
-	pcb_hid_expose_ctx_t ctx;
+	rnd_hid_expose_ctx_t ctx;
 	Drawable save_main;
 
 
@@ -606,7 +606,7 @@ static double ltf_benchmark(pcb_hid_t *hid)
  */
 
 typedef struct {
-	const pcb_pixmap_t *pxm;
+	const rnd_pixmap_t *pxm;
 
 	/* cache */
 	int w_scaled, h_scaled;
@@ -772,7 +772,7 @@ static void pcb_ltf_draw_pixmap_(rnd_hidlib_t *hidlib, pcb_ltf_pixmap_t *lpm, rn
 	}
 }
 
-static void pcb_ltf_draw_pixmap(pcb_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, pcb_pixmap_t *pixmap)
+static void pcb_ltf_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_pixmap_t *pixmap)
 {
 	if (pixmap->hid_data == NULL) {
 		pcb_ltf_pixmap_t *lpm = calloc(sizeof(pcb_ltf_pixmap_t), 1);
@@ -784,7 +784,7 @@ static void pcb_ltf_draw_pixmap(pcb_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, 
 }
 
 
-static pcb_pixmap_t ltf_bg_img;
+static rnd_pixmap_t ltf_bg_img;
 static void DrawBackgroundImage()
 {
 	static pcb_ltf_pixmap_t lpm;
@@ -805,10 +805,10 @@ static void LoadBackgroundImage(const char *fn)
 
 /* ---------------------------------------------------------------------- */
 
-static pcb_export_opt_t *lesstif_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *lesstif_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if (n != NULL)
-		*n = sizeof(lesstif_attribute_list) / sizeof(pcb_export_opt_t);
+		*n = sizeof(lesstif_attribute_list) / sizeof(rnd_export_opt_t);
 	return lesstif_attribute_list;
 }
 
@@ -903,7 +903,7 @@ static void zoom_to(double new_zoom, rnd_coord_t x, rnd_coord_t y)
 	lesstif_pan_fixup();
 }
 
-static void zoom_win(pcb_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, int setch)
+static void zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, int setch)
 {
 	rnd_coord_t w = x2 - x1, h = y2 - y1;
 	double new_zoom = w / view_width;
@@ -1396,7 +1396,7 @@ static int lesstif_hid_inited = 0;
 
 #include "mouse.c"
 
-static void lesstif_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	Dimension width, height;
 	Widget menu;
@@ -1558,12 +1558,12 @@ static void lesstif_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	lesstif_end();
 }
 
-static void lesstif_do_exit(pcb_hid_t *hid)
+static void lesstif_do_exit(rnd_hid_t *hid)
 {
 	XtAppSetExitFlag(app_context);
 }
 
-static void lesstif_uninit(pcb_hid_t *hid)
+static void lesstif_uninit(rnd_hid_t *hid)
 {
 	if (lesstif_hid_inited) {
 		lesstif_uninit_menu();
@@ -1572,7 +1572,7 @@ static void lesstif_uninit(pcb_hid_t *hid)
 	}
 }
 
-static void lesstif_iterate(pcb_hid_t *hid)
+static void lesstif_iterate(rnd_hid_t *hid)
 {
 	while (XtAppPending(app_context))
 		XtAppProcessEvent(app_context, XtIMAll);
@@ -1643,7 +1643,7 @@ static void lesstif_err_msg(String name, String type, String class, String dflt,
 	longjmp(lesstif_err_jmp, 1);
 }
 
-static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	Atom close_atom;
 	pcb_hid_attr_node_t *ha;
@@ -1662,7 +1662,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			pcb_export_opt_t *a = ha->opts + i;
+			rnd_export_opt_t *a = ha->opts + i;
 			switch (a->type) {
 			case PCB_HATT_INTEGER:
 			case PCB_HATT_COORD:
@@ -1698,7 +1698,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			pcb_export_opt_t *a = ha->opts + i;
+			rnd_export_opt_t *a = ha->opts + i;
 			XrmOptionDescRec *o = new_options + acount;
 			char *tmpopt, *tmpres;
 			XtResource *r = new_resources + rcount;
@@ -1814,7 +1814,7 @@ static int lesstif_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
 	rcount = 0;
 	for (ha = hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
-			pcb_export_opt_t *a = ha->opts + i;
+			rnd_export_opt_t *a = ha->opts + i;
 			val_union *v = new_values + rcount;
 			switch (a->type) {
 			case PCB_HATT_INTEGER:
@@ -1950,7 +1950,7 @@ static Boolean idle_proc(XtPointer dummy)
 {
 	if (need_redraw) {
 		int mx, my;
-		pcb_hid_expose_ctx_t ctx;
+		rnd_hid_expose_ctx_t ctx;
 
 		pixmap = main_pixmap;
 		mx = view_width;
@@ -2077,7 +2077,7 @@ void lesstif_need_idle_proc()
 	idle_proc_set = 1;
 }
 
-static void lesstif_invalidate_lr(pcb_hid_t *hid, rnd_coord_t l, rnd_coord_t r, rnd_coord_t t, rnd_coord_t b)
+static void lesstif_invalidate_lr(rnd_hid_t *hid, rnd_coord_t l, rnd_coord_t r, rnd_coord_t t, rnd_coord_t b)
 {
 	if (!window)
 		return;
@@ -2086,13 +2086,13 @@ static void lesstif_invalidate_lr(pcb_hid_t *hid, rnd_coord_t l, rnd_coord_t r, 
 	need_idle_proc();
 }
 
-void lesstif_invalidate_all(pcb_hid_t *hid)
+void lesstif_invalidate_all(rnd_hid_t *hid)
 {
 	if (ltf_hidlib != NULL)
 		lesstif_invalidate_lr(hid, 0, ltf_hidlib->size_x, 0, ltf_hidlib->size_y);
 }
 
-static void lesstif_notify_crosshair_change(pcb_hid_t *hid, rnd_bool changes_complete)
+static void lesstif_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_complete)
 {
 	static int invalidate_depth = 0;
 	Pixmap save_pixmap;
@@ -2126,7 +2126,7 @@ static void lesstif_notify_crosshair_change(pcb_hid_t *hid, rnd_bool changes_com
 		invalidate_depth++;
 }
 
-static void lesstif_notify_mark_change(pcb_hid_t *hid, rnd_bool changes_complete)
+static void lesstif_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete)
 {
 	static int invalidate_depth = 0;
 	Pixmap save_pixmap;
@@ -2156,31 +2156,31 @@ static void lesstif_notify_mark_change(pcb_hid_t *hid, rnd_bool changes_complete
 		invalidate_depth++;
 }
 
-static int lesstif_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+static int lesstif_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	/* accept anything and draw */
 	return 1;
 }
 
-static pcb_hid_gc_t lesstif_make_gc(pcb_hid_t *hid)
+static rnd_hid_gc_t lesstif_make_gc(rnd_hid_t *hid)
 {
-	pcb_hid_gc_t rv = (hid_gc_s *) malloc(sizeof(hid_gc_s));
-	memset(rv, 0, sizeof(hid_gc_s));
+	rnd_hid_gc_t rv = (rnd_hid_gc_s *) malloc(sizeof(rnd_hid_gc_s));
+	memset(rv, 0, sizeof(rnd_hid_gc_s));
 	rv->me_pointer = &lesstif_hid;
 	return rv;
 }
 
-static void lesstif_destroy_gc(pcb_hid_gc_t gc)
+static void lesstif_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-static void lesstif_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen)
+static void lesstif_render_burst(rnd_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen)
 {
 	pcb_gui->coord_per_pix = view_zoom;
 }
 
-static void lesstif_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
+static void lesstif_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
 {
 	lesstif_drawing_mode = op;
 
@@ -2241,7 +2241,7 @@ typedef struct {
 	Pixel pix;
 } ltf_color_cache_t;
 
-static void lesstif_set_color(pcb_hid_gc_t gc, const rnd_color_t *pcolor)
+static void lesstif_set_color(rnd_hid_gc_t gc, const rnd_color_t *pcolor)
 {
 	ltf_color_cache_t *cc;
 
@@ -2293,7 +2293,7 @@ static void lesstif_set_color(pcb_hid_gc_t gc, const rnd_color_t *pcolor)
 	}
 }
 
-static void set_gc(pcb_hid_gc_t gc)
+static void set_gc(rnd_hid_gc_t gc)
 {
 	int cap, join, width;
 	if (gc->me_pointer != &lesstif_hid) {
@@ -2338,24 +2338,24 @@ static void set_gc(pcb_hid_gc_t gc)
 	}
 }
 
-static void lesstif_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+static void lesstif_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void lesstif_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+static void lesstif_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
-static void lesstif_set_draw_xor(pcb_hid_gc_t gc, int xor_set)
+static void lesstif_set_draw_xor(rnd_hid_gc_t gc, int xor_set)
 {
 	gc->xor_set = xor_set;
 }
 
 #define ISORT(a,b) if (a>b) { a^=b; b^=a; a^=b; }
 
-static void lesstif_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void lesstif_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double dx1, dy1, dx2, dy2;
 	int vw = Vw(gc->width);
@@ -2395,7 +2395,7 @@ static void lesstif_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 	}
 }
 
-static void lesstif_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void lesstif_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	if (conf_core.editor.thin_draw && gc->erase)
 		return;
@@ -2432,7 +2432,7 @@ static void lesstif_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 		XDrawArc(display, mask_bitmap, mask_gc, cx, cy, width * 2, height * 2, (start_angle + 180) * 64, delta_angle * 64);
 }
 
-static void lesstif_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void lesstif_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int vw = Vw(gc->width);
 	if (conf_core.editor.thin_draw && gc->erase)
@@ -2465,7 +2465,7 @@ static void lesstif_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 		XDrawRectangle(display, mask_bitmap, mask_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
-static void lesstif_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void lesstif_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	if ((conf_core.editor.thin_draw || conf_core.editor.thin_draw_poly) && gc->erase)
 		return;
@@ -2489,7 +2489,7 @@ static void lesstif_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy,
 }
 
 /* Intentaional code duplication for performance */
-static void lesstif_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y)
+static void lesstif_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y)
 {
 	static XPoint *p = 0;
 	static int maxp = 0;
@@ -2517,7 +2517,7 @@ static void lesstif_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t * x,
 }
 
 /* Intentaional code duplication for performance */
-static void lesstif_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void lesstif_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	static XPoint *p = 0;
 	static int maxp = 0;
@@ -2542,7 +2542,7 @@ static void lesstif_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t
 		XFillPolygon(display, mask_bitmap, mask_gc, p, n_coords, Complex, CoordModeOrigin);
 }
 
-static void lesstif_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void lesstif_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	int vw = Vw(gc->width);
 	if (conf_core.editor.thin_draw && gc->erase)
@@ -2575,29 +2575,29 @@ static void lesstif_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 		XFillRectangle(display, mask_bitmap, mask_gc, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }
 
-static void lesstif_calibrate(pcb_hid_t *hid, double xval, double yval)
+static void lesstif_calibrate(rnd_hid_t *hid, double xval, double yval)
 {
 	CRASH("lesstif_calibrate");
 }
 
-static int lesstif_shift_is_pressed(pcb_hid_t *hid)
+static int lesstif_shift_is_pressed(rnd_hid_t *hid)
 {
 	return shift_pressed;
 }
 
-static int lesstif_control_is_pressed(pcb_hid_t *hid)
+static int lesstif_control_is_pressed(rnd_hid_t *hid)
 {
 	return ctrl_pressed;
 }
 
-static int lesstif_mod1_is_pressed(pcb_hid_t *hid)
+static int lesstif_mod1_is_pressed(rnd_hid_t *hid)
 {
 	return alt_pressed;
 }
 
-extern void lesstif_get_coords(pcb_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
+extern void lesstif_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 
-static void lesstif_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void lesstif_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 	if (crosshair_x != x || crosshair_y != y) {
 		lesstif_show_crosshair(0);
@@ -2652,7 +2652,7 @@ static void lesstif_timer_cb(XtPointer * p, XtIntervalId * id)
 	free(ts);
 }
 
-static pcb_hidval_t lesstif_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+static pcb_hidval_t lesstif_add_timer(rnd_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
 {
 	TimerStruct *t;
 	pcb_hidval_t rv;
@@ -2664,7 +2664,7 @@ static pcb_hidval_t lesstif_add_timer(pcb_hid_t *hid, void (*func)(pcb_hidval_t 
 	return rv;
 }
 
-static void lesstif_stop_timer(pcb_hid_t *hid, pcb_hidval_t hv)
+static void lesstif_stop_timer(rnd_hid_t *hid, pcb_hidval_t hv)
 {
 	TimerStruct *ts = (TimerStruct *) hv.ptr;
 	XtRemoveTimeOut(ts->id);
@@ -2679,7 +2679,7 @@ typedef struct {
 	XtInputId id;
 } WatchStruct;
 
-void lesstif_unwatch_file(pcb_hid_t *hid, pcb_hidval_t data)
+void lesstif_unwatch_file(rnd_hid_t *hid, pcb_hidval_t data)
 {
 	WatchStruct *watch = (WatchStruct *) data.ptr;
 	XtRemoveInput(watch->id);
@@ -2716,7 +2716,7 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId *id)
 	return;
 }
 
-pcb_hidval_t lesstif_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
+pcb_hidval_t lesstif_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
 {
 	WatchStruct *watch = (WatchStruct *)malloc(sizeof(WatchStruct));
 	pcb_hidval_t ret;
@@ -2740,28 +2740,28 @@ pcb_hidval_t lesstif_watch_file(pcb_hid_t *hid, int fd, unsigned int condition, 
 	return ret;
 }
 
-extern void *lesstif_attr_dlg_new(pcb_hid_t *hid, const char *id, pcb_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+extern void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 
 extern int lesstif_attr_dlg_run(void *hid_ctx);
 extern void lesstif_attr_dlg_raise(void *hid_ctx);
 extern void lesstif_attr_dlg_close(void *hid_ctx);
 extern void lesstif_attr_dlg_free(void *hid_ctx);
-extern void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const pcb_hid_attr_val_t *val);
+extern void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val);
 extern int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled);
 extern int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide);
-extern int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
+extern int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
 extern void lesstif_attr_dlg_set_help(void *hid_ctx, int idx, const char *val);
 
 
 #include "wt_preview.c"
 
-static void lesstif_beep(pcb_hid_t *hid)
+static void lesstif_beep(rnd_hid_t *hid)
 {
 	putchar(7);
 	fflush(stdout);
 }
 
-static int lesstif_usage(pcb_hid_t *hid, const char *topic)
+static int lesstif_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nLesstif GUI command line arguments:\n\n");
 	pcb_hid_usage(lesstif_attribute_list, sizeof(lesstif_attribute_list) / sizeof(lesstif_attribute_list[0]));
@@ -2804,7 +2804,7 @@ static void lesstif_conf_regs(const char *cookie)
 
 #include <Xm/CutPaste.h>
 
-static int ltf_clip_set(pcb_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len)
+static int ltf_clip_set(rnd_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len)
 {
 	static long cnt = 0;
 	long item_id, data_id;
@@ -2827,7 +2827,7 @@ static int ltf_clip_set(pcb_hid_t *hid, pcb_hid_clipfmt_t format, const void *da
 	return 0;
 }
 
-static int ltf_clip_get(pcb_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t *len)
+static int ltf_clip_get(rnd_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t *len)
 {
 	int res;
 	gds_t tmp;
@@ -2857,17 +2857,17 @@ static int ltf_clip_get(pcb_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, 
 	return 0;
 }
 
-static void ltf_clip_free(pcb_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len)
+static void ltf_clip_free(rnd_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len)
 {
 	free(data);
 }
 
-static void ltf_zoom_win(pcb_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair)
+static void ltf_zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_bool set_crosshair)
 {
 	zoom_win(hid, x1, y1, x2, y2, 1);
 }
 
-static void ltf_zoom(pcb_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative)
+static void ltf_zoom(rnd_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y, double factor, int relative)
 {
 	if (relative)
 		zoom_by(factor, Vx(center_x), Vy(center_y));
@@ -2875,7 +2875,7 @@ static void ltf_zoom(pcb_hid_t *hid, rnd_coord_t center_x, rnd_coord_t center_y,
 		zoom_to(factor, Vx(center_x), Vy(center_y));
 }
 
-static void ltf_pan(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative)
+static void ltf_pan(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative)
 {
 	if (relative) {
 		view_left_x += x;
@@ -2891,13 +2891,13 @@ static void ltf_pan(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int relative)
 	}
 }
 
-static void ltf_pan_mode(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode)
+static void ltf_pan_mode(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode)
 {
 	Pan(mode, Vx(x), Vy(y));
 }
 
 
-static void ltf_view_get(pcb_hid_t *hid, rnd_rnd_box_t *viewbox)
+static void ltf_view_get(rnd_hid_t *hid, rnd_rnd_box_t *viewbox)
 {
 	viewbox->X1 = view_left_x;
 	viewbox->Y1 = view_top_y;
@@ -2905,7 +2905,7 @@ static void ltf_view_get(pcb_hid_t *hid, rnd_rnd_box_t *viewbox)
 	viewbox->Y2 = rnd_round(view_top_y + view_height * view_zoom);
 }
 
-static void ltf_open_command(pcb_hid_t *hid)
+static void ltf_open_command(rnd_hid_t *hid)
 {
 	pcb_clihist_init();
 	pcb_clihist_reset();
@@ -2915,18 +2915,18 @@ static void ltf_open_command(pcb_hid_t *hid)
 	cmd_is_active = 1;
 }
 
-static void ltf_set_top_title(pcb_hid_t *hid, const char *title)
+static void ltf_set_top_title(rnd_hid_t *hid, const char *title)
 {
 	stdarg_n = 0;
 	stdarg(XmNtitle, title);
 	XtSetValues(appwidget, stdarg_args, stdarg_n);
 }
 
-void lesstif_create_menu(pcb_hid_t *hid, const char *menu, const pcb_menu_prop_t *props);
-int lesstif_remove_menu(pcb_hid_t *hid, const char *menu);
-int lesstif_remove_menu_node(pcb_hid_t *hid, lht_node_t *node);
-rnd_hid_cfg_t *lesstif_get_menu_cfg(pcb_hid_t *hid);
-int ltf_open_popup(pcb_hid_t *hid, const char *menupath);
+void lesstif_create_menu(rnd_hid_t *hid, const char *menu, const pcb_menu_prop_t *props);
+int lesstif_remove_menu(rnd_hid_t *hid, const char *menu);
+int lesstif_remove_menu_node(rnd_hid_t *hid, lht_node_t *node);
+rnd_hid_cfg_t *lesstif_get_menu_cfg(rnd_hid_t *hid);
+int ltf_open_popup(rnd_hid_t *hid, const char *menupath);
 
 int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }
 
@@ -2946,11 +2946,11 @@ int pplg_init_hid_lesstif(void)
 	memset(&ccb, 0, sizeof(ccb));
 	ccb.val_change_post = lesstif_globconf_change_post;
 
-	memset(&lesstif_hid, 0, sizeof(pcb_hid_t));
+	memset(&lesstif_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&lesstif_hid);
 
-	lesstif_hid.struct_size = sizeof(pcb_hid_t);
+	lesstif_hid.struct_size = sizeof(rnd_hid_t);
 	lesstif_hid.name = "lesstif";
 	lesstif_hid.description = "LessTif - a Motif clone for X/Unix";
 	lesstif_hid.gui = 1;

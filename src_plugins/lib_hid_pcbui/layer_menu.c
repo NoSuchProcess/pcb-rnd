@@ -57,7 +57,7 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 	pcb_menu_prop_t props;
 	char act[256], chk[256];
 	int idx, max_ml, sect;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	const pcb_menu_layers_t *ml;
 
 	memset(&props, 0, sizeof(props));
@@ -137,7 +137,7 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 				continue;
 
 			for(n = g->len-1; n >= 0; n--) {
-				pcb_layer_id_t lid = g->lid[n];
+				rnd_layer_id_t lid = g->lid[n];
 				pcb_layer_t *l = pcb_get_layer(PCB->Data, lid);
 				pcb_layer_type_t lyt = pcb_layer_flags_(l);
 
@@ -169,7 +169,7 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 	*end = '\0';
 }
 
-static void custom_layer_attr_key(pcb_layer_t *l, pcb_layer_id_t lid, const char *attrname, const char *menu_prefix, const char *action_prefix, pcb_menu_prop_t *keyprops, char *path, char *end, int len_avail)
+static void custom_layer_attr_key(pcb_layer_t *l, rnd_layer_id_t lid, const char *attrname, const char *menu_prefix, const char *action_prefix, pcb_menu_prop_t *keyprops, char *path, char *end, int len_avail)
 {
 	char *key = rnd_attribute_get(&l->Attributes, attrname);
 	if (key != NULL) {
@@ -188,7 +188,7 @@ static void layer_install_menu_key(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *n
 	int len_avail = 125;
 	char *end = path + plen;
 	char act[256];
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	pcb_layer_t *l;
 	pcb_menu_prop_t keyprops;
 

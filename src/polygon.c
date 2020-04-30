@@ -352,7 +352,7 @@ rnd_polyarea_t *pcb_poly_from_box_bloated(rnd_rnd_box_t * box, rnd_coord_t bloat
 static int SubtractPadstack(pcb_data_t *d, pcb_pstk_t *ps, pcb_layer_t *l, pcb_poly_t *p)
 {
 	rnd_polyarea_t *np;
-	pcb_layer_id_t i;
+	rnd_layer_id_t i;
 
 	/* ps->Clearance == 0 doesn't mean no clearance because of the per shape clearances */
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps))
@@ -490,7 +490,7 @@ static pcb_r_dir_t padstack_sub_callback(const rnd_rnd_box_t *b, void *cl)
 	pcb_poly_t *polygon;
 	rnd_polyarea_t *np;
 	rnd_polyarea_t *merged;
-	pcb_layer_id_t i;
+	rnd_layer_id_t i;
 
 	/* don't subtract the object that was put back! */
 	if (b == info->other)
@@ -758,7 +758,7 @@ static rnd_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t
 	int seen;
 	rnd_rnd_box_t region;
 	struct cpInfo info;
-	pcb_layergrp_id_t group;
+	rnd_layergrp_id_t group;
 	unsigned int gflg;
 	pcb_layer_type_t lf;
 	int old_noop;

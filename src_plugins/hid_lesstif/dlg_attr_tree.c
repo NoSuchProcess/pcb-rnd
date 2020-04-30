@@ -4,7 +4,7 @@
 
 typedef struct {
 	lesstif_attr_dlg_t *ctx;
-	pcb_hid_attribute_t *attr;
+	rnd_hid_attribute_t *attr;
 	gdl_list_t model;
 	Widget w;
 	pcb_hid_tree_t *ht;
@@ -94,7 +94,7 @@ static void ltf_tt_insert_row(ltf_tree_t *lt, pcb_hid_row_t *new_row)
 
 extern void xm_extent_prediction(XmTreeTableWidget w);
 
-static void ltf_tree_insert_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row)
+static void ltf_tree_insert_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *new_row)
 {
 	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
@@ -104,7 +104,7 @@ static void ltf_tree_insert_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 	REDRAW();
 }
 
-static void ltf_tree_modify_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col)
+static void ltf_tree_modify_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int col)
 {
 	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
@@ -127,7 +127,7 @@ static void cursor_changed(ltf_tree_t *lt)
 		ht->user_selected_cb(lt->attr, lt->ctx, c_row);
 }
 
-static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
+static void ltf_tree_remove_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
@@ -148,7 +148,7 @@ static void ltf_tree_remove_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb
 		cursor_changed(lt);
 }
 
-static void ltf_tree_free_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
+static void ltf_tree_free_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
@@ -164,7 +164,7 @@ static void ltf_tree_free_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_h
 	ht->hid_wdata = NULL;
 }
 
-static pcb_hid_row_t *ltf_tree_get_selected_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
+static pcb_hid_row_t *ltf_tree_get_selected_cb(rnd_hid_attribute_t *attrib, void *hid_wdata)
 {
 	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
@@ -229,7 +229,7 @@ static void ltf_tt_jumprel(ltf_tree_t *lt, int dir)
 		cursor_changed(lt);
 }
 
-static void ltf_tree_jumpto_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
+static void ltf_tree_jumpto_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
@@ -271,7 +271,7 @@ static void ltf_tree_expcoll(ltf_tree_t *lt, tt_entry_t *e, int expanded)
 
 static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 {
-	pcb_hid_attribute_t *attr = &ctx->attrs[idx];
+	rnd_hid_attribute_t *attr = &ctx->attrs[idx];
 	pcb_hid_tree_t *ht = attr->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
 	pcb_hid_row_t *r, *row;
@@ -307,7 +307,7 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 	ltf_tt_jumpto(lt, row->hid_data, 1); /* implies a REDRAW() */
 }
 
-static void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
+static void ltf_tree_expcoll_cb(rnd_hid_attribute_t *attrib, void *hid_wdata, pcb_hid_row_t *row, int expanded)
 {
 	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
@@ -315,7 +315,7 @@ static void ltf_tree_expcoll_cb(pcb_hid_attribute_t *attrib, void *hid_wdata, pc
 	REDRAW();
 }
 
-static void ltf_tree_update_hide_cb(pcb_hid_attribute_t *attrib, void *hid_wdata)
+static void ltf_tree_update_hide_cb(rnd_hid_attribute_t *attrib, void *hid_wdata)
 {
 	pcb_hid_tree_t *ht = attrib->wdata;
 	ltf_tree_t *lt = ht->hid_wdata;
@@ -397,7 +397,7 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 	}
 }
 
-static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
 	pcb_hid_tree_t *ht = attr->wdata;
 	ltf_tree_t *lt = calloc(sizeof(ltf_tree_t), 1);
@@ -433,7 +433,7 @@ static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_a
 	return table;
 }
 
-static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr)
+static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
 	Widget w;
 

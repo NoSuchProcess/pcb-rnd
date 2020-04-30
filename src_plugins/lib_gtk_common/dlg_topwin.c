@@ -63,7 +63,7 @@
 #include "glue_common.h"
 
 /*** docking code (dynamic parts) ***/
-static int pcb_gtk_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
+static int pcb_gtk_dock_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
 {
 	return -1;
 }
@@ -78,7 +78,7 @@ typedef struct {
 GdkColor clr_orange = {0,  0xffff, 0xaaaa, 0x3333};
 
 static GdkColor *pcb_dock_color[PCB_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
-int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
+int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
 	GtkWidget *hvbox;
@@ -128,7 +128,7 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub, pc
 	return 0;
 }
 
-void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, pcb_hid_dad_subdialog_t *sub)
+void pcb_gtk_tw_dock_leave(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub)
 {
 	docked_t *docked = sub->parent_ctx;
 	gtk_widget_destroy(docked->frame);

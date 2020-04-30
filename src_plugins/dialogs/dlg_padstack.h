@@ -4,7 +4,7 @@ typedef struct pse_s pse_t;
 struct pse_s {
 	/* caller conf */
 	int disable_instance_tab, gen_shape_in_place;
-	pcb_hid_attribute_t *attrs;
+	rnd_hid_attribute_t *attrs;
 	pcb_board_t *pcb;
 	pcb_data_t *data; /* parent data where the proto is sitting; might be a subc */
 	pcb_pstk_t *ps;
@@ -33,7 +33,7 @@ struct pse_s {
 	/* sub-dialog: shape change */
 	void *parent_hid_ctx;
 	int editing_shape; /* index of the shape being edited */
-	pcb_hid_attribute_t *shape_chg;
+	rnd_hid_attribute_t *shape_chg;
 	int text_shape, del, derive, hshadow;
 	int copy_do, copy_from;
 	int shrink, amount, grow;

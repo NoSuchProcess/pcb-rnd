@@ -220,7 +220,7 @@ static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_lay
 static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp, int polarity)
 {
 	int has_otl;
-	pcb_layergrp_id_t i;
+	rnd_layergrp_id_t i;
 	pcb_layergrp_t *g;
 
 	result->grp = grp;
@@ -239,7 +239,7 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 		pcb_arc_t *arc;
 		rnd_rtree_it_t it;
 		rnd_rnd_box_t otlbb;
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 		
 		otlbb.X1 = otlbb.Y1 = PCB_MAX_COORD;
 		otlbb.X2 = otlbb.Y2 = -PCB_MAX_COORD;

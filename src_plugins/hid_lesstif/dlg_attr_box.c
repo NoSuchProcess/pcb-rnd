@@ -162,7 +162,7 @@ static void tabbed_destroy_cb(Widget tabbed, void *v, void *cbs)
 	XtVaSetValues(tabbed, XmNuserData, NULL, NULL);
 }
 
-static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, pcb_hid_attribute_t *attr, int i)
+static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr, int i)
 {
 	Widget wtop, wtab, wframe, t;
 	int res, add_top = 0, numtabs;

@@ -119,7 +119,7 @@ void pcb_loop_layers(pcb_board_t *pcb, void *ctx, pcb_layer_cb_t lacb, pcb_line_
 		}
 		else {
 			pcb_layer_it_t it;
-			pcb_layer_id_t lid;
+			rnd_layer_id_t lid;
 			for(lid = pcb_layer_first_all(&pcb->LayerGroups, &it); lid != -1; lid = pcb_layer_next(&it)) {
 				pcb_layer_t *layer = pcb->Data->Layer + lid;
 				pcb_loop_layer(pcb, layer, ctx, lacb, lcb, acb, tcb, pocb, gcb);
@@ -335,14 +335,14 @@ rnd_rnd_box_t *pcb_data_bbox_naked(rnd_rnd_box_t *out, pcb_data_t *Data, rnd_boo
 
 void pcb_data_set_layer_parents(pcb_data_t *data)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 	for(n = 0; n < PCB_MAX_LAYER; n++)
 		pcb_layer_setup(&data->Layer[n], data);
 }
 
 void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rtrees)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 	for(n = 0; n < pcb->Data->LayerN; n++) {
 		pcb_layer_real2bound(&data->Layer[n], &pcb->Data->Layer[n], share_rtrees);
 		data->Layer[n].parent.data = data;
@@ -354,7 +354,7 @@ void pcb_data_bind_board_layers(pcb_board_t *pcb, pcb_data_t *data, int share_rt
 
 void pcb_data_make_layers_bound(pcb_board_t *pcb4layer_groups, pcb_data_t *data)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 	for(n = 0; n < data->LayerN; n++) {
 		pcb_layer_type_t lyt = pcb_layergrp_flags(pcb4layer_groups, data->Layer[n].meta.real.grp);
 		memset(&data->Layer[n].meta.bound, 0, sizeof(data->Layer[n].meta.bound));
@@ -368,7 +368,7 @@ void pcb_data_make_layers_bound(pcb_board_t *pcb4layer_groups, pcb_data_t *data)
 
 void pcb_data_unbind_layers(pcb_data_t *data)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 	for(n = 0; n < data->LayerN; n++)
 		data->Layer[n].meta.bound.real = NULL;
 }
@@ -687,7 +687,7 @@ pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const rnd_r
 						 pcb_r_dir_t (*rectangle_in_region) (const rnd_rnd_box_t *box, void *cl),
 						 void *closure, int *num_found, rnd_bool vis_only)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	pcb_r_dir_t res = 0;
 
 	if (!vis_only || PCB->RatOn)

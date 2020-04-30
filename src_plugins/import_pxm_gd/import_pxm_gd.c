@@ -39,7 +39,7 @@
 
 static const char *import_pxm_gd_cookie = "import_pxm_gd";
 
-static int gd_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn, gdImagePtr (*loader)(FILE *f))
+static int gd_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn, gdImagePtr (*loader)(FILE *f))
 {
 	int x, y;
 	gdImagePtr gdi;
@@ -88,7 +88,7 @@ static int gd_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn, gdIm
 }
 
 #ifdef RND_HAVE_GDIMAGEPNG
-static int gd_png_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
+static int gd_png_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 {
 	return gd_load(hidlib, pxm, fn, gdImageCreateFromPng);
 }
@@ -100,7 +100,7 @@ static const pcb_pixmap_import_t pxm_gd_png_imp = {
 #endif
 
 #ifdef RND_HAVE_GDIMAGEJPEG
-static int gd_jpg_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
+static int gd_jpg_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 {
 	return gd_load(hidlib, pxm, fn, gdImageCreateFromJpeg);
 }
@@ -112,7 +112,7 @@ static const pcb_pixmap_import_t pxm_gd_jpg_imp = {
 #endif
 
 #ifdef RND_HAVE_GDIMAGEGIF
-static int gd_gif_load(rnd_hidlib_t *hidlib, pcb_pixmap_t *pxm, const char *fn)
+static int gd_gif_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 {
 	return gd_load(hidlib, pxm, fn, gdImageCreateFromGif);
 }

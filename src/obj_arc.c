@@ -433,7 +433,7 @@ static const uundo_oper_t undo_arc_geo = {
 void *pcb_arcop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 {
 	pcb_arc_t *a;
-	pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, Layer);
+	rnd_layer_id_t lid = pcb_layer_id(ctx->buffer.src, Layer);
 	pcb_layer_t *layer;
 
 	/* the buffer may not have the specified layer, e.g. on loose subc subc-aux layer */
@@ -457,7 +457,7 @@ void *pcb_arcop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_arc_t *arc
 
 	assert(arc->parent_type == PCB_PARENT_LAYER);
 	if ((dstly == NULL) || (dstly == srcly)) { /* auto layer in dst */
-		pcb_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
+		rnd_layer_id_t lid = pcb_layer_id(ctx->buffer.src, srcly);
 		if (lid < 0) {
 			rnd_message(RND_MSG_ERROR, "Internal error: can't resolve source layer ID in pcb_arcop_move_buffer\n");
 			return NULL;

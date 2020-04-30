@@ -56,7 +56,7 @@ static fgw_error_t pcb_act_ReadGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int cmd, fld;
 	char *cmds, *flds;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
 	pcb_layer_type_t lyt;
 	long idx;

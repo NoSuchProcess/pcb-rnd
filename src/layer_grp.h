@@ -40,7 +40,7 @@
 struct pcb_layergrp_s {
 	PCB_ANY_OBJ_FIELDS;
 	rnd_cardinal_t len;                    /* number of layer IDs in use */
-	pcb_layer_id_t lid[PCB_MAX_LAYER];     /* lid=layer ID */
+	rnd_layer_id_t lid[PCB_MAX_LAYER];     /* lid=layer ID */
 	char *name;                            /* name of the physical layer (independent of the name of the layer groups) */
 
 	pcb_layer_type_t ltype;
@@ -65,7 +65,7 @@ struct pcb_layer_stack_s {
 	pcb_layergrp_t grp[PCB_MAX_LAYERGRP];
 	struct { /* cache copper groups from top to bottom for fast padstack ("bbvia") lookup */
 		int copper_len, copper_alloced;
-		pcb_layergrp_id_t *copper;
+		rnd_layergrp_id_t *copper;
 		unsigned copper_valid:1; /* whether the cache is valid */
 	} cache;
 };
@@ -74,87 +74,87 @@ struct pcb_layer_stack_s {
 void pcb_layergroup_free_stack(pcb_layer_stack_t *st);
 
 /* Return the layer group for an id, or NULL on error (range check) */
-pcb_layergrp_t *pcb_get_layergrp(pcb_board_t *pcb, pcb_layergrp_id_t gid);
+pcb_layergrp_t *pcb_get_layergrp(pcb_board_t *pcb, rnd_layergrp_id_t gid);
 
 /* Return the gid if grp is in the stackup of pcb (else return -1) */
-pcb_layergrp_id_t pcb_layergrp_id(const pcb_board_t *pcb, const pcb_layergrp_t *grp);
+rnd_layergrp_id_t pcb_layergrp_id(const pcb_board_t *pcb, const pcb_layergrp_t *grp);
 
 /* Free a layer group (don't free the layers but detach them) */
-int pcb_layergrp_free(pcb_board_t *pcb, pcb_layergrp_id_t id);
+int pcb_layergrp_free(pcb_board_t *pcb, rnd_layergrp_id_t id);
 
 /* lookup the group to which a layer belongs to returns -1 if no group is found */
-pcb_layergrp_id_t pcb_layer_get_group(pcb_board_t *pcb, pcb_layer_id_t Layer);
-pcb_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
+rnd_layergrp_id_t pcb_layer_get_group(pcb_board_t *pcb, rnd_layer_id_t Layer);
+rnd_layergrp_id_t pcb_layer_get_group_(pcb_layer_t *Layer);
 
 /* Returns group actually moved to (i.e. either group or previous) */
-pcb_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, pcb_layer_id_t layer, pcb_layergrp_id_t group);
+rnd_layergrp_id_t pcb_layer_move_to_group(pcb_board_t *pcb, rnd_layer_id_t layer, rnd_layergrp_id_t group);
 
 /* Returns pcb_true if all layers in a group are empty */
-rnd_bool pcb_layergrp_is_empty(pcb_board_t *pcb, pcb_layergrp_id_t lgrp);
-rnd_bool pcb_layergrp_is_pure_empty(pcb_board_t *pcb, pcb_layergrp_id_t num);
+rnd_bool pcb_layergrp_is_empty(pcb_board_t *pcb, rnd_layergrp_id_t lgrp);
+rnd_bool pcb_layergrp_is_pure_empty(pcb_board_t *pcb, rnd_layergrp_id_t num);
 
 /* call the gui to set a layer group */
-int pcb_layer_gui_set_layer(pcb_layergrp_id_t gid, const pcb_layergrp_t *grp, int is_empty, pcb_xform_t **xform);
-int pcb_layer_gui_set_glayer(pcb_board_t *pcb, pcb_layergrp_id_t grp, int is_empty, pcb_xform_t **xform);
+int pcb_layer_gui_set_layer(rnd_layergrp_id_t gid, const pcb_layergrp_t *grp, int is_empty, rnd_xform_t **xform);
+int pcb_layer_gui_set_glayer(pcb_board_t *pcb, rnd_layergrp_id_t grp, int is_empty, rnd_xform_t **xform);
 
 /* returns a bitfield of pcb_layer_type_t; returns 0 if layer_idx is invalid. */
-unsigned int pcb_layergrp_flags(const pcb_board_t *pcb, pcb_layergrp_id_t group_idx);
-const char *pcb_layergrp_name(pcb_board_t *pcb, pcb_layergrp_id_t gid);
+unsigned int pcb_layergrp_flags(const pcb_board_t *pcb, rnd_layergrp_id_t group_idx);
+const char *pcb_layergrp_name(pcb_board_t *pcb, rnd_layergrp_id_t gid);
 
 /* Same as pcb_layer_list but lists layer groups. A group is matching
    if any layer in that group matches mask. */
-int pcb_layergrp_list(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
-int pcb_layergrp_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len, int purpi, const char *purpose);
-int pcb_layergrp_list_any(const pcb_board_t *pcb, pcb_layer_type_t mask, pcb_layergrp_id_t *res, int res_len);
+int pcb_layergrp_list(const pcb_board_t *pcb, pcb_layer_type_t mask, rnd_layergrp_id_t *res, int res_len);
+int pcb_layergrp_listp(const pcb_board_t *pcb, pcb_layer_type_t mask, rnd_layergrp_id_t *res, int res_len, int purpi, const char *purpose);
+int pcb_layergrp_list_any(const pcb_board_t *pcb, pcb_layer_type_t mask, rnd_layergrp_id_t *res, int res_len);
 
 /* Put a layer in a group (the layer should not be in any other group);
    returns 0 on success */
-int pcb_layer_add_in_group(pcb_board_t *pcb, pcb_layer_id_t layer_id, pcb_layergrp_id_t group_id);
-int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layergrp_id_t group_id, pcb_layer_id_t layer_id);
+int pcb_layer_add_in_group(pcb_board_t *pcb, rnd_layer_id_t layer_id, rnd_layergrp_id_t group_id);
+int pcb_layer_add_in_group_(pcb_board_t *pcb, pcb_layergrp_t *grp, rnd_layergrp_id_t group_id, rnd_layer_id_t layer_id);
 
 /* Remove a layer group; if del_layers is zero, layers are kept but detached
    (.grp = -1), else layers are deleted too */
-int pcb_layergrp_del(pcb_board_t *pcb, pcb_layergrp_id_t gid, int del_layers, rnd_bool undoable);
+int pcb_layergrp_del(pcb_board_t *pcb, rnd_layergrp_id_t gid, int del_layers, rnd_bool undoable);
 
 /* Remove a layer from a group */
-int pcb_layergrp_del_layer(pcb_board_t *pcb, pcb_layergrp_id_t gid, pcb_layer_id_t lid);
+int pcb_layergrp_del_layer(pcb_board_t *pcb, rnd_layergrp_id_t gid, rnd_layer_id_t lid);
 
 /* Duplicate a layer group (with no layers); if auto_substrate is set, insert
    a substrate layer automatically if needed */
-pcb_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, pcb_layergrp_id_t gid, int auto_substrate, rnd_bool undoable);
+rnd_layergrp_id_t pcb_layergrp_dup(pcb_board_t *pcb, rnd_layergrp_id_t gid, int auto_substrate, rnd_bool undoable);
 
 /* Move gfrom to to_before and shift the stack as necessary. Return -1 on range error */
-int pcb_layergrp_move(pcb_board_t *pcb, pcb_layergrp_id_t gfrom, pcb_layergrp_id_t to_before);
+int pcb_layergrp_move(pcb_board_t *pcb, rnd_layergrp_id_t gfrom, rnd_layergrp_id_t to_before);
 
 /* Move src onto dst, not shifting the stack, free()'ing and overwriting dst, leaving a gap (0'd slot) at src */
-int pcb_layergrp_move_onto(pcb_board_t *pcb, pcb_layergrp_id_t dst, pcb_layergrp_id_t src);
+int pcb_layergrp_move_onto(pcb_board_t *pcb, rnd_layergrp_id_t dst, rnd_layergrp_id_t src);
 
 /* Set up the administrative fields (type, parent) of a group */
 void pcb_layergrp_setup(pcb_layergrp_t *g, pcb_board_t *parent);
 
 
 /* Insert a new layer group in the layer stack after the specified group */
-pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, pcb_layergrp_id_t where);
+pcb_layergrp_t *pcb_layergrp_insert_after(pcb_board_t *pcb, rnd_layergrp_id_t where);
 
 /* Move lid 1 step towards the front (delta=-1) or end (delta=+1) of the
    layer list of the group. Return 0 on success (even when already reached
    the end of the list) or -1 on error.
    This operation is always undoable. */
-int pcb_layergrp_step_layer(pcb_board_t *pcb, pcb_layergrp_t *grp, pcb_layer_id_t lid, int delta);
+int pcb_layergrp_step_layer(pcb_board_t *pcb, pcb_layergrp_t *grp, rnd_layer_id_t lid, int delta);
 
 /* Return the array index of lid within the grp's lid list or -1 if not on the list */
-int pcb_layergrp_index_in_grp(pcb_layergrp_t *grp, pcb_layer_id_t lid);
+int pcb_layergrp_index_in_grp(pcb_layergrp_t *grp, rnd_layer_id_t lid);
 
 /* Calculate the distance between gid1 and gid2 in the stack, in number of
    layer groups matching mask. The result is placed in *diff. Returns 0 on success.
    Typical use case: gid1 is an internal copper layer, gid2 is the top copper layer,
    mask is PCB_LYT_COPPER -> *diff is the copper index of the internal layer from top */
-int pcb_layergrp_dist(pcb_board_t *pcb, pcb_layergrp_id_t gid1, pcb_layergrp_id_t gid2, pcb_layer_type_t mask, int *diff);
+int pcb_layergrp_dist(pcb_board_t *pcb, rnd_layergrp_id_t gid1, rnd_layergrp_id_t gid2, pcb_layer_type_t mask, int *diff);
 
 /* walk the given amount steps on the stack among layer groups matching mask.
    A negative step goes upward.
    Typical use: "return the 2nd copper layer below this one" */
-pcb_layergrp_id_t pcb_layergrp_step(pcb_board_t *pcb, pcb_layergrp_id_t gid, int steps, pcb_layer_type_t mask);
+rnd_layergrp_id_t pcb_layergrp_step(pcb_board_t *pcb, rnd_layergrp_id_t gid, int steps, pcb_layer_type_t mask);
 
 
 /* Enable/disable inhibition of layer changed events during layer group updates */
@@ -169,7 +169,7 @@ void pcb_layergrp_notify_chg(pcb_board_t *pcb);
 void pcb_layergrp_notify(pcb_board_t *pcb);
 
 /* Rename an existing layer by idx */
-int pcb_layergrp_rename(pcb_board_t *pcb, pcb_layergrp_id_t gid, const char *lname, rnd_bool undoable);
+int pcb_layergrp_rename(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *lname, rnd_bool undoable);
 
 /* changes the name of a layer; memory has to be already allocated */
 int pcb_layergrp_rename_(pcb_layergrp_t *grp, char *name, rnd_bool undoable);
@@ -183,7 +183,7 @@ int pcb_layergrp_set_purpose(pcb_layergrp_t *lg, const char *purpose, rnd_bool u
 int pcb_layergrp_set_ltype(pcb_layergrp_t *g, pcb_layer_type_t lyt, rnd_bool undoable);
 
 /* Slow linear search for a layer group by name */
-pcb_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name);
+rnd_layergrp_id_t pcb_layergrp_by_name(pcb_board_t *pcb, const char *name);
 
 /* Create a layer for each unbindable layers from the layer array */
 int pcb_layer_create_all_for_recipe(pcb_board_t *pcb, pcb_layer_t *layer, int num_layer);
@@ -219,7 +219,7 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, int LayerN, in
         for (entry = 0; entry < ((pcb_board_t *)(cgl__pcb))->LayerGroups.grp[(group)].len; entry++) \
         { \
 		pcb_layer_t *layer;		\
-		pcb_layer_id_t number; 		\
+		rnd_layer_id_t number; 		\
 		number = ((pcb_board_t *)(cgl__pcb))->LayerGroups.grp[(group)].lid[entry]; \
 		if (!(pcb_layer_flags(PCB, number) & PCB_LYT_COPPER)) \
 		  continue;			\
@@ -246,14 +246,14 @@ void pcb_layergrp_fix_old_outline_detect(pcb_board_t *pcb, pcb_layergrp_t *g);
 
 
 /* Cached layer group lookups foir a few common cases */
-pcb_layergrp_id_t pcb_layergrp_get_bottom_mask();
-pcb_layergrp_id_t pcb_layergrp_get_top_mask();
-pcb_layergrp_id_t pcb_layergrp_get_bottom_paste();
-pcb_layergrp_id_t pcb_layergrp_get_top_paste();
-pcb_layergrp_id_t pcb_layergrp_get_bottom_silk();
-pcb_layergrp_id_t pcb_layergrp_get_top_silk();
-pcb_layergrp_id_t pcb_layergrp_get_bottom_copper();
-pcb_layergrp_id_t pcb_layergrp_get_top_copper();
+rnd_layergrp_id_t pcb_layergrp_get_bottom_mask();
+rnd_layergrp_id_t pcb_layergrp_get_top_mask();
+rnd_layergrp_id_t pcb_layergrp_get_bottom_paste();
+rnd_layergrp_id_t pcb_layergrp_get_top_paste();
+rnd_layergrp_id_t pcb_layergrp_get_bottom_silk();
+rnd_layergrp_id_t pcb_layergrp_get_top_silk();
+rnd_layergrp_id_t pcb_layergrp_get_bottom_copper();
+rnd_layergrp_id_t pcb_layergrp_get_top_copper();
 
 
 /* return whether any silk or mask or paste layer group is visible */

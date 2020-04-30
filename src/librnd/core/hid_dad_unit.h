@@ -69,13 +69,13 @@ do { \
 
 extern const char **pcb_dad_unit_enum;
 
-void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long l, double unused1, rnd_coord_t unused2);
-int pcb_dad_unit_widget_state(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled);
-int pcb_dad_unit_widget_hide(pcb_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide);
-int pcb_dad_unit_set_value(pcb_hid_attribute_t *end, void *hid_ctx, int idx, const pcb_hid_attr_val_t *val);
-void pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val);
-void pcb_dad_unit_set_help(pcb_hid_attribute_t *end, const char *help);
-void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr);
+void pcb_dad_unit_set_num(rnd_hid_attribute_t *attr, long l, double unused1, rnd_coord_t unused2);
+int pcb_dad_unit_widget_state(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled);
+int pcb_dad_unit_widget_hide(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide);
+int pcb_dad_unit_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
+void pcb_dad_unit_set_val_ptr(rnd_hid_attribute_t *end, void *val);
+void pcb_dad_unit_set_help(rnd_hid_attribute_t *end, const char *help);
+void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
 void pcb_dad_unit_init(enum pcb_family_e family);
 void pcb_dad_unit_uninit(void);

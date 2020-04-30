@@ -84,7 +84,7 @@ typedef struct {
 	void *hid_ctx; /* DAD subdialog context */
 } pcb_gtk_fsd_t;
 
-static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
+static int pcb_gtk_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
 {
 	pcb_gtk_fsd_t *pctx = sub->parent_ctx;
 
@@ -116,7 +116,7 @@ static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, rnd_e
 	return -1;
 }
 
-char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, pcb_hid_dad_subdialog_t *sub)
+char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	GtkWidget *top_window = gctx->wtop_window;
 	gchar *path = NULL, *base = NULL, *res = NULL;

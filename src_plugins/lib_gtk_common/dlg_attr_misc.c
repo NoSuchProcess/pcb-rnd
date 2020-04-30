@@ -30,7 +30,7 @@
 
 #include "../src_plugins/lib_hid_common/dad_markup.h"
 
-static int ghid_progress_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+static int ghid_progress_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	GtkWidget *prg = ctx->wl[idx];
 	double pos = val->dbl;
@@ -44,7 +44,7 @@ static int ghid_progress_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t 
 }
 
 
-static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent, int j)
+static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
 {
 	GtkWidget *bparent, *prg;
 
@@ -58,7 +58,7 @@ static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, pcb_hid_attribute_t *att
 	return prg;
 }
 
-static void ghid_preview_expose(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e)
+static void ghid_preview_expose(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	pcb_hid_preview_t *prv = e->draw_data;
 	prv->user_expose_cb(prv->attrib, prv, gc, e);
@@ -72,7 +72,7 @@ static rnd_bool ghid_preview_mouse(void *widget, void *draw_data, pcb_hid_mouse_
 	return pcb_false;
 }
 
-void ghid_preview_zoomto(pcb_hid_attribute_t *attrib, void *hid_ctx, const rnd_rnd_box_t *view)
+void ghid_preview_zoomto(rnd_hid_attribute_t *attrib, void *hid_ctx, const rnd_rnd_box_t *view)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;
@@ -81,7 +81,7 @@ void ghid_preview_zoomto(pcb_hid_attribute_t *attrib, void *hid_ctx, const rnd_r
 	gtk_widget_queue_draw(prv);
 }
 
-static int ghid_preview_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+static int ghid_preview_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	GtkWidget *prv = ctx->wl[idx];
 
@@ -100,7 +100,7 @@ void ghid_preview_config(pcb_gtk_preview_t *gp, GtkWidget *widget)
 	}
 }
 
-static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent, int j)
+static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
 {
 	GtkWidget *bparent, *prv;
 	pcb_gtk_preview_t *p;
@@ -130,7 +130,7 @@ TODO("TODO make these configurable:")
 	return prv;
 }
 
-static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent, int j, GCallback click_cb, void *click_ctx)
+static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j, GCallback click_cb, void *click_ctx)
 {
 	GtkWidget *bparent, *pic, *evb;
 	GdkPixbuf *pixbuf;
@@ -149,7 +149,7 @@ static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr
 }
 
 
-static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent, int j, int toggle, int expfill)
+static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j, int toggle, int expfill)
 {
 	GtkWidget *bparent, *button, *img;
 	GdkPixbuf *pixbuf;
@@ -171,7 +171,7 @@ static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, pcb_hid_attribute_t *at
 	return button;
 }
 
-static GtkWidget *ghid_color_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, GtkWidget *parent, int j)
+static GtkWidget *ghid_color_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, GtkWidget *parent, int j)
 {
 	GtkWidget *bparent, *button;
 	pcb_gtk_color_t gclr;
@@ -191,7 +191,7 @@ static GtkWidget *ghid_color_create(attr_dlg_t *ctx, pcb_hid_attribute_t *attr, 
 }
 
 
-static int ghid_color_set(attr_dlg_t *ctx, int idx, const pcb_hid_attr_val_t *val)
+static int ghid_color_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val)
 {
 	pcb_gtk_color_t gclr;
 	GtkWidget *btn = ctx->wl[idx];

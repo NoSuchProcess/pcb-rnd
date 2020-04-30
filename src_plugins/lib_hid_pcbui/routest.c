@@ -42,7 +42,7 @@
 #define MAX_STYLES 64
 
 typedef struct {
-	pcb_hid_dad_subdialog_t sub;
+	rnd_hid_dad_subdialog_t sub;
 	int sub_inited, last_len;
 	int whbox[MAX_STYLES], wchk[MAX_STYLES], wlab[MAX_STYLES];
 } rst_ctx_t;
@@ -83,7 +83,7 @@ static void rst_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, ch
 static void rst_force_update_chk_and_dlg()
 {
 	int n, target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 
 	for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
 		hv.lng = (n == target);
@@ -103,7 +103,7 @@ static void rst_update()
 		int n, target;
 		target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 		for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
-			pcb_hid_attr_val_t hv;
+			rnd_hid_attr_val_t hv;
 
 			hv.lng = (n == target);
 			if (rst.sub.dlg[rst.wlab[n]].val.lng != hv.lng)
@@ -123,7 +123,7 @@ static void rst_update()
 	rst_lock--;
 }
 
-static void rst_select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void rst_select_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int n, ridx = -1;
 	for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
@@ -138,14 +138,14 @@ static void rst_select_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	rst_force_update_chk_and_dlg();
 }
 
-static void rst_edit_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void rst_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 	if (target >= 0)
 		pcb_dlg_rstdlg(target);
 }
 
-static void rst_new_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void rst_new_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int target = vtroutestyle_len(&PCB->RouteStyle);
 	pcb_route_style_t *rst = vtroutestyle_alloc_append(&PCB->RouteStyle, 1);
@@ -162,7 +162,7 @@ static void rst_new_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *at
 	rst_updated(rst);
 }
 
-static void rst_del_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void rst_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 	if (target >= 0) {

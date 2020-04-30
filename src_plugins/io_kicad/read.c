@@ -231,9 +231,9 @@ static int kicad_parse_version(read_state_t *st, gsxl_node_t *subtree)
 }
 
 
-static int kicad_create_copper_layer_(read_state_t *st, pcb_layergrp_id_t gid, const char *lname, const char *ltype, gsxl_node_t *subtree)
+static int kicad_create_copper_layer_(read_state_t *st, rnd_layergrp_id_t gid, const char *lname, const char *ltype, gsxl_node_t *subtree)
 {
-	pcb_layer_id_t id;
+	rnd_layer_id_t id;
 	id = pcb_layer_create(st->pcb, gid, lname, 0);
 	htsi_set(&st->layer_k2i, rnd_strdup(lname), id);
 	if (ltype != NULL) {
@@ -245,7 +245,7 @@ static int kicad_create_copper_layer_(read_state_t *st, pcb_layergrp_id_t gid, c
 
 static int kicad_create_copper_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree, int last_copper)
 {
-	pcb_layergrp_id_t gid = -1;
+	rnd_layergrp_id_t gid = -1;
 	const char *cu;
 
 	pcb_layer_type_t loc = PCB_LYT_INTERN;
@@ -299,8 +299,8 @@ static int kicad_create_copper_layer(read_state_t *st, int lnum, const char *lna
 
 static int kicad_create_misc_layer(read_state_t *st, int lnum, const char *lname, const char *ltype, gsxl_node_t *subtree, int last_copper)
 {
-	pcb_layergrp_id_t gid;
-	pcb_layer_id_t lid = -1;
+	rnd_layergrp_id_t gid;
+	rnd_layer_id_t lid = -1;
 	pcb_layergrp_t *grp, *new_grp = NULL;
 	pcb_layer_t *ly;
 	const kicad_layertab_t *lt, *best = NULL;
@@ -390,10 +390,10 @@ static int kicad_create_layer(read_state_t *st, int lnum, const char *lname, con
 /* Register a kicad layer in the layer hash after looking up the pcb-rnd equivalent */
 static unsigned int kicad_reg_layer(read_state_t *st, const char *kicad_name, unsigned int mask, const char *purpose)
 {
-	pcb_layer_id_t id;
+	rnd_layer_id_t id;
 	if (st->pcb != NULL) {
 		if (pcb_layer_listp(st->pcb, mask, &id, 1, -1, purpose) != 1) {
-			pcb_layergrp_id_t gid;
+			rnd_layergrp_id_t gid;
 			pcb_layergrp_listp(PCB, mask, &gid, 1, -1, purpose);
 			id = pcb_layer_create(st->pcb, gid, kicad_name, 0);
 		}
@@ -489,7 +489,7 @@ static void kicad_create_fp_layers(read_state_t *st, gsxl_node_t *subtree)
 static pcb_layer_t *kicad_get_subc_layer(read_state_t *st, pcb_subc_t *subc, const char *layer_name, const char *default_layer_name)
 {
 	int pcb_idx = -1;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	pcb_layer_type_t lyt;
 	pcb_layer_combining_t comb;
 	const char *lnm;
@@ -687,7 +687,7 @@ do { \
 		if ((nd == NULL) || (nd->str == NULL)) \
 			return kicad_error(n, "unexpected empty/NULL " loc " layer node"); \
 		if (subc == NULL) { \
-			pcb_layer_id_t lid = kicad_get_layeridx(st, nd->str); \
+			rnd_layer_id_t lid = kicad_get_layeridx(st, nd->str); \
 			if (lid < 0) \
 				return kicad_error(nd, "unhandled " loc " layer: (%s)", nd->str); \
 			ly = &st->pcb->Data->Layer[lid]; \
@@ -1378,8 +1378,8 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 		pcb_pstk_proto_t *new_proto;
 		rnd_cardinal_t new_pid;
 		int ot1, ot2, ob1, ob2, err;
-		pcb_layergrp_id_t gtop = pcb_layergrp_get_top_copper();
-		pcb_layergrp_id_t gbot = pcb_layergrp_get_bottom_copper();
+		rnd_layergrp_id_t gtop = pcb_layergrp_get_top_copper();
+		rnd_layergrp_id_t gbot = pcb_layergrp_get_bottom_copper();
 
 		orig_proto = pcb_pstk_get_proto(ps);
 		assert(orig_proto != NULL);
@@ -1503,7 +1503,7 @@ TODO("check if we really need these excess layers");
 			gsxl_node_t *nd;
 			if ((ndp != NULL) && (*ndp != NULL)) {
 				pcb_layergrp_t *g = pcb_get_grp_new_intern(st->pcb, -1);
-				pcb_layergrp_id_t gid = g - st->pcb->LayerGroups.grp;
+				rnd_layergrp_id_t gid = g - st->pcb->LayerGroups.grp;
 				const char *lname, *ltype;
 
 				nd = *ndp;
@@ -1571,7 +1571,7 @@ static void exec_zone_connect(read_state_t *st)
 	htpp_init(&poly_upd, ptrhash, ptrkeyeq);
 
 	for(zc = st->zc_head; zc != NULL; zc = next) {
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 		pcb_layer_t *ly;
 
 		/* search all layers for polygons */
@@ -1917,7 +1917,7 @@ pcb_layer_type_t kicad_parse_pad_layers(read_state_t *st, gsxl_node_t *subtree, 
 {
 	gsxl_node_t *l;
 	pcb_layer_type_t smd_side = 0;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	int numly = 0, side_from_lyt = 0;
 
 	for(l = subtree; l != NULL; l = l->next) {
@@ -2048,8 +2048,8 @@ static int kicad_parse_primitives(read_state_t *st, gsxl_node_t *primitives, pcb
 	const char *old_term;
 	pcb_subc_t *old_subc;
 	pcb_layer_t *old_ly;
-	pcb_layer_id_t loc, *typ;
-	pcb_layer_id_t ltypes[] = { PCB_LYT_COPPER, PCB_LYT_SILK, PCB_LYT_MASK, PCB_LYT_PASTE, 0};
+	rnd_layer_id_t loc, *typ;
+	rnd_layer_id_t ltypes[] = { PCB_LYT_COPPER, PCB_LYT_SILK, PCB_LYT_MASK, PCB_LYT_PASTE, 0};
 
 	old_subc = st->primitive_subc;
 	old_ly = st->primitive_ly;
@@ -2339,7 +2339,7 @@ static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
 	gsxl_node_t *n, *p;
-	pcb_layer_id_t lid = 0;
+	rnd_layer_id_t lid = 0;
 	int on_bottom = 0, found_refdes = 0, module_empty = 1, module_defined = 0, i;
 	int mod_zone_connect = 1; /* default seems to be connect; see CUCP#57, case labeled "-1" */
 	double mod_rot = 0, mod_paste_ratio = 0;
@@ -2689,7 +2689,7 @@ static int kicad_parse_pcb(read_state_t *st)
 	/* create an extra layer for plated slots so they show up properly */
 	{
 		pcb_layergrp_t *g = pcb_get_grp_new_misc(st->pcb);
-		pcb_layer_id_t lid = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "plated_slots", 0);
+		rnd_layer_id_t lid = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "plated_slots", 0);
 		pcb_layer_t *ly = pcb_get_layer(st->pcb->Data, lid);
 		g->ltype = PCB_LYT_MECH;
 		pcb_layergrp_set_purpose(g, "proute", 0);

@@ -171,7 +171,7 @@ void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
 {
 	rnd_rnd_box_t bb;
 	long l;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 
 	switch(f->autoload) {
 		case PCB_OAL_none: return;

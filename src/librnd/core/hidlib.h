@@ -106,10 +106,10 @@ void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
 /* Main expose: draw the design in the top window
    (pcb-rnd: all layers with all flags (no .content is used) */
-void pcbhl_expose_main(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *region, pcb_xform_t *xform_caller);
+void pcbhl_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xform_t *xform_caller);
 
 /* Preview expose: generic, dialog based, used in preview widgets */
-void pcbhl_expose_preview(pcb_hid_t *hid, const pcb_hid_expose_ctx_t *e);
+void pcbhl_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
 
 
 

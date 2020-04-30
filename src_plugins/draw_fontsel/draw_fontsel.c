@@ -47,7 +47,7 @@
 #include "obj_line_draw.h"
 
 static pcb_draw_info_t dinfo;
-static pcb_xform_t dxform;
+static rnd_xform_t dxform;
 
 
 static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char *txt)
@@ -82,7 +82,7 @@ static void dline(int x1, int y1, int x2, int y2, float thick)
 	pcb_line_draw_(&dinfo, &l, 0);
 }
 
-static void dchkbox(pcb_hid_gc_t gc, int x0, int y0, int checked)
+static void dchkbox(rnd_hid_gc_t gc, int x0, int y0, int checked)
 {
 	int w = 2, h = 2;
 	float th = 0.1, th2 = 0.4;
@@ -108,7 +108,7 @@ typedef struct {
 font_coord_t font_coord[MAX_FONT];
 int font_coords;
 
-static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_text_t *txt)
+static void pcb_draw_font(rnd_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_text_t *txt)
 {
 	char buf[256];
 	pcb_text_t *t;
@@ -136,7 +136,7 @@ static void pcb_draw_font(pcb_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_tex
 }
 
 
-static void pcb_draw_fontsel(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e, pcb_text_t *txt)
+static void pcb_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt)
 {
 	int y = 0;
 

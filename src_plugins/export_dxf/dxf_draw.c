@@ -34,7 +34,7 @@ static void dxf_draw_handle(dxf_ctx_t *ctx)
 	fprintf(ctx->f, "5\n%lu\n", ctx->handle);
 }
 
-static void dxf_draw_line_props(dxf_ctx_t *ctx, pcb_hid_gc_t gc)
+static void dxf_draw_line_props(dxf_ctx_t *ctx, rnd_hid_gc_t gc)
 {
 	fprintf(ctx->f, "100\nAcDbEntity\n");
 	fprintf(ctx->f, "8\n%s\n", ctx->layer_name); /* layer name */
@@ -48,7 +48,7 @@ static void dxf_draw_line_props(dxf_ctx_t *ctx, pcb_hid_gc_t gc)
 		fprintf(ctx->f, "370\n%d\n", (int)rnd_round(PCB_COORD_TO_MM(gc->width)*100.0));
 }
 
-static void dxf_hatch_pre(dxf_ctx_t *ctx, pcb_hid_gc_t gc, int n_coords)
+static void dxf_hatch_pre(dxf_ctx_t *ctx, rnd_hid_gc_t gc, int n_coords)
 {
 	fprintf(ctx->f, "0\nHATCH\n");
 	dxf_draw_handle(ctx);
@@ -72,7 +72,7 @@ static void dxf_hatch_post(dxf_ctx_t *ctx)
 	fprintf(ctx->f, "98\n0\n"); /* number of seed points */
 }
 
-static void dxf_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void dxf_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	dxf_ctx_t *ctx = &dxf_ctx;
 	fprintf(ctx->f, "0\nLINE\n");
@@ -83,7 +83,7 @@ static void dxf_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	pcb_fprintf(ctx->f, "11\n%mm\n21\n%mm\n", TRX(x2), TRY(y2));
 }
 
-static void dxf_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
+static void dxf_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
 {
 	dxf_ctx_t *ctx = &dxf_ctx;
 	fprintf(ctx->f, "0\nCIRCLE\n");
@@ -110,7 +110,7 @@ static void dxf_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd
 	}
 }
 
-static void dxf_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void dxf_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_angle_t end_angle, tmp;
 	dxf_ctx_t *ctx = &dxf_ctx;
@@ -141,7 +141,7 @@ static void dxf_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	fprintf(ctx->f, "51\n%f\n", end_angle);
 }
 
-static void dxf_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void dxf_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	dxf_ctx_t *ctx = &dxf_ctx;
 	int n, to;
@@ -184,7 +184,7 @@ static void dxf_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 }
 
 
-static void dxf_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+static void dxf_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	dxf_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }

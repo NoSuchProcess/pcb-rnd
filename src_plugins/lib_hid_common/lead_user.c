@@ -91,7 +91,7 @@ void pcb_lead_user_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event
 void pcb_lead_user_draw_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (lead) {
-		pcb_hid_gc_t *gc = argv[1].d.p;
+		rnd_hid_gc_t *gc = argv[1].d.p;
 		rnd_coord_t x = leadx + step, y = leady + step;
 
 		assert(argv[1].type == RND_EVARG_PTR);

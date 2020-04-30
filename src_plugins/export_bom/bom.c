@@ -29,7 +29,7 @@
 
 const char *bom_cookie = "bom HID";
 
-static pcb_export_opt_t bom_options[] = {
+static rnd_export_opt_t bom_options[] = {
 /* %start-doc options "8 BOM Creation"
 @ftable @code
 @item --bomfile <string>
@@ -49,7 +49,7 @@ Name of the BOM output file.
 
 #define NUM_OPTIONS (sizeof(bom_options)/sizeof(bom_options[0]))
 
-static pcb_hid_attr_val_t bom_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t bom_values[NUM_OPTIONS];
 
 static const char *bom_filename;
 
@@ -61,7 +61,7 @@ typedef struct pcb_bom_list_s {
 	struct pcb_bom_list_s *next;
 } pcb_bom_list_t;
 
-static pcb_export_opt_t *bom_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *bom_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if ((PCB != NULL) && (bom_options[HA_bomfile].default_val.str == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &bom_options[HA_bomfile], ".bom");
@@ -221,7 +221,7 @@ static int bom_print(void)
 	return 0;
 }
 
-static void bom_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void bom_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int i;
 	pcb_cam_t cam;
@@ -243,7 +243,7 @@ static void bom_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_cam_end(&cam);
 }
 
-static int bom_usage(pcb_hid_t *hid, const char *topic)
+static int bom_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nbom exporter command line arguments:\n\n");
 	pcb_hid_usage(bom_options, sizeof(bom_options) / sizeof(bom_options[0]));
@@ -252,13 +252,13 @@ static int bom_usage(pcb_hid_t *hid, const char *topic)
 }
 
 
-static int bom_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int bom_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(bom_options, sizeof(bom_options) / sizeof(bom_options[0]), bom_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
-pcb_hid_t bom_hid;
+rnd_hid_t bom_hid;
 
 int pplg_check_ver_export_bom(int ver_needed) { return 0; }
 
@@ -271,11 +271,11 @@ int pplg_init_export_bom(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&bom_hid, 0, sizeof(pcb_hid_t));
+	memset(&bom_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&bom_hid);
 
-	bom_hid.struct_size = sizeof(pcb_hid_t);
+	bom_hid.struct_size = sizeof(rnd_hid_t);
 	bom_hid.name = "bom";
 	bom_hid.description = "Exports a Bill of Materials";
 	bom_hid.exporter = 1;

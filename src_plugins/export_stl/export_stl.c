@@ -37,10 +37,10 @@
 #include "../lib_polyhelp/topoly.h"
 #include "../lib_polyhelp/triangulate.h"
 
-static pcb_hid_t stl_hid;
+static rnd_hid_t stl_hid;
 const char *stl_cookie = "export_stl HID";
 
-pcb_export_opt_t stl_attribute_list[] = {
+rnd_export_opt_t stl_attribute_list[] = {
 	{"outfile", "STL output file",
 	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_stlfile 0
@@ -68,9 +68,9 @@ pcb_export_opt_t stl_attribute_list[] = {
 
 #define NUM_OPTIONS (sizeof(stl_attribute_list)/sizeof(stl_attribute_list[0]))
 
-static pcb_hid_attr_val_t stl_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t stl_values[NUM_OPTIONS];
 
-static pcb_export_opt_t *stl_get_export_options(pcb_hid_t *hid, int *n)
+static rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".stl";
 
@@ -129,7 +129,7 @@ static void stl_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coor
 	fprintf(f, "	endfacet\n");
 }
 
-int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
+int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
 {
 	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB, PCB_TOPOLY_FLOATING);
 	size_t mem_req = fp2t_memory_required(poly->PointN);
@@ -181,7 +181,7 @@ int stl_hid_export_to_file(FILE *f, pcb_hid_attr_val_t *options, rnd_coord_t max
 	return 0;
 }
 
-static void stl_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
+static void stl_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *filename;
 	int i;
@@ -225,14 +225,14 @@ static void stl_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_cam_end(&cam);
 }
 
-static int stl_parse_arguments(pcb_hid_t *hid, int *argc, char ***argv)
+static int stl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	pcb_export_register_opts(stl_attribute_list, sizeof(stl_attribute_list) / sizeof(stl_attribute_list[0]), stl_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
 
-static int stl_usage(pcb_hid_t *hid, const char *topic)
+static int stl_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nstl exporter command line arguments:\n\n");
 	pcb_hid_usage(stl_attribute_list, sizeof(stl_attribute_list) / sizeof(stl_attribute_list[0]));
@@ -252,11 +252,11 @@ int pplg_init_export_stl(void)
 {
 	PCB_API_CHK_VER;
 
-	memset(&stl_hid, 0, sizeof(pcb_hid_t));
+	memset(&stl_hid, 0, sizeof(rnd_hid_t));
 
 	pcb_hid_nogui_init(&stl_hid);
 
-	stl_hid.struct_size = sizeof(pcb_hid_t);
+	stl_hid.struct_size = sizeof(rnd_hid_t);
 	stl_hid.name = "stl";
 	stl_hid.description = "export board outline in 3-dimensional STL";
 	stl_hid.exporter = 1;

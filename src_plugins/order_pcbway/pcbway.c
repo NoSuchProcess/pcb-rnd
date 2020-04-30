@@ -448,7 +448,7 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 	return 0;
 }
 
-static void pcbway_quote_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void pcbway_quote_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	order_ctx_t *octx = caller_data;
 	pcbway_form_t *form = octx->odata;

@@ -45,7 +45,7 @@ static void ee_data2dialog(ee_t *ee)
 	pcb_gui->attr_dlg_widget_state(ee->dlg_hid_ctx, ee->wfmt, pcb_false);
 }
 
-static void ee_chg_method(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void ee_chg_method(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	static int lock = 0;
 	ee_t *ee = caller_data;
@@ -60,7 +60,7 @@ static void ee_chg_method(void *hid_ctx, void *caller_data, pcb_hid_attribute_t 
 	lock = 0;
 }
 
-static void ee_chg_cmd(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void ee_chg_cmd(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	static int lock = 0;
 	ee_t *ee = caller_data;

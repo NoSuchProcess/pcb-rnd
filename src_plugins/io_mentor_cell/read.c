@@ -886,7 +886,7 @@ static long parse_dwg_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const hkp_netclass
 		return -1;
 
 	if (subc == NULL) {
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 		if (purpose == NULL) {
 			if (pcb_layer_list(ctx->pcb, side | type, &lid, 1) != 1)
 				return 0;
@@ -911,7 +911,7 @@ static pcb_layer_t *parse_layer(hkp_ctx_t *ctx, pcb_subc_t *subc, const char *ln
 	char *name = NULL;
 
 	if (user) { /* user layers are DOC layers identified by name and are allocated on the go */
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 		pcb_dflgmap_t map[2];
 		int retry;
 
@@ -934,7 +934,7 @@ TODO("this should be done only when subc == NULL");
 	if (strncmp(ln, "LYR_", 4) == 0) {
 		int cidx;
 		char *end;
-		pcb_layergrp_id_t gid;
+		rnd_layergrp_id_t gid;
 
 		TODO("can a subcircuit have intern copper objects? assume NO for now:");
 		assert(subc == NULL);
@@ -1003,7 +1003,7 @@ TODO("this should be done only when subc == NULL");
 			ly->meta.bound.purpose = rnd_strdup(purpose);
 	}
 	else {
-		pcb_layer_id_t lid;
+		rnd_layer_id_t lid;
 		int ln = pcb_layer_listp(ctx->pcb, lyt, &lid, 1, -1, purpose);
 		if (ln == 0)
 			return NULL;

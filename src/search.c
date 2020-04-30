@@ -1193,7 +1193,7 @@ pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, rnd_coord_t x, rnd_c
 pcb_layer_type_t pstk_vis_layers(pcb_board_t *pcb, pcb_layer_type_t material)
 {
 	pcb_layer_type_t res = 0, lyt;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
 		pcb_layer_t *ly = &pcb->Data->Layer[lid];
 		lyt = pcb_layer_flags_(ly);
@@ -1273,7 +1273,7 @@ static int pcb_search_obj_by_loc_group(unsigned long Type, void **Result1, void 
 	return 0;
 }
 
-static int pcb_search_obj_by_loc_group_id(unsigned long Type, void **Result1, void **Result2, void **Result3, unsigned long req_flag, const pcb_layergrp_id_t gid, int HigherAvail, double HigherBound, int objst)
+static int pcb_search_obj_by_loc_group_id(unsigned long Type, void **Result1, void **Result2, void **Result3, unsigned long req_flag, const rnd_layergrp_id_t gid, int HigherAvail, double HigherBound, int objst)
 {
 	pcb_layergrp_t *grp = pcb_get_layergrp(PCB, gid);
 	if (grp == NULL)
@@ -1369,7 +1369,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 
 	{ /* search the front silk layer first */
 		int found;
-		pcb_layergrp_id_t front_silk_id = conf_core.editor.show_solder_side ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk();
+		rnd_layergrp_id_t front_silk_id = conf_core.editor.show_solder_side ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk();
 		found = pcb_search_obj_by_loc_group_id(Type, Result1, Result2, Result3, req_flag, front_silk_id, HigherAvail, HigherBound, objst);
 		if (found > 0)
 			return found;
@@ -1390,7 +1390,7 @@ static int pcb_search_obj_by_location_(unsigned long Type, void **Result1, void 
 
 	if (PCB->InvisibleObjectsOn) { /* search the back silk layer last, unless it's invisible */
 		int found;
-		pcb_layergrp_id_t back_silk_id = conf_core.editor.show_solder_side ? pcb_layergrp_get_top_silk() : pcb_layergrp_get_bottom_silk();
+		rnd_layergrp_id_t back_silk_id = conf_core.editor.show_solder_side ? pcb_layergrp_get_top_silk() : pcb_layergrp_get_bottom_silk();
 		found = pcb_search_obj_by_loc_group_id(Type, Result1, Result2, Result3, req_flag, back_silk_id, HigherAvail, HigherBound, objst);
 		if (found > 0)
 			return found;
@@ -1726,7 +1726,7 @@ int pcb_lines_intersect(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_c
 pcb_r_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const rnd_rnd_box_t *query_box, pcb_r_dir_t (*cb_)(void *closure, pcb_any_obj_t *obj, void *box), void *closure)
 {
 	pcb_layer_t *ly;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	pcb_r_dir_t res;
 	const rnd_rtree_box_t *query = (const rnd_rtree_box_t *)query_box;
 	rnd_rtree_dir_t (*cb)(void *, void *, const rnd_rtree_box_t *) = (rnd_rtree_dir_t(*)(void *, void *, const rnd_rtree_box_t *))cb_;

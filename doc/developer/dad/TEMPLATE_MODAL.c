@@ -46,7 +46,7 @@
 #include "core headers this file depends on (even if other dialogs include them)"
 
 typedef struct{
-	pcb_hid_attribute_t *attrs;
+	rnd_hid_attribute_t *attrs;
 } foo_ctx_t; <<<- rename this
 
 static void pcb_dlg_foo(whatever args) <<<- edit this

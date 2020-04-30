@@ -223,7 +223,7 @@ static int vfs_access_obj(pcb_board_t *pcb, pcb_any_obj_t *obj, const char *path
 static void vfs_list_layers(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx, const char *datapath, pcb_data_t *data)
 {
 	gds_t path;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	size_t orig_used;
 
 	gds_init(&path);
@@ -312,7 +312,7 @@ static int vfs_access_layer(pcb_board_t *pcb, const char *path, gds_t *buff, int
 {
 	pcb_propedit_t pctx;
 	char *end;
-	pcb_layer_id_t lid = strtol(path, &end, 10);
+	rnd_layer_id_t lid = strtol(path, &end, 10);
 	int res;
 
 	if (*end == '\0') {
@@ -426,7 +426,7 @@ static int vfs_access_subcircuit(pcb_board_t *pcb, const char *path, gds_t *buff
 static void vfs_list_layergrps(pcb_board_t *pcb, pcb_vfs_list_cb cb, void *ctx)
 {
 	gds_t path;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	size_t orig_used;
 
 	cb(ctx, "layer_groups", 1);
@@ -453,7 +453,7 @@ static int vfs_access_layergrp(pcb_board_t *pcb, const char *path, gds_t *buff, 
 {
 	pcb_propedit_t pctx;
 	char *end;
-	pcb_layergrp_id_t gid = strtol(path, &end, 10);
+	rnd_layergrp_id_t gid = strtol(path, &end, 10);
 	int res;
 
 	if ((*end != '/') && (*end != '\0'))

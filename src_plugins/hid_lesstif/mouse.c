@@ -43,7 +43,7 @@ static const named_cursor_t named_cursors[] = {
 
 static vtlmc_t ltf_mouse_cursors;
 
-static void ltf_reg_mouse_cursor(pcb_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
+static void ltf_reg_mouse_cursor(rnd_hid_t *hid, int idx, const char *name, const unsigned char *pixel, const unsigned char *mask)
 {
 	ltf_cursor_t *mc = vtlmc_get(&ltf_mouse_cursors, idx, 1);
 
@@ -82,7 +82,7 @@ static void ltf_reg_mouse_cursor(pcb_hid_t *hid, int idx, const char *name, cons
 	}
 }
 
-static void ltf_set_mouse_cursor(pcb_hid_t *hid, int idx)
+static void ltf_set_mouse_cursor(rnd_hid_t *hid, int idx)
 {
 	if (!lesstif_hid_inited)
 		return;

@@ -1387,7 +1387,7 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 static void layer_fixup(pcb_board_t *pcb)
 {
 	int n;
-	pcb_layergrp_id_t top_silk, bottom_silk;
+	rnd_layergrp_id_t top_silk, bottom_silk;
 	pcb_layergrp_t *g;
 
 	pcb_layergrp_inhibit_inc();
@@ -1404,7 +1404,7 @@ static void layer_fixup(pcb_board_t *pcb)
 
 	for(n = 0; n < pcb->Data->LayerN - 2; n++) {
 		pcb_layer_t *l = &pcb->Data->Layer[n];
-		pcb_layergrp_id_t grp = l->meta.real.grp;
+		rnd_layergrp_id_t grp = l->meta.real.grp;
 		/*rnd_trace("********* l=%d %s g=%ld (top=%ld bottom=%ld)\n", n, l->name, grp, top_silk, bottom_silk);*/
 		l->meta.real.grp = -1;
 
@@ -1442,7 +1442,7 @@ static void layer_fixup(pcb_board_t *pcb)
 /* outline layers did not have auto flkag back then but we need that now for padstack slots */
 static void outline_fixup(pcb_board_t *pcb)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 	pcb_layergrp_inhibit_inc();
 
 	for(n = 0; n < pcb->Data->LayerN; n++) {
@@ -1458,8 +1458,8 @@ static void outline_fixup(pcb_board_t *pcb)
 
 static int validate_layer_stack_lyr(pcb_board_t *pcb, lht_node_t *loc)
 {
-	pcb_layer_id_t tmp[2], lid;
-	pcb_layergrp_id_t gid;
+	rnd_layer_id_t tmp[2], lid;
+	rnd_layergrp_id_t gid;
 		int n, found;
 
 	/* check layer->group cross-links */
@@ -1511,7 +1511,7 @@ static int validate_layer_stack_lyr(pcb_board_t *pcb, lht_node_t *loc)
 
 static int validate_layer_stack_grp(pcb_board_t *pcb, lht_node_t *loc)
 {
-	pcb_layergrp_id_t tmp[2];
+	rnd_layergrp_id_t tmp[2];
 
 	if (rdver == 1) { /*v1 required top and bottom silk */
 		if (pcb_layergrp_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
@@ -1536,7 +1536,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 
 	grps = lht_dom_hash_get(nd, "groups");
 	for(grp = lht_dom_first(&it, grps); grp != NULL; grp = lht_dom_next(&it)) {
-		pcb_layergrp_id_t gid;
+		rnd_layergrp_id_t gid;
 		pcb_layergrp_t *g;
 		char *end;
 		const char *prp;
@@ -1605,7 +1605,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		layers = lht_dom_hash_get(grp, "layers");
 		if (layers != NULL) {
 			for(lyr = lht_dom_first(&itt, layers); lyr != NULL; lyr = lht_dom_next(&itt)) {
-				pcb_layer_id_t lid;
+				rnd_layer_id_t lid;
 				if (lyr->type != LHT_TEXT) {
 					iolht_error(lyr, "Invalid layer node type in group '%s' (ignoring the layer)\n", g->name);
 					continue;

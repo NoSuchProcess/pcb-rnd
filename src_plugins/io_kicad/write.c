@@ -117,7 +117,7 @@ static int kicad_map_layers(wctx_t *ctx)
 	ctx->num_layers = -1;
 
 	for(fl = fixed_layers; fl->name != NULL; fl++) {
-		pcb_layergrp_id_t gid[KICAD_COPPERS];
+		rnd_layergrp_id_t gid[KICAD_COPPERS];
 		int idx, ngrp;
 
 		gid[0] = -1;
@@ -664,7 +664,7 @@ void kicad_print_data(wctx_t *ctx, pcb_data_t *data, int ind, rnd_coord_t dx, rn
 
 	for(n = 0; n < data->LayerN; n++) {
 		pcb_layer_t *ly = &data->Layer[n];
-		pcb_layergrp_id_t gid = pcb_layer_get_group_(ly);
+		rnd_layergrp_id_t gid = pcb_layer_get_group_(ly);
 		pcb_layergrp_t *grp;
 		int found = 0;
 		klayer_t kly;

@@ -27,9 +27,9 @@
 #include "../src_plugins/lib_gtk_common/hid_gtk_conf.h"
 
 #define Z_NEAR 3.0
-extern pcb_hid_t gtk2_gl_hid;
+extern rnd_hid_t gtk2_gl_hid;
 
-static pcb_hid_gc_t current_gc = NULL;
+static rnd_hid_gc_t current_gc = NULL;
 
 /* Sets ghidgui->port.u_gc to the "right" GC to use (wrt mask or window) */
 #define USE_GC(gc) if (!use_gc(gc)) return
@@ -53,16 +53,16 @@ typedef struct render_priv_s {
 } render_priv_t;
 
 
-typedef struct hid_gc_s {
+typedef struct rnd_hid_gc_s {
 	pcb_core_gc_t core_gc;
-	pcb_hid_t *me_pointer;
+	rnd_hid_t *me_pointer;
 
 	const rnd_color_t *pcolor;
 	double alpha_mult;
 	rnd_coord_t width;
-} hid_gc_s;
+} rnd_hid_gc_s;
 
-void ghid_gl_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen)
+void ghid_gl_render_burst(rnd_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen)
 {
 	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }
@@ -135,7 +135,7 @@ static void end_subcomposite(void)
 }
 #endif
 
-int ghid_gl_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char *purpose, int purpi, pcb_layer_id_t layer, unsigned int flags, int is_empty, pcb_xform_t **xform)
+int ghid_gl_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = ghidgui->port.render_priv;
@@ -158,22 +158,22 @@ int ghid_gl_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const char 
 	return 1;
 }
 
-static void ghid_gl_end_layer(pcb_hid_t *hid)
+static void ghid_gl_end_layer(rnd_hid_t *hid)
 {
 	drawgl_flush();
 	drawgl_reset();
 }
 
-void ghid_gl_destroy_gc(pcb_hid_gc_t gc)
+void ghid_gl_destroy_gc(rnd_hid_gc_t gc)
 {
 	g_free(gc);
 }
 
-pcb_hid_gc_t ghid_gl_make_gc(pcb_hid_t *hid)
+rnd_hid_gc_t ghid_gl_make_gc(rnd_hid_t *hid)
 {
-	pcb_hid_gc_t rv;
+	rnd_hid_gc_t rv;
 
-	rv = g_new0(hid_gc_s, 1);
+	rv = g_new0(rnd_hid_gc_s, 1);
 	rv->me_pointer = &gtk2_gl_hid;
 	rv->pcolor = &pcbhl_conf.appearance.color.background;
 	rv->alpha_mult = 1.0;
@@ -286,7 +286,7 @@ typedef struct {
 	double blue;
 } pcb_gtk_color_cache_t;
 
-static void set_gl_color_for_gc(pcb_hid_gc_t gc)
+static void set_gl_color_for_gc(rnd_hid_gc_t gc)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 	static GdkColormap *colormap = NULL;
@@ -385,7 +385,7 @@ static void set_gl_color_for_gc(pcb_hid_gc_t gc)
 	drawgl_set_colour(r, g, b, a);
 }
 
-void ghid_gl_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
+void ghid_gl_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	if (color == NULL) {
 		fprintf(stderr, "ghid_gl_set_color():  name = NULL, setting to magenta\n");
@@ -396,23 +396,23 @@ void ghid_gl_set_color(pcb_hid_gc_t gc, const rnd_color_t *color)
 	set_gl_color_for_gc(gc);
 }
 
-void ghid_gl_set_alpha_mult(pcb_hid_gc_t gc, double alpha_mult)
+void ghid_gl_set_alpha_mult(rnd_hid_gc_t gc, double alpha_mult)
 {
 	gc->alpha_mult = alpha_mult;
 	set_gl_color_for_gc(gc);
 }
 
-void ghid_gl_set_line_cap(pcb_hid_gc_t gc, pcb_cap_style_t style)
+void ghid_gl_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 {
 }
 
-void ghid_gl_set_line_width(pcb_hid_gc_t gc, rnd_coord_t width)
+void ghid_gl_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width < 0 ? (-width) * ghidgui->port.view.coord_per_px : width;
 }
 
 
-void ghid_gl_set_draw_xor(pcb_hid_gc_t gc, int xor)
+void ghid_gl_set_draw_xor(rnd_hid_gc_t gc, int xor)
 {
 	/* NOT IMPLEMENTED */
 
@@ -420,12 +420,12 @@ void ghid_gl_set_draw_xor(pcb_hid_gc_t gc, int xor)
 	   We manage our own drawing model for that anyway. */
 }
 
-void ghid_gl_set_draw_faded(pcb_hid_gc_t gc, int faded)
+void ghid_gl_set_draw_faded(rnd_hid_gc_t gc, int faded)
 {
 	printf("ghid_gl_set_draw_faded(%p,%d) -- not implemented\n", (void *)gc, faded);
 }
 
-void ghid_gl_set_line_cap_angle(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+void ghid_gl_set_line_cap_angle(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	printf("ghid_gl_set_line_cap_angle() -- not implemented\n");
 }
@@ -435,7 +435,7 @@ static void ghid_gl_invalidate_current_gc(void)
 	current_gc = NULL;
 }
 
-static int use_gc(pcb_hid_gc_t gc)
+static int use_gc(rnd_hid_gc_t gc)
 {
 	if (gc->me_pointer != &gtk2_gl_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to GTK HID\n");
@@ -452,21 +452,21 @@ static int use_gc(pcb_hid_gc_t gc)
 }
 
 
-static void ghid_gl_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void ghid_gl_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	USE_GC(gc);
 
 	hidgl_draw_line(gc->core_gc.cap, gc->width, x1, y1, x2, y2, ghidgui->port.view.coord_per_px);
 }
 
-static void ghid_gl_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void ghid_gl_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	USE_GC(gc);
 
 	hidgl_draw_arc(gc->width, cx, cy, xradius, yradius, start_angle, delta_angle, ghidgui->port.view.coord_per_px);
 }
 
-static void ghid_gl_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void ghid_gl_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	USE_GC(gc);
 
@@ -474,7 +474,7 @@ static void ghid_gl_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 }
 
 
-static void ghid_gl_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void ghid_gl_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	USE_GC(gc);
 
@@ -482,21 +482,21 @@ static void ghid_gl_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy,
 }
 
 
-static void ghid_gl_fill_polygon(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+static void ghid_gl_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
 	USE_GC(gc);
 
 	hidgl_fill_polygon(n_coords, x, y);
 }
 
-static void ghid_gl_fill_polygon_offs(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void ghid_gl_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	USE_GC(gc);
 
 	hidgl_fill_polygon_offs(n_coords, x, y, dx, dy);
 }
 
-static void ghid_gl_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void ghid_gl_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	USE_GC(gc);
 
@@ -505,7 +505,7 @@ static void ghid_gl_fill_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 
 static int preview_lock = 0;
 
-void ghid_gl_invalidate_all(pcb_hid_t *hid)
+void ghid_gl_invalidate_all(rnd_hid_t *hid)
 {
 	if (ghidgui && ghidgui->topwin.menu.menu_bar) {
 		ghid_draw_area_update(&ghidgui->port, NULL);
@@ -517,7 +517,7 @@ void ghid_gl_invalidate_all(pcb_hid_t *hid)
 	}
 }
 
-void ghid_gl_invalidate_lr(pcb_hid_t *hid, rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom)
+void ghid_gl_invalidate_lr(rnd_hid_t *hid, rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom)
 {
 	ghid_gl_invalidate_all(hid);
 	if (!preview_lock) {
@@ -527,7 +527,7 @@ void ghid_gl_invalidate_lr(pcb_hid_t *hid, rnd_coord_t left, rnd_coord_t right, 
 	}
 }
 
-static void ghid_gl_notify_crosshair_change(pcb_hid_t *hid, rnd_bool changes_complete)
+static void ghid_gl_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_complete)
 {
 	/* We sometimes get called before the GUI is up */
 	if (ghidgui->port.drawing_area == NULL)
@@ -537,7 +537,7 @@ static void ghid_gl_notify_crosshair_change(pcb_hid_t *hid, rnd_bool changes_com
 	ghid_gl_invalidate_all(hid);
 }
 
-static void ghid_gl_notify_mark_change(pcb_hid_t *hid, rnd_bool changes_complete)
+static void ghid_gl_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete)
 {
 	/* We sometimes get called before the GUI is up */
 	if (ghidgui->port.drawing_area == NULL)
@@ -720,7 +720,7 @@ static void ghid_gl_screen_update(void)
 /* Settles background color + inital GL configuration, to allow further drawing in GL area.
     (w, h) describes the total area concerned, while (xr, yr, wr, hr) describes area requested by an expose event.
     The color structure holds the wanted solid back-ground color, used to first paint the exposed drawing area. */
-static void pcb_gl_draw_expose_init(pcb_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
+static void pcb_gl_draw_expose_init(rnd_hid_t *hid, int w, int h, int xr, int yr, int wr, int hr, rnd_color_t *bg_c)
 {
 	hidgl_init();
 
@@ -755,7 +755,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	rnd_hidlib_t *hidlib = ghidgui->hidlib;
 	render_priv_t *priv = port->render_priv;
 	GtkAllocation allocation;
-	pcb_hid_expose_ctx_t ctx;
+	rnd_hid_expose_ctx_t ctx;
 
 	gtkc_widget_get_allocation(widget, &allocation);
 
@@ -823,7 +823,7 @@ static void ghid_gl_port_drawing_realize_cb(GtkWidget *widget, gpointer data)
 	return;
 }
 
-static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, pcb_hid_expose_ctx_t *ctx)
+static gboolean ghid_gl_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx)
 {
 	GdkGLContext *pGlContext = gtk_widget_get_gl_context(widget);
 	GdkGLDrawable *pGlDrawable = gtk_widget_get_gl_drawable(widget);
@@ -936,7 +936,7 @@ static GtkWidget *ghid_gl_new_drawing_widget(pcb_gtk_impl_t *impl)
 }
 
 
-void ghid_gl_install(pcb_gtk_impl_t *impl, pcb_hid_t *hid)
+void ghid_gl_install(pcb_gtk_impl_t *impl, rnd_hid_t *hid)
 {
 
 	if (impl != NULL) {

@@ -35,7 +35,7 @@
 
 #include <stdio.h>
 
-static void draw_mark(pcb_hid_gc_t gc, const pcb_arc_t *arc)
+static void draw_mark(rnd_hid_gc_t gc, const pcb_arc_t *arc)
 {
 	const rnd_coord_t mark = PCB_MM_TO_COORD(0.2);
 	pcb_render->draw_line(gc, arc->X-mark, arc->Y, arc->X+mark, arc->Y);

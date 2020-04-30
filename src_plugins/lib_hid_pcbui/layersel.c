@@ -156,13 +156,13 @@ typedef enum {
 typedef struct {
 	int wopen, wclosed;
 	layersel_ctx_t *ls;
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	virt_grp_id_t vid;
 	unsigned int is_open:1;
 } ls_group_t;
 
 struct layersel_ctx_s {
-	pcb_hid_dad_subdialog_t sub;
+	rnd_hid_dad_subdialog_t sub;
 	int sub_inited;
 	int lock_vis, lock_sel;
 	int w_last_sel, w_last_sel_closed, w_last_unsel_closed;
@@ -197,7 +197,7 @@ static ls_group_t *lgs_get_(layersel_ctx_t *ls, size_t gid, int alloc)
 	return *res;
 }
 
-static ls_group_t *lgs_get_real(layersel_ctx_t *ls, pcb_layergrp_id_t gid, int alloc)
+static ls_group_t *lgs_get_real(layersel_ctx_t *ls, rnd_layergrp_id_t gid, int alloc)
 {
 	ls_group_t *lgs = lgs_get_(ls, gid+LGS_max, alloc);
 	lgs->gid = gid;
@@ -262,7 +262,7 @@ static void layer_select(ls_layer_t *lys)
 
 	if (lys->ly != NULL) {
 		if (lys->grp_vis) {
-			pcb_layer_id_t lid = lys->ly - PCB->Data->Layer;
+			rnd_layer_id_t lid = lys->ly - PCB->Data->Layer;
 			pcb_layervis_change_group_vis(&PCB->hidlib, lid, 1, 1);
 		}
 		else {
@@ -288,7 +288,7 @@ static void layer_select(ls_layer_t *lys)
 	locked_layersel(lys->ls, lys->wlab, lys->wunsel_closed, lys->wsel_closed);
 }
 
-static void layer_sel_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void layer_sel_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	layer_select(attr->user_data);
 }
@@ -330,12 +330,12 @@ static void all_open_close(int is_open)
 	}
 }
 
-static void all_open_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void all_open_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	all_open_close(1);
 }
 
-static void all_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void all_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	all_open_close(0);
 }
@@ -346,8 +346,8 @@ static void all_close_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 static void ensure_visible_current(layersel_ctx_t *ls)
 {
 	pcb_layer_t *ly;
-	pcb_layer_id_t lid;
-	pcb_layergrp_id_t gid;
+	rnd_layer_id_t lid;
+	rnd_layergrp_id_t gid;
 	pcb_layer_t *l;
 	ls_layer_t *lys;
 	int repeat = 0;
@@ -393,7 +393,7 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 }
 
 
-static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void layer_vis_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	ls_layer_t *lys = attr->user_data;
 	rnd_bool *vis;
@@ -406,7 +406,7 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 		return;
 
 	if (lys->grp_vis) {
-		pcb_layer_id_t lid = lys->ly - PCB->Data->Layer;
+		rnd_layer_id_t lid = lys->ly - PCB->Data->Layer;
 		pcb_layervis_change_group_vis(&PCB->hidlib, lid, !*vis, 1);
 	}
 	else {
@@ -420,7 +420,7 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *
 	pcb_hid_redraw(PCB);
 }
 
-static void layer_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void layer_right_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	ls_layer_t *lys = attr->user_data;
 
@@ -433,8 +433,8 @@ static void layer_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 	rnd_actionva(&PCB->hidlib, "Popup", "layer", NULL);
 }
 
-extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
-static void group_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+extern rnd_layergrp_id_t pcb_actd_EditGroup_gid;
+static void group_right_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	ls_group_t *grp = attr->user_data;
 	if (grp->gid < 0)
@@ -444,7 +444,7 @@ static void group_right_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 }
 
 
-static void group_open_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
+static void group_open_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	ls_group_t *lgs = attr->user_data;
 	lgs->is_open = !lgs->is_open;
@@ -645,7 +645,7 @@ static void layersel_add_grpsep(layersel_ctx_t *ls)
 /* Editable layer groups that are part of the stack */
 static void layersel_create_stack(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *g;
 	rnd_cardinal_t created = 0;
 
@@ -666,7 +666,7 @@ static void layersel_create_stack(layersel_ctx_t *ls, pcb_board_t *pcb)
 /* Editable layer groups that are not part of the stack */
 static void layersel_create_global(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *g;
 	rnd_cardinal_t created = 0;
 

@@ -489,7 +489,7 @@ static rnd_bool UndoOtherSide(UndoListTypePtr Entry)
 	return pcb_false;
 }
 
-static void get_subc_parent_data(long subcid, pcb_layer_id_t subclayer, pcb_subc_t **subc, pcb_data_t **data, void **ptr1)
+static void get_subc_parent_data(long subcid, rnd_layer_id_t subclayer, pcb_subc_t **subc, pcb_data_t **data, void **ptr1)
 {
 	if (subcid > 0) { /* need to use a subc layer - putting back a floater */
 		void *p1, *p2, *p3;
@@ -605,7 +605,7 @@ static rnd_bool UndoMoveToLayer(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
 	int type;
-	pcb_layer_id_t swap;
+	rnd_layer_id_t swap;
 
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);

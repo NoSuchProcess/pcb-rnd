@@ -48,7 +48,7 @@ typedef struct {
 
 #define GNAME_MAX 64
 
-static void group_name(char *dst, const char *src, pcb_layergrp_id_t gid)
+static void group_name(char *dst, const char *src, rnd_layergrp_id_t gid)
 {
 	int n;
 	char *d;
@@ -70,7 +70,7 @@ static void group_name(char *dst, const char *src, pcb_layergrp_id_t gid)
 
 static int dsn_write_structure(dsn_write_t *wctx)
 {
-	pcb_layergrp_id_t gid;
+	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *lg;
 
 	fprintf(wctx->f, "  (structure\n");
@@ -88,13 +88,13 @@ static int dsn_write_structure(dsn_write_t *wctx)
 
 static int dsn_write_wiring(dsn_write_t *wctx)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	pcb_layer_t *ly;
 
 	fprintf(wctx->f, "  (wiring\n");
 	for(ly = wctx->pcb->Data->Layer, lid = 0; lid < wctx->pcb->Data->LayerN; lid++,ly++) {
 		char gname[GNAME_MAX];
-		pcb_layergrp_id_t gid = pcb_layer_get_group_(ly);
+		rnd_layergrp_id_t gid = pcb_layer_get_group_(ly);
 		pcb_layergrp_t *lg = pcb_get_layergrp(wctx->pcb, gid);
 		pcb_net_t *net;
 

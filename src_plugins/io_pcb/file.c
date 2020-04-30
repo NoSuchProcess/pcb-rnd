@@ -187,7 +187,7 @@ TODO("layer: revise this loop to save only what the original code saved")
 				*cp++ = ':';
 			sep = 1;
 			for (entry = 0; entry < PCB->LayerGroups.grp[group].len; entry++) {
-				pcb_layer_id_t layer = PCB->LayerGroups.grp[group].lid[entry];
+				rnd_layer_id_t layer = PCB->LayerGroups.grp[group].lid[entry];
 
 				sprintf(cp, "%ld", layer + 1);
 				while (*++cp);
@@ -661,7 +661,7 @@ TODO("textrot: incompatibility warning")
 	}
 }
 
-static pcb_layer_id_t pcb_layer_get_cached(pcb_board_t *pcb, unsigned int loc, unsigned int typ)
+static rnd_layer_id_t pcb_layer_get_cached(pcb_board_t *pcb, unsigned int loc, unsigned int typ)
 {
 	pcb_layergrp_t *g = pcb_get_grp(&pcb->LayerGroups, loc, typ);
 	if ((g == NULL) || (g->len == 0))
@@ -671,19 +671,19 @@ static pcb_layer_id_t pcb_layer_get_cached(pcb_board_t *pcb, unsigned int loc, u
 	return g->lid[0];
 }
 
-static pcb_layer_id_t pcb_layer_get_bottom_silk(void)
+static rnd_layer_id_t pcb_layer_get_bottom_silk(void)
 {
 	return pcb_layer_get_cached(PCB, PCB_LYT_BOTTOM, PCB_LYT_SILK);
 }
 
-static pcb_layer_id_t pcb_layer_get_top_silk(void)
+static rnd_layer_id_t pcb_layer_get_top_silk(void)
 {
 	return pcb_layer_get_cached(PCB, PCB_LYT_TOP, PCB_LYT_SILK);
 }
 
 static void LayersFixup(void)
 {
-	pcb_layer_id_t bs, ts;
+	rnd_layer_id_t bs, ts;
 	int chg = 0;
 
 	/* the PCB format requires 2 silk layers to be the last; swap layers to make that so */
@@ -791,7 +791,7 @@ void PostLoadElementPCB()
 
 	/* opening a footprint: we don't have a layer stack; make sure top and bottom copper exist */
 	{
-		pcb_layergrp_id_t gid;
+		rnd_layergrp_id_t gid;
 		int res;
 		
 		res = pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &gid, 1);
@@ -860,9 +860,9 @@ int io_pcb_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filena
 }
 
 
-pcb_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
+rnd_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	if (pcb->Data->LayerN >= PCB_MAX_LAYER)
 		return -1;
 	lid = pcb->Data->LayerN;
@@ -874,12 +874,12 @@ pcb_layer_id_t static new_ly_end(pcb_board_t *pcb, const char *name)
 	return lid;
 }
 
-pcb_layer_id_t static existing_or_new_ly_end(pcb_board_t *pcb, const char *name)
+rnd_layer_id_t static existing_or_new_ly_end(pcb_board_t *pcb, const char *name)
 {
-	pcb_layer_id_t lid = pcb_layer_by_name(pcb->Data, name);
+	rnd_layer_id_t lid = pcb_layer_by_name(pcb->Data, name);
 	if (lid >= 0) {
 		if (pcb->Data->Layer[lid].meta.real.grp >= 0) {
-			pcb_layergrp_id_t gid = pcb->Data->Layer[lid].meta.real.grp;
+			rnd_layergrp_id_t gid = pcb->Data->Layer[lid].meta.real.grp;
 			pcb_layergrp_del_layer(pcb, gid, lid);
 			pcb->Data->Layer[lid].meta.real.grp = -1;
 		}
@@ -888,9 +888,9 @@ pcb_layer_id_t static existing_or_new_ly_end(pcb_board_t *pcb, const char *name)
 	return new_ly_end(pcb, name);
 }
 
-pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
+rnd_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	for(lid = 0; lid < PCB_MAX_LAYER; lid++) {
 		if (pcb->Data->Layer[lid].meta.real.grp == 0) {
 			free((char *)pcb->Data->Layer[lid].name);
@@ -906,8 +906,8 @@ pcb_layer_id_t static new_ly_old(pcb_board_t *pcb, const char *name)
 
 int pcb_layer_improvise(pcb_board_t *pcb, rnd_bool setup)
 {
-	pcb_layergrp_id_t gid;
-	pcb_layer_id_t lid, silk = -1;
+	rnd_layergrp_id_t gid;
+	rnd_layer_id_t lid, silk = -1;
 
 	if (setup) {
 		pcb_layer_group_setup_default(pcb);
@@ -1160,7 +1160,7 @@ void io_pcb_postproc_board(pcb_board_t *pcb)
 
 			rnd_message(RND_MSG_WARNING, "Broken input file: layer group string doesn't contain layer %ld\n(Trying to fix it by introducing a new intern copper layer)\n", n);
 			if (grp != NULL) {
-				pcb_layergrp_id_t gid = grp - PCB->LayerGroups.grp;
+				rnd_layergrp_id_t gid = grp - PCB->LayerGroups.grp;
 				pcb_layer_move_to_group(pcb, n, gid);
 			}
 			else

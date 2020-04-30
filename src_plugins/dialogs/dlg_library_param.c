@@ -59,8 +59,8 @@ do { \
 
 static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 {
-	pcb_hid_attr_val_t hv;
-	pcb_hid_attribute_t *a = &ctx->pdlg[ctx->pwid[pidx]];
+	rnd_hid_attr_val_t hv;
+	rnd_hid_attribute_t *a = &ctx->pdlg[ctx->pwid[pidx]];
 	const char **s;
 	char *desc;
 	int vlen, len, n;
@@ -102,7 +102,7 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 	pcb_gui->attr_dlg_set_value(ctx->pdlg_hid_ctx, ctx->pwid[pidx], &hv);
 }
 
-static void library_param_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp);
+static void library_param_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp);
 
 #define pre_append() \
 do { \
@@ -304,7 +304,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 	for(n = 0; n < ctx->num_params; n++) {
 		char *desc, buff[128];
 		const char *val;
-		pcb_hid_attribute_t *a = &ctx->pdlg[ctx->pwid[n]];
+		rnd_hid_attribute_t *a = &ctx->pdlg[ctx->pwid[n]];
 
 		if ((!a->changed) || (a->empty))
 			continue;
@@ -356,11 +356,11 @@ static char *gen_cmd(library_ctx_t *ctx)
 	return sres.array;
 }
 
-static void library_param_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr_inp)
+static void library_param_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	library_ctx_t *ctx = caller_data;
 	char *cmd = gen_cmd(ctx);
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 
 	hv.str = cmd;
 	pcb_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
@@ -474,7 +474,7 @@ static void load_params(library_ctx_t *ctx, char *user_params)
 
 void pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 {
-	pcb_hid_attr_val_t hv;
+	rnd_hid_attr_val_t hv;
 	const char *filter_txt = ctx->dlg[ctx->wfilt].val.str;
 
 	if (filter_txt != NULL) {

@@ -185,7 +185,7 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
    references from any node */
 static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt, void *parent, int name_chk)
 {
-	pcb_layer_id_t n;
+	rnd_layer_id_t n;
 	long id_chk_cnt = 0;
 	htip_entry_t *e;
 
@@ -306,7 +306,7 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 
 static void chk_layergrps(pcb_board_t *pcb)
 {
-	pcb_layergrp_id_t n;
+	rnd_layergrp_id_t n;
 	const char *whose = "board";
 
 	for(n = 0; n < pcb->LayerGroups.len; n++) {

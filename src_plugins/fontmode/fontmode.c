@@ -70,9 +70,9 @@
 
 static const char pcb_acts_fontedit[] = "FontEdit()";
 static const char pcb_acth_fontedit[] = "Convert the current font to a PCB for editing.";
-static pcb_layer_t *make_layer(pcb_layergrp_id_t grp, const char *lname)
+static pcb_layer_t *make_layer(rnd_layergrp_id_t grp, const char *lname)
 {
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 
 	assert(grp >= 0);
 	lid = pcb_layer_create(PCB, grp, lname, 0);
@@ -101,7 +101,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_font_t *font;
 	pcb_symbol_t *symbol;
 	pcb_layer_t *lfont, *lorig, *lwidth, *lgrid, *lsilk;
-	pcb_layergrp_id_t grp[4];
+	rnd_layergrp_id_t grp[4];
 	pcb_poly_t *poly;
 	pcb_arc_t *arc, *newarc;
 	int s, l;

@@ -53,7 +53,7 @@ typedef enum {
 	TYPE_SESSION
 } dsn_type_t;
 
-static pcb_layer_id_t ses_layer_by_name(pcb_board_t *pcb, const char *name)
+static rnd_layer_id_t ses_layer_by_name(pcb_board_t *pcb, const char *name)
 {
 	char *end;
 	long gid;
@@ -93,7 +93,7 @@ static void parse_polyline(long int *nlines, rnd_coord_t clear, const gsxl_node_
 	const char *slayer = n->children->str;
 	const char *sthick = n->children->next->str;
 	rnd_bool succ;
-	pcb_layer_id_t lid;
+	rnd_layer_id_t lid;
 	pcb_layer_t *layer;
 
 	thick = pcb_get_value(sthick, unit, NULL, &succ);

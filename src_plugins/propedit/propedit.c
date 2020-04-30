@@ -42,7 +42,7 @@
 #include "crosshair.h"
 #include <librnd/core/compat_misc.h>
 
-extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
+extern rnd_layergrp_id_t pcb_actd_EditGroup_gid;
 
 int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 {
@@ -172,7 +172,7 @@ static void prop_scope_finish(pcb_propedit_t *pe)
 	}
 }
 
-extern pcb_layergrp_id_t pcb_actd_EditGroup_gid;
+extern rnd_layergrp_id_t pcb_actd_EditGroup_gid;
 
 static const char pcb_acts_propset[] = "propset([scope], name, value)";
 static const char pcb_acth_propset[] = "Change the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().";
@@ -354,12 +354,12 @@ int pplg_init_propedit(void)
 {
 	PCB_API_CHK_VER;
 
-	if (sizeof(long) < sizeof(pcb_layer_id_t)) {
+	if (sizeof(long) < sizeof(rnd_layer_id_t)) {
 		rnd_message(RND_MSG_ERROR, "can't load propedig: layer id type wider than long\n");
 		return -1;
 	}
 
-	if (sizeof(long) < sizeof(pcb_layergrp_id_t)) {
+	if (sizeof(long) < sizeof(rnd_layergrp_id_t)) {
 		rnd_message(RND_MSG_ERROR, "can't load propedig: layergrp id type wider than long\n");
 		return -1;
 	}
