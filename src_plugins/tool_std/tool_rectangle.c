@@ -118,9 +118,9 @@ rnd_bool pcb_tool_rectangle_anydo_act(rnd_hidlib_t *hl)
 void pcb_tool_rectangle_escape(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
-		pcb_tool_select_by_name(hl, "arrow");
+		rnd_tool_select_by_name(hl, "arrow");
 	else
-		pcb_tool_select_by_name(hl, "rectangle");
+		rnd_tool_select_by_name(hl, "rectangle");
 }
 
 /* XPM */
@@ -156,7 +156,7 @@ static const char *rect_icon[] = {
 
 
 pcb_tool_t pcb_tool_rectangle = {
-	"rectangle", NULL, NULL, 100, rect_icon, PCB_TOOL_CURSOR_NAMED("ul_angle"), 0,
+	"rectangle", NULL, NULL, 100, rect_icon, RND_TOOL_CURSOR_NAMED("ul_angle"), 0,
 	NULL,
 	pcb_tool_rectangle_uninit,
 	pcb_tool_rectangle_notify_mode,

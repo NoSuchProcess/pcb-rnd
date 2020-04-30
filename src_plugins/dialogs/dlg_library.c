@@ -183,7 +183,7 @@ TODO("Use rich text for this with explicit wrap marks\n");
 static void timed_update_preview_(library_ctx_t *ctx, const char *otext)
 {
 	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, otext, NULL)) {
-		pcb_tool_select_by_name(&PCB->hidlib, "buffer");
+		rnd_tool_select_by_name(&PCB->hidlib, "buffer");
 		if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
 			library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), NULL);
 		rnd_gui->invalidate_all(rnd_gui);
@@ -357,7 +357,7 @@ static void library_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_r
 			}
 			else {
 				if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, l->data.fp.loc_info, NULL)) {
-					pcb_tool_select_by_name(&PCB->hidlib, "buffer");
+					rnd_tool_select_by_name(&PCB->hidlib, "buffer");
 					if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
 						library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);
 					update_edit_button(ctx);

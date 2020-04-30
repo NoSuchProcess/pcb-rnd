@@ -24,29 +24,29 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_TOOL_H
-#define PCB_TOOL_H
+#ifndef RND_TOOL_H
+#define RND_TOOL_H
 
 #include <genvector/vtp0.h>
 
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/rnd_bool.h>
 
-typedef int pcb_toolid_t;
-#define PCB_TOOLID_INVALID (-1)
+typedef int rnd_toolid_t;
+#define RND_TOOLID_INVALID (-1)
 
-typedef struct pcb_tool_cursor_s {
+typedef struct rnd_tool_cursor_s {
 	const char *name;            /* if no custom graphics is provided, use a stock cursor by name */
 	const unsigned char *pixel;  /* 32 bytes: 16*16 bitmap */
 	const unsigned char *mask;   /* 32 bytes: 16*16 mask (1 means draw pixel) */
-} pcb_tool_cursor_t;
+} rnd_tool_cursor_t;
 
-#define PCB_TOOL_CURSOR_NAMED(name)       { name, NULL, NULL }
-#define PCB_TOOL_CURSOR_XBM(pixel, mask)  { NULL, pixel, mask }
+#define RND_TOOL_CURSOR_NAMED(name)       { name, NULL, NULL }
+#define RND_TOOL_CURSOR_XBM(pixel, mask)  { NULL, pixel, mask }
 
-typedef enum pcb_tool_flags_e {
+typedef enum rnd_tool_flags_e {
 	PCB_TLF_AUTO_TOOLBAR = 1      /* automatically insert in the toolbar if the menu file didn't do it */
-} pcb_tool_flags_t;
+} rnd_tool_flags_t;
 
 typedef struct pcb_tool_s {
 	const char *name;             /* textual name of the tool */
@@ -54,8 +54,8 @@ typedef struct pcb_tool_s {
 	const char *cookie;           /* plugin cookie _pointer_ of the registrar (comparision is pointer based, not strcmp) */
 	unsigned int priority;        /* lower values are higher priorities; escaping mode will try to select the highest prio tool */
 	const char **icon;            /* XPM for the tool buttons */
-	pcb_tool_cursor_t cursor;     /* name of the mouse cursor to switch to when the tool is activated */
-	pcb_tool_flags_t flags;
+	rnd_tool_cursor_t cursor;     /* name of the mouse cursor to switch to when the tool is activated */
+	rnd_tool_flags_t flags;
 
 	/* tool implementation */
 	void     (*init)(void);
@@ -71,35 +71,35 @@ typedef struct pcb_tool_s {
 	unsigned long user_flags;
 } pcb_tool_t;
 
-extern vtp0_t pcb_tools;
-extern pcb_toolid_t pcb_tool_prev_id;
-extern pcb_toolid_t pcb_tool_next_id;
-extern rnd_bool pcb_tool_is_saved;
+extern vtp0_t rnd_tools;
+extern rnd_toolid_t rnd_tool_prev_id;
+extern rnd_toolid_t rnd_tool_next_id;
+extern rnd_bool rnd_tool_is_saved;
 
 /* (un)initialize the tool subsystem */
-void pcb_tool_init(void);
-void pcb_tool_uninit(void);
+void rnd_tool_init(void);
+void rnd_tool_uninit(void);
 
 /* call this when the mode (tool) config node changes */
-void pcb_tool_chg_mode(rnd_hidlib_t *hl);
+void rnd_tool_chg_mode(rnd_hidlib_t *hl);
 
-/* Insert a new tool in pcb_tools; returns -1 on failure */
-pcb_toolid_t pcb_tool_reg(pcb_tool_t *tool, const char *cookie);
+/* Insert a new tool in rnd_tools; returns -1 on failure */
+rnd_toolid_t rnd_tool_reg(pcb_tool_t *tool, const char *cookie);
 
 /* Unregister all tools that has matching cookie */
-void pcb_tool_unreg_by_cookie(const char *cookie);
+void rnd_tool_unreg_by_cookie(const char *cookie);
 
 /* Return the ID of a tool by name; returns -1 on error */
-pcb_toolid_t pcb_tool_lookup(const char *name);
+rnd_toolid_t rnd_tool_lookup(const char *name);
 
 
 /* Select a tool by name, id or pick the highest prio tool; return 0 on success */
-int pcb_tool_select_by_name(rnd_hidlib_t *hidlib, const char *name);
-int pcb_tool_select_by_id(rnd_hidlib_t *hidlib, pcb_toolid_t id);
-int pcb_tool_select_highest(rnd_hidlib_t *hidlib);
+int rnd_tool_select_by_name(rnd_hidlib_t *hidlib, const char *name);
+int rnd_tool_select_by_id(rnd_hidlib_t *hidlib, rnd_toolid_t id);
+int rnd_tool_select_highest(rnd_hidlib_t *hidlib);
 
-int pcb_tool_save(rnd_hidlib_t *hidlib);
-int pcb_tool_restore(rnd_hidlib_t *hidlib);
+int rnd_tool_save(rnd_hidlib_t *hidlib);
+int rnd_tool_restore(rnd_hidlib_t *hidlib);
 
 /* Called after GUI_INIT; registers all mouse cursors in the GUI */
 void rnd_tool_gui_init(void);
@@ -108,20 +108,20 @@ void rnd_tool_gui_init(void);
 /**** Tool function wrappers; calling these will operate on the current tool 
       as defined in rnd_conf.editor.mode ****/
 
-void pcb_tool_press(rnd_hidlib_t *hidlib);
-void pcb_tool_release(rnd_hidlib_t *hidlib);
-void pcb_tool_adjust_attached(rnd_hidlib_t *hl);
-void pcb_tool_draw_attached(rnd_hidlib_t *hl);
-rnd_bool pcb_tool_undo_act(rnd_hidlib_t *hl);
-rnd_bool pcb_tool_redo_act(rnd_hidlib_t *hl);
+void rnd_tool_press(rnd_hidlib_t *hidlib);
+void rnd_tool_release(rnd_hidlib_t *hidlib);
+void rnd_tool_adjust_attached(rnd_hidlib_t *hl);
+void rnd_tool_draw_attached(rnd_hidlib_t *hl);
+rnd_bool rnd_tool_undo_act(rnd_hidlib_t *hl);
+rnd_bool rnd_tool_redo_act(rnd_hidlib_t *hl);
 
 
 /* fake a click */
-void pcb_tool_do_press(rnd_hidlib_t *hidlib);
+void rnd_tool_do_press(rnd_hidlib_t *hidlib);
 
 /**** Low level, for internal use ****/
 
 /* Get the tool pointer of a tool by id */
-#define pcb_tool_get(id) ((const pcb_tool_t *)*vtp0_get(&pcb_tools, id, 0))
+#define rnd_tool_get(id) ((const pcb_tool_t *)*vtp0_get(&rnd_tools, id, 0))
 
 #endif

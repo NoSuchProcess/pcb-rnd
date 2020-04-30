@@ -54,7 +54,7 @@ static void tool_logic_chg_tool(rnd_hidlib_t *hidlib, void *user_data, int argc,
 	int *ok = argv[1].d.p;
 	int id = argv[2].d.i;
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
-	if (pcb->RatDraw && !(pcb_tool_get(id)->user_flags & PCB_TLF_RAT)) {
+	if (pcb->RatDraw && !(rnd_tool_get(id)->user_flags & PCB_TLF_RAT)) {
 		rnd_message(RND_MSG_WARNING, "That tool can not be used on the rat layer!\n");
 		*ok = 0;
 	}
@@ -62,7 +62,7 @@ static void tool_logic_chg_tool(rnd_hidlib_t *hidlib, void *user_data, int argc,
 
 static void tool_logic_chg_mode(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pcb_tool_chg_mode(&PCB->hidlib);
+	rnd_tool_chg_mode(&PCB->hidlib);
 }
 
 
@@ -97,8 +97,8 @@ void pcb_tool_logic_uninit(void)
 static void tool_logic_chg_layer(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	static int was_rat;
-	if (PCB->RatDraw && !was_rat && !(pcb_tool_get(rnd_conf.editor.mode)->user_flags & PCB_TLF_RAT))
-		pcb_tool_select_by_name(&PCB->hidlib, "line");
+	if (PCB->RatDraw && !was_rat && !(rnd_tool_get(rnd_conf.editor.mode)->user_flags & PCB_TLF_RAT))
+		rnd_tool_select_by_name(&PCB->hidlib, "line");
 	was_rat = PCB->RatDraw;
 }
 

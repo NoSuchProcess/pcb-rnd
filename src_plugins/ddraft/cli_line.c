@@ -62,8 +62,8 @@ static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
 
 	pcb_ddraft_attached_reset();
 
-	if (pcb_tool_next_id != pcb_ddraft_tool)
-		pcb_tool_select_by_id(&PCB->hidlib, pcb_ddraft_tool);
+	if (rnd_tool_next_id != pcb_ddraft_tool)
+		rnd_tool_select_by_id(&PCB->hidlib, pcb_ddraft_tool);
 
 	rnd_trace("line e: '%s':%d\n", line, cursor);
 	memset(&box, 0, sizeof(box));

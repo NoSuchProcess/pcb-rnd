@@ -125,7 +125,7 @@ static const char *text_icon[] = {
 };
 
 pcb_tool_t pcb_tool_text = {
-	"text", NULL, NULL, 100, text_icon, PCB_TOOL_CURSOR_NAMED("xterm"), 0,
+	"text", NULL, NULL, 100, text_icon, RND_TOOL_CURSOR_NAMED("xterm"), 0,
 	NULL,
 	NULL,
 	pcb_tool_text_notify_mode,

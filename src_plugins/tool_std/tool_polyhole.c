@@ -183,9 +183,9 @@ rnd_bool pcb_tool_polyhole_redo_act(rnd_hidlib_t *hl)
 void pcb_tool_polyhole_escape(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
-		pcb_tool_select_by_name(hl, "arrow");
+		rnd_tool_select_by_name(hl, "arrow");
 	else
-		pcb_tool_select_by_name(hl, "polyhole");
+		rnd_tool_select_by_name(hl, "polyhole");
 }
 
 /* XPM */
@@ -219,7 +219,7 @@ static const char * polyhole_icon[] = {
 
 
 pcb_tool_t pcb_tool_polyhole = {
-	"polyhole", NULL, NULL, 100, polyhole_icon, PCB_TOOL_CURSOR_NAMED("up_arrow"), 0,
+	"polyhole", NULL, NULL, 100, polyhole_icon, RND_TOOL_CURSOR_NAMED("up_arrow"), 0,
 	NULL,
 	pcb_tool_polyhole_uninit,
 	pcb_tool_polyhole_notify_mode,

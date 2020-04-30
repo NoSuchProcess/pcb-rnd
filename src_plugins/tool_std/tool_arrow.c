@@ -78,17 +78,17 @@ static void click_timer_cb(rnd_hidval_t hv)
 			pcb_buffer_add_selected(pcb, PCB_PASTEBUFFER, hl->tool_x, hl->tool_y, rnd_true, rnd_true);
 			pcb_undo_save_serial();
 			pcb_remove_selected(rnd_false);
-			pcb_tool_save(hl);
-			pcb_tool_is_saved = rnd_true;
-			pcb_tool_select_by_name(hl, "buffer");
+			rnd_tool_save(hl);
+			rnd_tool_is_saved = rnd_true;
+			rnd_tool_select_by_name(hl, "buffer");
 		}
 		else if (hl->tool_hit && !rnd_gui->shift_is_pressed(rnd_gui)) {
 			rnd_rnd_box_t box;
 
 			hl->tool_grabbed.status = rnd_true;
-			pcb_tool_save(hl);
-			pcb_tool_is_saved = rnd_true;
-			pcb_tool_select_by_name(hl, rnd_gui->control_is_pressed(rnd_gui)? "copy" : "move");
+			rnd_tool_save(hl);
+			rnd_tool_is_saved = rnd_true;
+			rnd_tool_select_by_name(hl, rnd_gui->control_is_pressed(rnd_gui)? "copy" : "move");
 			pcb_crosshair.AttachedObject.Ptr1 = pcb_crosshair_note.ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = pcb_crosshair_note.ptr2;
 			pcb_crosshair.AttachedObject.Ptr3 = pcb_crosshair_note.ptr3;
@@ -269,7 +269,7 @@ static const char *arrow_icon[] = {
 };
 
 pcb_tool_t pcb_tool_arrow = {
-	"arrow", NULL, NULL, 10, arrow_icon, PCB_TOOL_CURSOR_NAMED("left_ptr"), 0,
+	"arrow", NULL, NULL, 10, arrow_icon, RND_TOOL_CURSOR_NAMED("left_ptr"), 0,
 	NULL,
 	pcb_tool_arrow_uninit,
 	pcb_tool_arrow_notify_mode,

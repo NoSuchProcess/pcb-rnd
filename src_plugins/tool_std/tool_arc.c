@@ -52,12 +52,12 @@
 void pcb_tool_arc_init(void)
 {
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
-	if (pcb_tool_prev_id == pcb_crosshair.tool_line && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
+	if (rnd_tool_prev_id == pcb_crosshair.tool_line && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.AttachedLine.Point1.X;
 		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedLine.Point1.Y;
-		pcb_tool_adjust_attached(NULL);
+		rnd_tool_adjust_attached(NULL);
 	}
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
@@ -66,7 +66,7 @@ void pcb_tool_arc_uninit(void)
 {
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	pcb_added_lines = 0;
-	if (pcb_tool_next_id != pcb_crosshair.tool_line) {
+	if (rnd_tool_next_id != pcb_crosshair.tool_line) {
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 		if (!pcb_marked.user_placed)
 			pcb_crosshair_set_local_ref(0, 0, rnd_false);
@@ -186,7 +186,7 @@ rnd_bool pcb_tool_arc_undo_act(rnd_hidlib_t *hl)
 		pcb_arc_get_end((pcb_arc_t *) ptr2, 0, &pcb_crosshair.AttachedBox.Point2.X, &pcb_crosshair.AttachedBox.Point2.Y);
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X;
 		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y;
-		pcb_tool_adjust_attached(hl);
+		rnd_tool_adjust_attached(hl);
 		if (--pcb_added_lines == 0)
 			pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
 	}
@@ -196,9 +196,9 @@ rnd_bool pcb_tool_arc_undo_act(rnd_hidlib_t *hl)
 void pcb_tool_arc_escape(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
-		pcb_tool_select_by_name(hl, "arrow");
+		rnd_tool_select_by_name(hl, "arrow");
 	else
-		pcb_tool_select_by_name(hl, "arc");
+		rnd_tool_select_by_name(hl, "arc");
 }
 
 /* XPM */
@@ -233,7 +233,7 @@ static const char *arc_icon[] = {
 };
 
 pcb_tool_t pcb_tool_arc = {
-	"arc", NULL, NULL, 100, arc_icon, PCB_TOOL_CURSOR_NAMED("question_arrow"), 0,
+	"arc", NULL, NULL, 100, arc_icon, RND_TOOL_CURSOR_NAMED("question_arrow"), 0,
 	pcb_tool_arc_init,
 	pcb_tool_arc_uninit,
 	pcb_tool_arc_notify_mode,

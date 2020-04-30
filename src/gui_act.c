@@ -144,7 +144,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* toggle line-adjust flag */
 		case F_ToggleAllDirections:
 			rnd_conf_toggle_editor(all_direction_lines);
-			pcb_tool_adjust_attached(RND_ACT_HIDLIB);
+			rnd_tool_adjust_attached(RND_ACT_HIDLIB);
 			break;
 
 		case F_CycleClip:
@@ -156,7 +156,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else {
 				rnd_conf_setf(RND_CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
 			}
-			pcb_tool_adjust_attached(RND_ACT_HIDLIB);
+			rnd_tool_adjust_attached(RND_ACT_HIDLIB);
 			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
@@ -592,7 +592,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (rnd_conf.editor.mode != pcb_crosshair.tool_line)
-			pcb_tool_select_by_name(RND_ACT_HIDLIB, "line");
+			rnd_tool_select_by_name(RND_ACT_HIDLIB, "line");
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
@@ -602,7 +602,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (rnd_conf.editor.mode != pcb_crosshair.tool_arc)
-			pcb_tool_select_by_name(RND_ACT_HIDLIB, "arc");
+			rnd_tool_select_by_name(RND_ACT_HIDLIB, "arc");
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;

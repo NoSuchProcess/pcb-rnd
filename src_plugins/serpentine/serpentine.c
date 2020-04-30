@@ -408,7 +408,7 @@ rnd_bool tool_serpentine_undo_act()
 
 static pcb_tool_t tool_serpentine = {
 	"serpentine", "experimental",
-	NULL, 100, NULL, PCB_TOOL_CURSOR_NAMED(NULL), 0,
+	NULL, 100, NULL, RND_TOOL_CURSOR_NAMED(NULL), 0,
 	tool_serpentine_init,
 	tool_serpentine_uninit,
 	tool_serpentine_notify_mode,
@@ -430,7 +430,7 @@ static const char pcb_acts_serpentine[] = "serpentine()";
 static const char pcb_acth_serpentine[] = "Tool for drawing serpentines";
 fgw_error_t pcb_act_serpentine(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_tool_select_by_name(&PCB->hidlib, "serpentine");
+	rnd_tool_select_by_name(&PCB->hidlib, "serpentine");
 	RND_ACT_IRES(0);
 	return 0;
 }
@@ -445,7 +445,7 @@ int pplg_check_ver_serpentine(int ver_needed) { return 0; }
 void pplg_uninit_serpentine(void)
 {
 	rnd_remove_actions_by_cookie(serpentine_cookie);
-	pcb_tool_unreg_by_cookie(serpentine_cookie);
+	rnd_tool_unreg_by_cookie(serpentine_cookie);
 	rnd_conf_unreg_fields("plugins/serpentine/");
 }
 
@@ -457,7 +457,7 @@ int pplg_init_serpentine(void)
 	rnd_conf_reg_field(conf_serpentine, field,isarray,type_name,cpath,cname,desc,flags);
 #include "serpentine_conf_fields.h"
 
-	pcb_tool_reg(&tool_serpentine, serpentine_cookie);
+	rnd_tool_reg(&tool_serpentine, serpentine_cookie);
 
 	return 0;
 }

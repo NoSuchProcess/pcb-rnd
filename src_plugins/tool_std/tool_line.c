@@ -65,12 +65,12 @@ static pcb_layer_t *last_layer;
 void pcb_tool_line_init(void)
 {
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
-	if (pcb_tool_prev_id == pcb_crosshair.tool_arc && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
+	if (rnd_tool_prev_id == pcb_crosshair.tool_arc && pcb_crosshair.AttachedBox.State != PCB_CH_STATE_FIRST) {
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
 		pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = pcb_crosshair.AttachedBox.Point1.X;
 		pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = pcb_crosshair.AttachedBox.Point1.Y;
-		pcb_tool_adjust_attached(NULL);
+		rnd_tool_adjust_attached(NULL);
 	}
 	else {
 		if (conf_core.editor.auto_drc) {
@@ -88,7 +88,7 @@ void pcb_tool_line_uninit(void)
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	pcb_added_lines = 0;
 	pcb_route_reset(&pcb_crosshair.Route);
-	if (pcb_tool_next_id != pcb_crosshair.tool_arc) {
+	if (rnd_tool_next_id != pcb_crosshair.tool_arc) {
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		if (!pcb_marked.user_placed)
 			pcb_crosshair_set_local_ref(0, 0, rnd_false);
@@ -158,7 +158,7 @@ void pcb_tool_line_notify_mode(rnd_hidlib_t *hl)
 	 * the file after saving.
 	 */
 	if (pcb_crosshair.X == pcb_crosshair.AttachedLine.Point1.X && pcb_crosshair.Y == pcb_crosshair.AttachedLine.Point1.Y) {
-		pcb_tool_select_by_name(hl, "line");
+		rnd_tool_select_by_name(hl, "line");
 		return;
 	}
 
@@ -441,7 +441,7 @@ rnd_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
 			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point2.Y;
 		}
 		pcb_crosshair_grid_fit(pcb_crosshair.X, pcb_crosshair.Y);
-		pcb_tool_adjust_attached(hl);
+		rnd_tool_adjust_attached(hl);
 		if (--pcb_added_lines == 0) {
 			pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
 			last_layer = PCB_CURRLAYER(pcb);
@@ -478,9 +478,9 @@ rnd_bool pcb_tool_line_redo_act(rnd_hidlib_t *hl)
 void pcb_tool_line_escape(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
-		pcb_tool_select_by_name(hl, "arrow");
+		rnd_tool_select_by_name(hl, "arrow");
 	else
-		pcb_tool_select_by_name(hl, "line");
+		rnd_tool_select_by_name(hl, "line");
 }
 
 /* XPM */
@@ -517,7 +517,7 @@ static const char *line_icon[] = {
 
 
 pcb_tool_t pcb_tool_line = {
-	"line", NULL, NULL, 100, line_icon, PCB_TOOL_CURSOR_NAMED("pencil"), 0,
+	"line", NULL, NULL, 100, line_icon, RND_TOOL_CURSOR_NAMED("pencil"), 0,
 	pcb_tool_line_init,
 	pcb_tool_line_uninit,
 	pcb_tool_line_notify_mode,

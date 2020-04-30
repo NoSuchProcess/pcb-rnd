@@ -1124,7 +1124,7 @@ static const char *skroute_xpm[] = {
 
 static pcb_tool_t tool_skline = {
 	"skline", "convert a free-hand sketch of a route to traces",
-	NULL, 100, skroute_xpm, PCB_TOOL_CURSOR_NAMED(NULL), PCB_TLF_AUTO_TOOLBAR,
+	NULL, 100, skroute_xpm, RND_TOOL_CURSOR_NAMED(NULL), PCB_TLF_AUTO_TOOLBAR,
 	tool_skline_init,
 	tool_skline_uninit,
 	tool_skline_notify_mode,
@@ -1155,7 +1155,7 @@ static const char pcb_acts_skline[] = "skline()";
 static const char pcb_acth_skline[] = "Tool for drawing sketch lines";
 fgw_error_t pcb_act_skline(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_tool_select_by_name(&PCB->hidlib, "skline");
+	rnd_tool_select_by_name(&PCB->hidlib, "skline");
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -1181,7 +1181,7 @@ int pplg_check_ver_sketch_route(int ver_needed) { return 0; }
 void pplg_uninit_sketch_route(void)
 {
 	rnd_remove_actions_by_cookie(pcb_sketch_route_cookie);
-	pcb_tool_unreg_by_cookie(pcb_sketch_route_cookie); /* should be done before pcb_tool_uninit, somehow */
+	rnd_tool_unreg_by_cookie(pcb_sketch_route_cookie); /* should be done before pcb_tool_uninit, somehow */
 	sketches_uninit();
 }
 
@@ -1190,7 +1190,7 @@ int pplg_init_sketch_route(void)
 	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)
 
-	pcb_tool_reg(&tool_skline, pcb_sketch_route_cookie);
+	rnd_tool_reg(&tool_skline, pcb_sketch_route_cookie);
 
 	return 0;
 }

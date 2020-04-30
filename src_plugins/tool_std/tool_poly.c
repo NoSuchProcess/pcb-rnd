@@ -153,9 +153,9 @@ rnd_bool pcb_tool_poly_redo_act(rnd_hidlib_t *hl)
 void pcb_tool_poly_escape(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
-		pcb_tool_select_by_name(hl, "arrow");
+		rnd_tool_select_by_name(hl, "arrow");
 	else
-		pcb_tool_select_by_name(hl, "poly");
+		rnd_tool_select_by_name(hl, "poly");
 }
 
 /* XPM */
@@ -190,7 +190,7 @@ static const char *poly_icon[] = {
 };
 
 pcb_tool_t pcb_tool_poly = {
-	"poly", NULL, NULL, 100, poly_icon, PCB_TOOL_CURSOR_NAMED("up_arrow"), 0,
+	"poly", NULL, NULL, 100, poly_icon, RND_TOOL_CURSOR_NAMED("up_arrow"), 0,
 	NULL,
 	pcb_tool_poly_uninit,
 	pcb_tool_poly_notify_mode,

@@ -606,7 +606,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 #endif
 
 		conf_core.temp.rat_warn = rnd_true; /* make sure the first click can remove warnings */
-		pcb_tool_select_by_name(&PCB->hidlib, "arrow");
+		rnd_tool_select_by_name(&PCB->hidlib, "arrow");
 
 		return 0;
 	}

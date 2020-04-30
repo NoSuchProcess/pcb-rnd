@@ -1112,7 +1112,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				RND_ACT_IRES(-1);
 			}
 			else
-				pcb_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
+				rnd_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
 			break;
 
 		case F_Save:

@@ -236,11 +236,11 @@ static const char pcb_acth_ChkMode[] = "Return 1 if the currently selected mode 
 static fgw_error_t pcb_act_ChkMode(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dst;
-	pcb_toolid_t id;
+	rnd_toolid_t id;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, ChkMode, dst = argv[1].val.str);
 
-	id = pcb_tool_lookup(dst);
+	id = rnd_tool_lookup(dst);
 	if (id >= 0) {
 		RND_ACT_IRES(rnd_conf.editor.mode == id);
 		return 0;

@@ -359,7 +359,7 @@ void pcb_main_uninit(void)
 	pcb_io_uninit();
 	pcb_fp_uninit();
 	pcb_fp_host_uninit();
-	pcb_tool_uninit();
+	rnd_tool_uninit();
 	pcb_poly_uninit();
 
 	rnd_log_print_uninit_errs("Log produced during uninitialization");
@@ -439,7 +439,7 @@ int main(int argc, char *argv[])
 		/* optionally: handle extra arguments, not processed by the hidlib, here */
 		n += rnd_main_args_add(&ga, argv[n], argv[n+1]);
 	}
-	pcb_tool_init();
+	rnd_tool_init();
 	pcb_tool_logic_init();
 
 	rnd_hidlib_init2(pup_buildins, NULL);
@@ -564,7 +564,7 @@ int main(int argc, char *argv[])
 		rnd_message(RND_MSG_ERROR, "%s\n", EXPERIMENTAL);
 		rnd_message(RND_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
 	}
-	pcb_tool_select_by_name(&PCB->hidlib, "arrow");
+	rnd_tool_select_by_name(&PCB->hidlib, "arrow");
 	rnd_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 	rnd_mainloop_interactive(&ga, &PCB->hidlib);
 

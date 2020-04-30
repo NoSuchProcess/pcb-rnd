@@ -503,7 +503,7 @@ static const char *ddraft_xpm[] = {
 
 static pcb_tool_t tool_ddraft = {
 	"ddraft", "2 dimensional drafting",
-	NULL, 1000, ddraft_xpm, PCB_TOOL_CURSOR_NAMED(NULL), 1,
+	NULL, 1000, ddraft_xpm, RND_TOOL_CURSOR_NAMED(NULL), 1,
 	NULL,
 	NULL,
 	NULL,
@@ -541,7 +541,7 @@ void pplg_uninit_ddraft(void)
 	rnd_conf_hid_unreg(ddraft_cookie);
 	rnd_event_unbind_allcookie(ddraft_cookie);
 	rnd_remove_actions_by_cookie(ddraft_cookie);
-	pcb_tool_unreg_by_cookie(ddraft_cookie);
+	rnd_tool_unreg_by_cookie(ddraft_cookie);
 }
 
 static const rnd_conf_hid_callbacks_t conf_cbs_adl = { NULL, cons_gui_confchg, NULL, NULL };
@@ -557,7 +557,7 @@ int pplg_init_ddraft(void)
 	RND_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
 	rnd_event_bind(PCB_EVENT_DRAW_CROSSHAIR_CHATT, cnst_enforce, NULL, ddraft_cookie);
 
-	pcb_ddraft_tool = pcb_tool_reg(&tool_ddraft, ddraft_cookie);
+	pcb_ddraft_tool = rnd_tool_reg(&tool_ddraft, ddraft_cookie);
 
 	confid = rnd_conf_hid_reg(ddraft_cookie, NULL);
 	cn = rnd_conf_get_field("editor/all_direction_lines");

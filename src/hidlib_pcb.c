@@ -29,5 +29,5 @@
 
 void rnd_hidlib_adjust_attached_objects(rnd_hidlib_t *hl)
 {
-	pcb_tool_adjust_attached(hl);
+	rnd_tool_adjust_attached(hl);
 }

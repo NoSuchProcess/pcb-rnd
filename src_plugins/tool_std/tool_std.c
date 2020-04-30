@@ -54,29 +54,29 @@ int pplg_check_ver_tool_std(int ver_needed) { return 0; }
 
 void pplg_uninit_tool_std(void)
 {
-	pcb_tool_unreg_by_cookie(pcb_tool_std_cookie);
+	rnd_tool_unreg_by_cookie(pcb_tool_std_cookie);
 }
 
 int pplg_init_tool_std(void)
 {
 	RND_API_CHK_VER;
 
-	pcb_crosshair.tool_arc = pcb_tool_reg(&pcb_tool_arc, pcb_tool_std_cookie);
-	pcb_crosshair.tool_arrow = pcb_tool_reg(&pcb_tool_arrow, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_buffer, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_copy, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_insert, pcb_tool_std_cookie);
-	pcb_crosshair.tool_line = pcb_tool_reg(&pcb_tool_line, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_lock, pcb_tool_std_cookie);
-	pcb_crosshair.tool_move = pcb_tool_reg(&pcb_tool_move, pcb_tool_std_cookie);
-	pcb_crosshair.tool_poly = pcb_tool_reg(&pcb_tool_poly, pcb_tool_std_cookie);
-	pcb_crosshair.tool_poly_hole = pcb_tool_reg(&pcb_tool_polyhole, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_rectangle, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_remove, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_rotate, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_text, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_thermal, pcb_tool_std_cookie);
-	pcb_tool_reg(&pcb_tool_via, pcb_tool_std_cookie);
+	pcb_crosshair.tool_arc = rnd_tool_reg(&pcb_tool_arc, pcb_tool_std_cookie);
+	pcb_crosshair.tool_arrow = rnd_tool_reg(&pcb_tool_arrow, pcb_tool_std_cookie);
+	rnd_tool_reg(&pcb_tool_buffer, pcb_tool_std_cookie);
+	rnd_tool_reg(&pcb_tool_copy, pcb_tool_std_cookie);
+	rnd_tool_reg(&pcb_tool_insert, pcb_tool_std_cookie);
+	pcb_crosshair.tool_line = rnd_tool_reg(&pcb_tool_line, pcb_tool_std_cookie);
+	rnd_tool_reg(&pcb_tool_lock, pcb_tool_std_cookie);
+	pcb_crosshair.tool_move = rnd_tool_reg(&pcb_tool_move, pcb_tool_std_cookie);
+	pcb_crosshair.tool_poly = rnd_tool_reg(&pcb_tool_poly, pcb_tool_std_cookie);
+	pcb_crosshair.tool_poly_hole = rnd_tool_reg(&pcb_tool_polyhole, pcb_tool_std_cookie);
+	rnd_tool_reg(&pcb_tool_rectangle, pcb_tool_std_cookie);
+	rnd_tool_reg(&pcb_tool_remove, pcb_tool_std_cookie);
+	rnd_tool_reg(&pcb_tool_rotate, pcb_tool_std_cookie);
+	rnd_tool_reg(&pcb_tool_text, pcb_tool_std_cookie);
+	rnd_tool_reg(&pcb_tool_thermal, pcb_tool_std_cookie);
+	rnd_tool_reg(&pcb_tool_via, pcb_tool_std_cookie);
 
 	return 0;
 }

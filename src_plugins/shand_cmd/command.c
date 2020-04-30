@@ -94,7 +94,7 @@ static fgw_error_t pcb_act_LoadElementToBuffer(fgw_arg_t *res, int argc, fgw_arg
 	RND_PCB_ACT_CONVARG(1, FGW_STR, LoadElementToBuffer, filename = argv[1].val.str);
 
 	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, filename, NULL))
-		pcb_tool_select_by_name(&PCB->hidlib, "buffer");
+		rnd_tool_select_by_name(&PCB->hidlib, "buffer");
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -111,7 +111,7 @@ static fgw_error_t pcb_act_LoadLayoutToBuffer(fgw_arg_t *res, int argc, fgw_arg_
 	rnd_PCB_ACT_MAY_CONVARG(2, FGW_STR, LoadLayoutToBuffer, format = argv[2].val.str);
 
 	if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, filename, format))
-		pcb_tool_select_by_name(&PCB->hidlib, "buffer");
+		rnd_tool_select_by_name(&PCB->hidlib, "buffer");
 
 	RND_ACT_IRES(0);
 	return 0;
