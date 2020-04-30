@@ -347,7 +347,7 @@ void pcb_main_uninit(void)
 
 	rnd_hidlib_uninit(); /* plugin unload */
 
-	pcb_funchash_uninit();
+	rnd_funchash_uninit();
 	rnd_file_loaded_uninit();
 	pcb_uilayer_uninit();
 	rnd_cli_uninit();
@@ -391,7 +391,7 @@ void print_pup_err(pup_err_stack_t *entry, char *string)
 
 #include "funchash_core.h"
 #define action_entry(x) { #x, F_ ## x},
-static pcb_funchash_table_t Functions[] = {
+static rnd_funchash_table_t Functions[] = {
 #include "funchash_core_list.h"
 	{"F_END", F_END}
 };
@@ -451,7 +451,7 @@ int main(int argc, char *argv[])
 
 	srand(time(NULL));  /* Set seed for rand() */
 
-	pcb_funchash_set_table(Functions, RND_ENTRIES(Functions), NULL);
+	rnd_funchash_set_table(Functions, RND_ENTRIES(Functions), NULL);
 	pcb_polygon_init();
 
 	/* Register a function to be called when the program terminates. This makes

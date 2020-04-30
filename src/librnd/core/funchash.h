@@ -24,37 +24,37 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_FUNCHASH_H
-#define PCB_FUNCHASH_H
+#ifndef RND_FUNCHASH_H
+#define RND_FUNCHASH_H
 
-/* Table entry format for pcb_funchash_set_table() */
+/* Table entry format for rnd_funchash_set_table() */
 typedef struct {
 	const char *key;
 	int val;
-} pcb_funchash_table_t;
+} rnd_funchash_table_t;
 
 /* Cookie is the namespace so that different modules can use the same
    function names with different integer IDs without interference. Core
    should use cookie==NULL. */
 
 /* Resolve a key string into an integer ID */
-int pcb_funchash_get(const char *key, const char *cookie);
+int rnd_funchash_get(const char *key, const char *cookie);
 
 /* Store key string - integer ID pair */
-int pcb_funchash_set(const char *key, int val, const char *cookie);
+int rnd_funchash_set(const char *key, int val, const char *cookie);
 
 /* Store multiple key strings - integer ID pairs using a table */
-int pcb_funchash_set_table(pcb_funchash_table_t *table, int numelem, const char *cookie);
+int rnd_funchash_set_table(rnd_funchash_table_t *table, int numelem, const char *cookie);
 
 /* Remove all keys inserted for a cookie */
-void pcb_funchash_remove_cookie(const char *cookie);
+void rnd_funchash_remove_cookie(const char *cookie);
 
 /* Slow linear search to look up the key text for an ID (for debugging) */
-const char *pcb_funchash_reverse(int id);
+const char *rnd_funchash_reverse(int id);
 
 
 /* Init-uninit the hash */
-void pcb_funchash_init(void);
-void pcb_funchash_uninit(void);
+void rnd_funchash_init(void);
+void rnd_funchash_uninit(void);
 
 #endif

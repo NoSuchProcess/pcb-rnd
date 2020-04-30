@@ -85,7 +85,7 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *
 	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, ChangeClearSize, units = argv[3].val.str);
 
 	if (function && delta) {
-		int funcid = pcb_funchash_get(function, NULL);
+		int funcid = rnd_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
 			rnd_hid_get_coords("Select an Object", &x, &y, 0);
@@ -110,7 +110,7 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *
 		}
 		else
 			value = 2 * rnd_get_value(delta, units, &absolute, NULL);
-		switch (pcb_funchash_get(function, NULL)) {
+		switch (rnd_funchash_get(function, NULL)) {
 		case F_Object:
 			{
 				if (type != PCB_OBJ_VOID)
@@ -188,7 +188,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 		return;
 	}
 
-	switch (pcb_funchash_get(what, NULL)) {
+	switch (rnd_funchash_get(what, NULL)) {
 	case F_Object:
 		{
 			int type;
@@ -286,7 +286,7 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 	if (function && delta) {
-		int funcid = pcb_funchash_get(function, NULL);
+		int funcid = rnd_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
 			rnd_coord_t x, y;
@@ -381,7 +381,7 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	rnd_PCB_ACT_MAY_CONVARG(3, FGW_STR, Change2ndSize, units = argv[3].val.str);
 
 	if (function && delta) {
-		int funcid = pcb_funchash_get(function, NULL);
+		int funcid = rnd_funchash_get(function, NULL);
 
 		if (funcid == F_Object) {
 			rnd_coord_t x, y;
@@ -397,7 +397,7 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		else
 			value = rnd_get_value(delta, units, &absolute, NULL);
 
-		switch (pcb_funchash_get(function, NULL)) {
+		switch (rnd_funchash_get(function, NULL)) {
 		case F_Object:
 			{
 
@@ -672,7 +672,7 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		kind = rnd_get_value_ex(style, NULL, &absolute, NULL, NULL, NULL);
 		if (absolute && (kind <= 5))
-			switch (pcb_funchash_get(function, NULL)) {
+			switch (rnd_funchash_get(function, NULL)) {
 			case F_Object:
 				rnd_hid_get_coords("Click on object for SetThermal", &gx, &gy, 0);
 				if ((type = pcb_search_screen(gx, gy, PCB_CHANGETHERMAL_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {

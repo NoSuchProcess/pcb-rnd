@@ -1125,7 +1125,7 @@ int pcb_layergrp_set_purpose__(pcb_layergrp_t *grp, char *purpose, rnd_bool undo
 	}
 	else {
 		r->purps = purpose;
-		r->purpi = pcb_funchash_get(purpose, NULL);
+		r->purpi = rnd_funchash_get(purpose, NULL);
 		if (r->purpi < 0)
 			r->purpi = F_user;
 	}

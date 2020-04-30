@@ -373,7 +373,7 @@ int pcb_layer_purpose_(const pcb_layer_t *layer, const char **out)
 	/* bound layer without a real layer binding: use the type match */
 	if (out != NULL)
 		*out = layer->meta.bound.purpose;
-	return pcb_funchash_get(layer->meta.bound.purpose, NULL);
+	return rnd_funchash_get(layer->meta.bound.purpose, NULL);
 }
 
 #define APPEND(n) \

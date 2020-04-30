@@ -58,19 +58,19 @@ static unsigned fh_hash(const void *key)
 
 #include <librnd/core/funchash_core.h>
 #define action_entry(x) { #x, F_ ## x},
-static pcb_funchash_table_t rnd_functions[] = {
+static rnd_funchash_table_t rnd_functions[] = {
 #include <librnd/core/funchash_core_list.h>
 	{"F_RND_END", F_RND_END}
 };
 
 
-void pcb_funchash_init(void)
+void rnd_funchash_init(void)
 {
 	funchash = htpi_alloc(fh_hash, keyeq);
-	pcb_funchash_set_table(rnd_functions, RND_ENTRIES(rnd_functions), NULL);
+	rnd_funchash_set_table(rnd_functions, RND_ENTRIES(rnd_functions), NULL);
 }
 
-void pcb_funchash_uninit(void)
+void rnd_funchash_uninit(void)
 {
 	htpi_entry_t *e;
 
@@ -85,7 +85,7 @@ void pcb_funchash_uninit(void)
 	funchash = NULL;
 }
 
-void pcb_funchash_remove_cookie(const char *cookie)
+void rnd_funchash_remove_cookie(const char *cookie)
 {
 	htpi_entry_t *e;
 
@@ -99,7 +99,7 @@ void pcb_funchash_remove_cookie(const char *cookie)
 	}
 }
 
-int pcb_funchash_get(const char *key, const char *cookie)
+int rnd_funchash_get(const char *key, const char *cookie)
 {
 	fh_key_t new_key;
 	htpi_entry_t *e;
@@ -116,12 +116,12 @@ int pcb_funchash_get(const char *key, const char *cookie)
 	return e->value;
 }
 
-int pcb_funchash_set(const char *key, int val, const char *cookie)
+int rnd_funchash_set(const char *key, int val, const char *cookie)
 {
 	fh_key_t *new_key;
 	int kl;
 
-	if (pcb_funchash_get(key, cookie) >= 0)
+	if (rnd_funchash_get(key, cookie) >= 0)
 		return -1;
 
 	kl = strlen(key);
@@ -133,17 +133,17 @@ int pcb_funchash_set(const char *key, int val, const char *cookie)
 	return 0;
 }
 
-int pcb_funchash_set_table(pcb_funchash_table_t *table, int numelem, const char *cookie)
+int rnd_funchash_set_table(rnd_funchash_table_t *table, int numelem, const char *cookie)
 {
 	int i, rv = 0;
 
 	for (i = 0; i < numelem; i++)
-		rv |= pcb_funchash_set(table[i].key, table[i].val, cookie);
+		rv |= rnd_funchash_set(table[i].key, table[i].val, cookie);
 
 	return rv;
 }
 
-const char *pcb_funchash_reverse(int id)
+const char *rnd_funchash_reverse(int id)
 {
 	htpi_entry_t *e;
 

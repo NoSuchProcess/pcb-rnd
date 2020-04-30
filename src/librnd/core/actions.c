@@ -724,7 +724,7 @@ int rnd_parse_actions(rnd_hidlib_t *hl, const char *str_)
 }
 
 /*** custom fungw types ***/
-#define conv_str2kw(dst, src) dst = pcb_funchash_get(src, NULL)
+#define conv_str2kw(dst, src) dst = rnd_funchash_get(src, NULL)
 
 static int keyword_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
@@ -756,7 +756,7 @@ static int keyword_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 			ARG_CONV_CASE_INVALID(tmp, conv_err)
 			case FGW_AUTO:
 			case FGW_STR:
-				arg->val.str = (char *)pcb_funchash_reverse(tmp);
+				arg->val.str = (char *)rnd_funchash_reverse(tmp);
 				arg->type = FGW_STR;
 				return 0;
 		}

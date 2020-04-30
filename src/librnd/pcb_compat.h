@@ -1192,3 +1192,11 @@
 #define PCB_UNIT_METRIC RND_UNIT_METRIC
 #define PCB_UNIT_IMPERIAL RND_UNIT_IMPERIAL
 #define PCB_UNIT_FREQ RND_UNIT_FREQ
+#define pcb_funchash_table_t rnd_funchash_table_t
+#define pcb_funchash_get rnd_funchash_get
+#define pcb_funchash_set rnd_funchash_set
+#define pcb_funchash_set_table rnd_funchash_set_table
+#define pcb_funchash_remove_cookie rnd_funchash_remove_cookie
+#define pcb_funchash_reverse rnd_funchash_reverse
+#define pcb_funchash_init rnd_funchash_init
+#define pcb_funchash_uninit rnd_funchash_uninit

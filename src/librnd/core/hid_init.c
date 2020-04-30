@@ -365,7 +365,7 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 
 	rnd_conf_load_extra(NULL, NULL);
 	rnd_units_init();
-	pcb_funchash_init();
+	rnd_funchash_init();
 
 	/* actions */
 	pcb_hidlib_error_init2();
