@@ -60,7 +60,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_PCB_ACT_CONVARG(1, FGW_STR, Zoom, vp = argv[1].val.str);
 
 		if (rnd_strcasecmp(vp, "selected") == 0) {
-			rnd_box_t sb;
+			rnd_rnd_box_t sb;
 			if (pcb_get_selection_bbox(&sb, PCB->Data) > 0)
 				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 			else
@@ -69,7 +69,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		if (rnd_strcasecmp(vp, "found") == 0) {
-			rnd_box_t sb;
+			rnd_rnd_box_t sb;
 			if (pcb_get_found_bbox(&sb, PCB->Data) > 0)
 				pcb_gui->zoom_win(pcb_gui, sb.X1, sb.Y1, sb.X2, sb.Y2, 1);
 			else
@@ -89,7 +89,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_layergrp_id_t active_group = pcb_layer_get_group(PCB, pcb_layer_stack[0]);
 	pcb_layergrp_id_t comp_group = -1, solder_group = -1;
 	rnd_bool comp_on = pcb_false, solder_on = pcb_false;
-	rnd_box_t vb;
+	rnd_rnd_box_t vb;
 	rnd_coord_t x, y;
 	double xcent, ycent, xoffs, yoffs;
 

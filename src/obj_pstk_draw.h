@@ -30,19 +30,19 @@
 #define PCB_OBJ_PSTK_DRAW_H
 
 /* Include rtree.h for these */
-#ifdef PCB_RTREE_H
+#ifdef RND_RTREE_H
 
 #include "board.h"
 #include "draw.h"
 
-pcb_r_dir_t pcb_pstk_draw_callback(const rnd_box_t *b, void *cl);
-pcb_r_dir_t pcb_pstk_draw_hole_callback(const rnd_box_t *b, void *cl);
-pcb_r_dir_t pcb_pstk_draw_slot_callback(const rnd_box_t *b, void *cl);
-pcb_r_dir_t pcb_pstk_clear_callback(const rnd_box_t *b, void *cl);
+pcb_r_dir_t pcb_pstk_draw_callback(const rnd_rnd_box_t *b, void *cl);
+pcb_r_dir_t pcb_pstk_draw_hole_callback(const rnd_rnd_box_t *b, void *cl);
+pcb_r_dir_t pcb_pstk_draw_slot_callback(const rnd_rnd_box_t *b, void *cl);
+pcb_r_dir_t pcb_pstk_clear_callback(const rnd_rnd_box_t *b, void *cl);
 #endif
 
-pcb_r_dir_t pcb_pstk_draw_mark_callback(const rnd_box_t *b, void *cl);
-pcb_r_dir_t pcb_pstk_draw_label_callback(const rnd_box_t *b, void *cl);
+pcb_r_dir_t pcb_pstk_draw_mark_callback(const rnd_rnd_box_t *b, void *cl);
+pcb_r_dir_t pcb_pstk_draw_label_callback(const rnd_rnd_box_t *b, void *cl);
 void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps);
 void pcb_pstk_invalidate_erase(pcb_pstk_t *ps);
 void pcb_pstk_invalidate_draw(pcb_pstk_t *ps);
@@ -51,7 +51,7 @@ void pcb_pstk_thindraw(pcb_draw_info_t *info, pcb_hid_gc_t gc, pcb_pstk_t *ps);
 
 /* Draw a padstack for perview; if layers is NULL, draw all layers, else
    draw the layers where it is not zero (layers are defined in pcb_proto_layers[]) */
-void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, rnd_bool mark, rnd_bool label, const rnd_box_t *drawn_area);
+void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers, rnd_bool mark, rnd_bool label, const rnd_rnd_box_t *drawn_area);
 
 
 #endif

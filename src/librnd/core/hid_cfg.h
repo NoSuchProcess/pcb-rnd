@@ -34,14 +34,14 @@
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/hid.h>
 
-struct pcb_hid_cfg_s {
+struct rnd_hid_cfg_s {
 	lht_doc_t *doc;
 };
 
 /* Search and load the menu res for hidname; if not found, parse
    embedded_fallback instead (if it is NULL, use the application default
    instead; for explicit empty embedded: use ""). Returns NULL on error */
-pcb_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback);
+rnd_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback);
 
 /* Generic, low level lihata loader */
 lht_doc_t *pcb_hid_cfg_load_lht(rnd_hidlib_t *hidlib, const char *filename);
@@ -50,8 +50,8 @@ lht_doc_t *pcb_hid_cfg_load_str(const char *text);
 /* Generic, low level lihata text value fetch */
 const char *pcb_hid_cfg_text_value(lht_doc_t *doc, const char *path);
 
-lht_node_t *pcb_hid_cfg_get_menu(pcb_hid_cfg_t *hr, const char *menu_path);
-lht_node_t *pcb_hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx);
+lht_node_t *pcb_hid_cfg_get_menu(rnd_hid_cfg_t *hr, const char *menu_path);
+lht_node_t *pcb_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx);
 
 /* Create a new hash node under parent (optional) and create a flat subtree of
    text nodes from name,value varargs (NULL terminated). This is a shorthand
@@ -76,7 +76,7 @@ void pcb_hid_cfg_error(const lht_node_t *node, const char *fmt, ...);
 
 /* search all instances of an @anchor menu in the currently active GUI and
    call cb on the lihata node; path has 128 extra bytes available at the end */
-void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx);
+void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx);
 
 /* remove all adjacent anchor menus with matching cookie below anode, the
    anchor node */

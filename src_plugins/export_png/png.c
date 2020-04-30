@@ -443,7 +443,7 @@ static int layer_sort(const void *va, const void *vb)
 }
 
 static const char *filename;
-static rnd_box_t *bounds;
+static rnd_rnd_box_t *bounds;
 static int in_mono, as_shown;
 
 static void parse_bloat(const char *str)
@@ -526,7 +526,7 @@ static void png_foot(void)
 void png_hid_export_to_file(FILE *the_file, pcb_hid_attr_val_t *options, pcb_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	rnd_box_t tmp, region;
+	rnd_rnd_box_t tmp, region;
 	pcb_hid_expose_ctx_t ctx;
 
 	f = the_file;
@@ -600,7 +600,7 @@ static void png_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 {
 	int save_ons[PCB_MAX_LAYER];
 	int i;
-	rnd_box_t tmp, *bbox;
+	rnd_rnd_box_t tmp, *bbox;
 	int w, h;
 	int xmax, ymax, dpi;
 	pcb_xform_t xform;
@@ -873,7 +873,7 @@ static void png_destroy_gc(pcb_hid_gc_t gc)
 }
 
 static pcb_composite_op_t drawing_mode;
-static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+static void png_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	static gdImagePtr dst_im;
 	drawing_mode = op;
@@ -1244,9 +1244,9 @@ static void png_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 }
 
 
-static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
-	pcb_angle_t sa, ea;
+	rnd_angle_t sa, ea;
 
 	use_gc(im, gc);
 	gdImageSetThickness(im, 0);
@@ -1302,7 +1302,7 @@ static void png_draw_arc_(gdImagePtr im, pcb_hid_gc_t gc, rnd_coord_t cx, rnd_co
 	gdImageArc(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * width), SCALE(2 * height), sa, ea, gdBrushed);
 }
 
-static void png_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void png_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	png_draw_arc_(im, gc, cx, cy, width, height, start_angle, delta_angle);
 	if ((im != erase_im) && (erase_im != NULL)) {

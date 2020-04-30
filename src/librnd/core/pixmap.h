@@ -54,7 +54,7 @@ struct pcb_pixmap_s {
 	void *hid_data;            /* HID's version of the pixmap */
 
 	/* transformation info */
-	pcb_angle_t tr_rot;        /* rotation angle (0 if not transformed) */
+	rnd_angle_t tr_rot;        /* rotation angle (0 if not transformed) */
 	double tr_xscale;
 	double tr_yscale;
 	unsigned tr_xmirror:1;     /* whether the pixmap is mirrored along the x axis (vertical mirror) */

@@ -71,7 +71,7 @@ RND_INLINE void pcb_hash_tr_coords(const pcb_host_trans_t *tr, rnd_coord_t *dstx
 }
 
 
-RND_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, pcb_angle_t ang)
+RND_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, rnd_angle_t ang)
 {
 	long l;
 	ang = fmod(ang + tr->rot, 360.0);

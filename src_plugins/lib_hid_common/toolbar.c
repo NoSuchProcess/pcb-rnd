@@ -100,7 +100,7 @@ static void toolbar_create_tool(pcb_toolid_t tid, pcb_tool_t *tool, const char *
 	vti0_set(&toolbar.tid2wid, tid, wid);
 }
 
-static void toolbar_create_static(pcb_hid_cfg_t *cfg)
+static void toolbar_create_static(rnd_hid_cfg_t *cfg)
 {
 	const lht_node_t *t, *ts = pcb_hid_cfg_get_menu(cfg, "/toolbar_static");
 
@@ -147,7 +147,7 @@ static void toolbar_create_dyn_all(void)
 	}
 }
 
-static void toolbar_docked_create(pcb_hid_cfg_t *cfg)
+static void toolbar_docked_create(rnd_hid_cfg_t *cfg)
 {
 	toolbar.tid2wid.used = 0;
 
@@ -169,7 +169,7 @@ static void toolbar_docked_create(pcb_hid_cfg_t *cfg)
 
 static void toolbar_create(void)
 {
-	pcb_hid_cfg_t *cfg = pcb_gui->get_menu_cfg(pcb_gui);
+	rnd_hid_cfg_t *cfg = pcb_gui->get_menu_cfg(pcb_gui);
 	if (cfg == NULL)
 		return;
 	toolbar_docked_create(cfg);

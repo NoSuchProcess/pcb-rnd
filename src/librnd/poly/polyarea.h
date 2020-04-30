@@ -72,7 +72,7 @@ struct pcb_pline_s {
 	pcb_vnode_t *head;
 	unsigned int Count;
 	double area;
-	pcb_rtree_t *tree;
+	rnd_rtree_t *tree;
 	rnd_bool is_round;
 	rnd_coord_t cx, cy;
 	rnd_coord_t radius;
@@ -103,26 +103,26 @@ pcb_vnode_t *pcb_poly_node_add_single(pcb_vnode_t *dest, pcb_vector_t po);
 
 /**********************************************************************/
 
-struct pcb_polyarea_s {
-	pcb_polyarea_t *f, *b;
+struct rnd_polyarea_s {
+	rnd_polyarea_t *f, *b;
 	pcb_pline_t *contours;
-	pcb_rtree_t *contour_tree;
+	rnd_rtree_t *contour_tree;
 };
 
-rnd_bool pcb_polyarea_m_copy0(pcb_polyarea_t **dst, const pcb_polyarea_t *srcfst);
-void pcb_polyarea_m_include(pcb_polyarea_t **list, pcb_polyarea_t *a);
+rnd_bool pcb_polyarea_m_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst);
+void pcb_polyarea_m_include(rnd_polyarea_t **list, rnd_polyarea_t *a);
 
-rnd_bool pcb_polyarea_copy0(pcb_polyarea_t **dst, const pcb_polyarea_t *src);
-rnd_bool pcb_polyarea_copy1(pcb_polyarea_t *dst, const pcb_polyarea_t *src);
+rnd_bool pcb_polyarea_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *src);
+rnd_bool pcb_polyarea_copy1(rnd_polyarea_t *dst, const rnd_polyarea_t *src);
 
-rnd_bool pcb_polyarea_contour_include(pcb_polyarea_t *p, pcb_pline_t *c);
-rnd_bool pcb_polyarea_contour_exclude(pcb_polyarea_t *p, pcb_pline_t *c);
+rnd_bool pcb_polyarea_contour_include(rnd_polyarea_t *p, pcb_pline_t *c);
+rnd_bool pcb_polyarea_contour_exclude(rnd_polyarea_t *p, pcb_pline_t *c);
 
 
 rnd_bool pcb_polyarea_contour_check(pcb_pline_t *a);
 
-rnd_bool pcb_polyarea_contour_inside(pcb_polyarea_t *c, pcb_vector_t v0);
-rnd_bool pcb_polyarea_touching(pcb_polyarea_t *p1, pcb_polyarea_t *p2);
+rnd_bool pcb_polyarea_contour_inside(rnd_polyarea_t *c, pcb_vector_t v0);
+rnd_bool pcb_polyarea_touching(rnd_polyarea_t *p1, rnd_polyarea_t *p2);
 
 /*** tools for clipping ***/
 
@@ -130,12 +130,12 @@ rnd_bool pcb_polyarea_touching(pcb_polyarea_t *p1, pcb_polyarea_t *p2);
 
 int pcb_poly_contour_inside(const pcb_pline_t *c, pcb_vector_t v);
 int pcb_poly_contour_in_contour(pcb_pline_t *poly, pcb_pline_t *inner);
-pcb_polyarea_t *pcb_polyarea_create(void);
+rnd_polyarea_t *pcb_polyarea_create(void);
 
-void pcb_polyarea_free(pcb_polyarea_t **p);
-void pcb_polyarea_init(pcb_polyarea_t *p);
+void pcb_polyarea_free(rnd_polyarea_t **p);
+void pcb_polyarea_init(rnd_polyarea_t *p);
 void pcb_poly_contours_free(pcb_pline_t **pl);
-rnd_bool pcb_poly_valid(pcb_polyarea_t *p);
+rnd_bool pcb_poly_valid(rnd_polyarea_t *p);
 
 enum pcb_poly_bool_op_e {
 	PCB_PBO_UNITE,
@@ -150,16 +150,16 @@ double pcb_vect_len2(pcb_vector_t v1);
 
 int pcb_vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t D, pcb_vector_t S1, pcb_vector_t S2);
 
-int pcb_polyarea_boolean(const pcb_polyarea_t *a, const pcb_polyarea_t *b, pcb_polyarea_t **res, int action);
-int pcb_polyarea_boolean_free(pcb_polyarea_t *a, pcb_polyarea_t *b, pcb_polyarea_t **res, int action);
-int pcb_polyarea_and_subtract_free(pcb_polyarea_t *a, pcb_polyarea_t *b, pcb_polyarea_t **aandb, pcb_polyarea_t **aminusb);
-int pcb_polyarea_save(pcb_polyarea_t *PA, char *fname);
+int pcb_polyarea_boolean(const rnd_polyarea_t *a, const rnd_polyarea_t *b, rnd_polyarea_t **res, int action);
+int pcb_polyarea_boolean_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **res, int action);
+int pcb_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **aandb, rnd_polyarea_t **aminusb);
+int pcb_polyarea_save(rnd_polyarea_t *PA, char *fname);
 
-/* calculate the bounding box of a pcb_polyarea_t and save result in b */
-void pcb_polyarea_bbox(pcb_polyarea_t *p, rnd_box_t *b);
+/* calculate the bounding box of a rnd_polyarea_t and save result in b */
+void pcb_polyarea_bbox(rnd_polyarea_t *p, rnd_rnd_box_t *b);
 
 /* Move each point of pa1 by dx and dy */
-void pcb_polyarea_move(pcb_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy);
+void pcb_polyarea_move(rnd_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy);
 
 /*** Tools for building polygons for common object shapes ***/
 
@@ -170,7 +170,7 @@ void pcb_polyarea_move(pcb_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy);
 double rnd_round(double x); /* from math_helper.h */
 
 /* Calculate an endpoint of an arc and return the result in *x;*y */
-RND_INLINE void pcb_arc_get_endpt(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, int which, rnd_coord_t *x, rnd_coord_t *y)
+RND_INLINE void pcb_arc_get_endpt(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, int which, rnd_coord_t *x, rnd_coord_t *y)
 {
 	if (which == 0) {
 		*x = rnd_round((double)cx - (double)width * cos(astart * (M_PI/180.0)));
@@ -199,7 +199,7 @@ RND_INLINE void pcb_arc_get_endpt(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t wi
 /* Convert a struct seg *obj extracted from a pline->tree into coords */
 void pcb_polyarea_get_tree_seg(void *obj, rnd_coord_t *x1, rnd_coord_t *y1, rnd_coord_t *x2, rnd_coord_t *y2);
 
-/* create a (pcb_rtree_t *) of each seg derived from src */
+/* create a (rnd_rtree_t *) of each seg derived from src */
 void *pcb_poly_make_edge_tree(pcb_pline_t *src);
 
 

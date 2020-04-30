@@ -69,7 +69,7 @@ typedef struct {
 /* ---------------------------------------------------------------------------
  * Create a sorted list of unique y coords from a BoxList.
  */
-static LocationList createSortedYList(rnd_box_list_t *boxlist)
+static LocationList createSortedYList(rnd_rnd_box_list_t *boxlist)
 {
 	LocationList yCoords;
 	rnd_coord_t last;
@@ -164,7 +164,7 @@ void deleteSegment(SegmentTree * st, int n, rnd_coord_t Y1, rnd_coord_t Y2)
  * etc.).
  * Runs in O(N ln N) time.
  */
-double pcb_intersect_box_box(rnd_box_list_t *boxlist)
+double pcb_intersect_box_box(rnd_rnd_box_list_t *boxlist)
 {
 	rnd_cardinal_t i;
 	double area = 0.0;
@@ -179,9 +179,9 @@ double pcb_intersect_box_box(rnd_box_list_t *boxlist)
  * Compute the area of the union of the given rectangles.
  * O(N ln N) time.
  */
-double pcb_union_box_box(rnd_box_list_t *boxlist)
+double pcb_union_box_box(rnd_rnd_box_list_t *boxlist)
 {
-	rnd_box_t **rectLeft, **rectRight;
+	rnd_rnd_box_t **rectLeft, **rectRight;
 	rnd_cardinal_t i, j;
 	LocationList yCoords;
 	SegmentTree segtree;
@@ -196,8 +196,8 @@ double pcb_union_box_box(rnd_box_list_t *boxlist)
 	segtree = createSegmentTree(yCoords.p, yCoords.size);
 	free(yCoords.p);
 	/* create sorted list of left and right X coordinates of rectangles */
-	rectLeft = (rnd_box_t **) calloc(boxlist->BoxN, sizeof(*rectLeft));
-	rectRight = (rnd_box_t **) calloc(boxlist->BoxN, sizeof(*rectRight));
+	rectLeft = (rnd_rnd_box_t **) calloc(boxlist->BoxN, sizeof(*rectLeft));
+	rectRight = (rnd_rnd_box_t **) calloc(boxlist->BoxN, sizeof(*rectRight));
 	for (i = 0; i < boxlist->BoxN; i++) {
 		assert(boxlist->Box[i].X1 <= boxlist->Box[i].X2);
 		assert(boxlist->Box[i].Y1 <= boxlist->Box[i].Y2);
@@ -213,7 +213,7 @@ double pcb_union_box_box(rnd_box_list_t *boxlist)
 		/* i will step through rectLeft, j will through rectRight */
 		if (i == boxlist->BoxN || rectRight[j]->X2 < rectLeft[i]->X1) {
 			/* right edge of rectangle */
-			rnd_box_t *b = rectRight[j++];
+			rnd_rnd_box_t *b = rectRight[j++];
 			/* check lastX */
 			if (b->X2 != lastX) {
 				assert(lastX < b->X2);
@@ -225,7 +225,7 @@ double pcb_union_box_box(rnd_box_list_t *boxlist)
 		}
 		else {
 			/* left edge of rectangle */
-			rnd_box_t *b = rectLeft[i++];
+			rnd_rnd_box_t *b = rectLeft[i++];
 			/* check lastX */
 			if (b->X1 != lastX) {
 				assert(lastX < b->X1);
@@ -244,13 +244,13 @@ double pcb_union_box_box(rnd_box_list_t *boxlist)
 
 static int compareleft(const void *ptr1, const void *ptr2)
 {
-	rnd_box_t **b1 = (rnd_box_t **) ptr1, **b2 = (rnd_box_t **) ptr2;
+	rnd_rnd_box_t **b1 = (rnd_rnd_box_t **) ptr1, **b2 = (rnd_rnd_box_t **) ptr2;
 	return (*b1)->X1 - (*b2)->X1;
 }
 
 static int compareright(const void *ptr1, const void *ptr2)
 {
-	rnd_box_t **b1 = (rnd_box_t **) ptr1, **b2 = (rnd_box_t **) ptr2;
+	rnd_rnd_box_t **b1 = (rnd_rnd_box_t **) ptr1, **b2 = (rnd_rnd_box_t **) ptr2;
 	return (*b1)->X2 - (*b2)->X2;
 }
 

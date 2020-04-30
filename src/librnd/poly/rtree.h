@@ -24,23 +24,23 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
   */
 
-#ifndef PCB_RTREE_H
-#define PCB_RTREE_H
+#ifndef RND_RTREE_H
+#define RND_RTREE_H
 
 #include <librnd/core/global_typedefs.h>
 
-typedef long int pcb_rtree_cardinal_t;
-typedef rnd_coord_t pcb_rtree_coord_t;
+typedef long int rnd_rtree_cardinal_t;
+typedef rnd_coord_t rnd_rtree_coord_t;
 
 /* Instantiate an rtree */
-#define RTR(n)  pcb_rtree_ ## n
-#define RTRU(n) pcb_RTREE_ ## n
-#define pcb_rtree_privfunc static
-#define pcb_rtree_size 6
-#define pcb_rtree_stack_max 1024
+#define RTR(n)  rnd_rtree_ ## n
+#define RTRU(n) rnd_RTREE_ ## n
+#define rnd_rtree_privfunc static
+#define rnd_rtree_size 6
+#define rnd_rtree_stack_max 1024
 
 #define RTREE_NO_TREE_TYPEDEFS
 
 #include <genrtree/genrtree_api.h>
 
-#endif /* PCB_RTREE_H */
+#endif /* RND_RTREE_H */

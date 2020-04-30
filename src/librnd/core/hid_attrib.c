@@ -138,7 +138,7 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 				if (strcmp((*argv)[0] + arg_ofs, ha->opts[i].name) == 0) {
 					pcb_export_opt_t *a = ha->opts + i;
 					char *ep;
-					const pcb_unit_t *unit;
+					const rnd_unit_t *unit;
 					switch (ha->opts[i].type) {
 					case PCB_HATT_LABEL:
 						break;

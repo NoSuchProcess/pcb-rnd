@@ -500,7 +500,7 @@ rnd_bool pcb_chg_selected_nonetlist(int types)
  * changes the angle of all selected and visible object types
  * returns pcb_true if anything has changed
  */
-rnd_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference, rnd_bool fixIt)
+rnd_bool pcb_chg_selected_angle(int types, int is_start, rnd_angle_t Difference, rnd_bool fixIt)
 {
 	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -522,7 +522,7 @@ rnd_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference,
  * changes the radius of all selected and visible object types
  * returns pcb_true if anything has changed
  */
-rnd_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference, rnd_bool fixIt)
+rnd_bool pcb_chg_selected_radius(int types, int is_start, rnd_angle_t Difference, rnd_bool fixIt)
 {
 	rnd_bool change = pcb_false;
 	pcb_opctx_t ctx;
@@ -612,7 +612,7 @@ rnd_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is
  * changes the angles of the passed object (e.g. arc start/ctx->chgsize.value)
  * Returns pcb_true if anything is changed
  */
-rnd_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, rnd_bool fixIt)
+rnd_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, rnd_angle_t a, rnd_bool fixIt)
 {
 	rnd_bool change;
 	pcb_opctx_t ctx;

@@ -56,7 +56,7 @@ typedef enum {
 typedef union {
 	const char *string;
 	rnd_coord_t coord;
-	pcb_angle_t angle;
+	rnd_angle_t angle;
 	int i;
 	rnd_color_t clr;
 } pcb_propval_t;

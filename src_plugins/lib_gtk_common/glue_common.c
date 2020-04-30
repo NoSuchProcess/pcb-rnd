@@ -306,7 +306,7 @@ void ghid_draw_area_update(pcb_gtk_port_t *port, GdkRectangle *rect)
 
 void pcb_gtk_previews_invalidate_lr(rnd_coord_t left, rnd_coord_t right, rnd_coord_t top, rnd_coord_t bottom)
 {
-	rnd_box_t screen;
+	rnd_rnd_box_t screen;
 	screen.X1 = left; screen.X2 = right;
 	screen.Y1 = top; screen.Y2 = bottom;
 	pcb_gtk_preview_invalidate(ghidgui, &screen);

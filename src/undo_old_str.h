@@ -35,7 +35,7 @@ typedef struct {								/* information about poly clear/restore */
 } ClearPolyType, *ClearPolyTypePtr;
 
 typedef struct {
-	pcb_angle_t angle[2];
+	rnd_angle_t angle[2];
 } AngleChangeType;
 
 typedef struct {								/* information about netlist lib changes */
@@ -61,6 +61,6 @@ typedef struct {								/* holds information about an operation */
 		NetlistChangeType NetlistChange;
 		long int CopyID;
 		AngleChangeType AngleChange;
-		pcb_angle_t Angle;
+		rnd_angle_t Angle;
 	} Data;
 } UndoListType, *UndoListTypePtr;

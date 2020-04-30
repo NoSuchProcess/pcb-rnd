@@ -118,7 +118,7 @@ struct rubber_info {
 	rnd_coord_t radius;
 	rnd_coord_t X, Y;
 	pcb_line_t *line;
-	rnd_box_t box;
+	rnd_rnd_box_t box;
 	pcb_layer_t *layer;
 	rubber_ctx_t *rbnd;
 	int delta_index;
@@ -127,21 +127,21 @@ struct rubber_info {
 
 static pcb_rb_line_t *pcb_rubber_band_create(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, int point_number, int delta_index);
 static pcb_rb_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_arc_t *Line, int end, int delta_index);
-static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, int delta_index);
+static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, rnd_point_t *, int delta_index);
 static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, int *, rnd_bool);
 static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_arc_t *, rnd_bool);
 static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_poly_t *);
-static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_point_t *);
+static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *, rnd_point_t *);
 static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *);
 
 static void calculate_route_rubber_arc_point_move(pcb_rb_arc_t *arcptr, int end, rnd_coord_t dx, rnd_coord_t dy, pcb_route_t *route);
 
-static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, pcb_point_t *, rnd_bool);
+static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, rnd_point_t *, rnd_bool);
 
-static pcb_r_dir_t rubber_callback(const rnd_box_t *b, void *cl);
-static pcb_r_dir_t rubber_callback_arc(const rnd_box_t *b, void *cl);
+static pcb_r_dir_t rubber_callback(const rnd_rnd_box_t *b, void *cl);
+static pcb_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl);
 
-static pcb_r_dir_t rubber_callback(const rnd_box_t *b, void *cl)
+static pcb_r_dir_t rubber_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	pcb_rb_line_t *have_line = NULL;
@@ -281,7 +281,7 @@ static pcb_r_dir_t rubber_callback(const rnd_box_t *b, void *cl)
 	return touches1 || touches2 ? PCB_R_DIR_FOUND_CONTINUE : PCB_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t rubber_callback_arc(const rnd_box_t *b, void *cl)
+static pcb_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct rubber_info *i = (struct rubber_info *)cl;
@@ -356,12 +356,12 @@ struct rinfo {
 	int type;
 	pcb_layergrp_id_t group;
 	pcb_pstk_t *pstk;
-	pcb_point_t *point;
+	rnd_point_t *point;
 	rubber_ctx_t *rbnd;
 	int delta_index;
 };
 
-static pcb_r_dir_t rat_callback(const rnd_box_t *box, void *cl)
+static pcb_r_dir_t rat_callback(const rnd_rnd_box_t *box, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) box;
 	struct rinfo *i = (struct rinfo *)cl;
@@ -397,7 +397,7 @@ static void CheckPadstackForRat(rubber_ctx_t *rbnd, pcb_pstk_t *pstk)
 	pcb_r_search(PCB->Data->rat_tree, &pstk->BoundingBox, NULL, rat_callback, &info, NULL);
 }
 
-static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_point_t *Point)
+static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, rnd_point_t *Point)
 {
 	struct rinfo info;
 	info.group = pcb_layer_get_group_(Layer);
@@ -406,13 +406,13 @@ static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_poi
 	info.rbnd = rbnd;
 	info.delta_index = 0;
 
-	pcb_r_search(PCB->Data->rat_tree, (rnd_box_t *) Point, NULL, rat_callback, &info, NULL);
+	pcb_r_search(PCB->Data->rat_tree, (rnd_rnd_box_t *) Point, NULL, rat_callback, &info, NULL);
 }
 
 /* checks all visible lines which belong to the same group as the passed line.
  * If one of the endpoints of the line is connected to an endpoint of the 
  * passed line, the scanned line is added to the 'rubberband' list */
-static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint, int delta_index)
+static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, rnd_point_t *LinePoint, int delta_index)
 {
 	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
 	pcb_board_t *board = pcb_data_get_top(PCB->Data);
@@ -453,7 +453,7 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 /* checks all visible arcs which belong to the same group as the passed line.
  * If one of the endpoints of the arc lays * inside the passed line,
  * the scanned arc is added to the 'rubberband' list */
-static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, pcb_point_t *LinePoint, rnd_bool Exact)
+static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *Layer, pcb_line_t *Line, rnd_point_t *LinePoint, rnd_bool Exact)
 {
 	const pcb_layergrp_id_t group = pcb_layer_get_group_(Layer);
 	pcb_board_t *board = pcb_data_get_top(PCB->Data);
@@ -909,9 +909,9 @@ static void pcb_rubber_band_lookup_lines(rubber_ctx_t *rbnd, int Type, void *Ptr
 			}
 
 		case PCB_OBJ_LINE_POINT:
-			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, 0);
+			CheckLinePointForRubberbandConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (rnd_point_t *) Ptr3, 0);
 			if (conf_rbo.plugins.rubberband_orig.enable_rubberband_arcs != 0)
-				CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (pcb_point_t *) Ptr3, pcb_true);
+				CheckLinePointForRubberbandArcConnection(rbnd, (pcb_layer_t *) Ptr1, (pcb_line_t *) Ptr2, (rnd_point_t *) Ptr3, pcb_true);
 			break;
 
 		case PCB_OBJ_ARC_POINT:
@@ -955,7 +955,7 @@ static void pcb_rubber_band_lookup_rat_lines(rubber_ctx_t *rbnd, int Type, void 
 			}
 
 		case PCB_OBJ_LINE_POINT:
-			CheckLinePointForRat(rbnd, (pcb_layer_t *) Ptr1, (pcb_point_t *) Ptr3);
+			CheckLinePointForRat(rbnd, (pcb_layer_t *) Ptr1, (rnd_point_t *) Ptr3);
 			break;
 
 	}
@@ -1042,8 +1042,8 @@ static void rbe_move(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_
 			/* Move both ends with route. */
 			const int argi1 = (dindex1 * 2) + 2;
 			const int argi2 = (dindex2 * 2) + 2;
-			pcb_point_t point1 = ptr->Line->Point1;
-			pcb_point_t point2 = ptr->Line->Point2;
+			rnd_point_t point1 = ptr->Line->Point1;
+			rnd_point_t point2 = ptr->Line->Point2;
 			pcb_route_t route;
 
 			point1.X += argv[argi1].d.i;
@@ -1178,8 +1178,8 @@ static void rbe_draw(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_
 				}
 			}
 			else {
-				pcb_point_t point1;
-				pcb_point_t point2;
+				rnd_point_t point1;
+				rnd_point_t point2;
 				pcb_route_t route;
 
 				point1.X = x[0];
@@ -1265,10 +1265,10 @@ static void rbe_rotate90(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_ev
 		pcb_line_invalidate_erase(ptr->Line);
 		if (ptr->Layer) {
 			pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_LINE, ptr->Layer, ptr->Line);
-			pcb_r_delete_entry(ptr->Layer->line_tree, (rnd_box_t *) ptr->Line);
+			pcb_r_delete_entry(ptr->Layer->line_tree, (rnd_rnd_box_t *) ptr->Line);
 		}
 		else
-			pcb_r_delete_entry(PCB->Data->rat_tree, (rnd_box_t *) ptr->Line);
+			pcb_r_delete_entry(PCB->Data->rat_tree, (rnd_rnd_box_t *) ptr->Line);
 
 		if (dindex1 >= 0)
 			pcb_point_rotate90(&ptr->Line->Point1, cx, cy, steps);
@@ -1278,12 +1278,12 @@ static void rbe_rotate90(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_ev
 
 		pcb_line_bbox(ptr->Line);
 		if (ptr->Layer) {
-			pcb_r_insert_entry(ptr->Layer->line_tree, (rnd_box_t *) ptr->Line);
+			pcb_r_insert_entry(ptr->Layer->line_tree, (rnd_rnd_box_t *) ptr->Line);
 			pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_LINE, ptr->Layer, ptr->Line);
 			pcb_line_invalidate_draw(ptr->Layer, ptr->Line);
 		}
 		else {
-			pcb_r_insert_entry(PCB->Data->rat_tree, (rnd_box_t *) ptr->Line);
+			pcb_r_insert_entry(PCB->Data->rat_tree, (rnd_rnd_box_t *) ptr->Line);
 			pcb_rat_invalidate_draw((pcb_rat_t *) ptr->Line);
 		}
 
@@ -1395,9 +1395,9 @@ static void calculate_route_rubber_arc_point_move(pcb_rb_arc_t *arcptr, int end,
 
 	pcb_layer_id_t layerid = pcb_layer_id(PCB->Data, arcptr->Layer);
 	pcb_arc_t arc = *(arcptr->Arc);
-	pcb_point_t startpoint;
-	pcb_point_t endpoint;
-	pcb_point_t center;
+	rnd_point_t startpoint;
+	rnd_point_t endpoint;
+	rnd_point_t center;
 
 	if (end == 1) {
 		arc.StartAngle += arc.Delta;

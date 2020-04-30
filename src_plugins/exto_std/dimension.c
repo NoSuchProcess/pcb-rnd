@@ -195,14 +195,14 @@ static int dimension_gen(pcb_subc_t *subc)
 	}
 	else { /* modify the floater if it exists */
 		if (ly->line_tree != NULL)
-			pcb_r_delete_entry(ly->line_tree, (rnd_box_t *)flt);
+			pcb_r_delete_entry(ly->line_tree, (rnd_rnd_box_t *)flt);
 
 		flt->Point1.X = x1 + arrx * dim->dx; flt->Point1.Y = y1 + arrx * dim->dy;
 		flt->Point2.X = x2 - arrx * dim->dx; flt->Point2.Y = y2 - arrx * dim->dy;
 
 		pcb_line_bbox(flt);
 		if (ly->line_tree != NULL)
-			pcb_r_insert_entry(ly->line_tree, (rnd_box_t *)flt);
+			pcb_r_insert_entry(ly->line_tree, (rnd_rnd_box_t *)flt);
 	}
 
 	/* guide lines */

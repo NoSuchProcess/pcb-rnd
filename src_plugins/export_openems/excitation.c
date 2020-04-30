@@ -145,7 +145,7 @@ static void exc_val_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t
 
 static rnd_bool to_hz(const char *s, double *out)
 {
-	const pcb_unit_t *u;
+	const rnd_unit_t *u;
 	double d;
 	if (!pcb_get_value_unit(s, NULL, 0, &d, &u))
 		return pcb_false;

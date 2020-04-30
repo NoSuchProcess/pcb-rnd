@@ -62,7 +62,7 @@ typedef struct hid_gc_s {
 	rnd_coord_t width;
 } hid_gc_s;
 
-void ghid_gl_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_box_t *screen)
+void ghid_gl_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen)
 {
 	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }
@@ -188,7 +188,7 @@ void ghid_gl_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t c
 	grid_local_radius = pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.radius;
 }
 
-static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
+static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_rnd_box_t *drawn_area)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
@@ -459,7 +459,7 @@ static void ghid_gl_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 	hidgl_draw_line(gc->core_gc.cap, gc->width, x1, y1, x2, y2, ghidgui->port.view.coord_per_px);
 }
 
-static void ghid_gl_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void ghid_gl_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	USE_GC(gc);
 

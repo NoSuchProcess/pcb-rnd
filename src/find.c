@@ -180,37 +180,37 @@ static rnd_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
 		} \
 	} while(0)
 
-void pcb_find_on_layer(pcb_find_t *ctx, pcb_layer_t *l, pcb_any_obj_t *curr, pcb_rtree_box_t *sb, pcb_found_conn_type_t ctype)
+void pcb_find_on_layer(pcb_find_t *ctx, pcb_layer_t *l, pcb_any_obj_t *curr, rnd_rtree_box_t *sb, pcb_found_conn_type_t ctype)
 {
-	pcb_rtree_it_t it;
-	rnd_box_t *n;
+	rnd_rtree_it_t it;
+	rnd_rnd_box_t *n;
 
 	if (l->line_tree != NULL) {
-		for(n = pcb_rtree_first(&it, l->line_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+		for(n = rnd_rtree_first(&it, l->line_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
 		pcb_r_end(&it);
 	}
 
 	if (l->arc_tree != NULL) {
-		for(n = pcb_rtree_first(&it, l->arc_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+		for(n = rnd_rtree_first(&it, l->arc_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
 		pcb_r_end(&it);
 	}
 
 	if (l->polygon_tree != NULL) {
-		for(n = pcb_rtree_first(&it, l->polygon_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+		for(n = rnd_rtree_first(&it, l->polygon_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
 		pcb_r_end(&it);
 	}
 
 	if (l->text_tree != NULL) {
-		for(n = pcb_rtree_first(&it, l->text_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+		for(n = rnd_rtree_first(&it, l->text_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
 		pcb_r_end(&it);
 	}
 }
 
-void pcb_find_on_layergrp(pcb_find_t *ctx, pcb_layergrp_t *g, pcb_any_obj_t *curr, pcb_rtree_box_t *sb, pcb_found_conn_type_t ctype)
+void pcb_find_on_layergrp(pcb_find_t *ctx, pcb_layergrp_t *g, pcb_any_obj_t *curr, rnd_rtree_box_t *sb, pcb_found_conn_type_t ctype)
 {
 	int n;
 	if (g == NULL)
@@ -221,7 +221,7 @@ void pcb_find_on_layergrp(pcb_find_t *ctx, pcb_layergrp_t *g, pcb_any_obj_t *cur
 
 static void pcb_find_rat(pcb_find_t *ctx, pcb_rat_t *rat)
 {
-	pcb_rtree_box_t sb;
+	rnd_rtree_box_t sb;
 
 	sb.x1 = rat->Point1.X; sb.x2 = rat->Point1.X+1;
 	sb.y1 = rat->Point1.Y; sb.y2 = rat->Point1.Y+1;
@@ -255,19 +255,19 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 		ctype = curr->type == PCB_OBJ_RAT ? PCB_FCT_RAT : PCB_FCT_COPPER;
 
 		{ /* search unmkared connections: iterative approach */
-			pcb_rtree_it_t it;
-			rnd_box_t *n;
-			pcb_rtree_box_t *sb = (pcb_rtree_box_t *)&curr->bbox_naked;
+			rnd_rtree_it_t it;
+			rnd_rnd_box_t *n;
+			rnd_rtree_box_t *sb = (rnd_rtree_box_t *)&curr->bbox_naked;
 
 			if (PCB->Data->padstack_tree != NULL) {
-				for(n = pcb_rtree_first(&it, PCB->Data->padstack_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+				for(n = rnd_rtree_first(&it, PCB->Data->padstack_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 					PCB_FIND_CHECK(ctx, curr, n, ctype, return ctx->nfound);
 				pcb_r_end(&it);
 			}
 
 			if ((ctx->consider_rats || ctx->only_mark_rats) && (PCB->Data->rat_tree != NULL)) {
 				if (PCB->Data->padstack_tree != NULL) {
-					for(n = pcb_rtree_first(&it, PCB->Data->rat_tree, sb); n != NULL; n = pcb_rtree_next(&it))
+					for(n = rnd_rtree_first(&it, PCB->Data->rat_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 						PCB_FIND_CHECK_RAT(ctx, curr, n, PCB_FCT_RAT, return ctx->nfound);
 					pcb_r_end(&it);
 				}

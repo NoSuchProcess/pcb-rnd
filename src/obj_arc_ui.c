@@ -46,7 +46,7 @@ static void pcb_arc_ui_move_or_copy_angle(pcb_crosshair_t *ch)
 {
 	int *end_pt = ch->AttachedObject.Ptr3;
 	pcb_arc_t *arc = (pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2;
-	pcb_angle_t start = arc->StartAngle, delta = arc->Delta;
+	rnd_angle_t start = arc->StartAngle, delta = arc->Delta;
 
 	if (end_pt == pcb_arc_start_ptr) {
 		double end2, new_delta, new_start = atan2(-(ch->Y - arc->Y), (ch->X - arc->X)) * 180.0 / M_PI + 180.0;
@@ -133,7 +133,7 @@ void pcb_arc_ui_move_or_copy(pcb_crosshair_t *ch)
 }
 
 
-int pcb_obj_ui_arc_point_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_box_t *res)
+int pcb_obj_ui_arc_point_bbox(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_rnd_box_t *res)
 {
 	pcb_arc_t *arc = Ptr2;
 	int *end_pt = Ptr3;

@@ -29,8 +29,8 @@
 /*** Standard draw on rats ***/
 
 /* Include rtree.h for these */
-#ifdef PCB_RTREE_H
-pcb_r_dir_t pcb_rat_draw_callback(const rnd_box_t * b, void *cl);
+#ifdef RND_RTREE_H
+pcb_r_dir_t pcb_rat_draw_callback(const rnd_rnd_box_t * b, void *cl);
 #endif
 
 void pcb_rat_invalidate_erase(pcb_rat_t *Rat);

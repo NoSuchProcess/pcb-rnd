@@ -38,7 +38,7 @@ struct pcb_gfx_s {       /* holds information about gfxs */
 	PCB_ANY_PRIMITIVE_FIELDS;
 	rnd_coord_t cx, cy;            /* center coordinates */
 	rnd_coord_t sx, sy;            /* size x and y on board (net box size before rotation) */
-	pcb_angle_t rot;
+	rnd_angle_t rot;
 	unsigned int xmirror:1, ymirror:1;
 
 	pcb_pixmap_t *pxm_neutral;     /* graphics is a pixmap, if not NULL - in neutral scale/rot */
@@ -54,7 +54,7 @@ pcb_gfx_t *pcb_gfx_alloc(pcb_layer_t *);
 pcb_gfx_t *pcb_gfx_alloc_id(pcb_layer_t *layer, long int id);
 void pcb_gfx_free(pcb_gfx_t *data);
 
-pcb_gfx_t *pcb_gfx_new(pcb_layer_t *layer, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, pcb_angle_t rot, pcb_flag_t Flags);
+pcb_gfx_t *pcb_gfx_new(pcb_layer_t *layer, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, rnd_angle_t rot, pcb_flag_t Flags);
 pcb_gfx_t *pcb_gfx_dup(pcb_layer_t *dst, pcb_gfx_t *src);
 pcb_gfx_t *pcb_gfx_dup_at(pcb_layer_t *dst, pcb_gfx_t *src, rnd_coord_t dx, rnd_coord_t dy);
 void *pcb_gfx_destroy(pcb_layer_t *Layer, pcb_gfx_t *gfx);
@@ -70,11 +70,11 @@ void pcb_add_gfx_on_layer(pcb_layer_t *layer, pcb_gfx_t *gfx);
 void pcb_gfx_update(pcb_gfx_t *gfx); /* update corner cache: call this after any geometry change */
 void pcb_gfx_bbox(pcb_gfx_t *gfx);
 void pcb_gfx_rotate90(pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord_t Y, unsigned Number);
-void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord_t Y, double cosa, double sina, pcb_angle_t angle);
+void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord_t Y, double cosa, double sina, rnd_angle_t angle);
 void pcb_gfx_mirror(pcb_gfx_t *gfx, rnd_coord_t y_offs, rnd_bool undoable);
 void pcb_gfx_flip_side(pcb_layer_t *layer, pcb_gfx_t *gfx);
 void pcb_gfx_scale(pcb_gfx_t *gfx, double sx, double sy, double sth);
-void pcb_gfx_chg_geo(pcb_gfx_t *gfx, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy,  pcb_angle_t rot, rnd_bool undoable);
+void pcb_gfx_chg_geo(pcb_gfx_t *gfx, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy,  rnd_angle_t rot, rnd_bool undoable);
 
 /* assings pxm to gfx and free pxm (if needed) */
 void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, pcb_pixmap_t *pxm, rnd_bool undoable);

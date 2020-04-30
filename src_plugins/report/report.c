@@ -231,7 +231,7 @@ static void report_rat(gds_t *dst, pcb_rat_t *line)
 
 static void report_arc(gds_t *dst, pcb_arc_t *arc)
 {
-	rnd_box_t box;
+	rnd_rnd_box_t box;
 #ifndef NDEBUG
 	if (pcb_gui->shift_is_pressed(pcb_gui))
 		pcb_r_dump_tree(arc->parent.layer->arc_tree, 0);
@@ -349,7 +349,7 @@ static void report_gfx(gds_t *dst, pcb_gfx_t *gfx)
 		gfx->cx, gfx->cy, gfx->sx, gfx->sx, gfx->rot);
 }
 
-static void report_point(gds_t *dst, int type, pcb_layer_t *layer, pcb_point_t *point)
+static void report_point(gds_t *dst, int type, pcb_layer_t *layer, rnd_point_t *point)
 {
 	pcb_append_printf(dst, "%m+POINT ID# %ld.\n"
 		"Located at (X,Y) = %$mD.\n"
@@ -663,21 +663,21 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 #undef MINDIST2
 
 		rnd_message(RND_MSG_INFO, "The two arms of the net are:\n");
-		pcb_r_delete_entry(ly->line_tree, (rnd_box_t *)l);
+		pcb_r_delete_entry(ly->line_tree, (rnd_rnd_box_t *)l);
 		ox = l->Point1.X; oy = l->Point1.Y; l->Point1.X = x; l->Point1.Y = y;
-		pcb_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
+		pcb_r_insert_entry(ly->line_tree, (rnd_rnd_box_t *)l);
 		report_net_length_(res, argc, argv, x, y);
-		pcb_r_delete_entry(ly->line_tree, (rnd_box_t *)l);
+		pcb_r_delete_entry(ly->line_tree, (rnd_rnd_box_t *)l);
 		l->Point1.X = ox; l->Point1.Y = oy;
-		pcb_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
+		pcb_r_insert_entry(ly->line_tree, (rnd_rnd_box_t *)l);
 
-		pcb_r_delete_entry(ly->line_tree, (rnd_box_t *)l);
+		pcb_r_delete_entry(ly->line_tree, (rnd_rnd_box_t *)l);
 		ox = l->Point2.X; oy = l->Point2.Y; l->Point2.X = x; l->Point2.Y = y;
-		pcb_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
+		pcb_r_insert_entry(ly->line_tree, (rnd_rnd_box_t *)l);
 		report_net_length_(res, argc, argv, x, y);
-		pcb_r_delete_entry(ly->line_tree, (rnd_box_t *)l);
+		pcb_r_delete_entry(ly->line_tree, (rnd_rnd_box_t *)l);
 		l->Point2.X = ox; l->Point2.Y = oy;
-		pcb_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
+		pcb_r_insert_entry(ly->line_tree, (rnd_rnd_box_t *)l);
 
 		PCB_FLAG_SET(PCB_FLAG_SELECTED, l);
 

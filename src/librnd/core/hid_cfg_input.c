@@ -120,7 +120,7 @@ static int keyb_eq(const void *keya_, const void *keyb_)
 
 /************************** MOUSE ***************************/
 
-int hid_cfg_mouse_init(pcb_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse)
+int hid_cfg_mouse_init(rnd_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse)
 {
 	lht_node_t *btn, *m;
 

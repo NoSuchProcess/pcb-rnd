@@ -195,7 +195,7 @@ struct drc_info {
 	jmp_buf env;
 };
 
-static pcb_r_dir_t drcPstk_callback(const rnd_box_t *b, void *cl)
+static pcb_r_dir_t drcPstk_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	struct drc_info *i = (struct drc_info *)cl;
@@ -205,7 +205,7 @@ static pcb_r_dir_t drcPstk_callback(const rnd_box_t *b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static pcb_r_dir_t drcLine_callback(const rnd_box_t * b, void *cl)
+static pcb_r_dir_t drcLine_callback(const rnd_rnd_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
@@ -215,7 +215,7 @@ static pcb_r_dir_t drcLine_callback(const rnd_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-static pcb_r_dir_t drcArc_callback(const rnd_box_t * b, void *cl)
+static pcb_r_dir_t drcArc_callback(const rnd_rnd_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
@@ -225,7 +225,7 @@ static pcb_r_dir_t drcArc_callback(const rnd_box_t * b, void *cl)
 	return PCB_R_DIR_FOUND_CONTINUE;
 }
 
-double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, rnd_bool way, rnd_bool optimize)
+double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *end, rnd_point_t *mid_out, rnd_bool way, rnd_bool optimize)
 {
 	double f, s, f2, s2, len, best;
 	rnd_coord_t dx, dy, temp, last, length;
@@ -234,7 +234,7 @@ double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *en
 	pcb_layergrp_id_t group, comp;
 	struct drc_info info;
 	rnd_bool two_lines, x_is_long, blocker;
-	pcb_point_t ans;
+	rnd_point_t ans;
 
 	f = 1.0;
 	s = 0.5;
@@ -398,13 +398,13 @@ double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *en
 	return best;
 }
 
-static void drc_line(pcb_point_t *end)
+static void drc_line(rnd_point_t *end)
 {
 	struct drc_info info;
 	pcb_layergrp_id_t group, comp;
 	pcb_line_t line;
 	pcb_attached_line_t aline;
-	static pcb_point_t last_good; /* internal state of last good endpoint - we can do this cheat, because... */
+	static rnd_point_t last_good; /* internal state of last good endpoint - we can do this cheat, because... */
 
 	/* ... we hardwire the assumption on how a line is drawn: it starts out as a 0 long segment, which is valid: */
 	if ((pcb_crosshair.AttachedLine.Point1.X == pcb_crosshair.X) && (pcb_crosshair.AttachedLine.Point1.Y == pcb_crosshair.Y)) {
@@ -460,7 +460,7 @@ static void drc_line(pcb_point_t *end)
 
 void pcb_line_enforce_drc(pcb_board_t *pcb)
 {
-	pcb_point_t r45, rs, start;
+	rnd_point_t r45, rs, start;
 	rnd_bool shift;
 	double r1, r2;
 

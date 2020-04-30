@@ -137,7 +137,7 @@ static const char *xpm_refresh[] = {
 
 static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc, pcb_fplibrary_t *l)
 {
-	rnd_box_t bbox;
+	rnd_rnd_box_t bbox;
 	pcb_hid_attr_val_t hv;
 	gds_t tmp;
 

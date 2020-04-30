@@ -6,25 +6,25 @@
 
 void pcb_poly_square_pin_factors(int style, double *xm, double *ym);
 
-pcb_polyarea_t *pcb_poly_from_contour(pcb_pline_t *pl);
-pcb_polyarea_t *pcb_poly_from_contour_autoinv(pcb_pline_t *pl);
+rnd_polyarea_t *pcb_poly_from_contour(pcb_pline_t *pl);
+rnd_polyarea_t *pcb_poly_from_contour_autoinv(pcb_pline_t *pl);
 
-pcb_polyarea_t *pcb_poly_from_circle(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius);
-pcb_polyarea_t *pcb_poly_from_octagon(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, int style);
-pcb_polyarea_t *pcb_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2);
-pcb_polyarea_t *RoundRect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2, rnd_coord_t t);
+rnd_polyarea_t *pcb_poly_from_circle(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius);
+rnd_polyarea_t *pcb_poly_from_octagon(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, int style);
+rnd_polyarea_t *pcb_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2);
+rnd_polyarea_t *RoundRect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2, rnd_coord_t t);
 
 
 /* generate a polygon of a round or square cap line of a given thickness */
-pcb_polyarea_t *pcb_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick, rnd_bool square);
+rnd_polyarea_t *pcb_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick, rnd_bool square);
 
 /* generate a polygon of a round cap arc of a given thickness */
-pcb_polyarea_t *pcb_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, rnd_coord_t thick);
+rnd_polyarea_t *pcb_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, rnd_coord_t thick);
 
 /* Slice up a polyarea-with-holes into a set of polygon islands with no
    holes, within the clip area. If the clip area is all-zero, do not clip.
    Free's main_contour. */
-void pcb_polyarea_no_holes_dicer(pcb_polyarea_t *main_contour, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(pcb_pline_t *, void *), void *user_data);
+void pcb_polyarea_no_holes_dicer(rnd_polyarea_t *main_contour, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(pcb_pline_t *, void *), void *user_data);
 
 /* Add vertices in a fractional-circle starting from v centered at X, Y and
    going counter-clockwise. Does not include the first point. Last argument is:

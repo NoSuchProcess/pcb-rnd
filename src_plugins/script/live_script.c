@@ -499,7 +499,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void lvs_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
+static void lvs_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
 	char *end = path + strlen(path);
 	pcb_menu_prop_t props;

@@ -85,7 +85,7 @@ RND_INLINE void sub_layer_arc(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 
 RND_INLINE void sub_layer_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, const pcb_poly_t *poly, int centerline)
 {
-	pcb_polyarea_t *f, *b, *ra;
+	rnd_polyarea_t *f, *b, *ra;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly)) {
 		f = poly->Clipped->f;
@@ -130,7 +130,7 @@ static void sub_layer_text(void *ctx_, pcb_any_obj_t *obj)
 
 static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer, int centerline)
 {
-	pcb_rtree_it_t it;
+	rnd_rtree_it_t it;
 	pcb_line_t *line;
 	pcb_arc_t *arc;
 	pcb_poly_t *poly;
@@ -173,7 +173,7 @@ static void sub_group_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer_t *layer)
 {
 	pcb_pstk_t *ps, ps_tmp;
-	pcb_rtree_it_t it;
+	rnd_rtree_it_t it;
 
 	for(ps = (pcb_pstk_t *)pcb_r_first(pcb->Data->padstack_tree, &it); ps != NULL; ps = (pcb_pstk_t *)pcb_r_next(&it)) {
 		memcpy(&ps_tmp, ps, sizeof(ps_tmp));
@@ -237,8 +237,8 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	if (has_otl) { /* if there's an outline layer, the remove-poly shouldn't be bigger than that */
 		pcb_line_t *line;
 		pcb_arc_t *arc;
-		pcb_rtree_it_t it;
-		rnd_box_t otlbb;
+		rnd_rtree_it_t it;
+		rnd_rnd_box_t otlbb;
 		pcb_layer_id_t lid;
 		
 		otlbb.X1 = otlbb.Y1 = PCB_MAX_COORD;
@@ -254,11 +254,11 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 				continue;
 
 			for(line = (pcb_line_t *)pcb_r_first(l->line_tree, &it); line != NULL; line = (pcb_line_t *)pcb_r_next(&it))
-				rnd_box_bump_box(&otlbb, (rnd_box_t *)line);
+				rnd_box_bump_box(&otlbb, (rnd_rnd_box_t *)line);
 			pcb_r_end(&it);
 
 			for(arc = (pcb_arc_t *)pcb_r_first(l->arc_tree, &it); arc != NULL; arc = (pcb_arc_t *)pcb_r_next(&it))
-				rnd_box_bump_box(&otlbb, (rnd_box_t *)arc);
+				rnd_box_bump_box(&otlbb, (rnd_rnd_box_t *)arc);
 			pcb_r_end(&it);
 		}
 		result->fill = pcb_poly_new_from_rectangle(result->res_ply, otlbb.X1, otlbb.Y1, otlbb.X2, otlbb.Y2, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
@@ -290,7 +290,7 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 
 	/* remove fill from remain */
 	{
-		pcb_polyarea_t *rp;
+		rnd_polyarea_t *rp;
 		pcb_polyarea_boolean(result->remain->Clipped, result->fill->Clipped, &rp, PCB_PBO_SUB);
 		pcb_polyarea_free(&result->remain->Clipped);
 		result->remain->Clipped = rp;
@@ -308,7 +308,7 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 static rnd_cardinal_t trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result, int tool_idx, rnd_coord_t extra_offs)
 {
 	pcb_poly_it_t it;
-	pcb_polyarea_t *pa;
+	rnd_polyarea_t *pa;
 	rnd_coord_t tool_dia = result->tools->dia[tool_idx];
 	rnd_cardinal_t cnt = 0;
 	
@@ -347,11 +347,11 @@ typedef struct {
 	pcb_any_obj_t *cut;
 } pline_ctx_t;
 
-pcb_rtree_dir_t fix_overcuts_in_seg(void *ctx_, void *obj, const pcb_rtree_box_t *box)
+rnd_rtree_dir_t fix_overcuts_in_seg(void *ctx_, void *obj, const rnd_rtree_box_t *box)
 {
 	pline_ctx_t *ctx = ctx_;
 	pcb_line_t *l = (pcb_line_t *)ctx->cut, lo, vl;
-	rnd_box_t ip;
+	rnd_rnd_box_t ip;
 	double offs[2], ox, oy, vx, vy, len, r;
 
 	assert(ctx->cut->type == PCB_OBJ_LINE); /* need to handle arc later */
@@ -377,7 +377,7 @@ pcb_rtree_dir_t fix_overcuts_in_seg(void *ctx_, void *obj, const pcb_rtree_box_t
 		pcb_line_new(ly, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, 1, 0, pcb_no_flags());
 		pcb_line_new(ly, lo.Point1.X, lo.Point1.Y, lo.Point2.X, lo.Point2.Y, 1, 0, pcb_no_flags());
 */
-		return pcb_RTREE_DIR_FOUND | pcb_RTREE_DIR_STOP;
+		return rnd_RTREE_DIR_FOUND | rnd_RTREE_DIR_STOP;
 	}
 
 	lo.Point1.X = l->Point1.X - ox + vx*500; lo.Point1.Y = l->Point1.Y - oy + vy*500;
@@ -388,18 +388,18 @@ pcb_rtree_dir_t fix_overcuts_in_seg(void *ctx_, void *obj, const pcb_rtree_box_t
 		pcb_line_new(ly, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, 1, 0, pcb_no_flags());
 		pcb_line_new(ly, lo.Point1.X, lo.Point1.Y, lo.Point2.X, lo.Point2.Y, 1, 0, pcb_no_flags());
 */
-		return pcb_RTREE_DIR_FOUND | pcb_RTREE_DIR_STOP;
+		return rnd_RTREE_DIR_FOUND | rnd_RTREE_DIR_STOP;
 	}
 
 	return 0;
 }
 
-pcb_rtree_dir_t fix_overcuts_in_pline(void *ctx_, void *obj, const pcb_rtree_box_t *box)
+rnd_rtree_dir_t fix_overcuts_in_pline(void *ctx_, void *obj, const rnd_rtree_box_t *box)
 {
 	pline_ctx_t *ctx = ctx_;
 	pcb_pline_t *pl = obj;
 
-	return pcb_rtree_search_obj(pl->tree, (const pcb_rtree_box_t *)&ctx->cut->BoundingBox, fix_overcuts_in_seg, ctx);
+	return rnd_rtree_search_obj(pl->tree, (const rnd_rtree_box_t *)&ctx->cut->BoundingBox, fix_overcuts_in_seg, ctx);
 }
 
 static long fix_overcuts(pcb_board_t *pcb, pcb_tlp_session_t *result)
@@ -412,24 +412,24 @@ static long fix_overcuts(pcb_board_t *pcb, pcb_tlp_session_t *result)
 	pctx.result = result;
 
 	linelist_foreach(&result->res_path->Line, &it, line) {
-		pcb_polyarea_t *pa;
+		rnd_polyarea_t *pa;
 
 		pa = result->remain->Clipped;
 		do {
-			pcb_rtree_dir_t dir;
+			rnd_rtree_dir_t dir;
 
 			pctx.cut = (pcb_any_obj_t *)line;
 
 			if (pa == NULL)
 				continue;
-			dir = pcb_rtree_search_obj(pa->contour_tree, (const pcb_rtree_box_t *)&line->BoundingBox, fix_overcuts_in_pline, &pctx);
-			if (dir & pcb_RTREE_DIR_FOUND) { /* line crosses poly */
+			dir = rnd_rtree_search_obj(pa->contour_tree, (const rnd_rtree_box_t *)&line->BoundingBox, fix_overcuts_in_pline, &pctx);
+			if (dir & rnd_RTREE_DIR_FOUND) { /* line crosses poly */
 				error++;
 				pcb_line_free(line);
 				line = NULL;
 			}
 			else {  /* check endpoints only if side didn't intersect */
-				pcb_polyarea_t *c;
+				rnd_polyarea_t *c;
 				rnd_coord_t r = (line->Thickness-1)/2 - 1000;
 				int within = 0;
 

@@ -636,7 +636,7 @@ TODO("textrot: incompatibility warning")
 			rnd_cardinal_t hole = 0;
 			fprintf(FP, "\tPolygon(%s)\n\t(", F2S(polygon, PCB_OBJ_POLY));
 			for (p = 0; p < polygon->PointN; p++) {
-				pcb_point_t *point = &polygon->Points[p];
+				rnd_point_t *point = &polygon->Points[p];
 
 				if (hole < polygon->HoleIndexN && p == polygon->HoleIndex[hole]) {
 					if (hole > 0)
@@ -772,7 +772,7 @@ void PreLoadElementPCB()
 void PostLoadElementPCB()
 {
 	pcb_board_t *pcb_save = PCB;
-	rnd_box_t dbb;
+	rnd_rnd_box_t dbb;
 	pcb_subc_t *sc;
 
 	if (!yyPCB)
@@ -1073,7 +1073,7 @@ void io_pcb_element_fin(pcb_data_t *Data)
 	pcb_subc_bbox(yysubc);
 	if (Data->subc_tree == NULL)
 		Data->subc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(Data->subc_tree, (rnd_box_t *)yysubc);
+	pcb_r_insert_entry(Data->subc_tree, (rnd_rnd_box_t *)yysubc);
 }
 
 static pcb_layer_t *subc_silk_layer(pcb_subc_t *subc)
@@ -1090,7 +1090,7 @@ pcb_line_t *io_pcb_element_line_new(pcb_subc_t *subc, rnd_coord_t X1, rnd_coord_
 }
 
 pcb_arc_t *io_pcb_element_arc_new(pcb_subc_t *subc, rnd_coord_t X, rnd_coord_t Y,
-	rnd_coord_t Width, rnd_coord_t Height, pcb_angle_t angle, pcb_angle_t delta, rnd_coord_t Thickness)
+	rnd_coord_t Width, rnd_coord_t Height, rnd_angle_t angle, rnd_angle_t delta, rnd_coord_t Thickness)
 {
 	pcb_layer_t *ly = subc_silk_layer(subc);
 	return pcb_arc_new(ly, X, Y, Width, Height, angle, delta, Thickness, 0, pcb_no_flags(), pcb_true);

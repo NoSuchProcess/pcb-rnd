@@ -159,7 +159,7 @@ static int layer_sort(const void *va, const void *vb)
 }
 
 static const char *filename;
-static rnd_box_t *bounds;
+static rnd_rnd_box_t *bounds;
 static int in_mono, as_shown;
 
 static pcb_hid_attr_val_t *options_;
@@ -217,7 +217,7 @@ void eps_hid_export_to_file(FILE * the_file, pcb_hid_attr_val_t *options, pcb_xf
 {
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	rnd_box_t tmp, region;
+	rnd_rnd_box_t tmp, region;
 	pcb_hid_expose_ctx_t ctx;
 
 	options_ = options;
@@ -443,7 +443,7 @@ static void eps_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void eps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+static void eps_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	if (direct)
 		return;
@@ -571,9 +571,9 @@ static void eps_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	pcb_fprintf(f, "%mi %mi %mi %mi %s\n", x1, y1, x2, y2, gc->erase ? "tc" : "t");
 }
 
-static void eps_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void eps_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
-	pcb_angle_t sa, ea;
+	rnd_angle_t sa, ea;
 	double w;
 
 	if ((width == 0) && (height == 0)) {

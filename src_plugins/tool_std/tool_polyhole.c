@@ -82,7 +82,7 @@ void pcb_tool_polyhole_notify_mode(rnd_hidlib_t *hl)
 		/* second notify, insert new point into object */
 	case PCB_CH_STATE_SECOND:
 		{
-			pcb_point_t *points = pcb_crosshair.AttachedPolygon.Points;
+			rnd_point_t *points = pcb_crosshair.AttachedPolygon.Points;
 			rnd_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
 
 			/* do update of position */

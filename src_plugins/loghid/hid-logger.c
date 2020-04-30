@@ -85,7 +85,7 @@ static void log_destroy_gc(pcb_hid_gc_t gc)
 	delegatee_->destroy_gc(gc);
 }
 
-static void log_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+static void log_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	if (screen != NULL)
 		pcb_fprintf(out_, "set_drawing_mode(%d,%d,[%mm;%mm,%mm;%mm])\n", op, direct, screen->X1, screen->Y1, screen->X2, screen->Y2);
@@ -94,7 +94,7 @@ static void log_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool
 	delegatee_->set_drawing_mode(hid, op, direct, screen);
 }
 
-static void log_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_box_t *screen)
+static void log_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen)
 {
 	pcb_fprintf(out_, "render_burst(%d,[%mm;%mm,%mm;%mm])\n", op, screen->X1, screen->Y1, screen->X2, screen->Y2);
 	delegatee_->render_burst(hid, op, screen);
@@ -144,7 +144,7 @@ static void log_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	delegatee_->draw_line(gc, x1, y1, x2, y2);
 }
 
-static void log_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void log_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	pcb_fprintf(out_, "draw_arc(gc, %mm, %mm, rx=%mm, ry=%mm, start_angle=%.1f, delta_a=%.1f)\n",
 		cx, cy, xradius, yradius, start_angle, delta_angle);

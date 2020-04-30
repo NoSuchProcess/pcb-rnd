@@ -107,7 +107,7 @@ pcb_route_object_t *pcb_route_alloc_object(pcb_route_t *p_route)
 	return &p_route->objects[p_route->size - 1];
 }
 
-void pcb_route_add_line(pcb_route_t *p_route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer)
+void pcb_route_add_line(pcb_route_t *p_route, rnd_point_t *point1, rnd_point_t *point2, pcb_layer_id_t layer)
 {
 	pcb_route_object_t *p_object = pcb_route_alloc_object(p_route);
 	if (p_object == NULL)
@@ -120,7 +120,7 @@ void pcb_route_add_line(pcb_route_t *p_route, pcb_point_t *point1, pcb_point_t *
 	p_route->end_point = *point2;
 }
 
-void pcb_route_add_arc(pcb_route_t *p_route, pcb_point_t *center, pcb_angle_t start_angle, pcb_angle_t delta, rnd_coord_t radius, pcb_layer_id_t layer)
+void pcb_route_add_arc(pcb_route_t *p_route, rnd_point_t *center, rnd_angle_t start_angle, rnd_angle_t delta, rnd_coord_t radius, pcb_layer_id_t layer)
 {
 	pcb_route_object_t *p_object = pcb_route_alloc_object(p_route);
 	if (p_object == NULL)
@@ -138,7 +138,7 @@ void pcb_route_add_arc(pcb_route_t *p_route, pcb_point_t *center, pcb_angle_t st
 }
 
 
-void pcb_route_direct(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
+void pcb_route_direct(pcb_board_t *PCB, pcb_route_t *route, rnd_point_t *point1, rnd_point_t *point2, pcb_layer_id_t layer, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
 {
 	pcb_route_reset(route);
 	route->start_point = *point1;
@@ -156,7 +156,7 @@ void pcb_route_direct(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point1,
  * Calculate an arc fitted to a corner.
  *---------------------------------------------------------*/
 
-void pcb_route_calculate_corner_arc(const pcb_point_t *point1, const pcb_point_t *point2, const pcb_point_t *point3, double radius, pcb_route_object_t *p_out_obj, pcb_point_t *p_endpoint1, pcb_point_t *p_endpoint2)
+void pcb_route_calculate_corner_arc(const rnd_point_t *point1, const rnd_point_t *point2, const rnd_point_t *point3, double radius, pcb_route_object_t *p_out_obj, rnd_point_t *p_endpoint1, rnd_point_t *p_endpoint2)
 {
 	const double r_min = 10.0;
 
@@ -223,7 +223,7 @@ void pcb_route_calculate_corner_arc(const pcb_point_t *point1, const pcb_point_t
 	}
 }
 
-void pcb_route_calculate_45(pcb_point_t *start_point, pcb_point_t *target_point)
+void pcb_route_calculate_45(rnd_point_t *start_point, rnd_point_t *target_point)
 {
 
 	rnd_coord_t dx, dy, min;
@@ -291,7 +291,7 @@ void pcb_route_calculate_45(pcb_point_t *start_point, pcb_point_t *target_point)
 	}
 }
 
-void pcb_route_start(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point, pcb_layer_id_t layer_id, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
+void pcb_route_start(pcb_board_t *PCB, pcb_route_t *route, rnd_point_t *point, pcb_layer_id_t layer_id, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
 {
 	/* Restart the route */
 	pcb_route_reset(route);
@@ -305,13 +305,13 @@ void pcb_route_start(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point, p
 	route->flags = flags;
 }
 
-void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, int mod2)
+void pcb_route_calculate_to(pcb_route_t *route, rnd_point_t *point, int mod1, int mod2)
 {
 	TODO("If an external route calculator has been selected then use it instead of this default one.")
 	TODO("Add DRC Checking")
 
-	pcb_point_t *point1 = &route->end_point;
-	pcb_point_t *point2 = point;
+	rnd_point_t *point1 = &route->end_point;
+	rnd_point_t *point2 = point;
 	pcb_layer_id_t layer_id = route->end_layer;
 
 	/* Set radius to 0 for standard 45/90 operation */
@@ -329,7 +329,7 @@ void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, in
 	 * This line segment might not end under the crosshair.
 	 */
 	else if (conf_core.editor.line_refraction == 0) {
-		pcb_point_t target = *point2;
+		rnd_point_t target = *point2;
 		pcb_route_calculate_45(point1, &target);
 		pcb_route_add_line(route, point1, &target, layer_id);
 		route->end_point = target;
@@ -337,7 +337,7 @@ void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, in
 	else {
 		/* Refraction is non-zero so add multiple lines (horizontal, vertical and/or 45 degrees). */
 		rnd_coord_t dx, dy;
-		pcb_point_t target;
+		rnd_point_t target;
 		rnd_bool way = (conf_core.editor.line_refraction == 1 ? pcb_false : pcb_true);
 
 		/* swap the 'way' if mod1 is set (typically the shift key) */
@@ -370,8 +370,8 @@ void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, in
 
 		if (radius > 0.0) {
 			pcb_route_object_t arc;
-			pcb_point_t target1;
-			pcb_point_t target2;
+			rnd_point_t target1;
+			rnd_point_t target2;
 
 			pcb_route_calculate_corner_arc(point1, &target, point2, radius, &arc, &target1, &target2);
 
@@ -398,7 +398,7 @@ void pcb_route_calculate_to(pcb_route_t *route, pcb_point_t *point, int mod1, in
 }
 
 TODO("Pass in other required information such as object flags")
-void pcb_route_calculate(pcb_board_t *PCB, pcb_route_t *route, pcb_point_t *point1, pcb_point_t *point2, pcb_layer_id_t layer_id, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags, int mod1, int mod2)
+void pcb_route_calculate(pcb_board_t *PCB, pcb_route_t *route, rnd_point_t *point1, rnd_point_t *point2, pcb_layer_id_t layer_id, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags, int mod1, int mod2)
 {
 	/* Set radius to 0 for standard 45/90 operation */
 /*	const rnd_coord_t radius = thickness * conf_core.editor.route_radius; - TODO: remove this if not needed */
@@ -467,14 +467,14 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 					/* Move the existing line point/s */
 					exto = pcb_extobj_float_pre((pcb_any_obj_t *)apply_to_line);
 					pcb_line_invalidate_erase(apply_to_line);
-					pcb_r_delete_entry(apply_to_line_layer->line_tree, (rnd_box_t *) apply_to_line);
+					pcb_r_delete_entry(apply_to_line_layer->line_tree, (rnd_rnd_box_t *) apply_to_line);
 					pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_LINE, apply_to_line_layer, apply_to_line);
 					apply_to_line->Point1.X = p_obj->point1.X;
 					apply_to_line->Point1.Y = p_obj->point1.Y;
 					apply_to_line->Point2.X = p_obj->point2.X;
 					apply_to_line->Point2.Y = p_obj->point2.Y;
 					pcb_line_bbox(apply_to_line);
-					pcb_r_insert_entry(layer->line_tree, (rnd_box_t *) apply_to_line);
+					pcb_r_insert_entry(layer->line_tree, (rnd_rnd_box_t *) apply_to_line);
 					pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_LINE, layer, apply_to_line);
 					pcb_line_invalidate_draw(layer, apply_to_line);
 					apply_to_line_layer = layer;
@@ -599,7 +599,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						exto = pcb_extobj_float_pre((pcb_any_obj_t *)apply_to_arc);
 						pcb_arc_invalidate_erase(apply_to_arc);
 
-						pcb_r_delete_entry(apply_to_arc_layer->arc_tree, (rnd_box_t *) apply_to_arc);
+						pcb_r_delete_entry(apply_to_arc_layer->arc_tree, (rnd_rnd_box_t *) apply_to_arc);
 						pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_ARC, apply_to_arc_layer, apply_to_arc);
 
 						apply_to_arc->X = p_obj->point1.X;
@@ -610,7 +610,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						apply_to_arc->Delta = p_obj->delta_angle;
 						apply_to_arc->Thickness = p_route->thickness;
 						pcb_arc_bbox(apply_to_arc);
-						pcb_r_insert_entry(apply_to_arc_layer->arc_tree, (rnd_box_t *) apply_to_arc);
+						pcb_r_insert_entry(apply_to_arc_layer->arc_tree, (rnd_rnd_box_t *) apply_to_arc);
 						pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_ARC, apply_to_arc_layer, apply_to_arc);
 						pcb_arc_invalidate_draw(layer, apply_to_arc);
 						apply_to_arc_layer = layer;
@@ -698,7 +698,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 /*-----------------------------------------------------------
  * Draws the outline of an arc
  *---------------------------------------------------------*/
-void pcb_route_draw_arc(pcb_hid_gc_t GC, rnd_coord_t x, rnd_coord_t y, pcb_angle_t start_angle, pcb_angle_t delta, rnd_coord_t radius, rnd_coord_t thickness)
+void pcb_route_draw_arc(pcb_hid_gc_t GC, rnd_coord_t x, rnd_coord_t y, rnd_angle_t start_angle, rnd_angle_t delta, rnd_coord_t radius, rnd_coord_t thickness)
 {
 	double x1, y1, x2, y2, wid = thickness / 2;
 

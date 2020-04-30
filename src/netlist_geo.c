@@ -137,7 +137,7 @@ static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, rnd_coord_
 {
 	pcb_subnet_dist_t best;
 	pcb_poly_it_t it;
-	pcb_polyarea_t *pa;
+	rnd_polyarea_t *pa;
 
 	best.dist2 = HUGE_VAL;
 	best.o1 = (pcb_any_obj_t *)o1;
@@ -216,7 +216,7 @@ static pcb_subnet_dist_t pcb_dist_poly_poly(pcb_poly_t *o1, pcb_poly_t *o2, pcb_
 {
 	pcb_subnet_dist_t best;
 	pcb_poly_it_t it;
-	pcb_polyarea_t *pa;
+	rnd_polyarea_t *pa;
 
 	if (acc & PCB_RATACC_ONLY_MANHATTAN)
 		return sdist_invalid;

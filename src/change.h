@@ -98,9 +98,9 @@ void *pcb_chg_obj_name(int, void *, void *, void *, char *);
 void *pcb_chg_obj_name_query(pcb_any_obj_t *obj);
 
 rnd_bool pcb_chg_obj_radius(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_x, rnd_coord_t r, rnd_bool absolute);
-rnd_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, pcb_angle_t a, rnd_bool absolute);
-rnd_bool pcb_chg_selected_angle(int types, int is_start, pcb_angle_t Difference, rnd_bool fixIt);
-rnd_bool pcb_chg_selected_radius(int types, int is_start, pcb_angle_t Difference, rnd_bool fixIt);
+rnd_bool pcb_chg_obj_angle(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int is_start, rnd_angle_t a, rnd_bool absolute);
+rnd_bool pcb_chg_selected_angle(int types, int is_start, rnd_angle_t Difference, rnd_bool fixIt);
+rnd_bool pcb_chg_selected_radius(int types, int is_start, rnd_angle_t Difference, rnd_bool fixIt);
 
 /* Change flag flg of an object in a way dictated by 'how' */
 void pcb_flag_change(pcb_board_t *pcb, pcb_change_flag_t how, pcb_flag_values_t flg, int Type, void *Ptr1, void *Ptr2, void *Ptr3);

@@ -292,7 +292,7 @@ TODO("leak: remove the unused hubs");
 	vtp0_uninit(&hubs);
 }
 
-rnd_cardinal_t pcb_polyarea_split_selfint(pcb_polyarea_t *pa)
+rnd_cardinal_t pcb_polyarea_split_selfint(rnd_polyarea_t *pa)
 {
 	pcb_pline_t *pl, *next, *pln, *prev = NULL;
 	rnd_cardinal_t cnt = 0;

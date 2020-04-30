@@ -74,14 +74,14 @@ struct hkp_tree_s {
 };
 
 typedef struct {
-	const pcb_unit_t *unit;
+	const rnd_unit_t *unit;
 	node_t *subtree;
 	unsigned valid:1; /* whether it's already parsed */
 	pcb_pstk_shape_t shp;
 } hkp_shape_t;
 
 typedef struct {
-	const pcb_unit_t *unit;
+	const rnd_unit_t *unit;
 	node_t *subtree;
 	unsigned valid:1; /* whether it's already parsed */
 	unsigned plated:1;
@@ -90,7 +90,7 @@ typedef struct {
 } hkp_hole_t;
 
 typedef struct {
-	const pcb_unit_t *unit;
+	const rnd_unit_t *unit;
 	node_t *subtree;
 	unsigned valid:1; /* whether it's already parsed */
 	pcb_pstk_proto_t proto;
@@ -113,8 +113,8 @@ typedef struct {
 
 	int num_cop_layers;
 
-	const pcb_unit_t *unit;      /* default unit used while converting coords any given time */
-	const pcb_unit_t *pstk_unit; /* default unit for the padstacks file */
+	const rnd_unit_t *unit;      /* default unit used while converting coords any given time */
+	const rnd_unit_t *pstk_unit; /* default unit for the padstacks file */
 
 	hkp_netclass_t nc_dflt; /* for default clearances */
 
@@ -1123,7 +1123,7 @@ static pcb_subc_t *parse_package(hkp_ctx_t *ctx, pcb_data_t *dt, node_t *nd)
 
 		if (dt->subc_tree == NULL)
 			dt->subc_tree = pcb_r_create_tree();
-		pcb_r_insert_entry(dt->subc_tree, (rnd_box_t *)subc);
+		pcb_r_insert_entry(dt->subc_tree, (rnd_rnd_box_t *)subc);
 
 		pcb_subc_rebind(ctx->pcb, subc);
 	}
@@ -1158,7 +1158,7 @@ TODO("netclass: fill this in:")
 	}
 }
 
-static const pcb_unit_t *parse_units(const char *ust)
+static const rnd_unit_t *parse_units(const char *ust)
 {
 	if (strcmp(ust, "MIL") == 0) return get_unit_struct("mil");
 	if (strcmp(ust, "TH") == 0)  return get_unit_struct("mil");
@@ -1260,7 +1260,7 @@ TODO("netclass: set nc for net's netclass");
 
 	/* 'autocrop' the board for now (required by y mirror and unknown extents) */
 	{
-		rnd_box_t bb;
+		rnd_rnd_box_t bb;
 		pcb_data_normalize(ctx->pcb->Data);
 		pcb_data_bbox(&bb, ctx->pcb->Data, 0);
 		ctx->pcb->hidlib.size_x = bb.X2;

@@ -39,7 +39,7 @@ void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_
 	pcb_hid_attribute_t *enu = attr;
 	pcb_hid_attribute_t *end = attr - unit->wenum + unit->cmp.wend;
 	const char **vals = enu->wdata;
-	const pcb_unit_t *u = get_unit_by_suffix(vals[enu->val.lng]);
+	const rnd_unit_t *u = get_unit_by_suffix(vals[enu->val.lng]);
 	int unit_id = u == NULL ? -1 : u - pcb_units;
 
 	end->val.lng = unit_id;
@@ -66,7 +66,7 @@ void pcb_dad_unit_set_num(pcb_hid_attribute_t *attr, long unit_id, double unused
 
 void pcb_dad_unit_set_val_ptr(pcb_hid_attribute_t *end, void *val_)
 {
-	const pcb_unit_t *val = val_;
+	const rnd_unit_t *val = val_;
 	int __n__, __v__ = pcb_get_n_units(1);
 	if (val != NULL) {
 		for(__n__ = 0; __n__ < __v__; __n__++) {

@@ -35,7 +35,7 @@ typedef struct pcb_mark_s {
 	unsigned user_placed:1;   /* if 1, the user has explicitly placed the mark - do not move it */
 } pcb_mark_t;
 
-struct pcb_hidlib_s {
+struct rnd_hidlib_s {
 	rnd_coord_t grid;                  /* grid resolution */
 	rnd_coord_t grid_ox, grid_oy;      /* grid offset */
 	rnd_coord_t size_x, size_y;        /* drawing area extents (or board dimensions) */
@@ -47,7 +47,7 @@ struct pcb_hidlib_s {
 	unsigned int tool_hit;                  /* optional: type of a hit object of PCB_MOVE_TYPES; 0 if there was no PCB_MOVE_TYPES object under the crosshair */
 	unsigned int tool_click:1;              /* optional: true if clicked somewhere with the arrow tool */
 	pcb_mark_t tool_grabbed;                /* point where a drag&drop operation started */
-	rnd_box_t *tool_snapped_obj_bbox;
+	rnd_rnd_box_t *tool_snapped_obj_bbox;
 
 	/* internal */
 	int *batch_ask_ovr;                /* if not NULL, override local ask-overwrite state - useful when manu operations that need to write files are ran in batch, e.g. in a cam job */

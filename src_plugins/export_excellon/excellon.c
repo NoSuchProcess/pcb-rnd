@@ -337,7 +337,7 @@ static void excellon_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void excellon_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *drw_screen)
+static void excellon_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
 {
 	switch(op) {
 		case PCB_HID_COMP_RESET:
@@ -420,7 +420,7 @@ static void excellon_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	excellon_draw_line(gc, x2, y1, x2, y2);
 }
 
-static void excellon_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void excellon_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	if (!warn.arc) {
 		warn.arc = 1;

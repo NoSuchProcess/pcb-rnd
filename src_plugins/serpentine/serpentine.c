@@ -50,8 +50,8 @@
 #include "route.h"
 
 typedef struct {
-	pcb_point_t start;
-	pcb_point_t end;
+	rnd_point_t start;
+	rnd_point_t end;
 	double amplitude;
 	double minimum_amplitude;
 	double nx,ny; /* Normal of host line */
@@ -106,8 +106,8 @@ draw_serpentine_ui(serpentine_info_t * p_info)
 int 
 serpentine_calculate_route(	pcb_route_t * route,
 														const pcb_line_t * line,
-														const pcb_point_t * point1,
-														const pcb_point_t * point2,
+														const rnd_point_t * point1,
+														const rnd_point_t * point2,
 														const rnd_coord_t pitch,
 														serpentine_info_t * p_info )
 {
@@ -119,7 +119,7 @@ serpentine_calculate_route(	pcb_route_t * route,
 	int count = 0;
 	double sind,cosd,sinn,cosn;
 
-	pcb_point_t start,end;
+	rnd_point_t start,end;
 
 	/* Project the start and end points onto the line */
 	double t0 =	point_on_line(point1->X,point1->Y,line->Point1.X,line->Point1.Y,line->Point2.X,line->Point2.Y,&sx,&sy);
@@ -180,8 +180,8 @@ serpentine_calculate_route(	pcb_route_t * route,
 		double nax = 0.0;
 		double nay = 0.0;
 		double last_amplitude = 0.0;
-		pcb_point_t startpos;
-		pcb_point_t endpos;
+		rnd_point_t startpos;
+		rnd_point_t endpos;
 
 		route->start_point = route->end_point = line->Point1;
 		route->thickness = line->Thickness;
@@ -328,8 +328,8 @@ static void tool_serpentine_notify_mode(rnd_hidlib_t *hl)
 			double pitch_mult = conf_serpentine.plugins.serpentine.pitch;
 			pcb_route_t route;
 			pcb_line_t * p_line = (pcb_line_t *)pcb_crosshair.AttachedObject.Ptr2;
-			pcb_point_t point1;
-			pcb_point_t point2;
+			rnd_point_t point1;
+			rnd_point_t point2;
 			point1.X = pcb_crosshair.AttachedObject.X;
 			point1.Y = pcb_crosshair.AttachedObject.Y;
 			point2.X = pcb_crosshair.AttachedObject.tx; 
@@ -371,8 +371,8 @@ static void tool_serpentine_draw_attached(void)
 				pcb_route_t route;
 				serpentine_info_t info;
 				pcb_line_t * p_line = (pcb_line_t *)pcb_crosshair.AttachedObject.Ptr2;
-				pcb_point_t point1;
-				pcb_point_t point2;
+				rnd_point_t point1;
+				rnd_point_t point2;
 				point1.X = pcb_crosshair.AttachedObject.X;
 				point1.Y = pcb_crosshair.AttachedObject.Y;
 				point2.X = pcb_crosshair.AttachedObject.tx; 

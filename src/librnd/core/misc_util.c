@@ -65,7 +65,7 @@ double pcb_get_value(const char *val, const char *units, rnd_bool * absolute, rn
 	return pcb_get_value_ex(val, units, absolute, NULL, "cmil", success);
 }
 
-rnd_bool pcb_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict, double *val_out, const pcb_unit_t **unit_out)
+rnd_bool pcb_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict, double *val_out, const rnd_unit_t **unit_out)
 {
 	int ul, ulo = 0;
 	const char *start;
@@ -87,7 +87,7 @@ rnd_bool pcb_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict
 		ul += ulo;
 	if ((ul > 0) && (val[ul] != '\0')) {
 		const char *unit = val+ul;
-		const pcb_unit_t *u;
+		const rnd_unit_t *u;
 
 		while(isspace(*unit)) unit++;
 		if (*unit == '\0')
@@ -155,7 +155,7 @@ double pcb_get_value_ex(const char *val, const char *units, rnd_bool * absolute,
 
 	if (units && *units) {
 		int i, unit_ok = 0;
-		const pcb_unit_t *unit = get_unit_struct(units);
+		const rnd_unit_t *unit = get_unit_struct(units);
 		if (unit != NULL) {
 			value = pcb_unit_to_coord(unit, value);
 			scaled = 1;
@@ -179,7 +179,7 @@ double pcb_get_value_ex(const char *val, const char *units, rnd_bool * absolute,
 	/* Apply default unit */
 	if (!scaled && default_unit && *default_unit) {
 		int i;
-		const pcb_unit_t *unit = get_unit_struct(default_unit);
+		const rnd_unit_t *unit = get_unit_struct(default_unit);
 		if (extra_units)
 			for (i = 0; *extra_units[i].suffix; ++i)
 				if (strcmp(extra_units[i].suffix, default_unit) == 0) {

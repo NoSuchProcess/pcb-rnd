@@ -94,7 +94,7 @@ pcb_pstk_t *pcb_pstk_new(pcb_data_t *data, long int id, rnd_cardinal_t proto, rn
 pcb_pstk_t *pcb_pstk_new_tr(pcb_data_t *data, long int id, rnd_cardinal_t proto, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, pcb_flag_t Flags, double rot, int xmirror, int smirror);
 void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps);
 void pcb_pstk_bbox(pcb_pstk_t *ps);
-void pcb_pstk_copper_bbox(rnd_box_t *dst, pcb_pstk_t *ps);
+void pcb_pstk_copper_bbox(rnd_rnd_box_t *dst, pcb_pstk_t *ps);
 
 void pcb_pstk_reg(pcb_data_t *data, pcb_pstk_t *pstk);
 void pcb_pstk_unreg(pcb_pstk_t *pstk);
@@ -157,7 +157,7 @@ void pcb_pstk_shape_alloc_poly(pcb_pstk_poly_t *poly, int len);
 void pcb_pstk_shape_free_poly(pcb_pstk_poly_t *poly);
 
 /* geometry for select.c and search.c; if layer is NULL, consider all shapes */
-int pcb_pstk_near_box(pcb_pstk_t *ps, rnd_box_t *box, pcb_layer_t *layer);
+int pcb_pstk_near_box(pcb_pstk_t *ps, rnd_rnd_box_t *box, pcb_layer_t *layer);
 int pcb_is_point_in_pstk(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, pcb_pstk_t *ps, pcb_layer_t *layer);
 
 /* Check if padstack has the proper clearance against polygon; returns 0 if everything's fine */

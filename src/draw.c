@@ -57,7 +57,7 @@
 
 pcb_output_t pcb_draw_out; /* global context used for drawing */
 
-rnd_box_t pcb_draw_invalidated = { RND_COORD_MAX, RND_COORD_MAX, -RND_COORD_MAX, -RND_COORD_MAX };
+rnd_rnd_box_t pcb_draw_invalidated = { RND_COORD_MAX, RND_COORD_MAX, -RND_COORD_MAX, -RND_COORD_MAX };
 
 int pcb_draw_force_termlab = 0;
 rnd_bool pcb_draw_doing_assy = pcb_false;
@@ -79,7 +79,7 @@ static void pcb_draw_paste(pcb_draw_info_t *info, int side);
 static void pcb_draw_mask(pcb_draw_info_t *info, int side);
 static void pcb_draw_silk_doc(pcb_draw_info_t *info, pcb_layer_type_t lyt_side, pcb_layer_type_t lyt_type, int setgrp, int invis);
 static void pcb_draw_boundary_mech(pcb_draw_info_t *info);
-static void pcb_draw_rats(pcb_draw_info_t *info, const rnd_box_t *);
+static void pcb_draw_rats(pcb_draw_info_t *info, const rnd_rnd_box_t *);
 static void pcb_draw_assembly(pcb_draw_info_t *info, pcb_layer_type_t lyt_side);
 
 
@@ -294,7 +294,7 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
-static void draw_rats(pcb_draw_info_t *info, const rnd_box_t *drawn_area)
+static void draw_rats(pcb_draw_info_t *info, const rnd_rnd_box_t *drawn_area)
 {
 	if (pcb_layer_gui_set_vlayer(PCB, PCB_VLY_RATS, 0, NULL)) {
 		pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
@@ -628,7 +628,7 @@ static void pcb_draw_ppv(pcb_draw_info_t *info, pcb_layergrp_id_t group)
  * Draws padstacks' names - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->pstk_on
  */
-void pcb_draw_pstk_names(pcb_draw_info_t *info, pcb_layergrp_id_t group, const rnd_box_t *drawn_area)
+void pcb_draw_pstk_names(pcb_draw_info_t *info, pcb_layergrp_id_t group, const rnd_rnd_box_t *drawn_area)
 {
 	if (PCB->pstk_on || !pcb_render->gui) {
 		size_t n;
@@ -644,7 +644,7 @@ static void pcb_draw_delayed_objs(pcb_draw_info_t *info)
 
 	for(n = 0; n < delayed_objs.used; n++) {
 		pcb_any_obj_t *o = delayed_objs.array[n];
-		rnd_box_t *b = (rnd_box_t *)o;
+		rnd_rnd_box_t *b = (rnd_rnd_box_t *)o;
 		switch(o->type) {
 			case PCB_OBJ_ARC:  pcb_arc_draw_term_callback(b, info); break;
 			case PCB_OBJ_LINE: pcb_line_draw_term_callback(b, info); break;
@@ -799,10 +799,10 @@ static void pcb_draw_info_setup(pcb_draw_info_t *info, pcb_board_t *pcb)
 		*info->noexport_name = '\0';
 }
 
-void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_box_t *screen)
+void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_rnd_box_t *screen)
 {
 	pcb_draw_info_t info;
-	rnd_box_t scr2;
+	rnd_rnd_box_t scr2;
 
 	pcb_draw_info_setup(&info, pcb);
 	info.drawn_area = screen;
@@ -824,12 +824,12 @@ void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *Layer, const rn
 
 /* This version is about 1% slower and used rarely, thus it's all dupped
    from pcb_draw_layer() to keep the original speed there */
-void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_box_t *screen, pcb_data_t *data, pcb_xform_t *xf)
+void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_rnd_box_t *screen, pcb_data_t *data, pcb_xform_t *xf)
 {
 	pcb_draw_info_t info;
-	rnd_box_t scr2;
+	rnd_rnd_box_t scr2;
 	unsigned int lflg = 0;
-	pcb_rtree_it_t it;
+	rnd_rtree_it_t it;
 	pcb_any_obj_t *o;
 	pcb_xform_t tmp;
 
@@ -857,14 +857,14 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_
 		/* print the non-clearing polys */
 	if (Layer->polygon_tree != NULL) {
 		if (lflg & PCB_LYT_COPPER) {
-			for(o = pcb_rtree_first(&it, Layer->polygon_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+			for(o = rnd_rtree_first(&it, Layer->polygon_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_poly_draw_term_callback((rnd_box_t *)o, &info);
+					pcb_poly_draw_term_callback((rnd_rnd_box_t *)o, &info);
 		}
 		else {
-			for(o = pcb_rtree_first(&it, Layer->polygon_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+			for(o = rnd_rtree_first(&it, Layer->polygon_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_poly_draw_callback((rnd_box_t *)o, &info);
+					pcb_poly_draw_callback((rnd_rnd_box_t *)o, &info);
 		}
 	}
 
@@ -874,39 +874,39 @@ void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_
 	/* draw all visible layer objects (with terminal gfx on copper) */
 	if (lflg & PCB_LYT_COPPER) {
 		if (Layer->line_tree != NULL)
-			for(o = pcb_rtree_first(&it, Layer->line_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+			for(o = rnd_rtree_first(&it, Layer->line_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_line_draw_term_callback((rnd_box_t *)o, &info);
+					pcb_line_draw_term_callback((rnd_rnd_box_t *)o, &info);
 		if (Layer->arc_tree != NULL)
-			for(o = pcb_rtree_first(&it, Layer->arc_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+			for(o = rnd_rtree_first(&it, Layer->arc_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_arc_draw_term_callback((rnd_box_t *)o, &info);
+					pcb_arc_draw_term_callback((rnd_rnd_box_t *)o, &info);
 		if (Layer->text_tree != NULL)
-			for(o = pcb_rtree_first(&it, Layer->text_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+			for(o = rnd_rtree_first(&it, Layer->text_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_text_draw_term_callback((rnd_box_t *)o, &info);
+					pcb_text_draw_term_callback((rnd_rnd_box_t *)o, &info);
 		if (Layer->gfx_tree != NULL)
-			for(o = pcb_rtree_first(&it, Layer->gfx_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+			for(o = rnd_rtree_first(&it, Layer->gfx_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
 					pcb_gfx_draw(&info, (pcb_gfx_t *)o, 0);
 	}
 	else {
 		if (Layer->line_tree != NULL)
-			for(o = pcb_rtree_first(&it, Layer->line_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+			for(o = rnd_rtree_first(&it, Layer->line_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_line_draw_callback((rnd_box_t *)o, &info);
+					pcb_line_draw_callback((rnd_rnd_box_t *)o, &info);
 		if (Layer->arc_tree != NULL)
-			for(o = pcb_rtree_first(&it, Layer->arc_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+			for(o = rnd_rtree_first(&it, Layer->arc_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_arc_draw_callback((rnd_box_t *)o, &info);
+					pcb_arc_draw_callback((rnd_rnd_box_t *)o, &info);
 		if (Layer->text_tree != NULL)
-			for(o = pcb_rtree_first(&it, Layer->text_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+			for(o = rnd_rtree_first(&it, Layer->text_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_text_draw_callback((rnd_box_t *)o, &info);
+					pcb_text_draw_callback((rnd_rnd_box_t *)o, &info);
 		if (Layer->gfx_tree != NULL)
-			for(o = pcb_rtree_first(&it, Layer->gfx_tree, (pcb_rtree_box_t *)screen); o != NULL; o = pcb_rtree_next(&it))
+			for(o = rnd_rtree_first(&it, Layer->gfx_tree, (rnd_rtree_box_t *)screen); o != NULL; o = rnd_rtree_next(&it))
 				if (pcb_obj_is_under(o, data))
-					pcb_gfx_draw_callback((rnd_box_t *)o, &info);
+					pcb_gfx_draw_callback((rnd_rnd_box_t *)o, &info);
 	}
 
 	out:;
@@ -1258,7 +1258,7 @@ void pcb_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double 
 void pcb_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const char *label)
 {
 	rnd_coord_t ox = x, oy = y, margin = 0;
-	rnd_box_t b;
+	rnd_rnd_box_t b;
 	PCB_TERM_LABEL_SETUP((const unsigned char *)label);
 
 	dx = PCB_ABS(dx);

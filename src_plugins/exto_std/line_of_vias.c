@@ -96,8 +96,8 @@ static void line_of_vias_gen_line(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t
 	too_close = pitch/2.0;
 	qbox_bloat = pitch/4.0;
 	for(offs = 0; offs <= len; offs += pitch) {
-		pcb_rtree_it_t it;
-		pcb_rtree_box_t qbox;
+		rnd_rtree_it_t it;
+		rnd_rtree_box_t qbox;
 		pcb_pstk_t *cl;
 		int skip = 0;
 		rnd_coord_t rx = rnd_round(x), ry = rnd_round(y);
@@ -107,7 +107,7 @@ static void line_of_vias_gen_line(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t
 		qbox.x2 = rnd_round(rx + qbox_bloat); qbox.y2 = rnd_round(ry + qbox_bloat);
 
 		if ((pcb != NULL) && (pcb->Data->padstack_tree != NULL)) {
-			for(cl = pcb_rtree_first(&it, pcb->Data->padstack_tree, &qbox); cl != NULL; cl = pcb_rtree_next(&it)) {
+			for(cl = rnd_rtree_first(&it, pcb->Data->padstack_tree, &qbox); cl != NULL; cl = rnd_rtree_next(&it)) {
 				if (rnd_distance(rx, ry, cl->x, cl->y) < too_close) {
 					skip = 1;
 					break;

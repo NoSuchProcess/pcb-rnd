@@ -294,7 +294,7 @@ static void maybe_close_f(FILE * f)
 	}
 }
 
-static rnd_box_t region;
+static rnd_rnd_box_t region;
 
 static void append_file_suffix(gds_t *dst, pcb_layergrp_id_t gid, pcb_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
 {
@@ -631,7 +631,7 @@ static void gerber_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void gerber_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *drw_screen)
+static void gerber_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
 {
 	gerber_drawing_mode = op;
 	if ((f != NULL) && (gerber_debug))
@@ -852,7 +852,7 @@ static void gerber_draw_rect(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rn
 	gerber_draw_line(gc, x2, y1, x2, y2);
 }
 
-static void gerber_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void gerber_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_bool m = pcb_false;
 	double arcStartX, arcStopX, arcStartY, arcStopY;

@@ -241,7 +241,7 @@ void proto_send_draw_line(int gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2
 	send_end(&pctx);
 }
 
-void proto_send_draw_arc(int gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+void proto_send_draw_arc(int gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	send_begin(&pctx, "arc");
 	send_open(&pctx, 0, 1);

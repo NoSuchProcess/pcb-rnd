@@ -478,7 +478,7 @@ static void hyp_subc_fin(pcb_subc_t *subc)
 	pcb_subc_bbox(subc);
 	if (hyp_dest->subc_tree == NULL)
 		hyp_dest->subc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(hyp_dest->subc_tree, (rnd_box_t *)subc);
+	pcb_r_insert_entry(hyp_dest->subc_tree, (rnd_rnd_box_t *)subc);
 	pcb_subc_rebind(hyp_dest->parent.board, subc);
 }
 
@@ -948,9 +948,9 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_
 											 rnd_coord_t YC, rnd_coord_t Width, rnd_coord_t Height, pcb_bool_t Clockwise, rnd_coord_t Thickness,
 											 rnd_coord_t Clearance, pcb_flag_t Flags)
 {
-	pcb_angle_t start_angle;
-	pcb_angle_t end_angle;
-	pcb_angle_t delta;
+	rnd_angle_t start_angle;
+	rnd_angle_t end_angle;
+	rnd_angle_t delta;
 	pcb_arc_t *new_arc;
 
 	if (Width < 1) {
@@ -1139,7 +1139,7 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 	pcb_bool_t outer_contour;
 	hyp_vertex_t *vrtx;
 
-	pcb_polyarea_t *polyarea = NULL;
+	rnd_polyarea_t *polyarea = NULL;
 	pcb_pline_t *contour = NULL;
 
 	polyarea = pcb_polyarea_create();

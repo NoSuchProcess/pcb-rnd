@@ -166,7 +166,7 @@ void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
 void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
 {
 	int g;
-	rnd_box_t b;
+	rnd_rnd_box_t b;
 	pcb_any_obj_t *obj;
 	pcb_idpath_t *idp;
 

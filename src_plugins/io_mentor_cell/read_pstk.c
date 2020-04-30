@@ -40,7 +40,7 @@ static int parse_dia(hkp_ctx_t *ctx, node_t *roundn, rnd_coord_t *dia)
 
 static hkp_hole_t *parse_hole(hkp_ctx_t *ctx, const char *name)
 {
-	const pcb_unit_t *old_unit;
+	const rnd_unit_t *old_unit;
 	node_t *hr, *ho;
 	hkp_hole_t *h = htsp_get(&ctx->holes, name);
 
@@ -102,7 +102,7 @@ do { \
 } while(0)
 static hkp_shape_t *parse_shape(hkp_ctx_t *ctx, const char *name)
 {
-	const pcb_unit_t *old_unit;
+	const rnd_unit_t *old_unit;
 	node_t *n, *on, *tmp;
 	rnd_coord_t ox = 0, oy = 0;
 	hkp_shape_t *s = htsp_get(&ctx->shapes, name);
@@ -229,7 +229,7 @@ static void slot_shape(pcb_pstk_shape_t *shape, rnd_coord_t sx, rnd_coord_t sy)
 
 static hkp_pstk_t *parse_pstk(hkp_ctx_t *ctx, const char *ps)
 {
-	const pcb_unit_t *old_unit;
+	const rnd_unit_t *old_unit;
 	rnd_coord_t ox = 0, oy = 0;
 	node_t *n, *hn, *on, *tn;
 	hkp_pstk_t *p = htsp_get(&ctx->pstks, ps);

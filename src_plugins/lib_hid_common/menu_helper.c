@@ -180,7 +180,7 @@ lht_node_t *pcb_hid_cfg_menu_field_path(const lht_node_t *parent, const char *pa
 	return lht_tree_path_(parent->doc, parent, path, 1, 0, NULL);
 }
 
-static int hid_cfg_remove_item(pcb_hid_cfg_t *hr, lht_node_t *item, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
+static int hid_cfg_remove_item(rnd_hid_cfg_t *hr, lht_node_t *item, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
 	if (gui_remove(ctx, item) != 0)
 		return -1;
@@ -188,7 +188,7 @@ static int hid_cfg_remove_item(pcb_hid_cfg_t *hr, lht_node_t *item, int (*gui_re
 	return 0;
 }
 
-int pcb_hid_cfg_remove_menu_node(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
+int pcb_hid_cfg_remove_menu_node(rnd_hid_cfg_t *hr, lht_node_t *root, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
 	if ((root == NULL) || (hr == NULL))
 		return -1;
@@ -216,7 +216,7 @@ int pcb_hid_cfg_remove_menu_node(pcb_hid_cfg_t *hr, lht_node_t *root, int (*gui_
 	return hid_cfg_remove_item(hr, root, gui_remove, ctx);
 }
 
-int pcb_hid_cfg_remove_menu_cookie(pcb_hid_cfg_t *hr, const char *cookie, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx, int level, lht_node_t *curr)
+int pcb_hid_cfg_remove_menu_cookie(rnd_hid_cfg_t *hr, const char *cookie, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx, int level, lht_node_t *curr)
 {
 	lht_err_t err;
 	lht_dom_iterator_t it;
@@ -240,7 +240,7 @@ int pcb_hid_cfg_remove_menu_cookie(pcb_hid_cfg_t *hr, const char *cookie, int (*
 	return 0;
 }
 
-int pcb_hid_cfg_remove_menu(pcb_hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
+int pcb_hid_cfg_remove_menu(rnd_hid_cfg_t *hr, const char *path, int (*gui_remove)(void *ctx, lht_node_t *nd), void *ctx)
 {
 	if (hr != NULL) {
 		lht_node_t *nd = pcb_hid_cfg_get_menu_at(hr, NULL, path, NULL, NULL);
@@ -254,7 +254,7 @@ int pcb_hid_cfg_remove_menu(pcb_hid_cfg_t *hr, const char *path, int (*gui_remov
 }
 
 typedef struct {
-	pcb_hid_cfg_t *hr;
+	rnd_hid_cfg_t *hr;
 	pcb_create_menu_widget_t cb;
 	void *cb_ctx;
 	lht_node_t *parent;
@@ -334,7 +334,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 	return node;
 }
 
-int pcb_hid_cfg_create_menu(pcb_hid_cfg_t *hr, const char *path, const pcb_menu_prop_t *props, pcb_create_menu_widget_t cb, void *cb_ctx)
+int pcb_hid_cfg_create_menu(rnd_hid_cfg_t *hr, const char *path, const pcb_menu_prop_t *props, pcb_create_menu_widget_t cb, void *cb_ctx)
 {
 	const char *name;
 	create_menu_ctx_t cmc;

@@ -38,7 +38,7 @@ typedef struct {
 	htip_t *mouse_mask;
 } pcb_hid_cfg_mouse_t;
 
-int hid_cfg_mouse_init(pcb_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse);
+int hid_cfg_mouse_init(rnd_hid_cfg_t *hr, pcb_hid_cfg_mouse_t *mouse);
 void hid_cfg_mouse_action(rnd_hidlib_t *hl, pcb_hid_cfg_mouse_t *mouse, pcb_hid_cfg_mod_t button_and_mask, rnd_bool cmd_entry_active);
 
 

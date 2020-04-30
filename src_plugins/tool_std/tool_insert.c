@@ -48,7 +48,7 @@ static struct {
 	pcb_line_t line;
 } fake;
 
-static pcb_point_t InsertedPoint;
+static rnd_point_t InsertedPoint;
 static rnd_cardinal_t polyIndex = 0;
 
 
@@ -135,7 +135,7 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 
 void pcb_tool_insert_adjust_attached_objects(rnd_hidlib_t *hl)
 {
-	pcb_point_t *pnt;
+	rnd_point_t *pnt;
 	pnt = pcb_adjust_insert_point();
 	if (pnt)
 		InsertedPoint = *pnt;

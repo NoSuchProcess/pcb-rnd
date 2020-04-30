@@ -110,9 +110,9 @@ static void dxf_fill_circle(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd
 	}
 }
 
-static void dxf_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void dxf_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
-	pcb_angle_t end_angle, tmp;
+	rnd_angle_t end_angle, tmp;
 	dxf_ctx_t *ctx = &dxf_ctx;
 
 	end_angle = start_angle + delta_angle;

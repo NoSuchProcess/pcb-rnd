@@ -196,7 +196,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		for(poly = polylist_first(&symbol->polys); poly != NULL; poly = polylist_next(poly)) {
 			int n;
-			pcb_point_t *pnt;
+			rnd_point_t *pnt;
 
 			add_poly(lfont, poly, ox, oy);
 			add_poly(lorig, poly, ox, oy);

@@ -59,9 +59,9 @@ static void init_rotate_cache(void)
 	}
 }
 
-pcb_polyarea_t *pcb_poly_from_contour(pcb_pline_t * contour)
+rnd_polyarea_t *pcb_poly_from_contour(pcb_pline_t * contour)
 {
-	pcb_polyarea_t *p;
+	rnd_polyarea_t *p;
 	pcb_poly_contour_pre(contour, pcb_true);
 	assert(contour->Flags.orient == PCB_PLF_DIR);
 	if (!(p = pcb_polyarea_create()))
@@ -71,9 +71,9 @@ pcb_polyarea_t *pcb_poly_from_contour(pcb_pline_t * contour)
 	return p;
 }
 
-pcb_polyarea_t *pcb_poly_from_contour_autoinv(pcb_pline_t *contour)
+rnd_polyarea_t *pcb_poly_from_contour_autoinv(pcb_pline_t *contour)
 {
-	pcb_polyarea_t *p;
+	rnd_polyarea_t *p;
 	pcb_poly_contour_pre(contour, pcb_true);
 	if (contour->Flags.orient != PCB_PLF_DIR)
 		pcb_poly_contour_inv(contour);
@@ -86,10 +86,10 @@ pcb_polyarea_t *pcb_poly_from_contour_autoinv(pcb_pline_t *contour)
 
 
 #define ARC_ANGLE 5
-static pcb_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, rnd_coord_t thick, int end_caps)
+static rnd_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, rnd_coord_t thick, int end_caps)
 {
 	pcb_pline_t *contour = NULL;
-	pcb_polyarea_t *np = NULL;
+	rnd_polyarea_t *np = NULL;
 	pcb_vector_t v, v2;
 	int i, segs;
 	double ang, da, rx, ry;
@@ -172,7 +172,7 @@ static pcb_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	return np;
 }
 
-pcb_polyarea_t *pcb_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2)
+rnd_polyarea_t *pcb_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
@@ -197,7 +197,7 @@ pcb_polyarea_t *pcb_poly_from_rect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y
 	return pcb_poly_from_contour(contour);
 }
 
-pcb_polyarea_t *pcb_poly_from_octagon(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, int style)
+rnd_polyarea_t *pcb_poly_from_octagon(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, int style)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
@@ -298,7 +298,7 @@ void pcb_poly_frac_circle_end(pcb_pline_t * c, rnd_coord_t X, rnd_coord_t Y, pcb
 
 
 /* create a circle approximation from lines */
-pcb_polyarea_t *pcb_poly_from_circle(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius)
+rnd_polyarea_t *pcb_poly_from_circle(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius)
 {
 	pcb_pline_t *contour;
 	pcb_vector_t v;
@@ -318,7 +318,7 @@ pcb_polyarea_t *pcb_poly_from_circle(rnd_coord_t x, rnd_coord_t y, rnd_coord_t r
 }
 
 /* make a rounded-corner rectangle with radius t beyond x1,x2,y1,y2 rectangle */
-pcb_polyarea_t *RoundRect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2, rnd_coord_t t)
+rnd_polyarea_t *RoundRect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_coord_t y2, rnd_coord_t t)
 {
 	pcb_pline_t *contour = NULL;
 	pcb_vector_t v;
@@ -346,10 +346,10 @@ pcb_polyarea_t *RoundRect(rnd_coord_t x1, rnd_coord_t x2, rnd_coord_t y1, rnd_co
 }
 
 
-pcb_polyarea_t *pcb_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick, rnd_bool square)
+rnd_polyarea_t *pcb_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick, rnd_bool square)
 {
 	pcb_pline_t *contour = NULL;
-	pcb_polyarea_t *np = NULL;
+	rnd_polyarea_t *np = NULL;
 	pcb_vector_t v;
 	double d, dx, dy;
 	long half;
@@ -402,7 +402,7 @@ pcb_polyarea_t *pcb_poly_from_line(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x
 }
 
 #define MIN_CLEARANCE_BEFORE_BISECT 10.
-pcb_polyarea_t *pcb_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t astart, pcb_angle_t adelta, rnd_coord_t thick)
+rnd_polyarea_t *pcb_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, rnd_coord_t thick)
 {
 	double delta;
 	rnd_coord_t half;
@@ -415,7 +415,7 @@ pcb_polyarea_t *pcb_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t wi
 	   is so small that there's no inner arc of the clearance */
 	if ((width - half <= 0) || (height - half <= 0)) {
 		rnd_coord_t lx1, ly1;
-		pcb_polyarea_t *tmp_arc, *tmp1, *tmp2, *res, *ends;
+		rnd_polyarea_t *tmp_arc, *tmp1, *tmp2, *res, *ends;
 
 		tmp_arc = ArcPolyNoIntersect(cx, cy, width, height, astart, adelta, thick, 0);
 
@@ -433,7 +433,7 @@ pcb_polyarea_t *pcb_poly_from_arc(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t wi
 	/* If the arc segment would self-intersect, we need to construct it as the union of
 	   two non-intersecting segments */
 	if (2 * M_PI * width * (1. - (double) delta / 360.) - thick < MIN_CLEARANCE_BEFORE_BISECT) {
-		pcb_polyarea_t *tmp1, *tmp2, *res;
+		rnd_polyarea_t *tmp1, *tmp2, *res;
 		int half_delta = adelta / 2;
 
 		tmp1 = ArcPolyNoIntersect(cx, cy, width, height, astart, half_delta, thick, 1);
@@ -470,58 +470,58 @@ void pcb_poly_square_pin_factors(int style, double *xm, double *ym)
 		ym[0] = ym[1] = ym[2] = ym[3] = factor;
 }
 
-/* NB: This function will free the passed pcb_polyarea_t.
-       It must only be passed a single pcb_polyarea_t (pa->f == pa->b == pa) */
-static void r_NoHolesPolygonDicer(pcb_polyarea_t * pa, void (*emit) (pcb_pline_t *, void *), void *user_data)
+/* NB: This function will free the passed rnd_polyarea_t.
+       It must only be passed a single rnd_polyarea_t (pa->f == pa->b == pa) */
+static void r_NoHolesPolygonDicer(rnd_polyarea_t * pa, void (*emit) (pcb_pline_t *, void *), void *user_data)
 {
 	pcb_pline_t *p = pa->contours;
 
 	if (!pa->contours->next) {		/* no holes */
 		pa->contours = NULL;				/* The callback now owns the contour */
-		/* Don't bother removing it from the pcb_polyarea_t's rtree
-		   since we're going to free the pcb_polyarea_t below anyway */
+		/* Don't bother removing it from the rnd_polyarea_t's rtree
+		   since we're going to free the rnd_polyarea_t below anyway */
 		emit(p, user_data);
 		pcb_polyarea_free(&pa);
 		return;
 	}
 	else {
-		pcb_polyarea_t *poly2, *left, *right;
+		rnd_polyarea_t *poly2, *left, *right;
 
 		/* make a rectangle of the left region slicing through the middle of the first hole */
 		poly2 = pcb_poly_from_rect(p->xmin, (p->next->xmin + p->next->xmax) / 2, p->ymin, p->ymax);
 		pcb_polyarea_and_subtract_free(pa, poly2, &left, &right);
 		if (left) {
-			pcb_polyarea_t *cur, *next;
+			rnd_polyarea_t *cur, *next;
 			cur = left;
 			do {
 				next = cur->f;
 				cur->f = cur->b = cur;	/* Detach this polygon piece */
 				r_NoHolesPolygonDicer(cur, emit, user_data);
-				/* NB: The pcb_polyarea_t was freed by its use in the recursive dicer */
+				/* NB: The rnd_polyarea_t was freed by its use in the recursive dicer */
 			}
 			while ((cur = next) != left);
 		}
 		if (right) {
-			pcb_polyarea_t *cur, *next;
+			rnd_polyarea_t *cur, *next;
 			cur = right;
 			do {
 				next = cur->f;
 				cur->f = cur->b = cur;	/* Detach this polygon piece */
 				r_NoHolesPolygonDicer(cur, emit, user_data);
-				/* NB: The pcb_polyarea_t was freed by its use in the recursive dicer */
+				/* NB: The rnd_polyarea_t was freed by its use in the recursive dicer */
 			}
 			while ((cur = next) != right);
 		}
 	}
 }
 
-void pcb_polyarea_no_holes_dicer(pcb_polyarea_t *main_contour, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(pcb_pline_t *, void *), void *user_data)
+void pcb_polyarea_no_holes_dicer(rnd_polyarea_t *main_contour, rnd_coord_t clipX1, rnd_coord_t clipY1, rnd_coord_t clipX2, rnd_coord_t clipY2, void (*emit)(pcb_pline_t *, void *), void *user_data)
 {
-	pcb_polyarea_t *cur, *next;
+	rnd_polyarea_t *cur, *next;
 
 	/* clip to the bounding box */
 	if ((clipX1 != clipX2) || (clipY1 != clipY2)) {
-		pcb_polyarea_t *cbox = pcb_poly_from_rect(clipX1, clipX2, clipY1, clipY2);
+		rnd_polyarea_t *cbox = pcb_poly_from_rect(clipX1, clipX2, clipY1, clipY2);
 		pcb_polyarea_boolean_free(main_contour, cbox, &main_contour, PCB_PBO_ISECT);
 	}
 	if (main_contour == NULL)
@@ -533,7 +533,7 @@ void pcb_polyarea_no_holes_dicer(pcb_polyarea_t *main_contour, rnd_coord_t clipX
 		next = cur->f;
 		cur->f = cur->b = cur;			/* Detach this polygon piece */
 		r_NoHolesPolygonDicer(cur, emit, user_data);
-		/* NB: The pcb_polyarea_t was freed by its use in the recursive dicer */
+		/* NB: The rnd_polyarea_t was freed by its use in the recursive dicer */
 	}
 	while ((cur = next) != main_contour);
 }

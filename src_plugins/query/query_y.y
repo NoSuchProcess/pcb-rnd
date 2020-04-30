@@ -120,7 +120,7 @@ static pcb_qry_node_t *make_flag_free(char *str)
 	char *s;
 	rnd_coord_t c;
 	double d;
-	const pcb_unit_t *u;
+	const rnd_unit_t *u;
 	pcb_qry_node_t *n;
 }
 

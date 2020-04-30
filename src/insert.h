@@ -38,6 +38,6 @@
 void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, rnd_cardinal_t * Ptr3, rnd_coord_t DX, rnd_coord_t DY, rnd_bool Force, rnd_bool insert_last);
 
 /* adjusts the insert point to make 45 degree lines as necessary */
-pcb_point_t *pcb_adjust_insert_point(void);
+rnd_point_t *pcb_adjust_insert_point(void);
 
 #endif

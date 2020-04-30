@@ -54,7 +54,7 @@ double pcb_get_value_ex(const char *val, const char *units, rnd_bool * absolute,
 /* Convert a string of value+unit to coords and unit struct. Absolute is the same
    as above; if unit_strict is non-zero, require full unit name. Returns whether
    the conversion is succesful. */
-rnd_bool pcb_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict, double *val_out, const pcb_unit_t **unit_out);
+rnd_bool pcb_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict, double *val_out, const rnd_unit_t **unit_out);
 
 char *pcb_concat(const char *first, ...); /* end with NULL */
 int pcb_mem_any_set(unsigned char *ptr, int bytes);

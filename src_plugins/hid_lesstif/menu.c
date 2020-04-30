@@ -33,7 +33,7 @@
 extern rnd_hidlib_t *ltf_hidlib;
 
 Widget lesstif_menubar;
-pcb_hid_cfg_t *lesstif_cfg;
+rnd_hid_cfg_t *lesstif_cfg;
 rnd_conf_hid_id_t lesstif_menuconf_id = -1;
 htsp_t ltf_popups; /* popup_name -> Widget */
 
@@ -666,7 +666,7 @@ int lesstif_remove_menu_node(pcb_hid_t *hid, lht_node_t *node)
 	return pcb_hid_cfg_remove_menu_node(lesstif_cfg, node, del_menu, NULL);
 }
 
-pcb_hid_cfg_t *lesstif_get_menu_cfg(pcb_hid_t *hid)
+rnd_hid_cfg_t *lesstif_get_menu_cfg(pcb_hid_t *hid)
 {
 	return lesstif_cfg;
 }

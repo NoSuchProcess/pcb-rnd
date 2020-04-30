@@ -35,7 +35,7 @@ static int fnc_poly_num_islands(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *a
 	pcb_poly_t *poly;
 	long cnt = 0;
 	pcb_poly_it_t it;
-	pcb_polyarea_t *pa;
+	rnd_polyarea_t *pa;
 
 	if ((argc != 1) || (argv[0].type != PCBQ_VT_OBJ))
 		return -1;

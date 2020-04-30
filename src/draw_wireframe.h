@@ -79,7 +79,7 @@ RND_INLINE void pcb_draw_wireframe_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coo
 
 			/* draw caps */
 			if (!square) {
-				pcb_angle_t angle = atan2(dx, dy) * 57.295779;
+				rnd_angle_t angle = atan2(dx, dy) * 57.295779;
 				pcb_render->draw_arc(gc, x1, y1, thick / 2, thick / 2, angle - 180, 180);
 				pcb_render->draw_arc(gc, x2, y2, thick / 2, thick / 2, angle, 180);
 			}

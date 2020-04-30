@@ -132,7 +132,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 	pcb_layer_combining_t comb;    /* how to combine this layer with other layers in the group */
 
 	/* for bound layers these point to the board layer's*/
-	pcb_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree, *gfx_tree;
+	rnd_rtree_t *line_tree, *text_tree, *polygon_tree, *arc_tree, *gfx_tree;
 
 	union {
 		struct { /* A real board layer */

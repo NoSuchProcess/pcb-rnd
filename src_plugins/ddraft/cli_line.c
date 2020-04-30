@@ -1,4 +1,4 @@
-static int line_parse(char *line, int argc, cli_node_t *argv, rnd_box_t *box, int verbose, int annot)
+static int line_parse(char *line, int argc, cli_node_t *argv, rnd_rnd_box_t *box, int verbose, int annot)
 {
 	int n = 0;
 
@@ -39,7 +39,7 @@ static int line_parse(char *line, int argc, cli_node_t *argv, rnd_box_t *box, in
 static int line_exec(char *line, int argc, cli_node_t *argv)
 {
 	int res;
-	rnd_box_t box;
+	rnd_rnd_box_t box;
 
 	rnd_trace("line e: '%s'\n", line);
 
@@ -58,7 +58,7 @@ static int line_exec(char *line, int argc, cli_node_t *argv)
 static int line_edit(char *line, int cursor, int argc, cli_node_t *argv)
 {
 	int res;
-	rnd_box_t box;
+	rnd_rnd_box_t box;
 
 	pcb_ddraft_attached_reset();
 

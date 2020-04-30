@@ -30,7 +30,7 @@
 #include "data_it.h"
 #include "flag.h"
 
-static rnd_cardinal_t pcb_get_bbox_by_flag(rnd_box_t *dst, const pcb_data_t *data, pcb_flag_values_t flg)
+static rnd_cardinal_t pcb_get_bbox_by_flag(rnd_rnd_box_t *dst, const pcb_data_t *data, pcb_flag_values_t flg)
 {
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
@@ -48,12 +48,12 @@ static rnd_cardinal_t pcb_get_bbox_by_flag(rnd_box_t *dst, const pcb_data_t *dat
 	return cnt;
 }
 
-rnd_cardinal_t pcb_get_selection_bbox(rnd_box_t *dst, const pcb_data_t *data)
+rnd_cardinal_t pcb_get_selection_bbox(rnd_rnd_box_t *dst, const pcb_data_t *data)
 {
 	return pcb_get_bbox_by_flag(dst, data, PCB_FLAG_SELECTED);
 }
 
-rnd_cardinal_t pcb_get_found_bbox(rnd_box_t *dst, const pcb_data_t *data)
+rnd_cardinal_t pcb_get_found_bbox(rnd_rnd_box_t *dst, const pcb_data_t *data)
 {
 	return pcb_get_bbox_by_flag(dst, data, PCB_FLAG_FOUND);
 }

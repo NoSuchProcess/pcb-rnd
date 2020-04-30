@@ -53,10 +53,10 @@
 /* This is required for fullpoly: whether an object bbox intersects a poly
    bbox can't be determined by a single contour check because there might be
    multiple contours. Returns 1 if obj bbox intersects any island's bbox */
-RND_INLINE int box_isc_poly_any_island_bbox(const pcb_find_t *ctx, const rnd_box_t *box, const pcb_poly_t *poly, int first_only)
+RND_INLINE int box_isc_poly_any_island_bbox(const pcb_find_t *ctx, const rnd_rnd_box_t *box, const pcb_poly_t *poly, int first_only)
 {
 	pcb_poly_it_t it;
-	pcb_polyarea_t *pa;
+	rnd_polyarea_t *pa;
 
 	/* first, iterate over all islands of a polygon */
 	for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
@@ -75,10 +75,10 @@ RND_INLINE int box_isc_poly_any_island_bbox(const pcb_find_t *ctx, const rnd_box
    can't be determined by a single contour check because there might be
    multiple contours. Returns 1 if obj's poly intersects any island's.
    Frees objpoly at the end. */
-RND_INLINE int box_isc_poly_any_island_free(pcb_polyarea_t *objpoly, const pcb_poly_t *poly, int first_only)
+RND_INLINE int box_isc_poly_any_island_free(rnd_polyarea_t *objpoly, const pcb_poly_t *poly, int first_only)
 {
 	pcb_poly_it_t it;
-	pcb_polyarea_t *pa;
+	rnd_polyarea_t *pa;
 	int ans;
 
 	/* first, iterate over all islands of a polygon */
@@ -94,7 +94,7 @@ RND_INLINE int box_isc_poly_any_island_free(pcb_polyarea_t *objpoly, const pcb_p
 }
 
 /* reduce arc start angle and delta to 0..360 */
-static void normalize_angles(pcb_angle_t * sa, pcb_angle_t * d)
+static void normalize_angles(rnd_angle_t * sa, rnd_angle_t * d)
 {
 	if (*d < 0) {
 		*sa += *d;
@@ -108,7 +108,7 @@ static void normalize_angles(pcb_angle_t * sa, pcb_angle_t * d)
 static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)
 {
 	double alpha = atan2(y - arc->Y, -x + arc->X) * PCB_RAD_TO_DEG;
-	pcb_angle_t sa = arc->StartAngle, d = arc->Delta;
+	rnd_angle_t sa = arc->StartAngle, d = arc->Delta;
 
 	normalize_angles(&sa, &d);
 	if (alpha < 0)
@@ -181,8 +181,8 @@ static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 	if (dl < 0.5) {
 		if ((Arc1->Width - t >= Arc2->Width - t2 && Arc1->Width - t <= Arc2->Width + t2)
 				|| (Arc1->Width + t >= Arc2->Width - t2 && Arc1->Width + t <= Arc2->Width + t2)) {
-			pcb_angle_t sa1 = Arc1->StartAngle, d1 = Arc1->Delta;
-			pcb_angle_t sa2 = Arc2->StartAngle, d2 = Arc2->Delta;
+			rnd_angle_t sa1 = Arc1->StartAngle, d1 = Arc1->Delta;
+			rnd_angle_t sa2 = Arc2->StartAngle, d2 = Arc2->Delta;
 			/* NB the endpoints have already been checked,
 			   so we just compare the angles */
 
@@ -262,7 +262,7 @@ static rnd_bool pcb_isc_arc_arc(const pcb_find_t *ctx, pcb_arc_t *Arc1, pcb_arc_
 /* ---------------------------------------------------------------------------
  * Tests if point is same as line end point or center point
  */
-static rnd_bool pcb_isc_ratp_line(const pcb_find_t *ctx, pcb_point_t *Point, pcb_line_t *Line)
+static rnd_bool pcb_isc_ratp_line(const pcb_find_t *ctx, rnd_point_t *Point, pcb_line_t *Line)
 {
 	rnd_coord_t cx, cy;
 
@@ -295,7 +295,7 @@ static rnd_bool pcb_isc_rat_line(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_line
 /* ---------------------------------------------------------------------------
  * Tests if point is same as arc end point or center point
  */
-static rnd_bool pcb_isc_ratp_arc(const pcb_find_t *ctx, pcb_point_t *Point, pcb_arc_t *arc)
+static rnd_bool pcb_isc_ratp_arc(const pcb_find_t *ctx, rnd_point_t *Point, pcb_arc_t *arc)
 {
 	rnd_coord_t cx, cy;
 
@@ -332,11 +332,11 @@ static rnd_bool pcb_isc_rat_arc(const pcb_find_t *ctx, pcb_rat_t *rat, pcb_arc_t
 /* ---------------------------------------------------------------------------
  * Tests if rat line point is connected to a polygon
  */
-static rnd_bool pcb_isc_ratp_poly(const pcb_find_t *ctx, pcb_point_t *Point, pcb_poly_t *polygon, int donut)
+static rnd_bool pcb_isc_ratp_poly(const pcb_find_t *ctx, rnd_point_t *Point, pcb_poly_t *polygon, int donut)
 {
 	rnd_coord_t cx, cy;
 	pcb_poly_it_t it;
-	pcb_polyarea_t *pa;
+	rnd_polyarea_t *pa;
 
 	/* clipped out of existence... */
 	if (polygon->Clipped == NULL)
@@ -411,7 +411,7 @@ static rnd_bool pcb_isc_rat_rat(const pcb_find_t *ctx, pcb_rat_t *r1, pcb_rat_t 
 	return pcb_false;
 }
 
-static void form_slanted_rectangle(pcb_point_t p[4], pcb_line_t *l)
+static void form_slanted_rectangle(rnd_point_t p[4], pcb_line_t *l)
 /* writes vertices of a squared line */
 {
 	double dwx = 0, dwy = 0;
@@ -496,14 +496,14 @@ rnd_bool pcb_isc_line_line(const pcb_find_t *ctx, pcb_line_t *Line1, pcb_line_t 
 	double s, r;
 	double line1_dx, line1_dy, line2_dx, line2_dy, point1_dx, point1_dy;
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line1)) {	/* pretty reckless recursion */
-		pcb_point_t p[4];
+		rnd_point_t p[4];
 		form_slanted_rectangle(p, Line1);
 		return pcb_is_line_in_quadrangle(p, Line2);
 	}
 	/* here come only round Line1 because pcb_is_line_in_quadrangle()
 	   calls pcb_isc_line_line() with first argument rounded */
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line2)) {
-		pcb_point_t p[4];
+		rnd_point_t p[4];
 		form_slanted_rectangle(p, Line2);
 		return pcb_is_line_in_quadrangle(p, Line1);
 	}
@@ -648,7 +648,7 @@ rnd_bool pcb_isc_line_arc(const pcb_find_t *ctx, pcb_line_t *Line, pcb_arc_t *Ar
  */
 rnd_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Polygon)
 {
-	rnd_box_t *Box = (rnd_box_t *) Arc;
+	rnd_rnd_box_t *Box = (rnd_rnd_box_t *) Arc;
 
 	/* arcs with clearance never touch polys */
 	if (!ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Arc))
@@ -656,7 +656,7 @@ rnd_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Pol
 	if (!Polygon->Clipped)
 		return pcb_false;
 	if (box_isc_poly_any_island_bbox(ctx, Box, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon))) {
-		pcb_polyarea_t *ap;
+		rnd_polyarea_t *ap;
 
 		if (!(ap = pcb_poly_from_pcb_arc(Arc, Arc->Thickness + Bloat)))
 			return pcb_false;							/* error */
@@ -665,15 +665,15 @@ rnd_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Pol
 	return pcb_false;
 }
 
-rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_polyarea_t *pa)
+rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, rnd_polyarea_t *pa)
 {
-	rnd_box_t *Box = (rnd_box_t *) Arc;
+	rnd_rnd_box_t *Box = (rnd_rnd_box_t *) Arc;
 	rnd_bool res = pcb_false;
 
 	/* arcs with clearance never touch polys */
 	if ((Box->X1 <= pa->contours->xmax + Bloat) && (Box->X2 >= pa->contours->xmin - Bloat)
 			&& (Box->Y1 <= pa->contours->ymax + Bloat) && (Box->Y2 >= pa->contours->ymin - Bloat)) {
-		pcb_polyarea_t *arcp;
+		rnd_polyarea_t *arcp;
 
 		if (!(arcp = pcb_poly_from_pcb_arc(Arc, Arc->Thickness + Bloat)))
 			return pcb_false; /* error */
@@ -694,8 +694,8 @@ rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_polyare
  */
 rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *Polygon)
 {
-	rnd_box_t *Box = (rnd_box_t *) Line;
-	pcb_polyarea_t *lp;
+	rnd_rnd_box_t *Box = (rnd_rnd_box_t *) Line;
+	rnd_polyarea_t *lp;
 
 	/* lines with clearance never touch polygons */
 	if (!ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Line))
@@ -731,7 +731,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 	int pcp_cnt = 0;
 	rnd_coord_t pcp_gap;
 	pcb_poly_it_t it1, it2;
-	pcb_polyarea_t *pa1, *pa2;
+	rnd_polyarea_t *pa1, *pa2;
 
 	if (!P1->Clipped || !P2->Clipped)
 		return pcb_false;
@@ -1018,12 +1018,12 @@ RND_INLINE pcb_bool_t pcb_isc_pstk_arc(const pcb_find_t *ctx, pcb_pstk_t *ps, pc
 }
 
 
-RND_INLINE pcb_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
+RND_INLINE rnd_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
 	int n;
 	pcb_pline_t *pl;
 	pcb_vector_t v;
-	pcb_polyarea_t *shp = pcb_polyarea_create();
+	rnd_polyarea_t *shp = pcb_polyarea_create();
 
 	v[0] = shape->data.poly.x[0] + ps->x; v[1] = shape->data.poly.y[0] + ps->y;
 	pl = pcb_poly_contour_new(v);
@@ -1052,7 +1052,7 @@ RND_INLINE pcb_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *p
 		{
 			/* convert the shape poly to a new poly so that it can be intersected */
 			rnd_bool res;
-			pcb_polyarea_t *shp = pcb_pstk_shp_poly2area(ps, shape);
+			rnd_polyarea_t *shp = pcb_pstk_shp_poly2area(ps, shape);
 			res = pcb_polyarea_touching(shp, poly->Clipped);
 			pcb_polyarea_free(&shp);
 			return res;
@@ -1147,8 +1147,8 @@ RND_INLINE pcb_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t
 				case PCB_PSSH_POLY:
 				{
 					rnd_bool res;
-					pcb_polyarea_t *shp1 = pcb_pstk_shp_poly2area(ps1, shape1);
-					pcb_polyarea_t *shp2 = pcb_pstk_shp_poly2area(ps2, shape2);
+					rnd_polyarea_t *shp1 = pcb_pstk_shp_poly2area(ps1, shape1);
+					rnd_polyarea_t *shp2 = pcb_pstk_shp_poly2area(ps2, shape2);
 					res = pcb_polyarea_touching(shp1, shp2);
 					pcb_polyarea_free(&shp1);
 					pcb_polyarea_free(&shp2);

@@ -443,7 +443,7 @@ static void dxf_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void dxf_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+static void dxf_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	if (direct)
 		return;

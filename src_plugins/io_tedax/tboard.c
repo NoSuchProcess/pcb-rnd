@@ -301,7 +301,7 @@ struct tdx_attr_s {
 
 struct tdx_text_s {
 	char *layer;
-	rnd_box_t bbox;
+	rnd_rnd_box_t bbox;
 	double rot;
 	char *val;
 	tdx_text_t *next;

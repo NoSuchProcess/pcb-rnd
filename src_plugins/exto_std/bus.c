@@ -95,7 +95,7 @@ static void bus_clear(pcb_subc_t *subc)
 		ny = vx; \
 	} while(0)
 
-static int close_enough(pcb_point_t a, pcb_point_t b)
+static int close_enough(rnd_point_t a, rnd_point_t b)
 {
 	rnd_coord_t dx = a.X - b.X, dy = a.Y - b.Y;
 
@@ -123,8 +123,8 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 
 	o0 = ((bus->width - 1) * bus->pitch)/2;
 	for(l = linelist_first(&ely->Line); l != NULL; l = linelist_next(l)) {
-		pcb_rtree_box_t sb;
-		pcb_rtree_it_t it;
+		rnd_rtree_box_t sb;
+		rnd_rtree_it_t it;
 		bus_seg_def;
 		double o = o0, a1 = 0, a2 = 0, tune1, tune2;
 		int n, c1 = 0, c2 = 0;
@@ -137,7 +137,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 /*		rnd_trace("line\n");*/
 		sb.x1 = l->Point1.X-1; sb.y1 = l->Point1.Y-1;
 		sb.x2 = l->Point1.X+1; sb.y2 = l->Point1.Y+1;
-		for(ltmp = pcb_rtree_first(&it, ely->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
+		for(ltmp = rnd_rtree_first(&it, ely->line_tree, &sb); ltmp != NULL; ltmp = rnd_rtree_next(&it))
 		{
 			if ((ltmp == l) || (ltmp->parent.any != l->parent.any)) continue;
 			if (close_enough(l->Point1, ltmp->Point1)) {
@@ -155,7 +155,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		}
 		sb.x1 = l->Point2.X-1; sb.y1 = l->Point2.Y-1;
 		sb.x2 = l->Point2.X+1; sb.y2 = l->Point2.Y+1;
-		for(ltmp = pcb_rtree_first(&it, ely->line_tree, &sb); ltmp != NULL; ltmp = pcb_rtree_next(&it))
+		for(ltmp = rnd_rtree_first(&it, ely->line_tree, &sb); ltmp != NULL; ltmp = rnd_rtree_next(&it))
 		{
 			if ((ltmp == l) || (ltmp->parent.any != l->parent.any)) continue;
 			if (close_enough(l->Point2, ltmp->Point1)) {

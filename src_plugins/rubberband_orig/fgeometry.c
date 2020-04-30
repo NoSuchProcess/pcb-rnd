@@ -88,7 +88,7 @@ pcb_fline_t pcb_fline_create(pcb_any_line_t *line)
 }
 
 
-pcb_fline_t pcb_fline_create_from_points(struct pcb_point_s *base_point, struct pcb_point_s *other_point)
+pcb_fline_t pcb_fline_create_from_points(struct rnd_point_s *base_point, struct rnd_point_s *other_point)
 {
 	pcb_fline_t ret;
 

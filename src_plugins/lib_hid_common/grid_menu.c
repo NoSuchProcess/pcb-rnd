@@ -39,7 +39,7 @@
 
 static rnd_conf_resolve_t grids_idx = {"editor.grids_idx", RND_CFN_INTEGER, 0, NULL};
 
-static void grid_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
+static void grid_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
 	rnd_conf_native_t *nat;
 	rnd_conflist_t *lst;

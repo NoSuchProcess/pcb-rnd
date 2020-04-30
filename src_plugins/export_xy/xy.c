@@ -84,7 +84,7 @@ Unit of XY dimensions. Defaults to mil.
 static pcb_hid_attr_val_t xy_values[NUM_OPTIONS];
 
 static const char *xy_filename;
-static const pcb_unit_t *xy_unit;
+static const rnd_unit_t *xy_unit;
 vts0_t fmt_names; /* array of const char * long name of each format, pointing into the conf database */
 vts0_t fmt_ids;   /* array of strdup'd short name (ID) of each format */
 
@@ -210,7 +210,7 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 
 static void calc_pad_bbox_(subst_ctx_t *ctx, rnd_coord_t *pw, rnd_coord_t *ph, rnd_coord_t *pcx, rnd_coord_t *pcy)
 {
-	rnd_box_t box;
+	rnd_rnd_box_t box;
 	box.X1 = box.Y1 = PCB_MAX_COORD;
 	box.X2 = box.Y2 = -PCB_MAX_COORD;
 

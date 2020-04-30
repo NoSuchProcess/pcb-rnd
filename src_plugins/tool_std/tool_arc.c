@@ -90,7 +90,7 @@ void pcb_tool_arc_notify_mode(rnd_hidlib_t *hl)
 		{
 			pcb_arc_t *arc;
 			rnd_coord_t wx, wy;
-			pcb_angle_t sa, dir;
+			rnd_angle_t sa, dir;
 			wx = hl->tool_x - pcb_crosshair.AttachedBox.Point1.X;
 			wy = hl->tool_y - pcb_crosshair.AttachedBox.Point1.Y;
 rnd_trace("arc: %mm %mm wh %mm %mm\n", hl->tool_x, hl->tool_y, wx, wy);

@@ -261,7 +261,7 @@ union YYSTYPE
 	char *s;
 	rnd_coord_t c;
 	double d;
-	const pcb_unit_t *u;
+	const rnd_unit_t *u;
 	pcb_qry_node_t *n;
 
 #line 268 "query_y.c" /* yacc.c:352  */

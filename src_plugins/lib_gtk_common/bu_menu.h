@@ -37,7 +37,7 @@ int ghid_create_menu_widget(void *ctx_, const char *path, const char *name, int 
 
 void menu_toggle_update_cb(rnd_hidlib_t *hidlib, GtkAction *act, const char *tflag, const char *aflag);
 
-GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, pcb_hid_cfg_t **cfg_out);
+GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, rnd_hid_cfg_t **cfg_out);
 
 GtkWidget *pcb_gtk_menu_widget(lht_node_t *node);
 

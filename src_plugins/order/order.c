@@ -81,7 +81,7 @@ static rnd_action_t order_action_list[] = {
 	{"OrderPCB", pcb_act_OrderPCB, pcb_acth_OrderPCB, pcb_acts_OrderPCB}
 };
 
-static void order_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
+static void order_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
 	char *end = path + strlen(path);
 	pcb_menu_prop_t props;
@@ -169,7 +169,7 @@ static void autoload_field_lng(order_ctx_t *octx, pcb_order_field_t *f, long l, 
 
 void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
 {
-	rnd_box_t bb;
+	rnd_rnd_box_t bb;
 	long l;
 	pcb_layergrp_id_t gid;
 

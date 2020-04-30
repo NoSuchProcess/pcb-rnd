@@ -579,7 +579,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 		if (unit_suffix && *unit_suffix) {
 			lht_node_t *nat = rnd_conf_lht_get_at(RND_CFR_DESIGN, "editor/grid_unit", 0);
 			if (nat == NULL) {
-				const pcb_unit_t *new_unit = get_unit_struct(unit_suffix);
+				const rnd_unit_t *new_unit = get_unit_struct(unit_suffix);
 				if (new_unit)
 					rnd_conf_set(settings_dest, "editor/grid_unit", -1, unit_suffix, RND_POL_OVERWRITE);
 			}
@@ -731,7 +731,7 @@ int pcb_load_pcb(const char *file, const char *fmt, rnd_bool require_font, int h
 	if (res == 0) {
 		rnd_file_loaded_set_at("design", "main", file, PCB->is_footprint ? "footprint" : "board");
 		if (PCB->is_footprint) {
-			rnd_box_t b;
+			rnd_rnd_box_t b;
 			/* a footprint has no board size set, need to invent one */
 			pcb_data_bbox(&b, PCB->Data, 0);
 			if ((b.X2 < b.X1) || (b.Y2 < b.Y1)) {

@@ -236,13 +236,13 @@ pcb_poly_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points)
 	pcb_poly_t *p = calloc(sizeof(pcb_poly_t), 1);
 	if (num_points > 0) {
 		p->PointN = p->PointMax = num_points;
-		p->Points = malloc(sizeof(pcb_point_t) * num_points);
+		p->Points = malloc(sizeof(rnd_point_t) * num_points);
 	}
 	polylist_insert(&Symbol->polys, p);
 	return p;
 }
 
-pcb_arc_t *pcb_font_new_arc_in_sym(pcb_symbol_t *Symbol, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, pcb_angle_t start, pcb_angle_t delta, rnd_coord_t thickness)
+pcb_arc_t *pcb_font_new_arc_in_sym(pcb_symbol_t *Symbol, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, rnd_angle_t start, rnd_angle_t delta, rnd_coord_t thickness)
 {
 	pcb_arc_t *a = calloc(sizeof(pcb_arc_t), 1);
 	a->X = cx;
@@ -428,7 +428,7 @@ static void copy_font(pcb_font_t *dst, pcb_font_t *src)
 		memset(&dst->Symbol[i].polys, 0, sizeof(polylist_t));
 		for(p_src = polylist_first(&src->Symbol[i].polys); p_src != NULL; p_src = polylist_next(p_src)) {
 			pcb_poly_t *p_dst = pcb_font_new_poly_in_sym(&dst->Symbol[i], p_src->PointN);
-			memcpy(p_dst->Points, p_src->Points, p_src->PointN * sizeof(pcb_point_t));
+			memcpy(p_dst->Points, p_src->Points, p_src->PointN * sizeof(rnd_point_t));
 		}
 
 		memset(&dst->Symbol[i].arcs, 0, sizeof(arclist_t));

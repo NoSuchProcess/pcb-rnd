@@ -298,8 +298,8 @@ static int rdax_arc(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	pcb_layer_t *ly;
 
 	rnd_coord_t centreX, centreY, width, height, Thickness, Clearance, radius;
-	pcb_angle_t start_angle = 0.0;
-	pcb_angle_t delta = 360.0;
+	rnd_angle_t start_angle = 0.0;
+	rnd_angle_t delta = 360.0;
 
 	pcb_flag_t Flags = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_id_t PCB_layer;
@@ -1065,7 +1065,7 @@ TODO("this does not handle return -1")
 	pcb_subc_bbox(new_module);
 	if (st->pcb->Data->subc_tree == NULL)
 		st->pcb->Data->subc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)new_module);
+	pcb_r_insert_entry(st->pcb->Data->subc_tree, (rnd_rnd_box_t *)new_module);
 	pcb_subc_rebind(st->pcb, new_module);
 
 	return 0;
@@ -1075,7 +1075,7 @@ TODO("this does not handle return -1")
 int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	int readres = 0;
-	rnd_box_t board_size, *box;
+	rnd_rnd_box_t board_size, *box;
 	read_state_t st;
 	FILE *FP;
 	pcb_subc_t *subc = NULL;

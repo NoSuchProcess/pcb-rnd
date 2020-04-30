@@ -84,7 +84,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			break;
 		case RND_CFN_UNIT:
 			{
-				const pcb_unit_t *u = get_unit_struct(val);
+				const rnd_unit_t *u = get_unit_struct(val);
 				if (u != NULL)
 					hv.lng = u - pcb_units;
 				else

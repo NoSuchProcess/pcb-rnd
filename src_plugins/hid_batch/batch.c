@@ -204,7 +204,7 @@ static void batch_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd
 {
 }
 
-static void batch_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t end_angle)
+static void batch_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t end_angle)
 {
 }
 
@@ -305,7 +305,7 @@ static void batch_set_hidlib(pcb_hid_t *hid, rnd_hidlib_t *hidlib)
 }
 
 
-static void batch_view_get(pcb_hid_t *hid, rnd_box_t *viewbox)
+static void batch_view_get(pcb_hid_t *hid, rnd_rnd_box_t *viewbox)
 {
 	rnd_hidlib_t *hidlib = hid->hid_data;
 	viewbox->X1 = 0;

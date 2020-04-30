@@ -41,7 +41,7 @@ struct pcb_line_s {            /* holds information about one line */
 
 /* crosshair: */
 typedef struct {              /* current marked line */
-	pcb_point_t Point1, Point2; /* start- and end-position */
+	rnd_point_t Point1, Point2; /* start- and end-position */
 	long int State;
 	rnd_bool draw;
 } pcb_attached_line_t;
@@ -114,7 +114,7 @@ void pcb_line_enforce_drc(pcb_board_t *pcb);
    the fields of 'end' needed to find the closest point to the original target
    that still won't hit any object. Returns the straigh-line distance between
    start and the new end. */
-double pcb_drc_lines(pcb_board_t *pcb, const pcb_point_t *start, pcb_point_t *end, pcb_point_t *mid_out, rnd_bool way, rnd_bool optimize);
+double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *end, rnd_point_t *mid_out, rnd_bool way, rnd_bool optimize);
 
 
 /* Rather than mode the line bounding box, we set it so the point bounding

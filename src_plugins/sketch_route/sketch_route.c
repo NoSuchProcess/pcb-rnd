@@ -71,7 +71,7 @@ typedef struct {
 	htpp_t terminals; /* key - terminal object; value - cdt point */
 	vtwire_t wires;
 	vtewire_t ewires;
-	pcb_rtree_t *spoke_tree;
+	rnd_rtree_t *spoke_tree;
 	pcb_layer_t *ui_layer_cdt;
 	pcb_layer_t *ui_layer_erbs;
 } sketch_t;
@@ -653,7 +653,7 @@ struct search_info {
 	sketch_t *sk;
 };
 
-static pcb_r_dir_t r_search_cb(const rnd_box_t *box, void *cl)
+static pcb_r_dir_t r_search_cb(const rnd_rnd_box_t *box, void *cl)
 {
 	pcb_any_obj_t *obj = (pcb_any_obj_t *) box;
 	struct search_info *i = (struct search_info *) cl;
@@ -690,7 +690,7 @@ static pcb_r_dir_t r_search_cb(const rnd_box_t *box, void *cl)
 
 static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 {
-	rnd_box_t bbox;
+	rnd_rnd_box_t bbox;
 	struct search_info info;
 	char name[256];
 
@@ -1081,8 +1081,8 @@ static void tool_skline_draw_attached(rnd_hidlib_t *hl)
 	int i;
 	if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
 		for (i = 0; i < vtp0_len(&attached_path.lines); i++) {
-			pcb_point_t *p1 = &((pcb_attached_line_t *) attached_path.lines.array[i])->Point1;
-			pcb_point_t *p2 = &((pcb_attached_line_t *) attached_path.lines.array[i])->Point2;
+			rnd_point_t *p1 = &((pcb_attached_line_t *) attached_path.lines.array[i])->Point1;
+			rnd_point_t *p2 = &((pcb_attached_line_t *) attached_path.lines.array[i])->Point2;
 			pcb_render->draw_line(pcb_crosshair.GC, p1->X, p1->Y, p2->X, p2->Y);
 		}
 	}

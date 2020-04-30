@@ -462,7 +462,7 @@ static void ghid_menu_cb(GtkAction *action, const lht_node_t *node)
 }
 
 
-GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, pcb_hid_cfg_t **cfg_out)
+GtkWidget *ghid_load_menus(pcb_gtk_menu_ctx_t *menu, rnd_hidlib_t *hidlib, rnd_hid_cfg_t **cfg_out)
 {
 	const lht_node_t *mr;
 	GtkWidget *menu_bar = NULL;

@@ -2038,7 +2038,7 @@ static Boolean idle_proc(XtPointer dummy)
 	{
 		static int c_x = -2, c_y = -2;
 		static pcb_mark_t saved_mark;
-		static const pcb_unit_t *old_grid_unit = NULL;
+		static const rnd_unit_t *old_grid_unit = NULL;
 		if (crosshair_x != c_x || crosshair_y != c_y || pcbhl_conf.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &pcb_marked, sizeof(pcb_mark_t))) {
 			c_x = crosshair_x;
 			c_y = crosshair_y;
@@ -2175,12 +2175,12 @@ static void lesstif_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void lesstif_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_box_t *screen)
+static void lesstif_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen)
 {
 	pcb_gui->coord_per_pix = view_zoom;
 }
 
-static void lesstif_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *drw_screen)
+static void lesstif_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
 {
 	lesstif_drawing_mode = op;
 
@@ -2395,7 +2395,7 @@ static void lesstif_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 	}
 }
 
-static void lesstif_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void lesstif_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	if (conf_core.editor.thin_draw && gc->erase)
 		return;
@@ -2897,7 +2897,7 @@ static void ltf_pan_mode(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool 
 }
 
 
-static void ltf_view_get(pcb_hid_t *hid, rnd_box_t *viewbox)
+static void ltf_view_get(pcb_hid_t *hid, rnd_rnd_box_t *viewbox)
 {
 	viewbox->X1 = view_left_x;
 	viewbox->Y1 = view_top_y;
@@ -2925,7 +2925,7 @@ static void ltf_set_top_title(pcb_hid_t *hid, const char *title)
 void lesstif_create_menu(pcb_hid_t *hid, const char *menu, const pcb_menu_prop_t *props);
 int lesstif_remove_menu(pcb_hid_t *hid, const char *menu);
 int lesstif_remove_menu_node(pcb_hid_t *hid, lht_node_t *node);
-pcb_hid_cfg_t *lesstif_get_menu_cfg(pcb_hid_t *hid);
+rnd_hid_cfg_t *lesstif_get_menu_cfg(pcb_hid_t *hid);
 int ltf_open_popup(pcb_hid_t *hid, const char *menupath);
 
 int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }

@@ -95,7 +95,7 @@ struct rnd_event_arg_s {
 		const char *s;
 		void *p;
 		rnd_coord_t c;
-		pcb_angle_t a;
+		rnd_angle_t a;
 	} d;
 };
 

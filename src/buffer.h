@@ -36,8 +36,8 @@
 
 struct pcb_buffer_s {     /* information about the paste buffer */
 	rnd_coord_t X, Y;       /* offset */
-	rnd_box_t BoundingBox;
-	rnd_box_t bbox_naked;
+	rnd_rnd_box_t BoundingBox;
+	rnd_rnd_box_t bbox_naked;
 	pcb_data_t *Data;       /* data; not all members of pcb_board_t */
 	int from_outside;       /* data is coming from outside of the current board (lib, loaded board) */
 	char *source_path;      /* when from the outside, this field may remember the full path of the original source file */
@@ -57,7 +57,7 @@ rnd_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 
 /* rotates the contents of the pastebuffer by Number * 90 degrees or free angle*/
 void pcb_buffer_rotate90(pcb_buffer_t *Buffer, unsigned int Number);
-void pcb_buffer_rotate(pcb_buffer_t *Buffer, pcb_angle_t angle);
+void pcb_buffer_rotate(pcb_buffer_t *Buffer, rnd_angle_t angle);
 
 /* flip elements/subcircuits/tracks from one side to the other; also swap
    the layer stackup of padstacks */

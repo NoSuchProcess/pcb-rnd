@@ -351,7 +351,7 @@ static lht_node_t *build_simplepoly(pcb_poly_t *poly, int local_id)
 {
 	char buff[128];
 	lht_node_t *obj;
-	pcb_point_t *pnt;
+	rnd_point_t *pnt;
 	int n;
 
 	sprintf(buff, "simplepoly.%ld", (local_id >= 0 ? local_id : poly->ID));

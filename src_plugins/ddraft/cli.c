@@ -97,7 +97,7 @@ struct cli_node_s {
 	int invalid;
 
 	rnd_coord_t x, y, dist;
-	pcb_angle_t angle, offs;
+	rnd_angle_t angle, offs;
 	rnd_cardinal_t id;
 };
 

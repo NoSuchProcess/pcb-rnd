@@ -41,7 +41,7 @@
 #include <librnd/poly/polygon1_gen.h>
 #include "obj_pinvia_therm.h"
 
-static pcb_polyarea_t *pcb_pa_diag_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t l, rnd_coord_t w, rnd_bool rt)
+static rnd_polyarea_t *pcb_pa_diag_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t l, rnd_coord_t w, rnd_bool rt)
 {
 	pcb_pline_t *c;
 	pcb_vector_t v;
@@ -76,22 +76,22 @@ static pcb_polyarea_t *pcb_pa_diag_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_
 	return pcb_poly_from_contour(c);
 }
 
-/* ThermPoly returns a pcb_polyarea_t having all of the clearance that when
+/* ThermPoly returns a rnd_polyarea_t having all of the clearance that when
  * subtracted from the plane create the desired thermal fingers.
  * Usually this is 4 disjoint regions.
  *
  */
-pcb_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t thickness, rnd_coord_t clearance, rnd_cardinal_t style)
+rnd_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t thickness, rnd_coord_t clearance, rnd_cardinal_t style)
 {
 	pcb_arc_t a;
-	pcb_polyarea_t *pa, *arc;
+	rnd_polyarea_t *pa, *arc;
 
 	/* must be circular */
 	switch (style) {
 	case 1:
 	case 2:
 		{
-			pcb_polyarea_t *m;
+			rnd_polyarea_t *m;
 			rnd_coord_t t = (thickness + clearance) / 2;
 			rnd_coord_t w = 0.5 * pcb->ThermScale * clearance;
 			pa = pcb_poly_from_circle(cx, cy, t);

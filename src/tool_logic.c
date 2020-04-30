@@ -120,8 +120,8 @@ static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *pt
 
 	case PCB_OBJ_LINE_POINT:
 	case PCB_OBJ_POLY_POINT:
-		*x = ((pcb_point_t *) ptr3)->X;
-		*y = ((pcb_point_t *) ptr3)->Y;
+		*x = ((rnd_point_t *) ptr3)->X;
+		*y = ((rnd_point_t *) ptr3)->Y;
 		break;
 	case PCB_OBJ_ARC:
 		pcb_arc_get_end((pcb_arc_t *) ptr2, 0, x, y);

@@ -100,12 +100,12 @@ static void nogui_destroy_gc(pcb_hid_gc_t gc)
 {
 }
 
-static void nogui_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+static void nogui_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	CRASH("set_drawing_mode");
 }
 
-static void nogui_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_box_t *screen)
+static void nogui_render_burst(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen)
 {
 	/* the HID may decide to ignore this hook */
 }
@@ -139,7 +139,7 @@ static void nogui_draw_line(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd
 	CRASH("draw_line");
 }
 
-static void nogui_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t end_angle)
+static void nogui_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t end_angle)
 {
 	CRASH("draw_arc");
 }

@@ -42,7 +42,7 @@ static const char pcb_acth_autocrop[] = "Autocrops the board dimensions to (exta
 static const char pcb_acts_autocrop[] = "autocrop()";
 static fgw_error_t pcb_act_autocrop(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_box_t box;
+	rnd_rnd_box_t box;
 	rnd_coord_t dx, dy, w, h;
 
 	if (pcb_data_is_empty(PCB->Data))

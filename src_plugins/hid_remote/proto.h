@@ -43,7 +43,7 @@ void proto_send_set_line_cap(int gc, char style);
 void proto_send_set_line_width(int gc, rnd_coord_t width);
 void proto_send_set_draw_xor(int gc, int xor_set);
 void proto_send_draw_line(int gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
-void proto_send_draw_arc(int gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle);
+void proto_send_draw_arc(int gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle);
 void proto_send_draw_rect(int gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, int is_filled);
 void proto_send_fill_circle(int gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 void proto_send_draw_poly(int gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy);

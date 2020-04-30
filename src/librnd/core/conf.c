@@ -512,7 +512,7 @@ int rnd_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t typ
 	long l;
 	int base = 10;
 	double d;
-	const pcb_unit_t *u;
+	const rnd_unit_t *u;
 
 	switch(type) {
 		case RND_CFN_STRING:

@@ -48,7 +48,7 @@ typedef struct {
 	int view;
 } ly_ctx_t;
 
-static void layer_install_menu1(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
+static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
 	ly_ctx_t *ctx = ctx_;
 	int plen = strlen(path);
@@ -181,7 +181,7 @@ static void custom_layer_attr_key(pcb_layer_t *l, pcb_layer_id_t lid, const char
 }
 
 
-static void layer_install_menu_key(void *ctx_, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
+static void layer_install_menu_key(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
 	ly_ctx_t *ctx = ctx_;
 	int plen = strlen(path);

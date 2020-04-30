@@ -83,7 +83,7 @@ pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
 void pcb_rat_free(pcb_rat_t *rat)
 {
 	if ((rat->parent.data != NULL) && (rat->parent.data->rat_tree != NULL))
-		pcb_r_delete_entry(rat->parent.data->rat_tree, (rnd_box_t *)rat);
+		pcb_r_delete_entry(rat->parent.data->rat_tree, (rnd_rnd_box_t *)rat);
 	pcb_rat_unreg(rat);
 	free(rat->anchor[0]);
 	free(rat->anchor[1]);
@@ -213,15 +213,15 @@ static rnd_bool rat_meets_pstk(pcb_data_t *data, pcb_pstk_t *pstk, rnd_coord_t x
    on a point on a layer */
 static pcb_any_obj_t *find_obj_on_layer(rnd_coord_t x, rnd_coord_t y, pcb_layer_t *l)
 {
-	pcb_rtree_it_t it;
-	rnd_box_t *n;
-	pcb_rtree_box_t sb;
+	rnd_rtree_it_t it;
+	rnd_rnd_box_t *n;
+	rnd_rtree_box_t sb;
 
 	sb.x1 = x; sb.x2 = x+1;
 	sb.y1 = y; sb.y2 = y+1;
 
 	if (l->line_tree != NULL) {
-		for(n = pcb_rtree_first(&it, l->line_tree, &sb); n != NULL; n = pcb_rtree_next(&it)) {
+		for(n = rnd_rtree_first(&it, l->line_tree, &sb); n != NULL; n = rnd_rtree_next(&it)) {
 			if (rat_meets_line((pcb_line_t *)n, x, y, -1)) {
 				pcb_r_end(&it);
 				return (pcb_any_obj_t *)n;
@@ -231,7 +231,7 @@ static pcb_any_obj_t *find_obj_on_layer(rnd_coord_t x, rnd_coord_t y, pcb_layer_
 	}
 
 	if (l->arc_tree != NULL) {
-		for(n = pcb_rtree_first(&it, l->arc_tree, &sb); n != NULL; n = pcb_rtree_next(&it)) {
+		for(n = rnd_rtree_first(&it, l->arc_tree, &sb); n != NULL; n = rnd_rtree_next(&it)) {
 			if (rat_meets_arc((pcb_arc_t *)n, x, y, -1)) {
 				pcb_r_end(&it);
 				return (pcb_any_obj_t *)n;
@@ -241,7 +241,7 @@ static pcb_any_obj_t *find_obj_on_layer(rnd_coord_t x, rnd_coord_t y, pcb_layer_
 	}
 
 	if (l->polygon_tree != NULL) {
-		for(n = pcb_rtree_first(&it, l->polygon_tree, &sb); n != NULL; n = pcb_rtree_next(&it)) {
+		for(n = rnd_rtree_first(&it, l->polygon_tree, &sb); n != NULL; n = rnd_rtree_next(&it)) {
 			if (rat_meets_poly((pcb_poly_t *)n, x, y, -1)) {
 				pcb_r_end(&it);
 				return (pcb_any_obj_t *)n;
@@ -253,7 +253,7 @@ static pcb_any_obj_t *find_obj_on_layer(rnd_coord_t x, rnd_coord_t y, pcb_layer_
 TODO("find through text");
 #if 0
 	if (l->text_tree != NULL) {
-		for(n = pcb_rtree_first(&it, l->text_tree, &sb); n != NULL; n = pcb_rtree_next(&it)) {
+		for(n = rnd_rtree_first(&it, l->text_tree, &sb); n != NULL; n = rnd_rtree_next(&it)) {
 			if (rat_meets_text((pcb_text_t *)n, x, y, -1)) {
 				pcb_r_end(&it);
 				return (pcb_any_obj_t *)n;
@@ -271,9 +271,9 @@ TODO("find through text");
 static pcb_any_obj_t *find_obj_on_grp(pcb_data_t *data, rnd_coord_t x, rnd_coord_t y, pcb_layergrp_id_t gid)
 {
 	int i;
-	pcb_rtree_box_t sb;
-	pcb_rtree_it_t it;
-	rnd_box_t *n;
+	rnd_rtree_box_t sb;
+	rnd_rtree_it_t it;
+	rnd_rnd_box_t *n;
 	pcb_layergrp_t *g = pcb_get_layergrp(PCB, gid);
 
 	if (g == NULL)
@@ -283,7 +283,7 @@ static pcb_any_obj_t *find_obj_on_grp(pcb_data_t *data, rnd_coord_t x, rnd_coord
 	sb.y1 = y; sb.y2 = y+1;
 
 	if (PCB->Data->padstack_tree != NULL) {
-		for(n = pcb_rtree_first(&it, data->padstack_tree, &sb); n != NULL; n = pcb_rtree_next(&it)) {
+		for(n = rnd_rtree_first(&it, data->padstack_tree, &sb); n != NULL; n = rnd_rtree_next(&it)) {
 			if (rat_meets_pstk(data, (pcb_pstk_t *)n, x, y, gid)) {
 				pcb_r_end(&it);
 				return (pcb_any_obj_t *)n;
@@ -367,7 +367,7 @@ void *pcb_ratop_add_to_buffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 /* moves a rat-line between board and buffer */
 void *pcb_ratop_move_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 {
-	pcb_r_delete_entry(ctx->buffer.src->rat_tree, (rnd_box_t *) rat);
+	pcb_r_delete_entry(ctx->buffer.src->rat_tree, (rnd_rnd_box_t *) rat);
 
 	pcb_rat_unreg(rat);
 	pcb_rat_reg(ctx->buffer.dst, rat);
@@ -376,7 +376,7 @@ void *pcb_ratop_move_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 
 	if (!ctx->buffer.dst->rat_tree)
 		ctx->buffer.dst->rat_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(ctx->buffer.dst->rat_tree, (rnd_box_t *) rat);
+	pcb_r_insert_entry(ctx->buffer.dst->rat_tree, (rnd_rnd_box_t *) rat);
 
 	return rat;
 }
@@ -442,7 +442,7 @@ void *pcb_ratop_remove(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 }
 
 /*** draw ***/
-pcb_r_dir_t pcb_rat_draw_callback(const rnd_box_t * b, void *cl)
+pcb_r_dir_t pcb_rat_draw_callback(const rnd_rnd_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 	pcb_draw_info_t *info = cl;
@@ -481,7 +481,7 @@ void pcb_rat_invalidate_erase(pcb_rat_t *Rat)
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, Rat)) {
 		rnd_coord_t w = Rat->Thickness;
 
-		rnd_box_t b;
+		rnd_rnd_box_t b;
 
 		b.X1 = Rat->Point1.X - w * 2 - w / 2;
 		b.X2 = Rat->Point1.X + w * 2 + w / 2;
@@ -502,7 +502,7 @@ void pcb_rat_invalidate_draw(pcb_rat_t *Rat)
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, Rat)) {
 		rnd_coord_t w = Rat->Thickness;
 
-		rnd_box_t b;
+		rnd_rnd_box_t b;
 
 		b.X1 = Rat->Point1.X - w * 2 - w / 2;
 		b.X2 = Rat->Point1.X + w * 2 + w / 2;

@@ -51,7 +51,7 @@ static rst_ctx_t rst;
 
 #include "routest_dlg.c"
 
-static void rst_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, char *path)
+static void rst_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
 	pcb_menu_prop_t props;
 	char *end = path + strlen(path);

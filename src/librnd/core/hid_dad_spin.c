@@ -110,7 +110,7 @@ static void spin_warn(void *hid_ctx, pcb_hid_dad_spin_t *spin, pcb_hid_attribute
 
 static char *gen_str_coord(pcb_hid_dad_spin_t *spin, rnd_coord_t c, char *buf, int buflen)
 {
-	const pcb_unit_t *unit;
+	const rnd_unit_t *unit;
 	if (spin->unit != NULL)
 		unit = spin->unit;
 	else
@@ -133,7 +133,7 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute
 {
 	pcb_hid_attr_val_t hv;
 	spin_unit_t *su = (spin_unit_t *)caller_data;
-	const pcb_unit_t *unit;
+	const rnd_unit_t *unit;
 	int unum = su->dlg[su->wunit].val.lng;
 	int can_glob = su->wglob > 0;
 	int is_globbing = &su->dlg[su->wglob] == attr;
@@ -167,7 +167,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 {
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	spin_unit_t ctx;
-	const pcb_unit_t *def_unit;
+	const rnd_unit_t *def_unit;
 	int dlgfail;
 
 	memset(&ctx, 0, sizeof(ctx));
@@ -254,7 +254,7 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, pcb_h
 static double get_step(pcb_hid_dad_spin_t *spin, pcb_hid_attribute_t *end, pcb_hid_attribute_t *str)
 {
 	double v, step;
-	const pcb_unit_t *unit;
+	const rnd_unit_t *unit;
 
 	if (spin->step > 0)
 		return spin->step;
@@ -371,7 +371,7 @@ void pcb_dad_spin_txt_change_cb(void *hid_ctx, void *caller_data, pcb_hid_attrib
 	long l;
 	double d;
 	rnd_bool succ, absolute;
-	const pcb_unit_t *unit;
+	const rnd_unit_t *unit;
 
 	if (spin->set_writeback_lock)
 		return;
@@ -422,7 +422,7 @@ void pcb_dad_spin_txt_enter_cb_dry(void *hid_ctx, void *caller_data, pcb_hid_att
 	int changed = 0;
 	double d;
 	rnd_bool succ, absolute;
-	const pcb_unit_t *unit;
+	const rnd_unit_t *unit;
 
 	if (spin->set_writeback_lock)
 		return;

@@ -80,9 +80,9 @@ void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, rnd_cardinal_
 	return ptr;
 }
 
-pcb_point_t *pcb_adjust_insert_point(void)
+rnd_point_t *pcb_adjust_insert_point(void)
 {
-	static pcb_point_t InsertedPoint;
+	static rnd_point_t InsertedPoint;
 	double m;
 	rnd_coord_t x, y, m1, m2;
 	pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;

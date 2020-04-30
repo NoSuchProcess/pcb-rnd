@@ -1062,7 +1062,7 @@ static int kicad_parse_target(read_state_t *st, gsxl_node_t *subtree)
 	if (st->pcb != NULL) {
 		if (st->pcb->Data->subc_tree == NULL)
 			st->pcb->Data->subc_tree = pcb_r_create_tree();
-		pcb_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)subc);
+		pcb_r_insert_entry(st->pcb->Data->subc_tree, (rnd_rnd_box_t *)subc);
 		pcb_subc_rebind(st->pcb, subc);
 	}
 	else
@@ -1185,7 +1185,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	gsxl_node_t *n;
 	unsigned long tally = 0, required;
 	rnd_coord_t cx, cy, endx, endy, thickness, clearance, deltax, deltay;
-	pcb_angle_t end_angle = 0.0, delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
+	rnd_angle_t end_angle = 0.0, delta = 360.0; /* these defaults allow a gr_circle to be parsed, which does not specify (angle XXX) */
 	pcb_flag_t flg = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_t *ly = NULL;
 	pcb_arc_t *arc;
@@ -1248,7 +1248,7 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 		return kicad_error(subtree, "unexpected empty/NULL node in arc.");
 
 	{
-		pcb_angle_t start_angle;
+		rnd_angle_t start_angle;
 		rnd_coord_t width, height;
 
 		width = height = rnd_distance(cx, cy, endx, endy); /* calculate radius of arc */
@@ -1576,13 +1576,13 @@ static void exec_zone_connect(read_state_t *st)
 
 		/* search all layers for polygons */
 		for(lid = 0, ly = st->pcb->Data->Layer; lid < st->pcb->Data->LayerN; lid++,ly++) {
-			pcb_rtree_it_t it;
+			rnd_rtree_it_t it;
 			pcb_poly_t *p;
 
 			if (ly->polygon_tree == NULL) continue;
 
 			/* use rtree to search for polys that are near the padstack */
-			for(p = pcb_rtree_first(&it, ly->polygon_tree, (const pcb_rtree_box_t *)&zc->ps->BoundingBox); p != NULL; p = pcb_rtree_next(&it)) {
+			for(p = rnd_rtree_first(&it, ly->polygon_tree, (const rnd_rtree_box_t *)&zc->ps->BoundingBox); p != NULL; p = rnd_rtree_next(&it)) {
 				const char *pnet;
 				pnet = htpp_get(&st->poly2net, p);
 				if ((zc != NULL) && (zc->netname != NULL) && (pnet != NULL) && (strcmp(pnet, zc->netname) == 0)) {
@@ -2513,7 +2513,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	if (st->pcb != NULL) {
 		if (st->pcb->Data->subc_tree == NULL)
 			st->pcb->Data->subc_tree = pcb_r_create_tree();
-		pcb_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)subc);
+		pcb_r_insert_entry(st->pcb->Data->subc_tree, (rnd_rnd_box_t *)subc);
 		pcb_subc_rebind(st->pcb, subc);
 	}
 	else

@@ -14,7 +14,7 @@
 
 static void poly_test()
 {
-	pcb_polyarea_t pa;
+	rnd_polyarea_t pa;
 	pcb_polyarea_init(&pa);
 	pcb_poly_valid(&pa);
 }

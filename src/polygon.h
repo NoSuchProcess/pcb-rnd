@@ -45,7 +45,7 @@
 
 void pcb_polygon_init(void);
 void pcb_polygon_uninit(void);
-rnd_cardinal_t pcb_poly_point_idx(pcb_poly_t *polygon, pcb_point_t *point);
+rnd_cardinal_t pcb_poly_point_idx(pcb_poly_t *polygon, rnd_point_t *point);
 rnd_cardinal_t pcb_poly_contour_point(pcb_poly_t *polygon, rnd_cardinal_t point);
 rnd_cardinal_t pcb_poly_contour_prev_point(pcb_poly_t *polygon, rnd_cardinal_t point);
 rnd_cardinal_t pcb_poly_contour_next_point(pcb_poly_t *polygon, rnd_cardinal_t point);
@@ -57,18 +57,18 @@ void pcb_polygon_close_poly(void);
 void pcb_polygon_copy_attached_to_layer(void);
 void pcb_polygon_close_hole(void);
 void pcb_polygon_hole_create_from_attached(void);
-int pcb_poly_holes(pcb_poly_t * ptr, const rnd_box_t * range, int (*callback) (pcb_pline_t *, void *user_data), void *user_data);
+int pcb_poly_holes(pcb_poly_t * ptr, const rnd_rnd_box_t * range, int (*callback) (pcb_pline_t *, void *user_data), void *user_data);
 int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
 	pcb_r_dir_t (*cb)(pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2, void *user_data),
 	void *user_data);
 void pcb_poly_compute_no_holes(pcb_poly_t * poly);
 
 /* helpers: create complex shaped polygons */
-pcb_polyarea_t *pcb_poly_from_poly(pcb_poly_t *);
-pcb_polyarea_t *pcb_poly_from_pcb_line(pcb_line_t * l, rnd_coord_t thick);
-pcb_polyarea_t *pcb_poly_from_pcb_arc(pcb_arc_t * l, rnd_coord_t thick);
-pcb_polyarea_t *pcb_poly_from_box_bloated(rnd_box_t * box, rnd_coord_t radius);
-pcb_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly, rnd_coord_t *clr_override); /* clearance shape for when clearpolypoly is set */
+rnd_polyarea_t *pcb_poly_from_poly(pcb_poly_t *);
+rnd_polyarea_t *pcb_poly_from_pcb_line(pcb_line_t * l, rnd_coord_t thick);
+rnd_polyarea_t *pcb_poly_from_pcb_arc(pcb_arc_t * l, rnd_coord_t thick);
+rnd_polyarea_t *pcb_poly_from_box_bloated(rnd_rnd_box_t * box, rnd_coord_t radius);
+rnd_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly, rnd_coord_t *clr_override); /* clearance shape for when clearpolypoly is set */
 
 int pcb_poly_init_clip(pcb_data_t * d, pcb_layer_t * l, pcb_poly_t * p);
 int pcb_poly_init_clip_force(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p); /* bypasses clip inhibit */
@@ -76,7 +76,7 @@ void pcb_poly_restore_to_poly(pcb_data_t *, int, void *, void *);
 void pcb_poly_clear_from_poly(pcb_data_t *, int, void *, void *);
 
 /* Convert a polygon to an unclipped polyarea */
-pcb_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, rnd_bool *need_full);
+rnd_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, rnd_bool *need_full);
 
 /* Same as pcb_poly_init_clip() but also call cb before each operation,
    giving the caller a chance to draw a progress bar */
@@ -91,20 +91,20 @@ rnd_bool pcb_poly_is_point_in_p(rnd_coord_t, rnd_coord_t, rnd_coord_t, pcb_poly_
 rnd_bool pcb_poly_is_point_in_p_ignore_holes(rnd_coord_t, rnd_coord_t, pcb_poly_t *);
 pcb_bool_t pcb_is_point_in_convex_quad(pcb_vector_t p, pcb_vector_t *q);
 rnd_bool pcb_poly_is_rect_in_p(rnd_coord_t, rnd_coord_t, rnd_coord_t, rnd_coord_t, pcb_poly_t *);
-rnd_bool pcb_poly_isects_poly(pcb_polyarea_t *, pcb_poly_t *, rnd_bool);
+rnd_bool pcb_poly_isects_poly(rnd_polyarea_t *, pcb_poly_t *, rnd_bool);
 rnd_bool pcb_pline_isect_line(pcb_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy);
 rnd_bool pcb_pline_isect_circ(pcb_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r); /* cirlce contour crosses polyline contour */
 rnd_bool pcb_pline_embraces_circ(pcb_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r); /* circle is within the polyline; caller must make sure they do not cross! */
 rnd_bool pcb_pline_overlaps_circ(pcb_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r); /* circle is within or is crossing the polyline */
 rnd_bool pcb_poly_morph(pcb_layer_t *, pcb_poly_t *);
-void pcb_poly_no_holes_dicer(pcb_poly_t * p, const rnd_box_t * clip, void (*emit) (pcb_pline_t *, void *), void *user_data);
-void pcb_poly_to_polygons_on_layer(pcb_data_t *, pcb_layer_t *, pcb_polyarea_t *, pcb_flag_t);
+void pcb_poly_no_holes_dicer(pcb_poly_t * p, const rnd_rnd_box_t * clip, void (*emit) (pcb_pline_t *, void *), void *user_data);
+void pcb_poly_to_polygons_on_layer(pcb_data_t *, pcb_layer_t *, rnd_polyarea_t *, pcb_flag_t);
 
 rnd_bool pcb_pline_is_rectangle(pcb_pline_t *pl);
 
 /* clear np1 from the polygon; also free np1 if fnp is true. Returns 1 on
    success. */
-int pcb_poly_subtract(pcb_polyarea_t *np1, pcb_poly_t *p, rnd_bool fnp);
+int pcb_poly_subtract(rnd_polyarea_t *np1, pcb_poly_t *p, rnd_bool fnp);
 
 /* Subtract or unsubtract obj from poly; Layer is used for looking up thermals */
 int pcb_poly_sub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *obj);

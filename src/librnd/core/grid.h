@@ -44,7 +44,7 @@ typedef struct {
 	char *name;
 	rnd_coord_t size;
 	rnd_coord_t ox, oy;
-	const pcb_unit_t *unit; /* force switching to unit if not NULL */
+	const rnd_unit_t *unit; /* force switching to unit if not NULL */
 } pcb_grid_t;
 
 /* Returns the nearest grid-point to the given coord x */

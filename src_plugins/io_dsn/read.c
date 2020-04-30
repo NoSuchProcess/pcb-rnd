@@ -52,8 +52,8 @@
 typedef struct {
 	gsxl_dom_t dom;
 	pcb_board_t *pcb;
-	const pcb_unit_t *unit;
-	rnd_box_t bbox; /* board's bbox from the boundary subtrees, in the file's coordinate system */
+	const rnd_unit_t *unit;
+	rnd_rnd_box_t bbox; /* board's bbox from the boundary subtrees, in the file's coordinate system */
 	htsp_t name2layer;
 	htsp_t protos; /* padstack prototypes - allocated for the hash, copied on placement */
 	htsp_t subcs;  /* subc images - allocated for the hash, copied on placement */
@@ -129,9 +129,9 @@ static rnd_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
 		} \
 	} while(0)
 
-static const pcb_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
+static const rnd_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
 {
-	const pcb_unit_t *old = ctx->unit;
+	const rnd_unit_t *old = ctx->unit;
 	char *su, *s;
 
 	if ((nu == NULL) || (nu->children == NULL))
@@ -149,16 +149,16 @@ static const pcb_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
 	return old;
 }
 
-static void pop_unit(dsn_read_t *ctx, const pcb_unit_t *saved)
+static void pop_unit(dsn_read_t *ctx, const rnd_unit_t *saved)
 {
 	ctx->unit = saved;
 }
 
 /* Search a subtree for a unit descriptor and push it and return the old.
    Returns NULL if nothing found/pushed */
-static const pcb_unit_t *dsn_set_old_unit(dsn_read_t *ctx, gsxl_node_t *nd)
+static const rnd_unit_t *dsn_set_old_unit(dsn_read_t *ctx, gsxl_node_t *nd)
 {
-	const pcb_unit_t *old_unit = NULL;
+	const rnd_unit_t *old_unit = NULL;
 	gsxl_node_t *n;
 
 	for(n = nd; n != NULL; n = n->next) {
@@ -189,7 +189,7 @@ static void parse_attribute(dsn_read_t *ctx, rnd_attribute_list_t *attr, gsxl_no
 		rnd_attribute_put(attr, STRE(kv), STRE(kv->children));
 }
 
-static int dsn_parse_rect(dsn_read_t *ctx, rnd_box_t *dst, gsxl_node_t *src, int no_y_flip)
+static int dsn_parse_rect(dsn_read_t *ctx, rnd_rnd_box_t *dst, gsxl_node_t *src, int no_y_flip)
 {
 	rnd_coord_t x, y;
 
@@ -294,7 +294,7 @@ static int dsn_parse_boundary_(dsn_read_t *ctx, gsxl_node_t *bnd, int do_bbox, p
 				boundary_line(oly, lx, ly, x, y, aper);
 		}
 		else if (rnd_strcasecmp(bnd->str, "rect") == 0) {
-			rnd_box_t box;
+			rnd_rnd_box_t box;
 
 			b = gsxl_children(bnd);
 			if ((b->next == NULL) || (b->next->next == NULL)) {
@@ -370,7 +370,7 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	gsxl_node_t *n, *i;
 	pcb_layergrp_t *topcop = NULL, *botcop = NULL, *grp;
 	pcb_layergrp_id_t gid;
-	const pcb_unit_t *old_unit;
+	const rnd_unit_t *old_unit;
 	const pcb_dflgmap_t doclayers[] = {
 		{"top_outline",         PCB_LYT_TOP | PCB_LYT_DOC,    "outline", PCB_LYC_AUTO, 0},
 		{"bot_outline",         PCB_LYT_BOTTOM | PCB_LYT_DOC, "outline", PCB_LYC_AUTO, 0},
@@ -538,7 +538,7 @@ int dsn_parse_pstk_shape_circle(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape
 
 int dsn_parse_pstk_shape_rect(dsn_read_t *ctx, gsxl_node_t *nd, pcb_pstk_shape_t *shp)
 {
-	rnd_box_t box;
+	rnd_rnd_box_t box;
 	gsxl_node_t *args = nd->children->next;
 
 	if (dsn_parse_rect(ctx, &box, args, 1) != 0)
@@ -729,7 +729,7 @@ static void dsn_pstk_set_shape(pcb_pstk_proto_t *prt, pcb_layer_type_t lyt, pcb_
 
 static int dsn_parse_lib_padstack(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
-	const pcb_unit_t *old_unit;
+	const rnd_unit_t *old_unit;
 	gsxl_node_t *n;
 	pcb_pstk_proto_t *prt;
 	pcb_pstk_shape_t hole;
@@ -954,7 +954,7 @@ static int dsn_parse_img_property(dsn_read_t *ctx, gsxl_node_t *nd, pcb_subc_t *
 
 static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 {
-	const pcb_unit_t *old_unit;
+	const rnd_unit_t *old_unit;
 	pcb_subc_t *subc;
 	char *id;
 	int n;
@@ -1049,7 +1049,7 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 
 static int dsn_parse_library(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
-	const pcb_unit_t *old_unit;
+	const rnd_unit_t *old_unit;
 	gsxl_node_t *n;
 
 	old_unit = dsn_set_old_unit(ctx, wrr->children);
@@ -1186,7 +1186,7 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 
 static int dsn_parse_wire_rect(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *subc, pcb_layer_t *force_ly)
 {
-	rnd_box_t box;
+	rnd_rnd_box_t box;
 	gsxl_node_t *net = wrr->children;
 	pcb_layer_t *ly;
 
@@ -1492,7 +1492,7 @@ static int dsn_parse_point(dsn_read_t *ctx, gsxl_node_t *tnd)
 
 static int dsn_parse_wiring(dsn_read_t *ctx, gsxl_node_t *wrr)
 {
-	const pcb_unit_t *old_unit;
+	const rnd_unit_t *old_unit;
 
 	old_unit = dsn_set_old_unit(ctx, wrr->children);
 
@@ -1589,7 +1589,7 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 
 static int dsn_parse_placement(dsn_read_t *ctx, gsxl_node_t *plr)
 {
-	const pcb_unit_t *old_unit;
+	const rnd_unit_t *old_unit;
 	int mirror_first = 1;
 
 	old_unit = dsn_set_old_unit(ctx, plr->children);

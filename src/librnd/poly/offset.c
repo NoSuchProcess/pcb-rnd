@@ -323,8 +323,8 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_
 	/* case #1: a point in dst is too close to a line in src */
 	v = dst->head;
 	do {
-		pcb_rtree_it_t it;
-		pcb_rtree_box_t pb;
+		rnd_rtree_it_t it;
+		rnd_rtree_box_t pb;
 		void *seg;
 		int inside = 0;
 
@@ -335,7 +335,7 @@ void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_
 		if (!negoffs)
 			inside = pcb_poly_contour_inside(src, v->point);
 
-		for(seg = pcb_rtree_first(&it, src->tree, &pb); seg != NULL; seg = pcb_rtree_next(&it)) {
+		for(seg = rnd_rtree_first(&it, src->tree, &pb); seg != NULL; seg = rnd_rtree_next(&it)) {
 			rnd_coord_t x1, y1, x2, y2;
 			double dist, tune, prjx, prjy, dx, dy, ax, ay, dotp, prevx, prevy, prevl;
 

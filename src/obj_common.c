@@ -72,7 +72,7 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 /* returns a pointer to an objects bounding box;
  * data is valid until the routine is called again
  */
-int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_box_t *res)
+int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_rnd_box_t *res)
 {
 	switch (Type) {
 	case PCB_OBJ_LINE:
@@ -88,13 +88,13 @@ int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_box
 		return 0;
 	case PCB_OBJ_POLY_POINT:
 	case PCB_OBJ_LINE_POINT:
-		*res = *(rnd_box_t *)Ptr3;
+		*res = *(rnd_rnd_box_t *)Ptr3;
 		return 0;
 	case PCB_OBJ_ARC_POINT:
 		return pcb_obj_ui_arc_point_bbox(Type, Ptr1, Ptr2, Ptr3, res);
 	default:
 		rnd_message(RND_MSG_ERROR, "Request for bounding box of unsupported type %d\n", Type);
-		*res = *(rnd_box_t *)Ptr2;
+		*res = *(rnd_rnd_box_t *)Ptr2;
 		return -1;
 	}
 }
@@ -423,7 +423,7 @@ void pcb_obj_change_id(pcb_any_obj_t *obj, long int new_id)
 }
 
 
-void pcb_set_point_bounding_box(pcb_point_t *Pnt)
+void pcb_set_point_bounding_box(rnd_point_t *Pnt)
 {
 	Pnt->X2 = Pnt->X + 1;
 	Pnt->Y2 = Pnt->Y + 1;

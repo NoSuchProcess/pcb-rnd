@@ -31,9 +31,9 @@
 #include "draw.h"
 
 /* Include rtree.h for this */
-#ifdef PCB_RTREE_H
-pcb_r_dir_t pcb_line_draw_callback(const rnd_box_t * b, void *cl);
-pcb_r_dir_t pcb_line_draw_term_callback(const rnd_box_t * b, void *cl);
+#ifdef RND_RTREE_H
+pcb_r_dir_t pcb_line_draw_callback(const rnd_rnd_box_t * b, void *cl);
+pcb_r_dir_t pcb_line_draw_term_callback(const rnd_rnd_box_t * b, void *cl);
 #endif
 
 void pcb_line_draw_(pcb_draw_info_t *info, pcb_line_t *line, int allow_term_gfx);

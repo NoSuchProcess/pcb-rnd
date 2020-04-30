@@ -70,12 +70,12 @@ const char *dirnames[] = {
 #define ARG(n) (argc > (n) ? argv[n] : 0)
 
 /* DEBUG */
-static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
+static void Debugpcb_polyarea_t(rnd_polyarea_t * s, char *color)
 {
 	int *x, *y, n, i = 0;
 	pcb_pline_t *pl;
 	pcb_vnode_t *v;
-	pcb_polyarea_t *p;
+	rnd_polyarea_t *p;
 
 #ifndef DEBUG_pcb_polyarea_t
 	return;
@@ -116,16 +116,16 @@ static void Debugpcb_polyarea_t(pcb_polyarea_t * s, char *color)
 /*	pcb_hid_busy(PCB, 0); */
 }
 
-/* Find the bounding box of a pcb_polyarea_t.
+/* Find the bounding box of a rnd_polyarea_t.
  *
  * pcb_polyarea_ts linked by ->f/b are outlines.\n
  * n->contours->next would be the start of the inner holes (irrelevant
  * for bounding box). */
-static rnd_box_t pcb_polyarea_t_boundingBox(pcb_polyarea_t * a)
+static rnd_rnd_box_t pcb_polyarea_t_boundingBox(rnd_polyarea_t * a)
 {
-	pcb_polyarea_t *n;
+	rnd_polyarea_t *n;
 	pcb_pline_t *pa;
-	rnd_box_t box;
+	rnd_rnd_box_t box;
 	int first = 1;
 
 	n = a;
@@ -151,7 +151,7 @@ static rnd_box_t pcb_polyarea_t_boundingBox(pcb_polyarea_t * a)
 /* Given a polygon and a side of it (a direction north/northeast/etc), find a
    line tangent to that side, offset by clearance, and return it as a pair of
    vectors PQ. Make it long so it will intersect everything in the area. */
-static void pcb_polyarea_t_findXmostLine(pcb_polyarea_t * a, int side, pcb_vector_t p, pcb_vector_t q, int clearance)
+static void pcb_polyarea_t_findXmostLine(rnd_polyarea_t * a, int side, pcb_vector_t p, pcb_vector_t q, int clearance)
 {
 	int extra;
 	p[0] = p[1] = 0;
@@ -266,13 +266,13 @@ static pcb_line_t *Createpcb_vector_tLineOnLayer(pcb_layer_t * layer, pcb_vector
 	return line;
 }
 
-static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vector_t b, pcb_line_t * orig, pcb_polyarea_t ** expandp)
+static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vector_t b, pcb_line_t * orig, rnd_polyarea_t ** expandp)
 {
 	pcb_line_t *line;
 
 	line = Createpcb_vector_tLineOnLayer(layer, a, b, orig->Thickness, orig->Clearance, orig->Flags);
 	if (line && expandp) {
-		pcb_polyarea_t *p = pcb_poly_from_pcb_line(line, line->Thickness + line->Clearance);
+		rnd_polyarea_t *p = pcb_poly_from_pcb_line(line, line->Thickness + line->Clearance);
 		pcb_polyarea_boolean_free(*expandp, p, expandp, PCB_PBO_UNITE);
 	}
 	return line;
@@ -293,7 +293,7 @@ static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vecto
  * Then intersect them with each other and the original to find
  * points a, b, c, d.  Finally connect the dots and remove the
  * old straight line. */
-static int MakeBypassingLines(pcb_polyarea_t * brush, pcb_layer_t * layer, pcb_line_t * line, int side, pcb_polyarea_t ** expandp)
+static int MakeBypassingLines(rnd_polyarea_t * brush, pcb_layer_t * layer, pcb_line_t * line, int side, rnd_polyarea_t ** expandp)
 {
 	pcb_vector_t pA, pB, flatA, flatB, qA, qB;
 	pcb_vector_t lA, lB;
@@ -329,21 +329,21 @@ static int MakeBypassingLines(pcb_polyarea_t * brush, pcb_layer_t * layer, pcb_l
 }
 
 struct info {
-	rnd_box_t box;
-	pcb_polyarea_t *brush;
+	rnd_rnd_box_t box;
+	rnd_polyarea_t *brush;
 	pcb_layer_t *layer;
-	pcb_polyarea_t *smallest; /* after cutting brush with line, the smallest chunk, which we will go around on 'side'. */
+	rnd_polyarea_t *smallest; /* after cutting brush with line, the smallest chunk, which we will go around on 'side'. */
 	pcb_line_t *line;
 	int side;
 	double centroid; /* smallest difference between slices of brush after cutting with line, trying to find the line closest to the centroid to process first */
 };
 
 /* Process lines that intersect our 'brush'. */
-static pcb_r_dir_t jostle_callback(const rnd_box_t * targ, void *private)
+static pcb_r_dir_t jostle_callback(const rnd_rnd_box_t * targ, void *private)
 {
 	pcb_line_t *line = (pcb_line_t *) targ;
 	struct info *info = private;
-	pcb_polyarea_t *lp, *copy, *tmp, *n, *smallest = NULL;
+	rnd_polyarea_t *lp, *copy, *tmp, *n, *smallest = NULL;
 	pcb_vector_t p;
 	int inside = 0, side, r;
 	double small, big;
@@ -471,7 +471,7 @@ static const char pcb_acth_jostle[] = "Make room by moving wires away.";
 static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_coord_t x, y;
-	pcb_polyarea_t *expand;
+	rnd_polyarea_t *expand;
 	float value = conf_core.design.via_thickness + (conf_core.design.bloat + 1) * 2 + 50;
 	struct info info;
 	int found;

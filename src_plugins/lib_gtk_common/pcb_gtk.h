@@ -108,7 +108,7 @@ struct pcb_gtk_mouse_s {
 struct pcb_gtk_topwin_s {
 	/* util/builder states */
 	pcb_gtk_menu_ctx_t menu;
-	pcb_hid_cfg_t *ghid_cfg;
+	rnd_hid_cfg_t *ghid_cfg;
 	pcb_gtk_command_t cmd;
 
 	/* own widgets */

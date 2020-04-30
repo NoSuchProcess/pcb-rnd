@@ -70,7 +70,7 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 
 		case PCB_OBJ_LINE_POINT:
 			if (F->LinePoint)
-				res = F->LinePoint(ctx, (pcb_layer_t *)Ptr1, (pcb_line_t *)Ptr2, (pcb_point_t *)Ptr3);
+				res = F->LinePoint(ctx, (pcb_layer_t *)Ptr1, (pcb_line_t *)Ptr2, (rnd_point_t *)Ptr3);
 			break;
 
 		case PCB_OBJ_ARC_POINT:
@@ -90,7 +90,7 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 
 		case PCB_OBJ_POLY_POINT:
 			if (F->Point)
-				res = F->Point(ctx, (pcb_layer_t *)Ptr1, (pcb_poly_t *)Ptr2, (pcb_point_t *)Ptr3);
+				res = F->Point(ctx, (pcb_layer_t *)Ptr1, (pcb_poly_t *)Ptr2, (rnd_point_t *)Ptr3);
 			break;
 
 		case PCB_OBJ_SUBC:

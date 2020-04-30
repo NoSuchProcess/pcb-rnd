@@ -89,7 +89,7 @@ pcb_opfunc_t RotateFunctions = {
 /* ---------------------------------------------------------------------------
  * rotates a point in 90 degree steps
  */
-void pcb_point_rotate90(pcb_point_t *Point, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
+void pcb_point_rotate90(rnd_point_t *Point, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
 	PCB_COORD_ROTATE90(Point->X, Point->Y, X, Y, Number);
 }
@@ -121,7 +121,7 @@ pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_
 	return obj;
 }
 
-pcb_any_obj_t *pcb_obj_rotate(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_t X, rnd_coord_t Y, pcb_angle_t angle)
+pcb_any_obj_t *pcb_obj_rotate(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_t X, rnd_coord_t Y, rnd_angle_t angle)
 {
 	int changed = 0;
 	pcb_opctx_t ctx;
@@ -168,7 +168,7 @@ void pcb_screen_obj_rotate90(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, uns
 	}
 }
 
-void pcb_screen_obj_rotate(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, pcb_angle_t angle)
+void pcb_screen_obj_rotate(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, rnd_angle_t angle)
 {
 	int type;
 	void *ptr1, *ptr2, *ptr3;

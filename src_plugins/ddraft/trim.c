@@ -34,7 +34,7 @@
 /* Move a line endpoint to a new absoltue coord in an undoable way */
 static void move_lp(pcb_line_t *line, int pt_idx, rnd_coord_t x, rnd_coord_t y)
 {
-	pcb_point_t *pt;
+	rnd_point_t *pt;
 
 	switch(pt_idx) {
 		case 1: pt = &line->Point1; break;

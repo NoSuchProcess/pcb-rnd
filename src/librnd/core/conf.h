@@ -59,7 +59,7 @@ typedef int               RND_CFT_BOOLEAN;
 typedef long              RND_CFT_INTEGER;
 typedef double            RND_CFT_REAL;
 typedef rnd_coord_t       RND_CFT_COORD;
-typedef pcb_unit_t *      RND_CFT_UNIT;
+typedef rnd_unit_t *      RND_CFT_UNIT;
 typedef rnd_color_t       RND_CFT_COLOR;
 typedef rnd_conflist_t    RND_CFT_LIST;
 typedef rnd_conflist_t    RND_CFT_HLIST;
@@ -83,7 +83,7 @@ union rnd_confitem_u {
 	long *integer;
 	double *real;
 	rnd_coord_t *coord;
-	const pcb_unit_t **unit;
+	const rnd_unit_t **unit;
 	rnd_color_t *color;
 	rnd_conflist_t *list;
 	void *any;

@@ -39,7 +39,7 @@
 #include "route.h"
 
 typedef struct {              /* currently marked block */
-	pcb_point_t Point1, Point2; /* start- and end-position */
+	rnd_point_t Point1, Point2; /* start- and end-position */
 	long int State;
 	rnd_bool otherway;
 } pcb_attached_box_t;
@@ -47,11 +47,11 @@ typedef struct {              /* currently marked block */
 typedef struct {              /* currently attached object */
 	rnd_coord_t X, Y;           /* saved position when tool is move */
 	rnd_coord_t tx, ty;         /* target position when tool is move */
-	rnd_box_t BoundingBox;
+	rnd_rnd_box_t BoundingBox;
 	long int Type;              /* object type */
 	long int State;
 	void *Ptr1, *Ptr2, *Ptr3;   /* three pointers to data, see search.c */
-	pcb_angle_t start_angle, delta_angle;
+	rnd_angle_t start_angle, delta_angle;
 	rnd_coord_t radius;
 } pcb_attached_object_t;
 

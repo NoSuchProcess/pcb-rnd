@@ -39,7 +39,7 @@ typedef struct {
 	unsigned vmax_valid:1;
 	unsigned no_unit_chg:1;
 	int wall, wstr, wup, wdown, wunit, wwarn;
-	const pcb_unit_t *unit; /* for PCB_DAD_SPIN_COORD and PCB_DAD_SPIN_FREQ only: current unit */
+	const rnd_unit_t *unit; /* for PCB_DAD_SPIN_COORD and PCB_DAD_SPIN_FREQ only: current unit */
 	pcb_family_t unit_family;
 	pcb_hid_attribute_t **attrs;
 	void **hid_ctx;

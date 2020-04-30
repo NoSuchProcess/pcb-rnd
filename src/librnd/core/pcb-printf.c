@@ -275,7 +275,7 @@ typedef struct {
 	enum pcb_allow_e  up;
 
 	/* persistent, calculated once */
-	const pcb_unit_t    *base_unit, *down_unit, *up_unit;
+	const rnd_unit_t    *base_unit, *down_unit, *up_unit;
 } human_coord_t;
 
 /* Conversion preference table */
@@ -285,7 +285,7 @@ static human_coord_t human_coord[] = {
 };
 #define NUM_HUMAN_COORD (sizeof(human_coord) / sizeof(human_coord[0]))
 
-static inline int try_human_coord(rnd_coord_t coord, const pcb_unit_t *unit, double down_limit, double up_limit, int score_factor, double *value, unsigned int *best, const char **suffix)
+static inline int try_human_coord(rnd_coord_t coord, const rnd_unit_t *unit, double down_limit, double up_limit, int score_factor, double *value, unsigned int *best, const char **suffix)
 {
 	double v, frac, save;
 	long int digs, zeros;
@@ -699,7 +699,7 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 					if (gds_append_len(&spec, ".06f", 4) != 0) goto err;
 					if (suffix == PCB_UNIT_SUFFIX)
 						if (gds_append_len(&spec, " deg", 4) != 0) goto err;
-					tmplen = sprintf(tmp, spec.array, (double) va_arg(args, pcb_angle_t));
+					tmplen = sprintf(tmp, spec.array, (double) va_arg(args, rnd_angle_t));
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case 'A':
@@ -708,7 +708,7 @@ int pcb_safe_append_vprintf(gds_t *string, pcb_safe_printf_t safe, const char *f
 					if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
 					/* if (suffix == PCB_UNIT_SUFFIX)
 						if (gds_append_len(&spec, " deg", 4) != 0) goto err;*/
-					tmplen = sprintf(tmp, spec.array, 10*((double) va_arg(args, pcb_angle_t))); /* kicad legacy needs decidegrees */
+					tmplen = sprintf(tmp, spec.array, 10*((double) va_arg(args, rnd_angle_t))); /* kicad legacy needs decidegrees */
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case 'f':

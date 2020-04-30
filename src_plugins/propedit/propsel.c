@@ -51,14 +51,14 @@
 /*********** map ***********/
 #define type2field_String string
 #define type2field_rnd_coord_t coord
-#define type2field_pcb_angle_t angle
+#define type2field_rnd_angle_t angle
 #define type2field_int i
 #define type2field_bool i
 #define type2field_color clr
 
 #define type2TYPE_String PCB_PROPT_STRING
 #define type2TYPE_rnd_coord_t PCB_PROPT_COORD
-#define type2TYPE_pcb_angle_t PCB_PROPT_ANGLE
+#define type2TYPE_rnd_angle_t PCB_PROPT_ANGLE
 #define type2TYPE_int PCB_PROPT_INT
 #define type2TYPE_bool PCB_PROPT_BOOL
 #define type2TYPE_color PCB_PROPT_COLOR
@@ -190,8 +190,8 @@ static void map_arc(pcb_propedit_t *ctx, pcb_arc_t *arc)
 	map_add_prop(ctx, "p/trace/clearance", rnd_coord_t, arc->Clearance/2);
 	map_add_prop(ctx, "p/arc/width",       rnd_coord_t, arc->Width);
 	map_add_prop(ctx, "p/arc/height",      rnd_coord_t, arc->Height);
-	map_add_prop(ctx, "p/arc/angle/start", pcb_angle_t, arc->StartAngle);
-	map_add_prop(ctx, "p/arc/angle/delta", pcb_angle_t, arc->Delta);
+	map_add_prop(ctx, "p/arc/angle/start", rnd_angle_t, arc->StartAngle);
+	map_add_prop(ctx, "p/arc/angle/delta", rnd_angle_t, arc->Delta);
 	map_common(ctx, (pcb_any_obj_t *)arc);
 	map_attr(ctx, &arc->Attributes);
 	if (ctx->geo) {
@@ -204,7 +204,7 @@ static void map_gfx(pcb_propedit_t *ctx, pcb_gfx_t *gfx)
 {
 	map_add_prop(ctx, "p/gfx/sx",      rnd_coord_t, gfx->sx);
 	map_add_prop(ctx, "p/gfx/sy",      rnd_coord_t, gfx->sy);
-	map_add_prop(ctx, "p/gfx/rot",     pcb_angle_t, gfx->rot);
+	map_add_prop(ctx, "p/gfx/rot",     rnd_angle_t, gfx->rot);
 	map_common(ctx, (pcb_any_obj_t *)gfx);
 	map_attr(ctx, &gfx->Attributes);
 	if (ctx->geo) {
@@ -217,7 +217,7 @@ static void map_text(pcb_propedit_t *ctx, pcb_text_t *text)
 {
 	map_add_prop(ctx, "p/text/scale", int, text->Scale);
 	map_add_prop(ctx, "p/text/fid", int, text->fid);
-	map_add_prop(ctx, "p/text/rotation",  pcb_angle_t, text->rot);
+	map_add_prop(ctx, "p/text/rotation",  rnd_angle_t, text->rot);
 	map_add_prop(ctx, "p/text/thickness", rnd_coord_t, text->thickness);
 	map_add_prop(ctx, "p/text/string", String, text->TextString);
 	map_common(ctx, (pcb_any_obj_t *)text);
@@ -241,7 +241,7 @@ static void map_pstk(pcb_propedit_t *ctx, pcb_pstk_t *ps)
 
 	map_add_prop(ctx, "p/padstack/xmirror", rnd_coord_t, ps->xmirror);
 	map_add_prop(ctx, "p/padstack/smirror", rnd_coord_t, ps->smirror);
-	map_add_prop(ctx, "p/padstack/rotation", pcb_angle_t, ps->rot);
+	map_add_prop(ctx, "p/padstack/rotation", rnd_angle_t, ps->rot);
 	map_add_prop(ctx, "p/padstack/proto", rnd_coord_t, ps->proto);
 
 	proto = pcb_pstk_get_proto(ps);

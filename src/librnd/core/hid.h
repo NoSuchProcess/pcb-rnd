@@ -277,11 +277,11 @@ struct pcb_hid_s {
 
 	/* Composite layer drawing: manipulate the sketch canvas and set
 	   positive or negative drawing mode. The canvas covers the screen box. */
-	void (*set_drawing_mode)(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *screen);
+	void (*set_drawing_mode)(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen);
 
 	/* Announce start/end of a render burst for a specific screen screen box;
 	   A GUI hid should set the coord_per_pix value here for proper optimization. */
-	void (*render_burst)(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_box_t *screen);
+	void (*render_burst)(pcb_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen);
 
 	/*** gc vs. pcb_hid_t *: pcb_core_gc_t contains ->hid, so these calls don't
 	     need to get it as first arg. ***/
@@ -306,7 +306,7 @@ struct pcb_hid_s {
 	   given width, whereas "fill" means to fill to a zero-width
 	   outline.  */
 	void (*draw_line)(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
-	void (*draw_arc)(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, pcb_angle_t start_angle, pcb_angle_t delta_angle);
+	void (*draw_arc)(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t xradius, rnd_coord_t yradius, rnd_angle_t start_angle, rnd_angle_t delta_angle);
 	void (*draw_rect)(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
 	void (*fill_circle)(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 	void (*fill_polygon)(pcb_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y);
@@ -458,7 +458,7 @@ struct pcb_hid_s {
 	/* At the moment HIDs load the menu file. Some plugin code, like the toolbar
 	   code needs to traverse the menu tree too. This call exposes the
 	   HID-internal menu struct */
-	pcb_hid_cfg_t *(*get_menu_cfg)(pcb_hid_t *hid);
+	rnd_hid_cfg_t *(*get_menu_cfg)(pcb_hid_t *hid);
 
 	/* Update the state of all checkboxed menus whose lihata
 	   node cookie matches cookie (or all checkboxed menus globally if cookie
@@ -466,7 +466,7 @@ struct pcb_hid_s {
 	void (*update_menu_checkbox)(pcb_hid_t *hid, const char *cookie);
 
 	/* Pointer to the hid's configuration - useful for plugins and core wanting to install menus at anchors */
-	pcb_hid_cfg_t *hid_cfg;
+	rnd_hid_cfg_t *hid_cfg;
 
 
 	/* Optional: print usage string (if accepts command line arguments)
@@ -530,7 +530,7 @@ struct pcb_hid_s {
 	void (*pan_mode)(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode);
 
 	/* Load viewbox with the extents of visible pixels translated to board coords */
-	void (*view_get)(pcb_hid_t *hid, rnd_box_t *viewbox);
+	void (*view_get)(pcb_hid_t *hid, rnd_rnd_box_t *viewbox);
 
 	/*** misc GUI ***/
 	/* Open the command line */
@@ -562,7 +562,7 @@ struct pcb_hid_s {
 typedef void (*pcb_hid_expose_cb_t)(pcb_hid_gc_t gc, const pcb_hid_expose_ctx_t *e);
 
 struct pcb_hid_expose_ctx_s {
-	rnd_box_t view;
+	rnd_rnd_box_t view;
 	pcb_hid_expose_cb_t expose_cb;   /* function that is called on expose to get things drawn */
 	void *draw_data;                 /* user data for the expose function */
 };

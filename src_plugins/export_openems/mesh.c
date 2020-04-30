@@ -386,7 +386,7 @@ TODO("mesh: text")
 
 	polylist_foreach(&layer->Polygon, &it, poly) {
 		pcb_poly_it_t it;
-		pcb_polyarea_t *pa;
+		rnd_polyarea_t *pa;
 
 		for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 			rnd_coord_t x, y;

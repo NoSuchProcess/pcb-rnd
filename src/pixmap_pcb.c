@@ -67,7 +67,7 @@ pcb_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, pcb_p
 	return pm;
 }
 
-pcb_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *ipm, pcb_angle_t rot, int xmirror, int ymirror)
+pcb_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, pcb_pixmap_t *ipm, rnd_angle_t rot, int xmirror, int ymirror)
 {
 	pcb_pixmap_t *pm;
 	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;

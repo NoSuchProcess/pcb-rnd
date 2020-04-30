@@ -486,7 +486,7 @@ static void svg_destroy_gc(pcb_hid_gc_t gc)
 	free(gc);
 }
 
-static void svg_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+static void svg_set_drawing_mode(pcb_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	drawing_mode = op;
 
@@ -720,10 +720,10 @@ static void pcb_arc_draw(pcb_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 	}
 }
 
-static void svg_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, pcb_angle_t start_angle, pcb_angle_t delta_angle)
+static void svg_draw_arc(pcb_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_coord_t x1, y1, x2, y2, diff = 0, diff2, maxdiff;
-	pcb_angle_t sa, ea;
+	rnd_angle_t sa, ea;
 
 	svg_drawn_objs++;
 

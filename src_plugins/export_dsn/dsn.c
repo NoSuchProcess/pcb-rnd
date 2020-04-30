@@ -304,7 +304,7 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, rnd_
 		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, gid);
 		char *padstack = pcb_strdup_printf("Term_poly_%ld", poly->ID);
 		pcb_poly_it_t it;
-		pcb_polyarea_t *pa;
+		rnd_polyarea_t *pa;
 
 
 		pcb_fprintf(fp, "      (pin %s \"%s\" %.6mm %.6mm)\n", padstack, poly->term, 0, 0);

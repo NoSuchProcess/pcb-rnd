@@ -40,12 +40,12 @@
 
 void pcb_msgr_init(pcb_meshgraph_t *gr)
 {
-	pcb_rtree_init(&gr->ntree);
+	rnd_rtree_init(&gr->ntree);
 	htip_init(&gr->id2node, longhash, longkeyeq);
 	gr->next_id = 1;
 }
 
-long int pcb_msgr_add_node(pcb_meshgraph_t *gr, rnd_box_t *bbox, int score)
+long int pcb_msgr_add_node(pcb_meshgraph_t *gr, rnd_rnd_box_t *bbox, int score)
 {
 	pcb_meshnode_t *nd = malloc(sizeof(pcb_meshnode_t));
 	nd->bbox = *bbox;
@@ -55,7 +55,7 @@ long int pcb_msgr_add_node(pcb_meshgraph_t *gr, rnd_box_t *bbox, int score)
 	nd->fscore = INF_SCORE;
 	nd->iscore = score;
 
-	pcb_rtree_insert(&gr->ntree, nd, (pcb_rtree_box_t *)nd);
+	rnd_rtree_insert(&gr->ntree, nd, (rnd_rtree_box_t *)nd);
 	htip_set(&gr->id2node, nd->id, nd);
 	gr->next_id++;
 	return nd->id;
@@ -63,7 +63,7 @@ long int pcb_msgr_add_node(pcb_meshgraph_t *gr, rnd_box_t *bbox, int score)
 
 static double msgr_connect(pcb_meshnode_t *curr, pcb_meshnode_t *next)
 {
-	pcb_point_t np, cp;
+	rnd_point_t np, cp;
 	pcb_route_t route;
 	pcb_route_init(&route);
 
@@ -102,9 +102,9 @@ int pcb_msgr_astar(pcb_meshgraph_t *gr, long int startid, long int endid)
 
 	htip_set(&open, startid, curr);
 	for(;;) {
-		pcb_rtree_box_t sb;
-		rnd_box_t *b;
-		pcb_rtree_it_t it;
+		rnd_rtree_box_t sb;
+		rnd_rnd_box_t *b;
+		rnd_rtree_it_t it;
 		double tentative_g, best;
 
 TODO("should use a faster way for picking lowest fscore")
@@ -136,7 +136,7 @@ rnd_trace("first: %ld\n", curr->id);
 		sb.x2 = curr->bbox.X2 + SEARCHR;
 		sb.y1 = curr->bbox.Y1 - SEARCHR;
 		sb.y2 = curr->bbox.Y2 + SEARCHR;
-		for(b = pcb_rtree_first(&it, &gr->ntree, &sb); b != NULL; b = pcb_rtree_next(&it)) {
+		for(b = rnd_rtree_first(&it, &gr->ntree, &sb); b != NULL; b = rnd_rtree_next(&it)) {
 			next = (pcb_meshnode_t *)b;
 			if (htip_get(&closed, next->id) != NULL)
 				continue;

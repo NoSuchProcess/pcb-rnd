@@ -207,7 +207,7 @@ static int parse_coord(rnd_coord_t *res, lht_node_t *nd)
 }
 
 /* Load the Angle value of a text node into res. Return 0 on success */
-static int parse_angle(pcb_angle_t *res, lht_node_t *nd)
+static int parse_angle(rnd_angle_t *res, lht_node_t *nd)
 {
 	double tmp;
 	rnd_bool success;
@@ -744,7 +744,7 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 			poly->PointN += cnt->data.table.rows;
 		}
 		poly->PointMax = poly->PointN;
-		poly->Points = malloc(sizeof(pcb_point_t) * poly->PointMax);
+		poly->Points = malloc(sizeof(rnd_point_t) * poly->PointMax);
 		poly->HoleIndexMax = poly->HoleIndexN = c-1;
 		if (poly->HoleIndexN > 0)
 			poly->HoleIndex = malloc(sizeof(rnd_cardinal_t) * poly->HoleIndexMax);
@@ -1310,7 +1310,7 @@ TODO("subc: TextFlags")
 
 	if (dt->subc_tree == NULL)
 		dt->subc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(dt->subc_tree, (rnd_box_t *)subc);
+	pcb_r_insert_entry(dt->subc_tree, (rnd_rnd_box_t *)subc);
 
 	pcb_subc_rebind(pcb, subc);
 
@@ -1350,7 +1350,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 
 	if (!dt->subc_tree)
 		dt->subc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(dt->subc_tree, (rnd_box_t *)sc);
+	pcb_r_insert_entry(dt->subc_tree, (rnd_rnd_box_t *)sc);
 
 	if (subc_out != NULL)
 		*subc_out = sc;
@@ -2310,8 +2310,8 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	/* Run poly clipping at the end so we have all IDs and we can
 	   announce the clipping (it's slow, we may need a progress bar) */
 	{
-		pcb_rtree_it_t it;
-		rnd_box_t *b;
+		rnd_rtree_it_t it;
+		rnd_rnd_box_t *b;
 		int l;
 		for(l = 0; l < pcb->Data->LayerN; l++) {
 			pcb_layer_t *layer = pcb->Data->Layer + l;

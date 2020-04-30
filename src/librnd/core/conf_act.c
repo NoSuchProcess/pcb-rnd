@@ -336,7 +336,7 @@ static const char pcb_acth_setunits[] = "Set the default measurement units.";
 /* DOC: setunits.html */
 static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const pcb_unit_t *new_unit;
+	const rnd_unit_t *new_unit;
 	const char *name;
 
 	RND_PCB_ACT_CONVARG(1, FGW_STR, setunits, name = argv[1].val.str);

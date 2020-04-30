@@ -506,7 +506,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				txt = NULL;
 				rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
 				if (txt != NULL) {
-					const pcb_unit_t *u = get_unit_struct(txt);
+					const rnd_unit_t *u = get_unit_struct(txt);
 					if (u == NULL) {
 						rnd_message(RND_MSG_ERROR, "Invalid unit %s (get ignored)\n", txt);
 						return FGW_ERR_NOT_FOUND;

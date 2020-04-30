@@ -233,7 +233,7 @@ void rnd_event(rnd_hidlib_t *hidlib, rnd_event_id_t ev, const char *fmt, ...)
 			case 'a':
 				a->type = RND_EVARG_ANGLE;
 				fa->type = FGW_DOUBLE;
-				fa->val.nat_double = a->d.a = va_arg(ap, pcb_angle_t);
+				fa->val.nat_double = a->d.a = va_arg(ap, rnd_angle_t);
 				break;
 			default:
 				a->type = RND_EVARG_INT;

@@ -104,7 +104,7 @@ const char *pcb_thermal_bits2str(pcb_thermal_t *bit)
 
 
 /* generate a round-cap line polygon */
-static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, rnd_coord_t clr, rnd_bool square)
+static rnd_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, rnd_coord_t clr, rnd_bool square)
 {
 	pcb_line_t ltmp;
 
@@ -118,7 +118,7 @@ static pcb_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, rn
 }
 
 /* generate a round-cap arc polygon knowing the center and endpoints */
-static pcb_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, double e1y, double e2x, double e2y, rnd_coord_t clr, double max_span_angle)
+static rnd_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, double e1y, double e2x, double e2y, rnd_coord_t clr, double max_span_angle)
 {
 	double sa, ea, da;
 	pcb_arc_t atmp;
@@ -150,9 +150,9 @@ static pcb_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, dou
 	return pcb_poly_from_pcb_arc(&atmp, clr);
 }
 
-pcb_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, pcb_layer_id_t lid)
 {
-	pcb_polyarea_t *pa, *pb, *pc;
+	rnd_polyarea_t *pa, *pb, *pc;
 	double dx, dy, len, vx, vy, nx, ny, clr, clrth, x1, y1, x2, y2, mx, my;
 	rnd_coord_t th;
 
@@ -397,9 +397,9 @@ TODO("thermal TODO")
 }
 
 /* combine a base poly-area into the result area (pres) */
-static void polytherm_base(pcb_polyarea_t **pres, const pcb_polyarea_t *src)
+static void polytherm_base(rnd_polyarea_t **pres, const rnd_polyarea_t *src)
 {
-	pcb_polyarea_t *p;
+	rnd_polyarea_t *p;
 
 	if (*pres != NULL) {
 		pcb_polyarea_boolean(src, *pres, &p, PCB_PBO_UNITE);
@@ -440,9 +440,9 @@ static int cong_map(char *cong, pcb_poly_it_t *it, rnd_coord_t clr)
 
 /* combine a round clearance line set into pres; "it" is an iterator
    already initialized to a polyarea contour */
-static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, rnd_bool is_diag)
+static void polytherm_round(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, rnd_bool is_diag)
 {
-	pcb_polyarea_t *ptmp, *p;
+	rnd_polyarea_t *ptmp, *p;
 	double fact = 0.5, fact_ortho=0.75;
 	rnd_coord_t cx, cy;
 	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len;
@@ -530,9 +530,9 @@ static void polytherm_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_
 	}
 }
 
-static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, rnd_bool is_diag)
+static void polytherm_sharp(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, rnd_bool is_diag)
 {
-	pcb_polyarea_t *ptmp, *p;
+	rnd_polyarea_t *ptmp, *p;
 	rnd_coord_t cx, cy, x2c, y2c;
 	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len, x2, y2, vx2, vy2, len2, dx2, dy2;
 	int n, go, first = 1;
@@ -620,7 +620,7 @@ static void polytherm_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_
 }
 
 /* generate round thermal around a polyarea specified by the iterator */
-static void pcb_thermal_area_pa_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, pcb_bool_t is_diag)
+static void pcb_thermal_area_pa_round(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, pcb_bool_t is_diag)
 {
 	pcb_pline_t *pl;
 
@@ -634,7 +634,7 @@ static void pcb_thermal_area_pa_round(pcb_polyarea_t **pres, pcb_poly_it_t *it, 
 }
 
 /* generate sharp thermal around a polyarea specified by the iterator */
-static void pcb_thermal_area_pa_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, pcb_bool_t is_diag)
+static void pcb_thermal_area_pa_sharp(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, pcb_bool_t is_diag)
 {
 	pcb_pline_t *pl;
 
@@ -649,9 +649,9 @@ static void pcb_thermal_area_pa_sharp(pcb_polyarea_t **pres, pcb_poly_it_t *it, 
 	polytherm_base(pres, it->pa);
 }
 
-pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_layer_id_t lid)
 {
-	pcb_polyarea_t *pa, *pres = NULL;
+	rnd_polyarea_t *pa, *pres = NULL;
 	rnd_coord_t clr = poly->Clearance/2;
 	pcb_poly_it_t it;
 
@@ -675,10 +675,10 @@ pcb_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, pcb_la
 }
 
 /* Generate a clearance around a padstack shape, with no thermal */
-static pcb_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_id_t lid, pcb_pstk_shape_t *shp, rnd_coord_t clearance)
+static rnd_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_id_t lid, pcb_pstk_shape_t *shp, rnd_coord_t clearance)
 {
 	pcb_poly_it_t it;
-	pcb_polyarea_t *pres = NULL;
+	rnd_polyarea_t *pres = NULL;
 	pcb_pstk_shape_t tmpshp;
 
 	retry:;
@@ -705,11 +705,11 @@ static pcb_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pst
 	return NULL;
 }
 
-pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_id_t lid)
 {
 	unsigned char thr;
 	pcb_pstk_shape_t *shp, tmpshp;
-	pcb_polyarea_t *pres = NULL;
+	rnd_polyarea_t *pres = NULL;
 	pcb_layer_t *layer;
 	rnd_coord_t clearance = ps->Clearance;
 
@@ -831,7 +831,7 @@ pcb_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_laye
 	return NULL;
 }
 
-pcb_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, pcb_layer_id_t lid)
 {
 	switch(obj->type) {
 

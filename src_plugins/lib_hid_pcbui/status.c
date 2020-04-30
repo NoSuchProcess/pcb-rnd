@@ -52,7 +52,7 @@ typedef struct {
 	int wrdunit, wrd1[3], wrd2[2];
 	gds_t buf; /* save on allocation */
 	int lock;
-	const pcb_unit_t *last_unit;
+	const rnd_unit_t *last_unit;
 } status_ctx_t;
 
 static status_ctx_t status;
@@ -104,8 +104,8 @@ static void build_st_line2(void)
 
 static void build_st_help(void)
 {
-	static const pcb_unit_t *unit_mm = NULL, *unit_mil;
-	const pcb_unit_t *unit_inv;
+	static const rnd_unit_t *unit_mm = NULL, *unit_mil;
+	const rnd_unit_t *unit_inv;
 
 	if (unit_mm == NULL) { /* cache mm and mil units to save on the lookups */
 		unit_mm  = get_unit_struct("mm");

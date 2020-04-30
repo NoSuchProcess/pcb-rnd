@@ -41,10 +41,10 @@ struct pcb_poly_s  {           /* holds information about a polygon */
 	rnd_coord_t Clearance;
 	rnd_cardinal_t PointN;       /* number of points in polygon */
 	rnd_cardinal_t PointMax;     /* max number from malloc() */
-	pcb_polyarea_t *Clipped;     /* the clipped region of this polygon */
+	rnd_polyarea_t *Clipped;     /* the clipped region of this polygon */
 	pcb_pline_t *NoHoles;        /* the polygon broken into hole-less regions */
 	int NoHolesValid;            /* Is the NoHoles polygon up to date? */
-	pcb_point_t *Points;         /* data */
+	rnd_point_t *Points;         /* data */
 	rnd_cardinal_t *HoleIndex;   /* Index of hole data within the Points array */
 	rnd_cardinal_t HoleIndexN;   /* number of holes in polygon */
 	rnd_cardinal_t HoleIndexMax; /* max number from malloc() */
@@ -57,7 +57,7 @@ struct pcb_poly_s  {           /* holds information about a polygon */
 pcb_poly_t *pcb_poly_alloc(pcb_layer_t * layer);
 pcb_poly_t *pcb_poly_alloc_id(pcb_layer_t *layer, long int id);
 void pcb_poly_free(pcb_poly_t * data);
-pcb_point_t *pcb_poly_point_alloc(pcb_poly_t *Polygon);
+rnd_point_t *pcb_poly_point_alloc(pcb_poly_t *Polygon);
 rnd_cardinal_t *pcb_poly_holeidx_new(pcb_poly_t *Polygon);
 void pcb_poly_free_fields(pcb_poly_t * polygon);
 
@@ -70,7 +70,7 @@ pcb_poly_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_poly_t *src, rnd_coor
 pcb_poly_t *pcb_poly_new(pcb_layer_t *Layer, rnd_coord_t Clearance, pcb_flag_t Flags);
 pcb_poly_t *pcb_poly_dup(pcb_layer_t *dst, pcb_poly_t *src);
 pcb_poly_t *pcb_poly_dup_at(pcb_layer_t *dst, pcb_poly_t *src, rnd_coord_t dx, rnd_coord_t dy);
-pcb_point_t *pcb_poly_point_new(pcb_poly_t *Polygon, rnd_coord_t X, rnd_coord_t Y);
+rnd_point_t *pcb_poly_point_new(pcb_poly_t *Polygon, rnd_coord_t X, rnd_coord_t Y);
 pcb_poly_t *pcb_poly_hole_new(pcb_poly_t * Polygon);
 void *pcb_poly_remove(pcb_layer_t *Layer, pcb_poly_t *Polygon);
 
@@ -123,7 +123,7 @@ void pcb_poly_map_contours(pcb_poly_t *p, void *ctx, pcb_poly_map_cb_t *cb);
 
 typedef struct pcb_poly_it_s {
 	const pcb_poly_t *p;
-	pcb_polyarea_t *pa;
+	rnd_polyarea_t *pa;
 	pcb_pline_t *cntr;
 	pcb_vnode_t *v;
 } pcb_poly_it_t;
@@ -132,7 +132,7 @@ typedef struct pcb_poly_it_s {
    invisible islands are returned */
 
 /* Set the iterator to the first island of the polygon; returns NULL if no contour available */
-RND_INLINE pcb_polyarea_t *pcb_poly_island_first(const pcb_poly_t *p, pcb_poly_it_t *it)
+RND_INLINE rnd_polyarea_t *pcb_poly_island_first(const pcb_poly_t *p, pcb_poly_it_t *it)
 {
 	it->p = p;
 	it->pa = p->Clipped;
@@ -142,7 +142,7 @@ RND_INLINE pcb_polyarea_t *pcb_poly_island_first(const pcb_poly_t *p, pcb_poly_i
 }
 
 /* Set the iterator to the next island of the polygon; returns NULL if no more */
-RND_INLINE pcb_polyarea_t *pcb_poly_island_next(pcb_poly_it_t *it)
+RND_INLINE rnd_polyarea_t *pcb_poly_island_next(pcb_poly_it_t *it)
 {
 	if (it->pa->f == it->p->Clipped)
 		return NULL;
@@ -213,7 +213,7 @@ RND_INLINE void pcb_poly_vect_peek_next(pcb_poly_it_t *it, rnd_coord_t *x, rnd_c
 }
 
 /* Set the iterator to a polyarea*/
-RND_INLINE pcb_polyarea_t *pcb_poly_iterate_polyarea(pcb_polyarea_t *pa, pcb_poly_it_t *it)
+RND_INLINE rnd_polyarea_t *pcb_poly_iterate_polyarea(rnd_polyarea_t *pa, pcb_poly_it_t *it)
 {
 	it->p = NULL;
 	it->pa = pa;
@@ -224,7 +224,7 @@ RND_INLINE pcb_polyarea_t *pcb_poly_iterate_polyarea(pcb_polyarea_t *pa, pcb_pol
 
 /* construct the full poly clearance cutout for the pa in the iterator and add
    it to dst - implemented in polygon.c */
-void pcb_poly_pa_clearance_construct(pcb_polyarea_t **dst, pcb_poly_it_t *it, rnd_coord_t clearance);
+void pcb_poly_pa_clearance_construct(rnd_polyarea_t **dst, pcb_poly_it_t *it, rnd_coord_t clearance);
 
 
 #define pcb_poly_ppclear_at(poly, layer) \
@@ -269,7 +269,7 @@ do { \
 
 #define	PCB_POLY_POINT_LOOP(polygon) do	{	\
 	rnd_cardinal_t			n;		\
-	pcb_point_t *point;				\
+	rnd_point_t *point;				\
 	for (n = (polygon)->PointN-1; n != -1; n--)	\
 	{						\
 		point = &(polygon)->Points[n]

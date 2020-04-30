@@ -129,10 +129,10 @@ const char *pcb_hid_cfg_text_value(lht_doc_t *doc, const char *path)
 	return n->data.text.value;
 }
 
-pcb_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback)
+rnd_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_fn, const char *embedded_fallback)
 {
 	lht_doc_t *doc;
-	pcb_hid_cfg_t *hr;
+	rnd_hid_cfg_t *hr;
 
 	if (embedded_fallback == NULL)
 		embedded_fallback = pcb_hidlib_default_embedded_menu;
@@ -172,7 +172,7 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_
 	if (doc == NULL)
 		return NULL;
 
-	hr = calloc(sizeof(pcb_hid_cfg_t), 1); /* make sure the cache is cleared */
+	hr = calloc(sizeof(rnd_hid_cfg_t), 1); /* make sure the cache is cleared */
 	hr->doc = doc;
 
 	return hr;
@@ -180,7 +180,7 @@ pcb_hid_cfg_t *pcb_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_
 
 /************* "parsing" **************/
 
-lht_node_t *pcb_hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
+lht_node_t *pcb_hid_cfg_get_menu_at(rnd_hid_cfg_t *hr, lht_node_t *at, const char *menu_path, lht_node_t *(*cb)(void *ctx, lht_node_t *node, const char *path, int rel_level), void *ctx)
 {
 	lht_err_t err;
 	lht_node_t *curr;
@@ -254,7 +254,7 @@ lht_node_t *pcb_hid_cfg_get_menu_at(pcb_hid_cfg_t *hr, lht_node_t *at, const cha
 	return curr;
 }
 
-lht_node_t *pcb_hid_cfg_get_menu(pcb_hid_cfg_t *hr, const char *menu_path)
+lht_node_t *pcb_hid_cfg_get_menu(rnd_hid_cfg_t *hr, const char *menu_path)
 {
 	return pcb_hid_cfg_get_menu_at(hr, NULL, menu_path, NULL, NULL);
 }
@@ -398,7 +398,7 @@ static void map_anchor_menus(vtp0_t *dst, lht_node_t *node, const char *name)
 	}
 }
 
-void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx)
+void pcb_hid_cfg_map_anchor_menus(const char *name, void (*cb)(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *n, char *path), void *ctx)
 {
 	vtp0_t anchors;
 

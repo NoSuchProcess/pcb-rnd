@@ -290,7 +290,7 @@ static void autotrax_cpoly_hatch_lines(wctx_t *ctx, const pcb_poly_t *src, pcb_c
 }
 
 /* generates an autotrax arc "segments" value to approximate an arc being exported   */
-static int pcb_rnd_arc_to_autotrax_segments(pcb_angle_t arc_start, pcb_angle_t arc_delta)
+static int pcb_rnd_arc_to_autotrax_segments(rnd_angle_t arc_start, rnd_angle_t arc_delta)
 {
 	int arc_segments = 0; /* start with no arc segments */
 	/* 15 = circle, bit 1 = LUQ, bit 2 = LLQ, bit 3 = LRQ, bit 4 = URQ */
@@ -497,7 +497,7 @@ static const char *or_empty(const char *s)
 static int wrax_subc(wctx_t *ctx, pcb_subc_t *subc)
 {
 	int res, on_bottom = 0, silk_layer;
-	rnd_box_t *box = &subc->BoundingBox;
+	rnd_rnd_box_t *box = &subc->BoundingBox;
 	rnd_coord_t xPos, yPos, yPos2, yPos3;
 
 TODO("do not hardcode things like this, especially when actual data is available")
@@ -552,7 +552,7 @@ static int wrax_polygons(wctx_t *ctx, rnd_cardinal_t number, pcb_layer_t *layer,
 	rnd_cardinal_t current_layer = number;
 
 	pcb_poly_it_t poly_it;
-	pcb_polyarea_t *pa;
+	rnd_polyarea_t *pa;
 
 	rnd_coord_t minx, miny, maxx, maxy;
 

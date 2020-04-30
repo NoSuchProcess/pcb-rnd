@@ -137,7 +137,7 @@ void pcb_xordraw_attached_arc(rnd_coord_t thick)
 {
 	pcb_arc_t arc;
 	rnd_coord_t wx, wy;
-	pcb_angle_t sa, dir;
+	rnd_angle_t sa, dir;
 
 	wx = pcb_crosshair.X - pcb_crosshair.AttachedBox.Point1.X;
 	wy = pcb_crosshair.Y - pcb_crosshair.AttachedBox.Point1.Y;
@@ -240,7 +240,7 @@ void pcb_xordraw_buffer(pcb_buffer_t *Buffer)
 void pcb_xordraw_insert_pt_obj(void)
 {
 	pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
-	pcb_point_t *point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
+	rnd_point_t *point = (rnd_point_t *) pcb_crosshair.AttachedObject.Ptr3;
 
 	if (pcb_crosshair.AttachedObject.Type != PCB_OBJ_VOID) {
 		pcb_render->draw_line(pcb_crosshair.GC, point->X, point->Y, line->Point1.X, line->Point1.Y);
@@ -357,10 +357,10 @@ void pcb_xordraw_movecopy(void)
 	case PCB_OBJ_LINE_POINT:
 		{
 			pcb_line_t *line;
-			pcb_point_t *point,*point1,point2;
+			rnd_point_t *point,*point1,point2;
 
 			line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
-			point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
+			point = (rnd_point_t *) pcb_crosshair.AttachedObject.Ptr3;
 			point1 = (point == &line->Point1 ? &line->Point2 : &line->Point1);
 			point2 = *point;
 			point2.X += dx;
@@ -445,11 +445,11 @@ void pcb_xordraw_movecopy(void)
 	case PCB_OBJ_POLY_POINT:
 		{
 			pcb_poly_t *polygon;
-			pcb_point_t *point;
+			rnd_point_t *point;
 			rnd_cardinal_t point_idx, prev, next;
 
 			polygon = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
-			point = (pcb_point_t *) pcb_crosshair.AttachedObject.Ptr3;
+			point = (rnd_point_t *) pcb_crosshair.AttachedObject.Ptr3;
 			point_idx = pcb_poly_point_idx(polygon, point);
 
 			/* get previous and following point */
@@ -572,7 +572,7 @@ struct onpoint_search_info {
 	rnd_coord_t Y;
 };
 
-static pcb_r_dir_t onpoint_line_callback(const rnd_box_t * box, void *cl)
+static pcb_r_dir_t onpoint_line_callback(const rnd_rnd_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
@@ -598,7 +598,7 @@ static pcb_r_dir_t onpoint_line_callback(const rnd_box_t * box, void *cl)
 
 #define close_enough(v1, v2) (coord_abs((v1)-(v2)) < 10)
 
-static pcb_r_dir_t onpoint_arc_callback(const rnd_box_t * box, void *cl)
+static pcb_r_dir_t onpoint_arc_callback(const rnd_rnd_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
@@ -671,7 +671,7 @@ static void *onpoint_find(vtop_t *vect, void *obj_ptr)
  */
 static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t Y)
 {
-	rnd_box_t SearchBox = rnd_point_box(X, Y);
+	rnd_rnd_box_t SearchBox = rnd_point_box(X, Y);
 	struct onpoint_search_info info;
 	int i;
 	rnd_bool redraw = pcb_false;
@@ -935,7 +935,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 		check_snap_object(&snap_data, ex, ey, pcb_true, (pcb_any_obj_t *)ptr2);
 	}
 	else if (ans != PCB_OBJ_VOID) {
-		pcb_point_t *pnt = (pcb_point_t *) ptr3;
+		rnd_point_t *pnt = (rnd_point_t *) ptr3;
 		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true, (pcb_any_obj_t *)ptr2);
 	}
 
@@ -973,7 +973,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_POLY_POINT, &ptr1, &ptr2, &ptr3);
 
 	if (ans != PCB_OBJ_VOID) {
-		pcb_point_t *pnt = (pcb_point_t *) ptr3;
+		rnd_point_t *pnt = (rnd_point_t *) ptr3;
 		check_snap_object(&snap_data, pnt->X, pnt->Y, pcb_true, NULL);
 	}
 

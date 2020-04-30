@@ -83,7 +83,7 @@ typedef enum pcb_family_e {
 
 enum pcb_suffix_e { PCB_UNIT_NO_SUFFIX, PCB_UNIT_SUFFIX, PCB_UNIT_FILE_MODE };
 
-struct pcb_unit_s {
+struct rnd_unit_s {
 	const char *suffix;
 	char printf_code;        /* 0 means the unit is an alias and should not be used in printf */
 	double scale_factor;
@@ -95,15 +95,15 @@ struct pcb_unit_s {
 	int index; /* Index into Unit[] list */
 };
 
-extern pcb_unit_t pcb_units[];
+extern rnd_unit_t pcb_units[];
 
 /* Look up a given suffix in the units array. Pluralized units are supported.
    The _ version allows strict (full name match) lookup if strict iz non-zero. */
-const pcb_unit_t *get_unit_struct(const char *suffix);
-const pcb_unit_t *get_unit_struct_(const char *suffix, int strict);
+const rnd_unit_t *get_unit_struct(const char *suffix);
+const rnd_unit_t *get_unit_struct_(const char *suffix, int strict);
 
 /* Return the furst unit that matches allow */
-const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow);
+const rnd_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow);
 
 /* Return the list of units and number of units (use only when listing units);
    Normally returns basic units only (aliases_too==0); if aliases_too is
@@ -111,22 +111,22 @@ const pcb_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow);
 int pcb_get_n_units(int aliases_too);
 
 /* Return the idxth unit or NULL (bounds check) */
-const pcb_unit_t *get_unit_by_idx(int idx);
+const rnd_unit_t *get_unit_by_idx(int idx);
 
 /* Return the unit with (case sensitive) matching suffix */
-const pcb_unit_t *get_unit_by_suffix(const char *suffix);
+const rnd_unit_t *get_unit_by_suffix(const char *suffix);
 
 /* Convert x to the given unit */
-double pcb_coord_to_unit(const pcb_unit_t *unit, rnd_coord_t x);
+double pcb_coord_to_unit(const rnd_unit_t *unit, rnd_coord_t x);
 
 /* Return how many PCB-internal-Coord-unit a unit translates to */
-double pcb_unit_to_factor(const pcb_unit_t *unit);
+double pcb_unit_to_factor(const rnd_unit_t *unit);
 
 /* Convert a given unit to pcb coords; clamp at the end of the ranges */
-rnd_coord_t pcb_unit_to_coord(const pcb_unit_t *unit, double x);
+rnd_coord_t pcb_unit_to_coord(const rnd_unit_t *unit, double x);
 
 /* Bring an angle into [0, 360) range */
-pcb_angle_t pcb_normalize_angle(pcb_angle_t a);
+rnd_angle_t pcb_normalize_angle(rnd_angle_t a);
 
 
 /* Initialize non-static unit data: assigns each unit its index for
