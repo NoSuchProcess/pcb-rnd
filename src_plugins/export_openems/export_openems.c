@@ -819,7 +819,7 @@ static void openems_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, 
 static int openems_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nopenems exporter command line arguments:\n\n");
-	pcb_hid_usage(openems_attribute_list, sizeof(openems_attribute_list) / sizeof(openems_attribute_list[0]));
+	rnd_hid_usage(openems_attribute_list, sizeof(openems_attribute_list) / sizeof(openems_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x openems [openems options] foo.pcb\n\n");
 	return 0;
 }

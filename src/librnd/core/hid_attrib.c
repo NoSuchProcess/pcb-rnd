@@ -247,24 +247,24 @@ int pcb_hid_parse_command_line(int *argc, char ***argv)
 	return 0;
 }
 
-void pcb_hid_usage_option(const char *name, const char *help)
+void rnd_hid_usage_option(const char *name, const char *help)
 {
 	fprintf(stderr, "--%-20s %s\n", name, help);
 }
 
-void pcb_hid_usage(rnd_export_opt_t *a, int numa)
+void rnd_hid_usage(rnd_export_opt_t *a, int numa)
 {
 	for (; numa > 0; numa--,a++) {
 		const char *help;
 		if (a->help_text == NULL) help = "";
 		else help = a->help_text;
 		if (RND_HATT_IS_COMPOSITE(a->type)) {
-			pcb_hid_export_opt_func_t fnc = a->default_val.func;
+			rnd_hid_export_opt_func_t fnc = a->default_val.func;
 			if (fnc != NULL)
-				fnc(PCB_HIDEOF_USAGE, stderr, a);
+				fnc(RND_HIDEOF_USAGE, stderr, a);
 		}
 		else
-			pcb_hid_usage_option(a->name, help);
+			rnd_hid_usage_option(a->name, help);
 	}
 }
 

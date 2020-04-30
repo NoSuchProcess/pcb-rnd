@@ -350,7 +350,7 @@ rnd_hid_cfg_t *ghid_get_menu_cfg(rnd_hid_t *hid)
 static int ghid_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nGTK GUI command line arguments:\n\n");
-	rnd_conf_usage("plugins/hid_gtk", pcb_hid_usage_option);
+	rnd_conf_usage("plugins/hid_gtk", rnd_hid_usage_option);
 	fprintf(stderr, "\nInvocation:\n");
 	fprintf(stderr, "  pcb-rnd --gui gtk2_gdk [options]\n");
 	fprintf(stderr, "  pcb-rnd --gui gtk2_gl [options]\n");

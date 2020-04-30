@@ -229,7 +229,7 @@ static void tedax_etest_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int tedax_etest_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ntEDAx etest exporter command line arguments:\n\n");
-	pcb_hid_usage(tedax_etest_options, sizeof(tedax_etest_options) / sizeof(tedax_etest_options[0]));
+	rnd_hid_usage(tedax_etest_options, sizeof(tedax_etest_options) / sizeof(tedax_etest_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x tedax-etest [tedax_etest_options] foo.pcb\n\n");
 	return 0;
 }

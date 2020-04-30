@@ -220,9 +220,9 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 									break;
 								default:
 									if (RND_HATT_IS_COMPOSITE(opts[i].type)) {
-										pcb_hid_export_opt_func_t fnc = opts[i].default_val.func;
+										rnd_hid_export_opt_func_t fnc = opts[i].default_val.func;
 										if (fnc != NULL)
-											fnc(PCB_HIDEOF_DAD, &export_ctx, &opts[i]);
+											fnc(RND_HIDEOF_DAD, &export_ctx, &opts[i]);
 									}
 									else
 										PCB_DAD_DUP_EXPOPT(export_ctx.dlg, &(opts[i]));

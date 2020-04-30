@@ -47,7 +47,7 @@ static comflag_name_t compflag_names[] = {
 	{0, NULL}
 };
 
-const char *pcb_hid_compflag_bit2name(rnd_hatt_compflags_t bit)
+const char *rnd_hid_compflag_bit2name(rnd_hatt_compflags_t bit)
 {
 	comflag_name_t *n;
 	for(n = compflag_names; n->flag != 0; n++)
@@ -56,7 +56,7 @@ const char *pcb_hid_compflag_bit2name(rnd_hatt_compflags_t bit)
 	return NULL;
 }
 
-rnd_hatt_compflags_t pcb_hid_compflag_name2bit(const char *name)
+rnd_hatt_compflags_t rnd_hid_compflag_name2bit(const char *name)
 {
 	comflag_name_t *n;
 	for(n = compflag_names; n->flag != 0; n++)
@@ -91,7 +91,7 @@ int pcb_hid_dad_run(void *hid_ctx, pcb_dad_retovr_t *retovr)
 	return ret;
 }
 
-int pcb_hid_attrdlg_num_children(rnd_hid_attribute_t *attrs, int start_from, int n_attrs)
+int rnd_hid_attrdlg_num_children(rnd_hid_attribute_t *attrs, int start_from, int n_attrs)
 {
 	int n, level = 1, cnt = 0;
 
@@ -117,7 +117,7 @@ int pcb_hid_attrdlg_num_children(rnd_hid_attribute_t *attrs, int start_from, int
 	return cnt;
 }
 
-int pcb_attribute_dialog_(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, void **retovr, int defx, int defy, int minx, int miny, void **hid_ctx_out)
+int rnd_attribute_dialog_(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, void **retovr, int defx, int defy, int minx, int miny, void **hid_ctx_out)
 {
 	int rv;
 	void *hid_ctx;
@@ -135,9 +135,9 @@ int pcb_attribute_dialog_(const char *id, rnd_hid_attribute_t *attrs, int n_attr
 	return rv ? 0 : 1;
 }
 
-int pcb_attribute_dialog(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data)
+int rnd_attribute_dialog(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data)
 {
-	return pcb_attribute_dialog_(id, attrs, n_attrs, title, caller_data, NULL, 0, 0, 0, 0, NULL);
+	return rnd_attribute_dialog_(id, attrs, n_attrs, title, caller_data, NULL, 0, 0, 0, 0, NULL);
 }
 
 int rnd_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)

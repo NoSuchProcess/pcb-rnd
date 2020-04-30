@@ -669,3 +669,15 @@
 #define pcb_hid_attr_node_s rnd_hid_attr_node_s
 #define pcb_hid_attr_node_t rnd_hid_attr_node_t
 #define hid_attr_nodes rnd_hid_attr_nodes
+#define pcb_hid_usage rnd_hid_usage
+#define pcb_hid_usage_option rnd_hid_usage_option
+#define pcb_hid_attrdlg_num_children rnd_hid_attrdlg_num_children
+#define pcb_attribute_dialog_ rnd_attribute_dialog_
+#define pcb_attribute_dialog rnd_attribute_dialog
+#define pcb_hid_compflag_bit2name rnd_hid_compflag_bit2name
+#define pcb_hid_compflag_name2bit rnd_hid_compflag_name2bit
+#define pcb_hid_export_opt_func_action_e rnd_hid_export_opt_func_action_e
+#define pcb_hid_export_opt_func_action_t rnd_hid_export_opt_func_action_t
+#define PCB_HIDEOF_USAGE RND_HIDEOF_USAGE
+#define PCB_HIDEOF_DAD RND_HIDEOF_DAD
+#define pcb_hid_export_opt_func_t rnd_hid_export_opt_func_t

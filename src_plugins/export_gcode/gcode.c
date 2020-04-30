@@ -387,7 +387,7 @@ static int gcode_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 static int gcode_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ngcode exporter command line arguments:\n\n");
-	pcb_hid_usage(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]));
+	rnd_hid_usage(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x gcode [gcode options] foo.pcb\n\n");
 	return 0;
 }

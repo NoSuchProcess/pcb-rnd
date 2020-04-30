@@ -380,7 +380,7 @@ static int stat_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 static int stat_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nstat exporter command line arguments:\n\n");
-	pcb_hid_usage(stat_attribute_list, sizeof(stat_attribute_list) / sizeof(stat_attribute_list[0]));
+	rnd_hid_usage(stat_attribute_list, sizeof(stat_attribute_list) / sizeof(stat_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x stat [stat options] foo.pcb\n\n");
 	return 0;
 }

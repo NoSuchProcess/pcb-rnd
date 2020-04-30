@@ -92,7 +92,7 @@ static int loghid_parse_arguments_exp(rnd_hid_t *hid, int *argc, char ***argv)
 static int loghid_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nloghid command line arguments:\n\n");
-	pcb_hid_usage(loghid_attribute_list, NUM_OPTIONS);
+	rnd_hid_usage(loghid_attribute_list, NUM_OPTIONS);
 	fprintf(stderr, "\n");
 	fprintf(stderr, "Usage: pcb-rnd [generic_options] --gui loghid-gui --target-hid gtk2_gdk foo.pcb\n");
 	fprintf(stderr, "Usage: pcb-rnd [generic_options] --x loghid-exp --target-hid png foo.pcb\n");

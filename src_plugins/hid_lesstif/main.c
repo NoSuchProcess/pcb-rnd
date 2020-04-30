@@ -2764,7 +2764,7 @@ static void lesstif_beep(rnd_hid_t *hid)
 static int lesstif_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nLesstif GUI command line arguments:\n\n");
-	pcb_hid_usage(lesstif_attribute_list, sizeof(lesstif_attribute_list) / sizeof(lesstif_attribute_list[0]));
+	rnd_hid_usage(lesstif_attribute_list, sizeof(lesstif_attribute_list) / sizeof(lesstif_attribute_list[0]));
 	fprintf(stderr, "\nInvocation: pcb-rnd --gui lesstif [options]\n");
 	return 0;
 }

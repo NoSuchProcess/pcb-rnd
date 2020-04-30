@@ -335,7 +335,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 		case RND_HATT_BEGIN_TABLE:
 			/* create content table */
 			numcol = ctx->attrs[i].rnd_hatt_table_cols;
-			len = pcb_hid_attrdlg_num_children(ctx->attrs, i+1, ctx->n_attrs);
+			len = rnd_hid_attrdlg_num_children(ctx->attrs, i+1, ctx->n_attrs);
 			numch = len  / numcol + !!(len % numcol);
 			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 't', numch, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
 
@@ -668,7 +668,7 @@ void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *
 
 	if (!RND_HATT_IS_COMPOSITE(attrs[0].type)) {
 		stdarg_n = 0;
-		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', pcb_hid_attrdlg_num_children(ctx->attrs, 0, ctx->n_attrs), 0, 0);
+		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', rnd_hid_attrdlg_num_children(ctx->attrs, 0, ctx->n_attrs), 0, 0);
 		XtManageChild(main_tbl);
 		attribute_dialog_add(ctx, main_tbl, 0);
 	}

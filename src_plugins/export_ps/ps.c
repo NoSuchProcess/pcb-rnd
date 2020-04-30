@@ -1368,7 +1368,7 @@ void ps_calibrate_1(rnd_hid_t *hid, double xval, double yval, int use_command)
 		ps_calib_attribute_list[0].val.str = rnd_strdup("lpr");
 	}
 
-	if (pcb_attribute_dialog("ps_calibrate", ps_calib_attribute_list, 1, "Print Calibration Page", NULL))
+	if (rnd_attribute_dialog("ps_calibrate", ps_calib_attribute_list, 1, "Print Calibration Page", NULL))
 		return;
 
 	if (ps_calib_attribute_list[0].val.str == NULL)
@@ -1462,7 +1462,7 @@ void ps_ps_init(rnd_hid_t * hid)
 static int ps_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nps exporter command line arguments:\n\n");
-	pcb_hid_usage(ps_attribute_list, sizeof(ps_attribute_list) / sizeof(ps_attribute_list[0]));
+	rnd_hid_usage(ps_attribute_list, sizeof(ps_attribute_list) / sizeof(ps_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x ps [ps options] foo.pcb\n\n");
 	return 0;
 }

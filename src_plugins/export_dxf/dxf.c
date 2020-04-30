@@ -519,7 +519,7 @@ static void dxf_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int 
 static int dxf_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ndxf exporter command line arguments:\n\n");
-	pcb_hid_usage(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]));
+	rnd_hid_usage(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x dxf [dxf options] foo.pcb\n\n");
 	return 0;
 }

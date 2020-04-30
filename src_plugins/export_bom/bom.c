@@ -246,7 +246,7 @@ static void bom_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int bom_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nbom exporter command line arguments:\n\n");
-	pcb_hid_usage(bom_options, sizeof(bom_options) / sizeof(bom_options[0]));
+	rnd_hid_usage(bom_options, sizeof(bom_options) / sizeof(bom_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x bom [bom_options] foo.pcb\n\n");
 	return 0;
 }

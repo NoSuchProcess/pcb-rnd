@@ -643,7 +643,7 @@ static void eps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int 
 static int eps_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\neps exporter command line arguments:\n\n");
-	pcb_hid_usage(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]));
+	rnd_hid_usage(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x eps [eps options] foo.pcb\n\n");
 	return 0;
 }

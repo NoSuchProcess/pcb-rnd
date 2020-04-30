@@ -466,7 +466,7 @@ static void excellon_calibrate(rnd_hid_t *hid, double xval, double yval)
 static int excellon_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexcellon exporter command line arguments:\n\n");
-	pcb_hid_usage(excellon_options, sizeof(excellon_options) / sizeof(excellon_options[0]));
+	rnd_hid_usage(excellon_options, sizeof(excellon_options) / sizeof(excellon_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x excellon [excellon options] foo.pcb\n\n");
 	return 0;
 }

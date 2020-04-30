@@ -110,7 +110,7 @@ static rnd_hid_t lpr_hid;
 static int lpr_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nlpr exporter command line arguments:\n\n");
-	pcb_hid_usage(base_lpr_options, sizeof(base_lpr_options) / sizeof(base_lpr_options[0]));
+	rnd_hid_usage(base_lpr_options, sizeof(base_lpr_options) / sizeof(base_lpr_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x lpr [lpr options] foo.pcb\n\n");
 	return 0;
 }

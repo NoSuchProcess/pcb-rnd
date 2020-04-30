@@ -80,7 +80,7 @@ TODO(": set some FILE *fp to stdout")
 static int export_test_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexport_test exporter command line arguments:\n\n");
-	pcb_hid_usage(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]));
+	rnd_hid_usage(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x export_test [export_test_options] foo.pcb\n\n");
 	return 0;
 }

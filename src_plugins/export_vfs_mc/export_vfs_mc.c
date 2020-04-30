@@ -127,7 +127,7 @@ static void export_vfs_mc_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int export_vfs_mc_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexport_vfs_mc exporter command line arguments:\n\n");
-	pcb_hid_usage(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]));
+	rnd_hid_usage(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x export_vfs_mc [export_vfs_mc_options] foo.pcb\n\n");
 	return 0;
 }

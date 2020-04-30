@@ -195,7 +195,7 @@ static const char *coord_format_names[NUM_COORD_FORMATS+1] = {
 	NULL
 };
 
-static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt);
+static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt);
 
 static rnd_export_opt_t gerber_options[] = {
 	{"", "WARNING",
@@ -1002,7 +1002,7 @@ static void gerber_calibrate(rnd_hid_t *hid, double xval, double yval)
 static int gerber_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ngerber exporter command line arguments:\n\n");
-	pcb_hid_usage(gerber_options, sizeof(gerber_options) / sizeof(gerber_options[0]));
+	rnd_hid_usage(gerber_options, sizeof(gerber_options) / sizeof(gerber_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x gerber [gerber options] foo.pcb\n\n");
 	return 0;
 }
@@ -1015,7 +1015,7 @@ static void gerber_go_to_cam_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 }
 
 
-static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt)
+static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt)
 {
 	const char warn_txt[] =
 		"WARNING: direct gerber export is most probably NOT what\n"
@@ -1026,14 +1026,14 @@ static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx,
 	pcb_hid_export_opt_func_dad_t *dad = call_ctx;
 
 	switch(act) {
-		case PCB_HIDEOF_USAGE:
+		case RND_HIDEOF_USAGE:
 			fprintf((FILE *)call_ctx, "******************************************************************************\n");
 			fprintf((FILE *)call_ctx, warn_txt);
 			fprintf((FILE *)call_ctx, "For the cam export, try --help cam\n");
 			fprintf((FILE *)call_ctx, "Command line would look like pcb-rnd -x cam gerber:fixed filename\n");
 			fprintf((FILE *)call_ctx, "******************************************************************************\n\n");
 			break;
-		case PCB_HIDEOF_DAD:
+		case RND_HIDEOF_DAD:
 			PCB_DAD_BEGIN_VBOX(dad->dlg);
 				PCB_DAD_COMPFLAG(dad->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
 				PCB_DAD_BEGIN_HBOX(dad->dlg);

@@ -51,7 +51,7 @@ fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	printer->calibrate(printer, 0.0, 0.0);
 
-	if (pcb_attribute_dialog("printer_calibrate", printer_calibrate_attrs, 3, "Printer Calibration Values", NULL))
+	if (rnd_attribute_dialog("printer_calibrate", printer_calibrate_attrs, 3, "Printer Calibration Values", NULL))
 		return 1;
 	printer->calibrate(printer, printer_calibrate_attrs[1].val.dbl, printer_calibrate_attrs[2].val.dbl);
 	RND_ACT_IRES(0);

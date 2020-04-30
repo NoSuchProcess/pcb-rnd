@@ -235,7 +235,7 @@ static int stl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 static int stl_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nstl exporter command line arguments:\n\n");
-	pcb_hid_usage(stl_attribute_list, sizeof(stl_attribute_list) / sizeof(stl_attribute_list[0]));
+	rnd_hid_usage(stl_attribute_list, sizeof(stl_attribute_list) / sizeof(stl_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x stl [stl options] foo.pcb\n\n");
 	return 0;
 }

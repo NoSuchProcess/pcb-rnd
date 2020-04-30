@@ -833,7 +833,7 @@ static void xy_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int xy_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nXY exporter command line arguments:\n\n");
-	pcb_hid_usage(xy_options, sizeof(xy_options) / sizeof(xy_options[0]));
+	rnd_hid_usage(xy_options, sizeof(xy_options) / sizeof(xy_options[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x xy [xy_options] foo.pcb\n\n");
 	return 0;
 }

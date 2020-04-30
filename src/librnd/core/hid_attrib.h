@@ -140,29 +140,29 @@ typedef struct rnd_hid_attr_node_s {
 
 extern rnd_hid_attr_node_t *rnd_hid_attr_nodes;
 
-void pcb_hid_usage(rnd_export_opt_t *a, int numa);
-void pcb_hid_usage_option(const char *name, const char *help);
+void rnd_hid_usage(rnd_export_opt_t *a, int numa);
+void rnd_hid_usage_option(const char *name, const char *help);
 
 /* Count the number of direct children, start_from the first children */
-int pcb_hid_attrdlg_num_children(rnd_hid_attribute_t *attrs, int start_from, int n_attrs);
+int rnd_hid_attrdlg_num_children(rnd_hid_attribute_t *attrs, int start_from, int n_attrs);
 
 /* Invoke a simple modal attribute dialog if GUI is available */
-int pcb_attribute_dialog_(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, void **retovr, int defx, int defy, int minx, int miny, void **hid_ctx_out);
-int pcb_attribute_dialog(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data);
+int rnd_attribute_dialog_(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, void **retovr, int defx, int defy, int minx, int miny, void **hid_ctx_out);
+int rnd_attribute_dialog(const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data);
 
 
 /* Convert between compflag bit value and name */
-const char *pcb_hid_compflag_bit2name(rnd_hatt_compflags_t bit);
-rnd_hatt_compflags_t pcb_hid_compflag_name2bit(const char *name);
+const char *rnd_hid_compflag_bit2name(rnd_hatt_compflags_t bit);
+rnd_hatt_compflags_t rnd_hid_compflag_name2bit(const char *name);
 
 /*** When an rnd_export_opt_t item is a box, the following function is called
      from its ->func ***/
 
-typedef enum pcb_hid_export_opt_func_action_e {
-	PCB_HIDEOF_USAGE, /* call_ctx is a FILE * */
-	PCB_HIDEOF_DAD    /* call_ctx is a pcb_hid_export_opt_func_dad_t */
-} pcb_hid_export_opt_func_action_t;
+typedef enum rnd_hid_export_opt_func_action_e {
+	RND_HIDEOF_USAGE, /* call_ctx is a FILE * */
+	RND_HIDEOF_DAD    /* call_ctx is a pcb_hid_export_opt_func_dad_t */
+} rnd_hid_export_opt_func_action_t;
 
-typedef void (*pcb_hid_export_opt_func_t)(pcb_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt);
+typedef void (*rnd_hid_export_opt_func_t)(rnd_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt);
 
 #endif

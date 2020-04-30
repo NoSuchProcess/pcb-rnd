@@ -1394,7 +1394,7 @@ static void png_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int 
 static int png_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\npng exporter command line arguments:\n\n");
-	pcb_hid_usage(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]));
+	rnd_hid_usage(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]));
 	fprintf(stderr, "\nUsage: pcb-rnd [generic_options] -x png [png options] foo.pcb\n\n");
 	return 0;
 }
