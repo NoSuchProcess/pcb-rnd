@@ -445,7 +445,7 @@ static int rdax_via(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	Thickness = 0;
 	Clearance = st->copper_clearance; /* start with sane default */
 
-	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
+	Drill = RND_MM_TO_COORD(0.300); /* start with something sane */
 
 	name = rnd_strdup("unnamed");
 
@@ -505,7 +505,7 @@ static int rdax_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int component)
 	Thickness = 0;
 	Clearance = st->copper_clearance; /* start with sane default */
 
-	Drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
+	Drill = RND_MM_TO_COORD(0.300); /* start with something sane */
 
 	if (fgetline(line, sizeof(line), FP, st->lineno) != NULL) {
 		int argc;
@@ -1095,8 +1095,8 @@ int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filen
 	st.Filename = Filename;
 	st.settings_dest = settings_dest;
 	st.lineno = 0;
-	st.mask_clearance = st.copper_clearance = PCB_MIL_TO_COORD(10); /* sensible default values */
-	st.minimum_comp_pin_drill = PCB_MIL_TO_COORD(30); /* Easytrax PCB FILE 5 uses zero in COMP pins */
+	st.mask_clearance = st.copper_clearance = RND_MIL_TO_COORD(10); /* sensible default values */
+	st.minimum_comp_pin_drill = RND_MIL_TO_COORD(30); /* Easytrax PCB FILE 5 uses zero in COMP pins */
 	st.trax_version = 4; /* assume autotrax, not easytrax */
 	st.ignored_keepout_element = 0;
 	st.ignored_layer_zero_element = 0;

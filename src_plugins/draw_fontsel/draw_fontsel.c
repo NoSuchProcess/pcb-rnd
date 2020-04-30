@@ -56,8 +56,8 @@ static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char 
 
 	if (dinfo.xform == NULL) dinfo.xform = &dxform;
 
-	t.X = PCB_MM_TO_COORD(x);
-	t.Y = PCB_MM_TO_COORD(y);
+	t.X = RND_MM_TO_COORD(x);
+	t.Y = RND_MM_TO_COORD(y);
 	t.TextString = (char *)txt;
 	t.rot = 0;
 	t.Scale = scale;
@@ -74,11 +74,11 @@ static void dline(int x1, int y1, int x2, int y2, float thick)
 
 	if (dinfo.xform == NULL) dinfo.xform = &dxform;
 
-	l.Point1.X = PCB_MM_TO_COORD(x1);
-	l.Point1.Y = PCB_MM_TO_COORD(y1);
-	l.Point2.X = PCB_MM_TO_COORD(x2);
-	l.Point2.Y = PCB_MM_TO_COORD(y2);
-	l.Thickness = PCB_MM_TO_COORD(thick);
+	l.Point1.X = RND_MM_TO_COORD(x1);
+	l.Point1.Y = RND_MM_TO_COORD(y1);
+	l.Point2.X = RND_MM_TO_COORD(x2);
+	l.Point2.Y = RND_MM_TO_COORD(y2);
+	l.Thickness = RND_MM_TO_COORD(thick);
 	pcb_line_draw_(&dinfo, &l, 0);
 }
 
@@ -125,7 +125,7 @@ static void pcb_draw_font(rnd_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_tex
 	t = dtext(x, *y, 200, f->id, buf);
 	pcb_text_bbox(pcb_font(PCB, f->id, 1), t);
 
-	*y += rnd_round(PCB_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
+	*y += rnd_round(RND_COORD_TO_MM(t->BoundingBox.Y2 - t->BoundingBox.Y1) + 0.5);
 
 	if (font_coords < MAX_FONT) {
 		font_coord[font_coords].y1 = y_old;
@@ -167,7 +167,7 @@ static rnd_bool pcb_mouse_fontsel(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_co
 
 	switch(kind) {
 		case RND_HID_MOUSE_PRESS:
-			ymm = PCB_COORD_TO_MM(y);
+			ymm = RND_COORD_TO_MM(y);
 			fid = lookup_fid_for_coord(ymm);
 			if (fid >= 0) {
 				if (txt == NULL) {

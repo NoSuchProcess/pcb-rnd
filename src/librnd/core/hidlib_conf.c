@@ -34,7 +34,7 @@
 
 #include <librnd/core/hidlib_conf.h>
 
-#define PCB_MAX_GRID         PCB_MIL_TO_COORD(1000)
+#define PCB_MAX_GRID         RND_MIL_TO_COORD(1000)
 
 rnd_conf_t rnd_conf;
 

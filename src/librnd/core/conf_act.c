@@ -342,7 +342,7 @@ static fgw_error_t pcb_act_SetUnits(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_PCB_ACT_CONVARG(1, FGW_STR, setunits, name = argv[1].val.str);
 	RND_ACT_IRES(0);
 
-	new_unit = get_unit_struct(name);
+	new_unit = rnd_get_unit_struct(name);
 	rnd_hidlib_set_unit(RND_ACT_HIDLIB, new_unit);
 
 	return 0;

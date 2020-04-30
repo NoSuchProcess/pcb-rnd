@@ -232,7 +232,7 @@ static void create_feature(pcb_board_t *pcb, pcb_data_t *data, test_feature_t *t
 {
 	pcb_pstk_t *ps;
 	pcb_pstk_shape_t sh[6];
-	rnd_coord_t msk = PCB_MIL_TO_COORD(4), y;
+	rnd_coord_t msk = RND_MIL_TO_COORD(4), y;
 	int i = 0, thru = (tf->hole > 0) && (tf->is_plated);
 
 	memset(sh, 0, sizeof(sh));

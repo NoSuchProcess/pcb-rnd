@@ -49,9 +49,9 @@
 
 static const char *hpgl_cookie = "hpgl importer";
 
-#define HPGL2CRD_D(crd)   (PCB_MM_TO_COORD((double)crd*0.025))
-#define HPGL2CRD_X(crd)   (PCB_MM_TO_COORD((double)crd*0.025))
-#define HPGL2CRD_Y(crd)   (PCB_MM_TO_COORD((double)crd*(-0.025)))
+#define HPGL2CRD_D(crd)   (RND_MM_TO_COORD((double)crd*0.025))
+#define HPGL2CRD_X(crd)   (RND_MM_TO_COORD((double)crd*0.025))
+#define HPGL2CRD_Y(crd)   (RND_MM_TO_COORD((double)crd*(-0.025)))
 
 static pcb_layer_t *get_pen_layer(pcb_data_t *data, int pen)
 {

@@ -679,7 +679,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	if (dpi > 0) {
 		/* a scale of 1  means 1 pixel is 1 inch
 		   a scale of 10 means 1 pixel is 10 inches */
-		scale = PCB_INCH_TO_COORD(1) / dpi;
+		scale = RND_INCH_TO_COORD(1) / dpi;
 		w = rnd_round(w / scale) - PNG_SCALE_HACK1;
 		h = rnd_round(h / scale) - PNG_SCALE_HACK1;
 	}
@@ -1288,8 +1288,8 @@ static void png_draw_arc_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_co
 
 		/* make sure we start between 0 and 360 otherwise gd does
 		   strange things */
-		sa = pcb_normalize_angle(sa);
-		ea = pcb_normalize_angle(ea);
+		sa = rnd_normalize_angle(sa);
+		ea = rnd_normalize_angle(ea);
 	}
 
 	have_outline |= doing_outline;

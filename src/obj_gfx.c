@@ -211,7 +211,7 @@ int pcb_gfx_eq(const pcb_host_trans_t *tr1, const pcb_gfx_t *a1, const pcb_host_
 	if (a1->sx != a2->sx) return 0;
 	if (a1->sy != a2->sy) return 0;
 	if (pcb_neq_tr_coords(tr1, a1->cx, a1->cy, tr2, a2->cx, a2->cy)) return 0;
-	if (pcb_normalize_angle(rnd_round(a1->rot * sgn1)) != pcb_normalize_angle(rnd_round(a2->rot * sgn2))) return 0;
+	if (rnd_normalize_angle(rnd_round(a1->rot * sgn1)) != rnd_normalize_angle(rnd_round(a2->rot * sgn2))) return 0;
 TODO("compare pixmaps");
 	return 1;
 }
@@ -225,7 +225,7 @@ unsigned int pcb_gfx_hash(const pcb_host_trans_t *tr, const pcb_gfx_t *a)
 		rnd_coord_t x, y;
 		pcb_hash_tr_coords(tr, &x, &y, a->cx, a->cy);
 		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y) ^ pcb_hash_coord(a->sx) ^ pcb_hash_coord(a->sy) ^
-			pcb_hash_coord(pcb_normalize_angle(rnd_round(a->rot*sgn + tr->rot*sgn)));
+			pcb_hash_coord(rnd_normalize_angle(rnd_round(a->rot*sgn + tr->rot*sgn)));
 	}
 
 TODO("hash pixmaps");
@@ -471,7 +471,7 @@ void *pcb_gfx_destroy(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 /* rotates a gfx */
 void pcb_gfx_rotate90(pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
-	gfx->rot = pcb_normalize_angle(gfx->rot + Number * 90);
+	gfx->rot = rnd_normalize_angle(gfx->rot + Number * 90);
 	TODO("rotate content")
 	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
@@ -482,7 +482,7 @@ void pcb_gfx_rotate(pcb_layer_t *layer, pcb_gfx_t *gfx, rnd_coord_t X, rnd_coord
 	if (layer->gfx_tree != NULL)
 		pcb_r_delete_entry(layer->gfx_tree, (rnd_rnd_box_t *) gfx);
 
-	gfx->rot = pcb_normalize_angle(gfx->rot + angle);
+	gfx->rot = rnd_normalize_angle(gfx->rot + angle);
 	TODO("rotate content")
 	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
@@ -514,7 +514,7 @@ void pcb_gfx_flip_side(pcb_layer_t *layer, pcb_gfx_t *gfx)
 	pcb_r_delete_entry(layer->gfx_tree, (rnd_rnd_box_t *)gfx);
 	gfx->cx = PCB_SWAP_X(gfx->cx);
 	gfx->cy = PCB_SWAP_Y(gfx->cy);
-	gfx->rot = PCB_SWAP_ANGLE(gfx->rot);
+	gfx->rot = RND_SWAP_ANGLE(gfx->rot);
 	pcb_gfx_update(gfx);
 	pcb_gfx_bbox(gfx);
 	pcb_r_insert_entry(layer->gfx_tree, (rnd_rnd_box_t *)gfx);
@@ -647,7 +647,7 @@ void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 	if ((gfx->pxm_neutral == NULL) || (rnd_render->draw_pixmap == NULL)) {
 		rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.warn);
 		rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
-		rnd_hid_set_line_width(pcb_draw_out.fgGC, PCB_MM_TO_COORD(0.1));
+		rnd_hid_set_line_width(pcb_draw_out.fgGC, RND_MM_TO_COORD(0.1));
 		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[2], gfx->coy[2]);
 		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]);
 	}

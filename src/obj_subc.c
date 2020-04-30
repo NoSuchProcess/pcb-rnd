@@ -184,7 +184,7 @@ pcb_layer_t *pcb_subc_layer_create(pcb_subc_t *sc, const char *name, pcb_layer_t
 
 static pcb_line_t *add_aux_line(pcb_layer_t *aux, const char *key, const char *val, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	pcb_line_t *l = pcb_line_new(aux, x1, y1, x2, y2, PCB_MM_TO_COORD(0.1), 0, pcb_no_flags());
+	pcb_line_t *l = pcb_line_new(aux, x1, y1, x2, y2, RND_MM_TO_COORD(0.1), 0, pcb_no_flags());
 	rnd_attribute_put(&l->Attributes, key, val);
 	return l;
 }
@@ -769,14 +769,14 @@ void pcb_xordraw_subc(pcb_subc_t *sc, rnd_coord_t DX, rnd_coord_t DY, int use_cu
 		arclist_foreach(&ly->Arc, &it, arc) {
 			if(arc->Width != arc->Height) {
 TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elliptical arc with a thin line ")
-				double sa = mirr ? PCB_SWAP_ANGLE(arc->StartAngle) : arc->StartAngle;
-				double da = mirr ? PCB_SWAP_DELTA(arc->Delta) : arc->Delta;
+				double sa = mirr ? RND_SWAP_ANGLE(arc->StartAngle) : arc->StartAngle;
+				double da = mirr ? RND_SWAP_DELTA(arc->Delta) : arc->Delta;
 				rnd_render->draw_arc(pcb_crosshair.GC, DX + PCB_CSWAP_X(arc->X, w, mirr), DY + PCB_CSWAP_Y(arc->Y, h, mirr), arc->Width, arc->Height, sa, da);
 			}
 			else {
 				pcb_arc_t temp_arc;
-				temp_arc.StartAngle = mirr ? PCB_SWAP_ANGLE(arc->StartAngle) : arc->StartAngle; 
-				temp_arc.Delta = mirr ? PCB_SWAP_DELTA(arc->Delta) : arc->Delta;
+				temp_arc.StartAngle = mirr ? RND_SWAP_ANGLE(arc->StartAngle) : arc->StartAngle; 
+				temp_arc.Delta = mirr ? RND_SWAP_DELTA(arc->Delta) : arc->Delta;
 				temp_arc.X = DX + PCB_CSWAP_X(arc->X, w, mirr);
 				temp_arc.Y = DY + PCB_CSWAP_Y(arc->Y, h, mirr);
 				temp_arc.Width = arc->Width;

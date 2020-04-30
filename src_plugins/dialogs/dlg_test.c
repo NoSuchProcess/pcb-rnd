@@ -149,7 +149,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						RND_DAD_LABEL(ctx.dlg, "CRD:");
 						RND_DAD_SPIN_COORD(ctx.dlg);
 							ctx.wspin_coord = RND_DAD_CURRENT(ctx.dlg);
-							RND_DAD_DEFAULT_NUM(ctx.dlg, PCB_MM_TO_COORD(42));
+							RND_DAD_DEFAULT_NUM(ctx.dlg, RND_MM_TO_COORD(42));
 							RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_upd);
 						RND_DAD_LABEL(ctx.dlg, "->");
 						RND_DAD_LABEL(ctx.dlg, "n/a");
@@ -305,7 +305,7 @@ static void pcb_act_spin_reset(void *hid_ctx, void *caller_data, rnd_hid_attribu
 
 	hv.lng = 42;
 	hv.dbl = 42.0;
-	hv.crd = PCB_MM_TO_COORD(42);
+	hv.crd = RND_MM_TO_COORD(42);
 
 	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_int, &hv);
 	rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wspin_double, &hv);
@@ -511,7 +511,7 @@ static void cb_text_ro(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 static void prv_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	rnd_render->set_color(gc, rnd_color_red);
-	pcb_text_draw_string_simple(NULL, "foo", PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(20), 500, 10.0, 0, 0, 0, 0, 0);
+	pcb_text_draw_string_simple(NULL, "foo", RND_MM_TO_COORD(1), RND_MM_TO_COORD(20), 500, 10.0, 0, 0, 0, 0, 0);
 
 	printf("expose in dlg_test!\n");
 }

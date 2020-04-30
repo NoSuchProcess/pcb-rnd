@@ -84,9 +84,9 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 			break;
 		case RND_CFN_UNIT:
 			{
-				const rnd_unit_t *u = get_unit_struct(val);
+				const rnd_unit_t *u = rnd_get_unit_struct(val);
 				if (u != NULL)
-					hv.lng = u - pcb_units;
+					hv.lng = u - rnd_units;
 				else
 					hv.lng = -1;
 				rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wnewval, &hv);
@@ -142,9 +142,9 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 		case RND_CFN_REAL:    sprintf(buf, "%f", attr->val.dbl); break;
 		case RND_CFN_COORD:   rnd_snprintf(buf, sizeof(buf), "%.08$mH", attr->val.crd); break;
 		case RND_CFN_UNIT:
-			if ((attr->val.lng < 0) || (attr->val.lng >= pcb_get_n_units(0)))
+			if ((attr->val.lng < 0) || (attr->val.lng >= rnd_get_n_units(0)))
 				return;
-			val = pcb_units[attr->val.lng].suffix;
+			val = rnd_units[attr->val.lng].suffix;
 			break;
 		case RND_CFN_COLOR:   val = attr->val.clr.str; break;
 		case RND_CFN_LIST:
@@ -325,7 +325,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 			case RND_CFN_COORD:
 				RND_DAD_COORD(ctx->dlg, "");
 					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
-					RND_DAD_MINMAX(ctx->dlg, -PCB_MM_TO_COORD(1000), +PCB_MM_TO_COORD(1000));
+					RND_DAD_MINMAX(ctx->dlg, -RND_MM_TO_COORD(1000), +RND_MM_TO_COORD(1000));
 				RND_DAD_BUTTON(ctx->dlg, "apply");
 					RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 					b[0] = RND_DAD_CURRENT(ctx->dlg);

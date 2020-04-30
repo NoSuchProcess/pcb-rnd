@@ -117,7 +117,7 @@ int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const cha
 	/* for backwards-compatibility, we use a 10-mil default
 	 * for styles which omit the clearance specification. */
 	if (*s != ',')
-		routeStyle->Clearance = PCB_MIL_TO_COORD(10);
+		routeStyle->Clearance = RND_MIL_TO_COORD(10);
 	else {
 		s++;
 		while (*s && isspace((int) *s))

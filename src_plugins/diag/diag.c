@@ -413,7 +413,7 @@ static fgw_error_t pcb_act_d1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	rnd_pixmap_t *pxm;
 	pcb_gfx_t *g = pcb_gfx_new(PCB_CURRLAYER(pcb),
-		PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(500), PCB_MIL_TO_COORD(233), PCB_MIL_TO_COORD(233), 15, pcb_flag_make(0));
+		RND_MIL_TO_COORD(500), RND_MIL_TO_COORD(500), RND_MIL_TO_COORD(233), RND_MIL_TO_COORD(233), 15, pcb_flag_make(0));
 
 	pxm = rnd_pixmap_load(RND_ACT_HIDLIB, "A.pnm");
 rnd_trace("pxm=%p\n", pxm);

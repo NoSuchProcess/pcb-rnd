@@ -134,7 +134,7 @@ static int line_of_vias_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 		line_of_vias_unpack(subc);
 
 	lov = subc->extobj_data;
-	if (lov->pitch < PCB_MM_TO_COORD(0.001)) {
+	if (lov->pitch < RND_MM_TO_COORD(0.001)) {
 		rnd_message(RND_MSG_ERROR, "line_of_vias_gen(): can not generate line-of-vias, pitch value is too small\n");
 		return -1;
 	}
@@ -158,8 +158,8 @@ static int line_of_vias_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 static void draw_mark_line(pcb_draw_info_t *info, pcb_subc_t *subc, pcb_line_t *line)
 {
 	int selected;
-	double disp = PCB_MM_TO_COORD(0.05);
-	double arrow = PCB_MM_TO_COORD(0.2);
+	double disp = RND_MM_TO_COORD(0.05);
+	double arrow = RND_MM_TO_COORD(0.2);
 	double ax, ay, ax1, ay1, ax2, ay2;
 	line_geo_def;
 	rnd_coord_t x1 = line->Point1.X, y1 = line->Point1.Y, x2 = line->Point2.X, y2 = line->Point2.Y;

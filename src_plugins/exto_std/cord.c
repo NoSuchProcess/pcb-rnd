@@ -151,7 +151,7 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 			y = rnd_round(it3*e1->y + 3*it2*t*a1->Y + 3*it*t2*a2->Y + t3*e2->y);
 
 			l = pcb_line_new(lyr, lx, ly, x, y,
-				PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
+				RND_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
 			rnd_attribute_put(&l->Attributes, "extobj::role", "gfx");
 			set_grp((pcb_any_obj_t *)l, group);
 
@@ -161,7 +161,7 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 	}
 	else {
 		l = pcb_line_new(lyr, e1->x, e1->y, e2->x, e2->y,
-			PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
+			RND_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
 		rnd_attribute_put(&l->Attributes, "extobj::role", "gfx");
 		set_grp((pcb_any_obj_t *)l, group);
 	}
@@ -209,7 +209,7 @@ static void pcb_cord_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 
 	if ((floater->type == PCB_OBJ_LINE) && (rnd_attribute_get(&subc->Attributes, "extobj::fixed_origin") == NULL)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)floater;
-		pcb_subc_move_origin_to(subc, ps->x + PCB_MM_TO_COORD(0.3), ps->y + PCB_MM_TO_COORD(0.3), 0);
+		pcb_subc_move_origin_to(subc, ps->x + RND_MM_TO_COORD(0.3), ps->y + RND_MM_TO_COORD(0.3), 0);
 	}
 }
 
@@ -259,7 +259,7 @@ static rnd_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
 	proto.tr.array = &tshp;
 
 	shape.shape = PCB_PSSH_CIRC;
-	shape.data.circ.dia = PCB_MM_TO_COORD(0.5);
+	shape.data.circ.dia = RND_MM_TO_COORD(0.5);
 	shape.data.circ.x = shape.data.circ.y = 0;
 	
 	shape.layer_mask = lyt;
@@ -276,7 +276,7 @@ static rnd_cardinal_t endpt_pstk_proto(pcb_data_t *data, pcb_layer_type_t lyt)
 static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, rnd_cardinal_t pid, rnd_coord_t x, rnd_coord_t y, rnd_coord_t ox, rnd_coord_t oy, const char *term, const char *grp, int floater)
 {
 	pcb_pstk_t *ps;
-	rnd_coord_t dx = ox-x, dy = oy-y,  cpx = x+dx/4, cpy = y+dy/4, cpr = PCB_MM_TO_COORD(0.5);
+	rnd_coord_t dx = ox-x, dy = oy-y,  cpx = x+dx/4, cpy = y+dy/4, cpr = RND_MM_TO_COORD(0.5);
 	pcb_layer_t *ely = &subc->data->Layer[LID_EDIT];
 
 
@@ -310,7 +310,7 @@ static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, rnd_cardinal_
 static void conv_pstk(pcb_subc_t *subc, pcb_pstk_t *ps, long *grp, long *term, int *has_origin)
 {
 	char sgrp[16], sterm[16];
-	rnd_coord_t d = PCB_MM_TO_COORD(0.75);
+	rnd_coord_t d = RND_MM_TO_COORD(0.75);
 
 	sprintf(sgrp, "%ld", (*grp)++);
 
@@ -320,7 +320,7 @@ static void conv_pstk(pcb_subc_t *subc, pcb_pstk_t *ps, long *grp, long *term, i
 	endpt_pstk(subc, "1", SILK_END, ps->x, ps->y, ps->x+d, ps->x+d, ps->term, sgrp, 0);
 
 	if (!*has_origin) {
-		pcb_subc_move_origin_to(subc, ps->x + PCB_MM_TO_COORD(0.3), ps->y + PCB_MM_TO_COORD(0.3), 0);
+		pcb_subc_move_origin_to(subc, ps->x + RND_MM_TO_COORD(0.3), ps->y + RND_MM_TO_COORD(0.3), 0);
 		*has_origin = 1;
 	}
 
@@ -360,8 +360,8 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 		layers[1].lyt = pcb_layer_flags_(l->parent.layer);
 		pcb_layer_purpose_(l->parent.layer, &layers[1].purpose);
 		if (!has_origin) {
-			ox = l->Point1.X + PCB_MM_TO_COORD(0.3);
-			oy = l->Point1.Y + PCB_MM_TO_COORD(0.3);
+			ox = l->Point1.X + RND_MM_TO_COORD(0.3);
+			oy = l->Point1.Y + RND_MM_TO_COORD(0.3);
 			has_origin = 1;
 		}
 		break;

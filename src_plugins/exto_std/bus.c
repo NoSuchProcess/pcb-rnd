@@ -236,7 +236,7 @@ static void pcb_bus_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 		bus_seg_calc(l);
 
 		x = l->Point1.X; y = l->Point1.Y;
-		for(o = 0; o < len; o += PCB_MM_TO_COORD(5), x += vx*PCB_MM_TO_COORD(5), y += vy*PCB_MM_TO_COORD(5))
+		for(o = 0; o < len; o += RND_MM_TO_COORD(5), x += vx*RND_MM_TO_COORD(5), y += vy*RND_MM_TO_COORD(5))
 			rnd_render->draw_line(pcb_draw_out.fgGC,
 				x + nx * bus->vthickness/2, y + ny * bus->vthickness/2,
 				x - nx * bus->vthickness/2, y - ny * bus->vthickness/2);

@@ -171,7 +171,7 @@ static void eps_print_header(FILE *f, const char *outfn)
 
 	fprintf(f, "%%!PS-Adobe-3.0 EPSF-3.0\n");
 
-#define pcb2em(x) 1 + PCB_COORD_TO_INCH (x) * 72.0 * options_[HA_scale].dbl
+#define pcb2em(x) 1 + RND_COORD_TO_INCH (x) * 72.0 * options_[HA_scale].dbl
 	fprintf(f, "%%%%BoundingBox: 0 0 %f %f\n", pcb2em(bounds->X2 - bounds->X1), pcb2em(bounds->Y2 - bounds->Y1));
 #undef pcb2em
 	fprintf(f, "%%%%Pages: 1\n");
@@ -188,7 +188,7 @@ static void eps_print_header(FILE *f, const char *outfn)
 	if (options_[HA_as_shown].lng && conf_core.editor.show_solder_side)
 		rnd_fprintf(f, "-1 1 scale %mi 0 translate\n", bounds->X1 - bounds->X2);
 
-#define Q (rnd_coord_t) PCB_MIL_TO_COORD(10)
+#define Q (rnd_coord_t) RND_MIL_TO_COORD(10)
 	rnd_fprintf(f,
 							"/nclip { %mi %mi moveto %mi %mi lineto %mi %mi lineto %mi %mi lineto %mi %mi lineto eoclip newpath } def\n",
 							bounds->X1 - Q, bounds->Y1 - Q, bounds->X1 - Q, bounds->Y2 + Q,

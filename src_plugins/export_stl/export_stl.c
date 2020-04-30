@@ -213,7 +213,7 @@ static void stl_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	else thick = pcb_board_thickness(PCB, "stl", PCB_BRDTHICK_PRINT_ERROR);
 	if (thick <= 0) {
 		rnd_message(RND_MSG_WARNING, "STL: can not determine board thickness - falling back to hardwired 1.6mm\n");
-		thick = PCB_MM_TO_COORD(1.6);
+		thick = RND_MM_TO_COORD(1.6);
 	}
 
 	if (options[HA_zcent].lng)

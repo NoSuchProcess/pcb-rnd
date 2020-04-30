@@ -141,7 +141,7 @@ static int inline append_suffix(gds_t *dest, enum pcb_suffix_e suffix_type, cons
  *
  * return 0 on success, -1 on error
  */
-static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const gds_t *printf_spec_, enum pcb_allow_e allow,
+static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const gds_t *printf_spec_, enum rnd_allow_e allow,
 														 enum pcb_suffix_e suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
@@ -179,7 +179,7 @@ static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const 
 		int met_votes = 0, imp_votes = 0;
 
 		for (i = 0; i < n_coords; ++i)
-			if (min_sig_figs(PCB_COORD_TO_MIL(coord[i])) < min_sig_figs(PCB_COORD_TO_MM(coord[i])))
+			if (min_sig_figs(RND_COORD_TO_MIL(coord[i])) < min_sig_figs(RND_COORD_TO_MM(coord[i])))
 				++imp_votes;
 			else
 				++met_votes;
@@ -194,10 +194,10 @@ static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const 
 	for (i = 0; i < n_coords; ++i) {
 		switch (family) {
 			case PCB_UNIT_METRIC:
-				value[i] = PCB_COORD_TO_MM(coord[i]);
+				value[i] = RND_COORD_TO_MM(coord[i]);
 				break;
 			case PCB_UNIT_IMPERIAL:
-				value[i] = PCB_COORD_TO_MIL(coord[i]);
+				value[i] = RND_COORD_TO_MIL(coord[i]);
 				break;
 			default:
 				value[i] = 0;
@@ -206,30 +206,30 @@ static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const 
 
 	/* Determine scale factor -- find smallest unit that brings
 	 * the whole group above unity */
-	for (n = 0; n < pcb_get_n_units(0); ++n) {
-		if ((pcb_units[n].allow & allow) != 0 && (pcb_units[n].family == family)) {
+	for (n = 0; n < rnd_get_n_units(0); ++n) {
+		if ((rnd_units[n].allow & allow) != 0 && (rnd_units[n].family == family)) {
 			int n_above_one = 0;
 
 			for (i = 0; i < n_coords; ++i)
-				if (fabs(value[i] * pcb_units[n].scale_factor) > 1)
+				if (fabs(value[i] * rnd_units[n].scale_factor) > 1)
 					++n_above_one;
 			if (n_above_one == n_coords)
 				break;
 		}
 	}
 	/* If nothing worked, wind back to the smallest allowable unit */
-	if (n == pcb_get_n_units(0)) {
+	if (n == rnd_get_n_units(0)) {
 		do {
 			--n;
-		} while ((n>=0) && ((pcb_units[n].allow & allow) == 0 || pcb_units[n].family != family));
+		} while ((n>=0) && ((rnd_units[n].allow & allow) == 0 || rnd_units[n].family != family));
 	}
 
 	/* Apply scale factor */
-	suffix = pcb_units[n].suffix;
+	suffix = rnd_units[n].suffix;
 	for (i = 0; i < n_coords; ++i)
-		value[i] = value[i] * pcb_units[n].scale_factor;
+		value[i] = value[i] * rnd_units[n].scale_factor;
 
-	make_printf_spec(printf_spec_new, printf_spec, pcb_units[n].default_prec, &trunc0);
+	make_printf_spec(printf_spec_new, printf_spec, rnd_units[n].default_prec, &trunc0);
 
 	/* Actually sprintf the values in place
 	 *  (+ 2 skips the ", " for first value) */
@@ -268,11 +268,11 @@ err:;
 typedef struct {
 	int           score_factor;
 
-	enum pcb_allow_e  base;
+	enum rnd_allow_e  base;
 	double        down_limit;
-	enum pcb_allow_e  down;
+	enum rnd_allow_e  down;
 	double        up_limit;
-	enum pcb_allow_e  up;
+	enum rnd_allow_e  up;
 
 	/* persistent, calculated once */
 	const rnd_unit_t    *base_unit, *down_unit, *up_unit;
@@ -293,9 +293,9 @@ static inline int try_human_coord(rnd_coord_t coord, const rnd_unit_t *unit, dou
 
 	/* convert the value to the proposed unit */
 	if (unit->family == PCB_UNIT_METRIC)
-		v = PCB_COORD_TO_MM(coord);
+		v = RND_COORD_TO_MM(coord);
 	else
-		v = PCB_COORD_TO_MIL(coord);
+		v = RND_COORD_TO_MIL(coord);
 	save = v = v * unit->scale_factor;
 	if (v < 0) v = -v;
 
@@ -349,9 +349,9 @@ static int CoordsToHumanString(gds_t *dest, rnd_coord_t coord, const gds_t *prin
 	/* cache unit lookup */
 	if (human_coord[0].base_unit == NULL) {
 		for(i = 0; i < NUM_HUMAN_COORD; i++) {
-			human_coord[i].base_unit = get_unit_struct_by_allow(human_coord[i].base);
-			human_coord[i].down_unit = get_unit_struct_by_allow(human_coord[i].down);
-			human_coord[i].up_unit = get_unit_struct_by_allow(human_coord[i].up);
+			human_coord[i].base_unit = rnd_get_unit_struct_by_allow(human_coord[i].base);
+			human_coord[i].down_unit = rnd_get_unit_struct_by_allow(human_coord[i].down);
+			human_coord[i].up_unit = rnd_get_unit_struct_by_allow(human_coord[i].up);
 		}
 	}
 
@@ -427,7 +427,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 	char tmp[128]; /* large enough for rendering a long long int */
 	int tmplen, retval = -1, slot_recursion = 0, mq_has_spec;
 	char *dot, *free_fmt = NULL;
-	enum pcb_allow_e mask = PCB_UNIT_ALLOW_ALL_SANE;
+	enum rnd_allow_e mask = PCB_UNIT_ALLOW_ALL_SANE;
 	unsigned long maxfmts;
 
 	if ((safe & PCB_SAFEPRINT_arg_max) > 0)
@@ -682,9 +682,9 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				case '*':
 					{
 						int found = 0;
-						for (i = 0; i < pcb_get_n_units(1); ++i) {
-							if (strcmp(ext_unit, pcb_units[i].suffix) == 0) {
-								if (CoordsToString(string, value, 1, &spec, pcb_units[i].allow, suffix) != 0) goto err;
+						for (i = 0; i < rnd_get_n_units(1); ++i) {
+							if (strcmp(ext_unit, rnd_units[i].suffix) == 0) {
+								if (CoordsToString(string, value, 1, &spec, rnd_units[i].allow, suffix) != 0) goto err;
 								found = 1;
 								break;
 							}
@@ -722,14 +722,14 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
 					break;
 				case '+':
-					mask = va_arg(args, enum pcb_allow_e);
+					mask = va_arg(args, enum rnd_allow_e);
 					break;
 				default:
 					{
 						int found = 0;
-						for (i = 0; i < pcb_get_n_units(1); ++i) {
-							if (*fmt == pcb_units[i].printf_code) {
-								if (CoordsToString(string, value, 1, &spec, pcb_units[i].allow, suffix) != 0) goto err;
+						for (i = 0; i < rnd_get_n_units(1); ++i) {
+							if (*fmt == rnd_units[i].printf_code) {
+								if (CoordsToString(string, value, 1, &spec, rnd_units[i].allow, suffix) != 0) goto err;
 								found = 1;
 								break;
 							}

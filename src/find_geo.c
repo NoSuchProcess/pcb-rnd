@@ -102,7 +102,7 @@ static void normalize_angles(rnd_angle_t * sa, rnd_angle_t * d)
 	}
 	if (*d > 360)									/* full circle */
 		*d = 360;
-	*sa = pcb_normalize_angle(*sa);
+	*sa = rnd_normalize_angle(*sa);
 }
 
 static int radius_crosses_arc(double x, double y, pcb_arc_t *arc)

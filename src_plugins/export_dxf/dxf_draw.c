@@ -45,7 +45,7 @@ static void dxf_draw_line_props(dxf_ctx_t *ctx, rnd_hid_gc_t gc)
 	if (ctx->enable_force_thin && ctx->force_thin)
 		fprintf(ctx->f, "370\n1\n");
 	else
-		fprintf(ctx->f, "370\n%d\n", (int)rnd_round(PCB_COORD_TO_MM(gc->width)*100.0));
+		fprintf(ctx->f, "370\n%d\n", (int)rnd_round(RND_COORD_TO_MM(gc->width)*100.0));
 }
 
 static void dxf_hatch_pre(dxf_ctx_t *ctx, rnd_hid_gc_t gc, int n_coords)

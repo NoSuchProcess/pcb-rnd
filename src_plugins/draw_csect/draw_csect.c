@@ -76,8 +76,8 @@ static pcb_text_t *dtext(int x, int y, int scale, int dir, const char *txt)
 
 	memset(&t, 0, sizeof(t));
 
-	t.X = PCB_MM_TO_COORD(x);
-	t.Y = PCB_MM_TO_COORD(y);
+	t.X = RND_MM_TO_COORD(x);
+	t.Y = RND_MM_TO_COORD(y);
 	t.TextString = (char *)txt;
 	t.rot = 90.0*dir;
 	t.Scale = scale;
@@ -112,8 +112,8 @@ static pcb_text_t *dtext_bg(rnd_hid_gc_t gc, int x, int y, int scale, int dir, c
 
 	memset(&t, 0, sizeof(t));
 
-	t.X = PCB_MM_TO_COORD(x);
-	t.Y = PCB_MM_TO_COORD(y);
+	t.X = RND_MM_TO_COORD(x);
+	t.Y = RND_MM_TO_COORD(y);
 	t.TextString = (char *)txt;
 	t.rot = 90.0 * dir;
 	t.Scale = scale;
@@ -136,11 +136,11 @@ static void dline(int x1, int y1, int x2, int y2, float thick)
 {
 	pcb_line_t l;
 	memset(&l, 0, sizeof(l));
-	l.Point1.X = PCB_MM_TO_COORD(x1);
-	l.Point1.Y = PCB_MM_TO_COORD(y1);
-	l.Point2.X = PCB_MM_TO_COORD(x2);
-	l.Point2.Y = PCB_MM_TO_COORD(y2);
-	l.Thickness = PCB_MM_TO_COORD(thick);
+	l.Point1.X = RND_MM_TO_COORD(x1);
+	l.Point1.Y = RND_MM_TO_COORD(y1);
+	l.Point2.X = RND_MM_TO_COORD(x2);
+	l.Point2.Y = RND_MM_TO_COORD(y2);
+	l.Thickness = RND_MM_TO_COORD(thick);
 	if (l.Thickness == 0)
 		l.Thickness = 1;
 	pcb_line_draw_(&def_info, &l, 0);
@@ -155,7 +155,7 @@ static void dline_(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y
 	l.Point1.Y = y1;
 	l.Point2.X = x2;
 	l.Point2.Y = y2;
-	l.Thickness = PCB_MM_TO_COORD(thick);
+	l.Thickness = RND_MM_TO_COORD(thick);
 	if (l.Thickness == 0)
 		l.Thickness = 1;
 	pcb_line_draw_(&def_info, &l, 0);
@@ -322,12 +322,12 @@ static rnd_coord_t create_button(rnd_hid_gc_t gc, int x, int y, const char *labe
 	pcb_text_t *t;
 	t = dtext_bg(gc, x, y, 200, 0, label, &COLOR_BG, &COLOR_ANNOT);
 	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
-	dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
+	dhrect(RND_COORD_TO_MM(t->BoundingBox.X1), y, RND_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
 	box->X1 = t->BoundingBox.X1;
-	box->Y1 = PCB_MM_TO_COORD(y);
-	box->X2 = t->BoundingBox.X2+PCB_MM_TO_COORD(1);
-	box->Y2 = PCB_MM_TO_COORD(y+4);
-	return PCB_COORD_TO_MM(box->X2);
+	box->Y1 = RND_MM_TO_COORD(y);
+	box->X2 = t->BoundingBox.X2+RND_MM_TO_COORD(1);
+	box->Y2 = RND_MM_TO_COORD(y+4);
+	return RND_COORD_TO_MM(box->X2);
 }
 
 static int is_button(int x, int y, const rnd_rnd_box_t *box)
@@ -355,7 +355,7 @@ typedef enum {
 
 static void mark_grp(rnd_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc)
 {
-	rnd_coord_t y1, y2, x0 = -PCB_MM_TO_COORD(5);
+	rnd_coord_t y1, y2, x0 = -RND_MM_TO_COORD(5);
 	rnd_layergrp_id_t g;
 
 	g = get_group_coords(y, &y1, &y2);
@@ -364,14 +364,14 @@ static void mark_grp(rnd_coord_t y, unsigned int accept_mask, mark_grp_loc_t loc
 		gactive = g;
 		switch(loc) {
 			case MARK_GRP_FRAME:
-				dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
-				dline_(x0, y2, PCB_MM_TO_COORD(200), y2, 0.1);
+				dline_(x0, y1, RND_MM_TO_COORD(200), y1, 0.1);
+				dline_(x0, y2, RND_MM_TO_COORD(200), y2, 0.1);
 				break;
 			case MARK_GRP_MIDDLE:
-				dline_(x0, (y1+y2)/2, PCB_MM_TO_COORD(200), (y1+y2)/2, 0.1);
+				dline_(x0, (y1+y2)/2, RND_MM_TO_COORD(200), (y1+y2)/2, 0.1);
 				break;
 			case MARK_GRP_TOP:
-				dline_(x0, y1, PCB_MM_TO_COORD(200), y1, 0.1);
+				dline_(x0, y1, RND_MM_TO_COORD(200), y1, 0.1);
 				break;
 		}
 	}
@@ -395,8 +395,8 @@ static void mark_layer(rnd_coord_t x, rnd_coord_t y)
 	lactive = get_layer_coords(x, y);
 	if (lactive >= 0) {
 		dhrect(
-			PCB_COORD_TO_MM(layer_crd[lactive].X1)-1, PCB_COORD_TO_MM(layer_crd[lactive].Y1)-1,
-			PCB_COORD_TO_MM(layer_crd[lactive].X2)+1, PCB_COORD_TO_MM(layer_crd[lactive].Y2)+1,
+			RND_COORD_TO_MM(layer_crd[lactive].X1)-1, RND_COORD_TO_MM(layer_crd[lactive].Y1)-1,
+			RND_COORD_TO_MM(layer_crd[lactive].X2)+1, RND_COORD_TO_MM(layer_crd[lactive].Y2)+1,
 			0.1, 0.1, 3, 3, 0
 		);
 	}
@@ -413,7 +413,7 @@ static void mark_layer_order(rnd_coord_t x)
 
 	g = &PCB->LayerGroups.grp[gactive];
 
-	tx = layer_crd[g->lid[0]].X1 - PCB_MM_TO_COORD(1.5);
+	tx = layer_crd[g->lid[0]].X1 - RND_MM_TO_COORD(1.5);
 	ty1 = layer_crd[g->lid[0]].Y1;
 	ty2 = layer_crd[g->lid[0]].Y2;
 
@@ -424,16 +424,16 @@ static void mark_layer_order(rnd_coord_t x)
 			break;
 		}
 	}
-	dline_(tx, ty1-PCB_MM_TO_COORD(1.5), tx-PCB_MM_TO_COORD(0.75), ty2+PCB_MM_TO_COORD(1.5), 0.1);
-	dline_(tx, ty1-PCB_MM_TO_COORD(1.5), tx+PCB_MM_TO_COORD(0.75), ty2+PCB_MM_TO_COORD(1.5), 0.1);
+	dline_(tx, ty1-RND_MM_TO_COORD(1.5), tx-RND_MM_TO_COORD(0.75), ty2+RND_MM_TO_COORD(1.5), 0.1);
+	dline_(tx, ty1-RND_MM_TO_COORD(1.5), tx+RND_MM_TO_COORD(0.75), ty2+RND_MM_TO_COORD(1.5), 0.1);
 	lactive_idx++;
 }
 
 static void draw_hover_label(rnd_hid_gc_t gc, const char *str)
 {
-	int x0 = PCB_MM_TO_COORD(2.5); /* compensate for the mouse cursor (sort of random) */
+	int x0 = RND_MM_TO_COORD(2.5); /* compensate for the mouse cursor (sort of random) */
 	rnd_render->set_color(gc, &COLOR_ANNOT);
-	dtext_(cx+x0, cy, 250, 0, str, PCB_MM_TO_COORD(0.01));
+	dtext_(cx+x0, cy, 250, 0, str, RND_MM_TO_COORD(0.01));
 }
 
 /* Draw the cross-section layer */
@@ -502,7 +502,7 @@ TODO("layer: handle multiple outline layers")
 		rnd_render->set_color(gc, color);
 		dhrect(0, y, GROUP_WIDTH_MM, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
 		dtext_bg(gc, 5, y, 200, 0, g->name, &COLOR_BG, &COLOR_ANNOT);
-		reg_group_coords(gid, PCB_MM_TO_COORD(y), PCB_MM_TO_COORD(y+th));
+		reg_group_coords(gid, RND_MM_TO_COORD(y), RND_MM_TO_COORD(y+th));
 
 
 		/* draw layer names */
@@ -519,7 +519,7 @@ TODO("layer: handle multiple outline layers")
 				t = dtext_bg(gc, x, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
 				pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 				if (l->comb & PCB_LYC_SUB) {
-					dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1.2, 0, 0, 0, OMIT_NONE);
+					dhrect(RND_COORD_TO_MM(t->BoundingBox.X1), y, RND_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1.2, 0, 0, 0, OMIT_NONE);
 					redraw_text = 1;
 				}
 
@@ -528,13 +528,13 @@ TODO("layer: handle multiple outline layers")
 					pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 				}
 				else
-					dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
+					dhrect(RND_COORD_TO_MM(t->BoundingBox.X1), y, RND_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.25, 0, 0, 0, OMIT_NONE);
 
 				if (l->comb & PCB_LYC_AUTO)
-					dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.0, 0, 3, 0, OMIT_ALL);
+					dhrect(RND_COORD_TO_MM(t->BoundingBox.X1), y, RND_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 0.0, 0, 3, 0, OMIT_ALL);
 
-				reg_layer_coords(lid, t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2+PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(y+4));
-				x += PCB_COORD_TO_MM(t->BoundingBox.X2 - t->BoundingBox.X1) + 3;
+				reg_layer_coords(lid, t->BoundingBox.X1, RND_MM_TO_COORD(y), t->BoundingBox.X2+RND_MM_TO_COORD(1), RND_MM_TO_COORD(y+4));
+				x += RND_COORD_TO_MM(t->BoundingBox.X2 - t->BoundingBox.X1) + 3;
 			}
 		}
 
@@ -552,19 +552,19 @@ TODO("layer: handle multiple outline layers")
 			rnd_render->set_color(gc, &l->meta.real.color);
 			t = dtext_bg(gc, 1, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
 			pcb_text_bbox(pcb_font(PCB, 0, 1), t);
-			dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
+			dhrect(RND_COORD_TO_MM(t->BoundingBox.X1), y, RND_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
 			dtext_bg(gc, 1, y, 200, 0, l->name, &COLOR_BG, &l->meta.real.color);
-			reg_layer_coords(g->lid[0], t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2+PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(y+4));
+			reg_layer_coords(g->lid[0], t->BoundingBox.X1, RND_MM_TO_COORD(y), t->BoundingBox.X2+RND_MM_TO_COORD(1), RND_MM_TO_COORD(y+4));
 		}
 		else {
 			rnd_render->set_color(gc, &COLOR_OUTLINE);
 			t = dtext_bg(gc, 1, y, 200, 0, "<outline>", &COLOR_BG, &COLOR_OUTLINE);
 			pcb_text_bbox(pcb_font(PCB, 0, 1), t);
-			dhrect(PCB_COORD_TO_MM(t->BoundingBox.X1), y, PCB_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
+			dhrect(RND_COORD_TO_MM(t->BoundingBox.X1), y, RND_COORD_TO_MM(t->BoundingBox.X2)+1, y+4, 1, 0, 0, 0, OMIT_NONE);
 			dtext_bg(gc, 1, y, 200, 0, "<outline>", &COLOR_BG, &COLOR_OUTLINE);
 		}
 		dline(0, ystart, 0, y+4, 1);
-		reg_outline_coords(t->BoundingBox.X1, PCB_MM_TO_COORD(y), t->BoundingBox.X2, PCB_MM_TO_COORD(y+4));
+		reg_outline_coords(t->BoundingBox.X1, RND_MM_TO_COORD(y), t->BoundingBox.X2, RND_MM_TO_COORD(y+4));
 	}
 	else {
 		create_button(gc, 2, y, "Create outline", &btn_addoutline);
@@ -721,7 +721,7 @@ static rnd_bool mouse_csect(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 				break;
 			}
 			
-			if ((x > 0) && (x < PCB_MM_TO_COORD(GROUP_WIDTH_MM))) {
+			if ((x > 0) && (x < RND_MM_TO_COORD(GROUP_WIDTH_MM))) {
 				rnd_coord_t tmp;
 				rnd_layergrp_id_t gid;
 				gid = get_group_coords(y, &tmp, &tmp);
@@ -878,7 +878,7 @@ static rnd_bool mouse_csect(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 				pcb_layervis_change_group_vis(&PCB->hidlib, lid, 1, 1);
 				rnd_actionva(&PCB->hidlib, "Popup", "layer", NULL);
 			}
-			else if ((x > 0) && (x < PCB_MM_TO_COORD(GROUP_WIDTH_MM))) {
+			else if ((x > 0) && (x < RND_MM_TO_COORD(GROUP_WIDTH_MM))) {
 				rnd_coord_t tmp;
 				pcb_actd_EditGroup_gid = get_group_coords(y, &tmp, &tmp);
 				if (pcb_actd_EditGroup_gid >= 0)

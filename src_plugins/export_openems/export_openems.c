@@ -91,7 +91,7 @@ static FILE *f = NULL;
 static wctx_t *ems_ctx;
 static int openems_ovr;
 
-#define THMAX PCB_MM_TO_COORD(100)
+#define THMAX RND_MM_TO_COORD(100)
 
 rnd_export_opt_t openems_attribute_list[] = {
 	{"outfile", "Graphics output file",
@@ -99,11 +99,11 @@ rnd_export_opt_t openems_attribute_list[] = {
 #define HA_openemsfile 0
 
 	{"def-copper-thick", "Default copper thickness",
-	 RND_HATT_COORD, 0, THMAX, {0, 0, 0, PCB_MM_TO_COORD(0.035)}, 0, 0},
+	 RND_HATT_COORD, 0, THMAX, {0, 0, 0, RND_MM_TO_COORD(0.035)}, 0, 0},
 #define HA_def_copper_thick 1
 
 	{"def-substrate-thick", "Default substrate thickness",
-	 RND_HATT_COORD, 0, THMAX, {0, 0, 0, PCB_MM_TO_COORD(0.8)}, 0, 0},
+	 RND_HATT_COORD, 0, THMAX, {0, 0, 0, RND_MM_TO_COORD(0.8)}, 0, 0},
 #define HA_def_substrate_thick 2
 
 	{"def-copper-cond", "Default copper conductivity",

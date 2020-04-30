@@ -130,8 +130,8 @@
 /* frame between the groundplane and the copper or mask - noone seems
    to remember what these two are for; changing them may have unforeseen
    side effects. */
-#define PCB_GROUNDPLANEFRAME        PCB_MIL_TO_COORD(15)
-#define PCB_MASKFRAME               PCB_MIL_TO_COORD(3)
+#define PCB_GROUNDPLANEFRAME        RND_MIL_TO_COORD(15)
+#define PCB_MASKFRAME               RND_MIL_TO_COORD(3)
 
 /* default inner/outer ratio for pins/vias in percent */
 #define PCB_DEFAULT_DRILLINGHOLE 40
@@ -2064,7 +2064,7 @@ yyreduce:
 #line 392 "parse_y.y" /* yacc.c:1652  */
     {
 				/* Read in cmil^2 for now; in future this should be a noop. */
-				load_meta_float("design/poly_isle_area", PCB_MIL_TO_COORD(PCB_MIL_TO_COORD ((yyvsp[-1].number)) / 100.0) / 100.0);
+				load_meta_float("design/poly_isle_area", RND_MIL_TO_COORD(RND_MIL_TO_COORD ((yyvsp[-1].number)) / 100.0) / 100.0);
 			}
 #line 2070 "parse_y.c" /* yacc.c:1652  */
     break;
@@ -2967,61 +2967,61 @@ yyreduce:
 
   case 205:
 #line 1345 "parse_y.y" /* yacc.c:1652  */
-    { do_measure(&(yyval.measure), (yyvsp[0].number), PCB_MIL_TO_COORD ((yyvsp[0].number)) / 100.0, 0); }
+    { do_measure(&(yyval.measure), (yyvsp[0].number), RND_MIL_TO_COORD ((yyvsp[0].number)) / 100.0, 0); }
 #line 2972 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 206:
 #line 1346 "parse_y.y" /* yacc.c:1652  */
-    { M ((yyval.measure), (yyvsp[-1].number), PCB_MIL_TO_COORD ((yyvsp[-1].number)) / 100000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+    { M ((yyval.measure), (yyvsp[-1].number), RND_MIL_TO_COORD ((yyvsp[-1].number)) / 100000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 #line 2978 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 207:
 #line 1347 "parse_y.y" /* yacc.c:1652  */
-    { M ((yyval.measure), (yyvsp[-1].number), PCB_MIL_TO_COORD ((yyvsp[-1].number)) / 100.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+    { M ((yyval.measure), (yyvsp[-1].number), RND_MIL_TO_COORD ((yyvsp[-1].number)) / 100.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 #line 2984 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 208:
 #line 1348 "parse_y.y" /* yacc.c:1652  */
-    { M ((yyval.measure), (yyvsp[-1].number), PCB_MIL_TO_COORD ((yyvsp[-1].number))); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+    { M ((yyval.measure), (yyvsp[-1].number), RND_MIL_TO_COORD ((yyvsp[-1].number))); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 #line 2990 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 209:
 #line 1349 "parse_y.y" /* yacc.c:1652  */
-    { M ((yyval.measure), (yyvsp[-1].number), PCB_INCH_TO_COORD ((yyvsp[-1].number))); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+    { M ((yyval.measure), (yyvsp[-1].number), RND_INCH_TO_COORD ((yyvsp[-1].number))); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 #line 2996 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 210:
 #line 1350 "parse_y.y" /* yacc.c:1652  */
-    { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) / 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_NANOMETER; }
+    { M ((yyval.measure), (yyvsp[-1].number), RND_MM_TO_COORD ((yyvsp[-1].number)) / 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_NANOMETER; }
 #line 3002 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 211:
 #line 1351 "parse_y.y" /* yacc.c:1652  */
-    { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) / 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+    { M ((yyval.measure), (yyvsp[-1].number), RND_MM_TO_COORD ((yyvsp[-1].number)) / 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 #line 3008 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 212:
 #line 1352 "parse_y.y" /* yacc.c:1652  */
-    { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number))); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+    { M ((yyval.measure), (yyvsp[-1].number), RND_MM_TO_COORD ((yyvsp[-1].number))); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 #line 3014 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 213:
 #line 1353 "parse_y.y" /* yacc.c:1652  */
-    { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) * 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+    { M ((yyval.measure), (yyvsp[-1].number), RND_MM_TO_COORD ((yyvsp[-1].number)) * 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 #line 3020 "parse_y.c" /* yacc.c:1652  */
     break;
 
   case 214:
 #line 1354 "parse_y.y" /* yacc.c:1652  */
-    { M ((yyval.measure), (yyvsp[-1].number), PCB_MM_TO_COORD ((yyvsp[-1].number)) * 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+    { M ((yyval.measure), (yyvsp[-1].number), RND_MM_TO_COORD ((yyvsp[-1].number)) * 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 #line 3026 "parse_y.c" /* yacc.c:1652  */
     break;
 
@@ -3317,7 +3317,7 @@ old_units (PLMeasure m)
     return m.bval;
   if (m.ival != 0)
     pcb_io_pcb_usty_seen |= PCB_USTY_CMIL; /* ... because we can't save in mil */
-  return rnd_round(PCB_MIL_TO_COORD (m.ival));
+  return rnd_round(RND_MIL_TO_COORD (m.ival));
 }
 
 static rnd_coord_t

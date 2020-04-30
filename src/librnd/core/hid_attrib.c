@@ -198,7 +198,7 @@ int rnd_hid_parse_command_line(int *argc, char ***argv)
 						(*argv)++;
 						break;
 					case RND_HATT_UNIT:
-						unit = get_unit_struct((*argv)[1]);
+						unit = rnd_get_unit_struct((*argv)[1]);
 						if (unit == NULL) {
 							fprintf(stderr, "ERROR:  unit \"%s\" is unknown to pcb (option --%s)\n", (*argv)[1], a->name);
 							exit(1);

@@ -121,7 +121,7 @@ real:
 	;
 
 coord:
-	real    { $$ = PCB_MIL_TO_COORD($1); }
+	real    { $$ = RND_MIL_TO_COORD($1); }
 	;
 
 common_attr_text:

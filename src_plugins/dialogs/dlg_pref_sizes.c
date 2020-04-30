@@ -106,13 +106,13 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 			RND_DAD_LABEL(ctx->dlg, "Width=");
 			RND_DAD_COORD(ctx->dlg, "");
 				ctx->sizes.wwidth = RND_DAD_CURRENT(ctx->dlg);
-				RND_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), RND_MAX_COORD);
+				RND_DAD_MINMAX(ctx->dlg, RND_MM_TO_COORD(1), RND_MAX_COORD);
 				RND_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_x);
 				RND_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
 			RND_DAD_LABEL(ctx->dlg, "Height=");
 			RND_DAD_COORD(ctx->dlg, "");
 				ctx->sizes.wheight = RND_DAD_CURRENT(ctx->dlg);
-				RND_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(1), RND_MAX_COORD);
+				RND_DAD_MINMAX(ctx->dlg, RND_MM_TO_COORD(1), RND_MAX_COORD);
 				RND_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_y);
 				RND_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
 		RND_DAD_END(ctx->dlg);

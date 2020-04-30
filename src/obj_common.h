@@ -318,7 +318,7 @@ do { \
 
 #define pcb_obj_noexport_mark(obj, cx, cy) \
 do { \
-	rnd_coord_t radius = PCB_MM_TO_COORD(0.2); \
+	rnd_coord_t radius = RND_MM_TO_COORD(0.2); \
 	int selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, obj); \
 	rnd_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc); \
 	rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round); \

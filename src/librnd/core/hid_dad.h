@@ -685,10 +685,10 @@ do { \
 			break; \
 		case RND_HATT_UNIT: \
 			{ \
-				int __n__, __v__ = pcb_get_n_units(0); \
+				int __n__, __v__ = rnd_get_n_units(0); \
 				if (val_ != NULL) { \
 					for(__n__ = 0; __n__ < __v__; __n__++) { \
-						if (&pcb_units[__n__] == (rnd_unit_t *)(val_)) { \
+						if (&rnd_units[__n__] == (rnd_unit_t *)(val_)) { \
 							table[table ## _len - 1].field.lng = __n__; \
 							break; \
 						} \

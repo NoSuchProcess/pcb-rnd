@@ -604,7 +604,7 @@ case 15:
 break;
 case 16:
 #line 124 "bxl_gram.y"
-	{ yyctx->val.un.c = PCB_MIL_TO_COORD(yyctx->stack.l_mark[0].un.d); }
+	{ yyctx->val.un.c = RND_MIL_TO_COORD(yyctx->stack.l_mark[0].un.d); }
 break;
 case 17:
 #line 128 "bxl_gram.y"

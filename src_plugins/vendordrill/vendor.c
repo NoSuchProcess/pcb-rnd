@@ -179,20 +179,20 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* figure out the units, if specified */
 	sval = rnd_hid_cfg_text_value(doc, "/units");
 	if (sval == NULL) {
-		sf = PCB_MIL_TO_COORD(1);
+		sf = RND_MIL_TO_COORD(1);
 	}
 	else if ((RND_NSTRCMP(sval, "mil") == 0) || (RND_NSTRCMP(sval, "mils") == 0)) {
-		sf = PCB_MIL_TO_COORD(1);
+		sf = RND_MIL_TO_COORD(1);
 	}
 	else if ((RND_NSTRCMP(sval, "inch") == 0) || (RND_NSTRCMP(sval, "inches") == 0)) {
-		sf = PCB_INCH_TO_COORD(1);
+		sf = RND_INCH_TO_COORD(1);
 	}
 	else if (RND_NSTRCMP(sval, "mm") == 0) {
-		sf = PCB_MM_TO_COORD(1);
+		sf = RND_MM_TO_COORD(1);
 	}
 	else {
 		rnd_message(RND_MSG_ERROR, "\"%s\" is not a supported units.  Defaulting to inch\n", sval);
-		sf = PCB_INCH_TO_COORD(1);
+		sf = RND_INCH_TO_COORD(1);
 	}
 
 	/* default to ROUND_UP */

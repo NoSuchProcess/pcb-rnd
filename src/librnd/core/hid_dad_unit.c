@@ -40,7 +40,7 @@ void rnd_dad_unit_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rnd_hid_attribute_t *end = attr - unit->wenum + unit->cmp.wend;
 	const char **vals = enu->wdata;
 	const rnd_unit_t *u = get_unit_by_suffix(vals[enu->val.lng]);
-	int unit_id = u == NULL ? -1 : u - pcb_units;
+	int unit_id = u == NULL ? -1 : u - rnd_units;
 
 	end->val.lng = unit_id;
 	end->changed = 1;
@@ -53,7 +53,7 @@ void rnd_dad_unit_set_num(rnd_hid_attribute_t *attr, long unit_id, double unused
 	int l;
 	rnd_hid_dad_unit_t *unit = attr->wdata;
 	rnd_hid_attribute_t *enu = attr - unit->cmp.wend + unit->wenum;
-	const char *target = pcb_units[unit_id].suffix;
+	const char *target = rnd_units[unit_id].suffix;
 	const char **vals = enu->wdata;
 
 	for(l = 0; vals[l] != NULL; l++) {
@@ -67,10 +67,10 @@ void rnd_dad_unit_set_num(rnd_hid_attribute_t *attr, long unit_id, double unused
 void rnd_dad_unit_set_val_ptr(rnd_hid_attribute_t *end, void *val_)
 {
 	const rnd_unit_t *val = val_;
-	int __n__, __v__ = pcb_get_n_units(1);
+	int __n__, __v__ = rnd_get_n_units(1);
 	if (val != NULL) {
 		for(__n__ = 0; __n__ < __v__; __n__++) {
-			if (&pcb_units[__n__] == val) {
+			if (&rnd_units[__n__] == val) {
 				rnd_dad_unit_set_num(end, __n__, 0, 0);
 				return;
 			}
@@ -119,11 +119,11 @@ void rnd_dad_unit_init(enum pcb_family_e family)
 	if (rnd_dad_unit_enum != NULL)
 		return;
 
-	len = pcb_get_n_units(0);
+	len = rnd_get_n_units(0);
 	rnd_dad_unit_enum = malloc(sizeof(char *) * (len+1));
 	for(n = i = 0; i < len; i++) {
-		if (pcb_units[i].family & family)
-			rnd_dad_unit_enum[n++] = pcb_units[i].suffix;
+		if (rnd_units[i].family & family)
+			rnd_dad_unit_enum[n++] = rnd_units[i].suffix;
 	}
 	rnd_dad_unit_enum[n] = NULL;
 }

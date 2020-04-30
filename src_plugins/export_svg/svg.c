@@ -119,10 +119,10 @@ static struct {
 	const char *dark;
 	rnd_coord_t offs;
 } photo_palette[] = {
-	/* MASK */   { "#00ff00", "#00ff00", "#00ff00", PCB_MM_TO_COORD(0) },
-	/* SILK */   { "#ffffff", "#eeeeee", "#aaaaaa", PCB_MM_TO_COORD(0) },
-	/* COPPER */ { "#bbbbbb", "#707090", "#555555", PCB_MM_TO_COORD(0.05) },
-	/* INNER */  { "#222222", "#111111", "#000000", PCB_MM_TO_COORD(0) }
+	/* MASK */   { "#00ff00", "#00ff00", "#00ff00", RND_MM_TO_COORD(0) },
+	/* SILK */   { "#ffffff", "#eeeeee", "#aaaaaa", RND_MM_TO_COORD(0) },
+	/* COPPER */ { "#bbbbbb", "#707090", "#555555", RND_MM_TO_COORD(0.05) },
+	/* INNER */  { "#222222", "#111111", "#000000", RND_MM_TO_COORD(0) }
 };
 
 rnd_export_opt_t svg_attribute_list[] = {
@@ -293,17 +293,17 @@ static void svg_header(void)
 	fprintf(f, "<?xml version=\"1.0\"?>\n");
 	w = PCB->hidlib.size_x;
 	h = PCB->hidlib.size_y;
-	while((w < PCB_MM_TO_COORD(1024)) && (h < PCB_MM_TO_COORD(1024))) {
+	while((w < RND_MM_TO_COORD(1024)) && (h < RND_MM_TO_COORD(1024))) {
 		w *= 2;
 		h *= 2;
 	}
 
-	x1 = PCB_MM_TO_COORD(2);
-	y1 = PCB_MM_TO_COORD(2);
+	x1 = RND_MM_TO_COORD(2);
+	y1 = RND_MM_TO_COORD(2);
 	x2 = PCB->hidlib.size_x;
 	y2 = PCB->hidlib.size_y;
-	x2 += PCB_MM_TO_COORD(5);
-	y2 += PCB_MM_TO_COORD(5);
+	x2 += RND_MM_TO_COORD(5);
+	y2 += RND_MM_TO_COORD(5);
 	rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
 }
 
@@ -563,7 +563,7 @@ static void svg_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 
 static void svg_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
-	gc->width = width < PCB_MM_TO_COORD(0.01) ? PCB_MM_TO_COORD(0.01) : width;
+	gc->width = width < RND_MM_TO_COORD(0.01) ? RND_MM_TO_COORD(0.01) : width;
 }
 
 static void indent(gds_t *s)

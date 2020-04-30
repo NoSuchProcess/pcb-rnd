@@ -67,7 +67,7 @@ void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
 /* debug helper */
 static void cross(FILE *f, rnd_coord_t x, rnd_coord_t y)
 {
-	static rnd_coord_t cs = PCB_MM_TO_COORD(0.2);
+	static rnd_coord_t cs = RND_MM_TO_COORD(0.2);
 	rnd_fprintf(f, "line %#mm %#mm %#mm %#mm\n", x - cs, y, x + cs, y);
 	rnd_fprintf(f, "line %#mm %#mm %#mm %#mm\n", x, y - cs, x, y + cs);
 }
@@ -384,7 +384,7 @@ static int polyhatch_gui(rnd_coord_t *period, pcb_cpoly_hatchdir_t *dir, pcb_fla
 			RND_DAD_COORD(dlg, "");
 				RND_DAD_HELP(dlg, "Distance between centerlines of adjacent hatch lines for vertical and horizontal hatching");
 				RND_DAD_DEFAULT_NUM(dlg, conf_core.design.line_thickness * 2);
-				RND_DAD_MINMAX(dlg, 1, PCB_MM_TO_COORD(100));
+				RND_DAD_MINMAX(dlg, 1, RND_MM_TO_COORD(100));
 				wspc = RND_DAD_CURRENT(dlg);
 
 			RND_DAD_LABEL(dlg, "Draw contour");

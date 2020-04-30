@@ -77,19 +77,19 @@ rnd_export_opt_t gcode_attribute_list[] = {
 #define HA_mech_script 3
 
 	{"mill-depth", "Milling depth on layers",
-	 RND_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(-0.05)}, 0},
+	 RND_HATT_COORD, RND_MM_TO_COORD(-10), RND_MM_TO_COORD(100), {0, 0, 0, RND_MM_TO_COORD(-0.05)}, 0},
 #define HA_layerdepth 4
 
 	{"total-cut-depth", "Total milling depth when cutting through the board (if 0, use pcb thickness)",
-	 RND_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(-1.6)}, 0},
+	 RND_HATT_COORD, RND_MM_TO_COORD(-10), RND_MM_TO_COORD(100), {0, 0, 0, RND_MM_TO_COORD(-1.6)}, 0},
 #define HA_totalcutdepth 5
 
 	{"cut-depth", "Milling depth increment in each pass",
-	 RND_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(0.5)}, 0},
+	 RND_HATT_COORD, RND_MM_TO_COORD(-10), RND_MM_TO_COORD(100), {0, 0, 0, RND_MM_TO_COORD(0.5)}, 0},
 #define HA_cutdepth 6
 
 	{"safe-Z", "Safe Z (above the board) for traverse move",
-	 RND_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(0.5)}, 0},
+	 RND_HATT_COORD, RND_MM_TO_COORD(-10), RND_MM_TO_COORD(100), {0, 0, 0, RND_MM_TO_COORD(0.5)}, 0},
 #define HA_safeZ 7
 
 	{"cam", "CAM instruction",
@@ -256,8 +256,8 @@ static int gcode_export_layer_group(rnd_layergrp_id_t group, const char *purpose
 	pcb_layergrp_t *grp = &gctx.pcb->LayerGroups.grp[group];
 	static pcb_tlp_session_t tctx;
 	static rnd_coord_t tool_dias[] = {
-		PCB_MM_TO_COORD(0.2),
-		PCB_MM_TO_COORD(3)
+		RND_MM_TO_COORD(0.2),
+		RND_MM_TO_COORD(3)
 	};
 	static pcb_tlp_tools_t tools = { sizeof(tool_dias)/sizeof(tool_dias[0]), tool_dias};
 
@@ -311,7 +311,7 @@ static int gcode_export_layer_group(rnd_layergrp_id_t group, const char *purpose
 		script = gcode_values[script_ha].str;
 
 	memset(&tctx, 0, sizeof(tctx));
-	tctx.edge_clearance = PCB_MM_TO_COORD(0.05);
+	tctx.edge_clearance = RND_MM_TO_COORD(0.05);
 	tctx.tools = &tools;
 	pcb_tlp_mill_script(gctx.pcb, &tctx, grp, script);
 

@@ -32,7 +32,7 @@ static rnd_coord_t net_get_clearance_(hkp_ctx_t *ctx, rnd_layer_id_t lid, const 
 {
 	if ((lid < 0) || (lid >= PCB_MAX_LAYER)) {
 		hkp_error(errnode, "failed to determine clearance, falling back to default value\n");
-		return PCB_MIL_TO_COORD(12);
+		return RND_MIL_TO_COORD(12);
 	}
 	return ctx->nc_dflt.clearance[lid][type];
 }

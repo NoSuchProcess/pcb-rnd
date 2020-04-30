@@ -142,7 +142,7 @@ static rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
 		if (rnd_conf.editor.grid_unit)
 			xy_options[HA_unit].default_val.lng = rnd_conf.editor.grid_unit->index;
 		else
-			xy_options[HA_unit].default_val.lng = get_unit_struct("mil")->index;
+			xy_options[HA_unit].default_val.lng = rnd_get_unit_struct("mil")->index;
 		last_unit_value = xy_options[HA_unit].default_val.lng;
 	}
 	if ((PCB != NULL)  && (xy_options[HA_xyfile].default_val.str == NULL))
@@ -813,9 +813,9 @@ static void xy_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &xy_filename);
 
 	if (options[HA_unit].lng == -1)
-		xy_unit = get_unit_struct("mil");
+		xy_unit = rnd_get_unit_struct("mil");
 	else
-		xy_unit = &pcb_units[options[HA_unit].lng];
+		xy_unit = &rnd_units[options[HA_unit].lng];
 
 	tid = vts0_get(&fmt_ids, options[HA_format].lng, 0);
 	if ((tid == NULL) || (*tid == NULL)) {

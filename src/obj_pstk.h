@@ -283,7 +283,7 @@ typedef struct pcb_proto_layer_s {
 	rnd_coord_t auto_bloat;
 } pcb_proto_layer_t;
 
-#define PCB_PROTO_MASK_BLOAT PCB_MIL_TO_COORD(2*3)
+#define PCB_PROTO_MASK_BLOAT RND_MIL_TO_COORD(2*3)
 
 #define pcb_proto_num_layers 8
 extern const pcb_proto_layer_t pcb_proto_layers[pcb_proto_num_layers];

@@ -364,7 +364,7 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 	pup_autoload_dir(&rnd_pup, NULL, NULL);
 
 	rnd_conf_load_extra(NULL, NULL);
-	pcb_units_init();
+	rnd_units_init();
 	pcb_funchash_init();
 
 	/* actions */

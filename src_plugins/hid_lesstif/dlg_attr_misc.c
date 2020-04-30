@@ -190,8 +190,8 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid
 	else {
 		pd->x1 = 0;
 		pd->y1 = 0;
-		pd->x2 = PCB_MM_TO_COORD(100);
-		pd->y2 = PCB_MM_TO_COORD(100);
+		pd->x2 = RND_MM_TO_COORD(100);
+		pd->y2 = RND_MM_TO_COORD(100);
 	}
 
 	stdarg(XmNwidth, prv->min_sizex_px);

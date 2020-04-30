@@ -54,7 +54,7 @@
 #include "../src_plugins/shape/shape.h"
 
 /* coordinates that corresponds to pcb-rnd 100% text size in height */
-#define EAGLE_TEXT_SIZE_100 PCB_MIL_TO_COORD(50)
+#define EAGLE_TEXT_SIZE_100 RND_MIL_TO_COORD(50)
 
 #define PARENT(node)   st->parser.calls->parent(&st->parser, node)
 #define CHILDREN(node) st->parser.calls->children(&st->parser, node)
@@ -1565,7 +1565,7 @@ static int eagle_read_design_rules(read_state_t *st)
 	st->rv_pad_top = 0.25;
 	st->rv_pad_inner = 0.25;
 	st->rv_pad_bottom = 0.25;
-	st->md_wire_wire = PCB_MIL_TO_COORD(10); /* default minimum wire to wire spacing */
+	st->md_wire_wire = RND_MIL_TO_COORD(10); /* default minimum wire to wire spacing */
 
 	dr = eagle_trpath(st, st->parser.root, "drawing", "board", "designrules", NULL);
 	if (dr == NULL) {
@@ -1709,7 +1709,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	};
 
 	/* have not read design rules section yet but need this for rectangle parsing */
-	st.ms_width = PCB_MIL_TO_COORD(10); /* default minimum feature width */
+	st.ms_width = RND_MIL_TO_COORD(10); /* default minimum feature width */
 
 	st.parser.calls = &trparse_xml_calls;
 

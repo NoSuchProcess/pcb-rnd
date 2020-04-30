@@ -99,13 +99,13 @@ flag[.]         { return T_FLD_FLAG; }
 "$dwg_area_x"   { qry_lval.c = PCB->hidlib.size_x; return T_INT; }
 "$dwg_area_y"   { qry_lval.c = PCB->hidlib.size_y; return T_INT; }
 
-mm              { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_MM); return T_UNIT; }
-m               { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_M); return T_UNIT; }
-um              { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_UM); return T_UNIT; }
-cm              { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_CM); return T_UNIT; }
-nm              { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_NM); return T_UNIT; }
-mil             { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_MIL); return T_UNIT; }
-inch            { qry_lval.u = get_unit_struct_by_allow(PCB_UNIT_ALLOW_IN); return T_UNIT; }
+mm              { qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_MM); return T_UNIT; }
+m               { qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_M); return T_UNIT; }
+um              { qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_UM); return T_UNIT; }
+cm              { qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_CM); return T_UNIT; }
+nm              { qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_NM); return T_UNIT; }
+mil             { qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_MIL); return T_UNIT; }
+inch            { qry_lval.u = rnd_get_unit_struct_by_allow(PCB_UNIT_ALLOW_IN); return T_UNIT; }
 
 thus            { return T_THUS; }
 [|][|]          { return T_OR; }

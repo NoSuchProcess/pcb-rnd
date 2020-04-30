@@ -70,16 +70,16 @@ static void pcb_font_load_internal(pcb_font_t *font)
 			embf_line_t *lines = embf_font[n].lines;
 
 			for(l = 0; l < embf_font[n].num_lines; l++) {
-				rnd_coord_t x1 = PCB_MIL_TO_COORD(lines[l].x1);
-				rnd_coord_t y1 = PCB_MIL_TO_COORD(lines[l].y1);
-				rnd_coord_t x2 = PCB_MIL_TO_COORD(lines[l].x2);
-				rnd_coord_t y2 = PCB_MIL_TO_COORD(lines[l].y2);
-				rnd_coord_t th = PCB_MIL_TO_COORD(lines[l].th);
+				rnd_coord_t x1 = RND_MIL_TO_COORD(lines[l].x1);
+				rnd_coord_t y1 = RND_MIL_TO_COORD(lines[l].y1);
+				rnd_coord_t x2 = RND_MIL_TO_COORD(lines[l].x2);
+				rnd_coord_t y2 = RND_MIL_TO_COORD(lines[l].y2);
+				rnd_coord_t th = RND_MIL_TO_COORD(lines[l].th);
 				pcb_font_new_line_in_sym(s, x1, y1, x2, y2, th);
 			}
 
 			s->Valid = 1;
-			s->Delta = PCB_MIL_TO_COORD(embf_font[n].delta);
+			s->Delta = RND_MIL_TO_COORD(embf_font[n].delta);
 		}
 	}
 	pcb_font_set_info(font);

@@ -515,8 +515,8 @@ void *pcb_textop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_text_t *t
 /* changes the scaling factor of a text object */
 void *pcb_textop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
-	int value = ctx->chgsize.is_absolute ? PCB_COORD_TO_MIL(ctx->chgsize.value)
-		: Text->Scale + PCB_COORD_TO_MIL(ctx->chgsize.value);
+	int value = ctx->chgsize.is_absolute ? RND_COORD_TO_MIL(ctx->chgsize.value)
+		: Text->Scale + RND_COORD_TO_MIL(ctx->chgsize.value);
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Text))
 		return NULL;
@@ -1230,8 +1230,8 @@ RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 				newarc.Thickness = PCB_SCALE_TEXT(newarc.Thickness, scale / 2);
 				newarc.StartAngle += rotdeg;
 				if (mirror) {
-					newarc.StartAngle = PCB_SWAP_ANGLE(newarc.StartAngle);
-					newarc.Delta = PCB_SWAP_DELTA(newarc.Delta);
+					newarc.StartAngle = RND_SWAP_ANGLE(newarc.StartAngle);
+					newarc.Delta = RND_SWAP_DELTA(newarc.Delta);
 				}
 				if (newarc.Thickness < min_line_width)
 					newarc.Thickness = min_line_width;

@@ -37,8 +37,8 @@ const char *pcb_millpath_cookie = "millpath plugin";
 
 static pcb_tlp_session_t ctx;
 static rnd_coord_t tool_dias[] = {
-	PCB_MM_TO_COORD(0.5),
-	PCB_MM_TO_COORD(3)
+	RND_MM_TO_COORD(0.5),
+	RND_MM_TO_COORD(3)
 };
 static pcb_tlp_tools_t tools = { sizeof(tool_dias)/sizeof(tool_dias[0]), tool_dias};
 
@@ -48,7 +48,7 @@ fgw_error_t pcb_act_mill(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *script = NULL;
 	pcb_board_t *pcb = (pcb_board_t *)RND_ACT_HIDLIB;
-	ctx.edge_clearance = PCB_MM_TO_COORD(0.05);
+	ctx.edge_clearance = RND_MM_TO_COORD(0.05);
 	ctx.tools = &tools;
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, mill, script = argv[1].val.str);

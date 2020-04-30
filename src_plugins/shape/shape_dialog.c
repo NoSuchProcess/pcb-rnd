@@ -140,8 +140,8 @@ static void shp_chg_tab(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rnd_bool modal)
 {
 	ctx_t *shp = calloc(sizeof(ctx_t), 1);
-	rnd_coord_t mm2 = PCB_MM_TO_COORD(2);
-	rnd_coord_t maxr = PCB_MM_TO_COORD(1000);
+	rnd_coord_t mm2 = RND_MM_TO_COORD(2);
+	rnd_coord_t maxr = RND_MM_TO_COORD(1000);
 	const char *tabs[] = {"Regular polygon", "Round rectangle", "Filled circle", NULL};
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
@@ -382,7 +382,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 	RND_DAD_END(shp->dlg);
 
 	RND_DAD_NEW("shape", shp->dlg, "dlg_shape", shp, modal, shp_close_cb);
-	RND_DAD_SET_VALUE(shp->dlg_hid_ctx, shp->dia, crd, PCB_MM_TO_COORD(25.4)); /* suppress a runtime warning on invalid dia (zero) */
+	RND_DAD_SET_VALUE(shp->dlg_hid_ctx, shp->dia, crd, RND_MM_TO_COORD(25.4)); /* suppress a runtime warning on invalid dia (zero) */
 	shp_chg_circle(shp->dlg_hid_ctx, shp, NULL);
 	shp_chg_roundrect(shp->dlg_hid_ctx, shp, NULL);
 	shp_chg_regpoly(shp->dlg_hid_ctx, shp, NULL); /* has to be the last */

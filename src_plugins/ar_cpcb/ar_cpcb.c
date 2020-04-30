@@ -146,9 +146,9 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 				break;
 			case 6: /* tracks */
 				nid = gsxl_nth(rn, 1);
-				ntr = gsxl_next(nid); thick = 2*PCB_MM_TO_COORD(strtod(ntr->str, NULL));
-				nvr = gsxl_next(ntr); via_dia = 2*PCB_MM_TO_COORD(strtod(nvr->str, NULL));
-				ngap = gsxl_next(nvr); clear = PCB_MM_TO_COORD(strtod(ngap->str, NULL));
+				ntr = gsxl_next(nid); thick = 2*RND_MM_TO_COORD(strtod(ntr->str, NULL));
+				nvr = gsxl_next(ntr); via_dia = 2*RND_MM_TO_COORD(strtod(nvr->str, NULL));
+				ngap = gsxl_next(nvr); clear = RND_MM_TO_COORD(strtod(ngap->str, NULL));
 				npads = gsxl_next(ngap);
 				npaths = gsxl_next(npads);
 
@@ -158,8 +158,8 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 
 					for(p = gsxl_children(n); p != NULL; p = gsxl_next(p)) { /* iterate over all points of the path */
 						pcb_line_t *line;
-						nx = gsxl_children(p); x = PCB_MM_TO_COORD(strtod(nx->str, NULL));
-						ny = gsxl_next(nx); y = PCB_MM_TO_COORD(strtod(ny->str, NULL));
+						nx = gsxl_children(p); x = RND_MM_TO_COORD(strtod(nx->str, NULL));
+						ny = gsxl_next(nx); y = RND_MM_TO_COORD(strtod(ny->str, NULL));
 						nl = gsxl_next(ny);
 						
 						lidx = strtol(nl->str, &end, 10);
@@ -256,7 +256,7 @@ static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 	htpp_entry_t *e;
 
 	/* print dims */
-	rnd_fprintf(f, "(%d %d %d)\n", (int)(PCB_COORD_TO_MM(pcb->hidlib.size_x)+0.5), (int)(PCB_COORD_TO_MM(pcb->hidlib.size_y)+0.5), stack->maxlayer);
+	rnd_fprintf(f, "(%d %d %d)\n", (int)(RND_COORD_TO_MM(pcb->hidlib.size_x)+0.5), (int)(RND_COORD_TO_MM(pcb->hidlib.size_y)+0.5), stack->maxlayer);
 
 	/* print tracks */
 	for(e = htpp_first(&nmap->netmap.n2o); e != NULL; e = htpp_next(&nmap->netmap.n2o, e)) {

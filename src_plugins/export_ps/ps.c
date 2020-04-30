@@ -281,7 +281,7 @@ Diameter of the small hole when drill-helper is on
 %end-doc
 */
 	{"drill-helper-size", "Diameter of the small hole when drill-helper is on",
-	 RND_HATT_COORD, 0, PCB_MM_TO_COORD(10), {0, 0, 0, PCB_MIN_PINORVIAHOLE}, 0, 0},
+	 RND_HATT_COORD, 0, RND_MM_TO_COORD(10), {0, 0, 0, PCB_MIN_PINORVIAHOLE}, 0, 0},
 #define HA_drillhelpersize 19
 
 
@@ -446,8 +446,8 @@ void ps_start_file(FILE * f)
 	 */
 	rnd_fprintf(f, "%%%%DocumentMedia: %s %f %f 0 \"\" \"\"\n",
 							pcb_media_data[global.media_idx].name,
-							72 * PCB_COORD_TO_INCH(pcb_media_data[global.media_idx].width),
-							72 * PCB_COORD_TO_INCH(pcb_media_data[global.media_idx].height));
+							72 * RND_COORD_TO_INCH(pcb_media_data[global.media_idx].width),
+							72 * RND_COORD_TO_INCH(pcb_media_data[global.media_idx].height));
 	rnd_fprintf(f, "%%%%DocumentPaperSizes: %s\n", pcb_media_data[global.media_idx].name);
 
 	/* End General Header Comments. */
@@ -678,8 +678,8 @@ static int ps_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 static void corner(FILE * fh, rnd_coord_t x, rnd_coord_t y, int dx, int dy)
 {
-	rnd_coord_t len = PCB_MIL_TO_COORD(2000);
-	rnd_coord_t len2 = PCB_MIL_TO_COORD(200);
+	rnd_coord_t len = RND_MIL_TO_COORD(2000);
+	rnd_coord_t len2 = RND_MIL_TO_COORD(200);
 	rnd_coord_t thick = 0;
 	/*
 	 * Originally 'thick' used thicker lines.  Currently is uses
@@ -873,7 +873,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		 * If users don't want to make smaller boards, or use fewer drill
 		 * sizes, they can always ignore this sheet. */
 		if (PCB_LAYER_IS_FAB(flags, purpi)) {
-			rnd_coord_t natural = boffset - PCB_MIL_TO_COORD(500) - PCB->hidlib.size_y / 2;
+			rnd_coord_t natural = boffset - RND_MIL_TO_COORD(500) - PCB->hidlib.size_y / 2;
 			rnd_coord_t needed = pcb_stub_draw_fab_overhang();
 			rnd_fprintf(global.f, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
 			if (needed > natural)

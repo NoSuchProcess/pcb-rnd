@@ -74,10 +74,10 @@ static void pinout_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, r
 		rnd_rnd_box_t bbox;
 		sprintf(tmp, "Subcircuit #%ld not found.", ctx->subc_id);
 		bbox.X1 = bbox.Y1 = 0;
-		bbox.X2 = bbox.Y2 = PCB_MM_TO_COORD(10);
+		bbox.X2 = bbox.Y2 = RND_MM_TO_COORD(10);
 		rnd_dad_preview_zoomto(attrib, &bbox);
 		rnd_render->set_color(gc, rnd_color_red);
-		pcb_text_draw_string_simple(NULL, tmp, PCB_MM_TO_COORD(1), PCB_MM_TO_COORD(20), 100, 0, 0, 0, 0, 0, 0);
+		pcb_text_draw_string_simple(NULL, tmp, RND_MM_TO_COORD(1), RND_MM_TO_COORD(20), 100, 0, 0, 0, 0, 0, 0);
 	}
 }
 

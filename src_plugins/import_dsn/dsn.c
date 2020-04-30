@@ -123,7 +123,7 @@ static void parse_polyline(long int *nlines, rnd_coord_t clear, const gsxl_node_
 			rnd_message(RND_MSG_ERROR, "import_dsn: skipping polyline segment because x coord is invalid: %s\n", sy);
 			return;
 		}
-		if (workaround0 && ((y < PCB_MM_TO_COORD(0.01)) || (x < PCB_MM_TO_COORD(0.01)))) /* workaround for broken polyline coords */
+		if (workaround0 && ((y < RND_MM_TO_COORD(0.01)) || (x < RND_MM_TO_COORD(0.01)))) /* workaround for broken polyline coords */
 			return;
 		(*nlines)++;
 		if (pn > 0) {

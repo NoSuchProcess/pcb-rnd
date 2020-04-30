@@ -115,7 +115,7 @@ rnd_bool_t rnd_grid_parse(rnd_grid_t *dst, const char *src)
 		dst->oy = 0;
 
 	if (unit != NULL) {
-		dst->unit = get_unit_struct(unit);
+		dst->unit = rnd_get_unit_struct(unit);
 		if (dst->unit == NULL)
 			goto error;
 	}

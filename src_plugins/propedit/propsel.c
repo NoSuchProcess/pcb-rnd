@@ -636,7 +636,7 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 		pcb_opctx_t op;
 
 		if (st->c_valid && (strcmp(pn, "scale") == 0) &&
-		    pcb_chg_obj_size(PCB_OBJ_TEXT, text->parent.layer, text, text, PCB_MIL_TO_COORD(st->c), st->c_absolute)) DONE;
+		    pcb_chg_obj_size(PCB_OBJ_TEXT, text->parent.layer, text, text, RND_MIL_TO_COORD(st->c), st->c_absolute)) DONE;
 
 		if (st->c_valid && (strcmp(pn, "fid") == 0)) {
 			pcb_text_set_font(text, st->c);

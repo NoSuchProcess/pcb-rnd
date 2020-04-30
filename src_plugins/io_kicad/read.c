@@ -675,7 +675,7 @@ do { \
 do { \
 	double __dtmp__; \
 	PARSE_DOUBLE(__dtmp__, missnode, node, errmsg); \
-	(res) = rnd_round(PCB_MM_TO_COORD(__dtmp__)); \
+	(res) = rnd_round(RND_MM_TO_COORD(__dtmp__)); \
 } while(0) \
 
 /* parse nd->str into a pcb_layer_t in ly, either as a subc layer or if subc
@@ -993,7 +993,7 @@ static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 static int kicad_parse_target(read_state_t *st, gsxl_node_t *subtree)
 {
 	unsigned long tally = 0, required;
-	rnd_coord_t x, y, thick = PCB_MM_TO_COORD(0.15);
+	rnd_coord_t x, y, thick = RND_MM_TO_COORD(0.15);
 	double size = 5.0;
 	pcb_layer_t *ly = NULL;
 	pcb_subc_t *subc;
@@ -1048,14 +1048,14 @@ static int kicad_parse_target(read_state_t *st, gsxl_node_t *subtree)
 
 	/* draw the target within the subc */
 	if (is_plus) {
-		pcb_line_new(ly, x-PCB_MM_TO_COORD(size/2), y, x+PCB_MM_TO_COORD(size/2), y, thick, 0, flg);
-		pcb_line_new(ly, x, y-PCB_MM_TO_COORD(size/2), x, y+PCB_MM_TO_COORD(size/2), thick, 0, flg);
+		pcb_line_new(ly, x-RND_MM_TO_COORD(size/2), y, x+RND_MM_TO_COORD(size/2), y, thick, 0, flg);
+		pcb_line_new(ly, x, y-RND_MM_TO_COORD(size/2), x, y+RND_MM_TO_COORD(size/2), thick, 0, flg);
 	}
 	else {
-		pcb_line_new(ly, x-PCB_MM_TO_COORD(size/2), y-PCB_MM_TO_COORD(size/2), x+PCB_MM_TO_COORD(size/2), y+PCB_MM_TO_COORD(size/2), thick, 0, flg);
-		pcb_line_new(ly, x+PCB_MM_TO_COORD(size/2), y-PCB_MM_TO_COORD(size/2), x-PCB_MM_TO_COORD(size/2), y+PCB_MM_TO_COORD(size/2), thick, 0, flg);
+		pcb_line_new(ly, x-RND_MM_TO_COORD(size/2), y-RND_MM_TO_COORD(size/2), x+RND_MM_TO_COORD(size/2), y+RND_MM_TO_COORD(size/2), thick, 0, flg);
+		pcb_line_new(ly, x+RND_MM_TO_COORD(size/2), y-RND_MM_TO_COORD(size/2), x-RND_MM_TO_COORD(size/2), y+RND_MM_TO_COORD(size/2), thick, 0, flg);
 	}
-	pcb_arc_new(ly, x, y, PCB_MM_TO_COORD(size*0.325), PCB_MM_TO_COORD(size*0.325), 0,360, thick, 0, flg, 0);
+	pcb_arc_new(ly, x, y, RND_MM_TO_COORD(size*0.325), RND_MM_TO_COORD(size*0.325), 0,360, thick, 0, flg, 0);
 
 	/* finish registration of the subc */
 	pcb_subc_bbox(subc);
@@ -1088,7 +1088,7 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 
 	TODO("this workaround is for segment - remove it when clearance is figured CUCP#39");
 	if (flag & PCB_FLAG_CLEARLINE)
-		clearance = PCB_MM_TO_COORD(0.250);
+		clearance = RND_MM_TO_COORD(0.250);
 
 	for(n = subtree; n != NULL; n = n->next) {
 		if (n->str == NULL)
@@ -1192,9 +1192,9 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 
 	TODO("apply poly clearance as in pool/io_kicad (CUCP#39)");
 	if (subc == NULL)
-		clearance = thickness = PCB_MM_TO_COORD(0.250); /* start with sane defaults */
+		clearance = thickness = RND_MM_TO_COORD(0.250); /* start with sane defaults */
 	else
-		clearance = thickness = PCB_MM_TO_COORD(0);
+		clearance = thickness = RND_MM_TO_COORD(0);
 
 	for(n = subtree; n != NULL; n = n->next) {
 		if (n->str == NULL)
@@ -1305,8 +1305,8 @@ static int kicad_parse_via(read_state_t *st, gsxl_node_t *subtree)
 	pcb_pstk_t *ps;
 
 	TODO("apply poly clearance as in pool/io_kicad (CUCP#39)");
-	clearance = mask = PCB_MM_TO_COORD(0.250); /* start with something bland here */
-	drill = PCB_MM_TO_COORD(0.300); /* start with something sane */
+	clearance = mask = RND_MM_TO_COORD(0.250); /* start with something bland here */
+	drill = RND_MM_TO_COORD(0.300); /* start with something sane */
 
 	for(n = subtree; n != NULL; n = n->next) {
 		if (n->str == NULL)
@@ -1665,7 +1665,7 @@ static pcb_pstk_t *kicad_make_pad_thr(read_state_t *st, gsxl_node_t *subtree, pc
 		   padstack and add the custom shapes as heavy terminal together with the
 		   padstack */
 		pcb_pstk_shape_t sh[9];
-		rnd_coord_t dy = PCB_MM_TO_COORD(shape_arg), dx = PCB_MM_TO_COORD(shape_arg2); /* x;y and 1;2 swapped intentionally - kicad does it like that */
+		rnd_coord_t dy = RND_MM_TO_COORD(shape_arg), dx = RND_MM_TO_COORD(shape_arg2); /* x;y and 1;2 swapped intentionally - kicad does it like that */
 		memset(sh, 0, sizeof(sh));
 		if (LYSHT(TOP, MASK))      {sh[len].layer_mask = PCB_LYT_TOP    | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect_trdelta(&sh[len++], padXsize+mask*2, padYsize+mask*2, dx, dy);}
 		if (LYSHT(BOTTOM, MASK))   {sh[len].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect_trdelta(&sh[len++], padXsize+mask*2, padYsize+mask*2, dx, dy);}
@@ -1743,7 +1743,7 @@ static pcb_pstk_t *kicad_make_pad_smd(read_state_t *st, gsxl_node_t *subtree, pc
 	if ((strcmp(pad_shape, "rect") == 0) || (strcmp(pad_shape, "trapezoid") == 0) || (strcmp(pad_shape, "custom") == 0)) {
 		/* "custom" pads: see comment in kicad_make_pad_thr() */
 		pcb_pstk_shape_t sh[4];
-		rnd_coord_t dy = PCB_MM_TO_COORD(shape_arg), dx = PCB_MM_TO_COORD(shape_arg2); /* x;y and 1;2 swapped intentionally - kicad does it like that */
+		rnd_coord_t dy = RND_MM_TO_COORD(shape_arg), dx = RND_MM_TO_COORD(shape_arg2); /* x;y and 1;2 swapped intentionally - kicad does it like that */
 		memset(sh, 0, sizeof(sh));
 		if (LYSHS(side, MASK))      {sh[len].layer_mask = side | PCB_LYT_MASK;   sh[len].comb = PCB_LYC_SUB | PCB_LYC_AUTO; pcb_shape_rect_trdelta(&sh[len++], padXsize+mask*2, padYsize+mask*2, dx, dy);}
 		if (LYSHS(side, PASTE))     {sh[len].layer_mask = side | PCB_LYT_PASTE;  sh[len].comb = PCB_LYC_AUTO; pcb_shape_rect_trdelta(&sh[len++], padXsize * paste_ratio + paste*2, padYsize * paste_ratio + paste*2, dx, dy);}
@@ -1806,7 +1806,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 		if ((*featureTally & required) != required)
 			return kicad_error(subtree, "malformed module pad/pin definition.");
 		if ((*featureTally & BV(3)) == 0)
-			drillx = drilly = PCB_MIL_TO_COORD(30); /* CUCP#63: default size is hardwired in pcbnew/class_pad.cpp */
+			drillx = drilly = RND_MIL_TO_COORD(30); /* CUCP#63: default size is hardwired in pcbnew/class_pad.cpp */
 		ps = kicad_make_pad_thr(st, subtree, subc, X, Y, padXsize, padYsize, clearance, mask, paste, paste_ratio, drillx, drilly, pad_shape, plated, layers, shape_arg, shape_arg2);
 	}
 	else {
@@ -2096,7 +2096,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 	double shape_arg = 0.0, shape_arg2 = 0.0;
 	double rot = 0.0;
 
-	sx = sy = PCB_MIL_TO_COORD(60); /* CUCP#63: default size matching pcbnew/class_pad.cpp */
+	sx = sy = RND_MIL_TO_COORD(60); /* CUCP#63: default size matching pcbnew/class_pad.cpp */
 
 	/* Kicad clearance hierarchy (top overrides bottom):
 	   - pad clearance
@@ -2741,8 +2741,8 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	st.poly2net_inited = 1;
 
 	/* A0 */
-	st.width[DIM_FALLBACK] = PCB_MM_TO_COORD(1189.0);
-	st.height[DIM_FALLBACK] = PCB_MM_TO_COORD(841.0);
+	st.width[DIM_FALLBACK] = RND_MM_TO_COORD(1189.0);
+	st.height[DIM_FALLBACK] = RND_MM_TO_COORD(841.0);
 	st.dim_valid[DIM_FALLBACK] = 1;
 
 	/* load the file into the dom */

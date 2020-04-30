@@ -32,9 +32,9 @@
 #include <librnd/core/event.h>
 #include <librnd/core/hid.h>
 
-#define LEAD_ARROW_LEN    PCB_MM_TO_COORD(3)
-#define LEAD_CENTER_RAD   PCB_MM_TO_COORD(0.5)
-#define LEAD_ANIM_AMP     PCB_MM_TO_COORD(2)
+#define LEAD_ARROW_LEN    RND_MM_TO_COORD(3)
+#define LEAD_CENTER_RAD   RND_MM_TO_COORD(0.5)
+#define LEAD_ANIM_AMP     RND_MM_TO_COORD(2)
 #define LEAD_ANIM_SPEED   0.6
 #define LEAD_PERIOD_MS    100
 

@@ -158,7 +158,7 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_DisperseElements[] = "DisperseElements(All|Selected)";
 static const char pcb_acth_DisperseElements[] = "Disperses subcircuits.";
 
-#define GAP PCB_MIL_TO_COORD(100)
+#define GAP RND_MIL_TO_COORD(100)
 
 /* DOC: disperseelements.html */
 

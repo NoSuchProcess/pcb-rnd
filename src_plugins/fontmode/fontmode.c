@@ -64,7 +64,7 @@
    should search the grid for the gridlines and use them to figure out
    where the symbols are. */
 
-#define CELL_SIZE   ((rnd_coord_t)(PCB_MIL_TO_COORD (100)))
+#define CELL_SIZE   ((rnd_coord_t)(RND_MIL_TO_COORD (100)))
 
 #define XYtoSym(x,y) (((x) / CELL_SIZE - 1)  +  (16 * ((y) / CELL_SIZE - 1)))
 
@@ -123,7 +123,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	PCB->hidlib.size_x = CELL_SIZE * 18;
 	PCB->hidlib.size_y = CELL_SIZE * ((PCB_MAX_FONTPOSITION + 15) / 16 + 2);
-	PCB->hidlib.grid = PCB_MIL_TO_COORD(5);
+	PCB->hidlib.grid = RND_MIL_TO_COORD(5);
 
 	/* create the layer stack and logical layers */
 	pcb_layergrp_inhibit_inc();
@@ -156,7 +156,7 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		symbol = &font->Symbol[s];
 
-		miny = PCB_MIL_TO_COORD(5);
+		miny = RND_MIL_TO_COORD(5);
 		maxy = font->MaxHeight;
 
 		if ((s > 32) && (s < 127)) {
@@ -210,16 +210,16 @@ static fgw_error_t pcb_act_FontEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		w = maxx + symbol->Delta + ox;
-		pcb_line_new_merge(lwidth, w, miny + oy, w, maxy + oy, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
+		pcb_line_new_merge(lwidth, w, miny + oy, w, maxy + oy, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
 
 	for (l = 0; l < 16; l++) {
 		int x = (l + 1) * CELL_SIZE;
-		pcb_line_new_merge(lgrid, x, 0, x, PCB->hidlib.size_y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
+		pcb_line_new_merge(lgrid, x, 0, x, PCB->hidlib.size_y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
 	for (l = 0; l <= PCB_MAX_FONTPOSITION / 16 + 1; l++) {
 		int y = (l + 1) * CELL_SIZE;
-		pcb_line_new_merge(lgrid, 0, y, PCB->hidlib.size_x, y, PCB_MIL_TO_COORD(1), PCB_MIL_TO_COORD(1), pcb_no_flags());
+		pcb_line_new_merge(lgrid, 0, y, PCB->hidlib.size_x, y, RND_MIL_TO_COORD(1), RND_MIL_TO_COORD(1), pcb_no_flags());
 	}
 	RND_ACT_IRES(0);
 	return 0;

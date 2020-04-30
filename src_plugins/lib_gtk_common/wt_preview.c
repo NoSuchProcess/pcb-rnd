@@ -528,12 +528,12 @@ GtkWidget *pcb_gtk_preview_new(pcb_gtk_t *ctx, pcb_gtk_init_drawing_widget_t ini
 
 TODO(": maybe expose these through the object API so the caller can set it up?")
 	memset(&prv->view, 0, sizeof(prv->view));
-	prv->view.width = PCB_MM_TO_COORD(110);
-	prv->view.height = PCB_MM_TO_COORD(110);
+	prv->view.width = RND_MM_TO_COORD(110);
+	prv->view.height = RND_MM_TO_COORD(110);
 	prv->view.use_max_pcb = 0;
 	prv->view.max_width = RND_MAX_COORD;
 	prv->view.max_height = RND_MAX_COORD;
-	prv->view.coord_per_px = PCB_MM_TO_COORD(0.25);
+	prv->view.coord_per_px = RND_MM_TO_COORD(0.25);
 	prv->view.ctx = ctx;
 
 	update_expose_data(prv);

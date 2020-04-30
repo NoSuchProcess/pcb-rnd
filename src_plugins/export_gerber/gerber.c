@@ -110,7 +110,7 @@ static void fprint_aperture(FILE *f, aperture_t *aptr)
 	}
 }
 
-#define AUTO_OUTLINE_WIDTH PCB_MIL_TO_COORD(8)	/* Auto-geneated outline width of 8 mils */
+#define AUTO_OUTLINE_WIDTH RND_MIL_TO_COORD(8)	/* Auto-geneated outline width of 8 mils */
 
 /* Set the aperture list for the current layer,
  * expanding the list buffer if needed  */

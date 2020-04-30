@@ -621,7 +621,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 				RND_DAD_HELP(dlg, "Make the shape smaller by the selected amount");
 			RND_DAD_COORD(dlg, "");
 				pse->amount = RND_DAD_CURRENT(dlg);
-				RND_DAD_MINMAX(dlg, 1, PCB_MM_TO_COORD(100));
+				RND_DAD_MINMAX(dlg, 1, RND_MM_TO_COORD(100));
 			RND_DAD_BUTTON(dlg, "Grow");
 				pse->grow = RND_DAD_CURRENT(dlg);
 				RND_DAD_CHANGE_CB(dlg, pse_shape_grow);
@@ -786,7 +786,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 							RND_DAD_COORD(dlg, "");
 								pse->clearance = RND_DAD_CURRENT(dlg);
 								RND_DAD_MINVAL(dlg, 0);
-								RND_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+								RND_DAD_MAXVAL(dlg, RND_MM_TO_COORD(1000));
 								RND_DAD_CHANGE_CB(dlg, pse_chg_instance);
 								RND_DAD_HELP(dlg, "global clearance (affects all layers)");
 							RND_DAD_LABEL(dlg, "Rotation");
@@ -879,7 +879,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 								RND_DAD_COORD(dlg, "");
 									pse->proto_clr[n] = RND_DAD_CURRENT(dlg);
 									RND_DAD_MINVAL(dlg, 1);
-									RND_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+									RND_DAD_MAXVAL(dlg, RND_MM_TO_COORD(1000));
 									RND_DAD_CHANGE_CB(dlg, pse_chg_proto_clr);
 									RND_DAD_WIDTH_CHR(dlg, 8);
 									RND_DAD_HELP(dlg, "local, per layer type clearance\n(only when global padstack clearance is 0)");
@@ -897,7 +897,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 						RND_DAD_COORD(dlg, "");
 							pse->hdia = RND_DAD_CURRENT(dlg);
 							RND_DAD_MINVAL(dlg, 0);
-							RND_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+							RND_DAD_MAXVAL(dlg, RND_MM_TO_COORD(1000));
 							RND_DAD_CHANGE_CB(dlg, pse_chg_hole);
 							RND_DAD_WIDTH_CHR(dlg, 10);
 						spring(dlg);
@@ -956,13 +956,13 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 						RND_DAD_COORD(dlg, "");
 							pse->gen_size = RND_DAD_CURRENT(dlg);
 							RND_DAD_MINVAL(dlg, 1);
-							RND_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+							RND_DAD_MAXVAL(dlg, RND_MM_TO_COORD(1000));
 
 						RND_DAD_LABEL(dlg, "Drill diameter (0 means no hole):");
 						RND_DAD_COORD(dlg, "");
 							pse->gen_drill = RND_DAD_CURRENT(dlg);
 							RND_DAD_MINVAL(dlg, 1);
-							RND_DAD_MAXVAL(dlg, PCB_MM_TO_COORD(1000));
+							RND_DAD_MAXVAL(dlg, RND_MM_TO_COORD(1000));
 
 						RND_DAD_LABEL(dlg, "Copper shapes on:");
 						RND_DAD_ENUM(dlg, sides);

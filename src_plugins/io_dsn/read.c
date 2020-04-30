@@ -100,8 +100,8 @@ static rnd_coord_t COORD(dsn_read_t *ctx, gsxl_node_t *n)
 	}
 	v /= ctx->unit->scale_factor;
 	if (ctx->unit->family == PCB_UNIT_METRIC)
-		return PCB_MM_TO_COORD(v);
-	return PCB_MIL_TO_COORD(v);
+		return RND_MM_TO_COORD(v);
+	return RND_MIL_TO_COORD(v);
 }
 
 #define COORDX(ctx, n) COORD(ctx, n)
@@ -140,7 +140,7 @@ static const rnd_unit_t *push_unit(dsn_read_t *ctx, gsxl_node_t *nu)
 	for(su = s = STRE(gsxl_children(nu)); *s != '\0'; s++)
 		*s = tolower(*s);
 
-	ctx->unit = get_unit_struct(su);
+	ctx->unit = rnd_get_unit_struct(su);
 	if (ctx->unit == NULL) {
 		rnd_message(RND_MSG_ERROR, "Invalid unit: '%s' (at %ld:%ld)\n", su, (long)nu->line, (long)nu->col);
 		return NULL;
@@ -1227,7 +1227,7 @@ static int dsn_parse_wire_circle(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *
 		DSN_LOAD_COORDS_FMT(cent, n, (subc == NULL) ? "xy" : "XY", goto err_cent);
 
 	poly = pcb_poly_new(ly, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
-	astep = 2*M_PI / (8 + r / PCB_MM_TO_COORD(0.1));
+	astep = 2*M_PI / (8 + r / RND_MM_TO_COORD(0.1));
 
 	for(a = 0; a < 2*M_PI; a += astep) {
 		rnd_coord_t x, y;
@@ -1676,7 +1676,7 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 	gsxl_node_t *n, *nunit = NULL, *nstructure = NULL, *nplacement = NULL, *nlibrary = NULL, *nnetwork = NULL, *nwiring = NULL, *ncolors = NULL, *nresolution = NULL;
 
 	/* default unit in case the file does not specify one */
-	ctx->unit = get_unit_struct("inch");
+	ctx->unit = rnd_get_unit_struct("inch");
 
 	free(ctx->pcb->hidlib.name);
 	ctx->pcb->hidlib.name = rnd_strdup(STRE(root->children));
@@ -1700,7 +1700,7 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 		for(su = s = STRE(gsxl_children(nresolution)); *s != '\0'; s++)
 			*s = tolower(*s);
 
-		ctx->unit = get_unit_struct(su);
+		ctx->unit = rnd_get_unit_struct(su);
 		if (ctx->unit == NULL) {
 			rnd_message(RND_MSG_ERROR, "Invalid resolution unit: '%s'\n", su);
 			return -1;

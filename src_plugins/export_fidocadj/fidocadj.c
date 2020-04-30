@@ -129,7 +129,7 @@ static int load_lib(htsi_t *ht, const char *fn)
 
 static long int crd(rnd_coord_t c)
 {
-	return rnd_round((double)PCB_COORD_TO_MIL(c) / 5.0);
+	return rnd_round((double)RND_COORD_TO_MIL(c) / 5.0);
 }
 
 static int layer_map(unsigned int lflg, int *fidoly_next, const char *lyname)

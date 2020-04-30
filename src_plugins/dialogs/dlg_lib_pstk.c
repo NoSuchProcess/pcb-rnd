@@ -206,10 +206,10 @@ static void pstklib_force_redraw(pstk_lib_ctx_t *ctx, pcb_pstk_t *ps)
 		return;
 
 	pcb_pstk_bbox(ps);
-	ps->BoundingBox.X1 -= PCB_MM_TO_COORD(0.5);
-	ps->BoundingBox.Y1 -= PCB_MM_TO_COORD(0.5);
-	ps->BoundingBox.X2 += PCB_MM_TO_COORD(0.5);
-	ps->BoundingBox.Y2 += PCB_MM_TO_COORD(0.5);
+	ps->BoundingBox.X1 -= RND_MM_TO_COORD(0.5);
+	ps->BoundingBox.Y1 -= RND_MM_TO_COORD(0.5);
+	ps->BoundingBox.X2 += RND_MM_TO_COORD(0.5);
+	ps->BoundingBox.Y2 += RND_MM_TO_COORD(0.5);
 	memcpy(&ctx->drawbox, &ps->BoundingBox, sizeof(rnd_rnd_box_t));
 	rnd_dad_preview_zoomto(&ctx->dlg[ctx->wprev], &ctx->drawbox);
 }
@@ -571,8 +571,8 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 					RND_DAD_LABEL(ctx->dlg, "Grid:");
 					RND_DAD_COORD(ctx->dlg, "");
 						ctx->wgrid = RND_DAD_CURRENT(ctx->dlg);
-						RND_DAD_MINMAX(ctx->dlg, PCB_MM_TO_COORD(0.01), PCB_MM_TO_COORD(10));
-						RND_DAD_DEFAULT_NUM(ctx->dlg, (rnd_coord_t)PCB_MM_TO_COORD(1));
+						RND_DAD_MINMAX(ctx->dlg, RND_MM_TO_COORD(0.01), RND_MM_TO_COORD(10));
+						RND_DAD_DEFAULT_NUM(ctx->dlg, (rnd_coord_t)RND_MM_TO_COORD(1));
 						RND_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
 
 					RND_DAD_LABEL(ctx->dlg, "");

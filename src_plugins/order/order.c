@@ -137,7 +137,7 @@ static void autoload_field_lng(order_ctx_t *octx, pcb_order_field_t *f, long l, 
 
 	switch(f->type) {
 		case RND_HATT_INTEGER: f->val.lng = l; break;
-		case RND_HATT_COORD: f->val.crd = PCB_MM_TO_COORD(l); break;
+		case RND_HATT_COORD: f->val.crd = RND_MM_TO_COORD(l); break;
 		case RND_HATT_STRING:
 			free((char *)f->val.str);
 			f->val.str = rnd_strdup_printf("%ld", l);

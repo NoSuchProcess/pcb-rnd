@@ -61,13 +61,13 @@ static void mesh2dlg()
 	subst_thick = pcb_board_thickness(PCB, "openems", PCB_BRDTHICK_PRINT_ERROR);
 	if (subst_thick <= 0) {
 		rnd_message(RND_MSG_ERROR, "Assuming 1.5mm thick substrate because of the missing thickness attributes.\nFeel free to change it in the mesh dialog or add the attributes to the substrate groups.");
-		subst_thick = PCB_MM_TO_COORD(1.5);
+		subst_thick = RND_MM_TO_COORD(1.5);
 	}
 
 	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.pml, lng, mesh.pml);
-	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_obj, crd, PCB_MM_TO_COORD(0.15));
-	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_gap, crd, PCB_MM_TO_COORD(0.5));
-	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.min_space, crd, PCB_MM_TO_COORD(0.1));
+	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_obj, crd, RND_MM_TO_COORD(0.15));
+	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_gap, crd, RND_MM_TO_COORD(0.5));
+	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.min_space, crd, RND_MM_TO_COORD(0.1));
 	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.smooth, lng, 1);
 	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.noimpl, lng, 0);
 	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.hor, lng, 1);
@@ -75,12 +75,12 @@ static void mesh2dlg()
 TODO("enum lookup");
 	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.subslines, lng, 3);
 	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.def_subs_thick, crd, subst_thick);
-/*	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.def_copper_thick, crd, PCB_MM_TO_COORD(1.5));*/
+/*	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.def_copper_thick, crd, RND_MM_TO_COORD(1.5));*/
 	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_top, lng, 1);
 	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.air_bot, lng, 1);
-	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_air, crd, PCB_MM_TO_COORD(0.7));
+	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.dens_air, crd, RND_MM_TO_COORD(0.7));
 	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.smoothz, lng, 1);
-	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.max_air, crd, PCB_MM_TO_COORD(4));
+	RND_DAD_SET_VALUE(ia.dlg_hid_ctx, ia.max_air, crd, RND_MM_TO_COORD(4));
 	for(n = 0; n < 6; n++) {
 		const char **a;
 		int i;
@@ -523,7 +523,7 @@ static int mesh_sort(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	for(n = 0; n < vtc0_len(&mesh->line[dir].edge)-1; n++) {
 		rnd_coord_t c1 = mesh->line[dir].edge.array[n], c2 = mesh->line[dir].edge.array[n+1];
 		if (c2 - c1 < mesh->min_space) {
-			if ((c2 - c1) < PCB_MM_TO_COORD(0.1)) {
+			if ((c2 - c1) < RND_MM_TO_COORD(0.1)) {
 				mesh->line[dir].edge.array[n] = (c1 + c2) / 2;
 				vtc0_remove(&mesh->line[dir].edge, n+1, 1);
 			}
@@ -709,7 +709,7 @@ static void mesh_draw_range(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t at
 
 static void mesh_draw_label(pcb_mesh_t *mesh, pcb_mesh_dir_t dir, rnd_coord_t aux, const char *label)
 {
-	aux -= PCB_MM_TO_COORD(0.6);
+	aux -= RND_MM_TO_COORD(0.6);
 	if (dir == PCB_MESH_HORIZONTAL)
 		pcb_text_new(mesh->ui_layer_xy, pcb_font(PCB, 0, 0), aux, 0, 90, 75, 0, label, pcb_no_flags());
 	else
@@ -722,22 +722,22 @@ static int mesh_vis_xy(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	size_t n;
 	rnd_coord_t end;
 
-	mesh_draw_label(mesh, dir, PCB_MM_TO_COORD(0.1), "object edge");
+	mesh_draw_label(mesh, dir, RND_MM_TO_COORD(0.1), "object edge");
 
 	mesh_trace("%s edges:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
 	for(n = 0; n < vtc0_len(&mesh->line[dir].edge); n++) {
 		mesh_trace(" %mm", mesh->line[dir].edge.array[n]);
-		mesh_draw_line(mesh, dir, mesh->line[dir].edge.array[n], PCB_MM_TO_COORD(0.1), PCB_MM_TO_COORD(0.5), PCB_MM_TO_COORD(0.1));
+		mesh_draw_line(mesh, dir, mesh->line[dir].edge.array[n], RND_MM_TO_COORD(0.1), RND_MM_TO_COORD(0.5), RND_MM_TO_COORD(0.1));
 	}
 	mesh_trace("\n");
 
-	mesh_draw_label(mesh, dir, PCB_MM_TO_COORD(2), "density ranges");
+	mesh_draw_label(mesh, dir, RND_MM_TO_COORD(2), "density ranges");
 
 	mesh_trace("%s ranges:\n", dir == PCB_MESH_HORIZONTAL ? "horizontal" : "vertical");
 	for(n = 0; n < vtr0_len(&mesh->line[dir].dens); n++) {
 		pcb_range_t *r = &mesh->line[dir].dens.array[n];
 		mesh_trace(" [%mm..%mm=%mm]", r->begin, r->end, r->data[0].c);
-		mesh_draw_range(mesh, dir, r->begin, r->end, PCB_MM_TO_COORD(2)+r->data[0].c/2, PCB_MM_TO_COORD(0.05));
+		mesh_draw_range(mesh, dir, r->begin, r->end, RND_MM_TO_COORD(2)+r->data[0].c/2, RND_MM_TO_COORD(0.05));
 	}
 	mesh_trace("\n");
 
@@ -745,7 +745,7 @@ static int mesh_vis_xy(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	end = (dir == PCB_MESH_HORIZONTAL) ? PCB->hidlib.size_x : PCB->hidlib.size_y;
 	for(n = 0; n < vtc0_len(&mesh->line[dir].result); n++) {
 		mesh_trace(" %mm", mesh->line[dir].result.array[n]);
-		mesh_draw_line(mesh, dir, mesh->line[dir].result.array[n], 0, end, PCB_MM_TO_COORD(0.03));
+		mesh_draw_line(mesh, dir, mesh->line[dir].result.array[n], 0, end, RND_MM_TO_COORD(0.03));
 	}
 	mesh_trace("\n");
 
@@ -759,15 +759,15 @@ static int mesh_vis_z(pcb_mesh_t *mesh)
 	rnd_coord_t y0 = PCB->hidlib.size_y/3, y = y0, y2;
 	rnd_coord_t xl = PCB->hidlib.size_x/5; /* board left */
 	rnd_coord_t xr = PCB->hidlib.size_x/5*3; /* board right */
-	rnd_coord_t spen = PCB_MM_TO_COORD(0.3), cpen = PCB_MM_TO_COORD(0.2), mpen = PCB_MM_TO_COORD(0.03);
+	rnd_coord_t spen = RND_MM_TO_COORD(0.3), cpen = RND_MM_TO_COORD(0.2), mpen = RND_MM_TO_COORD(0.03);
 	int mag = 2;
 
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
 		pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
 		if (grp->ltype & PCB_LYT_COPPER) {
 			y2 = y + mesh->def_copper_thick * mag / 2;
-			pcb_line_new(mesh->ui_layer_z, xr, y2, xr+PCB_MM_TO_COORD(2), y2, cpen, 0, pcb_no_flags());
-			pcb_text_new(mesh->ui_layer_z, pcb_font(PCB, 0, 0), xr+PCB_MM_TO_COORD(3), y2 - PCB_MM_TO_COORD(1), 0, 100, 0, grp->name, pcb_no_flags());
+			pcb_line_new(mesh->ui_layer_z, xr, y2, xr+RND_MM_TO_COORD(2), y2, cpen, 0, pcb_no_flags());
+			pcb_text_new(mesh->ui_layer_z, pcb_font(PCB, 0, 0), xr+RND_MM_TO_COORD(3), y2 - RND_MM_TO_COORD(1), 0, 100, 0, grp->name, pcb_no_flags());
 			y += mesh->def_copper_thick * mag;
 		}
 		else if (grp->ltype & PCB_LYT_SUBSTRATE) {
@@ -1066,7 +1066,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_BEGIN_HBOX(ia.dlg);
 					RND_DAD_COORD(ia.dlg, "");
 						ia.dens_obj = RND_DAD_CURRENT(ia.dlg);
-						RND_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "copper dens.");
 					RND_DAD_HELP(ia.dlg, "mesh density over copper");
 				RND_DAD_END(ia.dlg);
@@ -1074,7 +1074,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_BEGIN_HBOX(ia.dlg);
 					RND_DAD_COORD(ia.dlg, "");
 						ia.dens_gap = RND_DAD_CURRENT(ia.dlg);
-						RND_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "gap dens.");
 					RND_DAD_HELP(ia.dlg, "mesh density over gaps");
 				RND_DAD_END(ia.dlg);
@@ -1082,7 +1082,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_BEGIN_HBOX(ia.dlg);
 					RND_DAD_COORD(ia.dlg, "");
 						ia.min_space = RND_DAD_CURRENT(ia.dlg);
-						RND_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "min. spacing");
 					RND_DAD_HELP(ia.dlg, "minimum distance between mesh lines");
 				RND_DAD_END(ia.dlg);
@@ -1130,7 +1130,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_BEGIN_HBOX(ia.dlg);
 					RND_DAD_COORD(ia.dlg, "");
 						ia.def_subs_thick = RND_DAD_CURRENT(ia.dlg);
-						RND_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "def. subst. thick");
 					RND_DAD_HELP(ia.dlg, "default substrate thickness\n(for substrate layer groups without\nthickness specified in attribute)");
 				RND_DAD_END(ia.dlg);
@@ -1138,7 +1138,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_BEGIN_HBOX(ia.dlg);
 					RND_DAD_COORD(ia.dlg, "");
 						ia.def_copper_thick = RND_DAD_CURRENT(ia.dlg);
-						RND_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "def. copper thick");
 					RND_DAD_HELP(ia.dlg, "default copper thickness\n(for copper layer groups without\nthickness specified in attribute)");
 				RND_DAD_END(ia.dlg);
@@ -1161,7 +1161,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_BEGIN_HBOX(ia.dlg);
 					RND_DAD_COORD(ia.dlg, "");
 						ia.dens_air = RND_DAD_CURRENT(ia.dlg);
-						RND_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "dens. air");
 					RND_DAD_HELP(ia.dlg, "mesh line density (spacing) in air");
 				RND_DAD_END(ia.dlg);
@@ -1169,7 +1169,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_BEGIN_HBOX(ia.dlg);
 					RND_DAD_COORD(ia.dlg, "");
 						ia.max_air = RND_DAD_CURRENT(ia.dlg);
-						RND_DAD_MINMAX(ia.dlg, 0, PCB_MM_TO_COORD(5));
+						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "air thickness");
 					RND_DAD_HELP(ia.dlg, "how far out to mesh in air");
 				RND_DAD_END(ia.dlg);

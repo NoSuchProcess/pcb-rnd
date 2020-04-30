@@ -445,7 +445,7 @@ static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 
 	/* new method: detailed clearance */
 	sctx.poly = p;
-	sctx.clearance = text->clearance + PCB_MM_TO_COORD(0.5);
+	sctx.clearance = text->clearance + RND_MM_TO_COORD(0.5);
 	pcb_text_decompose_text(NULL, text, poly_sub_text_cb, &sctx);
 	return 1;
 }

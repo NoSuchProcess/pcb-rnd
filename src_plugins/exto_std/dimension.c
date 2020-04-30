@@ -150,7 +150,7 @@ static int dimension_gen(pcb_subc_t *subc)
 	pcb_layer_t *ly;
 	pcb_line_t *flt;
 	double ang, deg, dispe, rotsign;
-	double arrx = PCB_MM_TO_COORD(2), arry = PCB_MM_TO_COORD(0.5);
+	double arrx = RND_MM_TO_COORD(2), arry = RND_MM_TO_COORD(0.5);
 	rnd_coord_t x1, y1, x2, y2, x1e, y1e, x2e, y2e, tx, ty, x, y, ex, ey;
 	pcb_text_t *t;
 	char ttmp[128];
@@ -174,7 +174,7 @@ static int dimension_gen(pcb_subc_t *subc)
 	y2 = rnd_round(dim->y2 + dim->displace * +dim->dx);
 
 	/* endpoints of the extended-displaced baseline */
-	dispe = PCB_MM_TO_COORD(0.5);
+	dispe = RND_MM_TO_COORD(0.5);
 	if (dim->displace < 0)
 		dispe = -dispe;
 	dispe = dim->displace + dispe;
@@ -190,7 +190,7 @@ static int dimension_gen(pcb_subc_t *subc)
 		flt = pcb_line_new(ly,
 			x1 + arrx * dim->dx, y1 + arrx * dim->dy,
 			x2 - arrx * dim->dx, y2 - arrx * dim->dy,
-			PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(PCB_FLAG_FLOATER));
+			RND_MM_TO_COORD(0.25), 0, pcb_flag_make(PCB_FLAG_FLOATER));
 		rnd_attribute_put(&flt->Attributes, "extobj::role", "dimline");
 	}
 	else { /* modify the floater if it exists */
@@ -206,8 +206,8 @@ static int dimension_gen(pcb_subc_t *subc)
 	}
 
 	/* guide lines */
-	pcb_line_new(ly, dim->x1, dim->y1, x1e, y1e, PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
-	pcb_line_new(ly, dim->x2, dim->y2, x2e, y2e, PCB_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
+	pcb_line_new(ly, dim->x1, dim->y1, x1e, y1e, RND_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
+	pcb_line_new(ly, dim->x2, dim->y2, x2e, y2e, RND_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
 
 	/* arrows */
 	draw_arrow(dim, subc->data, ly, x1, y1, arrx, arry);
@@ -290,7 +290,7 @@ static void pcb_dimension_dimline_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 
 rnd_trace("new disp: %mm f=%mm;%mm\n", (rnd_coord_t)d, fx, fy);
 
-	if ((d > -PCB_MM_TO_COORD(0.1)) && (d < PCB_MM_TO_COORD(0.1)))
+	if ((d > -RND_MM_TO_COORD(0.1)) && (d < RND_MM_TO_COORD(0.1)))
 		return;
 
 rnd_trace("let's do it!\n");

@@ -338,7 +338,7 @@ static int parse_dwg_path_polyline(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t
 			filled = (strcmp(tmp->argv[1], "FILLED") == 0);
 	}
 	else {
-		th = PCB_MM_TO_COORD(0.5);
+		th = RND_MM_TO_COORD(0.5);
 		tmp = find_nth(pp->first_child, "WIDTH", 0);
 		if (tmp != NULL)
 			parse_coord(ctx, tmp->argv[1], &th);
@@ -388,9 +388,9 @@ static void convert_arc(rnd_coord_t sx, rnd_coord_t sy, rnd_coord_t cx, rnd_coor
 	srx = -(sx - cx); sry = sy - cy; /* Since angle = 0 is towards -x, change sign to x part */
 	erx = -(ex - cx); ery = ey - cy; /* Since angle = 0 is towards -x, change sign to x part */
 	*sa = atan2(sry, srx) * RND_RAD_TO_DEG;
-	*sa = pcb_normalize_angle(360 + *sa); /* normalize angle between 0 and 359 */
+	*sa = rnd_normalize_angle(360 + *sa); /* normalize angle between 0 and 359 */
 	ea = atan2(ery, erx) * RND_RAD_TO_DEG;
-	ea = pcb_normalize_angle(360 + ea); /* normalize angle between 0 and 359 */
+	ea = rnd_normalize_angle(360 + ea); /* normalize angle between 0 and 359 */
 
 	if (*r < 0) {
 		/* counterclockwise */
@@ -427,7 +427,7 @@ static int parse_dwg_path_polyarc(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t 
 			filled = (strcmp(tmp->argv[1], "FILLED") == 0);
 	}
 	else {
-		th = PCB_MM_TO_COORD(0.5);
+		th = RND_MM_TO_COORD(0.5);
 		tmp = find_nth(pp->first_child, "WIDTH", 0);
 		if (tmp != NULL)
 			parse_coord(ctx, tmp->argv[1], &th);
@@ -597,9 +597,9 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		return;
 	}
 
-	width = width * PCB_COORD_TO_MM(h) + thickness;
-	height = height * PCB_COORD_TO_MM(h) + thickness;
-	ymin = ymin * PCB_COORD_TO_MM(h);
+	width = width * RND_COORD_TO_MM(h) + thickness;
+	height = height * RND_COORD_TO_MM(h) + thickness;
+	ymin = ymin * RND_COORD_TO_MM(h);
 
 	tmp = find_nth(attr->first_child, "HORZ_JUST", 0);
 	if (tmp != NULL) {
@@ -1160,10 +1160,10 @@ TODO("netclass: fill this in:")
 
 static const rnd_unit_t *parse_units(const char *ust)
 {
-	if (strcmp(ust, "MIL") == 0) return get_unit_struct("mil");
-	if (strcmp(ust, "TH") == 0)  return get_unit_struct("mil");
-	if (strcmp(ust, "MM") == 0)  return get_unit_struct("mm");
-	if (strcmp(ust, "IN") == 0)  return get_unit_struct("inch");
+	if (strcmp(ust, "MIL") == 0) return rnd_get_unit_struct("mil");
+	if (strcmp(ust, "TH") == 0)  return rnd_get_unit_struct("mil");
+	if (strcmp(ust, "MM") == 0)  return rnd_get_unit_struct("mm");
+	if (strcmp(ust, "IN") == 0)  return rnd_get_unit_struct("inch");
 	return NULL;
 }
 
@@ -1430,7 +1430,7 @@ int io_mentor_cell_read_pcb(pcb_plug_io_t *pctx, pcb_board_t *pcb, const char *f
 	}
 
 	ctx.pcb = pcb;
-	ctx.unit = get_unit_struct("mm");
+	ctx.unit = rnd_get_unit_struct("mm");
 
 
 

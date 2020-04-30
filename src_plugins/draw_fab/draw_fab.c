@@ -55,10 +55,10 @@ conf_draw_fab_t conf_draw_fab;
  * prints a FAB drawing.
  */
 
-#define TEXT_SIZE	PCB_MIL_TO_COORD(150)
-#define TEXT_LINE	PCB_MIL_TO_COORD(150)
-#define DRILL_MARK_SIZE	PCB_MIL_TO_COORD(16)
-#define FAB_LINE_W      PCB_MIL_TO_COORD(8)
+#define TEXT_SIZE	RND_MIL_TO_COORD(150)
+#define TEXT_LINE	RND_MIL_TO_COORD(150)
+#define DRILL_MARK_SIZE	RND_MIL_TO_COORD(16)
+#define FAB_LINE_W      RND_MIL_TO_COORD(8)
 
 static void fab_line(rnd_hid_gc_t gc, int x1, int y1, int x2, int y2)
 {
@@ -84,7 +84,7 @@ static void text_at(pcb_draw_info_t *info, rnd_hid_gc_t gc, int x, int y, int al
 	va_end(a);
 	memset(&t, 0, sizeof(t));
 	t.TextString = tmp;
-	t.Scale = PCB_COORD_TO_MIL(TEXT_SIZE);	/* pcnt of 100mil base height */
+	t.Scale = RND_COORD_TO_MIL(TEXT_SIZE);	/* pcnt of 100mil base height */
 	t.Flags = pcb_no_flags();
 	t.fid = 0; /* use the default font */
 	t.X = x;
@@ -98,8 +98,8 @@ static void text_at(pcb_draw_info_t *info, rnd_hid_gc_t gc, int x, int y, int al
 	pcb_text_draw_(info, &t, 0,0, PCB_TXT_TINY_ACCURATE);
 	if (align & 8)
 		fab_line(gc, t.X,
-						 t.Y + PCB_SCALE_TEXT(font->MaxHeight, t.Scale) + PCB_MIL_TO_COORD(10),
-						 t.X + w, t.Y + PCB_SCALE_TEXT(font->MaxHeight, t.Scale) + PCB_MIL_TO_COORD(10));
+						 t.Y + PCB_SCALE_TEXT(font->MaxHeight, t.Scale) + RND_MIL_TO_COORD(10),
+						 t.X + w, t.Y + PCB_SCALE_TEXT(font->MaxHeight, t.Scale) + RND_MIL_TO_COORD(10));
 }
 
 /* Y, +, X, circle, square */
@@ -178,7 +178,7 @@ static int DrawFab_overhang(void)
 
 static void draw_fab_layer(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_layer_t *layer, int found)
 {
-	rnd_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
+	rnd_hid_set_line_width(gc, RND_MIL_TO_COORD(10));
 	PCB_LINE_LOOP(layer);
 	{
 		rnd_render->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
@@ -196,7 +196,7 @@ static void draw_fab_layer(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid
 	PCB_END_LOOP;
 	if (!found) {
 		rnd_hid_set_line_width(gc, FAB_LINE_W);
-		text_at(info, gc, PCB->hidlib.size_x / 2, PCB->hidlib.size_y + PCB_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
+		text_at(info, gc, PCB->hidlib.size_x / 2, PCB->hidlib.size_y + RND_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
 	}
 }
 
@@ -208,9 +208,9 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 
 	AllDrills = drill_get_info(PCB->Data);
 	if (rnd_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
-		drill_round_info(AllDrills, PCB_MIL_TO_COORD(1));
+		drill_round_info(AllDrills, RND_MIL_TO_COORD(1));
 	else
-		drill_round_info(AllDrills, PCB_MM_TO_COORD(0.01));
+		drill_round_info(AllDrills, RND_MM_TO_COORD(0.01));
 	yoff = -TEXT_LINE;
 
 	/* count how many drill description lines will be needed */
@@ -251,27 +251,27 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 		}
 		if (plated_sym != -1) {
 			drill_sym(gc, plated_sym, TEXT_SIZE, yoff + TEXT_SIZE / 4);
-			text_at(info, gc, PCB_MIL_TO_COORD(1350), yoff, PCB_MIL_TO_COORD(2), "YES");
-			text_at(info, gc, PCB_MIL_TO_COORD(980), yoff, PCB_MIL_TO_COORD(2), "%d", drill->PinCount + drill->ViaCount - drill->UnplatedCount);
+			text_at(info, gc, RND_MIL_TO_COORD(1350), yoff, RND_MIL_TO_COORD(2), "YES");
+			text_at(info, gc, RND_MIL_TO_COORD(980), yoff, RND_MIL_TO_COORD(2), "%d", drill->PinCount + drill->ViaCount - drill->UnplatedCount);
 
 			if (unplated_sym != -1)
 				yoff -= TEXT_LINE;
 		}
 		if (unplated_sym != -1) {
 			drill_sym(gc, unplated_sym, TEXT_SIZE, yoff + TEXT_SIZE / 4);
-			text_at(info, gc, PCB_MIL_TO_COORD(1400), yoff, PCB_MIL_TO_COORD(2), "NO");
-			text_at(info, gc, PCB_MIL_TO_COORD(980), yoff, PCB_MIL_TO_COORD(2), "%d", drill->UnplatedCount);
+			text_at(info, gc, RND_MIL_TO_COORD(1400), yoff, RND_MIL_TO_COORD(2), "NO");
+			text_at(info, gc, RND_MIL_TO_COORD(980), yoff, RND_MIL_TO_COORD(2), "%d", drill->UnplatedCount);
 		}
 		rnd_render->set_color(gc, &conf_core.appearance.color.element);
 		if (rnd_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
-			text_at(info, gc, PCB_MIL_TO_COORD(450), yoff, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize));
+			text_at(info, gc, RND_MIL_TO_COORD(450), yoff, RND_MIL_TO_COORD(2), "%0.3f", RND_COORD_TO_INCH(drill->DrillSize));
 		else
-			text_at(info, gc, PCB_MIL_TO_COORD(450), yoff, PCB_MIL_TO_COORD(2), "%1.2f", PCB_COORD_TO_MM(drill->DrillSize));
+			text_at(info, gc, RND_MIL_TO_COORD(450), yoff, RND_MIL_TO_COORD(2), "%1.2f", RND_COORD_TO_MM(drill->DrillSize));
 		if (plated_sym != -1 && unplated_sym != -1) {
 			if (rnd_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
-				text_at(info, gc, PCB_MIL_TO_COORD(450), yoff + TEXT_LINE, PCB_MIL_TO_COORD(2), "%0.3f", PCB_COORD_TO_INCH(drill->DrillSize));
+				text_at(info, gc, RND_MIL_TO_COORD(450), yoff + TEXT_LINE, RND_MIL_TO_COORD(2), "%0.3f", RND_COORD_TO_INCH(drill->DrillSize));
 			else
-				text_at(info, gc, PCB_MIL_TO_COORD(450), yoff + TEXT_LINE, PCB_MIL_TO_COORD(2), "%1.2f", PCB_COORD_TO_MM(drill->DrillSize));
+				text_at(info, gc, RND_MIL_TO_COORD(450), yoff + TEXT_LINE, RND_MIL_TO_COORD(2), "%1.2f", RND_COORD_TO_MM(drill->DrillSize));
 		}
 		yoff -= TEXT_LINE;
 		total_drills += drill->PinCount;
@@ -279,13 +279,13 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 	}
 
 	rnd_render->set_color(gc, &conf_core.appearance.color.element);
-	text_at(info, gc, 0, yoff, PCB_MIL_TO_COORD(9), "Symbol");
+	text_at(info, gc, 0, yoff, RND_MIL_TO_COORD(9), "Symbol");
 	if (rnd_conf.editor.grid_unit->family == PCB_UNIT_IMPERIAL)
-		text_at(info, gc, PCB_MIL_TO_COORD(410), yoff, PCB_MIL_TO_COORD(9), "Diam. (Inch)");
+		text_at(info, gc, RND_MIL_TO_COORD(410), yoff, RND_MIL_TO_COORD(9), "Diam. (Inch)");
 	else
-		text_at(info, gc, PCB_MIL_TO_COORD(410), yoff, PCB_MIL_TO_COORD(9), "Diam. (mm)");
-	text_at(info, gc, PCB_MIL_TO_COORD(950), yoff, PCB_MIL_TO_COORD(9), "Count");
-	text_at(info, gc, PCB_MIL_TO_COORD(1300), yoff, PCB_MIL_TO_COORD(9), "Plated?");
+		text_at(info, gc, RND_MIL_TO_COORD(410), yoff, RND_MIL_TO_COORD(9), "Diam. (mm)");
+	text_at(info, gc, RND_MIL_TO_COORD(950), yoff, RND_MIL_TO_COORD(9), "Count");
+	text_at(info, gc, RND_MIL_TO_COORD(1300), yoff, RND_MIL_TO_COORD(9), "Plated?");
 	yoff -= TEXT_LINE;
 	text_at(info, gc, 0, yoff, 0,
 					"There are %d different drill sizes used in this layout, %d holes total", AllDrills->DrillN, total_drills);
@@ -307,27 +307,27 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 		}
 	}
 	if (!found) {
-		rnd_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
+		rnd_hid_set_line_width(gc, RND_MIL_TO_COORD(10));
 		rnd_render->draw_line(gc, 0, 0, PCB->hidlib.size_x, 0);
 		rnd_render->draw_line(gc, 0, 0, 0, PCB->hidlib.size_y);
 		rnd_render->draw_line(gc, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 		rnd_render->draw_line(gc, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
 		/*FPrintOutline (); */
 		rnd_hid_set_line_width(gc, FAB_LINE_W);
-		text_at(info, gc, PCB_MIL_TO_COORD(2000), yoff, 0,
-						"Maximum Dimensions: %f mils wide, %f mils high", PCB_COORD_TO_MIL(PCB->hidlib.size_x), PCB_COORD_TO_MIL(PCB->hidlib.size_y));
-		text_at(info, gc, PCB->hidlib.size_x / 2, PCB->hidlib.size_y + PCB_MIL_TO_COORD(20), 1,
+		text_at(info, gc, RND_MIL_TO_COORD(2000), yoff, 0,
+						"Maximum Dimensions: %f mils wide, %f mils high", RND_COORD_TO_MIL(PCB->hidlib.size_x), RND_COORD_TO_MIL(PCB->hidlib.size_y));
+		text_at(info, gc, PCB->hidlib.size_x / 2, PCB->hidlib.size_y + RND_MIL_TO_COORD(20), 1,
 						"Board outline is the centerline of this %f mil"
 						" rectangle - 0,0 to %f,%f mils",
-						PCB_COORD_TO_MIL(FAB_LINE_W), PCB_COORD_TO_MIL(PCB->hidlib.size_x), PCB_COORD_TO_MIL(PCB->hidlib.size_y));
+						RND_COORD_TO_MIL(FAB_LINE_W), RND_COORD_TO_MIL(PCB->hidlib.size_x), RND_COORD_TO_MIL(PCB->hidlib.size_y));
 	}
 	yoff -= TEXT_LINE;
 
-	text_at(info, gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Date: %s", utcTime);
+	text_at(info, gc, RND_MIL_TO_COORD(2000), yoff, 0, "Date: %s", utcTime);
 	yoff -= TEXT_LINE;
-	text_at(info, gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Author: %s", pcb_author());
+	text_at(info, gc, RND_MIL_TO_COORD(2000), yoff, 0, "Author: %s", pcb_author());
 	yoff -= TEXT_LINE;
-	text_at(info, gc, PCB_MIL_TO_COORD(2000), yoff, 0, "Title: %s - Fabrication Drawing", RND_UNKNOWN(PCB->hidlib.name));
+	text_at(info, gc, RND_MIL_TO_COORD(2000), yoff, 0, "Title: %s - Fabrication Drawing", RND_UNKNOWN(PCB->hidlib.name));
 }
 
 int pplg_check_ver_draw_fab(int ver_needed) { return 0; }

@@ -584,7 +584,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 	const char *hdr[] = {"property", "common", "min", "max", "avg", NULL};
 	const char *hdr_val[] = {"use", "values"};
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	static rnd_rnd_box_t prvbb = {0, 0, PCB_MM_TO_COORD(10), PCB_MM_TO_COORD(10)};
+	static rnd_rnd_box_t prvbb = {0, 0, RND_MM_TO_COORD(10), RND_MM_TO_COORD(10)};
 	int n;
 	rnd_hid_attr_val_t hv;
 

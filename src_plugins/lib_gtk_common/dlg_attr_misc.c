@@ -120,10 +120,10 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr
 TODO("TODO make these configurable:")
 	p->x_min = 0;
 	p->y_min = 0;
-	p->x_max = PCB_MM_TO_COORD(100);
-	p->y_max = PCB_MM_TO_COORD(100);
-	p->w_pixels = PCB_MM_TO_COORD(10);
-	p->h_pixels = PCB_MM_TO_COORD(10);
+	p->x_max = RND_MM_TO_COORD(100);
+	p->y_max = RND_MM_TO_COORD(100);
+	p->w_pixels = RND_MM_TO_COORD(10);
+	p->h_pixels = RND_MM_TO_COORD(10);
 	p->redraw_with_board = !!(attr->hatt_flags & RND_HATF_PRV_BOARD);
 
 	gtk_widget_set_size_request(prv, hp->min_sizex_px, hp->min_sizey_px);

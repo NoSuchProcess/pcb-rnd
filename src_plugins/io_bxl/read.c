@@ -355,7 +355,7 @@ void pcb_bxl_pad_end(pcb_bxl_ctx_t *ctx)
 
 	ps = pcb_pstk_new_tr(ctx->subc->data, -1, ctx->state.pstk_proto_id,
 		ctx->state.origin_x, ctx->state.origin_y,
-		PCB_MM_TO_COORD(0.2), pcb_flag_make(PCB_FLAG_CLEARLINE),
+		RND_MM_TO_COORD(0.2), pcb_flag_make(PCB_FLAG_CLEARLINE),
 		ctx->state.rot, xmirror, smirror);
 
 	if (ps != NULL) {
@@ -445,7 +445,7 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 		if (ctx->state.text_style != NULL) {
 TODO("need to figure how text is scaled and justified in bxl");
 			scale = ctx->state.text_style->height;
-			thickness = PCB_MIL_TO_COORD(ctx->state.text_style->width);
+			thickness = RND_MIL_TO_COORD(ctx->state.text_style->width);
 		}
 		else {
 			scale = 100;

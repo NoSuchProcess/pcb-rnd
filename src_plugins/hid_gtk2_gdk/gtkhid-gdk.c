@@ -701,7 +701,7 @@ static void ghid_gdk_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, r
 		delta_angle = -delta_angle;
 	}
 	/* make sure we fall in the -180 to +180 range */
-	start_angle = pcb_normalize_angle(start_angle);
+	start_angle = rnd_normalize_angle(start_angle);
 	if (start_angle >= 180)
 		start_angle -= 360;
 

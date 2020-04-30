@@ -53,8 +53,8 @@
 /* frame between the groundplane and the copper or mask - noone seems
    to remember what these two are for; changing them may have unforeseen
    side effects. */
-#define PCB_GROUNDPLANEFRAME        PCB_MIL_TO_COORD(15)
-#define PCB_MASKFRAME               PCB_MIL_TO_COORD(3)
+#define PCB_GROUNDPLANEFRAME        RND_MIL_TO_COORD(15)
+#define PCB_MASKFRAME               RND_MIL_TO_COORD(3)
 
 /* default inner/outer ratio for pins/vias in percent */
 #define PCB_DEFAULT_DRILLINGHOLE 40
@@ -391,7 +391,7 @@ polyarea
 		| T_AREA '[' number ']'
 			{
 				/* Read in cmil^2 for now; in future this should be a noop. */
-				load_meta_float("design/poly_isle_area", PCB_MIL_TO_COORD(PCB_MIL_TO_COORD ($3) / 100.0) / 100.0);
+				load_meta_float("design/poly_isle_area", RND_MIL_TO_COORD(RND_MIL_TO_COORD ($3) / 100.0) / 100.0);
 			}
 		;
 
@@ -1342,16 +1342,16 @@ number
 
 measure
 		/* Default unit (no suffix) is cmil */
-		: number	{ do_measure(&$$, $1, PCB_MIL_TO_COORD ($1) / 100.0, 0); }
-		| number T_UMIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1) / 100000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-		| number T_CMIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1) / 100.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-		| number T_MIL	{ M ($$, $1, PCB_MIL_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-		| number T_IN	{ M ($$, $1, PCB_INCH_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-		| number T_NM	{ M ($$, $1, PCB_MM_TO_COORD ($1) / 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_NANOMETER; }
-		| number T_UM	{ M ($$, $1, PCB_MM_TO_COORD ($1) / 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-		| number T_MM	{ M ($$, $1, PCB_MM_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-		| number T_M	{ M ($$, $1, PCB_MM_TO_COORD ($1) * 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
-		| number T_KM	{ M ($$, $1, PCB_MM_TO_COORD ($1) * 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		: number	{ do_measure(&$$, $1, RND_MIL_TO_COORD ($1) / 100.0, 0); }
+		| number T_UMIL	{ M ($$, $1, RND_MIL_TO_COORD ($1) / 100000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_CMIL	{ M ($$, $1, RND_MIL_TO_COORD ($1) / 100.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_MIL	{ M ($$, $1, RND_MIL_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_IN	{ M ($$, $1, RND_INCH_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_NM	{ M ($$, $1, RND_MM_TO_COORD ($1) / 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_NANOMETER; }
+		| number T_UM	{ M ($$, $1, RND_MM_TO_COORD ($1) / 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_MM	{ M ($$, $1, RND_MM_TO_COORD ($1)); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_M	{ M ($$, $1, RND_MM_TO_COORD ($1) * 1000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
+		| number T_KM	{ M ($$, $1, RND_MM_TO_COORD ($1) * 1000000.0); pcb_io_pcb_usty_seen |= PCB_USTY_UNITS; }
 		;
 
 %%
@@ -1413,7 +1413,7 @@ old_units (PLMeasure m)
     return m.bval;
   if (m.ival != 0)
     pcb_io_pcb_usty_seen |= PCB_USTY_CMIL; /* ... because we can't save in mil */
-  return rnd_round(PCB_MIL_TO_COORD (m.ival));
+  return rnd_round(RND_MIL_TO_COORD (m.ival));
 }
 
 static rnd_coord_t

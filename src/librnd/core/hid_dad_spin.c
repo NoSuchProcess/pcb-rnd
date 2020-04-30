@@ -139,15 +139,15 @@ static void spin_unit_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	int is_globbing = &su->dlg[su->wglob] == attr;
 
 	if (!can_glob)
-		unit = &pcb_units[unum];
-	else if ((!is_globbing) && (unum >= 0) && (unum < pcb_get_n_units(0)))
-		unit = &pcb_units[unum];
+		unit = &rnd_units[unum];
+	else if ((!is_globbing) && (unum >= 0) && (unum < rnd_get_n_units(0)))
+		unit = &rnd_units[unum];
 	else
 		unit = rnd_conf.editor.grid_unit;
 
 	if (is_globbing && su->dlg[su->wglob].val.lng) {
 		/* global ticked in: also set the unit by force */
-		unum = rnd_conf.editor.grid_unit - pcb_units;
+		unum = rnd_conf.editor.grid_unit - rnd_units;
 		hv.lng = unum;
 		rnd_gui->attr_dlg_set_value(hid_ctx, su->wunit, &hv);
 	}
@@ -233,9 +233,9 @@ static void spin_unit_dialog(void *spin_hid_ctx, rnd_hid_dad_spin_t *spin, rnd_h
 		int can_glob = (spin->unit_family == (PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL));
 
 		if (!can_glob)
-			spin->unit = &pcb_units[unum];
-		else if ((!ctx.dlg[ctx.wglob].val.lng) && (unum >= 0) && (unum < pcb_get_n_units(0)))
-			spin->unit = &pcb_units[unum];
+			spin->unit = &rnd_units[unum];
+		else if ((!ctx.dlg[ctx.wglob].val.lng) && (unum >= 0) && (unum < rnd_get_n_units(0)))
+			spin->unit = &rnd_units[unum];
 		else
 			spin->unit = NULL;
 
@@ -281,11 +281,11 @@ static double get_step(rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_h
 			}
 			else
 				unit = spin->unit;
-			v = pcb_coord_to_unit(unit, end->val.crd);
+			v = rnd_coord_to_unit(unit, end->val.crd);
 			step = pow(10, floor(log10(fabs(v)) - 1.0));
 			if (step <= 0.0)
 				step = 1;
-			step = pcb_unit_to_coord(unit, step);
+			step = rnd_unit_to_coord(unit, step);
 			break;
 	}
 	return step;

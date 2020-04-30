@@ -501,14 +501,14 @@ static int wrax_subc(wctx_t *ctx, pcb_subc_t *subc)
 	rnd_coord_t xPos, yPos, yPos2, yPos3;
 
 TODO("do not hardcode things like this, especially when actual data is available")
-	rnd_coord_t text_offset = PCB_MIL_TO_COORD(400); /* this gives good placement of refdes relative to element */
+	rnd_coord_t text_offset = RND_MIL_TO_COORD(400); /* this gives good placement of refdes relative to element */
 
 TODO("rename these variables to something more expressive")
 TODO("instead of hardwiring coords, just read existing dyntex coords")
 	xPos = (box->X1 + box->X2) / 2;
 	yPos = PCB->hidlib.size_y - (box->Y1 - text_offset);
-	yPos2 = yPos - PCB_MIL_TO_COORD(200);
-	yPos3 = yPos2 - PCB_MIL_TO_COORD(200);
+	yPos2 = yPos - RND_MIL_TO_COORD(200);
+	yPos3 = yPos2 - RND_MIL_TO_COORD(200);
 
 	pcb_subc_get_side(subc, &on_bottom);
 
@@ -591,7 +591,7 @@ TODO("why do we recalculate the bounding box here?")
 			}
 			else {
 				rnd_coord_t Thickness;
-				Thickness = PCB_MIL_TO_COORD(10);
+				Thickness = RND_MIL_TO_COORD(10);
 				autotrax_cpoly_hatch_lines(ctx, polygon, PCB_CPOLY_HATCH_HORIZONTAL | PCB_CPOLY_HATCH_VERTICAL, Thickness * 3, Thickness, current_layer, dx, dy);
 TODO("do we really need to reimplement this, can not cpoly_hatch_lines handle it?")
 				for(pa = pcb_poly_island_first(polygon, &poly_it); pa != NULL; pa = pcb_poly_island_next(&poly_it)) {
@@ -680,7 +680,7 @@ TODO("this is a bug - exporting to a file shall not change the content we are ex
 	fputs("PCB FILE 4\r\n", FP); /*autotrax header */
 
 	/* we sort out if the layout dimensions exceed the autotrax maxima */
-	if (PCB_COORD_TO_MIL(PCB->hidlib.size_x) > max_width_mil || PCB_COORD_TO_MIL(PCB->hidlib.size_y) > max_height_mil) {
+	if (RND_COORD_TO_MIL(PCB->hidlib.size_x) > max_width_mil || RND_COORD_TO_MIL(PCB->hidlib.size_y) > max_height_mil) {
 		rnd_message(RND_MSG_ERROR, "Layout size exceeds protel autotrax 32000 mil x 32000 mil maximum.");
 		return -1;
 	}

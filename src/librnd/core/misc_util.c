@@ -97,7 +97,7 @@ rnd_bool rnd_get_value_unit(const char *val, rnd_bool *absolute, int unit_strict
 			goto err;
 		}
 
-		u = get_unit_struct_(unit, unit_strict);
+		u = rnd_get_unit_struct_(unit, unit_strict);
 		if (u != NULL) {
 			rnd_bool succ;
 			double crd;
@@ -155,9 +155,9 @@ double rnd_get_value_ex(const char *val, const char *units, rnd_bool * absolute,
 
 	if (units && *units) {
 		int i, unit_ok = 0;
-		const rnd_unit_t *unit = get_unit_struct(units);
+		const rnd_unit_t *unit = rnd_get_unit_struct(units);
 		if (unit != NULL) {
-			value = pcb_unit_to_coord(unit, value);
+			value = rnd_unit_to_coord(unit, value);
 			scaled = 1;
 			unit_ok = 1;
 		}
@@ -179,7 +179,7 @@ double rnd_get_value_ex(const char *val, const char *units, rnd_bool * absolute,
 	/* Apply default unit */
 	if (!scaled && default_unit && *default_unit) {
 		int i;
-		const rnd_unit_t *unit = get_unit_struct(default_unit);
+		const rnd_unit_t *unit = rnd_get_unit_struct(default_unit);
 		if (extra_units)
 			for (i = 0; *extra_units[i].suffix; ++i)
 				if (strcmp(extra_units[i].suffix, default_unit) == 0) {
@@ -189,7 +189,7 @@ double rnd_get_value_ex(const char *val, const char *units, rnd_bool * absolute,
 					scaled = 1;
 				}
 		if (!scaled && unit != NULL)
-			value = pcb_unit_to_coord(unit, value);
+			value = rnd_unit_to_coord(unit, value);
 	}
 
 	if (success != NULL)

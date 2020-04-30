@@ -40,7 +40,7 @@
 
 /* Should be kept in order of smallest scale_factor to largest -- the code
    uses this ordering for finding the best scale to use for a group of units */
-rnd_unit_t pcb_units[] = {
+rnd_unit_t rnd_units[] = {
 	{"km",   'k', 0.000001, PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_KM, 5},
 	{"m",    'f', 0.001,    PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_M, 5},
 	{"cm",   'e', 0.1,      PCB_UNIT_METRIC,   PCB_UNIT_ALLOW_CM, 5},
@@ -64,16 +64,16 @@ rnd_unit_t pcb_units[] = {
 	{"pcb",   0,  100,      PCB_UNIT_IMPERIAL, PCB_UNIT_ALLOW_CMIL, 0} /* old io_pcb unit */
 };
 
-#define N_UNITS ((int) (sizeof pcb_units / sizeof pcb_units[0]))
+#define N_UNITS ((int) (sizeof rnd_units / sizeof rnd_units[0]))
 
-void pcb_units_init(void)
+void rnd_units_init(void)
 {
 	int i;
 	for (i = 0; i < N_UNITS; ++i)
-		pcb_units[i].index = i;
+		rnd_units[i].index = i;
 }
 
-const rnd_unit_t *get_unit_struct_(const char *suffix, int strict)
+const rnd_unit_t *rnd_get_unit_struct_(const char *suffix, int strict)
 {
 	int i;
 	int s_len = 0;
@@ -98,30 +98,30 @@ const rnd_unit_t *get_unit_struct_(const char *suffix, int strict)
 
 	if (strict) {
 		for (i = 0; i < N_UNITS; ++i)
-			if (strcmp(suffix, pcb_units[i].suffix) == 0)
-				return &pcb_units[i];
+			if (strcmp(suffix, rnd_units[i].suffix) == 0)
+				return &rnd_units[i];
 	}
 	else {
 		for (i = 0; i < N_UNITS; ++i)
-			if (strncmp(suffix, pcb_units[i].suffix, s_len) == 0)
-				return &pcb_units[i];
+			if (strncmp(suffix, rnd_units[i].suffix, s_len) == 0)
+				return &rnd_units[i];
 	}
 
 	return NULL;
 }
 
-const rnd_unit_t *get_unit_struct(const char *suffix)
+const rnd_unit_t *rnd_get_unit_struct(const char *suffix)
 {
-	return get_unit_struct_(suffix, 0);
+	return rnd_get_unit_struct_(suffix, 0);
 }
 
 
-const rnd_unit_t *get_unit_struct_by_allow(enum pcb_allow_e allow)
+const rnd_unit_t *rnd_get_unit_struct_by_allow(enum rnd_allow_e allow)
 {
 	int i;
 	for (i = 0; i < N_UNITS; ++i)
-		if (pcb_units[i].allow == allow)
-			return &pcb_units[i];
+		if (rnd_units[i].allow == allow)
+			return &rnd_units[i];
 
 	return NULL;
 }
@@ -130,42 +130,42 @@ const rnd_unit_t *get_unit_by_idx(int idx)
 {
 	if ((idx < 0) || (idx >= N_UNITS))
 		return NULL;
-	return pcb_units + idx;
+	return rnd_units + idx;
 }
 
 const rnd_unit_t *get_unit_by_suffix(const char *suffix)
 {
 	int i;
 	for (i = 0; i < N_UNITS; ++i)
-		if (strcmp(pcb_units[i].suffix, suffix) == 0)
-			return &pcb_units[i];
+		if (strcmp(rnd_units[i].suffix, suffix) == 0)
+			return &rnd_units[i];
 	return NULL;
 }
 
-int pcb_get_n_units(int aliases_too)
+int rnd_get_n_units(int aliases_too)
 {
 	static int num_base = -1;
 	if (aliases_too)
 		return N_UNITS;
 	if (num_base < 0)
-		for(num_base = 0; pcb_units[num_base].printf_code != 0; num_base++) ;
+		for(num_base = 0; rnd_units[num_base].printf_code != 0; num_base++) ;
 	return num_base;
 }
 
-double pcb_coord_to_unit(const rnd_unit_t *unit, rnd_coord_t x)
+double rnd_coord_to_unit(const rnd_unit_t *unit, rnd_coord_t x)
 {
 	double base;
 	if (unit == NULL)
 		return -1;
 	switch(unit->family) {
-		case PCB_UNIT_METRIC: base = PCB_COORD_TO_MM(1); break;
-		case PCB_UNIT_IMPERIAL: base = PCB_COORD_TO_MIL(1); break;
+		case PCB_UNIT_METRIC: base = RND_COORD_TO_MM(1); break;
+		case PCB_UNIT_IMPERIAL: base = RND_COORD_TO_MIL(1); break;
 		case PCB_UNIT_FREQ: base = 1.0; break;
 	}
 	return x * unit->scale_factor * base;
 }
 
-rnd_coord_t pcb_unit_to_coord(const rnd_unit_t *unit, double x)
+rnd_coord_t rnd_unit_to_coord(const rnd_unit_t *unit, double x)
 {
 	double base, res;
 
@@ -173,8 +173,8 @@ rnd_coord_t pcb_unit_to_coord(const rnd_unit_t *unit, double x)
 		return -1;
 
 	switch(unit->family) {
-		case PCB_UNIT_METRIC:   base = PCB_MM_TO_COORD(x); break;
-		case PCB_UNIT_IMPERIAL: base = PCB_MIL_TO_COORD(x); break;
+		case PCB_UNIT_METRIC:   base = RND_MM_TO_COORD(x); break;
+		case PCB_UNIT_IMPERIAL: base = RND_MIL_TO_COORD(x); break;
 		case PCB_UNIT_FREQ:     base = x; break;
 	}
 	res = rnd_round(base/unit->scale_factor);
@@ -194,12 +194,12 @@ rnd_coord_t pcb_unit_to_coord(const rnd_unit_t *unit, double x)
 	return res;
 }
 
-double pcb_unit_to_factor(const rnd_unit_t *unit)
+double rnd_unit_to_factor(const rnd_unit_t *unit)
 {
-	return 1.0 / pcb_coord_to_unit(unit, 1);
+	return 1.0 / rnd_coord_to_unit(unit, 1);
 }
 
-rnd_angle_t pcb_normalize_angle(rnd_angle_t a)
+rnd_angle_t rnd_normalize_angle(rnd_angle_t a)
 {
 	while (a < 0)
 		a += 360.0;

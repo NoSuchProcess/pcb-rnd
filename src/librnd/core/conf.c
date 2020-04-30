@@ -563,7 +563,7 @@ int rnd_conf_parse_text(rnd_confitem_t *dst, int idx, rnd_conf_native_type_t typ
 			}
 			break;
 		case RND_CFN_UNIT:
-			u = get_unit_struct(text);
+			u = rnd_get_unit_struct(text);
 			if (u == NULL)
 				rnd_hid_cfg_error(err_node, "Invalid unit: %s\n", text);
 			else

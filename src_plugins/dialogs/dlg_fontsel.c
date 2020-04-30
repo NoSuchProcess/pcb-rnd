@@ -145,7 +145,7 @@ static void btn_remove_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 
 static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t *txt_obj)
 {
-	rnd_rnd_box_t vbox = {0, 0, PCB_MM_TO_COORD(55), PCB_MM_TO_COORD(55)};
+	rnd_rnd_box_t vbox = {0, 0, RND_MM_TO_COORD(55), RND_MM_TO_COORD(55)};
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	fontsel_ctx_t *c, *ctx = NULL;
 

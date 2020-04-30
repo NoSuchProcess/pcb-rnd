@@ -83,17 +83,17 @@ static rnd_export_opt_t dsn_options[] = {
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_dsnfile 0
 	{"trackwidth", "track width in mils",
-	 RND_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(8)}, 0, 0},
+	 RND_HATT_COORD, RND_MIL_TO_COORD(0), RND_MIL_TO_COORD(100), {0, 0, 0, RND_MIL_TO_COORD(8)}, 0, 0},
 #define HA_trackwidth 1
 	{"clearance", "clearance in mils",
-	 RND_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(8)}, 0, 0},
+	 RND_HATT_COORD, RND_MIL_TO_COORD(0), RND_MIL_TO_COORD(100), {0, 0, 0, RND_MIL_TO_COORD(8)}, 0, 0},
 #define HA_clearance 2
 	{"viawidth", "via width in mils",
-	 RND_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(27)}, 0,
+	 RND_HATT_COORD, RND_MIL_TO_COORD(0), RND_MIL_TO_COORD(100), {0, 0, 0, RND_MIL_TO_COORD(27)}, 0,
 	 0},
 #define HA_viawidth 3
 	{"viadrill", "via drill diameter in mils",
-	 RND_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(15)}, 0,
+	 RND_HATT_COORD, RND_MIL_TO_COORD(0), RND_MIL_TO_COORD(100), {0, 0, 0, RND_MIL_TO_COORD(15)}, 0,
 	 0},
 #define HA_viadrill 4
 	{"cam", "CAM instruction",

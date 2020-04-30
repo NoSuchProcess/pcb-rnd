@@ -139,7 +139,7 @@ static rnd_coord_t view_left_x = 0, view_top_y = 0;
 /* Denotes PCB units per screen pixel.  Larger numbers mean zooming
    out - the largest value means you are looking at the whole
    board.  */
-static double view_zoom = PCB_MIL_TO_COORD(10);
+static double view_zoom = RND_MIL_TO_COORD(10);
 static rnd_bool autofade = 0;
 static rnd_bool crosshair_on = rnd_true;
 
@@ -2420,7 +2420,7 @@ static void lesstif_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 		start_angle = -start_angle;
 		delta_angle = -delta_angle;
 	}
-	start_angle = pcb_normalize_angle(start_angle);
+	start_angle = rnd_normalize_angle(start_angle);
 	if (start_angle >= 180)
 		start_angle -= 360;
 #if 0

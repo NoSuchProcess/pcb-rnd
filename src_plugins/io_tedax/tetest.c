@@ -92,7 +92,7 @@ static void tedax_etest_fsave_pstk(FILE *f, pcb_pstk_t *ps, const char *netname,
 		}
 		if (accept) {
 			TODO("calculate dia");
-			dia = PCB_MM_TO_COORD(0.5);
+			dia = RND_MM_TO_COORD(0.5);
 			if ((minshp == NULL) || (dia < mindia)) {
 				minshp = shp;
 				shx = 0; shy = 0;

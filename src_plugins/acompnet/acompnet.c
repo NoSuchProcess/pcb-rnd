@@ -182,11 +182,11 @@ static fgw_error_t pcb_act_acompnet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	{ /* temporary hack for testing: fixed, off-mesh start/end */
 		rnd_rnd_box_t bbox;
-		bbox.X1 = PCB_MM_TO_COORD(6.35); bbox.X2 = bbox.X1+1;
-		bbox.Y1 = PCB_MM_TO_COORD(21.5); bbox.Y2 = bbox.Y1+1;
+		bbox.X1 = RND_MM_TO_COORD(6.35); bbox.X2 = bbox.X1+1;
+		bbox.Y1 = RND_MM_TO_COORD(21.5); bbox.Y2 = bbox.Y1+1;
 		is = pcb_msgr_add_node(&gr, &bbox, 0);
-		bbox.X1 = PCB_MM_TO_COORD(12); bbox.X2 = bbox.X1+1;
-		bbox.Y1 = PCB_MM_TO_COORD(3.8); bbox.Y2 = bbox.Y1+1;
+		bbox.X1 = RND_MM_TO_COORD(12); bbox.X2 = bbox.X1+1;
+		bbox.Y1 = RND_MM_TO_COORD(3.8); bbox.Y2 = bbox.Y1+1;
 		ie = pcb_msgr_add_node(&gr, &bbox, 0);
 	}
 

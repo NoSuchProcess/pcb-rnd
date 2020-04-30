@@ -295,7 +295,7 @@ static void WritePCBDataHeader(FILE * FP)
 	rnd_fprintf(FP, "Grid[%[0] %[0] %[0] %d]\n", PCB->hidlib.grid, PCB->hidlib.grid_ox, PCB->hidlib.grid_oy, rnd_conf.editor.draw_grid);
 	rnd_fprintf(FP, "Cursor[%[0] %[0] 1000]\n", pcb_crosshair.X, pcb_crosshair.Y);
 	/* PolyArea should be output in square cmils, no suffix */
-	fprintf(FP, "PolyArea[%s]\n", c_dtostr(PCB_COORD_TO_MIL(PCB_COORD_TO_MIL(conf_core.design.poly_isle_area) * 100) * 100));
+	fprintf(FP, "PolyArea[%s]\n", c_dtostr(RND_COORD_TO_MIL(RND_COORD_TO_MIL(conf_core.design.poly_isle_area) * 100) * 100));
 	rnd_fprintf(FP, "Thermal[%s]\n", c_dtostr(PCB->ThermScale));
 	rnd_fprintf(FP, "DRC[%[0] %[0] %[0] %[0] %[0] %[0]]\n", conf_core.design.bloat, conf_core.design.shrink,
 							conf_core.design.min_wid, conf_core.design.min_slk, conf_core.design.min_drill, conf_core.design.min_ring);

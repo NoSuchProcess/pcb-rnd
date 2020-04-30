@@ -76,9 +76,9 @@ static font_size_res_t font_text_nominal_size(int font_id, const char *txt, rnd_
 	}
 	LINE_END;
 
-	*width = PCB_MM_TO_COORD(tw);
-	*height = PCB_MM_TO_COORD((double)lines * (pcb_mentor_font_ymax[font_id] - pcb_mentor_font_ymin[font_id]));
-	*yoffs = PCB_MM_TO_COORD(pcb_mentor_font_ymin[font_id]);
+	*width = RND_MM_TO_COORD(tw);
+	*height = RND_MM_TO_COORD((double)lines * (pcb_mentor_font_ymax[font_id] - pcb_mentor_font_ymin[font_id]));
+	*yoffs = RND_MM_TO_COORD(pcb_mentor_font_ymin[font_id]);
 
 	return bad_glyph ? FSR_INVALID_GLYPH_ID : FSR_SUCCESS;
 }

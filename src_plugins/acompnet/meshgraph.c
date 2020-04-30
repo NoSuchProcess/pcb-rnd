@@ -36,7 +36,7 @@
 #include "route.h"
 
 #define INF_SCORE 9000000000.0
-#define SEARCHR PCB_MM_TO_COORD(5)
+#define SEARCHR RND_MM_TO_COORD(5)
 
 void pcb_msgr_init(pcb_meshgraph_t *gr)
 {

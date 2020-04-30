@@ -160,7 +160,7 @@ pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t
 	else
 		need_rot = 0;
 
-	segs = sqrt((double)(rx+ry) / (double)PCB_MM_TO_COORD(0.1));
+	segs = sqrt((double)(rx+ry) / (double)RND_MM_TO_COORD(0.1));
 	if (segs < 3)  segs = 3;
 	if (segs > 15) segs = 15;
 

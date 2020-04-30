@@ -246,7 +246,7 @@ int constraint_gui(void)
 					RND_DAD_COORD(cnstgui_ctx.dlg, "");
 						cnstgui_ctx.line_length_mod = RND_DAD_CURRENT(cnstgui_ctx.dlg);
 						RND_DAD_MINVAL(cnstgui_ctx.dlg, 0);
-						RND_DAD_MAXVAL(cnstgui_ctx.dlg, PCB_MM_TO_COORD(1000));
+						RND_DAD_MAXVAL(cnstgui_ctx.dlg, RND_MM_TO_COORD(1000));
 						RND_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
 						RND_DAD_HELP(cnstgui_ctx.dlg, "if non-zero:\nline length must be an integer multiply of this value");
 				RND_DAD_END(cnstgui_ctx.dlg);
@@ -306,7 +306,7 @@ int constraint_gui(void)
 					RND_DAD_COORD(cnstgui_ctx.dlg, "");
 						cnstgui_ctx.move_length_mod = RND_DAD_CURRENT(cnstgui_ctx.dlg);
 						RND_DAD_MINVAL(cnstgui_ctx.dlg, 0);
-						RND_DAD_MAXVAL(cnstgui_ctx.dlg, PCB_MM_TO_COORD(1000));
+						RND_DAD_MAXVAL(cnstgui_ctx.dlg, RND_MM_TO_COORD(1000));
 						RND_DAD_CHANGE_CB(cnstgui_ctx.dlg, gui2cons);
 						RND_DAD_HELP(cnstgui_ctx.dlg, "if non-zero:\nmove distance must be an integer multiply of this value");
 				RND_DAD_END(cnstgui_ctx.dlg);

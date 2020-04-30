@@ -3070,7 +3070,7 @@ static void pcb_poly_valid_report(pcb_pline_t *c, pcb_vnode_t *pl, pa_chk_res_t 
 	while ((v = v->next) != pl);
 
 	if ((chk != NULL) && (chk->marks > 0)) {
-		int n, MR=PCB_MM_TO_COORD(0.05);
+		int n, MR=RND_MM_TO_COORD(0.05);
 		fprintf(stderr, "color #770000\n");
 		for(n = 0; n < chk->marks; n++) {
 			rnd_fprintf(stderr, "line %#mm %#mm %#mm %#mm\n", chk->x[n]-MR, chk->y[n]-MR, chk->x[n]+MR, chk->y[n]+MR);

@@ -158,7 +158,7 @@ static rnd_polyarea_t *ArcPolyNoIntersect(rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	edy = (v[1] - v2[1]);
 	if (edx < 0) edx = -edx;
 	if (edy < 0) edy = -edy;
-	if (edx+edy > PCB_MM_TO_COORD(0.001))
+	if (edx+edy > RND_MM_TO_COORD(0.001))
 		pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v2));
 
 

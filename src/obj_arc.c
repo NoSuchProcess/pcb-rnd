@@ -113,12 +113,12 @@ static rnd_rnd_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
 	delta = RND_CLAMP(Arc->Delta, -360, 360);
 
 	if (delta > 0) {
-		ang1 = pcb_normalize_angle(Arc->StartAngle);
-		ang2 = pcb_normalize_angle(Arc->StartAngle + delta);
+		ang1 = rnd_normalize_angle(Arc->StartAngle);
+		ang2 = rnd_normalize_angle(Arc->StartAngle + delta);
 	}
 	else {
-		ang1 = pcb_normalize_angle(Arc->StartAngle + delta);
-		ang2 = pcb_normalize_angle(Arc->StartAngle);
+		ang1 = rnd_normalize_angle(Arc->StartAngle + delta);
+		ang2 = rnd_normalize_angle(Arc->StartAngle);
 	}
 	if (ang1 > ang2)
 		ang2 += 360;
@@ -230,7 +230,7 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_c
 		for(o = rnd_rtree_first(&it, Layer->arc_tree, (rnd_rtree_box_t *)&b); o != NULL; o = rnd_rtree_next(&it)) {
 			pcb_arc_t *arc = (pcb_arc_t *)o;
 TODO(": this does not catch all cases; there are more ways two arcs can be the same because of the angles")
-			if (arc->X == X1 && arc->Y == Y1 && arc->Width == width && pcb_normalize_angle(arc->StartAngle) == pcb_normalize_angle(sa) && arc->Delta == dir)
+			if (arc->X == X1 && arc->Y == Y1 && arc->Width == width && rnd_normalize_angle(arc->StartAngle) == rnd_normalize_angle(sa) && arc->Delta == dir)
 				return NULL; /* prevent stacked arcs */
 		}
 	}
@@ -309,7 +309,7 @@ int pcb_arc_eq(const pcb_host_trans_t *tr1, const pcb_arc_t *a1, const pcb_host_
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, a1) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, a2)) {
 		if (pcb_neq_tr_coords(tr1, a1->X, a1->Y, tr2, a2->X, a2->Y)) return 0;
-		if (pcb_normalize_angle(rnd_round(a1->StartAngle * sgn1 + tr1->rot * sgn1)) != pcb_normalize_angle(rnd_round(a2->StartAngle * sgn2 + tr2->rot * sgn2))) return 0;
+		if (rnd_normalize_angle(rnd_round(a1->StartAngle * sgn1 + tr1->rot * sgn1)) != rnd_normalize_angle(rnd_round(a2->StartAngle * sgn2 + tr2->rot * sgn2))) return 0;
 		if (rnd_round(a1->Delta * sgn1) != rnd_round(a2->Delta * sgn2)) return 0;
 	}
 
@@ -325,7 +325,7 @@ unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a)
 		rnd_coord_t x, y;
 		pcb_hash_tr_coords(tr, &x, &y, a->X, a->Y);
 		crd = pcb_hash_coord(x) ^ pcb_hash_coord(y) ^
-			pcb_hash_coord(pcb_normalize_angle(rnd_round(a->StartAngle*sgn + tr->rot*sgn))) ^ pcb_hash_coord(rnd_round(a->Delta * sgn));
+			pcb_hash_coord(rnd_normalize_angle(rnd_round(a->StartAngle*sgn + tr->rot*sgn))) ^ pcb_hash_coord(rnd_round(a->Delta * sgn));
 	}
 
 	return
@@ -781,7 +781,7 @@ void pcb_arc_rotate90(pcb_arc_t *Arc, rnd_coord_t X, rnd_coord_t Y, unsigned Num
 	rnd_coord_t save;
 
 	/* add Number*90 degrees (i.e., Number quarter-turns) */
-	Arc->StartAngle = pcb_normalize_angle(Arc->StartAngle + Number * 90);
+	Arc->StartAngle = rnd_normalize_angle(Arc->StartAngle + Number * 90);
 	RND_COORD_ROTATE90(Arc->X, Arc->Y, X, Y, Number);
 
 	/* now change width and height */
@@ -800,7 +800,7 @@ void pcb_arc_rotate(pcb_layer_t *layer, pcb_arc_t *arc, rnd_coord_t X, rnd_coord
 	if (layer->arc_tree != NULL)
 		pcb_r_delete_entry(layer->arc_tree, (rnd_rnd_box_t *) arc);
 	rnd_rotate(&arc->X, &arc->Y, X, Y, cosa, sina);
-	arc->StartAngle = pcb_normalize_angle(arc->StartAngle + angle);
+	arc->StartAngle = rnd_normalize_angle(arc->StartAngle + angle);
 	if (layer->arc_tree != NULL)
 		pcb_r_insert_entry(layer->arc_tree, (rnd_rnd_box_t *) arc);
 }
@@ -818,8 +818,8 @@ void pcb_arc_mirror(pcb_arc_t *arc, rnd_coord_t y_offs, rnd_bool undoable)
 	g->Height = arc->Height;
 	g->X = PCB_SWAP_X(arc->X);
 	g->Y = PCB_SWAP_Y(arc->Y) + y_offs;
-	g->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
-	g->Delta = PCB_SWAP_DELTA(arc->Delta);
+	g->StartAngle = RND_SWAP_ANGLE(arc->StartAngle);
+	g->Delta = RND_SWAP_DELTA(arc->Delta);
 
 	undo_arc_geo_swap(g);
 	if (undoable) pcb_undo_inc_serial();
@@ -830,8 +830,8 @@ void pcb_arc_flip_side(pcb_layer_t *layer, pcb_arc_t *arc)
 	pcb_r_delete_entry(layer->arc_tree, (rnd_rnd_box_t *) arc);
 	arc->X = PCB_SWAP_X(arc->X);
 	arc->Y = PCB_SWAP_Y(arc->Y);
-	arc->StartAngle = PCB_SWAP_ANGLE(arc->StartAngle);
-	arc->Delta = PCB_SWAP_DELTA(arc->Delta);
+	arc->StartAngle = RND_SWAP_ANGLE(arc->StartAngle);
+	arc->Delta = RND_SWAP_DELTA(arc->Delta);
 	pcb_arc_bbox(arc);
 	pcb_r_insert_entry(layer->arc_tree, (rnd_rnd_box_t *) arc);
 }
@@ -986,7 +986,7 @@ void pcb_arc_approx(const pcb_arc_t *arc, double res, int reverse, void *uctx, i
 	}
 
 	if (res == 0)
-		res = PCB_MM_TO_COORD(-1);
+		res = RND_MM_TO_COORD(-1);
 
 	if (res < 0) {
 		double arclen, delta;

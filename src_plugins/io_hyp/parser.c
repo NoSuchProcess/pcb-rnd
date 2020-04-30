@@ -41,8 +41,8 @@
 #include "../src_plugins/lib_compat_help/subc_help.h"
 #include <string.h>
 
-#define MASK_OFFS  +PCB_MIL_TO_COORD(10)
-#define PASTE_OFFS -PCB_MIL_TO_COORD(10)
+#define MASK_OFFS  +RND_MIL_TO_COORD(10)
+#define PASTE_OFFS -RND_MIL_TO_COORD(10)
 
 
 #undef min
@@ -216,7 +216,7 @@ rnd_coord_t origin_y;
 
 static rnd_coord_t m2coord(double m)
 {
-	return ((rnd_coord_t) PCB_MM_TO_COORD(1000.0 * m));
+	return ((rnd_coord_t) RND_MM_TO_COORD(1000.0 * m));
 }
 
 /* xy coordinates to rnd_coord_t, without offset */
@@ -618,7 +618,7 @@ void hyp_resize_board()
 {
 	rnd_coord_t x_max, x_min, y_max, y_min;
 	rnd_coord_t width, height;
-	rnd_coord_t slack = PCB_MM_TO_COORD(1);
+	rnd_coord_t slack = RND_MM_TO_COORD(1);
 	outline_t *i;
 
 	if (PCB == NULL)
@@ -962,8 +962,8 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_
 		start_angle = 180 + 180 * atan2(YC - Y1, X1 - XC) / M_PI;
 		end_angle = 180 + 180 * atan2(YC - Y2, X2 - XC) / M_PI;
 	}
-	start_angle = pcb_normalize_angle(start_angle);
-	end_angle = pcb_normalize_angle(end_angle);
+	start_angle = rnd_normalize_angle(start_angle);
+	end_angle = rnd_normalize_angle(end_angle);
 
 	if (Clockwise)
 		while (start_angle < end_angle)
@@ -986,7 +986,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_
 void hyp_arc2contour(pcb_pline_t * contour, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t xc,
 										 rnd_coord_t yc, rnd_coord_t r, rnd_bool_t clockwise)
 {
-	rnd_coord_t arc_precision = PCB_MM_TO_COORD(0.254);	/* mm */
+	rnd_coord_t arc_precision = RND_MM_TO_COORD(0.254);	/* mm */
 	int min_circle_segments = 8;	/* 8 seems minimal, 16 seems more than sufficient. */
 	int segments;
 	int poly_points = 0;

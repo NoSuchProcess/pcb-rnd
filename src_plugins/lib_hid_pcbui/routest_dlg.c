@@ -45,7 +45,7 @@ static void rstdlg_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 		pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, ctx->curr, 0);
 		if (rst->Diameter <= rst->Hole) {
 			rnd_message(RND_MSG_ERROR, "had to increase the via ring diameter - can not be smaller than the hole");
-			rst->Diameter = rst->Hole+PCB_MIL_TO_COORD(1);
+			rst->Diameter = rst->Hole+RND_MIL_TO_COORD(1);
 		}
 	}
 

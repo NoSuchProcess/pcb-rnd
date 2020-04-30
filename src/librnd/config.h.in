@@ -197,7 +197,7 @@ print [@
 /* Coordinate type and properties, as detected by scconfig */
 typedef @/local/pcb/coord_type@ rnd_coord_t;
 #define RND_COORD_MAX @/local/pcb/coord_max@
-#define coord_abs pcb_coord_abs
+#define coord_abs rnd_coord_abs
 
 /* Other autodetected types */
 typedef @/local/pcb/long64@    pcb_long64_t;

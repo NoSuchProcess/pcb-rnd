@@ -148,7 +148,7 @@ do { \
 		case RND_HATT_END: \
 			RND_DAD_COORD(library_ctx.pdlg, ""); \
 				ctx->pwid[curr] = RND_DAD_CURRENT(library_ctx.pdlg); \
-				RND_DAD_MINMAX(library_ctx.pdlg, 0, PCB_MM_TO_COORD(512)); \
+				RND_DAD_MINMAX(library_ctx.pdlg, 0, RND_MM_TO_COORD(512)); \
 				RND_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
 			break; \
 		case RND_HATT_STRING: \

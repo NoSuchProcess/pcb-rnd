@@ -270,9 +270,9 @@ static void report_poly(gds_t *dst, pcb_poly_t *poly)
 
 	aunit = rnd_conf.editor.grid_unit->suffix;
 	if (aunit[1] == 'm')
-		u = PCB_MM_TO_COORD(1);
+		u = RND_MM_TO_COORD(1);
 	else
-		u = PCB_MIL_TO_COORD(1);
+		u = RND_MIL_TO_COORD(1);
 
 	area = pcb_poly_area(poly);
 	area = area / u;
@@ -655,7 +655,7 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 			return -1;
 		}
 
-#define MINDIST PCB_MIL_TO_COORD(40)
+#define MINDIST RND_MIL_TO_COORD(40)
 		if ((rnd_distance(l->Point1.X, l->Point1.Y, x, y) < MINDIST) || (rnd_distance(l->Point2.X, l->Point2.Y, x, y) < MINDIST)) {
 			rnd_message(RND_MSG_ERROR, "Can not split near the endpoint of a line\n");
 			return -1;

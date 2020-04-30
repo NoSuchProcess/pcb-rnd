@@ -53,7 +53,7 @@ static pcb_r_dir_t check_line_callback(const rnd_rnd_box_t * box, void *cl)
 	pcb_arc_t *arc;
 
 	fprintf(stderr, "...Line ((%.6f, %.6f), (%.6f, %.6f)): ",
-					PCB_COORD_TO_MM(l->Point1.X), PCB_COORD_TO_MM(l->Point1.Y), PCB_COORD_TO_MM(l->Point2.X), PCB_COORD_TO_MM(l->Point2.Y));
+					RND_COORD_TO_MM(l->Point1.X), RND_COORD_TO_MM(l->Point1.Y), RND_COORD_TO_MM(l->Point2.X), RND_COORD_TO_MM(l->Point2.Y));
 
 	/* if our line is to short ignore it */
 	if (rnd_distance2(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y) < MIN_LINE_LENGTH2) {
@@ -61,7 +61,7 @@ static pcb_r_dir_t check_line_callback(const rnd_rnd_box_t * box, void *cl)
 		return 1;
 	}
 
-	fprintf(stderr, "......Point (%.6f, %.6f): ", PCB_COORD_TO_MM(px), PCB_COORD_TO_MM(py));
+	fprintf(stderr, "......Point (%.6f, %.6f): ", RND_COORD_TO_MM(px), RND_COORD_TO_MM(py));
 
 	if (rnd_distance2(l->Point1.X, l->Point1.Y, px, py) < MAX_DISTANCE2) {
 		x1 = l->Point1.X;
@@ -85,7 +85,7 @@ static pcb_r_dir_t check_line_callback(const rnd_rnd_box_t * box, void *cl)
 	t = l->Thickness / 2.0;
 
 	if (t > r) {
-		fprintf(stderr, "t > r: t = %3.6f, r = %3.6f\n", PCB_COORD_TO_MM(t), PCB_COORD_TO_MM(r));
+		fprintf(stderr, "t > r: t = %3.6f, r = %3.6f\n", RND_COORD_TO_MM(t), RND_COORD_TO_MM(r));
 		return 1;
 	}
 
@@ -105,7 +105,7 @@ static pcb_r_dir_t check_line_callback(const rnd_rnd_box_t * box, void *cl)
 		if (radius < r || radius < t) {
 			fprintf(stderr,
 							"(radius < r || radius < t): radius = %3.6f, r = %3.6f, t = %3.6f\n",
-							PCB_COORD_TO_MM(radius), PCB_COORD_TO_MM(r), PCB_COORD_TO_MM(t));
+							RND_COORD_TO_MM(radius), RND_COORD_TO_MM(r), RND_COORD_TO_MM(t));
 			return 1;
 		}
 	}
@@ -208,7 +208,7 @@ static void check_pstk(pcb_pstk_t *ps)
 				px /= shp->data.poly.len;
 				py /= shp->data.poly.len;
 
-				mindist = PCB_MM_TO_COORD(8);
+				mindist = RND_MM_TO_COORD(8);
 				mindist *= mindist;
 				for(n = 0; n < shp->data.poly.len; n++) {
 					double dist = rnd_distance2(px, py, shp->data.poly.x[n], shp->data.poly.y[n]);

@@ -108,8 +108,8 @@ static void build_st_help(void)
 	const rnd_unit_t *unit_inv;
 
 	if (unit_mm == NULL) { /* cache mm and mil units to save on the lookups */
-		unit_mm  = get_unit_struct("mm");
-		unit_mil = get_unit_struct("mil");
+		unit_mm  = rnd_get_unit_struct("mm");
+		unit_mil = rnd_get_unit_struct("mil");
 	}
 	if (rnd_conf.editor.grid_unit == unit_mm)
 		unit_inv = unit_mil;
@@ -241,7 +241,7 @@ static void status_rd_pcb2dlg(void)
 
 static void unit_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	if (rnd_conf.editor.grid_unit == get_unit_struct("mm"))
+	if (rnd_conf.editor.grid_unit == rnd_get_unit_struct("mm"))
 		rnd_actionva(&PCB->hidlib, "SetUnits", "mil", NULL);
 	else
 		rnd_actionva(&PCB->hidlib, "SetUnits", "mm", NULL);
