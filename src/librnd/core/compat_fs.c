@@ -29,7 +29,7 @@
 
 /* misc functions used by several modules */
 
-#define PCB_SAFE_FS
+#define RND_SAFE_FS
 #include <librnd/config.h>
 
 #include <librnd/core/compat_inc.h>

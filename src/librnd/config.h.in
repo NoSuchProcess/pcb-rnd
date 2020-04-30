@@ -223,7 +223,7 @@ typedef @/local/pcb/long64@    pcb_long64_t;
 #	define snprintf    never_use_snprintf__use_rnd_snprintf
 #	define round       never_use_round__use_rnd_round
 #	define strcasecmp  never_use_strcasecmp__use_rnd_strcasecmp
-#	ifndef PCB_SAFE_FS
+#	ifndef RND_SAFE_FS
 #		undef fopen
 #		undef popen
 #		undef system

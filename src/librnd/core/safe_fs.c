@@ -25,7 +25,7 @@
   */
 
 /* permit direct access to the libc calls (turn off config.h masking) */
-#define PCB_SAFE_FS
+#define RND_SAFE_FS
 
 /* opendir, readdir */
 #include <librnd/core/compat_inc.h>
