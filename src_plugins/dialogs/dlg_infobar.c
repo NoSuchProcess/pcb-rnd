@@ -56,7 +56,7 @@ fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	rnd_hid_attr_val_t hv;
 	const char *cmd;
 
-	if (!PCB_HAVE_GUI_ATTR_DLG) {
+	if (!RND_HAVE_GUI_ATTR_DLG) {
 		RND_ACT_IRES(0);
 		return 0;
 	}
@@ -89,7 +89,7 @@ fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv
 						PCB_DAD_CHANGE_CB(sub.dlg, ifb_file_chg_close_cb);
 				PCB_DAD_END(sub.dlg);
 			PCB_DAD_END(sub.dlg);
-			if (pcb_hid_dock_enter(&sub, RND_HID_DOCK_TOP_INFOBAR, "file_changed") != 0) {
+			if (rnd_hid_dock_enter(&sub, RND_HID_DOCK_TOP_INFOBAR, "file_changed") != 0) {
 				RND_ACT_IRES(1);
 				return 0;
 			}
@@ -106,7 +106,7 @@ fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	}
 	else if (strcmp(cmd, "close") == 0) {
 		if (active) {
-			pcb_hid_dock_leave(&sub);
+			rnd_hid_dock_leave(&sub);
 			active = 0;
 		}
 	}

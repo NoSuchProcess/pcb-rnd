@@ -203,7 +203,7 @@ static void log_append_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_e
 		log_append(&log_ctx, atxt, line);
 		maybe_scroll_to_bottom();
 	}
-	else if ((PCB_HAVE_GUI_ATTR_DLG) && (log_ctx.gui_inited)) {
+	else if ((RND_HAVE_GUI_ATTR_DLG) && (log_ctx.gui_inited)) {
 		const char *prefix;
 		int popup;
 

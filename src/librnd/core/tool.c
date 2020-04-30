@@ -304,7 +304,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* it is okay to use crosshair directly here, the mode command is called from a click when it needs coords */
 	hidlib->tool_x = hidlib->ch_x;
 	hidlib->tool_y = hidlib->ch_y;
-	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 	if (rnd_strcasecmp(cmd, "Cancel") == 0) {
 		pcb_tool_select_by_id(RND_ACT_HIDLIB, pcbhl_conf.editor.mode);
 	}
@@ -331,7 +331,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			   action script, so actions after this one could do things
 			   that would be executed only after non-recognized gestures */
 				do_release(RND_ACT_HIDLIB);
-				pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 				return 1;
 			}
 		}
@@ -353,7 +353,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (pcb_tool_select_by_name(RND_ACT_HIDLIB, cmd) != 0)
 			rnd_message(RND_MSG_ERROR, "No such tool: '%s'\n", cmd);
 	}
-	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 	return 0;
 }
 

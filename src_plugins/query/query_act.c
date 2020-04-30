@@ -276,8 +276,8 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
-			if (PCB_HAVE_GUI_ATTR_DLG)
-				pcb_hid_redraw(PCB);
+			if (RND_HAVE_GUI_ATTR_DLG)
+				rnd_hid_redraw(PCB);
 		}
 		RND_ACT_IRES(0);
 		return 0;
@@ -304,8 +304,8 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			printf("Failed to run the query\n");
 		if (sel.cnt > 0) {
 			pcb_board_set_changed_flag(pcb_true);
-			if (PCB_HAVE_GUI_ATTR_DLG)
-				pcb_hid_redraw(PCB);
+			if (RND_HAVE_GUI_ATTR_DLG)
+				rnd_hid_redraw(PCB);
 		}
 		RND_ACT_IRES(0);
 		return 0;

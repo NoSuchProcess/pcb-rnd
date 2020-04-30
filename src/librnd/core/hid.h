@@ -94,7 +94,7 @@ typedef enum rnd_burst_op_s {
 	RND_HID_BURST_END
 } rnd_burst_op_t;
 
-typedef enum pcb_hid_attr_ev_e {
+typedef enum rnd_hid_attr_ev_e {
 	RND_HID_ATTR_EV_WINCLOSE = 2, /* window closed (window manager close) */
 	RND_HID_ATTR_EV_CODECLOSE     /* closed by the code, including standard close buttons */
 } rnd_hid_attr_ev_t;
@@ -599,30 +599,30 @@ extern int rnd_pixel_slop;
    value. "msg" is printed above the query. The optional title
    is the window title.
    Returns NULL on cancel. The caller needs to free the returned string */
-char *pcb_hid_prompt_for(rnd_hidlib_t *hl, const char *msg, const char *default_string, const char *title);
+char *rnd_hid_prompt_for(rnd_hidlib_t *hl, const char *msg, const char *default_string, const char *title);
 
 /* Present a dialog box with a message and variable number of buttons. If icon
    is not NULL, attempt to draw the named icon on the left. The vararg part is
    one or more buttons, as a list of "char *label, int retval", terminated with
    NULL. */
-int pcb_hid_message_box(rnd_hidlib_t *hl, const char *icon, const char *title, const char *label, ...);
+int rnd_hid_message_box(rnd_hidlib_t *hl, const char *icon, const char *title, const char *label, ...);
 
 /* Show modal progressbar to the user, offering cancel long running processes.
    Pass all zeros to flush display and remove the dialog.
    Returns nonzero if the user wishes to cancel the operation.  */
-int pcb_hid_progress(long so_far, long total, const char *message);
+int rnd_hid_progress(long so_far, long total, const char *message);
 
 /* non-zero if DAD dialogs are available currently */
-#define PCB_HAVE_GUI_ATTR_DLG \
-	((rnd_gui != NULL) && (rnd_gui->gui) && (rnd_gui->attr_dlg_new != NULL) && (rnd_gui->attr_dlg_new != pcb_nogui_attr_dlg_new))
-void *pcb_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+#define RND_HAVE_GUI_ATTR_DLG \
+	((rnd_gui != NULL) && (rnd_gui->gui) && (rnd_gui->attr_dlg_new != NULL) && (rnd_gui->attr_dlg_new != rnd_nogui_attr_dlg_new))
+void *rnd_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 
-int pcb_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id);
-void pcb_hid_dock_leave(rnd_hid_dad_subdialog_t *sub);
+int rnd_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id);
+void rnd_hid_dock_leave(rnd_hid_dad_subdialog_t *sub);
 
-#define pcb_hid_redraw(pcb) rnd_gui->invalidate_all(rnd_gui)
+#define rnd_hid_redraw(pcb) rnd_gui->invalidate_all(rnd_gui)
 
-#define pcb_hid_busy(pcb, is_busy) \
+#define rnd_hid_busy(pcb, is_busy) \
 do { \
 	rnd_event(&pcb->hidlib, RND_EVENT_BUSY, "i", is_busy, NULL); \
 	if ((rnd_gui != NULL) && (rnd_gui->busy != NULL)) \
@@ -643,7 +643,7 @@ do { \
  * They should initiate a redraw of the crosshair attached objects - which may
  * (if necessary) mean repainting the whole screen if the GUI hasn't tracked the
  * location of existing attached drawing. */
-void pcb_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete);
+void rnd_hid_notify_crosshair_change(rnd_hidlib_t *hl, rnd_bool changes_complete);
 
 
 #endif

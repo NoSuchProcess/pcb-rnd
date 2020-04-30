@@ -4375,7 +4375,7 @@ struct routeall_status RouteAll(routedata_t * rd)
 					 * to route a net from a particular starting point, but perfectly
 					 * able to route it from some other. */
 					percent = calculate_progress(this_heap_item, this_heap_size, &ras);
-					request_cancel = pcb_hid_progress(percent * 100., 100, "Autorouting tracks");
+					request_cancel = rnd_hid_progress(percent * 100., 100, "Autorouting tracks");
 					if (request_cancel) {
 						ras.total_nets_routed = 0;
 						ras.conflict_subnets = 0;
@@ -4746,7 +4746,7 @@ rnd_bool AutoRoute(rnd_bool selected)
 	/* auto-route all nets */
 	changed = (RouteAll(rd).total_nets_routed > 0) || changed;
 donerouting:
-	pcb_hid_progress(0, 0, NULL);
+	rnd_hid_progress(0, 0, NULL);
 	if (conf_core.editor.live_routing) {
 		int i;
 		rnd_rnd_box_t big = { 0, 0, RND_MAX_COORD, RND_MAX_COORD };
@@ -4774,7 +4774,7 @@ donerouting:
 
 		pcb_undo_inc_serial();
 
-		pcb_hid_redraw(PCB);
+		rnd_hid_redraw(PCB);
 	}
 #if defined (ROUTE_DEBUG)
 	aabort = 0;

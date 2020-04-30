@@ -208,7 +208,7 @@ static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, rnd_hid_a
 
 static void pref_conf_editval_edit(void *hid_ctx, confedit_ctx_t *ctx, rnd_hid_attribute_t *attr, pcb_hid_row_t *r)
 {
-	char *nv = pcb_hid_prompt_for(&PCB->hidlib, "list item value:", r->cell[0], "Edit config list item");
+	char *nv = rnd_hid_prompt_for(&PCB->hidlib, "list item value:", r->cell[0], "Edit config list item");
 	if (nv == NULL)
 		return;
 

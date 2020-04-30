@@ -52,11 +52,11 @@
 
 void pcb_tool_arrow_uninit(void)
 {
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 /* Called some time after the click if there was a release but no second click
@@ -68,7 +68,7 @@ static void click_timer_cb(rnd_hidval_t hv)
 	pcb_board_t *pcb = hv.ptr;
 
 	if (hl->tool_click) {
-		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+		rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 		hl->tool_click = pcb_false;
 		if (pcb_crosshair_note.Moving && !rnd_gui->shift_is_pressed(rnd_gui)) {
 			hl->tool_grabbed.status = pcb_true;
@@ -125,7 +125,7 @@ static void click_timer_cb(rnd_hidval_t hv)
 			pcb_crosshair.AttachedBox.Point1.X = hl->tool_x;
 			pcb_crosshair.AttachedBox.Point1.Y = hl->tool_y;
 		}
-		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+		rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 	}
 
 	if (pcb_crosshair.extobj_edit != NULL) {

@@ -825,23 +825,23 @@ void *pcb_chg_obj_name_query(pcb_any_obj_t *obj)
 			if ((parent_subc != NULL) && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, obj) && !PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, obj))
 				goto term_name; /* special case: dyntext floaters are rarely temrinals */
 			if ((parent_subc != NULL) && PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, obj) && (strstr(((pcb_text_t *)obj)->TextString, "%a.parent.refdes%"))) {
-				if (pcb_hid_message_box(&PCB->hidlib, "question", "Text edit: refdes or template?", "Text object seems to be a refdes text", "edit the text (template)", 0, "edit subcircuit refdes", 1, NULL) == 1) {
+				if (rnd_hid_message_box(&PCB->hidlib, "question", "Text edit: refdes or template?", "Text object seems to be a refdes text", "edit the text (template)", 0, "edit subcircuit refdes", 1, NULL) == 1) {
 					obj = (pcb_any_obj_t *)parent_subc;
 					goto subc_name;
 				}
 			}
-			name = pcb_hid_prompt_for(&PCB->hidlib, "Enter text:", PCB_EMPTY(((pcb_text_t *)obj)->TextString), "Change text");
+			name = rnd_hid_prompt_for(&PCB->hidlib, "Enter text:", PCB_EMPTY(((pcb_text_t *)obj)->TextString), "Change text");
 			break;
 
 		case PCB_OBJ_SUBC:
 			subc_name:;
-			name = pcb_hid_prompt_for(&PCB->hidlib, "Subcircuit refdes:", PCB_EMPTY(((pcb_subc_t *)obj)->refdes), "Change refdes");
+			name = rnd_hid_prompt_for(&PCB->hidlib, "Subcircuit refdes:", PCB_EMPTY(((pcb_subc_t *)obj)->refdes), "Change refdes");
 			break;
 
 		default:
 			term_name:;
 			{
-				name = pcb_hid_prompt_for(&PCB->hidlib, "Enter terminal ID:", PCB_EMPTY(obj->term), "Change terminal ID");
+				name = rnd_hid_prompt_for(&PCB->hidlib, "Enter terminal ID:", PCB_EMPTY(obj->term), "Change terminal ID");
 				if (name != NULL) {
 					pcb_term_undoable_rename(PCB, obj, name);
 					pcb_draw();

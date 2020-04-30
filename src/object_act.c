@@ -246,7 +246,7 @@ static fgw_error_t pcb_act_DisperseElements(fgw_arg_t *res, int argc, fgw_arg_t 
 	/* done with our action so increment the undo # */
 	pcb_undo_inc_serial();
 
-	pcb_hid_redraw(pcb);
+	rnd_hid_redraw(pcb);
 	pcb_board_set_changed_flag(pcb_true);
 
 	return 0;

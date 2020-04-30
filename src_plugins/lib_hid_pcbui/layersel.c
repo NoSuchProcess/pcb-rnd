@@ -279,7 +279,7 @@ static void layer_select(ls_layer_t *lys)
 	else
 		return;
 
-	pcb_hid_redraw(PCB);
+	rnd_hid_redraw(PCB);
 
 	if (vis != NULL) {
 		lys_update_vis(lys, *vis);
@@ -417,7 +417,7 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 	ensure_visible_current(lys->ls);
 
-	pcb_hid_redraw(PCB);
+	rnd_hid_redraw(PCB);
 }
 
 static void layer_right_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -832,7 +832,7 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 static void layersel_build(void)
 {
 	layersel_docked_create(&layersel, PCB);
-	if (pcb_hid_dock_enter(&layersel.sub, RND_HID_DOCK_LEFT, "layersel") == 0) {
+	if (rnd_hid_dock_enter(&layersel.sub, RND_HID_DOCK_LEFT, "layersel") == 0) {
 		layersel.sub_inited = 1;
 		layersel_update_vis(&layersel, PCB);
 	}
@@ -840,7 +840,7 @@ static void layersel_build(void)
 
 void pcb_layersel_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	if ((PCB_HAVE_GUI_ATTR_DLG) && (rnd_gui->get_menu_cfg != NULL))
+	if ((RND_HAVE_GUI_ATTR_DLG) && (rnd_gui->get_menu_cfg != NULL))
 		layersel_build();
 }
 
@@ -853,8 +853,8 @@ void pcb_layersel_vis_chg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rn
 
 void pcb_layersel_stack_chg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	if ((PCB_HAVE_GUI_ATTR_DLG) && (rnd_gui->get_menu_cfg != NULL) && (layersel.sub_inited)) {
-		pcb_hid_dock_leave(&layersel.sub);
+	if ((RND_HAVE_GUI_ATTR_DLG) && (rnd_gui->get_menu_cfg != NULL) && (layersel.sub_inited)) {
+		rnd_hid_dock_leave(&layersel.sub);
 		layersel.sub_inited = 0;
 		layersel_build();
 	}

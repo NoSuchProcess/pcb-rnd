@@ -1010,11 +1010,11 @@ static void tool_skline_init(void)
 
 static void tool_skline_uninit(void)
 {
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	attached_path_uninit();
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 static void tool_skline_notify_mode(rnd_hidlib_t *hl)

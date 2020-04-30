@@ -735,7 +735,7 @@ static void move_corner(corner_s * c, int x, int y)
 				break;
 			}
 		}
-	pcb_hid_progress(0, 0, 0);
+	rnd_hid_progress(0, 0, 0);
 	check(c, 0);
 }
 
@@ -2445,7 +2445,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	SwitchDrawingWindow(PCB->Zoom, Output.drawing_area->window, conf_core.editor.show_solder_side, pcb_false);
 #endif
 
-	pcb_hid_busy(PCB, 1);
+	rnd_hid_busy(PCB, 1);
 
 	lines = 0;
 	corners = 0;
@@ -2483,7 +2483,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (PCB_NSTRCMP(arg, "splitlines") == 0) {
 		if (canonicalize_lines())
 			pcb_undo_inc_serial();
-		pcb_hid_busy(PCB, 0);
+		rnd_hid_busy(PCB, 0);
 		return 0;
 	}
 
@@ -2545,7 +2545,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		saved += miter();
 	else {
 		printf("unknown command: %s\n", arg);
-		pcb_hid_busy(PCB, 0);
+		rnd_hid_busy(PCB, 0);
 		return 1;
 	}
 
@@ -2555,7 +2555,7 @@ static fgw_error_t pcb_act_DJopt(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (saved)
 		pcb_undo_inc_serial();
 
-	pcb_hid_busy(PCB, 0);
+	rnd_hid_busy(PCB, 0);
 	RND_ACT_IRES(0);
 	return 0;
 }

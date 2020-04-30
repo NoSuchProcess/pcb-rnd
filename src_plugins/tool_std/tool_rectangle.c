@@ -48,9 +48,9 @@
 
 void pcb_tool_rectangle_uninit(void)
 {
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 void pcb_tool_rectangle_notify_mode(rnd_hidlib_t *hl)

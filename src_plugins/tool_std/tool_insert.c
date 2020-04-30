@@ -54,11 +54,11 @@ static rnd_cardinal_t polyIndex = 0;
 
 void pcb_tool_insert_uninit(void)
 {
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.extobj_edit = NULL;
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)

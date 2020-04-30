@@ -140,14 +140,14 @@ int pcb_attribute_dialog(const char *id, rnd_hid_attribute_t *attrs, int n_attrs
 	return pcb_attribute_dialog_(id, attrs, n_attrs, title, caller_data, NULL, 0, 0, 0, 0, NULL);
 }
 
-int pcb_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
+int rnd_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
 {
 	if ((rnd_gui == NULL) || (rnd_gui->dock_enter == NULL))
 		return -1;
 	return rnd_gui->dock_enter(rnd_gui, sub, where, id);
 }
 
-void pcb_hid_dock_leave(rnd_hid_dad_subdialog_t *sub)
+void rnd_hid_dock_leave(rnd_hid_dad_subdialog_t *sub)
 {
 	if ((rnd_gui == NULL) || (rnd_gui->dock_leave == NULL))
 		return;

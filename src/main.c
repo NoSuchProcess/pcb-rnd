@@ -492,7 +492,7 @@ int main(int argc, char *argv[])
 		exit(n);
 	}
 
-	if (PCB_HAVE_GUI_ATTR_DLG)
+	if (RND_HAVE_GUI_ATTR_DLG)
 		gui_support_plugins(1);
 
 	/* Create a new PCB object in memory */
@@ -554,7 +554,7 @@ int main(int argc, char *argv[])
 	pcb_enable_autosave();
 
 	/* main loop */
-	if (PCB_HAVE_GUI_ATTR_DLG)
+	if (RND_HAVE_GUI_ATTR_DLG)
 		gui_support_plugins(1);
 
 	if (EXPERIMENTAL != NULL) {

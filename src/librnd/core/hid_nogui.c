@@ -350,7 +350,7 @@ static char *nogui_fileselect(rnd_hid_t *hid, const char *title, const char *des
 		return rnd_strdup(answer);
 }
 
-void *pcb_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *rnd_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	CRASH("attr_dlg_new");
 }
@@ -515,7 +515,7 @@ void pcb_hid_nogui_init(rnd_hid_t * hid)
 	hid->watch_file = nogui_watch_file;
 	hid->unwatch_file = nogui_unwatch_file;
 	hid->fileselect = nogui_fileselect;
-	hid->attr_dlg_new = pcb_nogui_attr_dlg_new;
+	hid->attr_dlg_new = rnd_nogui_attr_dlg_new;
 	hid->attr_dlg_run = nogui_attr_dlg_run;
 	hid->attr_dlg_raise = nogui_attr_dlg_raise;
 	hid->attr_dlg_close = nogui_attr_dlg_close;

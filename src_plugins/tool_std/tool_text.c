@@ -50,7 +50,7 @@ void pcb_tool_text_notify_mode(rnd_hidlib_t *hl)
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 	char *string;
 
-	if ((string = pcb_hid_prompt_for(hl, "Enter text:", "", "text")) != NULL) {
+	if ((string = rnd_hid_prompt_for(hl, "Enter text:", "", "text")) != NULL) {
 		if (strlen(string) > 0) {
 			pcb_text_t *text;
 			int flag = PCB_FLAG_CLEARLINE;

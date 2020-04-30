@@ -108,9 +108,9 @@ static const char apply_vendor_help[] = "Applies the currently loaded vendor dri
 /* DOC: applyvendor.html */
 fgw_error_t pcb_act_ApplyVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_hid_busy(PCB, 1);
+	rnd_hid_busy(PCB, 1);
 	apply_vendor_map();
-	pcb_hid_busy(PCB, 0);
+	rnd_hid_busy(PCB, 0);
 	RND_ACT_IRES(0);
 	return 0;
 }
@@ -372,7 +372,7 @@ static void apply_vendor_map(void)
 		 */
 		if (changed) {
 			pcb_board_set_changed_flag(pcb_true);
-			pcb_hid_redraw(PCB);
+			rnd_hid_redraw(PCB);
 			pcb_undo_inc_serial();
 		}
 	}

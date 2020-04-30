@@ -764,14 +764,14 @@ static void data_clip_all_cb(void *ctx_)
 				} PCB_ENDALL_LOOP;
 				ctx->inited = 1;
 			}
-			if (pcb_hid_progress(ctx->at, ctx->total, "Clipping polygons...") != 0) {
-				int rv = pcb_hid_message_box(&PCB->hidlib, "warning", "Stop poly clipping", "The only way to cancel poly clipping is to quit pcb-rnd.\nAre you sure you want to quit?", "yes, quit pcb-rnd", 1, "no, continue clipping", 2, NULL);
+			if (rnd_hid_progress(ctx->at, ctx->total, "Clipping polygons...") != 0) {
+				int rv = rnd_hid_message_box(&PCB->hidlib, "warning", "Stop poly clipping", "The only way to cancel poly clipping is to quit pcb-rnd.\nAre you sure you want to quit?", "yes, quit pcb-rnd", 1, "no, continue clipping", 2, NULL);
 				if (rv == 1) {
 					exit(1);
 				}
 				else {
 					/* Have to recreate the dialog next time, that's the only way to get it out from the cancel state */
-					pcb_hid_progress(0, 0, NULL);
+					rnd_hid_progress(0, 0, NULL);
 				}
 			}
 		}
@@ -810,7 +810,7 @@ void pcb_data_clip_all_poly(pcb_data_t *data, rnd_bool enable_progbar, rnd_bool 
 	} PCB_ENDALL_LOOP;
 
 	if (enable_progbar)
-		pcb_hid_progress(0, 0, NULL);
+		rnd_hid_progress(0, 0, NULL);
 }
 
 void pcb_data_clip_dirty(pcb_data_t *data, rnd_bool enable_progbar)

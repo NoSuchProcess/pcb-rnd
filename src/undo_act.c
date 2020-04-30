@@ -103,13 +103,13 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *function = NULL;
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, Undo, function = argv[1].val.str);
 	if (!function || !*function) {
-		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 		if (pcb_tool_undo_act(RND_ACT_HIDLIB))
 			if (pcb_undo(pcb_true) == 0)
 				pcb_board_set_changed_flag(pcb_true);
 	}
 	else if (function) {
-		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 		if (rnd_strcasecmp(function, "ClearList") == 0)
 			pcb_undo_clear_list(pcb_false);
 		else if (rnd_strcasecmp(function, "FreezeSerial") == 0)
@@ -119,7 +119,7 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else if (rnd_strcasecmp(function, "IncSerial") == 0)
 			pcb_undo_inc_serial();
 	}
-	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 	RND_ACT_IRES(0);
 	return 0;
 }
@@ -134,11 +134,11 @@ static const char pcb_acth_Redo[] = "Redo recent \"undo\" operations.";
 
 fgw_error_t pcb_act_Redo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 	if (pcb_tool_redo_act(RND_ACT_HIDLIB))
 		if (pcb_redo(pcb_true))
 			pcb_board_set_changed_flag(pcb_true);
-	pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 	RND_ACT_IRES(0);
 	return 0;
 }

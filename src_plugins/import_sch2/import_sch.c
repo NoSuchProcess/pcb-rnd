@@ -120,7 +120,7 @@ static int do_import(void)
 			imp_name = conf_import_sch.plugins.import_sch.import_fmt;
 		}
 		else {
-			if (!PCB_HAVE_GUI_ATTR_DLG) {
+			if (!RND_HAVE_GUI_ATTR_DLG) {
 				rnd_message(RND_MSG_ERROR, "import_sch not configured; please use ImportSch(setup, ...)\n");
 				return 1;
 			}

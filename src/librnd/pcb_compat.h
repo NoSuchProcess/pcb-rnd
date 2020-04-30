@@ -605,3 +605,14 @@
 #define pcb_exporter rnd_exporter
 #define pcb_current_action rnd_current_action
 #define pcb_pixel_slop rnd_pixel_slop
+#define pcb_hid_prompt_for rnd_hid_prompt_for
+#define pcb_hid_message_box rnd_hid_message_box
+#define pcb_hid_progress rnd_hid_progress
+#define PCB_HAVE_GUI_ATTR_DLG RND_HAVE_GUI_ATTR_DLG
+#define pcb_nogui_attr_dlg_new rnd_nogui_attr_dlg_new
+#define pcb_hid_dock_enter rnd_hid_dock_enter
+#define pcb_hid_dock_leave rnd_hid_dock_leave
+#define pcb_hid_redraw rnd_hid_redraw
+#define pcb_hid_busy rnd_hid_busy
+#define pcb_hid_notify_crosshair_change rnd_hid_notify_crosshair_change
+#define pcb_hid_attr_ev_e rnd_hid_attr_ev_e

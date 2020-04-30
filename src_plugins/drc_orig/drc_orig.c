@@ -151,7 +151,7 @@ static int drc_nets_from_subc_term(pcb_view_list_t *lst)
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
 
-		if (pcb_hid_progress(sofar, total, "drc_orig: Checking nets from subc terminals...") != 0)
+		if (rnd_hid_progress(sofar, total, "drc_orig: Checking nets from subc terminals...") != 0)
 			return 1;
 		for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 			if (o->term == NULL) /* only terminals can be starting point of DRC net checks */
@@ -176,7 +176,7 @@ static int drc_nets_from_pstk(pcb_view_list_t *lst)
 
 	PCB_PADSTACK_LOOP(PCB->Data);
 	{
-		if (pcb_hid_progress(sofar, total, "drc_orig: Checking nets from subc non-terminals...") != 0)
+		if (rnd_hid_progress(sofar, total, "drc_orig: Checking nets from subc non-terminals...") != 0)
 			return 1;
 
 		if ((padstack->term == NULL) && pcb_net_integrity(PCB, (pcb_any_obj_t *)padstack, conf_core.design.shrink, conf_core.design.bloat, drc_broken_cb, lst))
@@ -352,32 +352,32 @@ static void pcb_drc_orig(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_ev
 	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 
 	/* actual tests */
-	pcb_hid_progress(0, 0, NULL);
+	rnd_hid_progress(0, 0, NULL);
 	if (drc_nets_from_subc_term(lst) != 0) goto out;
-	pcb_hid_progress(0, 0, NULL);
+	rnd_hid_progress(0, 0, NULL);
 	if (drc_nets_from_pstk(lst)) goto out;
 
-	pcb_hid_progress(0, 0, NULL);
-	if (pcb_hid_progress(0, 6, "drc_orig: Checking objects: text")) goto out;
+	rnd_hid_progress(0, 0, NULL);
+	if (rnd_hid_progress(0, 6, "drc_orig: Checking objects: text")) goto out;
 	drc_all_texts(lst);
-	pcb_hid_progress(0, 0, NULL);
-	if (pcb_hid_progress(1, 6, "drc_orig: Checking objects: line")) goto out;
+	rnd_hid_progress(0, 0, NULL);
+	if (rnd_hid_progress(1, 6, "drc_orig: Checking objects: line")) goto out;
 	drc_copper_lines(lst);
-	pcb_hid_progress(0, 0, NULL);
-	if (pcb_hid_progress(2, 6, "drc_orig: Checking objects: arc")) goto out;
+	rnd_hid_progress(0, 0, NULL);
+	if (rnd_hid_progress(2, 6, "drc_orig: Checking objects: arc")) goto out;
 	drc_copper_arcs(lst);
-	pcb_hid_progress(0, 0, NULL);
-	if (pcb_hid_progress(3, 6, "drc_orig: Checking objects: padstack")) goto out;
+	rnd_hid_progress(0, 0, NULL);
+	if (rnd_hid_progress(3, 6, "drc_orig: Checking objects: padstack")) goto out;
 	drc_global_pstks(lst);
-	pcb_hid_progress(0, 0, NULL);
-	if (pcb_hid_progress(4, 6, "drc_orig: Checking objects: extent")) goto out;
+	rnd_hid_progress(0, 0, NULL);
+	if (rnd_hid_progress(4, 6, "drc_orig: Checking objects: extent")) goto out;
 	drc_beyond_extents(lst, PCB->Data);
-	pcb_hid_progress(0, 0, NULL);
-	if (pcb_hid_progress(5, 6, "drc_orig: Checking objects: silk")) goto out;
+	rnd_hid_progress(0, 0, NULL);
+	if (rnd_hid_progress(5, 6, "drc_orig: Checking objects: silk")) goto out;
 	drc_global_silk_lines(lst);
 
 	out:;
-	pcb_hid_progress(0, 0, NULL);
+	rnd_hid_progress(0, 0, NULL);
 	pcb_layervis_restore_stack();
 	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	rnd_gui->invalidate_all(rnd_gui);

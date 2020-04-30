@@ -110,10 +110,10 @@ static void Debugpcb_polyarea_t(rnd_polyarea_t * s, char *color)
 		}
 	} while ((p = p->f) != s);
 /*	ddraw->flush_debug_draw();*/
-/*	pcb_hid_busy(PCB, 1); */
+/*	rnd_hid_busy(PCB, 1); */
 /*	sleep(3);
 	ddraw->finish_debug_draw();*/
-/*	pcb_hid_busy(PCB, 0); */
+/*	rnd_hid_busy(PCB, 0); */
 }
 
 /* Find the bounding box of a rnd_polyarea_t.

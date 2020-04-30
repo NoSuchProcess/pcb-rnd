@@ -48,7 +48,7 @@ static fgw_error_t call_dialog(const char *act_name, fgw_arg_t *res, int argc, f
 
 	strcpy(tmp, "gui_");
 	strncpy(tmp+4, act_name, sizeof(tmp)-5);
-	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&rnd_fgw, tmp) != NULL))
+	if (RND_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&rnd_fgw, tmp) != NULL))
 		return rnd_actionv_bin(RND_ACT_HIDLIB, tmp, res, argc, argv);
 
 	tmp[0] = 'c'; tmp[1] = 'l';
@@ -66,7 +66,7 @@ static fgw_error_t pcb_act_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return call_dialog("promptfor", res, argc, argv);
 }
 
-char *pcb_hid_prompt_for(rnd_hidlib_t *hl, const char *msg, const char *default_string, const char *title)
+char *rnd_hid_prompt_for(rnd_hidlib_t *hl, const char *msg, const char *default_string, const char *title)
 {
 	fgw_arg_t res, argv[4];
 
@@ -92,7 +92,7 @@ static fgw_error_t pcb_act_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return call_dialog("messagebox", res, argc, argv);
 }
 
-int pcb_hid_message_box(rnd_hidlib_t *hl, const char *icon, const char *title, const char *label, ...)
+int rnd_hid_message_box(rnd_hidlib_t *hl, const char *icon, const char *title, const char *label, ...)
 {
 	fgw_arg_t res, argv[128];
 	int argc;
@@ -138,17 +138,17 @@ static const char *cancel  = "progress cancel";
 
 static void progress_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
-	pcb_hid_progress(0, 0, NULL);
+	rnd_hid_progress(0, 0, NULL);
 }
 
 static void progress_close_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hid_progress(0, 0, cancel);
+	rnd_hid_progress(0, 0, cancel);
 }
 
 static void progress_refresh_cb(rnd_hidval_t user_data)
 {
-	pcb_hid_progress(0, 0, refresh);
+	rnd_hid_progress(0, 0, refresh);
 }
 
 static int pcb_gui_progress(long so_far, long total, const char *message)
@@ -244,11 +244,11 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 }
 
 
-int pcb_hid_progress(long so_far, long total, const char *message)
+int rnd_hid_progress(long so_far, long total, const char *message)
 {
 	if (rnd_gui == NULL)
 		return 0;
-	if ((rnd_gui->gui) && (PCB_HAVE_GUI_ATTR_DLG) && (hid_dlg_gui_inited || rnd_gui->allow_dad_before_init))
+	if ((rnd_gui->gui) && (RND_HAVE_GUI_ATTR_DLG) && (hid_dlg_gui_inited || rnd_gui->allow_dad_before_init))
 		return pcb_gui_progress(so_far, total, message);
 
 	return pcb_nogui_progress(so_far, total, message);
@@ -259,7 +259,7 @@ static const char pcb_acth_Print[] = "Present the print export dialog for printi
 /* DOC: print.html */
 static fgw_error_t pcb_act_Print(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (PCB_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&rnd_fgw, "printgui") != NULL))
+	if (RND_HAVE_GUI_ATTR_DLG && (fgw_func_lookup(&rnd_fgw, "printgui") != NULL))
 		return rnd_actionv_bin(RND_ACT_HIDLIB, "printgui", res, argc, argv);
 	rnd_message(RND_MSG_ERROR, "action Print() is available only under a GUI HID. Please use the lpr exporter instead.\n");
 	return FGW_ERR_NOT_FOUND;

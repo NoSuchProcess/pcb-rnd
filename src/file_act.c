@@ -76,21 +76,21 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_SubcToBuffer:
 		case F_Subcircuit:
 		case F_Footprint:
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, name, format))
 				pcb_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_LayoutToBuffer:
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, name, format))
 				pcb_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_Layout:
-			if (!PCB->Changed ||  pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
+			if (!PCB->Changed ||  rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
 				pcb_load_pcb(name, format, pcb_true, 0);
 			break;
 
@@ -112,7 +112,7 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_Revert:
-			if (RND_ACT_HIDLIB->filename && (!PCB->Changed || (pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
+			if (RND_ACT_HIDLIB->filename && (!PCB->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
 				pcb_revert_pcb();
 			break;
 
@@ -136,11 +136,11 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	rnd_PCB_ACT_MAY_CONVARG(1, FGW_STR, New, argument_name = argv[1].val.str);
 
-	if (!PCB->Changed || (pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
+	if (!PCB->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
 		if (argument_name)
 			name = rnd_strdup(argument_name);
 		else
-			name = pcb_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layout name:", "", "Layout name");
+			name = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layout name:", "", "Layout name");
 
 		if (!name)
 			return 1;
@@ -148,7 +148,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* PCB usgae: at the moment, while having only one global PCB, this function
    legitimately uses that */
 
-		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 		/* do emergency saving
 		 * clear the old struct and allocate memory for the new one
 		 */
@@ -175,8 +175,8 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_layervis_reset_stack(&PCB->hidlib);
 		pcb_center_display(PCB->hidlib.size_x / 2, PCB->hidlib.size_y / 2);
 		pcb_board_changed(0);
-		pcb_hid_redraw(PCB);
-		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+		rnd_hid_redraw(PCB);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 		RND_ACT_IRES(0);
 		return 0;
 	}
@@ -472,7 +472,7 @@ static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if ((force != NULL) && (rnd_strcasecmp(force, "force") == 0))
 		exit(0);
-	if (!PCB->Changed || (pcb_hid_message_box(RND_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
+	if (!PCB->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_quit_app();
 	RND_ACT_IRES(-1);
 	return 0;

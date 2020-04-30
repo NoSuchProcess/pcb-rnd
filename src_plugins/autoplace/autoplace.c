@@ -793,7 +793,7 @@ rnd_bool AutoPlaceSelected(void)
 			if (good_moves >= good_move_cutoff || moves >= move_cutoff) {
 				printf("END OF STAGE: COST %.0f\t" "GOOD_MOVES %d\tMOVES %d\t" "T: %.1f\n", C0, good_moves, moves, T);
 				pcb_draw();
-				if (pcb_hid_progress(C00-T, C00, "Optimizing the placement..."))
+				if (rnd_hid_progress(C00-T, C00, "Optimizing the placement..."))
 					break;
 				/* is this the end? */
 				if (T < 5 || good_moves < moves / CostParameter.good_ratio)
@@ -808,11 +808,11 @@ rnd_bool AutoPlaceSelected(void)
 		changed = (steps > 0);
 	}
 done:
-	pcb_hid_progress(0, 0, NULL);
+	rnd_hid_progress(0, 0, NULL);
 	if (changed) {
 		pcb_rats_destroy(pcb_false);
 		pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE);
-		pcb_hid_redraw(PCB);
+		rnd_hid_redraw(PCB);
 	}
 	vtp0_uninit(&Selected);
 	return changed;

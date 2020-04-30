@@ -474,7 +474,7 @@ static int act_replace_footprint_src(char *fpname, pcb_subc_t **news)
 	const char *what, *what2;
 
 	if (fpname == NULL) {
-		fpname = pcb_hid_prompt_for(&PCB->hidlib, "Footprint name to use for replacement:", "", "Footprint");
+		fpname = rnd_hid_prompt_for(&PCB->hidlib, "Footprint name to use for replacement:", "", "Footprint");
 		if (fpname == NULL) {
 			rnd_message(RND_MSG_ERROR, "No footprint name supplied\n");
 			return 1;

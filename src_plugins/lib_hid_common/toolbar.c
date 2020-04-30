@@ -173,7 +173,7 @@ static void toolbar_create(void)
 	if (cfg == NULL)
 		return;
 	toolbar_docked_create(cfg);
-	if (pcb_hid_dock_enter(&toolbar.sub, RND_HID_DOCK_TOP_LEFT, "Toolbar") == 0) {
+	if (rnd_hid_dock_enter(&toolbar.sub, RND_HID_DOCK_TOP_LEFT, "Toolbar") == 0) {
 		toolbar.sub_inited = 1;
 		toolbar_pcb2dlg();
 	}
@@ -181,7 +181,7 @@ static void toolbar_create(void)
 
 void pcb_toolbar_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	if ((PCB_HAVE_GUI_ATTR_DLG) && (rnd_gui->get_menu_cfg != NULL))
+	if ((RND_HAVE_GUI_ATTR_DLG) && (rnd_gui->get_menu_cfg != NULL))
 		toolbar_create();
 }
 
@@ -194,7 +194,7 @@ void pcb_toolbar_reg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_eve
 			int *wid = vti0_get(&toolbar.tid2wid, tid, 0);
 			if ((wid != NULL) && (*wid != 0))
 				return;
-			pcb_hid_dock_leave(&toolbar.sub);
+			rnd_hid_dock_leave(&toolbar.sub);
 			toolbar.sub_inited = 0;
 			toolbar_create();
 		}

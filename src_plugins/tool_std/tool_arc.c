@@ -51,7 +51,7 @@
 
 void pcb_tool_arc_init(void)
 {
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	if (pcb_tool_prev_id == pcb_crosshair.tool_line && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
 		pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_SECOND;
@@ -59,19 +59,19 @@ void pcb_tool_arc_init(void)
 		pcb_crosshair.AttachedBox.Point1.Y = pcb_crosshair.AttachedBox.Point2.Y = pcb_crosshair.AttachedLine.Point1.Y;
 		pcb_tool_adjust_attached(NULL);
 	}
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 void pcb_tool_arc_uninit(void)
 {
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	pcb_added_lines = 0;
 	if (pcb_tool_next_id != pcb_crosshair.tool_line) {
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 		if (!pcb_marked.user_placed)
 			pcb_crosshair_set_local_ref(0, 0, pcb_false);
 	}
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 void pcb_tool_arc_notify_mode(rnd_hidlib_t *hl)
@@ -175,7 +175,7 @@ rnd_bool pcb_tool_arc_undo_act(rnd_hidlib_t *hl)
 {
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_SECOND) {
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
-		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+		rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 		return pcb_false;
 	}
 	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD) {

@@ -208,9 +208,9 @@ void pcb_rst_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_even
 
 void pcb_rst_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	if (PCB_HAVE_GUI_ATTR_DLG) {
+	if (RND_HAVE_GUI_ATTR_DLG) {
 		rst_docked_create();
-		if (pcb_hid_dock_enter(&rst.sub, RND_HID_DOCK_LEFT, "Route styles") == 0)
+		if (rnd_hid_dock_enter(&rst.sub, RND_HID_DOCK_LEFT, "Route styles") == 0)
 			rst.sub_inited = 1;
 	}
 	rst_update();

@@ -138,7 +138,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* redraw layout */
 		case F_ClearAndRedraw:
 		case F_Redraw:
-			pcb_hid_redraw(PCB);
+			rnd_hid_redraw(PCB);
 			break;
 
 			/* toggle line-adjust flag */
@@ -148,7 +148,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_CycleClip:
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			if (conf_core.editor.all_direction_lines) {
 				rnd_conf_toggle_editor(all_direction_lines);
 				rnd_conf_setf(RND_CFR_DESIGN,"editor/line_refraction",-1,"%d",0);
@@ -157,27 +157,27 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_conf_setf(RND_CFR_DESIGN,"editor/line_refraction",-1,"%d",(conf_core.editor.line_refraction +1) % 3);
 			}
 			pcb_tool_adjust_attached(RND_ACT_HIDLIB);
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_CycleCrosshair:
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			rnd_conf_setf(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "%d", CrosshairShapeIncrement(pcbhl_conf.editor.crosshair_shape_idx));
 			if (pcb_ch_shape_NUM == pcbhl_conf.editor.crosshair_shape_idx)
 				rnd_conf_set(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "0", RND_POL_OVERWRITE);
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_ToggleRubberBandMode:
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			rnd_conf_toggle_editor(rubber_band_mode);
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_ToggleStartDirection:
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			rnd_conf_toggle_editor(swap_start_direction);
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_ToggleUniqueNames:
@@ -185,21 +185,21 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_ToggleSnapPin:
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			rnd_conf_toggle_editor(snap_pin);
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_ToggleSnapOffGridLine:
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			rnd_conf_toggle_editor(snap_offgrid_line);
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_ToggleHighlightOnPoint:
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			rnd_conf_toggle_editor(highlight_on_point);
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_ToggleLocalRef:
@@ -208,12 +208,12 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleThindraw:
 			rnd_conf_toggle_editor(thin_draw);
-			pcb_hid_redraw(PCB);
+			rnd_hid_redraw(PCB);
 			break;
 
 		case F_ToggleThindrawPoly:
 			rnd_conf_toggle_editor(thin_draw_poly);
-			pcb_hid_redraw(PCB);
+			rnd_hid_redraw(PCB);
 			break;
 
 		case F_ToggleLockNames:
@@ -228,7 +228,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleHideNames:
 			rnd_conf_toggle_editor(hide_names);
-			pcb_hid_redraw(PCB);
+			rnd_hid_redraw(PCB);
 			break;
 
 		case F_ToggleStroke:
@@ -244,7 +244,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_ToggleAutoDRC:
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 			rnd_conf_toggle_editor(auto_drc);
 			if (conf_core.editor.auto_drc && pcbhl_conf.editor.mode == pcb_crosshair.tool_line) {
 				if (pcb_data_clear_flag(PCB->Data, PCB_FLAG_FOUND, 1, 1) > 0) {
@@ -260,12 +260,12 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_find_free(&fctx);
 				}
 			}
-			pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 			break;
 
 		case F_ToggleCheckPlanes:
 			rnd_conf_toggle_editor(check_planes);
-			pcb_hid_redraw(PCB);
+			rnd_hid_redraw(PCB);
 			break;
 
 		case F_ToggleOrthoMove:
@@ -274,7 +274,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_ToggleName:
 			rnd_conf_toggle_editor(show_number);
-			pcb_hid_redraw(PCB);
+			rnd_hid_redraw(PCB);
 			break;
 
 		case F_ToggleClearLine:
@@ -292,7 +292,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 				RND_ACT_HIDLIB->grid = 1;
 				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
-					pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true); /* first notify was in MoveCrosshairAbs */
+					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true); /* first notify was in MoveCrosshairAbs */
 				pcb_hidlib_set_grid(RND_ACT_HIDLIB, oldGrid, pcb_true, pcb_crosshair.X, pcb_crosshair.Y);
 				rnd_grid_inval();
 			}
@@ -301,7 +301,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* toggle displaying of the grid */
 		case F_Grid:
 			rnd_conf_toggle_heditor(draw_grid);
-			pcb_hid_redraw(PCB);
+			rnd_hid_redraw(PCB);
 			break;
 
 			/* display the pinout of a subcircuit */
@@ -366,7 +366,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				RND_ACT_HIDLIB->grid_ox = pcb_get_value(argv[2].val.str, NULL, NULL, NULL);
 				RND_ACT_HIDLIB->grid_oy = pcb_get_value(argv[3].val.str, NULL, NULL, NULL);
 				if (pcbhl_conf.editor.draw_grid)
-					pcb_hid_redraw(PCB);
+					rnd_hid_redraw(PCB);
 			}
 			break;
 
@@ -588,22 +588,22 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* set layer current and size from line or arc */
 	switch (type) {
 	case PCB_OBJ_LINE:
-		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (pcbhl_conf.editor.mode != pcb_crosshair.tool_line)
 			pcb_tool_select_by_name(RND_ACT_HIDLIB, "line");
-		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
 
 	case PCB_OBJ_ARC:
-		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_false);
 		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (pcbhl_conf.editor.mode != pcb_crosshair.tool_arc)
 			pcb_tool_select_by_name(RND_ACT_HIDLIB, "arc");
-		pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true);
 		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
 
@@ -617,7 +617,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	if (layer != PCB_CURRLAYER(PCB_ACT_BOARD)) {
 		pcb_layervis_change_group_vis(RND_ACT_HIDLIB, pcb_layer_id(PCB_ACT_BOARD->Data, layer), pcb_true, pcb_true);
-		pcb_hid_redraw(PCB);
+		rnd_hid_redraw(PCB);
 	}
 	RND_ACT_IRES(0);
 	return 0;

@@ -166,7 +166,7 @@ void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t 
 
 void pcb_tool_notify_block(void)
 {
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_false);
 	switch (pcb_crosshair.AttachedBox.State) {
 	case PCB_CH_STATE_FIRST:						/* setup first point */
 		pcb_crosshair.AttachedBox.Point1.X = pcb_crosshair.AttachedBox.Point2.X = pcb_crosshair.X;
@@ -178,7 +178,7 @@ void pcb_tool_notify_block(void)
 		pcb_crosshair.AttachedBox.State = PCB_CH_STATE_THIRD;
 		break;
 	}
-	pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 }
 
 /*** old helpers ***/

@@ -228,7 +228,7 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	pcb_hid_dad_buttons_t clbtn_m[] = {{"yes", 1}, {"yes to all", 2}, {"no", 0}, {NULL, 0}};
 	PCB_DAD_DECL(dlg);
 
-	if (!PCB_HAVE_GUI_ATTR_DLG) {
+	if (!RND_HAVE_GUI_ATTR_DLG) {
 		RND_ACT_IRES(0); /* no gui means auto-yes (for batch) */
 		return 2;
 	}
