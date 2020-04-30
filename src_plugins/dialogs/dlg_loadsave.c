@@ -128,7 +128,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 	save_t *save = fmtsub->sub_ctx;
 	char *bn, *fn, *s;
 	const char *ext;
-	pcb_event_arg_t res, argv[4];
+	rnd_event_arg_t res, argv[4];
 	int selection = attr->val.lng;
 	pcb_hid_attr_val_t hv;
 
@@ -167,7 +167,7 @@ static void fmt_chg(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *attr)
 
 	/* build a new file name with the right extension */
 
-	argv[0].type = PCB_EVARG_STR;
+	argv[0].type = RND_EVARG_STR;
 	argv[0].d.s = pcb_concat(bn, ext, NULL);;
 	fmtsub->parent_poke(fmtsub, "set_file_name", &res, 1, argv);
 	free(fn);
@@ -239,7 +239,7 @@ static void save_timer(pcb_hidval_t user_data)
 	save->timer = pcb_gui->add_timer(pcb_gui, save_timer, 300, user_data);
 
 	if ((save->fmtsub->parent_poke != NULL) && (save->fmtsub->dlg_hid_ctx != NULL) && (save->fmtsub->dlg[save->wguess].val.lng)) {
-		pcb_event_arg_t res;
+		rnd_event_arg_t res;
 		char *end;
 
 		save->fmtsub->parent_poke(save->fmtsub, "get_path", &res, 0, NULL);

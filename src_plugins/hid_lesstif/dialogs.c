@@ -47,7 +47,7 @@ void pcb_ltf_winplace(Display *dsp, Window w, const char *id, int defx, int defy
 	plc[2] = defx;
 	plc[3] = defy;
 
-	pcb_event(ltf_hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
+	rnd_event(ltf_hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
 
 	if (pcbhl_conf.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0) && (plc[0] >= 0) && (plc[1] >= 0)) {
@@ -101,7 +101,7 @@ static void ltf_winplace_cfg(Display *dsp, Window win, void *ctx, const char *id
 
 			/* restore the original window position (either what the code wants or
 			   what we learned from the GUI */
-			pcb_event(ltf_hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
+			rnd_event(ltf_hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
 			if ((plc[0] >= 0) && (plc[1] >= 0)) {
 				x = plc[0];
 				y = plc[1];
@@ -120,7 +120,7 @@ static void ltf_winplace_cfg(Display *dsp, Window win, void *ctx, const char *id
 		XGetGeometry(dsp, win, &rw, &tmp, &tmp, &w, &h, &brd, &depth);
 		x -= wplc_hackx;
 		y -= wplc_hacky;
-		pcb_event(ltf_hidlib, PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, id, (int)x, (int)y, (int)w, (int)h);
+		rnd_event(ltf_hidlib, RND_EVENT_DAD_NEW_GEO, "psiiii", ctx, id, (int)x, (int)y, (int)w, (int)h);
 	}
 }
 

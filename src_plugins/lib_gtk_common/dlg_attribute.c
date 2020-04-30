@@ -794,7 +794,7 @@ void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, pcb_hid_attribute_t *at
 	ctx->id = rnd_strdup(id);
 	ctx->modal = modal;
 
-	pcb_event(gctx->hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
+	rnd_event(gctx->hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", ctx, ctx->id, plc);
 
 	ctx->dialog = gtk_dialog_new();
 	if ((modal && pcb_conf_hid_gtk.plugins.hid_gtk.dialog.transient_modal) || (!modal && pcb_conf_hid_gtk.plugins.hid_gtk.dialog.transient_modeless))
@@ -1026,7 +1026,7 @@ int pcb_gtk_winplace_cfg(rnd_hidlib_t *hidlib, GtkWidget *widget, void *ctx, con
 	/* For whatever reason, get_allocation doesn't set these. Gtk. */
 	gtk_window_get_position(GTK_WINDOW(widget), &allocation.x, &allocation.y);
 
-	pcb_event(hidlib, PCB_EVENT_DAD_NEW_GEO, "psiiii", ctx, id,
+	rnd_event(hidlib, RND_EVENT_DAD_NEW_GEO, "psiiii", ctx, id,
 		(int)allocation.x, (int)allocation.y, (int)allocation.width, (int)allocation.height);
 
 	return 0;

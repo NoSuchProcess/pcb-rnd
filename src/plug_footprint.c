@@ -459,7 +459,7 @@ int pcb_fp_rehash(rnd_hidlib_t *hidlib, pcb_fplibrary_t *l)
 	if (l == NULL) {
 		pcb_fp_free_children(&pcb_library);
 		res = pcb_fp_read_lib_all();
-		pcb_event(hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
+		rnd_event(hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 		return res;
 	}
 	if (l->type != PCB_LIB_DIR)
@@ -476,7 +476,7 @@ int pcb_fp_rehash(rnd_hidlib_t *hidlib, pcb_fplibrary_t *l)
 	free(path);
 
 	if (res >= 0) {
-		pcb_event(hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
+		rnd_event(hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 		return 0;
 	}
 	return -1;

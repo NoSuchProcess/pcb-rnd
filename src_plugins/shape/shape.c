@@ -627,7 +627,7 @@ int pplg_check_ver_shape(int ver_needed) { return 0; }
 
 void pplg_uninit_shape(void)
 {
-	pcb_event_unbind_allcookie(pcb_shape_cookie);
+	rnd_event_unbind_allcookie(pcb_shape_cookie);
 	rnd_remove_actions_by_cookie(pcb_shape_cookie);
 }
 
@@ -636,7 +636,7 @@ int pplg_init_shape(void)
 	PCB_API_CHK_VER;
 	RND_REGISTER_ACTIONS(shape_action_list, pcb_shape_cookie)
 
-	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, shape_layer_chg, NULL, pcb_shape_cookie);
+	rnd_event_bind(PCB_EVENT_LAYERVIS_CHANGED, shape_layer_chg, NULL, pcb_shape_cookie);
 
 	return 0;
 }

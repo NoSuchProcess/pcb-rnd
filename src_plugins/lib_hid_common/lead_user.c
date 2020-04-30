@@ -75,11 +75,11 @@ static void pcb_lead_user_to_location(rnd_hidlib_t *hidlib, rnd_coord_t x, rnd_c
 		lead_timer = pcb_gui->add_timer(pcb_gui, lead_cb, LEAD_PERIOD_MS, user_data);
 }
 
-void pcb_lead_user_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_lead_user_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (argc < 4)
 		return;
-	if ((argv[1].type != PCB_EVARG_COORD) || (argv[2].type != PCB_EVARG_COORD) || (argv[3].type != PCB_EVARG_INT))
+	if ((argv[1].type != RND_EVARG_COORD) || (argv[2].type != RND_EVARG_COORD) || (argv[3].type != RND_EVARG_INT))
 		return;
 
 	pcb_lead_user_to_location(hidlib, argv[1].d.c, argv[2].d.c, argv[3].d.i);
@@ -88,13 +88,13 @@ void pcb_lead_user_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event
 
 
 #define ARL LEAD_ARROW_LEN/3
-void pcb_lead_user_draw_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_lead_user_draw_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (lead) {
 		pcb_hid_gc_t *gc = argv[1].d.p;
 		rnd_coord_t x = leadx + step, y = leady + step;
 
-		assert(argv[1].type == PCB_EVARG_PTR);
+		assert(argv[1].type == RND_EVARG_PTR);
 
 		pcb_render->set_line_width(*gc, ARL/40);
 		pcb_render->draw_arc(*gc, leadx, leady, LEAD_CENTER_RAD+step/10, LEAD_CENTER_RAD+step/10, 0, 360);

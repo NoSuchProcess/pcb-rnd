@@ -41,15 +41,15 @@
 
 #include "tool_logic.h"
 
-static void tool_logic_chg_layer(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
-static void pcb_release_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
-static void pcb_press_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
+static void tool_logic_chg_layer(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
+static void pcb_release_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
+static void pcb_press_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
 
 /*** Generic part, all rnd apps should do something like this ***/
 
 static char tool_logic_cookie[] = "tool_logic";
 
-static void tool_logic_chg_tool(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void tool_logic_chg_tool(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	int *ok = argv[1].d.p;
 	int id = argv[2].d.i;
@@ -79,22 +79,22 @@ void pcb_tool_logic_init(void)
 		rnd_conf_hid_set_cb(n_mode, tool_conf_id, &cbs_mode);
 	}
 
-	pcb_event_bind(PCB_EVENT_TOOL_SELECT_PRE, tool_logic_chg_tool, NULL, tool_logic_cookie);
-	pcb_event_bind(PCB_EVENT_TOOL_RELEASE, pcb_release_mode, NULL, tool_logic_cookie);
-	pcb_event_bind(PCB_EVENT_TOOL_PRESS, pcb_press_mode, NULL, tool_logic_cookie);
-	pcb_event_bind(PCB_EVENT_LAYERVIS_CHANGED, tool_logic_chg_layer, NULL, tool_logic_cookie);
+	rnd_event_bind(RND_EVENT_TOOL_SELECT_PRE, tool_logic_chg_tool, NULL, tool_logic_cookie);
+	rnd_event_bind(RND_EVENT_TOOL_RELEASE, pcb_release_mode, NULL, tool_logic_cookie);
+	rnd_event_bind(RND_EVENT_TOOL_PRESS, pcb_press_mode, NULL, tool_logic_cookie);
+	rnd_event_bind(PCB_EVENT_LAYERVIS_CHANGED, tool_logic_chg_layer, NULL, tool_logic_cookie);
 }
 
 void pcb_tool_logic_uninit(void)
 {
-	pcb_event_unbind_allcookie(tool_logic_cookie);
+	rnd_event_unbind_allcookie(tool_logic_cookie);
 	rnd_conf_hid_unreg(tool_logic_cookie);
 }
 
 /*** pcb-rnd-specific parts ***/
 
 
-static void tool_logic_chg_layer(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void tool_logic_chg_layer(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	static int was_rat;
 	if (PCB->RatDraw && !was_rat && !(pcb_tool_get(pcbhl_conf.editor.mode)->user_flags & PCB_TLF_RAT))
@@ -137,7 +137,7 @@ void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t 
 {
 	rnd_coord_t mx = 0, my = 0;
 
-	pcb_event(hl, PCB_EVENT_RUBBER_RESET, NULL);
+	rnd_event(hl, PCB_EVENT_RUBBER_RESET, NULL);
 	if (!conf_core.editor.snap_pin) {
 		/* dither the grab point so that the mark, center, etc
 		 * will end up on a grid coordinate
@@ -156,12 +156,12 @@ void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t 
 
 	/* get all attached objects if necessary */
 	if (do_rubberband && conf_core.editor.rubber_band_mode)
-		pcb_event(hl, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
+		rnd_event(hl, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 	if (do_rubberband &&
 			(pcb_crosshair.AttachedObject.Type == PCB_OBJ_SUBC ||
 			 pcb_crosshair.AttachedObject.Type == PCB_OBJ_PSTK ||
 			 pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE || pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT))
-		pcb_event(hl, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
+		rnd_event(hl, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 }
 
 void pcb_tool_notify_block(void)
@@ -183,12 +183,12 @@ void pcb_tool_notify_block(void)
 
 /*** old helpers ***/
 
-static void pcb_release_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_release_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_draw();
 }
 
-static void pcb_press_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_press_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 

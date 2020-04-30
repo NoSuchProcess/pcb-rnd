@@ -1020,14 +1020,14 @@ static pcb_rb_arc_t *pcb_rubber_band_create_arc(rubber_ctx_t *rbnd, pcb_layer_t 
 }
 
 /*** event handlers ***/
-static void rbe_reset(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void rbe_reset(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	rbnd->lines.used = 0;
 	rbnd->arcs.used = 0;
 }
 
-static void rbe_move(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void rbe_move(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_rb_line_t *ptr = rbnd->lines.array;
@@ -1129,7 +1129,7 @@ static void rbe_move(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_
 	}
 }
 
-static void rbe_draw(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void rbe_draw(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_rb_line_t *ptr;
@@ -1241,7 +1241,7 @@ static void rbe_draw(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_
 	}
 }
 
-static void rbe_rotate90(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void rbe_rotate90(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_rb_line_t *ptr;
@@ -1292,12 +1292,12 @@ static void rbe_rotate90(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 	}
 }
 
-static void rbe_rotate(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void rbe_rotate(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 TODO("TODO")
 }
 
-static void rbe_lookup_lines(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void rbe_lookup_lines(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	int type = argv[1].d.i;
@@ -1307,7 +1307,7 @@ static void rbe_lookup_lines(rnd_hidlib_t *hidlib, void *user_data, int argc, pc
 		pcb_rubber_band_lookup_lines(rbnd, type, ptr1, ptr2, ptr3);
 }
 
-static void rbe_lookup_rats(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void rbe_lookup_rats(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	int type = argv[1].d.i;
@@ -1316,7 +1316,7 @@ static void rbe_lookup_rats(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb
 	pcb_rubber_band_lookup_rat_lines(rbnd, type, ptr1, ptr2, ptr3);
 }
 
-static void rbe_constrain_main_line(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void rbe_constrain_main_line(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rubber_ctx_t *rbnd = user_data;
 	pcb_line_t *line = argv[1].d.p;
@@ -1423,7 +1423,7 @@ static const char *rubber_cookie = "old rubberband";
 
 void rb_uninit(void)
 {
-	pcb_event_unbind_allcookie(rubber_cookie);
+	rnd_event_unbind_allcookie(rubber_cookie);
 }
 
 int pplg_check_ver_rubberband_orig(int ver_needed)
@@ -1433,7 +1433,7 @@ int pplg_check_ver_rubberband_orig(int ver_needed)
 
 void pplg_uninit_rubberband_orig(void)
 {
-	pcb_event_unbind_allcookie(rubber_cookie);
+	rnd_event_unbind_allcookie(rubber_cookie);
 	rnd_conf_unreg_fields("plugins/rubberband_orig/");
 }
 
@@ -1441,14 +1441,14 @@ int pplg_init_rubberband_orig(void)
 {
 	void *ctx = &rubber_band_state;
 	PCB_API_CHK_VER;
-	pcb_event_bind(PCB_EVENT_RUBBER_RESET, rbe_reset, ctx, rubber_cookie);
-	pcb_event_bind(PCB_EVENT_RUBBER_MOVE, rbe_move, ctx, rubber_cookie);
-	pcb_event_bind(PCB_EVENT_RUBBER_MOVE_DRAW, rbe_draw, ctx, rubber_cookie);
-	pcb_event_bind(PCB_EVENT_RUBBER_ROTATE90, rbe_rotate90, ctx, rubber_cookie);
-	pcb_event_bind(PCB_EVENT_RUBBER_ROTATE, rbe_rotate, ctx, rubber_cookie);
-	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_LINES, rbe_lookup_lines, ctx, rubber_cookie);
-	pcb_event_bind(PCB_EVENT_RUBBER_LOOKUP_RATS, rbe_lookup_rats, ctx, rubber_cookie);
-	pcb_event_bind(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, rbe_constrain_main_line, ctx, rubber_cookie);
+	rnd_event_bind(PCB_EVENT_RUBBER_RESET, rbe_reset, ctx, rubber_cookie);
+	rnd_event_bind(PCB_EVENT_RUBBER_MOVE, rbe_move, ctx, rubber_cookie);
+	rnd_event_bind(PCB_EVENT_RUBBER_MOVE_DRAW, rbe_draw, ctx, rubber_cookie);
+	rnd_event_bind(PCB_EVENT_RUBBER_ROTATE90, rbe_rotate90, ctx, rubber_cookie);
+	rnd_event_bind(PCB_EVENT_RUBBER_ROTATE, rbe_rotate, ctx, rubber_cookie);
+	rnd_event_bind(PCB_EVENT_RUBBER_LOOKUP_LINES, rbe_lookup_lines, ctx, rubber_cookie);
+	rnd_event_bind(PCB_EVENT_RUBBER_LOOKUP_RATS, rbe_lookup_rats, ctx, rubber_cookie);
+	rnd_event_bind(PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, rbe_constrain_main_line, ctx, rubber_cookie);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_rbo, field,isarray,type_name,cpath,cname,desc,flags);

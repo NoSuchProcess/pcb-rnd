@@ -274,19 +274,19 @@ static rnd_action_t hid_dlg_action_list[] = {
 
 static const char *event_dlg_cookie = "hid_dlg";
 
-static void hid_dlg_log_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void hid_dlg_log_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	hid_dlg_gui_inited = 1;
 }
 
 void pcb_hid_dlg_uninit(void)
 {
-	pcb_event_unbind_allcookie(event_dlg_cookie);
+	rnd_event_unbind_allcookie(event_dlg_cookie);
 }
 
 void pcb_hid_dlg_init(void)
 {
-	pcb_event_bind(PCB_EVENT_GUI_INIT, hid_dlg_log_gui_init_ev, NULL, event_dlg_cookie);
+	rnd_event_bind(RND_EVENT_GUI_INIT, hid_dlg_log_gui_init_ev, NULL, event_dlg_cookie);
 }
 
 void pcb_hid_dlg_init2(void)

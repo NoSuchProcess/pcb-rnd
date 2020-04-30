@@ -335,7 +335,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 		PCB_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, lng, target_tab);
 }
 
-static void pref_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pref_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pref_ctx_t *ctx = user_data;
 	if (!pref_ctx.active)
@@ -347,7 +347,7 @@ static void pref_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int arg
 	pref_win_brd2dlg(ctx);
 }
 
-static void pref_ev_board_meta_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pref_ev_board_meta_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pref_ctx_t *ctx = user_data;
 	if (!pref_ctx.active)
@@ -374,8 +374,8 @@ static rnd_conf_hid_callbacks_t pref_conf_cb;
 void pcb_dlg_pref_init(void)
 {
 	pref_conf_cb.val_change_post = pref_conf_changed;
-	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, pref_ev_board_changed, &pref_ctx, pref_cookie);
-	pcb_event_bind(PCB_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_CHANGED, pref_ev_board_changed, &pref_ctx, pref_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
 	pref_hid = rnd_conf_hid_reg(pref_cookie, &pref_conf_cb);
 	pcb_dlg_pref_sizes_init(&pref_ctx);
 	pcb_dlg_pref_lib_init(&pref_ctx);
@@ -383,7 +383,7 @@ void pcb_dlg_pref_init(void)
 
 void pcb_dlg_pref_uninit(void)
 {
-	pcb_event_unbind_allcookie(pref_cookie);
+	rnd_event_unbind_allcookie(pref_cookie);
 	rnd_conf_hid_unreg(pref_cookie);
 }
 

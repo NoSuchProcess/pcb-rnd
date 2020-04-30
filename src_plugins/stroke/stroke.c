@@ -70,7 +70,7 @@ static int pcb_stroke_exec(rnd_hidlib_t *hl, const char *seq)
 	return 0;
 }
 
-static void pcb_stroke_finish(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_stroke_finish(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	char msg[255];
 	int *handled = argv[1].d.p;
@@ -83,7 +83,7 @@ static void pcb_stroke_finish(rnd_hidlib_t *hidlib, void *user_data, int argc, p
 		*handled = pcb_stroke_exec(hidlib, msg);
 }
 
-static void pcb_stroke_record(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_stroke_record(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_coord_t ev_x = argv[1].d.c, ev_y = argv[2].d.c;
 
@@ -98,7 +98,7 @@ static void pcb_stroke_record(rnd_hidlib_t *hidlib, void *user_data, int argc, p
 	return;
 }
 
-static void pcb_stroke_start(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_stroke_start(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_coord_t ev_x = argv[1].d.c, ev_y = argv[2].d.c;
 	pcb_mid_stroke = pcb_true;
@@ -161,7 +161,7 @@ int pplg_uninit_stroke(void)
 	rnd_conf_unreg_file(STROKE_CONF_FN, stroke_conf_internal);
 	rnd_conf_unreg_fields("plugins/stroke/");
 	rnd_remove_actions_by_cookie(pcb_stroke_cookie);
-	pcb_event_unbind_allcookie(pcb_stroke_cookie);
+	rnd_event_unbind_allcookie(pcb_stroke_cookie);
 	return 0;
 }
 
@@ -177,9 +177,9 @@ int pplg_init_stroke(void)
 
 	RND_REGISTER_ACTIONS(stroke_action_list, pcb_stroke_cookie)
 
-	pcb_event_bind(PCB_EVENT_STROKE_START, pcb_stroke_start, NULL, pcb_stroke_cookie);
-	pcb_event_bind(PCB_EVENT_STROKE_RECORD, pcb_stroke_record, NULL, pcb_stroke_cookie);
-	pcb_event_bind(PCB_EVENT_STROKE_FINISH, pcb_stroke_finish, NULL, pcb_stroke_cookie);
+	rnd_event_bind(RND_EVENT_STROKE_START, pcb_stroke_start, NULL, pcb_stroke_cookie);
+	rnd_event_bind(RND_EVENT_STROKE_RECORD, pcb_stroke_record, NULL, pcb_stroke_cookie);
+	rnd_event_bind(RND_EVENT_STROKE_FINISH, pcb_stroke_finish, NULL, pcb_stroke_cookie);
 
 	return 0;
 }

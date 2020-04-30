@@ -193,7 +193,7 @@ fgw_error_t pcb_act_LogDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void log_append_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void log_append_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_logline_t *line = argv[1].d.p;
 
@@ -213,7 +213,7 @@ static void log_append_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 	}
 }
 
-static void log_clear_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void log_clear_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (log_ctx.active) {
 		pcb_hid_attribute_t *atxt = &log_ctx.dlg[log_ctx.wtxt];
@@ -224,7 +224,7 @@ static void log_clear_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 	}
 }
 
-static void log_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void log_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_logline_t *n;
 
@@ -246,12 +246,12 @@ static void log_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb
 
 void pcb_dlg_log_uninit(void)
 {
-	pcb_event_unbind_allcookie(log_cookie);
+	rnd_event_unbind_allcookie(log_cookie);
 }
 
 void pcb_dlg_log_init(void)
 {
-	pcb_event_bind(PCB_EVENT_LOG_APPEND, log_append_ev, NULL, log_cookie);
-	pcb_event_bind(PCB_EVENT_LOG_CLEAR, log_clear_ev, NULL, log_cookie);
-	pcb_event_bind(PCB_EVENT_GUI_INIT, log_gui_init_ev, NULL, log_cookie);
+	rnd_event_bind(RND_EVENT_LOG_APPEND, log_append_ev, NULL, log_cookie);
+	rnd_event_bind(RND_EVENT_LOG_CLEAR, log_clear_ev, NULL, log_cookie);
+	rnd_event_bind(RND_EVENT_GUI_INIT, log_gui_init_ev, NULL, log_cookie);
 }

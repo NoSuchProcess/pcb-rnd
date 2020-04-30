@@ -1055,7 +1055,7 @@ static void gerber_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y, i
 {
 }
 
-static void gerber_session_begin(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void gerber_session_begin(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	gerber_global_aperture_cnt = 0;
 }
@@ -1066,7 +1066,7 @@ void pplg_uninit_export_gerber(void)
 {
 	pcb_export_remove_opts_by_cookie(gerber_cookie);
 	rnd_conf_unreg_fields("plugins/export_gerber/");
-	pcb_event_unbind_allcookie(gerber_cookie);
+	rnd_event_unbind_allcookie(gerber_cookie);
 }
 
 int pplg_init_export_gerber(void)
@@ -1112,7 +1112,7 @@ int pplg_init_export_gerber(void)
 
 	pcb_hid_register_hid(&gerber_hid);
 
-	pcb_event_bind(PCB_EVENT_EXPORT_SESSION_BEGIN, gerber_session_begin, NULL, gerber_cookie);
+	rnd_event_bind(RND_EVENT_EXPORT_SESSION_BEGIN, gerber_session_begin, NULL, gerber_cookie);
 
 	return 0;
 }

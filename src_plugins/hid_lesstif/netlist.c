@@ -344,7 +344,7 @@ static int build_netlist_dialog()
 	return 0;
 }
 
-void LesstifNetlistChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void LesstifNetlistChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	htsp_entry_t *e;
 	int i;

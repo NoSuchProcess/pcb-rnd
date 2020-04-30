@@ -338,7 +338,7 @@ void pcb_gtk_note_event_location(GdkEventButton *ev)
 /*** init ***/
 void ghid_glue_common_uninit(const char *cookie)
 {
-	pcb_event_unbind_allcookie(cookie);
+	rnd_event_unbind_allcookie(cookie);
 	rnd_conf_hid_unreg(cookie);
 	rnd_conf_hid_unreg(cookie_menu);
 }

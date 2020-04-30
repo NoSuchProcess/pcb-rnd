@@ -475,7 +475,7 @@ static void excellon_set_crosshair(pcb_hid_t *hid, rnd_coord_t x, rnd_coord_t y,
 {
 }
 
-static void exc_session_begin(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void exc_session_begin(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	exc_aperture_cnt = 0;
 }
@@ -487,7 +487,7 @@ void pplg_uninit_export_excellon(void)
 	pcb_export_remove_opts_by_cookie(excellon_cookie);
 	free(filename);
 	rnd_conf_unreg_fields("plugins/export_excellon/");
-	pcb_event_unbind_allcookie(excellon_cookie);
+	rnd_event_unbind_allcookie(excellon_cookie);
 }
 
 int pplg_init_export_excellon(void)
@@ -531,6 +531,6 @@ int pplg_init_export_excellon(void)
 
 	pcb_hid_register_hid(&excellon_hid);
 
-	pcb_event_bind(PCB_EVENT_EXPORT_SESSION_BEGIN, exc_session_begin, NULL, excellon_cookie);
+	rnd_event_bind(RND_EVENT_EXPORT_SESSION_BEGIN, exc_session_begin, NULL, excellon_cookie);
 	return 0;
 }

@@ -152,7 +152,7 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 void pcb_drc_all(void)
 {
 	pcb_view_list_free_fields(&pcb_drc_lst);
-	pcb_event(&PCB->hidlib, PCB_EVENT_DRC_RUN, NULL);
+	rnd_event(&PCB->hidlib, PCB_EVENT_DRC_RUN, NULL);
 }
 
 static const char pcb_acts_DRC[] = "DRC([list|simple|print|log|dump])";

@@ -534,7 +534,7 @@ int main(int argc, char *argv[])
 
 	/* read the library file and display it if it's not empty */
 	if (!pcb_fp_read_lib_all() && pcb_library.data.dir.children.used)
-		pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
+		rnd_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 
 	if (conf_core.rc.script_filename) {
 		rnd_message(RND_MSG_INFO, "Executing startup script file %s\n", conf_core.rc.script_filename);
@@ -565,7 +565,7 @@ int main(int argc, char *argv[])
 		rnd_message(RND_MSG_ERROR, "******************************** IMPORTANT ********************************\n");
 	}
 	pcb_tool_select_by_name(&PCB->hidlib, "arrow");
-	pcb_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
+	rnd_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
 	pcbhl_mainloop_interactive(&ga, &PCB->hidlib);
 
 	pcb_main_uninit();

@@ -534,7 +534,7 @@ static char *pcb_openems_excitation_get(pcb_board_t *pcb)
 	return excitations[exc_ctx.selected].get(exc_ctx.selected);
 }
 
-static void exc_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void exc_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	load_selector();
 	if (exc_ctx.active)
@@ -543,10 +543,10 @@ static void exc_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc
 
 static void pcb_openems_excitation_init(void)
 {
-	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, exc_ev_board_changed, NULL, openems_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_CHANGED, exc_ev_board_changed, NULL, openems_cookie);
 }
 
 static void pcb_openems_excitation_uninit(void)
 {
-	pcb_event_unbind_allcookie(openems_cookie);
+	rnd_event_unbind_allcookie(openems_cookie);
 }

@@ -36,7 +36,7 @@ static double last_interval = -2;
 static double last_date = -1;
 static int infobar_gui_inited = 0;
 
-static void pcb_infobar_brdchg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_infobar_brdchg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	rnd_actionva(hidlib, "InfoBarFileChanged", "close", NULL);
 	if ((hidlib != NULL) && (hidlib->filename != NULL))
@@ -79,7 +79,7 @@ static void pcb_infobar_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 }
 
 
-static void pcb_infobar_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_infobar_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	infobar_gui_inited = 1;
 	pcb_infobar_brdchg_ev(hidlib, NULL, 0, NULL); /* this may have happened ebfore plugin init if file was specified on the CLI and is already loaded - pick up file data from memory */
@@ -87,7 +87,7 @@ static void pcb_infobar_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int a
 		infobar_tick(infobar_timer);
 }
 
-static void pcb_infobar_fn_chg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_infobar_fn_chg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if ((PCB != NULL) && (PCB->hidlib.filename != NULL)) {
 		last_date = pcb_file_mtime(NULL, PCB->hidlib.filename);

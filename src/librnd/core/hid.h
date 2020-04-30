@@ -624,7 +624,7 @@ void pcb_hid_dock_leave(pcb_hid_dad_subdialog_t *sub);
 
 #define pcb_hid_busy(pcb, is_busy) \
 do { \
-	pcb_event(&pcb->hidlib, PCB_EVENT_BUSY, "i", is_busy, NULL); \
+	rnd_event(&pcb->hidlib, RND_EVENT_BUSY, "i", is_busy, NULL); \
 	if ((pcb_gui != NULL) && (pcb_gui->busy != NULL)) \
 		pcb_gui->busy(pcb_gui, is_busy); \
 } while(0)

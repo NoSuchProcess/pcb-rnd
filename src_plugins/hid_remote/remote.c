@@ -40,7 +40,7 @@ static pcb_export_opt_t *remote_get_export_options(pcb_hid_t *hid, int *n_ret)
 
 /* ----------------------------------------------------------------------------- */
 
-static void ev_pcb_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void ev_pcb_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 }
 
@@ -385,7 +385,7 @@ int pplg_check_ver_hid_remote(int ver_needed) { return 0; }
 void pplg_uninit_hid_remote(void)
 {
 /*	rnd_remove_actions_by_cookie(remote_cookie);*/
-	pcb_event_unbind_allcookie(remote_cookie);
+	rnd_event_unbind_allcookie(remote_cookie);
 }
 
 int pplg_init_hid_remote(void)
@@ -445,7 +445,7 @@ int pplg_init_hid_remote(void)
 
 	pcb_hid_register_hid(&remote_hid);
 
-	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, remote_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, remote_cookie);
 
 	return 0;
 }

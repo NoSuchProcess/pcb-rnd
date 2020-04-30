@@ -55,14 +55,14 @@ static char *prompt = NULL;
 
 static void uninit_batch(void)
 {
-	pcb_event_unbind_allcookie(batch_cookie);
+	rnd_event_unbind_allcookie(batch_cookie);
 	if (prompt != NULL) {
 		free(prompt);
 		prompt = NULL;
 	}
 }
 
-static void ev_pcb_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void ev_pcb_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (prompt != NULL)
 		free(prompt);
@@ -96,7 +96,7 @@ static void log_append(rnd_logline_t *line)
 	line->seen = 1;
 }
 
-static void ev_log_append(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void ev_log_append(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (!batch_active)
 		return;
@@ -331,7 +331,7 @@ int pplg_check_ver_hid_batch(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_batch(void)
 {
-	pcb_event_unbind_allcookie(batch_cookie);
+	rnd_event_unbind_allcookie(batch_cookie);
 	pcb_export_remove_opts_by_cookie(batch_cookie);
 }
 
@@ -390,8 +390,8 @@ int pplg_init_hid_batch(void)
 	batch_hid.open_command = batch_open_command;
 	batch_hid.open_popup = batch_open_popup;
 
-	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, batch_cookie);
-	pcb_event_bind(PCB_EVENT_LOG_APPEND, ev_log_append, NULL, batch_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, batch_cookie);
+	rnd_event_bind(RND_EVENT_LOG_APPEND, ev_log_append, NULL, batch_cookie);
 
 	pcb_hid_register_hid(&batch_hid);
 	return 0;

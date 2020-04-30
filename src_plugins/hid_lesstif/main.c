@@ -175,7 +175,7 @@ static Widget ltf_create_dockbox(Widget parent, pcb_hid_dock_t where, int vert)
 	return ltf_dockbox[where];
 }
 
-static int ltf_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv)
+static int ltf_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
 {
 	return -1;
 }
@@ -398,8 +398,8 @@ static void PointCursor(pcb_hid_t *hid, rnd_bool grabbed)
 	old_cursor_mode = -1;
 }
 
-extern void LesstifNetlistChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
-extern void LesstifLibraryChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[]);
+extern void LesstifNetlistChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
+extern void LesstifLibraryChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[]);
 
 
 static void ltf_set_hidlib(pcb_hid_t *hid, rnd_hidlib_t *hidlib)
@@ -1547,7 +1547,7 @@ static void lesstif_do_export(pcb_hid_t *hid, pcb_hid_attr_val_t *options)
 	pcb_board_changed(0);
 
 	lesstif_menubar = menu;
-	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_INIT, NULL);
+	rnd_event(&PCB->hidlib, RND_EVENT_GUI_INIT, NULL);
 
 
 	lesstif_hid_inited = 1;
@@ -2933,7 +2933,7 @@ int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }
 void pplg_uninit_hid_lesstif(void)
 {
 	pcb_export_remove_opts_by_cookie(lesstif_cookie);
-	pcb_event_unbind_allcookie(lesstif_cookie);
+	rnd_event_unbind_allcookie(lesstif_cookie);
 	rnd_conf_hid_unreg(lesstif_cookie);
 }
 
@@ -3045,8 +3045,8 @@ int pplg_init_hid_lesstif(void)
 
 	lesstif_hid.get_dad_hidlib = ltf_attr_get_dad_hidlib;
 
-	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, LesstifNetlistChanged, NULL, lesstif_cookie);
-	pcb_event_bind(PCB_EVENT_LIBRARY_CHANGED, LesstifLibraryChanged, NULL, lesstif_cookie);
+	rnd_event_bind(PCB_EVENT_NETLIST_CHANGED, LesstifNetlistChanged, NULL, lesstif_cookie);
+	rnd_event_bind(PCB_EVENT_LIBRARY_CHANGED, LesstifLibraryChanged, NULL, lesstif_cookie);
 
 	pcb_hid_register_hid(&lesstif_hid);
 	if (lesstif_conf_id < 0)

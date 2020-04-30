@@ -158,7 +158,7 @@ static fgw_error_t pcb_act_UndoDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 /* update the dialog after an undo operation */
-static void pcb_dlg_undo_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_dlg_undo_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	undo_ctx_t *ctx = user_data;
 	if (!ctx->active)
@@ -167,7 +167,7 @@ static void pcb_dlg_undo_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb
 }
 
 /* Check if the serial has changed and update the dialog if so */
-static void pcb_dlg_undo_ev_chk(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_dlg_undo_ev_chk(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	undo_ctx_t *ctx = user_data;
 	if (!ctx->active)
@@ -181,11 +181,11 @@ static void pcb_dlg_undo_ev_chk(rnd_hidlib_t *hidlib, void *user_data, int argc,
 
 static void pcb_dlg_undo_init(void)
 {
-	pcb_event_bind(PCB_EVENT_UNDO_POST, pcb_dlg_undo_ev, &undo_ctx, dlg_undo_cookie);
-	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, pcb_dlg_undo_ev_chk, &undo_ctx, dlg_undo_cookie);
+	rnd_event_bind(PCB_EVENT_UNDO_POST, pcb_dlg_undo_ev, &undo_ctx, dlg_undo_cookie);
+	rnd_event_bind(RND_EVENT_USER_INPUT_POST, pcb_dlg_undo_ev_chk, &undo_ctx, dlg_undo_cookie);
 }
 
 static void pcb_dlg_undo_uninit(void)
 {
-	pcb_event_unbind_allcookie(dlg_undo_cookie);
+	rnd_event_unbind_allcookie(dlg_undo_cookie);
 }

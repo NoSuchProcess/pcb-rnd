@@ -84,7 +84,7 @@ typedef struct {
 	void *hid_ctx; /* DAD subdialog context */
 } pcb_gtk_fsd_t;
 
-static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv)
+static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
 {
 	pcb_gtk_fsd_t *pctx = sub->parent_ctx;
 
@@ -98,7 +98,7 @@ static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_e
 
 	if (strcmp(cmd, "get_path") == 0) {
 		gchar *gp = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(pctx->dialog));
-			res->type = PCB_EVARG_STR;
+			res->type = RND_EVARG_STR;
 		if (gp != NULL) {
 			res->d.s = rnd_strdup(gp);
 			g_free(gp);
@@ -108,7 +108,7 @@ static int pcb_gtk_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_e
 		return 0;
 	}
 
-	if ((strcmp(cmd, "set_file_name") == 0) && (argc == 1) && (argv[0].type == PCB_EVARG_STR)) {
+	if ((strcmp(cmd, "set_file_name") == 0) && (argc == 1) && (argv[0].type == RND_EVARG_STR)) {
 		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(pctx->dialog), argv[0].d.s);
 		return 0;
 	}

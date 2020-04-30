@@ -521,7 +521,7 @@ static void lvs_install_menu(void *ctx, pcb_hid_cfg_t *cfg, lht_node_t *node, ch
 }
 
 
-static void lvs_menu_init(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void lvs_menu_init(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_hid_cfg_map_anchor_menus(ANCH, lvs_install_menu, NULL);
 }
@@ -529,7 +529,7 @@ static void lvs_menu_init(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 void pcb_live_script_init(void)
 {
 	htsp_init(&pcb_live_scripts, strhash, strkeyeq);
-	pcb_event_bind(PCB_EVENT_GUI_INIT, lvs_menu_init, NULL, lvs_cookie);
+	rnd_event_bind(RND_EVENT_GUI_INIT, lvs_menu_init, NULL, lvs_cookie);
 }
 
 void pcb_live_script_uninit(void)
@@ -542,6 +542,6 @@ void pcb_live_script_uninit(void)
 	htsp_uninit(&pcb_live_scripts);
 	if ((pcb_gui != NULL) && (pcb_gui->remove_menu != NULL))
 		pcb_gui->remove_menu(pcb_gui, lvs_cookie);
-	pcb_event_unbind_allcookie(lvs_cookie);
+	rnd_event_unbind_allcookie(lvs_cookie);
 }
 

@@ -1520,10 +1520,10 @@ static int pcb_text_font_chg_data(pcb_data_t *data, pcb_font_id_t fid)
 	return need_redraw;
 }
 
-static void pcb_text_font_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_text_font_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 
-	if ((argc < 2) || (argv[1].type != PCB_EVARG_INT))
+	if ((argc < 2) || (argv[1].type != RND_EVARG_INT))
 		return;
 
 	if (pcb_text_font_chg_data(PCB->Data, argv[1].d.i))
@@ -1550,10 +1550,10 @@ rnd_bool pcb_text_old_direction(int *dir_out, double rot)
 
 void pcb_text_init(void)
 {
-	pcb_event_bind(PCB_EVENT_FONT_CHANGED, pcb_text_font_chg, NULL, text_cookie);
+	rnd_event_bind(PCB_EVENT_FONT_CHANGED, pcb_text_font_chg, NULL, text_cookie);
 }
 
 void pcb_text_uninit(void)
 {
-	pcb_event_unbind_allcookie(text_cookie);
+	rnd_event_unbind_allcookie(text_cookie);
 }

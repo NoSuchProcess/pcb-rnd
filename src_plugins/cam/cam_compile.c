@@ -156,14 +156,14 @@ static int cam_exec(cam_ctx_t *ctx)
 		pcb_hid_save_and_show_layergrp_ons(save_g_ons);
 	}
 
-	pcb_event(&PCB->hidlib, PCB_EVENT_EXPORT_SESSION_BEGIN, NULL);
+	rnd_event(&PCB->hidlib, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
 	for(n = 0; n < ctx->code.used; n++) {
 		if (cam_exec_inst(ctx, &ctx->code.array[n]) != 0) {
 			res = 1;
 			break;
 		}
 	}
-	pcb_event(&PCB->hidlib, PCB_EVENT_EXPORT_SESSION_END, NULL);
+	rnd_event(&PCB->hidlib, RND_EVENT_EXPORT_SESSION_END, NULL);
 
 	if (ctx->partial) {
 		pcb_data_clear_flag(PCB->Data, PCB_FLAG_EXPORTSEL, 0, 0);
@@ -174,7 +174,7 @@ static int cam_exec(cam_ctx_t *ctx)
 		pcb_hid_restore_layer_ons(save_l_ons);
 		pcb_hid_restore_layergrp_ons(save_g_ons);
 		pcb_layervis_change_group_vis(&PCB->hidlib, currly, 1, 1);
-		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		rnd_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 
 	pcb_batched_ask_ovr_uninit(&PCB->hidlib, old_ovr);

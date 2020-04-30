@@ -92,7 +92,7 @@ void rnd_message(rnd_message_level_t level, const char *Format, ...)
 	rnd_log_last = line;
 	line->len = tmp.used - offsetof(rnd_logline_t, str);
 
-	pcb_event(NULL, PCB_EVENT_LOG_APPEND, "p", line);
+	rnd_event(NULL, RND_EVENT_LOG_APPEND, "p", line);
 }
 
 rnd_logline_t *rnd_log_find_min_(rnd_logline_t *from, unsigned long ID)
@@ -214,7 +214,7 @@ static fgw_error_t pcb_act_Log(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_PCB_ACT_MAY_CONVARG(2, FGW_ULONG, Log, from = fgw_keyword(&argv[2]));
 		rnd_PCB_ACT_MAY_CONVARG(3, FGW_ULONG, Log, from = fgw_keyword(&argv[3]));
 		rnd_log_del_range(from, to);
-		pcb_event(NULL, PCB_EVENT_LOG_CLEAR, "pp", &from, &to);
+		rnd_event(NULL, RND_EVENT_LOG_CLEAR, "pp", &from, &to);
 		ret = 0;
 	}
 	else if (rnd_strcasecmp(op, "Export") == 0) {

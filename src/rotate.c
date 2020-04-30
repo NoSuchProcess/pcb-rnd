@@ -107,7 +107,7 @@ pcb_any_obj_t *pcb_obj_rotate90(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_
 	ctx.rotate.center_x = X;
 	ctx.rotate.center_y = Y;
 
-	pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_ROTATE90, "ipppccip", obj->type, obj->parent.any, obj, obj, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number, &changed);
+	rnd_event(&pcb->hidlib, PCB_EVENT_RUBBER_ROTATE90, "ipppccip", obj->type, obj->parent.any, obj, obj, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number, &changed);
 
 	if (obj->type != PCB_OBJ_PSTK) /* padstack has its own way doing the rotation-undo */
 		pcb_undo_add_obj_to_rotate90(obj->type, obj->parent.any, obj, obj, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.number);
@@ -134,7 +134,7 @@ pcb_any_obj_t *pcb_obj_rotate(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_coord_t 
 	ctx.rotate.center_x = X;
 	ctx.rotate.center_y = Y;
 
-	pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_ROTATE, "ipppccip", obj->type, obj->parent.any, obj, obj, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.angle, &changed);
+	rnd_event(&pcb->hidlib, PCB_EVENT_RUBBER_ROTATE, "ipppccip", obj->type, obj->parent.any, obj, obj, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.angle, &changed);
 
 	if (obj->type != PCB_OBJ_PSTK) /* padstack has its own way doing the rotation-undo */
 		pcb_undo_add_obj_to_rotate(obj->type, obj->parent.any, obj, obj, ctx.rotate.center_x, ctx.rotate.center_y, ctx.rotate.angle);
@@ -158,11 +158,11 @@ void pcb_screen_obj_rotate90(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, uns
 			rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 			return;
 		}
-		pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
+		rnd_event(&pcb->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
 		if (conf_core.editor.rubber_band_mode)
-			pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
+			rnd_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 		if (type == PCB_OBJ_SUBC)
-			pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
+			rnd_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 		pcb_obj_rotate90(pcb, obj, X, Y, Steps);
 		pcb_board_set_changed_flag(pcb_true);
 	}
@@ -178,11 +178,11 @@ void pcb_screen_obj_rotate(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, pcb_a
 			rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 			return;
 		}
-		pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
+		rnd_event(&pcb->hidlib, PCB_EVENT_RUBBER_RESET, NULL);
 		if (conf_core.editor.rubber_band_mode)
-			pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
+			rnd_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_LINES, "ippp", type, ptr1, ptr2, ptr3);
 		if (type == PCB_OBJ_SUBC)
-			pcb_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
+			rnd_event(&pcb->hidlib, PCB_EVENT_RUBBER_LOOKUP_RATS, "ippp", type, ptr1, ptr2, ptr3);
 		pcb_obj_rotate(PCB, obj, X, Y, angle);
 		pcb_board_set_changed_flag(pcb_true);
 	}

@@ -63,7 +63,7 @@
 #include "glue_common.h"
 
 /*** docking code (dynamic parts) ***/
-static int pcb_gtk_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv)
+static int pcb_gtk_dock_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
 {
 	return -1;
 }

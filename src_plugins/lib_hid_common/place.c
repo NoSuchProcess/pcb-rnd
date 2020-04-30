@@ -78,13 +78,13 @@ static void pcb_dialog_store(const char *id, int x, int y, int w, int h)
 }
 
 
-void pcb_dialog_place(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_dialog_place(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	const char *id;
 	int *geo;
 	htsw_entry_t *e;
 
-	if ((argc < 3) || (argv[1].type != PCB_EVARG_PTR) || (argv[2].type != PCB_EVARG_STR))
+	if ((argc < 3) || (argv[1].type != RND_EVARG_PTR) || (argv[2].type != RND_EVARG_STR))
 		return;
 
 	id = argv[2].d.s;
@@ -100,9 +100,9 @@ void pcb_dialog_place(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event
 /*	rnd_trace("dialog place: %p '%s'\n", hid_ctx, id);*/
 }
 
-void pcb_dialog_resize(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_dialog_resize(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	if ((argc < 7) || (argv[1].type != PCB_EVARG_PTR) || (argv[2].type != PCB_EVARG_STR))
+	if ((argc < 7) || (argv[1].type != RND_EVARG_PTR) || (argv[2].type != RND_EVARG_STR))
 		return;
 
 /*	hid_ctx = argv[1].d.p;*/
@@ -235,13 +235,13 @@ static void place_maybe_save(rnd_hidlib_t *hidlib, rnd_conf_role_t role, int for
 /* event handlers that run before the current pcb is saved to save win geo
    in the board conf and after loading a new board to fetch window placement
    info. */
-static void place_save_pre(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void place_save_pre(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	place_maybe_save(hidlib, RND_CFR_PROJECT, 0);
 	place_maybe_save(hidlib, RND_CFR_DESIGN, 0);
 }
 
-static void place_load_post(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void place_load_post(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_wplc_load(RND_CFR_PROJECT);
 	pcb_wplc_load(RND_CFR_DESIGN);
@@ -298,7 +298,7 @@ void pcb_dialog_place_uninit(void)
 	for(e = htsw_first(&wingeo); e != NULL; e = htsw_next(&wingeo, e))
 		free((char *)e->key);
 	htsw_uninit(&wingeo);
-	pcb_event_unbind_allcookie(place_cookie);
+	rnd_event_unbind_allcookie(place_cookie);
 
 	for(n = 0; n < cleanup_later.used; n++)
 		free(cleanup_later.array[n]);
@@ -308,8 +308,8 @@ void pcb_dialog_place_uninit(void)
 void pcb_dialog_place_init(void)
 {
 	htsw_init(&wingeo, strhash, strkeyeq);
-	pcb_event_bind(PCB_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
-	pcb_event_bind(PCB_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
+	rnd_event_bind(RND_EVENT_SAVE_PRE, place_save_pre, NULL, place_cookie);
+	rnd_event_bind(RND_EVENT_LOAD_POST, place_load_post, NULL, place_cookie);
 	pcb_wplc_load(RND_CFR_INTERNAL);
 	pcb_wplc_load(RND_CFR_ENV);
 	pcb_wplc_load(RND_CFR_SYSTEM);

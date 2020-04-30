@@ -167,7 +167,7 @@ int pcb_board_new_postproc(pcb_board_t *pcb, int use_defaults)
 	}
 
 	if (pcb == PCB)
-		pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+		rnd_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 
 	return 0;
 }
@@ -375,7 +375,7 @@ void pcb_board_set_changed_flag(rnd_bool New)
 	PCB->Changed = New;
 
 	if (old != New)
-		pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_META_CHANGED, NULL);
+		rnd_event(&PCB->hidlib, RND_EVENT_BOARD_META_CHANGED, NULL);
 }
 
 
@@ -383,7 +383,7 @@ void pcb_board_changed(int reverted)
 {
 	if ((pcb_gui != NULL) && (pcb_gui->set_hidlib != NULL))
 		pcb_gui->set_hidlib(pcb_gui, &PCB->hidlib);
-	pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_CHANGED, "i", reverted);
+	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_CHANGED, "i", reverted);
 }
 
 int pcb_board_normalize(pcb_board_t *pcb)

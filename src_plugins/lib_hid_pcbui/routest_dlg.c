@@ -110,7 +110,7 @@ static void rst_updated(pcb_route_style_t *rst)
 {
 	if (rst != NULL)
 		pcb_use_route_style(rst);
-	pcb_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+	rnd_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	pcb_board_set_changed_flag(1);
 }
 

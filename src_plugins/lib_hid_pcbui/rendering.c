@@ -90,7 +90,7 @@ static int pcbui_set_layer_group(pcb_hid_t *hid, pcb_layergrp_id_t group, const 
 	return common_set_layer_group(hid, group, purpose, purpi, layer, flags, is_empty, xform);
 }
 
-static void pcb_rendering_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_rendering_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	/* hook in our dispatcher */
 	gui_set_layer_group = pcb_gui->set_layer_group;

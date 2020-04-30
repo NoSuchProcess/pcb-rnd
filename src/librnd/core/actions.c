@@ -682,7 +682,7 @@ int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_
 
 	/* no backend or forced action mode: classic pcb-rnd action parse */
 	if (force_action_mode || (pcbhl_conf.rc.cli_backend == NULL) || (*pcbhl_conf.rc.cli_backend == '\0')) {
-		pcb_event(NULL, PCB_EVENT_CLI_ENTER, "s", str_);
+		rnd_event(NULL, RND_EVENT_CLI_ENTER, "s", str_);
 		return hid_parse_actionstring(hl, str_, pcb_false);
 	}
 

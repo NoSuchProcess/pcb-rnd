@@ -130,7 +130,7 @@ static void obj_free_undoable(pcb_any_obj_t *obj)
 static void layer_post_change(rnd_attribute_list_t *list, const char *name, const char *value)
 {
 	if (strncmp(name, "pcb-rnd::key::", 14) == 0)
-		pcb_event(&PCB->hidlib, PCB_EVENT_LAYER_KEY_CHANGE, NULL);
+		rnd_event(&PCB->hidlib, PCB_EVENT_LAYER_KEY_CHANGE, NULL);
 }
 
 
@@ -819,7 +819,7 @@ static pcb_layer_t *pcb_layer_move_append_(pcb_board_t *pcb, pcb_layer_id_t new_
 	g->len++;
 	pcb_layergrp_notify_chg(pcb);
 	pcb_layervis_change_group_vis(&pcb->hidlib, new_lid, 1, 1);
-	pcb_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	rnd_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 
 	return lp;
 }
@@ -951,7 +951,7 @@ static int undo_layer_move_swap(void *udata)
 		l->meta.real.color = m->color;
 		pcb_layergrp_notify_chg(pcb);
 		pcb_layervis_change_group_vis(&pcb->hidlib, m->lid, 1, 1);
-		pcb_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		rnd_event(&pcb->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	}
 
 	m->append = !m->append;

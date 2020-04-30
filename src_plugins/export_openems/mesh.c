@@ -1040,7 +1040,7 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, pcb_hid_attribute_t *att
 	free((char *)mesh.ui_layer_xy->name); /* we have strdup'd it */
 	mesh.ui_name_xy = pcb_strdup_printf("mesh 0: %s", mesh.layer->name);
 	mesh.ui_layer_xy->name = rnd_strdup(mesh.ui_name_xy);
-	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 
 	pcb_gui->invalidate_all(pcb_gui);
 }

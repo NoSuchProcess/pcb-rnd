@@ -132,7 +132,7 @@ static void lib_dfs(pcb_fplibrary_t *parent, int level)
 		lib_dfs(l, level+1);
 }
 
-void LesstifLibraryChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void LesstifLibraryChanged(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	int i;
 	if (pcb_library.data.dir.children.used == 0)

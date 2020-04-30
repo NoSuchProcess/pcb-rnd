@@ -53,5 +53,5 @@ static const char *pcb_evnames[] = {
 
 void pcb_event_init_app(void)
 {
-	pcb_event_app_reg(PCB_EVENT_last, pcb_evnames, sizeof(pcb_evnames));
+	rnd_event_app_reg(PCB_EVENT_last, pcb_evnames, sizeof(pcb_evnames));
 }

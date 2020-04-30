@@ -83,7 +83,7 @@ pcb_toolid_t pcb_tool_reg(pcb_tool_t *tool, const char *cookie)
 	vtp0_append(&pcb_tools, (void *)tool);
 	if (pcb_gui != NULL)
 		pcb_gui->reg_mouse_cursor(pcb_gui, id, tool->cursor.name, tool->cursor.pixel, tool->cursor.mask);
-	pcb_event(NULL, PCB_EVENT_TOOL_REG, "p", tool);
+	rnd_event(NULL, RND_EVENT_TOOL_REG, "p", tool);
 	return id;
 }
 
@@ -135,7 +135,7 @@ int pcb_tool_select_by_id(rnd_hidlib_t *hidlib, pcb_toolid_t id)
 		return -1;
 
 	/* check if the UI logic allows picking that tool */
-	pcb_event(hidlib, PCB_EVENT_TOOL_SELECT_PRE, "pi", &ok, id);
+	rnd_event(hidlib, RND_EVENT_TOOL_SELECT_PRE, "pi", &ok, id);
 	if (ok == 0)
 		id = pcbhl_conf.editor.mode;
 
@@ -272,7 +272,7 @@ static void do_release(rnd_hidlib_t *hidlib)
 	if (pcb_tool_is_saved)
 		pcb_tool_restore(hidlib);
 	pcb_tool_is_saved = pcb_false;
-	pcb_event(hidlib, PCB_EVENT_TOOL_RELEASE, NULL);
+	rnd_event(hidlib, RND_EVENT_TOOL_RELEASE, NULL);
 }
 
 void pcb_tool_do_press(rnd_hidlib_t *hidlib)
@@ -284,7 +284,7 @@ void pcb_tool_do_press(rnd_hidlib_t *hidlib)
 	hidlib->tool_grabbed.Y = hidlib->tool_y;
 
 	pcb_tool_press(hidlib);
-	pcb_event(hidlib, PCB_EVENT_TOOL_PRESS, NULL);
+	rnd_event(hidlib, RND_EVENT_TOOL_PRESS, NULL);
 }
 
 
@@ -325,7 +325,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (rnd_strcasecmp(cmd, "Release") == 0) {
 		if (pcbhl_conf.editor.enable_stroke) {
 			int handled = 0;
-			pcb_event(RND_ACT_HIDLIB, PCB_EVENT_STROKE_FINISH, "p", &handled);
+			rnd_event(RND_ACT_HIDLIB, RND_EVENT_STROKE_FINISH, "p", &handled);
 			if (handled) {
 			/* Ugly hack: returning 1 here will break execution of the
 			   action script, so actions after this one could do things
@@ -339,7 +339,7 @@ static fgw_error_t pcb_act_Tool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (rnd_strcasecmp(cmd, "Stroke") == 0) {
 		if (pcbhl_conf.editor.enable_stroke)
-			pcb_event(RND_ACT_HIDLIB, PCB_EVENT_STROKE_START, "cc", hidlib->tool_x, hidlib->tool_y);
+			rnd_event(RND_ACT_HIDLIB, RND_EVENT_STROKE_START, "cc", hidlib->tool_x, hidlib->tool_y);
 		else
 			goto escape; /* Right mouse button restarts drawing mode. */
 	}

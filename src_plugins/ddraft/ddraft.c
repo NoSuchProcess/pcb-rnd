@@ -539,7 +539,7 @@ int pplg_check_ver_ddraft(int ver_needed) { return 0; }
 void pplg_uninit_ddraft(void)
 {
 	rnd_conf_hid_unreg(ddraft_cookie);
-	pcb_event_unbind_allcookie(ddraft_cookie);
+	rnd_event_unbind_allcookie(ddraft_cookie);
 	rnd_remove_actions_by_cookie(ddraft_cookie);
 	pcb_tool_unreg_by_cookie(ddraft_cookie);
 }
@@ -555,7 +555,7 @@ int pplg_init_ddraft(void)
 	PCB_API_CHK_VER;
 
 	RND_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
-	pcb_event_bind(PCB_EVENT_DRAW_CROSSHAIR_CHATT, cnst_enforce, NULL, ddraft_cookie);
+	rnd_event_bind(PCB_EVENT_DRAW_CROSSHAIR_CHATT, cnst_enforce, NULL, ddraft_cookie);
 
 	pcb_ddraft_tool = pcb_tool_reg(&tool_ddraft, ddraft_cookie);
 

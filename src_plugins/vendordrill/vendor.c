@@ -640,12 +640,12 @@ static void vendor_free_all(void)
 }
 
 /* Tune newly placed padstacks */
-static void vendor_new_pstk(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void vendor_new_pstk(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_pstk_t *ps;
 	rnd_cardinal_t dummy;
 
-	if ((argc < 2) || (argv[1].type != PCB_EVARG_PTR))
+	if ((argc < 2) || (argv[1].type != RND_EVARG_PTR))
 		return;
 
 	ps = argv[1].d.p;
@@ -656,7 +656,7 @@ int pplg_check_ver_vendordrill(int ver_needed) { return 0; }
 
 void pplg_uninit_vendordrill(void)
 {
-	pcb_event_unbind_allcookie(vendor_cookie);
+	rnd_event_unbind_allcookie(vendor_cookie);
 	rnd_remove_actions_by_cookie(vendor_cookie);
 	vendor_free_all();
 	rnd_conf_unreg_fields("plugins/vendor/");
@@ -669,7 +669,7 @@ int pplg_init_vendordrill(void)
 	rnd_conf_reg_field(conf_vendor, field,isarray,type_name,cpath,cname,desc,flags);
 #include "vendor_conf_fields.h"
 
-	pcb_event_bind(PCB_EVENT_NEW_PSTK, vendor_new_pstk, NULL, vendor_cookie);
+	rnd_event_bind(PCB_EVENT_NEW_PSTK, vendor_new_pstk, NULL, vendor_cookie);
 	RND_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 	return 0;
 }

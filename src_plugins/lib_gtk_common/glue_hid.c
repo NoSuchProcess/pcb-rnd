@@ -116,7 +116,7 @@ static void ghid_gui_inited(pcb_gtk_t *gctx, int main, int conf)
 
 	if (im && ic && first) {
 		first = 0;
-		pcb_event(gctx->hidlib, PCB_EVENT_GUI_INIT, NULL);
+		rnd_event(gctx->hidlib, RND_EVENT_GUI_INIT, NULL);
 		pcb_gtk_zoom_view_win_side(&gctx->port.view, 0, 0, gctx->hidlib->size_x, gctx->hidlib->size_y, 0);
 	}
 }
@@ -202,7 +202,7 @@ static void pcb_gtk_topwinplace(rnd_hidlib_t *hidlib, GtkWidget *dialog, const c
 {
 	int plc[4] = {-1, -1, -1, -1};
 
-	pcb_event(hidlib, PCB_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
+	rnd_event(hidlib, RND_EVENT_DAD_NEW_DIALOG, "psp", NULL, id, plc);
 
 	if (pcbhl_conf.editor.auto_place) {
 		if ((plc[2] > 0) && (plc[3] > 0))

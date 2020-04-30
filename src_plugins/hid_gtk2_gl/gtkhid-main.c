@@ -28,7 +28,7 @@ int pplg_check_ver_hid_gtk2_gl(int ver_needed) { return 0; }
 
 void pplg_uninit_hid_gtk2_gl(void)
 {
-	pcb_event_unbind_allcookie(ghid_gl_cookie);
+	rnd_event_unbind_allcookie(ghid_gl_cookie);
 	rnd_conf_hid_unreg(ghid_gl_cookie);
 	drawgl_uninit();
 }

@@ -46,7 +46,7 @@ static void netlist_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
 	netlist_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(netlist_ctx_t));
-	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
+	rnd_event(&PCB->hidlib, RND_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 }
 
 /* returns allocated net name for the currently selected net */
@@ -158,7 +158,7 @@ static void netlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pcb
 	if (netname != NULL)
 		net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
 	netlist_data2dlg_connlist(ctx, net);
-	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
+	rnd_event(&PCB->hidlib, RND_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 	netlist_force_redraw(ctx);
 }
 
@@ -169,7 +169,7 @@ static void termlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pc
 	char *refdes, *term;
 	pcb_any_obj_t *obj;
 
-	pcb_event(&PCB->hidlib, PCB_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
+	rnd_event(&PCB->hidlib, RND_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 	if (row == NULL)
 		return;
 	refdes = rnd_strdup(row->cell[0]);
@@ -181,7 +181,7 @@ static void termlist_row_selected(pcb_hid_attribute_t *attrib, void *hid_ctx, pc
 		if (obj != NULL) {
 			rnd_coord_t x, y;
 			pcb_obj_center(obj, &x, &y);
-			pcb_event(&PCB->hidlib, PCB_EVENT_GUI_LEAD_USER, "cci", x, y, 1);
+			rnd_event(&PCB->hidlib, RND_EVENT_GUI_LEAD_USER, "cci", x, y, 1);
 		}
 	}
 	free(refdes);
@@ -454,7 +454,7 @@ static fgw_error_t pcb_act_NetlistDialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 }
 
 /* update the dialog after a netlist change */
-static void pcb_dlg_netlist_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_dlg_netlist_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	netlist_ctx_t *ctx = user_data;
 	if (!ctx->active)
@@ -463,11 +463,11 @@ static void pcb_dlg_netlist_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, 
 }
 static void pcb_dlg_netlist_init(void)
 {
-	pcb_event_bind(PCB_EVENT_NETLIST_CHANGED, pcb_dlg_netlist_ev, &netlist_ctx, dlg_netlist_cookie);
+	rnd_event_bind(PCB_EVENT_NETLIST_CHANGED, pcb_dlg_netlist_ev, &netlist_ctx, dlg_netlist_cookie);
 }
 
 static void pcb_dlg_netlist_uninit(void)
 {
-	pcb_event_unbind_allcookie(dlg_netlist_cookie);
+	rnd_event_unbind_allcookie(dlg_netlist_cookie);
 	vtp0_uninit(&netlist_color_save);
 }

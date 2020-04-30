@@ -323,7 +323,7 @@ static int proc_short(pcb_any_obj_t *term, pcb_net_t *Snet, pcb_net_t *Tnet, int
 	return bad_gr;
 }
 
-static void pcb_mincut_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_mincut_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	int *handled, *cancel;
 	pcb_any_obj_t *term;
@@ -335,22 +335,22 @@ static void pcb_mincut_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_e
 	if (argc < 5)
 		return;
 
-	if ((argv[4].type != PCB_EVARG_PTR) || (argv[5].type != PCB_EVARG_PTR))
+	if ((argv[4].type != RND_EVARG_PTR) || (argv[5].type != RND_EVARG_PTR))
 		return;
 	handled = (int *)argv[4].d.p;
 	cancel = (int *)argv[5].d.p;
 	if (*handled || *cancel)
 		return;
 
-	if (argv[2].type != PCB_EVARG_PTR)
+	if (argv[2].type != RND_EVARG_PTR)
 		return;
 	term = (pcb_any_obj_t *)argv[2].d.p;
 
-	if (argv[1].type != PCB_EVARG_PTR)
+	if (argv[1].type != RND_EVARG_PTR)
 		return;
 	Snet = (pcb_net_t *)argv[1].d.p;
 
-	if (argv[3].type != PCB_EVARG_PTR)
+	if (argv[3].type != RND_EVARG_PTR)
 		return;
 	Tnet = (pcb_net_t *)argv[3].d.p;
 
@@ -364,14 +364,14 @@ int pplg_check_ver_mincut(int ver_needed) { return 0; }
 void pplg_uninit_mincut(void)
 {
 	rnd_conf_unreg_fields("plugins/mincut/");
-	pcb_event_unbind_allcookie(pcb_mincut_cookie);
+	rnd_event_unbind_allcookie(pcb_mincut_cookie);
 }
 
 int pplg_init_mincut(void)
 {
 	PCB_API_CHK_VER;
 
-	pcb_event_bind(PCB_EVENT_NET_INDICATE_SHORT, pcb_mincut_ev, NULL, pcb_mincut_cookie);
+	rnd_event_bind(PCB_EVENT_NET_INDICATE_SHORT, pcb_mincut_ev, NULL, pcb_mincut_cookie);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_mincut, field,isarray,type_name,cpath,cname,desc,flags);

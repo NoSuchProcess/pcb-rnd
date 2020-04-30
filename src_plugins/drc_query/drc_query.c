@@ -200,7 +200,7 @@ static int *drc_get_disable(const char *name)
 	return nat->val.boolean;
 }
 
-static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	gdl_iterator_t it;
@@ -361,7 +361,7 @@ void pplg_uninit_drc_query(void)
 	long n;
 
 	pcb_drc_impl_unreg(&drc_query_impl);
-	pcb_event_unbind_allcookie(drc_query_cookie);
+	rnd_event_unbind_allcookie(drc_query_cookie);
 	rnd_conf_unreg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
 	rnd_conf_unreg_fields(DRC_CONF_PATH_PLUGIN);
 	rnd_conf_hid_unreg(drc_query_cookie);
@@ -382,7 +382,7 @@ int pplg_init_drc_query(void)
 
 	pcb_drcq_stat_init();
 
-	pcb_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_query, NULL, drc_query_cookie);
+	rnd_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_query, NULL, drc_query_cookie);
 
 	vtp0_init(&free_drc_conf_nodes);
 	cbs.new_hlist_item_post = drc_query_newconf;

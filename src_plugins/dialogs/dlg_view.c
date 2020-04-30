@@ -811,7 +811,7 @@ fgw_error_t pcb_act_ViewList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void view_preview_update_cb(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void view_preview_update_cb(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (drc_gui_ctx.active)
 		view_preview_update(&drc_gui_ctx);
@@ -821,11 +821,11 @@ static void view_preview_update_cb(rnd_hidlib_t *hidlib, void *user_data, int ar
 
 void pcb_view_dlg_uninit(void)
 {
-	pcb_event_unbind_allcookie(dlg_view_cookie);
+	rnd_event_unbind_allcookie(dlg_view_cookie);
 	vtp0_uninit(&view_color_save);
 }
 
 void pcb_view_dlg_init(void)
 {
-	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, view_preview_update_cb, NULL, dlg_view_cookie);
+	rnd_event_bind(RND_EVENT_USER_INPUT_POST, view_preview_update_cb, NULL, dlg_view_cookie);
 }

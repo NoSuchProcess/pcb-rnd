@@ -340,7 +340,7 @@ static void drc_beyond_extents(pcb_view_list_t *lst, pcb_data_t *data)
 	}
 }
 
-static void pcb_drc_orig(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_drc_orig(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_view_list_t *lst = &pcb_drc_lst;
 
@@ -349,7 +349,7 @@ static void pcb_drc_orig(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 
 	pcb_layervis_save_stack();
 	pcb_layervis_reset_stack(&PCB->hidlib);
-	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 
 	/* actual tests */
 	pcb_hid_progress(0, 0, NULL);
@@ -379,7 +379,7 @@ static void pcb_drc_orig(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 	out:;
 	pcb_hid_progress(0, 0, NULL);
 	pcb_layervis_restore_stack();
-	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	pcb_gui->invalidate_all(pcb_gui);
 }
 
@@ -389,7 +389,7 @@ int pplg_check_ver_drc_orig(int ver_needed) { return 0; }
 
 void pplg_uninit_drc_orig(void)
 {
-	pcb_event_unbind_allcookie(drc_orig_cookie);
+	rnd_event_unbind_allcookie(drc_orig_cookie);
 	rnd_conf_unreg_file(DRC_ORIG_CONF_FN, drc_orig_conf_internal);
 	rnd_conf_unreg_fields("plugins/drc_orig/");
 }
@@ -397,7 +397,7 @@ void pplg_uninit_drc_orig(void)
 int pplg_init_drc_orig(void)
 {
 	PCB_API_CHK_VER;
-	pcb_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_orig, NULL, drc_orig_cookie);
+	rnd_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_orig, NULL, drc_orig_cookie);
 
 	rnd_conf_reg_file(DRC_ORIG_CONF_FN, drc_orig_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \

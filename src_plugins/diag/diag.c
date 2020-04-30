@@ -393,7 +393,7 @@ static fgw_error_t pcb_act_dumpflags(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void ev_ui_post(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void ev_ui_post(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 
 	if (conf_diag.plugins.diag.auto_integrity) {
@@ -596,7 +596,7 @@ void pplg_uninit_diag(void)
 {
 	rnd_remove_actions_by_cookie(diag_cookie);
 	rnd_conf_unreg_fields("plugins/diag/");
-	pcb_event_unbind_allcookie(diag_cookie);
+	rnd_event_unbind_allcookie(diag_cookie);
 }
 
 int pplg_init_diag(void)
@@ -607,7 +607,7 @@ int pplg_init_diag(void)
 	rnd_conf_reg_field(conf_diag, field,isarray,type_name,cpath,cname,desc,flags);
 #include "diag_conf_fields.h"
 
-	pcb_event_bind(PCB_EVENT_USER_INPUT_POST, ev_ui_post, NULL, diag_cookie);
+	rnd_event_bind(RND_EVENT_USER_INPUT_POST, ev_ui_post, NULL, diag_cookie);
 	RND_REGISTER_ACTIONS(diag_action_list, diag_cookie)
 	return 0;
 }

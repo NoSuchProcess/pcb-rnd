@@ -101,7 +101,7 @@ static void pcb_ltf_set_fn(pcb_ltf_fsd_t *pctx, int append, const char *fn)
 	XmStringFree(xms_path);
 }
 
-static int pcb_ltf_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_event_arg_t *res, int argc, pcb_event_arg_t *argv)
+static int pcb_ltf_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, rnd_event_arg_t *res, int argc, rnd_event_arg_t *argv)
 {
 	pcb_ltf_fsd_t *pctx = sub->parent_ctx;
 
@@ -114,12 +114,12 @@ static int pcb_ltf_fsd_poke(pcb_hid_dad_subdialog_t *sub, const char *cmd, pcb_e
 	}
 
 	if (strcmp(cmd, "get_path") == 0) {
-		res->type = PCB_EVARG_STR;
+		res->type = RND_EVARG_STR;
 		res->d.s = pcb_ltf_get_path(pctx);
 		return 0;
 	}
 
-	if ((strcmp(cmd, "set_file_name") == 0) && (argc == 1) && (argv[0].type == PCB_EVARG_STR)) {
+	if ((strcmp(cmd, "set_file_name") == 0) && (argc == 1) && (argv[0].type == RND_EVARG_STR)) {
 		pcb_ltf_set_fn(pctx, 1, argv[0].d.s);
 		return 0;
 	}

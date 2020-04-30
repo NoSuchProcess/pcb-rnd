@@ -193,7 +193,7 @@ void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
 }
 
 
-static void order_menu_init(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void order_menu_init(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_hid_cfg_map_anchor_menus(ANCH, order_install_menu, NULL);
 }
@@ -203,7 +203,7 @@ int pplg_check_ver_order(int ver_needed) { return 0; }
 void pplg_uninit_order(void)
 {
 	rnd_remove_actions_by_cookie(order_cookie);
-	pcb_event_unbind_allcookie(order_cookie);
+	rnd_event_unbind_allcookie(order_cookie);
 	rnd_conf_unreg_file(ORDER_CONF_FN, order_conf_internal);
 	rnd_conf_unreg_fields("plugins/order/");
 }
@@ -218,6 +218,6 @@ int pplg_init_order(void)
 #include "order_conf_fields.h"
 
 	RND_REGISTER_ACTIONS(order_action_list, order_cookie)
-	pcb_event_bind(PCB_EVENT_GUI_INIT, order_menu_init, NULL, order_cookie);
+	rnd_event_bind(RND_EVENT_GUI_INIT, order_menu_init, NULL, order_cookie);
 	return 0;
 }

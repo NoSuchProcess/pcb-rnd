@@ -280,8 +280,8 @@ void pcb_xordraw_movecopy(void)
 			memcpy(&line, (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2, sizeof(line));
 
 			if(conf_core.editor.rubber_band_keep_midlinedir)
-				pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, "pppppp", &line, &constrained, &dx1, &dy1, &dx2, &dy2);
-			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", constrained, dx1, dy1, dx2, dy2);
+				rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, "pppppp", &line, &constrained, &dx1, &dy1, &dx2, &dy2);
+			rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", constrained, dx1, dy1, dx2, dy2);
 
 			event_sent = 1;
 
@@ -310,7 +310,7 @@ void pcb_xordraw_movecopy(void)
 		{
 			/* Make a temporary arc and move it by dx,dy */
 			pcb_arc_t arc = *((pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2);
-			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, dx, dy, dx, dy);
+			rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, dx, dy, dx, dy);
 			event_sent = 1;
 			
 			arc.X += dx;
@@ -437,7 +437,7 @@ void pcb_xordraw_movecopy(void)
 			pcb_arc_get_end(&arc,0, &nx1, &ny1);
 			pcb_arc_get_end(&arc,1, &nx2, &ny2);
 
-			pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, nx1-ox1,ny1-oy1,nx2-ox2,ny2-oy2);
+			rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, nx1-ox1,ny1-oy1,nx2-ox2,ny2-oy2);
 			event_sent = 1;
 			break;
 		}
@@ -483,7 +483,7 @@ void pcb_xordraw_movecopy(void)
 	}
 
 	if(!event_sent)
-		pcb_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
+		rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
 }
 
 void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
@@ -1052,7 +1052,7 @@ void pcb_center_display(rnd_coord_t X, rnd_coord_t Y)
 }
 
 /* allocate GC only when the GUI is already up and running */
-static void pcb_crosshair_gui_init(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void pcb_crosshair_gui_init(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_crosshair.GC = pcb_hid_make_gc();
 
@@ -1079,7 +1079,7 @@ void pcb_crosshair_init(void)
 	pcb_route_init(&pcb_crosshair.Route);
 
 
-	pcb_event_bind(PCB_EVENT_GUI_INIT, pcb_crosshair_gui_init, NULL, crosshair_cookie);
+	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_crosshair_gui_init, NULL, crosshair_cookie);
 }
 
 void pcb_crosshair_pre_init(void)
@@ -1094,7 +1094,7 @@ void pcb_crosshair_uninit(void)
 	pcb_route_destroy(&pcb_crosshair.Route);
 	if (pcb_render != NULL)
 		pcb_hid_destroy_gc(pcb_crosshair.GC);
-	pcb_event_unbind_allcookie(crosshair_cookie);
+	rnd_event_unbind_allcookie(crosshair_cookie);
 }
 
 void pcb_crosshair_set_local_ref(rnd_coord_t X, rnd_coord_t Y, rnd_bool Showing)
@@ -1125,7 +1125,7 @@ static void pcb_event_move_crosshair(rnd_coord_t ev_x, rnd_coord_t ev_y)
 	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
 		/* update object position and cursor location */
 		pcb_tool_adjust_attached(&PCB->hidlib);
-		pcb_event(&PCB->hidlib, PCB_EVENT_DRAW_CROSSHAIR_CHATT, NULL);
+		rnd_event(&PCB->hidlib, PCB_EVENT_DRAW_CROSSHAIR_CHATT, NULL);
 		pcb_hid_notify_crosshair_change(&PCB->hidlib, pcb_true);
 	}
 }

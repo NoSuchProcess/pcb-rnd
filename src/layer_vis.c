@@ -120,7 +120,7 @@ int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, pcb_layer_id_t Layer, int On
 	/* update control panel and exit */
 	if (ChangeStackOrder)
 		PCB->RatDraw = 0; /* any layer selection here means we can not be in rat mode */
-	pcb_event(hl, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+	rnd_event(hl, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	return changed;
 }
 
@@ -229,7 +229,7 @@ void layer_vis_chg_mask(rnd_conf_native_t *cfg, int arr_idx)
 		}
 	}
 	if (chg)
-		pcb_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
+		rnd_event(&PCB->hidlib, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	in = 0;
 }
 
@@ -286,13 +286,13 @@ void pcb_layer_vis_historical_hides(pcb_board_t *pcb)
 	}
 }
 
-static void layer_vis_grp_defaults(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+static void layer_vis_grp_defaults(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	pcb_layer_vis_change_all(pcb, PCB_BOOL_SET, PCB_BOOL_PRESERVE);
 	pcb_layer_vis_historical_hides(pcb);
 
-	pcb_event(hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
+	rnd_event(hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); /* Can't send LAYERVIS_CHANGED here: it's a race condition, the layer selector could still have the old widgets */
 }
 
 pcb_layer_id_t pcb_layer_vis_last_lyt(pcb_layer_type_t target)
@@ -361,12 +361,12 @@ void pcb_layer_vis_init(void)
 		rnd_conf_hid_set_cb(n_mask, layer_vis_conf_id, &cbs_mask);
 	}
 
-	pcb_event_bind(PCB_EVENT_BOARD_CHANGED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
-	pcb_event_bind(PCB_EVENT_GUI_INIT, layer_vis_grp_defaults, NULL, layer_vis_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_CHANGED, layer_vis_grp_defaults, NULL, layer_vis_cookie);
+	rnd_event_bind(RND_EVENT_GUI_INIT, layer_vis_grp_defaults, NULL, layer_vis_cookie);
 }
 
 void pcb_layer_vis_uninit(void)
 {
-	pcb_event_unbind_allcookie(layer_vis_cookie);
+	rnd_event_unbind_allcookie(layer_vis_cookie);
 	rnd_conf_hid_unreg(layer_vis_cookie);
 }

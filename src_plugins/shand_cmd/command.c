@@ -177,7 +177,7 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_board_set_changed_flag(pcb_false);
 			free(PCB->hidlib.filename);
 			PCB->hidlib.filename = rnd_strdup(filename);
-			pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_FN_CHANGED, NULL);
+			rnd_event(&PCB->hidlib, RND_EVENT_BOARD_FN_CHANGED, NULL);
 		}
 	}
 

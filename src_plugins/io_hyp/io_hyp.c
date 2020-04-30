@@ -111,8 +111,8 @@ TODO(": rewrite this - this is very unpcb-rnd")
 	pcb_hid_busy(PCB, 0);
 
 	/* notify GUI */
-	pcb_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
-	pcb_event(&PCB->hidlib, PCB_EVENT_BOARD_CHANGED, NULL);
+	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	rnd_event(&PCB->hidlib, RND_EVENT_BOARD_CHANGED, NULL);
 
 	RND_ACT_IRES(retval);
 	return 0;

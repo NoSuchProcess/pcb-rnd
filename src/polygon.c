@@ -71,12 +71,12 @@ static int Unsubtract(pcb_polyarea_t * np1, pcb_poly_t * p);
 static const char *polygon_cookie = "core polygon";
 
 
-void pcb_poly_layers_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_event_arg_t argv[])
+void pcb_poly_layers_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_layer_t *ly;
 	pcb_data_t *data;
 
-	if ((argc < 2) || (argv[1].type != PCB_EVARG_PTR))
+	if ((argc < 2) || (argv[1].type != RND_EVARG_PTR))
 		return;
 	ly = argv[1].d.p;
 	if ((ly->is_bound) || (ly->parent_type != PCB_PARENT_DATA))
@@ -93,12 +93,12 @@ void pcb_poly_layers_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, pcb_ev
 
 void pcb_polygon_init(void)
 {
-	pcb_event_bind(PCB_EVENT_LAYER_CHANGED_GRP, pcb_poly_layers_chg, NULL, polygon_cookie);
+	rnd_event_bind(PCB_EVENT_LAYER_CHANGED_GRP, pcb_poly_layers_chg, NULL, polygon_cookie);
 }
 
 void pcb_polygon_uninit(void)
 {
-	pcb_event_unbind_allcookie(polygon_cookie);
+	rnd_event_unbind_allcookie(polygon_cookie);
 }
 
 rnd_cardinal_t pcb_poly_point_idx(pcb_poly_t *polygon, pcb_point_t *point)
