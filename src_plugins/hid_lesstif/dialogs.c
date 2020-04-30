@@ -185,7 +185,7 @@ typedef struct {
 	Widget dialog;
 	rnd_hid_attr_val_t property[RND_HATP_max];
 	Dimension minw, minh;
-	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
+	void (*close_cb)(void *caller_data, rnd_hid_attr_ev_t ev);
 	char *id;
 	unsigned close_cb_called:1;
 	unsigned already_closing:1;
@@ -592,7 +592,7 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 
 	if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
 		ctx->close_cb_called = 1;
-		ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_WINCLOSE);
+		ctx->close_cb(ctx->caller_data, RND_HID_ATTR_EV_WINCLOSE);
 	}
 	else if (!ctx->widget_destroyed) {
 		ctx->widget_destroyed = 1;
@@ -605,7 +605,7 @@ static void ltf_attr_destroy_cb(Widget w, void *v, void *cbs)
 
 		if ((!ctx->close_cb_called) && (ctx->close_cb != NULL)) {
 			ctx->close_cb_called = 1;
-			ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
+			ctx->close_cb(ctx->caller_data, RND_HID_ATTR_EV_CODECLOSE);
 		}
 	}
 }
@@ -632,7 +632,7 @@ static void ltf_initial_wstates(lesstif_attr_dlg_t *ctx)
 			XtUnmanageChild(ctx->wltop[n]);
 }
 
-void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	Widget topform, main_tbl;
 	lesstif_attr_dlg_t *ctx;

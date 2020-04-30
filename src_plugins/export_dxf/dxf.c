@@ -443,21 +443,21 @@ static void dxf_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void dxf_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void dxf_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	if (direct)
 		return;
 
 	switch(op) {
-		case PCB_HID_COMP_RESET:
+		case RND_HID_COMP_RESET:
 			break;
 
-		case PCB_HID_COMP_POSITIVE:
-		case PCB_HID_COMP_POSITIVE_XOR:
-		case PCB_HID_COMP_NEGATIVE:
+		case RND_HID_COMP_POSITIVE:
+		case RND_HID_COMP_POSITIVE_XOR:
+		case RND_HID_COMP_NEGATIVE:
 			break;
 
-		case PCB_HID_COMP_FLUSH:
+		case RND_HID_COMP_FLUSH:
 			break;
 	}
 }

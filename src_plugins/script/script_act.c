@@ -150,7 +150,7 @@ void script_dlg_update(void)
 		script_dlg_s2d(&script_dlg);
 }
 
-static void script_dlg_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void script_dlg_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	script_dlg_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);
@@ -188,7 +188,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 {
 	script_dlg_t *ctx = caller_data;
 	int failed;
-	char *tmp, *fn = pcb_gui->fileselect(pcb_gui, "script to load", "Select a script file to load", NULL, NULL, NULL, "script", PCB_HID_FSD_READ, NULL);
+	char *tmp, *fn = pcb_gui->fileselect(pcb_gui, "script to load", "Select a script file to load", NULL, NULL, NULL, "script", RND_HID_FSD_READ, NULL);
 	pcb_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
 	typedef struct {
 		PCB_DAD_DECL_NOINIT(dlg)

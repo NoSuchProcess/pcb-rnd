@@ -127,7 +127,7 @@ static int pcb_ltf_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_e
 	return -1;
 }
 
-char *pcb_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
+char *pcb_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	XmString xms_ext = NULL, xms_load = NULL;
 	pcb_ltf_fsd_t pctx;
@@ -159,7 +159,7 @@ char *pcb_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, c
 	stdarg(XmNtitle, title);
 	XtSetValues(XtParent(pctx.dialog), stdarg_args, stdarg_n);
 
-	if (flags & PCB_HID_FSD_READ) {
+	if (flags & RND_HID_FSD_READ) {
 		xms_load = XmStringCreatePCB("Load From");
 		stdarg_n = 0;
 		stdarg(XmNselectionLabelString, xms_load);

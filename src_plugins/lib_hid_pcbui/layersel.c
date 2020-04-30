@@ -832,7 +832,7 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 static void layersel_build(void)
 {
 	layersel_docked_create(&layersel, PCB);
-	if (pcb_hid_dock_enter(&layersel.sub, PCB_HID_DOCK_LEFT, "layersel") == 0) {
+	if (pcb_hid_dock_enter(&layersel.sub, RND_HID_DOCK_LEFT, "layersel") == 0) {
 		layersel.sub_inited = 1;
 		layersel_update_vis(&layersel, PCB);
 	}

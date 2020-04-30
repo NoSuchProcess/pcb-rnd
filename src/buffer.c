@@ -1094,7 +1094,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			if (argc <= 2) {
 				name = pcb_gui->fileselect(pcb_gui, "Load Paste Buffer ...",
 					"Choose a file to load the contents of the\npaste buffer from.\n",
-					default_file, ".lht", NULL, "buffer", PCB_HID_FSD_READ | PCB_HID_FSD_MAY_NOT_EXIST, NULL);
+					default_file, ".lht", NULL, "buffer", RND_HID_FSD_READ | RND_HID_FSD_MAY_NOT_EXIST, NULL);
 
 				if (default_file) {
 					free(default_file);

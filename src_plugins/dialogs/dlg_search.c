@@ -78,7 +78,7 @@ static void free_expr(search_expr_t *e)
 	memset(e, 0, sizeof(search_expr_t));
 }
 
-static void search_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void search_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	int r, c;
 	search_ctx_t *ctx = caller_data;

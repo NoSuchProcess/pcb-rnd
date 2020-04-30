@@ -129,8 +129,8 @@ struct pcb_gtk_topwin_s {
 	int active; /* 0 before init finishes */
 
 	/* docking */
-	GtkWidget *dockbox[PCB_HID_DOCK_max];
-	gdl_list_t dock[PCB_HID_DOCK_max];
+	GtkWidget *dockbox[RND_HID_DOCK_max];
+	gdl_list_t dock[RND_HID_DOCK_max];
 };
 
 /* needed for a type in pcb_gtk_t - DO NOT ADD .h files that are not required for the structs! */

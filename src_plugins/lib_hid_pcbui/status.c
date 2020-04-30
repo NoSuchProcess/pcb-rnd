@@ -306,13 +306,13 @@ void pcb_status_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd
 {
 	if ((PCB_HAVE_GUI_ATTR_DLG) && (pcb_gui->get_menu_cfg != NULL)) {
 		status_docked_create_st();
-		if (pcb_hid_dock_enter(&status.stsub, PCB_HID_DOCK_BOTTOM, "status") == 0) {
+		if (pcb_hid_dock_enter(&status.stsub, RND_HID_DOCK_BOTTOM, "status") == 0) {
 			status.stsub_inited = 1;
 			status_st_pcb2dlg();
 		}
 
 		status_docked_create_rd();
-		if (pcb_hid_dock_enter(&status.rdsub, PCB_HID_DOCK_TOP_RIGHT, "readout") == 0) {
+		if (pcb_hid_dock_enter(&status.rdsub, RND_HID_DOCK_TOP_RIGHT, "readout") == 0) {
 			status.rdsub_inited = 1;
 			status_rd_pcb2dlg();
 		}

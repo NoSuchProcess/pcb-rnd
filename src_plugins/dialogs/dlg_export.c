@@ -121,7 +121,7 @@ static void copy_attrs_back(export_ctx_t *ctx)
 	}
 }
 
-static void export_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void export_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	export_ctx_t *ctx = caller_data;
 	int n;

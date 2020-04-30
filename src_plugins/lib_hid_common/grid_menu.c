@@ -45,7 +45,7 @@ static void grid_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, c
 	rnd_conflist_t *lst;
 	rnd_conf_listitem_t *li;
 	char *end = path + strlen(path);
-	pcb_menu_prop_t props;
+	rnd_menu_prop_t props;
 	char act[256], chk[256];
 	int idx;
 

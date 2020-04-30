@@ -69,7 +69,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		static const char *flt_pcb[]   = {"*.font", "*.pcb_font", NULL};
 		static const char *flt_fonts[] = {"*.lht", "*.font", "*.pcb_font", NULL};
 		static const char *flt_any[] = {"*", "*.*", NULL};
-		const pcb_hid_fsd_filter_t flt[] = {
+		const rnd_hid_fsd_filter_t flt[] = {
 			{"any font",            NULL, flt_fonts},
 			{"lihata pcb-rnd font", NULL, flt_lht},
 			{"gEDA pcb font",       NULL, flt_pcb},
@@ -78,7 +78,7 @@ fgw_error_t pcb_act_load_font_from(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		};
 		fname = pcb_gui->fileselect(pcb_gui,
 			"Load PCB font file...", "Picks a PCB font file to load.\n",
-			default_file, ".font", flt, "pcbfont", PCB_HID_FSD_READ, NULL);
+			default_file, ".font", flt, "pcbfont", RND_HID_FSD_READ, NULL);
 		if (fname == NULL)
 			return 0; /* cancel */
 		if (default_file != NULL) {
@@ -150,7 +150,7 @@ fgw_error_t pcb_act_save_font_to(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect(pcb_gui, "Save PCB font file...",
 																"Picks a PCB font file to save.\n",
-																default_file, ".font", NULL, "pcbfont", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
+																default_file, ".font", NULL, "pcbfont", RND_HID_FSD_MAY_NOT_EXIST, NULL);
 		if (fname == NULL)
 			RND_ACT_FAIL(save_font_to);
 		if (default_file != NULL) {

@@ -83,7 +83,7 @@ typedef struct rdialog_ctx_s {
 	PCB_DAD_DECL_NOINIT(dlg)
 } rdialog_ctx_t;
 
-static void rdialog_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void rdialog_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	rdialog_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);

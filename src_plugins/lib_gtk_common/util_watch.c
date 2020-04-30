@@ -49,13 +49,13 @@ static gboolean ghid_watch(GIOChannel *source, GIOCondition condition, gpointer 
 	rnd_bool res;
 
 	if (condition & G_IO_IN)
-		pcb_condition |= PCB_WATCH_READABLE;
+		pcb_condition |= RND_WATCH_READABLE;
 	if (condition & G_IO_OUT)
-		pcb_condition |= PCB_WATCH_WRITABLE;
+		pcb_condition |= RND_WATCH_WRITABLE;
 	if (condition & G_IO_ERR)
-		pcb_condition |= PCB_WATCH_ERROR;
+		pcb_condition |= RND_WATCH_ERROR;
 	if (condition & G_IO_HUP)
-		pcb_condition |= PCB_WATCH_HANGUP;
+		pcb_condition |= RND_WATCH_HANGUP;
 
 	x.ptr = (void *)watch;
 	res = watch->func(x, watch->fd, pcb_condition, watch->user_data);
@@ -73,13 +73,13 @@ rnd_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,
 	rnd_hidval_t ret;
 	unsigned int glib_condition = 0;
 
-	if (condition & PCB_WATCH_READABLE)
+	if (condition & RND_WATCH_READABLE)
 		glib_condition |= G_IO_IN;
-	if (condition & PCB_WATCH_WRITABLE)
+	if (condition & RND_WATCH_WRITABLE)
 		glib_condition |= G_IO_OUT;
-	if (condition & PCB_WATCH_ERROR)
+	if (condition & RND_WATCH_ERROR)
 		glib_condition |= G_IO_ERR;
-	if (condition & PCB_WATCH_HANGUP)
+	if (condition & RND_WATCH_HANGUP)
 		glib_condition |= G_IO_HUP;
 
 	watch->func = func;

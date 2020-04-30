@@ -129,7 +129,7 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 	return 0;
 }
 
-static void pstklib_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void pstklib_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 

@@ -61,7 +61,7 @@ typedef struct{
 
 foo_ctx_t foo_ctx;
 
-static void foo_close_cb(void *caller_data, pcb_hid_attr_ev_t ev) <<<- rename this
+static void foo_close_cb(void *caller_data, rnd_hid_attr_ev_t ev) <<<- rename this
 {
 	foo_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);

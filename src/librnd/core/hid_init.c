@@ -66,7 +66,7 @@ char *pcbhl_conf_lib_dir = "/usr/lib/librnd";
 
 static const char *flt_any[] = {"*", "*.*", NULL};
 
-const pcb_hid_fsd_filter_t pcb_hid_fsd_filter_any[] = {
+const rnd_hid_fsd_filter_t rnd_hid_fsd_filter_any[] = {
 	{ "all", NULL, flt_any },
 	{ NULL, NULL, NULL }
 };

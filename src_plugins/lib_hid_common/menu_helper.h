@@ -35,7 +35,7 @@
    NOTE: unlike other cookies, this cookie is strdup()'d. 
    */
 typedef int (*pcb_create_menu_widget_t)(void *ctx, const char *path, const char *name, int is_main, lht_node_t *parent, lht_node_t *ins_after, lht_node_t *menu_item);
-int pcb_hid_cfg_create_menu(rnd_hid_cfg_t *hr, const char *path, const pcb_menu_prop_t *props, pcb_create_menu_widget_t cb, void *cb_ctx);
+int pcb_hid_cfg_create_menu(rnd_hid_cfg_t *hr, const char *path, const rnd_menu_prop_t *props, pcb_create_menu_widget_t cb, void *cb_ctx);
 
 /* Looks up an integer (usually boolean) value by conf path or by running
    an action (if name has a parenthesis). When an action is run, it has 0

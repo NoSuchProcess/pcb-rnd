@@ -1,6 +1,6 @@
 order_ctx_t order_ctx;
 
-static void order_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void order_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	order_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);

@@ -59,7 +59,7 @@ typedef struct {
 	GtkWidget *dialog;
 	int close_cb_called;
 	rnd_hid_attr_val_t property[RND_HATP_max];
-	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
+	void (*close_cb)(void *caller_data, rnd_hid_attr_ev_t ev);
 	char *id;
 	gulong destroy_handler;
 	unsigned inhibit_valchg:1;
@@ -208,7 +208,7 @@ static GtkWidget *chk_btn_new(GtkWidget *box, gboolean active, void (*cb_func)(G
 }
 
 typedef struct {
-	void (*cb)(void *ctx, pcb_hid_attr_ev_t ev);
+	void (*cb)(void *ctx, rnd_hid_attr_ev_t ev);
 	void *ctx;
 	attr_dlg_t *attrdlg;
 } resp_ctx_t;
@@ -721,7 +721,7 @@ static void ghid_attr_dlg_free_gui(attr_dlg_t *ctx)
 	if (!ctx->close_cb_called) {
 		ctx->close_cb_called = 1;
 		if (ctx->close_cb != NULL) {
-			ctx->close_cb(ctx->caller_data, PCB_HID_ATTR_EV_CODECLOSE);
+			ctx->close_cb(ctx->caller_data, RND_HID_ATTR_EV_CODECLOSE);
 			return; /* ctx is invalid now */
 		}
 	}
@@ -770,7 +770,7 @@ static void ghid_initial_wstates(attr_dlg_t *ctx)
 			ghid_attr_dlg_widget_hide_(ctx, n, 1);
 }
 
-void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	GtkWidget *content_area;
 	GtkWidget *main_vbox;

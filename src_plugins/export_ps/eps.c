@@ -45,7 +45,7 @@ static int lastcolor = -1;
 static int print_group[PCB_MAX_LAYERGRP];
 static int print_layer[PCB_MAX_LAYER];
 static int fast_erase = -1;
-static pcb_composite_op_t drawing_mode;
+static rnd_composite_op_t drawing_mode;
 static long eps_drawn_objs;
 
 static rnd_export_opt_t eps_attribute_list[] = {
@@ -443,22 +443,22 @@ static void eps_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void eps_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void eps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	if (direct)
 		return;
 	drawing_mode = op;
 	switch(op) {
-		case PCB_HID_COMP_RESET:
+		case RND_HID_COMP_RESET:
 			fprintf(f, "gsave\n");
 			break;
 
-		case PCB_HID_COMP_POSITIVE:
-		case PCB_HID_COMP_POSITIVE_XOR:
-		case PCB_HID_COMP_NEGATIVE:
+		case RND_HID_COMP_POSITIVE:
+		case RND_HID_COMP_POSITIVE_XOR:
+		case RND_HID_COMP_NEGATIVE:
 			break;
 
-		case PCB_HID_COMP_FLUSH:
+		case RND_HID_COMP_FLUSH:
 			fprintf(f, "grestore\n");
 			lastcolor = -1;
 			break;
@@ -468,7 +468,7 @@ static void eps_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool
 
 static void eps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
-	if (drawing_mode == PCB_HID_COMP_NEGATIVE) {
+	if (drawing_mode == RND_HID_COMP_NEGATIVE) {
 		gc->color = 0xffffff;
 		gc->erase = 1;
 		return;

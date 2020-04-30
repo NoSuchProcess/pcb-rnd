@@ -61,7 +61,7 @@ static fgw_error_t pcb_act_CreateMenu(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, CreateMenu, ;);
 
 	if (argc > 1) {
-		pcb_menu_prop_t props;
+		rnd_menu_prop_t props;
 
 		memset(&props, 0, sizeof(props));
 		props.action = (argc > 2) ? argv[2].val.str : NULL;

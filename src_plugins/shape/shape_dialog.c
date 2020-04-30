@@ -24,7 +24,7 @@ typedef struct {
 /* Last open non-modal shape dialog */
 static ctx_t *shape_active = NULL;
 
-static void shp_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void shp_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	ctx_t *shp = caller_data;
 

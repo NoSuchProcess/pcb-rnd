@@ -37,7 +37,7 @@ typedef struct{
 
 rstdlg_ctx_t rstdlg_ctx;
 
-static void rstdlg_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void rstdlg_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	rstdlg_ctx_t *ctx = caller_data;
 

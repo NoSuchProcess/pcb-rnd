@@ -97,7 +97,7 @@ static int group_open = 0;
 static int opacity = 100, drawing_mask, drawing_hole, photo_mode, flip;
 
 static gds_t sbright, sdark, snormal, sclip;
-static pcb_composite_op_t drawing_mode;
+static rnd_composite_op_t drawing_mode;
 static int comp_cnt;
 static long svg_drawn_objs;
 
@@ -486,7 +486,7 @@ static void svg_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void svg_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void svg_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	drawing_mode = op;
 
@@ -494,7 +494,7 @@ static void svg_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool
 		return;
 
 	switch(op) {
-		case PCB_HID_COMP_RESET:
+		case RND_HID_COMP_RESET:
 			comp_cnt++;
 			gds_init(&sclip);
 			pcb_append_printf(&snormal, "<!-- Composite: reset -->\n");
@@ -503,12 +503,12 @@ static void svg_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool
 			pcb_append_printf(&sclip, "<mask id=\"comp_clip_%d\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"%mm\" height=\"%mm\">\n", comp_cnt, PCB->hidlib.size_x, PCB->hidlib.size_y);
 			break;
 
-		case PCB_HID_COMP_POSITIVE:
-		case PCB_HID_COMP_POSITIVE_XOR:
-		case PCB_HID_COMP_NEGATIVE:
+		case RND_HID_COMP_POSITIVE:
+		case RND_HID_COMP_POSITIVE_XOR:
+		case RND_HID_COMP_NEGATIVE:
 			break;
 
-		case PCB_HID_COMP_FLUSH:
+		case RND_HID_COMP_FLUSH:
 			pcb_append_printf(&snormal, "</g>\n");
 			pcb_append_printf(&sclip, "</mask>\n");
 			gds_append_str(&snormal, sclip.array);
@@ -527,9 +527,9 @@ static const char *svg_color(rnd_hid_gc_t gc)
 
 static const char *svg_clip_color(rnd_hid_gc_t gc)
 {
-	if ((drawing_mode == PCB_HID_COMP_POSITIVE) || (drawing_mode == PCB_HID_COMP_POSITIVE_XOR))
+	if ((drawing_mode == RND_HID_COMP_POSITIVE) || (drawing_mode == RND_HID_COMP_POSITIVE_XOR))
 		return "#FFFFFF";
-	if (drawing_mode == PCB_HID_COMP_NEGATIVE)
+	if (drawing_mode == RND_HID_COMP_NEGATIVE)
 		return "#000000";
 	return NULL;
 }

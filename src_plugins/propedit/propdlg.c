@@ -52,7 +52,7 @@ gdl_list_t propdlgs;
 
 static void prop_refresh(propdlg_t *ctx);
 
-static void propdlgclose_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void propdlgclose_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	propdlg_t *ctx = caller_data;
 	gdl_remove(&propdlgs, ctx, link);

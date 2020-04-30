@@ -72,13 +72,13 @@ typedef struct {
 	void *hid_ctx;
 	GtkWidget *frame;
 	pcb_gtk_topwin_t *tw;
-	pcb_hid_dock_t where;
+	rnd_hid_dock_t where;
 } docked_t;
 
 GdkColor clr_orange = {0,  0xffff, 0xaaaa, 0x3333};
 
-static GdkColor *pcb_dock_color[PCB_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
-int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
+static GdkColor *pcb_dock_color[RND_HID_DOCK_max] = {NULL, NULL, &clr_orange, NULL, NULL, NULL}; /* force change color when docked */
+int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
 	GtkWidget *hvbox;
@@ -87,12 +87,12 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, pc
 	docked = calloc(sizeof(docked_t), 1);
 	docked->where = where;
 
-	if (pcb_dock_is_vert[where])
+	if (rnd_dock_is_vert[where])
 		hvbox = gtkc_vbox_new(FALSE, 0);
 	else
 		hvbox = gtkc_hbox_new(TRUE, 0);
 
-	if (pcb_dock_has_frame[where]) {
+	if (rnd_dock_has_frame[where]) {
 		docked->frame = gtk_frame_new(id);
 		gtk_container_add(GTK_CONTAINER(docked->frame), hvbox);
 	}
@@ -119,7 +119,7 @@ int pcb_gtk_tw_dock_enter(pcb_gtk_topwin_t *tw, rnd_hid_dad_subdialog_t *sub, pc
 		pcb_gtk_dad_fixcolor(sub->dlg_hid_ctx, pcb_dock_color[where]);
 
 	/* workaround: the left dock is in a pane that should be adjusted to the default x size of newcomers if narrower */
-	if ((where == PCB_HID_DOCK_LEFT) && (sub->dlg_defx > 0)) {
+	if ((where == RND_HID_DOCK_LEFT) && (sub->dlg_defx > 0)) {
 		int curr = gtk_paned_get_position(GTK_PANED(tw->hpaned_middle));
 		if (curr < sub->dlg_defx)
 			gtk_paned_set_position(GTK_PANED(tw->hpaned_middle), sub->dlg_defx);
@@ -363,9 +363,9 @@ void ghid_topwin_hide_status(void *ctx, int show)
 	pcb_gtk_topwin_t *tw = ctx;
 
 	if (show)
-		gtk_widget_show(tw->dockbox[PCB_HID_DOCK_BOTTOM]);
+		gtk_widget_show(tw->dockbox[RND_HID_DOCK_BOTTOM]);
 	else
-		gtk_widget_hide(tw->dockbox[PCB_HID_DOCK_BOTTOM]);
+		gtk_widget_hide(tw->dockbox[RND_HID_DOCK_BOTTOM]);
 }
 
 /* Create the top_window contents.  The config settings should be loaded
@@ -401,14 +401,14 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	tw->menu.menu_bar = ghid_load_menus(&tw->menu, ghidgui->hidlib, &tw->ghid_cfg);
 	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->menu.menu_bar, FALSE, FALSE, 0);
 
-	tw->dockbox[PCB_HID_DOCK_TOP_LEFT] = gtkc_hbox_new(TRUE, 2);
-	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->dockbox[PCB_HID_DOCK_TOP_LEFT], FALSE, FALSE, 0);
+	tw->dockbox[RND_HID_DOCK_TOP_LEFT] = gtkc_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(tw->menubar_toolbar_vbox), tw->dockbox[RND_HID_DOCK_TOP_LEFT], FALSE, FALSE, 0);
 
 	tw->position_hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(tw->top_hbox), tw->position_hbox, FALSE, FALSE, 0);
 
-	tw->dockbox[PCB_HID_DOCK_TOP_RIGHT] = gtkc_vbox_new(FALSE, 8);
-	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->position_hbox)), tw->dockbox[PCB_HID_DOCK_TOP_RIGHT], FALSE, FALSE, 0);
+	tw->dockbox[RND_HID_DOCK_TOP_RIGHT] = gtkc_vbox_new(FALSE, 8);
+	gtk_box_pack_end(GTK_BOX(GTK_BOX(tw->position_hbox)), tw->dockbox[RND_HID_DOCK_TOP_RIGHT], FALSE, FALSE, 0);
 
 	tw->hpaned_middle = gtkc_hpaned_new();
 	gtk_box_pack_start(GTK_BOX(vbox_main), tw->hpaned_middle, TRUE, TRUE, 0);
@@ -421,8 +421,8 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	tw->left_toolbar = gtkc_vbox_new(FALSE, 0);
 	gtk_paned_pack1(GTK_PANED(tw->hpaned_middle), tw->left_toolbar, FALSE, FALSE);
 
-	tw->dockbox[PCB_HID_DOCK_LEFT] = gtkc_vbox_new(FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dockbox[PCB_HID_DOCK_LEFT], TRUE, TRUE, 0);
+	tw->dockbox[RND_HID_DOCK_LEFT] = gtkc_vbox_new(FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(GTK_BOX(tw->left_toolbar)), tw->dockbox[RND_HID_DOCK_LEFT], TRUE, TRUE, 0);
 
 	/* -- main content */
 	tw->vbox_middle = gtkc_vbox_new(FALSE, 0);
@@ -434,16 +434,16 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	/* info bar: hboxi->event_box->hbox2:
 	    hboxi is for the layout (horizontal fill)
 	    the event box is neeed for background color
-      vbox is tw->dockbox[PCB_HID_DOCK_TOP_INFOBAR] where DAD widgets are packed */
+      vbox is tw->dockbox[RND_HID_DOCK_TOP_INFOBAR] where DAD widgets are packed */
 	hboxi = gtkc_hbox_new(TRUE, 0);
-	tw->dockbox[PCB_HID_DOCK_TOP_INFOBAR] = gtkc_vbox_new(TRUE, 0);
+	tw->dockbox[RND_HID_DOCK_TOP_INFOBAR] = gtkc_vbox_new(TRUE, 0);
 	evb = gtk_event_box_new();
-	gtk_container_add(GTK_CONTAINER(evb), tw->dockbox[PCB_HID_DOCK_TOP_INFOBAR]);
+	gtk_container_add(GTK_CONTAINER(evb), tw->dockbox[RND_HID_DOCK_TOP_INFOBAR]);
 	gtk_box_pack_start(GTK_BOX(hboxi), evb, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hboxi, FALSE, FALSE, 0);
 
-	if (pcb_dock_color[PCB_HID_DOCK_TOP_INFOBAR] != NULL)
-		gtk_widget_modify_bg(evb, GTK_STATE_NORMAL, pcb_dock_color[PCB_HID_DOCK_TOP_INFOBAR]);
+	if (pcb_dock_color[RND_HID_DOCK_TOP_INFOBAR] != NULL)
+		gtk_widget_modify_bg(evb, GTK_STATE_NORMAL, pcb_dock_color[RND_HID_DOCK_TOP_INFOBAR]);
 
 	hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), hbox, TRUE, TRUE, 0);
@@ -490,8 +490,8 @@ static void ghid_build_pcb_top_window(pcb_gtk_t *ctx, pcb_gtk_topwin_t *tw)
 	tw->bottom_hbox = gtkc_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(tw->vbox_middle), tw->bottom_hbox, FALSE, FALSE, 0);
 
-	tw->dockbox[PCB_HID_DOCK_BOTTOM] = gtkc_hbox_new(TRUE, 2);
-	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->dockbox[PCB_HID_DOCK_BOTTOM], FALSE, FALSE, 0);
+	tw->dockbox[RND_HID_DOCK_BOTTOM] = gtkc_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->dockbox[RND_HID_DOCK_BOTTOM], FALSE, FALSE, 0);
 
 	tw->cmd.prompt_label = gtk_label_new("action:");
 	gtk_box_pack_start(GTK_BOX(tw->bottom_hbox), tw->cmd.prompt_label, FALSE, FALSE, 0);

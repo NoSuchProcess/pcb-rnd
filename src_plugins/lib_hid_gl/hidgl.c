@@ -49,7 +49,7 @@ void hidgl_init(void)
 	stencilgl_init();
 }
 
-static pcb_composite_op_t composite_op = PCB_HID_COMP_RESET;
+static rnd_composite_op_t composite_op = RND_HID_COMP_RESET;
 static rnd_bool direct_mode = pcb_true;
 static int comp_stencil_bit = 0;
 
@@ -135,14 +135,14 @@ static inline void mode_flush(rnd_bool direct, rnd_bool xor_mode, const rnd_rnd_
 	comp_stencil_bit = 0;
 }
 
-pcb_composite_op_t hidgl_get_drawing_mode()
+rnd_composite_op_t hidgl_get_drawing_mode()
 {
 	return composite_op;
 }
 
-void hidgl_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+void hidgl_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
-	rnd_bool xor_mode = (composite_op == PCB_HID_COMP_POSITIVE_XOR ? pcb_true : pcb_false);
+	rnd_bool xor_mode = (composite_op == RND_HID_COMP_POSITIVE_XOR ? pcb_true : pcb_false);
 
 	/* If the previous mode was NEGATIVE then all of the primitives drawn
 	 * in that mode were used only for creating the stencil and will not be 
@@ -150,7 +150,7 @@ void hidgl_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool dire
 	 * discarded by rewinding the primitive buffer to the marker that was
 	 * set when entering NEGATIVE mode.
 	 */
-	if (composite_op == PCB_HID_COMP_NEGATIVE) {
+	if (composite_op == RND_HID_COMP_NEGATIVE) {
 		drawgl_flush();
 		drawgl_rewind_to_marker();
 	}
@@ -159,19 +159,19 @@ void hidgl_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool dire
 	direct_mode = direct;
 
 	switch (op) {
-		case PCB_HID_COMP_RESET:
+		case RND_HID_COMP_RESET:
 			mode_reset(direct, screen);
 			break;
-		case PCB_HID_COMP_POSITIVE_XOR:
+		case RND_HID_COMP_POSITIVE_XOR:
 			mode_positive_xor(direct, screen);
 			break;
-		case PCB_HID_COMP_POSITIVE:
+		case RND_HID_COMP_POSITIVE:
 			mode_positive(direct, screen);
 			break;
-		case PCB_HID_COMP_NEGATIVE:
+		case RND_HID_COMP_NEGATIVE:
 			mode_negative(direct, screen);
 			break;
-		case PCB_HID_COMP_FLUSH:
+		case RND_HID_COMP_FLUSH:
 			mode_flush(direct, xor_mode, screen);
 			break;
 		default:
@@ -481,7 +481,7 @@ void hidgl_fill_circle(rnd_coord_t vx, rnd_coord_t vy, rnd_coord_t vr, double sc
 	int slices;
 	int i;
 
-	assert((composite_op == PCB_HID_COMP_POSITIVE) || (composite_op == PCB_HID_COMP_POSITIVE_XOR) || (composite_op == PCB_HID_COMP_NEGATIVE));
+	assert((composite_op == RND_HID_COMP_POSITIVE) || (composite_op == RND_HID_COMP_POSITIVE_XOR) || (composite_op == RND_HID_COMP_NEGATIVE));
 
 	slices = calc_slices(vr / scale, 2 * M_PI);
 

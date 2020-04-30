@@ -55,7 +55,7 @@ fontsel_ctx_t fontsel_brd;
 
 static const char *fontsel_cookie = "dlg_fontsel";
 
-static void fontsel_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void fontsel_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	fontsel_ctx_t *ctx = caller_data;
 

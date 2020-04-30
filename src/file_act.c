@@ -301,7 +301,7 @@ fgw_error_t pcb_act_SaveTo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 /* Run the save dialog, either the full version from the dialogs plugin
 (if available) or a simplified version. Return 0 on success and fill in
 name_out and fmt_out. */
-static int save_fmt_dialog(const char *title, const char *descr, char **default_file, const char *history_tag, pcb_hid_fsd_flags_t flags, char **name_out, const char **fmt_out)
+static int save_fmt_dialog(const char *title, const char *descr, char **default_file, const char *history_tag, rnd_hid_fsd_flags_t flags, char **name_out, const char **fmt_out)
 {
 	const fgw_func_t *f = rnd_act_lookup("save");
 
@@ -373,7 +373,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (fn == NULL) {
 			int sr = save_fmt_dialog("Save footprint lib to file ...", "Choose a file to save all subcircuits to.\n",
-				&default_file, "save_lib_file", PCB_HID_FSD_MAY_NOT_EXIST, &name, &fmt);
+				&default_file, "save_lib_file", RND_HID_FSD_MAY_NOT_EXIST, &name, &fmt);
 			if (sr != 0) {
 				RND_ACT_IRES(-1);
 				return 0;
@@ -405,7 +405,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		if (fn == NULL) {
 			int sr = save_fmt_dialog("Save footprint lib to directory ...", "Choose a file name pattern to save all subcircuits to.\n",
-				&default_file, "save_lib_dir", PCB_HID_FSD_IS_TEMPLATE, &name, &fmt);
+				&default_file, "save_lib_dir", RND_HID_FSD_IS_TEMPLATE, &name, &fmt);
 			if (sr != 0) {
 				RND_ACT_IRES(-1);
 				return 0;

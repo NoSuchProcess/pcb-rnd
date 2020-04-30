@@ -89,7 +89,7 @@ fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv
 						PCB_DAD_CHANGE_CB(sub.dlg, ifb_file_chg_close_cb);
 				PCB_DAD_END(sub.dlg);
 			PCB_DAD_END(sub.dlg);
-			if (pcb_hid_dock_enter(&sub, PCB_HID_DOCK_TOP_INFOBAR, "file_changed") != 0) {
+			if (pcb_hid_dock_enter(&sub, RND_HID_DOCK_TOP_INFOBAR, "file_changed") != 0) {
 				RND_ACT_IRES(1);
 				return 0;
 			}

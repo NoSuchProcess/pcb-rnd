@@ -390,7 +390,7 @@ static pcb_subc_t *pcb_dimension_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_su
 	return subc;
 }
 
-static void pcb_dimension_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void pcb_dimension_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	pcb_subc_t *subc = caller_data;
 	dimension *dim = subc->extobj_data;

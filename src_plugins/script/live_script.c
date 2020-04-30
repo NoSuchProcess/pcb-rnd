@@ -75,7 +75,7 @@ static void lvs_free_langs(live_script_t *lvs)
 }
 
 
-static void lvs_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void lvs_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	live_script_t *lvs = caller_data;
 
@@ -359,7 +359,7 @@ static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 		const char *default_ext = live_default_ext(lvs);
 		fn = pcb_gui->fileselect(pcb_gui,
 			"Load live script", "Load the a live script from file",
-			lvs->fn, default_ext, pcb_hid_fsd_filter_any, "live_script", PCB_HID_FSD_READ, NULL);
+			lvs->fn, default_ext, rnd_hid_fsd_filter_any, "live_script", RND_HID_FSD_READ, NULL);
 		if (fn == NULL)
 			return 0;
 	}
@@ -405,7 +405,7 @@ static int live_save(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 
 		fn = pcb_gui->fileselect(pcb_gui,
 			"Save live script", "Save the source of a live script",
-			lvs->fn, default_ext, pcb_hid_fsd_filter_any, "live_script", 0, NULL);
+			lvs->fn, default_ext, rnd_hid_fsd_filter_any, "live_script", 0, NULL);
 		if (fn == NULL)
 			return 0;
 	}
@@ -502,7 +502,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static void lvs_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
 	char *end = path + strlen(path);
-	pcb_menu_prop_t props;
+	rnd_menu_prop_t props;
 	char act[256];
 
 	memset(&props, 0,sizeof(props));
@@ -537,7 +537,7 @@ void pcb_live_script_uninit(void)
 	htsp_entry_t *e;
 	for(e = htsp_first(&pcb_live_scripts); e != NULL; e = htsp_next(&pcb_live_scripts, e)) {
 		live_script_t *lvs = e->value;
-		lvs_close_cb(lvs, PCB_HID_ATTR_EV_CODECLOSE);
+		lvs_close_cb(lvs, RND_HID_ATTR_EV_CODECLOSE);
 	}
 	htsp_uninit(&pcb_live_scripts);
 	if ((pcb_gui != NULL) && (pcb_gui->remove_menu != NULL))

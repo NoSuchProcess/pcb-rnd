@@ -361,7 +361,7 @@ static void ghid_gdk_draw_bg_image(rnd_hidlib_t *hidlib)
 }
 
 
-static pcb_composite_op_t curr_drawing_mode;
+static rnd_composite_op_t curr_drawing_mode;
 
 static void ghid_sketch_setup(render_priv_t *priv)
 {
@@ -374,7 +374,7 @@ static void ghid_sketch_setup(render_priv_t *priv)
 	priv->out_clip = priv->sketch_clip;
 }
 
-static void ghid_gdk_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void ghid_gdk_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 
@@ -388,12 +388,12 @@ static void ghid_gdk_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd
 	if (direct) {
 		priv->out_pixel = priv->base_pixel;
 		priv->out_clip = NULL;
-		curr_drawing_mode = PCB_HID_COMP_POSITIVE;
+		curr_drawing_mode = RND_HID_COMP_POSITIVE;
 		return;
 	}
 
 	switch(op) {
-		case PCB_HID_COMP_RESET:
+		case RND_HID_COMP_RESET:
 			ghid_sketch_setup(priv);
 
 		/* clear the canvas */
@@ -405,16 +405,16 @@ static void ghid_gdk_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd
 			gdk_draw_rectangle(priv->out_clip, priv->clear_gc, TRUE, 0, 0, ghidgui->port.view.canvas_width, ghidgui->port.view.canvas_height);
 			break;
 
-		case PCB_HID_COMP_POSITIVE:
-		case PCB_HID_COMP_POSITIVE_XOR:
+		case RND_HID_COMP_POSITIVE:
+		case RND_HID_COMP_POSITIVE_XOR:
 			priv->clip_color.pixel = 1;
 			break;
 
-		case PCB_HID_COMP_NEGATIVE:
+		case RND_HID_COMP_NEGATIVE:
 			priv->clip_color.pixel = 0;
 			break;
 
-		case PCB_HID_COMP_FLUSH:
+		case RND_HID_COMP_FLUSH:
 			if (priv->copy_gc == NULL)
 				priv->copy_gc = gdk_gc_new(priv->out_pixel);
 			gdk_gc_set_clip_mask(priv->copy_gc, priv->sketch_clip);
@@ -428,7 +428,7 @@ static void ghid_gdk_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd
 	curr_drawing_mode = op;
 }
 
-static void ghid_gdk_render_burst(rnd_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen)
+static void ghid_gdk_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen)
 {
 	pcb_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }
@@ -595,7 +595,7 @@ static int use_gc(rnd_hid_gc_t gc, int need_pen)
 	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.top_window);
 	int need_setup = 0;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == RND_HID_COMP_POSITIVE) || (curr_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == RND_HID_COMP_NEGATIVE));
 
 	if (gc->me_pointer != &gtk2_gdk_hid) {
 		fprintf(stderr, "Fatal: GC from another HID passed to GTK HID\n");
@@ -637,7 +637,7 @@ static void ghid_gdk_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	double dx1, dy1, dx2, dy2;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == RND_HID_COMP_POSITIVE) || (curr_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == RND_HID_COMP_NEGATIVE));
 
 	dx1 = Vx((double) x1);
 	dy1 = Vy((double) y1);
@@ -672,7 +672,7 @@ static void ghid_gdk_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, r
 	double w, h, radius;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == RND_HID_COMP_POSITIVE) || (curr_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == RND_HID_COMP_NEGATIVE));
 
 	w = ghidgui->port.view.canvas_width * ghidgui->port.view.coord_per_px;
 	h = ghidgui->port.view.canvas_height * ghidgui->port.view.coord_per_px;
@@ -722,7 +722,7 @@ static void ghid_gdk_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	gint w, h, lw, sx1, sy1;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == RND_HID_COMP_POSITIVE) || (curr_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == RND_HID_COMP_NEGATIVE));
 
 	lw = gc->width;
 	w = ghidgui->port.view.canvas_width * ghidgui->port.view.coord_per_px;
@@ -775,7 +775,7 @@ static void ghid_gdk_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy
 	gint w, h, vr;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == RND_HID_COMP_POSITIVE) || (curr_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == RND_HID_COMP_NEGATIVE));
 
 	w = ghidgui->port.view.canvas_width * ghidgui->port.view.coord_per_px;
 	h = ghidgui->port.view.canvas_height * ghidgui->port.view.coord_per_px;
@@ -859,7 +859,7 @@ static void ghid_gdk_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 	render_priv_t *priv = ghidgui->port.render_priv;
 	USE_GC_NOPEN(gc);
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == RND_HID_COMP_POSITIVE) || (curr_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == RND_HID_COMP_NEGATIVE));
 
 	/* optimization: axis aligned rectangles can be drawn cheaper than polygons and they are common because of smd pads */
 	if (poly_is_aligned_rect(&b, n_coords, x, y)) {
@@ -918,7 +918,7 @@ static void ghid_gdk_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_
 	rnd_coord_t lsx, lsy, lastx = RND_MAX_COORD, lasty = RND_MAX_COORD, mindist = ghidgui->port.view.coord_per_px * 2;
 	USE_GC_NOPEN(gc);
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == RND_HID_COMP_POSITIVE) || (curr_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == RND_HID_COMP_NEGATIVE));
 
 	/* optimization: axis aligned rectangles can be drawn cheaper than polygons and they are common because of smd pads */
 	if (poly_is_aligned_rect(&b, n_coords, x, y)) {
@@ -971,7 +971,7 @@ static void ghid_gdk_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	gint w, h, lw, xx, yy, sx1, sy1;
 	render_priv_t *priv = ghidgui->port.render_priv;
 
-	assert((curr_drawing_mode == PCB_HID_COMP_POSITIVE) || (curr_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == PCB_HID_COMP_NEGATIVE));
+	assert((curr_drawing_mode == RND_HID_COMP_POSITIVE) || (curr_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (curr_drawing_mode == RND_HID_COMP_NEGATIVE));
 
 	lw = gc->width;
 	w = ghidgui->port.view.canvas_width * ghidgui->port.view.coord_per_px;

@@ -74,7 +74,7 @@ static void isch_flush_timer(void)
 	}
 }
 
-static void isch_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void isch_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	int n;
 	isch_ctx_t *ctx = caller_data;
@@ -206,7 +206,7 @@ static void isch_browse_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	if (*cwd == '\0')
 		rnd_get_wd(cwd);
 
-	name = pcb_gui->fileselect(pcb_gui, "Import schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
+	name = pcb_gui->fileselect(pcb_gui, "Import schematics", "Import netlist and footprints from schematics", cwd, NULL, NULL, "schematics", RND_HID_FSD_MAY_NOT_EXIST, NULL);
 	if (name == NULL)
 		return;
 

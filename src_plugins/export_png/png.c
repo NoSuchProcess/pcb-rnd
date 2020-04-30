@@ -872,15 +872,15 @@ static void png_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static pcb_composite_op_t drawing_mode;
-static void png_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static rnd_composite_op_t drawing_mode;
+static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	static gdImagePtr dst_im;
 	drawing_mode = op;
 	if ((direct) || (is_photo_drill)) /* photo drill is a special layer, no copositing on that */
 		return;
 	switch(op) {
-		case PCB_HID_COMP_RESET:
+		case RND_HID_COMP_RESET:
 
 			/* the main pixel buffer; drawn with color */
 			if (comp_im == NULL) {
@@ -909,15 +909,15 @@ static void png_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool
 			gdImageFilledRectangle(erase_im, 0, 0, gdImageSX(erase_im), gdImageSY(erase_im), black->c);
 			break;
 
-		case PCB_HID_COMP_POSITIVE:
-		case PCB_HID_COMP_POSITIVE_XOR:
+		case RND_HID_COMP_POSITIVE:
+		case RND_HID_COMP_POSITIVE_XOR:
 			im = comp_im;
 			break;
-		case PCB_HID_COMP_NEGATIVE:
+		case RND_HID_COMP_NEGATIVE:
 			im = erase_im;
 			break;
 
-		case PCB_HID_COMP_FLUSH:
+		case RND_HID_COMP_FLUSH:
 		{
 			int x, y, c, e;
 			im = dst_im;

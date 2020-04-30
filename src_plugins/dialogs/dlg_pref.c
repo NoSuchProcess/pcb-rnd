@@ -211,7 +211,7 @@ static void pref_role_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	ctx->role = roles[attr->val.lng];
 }
 
-static void pref_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void pref_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	long n;
 	pref_ctx_t *ctx = caller_data;

@@ -956,7 +956,7 @@ static void mesh_layer_reset()
 	mesh.ui_layer_z = pcb_uilayer_alloc(mesh_ui_cookie, "mesh z", &clr);
 }
 
-static void ia_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void ia_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	PCB_DAD_FREE(ia.dlg);
 	memset(&ia, 0, sizeof(ia));
@@ -971,7 +971,7 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 
 	fname = pcb_gui->fileselect(pcb_gui, "Save mesh settings...",
 															"Picks file for saving mesh settings.\n",
-															default_file, ".lht", NULL, "mesh", PCB_HID_FSD_MAY_NOT_EXIST, NULL);
+															default_file, ".lht", NULL, "mesh", RND_HID_FSD_MAY_NOT_EXIST, NULL);
 	if (fname == NULL)
 		return; /* cancel */
 
@@ -1001,7 +1001,7 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 
 	fname = pcb_gui->fileselect(pcb_gui, "Load mesh settings...",
 															"Picks file for loading mesh settings from.\n",
-															default_file, ".lht", NULL, "mesh", PCB_HID_FSD_READ, NULL);
+															default_file, ".lht", NULL, "mesh", RND_HID_FSD_READ, NULL);
 	if (fname == NULL)
 		return; /* cancel */
 

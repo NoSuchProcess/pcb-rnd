@@ -102,7 +102,7 @@ static void dad_destroy(dad_t *dad)
 	free(dad);
 }
 
-static void dad_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void dad_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	dad_t *dad = caller_data;
 	PCB_DAD_FREE(dad->dlg);

@@ -68,7 +68,7 @@ struct view_ctx_s {
 
 view_ctx_t view_ctx;
 
-static void view_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void view_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	view_ctx_t *ctx = caller_data;
 
@@ -382,7 +382,7 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 		}
 	}
 	pcb_view_save_list_end(&tmp, NULL);
-	pcb_gui->clip_set(pcb_gui, PCB_HID_CLIPFMT_TEXT, tmp.array, tmp.used+1);
+	pcb_gui->clip_set(pcb_gui, RND_HID_CLIPFMT_TEXT, tmp.array, tmp.used+1);
 	gds_uninit(&tmp);
 	if (cut)
 		view2dlg_list(ctx);
@@ -391,7 +391,7 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 static void view_paste_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	view_ctx_t *ctx = caller_data;
-	pcb_hid_clipfmt_t cformat;
+	rnd_hid_clipfmt_t cformat;
 	void *cdata, *load_ctx;
 	size_t clen;
 	pcb_view_t *v, *vt = NULL;
@@ -411,7 +411,7 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	if (pcb_gui->clip_get(pcb_gui, &cformat, &cdata, &clen) != 0)
 		return;
 
-	if (cformat != PCB_HID_CLIPFMT_TEXT) {
+	if (cformat != RND_HID_CLIPFMT_TEXT) {
 		pcb_gui->clip_free(pcb_gui, cformat, cdata, clen);
 		return;
 	}
@@ -470,7 +470,7 @@ static void view_load_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	FILE *f;
 	void *load_ctx;
 
-	fn = pcb_gui->fileselect(pcb_gui, "Load view list", "Load all views from the list", "view.lht", "lht", NULL, "view", PCB_HID_FSD_READ, NULL);
+	fn = pcb_gui->fileselect(pcb_gui, "Load view list", "Load all views from the list", "view.lht", "lht", NULL, "view", RND_HID_FSD_READ, NULL);
 	if (fn == NULL)
 		return;
 

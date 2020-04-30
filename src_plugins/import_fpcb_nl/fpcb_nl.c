@@ -173,7 +173,7 @@ fgw_error_t pcb_act_LoadFpcbnlFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname || !*fname) {
 		fname = pcb_gui->fileselect(pcb_gui,
 			"Load freepcb netlist...", "Picks a freepcb netlist file to load.\n",
-			default_file, ".net", NULL, "freepcb", PCB_HID_FSD_READ, NULL);
+			default_file, ".net", NULL, "freepcb", RND_HID_FSD_READ, NULL);
 		if (fname == NULL)
 			return 1;
 		if (default_file != NULL) {

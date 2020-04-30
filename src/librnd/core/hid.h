@@ -75,60 +75,60 @@ typedef struct {
 /* File Watch flags */
 /* Based upon those in dbus/dbus-connection.h */
 typedef enum {
-	PCB_WATCH_READABLE = 1 << 0,  /* As in POLLIN */
-	PCB_WATCH_WRITABLE = 1 << 1,  /* As in POLLOUT */
-	PCB_WATCH_ERROR = 1 << 2,     /* As in POLLERR */
-	PCB_WATCH_HANGUP = 1 << 3     /* As in POLLHUP */
-} pcb_watch_flags_t;
+	RND_WATCH_READABLE = 1 << 0,  /* As in POLLIN */
+	RND_WATCH_WRITABLE = 1 << 1,  /* As in POLLOUT */
+	RND_WATCH_ERROR = 1 << 2,     /* As in POLLERR */
+	RND_WATCH_HANGUP = 1 << 3     /* As in POLLHUP */
+} rnd_watch_flags_t;
 
-typedef enum pcb_composite_op_s {
-	PCB_HID_COMP_RESET,         /* reset (allocate and clear) the sketch canvas */
-	PCB_HID_COMP_POSITIVE,      /* draw subsequent objects in positive, with color, no XOR allowed */
-	PCB_HID_COMP_POSITIVE_XOR,  /* draw subsequent objects in positive, with color, XOR allowed */
-	PCB_HID_COMP_NEGATIVE,      /* draw subsequent objects in negative, ignore color */
-	PCB_HID_COMP_FLUSH          /* combine the sketch canvas onto the output buffer and discard the sketch canvas */
-} pcb_composite_op_t;
+typedef enum rnd_composite_op_s {
+	RND_HID_COMP_RESET,         /* reset (allocate and clear) the sketch canvas */
+	RND_HID_COMP_POSITIVE,      /* draw subsequent objects in positive, with color, no XOR allowed */
+	RND_HID_COMP_POSITIVE_XOR,  /* draw subsequent objects in positive, with color, XOR allowed */
+	RND_HID_COMP_NEGATIVE,      /* draw subsequent objects in negative, ignore color */
+	RND_HID_COMP_FLUSH          /* combine the sketch canvas onto the output buffer and discard the sketch canvas */
+} rnd_composite_op_t;
 
-typedef enum pcb_burst_op_s {
-	PCB_HID_BURST_START,
-	PCB_HID_BURST_END
-} pcb_burst_op_t;
+typedef enum rnd_burst_op_s {
+	RND_HID_BURST_START,
+	RND_HID_BURST_END
+} rnd_burst_op_t;
 
 typedef enum pcb_hid_attr_ev_e {
-	PCB_HID_ATTR_EV_WINCLOSE = 2, /* window closed (window manager close) */
-	PCB_HID_ATTR_EV_CODECLOSE     /* closed by the code, including standard close buttons */
-} pcb_hid_attr_ev_t;
+	RND_HID_ATTR_EV_WINCLOSE = 2, /* window closed (window manager close) */
+	RND_HID_ATTR_EV_CODECLOSE     /* closed by the code, including standard close buttons */
+} rnd_hid_attr_ev_t;
 
-typedef enum pcb_hid_fsd_flags_e {
+typedef enum rnd_hid_fsd_flags_e {
 	/* Prompts the user for a filename or directory name.  For GUI
 	   HID's this would mean a file select dialog box.  The 'flags'
 	   argument is the bitwise OR of the following values.  */
-	PCB_HID_FSD_READ = 1,
+	RND_HID_FSD_READ = 1,
 
 	/* The function calling hid->fileselect will deal with the case
 	   where the selected file already exists.  If not given, then the
 	   GUI will prompt with an "overwrite?" prompt.  Only used when
 	   writing.
 	 */
-	PCB_HID_FSD_MAY_NOT_EXIST = 2,
+	RND_HID_FSD_MAY_NOT_EXIST = 2,
 
 	/* The call is supposed to return a file template (for gerber
 	   output for example) instead of an actual file.  Only used when
 	   writing.
 	 */
-	PCB_HID_FSD_IS_TEMPLATE = 4
-} pcb_hid_fsd_flags_t;
+	RND_HID_FSD_IS_TEMPLATE = 4
+} rnd_hid_fsd_flags_t;
 
 typedef struct {
 	const char *name;
 	const char *mime;
 	const char **pat; /* NULL terminated array of file name patterns */
-} pcb_hid_fsd_filter_t;
+} rnd_hid_fsd_filter_t;
 
-extern const pcb_hid_fsd_filter_t pcb_hid_fsd_filter_any[];
+extern const rnd_hid_fsd_filter_t rnd_hid_fsd_filter_any[];
 
 /* Optional fields of a menu item; all non-NULL fields are strdup'd in the HID. */
-typedef struct pcb_menu_prop_s {
+typedef struct rnd_menu_prop_s {
 	const char *action;
 	const char *accel;
 	const char *tip;        /* tooltip */
@@ -137,25 +137,25 @@ typedef struct pcb_menu_prop_s {
 	const rnd_color_t *foreground;
 	const rnd_color_t *background;
 	const char *cookie;     /* used for cookie based removal */
-} pcb_menu_prop_t;
+} rnd_menu_prop_t;
 
-typedef enum pcb_hid_clipfmt_e {
-	PCB_HID_CLIPFMT_TEXT              /* plain text (c string with the \0 included) */
-} pcb_hid_clipfmt_t;
+typedef enum rnd_hid_clipfmt_e {
+	RND_HID_CLIPFMT_TEXT              /* plain text (c string with the \0 included) */
+} rnd_hid_clipfmt_t;
 
 typedef enum {
-	PCB_HID_DOCK_TOP_LEFT,       /*  hbox on the top, below the menubar */
-	PCB_HID_DOCK_TOP_RIGHT,      /*  hbox on the top, next to the menubar */
-	PCB_HID_DOCK_TOP_INFOBAR,    /*  vbox for horizontally aligned important messages, above ("on top of") the drawing area for critical warnings - may have bright background color */
-	PCB_HID_DOCK_LEFT,
-	PCB_HID_DOCK_BOTTOM,
-	PCB_HID_DOCK_FLOAT,          /* separate window */
+	RND_HID_DOCK_TOP_LEFT,       /*  hbox on the top, below the menubar */
+	RND_HID_DOCK_TOP_RIGHT,      /*  hbox on the top, next to the menubar */
+	RND_HID_DOCK_TOP_INFOBAR,    /*  vbox for horizontally aligned important messages, above ("on top of") the drawing area for critical warnings - may have bright background color */
+	RND_HID_DOCK_LEFT,
+	RND_HID_DOCK_BOTTOM,
+	RND_HID_DOCK_FLOAT,          /* separate window */
 
-	PCB_HID_DOCK_max
-} pcb_hid_dock_t;
+	RND_HID_DOCK_max
+} rnd_hid_dock_t;
 
-extern int pcb_dock_is_vert[PCB_HID_DOCK_max];    /* 1 if a new dock box (parent of a new sub-DAD) should be a vbox, 0 if hbox */
-extern int pcb_dock_has_frame[PCB_HID_DOCK_max];  /* 1 if a new dock box (parent of a new sub-DAD) should be framed */
+extern int rnd_dock_is_vert[RND_HID_DOCK_max];    /* 1 if a new dock box (parent of a new sub-DAD) should be a vbox, 0 if hbox */
+extern int rnd_dock_has_frame[RND_HID_DOCK_max];  /* 1 if a new dock box (parent of a new sub-DAD) should be framed */
 
 /* This is the main HID structure.  */
 struct rnd_hid_s {
@@ -277,11 +277,11 @@ struct rnd_hid_s {
 
 	/* Composite layer drawing: manipulate the sketch canvas and set
 	   positive or negative drawing mode. The canvas covers the screen box. */
-	void (*set_drawing_mode)(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen);
+	void (*set_drawing_mode)(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen);
 
 	/* Announce start/end of a render burst for a specific screen screen box;
 	   A GUI hid should set the coord_per_pix value here for proper optimization. */
-	void (*render_burst)(rnd_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen);
+	void (*render_burst)(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen);
 
 	/*** gc vs. rnd_hid_t *: rnd_core_gc_t contains ->hid, so these calls don't
 	     need to get it as first arg. ***/
@@ -391,7 +391,7 @@ struct rnd_hid_s {
 	 *  get_path       returns the current full path in res as an strdup'd string (caller needs to free it)
 	 *  set_file_name  replaces the file name portion of the current path from arg[0].d.s
 	 */
-	char *(*fileselect)(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
+	char *(*fileselect)(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
 
 	/* A generic dialog to ask for a set of attributes. If n_attrs_ is
 	   zero, attrs_(.name) must be NULL terminated. attr_dlg_run returns
@@ -404,7 +404,7 @@ struct rnd_hid_s {
 	   by window placement. Returns opaque hid_ctx.
 	   (Hid_ctx shall save rnd_hid_t so subsequent attr_dlg_*() calls don't have
 	   it as an argument) */
-	void *(*attr_dlg_new)(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+	void *(*attr_dlg_new)(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 	int (*attr_dlg_run)(void *hid_ctx);
 	void (*attr_dlg_raise)(void *hid_ctx); /* raise the window to top */
 	void (*attr_dlg_close)(void *hid_ctx); /* close the GUI but do not yet free hid_ctx (results should be available) */
@@ -433,7 +433,7 @@ struct rnd_hid_s {
 	/* top window docking: enter a new docked part by registering a
 	   new subdialog or leave (remove a docked part) from a subdialog. Return 0
 	   on success. */
-	int (*dock_enter)(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
+	int (*dock_enter)(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id);
 	void (*dock_leave)(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub);
 
 	/* Something to alert the user.  */
@@ -449,7 +449,7 @@ struct rnd_hid_s {
 	 * and remove menu items that are no longer needed.
 	 * If action is NULL, the menu may get submenus.
 	 */
-	void (*create_menu)(rnd_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props);
+	void (*create_menu)(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props);
 
 	/* Removes a menu recursively */
 	int (*remove_menu)(rnd_hid_t *hid, const char *menu_path);
@@ -496,15 +496,15 @@ struct rnd_hid_s {
 
 	/*** clipboard handling for GUI HIDs ***/
 	/* Place format/data/len on the clipboard; return 0 on success */
-	int (*clip_set)(rnd_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len);
+	int (*clip_set)(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len);
 
 	/* retrieve format/data/len from the clipboard; return 0 on success;
 	   data is a copy of the data, modifiable by the caller */
-	int (*clip_get)(rnd_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t *len);
+	int (*clip_get)(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len);
 
 	/* release the data from the last clip_get(); clip_get() and clip_free() should
 	   be called in pair */
-	void (*clip_free)(rnd_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len);
+	void (*clip_free)(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len);
 
 	/* run redraw-benchmark and return an FPS value (optional) */
 	double (*benchmark)(rnd_hid_t *hid);
@@ -615,9 +615,9 @@ int pcb_hid_progress(long so_far, long total, const char *message);
 /* non-zero if DAD dialogs are available currently */
 #define PCB_HAVE_GUI_ATTR_DLG \
 	((pcb_gui != NULL) && (pcb_gui->gui) && (pcb_gui->attr_dlg_new != NULL) && (pcb_gui->attr_dlg_new != pcb_nogui_attr_dlg_new))
-void *pcb_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+void *pcb_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 
-int pcb_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id);
+int pcb_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id);
 void pcb_hid_dock_leave(rnd_hid_dad_subdialog_t *sub);
 
 #define pcb_hid_redraw(pcb) pcb_gui->invalidate_all(pcb_gui)

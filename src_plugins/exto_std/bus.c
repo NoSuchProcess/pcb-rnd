@@ -352,7 +352,7 @@ rnd_trace(" subc=%p l=%p\n", subc, ly);
 }
 
 
-static void pcb_bus_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void pcb_bus_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	pcb_subc_t *subc = caller_data;
 	bus_t *bus = subc->extobj_data;

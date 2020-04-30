@@ -2,7 +2,7 @@
 #include <librnd/core/hid.h>
 #include "pcb_gtk.h"
 
-void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+void *ghid_attr_dlg_new(pcb_gtk_t *gctx, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 int ghid_attr_dlg_run(void *hid_ctx);
 void ghid_attr_dlg_raise(void *hid_ctx);
 void ghid_attr_dlg_close(void *hid_ctx);

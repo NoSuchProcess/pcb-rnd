@@ -136,7 +136,7 @@ static const char *refresh = "progress refresh";
 static const char *cancel  = "progress cancel";
 #define REFRESH_RATE 100
 
-static void progress_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void progress_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	pcb_hid_progress(0, 0, NULL);
 }

@@ -84,7 +84,7 @@ static rnd_action_t order_action_list[] = {
 static void order_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
 	char *end = path + strlen(path);
-	pcb_menu_prop_t props;
+	rnd_menu_prop_t props;
 	char act[256];
 
 	memset(&props, 0,sizeof(props));

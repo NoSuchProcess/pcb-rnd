@@ -41,7 +41,7 @@ undo_ctx_t undo_ctx;
 
 extern uundo_list_t pcb_uundo;
 
-static void undo_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void undo_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	undo_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);

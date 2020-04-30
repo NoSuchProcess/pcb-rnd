@@ -310,7 +310,7 @@ static void asm_greyout(int grey)
 }
 
 /*** UI callbacks ***/
-static void asm_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void asm_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	group_t **g;
 	part_t **p;

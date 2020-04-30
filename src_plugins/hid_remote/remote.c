@@ -192,7 +192,7 @@ static void remote_destroy_gc(rnd_hid_gc_t gc)
 }
 
 static const char *drawing_mode_names[] = { "reset", "positive", "negative", "flush"};
-static void remote_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
+static void remote_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
 {
 	if ((op >= 0) && (op < sizeof(drawing_mode_names) / sizeof(drawing_mode_names[0])))
 		proto_send_set_drawing_mode(drawing_mode_names[op], direct);
@@ -350,7 +350,7 @@ void remote_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
 {
 }
 
-static void *remote_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+static void *remote_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	return NULL;
 }
@@ -376,7 +376,7 @@ static void remote_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, con
 {
 }
 
-static void remote_create_menu(rnd_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
+static void remote_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
 {
 }
 

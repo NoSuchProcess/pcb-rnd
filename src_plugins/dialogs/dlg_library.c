@@ -237,7 +237,7 @@ static void update_edit_button(library_ctx_t *ctx)
 
 #include "dlg_library_param.c"
 
-static void library_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void library_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	library_ctx_t *ctx = caller_data;
 

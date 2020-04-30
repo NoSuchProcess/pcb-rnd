@@ -489,8 +489,8 @@ void pcb_xordraw_movecopy(void)
 void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 	if (!inhibit_drawing_mode) {
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, 1, NULL);
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE_XOR, 1, NULL);
+		pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_RESET, 1, NULL);
+		pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_POSITIVE_XOR, 1, NULL);
 	}
 
 	pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
@@ -508,7 +508,7 @@ void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 	}
 
 	if (!inhibit_drawing_mode)
-		pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, 1, NULL);
+		pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_FLUSH, 1, NULL);
 }
 
 
@@ -518,8 +518,8 @@ void pcbhl_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 
 	if ((pcb_marked.status) || (hidlib->tool_grabbed.status)) {
 		if (!inhibit_drawing_mode) {
-			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_RESET, 1, NULL);
-			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_POSITIVE, 1, NULL);
+			pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_RESET, 1, NULL);
+			pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_POSITIVE, 1, NULL);
 		}
 		pcb_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.mark);
 	}
@@ -536,7 +536,7 @@ void pcbhl_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 
 	if ((pcb_marked.status) || (hidlib->tool_grabbed.status))
 		if (!inhibit_drawing_mode)
-			pcb_render->set_drawing_mode(pcb_gui, PCB_HID_COMP_FLUSH, 1, NULL);
+			pcb_render->set_drawing_mode(pcb_gui, RND_HID_COMP_FLUSH, 1, NULL);
 }
 
 

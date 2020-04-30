@@ -100,12 +100,12 @@ static void nogui_destroy_gc(rnd_hid_gc_t gc)
 {
 }
 
-static void nogui_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void nogui_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	CRASH("set_drawing_mode");
 }
 
-static void nogui_render_burst(rnd_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen)
+static void nogui_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen)
 {
 	/* the HID may decide to ignore this hook */
 }
@@ -331,7 +331,7 @@ static fgw_error_t pcb_act_cli_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *a
 /* FIXME - this could use some enhancement to actually use the other
    args */
 static char *nogui_fileselect(rnd_hid_t *hid, const char *title, const char *descr,
-															const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
+															const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	char *answer;
 
@@ -350,7 +350,7 @@ static char *nogui_fileselect(rnd_hid_t *hid, const char *title, const char *des
 		return rnd_strdup(answer);
 }
 
-void *pcb_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+void *pcb_nogui_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	CRASH("attr_dlg_new");
 }
@@ -412,7 +412,7 @@ int pcb_nogui_progress(long so_far, long total, const char *message)
 	return 0;
 }
 
-static void nogui_create_menu(rnd_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
+static void nogui_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
 {
 }
 
@@ -428,9 +428,9 @@ static int clip_warn(void)
 
 static void *clip_data = NULL;
 static size_t clip_len;
-static pcb_hid_clipfmt_t clip_format;
+static rnd_hid_clipfmt_t clip_format;
 
-static int nogui_clip_set(rnd_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len)
+static int nogui_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len)
 {
 	free(clip_data);
 	clip_data = malloc(len);
@@ -444,7 +444,7 @@ static int nogui_clip_set(rnd_hid_t *hid, pcb_hid_clipfmt_t format, const void *
 	return clip_warn();
 }
 
-static int nogui_clip_get(rnd_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t *len)
+static int nogui_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len)
 {
 	if (clip_data == NULL) {
 		*data = NULL;
@@ -463,7 +463,7 @@ static int nogui_clip_get(rnd_hid_t *hid, pcb_hid_clipfmt_t *format, void **data
 	return clip_warn();
 }
 
-static void nogui_clip_free(rnd_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len)
+static void nogui_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len)
 {
 	free(data);
 }

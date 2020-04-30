@@ -44,7 +44,7 @@ typedef struct{
 
 cnstgui_ctx_t cnstgui_ctx;
 
-static void cnstgui_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void cnstgui_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	cnstgui_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);

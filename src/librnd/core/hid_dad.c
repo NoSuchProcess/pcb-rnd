@@ -29,8 +29,8 @@
 #include <librnd/config.h>
 #include <librnd/core/hid_dad.h>
 
-int pcb_dock_is_vert[PCB_HID_DOCK_max]   = {0, 0, 0, 1, 0, 1}; /* Update this if pcb_hid_dock_t changes */
-int pcb_dock_has_frame[PCB_HID_DOCK_max] = {0, 0, 0, 1, 0, 0}; /* Update this if pcb_hid_dock_t changes */
+int rnd_dock_is_vert[RND_HID_DOCK_max]   = {0, 0, 0, 1, 0, 1}; /* Update this if rnd_hid_dock_t changes */
+int rnd_dock_has_frame[RND_HID_DOCK_max] = {0, 0, 0, 1, 0, 0}; /* Update this if rnd_hid_dock_t changes */
 
 typedef struct {
 	pcb_hatt_compflags_t flag;
@@ -140,7 +140,7 @@ int pcb_attribute_dialog(const char *id, rnd_hid_attribute_t *attrs, int n_attrs
 	return pcb_attribute_dialog_(id, attrs, n_attrs, title, caller_data, NULL, 0, 0, 0, 0, NULL);
 }
 
-int pcb_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
+int pcb_hid_dock_enter(rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
 {
 	if ((pcb_gui == NULL) || (pcb_gui->dock_enter == NULL))
 		return -1;

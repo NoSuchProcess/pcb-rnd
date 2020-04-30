@@ -279,7 +279,7 @@ void batch_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
 {
 }
 
-static void batch_create_menu(rnd_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
+static void batch_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
 {
 }
 

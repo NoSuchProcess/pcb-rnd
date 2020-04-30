@@ -41,7 +41,7 @@ typedef struct {
 
 netlist_ctx_t netlist_ctx;
 
-static void netlist_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void netlist_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	netlist_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);

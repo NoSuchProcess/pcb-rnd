@@ -334,7 +334,7 @@ static struct {
 	rnd_bool is_copper;
 	rnd_bool is_paste;
 
-	pcb_composite_op_t drawing_mode;
+	rnd_composite_op_t drawing_mode;
 	int ovr_all;
 	long drawn_objs;
 } global;
@@ -963,7 +963,7 @@ static void ps_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void ps_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void ps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	global.drawing_mode = op;
 }
@@ -971,7 +971,7 @@ static void ps_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool 
 
 static void ps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
-	if (global.drawing_mode == PCB_HID_COMP_NEGATIVE) {
+	if (global.drawing_mode == RND_HID_COMP_NEGATIVE) {
 		gc->r = gc->g = gc->b = 255;
 		gc->erase = 0;
 	}

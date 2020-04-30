@@ -235,7 +235,7 @@ static void cam_job_select_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, pcb_hi
 	}
 }
 
-static void cam_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void cam_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	cam_dlg_t *ctx = caller_data;
 	cam_uninit_inst(&ctx->cam);

@@ -279,12 +279,12 @@ static rnd_hidval_t ghid_watch_file(rnd_hid_t *hid, int fd, unsigned int conditi
 	return pcb_gtk_watch_file((pcb_gtk_t *)hid->hid_data, fd, condition, func, user_data);
 }
 
-static char *ghid_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
+static char *ghid_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	return pcb_gtk_fileselect((pcb_gtk_t *)hid->hid_data, title, descr, default_file, default_ext, flt, history_tag, flags, sub);
 }
 
-static void *ghid_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
+static void *ghid_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs, int n_attrs, const char *title, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny)
 {
 	return ghid_attr_dlg_new((pcb_gtk_t *)hid->hid_data, id, attrs, n_attrs, title, caller_data, modal, button_cb, defx, defy, minx, miny);
 }
@@ -326,7 +326,7 @@ static int ghid_remove_menu_node(rnd_hid_t *hid, lht_node_t *node)
 	return pcb_hid_cfg_remove_menu_node(gctx->topwin.ghid_cfg, node, ghid_remove_menu_widget, gctx->topwin.menu.menu_bar);
 }
 
-static void ghid_create_menu(rnd_hid_t *hid, const char *menu_path, const pcb_menu_prop_t *props)
+static void ghid_create_menu(rnd_hid_t *hid, const char *menu_path, const rnd_menu_prop_t *props)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	pcb_hid_cfg_create_menu(gctx->topwin.ghid_cfg, menu_path, props, ghid_create_menu_widget, &gctx->topwin.menu);
@@ -364,12 +364,12 @@ static const char *ghid_command_entry(rnd_hid_t *hid, const char *ovr, int *curs
 	return pcb_gtk_cmd_command_entry(&gctx->topwin.cmd, ovr, cursor);
 }
 
-static int ghid_clip_set(rnd_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len)
+static int ghid_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len)
 {
 	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 
 	switch(format) {
-		case PCB_HID_CLIPFMT_TEXT:
+		case RND_HID_CLIPFMT_TEXT:
 			gtk_clipboard_set_text(cbrd, data, len);
 			break;
 	}
@@ -378,13 +378,13 @@ static int ghid_clip_set(rnd_hid_t *hid, pcb_hid_clipfmt_t format, const void *d
 
 
 
-int ghid_clip_get(rnd_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t *len)
+int ghid_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len)
 {
 	GtkClipboard *cbrd = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 
 	if (gtk_clipboard_wait_is_text_available(cbrd)) {
 		gchar *txt = gtk_clipboard_wait_for_text(cbrd);
-		*format = PCB_HID_CLIPFMT_TEXT;
+		*format = RND_HID_CLIPFMT_TEXT;
 		*data = txt;
 		*len = strlen(txt) + 1;
 		return 0;
@@ -393,10 +393,10 @@ int ghid_clip_get(rnd_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t
 	return -1;
 }
 
-void ghid_clip_free(rnd_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len)
+void ghid_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len)
 {
 	switch(format) {
-		case PCB_HID_CLIPFMT_TEXT:
+		case RND_HID_CLIPFMT_TEXT:
 			g_free(data);
 			break;
 	}
@@ -432,7 +432,7 @@ static double ghid_benchmark(rnd_hid_t *hid)
 	return i/10.0;
 }
 
-static int ghid_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
+static int ghid_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	return pcb_gtk_tw_dock_enter(&gctx->topwin, sub, where, id);

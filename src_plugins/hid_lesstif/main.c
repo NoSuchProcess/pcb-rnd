@@ -147,16 +147,16 @@ static void lesstif_reg_attrs(void);
 static void lesstif_begin(void);
 static void lesstif_end(void);
 
-static Widget ltf_dockbox[PCB_HID_DOCK_max];
-static gdl_list_t ltf_dock[PCB_HID_DOCK_max];
+static Widget ltf_dockbox[RND_HID_DOCK_max];
+static gdl_list_t ltf_dock[RND_HID_DOCK_max];
 
 typedef struct {
 	void *hid_ctx;
 	Widget frame;
-	pcb_hid_dock_t where;
+	rnd_hid_dock_t where;
 } docked_t;
 
-static Widget ltf_create_dockbox(Widget parent, pcb_hid_dock_t where, int vert)
+static Widget ltf_create_dockbox(Widget parent, rnd_hid_dock_t where, int vert)
 {
 	stdarg(PxmNfillBoxVertical, vert);
 	stdarg(XmNmarginWidth, 0);
@@ -180,7 +180,7 @@ static int ltf_dock_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_even
 	return -1;
 }
 
-static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, pcb_hid_dock_t where, const char *id)
+static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, rnd_hid_dock_t where, const char *id)
 {
 	docked_t *docked;
 	Widget hvbox;
@@ -192,14 +192,14 @@ static int ltf_dock_enter(rnd_hid_t *hid, rnd_hid_dad_subdialog_t *sub, pcb_hid_
 	docked->where = where;
 
 	stdarg_n = 0;
-	stdarg(PxmNfillBoxVertical, pcb_dock_is_vert[where]);
+	stdarg(PxmNfillBoxVertical, rnd_dock_is_vert[where]);
 	stdarg(XmNmarginWidth, 0);
 	stdarg(XmNmarginHeight, 0);
 	hvbox = PxmCreateFillBox(ltf_dockbox[where], "dockbox", stdarg_args, stdarg_n);
 
 TODO("hidlib: dock frame");
 /*
-	if (pcb_dock_has_frame[where]) {
+	if (rnd_dock_has_frame[where]) {
 		docked->frame = gtk_frame_new(id);
 		gtk_container_add(GTK_CONTAINER(docked->frame), hvbox);
 	}
@@ -221,7 +221,7 @@ TODO("hidlib: dock frame");
 typedef struct {
 	void *hid_ctx;
 	Widget frame;
-	pcb_hid_dock_t where;
+	rnd_hid_dock_t where;
 } ltf_docked_t;
 
 static void ShowCrosshair(rnd_bool show)
@@ -281,8 +281,8 @@ TODO("menu: pcb-menu should be generic and not depend on the HID")
 
 
 static int lesstif_direct = 0;
-static pcb_composite_op_t lesstif_drawing_mode = 0;
-#define use_mask() ((!lesstif_direct) && ((lesstif_drawing_mode == PCB_HID_COMP_POSITIVE) || (lesstif_drawing_mode == PCB_HID_COMP_POSITIVE_XOR) || (lesstif_drawing_mode == PCB_HID_COMP_NEGATIVE)))
+static rnd_composite_op_t lesstif_drawing_mode = 0;
+#define use_mask() ((!lesstif_direct) && ((lesstif_drawing_mode == RND_HID_COMP_POSITIVE) || (lesstif_drawing_mode == RND_HID_COMP_POSITIVE_XOR) || (lesstif_drawing_mode == RND_HID_COMP_NEGATIVE)))
 
 static void zoom_max();
 static void zoom_to(double factor, rnd_coord_t x, rnd_coord_t y);
@@ -1523,7 +1523,7 @@ static void lesstif_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		stdarg(XmNbottomAttachment, XmATTACH_FORM);
 		stdarg(XmNleftAttachment, XmATTACH_FORM);
 		stdarg(XmNrightAttachment, XmATTACH_FORM);
-		w = ltf_create_dockbox(messages, PCB_HID_DOCK_BOTTOM, 0);
+		w = ltf_create_dockbox(messages, RND_HID_DOCK_BOTTOM, 0);
 		XtManageChild(w);
 	}
 
@@ -2020,7 +2020,7 @@ static Boolean idle_proc(XtPointer dummy)
 		}
 		DrawBackgroundImage();
 		pcbhl_expose_main(&lesstif_hid, &ctx, NULL);
-		lesstif_drawing_mode = PCB_HID_COMP_POSITIVE;
+		lesstif_drawing_mode = RND_HID_COMP_POSITIVE;
 		draw_grid();
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */
 		XSetFunction(display, my_gc, GXcopy);
@@ -2175,12 +2175,12 @@ static void lesstif_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void lesstif_render_burst(rnd_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen)
+static void lesstif_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen)
 {
 	pcb_gui->coord_per_pix = view_zoom;
 }
 
-static void lesstif_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
+static void lesstif_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
 {
 	lesstif_drawing_mode = op;
 
@@ -2191,7 +2191,7 @@ static void lesstif_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_
 	}
 
 	switch(op) {
-		case PCB_HID_COMP_RESET:
+		case RND_HID_COMP_RESET:
 			if (mask_pixmap == 0) {
 				mask_pixmap = XCreatePixmap(display, window, pixmap_w, pixmap_h, XDefaultDepth(display, screen));
 				mask_bitmap = XCreatePixmap(display, window, pixmap_w, pixmap_h, 1);
@@ -2204,16 +2204,16 @@ static void lesstif_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_
 			mask_gc = bset_gc;
 			break;
 
-		case PCB_HID_COMP_POSITIVE:
-		case PCB_HID_COMP_POSITIVE_XOR:
+		case RND_HID_COMP_POSITIVE:
+		case RND_HID_COMP_POSITIVE_XOR:
 			mask_gc = bset_gc;
 			break;
 
-		case PCB_HID_COMP_NEGATIVE:
+		case RND_HID_COMP_NEGATIVE:
 			mask_gc = bclear_gc;
 			break;
 
-		case PCB_HID_COMP_FLUSH:
+		case RND_HID_COMP_FLUSH:
 			pixmap = main_pixmap;
 
 			/* blit back the result */
@@ -2702,13 +2702,13 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId *id)
 
 	/* Should we only include those we were asked to watch? */
 	if (condition & POLLIN)
-		pcb_condition |= PCB_WATCH_READABLE;
+		pcb_condition |= RND_WATCH_READABLE;
 	if (condition & POLLOUT)
-		pcb_condition |= PCB_WATCH_WRITABLE;
+		pcb_condition |= RND_WATCH_WRITABLE;
 	if (condition & POLLERR)
-		pcb_condition |= PCB_WATCH_ERROR;
+		pcb_condition |= RND_WATCH_ERROR;
 	if (condition & POLLHUP)
-		pcb_condition |= PCB_WATCH_HANGUP;
+		pcb_condition |= RND_WATCH_HANGUP;
 
 	x.ptr = (void *) watch;
 	if (!watch->func(x, watch->fd, pcb_condition, watch->user_data))
@@ -2722,13 +2722,13 @@ rnd_hidval_t lesstif_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, 
 	rnd_hidval_t ret;
 	unsigned int xt_condition = 0;
 
-	if (condition & PCB_WATCH_READABLE)
+	if (condition & RND_WATCH_READABLE)
 		xt_condition |= XtInputReadMask;
-	if (condition & PCB_WATCH_WRITABLE)
+	if (condition & RND_WATCH_WRITABLE)
 		xt_condition |= XtInputWriteMask;
-	if (condition & PCB_WATCH_ERROR)
+	if (condition & RND_WATCH_ERROR)
 		xt_condition |= XtInputExceptMask;
-	if (condition & PCB_WATCH_HANGUP)
+	if (condition & RND_WATCH_HANGUP)
 		xt_condition |= XtInputExceptMask;
 
 	watch->func = func;
@@ -2740,7 +2740,7 @@ rnd_hidval_t lesstif_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, 
 	return ret;
 }
 
-extern void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, pcb_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
+extern void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *attrs_, int n_attrs_, const char *title_, void *caller_data, rnd_bool modal, void (*button_cb)(void *caller_data, rnd_hid_attr_ev_t ev), int defx, int defy, int minx, int miny);
 
 extern int lesstif_attr_dlg_run(void *hid_ctx);
 extern void lesstif_attr_dlg_raise(void *hid_ctx);
@@ -2804,7 +2804,7 @@ static void lesstif_conf_regs(const char *cookie)
 
 #include <Xm/CutPaste.h>
 
-static int ltf_clip_set(rnd_hid_t *hid, pcb_hid_clipfmt_t format, const void *data, size_t len)
+static int ltf_clip_set(rnd_hid_t *hid, rnd_hid_clipfmt_t format, const void *data, size_t len)
 {
 	static long cnt = 0;
 	long item_id, data_id;
@@ -2827,7 +2827,7 @@ static int ltf_clip_set(rnd_hid_t *hid, pcb_hid_clipfmt_t format, const void *da
 	return 0;
 }
 
-static int ltf_clip_get(rnd_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, size_t *len)
+static int ltf_clip_get(rnd_hid_t *hid, rnd_hid_clipfmt_t *format, void **data, size_t *len)
 {
 	int res;
 	gds_t tmp;
@@ -2857,7 +2857,7 @@ static int ltf_clip_get(rnd_hid_t *hid, pcb_hid_clipfmt_t *format, void **data, 
 	return 0;
 }
 
-static void ltf_clip_free(rnd_hid_t *hid, pcb_hid_clipfmt_t format, void *data, size_t len)
+static void ltf_clip_free(rnd_hid_t *hid, rnd_hid_clipfmt_t format, void *data, size_t len)
 {
 	free(data);
 }
@@ -2922,7 +2922,7 @@ static void ltf_set_top_title(rnd_hid_t *hid, const char *title)
 	XtSetValues(appwidget, stdarg_args, stdarg_n);
 }
 
-void lesstif_create_menu(rnd_hid_t *hid, const char *menu, const pcb_menu_prop_t *props);
+void lesstif_create_menu(rnd_hid_t *hid, const char *menu, const rnd_menu_prop_t *props);
 int lesstif_remove_menu(rnd_hid_t *hid, const char *menu);
 int lesstif_remove_menu_node(rnd_hid_t *hid, lht_node_t *node);
 rnd_hid_cfg_t *lesstif_get_menu_cfg(rnd_hid_t *hid);

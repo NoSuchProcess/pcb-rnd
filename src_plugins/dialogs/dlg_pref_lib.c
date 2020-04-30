@@ -390,7 +390,7 @@ void pcb_dlg_pref_lib_close(pref_ctx_t *ctx)
 		PCB_DAD_FREE(ctx->lib.help.dlg);
 }
 
-static void pref_libhelp_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void pref_libhelp_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 /*	pref_libhelp_ctx_t *ctx = caller_data;*/
 }

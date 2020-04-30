@@ -337,16 +337,16 @@ static void excellon_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void excellon_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
+static void excellon_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
 {
 	switch(op) {
-		case PCB_HID_COMP_RESET:
-		case PCB_HID_COMP_POSITIVE:
-		case PCB_HID_COMP_FLUSH:
+		case RND_HID_COMP_RESET:
+		case RND_HID_COMP_POSITIVE:
+		case RND_HID_COMP_FLUSH:
 			break;
 
-		case PCB_HID_COMP_POSITIVE_XOR:
-		case PCB_HID_COMP_NEGATIVE:
+		case RND_HID_COMP_POSITIVE_XOR:
+		case RND_HID_COMP_NEGATIVE:
 			if (!warn.comp) {
 				warn.comp = 1;
 				rnd_message(RND_MSG_ERROR, "Excellon: can not draw composite layers (some features may be missing from the export)\n");

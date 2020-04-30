@@ -116,7 +116,7 @@ static int pcb_gtk_fsd_poke(rnd_hid_dad_subdialog_t *sub, const char *cmd, rnd_e
 	return -1;
 }
 
-char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, const char *default_file, const char *default_ext, const pcb_hid_fsd_filter_t *flt, const char *history_tag, pcb_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
+char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub)
 {
 	GtkWidget *top_window = gctx->wtop_window;
 	gchar *path = NULL, *base = NULL, *res = NULL;
@@ -124,7 +124,7 @@ char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, 
 	file_history_t *hi;
 	int n, free_flt = 0;
 	pcb_gtk_fsd_t pctx;
-	pcb_hid_fsd_filter_t flt_local[3];
+	rnd_hid_fsd_filter_t flt_local[3];
 
 	if (!inited) {
 		htsp_init(&history, strhash, strkeyeq);
@@ -156,7 +156,7 @@ char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, 
 		flt_local[0].pat = malloc(sizeof(char *) * 2);
 		flt_local[0].pat[0] = pcb_concat("*", default_ext, NULL);
 		flt_local[0].pat[1] = NULL;
-		flt_local[1] = pcb_hid_fsd_filter_any[0];
+		flt_local[1] = rnd_hid_fsd_filter_any[0];
 		flt = flt_local;
 		free_flt = 1;
 	}
@@ -164,13 +164,13 @@ char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, 
 
 	pctx.dialog = gtk_file_chooser_dialog_new(
 		title, GTK_WINDOW(top_window),
-		(flags & PCB_HID_FSD_READ) ? GTK_FILE_CHOOSER_ACTION_OPEN : GTK_FILE_CHOOSER_ACTION_SAVE,
+		(flags & RND_HID_FSD_READ) ? GTK_FILE_CHOOSER_ACTION_OPEN : GTK_FILE_CHOOSER_ACTION_SAVE,
 		 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OK, GTK_RESPONSE_OK, NULL);
 
 	gtk_dialog_set_default_response(GTK_DIALOG(pctx.dialog), GTK_RESPONSE_OK);
 
 	if (flt != NULL) {
-		const pcb_hid_fsd_filter_t *f;
+		const rnd_hid_fsd_filter_t *f;
 		for(f = flt; f->name != NULL; f++) {
 			GtkFileFilter *gf;
 			gf = gtk_file_filter_new();
@@ -206,7 +206,7 @@ char *pcb_gtk_fileselect(pcb_gtk_t *gctx, const char *title, const char *descr, 
 
 	if ((base != NULL) && (*base != '\0')) {
 		/* default_file is useful only for write */
-		if (!(flags & PCB_HID_FSD_READ))
+		if (!(flags & RND_HID_FSD_READ))
 			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(pctx.dialog), base);
 		g_free(base);
 	}

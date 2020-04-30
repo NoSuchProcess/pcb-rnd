@@ -53,7 +53,7 @@ static rst_ctx_t rst;
 
 static void rst_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
 {
-	pcb_menu_prop_t props;
+	rnd_menu_prop_t props;
 	char *end = path + strlen(path);
 	char act[256], chk[256];
 	int idx;
@@ -210,7 +210,7 @@ void pcb_rst_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_ev
 {
 	if (PCB_HAVE_GUI_ATTR_DLG) {
 		rst_docked_create();
-		if (pcb_hid_dock_enter(&rst.sub, PCB_HID_DOCK_LEFT, "Route styles") == 0)
+		if (pcb_hid_dock_enter(&rst.sub, RND_HID_DOCK_LEFT, "Route styles") == 0)
 			rst.sub_inited = 1;
 	}
 	rst_update();

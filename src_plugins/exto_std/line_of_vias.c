@@ -290,7 +290,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto + remove the plugin d
 }
 
 
-static void pcb_line_of_vias_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void pcb_line_of_vias_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	pcb_subc_t *subc = caller_data;
 	line_of_vias *lov = subc->extobj_data;

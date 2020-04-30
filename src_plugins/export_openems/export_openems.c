@@ -708,18 +708,18 @@ static void openems_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void openems_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void openems_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
 {
 	switch(op) {
-		case PCB_HID_COMP_RESET:
+		case RND_HID_COMP_RESET:
 			break;
-		case PCB_HID_COMP_POSITIVE:
-		case PCB_HID_COMP_POSITIVE_XOR:
+		case RND_HID_COMP_POSITIVE:
+		case RND_HID_COMP_POSITIVE_XOR:
 			break;
-		case PCB_HID_COMP_NEGATIVE:
+		case RND_HID_COMP_NEGATIVE:
 			rnd_message(RND_MSG_ERROR, "Can't draw composite layer, especially not on copper\n");
 			break;
-		case PCB_HID_COMP_FLUSH:
+		case RND_HID_COMP_FLUSH:
 			break;
 	}
 }

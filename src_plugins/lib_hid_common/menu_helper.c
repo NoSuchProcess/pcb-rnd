@@ -258,7 +258,7 @@ typedef struct {
 	pcb_create_menu_widget_t cb;
 	void *cb_ctx;
 	lht_node_t *parent;
-	const pcb_menu_prop_t *props;
+	const rnd_menu_prop_t *props;
 	int target_level;
 	int err;
 	lht_node_t *after;
@@ -334,7 +334,7 @@ static lht_node_t *create_menu_cb(void *ctx, lht_node_t *node, const char *path,
 	return node;
 }
 
-int pcb_hid_cfg_create_menu(rnd_hid_cfg_t *hr, const char *path, const pcb_menu_prop_t *props, pcb_create_menu_widget_t cb, void *cb_ctx)
+int pcb_hid_cfg_create_menu(rnd_hid_cfg_t *hr, const char *path, const rnd_menu_prop_t *props, pcb_create_menu_widget_t cb, void *cb_ctx)
 {
 	const char *name;
 	create_menu_ctx_t cmc;

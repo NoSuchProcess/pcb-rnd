@@ -47,7 +47,7 @@ typedef struct{
 
 static log_ctx_t log_ctx;
 
-static void log_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void log_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	log_ctx_t *ctx = caller_data;
 	ctx->active = 0;

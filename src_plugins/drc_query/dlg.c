@@ -53,7 +53,7 @@ static rnd_conf_role_t save_rolee[] = { RND_CFR_USER, RND_CFR_PROJECT, RND_CFR_D
 
 gdl_list_t rule_edit_dialogs;
 
-static void rule_edit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void rule_edit_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	rule_edit_ctx_t *ctx = caller_data;
 
@@ -354,7 +354,7 @@ typedef struct{
 
 static drc_rlist_ctx_t drc_rlist_ctx;
 
-static void drc_rlist_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void drc_rlist_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);

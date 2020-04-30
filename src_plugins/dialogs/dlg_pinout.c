@@ -48,7 +48,7 @@ typedef struct{
 
 pinout_ctx_t pinout_ctx;
 
-static void pinout_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void pinout_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	pinout_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);

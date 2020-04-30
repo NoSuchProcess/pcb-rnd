@@ -40,7 +40,7 @@ typedef struct {
 	int wnewval, winsa;
 } confedit_ctx_t;
 
-static void pref_conf_edit_close_cb(void *caller_data, pcb_hid_attr_ev_t ev)
+static void pref_conf_edit_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	pref_ctx_t *ctx = caller_data;
 	PCB_DAD_FREE(ctx->dlg);

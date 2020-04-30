@@ -66,7 +66,7 @@ static int verbose;
 static int all_layers;
 static int is_mask, was_drill;
 static int is_drill, is_plated;
-static pcb_composite_op_t gerber_drawing_mode, drawing_mode_issued;
+static rnd_composite_op_t gerber_drawing_mode, drawing_mode_issued;
 static int flash_drills, line_slots;
 static int copy_outline_mode;
 static int want_cross_sect;
@@ -321,7 +321,7 @@ static void gerber_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	gerber_ovr = 0;
 
-	drawing_mode_issued = PCB_HID_COMP_POSITIVE;
+	drawing_mode_issued = RND_HID_COMP_POSITIVE;
 
 	if (!options) {
 		gerber_get_export_options(hid, NULL);
@@ -631,7 +631,7 @@ static void gerber_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void gerber_set_drawing_mode(rnd_hid_t *hid, pcb_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
+static void gerber_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
 {
 	gerber_drawing_mode = op;
 	if ((f != NULL) && (gerber_debug))
@@ -671,11 +671,11 @@ static void use_gc(rnd_hid_gc_t gc, int radius)
 {
 	gerber_drawn_objs++;
 	if ((f != NULL) && (gerber_drawing_mode != drawing_mode_issued)) {
-		if ((gerber_drawing_mode == PCB_HID_COMP_POSITIVE) || (gerber_drawing_mode == PCB_HID_COMP_POSITIVE_XOR)) {
+		if ((gerber_drawing_mode == RND_HID_COMP_POSITIVE) || (gerber_drawing_mode == RND_HID_COMP_POSITIVE_XOR)) {
 			fprintf(f, "%%LPD*%%\r\n");
 			drawing_mode_issued = gerber_drawing_mode;
 		}
-		else if (gerber_drawing_mode == PCB_HID_COMP_NEGATIVE) {
+		else if (gerber_drawing_mode == RND_HID_COMP_NEGATIVE) {
 			fprintf(f, "%%LPC*%%\r\n");
 			drawing_mode_issued = gerber_drawing_mode;
 		}
@@ -725,7 +725,7 @@ static void gerber_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t 
 	int firstTime = 1;
 	rnd_coord_t startX = 0, startY = 0;
 
-	if (is_mask && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE) && (gerber_drawing_mode != PCB_HID_COMP_POSITIVE_XOR) && (gerber_drawing_mode != PCB_HID_COMP_NEGATIVE))
+	if (is_mask && (gerber_drawing_mode != RND_HID_COMP_POSITIVE) && (gerber_drawing_mode != RND_HID_COMP_POSITIVE_XOR) && (gerber_drawing_mode != RND_HID_COMP_NEGATIVE))
 		return;
 
 	use_gc(gc, 10 * 100);

@@ -173,7 +173,7 @@ static void toolbar_create(void)
 	if (cfg == NULL)
 		return;
 	toolbar_docked_create(cfg);
-	if (pcb_hid_dock_enter(&toolbar.sub, PCB_HID_DOCK_TOP_LEFT, "Toolbar") == 0) {
+	if (pcb_hid_dock_enter(&toolbar.sub, RND_HID_DOCK_TOP_LEFT, "Toolbar") == 0) {
 		toolbar.sub_inited = 1;
 		toolbar_pcb2dlg();
 	}
