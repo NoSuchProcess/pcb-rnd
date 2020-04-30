@@ -178,9 +178,9 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	export_ctx.tab_name[i] = NULL;
 
 	PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
-	PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_EXPFILL);
+	PCB_DAD_COMPFLAG(export_ctx.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(export_ctx.dlg, export_ctx.tab_name);
-			PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_LEFT_TAB|PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(export_ctx.dlg, RND_HATF_LEFT_TAB|RND_HATF_EXPFILL);
 			export_ctx.tabs = PCB_DAD_CURRENT(export_ctx.dlg);
 			for(n = 0; n < export_ctx.len; n++) {
 				int numo;
@@ -193,33 +193,33 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 				}
 				PCB_DAD_BEGIN_VBOX(export_ctx.dlg);
 					if (numo > 12)
-						PCB_DAD_COMPFLAG(export_ctx.dlg, PCB_HATF_SCROLL);
+						PCB_DAD_COMPFLAG(export_ctx.dlg, RND_HATF_SCROLL);
 					export_ctx.exp_attr[n] = exp_attr = malloc(sizeof(int) * numo);
 					for(i = 0; i < numo; i++) {
 						PCB_DAD_BEGIN_HBOX(export_ctx.dlg)
 							
 							switch(opts[i].type) {
-								case PCB_HATT_COORD:
+								case RND_HATT_COORD:
 									PCB_DAD_COORD(export_ctx.dlg, opts[i].name);
 									PCB_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
 									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.crd);
 									break;
-								case PCB_HATT_INTEGER:
+								case RND_HATT_INTEGER:
 									PCB_DAD_INTEGER(export_ctx.dlg, opts[i].name);
 									PCB_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
 									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.lng);
 									break;
-								case PCB_HATT_REAL:
+								case RND_HATT_REAL:
 									PCB_DAD_REAL(export_ctx.dlg, opts[i].name);
 									PCB_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
 									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.dbl);
 									break;
-								case PCB_HATT_UNIT:
+								case RND_HATT_UNIT:
 									PCB_DAD_UNIT(export_ctx.dlg, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL);
 									PCB_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.lng);
 									break;
 								default:
-									if (PCB_HATT_IS_COMPOSITE(opts[i].type)) {
+									if (RND_HATT_IS_COMPOSITE(opts[i].type)) {
 										pcb_hid_export_opt_func_t fnc = opts[i].default_val.func;
 										if (fnc != NULL)
 											fnc(PCB_HIDEOF_DAD, &export_ctx, &opts[i]);

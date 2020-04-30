@@ -26,11 +26,11 @@ const char *export_vfs_mc_cookie = "export_vfs_mc HID";
 
 static rnd_export_opt_t export_vfs_mc_options[] = {
 	{"cmd", "mc command",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_export_vfs_mc_cmd 0
 
 	{"qpath", "query path",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_export_vfs_mc_qpath 1
 };
 
@@ -135,7 +135,7 @@ static int export_vfs_mc_usage(rnd_hid_t *hid, const char *topic)
 
 static int export_vfs_mc_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]), export_vfs_mc_cookie, 0);
+	rnd_export_register_opts(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]), export_vfs_mc_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -145,7 +145,7 @@ int pplg_check_ver_export_vfs_mc(int ver_needed) { return 0; }
 
 void pplg_uninit_export_vfs_mc(void)
 {
-	pcb_export_remove_opts_by_cookie(export_vfs_mc_cookie);
+	rnd_export_remove_opts_by_cookie(export_vfs_mc_cookie);
 }
 
 int pplg_init_export_vfs_mc(void)

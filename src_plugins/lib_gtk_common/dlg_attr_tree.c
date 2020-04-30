@@ -45,7 +45,7 @@ static GtkTreeIter *ghid_tree_table_add(rnd_hid_attribute_t *attr, GtkTreeStore 
 			gtk_tree_store_insert_after(tstore, curr, par, sibling);
 	}
 
-	for(c = 0; c < attr->pcb_hatt_table_cols; c++) {
+	for(c = 0; c < attr->rnd_hatt_table_cols; c++) {
 		GValue v = {0};
 		g_value_init(&v, G_TYPE_STRING);
 		if (c < r->cols)
@@ -132,7 +132,7 @@ static void ghid_tree_table_modify_cb(rnd_hid_attribute_t *attr, void *hid_ctx, 
 	g_value_init(&v, G_TYPE_STRING);
 
 	if (col < 0) {
-		for(col = 0; col < attr->pcb_hatt_table_cols; col++) {
+		for(col = 0; col < attr->rnd_hatt_table_cols; col++) {
 			g_value_set_string(&v, row->cell[col]);
 			gtk_tree_store_set_value(GTK_TREE_STORE(model), iter, col, &v);
 		}
@@ -174,7 +174,7 @@ static pcb_hid_row_t *ghid_tree_table_get_selected(rnd_hid_attribute_t *attrib, 
 	if (iter.stamp == 0)
 		return NULL;
 
-	gtk_tree_model_get(tm, &iter, attrib->pcb_hatt_table_cols, &r, -1);
+	gtk_tree_model_get(tm, &iter, attrib->rnd_hatt_table_cols, &r, -1);
 	return r;
 }
 
@@ -201,7 +201,7 @@ static gboolean tree_table_filter_visible_func(GtkTreeModel *model, GtkTreeIter 
 	rnd_hid_attribute_t *attr = user_data;
 	pcb_hid_row_t *r = NULL;
 
-	gtk_tree_model_get(model, iter, attr->pcb_hatt_table_cols, &r, -1);
+	gtk_tree_model_get(model, iter, attr->rnd_hatt_table_cols, &r, -1);
 
 	if (r == NULL)
 		return TRUE; /* should not happen; when it does, it's a bug - better make the row visible */
@@ -259,7 +259,7 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 		if (!gtk_tree_selection_get_selected(selection, &model, &iter))
 			return TRUE;
 
-		gtk_tree_model_get(model, &iter, attr->pcb_hatt_table_cols, &r, -1);
+		gtk_tree_model_get(model, &iter, attr->rnd_hatt_table_cols, &r, -1);
 		if (r == NULL)
 			return TRUE;
 
@@ -298,7 +298,7 @@ static gboolean ghid_tree_table_key_press_cb(GtkTreeView *tree_view, GdkEventKey
 	if (arrow_key) {
 		pcb_hid_row_t *r;
 
-		gtk_tree_model_get(model, &iter, attr->pcb_hatt_table_cols, &r, -1);
+		gtk_tree_model_get(model, &iter, attr->rnd_hatt_table_cols, &r, -1);
 		if (r != NULL) {
 			pcb_hid_tree_t *tree = attr->wdata;
 			if (tree->user_browse_activate_cb != NULL) { /* let the user callbakc decide */
@@ -461,9 +461,9 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 	tree->hid_wdata = ctx;
 
 	/* create columns */
-	types = malloc(sizeof(GType) * (attr->pcb_hatt_table_cols+1));
+	types = malloc(sizeof(GType) * (attr->rnd_hatt_table_cols+1));
 	colhdr = tree->hdr;
-	for(c = 0; c < attr->pcb_hatt_table_cols; c++) {
+	for(c = 0; c < attr->rnd_hatt_table_cols; c++) {
 		GtkTreeViewColumn *col = gtk_tree_view_column_new();
 		if (tree->hdr != NULL) {
 			gtk_tree_view_column_set_title(col, *colhdr == NULL ? "" : *colhdr);
@@ -481,7 +481,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 	types[c] = G_TYPE_POINTER;
 
 	/* import existing data */
-	tstore = gtk_tree_store_newv(attr->pcb_hatt_table_cols+1, types);
+	tstore = gtk_tree_store_newv(attr->rnd_hatt_table_cols+1, types);
 	free(types);
 	ghid_tree_table_import(attr, tstore, &tree->rows, NULL);
 
@@ -502,7 +502,7 @@ static GtkWidget *ghid_tree_table_create(attr_dlg_t *ctx, rnd_hid_attribute_t *a
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_SINGLE);
 
 	gtk_widget_set_tooltip_text(view, attr->help_text);
-	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
+	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 	gtk_box_pack_start(GTK_BOX(bparent), view, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(view), PCB_OBJ_PROP, ctx);
 	return view;

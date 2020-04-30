@@ -437,14 +437,14 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 	static const char *hdr[] = {"configured path", "actual path on the filesystem", "config source", NULL};
 	pcb_hid_tree_t *tree;
 
-	PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL); /* get the parent vbox, which is the tab's page vbox, to expand and fill */
+	PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL); /* get the parent vbox, which is the tab's page vbox, to expand and fill */
 
 	PCB_DAD_LABEL(ctx->dlg, "Ordered list of footprint library search directories.");
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME | PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_SCROLL | RND_HATF_EXPFILL);
 		PCB_DAD_TREE(ctx->dlg, 3, 0, hdr);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			ctx->lib.wlist = PCB_DAD_CURRENT(ctx->dlg);
 			tree = ctx->dlg[ctx->lib.wlist].wdata;
 			tree->user_free_cb = pref_lib_row_free;

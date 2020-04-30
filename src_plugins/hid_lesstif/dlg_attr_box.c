@@ -174,11 +174,11 @@ static int ltf_tabbed_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_att
 	tctx = calloc(1, sizeof(ltf_tab_t) + sizeof(ltf_tabbtn_t) * numtabs-1);
 	tctx->len = numtabs;
 
-	if (!(ctx->attrs[i].pcb_hatt_flags & PCB_HATF_HIDE_TABLAB)) {
+	if (!(ctx->attrs[i].rnd_hatt_flags & RND_HATF_HIDE_TABLAB)) {
 		int n;
 
 		/* create the boxing for the labels */
-		if (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_LEFT_TAB) {
+		if (ctx->attrs[i].rnd_hatt_flags & RND_HATF_LEFT_TAB) {
 			wtop = pcb_motif_box(parent, "tabbed_top", 'h', 0, 0, 0);
 			wtab = pcb_motif_box(wtop, "tabbed_tabs", 'v', 0, 0, 0);
 		}

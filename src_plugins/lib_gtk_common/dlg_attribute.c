@@ -213,13 +213,13 @@ typedef struct {
 	attr_dlg_t *attrdlg;
 } resp_ctx_t;
 
-static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags, GtkWidget **wltop)
+static GtkWidget *frame_scroll(GtkWidget *parent, rnd_hatt_compflags_t flags, GtkWidget **wltop)
 {
 	GtkWidget *fr;
-	int expfill = (flags & PCB_HATF_EXPFILL);
+	int expfill = (flags & RND_HATF_EXPFILL);
 	int topped = 0;
 
-	if (flags & PCB_HATF_FRAME) {
+	if (flags & RND_HATF_FRAME) {
 		fr = gtk_frame_new(NULL);
 		gtk_box_pack_start(GTK_BOX(parent), fr, expfill, expfill, 0);
 
@@ -230,7 +230,7 @@ static GtkWidget *frame_scroll(GtkWidget *parent, pcb_hatt_compflags_t flags, Gt
 			topped = 1; /* remember the outmost parent */
 		}
 	}
-	if (flags & PCB_HATF_SCROLL) {
+	if (flags & RND_HATF_SCROLL) {
 		fr = gtk_scrolled_window_new(NULL, NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(fr), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_box_pack_start(GTK_BOX(parent), fr, TRUE, TRUE, 0);
@@ -286,7 +286,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 	GtkWidget *combo, *widget, *entry, *vbox1, *hbox, *bparent, *parent, *tbl;
 
 	for (j = start_from; j < ctx->n_attrs; j++) {
-		if (ctx->attrs[j].type == PCB_HATT_END)
+		if (ctx->attrs[j].type == RND_HATT_END)
 			break;
 
 		/* if we are filling a table, allocate parent boxes in row-major */
@@ -320,56 +320,56 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 		else
 			parent = real_parent;
 
-		expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
+		expfill = (ctx->attrs[j].rnd_hatt_flags & RND_HATF_EXPFILL);
 
 		/* create the actual widget from attrs */
 		switch (ctx->attrs[j].type) {
-			case PCB_HATT_BEGIN_HBOX:
-				bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags, &ctx->wltop[j]);
-				hbox = gtkc_hbox_new(FALSE, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
+			case RND_HATT_BEGIN_HBOX:
+				bparent = frame_scroll(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j]);
+				hbox = gtkc_hbox_new(FALSE, ((ctx->attrs[j].rnd_hatt_flags & RND_HATF_TIGHT) ? 0 : 4));
 				gtk_box_pack_start(GTK_BOX(bparent), hbox, expfill, expfill, 0);
 				ctx->wl[j] = hbox;
 				j = ghid_attr_dlg_add(ctx, hbox, NULL, j+1);
 				break;
 
-			case PCB_HATT_BEGIN_VBOX:
-				bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags, &ctx->wltop[j]);
-				vbox1 = gtkc_vbox_new(FALSE, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
-				expfill = (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_EXPFILL);
+			case RND_HATT_BEGIN_VBOX:
+				bparent = frame_scroll(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j]);
+				vbox1 = gtkc_vbox_new(FALSE, ((ctx->attrs[j].rnd_hatt_flags & RND_HATF_TIGHT) ? 0 : 4));
+				expfill = (ctx->attrs[j].rnd_hatt_flags & RND_HATF_EXPFILL);
 				gtk_box_pack_start(GTK_BOX(bparent), vbox1, expfill, expfill, 0);
 				ctx->wl[j] = vbox1;
 				j = ghid_attr_dlg_add(ctx, vbox1, NULL, j+1);
 				break;
 
-			case PCB_HATT_BEGIN_HPANE:
-			case PCB_HATT_BEGIN_VPANE:
-				j = ghid_pane_create(ctx, j, parent, (ctx->attrs[j].type == PCB_HATT_BEGIN_HPANE));
+			case RND_HATT_BEGIN_HPANE:
+			case RND_HATT_BEGIN_VPANE:
+				j = ghid_pane_create(ctx, j, parent, (ctx->attrs[j].type == RND_HATT_BEGIN_HPANE));
 				break;
 
-			case PCB_HATT_BEGIN_TABLE:
+			case RND_HATT_BEGIN_TABLE:
 				{
 					ghid_attr_tb_t ts;
-					bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags, &ctx->wltop[j]);
+					bparent = frame_scroll(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j]);
 					ts.type = TB_TABLE;
-					ts.val.table.cols = ctx->attrs[j].pcb_hatt_table_cols;
+					ts.val.table.cols = ctx->attrs[j].rnd_hatt_table_cols;
 					ts.val.table.rows = pcb_hid_attrdlg_num_children(ctx->attrs, j+1, ctx->n_attrs) / ts.val.table.cols;
 					ts.val.table.col = 0;
 					ts.val.table.row = 0;
 					tbl = gtkc_table_static(ts.val.table.rows, ts.val.table.cols, 1);
-					gtk_box_pack_start(GTK_BOX(bparent), tbl, expfill, expfill, ((ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TIGHT) ? 0 : 4));
+					gtk_box_pack_start(GTK_BOX(bparent), tbl, expfill, expfill, ((ctx->attrs[j].rnd_hatt_flags & RND_HATF_TIGHT) ? 0 : 4));
 					ctx->wl[j] = tbl;
 					j = ghid_attr_dlg_add(ctx, tbl, &ts, j+1);
 				}
 				break;
 
-			case PCB_HATT_BEGIN_TABBED:
+			case RND_HATT_BEGIN_TABBED:
 				{
 					ghid_attr_tb_t ts;
 					ts.type = TB_TABBED;
 					ts.val.tabbed.tablab = ctx->attrs[j].wdata;
 					ctx->wl[j] = widget = gtk_notebook_new();
-					gtk_notebook_set_show_tabs(GTK_NOTEBOOK(widget), !(ctx->attrs[j].pcb_hatt_flags & PCB_HATF_HIDE_TABLAB));
-					if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_LEFT_TAB)
+					gtk_notebook_set_show_tabs(GTK_NOTEBOOK(widget), !(ctx->attrs[j].rnd_hatt_flags & RND_HATF_HIDE_TABLAB));
+					if (ctx->attrs[j].rnd_hatt_flags & RND_HATF_LEFT_TAB)
 						gtk_notebook_set_tab_pos(GTK_NOTEBOOK(widget), GTK_POS_LEFT);
 					else
 						gtk_notebook_set_tab_pos(GTK_NOTEBOOK(widget), GTK_POS_TOP);
@@ -381,16 +381,16 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				}
 				break;
 
-			case PCB_HATT_BEGIN_COMPOUND:
+			case RND_HATT_BEGIN_COMPOUND:
 				j = ghid_attr_dlg_add(ctx, parent, NULL, j+1);
 				break;
 
-			case PCB_HATT_LABEL:
+			case RND_HATT_LABEL:
 				{
 				GtkRequisition req;
 				int theight;
 
-				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_TRUNCATED) {
+				if (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TEXT_TRUNCATED) {
 					/* workaround: need to get the real height - create a temporary, non-truncated label */
 					widget = gtk_label_new(ctx->attrs[j].name);
 					gtk_widget_size_request(widget, &req);
@@ -408,11 +408,11 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				else if (theight > 128)
 					theight = 128;
 
-				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_VERTICAL)
+				if (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TEXT_VERTICAL)
 					gtk_label_set_angle(GTK_LABEL(widget), 90);
 
-				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_TRUNCATED) {
-					if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_VERTICAL) {
+				if (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TEXT_TRUNCATED) {
+					if (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TEXT_VERTICAL) {
 						gtk_misc_set_alignment(GTK_MISC(widget), 0, 1);
 						gtk_widget_set_size_request(widget, theight, 1);
 					}
@@ -429,21 +429,21 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				g_object_set_data(G_OBJECT(ctx->wltop[j]), PCB_OBJ_PROP, ctx);
 
 				gtk_box_pack_start(GTK_BOX(parent), ctx->wltop[j], FALSE, FALSE, 0);
-				if (!(ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TEXT_TRUNCATED))
+				if (!(ctx->attrs[j].rnd_hatt_flags & RND_HATF_TEXT_TRUNCATED))
 					gtk_misc_set_alignment(GTK_MISC(widget), 0., 0.5);
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
 				}
 				break;
 
-			case PCB_HATT_INTEGER:
+			case RND_HATT_INTEGER:
 				ctx->wl[j] = gtk_label_new("ERROR: INTEGER entry");
 				break;
 
-			case PCB_HATT_COORD:
+			case RND_HATT_COORD:
 				ctx->wl[j] = gtk_label_new("ERROR: COORD entry");
 				break;
 
-			case PCB_HATT_STRING:
+			case RND_HATT_STRING:
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
@@ -458,12 +458,12 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				g_signal_connect(G_OBJECT(entry), "changed", G_CALLBACK(entry_changed_cb), &(ctx->attrs[j]));
 				g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(entry_activate_cb), &(ctx->attrs[j]));
 
-				if (ctx->attrs[j].hatt_flags & PCB_HATF_HEIGHT_CHR)
+				if (ctx->attrs[j].hatt_flags & RND_HATF_HEIGHT_CHR)
 					gtk_entry_set_width_chars(GTK_ENTRY(entry), ctx->attrs[j].geo_width);
 
 				break;
 
-			case PCB_HATT_BOOL:
+			case RND_HATT_BOOL:
 				/* put this in a check button */
 				widget = chk_btn_new(parent, ctx->attrs[j].val.lng, set_flag_cb, &(ctx->attrs[j]), NULL);
 				gtk_widget_set_tooltip_text(widget, ctx->attrs[j].help_text);
@@ -471,7 +471,7 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				ctx->wl[j] = widget;
 				break;
 
-			case PCB_HATT_ENUM:
+			case RND_HATT_ENUM:
 				ctx->wltop[j] = hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
@@ -494,47 +494,47 @@ static int ghid_attr_dlg_add(attr_dlg_t *ctx, GtkWidget *real_parent, ghid_attr_
 				g_signal_connect(G_OBJECT(combo), "changed", G_CALLBACK(enum_changed_cb), &(ctx->attrs[j]));
 				break;
 
-			case PCB_HATT_TREE:
+			case RND_HATT_TREE:
 				ctx->wl[j] = ghid_tree_table_create(ctx, &ctx->attrs[j], parent, j);
 				break;
 
-			case PCB_HATT_PREVIEW:
+			case RND_HATT_PREVIEW:
 				ctx->wl[j] = ghid_preview_create(ctx, &ctx->attrs[j], parent, j);
 				break;
 
-			case PCB_HATT_TEXT:
+			case RND_HATT_TEXT:
 				ctx->wl[j] = ghid_text_create(ctx, &ctx->attrs[j], parent);
 				break;
 
-			case PCB_HATT_PICTURE:
+			case RND_HATT_PICTURE:
 				ctx->wl[j] = ghid_picture_create(ctx, &ctx->attrs[j], parent, j, G_CALLBACK(label_click_cb), ctx);
 				break;
 
-			case PCB_HATT_PICBUTTON:
-				ctx->wl[j] = ghid_picbutton_create(ctx, &ctx->attrs[j], parent, j, (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TOGGLE), expfill);
+			case RND_HATT_PICBUTTON:
+				ctx->wl[j] = ghid_picbutton_create(ctx, &ctx->attrs[j], parent, j, (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TOGGLE), expfill);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "clicked", G_CALLBACK(button_changed_cb), &(ctx->attrs[j]));
 				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
 				break;
 
-			case PCB_HATT_COLOR:
+			case RND_HATT_COLOR:
 				ctx->wl[j] = ghid_color_create(ctx, &ctx->attrs[j], parent, j);
 				g_signal_connect(G_OBJECT(ctx->wl[j]), "color_set", G_CALLBACK(color_changed_cb), &(ctx->attrs[j]));
 				g_object_set_data(G_OBJECT(ctx->wl[j]), PCB_OBJ_PROP, ctx);
 				break;
 
-			case PCB_HATT_PROGRESS:
+			case RND_HATT_PROGRESS:
 				ctx->wl[j] = ghid_progress_create(ctx, &ctx->attrs[j], parent, j);
 				break;
 
-			case PCB_HATT_UNIT:
+			case RND_HATT_UNIT:
 				ctx->wl[j] = gtk_label_new("ERROR: UNIT entry");
 				break;
 
-			case PCB_HATT_BUTTON:
+			case RND_HATT_BUTTON:
 				hbox = gtkc_hbox_new(FALSE, 4);
 				gtk_box_pack_start(GTK_BOX(parent), hbox, expfill, expfill, 0);
 
-				if (ctx->attrs[j].pcb_hatt_flags & PCB_HATF_TOGGLE)
+				if (ctx->attrs[j].rnd_hatt_flags & RND_HATF_TOGGLE)
 					ctx->wl[j] = gtk_toggle_button_new_with_label(ctx->attrs[j].val.str);
 				else
 					ctx->wl[j] = gtk_button_new_with_label(ctx->attrs[j].val.str);
@@ -564,18 +564,18 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 
 	/* create the actual widget from attrs */
 	switch (ctx->attrs[idx].type) {
-		case PCB_HATT_BEGIN_HBOX:
-		case PCB_HATT_BEGIN_VBOX:
-		case PCB_HATT_BEGIN_TABLE:
-		case PCB_HATT_PICBUTTON:
-		case PCB_HATT_PICTURE:
-		case PCB_HATT_COORD:
-		case PCB_HATT_REAL:
-		case PCB_HATT_INTEGER:
-		case PCB_HATT_BEGIN_COMPOUND:
+		case RND_HATT_BEGIN_HBOX:
+		case RND_HATT_BEGIN_VBOX:
+		case RND_HATT_BEGIN_TABLE:
+		case RND_HATT_PICBUTTON:
+		case RND_HATT_PICTURE:
+		case RND_HATT_COORD:
+		case RND_HATT_REAL:
+		case RND_HATT_INTEGER:
+		case RND_HATT_BEGIN_COMPOUND:
 			goto error;
 
-		case PCB_HATT_END:
+		case RND_HATT_END:
 			{
 				pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 				if ((cmp != NULL) && (cmp->set_value != NULL))
@@ -585,38 +585,38 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 			}
 			break;
 
-		case PCB_HATT_TREE:
+		case RND_HATT_TREE:
 			ret = ghid_tree_table_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
-		case PCB_HATT_PROGRESS:
+		case RND_HATT_PROGRESS:
 			ret = ghid_progress_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
-		case PCB_HATT_PREVIEW:
+		case RND_HATT_PREVIEW:
 			ret = ghid_preview_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
-		case PCB_HATT_TEXT:
+		case RND_HATT_TEXT:
 			ret = ghid_text_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
-		case PCB_HATT_COLOR:
+		case RND_HATT_COLOR:
 			ret = ghid_color_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
-		case PCB_HATT_BEGIN_HPANE:
-		case PCB_HATT_BEGIN_VPANE:
+		case RND_HATT_BEGIN_HPANE:
+		case RND_HATT_BEGIN_VPANE:
 			ret = ghid_pane_set(ctx, idx, val);
 			ctx->inhibit_valchg = save;
 			return ret;
 
-		case PCB_HATT_LABEL:
+		case RND_HATT_LABEL:
 			{
 				const char *txt = gtk_label_get_text(GTK_LABEL(ctx->wl[idx]));
 				if (strcmp(txt, val->str) == 0)
@@ -627,7 +627,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 
 
 
-		case PCB_HATT_STRING:
+		case RND_HATT_STRING:
 			{
 				const char *nv, *s = gtk_entry_get_text(GTK_ENTRY(ctx->wl[idx]));
 				nv = val->str;
@@ -641,7 +641,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 			}
 			break;
 
-		case PCB_HATT_BOOL:
+		case RND_HATT_BOOL:
 			{
 				int chk = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]));
 				if (chk == val->lng)
@@ -650,7 +650,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 			}
 			break;
 
-		case PCB_HATT_ENUM:
+		case RND_HATT_ENUM:
 			{
 				int en = gtk_combo_box_get_active(GTK_COMBO_BOX(ctx->wl[idx]));
 				if (en == val->lng)
@@ -659,11 +659,11 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 			}
 			break;
 
-		case PCB_HATT_UNIT:
+		case RND_HATT_UNIT:
 			abort();
 			break;
 
-		case PCB_HATT_BUTTON:
+		case RND_HATT_BUTTON:
 			{
 				const char *s = gtk_button_get_label(GTK_BUTTON(ctx->wl[idx]));
 				if (strcmp(s, val->str) == 0)
@@ -672,7 +672,7 @@ static int ghid_attr_dlg_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t 
 			}
 			break;
 
-		case PCB_HATT_BEGIN_TABBED:
+		case RND_HATT_BEGIN_TABBED:
 			gtk_notebook_set_current_page(GTK_NOTEBOOK(ctx->wl[idx]), val->lng);
 			break;
 	}
@@ -711,9 +711,9 @@ static void ghid_attr_dlg_free_gui(attr_dlg_t *ctx)
 
 	for(i = 0; i < ctx->n_attrs; i++) {
 		switch(ctx->attrs[i].type) {
-			case PCB_HATT_TREE: ghid_tree_pre_free(ctx, &ctx->attrs[i], i); break;
-			case PCB_HATT_BUTTON: g_signal_handlers_block_by_func(G_OBJECT(ctx->wl[i]), G_CALLBACK(button_changed_cb), &(ctx->attrs[i])); break;
-			case PCB_HATT_PREVIEW: pcb_gtk_preview_del(ctx->gctx, PCB_GTK_PREVIEW(ctx->wl[i]));
+			case RND_HATT_TREE: ghid_tree_pre_free(ctx, &ctx->attrs[i], i); break;
+			case RND_HATT_BUTTON: g_signal_handlers_block_by_func(G_OBJECT(ctx->wl[i]), G_CALLBACK(button_changed_cb), &(ctx->attrs[i])); break;
+			case RND_HATT_PREVIEW: pcb_gtk_preview_del(ctx->gctx, PCB_GTK_PREVIEW(ctx->wl[i]));
 			default: break;
 		}
 	}
@@ -739,10 +739,10 @@ static int ghid_attr_dlg_widget_hide_(attr_dlg_t *ctx, int idx, rnd_bool hide)
 {
 	GtkWidget *w;
 
-	if (ctx->attrs[idx].type == PCB_HATT_BEGIN_COMPOUND)
+	if (ctx->attrs[idx].type == RND_HATT_BEGIN_COMPOUND)
 		return -1;
 
-	if (ctx->attrs[idx].type == PCB_HATT_END) {
+	if (ctx->attrs[idx].type == RND_HATT_END) {
 		pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 		if ((cmp != NULL) && (cmp->widget_hide != NULL))
 			return cmp->widget_hide(&ctx->attrs[idx], ctx, idx, hide);
@@ -766,7 +766,7 @@ static void ghid_initial_wstates(attr_dlg_t *ctx)
 {
 	int n;
 	for(n = 0; n < ctx->n_attrs; n++)
-		if (ctx->attrs[n].pcb_hatt_flags & PCB_HATF_HIDE)
+		if (ctx->attrs[n].rnd_hatt_flags & RND_HATF_HIDE)
 			ghid_attr_dlg_widget_hide_(ctx, n, 1);
 }
 
@@ -931,10 +931,10 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
 		return -1;
 
-	if (ctx->attrs[idx].type == PCB_HATT_BEGIN_COMPOUND)
+	if (ctx->attrs[idx].type == RND_HATT_BEGIN_COMPOUND)
 		return -1;
 
-	if (ctx->attrs[idx].type == PCB_HATT_END) {
+	if (ctx->attrs[idx].type == RND_HATT_END) {
 		pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 		if ((cmp != NULL) && (cmp->widget_state != NULL))
 			cmp->widget_state(&ctx->attrs[idx], ctx, idx, enabled);
@@ -945,12 +945,12 @@ int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 	gtk_widget_set_sensitive(ctx->wl[idx], enabled);
 
 	switch(ctx->attrs[idx].type) {
-		case PCB_HATT_LABEL:
+		case RND_HATT_LABEL:
 			pcb_gtk_set_selected(ctx->wltop[idx], (enabled == 2));
 			break;
-		case PCB_HATT_PICBUTTON:
-		case PCB_HATT_BUTTON:
-			if (ctx->attrs[idx].pcb_hatt_flags & PCB_HATF_TOGGLE)
+		case RND_HATT_PICBUTTON:
+		case RND_HATT_BUTTON:
+			if (ctx->attrs[idx].rnd_hatt_flags & RND_HATF_TOGGLE)
 				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ctx->wl[idx]), (enabled == 2));
 			break;
 		default:;
@@ -1008,9 +1008,9 @@ void pcb_gtk_dad_fixcolor(void *hid_ctx, const GdkColor *color)
 	int n;
 	for(n = 0; n < ctx->n_attrs; n++) {
 		switch(ctx->attrs[n].type) {
-			case PCB_HATT_BUTTON:
-			case PCB_HATT_LABEL:
-			case PCB_HATT_PICTURE:
+			case RND_HATT_BUTTON:
+			case RND_HATT_LABEL:
+			case RND_HATT_PICTURE:
 				gtk_widget_modify_bg(ctx->wltop[n], GTK_STATE_NORMAL, color);
 			default:;
 		}

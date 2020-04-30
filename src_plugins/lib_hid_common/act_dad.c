@@ -247,7 +247,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		PCB_DAD_BEGIN_HBOX(dad->dlg);
 		PCB_DAD_BEGIN_HBOX(dad->dlg);
-		PCB_DAD_COMPFLAG(dad->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(dad->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_END(dad->dlg);
 		for(n = 3; n < argc; n+=2) {
 			RND_PCB_ACT_CONVARG(n+0, FGW_STR, dad, txt = argv[n+0].val.str);
@@ -420,7 +420,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (rnd_strcasecmp(cmd, "flags") == 0) {
 		int n;
-		pcb_hatt_compflags_t tmp, flg = 0;
+		rnd_hatt_compflags_t tmp, flg = 0;
 
 		if (dad->running) goto cant_chg;
 
@@ -446,7 +446,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		int wid, i;
 		double d;
 		rnd_coord_t c;
-		pcb_hid_attr_type_t wtype;
+		rnd_hid_attr_type_t wtype;
 
 		RND_PCB_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
 		if ((wid < 0) || (wid >= dad->dlg_len)) {
@@ -456,27 +456,27 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		wtype = dad->dlg[wid].type;
-		if (dad->dlg[wid].type == PCB_HATT_END) /* composite widget's end or real end - the spin macro handles both */
+		if (dad->dlg[wid].type == RND_HATT_END) /* composite widget's end or real end - the spin macro handles both */
 			wtype = PCB_DAD_SPIN_GET_TYPE(&dad->dlg[wid]);
 
 		switch(wtype) {
-			case PCB_HATT_COORD:
+			case RND_HATT_COORD:
 				RND_PCB_ACT_CONVARG(4, FGW_COORD, dad, c = fgw_coord(&argv[4]));
 				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, crd, c);
 				break;
-			case PCB_HATT_REAL:
-			case PCB_HATT_PROGRESS:
+			case RND_HATT_REAL:
+			case RND_HATT_PROGRESS:
 				RND_PCB_ACT_CONVARG(4, FGW_DOUBLE, dad, d = argv[4].val.nat_double);
 				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, dbl, d);
 				break;
-			case PCB_HATT_INTEGER:
-			case PCB_HATT_BOOL:
+			case RND_HATT_INTEGER:
+			case RND_HATT_BOOL:
 				RND_PCB_ACT_CONVARG(4, FGW_INT, dad, i = argv[4].val.nat_int);
 				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, lng, i);
 				break;
-			case PCB_HATT_STRING:
-			case PCB_HATT_LABEL:
-			case PCB_HATT_BUTTON:
+			case RND_HATT_STRING:
+			case RND_HATT_LABEL:
+			case RND_HATT_BUTTON:
 				RND_PCB_ACT_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
 				PCB_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, str, txt);
 				break;
@@ -489,7 +489,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (rnd_strcasecmp(cmd, "get") == 0) {
 		int wid;
-		pcb_hid_attr_type_t wtype;
+		rnd_hid_attr_type_t wtype;
 
 		RND_PCB_ACT_CONVARG(3, FGW_INT, dad, wid = argv[3].val.nat_int);
 		if ((wid < 0) || (wid >= dad->dlg_len)) {
@@ -498,11 +498,11 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 
 		wtype = dad->dlg[wid].type;
-		if (dad->dlg[wid].type == PCB_HATT_END) /* composite widget's end or real end - the spin macro handles both */
+		if (dad->dlg[wid].type == RND_HATT_END) /* composite widget's end or real end - the spin macro handles both */
 			wtype = PCB_DAD_SPIN_GET_TYPE(&dad->dlg[wid]);
 
 		switch(wtype) {
-			case PCB_HATT_COORD:
+			case RND_HATT_COORD:
 				txt = NULL;
 				rnd_PCB_ACT_MAY_CONVARG(4, FGW_STR, dad, txt = argv[4].val.str);
 				if (txt != NULL) {
@@ -519,15 +519,15 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					fgw_coord(res) = dad->dlg[wid].val.crd;
 				}
 				break;
-			case PCB_HATT_INTEGER:
-			case PCB_HATT_BOOL:
-			case PCB_HATT_ENUM:
+			case RND_HATT_INTEGER:
+			case RND_HATT_BOOL:
+			case RND_HATT_ENUM:
 				res->type = FGW_INT;
 				res->val.nat_int = dad->dlg[wid].val.lng;
 				break;
-			case PCB_HATT_STRING:
-			case PCB_HATT_LABEL:
-			case PCB_HATT_BUTTON:
+			case RND_HATT_STRING:
+			case RND_HATT_LABEL:
+			case RND_HATT_BUTTON:
 				res->type = FGW_STR;
 				res->val.str = (char *)dad->dlg[wid].val.str;
 				break;

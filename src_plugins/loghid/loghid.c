@@ -50,7 +50,7 @@ static rnd_hid_t loghid_exp;
 
 rnd_export_opt_t loghid_attribute_list[] = {
 	{"target-hid", "the real GUI or export HID to relay calls to",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
 #define HA_target_hid 0
 };
 #define NUM_OPTIONS sizeof(loghid_attribute_list) / sizeof(loghid_attribute_list[0])
@@ -60,7 +60,7 @@ static int loghid_parse_arguments_real(rnd_hid_t *hid, int *argc, char ***argv, 
 	rnd_hid_t *target, *me;
 	const char *target_name;
 
-	pcb_export_register_opts(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
+	rnd_export_register_opts(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
 	pcb_hid_parse_command_line(argc, argv);
 
 	target_name = loghid_attribute_list[HA_target_hid].default_val.str;
@@ -114,7 +114,7 @@ int pplg_check_ver_loghid(int ver_needed) { return 0; }
 
 void pplg_uninit_loghid(void)
 {
-	pcb_export_remove_opts_by_cookie(loghid_cookie);
+	rnd_export_remove_opts_by_cookie(loghid_cookie);
 }
 
 int pplg_init_loghid(void)

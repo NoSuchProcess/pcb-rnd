@@ -259,7 +259,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 
 	info = pcb_strdup_printf("DRC rule edit: %s on role %s", rule, rnd_conf_role_name(role));
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_LABEL(ctx->dlg, info);
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "DRC violation type (group):");
@@ -285,7 +285,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 
 		PCB_DAD_LABEL(ctx->dlg, "DRC rule query script:");
 		PCB_DAD_TEXT(ctx->dlg, ctx);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			ctx->wquery = PCB_DAD_CURRENT(ctx->dlg);
 
 
@@ -294,7 +294,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 				PCB_DAD_CHANGE_CB(ctx->dlg, rule_btn_run_cb);
 
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME | PCB_HATF_TIGHT);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_TIGHT);
 				PCB_DAD_BUTTON(ctx->dlg, "Save");
 					PCB_DAD_CHANGE_CB(ctx->dlg, rule_btn_save_cb);
 					ctx->wsave = PCB_DAD_CURRENT(ctx->dlg);
@@ -306,7 +306,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 			PCB_DAD_END(ctx->dlg);
 
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
@@ -561,15 +561,15 @@ static int pcb_dlg_drc_rlist(void)
 		return 0; /* do not open another */
 
 	PCB_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg);
-		PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_HPANE(drc_rlist_ctx.dlg);
 			wpane = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
 
 			PCB_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* left */
-				PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
 				PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Rules available:");
 				PCB_DAD_TREE(drc_rlist_ctx.dlg, 4, 0, lst_hdr);
-					PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					drc_rlist_ctx.wlist = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);
 					PCB_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, selected_cb, rlist_select);
 					PCB_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, ctx, &drc_rlist_ctx);
@@ -584,7 +584,7 @@ static int pcb_dlg_drc_rlist(void)
 			PCB_DAD_END(drc_rlist_ctx.dlg);
 
 			PCB_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* right */
-				PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
 				PCB_DAD_BEGIN_HBOX(drc_rlist_ctx.dlg);
 					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Rule: ");
 					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "<no rule selected>");
@@ -592,7 +592,7 @@ static int pcb_dlg_drc_rlist(void)
 				PCB_DAD_END(drc_rlist_ctx.dlg);
 
 				PCB_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg);
-					PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					PCB_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "Type/group:");
 					PCB_DAD_LABEL(drc_rlist_ctx.dlg, "-");
 						drc_rlist_ctx.wtype = PCB_DAD_CURRENT(drc_rlist_ctx.dlg);

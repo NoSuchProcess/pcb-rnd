@@ -307,9 +307,9 @@ TODO("subc TODO")
 				num_copper++;
 
 		PCB_DAD_BEGIN_VBOX(dlg);
-			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 			PCB_DAD_BEGIN_TABLE(dlg, 2);
-				PCB_DAD_COMPFLAG(dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
 			for(n = 0; n < ctx.data->LayerN; n++) {
 				lb_widx_t *w = ctx.widx+n;
 				/* left side */

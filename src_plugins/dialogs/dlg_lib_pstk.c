@@ -516,7 +516,7 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 		htip_set(&pstk_libs, subc_id, ctx);
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			if (hint != NULL)
 				PCB_DAD_LABEL(ctx->dlg, hint);
 
@@ -524,9 +524,9 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 		PCB_DAD_BEGIN_HPANE(ctx->dlg);
 			/* left */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_TREE(ctx->dlg, 3, 0, hdr);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, pstklib_select);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 					ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
@@ -562,9 +562,9 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 
 			/* right */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_PREVIEW(ctx->dlg, pstklib_expose, NULL, NULL, NULL, 200, 200, ctx);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 					ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
 
 				PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);

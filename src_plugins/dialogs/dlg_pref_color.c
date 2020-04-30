@@ -94,12 +94,12 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 	const char *path_prefix = "appearance/color";
 
 
-	PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+	PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 	PCB_DAD_BEGIN_TABBED(ctx->dlg, tabs);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_LEFT_TAB);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_LEFT_TAB);
 
 		PCB_DAD_BEGIN_VBOX(ctx->dlg); /* generic */
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			pl = strlen(path_prefix);
 
 			ctx->color.ngen = 0;
@@ -129,7 +129,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 		PCB_DAD_END(ctx->dlg);
 
 		PCB_DAD_BEGIN_VBOX(ctx->dlg); /* layer */
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			nat = rnd_conf_get_field("appearance/color/layer");
 			if (nat->type == RND_CFN_COLOR) {
 				PCB_DAD_LABEL(ctx->dlg, "NOTE: these colors are used only\nwhen creating new layers.");

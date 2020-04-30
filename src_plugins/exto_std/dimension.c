@@ -415,7 +415,7 @@ static void pcb_dimension_gui_propedit(pcb_subc_t *subc)
 		return; /* do not open another */
 
 	PCB_DAD_BEGIN_VBOX(dim->dlg);
-		PCB_DAD_COMPFLAG(dim->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(dim->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABLE(dim->dlg, 2);
 			pcb_exto_dlg_coord(dim->dlg, subc, "displacement", "extobj::displace", "distance between base line and dimension line");
 			pcb_exto_dlg_str(dim->dlg, subc, "format", "extobj::format", "printf coord format string of the dimension value");

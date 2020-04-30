@@ -33,7 +33,7 @@ PDF output with a virtual PDF printer. Example: @*
 %end-doc
 */
 	{"lprcommand", "Command to use for printing",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_lprcommand 0
 };
 
@@ -96,7 +96,7 @@ static void lpr_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int lpr_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	lpr_get_export_options(hid, 0);
-	pcb_export_register_opts(lpr_options, num_lpr_options, lpr_cookie, 0);
+	rnd_export_register_opts(lpr_options, num_lpr_options, lpr_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 

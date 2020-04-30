@@ -66,7 +66,7 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 	int vlen, len, n;
 
 	switch(a->type) {
-		case PCB_HATT_ENUM:
+		case RND_HATT_ENUM:
 			hv.lng = 0; /* fallback in case the loop doesn't find any match */
 			vlen = strlen(val);
 			for(n = 0, s = a->wdata; *s != NULL; s++,n++) {
@@ -81,18 +81,18 @@ static void set_attr(library_ctx_t *ctx, int pidx, char *val)
 				}
 			}
 			break;
-		case PCB_HATT_STRING:
+		case RND_HATT_STRING:
 			hv.str = val;
 			break;
-		case PCB_HATT_BOOL:
+		case RND_HATT_BOOL:
 			if ((val == NULL) || (*val == '\0'))
 				return;
 			hv.lng = \
 				(*val == '1') || (*val == 't') || (*val == 'T') || (*val == 'y') || (*val == 'Y') || \
 				(((val[0] == 'o') || (val[0] == 'O')) && ((val[1] == 'n') || (val[1] == 'N')));
 			break;
-		case PCB_HATT_COORD:
-		case PCB_HATT_END: /* compound widget for the spinbox! */
+		case RND_HATT_COORD:
+		case RND_HATT_END: /* compound widget for the spinbox! */
 			hv.crd = pcb_get_value_ex(val, NULL, NULL, NULL, "mil", NULL);
 			break;
 		default:
@@ -124,7 +124,7 @@ do { \
 	vtp0_uninit(&curr_enum); \
 	free(name); name = NULL; \
 	free(help); help = NULL; \
-	curr_type = PCB_HATT_END; \
+	curr_type = RND_HATT_END; \
 	curr = -1; \
 	vtp0_init(&curr_enum); \
 	vtp0_append(&curr_enum, rnd_strdup("")); \
@@ -138,30 +138,30 @@ do { \
 			rnd_message(RND_MSG_ERROR, "too many parameters, displaying only the first %d\n", MAX_PARAMS); \
 		break; \
 	} \
-	if (curr_type == PCB_HATT_END) \
+	if (curr_type == RND_HATT_END) \
 		break; \
 	pre_append(); \
 	PCB_DAD_LABEL(library_ctx.pdlg, name); \
 		PCB_DAD_HELP(library_ctx.pdlg, rnd_strdup(help)); \
 	switch(curr_type) { \
-		case PCB_HATT_COORD: \
-		case PCB_HATT_END: \
+		case RND_HATT_COORD: \
+		case RND_HATT_END: \
 			PCB_DAD_COORD(library_ctx.pdlg, ""); \
 				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 				PCB_DAD_MINMAX(library_ctx.pdlg, 0, PCB_MM_TO_COORD(512)); \
 				PCB_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
 			break; \
-		case PCB_HATT_STRING: \
+		case RND_HATT_STRING: \
 			PCB_DAD_STRING(library_ctx.pdlg); \
 				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 				PCB_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
 			break; \
-		case PCB_HATT_BOOL: \
+		case RND_HATT_BOOL: \
 			PCB_DAD_BOOL(library_ctx.pdlg, ""); \
 				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 				PCB_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
 			break; \
-		case PCB_HATT_ENUM: \
+		case RND_HATT_ENUM: \
 			PCB_DAD_ENUM(library_ctx.pdlg, (const char **)curr_enum.array); \
 				ctx->pwid[curr] = PCB_DAD_CURRENT(library_ctx.pdlg); \
 				PCB_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
@@ -183,7 +183,7 @@ static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 	char *name = NULL, *help = NULL, *help_def = NULL;
 	vtp0_t curr_enum;
 	int curr, examples = 0, numrows = 0;
-	pcb_hid_attr_type_t curr_type = PCB_HATT_END;
+	rnd_hid_attr_type_t curr_type = RND_HATT_END;
 
 	curr = -1;
 
@@ -248,7 +248,7 @@ static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 			free(help);
 			name = rnd_strdup(col);
 			help = rnd_strdup(arg);
-			curr_type = PCB_HATT_STRING; /* assume string until a dim or enum overrides that */
+			curr_type = RND_HATT_STRING; /* assume string until a dim or enum overrides that */
 		}
 		else if (strncmp(cmd, "default:", 6) == 0) {
 			free(help_def);
@@ -257,15 +257,15 @@ static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 			help_def = rnd_strdup(arg);
 		}
 		else if (strncmp(cmd, "dim:", 4) == 0) {
-			curr_type = PCB_HATT_COORD;
+			curr_type = RND_HATT_COORD;
 		}
 		else if (strncmp(cmd, "bool:", 5) == 0) {
-			curr_type = PCB_HATT_BOOL;
+			curr_type = RND_HATT_BOOL;
 		}
 		else if (strncmp(cmd, "enum:", 5) == 0) {
 			char *evl;
 
-			curr_type = PCB_HATT_ENUM;
+			curr_type = RND_HATT_ENUM;
 			colsplit(); colsplit();
 			if (arg != NULL) {
 				if (strlen(arg) > 32) {
@@ -310,10 +310,10 @@ static char *gen_cmd(library_ctx_t *ctx)
 			continue;
 
 		switch(a->type) {
-			case PCB_HATT_LABEL:
-			case PCB_HATT_BEGIN_TABLE:
+			case RND_HATT_LABEL:
+			case RND_HATT_BEGIN_TABLE:
 				continue;
-			case PCB_HATT_ENUM:
+			case RND_HATT_ENUM:
 				val = ((const char **)(a->wdata))[a->val.lng];
 				if (val != NULL) {
 					if (*val != '\0') {
@@ -325,14 +325,14 @@ static char *gen_cmd(library_ctx_t *ctx)
 						val = NULL;
 				}
 				break;
-			case PCB_HATT_STRING:
+			case RND_HATT_STRING:
 				val = a->val.str;
 				break;
-			case PCB_HATT_BOOL:
+			case RND_HATT_BOOL:
 				val = a->val.lng ? "yes" : "no";
 				break;
-			case PCB_HATT_COORD:
-			case PCB_HATT_END:
+			case RND_HATT_COORD:
+			case RND_HATT_END:
 				val = buff;
 				pcb_snprintf(buff, sizeof(buff), "%$$mH", a->val.crd);
 				break;
@@ -530,14 +530,14 @@ static int library_param_open(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 	int w, oversized = 0;
 
 	PCB_DAD_BEGIN_VBOX(library_ctx.pdlg);
-		PCB_DAD_COMPFLAG(library_ctx.pdlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(library_ctx.pdlg, RND_HATF_EXPFILL);
 		PCB_DAD_LABEL(library_ctx.pdlg, "n/a");
 			ctx->pwdesc = PCB_DAD_CURRENT(library_ctx.pdlg);
 		PCB_DAD_BEGIN_TABLE(library_ctx.pdlg, 2);
-			PCB_DAD_COMPFLAG(library_ctx.pdlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(library_ctx.pdlg, RND_HATF_EXPFILL);
 			w = PCB_DAD_CURRENT(library_ctx.pdlg);
 			if (library_param_build(ctx, l, f) > 16) {
-				library_ctx.pdlg[w].pcb_hatt_flags |= PCB_HATF_SCROLL;
+				library_ctx.pdlg[w].rnd_hatt_flags |= RND_HATF_SCROLL;
 				oversized = 1;
 			}
 		PCB_DAD_END(library_ctx.pdlg);

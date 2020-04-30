@@ -75,7 +75,7 @@ static void pcb_dlg_foo(whatever args) <<<- edit this
 		return; /* do not open another */
 
 	PCB_DAD_BEGIN_VBOX(foo_ctx.dlg);
-		PCB_DAD_COMPFLAG(foo_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(foo_ctx.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_LABEL(foo_ctx.dlg, "foo");
 		PCB_DAD_BUTTON_CLOSES(foo_ctx.dlg, clbtn);
 	PCB_DAD_END(foo_ctx.dlg);

@@ -115,9 +115,9 @@ static void pref_win_file_now_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 
 void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 {
-	PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+	PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 	PCB_DAD_BEGIN_HBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		PCB_DAD_LABEL(ctx->dlg, "Load window geometry and enable window placement:");
 		PCB_DAD_BOOL(ctx->dlg, "");
 			PCB_DAD_HELP(ctx->dlg, "When enabled, pcb-rnd will load window geometry from config files\nand try to resize and place windows accordingly.\nSizes can be saved once (golden arrangement)\nor at every exit (retrain last setup),\nsee below.");
@@ -125,13 +125,13 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 			PCB_DAD_CHANGE_CB(ctx->dlg, pref_win_master_cb);
 	PCB_DAD_END(ctx->dlg);
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		PCB_DAD_LABEL(ctx->dlg, "Save window geometry to...");
 		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
 
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "... in the design (board) file");
 			PCB_DAD_END(ctx->dlg);
@@ -146,7 +146,7 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "... in the project file");
 			PCB_DAD_END(ctx->dlg);
@@ -161,7 +161,7 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "... in the user config");
 			PCB_DAD_END(ctx->dlg);
@@ -176,7 +176,7 @@ void pcb_dlg_pref_win_create(pref_ctx_t *ctx)
 
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "... in a custom file");
 			PCB_DAD_END(ctx->dlg);

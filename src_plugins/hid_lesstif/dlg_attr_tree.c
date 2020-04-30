@@ -418,7 +418,7 @@ static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_a
 	ht->hid_expcoll_cb = ltf_tree_expcoll_cb;
 	ht->hid_update_hide_cb = ltf_tree_update_hide_cb;
 
-	xm_tree_table_tree_mode(lt->w, !!(attr->pcb_hatt_flags & PCB_HATF_TREE_COL));
+	xm_tree_table_tree_mode(lt->w, !!(attr->rnd_hatt_flags & RND_HATF_TREE_COL));
 
 	if (ht->hdr != NULL) {
 		int n;

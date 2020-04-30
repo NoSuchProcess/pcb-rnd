@@ -139,7 +139,7 @@ void pcb_hid_uninit(void)
 
 	pup_uninit(&pcb_pup);
 
-	pcb_export_uninit();
+	rnd_export_uninit();
 
 	for(pd = pcb_plugin_dir_first; pd != NULL; pd = next) {
 		next = pd->next;

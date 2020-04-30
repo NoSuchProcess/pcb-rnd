@@ -58,7 +58,7 @@ Name of the postscript output file. Can contain a path.
 %end-doc
 */
 	{"psfile", "Postscript output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_psfile 0
 
 /* %start-doc options "91 Postscript Export"
@@ -70,7 +70,7 @@ Draw small holes to center drill but in copper
 %end-doc
 */
 	{"drill-helper", "Draw small holes to center drill but in copper",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_drillhelper 1
 
 /* %start-doc options "91 Postscript Export"
@@ -82,7 +82,7 @@ Print alignment marks on each sheet. This is meant to ease alignment during expo
 %end-doc
 */
 	{"align-marks", "Print alignment marks on each sheet",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_alignmarks 2
 
 /* %start-doc options "91 Postscript Export"
@@ -93,7 +93,7 @@ Print the contents of the outline layer on each sheet.
 %end-doc
 */
 	{"outline", "Print outline on each sheet",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_outline 3
 /* %start-doc options "91 Postscript Export"
 @ftable @code
@@ -103,7 +103,7 @@ Print mirror image.
 %end-doc
 */
 	{"mirror", "Print mirror image of every page",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_mirror 4
 
 /* %start-doc options "91 Postscript Export"
@@ -114,7 +114,7 @@ Scale output to make the board fit the page.
 %end-doc
 */
 	{"fill-page", "Scale board to fill page",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_fillpage 5
 
 /* %start-doc options "91 Postscript Export"
@@ -125,7 +125,7 @@ Print mirror image of appropriate layers.
 %end-doc
 */
 	{"auto-mirror", "Print mirror image of appropriate layers",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_automirror 6
 
 /* %start-doc options "91 Postscript Export"
@@ -136,7 +136,7 @@ Postscript output in color.
 %end-doc
 */
 	{"ps-color", "Prints in color",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_color 7
 
 /* %start-doc options "91 Postscript Export"
@@ -148,7 +148,7 @@ Draw objects as white-on-black.
 %end-doc
 */
 	{"ps-invert", "Draw objects as white-on-black",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_psinvert 8
 
 /* %start-doc options "91 Postscript Export"
@@ -164,7 +164,7 @@ to @samp{A10}, @samp{B0} to @samp{B10}, @samp{Letter}, @samp{11x17},
 %end-doc
 */
 	{"media", "media type",
-	 PCB_HATT_ENUM, 0, 0, {22, 0, 0}, pcb_medias, 0},
+	 RND_HATT_ENUM, 0, 0, {22, 0, 0}, pcb_medias, 0},
 #define HA_media 9
 
 /* %start-doc options "91 Postscript Export"
@@ -176,7 +176,7 @@ Fade amount for assembly drawings (0.0=missing, 1.0=solid).
 %end-doc
 */
 	{"psfade", "Fade amount for assembly drawings (0.0=missing, 1.0=solid)",
-	 PCB_HATT_REAL, 0, 1, {0, 0, 0.40}, 0, 0},
+	 RND_HATT_REAL, 0, 1, {0, 0, 0.40}, 0, 0},
 #define HA_psfade 10
 
 /* %start-doc options "91 Postscript Export"
@@ -187,7 +187,7 @@ Scale value to compensate for printer sizing errors (1.0 = full scale).
 %end-doc
 */
 	{"scale", "Scale value to compensate for printer sizing errors (1.0 = full scale)",
-	 PCB_HATT_REAL, 0.01, 4, {0, 0, 1.00}, 0, 0},
+	 RND_HATT_REAL, 0.01, 4, {0, 0, 1.00}, 0, 0},
 #define HA_scale 11
 
 /* %start-doc options "91 Postscript Export"
@@ -199,7 +199,7 @@ Produce multiple files, one per page, instead of a single multi page file.
 %end-doc
 */
 	{"multi-file", "Produce multiple files, one per page, instead of a single file",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0.40}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0.40}, 0, 0},
 #define HA_multifile 12
 
 /* %start-doc options "91 Postscript Export"
@@ -210,7 +210,7 @@ Paper width. Used for x-Axis calibration.
 %end-doc
 */
 	{"xcalib", "Paper width. Used for x-Axis calibration",
-	 PCB_HATT_REAL, 0, 2, {0, 0, 1.0}, 0, 0},
+	 RND_HATT_REAL, 0, 2, {0, 0, 1.0}, 0, 0},
 #define HA_xcalib 13
 
 /* %start-doc options "91 Postscript Export"
@@ -221,7 +221,7 @@ Paper height. Used for y-Axis calibration.
 %end-doc
 */
 	{"ycalib", "Paper height. Used for y-Axis calibration",
-	 PCB_HATT_REAL, 0, 2, {0, 0, 1.0}, 0, 0},
+	 RND_HATT_REAL, 0, 2, {0, 0, 1.0}, 0, 0},
 #define HA_ycalib 14
 
 /* %start-doc options "91 Postscript Export"
@@ -232,7 +232,7 @@ Draw drill holes in pins / vias, instead of leaving solid copper.
 %end-doc
 */
 	{"drill-copper", "Draw drill holes in pins / vias, instead of leaving solid copper",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_drillcopper 15
 
 /* %start-doc options "91 Postscript Export"
@@ -244,7 +244,7 @@ Print file name and scale on printout.
 %end-doc
 */
 	{"show-legend", "Print file name and scale on printout",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_legend 16
 
 /* %start-doc options "91 Postscript Export"
@@ -256,7 +256,7 @@ Generate Table of Contents
 %end-doc
 */
 	{"show-toc", "Print Table of Content",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_toc 17
 
 
@@ -269,7 +269,7 @@ Merge all drawings on a single page
 %end-doc
 */
 	{"single-page", "Merge all drawings on a single page",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_single_page 18
 
 /* %start-doc options "91 Postscript Export"
@@ -281,12 +281,12 @@ Diameter of the small hole when drill-helper is on
 %end-doc
 */
 	{"drill-helper-size", "Diameter of the small hole when drill-helper is on",
-	 PCB_HATT_COORD, 0, PCB_MM_TO_COORD(10), {0, 0, 0, PCB_MIN_PINORVIAHOLE}, 0, 0},
+	 RND_HATT_COORD, 0, PCB_MM_TO_COORD(10), {0, 0, 0, PCB_MIN_PINORVIAHOLE}, 0, 0},
 #define HA_drillhelpersize 19
 
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 20
 
 };
@@ -672,7 +672,7 @@ static void ps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int ps_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
+	rnd_export_register_opts(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -1251,7 +1251,7 @@ static void ps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 
 rnd_hid_attribute_t ps_calib_attribute_list[] = {
 	{"lprcommand", "Command to print",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 };
 
 static const char *const calib_lines[] = {
@@ -1470,7 +1470,7 @@ static int ps_usage(rnd_hid_t *hid, const char *topic)
 static void plugin_ps_uninit(void)
 {
 	rnd_remove_actions_by_cookie(ps_cookie);
-	pcb_export_remove_opts_by_cookie(ps_cookie);
+	rnd_export_remove_opts_by_cookie(ps_cookie);
 	ps_inited = 0;
 }
 

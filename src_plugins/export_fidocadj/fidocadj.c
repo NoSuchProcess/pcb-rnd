@@ -69,11 +69,11 @@ rnd_export_opt_t fidocadj_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 	{"outfile", "Output file name",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_fidocadjfile 0
 
 	{"libfile", "path to PCB.fcl",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_libfile 1
 };
 
@@ -342,7 +342,7 @@ TODO(": figure how to store side")
 
 static int fidocadj_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]), fidocadj_cookie, 0);
+	rnd_export_register_opts(fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]), fidocadj_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -358,7 +358,7 @@ int pplg_check_ver_export_fidocadj(int ver_needed) { return 0; }
 
 void pplg_uninit_export_fidocadj(void)
 {
-	pcb_export_remove_opts_by_cookie(fidocadj_cookie);
+	rnd_export_remove_opts_by_cookie(fidocadj_cookie);
 }
 
 int pplg_init_export_fidocadj(void)

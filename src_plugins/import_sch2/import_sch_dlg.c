@@ -283,10 +283,10 @@ static int do_dialog(void)
 	isch_ctx.len = len;
 
 	PCB_DAD_BEGIN_VBOX(isch_ctx.dlg);
-		PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL);
 
 		PCB_DAD_BEGIN_VBOX(isch_ctx.dlg); /* format box */
-			PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL);
 			PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
 				PCB_DAD_LABEL(isch_ctx.dlg, "Format:");
 				PCB_DAD_ENUM(isch_ctx.dlg, isch_ctx.inames);
@@ -295,13 +295,13 @@ static int do_dialog(void)
 					PCB_DAD_HELP(isch_ctx.dlg, "Import file format (or plugin)");
 			PCB_DAD_END(isch_ctx.dlg);
 			PCB_DAD_BEGIN_TABBED(isch_ctx.dlg, isch_ctx.inames);
-				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_HIDE_TABLAB);
+				PCB_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_HIDE_TABLAB);
 				isch_ctx.wtab = PCB_DAD_CURRENT(isch_ctx.dlg);
 				for(n = 0; n < len; n++)
 					isch_add_tab(pa[n]);
 			PCB_DAD_END(isch_ctx.dlg);
 			PCB_DAD_BEGIN_VBOX(isch_ctx.dlg); /* scrollable arg list */
-				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				PCB_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 				for(n = 0; n < MAX_ARGS; n++) {
 					PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
 						isch_ctx.warg_box[n] = PCB_DAD_CURRENT(isch_ctx.dlg);
@@ -342,7 +342,7 @@ static int do_dialog(void)
 			PCB_DAD_BUTTON(isch_ctx.dlg, "Import!");
 				PCB_DAD_CHANGE_CB(isch_ctx.dlg, isch_import_cb);
 			PCB_DAD_BEGIN_HBOX(isch_ctx.dlg);
-				PCB_DAD_COMPFLAG(isch_ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(isch_ctx.dlg, RND_HATF_EXPFILL);
 			PCB_DAD_END(isch_ctx.dlg);
 			PCB_DAD_BUTTON_CLOSES(isch_ctx.dlg, clbtn);
 		PCB_DAD_END(isch_ctx.dlg);

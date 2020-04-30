@@ -174,27 +174,27 @@ excellon output file prefix. Can include a path.
 %end-doc
 */
 	{"filename", "excellon output file base - used to generate default plated and/or unplated file name in case they are not specified",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_excellonfile 0
 
 	{"filename-plated", "excellon output file name for plated features",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_excellonfile_plated 1
 
 	{"filename-unplated", "excellon output file name for unplated features",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_excellonfile_unplated 2
 
 	{"coord-format", "Coordinate format (resolution)",
-	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
 #define HA_excellonfile_coordfmt 3
 
 	{"aperture-per-file", "Restart aperture numbering in each new file",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_apeture_per_file 4
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 5
 };
 
@@ -301,7 +301,7 @@ static void excellon_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int excellon_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(excellon_options, NUM_OPTIONS, excellon_cookie, 0);
+	rnd_export_register_opts(excellon_options, NUM_OPTIONS, excellon_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -484,7 +484,7 @@ int pplg_check_ver_export_excellon(int ver_needed) { return 0; }
 
 void pplg_uninit_export_excellon(void)
 {
-	pcb_export_remove_opts_by_cookie(excellon_cookie);
+	rnd_export_remove_opts_by_cookie(excellon_cookie);
 	free(filename);
 	rnd_conf_unreg_fields("plugins/export_excellon/");
 	rnd_event_unbind_allcookie(excellon_cookie);

@@ -31,7 +31,7 @@ Name of the export_test output file. Use stdout if not specified.
 %end-doc
 */
 	{"export_testfile", "Name of the export_test output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_export_testfile 0
 };
 
@@ -88,7 +88,7 @@ static int export_test_usage(rnd_hid_t *hid, const char *topic)
 
 static int export_test_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]), export_test_cookie, 0);
+	rnd_export_register_opts(export_test_options, sizeof(export_test_options) / sizeof(export_test_options[0]), export_test_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 

@@ -42,27 +42,27 @@ const char *stl_cookie = "export_stl HID";
 
 rnd_export_opt_t stl_attribute_list[] = {
 	{"outfile", "STL output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_stlfile 0
 
 	{"models", "enable searching and inserting model files",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_models 1
 
 	{"drill", "enable drilling holes",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_drill 2
 
 	{"override-thickness", "override calculated board thickness (when non-zero)",
-	 PCB_HATT_COORD, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_COORD, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_ovrthick 3
 
 	{"z-center", "when true: z=0 is the center of board cross section, instead of being at the bottom side",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_zcent 4
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 5
 };
 
@@ -227,7 +227,7 @@ static void stl_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int stl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(stl_attribute_list, sizeof(stl_attribute_list) / sizeof(stl_attribute_list[0]), stl_cookie, 0);
+	rnd_export_register_opts(stl_attribute_list, sizeof(stl_attribute_list) / sizeof(stl_attribute_list[0]), stl_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 

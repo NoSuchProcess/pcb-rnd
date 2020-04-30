@@ -178,7 +178,7 @@ static void rst_docked_create()
 	PCB_DAD_BEGIN_VBOX(rst.sub.dlg);
 		for(n = 0; n < MAX_STYLES; n++) {
 			PCB_DAD_BEGIN_HBOX(rst.sub.dlg);
-				PCB_DAD_COMPFLAG(rst.sub.dlg, PCB_HATF_HIDE);
+				PCB_DAD_COMPFLAG(rst.sub.dlg, RND_HATF_HIDE);
 					rst.whbox[n] = PCB_DAD_CURRENT(rst.sub.dlg);
 				PCB_DAD_BOOL(rst.sub.dlg, "");
 					rst.wchk[n] = PCB_DAD_CURRENT(rst.sub.dlg);

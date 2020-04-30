@@ -60,9 +60,9 @@ static void pcb_dlg_about(void)
 		return;
 
 	PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
-		PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(about_ctx.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(about_ctx.dlg, tabs);
-			PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(about_ctx.dlg, RND_HATF_EXPFILL);
 			PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
 				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_program());
 				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_copyright());
@@ -70,14 +70,14 @@ static void pcb_dlg_about(void)
 			PCB_DAD_END(about_ctx.dlg);
 
 			PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
-				PCB_DAD_COMPFLAG(about_ctx.dlg, /*PCB_HATF_SCROLL |*/ /*PCB_HATF_FRAME |*/ PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(about_ctx.dlg, /*RND_HATF_SCROLL |*/ /*RND_HATF_FRAME |*/ RND_HATF_EXPFILL);
 				PCB_DAD_LABEL(about_ctx.dlg, pcb_get_info_compile_options());
-					PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(about_ctx.dlg, RND_HATF_EXPFILL);
 			PCB_DAD_END(about_ctx.dlg);
 
 
 			PCB_DAD_BEGIN_VBOX(about_ctx.dlg);
-				PCB_DAD_COMPFLAG(about_ctx.dlg, PCB_HATF_SCROLL);
+				PCB_DAD_COMPFLAG(about_ctx.dlg, RND_HATF_SCROLL);
 				gds_init(&s);
 				for (e = htsp_first(&rnd_file_loaded); e; e = htsp_next(&rnd_file_loaded, e)) {
 					htsp_entry_t *e2;

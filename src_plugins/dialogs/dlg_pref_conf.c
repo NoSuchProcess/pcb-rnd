@@ -346,7 +346,7 @@ static void build_natval(pref_ctx_t *ctx)
 	static const char *hdr_nat[] = {"role", "prio", "value", NULL};
 
 	PCB_DAD_BEGIN_TABBED(pref_ctx.dlg, type_tabs);
-		PCB_DAD_COMPFLAG(pref_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_HIDE_TABLAB);
+		PCB_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_HIDE_TABLAB);
 		ctx->conf.wnattype = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: string");
@@ -398,19 +398,19 @@ static void build_natval(pref_ctx_t *ctx)
 				ctx->conf.wnatval[6] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: list of strings");
 			ctx->conf.wsrc[7] = -1;
 			PCB_DAD_TREE(ctx->dlg, 3, 0, hdr_nat); /* input state */
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 				ctx->conf.wnatval[7] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_LABEL(ctx->dlg, "Data type: list of hash subtrees");
 			ctx->conf.wsrc[8] = -1;
 			PCB_DAD_TREE(ctx->dlg, 3, 0, hdr_nat); /* input state */
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 				ctx->conf.wnatval[8] = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
@@ -424,16 +424,16 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 {
 	static const char *hdr_intree[] = {"role", "prio", "policy", "value", NULL};
 
-	PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+	PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 	PCB_DAD_BEGIN_HPANE(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 		ctx->conf.wmainp = PCB_DAD_CURRENT(ctx->dlg);
 
 		/* left: tree */
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_TREE(ctx->dlg, 1, 1, NULL);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 				ctx->conf.wtree = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, dlg_conf_select_node_cb);
 				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
@@ -445,11 +445,11 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 
 		/* right: details */
 		PCB_DAD_BEGIN_VPANE(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			
 			/* right/top: conf file */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 				PCB_DAD_LABEL(ctx->dlg, "");
 					ctx->conf.wname = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "");
@@ -467,7 +467,7 @@ void pcb_dlg_pref_conf_create(pref_ctx_t *ctx)
 
 			/* right/bottom: native file */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
 				PCB_DAD_LABEL(ctx->dlg, "NATIVE: in-memory conf node after the merge");
 				build_natval(ctx);
 

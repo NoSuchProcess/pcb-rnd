@@ -249,7 +249,7 @@ static char *background_image_file = 0;
 
 rnd_export_opt_t lesstif_attribute_list[] = {
 	{"install", "Install private colormap",
-		PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &use_private_colormap},
+		RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &use_private_colormap},
 #define HA_colormap 0
 
 /* %start-doc options "22 lesstif GUI Options"
@@ -260,7 +260,7 @@ Listen for actions on stdin.
 %end-doc
 */
 	{"listen", "Listen on standard input for actions",
-		PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &stdin_listen},
+		RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, &stdin_listen},
 #define HA_listen 1
 
 /* %start-doc options "22 lesstif GUI Options"
@@ -273,7 +273,7 @@ automatically scaled to fit the canvas.
 %end-doc
 */
 	{"bg-image", "Background Image",
-		PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, &background_image_file},
+		RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, &background_image_file},
 #define HA_bg_image 2
 };
 
@@ -1646,7 +1646,7 @@ static void lesstif_err_msg(String name, String type, String class, String dflt,
 static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	Atom close_atom;
-	pcb_hid_attr_node_t *ha;
+	rnd_hid_attr_node_t *ha;
 	int acount = 0, amax;
 	int rcount = 0, rmax;
 	int i, err;
@@ -1660,15 +1660,15 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 	lesstif_reg_attrs();
 
-	for (ha = hid_attr_nodes; ha; ha = ha->next)
+	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
 			rnd_export_opt_t *a = ha->opts + i;
 			switch (a->type) {
-			case PCB_HATT_INTEGER:
-			case PCB_HATT_COORD:
-			case PCB_HATT_REAL:
-			case PCB_HATT_STRING:
-			case PCB_HATT_BOOL:
+			case RND_HATT_INTEGER:
+			case RND_HATT_COORD:
+			case RND_HATT_REAL:
+			case RND_HATT_STRING:
+			case RND_HATT_BOOL:
 				acount++;
 				rcount++;
 				break;
@@ -1696,7 +1696,7 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	new_values = (val_union *) malloc((rmax + 1) * sizeof(val_union));
 	rcount = 0;
 
-	for (ha = hid_attr_nodes; ha; ha = ha->next)
+	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
 			rnd_export_opt_t *a = ha->opts + i;
 			XrmOptionDescRec *o = new_options + acount;
@@ -1714,15 +1714,15 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 			o->specifier = tmpres;
 
 			switch (a->type) {
-			case PCB_HATT_INTEGER:
-			case PCB_HATT_COORD:
-			case PCB_HATT_REAL:
-			case PCB_HATT_STRING:
+			case RND_HATT_INTEGER:
+			case RND_HATT_COORD:
+			case RND_HATT_REAL:
+			case RND_HATT_STRING:
 				o->argKind = XrmoptionSepArg;
 				o->value = NULL;
 				acount++;
 				break;
-			case PCB_HATT_BOOL:
+			case RND_HATT_BOOL:
 				o->argKind = XrmoptionNoArg;
 				o->value = XmStrCast("True");
 				acount++;
@@ -1736,35 +1736,35 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 			r->resource_offset = sizeof(val_union) * rcount;
 
 			switch (a->type) {
-			case PCB_HATT_INTEGER:
+			case RND_HATT_INTEGER:
 				r->resource_type = XtRInt;
 				r->default_type = XtRInt;
 				r->resource_size = sizeof(int);
 				r->default_addr = &(a->default_val.lng);
 				rcount++;
 				break;
-			case PCB_HATT_COORD:
+			case RND_HATT_COORD:
 				r->resource_type = XmStrCast(XtRPCBCoord);
 				r->default_type = XmStrCast(XtRPCBCoord);
 				r->resource_size = sizeof(rnd_coord_t);
 				r->default_addr = &(a->default_val.crd);
 				rcount++;
 				break;
-			case PCB_HATT_REAL:
+			case RND_HATT_REAL:
 				r->resource_type = XmStrCast(XtRDouble);
 				r->default_type = XmStrCast(XtRDouble);
 				r->resource_size = sizeof(double);
 				r->default_addr = &(a->default_val.dbl);
 				rcount++;
 				break;
-			case PCB_HATT_STRING:
+			case RND_HATT_STRING:
 				r->resource_type = XtRString;
 				r->default_type = XtRString;
 				r->resource_size = sizeof(char *);
 				r->default_addr = (char *) a->default_val.str;
 				rcount++;
 				break;
-			case PCB_HATT_BOOL:
+			case RND_HATT_BOOL:
 				r->resource_type = XtRBoolean;
 				r->default_type = XtRInt;
 				r->resource_size = sizeof(int);
@@ -1812,40 +1812,40 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 #endif /* RND_HAVE_XRENDER */
 
 	rcount = 0;
-	for (ha = hid_attr_nodes; ha; ha = ha->next)
+	for (ha = rnd_hid_attr_nodes; ha; ha = ha->next)
 		for (i = 0; i < ha->n; i++) {
 			rnd_export_opt_t *a = ha->opts + i;
 			val_union *v = new_values + rcount;
 			switch (a->type) {
-			case PCB_HATT_INTEGER:
+			case RND_HATT_INTEGER:
 				if (a->value)
 					*(int *) a->value = v->i;
 				else
 					a->default_val.lng = v->i;
 				rcount++;
 				break;
-			case PCB_HATT_COORD:
+			case RND_HATT_COORD:
 				if (a->value)
 					*(rnd_coord_t *) a->value = v->c;
 				else
 					a->default_val.crd = v->c;
 				rcount++;
 				break;
-			case PCB_HATT_BOOL:
+			case RND_HATT_BOOL:
 				if (a->value)
 					*(char *) a->value = v->i;
 				else
 					a->default_val.lng = v->i;
 				rcount++;
 				break;
-			case PCB_HATT_REAL:
+			case RND_HATT_REAL:
 				if (a->value)
 					*(double *) a->value = v->f;
 				else
 					a->default_val.dbl = v->f;
 				rcount++;
 				break;
-			case PCB_HATT_STRING:
+			case RND_HATT_STRING:
 				if (a->value)
 					*(char **) a->value = v->s;
 				else
@@ -2932,7 +2932,7 @@ int pplg_check_ver_hid_lesstif(int version_we_need) { return 0; }
 
 void pplg_uninit_hid_lesstif(void)
 {
-	pcb_export_remove_opts_by_cookie(lesstif_cookie);
+	rnd_export_remove_opts_by_cookie(lesstif_cookie);
 	rnd_event_unbind_allcookie(lesstif_cookie);
 	rnd_conf_hid_unreg(lesstif_cookie);
 }
@@ -3060,7 +3060,7 @@ static int lesstif_attrs_regd = 0;
 static void lesstif_reg_attrs(void)
 {
 	if (!lesstif_attrs_regd)
-		pcb_export_register_opts(lesstif_attribute_list, sizeof(lesstif_attribute_list)/sizeof(lesstif_attribute_list[0]), lesstif_cookie, 0);
+		rnd_export_register_opts(lesstif_attribute_list, sizeof(lesstif_attribute_list)/sizeof(lesstif_attribute_list[0]), lesstif_cookie, 0);
 	lesstif_attrs_regd = 1;
 }
 
@@ -3081,6 +3081,6 @@ static void lesstif_begin(void)
 static void lesstif_end(void)
 {
 	rnd_remove_actions_by_cookie(lesstif_cookie);
-	pcb_export_remove_opts_by_cookie(lesstif_cookie);
+	rnd_export_remove_opts_by_cookie(lesstif_cookie);
 	lesstif_active = 0;
 }

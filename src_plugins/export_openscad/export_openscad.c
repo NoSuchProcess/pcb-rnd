@@ -93,31 +93,31 @@ Name of the file to be exported to. Can contain a path.
 %end-doc
 */
 	{"outfile", "Graphics output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_openscadfile 0
 
 	{"copper", "enable exporting outer copper layers",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_copper 1
 
 	{"silk", "enable exporting silk layers",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_silk 2
 
 	{"mask", "enable exporting mask layers",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_mask 3
 
 	{"models", "enable searching and inserting model files",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_models 4
 
 	{"drill", "enable drilling holes",
-	 PCB_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_drill 5
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 6
 
 };
@@ -353,7 +353,7 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int openscad_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(openscad_attribute_list, sizeof(openscad_attribute_list) / sizeof(openscad_attribute_list[0]), openscad_cookie, 0);
+	rnd_export_register_opts(openscad_attribute_list, sizeof(openscad_attribute_list) / sizeof(openscad_attribute_list[0]), openscad_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -661,7 +661,7 @@ int pplg_check_ver_export_openscad(int ver_needed) { return 0; }
 
 void pplg_uninit_export_openscad(void)
 {
-	pcb_export_remove_opts_by_cookie(openscad_cookie);
+	rnd_export_remove_opts_by_cookie(openscad_cookie);
 	rnd_remove_actions_by_cookie(openscad_cookie);
 }
 

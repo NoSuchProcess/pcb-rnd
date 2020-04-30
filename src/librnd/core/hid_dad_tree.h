@@ -119,7 +119,7 @@ RND_INLINE void pcb_dad_tree_build_path(pcb_hid_tree_t *tree, gds_t *path, pcb_h
 RND_INLINE void pcb_dad_tree_set_hash(rnd_hid_attribute_t *attr, pcb_hid_row_t *row)
 {
 	pcb_hid_tree_t *tree = attr->wdata;
-	if (attr->pcb_hatt_flags & PCB_HATF_TREE_COL) {
+	if (attr->rnd_hatt_flags & RND_HATF_TREE_COL) {
 		gds_t path;
 		gds_init(&path);
 		pcb_dad_tree_build_path(tree, &path, row);

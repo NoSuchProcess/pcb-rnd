@@ -1061,7 +1061,7 @@ int pcb_mesh_interactive(void)
 	PCB_DAD_BEGIN_VBOX(ia.dlg);
 		PCB_DAD_BEGIN_HBOX(ia.dlg);
 			PCB_DAD_BEGIN_VBOX(ia.dlg);
-				PCB_DAD_COMPFLAG(ia.dlg, PCB_HATF_FRAME);
+				PCB_DAD_COMPFLAG(ia.dlg, RND_HATF_FRAME);
 				PCB_DAD_LABEL(ia.dlg, "XY-mesh");
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
 					PCB_DAD_COORD(ia.dlg, "");
@@ -1117,7 +1117,7 @@ int pcb_mesh_interactive(void)
 			PCB_DAD_END(ia.dlg);
 
 			PCB_DAD_BEGIN_VBOX(ia.dlg);
-				PCB_DAD_COMPFLAG(ia.dlg, PCB_HATF_FRAME);
+				PCB_DAD_COMPFLAG(ia.dlg, RND_HATF_FRAME);
 				PCB_DAD_LABEL(ia.dlg, "Z-mesh");
 
 				PCB_DAD_BEGIN_HBOX(ia.dlg);
@@ -1186,7 +1186,7 @@ int pcb_mesh_interactive(void)
 
 		PCB_DAD_BEGIN_HBOX(ia.dlg);
 			PCB_DAD_BEGIN_VBOX(ia.dlg);
-				PCB_DAD_COMPFLAG(ia.dlg, PCB_HATF_FRAME);
+				PCB_DAD_COMPFLAG(ia.dlg, RND_HATF_FRAME);
 				PCB_DAD_LABEL(ia.dlg, "Boundary");
 				for(n = 0; n < 6; n+=2) {
 					char name[64];

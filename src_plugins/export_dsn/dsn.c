@@ -80,24 +80,24 @@ static rnd_hid_t dsn_hid;
 
 static rnd_export_opt_t dsn_options[] = {
 	{"dsnfile", "SPECCTRA output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_dsnfile 0
 	{"trackwidth", "track width in mils",
-	 PCB_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(8)}, 0, 0},
+	 RND_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(8)}, 0, 0},
 #define HA_trackwidth 1
 	{"clearance", "clearance in mils",
-	 PCB_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(8)}, 0, 0},
+	 RND_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(8)}, 0, 0},
 #define HA_clearance 2
 	{"viawidth", "via width in mils",
-	 PCB_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(27)}, 0,
+	 RND_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(27)}, 0,
 	 0},
 #define HA_viawidth 3
 	{"viadrill", "via drill diameter in mils",
-	 PCB_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(15)}, 0,
+	 RND_HATT_COORD, PCB_MIL_TO_COORD(0), PCB_MIL_TO_COORD(100), {0, 0, 0, PCB_MIL_TO_COORD(15)}, 0,
 	 0},
 #define HA_viadrill 4
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 5
 
 };
@@ -605,7 +605,7 @@ int pplg_check_ver_export_dsn(int ver_needed) { return 0; }
 
 void pplg_uninit_export_dsn(void)
 {
-	pcb_export_remove_opts_by_cookie(dsn_cookie);
+	rnd_export_remove_opts_by_cookie(dsn_cookie);
 }
 
 int pplg_init_export_dsn(void)
@@ -623,7 +623,7 @@ int pplg_init_export_dsn(void)
 	dsn_hid.parse_arguments = dsn_parse_arguments;
 	pcb_hid_register_hid(&dsn_hid);
 
-	pcb_export_register_opts(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
+	rnd_export_register_opts(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
 	return 0;
 }
 

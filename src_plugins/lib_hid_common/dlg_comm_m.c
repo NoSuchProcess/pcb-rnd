@@ -113,7 +113,7 @@ fgw_error_t pcb_act_gui_MessageBox(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		/* close buttons */
 		PCB_DAD_BEGIN_HBOX(dlg);
 			PCB_DAD_BEGIN_HBOX(dlg);
-				PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 			PCB_DAD_END(dlg);
 			for(n = 4; n < argc; n+=2) {
 				RND_PCB_ACT_CONVARG(n+0, FGW_STR, gui_MessageBox, txt = argv[n+0].val.str);
@@ -173,7 +173,7 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 	PCB_DAD_BEGIN_VBOX(ctx.dlg);
 		PCB_DAD_COLOR(ctx.dlg);
 			ctx.wclr = PCB_DAD_CURRENT(ctx.dlg);
-			PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_CLR_STATIC);
+			PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_CLR_STATIC);
 		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
 			PCB_DAD_LABEL(ctx.dlg, "red");
 			PCB_DAD_INTEGER(ctx.dlg, "");

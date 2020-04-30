@@ -493,7 +493,7 @@ static void layersel_begin_grp_open(layersel_ctx_t *ls, const char *name, ls_gro
 
 		/* vertical group name */
 		PCB_DAD_LABEL(ls->sub.dlg, name);
-			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_TEXT_VERTICAL | PCB_HATF_TEXT_TRUNCATED);
+			PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_TEXT_VERTICAL | RND_HATF_TEXT_TRUNCATED);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lsg);
 			PCB_DAD_RIGHT_CB(ls->sub.dlg, group_right_cb);
 			PCB_DAD_CHANGE_CB(ls->sub.dlg, group_open_cb);
@@ -501,12 +501,12 @@ static void layersel_begin_grp_open(layersel_ctx_t *ls, const char *name, ls_gro
 
 		/* vert sep */
 		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_FRAME);
+			PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
 		PCB_DAD_END(ls->sub.dlg);
 
 		/* layer list box */
 		PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
-			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT);
+			PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT);
 }
 
 static void layersel_end_grp_open(layersel_ctx_t *ls)
@@ -526,7 +526,7 @@ static void layersel_begin_grp_closed(layersel_ctx_t *ls, const char *name, ls_g
 
 		/* vert sep */
 		PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-			PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_FRAME);
+			PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
 		PCB_DAD_END(ls->sub.dlg);
 
 }
@@ -567,7 +567,7 @@ static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, co
 	layer_vis_box(&lys->off_closed, 0, color, brd, hatch, 10, 10, 0);
 
 	PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
-		PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT);
+		PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT);
 		PCB_DAD_PICTURE(ls->sub.dlg, lys->on_closed.xpm);
 			lys->wvis_on_closed = PCB_DAD_CURRENT(ls->sub.dlg);
 			PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
@@ -581,14 +581,14 @@ static void layersel_create_layer_closed(layersel_ctx_t *ls, ls_layer_t *lys, co
 		if (selectable) {
 			PCB_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_unsel);
 				if (selected)
-					PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_HIDE);
+					PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_HIDE);
 				lys->wunsel_closed = PCB_DAD_CURRENT(ls->sub.dlg);
 				PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 				PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
 				PCB_DAD_HELP(ls->sub.dlg, name);
 			PCB_DAD_PICTURE(ls->sub.dlg, closed_grp_layer_sel);
 				if (!selected)
-					PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_HIDE);
+					PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_HIDE);
 				lys->wsel_closed = PCB_DAD_CURRENT(ls->sub.dlg);
 				PCB_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 				PCB_DAD_CHANGE_CB(ls->sub.dlg, layer_sel_cb);
@@ -636,7 +636,7 @@ static void layersel_create_grp(layersel_ctx_t *ls, pcb_board_t *pcb, pcb_layerg
 static void layersel_add_grpsep(layersel_ctx_t *ls)
 {
 	PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-		PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_PICTURE(ls->sub.dlg, grpsep);
 	PCB_DAD_END(ls->sub.dlg);
 
@@ -742,7 +742,7 @@ static void layersel_create_ui(layersel_ctx_t *ls, pcb_board_t *pcb)
 static void hsep(layersel_ctx_t *ls)
 {
 	PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
-		PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_TIGHT | PCB_HATF_FRAME);
+		PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
 	PCB_DAD_END(ls->sub.dlg);
 }
 
@@ -750,7 +750,7 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 {
 	lgs_reset(ls);
 	PCB_DAD_BEGIN_VBOX(ls->sub.dlg);
-		PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT | PCB_HATF_SCROLL);
+		PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_EXPFILL | RND_HATF_TIGHT | RND_HATF_SCROLL);
 		layersel_create_stack(&layersel, pcb);
 		hsep(&layersel);
 		layersel_create_global(&layersel, pcb);
@@ -767,7 +767,7 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 				PCB_DAD_HELP(ls->sub.dlg, "collapse/close all layer groups\nso that layer names are\nnot displayed,\neach row is a layer group");
 				PCB_DAD_CHANGE_CB(ls->sub.dlg, all_close_cb);
 			PCB_DAD_BEGIN_HBOX(ls->sub.dlg);
-				PCB_DAD_COMPFLAG(ls->sub.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_EXPFILL);
 			PCB_DAD_END(ls->sub.dlg);
 		PCB_DAD_END(ls->sub.dlg);
 	PCB_DAD_END(ls->sub.dlg);

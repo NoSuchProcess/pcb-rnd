@@ -214,13 +214,13 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 		if (note != NULL)
 			f->help = rnd_strdup(note);
 		if (type == NULL) {
-			f->type = PCB_HATT_LABEL;
+			f->type = RND_HATT_LABEL;
 		}
 		else if (strcmp(type, "enum") == 0) {
 			int di = 0, i;
 			vtp0_t tmp;
 
-			f->type = PCB_HATT_ENUM;
+			f->type = RND_HATT_ENUM;
 			vtp0_init(&tmp);
 			for(v = n->children, i = 0; v != NULL; v = v->next) {
 				char *s;
@@ -238,26 +238,26 @@ static int pcbway_load_fields_(rnd_hidlib_t *hidlib, pcb_order_imp_t *imp, order
 				f->val.lng = di;
 		}
 		else if (strcmp(type, "enum:country:code") == 0) {
-			f->type = PCB_HATT_ENUM;
+			f->type = RND_HATT_ENUM;
 			f->enum_vals = form->country_codes.array;
 		}
 		else if (strcmp(type, "integer") == 0) {
-			f->type = PCB_HATT_INTEGER;
+			f->type = RND_HATT_INTEGER;
 			if (dflt != NULL)
 				f->val.lng = atoi(dflt);
 		}
 		else if (strcmp(type, "mm") == 0) {
-			f->type = PCB_HATT_COORD;
+			f->type = RND_HATT_COORD;
 			if (dflt != NULL)
 				f->val.crd = PCB_MM_TO_COORD(strtod(dflt, NULL));
 		}
 		else if (strcmp(type, "string") == 0) {
-			f->type = PCB_HATT_STRING;
+			f->type = RND_HATT_STRING;
 			if (dflt != NULL)
 				f->val.str = rnd_strdup(dflt);
 		}
 		else {
-			f->type = PCB_HATT_LABEL;
+			f->type = RND_HATT_LABEL;
 		}
 		if (strcmp(f->name, "Layers") == 0)         f->autoload = PCB_OAL_LAYERS;
 		else if (strcmp(f->name, "Width") == 0)     f->autoload = PCB_OAL_WIDTH;
@@ -409,10 +409,10 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 	}
 
 	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 
 		PCB_DAD_BEGIN_TABLE(dlg, 2);
-			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+			PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			PCB_DAD_LABEL(dlg, "=== Shipping ==="); PCB_DAD_LABEL(dlg, "");
 			XML_TBL(dlg, ship, shipcost, "ShipCost");
 			for(n = prices->children; n != NULL; n = n->next) {
@@ -425,10 +425,10 @@ static int pcbway_present_quote(order_ctx_t *octx, const char *respfn)
 					*tmp = 0;
 
 				PCB_DAD_LABEL(dlg, "    Total:");
-				PCB_DAD_COMPFLAG(dlg, PCB_HATF_TIGHT);
+				PCB_DAD_COMPFLAG(dlg, RND_HATF_TIGHT);
 
 				PCB_DAD_BEGIN_HBOX(dlg);
-					PCB_DAD_COMPFLAG(dlg, PCB_HATF_TIGHT);
+					PCB_DAD_COMPFLAG(dlg, RND_HATF_TIGHT);
 					PCB_DAD_LABEL(dlg, tmp);
 					PCB_DAD_PICBUTTON(dlg, order_xpm);
 				PCB_DAD_END(dlg);
@@ -478,17 +478,17 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 		fprintf(fx, " <%s>", (char *)f->name);
 
 		switch(f->type) {
-			case PCB_HATT_ENUM:
+			case RND_HATT_ENUM:
 				fprintf(fx, "%s", f->enum_vals[f->val.lng]);
 				break;
-			case PCB_HATT_INTEGER:
+			case RND_HATT_INTEGER:
 				fprintf(fx, "%d", f->val.lng);
 				break;
-			case PCB_HATT_COORD:
+			case RND_HATT_COORD:
 				pcb_fprintf(fx, "%mm", f->val.crd);
 				break;
 
-			case PCB_HATT_STRING:
+			case RND_HATT_STRING:
 				if (f->val.str != NULL)
 					fprintf(fx, "%s", f->val.str);
 				break;
@@ -532,13 +532,13 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 	pcbway_form_t *form = octx->odata;
 
 	PCB_DAD_BEGIN_VBOX(octx->dlg);
-		PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(octx->dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
 
 		for(n = 0; n < form->fields.used; n++)
 			pcb_order_dad_field(octx, form->fields.array[n]);
 
 		PCB_DAD_BEGIN_VBOX(octx->dlg);
-			PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_LABEL(octx->dlg, "");
 			PCB_DAD_LABEL(octx->dlg, "");
 		PCB_DAD_END(octx->dlg);
@@ -547,7 +547,7 @@ static void pcbway_populate_dad(pcb_order_imp_t *imp, order_ctx_t *octx)
 			PCB_DAD_BUTTON(octx->dlg, "Update data");
 				PCB_DAD_HELP(octx->dlg, "Copy data from board to form");
 			PCB_DAD_BEGIN_VBOX(octx->dlg);
-				PCB_DAD_COMPFLAG(octx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(octx->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_END(octx->dlg);
 			PCB_DAD_BUTTON(octx->dlg, "Quote & order");
 				PCB_DAD_HELP(octx->dlg, "Generate a price quote");

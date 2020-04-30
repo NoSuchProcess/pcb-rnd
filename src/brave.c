@@ -198,7 +198,7 @@ static int brave_interact(void)
 	PCB_DAD_DECL(dlg);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 		PCB_DAD_LABEL(dlg, "Experimental features for the brave");
 
 		PCB_DAD_BEGIN_TABLE(dlg, 3);
@@ -214,7 +214,7 @@ static int brave_interact(void)
 			}
 		PCB_DAD_END(dlg);
 		PCB_DAD_BEGIN_VBOX(dlg);
-			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 		PCB_DAD_END(dlg);
 		PCB_DAD_BEGIN_HBOX(dlg);
 			if (len != 0) {

@@ -51,31 +51,31 @@ typedef struct {
 		PCB_DAD_SPIN_COORD,
 		PCB_DAD_SPIN_FREQ
 	} type;
-	pcb_hid_attr_type_t wtype;
+	rnd_hid_attr_type_t wtype;
 	gdl_elem_t link;
 } pcb_hid_dad_spin_t;
 
-#define PCB_DAD_SPIN_INT(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_INT, PCB_HATT_INTEGER, 0, 0)
-#define PCB_DAD_SPIN_DOUBLE(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_DOUBLE, PCB_HATT_REAL, 0, 0)
-#define PCB_DAD_SPIN_COORD(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_COORD, PCB_HATT_COORD, 1, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL)
-#define PCB_DAD_SPIN_FREQ(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_FREQ, PCB_HATT_REAL, 1, PCB_UNIT_FREQ)
+#define PCB_DAD_SPIN_INT(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_INT, RND_HATT_INTEGER, 0, 0)
+#define PCB_DAD_SPIN_DOUBLE(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_DOUBLE, RND_HATT_REAL, 0, 0)
+#define PCB_DAD_SPIN_COORD(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_COORD, RND_HATT_COORD, 1, PCB_UNIT_METRIC | PCB_UNIT_IMPERIAL)
+#define PCB_DAD_SPIN_FREQ(table) PCB_DAD_SPIN_ANY(table, PCB_DAD_SPIN_FREQ, RND_HATT_REAL, 1, PCB_UNIT_FREQ)
 
-/* Return the widget-type (PCB_DAD_HATT) of a spinbox at the PCB_HATT_END widget;
+/* Return the widget-type (PCB_DAD_HATT) of a spinbox at the RND_HATT_END widget;
    useful for dispatching what value set to use */
 #define PCB_DAD_SPIN_GET_TYPE(attr) \
-	((((attr)->type == PCB_HATT_END) && (((pcb_hid_dad_spin_t *)((attr)->wdata))->cmp.free == pcb_dad_spin_free)) ? ((pcb_hid_dad_spin_t *)((attr)->wdata))->wtype : PCB_HATT_END)
+	((((attr)->type == RND_HATT_END) && (((pcb_hid_dad_spin_t *)((attr)->wdata))->cmp.free == pcb_dad_spin_free)) ? ((pcb_hid_dad_spin_t *)((attr)->wdata))->wtype : RND_HATT_END)
 
 /*** implementation ***/
 
 #define PCB_DAD_SPIN_ANY(table, typ, wtyp, has_unit, unit_family_) \
 do { \
 	pcb_hid_dad_spin_t *spin = calloc(sizeof(pcb_hid_dad_spin_t), 1); \
-	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_COMPOUND); \
+	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_COMPOUND); \
 		spin->cmp.wbegin = PCB_DAD_CURRENT(table); \
 		PCB_DAD_SET_ATTR_FIELD(table, wdata, spin); \
 		PCB_DAD_BEGIN_HBOX(table); \
 			spin->wall = PCB_DAD_CURRENT(table); \
-			PCB_DAD_COMPFLAG(table, PCB_HATF_TIGHT); \
+			PCB_DAD_COMPFLAG(table, RND_HATF_TIGHT); \
 			PCB_DAD_STRING(table); \
 				PCB_DAD_DEFAULT_PTR(table, rnd_strdup("")); \
 				PCB_DAD_ENTER_CB(table, pcb_dad_spin_txt_enter_cb); \
@@ -83,7 +83,7 @@ do { \
 				PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
 				spin->wstr = PCB_DAD_CURRENT(table); \
 			PCB_DAD_BEGIN_VBOX(table); \
-				PCB_DAD_COMPFLAG(table, PCB_HATF_TIGHT); \
+				PCB_DAD_COMPFLAG(table, RND_HATF_TIGHT); \
 				PCB_DAD_PICBUTTON(table, pcb_hid_dad_spin_up); \
 					PCB_DAD_CHANGE_CB(table, pcb_dad_spin_up_cb); \
 					PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
@@ -94,7 +94,7 @@ do { \
 					spin->wdown = PCB_DAD_CURRENT(table); \
 			PCB_DAD_END(table); \
 			PCB_DAD_BEGIN_VBOX(table); \
-				PCB_DAD_COMPFLAG(table, PCB_HATF_TIGHT); \
+				PCB_DAD_COMPFLAG(table, RND_HATF_TIGHT); \
 				if (has_unit) { \
 					PCB_DAD_PICBUTTON(table, pcb_hid_dad_spin_unit); \
 						PCB_DAD_CHANGE_CB(table, pcb_dad_spin_unit_cb); \
@@ -102,7 +102,7 @@ do { \
 						spin->wunit = PCB_DAD_CURRENT(table); \
 				} \
 				PCB_DAD_PICTURE(table, pcb_hid_dad_spin_warn); \
-					PCB_DAD_COMPFLAG(table, PCB_HATF_HIDE); \
+					PCB_DAD_COMPFLAG(table, RND_HATF_HIDE); \
 					PCB_DAD_SET_ATTR_FIELD(table, user_data, (const char **)spin); \
 					spin->wwarn = PCB_DAD_CURRENT(table); \
 			PCB_DAD_END(table); \
@@ -148,7 +148,7 @@ int pcb_dad_spin_widget_state(rnd_hid_attribute_t *end, void *hid_ctx, int idx, 
 int pcb_dad_spin_widget_hide(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide);
 int pcb_dad_spin_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
 void pcb_dad_spin_set_help(rnd_hid_attribute_t *end, const char *help);
-void pcb_dad_spin_set_geo(rnd_hid_attribute_t *end, pcb_hatt_compflags_t flg, int geo);
+void pcb_dad_spin_set_geo(rnd_hid_attribute_t *end, rnd_hatt_compflags_t flg, int geo);
 
 void pcb_dad_spin_update_internal(pcb_hid_dad_spin_t *spin); /* update the widget from spin, before or after the dialog is realized */
 

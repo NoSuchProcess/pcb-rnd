@@ -119,9 +119,9 @@ void pcb_order_free_field_data(order_ctx_t *octx, pcb_order_field_t *f)
 static void autoload_field_crd(order_ctx_t *octx, pcb_order_field_t *f, rnd_coord_t c)
 {
 	switch(f->type) {
-		case PCB_HATT_INTEGER: f->val.lng = c; break;
-		case PCB_HATT_COORD: f->val.crd = c; break;
-		case PCB_HATT_STRING:
+		case RND_HATT_INTEGER: f->val.lng = c; break;
+		case RND_HATT_COORD: f->val.crd = c; break;
+		case RND_HATT_STRING:
 			free((char *)f->val.str);
 			f->val.str = pcb_strdup_printf("%$mm", c);
 			break;
@@ -136,13 +136,13 @@ static void autoload_field_lng(order_ctx_t *octx, pcb_order_field_t *f, long l, 
 	char **s;
 
 	switch(f->type) {
-		case PCB_HATT_INTEGER: f->val.lng = l; break;
-		case PCB_HATT_COORD: f->val.crd = PCB_MM_TO_COORD(l); break;
-		case PCB_HATT_STRING:
+		case RND_HATT_INTEGER: f->val.lng = l; break;
+		case RND_HATT_COORD: f->val.crd = PCB_MM_TO_COORD(l); break;
+		case RND_HATT_STRING:
 			free((char *)f->val.str);
 			f->val.str = pcb_strdup_printf("%ld", l);
 			break;
-		case PCB_HATT_ENUM:
+		case RND_HATT_ENUM:
 			bestn = -1;
 			/* find the closest enum value, rounding l up or down only */
 			for(n = 0, s = f->enum_vals; *s != NULL; n++,s++) {

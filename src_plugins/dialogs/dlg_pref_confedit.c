@@ -289,7 +289,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	ctx->role = r->user_data2.lng;
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 		PCB_DAD_LABEL(ctx->dlg, ctx->nat->hash_path);
 
@@ -342,9 +342,9 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 				break;
 			case RND_CFN_LIST:
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 					PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
-						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 						ctx->wnewval = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_BEGIN_HBOX(ctx->dlg);
 						PCB_DAD_BUTTON(ctx->dlg, "Edit...");
@@ -368,7 +368,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 					rnd_conf_listitem_t *i;
 
 					PCB_DAD_BEGIN_VBOX(ctx->dlg);
-						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 						rnd_conflist_foreach(pctx->conf.selected_nat->val.list, &it, i) {
 							lht_node_t *rule = i->prop.src;
 							PCB_DAD_BUTTON(ctx->dlg, rule->name);

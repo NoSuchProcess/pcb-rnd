@@ -33,21 +33,21 @@ int rnd_dock_is_vert[RND_HID_DOCK_max]   = {0, 0, 0, 1, 0, 1}; /* Update this if
 int rnd_dock_has_frame[RND_HID_DOCK_max] = {0, 0, 0, 1, 0, 0}; /* Update this if rnd_hid_dock_t changes */
 
 typedef struct {
-	pcb_hatt_compflags_t flag;
+	rnd_hatt_compflags_t flag;
 	const char *name;
 } comflag_name_t;
 
 static comflag_name_t compflag_names[] = {
-	{PCB_HATF_FRAME,         "frame"},
-	{PCB_HATF_SCROLL,        "scroll"},
-	{PCB_HATF_HIDE_TABLAB,   "hide_tablab"},
-	{PCB_HATF_LEFT_TAB,      "left_tab"},
-	{PCB_HATF_TREE_COL,      "tree_col"},
-	{PCB_HATF_EXPFILL,       "expfill"},
+	{RND_HATF_FRAME,         "frame"},
+	{RND_HATF_SCROLL,        "scroll"},
+	{RND_HATF_HIDE_TABLAB,   "hide_tablab"},
+	{RND_HATF_LEFT_TAB,      "left_tab"},
+	{RND_HATF_TREE_COL,      "tree_col"},
+	{RND_HATF_EXPFILL,       "expfill"},
 	{0, NULL}
 };
 
-const char *pcb_hid_compflag_bit2name(pcb_hatt_compflags_t bit)
+const char *pcb_hid_compflag_bit2name(rnd_hatt_compflags_t bit)
 {
 	comflag_name_t *n;
 	for(n = compflag_names; n->flag != 0; n++)
@@ -56,7 +56,7 @@ const char *pcb_hid_compflag_bit2name(pcb_hatt_compflags_t bit)
 	return NULL;
 }
 
-pcb_hatt_compflags_t pcb_hid_compflag_name2bit(const char *name)
+rnd_hatt_compflags_t pcb_hid_compflag_name2bit(const char *name)
 {
 	comflag_name_t *n;
 	for(n = compflag_names; n->flag != 0; n++)
@@ -96,18 +96,18 @@ int pcb_hid_attrdlg_num_children(rnd_hid_attribute_t *attrs, int start_from, int
 	int n, level = 1, cnt = 0;
 
 	for(n = start_from; n < n_attrs; n++) {
-		if ((level == 1) && (attrs[n].type != PCB_HATT_END))
+		if ((level == 1) && (attrs[n].type != RND_HATT_END))
 			cnt++;
 		switch(attrs[n].type) {
-			case PCB_HATT_END:
+			case RND_HATT_END:
 				level--;
 				if (level == 0)
 					return cnt;
 				break;
-			case PCB_HATT_BEGIN_TABLE:
-			case PCB_HATT_BEGIN_HBOX:
-			case PCB_HATT_BEGIN_VBOX:
-			case PCB_HATT_BEGIN_COMPOUND:
+			case RND_HATT_BEGIN_TABLE:
+			case RND_HATT_BEGIN_HBOX:
+			case RND_HATT_BEGIN_VBOX:
+			case RND_HATT_BEGIN_COMPOUND:
 				level++;
 				break;
 			default:

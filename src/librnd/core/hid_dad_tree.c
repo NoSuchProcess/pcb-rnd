@@ -45,7 +45,7 @@ static void pcb_dad_tree_free_rowlist(rnd_hid_attribute_t *attr, gdl_list_t *lis
 		if (tree->user_free_cb != NULL)
 			tree->user_free_cb(tree->attrib, tree->hid_wdata, r);
 
-		if (attr->pcb_hatt_flags & PCB_HATF_TREE_COL)
+		if (attr->rnd_hatt_flags & RND_HATF_TREE_COL)
 			free(r->path);
 
 		free(r);

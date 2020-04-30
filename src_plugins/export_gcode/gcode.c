@@ -61,39 +61,39 @@ static const char def_mech_script[]  = "setup_positive; trace_contour; fix_overc
 
 rnd_export_opt_t gcode_attribute_list[] = {
 	{"outfile", "file name prefix for non-cam",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_outfile 0
 
 	{"dias", "tool diameters",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_template 1
 
 	{"layer-script", "rendering script for layer graphics",
-	 PCB_HATT_STRING, 0, 0, {0, def_layer_script, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, def_layer_script, 0}, 0, 0},
 #define HA_layer_script 2
 
 	{"mech-script", "rendering script for boundary/mech/drill",
-	 PCB_HATT_STRING, 0, 0, {0, def_mech_script, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, def_mech_script, 0}, 0, 0},
 #define HA_mech_script 3
 
 	{"mill-depth", "Milling depth on layers",
-	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(-0.05)}, 0},
+	 RND_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(-0.05)}, 0},
 #define HA_layerdepth 4
 
 	{"total-cut-depth", "Total milling depth when cutting through the board (if 0, use pcb thickness)",
-	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(-1.6)}, 0},
+	 RND_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(-1.6)}, 0},
 #define HA_totalcutdepth 5
 
 	{"cut-depth", "Milling depth increment in each pass",
-	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(0.5)}, 0},
+	 RND_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(0.5)}, 0},
 #define HA_cutdepth 6
 
 	{"safe-Z", "Safe Z (above the board) for traverse move",
-	 PCB_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(0.5)}, 0},
+	 RND_HATT_COORD, PCB_MM_TO_COORD(-10), PCB_MM_TO_COORD(100), {0, 0, 0, PCB_MM_TO_COORD(0.5)}, 0},
 #define HA_safeZ 7
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 8
 
 };
@@ -379,7 +379,7 @@ static void gcode_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int gcode_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]), pcb_export_gcode_cookie, 0);
+	rnd_export_register_opts(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]), pcb_export_gcode_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 

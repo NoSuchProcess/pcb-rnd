@@ -315,7 +315,7 @@ static void pcb_line_of_vias_gui_propedit(pcb_subc_t *subc)
 		return; /* do not open another */
 
 	PCB_DAD_BEGIN_VBOX(lov->dlg);
-		PCB_DAD_COMPFLAG(lov->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(lov->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABLE(lov->dlg, 2);
 			pcb_exto_dlg_coord(lov->dlg, subc, "pitch", "extobj::pitch", "target distance between center of vias");
 			pcb_exto_dlg_coord(lov->dlg, subc, "clearance", "extobj::clearance", "global clarance value on vias");

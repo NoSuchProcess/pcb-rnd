@@ -100,7 +100,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 	pcb_drc_impl_t *di;
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		PCB_DAD_LABEL(ctx->dlg, "Board size");
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "Width=");
@@ -119,7 +119,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		PCB_DAD_LABEL(ctx->dlg, "*OBSOLETE* DRC; do not use; details:");
 		PCB_DAD_STRING(ctx->dlg);
 		PCB_DAD_DEFAULT_PTR(ctx->dlg, "http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=deprecation#olddrc");
@@ -130,7 +130,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_BEGIN_HBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		PCB_DAD_LABEL(ctx->dlg, "Configure DRC rules:");
 		for(di = gdl_first(&pcb_drc_impls); di != NULL; di = di->link.next) {
 			char *ra = rnd_strdup(di->list_rules_action); /* need to strdup it just in case the plugin is unloaded while the preferences dialog is open */
@@ -143,7 +143,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		PCB_DAD_LABEL(ctx->dlg, "misc sizes");
 		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			PCB_DAD_LABEL(ctx->dlg, "polygon isle minimum size\n[square um]");

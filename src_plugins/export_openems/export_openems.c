@@ -95,59 +95,59 @@ static int openems_ovr;
 
 rnd_export_opt_t openems_attribute_list[] = {
 	{"outfile", "Graphics output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_openemsfile 0
 
 	{"def-copper-thick", "Default copper thickness",
-	 PCB_HATT_COORD, 0, THMAX, {0, 0, 0, PCB_MM_TO_COORD(0.035)}, 0, 0},
+	 RND_HATT_COORD, 0, THMAX, {0, 0, 0, PCB_MM_TO_COORD(0.035)}, 0, 0},
 #define HA_def_copper_thick 1
 
 	{"def-substrate-thick", "Default substrate thickness",
-	 PCB_HATT_COORD, 0, THMAX, {0, 0, 0, PCB_MM_TO_COORD(0.8)}, 0, 0},
+	 RND_HATT_COORD, 0, THMAX, {0, 0, 0, PCB_MM_TO_COORD(0.8)}, 0, 0},
 #define HA_def_substrate_thick 2
 
 	{"def-copper-cond", "Default copper conductivity",
-	 PCB_HATT_STRING, 0, 0, {0, "56*10^6", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "56*10^6", 0}, 0, 0},
 #define HA_def_copper_cond 3
 
 	{"def-subst-epsilon", "Default substrate epsilon",
-	 PCB_HATT_STRING, 0, 0, {0, "3.66", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "3.66", 0}, 0, 0},
 #define HA_def_subst_epsilon 4
 
 	{"def-subst-mue", "Default substrate mue",
-	 PCB_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
 #define HA_def_subst_mue 5
 
 	{"def-subst-kappa", "Default substrate kappa",
-	 PCB_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
 #define HA_def_subst_kappa 6
 
 	{"def-subst-sigma", "Default substrate sigma",
-	 PCB_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
 #define HA_def_subst_sigma 7
 
 	{"void-name", "Name of the void (sorrunding material)",
-	 PCB_HATT_STRING, 0, 0, {0, "AIR", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "AIR", 0}, 0, 0},
 #define HA_void_name 8
 
 	{"void-epsilon", "epsilon value for the void (sorrunding material)",
-	 PCB_HATT_REAL, 0, 1000, {0, 0, 1}, 0, 0},
+	 RND_HATT_REAL, 0, 1000, {0, 0, 1}, 0, 0},
 #define HA_void_epsilon 9
 
 	{"void-mue", "mue value for the void (sorrunding material)",
-	 PCB_HATT_REAL, 0, 1000, {0, 0, 1}, 0, 0},
+	 RND_HATT_REAL, 0, 1000, {0, 0, 1}, 0, 0},
 #define HA_void_mue 10
 
 	{"segments", "kludge: number of segments used to approximate round cap trace ends",
-	 PCB_HATT_INTEGER, 0, 100, {10, 0, 0}, 0, 0},
+	 RND_HATT_INTEGER, 0, 100, {10, 0, 0}, 0, 0},
 #define HA_segments 11
 
 	{"base-prio", "base priority: if the board displaces the chassis",
-	 PCB_HATT_INTEGER, 0, 10, {0, 0, 0}, 0, 0},
+	 RND_HATT_INTEGER, 0, 10, {0, 0, 0}, 0, 0},
 #define HA_base_prio 12
 
 	{"port-resistance", "default port resistance",
-	 PCB_HATT_REAL, 0, 1000, {0, 0, 50}, 0, 0}
+	 RND_HATT_REAL, 0, 1000, {0, 0, 50}, 0, 0}
 #define HA_def_port_res 13
 
 };
@@ -683,7 +683,7 @@ static void openems_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int openems_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(openems_attribute_list, sizeof(openems_attribute_list) / sizeof(openems_attribute_list[0]), openems_cookie, 0);
+	rnd_export_register_opts(openems_attribute_list, sizeof(openems_attribute_list) / sizeof(openems_attribute_list[0]), openems_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -835,7 +835,7 @@ void pplg_uninit_export_openems(void)
 {
 	pcb_openems_excitation_uninit();
 	rnd_remove_actions_by_cookie(openems_cookie);
-	pcb_export_remove_opts_by_cookie(openems_cookie);
+	rnd_export_remove_opts_by_cookie(openems_cookie);
 }
 
 int pplg_init_export_openems(void)

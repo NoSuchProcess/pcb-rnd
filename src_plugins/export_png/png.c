@@ -176,7 +176,7 @@ Name of the file to be exported to. Can contain a path.
 %end-doc
 */
 	{"outfile", "Graphics output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_pngfile 0
 
 /* %start-doc options "93 PNG Options"
@@ -187,7 +187,7 @@ Scale factor in pixels/inch. Set to 0 to scale to size specified in the layout.
 %end-doc
 */
 	{"dpi", "Scale factor (pixels/inch). 0 to scale to specified size",
-	 PCB_HATT_INTEGER, 0, 10000, {100, 0, 0}, 0, 0},
+	 RND_HATT_INTEGER, 0, 10000, {100, 0, 0}, 0, 0},
 #define HA_dpi 1
 
 /* %start-doc options "93 PNG Options"
@@ -198,7 +198,7 @@ Width of the png image in pixels. No constraint, when set to 0.
 %end-doc
 */
 	{"x-max", "Maximum width (pixels).  0 to not constrain",
-	 PCB_HATT_INTEGER, 0, 10000, {0, 0, 0}, 0, 0},
+	 RND_HATT_INTEGER, 0, 10000, {0, 0, 0}, 0, 0},
 #define HA_xmax 2
 
 /* %start-doc options "93 PNG Options"
@@ -209,7 +209,7 @@ Height of the png output in pixels. No constraint, when set to 0.
 %end-doc
 */
 	{"y-max", "Maximum height (pixels).  0 to not constrain",
-	 PCB_HATT_INTEGER, 0, 10000, {0, 0, 0}, 0, 0},
+	 RND_HATT_INTEGER, 0, 10000, {0, 0, 0}, 0, 0},
 #define HA_ymax 3
 
 /* %start-doc options "93 PNG Options"
@@ -220,7 +220,7 @@ Maximum width and height of the PNG output in pixels. No constraint, when set to
 %end-doc
 */
 	{"xy-max", "Maximum width and height (pixels).  0 to not constrain",
-	 PCB_HATT_INTEGER, 0, 10000, {0, 0, 0}, 0, 0},
+	 RND_HATT_INTEGER, 0, 10000, {0, 0, 0}, 0, 0},
 #define HA_xymax 4
 
 /* %start-doc options "93 PNG Options"
@@ -231,7 +231,7 @@ Export layers as shown on screen.
 %end-doc
 */
 	{"as-shown", "Export layers as shown on screen",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_as_shown 5
 
 /* %start-doc options "93 PNG Options"
@@ -242,7 +242,7 @@ Convert output to monochrome.
 %end-doc
 */
 	{"monochrome", "Convert to monochrome",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_mono 6
 
 /* %start-doc options "93 PNG Options"
@@ -253,7 +253,7 @@ Limit the bounds of the exported PNG image to the visible items.
 %end-doc
 */
 	{"only-visible", "Limit the bounds of the PNG image to the visible items",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_only_visible 7
 
 /* %start-doc options "93 PNG Options"
@@ -264,7 +264,7 @@ Make the background and any holes transparent.
 %end-doc
 */
 	{"use-alpha", "Make the background and any holes transparent",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_use_alpha 8
 
 /* %start-doc options "93 PNG Options"
@@ -276,7 +276,7 @@ File format to be exported. Parameter @code{<string>} can be @samp{PNG},
 %end-doc
 */
 	{"format", "Export file format",
-	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, filetypes, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, filetypes, 0},
 #define HA_filetype 9
 
 /* %start-doc options "93 PNG Options"
@@ -290,7 +290,7 @@ OBSOLETE - do not use this feature!
 %end-doc
 */
 	{"png-bloat", "Amount (in/mm/mil/pix) to add to trace/pad/pin edges (1 = 1/100 mil) (OBSOLETE - do not use this feature!)",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_bloat 10
 
 /* %start-doc options "93 PNG Options"
@@ -302,7 +302,7 @@ Export a photo realistic image of the layout.
 %end-doc
 */
 	{"photo-mode", "Photo-realistic export mode",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_photo_mode 11
 
 /* %start-doc options "93 PNG Options"
@@ -313,7 +313,7 @@ In photo-realistic mode, export the reverse side of the layout. Left-right flip.
 %end-doc
 */
 	{"photo-flip-x", "Show reverse side of the board, left-right flip",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_photo_flip_x 12
 
 /* %start-doc options "93 PNG Options"
@@ -324,7 +324,7 @@ In photo-realistic mode, export the reverse side of the layout. Up-down flip.
 %end-doc
 */
 	{"photo-flip-y", "Show reverse side of the board, up-down flip",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_photo_flip_y 13
 
 /* %start-doc options "93 PNG Options"
@@ -337,7 +337,7 @@ In photo-realistic mode, export the solder mask as this colour. Parameter
 %end-doc
 */
 	{"photo-mask-colour", "Colour for the exported colour mask (green, red, blue, purple)",
-	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, mask_colour_names, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, mask_colour_names, 0},
 #define HA_photo_mask_colour 14
 
 /* %start-doc options "93 PNG Options"
@@ -351,7 +351,7 @@ of plating. Parameter @code{<colour>} can be @samp{tinned}, @samp{gold},
 %end-doc
 */
 	{"photo-plating", "Type of plating applied to exposed copper in photo-mode (tinned, gold, silver, copper)",
-	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, plating_type_names, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, plating_type_names, 0},
 #define HA_photo_plating 15
 
 /* %start-doc options "93 PNG Options"
@@ -364,11 +364,11 @@ In photo-realistic mode, export the silk screen as this colour. Parameter
 %end-doc
 */
 	{"photo-silk-colour", "Colour for the exported colour silk (white, black, yellow)",
-	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, silk_colour_names, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, silk_colour_names, 0},
 #define HA_photo_silk_colour 16
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 17
 };
 
@@ -793,7 +793,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int png_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie, 0);
+	rnd_export_register_opts(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -1403,7 +1403,7 @@ int pplg_check_ver_export_png(int ver_needed) { return 0; }
 
 void pplg_uninit_export_png(void)
 {
-	pcb_export_remove_opts_by_cookie(png_cookie);
+	rnd_export_remove_opts_by_cookie(png_cookie);
 }
 
 int pplg_init_export_png(void)

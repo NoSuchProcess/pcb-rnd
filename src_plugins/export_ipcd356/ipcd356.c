@@ -409,12 +409,12 @@ Name of the IPC-D-356 Netlist output file.
 	{
 	 "netlistfile",
 	 "Name of the IPC-D-356 Netlist output file",
-	 PCB_HATT_STRING,
+	 RND_HATT_STRING,
 	 0, 0, {0, 0, 0}, 0, 0},
 #define HA_ipcd356_filename 0
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 1
 
 };
@@ -477,7 +477,7 @@ int pplg_check_ver_export_ipcd356(int ver_needed) { return 0; }
 
 void pplg_uninit_export_ipcd356(void)
 {
-	pcb_export_remove_opts_by_cookie(ipcd356_cookie);
+	rnd_export_remove_opts_by_cookie(ipcd356_cookie);
 }
 
 int pplg_init_export_ipcd356(void)
@@ -498,6 +498,6 @@ int pplg_init_export_ipcd356(void)
 
 	pcb_hid_register_hid(&ipcd356_hid);
 
-	pcb_export_register_opts(ipcd356_options, sizeof(ipcd356_options) / sizeof(ipcd356_options[0]), ipcd356_cookie, 0);
+	rnd_export_register_opts(ipcd356_options, sizeof(ipcd356_options) / sizeof(ipcd356_options[0]), ipcd356_cookie, 0);
 	return 0;
 }

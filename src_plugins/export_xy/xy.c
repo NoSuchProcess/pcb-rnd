@@ -56,7 +56,7 @@ Name of the XY output file.
 %end-doc
 */
 	{"xyfile", "Name of the XY output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_xyfile 0
 
 /* %start-doc options "8 XY Creation"
@@ -67,14 +67,14 @@ Unit of XY dimensions. Defaults to mil.
 %end-doc
 */
 	{"xy-unit", "XY units",
-	 PCB_HATT_UNIT, 0, 0, {-1, 0, 0}, NULL, 0},
+	 RND_HATT_UNIT, 0, 0, {-1, 0, 0}, NULL, 0},
 #define HA_unit 1
 	{"format", "file format (template)",
-	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, NULL, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, NULL, 0},
 #define HA_format 2
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 3
 
 };
@@ -840,7 +840,7 @@ static int xy_usage(rnd_hid_t *hid, const char *topic)
 
 static int xy_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(xy_options, sizeof(xy_options) / sizeof(xy_options[0]), xy_cookie, 0);
+	rnd_export_register_opts(xy_options, sizeof(xy_options) / sizeof(xy_options[0]), xy_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -850,7 +850,7 @@ int pplg_check_ver_export_xy(int ver_needed) { return 0; }
 
 void pplg_uninit_export_xy(void)
 {
-	pcb_export_remove_opts_by_cookie(xy_cookie);
+	rnd_export_remove_opts_by_cookie(xy_cookie);
 	rnd_conf_unreg_file(CONF_FN, export_xy_conf_internal);
 	rnd_conf_unreg_fields("plugins/export_xy/");
 	free_fmts();

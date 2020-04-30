@@ -124,9 +124,9 @@ static void pcb_dlg_undo(void)
 		return; /* do not open another */
 
 	PCB_DAD_BEGIN_VBOX(undo_ctx.dlg);
-		PCB_DAD_COMPFLAG(undo_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(undo_ctx.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_TREE(undo_ctx.dlg, 3, 0, hdr);
-			PCB_DAD_COMPFLAG(undo_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+			PCB_DAD_COMPFLAG(undo_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			undo_ctx.wlist = PCB_DAD_CURRENT(undo_ctx.dlg);
 
 		PCB_DAD_BEGIN_HBOX(undo_ctx.dlg);

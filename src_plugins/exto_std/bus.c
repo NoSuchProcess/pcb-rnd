@@ -377,7 +377,7 @@ static void pcb_bus_gui_propedit(pcb_subc_t *subc)
 		return; /* do not open another */
 
 	PCB_DAD_BEGIN_VBOX(bus->dlg);
-		PCB_DAD_COMPFLAG(bus->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(bus->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABLE(bus->dlg, 2);
 			pcb_exto_dlg_int(bus->dlg, subc, "width", "extobj::width", "number of traces in the bus");
 			pcb_exto_dlg_coord(bus->dlg, subc, "thickness", "extobj::thickness", "thickness of each trace");

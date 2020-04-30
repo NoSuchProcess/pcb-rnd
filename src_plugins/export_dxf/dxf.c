@@ -119,7 +119,7 @@ Name of the file to be exported to. Can contain a path.
 %end-doc
 */
 	{"outfile", "Graphics output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_dxffile 0
 
 /* %start-doc options "93 DXF Options"
@@ -130,7 +130,7 @@ Name of the lihata template file to be used instead of the default dxf template.
 %end-doc
 */
 	{"template", "DXF template (lihata file)",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_template 1
 
 /* %start-doc options "93 DXF Options"
@@ -141,7 +141,7 @@ Draw outline and drills with thin lines.
 %end-doc
 */
 	{"thin", "Draw outline and drill with thin lines",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_thin 2
 
 /* %start-doc options "93 DXF Options"
@@ -152,7 +152,7 @@ Fill polygons using hatch
 %end-doc
 */
 	{"poly-fill", "Fill polygons using hatch",
-	 PCB_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
 #define HA_poly_fill 3
 
 /* %start-doc options "93 DXF Options"
@@ -163,7 +163,7 @@ Draw polygons contour with thin line
 %end-doc
 */
 	{"poly-contour", "Draw polygons contour with thin line",
-	 PCB_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
 #define HA_poly_contour 4
 
 /* %start-doc options "93 DXF Options"
@@ -174,7 +174,7 @@ Fill drill (hole) circles using hatch
 %end-doc
 */
 	{"drill-fill", "Fill drill (hole) circles using hatch",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_drill_fill 5
 
 /* %start-doc options "93 DXF Options"
@@ -185,11 +185,11 @@ Draw drill contour with thin line
 %end-doc
 */
 	{"drill-contour", "Draw drill contour with thin line",
-	 PCB_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
 #define HA_drill_contour 6
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 7
 
 };
@@ -347,7 +347,7 @@ static void dxf_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int dxf_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]), dxf_cookie, 0);
+	rnd_export_register_opts(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]), dxf_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -528,7 +528,7 @@ int pplg_check_ver_export_dxf(int ver_needed) { return 0; }
 
 void pplg_uninit_export_dxf(void)
 {
-	pcb_export_remove_opts_by_cookie(dxf_cookie);
+	rnd_export_remove_opts_by_cookie(dxf_cookie);
 }
 
 int pplg_init_export_dxf(void)

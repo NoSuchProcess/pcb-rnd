@@ -39,8 +39,8 @@ static int ghid_pane_set(attr_dlg_t *ctx, int idx, const rnd_hid_attr_val_t *val
 	g_object_get(G_OBJECT(pane), "min-position", &minp, "max-position", &maxp, NULL);
 	gtkc_widget_get_allocation(pane, &a);
 	switch(ctx->attrs[idx].type) {
-		case PCB_HATT_BEGIN_HPANE: p = a.width; break;
-		case PCB_HATT_BEGIN_VPANE: p = a.height; break;
+		case RND_HATT_BEGIN_HPANE: p = a.width; break;
+		case RND_HATT_BEGIN_VPANE: p = a.height; break;
 		default: abort();
 	}
 	p = (double)p * ratio;
@@ -73,7 +73,7 @@ static int ghid_pane_create(attr_dlg_t *ctx, int j, GtkWidget *parent, int ishor
 	ts.val.pane.next = 1;
 	ctx->wl[j] = widget = ishor ? gtkc_hpaned_new() : gtkc_vpaned_new();
 
-	bparent = frame_scroll(parent, ctx->attrs[j].pcb_hatt_flags, &ctx->wltop[j]);
+	bparent = frame_scroll(parent, ctx->attrs[j].rnd_hatt_flags, &ctx->wltop[j]);
 	gtk_box_pack_start(GTK_BOX(bparent), widget, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(widget), PCB_OBJ_PROP, ctx);
 	j = ghid_attr_dlg_add(ctx, widget, &ts, j+1);

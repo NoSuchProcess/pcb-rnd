@@ -325,35 +325,35 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 	netlist_ctx.pcb = pcb;
 
 	PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* layout */
-		PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 
 		PCB_DAD_BEGIN_HPANE(netlist_ctx.dlg);
-			PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* left */
-				PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 				PCB_DAD_TREE(netlist_ctx.dlg, 2, 0, hdr);
-					PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					netlist_ctx.wnetlist = PCB_DAD_CURRENT(netlist_ctx.dlg);
 					PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, selected_cb, netlist_row_selected);
 					PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, ctx, &netlist_ctx);
 			PCB_DAD_END(netlist_ctx.dlg);
 
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right */
-				PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 				PCB_DAD_BEGIN_VPANE(netlist_ctx.dlg);
-					PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 					wvpan = PCB_DAD_CURRENT(netlist_ctx.dlg);
 					PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-top */
-						PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 						PCB_DAD_PREVIEW(netlist_ctx.dlg, netlist_expose, netlist_mouse, NULL, &netlist_ctx.bb_prv, 100, 100, &netlist_ctx);
-							PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_PRV_BOARD);
+							PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
 							netlist_ctx.wprev = PCB_DAD_CURRENT(netlist_ctx.dlg);
 					PCB_DAD_END(netlist_ctx.dlg);
 					PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* right-bottom */
-						PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 						PCB_DAD_TREE(netlist_ctx.dlg, 1, 0, hdr2);
-							PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+							PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 							netlist_ctx.wtermlist = PCB_DAD_CURRENT(netlist_ctx.dlg);
 							PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, selected_cb, termlist_row_selected);
 							PCB_DAD_TREE_SET_CB(netlist_ctx.dlg, ctx, &netlist_ctx);
@@ -420,7 +420,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 			PCB_DAD_BUTTON(netlist_ctx.dlg, "found");
 				PCB_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_fnd_cb);
 			PCB_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* fill between buttons and close */
-				PCB_DAD_COMPFLAG(netlist_ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 			PCB_DAD_END(netlist_ctx.dlg);
 			PCB_DAD_BUTTON_CLOSES(netlist_ctx.dlg, clbtn);
 		PCB_DAD_END(netlist_ctx.dlg);

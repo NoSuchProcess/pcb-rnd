@@ -46,7 +46,7 @@ typedef struct {
 #define PCB_DAD_UNIT(table, family_) \
 do { \
 	pcb_hid_dad_unit_t *unit = calloc(sizeof(pcb_hid_dad_unit_t), 1); \
-	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_COMPOUND); \
+	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_COMPOUND); \
 		unit->cmp.wbegin = PCB_DAD_CURRENT(table); \
 		pcb_dad_unit_init(family_); \
 		PCB_DAD_ENUM(table, pcb_dad_unit_enum); \

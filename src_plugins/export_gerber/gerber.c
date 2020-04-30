@@ -199,7 +199,7 @@ static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx,
 
 static rnd_export_opt_t gerber_options[] = {
 	{"", "WARNING",
-	 PCB_HATT_BEGIN_VBOX, 0, 0, {0, 0, 0, 0, {0}, gerber_warning}, 0, 0},
+	 RND_HATT_BEGIN_VBOX, 0, 0, {0, 0, 0, 0, {0}, gerber_warning}, 0, 0},
 #define HA_warning 0
 
 /* %start-doc options "90 Gerber Export"
@@ -210,7 +210,7 @@ Gerber output file prefix. Can include a path.
 %end-doc
 */
 	{"gerberfile", "Gerber output file base",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_gerberfile 1
 
 /* %start-doc options "90 Gerber Export"
@@ -221,7 +221,7 @@ Output contains all layers, even empty ones.
 %end-doc
 */
 	{"all-layers", "Output all layers, even empty ones",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_all_layers 2
 
 /* %start-doc options "90 Gerber Export"
@@ -232,25 +232,25 @@ Print file names and aperture counts on stdout.
 %end-doc
 */
 	{"verbose", "Print file names and aperture counts on stdout",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_verbose 3
 	{"copy-outline", "Copy outline onto other layers",
-	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, copy_outline_names, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, copy_outline_names, 0},
 #define HA_copy_outline 4
 	{"cross-sect", "Export the cross section layer",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cross_sect 5
 
 	{"coord-format", "Coordinate format (resolution)",
-	 PCB_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
 #define HA_coord_format 6
 
 	{"aperture-per-file", "Restart aperture numbering in each new file",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_apeture_per_file 7
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 8
 };
 
@@ -421,7 +421,7 @@ static void gerber_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int gerber_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
+	rnd_export_register_opts(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -1035,7 +1035,7 @@ static void gerber_warning(pcb_hid_export_opt_func_action_t act, void *call_ctx,
 			break;
 		case PCB_HIDEOF_DAD:
 			PCB_DAD_BEGIN_VBOX(dad->dlg);
-				PCB_DAD_COMPFLAG(dad->dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+				PCB_DAD_COMPFLAG(dad->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
 				PCB_DAD_BEGIN_HBOX(dad->dlg);
 					PCB_DAD_PICTURE(dad->dlg, pcp_dlg_xpm_by_name("warning"));
 					PCB_DAD_BEGIN_VBOX(dad->dlg);
@@ -1064,7 +1064,7 @@ int pplg_check_ver_export_gerber(int ver_needed) { return 0; }
 
 void pplg_uninit_export_gerber(void)
 {
-	pcb_export_remove_opts_by_cookie(gerber_cookie);
+	rnd_export_remove_opts_by_cookie(gerber_cookie);
 	rnd_conf_unreg_fields("plugins/export_gerber/");
 	rnd_event_unbind_allcookie(gerber_cookie);
 }

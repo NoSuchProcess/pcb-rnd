@@ -747,7 +747,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 
 #define spring(dlg) \
 	PCB_DAD_BEGIN_VBOX(dlg); \
-		PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL); \
+		PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL); \
 	PCB_DAD_END(dlg);
 
 void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
@@ -761,7 +761,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 	target_tab -= pse->disable_instance_tab;
 
 	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(dlg, tabs + pse->disable_instance_tab);
 			pse->tab = PCB_DAD_CURRENT(dlg);
 
@@ -769,7 +769,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 				/* Tab 0: this instance */
 				PCB_DAD_BEGIN_VBOX(dlg);
 					PCB_DAD_BEGIN_VBOX(dlg);
-						PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+						PCB_DAD_COMPFLAG(dlg, RND_HATF_FRAME);
 						PCB_DAD_LABEL(dlg, "Settings that affect only this padstack instance");
 						PCB_DAD_BEGIN_HBOX(dlg);
 							PCB_DAD_LABEL(dlg, "prototype");
@@ -813,14 +813,14 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 				PCB_DAD_BEGIN_VBOX(dlg);
 
 					PCB_DAD_BEGIN_HBOX(dlg);
-						PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 						PCB_DAD_LABEL(dlg, "Geometry of all padstacks with this proto");
 						PCB_DAD_LABEL(dlg, "[SMIRROR]");
 							PCB_DAD_HELP(dlg, "The layer stack of this specific padstack is mirrored.\nEditing the prototype will have mirrored effect,\ne.g. editing top side will affect the bottom side\nof this padstack instance.");
 							pse->prsmirror = PCB_DAD_CURRENT(dlg);
 						spring(dlg);
 						PCB_DAD_BEGIN_HBOX(dlg);
-							PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+							PCB_DAD_COMPFLAG(dlg, RND_HATF_FRAME);
 							PCB_DAD_LABEL(dlg, "Prototype name:");
 							PCB_DAD_STRING(dlg);
 								PCB_DAD_CHANGE_CB(dlg, pse_chg_prname);
@@ -828,9 +828,9 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 						PCB_DAD_END(dlg);
 					PCB_DAD_END(dlg);
 
-					PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+					PCB_DAD_COMPFLAG(dlg, RND_HATF_FRAME);
 					PCB_DAD_BEGIN_TABLE(dlg, 3);
-						PCB_DAD_COMPFLAG(dlg, PCB_HATF_FRAME);
+						PCB_DAD_COMPFLAG(dlg, RND_HATF_FRAME);
 
 						/* header */
 						PCB_DAD_LABEL(dlg, "Per layer-type shape");
@@ -865,7 +865,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 								PCB_DAD_LABEL(dlg, "-");
 									pse->proto_info[n] = PCB_DAD_CURRENT(dlg);
 								PCB_DAD_BEGIN_VBOX(dlg);
-									PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT);
+									PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL | RND_HATF_TIGHT);
 								PCB_DAD_END(dlg);
 							PCB_DAD_END(dlg);
 

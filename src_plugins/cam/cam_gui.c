@@ -248,11 +248,11 @@ static void header_label(cam_dlg_t *ctx, const char *text)
 {
 	PCB_DAD_BEGIN_HBOX(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_LABEL(ctx->dlg, text);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_END(ctx->dlg);
 	PCB_DAD_END(ctx->dlg);
 }
@@ -269,13 +269,13 @@ static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 	ctx->cam.vars = pcb_cam_vars_alloc();
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_HPANE(ctx->dlg);
 
 			PCB_DAD_BEGIN_VBOX(ctx->dlg); /* left */
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, cam_job_select_cb);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 					ctx->wjobs = PCB_DAD_CURRENT(ctx->dlg);
@@ -284,7 +284,7 @@ static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 						PCB_DAD_HELP(ctx->dlg, "Filter text:\nlist jobs with matching name only");
 						PCB_DAD_CHANGE_CB(ctx->dlg, cam_gui_filter_cb);
 					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* filler */
-						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 					PCB_DAD_END(ctx->dlg);
 					PCB_DAD_BUTTON(ctx->dlg, "export!");
 						PCB_DAD_CHANGE_CB(ctx->dlg, cam_gui_export_cb);
@@ -293,25 +293,25 @@ static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 			PCB_DAD_END(ctx->dlg);
 
 			PCB_DAD_BEGIN_VBOX(ctx->dlg); /* right */
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_BEGIN_VPANE(ctx->dlg);
 					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* top */
-						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 						header_label(ctx, "CAM job script");
 						PCB_DAD_BEGIN_TABBED(ctx->dlg, script_tabs);
-							PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+							PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 							PCB_DAD_TREE(ctx->dlg, 3, 0, digest_hdr);
-								PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+								PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 								ctx->wdigest = PCB_DAD_CURRENT(ctx->dlg);
 
 							PCB_DAD_TEXT(ctx->dlg, ctx);
-								PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+								PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 								ctx->wtxt = PCB_DAD_CURRENT(ctx->dlg);
 						PCB_DAD_END(ctx->dlg);
 					PCB_DAD_END(ctx->dlg);
 					PCB_DAD_BEGIN_VBOX(ctx->dlg); /* bottom */
-						PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 						header_label(ctx, "CAM options");
 						PCB_DAD_BEGIN_TABLE(ctx->dlg, 2); /* special options */
 							PCB_DAD_LABEL(ctx->dlg, "outfile");
@@ -328,7 +328,7 @@ static int cam_gui(rnd_hidlib_t *hidlib, const char *arg)
 						PCB_DAD_END(ctx->dlg);
 
 						PCB_DAD_TREE(ctx->dlg, 2, 0, opt_hdr); /* option table */
-							PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+							PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 							ctx->wopts = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_END(ctx->dlg);
 				PCB_DAD_END(ctx->dlg);

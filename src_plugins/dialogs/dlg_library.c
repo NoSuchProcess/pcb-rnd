@@ -654,19 +654,19 @@ static void pcb_dlg_library(void)
 	library_ctx.prev_pcb->LayerGroups.len = n;
 
 	PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
-		PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_HPANE(library_ctx.dlg);
 			/* left */
 			PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
-				PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
 				PCB_DAD_TREE(library_ctx.dlg, 1, 1, NULL);
-					PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					PCB_DAD_TREE_SET_CB(library_ctx.dlg, selected_cb, library_select);
 					PCB_DAD_TREE_SET_CB(library_ctx.dlg, ctx, &library_ctx);
 					library_ctx.wtree = PCB_DAD_CURRENT(library_ctx.dlg);
 				PCB_DAD_BEGIN_HBOX(library_ctx.dlg);
 					PCB_DAD_STRING(library_ctx.dlg);
-						PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
+						PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
 						PCB_DAD_HELP(library_ctx.dlg, "filter: display only footprints matching this text\n(if empty: display all)");
 						PCB_DAD_CHANGE_CB(library_ctx.dlg, library_filter_cb);
 						library_ctx.wfilt = PCB_DAD_CURRENT(library_ctx.dlg);
@@ -682,16 +682,16 @@ static void pcb_dlg_library(void)
 
 			/* right */
 			PCB_DAD_BEGIN_VPANE(library_ctx.dlg);
-				PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+				PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
 				/* right top */
 				PCB_DAD_PREVIEW(library_ctx.dlg, library_expose, library_mouse, NULL, NULL, 100, 100, &library_ctx);
 					library_ctx.wpreview = PCB_DAD_CURRENT(library_ctx.dlg);
 
 				/* right bottom */
 				PCB_DAD_BEGIN_VBOX(library_ctx.dlg);
-					PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
 					PCB_DAD_LABEL(library_ctx.dlg, "Refreshing");
-						PCB_DAD_COMPFLAG(library_ctx.dlg, PCB_HATF_HIDE);
+						PCB_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_HIDE);
 						library_ctx.wpend = PCB_DAD_CURRENT(library_ctx.dlg);
 					PCB_DAD_LABEL(library_ctx.dlg, " ");
 						library_ctx.wnopend = PCB_DAD_CURRENT(library_ctx.dlg);

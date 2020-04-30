@@ -131,7 +131,7 @@ struct pcb_hid_preview_s {
 };
 
 typedef struct {
-	int wbegin, wend; /* widget index to the correspoding PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END */
+	int wbegin, wend; /* widget index to the correspoding RND_HATT_BEGIN_COMPOUND and RND_HATT_END */
 
 	/* compound implementation callbacks */
 	int (*widget_state)(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled);
@@ -142,8 +142,8 @@ typedef struct {
 	void (*set_help)(rnd_hid_attribute_t *attr, const char *text); /* set the tooltip help; attr is the END */
 	void (*set_field_num)(rnd_hid_attribute_t *attr, const char *fieldname, long l, double d, rnd_coord_t c); /* set value during creation; attr is the END */
 	void (*set_field_ptr)(rnd_hid_attribute_t *attr, const char *fieldname, void *ptr); /* set value during creation; attr is the END */
-	void (*set_geo)(rnd_hid_attribute_t *attr, pcb_hatt_compflags_t flg, int geo); /* set geometry during creation; attr is the END */
-	void (*free)(rnd_hid_attribute_t *attrib); /* called by DAD on free'ing the PCB_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
+	void (*set_geo)(rnd_hid_attribute_t *attr, rnd_hatt_compflags_t flg, int geo); /* set geometry during creation; attr is the END */
+	void (*free)(rnd_hid_attribute_t *attrib); /* called by DAD on free'ing the RND_HATT_BEGIN_COMPOUND and PCB_HATT_END_COMPOUND widget */
 } pcb_hid_compound_t;
 
 #include <librnd/core/hid_dad_spin.h>
@@ -240,43 +240,43 @@ do { \
 
 #define PCB_DAD_BEGIN_TABLE(table, cols) \
 do { \
-	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_TABLE); \
-	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_table_cols, cols); \
+	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_TABLE); \
+	PCB_DAD_SET_ATTR_FIELD(table, rnd_hatt_table_cols, cols); \
 } while(0)
 
 #define PCB_DAD_BEGIN_TABBED(table, tabs) \
 do { \
-	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_TABBED); \
+	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_TABBED); \
 	PCB_DAD_SET_ATTR_FIELD(table, wdata, tabs); \
 } while(0)
 
-#define PCB_DAD_BEGIN_HBOX(table)      PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HBOX)
-#define PCB_DAD_BEGIN_VBOX(table)      PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_VBOX)
-#define PCB_DAD_END(table)             PCB_DAD_BEGIN(table, PCB_HATT_END)
-#define PCB_DAD_COMPFLAG(table, val)   PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, val | (table[table ## _len-1].pcb_hatt_flags & PCB_HATF_TREE_COL))
+#define PCB_DAD_BEGIN_HBOX(table)      PCB_DAD_BEGIN(table, RND_HATT_BEGIN_HBOX)
+#define PCB_DAD_BEGIN_VBOX(table)      PCB_DAD_BEGIN(table, RND_HATT_BEGIN_VBOX)
+#define PCB_DAD_END(table)             PCB_DAD_BEGIN(table, RND_HATT_END)
+#define PCB_DAD_COMPFLAG(table, val)   PCB_DAD_SET_ATTR_FIELD(table, rnd_hatt_flags, val | (table[table ## _len-1].rnd_hatt_flags & RND_HATF_TREE_COL))
 
 #define PCB_DAD_LABEL(table, text) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_LABEL); \
+	PCB_DAD_ALLOC(table, RND_HATT_LABEL); \
 	PCB_DAD_SET_ATTR_FIELD(table, name, rnd_strdup(text)); \
 } while(0)
 
 /* Add label usign printf formatting syntax: PCB_DAD_LABELF(tbl, ("a=%d", 12)); */
 #define PCB_DAD_LABELF(table, printf_args) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_LABEL); \
+	PCB_DAD_ALLOC(table, RND_HATT_LABEL); \
 	PCB_DAD_SET_ATTR_FIELD(table, name, pcb_strdup_printf printf_args); \
 } while(0)
 
 #define PCB_DAD_ENUM(table, choices) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_ENUM); \
+	PCB_DAD_ALLOC(table, RND_HATT_ENUM); \
 	PCB_DAD_SET_ATTR_FIELD(table, wdata, choices); \
 } while(0)
 
 #define PCB_DAD_BOOL(table, label) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_BOOL); \
+	PCB_DAD_ALLOC(table, RND_HATT_BOOL); \
 	PCB_DAD_SET_ATTR_FIELD(table, name, rnd_strdup(label)); \
 } while(0)
 
@@ -299,25 +299,25 @@ do { \
 } while(0)
 
 #define PCB_DAD_STRING(table) \
-	PCB_DAD_ALLOC(table, PCB_HATT_STRING); \
+	PCB_DAD_ALLOC(table, RND_HATT_STRING); \
 
 #define PCB_DAD_TEXT(table, user_ctx_) \
 do { \
 	pcb_hid_text_t *txt = calloc(sizeof(pcb_hid_text_t), 1); \
 	txt->user_ctx = user_ctx_; \
-	PCB_DAD_ALLOC(table, PCB_HATT_TEXT); \
+	PCB_DAD_ALLOC(table, RND_HATT_TEXT); \
 	PCB_DAD_SET_ATTR_FIELD(table, wdata, txt); \
 } while(0)
 
 #define PCB_DAD_BUTTON(table, text) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
+	PCB_DAD_ALLOC(table, RND_HATT_BUTTON); \
 	table[table ## _len - 1].val.str = text; \
 } while(0)
 
 #define PCB_DAD_BUTTON_CLOSE(table, text, retval) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_BUTTON); \
+	PCB_DAD_ALLOC(table, RND_HATT_BUTTON); \
 	table[table ## _len - 1].val.str = text; \
 	table[table ## _len - 1].val.lng = retval; \
 	table[table ## _len - 1].wdata = (&table ## _ret_override); \
@@ -329,7 +329,7 @@ do { \
 do { \
 	pcb_hid_dad_buttons_t *__n__; \
 	PCB_DAD_BEGIN_HBOX(table); \
-	PCB_DAD_COMPFLAG(table, PCB_HATF_EXPFILL); \
+	PCB_DAD_COMPFLAG(table, RND_HATF_EXPFILL); \
 	PCB_DAD_END(table); \
 	for(__n__ = buttons; __n__->label != NULL; __n__++) { \
 		PCB_DAD_BUTTON_CLOSE(table, __n__->label, __n__->retval); \
@@ -347,7 +347,7 @@ do { \
 
 #define PCB_DAD_PROGRESS(table) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_PROGRESS); \
+	PCB_DAD_ALLOC(table, RND_HATT_PROGRESS); \
 } while(0)
 
 #define PCB_DAD_PREVIEW(table, expose_cb, mouse_cb, free_cb, initial_view_box, min_sizex_px_,  min_sizey_px_, user_ctx_) \
@@ -366,7 +366,7 @@ do { \
 		prv->initial_view.Y2 = ((rnd_rnd_box_t *)(initial_view_box))->Y2; \
 		prv->initial_view_valid = 1; \
 	} \
-	PCB_DAD_ALLOC(table, PCB_HATT_PREVIEW); \
+	PCB_DAD_ALLOC(table, RND_HATT_PREVIEW); \
 	prv->attrib = &table[table ## _len-1]; \
 	PCB_DAD_SET_ATTR_FIELD(table, wdata, prv); \
 } while(0)
@@ -381,31 +381,31 @@ do { \
 
 #define PCB_DAD_PICTURE(table, xpm) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_PICTURE); \
+	PCB_DAD_ALLOC(table, RND_HATT_PICTURE); \
 	table[table ## _len - 1].wdata = xpm; \
 } while(0)
 
 #define PCB_DAD_PICBUTTON(table, xpm) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_PICBUTTON); \
+	PCB_DAD_ALLOC(table, RND_HATT_PICBUTTON); \
 	table[table ## _len - 1].wdata = xpm; \
 } while(0)
 
 
 #define PCB_DAD_COLOR(table) \
 do { \
-	PCB_DAD_ALLOC(table, PCB_HATT_COLOR); \
+	PCB_DAD_ALLOC(table, RND_HATT_COLOR); \
 } while(0)
 
 #define PCB_DAD_BEGIN_HPANE(table) \
 do { \
-	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_HPANE); \
+	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_HPANE); \
 	table[table ## _len - 1].val.dbl = 0.5; \
 } while(0)
 
 #define PCB_DAD_BEGIN_VPANE(table) \
 do { \
-	PCB_DAD_BEGIN(table, PCB_HATT_BEGIN_VPANE); \
+	PCB_DAD_BEGIN(table, RND_HATT_BEGIN_VPANE); \
 	table[table ## _len - 1].val.dbl = 0.5; \
 } while(0)
 
@@ -413,11 +413,11 @@ do { \
 do { \
 	pcb_hid_tree_t *tree = calloc(sizeof(pcb_hid_tree_t), 1); \
 	htsp_init(&tree->paths, strhash, strkeyeq); \
-	PCB_DAD_ALLOC(table, PCB_HATT_TREE); \
+	PCB_DAD_ALLOC(table, RND_HATT_TREE); \
 	tree->attrib = &table[table ## _len-1]; \
 	tree->hdr = opt_header; \
-	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_table_cols, cols); \
-	PCB_DAD_SET_ATTR_FIELD(table, pcb_hatt_flags, first_col_is_tree ? PCB_HATF_TREE_COL : 0); \
+	PCB_DAD_SET_ATTR_FIELD(table, rnd_hatt_table_cols, cols); \
+	PCB_DAD_SET_ATTR_FIELD(table, rnd_hatt_flags, first_col_is_tree ? RND_HATF_TREE_COL : 0); \
 	PCB_DAD_SET_ATTR_FIELD(table, wdata, tree); \
 } while(0)
 
@@ -472,7 +472,7 @@ do { \
 #define PCB_DAD_HELP(table, val) \
 	do { \
 		switch(table[table ## _len - 1].type) { \
-			case PCB_HATT_END: \
+			case RND_HATT_END: \
 				{ \
 					pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 					if ((cmp != NULL) && (cmp->set_help != NULL)) \
@@ -487,8 +487,8 @@ do { \
 #define PCB_DAD_DEFAULT_PTR(table, val_) \
 	do {\
 		switch(table[table ## _len - 1].type) { \
-			case PCB_HATT_BEGIN_COMPOUND: \
-			case PCB_HATT_END: \
+			case RND_HATT_BEGIN_COMPOUND: \
+			case RND_HATT_END: \
 				{ \
 					pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 					if ((cmp != NULL) && (cmp->set_val_ptr != NULL)) \
@@ -505,8 +505,8 @@ do { \
 #define PCB_DAD_DEFAULT_NUM(table, val_) \
 	do {\
 		switch(table[table ## _len - 1].type) { \
-			case PCB_HATT_BEGIN_COMPOUND: \
-			case PCB_HATT_END: \
+			case RND_HATT_BEGIN_COMPOUND: \
+			case RND_HATT_END: \
 				{ \
 					pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 					if ((cmp != NULL) && (cmp->set_val_num != NULL)) \
@@ -537,11 +537,11 @@ do { \
 		pcb_hid_preview_t *__prv__; \
 		pcb_hid_tree_t *__tree__; \
 		switch(table[(widx)].type) { \
-			case PCB_HATT_PREVIEW: \
+			case RND_HATT_PREVIEW: \
 				__prv__ = table[(widx)].wdata; \
 				__prv__->attrib = &table[(widx)]; \
 				break; \
-			case PCB_HATT_TREE: \
+			case RND_HATT_TREE: \
 				__tree__ = table[(widx)].wdata; \
 				__tree__->attrib = &table[(widx)]; \
 				break; \
@@ -577,42 +577,42 @@ do { \
 #define PCB_DAD_SET_ATTR_FIELD_VAL(table, field, val) \
 do { \
 	switch(table[table ## _len - 1].type) { \
-		case PCB_HATT_LABEL: \
+		case RND_HATT_LABEL: \
 			assert(0); \
 			break; \
-		case PCB_HATT_INTEGER: \
-		case PCB_HATT_BOOL: \
-		case PCB_HATT_ENUM: \
-		case PCB_HATT_UNIT: \
-		case PCB_HATT_BEGIN_TABBED: \
+		case RND_HATT_INTEGER: \
+		case RND_HATT_BOOL: \
+		case RND_HATT_ENUM: \
+		case RND_HATT_UNIT: \
+		case RND_HATT_BEGIN_TABBED: \
 			table[table ## _len - 1].field.lng = (int)val; \
 			break; \
-		case PCB_HATT_COORD: \
+		case RND_HATT_COORD: \
 			table[table ## _len - 1].field.crd = (rnd_coord_t)val; \
 			break; \
-		case PCB_HATT_REAL: \
-		case PCB_HATT_PROGRESS: \
-		case PCB_HATT_BEGIN_HPANE: \
-		case PCB_HATT_BEGIN_VPANE: \
+		case RND_HATT_REAL: \
+		case RND_HATT_PROGRESS: \
+		case RND_HATT_BEGIN_HPANE: \
+		case RND_HATT_BEGIN_VPANE: \
 			table[table ## _len - 1].field.dbl = (double)val; \
 			break; \
-		case PCB_HATT_STRING: \
-		case PCB_HATT_TEXT: \
-		case PCB_HATT_BUTTON: \
-		case PCB_HATT_TREE: \
+		case RND_HATT_STRING: \
+		case RND_HATT_TEXT: \
+		case RND_HATT_BUTTON: \
+		case RND_HATT_TREE: \
 			table[table ## _len - 1].field.str = (char *)val; \
 			break; \
-		case PCB_HATT_COLOR: \
+		case RND_HATT_COLOR: \
 			table[table ## _len - 1].field.clr = *(rnd_color_t *)val; \
 			break; \
-		case PCB_HATT_BEGIN_HBOX: \
-		case PCB_HATT_BEGIN_VBOX: \
-		case PCB_HATT_BEGIN_TABLE: \
-		case PCB_HATT_BEGIN_COMPOUND: \
-		case PCB_HATT_END: \
-		case PCB_HATT_PREVIEW: \
-		case PCB_HATT_PICTURE: \
-		case PCB_HATT_PICBUTTON: \
+		case RND_HATT_BEGIN_HBOX: \
+		case RND_HATT_BEGIN_VBOX: \
+		case RND_HATT_BEGIN_TABLE: \
+		case RND_HATT_BEGIN_COMPOUND: \
+		case RND_HATT_END: \
+		case RND_HATT_PREVIEW: \
+		case RND_HATT_PICTURE: \
+		case RND_HATT_PICBUTTON: \
 			assert(0); \
 	} \
 } while(0)
@@ -620,41 +620,41 @@ do { \
 #define PCB_DAD_SET_ATTR_FIELD_NUM(table, field, val_) \
 do { \
 	switch(table[table ## _len - 1].type) { \
-		case PCB_HATT_LABEL: \
+		case RND_HATT_LABEL: \
 			assert(0); \
 			break; \
-		case PCB_HATT_INTEGER: \
-		case PCB_HATT_BOOL: \
-		case PCB_HATT_ENUM: \
-		case PCB_HATT_BEGIN_TABBED: \
+		case RND_HATT_INTEGER: \
+		case RND_HATT_BOOL: \
+		case RND_HATT_ENUM: \
+		case RND_HATT_BEGIN_TABBED: \
 			table[table ## _len - 1].field.lng = (int)val_; \
 			break; \
-		case PCB_HATT_COORD: \
+		case RND_HATT_COORD: \
 			table[table ## _len - 1].field.crd = (rnd_coord_t)val_; \
 			break; \
-		case PCB_HATT_REAL: \
-		case PCB_HATT_PROGRESS: \
-		case PCB_HATT_BEGIN_HPANE: \
-		case PCB_HATT_BEGIN_VPANE: \
+		case RND_HATT_REAL: \
+		case RND_HATT_PROGRESS: \
+		case RND_HATT_BEGIN_HPANE: \
+		case RND_HATT_BEGIN_VPANE: \
 			table[table ## _len - 1].field.dbl = (double)val_; \
 			break; \
-		case PCB_HATT_STRING: \
-		case PCB_HATT_TEXT: \
-		case PCB_HATT_BUTTON: \
-		case PCB_HATT_TREE: \
-		case PCB_HATT_COLOR: \
-		case PCB_HATT_UNIT: \
+		case RND_HATT_STRING: \
+		case RND_HATT_TEXT: \
+		case RND_HATT_BUTTON: \
+		case RND_HATT_TREE: \
+		case RND_HATT_COLOR: \
+		case RND_HATT_UNIT: \
 			assert(!"please use the _PTR() variant instead of the _NUM() variant"); \
 			break; \
-		case PCB_HATT_BEGIN_HBOX: \
-		case PCB_HATT_BEGIN_VBOX: \
-		case PCB_HATT_BEGIN_TABLE: \
-		case PCB_HATT_PREVIEW: \
-		case PCB_HATT_PICTURE: \
-		case PCB_HATT_PICBUTTON: \
+		case RND_HATT_BEGIN_HBOX: \
+		case RND_HATT_BEGIN_VBOX: \
+		case RND_HATT_BEGIN_TABLE: \
+		case RND_HATT_PREVIEW: \
+		case RND_HATT_PICTURE: \
+		case RND_HATT_PICBUTTON: \
 			assert(0); \
-		case PCB_HATT_BEGIN_COMPOUND: \
-		case PCB_HATT_END: \
+		case RND_HATT_BEGIN_COMPOUND: \
+		case RND_HATT_END: \
 			{ \
 				pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 				if ((cmp != NULL) && (cmp->set_field_num != NULL)) \
@@ -669,21 +669,21 @@ do { \
 #define PCB_DAD_SET_ATTR_FIELD_PTR(table, field, val_) \
 do { \
 	switch(table[table ## _len - 1].type) { \
-		case PCB_HATT_LABEL: \
+		case RND_HATT_LABEL: \
 			assert(0); \
 			break; \
-		case PCB_HATT_INTEGER: \
-		case PCB_HATT_BOOL: \
-		case PCB_HATT_ENUM: \
-		case PCB_HATT_BEGIN_TABBED: \
-		case PCB_HATT_COORD: \
-		case PCB_HATT_REAL: \
-		case PCB_HATT_PROGRESS: \
-		case PCB_HATT_BEGIN_HPANE: \
-		case PCB_HATT_BEGIN_VPANE: \
+		case RND_HATT_INTEGER: \
+		case RND_HATT_BOOL: \
+		case RND_HATT_ENUM: \
+		case RND_HATT_BEGIN_TABBED: \
+		case RND_HATT_COORD: \
+		case RND_HATT_REAL: \
+		case RND_HATT_PROGRESS: \
+		case RND_HATT_BEGIN_HPANE: \
+		case RND_HATT_BEGIN_VPANE: \
 			assert(!"please use the _NUM() variant instead of the _PTR() variant"); \
 			break; \
-		case PCB_HATT_UNIT: \
+		case RND_HATT_UNIT: \
 			{ \
 				int __n__, __v__ = pcb_get_n_units(0); \
 				if (val_ != NULL) { \
@@ -696,24 +696,24 @@ do { \
 				} \
 			} \
 			break; \
-		case PCB_HATT_STRING: \
-		case PCB_HATT_TEXT: \
-		case PCB_HATT_BUTTON: \
-		case PCB_HATT_TREE: \
+		case RND_HATT_STRING: \
+		case RND_HATT_TEXT: \
+		case RND_HATT_BUTTON: \
+		case RND_HATT_TREE: \
 			table[table ## _len - 1].field.str = (char *)val_; \
 			break; \
-		case PCB_HATT_COLOR: \
+		case RND_HATT_COLOR: \
 			table[table ## _len - 1].field.clr = *((rnd_color_t *)val_); \
 			break; \
-		case PCB_HATT_BEGIN_HBOX: \
-		case PCB_HATT_BEGIN_VBOX: \
-		case PCB_HATT_BEGIN_TABLE: \
-		case PCB_HATT_PREVIEW: \
-		case PCB_HATT_PICTURE: \
-		case PCB_HATT_PICBUTTON: \
+		case RND_HATT_BEGIN_HBOX: \
+		case RND_HATT_BEGIN_VBOX: \
+		case RND_HATT_BEGIN_TABLE: \
+		case RND_HATT_PREVIEW: \
+		case RND_HATT_PICTURE: \
+		case RND_HATT_PICBUTTON: \
 			assert(0); \
-		case PCB_HATT_BEGIN_COMPOUND: \
-		case PCB_HATT_END: \
+		case RND_HATT_BEGIN_COMPOUND: \
+		case RND_HATT_END: \
 			{ \
 				pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 				if ((cmp != NULL) && (cmp->set_field_ptr != NULL)) \
@@ -728,26 +728,26 @@ do { \
 #define PCB_DAD_FREE_FIELD(table, field) \
 do { \
 	switch(table[field].type) { \
-		case PCB_HATT_LABEL: \
+		case RND_HATT_LABEL: \
 			free((char *)table[field].name); \
 			break; \
-		case PCB_HATT_INTEGER: \
-		case PCB_HATT_BOOL: \
-		case PCB_HATT_ENUM: \
-		case PCB_HATT_COORD: \
-		case PCB_HATT_UNIT: \
-		case PCB_HATT_REAL: \
-		case PCB_HATT_PROGRESS: \
-		case PCB_HATT_STRING: \
-		case PCB_HATT_BUTTON: \
-		case PCB_HATT_PICTURE: \
-		case PCB_HATT_PICBUTTON: \
-		case PCB_HATT_COLOR: \
+		case RND_HATT_INTEGER: \
+		case RND_HATT_BOOL: \
+		case RND_HATT_ENUM: \
+		case RND_HATT_COORD: \
+		case RND_HATT_UNIT: \
+		case RND_HATT_REAL: \
+		case RND_HATT_PROGRESS: \
+		case RND_HATT_STRING: \
+		case RND_HATT_BUTTON: \
+		case RND_HATT_PICTURE: \
+		case RND_HATT_PICBUTTON: \
+		case RND_HATT_COLOR: \
 			break; \
-		case PCB_HATT_TREE: \
+		case RND_HATT_TREE: \
 			pcb_dad_tree_free(&table[field]); \
 			break; \
-		case PCB_HATT_PREVIEW: \
+		case RND_HATT_PREVIEW: \
 			{ \
 				pcb_hid_preview_t *prv = table[field].wdata; \
 				if (prv->user_free_cb != NULL) \
@@ -757,7 +757,7 @@ do { \
 				free(prv); \
 			} \
 			break; \
-		case PCB_HATT_TEXT: \
+		case RND_HATT_TEXT: \
 			{ \
 				pcb_hid_text_t *txt = table[field].wdata; \
 				if (txt->user_free_cb != NULL) \
@@ -767,32 +767,32 @@ do { \
 				free(txt); \
 			} \
 			break; \
-		case PCB_HATT_BEGIN_COMPOUND: \
-		case PCB_HATT_END: \
+		case RND_HATT_BEGIN_COMPOUND: \
+		case RND_HATT_END: \
 			{ \
 				pcb_hid_compound_t *cmp = table[field].wdata; \
 				if ((cmp != NULL) && (cmp->free != NULL)) \
 					cmp->free(&table[field]); \
 			} \
-		case PCB_HATT_BEGIN_HBOX: \
-		case PCB_HATT_BEGIN_VBOX: \
-		case PCB_HATT_BEGIN_HPANE: \
-		case PCB_HATT_BEGIN_VPANE: \
-		case PCB_HATT_BEGIN_TABLE: \
-		case PCB_HATT_BEGIN_TABBED: \
+		case RND_HATT_BEGIN_HBOX: \
+		case RND_HATT_BEGIN_VBOX: \
+		case RND_HATT_BEGIN_HPANE: \
+		case RND_HATT_BEGIN_VPANE: \
+		case RND_HATT_BEGIN_TABLE: \
+		case RND_HATT_BEGIN_TABBED: \
 			break; \
 	} \
 } while(0)
 
 #define PCB_DAD_WIDTH_CHR(table, width) \
 do { \
-	if ((table[table ## _len - 1].type) == PCB_HATT_END) { \
+	if ((table[table ## _len - 1].type) == RND_HATT_END) { \
 		pcb_hid_compound_t *cmp = table[table ## _len - 1].wdata; \
 		if (cmp->set_geo != NULL) \
-			cmp->set_geo(&table[table ## _len - 1], PCB_HATF_HEIGHT_CHR, (width)); \
+			cmp->set_geo(&table[table ## _len - 1], RND_HATF_HEIGHT_CHR, (width)); \
 	} \
 	else { \
-		PCB_DAD_OR_ATTR_FIELD(table, hatt_flags, PCB_HATF_HEIGHT_CHR); \
+		PCB_DAD_OR_ATTR_FIELD(table, hatt_flags, RND_HATF_HEIGHT_CHR); \
 		PCB_DAD_SET_ATTR_FIELD(table, geo_width, (width)); \
 	} \
 } while(0)

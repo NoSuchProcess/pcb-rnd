@@ -38,11 +38,11 @@ Name of the BOM output file.
 %end-doc
 */
 	{"bomfile", "Name of the BOM output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_bomfile 0
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 1
 
 };
@@ -254,7 +254,7 @@ static int bom_usage(rnd_hid_t *hid, const char *topic)
 
 static int bom_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(bom_options, sizeof(bom_options) / sizeof(bom_options[0]), bom_cookie, 0);
+	rnd_export_register_opts(bom_options, sizeof(bom_options) / sizeof(bom_options[0]), bom_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -264,7 +264,7 @@ int pplg_check_ver_export_bom(int ver_needed) { return 0; }
 
 void pplg_uninit_export_bom(void)
 {
-	pcb_export_remove_opts_by_cookie(bom_cookie);
+	rnd_export_remove_opts_by_cookie(bom_cookie);
 }
 
 int pplg_init_export_bom(void)

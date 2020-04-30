@@ -176,9 +176,9 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, rnd_h
 	def_unit = spin->unit == NULL ? pcbhl_conf.editor.grid_unit : spin->unit;
 
 	PCB_DAD_BEGIN_VBOX(ctx.dlg);
-		PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
-			PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_FRAME);
+			PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_FRAME);
 			PCB_DAD_LABEL(ctx.dlg, "Original:");
 			PCB_DAD_LABEL(ctx.dlg, str->val.str);
 			PCB_DAD_LABEL(ctx.dlg, "With new unit:");
@@ -218,9 +218,9 @@ static void spin_unit_dialog(void *spin_hid_ctx, pcb_hid_dad_spin_t *spin, rnd_h
 		PCB_DAD_END(ctx.dlg);
 
 		PCB_DAD_BEGIN_HBOX(ctx.dlg);
-			PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
 			PCB_DAD_BEGIN_HBOX(ctx.dlg);
-				PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
 			PCB_DAD_END(ctx.dlg);
 			PCB_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
 		PCB_DAD_END(ctx.dlg);
@@ -523,7 +523,7 @@ void pcb_dad_spin_set_num(rnd_hid_attribute_t *attr, long l, double d, rnd_coord
 
 void pcb_dad_spin_free(rnd_hid_attribute_t *attr)
 {
-	if (attr->type == PCB_HATT_END) {
+	if (attr->type == RND_HATT_END) {
 		pcb_hid_dad_spin_t *spin = attr->wdata;
 		if (spin->type == PCB_DAD_SPIN_COORD)
 			gdl_remove(&pcb_dad_coord_spins, spin, link);
@@ -614,13 +614,13 @@ void pcb_dad_spin_update_internal(pcb_hid_dad_spin_t *spin)
 		do_step(hid_ctx, spin, &dlg[spin->wstr], &dlg[spin->cmp.wend], 0); /* cheap conversion*/
 }
 
-void pcb_dad_spin_set_geo(rnd_hid_attribute_t *end, pcb_hatt_compflags_t flg, int geo)
+void pcb_dad_spin_set_geo(rnd_hid_attribute_t *end, rnd_hatt_compflags_t flg, int geo)
 {
 	pcb_hid_dad_spin_t *spin = end->wdata;
 	rnd_hid_attribute_t *str = end - spin->cmp.wend + spin->wstr;
 
-	if (flg == PCB_HATF_HEIGHT_CHR) {
-		str->hatt_flags |= PCB_HATF_HEIGHT_CHR;
+	if (flg == RND_HATF_HEIGHT_CHR) {
+		str->hatt_flags |= RND_HATF_HEIGHT_CHR;
 		str->geo_width = geo;
 	}
 }

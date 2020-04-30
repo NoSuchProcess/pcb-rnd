@@ -391,7 +391,7 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 
 	PCB_DAD_BEGIN_VBOX(dlg);
 		PCB_DAD_BEGIN_TABLE(dlg, 2);
-			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 			PCB_DAD_LABEL(dlg, "Attribute key:");
 			PCB_DAD_STRING(dlg);
 				wkey = PCB_DAD_CURRENT(dlg);
@@ -471,7 +471,7 @@ static void build_propval(propdlg_t *ctx)
 	static const char *abshelp = "When unticked each apply is a relative change added to\nthe current value of each object";
 
 	PCB_DAD_BEGIN_TABBED(ctx->dlg, type_tabs);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE_TABLAB);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE_TABLAB);
 		ctx->wtype = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
 			PCB_DAD_LABEL(ctx->dlg, "(nothing to edit)");
@@ -486,7 +486,7 @@ static void build_propval(propdlg_t *ctx)
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				ctx->wabs[1] = 0;
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
@@ -504,7 +504,7 @@ static void build_propval(propdlg_t *ctx)
 					ctx->wabs[2] = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_HELP(ctx->dlg, abshelp);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
@@ -522,7 +522,7 @@ static void build_propval(propdlg_t *ctx)
 					ctx->wabs[3] = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_HELP(ctx->dlg, abshelp);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
@@ -541,7 +541,7 @@ static void build_propval(propdlg_t *ctx)
 					ctx->wabs[4] = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_HELP(ctx->dlg, abshelp);
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
@@ -555,7 +555,7 @@ static void build_propval(propdlg_t *ctx)
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				ctx->wabs[5] = 0;
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
@@ -569,7 +569,7 @@ static void build_propval(propdlg_t *ctx)
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
 				ctx->wabs[6] = 0;
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_END(ctx->dlg);
 				PCB_DAD_BUTTON(ctx->dlg, "apply");
 					PCB_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
@@ -589,14 +589,14 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 	rnd_hid_attr_val_t hv;
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_HPANE(ctx->dlg);
 
 			/* left: property tree and filter */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_TREE(ctx->dlg, 5, 1, hdr);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					ctx->wtree = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, prop_select_node_cb);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
@@ -619,7 +619,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 
 			/* right: preview and per type edit */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
 					PCB_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, &prvbb, 100, 100, ctx);
 				PCB_DAD_END(ctx->dlg);
@@ -627,7 +627,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 					ctx->wscope = PCB_DAD_CURRENT(ctx->dlg);
 					PCB_DAD_HELP(ctx->dlg, "Scope: list of objects affected");
 				PCB_DAD_BEGIN_VBOX(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					PCB_DAD_TREE(ctx->dlg, 2, 0, hdr_val);
 						ctx->wvals = PCB_DAD_CURRENT(ctx->dlg);
 						PCB_DAD_CHANGE_CB(ctx->dlg, prop_preset_cb);

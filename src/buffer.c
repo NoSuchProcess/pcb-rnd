@@ -519,9 +519,9 @@ static int pcb_actgui_ScaleBuffer(rnd_hidlib_t *hidlib, double *x, double *y)
 
 	memset(&ctx, 0, sizeof(ctx));
 	PCB_DAD_BEGIN_VBOX(ctx.dlg);
-		PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABLE(ctx.dlg, 2);
-			PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
 
 			PCB_DAD_LABEL(ctx.dlg, "scale X");
 			PCB_DAD_REAL(ctx.dlg, "");

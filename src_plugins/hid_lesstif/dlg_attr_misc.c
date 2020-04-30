@@ -203,7 +203,7 @@ static Widget ltf_preview_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid
 
 	pd->window = XtWindow(pw);
 	pd->pw = pw;
-	pd->redraw_with_board = !!(attr->hatt_flags & PCB_HATF_PRV_BOARD);
+	pd->redraw_with_board = !!(attr->hatt_flags & RND_HATF_PRV_BOARD);
 
 	XtAddCallback(pw, XmNexposeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
 	XtAddCallback(pw, XmNresizeCallback, (XtCallbackProc)pcb_ltf_preview_callback, (XtPointer)pd);
@@ -481,7 +481,7 @@ static Widget ltf_text_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_at
 	stdarg(XmNresizePolicy, XmRESIZE_GROW);
 	stdarg(XmNeditMode, XmMULTI_LINE_EDIT);
 	stdarg(XmNuserData, ctx);
-	if (attr->pcb_hatt_flags & PCB_HATF_SCROLL)
+	if (attr->rnd_hatt_flags & RND_HATF_SCROLL)
 		wtxt = XmCreateScrolledText(parent, XmStrCast("dad_text"), stdarg_args, stdarg_n);
 	else
 		wtxt = XmCreateText(parent, XmStrCast("dad_text"), stdarg_args, stdarg_n);

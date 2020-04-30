@@ -123,7 +123,7 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb_undo_save_serial();
 
 		PCB_DAD_BEGIN_VBOX(dlg);
-			PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 			sprintf(tmp, "Object flags of %s #%ld\n", pcb_obj_type_name(ctx.obj_type), ctx.obj->ID);
 			PCB_DAD_LABEL(dlg, tmp);
 

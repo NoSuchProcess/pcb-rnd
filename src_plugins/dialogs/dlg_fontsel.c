@@ -174,9 +174,9 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 	else
 		ctx->txt_id = NULL;
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_PREVIEW(ctx->dlg, fontsel_expose_cb, fontsel_mouse_cb, fontsel_free_cb, &vbox, 200, 200, ctx);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
 		PCB_DAD_BUTTON(ctx->dlg, "Load font");

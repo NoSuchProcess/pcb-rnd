@@ -315,7 +315,7 @@ static void setup_fmt_tabs(save_t *save, pcb_plug_iot_t save_type)
 	save->fmt_tab_names[tabs+1] = NULL;
 
 	PCB_DAD_BEGIN_TABBED(save->fmtsub->dlg, save->fmt_tab_names);
-		PCB_DAD_COMPFLAG(save->fmtsub->dlg, PCB_HATF_HIDE_TABLAB);
+		PCB_DAD_COMPFLAG(save->fmtsub->dlg, RND_HATF_HIDE_TABLAB);
 		save->wopts = PCB_DAD_CURRENT(save->fmtsub->dlg);
 /*	pre-creation tab switch not yet supported:	PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, save->opt_tab[0]);*/
 
@@ -365,7 +365,7 @@ static void setup_fmt_sub(save_t *save, pcb_plug_iot_t save_type)
 				PCB_DAD_DEFAULT_NUM(save->fmtsub->dlg, !!dialogs_conf.plugins.dialogs.file_select_dialog.save_as_format_guess);
 				PCB_DAD_HELP(save->fmtsub->dlg, guess_help);
 			PCB_DAD_LABEL(save->fmtsub->dlg, "(guess failed)");
-				PCB_DAD_COMPFLAG(save->fmtsub->dlg, PCB_HATF_HIDE);
+				PCB_DAD_COMPFLAG(save->fmtsub->dlg, RND_HATF_HIDE);
 				PCB_DAD_HELP(save->fmtsub->dlg, "This file name is not naturally connected to\nany file format; file format\nis left on what was last selected/recognized");
 				save->wguess_err = PCB_DAD_CURRENT(save->fmtsub->dlg);
 		PCB_DAD_END(save->fmtsub->dlg);

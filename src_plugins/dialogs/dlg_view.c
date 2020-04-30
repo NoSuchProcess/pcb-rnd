@@ -588,14 +588,14 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 	ctx->wpos = -1;
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 		PCB_DAD_BEGIN_HPANE(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 			/* left */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 				PCB_DAD_BEGIN_HBOX(ctx->dlg);
 					PCB_DAD_LABEL(ctx->dlg, "Number of violations:");
@@ -604,7 +604,7 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 				PCB_DAD_END(ctx->dlg);
 
 				PCB_DAD_TREE(ctx->dlg, 2, 1, hdr);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, view_select);
 					PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 					ctx->wlist = PCB_DAD_CURRENT(ctx->dlg);
@@ -626,10 +626,10 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 
 			/* right */
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, ctx);
 					ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
-					PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_PRV_BOARD);
+					PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
 				PCB_DAD_LABEL(ctx->dlg, "(description)");
 					ctx->wdescription = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "(measure)");
@@ -647,7 +647,7 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 					PCB_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
 			}
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Close");
 				PCB_DAD_CHANGE_CB(ctx->dlg, view_close_btn_cb);
@@ -666,13 +666,13 @@ static void pcb_dlg_view_simplified(const char *id, view_ctx_t *ctx, const char 
 	ctx->wlist = -1;
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 		PCB_DAD_BEGIN_HBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, ctx);
 				ctx->wprev = PCB_DAD_CURRENT(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL | PCB_HATF_PRV_BOARD);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "(description)");
 					ctx->wdescription = PCB_DAD_CURRENT(ctx->dlg);
@@ -685,7 +685,7 @@ static void pcb_dlg_view_simplified(const char *id, view_ctx_t *ctx, const char 
 			PCB_DAD_BUTTON(ctx->dlg, "Previous");
 				PCB_DAD_CHANGE_CB(ctx->dlg, view_prev_btn_cb);
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				PCB_DAD_LABEL(ctx->dlg, "na");
 					ctx->wpos = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_LABEL(ctx->dlg, "/");
@@ -704,7 +704,7 @@ static void pcb_dlg_view_simplified(const char *id, view_ctx_t *ctx, const char 
 					PCB_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
 			}
 			PCB_DAD_BEGIN_HBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BUTTON(ctx->dlg, "Close");
 				PCB_DAD_CHANGE_CB(ctx->dlg, view_close_btn_cb);

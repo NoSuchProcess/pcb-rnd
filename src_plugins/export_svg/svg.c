@@ -136,7 +136,7 @@ Name of the file to be exported to. Can contain a path.
 %end-doc
 */
 	{"outfile", "Graphics output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_svgfile 0
 
 /* %start-doc options "93 SVG Options"
@@ -148,7 +148,7 @@ Export a photo realistic image of the layout.
 %end-doc
 */
 	{"photo-mode", "Photo-realistic export mode",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_photo_mode 1
 
 /* %start-doc options "93 SVG Options"
@@ -160,7 +160,7 @@ Layer opacity
 %end-doc
 */
 	{"opacity", "Layer opacity",
-	 PCB_HATT_INTEGER, 0, 100, {100, 0, 0}, 0, 0},
+	 RND_HATT_INTEGER, 0, 100, {100, 0, 0}, 0, 0},
 #define HA_opacity 2
 
 /* %start-doc options "93 SVG Options"
@@ -172,15 +172,15 @@ Flip board, look at it from the bottom side
 %end-doc
 */
 	{"flip", "Flip board",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_flip 3
 
 	{"as-shown", "Render similar to as shown on screen (display overlays)",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_as_shown 4
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
 #define HA_cam 5
 };
 
@@ -379,7 +379,7 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int svg_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]), svg_cookie, 0);
+	rnd_export_register_opts(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]), svg_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -886,7 +886,7 @@ int pplg_check_ver_export_svg(int ver_needed) { return 0; }
 
 void pplg_uninit_export_svg(void)
 {
-	pcb_export_remove_opts_by_cookie(svg_cookie);
+	rnd_export_remove_opts_by_cookie(svg_cookie);
 }
 
 int pplg_init_export_svg(void)

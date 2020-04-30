@@ -43,7 +43,7 @@ static int extobj_pick_gui(void)
 	PCB_DAD_DECL(dlg);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 		PCB_DAD_LABEL(dlg, "Choose extended object:");
 		if ((last > 0) && (last < pcb_extobj_i2o.used)) {
 			pcb_extobj_t *eo = pcb_extobj_i2o.array[last];

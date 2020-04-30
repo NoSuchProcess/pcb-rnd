@@ -92,7 +92,7 @@ static void toolbar_create_tool(pcb_toolid_t tid, pcb_tool_t *tool, const char *
 	else
 		PCB_DAD_BUTTON(toolbar.sub.dlg, tool->name);
 	PCB_DAD_CHANGE_CB(toolbar.sub.dlg, toolbar_select_cb);
-	PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_TIGHT | PCB_HATF_TOGGLE);
+	PCB_DAD_COMPFLAG(toolbar.sub.dlg, RND_HATF_TIGHT | RND_HATF_TOGGLE);
 	if (help != NULL)
 		PCB_DAD_HELP(toolbar.sub.dlg, help);
 	wid = PCB_DAD_CURRENT(toolbar.sub.dlg);
@@ -152,14 +152,14 @@ static void toolbar_docked_create(rnd_hid_cfg_t *cfg)
 	toolbar.tid2wid.used = 0;
 
 	PCB_DAD_BEGIN_HBOX(toolbar.sub.dlg);
-		PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT);
+		PCB_DAD_COMPFLAG(toolbar.sub.dlg, RND_HATF_EXPFILL | RND_HATF_TIGHT);
 
 		toolbar_create_static(cfg);
 		toolbar_create_dyn_all();
 
 	/* eat up remaining space in the middle before displaying the dynamic tools */
 		PCB_DAD_BEGIN_HBOX(toolbar.sub.dlg);
-			PCB_DAD_COMPFLAG(toolbar.sub.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(toolbar.sub.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_END(toolbar.sub.dlg);
 
 	/* later on dynamic tools would be displayed here */

@@ -172,7 +172,7 @@ static int rst_edit_attr(char **key, char **val)
 	PCB_DAD_DECL(dlg);
 
 	PCB_DAD_BEGIN_VBOX(dlg);
-		PCB_DAD_COMPFLAG(dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABLE(dlg, 2);
 			PCB_DAD_LABEL(dlg, "key");
 			PCB_DAD_STRING(dlg);
@@ -253,7 +253,7 @@ static int pcb_dlg_rstdlg(int rst_idx)
 	}
 
 	PCB_DAD_BEGIN_VBOX(rstdlg_ctx.dlg);
-		PCB_DAD_COMPFLAG(rstdlg_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(rstdlg_ctx.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABLE(rstdlg_ctx.dlg, 2);
 
 			PCB_DAD_LABEL(rstdlg_ctx.dlg, "Name:");

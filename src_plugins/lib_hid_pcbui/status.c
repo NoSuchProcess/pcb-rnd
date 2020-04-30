@@ -252,14 +252,14 @@ static void unit_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 static void status_docked_create_st()
 {
 	PCB_DAD_BEGIN_VBOX(status.stsub.dlg);
-		PCB_DAD_COMPFLAG(status.stsub.dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT);
+		PCB_DAD_COMPFLAG(status.stsub.dlg, RND_HATF_EXPFILL | RND_HATF_TIGHT);
 		PCB_DAD_LABEL(status.stsub.dlg, "");
-			PCB_DAD_COMPFLAG(status.stsub.dlg, PCB_HATF_HIDE);
+			PCB_DAD_COMPFLAG(status.stsub.dlg, RND_HATF_HIDE);
 			status.wsttxt = PCB_DAD_CURRENT(status.stsub.dlg);
 		PCB_DAD_LABEL(status.stsub.dlg, "<pending update>");
 			status.wst1 = PCB_DAD_CURRENT(status.stsub.dlg);
 		PCB_DAD_LABEL(status.stsub.dlg, "<pending update>");
-			PCB_DAD_COMPFLAG(status.stsub.dlg, PCB_HATF_HIDE);
+			PCB_DAD_COMPFLAG(status.stsub.dlg, RND_HATF_HIDE);
 			status.wst2 = PCB_DAD_CURRENT(status.stsub.dlg);
 	PCB_DAD_END(status.stsub.dlg);
 }
@@ -268,7 +268,7 @@ static void status_docked_create_st()
 static void vpad(rnd_hid_dad_subdialog_t *sub)
 {
 	PCB_DAD_BEGIN_VBOX(sub->dlg);
-		PCB_DAD_COMPFLAG(sub->dlg, PCB_HATF_EXPFILL | PCB_HATF_TIGHT);
+		PCB_DAD_COMPFLAG(sub->dlg, RND_HATF_EXPFILL | RND_HATF_TIGHT);
 	PCB_DAD_END(sub->dlg);
 }
 
@@ -276,9 +276,9 @@ static void status_docked_create_rd()
 {
 	int n;
 	PCB_DAD_BEGIN_HBOX(status.rdsub.dlg);
-		PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_TIGHT);
+		PCB_DAD_COMPFLAG(status.rdsub.dlg, RND_HATF_TIGHT);
 		PCB_DAD_BEGIN_VBOX(status.rdsub.dlg);
-			PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME | PCB_HATF_TIGHT);
+			PCB_DAD_COMPFLAG(status.rdsub.dlg, RND_HATF_EXPFILL | RND_HATF_FRAME | RND_HATF_TIGHT);
 			vpad(&status.rdsub);
 			for(n = 0; n < 3; n++) {
 				PCB_DAD_LABEL(status.rdsub.dlg, "<pending>");
@@ -287,7 +287,7 @@ static void status_docked_create_rd()
 			vpad(&status.rdsub);
 		PCB_DAD_END(status.rdsub.dlg);
 		PCB_DAD_BEGIN_VBOX(status.rdsub.dlg);
-			PCB_DAD_COMPFLAG(status.rdsub.dlg, PCB_HATF_EXPFILL | PCB_HATF_FRAME);
+			PCB_DAD_COMPFLAG(status.rdsub.dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
 			vpad(&status.rdsub);
 			for(n = 0; n < 2; n++) {
 					PCB_DAD_LABEL(status.rdsub.dlg, "<pending>");

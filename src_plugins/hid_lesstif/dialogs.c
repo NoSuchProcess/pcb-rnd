@@ -197,14 +197,14 @@ typedef struct {
 static void attribute_dialog_readres(lesstif_attr_dlg_t *ctx, int widx)
 {
 	switch(ctx->attrs[widx].type) {
-		case PCB_HATT_BOOL:
+		case RND_HATT_BOOL:
 			ctx->attrs[widx].val.lng = XmToggleButtonGetState(ctx->wl[widx]);
 			break;
-		case PCB_HATT_STRING:
+		case RND_HATT_STRING:
 			free((char *)ctx->attrs[widx].val.str);
 			ctx->attrs[widx].val.str = rnd_strdup(XmTextGetString(ctx->wl[widx]));
 			return; /* can't rely on central copy because of the allocation */
-		case PCB_HATT_ENUM:
+		case RND_HATT_ENUM:
 			{
 				const char **uptr;
 				Widget btn;
@@ -302,42 +302,42 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 	for (i = start_from; i < ctx->n_attrs; i++) {
 		Widget w;
 
-		if (ctx->attrs[i].type == PCB_HATT_END)
+		if (ctx->attrs[i].type == RND_HATT_END)
 			break;
 
 		/* Add content */
 		stdarg_n = 0;
 		stdarg(XmNalignment, XmALIGNMENT_END);
-		if ((ctx->attrs[i].pcb_hatt_flags & PCB_HATF_EXPFILL) || (ctx->attrs[i].type == PCB_HATT_BEGIN_HPANE) || (ctx->attrs[i].type == PCB_HATT_BEGIN_VPANE))
+		if ((ctx->attrs[i].rnd_hatt_flags & RND_HATF_EXPFILL) || (ctx->attrs[i].type == RND_HATT_BEGIN_HPANE) || (ctx->attrs[i].type == RND_HATT_BEGIN_VPANE))
 			stdarg(PxmNfillBoxFill, 1);
 		stdarg(XmNuserData, ctx);
 
 		switch(ctx->attrs[i].type) {
-		case PCB_HATT_BEGIN_HBOX:
-			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
+		case RND_HATT_BEGIN_HBOX:
+			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'h', 0, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
 			XtManageChild(w);
 			ctx->wl[i] = w;
 			i = attribute_dialog_add(ctx, w, i+1);
 			break;
 
-		case PCB_HATT_BEGIN_VBOX:
-			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'v', 0, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
+		case RND_HATT_BEGIN_VBOX:
+			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 'v', 0, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
 			XtManageChild(w);
 			ctx->wl[i] = w;
 			i = attribute_dialog_add(ctx, w, i+1);
 			break;
 
-		case PCB_HATT_BEGIN_HPANE:
-		case PCB_HATT_BEGIN_VPANE:
-			i = ltf_pane_create(ctx, i, parent, (ctx->attrs[i].type == PCB_HATT_BEGIN_HPANE));
+		case RND_HATT_BEGIN_HPANE:
+		case RND_HATT_BEGIN_VPANE:
+			i = ltf_pane_create(ctx, i, parent, (ctx->attrs[i].type == RND_HATT_BEGIN_HPANE));
 			break;
 
-		case PCB_HATT_BEGIN_TABLE:
+		case RND_HATT_BEGIN_TABLE:
 			/* create content table */
-			numcol = ctx->attrs[i].pcb_hatt_table_cols;
+			numcol = ctx->attrs[i].rnd_hatt_table_cols;
 			len = pcb_hid_attrdlg_num_children(ctx->attrs, i+1, ctx->n_attrs);
 			numch = len  / numcol + !!(len % numcol);
-			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 't', numch, (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_FRAME), (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_SCROLL));
+			w = pcb_motif_box(parent, XmStrCast(ctx->attrs[i].name), 't', numch, (ctx->attrs[i].rnd_hatt_flags & RND_HATF_FRAME), (ctx->attrs[i].rnd_hatt_flags & RND_HATF_SCROLL));
 
 			ctx->wl[i] = w;
 
@@ -357,55 +357,55 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			XtManageChild(w);
 			break;
 
-		case PCB_HATT_BEGIN_TABBED:
+		case RND_HATT_BEGIN_TABBED:
 			i = ltf_tabbed_create(ctx, parent, &ctx->attrs[i], i);
 			break;
 
-		case PCB_HATT_BEGIN_COMPOUND:
+		case RND_HATT_BEGIN_COMPOUND:
 			i = attribute_dialog_add(ctx, parent, i+1);
 			break;
 
-		case PCB_HATT_PREVIEW:
+		case RND_HATT_PREVIEW:
 			ctx->wl[i] = ltf_preview_create(ctx, parent, &ctx->attrs[i]);
 			break;
 
-		case PCB_HATT_TEXT:
+		case RND_HATT_TEXT:
 			ctx->wl[i] = ltf_text_create(ctx, parent, &ctx->attrs[i]);
 			break;
 
-		case PCB_HATT_TREE:
+		case RND_HATT_TREE:
 			ctx->wl[i] = ltf_tree_create(ctx, parent, &ctx->attrs[i]);
 			break;
 
-		case PCB_HATT_PICTURE:
+		case RND_HATT_PICTURE:
 			ctx->wl[i] = ltf_picture_create(ctx, parent, &ctx->attrs[i]);
 			break;
 
-		case PCB_HATT_PICBUTTON:
+		case RND_HATT_PICBUTTON:
 			ctx->wl[i] = ltf_picbutton_create(ctx, parent, &ctx->attrs[i]);
 			XtAddCallback(ctx->wl[i], XmNactivateCallback, valchg, ctx->wl[i]);
 			XtSetValues(ctx->wl[i], stdarg_args, stdarg_n);
 			break;
 
-		case PCB_HATT_COLOR:
-			ctx->wl[i] = ltf_colorbtn_create(ctx, parent, &ctx->attrs[i], (ctx->attrs[i].pcb_hatt_flags & PCB_HATF_CLR_STATIC));
+		case RND_HATT_COLOR:
+			ctx->wl[i] = ltf_colorbtn_create(ctx, parent, &ctx->attrs[i], (ctx->attrs[i].rnd_hatt_flags & RND_HATF_CLR_STATIC));
 			/* callback handled internally */
 			XtSetValues(ctx->wl[i], stdarg_args, stdarg_n);
 			break;
 	
-		case PCB_HATT_LABEL:
+		case RND_HATT_LABEL:
 			stdarg_n = 0;
 			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
 			ctx->wl[i] = XmCreateLabel(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			break;
-		case PCB_HATT_BOOL:
+		case RND_HATT_BOOL:
 			stdarg(XmNlabelString, empty);
 			stdarg(XmNset, ctx->attrs[i].val.lng);
 			ctx->wl[i] = XmCreateToggleButton(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNvalueChangedCallback, valchg, ctx->wl[i]);
 			break;
-		case PCB_HATT_STRING:
-			stdarg(XmNcolumns, ((ctx->attrs[i].hatt_flags & PCB_HATF_HEIGHT_CHR) ? ctx->attrs[i].geo_width : 40));
+		case RND_HATT_STRING:
+			stdarg(XmNcolumns, ((ctx->attrs[i].hatt_flags & RND_HATF_HEIGHT_CHR) ? ctx->attrs[i].geo_width : 40));
 			stdarg(XmNresizeWidth, True);
 			stdarg(XmNvalue, ctx->attrs[i].val.str);
 			ctx->wl[i] = XmCreateTextField(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
@@ -413,18 +413,18 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 			XtAddCallback(ctx->wl[i], XmNactivateCallback, activated, ctx->wl[i]);
 			break;
 
-		case PCB_HATT_INTEGER:
-		case PCB_HATT_COORD:
-		case PCB_HATT_REAL:
+		case RND_HATT_INTEGER:
+		case RND_HATT_COORD:
+		case RND_HATT_REAL:
 			stdarg_n = 0;
 			stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
 			ctx->wl[i] = XmCreateLabel(parent, XmStrCast("ERROR: old spin widget"), stdarg_args, stdarg_n);
 			break;
 
-		case PCB_HATT_PROGRESS:
+		case RND_HATT_PROGRESS:
 			ctx->wl[i] = ltf_progress_create(ctx, parent);
 			break;
-		case PCB_HATT_ENUM:
+		case RND_HATT_ENUM:
 			{
 				static XmString empty = 0;
 				Widget submenu, default_button = 0;
@@ -464,7 +464,7 @@ static int attribute_dialog_add(lesstif_attr_dlg_t *ctx, Widget parent, int star
 				}
 			}
 			break;
-		case PCB_HATT_BUTTON:
+		case RND_HATT_BUTTON:
 			stdarg(XmNlabelString, XmStringCreatePCB(ctx->attrs[i].val.str));
 			ctx->wl[i] = XmCreatePushButton(parent, XmStrCast(ctx->attrs[i].name), stdarg_args, stdarg_n);
 			XtAddCallback(ctx->wl[i], XmNactivateCallback, valchg, ctx->wl[i]);
@@ -491,12 +491,12 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const rnd_hid_
 	save = ctx->inhibit_valchg;
 	ctx->inhibit_valchg = 1;
 	switch(ctx->attrs[idx].type) {
-		case PCB_HATT_BEGIN_HBOX:
-		case PCB_HATT_BEGIN_VBOX:
-		case PCB_HATT_BEGIN_TABLE:
-		case PCB_HATT_BEGIN_COMPOUND:
+		case RND_HATT_BEGIN_HBOX:
+		case RND_HATT_BEGIN_VBOX:
+		case RND_HATT_BEGIN_TABLE:
+		case RND_HATT_BEGIN_COMPOUND:
 			goto err;
-		case PCB_HATT_END:
+		case RND_HATT_END:
 			{
 				pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 				if ((cmp != NULL) && (cmp->set_value != NULL))
@@ -505,47 +505,47 @@ static int attribute_dialog_set(lesstif_attr_dlg_t *ctx, int idx, const rnd_hid_
 					goto err;
 			}
 			break;
-		case PCB_HATT_BEGIN_TABBED:
+		case RND_HATT_BEGIN_TABBED:
 			ltf_tabbed_set(ctx->wl[idx], val->lng);
 			break;
-		case PCB_HATT_BEGIN_HPANE:
-		case PCB_HATT_BEGIN_VPANE:
+		case RND_HATT_BEGIN_HPANE:
+		case RND_HATT_BEGIN_VPANE:
 			/* not possible to change the pane with the default motif widget */
 			break;
-		case PCB_HATT_BUTTON:
+		case RND_HATT_BUTTON:
 			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str), NULL);
 			break;
-		case PCB_HATT_LABEL:
+		case RND_HATT_LABEL:
 			XtVaSetValues(ctx->wl[idx], XmNlabelString, XmStringCreatePCB(val->str), NULL);
 			break;
-		case PCB_HATT_BOOL:
+		case RND_HATT_BOOL:
 			XtVaSetValues(ctx->wl[idx], XmNset, val->lng, NULL);
 			break;
-		case PCB_HATT_STRING:
+		case RND_HATT_STRING:
 			XtVaSetValues(ctx->wl[idx], XmNvalue, XmStrCast(val->str), NULL);
 			ctx->attrs[idx].val.str = rnd_strdup(val->str);
 			copied = 1;
 			break;
-		case PCB_HATT_INTEGER:
-		case PCB_HATT_COORD:
-		case PCB_HATT_REAL:
+		case RND_HATT_INTEGER:
+		case RND_HATT_COORD:
+		case RND_HATT_REAL:
 			goto err;
-		case PCB_HATT_PROGRESS:
+		case RND_HATT_PROGRESS:
 			ltf_progress_set(ctx, idx, val->dbl);
 			break;
-		case PCB_HATT_COLOR:
+		case RND_HATT_COLOR:
 			ltf_colorbtn_set(ctx, idx, &val->clr);
 			break;
-		case PCB_HATT_PREVIEW:
+		case RND_HATT_PREVIEW:
 			ltf_preview_set(ctx, idx, val->dbl);
 			break;
-		case PCB_HATT_TEXT:
+		case RND_HATT_TEXT:
 			ltf_text_set(ctx, idx, val->str);
 			break;
-		case PCB_HATT_TREE:
+		case RND_HATT_TREE:
 			ltf_tree_set(ctx, idx, val->str);
 			break;
-		case PCB_HATT_ENUM:
+		case RND_HATT_ENUM:
 			{
 				const char **vals = ctx->attrs[idx].wdata;
 				for (n = 0; vals[n]; n++) {
@@ -628,7 +628,7 @@ static void ltf_initial_wstates(lesstif_attr_dlg_t *ctx)
 {
 	int n;
 	for(n = 0; n < ctx->n_attrs; n++)
-		if (ctx->attrs[n].pcb_hatt_flags & PCB_HATF_HIDE)
+		if (ctx->attrs[n].rnd_hatt_flags & RND_HATF_HIDE)
 			XtUnmanageChild(ctx->wltop[n]);
 }
 
@@ -666,7 +666,7 @@ void *lesstif_attr_dlg_new(rnd_hid_t *hid, const char *id, rnd_hid_attribute_t *
 	XtSetValues(topform, stdarg_args, stdarg_n);
 
 
-	if (!PCB_HATT_IS_COMPOSITE(attrs[0].type)) {
+	if (!RND_HATT_IS_COMPOSITE(attrs[0].type)) {
 		stdarg_n = 0;
 		main_tbl = pcb_motif_box(topform, XmStrCast("layout"), 't', pcb_hid_attrdlg_num_children(ctx->attrs, 0, ctx->n_attrs), 0, 0);
 		XtManageChild(main_tbl);
@@ -781,10 +781,10 @@ int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled)
 	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
 		return -1;
 
-	if (ctx->attrs[idx].type == PCB_HATT_BEGIN_COMPOUND)
+	if (ctx->attrs[idx].type == RND_HATT_BEGIN_COMPOUND)
 		return -1;
 
-	if (ctx->attrs[idx].type == PCB_HATT_END) {
+	if (ctx->attrs[idx].type == RND_HATT_END) {
 		pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 		if ((cmp != NULL) && (cmp->widget_state != NULL))
 			cmp->widget_state(&ctx->attrs[idx], ctx, idx, enabled);
@@ -803,9 +803,9 @@ int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide)
 	if ((idx < 0) || (idx >= ctx->n_attrs) || (ctx->wl[idx] == NULL))
 		return -1;
 
-	if (ctx->attrs[idx].type == PCB_HATT_BEGIN_COMPOUND)
+	if (ctx->attrs[idx].type == RND_HATT_BEGIN_COMPOUND)
 		return -1;
-	if (ctx->attrs[idx].type == PCB_HATT_END) {
+	if (ctx->attrs[idx].type == RND_HATT_END) {
 		pcb_hid_compound_t *cmp = ctx->attrs[idx].wdata;
 		if ((cmp != NULL) && (cmp->widget_hide != NULL))
 			cmp->widget_hide(&ctx->attrs[idx], ctx, idx, hide);

@@ -228,7 +228,7 @@ static GtkWidget *ghid_text_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, G
 	dad_txt_t *tctx;
 
 
-	if (attr->pcb_hatt_flags & PCB_HATF_SCROLL) {
+	if (attr->rnd_hatt_flags & RND_HATF_SCROLL) {
 		GtkWidget *scrolled = gtk_scrolled_window_new(NULL, NULL);
 		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_box_pack_start(GTK_BOX(parent), scrolled, TRUE, TRUE, 0);

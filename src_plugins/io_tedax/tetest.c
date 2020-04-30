@@ -175,11 +175,11 @@ int tedax_etest_save(pcb_board_t *pcb, const char *etestid, const char *fn)
 
 static rnd_export_opt_t tedax_etest_options[] = {
 	{"outfile", "Name of the tedax etest output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_outfile 0
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 1
 };
 
@@ -237,7 +237,7 @@ static int tedax_etest_usage(rnd_hid_t *hid, const char *topic)
 static const char *tedax_etest_cookie = "tEDAx etest";
 static int tedax_etest_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(tedax_etest_options, sizeof(tedax_etest_options) / sizeof(tedax_etest_options[0]), tedax_etest_cookie, 0);
+	rnd_export_register_opts(tedax_etest_options, sizeof(tedax_etest_options) / sizeof(tedax_etest_options[0]), tedax_etest_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 
@@ -245,7 +245,7 @@ static rnd_hid_t exp_tedax_etest;
 
 void tedax_etest_uninit(void)
 {
-	pcb_export_remove_opts_by_cookie(tedax_etest_cookie);
+	rnd_export_remove_opts_by_cookie(tedax_etest_cookie);
 }
 
 void tedax_etest_init(void)

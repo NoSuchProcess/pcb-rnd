@@ -292,11 +292,11 @@ static int srchedit_window(search_expr_t *expr)
 	ctx->last_rtype = RIGHT_max;
 
 	PCB_DAD_BEGIN_HBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_TREE(ctx->dlg, 1, 1, NULL);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_SCROLL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_SCROLL);
 				ctx->wleft = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, srch_expr_left_cb);
 				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
@@ -308,39 +308,39 @@ static int srchedit_window(search_expr_t *expr)
 				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 		PCB_DAD_END(ctx->dlg);
 		PCB_DAD_BEGIN_VBOX(ctx->dlg);
-			PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 			PCB_DAD_STRING(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
 				ctx->wright[RIGHT_STR] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_INTEGER(ctx->dlg, "");
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
 				ctx->wright[RIGHT_INT] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, -(1L<<30), (1L<<30));
 				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_REAL(ctx->dlg, "");
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
 				ctx->wright[RIGHT_DOUBLE] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, -(1L<<30), (1L<<30));
 				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_COORD(ctx->dlg, "");
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
 				ctx->wright[RIGHT_COORD] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_MINMAX(ctx->dlg, -RND_MAX_COORD, RND_MAX_COORD);
 				PCB_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
 			PCB_DAD_TREE(ctx->dlg, 1, 0, NULL);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_HIDE);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
 				ctx->wright[RIGHT_CONST] = PCB_DAD_CURRENT(ctx->dlg);
 				PCB_DAD_TREE_SET_CB(ctx->dlg, selected_cb, srch_expr_right_table_cb);
 				PCB_DAD_TREE_SET_CB(ctx->dlg, ctx, ctx);
 
 			PCB_DAD_BEGIN_VBOX(ctx->dlg);
-				PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_END(ctx->dlg);
 			PCB_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 		PCB_DAD_END(ctx->dlg);

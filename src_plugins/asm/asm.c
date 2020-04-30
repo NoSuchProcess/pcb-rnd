@@ -535,10 +535,10 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	asm_greyout(1);
 
 	PCB_DAD_BEGIN_VBOX(asm_ctx.dlg);
-		PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(asm_ctx.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_TREE(asm_ctx.dlg, 6, 1, hdr);
 			asm_ctx.wtbl = PCB_DAD_CURRENT(asm_ctx.dlg);
-			PCB_DAD_COMPFLAG(asm_ctx.dlg, PCB_HATF_SCROLL);
+			PCB_DAD_COMPFLAG(asm_ctx.dlg, RND_HATF_SCROLL);
 			for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++) {
 				pcb_hid_row_t *parent, *child;
 				row[0] = (*g)->name;

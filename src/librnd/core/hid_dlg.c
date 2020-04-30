@@ -217,7 +217,7 @@ static int pcb_gui_progress(long so_far, long total, const char *message)
 			/* need to have a manual cancel button as it needs to call the close cb before really closing the window */
 			PCB_DAD_BEGIN_HBOX(ctx.dlg);
 				PCB_DAD_BEGIN_HBOX(ctx.dlg);
-					PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
 				PCB_DAD_END(ctx.dlg);
 				PCB_DAD_BUTTON(ctx.dlg, "cancel");
 					PCB_DAD_CHANGE_CB(ctx.dlg, progress_close_btn_cb);

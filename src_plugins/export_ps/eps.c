@@ -59,7 +59,7 @@ Name of the encapsulated postscript output file. Can contain a path.
 %end-doc
 */
 	{"eps-file", "Encapsulated Postscript output file",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_psfile 0
 
 /* %start-doc options "92 Encapsulated Postscript Export"
@@ -70,7 +70,7 @@ Scale EPS output by the parameter @samp{num}.
 %end-doc
 */
 	{"eps-scale", "EPS scale",
-	 PCB_HATT_REAL, 0, 100, {0, 0, 1.0}, 0, 0},
+	 RND_HATT_REAL, 0, 100, {0, 0, 1.0}, 0, 0},
 #define HA_scale 1
 
 /* %start-doc options "92 Encapsulated Postscript Export"
@@ -82,7 +82,7 @@ Export layers as shown on screen.
 %end-doc
 */
 	{"as-shown", "Export layers as shown on screen",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_as_shown 2
 
 /* %start-doc options "92 Encapsulated Postscript Export"
@@ -93,7 +93,7 @@ Convert output to monochrome.
 %end-doc
 */
 	{"monochrome", "Convert to monochrome",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_mono 3
 
 /* %start-doc options "92 Encapsulated Postscript Export"
@@ -105,11 +105,11 @@ Limit the bounds of the EPS file to the visible items.
 %end-doc
 */
 	{"only-visible", "Limit the bounds of the EPS file to the visible items",
-	 PCB_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_only_visible 4
 
 	{"cam", "CAM instruction",
-	 PCB_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_cam 5
 
 };
@@ -359,7 +359,7 @@ static void eps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int eps_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	pcb_export_register_opts(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie, 0);
+	rnd_export_register_opts(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie, 0);
 	return pcb_hid_parse_command_line(argc, argv);
 }
 

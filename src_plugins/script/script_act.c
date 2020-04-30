@@ -242,14 +242,14 @@ static void script_dlg_open(void)
 		return; /* do not open another */
 
 	PCB_DAD_BEGIN_VBOX(script_dlg.dlg);
-	PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL);
+	PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
 	PCB_DAD_BEGIN_HPANE(script_dlg.dlg);
-		PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
 		/* left side */
 		PCB_DAD_BEGIN_VBOX(script_dlg.dlg);
-			PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
 			PCB_DAD_TREE(script_dlg.dlg, 3, 0, hdr);
-				PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 				script_dlg.wslist = PCB_DAD_CURRENT(script_dlg.dlg);
 				PCB_DAD_CHANGE_CB(script_dlg.dlg, slist_cb);
 			PCB_DAD_BEGIN_HBOX(script_dlg.dlg);
@@ -267,10 +267,10 @@ static void script_dlg_open(void)
 
 		/* right side */
 		PCB_DAD_BEGIN_VBOX(script_dlg.dlg);
-			PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL);
+			PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL);
 			PCB_DAD_LABEL(script_dlg.dlg, "Actions:");
 			PCB_DAD_TREE(script_dlg.dlg, 1, 0, NULL);
-				PCB_DAD_COMPFLAG(script_dlg.dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+				PCB_DAD_COMPFLAG(script_dlg.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 				script_dlg.walist = PCB_DAD_CURRENT(script_dlg.dlg);
 		PCB_DAD_END(script_dlg.dlg);
 	PCB_DAD_END(script_dlg.dlg);

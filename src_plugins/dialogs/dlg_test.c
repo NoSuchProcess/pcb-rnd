@@ -101,7 +101,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	memset(&ctx, 0, sizeof(ctx));
 
 	PCB_DAD_BEGIN_VBOX(ctx.dlg);
-		PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
 		PCB_DAD_BEGIN_TABBED(ctx.dlg, tabs);
 			PCB_DAD_CHANGE_CB(ctx.dlg, cb_tab_chg);
 			ctx.wtab = PCB_DAD_CURRENT(ctx.dlg);
@@ -118,7 +118,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_DAD_LABEL(ctx.dlg, "text3");
 
 				PCB_DAD_BEGIN_VBOX(ctx.dlg);
-					PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_FRAME);
+					PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_FRAME);
 					PCB_DAD_LABEL(ctx.dlg, "spin test");
 					PCB_DAD_BUTTON(ctx.dlg, "reset all to 42");
 						PCB_DAD_CHANGE_CB(ctx.dlg, pcb_act_spin_reset);
@@ -187,10 +187,10 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* tab 2: tree table widget */
 			PCB_DAD_BEGIN_VBOX(ctx.dlg);
-				PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
 				PCB_DAD_TREE(ctx.dlg, 3, 1, hdr);
 					ctx.tt = PCB_DAD_CURRENT(ctx.dlg);
-					PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_SCROLL);
+					PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_SCROLL);
 					PCB_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_select);
 					PCB_DAD_TREE_SET_CB(ctx.dlg, free_cb, cb_ttbl_free_row);
 					PCB_DAD_TREE_SET_CB(ctx.dlg, selected_cb, cb_ttbl_row_selected);
@@ -244,9 +244,9 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			/* tab 5: text */
 			PCB_DAD_BEGIN_VBOX(ctx.dlg);
-				PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
 				PCB_DAD_TEXT(ctx.dlg, NULL);
-					PCB_DAD_COMPFLAG(ctx.dlg, PCB_HATF_SCROLL | PCB_HATF_EXPFILL);
+					PCB_DAD_COMPFLAG(ctx.dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
 					PCB_DAD_CHANGE_CB(ctx.dlg, cb_text_edit);
 					ctx.wtxt = PCB_DAD_CURRENT(ctx.dlg);
 				PCB_DAD_BEGIN_HBOX(ctx.dlg);

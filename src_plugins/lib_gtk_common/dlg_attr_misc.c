@@ -52,7 +52,7 @@ static GtkWidget *ghid_progress_create(attr_dlg_t *ctx, rnd_hid_attribute_t *att
 	gtk_widget_set_size_request(prg, -1, 16);
 
 	gtk_widget_set_tooltip_text(prg, attr->help_text);
-	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
+	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 	gtk_box_pack_start(GTK_BOX(bparent), prg, TRUE, TRUE, 0);
 	g_object_set_data(G_OBJECT(prg), PCB_OBJ_PROP, ctx);
 	return prg;
@@ -109,7 +109,7 @@ static GtkWidget *ghid_preview_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr
 	hp->hid_wdata = ctx;
 	hp->hid_zoomto_cb = ghid_preview_zoomto;
 	
-	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
+	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 	prv = pcb_gtk_preview_new(ctx->gctx, ctx->gctx->impl.init_drawing_widget, ctx->gctx->impl.preview_expose, ghid_preview_expose, ghid_preview_config, attr->wdata);
 	gtk_box_pack_start(GTK_BOX(bparent), prv, TRUE, TRUE, 0);
 	gtk_widget_set_tooltip_text(prv, attr->help_text);
@@ -124,7 +124,7 @@ TODO("TODO make these configurable:")
 	p->y_max = PCB_MM_TO_COORD(100);
 	p->w_pixels = PCB_MM_TO_COORD(10);
 	p->h_pixels = PCB_MM_TO_COORD(10);
-	p->redraw_with_board = !!(attr->hatt_flags & PCB_HATF_PRV_BOARD);
+	p->redraw_with_board = !!(attr->hatt_flags & RND_HATF_PRV_BOARD);
 
 	gtk_widget_set_size_request(prv, hp->min_sizex_px, hp->min_sizey_px);
 	return prv;
@@ -134,8 +134,8 @@ static GtkWidget *ghid_picture_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr
 {
 	GtkWidget *bparent, *pic, *evb;
 	GdkPixbuf *pixbuf;
-	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
-	int expfill = (attr->pcb_hatt_flags & PCB_HATF_EXPFILL);
+	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
+	int expfill = (attr->rnd_hatt_flags & RND_HATF_EXPFILL);
 
 	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->wdata);
 	pic = gtk_image_new_from_pixbuf(pixbuf);
@@ -154,7 +154,7 @@ static GtkWidget *ghid_picbutton_create(attr_dlg_t *ctx, rnd_hid_attribute_t *at
 	GtkWidget *bparent, *button, *img;
 	GdkPixbuf *pixbuf;
 
-	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
+	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 
 	pixbuf = gdk_pixbuf_new_from_xpm_data(attr->wdata);
 	img = gtk_image_new_from_pixbuf(pixbuf);
@@ -176,7 +176,7 @@ static GtkWidget *ghid_color_create(attr_dlg_t *ctx, rnd_hid_attribute_t *attr, 
 	GtkWidget *bparent, *button;
 	pcb_gtk_color_t gclr;
 
-	bparent = frame_scroll(parent, attr->pcb_hatt_flags, &ctx->wltop[j]);
+	bparent = frame_scroll(parent, attr->rnd_hatt_flags, &ctx->wltop[j]);
 
 	memset(&gclr, 0, sizeof(gclr));
 	ctx->gctx->impl.map_color(rnd_color_black, &gclr);

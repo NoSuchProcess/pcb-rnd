@@ -62,7 +62,7 @@ void pcb_dlg_pref_general_close(pref_ctx_t *ctx)
 void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
 {
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		PCB_DAD_LABEL(ctx->dlg, "Top window layout");
 		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			pcb_pref_create_conftable(ctx, perf_topwin, pref_general_dlg2conf);
@@ -70,7 +70,7 @@ void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		PCB_DAD_LABEL(ctx->dlg, "Backup");
 		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			pcb_pref_create_conftable(ctx, perf_backup, pref_general_dlg2conf);
@@ -78,7 +78,7 @@ void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
 	PCB_DAD_END(ctx->dlg);
 
 	PCB_DAD_BEGIN_VBOX(ctx->dlg);
-		PCB_DAD_COMPFLAG(ctx->dlg, PCB_HATF_FRAME);
+		PCB_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		PCB_DAD_LABEL(ctx->dlg, "Command line entry");
 		PCB_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			pcb_pref_create_conftable(ctx, perf_cli, pref_general_dlg2conf);

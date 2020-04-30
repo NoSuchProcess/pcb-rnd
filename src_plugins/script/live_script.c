@@ -213,9 +213,9 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 	lvs->name = rnd_strdup(name);
 	lvs->longname = pcb_concat("_live_script_", name, NULL);
 	PCB_DAD_BEGIN_VBOX(lvs->dlg);
-		PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
+		PCB_DAD_COMPFLAG(lvs->dlg, RND_HATF_EXPFILL);
 		PCB_DAD_TEXT(lvs->dlg, lvs);
-			PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL | PCB_HATF_SCROLL);
+			PCB_DAD_COMPFLAG(lvs->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			lvs->wtxt = PCB_DAD_CURRENT(lvs->dlg);
 
 		PCB_DAD_BEGIN_HBOX(lvs->dlg);
@@ -252,7 +252,7 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 			PCB_DAD_ENUM(lvs->dlg, (const char **)lvs->langs);
 				lvs->wlang = PCB_DAD_CURRENT(lvs->dlg);
 			PCB_DAD_BEGIN_HBOX(lvs->dlg);
-				PCB_DAD_COMPFLAG(lvs->dlg, PCB_HATF_EXPFILL);
+				PCB_DAD_COMPFLAG(lvs->dlg, RND_HATF_EXPFILL);
 			PCB_DAD_END(lvs->dlg);
 			PCB_DAD_BUTTON_CLOSES(lvs->dlg, clbtn);
 		PCB_DAD_END(lvs->dlg);

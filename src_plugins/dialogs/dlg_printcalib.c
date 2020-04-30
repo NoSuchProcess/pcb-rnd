@@ -30,11 +30,11 @@
 
 static rnd_hid_attribute_t printer_calibrate_attrs[] = {
 	{"Enter Values here:", "",
-	 PCB_HATT_LABEL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_LABEL, 0, 0, {0, 0, 0}, 0, 0},
 	{"x-calibration", "X scale for calibrating your printer",
-	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0},
+	 RND_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0},
 	{"y-calibration", "Y scale for calibrating your printer",
-	 PCB_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0}
+	 RND_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0}
 };
 
 const char pcb_acts_PrintCalibrate[] = "PrintCalibrate()";
