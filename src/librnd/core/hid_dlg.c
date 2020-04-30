@@ -251,7 +251,7 @@ int rnd_hid_progress(long so_far, long total, const char *message)
 	if ((rnd_gui->gui) && (RND_HAVE_GUI_ATTR_DLG) && (hid_dlg_gui_inited || rnd_gui->allow_dad_before_init))
 		return pcb_gui_progress(so_far, total, message);
 
-	return pcb_nogui_progress(so_far, total, message);
+	return rnd_nogui_progress(so_far, total, message);
 }
 
 static const char pcb_acts_Print[] = "Print()";

@@ -121,8 +121,8 @@ int pplg_init_loghid(void)
 {
 	PCB_API_CHK_VER;
 
-	pcb_hid_nogui_init(&loghid_gui);
-	pcb_hid_nogui_init(&loghid_exp);
+	rnd_hid_nogui_init(&loghid_gui);
+	rnd_hid_nogui_init(&loghid_exp);
 
 	/* gui version */
 	loghid_gui.struct_size = sizeof(rnd_hid_t);

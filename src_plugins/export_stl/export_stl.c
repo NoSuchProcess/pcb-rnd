@@ -254,7 +254,7 @@ int pplg_init_export_stl(void)
 
 	memset(&stl_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&stl_hid);
+	rnd_hid_nogui_init(&stl_hid);
 
 	stl_hid.struct_size = sizeof(rnd_hid_t);
 	stl_hid.name = "stl";

@@ -407,7 +407,7 @@ int pplg_init_export_gcode(void)
 
 	memset(&gcode_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&gcode_hid);
+	rnd_hid_nogui_init(&gcode_hid);
 
 	gcode_hid.struct_size = sizeof(rnd_hid_t);
 	gcode_hid.name = "gcode";

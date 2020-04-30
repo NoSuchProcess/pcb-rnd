@@ -87,7 +87,7 @@ void rnd_hid_init()
 	char *tmp;
 
 	/* Setup a "nogui" default HID */
-	rnd_render = rnd_gui = pcb_hid_nogui_get_hid();
+	rnd_render = rnd_gui = rnd_hid_nogui_get_hid();
 
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
 	tmp = pcb_concat(pcbhl_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);

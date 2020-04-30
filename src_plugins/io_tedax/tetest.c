@@ -252,7 +252,7 @@ void tedax_etest_init(void)
 {
 	memset(&exp_tedax_etest, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&exp_tedax_etest);
+	rnd_hid_nogui_init(&exp_tedax_etest);
 
 	exp_tedax_etest.struct_size = sizeof(rnd_hid_t);
 	exp_tedax_etest.name = "tedax-etest";

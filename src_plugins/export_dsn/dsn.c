@@ -612,7 +612,7 @@ int pplg_init_export_dsn(void)
 {
 	PCB_API_CHK_VER;
 	memset(&dsn_hid, 0, sizeof(rnd_hid_t));
-	pcb_hid_nogui_init(&dsn_hid);
+	rnd_hid_nogui_init(&dsn_hid);
 
 	dsn_hid.struct_size = sizeof(rnd_hid_t);
 	dsn_hid.name = "dsn";

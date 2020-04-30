@@ -386,7 +386,7 @@ static void nogui_beep(rnd_hid_t *hid)
 	fflush(stdout);
 }
 
-int pcb_nogui_progress(long so_far, long total, const char *message)
+int rnd_nogui_progress(long so_far, long total, const char *message)
 {
 	static int on = 0;
 	static double nextt;
@@ -480,7 +480,7 @@ static void nogui_set_top_title(rnd_hid_t *hid, const char *title)
 {
 }
 
-void pcb_hid_nogui_init(rnd_hid_t * hid)
+void rnd_hid_nogui_init(rnd_hid_t * hid)
 {
 	hid->get_export_options = nogui_get_export_options;
 	hid->do_export = nogui_do_export;
@@ -532,7 +532,7 @@ void pcb_hid_nogui_init(rnd_hid_t * hid)
 }
 
 
-rnd_hid_t *pcb_hid_nogui_get_hid(void)
+rnd_hid_t *rnd_hid_nogui_get_hid(void)
 {
 	memset(&nogui_hid, 0, sizeof(rnd_hid_t));
 
@@ -540,7 +540,7 @@ rnd_hid_t *pcb_hid_nogui_get_hid(void)
 	nogui_hid.name = "nogui";
 	nogui_hid.description = "Default GUI when no other GUI is present.  " "Does nothing.";
 
-	pcb_hid_nogui_init(&nogui_hid);
+	rnd_hid_nogui_init(&nogui_hid);
 
 	return &nogui_hid;
 }

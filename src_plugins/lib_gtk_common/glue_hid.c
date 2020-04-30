@@ -643,7 +643,7 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 {
 	memset(dst, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(dst);
+	rnd_hid_nogui_init(dst);
 
 	dst->struct_size = sizeof(rnd_hid_t);
 	dst->gui = 1;

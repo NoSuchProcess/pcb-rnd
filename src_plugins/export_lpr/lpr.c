@@ -127,7 +127,7 @@ int pplg_init_export_lpr(void)
 	PCB_API_CHK_VER;
 	memset(&lpr_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&lpr_hid);
+	rnd_hid_nogui_init(&lpr_hid);
 	ps_ps_init(&lpr_hid);
 
 	lpr_hid.struct_size = sizeof(rnd_hid_t);

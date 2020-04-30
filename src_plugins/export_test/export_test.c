@@ -106,7 +106,7 @@ int pplg_init_export_test(void)
 
 	memset(&export_test_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&export_test_hid);
+	rnd_hid_nogui_init(&export_test_hid);
 
 	export_test_hid.struct_size = sizeof(rnd_hid_t);
 	export_test_hid.name = "export_test";

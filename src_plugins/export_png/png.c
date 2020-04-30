@@ -1412,7 +1412,7 @@ int pplg_init_export_png(void)
 
 	memset(&png_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&png_hid);
+	rnd_hid_nogui_init(&png_hid);
 
 	png_hid.struct_size = sizeof(rnd_hid_t);
 	png_hid.name = "png";

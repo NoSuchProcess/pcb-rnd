@@ -302,7 +302,7 @@ int pplg_init_cam(void)
 
 	memset(&export_cam_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&export_cam_hid);
+	rnd_hid_nogui_init(&export_cam_hid);
 
 	export_cam_hid.struct_size = sizeof(rnd_hid_t);
 	export_cam_hid.name = "cam";

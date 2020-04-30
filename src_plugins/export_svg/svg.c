@@ -895,7 +895,7 @@ int pplg_init_export_svg(void)
 
 	memset(&svg_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&svg_hid);
+	rnd_hid_nogui_init(&svg_hid);
 
 	svg_hid.struct_size = sizeof(rnd_hid_t);
 	svg_hid.name = "svg";

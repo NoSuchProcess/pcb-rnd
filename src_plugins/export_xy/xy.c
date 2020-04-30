@@ -871,7 +871,7 @@ int pplg_init_export_xy(void)
 	rnd_conf_reg_field(conf_xy, field,isarray,type_name,cpath,cname,desc,flags);
 #include "xy_conf_fields.h"
 
-	pcb_hid_nogui_init(&xy_hid);
+	rnd_hid_nogui_init(&xy_hid);
 
 	xy_hid.struct_size = sizeof(rnd_hid_t);
 	xy_hid.name = "XY";

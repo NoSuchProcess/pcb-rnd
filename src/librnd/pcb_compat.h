@@ -929,3 +929,6 @@
 #define pcb_hid_set_draw_xor rnd_hid_set_draw_xor
 #define pcb_hid_set_draw_faded rnd_hid_set_draw_faded
 #define pcb_hid_command_entry rnd_hid_command_entry
+#define pcb_hid_nogui_init rnd_hid_nogui_init
+#define pcb_hid_nogui_get_hid rnd_hid_nogui_get_hid
+#define pcb_nogui_progress rnd_nogui_progress

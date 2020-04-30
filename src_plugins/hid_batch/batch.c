@@ -340,7 +340,7 @@ int pplg_init_hid_batch(void)
 	PCB_API_CHK_VER;
 	memset(&batch_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&batch_hid);
+	rnd_hid_nogui_init(&batch_hid);
 
 	batch_hid.struct_size = sizeof(rnd_hid_t);
 	batch_hid.name = "batch";

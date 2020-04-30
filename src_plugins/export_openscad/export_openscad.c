@@ -671,7 +671,7 @@ int pplg_init_export_openscad(void)
 
 	memset(&openscad_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&openscad_hid);
+	rnd_hid_nogui_init(&openscad_hid);
 
 	openscad_hid.struct_size = sizeof(rnd_hid_t);
 	openscad_hid.name = "openscad";

@@ -1079,7 +1079,7 @@ int pplg_init_export_gerber(void)
 
 	memset(&gerber_hid, 0, sizeof(gerber_hid));
 
-	pcb_hid_nogui_init(&gerber_hid);
+	rnd_hid_nogui_init(&gerber_hid);
 
 	gerber_hid.struct_size = sizeof(gerber_hid);
 	gerber_hid.name = "gerber";

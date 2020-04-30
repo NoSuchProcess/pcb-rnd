@@ -2948,7 +2948,7 @@ int pplg_init_hid_lesstif(void)
 
 	memset(&lesstif_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&lesstif_hid);
+	rnd_hid_nogui_init(&lesstif_hid);
 
 	lesstif_hid.struct_size = sizeof(rnd_hid_t);
 	lesstif_hid.name = "lesstif";

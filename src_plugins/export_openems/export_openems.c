@@ -844,7 +844,7 @@ int pplg_init_export_openems(void)
 
 	memset(&openems_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&openems_hid);
+	rnd_hid_nogui_init(&openems_hid);
 
 	openems_hid.struct_size = sizeof(rnd_hid_t);
 	openems_hid.name = "openems";

@@ -652,7 +652,7 @@ void hid_eps_init()
 {
 	memset(&eps_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&eps_hid);
+	rnd_hid_nogui_init(&eps_hid);
 
 	eps_hid.struct_size = sizeof(rnd_hid_t);
 	eps_hid.name = "eps";

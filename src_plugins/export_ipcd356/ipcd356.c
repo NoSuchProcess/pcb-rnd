@@ -485,7 +485,7 @@ int pplg_init_export_ipcd356(void)
 	PCB_API_CHK_VER;
 	memset(&ipcd356_hid, 0, sizeof(rnd_hid_t));
 
-	pcb_hid_nogui_init(&ipcd356_hid);
+	rnd_hid_nogui_init(&ipcd356_hid);
 
 	ipcd356_hid.struct_size = sizeof(rnd_hid_t);
 	ipcd356_hid.name = "IPC-D-356";
