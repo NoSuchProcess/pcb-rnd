@@ -497,7 +497,7 @@ print [@
 
 ### default menu embed
 pcb_menu_default.c: pcb-menu-default.lht $(CQUOTE)
-	$(CQUOTE) -n pcb_hidlib_default_embedded_menu <pcb-menu-default.lht > pcb_menu_default.c
+	$(CQUOTE) -n rnd_hidlib_default_embedded_menu <pcb-menu-default.lht > pcb_menu_default.c
 
 pcblib_DATA= \
 	default_font \
