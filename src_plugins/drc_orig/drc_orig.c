@@ -396,7 +396,7 @@ void pplg_uninit_drc_orig(void)
 
 int pplg_init_drc_orig(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	rnd_event_bind(PCB_EVENT_DRC_RUN, pcb_drc_orig, NULL, drc_orig_cookie);
 
 	rnd_conf_reg_file(DRC_ORIG_CONF_FN, drc_orig_conf_internal);

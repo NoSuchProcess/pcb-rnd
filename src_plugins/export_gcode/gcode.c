@@ -403,7 +403,7 @@ void pplg_uninit_export_gcode(void)
 
 int pplg_init_export_gcode(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	memset(&gcode_hid, 0, sizeof(rnd_hid_t));
 

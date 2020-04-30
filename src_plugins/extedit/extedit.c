@@ -351,7 +351,7 @@ void pplg_uninit_extedit(void)
 
 int pplg_init_extedit(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(extedit_action_list, extedit_cookie)
 	return 0;
 }

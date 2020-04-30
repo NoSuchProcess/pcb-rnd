@@ -45,7 +45,7 @@ void pplg_uninit_lib_gtk_common(void)
 
 int pplg_init_lib_gtk_common(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	pcb_gtk_conf_init();
 	return 0;
 }

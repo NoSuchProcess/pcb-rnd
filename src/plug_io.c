@@ -294,7 +294,7 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 int pcb_parse_font(pcb_font_t *Ptr, const char *Filename)
 {
 	int res = -1;
-	PCB_HOOK_CALL(pcb_plug_io_t, pcb_plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));
+	RND_HOOK_CALL(pcb_plug_io_t, pcb_plug_io_chain, parse_font, res, == 0, (self, Ptr, Filename));
 
 	pcb_plug_io_err(&PCB->hidlib, res, "load font", Filename);
 	return res;
@@ -325,7 +325,7 @@ int pcb_find_io(pcb_find_io_t *available, int avail_len, pcb_plug_iot_t typ, int
 		} \
 	} while(0)
 
-	PCB_HOOK_CALL_ALL(pcb_plug_io_t, pcb_plug_io_chain, fmt_support_prio, cb_append, (self, typ, is_wr, (fmt == NULL ? self->default_fmt : fmt)));
+	RND_HOOK_CALL_ALL(pcb_plug_io_t, pcb_plug_io_chain, fmt_support_prio, cb_append, (self, typ, is_wr, (fmt == NULL ? self->default_fmt : fmt)));
 
 	if (len > 0)
 		qsort(available, len, sizeof(available[0]), find_prio_cmp);

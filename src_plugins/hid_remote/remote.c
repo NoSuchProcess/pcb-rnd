@@ -390,7 +390,7 @@ void pplg_uninit_hid_remote(void)
 
 int pplg_init_hid_remote(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	memset(&remote_hid, 0, sizeof(rnd_hid_t));
 

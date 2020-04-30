@@ -552,7 +552,7 @@ int pplg_init_ddraft(void)
 	rnd_conf_native_t *cn;
 	rnd_conf_hid_id_t confid;
 
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	RND_REGISTER_ACTIONS(ddraft_action_list, ddraft_cookie)
 	rnd_event_bind(PCB_EVENT_DRAW_CROSSHAIR_CHATT, cnst_enforce, NULL, ddraft_cookie);

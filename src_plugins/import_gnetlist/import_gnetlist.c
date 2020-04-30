@@ -135,14 +135,14 @@ int pplg_check_ver_import_gnetlist(int ver_needed) { return 0; }
 
 void pplg_uninit_import_gnetlist(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
 	rnd_conf_unreg_file(IMPORT_GNETLIST_CONF_FN, import_gnetlist_conf_internal);
 	rnd_conf_unreg_fields("plugins/import_gnetlist/");
 }
 
 int pplg_init_import_gnetlist(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	import_gnetlist.plugin_data = NULL;
@@ -156,7 +156,7 @@ int pplg_init_import_gnetlist(void)
 	import_gnetlist.all_filenames    = 1;
 	import_gnetlist.ext_exec         = 0;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
 
 	rnd_conf_reg_file(IMPORT_GNETLIST_CONF_FN, import_gnetlist_conf_internal);
 

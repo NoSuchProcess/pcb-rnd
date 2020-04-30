@@ -84,7 +84,7 @@ void pplg_uninit_autoroute(void)
 
 int pplg_init_autoroute(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(autoroute_action_list, autoroute_cookie)
 	return 0;
 }

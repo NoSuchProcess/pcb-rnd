@@ -492,7 +492,7 @@ void pplg_uninit_export_excellon(void)
 
 int pplg_init_export_excellon(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_excellon, field,isarray,type_name,cpath,cname,desc,flags);

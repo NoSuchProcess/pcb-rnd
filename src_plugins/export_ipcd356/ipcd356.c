@@ -482,7 +482,7 @@ void pplg_uninit_export_ipcd356(void)
 
 int pplg_init_export_ipcd356(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	memset(&ipcd356_hid, 0, sizeof(rnd_hid_t));
 
 	rnd_hid_nogui_init(&ipcd356_hid);

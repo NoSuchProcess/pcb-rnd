@@ -337,7 +337,7 @@ void pplg_uninit_hid_batch(void)
 
 int pplg_init_hid_batch(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	memset(&batch_hid, 0, sizeof(rnd_hid_t));
 
 	rnd_hid_nogui_init(&batch_hid);

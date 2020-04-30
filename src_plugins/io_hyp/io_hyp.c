@@ -161,13 +161,13 @@ int pplg_check_ver_io_hyp(int ver_needed)
 void pplg_uninit_io_hyp(void)
 {
 	rnd_remove_actions_by_cookie(hyp_cookie);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_hyp);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_hyp);
 
 }
 
 int pplg_init_io_hyp(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	io_hyp.plugin_data = NULL;
@@ -187,7 +187,7 @@ TODO(": look these up")
 	io_hyp.fp_extension = ".hyp_mod";
 	io_hyp.mime_type = "application/x-hyp-pcb";
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_hyp);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_hyp);
 
 
 	RND_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)

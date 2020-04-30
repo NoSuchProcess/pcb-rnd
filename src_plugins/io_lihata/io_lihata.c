@@ -64,17 +64,17 @@ int pplg_check_ver_io_lihata(int ver_needed) { return 0; }
 void pplg_uninit_io_lihata(void)
 {
 	rnd_conf_unreg_fields("plugins/io_lihata/");
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v6);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v5);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v4);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v3);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v2);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v1);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v6);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v5);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v4);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v3);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v2);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v1);
 }
 
 int pplg_init_io_lihata(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 
@@ -103,7 +103,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v6.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
 
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v6);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v6);
 
 
 	plug_io_lihata_v5.plugin_data = NULL;
@@ -129,7 +129,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v5.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
 	plug_io_lihata_v5.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v5);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v5);
 
 	plug_io_lihata_v4.plugin_data = NULL;
 	plug_io_lihata_v4.fmt_support_prio = io_lihata_fmt;
@@ -154,7 +154,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v4.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
 	plug_io_lihata_v4.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v4);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v4);
 
 	plug_io_lihata_v3.plugin_data = NULL;
 	plug_io_lihata_v3.fmt_support_prio = io_lihata_fmt;
@@ -179,7 +179,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v3.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
 	plug_io_lihata_v3.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v3);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v3);
 
 	plug_io_lihata_v2.plugin_data = NULL;
 	plug_io_lihata_v2.fmt_support_prio = io_lihata_fmt;
@@ -201,7 +201,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v2.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
 	plug_io_lihata_v2.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v2);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v2);
 
 	plug_io_lihata_v1.plugin_data = NULL;
 	plug_io_lihata_v1.fmt_support_prio = io_lihata_fmt;
@@ -224,7 +224,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v1.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
 	plug_io_lihata_v1.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v1);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v1);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_io_lihata, field,isarray,type_name,cpath,cname,desc,flags);

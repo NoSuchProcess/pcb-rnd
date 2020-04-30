@@ -119,7 +119,7 @@ void pplg_uninit_loghid(void)
 
 int pplg_init_loghid(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	rnd_hid_nogui_init(&loghid_gui);
 	rnd_hid_nogui_init(&loghid_exp);

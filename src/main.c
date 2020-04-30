@@ -256,12 +256,12 @@ static void gui_support_plugins(int load)
 		int state = 0;
 		loaded = 1;
 		rnd_message(RND_MSG_DEBUG, "Loading GUI support plugin: '%s'\n", plugin_name);
-		puphand = pup_load(&pcb_pup, (const char **)pcb_pup_paths, plugin_name, 0, &state);
+		puphand = pup_load(&rnd_pup, (const char **)rnd_pup_paths, plugin_name, 0, &state);
 		if (puphand == NULL)
 			rnd_message(RND_MSG_ERROR, "Error: failed to load GUI support plugin '%s'\n-> expect missing widgets and dialog boxes\n", plugin_name);
 	}
 	if (!load && loaded && (puphand != NULL)) {
-		pup_unload(&pcb_pup, puphand, NULL);
+		pup_unload(&rnd_pup, puphand, NULL);
 		loaded = 0;
 		puphand = NULL;
 	}
@@ -462,18 +462,18 @@ int main(int argc, char *argv[])
 
 	pcb_text_init();
 
-	if (pcb_pup.err_stack != NULL) {
+	if (rnd_pup.err_stack != NULL) {
 		rnd_message(RND_MSG_ERROR, "Some of the static linked buildins could not be loaded:\n");
-		pup_err_stack_process_str(&pcb_pup, print_pup_err);
+		pup_err_stack_process_str(&rnd_pup, print_pup_err);
 	}
 
-	for(sp = pcb_pup_paths; *sp != NULL; sp++) {
+	for(sp = rnd_pup_paths; *sp != NULL; sp++) {
 		rnd_message(RND_MSG_DEBUG, "Loading plugins from '%s'\n", *sp);
-		pup_autoload_dir(&pcb_pup, *sp, (const char **)pcb_pup_paths);
+		pup_autoload_dir(&rnd_pup, *sp, (const char **)rnd_pup_paths);
 	}
-	if (pcb_pup.err_stack != NULL) {
+	if (rnd_pup.err_stack != NULL) {
 		rnd_message(RND_MSG_ERROR, "Some of the dynamic linked plugins could not be loaded:\n");
-		pup_err_stack_process_str(&pcb_pup, print_pup_err);
+		pup_err_stack_process_str(&rnd_pup, print_pup_err);
 	}
 
 	if (rnd_main_args_setup1(&ga) != 0) {

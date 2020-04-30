@@ -233,7 +233,7 @@ void pplg_uninit_import_sch2(void)
 
 int pplg_init_import_sch2(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(import_sch_action_list, import_sch_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_import_sch, field,isarray,type_name,cpath,cname,desc,flags);

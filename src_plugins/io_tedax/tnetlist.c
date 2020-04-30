@@ -278,7 +278,7 @@ static pcb_plug_import_t import_tedaxnet;
 
 void pcb_tedax_net_uninit(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tedaxnet);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tedaxnet);
 }
 
 void pcb_tedax_net_init(void)
@@ -295,5 +295,5 @@ void pcb_tedax_net_init(void)
 	import_tedaxnet.all_filenames    = 1;
 	import_tedaxnet.ext_exec         = 0;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tedaxnet);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tedaxnet);
 }

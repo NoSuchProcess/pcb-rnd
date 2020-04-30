@@ -640,7 +640,7 @@ void pplg_uninit_asm(void)
 
 int pplg_init_asm(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	rnd_conf_reg_file(ASM_CONF_FN, asm_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_asm, field,isarray,type_name,cpath,cname,desc,flags);

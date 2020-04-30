@@ -349,7 +349,7 @@ void pplg_uninit_import_dsn(void)
 
 int pplg_init_import_dsn(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
 	return 0;
 }

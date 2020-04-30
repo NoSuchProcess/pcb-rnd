@@ -347,7 +347,7 @@ void pplg_uninit_polycombine(void)
 
 int pplg_init_polycombine(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(polycombine_action_list, polycombine_cookie);
 	return 0;
 }

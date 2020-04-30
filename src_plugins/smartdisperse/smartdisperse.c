@@ -239,7 +239,7 @@ void pplg_uninit_smartdisperse(void)
 
 int pplg_init_smartdisperse(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(smartdisperse_action_list, smartdisperse_cookie);
 	return 0;
 }

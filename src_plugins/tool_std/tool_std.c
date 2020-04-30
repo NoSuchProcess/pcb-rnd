@@ -59,7 +59,7 @@ void pplg_uninit_tool_std(void)
 
 int pplg_init_tool_std(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	pcb_crosshair.tool_arc = pcb_tool_reg(&pcb_tool_arc, pcb_tool_std_cookie);
 	pcb_crosshair.tool_arrow = pcb_tool_reg(&pcb_tool_arrow, pcb_tool_std_cookie);

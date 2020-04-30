@@ -524,7 +524,7 @@ void pplg_uninit_jostle(void)
 
 int pplg_init_jostle(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(jostle_action_list, jostle_cookie);
 	return 0;
 }

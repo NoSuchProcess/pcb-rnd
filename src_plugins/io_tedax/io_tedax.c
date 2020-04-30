@@ -249,13 +249,13 @@ void pplg_uninit_io_tedax(void)
 {
 	rnd_remove_actions_by_cookie(tedax_cookie);
 	tedax_etest_uninit();
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_tedax);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_tedax);
 	pcb_tedax_net_uninit();
 }
 
 int pplg_init_io_tedax(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	io_tedax.plugin_data = NULL;
@@ -277,7 +277,7 @@ int pplg_init_io_tedax(void)
 	io_tedax.fp_extension = ".tdx";
 	io_tedax.mime_type = "application/tEDAx";
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_tedax);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_tedax);
 
 	tedax_etest_init();
 

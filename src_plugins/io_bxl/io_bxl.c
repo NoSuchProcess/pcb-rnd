@@ -60,12 +60,12 @@ int pplg_check_ver_io_bxl(int ver_needed) { return 0; }
 void pplg_uninit_io_bxl(void)
 {
 	rnd_remove_actions_by_cookie(bxl_cookie);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_bxl);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_bxl);
 }
 
 int pplg_init_io_bxl(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	io_bxl.plugin_data = NULL;
 	io_bxl.fmt_support_prio = io_bxl_fmt;
@@ -83,7 +83,7 @@ int pplg_init_io_bxl(void)
 	io_bxl.fp_extension = ".bxl";
 	io_bxl.mime_type = "application/x-bxl";
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_bxl);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_bxl);
 
 	return 0;
 }

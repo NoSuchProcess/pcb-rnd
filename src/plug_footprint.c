@@ -137,7 +137,7 @@ FILE *pcb_fp_fopen(const rnd_conflist_t *path, const char *name, pcb_fp_fopen_ct
 
 	for(ci = rnd_conflist_first((rnd_conflist_t *)path); ci != NULL; ci = rnd_conflist_next(ci)) {
 		const char *curr = ci->val.string[0];
-		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, curr, fctx->filename, fctx, dst));
+		RND_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, fp_fopen, res, != NULL, (self, curr, fctx->filename, fctx, dst));
 		if (res != NULL)
 			return res;
 	}
@@ -411,7 +411,7 @@ static int fp_read_lib_all_(const rnd_conflist_t *searchpath)
 
 		/* Next read in any footprints in the top level dir */
 		res = -1;
-		PCB_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, load_dir, res, >= 0, (self, toppath, 0));
+		RND_HOOK_CALL(pcb_plug_fp_t, pcb_plug_fp_chain, load_dir, res, >= 0, (self, toppath, 0));
 		if (res >= 0)
 			n_footprints += res;
 		else if (!silent_fail)

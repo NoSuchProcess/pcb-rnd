@@ -286,7 +286,7 @@ static pcb_plug_import_t import_eeschema;
 
 void pcb_eeschema_uninit(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_eeschema);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_eeschema);
 }
 
 void pcb_eeschema_init(void)
@@ -303,5 +303,5 @@ void pcb_eeschema_init(void)
 	import_eeschema.all_filenames    = 1;
 	import_eeschema.ext_exec         = 0;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_eeschema);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_eeschema);
 }

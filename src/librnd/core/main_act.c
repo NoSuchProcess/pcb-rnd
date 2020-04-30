@@ -93,14 +93,14 @@ fgw_error_t pcb_act_DumpPlugins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	printf("#state\tname\tbuildin\tautoload\trefco\tloaded_from\n");
 
-	for(p = pcb_pup.plugins; p != NULL; p = p->next)
+	for(p = rnd_pup.plugins; p != NULL; p = p->next)
 		printf("loaded\t%s\t%d\t%d\t%d\t%s\n",
 			p->name,
 			!!(p->flags & PUP_FLG_STATIC), !!(p->flags & PUP_FLG_AUTOLOAD), p->references,
 			(p->path == NULL ? "<builtin>" : p->path));
 
-	for(n = 0, bu = pcb_pup.bu; n < pcb_pup.bu_used; n++, bu++)
-		if (pup_lookup(&pcb_pup, (*bu)->name) == NULL)
+	for(n = 0, bu = rnd_pup.bu; n < rnd_pup.bu_used; n++, bu++)
+		if (pup_lookup(&rnd_pup, (*bu)->name) == NULL)
 			printf("unloaded buildin\t%s\t1\t0\t0\t<builtin>\n", (*bu)->name);
 
 	RND_ACT_IRES(0);
@@ -113,7 +113,7 @@ static const char pcb_acth_DumpPluginDirs[] = "Print plugins directories in a fo
 fgw_error_t pcb_act_DumpPluginDirs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char **p;
-	for(p = pcb_pup_paths; *p != NULL; p++)
+	for(p = rnd_pup_paths; *p != NULL; p++)
 		printf("%s\n", *p);
 
 	RND_ACT_IRES(0);

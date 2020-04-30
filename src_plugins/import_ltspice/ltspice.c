@@ -383,12 +383,12 @@ int pplg_check_ver_import_ltspice(int ver_needed) { return 0; }
 void pplg_uninit_import_ltspice(void)
 {
 	rnd_remove_actions_by_cookie(ltspice_cookie);
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ltspice);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ltspice);
 }
 
 int pplg_init_import_ltspice(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	import_ltspice.plugin_data = NULL;
@@ -402,7 +402,7 @@ int pplg_init_import_ltspice(void)
 	import_ltspice.all_filenames    = 1;
 	import_ltspice.ext_exec         = 0;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ltspice);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ltspice);
 
 	RND_REGISTER_ACTIONS(ltspice_action_list, ltspice_cookie)
 	return 0;

@@ -22,7 +22,7 @@ void pplg_uninit_fp_wget(void)
 
 int pplg_init_fp_wget(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_fp_wget, field,isarray,type_name,cpath,cname,desc,flags);

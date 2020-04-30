@@ -352,7 +352,7 @@ void pplg_uninit_propedit(void)
 
 int pplg_init_propedit(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	if (sizeof(long) < sizeof(rnd_layer_id_t)) {
 		rnd_message(RND_MSG_ERROR, "can't load propedig: layer id type wider than long\n");

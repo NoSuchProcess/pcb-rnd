@@ -601,7 +601,7 @@ void pplg_uninit_diag(void)
 
 int pplg_init_diag(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_diag, field,isarray,type_name,cpath,cname,desc,flags);

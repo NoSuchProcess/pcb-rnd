@@ -1440,7 +1440,7 @@ void pplg_uninit_rubberband_orig(void)
 int pplg_init_rubberband_orig(void)
 {
 	void *ctx = &rubber_band_state;
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	rnd_event_bind(PCB_EVENT_RUBBER_RESET, rbe_reset, ctx, rubber_cookie);
 	rnd_event_bind(PCB_EVENT_RUBBER_MOVE, rbe_move, ctx, rubber_cookie);
 	rnd_event_bind(PCB_EVENT_RUBBER_MOVE_DRAW, rbe_draw, ctx, rubber_cookie);

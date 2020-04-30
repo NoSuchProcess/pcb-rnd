@@ -292,7 +292,7 @@ rnd_hid_t export_cam_hid;
 
 int pplg_init_cam(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	rnd_conf_reg_file(CAM_CONF_FN, cam_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_cam, field,isarray,type_name,cpath,cname,desc,flags);

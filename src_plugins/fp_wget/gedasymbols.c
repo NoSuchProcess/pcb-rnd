@@ -225,7 +225,7 @@ static pcb_plug_fp_t fp_gedasymbols;
 
 void fp_gedasymbols_uninit(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_gedasymbols);
+	RND_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_gedasymbols);
 }
 
 void fp_gedasymbols_init(void)
@@ -235,5 +235,5 @@ void fp_gedasymbols_init(void)
 	fp_gedasymbols.fp_fopen = fp_gedasymbols_fopen;
 	fp_gedasymbols.fp_fclose = fp_gedasymbols_fclose;
 
-	PCB_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_gedasymbols);
+	RND_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_gedasymbols);
 }

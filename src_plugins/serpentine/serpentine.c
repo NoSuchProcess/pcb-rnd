@@ -451,7 +451,7 @@ void pplg_uninit_serpentine(void)
 
 int pplg_init_serpentine(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(serpentine_action_list, serpentine_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_serpentine, field,isarray,type_name,cpath,cname,desc,flags);

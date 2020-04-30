@@ -76,7 +76,7 @@ void pplg_uninit_millpath(void)
 
 int pplg_init_millpath(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	RND_REGISTER_ACTIONS(millpath_action_list, pcb_millpath_cookie)
 	return 0;

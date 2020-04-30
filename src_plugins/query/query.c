@@ -410,7 +410,7 @@ void pcb_qry_basic_fnc_init(void);
 
 int pplg_init_query(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	pcb_qry_basic_fnc_init();
 	query_action_reg(query_cookie);
 	return 0;

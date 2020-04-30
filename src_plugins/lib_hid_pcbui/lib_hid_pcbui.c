@@ -124,7 +124,7 @@ TODO("padstack: remove some paths when route style has proto")
 	static rnd_conf_hid_callbacks_t rdcb[sizeof(rdpaths)/sizeof(rdpaths[0])];
 	static rnd_conf_hid_callbacks_t ibcb[sizeof(rdpaths)/sizeof(ibpaths[0])];
 
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	RND_REGISTER_ACTIONS(rst_action_list, rst_cookie);
 	RND_REGISTER_ACTIONS(status_action_list, status_cookie);

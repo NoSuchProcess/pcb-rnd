@@ -369,7 +369,7 @@ void pplg_uninit_mincut(void)
 
 int pplg_init_mincut(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	rnd_event_bind(PCB_EVENT_NET_INDICATE_SHORT, pcb_mincut_ev, NULL, pcb_mincut_cookie);
 

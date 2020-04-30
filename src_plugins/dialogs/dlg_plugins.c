@@ -36,7 +36,7 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	gds_init(&str);
 
-	for (p = pcb_pup.plugins; p != NULL; p = p->next)
+	for (p = rnd_pup.plugins; p != NULL; p = p->next)
 		if (p->flags & PUP_FLG_STATIC)
 			numb++;
 		else
@@ -44,7 +44,7 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	gds_append_str(&str, "Plugins loaded:\n");
 	if (nump > 0) {
-		for (p = pcb_pup.plugins; p != NULL; p = p->next) {
+		for (p = rnd_pup.plugins; p != NULL; p = p->next) {
 			if (!(p->flags & PUP_FLG_STATIC)) {
 				gds_append(&str, ' ');
 				gds_append_str(&str, p->name);
@@ -59,7 +59,7 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	gds_append_str(&str, "\n\nBuildins:\n");
 	if (numb > 0) {
-		for (p = pcb_pup.plugins; p != NULL; p = p->next) {
+		for (p = rnd_pup.plugins; p != NULL; p = p->next) {
 			if (p->flags & PUP_FLG_STATIC) {
 				gds_append(&str, ' ');
 				gds_append_str(&str, p->name);

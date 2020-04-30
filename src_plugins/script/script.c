@@ -446,7 +446,7 @@ void pplg_uninit_script(void)
 
 int pplg_init_script(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(script_action_list, script_cookie);
 
 #ifndef RND_HAVE_SYS_FUNGW

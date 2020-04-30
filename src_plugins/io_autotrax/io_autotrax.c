@@ -68,12 +68,12 @@ int pplg_check_ver_io_autotrax(int ver_needed) { return 0; }
 void pplg_uninit_io_autotrax(void)
 {
 	rnd_remove_actions_by_cookie(autotrax_cookie);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_autotrax);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_autotrax);
 }
 
 int pplg_init_io_autotrax(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	io_autotrax.plugin_data = NULL;
 	io_autotrax.fmt_support_prio = io_autotrax_fmt;
@@ -91,7 +91,7 @@ int pplg_init_io_autotrax(void)
 	io_autotrax.fp_extension = ".PCB";
 	io_autotrax.mime_type = "application/x-autotrax-pcb";
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_autotrax);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_autotrax);
 
 	return 0;
 }

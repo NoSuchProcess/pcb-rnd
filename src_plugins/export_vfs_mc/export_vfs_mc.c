@@ -150,7 +150,7 @@ void pplg_uninit_export_vfs_mc(void)
 
 int pplg_init_export_vfs_mc(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	memset(&export_vfs_mc_hid, 0, sizeof(rnd_hid_t));
 

@@ -148,16 +148,16 @@ int pplg_check_ver_fp_board(int ver_needed) { return 0; }
 
 void pplg_uninit_fp_board(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_board);
+	RND_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_board);
 }
 
 int pplg_init_fp_board(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	fp_board.plugin_data = NULL;
 	fp_board.load_dir = fp_board_load_dir;
 	fp_board.fp_fopen = fp_board_fopen;
 	fp_board.fp_fclose = fp_board_fclose;
-	PCB_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_board);
+	RND_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_board);
 	return 0;
 }

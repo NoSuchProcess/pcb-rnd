@@ -836,7 +836,7 @@ void pplg_uninit_report(void)
 
 int pplg_init_report(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(report_action_list, report_cookie)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_report, field,isarray,type_name,cpath,cname,desc,flags);

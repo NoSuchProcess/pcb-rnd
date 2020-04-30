@@ -576,7 +576,7 @@ void pplg_uninit_order_pcbway(void)
 
 int pplg_init_order_pcbway(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	rnd_conf_reg_file(ORDER_PCBWAY_CONF_FN, order_pcbway_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \

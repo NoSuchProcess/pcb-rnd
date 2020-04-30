@@ -63,12 +63,12 @@ int pplg_check_ver_io_dsn(int ver_needed) { return 0; }
 
 void pplg_uninit_io_dsn(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_dsn);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_dsn);
 }
 
 int pplg_init_io_dsn(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	io_dsn.plugin_data = NULL;
@@ -87,7 +87,7 @@ int pplg_init_io_dsn(void)
 	io_dsn.fp_extension = NULL;
 	io_dsn.mime_type = "application/dsn";
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_dsn);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_dsn);
 
 	return 0;
 }

@@ -87,7 +87,7 @@ void pplg_uninit_autocrop(void)
 
 int pplg_init_autocrop(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(autocrop_action_list, autocrop_cookie);
 	return 0;
 }

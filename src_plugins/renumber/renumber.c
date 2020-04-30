@@ -369,7 +369,7 @@ void pplg_uninit_renumber(void)
 
 int pplg_init_renumber(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(renumber_action_list, renumber_cookie)
 	return 0;
 }

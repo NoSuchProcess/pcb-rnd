@@ -91,12 +91,12 @@ int pplg_check_ver_import_edif(int ver_needed) { return 0; }
 
 void pplg_uninit_import_edif(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_edif);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_edif);
 }
 
 int pplg_init_import_edif(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	import_edif.plugin_data = NULL;
@@ -110,7 +110,7 @@ int pplg_init_import_edif(void)
 	import_edif.all_filenames    = 1;
 	import_edif.ext_exec         = 0;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_edif);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_edif);
 
 	return 0;
 }

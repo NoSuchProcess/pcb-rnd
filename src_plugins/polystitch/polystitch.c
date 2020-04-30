@@ -129,7 +129,7 @@ void pplg_uninit_polystitch(void)
 
 int pplg_init_polystitch(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(polystitch_action_list, polystitch_cookie);
 	return 0;
 }

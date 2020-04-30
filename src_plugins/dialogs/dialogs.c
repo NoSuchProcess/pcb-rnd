@@ -110,7 +110,7 @@ void pplg_uninit_dialogs(void)
 
 int pplg_init_dialogs(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	RND_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
 	pcb_dlg_pref_init();

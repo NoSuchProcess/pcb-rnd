@@ -24,35 +24,35 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_RND_PLUGINS_H
-#define PCB_RND_PLUGINS_H
+#ifndef RND_RND_PLUGINS_H
+#define RND_RND_PLUGINS_H
 
 #include <puplug/puplug.h>
 #include <puplug/error.h>
 
 /* core's version stored in plugins.o */
-extern unsigned long pcb_api_ver;
+extern unsigned long rnd_api_ver;
 
-#define PCB_API_VER_MATCH (PCB_API_VER == pcb_api_ver)
-#define PCB_API_CHK_VER \
+#define RND_API_VER_MATCH (PCB_API_VER == rnd_api_ver)
+#define RND_API_CHK_VER \
 do { \
-	if (!PCB_API_VER_MATCH) {\
-		fprintf(stderr, "pcb-rnd API version incompatibility: " __FILE__ "=%lu core=%lu\n(not loading this plugin)\n", (unsigned long)PCB_API_VER, pcb_api_ver); \
+	if (!RND_API_VER_MATCH) {\
+		fprintf(stderr, "pcb-rnd API version incompatibility: " __FILE__ "=%lu core=%lu\n(not loading this plugin)\n", (unsigned long)PCB_API_VER, rnd_api_ver); \
 		return 1; \
 	} \
 } while(0)
 
-extern pup_context_t pcb_pup;
-extern char **pcb_pup_paths;
+extern pup_context_t rnd_pup;
+extern char **rnd_pup_paths;
 
-void pcb_plugin_add_dir(const char *dir);
-void pcb_plugin_uninit(void);
+void rnd_plugin_add_dir(const char *dir);
+void rnd_plugin_uninit(void);
 
 /* Hook based plugin generics; plugins that implement a common API should use
    HOOK_REGISTER with an api struct. The core should run the plugins using
    HOOK_CALL */
 
-#define PCB_HOOK_CALL_DO(chain_type, chain, func, res, accept, funcargs, do_on_success) \
+#define RND_HOOK_CALL_DO(chain_type, chain, func, res, accept, funcargs, do_on_success) \
 do { \
 	chain_type *self; \
 	for(self = (chain); self != NULL; self = self->next) { \
@@ -66,10 +66,10 @@ do { \
 	} \
 } while(0)
 
-#define PCB_HOOK_CALL(chain_type, chain, func, res, accept, funcargs) \
-	PCB_HOOK_CALL_DO(chain_type, chain, func, res, accept, funcargs, (void)0)
+#define RND_HOOK_CALL(chain_type, chain, func, res, accept, funcargs) \
+	RND_HOOK_CALL_DO(chain_type, chain, func, res, accept, funcargs, (void)0)
 
-#define PCB_HOOK_CALL_ALL(chain_type, chain, func, cb, funcargs) \
+#define RND_HOOK_CALL_ALL(chain_type, chain, func, cb, funcargs) \
 do { \
 	chain_type *self; \
 	for(self = (chain); self != NULL; self = self->next) { \
@@ -81,14 +81,14 @@ do { \
 	} \
 } while(0)
 
-#define PCB_HOOK_REGISTER(chain_type, chain, hstruct) \
+#define RND_HOOK_REGISTER(chain_type, chain, hstruct) \
 do { \
 	(hstruct)->next = chain; \
 	chain = (hstruct); \
 } while(0)
 
 
-#define PCB_HOOK_UNREGISTER(chain_type, chain, hstruct) \
+#define RND_HOOK_UNREGISTER(chain_type, chain, hstruct) \
 do { \
 	chain_type *__n__, *__prev__ = NULL, *__h__ = (hstruct); \
 	while (chain == __h__) \

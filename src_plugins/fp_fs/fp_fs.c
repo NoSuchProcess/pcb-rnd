@@ -455,16 +455,16 @@ int pplg_check_ver_fp_fs(int ver_needed) { return 0; }
 
 void pplg_uninit_fp_fs(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
+	RND_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
 }
 
 int pplg_init_fp_fs(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	fp_fs.plugin_data = NULL;
 	fp_fs.load_dir = fp_fs_load_dir;
 	fp_fs.fp_fopen = fp_fs_fopen;
 	fp_fs.fp_fclose = fp_fs_fclose;
-	PCB_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
+	RND_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
 	return 0;
 }

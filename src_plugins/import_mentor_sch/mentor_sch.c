@@ -310,12 +310,12 @@ void pplg_uninit_import_mentor_sch(void)
 {
 	rnd_remove_actions_by_cookie(mentor_sch_cookie);
 	rnd_conf_unreg_fields("plugins/import_mentor_sch/");
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_mentor_sch);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_mentor_sch);
 }
 
 int pplg_init_import_mentor_sch(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_mentor, field,isarray,type_name,cpath,cname,desc,flags);
@@ -333,7 +333,7 @@ int pplg_init_import_mentor_sch(void)
 	import_mentor_sch.all_filenames    = 1;
 	import_mentor_sch.ext_exec         = 0;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_mentor_sch);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_mentor_sch);
 
 	RND_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)
 	return 0;

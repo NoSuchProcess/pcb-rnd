@@ -60,13 +60,13 @@ void pplg_uninit_io_kicad(void)
 {
 	/* Runs once when the plugin is unloaded. TODO: free plugin-globals here. */
 	rnd_remove_actions_by_cookie(kicad_cookie);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
 	pcb_eeschema_uninit();
 }
 
 int pplg_init_io_kicad(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	io_kicad.plugin_data = NULL;
@@ -89,7 +89,7 @@ int pplg_init_io_kicad(void)
 	io_kicad.mime_type = "application/x-kicad-pcb";
 
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
 
 	RND_REGISTER_ACTIONS(eeschema_action_list, kicad_cookie);
 

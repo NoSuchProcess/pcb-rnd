@@ -316,7 +316,7 @@ void pplg_uninit_export_oldconn(void)
 
 int pplg_init_export_oldconn(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	RND_REGISTER_ACTIONS(oldconn_action_list, oldconn_cookie)
 

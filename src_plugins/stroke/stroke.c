@@ -167,7 +167,7 @@ int pplg_uninit_stroke(void)
 
 int pplg_init_stroke(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	stroke_init();
 	rnd_conf_reg_file(STROKE_CONF_FN, stroke_conf_internal);
 

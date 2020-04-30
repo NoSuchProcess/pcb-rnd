@@ -533,7 +533,7 @@ void pplg_uninit_export_dxf(void)
 
 int pplg_init_export_dxf(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	memset(&dxf_hid, 0, sizeof(rnd_hid_t));
 

@@ -861,7 +861,7 @@ void pplg_uninit_export_xy(void)
 
 int pplg_init_export_xy(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	rnd_conf_reg_file(CONF_FN, export_xy_conf_internal);
 

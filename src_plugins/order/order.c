@@ -210,7 +210,7 @@ void pplg_uninit_order(void)
 
 int pplg_init_order(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	rnd_conf_reg_file(ORDER_CONF_FN, order_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \

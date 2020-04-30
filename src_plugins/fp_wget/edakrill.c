@@ -331,7 +331,7 @@ static pcb_plug_fp_t fp_edakrill;
 
 void fp_edakrill_uninit(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_edakrill);
+	RND_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_edakrill);
 }
 
 void fp_edakrill_init(void)
@@ -341,5 +341,5 @@ void fp_edakrill_init(void)
 	fp_edakrill.fp_fopen = fp_edakrill_fopen;
 	fp_edakrill.fp_fclose = fp_edakrill_fclose;
 
-	PCB_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_edakrill);
+	RND_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_edakrill);
 }

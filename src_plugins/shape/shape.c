@@ -633,7 +633,7 @@ void pplg_uninit_shape(void)
 
 int pplg_init_shape(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(shape_action_list, pcb_shape_cookie)
 
 	rnd_event_bind(PCB_EVENT_LAYERVIS_CHANGED, shape_layer_chg, NULL, pcb_shape_cookie);

@@ -124,7 +124,7 @@ void pplg_uninit_export_lpr(void)
 
 int pplg_init_export_lpr(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	memset(&lpr_hid, 0, sizeof(rnd_hid_t));
 
 	rnd_hid_nogui_init(&lpr_hid);

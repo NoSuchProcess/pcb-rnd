@@ -417,7 +417,7 @@ void pplg_uninit_ar_cpcb(void)
 
 int pplg_init_ar_cpcb(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	RND_REGISTER_ACTIONS(cpcb_action_list, cpcb_cookie)
 

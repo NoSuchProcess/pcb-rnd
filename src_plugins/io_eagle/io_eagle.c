@@ -59,14 +59,14 @@ void pplg_uninit_io_eagle(void)
 {
 	/* Runs once when the plugin is unloaded. TODO: free plugin-globals here. */
 	rnd_remove_actions_by_cookie(eagle_cookie);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_xml);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_bin);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_dru);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_xml);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_bin);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_dru);
 }
 
 int pplg_init_io_eagle(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	io_eagle_xml.plugin_data = NULL;
@@ -85,7 +85,7 @@ int pplg_init_io_eagle(void)
 	io_eagle_xml.fp_extension = ".eagle_mod";
 	io_eagle_xml.mime_type = "application/x-eagle-pcb";
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_xml);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_xml);
 
 	/* register the IO hook */
 	io_eagle_bin.plugin_data = NULL;
@@ -104,7 +104,7 @@ int pplg_init_io_eagle(void)
 	io_eagle_bin.fp_extension = ".???";
 	io_eagle_bin.mime_type = "application/x-eagle-pcb";
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_bin);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_bin);
 
 	/* register the IO hook */
 	io_eagle_dru.plugin_data = NULL;
@@ -123,7 +123,7 @@ int pplg_init_io_eagle(void)
 	io_eagle_dru.fp_extension = ".dru";
 	io_eagle_dru.mime_type = "application/x-eagle-dru";
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_dru);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_dru);
 
 	return 0;
 }

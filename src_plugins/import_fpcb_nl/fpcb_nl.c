@@ -232,12 +232,12 @@ int pplg_check_ver_import_fpcb_nl(int ver_needed) { return 0; }
 void pplg_uninit_import_fpcb_nl(void)
 {
 	rnd_remove_actions_by_cookie(fpcb_nl_cookie);
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_fpcb_nl);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_fpcb_nl);
 }
 
 int pplg_init_import_fpcb_nl(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	import_fpcb_nl.plugin_data = NULL;
@@ -251,7 +251,7 @@ int pplg_init_import_fpcb_nl(void)
 	import_fpcb_nl.all_filenames    = 1;
 	import_fpcb_nl.ext_exec         = 0;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_fpcb_nl);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_fpcb_nl);
 
 
 	RND_REGISTER_ACTIONS(fpcb_nl_action_list, fpcb_nl_cookie)

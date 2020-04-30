@@ -1187,7 +1187,7 @@ void pplg_uninit_sketch_route(void)
 
 int pplg_init_sketch_route(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(sketch_route_action_list, pcb_sketch_route_cookie)
 
 	pcb_tool_reg(&tool_skline, pcb_sketch_route_cookie);

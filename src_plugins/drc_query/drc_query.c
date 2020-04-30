@@ -378,7 +378,7 @@ static rnd_conf_hid_callbacks_t cbs;
 
 int pplg_init_drc_query(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	pcb_drcq_stat_init();
 

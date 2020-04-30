@@ -112,7 +112,7 @@ int pplg_init_lib_hid_common(void)
 	static rnd_conf_hid_callbacks_t ccb, ccbu;
 	rnd_conf_native_t *nat;
 
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(dialogs_conf, field,isarray,type_name,cpath,cname,desc,flags);
 /*#include "lib_hid_common_conf_fields.h"*/

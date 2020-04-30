@@ -158,7 +158,7 @@ void pplg_uninit_import_pxm_pnm(void)
 
 int pplg_init_import_pxm_pnm(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	rnd_pixmap_reg_import(&pxm_pnm_imp, import_pxm_pnm_cookie);
 	return 0;
 }

@@ -2574,7 +2574,7 @@ void pplg_uninit_djopt(void)
 
 int pplg_init_djopt(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_djopt, field,isarray,type_name,cpath,cname,desc,flags);

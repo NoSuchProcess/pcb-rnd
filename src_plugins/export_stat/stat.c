@@ -398,7 +398,7 @@ void pplg_uninit_export_stat(void)
 
 int pplg_init_export_stat(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	memset(&stat_hid, 0, sizeof(rnd_hid_t));
 

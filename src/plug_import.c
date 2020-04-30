@@ -68,7 +68,7 @@ static pcb_plug_import_t *find_importer(unsigned int aspects, const char **args,
 	} while(0)
 
 
-	PCB_HOOK_CALL_ALL(pcb_plug_import_t, pcb_plug_import_chain, fmt_support_prio, cb_append,   (self, aspects, args, numargs));
+	RND_HOOK_CALL_ALL(pcb_plug_import_t, pcb_plug_import_chain, fmt_support_prio, cb_append,   (self, aspects, args, numargs));
 	if (len == 0)
 		return NULL;
 

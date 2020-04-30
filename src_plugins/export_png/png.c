@@ -1408,7 +1408,7 @@ void pplg_uninit_export_png(void)
 
 int pplg_init_export_png(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	memset(&png_hid, 0, sizeof(rnd_hid_t));
 

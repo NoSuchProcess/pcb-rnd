@@ -268,12 +268,12 @@ int pplg_check_ver_import_calay(int ver_needed) { return 0; }
 void pplg_uninit_import_calay(void)
 {
 	rnd_remove_actions_by_cookie(calay_cookie);
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_calay);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_calay);
 }
 
 int pplg_init_import_calay(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	import_calay.plugin_data = NULL;
@@ -287,7 +287,7 @@ int pplg_init_import_calay(void)
 	import_calay.all_filenames    = 1;
 	import_calay.ext_exec         = 0;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_calay);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_calay);
 
 
 	RND_REGISTER_ACTIONS(calay_action_list, calay_cookie)

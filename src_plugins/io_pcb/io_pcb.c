@@ -57,12 +57,12 @@ void pplg_uninit_io_pcb(void)
 	pcb_lex_destroy();
 
 	for(n = 0; n < 3; n++)
-		PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[n]));
+		RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[n]));
 }
 
 int pplg_init_io_pcb(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	memset(&io_pcb, 0, sizeof(io_pcb));
 
@@ -86,7 +86,7 @@ int pplg_init_io_pcb(void)
 	io_pcb[0].default_extension = ".pcb";
 	io_pcb[0].fp_extension = ".fp";
 	io_pcb[0].mime_type = "application/x-pcb-layout";
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[0]));
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[0]));
 	pcb_centimil_io_pcb = &io_pcb[0];
 
 	ctx[1].write_coord_fmt = rnd_printf_slot[9];
@@ -103,7 +103,7 @@ int pplg_init_io_pcb(void)
 	io_pcb[1].default_extension = ".pcb";
 	io_pcb[1].fp_extension = ".fp";
 	io_pcb[1].mime_type = "application/x-pcb-layout";
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[1]));
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[1]));
 	pcb_preferred_io_pcb = &io_pcb[1];
 
 	ctx[2].write_coord_fmt = "%$$mn";
@@ -120,7 +120,7 @@ int pplg_init_io_pcb(void)
 	io_pcb[2].default_extension = ".pcb";
 	io_pcb[2].fp_extension = ".fp";
 	io_pcb[2].mime_type = "application/x-pcb-layout";
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[2]));
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &(io_pcb[2]));
 	pcb_nanometer_io_pcb = &io_pcb[2];
 
 

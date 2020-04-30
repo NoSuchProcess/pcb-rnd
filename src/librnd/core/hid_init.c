@@ -91,37 +91,37 @@ void rnd_hid_init()
 
 TODO("make this configurable - add to conf_board_ignores avoid plugin injection")
 	tmp = rnd_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
-	pcb_plugin_add_dir(tmp);
+	rnd_plugin_add_dir(tmp);
 	free(tmp);
 
 	tmp = rnd_concat(rnd_conf.rc.path.exec_prefix, RND_DIR_SEPARATOR_S, "lib", RND_DIR_SEPARATOR_S, "pcb-rnd", RND_DIR_SEPARATOR_S, "plugins", NULL);
-	pcb_plugin_add_dir(tmp);
+	rnd_plugin_add_dir(tmp);
 	free(tmp);
 
 	/* hardwired libdir, just in case exec-prefix goes wrong (e.g. linstall) */
 	tmp = rnd_concat(rnd_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
-	pcb_plugin_add_dir(tmp);
+	rnd_plugin_add_dir(tmp);
 	free(tmp);
 	tmp = rnd_concat(rnd_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
-	pcb_plugin_add_dir(tmp);
+	rnd_plugin_add_dir(tmp);
 	free(tmp);
 
 	/* rnd_conf.rc.path.home is set by the conf_core immediately on startup */
 	if (rnd_conf.rc.path.home != NULL) {
 		tmp = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
-		pcb_plugin_add_dir(tmp);
+		rnd_plugin_add_dir(tmp);
 		free(tmp);
 
 		tmp = rnd_concat(rnd_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
-		pcb_plugin_add_dir(tmp);
+		rnd_plugin_add_dir(tmp);
 		free(tmp);
 	}
 
 	tmp = rnd_concat("plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
-	pcb_plugin_add_dir(tmp);
+	rnd_plugin_add_dir(tmp);
 	free(tmp);
 
-	pcb_plugin_add_dir("plugins");
+	rnd_plugin_add_dir("plugins");
 }
 
 void rnd_hid_uninit(void)
@@ -137,7 +137,7 @@ void rnd_hid_uninit(void)
 	}
 	free(rnd_hid_list);
 
-	pup_uninit(&pcb_pup);
+	pup_uninit(&rnd_pup);
 
 	rnd_export_uninit();
 
@@ -356,12 +356,12 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 
 	rnd_conf_load_all(NULL, NULL);
 
-	pup_init(&pcb_pup);
-	pcb_pup.error_stack_enable = 1;
-	pup_buildin_load(&pcb_pup, buildins);
+	pup_init(&rnd_pup);
+	rnd_pup.error_stack_enable = 1;
+	pup_buildin_load(&rnd_pup, buildins);
 	if (local_buildins != NULL)
-		pup_buildin_load(&pcb_pup, local_buildins);
-	pup_autoload_dir(&pcb_pup, NULL, NULL);
+		pup_buildin_load(&rnd_pup, local_buildins);
+	pup_autoload_dir(&rnd_pup, NULL, NULL);
 
 	rnd_conf_load_extra(NULL, NULL);
 	pcb_units_init();
@@ -389,7 +389,7 @@ void rnd_hidlib_uninit(void)
 	rnd_hid_uninit();
 	pcb_events_uninit();
 	rnd_conf_uninit();
-	pcb_plugin_uninit();
+	rnd_plugin_uninit();
 	rnd_actions_uninit();
 	rnd_dad_unit_uninit();
 }

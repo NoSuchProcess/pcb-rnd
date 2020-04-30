@@ -363,7 +363,7 @@ void pplg_uninit_export_fidocadj(void)
 
 int pplg_init_export_fidocadj(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	memset(&fidocadj_hid, 0, sizeof(rnd_hid_t));
 

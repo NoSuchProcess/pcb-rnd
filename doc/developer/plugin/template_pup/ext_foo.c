@@ -56,7 +56,7 @@ void pplg_uninit_ext_foo(void)
 
 int pplg_init_ext_foo(void)
 {
-	PCB_API_CHK_VER; /* for external plugins this is CRITICAL */
+	RND_API_CHK_VER; /* for external plugins this is CRITICAL */
 
 	RND_REGISTER_ACTIONS(ext_foo_action_list, ext_foo_cookie);
 

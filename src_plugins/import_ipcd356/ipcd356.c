@@ -490,12 +490,12 @@ int pplg_check_ver_import_ipcd356(int ver_needed) { return 0; }
 void pplg_uninit_import_ipcd356(void)
 {
 	rnd_remove_actions_by_cookie(ipcd356_cookie);
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ipcd356);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ipcd356);
 }
 
 int pplg_init_import_ipcd356(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	import_ipcd356.plugin_data = NULL;
@@ -509,7 +509,7 @@ int pplg_init_import_ipcd356(void)
 	import_ipcd356.all_filenames    = 1;
 	import_ipcd356.ext_exec         = 0;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ipcd356);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ipcd356);
 
 
 	RND_REGISTER_ACTIONS(import_ipcd356_action_list, ipcd356_cookie);

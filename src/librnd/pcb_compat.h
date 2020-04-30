@@ -1072,3 +1072,15 @@
 #define pcb_pixmap_hash_pixels rnd_pixmap_hash_pixels
 #define pcb_pixmap_eq_meta rnd_pixmap_eq_meta
 #define pcb_pixmap_eq_pixels rnd_pixmap_eq_pixels
+#define pcb_api_ver rnd_api_ver
+#define PCB_API_VER_MATCH RND_API_VER_MATCH
+#define PCB_API_CHK_VER RND_API_CHK_VER
+#define pcb_pup rnd_pup
+#define pcb_pup_paths rnd_pup_paths
+#define pcb_plugin_add_dir rnd_plugin_add_dir
+#define pcb_plugin_uninit rnd_plugin_uninit
+#define PCB_HOOK_CALL_DO RND_HOOK_CALL_DO
+#define PCB_HOOK_CALL RND_HOOK_CALL
+#define PCB_HOOK_CALL_ALL RND_HOOK_CALL_ALL
+#define PCB_HOOK_REGISTER RND_HOOK_REGISTER
+#define PCB_HOOK_UNREGISTER RND_HOOK_UNREGISTER

@@ -59,7 +59,7 @@ void pplg_uninit_exto_std(void)
 
 int pplg_init_exto_std(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	pcb_extobj_reg(&pcb_line_of_vias);
 	pcb_extobj_reg(&pcb_dimension);

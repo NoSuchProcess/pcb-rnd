@@ -588,6 +588,6 @@ void pplg_uninit_lib_vfs(void)
 
 int pplg_init_lib_vfs(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	return 0;
 }

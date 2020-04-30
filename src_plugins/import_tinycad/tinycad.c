@@ -252,12 +252,12 @@ int pplg_check_ver_import_tinycad(int ver_needed) { return 0; }
 void pplg_uninit_import_tinycad(void)
 {
 	rnd_remove_actions_by_cookie(tinycad_cookie);
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tinycad);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tinycad);
 }
 
 int pplg_init_import_tinycad(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	import_tinycad.plugin_data = NULL;
@@ -271,7 +271,7 @@ int pplg_init_import_tinycad(void)
 	import_tinycad.all_filenames    = 1;
 	import_tinycad.ext_exec         = 0;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tinycad);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tinycad);
 
 	RND_REGISTER_ACTIONS(tinycad_action_list, tinycad_cookie)
 	return 0;

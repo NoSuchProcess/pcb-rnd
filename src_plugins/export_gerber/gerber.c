@@ -1071,7 +1071,7 @@ void pplg_uninit_export_gerber(void)
 
 int pplg_init_export_gerber(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_gerber, field,isarray,type_name,cpath,cname,desc,flags);

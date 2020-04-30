@@ -36,7 +36,7 @@ void pplg_uninit_hid_gtk2_gl(void)
 
 int pplg_init_hid_gtk2_gl(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	ghid_glue_hid_init(&gtk2_gl_hid);
 

@@ -178,12 +178,12 @@ int pplg_check_ver_import_netlist(int ver_needed) { return 0; }
 
 void pplg_uninit_import_netlist(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_netlist);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_netlist);
 }
 
 int pplg_init_import_netlist(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	import_netlist.plugin_data = NULL;
@@ -197,7 +197,7 @@ int pplg_init_import_netlist(void)
 	import_netlist.all_filenames    = 1;
 	import_netlist.ext_exec         = 0;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_netlist);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_netlist);
 
 	return 0;
 }

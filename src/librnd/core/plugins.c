@@ -34,29 +34,29 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
 
-unsigned long pcb_api_ver = PCB_API_VER;
+unsigned long rnd_api_ver = PCB_API_VER;
 
-pup_context_t pcb_pup;
-char **pcb_pup_paths = NULL;
+pup_context_t rnd_pup;
+char **rnd_pup_paths = NULL;
 static int paths_used = 0, paths_alloced = 0;
 
-void pcb_plugin_add_dir(const char *dir)
+void rnd_plugin_add_dir(const char *dir)
 {
 	if (paths_used+1 >= paths_alloced) {
 		paths_alloced += 16;
-		pcb_pup_paths = realloc(pcb_pup_paths, sizeof(char *) * paths_alloced);
+		rnd_pup_paths = realloc(rnd_pup_paths, sizeof(char *) * paths_alloced);
 	}
-	pcb_pup_paths[paths_used] = rnd_strdup(dir);
+	rnd_pup_paths[paths_used] = rnd_strdup(dir);
 	paths_used++;
-	pcb_pup_paths[paths_used] = NULL;
+	rnd_pup_paths[paths_used] = NULL;
 }
 
-void pcb_plugin_uninit(void)
+void rnd_plugin_uninit(void)
 {
 	int n;
 	for(n = 0; n < paths_used; n++)
-		free(pcb_pup_paths[n]);
-	free(pcb_pup_paths);
-	pcb_pup_paths = NULL;
+		free(rnd_pup_paths[n]);
+	free(rnd_pup_paths);
+	rnd_pup_paths = NULL;
 }
 

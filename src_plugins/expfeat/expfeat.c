@@ -62,7 +62,7 @@ void pplg_uninit_expfeat(void)
 
 int pplg_init_expfeat(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(expfeat_action_list, expfeat_cookie)
 	return 0;
 }

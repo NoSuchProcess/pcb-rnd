@@ -91,12 +91,12 @@ int pplg_check_ver_import_net_cmd(int ver_needed) { return 0; }
 
 void pplg_uninit_import_net_cmd(void)
 {
-	PCB_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_net_cmd);
+	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_net_cmd);
 }
 
 int pplg_init_import_net_cmd(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	import_net_cmd.plugin_data = NULL;
@@ -110,7 +110,7 @@ int pplg_init_import_net_cmd(void)
 	import_net_cmd.all_filenames    = 0;
 	import_net_cmd.ext_exec         = 1;
 
-	PCB_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_net_cmd);
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_net_cmd);
 
 	return 0;
 }

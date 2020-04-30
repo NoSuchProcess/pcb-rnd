@@ -227,7 +227,7 @@ int pplg_init_acompnet(void)
 {
 	static rnd_color_t clr;
 
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	if (clr.str[0] != '#')
 		rnd_color_load_str(&clr, "#c09920");

@@ -56,12 +56,12 @@ int pplg_check_ver_io_mentor_cell(int ver_needed) { return 0; }
 void pplg_uninit_io_mentor_cell(void)
 {
 	rnd_remove_actions_by_cookie(mentor_cell_cookie);
-	PCB_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_mentor_cell);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_mentor_cell);
 }
 
 int pplg_init_io_mentor_cell(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 	/* register the IO hook */
 	io_mentor_cell.plugin_data = NULL;
@@ -81,7 +81,7 @@ int pplg_init_io_mentor_cell(void)
 	io_mentor_cell.mime_type = "application/x-mentor_cell";
 
 
-	PCB_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_mentor_cell);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_mentor_cell);
 
 	return 0;
 }

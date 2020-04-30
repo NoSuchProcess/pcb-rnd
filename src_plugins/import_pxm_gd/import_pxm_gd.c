@@ -132,7 +132,7 @@ void pplg_uninit_import_pxm_gd(void)
 
 int pplg_init_import_pxm_gd(void)
 {
-	PCB_API_CHK_VER;
+	RND_API_CHK_VER;
 
 #ifdef RND_HAVE_GDIMAGEPNG
 	rnd_pixmap_reg_import(&pxm_gd_png_imp, import_pxm_gd_cookie);
