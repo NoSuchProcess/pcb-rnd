@@ -1891,32 +1891,32 @@ static void draw_grid()
 		XSetForeground(display, grid_gc, grid_color);
 	}
 	if (pcbhl_conf.editor.view.flip_x) {
-		x2 = pcb_grid_fit(Px(0), ltf_hidlib->grid, ltf_hidlib->grid_ox);
-		x1 = pcb_grid_fit(Px(view_width), ltf_hidlib->grid, ltf_hidlib->grid_ox);
+		x2 = rnd_grid_fit(Px(0), ltf_hidlib->grid, ltf_hidlib->grid_ox);
+		x1 = rnd_grid_fit(Px(view_width), ltf_hidlib->grid, ltf_hidlib->grid_ox);
 		if (Vx(x2) < 0)
 			x2 -= ltf_hidlib->grid;
 		if (Vx(x1) >= view_width)
 			x1 += ltf_hidlib->grid;
 	}
 	else {
-		x1 = pcb_grid_fit(Px(0), ltf_hidlib->grid, ltf_hidlib->grid_ox);
-		x2 = pcb_grid_fit(Px(view_width), ltf_hidlib->grid, ltf_hidlib->grid_ox);
+		x1 = rnd_grid_fit(Px(0), ltf_hidlib->grid, ltf_hidlib->grid_ox);
+		x2 = rnd_grid_fit(Px(view_width), ltf_hidlib->grid, ltf_hidlib->grid_ox);
 		if (Vx(x1) < 0)
 			x1 += ltf_hidlib->grid;
 		if (Vx(x2) >= view_width)
 			x2 -= ltf_hidlib->grid;
 	}
 	if (pcbhl_conf.editor.view.flip_y) {
-		y2 = pcb_grid_fit(Py(0), ltf_hidlib->grid, ltf_hidlib->grid_oy);
-		y1 = pcb_grid_fit(Py(view_height), ltf_hidlib->grid, ltf_hidlib->grid_oy);
+		y2 = rnd_grid_fit(Py(0), ltf_hidlib->grid, ltf_hidlib->grid_oy);
+		y1 = rnd_grid_fit(Py(view_height), ltf_hidlib->grid, ltf_hidlib->grid_oy);
 		if (Vy(y2) < 0)
 			y2 -= ltf_hidlib->grid;
 		if (Vy(y1) >= view_height)
 			y1 += ltf_hidlib->grid;
 	}
 	else {
-		y1 = pcb_grid_fit(Py(0), ltf_hidlib->grid, ltf_hidlib->grid_oy);
-		y2 = pcb_grid_fit(Py(view_height), ltf_hidlib->grid, ltf_hidlib->grid_oy);
+		y1 = rnd_grid_fit(Py(0), ltf_hidlib->grid, ltf_hidlib->grid_oy);
+		y2 = rnd_grid_fit(Py(view_height), ltf_hidlib->grid, ltf_hidlib->grid_oy);
 		if (Vy(y1) < 0)
 			y1 += ltf_hidlib->grid;
 		if (Vy(y2) >= view_height)

@@ -256,23 +256,23 @@ static fgw_error_t pcb_act_grid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_IRES(0);
 
 	if (strcmp(op, "set") == 0) {
-		pcb_grid_t dst;
+		rnd_grid_t dst;
 		RND_PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
-		if (!pcb_grid_parse(&dst, a))
+		if (!rnd_grid_parse(&dst, a))
 			RND_ACT_FAIL(grid);
-		pcb_grid_set(RND_ACT_HIDLIB, &dst);
-		pcb_grid_free(&dst);
+		rnd_grid_set(RND_ACT_HIDLIB, &dst);
+		rnd_grid_free(&dst);
 	}
 	else if ((strcmp(op, "up") == 0) || (strcmp(op, "+") == 0))
-		pcb_grid_list_step(RND_ACT_HIDLIB, +1);
+		rnd_grid_list_step(RND_ACT_HIDLIB, +1);
 	else if ((strcmp(op, "down") == 0) || (strcmp(op, "-") == 0))
-		pcb_grid_list_step(RND_ACT_HIDLIB, -1);
+		rnd_grid_list_step(RND_ACT_HIDLIB, -1);
 	else if (strcmp(op, "idx") == 0) {
 		RND_PCB_ACT_CONVARG(2, FGW_STR, grid, a = argv[2].val.str);
-		pcb_grid_list_jump(RND_ACT_HIDLIB, atoi(a));
+		rnd_grid_list_jump(RND_ACT_HIDLIB, atoi(a));
 	}
 	else if (op[0] == '#') {
-		pcb_grid_list_jump(RND_ACT_HIDLIB, atoi(op+1));
+		rnd_grid_list_jump(RND_ACT_HIDLIB, atoi(op+1));
 	}
 	else
 		RND_ACT_FAIL(grid);

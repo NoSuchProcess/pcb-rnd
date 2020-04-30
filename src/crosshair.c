@@ -877,8 +877,8 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	PCB->hidlib.ch_x = pcb_crosshair.X = PCB_CLAMP(X, -PCB->hidlib.size_x/2, PCB->hidlib.size_x*3/2);
 	PCB->hidlib.ch_y = pcb_crosshair.Y = PCB_CLAMP(Y, -PCB->hidlib.size_y/2, PCB->hidlib.size_y*3/2);
 
-	nearest_grid_x = pcb_grid_fit(pcb_crosshair.X, PCB->hidlib.grid, PCB->hidlib.grid_ox);
-	nearest_grid_y = pcb_grid_fit(pcb_crosshair.Y, PCB->hidlib.grid, PCB->hidlib.grid_oy);
+	nearest_grid_x = rnd_grid_fit(pcb_crosshair.X, PCB->hidlib.grid, PCB->hidlib.grid_ox);
+	nearest_grid_y = rnd_grid_fit(pcb_crosshair.Y, PCB->hidlib.grid, PCB->hidlib.grid_oy);
 
 	if (pcb_marked.status && conf_core.editor.orthogonal_moves) {
 		rnd_coord_t dx = pcb_crosshair.X - hidlib->tool_grabbed.X;

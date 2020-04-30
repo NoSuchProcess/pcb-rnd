@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef PCB_GRID_H
-#define PCB_GRID_H
+#ifndef RND_GRID_H
+#define RND_GRID_H
 
 #include <genvector/gds_char.h>
 #include <librnd/core/pcb_bool.h>
@@ -45,34 +45,34 @@ typedef struct {
 	rnd_coord_t size;
 	rnd_coord_t ox, oy;
 	const rnd_unit_t *unit; /* force switching to unit if not NULL */
-} pcb_grid_t;
+} rnd_grid_t;
 
 /* Returns the nearest grid-point to the given coord x */
-rnd_coord_t pcb_grid_fit(rnd_coord_t x, rnd_coord_t grid_spacing, rnd_coord_t grid_offset);
+rnd_coord_t rnd_grid_fit(rnd_coord_t x, rnd_coord_t grid_spacing, rnd_coord_t grid_offset);
 
 /* Parse packed string format src into dst; allocat dst->name on success */
-pcb_bool_t pcb_grid_parse(pcb_grid_t *dst, const char *src);
+pcb_bool_t rnd_grid_parse(rnd_grid_t *dst, const char *src);
 
 /* Free all allocated fields of a grid struct */
-void pcb_grid_free(pcb_grid_t *dst);
+void rnd_grid_free(rnd_grid_t *dst);
 
 /* Convert src into packed string format */
-pcb_bool_t pcb_grid_append_print(gds_t *dst, const pcb_grid_t *src);
-char *pcb_grid_print(const pcb_grid_t *src);
+pcb_bool_t rnd_grid_append_print(gds_t *dst, const rnd_grid_t *src);
+char *rnd_grid_print(const rnd_grid_t *src);
 
 /* Apply grid settings from src to the pcb */
-void pcb_grid_set(rnd_hidlib_t *hidlib, const pcb_grid_t *src);
+void rnd_grid_set(rnd_hidlib_t *hidlib, const rnd_grid_t *src);
 
 /* Jump to grid index dst (clamped); absolute set */
-pcb_bool_t pcb_grid_list_jump(rnd_hidlib_t *hidlib, int dst);
+pcb_bool_t rnd_grid_list_jump(rnd_hidlib_t *hidlib, int dst);
 
 /* Step stp steps (can be 0) on the grids list and set the resulting grid; relative set */
-pcb_bool_t pcb_grid_list_step(rnd_hidlib_t *hidlib, int stp);
+pcb_bool_t rnd_grid_list_step(rnd_hidlib_t *hidlib, int stp);
 
 /* invalidate the grid index; call this when changing the grid settings */
-void pcb_grid_inval(void);
+void rnd_grid_inval(void);
 
 /* Reinstall grid menus */
-void pcb_grid_install_menu(void);
+void rnd_grid_install_menu(void);
 
 #endif

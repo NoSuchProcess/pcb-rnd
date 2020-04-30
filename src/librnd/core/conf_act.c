@@ -305,7 +305,7 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rnd_message(RND_MSG_ERROR, "SetGrid: Invalid multiplier/divider for grid set: needs to be a positive number\n");
 			return 1;
 		}
-		pcb_grid_inval();
+		rnd_grid_inval();
 		if (val[0] == '*')
 			pcb_hidlib_set_grid(RND_ACT_HIDLIB, rnd_round(RND_ACT_HIDLIB->grid * d), pcb_false, 0, 0);
 		else
@@ -315,7 +315,7 @@ static fgw_error_t pcb_act_SetGrid(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	value = pcb_get_value(val, units, &absolute, NULL);
 
-	pcb_grid_inval();
+	rnd_grid_inval();
 	if (absolute)
 		pcb_hidlib_set_grid(RND_ACT_HIDLIB, value, pcb_false, 0, 0);
 	else {

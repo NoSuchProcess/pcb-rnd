@@ -230,10 +230,10 @@ void hidgl_draw_grid(rnd_hidlib_t *hidlib, rnd_rnd_box_t *drawn_area)
 	rnd_coord_t x1, y1, x2, y2, n, i;
 	double x, y;
 
-	x1 = pcb_grid_fit(MAX(0, drawn_area->X1), hidlib->grid, hidlib->grid_ox);
-	y1 = pcb_grid_fit(MAX(0, drawn_area->Y1), hidlib->grid, hidlib->grid_oy);
-	x2 = pcb_grid_fit(MIN(hidlib->size_x, drawn_area->X2), hidlib->grid, hidlib->grid_ox);
-	y2 = pcb_grid_fit(MIN(hidlib->size_y, drawn_area->Y2), hidlib->grid, hidlib->grid_oy);
+	x1 = rnd_grid_fit(MAX(0, drawn_area->X1), hidlib->grid, hidlib->grid_ox);
+	y1 = rnd_grid_fit(MAX(0, drawn_area->Y1), hidlib->grid, hidlib->grid_oy);
+	x2 = rnd_grid_fit(MIN(hidlib->size_x, drawn_area->X2), hidlib->grid, hidlib->grid_ox);
+	y2 = rnd_grid_fit(MIN(hidlib->size_y, drawn_area->Y2), hidlib->grid, hidlib->grid_oy);
 
 	if (x1 > x2) {
 		rnd_coord_t tmp = x1;

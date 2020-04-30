@@ -145,8 +145,8 @@ void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t 
 		get_grid_lock_coordinates(pcb_crosshair.AttachedObject.Type,
 															pcb_crosshair.AttachedObject.Ptr1,
 															pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, &mx, &my);
-		mx = pcb_grid_fit(mx, hl->grid, hl->grid_ox) - mx;
-		my = pcb_grid_fit(my, hl->grid, hl->grid_oy) - my;
+		mx = rnd_grid_fit(mx, hl->grid, hl->grid_ox) - mx;
+		my = rnd_grid_fit(my, hl->grid, hl->grid_oy) - my;
 	}
 	pcb_crosshair.AttachedObject.X = PlaceX - mx;
 	pcb_crosshair.AttachedObject.Y = PlaceY - my;

@@ -85,7 +85,7 @@ static void grid_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, c
 
 }
 
-void pcb_grid_install_menu(void)
+void rnd_grid_install_menu(void)
 {
 	pcb_hid_cfg_map_anchor_menus(ANCH, grid_install_menu, NULL);
 }
@@ -96,7 +96,7 @@ void pcb_grid_update_conf(rnd_conf_native_t *cfg, int arr_idx)
 {
 	if (grid_lock) return;
 	grid_lock++;
-	pcb_grid_install_menu();
+	rnd_grid_install_menu();
 	grid_lock--;
 }
 
@@ -104,11 +104,11 @@ void pcb_grid_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_eve
 {
 	if (grid_lock) return;
 	grid_lock++;
-	pcb_grid_install_menu();
+	rnd_grid_install_menu();
 
 	/* to get the right menu checked */
 	if ((grids_idx.nat != NULL) && (grids_idx.nat->val.integer[0] >= 0))
-		pcb_grid_list_step(hidlib, 0);
+		rnd_grid_list_step(hidlib, 0);
 	grid_lock--;
 }
 

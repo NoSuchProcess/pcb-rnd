@@ -519,3 +519,14 @@
 #define PCB_MAX_POLYGON_POINT_DISTANCE RND_MAX_POLYGON_POINT_DISTANCE
 #define PCB_MAX_NETLIST_LINE_LENGTH RND_MAX_NETLIST_LINE_LENGTH
 #define PCB_MIN_GRID_DISTANCE RND_MIN_GRID_DISTANCE
+#define pcb_grid_t rnd_grid_t
+#define pcb_grid_fit rnd_grid_fit
+#define pcb_grid_parse rnd_grid_parse
+#define pcb_grid_free rnd_grid_free
+#define pcb_grid_append_print rnd_grid_append_print
+#define pcb_grid_print rnd_grid_print
+#define pcb_grid_set rnd_grid_set
+#define pcb_grid_list_jump rnd_grid_list_jump
+#define pcb_grid_list_step rnd_grid_list_step
+#define pcb_grid_inval rnd_grid_inval
+#define pcb_grid_install_menu rnd_grid_install_menu

@@ -294,7 +294,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
 					pcb_hid_notify_crosshair_change(RND_ACT_HIDLIB, pcb_true); /* first notify was in MoveCrosshairAbs */
 				pcb_hidlib_set_grid(RND_ACT_HIDLIB, oldGrid, pcb_true, pcb_crosshair.X, pcb_crosshair.Y);
-				pcb_grid_inval();
+				rnd_grid_inval();
 			}
 			break;
 
