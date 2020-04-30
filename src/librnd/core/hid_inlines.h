@@ -33,11 +33,11 @@
 RND_INLINE rnd_hid_gc_t pcb_hid_make_gc(void)
 {
 	rnd_hid_gc_t res;
-	pcb_core_gc_t *hc;
+	rnd_core_gc_t *hc;
 	res = pcb_render->make_gc(pcb_gui);
-	hc = (pcb_core_gc_t *)res; /* assumes first field is pcb_core_gc_t */
+	hc = (rnd_core_gc_t *)res; /* assumes first field is rnd_core_gc_t */
 	hc->width = RND_MAX_COORD;
-	hc->cap = pcb_cap_invalid;
+	hc->cap = rnd_cap_invalid;
 	hc->xor = 0;
 	hc->faded = 0;
 	hc->hid = pcb_gui;
@@ -49,9 +49,9 @@ RND_INLINE void pcb_hid_destroy_gc(rnd_hid_gc_t gc)
 	pcb_render->destroy_gc(gc);
 }
 
-RND_INLINE void pcb_hid_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+RND_INLINE void pcb_hid_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
-	pcb_core_gc_t *hc = (pcb_core_gc_t *)gc;
+	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->cap != style) {
 		hc->cap = style;
 		pcb_render->set_line_cap(gc, style);
@@ -60,7 +60,7 @@ RND_INLINE void pcb_hid_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
 
 RND_INLINE void pcb_hid_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
-	pcb_core_gc_t *hc = (pcb_core_gc_t *)gc;
+	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->width != width) {
 		hc->width = width;
 		pcb_render->set_line_width(gc, width);
@@ -69,7 +69,7 @@ RND_INLINE void pcb_hid_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 
 RND_INLINE void pcb_hid_set_draw_xor(rnd_hid_gc_t gc, int xor)
 {
-	pcb_core_gc_t *hc = (pcb_core_gc_t *)gc;
+	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->xor != xor) {
 		hc->xor = xor;
 		pcb_render->set_draw_xor(gc, xor);
@@ -78,7 +78,7 @@ RND_INLINE void pcb_hid_set_draw_xor(rnd_hid_gc_t gc, int xor)
 
 RND_INLINE void pcb_hid_set_draw_faded(rnd_hid_gc_t gc, int faded)
 {
-	pcb_core_gc_t *hc = (pcb_core_gc_t *)gc;
+	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->faded != faded) {
 		hc->faded = faded;
 		pcb_render->set_draw_faded(gc, faded);

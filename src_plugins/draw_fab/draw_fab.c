@@ -225,7 +225,7 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 		yoff -= (4 - ds) * TEXT_LINE;
 	}
 
-	pcb_hid_set_line_cap(gc, pcb_cap_round);
+	pcb_hid_set_line_cap(gc, rnd_cap_round);
 	pcb_hid_set_line_width(gc, FAB_LINE_W);
 
 	for (n = AllDrills->DrillN - 1; n >= 0; n--) {

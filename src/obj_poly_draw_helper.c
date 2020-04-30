@@ -98,7 +98,7 @@ static void fill_contour(rnd_hid_gc_t gc, pcb_pline_t * pl)
 
 	if (i < 3) {
 		pcb_hid_set_line_width(gc, PCB_MM_TO_COORD(0.01));
-		pcb_hid_set_line_cap(gc, pcb_cap_round);
+		pcb_hid_set_line_cap(gc, rnd_cap_round);
 		pcb_render->draw_line(gc, last_x, last_y, this_x, this_y);
 	}
 	else
@@ -114,7 +114,7 @@ static void thindraw_contour(rnd_hid_gc_t gc, pcb_pline_t * pl)
 
 
 	pcb_hid_set_line_width(gc, 0);
-	pcb_hid_set_line_cap(gc, pcb_cap_round);
+	pcb_hid_set_line_cap(gc, rnd_cap_round);
 
 	/* If the contour is round, use an arc drawing routine. */
 	if (pl->is_round) {

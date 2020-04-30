@@ -122,7 +122,7 @@ struct pcb_hid_preview_s {
 	void *user_ctx;
 	void (*user_free_cb)(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx);
 	void (*user_expose_cb)(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
-	rnd_bool (*user_mouse_cb)(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y); /* returns true if redraw is needed */
+	rnd_bool (*user_mouse_cb)(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y); /* returns true if redraw is needed */
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;

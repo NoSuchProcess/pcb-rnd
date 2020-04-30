@@ -106,7 +106,7 @@ typedef struct {
 	int tabs; /* number of option tabs, including the dummy 0th tab */
 	int wfmt, wguess, wguess_err, wopts;
 	int pick, num_fmts;
-	pcb_hidval_t timer;
+	rnd_hidval_t timer;
 	char last_ext[32];
 	unsigned fmt_chg_lock:1;
 	unsigned timer_active:1;
@@ -222,7 +222,7 @@ static void save_guess_format(save_t *save, const char *ext)
 	pcb_gui->attr_dlg_widget_hide(save->fmtsub->dlg_hid_ctx, save->wguess_err, 0);
 }
 
-static void save_timer(pcb_hidval_t user_data)
+static void save_timer(rnd_hidval_t user_data)
 {
 	save_t *save = user_data.ptr;
 
@@ -394,7 +394,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char **extensions_param = NULL;
 	int num_fmts, fmt, *fmt_param = NULL;
 	save_t save;
-	pcb_hidval_t timer_ctx;
+	rnd_hidval_t timer_ctx;
 	const char *default_pattern = NULL;
 	pcb_plug_iot_t list_iot;
 	pcb_io_list_ext_t list_ext;

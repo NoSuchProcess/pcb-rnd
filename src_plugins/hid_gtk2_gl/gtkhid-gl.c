@@ -54,7 +54,7 @@ typedef struct render_priv_s {
 
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
+	rnd_core_gc_t core_gc;
 	rnd_hid_t *me_pointer;
 
 	const rnd_color_t *pcolor;
@@ -402,7 +402,7 @@ void ghid_gl_set_alpha_mult(rnd_hid_gc_t gc, double alpha_mult)
 	set_gl_color_for_gc(gc);
 }
 
-void ghid_gl_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+void ghid_gl_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 }
 

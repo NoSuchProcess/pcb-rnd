@@ -1058,7 +1058,7 @@ static void pcb_crosshair_gui_init(rnd_hidlib_t *hidlib, void *user_data, int ar
 
 	pcb_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
 	pcb_hid_set_draw_xor(pcb_crosshair.GC, 1);
-	pcb_hid_set_line_cap(pcb_crosshair.GC, pcb_cap_round);
+	pcb_hid_set_line_cap(pcb_crosshair.GC, rnd_cap_round);
 	pcb_hid_set_line_width(pcb_crosshair.GC, 1);
 }
 

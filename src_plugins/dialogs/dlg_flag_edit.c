@@ -149,7 +149,7 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		PCB_DAD_NEW("flags", dlg, "Edit flags", &ctx, pcb_true, NULL);
 
 		val.func = fe_attr_chg;
-		pcb_gui->attr_dlg_property(dlg_hid_ctx, PCB_HATP_GLOBAL_CALLBACK, &val);
+		pcb_gui->attr_dlg_property(dlg_hid_ctx, RND_HATP_GLOBAL_CALLBACK, &val);
 
 		PCB_DAD_RUN(dlg);
 

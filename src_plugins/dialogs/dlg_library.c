@@ -64,7 +64,7 @@ typedef struct{
 	pcb_subc_t *sc;
 	pcb_board_t *prev_pcb; /* sc must be in here so buffer changes don't ruin it */
 
-	pcb_hidval_t timer;
+	rnd_hidval_t timer;
 	int timer_active;
 
  /* for the parametric */
@@ -193,7 +193,7 @@ static void timed_update_preview_(library_ctx_t *ctx, const char *otext)
 	pcb_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 0);
 }
 
-static void timed_update_preview_cb(pcb_hidval_t user_data)
+static void timed_update_preview_cb(rnd_hidval_t user_data)
 {
 	library_ctx_t *ctx = user_data.ptr;
 	const char *otext = ctx->dlg[ctx->wfilt].val.str;
@@ -210,7 +210,7 @@ static void timed_update_preview(library_ctx_t *ctx, int active)
 	}
 
 	if (active) {
-		pcb_hidval_t user_data;
+		rnd_hidval_t user_data;
 		user_data.ptr = ctx;
 		ctx->timer = pcb_gui->add_timer(pcb_gui, timed_update_preview_cb, 500, user_data);
 		ctx->timer_active = 1;
@@ -633,7 +633,7 @@ static void library_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 }
 
 
-static rnd_bool library_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool library_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_false;
 }

@@ -31,7 +31,7 @@ static void batch_end(void);
    non-GUI needs.  */
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
+	rnd_core_gc_t core_gc;
 } rnd_hid_gc_s;
 
 static rnd_export_opt_t *batch_get_export_options(rnd_hid_t *hid, int *n_ret)
@@ -176,7 +176,7 @@ static int batch_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const 
 
 static rnd_hid_gc_t batch_make_gc(rnd_hid_t *hid)
 {
-	static pcb_core_gc_t hc;
+	static rnd_core_gc_t hc;
 	return (rnd_hid_gc_t)&hc;
 }
 
@@ -188,7 +188,7 @@ static void batch_set_color(rnd_hid_gc_t gc, const rnd_color_t *name)
 {
 }
 
-static void batch_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void batch_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 }
 
@@ -255,27 +255,27 @@ static void batch_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, in
 {
 }
 
-static pcb_hidval_t batch_add_timer(rnd_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+static rnd_hidval_t batch_add_timer(rnd_hid_t *hid, void (*func)(rnd_hidval_t user_data), unsigned long milliseconds, rnd_hidval_t user_data)
 {
-	pcb_hidval_t rv;
+	rnd_hidval_t rv;
 	rv.lval = 0;
 	return rv;
 }
 
-static void batch_stop_timer(rnd_hid_t *hid, pcb_hidval_t timer)
+static void batch_stop_timer(rnd_hid_t *hid, rnd_hidval_t timer)
 {
 }
 
-pcb_hidval_t
-batch_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
-								 pcb_hidval_t user_data)
+rnd_hidval_t
+batch_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func) (rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data),
+								 rnd_hidval_t user_data)
 {
-	pcb_hidval_t ret;
+	rnd_hidval_t ret;
 	ret.ptr = NULL;
 	return ret;
 }
 
-void batch_unwatch_file(rnd_hid_t *hid, pcb_hidval_t data)
+void batch_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
 {
 }
 

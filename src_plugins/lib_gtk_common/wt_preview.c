@@ -325,7 +325,7 @@ static gboolean button_press_(GtkWidget *w, pcb_hid_cfg_mod_t btn)
 	case PCB_MB_LEFT:
 		if (preview->mouse_cb != NULL) {
 /*				pcb_printf("bp %mm %mm\n", cx, cy); */
-			if (preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_PRESS, cx, cy))
+			if (preview->mouse_cb(w, draw_data, RND_HID_MOUSE_PRESS, cx, cy))
 				gtk_widget_queue_draw(w);
 		}
 		break;
@@ -411,13 +411,13 @@ static gboolean preview_button_release_cb(GtkWidget *w, GdkEventButton *ev, gpoi
 		preview->view.panning = 0;
 		break;
 	case PCB_MB_RIGHT:
-		if ((preview->mouse_cb != NULL) && (preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_POPUP, cx, cy)))
+		if ((preview->mouse_cb != NULL) && (preview->mouse_cb(w, draw_data, RND_HID_MOUSE_POPUP, cx, cy)))
 			gtk_widget_queue_draw(w);
 		break;
 	case PCB_MB_LEFT:
 		if (preview->mouse_cb != NULL) {
 /*				pcb_printf("br %mm %mm\n", cx, cy); */
-			if (preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_RELEASE, cx, cy))
+			if (preview->mouse_cb(w, draw_data, RND_HID_MOUSE_RELEASE, cx, cy))
 				gtk_widget_queue_draw(w);
 		}
 		break;
@@ -455,7 +455,7 @@ static gboolean preview_motion_cb(GtkWidget *w, GdkEventMotion *ev, gpointer dat
 		gtk_widget_queue_draw(w);
 	}
 	else if (preview->mouse_cb != NULL) {
-		if (preview->mouse_cb(w, draw_data, PCB_HID_MOUSE_MOTION, cx, cy))
+		if (preview->mouse_cb(w, draw_data, RND_HID_MOUSE_MOTION, cx, cy))
 			gtk_widget_queue_draw(w);
 	}
 

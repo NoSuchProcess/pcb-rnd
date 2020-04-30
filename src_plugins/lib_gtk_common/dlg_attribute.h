@@ -7,7 +7,7 @@ int ghid_attr_dlg_run(void *hid_ctx);
 void ghid_attr_dlg_raise(void *hid_ctx);
 void ghid_attr_dlg_close(void *hid_ctx);
 void ghid_attr_dlg_free(void *hid_ctx);
-void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val);
+void ghid_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val);
 
 int ghid_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled);
 int ghid_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide);

@@ -216,7 +216,7 @@ static void prop_prv_expose_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *p
 }
 
 
-static rnd_bool prop_prv_mouse_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool prop_prv_mouse_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_false; /* don't redraw */
 }

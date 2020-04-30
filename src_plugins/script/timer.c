@@ -42,7 +42,7 @@ vtp0_t timers;
 int timer_running = 0;
 
 static void start_timer(void);
-static void timer_cb(pcb_hidval_t hv)
+static void timer_cb(rnd_hidval_t hv)
 {
 	long n, len;
 	double now;
@@ -109,7 +109,7 @@ static void timer_cb(pcb_hidval_t hv)
 
 static void start_timer(void)
 {
-	static pcb_hidval_t hv;
+	static rnd_hidval_t hv;
 	timer_running = 1;
 	pcb_gui->add_timer(pcb_gui, timer_cb, 100, hv);
 }

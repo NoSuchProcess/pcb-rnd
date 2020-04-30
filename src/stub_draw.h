@@ -42,10 +42,10 @@ extern void (*pcb_stub_draw_fab)(pcb_draw_info_t *info, rnd_hid_gc_t gc, const r
 
 /* csect */
 extern void (*pcb_stub_draw_csect)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
-extern rnd_bool (*pcb_stub_draw_csect_mouse_ev)(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
+extern rnd_bool (*pcb_stub_draw_csect_mouse_ev)(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
 
 /* fontsel */
 extern void (*pcb_stub_draw_fontsel)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt);
-extern rnd_bool (*pcb_stub_draw_fontsel_mouse_ev)(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt);
+extern rnd_bool (*pcb_stub_draw_fontsel_mouse_ev)(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt);
 
 #endif

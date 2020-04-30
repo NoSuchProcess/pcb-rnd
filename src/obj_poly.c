@@ -1244,7 +1244,7 @@ void pcb_poly_draw_annotation(pcb_draw_info_t *info, pcb_poly_t *poly)
 		pcb_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
 
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
-	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+	pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 
 	if (poly->HoleIndexN > 0)
 		np = poly->HoleIndex[0];
@@ -1348,7 +1348,7 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 			int i;
 			pcb_dhlp_fill_pcb_polygon(pcb_draw_out.active_padGC, polygon, info->drawn_area);
 			head = polygon->Clipped->contours->head;
-			pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
+			pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
 			for(n = head, i = 0; (n != head) || (i == 0); n = n->next, i++) {
 				rnd_coord_t x, y, r;
 				x = (n->prev->point[0] + n->point[0] + n->next->point[0]) / 3;
@@ -1357,7 +1357,7 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 TODO("subc: check if x;y is within the poly, but use a cheaper method than the official")
 				r = PCB_DRAW_TERM_GFX_WIDTH;
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, r);
-				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
+				pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
 				pcb_render->draw_line(pcb_draw_out.fgGC, x, y, x, y);
 			}
 		}

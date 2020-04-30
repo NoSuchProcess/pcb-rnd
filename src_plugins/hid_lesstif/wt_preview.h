@@ -16,7 +16,7 @@ typedef struct pcb_ltf_preview_s {
 	int v_width, v_height;       /* widget dimensions in pixels */
 
 	rnd_hid_expose_ctx_t ctx;
-	rnd_bool (*mouse_ev)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
+	rnd_bool (*mouse_ev)(void *widget, void *draw_data, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
 	void (*pre_close)(struct pcb_ltf_preview_s *pd);
 	pcb_hid_expose_t overlay_draw;
 	unsigned resized:1;

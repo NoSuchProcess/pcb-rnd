@@ -302,7 +302,7 @@ static void netlist_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, 
 	}
 }
 
-static rnd_bool netlist_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool netlist_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_false;
 }

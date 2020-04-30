@@ -66,9 +66,9 @@ const char *openscad_cookie = "openscad HID";
 
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
+	rnd_core_gc_t core_gc;
 	rnd_hid_t *me_pointer;
-	pcb_cap_style_t cap;
+	rnd_cap_style_t cap;
 	int width;
 } rnd_hid_gc_s;
 
@@ -453,7 +453,7 @@ static void openscad_set_color(rnd_hid_gc_t gc, const rnd_color_t *name)
 {
 }
 
-static void openscad_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void openscad_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -503,7 +503,7 @@ static void openscad_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	length = rnd_distance(x1, y1, x2, y2);
 	angle = atan2((double)y2-y1, (double)x2-x1);
 
-	if (gc->cap == pcb_cap_square)
+	if (gc->cap == rnd_cap_square)
 		cap_style = "sc";
 	else
 		cap_style = "rc";

@@ -1141,7 +1141,7 @@ RND_INLINE int draw_text_cheap(pcb_font_t *font, pcb_xform_mx_t mx, const unsign
 			}
 			else {
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
-				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
+				pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
 				cheap_text_line(pcb_draw_out.fgGC, mx, 0, h/2, w, h/2, 0, 0);
 			}
 			return 1;
@@ -1157,7 +1157,7 @@ RND_INLINE int draw_text_cheap(pcb_font_t *font, pcb_xform_mx_t mx, const unsign
 			else {
 				h /= 4;
 				pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
-				pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
+				pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
 				cheap_text_line(pcb_draw_out.fgGC, mx, 0, h,   w, h,   0, 0);
 				cheap_text_line(pcb_draw_out.fgGC, mx, 0, h,   w, h*3, 0, 0);
 				cheap_text_line(pcb_draw_out.fgGC, mx, 0, h*3, w, h*3, 0, 0);

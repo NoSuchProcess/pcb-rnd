@@ -221,9 +221,9 @@ static void layer_install_menu_keys(void)
 }
 
 static int layer_menu_install_timer_active = 0;
-static pcb_hidval_t layer_menu_install_timer;
+static rnd_hidval_t layer_menu_install_timer;
 
-static void layer_install_menu_cb(pcb_hidval_t user_data)
+static void layer_install_menu_cb(rnd_hidval_t user_data)
 {
 	ly_ctx_t ctx;
 
@@ -241,7 +241,7 @@ static void layer_install_menu_cb(pcb_hidval_t user_data)
 
 static void layer_install_menu(void)
 {
-	pcb_hidval_t timerdata;
+	rnd_hidval_t timerdata;
 
 	if ((pcb_gui == NULL) || (!pcb_gui->gui))
 		return;
@@ -272,9 +272,9 @@ void pcb_layer_menu_vis_update_ev(rnd_hidlib_t *hidlib, void *user_data, int arg
 
 
 static int layer_menu_key_timer_active = 0;
-static pcb_hidval_t layer_menu_key_timer;
+static rnd_hidval_t layer_menu_key_timer;
 
-static void timed_layer_menu_key_update_cb(pcb_hidval_t user_data)
+static void timed_layer_menu_key_update_cb(rnd_hidval_t user_data)
 {
 /*	rnd_trace("************ layer key update timer!\n");*/
 	layer_install_menu_keys();
@@ -284,7 +284,7 @@ static void timed_layer_menu_key_update_cb(pcb_hidval_t user_data)
 
 void pcb_layer_menu_key_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	pcb_hidval_t timerdata;
+	rnd_hidval_t timerdata;
 
 /*	rnd_trace("************ layer key update ev!\n");*/
 

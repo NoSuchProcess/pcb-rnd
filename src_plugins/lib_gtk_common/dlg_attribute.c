@@ -58,7 +58,7 @@ typedef struct {
 	int n_attrs;
 	GtkWidget *dialog;
 	int close_cb_called;
-	rnd_hid_attr_val_t property[PCB_HATP_max];
+	rnd_hid_attr_val_t property[RND_HATP_max];
 	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
 	char *id;
 	gulong destroy_handler;
@@ -70,8 +70,8 @@ typedef struct {
 
 #define change_cb(ctx, dst) \
 	do { \
-		if (ctx->property[PCB_HATP_GLOBAL_CALLBACK].func != NULL) \
-			ctx->property[PCB_HATP_GLOBAL_CALLBACK].func(ctx, ctx->caller_data, dst); \
+		if (ctx->property[RND_HATP_GLOBAL_CALLBACK].func != NULL) \
+			ctx->property[RND_HATP_GLOBAL_CALLBACK].func(ctx, ctx->caller_data, dst); \
 		if (dst->change_cb != NULL) \
 			dst->change_cb(ctx, ctx->caller_data, dst); \
 	} while(0) \
@@ -917,11 +917,11 @@ void ghid_attr_dlg_free(void *hid_ctx)
 	free(ctx);
 }
 
-void ghid_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val)
+void ghid_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val)
 {
 	attr_dlg_t *ctx = hid_ctx;
 
-	if ((prop >= 0) && (prop < PCB_HATP_max))
+	if ((prop >= 0) && (prop < RND_HATP_max))
 		ctx->property[prop] = *val;
 }
 

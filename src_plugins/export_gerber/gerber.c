@@ -137,8 +137,8 @@ static aperture_list_t *set_layer_aperture_list(int layer_idx, int aper_per_file
 static rnd_hid_t gerber_hid;
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
-	pcb_cap_style_t cap;
+	rnd_core_gc_t core_gc;
+	rnd_cap_style_t cap;
 	int width;
 	int color;
 	int erase;
@@ -622,7 +622,7 @@ emit_outline:
 static rnd_hid_gc_t gerber_make_gc(rnd_hid_t *hid)
 {
 	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(1, sizeof(*rv));
-	rv->cap = pcb_cap_round;
+	rv->cap = rnd_cap_round;
 	return rv;
 }
 
@@ -652,7 +652,7 @@ static void gerber_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	}
 }
 
-static void gerber_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void gerber_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -683,14 +683,14 @@ static void use_gc(rnd_hid_gc_t gc, int radius)
 
 	if (radius) {
 		radius *= 2;
-		if (radius != linewidth || lastcap != pcb_cap_round) {
+		if (radius != linewidth || lastcap != rnd_cap_round) {
 			aperture_t *aptr = find_aperture(curr_aptr_list, radius, ROUND);
 			if (aptr == NULL)
 				pcb_fprintf(stderr, "error: aperture for radius %$mS type ROUND is null\n", radius);
 			else if (f != NULL)
 				fprintf(f, "G54D%d*", aptr->dCode);
 			linewidth = radius;
-			lastcap = pcb_cap_round;
+			lastcap = rnd_cap_round;
 		}
 	}
 	else if (linewidth != gc->width || lastcap != gc->cap) {
@@ -700,10 +700,10 @@ static void use_gc(rnd_hid_gc_t gc, int radius)
 		linewidth = gc->width;
 		lastcap = gc->cap;
 		switch (gc->cap) {
-		case pcb_cap_round:
+		case rnd_cap_round:
 			shape = ROUND;
 			break;
-		case pcb_cap_square:
+		case rnd_cap_square:
 			shape = SQUARE;
 			break;
 		default:
@@ -786,7 +786,7 @@ static void gerber_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rn
 			return;
 	}
 
-	if (x1 != x2 && y1 != y2 && gc->cap == pcb_cap_square) {
+	if (x1 != x2 && y1 != y2 && gc->cap == rnd_cap_square) {
 		rnd_coord_t x[5], y[5];
 		double tx, ty, theta;
 

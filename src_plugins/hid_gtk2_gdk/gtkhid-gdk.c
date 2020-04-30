@@ -59,7 +59,7 @@ typedef struct render_priv_s {
 
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
+	rnd_core_gc_t core_gc;
 	rnd_hid_t *me_pointer;
 	GdkGC *pixel_gc;
 	GdkGC *clip_gc;
@@ -527,14 +527,14 @@ static void ghid_gdk_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	}
 }
 
-static void ghid_gdk_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void ghid_gdk_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	switch (style) {
-	case pcb_cap_round:
+	case rnd_cap_round:
 		gc->cap = GDK_CAP_ROUND;
 		gc->join = GDK_JOIN_ROUND;
 		break;
-	case pcb_cap_square:
+	case rnd_cap_square:
 		gc->cap = GDK_CAP_PROJECTING;
 		gc->join = GDK_JOIN_MITER;
 		break;
@@ -618,8 +618,8 @@ static int use_gc(rnd_hid_gc_t gc, int need_pen)
 	if (need_setup) {
 		ghid_gdk_set_color(gc, &gc->pcolor);
 		ghid_gdk_set_line_width(gc, gc->core_gc.width);
-		if ((need_pen) || (gc->core_gc.cap != pcb_cap_invalid))
-			ghid_gdk_set_line_cap(gc, (pcb_cap_style_t) gc->core_gc.cap);
+		if ((need_pen) || (gc->core_gc.cap != rnd_cap_invalid))
+			ghid_gdk_set_line_cap(gc, (rnd_cap_style_t) gc->core_gc.cap);
 		ghid_gdk_set_draw_xor(gc, gc->xor_mask);
 		gdk_gc_set_clip_origin(gc->pixel_gc, 0, 0);
 	}

@@ -64,7 +64,7 @@ static void cb_text_offs(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 static void cb_text_ro(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
 static void prv_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
-static rnd_bool prv_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
+static rnd_bool prv_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
 
 static const char * test_xpm[] = {
 "8 8 4 1",
@@ -517,10 +517,10 @@ static void prv_expose(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_
 }
 
 
-static rnd_bool prv_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool prv_mouse(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	pcb_printf("Mouse %d %mm %mm\n", kind, x, y);
-	return (kind == PCB_HID_MOUSE_PRESS) || (kind == PCB_HID_MOUSE_RELEASE);
+	return (kind == RND_HID_MOUSE_PRESS) || (kind == RND_HID_MOUSE_RELEASE);
 }
 
 static void cb_color_print(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)

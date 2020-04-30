@@ -108,13 +108,13 @@ static void log_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	delegatee_->set_color(gc, color);
 }
 
-static void log_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void log_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	const char *txt = "unknown";
 	switch (style) {
-		ENUM_LOG_TEXT(pcb_cap_square);
-		ENUM_LOG_TEXT(pcb_cap_round);
-		ENUM_LOG_TEXT(pcb_cap_invalid);
+		ENUM_LOG_TEXT(rnd_cap_square);
+		ENUM_LOG_TEXT(rnd_cap_round);
+		ENUM_LOG_TEXT(rnd_cap_invalid);
 	}
 	pcb_fprintf(out_, "set_line_cap(gc, %s)\n", txt);
 	delegatee_->set_line_cap(gc, style);

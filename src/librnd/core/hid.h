@@ -1,5 +1,5 @@
-#ifndef PCB_HID_H
-#define PCB_HID_H
+#ifndef RND_HID_H
+#define RND_HID_H
 
 #include <stdarg.h>
 #include <liblihata/dom.h>
@@ -11,18 +11,18 @@
 #include <librnd/core/box.h>
 
 /* attribute dialog properties */
-typedef enum pcb_hat_property_e {
-	PCB_HATP_GLOBAL_CALLBACK,
-	PCB_HATP_max
-} pcb_hat_property_t;
+typedef enum rnd_hat_property_e {
+	RND_HATP_GLOBAL_CALLBACK,
+	RND_HATP_max
+} rnd_hat_property_t;
 
 
 typedef enum {
-	PCB_HID_MOUSE_PRESS,
-	PCB_HID_MOUSE_RELEASE,
-	PCB_HID_MOUSE_MOTION,
-	PCB_HID_MOUSE_POPUP  /* "right click", open context-specific popup */
-} pcb_hid_mouse_ev_t;
+	RND_HID_MOUSE_PRESS,
+	RND_HID_MOUSE_RELEASE,
+	RND_HID_MOUSE_MOTION,
+	RND_HID_MOUSE_POPUP  /* "right click", open context-specific popup */
+} rnd_hid_mouse_ev_t;
 
 /* Human Interface Device */
 
@@ -48,10 +48,10 @@ The main structure is rnd_hid_t.
 /* Line end cap styles.  The cap *always* extends beyond the
    coordinates given, by half the width of the line. */
 typedef enum {
-	pcb_cap_invalid = -1,
-	pcb_cap_square,        /* square pins or pads when drawn using a line */
-	pcb_cap_round          /* for normal traces, round pins */
-} pcb_cap_style_t;
+	rnd_cap_invalid = -1,
+	rnd_cap_square,        /* square pins or pads when drawn using a line */
+	rnd_cap_round          /* for normal traces, round pins */
+} rnd_cap_style_t;
 
 /* The HID may need something more than an "int" for colors, timers,
    etc.  So it passes/returns one of these, which is castable to a
@@ -59,18 +59,18 @@ typedef enum {
 typedef union {
 	long lval;
 	void *ptr;
-} pcb_hidval_t;
+} rnd_hidval_t;
 
 typedef struct {
 	rnd_coord_t width;     /* as set by set_line_width */
-	pcb_cap_style_t cap;   /* as set by set_line_cap */
+	rnd_cap_style_t cap;   /* as set by set_line_cap */
 	int xor;               /* as set by set_draw_xor */
 	int faded;             /* as set by set_draw_faded */
 	rnd_hid_t *hid;        /* the HID that owns this gc */
-} pcb_core_gc_t;
+} rnd_core_gc_t;
 
 
-#define PCB_HIDCONCAT(a,b) a##b
+#define RND_HIDCONCAT(a,b) a##b
 
 /* File Watch flags */
 /* Based upon those in dbus/dbus-connection.h */
@@ -283,7 +283,7 @@ struct rnd_hid_s {
 	   A GUI hid should set the coord_per_pix value here for proper optimization. */
 	void (*render_burst)(rnd_hid_t *hid, pcb_burst_op_t op, const rnd_rnd_box_t *screen);
 
-	/*** gc vs. rnd_hid_t *: pcb_core_gc_t contains ->hid, so these calls don't
+	/*** gc vs. rnd_hid_t *: rnd_core_gc_t contains ->hid, so these calls don't
 	     need to get it as first arg. ***/
 
 	/* Sets a color. Can be one of the special colors like rnd_color_drill.
@@ -295,7 +295,7 @@ struct rnd_hid_s {
 	/* Sets the line style.  While calling this is cheap, calling it with
 	   different values each time may be expensive, so grouping items by
 	   line style is helpful.  */
-	void (*set_line_cap)(rnd_hid_gc_t gc, pcb_cap_style_t style);
+	void (*set_line_cap)(rnd_hid_gc_t gc, rnd_cap_style_t style);
 	void (*set_line_width)(rnd_hid_gc_t gc, rnd_coord_t width);
 	void (*set_draw_xor)(rnd_hid_gc_t gc, int xor);
 	/* Blends 20% or so color with 80% background.  Only used for
@@ -351,19 +351,19 @@ struct rnd_hid_s {
 	   timer during the callback for the first.  user_data_ can be
 	   anything, it's just passed to func.  Times are not guaranteed to
 	   be accurate.  */
-	pcb_hidval_t (*add_timer)(rnd_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data);
+	rnd_hidval_t (*add_timer)(rnd_hid_t *hid, void (*func)(rnd_hidval_t user_data), unsigned long milliseconds, rnd_hidval_t user_data);
 	/* Use this to stop a timer that hasn't triggered yet. */
-	void (*stop_timer)(rnd_hid_t *hid, pcb_hidval_t timer);
+	void (*stop_timer)(rnd_hid_t *hid, rnd_hidval_t timer);
 
 	/* Causes func_ to be called when some condition occurs on the file
 	   descriptor passed. Conditions include data for reading, writing,
 	   hangup, and errors. user_data_ can be anything, it's just passed
 	   to func. If the watch function returns pcb_true, the watch is kept, else
 	   it is removed. */
-	pcb_hidval_t (*watch_file)(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data);
+	rnd_hidval_t (*watch_file)(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data), rnd_hidval_t user_data);
 
 	/* Use this to stop a file watch; must not be called from within a GUI callback! */
-	void (*unwatch_file)(rnd_hid_t *hid, pcb_hidval_t watch);
+	void (*unwatch_file)(rnd_hid_t *hid, rnd_hidval_t watch);
 
 
 	/* Run the file selection dialog. Return a string the caller needs to free().
@@ -412,7 +412,7 @@ struct rnd_hid_s {
 
 	/* Set a property of an attribute dialog (typical call is between
 	   attr_dlg_new() and attr_dlg_run()) */
-	void (*attr_dlg_property)(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val);
+	void (*attr_dlg_property)(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val);
 
 
 	/* Disable or enable a widget of an active attribute dialog; if enabled is

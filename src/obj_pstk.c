@@ -423,7 +423,7 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_
 
 	if (shape->data.poly.pa == NULL)
 		pcb_pstk_shape_update_pa(&shape->data.poly);
-	pcb_hid_set_line_cap(gc, pcb_cap_round);
+	pcb_hid_set_line_cap(gc, rnd_cap_round);
 	if (dthick != 0) {
 		/* slow - but would be used on export mostly, not on-screen drawing */
 		pcb_polo_t *p, p_st[32];
@@ -491,13 +491,13 @@ static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, rnd_hid_gc_t gc, pc
 			pcb_pstk_draw_poly(info, gc, ps, shape, 1, dthick);
 			break;
 		case PCB_PSSH_LINE:
-			pcb_hid_set_line_cap(gc, shape->data.line.square ? pcb_cap_square : pcb_cap_round);
+			pcb_hid_set_line_cap(gc, shape->data.line.square ? rnd_cap_square : rnd_cap_round);
 			pcb_hid_set_line_width(gc, MAX(shape->data.line.thickness + dthick, 1));
 			pcb_render->draw_line(gc, ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, ps->x + shape->data.line.x2, ps->y + shape->data.line.y2);
 			break;
 		case PCB_PSSH_CIRC:
 			r = MAX(shape->data.circ.dia/2 + dthick/2, 1);
-			pcb_hid_set_line_cap(gc, pcb_cap_round);
+			pcb_hid_set_line_cap(gc, rnd_cap_round);
 			pcb_render->fill_circle(gc, ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, r);
 			break;
 		case PCB_PSSH_HSHADOW:
@@ -508,7 +508,7 @@ static void pcb_pstk_draw_shape_solid(pcb_draw_info_t *info, rnd_hid_gc_t gc, pc
 static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
 	rnd_coord_t r, dthick = 0;
-	pcb_hid_set_line_cap(gc, pcb_cap_round);
+	pcb_hid_set_line_cap(gc, rnd_cap_round);
 
 	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0))
 		dthick = info->xform->bloat;
@@ -586,7 +586,7 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const rnd_rnd_box_t *b, void *cl)
 
 	/* mark is a cross in the middle, right on the hole;
 	   cross size should extend beyond the hole */
-	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+	pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 	mark = conf_core.appearance.padstack.cross_size;
 	proto = pcb_pstk_get_proto(ps);
 	if (proto != NULL)
@@ -667,7 +667,7 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const rnd_rnd_box_t *b, void *cl)
 
 	/* actual hole */
 	pcb_hid_set_line_width(pcb_draw_out.drillGC, 0);
-	pcb_hid_set_line_cap(pcb_draw_out.drillGC, pcb_cap_round);
+	pcb_hid_set_line_cap(pcb_draw_out.drillGC, rnd_cap_round);
 	pcb_render->fill_circle(pcb_draw_out.drillGC, ps->x, ps->y, proto->hdia / 2);
 
 	/* indicate unplated holes with an arc; unplated holes are more rare

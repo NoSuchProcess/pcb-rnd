@@ -838,14 +838,14 @@ void pcb_disable_emergency_save(void)
 
 /*** Autosave ***/
 
-static pcb_hidval_t backup_timer;
+static rnd_hidval_t backup_timer;
 
 /*
  * If the backup interval is > 0 then set another timer.  Otherwise
  * we do nothing and it is up to the GUI to call pcb_enable_autosave()
  * after setting conf_core.rc.backup_interval > 0 again.
  */
-static void backup_cb(pcb_hidval_t data)
+static void backup_cb(rnd_hidval_t data)
 {
 	backup_timer.ptr = NULL;
 	pcb_backup();
@@ -855,7 +855,7 @@ static void backup_cb(pcb_hidval_t data)
 
 void pcb_enable_autosave(void)
 {
-	pcb_hidval_t x;
+	rnd_hidval_t x;
 
 	x.ptr = NULL;
 

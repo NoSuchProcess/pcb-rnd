@@ -81,10 +81,10 @@ static extedit_method_t methods[] = {
 typedef struct {
 	FILE *fc;
 	int stay;
-	pcb_hidval_t wid;
+	rnd_hidval_t wid;
 } extedit_wait_t;
 
-rnd_bool extedit_fd_watch(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data)
+rnd_bool extedit_fd_watch(rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data)
 {
 	char tmp[128];
 	int res;
@@ -125,7 +125,7 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 		int fd = rnd_fileno(fc);
 		if (fd > 0) {
 			int n = 0;
-			pcb_hidval_t hd;
+			rnd_hidval_t hd;
 			extedit_wait_t ctx;
 
 			ctx.stay = 1;

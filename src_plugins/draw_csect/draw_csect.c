@@ -676,13 +676,13 @@ static void do_move_grp()
 }
 
 
-static rnd_bool mouse_csect(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool mouse_csect(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	rnd_bool res = 0;
 	rnd_layer_id_t lid;
 
 	switch(kind) {
-		case PCB_HID_MOUSE_PRESS:
+		case RND_HID_MOUSE_PRESS:
 			if (is_button(x, y, &btn_addoutline)) {
 				drag_addoutline = 1;
 				res = 1;
@@ -736,7 +736,7 @@ static rnd_bool mouse_csect(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 				}
 			}
 			break;
-		case PCB_HID_MOUSE_RELEASE:
+		case RND_HID_MOUSE_RELEASE:
 			if (drag_addoutline) {
 				if (is_button(x, y, &btn_addoutline)) {
 					pcb_layergrp_t *g = pcb_get_grp_new_misc(PCB);
@@ -867,12 +867,12 @@ static rnd_bool mouse_csect(pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t 
 				drag_gid_subst = -1;
 			}
 			break;
-		case PCB_HID_MOUSE_MOTION:
+		case RND_HID_MOUSE_MOTION:
 			cx = x;
 			cy = y;
 			res = DRAGGING;
 			break;
-		case PCB_HID_MOUSE_POPUP:
+		case RND_HID_MOUSE_POPUP:
 			lid = get_layer_coords(x, y);
 			if (lid >= 0) {
 				pcb_layervis_change_group_vis(&PCB->hidlib, lid, 1, 1);

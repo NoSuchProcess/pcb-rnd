@@ -64,7 +64,7 @@ static void ghid_preview_expose(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 	prv->user_expose_cb(prv->attrib, prv, gc, e);
 }
 
-static rnd_bool ghid_preview_mouse(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+static rnd_bool ghid_preview_mouse(void *widget, void *draw_data, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	pcb_hid_preview_t *prv = draw_data;
 	if (prv->user_mouse_cb != NULL)

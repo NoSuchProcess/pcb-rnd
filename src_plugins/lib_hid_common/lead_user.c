@@ -40,10 +40,10 @@
 
 static rnd_coord_t leadx, leady, step;
 static rnd_bool lead;
-static pcb_hidval_t lead_timer;
+static rnd_hidval_t lead_timer;
 static rnd_hidlib_t *lead_hidlib;
 
-static void lead_cb(pcb_hidval_t user_data)
+static void lead_cb(rnd_hidval_t user_data)
 {
 	static double p;
 
@@ -58,7 +58,7 @@ static void lead_cb(pcb_hidval_t user_data)
 
 static void pcb_lead_user_to_location(rnd_hidlib_t *hidlib, rnd_coord_t x, rnd_coord_t y, rnd_bool enabled)
 {
-	pcb_hidval_t user_data;
+	rnd_hidval_t user_data;
 
 	if (lead) {
 		pcb_gui->stop_timer(pcb_gui, lead_timer);

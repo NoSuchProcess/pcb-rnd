@@ -39,7 +39,7 @@ void layersel_expose_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd
 	pcb_stub_draw_csect(gc, e);
 }
 
-rnd_bool layersel_mouse_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+rnd_bool layersel_mouse_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	return pcb_stub_draw_csect_mouse_ev(kind, x, y);
 }

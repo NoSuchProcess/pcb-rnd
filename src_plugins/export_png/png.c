@@ -114,9 +114,9 @@ typedef struct color_struct {
 } color_struct;
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
+	rnd_core_gc_t core_gc;
 	rnd_hid_t *me_pointer;
-	pcb_cap_style_t cap;
+	rnd_cap_style_t cap;
 	int width, r, g, b;
 	color_struct *color;
 	gdImagePtr brush;
@@ -858,7 +858,7 @@ static rnd_hid_gc_t png_make_gc(rnd_hid_t *hid)
 {
 	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(sizeof(hid_gc_t), 1);
 	rv->me_pointer = &png_hid;
-	rv->cap = pcb_cap_round;
+	rv->cap = rnd_cap_round;
 	rv->width = 1;
 	rv->color = (color_struct *) malloc(sizeof(color_struct));
 	rv->color->r = rv->color->g = rv->color->b = rv->color->a = 0;
@@ -983,7 +983,7 @@ static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	}
 }
 
-static void png_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void png_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -1106,7 +1106,7 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 			if (r <= 1)
 				gdImageFilledRectangle(agc->brush, 0, 0, 0, 0, fg);
 			else {
-				if (agc->cap != pcb_cap_square) {
+				if (agc->cap != rnd_cap_square) {
 					gdImageFilledEllipse(agc->brush, r / 2, r / 2, r, r, fg);
 					/* Make sure the ellipse is the right exact size.  */
 					gdImageSetPixel(agc->brush, 0, r / 2, fg);
@@ -1168,7 +1168,7 @@ static void png_draw_line_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 	int x1o = 0, y1o = 0, x2o = 0, y2o = 0;
 	if (x1 == x2 && y1 == y2 && !photo_mode) {
 		rnd_coord_t w = gc->width / 2;
-		if (gc->cap != pcb_cap_square)
+		if (gc->cap != rnd_cap_square)
 			png_fill_circle(gc, x1, y1, w);
 		else
 			png_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
@@ -1194,7 +1194,7 @@ static void png_draw_line_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
-	if (gc->cap != pcb_cap_square || x1 == x2 || y1 == y2) {
+	if (gc->cap != rnd_cap_square || x1 == x2 || y1 == y2) {
 		gdImageLine(im, SCALE_X(x1) + x1o, SCALE_Y(y1) + y1o, SCALE_X(x2) + x2o, SCALE_Y(y2) + y2o, gdBrushed);
 	}
 	else {

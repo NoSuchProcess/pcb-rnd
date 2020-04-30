@@ -124,7 +124,7 @@ static void ltf_preview_motion_callback(Widget w, XtPointer pd_, XEvent *e, Bool
 	XQueryPointer(display, e->xmotion.window, &root, &child, &root_x, &root_y, &pos_x, &pos_y, &keys_buttons);
 	pcb_ltf_preview_getxy(pd, pos_x, pos_y, &x, &y);
 
-	if (prv->user_mouse_cb(attr, prv, PCB_HID_MOUSE_MOTION, x, y))
+	if (prv->user_mouse_cb(attr, prv, RND_HID_MOUSE_MOTION, x, y))
 		pcb_ltf_preview_redraw(pd);
 }
 
@@ -134,17 +134,17 @@ static void ltf_preview_input_callback(Widget w, XtPointer pd_, XmDrawingAreaCal
 	rnd_hid_attribute_t *attr = pd->attr;
 	pcb_hid_preview_t *prv = attr->wdata;
 	rnd_coord_t x, y;
-	pcb_hid_mouse_ev_t kind = -1;
+	rnd_hid_mouse_ev_t kind = -1;
 
 	if (prv->user_mouse_cb == NULL)
 		return;
 
 	if (cbs->event->xbutton.button == 1) {
-		if (cbs->event->type == ButtonPress) kind = PCB_HID_MOUSE_PRESS;
-		if (cbs->event->type == ButtonRelease) kind = PCB_HID_MOUSE_RELEASE;
+		if (cbs->event->type == ButtonPress) kind = RND_HID_MOUSE_PRESS;
+		if (cbs->event->type == ButtonRelease) kind = RND_HID_MOUSE_RELEASE;
 	}
 	else if (cbs->event->xbutton.button == 3) {
-		if (cbs->event->type == ButtonRelease) kind = PCB_HID_MOUSE_POPUP;
+		if (cbs->event->type == ButtonRelease) kind = RND_HID_MOUSE_POPUP;
 	}
 
 	if (kind < 0)

@@ -36,9 +36,9 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 static void use_gc(rnd_hid_gc_t gc);
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
+	rnd_core_gc_t core_gc;
 	rnd_hid_t *me_pointer;
-	pcb_cap_style_t cap;
+	rnd_cap_style_t cap;
 	rnd_coord_t width;
 	unsigned char r, g, b;
 	int erase;
@@ -954,7 +954,7 @@ static rnd_hid_gc_t ps_make_gc(rnd_hid_t *hid)
 {
 	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(1, sizeof(rnd_hid_gc_s));
 	rv->me_pointer = &ps_hid;
-	rv->cap = pcb_cap_round;
+	rv->cap = rnd_cap_round;
 	return rv;
 }
 
@@ -991,7 +991,7 @@ static void ps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	}
 }
 
-static void ps_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void ps_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -1032,10 +1032,10 @@ static void use_gc(rnd_hid_gc_t gc)
 	if (lastcap != gc->cap) {
 		int c;
 		switch (gc->cap) {
-		case pcb_cap_round:
+		case rnd_cap_round:
 			c = 1;
 			break;
-		case pcb_cap_square:
+		case rnd_cap_square:
 			c = 2;
 			break;
 		default:
@@ -1085,7 +1085,7 @@ static void ps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 	/* If you're etching your own paste mask, this will reduce the
 	   amount of brass you need to etch by drawing outlines for large
 	   pads.  See also ps_fill_rect.  */
-	if (is_paste && gc->width > 2500 && gc->cap == pcb_cap_square && (x1 == x2 || y1 == y2)) {
+	if (is_paste && gc->width > 2500 && gc->cap == rnd_cap_square && (x1 == x2 || y1 == y2)) {
 		rnd_coord_t t, w;
 		if (x1 > x2) {
 			t = x1;
@@ -1104,7 +1104,7 @@ static void ps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 #endif
 	if (x1 == x2 && y1 == y2) {
 		rnd_coord_t w = gc->width / 2;
-		if (gc->cap == pcb_cap_square)
+		if (gc->cap == rnd_cap_square)
 			ps_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		else
 			ps_fill_circle(gc, x1, y1, w);
@@ -1238,7 +1238,7 @@ static void ps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 	/* See comment in ps_draw_line.  */
 	if (is_paste && (x2 - x1) > 2500 && (y2 - y1) > 2500) {
 		linewidth = 1000;
-		lastcap = pcb_cap_round;
+		lastcap = rnd_cap_round;
 		fprintf(f, "1000 setlinewidth 1 setlinecap 1 setlinejoin\n");
 		fprintf(f, "%d %d moveto %d %d lineto %d %d lineto %d %d lineto closepath stroke\n",
 						x1 + 500 - bloat, y1 + 500 - bloat,

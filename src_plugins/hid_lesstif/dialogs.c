@@ -183,7 +183,7 @@ typedef struct {
 	Widget *wltop;/* the parent widget, which is different from wl if reparenting (extra boxes, e.g. for framing or scrolling) was needed */
 	Widget **btn; /* enum value buttons */
 	Widget dialog;
-	rnd_hid_attr_val_t property[PCB_HATP_max];
+	rnd_hid_attr_val_t property[RND_HATP_max];
 	Dimension minw, minh;
 	void (*close_cb)(void *caller_data, pcb_hid_attr_ev_t ev);
 	char *id;
@@ -264,11 +264,11 @@ static void valchg(Widget w, XtPointer dlg_widget_, XtPointer call_data)
 
 	attribute_dialog_readres(ctx, widx);
 
-	if ((ctx->attrs[widx].change_cb == NULL) && (ctx->property[PCB_HATP_GLOBAL_CALLBACK].func == NULL))
+	if ((ctx->attrs[widx].change_cb == NULL) && (ctx->property[RND_HATP_GLOBAL_CALLBACK].func == NULL))
 		return;
 
-	if (ctx->property[PCB_HATP_GLOBAL_CALLBACK].func != NULL)
-		ctx->property[PCB_HATP_GLOBAL_CALLBACK].func(ctx, ctx->caller_data, &ctx->attrs[widx]);
+	if (ctx->property[RND_HATP_GLOBAL_CALLBACK].func != NULL)
+		ctx->property[RND_HATP_GLOBAL_CALLBACK].func(ctx, ctx->caller_data, &ctx->attrs[widx]);
 	if (ctx->attrs[widx].change_cb != NULL)
 		ctx->attrs[widx].change_cb(ctx, ctx->caller_data, &ctx->attrs[widx]);
 }
@@ -767,10 +767,10 @@ void lesstif_attr_dlg_free(void *hid_ctx)
 	free(ctx);
 }
 
-void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val)
+void lesstif_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val)
 {
 	lesstif_attr_dlg_t *ctx = hid_ctx;
-	if ((prop >= 0) && (prop < PCB_HATP_max))
+	if ((prop >= 0) && (prop < RND_HATP_max))
 		ctx->property[prop] = *val;
 }
 

@@ -58,7 +58,7 @@ struct pcb_gtk_preview_class_s {
 typedef void (*pcb_gtk_init_drawing_widget_t)(GtkWidget *widget, void *port);
 typedef void (*pcb_gtk_preview_config_t)(pcb_gtk_preview_t *gp, GtkWidget *widget);
 typedef gboolean(*pcb_gtk_preview_expose_t)(GtkWidget *widget, pcb_gtk_expose_t *ev, pcb_hid_expose_t expcall, rnd_hid_expose_ctx_t *ctx);
-typedef rnd_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
+typedef rnd_bool(*pcb_gtk_preview_mouse_ev_t)(void *widget, void *draw_data, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y);
 
 struct pcb_gtk_preview_s {
 	GtkDrawingArea parent_instance;

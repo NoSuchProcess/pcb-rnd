@@ -27,7 +27,7 @@ static const char *remote_cookie = "remote HID";
 static rnd_hid_t remote_hid;
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
+	rnd_core_gc_t core_gc;
 	int nop;
 } rnd_hid_gc_s;
 
@@ -213,7 +213,7 @@ static void remote_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 
 /* r=round, s=square, b=beveled (octagon) */
 static const char *cap_style_names = "rsrb";
-static void remote_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void remote_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	int idx = gc2idx(gc);
 	int max = strlen(cap_style_names);
@@ -326,27 +326,27 @@ static void remote_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, i
 {
 }
 
-static pcb_hidval_t remote_add_timer(rnd_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+static rnd_hidval_t remote_add_timer(rnd_hid_t *hid, void (*func)(rnd_hidval_t user_data), unsigned long milliseconds, rnd_hidval_t user_data)
 {
-	pcb_hidval_t rv;
+	rnd_hidval_t rv;
 	rv.lval = 0;
 	return rv;
 }
 
-static void remote_stop_timer(rnd_hid_t *hid, pcb_hidval_t timer)
+static void remote_stop_timer(rnd_hid_t *hid, rnd_hidval_t timer)
 {
 }
 
-pcb_hidval_t
-remote_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
-								 pcb_hidval_t user_data)
+rnd_hidval_t
+remote_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data),
+								 rnd_hidval_t user_data)
 {
-	pcb_hidval_t ret;
+	rnd_hidval_t ret;
 	ret.ptr = NULL;
 	return ret;
 }
 
-void remote_unwatch_file(rnd_hid_t *hid, pcb_hidval_t data)
+void remote_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
 {
 }
 
@@ -372,7 +372,7 @@ static void remote_attr_dlg_free(void *hid_ctx)
 {
 }
 
-static void remote_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val)
+static void remote_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val)
 {
 }
 

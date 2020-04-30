@@ -69,21 +69,21 @@ const char *svg_cookie = "svg HID";
 static pcb_cam_t svg_cam;
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
+	rnd_core_gc_t core_gc;
 	rnd_hid_t *me_pointer;
-	pcb_cap_style_t cap;
+	rnd_cap_style_t cap;
 	int width;
 	char *color;
 	int drill;
 	unsigned warned_elliptical:1;
 } rnd_hid_gc_s;
 
-static const char *CAPS(pcb_cap_style_t cap)
+static const char *CAPS(rnd_cap_style_t cap)
 {
 	switch (cap) {
-		case pcb_cap_round:
+		case rnd_cap_round:
 			return "round";
-		case pcb_cap_square:
+		case rnd_cap_square:
 			return "square";
 		default:
 			assert(!"unhandled cap");
@@ -475,7 +475,7 @@ static rnd_hid_gc_t svg_make_gc(rnd_hid_t *hid)
 {
 	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(sizeof(rnd_hid_gc_s), 1);
 	rv->me_pointer = &svg_hid;
-	rv->cap = pcb_cap_round;
+	rv->cap = rnd_cap_round;
 	rv->width = 1;
 	rv->color = NULL;
 	return rv;
@@ -556,7 +556,7 @@ static void svg_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	gc->color = rnd_strdup(name);
 }
 
-static void svg_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void svg_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }

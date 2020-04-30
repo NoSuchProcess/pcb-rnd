@@ -115,7 +115,7 @@ static void nogui_set_color(rnd_hid_gc_t gc, const rnd_color_t *name)
 	CRASH("set_color");
 }
 
-static void nogui_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void nogui_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	CRASH("set_line_cap");
 }
@@ -196,28 +196,28 @@ static void nogui_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, in
 {
 }
 
-static pcb_hidval_t nogui_add_timer(rnd_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+static rnd_hidval_t nogui_add_timer(rnd_hid_t *hid, void (*func)(rnd_hidval_t user_data), unsigned long milliseconds, rnd_hidval_t user_data)
 {
-	pcb_hidval_t rv;
+	rnd_hidval_t rv;
 	CRASH("add_timer");
 	rv.lval = 0;
 	return rv;
 }
 
-static void nogui_stop_timer(rnd_hid_t *hid, pcb_hidval_t timer)
+static void nogui_stop_timer(rnd_hid_t *hid, rnd_hidval_t timer)
 {
 	CRASH("stop_timer");
 }
 
-static pcb_hidval_t nogui_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func) (pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
+static rnd_hidval_t nogui_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func) (rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data), rnd_hidval_t user_data)
 {
-	pcb_hidval_t rv;
+	rnd_hidval_t rv;
 	CRASH("watch_file");
 	rv.lval = 0;
 	return rv;
 }
 
-static void nogui_unwatch_file(rnd_hid_t *hid, pcb_hidval_t watch)
+static void nogui_unwatch_file(rnd_hid_t *hid, rnd_hidval_t watch)
 {
 	CRASH("unwatch_file");
 }
@@ -375,7 +375,7 @@ static void nogui_attr_dlg_free(void *hid_ctx)
 	CRASH("attr_dlg_free");
 }
 
-static void nogui_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val)
+static void nogui_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val)
 {
 	CRASH("attr_dlg_dlg_property");
 }

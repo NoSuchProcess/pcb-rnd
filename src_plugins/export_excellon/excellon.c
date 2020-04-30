@@ -157,8 +157,8 @@ static struct {
 } warn;
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
-	pcb_cap_style_t style;
+	rnd_core_gc_t core_gc;
+	rnd_cap_style_t style;
 	rnd_coord_t width;
 } rnd_hid_gc_s;
 
@@ -358,7 +358,7 @@ static void excellon_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 }
 
-static void excellon_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void excellon_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->style = style;
 }
@@ -383,7 +383,7 @@ pcb_drill_ctx_t *get_drill_ctx(void)
 static void use_gc(rnd_hid_gc_t gc, rnd_coord_t radius)
 {
 	exc_drawn_objs++;
-	if ((gc->style != pcb_cap_round) && (!warn.nonround)) {
+	if ((gc->style != rnd_cap_round) && (!warn.nonround)) {
 		warn.nonround = 1;
 		rnd_message(RND_MSG_ERROR, "Excellon: can not set non-round aperture (some features may be missing from the export)\n");
 	}

@@ -88,7 +88,7 @@ void fontsel_expose_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_
 	}
 }
 
-rnd_bool fontsel_mouse_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, pcb_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+rnd_bool fontsel_mouse_cb(rnd_hid_attribute_t *attrib, pcb_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	fontsel_ctx_t *ctx = prv->user_ctx;
 
@@ -255,9 +255,9 @@ static void fontsel_bchanged_ev(rnd_hidlib_t *hidlib, void *user_data, int argc,
 }
 
 static int fontsel_timer_active = 0;
-static pcb_hidval_t fontsel_timer;
+static rnd_hidval_t fontsel_timer;
 
-static void fontsel_timer_cb(pcb_hidval_t user_data)
+static void fontsel_timer_cb(rnd_hidval_t user_data)
 {
 	fontsel_ctx_t *c;
 

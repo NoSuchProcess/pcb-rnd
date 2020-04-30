@@ -268,13 +268,13 @@ static void ghid_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd
 	pcb_gtk_get_coords(gctx, &gctx->port.view, msg, x, y, force);
 }
 
-pcb_hidval_t ghid_add_timer(rnd_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+rnd_hidval_t ghid_add_timer(rnd_hid_t *hid, void (*func)(rnd_hidval_t user_data), unsigned long milliseconds, rnd_hidval_t user_data)
 {
 	return pcb_gtk_add_timer((pcb_gtk_t *)hid->hid_data, func, milliseconds, user_data);
 }
 
-static pcb_hidval_t ghid_watch_file(rnd_hid_t *hid, int fd, unsigned int condition,
-	rnd_bool (*func)(pcb_hidval_t, int, unsigned int, pcb_hidval_t), pcb_hidval_t user_data)
+static rnd_hidval_t ghid_watch_file(rnd_hid_t *hid, int fd, unsigned int condition,
+	rnd_bool (*func)(rnd_hidval_t, int, unsigned int, rnd_hidval_t), rnd_hidval_t user_data)
 {
 	return pcb_gtk_watch_file((pcb_gtk_t *)hid->hid_data, fd, condition, func, user_data);
 }

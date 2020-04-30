@@ -273,7 +273,7 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE_XOR, pcb_draw_out.direct, info->drawn_area);
 
-	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+	pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 	pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 1);
 
 	if (PCB->SubcOn) {
@@ -312,7 +312,7 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, rnd_layergrp_id_t componen
 	/* Draw pins' and pads' names */
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 	pcb_render->set_drawing_mode(pcb_render, PCB_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-	pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_round);
+	pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	if (PCB->SubcOn) {
 		info->objcb.subc.per_side = per_side;
@@ -743,7 +743,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 	if (lflg & PCB_LYT_COPPER) {
 		delayed_terms_enabled = pcb_true;
 		pcb_hid_set_line_width(pcb_draw_out.fgGC, 1);
-		pcb_hid_set_line_cap(pcb_draw_out.fgGC, pcb_cap_square);
+		pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
 		pcb_r_search(Layer->polygon_tree, info->drawn_area, NULL, pcb_poly_draw_term_callback, info, NULL);
 		delayed_terms_enabled = pcb_false;
 		may_have_delayed = 1;
@@ -1094,11 +1094,11 @@ static void expose_begin(pcb_output_t *save, rnd_hid_t *hid)
 	hid->set_color(pcb_draw_out.backpadGC, &conf_core.appearance.color.invisible_objects);
 	hid->set_color(pcb_draw_out.padselGC, &conf_core.appearance.color.selected);
 	pcb_hid_set_line_width(pcb_draw_out.backpadGC, -1);
-	pcb_hid_set_line_cap(pcb_draw_out.backpadGC, pcb_cap_square);
+	pcb_hid_set_line_cap(pcb_draw_out.backpadGC, rnd_cap_square);
 	pcb_hid_set_line_width(pcb_draw_out.padselGC, -1);
-	pcb_hid_set_line_cap(pcb_draw_out.padselGC, pcb_cap_square);
+	pcb_hid_set_line_cap(pcb_draw_out.padselGC, rnd_cap_square);
 	pcb_hid_set_line_width(pcb_draw_out.padGC, -1);
-	pcb_hid_set_line_cap(pcb_draw_out.padGC, pcb_cap_square);
+	pcb_hid_set_line_cap(pcb_draw_out.padGC, rnd_cap_square);
 }
 
 static void expose_end(pcb_output_t *save)

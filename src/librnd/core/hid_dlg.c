@@ -146,7 +146,7 @@ static void progress_close_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attr
 	pcb_hid_progress(0, 0, cancel);
 }
 
-static void progress_refresh_cb(pcb_hidval_t user_data)
+static void progress_refresh_cb(rnd_hidval_t user_data)
 {
 	pcb_hid_progress(0, 0, refresh);
 }
@@ -154,7 +154,7 @@ static void progress_refresh_cb(pcb_hidval_t user_data)
 static int pcb_gui_progress(long so_far, long total, const char *message)
 {
 	double now;
-	static pcb_hidval_t timer;
+	static rnd_hidval_t timer;
 	static int active = 0, cancelled = 0;
 	static int wp, have_timer = 0;
 	static rnd_hid_attr_val_t val;

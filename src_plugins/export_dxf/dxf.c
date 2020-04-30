@@ -87,9 +87,9 @@ typedef struct {
 static dxf_ctx_t dxf_ctx;
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
+	rnd_core_gc_t core_gc;
 	rnd_hid_t *me_pointer;
-	pcb_cap_style_t cap;
+	rnd_cap_style_t cap;
 	rnd_coord_t width;
 	char *color;
 	int drill;
@@ -468,7 +468,7 @@ static void dxf_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 		gc->drawing_hole = 1;
 }
 
-static void dxf_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void dxf_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }

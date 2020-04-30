@@ -81,12 +81,12 @@ static int ltf_ccache_inited;
 #define UUNIT	pcbhl_conf.editor.grid_unit->allow
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
+	rnd_core_gc_t core_gc;
 	rnd_hid_t *me_pointer;
 	Pixel color;
 	rnd_color_t pcolor;
 	int width;
-	pcb_cap_style_t cap;
+	rnd_cap_style_t cap;
 	char xor_set;
 	char erase;
 } rnd_hid_gc_s;
@@ -2304,11 +2304,11 @@ static void set_gc(rnd_hid_gc_t gc)
 	pcb_printf("set_gc c%s %08lx w%#mS c%d x%d e%d\n", gc->colorname, gc->color, gc->width, gc->cap, gc->xor_set, gc->erase);
 #endif
 	switch (gc->cap) {
-	case pcb_cap_square:
+	case rnd_cap_square:
 		cap = CapProjecting;
 		join = JoinMiter;
 		break;
-	case pcb_cap_round:
+	case rnd_cap_round:
 		cap = CapRound;
 		join = JoinRound;
 		break;
@@ -2338,7 +2338,7 @@ static void set_gc(rnd_hid_gc_t gc)
 	}
 }
 
-static void lesstif_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void lesstif_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -2383,7 +2383,7 @@ static void lesstif_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 	y2 = dy2;
 
 	set_gc(gc);
-	if (gc->cap == pcb_cap_square && x1 == x2 && y1 == y2) {
+	if (gc->cap == rnd_cap_square && x1 == x2 && y1 == y2) {
 		XFillRectangle(display, pixmap, my_gc, x1 - vw / 2, y1 - vw / 2, vw, vw);
 		if (use_mask())
 			XFillRectangle(display, mask_bitmap, mask_gc, x1 - vw / 2, y1 - vw / 2, vw, vw);
@@ -2640,8 +2640,8 @@ static void lesstif_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, 
 }
 
 typedef struct {
-	void (*func) (pcb_hidval_t);
-	pcb_hidval_t user_data;
+	void (*func) (rnd_hidval_t);
+	rnd_hidval_t user_data;
 	XtIntervalId id;
 } TimerStruct;
 
@@ -2652,10 +2652,10 @@ static void lesstif_timer_cb(XtPointer * p, XtIntervalId * id)
 	free(ts);
 }
 
-static pcb_hidval_t lesstif_add_timer(rnd_hid_t *hid, void (*func)(pcb_hidval_t user_data), unsigned long milliseconds, pcb_hidval_t user_data)
+static rnd_hidval_t lesstif_add_timer(rnd_hid_t *hid, void (*func)(rnd_hidval_t user_data), unsigned long milliseconds, rnd_hidval_t user_data)
 {
 	TimerStruct *t;
-	pcb_hidval_t rv;
+	rnd_hidval_t rv;
 	t = (TimerStruct *) malloc(sizeof(TimerStruct));
 	rv.ptr = t;
 	t->func = func;
@@ -2664,7 +2664,7 @@ static pcb_hidval_t lesstif_add_timer(rnd_hid_t *hid, void (*func)(pcb_hidval_t 
 	return rv;
 }
 
-static void lesstif_stop_timer(rnd_hid_t *hid, pcb_hidval_t hv)
+static void lesstif_stop_timer(rnd_hid_t *hid, rnd_hidval_t hv)
 {
 	TimerStruct *ts = (TimerStruct *) hv.ptr;
 	XtRemoveTimeOut(ts->id);
@@ -2673,13 +2673,13 @@ static void lesstif_stop_timer(rnd_hid_t *hid, pcb_hidval_t hv)
 
 
 typedef struct {
-	rnd_bool (*func) (pcb_hidval_t, int, unsigned int, pcb_hidval_t);
-	pcb_hidval_t user_data;
+	rnd_bool (*func) (rnd_hidval_t, int, unsigned int, rnd_hidval_t);
+	rnd_hidval_t user_data;
 	int fd;
 	XtInputId id;
 } WatchStruct;
 
-void lesstif_unwatch_file(rnd_hid_t *hid, pcb_hidval_t data)
+void lesstif_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
 {
 	WatchStruct *watch = (WatchStruct *) data.ptr;
 	XtRemoveInput(watch->id);
@@ -2692,7 +2692,7 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId *id)
 	unsigned int pcb_condition = 0;
 	struct pollfd fds;
 	short condition;
-	pcb_hidval_t x;
+	rnd_hidval_t x;
 	WatchStruct *watch = (WatchStruct *) client_data;
 
 	fds.fd = watch->fd;
@@ -2716,10 +2716,10 @@ static void lesstif_watch_cb(XtPointer client_data, int *fid, XtInputId *id)
 	return;
 }
 
-pcb_hidval_t lesstif_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data), pcb_hidval_t user_data)
+rnd_hidval_t lesstif_watch_file(rnd_hid_t *hid, int fd, unsigned int condition, rnd_bool (*func)(rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data), rnd_hidval_t user_data)
 {
 	WatchStruct *watch = (WatchStruct *)malloc(sizeof(WatchStruct));
-	pcb_hidval_t ret;
+	rnd_hidval_t ret;
 	unsigned int xt_condition = 0;
 
 	if (condition & PCB_WATCH_READABLE)
@@ -2746,7 +2746,7 @@ extern int lesstif_attr_dlg_run(void *hid_ctx);
 extern void lesstif_attr_dlg_raise(void *hid_ctx);
 extern void lesstif_attr_dlg_close(void *hid_ctx);
 extern void lesstif_attr_dlg_free(void *hid_ctx);
-extern void lesstif_attr_dlg_property(void *hid_ctx, pcb_hat_property_t prop, const rnd_hid_attr_val_t *val);
+extern void lesstif_attr_dlg_property(void *hid_ctx, rnd_hat_property_t prop, const rnd_hid_attr_val_t *val);
 extern int lesstif_attr_dlg_widget_state(void *hid_ctx, int idx, int enabled);
 extern int lesstif_attr_dlg_widget_hide(void *hid_ctx, int idx, rnd_bool hide);
 extern int lesstif_attr_dlg_set_value(void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);

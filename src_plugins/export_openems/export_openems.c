@@ -62,9 +62,9 @@ const char *openems_cookie = "openems HID";
 #define MESH_NAME "openems"
 
 typedef struct rnd_hid_gc_s {
-	pcb_core_gc_t core_gc;
+	rnd_core_gc_t core_gc;
 	rnd_hid_t *me_pointer;
-	pcb_cap_style_t cap;
+	rnd_cap_style_t cap;
 	int width;
 } rnd_hid_gc_s;
 
@@ -728,7 +728,7 @@ static void openems_set_color(rnd_hid_gc_t gc, const rnd_color_t *name)
 {
 }
 
-static void openems_set_line_cap(rnd_hid_gc_t gc, pcb_cap_style_t style)
+static void openems_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }
@@ -787,7 +787,7 @@ static void openems_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 {
 	wctx_t *ctx = ems_ctx;
 
-	if (gc->cap == pcb_cap_square) {
+	if (gc->cap == rnd_cap_square) {
 		rnd_coord_t x[4], y[4];
 		pcb_line_t tmp;
 		tmp.Point1.X = x1;

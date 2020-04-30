@@ -30,7 +30,7 @@
 #include "conf_core.h"
 #include <librnd/core/safe_fs.h>
 
-static pcb_hidval_t infobar_timer;
+static rnd_hidval_t infobar_timer;
 static int infobar_timer_active = 0;
 static double last_interval = -2;
 static double last_date = -1;
@@ -46,7 +46,7 @@ static void pcb_infobar_brdchg_ev(rnd_hidlib_t *hidlib, void *user_data, int arg
 }
 
 
-static void infobar_tick(pcb_hidval_t user_data)
+static void infobar_tick(rnd_hidval_t user_data)
 {
 	if (conf_core.rc.file_changed_interval > 0) {
 		infobar_timer = pcb_gui->add_timer(pcb_gui, infobar_tick, (conf_core.rc.file_changed_interval * 1000.0), user_data);

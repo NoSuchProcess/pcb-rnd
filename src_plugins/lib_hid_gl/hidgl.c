@@ -352,11 +352,11 @@ void hidgl_draw_line(int cap, rnd_coord_t width, rnd_coord_t x1, rnd_coord_t y1,
 		}
 
 		switch (cap) {
-			case pcb_cap_round:
+			case rnd_cap_round:
 				circular_caps = 1;
 				break;
 
-			case pcb_cap_square:
+			case rnd_cap_square:
 				x1 -= deltax * width / 2. / length;
 				y1 -= deltay * width / 2. / length;
 				x2 += deltax * width / 2. / length;

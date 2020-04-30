@@ -32,7 +32,7 @@ typedef struct{
 	int len;
 	int wfmt, wtab, warg_ctrl, wverbose;
 	int warg[MAX_ARGS], warg_box[MAX_ARGS], warg_button[MAX_ARGS];
-	pcb_hidval_t timer;
+	rnd_hidval_t timer;
 	int arg_dirty;
 	int active; /* already open - allow only one instance */
 } isch_ctx_t;
@@ -61,7 +61,7 @@ static void isch_arg2pcb(void)
 	isch_ctx.arg_dirty = 0;
 }
 
-static void isch_timed_update_cb(pcb_hidval_t user_data)
+static void isch_timed_update_cb(rnd_hidval_t user_data)
 {
 	isch_arg2pcb();
 }
@@ -226,7 +226,7 @@ static void isch_import_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 static void isch_arg_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_hidval_t user_data;
+	rnd_hidval_t user_data;
 
 	if (isch_ctx.arg_dirty)
 		pcb_gui->stop_timer(pcb_gui, isch_ctx.timer);

@@ -32,8 +32,8 @@
 #include "glue_common.h"
 
 typedef struct pcb_gtk_watch_s {
-	rnd_bool (*func)(pcb_hidval_t, int, unsigned int, pcb_hidval_t);
-	pcb_hidval_t user_data;
+	rnd_bool (*func)(rnd_hidval_t, int, unsigned int, rnd_hidval_t);
+	rnd_hidval_t user_data;
 	int fd;
 	GIOChannel *channel;
 	gint id;
@@ -44,7 +44,7 @@ typedef struct pcb_gtk_watch_s {
 static gboolean ghid_watch(GIOChannel *source, GIOCondition condition, gpointer data)
 {
 	unsigned int pcb_condition = 0;
-	pcb_hidval_t x;
+	rnd_hidval_t x;
 	pcb_gtk_watch_t *watch = (pcb_gtk_watch_t *)data;
 	rnd_bool res;
 
@@ -65,12 +65,12 @@ static gboolean ghid_watch(GIOChannel *source, GIOCondition condition, gpointer 
 	return res;
 }
 
-pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,
-	rnd_bool (*func)(pcb_hidval_t watch, int fd, unsigned int condition, pcb_hidval_t user_data),
-	pcb_hidval_t user_data)
+rnd_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,
+	rnd_bool (*func)(rnd_hidval_t watch, int fd, unsigned int condition, rnd_hidval_t user_data),
+	rnd_hidval_t user_data)
 {
 	pcb_gtk_watch_t *watch = g_new0(pcb_gtk_watch_t, 1);
-	pcb_hidval_t ret;
+	rnd_hidval_t ret;
 	unsigned int glib_condition = 0;
 
 	if (condition & PCB_WATCH_READABLE)
@@ -93,7 +93,7 @@ pcb_hidval_t pcb_gtk_watch_file(pcb_gtk_t *gctx, int fd, unsigned int condition,
 	return ret;
 }
 
-void pcb_gtk_unwatch_file(rnd_hid_t *hid, pcb_hidval_t data)
+void pcb_gtk_unwatch_file(rnd_hid_t *hid, rnd_hidval_t data)
 {
 	pcb_gtk_watch_t *watch = (pcb_gtk_watch_t *)data.ptr;
 
