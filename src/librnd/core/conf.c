@@ -32,7 +32,7 @@
 #include <liblihata/tree.h>
 #include <stdarg.h>
 #include <librnd/config.h>
-#include "globalconst.h"
+#include <librnd/core/globalconst.h>
 #include <librnd/core/color.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>

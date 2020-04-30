@@ -28,7 +28,7 @@
 #define RND_HID_INLINES
 
 #include <librnd/core/hid.h>
-#include "globalconst.h"
+#include <librnd/core/globalconst.h>
 
 RND_INLINE rnd_hid_gc_t rnd_hid_make_gc(void)
 {
