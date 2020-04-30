@@ -26,8 +26,8 @@
 
 /* Compound DAD widget for creating a unit change combo box */
 
-#ifndef PCB_HID_DAD_UNIT_H
-#define PCB_HID_DAD_UNIT_H
+#ifndef RND_HID_DAD_UNIT_H
+#define RND_HID_DAD_UNIT_H
 
 #include <genlist/gendlist.h>
 
@@ -38,46 +38,46 @@ typedef struct {
 	void **hid_ctx;
 	pcb_family_t family; /* which families of units are allowed in this spinbox */
 	int wenum;
-} pcb_hid_dad_unit_t;
+} rnd_hid_dad_unit_t;
 
 /*** implementation ***/
 
 
 #define PCB_DAD_UNIT(table, family_) \
 do { \
-	pcb_hid_dad_unit_t *unit = calloc(sizeof(pcb_hid_dad_unit_t), 1); \
+	rnd_hid_dad_unit_t *unit = calloc(sizeof(rnd_hid_dad_unit_t), 1); \
 	RND_DAD_BEGIN(table, RND_HATT_BEGIN_COMPOUND); \
 		unit->cmp.wbegin = RND_DAD_CURRENT(table); \
-		pcb_dad_unit_init(family_); \
-		RND_DAD_ENUM(table, pcb_dad_unit_enum); \
-			RND_DAD_CHANGE_CB(table, pcb_dad_unit_change_cb); \
+		rnd_dad_unit_init(family_); \
+		RND_DAD_ENUM(table, rnd_dad_unit_enum); \
+			RND_DAD_CHANGE_CB(table, rnd_dad_unit_change_cb); \
 			RND_DAD_SET_ATTR_FIELD(table, user_data, (const char **)unit); \
 			unit->wenum = RND_DAD_CURRENT(table); \
 	RND_DAD_END(table); \
 		RND_DAD_SET_ATTR_FIELD(table, wdata, unit); \
 		unit->cmp.wend = RND_DAD_CURRENT(table); \
 	\
-	unit->cmp.set_val_num = pcb_dad_unit_set_num; \
-	unit->cmp.widget_state = pcb_dad_unit_widget_state; \
-	unit->cmp.widget_hide = pcb_dad_unit_widget_hide; \
-	unit->cmp.set_value = pcb_dad_unit_set_value; \
-	unit->cmp.set_val_ptr = pcb_dad_unit_set_val_ptr; \
-	unit->cmp.set_help = pcb_dad_unit_set_help; \
+	unit->cmp.set_val_num = rnd_dad_unit_set_num; \
+	unit->cmp.widget_state = rnd_dad_unit_widget_state; \
+	unit->cmp.widget_hide = rnd_dad_unit_widget_hide; \
+	unit->cmp.set_value = rnd_dad_unit_set_value; \
+	unit->cmp.set_val_ptr = rnd_dad_unit_set_val_ptr; \
+	unit->cmp.set_help = rnd_dad_unit_set_help; \
 	unit->family = family_; \
 	unit->hid_ctx = &table ## _hid_ctx; \
 } while(0)
 
-extern const char **pcb_dad_unit_enum;
+extern const char **rnd_dad_unit_enum;
 
-void pcb_dad_unit_set_num(rnd_hid_attribute_t *attr, long l, double unused1, rnd_coord_t unused2);
-int pcb_dad_unit_widget_state(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled);
-int pcb_dad_unit_widget_hide(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide);
-int pcb_dad_unit_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
-void pcb_dad_unit_set_val_ptr(rnd_hid_attribute_t *end, void *val);
-void pcb_dad_unit_set_help(rnd_hid_attribute_t *end, const char *help);
-void pcb_dad_unit_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
+void rnd_dad_unit_set_num(rnd_hid_attribute_t *attr, long l, double unused1, rnd_coord_t unused2);
+int rnd_dad_unit_widget_state(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool enabled);
+int rnd_dad_unit_widget_hide(rnd_hid_attribute_t *end, void *hid_ctx, int idx, rnd_bool hide);
+int rnd_dad_unit_set_value(rnd_hid_attribute_t *end, void *hid_ctx, int idx, const rnd_hid_attr_val_t *val);
+void rnd_dad_unit_set_val_ptr(rnd_hid_attribute_t *end, void *val);
+void rnd_dad_unit_set_help(rnd_hid_attribute_t *end, const char *help);
+void rnd_dad_unit_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
-void pcb_dad_unit_init(enum pcb_family_e family);
-void pcb_dad_unit_uninit(void);
+void rnd_dad_unit_init(enum pcb_family_e family);
+void rnd_dad_unit_uninit(void);
 
 #endif

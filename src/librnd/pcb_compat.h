@@ -869,3 +869,14 @@
 #define pcb_dad_tree_jumpto rnd_dad_tree_jumpto
 #define pcb_dad_tree_expcoll_ rnd_dad_tree_expcoll_
 #define pcb_dad_tree_expcoll rnd_dad_tree_expcoll
+#define pcb_hid_dad_unit_t rnd_hid_dad_unit_t
+#define pcb_dad_unit_enum rnd_dad_unit_enum
+#define pcb_dad_unit_set_num rnd_dad_unit_set_num
+#define pcb_dad_unit_widget_state rnd_dad_unit_widget_state
+#define pcb_dad_unit_widget_hide rnd_dad_unit_widget_hide
+#define pcb_dad_unit_set_value rnd_dad_unit_set_value
+#define pcb_dad_unit_set_val_ptr rnd_dad_unit_set_val_ptr
+#define pcb_dad_unit_set_help rnd_dad_unit_set_help
+#define pcb_dad_unit_change_cb rnd_dad_unit_change_cb
+#define pcb_dad_unit_init rnd_dad_unit_init
+#define pcb_dad_unit_uninit rnd_dad_unit_uninit

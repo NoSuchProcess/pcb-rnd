@@ -391,7 +391,7 @@ void pcb_hidlib_uninit(void)
 	rnd_conf_uninit();
 	pcb_plugin_uninit();
 	rnd_actions_uninit();
-	pcb_dad_unit_uninit();
+	rnd_dad_unit_uninit();
 }
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
