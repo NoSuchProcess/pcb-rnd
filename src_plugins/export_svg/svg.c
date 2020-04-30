@@ -256,7 +256,7 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 		xform->omit_overlay = 0;
 	}
 
-	pcbhl_expose_main(&svg_hid, &ctx, xform);
+	rnd_expose_main(&svg_hid, &ctx, xform);
 
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }

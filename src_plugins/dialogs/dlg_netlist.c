@@ -290,7 +290,7 @@ static void netlist_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 	/* draw the board */
 	memset(&xform, 0, sizeof(xform));
 	xform.layer_faded = 1;
-	pcbhl_expose_main(rnd_gui, e, &xform);
+	rnd_expose_main(rnd_gui, e, &xform);
 
 	if (net != NULL) {/* restore object color */
 		for(n = 0, p = netlist_color_save.array; n < netlist_color_save.used; n+=2,p+=2) {

@@ -1087,16 +1087,16 @@ static void redraw_region(rnd_hidlib_t *hidlib, GdkRectangle *rect)
 
 	ghid_gdk_draw_bg_image(hidlib);
 
-	pcbhl_expose_main(&gtk2_gdk_hid, &ctx, NULL);
+	rnd_expose_main(&gtk2_gdk_hid, &ctx, NULL);
 	ghid_gdk_draw_grid(hidlib);
 
 	/* In some cases we are called with the crosshair still off */
 	if (priv->attached_invalidate_depth == 0)
-		pcbhl_draw_attached(hidlib, 0);
+		rnd_draw_attached(hidlib, 0);
 
 	/* In some cases we are called with the mark still off */
 	if (priv->mark_invalidate_depth == 0)
-		pcbhl_draw_marks(hidlib, 0);
+		rnd_draw_marks(hidlib, 0);
 
 	priv->clip_rect_valid = pcb_false;
 
@@ -1176,7 +1176,7 @@ static void ghid_gdk_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_co
 	}
 
 	if (priv->attached_invalidate_depth == 0)
-		pcbhl_draw_attached(hidlib, 0);
+		rnd_draw_attached(hidlib, 0);
 
 	if (!changes_complete) {
 		priv->attached_invalidate_depth++;
@@ -1210,7 +1210,7 @@ static void ghid_gdk_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complet
 	}
 
 	if (priv->mark_invalidate_depth == 0)
-		pcbhl_draw_marks(hidlib, 0);
+		rnd_draw_marks(hidlib, 0);
 
 	if (!changes_complete) {
 		priv->mark_invalidate_depth++;

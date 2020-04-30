@@ -387,12 +387,12 @@ static void gerber_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	lastgroup = -1;
 	layer_list_idx = 0;
 	finding_apertures = 1;
-	pcbhl_expose_main(&gerber_hid, &ctx, &xform);
+	rnd_expose_main(&gerber_hid, &ctx, &xform);
 
 	lastgroup = -2;
 	layer_list_idx = 0;
 	finding_apertures = 0;
-	pcbhl_expose_main(&gerber_hid, &ctx, &xform);
+	rnd_expose_main(&gerber_hid, &ctx, &xform);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 

@@ -332,7 +332,7 @@ void pcb_gtk_note_event_location(GdkEventButton *ev)
 
 	pcb_gtk_coords_event2pcb(&ghidgui->port.view, event_x, event_y, &ghidgui->port.view.pcb_x, &ghidgui->port.view.pcb_y);
 
-	pcb_hidcore_crosshair_move_to(ghidgui->port.view.ctx->hidlib, ghidgui->port.view.pcb_x, ghidgui->port.view.pcb_y, 1);
+	rnd_hidcore_crosshair_move_to(ghidgui->port.view.ctx->hidlib, ghidgui->port.view.pcb_x, ghidgui->port.view.pcb_y, 1);
 }
 
 /*** init ***/

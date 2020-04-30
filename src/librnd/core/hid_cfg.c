@@ -135,7 +135,7 @@ rnd_hid_cfg_t *rnd_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_
 	rnd_hid_cfg_t *hr;
 
 	if (embedded_fallback == NULL)
-		embedded_fallback = pcb_hidlib_default_embedded_menu;
+		embedded_fallback = rnd_hidlib_default_embedded_menu;
 
 	/* override HID defaults with the configured path */
 	if ((pcbhl_conf.rc.menu_file != NULL) && (*pcbhl_conf.rc.menu_file != '\0')) {
@@ -149,11 +149,11 @@ rnd_hid_cfg_t *rnd_hid_cfg_load(rnd_hidlib_t *hidlib, const char *fn, int exact_
 		int fn_len = strlen(fn);
 
 		doc = NULL;
-		pcb_paths_resolve_all(hidlib, pcbhl_menu_file_paths, paths, fn_len+32, pcb_false);
+		pcb_paths_resolve_all(hidlib, rnd_menu_file_paths, paths, fn_len+32, pcb_false);
 		for(p = paths; *p != NULL; p++) {
 			if (doc == NULL) {
 				char *end = *p + strlen(*p);
-				sprintf(end, pcbhl_menu_name_fmt, fn);
+				sprintf(end, rnd_menu_name_fmt, fn);
 				doc = rnd_hid_cfg_load_lht(hidlib, *p);
 				if (doc != NULL)
 					rnd_file_loaded_set_at("menu", "HID main", *p, "main menu system");

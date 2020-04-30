@@ -574,7 +574,7 @@ void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xfo
 	}
 
 	ctx.view = *bounds;
-	pcbhl_expose_main(&png_hid, &ctx, xform);
+	rnd_expose_main(&png_hid, &ctx, xform);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 	rnd_conf_update(NULL, -1); /* restore forced sets */

@@ -68,7 +68,7 @@ fgw_error_t pcb_act_gui_PromptFor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_DAD_END(dlg);
 
 	if (title == NULL) {
-		title = pcb_concat(pcbhl_app_package, " user input", NULL);
+		title = pcb_concat(rnd_app_package, " user input", NULL);
 		ft = 1;
 	}
 	RND_DAD_NEW("prompt_for", dlg, title, NULL, pcb_true, NULL);

@@ -94,7 +94,7 @@ extern pcb_crosshair_note_t pcb_crosshair_note;
 #define PCB_CH_STATE_THIRD  2
 
 extern pcb_crosshair_t pcb_crosshair;
-extern pcb_mark_t pcb_marked;  /* the point the user explicitly marked, or in some operations where the operation originally started */
+extern rnd_mark_t pcb_marked;  /* the point the user explicitly marked, or in some operations where the operation originally started */
 
 void pcb_notify_mark_change(rnd_bool changes_complete);
 void pcb_crosshair_move_relative(rnd_coord_t, rnd_coord_t);

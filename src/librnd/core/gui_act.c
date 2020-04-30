@@ -219,7 +219,7 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			dy += radius;
 	}
 
-	pcb_hidcore_crosshair_move_to(hidlib, dx, dy, 1);
+	rnd_hidcore_crosshair_move_to(hidlib, dx, dy, 1);
 	rnd_gui->set_crosshair(rnd_gui, hidlib->ch_x, hidlib->ch_y, pan_warp);
 
 	RND_ACT_IRES(0);
@@ -236,7 +236,7 @@ static fgw_error_t pcb_act_MoveCursorTo(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	RND_PCB_ACT_CONVARG(1, FGW_COORD, Cursor, x = fgw_coord(&argv[1]));
 	RND_PCB_ACT_CONVARG(2, FGW_COORD, Cursor, y = fgw_coord(&argv[2]));
 
-	pcb_hidcore_crosshair_move_to(RND_ACT_HIDLIB, x, y, 0);
+	rnd_hidcore_crosshair_move_to(RND_ACT_HIDLIB, x, y, 0);
 	rnd_gui->set_crosshair(rnd_gui, hidlib->ch_x, hidlib->ch_y, HID_SC_PAN_VIEWPORT);
 
 	RND_ACT_IRES(0);

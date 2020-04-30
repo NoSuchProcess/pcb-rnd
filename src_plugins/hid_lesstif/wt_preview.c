@@ -136,7 +136,7 @@ void pcb_ltf_preview_redraw(pcb_ltf_preview_t *pd)
 	pd->exp_ctx.view.Y2 = pd->y2;
 
 	rnd_gui->coord_per_pix = view_zoom;
-	pcbhl_expose_preview(&lesstif_hid, &pd->exp_ctx);
+	rnd_expose_preview(&lesstif_hid, &pd->exp_ctx);
 
 	XCopyArea(lesstif_display, pixmap, XtWindow(pd->pw), gc, 0, 0, pd->v_width, pd->v_height, 0, 0);
 	XtReleaseGC(pd->pw, gc);

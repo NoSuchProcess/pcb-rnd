@@ -156,7 +156,7 @@ void lesstif_get_xy(const char *message)
 	XmString ls = XmStringCreatePCB(message);
 	void *chst;
 
-	chst = pcb_hidlib_crosshair_suspend(ltf_hidlib);
+	chst = rnd_hidlib_crosshair_suspend(ltf_hidlib);
 	XtManageChild(m_click);
 	stdarg_n = 0;
 	stdarg(XmNlabelString, ls);
@@ -172,7 +172,7 @@ void lesstif_get_xy(const char *message)
 	need_xy = 0;
 	have_xy = 1;
 	XtUnmanageChild(m_click);
-	pcb_hidlib_crosshair_restore(ltf_hidlib, chst);
+	rnd_hidlib_crosshair_restore(ltf_hidlib, chst);
 }
 
 void lesstif_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *px, rnd_coord_t *py, int force)

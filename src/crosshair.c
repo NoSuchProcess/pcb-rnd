@@ -67,7 +67,7 @@ typedef struct {
 static char crosshair_cookie[] = "crosshair";
 
 pcb_crosshair_t pcb_crosshair;  /* information about cursor settings */
-pcb_mark_t pcb_marked;
+rnd_mark_t pcb_marked;
 pcb_crosshair_note_t pcb_crosshair_note;
 
 
@@ -486,7 +486,7 @@ void pcb_xordraw_movecopy(void)
 		rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
 }
 
-void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
+void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 	if (!inhibit_drawing_mode) {
 		rnd_render->set_drawing_mode(rnd_gui, RND_HID_COMP_RESET, 1, NULL);
@@ -512,7 +512,7 @@ void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 }
 
 
-void pcbhl_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
+void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 	rnd_coord_t ms = conf_core.appearance.mark_size, ms2 = ms / 2;
 
@@ -1099,7 +1099,7 @@ void pcb_crosshair_uninit(void)
 
 void pcb_crosshair_set_local_ref(rnd_coord_t X, rnd_coord_t Y, rnd_bool Showing)
 {
-	static pcb_mark_t old;
+	static rnd_mark_t old;
 	static int count = 0;
 
 	if (Showing) {
@@ -1135,7 +1135,7 @@ typedef struct {
 	int obj, line, box;
 } old_crosshair_t;
 
-void *pcb_hidlib_crosshair_suspend(rnd_hidlib_t *hl)
+void *rnd_hidlib_crosshair_suspend(rnd_hidlib_t *hl)
 {
 	old_crosshair_t *buf = malloc(sizeof(old_crosshair_t));
 
@@ -1150,7 +1150,7 @@ void *pcb_hidlib_crosshair_suspend(rnd_hidlib_t *hl)
 	return buf;
 }
 
-void pcb_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
+void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
 {
 	old_crosshair_t *buf = susp_data;
 
@@ -1164,7 +1164,7 @@ void pcb_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
 }
 
 
-void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
+void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
 {
 	if (!mouse_mot) {
 		rnd_hid_notify_crosshair_change(hl, pcb_false);

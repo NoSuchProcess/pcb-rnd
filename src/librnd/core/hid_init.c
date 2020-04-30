@@ -310,7 +310,7 @@ void rnd_hidlib_init1(void (*conf_core_init)(void))
 	conf_core_init();
 	pcbhl_conf_postproc();
 	pcb_hidlib_conf_init();
-	pcb_hidlib_event_init();
+	rnd_hidlib_event_init();
 	pcb_hid_dlg_init();
 	rnd_hid_init();
 	rnd_color_init();
@@ -380,7 +380,7 @@ void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 
 void rnd_hidlib_uninit(void)
 {
-	pcb_hidlib_event_uninit();
+	rnd_hidlib_event_uninit();
 	pcb_hid_dlg_uninit();
 
 	if (rnd_conf_isdirty(RND_CFR_USER))
@@ -666,14 +666,14 @@ int rnd_main_args_setup2(rnd_main_args_t *ga, int *exitval)
 		int res = rnd_parse_command(NULL, ga->main_action, pcb_true); /* hidlib is NULL because there is no context yet */
 		if ((res != 0) && (ga->main_action_hint != NULL))
 			rnd_message(RND_MSG_ERROR, "\nHint: %s\n", ga->main_action_hint);
-		pcbhl_log_print_uninit_errs("main_action parse error");
+		rnd_log_print_uninit_errs("main_action parse error");
 		*exitval = res;
 		return 1;
 	}
 
 
 	if (rnd_gui_parse_arguments(ga->autopick_gui, &ga->hid_argc, &ga->hid_argv) != 0) {
-		pcbhl_log_print_uninit_errs("Export plugin argument parse error");
+		rnd_log_print_uninit_errs("Export plugin argument parse error");
 		return 1;
 	}
 
@@ -692,7 +692,7 @@ int rnd_main_exported(rnd_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is_emp
 	rnd_event(hidlib, RND_EVENT_EXPORT_SESSION_BEGIN, NULL);
 	rnd_gui->do_export(rnd_gui, 0);
 	rnd_event(hidlib, RND_EVENT_EXPORT_SESSION_END, NULL);
-	pcbhl_log_print_uninit_errs("Exporting");
+	rnd_log_print_uninit_errs("Exporting");
 	return 1;
 }
 

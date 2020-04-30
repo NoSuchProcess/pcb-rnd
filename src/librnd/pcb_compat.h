@@ -8,6 +8,12 @@
    a new epoch is defined and all ringdove apps must use the rnd_ prefixed
    symbols only (and this file will be removed).
 */
+
+
+/* This indicates that the API has hidlib first argument in every crosshair related call */
+#define PCB_HIDLIB_ADJUST_ATTACHED_OBJECTS_HAS_HL 1
+
+
 #define pcb_register_action rnd_register_action
 #define pcb_register_actions rnd_register_actions
 #define PCB_REGISTER_ACTIONS RND_REGISTER_ACTIONS
@@ -932,3 +938,27 @@
 #define pcb_hid_nogui_init rnd_hid_nogui_init
 #define pcb_hid_nogui_get_hid rnd_hid_nogui_get_hid
 #define pcb_nogui_progress rnd_nogui_progress
+#define pcb_mark_s rnd_mark_s
+#define pcb_mark_t rnd_mark_t
+#define pcb_hidlib_event_uninit rnd_hidlib_event_uninit
+#define pcb_hidlib_event_init rnd_hidlib_event_init
+#define pcbhl_log_print_uninit_errs rnd_log_print_uninit_errs
+#define pcb_hidlib_adjust_attached_objects rnd_hidlib_adjust_attached_objects
+#define pcbhl_draw_marks rnd_draw_marks
+#define pcbhl_draw_attached rnd_draw_attached
+#define pcbhl_expose_main rnd_expose_main
+#define pcbhl_expose_preview rnd_expose_preview
+#define pcb_hidlib_crosshair_suspend rnd_hidlib_crosshair_suspend
+#define pcb_hidlib_crosshair_restore rnd_hidlib_crosshair_restore
+#define pcb_hidlib_crosshair_move_to rnd_hidlib_crosshair_move_to
+#define pcbhl_menu_file_paths rnd_menu_file_paths
+#define pcbhl_menu_name_fmt rnd_menu_name_fmt
+#define pcbhl_conf_userdir_path rnd_conf_userdir_path
+#define pcphl_conf_user_path rnd_pcphl_conf_user_path
+#define pcbhl_conf_sysdir_path rnd_conf_sysdir_path
+#define pcbhl_conf_sys_path rnd_conf_sys_path
+#define pcbhl_app_package rnd_app_package
+#define pcbhl_app_version rnd_app_version
+#define pcbhl_app_url rnd_app_url
+#define pcb_hidcore_crosshair_move_to rnd_hidcore_crosshair_move_to
+#define pcb_hidlib_default_embedded_menu rnd_hidlib_default_embedded_menu

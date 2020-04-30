@@ -77,15 +77,15 @@ static const char *EXPERIMENTAL = NULL;
 #include "tool_logic.h"
 #include "pixmap_pcb.h"
 
-const char *pcbhl_menu_file_paths[4];
-const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
+const char *rnd_menu_file_paths[4];
+const char *rnd_menu_name_fmt = "pcb-menu-%s.lht";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
-const char *pcbhl_conf_userdir_path, *pcphl_conf_user_path;
-const char *pcbhl_conf_sysdir_path, *pcbhl_conf_sys_path;
-const char *pcbhl_app_package = PCB_PACKAGE;
-const char *pcbhl_app_version = PCB_VERSION;
-const char *pcbhl_app_url = "http://repo.hu/projects/pcb-rnd";
+const char *rnd_conf_userdir_path, *rnd_pcphl_conf_user_path;
+const char *rnd_conf_sysdir_path, *rnd_conf_sys_path;
+const char *rnd_app_package = PCB_PACKAGE;
+const char *rnd_app_version = PCB_VERSION;
+const char *rnd_app_url = "http://repo.hu/projects/pcb-rnd";
 
 /* Figure out the canonical name of the executed program
    and fix up the defaults for various paths; returns exec prefix that
@@ -188,15 +188,15 @@ static char *main_path_init(char *argv0)
 	if (se != 0)
 		fprintf(stderr, "WARNING: setenv() failed - external commands such as parametric footprints may not have a proper environment\n");
 
-	pcbhl_menu_file_paths[0] = "./";
-	pcbhl_menu_file_paths[1] = "~/.pcb-rnd/";
-	pcbhl_menu_file_paths[2] = pcb_concat(PCBCONFDIR, "/", NULL);
-	pcbhl_menu_file_paths[3] = NULL;
+	rnd_menu_file_paths[0] = "./";
+	rnd_menu_file_paths[1] = "~/.pcb-rnd/";
+	rnd_menu_file_paths[2] = pcb_concat(PCBCONFDIR, "/", NULL);
+	rnd_menu_file_paths[3] = NULL;
 
-	pcbhl_conf_userdir_path = CONF_USER_DIR;
-	pcphl_conf_user_path = pcb_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
-	pcbhl_conf_sysdir_path = PCBCONFDIR;
-	pcbhl_conf_sys_path = pcb_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
+	rnd_conf_userdir_path = CONF_USER_DIR;
+	rnd_pcphl_conf_user_path = pcb_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	rnd_conf_sysdir_path = PCBCONFDIR;
+	rnd_conf_sys_path = pcb_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
 
 	free(bindir);
 	return exec_prefix;
@@ -205,9 +205,9 @@ static char *main_path_init(char *argv0)
 static void main_path_uninit(void)
 {
 	/* const for all other parts of the code, but we had to concat (alloc) it above */
-	free((char *)pcbhl_menu_file_paths[2]);
-	free((char *)pcphl_conf_user_path);
-	free((char *)pcbhl_conf_sys_path);
+	free((char *)rnd_menu_file_paths[2]);
+	free((char *)rnd_pcphl_conf_user_path);
+	free((char *)rnd_conf_sys_path);
 }
 
 
@@ -362,7 +362,7 @@ void pcb_main_uninit(void)
 	pcb_tool_uninit();
 	pcb_poly_uninit();
 
-	pcbhl_log_print_uninit_errs("Log produced during uninitialization");
+	rnd_log_print_uninit_errs("Log produced during uninitialization");
 	rnd_log_uninit();
 	main_path_uninit();
 	conf_core_uninit();
@@ -500,7 +500,7 @@ int main(int argc, char *argv[])
 
 	if (PCB == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can't create an empty layout, exiting\n");
-		pcbhl_log_print_uninit_errs("Initialization");
+		rnd_log_print_uninit_errs("Initialization");
 		exit(1);
 	}
 
@@ -521,7 +521,7 @@ int main(int argc, char *argv[])
 		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, how) != 0) {
 			if (rnd_main_exporting) {
 				rnd_message(RND_MSG_ERROR, "Can not load file '%s' (specified on command line) for exporting or printing\n", command_line_pcb);
-				pcbhl_log_print_uninit_errs("Export load error");
+				rnd_log_print_uninit_errs("Export load error");
 				exit(1);
 			}
 			/* keep filename if load failed: file might not exist, save it by that name */

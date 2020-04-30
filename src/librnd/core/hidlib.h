@@ -24,16 +24,16 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_HIDLIB_H
-#define PCB_HIDLIB_H
+#ifndef RND_HIDLIB_H
+#define RND_HIDLIB_H
 
 #include <librnd/core/global_typedefs.h>
 
-typedef struct pcb_mark_s {
+typedef struct rnd_mark_s {
 	rnd_bool status;
 	rnd_coord_t X, Y;
 	unsigned user_placed:1;   /* if 1, the user has explicitly placed the mark - do not move it */
-} pcb_mark_t;
+} rnd_mark_t;
 
 struct rnd_hidlib_s {
 	rnd_coord_t grid;                  /* grid resolution */
@@ -44,9 +44,9 @@ struct rnd_hidlib_s {
 
 	/* tool state */
 	rnd_coord_t ch_x, ch_y, tool_x, tool_y; /* ch is crosshair */
-	unsigned int tool_hit;                  /* optional: type of a hit object of PCB_MOVE_TYPES; 0 if there was no PCB_MOVE_TYPES object under the crosshair */
+	unsigned int tool_hit;                  /* optional: type of a hit object of RND_MOVE_TYPES; 0 if there was no RND_MOVE_TYPES object under the crosshair */
 	unsigned int tool_click:1;              /* optional: true if clicked somewhere with the arrow tool */
-	pcb_mark_t tool_grabbed;                /* point where a drag&drop operation started */
+	rnd_mark_t tool_grabbed;                /* point where a drag&drop operation started */
 	rnd_rnd_box_t *tool_snapped_obj_bbox;
 
 	/* internal */
@@ -59,41 +59,38 @@ struct rnd_hidlib_s {
 	void *pspare[8];
 };
 
-void pcb_hidlib_event_uninit(void);
-void pcb_hidlib_event_init(void);
+void rnd_hidlib_event_uninit(void);
+void rnd_hidlib_event_init(void);
 
 /* print pending log messages to stderr after gui uninit */
-void pcbhl_log_print_uninit_errs(const char *title);
+void rnd_log_print_uninit_errs(const char *title);
 
 
 /*** The following API is implemented by the host application ***/
 
 /* update crosshair-attached object because crosshair coords likely changed */
-void pcb_hidlib_adjust_attached_objects(rnd_hidlib_t *hl);
-
-/* This indicates that the API has hidlib first argument in every crosshair related call */
-#define PCB_HIDLIB_ADJUST_ATTACHED_OBJECTS_HAS_HL 1
+void rnd_hidlib_adjust_attached_objects(rnd_hidlib_t *hl);
 
 /* Suspend the crosshair: save all crosshair states in a newly allocated
    and returned temp buffer, then reset the crosshair to initial state;
    the returned buffer is used to restore the crosshair states later on.
    Used in the get location loop. */
-void *pcb_hidlib_crosshair_suspend(rnd_hidlib_t *hl);
-void pcb_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data);
+void *rnd_hidlib_crosshair_suspend(rnd_hidlib_t *hl);
+void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data);
 
 /* Move the crosshair to an absolute x;y coord on the board and update the GUI;
    if mouse_mot is non-zero, the request is a direct result of a mouse motion
    event */
-void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
+void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
 
 /* The whole default menu file embedded in the executable; NULL if not present */
-extern const char *pcb_hidlib_default_embedded_menu;
+extern const char *rnd_hidlib_default_embedded_menu;
 
 /* Draw any fixed mark on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
-void pcbhl_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
+void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
 /* Draw any mark following the crosshair on XOR overlay; if inhibit_drawing_mode is true, do not call ->set_drawing_mode */
-void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
+void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
 /*** One of these two functions will be called whenever (parts of) the screen
      needs redrawing (on screen, print or export, board or preview). The expose
@@ -106,34 +103,34 @@ void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
 /* Main expose: draw the design in the top window
    (pcb-rnd: all layers with all flags (no .content is used) */
-void pcbhl_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xform_t *xform_caller);
+void rnd_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xform_t *xform_caller);
 
 /* Preview expose: generic, dialog based, used in preview widgets */
-void pcbhl_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
+void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e);
 
 
 
 /* NULL terminated list of paths where the menu file should be looked at for */
-extern const char *pcbhl_menu_file_paths[];
+extern const char *rnd_menu_file_paths[];
 
 /* printf format string for the menu file name; may contain one %s that
    will be substituted with "default" or the HID's short name. */
-extern const char *pcbhl_menu_name_fmt;
+extern const char *rnd_menu_name_fmt;
 
 /* path to the user's config directory and main config file (RND_CFR_USER) */
-extern const char *pcbhl_conf_userdir_path;
-extern const char *pcphl_conf_user_path;
+extern const char *rnd_conf_userdir_path;
+extern const char *rnd_pcphl_conf_user_path;
 
 /* path to the system (installed) config directory and main config file (RND_CFR_SYSTEM) */
-extern const char *pcbhl_conf_sysdir_path;
-extern const char *pcbhl_conf_sys_path;
+extern const char *rnd_conf_sysdir_path;
+extern const char *rnd_conf_sys_path;
 
 /* application information (to be displayed on the UI) */
-extern const char *pcbhl_app_package;
-extern const char *pcbhl_app_version;
-extern const char *pcbhl_app_url;
+extern const char *rnd_app_package;
+extern const char *rnd_app_version;
+extern const char *rnd_app_url;
 
 /*** API wrappers provided for plugins (these are translated into calls to the app within the hidlib) ***/
-void pcb_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
+void rnd_hidcore_crosshair_move_to(rnd_hidlib_t *hidlib, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
 
 #endif

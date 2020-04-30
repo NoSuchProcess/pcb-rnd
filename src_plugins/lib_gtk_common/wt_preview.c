@@ -235,7 +235,7 @@ static gboolean ghid_preview_expose(GtkWidget *widget, pcb_gtk_expose_t *ev)
 	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, 0);
 	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, 0);
 
-	res = preview->expose(widget, ev, pcbhl_expose_preview, &preview->expose_data);
+	res = preview->expose(widget, ev, rnd_expose_preview, &preview->expose_data);
 
 	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_x, save_fx);
 	rnd_conf_force_set_bool(pcbhl_conf.editor.view.flip_y, save_fy);

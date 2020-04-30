@@ -230,7 +230,7 @@ void dxf_hid_export_to_file(dxf_ctx_t *ctx, rnd_hid_attr_val_t * options, rnd_xf
 	dxf_ctx.drill_fill = options[HA_drill_fill].lng;
 	dxf_ctx.drill_contour = options[HA_drill_contour].lng;
 
-	pcbhl_expose_main(&dxf_hid, &hectx, xform);
+	rnd_expose_main(&dxf_hid, &hectx, xform);
 
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }

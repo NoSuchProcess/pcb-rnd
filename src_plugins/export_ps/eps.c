@@ -299,7 +299,7 @@ void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xf
 	}
 
 	ctx.view = *bounds;
-	pcbhl_expose_main(&eps_hid, &ctx, xform);
+	rnd_expose_main(&eps_hid, &ctx, xform);
 
 	eps_print_footer(f);
 

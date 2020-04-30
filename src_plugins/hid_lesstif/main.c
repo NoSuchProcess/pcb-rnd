@@ -486,8 +486,8 @@ static void ltf_mod_key(XKeyEvent *e, int set, int mainloop)
 	rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_false);
 	if (panning)
 		Pan(2, e->x, e->y);
-	pcb_hidcore_crosshair_move_to(ltf_hidlib, Px(e->x), Py(e->y), 1);
-	pcb_hidlib_adjust_attached_objects(ltf_hidlib);
+	rnd_hidcore_crosshair_move_to(ltf_hidlib, Px(e->x), Py(e->y), 1);
+	rnd_hidlib_adjust_attached_objects(ltf_hidlib);
 	rnd_hid_notify_crosshair_change(ltf_hidlib, pcb_true);
 	in_move_event = 0;
 }
@@ -590,7 +590,7 @@ static double ltf_benchmark(rnd_hid_t *hid)
 	time(&start);
 	do {
 		XFillRectangle(display, pixmap, bg_gc, 0, 0, view_width, view_height);
-		pcbhl_expose_main(&lesstif_hid, &ctx, NULL);
+		rnd_expose_main(&lesstif_hid, &ctx, NULL);
 		XSync(display, 0);
 		time(&end);
 		i++;
@@ -923,7 +923,7 @@ static void zoom_win(rnd_hid_t *hid, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t
 
 	lesstif_pan_fixup();
 	if (setch)
-		pcb_hidcore_crosshair_move_to(ltf_hidlib, (x1+x2)/2, (y1+y2)/2, 0);
+		rnd_hidcore_crosshair_move_to(ltf_hidlib, (x1+x2)/2, (y1+y2)/2, 0);
 }
 
 void zoom_by(double factor, rnd_coord_t x, rnd_coord_t y)
@@ -1078,7 +1078,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 			in_move_event = 1;
 			if (panning)
 				Pan(2, pos_x, pos_y);
-			pcb_hidcore_crosshair_move_to(ltf_hidlib, Px(pos_x), Py(pos_y), 1);
+			rnd_hidcore_crosshair_move_to(ltf_hidlib, Px(pos_x), Py(pos_y), 1);
 			in_move_event = 0;
 		}
 		break;
@@ -1086,8 +1086,8 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 	case LeaveNotify:
 		crosshair_in_window = 0;
 		if (crosshair_on)
-			pcbhl_draw_attached(ltf_hidlib, 1);
-		pcbhl_draw_marks(ltf_hidlib, 1);
+			rnd_draw_attached(ltf_hidlib, 1);
+		rnd_draw_marks(ltf_hidlib, 1);
 		ShowCrosshair(pcb_false);
 		need_idle_proc();
 		break;
@@ -1095,7 +1095,7 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 	case EnterNotify:
 		crosshair_in_window = 1;
 		in_move_event = 1;
-		pcb_hidcore_crosshair_move_to(ltf_hidlib, Px(e->xcrossing.x), Py(e->xcrossing.y), 1);
+		rnd_hidcore_crosshair_move_to(ltf_hidlib, Px(e->xcrossing.x), Py(e->xcrossing.y), 1);
 		ShowCrosshair(pcb_true);
 		in_move_event = 0;
 		need_redraw = 1;
@@ -1783,7 +1783,7 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	err = setjmp(lesstif_err_jmp);
 	if (err != 0)
 		return err;
-	appwidget = XtAppInitialize(&app_context, pcbhl_app_package, new_options, amax, argc, *argv, 0, stdarg_args, stdarg_n);
+	appwidget = XtAppInitialize(&app_context, rnd_app_package, new_options, amax, argc, *argv, 0, stdarg_args, stdarg_n);
 	if (appwidget == NULL)
 		return 1;
 	XtSetErrorMsgHandler(NULL); /* restore the default handler */
@@ -2019,7 +2019,7 @@ static Boolean idle_proc(XtPointer dummy)
 			}
 		}
 		DrawBackgroundImage();
-		pcbhl_expose_main(&lesstif_hid, &ctx, NULL);
+		rnd_expose_main(&lesstif_hid, &ctx, NULL);
 		lesstif_drawing_mode = RND_HID_COMP_POSITIVE;
 		draw_grid();
 		show_crosshair(0);					/* To keep the drawn / not drawn info correct */
@@ -2028,8 +2028,8 @@ static Boolean idle_proc(XtPointer dummy)
 		pixmap = window;
 		need_redraw = 0;
 		if (crosshair_on) {
-			pcbhl_draw_attached(ltf_hidlib, 1);
-			pcbhl_draw_marks(ltf_hidlib, 1);
+			rnd_draw_attached(ltf_hidlib, 1);
+			rnd_draw_marks(ltf_hidlib, 1);
 		}
 
 		pcb_ltf_preview_invalidate(NULL);
@@ -2037,13 +2037,13 @@ static Boolean idle_proc(XtPointer dummy)
 
 	{
 		static int c_x = -2, c_y = -2;
-		static pcb_mark_t saved_mark;
+		static rnd_mark_t saved_mark;
 		static const rnd_unit_t *old_grid_unit = NULL;
-		if (crosshair_x != c_x || crosshair_y != c_y || pcbhl_conf.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &pcb_marked, sizeof(pcb_mark_t))) {
+		if (crosshair_x != c_x || crosshair_y != c_y || pcbhl_conf.editor.grid_unit != old_grid_unit || memcmp(&saved_mark, &pcb_marked, sizeof(rnd_mark_t))) {
 			c_x = crosshair_x;
 			c_y = crosshair_y;
 
-			memcpy(&saved_mark, &pcb_marked, sizeof(pcb_mark_t));
+			memcpy(&saved_mark, &pcb_marked, sizeof(rnd_mark_t));
 
 			if (old_grid_unit != pcbhl_conf.editor.grid_unit)
 				old_grid_unit = pcbhl_conf.editor.grid_unit;
@@ -2118,7 +2118,7 @@ static void lesstif_notify_crosshair_change(rnd_hid_t *hid, rnd_bool changes_com
 	if (invalidate_depth == 0 && crosshair_on) {
 		save_pixmap = pixmap;
 		pixmap = window;
-		pcbhl_draw_attached(ltf_hidlib, 1);
+		rnd_draw_attached(ltf_hidlib, 1);
 		pixmap = save_pixmap;
 	}
 
@@ -2148,7 +2148,7 @@ static void lesstif_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete
 	if (invalidate_depth == 0 && crosshair_on) {
 		save_pixmap = pixmap;
 		pixmap = window;
-		pcbhl_draw_marks(ltf_hidlib, 1);
+		rnd_draw_marks(ltf_hidlib, 1);
 		pixmap = save_pixmap;
 	}
 

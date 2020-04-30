@@ -106,7 +106,7 @@ TODO(": wait for a connection?")
 	if (remote_proto_send_ready() != 0)
 		exit(1);
 
-	pcbhl_expose_main(&remote_hid, &ctx, NULL);
+	rnd_expose_main(&remote_hid, &ctx, NULL);
 
 /* main loop, parser */
 	if (remote_proto_parse_all() != 0)

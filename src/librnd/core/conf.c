@@ -452,7 +452,7 @@ int rnd_conf_get_policy_prio(lht_node_t *node, rnd_conf_policy_t *gpolicy, long 
 
 const char *rnd_conf_get_user_conf_name()
 {
-	return pcphl_conf_user_path;
+	return rnd_pcphl_conf_user_path;
 }
 
 const char *rnd_conf_get_project_conf_name(const char *project_fn, const char *pcb_fn, const char **try)
@@ -1252,8 +1252,8 @@ void rnd_conf_load_all(const char *project_fn, const char *pcb_fn)
 	rnd_conf_load_as(RND_CFR_INTERNAL, pcb_conf_internal, 1);
 
 	/* load config files */
-	rnd_conf_load_as(RND_CFR_SYSTEM, pcbhl_conf_sys_path, 0);
-	rnd_conf_load_as(RND_CFR_USER, pcphl_conf_user_path, 0);
+	rnd_conf_load_as(RND_CFR_SYSTEM, rnd_conf_sys_path, 0);
+	rnd_conf_load_as(RND_CFR_USER, rnd_pcphl_conf_user_path, 0);
 	pc = rnd_conf_get_project_conf_name(project_fn, pcb_fn, &try);
 	if (pc != NULL)
 		rnd_conf_load_as(RND_CFR_PROJECT, pc, 0);
@@ -1263,7 +1263,7 @@ void rnd_conf_load_all(const char *project_fn, const char *pcb_fn)
 	   this is needed so if the user makes config changes from the GUI things
 	   get saved. */
 	if (pcb_conf_main_root[RND_CFR_USER] == NULL)
-		rnd_conf_reset(RND_CFR_USER, pcphl_conf_user_path);
+		rnd_conf_reset(RND_CFR_USER, rnd_pcphl_conf_user_path);
 
 	rnd_conf_in_production = 1;
 }
@@ -1271,8 +1271,8 @@ void rnd_conf_load_all(const char *project_fn, const char *pcb_fn)
 void rnd_conf_load_extra(const char *project_fn, const char *pcb_fn)
 {
 	int cnt;
-	cnt = conf_load_plug_files(RND_CFR_SYSTEM, pcbhl_conf_sysdir_path);
-	cnt += conf_load_plug_files(RND_CFR_USER, pcbhl_conf_userdir_path);
+	cnt = conf_load_plug_files(RND_CFR_SYSTEM, rnd_conf_sysdir_path);
+	cnt += conf_load_plug_files(RND_CFR_USER, rnd_conf_userdir_path);
 	cnt += conf_load_plug_interns(RND_CFR_INTERNAL);
 	if (cnt > 0)
 		pcb_conf_merge_all(NULL);
@@ -1892,7 +1892,7 @@ int rnd_conf_save_file(rnd_hidlib_t *hidlib, const char *project_fn, const char 
 	if (fn == NULL) {
 		switch(role) {
 			case RND_CFR_USER:
-				fn = pcphl_conf_user_path;
+				fn = rnd_pcphl_conf_user_path;
 				break;
 			case RND_CFR_PROJECT:
 				fn = rnd_conf_get_project_conf_name(project_fn, pcb_fn, &try);

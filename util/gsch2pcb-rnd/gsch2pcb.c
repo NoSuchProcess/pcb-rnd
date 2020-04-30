@@ -56,10 +56,10 @@
 static const char *want_method_default = "import";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
-const char *pcbhl_conf_userdir_path;
-const char *pcphl_conf_user_path;
-const char *pcbhl_conf_sysdir_path;
-const char *pcbhl_conf_sys_path;
+const char *rnd_conf_userdir_path;
+const char *rnd_pcphl_conf_user_path;
+const char *rnd_conf_sysdir_path;
+const char *rnd_conf_sys_path;
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
@@ -389,14 +389,14 @@ int main(int argc, char ** argv)
 
 	method_import_register();
 
-	pcbhl_conf_userdir_path = CONF_USER_DIR;
-	pcphl_conf_user_path = pcb_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
-	pcbhl_conf_sysdir_path = PCBCONFDIR;
-	pcbhl_conf_sys_path = pcb_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
-	pcbhl_menu_file_paths[0] = "./";
-	pcbhl_menu_file_paths[1] = "~/.pcb-rnd/";
-	pcbhl_menu_file_paths[2] = pcb_concat(PCBCONFDIR, "/", NULL);
-	pcbhl_menu_file_paths[3] = NULL;
+	rnd_conf_userdir_path = CONF_USER_DIR;
+	rnd_pcphl_conf_user_path = pcb_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	rnd_conf_sysdir_path = PCBCONFDIR;
+	rnd_conf_sys_path = pcb_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
+	rnd_menu_file_paths[0] = "./";
+	rnd_menu_file_paths[1] = "~/.pcb-rnd/";
+	rnd_menu_file_paths[2] = pcb_concat(PCBCONFDIR, "/", NULL);
+	rnd_menu_file_paths[3] = NULL;
 
 	rnd_file_loaded_init();
 	rnd_conf_init();

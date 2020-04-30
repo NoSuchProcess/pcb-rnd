@@ -30,11 +30,11 @@
 
 /* glue for pcb-rnd core */
 
-const char *pcbhl_menu_file_paths[4];
-const char *pcbhl_menu_name_fmt = "pcb-menu-%s.lht";
+const char *rnd_menu_file_paths[4];
+const char *rnd_menu_name_fmt = "pcb-menu-%s.lht";
 
-const char *pcb_hidlib_default_embedded_menu = "";
+const char *rnd_hidlib_default_embedded_menu = "";
 
-void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot) { }
+void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot) { }
 
 

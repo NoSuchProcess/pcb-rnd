@@ -785,7 +785,7 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 	ghid_gl_invalidate_current_gc();
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
-	pcbhl_expose_main(&gtk2_gl_hid, &ctx, NULL);
+	rnd_expose_main(&gtk2_gl_hid, &ctx, NULL);
 	drawgl_flush();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
@@ -794,8 +794,8 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 
 	ghid_gl_invalidate_current_gc();
 
-	pcbhl_draw_attached(hidlib, 0);
-	pcbhl_draw_marks(hidlib, 0);
+	rnd_draw_attached(hidlib, 0);
+	rnd_draw_marks(hidlib, 0);
 	drawgl_flush();
 
 	ghid_gl_show_crosshair(hidlib, TRUE, ctx.view.X1, ctx.view.Y1, ctx.view.X2, ctx.view.Y2);

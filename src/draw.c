@@ -1155,7 +1155,7 @@ void pcb_draw_setup_default_xform_info(rnd_hid_t *hid, pcb_draw_info_t *info)
 	}
 }
 
-void pcbhl_expose_main(rnd_hid_t * hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform_t *xform_caller)
+void rnd_expose_main(rnd_hid_t * hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform_t *xform_caller)
 {
 	if (!pcb_draw_inhibit) {
 		pcb_output_t save;
@@ -1175,7 +1175,7 @@ void pcbhl_expose_main(rnd_hid_t * hid, const rnd_hid_expose_ctx_t *ctx, rnd_xfo
 	}
 }
 
-void pcbhl_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e)
+void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e)
 {
 	pcb_output_t save;
 	expose_begin(&save, hid);

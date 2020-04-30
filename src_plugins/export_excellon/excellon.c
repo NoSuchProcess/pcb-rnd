@@ -253,11 +253,11 @@ static void excellon_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	lastwidth = -1;
 	finding_apertures = 1;
-	pcbhl_expose_main(&excellon_hid, &ctx, &xform);
+	rnd_expose_main(&excellon_hid, &ctx, &xform);
 
 	lastwidth = -1;
 	finding_apertures = 0;
-	pcbhl_expose_main(&excellon_hid, &ctx, &xform);
+	rnd_expose_main(&excellon_hid, &ctx, &xform);
 	rnd_conf_update(NULL, -1); /* resotre forced sets */
 
 

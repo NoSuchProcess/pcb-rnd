@@ -1,20 +1,20 @@
 /*** hidlib glue ***/
 
-const char *pcb_hidlib_default_embedded_menu = "";
+const char *rnd_hidlib_default_embedded_menu = "";
 const char *pcb_conf_internal = "";
-const char *pcbhl_menu_file_paths[] = { "./", NULL };
-const char *pcbhl_menu_name_fmt = "menu.lht";
+const char *rnd_menu_file_paths[] = { "./", NULL };
+const char *rnd_menu_name_fmt = "menu.lht";
 
-const char *pcbhl_conf_userdir_path = "./";
-const char *pcphl_conf_user_path = "./conf.lht";
+const char *rnd_conf_userdir_path = "./";
+const char *rnd_pcphl_conf_user_path = "./conf.lht";
 
 /* hack for running from ./ without internal version of the conf */
-const char *pcbhl_conf_sysdir_path = "./";
-const char *pcbhl_conf_sys_path = "./conf.lht";
+const char *rnd_conf_sysdir_path = "./";
+const char *rnd_conf_sys_path = "./conf.lht";
 
-const char *pcbhl_app_package = "librnd_test";
-const char *pcbhl_app_version = "0.0.0";
-const char *pcbhl_app_url = "n/a";
+const char *rnd_app_package = "librnd_test";
+const char *rnd_app_version = "0.0.0";
+const char *rnd_app_url = "n/a";
 
 
 typedef struct design_s {
@@ -36,35 +36,35 @@ void conf_core_init()
 	rnd_conf_reg_field_(NULL, 1, RND_CFN_COORD, "should_never_match", "dummy", 0);
 }
 
-void pcb_hidlib_adjust_attached_objects(rnd_hidlib_t *hl)
+void rnd_hidlib_adjust_attached_objects(rnd_hidlib_t *hl)
 {
 }
 
-void *pcb_hidlib_crosshair_suspend(rnd_hidlib_t *hl)
+void *rnd_hidlib_crosshair_suspend(rnd_hidlib_t *hl)
 {
 	return NULL;
 }
 
-void pcb_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
+void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
 {
 }
 
-void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
+void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
 {
 }
 
-void pcbhl_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
+void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 }
 
-void pcbhl_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
+void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 }
 
-void pcbhl_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xform_t *xform_caller)
+void rnd_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xform_t *xform_caller)
 {
 }
 
-void pcbhl_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e)
+void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e)
 {
 }

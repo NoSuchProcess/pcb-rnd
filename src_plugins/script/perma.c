@@ -121,6 +121,6 @@ static void perma_script_load_conf(const char *dir)
 
 static void perma_script_init(void)
 {
-	perma_script_load_conf(pcbhl_conf_userdir_path);
-	perma_script_load_conf(pcbhl_conf_sysdir_path);
+	perma_script_load_conf(rnd_conf_userdir_path);
+	perma_script_load_conf(rnd_conf_sysdir_path);
 }
