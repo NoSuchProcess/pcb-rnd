@@ -223,7 +223,7 @@ static void update_edit_button(library_ctx_t *ctx)
 {
 	const char *otext = ctx->dlg[ctx->wfilt].val.str;
 	int param_entered = 0, param_selected = 0;
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
 
 	if (row != NULL) {
 		pcb_fplibrary_t *l = row->user_data;
@@ -282,12 +282,12 @@ static void library_lib2dlg(library_ctx_t *ctx)
 	tree = attr->wdata;
 
 	/* remember cursor */
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL)
 		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	/* add all items recursively */
 	create_lib_tree_model_recurse(attr, &pcb_library, NULL);
@@ -421,8 +421,8 @@ static void library_tree_unhide(rnd_hid_tree_t *tree, gdl_list_t *rowlist, re_se
 
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
 		if (((preg == NULL) || (re_sei_exec(preg, r->cell[0]))) && tag_match(r->user_data, taglist)) {
-			pcb_dad_tree_hide_all(tree, &r->children, 0); /* if this is a node with children, show all children */
-			for(pr = r; pr != NULL; pr = pcb_dad_tree_parent_row(tree, pr)) /* also show all parents so it is visible */
+			rnd_dad_tree_hide_all(tree, &r->children, 0); /* if this is a node with children, show all children */
+			for(pr = r; pr != NULL; pr = rnd_dad_tree_parent_row(tree, pr)) /* also show all parents so it is visible */
 				pr->hide = 0;
 		}
 		library_tree_unhide(tree, &r->children, preg, taglist);
@@ -463,13 +463,13 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 	if (have_filter_text) {
 		/* need to unhide for expand to work */
-		pcb_dad_tree_hide_all(tree, &tree->rows, 0);
-		pcb_dad_tree_update_hide(attr);
-		pcb_dad_tree_expcoll(attr, NULL, 1, 1);
-		pcb_dad_tree_hide_all(tree, &tree->rows, 1);
+		rnd_dad_tree_hide_all(tree, &tree->rows, 0);
+		rnd_dad_tree_update_hide(attr);
+		rnd_dad_tree_expcoll(attr, NULL, 1, 1);
+		rnd_dad_tree_hide_all(tree, &tree->rows, 1);
 	}
 	else
-		pcb_dad_tree_hide_all(tree, &tree->rows, 0);
+		rnd_dad_tree_hide_all(tree, &tree->rows, 0);
 
 	if (have_filter_text) { /* unhide hits and all their parents */
 		char *tag, *next, *tags = NULL;
@@ -514,7 +514,7 @@ static void library_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		free(tags);
 	}
 
-	pcb_dad_tree_update_hide(attr);
+	rnd_dad_tree_update_hide(attr);
 
 	skip_filter:;
 
@@ -564,7 +564,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	int namelen;
 
 	attr = &ctx->dlg[ctx->wtree];
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 
 	if (!ctx->last_clicked && (otext != NULL)) {
 		name = rnd_strdup(otext);
@@ -597,7 +597,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 
 	if (rnew != NULL) {
 		if (r != rnew)
-			pcb_dad_tree_jumpto(attr, rnew);
+			rnd_dad_tree_jumpto(attr, rnew);
 		library_param_dialog(ctx, rnew->user_data);
 	}
 	else
@@ -609,7 +609,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 static void library_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	library_ctx_t *ctx = caller_data;
-	rnd_hid_row_t *r = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
+	rnd_hid_row_t *r = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
 	pcb_fplibrary_t *l;
 	char *oname;
 

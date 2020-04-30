@@ -85,7 +85,7 @@ static void setup_tree(pref_ctx_t *ctx)
 		*basename = '\0';
 		basename++;
 
-		parent = pcb_dad_tree_mkdirp(tree, path, NULL);
+		parent = rnd_dad_tree_mkdirp(tree, path, NULL);
 		if (parent == NULL) {
 			rnd_message(RND_MSG_WARNING, "Warning: can't create config item for %s: invalid path\n", e->key);
 			continue;
@@ -95,7 +95,7 @@ static void setup_tree(pref_ctx_t *ctx)
 		if (nat->array_size > 1) {
 			int i;
 			*bnsep = '/';
-			parent = pcb_dad_tree_mkdirp(tree, path, NULL);
+			parent = rnd_dad_tree_mkdirp(tree, path, NULL);
 			for(i = 0; i < nat->array_size; i++) {
 				cell[0] = pcb_strdup_printf("[%d]", i);
 				rnd_dad_tree_append_under(attr, parent, cell);
@@ -143,7 +143,7 @@ static void setup_intree(pref_ctx_t *ctx, rnd_conf_native_t *nat, int idx)
 	rnd_hid_tree_t *tree = attr->wdata;
 	rnd_hid_row_t *r;
 
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	for(n = 0; n < RND_CFR_max_real; n++) {
 		char *cell[5]= {NULL};
@@ -237,7 +237,7 @@ static void dlg_conf_select_node(pref_ctx_t *ctx, const char *path, rnd_conf_nat
 		rnd_conf_listitem_t *n;
 		char *cell[4];
 
-		pcb_dad_tree_clear(tree);
+		rnd_dad_tree_clear(tree);
 		for (n = rnd_conflist_first(&nat->val.list[idx]); n != NULL; n = rnd_conflist_next(n)) {
 			const char *strval;
 			rolename = rnd_conf_role_name(rnd_conf_lookup_role(n->prop.src));
@@ -332,12 +332,12 @@ static void pcb_pref_dlg_conf_filter_cb(void *hid_ctx, void *caller_data, rnd_hi
 	have_filter_text = (*text != '\0');
 
 	/* hide or unhide everything */
-	pcb_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
+	rnd_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
 
 	if (have_filter_text) /* unhide hits and all their parents */
-		pcb_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
+		rnd_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
 
-	pcb_dad_tree_update_hide(attr);
+	rnd_dad_tree_update_hide(attr);
 }
 
 
@@ -490,7 +490,7 @@ void pcb_dlg_pref_conf_open(pref_ctx_t *ctx, const char *tabarg)
 		hv.str = rnd_strdup(tabarg);
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->conf.wfilter, &hv);
 		pcb_pref_dlg_conf_filter_cb(ctx->dlg_hid_ctx, ctx, &ctx->dlg[ctx->conf.wfilter]);
-		pcb_dad_tree_expcoll(&ctx->dlg[ctx->conf.wtree], NULL, 1, 1);
+		rnd_dad_tree_expcoll(&ctx->dlg[ctx->conf.wtree], NULL, 1, 1);
 	}
 }
 

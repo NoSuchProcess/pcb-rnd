@@ -62,12 +62,12 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 	tree = attr->wdata;
 
 	/* remember cursor */
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL)
 		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	nets = pcb_netlist_sort(&ctx->pcb->netlist[1]);
 	if (nets != NULL) {
@@ -102,13 +102,13 @@ static void netlist_data2dlg_connlist(netlist_ctx_t *ctx, pcb_net_t *net)
 
 	/* remember cursor */
 	if (net != NULL) {
-		r = pcb_dad_tree_get_selected(attr);
+		r = rnd_dad_tree_get_selected(attr);
 		if (r != NULL)
 			cursor_path = rnd_strdup(r->cell[0]);
 	}
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	if (net == NULL)
 		return;
@@ -196,7 +196,7 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	const char *name;
 
 	atree = &ctx->dlg[ctx->wnetlist];
-	r = pcb_dad_tree_get_selected(atree);
+	r = rnd_dad_tree_get_selected(atree);
 	if (r == NULL)
 		return;
 	name = rnd_strdup(r->cell[0]);
@@ -266,7 +266,7 @@ static void netlist_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 	pcb_net_t *net = NULL;
 
 	attr = &ctx->dlg[ctx->wnetlist];
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL)
 		net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], r->cell[0], 0);
 

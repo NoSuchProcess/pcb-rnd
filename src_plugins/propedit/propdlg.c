@@ -76,12 +76,12 @@ static void prop_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	have_filter_text = (text != NULL) && (*text != '\0');
 
 	/* hide or unhide everything */
-	pcb_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
+	rnd_dad_tree_hide_all(tree, &tree->rows, have_filter_text);
 
 	if (have_filter_text) /* unhide hits and all their parents */
-		pcb_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
+		rnd_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
 
-	pcb_dad_tree_update_hide(attr);
+	rnd_dad_tree_update_hide(attr);
 }
 
 static void prop_pcb2dlg(propdlg_t *ctx)
@@ -93,11 +93,11 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 	char *cursor_path = NULL;
 
 	/* remember cursor */
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL)
 		cursor_path = rnd_strdup(r->path);
 
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	pcb_props_clear(&ctx->pe);
 	pcb_propsel_map_core(&ctx->pe);
@@ -120,13 +120,13 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 		cell[0] = rnd_strdup(e->key);
 		cell[1] = pcb_propsel_printval(p->type, &com);
 
-		r = pcb_dad_tree_mkdirp(tree, cell[0], cell);
+		r = rnd_dad_tree_mkdirp(tree, cell[0], cell);
 		r->user_data = e->key;
 	}
 	free(sorted);
 	prop_filter_cb(ctx->dlg_hid_ctx, ctx, NULL);
 
-	pcb_dad_tree_expcoll(attr, NULL, 1, 1);
+	rnd_dad_tree_expcoll(attr, NULL, 1, 1);
 
 	/* restore cursor */
 	if (cursor_path != NULL) {
@@ -271,7 +271,7 @@ static void prop_vals_update(propdlg_t *ctx, pcb_props_t *p)
 	char *cell[3] = {NULL, NULL, NULL};
 	int n;
 
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	if (p == NULL) { /* deselect or not found */
 		hv.lng = 0;
@@ -319,7 +319,7 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 static void prop_data_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr, int force_update)
 {
 	propdlg_t *ctx = caller_data;
-	rnd_hid_row_t *r = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
+	rnd_hid_row_t *r = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
 	pcb_props_t *p = NULL;
 	pcb_propset_ctx_t sctx;
 
@@ -419,7 +419,7 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 static void prop_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	propdlg_t *ctx = caller_data;
-	rnd_hid_row_t *r = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
+	rnd_hid_row_t *r = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
 	if (r == NULL) {
 		rnd_message(RND_MSG_ERROR, "can not delete: no attribute selected\n");
 		return;
@@ -438,8 +438,8 @@ static void prop_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 static void prop_preset_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	propdlg_t *ctx = caller_data;
-	rnd_hid_row_t *rv = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wvals]);
-	rnd_hid_row_t *rp = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
+	rnd_hid_row_t *rv = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wvals]);
+	rnd_hid_row_t *rp = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wtree]);
 	pcb_props_t *p;
 
 	if ((rv == NULL) || (rv->user_data == NULL) || (rp == NULL))
@@ -461,7 +461,7 @@ static void prop_refresh(propdlg_t *ctx)
 {
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wtree];
 	prop_pcb2dlg(ctx);
-	prop_select_node_cb(attr, ctx->dlg_hid_ctx, pcb_dad_tree_get_selected(attr));
+	prop_select_node_cb(attr, ctx->dlg_hid_ctx, rnd_dad_tree_get_selected(attr));
 }
 
 

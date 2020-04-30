@@ -51,12 +51,12 @@ static void cam_gui_jobs2dlg(cam_dlg_t *ctx)
 	tree = attr->wdata;
 
 	/* remember cursor */
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL)
 		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	/* add all new items */
 	cn = rnd_conf_get_field("plugins/cam/jobs");
@@ -91,7 +91,7 @@ static void cam_gui_digest2dlg(cam_dlg_t *ctx)
 	tree = attr->wdata;
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	/* add all new items */
 	for(n = 0, c = ctx->cam.code.array; n < ctx->cam.code.used; n++,c++) {
@@ -145,12 +145,12 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 	tree = attr->wdata;
 
 	/* remember cursor */
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL)
 		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	/* add all new items */
 	for(e = htsp_first(vars); e != NULL; e = htsp_next(vars, e)) {
@@ -185,16 +185,16 @@ static void cam_gui_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	tree = attr->wdata;
 	text = attr_inp->val.str;
 
-	pcb_dad_tree_hide_all(tree, &tree->rows, 1);
-	pcb_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
-	pcb_dad_tree_update_hide(attr);
+	rnd_dad_tree_hide_all(tree, &tree->rows, 1);
+	rnd_dad_tree_unhide_filter(tree, &tree->rows, 0, text);
+	rnd_dad_tree_update_hide(attr);
 }
 
 static void cam_gui_export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	cam_dlg_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wjobs];
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
 
 	if (row != NULL) {
 		const char *outfile = ctx->dlg[ctx->woutfile].val.str;

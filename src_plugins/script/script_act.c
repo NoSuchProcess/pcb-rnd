@@ -85,9 +85,9 @@ static void script_dlg_s2d_act(script_dlg_t *ctx)
 
 	/* remove existing items */
 	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
-		pcb_dad_tree_remove(attr, r);
+		rnd_dad_tree_remove(attr, r);
 
-	r = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
+	r = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
 	if (r == NULL)
 		return;
 
@@ -116,13 +116,13 @@ static void script_dlg_s2d(script_dlg_t *ctx)
 	tree = attr->wdata;
 
 	/* remember cursor */
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL)
 		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
 	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_first(&tree->rows))
-		pcb_dad_tree_remove(attr, r);
+		rnd_dad_tree_remove(attr, r);
 
 	/* add all items */
 	cell[3] = NULL;
@@ -160,7 +160,7 @@ static void script_dlg_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 static void btn_unload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	script_dlg_t *ctx = caller_data;
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
 	if (row == NULL)
 		return;
 
@@ -171,7 +171,7 @@ static void btn_unload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 static void btn_reload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	script_dlg_t *ctx = caller_data;
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
 	if (row == NULL)
 		return;
 

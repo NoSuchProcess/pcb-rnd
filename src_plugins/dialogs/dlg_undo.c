@@ -77,12 +77,12 @@ static void undo_data2dlg(undo_ctx_t *ctx)
 	tree = attr->wdata;
 
 	/* remember cursor */
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL)
 		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	mark[1] = '\0';
 	cell[3] = NULL;

@@ -415,12 +415,12 @@ static void skip(void *hid_ctx, int pick_grp, rnd_hid_row_t *row)
 			goto last; /* skipping from the last part of the last group -> unselect all */
 		nr = gdl_first(&nr->children);
 	}
-	pcb_dad_tree_jumpto(&asm_ctx.dlg[asm_ctx.wtbl], nr);
+	rnd_dad_tree_jumpto(&asm_ctx.dlg[asm_ctx.wtbl], nr);
 	return;
 
 	last:;
 	/* what happens after the last */
-	pcb_dad_tree_jumpto(&asm_ctx.dlg[asm_ctx.wtbl], NULL);
+	rnd_dad_tree_jumpto(&asm_ctx.dlg[asm_ctx.wtbl], NULL);
 	return;
 }
 
@@ -436,22 +436,22 @@ static void group_progress_update(void *hid_ctx, group_t *grp)
 	}
 
 	tmp = pcb_strdup_printf("%d/%d", done, total);
-	pcb_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], grp->row, 5, tmp);
+	rnd_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], grp->row, 5, tmp);
 }
 
 static void done(void *hid_ctx, part_t *part, int done)
 {
 	part->done = done;
 	if (done)
-		pcb_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "yes");
+		rnd_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "yes");
 	else
-		pcb_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "-");
+		rnd_dad_tree_modify_cell(&asm_ctx.dlg[asm_ctx.wtbl], part->row, 5, "-");
 	group_progress_update(hid_ctx, part->parent);
 }
 
 static void asm_done_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 	if (*(int *)row->user_data)
 		return;
 	done(hid_ctx, row->user_data, 1);
@@ -460,7 +460,7 @@ static void asm_done_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 
 static void asm_undo_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 	if (*(int *)row->user_data)
 		return;
 	done(hid_ctx, row->user_data, 0);
@@ -469,7 +469,7 @@ static void asm_undo_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 
 static void asm_skip_part(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 	if (*(int *)row->user_data)
 		return;
 	skip(hid_ctx, 0, row);
@@ -479,7 +479,7 @@ static void asm_done_group_(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 {
 	long n;
 	group_t *g;
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 
 	if (!*(int *)row->user_data) {
 		part_t *p = row->user_data;
@@ -506,7 +506,7 @@ static void asm_undo_group(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 static void asm_skip_group(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&asm_ctx.dlg[asm_ctx.wtbl]);
 
 	skip(hid_ctx, 1, row);
 }
@@ -619,7 +619,7 @@ fgw_error_t pcb_act_asm(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* expand all groups by default */
 	for(g = (group_t **)asm_ctx.grps.array, n = 0; n < asm_ctx.grps.used; g++,n++)
-		pcb_dad_tree_expcoll(&asm_ctx.dlg[asm_ctx.wtbl], (*g)->row, 1, 0);
+		rnd_dad_tree_expcoll(&asm_ctx.dlg[asm_ctx.wtbl], (*g)->row, 1, 0);
 
 	RND_ACT_IRES(0);
 	return 0;

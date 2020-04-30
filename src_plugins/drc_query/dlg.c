@@ -379,12 +379,12 @@ static void drc_rlist_pcb2dlg(void)
 	tree = attr->wdata;
 
 	/* remember cursor */
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL)
 		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	cell[4] = NULL;
 
@@ -419,7 +419,7 @@ static void drc_rlist_pcb2dlg(void)
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
 		free(cursor_path);
 
-		r = pcb_dad_tree_get_selected(attr);
+		r = rnd_dad_tree_get_selected(attr);
 		rlist_select(&ctx->dlg[ctx->wlist], ctx->dlg_hid_ctx, r);
 	}
 }
@@ -427,7 +427,7 @@ static void drc_rlist_pcb2dlg(void)
 static void rlist_btn_toggle_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
 	int *dis;
 
 	if (row == NULL) {
@@ -472,7 +472,7 @@ do { \
 static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
 	rnd_conf_role_t role;
 
 	rlist_fetch();
@@ -483,7 +483,7 @@ static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
 	lht_node_t *nd;
 	const char *script;
 	rnd_conf_role_t role;

@@ -94,7 +94,7 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	hv.crd = rst->Diameter;
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
 
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	for(a = rst->attr.List, n = 0; n < rst->attr.Number; a++,n++) {
 		char *cell[3]= {NULL};
@@ -212,7 +212,7 @@ static void rst_edit_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 {
 	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
 	rnd_hid_attribute_t *treea = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(treea);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(treea);
 	char *key, *val;
 
 	if (row == NULL)
@@ -232,7 +232,7 @@ static void rst_del_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 {
 	pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
 	rnd_hid_attribute_t *treea = &rstdlg_ctx.dlg[rstdlg_ctx.wattr];
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(treea);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(treea);
 
 	if (row == NULL)
 		return;

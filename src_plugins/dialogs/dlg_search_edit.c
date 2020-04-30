@@ -83,13 +83,13 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, i
 
 	/* remember cursor */
 	if (click) {
-		r = pcb_dad_tree_get_selected(attr);
+		r = rnd_dad_tree_get_selected(attr);
 		if (r != NULL)
 			cursor_path = rnd_strdup(r->cell[0]);
 	}
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	/* add all items */
 	cell[1] = NULL;
@@ -109,7 +109,7 @@ static void srch_expr_set_ops(srchedit_ctx_t *ctx, const expr_wizard_op_t *op, i
 		free(cursor_path);
 	}
 	if (cur != NULL)
-		pcb_dad_tree_jumpto(attr, cur);
+		rnd_dad_tree_jumpto(attr, cur);
 	ctx->last_op = op;
 }
 
@@ -124,7 +124,7 @@ static void srch_expr_fill_in_right_const(srchedit_ctx_t *ctx, const search_expr
 	tree = attr->wdata;
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	/* add all items */
 	cell[1] = NULL;
@@ -246,7 +246,7 @@ static int fill_in_left(srchedit_ctx_t *ctx)
 	}
 
 	if (cur != NULL) {
-		pcb_dad_tree_jumpto(attr, cur);
+		rnd_dad_tree_jumpto(attr, cur);
 
 		/* clear all cache fields so a second window open won't inhibit refreshes */
 		ctx->last_op = NULL;

@@ -61,30 +61,30 @@ void rnd_dad_tree_free(rnd_hid_attribute_t *attr)
 	free(tree);
 }
 
-void pcb_dad_tree_hide_all(rnd_hid_tree_t *tree, gdl_list_t *rowlist, int val)
+void rnd_dad_tree_hide_all(rnd_hid_tree_t *tree, gdl_list_t *rowlist, int val)
 {
 	rnd_hid_row_t *r;
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
 		r->hide = val;
-		pcb_dad_tree_hide_all(tree, &r->children, val);
+		rnd_dad_tree_hide_all(tree, &r->children, val);
 	}
 }
 
-void pcb_dad_tree_unhide_filter(rnd_hid_tree_t *tree, gdl_list_t *rowlist, int col, const char *text)
+void rnd_dad_tree_unhide_filter(rnd_hid_tree_t *tree, gdl_list_t *rowlist, int col, const char *text)
 {
 	rnd_hid_row_t *r, *pr;
 
 	for(r = gdl_first(rowlist); r != NULL; r = gdl_next(rowlist, r)) {
 		if (strstr(r->cell[col], text) != NULL) {
-			pcb_dad_tree_hide_all(tree, &r->children, 0); /* if this is a node with children, show all children */
-			for(pr = r; pr != NULL; pr = pcb_dad_tree_parent_row(tree, pr)) /* also show all parents so it is visible */
+			rnd_dad_tree_hide_all(tree, &r->children, 0); /* if this is a node with children, show all children */
+			for(pr = r; pr != NULL; pr = rnd_dad_tree_parent_row(tree, pr)) /* also show all parents so it is visible */
 				pr->hide = 0;
 		}
-		pcb_dad_tree_unhide_filter(tree, &r->children, col, text);
+		rnd_dad_tree_unhide_filter(tree, &r->children, col, text);
 	}
 }
 
-rnd_hid_row_t *pcb_dad_tree_mkdirp(rnd_hid_tree_t *tree, char *path, char **cells)
+rnd_hid_row_t *rnd_dad_tree_mkdirp(rnd_hid_tree_t *tree, char *path, char **cells)
 {
 	char *cell[2] = {NULL};
 	rnd_hid_row_t *parent;
@@ -108,7 +108,7 @@ rnd_hid_row_t *pcb_dad_tree_mkdirp(rnd_hid_tree_t *tree, char *path, char **cell
 /* non-root-dir: get or create parent */
 	*last = '\0';
 	last++;
-	parent = pcb_dad_tree_mkdirp(tree, path, NULL);
+	parent = rnd_dad_tree_mkdirp(tree, path, NULL);
 
 	if (cells == NULL) {
 		cell[0] = rnd_strdup(last);

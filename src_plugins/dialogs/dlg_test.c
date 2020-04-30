@@ -350,7 +350,7 @@ static void cb_ttbl_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
 	char *rowdata[] = {NULL, "ins", "dummy", NULL};
-	rnd_hid_row_t *new_row, *row = pcb_dad_tree_get_selected(treea);
+	rnd_hid_row_t *new_row, *row = rnd_dad_tree_get_selected(treea);
 	rnd_hid_attr_val_t val;
 
 	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
@@ -366,7 +366,7 @@ static void cb_ttbl_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	test_t *ctx = caller_data;
 	rnd_hid_attribute_t *treea = &ctx->dlg[ctx->tt];
 	char *rowdata[] = {NULL, "app", "dummy", NULL};
-	rnd_hid_row_t *new_row, *row = pcb_dad_tree_get_selected(treea);
+	rnd_hid_row_t *new_row, *row = rnd_dad_tree_get_selected(treea);
 	rnd_hid_attr_val_t val;
 
 	rowdata[0] = pcb_strdup_printf("dyn_%d", ctx->ttctr++);
@@ -403,13 +403,13 @@ static void cb_ttbl_filt(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	rnd_hid_tree_t *tree = treea->wdata;
 
 	ttbl_filt(&tree->rows, attr->val.lng);
-	pcb_dad_tree_update_hide(treea);
+	rnd_dad_tree_update_hide(treea);
 }
 
 /* table level selection */
 static void cb_ttbl_select(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
 	if (attr->val.str != NULL)
 		rnd_trace("tt tbl selected: path=%s row=%p '%s'\n", attr->val.str, row, row->cell[0]);
 	else

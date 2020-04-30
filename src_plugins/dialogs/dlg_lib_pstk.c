@@ -98,12 +98,12 @@ static int pstklib_data2dlg(pstk_lib_ctx_t *ctx)
 	tree = attr->wdata;
 
 	/* remember cursor */
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL)
 		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	/* add all items */
 	cell[3] = NULL;
@@ -288,7 +288,7 @@ static void pstklib_filter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 			r->hide = (strstr(r->cell[1], text) == NULL);
 	}
 
-	pcb_dad_tree_update_hide(attr);
+	rnd_dad_tree_update_hide(attr);
 }
 
 
@@ -320,7 +320,7 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, rnd_hid_attribu
 {
 	pstk_lib_ctx_t *ctx = caller_data;
 	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
-	rnd_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
 
 	if ((row == NULL) || (data == NULL))
 		return;
@@ -341,7 +341,7 @@ static void pstklib_proto_new_(void *hid_ctx, void *caller_data, rnd_hid_attribu
 		return;
 
 	if (dup) {
-		rnd_hid_row_t *row = pcb_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
+		rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
 		if (row == NULL)
 			return;
 		proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
@@ -388,7 +388,7 @@ static void pstklib_proto_switch(void *hid_ctx, void *caller_data, rnd_hid_attri
 		return;
 
 	attr = &ctx->dlg[ctx->wlist];
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r == NULL)
 		return;
 
@@ -421,7 +421,7 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, rnd_hid_attri
 		return;
 
 	attr = &ctx->dlg[ctx->wlist];
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r == NULL)
 		return;
 

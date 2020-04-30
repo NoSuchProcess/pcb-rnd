@@ -96,7 +96,7 @@ GtkTreeModel *ghid_tree_table_get_model(attr_dlg_t *ctx, rnd_hid_attribute_t *at
 static void ghid_tree_table_insert_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *new_row)
 {
 	attr_dlg_t *ctx = hid_ctx;
-	rnd_hid_row_t *sibling, *par = pcb_dad_tree_parent_row(attrib->wdata, new_row);
+	rnd_hid_row_t *sibling, *par = rnd_dad_tree_parent_row(attrib->wdata, new_row);
 	GtkTreeModel *model = ghid_tree_table_get_model(ctx, attrib, 0);
 	GtkTreeIter *sibiter, *pariter;
 	int prepnd;

@@ -95,12 +95,12 @@ static void view2dlg_list(view_ctx_t *ctx)
 	tree = attr->wdata;
 
 	/* remember cursor */
-	r = pcb_dad_tree_get_selected(attr);
+	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL)
 		cursor_path = rnd_strdup(r->cell[0]);
 
 	/* remove existing items */
-	pcb_dad_tree_clear(tree);
+	rnd_dad_tree_clear(tree);
 
 	/* add all items */
 	cell[2] = NULL;
@@ -118,7 +118,7 @@ static void view2dlg_list(view_ctx_t *ctx)
 		cell[1] = rnd_strdup(v->title);
 		r = rnd_dad_tree_append_under(attr, rt, cell);
 		r->user_data2.lng = v->uid;
-		pcb_dad_tree_expcoll(attr, rt, 1, 0);
+		rnd_dad_tree_expcoll(attr, rt, 1, 0);
 	}
 
 	/* restore cursor */
@@ -318,7 +318,7 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	}
 	else { /* full dialog, go by the list */
 		rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
-		rnd_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+		rnd_hid_row_t *rc, *r = rnd_dad_tree_get_selected(attr);
 
 		if (r == NULL)
 			return;
@@ -327,16 +327,16 @@ static void view_del_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 			/* remove a whole category - assume a single level */
 			for(rc = gdl_first(&r->children); rc != NULL; rc = gdl_next(&r->children, rc)) {
 				v = pcb_view_by_uid(ctx->lst, rc->user_data2.lng);
-				pcb_dad_tree_remove(attr, rc);
+				rnd_dad_tree_remove(attr, rc);
 				if (v != NULL)
 					pcb_view_free(v);
 			}
-			pcb_dad_tree_remove(attr, r);
+			rnd_dad_tree_remove(attr, r);
 		}
 		else {
 			/* remove a single item */
 			v = pcb_view_by_uid(ctx->lst, r->user_data2.lng);
-			pcb_dad_tree_remove(attr, r);
+			rnd_dad_tree_remove(attr, r);
 			if (v != NULL)
 				pcb_view_free(v);
 		}
@@ -349,7 +349,7 @@ static void view_copy_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	pcb_view_t *v;
 	gds_t tmp;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
-	rnd_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *rc, *r = rnd_dad_tree_get_selected(attr);
 	int btn_idx = attr_btn - ctx->dlg;
 	int cut = (ctx->wbtn_cut == btn_idx);
 
@@ -396,7 +396,7 @@ static void view_paste_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	size_t clen;
 	pcb_view_t *v, *vt = NULL;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
-	rnd_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
 
 	if (r != NULL) {
 		/* if cursor is a category */
@@ -528,7 +528,7 @@ static void view_select_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 {
 	view_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wlist];
-	rnd_hid_row_t *rc, *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *rc, *r = rnd_dad_tree_get_selected(attr);
 
 	if (r == NULL)
 		return;

@@ -37,7 +37,7 @@ static void ltf_tt_insert_row(ltf_tree_t *lt, rnd_hid_row_t *new_row)
 
 	e = tt_entry_alloc(new_row->cols);
 
-	parent = pcb_dad_tree_parent_row(lt->ht, new_row);
+	parent = rnd_dad_tree_parent_row(lt->ht, new_row);
 	if (parent != NULL) {
 		parlist = &parent->children;
 		at = parent->hid_data;
@@ -297,7 +297,7 @@ static void ltf_tree_set(lesstif_attr_dlg_t *ctx, int idx, const char *val)
 
 	/* make sure the path is visible: expand all parent, but not all
 	   children of those parents */
-	for(r = pcb_dad_tree_parent_row(lt->ht, row); r != NULL; r = pcb_dad_tree_parent_row(lt->ht, r)) {
+	for(r = rnd_dad_tree_parent_row(lt->ht, row); r != NULL; r = rnd_dad_tree_parent_row(lt->ht, r)) {
 		e = r->hid_data;
 		e->flags.is_thidden = 0;
 		e->flags.is_uhidden = 0;

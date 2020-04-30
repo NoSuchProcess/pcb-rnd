@@ -102,7 +102,7 @@ static void confedit_brd2dlg(confedit_ctx_t *ctx)
 				rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
 				rnd_hid_tree_t *tree = attr->wdata;
 			
-				pcb_dad_tree_clear(tree);
+				rnd_dad_tree_clear(tree);
 				if (nd->type != LHT_LIST)
 					return;
 				for(nl = nd->data.list.first; nl != NULL; nl = nl->next) {
@@ -198,10 +198,10 @@ static void pref_conf_editval_del_cb(void *hid_ctx, void *caller_data, rnd_hid_a
 {
 	confedit_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
-	rnd_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
 
 	if (r != NULL) {
-		pcb_dad_tree_remove(attr, r);
+		rnd_dad_tree_remove(attr, r);
 		pref_conf_editval_cb(hid_ctx, caller_data, trigger_attr);
 	}
 }
@@ -212,7 +212,7 @@ static void pref_conf_editval_edit(void *hid_ctx, confedit_ctx_t *ctx, rnd_hid_a
 	if (nv == NULL)
 		return;
 
-	if (pcb_dad_tree_modify_cell(attr, r, 0, rnd_strdup(nv)) == 0)
+	if (rnd_dad_tree_modify_cell(attr, r, 0, rnd_strdup(nv)) == 0)
 		pref_conf_editval_cb(hid_ctx, ctx, attr);
 }
 
@@ -220,7 +220,7 @@ static void pref_conf_editval_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_
 {
 	confedit_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
-	rnd_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
 
 	if (r != NULL)
 		pref_conf_editval_edit(hid_ctx, ctx, attr, r);
@@ -230,7 +230,7 @@ static void pref_conf_editval_ins_cb(void *hid_ctx, void *caller_data, rnd_hid_a
 {
 	confedit_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *attr = &ctx->dlg[ctx->wnewval];
-	rnd_hid_row_t *r = pcb_dad_tree_get_selected(attr);
+	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
 	char *cols[] = {NULL, NULL};
 
 	cols[0] = rnd_strdup("");
@@ -265,7 +265,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		return;
 	}
 
-	r = pcb_dad_tree_get_selected(&pctx->dlg[pctx->conf.wintree]);
+	r = rnd_dad_tree_get_selected(&pctx->dlg[pctx->conf.wintree]);
 	if (r == NULL) {
 		rnd_message(RND_MSG_ERROR, "You need to select a role (upper right list)\n");
 		return;
@@ -417,7 +417,7 @@ static void pref_conf_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 		return;
 	}
 
-	r = pcb_dad_tree_get_selected(&pctx->dlg[pctx->conf.wintree]);
+	r = rnd_dad_tree_get_selected(&pctx->dlg[pctx->conf.wintree]);
 	if (r == NULL) {
 		rnd_message(RND_MSG_ERROR, "You need to select a role (upper right list)\n");
 		return;
