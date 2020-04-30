@@ -238,7 +238,7 @@ static const char *tedax_etest_cookie = "tEDAx etest";
 static int tedax_etest_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(tedax_etest_options, sizeof(tedax_etest_options) / sizeof(tedax_etest_options[0]), tedax_etest_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 static rnd_hid_t exp_tedax_etest;
@@ -265,5 +265,5 @@ void tedax_etest_init(void)
 
 	exp_tedax_etest.usage = tedax_etest_usage;
 
-	pcb_hid_register_hid(&exp_tedax_etest);
+	rnd_hid_register_hid(&exp_tedax_etest);
 }

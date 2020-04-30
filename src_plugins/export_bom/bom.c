@@ -255,7 +255,7 @@ static int bom_usage(rnd_hid_t *hid, const char *topic)
 static int bom_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(bom_options, sizeof(bom_options) / sizeof(bom_options[0]), bom_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 rnd_hid_t bom_hid;
@@ -286,6 +286,6 @@ int pplg_init_export_bom(void)
 
 	bom_hid.usage = bom_usage;
 
-	pcb_hid_register_hid(&bom_hid);
+	rnd_hid_register_hid(&bom_hid);
 	return 0;
 }

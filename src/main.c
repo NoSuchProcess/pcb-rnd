@@ -345,7 +345,7 @@ void pcb_main_uninit(void)
 	}
 	PCB = NULL;
 
-	pcb_hidlib_uninit(); /* plugin unload */
+	rnd_hidlib_uninit(); /* plugin unload */
 
 	pcb_funchash_uninit();
 	rnd_file_loaded_uninit();
@@ -401,17 +401,17 @@ int main(int argc, char *argv[])
 	int n;
 	char **sp, *exec_prefix, *command_line_pcb = NULL;
 
-	pcbhl_main_args_t ga;
+	rnd_main_args_t ga;
 
-	pcbhl_conf_dot_dir = DOT_PCB_RND;
-	pcbhl_conf_lib_dir = PCBLIBDIR;
+	rnd_conf_dot_dir = DOT_PCB_RND;
+	rnd_conf_lib_dir = PCBLIBDIR;
 
-	pcb_fix_locale_and_env();
+	rnd_fix_locale_and_env();
 	exec_prefix = main_path_init(argv[0]);
 
 	pcb_crosshair_pre_init();
 
-	pcbhl_main_args_init(&ga, argc, pcb_action_args);
+	rnd_main_args_init(&ga, argc, pcb_action_args);
 
 	/* init application:
 	   - make program name available for error handlers
@@ -425,7 +425,7 @@ int main(int argc, char *argv[])
 	pcb_minuid_init();
 	pcb_extobj_init();
 
-	pcb_hidlib_init1(conf_core_init);
+	rnd_hidlib_init1(conf_core_init);
 	pcb_event_init_app();
 	rnd_conf_set(RND_CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, RND_POL_OVERWRITE);
 	free(exec_prefix);
@@ -437,12 +437,12 @@ int main(int argc, char *argv[])
 	/* process arguments */
 	for(n = 1; n < argc; n++) {
 		/* optionally: handle extra arguments, not processed by the hidlib, here */
-		n += pcbhl_main_args_add(&ga, argv[n], argv[n+1]);
+		n += rnd_main_args_add(&ga, argv[n], argv[n+1]);
 	}
 	pcb_tool_init();
 	pcb_tool_logic_init();
 
-	pcb_hidlib_init2(pup_buildins, NULL);
+	rnd_hidlib_init2(pup_buildins, NULL);
 	pcb_actions_init_pcb_only();
 
 	setbuf(stdout, 0);
@@ -476,9 +476,9 @@ int main(int argc, char *argv[])
 		pup_err_stack_process_str(&pcb_pup, print_pup_err);
 	}
 
-	if (pcbhl_main_args_setup1(&ga) != 0) {
+	if (rnd_main_args_setup1(&ga) != 0) {
 		pcb_main_uninit();
-		pcbhl_main_args_uninit(&ga);
+		rnd_main_args_uninit(&ga);
 		exit(1);
 	}
 
@@ -486,9 +486,9 @@ int main(int argc, char *argv[])
    one is registered (there can be only one GUI). */
 	pcb_main_init_actions();
 
-	if (pcbhl_main_args_setup2(&ga, &n) != 0) {
+	if (rnd_main_args_setup2(&ga, &n) != 0) {
 		pcb_main_uninit();
-		pcbhl_main_args_uninit(&ga);
+		rnd_main_args_uninit(&ga);
 		exit(n);
 	}
 
@@ -519,7 +519,7 @@ int main(int argc, char *argv[])
 	if (command_line_pcb) {
 		int how = conf_core.rc.silently_create_on_load ? 0x10 : 0;
 		if (pcb_load_pcb(command_line_pcb, NULL, pcb_true, how) != 0) {
-			if (pcbhl_main_exporting) {
+			if (rnd_main_exporting) {
 				rnd_message(RND_MSG_ERROR, "Can not load file '%s' (specified on command line) for exporting or printing\n", command_line_pcb);
 				pcbhl_log_print_uninit_errs("Export load error");
 				exit(1);
@@ -545,9 +545,9 @@ int main(int argc, char *argv[])
 		rnd_parse_actions(&PCB->hidlib, conf_core.rc.action_string);
 	}
 
-	if (pcbhl_main_exported(&ga, &PCB->hidlib, pcb_data_is_empty(PCB->Data))) {
+	if (rnd_main_exported(&ga, &PCB->hidlib, pcb_data_is_empty(PCB->Data))) {
 		pcb_main_uninit();
-		pcbhl_main_args_uninit(&ga);
+		rnd_main_args_uninit(&ga);
 		exit(0);
 	}
 
@@ -566,9 +566,9 @@ int main(int argc, char *argv[])
 	}
 	pcb_tool_select_by_name(&PCB->hidlib, "arrow");
 	rnd_event(&PCB->hidlib, PCB_EVENT_LIBRARY_CHANGED, NULL);
-	pcbhl_mainloop_interactive(&ga, &PCB->hidlib);
+	rnd_mainloop_interactive(&ga, &PCB->hidlib);
 
 	pcb_main_uninit();
-	pcbhl_main_args_uninit(&ga);
+	rnd_main_args_uninit(&ga);
 	return 0;
 }

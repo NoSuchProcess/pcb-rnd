@@ -136,7 +136,7 @@ static int export_vfs_mc_usage(rnd_hid_t *hid, const char *topic)
 static int export_vfs_mc_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]), export_vfs_mc_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 rnd_hid_t export_vfs_mc_hid;
@@ -168,6 +168,6 @@ int pplg_init_export_vfs_mc(void)
 
 	export_vfs_mc_hid.usage = export_vfs_mc_usage;
 
-	pcb_hid_register_hid(&export_vfs_mc_hid);
+	rnd_hid_register_hid(&export_vfs_mc_hid);
 	return 0;
 }

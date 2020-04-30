@@ -841,7 +841,7 @@ static int xy_usage(rnd_hid_t *hid, const char *topic)
 static int xy_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(xy_options, sizeof(xy_options) / sizeof(xy_options[0]), xy_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 rnd_hid_t xy_hid;
@@ -884,7 +884,7 @@ int pplg_init_export_xy(void)
 
 	xy_hid.usage = xy_usage;
 
-	pcb_hid_register_hid(&xy_hid);
+	rnd_hid_register_hid(&xy_hid);
 
 	vts0_init(&fmt_names);
 	vts0_init(&fmt_ids);

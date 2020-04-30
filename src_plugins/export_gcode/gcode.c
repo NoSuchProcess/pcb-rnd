@@ -380,7 +380,7 @@ static void gcode_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int gcode_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(gcode_attribute_list, sizeof(gcode_attribute_list) / sizeof(gcode_attribute_list[0]), pcb_export_gcode_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 
@@ -420,7 +420,7 @@ int pplg_init_export_gcode(void)
 
 	gcode_hid.usage = gcode_usage;
 
-	pcb_hid_register_hid(&gcode_hid);
+	rnd_hid_register_hid(&gcode_hid);
 
 
 	return 0;

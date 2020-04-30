@@ -403,8 +403,8 @@ static FILE *fp_fs_fopen(pcb_plug_fp_t *ctx, const char *path, const char *name,
 #ifdef __WIN32__
 			{
 				char *s;
-				cmd = malloc(strlen(pcb_w32_bindir) + strlen(libshell) + strlen(fullname) + strlen(params) + 32);
-				sprintf(cmd, "%s/sh -c \"%s%s%s %s\"", pcb_w32_bindir, libshell, sep, fullname, params);
+				cmd = malloc(strlen(rnd_w32_bindir) + strlen(libshell) + strlen(fullname) + strlen(params) + 32);
+				sprintf(cmd, "%s/sh -c \"%s%s%s %s\"", rnd_w32_bindir, libshell, sep, fullname, params);
 				for(s = cmd; *s != '\0'; s++)
 					if (*s == '\\')
 						*s = '/';

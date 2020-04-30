@@ -97,7 +97,7 @@ static int lpr_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	lpr_get_export_options(hid, 0);
 	rnd_export_register_opts(lpr_options, num_lpr_options, lpr_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 static void lpr_calibrate(rnd_hid_t *hid, double xval, double yval)
@@ -142,7 +142,7 @@ int pplg_init_export_lpr(void)
 
 	lpr_hid.usage = lpr_usage;
 
-	pcb_hid_register_hid(&lpr_hid);
+	rnd_hid_register_hid(&lpr_hid);
 
 	return 0;
 }

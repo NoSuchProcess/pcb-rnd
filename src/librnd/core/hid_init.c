@@ -61,8 +61,8 @@
 #include <librnd/core/conf.h>
 #include <librnd/core/funchash.h>
 
-char *pcbhl_conf_dot_dir = ".librnd";
-char *pcbhl_conf_lib_dir = "/usr/lib/librnd";
+char *rnd_conf_dot_dir = ".librnd";
+char *rnd_conf_lib_dir = "/usr/lib/librnd";
 
 static const char *flt_any[] = {"*", "*.*", NULL};
 
@@ -71,8 +71,8 @@ const rnd_hid_fsd_filter_t rnd_hid_fsd_filter_any[] = {
 	{ NULL, NULL, NULL }
 };
 
-rnd_hid_t **pcb_hid_list = 0;
-int pcb_hid_num_hids = 0;
+rnd_hid_t **rnd_hid_list = 0;
+int rnd_hid_num_hids = 0;
 
 rnd_hid_t *rnd_gui = NULL;
 rnd_hid_t *rnd_render = NULL;
@@ -80,9 +80,9 @@ rnd_hid_t *rnd_exporter = NULL;
 
 int rnd_pixel_slop = 1;
 
-pcb_plugin_dir_t *pcb_plugin_dir_first = NULL, *pcb_plugin_dir_last = NULL;
+rnd_plugin_dir_t *rnd_plugin_dir_first = NULL, *rnd_plugin_dir_last = NULL;
 
-void pcb_hid_init()
+void rnd_hid_init()
 {
 	char *tmp;
 
@@ -99,20 +99,20 @@ TODO("make this configurable - add to conf_board_ignores avoid plugin injection"
 	free(tmp);
 
 	/* hardwired libdir, just in case exec-prefix goes wrong (e.g. linstall) */
-	tmp = pcb_concat(pcbhl_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+	tmp = pcb_concat(rnd_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
-	tmp = pcb_concat(pcbhl_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
+	tmp = pcb_concat(rnd_conf_lib_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
 	pcb_plugin_add_dir(tmp);
 	free(tmp);
 
 	/* pcbhl_conf.rc.path.home is set by the conf_core immediately on startup */
 	if (pcbhl_conf.rc.path.home != NULL) {
-		tmp = pcb_concat(pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_S, pcbhl_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
+		tmp = pcb_concat(pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", RND_DIR_SEPARATOR_S, HOST, NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 
-		tmp = pcb_concat(pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_S, pcbhl_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
+		tmp = pcb_concat(pcbhl_conf.rc.path.home, RND_DIR_SEPARATOR_S, rnd_conf_dot_dir, RND_DIR_SEPARATOR_S, "plugins", NULL);
 		pcb_plugin_add_dir(tmp);
 		free(tmp);
 	}
@@ -124,71 +124,71 @@ TODO("make this configurable - add to conf_board_ignores avoid plugin injection"
 	pcb_plugin_add_dir("plugins");
 }
 
-void pcb_hid_uninit(void)
+void rnd_hid_uninit(void)
 {
-	pcb_plugin_dir_t *pd, *next;
+	rnd_plugin_dir_t *pd, *next;
 
-	if (pcb_hid_num_hids > 0) {
+	if (rnd_hid_num_hids > 0) {
 		int i;
-		for (i = pcb_hid_num_hids-1; i >= 0; i--) {
-			if (pcb_hid_list[i]->uninit != NULL)
-				pcb_hid_list[i]->uninit(pcb_hid_list[i]);
+		for (i = rnd_hid_num_hids-1; i >= 0; i--) {
+			if (rnd_hid_list[i]->uninit != NULL)
+				rnd_hid_list[i]->uninit(rnd_hid_list[i]);
 		}
 	}
-	free(pcb_hid_list);
+	free(rnd_hid_list);
 
 	pup_uninit(&pcb_pup);
 
 	rnd_export_uninit();
 
-	for(pd = pcb_plugin_dir_first; pd != NULL; pd = next) {
+	for(pd = rnd_plugin_dir_first; pd != NULL; pd = next) {
 		next = pd->next;
 		free(pd->path);
 		free(pd);
 	}
-	pcb_plugin_dir_first = pcb_plugin_dir_last = NULL;
+	rnd_plugin_dir_first = rnd_plugin_dir_last = NULL;
 }
 
-void pcb_hid_register_hid(rnd_hid_t * hid)
+void rnd_hid_register_hid(rnd_hid_t * hid)
 {
 	int i;
-	int sz = (pcb_hid_num_hids + 2) * sizeof(rnd_hid_t *);
+	int sz = (rnd_hid_num_hids + 2) * sizeof(rnd_hid_t *);
 
 	if (hid->struct_size != sizeof(rnd_hid_t)) {
 		fprintf(stderr, "Warning: hid \"%s\" has an incompatible ABI.\n", hid->name);
 		return;
 	}
 
-	for (i = 0; i < pcb_hid_num_hids; i++)
-		if (hid == pcb_hid_list[i])
+	for (i = 0; i < rnd_hid_num_hids; i++)
+		if (hid == rnd_hid_list[i])
 			return;
 
-	pcb_hid_num_hids++;
-	if (pcb_hid_list)
-		pcb_hid_list = (rnd_hid_t **) realloc(pcb_hid_list, sz);
+	rnd_hid_num_hids++;
+	if (rnd_hid_list)
+		rnd_hid_list = (rnd_hid_t **) realloc(rnd_hid_list, sz);
 	else
-		pcb_hid_list = (rnd_hid_t **) malloc(sz);
+		rnd_hid_list = (rnd_hid_t **) malloc(sz);
 
-	pcb_hid_list[pcb_hid_num_hids - 1] = hid;
-	pcb_hid_list[pcb_hid_num_hids] = 0;
+	rnd_hid_list[rnd_hid_num_hids - 1] = hid;
+	rnd_hid_list[rnd_hid_num_hids] = 0;
 }
 
-void pcb_hid_remove_hid(rnd_hid_t * hid)
+void rnd_hid_remove_hid(rnd_hid_t * hid)
 {
 	int i;
 
-	for (i = 0; i < pcb_hid_num_hids; i++) {
-		if (hid == pcb_hid_list[i]) {
-			pcb_hid_list[i] = pcb_hid_list[pcb_hid_num_hids - 1];
-			pcb_hid_list[pcb_hid_num_hids - 1] = 0;
-			pcb_hid_num_hids--;
+	for (i = 0; i < rnd_hid_num_hids; i++) {
+		if (hid == rnd_hid_list[i]) {
+			rnd_hid_list[i] = rnd_hid_list[rnd_hid_num_hids - 1];
+			rnd_hid_list[rnd_hid_num_hids - 1] = 0;
+			rnd_hid_num_hids--;
 			return;
 		}
 	}
 }
 
 
-rnd_hid_t *pcb_hid_find_gui(const char *preference)
+rnd_hid_t *rnd_hid_find_gui(const char *preference)
 {
 	int i;
 
@@ -196,11 +196,11 @@ rnd_hid_t *pcb_hid_find_gui(const char *preference)
 	if ((preference != NULL) && (strcmp(preference, "gtk") == 0)) {
 		rnd_hid_t *g;
 
-		g = pcb_hid_find_gui("gtk2_gl");
+		g = rnd_hid_find_gui("gtk2_gl");
 		if (g != NULL)
 			return g;
 
-		g = pcb_hid_find_gui("gtk2_gdk");
+		g = rnd_hid_find_gui("gtk2_gdk");
 		if (g != NULL)
 			return g;
 
@@ -209,27 +209,27 @@ rnd_hid_t *pcb_hid_find_gui(const char *preference)
 
 	/* normal search */
 	if (preference != NULL) {
-		for (i = 0; i < pcb_hid_num_hids; i++)
-			if (!pcb_hid_list[i]->printer && !pcb_hid_list[i]->exporter && !strcmp(pcb_hid_list[i]->name, preference))
-				return pcb_hid_list[i];
+		for (i = 0; i < rnd_hid_num_hids; i++)
+			if (!rnd_hid_list[i]->printer && !rnd_hid_list[i]->exporter && !strcmp(rnd_hid_list[i]->name, preference))
+				return rnd_hid_list[i];
 		return NULL;
 	}
 
-	for (i = 0; i < pcb_hid_num_hids; i++)
-		if (!pcb_hid_list[i]->printer && !pcb_hid_list[i]->exporter)
-			return pcb_hid_list[i];
+	for (i = 0; i < rnd_hid_num_hids; i++)
+		if (!rnd_hid_list[i]->printer && !rnd_hid_list[i]->exporter)
+			return rnd_hid_list[i];
 
 	fprintf(stderr, "Error: No GUI available.\n");
 	exit(1);
 }
 
-rnd_hid_t *pcb_hid_find_printer()
+rnd_hid_t *rnd_hid_find_printer()
 {
 	int i;
 
-	for (i = 0; i < pcb_hid_num_hids; i++)
-		if (pcb_hid_list[i]->printer)
-			return pcb_hid_list[i];
+	for (i = 0; i < rnd_hid_num_hids; i++)
+		if (rnd_hid_list[i]->printer)
+			return rnd_hid_list[i];
 
 	return 0;
 }
@@ -237,12 +237,12 @@ rnd_hid_t *pcb_hid_find_printer()
 void pcb_hid_print_exporter_list(FILE *f, const char *prefix, const char *suffix)
 {
 	int i;
-	for (i = 0; i < pcb_hid_num_hids; i++)
-		if (pcb_hid_list[i]->exporter)
-			fprintf(f, "%s%s%s", prefix, pcb_hid_list[i]->name, suffix);
+	for (i = 0; i < rnd_hid_num_hids; i++)
+		if (rnd_hid_list[i]->exporter)
+			fprintf(f, "%s%s%s", prefix, rnd_hid_list[i]->name, suffix);
 }
 
-rnd_hid_t *pcb_hid_find_exporter(const char *which)
+rnd_hid_t *rnd_hid_find_exporter(const char *which)
 {
 	int i;
 
@@ -256,9 +256,9 @@ rnd_hid_t *pcb_hid_find_exporter(const char *which)
 		return 0;
 	}
 
-	for (i = 0; i < pcb_hid_num_hids; i++)
-		if (pcb_hid_list[i]->exporter && strcmp(which, pcb_hid_list[i]->name) == 0)
-			return pcb_hid_list[i];
+	for (i = 0; i < rnd_hid_num_hids; i++)
+		if (rnd_hid_list[i]->exporter && strcmp(which, rnd_hid_list[i]->name) == 0)
+			return rnd_hid_list[i];
 
 	fprintf(stderr, "Invalid exporter %s, available ones:", which);
 
@@ -269,12 +269,12 @@ rnd_hid_t *pcb_hid_find_exporter(const char *which)
 	return 0;
 }
 
-rnd_hid_t **pcb_hid_enumerate()
+rnd_hid_t **rnd_hid_enumerate()
 {
-	return pcb_hid_list;
+	return rnd_hid_list;
 }
 
-const char *pcb_hid_export_fn(const char *filename)
+const char *rnd_hid_export_fn(const char *filename)
 {
 	if (pcbhl_conf.rc.export_basename) {
 		const char *outfn = strrchr(filename, RND_DIR_SEPARATOR_C);
@@ -302,7 +302,7 @@ void pcbhl_conf_postproc(void)
 	rnd_conf_force_set_str(pcbhl_conf.rc.path.home, get_homedir()); rnd_conf_ro("rc/path/home");
 }
 
-void pcb_hidlib_init1(void (*conf_core_init)(void))
+void rnd_hidlib_init1(void (*conf_core_init)(void))
 {
 	pcb_events_init();
 	rnd_file_loaded_init();
@@ -312,7 +312,7 @@ void pcb_hidlib_init1(void (*conf_core_init)(void))
 	pcb_hidlib_conf_init();
 	pcb_hidlib_event_init();
 	pcb_hid_dlg_init();
-	pcb_hid_init();
+	rnd_hid_init();
 	rnd_color_init();
 }
 
@@ -326,7 +326,7 @@ extern void rnd_tool_act_init2(void);
 extern void rnd_gui_act_init2(void);
 extern void rnd_main_act_init2(void);
 
-void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins)
+void rnd_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_buildins)
 {
 	rnd_actions_init();
 
@@ -378,7 +378,7 @@ void pcb_hidlib_init2(const pup_buildin_t *buildins, const pup_buildin_t *local_
 }
 
 
-void pcb_hidlib_uninit(void)
+void rnd_hidlib_uninit(void)
 {
 	pcb_hidlib_event_uninit();
 	pcb_hid_dlg_uninit();
@@ -386,7 +386,7 @@ void pcb_hidlib_uninit(void)
 	if (rnd_conf_isdirty(RND_CFR_USER))
 		rnd_conf_save_file(NULL, NULL, NULL, RND_CFR_USER, NULL);
 
-	pcb_hid_uninit();
+	rnd_hid_uninit();
 	pcb_events_uninit();
 	rnd_conf_uninit();
 	pcb_plugin_uninit();
@@ -395,7 +395,7 @@ void pcb_hidlib_uninit(void)
 }
 
 /* parse arguments using the gui; if fails and fallback is enabled, try the next gui */
-int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
+int rnd_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 {
 	rnd_conf_listitem_t *apg = NULL;
 
@@ -439,7 +439,7 @@ int pcb_gui_parse_arguments(int autopick_gui, int *hid_argc, char **hid_argv[])
 			apg = rnd_conf_list_next_str(apg, &g, &n);
 			if (apg == NULL)
 				goto ran_out_of_hids;
-			rnd_render = rnd_gui = pcb_hid_find_gui(g);
+			rnd_render = rnd_gui = rnd_hid_find_gui(g);
 		} while(rnd_gui == NULL);
 	}
 	return 0;
@@ -461,11 +461,11 @@ static int truncdir(char *dir)
 	return 0;
 }
 extern int pcb_mkdir_(const char *path, int mode);
-char *pcb_w32_root;
-char *pcb_w32_libdir, *pcb_w32_bindir, *pcb_w32_sharedir, *pcb_w32_cachedir;
+char *rnd_w32_root;
+char *rnd_w32_libdir, *rnd_w32_bindir, *rnd_w32_sharedir, *rnd_w32_cachedir;
 #endif
 
-void pcb_fix_locale_and_env()
+void rnd_fix_locale_and_env()
 {
 	static const char *lcs[] = { "LANG", "LC_NUMERIC", "LC_ALL", NULL };
 	const char **lc;
@@ -499,16 +499,16 @@ void pcb_fix_locale_and_env()
 			if (*s == '\\')
 				*s = '/';
 
-		pcb_w32_bindir = rnd_strdup(exedir);
+		rnd_w32_bindir = rnd_strdup(exedir);
 		truncdir(exedir);
-		pcb_w32_root = rnd_strdup(exedir);
-		pcb_w32_libdir = pcb_concat(exedir, "/lib/pcb-rnd", NULL);
-		pcb_w32_sharedir = pcb_concat(exedir, "/share/pcb-rnd", NULL);
+		rnd_w32_root = rnd_strdup(exedir);
+		rnd_w32_libdir = pcb_concat(exedir, "/lib/pcb-rnd", NULL);
+		rnd_w32_sharedir = pcb_concat(exedir, "/share/pcb-rnd", NULL);
 
-		pcb_w32_cachedir = pcb_concat(pcb_w32_root, "/cache", NULL);
-		pcb_mkdir_(pcb_w32_cachedir, 0755);
+		rnd_w32_cachedir = pcb_concat(rnd_w32_root, "/cache", NULL);
+		pcb_mkdir_(rnd_w32_cachedir, 0755);
 
-/*		printf("WIN32 root='%s' libdir='%s' sharedir='%s'\n", pcb_w32_root, pcb_w32_libdir, pcb_w32_sharedir);*/
+/*		printf("WIN32 root='%s' libdir='%s' sharedir='%s'\n", rnd_w32_root, rnd_w32_libdir, rnd_w32_sharedir);*/
 	}
 #endif
 }
@@ -518,22 +518,22 @@ static int pcbhl_main_arg_match(const char *in, const char *shrt, const char *ln
 	return ((shrt != NULL) && (strcmp(in, shrt) == 0)) || ((lng != NULL) && (strcmp(in, lng) == 0));
 }
 
-void pcbhl_main_args_init(pcbhl_main_args_t *ga, int argc, const char **action_args)
+void rnd_main_args_init(rnd_main_args_t *ga, int argc, const char **action_args)
 {
-	memset(ga, 0, sizeof(pcbhl_main_args_t));
+	memset(ga, 0, sizeof(rnd_main_args_t));
 	ga->hid_argv_orig = ga->hid_argv = calloc(sizeof(char *), argc);
 	vtp0_init(&ga->plugin_cli_conf);
 	ga->action_args = action_args;
 	ga->autopick_gui = -1;
 }
 
-void pcbhl_main_args_uninit(pcbhl_main_args_t *ga)
+void rnd_main_args_uninit(rnd_main_args_t *ga)
 {
 	vtp0_uninit(&ga->plugin_cli_conf);
 	free(ga->hid_argv_orig);
 }
 
-int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg)
+int rnd_main_args_add(rnd_main_args_t *ga, char *cmd, char *arg)
 {
 	const char **cs;
 	char *orig_cmd = cmd;
@@ -551,21 +551,21 @@ int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg)
 		}
 
 		if ((strcmp(cmd, "g") == 0) || (strcmp(cmd, "-gui") == 0) || (strcmp(cmd, "-hid") == 0)) {
-			ga->do_what = DO_GUI;
+			ga->do_what = RND_DO_GUI;
 			ga->hid_name = arg;
 			return 1;
 		}
 		if ((strcmp(cmd, "x") == 0) || (strcmp(cmd, "-export") == 0)) {
-			ga->do_what = DO_EXPORT;
+			ga->do_what = RND_DO_EXPORT;
 			ga->hid_name = arg;
 			return 1;
 		}
 		if ((strcmp(cmd, "p") == 0) || (strcmp(cmd, "-print") == 0)) {
-			ga->do_what = DO_PRINT;
+			ga->do_what = RND_DO_PRINT;
 			return 0;
 		}
 
-		for(cs = ga->action_args; cs[2] != NULL; cs += PCBHL_ACTION_ARGS_WIDTH) {
+		for(cs = ga->action_args; cs[2] != NULL; cs += RND_ACTION_ARGS_WIDTH) {
 			if (pcbhl_main_arg_match(cmd, cs[0], cs[1])) {
 				if (ga->main_action == NULL) {
 					ga->main_action = cs[2];
@@ -604,7 +604,7 @@ int pcbhl_main_args_add(pcbhl_main_args_t *ga, char *cmd, char *arg)
 	return 0;
 }
 
-int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
+int rnd_main_args_setup1(rnd_main_args_t *ga)
 {
 	int n;
 	/* Now that plugins are already initialized, apply plugin config items */
@@ -619,10 +619,10 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 
 	/* Export pcb from command line if requested.  */
 	switch(ga->do_what) {
-		case DO_PRINT:   rnd_render = rnd_exporter = rnd_gui = pcb_hid_find_printer(); break;
-		case DO_EXPORT:  rnd_render = rnd_exporter = rnd_gui = pcb_hid_find_exporter(ga->hid_name); break;
-		case DO_GUI:
-			rnd_render = rnd_gui = pcb_hid_find_gui(ga->hid_name);
+		case RND_DO_PRINT:   rnd_render = rnd_exporter = rnd_gui = rnd_hid_find_printer(); break;
+		case RND_DO_EXPORT:  rnd_render = rnd_exporter = rnd_gui = rnd_hid_find_exporter(ga->hid_name); break;
+		case RND_DO_GUI:
+			rnd_render = rnd_gui = rnd_hid_find_gui(ga->hid_name);
 			if (rnd_gui == NULL) {
 				rnd_message(RND_MSG_ERROR, "Can't find the gui (%s) requested.\n", ga->hid_name);
 				return 1;
@@ -634,7 +634,7 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 
 			rnd_render = rnd_gui = NULL;
 			rnd_conf_loop_list_str(&pcbhl_conf.rc.preferred_gui, i, g, ga->autopick_gui) {
-				rnd_render = rnd_gui = pcb_hid_find_gui(g);
+				rnd_render = rnd_gui = rnd_hid_find_gui(g);
 				if (rnd_gui != NULL)
 					break;
 			}
@@ -642,7 +642,7 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 			/* try anything */
 			if (rnd_gui == NULL) {
 				rnd_message(RND_MSG_WARNING, "Warning: can't find any of the preferred GUIs, falling back to anything available...\nYou may want to check if the plugin is loaded, try --dump-plugins and --dump-plugindirs\n");
-				rnd_render = rnd_gui = pcb_hid_find_gui(NULL);
+				rnd_render = rnd_gui = rnd_hid_find_gui(NULL);
 			}
 		}
 	}
@@ -654,7 +654,7 @@ int pcbhl_main_args_setup1(pcbhl_main_args_t *ga)
 	return 0;
 }
 
-int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval)
+int rnd_main_args_setup2(rnd_main_args_t *ga, int *exitval)
 {
 	*exitval = 0;
 
@@ -672,7 +672,7 @@ int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval)
 	}
 
 
-	if (pcb_gui_parse_arguments(ga->autopick_gui, &ga->hid_argc, &ga->hid_argv) != 0) {
+	if (rnd_gui_parse_arguments(ga->autopick_gui, &ga->hid_argc, &ga->hid_argv) != 0) {
 		pcbhl_log_print_uninit_errs("Export plugin argument parse error");
 		return 1;
 	}
@@ -680,9 +680,9 @@ int pcbhl_main_args_setup2(pcbhl_main_args_t *ga, int *exitval)
 	return 0;
 }
 
-int pcbhl_main_exported(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is_empty)
+int rnd_main_exported(rnd_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is_empty)
 {
-	if (!pcbhl_main_exporting)
+	if (!rnd_main_exporting)
 		return 0;
 
 	if (is_empty)
@@ -696,7 +696,7 @@ int pcbhl_main_exported(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib, rnd_bool is
 	return 1;
 }
 
-void pcbhl_mainloop_interactive(pcbhl_main_args_t *ga, rnd_hidlib_t *hidlib)
+void rnd_mainloop_interactive(rnd_main_args_t *ga, rnd_hidlib_t *hidlib)
 {
 	if (rnd_gui->set_hidlib != NULL)
 		rnd_gui->set_hidlib(rnd_gui, hidlib);

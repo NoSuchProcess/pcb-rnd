@@ -554,7 +554,7 @@ static FILE *library_param_get_help(library_ctx_t *ctx, pcb_fplibrary_t *l)
 #ifdef __WIN32__
 	{
 		char *s;
-		cmd = pcb_strdup_printf("%s/sh -c \"%s --help\"", pcb_w32_bindir, l->data.fp.loc_info);
+		cmd = pcb_strdup_printf("%s/sh -c \"%s --help\"", rnd_w32_bindir, l->data.fp.loc_info);
 		for(s = cmd; *s != '\0'; s++)
 			if (*s == '\\')
 				*s = '/';

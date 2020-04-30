@@ -381,7 +381,7 @@ void ps_start_file(FILE * f)
 	 * %%Title DCS provides text title for the document that is useful
 	 * for printing banner pages.
 	 */
-	fprintf(f, "%%%%Title: %s\n", pcb_hid_export_fn(PCB->hidlib.filename));
+	fprintf(f, "%%%%Title: %s\n", rnd_hid_export_fn(PCB->hidlib.filename));
 
 	/*
 	 * %%CreationDate DCS indicates the date and time the document was
@@ -673,7 +673,7 @@ static void ps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int ps_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(ps_attribute_list, NUM_OPTIONS, ps_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 static void corner(FILE * fh, rnd_coord_t x, rnd_coord_t y, int dx, int dy)
@@ -753,7 +753,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		if (group < 0 || group != lastgroup) {
 			if (global.pagecount == 1) {
 				currenttime = time(NULL);
-				fprintf(global.f, "30 30 moveto (%s) show\n", pcb_hid_export_fn(PCB->hidlib.filename));
+				fprintf(global.f, "30 30 moveto (%s) show\n", rnd_hid_export_fn(PCB->hidlib.filename));
 
 				fprintf(global.f, "(%d.) tocp\n", global.pagecount);
 				fprintf(global.f, "(Table of Contents \\(This Page\\)) toc\n");
@@ -832,7 +832,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		fprintf(global.f, "/Helvetica findfont 10 scalefont setfont\n");
 		if (global.legend) {
 			gds_t tmp;
-			fprintf(global.f, "30 30 moveto (%s) show\n", pcb_hid_export_fn(PCB->hidlib.filename));
+			fprintf(global.f, "30 30 moveto (%s) show\n", rnd_hid_export_fn(PCB->hidlib.filename));
 
 			gds_init(&tmp);
 			if (PCB->hidlib.name)
@@ -1498,7 +1498,7 @@ int pplg_init_export_ps(void)
 
 	ps_hid.usage = ps_usage;
 
-	pcb_hid_register_hid(&ps_hid);
+	rnd_hid_register_hid(&ps_hid);
 
 	hid_eps_init();
 	return 0;

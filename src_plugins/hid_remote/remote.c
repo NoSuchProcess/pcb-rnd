@@ -120,7 +120,7 @@ static void remote_do_exit(rnd_hid_t *hid)
 
 static int remote_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 static void remote_invalidate_lr(rnd_hid_t *hid, rnd_coord_t l, rnd_coord_t r, rnd_coord_t t, rnd_coord_t b)
@@ -443,7 +443,7 @@ int pplg_init_hid_remote(void)
 
 /*	RND_REGISTER_ACTIONS(remote_action_list, remote_cookie)*/
 
-	pcb_hid_register_hid(&remote_hid);
+	rnd_hid_register_hid(&remote_hid);
 
 	rnd_event_bind(RND_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, remote_cookie);
 

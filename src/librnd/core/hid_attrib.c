@@ -77,7 +77,7 @@ void rnd_export_remove_opts_by_cookie(const char *cookie)
 	}
 }
 
-int pcb_hid_parse_command_line(int *argc, char ***argv)
+int rnd_hid_parse_command_line(int *argc, char ***argv)
 {
 	rnd_hid_attr_node_t *ha;
 	int i, e, ok;

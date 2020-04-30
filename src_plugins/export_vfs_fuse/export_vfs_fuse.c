@@ -383,6 +383,6 @@ int pplg_init_export_vfs_fuse(void)
 
 	export_vfs_fuse_hid.usage = export_vfs_fuse_usage;
 
-	pcb_hid_register_hid(&export_vfs_fuse_hid);
+	rnd_hid_register_hid(&export_vfs_fuse_hid);
 	return 0;
 }

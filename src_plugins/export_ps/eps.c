@@ -291,7 +291,7 @@ void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xf
 	in_mono = options[HA_mono].lng;
 
 	if (f != NULL)
-		eps_print_header(f, pcb_hid_export_fn(filename));
+		eps_print_header(f, rnd_hid_export_fn(filename));
 
 	if (as_shown) {
 		/* disable (exporter default) hiding overlay in as_shown */
@@ -360,7 +360,7 @@ static void eps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int eps_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(eps_attribute_list, sizeof(eps_attribute_list) / sizeof(eps_attribute_list[0]), ps_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 static int is_mask;
@@ -682,5 +682,5 @@ void hid_eps_init()
 
 	eps_hid.usage = eps_usage;
 
-	pcb_hid_register_hid(&eps_hid);
+	rnd_hid_register_hid(&eps_hid);
 }

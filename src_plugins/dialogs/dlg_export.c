@@ -149,7 +149,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	if (export_ctx.active)
 		return; /* do not open another */
 
-	hids = pcb_hid_enumerate();
+	hids = rnd_hid_enumerate();
 	for(n = 0, export_ctx.len = 0; hids[n] != NULL; n++) {
 		if (((exporters && hids[n]->exporter) || (printers && hids[n]->printer)) && (!hids[n]->hide_from_gui))
 			export_ctx.len++;

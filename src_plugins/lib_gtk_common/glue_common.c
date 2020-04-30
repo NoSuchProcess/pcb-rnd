@@ -53,14 +53,14 @@ static void ghid_win32_init(void)
 {
 	char *cache, *cmd, *s;
 	/* set up gdk pixmap modules - without this XPMs won't be loaded */
-	cache = pcb_concat(pcb_w32_cachedir, "\\gdk-pixmap-loaders.cache", NULL);
+	cache = pcb_concat(rnd_w32_cachedir, "\\gdk-pixmap-loaders.cache", NULL);
 	rnd_setenv("GDK_PIXBUF_MODULE_FILE", cache, 1);
 
 	for(s = cache; *s != '\0'; s++)
 		if (*s == '\\')
 			*s = '/';
 	if (!rnd_file_readable(cache)) {
-		cmd = pcb_concat(pcb_w32_bindir, "\\gdk-pixbuf-query-loaders --update-cache", NULL);
+		cmd = pcb_concat(rnd_w32_bindir, "\\gdk-pixbuf-query-loaders --update-cache", NULL);
 		fprintf(stderr, "pcb-rnd: updating gdk loader cache: '%s'...\n", cache);
 		system(cmd);
 		free(cmd);

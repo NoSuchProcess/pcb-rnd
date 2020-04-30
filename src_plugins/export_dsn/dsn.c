@@ -598,7 +598,7 @@ static void dsn_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int dsn_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 int pplg_check_ver_export_dsn(int ver_needed) { return 0; }
@@ -621,7 +621,7 @@ int pplg_init_export_dsn(void)
 	dsn_hid.get_export_options = dsn_get_export_options;
 	dsn_hid.do_export = dsn_do_export;
 	dsn_hid.parse_arguments = dsn_parse_arguments;
-	pcb_hid_register_hid(&dsn_hid);
+	rnd_hid_register_hid(&dsn_hid);
 
 	rnd_export_register_opts(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
 	return 0;

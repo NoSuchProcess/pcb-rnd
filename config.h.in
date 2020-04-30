@@ -31,10 +31,10 @@ print [@
 switch sys/class
 	case {win32}
 		print [@
-#define PCB_PREFIX pcb_w32_root
-#define PCBSHAREDIR pcb_w32_sharedir
-#define PCBLIBDIR pcb_w32_libdir
-#define BINDIR pcb_w32_bindir
+#define PCB_PREFIX rnd_w32_root
+#define PCBSHAREDIR rnd_w32_sharedir
+#define PCBLIBDIR rnd_w32_libdir
+#define BINDIR rnd_w32_bindir
 #define PCBCONFDIR @/local/confdir_final@
 @]
 		end;

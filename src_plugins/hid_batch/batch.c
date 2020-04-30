@@ -158,7 +158,7 @@ static void batch_do_exit(rnd_hid_t *hid)
 
 static int batch_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 static void batch_invalidate_lr(rnd_hid_t *hid, rnd_coord_t l, rnd_coord_t r, rnd_coord_t t, rnd_coord_t b)
@@ -393,7 +393,7 @@ int pplg_init_hid_batch(void)
 	rnd_event_bind(RND_EVENT_BOARD_CHANGED, ev_pcb_changed, NULL, batch_cookie);
 	rnd_event_bind(RND_EVENT_LOG_APPEND, ev_log_append, NULL, batch_cookie);
 
-	pcb_hid_register_hid(&batch_hid);
+	rnd_hid_register_hid(&batch_hid);
 	return 0;
 }
 

@@ -215,7 +215,7 @@ static int cam_compile_line(cam_ctx_t *ctx, char *cmd, char *arg, pcb_cam_code_t
 			*curr = '\0';
 			curr++;
 		}
-		code->op.plugin.exporter = pcb_hid_find_exporter(arg);
+		code->op.plugin.exporter = rnd_hid_find_exporter(arg);
 		if (code->op.plugin.exporter == NULL) {
 			rnd_message(RND_MSG_ERROR, "cam: can not find export plugin: '%s'\n", arg);
 			return -1;

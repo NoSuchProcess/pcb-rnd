@@ -159,7 +159,7 @@ char *rnd_tempfile_name_new(const char *name)
 	rand_s(&r1); rand_s(&r2); /* crypto secure according to the API doc */
 
 	sprintf(num, "%lu%lu", r1, r2);
-	tmpdir = pcb_w32_cachedir;
+	tmpdir = rnd_w32_cachedir;
 	res = pcb_concat(tmpdir, "/", num, NULL);
 	for(c = res; *c; c++)
 		if (*c == '\\')

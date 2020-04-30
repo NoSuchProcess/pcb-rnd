@@ -422,7 +422,7 @@ static void gerber_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int gerber_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 
@@ -1110,7 +1110,7 @@ int pplg_init_export_gerber(void)
 	gerber_hid.set_crosshair = gerber_set_crosshair;
 	gerber_hid.usage = gerber_usage;
 
-	pcb_hid_register_hid(&gerber_hid);
+	rnd_hid_register_hid(&gerber_hid);
 
 	rnd_event_bind(RND_EVENT_EXPORT_SESSION_BEGIN, gerber_session_begin, NULL, gerber_cookie);
 

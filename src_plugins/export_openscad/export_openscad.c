@@ -354,7 +354,7 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int openscad_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(openscad_attribute_list, sizeof(openscad_attribute_list) / sizeof(openscad_attribute_list[0]), openscad_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 
@@ -701,7 +701,7 @@ int pplg_init_export_openscad(void)
 
 	openscad_hid.usage = openscad_usage;
 
-	pcb_hid_register_hid(&openscad_hid);
+	rnd_hid_register_hid(&openscad_hid);
 
 	RND_REGISTER_ACTIONS(scad_action_list, openscad_cookie)
 

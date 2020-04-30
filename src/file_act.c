@@ -501,7 +501,7 @@ static fgw_error_t pcb_act_Export(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	for(n = 1; n < argc; n++)
 		RND_PCB_ACT_CONVARG(n, FGW_STR, Export, args[n-1] = argv[n].val.str);
 
-	rnd_exporter = pcb_hid_find_exporter(args[0]);
+	rnd_exporter = rnd_hid_find_exporter(args[0]);
 	if (rnd_exporter == NULL) {
 		rnd_message(RND_MSG_ERROR, "Export plugin %s not found. Was it enabled in ./configure?\n", args[0]);
 		return 1;

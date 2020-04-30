@@ -436,7 +436,7 @@ static rnd_export_opt_t *ipcd356_get_export_options(rnd_hid_t *hid, int *n)
 
 static int ipcd356_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 static void ipcd356_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
@@ -496,7 +496,7 @@ int pplg_init_export_ipcd356(void)
 	ipcd356_hid.do_export = ipcd356_do_export;
 	ipcd356_hid.parse_arguments = ipcd356_parse_arguments;
 
-	pcb_hid_register_hid(&ipcd356_hid);
+	rnd_hid_register_hid(&ipcd356_hid);
 
 	rnd_export_register_opts(ipcd356_options, sizeof(ipcd356_options) / sizeof(ipcd356_options[0]), ipcd356_cookie, 0);
 	return 0;

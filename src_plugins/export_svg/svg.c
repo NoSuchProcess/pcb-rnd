@@ -380,7 +380,7 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int svg_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(svg_attribute_list, sizeof(svg_attribute_list) / sizeof(svg_attribute_list[0]), svg_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
@@ -925,7 +925,7 @@ int pplg_init_export_svg(void)
 
 	svg_hid.usage = svg_usage;
 
-	pcb_hid_register_hid(&svg_hid);
+	rnd_hid_register_hid(&svg_hid);
 
 	return 0;
 }

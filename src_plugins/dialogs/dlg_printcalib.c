@@ -42,7 +42,7 @@ const char pcb_acth_PrintCalibrate[] = "Calibrate the printer.";
 /* DOC: printcalibrate.html */
 fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_hid_t *printer = pcb_hid_find_printer();
+	rnd_hid_t *printer = rnd_hid_find_printer();
 
 	if (printer == NULL) {
 		rnd_message(RND_MSG_ERROR, "No printer available\n");

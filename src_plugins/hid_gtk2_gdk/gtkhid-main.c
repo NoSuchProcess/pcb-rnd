@@ -39,7 +39,7 @@ int pplg_init_hid_gtk2_gdk(void)
 	gtk2_gdk_hid.name = "gtk2_gdk";
 	gtk2_gdk_hid.description = "Gtk2 - The Gimp Toolkit, with GDK software pixmap rendering";
 
-	pcb_hid_register_hid(&gtk2_gdk_hid);
+	rnd_hid_register_hid(&gtk2_gdk_hid);
 
 	return 0;
 }

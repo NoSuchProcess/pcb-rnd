@@ -794,7 +794,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int png_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 
@@ -1443,7 +1443,7 @@ int pplg_init_export_png(void)
 	png_hid.usage = png_usage;
 
 #ifdef HAVE_SOME_FORMAT
-	pcb_hid_register_hid(&png_hid);
+	rnd_hid_register_hid(&png_hid);
 #endif
 	return 0;
 }

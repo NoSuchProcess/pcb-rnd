@@ -61,16 +61,16 @@ static int loghid_parse_arguments_real(rnd_hid_t *hid, int *argc, char ***argv, 
 	const char *target_name;
 
 	rnd_export_register_opts(loghid_attribute_list, NUM_OPTIONS, loghid_cookie, 0);
-	pcb_hid_parse_command_line(argc, argv);
+	rnd_hid_parse_command_line(argc, argv);
 
 	target_name = loghid_attribute_list[HA_target_hid].default_val.str;
 
 	if (is_gui) {
-		target = pcb_hid_find_gui(target_name);
+		target = rnd_hid_find_gui(target_name);
 		me = &loghid_gui;
 	}
 	else {
-		target = pcb_hid_find_exporter(target_name);
+		target = rnd_hid_find_exporter(target_name);
 		me = &loghid_exp;
 	}
 
@@ -133,7 +133,7 @@ int pplg_init_loghid(void)
 	loghid_gui.usage = loghid_usage;
 	loghid_gui.parse_arguments = loghid_parse_arguments_gui;
 
-	pcb_hid_register_hid(&loghid_gui);
+	rnd_hid_register_hid(&loghid_gui);
 
 	/* export version */
 	loghid_exp.struct_size = sizeof(rnd_hid_t);
@@ -145,7 +145,7 @@ int pplg_init_loghid(void)
 	loghid_exp.usage = loghid_usage;
 	loghid_exp.parse_arguments = loghid_parse_arguments_exp;
 
-	pcb_hid_register_hid(&loghid_exp);
+	rnd_hid_register_hid(&loghid_exp);
 
 	return 0;
 }

@@ -1857,7 +1857,7 @@ static int lesstif_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 			}
 		}
 
-	pcb_hid_parse_command_line(argc, argv);
+	rnd_hid_parse_command_line(argc, argv);
 
 	/* redefine lesstif_colormap, if requested via "-install" */
 	if (use_private_colormap) {
@@ -3048,7 +3048,7 @@ int pplg_init_hid_lesstif(void)
 	rnd_event_bind(PCB_EVENT_NETLIST_CHANGED, LesstifNetlistChanged, NULL, lesstif_cookie);
 	rnd_event_bind(PCB_EVENT_LIBRARY_CHANGED, LesstifLibraryChanged, NULL, lesstif_cookie);
 
-	pcb_hid_register_hid(&lesstif_hid);
+	rnd_hid_register_hid(&lesstif_hid);
 	if (lesstif_conf_id < 0)
 		lesstif_conf_id = rnd_conf_hid_reg(lesstif_cookie, &ccb);
 /*	lesstif_conf_regs(lesstif_cookie);*/

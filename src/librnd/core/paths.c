@@ -145,7 +145,7 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 
 #ifdef __WIN32__
 	if (*template == '@') {
-		gds_append_str(s, pcb_w32_root);
+		gds_append_str(s, rnd_w32_root);
 		template++;
 	}
 #endif
@@ -247,7 +247,7 @@ int pcb_subst_append(gds_t *s, const char *template, int (*cb)(void *ctx, gds_t 
 								if (cn->val.string[0] != NULL) {
 									if (*cn->val.string[0] == '@') {
 #ifdef __WIN32__
-										gds_append_str(s, pcb_w32_root);
+										gds_append_str(s, rnd_w32_root);
 										gds_append_str(s, cn->val.string[0]+1);
 #else
 										gds_append_str(s, cn->val.string[0]);

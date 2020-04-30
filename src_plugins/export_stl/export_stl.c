@@ -228,7 +228,7 @@ static void stl_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int stl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(stl_attribute_list, sizeof(stl_attribute_list) / sizeof(stl_attribute_list[0]), stl_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 
@@ -267,7 +267,7 @@ int pplg_init_export_stl(void)
 
 	stl_hid.usage = stl_usage;
 
-	pcb_hid_register_hid(&stl_hid);
+	rnd_hid_register_hid(&stl_hid);
 
 	return 0;
 }

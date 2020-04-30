@@ -343,7 +343,7 @@ TODO(": figure how to store side")
 static int fidocadj_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]), fidocadj_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 static int fidocadj_usage(rnd_hid_t *hid, const char *topic)
@@ -380,7 +380,7 @@ int pplg_init_export_fidocadj(void)
 
 	fidocadj_hid.usage = fidocadj_usage;
 
-	pcb_hid_register_hid(&fidocadj_hid);
+	rnd_hid_register_hid(&fidocadj_hid);
 
 	return 0;
 }

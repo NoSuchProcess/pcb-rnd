@@ -45,7 +45,7 @@ int pplg_init_hid_gtk2_gl(void)
 	gtk2_gl_hid.name = "gtk2_gl";
 	gtk2_gl_hid.description = "Gtk2 - The Gimp Toolkit, with opengl rendering";
 
-	pcb_hid_register_hid(&gtk2_gl_hid);
+	rnd_hid_register_hid(&gtk2_gl_hid);
 
 	return 0;
 }

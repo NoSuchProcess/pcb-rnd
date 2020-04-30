@@ -302,7 +302,7 @@ static void excellon_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 static int excellon_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts(excellon_options, NUM_OPTIONS, excellon_cookie, 0);
-	return pcb_hid_parse_command_line(argc, argv);
+	return rnd_hid_parse_command_line(argc, argv);
 }
 
 static int excellon_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
@@ -529,7 +529,7 @@ int pplg_init_export_excellon(void)
 	excellon_hid.set_crosshair = excellon_set_crosshair;
 	excellon_hid.usage = excellon_usage;
 
-	pcb_hid_register_hid(&excellon_hid);
+	rnd_hid_register_hid(&excellon_hid);
 
 	rnd_event_bind(RND_EVENT_EXPORT_SESSION_BEGIN, exc_session_begin, NULL, excellon_cookie);
 	return 0;

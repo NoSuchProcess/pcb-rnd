@@ -22,39 +22,39 @@ static void poly_test()
 int main(int argc, char *argv[])
 {
 	int n;
-	pcbhl_main_args_t ga;
+	rnd_main_args_t ga;
 
-	pcb_fix_locale_and_env();
+	rnd_fix_locale_and_env();
 
-	pcbhl_main_args_init(&ga, argc, action_args);
+	rnd_main_args_init(&ga, argc, action_args);
 
-	pcb_hidlib_init1(conf_core_init);
+	rnd_hidlib_init1(conf_core_init);
 	for(n = 1; n < argc; n++)
-		n += pcbhl_main_args_add(&ga, argv[n], argv[n+1]);
-	pcb_hidlib_init2(pup_buildins, local_buildins);
+		n += rnd_main_args_add(&ga, argv[n], argv[n+1]);
+	rnd_hidlib_init2(pup_buildins, local_buildins);
 
 	rnd_conf_set(RND_CFR_CLI, "editor/view/flip_y", 0, "1", RND_POL_OVERWRITE);
 
-	if (pcbhl_main_args_setup1(&ga) != 0) {
+	if (rnd_main_args_setup1(&ga) != 0) {
 		fprintf(stderr, "setup1 fail\n");
-		pcbhl_main_args_uninit(&ga);
+		rnd_main_args_uninit(&ga);
 		exit(1);
 	}
 
-	if (pcbhl_main_args_setup2(&ga, &n) != 0) {
+	if (rnd_main_args_setup2(&ga, &n) != 0) {
 		fprintf(stderr, "setup2 fail\n");
-		pcbhl_main_args_uninit(&ga);
+		rnd_main_args_uninit(&ga);
 		exit(n);
 	}
 
-	if (pcbhl_main_exported(&ga, &CTX.hidlib, 0)) {
+	if (rnd_main_exported(&ga, &CTX.hidlib, 0)) {
 		fprintf(stderr, "main_exported fail\n");
-		pcbhl_main_args_uninit(&ga);
+		rnd_main_args_uninit(&ga);
 		exit(1);
 	}
 
 	poly_test();
 
-	pcbhl_main_args_uninit(&ga);
+	rnd_main_args_uninit(&ga);
 	exit(0);
 }
