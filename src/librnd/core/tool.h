@@ -30,7 +30,7 @@
 #include <genvector/vtp0.h>
 
 #include <librnd/core/global_typedefs.h>
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 
 typedef int pcb_toolid_t;
 #define PCB_TOOLID_INVALID (-1)

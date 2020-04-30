@@ -30,7 +30,7 @@
 
 #include "plug_io.h"
 #include <librnd/core/error.h>
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 #include "board.h"
 #include "data.h"
 #include "layer.h"

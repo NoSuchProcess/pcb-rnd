@@ -30,7 +30,7 @@
 #ifndef PCB_LIB_GTK_COMMON_UI_ZOOMPAN_H
 #define PCB_LIB_GTK_COMMON_UI_ZOOMPAN_H
 
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 
 #define SIDE_X_(hidlib, x)      ((rnd_conf.editor.view.flip_x ? hidlib->size_x - (x) : (x)))
 #define SIDE_Y_(hidlib, y)      ((rnd_conf.editor.view.flip_y ? hidlib->size_y - (y) : (y)))

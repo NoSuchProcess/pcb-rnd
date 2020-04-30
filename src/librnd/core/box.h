@@ -45,7 +45,7 @@
 #include <librnd/config.h>
 #include <librnd/core/math_helper.h>
 #include <librnd/core/global_typedefs.h>
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 
 struct rnd_rnd_box_list_s {
 	rnd_cardinal_t BoxN;   /* the number of boxes contained */

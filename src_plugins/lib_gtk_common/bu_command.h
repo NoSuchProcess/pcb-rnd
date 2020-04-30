@@ -3,7 +3,7 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 #include <librnd/core/global_typedefs.h>
 
 typedef struct pcb_gtk_command_s {

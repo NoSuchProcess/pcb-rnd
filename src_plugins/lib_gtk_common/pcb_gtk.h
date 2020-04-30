@@ -138,7 +138,7 @@ struct pcb_gtk_topwin_s {
 
 #include <librnd/core/event.h>
 #include <librnd/core/conf_hid.h>
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 
 struct pcb_gtk_pixmap_s {
 	rnd_pixmap_t *pxm;        /* core-side pixmap (raw input image) */

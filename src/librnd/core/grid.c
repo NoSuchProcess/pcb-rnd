@@ -42,7 +42,7 @@
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/misc_util.h>
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 #include <librnd/core/rnd_printf.h>
 
 rnd_coord_t rnd_grid_fit(rnd_coord_t x, rnd_coord_t grid_spacing, rnd_coord_t grid_offset)

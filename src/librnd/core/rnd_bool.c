@@ -25,7 +25,7 @@
  */
 
 #include <librnd/config.h>
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 #include <librnd/core/compat_misc.h>
 
 rnd_bool_op_t rnd_str2boolop(const char *s)

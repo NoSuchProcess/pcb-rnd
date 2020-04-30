@@ -79,6 +79,6 @@ typedef struct rnd_export_opt_s rnd_export_opt_t;
 typedef long int rnd_layer_id_t;
 typedef long int rnd_layergrp_id_t;
 
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 
 #endif

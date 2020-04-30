@@ -37,7 +37,7 @@
 #include "data.h"
 #include "plug_io.h"
 #include <librnd/core/error.h>
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
 #include "layer_grp.h"

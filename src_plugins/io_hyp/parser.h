@@ -22,7 +22,7 @@
 #define PCB_IO_HYP_PARSER_H
 
 #include <stdio.h>
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 #include "board.h"
 
 	/* 

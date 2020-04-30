@@ -95,7 +95,7 @@ append /local/pcb/OBJS_HIDLIB [@
 	$(LIBRND)/core/main_act.o
 	$(LIBRND)/core/misc_util.o
 	$(LIBRND)/core/paths.o
-	$(LIBRND)/core/pcb_bool.o
+	$(LIBRND)/core/rnd_bool.o
 	$(LIBRND)/core/rnd_printf.o
 	$(LIBRND)/core/plugins.o
 	$(LIBRND)/core/pixmap.o

@@ -32,7 +32,7 @@
 #define RND_MISC_UTIL_H
 
 #include <librnd/core/unit.h>
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 
 double rnd_distance(double x1, double y1, double x2, double y2);
 double rnd_distance2(double x1, double y1, double x2, double y2); /* distance square */

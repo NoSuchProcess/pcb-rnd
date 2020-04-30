@@ -31,7 +31,7 @@
 #define RND_GRID_H
 
 #include <genvector/gds_char.h>
-#include <librnd/core/pcb_bool.h>
+#include <librnd/core/rnd_bool.h>
 #include <librnd/core/global_typedefs.h>
 #include <librnd/core/unit.h>
 
