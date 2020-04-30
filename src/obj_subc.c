@@ -1984,7 +1984,7 @@ pcb_r_dir_t pcb_draw_subc_mark(const rnd_rnd_box_t *b, void *cl)
 
 	nnclr = (PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc)) ? &conf_core.appearance.color.subc_nonetlist : &conf_core.appearance.color.subc;
 	rnd_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : nnclr);
-	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	pcb_subc_draw_origin(pcb_draw_out.fgGC, subc, 0, 0);
 
 	if (locked) {

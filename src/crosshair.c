@@ -1054,12 +1054,12 @@ void pcb_center_display(rnd_coord_t X, rnd_coord_t Y)
 /* allocate GC only when the GUI is already up and running */
 static void pcb_crosshair_gui_init(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	pcb_crosshair.GC = pcb_hid_make_gc();
+	pcb_crosshair.GC = rnd_hid_make_gc();
 
 	rnd_render->set_color(pcb_crosshair.GC, &pcbhl_conf.appearance.color.cross);
-	pcb_hid_set_draw_xor(pcb_crosshair.GC, 1);
-	pcb_hid_set_line_cap(pcb_crosshair.GC, rnd_cap_round);
-	pcb_hid_set_line_width(pcb_crosshair.GC, 1);
+	rnd_hid_set_draw_xor(pcb_crosshair.GC, 1);
+	rnd_hid_set_line_cap(pcb_crosshair.GC, rnd_cap_round);
+	rnd_hid_set_line_width(pcb_crosshair.GC, 1);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1093,7 +1093,7 @@ void pcb_crosshair_uninit(void)
 	pcb_poly_free_fields(&pcb_crosshair.AttachedPolygon);
 	pcb_route_destroy(&pcb_crosshair.Route);
 	if (rnd_render != NULL)
-		pcb_hid_destroy_gc(pcb_crosshair.GC);
+		rnd_hid_destroy_gc(pcb_crosshair.GC);
 	rnd_event_unbind_allcookie(crosshair_cookie);
 }
 

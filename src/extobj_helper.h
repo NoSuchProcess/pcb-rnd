@@ -136,7 +136,7 @@ RND_INLINE void pcb_exto_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 		return;
 
 	rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.extobj);
-	pcb_hid_set_line_width(pcb_draw_out.fgGC, -2);
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, -2);
 	rnd_render->draw_line(pcb_draw_out.fgGC, x, y, x, y + unit);
 	rnd_render->draw_line(pcb_draw_out.fgGC, x, y, x + unit/2, y);
 	rnd_render->draw_line(pcb_draw_out.fgGC, x, y + unit, x + unit/2, y + unit);

@@ -174,8 +174,8 @@ static void pstklib_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 	pcb_pstk_draw_preview(PCB, &ps, layers, 0, 0, &e->view);
 
 	rnd_render->set_color(gc, rnd_color_black);
-	pcb_hid_set_line_cap(gc, rnd_cap_round);
-	pcb_hid_set_line_width(gc, -1);
+	rnd_hid_set_line_cap(gc, rnd_cap_round);
+	rnd_hid_set_line_width(gc, -1);
 
 	x1 = ctx->drawbox.X1;
 	y1 = ctx->drawbox.Y1;

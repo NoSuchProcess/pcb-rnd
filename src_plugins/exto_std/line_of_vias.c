@@ -169,11 +169,11 @@ static void draw_mark_line(pcb_draw_info_t *info, pcb_subc_t *subc, pcb_line_t *
 
 	selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, line);
 	rnd_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : &conf_core.appearance.color.extobj);
-	pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, -1);
 	rnd_render->draw_line(pcb_draw_out.fgGC, x1 - dy * +disp, y1 + dx * +disp, x2 - dy * +disp, y2 + dx * +disp);
 	rnd_render->draw_line(pcb_draw_out.fgGC, x1 - dy * -disp, y1 + dx * -disp, x2 - dy * -disp, y2 + dx * -disp);
 
-	pcb_hid_set_line_width(pcb_draw_out.fgGC, -2);
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, -2);
 	ax = x1 + dx * arrow;
 	ay = y1 + dy * arrow;
 	ax1 = x1 - dy * +arrow;

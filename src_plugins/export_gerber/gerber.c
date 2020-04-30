@@ -602,18 +602,18 @@ emit_outline:
 			pcb_draw_groups(hid, PCB, PCB_LYT_BOUNDARY, F_uroute, NULL, &region, rnd_color_black, PCB_LYT_MECH, 0, 0);
 		}
 		else {
-			rnd_hid_gc_t gc = pcb_hid_make_gc();
+			rnd_hid_gc_t gc = rnd_hid_make_gc();
 			if (flags & PCB_LYT_SILK)
-				pcb_hid_set_line_width(gc, conf_core.design.min_slk);
+				rnd_hid_set_line_width(gc, conf_core.design.min_slk);
 			else if (group >= 0)
-				pcb_hid_set_line_width(gc, conf_core.design.min_wid);
+				rnd_hid_set_line_width(gc, conf_core.design.min_wid);
 			else
-				pcb_hid_set_line_width(gc, AUTO_OUTLINE_WIDTH);
+				rnd_hid_set_line_width(gc, AUTO_OUTLINE_WIDTH);
 			rnd_render->draw_line(gc, 0, 0, PCB->hidlib.size_x, 0);
 			rnd_render->draw_line(gc, 0, 0, 0, PCB->hidlib.size_y);
 			rnd_render->draw_line(gc, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 			rnd_render->draw_line(gc, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
-			pcb_hid_destroy_gc(gc);
+			rnd_hid_destroy_gc(gc);
 		}
 	}
 	return 1;

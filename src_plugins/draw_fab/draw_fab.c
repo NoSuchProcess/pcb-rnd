@@ -178,7 +178,7 @@ static int DrawFab_overhang(void)
 
 static void draw_fab_layer(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_layer_t *layer, int found)
 {
-	pcb_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
+	rnd_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
 	PCB_LINE_LOOP(layer);
 	{
 		rnd_render->draw_line(gc, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
@@ -195,7 +195,7 @@ static void draw_fab_layer(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid
 	}
 	PCB_END_LOOP;
 	if (!found) {
-		pcb_hid_set_line_width(gc, FAB_LINE_W);
+		rnd_hid_set_line_width(gc, FAB_LINE_W);
 		text_at(info, gc, PCB->hidlib.size_x / 2, PCB->hidlib.size_y + PCB_MIL_TO_COORD(20), 1, "Board outline is the centerline of this path");
 	}
 }
@@ -225,8 +225,8 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 		yoff -= (4 - ds) * TEXT_LINE;
 	}
 
-	pcb_hid_set_line_cap(gc, rnd_cap_round);
-	pcb_hid_set_line_width(gc, FAB_LINE_W);
+	rnd_hid_set_line_cap(gc, rnd_cap_round);
+	rnd_hid_set_line_width(gc, FAB_LINE_W);
 
 	for (n = AllDrills->DrillN - 1; n >= 0; n--) {
 		int plated_sym = -1, unplated_sym = -1;
@@ -307,13 +307,13 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 		}
 	}
 	if (!found) {
-		pcb_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
+		rnd_hid_set_line_width(gc, PCB_MIL_TO_COORD(10));
 		rnd_render->draw_line(gc, 0, 0, PCB->hidlib.size_x, 0);
 		rnd_render->draw_line(gc, 0, 0, 0, PCB->hidlib.size_y);
 		rnd_render->draw_line(gc, PCB->hidlib.size_x, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 		rnd_render->draw_line(gc, 0, PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y);
 		/*FPrintOutline (); */
-		pcb_hid_set_line_width(gc, FAB_LINE_W);
+		rnd_hid_set_line_width(gc, FAB_LINE_W);
 		text_at(info, gc, PCB_MIL_TO_COORD(2000), yoff, 0,
 						"Maximum Dimensions: %f mils wide, %f mils high", PCB_COORD_TO_MIL(PCB->hidlib.size_x), PCB_COORD_TO_MIL(PCB->hidlib.size_y));
 		text_at(info, gc, PCB->hidlib.size_x / 2, PCB->hidlib.size_y + PCB_MIL_TO_COORD(20), 1,

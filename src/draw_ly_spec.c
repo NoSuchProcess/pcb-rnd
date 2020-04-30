@@ -291,8 +291,8 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 
 		rnd_render->set_color(pcb_draw_out.fgGC, &PCB->Data->Layer[goutl->lid[0]].meta.real.color);
-		pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
-		pcb_hid_set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
+		rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
+		rnd_hid_set_line_width(pcb_draw_out.fgGC, conf_core.design.min_wid);
 		rnd_render->draw_rect(pcb_draw_out.fgGC, 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
 
 		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
@@ -344,9 +344,9 @@ static void pcb_draw_assembly(pcb_draw_info_t *info, pcb_layer_type_t lyt_side)
 		return;
 
 	pcb_draw_doing_assy = pcb_true;
-	pcb_hid_set_draw_faded(pcb_draw_out.fgGC, 1);
+	rnd_hid_set_draw_faded(pcb_draw_out.fgGC, 1);
 	pcb_draw_layer_grp(info, side_group, 0);
-	pcb_hid_set_draw_faded(pcb_draw_out.fgGC, 0);
+	rnd_hid_set_draw_faded(pcb_draw_out.fgGC, 0);
 
 	/* draw package */
 	pcb_draw_silk_doc(info, lyt_side, PCB_LYT_SILK, 0, 0);

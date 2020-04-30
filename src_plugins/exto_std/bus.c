@@ -224,7 +224,7 @@ static void pcb_bus_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 	bus = subc->extobj_data;
 
 	rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.extobj);
-	pcb_hid_set_line_width(pcb_draw_out.fgGC, -1);
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, -1);
 
 	for(l = linelist_first(&ly->Line); l != NULL; l = linelist_next(l)) {
 		rnd_coord_t x, y;

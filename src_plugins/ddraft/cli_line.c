@@ -210,7 +210,7 @@ static int line_click(char *line, int cursor, int argc, cli_node_t *argv)
 
 rnd_trace("line='%s'\n", line);
 	update:;
-	pcb_hid_command_entry(line, &cursor);
+	rnd_hid_command_entry(line, &cursor);
 
 	return 0;
 }

@@ -922,3 +922,10 @@
 #define pcb_w32_sharedir rnd_w32_sharedir
 #define pcb_w32_cachedir rnd_w32_cachedir
 #define pcb_hid_register_hid rnd_hid_register_hid
+#define pcb_hid_make_gc rnd_hid_make_gc
+#define pcb_hid_destroy_gc rnd_hid_destroy_gc
+#define pcb_hid_set_line_cap rnd_hid_set_line_cap
+#define pcb_hid_set_line_width rnd_hid_set_line_width
+#define pcb_hid_set_draw_xor rnd_hid_set_draw_xor
+#define pcb_hid_set_draw_faded rnd_hid_set_draw_faded
+#define pcb_hid_command_entry rnd_hid_command_entry

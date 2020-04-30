@@ -521,7 +521,7 @@ static fgw_error_t pcb_act_ddraft(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if ((cmd != NULL) && (*cmd != '/'))
 		cline = cmd;
 	else
-		cline = pcb_hid_command_entry(NULL, &cursor);
+		cline = rnd_hid_command_entry(NULL, &cursor);
 	if (cline == NULL)
 		cline = "";
 

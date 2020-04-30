@@ -273,24 +273,24 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE_XOR, pcb_draw_out.direct, info->drawn_area);
 
-	pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
-	pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 1);
+	rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
+	rnd_hid_set_draw_xor(pcb_draw_out.fgGC, 1);
 
 	if (PCB->SubcOn) {
 		info->objcb.subc.per_side = per_side;
 		pcb_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_mark_callback, info, NULL);
 	}
 
-	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, 0);
 
 	if ((PCB->padstack_mark_on) && (conf_core.appearance.padstack.cross_thick > 0)) {
-		pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
+		rnd_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
 		pcb_draw_pstk_marks(info);
 	}
 
 	rnd_event(&PCB->hidlib, RND_EVENT_GUI_DRAW_OVERLAY_XOR, "p", &pcb_draw_out.fgGC, NULL);
 
-	pcb_hid_set_draw_xor(pcb_draw_out.fgGC, 0);
+	rnd_hid_set_draw_xor(pcb_draw_out.fgGC, 0);
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
@@ -312,14 +312,14 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, rnd_layergrp_id_t componen
 	/* Draw pins' and pads' names */
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-	pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
-	pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
+	rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	if (PCB->SubcOn) {
 		info->objcb.subc.per_side = per_side;
 		pcb_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_label_callback, info, NULL);
 	}
 	if (PCB->padstack_mark_on) {
-		pcb_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
+		rnd_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
 		pcb_draw_pstk_labels(info);
 	}
 	pcb_draw_pstk_names(info, info->xform->show_solder_side ? solder : component, info->drawn_area);
@@ -742,8 +742,8 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		/* print the non-clearing polys */
 	if (lflg & PCB_LYT_COPPER) {
 		delayed_terms_enabled = pcb_true;
-		pcb_hid_set_line_width(pcb_draw_out.fgGC, 1);
-		pcb_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
+		rnd_hid_set_line_width(pcb_draw_out.fgGC, 1);
+		rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
 		pcb_r_search(Layer->polygon_tree, info->drawn_area, NULL, pcb_poly_draw_term_callback, info, NULL);
 		delayed_terms_enabled = pcb_false;
 		may_have_delayed = 1;
@@ -1076,12 +1076,12 @@ static void expose_begin(pcb_output_t *save, rnd_hid_t *hid)
 	vtp0_truncate(&delayed_objs, 0);
 
 	rnd_render = pcb_draw_out.hid = hid;
-	pcb_draw_out.fgGC = pcb_hid_make_gc();
-	pcb_draw_out.padGC = pcb_hid_make_gc();
-	pcb_draw_out.backpadGC = pcb_hid_make_gc();
-	pcb_draw_out.padselGC = pcb_hid_make_gc();
-	pcb_draw_out.drillGC = pcb_hid_make_gc();
-	pcb_draw_out.pmGC = pcb_hid_make_gc();
+	pcb_draw_out.fgGC = rnd_hid_make_gc();
+	pcb_draw_out.padGC = rnd_hid_make_gc();
+	pcb_draw_out.backpadGC = rnd_hid_make_gc();
+	pcb_draw_out.padselGC = rnd_hid_make_gc();
+	pcb_draw_out.drillGC = rnd_hid_make_gc();
+	pcb_draw_out.pmGC = rnd_hid_make_gc();
 
 	if (hid->force_compositing)
 		pcb_draw_out.direct = 0;
@@ -1093,22 +1093,22 @@ static void expose_begin(pcb_output_t *save, rnd_hid_t *hid)
 	hid->set_color(pcb_draw_out.padGC, &conf_core.appearance.color.pin);
 	hid->set_color(pcb_draw_out.backpadGC, &conf_core.appearance.color.invisible_objects);
 	hid->set_color(pcb_draw_out.padselGC, &conf_core.appearance.color.selected);
-	pcb_hid_set_line_width(pcb_draw_out.backpadGC, -1);
-	pcb_hid_set_line_cap(pcb_draw_out.backpadGC, rnd_cap_square);
-	pcb_hid_set_line_width(pcb_draw_out.padselGC, -1);
-	pcb_hid_set_line_cap(pcb_draw_out.padselGC, rnd_cap_square);
-	pcb_hid_set_line_width(pcb_draw_out.padGC, -1);
-	pcb_hid_set_line_cap(pcb_draw_out.padGC, rnd_cap_square);
+	rnd_hid_set_line_width(pcb_draw_out.backpadGC, -1);
+	rnd_hid_set_line_cap(pcb_draw_out.backpadGC, rnd_cap_square);
+	rnd_hid_set_line_width(pcb_draw_out.padselGC, -1);
+	rnd_hid_set_line_cap(pcb_draw_out.padselGC, rnd_cap_square);
+	rnd_hid_set_line_width(pcb_draw_out.padGC, -1);
+	rnd_hid_set_line_cap(pcb_draw_out.padGC, rnd_cap_square);
 }
 
 static void expose_end(pcb_output_t *save)
 {
-	pcb_hid_destroy_gc(pcb_draw_out.fgGC);
-	pcb_hid_destroy_gc(pcb_draw_out.padGC);
-	pcb_hid_destroy_gc(pcb_draw_out.backpadGC);
-	pcb_hid_destroy_gc(pcb_draw_out.padselGC);
-	pcb_hid_destroy_gc(pcb_draw_out.drillGC);
-	pcb_hid_destroy_gc(pcb_draw_out.pmGC);
+	rnd_hid_destroy_gc(pcb_draw_out.fgGC);
+	rnd_hid_destroy_gc(pcb_draw_out.padGC);
+	rnd_hid_destroy_gc(pcb_draw_out.backpadGC);
+	rnd_hid_destroy_gc(pcb_draw_out.padselGC);
+	rnd_hid_destroy_gc(pcb_draw_out.drillGC);
+	rnd_hid_destroy_gc(pcb_draw_out.pmGC);
 
 	pcb_draw_out.fgGC = NULL;
 

@@ -24,13 +24,13 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#ifndef PCB_HID_INLINES
-#define PCB_HID_INLINES
+#ifndef RND_HID_INLINES
+#define RND_HID_INLINES
 
 #include <librnd/core/hid.h>
 #include "globalconst.h"
 
-RND_INLINE rnd_hid_gc_t pcb_hid_make_gc(void)
+RND_INLINE rnd_hid_gc_t rnd_hid_make_gc(void)
 {
 	rnd_hid_gc_t res;
 	rnd_core_gc_t *hc;
@@ -44,12 +44,12 @@ RND_INLINE rnd_hid_gc_t pcb_hid_make_gc(void)
 	return res;
 }
 
-RND_INLINE void pcb_hid_destroy_gc(rnd_hid_gc_t gc)
+RND_INLINE void rnd_hid_destroy_gc(rnd_hid_gc_t gc)
 {
 	rnd_render->destroy_gc(gc);
 }
 
-RND_INLINE void pcb_hid_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
+RND_INLINE void rnd_hid_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->cap != style) {
@@ -58,7 +58,7 @@ RND_INLINE void pcb_hid_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 	}
 }
 
-RND_INLINE void pcb_hid_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
+RND_INLINE void rnd_hid_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->width != width) {
@@ -67,7 +67,7 @@ RND_INLINE void pcb_hid_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 	}
 }
 
-RND_INLINE void pcb_hid_set_draw_xor(rnd_hid_gc_t gc, int xor)
+RND_INLINE void rnd_hid_set_draw_xor(rnd_hid_gc_t gc, int xor)
 {
 	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->xor != xor) {
@@ -76,7 +76,7 @@ RND_INLINE void pcb_hid_set_draw_xor(rnd_hid_gc_t gc, int xor)
 	}
 }
 
-RND_INLINE void pcb_hid_set_draw_faded(rnd_hid_gc_t gc, int faded)
+RND_INLINE void rnd_hid_set_draw_faded(rnd_hid_gc_t gc, int faded)
 {
 	rnd_core_gc_t *hc = (rnd_core_gc_t *)gc;
 	if (hc->faded != faded) {
@@ -85,7 +85,7 @@ RND_INLINE void pcb_hid_set_draw_faded(rnd_hid_gc_t gc, int faded)
 	}
 }
 
-RND_INLINE const char *pcb_hid_command_entry(const char *ovr, int *cursor)
+RND_INLINE const char *rnd_hid_command_entry(const char *ovr, int *cursor)
 {
 	if ((rnd_gui == NULL) || (rnd_gui->command_entry == NULL)) {
 		if (cursor != NULL)

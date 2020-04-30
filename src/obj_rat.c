@@ -466,9 +466,9 @@ pcb_r_dir_t pcb_rat_draw_callback(const rnd_rnd_box_t * b, void *cl)
 		int w = rat->Thickness;
 
 		if (info->xform->thin_draw || info->xform->wireframe)
-			pcb_hid_set_line_width(pcb_draw_out.fgGC, 0);
+			rnd_hid_set_line_width(pcb_draw_out.fgGC, 0);
 		else
-			pcb_hid_set_line_width(pcb_draw_out.fgGC, w);
+			rnd_hid_set_line_width(pcb_draw_out.fgGC, w);
 		rnd_render->draw_arc(pcb_draw_out.fgGC, rat->Point1.X, rat->Point1.Y, w * 2, w * 2, 0, 360);
 	}
 	else
