@@ -31,7 +31,7 @@
 #ifndef	PCB_DATA_H
 #define	PCB_DATA_H
 
-#include <librnd/core/globalconst.h>
+#include "globalconst.h"
 #include <librnd/core/global_typedefs.h>
 #include "layer.h"
 #include "crosshair.h"

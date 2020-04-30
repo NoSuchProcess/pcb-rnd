@@ -31,7 +31,7 @@
 #include "wget_common.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
-#include <librnd/core/globalconst.h>
+#include "globalconst.h"
 
 #include "../src_plugins/lib_wget/lib_wget.h"
 

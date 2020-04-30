@@ -28,7 +28,7 @@
 #define PCB_HID_INLINES
 
 #include <librnd/core/hid.h>
-#include <librnd/core/globalconst.h>
+#include "globalconst.h"
 
 RND_INLINE rnd_hid_gc_t pcb_hid_make_gc(void)
 {

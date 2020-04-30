@@ -2,7 +2,7 @@
 #define PCB_CONF_CORE_H
 
 #include <librnd/core/conf.h>
-#include <librnd/core/globalconst.h>
+#include "globalconst.h"
 #include <librnd/core/color.h>
 
 /* NOTE: this struct has a strict format because a code generator needs to

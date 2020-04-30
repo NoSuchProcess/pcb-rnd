@@ -33,7 +33,7 @@
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/compat_fs.h>
-#include <librnd/core/globalconst.h>
+#include "globalconst.h"
 
 #include "board.h"
 #include "plug_import.h"

@@ -40,7 +40,7 @@
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/event.h>
 #include "undo.h"
-#include <librnd/core/globalconst.h>
+#include "globalconst.h"
 
 #include "script.h"
 
