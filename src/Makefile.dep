@@ -5015,9 +5015,8 @@
  board.h vtroutestyle.h rats_patch.h board.h plug_io.h vtlibrary.h \
  ../src_3rd/genvector/vts0.h ../src_plugins/io_pcb/parse_common.h \
  ../src_plugins/io_pcb/parse_y.h plug_footprint.h data.h \
- ../src_plugins/io_pcb/attribs.h librnd/core/compat_misc.h \
- librnd/core/compat_cc.h obj_common.h librnd/core/paths.h \
- librnd/core/safe_fs.h
+ ../src_plugins/io_pcb/attribs.h librnd/core/compat_misc.h obj_common.h \
+ librnd/core/paths.h librnd/core/safe_fs.h
 ../src_plugins/io_pcb/parse_y.o: ../src_plugins/io_pcb/parse_y.c \
  ../config.h librnd/config.h flag.h librnd/core/globalconst.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
@@ -7957,7 +7956,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  librnd/core/error.h route.h insert.h polygon.h librnd/poly/rtree.h \
  ../src_3rd/genrtree/genrtree_api.h librnd/poly/rtree2_compat.h search.h \
- librnd/core/tool.h ../src_3rd/genvector/vtp0.h
+ brave.h librnd/core/tool.h ../src_3rd/genvector/vtp0.h
 ../src_plugins/tool_std/tool_line.o: ../src_plugins/tool_std/tool_line.c \
  ../config.h librnd/config.h conf_core.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/pcb_bool.h \
@@ -9158,8 +9157,8 @@ insert.o: insert.c ../config.h librnd/config.h conf_core.h \
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h select.h \
- operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h obj_line_op.h \
- obj_arc_op.h obj_rat_op.h obj_poly_op.h
+ operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h brave.h \
+ obj_line_op.h obj_arc_op.h obj_rat_op.h obj_poly_op.h
 intersect.o: intersect.c ../config.h librnd/config.h intersect.h \
  librnd/core/global_typedefs.h librnd/core/pcb_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h
@@ -9578,15 +9577,15 @@ obj_line.o: obj_line.c ../config.h librnd/config.h undo.h \
  obj_text.h font.h ../src_3rd/genht/htip.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h \
  ../src_3rd/genvector/gds_char.h obj_gfx_list.h obj_gfx.h layer_grp.h \
- rats_patch.h librnd/core/hidlib.h librnd/core/global_typedefs.h data.h \
- crosshair.h vtonpoint.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- librnd/core/error.h route.h buffer.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h obj_rat_list.h obj_rat.h idpath.h \
- obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
- librnd/poly/rtree2_compat.h librnd/poly/rtree.h \
- ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
- ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
+ rats_patch.h librnd/core/hidlib.h librnd/core/global_typedefs.h brave.h \
+ data.h crosshair.h vtonpoint.h librnd/core/hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h librnd/core/error.h route.h buffer.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h obj_rat_list.h \
+ obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h librnd/poly/rtree2_compat.h \
+ librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h move.h search.h conf_core.h librnd/core/conf.h \
  librnd/core/pcb-printf.h ../src_3rd/liblihata/lihata.h \
@@ -10032,9 +10031,10 @@ pcb_minuid.o: pcb_minuid.c ../src_3rd/libminuid/libminuid.h \
  librnd/core/compat_misc.h librnd/config.h pcb_minuid.h
 pixmap_pcb.o: pixmap_pcb.c ../config.h librnd/config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/pixmap.h \
- librnd/core/global_typedefs.h librnd/core/pcb_bool.h pixmap_pcb.h \
- ../src_3rd/genht/htpp.h obj_common.h flag.h librnd/core/globalconst.h \
- librnd/core/attrib.h global_typedefs.h data_parent.h
+ librnd/core/global_typedefs.h librnd/core/pcb_bool.h librnd/core/error.h \
+ pixmap_pcb.h ../src_3rd/genht/htpp.h obj_common.h flag.h \
+ librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ data_parent.h
 plug_footprint.o: plug_footprint.c ../config.h librnd/config.h \
  plug_footprint.h vtlibrary.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h data.h librnd/core/globalconst.h \
