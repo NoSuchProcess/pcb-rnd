@@ -75,19 +75,19 @@ enum rnd_allow_e {
 };
 
 /* bitfield */
-typedef enum pcb_family_e {
+typedef enum rnd_family_e {
 	PCB_UNIT_METRIC   = 1,
 	PCB_UNIT_IMPERIAL = 2,
 	PCB_UNIT_FREQ     = 4
-} pcb_family_t;
+} rnd_family_t;
 
-enum pcb_suffix_e { PCB_UNIT_NO_SUFFIX, PCB_UNIT_SUFFIX, PCB_UNIT_FILE_MODE };
+enum rnd_suffix_e { RND_UNIT_NO_SUFFIX, RND_UNIT_SUFFIX, RND_UNIT_FILE_MODE };
 
 struct rnd_unit_s {
 	const char *suffix;
 	char printf_code;        /* 0 means the unit is an alias and should not be used in printf */
 	double scale_factor;
-	enum pcb_family_e family;
+	enum rnd_family_e family;
 	enum rnd_allow_e allow;
 	int default_prec;
 

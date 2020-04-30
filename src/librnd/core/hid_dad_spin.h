@@ -40,7 +40,7 @@ typedef struct {
 	unsigned no_unit_chg:1;
 	int wall, wstr, wup, wdown, wunit, wwarn;
 	const rnd_unit_t *unit; /* for RND_DAD_SPIN_COORD and RND_DAD_SPIN_FREQ only: current unit */
-	pcb_family_t unit_family;
+	rnd_family_t unit_family;
 	rnd_hid_attribute_t **attrs;
 	void **hid_ctx;
 	int set_writeback_lock;

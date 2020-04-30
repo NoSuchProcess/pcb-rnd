@@ -112,7 +112,7 @@ void rnd_dad_unit_set_help(rnd_hid_attribute_t *end, const char *help)
 
 const char **rnd_dad_unit_enum = NULL;
 
-void rnd_dad_unit_init(enum pcb_family_e family)
+void rnd_dad_unit_init(enum rnd_family_e family)
 {
 	int len, n, i;
 

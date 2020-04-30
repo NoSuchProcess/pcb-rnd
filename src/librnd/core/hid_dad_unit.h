@@ -36,7 +36,7 @@
 typedef struct {
 	rnd_hid_compound_t cmp;
 	void **hid_ctx;
-	pcb_family_t family; /* which families of units are allowed in this spinbox */
+	rnd_family_t family; /* which families of units are allowed in this spinbox */
 	int wenum;
 } rnd_hid_dad_unit_t;
 
@@ -77,7 +77,7 @@ void rnd_dad_unit_set_val_ptr(rnd_hid_attribute_t *end, void *val);
 void rnd_dad_unit_set_help(rnd_hid_attribute_t *end, const char *help);
 void rnd_dad_unit_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
-void rnd_dad_unit_init(enum pcb_family_e family);
+void rnd_dad_unit_init(enum rnd_family_e family);
 void rnd_dad_unit_uninit(void);
 
 #endif

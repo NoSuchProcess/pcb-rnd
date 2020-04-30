@@ -1183,3 +1183,9 @@
 #define PCB_UNIT_ALLOW_NATURAL RND_UNIT_ALLOW_NATURAL
 #define PCB_UNIT_ALLOW_ALL_SANE RND_UNIT_ALLOW_ALL_SANE
 #define PCB_UNIT_ALLOW_ALL RND_UNIT_ALLOW_ALL
+#define pcb_family_e rnd_family_e
+#define pcb_family_t rnd_family_t
+#define pcb_suffix_e rnd_suffix_e
+#define PCB_UNIT_NO_SUFFIX RND_UNIT_NO_SUFFIX
+#define PCB_UNIT_SUFFIX RND_UNIT_SUFFIX
+#define PCB_UNIT_FILE_MODE RND_UNIT_FILE_MODE

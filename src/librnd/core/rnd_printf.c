@@ -110,15 +110,15 @@ do { \
 } while(0)
 
 /* append a suffix, with or without space */
-static int inline append_suffix(gds_t *dest, enum pcb_suffix_e suffix_type, const char *suffix)
+static int inline append_suffix(gds_t *dest, enum rnd_suffix_e suffix_type, const char *suffix)
 {
 	switch (suffix_type) {
-	case PCB_UNIT_NO_SUFFIX:
+	case RND_UNIT_NO_SUFFIX:
 		break;
-	case PCB_UNIT_SUFFIX:
+	case RND_UNIT_SUFFIX:
 		if (gds_append(dest, ' ') != 0) return -1;
 		/* deliberate fall-thru */
-	case PCB_UNIT_FILE_MODE:
+	case RND_UNIT_FILE_MODE:
 		if (gds_append_str(dest, suffix) != 0) return -1;
 		break;
 	}
@@ -142,12 +142,12 @@ static int inline append_suffix(gds_t *dest, enum pcb_suffix_e suffix_type, cons
  * return 0 on success, -1 on error
  */
 static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const gds_t *printf_spec_, enum rnd_allow_e allow,
-														 enum pcb_suffix_e suffix_type)
+														 enum rnd_suffix_e suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
 	char printf_spec_new_local[256];
 	double *value, value_local[32];
-	enum pcb_family_e family;
+	enum rnd_family_e family;
 	const char *suffix;
 	int i, n, retval = -1, trunc0 = 0;
 	const char *printf_spec = printf_spec_->array;
@@ -237,12 +237,12 @@ static int CoordsToString(gds_t *dest, rnd_coord_t coord[], int n_coords, const 
 		if (gds_append(dest,  '(') != 0)
 			goto err;
 
-	sprintf_lc_safe((suffix_type == PCB_UNIT_FILE_MODE), filemode_buff, printf_spec_new + 2, value[0]);
+	sprintf_lc_safe((suffix_type == RND_UNIT_FILE_MODE), filemode_buff, printf_spec_new + 2, value[0]);
 	if (gds_append_str(dest, filemode_buff) != 0)
 		goto err;
 
 	for (i = 1; i < n_coords; ++i) {
-		sprintf_lc_safe((suffix_type == PCB_UNIT_FILE_MODE), filemode_buff, printf_spec_new, value[i]);
+		sprintf_lc_safe((suffix_type == RND_UNIT_FILE_MODE), filemode_buff, printf_spec_new, value[i]);
 		if (gds_append_str(dest, filemode_buff) != 0)
 			goto err;
 	}
@@ -329,7 +329,7 @@ static inline int try_human_coord(rnd_coord_t coord, const rnd_unit_t *unit, dou
 }
 
 /* Same as CoordsToString but take only one coord and print it in human readable format */
-static int CoordsToHumanString(gds_t *dest, rnd_coord_t coord, const gds_t *printf_spec_, enum pcb_suffix_e suffix_type)
+static int CoordsToHumanString(gds_t *dest, rnd_coord_t coord, const gds_t *printf_spec_, enum rnd_suffix_e suffix_type)
 {
 	char filemode_buff[128]; /* G_ASCII_DTOSTR_BUF_SIZE */
 	char printf_spec_new_local[256];
@@ -366,13 +366,13 @@ static int CoordsToHumanString(gds_t *dest, rnd_coord_t coord, const gds_t *prin
 	}
 
 	make_printf_spec(printf_spec_new, printf_spec, 8, &trunc0);
-	sprintf_lc_safe((suffix_type == PCB_UNIT_FILE_MODE), filemode_buff, printf_spec_new + 2, value);
+	sprintf_lc_safe((suffix_type == RND_UNIT_FILE_MODE), filemode_buff, printf_spec_new + 2, value);
 	if (gds_append_str(dest, filemode_buff) != 0)
 		goto err;
 
 	if (value != 0) {
-		if (suffix_type == PCB_UNIT_NO_SUFFIX)
-			suffix_type = PCB_UNIT_SUFFIX;
+		if (suffix_type == RND_UNIT_NO_SUFFIX)
+			suffix_type = RND_UNIT_SUFFIX;
 		if (append_suffix(dest, suffix_type, suffix) != 0)
 			goto err;
 	}
@@ -439,7 +439,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 
 	new_fmt:;
 	while (*fmt) {
-		enum pcb_suffix_e suffix = PCB_UNIT_NO_SUFFIX;
+		enum rnd_suffix_e suffix = RND_UNIT_NO_SUFFIX;
 
 		if (*fmt == '%') {
 			const char *ext_unit = "";
@@ -519,11 +519,11 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				fmt++;
 			}
 			if (*fmt == '$') {
-				suffix = PCB_UNIT_SUFFIX;
+				suffix = RND_UNIT_SUFFIX;
 				fmt++;
 				if (*fmt == '$') {
 					fmt++;
-					suffix = PCB_UNIT_FILE_MODE;
+					suffix = RND_UNIT_FILE_MODE;
 				}
 			}
 
@@ -623,7 +623,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					if (QstringToString(string, qstr, '"', '\\', needsq) != 0) goto err;
 					break;
 				case 'I':
-					if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_NM, PCB_UNIT_NO_SUFFIX) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_NM, RND_UNIT_NO_SUFFIX) != 0) goto err;
 					break;
 				case 's':
 					if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_MM | RND_UNIT_ALLOW_MIL, suffix) != 0) goto err;
@@ -649,7 +649,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_DMIL, suffix) != 0) goto err;
 					break;
 				case 'r':
-					if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_READABLE, PCB_UNIT_NO_SUFFIX) != 0) goto err;
+					if (CoordsToString(string, value, 1, &spec, RND_UNIT_ALLOW_READABLE, RND_UNIT_NO_SUFFIX) != 0) goto err;
 					break;
 					/* All these fallthroughs are deliberate */
 				case '9':
@@ -697,7 +697,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					if (safe & PCB_SAFEPRINT_COORD_ONLY)
 						return -1;
 					if (gds_append_len(&spec, ".06f", 4) != 0) goto err;
-					if (suffix == PCB_UNIT_SUFFIX)
+					if (suffix == RND_UNIT_SUFFIX)
 						if (gds_append_len(&spec, " deg", 4) != 0) goto err;
 					tmplen = sprintf(tmp, spec.array, (double) va_arg(args, rnd_angle_t));
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
@@ -706,7 +706,7 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 					if (safe & PCB_SAFEPRINT_COORD_ONLY)
 						return -1;
 					if (gds_append_len(&spec, ".0f", 3) != 0) goto err;
-					/* if (suffix == PCB_UNIT_SUFFIX)
+					/* if (suffix == RND_UNIT_SUFFIX)
 						if (gds_append_len(&spec, " deg", 4) != 0) goto err;*/
 					tmplen = sprintf(tmp, spec.array, 10*((double) va_arg(args, rnd_angle_t))); /* kicad legacy needs decidegrees */
 					if (gds_append_len(string, tmp, tmplen) != 0) goto err;
