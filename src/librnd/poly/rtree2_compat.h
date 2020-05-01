@@ -38,27 +38,27 @@
 /* Compatibility layer between the new rtree and the old rtree for the
    period of transition */
 
-#ifndef PCB_RTREE2_COMPAT_H
-#define PCB_RTREE2_COMPAT_H
+#ifndef RND_RTREE2_COMPAT_H
+#define RND_RTREE2_COMPAT_H
 
 #include <librnd/poly/rtree.h>
 
 /* callback direction to the search engine */
-typedef enum pcb_r_dir_e {
-	PCB_R_DIR_NOT_FOUND = 0,         /* object not found or not accepted */
-	PCB_R_DIR_FOUND_CONTINUE = 1,    /* object found or accepted, go on searching */
-	PCB_R_DIR_CANCEL = 2             /* cancel the search and return immediately */
-} pcb_r_dir_t;
+typedef enum rnd_r_dir_e {
+	RND_R_DIR_NOT_FOUND = 0,         /* object not found or not accepted */
+	RND_R_DIR_FOUND_CONTINUE = 1,    /* object found or accepted, go on searching */
+	RND_R_DIR_CANCEL = 2             /* cancel the search and return immediately */
+} rnd_r_dir_t;
 
-rnd_rtree_t *pcb_r_create_tree(void);
-void pcb_r_destroy_tree(rnd_rtree_t **tree);
-void pcb_r_free_tree_data(rnd_rtree_t *rtree, void (*free)(void *ptr));
+rnd_rtree_t *rnd_r_create_tree(void);
+void rnd_r_destroy_tree(rnd_rtree_t **tree);
+void rnd_r_free_tree_data(rnd_rtree_t *rtree, void (*free)(void *ptr));
 
-void pcb_r_insert_entry(rnd_rtree_t *rtree, const rnd_rnd_box_t *which);
-void pcb_r_insert_array(rnd_rtree_t *rtree, const rnd_rnd_box_t *boxlist[], rnd_cardinal_t len);
+void rnd_r_insert_entry(rnd_rtree_t *rtree, const rnd_rnd_box_t *which);
+void rnd_r_insert_array(rnd_rtree_t *rtree, const rnd_rnd_box_t *boxlist[], rnd_cardinal_t len);
 
-rnd_bool pcb_r_delete_entry(rnd_rtree_t *rtree, const rnd_rnd_box_t *which);
-rnd_bool pcb_r_delete_entry_free_data(rnd_rtree_t *rtree, rnd_rnd_box_t *box, void (*free_data)(void *d));
+rnd_bool rnd_r_delete_entry(rnd_rtree_t *rtree, const rnd_rnd_box_t *which);
+rnd_bool rnd_r_delete_entry_free_data(rnd_rtree_t *rtree, rnd_rnd_box_t *box, void (*free_data)(void *d));
 
 /* generic search routine */
 /* region_in_search should return rnd_true if "what you're looking for" is
@@ -72,27 +72,27 @@ rnd_bool pcb_r_delete_entry_free_data(rnd_rtree_t *rtree, rnd_rnd_box_t *box, vo
  * Look at the implementation of r_region_is_empty for how to
  * abort the search if that is the desired behavior.
  */
-pcb_r_dir_t pcb_r_search(rnd_rtree_t *rtree, const rnd_rnd_box_t *query,
-	pcb_r_dir_t (*region_in_search)(const rnd_rnd_box_t *region, void *closure),
-	pcb_r_dir_t (*rectangle_in_region)(const rnd_rnd_box_t *box, void *closure),
+rnd_r_dir_t rnd_r_search(rnd_rtree_t *rtree, const rnd_rnd_box_t *query,
+	rnd_r_dir_t (*region_in_search)(const rnd_rnd_box_t *region, void *closure),
+	rnd_r_dir_t (*rectangle_in_region)(const rnd_rnd_box_t *box, void *closure),
 	void *closure, int *num_found);
 
 /* return 0 if there are any rectangles in the given region. */
-int pcb_r_region_is_empty(rnd_rtree_t *rtree, const rnd_rnd_box_t *region);
+int rnd_r_region_is_empty(rnd_rtree_t *rtree, const rnd_rnd_box_t *region);
 
-void pcb_r_dump_tree(rnd_rtree_t *root, int unused);
+void rnd_r_dump_tree(rnd_rtree_t *root, int unused);
 
-#define PCB_RTREE_EMPTY(rt) (((rt) == NULL) || ((rt)->size == 0))
+#define RND_RTREE_EMPTY(rt) (((rt) == NULL) || ((rt)->size == 0))
 
 /* -- Iterate through an rtree; DO NOT modify the tree while iterating -- */
 
 /* Get the first item, get fields of iterator set up; return can be casted to an object; returns NULL if rtree is empty */
-rnd_rnd_box_t *pcb_r_first(rnd_rtree_t *tree, rnd_rtree_it_t *it);
+rnd_rnd_box_t *rnd_r_first(rnd_rtree_t *tree, rnd_rtree_it_t *it);
 
 /* Get the next item, return can be casted to an object; returns NULL if no more items */
-rnd_rnd_box_t *pcb_r_next(rnd_rtree_it_t *it);
+rnd_rnd_box_t *rnd_r_next(rnd_rtree_it_t *it);
 
 /* Free fields of the iterator - not needed anymore, will be removed */
-void pcb_r_end(rnd_rtree_it_t *it);
+void rnd_r_end(rnd_rtree_it_t *it);
 
 #endif

@@ -520,7 +520,7 @@ static int adjust_tree(rnd_rtree_t * tree, struct seg *s)
 	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
 	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
 	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	pcb_r_insert_entry(tree, (const rnd_rnd_box_t *) q);
+	rnd_r_insert_entry(tree, (const rnd_rnd_box_t *) q);
 	q = (seg *) malloc(sizeof(struct seg));
 	if (!q)
 		return 1;
@@ -531,8 +531,8 @@ static int adjust_tree(rnd_rtree_t * tree, struct seg *s)
 	q->box.X2 = max(q->v->point[0], q->v->next->point[0]) + 1;
 	q->box.Y1 = min(q->v->point[1], q->v->next->point[1]);
 	q->box.Y2 = max(q->v->point[1], q->v->next->point[1]) + 1;
-	pcb_r_insert_entry(tree, (const rnd_rnd_box_t *) q);
-	pcb_r_delete_entry(tree, (const rnd_rnd_box_t *) s);
+	rnd_r_insert_entry(tree, (const rnd_rnd_box_t *) q);
+	rnd_r_delete_entry(tree, (const rnd_rnd_box_t *) s);
 	free(s);
 	return 0;
 }
@@ -542,20 +542,20 @@ static int adjust_tree(rnd_rtree_t * tree, struct seg *s)
  * (C) 2006, harry eaton
  * This prunes the search for boxes that don't intersect the segment.
  */
-static pcb_r_dir_t seg_in_region(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t seg_in_region(const rnd_rnd_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	double y1, y2;
 	/* for zero slope the search is aligned on the axis so it is already pruned */
 	if (i->m == 0.)
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return RND_R_DIR_FOUND_CONTINUE;
 	y1 = i->m * b->X1 + i->b;
 	y2 = i->m * b->X2 + i->b;
 	if (min(y1, y2) >= b->Y2)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	if (max(y1, y2) < b->Y1)
-		return PCB_R_DIR_NOT_FOUND;
-	return PCB_R_DIR_FOUND_CONTINUE;											/* might intersect */
+		return RND_R_DIR_NOT_FOUND;
+	return RND_R_DIR_FOUND_CONTINUE;											/* might intersect */
 }
 
 /* Prepend a deferred node-insertion task to a list */
@@ -579,7 +579,7 @@ static insert_node_task *prepend_insert_node_task(insert_node_task * list, seg *
  * problem. There are efficient algorithms for finding intersections with snap
  * rounding, but I don't have time to implement them right now.
  */
-static pcb_r_dir_t seg_in_seg(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t seg_in_seg(const rnd_rnd_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	struct seg *s = (struct seg *) b;
@@ -592,11 +592,11 @@ static pcb_r_dir_t seg_in_seg(const rnd_rnd_box_t * b, void *cl)
 	 * already been intersected this pass, skip it until the next pass.
 	 */
 	if (s->intersected || i->s->intersected)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	cnt = rnd_vect_inters2(s->v->point, s->v->next->point, i->v->point, i->v->next->point, s1, s2);
 	if (!cnt)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	if (i->touch)									/* if checking touches one find and we're done */
 		longjmp(*i->touch, TOUCHES);
 	i->s->p->Flags.status = ISECTED;
@@ -619,7 +619,7 @@ static pcb_r_dir_t seg_in_seg(const rnd_rnd_box_t * b, void *cl)
 #endif
 			i->node_insert_list = prepend_insert_node_task(i->node_insert_list, s, new_node);
 			s->intersected = 1;
-			return PCB_R_DIR_NOT_FOUND;									/* Keep looking for intersections with segment "i" */
+			return RND_R_DIR_NOT_FOUND;									/* Keep looking for intersections with segment "i" */
 		}
 		/* Skip any remaining r_search hits against segment i, as any further
 		 * intersections will be rejected until the next pass anyway.
@@ -627,14 +627,14 @@ static pcb_r_dir_t seg_in_seg(const rnd_rnd_box_t * b, void *cl)
 		if (done_insert_on_i)
 			longjmp(*i->env, 1);
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 void *rnd_poly_make_edge_tree(rnd_pline_t *pb)
 {
 	struct seg *s;
 	rnd_vnode_t *bv;
-	rnd_rtree_t *ans = pcb_r_create_tree();
+	rnd_rtree_t *ans = rnd_r_create_tree();
 	bv = pb->head;
 	do {
 		s = (seg *) malloc(sizeof(struct seg));
@@ -657,21 +657,21 @@ void *rnd_poly_make_edge_tree(rnd_pline_t *pb)
 		}
 		s->v = bv;
 		s->p = pb;
-		pcb_r_insert_entry(ans, (const rnd_rnd_box_t *) s);
+		rnd_r_insert_entry(ans, (const rnd_rnd_box_t *) s);
 	}
 	while ((bv = bv->next) != pb->head);
 	return (void *) ans;
 }
 
-static pcb_r_dir_t get_seg(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t get_seg(const rnd_rnd_box_t * b, void *cl)
 {
 	struct info *i = (struct info *) cl;
 	struct seg *s = (struct seg *) b;
 	if (i->v == s->v) {
 		i->s = s;
-		return PCB_R_DIR_CANCEL; /* found */
+		return RND_R_DIR_CANCEL; /* found */
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 /*
@@ -692,7 +692,7 @@ static pcb_r_dir_t get_seg(const rnd_rnd_box_t * b, void *cl)
  *
  */
 
-static pcb_r_dir_t contour_bounds_touch(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t contour_bounds_touch(const rnd_rnd_box_t * b, void *cl)
 {
 	contour_info *c_info = (contour_info *) cl;
 	rnd_pline_t *pa = c_info->pa;
@@ -725,7 +725,7 @@ static pcb_r_dir_t contour_bounds_touch(const rnd_rnd_box_t * b, void *cl)
 
 	av = looping_over->head;
 	do {													/* Loop over the nodes in the smaller contour */
-		pcb_r_dir_t rres;
+		rnd_r_dir_t rres;
 		/* check this edge for any insertions */
 		double dx;
 		info.v = av;
@@ -741,8 +741,8 @@ static pcb_r_dir_t contour_bounds_touch(const rnd_rnd_box_t * b, void *cl)
 		box.Y2 = (box.Y1 = av->point[1]) + 1;
 
 		/* fill in the segment in info corresponding to this node */
-		rres = pcb_r_search(looping_over->tree, &box, NULL, get_seg, &info, NULL);
-		assert(rres == PCB_R_DIR_CANCEL);
+		rres = rnd_r_search(looping_over->tree, &box, NULL, get_seg, &info, NULL);
+		assert(rres == RND_R_DIR_CANCEL);
 
 		/* If we're going to have another pass anyway, skip this */
 		if (info.s->intersected && info.node_insert_list != NULL)
@@ -755,7 +755,7 @@ static pcb_r_dir_t contour_bounds_touch(const rnd_rnd_box_t * b, void *cl)
 		info.tree = rtree_over->tree;
 		if (info.tree) {
 			int seen;
-			pcb_r_search(info.tree, &info.s->box, seg_in_region, seg_in_seg, &info, &seen);
+			rnd_r_search(info.tree, &info.s->box, seg_in_region, seg_in_seg, &info, &seen);
 			if (RND_UNLIKELY(seen))
 				assert(0);							/* XXX: Memory allocation failure */
 		}
@@ -765,7 +765,7 @@ static pcb_r_dir_t contour_bounds_touch(const rnd_rnd_box_t * b, void *cl)
 	c_info->node_insert_list = info.node_insert_list;
 	if (info.need_restart)
 		c_info->need_restart = 1;
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, int add)
@@ -810,7 +810,7 @@ static int intersect_impl(jmp_buf * jb, rnd_polyarea_t * b, rnd_polyarea_t * a, 
 		sb.X2 = pa->xmax + 1;
 		sb.Y2 = pa->ymax + 1;
 
-		pcb_r_search(b->contour_tree, &sb, NULL, contour_bounds_touch, &c_info, NULL);
+		rnd_r_search(b->contour_tree, &sb, NULL, contour_bounds_touch, &c_info, NULL);
 		if (c_info.need_restart)
 			need_restart = 1;
 	}
@@ -894,14 +894,14 @@ static inline int cntrbox_inside(rnd_pline_t * c1, rnd_pline_t * c2)
 /*****************************************************************/
 /* Routines for making labels */
 
-static pcb_r_dir_t count_contours_i_am_inside(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t count_contours_i_am_inside(const rnd_rnd_box_t * b, void *cl)
 {
 	rnd_pline_t *me = (rnd_pline_t *) cl;
 	rnd_pline_t *check = (rnd_pline_t *) b;
 
 	if (rnd_poly_contour_in_contour(check, me))
-		return PCB_R_DIR_FOUND_CONTINUE;
-	return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 /* cntr_in_M_pcb_polyarea_t
@@ -931,7 +931,7 @@ static int cntr_in_M_pcb_polyarea_t(rnd_pline_t * poly, rnd_polyarea_t * outfst,
 			break;
 		outer = (rnd_polyarea_t *) rnd_heap_remove_smallest(heap);
 
-		pcb_r_search(outer->contour_tree, (rnd_rnd_box_t *) poly, NULL, count_contours_i_am_inside, poly, &cnt);
+		rnd_r_search(outer->contour_tree, (rnd_rnd_box_t *) poly, NULL, count_contours_i_am_inside, poly, &cnt);
 		switch (cnt) {
 		case 0:										/* Didn't find anything in this piece, Keep looking */
 			break;
@@ -1090,8 +1090,8 @@ static void InsCntr(jmp_buf * e, rnd_pline_t * c, rnd_polyarea_t ** dst)
 		newp->f->b = newp->b->f = newp;
 	}
 	newp->contours = c;
-	newp->contour_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(newp->contour_tree, (rnd_rnd_box_t *) c);
+	newp->contour_tree = rnd_r_create_tree();
+	rnd_r_insert_entry(newp->contour_tree, (rnd_rnd_box_t *) c);
 	c->next = NULL;
 }																/* InsCntr */
 
@@ -1105,7 +1105,7 @@ PutContour(jmp_buf * e, rnd_pline_t * cntr, rnd_polyarea_t ** contours, rnd_plin
 
 	if (cntr->Flags.orient == RND_PLF_DIR) {
 		if (owner != NULL)
-			pcb_r_delete_entry(owner->contour_tree, (rnd_rnd_box_t *) cntr);
+			rnd_r_delete_entry(owner->contour_tree, (rnd_rnd_box_t *) cntr);
 		InsCntr(e, cntr, contours);
 	}
 	/* put hole into temporary list */
@@ -1116,8 +1116,8 @@ PutContour(jmp_buf * e, rnd_pline_t * cntr, rnd_polyarea_t ** contours, rnd_plin
 			parent_contour->next = cntr;
 			if (owner != parent) {
 				if (owner != NULL)
-					pcb_r_delete_entry(owner->contour_tree, (rnd_rnd_box_t *) cntr);
-				pcb_r_insert_entry(parent->contour_tree, (rnd_rnd_box_t *) cntr);
+					rnd_r_delete_entry(owner->contour_tree, (rnd_rnd_box_t *) cntr);
+				rnd_r_insert_entry(parent->contour_tree, (rnd_rnd_box_t *) cntr);
 			}
 		}
 		else {
@@ -1126,7 +1126,7 @@ PutContour(jmp_buf * e, rnd_pline_t * cntr, rnd_polyarea_t ** contours, rnd_plin
 			/* We don't insert the holes into an r-tree,
 			 * they just form a linked list */
 			if (owner != NULL)
-				pcb_r_delete_entry(owner->contour_tree, (rnd_rnd_box_t *) cntr);
+				rnd_r_delete_entry(owner->contour_tree, (rnd_rnd_box_t *) cntr);
 		}
 	}
 }																/* PutContour */
@@ -1143,7 +1143,7 @@ static inline void remove_contour(rnd_polyarea_t * piece, rnd_pline_t * prev_con
 	contour->next = NULL;
 
 	if (remove_rtree_entry)
-		pcb_r_delete_entry(piece->contour_tree, (rnd_rnd_box_t *) contour);
+		rnd_r_delete_entry(piece->contour_tree, (rnd_rnd_box_t *) contour);
 }
 
 struct polyarea_info {
@@ -1151,15 +1151,15 @@ struct polyarea_info {
 	rnd_polyarea_t *pa;
 };
 
-static pcb_r_dir_t heap_it(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t heap_it(const rnd_rnd_box_t * b, void *cl)
 {
 	rnd_heap_t *heap = (rnd_heap_t *) cl;
 	struct polyarea_info *pa_info = (struct polyarea_info *) b;
 	rnd_pline_t *p = pa_info->pa->contours;
 	if (p->Count == 0)
-		return PCB_R_DIR_NOT_FOUND;										/* how did this happen? */
+		return RND_R_DIR_NOT_FOUND;										/* how did this happen? */
 	rnd_heap_insert(heap, p->area, pa_info);
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 struct find_inside_info {
@@ -1168,20 +1168,20 @@ struct find_inside_info {
 	rnd_pline_t *result;
 };
 
-static pcb_r_dir_t find_inside(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t find_inside(const rnd_rnd_box_t * b, void *cl)
 {
 	struct find_inside_info *info = (struct find_inside_info *) cl;
 	rnd_pline_t *check = (rnd_pline_t *) b;
 	/* Do test on check to see if it inside info->want_inside */
 	/* If it is: */
 	if (check->Flags.orient == RND_PLF_DIR) {
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	}
 	if (rnd_poly_contour_in_contour(info->want_inside, check)) {
 		info->result = check;
 		longjmp(info->jb, 1);
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** src)
@@ -1209,7 +1209,7 @@ void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 	/* make a polyarea info table */
 	/* make an rtree of polyarea info table */
 	all_pa_info = (struct polyarea_info *) malloc(sizeof(struct polyarea_info) * num_polyareas);
-	tree = pcb_r_create_tree();
+	tree = rnd_r_create_tree();
 	i = 0;
 	curc = dest;
 	do {
@@ -1218,7 +1218,7 @@ void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 		all_pa_info[i].BoundingBox.X2 = curc->contours->xmax;
 		all_pa_info[i].BoundingBox.Y2 = curc->contours->ymax;
 		all_pa_info[i].pa = curc;
-		pcb_r_insert_entry(tree, (const rnd_rnd_box_t *) &all_pa_info[i]);
+		rnd_r_insert_entry(tree, (const rnd_rnd_box_t *) &all_pa_info[i]);
 		i++;
 	}
 	while ((curc = curc->f) != dest);
@@ -1230,7 +1230,7 @@ void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 		container = NULL;
 		/* build a heap of all of the polys that the hole is inside its bounding box */
 		heap = rnd_heap_create();
-		pcb_r_search(tree, (rnd_rnd_box_t *) curh, NULL, heap_it, heap, NULL);
+		rnd_r_search(tree, (rnd_rnd_box_t *) curh, NULL, heap_it, heap, NULL);
 		if (rnd_heap_is_empty(heap)) {
 #ifndef NDEBUG
 #ifdef DEBUG
@@ -1289,7 +1289,7 @@ void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 					info.result = NULL;
 					/* Rtree search, calling back a routine to longjmp back with data about any hole inside the added one */
 					/*   Be sure not to bother jumping back to report the main contour! */
-					pcb_r_search(pa_info->pa->contour_tree, (rnd_rnd_box_t *) curh, NULL, find_inside, &info, NULL);
+					rnd_r_search(pa_info->pa->contour_tree, (rnd_rnd_box_t *) curh, NULL, find_inside, &info, NULL);
 
 					/* Nothing found? */
 					break;
@@ -1313,11 +1313,11 @@ void pcb_poly_insert_holes(jmp_buf * e, rnd_polyarea_t * dest, rnd_pline_t ** sr
 			/* link at front of hole list */
 			curh->next = container->next;
 			container->next = curh;
-			pcb_r_insert_entry(pa_info->pa->contour_tree, (rnd_rnd_box_t *) curh);
+			rnd_r_insert_entry(pa_info->pa->contour_tree, (rnd_rnd_box_t *) curh);
 
 		}
 	}
-	pcb_r_destroy_tree(&tree);
+	rnd_r_destroy_tree(&tree);
 	free(all_pa_info);
 }																/* pcb_poly_insert_holes */
 
@@ -1763,21 +1763,21 @@ struct find_inside_m_pa_info {
 	rnd_pline_t *result;
 };
 
-static pcb_r_dir_t find_inside_m_pa(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t find_inside_m_pa(const rnd_rnd_box_t * b, void *cl)
 {
 	struct find_inside_m_pa_info *info = (struct find_inside_m_pa_info *) cl;
 	rnd_pline_t *check = (rnd_pline_t *) b;
 	/* Don't report for the main contour */
 	if (check->Flags.orient == RND_PLF_DIR)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	/* Don't look at contours marked as being intersected */
 	if (check->Flags.status == ISECTED)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	if (cntr_in_M_pcb_polyarea_t(check, info->want_inside, rnd_false)) {
 		info->result = check;
 		longjmp(info->jb, 1);
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 
@@ -1880,7 +1880,7 @@ static void M_pcb_polyarea_t_update_primary(jmp_buf * e, rnd_polyarea_t ** piece
 					 * data about any hole inside the B polygon.
 					 * NB: Does not jump back to report the main contour!
 					 */
-					pcb_r_search(a->contour_tree, &box, NULL, find_inside_m_pa, &info, NULL);
+					rnd_r_search(a->contour_tree, &box, NULL, find_inside_m_pa, &info, NULL);
 
 					/* Nothing found? */
 					break;
@@ -2322,8 +2322,8 @@ void rnd_poly_contour_del(rnd_pline_t ** c)
 	/* FIXME -- strict aliasing violation.  */
 	if ((*c)->tree) {
 		rnd_rtree_t *r = (*c)->tree;
-		pcb_r_free_tree_data(r, free);
-		pcb_r_destroy_tree(&r);
+		rnd_r_free_tree_data(r, free);
+		rnd_r_destroy_tree(&r);
 	}
 	free((*c)->head);
 	free(*c), *c = NULL;
@@ -2375,11 +2375,11 @@ void rnd_poly_contour_pre(rnd_pline_t * C, rnd_bool optimize)
 	C->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(C);
 }																/* poly_PreContour */
 
-static pcb_r_dir_t flip_cb(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t flip_cb(const rnd_rnd_box_t * b, void *cl)
 {
 	struct seg *s = (struct seg *) b;
 	s->v = s->v->prev;
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 void rnd_poly_contour_inv(rnd_pline_t * c)
@@ -2398,7 +2398,7 @@ void rnd_poly_contour_inv(rnd_pline_t * c)
 	while ((cur = next) != c->head);
 	c->Flags.orient ^= 1;
 	if (c->tree) {
-		pcb_r_search(c->tree, NULL, NULL, flip_cb, NULL, &r);
+		rnd_r_search(c->tree, NULL, NULL, flip_cb, NULL, &r);
 		assert(r == c->Count);
 	}
 }
@@ -2495,7 +2495,7 @@ rnd_bool rnd_polyarea_copy0(rnd_polyarea_t ** dst, const rnd_polyarea_t * src)
 		*dst = (rnd_polyarea_t *) calloc(1, sizeof(rnd_polyarea_t));
 	if (*dst == NULL)
 		return rnd_false;
-	(*dst)->contour_tree = pcb_r_create_tree();
+	(*dst)->contour_tree = rnd_r_create_tree();
 
 	return rnd_polyarea_copy1(*dst, src);
 }
@@ -2510,7 +2510,7 @@ rnd_bool rnd_polyarea_copy1(rnd_polyarea_t * dst, const rnd_polyarea_t * src)
 	for (cur = src->contours; cur != NULL; cur = cur->next) {
 		if (!rnd_poly_contour_copy(last, cur))
 			return rnd_false;
-		pcb_r_insert_entry(dst->contour_tree, (rnd_rnd_box_t *) * last);
+		rnd_r_insert_entry(dst->contour_tree, (rnd_rnd_box_t *) * last);
 		last = &(*last)->next;
 	}
 	return rnd_true;
@@ -2563,7 +2563,7 @@ rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t * p, rnd_pline_t * c)
 		p->contours->next = c;
 		c->next = tmp;
 	}
-	pcb_r_insert_entry(p->contour_tree, (rnd_rnd_box_t *) c);
+	rnd_r_insert_entry(p->contour_tree, (rnd_rnd_box_t *) c);
 	return rnd_true;
 }
 
@@ -2574,7 +2574,7 @@ typedef struct pip {
 } pip;
 
 
-static pcb_r_dir_t crossing(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t crossing(const rnd_rnd_box_t * b, void *cl)
 {
 	struct seg *s = (struct seg *) b;
 	struct pip *p = (struct pip *) cl;
@@ -2609,7 +2609,7 @@ static pcb_r_dir_t crossing(const rnd_rnd_box_t * b, void *cl)
 				p->f -= 1;
 		}
 	}
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t p)
@@ -2625,7 +2625,7 @@ int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t p)
 	ray.X2 = RND_COORD_MAX;
 	ray.Y2 = p[1] + 1;
 	if (setjmp(info.env) == 0)
-		pcb_r_search(c->tree, &ray, NULL, crossing, &info, NULL);
+		rnd_r_search(c->tree, &ray, NULL, crossing, &info, NULL);
 	return info.f;
 }
 
@@ -2822,7 +2822,7 @@ void rnd_polyarea_init(rnd_polyarea_t * p)
 {
 	p->f = p->b = p;
 	p->contours = NULL;
-	p->contour_tree = pcb_r_create_tree();
+	p->contour_tree = rnd_r_create_tree();
 }
 
 rnd_polyarea_t *rnd_polyarea_create(void)
@@ -2852,13 +2852,13 @@ void rnd_polyarea_free(rnd_polyarea_t ** p)
 		return;
 	for (cur = (*p)->f; cur != *p; cur = (*p)->f) {
 		rnd_poly_contours_free(&cur->contours);
-		pcb_r_destroy_tree(&cur->contour_tree);
+		rnd_r_destroy_tree(&cur->contour_tree);
 		cur->f->b = cur->b;
 		cur->b->f = cur->f;
 		free(cur);
 	}
 	rnd_poly_contours_free(&cur->contours);
-	pcb_r_destroy_tree(&cur->contour_tree);
+	rnd_r_destroy_tree(&cur->contour_tree);
 	free(*p), *p = NULL;
 }
 
@@ -3363,7 +3363,7 @@ typedef struct {
 	rnd_coord_t cx, cy;
 } pline_isect_line_t;
 
-static pcb_r_dir_t pline_isect_line_cb(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t pline_isect_line_cb(const rnd_rnd_box_t * b, void *cl)
 {
 	pline_isect_line_t *ctx = (pline_isect_line_t *)cl;
 	struct seg *s = (struct seg *)b;
@@ -3372,10 +3372,10 @@ static pcb_r_dir_t pline_isect_line_cb(const rnd_rnd_box_t * b, void *cl)
 	if (rnd_vect_inters2(s->v->point, s->v->next->point, ctx->l1, ctx->l2, S1, S2)) {
 		ctx->cx = S1[0];
 		ctx->cy = S1[1];
-		return PCB_R_DIR_CANCEL; /* found */
+		return RND_R_DIR_CANCEL; /* found */
 	}
 
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 rnd_bool pcb_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy)
@@ -3392,7 +3392,7 @@ rnd_bool pcb_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1,
 	if (pl->tree == NULL)
 		pl->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(pl);
 
-	if (pcb_r_search(pl->tree, &lbx, NULL, pline_isect_line_cb, &ctx, NULL) == PCB_R_DIR_CANCEL) {
+	if (rnd_r_search(pl->tree, &lbx, NULL, pline_isect_line_cb, &ctx, NULL) == RND_R_DIR_CANCEL) {
 		if (cx != NULL) *cx = ctx.cx;
 		if (cy != NULL) *cy = ctx.cy;
 		return rnd_true;
@@ -3410,7 +3410,7 @@ typedef struct {
 	double r2;
 } pline_isect_circ_t;
 
-static pcb_r_dir_t pline_isect_circ_cb(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t pline_isect_circ_cb(const rnd_rnd_box_t * b, void *cl)
 {
 	pline_isect_circ_t *ctx = (pline_isect_circ_t *)cl;
 	struct seg *s = (struct seg *)b;
@@ -3420,9 +3420,9 @@ static pcb_r_dir_t pline_isect_circ_cb(const rnd_rnd_box_t * b, void *cl)
 
 	/* Cheap: if either line endpoint is within the circle, we sure have an intersection */
 	if ((RND_SQUARE(s->v->point[0] - ctx->cx) + RND_SQUARE(s->v->point[1] - ctx->cy)) <= ctx->r2)
-		return PCB_R_DIR_CANCEL; /* found */
+		return RND_R_DIR_CANCEL; /* found */
 	if ((RND_SQUARE(s->v->next->point[0] - ctx->cx) + RND_SQUARE(s->v->next->point[1] - ctx->cy)) <= ctx->r2)
-		return PCB_R_DIR_CANCEL; /* found */
+		return RND_R_DIR_CANCEL; /* found */
 
 	dx = s->v->point[0] - s->v->next->point[0];
 	dy = s->v->point[1] - s->v->next->point[1];
@@ -3434,9 +3434,9 @@ static pcb_r_dir_t pline_isect_circ_cb(const rnd_rnd_box_t * b, void *cl)
 	ray2[0] = ctx->cx + ox; ray2[1] = ctx->cy + oy;
 
 	if (rnd_vect_inters2(s->v->point, s->v->next->point, ray1, ray2, S1, S2))
-		return PCB_R_DIR_CANCEL; /* found */
+		return RND_R_DIR_CANCEL; /* found */
 
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 rnd_bool pcb_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
@@ -3451,7 +3451,7 @@ rnd_bool pcb_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, r
 	if (pl->tree == NULL)
 		pl->tree = (rnd_rtree_t *) rnd_poly_make_edge_tree(pl);
 
-	return pcb_r_search(pl->tree, &cbx, NULL, pline_isect_circ_cb, &ctx, NULL) == PCB_R_DIR_CANCEL;
+	return rnd_r_search(pl->tree, &cbx, NULL, pline_isect_circ_cb, &ctx, NULL) == RND_R_DIR_CANCEL;
 }
 
 
@@ -3464,11 +3464,11 @@ rnd_bool pcb_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, r
  * (or intersecting).
  * (C) 2017 Tibor 'Igor2' Palinkas
 */
-static pcb_r_dir_t pline_embraces_circ_cb(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t pline_embraces_circ_cb(const rnd_rnd_box_t * b, void *cl)
 {
 	int *cnt = (int *)cl;
 	(*cnt)++;
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 rnd_bool pcb_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r)
@@ -3484,7 +3484,7 @@ rnd_bool pcb_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 	bx.X1 = cx + r;
 	bx.X2 = RND_COORD_MAX;
 	cnt = 0;
-	pcb_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &cnt, NULL);
+	rnd_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &cnt, NULL);
 	if ((cnt % 2) == 0)
 		return rnd_false;
 
@@ -3492,7 +3492,7 @@ rnd_bool pcb_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 	bx.X1 = -RND_COORD_MAX;
 	bx.X2 = cx - r;
 	cnt = 0;
-	pcb_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &cnt, NULL);
+	rnd_r_search(pl->tree, &bx, NULL, pline_embraces_circ_cb, &cnt, NULL);
 	if ((cnt % 2) == 0)
 		return rnd_false;
 
@@ -3552,8 +3552,8 @@ void rnd_polyarea_move(rnd_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy)
 				break;
 		}
 		if (pa->contour_tree != NULL)
-			pcb_r_destroy_tree(&pa->contour_tree);
-		pa->contour_tree = pcb_r_create_tree();
+			rnd_r_destroy_tree(&pa->contour_tree);
+		pa->contour_tree = rnd_r_create_tree();
 		for(pl = pa->contours; pl != NULL; pl = pl->next) {
 			rnd_vnode_t *v;
 			int cnt2 = 0;
@@ -3571,12 +3571,12 @@ void rnd_polyarea_move(rnd_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy)
 			pl->xmax += dx;
 			pl->ymax += dy;
 			if (pl->tree != NULL) {
-				pcb_r_free_tree_data(pl->tree, free);
-				pcb_r_destroy_tree(&pl->tree);
+				rnd_r_free_tree_data(pl->tree, free);
+				rnd_r_destroy_tree(&pl->tree);
 			}
 			pl->tree = (rnd_rtree_t *)rnd_poly_make_edge_tree(pl);
 
-			pcb_r_insert_entry(pa->contour_tree, (rnd_rnd_box_t *)pl);
+			rnd_r_insert_entry(pa->contour_tree, (rnd_rnd_box_t *)pl);
 		}
 	}
 }

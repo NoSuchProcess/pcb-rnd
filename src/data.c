@@ -188,11 +188,11 @@ void pcb_data_uninit(pcb_data_t *data)
 
 	if (!is_subc) {
 		if (data->subc_tree)
-			pcb_r_destroy_tree(&data->subc_tree);
+			rnd_r_destroy_tree(&data->subc_tree);
 		if (data->padstack_tree)
-			pcb_r_destroy_tree(&data->padstack_tree);
+			rnd_r_destroy_tree(&data->padstack_tree);
 		if (data->rat_tree)
-			pcb_r_destroy_tree(&data->rat_tree);
+			rnd_r_destroy_tree(&data->rat_tree);
 	}
 
 	for (layer = data->Layer, i = 0; i < PCB_MAX_LAYER; layer++, i++)
@@ -677,18 +677,18 @@ void pcb_data_clip_polys(pcb_data_t *data)
 
 #define rsearch(tree) \
 	do { \
-		pcb_r_dir_t tmp = pcb_r_search(tree, starting_region, region_in_search, rectangle_in_region, closure, num_found); \
-		if (tmp == PCB_R_DIR_CANCEL) return tmp; \
+		rnd_r_dir_t tmp = rnd_r_search(tree, starting_region, region_in_search, rectangle_in_region, closure, num_found); \
+		if (tmp == RND_R_DIR_CANCEL) return tmp; \
 		res |= tmp; \
 	} while(0);
 
-pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const rnd_rnd_box_t *starting_region,
-						 pcb_r_dir_t (*region_in_search) (const rnd_rnd_box_t *region, void *cl),
-						 pcb_r_dir_t (*rectangle_in_region) (const rnd_rnd_box_t *box, void *cl),
+rnd_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const rnd_rnd_box_t *starting_region,
+						 rnd_r_dir_t (*region_in_search) (const rnd_rnd_box_t *region, void *cl),
+						 rnd_r_dir_t (*rectangle_in_region) (const rnd_rnd_box_t *box, void *cl),
 						 void *closure, int *num_found, rnd_bool vis_only)
 {
 	rnd_layer_id_t lid;
-	pcb_r_dir_t res = 0;
+	rnd_r_dir_t res = 0;
 
 	if (!vis_only || PCB->RatOn)
 		if (types & PCB_OBJ_RAT)  rsearch(data->rat_tree);
@@ -869,21 +869,21 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 		conf_core.temp.rat_warn = rnd_false;
 
 	if (tmask & PCB_OBJ_PSTK) {
-		for(n = pcb_r_first(data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it))
+		for(n = rnd_r_first(data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it))
 			CHK_CLEAR(n);
-		pcb_r_end(&it);
+		rnd_r_end(&it);
 	}
 
 	if (tmask & PCB_OBJ_RAT) {
-		for(n = pcb_r_first(data->rat_tree, &it); n != NULL; n = pcb_r_next(&it))
+		for(n = rnd_r_first(data->rat_tree, &it); n != NULL; n = rnd_r_next(&it))
 			CHK_CLEAR(n);
-		pcb_r_end(&it);
+		rnd_r_end(&it);
 	}
 
 	if (tmask & PCB_OBJ_SUBC) {
-		for(n = pcb_r_first(data->subc_tree, &it); n != NULL; n = pcb_r_next(&it))
+		for(n = rnd_r_first(data->subc_tree, &it); n != NULL; n = rnd_r_next(&it))
 			CHK_CLEAR(n);
-		pcb_r_end(&it);
+		rnd_r_end(&it);
 	}
 
 	if ((tmask & (PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT | PCB_OBJ_GFX)) == 0)
@@ -891,33 +891,33 @@ unsigned long pcb_data_clear_obj_flag(pcb_data_t *data, pcb_objtype_t tmask, uns
 
 	for(li = 0, l = data->Layer; li < data->LayerN; li++,l++) {
 		if (tmask & PCB_OBJ_LINE) {
-			for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it))
+			for(n = rnd_r_first(l->line_tree, &it); n != NULL; n = rnd_r_next(&it))
 				CHK_CLEAR(n);
-			pcb_r_end(&it);
+			rnd_r_end(&it);
 		}
 
 		if (tmask & PCB_OBJ_ARC) {
-			for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it))
+			for(n = rnd_r_first(l->arc_tree, &it); n != NULL; n = rnd_r_next(&it))
 				CHK_CLEAR(n);
-			pcb_r_end(&it);
+			rnd_r_end(&it);
 		}
 
 		if (tmask & PCB_OBJ_POLY) {
-			for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it))
+			for(n = rnd_r_first(l->polygon_tree, &it); n != NULL; n = rnd_r_next(&it))
 				CHK_CLEAR(n);
-			pcb_r_end(&it);
+			rnd_r_end(&it);
 		}
 
 		if (tmask & PCB_OBJ_TEXT) {
-			for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it))
+			for(n = rnd_r_first(l->text_tree, &it); n != NULL; n = rnd_r_next(&it))
 				CHK_CLEAR(n);
-			pcb_r_end(&it);
+			rnd_r_end(&it);
 		}
 
 		if (tmask & PCB_OBJ_GFX) {
-			for(n = pcb_r_first(l->gfx_tree, &it); n != NULL; n = pcb_r_next(&it))
+			for(n = rnd_r_first(l->gfx_tree, &it); n != NULL; n = rnd_r_next(&it))
 				CHK_CLEAR(n);
-			pcb_r_end(&it);
+			rnd_r_end(&it);
 		}
 	}
 	return cnt;
@@ -937,40 +937,40 @@ void pcb_data_dynflag_clear(pcb_data_t *data, pcb_dynf_t dynf)
 	int li;
 	pcb_layer_t *l;
 
-	for(n = pcb_r_first(data->padstack_tree, &it); n != NULL; n = pcb_r_next(&it))
+	for(n = rnd_r_first(data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it))
 		PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
-	pcb_r_end(&it);
+	rnd_r_end(&it);
 
-	for(n = pcb_r_first(data->subc_tree, &it); n != NULL; n = pcb_r_next(&it)) {
+	for(n = rnd_r_first(data->subc_tree, &it); n != NULL; n = rnd_r_next(&it)) {
 		PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
 		pcb_data_dynflag_clear(((pcb_subc_t *)n)->data, dynf);
 	}
-	pcb_r_end(&it);
+	rnd_r_end(&it);
 
-	for(n = pcb_r_first(data->rat_tree, &it); n != NULL; n = pcb_r_next(&it))
+	for(n = rnd_r_first(data->rat_tree, &it); n != NULL; n = rnd_r_next(&it))
 		PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
-	pcb_r_end(&it);
+	rnd_r_end(&it);
 
 	for(li = 0, l = data->Layer; li < data->LayerN; li++,l++) {
-		for(n = pcb_r_first(l->line_tree, &it); n != NULL; n = pcb_r_next(&it))
+		for(n = rnd_r_first(l->line_tree, &it); n != NULL; n = rnd_r_next(&it))
 			PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
-		pcb_r_end(&it);
+		rnd_r_end(&it);
 
-		for(n = pcb_r_first(l->arc_tree, &it); n != NULL; n = pcb_r_next(&it))
+		for(n = rnd_r_first(l->arc_tree, &it); n != NULL; n = rnd_r_next(&it))
 			PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
-		pcb_r_end(&it);
+		rnd_r_end(&it);
 
-		for(n = pcb_r_first(l->polygon_tree, &it); n != NULL; n = pcb_r_next(&it))
+		for(n = rnd_r_first(l->polygon_tree, &it); n != NULL; n = rnd_r_next(&it))
 			PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
-		pcb_r_end(&it);
+		rnd_r_end(&it);
 
-		for(n = pcb_r_first(l->text_tree, &it); n != NULL; n = pcb_r_next(&it))
+		for(n = rnd_r_first(l->text_tree, &it); n != NULL; n = rnd_r_next(&it))
 			PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
-		pcb_r_end(&it);
+		rnd_r_end(&it);
 
-		for(n = pcb_r_first(l->gfx_tree, &it); n != NULL; n = pcb_r_next(&it))
+		for(n = rnd_r_first(l->gfx_tree, &it); n != NULL; n = rnd_r_next(&it))
 			PCB_DFLAG_CLR(&((pcb_any_obj_t *)n)->Flags, dynf);
-		pcb_r_end(&it);
+		rnd_r_end(&it);
 	}
 }
 

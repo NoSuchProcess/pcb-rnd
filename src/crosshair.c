@@ -572,7 +572,7 @@ struct onpoint_search_info {
 	rnd_coord_t Y;
 };
 
-static pcb_r_dir_t onpoint_line_callback(const rnd_rnd_box_t * box, void *cl)
+static rnd_r_dir_t onpoint_line_callback(const rnd_rnd_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
@@ -589,16 +589,16 @@ static pcb_r_dir_t onpoint_line_callback(const rnd_rnd_box_t * box, void *cl)
 		vtop_append(&crosshair->onpoint_objs, op);
 		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) line);
 		pcb_line_invalidate_draw(NULL, line);
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return RND_R_DIR_FOUND_CONTINUE;
 	}
 	else {
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	}
 }
 
 #define close_enough(v1, v2) (coord_abs((v1)-(v2)) < 10)
 
-static pcb_r_dir_t onpoint_arc_callback(const rnd_rnd_box_t * box, void *cl)
+static rnd_r_dir_t onpoint_arc_callback(const rnd_rnd_box_t * box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
@@ -619,10 +619,10 @@ static pcb_r_dir_t onpoint_arc_callback(const rnd_rnd_box_t * box, void *cl)
 		vtop_append(&crosshair->onpoint_objs, op);
 		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) arc);
 		pcb_arc_invalidate_draw(NULL, arc);
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return RND_R_DIR_FOUND_CONTINUE;
 	}
 	else {
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	}
 }
 
@@ -692,8 +692,8 @@ static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t
 		/* Only find points of arcs and lines on currently visible layers. */
 		if (!layer->meta.real.vis)
 			continue;
-		pcb_r_search(layer->line_tree, &SearchBox, NULL, onpoint_line_callback, &info, NULL);
-		pcb_r_search(layer->arc_tree, &SearchBox, NULL, onpoint_arc_callback, &info, NULL);
+		rnd_r_search(layer->line_tree, &SearchBox, NULL, onpoint_line_callback, &info, NULL);
+		rnd_r_search(layer->arc_tree, &SearchBox, NULL, onpoint_arc_callback, &info, NULL);
 	}
 
 	/* Undraw the old objects */

@@ -135,7 +135,7 @@ void pcb_subc_free(pcb_subc_t *sc)
 {
 	pcb_extobj_del_pre(sc);
 	if ((sc->parent.data != NULL) && (sc->parent.data->subc_tree != NULL))
-		pcb_r_delete_entry(sc->parent.data->subc_tree, (rnd_rnd_box_t *)sc);
+		rnd_r_delete_entry(sc->parent.data->subc_tree, (rnd_rnd_box_t *)sc);
 	rnd_attribute_free(&sc->Attributes);
 	if (sc->parent_type != PCB_PARENT_INVALID)
 		pcb_subc_unreg(sc);
@@ -968,7 +968,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 	/* bind the via rtree so that vias added in this subc show up on the board */
 	if (pcb != NULL) {
 		if (pcb->Data->padstack_tree == NULL)
-			pcb->Data->padstack_tree = pcb_r_create_tree();
+			pcb->Data->padstack_tree = rnd_r_create_tree();
 		sc->data->padstack_tree = pcb->Data->padstack_tree;
 	}
 
@@ -1018,8 +1018,8 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 
 	if (pcb != NULL) {
 		if (!dst->subc_tree)
-			dst->subc_tree = pcb_r_create_tree();
-		pcb_r_insert_entry(dst->subc_tree, (rnd_rnd_box_t *)sc);
+			dst->subc_tree = rnd_r_create_tree();
+		rnd_r_insert_entry(dst->subc_tree, (rnd_rnd_box_t *)sc);
 	}
 
 	return sc;
@@ -1076,9 +1076,9 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	EraseSubc(sc);
 	if (pcb_data_get_top(Data) != NULL) {
 		if (Data->subc_tree != NULL)
-			pcb_r_delete_entry(Data->subc_tree, (rnd_rnd_box_t *)sc);
+			rnd_r_delete_entry(Data->subc_tree, (rnd_rnd_box_t *)sc);
 		else
-			Data->subc_tree = pcb_r_create_tree();
+			Data->subc_tree = rnd_r_create_tree();
 	}
 
 	/* for calculating the new bounding box on the fly */
@@ -1158,7 +1158,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 	rnd_close_box(&sc->BoundingBox);
 	rnd_close_box(&sc->bbox_naked);
 	if (pcb_data_get_top(Data) != NULL)
-		pcb_r_insert_entry(Data->subc_tree, (rnd_rnd_box_t *)sc);
+		rnd_r_insert_entry(Data->subc_tree, (rnd_rnd_box_t *)sc);
 
 	sc->part_changed_bbox_dirty = 0; /* we've just recalculated the bbox */
 	pcb_subc_part_changed_inhibit_dec(sc);
@@ -1307,7 +1307,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 	linelist_foreach(&sl->Line, &it, line) {
 		if (src_has_real_layer) {
 			pcb_poly_restore_to_poly(src_data, PCB_OBJ_LINE, sl, line);
-			pcb_r_delete_entry(sl->line_tree, (rnd_rnd_box_t *)line);
+			rnd_r_delete_entry(sl->line_tree, (rnd_rnd_box_t *)line);
 			chg++;
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, line);
@@ -1316,7 +1316,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			pcb_line_reg(dl, line);
 		}
 		if ((dl != NULL) && (dl->line_tree != NULL)) {
-			pcb_r_insert_entry(dl->line_tree, (rnd_rnd_box_t *)line);
+			rnd_r_insert_entry(dl->line_tree, (rnd_rnd_box_t *)line);
 			chg++;
 		}
 		if (dst_is_pcb && (dl != NULL))
@@ -1326,7 +1326,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 	arclist_foreach(&sl->Arc, &it, arc) {
 		if (src_has_real_layer) {
 			pcb_poly_restore_to_poly(src_data, PCB_OBJ_ARC, sl, arc);
-			pcb_r_delete_entry(sl->arc_tree, (rnd_rnd_box_t *)arc);
+			rnd_r_delete_entry(sl->arc_tree, (rnd_rnd_box_t *)arc);
 			chg++;
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, arc);
@@ -1335,7 +1335,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			pcb_arc_reg(dl, arc);
 		}
 		if ((dl != NULL) && (dl->arc_tree != NULL)) {
-			pcb_r_insert_entry(dl->arc_tree, (rnd_rnd_box_t *)arc);
+			rnd_r_insert_entry(dl->arc_tree, (rnd_rnd_box_t *)arc);
 			chg++;
 		}
 		if (dst_is_pcb && (dl != NULL))
@@ -1345,7 +1345,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 	textlist_foreach(&sl->Text, &it, text) {
 		if (src_has_real_layer) {
 			pcb_poly_restore_to_poly(src_data, PCB_OBJ_LINE, sl, text);
-			pcb_r_delete_entry(sl->text_tree, (rnd_rnd_box_t *)text);
+			rnd_r_delete_entry(sl->text_tree, (rnd_rnd_box_t *)text);
 			chg++;
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, text);
@@ -1354,7 +1354,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			pcb_text_reg(dl, text);
 		}
 		if ((dl != NULL) && (dl->text_tree != NULL)) {
-			pcb_r_insert_entry(dl->text_tree, (rnd_rnd_box_t *)text);
+			rnd_r_insert_entry(dl->text_tree, (rnd_rnd_box_t *)text);
 			chg++;
 		}
 		if (dst_is_pcb && (dl != NULL))
@@ -1364,7 +1364,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 	polylist_foreach(&sl->Polygon, &it, poly) {
 		pcb_poly_pprestore(poly);
 		if (src_has_real_layer) {
-			pcb_r_delete_entry(sl->polygon_tree, (rnd_rnd_box_t *)poly);
+			rnd_r_delete_entry(sl->polygon_tree, (rnd_rnd_box_t *)poly);
 			chg++;
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, poly);
@@ -1373,7 +1373,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			pcb_poly_reg(dl, poly);
 		}
 		if ((dl != NULL) && (dl->polygon_tree != NULL)) {
-			pcb_r_insert_entry(dl->polygon_tree, (rnd_rnd_box_t *)poly);
+			rnd_r_insert_entry(dl->polygon_tree, (rnd_rnd_box_t *)poly);
 			chg++;
 		}
 		if (dst_is_pcb && (dl != NULL))
@@ -1382,7 +1382,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 
 	gfxlist_foreach(&sl->Gfx, &it, gfx) {
 		if (src_has_real_layer) {
-			pcb_r_delete_entry(sl->gfx_tree, (rnd_rnd_box_t *)gfx);
+			rnd_r_delete_entry(sl->gfx_tree, (rnd_rnd_box_t *)gfx);
 			chg++;
 		}
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, gfx);
@@ -1391,7 +1391,7 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 			pcb_gfx_reg(dl, gfx);
 		}
 		if ((dl != NULL) && (dl->gfx_tree != NULL)) {
-			pcb_r_insert_entry(dl->gfx_tree, (rnd_rnd_box_t *)gfx);
+			rnd_r_insert_entry(dl->gfx_tree, (rnd_rnd_box_t *)gfx);
 			chg++;
 		}
 	}
@@ -1422,10 +1422,10 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 		assert(proto != NULL); /* the prototype must be accessible at the source else we can't add it in the dest */
 		pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		if (sc->data->padstack_tree != NULL)
-			pcb_r_delete_entry(sc->data->padstack_tree, (rnd_rnd_box_t *)ps);
+			rnd_r_delete_entry(sc->data->padstack_tree, (rnd_rnd_box_t *)ps);
 		PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, ps);
 		if ((dst != NULL) && (dst->padstack_tree != NULL))
-			pcb_r_insert_entry(dst->padstack_tree, (rnd_rnd_box_t *)ps);
+			rnd_r_insert_entry(dst->padstack_tree, (rnd_rnd_box_t *)ps);
 		if ((move_obj) && (dst != NULL)) {
 			pcb_pstk_unreg(ps);
 			pcb_pstk_reg(dst, ps);
@@ -1442,7 +1442,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 	/* bind globals */
 	if ((dst != NULL) && (dst_is_pcb)) {
 		if (dst->padstack_tree == NULL)
-			dst->padstack_tree = pcb_r_create_tree();
+			dst->padstack_tree = rnd_r_create_tree();
 		sc->data->padstack_tree = dst->padstack_tree;
 		chg++;
 	}
@@ -1474,7 +1474,7 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 			clip.clip.pcb = ctx->buffer.pcb;
 			pcb_subc_op(ctx->buffer.pcb->Data, sc, &ClipFunctions, &clip, PCB_SUBCOP_UNDO_SUBC);
 		}
-		pcb_r_delete_entry(ctx->buffer.pcb->Data->subc_tree, (rnd_rnd_box_t *)sc);
+		rnd_r_delete_entry(ctx->buffer.pcb->Data->subc_tree, (rnd_rnd_box_t *)sc);
 	}
 
 	pcb_subc_unreg(sc);
@@ -1482,8 +1482,8 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 	if (dst_is_pcb) {
 		if (ctx->buffer.dst->subc_tree == NULL)
-			ctx->buffer.dst->subc_tree = pcb_r_create_tree();
-		pcb_r_insert_entry(ctx->buffer.dst->subc_tree, (rnd_rnd_box_t *)sc);
+			ctx->buffer.dst->subc_tree = rnd_r_create_tree();
+		rnd_r_insert_entry(ctx->buffer.dst->subc_tree, (rnd_rnd_box_t *)sc);
 	}
 
 	if (dst_is_pcb)
@@ -1502,11 +1502,11 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 			}
 			else {
 				/* need to create the trees so that move and other ops work */
-				if (sl->line_tree == NULL) sl->line_tree = pcb_r_create_tree();
-				if (sl->arc_tree == NULL) sl->arc_tree = pcb_r_create_tree();
-				if (sl->text_tree == NULL) sl->text_tree = pcb_r_create_tree();
-				if (sl->polygon_tree == NULL) sl->polygon_tree = pcb_r_create_tree();
-				if (sl->gfx_tree == NULL) sl->gfx_tree = pcb_r_create_tree();
+				if (sl->line_tree == NULL) sl->line_tree = rnd_r_create_tree();
+				if (sl->arc_tree == NULL) sl->arc_tree = rnd_r_create_tree();
+				if (sl->text_tree == NULL) sl->text_tree = rnd_r_create_tree();
+				if (sl->polygon_tree == NULL) sl->polygon_tree = rnd_r_create_tree();
+				if (sl->gfx_tree == NULL) sl->gfx_tree = rnd_r_create_tree();
 				if (!(sl->meta.bound.type & PCB_LYT_VIRTUAL))
 					rnd_message(RND_MSG_ERROR, "Couldn't bind subc layer %s on buffer move\n", sl->name == NULL ? "<anonymous>" : sl->name);
 			}
@@ -1608,11 +1608,11 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 				continue;
 
 			/* make sure all trees exist on the dest layer - if these are the first objects there we may need to create them */
-			if (dl->line_tree == NULL) dl->line_tree = pcb_r_create_tree();
-			if (dl->arc_tree == NULL) dl->arc_tree = pcb_r_create_tree();
-			if (dl->text_tree == NULL) dl->text_tree = pcb_r_create_tree();
-			if (dl->polygon_tree == NULL) dl->polygon_tree = pcb_r_create_tree();
-			if (dl->gfx_tree == NULL) dl->gfx_tree = pcb_r_create_tree();
+			if (dl->line_tree == NULL) dl->line_tree = rnd_r_create_tree();
+			if (dl->arc_tree == NULL) dl->arc_tree = rnd_r_create_tree();
+			if (dl->text_tree == NULL) dl->text_tree = rnd_r_create_tree();
+			if (dl->polygon_tree == NULL) dl->polygon_tree = rnd_r_create_tree();
+			if (dl->gfx_tree == NULL) dl->gfx_tree = rnd_r_create_tree();
 		}
 
 		if (subc_relocate_layer_objs(dl, pcb->Data, sl, src_has_real_layer, 1, 0) > 0)
@@ -1628,7 +1628,7 @@ int pcb_subc_rebind(pcb_board_t *pcb, pcb_subc_t *sc)
 void pcb_subc_bind_globals(pcb_board_t *pcb, pcb_subc_t *subc)
 {
 	if (pcb->Data->padstack_tree == NULL)
-		pcb->Data->padstack_tree = pcb_r_create_tree();
+		pcb->Data->padstack_tree = rnd_r_create_tree();
 	subc->data->padstack_tree = pcb->Data->padstack_tree;
 TODO("subc: subc-in-subc: bind subc rtree")
 }
@@ -1768,7 +1768,7 @@ void *pcb_subcop_change_name(pcb_opctx_t *ctx, pcb_subc_t *sc)
 void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	if (ctx->remove.pcb->Data->subc_tree != NULL)
-		pcb_r_delete_entry(ctx->remove.pcb->Data->subc_tree, (rnd_rnd_box_t *)sc);
+		rnd_r_delete_entry(ctx->remove.pcb->Data->subc_tree, (rnd_rnd_box_t *)sc);
 
 	EraseSubc(sc);
 	pcb_subc_free(sc);
@@ -1845,7 +1845,7 @@ static int undo_subc_mirror_swap(void *udata)
 	pcb_data_t *data = g->subc->parent.data;
 
 	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_delete_entry(data->subc_tree, (rnd_rnd_box_t *)g->subc);
+		rnd_r_delete_entry(data->subc_tree, (rnd_rnd_box_t *)g->subc);
 
 	pcb_undo_freeze_add();
 	pcb_data_mirror(g->subc->data, g->y_offs, g->smirror ? PCB_TXM_SIDE : PCB_TXM_COORD, g->smirror, 0);
@@ -1853,7 +1853,7 @@ static int undo_subc_mirror_swap(void *udata)
 	pcb_subc_bbox(g->subc);
 
 	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_insert_entry(data->subc_tree, (rnd_rnd_box_t *)g->subc);
+		rnd_r_insert_entry(data->subc_tree, (rnd_rnd_box_t *)g->subc);
 
 	return 0;
 }
@@ -1891,13 +1891,13 @@ void pcb_subc_mirror(pcb_data_t *data, pcb_subc_t *subc, rnd_coord_t y_offs, rnd
 void pcb_subc_scale(pcb_data_t *data, pcb_subc_t *subc, double sx, double sy, double sth, int recurse)
 {
 	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_delete_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
+		rnd_r_delete_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
 
 	pcb_data_scale(subc->data, sx, sy, sth, recurse);
 	pcb_subc_bbox(subc);
 
 	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_insert_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
+		rnd_r_insert_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
 }
 
 
@@ -1919,7 +1919,7 @@ rnd_bool pcb_subc_change_side(pcb_subc_t *subc, rnd_coord_t yoff)
 	/* mirror object geometry and stackup */
 
 	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_delete_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
+		rnd_r_delete_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
 
 	pcb_undo_freeze_add();
 	pcb_data_mirror(subc->data, yoff, PCB_TXM_SIDE, 1, 0);
@@ -1935,7 +1935,7 @@ rnd_bool pcb_subc_change_side(pcb_subc_t *subc, rnd_coord_t yoff)
 	pcb_subc_bbox(subc);
 
 	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_insert_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
+		rnd_r_insert_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
 
 	pcb_undo_add_subc_to_otherside(PCB_OBJ_SUBC, subc, subc, subc, yoff);
 
@@ -1955,7 +1955,7 @@ do { \
 		int on_bottom; \
 		if (pcb_subc_get_side(subc, &on_bottom) == 0) { \
 			if ((!!on_bottom) != (!!conf_core.editor.show_solder_side)) \
-				return PCB_R_DIR_FOUND_CONTINUE; \
+				return RND_R_DIR_FOUND_CONTINUE; \
 		} \
 	} \
 } while(0)
@@ -1965,7 +1965,7 @@ do { \
 #include "draw.h"
 
 
-pcb_r_dir_t pcb_draw_subc_mark(const rnd_rnd_box_t *b, void *cl)
+rnd_r_dir_t pcb_draw_subc_mark(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_subc_t *subc = (pcb_subc_t *) b;
@@ -2002,10 +2002,10 @@ pcb_r_dir_t pcb_draw_subc_mark(const rnd_rnd_box_t *b, void *cl)
 		pcb_draw_dashed_line(info, pcb_draw_out.fgGC, bb->X2, bb->Y2, bb->X1, bb->Y2, freq, rnd_true);
 	}
 
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t draw_subc_mark_callback(const rnd_rnd_box_t *b, void *cl)
+rnd_r_dir_t draw_subc_mark_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_subc_t *subc = (pcb_subc_t *) b;
@@ -2013,13 +2013,13 @@ pcb_r_dir_t draw_subc_mark_callback(const rnd_rnd_box_t *b, void *cl)
 
 	if ((extobj != NULL) && (extobj->draw_mark != NULL)) {
 		extobj->draw_mark(info, subc);
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return RND_R_DIR_FOUND_CONTINUE;
 	}
 
 	return pcb_draw_subc_mark(b, cl);
 }
 
-pcb_r_dir_t draw_subc_label_callback(const rnd_rnd_box_t *b, void *cl)
+rnd_r_dir_t draw_subc_label_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_subc_t *subc = (pcb_subc_t *) b;
@@ -2080,7 +2080,7 @@ pcb_r_dir_t draw_subc_label_callback(const rnd_rnd_box_t *b, void *cl)
 	else if (subc->refdes != NULL)
 		pcb_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, subc->refdes);
 
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_rnd_box_t *drawn_area)

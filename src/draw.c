@@ -278,7 +278,7 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 
 	if (PCB->SubcOn) {
 		info->objcb.subc.per_side = per_side;
-		pcb_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_mark_callback, info, NULL);
+		rnd_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_mark_callback, info, NULL);
 	}
 
 	rnd_hid_set_line_width(pcb_draw_out.fgGC, 0);
@@ -316,7 +316,7 @@ static void draw_pins_and_pads(pcb_draw_info_t *info, rnd_layergrp_id_t componen
 	rnd_hid_set_line_width(pcb_draw_out.fgGC, 0);
 	if (PCB->SubcOn) {
 		info->objcb.subc.per_side = per_side;
-		pcb_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_label_callback, info, NULL);
+		rnd_r_search(PCB->Data->subc_tree, info->drawn_area, NULL, draw_subc_label_callback, info, NULL);
 	}
 	if (PCB->padstack_mark_on) {
 		rnd_hid_set_line_width(pcb_draw_out.fgGC, -conf_core.appearance.padstack.cross_thick);
@@ -563,19 +563,19 @@ static void pcb_draw_pstks(pcb_draw_info_t *info, rnd_layergrp_id_t group, int i
 		info->objcb.pstk.layer1 = NULL;
 
 	if (!info->xform->check_planes)
-		pcb_r_search(info->pcb->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_callback, info, NULL);
+		rnd_r_search(info->pcb->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_callback, info, NULL);
 
 	info->xform = NULL; info->layer = NULL;
 }
 
 static void pcb_draw_pstk_marks(pcb_draw_info_t *info)
 {
-	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_mark_callback, info, NULL);
+	rnd_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_mark_callback, info, NULL);
 }
 
 static void pcb_draw_pstk_labels(pcb_draw_info_t *info)
 {
-	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_label_callback, info, NULL);
+	rnd_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_label_callback, info, NULL);
 }
 
 static void pcb_draw_pstk_holes(pcb_draw_info_t *info, rnd_layergrp_id_t group, pcb_pstk_draw_hole_t holetype)
@@ -589,7 +589,7 @@ static void pcb_draw_pstk_holes(pcb_draw_info_t *info, rnd_layergrp_id_t group, 
 	xform_setup(info, &tmp, NULL);
 	info->objcb.pstk.gid = group;
 	info->objcb.pstk.holetype = holetype;
-	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_hole_callback, info, NULL);
+	rnd_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_hole_callback, info, NULL);
 	info->xform = NULL; info->layer = NULL; 
 }
 
@@ -603,7 +603,7 @@ static void pcb_draw_pstk_slots(pcb_draw_info_t *info, rnd_layergrp_id_t group, 
 	xform_setup(info, &tmp, NULL);
 	info->objcb.pstk.gid = group;
 	info->objcb.pstk.holetype = holetype;
-	pcb_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_slot_callback, info, NULL);
+	rnd_r_search(PCB->Data->padstack_tree, info->drawn_area, NULL, pcb_pstk_draw_slot_callback, info, NULL);
 	info->xform = NULL; info->layer = NULL;
 }
 
@@ -744,12 +744,12 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		delayed_terms_enabled = rnd_true;
 		rnd_hid_set_line_width(pcb_draw_out.fgGC, 1);
 		rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
-		pcb_r_search(Layer->polygon_tree, info->drawn_area, NULL, pcb_poly_draw_term_callback, info, NULL);
+		rnd_r_search(Layer->polygon_tree, info->drawn_area, NULL, pcb_poly_draw_term_callback, info, NULL);
 		delayed_terms_enabled = rnd_false;
 		may_have_delayed = 1;
 	}
 	else {
-		pcb_r_search(Layer->polygon_tree, info->drawn_area, NULL, pcb_poly_draw_callback, info, NULL);
+		rnd_r_search(Layer->polygon_tree, info->drawn_area, NULL, pcb_poly_draw_callback, info, NULL);
 	}
 
 	if (info->xform->check_planes)
@@ -758,18 +758,18 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 	/* draw all visible layer objects (with terminal gfx on copper) */
 	if (lflg & PCB_LYT_COPPER) {
 		delayed_terms_enabled = rnd_true;
-		pcb_r_search(Layer->line_tree, info->drawn_area, NULL, pcb_line_draw_term_callback, info, NULL);
-		pcb_r_search(Layer->arc_tree, info->drawn_area, NULL, pcb_arc_draw_term_callback, info, NULL);
-		pcb_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_term_callback, info, NULL);
-		pcb_r_search(Layer->gfx_tree, info->drawn_area, NULL, pcb_gfx_draw_callback, info, NULL);
+		rnd_r_search(Layer->line_tree, info->drawn_area, NULL, pcb_line_draw_term_callback, info, NULL);
+		rnd_r_search(Layer->arc_tree, info->drawn_area, NULL, pcb_arc_draw_term_callback, info, NULL);
+		rnd_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_term_callback, info, NULL);
+		rnd_r_search(Layer->gfx_tree, info->drawn_area, NULL, pcb_gfx_draw_callback, info, NULL);
 		delayed_terms_enabled = rnd_false;
 		may_have_delayed = 1;
 	}
 	else {
-		pcb_r_search(Layer->line_tree, info->drawn_area, NULL, pcb_line_draw_callback, info, NULL);
-		pcb_r_search(Layer->arc_tree, info->drawn_area, NULL, pcb_arc_draw_callback, info, NULL);
-		pcb_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_callback, info, NULL);
-		pcb_r_search(Layer->gfx_tree, info->drawn_area, NULL, pcb_gfx_draw_callback, info, NULL);
+		rnd_r_search(Layer->line_tree, info->drawn_area, NULL, pcb_line_draw_callback, info, NULL);
+		rnd_r_search(Layer->arc_tree, info->drawn_area, NULL, pcb_arc_draw_callback, info, NULL);
+		rnd_r_search(Layer->text_tree, info->drawn_area, NULL, pcb_text_draw_callback, info, NULL);
+		rnd_r_search(Layer->gfx_tree, info->drawn_area, NULL, pcb_gfx_draw_callback, info, NULL);
 	}
 
 	if (may_have_delayed)

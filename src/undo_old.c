@@ -238,7 +238,7 @@ static rnd_bool UndoChangeAngles(UndoListTypePtr Entry)
 		pcb_layer_t *Layer = (pcb_layer_t *) ptr1;
 		pcb_arc_t *a = (pcb_arc_t *) ptr2;
 		pcb_poly_restore_to_poly(PCB->Data, a->type, ptr1, ptr2);
-		pcb_r_delete_entry(Layer->arc_tree, (rnd_rnd_box_t *) a);
+		rnd_r_delete_entry(Layer->arc_tree, (rnd_rnd_box_t *) a);
 		old_sa = a->StartAngle;
 		old_da = a->Delta;
 		if (pcb_undo_and_draw)
@@ -246,7 +246,7 @@ static rnd_bool UndoChangeAngles(UndoListTypePtr Entry)
 		a->StartAngle = Entry->Data.AngleChange.angle[0];
 		a->Delta = Entry->Data.AngleChange.angle[1];
 		pcb_arc_bbox(a);
-		pcb_r_insert_entry(Layer->arc_tree, (rnd_rnd_box_t *) a);
+		rnd_r_insert_entry(Layer->arc_tree, (rnd_rnd_box_t *) a);
 		pcb_poly_clear_from_poly(PCB->Data, a->type, ptr1, ptr2);
 		Entry->Data.AngleChange.angle[0] = old_sa;
 		Entry->Data.AngleChange.angle[1] = old_da;
@@ -270,7 +270,7 @@ static rnd_bool UndoChangeRadii(UndoListTypePtr Entry)
 	if (type == PCB_OBJ_ARC) {
 		pcb_layer_t *Layer = (pcb_layer_t *) ptr1;
 		pcb_arc_t *a = (pcb_arc_t *) ptr2;
-		pcb_r_delete_entry(Layer->arc_tree, (rnd_rnd_box_t *) a);
+		rnd_r_delete_entry(Layer->arc_tree, (rnd_rnd_box_t *) a);
 		old_w = a->Width;
 		old_h = a->Height;
 		if (pcb_undo_and_draw)
@@ -278,7 +278,7 @@ static rnd_bool UndoChangeRadii(UndoListTypePtr Entry)
 		a->Width = Entry->Data.Move.DX;
 		a->Height = Entry->Data.Move.DY;
 		pcb_arc_bbox(a);
-		pcb_r_insert_entry(Layer->arc_tree, (rnd_rnd_box_t *) a);
+		rnd_r_insert_entry(Layer->arc_tree, (rnd_rnd_box_t *) a);
 		Entry->Data.Move.DX = old_w;
 		Entry->Data.Move.DY = old_h;
 		pcb_draw_obj((pcb_any_obj_t *)a);

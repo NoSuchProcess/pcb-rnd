@@ -153,15 +153,15 @@ void pcb_layer_free_fields(pcb_layer_t *layer, rnd_bool undoable)
 	list_map0(&layer->Polygon, pcb_poly_t, undoable ? UFC(obj_free_undoable) : UFC(pcb_poly_free));
 	if (!layer->is_bound) {
 		if (layer->line_tree)
-			pcb_r_destroy_tree(&layer->line_tree);
+			rnd_r_destroy_tree(&layer->line_tree);
 		if (layer->arc_tree)
-			pcb_r_destroy_tree(&layer->arc_tree);
+			rnd_r_destroy_tree(&layer->arc_tree);
 		if (layer->text_tree)
-			pcb_r_destroy_tree(&layer->text_tree);
+			rnd_r_destroy_tree(&layer->text_tree);
 		if (layer->polygon_tree)
-			pcb_r_destroy_tree(&layer->polygon_tree);
+			rnd_r_destroy_tree(&layer->polygon_tree);
 		if (layer->gfx_tree)
-			pcb_r_destroy_tree(&layer->gfx_tree);
+			rnd_r_destroy_tree(&layer->gfx_tree);
 	}
 	free((char *)layer->name);
 	memset(layer, 0, sizeof(pcb_layer_t));
@@ -179,11 +179,11 @@ rnd_bool pcb_layer_is_pure_empty(pcb_layer_t *layer)
 	/* if the layer is locally empty, it might be a board layer that has
 	   objects from subcircuits so also check the rtrees */
 	return
-		PCB_RTREE_EMPTY(layer->line_tree) && 
-		PCB_RTREE_EMPTY(layer->arc_tree) && 
-		PCB_RTREE_EMPTY(layer->gfx_tree) && 
-		PCB_RTREE_EMPTY(layer->polygon_tree) && 
-		PCB_RTREE_EMPTY(layer->text_tree);
+		RND_RTREE_EMPTY(layer->line_tree) && 
+		RND_RTREE_EMPTY(layer->arc_tree) && 
+		RND_RTREE_EMPTY(layer->gfx_tree) && 
+		RND_RTREE_EMPTY(layer->polygon_tree) && 
+		RND_RTREE_EMPTY(layer->text_tree);
 }
 
 static rnd_bool pcb_layer_is_empty_glob(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer)
@@ -1118,11 +1118,11 @@ pcb_layer_t *pcb_get_layer(pcb_data_t *data, rnd_layer_id_t id)
 void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src)
 {
 	/* we can't link non-existing trees - make sure src does have the trees initialized */
-	if (src->line_tree == NULL) src->line_tree = pcb_r_create_tree();
-	if (src->arc_tree == NULL) src->arc_tree = pcb_r_create_tree();
-	if (src->text_tree == NULL) src->text_tree = pcb_r_create_tree();
-	if (src->polygon_tree == NULL) src->polygon_tree = pcb_r_create_tree();
-	if (src->gfx_tree == NULL) src->gfx_tree = pcb_r_create_tree();
+	if (src->line_tree == NULL) src->line_tree = rnd_r_create_tree();
+	if (src->arc_tree == NULL) src->arc_tree = rnd_r_create_tree();
+	if (src->text_tree == NULL) src->text_tree = rnd_r_create_tree();
+	if (src->polygon_tree == NULL) src->polygon_tree = rnd_r_create_tree();
+	if (src->gfx_tree == NULL) src->gfx_tree = rnd_r_create_tree();
 
 	dst->line_tree = src->line_tree;
 	dst->arc_tree = src->arc_tree;

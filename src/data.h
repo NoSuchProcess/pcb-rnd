@@ -184,9 +184,9 @@ void pcb_data_clip_polys(pcb_data_t *data);
 
 
 /* rsearch on all trees matching types of data */
-pcb_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const rnd_rnd_box_t *starting_region,
-						 pcb_r_dir_t (*region_in_search) (const rnd_rnd_box_t *region, void *cl),
-						 pcb_r_dir_t (*rectangle_in_region) (const rnd_rnd_box_t *box, void *cl),
+rnd_r_dir_t pcb_data_r_search(pcb_data_t *data, pcb_objtype_t types, const rnd_rnd_box_t *starting_region,
+						 rnd_r_dir_t (*region_in_search) (const rnd_rnd_box_t *region, void *cl),
+						 rnd_r_dir_t (*rectangle_in_region) (const rnd_rnd_box_t *box, void *cl),
 						 void *closure, int *num_found, rnd_bool vis_only);
 
 /* Either pcb->data or the subcircuit's data if PCB is a subc (footprint edit mode) */

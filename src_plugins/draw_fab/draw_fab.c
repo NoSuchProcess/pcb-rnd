@@ -301,7 +301,7 @@ static void DrawFab(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_expose
 		pcb_layer_t *l = &PCB->Data->Layer[i];
 		pcb_layer_type_t flags = pcb_layer_flags(PCB, i);
 		int purpi = pcb_layer_purpose(PCB, i, NULL);
-		if (PCB_LAYER_IS_ROUTE(flags, purpi) && (!PCB_RTREE_EMPTY(l->line_tree) || !PCB_RTREE_EMPTY(l->arc_tree))) {
+		if (PCB_LAYER_IS_ROUTE(flags, purpi) && (!RND_RTREE_EMPTY(l->line_tree) || !RND_RTREE_EMPTY(l->arc_tree))) {
 			draw_fab_layer(info, gc, e, l, found);
 			found = 1;
 		}

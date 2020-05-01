@@ -173,7 +173,7 @@ static void add_track_seg(pcb_cpoly_edgetree_t *dst, rnd_coord_t x1, rnd_coord_t
 	e->y2 = y2;
 
 	rnd_box_bump_box(&dst->bbox, b);
-	pcb_r_insert_entry(dst->edge_tree, (rnd_rnd_box_t *)e);
+	rnd_r_insert_entry(dst->edge_tree, (rnd_rnd_box_t *)e);
 }
 
 static void add_track(pcb_cpoly_edgetree_t *dst, rnd_pline_t *track)
@@ -208,7 +208,7 @@ pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, rnd_coord
 
 	res->alloced = alloced;
 	res->used = 0;
-	res->edge_tree = pcb_r_create_tree();
+	res->edge_tree = rnd_r_create_tree();
 	res->bbox.X1 = res->bbox.Y1 = RND_MAX_COORD;
 	res->bbox.X2 = res->bbox.Y2 = -RND_MAX_COORD;
 
@@ -234,7 +234,7 @@ pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, rnd_coord
 
 void pcb_cpoly_edgetree_destroy(pcb_cpoly_edgetree_t *etr)
 {
-	pcb_r_destroy_tree(&etr->edge_tree);
+	rnd_r_destroy_tree(&etr->edge_tree);
 	free(etr);
 }
 
@@ -244,7 +244,7 @@ typedef struct {
 	rnd_coord_t coord[1];
 } intersect_t;
 
-static pcb_r_dir_t pcb_cploy_hatch_edge_hor(const rnd_rnd_box_t *region, void *cl)
+static rnd_r_dir_t pcb_cploy_hatch_edge_hor(const rnd_rnd_box_t *region, void *cl)
 {
 	intersect_t *is = (intersect_t *)cl;
 	pcb_cpoly_edge_t *e = (pcb_cpoly_edge_t *)region;
@@ -260,10 +260,10 @@ static pcb_r_dir_t pcb_cploy_hatch_edge_hor(const rnd_rnd_box_t *region, void *c
 		is->used++;
 	}
 
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-static pcb_r_dir_t pcb_cploy_hatch_edge_ver(const rnd_rnd_box_t *region, void *cl)
+static rnd_r_dir_t pcb_cploy_hatch_edge_ver(const rnd_rnd_box_t *region, void *cl)
 {
 	intersect_t *is = (intersect_t *)cl;
 	pcb_cpoly_edge_t *e = (pcb_cpoly_edge_t *)region;
@@ -279,7 +279,7 @@ static pcb_r_dir_t pcb_cploy_hatch_edge_ver(const rnd_rnd_box_t *region, void *c
 		is->used++;
 	}
 
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 static int coord_cmp(const void *p1, const void *p2)
@@ -316,7 +316,7 @@ void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_
 
 			is->used = 0;
 			is->at = y;
-			pcb_r_search(etr->edge_tree, &scan, NULL, pcb_cploy_hatch_edge_hor, is, NULL);
+			rnd_r_search(etr->edge_tree, &scan, NULL, pcb_cploy_hatch_edge_hor, is, NULL);
 			qsort(is->coord, is->used, sizeof(rnd_coord_t), coord_cmp);
 			for(n = 1; n < is->used; n+=2) /* call the callback for the odd scan lines */
 				cb(ctx, is->coord[n-1], y, is->coord[n], y);
@@ -334,7 +334,7 @@ void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_
 
 			is->used = 0;
 			is->at = x;
-			pcb_r_search(etr->edge_tree, &scan, NULL, pcb_cploy_hatch_edge_ver, is, NULL);
+			rnd_r_search(etr->edge_tree, &scan, NULL, pcb_cploy_hatch_edge_ver, is, NULL);
 			qsort(is->coord, is->used, sizeof(rnd_coord_t), coord_cmp);
 			for(n = 1; n < is->used; n+=2) /* call the callback for the odd scan lines */
 				cb(ctx, x, is->coord[n-1], x, is->coord[n]);

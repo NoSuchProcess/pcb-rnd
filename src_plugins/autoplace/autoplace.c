@@ -230,7 +230,7 @@ struct r_neighbor_info {
     t = (box).X1; (box).X1 =   (box).X2; (box).X2 = t;\
 }
 /* helper methods for __r_find_neighbor */
-static pcb_r_dir_t __r_find_neighbor_reg_in_sea(const rnd_rnd_box_t * region, void *cl)
+static rnd_r_dir_t __r_find_neighbor_reg_in_sea(const rnd_rnd_box_t * region, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
 	rnd_rnd_box_t query = *region;
@@ -242,11 +242,11 @@ static pcb_r_dir_t __r_find_neighbor_reg_in_sea(const rnd_rnd_box_t * region, vo
 	 *   trap.x1    trap.x2   sides at 45-degree angle
 	 */
 	if ((query.Y2 > ni->trap.Y1) && (query.Y1 < ni->trap.Y2) && (query.X2 + ni->trap.Y2 > ni->trap.X1 + query.Y1) && (query.X1 + query.Y1 < ni->trap.X2 + ni->trap.Y2))
-		return PCB_R_DIR_FOUND_CONTINUE;
-	return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t __r_find_neighbor_rect_in_reg(const rnd_rnd_box_t * box, void *cl)
+static rnd_r_dir_t __r_find_neighbor_rect_in_reg(const rnd_rnd_box_t * box, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
 	rnd_rnd_box_t query = *box;
@@ -265,7 +265,7 @@ static pcb_r_dir_t __r_find_neighbor_rect_in_reg(const rnd_rnd_box_t * box, void
 		ni->trap.Y1 = query.Y2;
 		ni->neighbor = box;
 	}
-	return r ? PCB_R_DIR_FOUND_CONTINUE : PCB_R_DIR_NOT_FOUND;
+	return r ? RND_R_DIR_FOUND_CONTINUE : RND_R_DIR_NOT_FOUND;
 }
 
 /* main r_find_neighbor routine.  Returns NULL if no neighbor in the
@@ -289,7 +289,7 @@ static const rnd_rnd_box_t *r_find_neighbor(rnd_rtree_t * rtree, const rnd_rnd_b
 	ni.trap.Y2 = ni.trap.Y1;
 	ni.trap.Y1 = bbox.Y1;
 	/* do the search! */
-	pcb_r_search(rtree, NULL, __r_find_neighbor_reg_in_sea, __r_find_neighbor_rect_in_reg, &ni, NULL);
+	rnd_r_search(rtree, NULL, __r_find_neighbor_reg_in_sea, __r_find_neighbor_rect_in_reg, &ni, NULL);
 	return ni.neighbor;
 }
 
@@ -488,10 +488,10 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 		}
 		PCB_END_LOOP;
 
-		rt_s = pcb_r_create_tree();
-		pcb_r_insert_array(rt_s, (const rnd_rnd_box_t **) seboxes.array, vtp0_len(&seboxes));
-		rt_c = pcb_r_create_tree();
-		pcb_r_insert_array(rt_c, (const rnd_rnd_box_t **) ceboxes.array, vtp0_len(&ceboxes));
+		rt_s = rnd_r_create_tree();
+		rnd_r_insert_array(rt_s, (const rnd_rnd_box_t **) seboxes.array, vtp0_len(&seboxes));
+		rt_c = rnd_r_create_tree();
+		rnd_r_insert_array(rt_c, (const rnd_rnd_box_t **) ceboxes.array, vtp0_len(&ceboxes));
 		vtp0_uninit(&seboxes);
 		vtp0_uninit(&ceboxes);
 		/* now, for each subcircuit, find its neighbor on all four sides */
@@ -530,10 +530,10 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 			PCB_END_LOOP;
 		}
 		/* free k-d tree memory */
-		pcb_r_free_tree_data(rt_s, free);
-		pcb_r_free_tree_data(rt_c, free);
-		pcb_r_destroy_tree(&rt_s);
-		pcb_r_destroy_tree(&rt_c);
+		rnd_r_free_tree_data(rt_s, free);
+		rnd_r_free_tree_data(rt_c, free);
+		rnd_r_destroy_tree(&rt_s);
+		rnd_r_destroy_tree(&rt_c);
 	}
 	/* penalize total area used by this layout */
 	{

@@ -456,7 +456,7 @@ TODO("layer: make a real scoring mechanism here instead of ly1, ly2, ly3")
 
 	if (remove_src) {
 		if (src->parent.data->padstack_tree != NULL)
-			pcb_r_delete_entry(src->parent.data->padstack_tree, (rnd_rnd_box_t *)src);
+			rnd_r_delete_entry(src->parent.data->padstack_tree, (rnd_rnd_box_t *)src);
 		pcb_pstk_free(src);
 	}
 

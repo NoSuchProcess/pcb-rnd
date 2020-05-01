@@ -80,7 +80,7 @@ pcb_drill_info_t *drill_get_info(pcb_data_t *top)
 
 	AllDrills = (pcb_drill_info_t *)calloc(1, sizeof(pcb_drill_info_t));
 
-	for(pb = pcb_r_first(top->padstack_tree, &it); pb != NULL; pb = pcb_r_next(&it)) {
+	for(pb = rnd_r_first(top->padstack_tree, &it); pb != NULL; pb = rnd_r_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)pb;
 		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 		if (proto->hdia <= 0)
@@ -112,7 +112,7 @@ pcb_drill_info_t *drill_get_info(pcb_data_t *top)
 				drill_fill(Drill, (pcb_any_obj_t *)ps, !proto->hplated);
 		}
 	}
-	pcb_r_end(&it);
+	rnd_r_end(&it);
 
 	qsort(AllDrills->Drill, AllDrills->DrillN, sizeof(pcb_drill_t), drill_qsort_cmp);
 	return AllDrills;

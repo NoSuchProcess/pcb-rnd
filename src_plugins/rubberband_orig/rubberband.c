@@ -138,10 +138,10 @@ static void calculate_route_rubber_arc_point_move(pcb_rb_arc_t *arcptr, int end,
 
 static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_layer_t *, pcb_line_t *, rnd_point_t *, rnd_bool);
 
-static pcb_r_dir_t rubber_callback(const rnd_rnd_box_t *b, void *cl);
-static pcb_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl);
+static rnd_r_dir_t rubber_callback(const rnd_rnd_box_t *b, void *cl);
+static rnd_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl);
 
-static pcb_r_dir_t rubber_callback(const rnd_rnd_box_t *b, void *cl)
+static rnd_r_dir_t rubber_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	pcb_rb_line_t *have_line = NULL;
@@ -166,13 +166,13 @@ static pcb_r_dir_t rubber_callback(const rnd_rnd_box_t *b, void *cl)
 		}
 
 	if (have_point1 && have_point2)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	if (line == i->line)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/*
 	 * Check to see if the line touches a rectangular region.
@@ -244,7 +244,7 @@ static pcb_r_dir_t rubber_callback(const rnd_rnd_box_t *b, void *cl)
 		dist2 = x + y - rad;
 
 		if (dist1 > 0 && dist2 > 0)
-			return PCB_R_DIR_NOT_FOUND;
+			return RND_R_DIR_NOT_FOUND;
 #if 0
 #ifdef CLOSEST_ONLY /* keep this to remind me */
 		if ((dist1 < dist2) && !have_point1)
@@ -278,10 +278,10 @@ static pcb_r_dir_t rubber_callback(const rnd_rnd_box_t *b, void *cl)
 			pcb_rubber_band_create(rbnd, i->layer, line, 1, i->delta_index);
 	}
 
-	return touches1 || touches2 ? PCB_R_DIR_FOUND_CONTINUE : PCB_R_DIR_NOT_FOUND;
+	return touches1 || touches2 ? RND_R_DIR_FOUND_CONTINUE : RND_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl)
+static rnd_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct rubber_info *i = (struct rubber_info *)cl;
@@ -296,7 +296,7 @@ static pcb_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl)
 
 	/* If the arc is locked then don't add it to the rubberband list. */
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, arc))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* Don't add the arc if both ends of it are already in the list. */
 	for(n = 0; n < rbnd->arcs.used; n++)
@@ -306,7 +306,7 @@ static pcb_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl)
 		}
 
 	if (have_point1 && have_point2)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* Calculate the arc end points */
 	pcb_arc_get_end(arc, 0, &ex1, &ey1);
@@ -333,7 +333,7 @@ static pcb_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl)
 	dist2 = x + y - rad;
 
 	if (dist1 > 0 && dist2 > 0)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* The Arc end-point is touching so create an entry in the rubberband arc list */
 
@@ -349,7 +349,7 @@ static pcb_r_dir_t rubber_callback_arc(const rnd_rnd_box_t *b, void *cl)
 		pcb_rubber_band_create_arc(rbnd, i->layer, arc, 1, i->delta_index);
 #endif
 
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 struct rinfo {
@@ -361,7 +361,7 @@ struct rinfo {
 	int delta_index;
 };
 
-static pcb_r_dir_t rat_callback(const rnd_rnd_box_t *box, void *cl)
+static rnd_r_dir_t rat_callback(const rnd_rnd_box_t *box, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) box;
 	struct rinfo *i = (struct rinfo *)cl;
@@ -383,7 +383,7 @@ static pcb_r_dir_t rat_callback(const rnd_rnd_box_t *box, void *cl)
 		default:
 			rnd_message(RND_MSG_ERROR, "hace: bad rubber-rat lookup callback\n");
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 static void CheckPadstackForRat(rubber_ctx_t *rbnd, pcb_pstk_t *pstk)
@@ -394,7 +394,7 @@ static void CheckPadstackForRat(rubber_ctx_t *rbnd, pcb_pstk_t *pstk)
 	info.pstk = pstk;
 	info.rbnd = rbnd;
 	info.delta_index = 0;
-	pcb_r_search(PCB->Data->rat_tree, &pstk->BoundingBox, NULL, rat_callback, &info, NULL);
+	rnd_r_search(PCB->Data->rat_tree, &pstk->BoundingBox, NULL, rat_callback, &info, NULL);
 }
 
 static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, rnd_point_t *Point)
@@ -406,7 +406,7 @@ static void CheckLinePointForRat(rubber_ctx_t *rbnd, pcb_layer_t *Layer, rnd_poi
 	info.rbnd = rbnd;
 	info.delta_index = 0;
 
-	pcb_r_search(PCB->Data->rat_tree, (rnd_rnd_box_t *) Point, NULL, rat_callback, &info, NULL);
+	rnd_r_search(PCB->Data->rat_tree, (rnd_rnd_box_t *) Point, NULL, rat_callback, &info, NULL);
 }
 
 /* checks all visible lines which belong to the same group as the passed line.
@@ -444,7 +444,7 @@ static void CheckLinePointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 
 			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
 				info.layer = layer;
-				pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+				rnd_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 			}
 		}
 	}
@@ -485,7 +485,7 @@ static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_lay
 
 			if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
 				info.layer = layer;
-				pcb_r_search(layer->arc_tree, &info.box, NULL, rubber_callback_arc, &info, NULL);
+				rnd_r_search(layer->arc_tree, &info.box, NULL, rubber_callback_arc, &info, NULL);
 			}
 		}
 	}
@@ -531,7 +531,7 @@ static void CheckArcPointForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t
 
 				if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
 					info.layer = layer;
-					pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+					rnd_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 				}
 			}
 		}
@@ -579,7 +579,7 @@ static void CheckArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *Lay
 				if (layer->meta.real.vis && ((layer->comb & PCB_LYC_SUB) == comb)) {
 					/* check all visible lines of the group member */
 					info.layer = layer;
-					pcb_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
+					rnd_r_search(layer->line_tree, &info.box, NULL, rubber_callback, &info, NULL);
 				}
 			}
 		}
@@ -1265,10 +1265,10 @@ static void rbe_rotate90(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_ev
 		pcb_line_invalidate_erase(ptr->Line);
 		if (ptr->Layer) {
 			pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_LINE, ptr->Layer, ptr->Line);
-			pcb_r_delete_entry(ptr->Layer->line_tree, (rnd_rnd_box_t *) ptr->Line);
+			rnd_r_delete_entry(ptr->Layer->line_tree, (rnd_rnd_box_t *) ptr->Line);
 		}
 		else
-			pcb_r_delete_entry(PCB->Data->rat_tree, (rnd_rnd_box_t *) ptr->Line);
+			rnd_r_delete_entry(PCB->Data->rat_tree, (rnd_rnd_box_t *) ptr->Line);
 
 		if (dindex1 >= 0)
 			pcb_point_rotate90(&ptr->Line->Point1, cx, cy, steps);
@@ -1278,12 +1278,12 @@ static void rbe_rotate90(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_ev
 
 		pcb_line_bbox(ptr->Line);
 		if (ptr->Layer) {
-			pcb_r_insert_entry(ptr->Layer->line_tree, (rnd_rnd_box_t *) ptr->Line);
+			rnd_r_insert_entry(ptr->Layer->line_tree, (rnd_rnd_box_t *) ptr->Line);
 			pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_LINE, ptr->Layer, ptr->Line);
 			pcb_line_invalidate_draw(ptr->Layer, ptr->Line);
 		}
 		else {
-			pcb_r_insert_entry(PCB->Data->rat_tree, (rnd_rnd_box_t *) ptr->Line);
+			rnd_r_insert_entry(PCB->Data->rat_tree, (rnd_rnd_box_t *) ptr->Line);
 			pcb_rat_invalidate_draw((pcb_rat_t *) ptr->Line);
 		}
 

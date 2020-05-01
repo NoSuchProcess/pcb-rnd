@@ -78,7 +78,7 @@ RND_INLINE void pcb_exto_regen_begin(pcb_subc_t *subc)
 {
 	pcb_data_t *data = subc->parent.data;
 	if (data->subc_tree != NULL)
-		pcb_r_delete_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
+		rnd_r_delete_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
 	pcb_undo_freeze_add();
 }
 
@@ -89,7 +89,7 @@ RND_INLINE int pcb_exto_regen_end(pcb_subc_t *subc)
 	pcb_undo_unfreeze_add();
 	pcb_subc_bbox(subc);
 	if ((data != NULL) && (data->subc_tree != NULL))
-		pcb_r_insert_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
+		rnd_r_insert_entry(data->subc_tree, (rnd_rnd_box_t *)subc);
 
 	return 0;
 }
@@ -119,8 +119,8 @@ RND_INLINE pcb_subc_t *pcb_exto_create(pcb_data_t *dst, const char *eoname, cons
 		pcb_subc_rebind(pcb, subc);
 		pcb_subc_bind_globals(pcb, subc);
 		if (!dst->subc_tree)
-			dst->subc_tree = pcb_r_create_tree();
-		pcb_r_insert_entry(dst->subc_tree, (rnd_rnd_box_t *)subc);
+			dst->subc_tree = rnd_r_create_tree();
+		rnd_r_insert_entry(dst->subc_tree, (rnd_rnd_box_t *)subc);
 	}
 
 	pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, subc, subc, subc);

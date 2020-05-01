@@ -345,37 +345,37 @@ void pcb_buffer_rotate90(pcb_buffer_t *Buffer, unsigned int Number)
 	PCB_LINE_ALL_LOOP(Buffer->Data);
 	{
 		if (layer->line_tree != NULL)
-			pcb_r_delete_entry(layer->line_tree, (rnd_rnd_box_t *) line);
+			rnd_r_delete_entry(layer->line_tree, (rnd_rnd_box_t *) line);
 		pcb_line_rotate90(line, Buffer->X, Buffer->Y, Number);
 		if (layer->line_tree != NULL)
-			pcb_r_insert_entry(layer->line_tree, (rnd_rnd_box_t *) line);
+			rnd_r_insert_entry(layer->line_tree, (rnd_rnd_box_t *) line);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_ARC_ALL_LOOP(Buffer->Data);
 	{
 		if (layer->arc_tree != NULL)
-			pcb_r_delete_entry(layer->arc_tree, (rnd_rnd_box_t *) arc);
+			rnd_r_delete_entry(layer->arc_tree, (rnd_rnd_box_t *) arc);
 		pcb_arc_rotate90(arc, Buffer->X, Buffer->Y, Number);
 		if (layer->arc_tree != NULL)
-			pcb_r_insert_entry(layer->arc_tree, (rnd_rnd_box_t *) arc);
+			rnd_r_insert_entry(layer->arc_tree, (rnd_rnd_box_t *) arc);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Buffer->Data);
 	{
 		if (layer->text_tree != NULL)
-			pcb_r_delete_entry(layer->text_tree, (rnd_rnd_box_t *) text);
+			rnd_r_delete_entry(layer->text_tree, (rnd_rnd_box_t *) text);
 		pcb_text_rotate90(text, Buffer->X, Buffer->Y, Number);
 		if (layer->text_tree != NULL)
-			pcb_r_insert_entry(layer->text_tree, (rnd_rnd_box_t *) text);
+			rnd_r_insert_entry(layer->text_tree, (rnd_rnd_box_t *) text);
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Buffer->Data);
 	{
 		if (layer->polygon_tree != NULL)
-			pcb_r_delete_entry(layer->polygon_tree, (rnd_rnd_box_t *) polygon);
+			rnd_r_delete_entry(layer->polygon_tree, (rnd_rnd_box_t *) polygon);
 		pcb_poly_rotate90(polygon, Buffer->X, Buffer->Y, Number);
 		if (layer->polygon_tree != NULL)
-			pcb_r_insert_entry(layer->polygon_tree, (rnd_rnd_box_t *) polygon);
+			rnd_r_insert_entry(layer->polygon_tree, (rnd_rnd_box_t *) polygon);
 	}
 	PCB_ENDALL_LOOP;
 

@@ -106,7 +106,7 @@ pcb_pstk_t *pcb_pstk_alloc(pcb_data_t *data)
 void pcb_pstk_free(pcb_pstk_t *ps)
 {
 	if ((ps->parent.data != NULL) && (ps->parent.data->padstack_tree != NULL))
-		pcb_r_delete_entry(ps->parent.data->padstack_tree, (rnd_rnd_box_t *)ps);
+		rnd_r_delete_entry(ps->parent.data->padstack_tree, (rnd_rnd_box_t *)ps);
 	rnd_attribute_free(&ps->Attributes);
 	pcb_pstk_unreg(ps);
 	free(ps->thermals.shape);
@@ -151,8 +151,8 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 {
 	pcb_pstk_bbox(ps);
 	if (!data->padstack_tree)
-		data->padstack_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(data->padstack_tree, (rnd_rnd_box_t *)ps);
+		data->padstack_tree = rnd_r_create_tree();
+	rnd_r_insert_entry(data->padstack_tree, (rnd_rnd_box_t *)ps);
 	PCB_SET_PARENT(ps, data, data);
 }
 
@@ -529,26 +529,26 @@ static void pcb_pstk_draw_shape_thin(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb
 	}
 }
 
-pcb_r_dir_t pcb_pstk_draw_callback(const rnd_rnd_box_t *b, void *cl)
+rnd_r_dir_t pcb_pstk_draw_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_shape_t *shape;
 	pcb_layergrp_t *grp = NULL;
 
-	pcb_obj_noexport(info, ps, return PCB_R_DIR_NOT_FOUND);
+	pcb_obj_noexport(info, ps, return RND_R_DIR_NOT_FOUND);
 
 	if (pcb_hidden_floater((pcb_any_obj_t*)b, info) || pcb_partial_export((pcb_any_obj_t*)b, info))
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return RND_R_DIR_FOUND_CONTINUE;
 
 	if (!PCB->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	if (info->objcb.pstk.gid < 0) {
 		if (info->objcb.pstk.shape_mask != 0)
 			shape = pcb_pstk_shape(ps, info->objcb.pstk.shape_mask, info->objcb.pstk.comb);
 		else
-			return PCB_R_DIR_NOT_FOUND;
+			return RND_R_DIR_NOT_FOUND;
 	}
 	else {
 		int n;
@@ -557,7 +557,7 @@ pcb_r_dir_t pcb_pstk_draw_callback(const rnd_rnd_box_t *b, void *cl)
 		for(n = 0, lid = grp->lid; n < grp->len; n++,lid++) {
 			if (*lid < ps->thermals.used) {
 				if ((ps->thermals.shape[*lid] & PCB_THERMAL_ON) && ((ps->thermals.shape[*lid] & 3) == PCB_THERMAL_NOSHAPE))
-					return PCB_R_DIR_NOT_FOUND;
+					return RND_R_DIR_NOT_FOUND;
 			}
 		}
 	}
@@ -575,10 +575,10 @@ pcb_r_dir_t pcb_pstk_draw_callback(const rnd_rnd_box_t *b, void *cl)
 			pcb_pstk_draw_shape_solid(info, pcb_draw_out.fgGC, ps, shape);
 	}
 
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t pcb_pstk_draw_mark_callback(const rnd_rnd_box_t *b, void *cl)
+rnd_r_dir_t pcb_pstk_draw_mark_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto;
@@ -594,7 +594,7 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const rnd_rnd_box_t *b, void *cl)
 
 	mark2 = mark*2;
 	if (mark2 < rnd_render->coord_per_pix)
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return RND_R_DIR_FOUND_CONTINUE;
 
 	/* draw the cross using xor */
 	set_ps_annot_color(pcb_draw_out.fgGC, ps);
@@ -606,10 +606,10 @@ pcb_r_dir_t pcb_pstk_draw_mark_callback(const rnd_rnd_box_t *b, void *cl)
 	else
 		rnd_render->draw_line(pcb_draw_out.fgGC, ps->x-rnd_render->coord_per_pix, ps->y, ps->x+rnd_render->coord_per_pix, ps->y);
 
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t pcb_pstk_draw_label_callback(const rnd_rnd_box_t *b, void *cl)
+rnd_r_dir_t pcb_pstk_draw_label_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
@@ -623,47 +623,47 @@ pcb_r_dir_t pcb_pstk_draw_label_callback(const rnd_rnd_box_t *b, void *cl)
 	if (ps->noexport)
 		pcb_obj_noexport_mark(ps, ps->x, ps->y);
 
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t pcb_pstk_draw_hole_callback(const rnd_rnd_box_t *b, void *cl)
+rnd_r_dir_t pcb_pstk_draw_hole_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto;
 
-	pcb_obj_noexport(info, ps, return PCB_R_DIR_NOT_FOUND);
+	pcb_obj_noexport(info, ps, return RND_R_DIR_NOT_FOUND);
 
 	if (pcb_hidden_floater(ps, info) || pcb_partial_export(ps, info))
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return RND_R_DIR_FOUND_CONTINUE;
 
 	/* hide subc parts if requested */
 	if (!info->pcb->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* no hole in this layer group */
 	if (info->objcb.pstk.gid >= 0) {
 		if (!pcb_pstk_bb_drills(info->pcb, ps, info->objcb.pstk.gid, &proto))
-			return PCB_R_DIR_FOUND_CONTINUE;
+			return RND_R_DIR_FOUND_CONTINUE;
 	}
 	else
 		proto = pcb_pstk_get_proto(ps);
 
 	/* No hole at all */
 	if ((proto == NULL) || (proto->hdia <= 0))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* hole is plated, but the caller doesn't want plated holes */
 	if (proto->hplated && (!(info->objcb.pstk.holetype & PCB_PHOLE_PLATED)))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* hole is unplated, but the caller doesn't want unplated holes */
 	if (!proto->hplated && (!(info->objcb.pstk.holetype & PCB_PHOLE_UNPLATED)))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* BBvia, but the caller doesn't want BBvias */
 	if (((proto->htop != 0) || (proto->hbottom != 0)) && (!(info->objcb.pstk.holetype & PCB_PHOLE_BB)))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* actual hole */
 	rnd_hid_set_line_width(pcb_draw_out.drillGC, 0);
@@ -680,48 +680,48 @@ pcb_r_dir_t pcb_pstk_draw_hole_callback(const rnd_rnd_box_t *b, void *cl)
 		rnd_render->draw_arc(pcb_draw_out.fgGC, ps->x, ps->y, r, r, 20, 290);
 	}
 
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-pcb_r_dir_t pcb_pstk_draw_slot_callback(const rnd_rnd_box_t *b, void *cl)
+rnd_r_dir_t pcb_pstk_draw_slot_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto;
 	pcb_pstk_shape_t *shape;
 
-	pcb_obj_noexport(info, ps, return PCB_R_DIR_NOT_FOUND);
+	pcb_obj_noexport(info, ps, return RND_R_DIR_NOT_FOUND);
 
 	if (pcb_hidden_floater(ps, info) || pcb_partial_export(ps, info))
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return RND_R_DIR_FOUND_CONTINUE;
 
 	/* hide subc parts if requested */
 	if (!info->pcb->SubcPartsOn && pcb_gobj_parent_subc(ps->parent_type, &ps->parent))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* no slot in this layer group */
 	if (info->objcb.pstk.gid >= 0) {
 		if (!pcb_pstk_bb_drills(info->pcb, ps, info->objcb.pstk.gid, &proto))
-			return PCB_R_DIR_FOUND_CONTINUE;
+			return RND_R_DIR_FOUND_CONTINUE;
 	}
 	else
 		proto = pcb_pstk_get_proto(ps);
 
 	/* No slot at all */
 	if (proto->mech_idx < 0)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* hole is plated, but the caller doesn't want plated holes */
 	if (proto->hplated && (!(info->objcb.pstk.holetype & PCB_PHOLE_PLATED)))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* hole is unplated, but the caller doesn't want unplated holes */
 	if (!proto->hplated && (!(info->objcb.pstk.holetype & PCB_PHOLE_UNPLATED)))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* BBslot, but the caller doesn't want BBslot */
 	if (((proto->htop != 0) || (proto->hbottom != 0)) && (!(info->objcb.pstk.holetype & PCB_PHOLE_BB)))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* actual slot */
 	shape = pcb_pstk_shape(ps, PCB_LYT_MECH, PCB_LYC_AUTO);
@@ -734,7 +734,7 @@ pcb_r_dir_t pcb_pstk_draw_slot_callback(const rnd_rnd_box_t *b, void *cl)
 			pcb_pstk_draw_shape_solid(info, pcb_draw_out.drillGC, ps, shape);
 	}
 
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 void pcb_pstk_thindraw(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps)
@@ -1200,13 +1200,13 @@ static int undo_pstk_mirror_swap(void *udata)
 		pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_erase(ps);
 		if (ps->parent.data->padstack_tree != NULL)
-			pcb_r_delete_entry(ps->parent.data->padstack_tree, (rnd_rnd_box_t *)ps);
+			rnd_r_delete_entry(ps->parent.data->padstack_tree, (rnd_rnd_box_t *)ps);
 
 		ps->y = PCB_SWAP_Y(ps->y) + g->y_offs;
 		pcb_pstk_bbox(ps);
 
 		if (ps->parent.data->padstack_tree != NULL)
-			pcb_r_insert_entry(ps->parent.data->padstack_tree, (rnd_rnd_box_t *)ps);
+			rnd_r_insert_entry(ps->parent.data->padstack_tree, (rnd_rnd_box_t *)ps);
 		pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_draw(ps);
 	}
@@ -1415,7 +1415,7 @@ static int undo_change_instance_swap(void *udata)
 	pcb_poly_restore_to_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 	pcb_pstk_invalidate_erase(ps);
 	if (ps->parent.data->padstack_tree != NULL)
-		pcb_r_delete_entry(ps->parent.data->padstack_tree, (rnd_rnd_box_t *)ps);
+		rnd_r_delete_entry(ps->parent.data->padstack_tree, (rnd_rnd_box_t *)ps);
 
 	swap(ps->proto,      u->proto,     rnd_cardinal_t);
 	swap(ps->Clearance,  u->clearance, rnd_coord_t);
@@ -1429,7 +1429,7 @@ static int undo_change_instance_swap(void *udata)
 
 	pcb_pstk_bbox(ps);
 	if (ps->parent.data->padstack_tree != NULL)
-		pcb_r_insert_entry(ps->parent.data->padstack_tree, (rnd_rnd_box_t *)ps);
+		rnd_r_insert_entry(ps->parent.data->padstack_tree, (rnd_rnd_box_t *)ps);
 	pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 	pcb_pstk_invalidate_draw(ps);
 
@@ -1566,7 +1566,7 @@ void pcb_pstk_pre(pcb_pstk_t *pstk)
 {
 	pcb_data_t *data = pstk->parent.data;
 	if (data->padstack_tree != NULL)
-		pcb_r_delete_entry(data->padstack_tree, (rnd_rnd_box_t *)pstk);
+		rnd_r_delete_entry(data->padstack_tree, (rnd_rnd_box_t *)pstk);
 	pcb_poly_restore_to_poly(data, PCB_OBJ_PSTK, NULL, pstk);
 }
 
@@ -1574,7 +1574,7 @@ void pcb_pstk_post(pcb_pstk_t *pstk)
 {
 	pcb_data_t *data = pstk->parent.data;
 	if (data->padstack_tree != NULL)
-		pcb_r_insert_entry(data->padstack_tree, (rnd_rnd_box_t *)pstk);
+		rnd_r_insert_entry(data->padstack_tree, (rnd_rnd_box_t *)pstk);
 	pcb_poly_clear_from_poly(data, PCB_OBJ_PSTK, NULL, pstk);
 }
 

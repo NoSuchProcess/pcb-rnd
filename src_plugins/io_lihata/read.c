@@ -1309,8 +1309,8 @@ TODO("subc: TextFlags")
 	pcb_subc_bbox(subc);
 
 	if (dt->subc_tree == NULL)
-		dt->subc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(dt->subc_tree, (rnd_rnd_box_t *)subc);
+		dt->subc_tree = rnd_r_create_tree();
+	rnd_r_insert_entry(dt->subc_tree, (rnd_rnd_box_t *)subc);
 
 	pcb_subc_rebind(pcb, subc);
 
@@ -1333,7 +1333,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 	parse_minuid(sc->uid, lht_dom_hash_get(obj, "uid"));
 
 	if (!dt->padstack_tree)
-		dt->padstack_tree = pcb_r_create_tree();
+		dt->padstack_tree = rnd_r_create_tree();
 	sc->data->padstack_tree = dt->padstack_tree;
 
 	pcb_subc_reg(dt, sc);
@@ -1349,8 +1349,8 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 	pcb_data_bbox_naked(&sc->bbox_naked, sc->data, rnd_true);
 
 	if (!dt->subc_tree)
-		dt->subc_tree = pcb_r_create_tree();
-	pcb_r_insert_entry(dt->subc_tree, (rnd_rnd_box_t *)sc);
+		dt->subc_tree = rnd_r_create_tree();
+	rnd_r_insert_entry(dt->subc_tree, (rnd_rnd_box_t *)sc);
 
 	if (subc_out != NULL)
 		*subc_out = sc;
@@ -2315,11 +2315,11 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		int l;
 		for(l = 0; l < pcb->Data->LayerN; l++) {
 			pcb_layer_t *layer = pcb->Data->Layer + l;
-			for(b = pcb_r_first(layer->polygon_tree, &it); b != NULL; b = pcb_r_next(&it)) {
+			for(b = rnd_r_first(layer->polygon_tree, &it); b != NULL; b = rnd_r_next(&it)) {
 				pcb_poly_t *p = (pcb_poly_t *)b;
 				pcb_poly_init_clip(pcb->Data, layer, p);
 			}
-			pcb_r_end(&it);
+			rnd_r_end(&it);
 		}
 	}
 

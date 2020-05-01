@@ -131,7 +131,7 @@ int tedax_etest_fsave(pcb_board_t *pcb, const char *etestid, FILE *f)
 	tedax_fprint_escape(f, etestid);
 	fputc('\n', f);
 
-	for(b = pcb_r_first(pcb->Data->padstack_tree, &it); b != NULL; b = pcb_r_next(&it)) {
+	for(b = rnd_r_first(pcb->Data->padstack_tree, &it); b != NULL; b = rnd_r_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)b;
 		pcb_subc_t *sc;
 		pcb_net_term_t *t;
@@ -147,7 +147,7 @@ int tedax_etest_fsave(pcb_board_t *pcb, const char *etestid, FILE *f)
 			continue;
 		tedax_etest_fsave_pstk(f, ps, t->parent.net->name, sc->refdes, ps->term);
 	}
-	pcb_r_end(&it);
+	rnd_r_end(&it);
 
 
 	fprintf(f, "end etest\n");

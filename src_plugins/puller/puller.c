@@ -248,7 +248,7 @@ static double dist_lp(int x1, int y1, int x2, int y2, int px, int py)
 /*                                                                           */
 /*****************************************************************************/
 
-static pcb_r_dir_t line_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t line_callback(const rnd_rnd_box_t * b, void *cl)
 {
 	/* pcb_layer_t *layer = (pcb_layer_t *)cl; */
 	pcb_line_t *l = (pcb_line_t *) b;
@@ -271,10 +271,10 @@ static pcb_r_dir_t line_callback(const rnd_rnd_box_t * b, void *cl)
 		printf("picked, exact %d\n", line_exact);
 #endif
 	}
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-static pcb_r_dir_t arc_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t arc_callback(const rnd_rnd_box_t * b, void *cl)
 {
 	/* pcb_layer_t *layer = (pcb_layer_t *) cl; */
 	pcb_arc_t *a = (pcb_arc_t *) b;
@@ -305,7 +305,7 @@ static pcb_r_dir_t arc_callback(const rnd_rnd_box_t * b, void *cl)
 		printf("picked, exact %d\n", arc_exact);
 #endif
 	}
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 static int find_pair(int Px, int Py)
@@ -326,8 +326,8 @@ static int find_pair(int Px, int Py)
 	spot.Y1 = y - 1;
 	spot.X2 = x + 1;
 	spot.Y2 = y + 1;
-	pcb_r_search(PCB_CURRLAYER(PCB)->line_tree, &spot, NULL, line_callback, PCB_CURRLAYER(PCB), NULL);
-	pcb_r_search(PCB_CURRLAYER(PCB)->arc_tree, &spot, NULL, arc_callback, PCB_CURRLAYER(PCB), NULL);
+	rnd_r_search(PCB_CURRLAYER(PCB)->line_tree, &spot, NULL, line_callback, PCB_CURRLAYER(PCB), NULL);
+	rnd_r_search(PCB_CURRLAYER(PCB)->arc_tree, &spot, NULL, arc_callback, PCB_CURRLAYER(PCB), NULL);
 	if (the_line && the_arc && !multi)
 		return 1;
 	x = Px;
@@ -609,7 +609,7 @@ typedef struct {
 
 #define NEAR(a,b) ((a) <= (b) + 2 && (a) >= (b) - 2)
 
-static pcb_r_dir_t find_pair_line_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t find_pair_line_callback(const rnd_rnd_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 #if TRACE1
@@ -618,7 +618,7 @@ static pcb_r_dir_t find_pair_line_callback(const rnd_rnd_box_t * b, void *cl)
 	FindPairCallbackStruct *fpcs = (FindPairCallbackStruct *) cl;
 
 	if (line == fpcs->me)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 #ifdef CHECK_LINE_PT_NEG
 	if (line->Point1.X < 0)
 		abort1();
@@ -641,17 +641,17 @@ static pcb_r_dir_t find_pair_line_callback(const rnd_rnd_box_t * b, void *cl)
 #endif
 		}
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t find_pair_arc_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t find_pair_arc_callback(const rnd_rnd_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	Extra *e = ARC2EXTRA(arc);
 	FindPairCallbackStruct *fpcs = (FindPairCallbackStruct *) cl;
 
 	if (arc == fpcs->me)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 #if TRACE1
 	rnd_printf(" - %p arc %#mD or %#mD\n", (void *)e, e->start.x, e->start.y, e->end.x, e->end.y);
 #endif
@@ -666,7 +666,7 @@ static pcb_r_dir_t find_pair_arc_callback(const rnd_rnd_box_t * b, void *cl)
 		else
 			*fpcs->extra_ptr = e;
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 static void find_pairs_1(void *me, Extra ** e, int x, int y)
@@ -688,8 +688,8 @@ static void find_pairs_1(void *me, Extra ** e, int x, int y)
 	b.X2 = x + 10;
 	b.Y1 = y - 10;
 	b.Y2 = y + 10;
-	pcb_r_search(PCB_CURRLAYER(PCB)->line_tree, &b, NULL, find_pair_line_callback, &fpcs, NULL);
-	pcb_r_search(PCB_CURRLAYER(PCB)->arc_tree, &b, NULL, find_pair_arc_callback, &fpcs, NULL);
+	rnd_r_search(PCB_CURRLAYER(PCB)->line_tree, &b, NULL, find_pair_line_callback, &fpcs, NULL);
+	rnd_r_search(PCB_CURRLAYER(PCB)->arc_tree, &b, NULL, find_pair_arc_callback, &fpcs, NULL);
 }
 
 static int check_point_in_pstk(pcb_pstk_t *ps, pcb_layer_t *layer, int x, int y, End *e)
@@ -726,7 +726,7 @@ static int check_point_in_pstk(pcb_pstk_t *ps, pcb_layer_t *layer, int x, int y,
 	return 0;
 }
 
-static pcb_r_dir_t find_pair_pstkline_callback(const rnd_rnd_box_t *b, void *cl)
+static rnd_r_dir_t find_pair_pstkline_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *)b;
 	pcb_pstk_t *pin = (pcb_pstk_t *)cl;
@@ -743,7 +743,7 @@ static pcb_r_dir_t find_pair_pstkline_callback(const rnd_rnd_box_t *b, void *cl)
 	hits += check_point_in_pstk(pin, line->parent.layer, line->Point2.X, line->Point2.Y, &(e->end));
 
 	if (hits)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	/* See if the line passes through this pin - if so, split it into two
 	   lines so they can be pulled independently. */
@@ -755,10 +755,10 @@ static pcb_r_dir_t find_pair_pstkline_callback(const rnd_rnd_box_t *b, void *cl)
 		unlink_end(e, &e->start.next);
 		unlink_end(e, &e->end.next);
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t find_pair_pstkarc_callback(const rnd_rnd_box_t *b, void *cl)
+static rnd_r_dir_t find_pair_pstkarc_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *)b;
 	pcb_pstk_t *pin = (pcb_pstk_t *)cl;
@@ -768,7 +768,7 @@ static pcb_r_dir_t find_pair_pstkarc_callback(const rnd_rnd_box_t *b, void *cl)
 	assert(arc->parent_type == PCB_PARENT_LAYER);
 	hits = check_point_in_pstk(pin, arc->parent.layer, e->start.x, e->start.y, &(e->start));
 	hits += check_point_in_pstk(pin, arc->parent.layer, e->end.x, e->end.y, &(e->end));
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 static void null_multi_next_ends(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
@@ -803,8 +803,8 @@ static void find_pairs_pstk(pcb_data_t *data)
 	PCB_PADSTACK_LOOP(PCB->Data); {
 		rnd_rnd_box_t box;
 		box = padstack->BoundingBox;
-		pcb_r_search(PCB_CURRLAYER(PCB)->line_tree, &box, NULL, find_pair_pstkline_callback, padstack, NULL);
-		pcb_r_search(PCB_CURRLAYER(PCB)->arc_tree, &box, NULL, find_pair_pstkarc_callback, padstack, NULL);
+		rnd_r_search(PCB_CURRLAYER(PCB)->line_tree, &box, NULL, find_pair_pstkline_callback, padstack, NULL);
+		rnd_r_search(PCB_CURRLAYER(PCB)->arc_tree, &box, NULL, find_pair_pstkarc_callback, padstack, NULL);
 	}
 	PCB_END_LOOP;
 }
@@ -1334,14 +1334,14 @@ static int gp_point_2(int x, int y, int t, End * e, int esa, int eda, const char
 	return gp_point_force(x, y, t, e, esa, eda, 0, func);
 }
 
-static pcb_r_dir_t gp_line_cb(const rnd_rnd_box_t * b, void *cb)
+static rnd_r_dir_t gp_line_cb(const rnd_rnd_box_t * b, void *cb)
 {
 	const pcb_line_t *l = (pcb_line_t *) b;
 	Extra *e = LINE2EXTRA(l);
 	if (l == start_line || l == end_line)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	if (e->deleted)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 #ifdef CHECK_LINE_PT_NEG
 	if (l->Point1.X < 0)
 		abort1();
@@ -1350,32 +1350,32 @@ static pcb_r_dir_t gp_line_cb(const rnd_rnd_box_t * b, void *cb)
 		gp_point(l->Point1.X, l->Point1.Y, l->Thickness / 2, &e->start);
 	if (!e->end.next || !EXTRA_IS_ARC(e->end.next))
 		gp_point(l->Point2.X, l->Point2.Y, l->Thickness / 2, &e->end);
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t gp_arc_cb(const rnd_rnd_box_t * b, void *cb)
+static rnd_r_dir_t gp_arc_cb(const rnd_rnd_box_t * b, void *cb)
 {
 	const pcb_arc_t *a = (pcb_arc_t *) b;
 	Extra *e = ARC2EXTRA(a);
 	if (a == start_arc || a == end_arc)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	if (e->deleted)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	gp_point_2(a->X, a->Y, a->Width + a->Thickness / 2, 0, a->StartAngle, a->Delta, "gp_arc_cb");
 	if (start_arc && a->X == start_arc->X && a->Y == start_arc->Y)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	if (end_arc && a->X != end_arc->X && a->Y != end_arc->Y)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	if (e->start.next || e->end.next)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	gp_point(e->start.x, e->start.y, a->Thickness / 2, 0);
 	gp_point(e->end.x, e->end.y, a->Thickness / 2, 0);
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t gp_text_cb(const rnd_rnd_box_t * b, void *cb)
+static rnd_r_dir_t gp_text_cb(const rnd_rnd_box_t * b, void *cb)
 {
 	const pcb_text_t *t = (pcb_text_t *) b;
 	/* FIXME: drop in the actual text-line endpoints later. */
@@ -1383,26 +1383,26 @@ static pcb_r_dir_t gp_text_cb(const rnd_rnd_box_t * b, void *cb)
 	gp_point(t->BoundingBox.X1, t->BoundingBox.Y2, 0, 0);
 	gp_point(t->BoundingBox.X2, t->BoundingBox.Y2, 0, 0);
 	gp_point(t->BoundingBox.X2, t->BoundingBox.Y1, 0, 0);
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t gp_poly_cb(const rnd_rnd_box_t * b, void *cb)
+static rnd_r_dir_t gp_poly_cb(const rnd_rnd_box_t * b, void *cb)
 {
 	int i;
 	const pcb_poly_t *p = (pcb_poly_t *) b;
 	for (i = 0; i < p->PointN; i++)
 		gp_point(p->Points[i].X, p->Points[i].Y, 0, 0);
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t gp_pstk_cb(const rnd_rnd_box_t *b, void *cb)
+static rnd_r_dir_t gp_pstk_cb(const rnd_rnd_box_t *b, void *cb)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b; /* have to drop const because we may update the cache in ps */
 	pcb_layer_t *layer = PCB_CURRLAYER(PCB);
 	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, layer), tmpshp;
 
 	if (ps == start_pinpad || ps == end_pinpad)
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 
 	if (shape == NULL) return 0;
 	retry:;
@@ -1424,7 +1424,7 @@ TODO(": we lump poly padstacks in with square; safe, but not optimal; rather use
 			gp_point(ps->BoundingBox.X2, ps->BoundingBox.Y2, 0, 0);
 			break;
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 static pcb_line_t *create_line(pcb_line_t *sample, int x1, int y1, int x2, int y2)
@@ -1735,11 +1735,11 @@ static void maybe_pull_1(pcb_line_t *line)
 	end_pinpad = start_extra->end.pin;
 	fp = 0;
 
-	pcb_r_search(PCB_CURRLAYER(PCB)->line_tree, &box, NULL, gp_line_cb, 0, NULL);
-	pcb_r_search(PCB_CURRLAYER(PCB)->arc_tree, &box, NULL, gp_arc_cb, 0, NULL);
-	pcb_r_search(PCB_CURRLAYER(PCB)->text_tree, &box, NULL, gp_text_cb, 0, NULL);
-	pcb_r_search(PCB_CURRLAYER(PCB)->polygon_tree, &box, NULL, gp_poly_cb, 0, NULL);
-	pcb_r_search(PCB->Data->padstack_tree, &box, NULL, gp_pstk_cb, 0, NULL);
+	rnd_r_search(PCB_CURRLAYER(PCB)->line_tree, &box, NULL, gp_line_cb, 0, NULL);
+	rnd_r_search(PCB_CURRLAYER(PCB)->arc_tree, &box, NULL, gp_arc_cb, 0, NULL);
+	rnd_r_search(PCB_CURRLAYER(PCB)->text_tree, &box, NULL, gp_text_cb, 0, NULL);
+	rnd_r_search(PCB_CURRLAYER(PCB)->polygon_tree, &box, NULL, gp_poly_cb, 0, NULL);
+	rnd_r_search(PCB->Data->padstack_tree, &box, NULL, gp_pstk_cb, 0, NULL);
 
 	/* radians, absolute angle of (at the moment) the start_line */
 	abs_angle = fa + start_angle;

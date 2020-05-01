@@ -92,7 +92,7 @@ static void sketch_update_cdt_layer(sketch_t *sk)
 
 	list_map0(&l->Line, pcb_line_t, pcb_line_free);
 	if (l->line_tree)
-		pcb_r_destroy_tree(&l->line_tree);
+		rnd_r_destroy_tree(&l->line_tree);
 	VTEDGE_FOREACH(e, &sk->cdt->edges)
 		pcb_line_new(l, e->endp[0]->pos.x, -e->endp[0]->pos.y, e->endp[1]->pos.x, -e->endp[1]->pos.y, 1, 0, pcb_no_flags());
 	VTEDGE_FOREACH_END();
@@ -106,7 +106,7 @@ static void sketch_update_erbs_layer(sketch_t *sk)
 
 	list_map0(&l->Line, pcb_line_t, pcb_line_free);
 	if (l->line_tree)
-		pcb_r_destroy_tree(&l->line_tree);
+		rnd_r_destroy_tree(&l->line_tree);
 
 	VTEWIRE_FOREACH(ew, &sk->ewires)
 		ewire_point_t *ewp = &ew->points.array[0];
@@ -653,7 +653,7 @@ struct search_info {
 	sketch_t *sk;
 };
 
-static pcb_r_dir_t r_search_cb(const rnd_rnd_box_t *box, void *cl)
+static rnd_r_dir_t r_search_cb(const rnd_rnd_box_t *box, void *cl)
 {
 	pcb_any_obj_t *obj = (pcb_any_obj_t *) box;
 	struct search_info *i = (struct search_info *) cl;
@@ -662,7 +662,7 @@ static pcb_r_dir_t r_search_cb(const rnd_rnd_box_t *box, void *cl)
 	if (obj->type == PCB_OBJ_PSTK) {
 		pcb_pstk_t *pstk = (pcb_pstk_t *) obj;
 		if (pcb_pstk_shape_at(PCB, pstk, i->layer) == NULL)
-			return PCB_R_DIR_NOT_FOUND;
+			return RND_R_DIR_NOT_FOUND;
 		point = cdt_insert_point(i->sk->cdt, pstk->x, -pstk->y);
 		pointdata_create(point, obj);
 	}
@@ -685,7 +685,7 @@ static pcb_r_dir_t r_search_cb(const rnd_rnd_box_t *box, void *cl)
 			htpp_insert(&i->sk->terminals, obj, point);
 	}
 
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
@@ -706,16 +706,16 @@ static void sketch_create_for_layer(sketch_t *sk, pcb_layer_t *layer)
 	sk->ewires.elem_copy = NULL;
 	vtewire_init(&sk->ewires);
 
-	sk->spoke_tree = pcb_r_create_tree();
+	sk->spoke_tree = rnd_r_create_tree();
 
 	bbox.X1 = 0; bbox.Y1 = 0; bbox.X2 = PCB->hidlib.size_x; bbox.Y2 = PCB->hidlib.size_y;
 	info.layer = layer;
 	info.sk = sk;
-	pcb_r_search(PCB->Data->padstack_tree, &bbox, NULL, r_search_cb, &info, NULL);
-	pcb_r_search(layer->line_tree, &bbox, NULL, r_search_cb, &info, NULL);
-	pcb_r_search(layer->text_tree, &bbox, NULL, r_search_cb, &info, NULL);
-	pcb_r_search(layer->polygon_tree, &bbox, NULL, r_search_cb, &info, NULL);
-	pcb_r_search(layer->arc_tree, &bbox, NULL, r_search_cb, &info, NULL);
+	rnd_r_search(PCB->Data->padstack_tree, &bbox, NULL, r_search_cb, &info, NULL);
+	rnd_r_search(layer->line_tree, &bbox, NULL, r_search_cb, &info, NULL);
+	rnd_r_search(layer->text_tree, &bbox, NULL, r_search_cb, &info, NULL);
+	rnd_r_search(layer->polygon_tree, &bbox, NULL, r_search_cb, &info, NULL);
+	rnd_r_search(layer->arc_tree, &bbox, NULL, r_search_cb, &info, NULL);
 
 	rnd_snprintf(name, sizeof(name), "%s: CDT", layer->name);
 	sk->ui_layer_cdt = pcb_uilayer_alloc(pcb_sketch_route_cookie, name, &layer->meta.real.color);
@@ -748,7 +748,7 @@ static void sketch_uninit(sketch_t *sk)
 	vtwire_uninit(&sk->wires);
 	vtewire_uninit(&sk->ewires);
 	htpp_uninit(&sk->terminals);
-	pcb_r_destroy_tree(&sk->spoke_tree);
+	rnd_r_destroy_tree(&sk->spoke_tree);
 	pcb_uilayer_free(sk->ui_layer_cdt);
 	pcb_uilayer_free(sk->ui_layer_erbs);
 }

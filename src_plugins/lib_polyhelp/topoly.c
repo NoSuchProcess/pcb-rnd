@@ -58,7 +58,7 @@ typedef struct {
 	pcb_dynf_t mark;
 } next_conn_t;
 
-static pcb_r_dir_t next_conn_found_arc(const rnd_rnd_box_t *box, void *cl)
+static rnd_r_dir_t next_conn_found_arc(const rnd_rnd_box_t *box, void *cl)
 {
 	rnd_coord_t ex, ey;
 	next_conn_t *ctx = cl;
@@ -66,7 +66,7 @@ static pcb_r_dir_t next_conn_found_arc(const rnd_rnd_box_t *box, void *cl)
 	int n;
 
 	if (PCB_DFLAG_TEST(&obj->Flags, ctx->mark))
-		return PCB_R_DIR_NOT_FOUND; /* object already mapped */
+		return RND_R_DIR_NOT_FOUND; /* object already mapped */
 
 	for(n = 0; n < 2; n++) {
 		pcb_arc_get_end((pcb_arc_t *)obj, n, &ex, &ey);
@@ -75,28 +75,28 @@ static pcb_r_dir_t next_conn_found_arc(const rnd_rnd_box_t *box, void *cl)
 			vtp0_append(ctx->list, obj);
 			PCB_DFLAG_SET(&obj->Flags, ctx->mark);
 			ctx->result = obj;
-			return PCB_R_DIR_FOUND_CONTINUE;
+			return RND_R_DIR_FOUND_CONTINUE;
 		}
 	}
 
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
-static pcb_r_dir_t next_conn_found_line(const rnd_rnd_box_t *box, void *cl)
+static rnd_r_dir_t next_conn_found_line(const rnd_rnd_box_t *box, void *cl)
 {
 	next_conn_t *ctx = cl;
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
 	pcb_line_t *l = (pcb_line_t *)box;
 
 	if (PCB_DFLAG_TEST(&obj->Flags, ctx->mark))
-		return PCB_R_DIR_NOT_FOUND; /* object already mapped */
+		return RND_R_DIR_NOT_FOUND; /* object already mapped */
 
 	if (NEAR(ctx->tx, l->Point1.X, ctx->ty, l->Point1.Y)) {
 		vti0_append(ctx->endlist, 0);
 		vtp0_append(ctx->list, obj);
 		PCB_DFLAG_SET(&obj->Flags, ctx->mark);
 		ctx->result = obj;
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return RND_R_DIR_FOUND_CONTINUE;
 	}
 
 	if (NEAR(ctx->tx, l->Point2.X, ctx->ty, l->Point2.Y)) {
@@ -104,10 +104,10 @@ static pcb_r_dir_t next_conn_found_line(const rnd_rnd_box_t *box, void *cl)
 		vtp0_append(ctx->list, obj);
 		PCB_DFLAG_SET(&obj->Flags, ctx->mark);
 		ctx->result = obj;
-		return PCB_R_DIR_FOUND_CONTINUE;
+		return RND_R_DIR_FOUND_CONTINUE;
 	}
 
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *curr, pcb_dynf_t df)
@@ -149,7 +149,7 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *cu
 		ctx.tx = cx[n];
 		ctx.ty = cy[n];
 
-		pcb_r_search(curr->parent.layer->arc_tree, &region, NULL, next_conn_found_arc, &ctx, &len);
+		rnd_r_search(curr->parent.layer->arc_tree, &region, NULL, next_conn_found_arc, &ctx, &len);
 		if (len > 1) {
 			rnd_message(RND_MSG_ERROR, "map_contour(): contour is not a clean loop: it contains at least one stub or subloop\n");
 			return NULL;
@@ -157,7 +157,7 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *cu
 		if (ctx.result != NULL)
 			return ctx.result;
 
-		pcb_r_search(curr->parent.layer->line_tree, &region, NULL, next_conn_found_line, &ctx, &len);
+		rnd_r_search(curr->parent.layer->line_tree, &region, NULL, next_conn_found_line, &ctx, &len);
 		if (len > 1) {
 			rnd_message(RND_MSG_ERROR, "map_contour(): contour is not a clean loop: it contains at least one stub or subloop\n");
 			return NULL;

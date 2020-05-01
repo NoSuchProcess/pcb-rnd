@@ -119,9 +119,9 @@ long pcb_subc_unbind_all(pcb_board_t *pcb, pcb_layer_t *brdly, int undoable);
 pcb_layer_t *pcb_subc_get_layer(pcb_subc_t *sc, pcb_layer_type_t lyt, pcb_layer_combining_t comb, rnd_bool_t alloc, const char *name, rnd_bool req_name_match);
 
 #include <librnd/poly/rtree.h>
-pcb_r_dir_t pcb_draw_subc_mark(const rnd_rnd_box_t *b, void *cl); /* low level version, does not do extobj */
-pcb_r_dir_t draw_subc_mark_callback(const rnd_rnd_box_t *b, void *cl);
-pcb_r_dir_t draw_subc_label_callback(const rnd_rnd_box_t *b, void *cl);
+rnd_r_dir_t pcb_draw_subc_mark(const rnd_rnd_box_t *b, void *cl); /* low level version, does not do extobj */
+rnd_r_dir_t draw_subc_mark_callback(const rnd_rnd_box_t *b, void *cl);
+rnd_r_dir_t draw_subc_label_callback(const rnd_rnd_box_t *b, void *cl);
 void DrawSubc(pcb_subc_t *sc);
 void EraseSubc(pcb_subc_t *sc);
 

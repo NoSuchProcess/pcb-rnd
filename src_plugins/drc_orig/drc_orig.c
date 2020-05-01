@@ -59,7 +59,7 @@ const conf_drc_orig_t conf_drc_orig;
 #define DRC_ORIG_CONF_FN "drc_orig.conf"
 
 /* DRC clearance callback */
-static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon, int type, void *ptr1, void *ptr2, void *user_data)
+static rnd_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t *polygon, int type, void *ptr1, void *ptr2, void *user_data)
 {
 	const char *message;
 	pcb_view_t *violation;
@@ -90,7 +90,7 @@ static pcb_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 	default:
 		rnd_message(RND_MSG_ERROR, "hace: Bad Plow object in callback\n");
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 
 doIsBad:
 	pcb_poly_invalidate_draw(layer, polygon);
@@ -100,7 +100,7 @@ doIsBad:
 	pcb_view_append_obj(violation, 0, (pcb_any_obj_t *)ptr2);
 	pcb_view_set_bbox_by_objs(PCB->Data, violation);
 	pcb_view_list_append(lst, violation);
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 static int drc_text(pcb_view_list_t *lst, pcb_layer_t *layer, pcb_text_t *text, rnd_coord_t min_wid)

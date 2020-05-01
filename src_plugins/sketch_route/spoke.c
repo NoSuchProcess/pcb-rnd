@@ -13,14 +13,14 @@ void spoke_init(spoke_t *sp, spoke_dir_t dir, point_t *p)
 	sp->p = p;
 	/* TODO:
 	spoke_bbox(sp);
-	pcb_r_insert_entry(spoke_tree, sp);
+	rnd_r_insert_entry(spoke_tree, sp);
 	*/
 }
 
 void spoke_uninit(spoke_t *sp)
 {
 	/* TODO:
-	pcb_r_delete_entry(spoke_tree, &pd->spokes[i]);
+	rnd_r_delete_entry(spoke_tree, &pd->spokes[i]);
 	*/
 	vtp0_uninit(&sp->slots);
 }

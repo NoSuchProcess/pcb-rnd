@@ -467,14 +467,14 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 					/* Move the existing line point/s */
 					exto = pcb_extobj_float_pre((pcb_any_obj_t *)apply_to_line);
 					pcb_line_invalidate_erase(apply_to_line);
-					pcb_r_delete_entry(apply_to_line_layer->line_tree, (rnd_rnd_box_t *) apply_to_line);
+					rnd_r_delete_entry(apply_to_line_layer->line_tree, (rnd_rnd_box_t *) apply_to_line);
 					pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_LINE, apply_to_line_layer, apply_to_line);
 					apply_to_line->Point1.X = p_obj->point1.X;
 					apply_to_line->Point1.Y = p_obj->point1.Y;
 					apply_to_line->Point2.X = p_obj->point2.X;
 					apply_to_line->Point2.Y = p_obj->point2.Y;
 					pcb_line_bbox(apply_to_line);
-					pcb_r_insert_entry(layer->line_tree, (rnd_rnd_box_t *) apply_to_line);
+					rnd_r_insert_entry(layer->line_tree, (rnd_rnd_box_t *) apply_to_line);
 					pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_LINE, layer, apply_to_line);
 					pcb_line_invalidate_draw(layer, apply_to_line);
 					apply_to_line_layer = layer;
@@ -599,7 +599,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						exto = pcb_extobj_float_pre((pcb_any_obj_t *)apply_to_arc);
 						pcb_arc_invalidate_erase(apply_to_arc);
 
-						pcb_r_delete_entry(apply_to_arc_layer->arc_tree, (rnd_rnd_box_t *) apply_to_arc);
+						rnd_r_delete_entry(apply_to_arc_layer->arc_tree, (rnd_rnd_box_t *) apply_to_arc);
 						pcb_poly_restore_to_poly(PCB->Data, PCB_OBJ_ARC, apply_to_arc_layer, apply_to_arc);
 
 						apply_to_arc->X = p_obj->point1.X;
@@ -610,7 +610,7 @@ int pcb_route_apply_to_arc(const pcb_route_t *p_route, pcb_layer_t *apply_to_arc
 						apply_to_arc->Delta = p_obj->delta_angle;
 						apply_to_arc->Thickness = p_route->thickness;
 						pcb_arc_bbox(apply_to_arc);
-						pcb_r_insert_entry(apply_to_arc_layer->arc_tree, (rnd_rnd_box_t *) apply_to_arc);
+						rnd_r_insert_entry(apply_to_arc_layer->arc_tree, (rnd_rnd_box_t *) apply_to_arc);
 						pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_ARC, apply_to_arc_layer, apply_to_arc);
 						pcb_arc_invalidate_draw(layer, apply_to_arc);
 						apply_to_arc_layer = layer;

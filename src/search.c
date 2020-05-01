@@ -81,7 +81,7 @@ do { \
 } while(0)
 
 #define TEST_OBJST(objst, req_flag, locality, obj, locked_obj) \
-	TEST_OBJST_(objst, req_flag, locality, obj, locked_obj, return PCB_R_DIR_NOT_FOUND)
+	TEST_OBJST_(objst, req_flag, locality, obj, locked_obj, return RND_R_DIR_NOT_FOUND)
 
 struct ans_info {
 	void **ptr1, **ptr2, **ptr3;
@@ -95,7 +95,7 @@ struct ans_info {
 /* ---------------------------------------------------------------------------
  * searches a padstack
  */
-static pcb_r_dir_t padstack_callback(const rnd_rnd_box_t *box, void *cl)
+static rnd_r_dir_t padstack_callback(const rnd_rnd_box_t *box, void *cl)
 {
 	struct ans_info *i = (struct ans_info *) cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *) box;
@@ -104,11 +104,11 @@ static pcb_r_dir_t padstack_callback(const rnd_rnd_box_t *box, void *cl)
 	TEST_OBJST(i->objst, i->req_flag, g, ps, ps);
 
 	if (!pcb_is_point_in_pstk(PosX, PosY, SearchRadius, ps, NULL))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	if ((i->on_current) && (pcb_pstk_shape_at(PCB, ps, PCB_CURRLAYER(PCB)) == NULL) && (!pcb_pstk_bb_drills(PCB, ps, PCB_CURRLAYER(PCB)->meta.real.grp, NULL)))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	if ((i->on_lyt != 0) && (pcb_pstk_shape(ps, i->on_lyt, 0) == NULL))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	*i->ptr2 = *i->ptr3 = ps;
 	assert(ps->parent_type == PCB_PARENT_DATA);
 	pdata = ps->parent.data;
@@ -116,7 +116,7 @@ static pcb_r_dir_t padstack_callback(const rnd_rnd_box_t *box, void *cl)
 		*i->ptr1 = pdata->parent.subc; /* padstack of a subcircuit */
 	else
 		*i->ptr1 = ps; /* padstack on a board (e.g. via) */
-	return PCB_R_DIR_CANCEL; /* found, stop searching */
+	return RND_R_DIR_CANCEL; /* found, stop searching */
 }
 
 static rnd_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_flag, pcb_pstk_t **ps, pcb_pstk_t **Dummy1, pcb_pstk_t **Dummy2, int on_current, pcb_layer_type_t on_lyt)
@@ -135,7 +135,7 @@ static rnd_bool SearchPadstackByLocation(unsigned long objst, unsigned long req_
 	info.on_current = on_current;
 	info.on_lyt = on_lyt;
 
-	if (pcb_r_search(PCB->Data->padstack_tree, &SearchBox, NULL, padstack_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
+	if (rnd_r_search(PCB->Data->padstack_tree, &SearchBox, NULL, padstack_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
 		return rnd_true;
 	return rnd_false;
 }
@@ -152,7 +152,7 @@ struct line_info {
 };
 
 
-static pcb_r_dir_t line_callback(const rnd_rnd_box_t * box, void *cl)
+static rnd_r_dir_t line_callback(const rnd_rnd_box_t * box, void *cl)
 {
 	struct line_info *i = (struct line_info *) cl;
 	pcb_line_t *l = (pcb_line_t *) box;
@@ -160,11 +160,11 @@ static pcb_r_dir_t line_callback(const rnd_rnd_box_t * box, void *cl)
 	TEST_OBJST(i->objst, i->req_flag, l, l, l);
 
 	if (!pcb_is_point_in_line(PosX, PosY, SearchRadius, (pcb_any_line_t *)l))
-		return PCB_R_DIR_NOT_FOUND;
+		return RND_R_DIR_NOT_FOUND;
 	*i->Line = l;
 	*i->Point = (rnd_point_t *) l;
 
-	return PCB_R_DIR_CANCEL; /* found what we were looking for */
+	return RND_R_DIR_CANCEL; /* found what we were looking for */
 }
 
 
@@ -178,13 +178,13 @@ static rnd_bool SearchLineByLocation(unsigned long objst, unsigned long req_flag
 	info.req_flag = req_flag;
 
 	*Layer = SearchLayer;
-	if (pcb_r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
+	if (rnd_r_search(SearchLayer->line_tree, &SearchBox, NULL, line_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
 		return rnd_true;
 
 	return rnd_false;
 }
 
-static pcb_r_dir_t rat_callback(const rnd_rnd_box_t * box, void *cl)
+static rnd_r_dir_t rat_callback(const rnd_rnd_box_t * box, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -195,9 +195,9 @@ static pcb_r_dir_t rat_callback(const rnd_rnd_box_t * box, void *cl)
 			(rnd_distance(line->Point1.X, line->Point1.Y, PosX, PosY) <=
 			 line->Thickness * 2 + SearchRadius) : pcb_is_point_on_line(PosX, PosY, SearchRadius, line)) {
 		*i->ptr1 = *i->ptr2 = *i->ptr3 = line;
-		return PCB_R_DIR_CANCEL;
+		return RND_R_DIR_CANCEL;
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -213,7 +213,7 @@ static rnd_bool SearchRatLineByLocation(unsigned long objst, unsigned long req_f
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (pcb_r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
+	if (rnd_r_search(PCB->Data->rat_tree, &SearchBox, NULL, rat_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
 		return rnd_true;
 	return rnd_false;
 }
@@ -228,7 +228,7 @@ struct arc_info {
 	double least;
 };
 
-static pcb_r_dir_t arc_callback(const rnd_rnd_box_t * box, void *cl)
+static rnd_r_dir_t arc_callback(const rnd_rnd_box_t * box, void *cl)
 {
 	struct arc_info *i = (struct arc_info *) cl;
 	pcb_arc_t *a = (pcb_arc_t *) box;
@@ -239,7 +239,7 @@ static pcb_r_dir_t arc_callback(const rnd_rnd_box_t * box, void *cl)
 		return 0;
 	*i->Arc = a;
 	*i->Dummy = a;
-	return PCB_R_DIR_CANCEL; /* found */
+	return RND_R_DIR_CANCEL; /* found */
 }
 
 
@@ -253,7 +253,7 @@ static rnd_bool SearchArcByLocation(unsigned long objst, unsigned long req_flag,
 	info.req_flag = req_flag;
 
 	*Layer = SearchLayer;
-	if (pcb_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
+	if (rnd_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arc_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
 		return rnd_true;
 	return rnd_false;
 }
@@ -267,7 +267,7 @@ struct gfx_info {
 	double least;
 };
 
-static pcb_r_dir_t gfx_callback(const rnd_rnd_box_t *box, void *cl)
+static rnd_r_dir_t gfx_callback(const rnd_rnd_box_t *box, void *cl)
 {
 	struct gfx_info *i = (struct gfx_info *)cl;
 	pcb_gfx_t *g = (pcb_gfx_t *)box;
@@ -278,7 +278,7 @@ static pcb_r_dir_t gfx_callback(const rnd_rnd_box_t *box, void *cl)
 		return 0;
 	*i->Gfx = g;
 	*i->Dummy = g;
-	return PCB_R_DIR_CANCEL; /* found */
+	return RND_R_DIR_CANCEL; /* found */
 }
 
 static rnd_bool SearchGfxByLocation(unsigned long objst, unsigned long req_flag, pcb_layer_t **Layer, pcb_gfx_t **gfx, pcb_gfx_t **Dummy)
@@ -291,12 +291,12 @@ static rnd_bool SearchGfxByLocation(unsigned long objst, unsigned long req_flag,
 	info.req_flag = req_flag;
 
 	*Layer = SearchLayer;
-	if (pcb_r_search(SearchLayer->gfx_tree, &SearchBox, NULL, gfx_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
+	if (rnd_r_search(SearchLayer->gfx_tree, &SearchBox, NULL, gfx_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
 		return rnd_true;
 	return rnd_false;
 }
 
-static pcb_r_dir_t text_callback(const rnd_rnd_box_t * box, void *cl)
+static rnd_r_dir_t text_callback(const rnd_rnd_box_t * box, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -305,9 +305,9 @@ static pcb_r_dir_t text_callback(const rnd_rnd_box_t * box, void *cl)
 
 	if (PCB_POINT_IN_BOX(PosX, PosY, &text->BoundingBox)) {
 		*i->ptr2 = *i->ptr3 = text;
-		return PCB_R_DIR_CANCEL; /* found */
+		return RND_R_DIR_CANCEL; /* found */
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 /* ---------------------------------------------------------------------------
@@ -323,12 +323,12 @@ static rnd_bool SearchTextByLocation(unsigned long objst, unsigned long req_flag
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (pcb_r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
+	if (rnd_r_search(SearchLayer->text_tree, &SearchBox, NULL, text_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
 		return rnd_true;
 	return rnd_false;
 }
 
-static pcb_r_dir_t polygon_callback(const rnd_rnd_box_t * box, void *cl)
+static rnd_r_dir_t polygon_callback(const rnd_rnd_box_t * box, void *cl)
 {
 	pcb_poly_t *polygon = (pcb_poly_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -336,13 +336,13 @@ static pcb_r_dir_t polygon_callback(const rnd_rnd_box_t * box, void *cl)
 	TEST_OBJST(i->objst, i->req_flag, l, polygon, polygon);
 
 	if (polygon->Clipped == NULL)
-		return PCB_R_DIR_NOT_FOUND; /* polygon cleared out of existence */
+		return RND_R_DIR_NOT_FOUND; /* polygon cleared out of existence */
 
 	if (pcb_poly_is_point_in_p(PosX, PosY, SearchRadius, polygon)) {
 		*i->ptr2 = *i->ptr3 = polygon;
-		return PCB_R_DIR_CANCEL; /* found */
+		return RND_R_DIR_CANCEL; /* found */
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 
@@ -359,16 +359,16 @@ static rnd_bool SearchPolygonByLocation(unsigned long objst, unsigned long req_f
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (pcb_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != PCB_R_DIR_NOT_FOUND)
+	if (rnd_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polygon_callback, &info, NULL) != RND_R_DIR_NOT_FOUND)
 		return rnd_true;
 	return rnd_false;
 }
 
-static pcb_r_dir_t linepoint_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t linepoint_callback(const rnd_rnd_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct line_info *i = (struct line_info *) cl;
-	pcb_r_dir_t ret_val = PCB_R_DIR_NOT_FOUND;
+	rnd_r_dir_t ret_val = RND_R_DIR_NOT_FOUND;
 	double d;
 
 	TEST_OBJST(i->objst, i->req_flag, l, line, line);
@@ -379,7 +379,7 @@ static pcb_r_dir_t linepoint_callback(const rnd_rnd_box_t * b, void *cl)
 		i->least = d;
 		*i->Line = line;
 		*i->Point = &line->Point1;
-		ret_val = PCB_R_DIR_FOUND_CONTINUE;
+		ret_val = RND_R_DIR_FOUND_CONTINUE;
 	}
 
 	d = rnd_distance(PosX, PosY, line->Point2.X, line->Point2.Y);
@@ -387,17 +387,17 @@ static pcb_r_dir_t linepoint_callback(const rnd_rnd_box_t * b, void *cl)
 		i->least = d;
 		*i->Line = line;
 		*i->Point = &line->Point2;
-		ret_val = PCB_R_DIR_FOUND_CONTINUE;
+		ret_val = RND_R_DIR_FOUND_CONTINUE;
 	}
 	return ret_val;
 }
 
-static pcb_r_dir_t arcpoint_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t arcpoint_callback(const rnd_rnd_box_t * b, void *cl)
 {
 	rnd_rnd_box_t ab;
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct arc_info *i = (struct arc_info *) cl;
-	pcb_r_dir_t ret_val = PCB_R_DIR_NOT_FOUND;
+	rnd_r_dir_t ret_val = RND_R_DIR_NOT_FOUND;
 	double d;
 
 	TEST_OBJST(i->objst, i->req_flag, l, arc, arc);
@@ -411,7 +411,7 @@ static pcb_r_dir_t arcpoint_callback(const rnd_rnd_box_t * b, void *cl)
 		i->least = d;
 		*i->Arc = arc;
 		*i->arc_pt = pcb_arc_start_ptr;
-		ret_val = PCB_R_DIR_FOUND_CONTINUE;
+		ret_val = RND_R_DIR_FOUND_CONTINUE;
 	}
 
 	d = rnd_distance(PosX, PosY, ab.X2, ab.Y2);
@@ -419,7 +419,7 @@ static pcb_r_dir_t arcpoint_callback(const rnd_rnd_box_t * b, void *cl)
 		i->least = d;
 		*i->Arc = arc;
 		*i->arc_pt = pcb_arc_end_ptr;
-		ret_val = PCB_R_DIR_FOUND_CONTINUE;
+		ret_val = RND_R_DIR_FOUND_CONTINUE;
 	}
 	return ret_val;
 }
@@ -438,7 +438,7 @@ static rnd_bool SearchLinePointByLocation(unsigned long objst, unsigned long req
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (pcb_r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
+	if (rnd_r_search(SearchLayer->line_tree, &SearchBox, NULL, linepoint_callback, &info, NULL))
 		return rnd_true;
 	return rnd_false;
 }
@@ -457,7 +457,7 @@ static rnd_bool SearchArcPointByLocation(unsigned long objst, unsigned long req_
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (pcb_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arcpoint_callback, &info, NULL))
+	if (rnd_r_search(SearchLayer->arc_tree, &SearchBox, NULL, arcpoint_callback, &info, NULL))
 		return rnd_true;
 	return rnd_false;
 }
@@ -476,7 +476,7 @@ typedef struct {
 	rnd_point_t **Point;
 } ptcb_t;
 
-static pcb_r_dir_t polypoint_callback(const rnd_rnd_box_t *box, void *cl)
+static rnd_r_dir_t polypoint_callback(const rnd_rnd_box_t *box, void *cl)
 {
 	pcb_poly_t *polygon = (pcb_poly_t *)box;
 	ptcb_t *ctx = (ptcb_t *)cl;
@@ -487,11 +487,11 @@ static pcb_r_dir_t polypoint_callback(const rnd_rnd_box_t *box, void *cl)
 	if ((dt != NULL) && (dt->parent_type == PCB_PARENT_SUBC)) {
 		/* do not find subc part poly points if not explicitly requested */
 		if (!(ctx->Type & PCB_OBJ_SUBC_PART))
-			return PCB_R_DIR_NOT_FOUND;
+			return RND_R_DIR_NOT_FOUND;
 
 		/* don't find subc poly points even as subc part unless we are editing a subc */
 		if (!PCB->loose_subc)
-			return PCB_R_DIR_NOT_FOUND;
+			return RND_R_DIR_NOT_FOUND;
 	}
 
 	PCB_POLY_POINT_LOOP(polygon);
@@ -506,7 +506,7 @@ static pcb_r_dir_t polypoint_callback(const rnd_rnd_box_t *box, void *cl)
 	}
 	PCB_END_LOOP;
 
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 static rnd_bool SearchPointByLocation(unsigned long Type, unsigned long objst, unsigned long req_flag, pcb_layer_t ** Layer, pcb_poly_t ** Polygon, rnd_point_t ** Point)
@@ -520,7 +520,7 @@ static rnd_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	ctx.found = rnd_false;;
 	ctx.least = SearchRadius + RND_MAX_POLYGON_POINT_DISTANCE;
 	ctx.least = ctx.least * ctx.least;
-	pcb_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polypoint_callback, &ctx, NULL);
+	rnd_r_search(SearchLayer->polygon_tree, &SearchBox, NULL, polypoint_callback, &ctx, NULL);
 
 	if (ctx.found)
 		return rnd_true;
@@ -528,7 +528,7 @@ static rnd_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 }
 
 
-static pcb_r_dir_t subc_callback(const rnd_rnd_box_t *box, void *cl)
+static rnd_r_dir_t subc_callback(const rnd_rnd_box_t *box, void *cl)
 {
 	pcb_subc_t *subc = (pcb_subc_t *) box;
 	struct ans_info *i = (struct ans_info *) cl;
@@ -546,17 +546,17 @@ static pcb_r_dir_t subc_callback(const rnd_rnd_box_t *box, void *cl)
 			/* extended objects are special case: only the origin should be clickable
 			   to avoid problems with large extended objects that cover the board */
 			if ((PosX < ox) || (PosX > ox + PCB_SUBC_AUX_UNIT) || (PosY < oy) || (PosY > oy + PCB_SUBC_AUX_UNIT))
-				return PCB_R_DIR_NOT_FOUND;
+				return RND_R_DIR_NOT_FOUND;
 		}
 		/* use the subcircuit with the smallest bounding box */
 		newarea = (subc->BoundingBox.X2 - subc->BoundingBox.X1) * (double) (subc->BoundingBox.Y2 - subc->BoundingBox.Y1);
 		if (newarea < i->area) {
 			i->area = newarea;
 			*i->ptr1 = *i->ptr2 = *i->ptr3 = subc;
-			return PCB_R_DIR_FOUND_CONTINUE;
+			return RND_R_DIR_FOUND_CONTINUE;
 		}
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 
@@ -578,7 +578,7 @@ SearchSubcByLocation(unsigned long objst, unsigned long req_flag, pcb_subc_t **s
 	info.objst = objst;
 	info.req_flag = req_flag;
 
-	if (pcb_r_search(PCB->Data->subc_tree, &SearchBox, NULL, subc_callback, &info, NULL))
+	if (rnd_r_search(PCB->Data->subc_tree, &SearchBox, NULL, subc_callback, &info, NULL))
 		return rnd_true;
 	return rnd_false;
 }
@@ -1723,11 +1723,11 @@ int pcb_lines_intersect(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_c
 }
 
 
-pcb_r_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const rnd_rnd_box_t *query_box, pcb_r_dir_t (*cb_)(void *closure, pcb_any_obj_t *obj, void *box), void *closure)
+rnd_r_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const rnd_rnd_box_t *query_box, rnd_r_dir_t (*cb_)(void *closure, pcb_any_obj_t *obj, void *box), void *closure)
 {
 	pcb_layer_t *ly;
 	rnd_layer_id_t lid;
-	pcb_r_dir_t res;
+	rnd_r_dir_t res;
 	const rnd_rtree_box_t *query = (const rnd_rtree_box_t *)query_box;
 	rnd_rtree_dir_t (*cb)(void *, void *, const rnd_rtree_box_t *) = (rnd_rtree_dir_t(*)(void *, void *, const rnd_rtree_box_t *))cb_;
 

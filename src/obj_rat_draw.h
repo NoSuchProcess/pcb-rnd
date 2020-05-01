@@ -30,7 +30,7 @@
 
 /* Include rtree.h for these */
 #ifdef RND_RTREE_H
-pcb_r_dir_t pcb_rat_draw_callback(const rnd_rnd_box_t * b, void *cl);
+rnd_r_dir_t pcb_rat_draw_callback(const rnd_rnd_box_t * b, void *cl);
 #endif
 
 void pcb_rat_invalidate_erase(pcb_rat_t *Rat);

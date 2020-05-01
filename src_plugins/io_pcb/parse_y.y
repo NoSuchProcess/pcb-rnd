@@ -795,8 +795,8 @@ polygon_format
 				  {
 				    pcb_poly_bbox(Polygon);
 				    if (!Layer->polygon_tree)
-				      Layer->polygon_tree = pcb_r_create_tree();
-				    pcb_r_insert_entry(Layer->polygon_tree, (rnd_rnd_box_t *) Polygon);
+				      Layer->polygon_tree = rnd_r_create_tree();
+				    rnd_r_insert_entry(Layer->polygon_tree, (rnd_rnd_box_t *) Polygon);
 				  }
 			}
 		;

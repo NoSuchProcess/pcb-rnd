@@ -81,7 +81,7 @@ static void pinout_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, r
 	}
 }
 
-static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, void *box)
+static rnd_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, void *box)
 {
 	pinout_ctx_t *ctx = closure;
 	rnd_hid_attr_val_t val;
@@ -102,7 +102,7 @@ static pcb_r_dir_t pinout_mouse_search_cb(void *closure, pcb_any_obj_t *obj, voi
 			}
 		}
 	}
-	return PCB_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND;
 }
 
 static rnd_bool pinout_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)

@@ -195,34 +195,34 @@ struct drc_info {
 	jmp_buf env;
 };
 
-static pcb_r_dir_t drcPstk_callback(const rnd_rnd_box_t *b, void *cl)
+static rnd_r_dir_t drcPstk_callback(const rnd_rnd_box_t *b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	struct drc_info *i = (struct drc_info *)cl;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, ps) && pcb_isc_pstk_line(pcb_find0, ps, i->line))
 		longjmp(i->env, 1);
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-static pcb_r_dir_t drcLine_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t drcLine_callback(const rnd_rnd_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, line) && pcb_isc_line_line(pcb_find0, line, i->line))
 		longjmp(i->env, 1);
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-static pcb_r_dir_t drcArc_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t drcArc_callback(const rnd_rnd_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct drc_info *i = (struct drc_info *) cl;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, arc) && pcb_isc_line_arc(pcb_find0, i->line, arc))
 		longjmp(i->env, 1);
-	return PCB_R_DIR_FOUND_CONTINUE;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *end, rnd_point_t *mid_out, rnd_bool way, rnd_bool optimize)
@@ -333,20 +333,20 @@ double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *en
 			last2 = length2;
 			if (setjmp(info.env) == 0) {
 				info.line = &line1;
-				pcb_r_search(PCB->Data->padstack_tree, &line1.BoundingBox, NULL, drcPstk_callback, &info, NULL);
+				rnd_r_search(PCB->Data->padstack_tree, &line1.BoundingBox, NULL, drcPstk_callback, &info, NULL);
 				if (two_lines) {
 					info.line = &line2;
-					pcb_r_search(PCB->Data->padstack_tree, &line2.BoundingBox, NULL, drcPstk_callback, &info, NULL);
+					rnd_r_search(PCB->Data->padstack_tree, &line2.BoundingBox, NULL, drcPstk_callback, &info, NULL);
 				}
 				PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 				{
 					info.line = &line1;
-					pcb_r_search(layer->line_tree, &line1.BoundingBox, NULL, drcLine_callback, &info, NULL);
-					pcb_r_search(layer->arc_tree, &line1.BoundingBox, NULL, drcArc_callback, &info, NULL);
+					rnd_r_search(layer->line_tree, &line1.BoundingBox, NULL, drcLine_callback, &info, NULL);
+					rnd_r_search(layer->arc_tree, &line1.BoundingBox, NULL, drcArc_callback, &info, NULL);
 					if (two_lines) {
 						info.line = &line2;
-						pcb_r_search(layer->line_tree, &line2.BoundingBox, NULL, drcLine_callback, &info, NULL);
-						pcb_r_search(layer->arc_tree, &line2.BoundingBox, NULL, drcArc_callback, &info, NULL);
+						rnd_r_search(layer->line_tree, &line2.BoundingBox, NULL, drcLine_callback, &info, NULL);
+						rnd_r_search(layer->arc_tree, &line2.BoundingBox, NULL, drcArc_callback, &info, NULL);
 					}
 				}
 				PCB_END_LOOP;
@@ -438,12 +438,12 @@ static void drc_line(rnd_point_t *end)
 	pcb_line_bbox(&line);
 	if (setjmp(info.env) == 0) {
 		info.line = &line;
-		pcb_r_search(PCB->Data->padstack_tree, &line.BoundingBox, NULL, drcPstk_callback, &info, NULL);
+		rnd_r_search(PCB->Data->padstack_tree, &line.BoundingBox, NULL, drcPstk_callback, &info, NULL);
 		PCB_COPPER_GROUP_LOOP(PCB->Data, group);
 		{
 			info.line = &line;
-			pcb_r_search(layer->line_tree, &line.BoundingBox, NULL, drcLine_callback, &info, NULL);
-			pcb_r_search(layer->arc_tree, &line.BoundingBox, NULL, drcArc_callback, &info, NULL);
+			rnd_r_search(layer->line_tree, &line.BoundingBox, NULL, drcLine_callback, &info, NULL);
+			rnd_r_search(layer->arc_tree, &line.BoundingBox, NULL, drcArc_callback, &info, NULL);
 		}
 		PCB_END_LOOP;
 		/* no intersector! */
