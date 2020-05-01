@@ -19,6 +19,7 @@
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 - FEATURE: layer binding dialog: manual layer binding (reuse csect?)
+- FEATURE: io_bxl text alignment & announcement [report: Igor2]
 - query & advanced search
 	- FEATURE: search expr wizard should pick up the expression from the button when clicked
 	- CLEANUP: make a run on a large board, speed test, with -O0 and -O3:
