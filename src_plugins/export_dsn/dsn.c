@@ -273,7 +273,7 @@ TODO("padstack: this ignores circle center offset")
 	gds_append_str(term_shapes, tmp);
 }
 
-static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, pcb_pline_t *pl, rnd_coord_t ox, rnd_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
+static void print_polyline(gds_t *term_shapes, pcb_poly_it_t *it, rnd_pline_t *pl, rnd_coord_t ox, rnd_coord_t oy, pcb_layergrp_t *grp, int partsidesign)
 {
 	char tmp[512];
 	int fld;
@@ -316,7 +316,7 @@ static void print_term_poly(FILE *fp, gds_t *term_shapes, pcb_poly_t *poly, rnd_
 		gds_append_str(term_shapes, "      (shape ");
 
 		for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-			pcb_pline_t *pl;
+			rnd_pline_t *pl;
 
 			pl = pcb_poly_contour(&it);
 

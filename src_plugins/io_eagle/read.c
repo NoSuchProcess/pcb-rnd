@@ -1680,7 +1680,7 @@ static int post_process_polyholes(read_state_t *st)
 			if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, hole)) continue;
 			linelist_foreach(&(ly)->Polygon, &itp, poly) {
 				if (PCB_FLAG_TEST(PCB_FLAG_FOUND, poly)) continue;
-				if (pcb_polyarea_touching(hole->Clipped, poly->Clipped)) {
+				if (rnd_polyarea_touching(hole->Clipped, poly->Clipped)) {
 					rnd_cardinal_t n;
 					poly->clip_dirty = 1;
 					/* add hole points to the permanent list */

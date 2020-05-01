@@ -221,8 +221,8 @@ TODO(": fprintf() some curve using arc->*")
 		PCB_END_LOOP;
 
 		PCB_POLY_LOOP(ly) {
-			pcb_vnode_t *v;
-			pcb_pline_t *pl = polygon->Clipped->contours;
+			rnd_vnode_t *v;
+			rnd_pline_t *pl = polygon->Clipped->contours;
 
 			if (polygon->HoleIndexN > 0) {
 				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)polygon, "polygon", "FidoCadJ can't handle holes in polygons, ignoring holes for this export", "(some of the polygons will look different unless you remove the holes or split up the polygons)");

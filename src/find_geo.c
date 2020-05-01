@@ -60,7 +60,7 @@ RND_INLINE int box_isc_poly_any_island_bbox(const pcb_find_t *ctx, const rnd_rnd
 
 	/* first, iterate over all islands of a polygon */
 	for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		pcb_pline_t *c = pcb_poly_contour(&it);
+		rnd_pline_t *c = pcb_poly_contour(&it);
 		if ((box->X1 <= c->xmax + Bloat) && (box->X2 >= c->xmin - Bloat) &&
 			  (box->Y1 <= c->ymax + Bloat) && (box->Y2 >= c->ymin - Bloat)) { return 1; }
 		if (first_only)
@@ -83,13 +83,13 @@ RND_INLINE int box_isc_poly_any_island_free(rnd_polyarea_t *objpoly, const pcb_p
 
 	/* first, iterate over all islands of a polygon */
 	for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		ans = pcb_polyarea_touching(objpoly, pa);
+		ans = rnd_polyarea_touching(objpoly, pa);
 		if (ans)
 			break;
 		if (first_only)
 			break;
 	}
-	pcb_polyarea_free(&objpoly);
+	rnd_polyarea_free(&objpoly);
 	return ans;
 }
 
@@ -360,7 +360,7 @@ static rnd_bool pcb_isc_ratp_poly(const pcb_find_t *ctx, rnd_point_t *Point, pcb
 	/* expensive test: the rat can end on any contour point */
 	for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		rnd_coord_t x, y;
-		pcb_pline_t *pl;
+		rnd_pline_t *pl;
 		int go;
 
 		pl = pcb_poly_contour(&it);
@@ -677,8 +677,8 @@ rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, rnd_polyare
 
 		if (!(arcp = pcb_poly_from_pcb_arc(Arc, Arc->Thickness + Bloat)))
 			return rnd_false; /* error */
-		res = pcb_polyarea_touching(arcp, pa);
-		pcb_polyarea_free(&arcp);
+		res = rnd_polyarea_touching(arcp, pa);
+		rnd_polyarea_free(&arcp);
 	}
 	return res;
 }
@@ -740,9 +740,9 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 
 	/* first, iterate over all island pairs of the polygons to find if any of them has overlapping bbox */
 	for(pa1 = pcb_poly_island_first(P1, &it1); pa1 != NULL; pa1 = pcb_poly_island_next(&it1)) {
-		pcb_pline_t *c1 = pcb_poly_contour(&it1);
+		rnd_pline_t *c1 = pcb_poly_contour(&it1);
 		for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
-			pcb_pline_t *c2 = pcb_poly_contour(&it2);
+			rnd_pline_t *c2 = pcb_poly_contour(&it2);
 			if ((c1->xmin - Bloat <= c2->xmax) && (c2->xmin <= c1->xmax + Bloat) &&
 				  (c1->ymin - Bloat <= c2->ymax) && (c2->ymin <= c1->ymax + Bloat)) { goto do_check; }
 			if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, P2))
@@ -775,7 +775,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 	if (Bloat == 0) {
 		for(pa1 = pcb_poly_island_first(P1, &it1); pa1 != NULL; pa1 = pcb_poly_island_next(&it1)) {
 			for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
-				if (pcb_polyarea_touching(pa1, pa2))
+				if (rnd_polyarea_touching(pa1, pa2))
 					return rnd_true;
 				if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, P2))
 					break;
@@ -788,15 +788,15 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 	/* now the difficult case of bloated for each island vs. island */
 	if (Bloat > 0) {
 		for(pa1 = pcb_poly_island_first(P1, &it1); pa1 != NULL; pa1 = pcb_poly_island_next(&it1)) {
-			pcb_pline_t *c1 = pcb_poly_contour(&it1);
+			rnd_pline_t *c1 = pcb_poly_contour(&it1);
 			for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
-				pcb_pline_t *c, *c2 = pcb_poly_contour(&it2);
+				rnd_pline_t *c, *c2 = pcb_poly_contour(&it2);
 
 				if (!((c1->xmin - Bloat <= c2->xmax) && (c2->xmin <= c1->xmax + Bloat) &&
 					  (c1->ymin - Bloat <= c2->ymax) && (c2->ymin <= c1->ymax + Bloat))) continue;
 				for (c = c1; c; c = c->next) {
 					pcb_line_t line;
-					pcb_vnode_t *v = c->head;
+					rnd_vnode_t *v = c->head;
 					if (c->xmin - Bloat <= c2->xmax && c->xmax + Bloat >= c2->xmin &&
 							c->ymin - Bloat <= c2->ymax && c->ymax + Bloat >= c2->ymin) {
 
@@ -829,7 +829,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 
 /* returns whether a round-cap pcb line touches a polygon; assumes bounding
    boxes do touch */
-RND_INLINE rnd_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *pl, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick)
+RND_INLINE rnd_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, rnd_pline_t *pl, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thick)
 {
 	rnd_coord_t ox, oy, vx, vy;
 	double dx, dy, h, l;
@@ -862,7 +862,7 @@ RND_INLINE rnd_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, pcb_pline_t *
 	   are sure there's no contour intersection, so if any of the polyline points
 	   is in, the whole polyline is in. */
 	{
-		pcb_vector_t q[4];
+		rnd_vector_t q[4];
 
 		q[0][0] = x1 + ox; q[0][1] = y1 + oy;
 		q[1][0] = x2 + ox; q[1][1] = y2 + oy;
@@ -1021,23 +1021,23 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_arc(const pcb_find_t *ctx, pcb_pstk_t *ps, pc
 RND_INLINE rnd_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
 {
 	int n;
-	pcb_pline_t *pl;
-	pcb_vector_t v;
-	rnd_polyarea_t *shp = pcb_polyarea_create();
+	rnd_pline_t *pl;
+	rnd_vector_t v;
+	rnd_polyarea_t *shp = rnd_polyarea_create();
 
 	v[0] = shape->data.poly.x[0] + ps->x; v[1] = shape->data.poly.y[0] + ps->y;
-	pl = pcb_poly_contour_new(v);
+	pl = rnd_poly_contour_new(v);
 	for(n = 1; n < shape->data.poly.len; n++) {
 		v[0] = shape->data.poly.x[n] + ps->x; v[1] = shape->data.poly.y[n] + ps->y;
-		pcb_poly_vertex_include(pl->head->prev, pcb_poly_node_create(v));
+		rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
 	}
-	pcb_poly_contour_pre(pl, 1);
-	pcb_polyarea_contour_include(shp, pl);
+	rnd_poly_contour_pre(pl, 1);
+	rnd_polyarea_contour_include(shp, pl);
 
-	if (!pcb_poly_valid(shp)) {
-/*		pcb_polyarea_free(&shp); shp = pcb_polyarea_create();*/
-		pcb_poly_contour_inv(pl);
-		pcb_polyarea_contour_include(shp, pl);
+	if (!rnd_poly_valid(shp)) {
+/*		rnd_polyarea_free(&shp); shp = rnd_polyarea_create();*/
+		rnd_poly_contour_inv(pl);
+		rnd_polyarea_contour_include(shp, pl);
 	}
 
 	return shp;
@@ -1053,8 +1053,8 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *p
 			/* convert the shape poly to a new poly so that it can be intersected */
 			rnd_bool res;
 			rnd_polyarea_t *shp = pcb_pstk_shp_poly2area(ps, shape);
-			res = pcb_polyarea_touching(shp, poly->Clipped);
-			pcb_polyarea_free(&shp);
+			res = rnd_polyarea_touching(shp, poly->Clipped);
+			rnd_polyarea_free(&shp);
 			return res;
 		}
 		case PCB_PSSH_LINE:
@@ -1149,9 +1149,9 @@ RND_INLINE rnd_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t
 					rnd_bool res;
 					rnd_polyarea_t *shp1 = pcb_pstk_shp_poly2area(ps1, shape1);
 					rnd_polyarea_t *shp2 = pcb_pstk_shp_poly2area(ps2, shape2);
-					res = pcb_polyarea_touching(shp1, shp2);
-					pcb_polyarea_free(&shp1);
-					pcb_polyarea_free(&shp2);
+					res = rnd_polyarea_touching(shp1, shp2);
+					rnd_polyarea_free(&shp1);
+					rnd_polyarea_free(&shp2);
 					return res;
 				}
 				case PCB_PSSH_LINE:

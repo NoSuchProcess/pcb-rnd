@@ -33,15 +33,15 @@
 
 static rnd_polyarea_t *original_poly(pcb_poly_t *p, rnd_bool *forward)
 {
-	pcb_pline_t *contour = NULL;
+	rnd_pline_t *contour = NULL;
 	rnd_polyarea_t *np = NULL;
 	rnd_cardinal_t n;
-	pcb_vector_t v;
+	rnd_vector_t v;
 	int hole = 0;
 
 	*forward = rnd_true;
 
-	if ((np = pcb_polyarea_create()) == NULL)
+	if ((np = rnd_polyarea_create()) == NULL)
 		return NULL;
 
 	/* first make initial polygon contour */
@@ -52,29 +52,29 @@ static rnd_polyarea_t *original_poly(pcb_poly_t *p, rnd_bool *forward)
 		v[0] = p->Points[n].X;
 		v[1] = p->Points[n].Y;
 		if (contour == NULL) {
-			if ((contour = pcb_poly_contour_new(v)) == NULL)
+			if ((contour = rnd_poly_contour_new(v)) == NULL)
 				return NULL;
 		}
 		else {
-			pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
+			rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
 		}
 
 		/* Is current point last in contour? If so process it. */
 		if (n == p->PointN - 1 || (hole < p->HoleIndexN && n == p->HoleIndex[hole] - 1)) {
-			pcb_poly_contour_pre(contour, rnd_true);
+			rnd_poly_contour_pre(contour, rnd_true);
 
 			/* Log the direction in which the outer contour was specified */
 			if (hole == 0)
-				*forward = (contour->Flags.orient == PCB_PLF_DIR);
+				*forward = (contour->Flags.orient == RND_PLF_DIR);
 
 			/* make sure it is a positive contour (outer) or negative (hole) */
-			if (contour->Flags.orient != (hole ? PCB_PLF_INV : PCB_PLF_DIR))
-				pcb_poly_contour_inv(contour);
-			assert(contour->Flags.orient == (hole ? PCB_PLF_INV : PCB_PLF_DIR));
+			if (contour->Flags.orient != (hole ? RND_PLF_INV : RND_PLF_DIR))
+				rnd_poly_contour_inv(contour);
+			assert(contour->Flags.orient == (hole ? RND_PLF_INV : RND_PLF_DIR));
 
-			pcb_polyarea_contour_include(np, contour);
+			rnd_polyarea_contour_include(np, contour);
 			contour = NULL;
-			assert(pcb_poly_valid(np));
+			assert(rnd_poly_valid(np));
 
 			hole++;
 		}
@@ -122,11 +122,11 @@ static rnd_bool PolygonContainsPolygon(rnd_polyarea_t *outer, rnd_polyarea_t *in
 {
 /*  int contours_isect;*/
 	/* Should check outer contours don't intersect? */
-/*  contours_isect = pcb_polyarea_touching(outer, inner);*/
+/*  contours_isect = rnd_polyarea_touching(outer, inner);*/
 	/* Cheat and assume simple single contour polygons for now */
 /*  return contours_isect ?
-           0 : pcb_poly_contour_in_contour(outer->contours, inner->contours);*/
-	return pcb_poly_contour_in_contour(outer->contours, inner->contours);
+           0 : rnd_poly_contour_in_contour(outer->contours, inner->contours);*/
+	return rnd_poly_contour_in_contour(outer->contours, inner->contours);
 }
 
 
@@ -247,7 +247,7 @@ static rnd_polyarea_t *compute_polygon_recursive(poly_tree * root, rnd_polyarea_
 	for (cur_node = root; cur_node != NULL; cur_node = cur_node->next) {
 		/* Process this element */
 /*      printf ("Processing node %ld %s\n", cur_node->polygon->ID, cur_node->forward ? "FWD" : "BWD");*/
-		pcb_polyarea_boolean_free(accumulate, cur_node->polyarea, &res, cur_node->forward ? PCB_PBO_UNITE : PCB_PBO_SUB);
+		rnd_polyarea_boolean_free(accumulate, cur_node->polyarea, &res, cur_node->forward ? RND_PBO_UNITE : RND_PBO_SUB);
 		accumulate = res;
 
 		/* And its children if it has them */
@@ -267,8 +267,8 @@ static fgw_error_t pcb_act_polycombine(fgw_arg_t *res, int argc, fgw_arg_t *argv
 	rnd_polyarea_t *np;
 /*  bool outer;
     rnd_polyarea_t *pa;
-    pcb_pline_t *pline;
-    pcb_vnode_t *node;
+    rnd_pline_t *pline;
+    rnd_vnode_t *node;
     pcb_poly_t *Polygon;*/
 	pcb_layer_t *Layer = NULL;
 	poly_tree *root = NULL;

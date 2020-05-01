@@ -349,7 +349,7 @@ static void pcb_line_bbox_(const pcb_line_t *Line, rnd_rnd_box_t *dst, int mini)
 	rnd_coord_t width = mini ? (Line->Thickness + 1) / 2 : (Line->Thickness + Line->Clearance + 1) / 2;
 
 	/* Adjust for our discrete polygon approximation */
-	width = (double) width *PCB_POLY_CIRC_RADIUS_ADJ + 0.5;
+	width = (double) width *RND_POLY_CIRC_RADIUS_ADJ + 0.5;
 
 	dst->X1 = MIN(Line->Point1.X, Line->Point2.X) - width;
 	dst->X2 = MAX(Line->Point1.X, Line->Point2.X) + width;

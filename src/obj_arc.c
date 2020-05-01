@@ -156,7 +156,7 @@ static rnd_rnd_box_t pcb_arc_bbox_(const pcb_arc_t *Arc, int mini)
 	if (!mini) {
 		width = (Arc->Thickness + Arc->Clearance) / 2;
 		/* Adjust for our discrete polygon approximation */
-		width = (double) width *MAX(PCB_POLY_CIRC_RADIUS_ADJ, (1.0 + PCB_POLY_ARC_MAX_DEVIATION)) + 0.5;
+		width = (double) width *MAX(RND_POLY_CIRC_RADIUS_ADJ, (1.0 + RND_POLY_ARC_MAX_DEVIATION)) + 0.5;
 	}
 	else
 		width = Arc->Thickness / 2;
@@ -178,7 +178,7 @@ void pcb_arc_bbox(pcb_arc_t *Arc)
 
 void pcb_arc_get_end(pcb_arc_t *arc, int which, rnd_coord_t *x, rnd_coord_t *y)
 {
-	pcb_arc_get_endpt(arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, which, x, y);
+	rnd_arc_get_endpt(arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, which, x, y);
 }
 
 

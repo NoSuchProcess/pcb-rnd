@@ -279,8 +279,8 @@ static void write_pstk(hyp_wr_t *wr, pcb_pstk_t *ps)
 
 static void write_poly(hyp_wr_t * wr, pcb_poly_t * poly)
 {
-	pcb_pline_t *pl;
-	pcb_vnode_t *v;
+	rnd_pline_t *pl;
+	rnd_vnode_t *v;
 
 	if (poly->Clipped == NULL) {
 		pcb_layer_t *l = poly->parent.layer;

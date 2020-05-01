@@ -866,7 +866,7 @@ void pcb_pstk_invalidate_draw(pcb_pstk_t *ps)
 static int pcb_pstk_near_box_(pcb_pstk_t *ps, rnd_rnd_box_t *box, pcb_pstk_shape_t *shape)
 {
 	pcb_any_line_t pad;
-	pcb_vector_t v;
+	rnd_vector_t v;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 	int isneg = PCB_IS_BOX_NEGATIVE(box), is_in, n;
 
@@ -944,7 +944,7 @@ static int pcb_pstk_near_box_(pcb_pstk_t *ps, rnd_rnd_box_t *box, pcb_pstk_shape
 			   the box is fully within the poly - if any of it's corners is in */
 			v[0] = box->X1 - ps->x;
 			v[1] = box->Y1 - ps->y;
-			if (pcb_polyarea_contour_inside(shape->data.poly.pa, v))
+			if (rnd_polyarea_contour_inside(shape->data.poly.pa, v))
 				return 1;
 
 
@@ -1010,7 +1010,7 @@ int pcb_pstk_near_box(pcb_pstk_t *ps, rnd_rnd_box_t *box, pcb_layer_t *layer)
 static int pcb_is_point_in_pstk_(pcb_pstk_t *ps, rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, pcb_pstk_shape_t *shape)
 {
 	pcb_any_line_t pad;
-	pcb_vector_t v;
+	rnd_vector_t v;
 
 	switch(shape->shape) {
 		case PCB_PSSH_HSHADOW:
@@ -1031,7 +1031,7 @@ static int pcb_is_point_in_pstk_(pcb_pstk_t *ps, rnd_coord_t x, rnd_coord_t y, r
 				pcb_pstk_shape_update_pa(&shape->data.poly);
 			v[0] = x - ps->x;
 			v[1] = y - ps->y;
-			return pcb_polyarea_contour_inside(shape->data.poly.pa, v);
+			return rnd_polyarea_contour_inside(shape->data.poly.pa, v);
 	}
 
 	return 0;

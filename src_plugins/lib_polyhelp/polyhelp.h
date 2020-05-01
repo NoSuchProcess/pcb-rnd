@@ -27,19 +27,19 @@
 #include "obj_poly.h"
 
 
-void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl);
+void pcb_pline_fprint_anim(FILE *f, const rnd_pline_t *pl);
 
 /* Add lines on dst tracing pline from the inner side (no line will extend
    outside of the original pline, except when the original polygon has a hair
    narrower than thickness). Returns number of lines created */
-rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags);
+rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const rnd_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags);
 
 /* Returns whether the clipped polygon is a simple rectangle (single island,
    no-hole rectangle). */
 rnd_bool pcb_cpoly_is_simple_rect(const pcb_poly_t *p);
 
 /* Returns whether all edges of a pline are axis aligned */
-rnd_bool pcb_pline_is_aligned(const pcb_pline_t *src);
+rnd_bool pcb_pline_is_aligned(const rnd_pline_t *src);
 
 /*** Generate an rtree of all edges if a polygon */
 

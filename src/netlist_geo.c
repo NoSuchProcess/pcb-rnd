@@ -147,7 +147,7 @@ static pcb_subnet_dist_t dist_poly(pcb_poly_t *o1, pcb_any_obj_t *o2, rnd_coord_
 
 	for(pa = pcb_poly_island_first(o1, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		rnd_coord_t x, y;
-		pcb_pline_t *pl;
+		rnd_pline_t *pl;
 		int go;
 
 		pl = pcb_poly_contour(&it);
@@ -228,7 +228,7 @@ static pcb_subnet_dist_t pcb_dist_poly_poly(pcb_poly_t *o1, pcb_poly_t *o2, pcb_
 
 	for(pa = pcb_poly_island_first(o2, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 		rnd_coord_t x, y;
-		pcb_pline_t *pl;
+		rnd_pline_t *pl;
 		int go;
 
 		pl = pcb_poly_contour(&it);

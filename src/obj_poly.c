@@ -159,8 +159,8 @@ void pcb_poly_free_fields(pcb_poly_t * polygon)
 	free(polygon->HoleIndex);
 
 	if (polygon->Clipped)
-		pcb_polyarea_free(&polygon->Clipped);
-	pcb_poly_contours_free(&polygon->NoHoles);
+		rnd_polyarea_free(&polygon->Clipped);
+	rnd_poly_contours_free(&polygon->NoHoles);
 
 	/* have to preserve parent info for unreg */
 	parent = polygon->parent;
@@ -207,13 +207,13 @@ void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *polygon, rnd_coord_t X, rnd
 
 int pcb_poly_is_valid(pcb_poly_t *p)
 {
-	pcb_pline_t *contour = NULL;
+	rnd_pline_t *contour = NULL;
 	rnd_polyarea_t *np1 = NULL, *np = NULL;
 	rnd_cardinal_t n;
-	pcb_vector_t v;
+	rnd_vector_t v;
 	int res = 1;
 
-	np1 = np = pcb_polyarea_create();
+	np1 = np = rnd_polyarea_create();
 	if (np == NULL)
 		return 0;
 
@@ -225,24 +225,24 @@ int pcb_poly_is_valid(pcb_poly_t *p)
 		v[0] = p->Points[n].X;
 		v[1] = p->Points[n].Y;
 		if (contour == NULL) {
-			if ((contour = pcb_poly_contour_new(v)) == NULL)
+			if ((contour = rnd_poly_contour_new(v)) == NULL)
 				goto err;
 		}
 		else {
-			pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
+			rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
 		}
 
 		/* Is current point last in contour? If so process it. */
 		if (n == p->PointN - 1) {
-			pcb_poly_contour_pre(contour, rnd_true);
+			rnd_poly_contour_pre(contour, rnd_true);
 
 			if (contour->Count == 0) {
-				pcb_poly_contours_free(&contour);
+				rnd_poly_contours_free(&contour);
 				goto err;
 			}
 
 			{ /* count number of not-on-the-same-line vertices to make sure there's more than 2*/
-				pcb_vnode_t *cur;
+				rnd_vnode_t *cur;
 				int r = 0;
 
 				cur = contour->head;
@@ -250,30 +250,30 @@ int pcb_poly_is_valid(pcb_poly_t *p)
 					r++;
 				} while ((cur = cur->next) != contour->head);
 				if (r < 3) {
-					pcb_poly_contours_free(&contour);
+					rnd_poly_contours_free(&contour);
 					goto err;
 				}
 			}
 
 			/* make sure it is a positive contour (outer) or negative (hole) */
-			if (contour->Flags.orient != PCB_PLF_DIR) {
-				pcb_poly_contour_inv(contour);
+			if (contour->Flags.orient != RND_PLF_DIR) {
+				rnd_poly_contour_inv(contour);
 			}
 
-			pcb_polyarea_contour_include(np, contour);
+			rnd_polyarea_contour_include(np, contour);
 			if (contour->Count == 0)
 				goto err;
 			contour = NULL;
 
-			if (!pcb_poly_valid(np))
+			if (!rnd_poly_valid(np))
 				res = 0;
 		}
 	}
-	pcb_polyarea_free(&np1);
+	rnd_polyarea_free(&np1);
 	return res;
 
 	err:;
-	pcb_polyarea_free(&np1);
+	rnd_polyarea_free(&np1);
 	return 0;
 }
 
@@ -454,7 +454,7 @@ pcb_poly_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_poly_t *src, rnd_coor
 {
 	rnd_coord_t x, y;
 	pcb_poly_it_t it;
-	pcb_pline_t *pl;
+	rnd_pline_t *pl;
 	int go;
 	pcb_poly_t *polygon = pcb_poly_new(Layer, Clearance, Flags);
 
@@ -468,7 +468,7 @@ pcb_poly_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_poly_t *src, rnd_coor
 	for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
 		pcb_poly_point_new(polygon, x, y);
 
-	pcb_poly_contours_free(&it.cntr);
+	rnd_poly_contours_free(&it.cntr);
 
 	pcb_add_poly_on_layer(Layer, polygon);
 	return polygon;
@@ -1170,13 +1170,13 @@ void pcb_poly_post(pcb_poly_t *poly)
 void pcb_poly_map_contours(pcb_poly_t *p, void *ctx, pcb_poly_map_cb_t *cb)
 {
 	rnd_polyarea_t *pa;
-	pcb_pline_t *pl;
+	rnd_pline_t *pl;
 
 	pa = p->Clipped;
 	do {
 		int cidx;
 		for(cidx = 0, pl = pa->contours; pl != NULL; cidx++, pl = pl->next) {
-			pcb_vnode_t *v;
+			rnd_vnode_t *v;
 			cb(p, ctx, (cidx == 0 ? PCB_POLYEV_ISLAND_START : PCB_POLYEV_HOLE_START), 0, 0);
 			v = pl->head->next;
 			do {
@@ -1298,11 +1298,11 @@ static pcb_poly_t *pcb_poly_draw_tr(pcb_draw_info_t *info, pcb_poly_t *polygon)
 	rnd_coord_t offs = info->xform->bloat / 2;
 
 	pcb_poly_copy(np, polygon, 0, 0);
-	pcb_polyarea_copy0(&np->Clipped, polygon->Clipped);
+	rnd_polyarea_copy0(&np->Clipped, polygon->Clipped);
 
 	/* iterate over all islands of a polygon */
 	for(pa = pcb_poly_island_first(np, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		pcb_pline_t *pl;
+		rnd_pline_t *pl;
 
 		/* check if we have a contour for the given island */
 		pl = pcb_poly_contour(&it);
@@ -1344,7 +1344,7 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 	}
 	else {
 		if ((allow_term_gfx) && pcb_draw_term_need_gfx(polygon) && pcb_draw_term_hid_permission()) {
-			pcb_vnode_t *n, *head;
+			rnd_vnode_t *n, *head;
 			int i;
 			pcb_dhlp_fill_pcb_polygon(pcb_draw_out.active_padGC, polygon, info->drawn_area);
 			head = polygon->Clipped->contours->head;

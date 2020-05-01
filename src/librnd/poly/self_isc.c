@@ -48,11 +48,11 @@ typedef struct {
 	vtp0_t node;
 } vhub_t;
 
-static pcb_vnode_t *pcb_pline_split(pcb_vnode_t *v, pcb_vector_t at)
+static rnd_vnode_t *pcb_pline_split(rnd_vnode_t *v, rnd_vector_t at)
 {
-	pcb_vnode_t *v2 = pcb_poly_node_add_single(v, at);
+	rnd_vnode_t *v2 = rnd_poly_node_add_single(v, at);
 
-	v2 = pcb_poly_node_create(at);
+	v2 = rnd_poly_node_create(at);
 	assert(v2 != NULL);
 	v2->cvc_prev = v2->cvc_next = NULL;
 	v2->Flags.status = UNKNWN;
@@ -66,29 +66,29 @@ static pcb_vnode_t *pcb_pline_split(pcb_vnode_t *v, pcb_vector_t at)
 	return v2;
 }
 
-static pcb_vnode_t *pcb_pline_end_at(pcb_vnode_t *v, pcb_vector_t at)
+static rnd_vnode_t *pcb_pline_end_at(rnd_vnode_t *v, rnd_vector_t at)
 {
-	if (pcb_vect_dist2(at, v->point) < PCB_POLY_ENDP_EPSILON)
+	if (rnd_vect_dist2(at, v->point) < RND_POLY_ENDP_EPSILON)
 		return v;
-	if (pcb_vect_dist2(at, v->next->point) < PCB_POLY_ENDP_EPSILON)
+	if (rnd_vect_dist2(at, v->next->point) < RND_POLY_ENDP_EPSILON)
 		return v->next;
 	return NULL;
 }
 
-static vhub_t *hub_find(vtp0_t *hubs, pcb_vnode_t *v, rnd_bool insert)
+static vhub_t *hub_find(vtp0_t *hubs, rnd_vnode_t *v, rnd_bool insert)
 {
 	int n, m;
 
 	for(n = 0; n < vtp0_len(hubs); n++) {
 		vhub_t *h = *vtp0_get(hubs, n, 0);
-		pcb_vnode_t *stored, **st;
-		st = (pcb_vnode_t **)vtp0_get(&h->node, 0, 0);
+		rnd_vnode_t *stored, **st;
+		st = (rnd_vnode_t **)vtp0_get(&h->node, 0, 0);
 		if (st == NULL) continue;
 		stored = *st;
 		/* found the hub at the specific location */
-		if (pcb_vect_dist2(stored->point, v->point) < PCB_POLY_ENDP_EPSILON) {
+		if (rnd_vect_dist2(stored->point, v->point) < RND_POLY_ENDP_EPSILON) {
 			for(m = 0; m < vtp0_len(&h->node); m++) {
-				st = (pcb_vnode_t **)vtp0_get(&h->node, m, 0);
+				st = (rnd_vnode_t **)vtp0_get(&h->node, m, 0);
 				if (st != NULL) {
 					stored = *st;
 					if (stored == v) /* already on the list */
@@ -107,13 +107,13 @@ static vhub_t *hub_find(vtp0_t *hubs, pcb_vnode_t *v, rnd_bool insert)
 }
 
 /* remove v from h; if h has only one node, remove that too */
-static void remove_from_hub(vhub_t *h, pcb_vnode_t *v)
+static void remove_from_hub(vhub_t *h, rnd_vnode_t *v)
 {
 	int m;
-	pcb_vnode_t *stored, **st;
+	rnd_vnode_t *stored, **st;
 
 	for(m = 0; m < vtp0_len(&h->node); m++) {
-		st = (pcb_vnode_t **)vtp0_get(&h->node, m, 0);
+		st = (rnd_vnode_t **)vtp0_get(&h->node, m, 0);
 		if (st == NULL) {
 			vtp0_remove(&h->node, m, 1);
 			m--;
@@ -136,7 +136,7 @@ static void remove_from_hub(vhub_t *h, pcb_vnode_t *v)
 }
 
 /* returns 1 if a new intersection is mapped */
-static int pcb_pline_add_isectp(vtp0_t *hubs, pcb_vnode_t *v)
+static int pcb_pline_add_isectp(vtp0_t *hubs, rnd_vnode_t *v)
 {
 	vhub_t *h;
 
@@ -155,21 +155,21 @@ static int pcb_pline_add_isectp(vtp0_t *hubs, pcb_vnode_t *v)
 	return 1;
 }
 
-static int pline_split_off_loop_new(pcb_pline_t *pl, vtp0_t *out, vhub_t *h, pcb_vnode_t *start, rnd_cardinal_t cnt)
+static int pline_split_off_loop_new(rnd_pline_t *pl, vtp0_t *out, vhub_t *h, rnd_vnode_t *start, rnd_cardinal_t cnt)
 {
-	pcb_pline_t *newpl = NULL;
-	pcb_vnode_t *v, *next, *tmp;
+	rnd_pline_t *newpl = NULL;
+	rnd_vnode_t *v, *next, *tmp;
 
-	newpl = pcb_poly_contour_new(start->point);
+	newpl = rnd_poly_contour_new(start->point);
 	next = start->next;
 	remove_from_hub(h, start);
-	pcb_poly_vertex_exclude(pl, start);
+	rnd_poly_vertex_exclude(pl, start);
 	for(v = next; cnt > 0; v = next, cnt--) {
 		TRACE("   Append %mm %mm!\n", v->point[0], v->point[1]);
 		next = v->next;
-		pcb_poly_vertex_exclude(pl, v);
-		tmp = pcb_poly_node_create(v->point);
-		pcb_poly_vertex_include(newpl->head->prev, tmp);
+		rnd_poly_vertex_exclude(pl, v);
+		tmp = rnd_poly_node_create(v->point);
+		rnd_poly_vertex_include(newpl->head->prev, tmp);
 	}
 
 TRACE("APPEND: %p %p\n", newpl, newpl->head->next);
@@ -177,14 +177,14 @@ TRACE("APPEND: %p %p\n", newpl, newpl->head->next);
 	return 1;
 }
 
-static int pline_split_off_loop(pcb_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub_t *h, pcb_vnode_t *start)
+static int pline_split_off_loop(rnd_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub_t *h, rnd_vnode_t *start)
 {
-	pcb_vnode_t *v;
+	rnd_vnode_t *v;
 	rnd_cardinal_t cnt;
 
 	for(v = start->next, cnt = 0;; v = v->next) {
 		if (v->Flags.in_hub) {
-			if (pcb_vect_dist2(start->point, v->point) < PCB_POLY_ENDP_EPSILON)
+			if (rnd_vect_dist2(start->point, v->point) < RND_POLY_ENDP_EPSILON)
 				break; /* found a matching hub point */
 			goto skip_to_backward; /* found a different hub point, skip */
 		}
@@ -198,7 +198,7 @@ static int pline_split_off_loop(pcb_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub
 	skip_to_backward:;
 	for(v = start->prev, cnt = 0;; v = v->prev) {
 		if (v->Flags.in_hub) {
-			if (pcb_vect_dist2(start->point, v->point) < PCB_POLY_ENDP_EPSILON) {
+			if (rnd_vect_dist2(start->point, v->point) < RND_POLY_ENDP_EPSILON) {
 				start = v;
 				break; /* found a matching hub point */
 			}
@@ -211,15 +211,15 @@ static int pline_split_off_loop(pcb_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub
 	return pline_split_off_loop_new(pl, out, h, start, cnt);
 }
 
-rnd_bool pcb_pline_is_selfint(pcb_pline_t *pl)
+rnd_bool pcb_pline_is_selfint(rnd_pline_t *pl)
 {
-	pcb_vnode_t *va, *vb;
+	rnd_vnode_t *va, *vb;
 
-	va = (pcb_vnode_t *)pl->head;
+	va = (rnd_vnode_t *)pl->head;
 	do {
 		for(vb = va->next->next; vb->next != va; vb = vb->next) {
-			pcb_vector_t i, tmp;
-			if (pcb_vect_inters2(va->point, va->next->point, vb->point, vb->next->point, i, tmp) > 0)
+			rnd_vector_t i, tmp;
+			if (rnd_vect_inters2(va->point, va->next->point, vb->point, vb->next->point, i, tmp) > 0)
 				return rnd_true;
 		}
 		va = va->next;
@@ -228,29 +228,29 @@ rnd_bool pcb_pline_is_selfint(pcb_pline_t *pl)
 }
 
 
-void pcb_pline_split_selfint(const pcb_pline_t *pl_in, vtp0_t *out)
+void pcb_pline_split_selfint(const rnd_pline_t *pl_in, vtp0_t *out)
 {
 	int n;
 	vtp0_t hubs;
-	pcb_pline_t *pl = NULL;
-	pcb_vnode_t *va, *vb, *iva, *ivb;
+	rnd_pline_t *pl = NULL;
+	rnd_vnode_t *va, *vb, *iva, *ivb;
 
 	vtp0_init(&hubs);
 
 	/* copy the pline and reset the in_hub flag */
-	pcb_poly_contour_copy(&pl, pl_in);
-	va = (pcb_vnode_t *)pl->head;
+	rnd_poly_contour_copy(&pl, pl_in);
+	va = (rnd_vnode_t *)pl->head;
 	do {
 		va->Flags.in_hub = 0;
 		va = va->next;
 	} while (va != pl->head);
 
 	/* insert corners at intersections, collect a list of intersection hubs */
-	va = (pcb_vnode_t *)pl->head;
+	va = (rnd_vnode_t *)pl->head;
 	do {
 		for(vb = va->next->next; vb->next != va; vb = vb->next) {
-			pcb_vector_t i, tmp;
-			if (pcb_vect_inters2(va->point, va->next->point, vb->point, vb->next->point, i, tmp) > 0) {
+			rnd_vector_t i, tmp;
+			if (rnd_vect_inters2(va->point, va->next->point, vb->point, vb->next->point, i, tmp) > 0) {
 				iva = pcb_pline_end_at(va, i);
 				if (iva == NULL)
 					iva = pcb_pline_split(va, i);
@@ -269,7 +269,7 @@ void pcb_pline_split_selfint(const pcb_pline_t *pl_in, vtp0_t *out)
 		for(n = 0; n < vtp0_len(&hubs); n++) {
 			int m;
 			vhub_t *h = *vtp0_get(&hubs, n, 0);
-			pcb_vnode_t *v, **v_ = (pcb_vnode_t **)vtp0_get(&h->node, 0, 0);
+			rnd_vnode_t *v, **v_ = (rnd_vnode_t **)vtp0_get(&h->node, 0, 0);
 			if (v_ == NULL) continue;
 			v = *v_;
 			TRACE("hub %p at %mm;%mm:\n", h, v->point[0], v->point[1]);
@@ -294,7 +294,7 @@ TODO("leak: remove the unused hubs");
 
 rnd_cardinal_t pcb_polyarea_split_selfint(rnd_polyarea_t *pa)
 {
-	pcb_pline_t *pl, *next, *pln, *prev = NULL;
+	rnd_pline_t *pl, *next, *pln, *prev = NULL;
 	rnd_cardinal_t cnt = 0;
 
 	for(pl = pa->contours; pl != NULL; pl = next) {
@@ -313,17 +313,17 @@ rnd_cardinal_t pcb_polyarea_split_selfint(rnd_polyarea_t *pa)
 				pa->contours = next;
 
 			for(n = 0; n < pls.used; n++) {
-				pln = (pcb_pline_t *)pls.array[n];
-				pcb_poly_contour_pre(pln, rnd_true);
+				pln = (rnd_pline_t *)pls.array[n];
+				rnd_poly_contour_pre(pln, rnd_true);
 				if (pln->Flags.orient != pl->Flags.orient)
-					pcb_poly_contour_inv(pln);
-				pcb_poly_contour_pre(pln, 0);
-				pln->tree = pcb_poly_make_edge_tree(pln);
-				pcb_polyarea_contour_include(pa, pln);
+					rnd_poly_contour_inv(pln);
+				rnd_poly_contour_pre(pln, 0);
+				pln->tree = rnd_poly_make_edge_tree(pln);
+				rnd_polyarea_contour_include(pa, pln);
 				cnt++;
 			}
 
-			pcb_poly_contour_del(&pl);
+			rnd_poly_contour_del(&pl);
 			cnt--;
 
 			vtp0_uninit(&pls);

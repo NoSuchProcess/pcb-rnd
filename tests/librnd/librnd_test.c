@@ -15,8 +15,8 @@
 static void poly_test()
 {
 	rnd_polyarea_t pa;
-	pcb_polyarea_init(&pa);
-	pcb_poly_valid(&pa);
+	rnd_polyarea_init(&pa);
+	rnd_poly_valid(&pa);
 }
 
 int main(int argc, char *argv[])

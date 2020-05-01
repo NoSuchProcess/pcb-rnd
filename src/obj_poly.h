@@ -42,7 +42,7 @@ struct pcb_poly_s  {           /* holds information about a polygon */
 	rnd_cardinal_t PointN;       /* number of points in polygon */
 	rnd_cardinal_t PointMax;     /* max number from malloc() */
 	rnd_polyarea_t *Clipped;     /* the clipped region of this polygon */
-	pcb_pline_t *NoHoles;        /* the polygon broken into hole-less regions */
+	rnd_pline_t *NoHoles;        /* the polygon broken into hole-less regions */
 	int NoHolesValid;            /* Is the NoHoles polygon up to date? */
 	rnd_point_t *Points;         /* data */
 	rnd_cardinal_t *HoleIndex;   /* Index of hole data within the Points array */
@@ -124,8 +124,8 @@ void pcb_poly_map_contours(pcb_poly_t *p, void *ctx, pcb_poly_map_cb_t *cb);
 typedef struct pcb_poly_it_s {
 	const pcb_poly_t *p;
 	rnd_polyarea_t *pa;
-	pcb_pline_t *cntr;
-	pcb_vnode_t *v;
+	rnd_pline_t *cntr;
+	rnd_vnode_t *v;
 } pcb_poly_it_t;
 
 /* WARNING: if the poly is not a FULLPOLY, quit after the first island else
@@ -153,21 +153,21 @@ RND_INLINE rnd_polyarea_t *pcb_poly_island_next(pcb_poly_it_t *it)
 }
 
 /* Set the iterator to trace the outer contour of the current island */
-RND_INLINE pcb_pline_t *pcb_poly_contour(pcb_poly_it_t *it)
+RND_INLINE rnd_pline_t *pcb_poly_contour(pcb_poly_it_t *it)
 {
 	it->v = NULL;
 	return it->cntr = it->pa->contours;
 }
 
 /* Set the iterator to trace the first hole of the current island; returns NULL if there are no holes */
-RND_INLINE pcb_pline_t *pcb_poly_hole_first(pcb_poly_it_t *it)
+RND_INLINE rnd_pline_t *pcb_poly_hole_first(pcb_poly_it_t *it)
 {
 	it->v = NULL;
 	return it->cntr = it->pa->contours->next;
 }
 
 /* Set the iterator to trace the next hole of the current island; returns NULL if there are were more holes */
-RND_INLINE pcb_pline_t *pcb_poly_hole_next(pcb_poly_it_t *it)
+RND_INLINE rnd_pline_t *pcb_poly_hole_next(pcb_poly_it_t *it)
 {
 	it->v = NULL;
 	return it->cntr = it->cntr->next;

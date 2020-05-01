@@ -983,7 +983,7 @@ pcb_arc_t *hyp_arc_new(pcb_layer_t * Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_
  * Draw an arc from (x1, y1) to (x2, y2) with center (xc, yc) and radius r using a polygonal approximation.
  * Arc may be clockwise or counterclockwise. Note pcb-rnd y-axis points downward.
  */
-void hyp_arc2contour(pcb_pline_t * contour, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t xc,
+void hyp_arc2contour(rnd_pline_t * contour, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t xc,
 										 rnd_coord_t yc, rnd_coord_t r, rnd_bool_t clockwise)
 {
 	rnd_coord_t arc_precision = RND_MM_TO_COORD(0.254);	/* mm */
@@ -991,7 +991,7 @@ void hyp_arc2contour(pcb_pline_t * contour, rnd_coord_t x1, rnd_coord_t y1, rnd_
 	int segments;
 	int poly_points = 0;
 	int i;
-	pcb_vector_t v;
+	rnd_vector_t v;
 
 	double alpha = atan2(y1 - yc, x1 - xc);
 	double beta = atan2(y2 - yc, x2 - xc);
@@ -1038,20 +1038,20 @@ void hyp_arc2contour(pcb_pline_t * contour, rnd_coord_t x1, rnd_coord_t y1, rnd_
 	/* add first point to contour */
 	v[0] = x1;
 	v[1] = y1;
-	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
+	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
 
 	/* intermediate points */
 	for (i = 1; i < poly_points; i++) {
 		double angle = alpha + (beta - alpha) * i / poly_points;
 		v[0] = xc + r * cos(angle);
 		v[1] = yc + r * sin(angle);
-		pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
+		rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
 	}
 
 	/* last point */
 	v[0] = x2;
 	v[1] = y2;
-	pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
+	rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
 
 	return;
 }
@@ -1140,9 +1140,9 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 	hyp_vertex_t *vrtx;
 
 	rnd_polyarea_t *polyarea = NULL;
-	pcb_pline_t *contour = NULL;
+	rnd_pline_t *contour = NULL;
 
-	polyarea = pcb_polyarea_create();
+	polyarea = rnd_polyarea_create();
 	if (polyarea == NULL)
 		return;
 
@@ -1157,37 +1157,37 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 	outer_contour = rnd_true;
 
 	for (vrtx = polygon->vertex; vrtx != NULL; vrtx = vrtx->next) {
-		pcb_vector_t v;
+		rnd_vector_t v;
 		v[0] = vrtx->x1;
 		v[1] = vrtx->y1;
 		if ((vrtx->is_first) || (vrtx->next == NULL)) {
 			if (contour != NULL) {
 				/* add contour to polyarea */
-				pcb_poly_contour_pre(contour, rnd_false);
+				rnd_poly_contour_pre(contour, rnd_false);
 
 				/* check contour valid */
-				if (pcb_polyarea_contour_check(contour) && hyp_debug)
+				if (rnd_polyarea_contour_check(contour) && hyp_debug)
 					rnd_message(RND_MSG_WARNING, "draw polygon: bad contour? continuing.\n");
 
 				/* set orientation for outer contour, negative for holes */
-				if (contour->Flags.orient != (outer_contour ? PCB_PLF_DIR : PCB_PLF_INV))
-					pcb_poly_contour_inv(contour);
+				if (contour->Flags.orient != (outer_contour ? RND_PLF_DIR : RND_PLF_INV))
+					rnd_poly_contour_inv(contour);
 
 				/* add contour to polyarea */
-				pcb_polyarea_contour_include(polyarea, contour);
+				rnd_polyarea_contour_include(polyarea, contour);
 
 				/* first contour is outer contour, remainder are holes */
 				outer_contour = rnd_false;
 			}
 			/* create new contour */
-			contour = pcb_poly_contour_new(v);
+			contour = rnd_poly_contour_new(v);
 			if (contour == NULL)
 				return;
 		}
 		else {
 			if (!vrtx->is_arc)
 				/* line. add vertex to contour */
-				pcb_poly_vertex_include(contour->head->prev, pcb_poly_node_create(v));
+				rnd_poly_vertex_include(contour->head->prev, rnd_poly_node_create(v));
 			else
 				/* arc. pcb polyarea contains line segments, not arc segments. convert arc segment to line segments. */
 				hyp_arc2contour(contour, vrtx->x1, vrtx->y1, vrtx->x2, vrtx->y2, vrtx->xc, vrtx->yc, vrtx->r, rnd_false);
@@ -1195,7 +1195,7 @@ void hyp_draw_polygon(hyp_polygon_t * polygon)
 	}
 
 	/* add polyarea to pcb */
-	if (pcb_poly_valid(polyarea))
+	if (rnd_poly_valid(polyarea))
 		pcb_poly_to_polygons_on_layer(hyp_dest, layer, polyarea, pcb_no_flags());
 	else if (hyp_debug)
 		rnd_message(RND_MSG_DEBUG, "draw polygon: self-intersecting polygon id=%i dropped.\n", polygon->hyp_poly_id);

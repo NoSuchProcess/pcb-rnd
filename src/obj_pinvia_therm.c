@@ -43,8 +43,8 @@
 
 static rnd_polyarea_t *pcb_pa_diag_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t l, rnd_coord_t w, rnd_bool rt)
 {
-	pcb_pline_t *c;
-	pcb_vector_t v;
+	rnd_pline_t *c;
+	rnd_vector_t v;
 	rnd_coord_t x1, x2, y1, y2;
 
 	if (rt) {
@@ -62,17 +62,17 @@ static rnd_polyarea_t *pcb_pa_diag_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_
 
 	v[0] = X + x1;
 	v[1] = Y + y2;
-	if ((c = pcb_poly_contour_new(v)) == NULL)
+	if ((c = rnd_poly_contour_new(v)) == NULL)
 		return NULL;
 	v[0] = X - x2;
 	v[1] = Y - y1;
-	pcb_poly_vertex_include(c->head->prev, pcb_poly_node_create(v));
+	rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
 	v[0] = X - x1;
 	v[1] = Y - y2;
-	pcb_poly_vertex_include(c->head->prev, pcb_poly_node_create(v));
+	rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
 	v[0] = X + x2;
 	v[1] = Y + y1;
-	pcb_poly_vertex_include(c->head->prev, pcb_poly_node_create(v));
+	rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
 	return pcb_poly_from_contour(c);
 }
 
@@ -97,14 +97,14 @@ rnd_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd
 			pa = pcb_poly_from_circle(cx, cy, t);
 			arc = pcb_poly_from_circle(cx, cy, thickness / 2);
 			/* create a thin ring */
-			pcb_polyarea_boolean_free(pa, arc, &m, PCB_PBO_SUB);
+			rnd_polyarea_boolean_free(pa, arc, &m, RND_PBO_SUB);
 			/* fix me needs error checking */
 			if (style == 2) {
 				/* t is the theoretically required length, but we use twice that
 				 * to avoid discretisation errors in our circle approximation.
 				 */
 				pa = pcb_poly_from_rect(cx - t * 2, cx + t * 2, cy - w, cy + w);
-				pcb_polyarea_boolean_free(m, pa, &arc, PCB_PBO_SUB);
+				rnd_polyarea_boolean_free(m, pa, &arc, RND_PBO_SUB);
 				pa = pcb_poly_from_rect(cx - w, cx + w, cy - t * 2, cy + t * 2);
 			}
 			else {
@@ -112,10 +112,10 @@ rnd_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd
 				 * to avoid discretisation errors in our circle approximation.
 				 */
 				pa = pcb_pa_diag_line(cx, cy, t * 2, w, rnd_true);
-				pcb_polyarea_boolean_free(m, pa, &arc, PCB_PBO_SUB);
+				rnd_polyarea_boolean_free(m, pa, &arc, RND_PBO_SUB);
 				pa = pcb_pa_diag_line(cx, cy, t * 2, w, rnd_false);
 			}
-			pcb_polyarea_boolean_free(arc, pa, &m, PCB_PBO_SUB);
+			rnd_polyarea_boolean_free(arc, pa, &m, RND_PBO_SUB);
 			return m;
 		}
 

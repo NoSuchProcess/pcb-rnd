@@ -629,7 +629,7 @@ static fgw_error_t pcb_act_scad_export_poly(fgw_arg_t *res, int argc, fgw_arg_t 
 		/* iterate over all islands of a polygon */
 		for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 			rnd_coord_t x, y;
-			pcb_pline_t *pl;
+			rnd_pline_t *pl;
 			int go;
 
 			/* check if we have a contour for the given island */

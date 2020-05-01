@@ -136,11 +136,11 @@ double rnd_polo_2area(rnd_polo_t *pcsh, long num_pts)
 	return a;
 }
 
-void rnd_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs)
+void rnd_pline_dup_offsets(vtp0_t *dst, const rnd_pline_t *src, rnd_coord_t offs)
 {
-	const pcb_vnode_t *v;
-	pcb_vector_t tmp;
-	pcb_pline_t *res = NULL;
+	const rnd_vnode_t *v;
+	rnd_vector_t tmp;
+	rnd_pline_t *res = NULL;
 	long num_pts, n, from;
 	rnd_polo_t *pcsh;
 
@@ -166,11 +166,11 @@ void rnd_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs
 	/* create a new pline by copying the cache */
 	tmp[0] = rnd_round(pcsh[0].x);
 	tmp[1] = rnd_round(pcsh[0].y);
-	res = pcb_poly_contour_new(tmp);
+	res = rnd_poly_contour_new(tmp);
 	for(n = 1; n < num_pts; n++) {
 		tmp[0] = rnd_round(pcsh[n].x);
 		tmp[1] = rnd_round(pcsh[n].y);
-		pcb_poly_vertex_include(res->head->prev, pcb_poly_node_create(tmp));
+		rnd_poly_vertex_include(res->head->prev, rnd_poly_node_create(tmp));
 	}
 
 	free(pcsh);
@@ -178,24 +178,24 @@ void rnd_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs
 	from = dst->used;
 	if (pcb_pline_is_selfint(res)) {
 		pcb_pline_split_selfint(res, dst);
-		pcb_poly_contour_del(&res);
+		rnd_poly_contour_del(&res);
 	}
 	else
 		vtp0_append(dst, res);
 
 	for(n = from; n < dst->used; n++) {
 		res = dst->array[n];
-		pcb_poly_contour_pre(res, 1);
+		rnd_poly_contour_pre(res, 1);
 		rnd_pline_keepout_offs(res, src, offs); /* avoid self-intersection */
-		res->tree = pcb_poly_make_edge_tree(res);
+		res->tree = rnd_poly_make_edge_tree(res);
 		dst->array[n] = res;
 	}
 }
 
-pcb_pline_t *rnd_pline_dup_offset(const pcb_pline_t *src, rnd_coord_t offs)
+rnd_pline_t *rnd_pline_dup_offset(const rnd_pline_t *src, rnd_coord_t offs)
 {
 	vtp0_t selfi;
-	pcb_pline_t *res = NULL;
+	rnd_pline_t *res = NULL;
 	int n;
 	double best = 0;
 
@@ -203,7 +203,7 @@ pcb_pline_t *rnd_pline_dup_offset(const pcb_pline_t *src, rnd_coord_t offs)
 	rnd_pline_dup_offsets(&selfi, src, offs);
 
 	for(n = 0; n < selfi.used; n++) {
-		pcb_pline_t *pl = selfi.array[n];
+		rnd_pline_t *pl = selfi.array[n];
 		if (pl->area > best) {
 			best = pl->area;
 			res = pl;
@@ -211,9 +211,9 @@ pcb_pline_t *rnd_pline_dup_offset(const pcb_pline_t *src, rnd_coord_t offs)
 	}
 	pcbo_trace("best area: %f out of %d\n", best, selfi.used);
 	for(n = 0; n < selfi.used; n++) {
-		pcb_pline_t *pl = selfi.array[n];
+		rnd_pline_t *pl = selfi.array[n];
 		if (res != pl)
-			pcb_poly_contour_del(&pl);
+			rnd_poly_contour_del(&pl);
 	}
 	vtp0_uninit(&selfi);
 	return res;
@@ -255,7 +255,7 @@ static double dist_line_to_pt(double x0, double y0, double x1, double y1, double
 }
 
 /* Modify v, pulling it back toward vp so that the distance to line ldx;ldy is increased by tune */
-RND_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, double ldx, double ldy, double prjx, double prjy, int inside)
+RND_INLINE int pull_back(rnd_vnode_t *v, const rnd_vnode_t *vp, double tune, double ldx, double ldy, double prjx, double prjy, int inside)
 {
 	rnd_coord_t ox, oy;
 	double c, vx, vy, vlen, prx, pry, prlen;
@@ -306,9 +306,9 @@ RND_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, dou
 	return 0;
 }
 
-void rnd_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_t offs)
+void rnd_pline_keepout_offs(rnd_pline_t *dst, const rnd_pline_t *src, rnd_coord_t offs)
 {
-	pcb_vnode_t *v;
+	rnd_vnode_t *v;
 	double offs2 = (double)offs * (double)offs;
 	int negoffs = offs < 0;
 
@@ -333,17 +333,17 @@ void rnd_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_
 		pb.x1 = v->point[0] - offs+1; pb.y1 = v->point[1] - offs+1;
 		pb.x2 = v->point[0] + offs-1; pb.y2 = v->point[1] + offs-1;
 		if (!negoffs)
-			inside = pcb_poly_contour_inside(src, v->point);
+			inside = rnd_poly_contour_inside(src, v->point);
 
 		for(seg = rnd_rtree_first(&it, src->tree, &pb); seg != NULL; seg = rnd_rtree_next(&it)) {
 			rnd_coord_t x1, y1, x2, y2;
 			double dist, tune, prjx, prjy, dx, dy, ax, ay, dotp, prevx, prevy, prevl;
 
-			pcb_polyarea_get_tree_seg(seg, &x1, &y1, &x2, &y2);
+			rnd_polyarea_get_tree_seg(seg, &x1, &y1, &x2, &y2);
 			dist = dist_line_to_pt(v->point[0], v->point[1], x1, y1, x2, y2, &dx, &dy);
 			if ((offs2 - dist) > 10) {
-				pcb_vector_t nv_;
-				pcb_vnode_t *nv;
+				rnd_vector_t nv_;
+				rnd_vnode_t *nv;
 
 				/* calculate x0;y0 projected onto the line */
 				ax = v->point[0] - x1;
@@ -387,17 +387,17 @@ void rnd_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_
 
 				nv_[0] = v->point[0];
 				nv_[1] = v->point[1];
-				nv = pcb_poly_node_create(nv_);
-				pcb_poly_vertex_include_force(v, nv);
+				nv = rnd_poly_node_create(nv_);
+				rnd_poly_vertex_include_force(v, nv);
 
 				if (pull_back(v, v->prev, tune, dx, dy, prjx, prjy, inside) != 0) {
-					pcb_poly_vertex_exclude(dst, nv);
+					rnd_poly_vertex_exclude(dst, nv);
 					v = v->next;
 					goto retry;
 				}
 
 				if (pull_back(nv, nv->next, tune, dx, dy, prjx, prjy, inside) != 0) {
-					pcb_poly_vertex_exclude(dst, nv);
+					rnd_poly_vertex_exclude(dst, nv);
 					v = v->next;
 					goto retry;
 				}
@@ -416,12 +416,12 @@ void rnd_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_
 	do {
 		if ((v->prev->point[0] == v->point[0]) && (v->prev->point[1] == v->point[1])) {
 			if (v->prev == dst->head) {
-				pcb_vnode_t *nv = v->next;
-				pcb_poly_vertex_exclude(dst, v);
+				rnd_vnode_t *nv = v->next;
+				rnd_poly_vertex_exclude(dst, v);
 				v = nv;
 				continue;
 			}
-			pcb_poly_vertex_exclude(dst, v->prev);
+			rnd_poly_vertex_exclude(dst, v->prev);
 		}
 	} while((v = v->next) != dst->head);
 }

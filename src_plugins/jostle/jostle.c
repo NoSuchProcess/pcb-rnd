@@ -38,7 +38,7 @@
 
 /*#define DEBUG_pcb_polyarea_t*/
 
-double pcb_vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
+double rnd_vect_dist2(rnd_vector_t v1, rnd_vector_t v2);
 #define Vcpy2(r,a)              {(r)[0] = (a)[0]; (r)[1] = (a)[1];}
 #define Vswp2(a,b) { long t; \
         t = (a)[0], (a)[0] = (b)[0], (b)[0] = t; \
@@ -73,8 +73,8 @@ const char *dirnames[] = {
 static void Debugpcb_polyarea_t(rnd_polyarea_t * s, char *color)
 {
 	int *x, *y, n, i = 0;
-	pcb_pline_t *pl;
-	pcb_vnode_t *v;
+	rnd_pline_t *pl;
+	rnd_vnode_t *v;
 	rnd_polyarea_t *p;
 
 #ifndef DEBUG_pcb_polyarea_t
@@ -124,7 +124,7 @@ static void Debugpcb_polyarea_t(rnd_polyarea_t * s, char *color)
 static rnd_rnd_box_t pcb_polyarea_t_boundingBox(rnd_polyarea_t * a)
 {
 	rnd_polyarea_t *n;
-	pcb_pline_t *pa;
+	rnd_pline_t *pa;
 	rnd_rnd_box_t box;
 	int first = 1;
 
@@ -151,7 +151,7 @@ static rnd_rnd_box_t pcb_polyarea_t_boundingBox(rnd_polyarea_t * a)
 /* Given a polygon and a side of it (a direction north/northeast/etc), find a
    line tangent to that side, offset by clearance, and return it as a pair of
    vectors PQ. Make it long so it will intersect everything in the area. */
-static void pcb_polyarea_t_findXmostLine(rnd_polyarea_t * a, int side, pcb_vector_t p, pcb_vector_t q, int clearance)
+static void pcb_polyarea_t_findXmostLine(rnd_polyarea_t * a, int side, rnd_vector_t p, rnd_vector_t q, int clearance)
 {
 	int extra;
 	p[0] = p[1] = 0;
@@ -182,8 +182,8 @@ static void pcb_polyarea_t_findXmostLine(rnd_polyarea_t * a, int side, pcb_vecto
 		{
 			int kx, ky, minmax, dq, ckx, cky;
 			rnd_coord_t mm[2] = { RND_MAX_COORD, -RND_MAX_COORD };
-			pcb_vector_t mmp[2];
-			pcb_vnode_t *v;
+			rnd_vector_t mmp[2];
+			rnd_vnode_t *v;
 
 			switch (side) {
 			case JNORTHWEST:
@@ -255,7 +255,7 @@ static int rotateSide(int side, int n)
 }
 
 /* Wrapper for CreateNewLineOnLayer that takes vectors and deals with Undo */
-static pcb_line_t *Createpcb_vector_tLineOnLayer(pcb_layer_t * layer, pcb_vector_t a, pcb_vector_t b, int thickness, int clearance, pcb_flag_t flags)
+static pcb_line_t *Createpcb_vector_tLineOnLayer(pcb_layer_t * layer, rnd_vector_t a, rnd_vector_t b, int thickness, int clearance, pcb_flag_t flags)
 {
 	pcb_line_t *line;
 
@@ -266,14 +266,14 @@ static pcb_line_t *Createpcb_vector_tLineOnLayer(pcb_layer_t * layer, pcb_vector
 	return line;
 }
 
-static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vector_t b, pcb_line_t * orig, rnd_polyarea_t ** expandp)
+static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, rnd_vector_t a, rnd_vector_t b, pcb_line_t * orig, rnd_polyarea_t ** expandp)
 {
 	pcb_line_t *line;
 
 	line = Createpcb_vector_tLineOnLayer(layer, a, b, orig->Thickness, orig->Clearance, orig->Flags);
 	if (line && expandp) {
 		rnd_polyarea_t *p = pcb_poly_from_pcb_line(line, line->Thickness + line->Clearance);
-		pcb_polyarea_boolean_free(*expandp, p, expandp, PCB_PBO_UNITE);
+		rnd_polyarea_boolean_free(*expandp, p, expandp, RND_PBO_UNITE);
 	}
 	return line;
 }
@@ -295,9 +295,9 @@ static pcb_line_t *MakeBypassLine(pcb_layer_t * layer, pcb_vector_t a, pcb_vecto
  * old straight line. */
 static int MakeBypassingLines(rnd_polyarea_t * brush, pcb_layer_t * layer, pcb_line_t * line, int side, rnd_polyarea_t ** expandp)
 {
-	pcb_vector_t pA, pB, flatA, flatB, qA, qB;
-	pcb_vector_t lA, lB;
-	pcb_vector_t a, b, c, d, junk;
+	rnd_vector_t pA, pB, flatA, flatB, qA, qB;
+	rnd_vector_t lA, lB;
+	rnd_vector_t a, b, c, d, junk;
 	int hits;
 
 	PCB_FLAG_SET(PCB_FLAG_DRC, line);			/* will cause sublines to inherit */
@@ -309,14 +309,14 @@ static int MakeBypassingLines(rnd_polyarea_t * brush, pcb_layer_t * layer, pcb_l
 	pcb_polyarea_t_findXmostLine(brush, side, flatA, flatB, line->Thickness / 2);
 	pcb_polyarea_t_findXmostLine(brush, rotateSide(side, 1), pA, pB, line->Thickness / 2);
 	pcb_polyarea_t_findXmostLine(brush, rotateSide(side, -1), qA, qB, line->Thickness / 2);
-	hits = pcb_vect_inters2(lA, lB, qA, qB, a, junk) +
-		pcb_vect_inters2(qA, qB, flatA, flatB, b, junk) +
-		pcb_vect_inters2(pA, pB, flatA, flatB, c, junk) + pcb_vect_inters2(lA, lB, pA, pB, d, junk);
+	hits = rnd_vect_inters2(lA, lB, qA, qB, a, junk) +
+		rnd_vect_inters2(qA, qB, flatA, flatB, b, junk) +
+		rnd_vect_inters2(pA, pB, flatA, flatB, c, junk) + rnd_vect_inters2(lA, lB, pA, pB, d, junk);
 	if (hits != 4) {
 		return 0;
 	}
 	/* flip the line endpoints to match up with a/b */
-	if (pcb_vect_dist2(lA, d) < pcb_vect_dist2(lA, a)) {
+	if (rnd_vect_dist2(lA, d) < rnd_vect_dist2(lA, a)) {
 		Vswp2(lA, lB);
 	}
 	MakeBypassLine(layer, lA, a, line, NULL);
@@ -344,7 +344,7 @@ static pcb_r_dir_t jostle_callback(const rnd_rnd_box_t * targ, void *private)
 	pcb_line_t *line = (pcb_line_t *) targ;
 	struct info *info = private;
 	rnd_polyarea_t *lp, *copy, *tmp, *n, *smallest = NULL;
-	pcb_vector_t p;
+	rnd_vector_t p;
 	int inside = 0, side, r;
 	double small, big;
 	int nocentroid = 0;
@@ -355,22 +355,22 @@ static pcb_r_dir_t jostle_callback(const rnd_rnd_box_t * targ, void *private)
 	fprintf(stderr, "hit! %p\n", (void *)line);
 	p[0] = line->Point1.X;
 	p[1] = line->Point1.Y;
-	if (pcb_poly_contour_inside(info->brush->contours, p)) {
+	if (rnd_poly_contour_inside(info->brush->contours, p)) {
 		rnd_fprintf(stderr, "\tinside1 %ms,%ms\n", p[0], p[1]);
 		inside++;
 	}
 	p[0] = line->Point2.X;
 	p[1] = line->Point2.Y;
-	if (pcb_poly_contour_inside(info->brush->contours, p)) {
+	if (rnd_poly_contour_inside(info->brush->contours, p)) {
 		rnd_fprintf(stderr, "\tinside2 %ms,%ms\n", p[0], p[1]);
 		inside++;
 	}
 	lp = pcb_poly_from_pcb_line(line, line->Thickness);
-	if (!pcb_polyarea_touching(lp, info->brush)) {
+	if (!rnd_polyarea_touching(lp, info->brush)) {
 		/* not a factor */
 		return 0;
 	}
-	pcb_polyarea_free(&lp);
+	rnd_polyarea_free(&lp);
 	if (inside) {
 		/* XXX not done!
 		   XXX if this is part of a series of lines passing
@@ -383,11 +383,11 @@ static pcb_r_dir_t jostle_callback(const rnd_rnd_box_t * targ, void *private)
 	 * around.  Use a very fine line.  XXX can still graze.
 	 */
 	lp = pcb_poly_from_pcb_line(line, 1);
-	if (!pcb_polyarea_m_copy0(&copy, info->brush))
+	if (!rnd_polyarea_m_copy0(&copy, info->brush))
 		return 0;
-	r = pcb_polyarea_boolean_free(copy, lp, &tmp, PCB_PBO_SUB);
-	if (r != pcb_err_ok) {
-		rnd_fprintf(stderr, "Error while jostling PCB_PBO_SUB: %d\n", r);
+	r = rnd_polyarea_boolean_free(copy, lp, &tmp, RND_PBO_SUB);
+	if (r != rnd_err_ok) {
+		rnd_fprintf(stderr, "Error while jostling RND_PBO_SUB: %d\n", r);
 		return 0;
 	}
 	if (tmp == tmp->f) {
@@ -396,9 +396,9 @@ static pcb_r_dir_t jostle_callback(const rnd_rnd_box_t * targ, void *private)
 		 */
 		rnd_fprintf(stderr, "try isect??\n");
 		lp = pcb_poly_from_pcb_line(line, line->Thickness);
-		r = pcb_polyarea_boolean_free(tmp, lp, &tmp, PCB_PBO_ISECT);
-		if (r != pcb_err_ok) {
-			fprintf(stderr, "Error while jostling PCB_PBO_ISECT: %d\n", r);
+		r = rnd_polyarea_boolean_free(tmp, lp, &tmp, RND_PBO_ISECT);
+		if (r != rnd_err_ok) {
+			fprintf(stderr, "Error while jostling RND_PBO_ISECT: %d\n", r);
 			return 0;
 		}
 		nocentroid = 1;
@@ -455,7 +455,7 @@ static pcb_r_dir_t jostle_callback(const rnd_rnd_box_t * targ, void *private)
 	if (info->line == NULL || (!nocentroid && (big - small) < info->centroid)) {
 		rnd_fprintf(stderr, "\tkeep it!\n");
 		if (info->smallest) {
-			pcb_polyarea_free(&info->smallest);
+			rnd_polyarea_free(&info->smallest);
 		}
 		info->centroid = nocentroid ? DBL_MAX : (big - small);
 		info->side = side;
@@ -498,8 +498,8 @@ static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (found) {
 			expand = NULL;
 			MakeBypassingLines(info.smallest, info.layer, info.line, info.side, &expand);
-			pcb_polyarea_free(&info.smallest);
-			pcb_polyarea_boolean_free(info.brush, expand, &info.brush, PCB_PBO_UNITE);
+			rnd_polyarea_free(&info.smallest);
+			rnd_polyarea_boolean_free(info.brush, expand, &info.brush, RND_PBO_UNITE);
 		}
 	} while (found);
 	pcb_board_set_changed_flag(rnd_true);

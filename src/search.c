@@ -1137,7 +1137,7 @@ TODO(": elliptical arc: rewrite this, as it does not work properly on extreme ca
 
 rnd_bool pcb_is_point_in_gfx(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_gfx_t *gfx)
 {
-	pcb_vector_t pt, a, b, c;
+	rnd_vector_t pt, a, b, c;
 	int n, m;
 
 	pt[0] = X; pt[1] = Y;

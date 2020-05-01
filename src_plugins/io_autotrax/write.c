@@ -596,29 +596,29 @@ TODO("why do we recalculate the bounding box here?")
 TODO("do we really need to reimplement this, can not cpoly_hatch_lines handle it?")
 				for(pa = pcb_poly_island_first(polygon, &poly_it); pa != NULL; pa = pcb_poly_island_next(&poly_it)) {
 					/* now generate cross hatch lines for polygon island export */
-					pcb_pline_t *pl, *track;
+					rnd_pline_t *pl, *track;
 					/* check if we have a contour for the given island */
 					pl = pcb_poly_contour(&poly_it);
 					if (pl != NULL) {
-						const pcb_vnode_t *v, *n;
+						const rnd_vnode_t *v, *n;
 						track = rnd_pline_dup_offset(pl, -((Thickness / 2) + 1));
 						v = track->head;
 						do {
 							n = v->next;
 							wrax_pline_segment(ctx, v->point[0]+dx, v->point[1]+dy, n->point[0]+dx, n->point[1]+dy, Thickness, current_layer);
 						} while((v = v->next) != track->head);
-						pcb_poly_contour_del(&track);
+						rnd_poly_contour_del(&track);
 
 						/* iterate over all holes within this island */
 						for(pl = pcb_poly_hole_first(&poly_it); pl != NULL; pl = pcb_poly_hole_next(&poly_it)) {
-							const pcb_vnode_t *v, *n;
+							const rnd_vnode_t *v, *n;
 							track = rnd_pline_dup_offset(pl, -((Thickness / 2) + 1));
 							v = track->head;
 							do {
 								n = v->next;
 								wrax_pline_segment(ctx, v->point[0]+dx, v->point[1]+dy, n->point[0]+dx, n->point[1]+dy, Thickness, current_layer);
 							} while((v = v->next) != track->head);
-							pcb_poly_contour_del(&track);
+							rnd_poly_contour_del(&track);
 						}
 					}
 				}

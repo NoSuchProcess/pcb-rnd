@@ -93,8 +93,8 @@ RND_INLINE void sub_layer_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_
 		poly->Clipped->f = poly->Clipped->b = poly->Clipped;
 	}
 
-	pcb_polyarea_boolean(result->fill->Clipped, poly->Clipped, &ra, PCB_PBO_SUB);
-	pcb_polyarea_free(&result->fill->Clipped);
+	rnd_polyarea_boolean(result->fill->Clipped, poly->Clipped, &ra, RND_PBO_SUB);
+	rnd_polyarea_free(&result->fill->Clipped);
 	result->fill->Clipped = ra;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, poly)) {
@@ -122,7 +122,7 @@ static void sub_layer_text(void *ctx_, pcb_any_obj_t *obj)
 		case PCB_OBJ_POLY:
 			poly->Clipped = pcb_poly_to_polyarea(poly, &dummy);
 			sub_layer_poly(ctx->pcb, ctx->result, ctx->layer, poly, ctx->centerline);
-			pcb_polyarea_free(&poly->Clipped);
+			rnd_polyarea_free(&poly->Clipped);
 			break;
 		default:           rnd_message(RND_MSG_ERROR, "Internal error: toolpath sub_layer_text() invalid object type %ld\n", obj->type);
 	}
@@ -291,8 +291,8 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 	/* remove fill from remain */
 	{
 		rnd_polyarea_t *rp;
-		pcb_polyarea_boolean(result->remain->Clipped, result->fill->Clipped, &rp, PCB_PBO_SUB);
-		pcb_polyarea_free(&result->remain->Clipped);
+		rnd_polyarea_boolean(result->remain->Clipped, result->fill->Clipped, &rp, RND_PBO_SUB);
+		rnd_polyarea_free(&result->remain->Clipped);
 		result->remain->Clipped = rp;
 		result->remain->Flags.f |= PCB_FLAG_FULLPOLY;
 	}
@@ -313,7 +313,7 @@ static rnd_cardinal_t trace_contour(pcb_board_t *pcb, pcb_tlp_session_t *result,
 	rnd_cardinal_t cnt = 0;
 	
 	for(pa = pcb_poly_island_first(result->fill, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		pcb_pline_t *pl = pcb_poly_contour(&it);
+		rnd_pline_t *pl = pcb_poly_contour(&it);
 		if (pl != NULL) { /* we have a contour */
 			pcb_pline_to_lines(result->res_path, pl, tool_dia + extra_offs, 0, pcb_no_flags());
 			cnt++;
@@ -356,7 +356,7 @@ rnd_rtree_dir_t fix_overcuts_in_seg(void *ctx_, void *obj, const rnd_rtree_box_t
 
 	assert(ctx->cut->type == PCB_OBJ_LINE); /* need to handle arc later */
 
-	pcb_polyarea_get_tree_seg(obj, &vl.Point1.X, &vl.Point1.Y, &vl.Point2.X, &vl.Point2.Y);
+	rnd_polyarea_get_tree_seg(obj, &vl.Point1.X, &vl.Point1.Y, &vl.Point2.X, &vl.Point2.Y);
 
 	/* ox;oy: normal vector scaled to thickness/2 */
 	vx = l->Point2.X - l->Point1.X;
@@ -397,7 +397,7 @@ rnd_rtree_dir_t fix_overcuts_in_seg(void *ctx_, void *obj, const rnd_rtree_box_t
 rnd_rtree_dir_t fix_overcuts_in_pline(void *ctx_, void *obj, const rnd_rtree_box_t *box)
 {
 	pline_ctx_t *ctx = ctx_;
-	pcb_pline_t *pl = obj;
+	rnd_pline_t *pl = obj;
 
 	return rnd_rtree_search_obj(pl->tree, (const rnd_rtree_box_t *)&ctx->cut->BoundingBox, fix_overcuts_in_seg, ctx);
 }
@@ -434,14 +434,14 @@ static long fix_overcuts(pcb_board_t *pcb, pcb_tlp_session_t *result)
 				int within = 0;
 
 				c = pcb_poly_from_circle(line->Point1.X, line->Point1.Y, r);
-				within |= pcb_polyarea_touching(pa, c);
-				pcb_polyarea_free(&c);
+				within |= rnd_polyarea_touching(pa, c);
+				rnd_polyarea_free(&c);
 
 				if (!within) {
 					c = pcb_poly_from_circle(line->Point2.X, line->Point2.Y, r);
 					if (!within)
-						within |= pcb_polyarea_touching(pa, c);
-					pcb_polyarea_free(&c);
+						within |= rnd_polyarea_touching(pa, c);
+					rnd_polyarea_free(&c);
 				}
 
 				if (within) {

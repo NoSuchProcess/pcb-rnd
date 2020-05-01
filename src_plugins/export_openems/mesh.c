@@ -390,7 +390,7 @@ TODO("mesh: text")
 
 		for(pa = pcb_poly_island_first(poly, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 			rnd_coord_t x, y;
-			pcb_pline_t *pl;
+			rnd_pline_t *pl;
 			int go;
 
 			pl = pcb_poly_contour(&it);

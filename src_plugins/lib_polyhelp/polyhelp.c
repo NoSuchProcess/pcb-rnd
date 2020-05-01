@@ -50,9 +50,9 @@ static const char *polyhelp_cookie = "lib_polyhelp";
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/actions.h>
 
-void pcb_pline_fprint_anim(FILE *f, const pcb_pline_t *pl)
+void pcb_pline_fprint_anim(FILE *f, const rnd_pline_t *pl)
 {
-	const pcb_vnode_t *v, *n;
+	const rnd_vnode_t *v, *n;
 	fprintf(f, "!pline start\n");
 	v = pl->head;
 	do {
@@ -73,7 +73,7 @@ static void cross(FILE *f, rnd_coord_t x, rnd_coord_t y)
 }
 #endif
 
-rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
+rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const rnd_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
 {
 	rnd_cardinal_t cnt = 0;
 	vtp0_t tracks;
@@ -83,8 +83,8 @@ rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, rnd_
 	rnd_pline_dup_offsets(&tracks, src, -((thickness/2)+1));
 
 	for(i = 0; i < tracks.used; i++) {
-		const pcb_vnode_t *v, *n;
-		pcb_pline_t *track = tracks.array[i];
+		const rnd_vnode_t *v, *n;
+		rnd_pline_t *track = tracks.array[i];
 
 		v = track->head;
 		do {
@@ -93,16 +93,16 @@ rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, rnd_
 			cnt++;
 		}
 		while((v = v->next) != track->head);
-		pcb_poly_contour_del(&track);
+		rnd_poly_contour_del(&track);
 	}
 
 	vtp0_uninit(&tracks);
 	return cnt;
 }
 
-rnd_bool pcb_pline_is_aligned(const pcb_pline_t *src)
+rnd_bool pcb_pline_is_aligned(const rnd_pline_t *src)
 {
-	const pcb_vnode_t *v, *n;
+	const rnd_vnode_t *v, *n;
 
 	v = src->head;
 	do {
@@ -132,7 +132,7 @@ rnd_cardinal_t pcb_cpoly_num_corners(const pcb_poly_t *src)
 
 
 	for(pa = pcb_poly_island_first(src, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		pcb_pline_t *pl;
+		rnd_pline_t *pl;
 
 		pl = pcb_poly_contour(&it);
 		if (pl != NULL) { /* we have a contour */
@@ -176,7 +176,7 @@ static void add_track_seg(pcb_cpoly_edgetree_t *dst, rnd_coord_t x1, rnd_coord_t
 	pcb_r_insert_entry(dst->edge_tree, (rnd_rnd_box_t *)e);
 }
 
-static void add_track(pcb_cpoly_edgetree_t *dst, pcb_pline_t *track)
+static void add_track(pcb_cpoly_edgetree_t *dst, rnd_pline_t *track)
 {
 	int go, first = 1;
 	rnd_coord_t x, y, px, py;
@@ -213,18 +213,18 @@ pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, rnd_coord
 	res->bbox.X2 = res->bbox.Y2 = -RND_MAX_COORD;
 
 	for(pa = pcb_poly_island_first(src, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		pcb_pline_t *pl, *track;
+		rnd_pline_t *pl, *track;
 
 		pl = pcb_poly_contour(&it);
 		if (pl != NULL) { /* we have a contour */
 			track = rnd_pline_dup_offset(pl, -offs);
 			add_track(res, track);
-			pcb_poly_contour_del(&track);
+			rnd_poly_contour_del(&track);
 
 			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it)) {
 				track = rnd_pline_dup_offset(pl, -offs);
 				add_track(res, track);
-				pcb_poly_contour_del(&track);
+				rnd_poly_contour_del(&track);
 			}
 		}
 	}
@@ -485,7 +485,7 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_poly_it_t it;
 			rnd_polyarea_t *pa;
 			for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-				pcb_pline_t *pl = pcb_poly_contour(&it);
+				rnd_pline_t *pl = pcb_poly_contour(&it);
 				if (pl != NULL) { /* we have a contour */
 					pcb_pline_to_lines(PCB_CURRLAYER(PCB), pl, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
 					for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))

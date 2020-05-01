@@ -31,10 +31,10 @@
 
 /* Calculate the offset plines of src and append the resulting plines to dst.
    Yields multiple islands in some corner cases. */
-void rnd_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs);
+void rnd_pline_dup_offsets(vtp0_t *dst, const rnd_pline_t *src, rnd_coord_t offs);
 
 /* Same, but returns the largest island only */
-pcb_pline_t *rnd_pline_dup_offset(const pcb_pline_t *src, rnd_coord_t offs);
+rnd_pline_t *rnd_pline_dup_offset(const rnd_pline_t *src, rnd_coord_t offs);
 
 
 /* low level */
@@ -53,7 +53,7 @@ double rnd_polo_2area(rnd_polo_t *pcsh, long num_pts);
 void rnd_polo_offs(double offs, rnd_polo_t *pcsh, long num_pts);
 
 /* modify dst so it is at least offs far from any point or line of src */
-void rnd_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_t offs);
+void rnd_pline_keepout_offs(rnd_pline_t *dst, const rnd_pline_t *src, rnd_coord_t offs);
 
 /* Orhto-shift an edge specified by x0;y0 and x1;y1. Calculate the new
    edge points by extending/shrinking the previous and next line segment.

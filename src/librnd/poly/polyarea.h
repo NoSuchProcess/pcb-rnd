@@ -22,54 +22,54 @@
       (C) 1997 Klamer Schutte (minor patches)
 */
 
-#ifndef	PCB_POLYAREA_H
-#define	PCB_POLYAREA_H
+#ifndef RND_POLYAREA_H
+#define RND_POLYAREA_H
 
-#define PCB_PLF_DIR 1
-#define PCB_PLF_INV 0
-#define PCB_PLF_MARK 1
+#define RND_PLF_DIR 1
+#define RND_PLF_INV 0
+#define RND_PLF_MARK 1
 
-typedef rnd_coord_t pcb_vertex_t[2]; /* longing point representation of coordinates */
-typedef pcb_vertex_t pcb_vector_t;
+typedef rnd_coord_t rnd_vertex_t[2]; /* longing point representation of coordinates */
+typedef rnd_vertex_t rnd_vector_t;
 
-#define pcb_vertex_equ(a,b) (memcmp((a),(b),sizeof(pcb_vector_t))==0)
-#define pcb_vertex_cpy(a,b) memcpy((a),(b),sizeof(pcb_vector_t))
+#define rnd_vertex_equ(a,b) (memcmp((a),(b),sizeof(rnd_vector_t))==0)
+#define rnd_vertex_cpy(a,b) memcpy((a),(b),sizeof(rnd_vector_t))
 
 
-extern pcb_vector_t vect_zero;
+extern rnd_vector_t rnd_vect_zero;
 
 enum {
-	pcb_err_no_memory = 2,
-	pcb_err_bad_parm = 3,
-	pcb_err_ok = 0
+	rnd_err_no_memory = 2,
+	rnd_err_bad_parm = 3,
+	rnd_err_ok = 0
 };
 
 
-typedef struct pcb_cvc_list_s pcb_cvc_list_t;
-typedef struct pcb_vnode_s pcb_vnode_t;
-struct pcb_cvc_list_s {
+typedef struct rnd_cvc_list_s rnd_cvc_list_t;
+typedef struct rnd_vnode_s rnd_vnode_t;
+struct rnd_cvc_list_s {
 	double angle;
-	pcb_vnode_t *parent;
-	pcb_cvc_list_t *prev, *next, *head;
+	rnd_vnode_t *parent;
+	rnd_cvc_list_t *prev, *next, *head;
 	char poly, side;
 };
-struct pcb_vnode_s {
-	pcb_vnode_t *next, *prev, *shared;
+struct rnd_vnode_s {
+	rnd_vnode_t *next, *prev, *shared;
 	struct {
 		unsigned int status:3;
 		unsigned int mark:1;
 		unsigned int in_hub:1;
 	} Flags;
-	pcb_cvc_list_t *cvc_prev;
-	pcb_cvc_list_t *cvc_next;
-	pcb_vector_t point;
+	rnd_cvc_list_t *cvc_prev;
+	rnd_cvc_list_t *cvc_next;
+	rnd_vector_t point;
 };
 
-typedef struct pcb_pline_s pcb_pline_t;
-struct pcb_pline_s {
+typedef struct rnd_pline_s rnd_pline_t;
+struct rnd_pline_s {
 	rnd_coord_t xmin, ymin, xmax, ymax;
-	pcb_pline_t *next;
-	pcb_vnode_t *head;
+	rnd_pline_t *next;
+	rnd_vnode_t *head;
 	unsigned int Count;
 	double area;
 	rnd_rtree_t *tree;
@@ -82,84 +82,84 @@ struct pcb_pline_s {
 	} Flags;
 };
 
-pcb_pline_t *pcb_poly_contour_new(const pcb_vector_t v);
+rnd_pline_t *rnd_poly_contour_new(const rnd_vector_t v);
 
-void pcb_poly_contour_init(pcb_pline_t *c);
-void pcb_poly_contour_clear(pcb_pline_t *c); /* clears list of vertices */
-void pcb_poly_contour_del(pcb_pline_t **c);
+void rnd_poly_contour_init(rnd_pline_t *c);
+void rnd_poly_contour_clear(rnd_pline_t *c); /* clears list of vertices */
+void rnd_poly_contour_del(rnd_pline_t **c);
 
-rnd_bool pcb_poly_contour_copy(pcb_pline_t **dst, const pcb_pline_t *src);
+rnd_bool rnd_poly_contour_copy(rnd_pline_t **dst, const rnd_pline_t *src);
 
-void pcb_poly_contour_pre(pcb_pline_t *c, rnd_bool optimize); /* prepare contour */
-void pcb_poly_contour_inv(pcb_pline_t *c); /* invert contour */
+void rnd_poly_contour_pre(rnd_pline_t *c, rnd_bool optimize); /* prepare contour */
+void rnd_poly_contour_inv(rnd_pline_t *c); /* invert contour */
 
-pcb_vnode_t *pcb_poly_node_create(pcb_vector_t v);
+rnd_vnode_t *rnd_poly_node_create(rnd_vector_t v);
 
-void pcb_poly_vertex_include(pcb_vnode_t *after, pcb_vnode_t *node);
-void pcb_poly_vertex_include_force(pcb_vnode_t *after, pcb_vnode_t *node); /* do not remove nodes even if on the same line */
-void pcb_poly_vertex_exclude(pcb_pline_t *parent, pcb_vnode_t *node);
+void rnd_poly_vertex_include(rnd_vnode_t *after, rnd_vnode_t *node);
+void rnd_poly_vertex_include_force(rnd_vnode_t *after, rnd_vnode_t *node); /* do not remove nodes even if on the same line */
+void rnd_poly_vertex_exclude(rnd_pline_t *parent, rnd_vnode_t *node);
 
-pcb_vnode_t *pcb_poly_node_add_single(pcb_vnode_t *dest, pcb_vector_t po);
+rnd_vnode_t *rnd_poly_node_add_single(rnd_vnode_t *dest, rnd_vector_t po);
 
 /**********************************************************************/
 
 struct rnd_polyarea_s {
 	rnd_polyarea_t *f, *b;
-	pcb_pline_t *contours;
+	rnd_pline_t *contours;
 	rnd_rtree_t *contour_tree;
 };
 
-rnd_bool pcb_polyarea_m_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst);
-void pcb_polyarea_m_include(rnd_polyarea_t **list, rnd_polyarea_t *a);
+rnd_bool rnd_polyarea_m_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *srcfst);
+void rnd_polyarea_m_include(rnd_polyarea_t **list, rnd_polyarea_t *a);
 
-rnd_bool pcb_polyarea_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *src);
-rnd_bool pcb_polyarea_copy1(rnd_polyarea_t *dst, const rnd_polyarea_t *src);
+rnd_bool rnd_polyarea_copy0(rnd_polyarea_t **dst, const rnd_polyarea_t *src);
+rnd_bool rnd_polyarea_copy1(rnd_polyarea_t *dst, const rnd_polyarea_t *src);
 
-rnd_bool pcb_polyarea_contour_include(rnd_polyarea_t *p, pcb_pline_t *c);
-rnd_bool pcb_polyarea_contour_exclude(rnd_polyarea_t *p, pcb_pline_t *c);
+rnd_bool rnd_polyarea_contour_include(rnd_polyarea_t *p, rnd_pline_t *c);
+rnd_bool rnd_polyarea_contour_exclude(rnd_polyarea_t *p, rnd_pline_t *c);
 
 
-rnd_bool pcb_polyarea_contour_check(pcb_pline_t *a);
+rnd_bool rnd_polyarea_contour_check(rnd_pline_t *a);
 
-rnd_bool pcb_polyarea_contour_inside(rnd_polyarea_t *c, pcb_vector_t v0);
-rnd_bool pcb_polyarea_touching(rnd_polyarea_t *p1, rnd_polyarea_t *p2);
+rnd_bool rnd_polyarea_contour_inside(rnd_polyarea_t *c, rnd_vector_t v0);
+rnd_bool rnd_polyarea_touching(rnd_polyarea_t *p1, rnd_polyarea_t *p2);
 
 /*** tools for clipping ***/
 
 /* checks whether point lies within contour independently of its orientation */
 
-int pcb_poly_contour_inside(const pcb_pline_t *c, pcb_vector_t v);
-int pcb_poly_contour_in_contour(pcb_pline_t *poly, pcb_pline_t *inner);
-rnd_polyarea_t *pcb_polyarea_create(void);
+int rnd_poly_contour_inside(const rnd_pline_t *c, rnd_vector_t v);
+int rnd_poly_contour_in_contour(rnd_pline_t *poly, rnd_pline_t *inner);
+rnd_polyarea_t *rnd_polyarea_create(void);
 
-void pcb_polyarea_free(rnd_polyarea_t **p);
-void pcb_polyarea_init(rnd_polyarea_t *p);
-void pcb_poly_contours_free(pcb_pline_t **pl);
-rnd_bool pcb_poly_valid(rnd_polyarea_t *p);
+void rnd_polyarea_free(rnd_polyarea_t **p);
+void rnd_polyarea_init(rnd_polyarea_t *p);
+void rnd_poly_contours_free(rnd_pline_t **pl);
+rnd_bool rnd_poly_valid(rnd_polyarea_t *p);
 
-enum pcb_poly_bool_op_e {
-	PCB_PBO_UNITE,
-	PCB_PBO_ISECT,
-	PCB_PBO_SUB,
-	PCB_PBO_XOR
+enum rnd_poly_bool_op_e {
+	RND_PBO_UNITE,
+	RND_PBO_ISECT,
+	RND_PBO_SUB,
+	RND_PBO_XOR
 };
 
-double pcb_vect_dist2(pcb_vector_t v1, pcb_vector_t v2);
-double pcb_vect_det2(pcb_vector_t v1, pcb_vector_t v2);
-double pcb_vect_len2(pcb_vector_t v1);
+double rnd_vect_dist2(rnd_vector_t v1, rnd_vector_t v2);
+double rnd_vect_det2(rnd_vector_t v1, rnd_vector_t v2);
+double rnd_vect_len2(rnd_vector_t v1);
 
-int pcb_vect_inters2(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t D, pcb_vector_t S1, pcb_vector_t S2);
+int rnd_vect_inters2(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t D, rnd_vector_t S1, rnd_vector_t S2);
 
-int pcb_polyarea_boolean(const rnd_polyarea_t *a, const rnd_polyarea_t *b, rnd_polyarea_t **res, int action);
-int pcb_polyarea_boolean_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **res, int action);
-int pcb_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **aandb, rnd_polyarea_t **aminusb);
-int pcb_polyarea_save(rnd_polyarea_t *PA, char *fname);
+int rnd_polyarea_boolean(const rnd_polyarea_t *a, const rnd_polyarea_t *b, rnd_polyarea_t **res, int action);
+int rnd_polyarea_boolean_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **res, int action);
+int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_polyarea_t **aandb, rnd_polyarea_t **aminusb);
+int rnd_polyarea_save(rnd_polyarea_t *PA, char *fname);
 
 /* calculate the bounding box of a rnd_polyarea_t and save result in b */
-void pcb_polyarea_bbox(rnd_polyarea_t *p, rnd_rnd_box_t *b);
+void rnd_polyarea_bbox(rnd_polyarea_t *p, rnd_rnd_box_t *b);
 
 /* Move each point of pa1 by dx and dy */
-void pcb_polyarea_move(rnd_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy);
+void rnd_polyarea_move(rnd_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy);
 
 /*** Tools for building polygons for common object shapes ***/
 
@@ -170,7 +170,7 @@ void pcb_polyarea_move(rnd_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy);
 double rnd_round(double x); /* from math_helper.h */
 
 /* Calculate an endpoint of an arc and return the result in *x;*y */
-RND_INLINE void pcb_arc_get_endpt(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, int which, rnd_coord_t *x, rnd_coord_t *y)
+RND_INLINE void rnd_arc_get_endpt(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t astart, rnd_angle_t adelta, int which, rnd_coord_t *x, rnd_coord_t *y)
 {
 	if (which == 0) {
 		*x = rnd_round((double)cx - (double)width * cos(astart * (M_PI/180.0)));
@@ -185,30 +185,30 @@ RND_INLINE void pcb_arc_get_endpt(rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t wi
 /*** constants for the poly shape generator ***/
 
 /* polygon diverges from modelled arc no more than MAX_ARC_DEVIATION * thick */
-#define PCB_POLY_ARC_MAX_DEVIATION 0.02
+#define RND_POLY_ARC_MAX_DEVIATION 0.02
 
-#define PCB_POLY_CIRC_SEGS 40
-#define PCB_POLY_CIRC_SEGS_F ((float)PCB_POLY_CIRC_SEGS)
+#define RND_POLY_CIRC_SEGS 40
+#define RND_POLY_CIRC_SEGS_F ((float)RND_POLY_CIRC_SEGS)
 
 /* adjustment to make the segments outline the circle rather than connect
    points on the circle: 1 - cos (\alpha / 2) < (\alpha / 2) ^ 2 / 2 */
-#define PCB_POLY_CIRC_RADIUS_ADJ \
-	(1.0 + M_PI / PCB_POLY_CIRC_SEGS_F * M_PI / PCB_POLY_CIRC_SEGS_F / 2.0)
+#define RND_POLY_CIRC_RADIUS_ADJ \
+	(1.0 + M_PI / RND_POLY_CIRC_SEGS_F * M_PI / RND_POLY_CIRC_SEGS_F / 2.0)
 
 /*** special purpose, internal tools ***/
 /* Convert a struct seg *obj extracted from a pline->tree into coords */
-void pcb_polyarea_get_tree_seg(void *obj, rnd_coord_t *x1, rnd_coord_t *y1, rnd_coord_t *x2, rnd_coord_t *y2);
+void rnd_polyarea_get_tree_seg(void *obj, rnd_coord_t *x1, rnd_coord_t *y1, rnd_coord_t *x2, rnd_coord_t *y2);
 
 /* create a (rnd_rtree_t *) of each seg derived from src */
-void *pcb_poly_make_edge_tree(pcb_pline_t *src);
+void *rnd_poly_make_edge_tree(rnd_pline_t *src);
 
 
 /* EPSILON^2 for endpoint matching; the bool algebra code is not
    perfect and causes tiny self intersections at the end of sharp
    spikes. Accept at most 10 nanometer of such intersection */
-#define PCB_POLY_ENDP_EPSILON 100
+#define RND_POLY_ENDP_EPSILON 100
 
 /*** generic geo ***/
-int rnd_point_in_triangle(pcb_vector_t A, pcb_vector_t B, pcb_vector_t C, pcb_vector_t P);
+int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t P);
 
 #endif /* PCB_POLYAREA_H */

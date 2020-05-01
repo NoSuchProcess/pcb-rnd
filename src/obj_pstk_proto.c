@@ -91,7 +91,7 @@ void pcb_pstk_shape_alloc_poly(pcb_pstk_poly_t *poly, int len)
 void pcb_pstk_shape_free_poly(pcb_pstk_poly_t *poly)
 {
 	if (poly->pa != NULL)
-		pcb_polyarea_free(&poly->pa);
+		rnd_polyarea_free(&poly->pa);
 	free(poly->x);
 	poly->len = 0;
 }
@@ -565,7 +565,7 @@ void pcb_pstk_shape_rot(pcb_pstk_shape_t *sh, double sina, double cosa, double a
 			break;
 		case PCB_PSSH_POLY:
 			if (sh->data.poly.pa != NULL)
-				pcb_polyarea_free(&sh->data.poly.pa);
+				rnd_polyarea_free(&sh->data.poly.pa);
 			for(i = 0; i < sh->data.poly.len; i++)
 				rnd_rotate(&sh->data.poly.x[i], &sh->data.poly.y[i], 0, 0, cosa, sina);
 			pcb_pstk_shape_update_pa(&sh->data.poly);
@@ -601,7 +601,7 @@ void pcb_pstk_tshape_xmirror(pcb_pstk_tshape_t *ts)
 				break;
 			case PCB_PSSH_POLY:
 				if (sh->data.poly.pa != NULL)
-					pcb_polyarea_free(&sh->data.poly.pa);
+					rnd_polyarea_free(&sh->data.poly.pa);
 				for(i = 0; i < sh->data.poly.len; i++)
 					sh->data.poly.y[i] = -sh->data.poly.y[i];
 
@@ -861,27 +861,27 @@ rnd_cardinal_t pcb_pstk_conv_buffer(int quiet)
 void pcb_pstk_shape_update_pa(pcb_pstk_poly_t *poly)
 {
 	int n;
-	pcb_vector_t v;
-	pcb_pline_t *pl;
+	rnd_vector_t v;
+	rnd_pline_t *pl;
 
 	v[0] = poly->x[0]; v[1] = poly->y[0];
-	pl = pcb_poly_contour_new(v);
+	pl = rnd_poly_contour_new(v);
 	for(n = 1; n < poly->len; n++) {
 		v[0] = poly->x[n]; v[1] = poly->y[n];
-		pcb_poly_vertex_include(pl->head->prev, pcb_poly_node_create(v));
+		rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
 	}
-	pcb_poly_contour_pre(pl, 1);
+	rnd_poly_contour_pre(pl, 1);
 
-	poly->pa = pcb_polyarea_create();
-	pcb_polyarea_contour_include(poly->pa, pl);
+	poly->pa = rnd_polyarea_create();
+	rnd_polyarea_contour_include(poly->pa, pl);
 
-	if (!pcb_poly_valid(poly->pa)) {
-		poly->pa->contours = NULL; /* keep pl safe from pcb_polyarea_free() */
-		pcb_polyarea_free(&poly->pa);
+	if (!rnd_poly_valid(poly->pa)) {
+		poly->pa->contours = NULL; /* keep pl safe from rnd_polyarea_free() */
+		rnd_polyarea_free(&poly->pa);
 		
-		poly->pa = pcb_polyarea_create();
-		pcb_poly_contour_inv(pl);
-		pcb_polyarea_contour_include(poly->pa, pl);
+		poly->pa = rnd_polyarea_create();
+		rnd_poly_contour_inv(pl);
+		rnd_polyarea_contour_include(poly->pa, pl);
 		poly->inverted = 1;
 	}
 	else
@@ -1146,7 +1146,7 @@ void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord
 			break;
 		case PCB_PSSH_POLY:
 			pcb_pstk_poly_center(&shp->data.poly, &cx, &cy);
-			pcb_polyarea_free(&shp->data.poly.pa);
+			rnd_polyarea_free(&shp->data.poly.pa);
 			if (is_absolute) {
 TODO("TODO")
 			}
@@ -1208,7 +1208,7 @@ static void pcb_pstk_shape_scale_(pcb_pstk_shape_t *shp, double sx, double sy)
 			break;
 		case PCB_PSSH_POLY:
 			pcb_pstk_poly_center(&shp->data.poly, &cx, &cy);
-			pcb_polyarea_free(&shp->data.poly.pa);
+			rnd_polyarea_free(&shp->data.poly.pa);
 
 			for(n = 0; n < shp->data.poly.len; n++) {
 				shp->data.poly.x[n] = rnd_round((double)shp->data.poly.x[n] * sx);

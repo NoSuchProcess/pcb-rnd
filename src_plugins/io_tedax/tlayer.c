@@ -46,7 +46,7 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 {
 	char lntmp[64];
 	int lno;
-	pcb_pline_t *pl;
+	rnd_pline_t *pl;
 	long plid;
 	pcb_layergrp_t *g = pcb_get_layergrp(pcb, gid);
 
@@ -66,12 +66,12 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 			continue;
 
 		PCB_POLY_LOOP(ly) {
-			pcb_pline_t *pl;
+			rnd_pline_t *pl;
 			if (!polygon->NoHolesValid)
 				pcb_poly_compute_no_holes(polygon);
 
 			for(pl = polygon->NoHoles, plid = 0; pl != NULL; pl = pl->next, plid++) {
-				pcb_vnode_t *v;
+				rnd_vnode_t *v;
 				long i, n;
 				fprintf(f, "begin polyline v1 pllay_%ld_%ld_%ld\n", gid, polygon->ID, plid);
 				n = pl->Count;
