@@ -1286,3 +1286,15 @@
 #define PCB_POLY_CIRC_SEGS_F RND_POLY_CIRC_SEGS_F
 #define PCB_POLY_CIRC_RADIUS_ADJ RND_POLY_CIRC_RADIUS_ADJ
 #define PCB_POLY_ENDP_EPSILON RND_POLY_ENDP_EPSILON
+#define pcb_poly_square_pin_factors rnd_poly_square_pin_factors
+#define pcb_poly_from_contour rnd_poly_from_contour
+#define pcb_poly_from_contour_autoinv rnd_poly_from_contour_autoinv
+#define pcb_poly_from_circle rnd_poly_from_circle
+#define pcb_poly_from_octagon rnd_poly_from_octagon
+#define pcb_poly_from_rect rnd_poly_from_rect
+#define RoundRect rnd_poly_from_round_rect
+#define pcb_poly_from_line rnd_poly_from_line
+#define pcb_poly_from_arc rnd_poly_from_arc
+#define pcb_polyarea_no_holes_dicer rnd_polyarea_no_holes_dicer
+#define pcb_poly_frac_circle rnd_poly_frac_circle
+#define pcb_poly_frac_circle_end rnd_poly_frac_circle_end

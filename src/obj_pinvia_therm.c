@@ -73,7 +73,7 @@ static rnd_polyarea_t *pcb_pa_diag_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_
 	v[0] = X + x2;
 	v[1] = Y + y1;
 	rnd_poly_vertex_include(c->head->prev, rnd_poly_node_create(v));
-	return pcb_poly_from_contour(c);
+	return rnd_poly_from_contour(c);
 }
 
 /* ThermPoly returns a rnd_polyarea_t having all of the clearance that when
@@ -94,8 +94,8 @@ rnd_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd
 			rnd_polyarea_t *m;
 			rnd_coord_t t = (thickness + clearance) / 2;
 			rnd_coord_t w = 0.5 * pcb->ThermScale * clearance;
-			pa = pcb_poly_from_circle(cx, cy, t);
-			arc = pcb_poly_from_circle(cx, cy, thickness / 2);
+			pa = rnd_poly_from_circle(cx, cy, t);
+			arc = rnd_poly_from_circle(cx, cy, thickness / 2);
 			/* create a thin ring */
 			rnd_polyarea_boolean_free(pa, arc, &m, RND_PBO_SUB);
 			/* fix me needs error checking */
@@ -103,9 +103,9 @@ rnd_polyarea_t *ThermPoly_(pcb_board_t *pcb, rnd_coord_t cx, rnd_coord_t cy, rnd
 				/* t is the theoretically required length, but we use twice that
 				 * to avoid discretisation errors in our circle approximation.
 				 */
-				pa = pcb_poly_from_rect(cx - t * 2, cx + t * 2, cy - w, cy + w);
+				pa = rnd_poly_from_rect(cx - t * 2, cx + t * 2, cy - w, cy + w);
 				rnd_polyarea_boolean_free(m, pa, &arc, RND_PBO_SUB);
-				pa = pcb_poly_from_rect(cx - w, cx + w, cy - t * 2, cy + t * 2);
+				pa = rnd_poly_from_rect(cx - w, cx + w, cy - t * 2, cy + t * 2);
 			}
 			else {
 				/* t is the theoretically required length, but we use twice that

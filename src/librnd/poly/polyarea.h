@@ -211,4 +211,4 @@ void *rnd_poly_make_edge_tree(rnd_pline_t *src);
 /*** generic geo ***/
 int rnd_point_in_triangle(rnd_vector_t A, rnd_vector_t B, rnd_vector_t C, rnd_vector_t P);
 
-#endif /* PCB_POLYAREA_H */
+#endif /* RND_POLYAREA_H */

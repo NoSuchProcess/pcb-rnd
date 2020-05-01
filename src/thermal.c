@@ -519,7 +519,7 @@ static void polytherm_round(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_
 
 			/* optical tuning: make sure the clearance is large enough around corners
 			   even if lines didn't meet - just throw in a big circle */
-			ptmp = pcb_poly_from_circle(x, y, clr);
+			ptmp = rnd_poly_from_circle(x, y, clr);
 			rnd_polyarea_boolean(ptmp, *pres, &p, RND_PBO_UNITE);
 			rnd_polyarea_free(pres);
 			rnd_polyarea_free(&ptmp);
@@ -689,7 +689,7 @@ static rnd_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pst
 				return NULL;
 			goto retry;
 		case PCB_PSSH_CIRC:
-			return pcb_poly_from_circle(ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia/2 + clearance);
+			return rnd_poly_from_circle(ps->x + shp->data.circ.x, ps->y + shp->data.circ.y, shp->data.circ.dia/2 + clearance);
 		case PCB_PSSH_LINE:
 			return pa_line_at(ps->x + shp->data.line.x1, ps->y + shp->data.line.y1, ps->x + shp->data.line.x2, ps->y + shp->data.line.y2, shp->data.line.thickness + clearance*2, shp->data.line.square);
 		case PCB_PSSH_POLY:

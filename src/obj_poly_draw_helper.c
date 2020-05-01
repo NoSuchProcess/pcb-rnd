@@ -161,7 +161,7 @@ static void fill_clipped_contour(rnd_hid_gc_t gc, rnd_pline_t * pl, const rnd_rn
 		return;
 	}
 
-	clip_poly = pcb_poly_from_rect(clip_box->X1, clip_box->X2, clip_box->Y1, clip_box->Y2);
+	clip_poly = rnd_poly_from_rect(clip_box->X1, clip_box->X2, clip_box->Y1, clip_box->Y2);
 	rnd_poly_contour_copy(&pl_copy, pl);
 	piece_poly = rnd_polyarea_create();
 	rnd_polyarea_contour_include(piece_poly, pl_copy);

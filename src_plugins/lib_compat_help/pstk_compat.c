@@ -44,7 +44,7 @@ static void octa_shape(pcb_pstk_poly_t *dst, rnd_coord_t x0, rnd_coord_t y0, rnd
 
 	pcb_pstk_shape_alloc_poly(dst, 8);
 
-	pcb_poly_square_pin_factors(style, xm, ym);
+	rnd_poly_square_pin_factors(style, xm, ym);
 
 	dst->x[7] = x0 + rnd_round(rx * 0.5) * xm[7];
 	dst->y[7] = y0 + rnd_round(ry * RND_TAN_22_5_DEGREE_2) * ym[7];
@@ -296,7 +296,7 @@ static pcb_pstk_compshape_t get_old_shape_octa(rnd_coord_t *dia, const pcb_pstk_
 
 	/* compare to all known shape factors */
 	for(shi = PCB_PSTK_COMPAT_SHAPED; shi <= PCB_PSTK_COMPAT_SHAPED_END; shi++) {
-		pcb_poly_square_pin_factors(shi - PCB_PSTK_COMPAT_SHAPED, xm, ym);
+		rnd_poly_square_pin_factors(shi - PCB_PSTK_COMPAT_SHAPED, xm, ym);
 		found = 1;
 		for(n = 0; n < 8; n++) {
 			if ((xm[n] != x[n]) || (ym[n] != y[n])) {

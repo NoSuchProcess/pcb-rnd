@@ -291,12 +291,12 @@ rnd_polyarea_t *pcb_poly_from_poly(pcb_poly_t * p)
 
 rnd_polyarea_t *pcb_poly_from_pcb_line(pcb_line_t *L, rnd_coord_t thick)
 {
-	return pcb_poly_from_line(L->Point1.X, L->Point1.Y, L->Point2.X, L->Point2.Y, thick, PCB_FLAG_TEST(PCB_FLAG_SQUARE, L));
+	return rnd_poly_from_line(L->Point1.X, L->Point1.Y, L->Point2.X, L->Point2.Y, thick, PCB_FLAG_TEST(PCB_FLAG_SQUARE, L));
 }
 
 rnd_polyarea_t *pcb_poly_from_pcb_arc(pcb_arc_t *a, rnd_coord_t thick)
 {
-	return pcb_poly_from_arc(a->X, a->Y, a->Width, a->Height, a->StartAngle, a->Delta, thick);
+	return rnd_poly_from_arc(a->X, a->Y, a->Width, a->Height, a->StartAngle, a->Delta, thick);
 }
 
 
@@ -345,7 +345,7 @@ int pcb_poly_subtract(rnd_polyarea_t *np1, pcb_poly_t *p, rnd_bool fnp)
 
 rnd_polyarea_t *pcb_poly_from_box_bloated(rnd_rnd_box_t * box, rnd_coord_t bloat)
 {
-	return pcb_poly_from_rect(box->X1 - bloat, box->X2 + bloat, box->Y1 - bloat, box->Y2 + bloat);
+	return rnd_poly_from_rect(box->X1 - bloat, box->X2 + bloat, box->Y1 - bloat, box->Y2 + bloat);
 }
 
 /* remove the padstack clearance from the polygon */
@@ -438,7 +438,7 @@ static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 		/* old method: clear by bounding box */
 		const rnd_rnd_box_t *b = &text->BoundingBox;
 		rnd_polyarea_t *np;
-		if (!(np = RoundRect(b->X1 + conf_core.design.bloat, b->X2 - conf_core.design.bloat, b->Y1 + conf_core.design.bloat, b->Y2 - conf_core.design.bloat, conf_core.design.bloat)))
+		if (!(np = rnd_poly_from_round_rect(b->X1 + conf_core.design.bloat, b->X2 - conf_core.design.bloat, b->Y1 + conf_core.design.bloat, b->Y2 - conf_core.design.bloat, conf_core.design.bloat)))
 			return -1;
 		return Subtract(np, p, rnd_true);
 	}
@@ -1522,7 +1522,7 @@ rnd_bool pcb_poly_is_point_in_p(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t r, pcb
 
 	if (r < 1)
 		return rnd_false;
-	if (!(c = pcb_poly_from_circle(X, Y, r)))
+	if (!(c = rnd_poly_from_circle(X, Y, r)))
 		return rnd_false;
 	return pcb_poly_isects_poly(c, p, rnd_true);
 }
@@ -1539,7 +1539,7 @@ rnd_bool pcb_poly_is_point_in_p_ignore_holes(rnd_coord_t X, rnd_coord_t Y, pcb_p
 rnd_bool pcb_poly_is_rect_in_p(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, pcb_poly_t *p)
 {
 	rnd_polyarea_t *s;
-	if (!(s = pcb_poly_from_rect(min(X1, X2), max(X1, X2), min(Y1, Y2), max(Y1, Y2))))
+	if (!(s = rnd_poly_from_rect(min(X1, X2), max(X1, X2), min(Y1, Y2), max(Y1, Y2))))
 		return rnd_false;
 	return pcb_poly_isects_poly(s, p, rnd_true);
 }
@@ -1553,9 +1553,9 @@ void pcb_poly_no_holes_dicer(pcb_poly_t *p, const rnd_rnd_box_t *clip, void (*em
 	rnd_polyarea_copy1(main_contour, p->Clipped);
 
 	if (clip == NULL)
-		pcb_polyarea_no_holes_dicer(main_contour, 0, 0, 0, 0, emit, user_data);
+		rnd_polyarea_no_holes_dicer(main_contour, 0, 0, 0, 0, emit, user_data);
 	else
-		pcb_polyarea_no_holes_dicer(main_contour, clip->X1, clip->Y1, clip->X2, clip->Y2, emit, user_data);
+		rnd_polyarea_no_holes_dicer(main_contour, clip->X1, clip->Y1, clip->X2, clip->Y2, emit, user_data);
 }
 
 /* make a polygon split into multiple parts into multiple polygons */
