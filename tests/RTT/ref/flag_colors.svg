@@ -45,9 +45,9 @@
  <line x1="6.3500" y1="5.7150" x2="6.9850" y2="5.0800" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round"/>
  <line x1="6.9850" y1="5.0800" x2="6.9850" y2="4.4450" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round"/>
  <line x1="8.8900" y1="0.6350" x2="13.9700" y2="0.6350" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round"/>
+ <line x1="8.8900" y1="4.4450" x2="13.9700" y2="4.4450" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round"/>
  <line x1="8.8900" y1="1.9050" x2="13.9700" y2="1.9050" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round"/>
  <line x1="8.8900" y1="3.1750" x2="13.9700" y2="3.1750" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round"/>
- <line x1="8.8900" y1="4.4450" x2="13.9700" y2="4.4450" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round"/>
  <path d="M 10.79500000 5.08000000 A 1.9050 1.9050 0 0 0 8.8900 6.9850" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round" fill="none"/>
  <path d="M 12.06500000 5.08000000 A 1.9050 1.9050 0 0 0 10.1600 6.9850" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round" fill="none"/>
  <path d="M 13.33500000 5.08000000 A 1.9050 1.9050 0 0 0 11.4300 6.9850" stroke-width="0.2540" stroke="#8b2323" stroke-linecap="round" fill="none"/>

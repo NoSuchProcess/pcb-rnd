@@ -47,13 +47,13 @@
 <g id="layer_1_topsilk">
 <!--normal-->
  <line x1="0.6350" y1="1.9050" x2="0.6350" y2="4.4450" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
- <line x1="10.7950" y1="4.4450" x2="0.6350" y2="4.4450" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="0.6350" y1="1.9050" x2="4.4450" y2="1.9050" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="0.6350" y1="6.9850" x2="4.4450" y2="6.9850" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="0.6350" y1="6.9850" x2="0.6350" y2="9.5250" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
- <line x1="6.9850" y1="6.9850" x2="10.7950" y2="6.9850" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="10.7950" y1="9.5250" x2="0.6350" y2="9.5250" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="10.7950" y1="9.5250" x2="10.7950" y2="6.9850" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
- <line x1="0.6350" y1="6.9850" x2="4.4450" y2="6.9850" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="6.9850" y1="6.9850" x2="10.7950" y2="6.9850" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
+ <line x1="10.7950" y1="4.4450" x2="0.6350" y2="4.4450" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="10.7950" y1="4.4450" x2="10.7950" y2="1.9050" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <line x1="6.9850" y1="1.9050" x2="10.7950" y2="1.9050" stroke-width="0.2540" stroke="#000000" stroke-linecap="round"/>
  <path d="M 6.98500000 1.90500000 A 1.2700 1.2700 0 0 1 4.4450 1.9050" stroke-width="0.2540" stroke="#000000" stroke-linecap="round" fill="none"/>
