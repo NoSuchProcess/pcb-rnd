@@ -1159,20 +1159,20 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 	if (aper != 0) {
 		double dv;
 		long n;
-		pcb_polo_t *p;
+		rnd_polo_t *p;
 
 		/* this assumes there's no hole in the poly - but DSN doesn't support holes anyway */
-		p = malloc(sizeof(pcb_polo_t) * len);
+		p = malloc(sizeof(rnd_polo_t) * len);
 		for(n = 0; n < len; n++) {
 			p[n].x = poly->Points[n].X;
 			p[n].y = poly->Points[n].Y;
 		}
-		pcb_polo_norms(p, len);
-		if (pcb_polo_2area(p, len) < 0)
+		rnd_polo_norms(p, len);
+		if (rnd_polo_2area(p, len) < 0)
 			dv = -2.0;
 		else
 			dv = 2.0;
-		pcb_polo_offs((double)aper / dv, p, len);
+		rnd_polo_offs((double)aper / dv, p, len);
 
 		for(n = 0; n < len; n++) {
 			poly->Points[n].X = rnd_round(p[n].x);

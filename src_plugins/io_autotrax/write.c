@@ -601,7 +601,7 @@ TODO("do we really need to reimplement this, can not cpoly_hatch_lines handle it
 					pl = pcb_poly_contour(&poly_it);
 					if (pl != NULL) {
 						const pcb_vnode_t *v, *n;
-						track = pcb_pline_dup_offset(pl, -((Thickness / 2) + 1));
+						track = rnd_pline_dup_offset(pl, -((Thickness / 2) + 1));
 						v = track->head;
 						do {
 							n = v->next;
@@ -612,7 +612,7 @@ TODO("do we really need to reimplement this, can not cpoly_hatch_lines handle it
 						/* iterate over all holes within this island */
 						for(pl = pcb_poly_hole_first(&poly_it); pl != NULL; pl = pcb_poly_hole_next(&poly_it)) {
 							const pcb_vnode_t *v, *n;
-							track = pcb_pline_dup_offset(pl, -((Thickness / 2) + 1));
+							track = rnd_pline_dup_offset(pl, -((Thickness / 2) + 1));
 							v = track->head;
 							do {
 								n = v->next;

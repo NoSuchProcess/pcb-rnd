@@ -31,35 +31,35 @@
 
 /* Calculate the offset plines of src and append the resulting plines to dst.
    Yields multiple islands in some corner cases. */
-void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs);
+void rnd_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs);
 
 /* Same, but returns the largest island only */
-pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, rnd_coord_t offs);
+pcb_pline_t *rnd_pline_dup_offset(const pcb_pline_t *src, rnd_coord_t offs);
 
 
 /* low level */
 
 typedef struct {
 	double x, y, nx, ny;
-} pcb_polo_t;
+} rnd_polo_t;
 
 /* Calculate the normal vectors of a cache */
-void pcb_polo_norms(pcb_polo_t *pcsh, long num_pts);
+void rnd_polo_norms(rnd_polo_t *pcsh, long num_pts);
 
 /* Calculate and return the double of the area of a cached polygon */
-double pcb_polo_2area(pcb_polo_t *pcsh, long num_pts);
+double rnd_polo_2area(rnd_polo_t *pcsh, long num_pts);
 
 /* Ortho-shift all edges of a polygon. Positive offset means grow. */
-void pcb_polo_offs(double offs, pcb_polo_t *pcsh, long num_pts);
+void rnd_polo_offs(double offs, rnd_polo_t *pcsh, long num_pts);
 
 /* modify dst so it is at least offs far from any point or line of src */
-void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_t offs);
+void rnd_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_t offs);
 
 /* Orhto-shift an edge specified by x0;y0 and x1;y1. Calculate the new
    edge points by extending/shrinking the previous and next line segment.
    Modifies the target edge's start and end coords. Requires cached normals
    Positive offset means grow. */
-void pcb_polo_edge_shift(double offs,
+void rnd_polo_edge_shift(double offs,
 	double *x0, double *y0, double nx, double ny,
 	double *x1, double *y1,
 	double prev_x, double prev_y, double prev_nx, double prev_ny,

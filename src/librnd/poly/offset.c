@@ -59,7 +59,7 @@ static long warp(long n, long len)
 	return n;
 }
 
-void pcb_polo_edge_shift(double offs,
+void rnd_polo_edge_shift(double offs,
 	double *x0, double *y0, double nx, double ny,
 	double *x1, double *y1,
 	double prev_x, double prev_y, double prev_nx, double prev_ny,
@@ -97,13 +97,13 @@ void pcb_polo_edge_shift(double offs,
 	(*y1) += a1y;
 }
 
-void pcb_polo_offs(double offs, pcb_polo_t *pcsh, long num_pts)
+void rnd_polo_offs(double offs, rnd_polo_t *pcsh, long num_pts)
 {
 	long n;
 
 	for(n = 0; n < num_pts; n++) {
 		long np = warp(n-1, num_pts), nn1 = warp(n+1, num_pts), nn2 = warp(n+2, num_pts);
-		pcb_polo_edge_shift(offs,
+		rnd_polo_edge_shift(offs,
 			&pcsh[n].x, &pcsh[n].y, pcsh[n].nx, pcsh[n].ny,
 			&pcsh[nn1].x, &pcsh[nn1].y,
 			pcsh[np].x, pcsh[np].y, pcsh[np].nx, pcsh[np].ny,
@@ -113,7 +113,7 @@ void pcb_polo_offs(double offs, pcb_polo_t *pcsh, long num_pts)
 }
 
 
-void pcb_polo_norms(pcb_polo_t *pcsh, long num_pts)
+void rnd_polo_norms(rnd_polo_t *pcsh, long num_pts)
 {
 	long n;
 
@@ -123,7 +123,7 @@ void pcb_polo_norms(pcb_polo_t *pcsh, long num_pts)
 	}
 }
 
-double pcb_polo_2area(pcb_polo_t *pcsh, long num_pts)
+double rnd_polo_2area(rnd_polo_t *pcsh, long num_pts)
 {
 	double a = 0;
 	long n;
@@ -136,13 +136,13 @@ double pcb_polo_2area(pcb_polo_t *pcsh, long num_pts)
 	return a;
 }
 
-void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs)
+void rnd_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs)
 {
 	const pcb_vnode_t *v;
 	pcb_vector_t tmp;
 	pcb_pline_t *res = NULL;
 	long num_pts, n, from;
-	pcb_polo_t *pcsh;
+	rnd_polo_t *pcsh;
 
 	/* count corners */
 	v = src->head;
@@ -152,7 +152,7 @@ void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs
 	} while((v = v->next) != src->head);
 
 	/* allocate the cache and copy all data */
-	pcsh = malloc(sizeof(pcb_polo_t) * num_pts);
+	pcsh = malloc(sizeof(rnd_polo_t) * num_pts);
 	for(n = 0, v = src->head; n < num_pts; n++, v = v->next) {
 		pcsh[n].x = v->point[0];
 		pcsh[n].y = v->point[1];
@@ -160,7 +160,7 @@ void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs
 	}
 
 	/* offset the cache */
-	pcb_polo_offs(offs, pcsh, num_pts);
+	rnd_polo_offs(offs, pcsh, num_pts);
 
 
 	/* create a new pline by copying the cache */
@@ -186,13 +186,13 @@ void pcb_pline_dup_offsets(vtp0_t *dst, const pcb_pline_t *src, rnd_coord_t offs
 	for(n = from; n < dst->used; n++) {
 		res = dst->array[n];
 		pcb_poly_contour_pre(res, 1);
-		pcb_pline_keepout_offs(res, src, offs); /* avoid self-intersection */
+		rnd_pline_keepout_offs(res, src, offs); /* avoid self-intersection */
 		res->tree = pcb_poly_make_edge_tree(res);
 		dst->array[n] = res;
 	}
 }
 
-pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, rnd_coord_t offs)
+pcb_pline_t *rnd_pline_dup_offset(const pcb_pline_t *src, rnd_coord_t offs)
 {
 	vtp0_t selfi;
 	pcb_pline_t *res = NULL;
@@ -200,7 +200,7 @@ pcb_pline_t *pcb_pline_dup_offset(const pcb_pline_t *src, rnd_coord_t offs)
 	double best = 0;
 
 	vtp0_init(&selfi);
-	pcb_pline_dup_offsets(&selfi, src, offs);
+	rnd_pline_dup_offsets(&selfi, src, offs);
 
 	for(n = 0; n < selfi.used; n++) {
 		pcb_pline_t *pl = selfi.array[n];
@@ -306,7 +306,7 @@ RND_INLINE int pull_back(pcb_vnode_t *v, const pcb_vnode_t *vp, double tune, dou
 	return 0;
 }
 
-void pcb_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_t offs)
+void rnd_pline_keepout_offs(pcb_pline_t *dst, const pcb_pline_t *src, rnd_coord_t offs)
 {
 	pcb_vnode_t *v;
 	double offs2 = (double)offs * (double)offs;

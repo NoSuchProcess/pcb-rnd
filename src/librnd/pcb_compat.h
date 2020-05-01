@@ -1210,3 +1210,11 @@
 #define pcb_events_init rnd_events_init
 #define pcb_events_uninit rnd_events_uninit
 #define PCB_DAD_UNIT RND_DAD_UNIT
+#define pcb_polo_t rnd_polo_t
+#define pcb_polo_norms rnd_polo_norms
+#define pcb_polo_2area rnd_polo_2area
+#define pcb_polo_offs rnd_polo_offs
+#define pcb_pline_keepout_offs rnd_pline_keepout_offs
+#define pcb_polo_edge_shift rnd_polo_edge_shift
+#define pcb_pline_dup_offsets rnd_pline_dup_offsets
+#define pcb_pline_dup_offset rnd_pline_dup_offset

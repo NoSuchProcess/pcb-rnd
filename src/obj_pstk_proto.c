@@ -1151,14 +1151,14 @@ void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord
 TODO("TODO")
 			}
 			else {
-				pcb_polo_t *p, p_st[32];
+				rnd_polo_t *p, p_st[32];
 				double vl = rnd_round(val/2);
 
 				if (shp->data.poly.inverted)
 					vl = -vl;
 
 				if (shp->data.poly.len >= sizeof(p_st) / sizeof(p_st[0]))
-					p = malloc(sizeof(pcb_polo_t) * shp->data.poly.len);
+					p = malloc(sizeof(rnd_polo_t) * shp->data.poly.len);
 				else
 					p = p_st;
 
@@ -1167,8 +1167,8 @@ TODO("TODO")
 					p[n].x = shp->data.poly.x[n];
 					p[n].y = shp->data.poly.y[n];
 				}
-				pcb_polo_norms(p, shp->data.poly.len);
-				pcb_polo_offs(vl, p, shp->data.poly.len);
+				rnd_polo_norms(p, shp->data.poly.len);
+				rnd_polo_offs(vl, p, shp->data.poly.len);
 				for(n = 0; n < shp->data.poly.len; n++) {
 					shp->data.poly.x[n] = p[n].x;
 					shp->data.poly.y[n] = p[n].y;

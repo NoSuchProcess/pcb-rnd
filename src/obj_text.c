@@ -1026,19 +1026,19 @@ static void draw_text_poly(pcb_draw_info_t *info, pcb_poly_t *poly, pcb_xform_mx
 	}
 
 	if ((info != NULL) && (info->xform != NULL) && (info->xform->bloat != 0)) {
-		pcb_polo_t *p, pp[MAX_SIMPLE_POLY_POINTS];
+		rnd_polo_t *p, pp[MAX_SIMPLE_POLY_POINTS];
 		double a2, dv;
 		for(n = 0, p = pp; n < max; n++,p++) {
 			p->x = x[n];
 			p->y = y[n];
 		}
-		pcb_polo_norms(pp, max);
-		a2 = pcb_polo_2area(pp, max);
+		rnd_polo_norms(pp, max);
+		a2 = rnd_polo_2area(pp, max);
 		if (a2 < 0)
 			dv = -0.5;
 		else
 			dv = 0.5;
-		pcb_polo_offs(info->xform->bloat*dv, pp, max);
+		rnd_polo_offs(info->xform->bloat*dv, pp, max);
 		for(n = 0, p = pp; n < max; n++,p++) {
 			x[n] = rnd_round(p->x);
 			y[n] = rnd_round(p->y);

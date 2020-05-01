@@ -426,7 +426,7 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_
 	rnd_hid_set_line_cap(gc, rnd_cap_round);
 	if (dthick != 0) {
 		/* slow - but would be used on export mostly, not on-screen drawing */
-		pcb_polo_t *p, p_st[32];
+		rnd_polo_t *p, p_st[32];
 		rnd_coord_t *x, *y, xy_st[64];
 		double vl = rnd_round(-dthick/2);
 		long n;
@@ -436,7 +436,7 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_
 		vl = rnd_round(dthick/2);
 		
 		if (shape->data.poly.len >= sizeof(p_st) / sizeof(p_st[0])) {
-			p = malloc(sizeof(pcb_polo_t) * shape->data.poly.len);
+			p = malloc(sizeof(rnd_polo_t) * shape->data.poly.len);
 			x = malloc(sizeof(rnd_coord_t) * shape->data.poly.len);
 		}
 		else {
@@ -450,8 +450,8 @@ static void pcb_pstk_draw_poly(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_
 			p[n].x = shape->data.poly.x[n];
 			p[n].y = shape->data.poly.y[n];
 		}
-		pcb_polo_norms(p, shape->data.poly.len);
-		pcb_polo_offs(vl, p, shape->data.poly.len);
+		rnd_polo_norms(p, shape->data.poly.len);
+		rnd_polo_offs(vl, p, shape->data.poly.len);
 		for(n = 0; n < shape->data.poly.len; n++) {
 			x[n] = rnd_round(p[n].x);
 			y[n] = rnd_round(p[n].y);

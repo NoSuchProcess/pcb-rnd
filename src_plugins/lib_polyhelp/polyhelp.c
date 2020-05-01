@@ -80,7 +80,7 @@ rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const pcb_pline_t *src, rnd_
 	long i;
 
 	vtp0_init(&tracks);
-	pcb_pline_dup_offsets(&tracks, src, -((thickness/2)+1));
+	rnd_pline_dup_offsets(&tracks, src, -((thickness/2)+1));
 
 	for(i = 0; i < tracks.used; i++) {
 		const pcb_vnode_t *v, *n;
@@ -217,12 +217,12 @@ pcb_cpoly_edgetree_t *pcb_cpoly_edgetree_create(const pcb_poly_t *src, rnd_coord
 
 		pl = pcb_poly_contour(&it);
 		if (pl != NULL) { /* we have a contour */
-			track = pcb_pline_dup_offset(pl, -offs);
+			track = rnd_pline_dup_offset(pl, -offs);
 			add_track(res, track);
 			pcb_poly_contour_del(&track);
 
 			for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it)) {
-				track = pcb_pline_dup_offset(pl, -offs);
+				track = rnd_pline_dup_offset(pl, -offs);
 				add_track(res, track);
 				pcb_poly_contour_del(&track);
 			}

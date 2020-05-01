@@ -464,7 +464,7 @@ pcb_poly_t *pcb_poly_new_from_poly(pcb_layer_t *Layer, pcb_poly_t *src, rnd_coor
 	it.pa = src->Clipped;
 	pcb_poly_island_first(src, &it);
 	pl = pcb_poly_contour(&it);
-	it.cntr = pcb_pline_dup_offset(pl, offs);
+	it.cntr = rnd_pline_dup_offset(pl, offs);
 	for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y))
 		pcb_poly_point_new(polygon, x, y);
 
@@ -1261,14 +1261,14 @@ static void pcb_poly_draw_tr_offs(pcb_poly_it_t *it, rnd_coord_t offs)
 	int go;
 	long len, n;
 	rnd_coord_t x, y;
-	pcb_polo_t *p, p_st[256];
+	rnd_polo_t *p, p_st[256];
 
 	/* calculate length of the polyline */
 	for(go = pcb_poly_vect_first(it, &x, &y), len = 0; go; go = pcb_poly_vect_next(it, &x, &y))
 		len++;
 
 	if (len >= sizeof(p_st) / sizeof(p_st[0]))
-		p = malloc(sizeof(pcb_polo_t) * len);
+		p = malloc(sizeof(rnd_polo_t) * len);
 	else
 		p = p_st;
 
@@ -1277,8 +1277,8 @@ static void pcb_poly_draw_tr_offs(pcb_poly_it_t *it, rnd_coord_t offs)
 		p[n].y = y;
 	}
 
-	pcb_polo_norms(p, len);
-	pcb_polo_offs(offs, p, len);
+	rnd_polo_norms(p, len);
+	rnd_polo_offs(offs, p, len);
 
 
 	for(go = pcb_poly_vect_first(it, &x, &y), n = 0; go; go = pcb_poly_vect_next(it, &x, &y), n++) {
