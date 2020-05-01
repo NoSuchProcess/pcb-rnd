@@ -1320,3 +1320,4 @@
 #define pcb_r_first rnd_r_first
 #define pcb_r_next rnd_r_next
 #define pcb_r_end rnd_r_end
+#define PCB_API_VER RND_API_VER

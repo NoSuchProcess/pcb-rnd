@@ -34,7 +34,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
 
-unsigned long rnd_api_ver = PCB_API_VER;
+unsigned long rnd_api_ver = RND_API_VER;
 
 pup_context_t rnd_pup;
 char **rnd_pup_paths = NULL;
