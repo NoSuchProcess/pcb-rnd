@@ -211,7 +211,7 @@ static int pline_split_off_loop(rnd_pline_t *pl, vtp0_t *hubs, vtp0_t *out, vhub
 	return pline_split_off_loop_new(pl, out, h, start, cnt);
 }
 
-rnd_bool pcb_pline_is_selfint(rnd_pline_t *pl)
+rnd_bool rnd_pline_is_selfint(rnd_pline_t *pl)
 {
 	rnd_vnode_t *va, *vb;
 
@@ -228,7 +228,7 @@ rnd_bool pcb_pline_is_selfint(rnd_pline_t *pl)
 }
 
 
-void pcb_pline_split_selfint(const rnd_pline_t *pl_in, vtp0_t *out)
+void rnd_pline_split_selfint(const rnd_pline_t *pl_in, vtp0_t *out)
 {
 	int n;
 	vtp0_t hubs;
@@ -292,19 +292,19 @@ TODO("leak: remove the unused hubs");
 	vtp0_uninit(&hubs);
 }
 
-rnd_cardinal_t pcb_polyarea_split_selfint(rnd_polyarea_t *pa)
+rnd_cardinal_t rnd_polyarea_split_selfint(rnd_polyarea_t *pa)
 {
 	rnd_pline_t *pl, *next, *pln, *prev = NULL;
 	rnd_cardinal_t cnt = 0;
 
 	for(pl = pa->contours; pl != NULL; pl = next) {
 		next = pl->next;
-		if (pcb_pline_is_selfint(pl)) {
+		if (rnd_pline_is_selfint(pl)) {
 			vtp0_t pls;
 			int n;
 			cnt++;
 			vtp0_init(&pls);
-			pcb_pline_split_selfint(pl, &pls);
+			rnd_pline_split_selfint(pl, &pls);
 
 
 			if (prev != NULL)

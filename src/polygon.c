@@ -266,7 +266,7 @@ rnd_polyarea_t *pcb_poly_to_polyarea(pcb_poly_t *p, rnd_bool *need_full)
 TODO("multiple plines within the returned polyarea np does not really work\n");
 #if 0
 			if (!rnd_poly_valid(np)) {
-				rnd_cardinal_t cnt = pcb_polyarea_split_selfint(np);
+				rnd_cardinal_t cnt = rnd_polyarea_split_selfint(np);
 				rnd_message(RND_MSG_ERROR, "Had to split up self-intersecting polygon into %ld parts\n", (long)cnt);
 				if (cnt > 1)
 					*need_full = rnd_true;

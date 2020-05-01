@@ -1298,3 +1298,6 @@
 #define pcb_polyarea_no_holes_dicer rnd_polyarea_no_holes_dicer
 #define pcb_poly_frac_circle rnd_poly_frac_circle
 #define pcb_poly_frac_circle_end rnd_poly_frac_circle_end
+#define pcb_pline_is_selfint rnd_pline_is_selfint
+#define pcb_pline_split_selfint rnd_pline_split_selfint
+#define pcb_polyarea_split_selfint rnd_polyarea_split_selfint
