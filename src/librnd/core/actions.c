@@ -49,7 +49,7 @@ const char *RND_PTR_DOMAIN_IDPATH = "pcb_fgw_ptr_domain_idpath";
 const char *RND_PTR_DOMAIN_IDPATH_LIST = "pcb_fgw_ptr_domain_idpath_list";
 
 fgw_ctx_t rnd_fgw;
-fgw_obj_t *pcb_fgw_obj;
+fgw_obj_t *rnd_fgw_obj;
 
 typedef struct {
 	const char *cookie;
@@ -104,7 +104,7 @@ void rnd_register_actions(const rnd_action_t *a, int n, const char *cookie)
 		ca->action = a+i;
 
 		rnd_make_action_name(fn, a[i].name, len);
-		f = fgw_func_reg(pcb_fgw_obj, fn, a[i].trigger_cb);
+		f = fgw_func_reg(rnd_fgw_obj, fn, a[i].trigger_cb);
 		if (f == NULL) {
 			rnd_message(RND_MSG_ERROR, "Failed to register action \"%s\" (already registered?)\n", a[i].name);
 			free(ca);
@@ -122,7 +122,7 @@ void rnd_register_action(const rnd_action_t *a, const char *cookie)
 static void pcb_remove_action(fgw_func_t *f)
 {
 	hid_cookie_action_t *ca = f->reg_data;
-	fgw_func_unreg(pcb_fgw_obj, f->name);
+	fgw_func_unreg(rnd_fgw_obj, f->name);
 	free(ca);
 }
 
@@ -927,7 +927,7 @@ void rnd_actions_init(void)
 {
 	fgw_init(&rnd_fgw, "pcb-rnd");
 	rnd_fgw.async_error = pcb_action_err;
-	pcb_fgw_obj = fgw_obj_reg(&rnd_fgw, "core");
+	rnd_fgw_obj = fgw_obj_reg(&rnd_fgw, "core");
 	if (fgw_reg_custom_type(&rnd_fgw, FGW_KEYWORD, "keyword", keyword_arg_conv, NULL) != FGW_KEYWORD) {
 		fprintf(stderr, "pcb_actions_init: failed to register FGW_KEYWORD\n");
 		abort();
@@ -954,7 +954,7 @@ void rnd_actions_uninit(void)
 		pcb_remove_action(f);
 	}
 
-	fgw_obj_unreg(&rnd_fgw, pcb_fgw_obj);
+	fgw_obj_unreg(&rnd_fgw, rnd_fgw_obj);
 	fgw_uninit(&rnd_fgw);
 	fgw_atexit();
 }
