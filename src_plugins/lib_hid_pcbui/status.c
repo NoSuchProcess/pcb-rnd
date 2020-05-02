@@ -439,6 +439,14 @@ fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	gds_append_str(&desc, "Subc. refdes:\t"); gds_append_str(&desc, subc->refdes == NULL ? "--" : subc->refdes);
 	gds_append_str(&desc, "\nTerminal:  \t"); gds_append_str(&desc, obj->term == NULL ? "--" : obj->term);
+	if (obj->term != NULL) { /* print terminal name if not empty and not the same as term */
+		const char *name = rnd_attribute_get(&obj->Attributes, "name");
+		if ((name != NULL) && (strcmp(name, obj->term) != 0)) {
+			gds_append_str(&desc, " (");
+			gds_append_str(&desc, name);
+			gds_append(&desc, ')');
+		}
+	}
 	gds_append_str(&desc, "\nNetlist:     \t"); gds_append_str(&desc, term == NULL ? "--" : term->parent.net->name);
 	sprintf(ids, "#%ld", subc->ID);
 	gds_append_str(&desc, "\nSubcircuit ID:\t"); gds_append_str(&desc, ids);
