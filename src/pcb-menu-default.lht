@@ -52,7 +52,7 @@ ha:{
 	}
 
 	li:main_menu {
-		### File Menu
+
 		ha:File {
 			li:submenu {
 				ha:Start New Layout                  = { li:a={{<key>f;<key>n}; {Ctrl<Key>n};}; action=New() }
