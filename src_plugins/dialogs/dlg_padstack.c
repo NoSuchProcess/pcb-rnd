@@ -27,6 +27,7 @@
 #include "config.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_dad.h>
+#include <librnd/core/hidlib_conf.h>
 #include "funchash_core.h"
 #include "obj_pstk.h"
 #include "obj_pstk_op.h"
@@ -108,16 +109,16 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 				case PCB_PSSH_CIRC:
 					RND_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "circle");
 					if ((shape->data.circ.x != 0) || (shape->data.circ.y != 0))
-						rnd_snprintf(tmp, sizeof(tmp), "dia=%.06$mm\nat %.06$mm;%.06$mm", shape->data.circ.dia, shape->data.circ.x, shape->data.circ.y);
+						rnd_snprintf(tmp, sizeof(tmp), "%m+dia=%.06$mS\nat %.06$mS;%.06$mS", rnd_conf.editor.grid_unit->allow, shape->data.circ.dia, shape->data.circ.x, shape->data.circ.y);
 					else
-						rnd_snprintf(tmp, sizeof(tmp), "dia=%.06$mm", shape->data.circ.dia);
+						rnd_snprintf(tmp, sizeof(tmp), "%m+dia=%.06$mS", rnd_conf.editor.grid_unit->allow, shape->data.circ.dia);
 					break;
 				case PCB_PSSH_LINE:
 					if (shape->data.line.square)
 						RND_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "square line");
 					else
 						RND_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "round line");
-					rnd_snprintf(tmp, sizeof(tmp), "thickness=%.06$mm", shape->data.line.thickness);
+					rnd_snprintf(tmp, sizeof(tmp), "%m+thickness=%.06$mS", rnd_conf.editor.grid_unit->allow, shape->data.line.thickness);
 					break;
 				case PCB_PSSH_POLY:
 					RND_DAD_SET_VALUE(hid_ctx, pse->proto_shape[n], str, "polygon");
