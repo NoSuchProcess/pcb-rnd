@@ -422,7 +422,8 @@ void pcb_bxl_add_arc(pcb_bxl_ctx_t *ctx)
 void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 {
 	pcb_flag_values_t flg = 0;
-	int scale;
+	int scale, tlen;
+	rnd_coord_t bbw, bbh;
 	rnd_coord_t thickness;
 	SKIP;
 
@@ -440,6 +441,12 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 		}
 		rnd_attribute_put(&ctx->subc->Attributes, ctx->state.attr_key, ctx->state.attr_val);
 	}
+
+	tlen = ctx->state.text_str == NULL ? 0 : strlen(ctx->state.text_str);
+	bbw = RND_MIL_TO_COORD(ctx->state.text_style->char_width * tlen);
+	bbh = RND_MIL_TO_COORD(ctx->state.text_style->height * (double)(1.3333333333)); /* +1/3 for the parts under the baseline */
+
+rnd_trace("bxl text '%s' w=%ml h=%ml hgh=%f\n", ctx->state.text_str, bbw, bbh, ctx->state.text_style->height);
 
 	if ((ctx->state.text_str != NULL) && (ctx->state.is_visible)) {
 		if (ctx->state.text_style != NULL) {
