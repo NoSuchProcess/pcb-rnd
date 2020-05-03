@@ -423,7 +423,7 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 {
 	pcb_flag_values_t flg = 0;
 	int scale, tlen;
-	rnd_coord_t bbw, bbh;
+	rnd_coord_t bbw, bbh, anchx, anchy;
 	rnd_coord_t thickness;
 	SKIP;
 
@@ -442,16 +442,33 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 		rnd_attribute_put(&ctx->subc->Attributes, ctx->state.attr_key, ctx->state.attr_val);
 	}
 
+	/* determine desired bounding box size */
 	tlen = ctx->state.text_str == NULL ? 0 : strlen(ctx->state.text_str);
 	bbw = RND_MIL_TO_COORD(ctx->state.text_style->char_width * tlen);
 	bbh = RND_MIL_TO_COORD(ctx->state.text_style->height * (double)(1.3333333333)); /* +1/3 for the parts under the baseline */
 
-rnd_trace("bxl text '%s' w=%ml h=%ml hgh=%f\n", ctx->state.text_str, bbw, bbh, ctx->state.text_style->height);
+	/* determine anchor point on this bounding box; the anchor is the point placed
+	   at origin */
+	switch(ctx->state.hjust) {
+		case PCB_BXL_JUST_LEFT:   anchx = 0; break;
+		case PCB_BXL_JUST_RIGHT:  anchx = bbw; break;
+		default:;
+		case PCB_BXL_JUST_CENTER: anchx = bbw/2; break;
+	}
+
+	switch(ctx->state.vjust) {
+		case PCB_BXL_JUST_TOP:    anchy = 0; break;
+		case PCB_BXL_JUST_BOTTOM: printf("bottom\n");anchy = RND_MIL_TO_COORD(ctx->state.text_style->height); break;
+		default:;
+		case PCB_BXL_JUST_CENTER: anchy = RND_MIL_TO_COORD(ctx->state.text_style->height)/2; break;
+	}
+
+rnd_trace("bxl text '%s' w=%ml h=%ml anchx=%ml anchy=%ml (%d %d)\n", ctx->state.text_str, bbw, bbh, anchx, anchy, ctx->state.hjust, ctx->state.vjust);
 
 	if ((ctx->state.text_str != NULL) && (ctx->state.is_visible)) {
 		if (ctx->state.text_style != NULL) {
 TODO("need to figure how text is scaled and justified in bxl");
-			scale = ctx->state.text_style->height;
+			scale = ctx->state.text_style->height/30*100;
 			thickness = RND_MIL_TO_COORD(ctx->state.text_style->width);
 		}
 		else {
@@ -460,7 +477,7 @@ TODO("need to figure how text is scaled and justified in bxl");
 		}
 
 		pcb_text_new(ctx->state.layer, pcb_font(ctx->pcb, 0, 1),
-			ctx->state.origin_x, ctx->state.origin_y,
+			ctx->state.origin_x - anchx, ctx->state.origin_y - anchy - RND_MIL_TO_COORD(13),
 			ctx->state.rot, scale, thickness, ctx->state.text_str,
 			pcb_flag_make(PCB_FLAG_CLEARLINE | flg));
 	}
