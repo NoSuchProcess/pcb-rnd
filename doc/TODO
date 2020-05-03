@@ -3,7 +3,7 @@
 1. For the upcoming release ===============================================================================
 - TEST: footprints are open as binary file now (fopen's "b") - check on win32 if this breaks anything with any of our footprint formats
 + CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
-+ CLEANUP/BUG: bug_files/gtk_transient.txt: add config options on how gtk transient-for and (a new) raise should work [report: Joe, Bdale]
++ CLEANUP/BUG: bug_files/gtk_transient.txt: add config options on how gtk transient-for and (a new) raise should work [report: Bdale]
 + CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert, Joe]
 + CLEANUP: insert drag&drop strangeness (mainline too): insert should just insert a new point and stop there, not starting a drag&drop move; the new point should be marked somehow (e.g. green-find one half of the object, like arc split does) lines can be inserted mostly only in all-dir-line which is strange [report: Igor2]
 - FEATURE: lihata v7
