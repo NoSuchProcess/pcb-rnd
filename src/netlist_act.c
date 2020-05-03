@@ -181,6 +181,33 @@ static void pcb_netlist_norats(pcb_net_t *new_net, pcb_net_term_t *term)
 	pcb_netlist_changed(0);
 }
 
+static void allrats(int val)
+{
+	htsp_entry_t *e;
+	int chg = 0;
+	for(e = htsp_first(&PCB->netlist[PCB_NETLIST_EDITED]); e != NULL; e = htsp_next(&PCB->netlist[PCB_NETLIST_EDITED], e)) {
+		pcb_net_t *n = e->value;
+		if ((n != NULL) && (n->inhibit_rats != val)) {
+			n->inhibit_rats = val;
+			chg = 1;
+		}
+	}
+	if (chg)
+		pcb_netlist_changed(0);
+}
+
+static int pcb_netlist_allrats()
+{
+	allrats(0);
+	return 0;
+}
+
+static int pcb_netlist_noallrats()
+{
+	allrats(1);
+	return 0;
+}
+
 /* The primary purpose of this action is to remove the netlist
    completely so that a new one can be loaded, usually via a gsch2pcb
    style script.  */
@@ -399,6 +426,8 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Unselect: func = pcb_netlist_unselect; break;
 		case F_Rats: func = pcb_netlist_rats; break;
 		case F_NoRats: func = pcb_netlist_norats; break;
+		case F_AllRats: return pcb_netlist_allrats();
+		case F_NoAllRats: return pcb_netlist_noallrats();
 		case F_AddRats: func = pcb_netlist_addrats; break;
 		case F_Style: func = (NFunc) pcb_netlist_style; break;
 		case F_Ripup: func = pcb_netlist_ripup; break;
