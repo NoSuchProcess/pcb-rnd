@@ -161,7 +161,9 @@ static void netlist_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd
 	if (row != NULL) {
 		netname = row->cell[0];
 		if ((row == ctx->last_selected_row) && ((rnd_dtime() - ctx->last_selected_time) < DBL_CLICK_TIME)) {
-rnd_trace("dbl click\n");
+			int disabled = (row->cell[1][0] == '*');
+			if (netname != NULL)
+				rnd_actionva(&ctx->pcb->hidlib, "netlist", disabled ? "rats" : "norats", netname, NULL);
 			ctx->last_selected_row = NULL;
 			return;
 		}
