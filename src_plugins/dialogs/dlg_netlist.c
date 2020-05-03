@@ -30,12 +30,17 @@
 
 const char *dlg_netlist_cookie = "netlist dialog";
 
+/* timeout for handling two clicks as a double click */
+#define DBL_CLICK_TIME 0.7
+
 typedef struct {
 	RND_DAD_DECL_NOINIT(dlg)
 	pcb_board_t *pcb;
 	rnd_rnd_box_t bb_prv;
 	int wnetlist, wprev, wtermlist;
 	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wallrats, wnoallrats, wripup, waddrats, wrename, wmerge, wattr;
+	void *last_selected_row;
+	double last_selected_time;
 	int active; /* already open - allow only one instance */
 } netlist_ctx_t;
 
@@ -153,13 +158,22 @@ static void netlist_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd
 	const char *netname = NULL;
 	pcb_net_t *net = NULL;
 
-	if (row != NULL)
+	if (row != NULL) {
 		netname = row->cell[0];
+		if ((row == ctx->last_selected_row) && ((rnd_dtime() - ctx->last_selected_time) < DBL_CLICK_TIME)) {
+rnd_trace("dbl click\n");
+			ctx->last_selected_row = NULL;
+			return;
+		}
+	}
 	if (netname != NULL)
 		net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
 	netlist_data2dlg_connlist(ctx, net);
 	rnd_event(&PCB->hidlib, RND_EVENT_GUI_LEAD_USER, "cci", 0, 0, 0);
 	netlist_force_redraw(ctx);
+
+	ctx->last_selected_row = row;
+	ctx->last_selected_time = rnd_dtime();
 }
 
 static void termlist_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
