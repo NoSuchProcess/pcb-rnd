@@ -35,7 +35,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	rnd_rnd_box_t bb_prv;
 	int wnetlist, wprev, wtermlist;
-	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wripup, waddrats, wrename, wmerge, wattr;
+	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wallrats, wnoallrats, wripup, waddrats, wrename, wmerge, wattr;
 	int active; /* already open - allow only one instance */
 } netlist_ctx_t;
 
@@ -196,6 +196,17 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	const char *name;
 
 	atree = &ctx->dlg[ctx->wnetlist];
+
+	/* no selection required */
+	if (w == ctx->wallrats) {
+		rnd_actionva(&ctx->pcb->hidlib, "netlist", "allrats", NULL);
+		return;
+	}
+	else if (w == ctx->wnoallrats) {
+		rnd_actionva(&ctx->pcb->hidlib, "netlist", "noallrats", NULL);
+		return;
+	}
+
 	r = rnd_dad_tree_get_selected(atree);
 	if (r == NULL)
 		return;
@@ -385,6 +396,14 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 					netlist_ctx.wnorats = RND_DAD_CURRENT(netlist_ctx.dlg);
 				RND_DAD_BUTTON(netlist_ctx.dlg, "rat enable");
 					netlist_ctx.wrats = RND_DAD_CURRENT(netlist_ctx.dlg);
+					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+			RND_DAD_END(netlist_ctx.dlg);
+			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg);
+				RND_DAD_BUTTON(netlist_ctx.dlg, "all disable");
+					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
+					netlist_ctx.wnoallrats = RND_DAD_CURRENT(netlist_ctx.dlg);
+				RND_DAD_BUTTON(netlist_ctx.dlg, "all enable");
+					netlist_ctx.wallrats = RND_DAD_CURRENT(netlist_ctx.dlg);
 					RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 			RND_DAD_END(netlist_ctx.dlg);
 			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg);
