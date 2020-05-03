@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.1 (svn r30753) an interactive printed circuit board editor ,  Revision: 30780
+This is pcb-rnd 2.2.1 (svn r31044) an interactive printed circuit board editor ,  Revision: 31055
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -150,7 +150,7 @@ This is pcb-rnd 2.2.1 (svn r30753) an interactive printed circuit board editor ,
 <tr><td>GetMark</td><td>Return mark properties in numeric form.</td><td>GetMark(active|user_placed|x|y)</td><td>act_read</td>
 <tr><td>GetParentData</td><td>Return the closest upstream pcb_data_t * parent of an object</td><td>GetParentData([root_data,] idpath)</td><td>act_read</td>
 <tr><td>GetStyle</td><td>Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)</td><td>GetStyle()</td><td></td>
-<tr><td>GetValue</td><td>Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps pcb_get_value_ex().</td><td>GetValue(input, units, relative, default_unit)</td><td>act_read</td>
+<tr><td>GetValue</td><td>Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps rnd_get_value_ex().</td><td>GetValue(input, units, relative, default_unit)</td><td>act_read</td>
 <tr><td><a href="action_details.html#getxy">GetXY</a></td><td>Get a coordinate. If x or y specified, the return value of the action is the x or y coordinate.</td><td>GetXY([message, [x|y]])</td><td></td>
 <tr><td>GlobalPuller</td><td>Pull all traces tight. With no argument it runs on the current layer.</td><td>pcb_act_GlobalPuller([Found|Selected])</td><td>puller plugin</td>
 <tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)</td><td></td>
