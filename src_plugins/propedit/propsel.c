@@ -686,7 +686,7 @@ static void set_poly(pcb_propset_ctx_t *st, pcb_poly_t *poly)
 		if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
 		    pcb_chg_obj_clear_size(PCB_OBJ_POLY, poly->parent.layer, poly, NULL, st->c*2, st->c_absolute)) DONE;
 		if (st->is_trace && st->c_valid && (strcmp(pn, "enforce_clearance") == 0) &&
-		    pcb_chg_obj_enforce_clear_size(PCB_OBJ_POLY, poly->parent.layer, poly, NULL, st->c*2, st->c_absolute)) DONE;
+		    pcb_chg_obj_enforce_clear_size(PCB_OBJ_POLY, poly->parent.layer, poly, NULL, st->c, st->c_absolute)) DONE;
 	}
 
 	if (st->is_attr) {
