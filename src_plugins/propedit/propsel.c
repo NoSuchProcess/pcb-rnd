@@ -354,6 +354,7 @@ static void toggle_attr(pcb_propset_ctx_t *st, rnd_attribute_list_t *list, int u
 {
 	const char *key = st->name+2, *newval = NULL;
 	const char *orig = rnd_attribute_get(list, key);
+	int side_effect = 0;
 
 	if (orig == NULL) {
 		if (st->toggle_create) {
@@ -374,10 +375,16 @@ static void toggle_attr(pcb_propset_ctx_t *st, rnd_attribute_list_t *list, int u
 	return;
 
 	do_set:;
+	if (strcmp(key, "tight_clearance") == 0)
+		side_effect = 1;
+	if ((obj != NULL) && side_effect)
+		pcb_obj_pre(obj);
 	if (undoable)
 		pcb_uchg_attr(st->pcb, obj, key, newval);
 	else
 		rnd_attribute_put(list, key, newval);
+	if ((obj != NULL) && side_effect)
+		pcb_obj_post(obj);
 	st->set_cnt++;
 }
 
