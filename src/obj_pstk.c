@@ -1077,14 +1077,16 @@ int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, rnd_coord_
 
 	/* global clearance */
 	if (ps->Clearance > 0)
-		return ps->Clearance < 2 * conf_core.design.bloat;
+		return pcb_obj_clearance(ps, polygon) < 2 * conf_core.design.bloat;
 
 	/* else check each shape; it's safest to run this check on the canonical
 	   transformed shape, that's always available */
 	ts = pcb_pstk_get_tshape_(ps->parent.data, ps->proto, 0);
-	for(n = 0; n < ts->len; n++)
-		if ((ts->shape[n].clearance > 0) && (ts->shape[n].clearance < 2 * conf_core.design.bloat))
+	for(n = 0; n < ts->len; n++) {
+		rnd_coord_t clr = RND_MAX(ts->shape[n].clearance, polygon->enforce_clearance);
+		if ((clr > 0) && (clr < 2 * conf_core.design.bloat))
 			return 1;
+	}
 
 	return 0;
 }
