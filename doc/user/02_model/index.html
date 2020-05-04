@@ -261,6 +261,13 @@ polygon. This is risky: the program will indicate connection between polygon
 islands that are not really connected, only because they are part of the same
 polygon!
 <p>
+Any polygon may have its <i>enforce_clearance</i> set to non-zero, in which
+case any object that has a clearance within the given polygon by flags will
+make a clearance at least as large as the polygon's <i>enforce_clearance</i>
+(but larger, if the object requested larger clearance than
+the polygon's <i>enforce_clearance</i>). Note: this applies only if
+the object has the clearline flag and the polygon has the clearpoly flag.
+
 <p>
 <table border=1>
 	<caption><b>Polygon Object Flags</b>
