@@ -8,6 +8,7 @@
 + CLEANUP: insert drag&drop strangeness (mainline too): insert should just insert a new point and stop there, not starting a drag&drop move; the new point should be marked somehow (e.g. green-find one half of the object, like arc split does) lines can be inserted mostly only in all-dir-line which is strange [report: Igor2]
 - FEATURE: lihata v7
 	- FEATURE: data model: new object type GFX- save and load
+	- save and load rat anchor object idpath
 	- FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
 		- deprecate MinClearGap
 		- thermal tool doesn't work on heavy terminals and objects
@@ -163,9 +164,8 @@
 	- FEATURE: vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 	- FEATURE: add round down
 - FEATURE: lesstif: implement/enable local grid in lesstif (menu option is disabled)
-- FEATURE: lihata v7
+- FEATURE: lihata v8
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
-	- save and load rat anchor object idpath
 	- remove via geometry from route style
 
 4. Low prio ===============================================================================
