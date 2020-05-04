@@ -201,8 +201,8 @@ fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_proptoggle[] = "proptoggle([scope], name, value)";
-static const char pcb_acth_proptoggle[] = "Toggle the named property of scope or all selected objects, assuming the property is boolean. Scope is documented at PropEdit().";
+static const char pcb_acts_proptoggle[] = "proptoggle([scope], name, [create])";
+static const char pcb_acth_proptoggle[] = "Toggle the named property of scope or all selected objects, assuming the property is boolean. Scope is documented at PropEdit(). If create is true, non-existing attributes are created as true.";
 fgw_error_t pcb_act_proptoggle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *first, *name, *create = NULL;
