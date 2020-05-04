@@ -137,7 +137,7 @@ size_t rnd_base64_str2bin(unsigned char *dst, size_t dst_len, const char *src, s
 		while(bits < 8) {
 			if (*src != '=') {
 				if (src_len <= 0)
-					return -2;
+					return -1;
 				tmp = digit2int(*src);
 				src++;
 				src_len--;
@@ -156,9 +156,8 @@ size_t rnd_base64_str2bin(unsigned char *dst, size_t dst_len, const char *src, s
 		olen++;
 		bits -= 8;
 		if (olen >= dst_len)
-			return -3;
+			return -1;
 	}
-
 
 	return olen;
 }
