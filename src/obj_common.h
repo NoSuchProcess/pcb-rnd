@@ -290,6 +290,11 @@ RND_INLINE size_t pcb_obj_iid(pcb_any_obj_t *obj)
 	return (size_t)obj / pcb_size_class(sizeof(pcb_any_obj_t));
 }
 
+/* Assuming clearance is happening (flags), clearance of an object
+   in a polygon is the bigger of the obj's ->clearance and the polygon's
+   ->enforce_clearance */
+#define pcb_obj_clearance(obj, in_poly) \
+	(RND_MAX((obj)->Clearance, (in_poly)->enforce_clearance))
 
 #define pcb_obj_id_reg(data, obj) \
 	do { \
