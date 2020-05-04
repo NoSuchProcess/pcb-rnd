@@ -550,7 +550,7 @@ static lht_node_t *build_polygon(pcb_poly_t *poly)
 
 static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 {
-	char buff[128];
+	char buff[128], *av;
 	lht_node_t *obj;
 
 	sprintf(buff, "text.%ld", text->ID);
@@ -585,6 +585,10 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 
 	if (role != NULL)
 		lht_dom_hash_put(obj, build_text("role", role));
+
+	if ((wrver < 7) && ((av = rnd_attribute_get(&text->Attributes, "tight_clearance")) != NULL))
+		if (rnd_istrue(av))
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text_tight_clearance", "lihata boards before version v7 did not support text tight_clearance\n", "Either save in lihata v7+ or remove the tight_clearance attribute");
 
 	return obj;
 }
