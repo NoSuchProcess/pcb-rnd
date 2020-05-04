@@ -1,3 +1,4 @@
+31115	configure	include libulzw in librnd 3rd
 31041	configure	pcb_ -> rnd_ renames in librnd
 30779	configure	remove distaligntext - all cases handled by distalign properly
 30754	configure	remove the old import_sch plugin (in favor of import_sch2)
