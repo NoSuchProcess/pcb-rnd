@@ -42,6 +42,9 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/error.h>
 #include <librnd/core/misc_util.h>
+#include <librnd/core/base64.h>
+#include <librnd/core/pixmap.h>
+#include <libulzw/libulzw.h>
 #include "layer.h"
 #include <genvector/vtp0.h>
 #include "common.h"
@@ -706,6 +709,112 @@ static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord
 	return err;
 }
 
+typedef struct {
+	gds_t buff;
+	unsigned char *iptr, *ibuff;
+	size_t ibs;
+} ucomp_t;
+
+static void ucomp_dst(void *ctx_, int d)
+{
+	ucomp_t *ctx = ctx_;
+	gds_append(&ctx->buff, d);
+}
+
+static int ucomp_src(void *ctx_)
+{
+	ucomp_t *ctx = ctx_;
+	if (ctx->ibs == 0)
+		return EOF;
+	ctx->ibs--;
+	return *ctx->iptr++;
+}
+
+
+static int parse_gfx(pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy)
+{
+	pcb_gfx_t *gfx;
+	lht_node_t *pmn;
+	unsigned char *raw;
+	unsigned char intconn = 0;
+	int err = 0, itmp, res;
+	size_t b64s;
+	long int id;
+	unsigned long psx, psy;
+	ucomp_t uctx;
+	rnd_pixmap_t *pxm;
+
+	if (obj->type != LHT_HASH)
+		return iolht_error(obj, "gfx.ID must be a hash\n");
+
+	if (ly == NULL)
+		return iolht_error(obj, "can't allocate gfx on invalid layer\n");
+
+	if (parse_id(&id, obj, 4) != 0)
+		return -1;
+
+	gfx = pcb_gfx_alloc_id(ly, id);
+	parse_flags(&gfx->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ARC, &intconn, 0);
+	rnd_attrib_compat_set_intconn(&gfx->Attributes, intconn);
+	parse_attributes(&gfx->Attributes, lht_dom_hash_get(obj, "attributes"));
+
+	if (rdver >= 4)
+		parse_thermal_heavy((pcb_any_obj_t *)gfx, lht_dom_hash_get(obj, "thermal"));
+
+	err |= parse_coord(&gfx->cx,         hash_get(obj, "cx", 0));
+	err |= parse_coord(&gfx->cy,         hash_get(obj, "cy", 0));
+	err |= parse_coord(&gfx->sx,         hash_get(obj, "sx", 0));
+	err |= parse_coord(&gfx->sy,         hash_get(obj, "sy", 0));
+	err |= parse_angle(&gfx->rot,        hash_get(obj, "rot", 0));
+	err |= parse_int(&itmp,              hash_get(obj, "xmirror", 0)); gfx->xmirror = itmp;
+	err |= parse_int(&itmp,              hash_get(obj, "ymirror", 0)); gfx->ymirror = itmp;
+
+	err |= parse_ulong(&psx,             hash_get(obj, "pxm_sx", 0));
+	err |= parse_ulong(&psy,             hash_get(obj, "pxm_sy", 0));
+	if (err != 0)
+		return err;
+
+	gfx->cx += dx;
+	gfx->cy += dy;
+
+	pmn = hash_get(obj, "pixmap", 0);
+	if ((pmn == NULL) || (pmn->type != LHT_TEXT))
+		return iolht_error(obj, "Failed to find a valid gfx pixmap node\n");
+
+	memset(&uctx, 0, sizeof(uctx));
+	b64s = strlen(pmn->data.text.value);
+	uctx.iptr = uctx.ibuff = malloc(b64s);
+	uctx.ibs = rnd_base64_str2bin(uctx.ibuff, b64s, pmn->data.text.value, b64s);
+
+	if (uctx.ibs == -1) {
+		free(uctx.ibuff);
+		return iolht_error(obj, "Failed to base64 decode pixmap gfx\n");
+	}
+
+	res = ulzw_decompress(&uctx, ucomp_dst, ucomp_src);
+	free(uctx.ibuff);
+	if (res != 0) {
+		gds_uninit(&uctx.buff);
+		return iolht_error(obj, "Failed to decompress gfx pixmap data\n");
+	}
+
+	if (psx * psy * 3 != uctx.buff.used) {
+		gds_uninit(&uctx.buff);
+		return iolht_error(obj, "Wrong size of pixmap\n");
+	}
+
+	pxm = rnd_pixmap_alloc(&pcb->hidlib, psx, psy);
+	pxm->p = uctx.buff.array;
+	pxm->size = uctx.buff.used;
+	pcb_gfx_set_pixmap_free(gfx, pxm, 0);
+
+	if (ly != NULL)
+		pcb_add_gfx_on_layer(ly, gfx);
+
+	return err;
+}
+
+
 static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 {
 	pcb_poly_t *poly;
@@ -1017,6 +1126,8 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 				parse_line(ly, n, 0, 0);
 			if (strncmp(n->name, "arc.", 4) == 0)
 				parse_arc(ly, n, 0, 0);
+			if (strncmp(n->name, "gfx.", 4) == 0)
+				parse_gfx(pcb, ly, n, 0, 0);
 			if (strncmp(n->name, "polygon.", 8) == 0)
 				parse_polygon(ly, n);
 			if (strncmp(n->name, "text.", 5) == 0)
