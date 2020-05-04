@@ -212,6 +212,7 @@ li:pcb-rnd-subcircuit-v*            footprint file containing a single subcircui
    found                 flag       If set, this object has been found by FindConnection()
    selected              flag       Set when the object is selected.
    drc                   flag       Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+   exportsel             flag       Set for objects that should be exported in a partial export.
    lock                  flag       Set for locked objects.
    nonetlist             flag       subcircuit is not on the netlist and should not interfere with the netlist
    termname              flag       when set the names of pins are shown.
@@ -258,6 +259,7 @@ ha:data                              Layers and global objects of the board
     auto                flag         For lines and vias, indicates that these were created by the autorouter.
     warn                flag         For pins, vias, and pads, set to indicate a warning.
     drc                 flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+    exportsel           flag         Set for objects that should be exported in a partial export.
     lock                flag         Set for locked objects.
     termname            flag         when set the names of pins are shown.
     floater             flag         subc part can be moved after subc placing
@@ -338,6 +340,7 @@ ha:data                              Layers and global objects of the board
       auto              flag         For lines and vias, indicates that these were created by the autorouter.
       rubberend         flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
       drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+      exportsel         flag         Set for objects that should be exported in a partial export.
       lock              flag         Set for locked objects.
       termname          flag         when set the names of pins are shown.
       floater           flag         subc part can be moved after subc placing
@@ -365,6 +368,7 @@ ha:data                              Layers and global objects of the board
       auto              flag         For lines and vias, indicates that these were created by the autorouter.
       rubberend         flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
       drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+      exportsel         flag         Set for objects that should be exported in a partial export.
       lock              flag         Set for locked objects.
       termname          flag         when set the names of pins are shown.
       floater           flag         subc part can be moved after subc placing
@@ -376,6 +380,7 @@ ha:data                              Layers and global objects of the board
       solid             none         if present, there is no thermal but a solid connection ("join")
     ha:polygon.ID                    polygon, as drawn (unclipped)
      clearance          coord    >=3 copper clearance around the object
+     enforce_clearance  coord    >=7 enforce minimum clearance on clearing objects within the polygon
      ha:attributes                   a hash of attribute key=value pairs
       attrib-key        string       attribute value
      ha:flags                        flag bits of a polygon
@@ -384,6 +389,7 @@ ha:data                              Layers and global objects of the board
       fullpoly          flag         For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).
       selected          flag         Set when the object is selected.
       drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+      exportsel         flag         Set for objects that should be exported in a partial export.
       lock              flag         Set for locked objects.
       termname          flag         when set the names of pins are shown.
       clearpolypoly     flag         For polygons, apply clearance to nearby polygons
@@ -415,6 +421,7 @@ ha:data                              Layers and global objects of the board
       selected          flag         Set when the object is selected.
       onsolder          flag         For text, indicates that it is on the solder side.
       drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+      exportsel         flag         Set for objects that should be exported in a partial export.
       lock              flag         Set for locked objects.
       termname          flag         when set the names of pins are shown.
       dyntext           flag         For text: dynamic string (substitute %patterns%)
@@ -468,6 +475,7 @@ ha:data                              Layers and global objects of the board
    found                flag         If set, this object has been found by FindConnection()
    selected             flag         Set when the object is selected.
    drc                  flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+   exportsel            flag         Set for objects that should be exported in a partial export.
    lock                 flag         Set for locked objects.
    nonetlist            flag         subcircuit is not on the netlist and should not interfere with the netlist
    termname             flag         when set the names of pins are shown.
@@ -561,6 +569,7 @@ ha:data                              Layers and global objects of the board
    auto                 flag         For lines and vias, indicates that these were created by the autorouter.
    rubberend            flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
    drc                  flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+   exportsel            flag         Set for objects that should be exported in a partial export.
    lock                 flag         Set for locked objects.
    termname             flag         when set the names of pins are shown.
    floater              flag         subc part can be moved after subc placing

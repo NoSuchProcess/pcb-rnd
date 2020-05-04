@@ -12,6 +12,7 @@ ha:lht_tree_doc { ha:comm {
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:rubberend { valtype=flag; desc={For lines, used internally for rubber band moves: indicates one end already rubber banding.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:exportsel { valtype=flag; desc={Set for objects that should be exported in a partial export.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
@@ -30,6 +31,7 @@ ha:lht_tree_doc { ha:comm {
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:rubberend { valtype=flag; desc={For lines, used internally for rubber band moves: indicates one end already rubber banding.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:exportsel { valtype=flag; desc={Set for objects that should be exported in a partial export.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
@@ -47,6 +49,7 @@ ha:lht_tree_doc { ha:comm {
 			ha:fullpoly { valtype=flag; desc={For polygons, the full polygon is drawn (i.e. all parts instead of only the biggest one).}}
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:exportsel { valtype=flag; desc={Set for objects that should be exported in a partial export.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:clearpolypoly { valtype=flag; desc={For polygons, apply clearance to nearby polygons}}
@@ -65,6 +68,7 @@ ha:lht_tree_doc { ha:comm {
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
 			ha:onsolder { valtype=flag; desc={For text, indicates that it is on the solder side.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:exportsel { valtype=flag; desc={Set for objects that should be exported in a partial export.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:dyntext { valtype=flag; desc={For text: dynamic string (substitute %patterns%)}}
@@ -81,6 +85,7 @@ ha:lht_tree_doc { ha:comm {
 			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:exportsel { valtype=flag; desc={Set for objects that should be exported in a partial export.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
 			ha:nonetlist { valtype=flag; desc={subcircuit is not on the netlist and should not interfere with the netlist }}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
@@ -101,6 +106,7 @@ ha:lht_tree_doc { ha:comm {
 			ha:auto { valtype=flag; desc={For lines and vias, indicates that these were created by the autorouter.}}
 			ha:warn { valtype=flag; desc={For pins, vias, and pads, set to indicate a warning.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:exportsel { valtype=flag; desc={Set for objects that should be exported in a partial export.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
 			ha:termname { valtype=flag; desc={when set the names of pins are shown.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
@@ -117,6 +123,22 @@ ha:lht_tree_doc { ha:comm {
 			ha:rat { valtype=flag; desc={If set for a line, indicates that this line is a rat line instead of a copper trace.}}
 			ha:selected { valtype=flag; desc={Set when the object is selected.}}
 			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:exportsel { valtype=flag; desc={Set for objects that should be exported in a partial export.}}
+			ha:lock { valtype=flag; desc={Set for locked objects.}}
+			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
+		}
+	}
+	ha:flags_gfx {
+		hide=1
+		name=flags
+		dot_group=1
+		desc={flag bits of a gfx}
+		type=ha
+		li:children {
+			ha:found { valtype=flag; desc={If set, this object has been found by FindConnection()}}
+			ha:selected { valtype=flag; desc={Set when the object is selected.}}
+			ha:drc { valtype=flag; desc={Set for objects that fail DRC: flag like FOUND flag for DRC checking.}}
+			ha:exportsel { valtype=flag; desc={Set for objects that should be exported in a partial export.}}
 			ha:lock { valtype=flag; desc={Set for locked objects.}}
 			ha:floater { valtype=flag; desc={subc part can be moved after subc placing}}
 		}
