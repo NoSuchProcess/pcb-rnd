@@ -425,11 +425,39 @@ static lht_node_t *build_arc(pcb_arc_t *arc, rnd_coord_t dx, rnd_coord_t dy)
 	return obj;
 }
 
+typedef struct {
+	unsigned char *buff, *optr, *iptr;
+	size_t cbs, ibs, cmax;
+} ucomp_t;
+
+static void ucomp_dst(void *ctx_, int d)
+{
+	ucomp_t *ctx = ctx_;
+	if (ctx->cmax <= 0) {
+		rnd_message(RND_MSG_ERROR, "Ran out of buffer space while compressing gfx pixmap\n");
+		return;
+	}
+	*ctx->optr++ = d;
+	ctx->cmax--;
+	ctx->cbs++;
+}
+
+static int ucomp_src(void *ctx_)
+{
+	ucomp_t *ctx = ctx_;
+	if (ctx->ibs == 0)
+		return EOF;
+	ctx->ibs--;
+	return *ctx->iptr++;
+}
+
 static lht_node_t *build_gfx(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
 {
-	unsigned char *tbuff, *cbiff, buff[128];
-	size_t cbs, tbs, obs;
+	unsigned char *tbuff;
+	char buff[128];
+	size_t tbs, obs;
 	lht_node_t *obj;
+	ucomp_t uctx;
 
 	sprintf(buff, "gfx.%ld", gfx->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
@@ -446,9 +474,17 @@ static lht_node_t *build_gfx(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
 	lht_dom_hash_put(obj, build_textf("xmirror", "%d", gfx->xmirror));
 	lht_dom_hash_put(obj, build_textf("ymirror", "%d", gfx->ymirror));
 
-	tbs = gfx->pxm_neutral->size + gfx->pxm_neutral->size/2 + 4;
+
+	uctx.iptr = gfx->pxm_neutral->p;
+	uctx.ibs = gfx->pxm_neutral->size;
+	uctx.cmax = gfx->pxm_neutral->size * 2 + 256;
+	uctx.cbs = 0;
+	uctx.optr = uctx.buff = malloc(uctx.cmax);
+	ulzw_compress(&uctx, ucomp_dst, ucomp_src, 12);
+
+	tbs = uctx.cbs + uctx.cbs/2 + 4;
 	tbuff = malloc(tbs+1);
-	obs = rnd_base64_bin2str(tbuff, tbs, gfx->pxm_neutral->p, gfx->pxm_neutral->size);
+	obs = rnd_base64_bin2str(tbuff, tbs, uctx.buff, uctx.cbs);
 	if (obs != -1) {
 		tbuff[obs] = '\0';
 		lht_dom_hash_put(obj, build_text_nodup("pixmap", tbuff));
@@ -457,6 +493,7 @@ static lht_node_t *build_gfx(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
 		free(tbuff);
 		pcb_io_incompat_save(NULL, (pcb_any_obj_t*)gfx, "gfx_internal", "Internal error saving gfx: base64\n", "Please report this bug to the developer!");
 	}
+	free(uctx.buff);
 
 	build_thermal_heavy(obj, (pcb_any_obj_t*)gfx);
 
