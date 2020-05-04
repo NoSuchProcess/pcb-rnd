@@ -721,6 +721,7 @@ ha:{
 				ha:Edit text...           { li:a={{<key>e;<key>t};};  action=ChangeName(Object) }
 				ha:Set Same Style         { action=SetSame() }
 				ha:Change font...         { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
+				ha:Toggle tight clearance { action=PropToggle(object, a/tight_clearance, true); }
 				-
 				ha:Remove text            { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
