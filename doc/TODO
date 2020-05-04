@@ -12,7 +12,6 @@
 		- deprecate MinClearGap
 		- thermal tool doesn't work on heavy terminals and objects
 		- make op change on enforce_clearance undoable
-	- FEATURE: data model: TODO("v7textclr"): clearance field of text objects; plus invent a flag or attrib to choose between bbox clear or detailed clear [report: Igor2]
 - FEATURE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
 + FEATURE: netlist dialog: double click on a net should disable rats [report: Joe]
 + FEATURE: netlist dialog: button for disable all or enable all [report: Joe]
