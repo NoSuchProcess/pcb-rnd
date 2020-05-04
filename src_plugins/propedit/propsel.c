@@ -48,6 +48,8 @@
 #include "obj_pstk_op.h"
 #include "obj_subc_op.h"
 
+#include "brave.h"
+
 /*********** map ***********/
 #define type2field_String string
 #define type2field_rnd_coord_t coord
@@ -233,6 +235,8 @@ static void map_poly(pcb_propedit_t *ctx, pcb_poly_t *poly)
 	map_attr(ctx, &poly->Attributes);
 	map_common(ctx, (pcb_any_obj_t *)poly);
 	map_add_prop(ctx, "p/trace/clearance", rnd_coord_t, poly->Clearance/2);
+	if (pcb_brave & PCB_BRAVE_LIHATA_V7)
+		map_add_prop(ctx, "p/trace/enforce_clearance", rnd_coord_t, poly->enforce_clearance);
 }
 
 static void map_pstk(pcb_propedit_t *ctx, pcb_pstk_t *ps)
@@ -681,6 +685,8 @@ static void set_poly(pcb_propset_ctx_t *st, pcb_poly_t *poly)
 	if (strncmp(st->name, "p/trace/", 8) == 0) {
 		if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
 		    pcb_chg_obj_clear_size(PCB_OBJ_POLY, poly->parent.layer, poly, NULL, st->c*2, st->c_absolute)) DONE;
+		if (st->is_trace && st->c_valid && (strcmp(pn, "enforce_clearance") == 0) &&
+		    pcb_chg_obj_enforce_clear_size(PCB_OBJ_POLY, poly->parent.layer, poly, NULL, st->c*2, st->c_absolute)) DONE;
 	}
 
 	if (st->is_attr) {
