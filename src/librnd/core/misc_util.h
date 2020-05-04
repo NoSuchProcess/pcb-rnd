@@ -83,7 +83,8 @@ do { \
 	b = __tmp__; \
 } while(0)
 
-#define rnd_istrue(s) (((s) != NULL) && ((*(s) == '1') || (*(s) == 'y') || (*(s) == 'Y') || (*(s) == 't') || (*(s) == 'T')))
+#define rnd_istrue(s)  (((s) != NULL) && ((*(s) == '1') || (*(s) == 'y') || (*(s) == 'Y') || (*(s) == 't') || (*(s) == 'T')))
+#define rnd_isfalse(s) (((s) != NULL) && ((*(s) == '0') || (*(s) == 'n') || (*(s) == 'N') || (*(s) == 'f') || (*(s) == 'F')))
 
 
 #endif
