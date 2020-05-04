@@ -41,6 +41,8 @@
 #include <librnd/core/compat_misc.h>
 #include "rats_patch.h"
 #include <librnd/core/actions.h>
+#include <librnd/core/base64.h>
+#include <librnd/core/pixmap.h>
 #include <librnd/core/misc_util.h>
 #include "layer.h"
 #include "common.h"
@@ -106,8 +108,19 @@ static lht_node_t *build_text(const char *key, const char *value)
 		return dummy_text_node(key);
 
 	field = lht_dom_node_alloc(LHT_TEXT, key);
-	if (value != NULL)
-		field->data.text.value = rnd_strdup(value);
+	field->data.text.value = rnd_strdup(value);
+	return field;
+}
+
+static lht_node_t *build_text_nodup(const char *key, char *value)
+{
+	lht_node_t *field;
+
+	if (value == NULL)
+		return dummy_text_node(key);
+
+	field = lht_dom_node_alloc(LHT_TEXT, key);
+	field->data.text.value = value;
 	return field;
 }
 
@@ -411,6 +424,45 @@ static lht_node_t *build_arc(pcb_arc_t *arc, rnd_coord_t dx, rnd_coord_t dy)
 
 	return obj;
 }
+
+static lht_node_t *build_gfx(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
+{
+	unsigned char *tbuff, *cbiff, buff[128];
+	size_t cbs, tbs, obs;
+	lht_node_t *obj;
+
+	sprintf(buff, "gfx.%ld", gfx->ID);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	obj_attr_flag_warn((pcb_any_obj_t *)gfx);
+
+	lht_dom_hash_put(obj, build_attributes(&gfx->Attributes));
+	lht_dom_hash_put(obj, build_flags(&gfx->Flags, PCB_OBJ_GFX, gfx->intconn));
+	lht_dom_hash_put(obj, build_textf("cx", CFMT, gfx->cx+dx));
+	lht_dom_hash_put(obj, build_textf("cy", CFMT, gfx->cy+dy));
+	lht_dom_hash_put(obj, build_textf("sx", CFMT, gfx->cx));
+	lht_dom_hash_put(obj, build_textf("sy", CFMT, gfx->cy));
+	lht_dom_hash_put(obj, build_textf("rot", "%f", gfx->rot));
+	lht_dom_hash_put(obj, build_textf("xmirror", "%d", gfx->xmirror));
+	lht_dom_hash_put(obj, build_textf("ymirror", "%d", gfx->ymirror));
+
+	tbs = gfx->pxm_neutral->size + gfx->pxm_neutral->size/2 + 4;
+	tbuff = malloc(tbs+1);
+	obs = rnd_base64_bin2str(tbuff, tbs, gfx->pxm_neutral->p, gfx->pxm_neutral->size);
+	if (obs != -1) {
+		tbuff[obs] = '\0';
+		lht_dom_hash_put(obj, build_text_nodup("pixmap", tbuff));
+	}
+	else {
+		free(tbuff);
+		pcb_io_incompat_save(NULL, (pcb_any_obj_t*)gfx, "gfx_internal", "Internal error saving gfx: base64\n", "Please report this bug to the developer!");
+	}
+
+	build_thermal_heavy(obj, (pcb_any_obj_t*)gfx);
+
+	return obj;
+}
+
 
 /* attempt to convert a padstack to an old-style via for v1, v2 and v3 */
 static lht_node_t *build_pstk_pinvia(pcb_data_t *data, pcb_pstk_t *ps, rnd_bool is_via, rnd_coord_t dx, rnd_coord_t dy)
@@ -939,6 +991,7 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, rnd_la
 	pcb_arc_t *ar;
 	pcb_poly_t *po;
 	pcb_text_t *tx;
+	pcb_gfx_t *gfx;
 	int added = 0;
 
 	obj = lht_dom_node_alloc(LHT_HASH, layer->name);
@@ -1002,6 +1055,18 @@ static lht_node_t *build_data_layer(pcb_data_t *data, pcb_layer_t *layer, rnd_la
 		lht_dom_list_append(grp, build_pcb_text(NULL, tx));
 		added++;
 	}
+
+	gfx = gfxlist_first(&layer->Gfx);
+	if (wrver >= 7) {
+		for(; gfx != NULL; gfx = gfxlist_next(gfx)) {
+			lht_dom_list_append(grp, build_gfx(gfx, 0, 0));
+			added++;
+		}
+	}
+	else
+		for(; gfx != NULL; gfx = gfxlist_next(gfx))
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)gfx, "gfx", "lihata boards before version v7 did not support the gfx object\n", "Either save in lihata v7+ or remove the gfx object");
+
 
 	lht_dom_hash_put(obj, grp);
 
