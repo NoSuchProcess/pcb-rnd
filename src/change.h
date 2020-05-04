@@ -86,6 +86,7 @@ rnd_bool pcb_chg_obj_size(int, void *, void *, void *, rnd_coord_t, rnd_bool);
 rnd_bool pcb_chg_obj_1st_size(int, void *, void *, void *, rnd_coord_t, rnd_bool);
 rnd_bool pcb_chg_obj_thermal(int Type, void *Ptr1, void *Ptr2, void *Ptr3, int therm_type, unsigned long lid);
 rnd_bool pcb_chg_obj_clear_size(int, void *, void *, void *, rnd_coord_t, rnd_bool);
+rnd_bool pcb_chg_obj_enforce_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt);
 rnd_bool pcb_chg_obj_2nd_size(int, void *, void *, void *, rnd_coord_t, rnd_bool, rnd_bool);
 rnd_bool pcb_chg_obj_rot(int, void *, void *, void *, double, rnd_bool, rnd_bool);
 rnd_bool pcb_chg_obj_join(int, void *, void *, void *);

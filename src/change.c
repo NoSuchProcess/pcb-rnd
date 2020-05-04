@@ -145,7 +145,7 @@ pcb_opfunc_t ChangeClearSizeFunctions = {
 	NULL, /* common_post */
 	pcb_lineop_change_clear_size,
 	NULL,
-	pcb_polyop_change_clear_size,				/* just to tell the user not to :-) */
+	pcb_polyop_change_clear_size,
 	NULL,
 	NULL,
 	pcb_arcop_change_clear_size,
@@ -154,6 +154,23 @@ pcb_opfunc_t ChangeClearSizeFunctions = {
 	NULL,
 	pcb_subcop_change_clear_size,
 	pcb_pstkop_change_clear_size,
+	0 /* extobj_inhibit_regen */
+};
+
+pcb_opfunc_t ChangeEnforceClearSizeFunctions = {
+	NULL, /* common_pre */
+	NULL, /* common_post */
+	NULL,
+	NULL,
+	pcb_polyop_change_enforce_clear_size,
+	NULL,
+	NULL,
+	NULL,
+	NULL, /* gfx */
+	NULL,
+	NULL,
+	NULL,
+	NULL,
 	0 /* extobj_inhibit_regen */
 };
 
@@ -652,6 +669,25 @@ rnd_bool pcb_chg_obj_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rn
 	}
 	return change;
 }
+
+rnd_bool pcb_chg_obj_enforce_clear_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt)
+{
+	rnd_bool change;
+	pcb_opctx_t ctx;
+
+	ctx.chgsize.pcb = PCB;
+	ctx.chgsize.is_primary = 1;
+	ctx.chgsize.is_absolute = fixIt;
+	ctx.chgsize.value = Difference;
+
+	change = (pcb_object_operation(&ChangeEnforceClearSizeFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3) != NULL);
+	if (change) {
+		pcb_draw();
+		pcb_undo_inc_serial();
+	}
+	return change;
+}
+
 
 /* ---------------------------------------------------------------------------
  * changes the thermal of the passed object

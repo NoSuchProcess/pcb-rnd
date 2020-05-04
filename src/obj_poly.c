@@ -716,6 +716,33 @@ void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_pol
 	return NULL;
 }
 
+/* Handle attempts to change the enforce_clearance of a polygon. */
+void *pcb_polyop_change_enforce_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *poly)
+{
+	rnd_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : poly->Clearance + ctx->chgsize.value;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, poly))
+		return NULL;
+
+	if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0)
+		value = 0;
+	if (value != poly->enforce_clearance) {
+TODO("undo: enforce_clearance in poly");
+/*		pcb_undo_add_obj_to_clear_size(PCB_OBJ_POLY, Layer, poly, poly);*/
+		pcb_poly_restore_to_poly(ctx->chgsize.pcb->Data, PCB_OBJ_POLY, Layer, poly);
+		pcb_poly_invalidate_erase(poly);
+		rnd_r_delete_entry(Layer->polygon_tree, (rnd_rnd_box_t *)poly);
+		poly->enforce_clearance = value;
+		pcb_poly_bbox(poly);
+		rnd_r_insert_entry(Layer->polygon_tree, (rnd_rnd_box_t *)poly);
+		pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_OBJ_POLY, Layer, poly);
+		pcb_poly_invalidate_draw(Layer, poly);
+		return poly;
+	}
+
+	return poly;
+}
+
 /* changes the CLEARPOLY flag of a polygon */
 void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {

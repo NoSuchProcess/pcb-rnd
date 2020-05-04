@@ -33,6 +33,7 @@
 void *pcb_polyop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon);
 void *pcb_polyop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t * layer, pcb_poly_t * polygon);
 void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *poly);
+void *pcb_polyop_change_enforce_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *poly);
 void *pcb_polyop_change_clear(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon);
 void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon);
 void *pcb_polyop_move(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon);
