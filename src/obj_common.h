@@ -296,6 +296,9 @@ RND_INLINE size_t pcb_obj_iid(pcb_any_obj_t *obj)
 #define pcb_obj_clearance(obj, in_poly) \
 	(RND_MAX((obj)->Clearance, (in_poly)->enforce_clearance))
 
+#define pcb_obj_clearance_p2(obj, in_poly) \
+	(RND_MAX((obj)->Clearance, ((in_poly)->enforce_clearance)*2))
+
 #define pcb_obj_id_reg(data, obj) \
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)(obj); \

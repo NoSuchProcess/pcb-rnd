@@ -358,7 +358,7 @@ static int SubtractPadstack(pcb_data_t *d, pcb_pstk_t *ps, pcb_layer_t *l, pcb_p
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps))
 		return 0;
 	i = pcb_layer_id(d, l);
-	np = pcb_thermal_area_pstk(pcb_data_get_top(d), ps, i);
+	np = pcb_thermal_area_pstk(pcb_data_get_top(d), ps, i, p);
 	if (np == 0)
 		return 0;
 
@@ -366,11 +366,11 @@ static int SubtractPadstack(pcb_data_t *d, pcb_pstk_t *ps, pcb_layer_t *l, pcb_p
 }
 
 /* return the clearance polygon for a line */
-static rnd_polyarea_t *line_clearance_poly(rnd_cardinal_t layernum, pcb_board_t *pcb, pcb_line_t *line)
+static rnd_polyarea_t *line_clearance_poly(rnd_cardinal_t layernum, pcb_board_t *pcb, pcb_line_t *line, pcb_poly_t *in_poly)
 {
 	if (line->thermal & PCB_THERMAL_ON)
-		return pcb_thermal_area_line(pcb, line, layernum);
-	return pcb_poly_from_pcb_line(line, line->Thickness + line->Clearance);
+		return pcb_thermal_area_line(pcb, line, layernum, in_poly);
+	return pcb_poly_from_pcb_line(line, line->Thickness + pcb_obj_clearance_p2(line, in_poly));
 }
 
 static int SubtractLine(pcb_line_t * line, pcb_poly_t * p)
@@ -379,7 +379,7 @@ static int SubtractLine(pcb_line_t * line, pcb_poly_t * p)
 
 	if (!PCB_NONPOLY_HAS_CLEARANCE(line))
 		return 0;
-	if (!(np = line_clearance_poly(-1, NULL, line)))
+	if (!(np = line_clearance_poly(-1, NULL, line, p)))
 		return -1;
 	return Subtract(np, p, rnd_true);
 }
@@ -503,7 +503,7 @@ static rnd_r_dir_t padstack_sub_callback(const rnd_rnd_box_t *b, void *cl)
 
 	i = pcb_layer_id(info->data, info->layer);
 
-	np = pcb_thermal_area_pstk(pcb_data_get_top(info->data), ps, i);
+	np = pcb_thermal_area_pstk(pcb_data_get_top(info->data), ps, i, polygon);
 	if (np == 0)
 			return RND_R_DIR_FOUND_CONTINUE;
 
@@ -633,10 +633,10 @@ rnd_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly, rnd_coord_t *c
 }
 
 /* return the clearance polygon for a line */
-static rnd_polyarea_t *poly_clearance_poly(rnd_cardinal_t layernum, pcb_board_t *pcb, pcb_poly_t *subpoly)
+static rnd_polyarea_t *poly_clearance_poly(rnd_cardinal_t layernum, pcb_board_t *pcb, pcb_poly_t *subpoly, pcb_poly_t *in_poly)
 {
 	if (subpoly->thermal & PCB_THERMAL_ON)
-		return pcb_thermal_area_poly(pcb, subpoly, layernum);
+		return pcb_thermal_area_poly(pcb, subpoly, layernum, in_poly);
 	return pcb_poly_clearance_construct(subpoly, NULL);
 }
 
@@ -648,7 +648,7 @@ static int SubtractPolyPoly(pcb_poly_t *subpoly, pcb_poly_t *frompoly)
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, frompoly)) /* two clearing polys won't interact */
 		return 0; /* but it's not an error, that'd kill other clearances in the same poly */
 
-	pa = poly_clearance_poly(-1, NULL, subpoly);
+	pa = poly_clearance_poly(-1, NULL, subpoly, frompoly);
 	if (pa == NULL)
 		return -1;
 
@@ -665,7 +665,7 @@ static int UnsubtractPolyPoly(pcb_poly_t *subpoly, pcb_poly_t *frompoly)
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, frompoly)) /* two clearing polys won't interact */
 		return 0; /* but it's not an error, that'd kill other clearances in the same poly */
 
-	pa = poly_clearance_poly(-1, NULL, subpoly);
+	pa = poly_clearance_poly(-1, NULL, subpoly, frompoly);
 	if (pa == NULL)
 		return -1;
 
@@ -718,7 +718,7 @@ static rnd_r_dir_t line_sub_callback(const rnd_rnd_box_t * b, void *cl)
 
 	POLY_CLIP_PROG();
 
-	np = line_clearance_poly(-1, NULL, line);
+	np = line_clearance_poly(-1, NULL, line, polygon);
 	if (!np)
 		longjmp(info->env, 1);
 

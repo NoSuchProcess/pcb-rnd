@@ -150,7 +150,7 @@ static rnd_polyarea_t *pa_arc_at(double cx, double cy, double r, double e1x, dou
 	return pcb_poly_from_pcb_arc(&atmp, clr);
 }
 
-rnd_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, rnd_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, rnd_layer_id_t lid, pcb_poly_t *in_poly)
 {
 	rnd_polyarea_t *pa, *pb, *pc;
 	double dx, dy, len, vx, vy, nx, ny, clr, clrth, x1, y1, x2, y2, mx, my;
@@ -649,7 +649,7 @@ static void pcb_thermal_area_pa_sharp(rnd_polyarea_t **pres, pcb_poly_it_t *it, 
 	polytherm_base(pres, it->pa);
 }
 
-rnd_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, rnd_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, rnd_layer_id_t lid, pcb_poly_t *in_poly)
 {
 	rnd_polyarea_t *pa, *pres = NULL;
 	rnd_coord_t clr = poly->Clearance/2;
@@ -705,7 +705,7 @@ static rnd_polyarea_t *pcb_thermal_area_pstk_nothermal(pcb_board_t *pcb, pcb_pst
 	return NULL;
 }
 
-rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_layer_id_t lid, pcb_poly_t *in_poly)
 {
 	unsigned char thr;
 	pcb_pstk_shape_t *shp, tmpshp;
@@ -803,7 +803,7 @@ rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_laye
 					ltmp.Thickness = shp->data.line.thickness;
 					ltmp.Clearance = clearance*2;
 					ltmp.thermal = thr;
-					pres = pcb_thermal_area_line(pcb, &ltmp, lid);
+					pres = pcb_thermal_area_line(pcb, &ltmp, lid, in_poly);
 				}
 				return pres;
 
@@ -831,18 +831,18 @@ rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_laye
 	return NULL;
 }
 
-rnd_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_layer_id_t lid)
+rnd_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_layer_id_t lid, pcb_poly_t *in_poly)
 {
 	switch(obj->type) {
 
 		case PCB_OBJ_LINE:
-			return pcb_thermal_area_line(pcb, (pcb_line_t *)obj, lid);
+			return pcb_thermal_area_line(pcb, (pcb_line_t *)obj, lid, in_poly);
 
 		case PCB_OBJ_POLY:
-			return pcb_thermal_area_poly(pcb, (pcb_poly_t *)obj, lid);
+			return pcb_thermal_area_poly(pcb, (pcb_poly_t *)obj, lid, in_poly);
 
 		case PCB_OBJ_PSTK:
-			return pcb_thermal_area_pstk(pcb, (pcb_pstk_t *)obj, lid);
+			return pcb_thermal_area_pstk(pcb, (pcb_pstk_t *)obj, lid, in_poly);
 
 		case PCB_OBJ_ARC:
 			break;
