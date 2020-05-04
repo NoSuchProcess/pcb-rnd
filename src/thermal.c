@@ -154,7 +154,7 @@ rnd_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, rnd_la
 {
 	rnd_polyarea_t *pa, *pb, *pc;
 	double dx, dy, len, vx, vy, nx, ny, clr, clrth, x1, y1, x2, y2, mx, my;
-	rnd_coord_t th;
+	rnd_coord_t th, lclr;
 
 	if ((line->Point1.X == line->Point2.X) && (line->Point1.Y == line->Point2.Y)) {
 		/* conrer case zero-long line is a circle: do the same as for vias */
@@ -177,8 +177,9 @@ TODO("thermal TODO")
 	nx = -vy;
 	ny = vx;
 
-	clr = line->Clearance/2;
-	clrth = (line->Clearance/2 + line->Thickness) / 2;
+	lclr = pcb_obj_clearance_o05(line, in_poly);
+	clr = lclr;
+	clrth = (lclr + line->Thickness) / 2;
 
 	assert(line->thermal & PCB_THERMAL_ON); /* caller should have checked this */
 	switch(line->thermal & 3) {
@@ -360,7 +361,7 @@ TODO("thermal TODO")
 			}
 			return pc;
 		case PCB_THERMAL_SHARP:
-			pa = pcb_poly_from_pcb_line(line, line->Thickness + line->Clearance);
+			pa = pcb_poly_from_pcb_line(line, line->Thickness + pcb_obj_clearance_p2(line, in_poly));
 			th = line->Thickness/2 < clr ? line->Thickness/2 : clr;
 			clrth *= 2;
 			if (line->thermal & PCB_THERMAL_DIAGONAL) {
@@ -652,7 +653,7 @@ static void pcb_thermal_area_pa_sharp(rnd_polyarea_t **pres, pcb_poly_it_t *it, 
 rnd_polyarea_t *pcb_thermal_area_poly(pcb_board_t *pcb, pcb_poly_t *poly, rnd_layer_id_t lid, pcb_poly_t *in_poly)
 {
 	rnd_polyarea_t *pa, *pres = NULL;
-	rnd_coord_t clr = poly->Clearance/2;
+	rnd_coord_t clr = pcb_obj_clearance_o05(poly, in_poly);
 	pcb_poly_it_t it;
 
 	assert(poly->thermal & PCB_THERMAL_ON); /* caller should have checked this */
@@ -711,7 +712,7 @@ rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_laye
 	pcb_pstk_shape_t *shp, tmpshp;
 	rnd_polyarea_t *pres = NULL;
 	pcb_layer_t *layer;
-	rnd_coord_t clearance = ps->Clearance;
+	rnd_coord_t clearance, gclearance = ps->Clearance; /* this is a legal direct access to the Clearance field, poly->enforce_clearance is applied later */
 
 	/* thermal needs a stackup - only a PCB has a stackup, buffers don't */
 	if (pcb == NULL)
@@ -753,8 +754,13 @@ rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_laye
 			return NULL;
 	}
 
-	if (clearance <= 0)
+	if (gclearance <= 0)
 		clearance = shp->clearance/2;
+	else
+		clearance = gclearance;
+
+	/* apply polygon enforced clearance on top of the per shape clearance */
+	clearance = RND_MAX(clearance, in_poly->enforce_clearance);
 
 	if (clearance <= 0) {
 		rnd_layergrp_id_t gid = pcb_layer_get_group_(layer);
