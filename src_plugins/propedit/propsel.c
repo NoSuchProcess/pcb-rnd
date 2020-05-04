@@ -350,6 +350,12 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 
 /*******************/
 
+static int attr_key_has_side_effect(const char *key)
+{
+	if (strcmp(key, "tight_clearance") == 0) return 1;
+	return 0;
+}
+
 static void toggle_attr(pcb_propset_ctx_t *st, rnd_attribute_list_t *list, int undoable, pcb_any_obj_t *obj)
 {
 	const char *key = st->name+2, *newval = NULL;
@@ -375,8 +381,7 @@ static void toggle_attr(pcb_propset_ctx_t *st, rnd_attribute_list_t *list, int u
 	return;
 
 	do_set:;
-	if (strcmp(key, "tight_clearance") == 0)
-		side_effect = 1;
+	side_effect = attr_key_has_side_effect(key);
 	if ((obj != NULL) && side_effect)
 		pcb_obj_pre(obj);
 	if (undoable)
@@ -409,13 +414,22 @@ static void set_attr_raw(pcb_propset_ctx_t *st, rnd_attribute_list_t *list)
 static void set_attr_obj(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 {
 	const char *key = st->name+2;
+	int side_effect, res;
 
 	if (st->toggle) {
 		toggle_attr(st, &obj->Attributes, 1, obj);
 		return;
 	}
 
-	if (pcb_uchg_attr(st->pcb, obj, key, st->s) != 0)
+	side_effect = attr_key_has_side_effect(key);
+printf("Side effect: %d key=%s\n", side_effect, key);
+	if (side_effect)
+		pcb_obj_pre(obj);
+	res = pcb_uchg_attr(st->pcb, obj, key, st->s);
+	if (side_effect)
+		pcb_obj_post(obj);
+
+	if (res != 0)
 		return;
 
 	st->set_cnt++;
