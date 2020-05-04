@@ -310,7 +310,7 @@ static void svg_header()
 	y2 += RND_MM_TO_COORD(5);
 	if (svg_true_size)
 		rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", x2+x1, y2+y1, x1, y1, x2, y2);
-	else 
+	else
 		rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
 }
 
