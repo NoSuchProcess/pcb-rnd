@@ -36,21 +36,21 @@
 #include "obj_common.h"
 #include <librnd/poly/polyarea.h>
 
-struct pcb_poly_s  {           /* holds information about a polygon */
+struct pcb_poly_s  {               /* holds information about a polygon */
 	PCB_ANY_PRIMITIVE_FIELDS;
 	rnd_coord_t Clearance;
-	rnd_coord_t enforce_clearance; /* all objects within this polygon needs to have at least this much clearance; WARNING: true gap value, not *2 as with the Clearance fields */
-	rnd_cardinal_t PointN;       /* number of points in polygon */
-	rnd_cardinal_t PointMax;     /* max number from malloc() */
-	rnd_polyarea_t *Clipped;     /* the clipped region of this polygon */
-	rnd_pline_t *NoHoles;        /* the polygon broken into hole-less regions */
-	int NoHolesValid;            /* Is the NoHoles polygon up to date? */
-	rnd_point_t *Points;         /* data */
-	rnd_cardinal_t *HoleIndex;   /* Index of hole data within the Points array */
-	rnd_cardinal_t HoleIndexN;   /* number of holes in polygon */
-	rnd_cardinal_t HoleIndexMax; /* max number from malloc() */
-	unsigned clip_dirty:1;       /* 1 if polygon should be reclipped after clipping inhibit is over */
-	gdl_elem_t link;             /* a poly is in a list of a layer */
+	rnd_coord_t enforce_clearance;   /* all objects within this polygon needs to have at least this much clearance; WARNING: true gap value, not *2 as with the Clearance fields */
+	rnd_cardinal_t PointN;           /* number of points in polygon */
+	rnd_cardinal_t PointMax;         /* max number from malloc() */
+	rnd_polyarea_t *Clipped;         /* the clipped region of this polygon */
+	rnd_pline_t *NoHoles;            /* the polygon broken into hole-less regions */
+	int NoHolesValid;                /* Is the NoHoles polygon up to date? */
+	rnd_point_t *Points;             /* data */
+	rnd_cardinal_t *HoleIndex;       /* Index of hole data within the Points array */
+	rnd_cardinal_t HoleIndexN;       /* number of holes in polygon */
+	rnd_cardinal_t HoleIndexMax;     /* max number from malloc() */
+	unsigned clip_dirty:1;           /* 1 if polygon should be reclipped after clipping inhibit is over */
+	gdl_elem_t link;                 /* a poly is in a list of a layer */
 };
 
 
