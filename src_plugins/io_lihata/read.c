@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016, 2017, 2018, 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016..2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -599,7 +599,7 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coor
 		return iolht_error(obj, "line.ID must be a hash\n");
 
 	if (ly == NULL)
-		return iolht_error(obj, "failed to allocate line object\n");
+		return iolht_error(obj, "can't allocate line on invalid layer\n");
 
 	if (parse_id(&id, obj, 5) != 0)
 		return -1;
@@ -675,7 +675,7 @@ static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord
 		return iolht_error(obj, "arc.ID must be a hash\n");
 
 	if (ly == NULL)
-		return iolht_error(obj, "failed to allocate arc object\n");
+		return iolht_error(obj, "can't allocate arc on invaid layer\n");
 
 	if (parse_id(&id, obj, 4) != 0)
 		return -1;
