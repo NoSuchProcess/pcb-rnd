@@ -291,7 +291,11 @@ rendered in 1:1 size. Text has a thickness field; if it is non-zero,
 it specifies the stroke (line and arc) thickness of symbols (glyphs); if it
 is zero, the thickness value is calculated from scale.
 <p>
-The clearance around text is rendered as a round corner rectangular cutout.
+By default, the clearance around text is rendered as a round corner
+rectangular cutout. If the tight_clearance attribute on the text object
+is specified and the value is "yes" or "true" or "1", a more accurate
+clearance is calculated that follows the true shape of the text object.
+<p>
 Bug: copper text can not participate in short circuits, the galvanic connection
 checker code skips texts.
 
