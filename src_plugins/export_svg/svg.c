@@ -302,16 +302,18 @@ static void svg_header()
 		h *= 2;
 	}
 
-	x1 = RND_MM_TO_COORD(2);
-	y1 = RND_MM_TO_COORD(2);
 	x2 = PCB->hidlib.size_x;
 	y2 = PCB->hidlib.size_y;
-	x2 += RND_MM_TO_COORD(5);
-	y2 += RND_MM_TO_COORD(5);
-	if (svg_true_size)
-		rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", x2+x1, y2+y1, x1, y1, x2, y2);
-	else
+	if (svg_true_size) {
+		rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"0 0 %mm %mm\">\n", x2, y2, x2, y2);
+	}
+	else {
+		x1 = RND_MM_TO_COORD(2);
+		y1 = RND_MM_TO_COORD(2);
+		x2 += RND_MM_TO_COORD(5);
+		y2 += RND_MM_TO_COORD(5);
 		rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
+	}
 }
 
 static void svg_footer(void)
