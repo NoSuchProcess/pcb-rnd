@@ -623,8 +623,6 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-#define istrue(s) ((*(s) == '1') || (*(s) == 'y') || (*(s) == 'Y') || (*(s) == 't') || (*(s) == 'T'))
-
 static const char pcb_acts_EditLayer[] = "Editlayer([@layer], [name=text|auto=[0|1]|sub=[0|1])]\nEditlayer([@layer], attrib, key=value)";
 static const char pcb_acth_EditLayer[] = "Change a property or attribute of a layer. If the first argument starts with @, it is taken as the layer name to manipulate, else the action uses the current layer. Without arguments or if only a layer name is specified, interactive runs editing.";
 static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -651,7 +649,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else if (strncmp(arg, "auto=", 5) == 0) {
 			interactive = 0;
-			if (istrue(arg+5))
+			if (rnd_istrue(arg+5))
 				ly->comb |= PCB_LYC_AUTO;
 			else
 				ly->comb &= ~PCB_LYC_AUTO;
@@ -659,7 +657,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		else if (strncmp(arg, "sub=", 4) == 0) {
 			interactive = 0;
-			if (istrue(arg+4))
+			if (rnd_istrue(arg+4))
 				ly->comb |= PCB_LYC_SUB;
 			else
 				ly->comb &= ~PCB_LYC_SUB;

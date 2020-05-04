@@ -161,8 +161,6 @@ void pcb_obj_center(const pcb_any_obj_t *obj, rnd_coord_t *x, rnd_coord_t *y)
 	}
 }
 
-#define istrue(s) ((*(s) == '1') || (*(s) == 'y') || (*(s) == 'Y') || (*(s) == 't') || (*(s) == 'T'))
-
 void pcb_obj_attrib_post_change(rnd_attribute_list_t *list, const char *name, const char *value)
 {
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)(((char *)list) - offsetof(pcb_any_obj_t, Attributes));
@@ -210,7 +208,7 @@ void pcb_obj_attrib_post_change(rnd_attribute_list_t *list, const char *name, co
 	}
 	else if ((obj->type == PCB_OBJ_TEXT) && (strcmp(name, "tight_clearance") == 0)) {
 		pcb_text_t *t = (pcb_text_t *)obj;
-		t->tight_clearance = value == NULL ? 0 : istrue(value);
+		t->tight_clearance = rnd_istrue(value);
 	}
 }
 
