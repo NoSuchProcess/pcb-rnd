@@ -54,6 +54,10 @@
 /* ---------------------------------------------------------------------------
  * misc macros, some might already be defined by <limits.h>
  */
+#define RND_MIN(a,b)  ((a) < (b) ? (a) : (b))
+#define RND_MAX(a,b)  ((a) > (b) ? (a) : (b))
+#define RND_SGN(a)    ((a) >0 ? 1 : ((a) == 0 ? 0 : -1))
+
 #ifndef MIN
 #define MIN(a,b)  ((a) < (b) ? (a) : (b))
 #define MAX(a,b)  ((a) > (b) ? (a) : (b))
