@@ -210,9 +210,9 @@ fgw_error_t pcb_act_proptoggle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_props_init(&ctx, PCB);
 
-	RND_ACT_CONVARG(1, FGW_STR, propset, first = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, proptoggle, first = argv[1].val.str);
 	if (prop_scope_add(&ctx, first, 1) == 0) {
-		RND_ACT_CONVARG(2, FGW_STR, propset, name = argv[2].val.str);
+		RND_ACT_CONVARG(2, FGW_STR, proptoggle, name = argv[2].val.str);
 	}
 	else {
 		name = first;
@@ -310,7 +310,7 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_props_init(&ctx, PCB);
 
-	RND_ACT_MAY_CONVARG(1, FGW_STR, propset, scope = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, propprint, scope = argv[1].val.str);
 	if (scope != NULL) {
 		if (prop_scope_add(&ctx, scope, 0) != 0)
 			return FGW_ERR_ARG_CONV;
