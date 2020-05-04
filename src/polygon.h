@@ -68,7 +68,7 @@ rnd_polyarea_t *pcb_poly_from_poly(pcb_poly_t *);
 rnd_polyarea_t *pcb_poly_from_pcb_line(pcb_line_t * l, rnd_coord_t thick);
 rnd_polyarea_t *pcb_poly_from_pcb_arc(pcb_arc_t * l, rnd_coord_t thick);
 rnd_polyarea_t *pcb_poly_from_box_bloated(rnd_rnd_box_t * box, rnd_coord_t radius);
-rnd_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly, rnd_coord_t *clr_override); /* clearance shape for when clearpolypoly is set */
+rnd_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly, rnd_coord_t *clr_override, pcb_poly_t *in_poly); /* clearance shape for when clearpolypoly is set */
 
 int pcb_poly_init_clip(pcb_data_t * d, pcb_layer_t * l, pcb_poly_t * p);
 int pcb_poly_init_clip_force(pcb_data_t *Data, pcb_layer_t *layer, pcb_poly_t *p); /* bypasses clip inhibit */
