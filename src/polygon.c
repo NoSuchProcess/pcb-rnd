@@ -432,7 +432,7 @@ static rnd_xform_t tsub_xform;
 static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 {
 	poly_sub_text_t sctx;
-	int by_bbox = 1; TODO("v7textclr");
+	int by_bbox = !text->tight_clearance;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text))
 		return 0;

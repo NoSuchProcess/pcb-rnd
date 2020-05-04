@@ -44,6 +44,7 @@ struct pcb_text_s {
 	rnd_coord_t thickness;        /* if non-zero, thickness of line/arc within the font */
 	rnd_coord_t clearance;        /* clearance around the object in polygon if flags have PCB_FLAG_CLEARLINE */
 	double rot;                   /* used when Direction is PCB_TEXT_FREEROT */
+	unsigned tight_clearance:1;   /* CACHED from attribute: when true, clearance is calculated to follow the true contour of the text; when false, the old, pre-v7 bbox based clearance is applied */
 	gdl_elem_t link;              /* a text is in a list of a layer */
 };
 
