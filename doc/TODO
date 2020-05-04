@@ -9,6 +9,8 @@
 - FEATURE: lihata v7
 	- FEATURE: data model: new object type GFX- save and load
 	- FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
+		- make op change on enforce_clearance undoable
+		- lihata v7 save/load with brave?
 	- FEATURE: data model: TODO("v7textclr"): clearance field of text objects; plus invent a flag or attrib to choose between bbox clear or detailed clear [report: Igor2]
 - FEATURE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
 + FEATURE: netlist dialog: double click on a net should disable rats [report: Joe]
