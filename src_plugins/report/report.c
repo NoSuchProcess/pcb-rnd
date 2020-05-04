@@ -283,17 +283,19 @@ static void report_poly(gds_t *dst, pcb_poly_t *poly)
 		"It has %d points and could store %d more\n"
 		"  without using more memory.\n"
 		"It has %d holes and resides on layer %d.\n"
-		"Its unclipped area is %f square %s.\n"
-		"%s"
-		"%s%s%s", USER_UNITMASK, poly->ID,
+		"Its unclipped area is %f square %s.\n", USER_UNITMASK, poly->ID,
 		pcb_strflg_f2s(poly->Flags, PCB_OBJ_POLY, NULL, 0),
 		poly->BoundingBox.X1, poly->BoundingBox.Y1,
 		poly->BoundingBox.X2, poly->BoundingBox.Y2,
 		poly->PointN, poly->PointMax - poly->PointN,
 		poly->HoleIndexN,
 		pcb_layer_id(PCB->Data, poly->parent.layer),
-		area, aunit,
-		gen_locked(poly), gen_term(poly));
+		area, aunit);
+
+	if (poly->enforce_clearance > 0)
+		rnd_append_printf(dst, "%m+Polygon enforced min. clearance: %$mS\n", USER_UNITMASK, poly->enforce_clearance);
+
+	rnd_append_printf(dst, "%s %s%s%s", gen_locked(poly), gen_term(poly));
 }
 
 static void report_subc(gds_t *dst, pcb_subc_t *subc)
