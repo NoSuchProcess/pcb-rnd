@@ -28,3 +28,9 @@
 
 size_t rnd_base64_write_right(char *buff_start, size_t buff_len, unsigned long int num);
 int rnd_base64_parse_grow(unsigned long int *num, int chr, int term);
+
+size_t rnd_base64_bin2str(char *dst, size_t dst_len, const unsigned char *src, size_t src_len);
+size_t rnd_base64_str2bin(unsigned char *dst, size_t dst_len, const char *src, size_t src_len);
+
+
+

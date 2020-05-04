@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2015 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2015,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 #include <limits.h>
 #include <librnd/core/base64.h>
 
+#define PAD '='
+
 static char int2digit(int digit)
 {
 	if (digit < 26) return 'A' + digit;
@@ -40,7 +42,7 @@ static int digit2int(char c)
 {
 	if ((c >= 'A') && (c <= 'Z')) return c - 'A';
 	if ((c >= 'a') && (c <= 'z')) return c - 'a' + 26;
-	if ((c >= '0') && (c <= '9')) return c - 'a' + 52;
+	if ((c >= '0') && (c <= '9')) return c - '0' + 52;
 	if (c == '+') return 62;
 	if (c == '/') return 63;
 	return -1;
@@ -83,4 +85,80 @@ int rnd_base64_parse_grow(unsigned long int *num, int chr, int term)
 	(*num) <<= 6UL;
 	(*num) |= digit;
 	return 0;
+}
+
+size_t rnd_base64_bin2str(char *dst, size_t dst_len, const unsigned char *src, size_t src_len)
+{
+	unsigned int val = 0, tmp;
+	int bits = 0;
+	size_t olen = 0;
+
+	if (dst_len == 0)
+		return -1;
+
+	while((bits > 0) || (src_len > 0)) {
+		if ((bits < 6) && (src_len > 0)) {
+			tmp = *src;
+			src++;
+			src_len--;
+			bits += 8;
+			val <<= 8;
+			val |= tmp;
+		}
+		if (bits < 6) {
+			val = val << (6-bits);
+			bits = 6;
+		}
+		tmp = (val >> (bits-6)) & 0x3F;
+		*dst++ = int2digit(tmp);
+		bits -= 6;
+		olen++;
+		if (olen >= dst_len)
+			return -1;
+	}
+
+	while((olen % 4) != 0) {
+		*dst++ = PAD;
+		olen++;
+		if (olen >= dst_len)
+			return -1;
+	}
+
+	return olen;
+}
+
+size_t rnd_base64_str2bin(unsigned char *dst, size_t dst_len, const char *src, size_t src_len)
+{
+	unsigned int val, tmp;
+	int bits = 0;
+	size_t olen = 0;
+
+	while(src_len > 0) {
+		while(bits < 8) {
+			if (*src != '=') {
+				if (src_len <= 0)
+					return -2;
+				tmp = digit2int(*src);
+				src++;
+				src_len--;
+			}
+			else {
+				tmp = 0;
+				return olen;
+			}
+			val <<= 6;
+			val |= tmp;
+			bits += 6;
+		}
+		tmp = (val >> (bits-8)) & 0xFF;
+		*dst = tmp;
+		dst++;
+		olen++;
+		bits -= 8;
+		if (olen >= dst_len)
+			return -3;
+	}
+
+
+	return olen;
 }
