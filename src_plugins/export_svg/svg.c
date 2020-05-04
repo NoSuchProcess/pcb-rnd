@@ -98,7 +98,7 @@ static int opacity = 100, drawing_mask, drawing_hole, photo_mode, flip;
 
 static gds_t sbright, sdark, snormal, sclip;
 static rnd_composite_op_t drawing_mode;
-static int comp_cnt;
+static int comp_cnt, svg_true_size = 0;
 static long svg_drawn_objs;
 
 /* Photo mode colors and hacks */
@@ -179,9 +179,13 @@ Flip board, look at it from the bottom side
 	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_as_shown 4
 
+	{"true-size", "Attempt to preserve true size for printing",
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_true_size 5
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
-#define HA_cam 5
+#define HA_cam 6
 };
 
 #define NUM_OPTIONS (sizeof(svg_attribute_list)/sizeof(svg_attribute_list[0]))
@@ -286,7 +290,7 @@ static void group_close()
 	fprintf(f, "</g>\n");
 }
 
-static void svg_header(void)
+static void svg_header()
 {
 	rnd_coord_t w, h, x1, y1, x2, y2;
 
@@ -304,7 +308,10 @@ static void svg_header(void)
 	y2 = PCB->hidlib.size_y;
 	x2 += RND_MM_TO_COORD(5);
 	y2 += RND_MM_TO_COORD(5);
-	rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
+	if (svg_true_size)
+		rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", x2+x1, y2+y1, x1, y1, x2, y2);
+	else 
+		rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
 }
 
 static void svg_footer(void)
@@ -333,6 +340,7 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		options = svg_values;
 	}
 
+	svg_true_size = options[HA_true_size].lng;
 	svg_drawn_objs = 0;
 	pcb_cam_begin(PCB, &svg_cam, &xform, options[HA_cam].str, svg_attribute_list, NUM_OPTIONS, options);
 
