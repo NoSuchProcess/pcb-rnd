@@ -350,31 +350,48 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 
 /*******************/
 
+static void toggle_attr(pcb_propset_ctx_t *st, rnd_attribute_list_t *list, int undoable, pcb_any_obj_t *obj)
+{
+	const char *key = st->name+2, *newval = NULL;
+	const char *orig = rnd_attribute_get(list, key);
+
+	if (orig == NULL) {
+		if (st->toggle_create) {
+			newval = "true";
+			goto do_set;
+		}
+		/* else do not create non-existing attributes */
+		return;
+	}
+	if (rnd_istrue(orig)) {
+		newval = "false";
+		goto do_set;
+	}
+	else if (rnd_isfalse(orig)) {
+		newval = "true";
+		goto do_set;
+	}
+	return;
+
+	do_set:;
+	if (undoable)
+		pcb_uchg_attr(st->pcb, obj, key, newval);
+	else
+		rnd_attribute_put(list, key, newval);
+	st->set_cnt++;
+}
+
 static void set_attr_raw(pcb_propset_ctx_t *st, rnd_attribute_list_t *list)
 {
 	const char *key = st->name+2;
-	const char *orig = rnd_attribute_get(list, key);
+	const char *orig;
 
 	if (st->toggle) {
-		if (orig == NULL) {
-			if (st->toggle_create) {
-				rnd_attribute_put(list, key, "true");
-				st->set_cnt++;
-			}
-			/* else do not create non-existing attributes */
-			return;
-		}
-		if (rnd_istrue(orig)) {
-			rnd_attribute_put(list, key, "false");
-			st->set_cnt++;
-		}
-		else if (rnd_isfalse(orig)) {
-			rnd_attribute_put(list, key, "true");
-			st->set_cnt++;
-		}
+		toggle_attr(st, list, 0, NULL);
 		return;
 	}
 
+	orig = rnd_attribute_get(list, key);
 	if ((orig != NULL) && (strcmp(orig, st->s) == 0))
 		return;
 
@@ -387,7 +404,7 @@ static void set_attr_obj(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 	const char *key = st->name+2;
 
 	if (st->toggle) {
-		set_attr_raw(st, &obj->Attributes);
+		toggle_attr(st, &obj->Attributes, 1, obj);
 		return;
 	}
 
