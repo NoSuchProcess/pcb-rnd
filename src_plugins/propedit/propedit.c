@@ -201,7 +201,7 @@ fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_propget[] = "propset([scope], name, [stattype])";
+static const char pcb_acts_propget[] = "propget([scope], name, [stattype])";
 static const char pcb_acth_propget[] = "Return the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().";
 fgw_error_t pcb_act_propget(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
