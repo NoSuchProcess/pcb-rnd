@@ -355,6 +355,20 @@ static void set_attr_raw(pcb_propset_ctx_t *st, rnd_attribute_list_t *list)
 	const char *key = st->name+2;
 	const char *orig = rnd_attribute_get(list, key);
 
+	if (st->toggle) {
+		if (orig == NULL) /* do not create non-existing attributes */
+			return;
+		if (rnd_istrue(orig)) {
+			rnd_attribute_put(list, key, "false");
+			st->set_cnt++;
+		}
+		else if (rnd_isfalse(orig)) {
+			rnd_attribute_put(list, key, "true");
+			st->set_cnt++;
+		}
+		return;
+	}
+
 	if ((orig != NULL) && (strcmp(orig, st->s) == 0))
 		return;
 
@@ -365,6 +379,11 @@ static void set_attr_raw(pcb_propset_ctx_t *st, rnd_attribute_list_t *list)
 static void set_attr_obj(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 {
 	const char *key = st->name+2;
+
+	if (st->toggle) {
+		set_attr_raw(st, &obj->Attributes);
+		return;
+	}
 
 	if (pcb_uchg_attr(st->pcb, obj, key, st->s) != 0)
 		return;
@@ -383,7 +402,11 @@ static int set_common(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 	if (i != NULL) {
 		if (i->mask & PCB_FLAG_CLEARLINE)
 			pcb_obj_pre(obj);
-		pcb_flag_change(st->pcb, st->c ? PCB_CHGFLG_SET : PCB_CHGFLG_CLEAR, i->mask, obj->type, obj->parent.any, obj, obj);
+
+		if (st->toggle)
+			pcb_flag_change(st->pcb, PCB_CHGFLG_TOGGLE, i->mask, obj->type, obj->parent.any, obj, obj);
+		else
+			pcb_flag_change(st->pcb, st->c ? PCB_CHGFLG_SET : PCB_CHGFLG_CLEAR, i->mask, obj->type, obj->parent.any, obj, obj);
 		if (i->mask & PCB_FLAG_CLEARLINE)
 			pcb_obj_post(obj);
 		DONE1;
@@ -406,6 +429,9 @@ static void set_board(pcb_propset_ctx_t *st, pcb_board_t *pcb)
 		set_attr_raw(st, &pcb->Attributes);
 		return;
 	}
+
+	if (st->toggle)
+		return; /* can't toggle anything else */
 
 	if (strncmp(st->name, "p/board/", 8) == 0) {
 		if ((strcmp(pn, "name") == 0) &&
@@ -442,6 +468,9 @@ static int set_layer(pcb_propset_ctx_t *st, pcb_layer_t *layer)
 		return 0;
 	}
 
+	if (st->toggle)
+		return 0; /* can't toggle anything else */
+
 	if (strncmp(st->name, "p/layer/", 8) == 0) {
 		if ((strcmp(pn, "name") == 0) &&
 		    (pcb_layer_rename_(layer, rnd_strdup(st->s), 1) == 0)) DONE0;
@@ -463,6 +492,9 @@ static void set_layergrp(pcb_propset_ctx_t *st, pcb_layergrp_t *grp)
 		return;
 	}
 
+	if (st->toggle)
+		return; /* can't toggle anything else */
+
 	if (strncmp(st->name, "p/layer_group/", 14) == 0) {
 		if ((strcmp(pn, "name") == 0) &&
 		    (pcb_layergrp_rename_(grp, rnd_strdup(st->s), 1) == 0)) DONE;
@@ -477,6 +509,9 @@ static void set_net(pcb_propset_ctx_t *st, const char *netname)
 	pcb_net_t *net = pcb_net_get(st->pcb, &st->pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
 	if (net == NULL)
 		return;
+
+	if (st->toggle)
+		return; /* can't toggle anything else */
 
 	if (st->is_attr) {
 		const char *key = st->name+2;
@@ -501,6 +536,9 @@ static void set_line(pcb_propset_ctx_t *st, pcb_line_t *line)
 	}
 
 	if (set_common(st, (pcb_any_obj_t *)line)) return;
+
+	if (st->toggle)
+		return; /* can't toggle anything else */
 
 	if (strncmp(st->name, "p/trace/", 8) == 0) {
 		if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
@@ -552,6 +590,9 @@ static void set_arc(pcb_propset_ctx_t *st, pcb_arc_t *arc)
 	}
 
 	if (set_common(st, (pcb_any_obj_t *)arc)) return;
+
+	if (st->toggle)
+		return; /* can't toggle anything else */
 
 	if (strncmp(st->name, "p/trace/", 8) == 0)  {
 		if (st->is_trace && st->c_valid && (strcmp(pn, "thickness") == 0) &&
@@ -607,6 +648,8 @@ static void set_gfx(pcb_propset_ctx_t *st, pcb_gfx_t *gfx)
 
 	if (set_common(st, (pcb_any_obj_t *)gfx)) return;
 
+	if (st->toggle)
+		return; /* can't toggle anything else */
 
 	if (strncmp(st->name, "p/gfx/", 6) == 0) {
 		if (st->c_valid && (strcmp(pn, "sx") == 0)) {
@@ -632,6 +675,9 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 	}
 
 	if (set_common(st, (pcb_any_obj_t *)text)) return;
+
+	if (st->toggle)
+		return; /* can't toggle anything else */
 
 	if (strncmp(st->name, "p/text/", 7) == 0) {
 		pcb_opctx_t op;
@@ -677,18 +723,21 @@ static void set_poly(pcb_propset_ctx_t *st, pcb_poly_t *poly)
 {
 	const char *pn = st->name + 8;
 
+	if (st->is_attr) {
+		set_attr_obj(st, (pcb_any_obj_t *)poly);
+		return;
+	}
+
 	if (set_common(st, (pcb_any_obj_t *)poly)) return;
+
+	if (st->toggle)
+		return; /* can't toggle anything else */
 
 	if (strncmp(st->name, "p/trace/", 8) == 0) {
 		if (st->is_trace && st->c_valid && (strcmp(pn, "clearance") == 0) &&
 		    pcb_chg_obj_clear_size(PCB_OBJ_POLY, poly->parent.layer, poly, NULL, st->c*2, st->c_absolute)) DONE;
 		if (st->is_trace && st->c_valid && (strcmp(pn, "enforce_clearance") == 0) &&
 		    pcb_chg_obj_enforce_clear_size(PCB_OBJ_POLY, poly->parent.layer, poly, NULL, st->c, st->c_absolute)) DONE;
-	}
-
-	if (st->is_attr) {
-		set_attr_obj(st, (pcb_any_obj_t *)poly);
-		return;
 	}
 }
 
@@ -705,6 +754,9 @@ static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 	}
 
 	if (set_common(st, (pcb_any_obj_t *)ps)) return;
+
+	if (st->toggle)
+		return; /* can't toggle anything else */
 
 	ca = st->c;
 	i = (st->c != 0);
@@ -792,6 +844,9 @@ static void set_subc(pcb_propset_ctx_t *st, pcb_subc_t *ssubc)
 		set_attr_obj(st, (pcb_any_obj_t *)ssubc);
 		return;
 	}
+
+	if (st->toggle)
+		return; /* can't toggle anything else */
 
 	if (strncmp(st->name, "p/subcircuit/", 13) == 0) {
 		pcb_opctx_t op;
@@ -898,6 +953,8 @@ int pcb_propsel_set_str(pcb_propedit_t *ctx, const char *prop, const char *value
 	if ((prop[0] != 'a') && (prop[0] != 'p'))
 		return 0;
 
+	memset(&sctx, 0, sizeof(sctx));
+
 	if (value == NULL)
 		value = "";
 	sctx.s = value;
@@ -909,9 +966,28 @@ int pcb_propsel_set_str(pcb_propedit_t *ctx, const char *prop, const char *value
 	}
 	else
 		sctx.d_absolute = ((*start != '-') && (*start != '+'));
+	sctx.toggle = 0;
 	sctx.c = rnd_get_value_ex(start, NULL, &sctx.c_absolute, NULL, NULL, &sctx.c_valid);
 	sctx.d = strtod(start, &end);
 	sctx.d_valid = (*end == '\0');
+	sctx.set_cnt = 0;
+
+	return pcb_propsel_set(ctx, prop, &sctx);
+}
+
+int pcb_propsel_toggle(pcb_propedit_t *ctx, const char *prop)
+{
+	pcb_propset_ctx_t sctx;
+
+	/* sanity checks for invalid props */
+	if (prop[1] != '/')
+		return 0;
+	if ((prop[0] != 'a') && (prop[0] != 'p'))
+		return 0;
+
+	memset(&sctx, 0, sizeof(sctx));
+
+	sctx.toggle = 1;
 	sctx.set_cnt = 0;
 
 	return pcb_propsel_set(ctx, prop, &sctx);

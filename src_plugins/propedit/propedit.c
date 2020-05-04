@@ -201,6 +201,31 @@ fgw_error_t pcb_act_propset(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_proptoggle[] = "proptoggle([scope], name, value)";
+static const char pcb_acth_proptoggle[] = "Toggle the named property of scope or all selected objects, assuming the property is boolean. Scope is documented at PropEdit().";
+fgw_error_t pcb_act_proptoggle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *first, *name;
+	pcb_propedit_t ctx;
+
+	pcb_props_init(&ctx, PCB);
+
+	RND_ACT_CONVARG(1, FGW_STR, propset, first = argv[1].val.str);
+	if (prop_scope_add(&ctx, first, 1) == 0) {
+		RND_ACT_CONVARG(2, FGW_STR, propset, name = argv[2].val.str);
+	}
+	else {
+		name = first;
+		ctx.selection = 1;
+	}
+
+	RND_ACT_IRES(pcb_propsel_toggle(&ctx, name));
+
+	prop_scope_finish(&ctx);
+	pcb_props_uninit(&ctx);
+	return 0;
+}
+
 static const char pcb_acts_propget[] = "propget([scope], name, [stattype])";
 static const char pcb_acth_propget[] = "Return the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().";
 fgw_error_t pcb_act_propget(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -339,6 +364,7 @@ rnd_action_t propedit_action_list[] = {
 	{"propedit", pcb_act_propedit, pcb_acth_propedit, pcb_acts_propedit},
 	{"propprint", pcb_act_propprint, pcb_acth_propprint, pcb_acts_propprint},
 	{"propset", pcb_act_propset, pcb_acth_propset, pcb_acts_propset},
+	{"proptoggle", pcb_act_proptoggle, pcb_acth_proptoggle, pcb_acts_proptoggle},
 	{"propget", pcb_act_propget, pcb_acth_propget, pcb_acts_propget}
 };
 
