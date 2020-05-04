@@ -127,6 +127,7 @@ ha:lht_tree_doc { ha:comm {
 										desc={polygon, as drawn (unclipped)}
 										li:children {
 											ha:clearance = { valtype=coord; ver={>=3} desc={copper clearance around the object }}
+											ha:enforce_clearance = { valtype=coord; ver={>=7} desc={enforce minimum clearance on clearing objects within the polygon }}
 											sy:attr@dup   = {/lht_tree_doc/comm/attributes}
 											sy:flags@dup  = {/lht_tree_doc/comm/flags_polygon}
 											sy:hvthr@dup  = {/lht_tree_doc/comm/thermal_heavy}
