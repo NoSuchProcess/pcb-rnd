@@ -33,7 +33,8 @@ typedef struct set_ctx_s {
 	double d;
 	rnd_color_t color;
 	rnd_bool c_absolute, d_absolute, c_valid, d_valid, clr_valid;
-	unsigned toggle:1; /* when 1, ignore value and attempt to toggle */
+	unsigned toggle:1;        /* when 1, ignore value and attempt to toggle */
+	unsigned toggle_create:1; /* when 1, create non-existing attribute on toggle, with value true */
 
 	/* private */
 	unsigned is_trace:1;
@@ -47,7 +48,7 @@ typedef struct set_ctx_s {
 
 int pcb_propsel_set_str(pcb_propedit_t *ctx, const char *prop, const char *value);
 int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sctx);
-int pcb_propsel_toggle(pcb_propedit_t *ctx, const char *prop);
+int pcb_propsel_toggle(pcb_propedit_t *ctx, const char *prop, rnd_bool create);
 int pcb_propsel_del(pcb_propedit_t *ctx, const char *attr_name);
 
 /* Allocate new string and print the value using current unit */

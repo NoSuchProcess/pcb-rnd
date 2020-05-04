@@ -356,8 +356,14 @@ static void set_attr_raw(pcb_propset_ctx_t *st, rnd_attribute_list_t *list)
 	const char *orig = rnd_attribute_get(list, key);
 
 	if (st->toggle) {
-		if (orig == NULL) /* do not create non-existing attributes */
+		if (orig == NULL) {
+			if (st->toggle_create) {
+				rnd_attribute_put(list, key, "true");
+				st->set_cnt++;
+			}
+			/* else do not create non-existing attributes */
 			return;
+		}
 		if (rnd_istrue(orig)) {
 			rnd_attribute_put(list, key, "false");
 			st->set_cnt++;
@@ -975,7 +981,7 @@ int pcb_propsel_set_str(pcb_propedit_t *ctx, const char *prop, const char *value
 	return pcb_propsel_set(ctx, prop, &sctx);
 }
 
-int pcb_propsel_toggle(pcb_propedit_t *ctx, const char *prop)
+int pcb_propsel_toggle(pcb_propedit_t *ctx, const char *prop, rnd_bool create)
 {
 	pcb_propset_ctx_t sctx;
 
@@ -988,6 +994,7 @@ int pcb_propsel_toggle(pcb_propedit_t *ctx, const char *prop)
 	memset(&sctx, 0, sizeof(sctx));
 
 	sctx.toggle = 1;
+	sctx.toggle_create = create;
 	sctx.set_cnt = 0;
 
 	return pcb_propsel_set(ctx, prop, &sctx);

@@ -205,7 +205,7 @@ static const char pcb_acts_proptoggle[] = "proptoggle([scope], name, value)";
 static const char pcb_acth_proptoggle[] = "Toggle the named property of scope or all selected objects, assuming the property is boolean. Scope is documented at PropEdit().";
 fgw_error_t pcb_act_proptoggle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *first, *name;
+	const char *first, *name, *create = NULL;
 	pcb_propedit_t ctx;
 
 	pcb_props_init(&ctx, PCB);
@@ -213,13 +213,15 @@ fgw_error_t pcb_act_proptoggle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(1, FGW_STR, proptoggle, first = argv[1].val.str);
 	if (prop_scope_add(&ctx, first, 1) == 0) {
 		RND_ACT_CONVARG(2, FGW_STR, proptoggle, name = argv[2].val.str);
+		RND_ACT_MAY_CONVARG(3, FGW_STR, proptoggle, create = argv[3].val.str);
 	}
 	else {
 		name = first;
+		RND_ACT_MAY_CONVARG(2, FGW_STR, proptoggle, create = argv[2].val.str);
 		ctx.selection = 1;
 	}
 
-	RND_ACT_IRES(pcb_propsel_toggle(&ctx, name));
+	RND_ACT_IRES(pcb_propsel_toggle(&ctx, name, rnd_istrue(create)));
 
 	prop_scope_finish(&ctx);
 	pcb_props_uninit(&ctx);
