@@ -390,7 +390,7 @@ static int SubtractArc(pcb_arc_t * arc, pcb_poly_t * p)
 
 	if (!PCB_NONPOLY_HAS_CLEARANCE(arc))
 		return 0;
-	if (!(np = pcb_poly_from_pcb_arc(arc, arc->Thickness + arc->Clearance)))
+	if (!(np = pcb_poly_from_pcb_arc(arc, arc->Thickness + pcb_obj_clearance_p2(arc, p))))
 		return -1;
 	return Subtract(np, p, rnd_true);
 }
