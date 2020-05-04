@@ -473,6 +473,9 @@ static lht_node_t *build_gfx(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
 	lht_dom_hash_put(obj, build_textf("rot", "%f", gfx->rot));
 	lht_dom_hash_put(obj, build_textf("xmirror", "%d", gfx->xmirror));
 	lht_dom_hash_put(obj, build_textf("ymirror", "%d", gfx->ymirror));
+	lht_dom_hash_put(obj, build_textf("pxm_sx", "%ld", gfx->pxm_neutral->sx));
+	lht_dom_hash_put(obj, build_textf("pxm_sy", "%ld", gfx->pxm_neutral->sy));
+	lht_dom_hash_put(obj, build_textf("pxm_transparent", "#%02x%02x%02x", gfx->pxm_neutral->tr, gfx->pxm_neutral->tg, gfx->pxm_neutral->tb));
 
 
 	uctx.iptr = gfx->pxm_neutral->p;
