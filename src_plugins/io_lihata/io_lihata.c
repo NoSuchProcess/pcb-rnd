@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016, 2017, 2018, 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016..2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,8 @@
 #include "io_lihata.h"
 
 pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3,
-              plug_io_lihata_v4, plug_io_lihata_v5, plug_io_lihata_v6;
+              plug_io_lihata_v4, plug_io_lihata_v5, plug_io_lihata_v6,
+              plug_io_lihata_v7;
 conf_io_lihata_t conf_io_lihata;
 
 pcb_plug_io_t *plug_io_lihata_default = &plug_io_lihata_v6;
@@ -64,6 +65,7 @@ int pplg_check_ver_io_lihata(int ver_needed) { return 0; }
 void pplg_uninit_io_lihata(void)
 {
 	rnd_conf_unreg_fields("plugins/io_lihata/");
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v7);
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v6);
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v5);
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v4);
@@ -78,6 +80,31 @@ int pplg_init_io_lihata(void)
 
 	/* register the IO hook */
 
+
+	plug_io_lihata_v7.plugin_data = NULL;
+	plug_io_lihata_v7.fmt_support_prio = io_lihata_fmt;
+	plug_io_lihata_v7.test_parse = io_lihata_test_parse;
+	plug_io_lihata_v7.parse_pcb = io_lihata_parse_pcb;
+	plug_io_lihata_v7.parse_footprint = io_lihata_parse_subc;
+	plug_io_lihata_v7.parse_font = io_lihata_parse_font;
+	plug_io_lihata_v7.parse_buffer = io_lihata_parse_buffer;
+	plug_io_lihata_v7.write_font = io_lihata_write_font;
+	plug_io_lihata_v7.write_buffer = io_lihata_write_buffer;
+	plug_io_lihata_v7.write_subcs_head = io_lihata_write_subcs_head;
+	plug_io_lihata_v7.write_subcs_subc = io_lihata_write_subcs_subc;
+	plug_io_lihata_v7.write_subcs_tail = io_lihata_write_subcs_tail;
+	plug_io_lihata_v7.write_pcb = io_lihata_write_pcb_v7;
+	plug_io_lihata_v7.default_fmt = "lihata";
+	plug_io_lihata_v7.description = "lihata board v7";
+	plug_io_lihata_v7.save_preference_prio = 1;
+	plug_io_lihata_v7.default_extension = ".lht";
+	plug_io_lihata_v7.fp_extension = ".lht";
+	plug_io_lihata_v7.mime_type = "application/x-pcbrnd-board";
+	plug_io_lihata_v7.save_as_subd_init = io_lihata_save_as_subd_init;
+	plug_io_lihata_v7.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
+	plug_io_lihata_v7.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
+
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v7);
 
 	plug_io_lihata_v6.plugin_data = NULL;
 	plug_io_lihata_v6.fmt_support_prio = io_lihata_fmt;
