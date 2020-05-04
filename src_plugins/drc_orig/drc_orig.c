@@ -70,13 +70,13 @@ static rnd_r_dir_t drc_callback(pcb_data_t *data, pcb_layer_t *layer, pcb_poly_t
 
 	switch (type) {
 	case PCB_OBJ_LINE:
-		if (line->Clearance < 2 * conf_core.design.bloat) {
+		if (pcb_obj_clearance_p2(line, polygon) < 2 * conf_core.design.bloat) {
 			message = "Line with insufficient clearance inside polygon";
 			goto doIsBad;
 		}
 		break;
 	case PCB_OBJ_ARC:
-		if (arc->Clearance < 2 * conf_core.design.bloat) {
+		if (pcb_obj_clearance_p2(arc, polygon) < 2 * conf_core.design.bloat) {
 			message = "Arc with insufficient clearance inside polygon";
 			goto doIsBad;
 		}
