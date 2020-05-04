@@ -39,7 +39,7 @@
 struct pcb_poly_s  {           /* holds information about a polygon */
 	PCB_ANY_PRIMITIVE_FIELDS;
 	rnd_coord_t Clearance;
-	rnd_coord_t enforce_clearance; /* all objects within this polygon needs to have at least this much clearance */
+	rnd_coord_t enforce_clearance; /* all objects within this polygon needs to have at least this much clearance; WARNING: true gap value, not *2 as with the Clearance fields */
 	rnd_cardinal_t PointN;       /* number of points in polygon */
 	rnd_cardinal_t PointMax;     /* max number from malloc() */
 	rnd_polyarea_t *Clipped;     /* the clipped region of this polygon */
