@@ -2753,10 +2753,10 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 		return -1;
 	}
 
-	for(n = doc->root; n != NULL; n = n->next) {
+	for(n = doc->root->data.list.first; n != NULL; n = n->next) {
 		if (strcmp(n->name, "pixmaps") == 0) {
 			if (n->type == LHT_HASH) {
-				pxm_init(doc->root);
+				pxm_init(n);
 				break;
 			}
 			else
