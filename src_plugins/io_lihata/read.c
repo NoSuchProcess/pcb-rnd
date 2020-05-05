@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <genht/htip.h>
 #include <liblihata/tree.h>
 #include <libminuid/libminuid.h>
 #include "config.h"
@@ -730,19 +731,110 @@ static int ucomp_src(void *ctx_)
 	return *ctx->iptr++;
 }
 
+static htip_t id2pxm;
+static lht_node_t *pxm_root;
+
+static rnd_pixmap_t *parse_pxm_(lht_node_t *obj)
+{
+	int err = 0, res;
+	size_t b64s;
+	unsigned long psx, psy;
+	ucomp_t uctx;
+	rnd_pixmap_t *pxm;
+	lht_node_t *pmn;
+
+	err |= parse_ulong(&psx,             hash_get(obj, "pxm_sx", 0));
+	err |= parse_ulong(&psy,             hash_get(obj, "pxm_sy", 0));
+
+	TODO("load transparent color");
+
+	pmn = hash_get(obj, "pixmap", 0);
+	if ((pmn == NULL) || (pmn->type != LHT_TEXT)) {
+		iolht_error(obj, "Failed to find a valid gfx pixmap node\n");
+		return NULL;
+	}
+
+	memset(&uctx, 0, sizeof(uctx));
+	b64s = strlen(pmn->data.text.value);
+	uctx.iptr = uctx.ibuff = malloc(b64s);
+	uctx.ibs = rnd_base64_str2bin(uctx.ibuff, b64s, pmn->data.text.value, b64s);
+
+	if (uctx.ibs == -1) {
+		free(uctx.ibuff);
+		iolht_error(obj, "Failed to base64 decode pixmap gfx\n");
+		return NULL;
+	}
+
+	res = ulzw_decompress(&uctx, ucomp_dst, ucomp_src);
+	free(uctx.ibuff);
+	if (res != 0) {
+		gds_uninit(&uctx.buff);
+		iolht_error(obj, "Failed to decompress gfx pixmap data\n");
+		return NULL;
+	}
+
+	if (psx * psy * 3 != uctx.buff.used) {
+		gds_uninit(&uctx.buff);
+		iolht_error(obj, "Wrong size of pixmap\n");
+		return NULL;
+	}
+
+	pxm = rnd_pixmap_alloc(&PCB->hidlib, psx, psy);
+	pxm->p = (unsigned char *)uctx.buff.array;
+	return pxm;
+}
+
+static rnd_pixmap_t *parse_pxm(long int ID)
+{
+	lht_node_t *nd;
+	char buff[128];
+	rnd_pixmap_t *pxm;
+
+	if (pxm_root == NULL)
+		return NULL;
+
+	pxm = htip_get(&id2pxm, ID);
+	if (pxm != NULL)
+		return pxm;
+
+	sprintf(buff, "ulzw.%ld", ID);
+	nd = hash_get(pxm_root, buff, 0);
+	if (nd == NULL)
+		return NULL;
+
+	pxm = parse_pxm_(nd);
+	if (pxm == NULL)
+		return NULL;
+
+	htip_set(&id2pxm, ID, pxm);
+	return pxm;
+}
+
+
+static void pxm_init(lht_node_t *root)
+{
+	pxm_root = NULL;
+	if (rdver >= 7)
+		pxm_root = lht_dom_hash_get(root, "pixmaps");
+	htip_init(&id2pxm, longhash, longkeyeq);
+}
+
+static void pxm_uninit(void)
+{
+	htip_uninit(&id2pxm);
+	pxm_root = NULL;
+}
+
 
 static int parse_gfx(pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_gfx_t *gfx;
-	lht_node_t *pmn;
-	unsigned char *raw;
 	unsigned char intconn = 0;
-	int err = 0, itmp, res;
-	size_t b64s;
+	int err = 0, itmp;
 	long int id;
-	unsigned long psx, psy;
-	ucomp_t uctx;
+	unsigned long int refid;
 	rnd_pixmap_t *pxm;
+
 
 	if (obj->type != LHT_HASH)
 		return iolht_error(obj, "gfx.ID must be a hash\n");
@@ -768,44 +860,18 @@ static int parse_gfx(pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coo
 	err |= parse_angle(&gfx->rot,        hash_get(obj, "rot", 0));
 	err |= parse_int(&itmp,              hash_get(obj, "xmirror", 0)); gfx->xmirror = itmp;
 	err |= parse_int(&itmp,              hash_get(obj, "ymirror", 0)); gfx->ymirror = itmp;
+	err |= parse_ulong(&refid,           hash_get(obj, "pixmap_ref", 0));
 
-	err |= parse_ulong(&psx,             hash_get(obj, "pxm_sx", 0));
-	err |= parse_ulong(&psy,             hash_get(obj, "pxm_sy", 0));
 	if (err != 0)
 		return err;
 
 	gfx->cx += dx;
 	gfx->cy += dy;
 
-	pmn = hash_get(obj, "pixmap", 0);
-	if ((pmn == NULL) || (pmn->type != LHT_TEXT))
-		return iolht_error(obj, "Failed to find a valid gfx pixmap node\n");
+	pxm = parse_pxm(refid);
+	if (pxm == NULL)
+		return iolht_error(obj, "Failed to load referenced pixmap\n");
 
-	memset(&uctx, 0, sizeof(uctx));
-	b64s = strlen(pmn->data.text.value);
-	uctx.iptr = uctx.ibuff = malloc(b64s);
-	uctx.ibs = rnd_base64_str2bin(uctx.ibuff, b64s, pmn->data.text.value, b64s);
-
-	if (uctx.ibs == -1) {
-		free(uctx.ibuff);
-		return iolht_error(obj, "Failed to base64 decode pixmap gfx\n");
-	}
-
-	res = ulzw_decompress(&uctx, ucomp_dst, ucomp_src);
-	free(uctx.ibuff);
-	if (res != 0) {
-		gds_uninit(&uctx.buff);
-		return iolht_error(obj, "Failed to decompress gfx pixmap data\n");
-	}
-
-	if (psx * psy * 3 != uctx.buff.used) {
-		gds_uninit(&uctx.buff);
-		return iolht_error(obj, "Wrong size of pixmap\n");
-	}
-
-	pxm = rnd_pixmap_alloc(&pcb->hidlib, psx, psy);
-	pxm->p = uctx.buff.array;
-	pxm->size = uctx.buff.used;
 	pcb_gfx_set_pixmap_free(gfx, pxm, 0);
 
 	if (ly != NULL)
@@ -2362,31 +2428,32 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	vtp0_init(&post_ids);
 	vtp0_init(&post_thermal_old);
 	vtp0_init(&post_thermal_heavy);
+	pxm_init(nd);
 
 	pcb_rat_all_anchor_guess(pcb->Data);
 
 	memset(&pcb->LayerGroups, 0, sizeof(pcb->LayerGroups));
 
 	if (parse_attributes(&pcb->Attributes, lht_dom_hash_get(nd, "attributes")) != 0)
-		return -1;
+		goto error;
 
 	sub = lht_dom_hash_get(nd, "meta");
 	if ((sub != NULL) && (parse_meta(pcb, sub) != 0))
-		return -1;
+		goto error;
 
 	sub = lht_dom_hash_get(nd, "font");
 	if ((sub != NULL) && (parse_fontkit(&PCB->fontkit, sub) != 0))
-		return -1;
+		goto error;
 	PCB->fontkit.valid = 1;
 
 	if (rdver >= 2) {
 		sub = lht_dom_hash_get(nd, "layer_stack");
 		if (sub != NULL) {
 			if (parse_layer_stack(pcb, sub) != 0)
-				return -1;
+				goto error;
 		}
 		else if (validate_layer_stack_grp(pcb, nd) != 0)
-			return -1;
+			goto error;
 	}
 
 	pcb_data_clip_inhibit_inc(pcb->Data);
@@ -2398,28 +2465,28 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	}
 	if (parse_data(pcb, pcb->Data, sub, NULL) == NULL) {
 		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
-		return -1;
+		goto error;
 	}
 
 	if (validate_layer_stack_lyr(pcb, sub) != 0)
-		return -1;
+		goto error;
 
 	sub = lht_dom_hash_get(nd, "styles");
 	if ((sub != NULL) && (parse_styles(pcb->Data, &pcb->RouteStyle, sub) != 0)) {
 		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
-		return -1;
+		goto error;
 	}
 
 	sub = lht_dom_hash_get(nd, "netlists");
 	if ((sub != NULL) && (parse_netlists(pcb, sub) != 0)) {
 		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
-		return -1;
+		goto error;
 	}
 
 	post_ids_assign(&post_ids);
 	if (post_thermal_assign(pcb, &post_thermal_old, &post_thermal_heavy) != 0) {
 		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
-		return -1;
+		goto error;
 	}
 
 	/* Run poly clipping at the end so we have all IDs and we can
@@ -2452,7 +2519,12 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 
 	pcb->Data->loader = loader; /* set this manually so the version is remembered */
+	pxm_uninit();
 	return 0;
+
+	error:
+	pxm_uninit();
+	return -1;
 }
 
 int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
