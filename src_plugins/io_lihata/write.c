@@ -535,7 +535,7 @@ static long gfx_invent_pxm_id(pcb_gfx_t *gfx)
 
 	gfx->pxm_id = pcb_create_ID_get();
 	htip_set(&id2pxm, gfx->pxm_id, gfx->pxm_neutral);
-	htip_set(&pxm2id, gfx->pxm_neutral, gfx->pxm_id);
+	htpi_set(&pxm2id, gfx->pxm_neutral, gfx->pxm_id);
 	return gfx->pxm_id;
 }
 
