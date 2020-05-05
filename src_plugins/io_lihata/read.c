@@ -811,21 +811,26 @@ static rnd_pixmap_t *parse_pxm(long int ID)
 }
 
 
+static int pxm_inited = 0;
 static void pxm_init(lht_node_t *pixmaps)
 {
 	pxm_root = NULL;
 	if (rdver >= 7)
 		pxm_root = pixmaps;
 	htip_init(&id2pxm, longhash, longkeyeq);
+	pxm_inited = 1;
 }
 
 static void pxm_uninit(void)
 {
 	htip_entry_t *e;
+	if (!pxm_inited)
+		return;
 	for(e = htip_first(&id2pxm); e != NULL; e = htip_next(&id2pxm, e))
 		rnd_pixmap_free(e->value);
 	htip_uninit(&id2pxm);
 	pxm_root = NULL;
+	pxm_inited = 0;
 }
 
 
