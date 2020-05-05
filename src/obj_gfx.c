@@ -100,7 +100,7 @@ pcb_gfx_t *pcb_gfx_alloc(pcb_layer_t *layer)
 /* computes the bounding box of a gfx */
 static rnd_rnd_box_t pcb_gfx_bbox_(const pcb_gfx_t *gfx)
 {
-	rnd_rnd_box_t res = {0};
+	rnd_rnd_box_t res = {+RND_COORD_MAX, +RND_COORD_MAX, -RND_COORD_MAX, -RND_COORD_MAX};
 	int n;
 	for(n = 0; n < 4; n++)
 		rnd_box_bump_point(&res, gfx->cox[n], gfx->coy[n]);
