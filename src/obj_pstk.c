@@ -1154,7 +1154,7 @@ void pcb_pstk_drc_check_and_warn(pcb_pstk_t *ps, rnd_coord_t *err_minring, rnd_c
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 
-	if (proto->hdia >= 0) {
+	if (proto->hdia > 0) {
 		int n;
 		pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape_(ps->parent.data, ps->proto, 0);
 
