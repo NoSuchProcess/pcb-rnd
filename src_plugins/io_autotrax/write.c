@@ -644,6 +644,11 @@ int wrax_data(wctx_t *ctx, pcb_data_t *data, rnd_coord_t dx, rnd_coord_t dy)
 			pcb_io_incompat_save(data, NULL, "layer", tmp, NULL);
 			continue;
 		}
+		{
+			pcb_gfx_t *gfx;
+			for(gfx = gfxlist_first(&ly->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)gfx, "gfx", "gfx can not be exported", "please use the lihata board format");
+		}
 		wrax_lines(ctx, alid, ly, dx, dy, in_subc);
 		wrax_arcs(ctx, alid, ly, dx, dy, in_subc);
 		wrax_text(ctx, alid, ly, dx, dy, in_subc);
