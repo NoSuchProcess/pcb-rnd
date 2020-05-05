@@ -795,10 +795,10 @@ TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elli
 		}
 
 		gfxlist_foreach(&ly->Gfx, &it, gfx) {
-			rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[0], gfx->coy[0], gfx->cox[1], gfx->coy[1]);
-			rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[1], gfx->coy[1], gfx->cox[2], gfx->coy[2]);
-			rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[2], gfx->coy[2], gfx->cox[3], gfx->coy[3]);
-			rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[3], gfx->coy[3], gfx->cox[0], gfx->coy[0]);
+			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->cox[0], DY+gfx->coy[0], DX+gfx->cox[1], DY+gfx->coy[1]);
+			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->cox[1], DY+gfx->coy[1], DX+gfx->cox[2], DY+gfx->coy[2]);
+			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->cox[2], DY+gfx->coy[2], DX+gfx->cox[3], DY+gfx->coy[3]);
+			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->cox[3], DY+gfx->coy[3], DX+gfx->cox[0], DY+gfx->coy[0]);
 		}
 
 		polylist_foreach(&ly->Polygon, &it, poly)
