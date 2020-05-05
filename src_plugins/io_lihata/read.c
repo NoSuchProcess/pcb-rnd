@@ -883,15 +883,19 @@ static int parse_gfx(pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coo
 	err |= parse_int(&itmp,              hash_get(obj, "ymirror", 0)); gfx->ymirror = itmp;
 	err |= parse_ulong(&refid,           hash_get(obj, "pixmap_ref", 0));
 
-	if (err != 0)
+	if (err != 0) {
+		pcb_gfx_free(gfx);
 		return err;
+	}
 
 	gfx->cx += dx;
 	gfx->cy += dy;
 
 	pxm = parse_pxm(refid);
-	if (pxm == NULL)
+	if (pxm == NULL) {
+		pcb_gfx_free(gfx);
 		return iolht_error(obj, "Failed to load referenced pixmap\n");
+	}
 
 	pcb_gfx_set_pixmap_dup(gfx, pxm, 0);
 
