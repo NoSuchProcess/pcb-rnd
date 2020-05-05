@@ -488,11 +488,24 @@ static const char *pat_ls_lyr1[] = {"te:*", "li:layers", "ha:*", "li:groups", "h
 static const char *pat_ls_lyr2[] = {"li:layers", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
 static const char *pat_ls_name[] = {"te:name", "ha:*", "li:groups", "ha:layer_stack", "*", NULL};
 static const char *pat_ls_grps[] = {"li:groups", "ha:layer_stack", "*", NULL};
+static const char *pat_pxm_ulzw[] = {"ha:ulzw.*", "ha:pixmaps", "*", NULL};
+static const char *pat_ulzw_sx[] = {"te:sx", "ha:ulzw.*", "*", NULL};
+static const char *pat_ulzw_sy[] = {"te:sy", "ha:ulzw.*", "*", NULL};
+static const char *pat_ulzw_transp[] = {"te:transparent", "ha:ulzw.*", "*", NULL};
+static const char *pat_ulzw_pixmap[] = {"te:pixmap", "ha:ulzw.*", "*", NULL};
 
 static lhtpers_rule_t r_layergrp[] = {
 	{pat_ls_name,  NULL, NULL},
 	{pat_ls_type2, &style_structsp, NULL},
 	{pat_ls_lyr2,  &style_structsp, NULL},
+	{NULL, NULL, NULL}
+};
+
+static lhtpers_rule_t r_ulzw[] = {
+	{pat_ulzw_sx,  &style_inlinesp, NULL},
+	{pat_ulzw_sy,  &style_inline, NULL},
+	{pat_ulzw_transp,  &style_inline, NULL},
+	{pat_ulzw_pixmap,  &style_inline, NULL},
 	{NULL, NULL, NULL}
 };
 
@@ -555,6 +568,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_layergrp,&style_structnp, r_layergrp},
 	{pat_ls_grps, &style_structnp, NULL},
 
+	{pat_pxm_ulzw, &style_structsp, r_ulzw},
 
 	{pat_cell,    &style_inline,   NULL},
 	{pat_thermt,  &style_inline,   NULL},
