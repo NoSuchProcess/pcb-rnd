@@ -14,6 +14,7 @@ digraph pcb_data {
 	pcb_pstk_t [shape=box style=filled color="#aaffaa"]
 	pcb_padstack_proto_t [shape=box]
 	pcb_arc_t [shape=box style=filled color="#aaffaa"]
+	pcb_gfx_t [shape=box style=filled color="#aaffaa"]
 	pcb_line_t [shape=box style=filled color="#aaffaa"]
 	pcb_text_t [shape=box style=filled color="#aaffaa"]
 	pcb_poly_t [shape=box style=filled color="#aaffaa"]
@@ -53,18 +54,21 @@ digraph pcb_data {
 
 	LayerType_lines [label="list and rtree of lines"]
 	LayerType_arcs [label="list and rtree of arcs"]
+	LayerType_gfxs [label="list and rtree of gfxs"]
 	LayerType_texts [label="list and rtree of text objects"]
 	LayerType_polygons [label="list and rtree of polygons"]
 	LayerType_misc [label="misc fields:\nflags\ncolors"]
 
 	LayerType_lines -> pcb_line_t
 	LayerType_arcs -> pcb_arc_t
+	LayerType_gfxs -> pcb_gfx_t
 	LayerType_polygons -> pcb_poly_t
 	LayerType_texts -> pcb_text_t
 
 	pcb_layer_t -> LayerType_misc
 	pcb_layer_t -> LayerType_lines
 	pcb_layer_t -> LayerType_arcs
+	pcb_layer_t -> LayerType_gfxs
 	pcb_layer_t -> LayerType_texts
 	pcb_layer_t -> LayerType_polygons
 	pcb_layer_t [shape=box]
