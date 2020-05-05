@@ -701,7 +701,7 @@ static lht_node_t *build_polygon(pcb_poly_t *poly)
 		lht_dom_hash_put(obj, dummy_node("enforce_clearance"));
 
 	if ((wrver < 7) && (poly->enforce_clearance > 0))
-		pcb_io_incompat_save(NULL, poly, "enforce_clearance", "lihata boards before version v7 did not support polygon side enforce_clearance\n", "Either save in lihata v7+ or set polygon enforce_clearance to 0");
+		pcb_io_incompat_save(NULL, (pcb_any_obj_t *)poly, "enforce_clearance", "lihata boards before version v7 did not support polygon side enforce_clearance\n", "Either save in lihata v7+ or set polygon enforce_clearance to 0");
 
 	geo = lht_dom_node_alloc(LHT_LIST, "geometry");
 	lht_dom_hash_put(obj, geo);
