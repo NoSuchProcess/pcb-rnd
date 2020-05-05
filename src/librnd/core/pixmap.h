@@ -73,6 +73,7 @@ void rnd_pixmap_uninit(void);
 int rnd_old_pixmap_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn); /* legacy API, should be removed */
 rnd_pixmap_t *rnd_pixmap_load(rnd_hidlib_t *hidlib, const char *fn);
 rnd_pixmap_t *rnd_pixmap_alloc(rnd_hidlib_t *hidlib, long sx, long sy);
+rnd_pixmap_t *rnd_pixmap_dup(rnd_hidlib_t *hidlib, const rnd_pixmap_t *pxm);
 
 unsigned int rnd_pixmap_hash_meta(const void *key);
 unsigned int rnd_pixmap_hash_pixels(const void *key);

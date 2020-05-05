@@ -166,6 +166,19 @@ rnd_pixmap_t *rnd_pixmap_alloc(rnd_hidlib_t *hidlib, long sx, long sy)
 	return p;
 }
 
+rnd_pixmap_t *rnd_pixmap_dup(rnd_hidlib_t *hidlib, const rnd_pixmap_t *pxm)
+{
+	rnd_pixmap_t *r = malloc(sizeof(rnd_pixmap_t));
+	memcpy(r, pxm, sizeof(rnd_pixmap_t));
+	r->p = malloc(pxm->size);
+	memcpy(r->p, pxm->p, pxm->size);
+	r->hid_data = NULL;
+	r->hid_data_valid = 0;
+	r->refco = 0;
+	return r;
+}
+
+
 void rnd_pixmap_free_fields(rnd_pixmap_t *pxm)
 {
 	free(pxm->p);
