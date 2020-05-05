@@ -1863,6 +1863,7 @@ static int plug2ver(const pcb_plug_io_t *ctx)
 	if (ctx == &plug_io_lihata_v4) return 4;
 	if (ctx == &plug_io_lihata_v5) return 5;
 	if (ctx == &plug_io_lihata_v6) return 6;
+	if (ctx == &plug_io_lihata_v7) return 7;
 	return 0;
 }
 
@@ -1894,8 +1895,10 @@ TODO("subc: for subc-in-subc this should be recursive")
 		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v3");
 	else if ((wrver >= 4) && (wrver < 6))
 		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v4");
-	else if (wrver >= 6)
+	else if (wrver == 6)
 		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v6");
+	else if (wrver >= 7)
+		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v7");
 	else {
 		rnd_message(RND_MSG_ERROR, "Invalid lihata subc version to write: %d\n", wrver);
 		pxm_uninit();
@@ -1903,6 +1906,8 @@ TODO("subc: for subc-in-subc this should be recursive")
 	}
 
 	lht_dom_list_append(doc->root, build_subc(sc));
+	if (wrver >= 7)
+		lht_dom_list_append(doc->root, build_pxms());
 
 	clean_invalid(doc->root); /* remove invalid nodes placed for persistency */
 	res = lht_dom_export(doc->root, f, "");
