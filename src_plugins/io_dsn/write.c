@@ -103,6 +103,12 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 
 		group_name(gname, lg->name, gid);
 
+		{
+			pcb_gfx_t *gfx;
+			for(gfx = gfxlist_first(&ly->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)gfx, "gfx", "gfx can not be exported", "please use the lihata board format");
+		}
+
 		PCB_LINE_LOOP(ly);
 		{
 			net = htpp_get(&wctx->nmap.o2n, (pcb_any_obj_t *)line);
