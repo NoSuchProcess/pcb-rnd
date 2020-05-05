@@ -572,8 +572,8 @@ static lht_node_t *build_gfx(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
 	lht_dom_hash_put(obj, build_flags(&gfx->Flags, PCB_OBJ_GFX, gfx->intconn));
 	lht_dom_hash_put(obj, build_textf("cx", CFMT, gfx->cx+dx));
 	lht_dom_hash_put(obj, build_textf("cy", CFMT, gfx->cy+dy));
-	lht_dom_hash_put(obj, build_textf("sx", CFMT, gfx->cx));
-	lht_dom_hash_put(obj, build_textf("sy", CFMT, gfx->cy));
+	lht_dom_hash_put(obj, build_textf("sx", CFMT, gfx->sx));
+	lht_dom_hash_put(obj, build_textf("sy", CFMT, gfx->sy));
 	lht_dom_hash_put(obj, build_textf("rot", "%f", gfx->rot));
 	lht_dom_hash_put(obj, build_textf("xmirror", "%d", gfx->xmirror));
 	lht_dom_hash_put(obj, build_textf("ymirror", "%d", gfx->ymirror));
