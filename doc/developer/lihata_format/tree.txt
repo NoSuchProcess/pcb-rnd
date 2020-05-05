@@ -590,6 +590,8 @@ ha:data                              Layers and global objects of the board
   y2                    coord        line second endpoint, vertical offset
   lgrp1                 integer      first endpoint's layer group ID
   lgrp2                 integer      second endpoint's layer group ID
+  anchor1               string   >=7 first endpoint's objet anchor written as an absolute idpath
+  anchor2               string   >=7 second endpoint's objet anchor written as an absolute idpath
   ha:attributes                      a hash of attribute key=value pairs
    attrib-key           string       attribute value
   ha:flags                           flag bits of a line

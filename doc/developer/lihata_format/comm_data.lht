@@ -301,6 +301,8 @@ ha:lht_tree_doc { ha:comm {
 					ha:y2        = { valtype=coord;   desc={line second endpoint, vertical offset }}
 					ha:lgrp1     = { valtype=integer; desc={first endpoint's layer group ID }}
 					ha:lgrp2     = { valtype=integer; desc={second endpoint's layer group ID }}
+					ha:anchor1   = { valtype=string; ver={>=7}; desc={first endpoint's objet anchor written as an absolute idpath }}
+					ha:anchor2   = { valtype=string; ver={>=7}; desc={second endpoint's objet anchor written as an absolute idpath }}
 					sy:attr@dup  = {/lht_tree_doc/comm/attributes}
 					sy:flags@dup  = {/lht_tree_doc/comm/flags_line}
 				}
