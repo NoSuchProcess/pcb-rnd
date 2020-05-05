@@ -521,6 +521,11 @@ TODO("textrot: incompatibility warning")
 						arc->X - ox, arc->Y - oy, arc->Width, arc->Height,
 						arc->StartAngle, arc->Delta, arc->Thickness);
 				}
+				{
+					pcb_gfx_t *gfx;
+					for(gfx = gfxlist_first(&ly->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
+						pcb_io_incompat_save(sc->data, (pcb_any_obj_t *)gfx, "element-obj", "gfx can not be exported in this format, please use lihata", "only lines and arcs are exported");
+				}
 				if (polylist_length(&ly->Polygon) > 0) {
 					char *desc = rnd_strdup_printf("Polygons on layer %s can not be exported in an element", ly->name);
 					pcb_io_incompat_save(sc->data, NULL, "element-obj", desc, "only lines and arcs are exported");
@@ -616,6 +621,11 @@ static void WriteLayerData(FILE * FP, rnd_cardinal_t Number, pcb_layer_t *layer)
 			rnd_fprintf(FP, "\tLine[%[0] %[0] %[0] %[0] %[0] %[0] %s]\n",
 									line->Point1.X, line->Point1.Y,
 									line->Point2.X, line->Point2.Y, line->Thickness, line->Clearance, F2S(line, PCB_OBJ_LINE));
+		}
+		{
+			pcb_gfx_t *gfx;
+			for(gfx = gfxlist_first(&layer->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)gfx, "gfx", "gfx can not be exported in this format", "please use the lihata format");
 		}
 		arclist_foreach(&layer->Arc, &it, arc) {
 			rnd_fprintf(FP, "\tArc[%[0] %[0] %[0] %[0] %[0] %[0] %ma %ma %s]\n",
