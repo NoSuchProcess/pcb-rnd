@@ -526,6 +526,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		pcb_text_t *text;
 		pcb_poly_t *poly;
 		pcb_arc_t *arc;
+		pcb_gfx_t *gfx;
 		pcb_layer_type_t ltype;
 
 		if (pcb_layer_is_pure_empty(&buffer->Data->Layer[n]))
@@ -610,6 +611,12 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 			pcb_arc_unreg(arc);
 			pcb_arc_reg(dst, arc);
 			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, arc);
+		}
+
+		while((gfx = gfxlist_first(&src->Gfx)) != NULL) {
+			pcb_gfx_unreg(gfx);
+			pcb_gfx_reg(dst, gfx);
+			PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, gfx);
 		}
 
 		while((text = textlist_first(&src->Text)) != NULL) {
