@@ -7,7 +7,6 @@
 + CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert]
 + CLEANUP: insert drag&drop strangeness (mainline too): insert should just insert a new point and stop there, not starting a drag&drop move; the new point should be marked somehow (e.g. green-find one half of the object, like arc split does) lines can be inserted mostly only in all-dir-line which is strange [report: Igor2]
 - FEATURE: lihata v7
-	- document new objects in the lihata format doc
 	+ FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
 		- deprecate MinClearGap
 		- thermal tool doesn't work on heavy terminals and objects
