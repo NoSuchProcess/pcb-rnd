@@ -762,6 +762,7 @@ void pcb_xordraw_subc(pcb_subc_t *sc, rnd_coord_t DX, rnd_coord_t DY, int use_cu
 		pcb_text_t *text;
 		pcb_poly_t *poly;
 		pcb_arc_t *arc;
+		pcb_gfx_t *gfx;
 		gdl_iterator_t it;
 
 		linelist_foreach(&ly->Line, &it, line)
@@ -791,6 +792,13 @@ TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elli
 				temp_arc.Thickness = arc->Thickness;
 				pcb_draw_wireframe_arc(pcb_crosshair.GC, &temp_arc, arc->Thickness);
 			}
+		}
+
+		gfxlist_foreach(&ly->Gfx, &it, gfx) {
+			rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[0], gfx->coy[0], gfx->cox[1], gfx->coy[1]);
+			rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[1], gfx->coy[1], gfx->cox[2], gfx->coy[2]);
+			rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[2], gfx->coy[2], gfx->cox[3], gfx->coy[3]);
+			rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[3], gfx->coy[3], gfx->cox[0], gfx->coy[0]);
 		}
 
 		polylist_foreach(&ly->Polygon, &it, poly)
