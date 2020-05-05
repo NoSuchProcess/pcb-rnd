@@ -877,6 +877,7 @@ static int parse_gfx(pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coo
 
 	pcb_gfx_set_pixmap_dup(gfx, pxm, 0);
 
+	pcb_gfx_update(gfx);
 	if (ly != NULL)
 		pcb_add_gfx_on_layer(ly, gfx);
 
