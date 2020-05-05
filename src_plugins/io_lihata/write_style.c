@@ -214,13 +214,17 @@ static lhtpers_rule_t r_line[] = {
 
 static const char *pat_lgrp1_line[] = {"te:lgrp1", "*", NULL};
 static const char *pat_lgrp2_line[] = {"te:lgrp2", "*", NULL};
+static const char *pat_anch1_line[] = {"te:anchor1", "*", NULL};
+static const char *pat_anch2_line[] = {"te:anchor2", "*", NULL};
 static lhtpers_rule_t r_rat[] = {
 	{pat_x1_line,    &style_inline, NULL},
 	{pat_y1_line,    &style_inline, NULL},
 	{pat_lgrp1_line, &style_inline, NULL},
+	{pat_anch1_line, &style_inline, NULL},
 	{pat_x2_line,    &style_inline, NULL},
 	{pat_y2_line,    &style_inline, NULL},
 	{pat_lgrp2_line, &style_inline, NULL},
+	{pat_anch2_line, &style_inline, NULL},
 	{lhtpers_early_end, &early_nl, NULL},
 	{pat_flags,      &style_nlstruct, r_thermal},
 	{pat_attributes, &style_nlstruct, NULL},
