@@ -168,6 +168,7 @@ pcb_gfx_t *pcb_gfx_dup(pcb_layer_t *dst, pcb_gfx_t *src)
 	pcb_gfx_t *a = pcb_gfx_new(dst, src->cx, src->cy, src->sx, src->sy, src->rot, src->Flags);
 	TODO("copy the pixmap too");
 	pcb_gfx_copy_meta(a, src);
+	a->pxm_id = src->pxm_id;
 	return a;
 }
 
@@ -176,6 +177,7 @@ pcb_gfx_t *pcb_gfx_dup_at(pcb_layer_t *dst, pcb_gfx_t *src, rnd_coord_t dx, rnd_
 	pcb_gfx_t *a = pcb_gfx_new(dst, src->cx+dx, src->cy+dy, src->sx, src->sy, src->rot, src->Flags);
 	TODO("copy the pixmap too");
 	pcb_gfx_copy_meta(a, src);
+	a->pxm_id = src->pxm_id;
 	return a;
 }
 
