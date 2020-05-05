@@ -901,6 +901,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 		pcb_line_t *line, *nline;
 		pcb_text_t *text, *ntext;
 		pcb_arc_t *arc, *narc;
+		pcb_gfx_t *gfx, *ngfx;
 		gdl_iterator_t it;
 
 		/* bind layer/resolve layers */
@@ -961,6 +962,18 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, 
 				if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, narc)) {
 					pcb_box_bump_box_noflt(&sc->BoundingBox, &narc->BoundingBox);
 					pcb_box_bump_box_noflt(&sc->bbox_naked, &narc->bbox_naked);
+				}
+			}
+		}
+
+		gfxlist_foreach(&sl->Gfx, &it, gfx) {
+			ngfx = pcb_gfx_dup_at(dl, gfx, dx, dy);
+			MAYBE_KEEP_ID(ngfx, gfx);
+			if (ngfx != NULL) {
+				PCB_SET_PARENT(ngfx, layer, dl);
+				if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, ngfx)) {
+					pcb_box_bump_box_noflt(&sc->BoundingBox, &ngfx->BoundingBox);
+					pcb_box_bump_box_noflt(&sc->bbox_naked, &ngfx->bbox_naked);
 				}
 			}
 		}
