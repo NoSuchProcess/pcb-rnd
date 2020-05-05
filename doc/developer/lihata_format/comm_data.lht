@@ -122,6 +122,24 @@ ha:lht_tree_doc { ha:comm {
 											sy:hvthr@dup  = {/lht_tree_doc/comm/thermal_heavy}
 										}
 									}
+									ha:gfx.ID {
+										type=ha
+										ver={>=7}
+										desc={rectangular custom pixmap graphics}
+										li:children {
+											ha:sx         = { valtype=coord;    desc={visible size, X direction}}
+											ha:sy         = { valtype=coord;    desc={visible size, Y direction}}
+											ha:cx         = { valtype=coord;    desc={center, X coord}}
+											ha:cy         = { valtype=coord;    desc={center, Y coord}}
+											ha:rot        = { valtype=angle;    desc={rotation angle, CCW}}
+											ha:xmirror    = { valtype=ingteger; desc={0 or 1, whether the pixmap should be mirrored (x coord mirror, which means mirror against the y axis}}
+											ha:ymirror    = { valtype=ingteger; desc={0 or 1, whether the pixmap should be mirrored (y coord mirror, which means mirror against the x axis}}
+											ha:pixmap_ref = { valtype=ingteger; desc={ID of the pixmap to use from the pixmaps subtree; this pixmap represents the neutral state (no rotation, no mirror) pixmap of the object}}
+											sy:attr@dup   = {/lht_tree_doc/comm/attributes}
+											sy:flags@dup  = {/lht_tree_doc/comm/flags_arc}
+											sy:hvthr@dup  = {/lht_tree_doc/comm/thermal_heavy}
+										}
+									}
 									ha:polygon.ID {
 										type=ha
 										desc={polygon, as drawn (unclipped)}

@@ -15,6 +15,7 @@ ha:lht_tree_doc { ha:roots {
 					sy:data       = {/lht_tree_doc/comm/data}
 				}
 			}
+			sy:pixmaps    = {/lht_tree_doc/comm/pixmaps}
 		}
 	}
 }}

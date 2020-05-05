@@ -1,0 +1,20 @@
+ha:lht_tree_doc { ha:comm {
+
+	ha:pixmaps {
+		type=ha
+		ver={>=7}
+		desc { Collection of all unique pixmaps used by the board or footprint }
+		li:children {
+			ha:ulzw.ID {
+				type=ha
+				desc { pixmap with payload ulzw-compressed }
+				li:children {
+					ha:sx          = { valtype=integer;   desc={size in X direction (width), in pixels }}
+					ha:sy          = { valtype=integer;   desc={size in Y direction (height), in pixels }}
+					ha:transparent = { valtype=string;    desc={color of the transparent pixel in #rrggbb form; omit node if there is no transparent pixel in the pixmap }}
+					ha:pixmap      = { valtype=string;    desc={ base64 encoded version of the ulzw compressed raw pixmap, whih is in 24 bit RGB format, stored row-major }}
+				}
+			}
+		}
+	}
+}}

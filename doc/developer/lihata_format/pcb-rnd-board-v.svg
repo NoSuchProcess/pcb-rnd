@@ -13,8 +13,8 @@
 <g id="node1" class="node">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*</title>
 <g id="a_node1"><a xlink:href="tree.html#/lht_tree_doc/roots/pcb-rnd-board-v*" xlink:title=" &#160;&#160;&#160;The full, self&#45;contained description of a printed circuit board. &#160;&#160;&#160;This is the root of a board .lht file. The * after the v in the name &#160;&#160;&#160;is an integer which is the format version. &#160;&#160;">
-<ellipse fill="none" stroke="#000000" cx="2010.0624" cy="-1511.5023" rx="90.5193" ry="27.6545"/>
-<text text-anchor="middle" x="2010.0624" y="-1515.8023" font-family="Times,serif" font-size="14.00" fill="#000000">ha:pcb&#45;rnd&#45;board&#45;v*</text>
+<ellipse fill="none" stroke="#000000" cx="2067.0624" cy="-1511.5023" rx="90.5193" ry="27.6545"/>
+<text text-anchor="middle" x="2067.0624" y="-1515.8023" font-family="Times,serif" font-size="14.00" fill="#000000">ha:pcb&#45;rnd&#45;board&#45;v*</text>
 </a>
 </g>
 </g>
@@ -30,8 +30,8 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/meta -->
 <g id="edge1" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/meta</title>
-<path fill="none" stroke="#000000" d="M1921.7527,-1505.1287C1676.8553,-1487.4538 994.3736,-1438.1971 799.5829,-1424.1385"/>
-<polygon fill="#000000" stroke="#000000" points="799.5582,-1420.6277 789.3321,-1423.3987 799.0542,-1427.6095 799.5582,-1420.6277"/>
+<path fill="none" stroke="#000000" d="M1978.6612,-1505.3976C1725.0764,-1487.886 1000.5518,-1437.853 799.4136,-1423.9631"/>
+<polygon fill="#000000" stroke="#000000" points="799.6193,-1420.4691 789.4019,-1423.2718 799.137,-1427.4525 799.6193,-1420.4691"/>
 </g>
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/layer_stack -->
 <g id="node24" class="node">
@@ -45,8 +45,8 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/layer_stack -->
 <g id="edge23" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/layer_stack</title>
-<path fill="none" stroke="#000000" d="M1945.9625,-1491.9785C1905.2699,-1479.5201 1851.5217,-1462.9466 1804.0624,-1447.9251 1796.6785,-1445.588 1788.9421,-1443.1137 1781.2714,-1440.6446"/>
-<polygon fill="#000000" stroke="#000000" points="1782.2135,-1437.2709 1771.6218,-1437.5305 1780.0636,-1443.9326 1782.2135,-1437.2709"/>
+<path fill="none" stroke="#000000" d="M1993.5484,-1495.3175C1940.5906,-1483.2733 1867.5741,-1465.8761 1804.0624,-1447.9251 1796.4205,-1445.7652 1788.4363,-1443.3665 1780.5521,-1440.9108"/>
+<polygon fill="#000000" stroke="#000000" points="1781.6044,-1437.5728 1771.0146,-1437.8994 1779.4967,-1444.248 1781.6044,-1437.5728"/>
 </g>
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/font -->
 <g id="node42" class="node">
@@ -60,8 +60,8 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/font -->
 <g id="edge53" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/font</title>
-<path fill="none" stroke="#000000" d="M1967.7213,-1487.0746C1943.9964,-1473.387 1914.6036,-1456.4296 1891.3861,-1443.0348"/>
-<polygon fill="#000000" stroke="#000000" points="1892.9052,-1439.8705 1882.4943,-1437.9049 1889.4071,-1445.9338 1892.9052,-1439.8705"/>
+<path fill="none" stroke="#000000" d="M2006.2006,-1490.9455C1974.1182,-1479.4593 1934.4034,-1464.2021 1900.0624,-1447.9251 1896.9278,-1446.4394 1893.723,-1444.8244 1890.53,-1443.1461"/>
+<polygon fill="#000000" stroke="#000000" points="1892.0877,-1440.0092 1881.631,-1438.3037 1888.7419,-1446.1578 1892.0877,-1440.0092"/>
 </g>
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/styles -->
 <g id="node44" class="node">
@@ -75,8 +75,8 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/styles -->
 <g id="edge55" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/styles</title>
-<path fill="none" stroke="#000000" d="M1993.2606,-1484.153C1987.6367,-1474.9986 1981.2912,-1464.6697 1975.3699,-1455.0312"/>
-<polygon fill="#000000" stroke="#000000" points="1978.3008,-1453.1156 1970.084,-1446.4272 1972.3364,-1456.7798 1978.3008,-1453.1156"/>
+<path fill="none" stroke="#000000" d="M2034.9834,-1485.6249C2020.7794,-1474.1669 2004.0256,-1460.652 1989.4578,-1448.9005"/>
+<polygon fill="#000000" stroke="#000000" points="1991.6003,-1446.132 1981.6195,-1442.5776 1987.2053,-1451.5803 1991.6003,-1446.132"/>
 </g>
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists -->
 <g id="node45" class="node">
@@ -90,8 +90,8 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists -->
 <g id="edge56" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists</title>
-<path fill="none" stroke="#000000" d="M2027.1643,-1484.153C2032.8384,-1475.0789 2039.2342,-1464.8508 2045.2158,-1455.285"/>
-<polygon fill="#000000" stroke="#000000" points="2048.2258,-1457.0729 2050.5601,-1446.7384 2042.2906,-1453.3615 2048.2258,-1457.0729"/>
+<path fill="none" stroke="#000000" d="M2067.0624,-1483.6577C2067.0624,-1475.6176 2067.0624,-1466.7053 2067.0624,-1458.1672"/>
+<polygon fill="#000000" stroke="#000000" points="2070.5625,-1458.022 2067.0624,-1448.022 2063.5625,-1458.0221 2070.5625,-1458.022"/>
 </g>
 <!-- dup4_/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/conf -->
 <g id="node66" class="node">
@@ -104,8 +104,8 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;dup4_/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/conf -->
 <g id="edge77" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;dup4_/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/conf</title>
-<path fill="none" stroke="#000000" d="M2056.5625,-1487.7477C2078.0762,-1476.3208 2103.7507,-1462.0559 2126.0624,-1447.9251 2126.3465,-1447.7452 2126.6313,-1447.5639 2126.9167,-1447.3814"/>
-<polygon fill="#000000" stroke="#000000" points="2128.8949,-1450.2691 2135.2782,-1441.813 2125.0149,-1444.4428 2128.8949,-1450.2691"/>
+<path fill="none" stroke="#000000" d="M2095.1189,-1485.1367C2105.3932,-1475.4815 2117.1657,-1464.4185 2128.0403,-1454.1992"/>
+<polygon fill="#000000" stroke="#000000" points="2130.5055,-1456.6855 2135.3959,-1447.2869 2125.7118,-1451.5844 2130.5055,-1456.6855"/>
 </g>
 <!-- dup5_/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/data -->
 <g id="node67" class="node">
@@ -118,23 +118,37 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;dup5_/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/data -->
 <g id="edge78" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;dup5_/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/data</title>
-<path fill="none" stroke="#000000" d="M2079.7424,-1493.888C2116.8692,-1483.137 2162.6705,-1467.6473 2201.0624,-1447.9251 2201.4794,-1447.7109 2201.8967,-1447.4925 2202.3143,-1447.27"/>
-<polygon fill="#000000" stroke="#000000" points="2204.2078,-1450.2166 2211.0354,-1442.1151 2200.6458,-1444.1905 2204.2078,-1450.2166"/>
+<path fill="none" stroke="#000000" d="M2120.0838,-1489.0747C2145.193,-1477.7711 2175.2619,-1463.2295 2201.0624,-1447.9251 2201.4656,-1447.686 2201.8697,-1447.4437 2202.2747,-1447.1985"/>
+<polygon fill="#000000" stroke="#000000" points="2204.292,-1450.0626 2210.8126,-1441.7121 2200.5077,-1444.1737 2204.292,-1450.0626"/>
 </g>
-<!-- dup6_/lht_tree_doc/comm/attributes -->
+<!-- dup6_/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/pixmaps -->
 <g id="node68" class="node">
-<title>dup6_/lht_tree_doc/comm/attributes</title>
-<g id="a_node68"><a xlink:href="tree.html#/lht_tree_doc/comm/attributes" xlink:title=" a hash of attribute key=value pairs ">
-<ellipse fill="none" stroke="#000000" cx="2354.0624" cy="-1420.3479" rx="58.8803" ry="27.6545"/>
-<text text-anchor="middle" x="2354.0624" y="-1424.6479" font-family="Times,serif" font-size="14.00" fill="#000000">ha:attributes</text>
+<title>dup6_/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/pixmaps</title>
+<g id="a_node68"><a xlink:href="pixmaps.svg" xlink:title="pixmaps &#45;&gt;\n\n\n">
+<text text-anchor="middle" x="2325.0624" y="-1432.6479" font-family="Times,serif" font-size="14.00" fill="#000000">pixmaps &#45;&gt;</text>
 </a>
 </g>
 </g>
-<!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;dup6_/lht_tree_doc/comm/attributes -->
+<!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;dup6_/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/pixmaps -->
 <g id="edge79" class="edge">
-<title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;dup6_/lht_tree_doc/comm/attributes</title>
-<path fill="none" stroke="#000000" d="M2084.8589,-1495.8334C2138.4724,-1484.0668 2212.1979,-1466.7902 2276.0624,-1447.9251 2283.165,-1445.8271 2290.5708,-1443.4554 2297.8695,-1441.0055"/>
-<polygon fill="#000000" stroke="#000000" points="2299.3898,-1444.1845 2307.7173,-1437.6345 2297.1227,-1437.5618 2299.3898,-1444.1845"/>
+<title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;dup6_/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/pixmaps</title>
+<path fill="none" stroke="#000000" d="M2137.6026,-1494.155C2176.3538,-1483.6772 2225.1381,-1468.9331 2275.5985,-1447.8058"/>
+<polygon fill="#000000" stroke="#000000" points="2277.2088,-1450.9243 2285.0381,-1443.7861 2274.4663,-1444.4839 2277.2088,-1450.9243"/>
+</g>
+<!-- dup7_/lht_tree_doc/comm/attributes -->
+<g id="node69" class="node">
+<title>dup7_/lht_tree_doc/comm/attributes</title>
+<g id="a_node69"><a xlink:href="tree.html#/lht_tree_doc/comm/attributes" xlink:title=" a hash of attribute key=value pairs ">
+<ellipse fill="none" stroke="#000000" cx="2455.0624" cy="-1420.3479" rx="58.8803" ry="27.6545"/>
+<text text-anchor="middle" x="2455.0624" y="-1424.6479" font-family="Times,serif" font-size="14.00" fill="#000000">ha:attributes</text>
+</a>
+</g>
+</g>
+<!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;dup7_/lht_tree_doc/comm/attributes -->
+<g id="edge80" class="edge">
+<title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*&#45;&gt;dup7_/lht_tree_doc/comm/attributes</title>
+<path fill="none" stroke="#000000" d="M2145.9307,-1497.9532C2208.3217,-1486.5679 2297.3939,-1468.8286 2374.0624,-1447.9251 2382.0973,-1445.7344 2390.4977,-1443.1807 2398.718,-1440.5279"/>
+<polygon fill="#000000" stroke="#000000" points="2399.8516,-1443.8396 2408.2527,-1437.3842 2397.6596,-1437.1916 2399.8516,-1443.8396"/>
 </g>
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/meta/children/board_name -->
 <g id="node3" class="node">
@@ -788,16 +802,16 @@
 <g id="node52" class="node">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch</title>
 <g id="a_node52"><a xlink:href="tree.html#/lht_tree_doc/roots/pcb-rnd-board-v*/children/netlists/children/netlist_patch" xlink:title=" a list of intentional deviations from the input netlist, a.k.a. material for back annotation ">
-<ellipse fill="none" stroke="#000000" cx="2296.0624" cy="-1318.587" rx="68.6788" ry="27.6545"/>
-<text text-anchor="middle" x="2296.0624" y="-1322.887" font-family="Times,serif" font-size="14.00" fill="#000000">li:netlist_patch</text>
+<ellipse fill="none" stroke="#000000" cx="2346.0624" cy="-1318.587" rx="68.6788" ry="27.6545"/>
+<text text-anchor="middle" x="2346.0624" y="-1322.887" font-family="Times,serif" font-size="14.00" fill="#000000">li:netlist_patch</text>
 </a>
 </g>
 </g>
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch -->
 <g id="edge63" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch</title>
-<path fill="none" stroke="#000000" d="M2105.3984,-1402.2548C2112.2648,-1399.0639 2119.3649,-1395.7967 2126.0624,-1392.7708 2163.7221,-1375.7561 2206.3452,-1357.1579 2239.4916,-1342.8397"/>
-<polygon fill="#000000" stroke="#000000" points="2241.2212,-1345.9054 2249.0165,-1338.7302 2238.4481,-1339.478 2241.2212,-1345.9054"/>
+<path fill="none" stroke="#000000" d="M2104.8732,-1401.9128C2111.8591,-1398.7251 2119.1357,-1395.5473 2126.0624,-1392.7708 2177.5413,-1372.1359 2237.2365,-1352.2523 2281.4446,-1338.2734"/>
+<polygon fill="#000000" stroke="#000000" points="2282.71,-1341.5446 2291.1991,-1335.2053 2280.6096,-1334.8671 2282.71,-1341.5446"/>
 </g>
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist/children/NETNAME -->
 <g id="node47" class="node">
@@ -889,8 +903,8 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/net_info -->
 <g id="edge64" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/net_info</title>
-<path fill="none" stroke="#000000" d="M2278.9845,-1291.8505C2271.1607,-1279.6021 2261.7848,-1264.9235 2253.409,-1251.8108"/>
-<polygon fill="#000000" stroke="#000000" points="2256.1343,-1249.5755 2247.8016,-1243.032 2250.2351,-1253.3436 2256.1343,-1249.5755"/>
+<path fill="none" stroke="#000000" d="M2317.6355,-1293.4326C2301.9737,-1279.5738 2282.4067,-1262.2595 2265.8392,-1247.5992"/>
+<polygon fill="#000000" stroke="#000000" points="2267.7856,-1244.6481 2257.9772,-1240.6423 2263.1468,-1249.8904 2267.7856,-1244.6481"/>
 </g>
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/add_conn -->
 <g id="node56" class="node">
@@ -904,8 +918,8 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/add_conn -->
 <g id="edge67" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/add_conn</title>
-<path fill="none" stroke="#000000" d="M2313.1404,-1291.8505C2320.903,-1279.6978 2330.1937,-1265.1527 2338.5194,-1252.1184"/>
-<polygon fill="#000000" stroke="#000000" points="2341.665,-1253.6956 2344.0985,-1243.384 2335.7658,-1249.9274 2341.665,-1253.6956"/>
+<path fill="none" stroke="#000000" d="M2350.1217,-1291.049C2351.7892,-1279.7367 2353.7464,-1266.4588 2355.5408,-1254.285"/>
+<polygon fill="#000000" stroke="#000000" points="2359.0042,-1254.7896 2357,-1244.3861 2352.079,-1253.7687 2359.0042,-1254.7896"/>
 </g>
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/del_conn -->
 <g id="node59" class="node">
@@ -919,8 +933,8 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/del_conn -->
 <g id="edge70" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/del_conn</title>
-<path fill="none" stroke="#000000" d="M2339.0948,-1296.8998C2350.1278,-1291.4352 2362.0026,-1285.6368 2373.0624,-1280.4032 2402.2654,-1266.5843 2435.1629,-1251.7117 2461.8319,-1239.8281"/>
-<polygon fill="#000000" stroke="#000000" points="2463.2738,-1243.0174 2470.989,-1235.756 2460.4295,-1236.6213 2463.2738,-1243.0174"/>
+<path fill="none" stroke="#000000" d="M2384.1842,-1295.4959C2409.408,-1280.2174 2442.5931,-1260.1165 2469.105,-1244.0577"/>
+<polygon fill="#000000" stroke="#000000" points="2471.0791,-1246.954 2477.819,-1238.7794 2467.4524,-1240.9667 2471.0791,-1246.954"/>
 </g>
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/change_attrib -->
 <g id="node62" class="node">
@@ -934,8 +948,8 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/change_attrib -->
 <g id="edge73" class="edge">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch&#45;&gt;/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/change_attrib</title>
-<path fill="none" stroke="#000000" d="M2335.894,-1296.1007C2347.58,-1290.2623 2360.5795,-1284.4772 2373.0624,-1280.4032 2462.6679,-1251.1592 2489.3487,-1261.3889 2582.0624,-1244.4032 2603.2808,-1240.5159 2626.2469,-1236.1325 2647.3992,-1232.0236"/>
-<polygon fill="#000000" stroke="#000000" points="2648.1521,-1235.4429 2657.2983,-1230.0952 2646.8135,-1228.572 2648.1521,-1235.4429"/>
+<path fill="none" stroke="#000000" d="M2386.3947,-1296.2039C2397.9782,-1290.4363 2410.7993,-1284.6621 2423.0624,-1280.4032 2444.0706,-1273.1073 2565.1498,-1248.394 2647.1956,-1232.0149"/>
+<polygon fill="#000000" stroke="#000000" points="2648.1253,-1235.3986 2657.248,-1230.0108 2646.7566,-1228.5337 2648.1253,-1235.3986"/>
 </g>
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*/children/netlists/children/netlist_patch/children/net_info/children/net -->
 <g id="node54" class="node">
@@ -1081,21 +1095,21 @@
 <path fill="none" stroke="#000000" d="M2758.1179,-1192.1357C2773.6079,-1180.6309 2792.02,-1166.5667 2808.0624,-1153.2489 2812.1285,-1149.8735 2816.334,-1146.2367 2820.4421,-1142.5962"/>
 <polygon fill="#000000" stroke="#000000" points="2823.0628,-1144.9466 2828.1599,-1135.6584 2818.3831,-1139.7408 2823.0628,-1144.9466"/>
 </g>
-<!-- dup6_/lht_tree_doc/comm/attributes/children/attrib&#45;key -->
-<g id="node69" class="node">
-<title>dup6_/lht_tree_doc/comm/attributes/children/attrib&#45;key</title>
-<g id="a_node69"><a xlink:href="tree.html#/lht_tree_doc/comm/attributes/children/attrib-key" xlink:title="attribute value">
-<ellipse fill="none" stroke="#000000" cx="2431.0624" cy="-1318.587" rx="48.5816" ry="26.7407"/>
-<text text-anchor="middle" x="2431.0624" y="-1322.387" font-family="Times,serif" font-size="14.00" fill="#000000">attrib&#45;key</text>
-<text text-anchor="middle" x="2431.0624" y="-1307.387" font-family="Times,serif" font-size="14.00" fill="#000000">string</text>
+<!-- dup7_/lht_tree_doc/comm/attributes/children/attrib&#45;key -->
+<g id="node70" class="node">
+<title>dup7_/lht_tree_doc/comm/attributes/children/attrib&#45;key</title>
+<g id="a_node70"><a xlink:href="tree.html#/lht_tree_doc/comm/attributes/children/attrib-key" xlink:title="attribute value">
+<ellipse fill="none" stroke="#000000" cx="2481.0624" cy="-1318.587" rx="48.5816" ry="26.7407"/>
+<text text-anchor="middle" x="2481.0624" y="-1322.387" font-family="Times,serif" font-size="14.00" fill="#000000">attrib&#45;key</text>
+<text text-anchor="middle" x="2481.0624" y="-1307.387" font-family="Times,serif" font-size="14.00" fill="#000000">string</text>
 </a>
 </g>
 </g>
-<!-- dup6_/lht_tree_doc/comm/attributes&#45;&gt;dup6_/lht_tree_doc/comm/attributes/children/attrib&#45;key -->
-<g id="edge80" class="edge">
-<title>dup6_/lht_tree_doc/comm/attributes&#45;&gt;dup6_/lht_tree_doc/comm/attributes/children/attrib&#45;key</title>
-<path fill="none" stroke="#000000" d="M2373.8919,-1394.142C2383.6337,-1381.2674 2395.4799,-1365.6118 2405.8572,-1351.8976"/>
-<polygon fill="#000000" stroke="#000000" points="2408.8536,-1353.738 2412.0967,-1343.6516 2403.2716,-1349.5141 2408.8536,-1353.738"/>
+<!-- dup7_/lht_tree_doc/comm/attributes&#45;&gt;dup7_/lht_tree_doc/comm/attributes/children/attrib&#45;key -->
+<g id="edge81" class="edge">
+<title>dup7_/lht_tree_doc/comm/attributes&#45;&gt;dup7_/lht_tree_doc/comm/attributes/children/attrib&#45;key</title>
+<path fill="none" stroke="#000000" d="M2462.0984,-1392.81C2465.0357,-1381.3136 2468.4917,-1367.7875 2471.6432,-1355.453"/>
+<polygon fill="#000000" stroke="#000000" points="2475.1162,-1355.9983 2474.2007,-1345.4431 2468.3341,-1354.2654 2475.1162,-1355.9983"/>
 </g>
 </g>
 </svg>

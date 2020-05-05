@@ -73,6 +73,7 @@ ha:pcb-rnd-board-v*            The full, self-contained description of a printed
     val             string     new value of the attribute
  li:conf                       complete pcb-rnd configuration tree ->
  ha:data                       Layers and global objects of the board ->
+ ha:pixmaps                >=7 Collection of all unique pixmaps used by the board or footprint ->
  ha:attributes                 a hash of attribute key=value pairs
   attrib-key        string     attribute value
 
@@ -218,6 +219,7 @@ li:pcb-rnd-subcircuit-v*            footprint file containing a single subcircui
    termname              flag       when set the names of pins are shown.
    floater               flag       subc part can be moved after subc placing
   ha:data                           Layers and global objects of the board ->
+ ha:pixmaps                     >=7 Collection of all unique pixmaps used by the board or footprint ->
 
 li:view-list-v*
 
@@ -359,6 +361,34 @@ ha:data                              Layers and global objects of the board
      clearance          coord        copper clearance around the object
      astart             angle        start angle
      adelta             angle        delta angle
+     ha:attributes                   a hash of attribute key=value pairs
+      attrib-key        string       attribute value
+     ha:flags                        flag bits of a arc
+      found             flag         If set, this object has been found by FindConnection()
+      clearline         flag         For lines and arcs, the line/arc will clear polygons instead of connecting to them.
+      selected          flag         Set when the object is selected.
+      auto              flag         For lines and vias, indicates that these were created by the autorouter.
+      rubberend         flag         For lines, used internally for rubber band moves: indicates one end already rubber banding.
+      drc               flag         Set for objects that fail DRC: flag like FOUND flag for DRC checking.
+      exportsel         flag         Set for objects that should be exported in a partial export.
+      lock              flag         Set for locked objects.
+      termname          flag         when set the names of pins are shown.
+      floater           flag         subc part can be moved after subc placing
+     li:thermal                      list of thermal flags for heavy terminals, on the single layer the object is on
+      on                none         draw any thermal only if this string is present; else normal clearance is applied
+      diag              none         if present, the thermal is diagonal (45 degree rotated)
+      round             none         if present, thermal shape is rounded
+      sharp             none         if present, thermal shape is sharp
+      solid             none         if present, there is no thermal but a solid connection ("join")
+    ha:gfx.ID                    >=7 rectangular custom pixmap graphics
+     sx                 coord        visible size, X direction
+     sy                 coord        visible size, Y direction
+     cx                 coord        center, X coord
+     cy                 coord        center, Y coord
+     rot                angle        rotation angle, CCW
+     xmirror            ingteger     0 or 1, whether the pixmap should be mirrored (x coord mirror, which means mirror against the y axis
+     ymirror            ingteger     0 or 1, whether the pixmap should be mirrored (y coord mirror, which means mirror against the x axis
+     pixmap_ref         ingteger     ID of the pixmap to use from the pixmaps subtree; this pixmap represents the neutral state (no rotation, no mirror) pixmap of the object
      ha:attributes                   a hash of attribute key=value pairs
       attrib-key        string       attribute value
      ha:flags                        flag bits of a arc
@@ -573,6 +603,16 @@ ha:data                              Layers and global objects of the board
    lock                 flag         Set for locked objects.
    termname             flag         when set the names of pins are shown.
    floater              flag         subc part can be moved after subc placing
+
+ha:pixmaps
+
+type:name     value   ver description
+ha:pixmaps            >=7 Collection of all unique pixmaps used by the board or footprint
+ ha:ulzw.ID               pixmap with payload ulzw-compressed
+  sx          integer     size in X direction (width), in pixels
+  sy          integer     size in Y direction (height), in pixels
+  transparent string      color of the transparent pixel in #rrggbb form; omit node if there is no transparent pixel in the pixmap
+  pixmap      string      base64 encoded version of the ulzw compressed raw pixmap, whih is in 24 bit RGB format, stored row-major
 
 li:submenu
 
