@@ -41,6 +41,8 @@ struct pcb_gfx_s {       /* holds information about gfxs */
 	rnd_angle_t rot;
 	unsigned int xmirror:1, ymirror:1;
 
+	long int pxm_id;               /* preferred id for the pixmap (to preserve it on save/load) */
+
 	rnd_pixmap_t *pxm_neutral;     /* graphics is a pixmap, if not NULL - in neutral scale/rot */
 	rnd_pixmap_t *pxm_xformed;     /* transformed version from the cache */
 
