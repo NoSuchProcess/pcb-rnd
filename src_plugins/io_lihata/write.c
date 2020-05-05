@@ -30,6 +30,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <liblihata/tree.h>
+#include <genht/htip.h>
+#include <genht/htpi.h>
+#include <genht/hash.h>
 #include <libminuid/libminuid.h>
 #include <libulzw/libulzw.h>
 #include "config.h"
@@ -73,6 +76,7 @@
 static int io_lihata_full_tree = 0;
 static int wrver;
 static htip_t id2pxm;
+static htpi_t pxm2id;
 
 static lht_node_t *build_data(pcb_data_t *data);
 
@@ -503,6 +507,11 @@ static lht_node_t *build_pxms(void)
 static long gfx_invent_pxm_id(pcb_gfx_t *gfx)
 {
 	rnd_pixmap_t *existing;
+	long int id;
+
+	id = htpi_get(&pxm2id, gfx->pxm_neutral);
+	if (id > 0) /* already have this pixmap stored with an id, reuse that to avoid redundant storage */
+		return gfx->pxm_id = id;
 
 	if (gfx->pxm_id == 0)
 		gfx->pxm_id = pcb_create_ID_get();
@@ -512,6 +521,7 @@ static long gfx_invent_pxm_id(pcb_gfx_t *gfx)
 
 	gfx->pxm_id = pcb_create_ID_get();
 	htip_set(&id2pxm, gfx->pxm_id, gfx->pxm_neutral);
+	htip_set(&pxm2id, gfx->pxm_neutral, gfx->pxm_id);
 	return gfx->pxm_id;
 }
 
@@ -538,11 +548,13 @@ static void gfx_invent_pxm_ids(pcb_data_t *data)
 static void pxm_init(void)
 {
 	htip_init(&id2pxm, longhash, longkeyeq);
+	htpi_init(&pxm2id, ptrhash, ptrkeyeq);
 }
 
 static void pxm_uninit(void)
 {
 	htip_uninit(&id2pxm);
+	htpi_uninit(&pxm2id);
 }
 
 
