@@ -182,6 +182,7 @@ char *pcb_idpath2str(const pcb_idpath_t *idp, rnd_bool relative)
 
 	gds_init(&tmp);
 	gds_enlarge(&tmp, 32);
+	tmp.used = 0;
 	pcb_append_idpath(&tmp, idp, relative);
 	return tmp.array;
 }
