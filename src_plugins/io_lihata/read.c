@@ -821,6 +821,9 @@ static void pxm_init(lht_node_t *root)
 
 static void pxm_uninit(void)
 {
+	htip_entry_t *e;
+	for(e = htip_first(&id2pxm); e != NULL; e = htip_next(&id2pxm, e))
+		rnd_pixmap_free(e->value);
 	htip_uninit(&id2pxm);
 	pxm_root = NULL;
 }
@@ -872,7 +875,7 @@ static int parse_gfx(pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coo
 	if (pxm == NULL)
 		return iolht_error(obj, "Failed to load referenced pixmap\n");
 
-	pcb_gfx_set_pixmap_free(gfx, pxm, 0);
+	pcb_gfx_set_pixmap_dup(gfx, pxm, 0);
 
 	if (ly != NULL)
 		pcb_add_gfx_on_layer(ly, gfx);
