@@ -52,6 +52,7 @@
 #include "common.h"
 #include "write_style.h"
 #include "io_lihata.h"
+#include "idpath.h"
 #include <librnd/core/paths.h>
 #include "obj_subc_list.h"
 #include "pcb_minuid.h"
@@ -140,6 +141,14 @@ static lht_node_t *build_textf(const char *key, const char *fmt, ...)
 	field->data.text.value = rnd_strdup_vprintf(fmt, ap);
 	va_end(ap);
 	return field;
+}
+
+static lht_node_t *build_idpath(const char *key, const pcb_idpath_t *idpath)
+{
+	char *idps = NULL;
+	if ((idpath != NULL) && (idpath->len > 0))
+		idps = pcb_idpath2str(idpath, 0);
+	return build_text(key, idps);
 }
 
 static lht_node_t *build_minuid(const char *key, minuid_bin_t val)
@@ -401,6 +410,11 @@ static lht_node_t *build_rat(pcb_rat_t *rat)
 	lht_dom_hash_put(obj, build_textf("y2", CFMT, rat->Point2.Y));
 	lht_dom_hash_put(obj, build_textf("lgrp1", "%d", rat->group1));
 	lht_dom_hash_put(obj, build_textf("lgrp2", "%d", rat->group2));
+
+	if (wrver >= 7) {
+		lht_dom_hash_put(obj, build_idpath("anchor1", rat->anchor[0]));
+		lht_dom_hash_put(obj, build_idpath("anchor2", rat->anchor[1]));
+	}
 
 	return obj;
 }
