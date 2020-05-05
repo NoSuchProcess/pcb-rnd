@@ -533,7 +533,8 @@ static long gfx_invent_pxm_id(pcb_gfx_t *gfx)
 	if (existing == gfx->pxm_neutral)
 		return gfx->pxm_id;
 
-	gfx->pxm_id = pcb_create_ID_get();
+	if (existing != NULL)
+		gfx->pxm_id = pcb_create_ID_get(); /* need to find a new ID because the one in gfx is already in use for a different pixmap */
 	htip_set(&id2pxm, gfx->pxm_id, gfx->pxm_neutral);
 	htpi_set(&pxm2id, gfx->pxm_neutral, gfx->pxm_id);
 	return gfx->pxm_id;
