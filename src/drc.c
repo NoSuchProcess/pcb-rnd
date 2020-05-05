@@ -36,7 +36,7 @@
 #include "event.h"
 
 
-pcb_view_list_t pcb_drc_lst;
+pcb_view_list_t pcb_drc_lst, pcb_io_incomp_lst;
 gdl_list_t pcb_drc_impls;
 
 void pcb_drc_impl_reg(pcb_drc_impl_t *impl)
@@ -183,7 +183,7 @@ fgw_error_t pcb_act_IOIncompatList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	return view_dlg(res, argc, argv, dlg_type, "ioincompatlistdialog", &pcb_drc_lst, pcb_drc_all);
+	return view_dlg(res, argc, argv, dlg_type, "ioincompatlistdialog", &pcb_io_incomp_lst, NULL);
 }
 
 static rnd_action_t drc_action_list[] = {
