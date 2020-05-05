@@ -106,6 +106,11 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 				arc->X, arc->Y, arc->Width, arc->StartAngle, arc->Delta, arc->Thickness, clr);
 			rnd_fprintf(f, "%.06mm %.06mm %.06mm %.06mm\n", sx, sy, ex, ey);
 		} PCB_END_LOOP;
+		{
+			pcb_gfx_t *gfx;
+			for(gfx = gfxlist_first(&ly->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)gfx, "gfx", "gfx can not be exported", "please use the lihata board format");
+		}
 		PCB_TEXT_LOOP(ly) {
 			rnd_fprintf(f, " text %.06mm %.06mm %.06mm %.06mm %d %f %.06mm ",
 				text->bbox_naked.X1, text->bbox_naked.Y1, text->bbox_naked.X2, text->bbox_naked.Y2,

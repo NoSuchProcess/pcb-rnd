@@ -215,6 +215,11 @@ int tedax_fp_fsave_subc_(pcb_subc_t *subc, const char *fpname, int lyrecipe, FIL
 			}
 			PCB_END_LOOP;
 
+			{
+				pcb_gfx_t *gfx;
+				for(gfx = gfxlist_first(&ly->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
+					pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)gfx, "gfx", "gfx can not be exported", "please use the lihata board format");
+			}
 
 			PCB_POLY_LOOP(ly)
 			{
