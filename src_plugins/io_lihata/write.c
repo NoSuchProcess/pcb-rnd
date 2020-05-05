@@ -31,6 +31,7 @@
 #include <stdarg.h>
 #include <liblihata/tree.h>
 #include <libminuid/libminuid.h>
+#include <libulzw/libulzw.h>
 #include "config.h"
 #include "board.h"
 #include "conf_core.h"
@@ -71,6 +72,7 @@
 
 static int io_lihata_full_tree = 0;
 static int wrver;
+static htip_t id2pxm;
 
 static lht_node_t *build_data(pcb_data_t *data);
 
@@ -451,13 +453,103 @@ static int ucomp_src(void *ctx_)
 	return *ctx->iptr++;
 }
 
-static lht_node_t *build_gfx(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
+static lht_node_t *build_pxm(rnd_pixmap_t *pxm, long int ID)
 {
-	unsigned char *tbuff;
-	char buff[128];
+	char buff[128], *tbuff;
 	size_t tbs, obs;
 	lht_node_t *obj;
 	ucomp_t uctx;
+
+	sprintf(buff, "ulzw.%ld", ID);
+	obj = lht_dom_node_alloc(LHT_HASH, buff);
+
+	lht_dom_hash_put(obj, build_textf("pxm_sx", "%ld", pxm->sx));
+	lht_dom_hash_put(obj, build_textf("pxm_sy", "%ld", pxm->sy));
+	lht_dom_hash_put(obj, build_textf("pxm_transparent", "#%02x%02x%02x", pxm->tr, pxm->tg, pxm->tb));
+
+	uctx.iptr = pxm->p;
+	uctx.ibs = pxm->size;
+	uctx.cmax = pxm->size * 2 + 256;
+	uctx.cbs = 0;
+	uctx.optr = uctx.buff = malloc(uctx.cmax);
+	ulzw_compress(&uctx, ucomp_dst, ucomp_src, 12);
+
+	tbs = uctx.cbs + uctx.cbs/2 + 4;
+	tbuff = malloc(tbs+1);
+	obs = rnd_base64_bin2str(tbuff, tbs, uctx.buff, uctx.cbs);
+	if (obs != -1) {
+		tbuff[obs] = '\0';
+		lht_dom_hash_put(obj, build_text_nodup("pixmap", tbuff));
+	}
+	else {
+		free(tbuff);
+		pcb_io_incompat_save(NULL, NULL, "gfx_internal", "Internal error saving gfx: base64\n", "Please report this bug to the developer!");
+	}
+	free(uctx.buff);
+	return obj;
+}
+
+static lht_node_t *build_pxms(void)
+{
+	htip_entry_t *e;
+	lht_node_t *root = lht_dom_node_alloc(LHT_HASH, "pixmaps");
+
+	for(e = htip_first(&id2pxm); e != NULL; e = htip_next(&id2pxm, e))
+		lht_dom_hash_put(root, build_pxm(e->value, e->key));
+
+	return root;
+}
+
+static long gfx_invent_pxm_id(pcb_gfx_t *gfx)
+{
+	rnd_pixmap_t *existing;
+
+	if (gfx->pxm_id == 0)
+		gfx->pxm_id = pcb_create_ID_get();
+	existing = htip_get(&id2pxm, gfx->pxm_id);
+	if (existing == gfx->pxm_neutral)
+		return gfx->pxm_id;
+
+	gfx->pxm_id = pcb_create_ID_get();
+	htip_set(&id2pxm, gfx->pxm_id, gfx->pxm_neutral);
+	return gfx->pxm_id;
+}
+
+/* assign all pixmap IDs for data, trying to preserve the ones from load */
+static void gfx_invent_pxm_ids(pcb_data_t *data)
+{
+	long int n;
+	for(n = 0; n < data->LayerN; n++) {
+		pcb_layer_t *layer = data->Layer+n;
+		pcb_gfx_t *gfx;
+
+		/* first remember IDs to preserve */
+		for(gfx = gfxlist_first(&layer->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
+			if (gfx->pxm_id > 0)
+				gfx_invent_pxm_id(gfx);
+
+		/* then assign yet-unassigned IDs */
+		for(gfx = gfxlist_first(&layer->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
+			if (gfx->pxm_id <= 0)
+				gfx_invent_pxm_id(gfx);
+	}
+}
+
+static void pxm_init(void)
+{
+	htip_init(&id2pxm, longhash, longkeyeq);
+}
+
+static void pxm_uninit(void)
+{
+	htip_uninit(&id2pxm);
+}
+
+
+static lht_node_t *build_gfx(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
+{
+	char buff[128];
+	lht_node_t *obj;
 
 	sprintf(buff, "gfx.%ld", gfx->ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
@@ -473,30 +565,7 @@ static lht_node_t *build_gfx(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
 	lht_dom_hash_put(obj, build_textf("rot", "%f", gfx->rot));
 	lht_dom_hash_put(obj, build_textf("xmirror", "%d", gfx->xmirror));
 	lht_dom_hash_put(obj, build_textf("ymirror", "%d", gfx->ymirror));
-	lht_dom_hash_put(obj, build_textf("pxm_sx", "%ld", gfx->pxm_neutral->sx));
-	lht_dom_hash_put(obj, build_textf("pxm_sy", "%ld", gfx->pxm_neutral->sy));
-	lht_dom_hash_put(obj, build_textf("pxm_transparent", "#%02x%02x%02x", gfx->pxm_neutral->tr, gfx->pxm_neutral->tg, gfx->pxm_neutral->tb));
-
-
-	uctx.iptr = gfx->pxm_neutral->p;
-	uctx.ibs = gfx->pxm_neutral->size;
-	uctx.cmax = gfx->pxm_neutral->size * 2 + 256;
-	uctx.cbs = 0;
-	uctx.optr = uctx.buff = malloc(uctx.cmax);
-	ulzw_compress(&uctx, ucomp_dst, ucomp_src, 12);
-
-	tbs = uctx.cbs + uctx.cbs/2 + 4;
-	tbuff = malloc(tbs+1);
-	obs = rnd_base64_bin2str(tbuff, tbs, uctx.buff, uctx.cbs);
-	if (obs != -1) {
-		tbuff[obs] = '\0';
-		lht_dom_hash_put(obj, build_text_nodup("pixmap", tbuff));
-	}
-	else {
-		free(tbuff);
-		pcb_io_incompat_save(NULL, (pcb_any_obj_t*)gfx, "gfx_internal", "Internal error saving gfx: base64\n", "Please report this bug to the developer!");
-	}
-	free(uctx.buff);
+	lht_dom_hash_put(obj, build_textf("pixmap_ref", "%ld", gfx->pxm_id));
 
 	build_thermal_heavy(obj, (pcb_any_obj_t*)gfx);
 
@@ -1134,6 +1203,9 @@ static lht_node_t *build_data_layers(pcb_data_t *data)
 
 	layers = lht_dom_node_alloc(LHT_LIST, "layers");
 
+	if (wrver >= 7)
+		gfx_invent_pxm_ids(data);
+
 	if (wrver == 1) { /* produce an old layer group assignment from top to bottom (needed for v1, good for other versions too) */
 		rnd_layergrp_id_t gm, grp[PCB_MAX_LAYERGRP], gtop = -1, gbottom = -1;
 
@@ -1545,6 +1617,7 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 
 	sprintf(vers, "pcb-rnd-board-v%d", wrver);
 	brd->root = lht_dom_node_alloc(LHT_HASH, vers);
+	pxm_init();
 	lht_dom_hash_put(brd->root, build_board_meta(pcb));
 	if (wrver >= 2) {
 		lht_node_t *stack = build_layer_stack(pcb);
@@ -1558,15 +1631,18 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 		goto error;
 
 	lht_dom_hash_put(brd->root, ntmp);
+	lht_dom_hash_put(brd->root, build_pxms());
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_fontkit(&pcb->fontkit));
 	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
 	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->netlist, pcb->NetlistPatches, PCB_NUM_NETLISTS));
 	lht_dom_hash_put(brd->root, build_conf());
+	pxm_uninit();
 	return brd;
 
 	error:;
 	lht_dom_uninit(brd);
+	pxm_uninit();
 	return NULL;
 }
 
@@ -1786,6 +1862,7 @@ static int io_lihata_dump_subc(pcb_plug_io_t *ctx, FILE *f, pcb_subc_t *sc)
 	/* create the doc */
 	io_lihata_full_tree = 1;
 	doc = lht_dom_init();
+	pxm_init();
 
 	/* determine version */
 	wrver = plug2ver(ctx);
@@ -1809,6 +1886,7 @@ TODO("subc: for subc-in-subc this should be recursive")
 		doc->root = lht_dom_node_alloc(LHT_LIST, "pcb-rnd-subcircuit-v6");
 	else {
 		rnd_message(RND_MSG_ERROR, "Invalid lihata subc version to write: %d\n", wrver);
+		pxm_uninit();
 		return -1;
 	}
 
@@ -1819,6 +1897,7 @@ TODO("subc: for subc-in-subc this should be recursive")
 
 	lht_dom_uninit(doc);
 	io_lihata_full_tree = 0;
+	pxm_uninit();
 	return res;
 }
 
