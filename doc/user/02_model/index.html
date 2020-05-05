@@ -545,7 +545,18 @@ existing copper layers that connect terminals on the pcb-rnd board.  Rat
 connections are straight line connections between the terminals of any two
 drawing primitives that aren't yet connected  
 
-<h4> 2.4.8 Netlists </h4>
+<h4> 2.4.8 Gfx objects </h4>
+<p>
+A gfx object is a layer object that hosts a rectangular custom graphics -
+typically pixel graphics. The raw graphics is rectangular ans has its own
+size (width and height), which is scaled to the rectangular size of the gfx
+object, the rotated and/or mirrored as requested by the gfx object.
+<p>
+Gfx objects are visible only on screen and will be ignored by most export
+plugins. The main purpose of the gfx object is GUI enhancement - for example
+breadboard support.
+
+<h4> 2.4.9 Netlists </h4>
 <p>
 A netlist is a list of named logical networks. Each network is a list of
 netlist terminals that should be connected. A netlist terminal is a pair
