@@ -736,15 +736,22 @@ static lht_node_t *pxm_root;
 
 static rnd_pixmap_t *parse_pxm_(lht_node_t *obj)
 {
-	int err = 0, res;
+	int err = 0, res, has_transp = 0;
 	size_t b64s;
 	unsigned long psx, psy;
 	ucomp_t uctx;
 	rnd_pixmap_t *pxm;
-	lht_node_t *pmn;
+	lht_node_t *pmn, *trn;
+	rnd_color_t transp;
 
 	err |= parse_ulong(&psx,             hash_get(obj, "pxm_sx", 0));
 	err |= parse_ulong(&psy,             hash_get(obj, "pxm_sy", 0));
+	trn = hash_get(obj, "pxm_transparent", 0);
+
+	if ((trn != NULL) && (trn->type == LHT_TEXT)) {
+		rnd_color_load_str(&transp, trn->data.text.value);
+		has_transp = 1;
+	}
 
 	TODO("load transparent color");
 
@@ -781,6 +788,12 @@ static rnd_pixmap_t *parse_pxm_(lht_node_t *obj)
 
 	pxm = rnd_pixmap_alloc(&PCB->hidlib, psx, psy);
 	pxm->p = (unsigned char *)uctx.buff.array;
+	if (has_transp) {
+		pxm->has_transp = 1;
+		pxm->tr = transp.r;
+		pxm->tg = transp.g;
+		pxm->tb = transp.b;
+	}
 	return pxm;
 }
 
