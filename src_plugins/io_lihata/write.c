@@ -803,6 +803,11 @@ static lht_node_t *build_subc_element(pcb_subc_t *subc)
 		pcb_text_t *text;
 
 		if ((ly->meta.bound.type & PCB_LYT_SILK) && (ly->meta.bound.type & PCB_LYT_TOP)) {
+			{
+				pcb_gfx_t *gfx;
+				for(gfx = gfxlist_first(&ly->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
+					pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)gfx, "gfx", "gfx can not be exported in element", "please use a more recent lihata format with subc support");
+			}
 			linelist_foreach(&ly->Line, &it, line)
 				lht_dom_list_append(lst, build_line(line, -1, -ox, -oy, 0));
 			arclist_foreach(&ly->Arc, &it, arc) 
