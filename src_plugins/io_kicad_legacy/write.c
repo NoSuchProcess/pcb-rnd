@@ -117,6 +117,12 @@ static int write_kicad_legacy_layout_tracks(FILE *FP, rnd_cardinal_t number, pcb
 	pcb_line_t *line;
 	rnd_cardinal_t currentLayer = number;
 
+	{
+		pcb_gfx_t *gfx;
+		for(gfx = gfxlist_first(&layer->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
+			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)gfx, "gfx", "gfx can not be exported", "please use the lihata board format");
+	}
+
 	/* write information about non empty layers */
 	if (!pcb_layer_is_empty_(PCB, layer) || (layer->name && *layer->name)) {
 		int localFlag = 0;
