@@ -252,6 +252,29 @@ static lhtpers_rule_t r_arc[] = {
 	{NULL, NULL, NULL}
 };
 
+static const char *pat_gfx_ref[]       = {"te:pixmap_ref", "*", NULL};
+static const char *pat_gfx_sx[]        = {"te:sx", "*", NULL};
+static const char *pat_gfx_sy[]        = {"te:sy", "*", NULL};
+static const char *pat_gfx_cx[]        = {"te:cx", "*", NULL};
+static const char *pat_gfx_cy[]        = {"te:cy", "*", NULL};
+static const char *pat_gfx_rot[]       = {"te:rot", "*", NULL};
+static const char *pat_gfx_xmirror[]   = {"te:xmirror", "*", NULL};
+static const char *pat_gfx_ymirror[]   = {"te:ymirror", "*", NULL};
+static lhtpers_rule_t r_gfx[] = {
+	{pat_gfx_ref,         &style_inline, NULL},
+	{pat_gfx_cx,          &style_inline, NULL},
+	{pat_gfx_cy,          &style_inline, NULL},
+	{pat_gfx_sx,          &style_inline, NULL},
+	{pat_gfx_sy,          &style_inline, NULL},
+	{pat_gfx_rot,         &style_inline, NULL},
+	{pat_gfx_xmirror,     &style_inline, NULL},
+	{pat_gfx_ymirror,     &style_inline, NULL},
+	{lhtpers_early_end, &early_nl, NULL},
+	{pat_flags,      &style_nlstruct, r_thermal},
+	{pat_attributes, &style_nlstruct, NULL},
+	{NULL, NULL, NULL}
+};
+
 static const char *pat_name[] = {"te:name", "*", NULL};
 static const char *pat_numb[] = {"te:number", "*", NULL};
 static const char *pat_hole[] = {"te:hole", "*", NULL};
@@ -514,6 +537,7 @@ static const char *pat_line[] = {"ha:line.*", "*", NULL};
 static const char *pat_spoly[]= {"li:simplepoly.*", "*", NULL};
 static const char *pat_rat[]  = {"ha:rat.*", "*", NULL};
 static const char *pat_arc[]  = {"ha:arc.*", "*", NULL};
+static const char *pat_gfx[]  = {"ha:gfx.*", "*", NULL};
 static const char *pat_via[]  = {"ha:via.*", "*", NULL};
 static const char *pat_psref[]= {"ha:padstack_ref.*", "*", NULL};
 static const char *pat_pin[]  = {"ha:pin.*", "*", NULL};
@@ -549,6 +573,7 @@ static lhtpers_rule_t r_istructs[] = {
 	{pat_spoly,   &style_structi,  NULL},
 	{pat_rat,     &style_structi,  r_rat},
 	{pat_arc,     &style_structi,  r_arc},
+	{pat_gfx,     &style_structi,  r_gfx},
 	{pat_via,     &style_structi,  r_pinvia},
 	{pat_psref,   &style_structi,  r_psref},
 	{pat_pin,     &style_structi,  r_pinvia},
