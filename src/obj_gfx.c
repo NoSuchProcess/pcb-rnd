@@ -132,6 +132,7 @@ void pcb_gfx_update(pcb_gfx_t *gfx)
 		for(n = 0; n < 4; n++)
 			rnd_rotate(&gfx->cox[n], &gfx->coy[n], gfx->cx, gfx->cy, cosa, sina);
 	}
+	pcb_gfx_bbox(gfx);
 }
 
 /* creates a new gfx on a layer */
