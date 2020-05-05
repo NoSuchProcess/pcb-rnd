@@ -162,12 +162,24 @@ static pcb_gfx_t *pcb_gfx_copy_meta(pcb_gfx_t *dst, pcb_gfx_t *src)
 	return dst;
 }
 
+static void pcb_gfx_copy_data(pcb_gfx_t *dst, pcb_gfx_t *src)
+{
+	dst->rot = src->rot;
+	dst->xmirror = src->xmirror;
+	dst->ymirror = src->ymirror;
+	dst->pxm_id = src->pxm_id;
+	dst->pxm_neutral = src->pxm_neutral;
+	src->pxm_neutral->refco++;
+	dst->pxm_xformed = src->pxm_xformed;
+	src->pxm_xformed->refco++;
+	pcb_gfx_update(dst);
+}
+
 pcb_gfx_t *pcb_gfx_dup_at(pcb_layer_t *dst, pcb_gfx_t *src, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_gfx_t *a = pcb_gfx_new(dst, src->cx+dx, src->cy+dy, src->sx, src->sy, src->rot, src->Flags);
-	TODO("copy the pixmap too");
 	pcb_gfx_copy_meta(a, src);
-	a->pxm_id = src->pxm_id;
+	pcb_gfx_copy_data(a, src);
 	return a;
 }
 
@@ -313,6 +325,7 @@ void *pcb_gfxop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_gfx_t *g
 		pcb_flag_mask(gfx->Flags, PCB_FLAG_FOUND | ctx->buffer.extraflg));
 
 	pcb_gfx_copy_meta(a, gfx);
+	pcb_gfx_copy_data(a, gfx);
 	if (ctx->buffer.keep_id) pcb_obj_change_id((pcb_any_obj_t *)a, gfx->ID);
 	return a;
 }
@@ -358,6 +371,7 @@ void *pcb_gfxop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_gfx_t *gfx)
 	if (ctx->copy.keep_id)
 		ngfx->ID = gfx->ID;
 	pcb_gfx_copy_meta(ngfx, gfx);
+	pcb_gfx_copy_data(ngfx, gfx);
 	pcb_gfx_invalidate_draw(Layer, ngfx);
 	pcb_undo_add_obj_to_create(PCB_OBJ_GFX, Layer, ngfx, ngfx);
 	return ngfx;
