@@ -604,6 +604,7 @@ void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, rnd_pixmap_t *pxm, rnd_bool undoabl
 	TODO("gfx: undoable pixmap assign");
 	gfx->pxm_neutral = pcb_pixmap_insert_neutral_or_free(&pcb_pixmaps, pxm);
 	gfx->pxm_xformed = pcb_pixmap_alloc_insert_transformed(&pcb_pixmaps, gfx->pxm_neutral, gfx->rot, gfx->xmirror, gfx->ymirror);
+	gfx->pxm_id = 0; /* no preference on the ID now */
 }
 
 
