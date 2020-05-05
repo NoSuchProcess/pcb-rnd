@@ -811,11 +811,11 @@ static rnd_pixmap_t *parse_pxm(long int ID)
 }
 
 
-static void pxm_init(lht_node_t *root)
+static void pxm_init(lht_node_t *pixmaps)
 {
 	pxm_root = NULL;
 	if (rdver >= 7)
-		pxm_root = lht_dom_hash_get(root, "pixmaps");
+		pxm_root = pixmaps;
 	htip_init(&id2pxm, longhash, longkeyeq);
 }
 
@@ -2432,7 +2432,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	vtp0_init(&post_ids);
 	vtp0_init(&post_thermal_old);
 	vtp0_init(&post_thermal_heavy);
-	pxm_init(nd);
+	pxm_init(lht_dom_hash_get(nd, "pixmaps"));
 
 	pcb_rat_all_anchor_guess(pcb->Data);
 
@@ -2714,6 +2714,7 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 	int res;
 	char *errmsg = NULL;
 	lht_doc_t *doc = NULL;
+	lht_node_t *n;
 	pcb_fp_fopen_ctx_t st;
 	FILE *f;
 	pcb_subc_t *sc;
@@ -2752,7 +2753,19 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 		return -1;
 	}
 
+	for(n = doc->root; n != NULL; n = n->next) {
+		if (strcmp(n->name, "pixmaps") == 0) {
+			if (n->type == LHT_HASH) {
+				pxm_init(doc->root);
+				break;
+			}
+			else
+				rnd_message(RND_MSG_ERROR, "io_lihata: invalid pixmaps subtree: needs to be a hash\n");
+		}
+	}
+
 	res = parse_subc(NULL, Ptr, doc->root->data.list.first, &sc);
+	pxm_uninit();
 	if (res == 0)
 		pcb_data_clip_polys(sc->data);
 
