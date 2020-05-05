@@ -467,9 +467,9 @@ static lht_node_t *build_pxm(rnd_pixmap_t *pxm, long int ID)
 	sprintf(buff, "ulzw.%ld", ID);
 	obj = lht_dom_node_alloc(LHT_HASH, buff);
 
-	lht_dom_hash_put(obj, build_textf("pxm_sx", "%ld", pxm->sx));
-	lht_dom_hash_put(obj, build_textf("pxm_sy", "%ld", pxm->sy));
-	lht_dom_hash_put(obj, build_textf("pxm_transparent", "#%02x%02x%02x", pxm->tr, pxm->tg, pxm->tb));
+	lht_dom_hash_put(obj, build_textf("sx", "%ld", pxm->sx));
+	lht_dom_hash_put(obj, build_textf("sy", "%ld", pxm->sy));
+	lht_dom_hash_put(obj, build_textf("transparent", "#%02x%02x%02x", pxm->tr, pxm->tg, pxm->tb));
 
 	uctx.iptr = pxm->p;
 	uctx.ibs = pxm->size;

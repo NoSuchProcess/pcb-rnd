@@ -744,9 +744,9 @@ static rnd_pixmap_t *parse_pxm_(lht_node_t *obj)
 	lht_node_t *pmn, *trn;
 	rnd_color_t transp;
 
-	err |= parse_ulong(&psx,             hash_get(obj, "pxm_sx", 0));
-	err |= parse_ulong(&psy,             hash_get(obj, "pxm_sy", 0));
-	trn = hash_get(obj, "pxm_transparent", 0);
+	err |= parse_ulong(&psx,             hash_get(obj, "sx", 0));
+	err |= parse_ulong(&psy,             hash_get(obj, "sy", 0));
+	trn = hash_get(obj, "transparent", 0);
 
 	if ((trn != NULL) && (trn->type == LHT_TEXT)) {
 		rnd_color_load_str(&transp, trn->data.text.value);
