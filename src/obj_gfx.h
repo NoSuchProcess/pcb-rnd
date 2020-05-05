@@ -81,6 +81,10 @@ void pcb_gfx_chg_geo(pcb_gfx_t *gfx, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t
 /* assings pxm to gfx and free pxm (if needed) */
 void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, rnd_pixmap_t *pxm, rnd_bool undoable);
 
+/* same but dups pxm so it is never free'd */
+void pcb_gfx_set_pixmap_dup(pcb_gfx_t *gfx, const rnd_pixmap_t *pxm, rnd_bool undoable);
+
+
 /*** hash and eq ***/
 int pcb_gfx_eq(const pcb_host_trans_t *tr1, const pcb_gfx_t *g1, const pcb_host_trans_t *tr2, const pcb_gfx_t *g2);
 unsigned int pcb_gfx_hash(const pcb_host_trans_t *tr, const pcb_gfx_t *g);

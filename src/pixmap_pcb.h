@@ -47,6 +47,11 @@ void pcb_pixmap_hash_uninit(pcb_pixmap_hash_t *pmhash);
    be in neutral position (no rotation, no mirror). Returns NULL on error. */
 rnd_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, rnd_pixmap_t *pm);
 
+/* Same but doesn't free pm but dups it when inserted; returns the dup'd pixmap
+   from the hash. */
+rnd_pixmap_t *pcb_pixmap_insert_neutral_dup(rnd_hidlib_t *hl, pcb_pixmap_hash_t *pmhash, const rnd_pixmap_t *pm);
+
+
 /* Allocate and render a transformed version of pm (or return the one from cache if already cached */
 rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd_pixmap_t *pm, rnd_angle_t rot, int xmirror, int ymirror);
 

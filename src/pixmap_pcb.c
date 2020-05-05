@@ -67,6 +67,24 @@ rnd_pixmap_t *pcb_pixmap_insert_neutral_or_free(pcb_pixmap_hash_t *pmhash, rnd_p
 	return pm;
 }
 
+rnd_pixmap_t *pcb_pixmap_insert_neutral_dup(rnd_hidlib_t *hl, pcb_pixmap_hash_t *pmhash, const rnd_pixmap_t *pm)
+{
+	rnd_pixmap_t *r;
+
+	if ((pm->tr_rot != 0) || pm->tr_xmirror || pm->tr_ymirror)
+		return NULL;
+
+	r = htpp_get(&pmhash->pixels, pm);
+	if (r != NULL)
+		return r;
+
+	r = rnd_pixmap_dup(hl, pm);
+	htpp_set(&pmhash->meta, r, r);
+	htpp_set(&pmhash->pixels, r, r);
+
+	return r;
+}
+
 rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd_pixmap_t *ipm, rnd_angle_t rot, int xmirror, int ymirror)
 {
 	rnd_pixmap_t *pm;
