@@ -487,6 +487,12 @@ static void kicad_print_layer(wctx_t *ctx, pcb_layer_t *ly, const klayer_t *kly,
 	pcb_arc_t *arc;
 	int in_subc = (ly->parent.data->parent_type == PCB_PARENT_SUBC);
 
+	{
+		pcb_gfx_t *gfx;
+		for(gfx = gfxlist_first(&ly->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
+			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)gfx, "gfx", "gfx can not be exported", "please use the lihata board format");
+	}
+
 	linelist_foreach(&ly->Line, &it, line)
 		if ((line->term == NULL) || !kly->skip_term)
 			kicad_print_line(ctx, kly, line, ind, dx, dy);
