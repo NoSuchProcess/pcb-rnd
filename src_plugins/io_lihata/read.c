@@ -339,6 +339,22 @@ static int parse_id(long int *res, lht_node_t *nd, int prefix_len)
 	return 0;
 }
 
+/* Load the integer value of a text node into res. Return 0 on success */
+static int parse_idpath(pcb_board_t *pcb, pcb_idpath_t **res, lht_node_t *nd)
+{
+	if (nd == &missing_ok)
+		return -1;
+
+	if (nd == NULL)
+		return -1;
+
+	if (nd->type != LHT_TEXT)
+		return iolht_error(nd, "Invalid idpath node type: '%d'\n", nd->type);
+
+	*res = pcb_str2idpath(pcb, nd->data.text.value);
+	return 0;
+}
+
 /* Load the boolean value of a text node into res.
    Return 0 on success */
 static int parse_bool(rnd_bool *res, lht_node_t *nd)
@@ -637,7 +653,7 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coor
 	return err;
 }
 
-static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
+static int parse_rat(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 {
 	pcb_rat_t rat, *new_rat;
 	int tmp, err = 0;
@@ -656,9 +672,14 @@ static int parse_rat(pcb_data_t *dt, lht_node_t *obj)
 	err |= parse_int(&tmp, hash_get(obj, "lgrp2", 0));
 	rat.group2 = tmp;
 
+	err |= parse_idpath(pcb, &rat.anchor[0], hash_get(obj, "anchor1", 0));
+	err |= parse_idpath(pcb, &rat.anchor[1], hash_get(obj, "anchor2", 0));
 
 	new_rat = pcb_rat_new(dt, rat.ID, rat.Point1.X, rat.Point1.Y, rat.Point2.X, rat.Point2.Y, rat.group1, rat.group2,
 		conf_core.appearance.rat_thickness, rat.Flags, NULL, NULL);
+	
+	new_rat->anchor[0] = rat.anchor[0];
+	new_rat->anchor[1] = rat.anchor[1];
 
 	parse_attributes(&new_rat->Attributes, lht_dom_hash_get(obj, "attributes"));
 
@@ -1579,7 +1600,7 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 		if (strncmp(n->name, "via.", 4) == 0)
 			parse_via(dt, n, 0, 0, 0);
 		if (strncmp(n->name, "rat.", 4) == 0)
-			parse_rat(dt, n);
+			parse_rat(pcb_for_font, dt, n);
 		else if (strncmp(n->name, "element.", 8) == 0)
 			parse_element(pcb_for_font, dt, n);
 		else if (strncmp(n->name, "subc.", 5) == 0)
