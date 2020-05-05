@@ -215,6 +215,7 @@ static void report_line(gds_t *dst, pcb_line_t *line)
 
 static void report_rat(gds_t *dst, pcb_rat_t *line)
 {
+	char *anchor1 = "n/a", *anchor2 = "n/a";
 #ifndef NDEBUG
 	if (rnd_gui->shift_is_pressed(rnd_gui))
 		rnd_r_dump_tree(PCB->Data->rat_tree, 0);
@@ -227,6 +228,14 @@ static void report_rat(gds_t *dst, pcb_rat_t *line)
 		USER_UNITMASK, line->ID, pcb_strflg_f2s(line->Flags, PCB_OBJ_LINE, NULL, 0),
 		line->Point1.X, line->Point1.Y, line->Point1.ID, line->group1, grpname(line->group1),
 		line->Point2.X, line->Point2.Y, line->Point2.ID, line->group2, grpname(line->group2));
+
+	if ((line->anchor[0] != NULL) && (line->anchor[0]->len > 0))
+		anchor1 = pcb_idpath2str(line->anchor[0], 0);
+	if ((line->anchor[1] != NULL) && (line->anchor[1]->len > 0))
+		anchor2 = pcb_idpath2str(line->anchor[1], 0);
+
+	rnd_append_printf(dst, "Anchors: %s <-> %s\n", anchor1, anchor2);
+
 }
 
 static void report_arc(gds_t *dst, pcb_arc_t *arc)
