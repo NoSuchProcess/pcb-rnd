@@ -6,10 +6,11 @@
 + CLEANUP/BUG: bug_files/gtk_transient.txt: add config options on how gtk transient-for and (a new) raise should work [report: Bdale]
 + CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert]
 + CLEANUP: insert drag&drop strangeness (mainline too): insert should just insert a new point and stop there, not starting a drag&drop move; the new point should be marked somehow (e.g. green-find one half of the object, like arc split does) lines can be inserted mostly only in all-dir-line which is strange [report: Igor2]
-+ FEATURE: lihata v7
-	- deprecate MinClearGap
-	- thermal tool doesn't work on heavy terminals and objects
-	- make op change on enforce_clearance undoable
++ CLEANUP: lihata v7
+	- deprecate MinClearGap: move to oldaction [report: Igor2]
+	- deprecate saving rats [report: Igor2]
+	- thermal tool doesn't work on heavy terminals and objects [report: Igor2]
+	- make op change on enforce_clearance undoable [report: Igor2]
 - FEATURE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
 - FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
