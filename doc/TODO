@@ -12,9 +12,6 @@
 		- thermal tool doesn't work on heavy terminals and objects
 		- make op change on enforce_clearance undoable
 - FEATURE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
-+ FEATURE: netlist dialog: double click on a net should disable rats [report: Joe]
-+ FEATURE: netlist dialog: button for disable all or enable all [report: Joe]
-+ FEATURE: padstack prototype edit dialog: geometry column in tab 2 (plain labels) do not respect glboal units [report: Joe]
 - FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
