@@ -6,11 +6,10 @@
 + CLEANUP/BUG: bug_files/gtk_transient.txt: add config options on how gtk transient-for and (a new) raise should work [report: Bdale]
 + CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert]
 + CLEANUP: insert drag&drop strangeness (mainline too): insert should just insert a new point and stop there, not starting a drag&drop move; the new point should be marked somehow (e.g. green-find one half of the object, like arc split does) lines can be inserted mostly only in all-dir-line which is strange [report: Igor2]
-- FEATURE: lihata v7
-	+ FEATURE: data model: object minimal clearance value from the polygon side; final clearance should be MAX(obj->Clearance, poly->Clearance); kicad example: 1 line, 2 polygons with 2 different clearance values - see CUCP#38 provided by Karl [report: Igor2]
-		- deprecate MinClearGap
-		- thermal tool doesn't work on heavy terminals and objects
-		- make op change on enforce_clearance undoable
++ FEATURE: lihata v7
+	- deprecate MinClearGap
+	- thermal tool doesn't work on heavy terminals and objects
+	- make op change on enforce_clearance undoable
 - FEATURE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
 - FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
@@ -112,6 +111,7 @@
 		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
+		- polygon side clearance (e.g. CUCP#38 provided by Karl)
 - BUG: lesstif hbox/vbox allocation issues: test with bug_files/ltf_fillbox/ patches applied, with the fontsel action; opening it multiple times will randomly show or hide the button
 	- hvbox: fontsel, about dialog: resize to smaller doesn't re-layout
 	- tabbed: redisplay bug in the about box
