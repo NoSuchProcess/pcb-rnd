@@ -108,6 +108,7 @@
 	- revise all I/O plugins for:
 		- text thickness
 		- text rotation
+		- text scale_x and scale_y
 		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
