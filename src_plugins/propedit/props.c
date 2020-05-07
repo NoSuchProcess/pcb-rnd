@@ -37,7 +37,7 @@
 #undef HT
 
 /* Type names in text */
-static const char *type_names[] = { "invalid", "string", "coord", "angle", "int" };
+static const char *type_names[] = { "invalid", "string", "coord", "angle", "double", "int" };
 
 /* A hash function for each known type */
 static unsigned int prophash_coord(pcb_propval_t key)  { return longhash(key.coord); }
