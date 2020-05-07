@@ -1045,6 +1045,8 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 	rnd_attrib_compat_set_intconn(&text->Attributes, intconn);
 	parse_attributes(&text->Attributes, lht_dom_hash_get(obj, "attributes"));
 	err |= parse_int(&text->Scale, hash_get(obj, "scale", 0));
+	err |= parse_double(&text->scale_x, hash_get(obj, "scale_x", 0));
+	err |= parse_double(&text->scale_y, hash_get(obj, "scale_y", 0));
 	tmp = 0;
 	err |= parse_int(&tmp, hash_get(obj, "fid", 0));
 	text->fid = tmp;
