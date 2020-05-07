@@ -733,6 +733,12 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 		if (st->c_valid && (strcmp(pn, "scale") == 0) &&
 		    pcb_chg_obj_size(PCB_OBJ_TEXT, text->parent.layer, text, text, RND_MIL_TO_COORD(st->c), st->c_absolute)) DONE;
 
+		if (st->d_valid && (strcmp(pn, "scale_x") == 0) &&
+		    (pcb_text_chg_scale(text, st->d, st->d_absolute, text->scale_y, 1, 1) == 0)) DONE;
+
+		if (st->d_valid && (strcmp(pn, "scale_y") == 0) &&
+		    (pcb_text_chg_scale(text, text->scale_x, 1, st->d, st->d_absolute, 1) == 0)) DONE;
+
 		if (st->c_valid && (strcmp(pn, "fid") == 0)) {
 			pcb_text_set_font(text, st->c);
 			DONE;
