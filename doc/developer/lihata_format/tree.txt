@@ -440,6 +440,8 @@ ha:data                              Layers and global objects of the board
      string             string       text string (payload)
      fid                integer      font ID
      scale              integer      text size scale in %
+     scale_x            double       text size scale in X direction (width), as a multiplier; if 0, use scale/100
+     scale_y            double       text size scale in Y direction (height), as a multiplier; if 0, use scale/100
      direction          integer  <=5 rotation in 90 degree steps (0 is horizontal); between -3 and +3, inclusive. Starting from v6, the rot field shall be used instead of direction
      rot                angle    >=6 rotation angle in degrees, [0..360), CCW
      thickness          coord    >=6 if zero, use the default width algorithm; if non-zero use this value as rotation angle in degrees
