@@ -335,12 +335,13 @@ static void report_text(gds_t *dst, pcb_text_t *text)
 
 	rnd_append_printf(dst, "%m+TEXT ID# %ld;  Flags:%s\n"
 		"BoundingBox %$mD %$mD.\n"
-		"Font id %d\nclearance %$mS\nthickness %$mS\nrotation %f\n"
+		"Font id %d\nclearance %$mS\nthickness %$mS\nrotation %f\nScale: %d %f;%f\n"
 		, USER_UNITMASK,
 		text->ID, pcb_strflg_f2s(text->Flags, PCB_OBJ_TEXT, NULL, 0),
 		text->BoundingBox.X1, text->BoundingBox.Y1,
 		text->BoundingBox.X2, text->BoundingBox.Y2,
-		text->fid, text->clearance, text->thickness, text->rot);
+		text->fid, text->clearance, text->thickness, text->rot,
+		text->Scale, text->scale_x, text->scale_y);
 }
 
 static void report_gfx(gds_t *dst, pcb_gfx_t *gfx)
