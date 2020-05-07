@@ -47,6 +47,7 @@ typedef enum {
 	PCB_PROPT_STRING,
 	PCB_PROPT_COORD,
 	PCB_PROPT_ANGLE,
+	PCB_PROPT_DOUBLE,
 	PCB_PROPT_INT,
 	PCB_PROPT_BOOL,
 	PCB_PROPT_COLOR,
@@ -58,6 +59,7 @@ typedef union {
 	rnd_coord_t coord;
 	rnd_angle_t angle;
 	int i;
+	double d;
 	rnd_color_t clr;
 } pcb_propval_t;
 

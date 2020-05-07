@@ -229,6 +229,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 	switch(p->type) {
 		case PCB_PROPT_COORD:
 		case PCB_PROPT_ANGLE:
+		case PCB_PROPT_DOUBLE:
 		case PCB_PROPT_INT:
 			if (!ctx->dlg[ctx->wabs[p->type]].val.lng)
 				return;
@@ -241,6 +242,7 @@ static void prop_valedit_update(propdlg_t *ctx, pcb_props_t *p, pcb_propval_t *p
 		case PCB_PROPT_STRING: hv.str = rnd_strdup(pv->string == NULL ? "" : pv->string); break;
 		case PCB_PROPT_COORD:  hv.crd = pv->coord; break;
 		case PCB_PROPT_ANGLE:  hv.dbl = pv->angle; break;
+		case PCB_PROPT_DOUBLE: hv.dbl = pv->d; break;
 		case PCB_PROPT_BOOL:
 		case PCB_PROPT_INT:    hv.lng = pv->i; break;
 		case PCB_PROPT_COLOR:  hv.clr = pv->clr; break;
@@ -343,6 +345,11 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 			sctx.c_valid = 1;
 			break;
 		case PCB_PROPT_ANGLE:
+			sctx.d = ctx->dlg[ctx->wedit[p->type]].val.dbl;
+			sctx.d_absolute = ctx->dlg[ctx->wabs[p->type]].val.lng;
+			sctx.d_valid = 1;
+			break;
+		case PCB_PROPT_DOUBLE:
 			sctx.d = ctx->dlg[ctx->wedit[p->type]].val.dbl;
 			sctx.d_absolute = ctx->dlg[ctx->wabs[p->type]].val.lng;
 			sctx.d_valid = 1;
@@ -467,7 +474,7 @@ static void prop_refresh(propdlg_t *ctx)
 
 static void build_propval(propdlg_t *ctx)
 {
-	static const char *type_tabs[] = {"none", "string", "coord", "angle", "int", NULL};
+	static const char *type_tabs[] = {"none", "string", "coord", "angle", "double", "int", NULL};
 	static const char *abshelp = "When unticked each apply is a relative change added to\nthe current value of each object";
 
 	RND_DAD_BEGIN_TABBED(ctx->dlg, type_tabs);
@@ -528,13 +535,12 @@ static void build_propval(propdlg_t *ctx)
 					RND_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
 			RND_DAD_END(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
-
 		RND_DAD_BEGIN_VBOX(ctx->dlg);
-			RND_DAD_LABEL(ctx->dlg, "Data type: int");
-			RND_DAD_INTEGER(ctx->dlg, "");
+			RND_DAD_LABEL(ctx->dlg, "Data type: double");
+			RND_DAD_REAL(ctx->dlg, "");
 				ctx->wedit[4] = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_MINMAX(ctx->dlg, -1000, +1000);
 				RND_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
-			RND_DAD_MINMAX(ctx->dlg, -(1<<30), 1<<30);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "abs");
 				RND_DAD_BOOL(ctx->dlg, "");
@@ -548,12 +554,32 @@ static void build_propval(propdlg_t *ctx)
 			RND_DAD_END(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
 
+
+		RND_DAD_BEGIN_VBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Data type: int");
+			RND_DAD_INTEGER(ctx->dlg, "");
+				ctx->wedit[5] = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
+			RND_DAD_MINMAX(ctx->dlg, -(1<<30), 1<<30);
+			RND_DAD_BEGIN_HBOX(ctx->dlg);
+				RND_DAD_LABEL(ctx->dlg, "abs");
+				RND_DAD_BOOL(ctx->dlg, "");
+					ctx->wabs[5] = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_HELP(ctx->dlg, abshelp);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_BUTTON(ctx->dlg, "apply");
+					RND_DAD_CHANGE_CB(ctx->dlg, prop_data_force_cb);
+			RND_DAD_END(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+
 		RND_DAD_BEGIN_VBOX(ctx->dlg);
 			RND_DAD_LABEL(ctx->dlg, "Data type: boolean");
 			RND_DAD_BOOL(ctx->dlg, "");
-				ctx->wedit[5] = RND_DAD_CURRENT(ctx->dlg);
+				ctx->wedit[6] = RND_DAD_CURRENT(ctx->dlg);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
-				ctx->wabs[5] = 0;
+				ctx->wabs[6] = 0;
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				RND_DAD_END(ctx->dlg);
@@ -565,9 +591,9 @@ static void build_propval(propdlg_t *ctx)
 		RND_DAD_BEGIN_VBOX(ctx->dlg);
 			RND_DAD_LABEL(ctx->dlg, "Data type: color");
 			RND_DAD_COLOR(ctx->dlg);
-				ctx->wedit[6] = RND_DAD_CURRENT(ctx->dlg);
+				ctx->wedit[7] = RND_DAD_CURRENT(ctx->dlg);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
-				ctx->wabs[6] = 0;
+				ctx->wabs[7] = 0;
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				RND_DAD_END(ctx->dlg);

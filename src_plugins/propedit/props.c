@@ -195,6 +195,7 @@ int pcb_props_stat(pcb_propedit_t *ctx, pcb_props_t *p, pcb_propval_t *most_comm
 		case PCB_PROPT_STRING: break;
 		case PCB_PROPT_COORD:  minp.coord = RND_COORD_MAX; maxp.coord = -minp.coord;  break;
 		case PCB_PROPT_ANGLE:  minp.angle = 100000;    maxp.angle = -minp.angle; break;
+		case PCB_PROPT_DOUBLE: minp.d     = 100000;    maxp.d = -minp.d; break;
 		case PCB_PROPT_INT:    minp.i     = INT_MAX;   maxp.i = -minp.i; break;
 		case PCB_PROPT_BOOL:   minp.i     = 1;         maxp.i = 0; break;
 		case PCB_PROPT_COLOR:  break;
@@ -213,6 +214,7 @@ int pcb_props_stat(pcb_propedit_t *ctx, pcb_props_t *p, pcb_propval_t *most_comm
 			case PCB_PROPT_STRING: break;
 			case PCB_PROPT_COORD:  STAT(e->key, coord, e->value); break;
 			case PCB_PROPT_ANGLE:  STAT(e->key, angle, e->value); break;
+			case PCB_PROPT_DOUBLE: STAT(e->key, d,     e->value); break;
 			case PCB_PROPT_INT:    STAT(e->key, i,     e->value); break;
 			case PCB_PROPT_BOOL:   STAT(e->key, i,     e->value); break;
 			case PCB_PROPT_COLOR:  break;
@@ -227,6 +229,7 @@ int pcb_props_stat(pcb_propedit_t *ctx, pcb_props_t *p, pcb_propval_t *most_comm
 			case PCB_PROPT_STRING: break;
 			case PCB_PROPT_COORD:  avgp.coord = avgp.coord/num_vals;  break;
 			case PCB_PROPT_ANGLE:  avgp.angle = avgp.angle/num_vals;  break;
+			case PCB_PROPT_DOUBLE: avgp.angle = avgp.d/num_vals;  break;
 			case PCB_PROPT_INT:    avgp.i     = avgp.i/num_vals;  break;
 			case PCB_PROPT_BOOL:   avgp.i     = avgp.i * 100/num_vals;  break;
 			case PCB_PROPT_COLOR:  break;

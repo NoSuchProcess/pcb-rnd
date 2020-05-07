@@ -286,6 +286,7 @@ fgw_error_t pcb_act_propget(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 		case PCB_PROPT_COORD: res->type = FGW_COORD; fgw_coord(res) = out->coord; break;
 		case PCB_PROPT_ANGLE: res->type = FGW_DOUBLE; res->val.nat_double = out->angle; break;
+		case PCB_PROPT_DOUBLE: res->type = FGW_DOUBLE; res->val.nat_double = out->d; break;
 		case PCB_PROPT_BOOL:
 		case PCB_PROPT_INT:   res->type = FGW_INT; res->val.nat_int = out->i; break;
 		case PCB_PROPT_COLOR: res->type = FGW_STR | FGW_DYN; res->val.str = rnd_strdup(out->clr.str); break;
@@ -340,6 +341,10 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			case PCB_PROPT_ANGLE:
 				rnd_printf("	common='%f'\n", com.angle);
 				rnd_printf("	min/avg/max=%f/%f/%f\n", min.angle, avg.angle, max.angle);
+				break;
+			case PCB_PROPT_DOUBLE:
+				rnd_printf("	common='%f'\n", com.d);
+				rnd_printf("	min/avg/max=%f/%f/%f\n", min.d, avg.d, max.d);
 				break;
 			case PCB_PROPT_INT:
 			case PCB_PROPT_BOOL:

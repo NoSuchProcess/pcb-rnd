@@ -52,6 +52,7 @@
 #define type2field_String string
 #define type2field_rnd_coord_t coord
 #define type2field_rnd_angle_t angle
+#define type2field_double d
 #define type2field_int i
 #define type2field_bool i
 #define type2field_color clr
@@ -59,6 +60,7 @@
 #define type2TYPE_String PCB_PROPT_STRING
 #define type2TYPE_rnd_coord_t PCB_PROPT_COORD
 #define type2TYPE_rnd_angle_t PCB_PROPT_ANGLE
+#define type2TYPE_double PCB_PROPT_DOUBLE
 #define type2TYPE_int PCB_PROPT_INT
 #define type2TYPE_bool PCB_PROPT_BOOL
 #define type2TYPE_color PCB_PROPT_COLOR
@@ -216,6 +218,8 @@ static void map_gfx(pcb_propedit_t *ctx, pcb_gfx_t *gfx)
 static void map_text(pcb_propedit_t *ctx, pcb_text_t *text)
 {
 	map_add_prop(ctx, "p/text/scale", int, text->Scale);
+	map_add_prop(ctx, "p/text/scale_x", double, text->scale_x);
+	map_add_prop(ctx, "p/text/scale_y", double, text->scale_y);
 	map_add_prop(ctx, "p/text/fid", int, text->fid);
 	map_add_prop(ctx, "p/text/rotation",  rnd_angle_t, text->rot);
 	map_add_prop(ctx, "p/text/thickness", rnd_coord_t, text->thickness);
@@ -1129,6 +1133,7 @@ char *pcb_propsel_printval(pcb_prop_type_t type, const pcb_propval_t *val)
 		case PCB_PROPT_STRING: return val->string == NULL ? rnd_strdup("") : rnd_strdup(val->string);
 		case PCB_PROPT_COORD:  return rnd_strdup_printf("%m+%.02mS", rnd_conf.editor.grid_unit->allow, val->coord);
 		case PCB_PROPT_ANGLE:  return rnd_strdup_printf("%f", val->angle);
+		case PCB_PROPT_DOUBLE: return rnd_strdup_printf("%f", val->d);
 		case PCB_PROPT_INT:    return rnd_strdup_printf("%d", val->i);
 		case PCB_PROPT_BOOL:   return rnd_strdup(val->i ? "true" : "false");
 		case PCB_PROPT_COLOR:  return rnd_strdup_printf("#%02x%02x%02x", val->clr.r, val->clr.g, val->clr.b);
