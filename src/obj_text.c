@@ -1054,9 +1054,19 @@ void pcb_text_dyn_bbox_update(pcb_data_t *data)
 
 int pcb_text_chg_scale(pcb_text_t *text, double scx, rnd_bool absx, double scy, rnd_bool absy, rnd_bool undoable)
 {
+	int onbrd = (text->parent.layer != NULL) && (!text->parent.layer->is_bound);
+
 	TODO("undo: make this undoable");
+
+	if (onbrd)
+		pcb_text_pre(text);
+
 	text->scale_x = absx ? scx : text->scale_x + scx;
 	text->scale_y = absy ? scy : text->scale_y + scy;
+
+	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
+	if (onbrd)
+		pcb_text_post(text);
 	return 0;
 }
 
