@@ -38,6 +38,7 @@
 struct pcb_text_s {
 	PCB_ANY_PRIMITIVE_FIELDS;
 	int Scale;                    /* text scaling in percent */
+	double scale_x, scale_y;      /* optional; x and y direction scale (1 means original size); if 0, use Scale/100 */
 	rnd_coord_t X, Y;             /* origin */
 	pcb_font_id_t fid;
 	char *TextString;             /* string */
@@ -88,7 +89,7 @@ void pcb_text_flagchg_pre(pcb_text_t *Text, unsigned long flagbits, void **save)
 void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long oldflagbits, void **save);
 
 /* Low level draw call for direct rendering on preview */
-void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, int scale, double rotdeg, int mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy);
+void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, int mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy);
 
 /* Recalculate the bounding box of all dynamic text objects that are
    directly under data - useful e.g. on parent attr change */

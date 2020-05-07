@@ -80,6 +80,14 @@ RND_INLINE unsigned pcb_hash_angle(const pcb_host_trans_t *tr, rnd_angle_t ang)
 	return murmurhash(&l, sizeof(l));
 }
 
+RND_INLINE unsigned pcb_hash_scale(rnd_angle_t ang)
+{
+	long l;
+	ang *= 100000.0;
+	l = floor(ang);
+	return murmurhash(&l, sizeof(l));
+}
+
 #define pcb_hash_str(s) ((s) == NULL ? 0 : strhash(s))
 
 /* compare two fields and return 0 if they are equal */

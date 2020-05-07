@@ -1250,7 +1250,7 @@ void pcb_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double 
 
 	if (rnd_render->gui)
 		pcb_draw_force_termlab++;
-	pcb_text_draw_string(info, font, (unsigned const char *)label, x, y, scale, direction*90.0, mirror, 1, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
+	pcb_text_draw_string(info, font, (unsigned const char *)label, x, y, scale/100, scale/100, direction*90.0, mirror, 1, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
 	if (rnd_render->gui)
 		pcb_draw_force_termlab--;
 }
