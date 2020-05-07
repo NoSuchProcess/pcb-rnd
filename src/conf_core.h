@@ -170,6 +170,10 @@ typedef struct {
 		RND_CFT_STRING fab_author;             /* Full name of author for FAB drawings */
 		RND_CFT_STRING initial_layer_stack;    /* deprecated. */
 
+		struct {
+			RND_CFT_REAL poly_scale;             /* scale thermal bridges around polygons; 1.000 is the original size */
+		} thermal;
+
 		RND_CFT_COORD paste_adjust;            /* Adjust paste thickness */
 	} design;
 

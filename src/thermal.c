@@ -33,6 +33,7 @@
 #include "data.h"
 #include "draw.h"
 #include "undo.h"
+#include "conf_core.h"
 #include "obj_common.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
@@ -447,7 +448,7 @@ static int cong_map(char *cong, pcb_poly_it_t *it, rnd_coord_t clr)
 
 /* combine a round clearance line set into pres; "it" is an iterator
    already initialized to a polyarea contour */
-static void polytherm_round(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, rnd_bool is_diag)
+static void polytherm_round(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, rnd_bool is_diag, double tune)
 {
 	rnd_polyarea_t *ptmp, *p;
 	double fact = 0.5, fact_ortho=0.75;
@@ -457,6 +458,10 @@ static void polytherm_round(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_
 	char cong[CONG_MAX];
 
 	clr -= 2;
+	if (tune > 0) {
+		fact *= tune;
+		fact_ortho *= tune;
+	}
 
 	cong_map(cong, it, clr);
 
@@ -637,7 +642,7 @@ static void pcb_thermal_area_pa_round(rnd_polyarea_t **pres, pcb_poly_it_t *it, 
 	/* generate the clear-lines */
 	pl = pcb_poly_contour(it);
 	if (pl != NULL)
-		polytherm_round(pres, it, clr, is_diag);
+		polytherm_round(pres, it, clr, is_diag, conf_core.design.thermal.poly_scale);
 }
 
 /* generate sharp thermal around a polyarea specified by the iterator */
