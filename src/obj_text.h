@@ -54,6 +54,11 @@ struct pcb_text_s {
 #define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((rnd_coord_t)rnd_round((COORD) * ((double)(TEXTSCALE) / 100.0)))
 #define PCB_UNPCB_SCALE_TEXT(COORD,TEXTSCALE) ((rnd_coord_t)rnd_round((COORD) * (100.0 / (double)(TEXTSCALE))))
 
+/* Determine what the Scale value would have been in the old, Scale only
+   setup and store it in scale_out. Useful for compatibility saves. Returns
+   0 on succes, -1 on error (with a best effort estimation left in scale_out) */
+int pcb_text_old_scale(pcb_text_t *text, int *scale_out);
+
 pcb_text_t *pcb_text_alloc(pcb_layer_t * layer);
 pcb_text_t *pcb_text_alloc_id(pcb_layer_t *layer, long int id);
 void pcb_text_free(pcb_text_t * data);

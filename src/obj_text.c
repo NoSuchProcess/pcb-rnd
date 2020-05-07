@@ -310,6 +310,26 @@ void pcb_text_get_scale_xy(pcb_text_t *text, double *scx, double *scy)
 	*scy = (text->scale_y > 0) ? text->scale_y : sc;
 }
 
+int pcb_text_old_scale(pcb_text_t *text, int *scale_out)
+{
+	double scx, scy;
+
+	if ((text->scale_x <= 0) && (text->scale_y <= 0)) { /* old model */
+		*scale_out = text->Scale;
+		return 0;
+	}
+
+	pcb_text_get_scale_xy(text, &scx, &scy);
+	if (fabs(scx - scy) < 0.01) { /* new model but scx == scy */
+		*scale_out = rnd_round(scx * 100);
+		return 0;
+	}
+
+	*scale_out = rnd_round((scx + scy) / 2.0 * 100);
+	return -1;
+}
+
+
 /* creates the bounding box of a text object */
 void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 {
