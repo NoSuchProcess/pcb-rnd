@@ -42,6 +42,7 @@ static const char *type_names[] = { "invalid", "string", "coord", "angle", "doub
 /* A hash function for each known type */
 static unsigned int prophash_coord(pcb_propval_t key)  { return longhash(key.coord); }
 static unsigned int prophash_angle(pcb_propval_t key)  { return longhash(key.angle); }
+static unsigned int prophash_double(pcb_propval_t key) { return longhash(key.d); }
 static unsigned int prophash_int(pcb_propval_t key)    { return longhash(key.i); }
 static unsigned int prophash_bool(pcb_propval_t key)   { return longhash(key.i); }
 static unsigned int prophash_color(pcb_propval_t key)  { return longhash(key.clr.packed); }
@@ -49,12 +50,13 @@ static unsigned int prophash_string(pcb_propval_t key) { return key.string == NU
 
 typedef unsigned int (*prophash_ft)(pcb_propval_t key);
 static prophash_ft prophash[PCB_PROPT_max] = {
-	NULL, prophash_string, prophash_coord, prophash_angle, prophash_int, prophash_bool, prophash_color
+	NULL, prophash_string, prophash_coord, prophash_angle, prophash_double, prophash_int, prophash_bool, prophash_color
 };
 
 /* A keyeq function for each known type */
 static int propkeyeq_coord(pcb_propval_t a, pcb_propval_t b)  { return a.coord == b.coord; }
 static int propkeyeq_angle(pcb_propval_t a, pcb_propval_t b)  { return a.angle == b.angle; }
+static int propkeyeq_double(pcb_propval_t a, pcb_propval_t b) { return a.d == b.d; }
 static int propkeyeq_int(pcb_propval_t a, pcb_propval_t b)    { return a.i == b.i; }
 static int propkeyeq_bool(pcb_propval_t a, pcb_propval_t b)   { return a.i == b.i; }
 static int propkeyeq_color(pcb_propval_t a, pcb_propval_t b)  { return a.clr.packed == b.clr.packed; }
@@ -70,7 +72,7 @@ static int propkeyeq_string(pcb_propval_t a, pcb_propval_t b)
 
 typedef int (*propkeyeq_ft)(pcb_propval_t a, pcb_propval_t b);
 static propkeyeq_ft propkeyeq[PCB_PROPT_max] = {
-	NULL, propkeyeq_string, propkeyeq_coord, propkeyeq_angle, propkeyeq_int, propkeyeq_bool, propkeyeq_color
+	NULL, propkeyeq_string, propkeyeq_coord, propkeyeq_angle, propkeyeq_double, propkeyeq_int, propkeyeq_bool, propkeyeq_color
 };
 
 
