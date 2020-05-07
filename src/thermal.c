@@ -114,7 +114,6 @@ const char *pcb_thermal_bits2str(pcb_thermal_t *bit)
 static rnd_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, rnd_coord_t clr, rnd_bool square)
 {
 	pcb_line_t ltmp;
-
 	if (square)
 		ltmp.Flags = pcb_flag_make(PCB_FLAG_SQUARE);
 	else
@@ -542,13 +541,16 @@ static void polytherm_round(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_
 	}
 }
 
-static void polytherm_sharp(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, rnd_bool is_diag)
+static void polytherm_sharp(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_t clr, rnd_bool is_diag, double tune)
 {
 	rnd_polyarea_t *ptmp, *p;
 	rnd_coord_t cx, cy, x2c, y2c;
 	double px, py, x, y, dx, dy, vx, vy, nx, ny, mx, my, len, x2, y2, vx2, vy2, len2, dx2, dy2;
 	int n, go, first = 1;
 	char cong[CONG_MAX], cong2[CONG_MAX];
+
+	if (tune <= 0)
+		tune = 1;
 
 	if (is_diag) {
 		int start = -1, v = cong_map(cong2, it, clr);
@@ -607,7 +609,8 @@ static void polytherm_sharp(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_
 			ny = vx2 - vx;
 
 			/* line from each corner at the average angle of the two edges from the corner */
-			ptmp = pa_line_at(x-nx*clr*0.2, y-ny*clr*0.2, x + nx*clr*4, y + ny*clr*4, clr/2, rnd_false);
+TODO("can not enable 'tune' here because of a poly lib bug for rectangular poly vs. 20 mil diagonal sharp with tun=1.5");
+			ptmp = pa_line_at(x-nx*clr*1.2, y-ny*clr*1.2, x + nx*clr*6, y + ny*clr*6, clr/2*tune, rnd_true);
 			rnd_polyarea_boolean(*pres, ptmp, &p, RND_PBO_SUB);
 			rnd_polyarea_free(pres);
 			rnd_polyarea_free(&ptmp);
@@ -620,7 +623,7 @@ static void polytherm_sharp(rnd_polyarea_t **pres, pcb_poly_it_t *it, rnd_coord_
 			my = (y+py)/2.0;
 
 			/* perpendicular line from the middle of each edge */
-			ptmp = pa_line_at(mx, my, mx - nx*clr, my - ny*clr, clr/2, rnd_true);
+			ptmp = pa_line_at(mx, my, mx - nx*clr, my - ny*clr, clr/2*tune, rnd_true);
 			rnd_polyarea_boolean(*pres, ptmp, &p, RND_PBO_SUB);
 			rnd_polyarea_free(pres);
 			rnd_polyarea_free(&ptmp);
@@ -642,7 +645,7 @@ static void pcb_thermal_area_pa_round(rnd_polyarea_t **pres, pcb_poly_it_t *it, 
 	/* generate the clear-lines */
 	pl = pcb_poly_contour(it);
 	if (pl != NULL)
-		polytherm_round(pres, it, clr, is_diag, conf_core.design.thermal.poly_scale);
+		polytherm_round(pres, it, clr, is_diag, 0/*conf_core.design.thermal.poly_scale*/);
 }
 
 /* generate sharp thermal around a polyarea specified by the iterator */
@@ -655,7 +658,7 @@ static void pcb_thermal_area_pa_sharp(rnd_polyarea_t **pres, pcb_poly_it_t *it, 
 
 	pl = pcb_poly_contour(it);
 	if (pl != NULL)
-		polytherm_sharp(pres, it, clr, is_diag);
+		polytherm_sharp(pres, it, clr, is_diag, 0/*conf_core.design.thermal.poly_scale*/);
 
 	/* trim internal stubs */
 	polytherm_base(pres, it->pa);
