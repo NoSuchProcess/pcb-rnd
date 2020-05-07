@@ -77,7 +77,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 		pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 
 		if (rnd_gui->shift_is_pressed(rnd_gui))
-			pcb_tool_thermal_on_pstk(ps, PCB_CURRLID(pcb));
+			pcb_tool_thermal_on_obj((pcb_any_obj_t *)ps, PCB_CURRLID(pcb));
 
 		pcb_undo_inc_serial();
 		pcb_pstk_invalidate_draw(ps);

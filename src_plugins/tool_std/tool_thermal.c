@@ -43,7 +43,7 @@
 #include "thermal.h"
 #include <librnd/core/tool.h>
 
-void pcb_tool_thermal_on_pstk(pcb_pstk_t *ps, unsigned long lid)
+void pcb_tool_thermal_on_obj(pcb_any_obj_t *obj, unsigned long lid)
 {
 	unsigned char *th, newth = 0;
 	unsigned char cycle[] = {
@@ -56,7 +56,7 @@ void pcb_tool_thermal_on_pstk(pcb_pstk_t *ps, unsigned long lid)
 	};
 	int cycles = sizeof(cycle) / sizeof(cycle[0]);
 
-	th = pcb_pstk_get_thermal(ps, lid, 1);
+	th = pcb_obj_common_get_thermal(obj, lid, 1);
 	if (rnd_gui->shift_is_pressed(rnd_gui)) {
 		int n, curr = -1;
 		/* cycle through the variants to find the current one */
@@ -85,7 +85,7 @@ void pcb_tool_thermal_on_pstk(pcb_pstk_t *ps, unsigned long lid)
 			newth = cycle[0]; /* new thermal, use default */
 	}
 
-	pcb_chg_obj_thermal(PCB_OBJ_PSTK, ps, ps, ps, newth, lid);
+	pcb_chg_obj_thermal(obj->type, obj, obj, obj, newth, lid);
 }
 
 
@@ -97,7 +97,11 @@ void pcb_tool_thermal_notify_mode(rnd_hidlib_t *hl)
 	if (((type = pcb_search_screen(hl->tool_x, hl->tool_y, PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_any_obj_t *) ptr3)) {
 		if (type == PCB_OBJ_PSTK)
-			pcb_tool_thermal_on_pstk((pcb_pstk_t *)ptr2, PCB_CURRLID(pcb));
+			pcb_tool_thermal_on_obj(ptr2, PCB_CURRLID(pcb));
+	}
+	else if (((type = pcb_search_screen(hl->tool_x, hl->tool_y, PCB_OBJ_CLASS_REAL, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
+			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_any_obj_t *) ptr3)) {
+		pcb_tool_thermal_on_obj(ptr2, PCB_CURRLID(pcb));
 	}
 }
 
