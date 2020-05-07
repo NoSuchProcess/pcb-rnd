@@ -52,3 +52,6 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
 void *pcb_textop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text);
 void *pcb_textop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_text_t *text);
 
+
+/* undoable scale_x and scale_y change */
+int pcb_text_chg_scale(pcb_text_t *text, double scx, rnd_bool absx, double scy, rnd_bool absy, rnd_bool undoable);

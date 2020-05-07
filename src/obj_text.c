@@ -1032,6 +1032,14 @@ void pcb_text_dyn_bbox_update(pcb_data_t *data)
 	} PCB_ENDALL_LOOP;
 }
 
+int pcb_text_chg_scale(pcb_text_t *text, double scx, rnd_bool absx, double scy, rnd_bool absy, rnd_bool undoable)
+{
+	TODO("undo: make this undoable");
+	text->scale_x = absx ? scx : text->scale_x + scx;
+	text->scale_y = absy ? scy : text->scale_y + scy;
+	return 0;
+}
+
 /*** draw ***/
 
 #define MAX_SIMPLE_POLY_POINTS 256
