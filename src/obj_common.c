@@ -448,3 +448,4 @@ unsigned char *pcb_obj_common_get_thermal(pcb_any_obj_t *obj, unsigned long lid,
 
 	return &obj->thermal;
 }
+

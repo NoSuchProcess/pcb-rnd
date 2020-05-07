@@ -29,12 +29,18 @@
 #include "thermal.h"
 
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/rnd_printf.h>
 #include "data.h"
+#include "draw.h"
+#include "undo.h"
+#include "obj_common.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 #include "obj_pinvia_therm.h"
 #include "polygon.h"
 #include "funchash_core.h"
+
+static const char core_thermal_cookie[] = "core/thermal.c";
 
 rnd_cardinal_t pcb_themal_style_new2old(unsigned char t)
 {
@@ -857,5 +863,85 @@ rnd_polyarea_t *pcb_thermal_area(pcb_board_t *pcb, pcb_any_obj_t *obj, rnd_layer
 	}
 
 	return NULL;
+}
+
+
+/*** undoable thermal change ***/
+typedef struct {
+	pcb_board_t *pcb;
+	pcb_any_obj_t *obj;
+	unsigned char shape;
+} undo_anyobj_thermal_t;
+
+static int undo_anyobj_thermal_swap(void *udata)
+{
+	undo_anyobj_thermal_t *t = udata;
+	unsigned char old, *th = pcb_obj_common_get_thermal(t->obj, 0, 1);
+
+	if (th != NULL) {
+		pcb_poly_restore_to_poly(t->pcb->Data, t->obj->type, t->obj->parent.layer, t->obj);
+
+		old = *th;
+		*th = t->shape;
+		t->shape = old;
+
+		pcb_poly_clear_from_poly(t->pcb->Data, t->obj->type, t->obj->parent.layer, t->obj);
+		pcb_draw_invalidate(t->obj);
+	}
+	return 0;
+}
+
+static void undo_anyobj_thermal_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_anyobj_thermal_t *t = udata;
+	rnd_snprintf(dst, dst_len, "anyobj_thermal: #%ld %d", t->obj->ID, t->shape);
+}
+
+static const uundo_oper_t undo_anyobj_thermal = {
+	core_thermal_cookie,
+	NULL, /* free */
+	undo_anyobj_thermal_swap,
+	undo_anyobj_thermal_swap,
+	undo_anyobj_thermal_print
+};
+
+
+int pcb_anyobj_set_thermal(pcb_any_obj_t *obj, unsigned char shape, int undoable)
+{
+	undo_anyobj_thermal_t *t;
+	pcb_board_t *pcb = NULL;
+
+	if (obj->type == PCB_OBJ_PSTK)
+		return -1; /* needs a layer */
+
+	if (undoable) {
+		assert(obj->parent_type == PCB_PARENT_LAYER);
+		pcb = pcb_data_get_top(obj->parent.layer->parent.data);
+	}
+
+	if (!undoable || (pcb == NULL)) {
+		unsigned char *th = pcb_obj_common_get_thermal(obj, 0, 1);
+		if (th != NULL)
+			*th = shape;
+		return 0;
+	}
+
+	t = pcb_undo_alloc(pcb, &undo_anyobj_thermal, sizeof(undo_anyobj_thermal_t));
+	t->pcb = pcb;
+	t->obj = obj;
+	t->shape = shape;
+	undo_anyobj_thermal_swap(t);
+	return 0;
+}
+
+void *pcb_anyop_change_thermal(pcb_opctx_t *ctx, pcb_any_obj_t *obj)
+{
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj))
+		return NULL;
+
+	if (pcb_anyobj_set_thermal(obj, ctx->chgtherm.style, 1) != 0)
+		return NULL;
+
+	return obj;
 }
 

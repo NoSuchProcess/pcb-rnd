@@ -38,6 +38,7 @@
 #include "draw.h"
 #include "select.h"
 #include "undo.h"
+#include "thermal.h"
 #include <librnd/core/actions.h>
 #include "obj_pstk_op.h"
 #include "obj_subc_parent.h"
@@ -126,12 +127,12 @@ pcb_opfunc_t ChangeRotFunctions = {
 static pcb_opfunc_t ChangeThermalFunctions = {
 	NULL, /* common_pre */
 	NULL, /* common_post */
+	pcb_anyop_change_thermal, /* line */
+	NULL,
+	pcb_anyop_change_thermal, /* poly */
 	NULL,
 	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
+	NULL, /* arc */
 	NULL, /* gfx */
 	NULL,
 	NULL,

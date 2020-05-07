@@ -28,6 +28,7 @@
 #define PCB_THERMAL_H
 
 #include "obj_common.h"
+#include "operation.h"
 #include "layer.h"
 #include <librnd/poly/polygon1_gen.h>
 
@@ -61,6 +62,8 @@ rnd_polyarea_t *pcb_thermal_area_pstk(pcb_board_t *pcb, pcb_pstk_t *ps, rnd_laye
 
 unsigned char pcb_themal_style_old2new(rnd_cardinal_t t);
 rnd_cardinal_t pcb_themal_style_new2old(unsigned char t);
+
+void *pcb_anyop_change_thermal(pcb_opctx_t *ctx, pcb_any_obj_t *ps);
 
 
 #endif
