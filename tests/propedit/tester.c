@@ -26,6 +26,7 @@ static void print_val(pcb_prop_type_t type, pcb_propval_t val)
 		case PCB_PROPT_STRING: printf("%s", val.string); break;
 		case PCB_PROPT_COORD:  printf("%d", val.coord); break;
 		case PCB_PROPT_ANGLE:  printf("%f", val.angle); break;
+		case PCB_PROPT_DOUBLE: printf("%f", val.d); break;
 		case PCB_PROPT_INT:    printf("%d", val.i); break;
 		default: printf(" ???");
 	}
@@ -103,6 +104,12 @@ int main()
 	v.angle = 42.0; assert(pcb_props_add(&ctx, "ang", PCB_PROPT_ANGLE, v) != NULL);
 	v.angle = 42.0; assert(pcb_props_add(&ctx, "ang", PCB_PROPT_ANGLE, v) != NULL);
 
+	/* double */
+	v.d = 42.0; assert(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
+	v.d = 10.5; assert(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
+	v.d = 42.0; assert(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
+	v.d = 42.0; assert(pcb_props_add(&ctx, "dbl", PCB_PROPT_DOUBLE, v) != NULL);
+
 	/* string */
 	v.string = "foo"; assert(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
 	v.string = "bar"; assert(pcb_props_add(&ctx, "str", PCB_PROPT_STRING, v) != NULL);
@@ -123,6 +130,7 @@ int main()
 	assert(print_stat(&ctx, "crd", 1) != NULL);
 	assert(print_stat(&ctx, "num", 1) != NULL);
 	assert(print_stat(&ctx, "ang", 1) != NULL);
+	assert(print_stat(&ctx, "dbl", 1) != NULL);
 	assert(print_stat(&ctx, "str", 0) != NULL);
 
 	/* these should fail */

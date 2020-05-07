@@ -4,14 +4,18 @@ num [int]
 ang [angle]
  42.000000 (3)
  10.500000 (1)
-crd [coord]
- 42 (3)
- 10 (1)
 str [string]
  foo (3)
  bar (1)
  BAZ (1)
+crd [coord]
+ 42 (3)
+ 10 (1)
+dbl [double]
+ 42.000000 (3)
+ 10.500000 (1)
 Stats crd:  common: 42  min: 10  max: 42  avg: 34
 Stats num:  common: 42  min: 10  max: 42  avg: 34
 Stats ang:  common: 42.000000  min: 10.500000  max: 42.000000  avg: 34.125000
+Stats dbl:  common: 42.000000  min: 10.500000  max: 42.000000  avg: 34.125000
 Stats str:  common: foo
