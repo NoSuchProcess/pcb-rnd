@@ -258,6 +258,7 @@ void pcb_obj_center(const pcb_any_obj_t *obj, rnd_coord_t *x, rnd_coord_t *y);
    case of padstack - in case of other objects layer is ignored) */
 rnd_coord_t pcb_obj_clearance_at(pcb_board_t *pcb, const pcb_any_obj_t *o, pcb_layer_t *at);
 
+unsigned char *pcb_obj_common_get_thermal(pcb_any_obj_t *obj, unsigned long lid, rnd_bool_t alloc);
 
 /* Update cached attributes (->term) */
 void pcb_obj_attrib_post_change(rnd_attribute_list_t *list, const char *name, const char *value);

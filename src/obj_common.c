@@ -440,3 +440,11 @@ void pcb_obj_common_free(pcb_any_obj_t *o)
 		o->override_color = NULL;
 	}
 }
+
+unsigned char *pcb_obj_common_get_thermal(pcb_any_obj_t *obj, unsigned long lid, rnd_bool_t alloc)
+{
+	if (obj->type == PCB_OBJ_PSTK)
+		return pcb_pstk_get_thermal((pcb_pstk_t *)obj, lid, alloc);
+
+	return &obj->thermal;
+}
