@@ -748,9 +748,30 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 	lht_dom_hash_put(obj, build_flags(&text->Flags, PCB_OBJ_TEXT, text->intconn));
 	lht_dom_hash_put(obj, build_text("string", text->TextString));
 	lht_dom_hash_put(obj, build_textf("fid", "%ld", text->fid));
-	lht_dom_hash_put(obj, build_textf("scale", "%d", text->Scale));
 	lht_dom_hash_put(obj, build_textf("x", CFMT, text->X));
 	lht_dom_hash_put(obj, build_textf("y", CFMT, text->Y));
+
+	if (wrver >= 7) {
+		if (text->Scale != 0)
+			lht_dom_hash_put(obj, build_textf("scale", "%d", text->Scale));
+		else
+			lht_dom_hash_put(obj, dummy_text_node("scale"));
+		if (text->scale_x != 0)
+			lht_dom_hash_put(obj, build_textf("scale_x", "%f", text->scale_x));
+		else
+			lht_dom_hash_put(obj, dummy_text_node("scale"));
+		if (text->scale_y != 0)
+			lht_dom_hash_put(obj, build_textf("scale_y", "%f", text->scale_y));
+		else
+			lht_dom_hash_put(obj, dummy_text_node("scale"));
+	}
+	else {
+		int scale;
+		if (pcb_text_old_scale(text, &scale) != 0)
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-scale", "versions below lihata board v7 do not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
+		lht_dom_hash_put(obj, build_textf("scale", "%d", scale));
+	}
+
 	if (wrver >= 6) {
 		lht_dom_hash_put(obj, build_textf("rot", "%f", text->rot));
 		if (text->thickness > 0)
