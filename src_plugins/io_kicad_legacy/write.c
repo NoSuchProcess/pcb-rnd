@@ -233,12 +233,16 @@ static int write_kicad_legacy_layout_text(FILE *FP, rnd_cardinal_t number, pcb_l
 		localFlag = 0;
 		textlist_foreach(&layer->Text, &it, text) {
 			if ((currentLayer < 16) || (currentLayer == 20) || (currentLayer == 21)) { /* copper or silk layer text */
+				int scale;
+				if (pcb_text_old_scale(text, &scale) != 0)
+					pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
+
 				fputs("$TEXTPCB\nTe \"", FP);
 				fputs(text->TextString, FP);
 				fputs("\"\n", FP);
-				defaultXSize = 5 * PCB_SCALE_TEXT(mWidth, text->Scale) / 6; /* IIRC kicad treats this as kerned width of upper case m */
+				defaultXSize = 5 * PCB_SCALE_TEXT(mWidth, scale) / 6; /* IIRC kicad treats this as kerned width of upper case m */
 				defaultYSize = defaultXSize;
-				strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale / 2);
+				strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, scale / 2);
 				rotation = 0;
 				textOffsetX = 0;
 				textOffsetY = 0;

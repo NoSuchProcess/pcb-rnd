@@ -109,12 +109,15 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 		{
 			pcb_gfx_t *gfx;
 			for(gfx = gfxlist_first(&ly->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
-				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)gfx, "gfx", "gfx can not be exported", "please use the lihata board format");
+				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)gfx, "gfx", "gfx can not be exported", "please use the lihata board format");
 		}
 		PCB_TEXT_LOOP(ly) {
+			int scale;
+			if (pcb_text_old_scale(text, &scale) != 0)
+				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
 			rnd_fprintf(f, " text %.06mm %.06mm %.06mm %.06mm %d %f %.06mm ",
 				text->bbox_naked.X1, text->bbox_naked.Y1, text->bbox_naked.X2, text->bbox_naked.Y2,
-				text->Scale, text->rot, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text) ? 1 : 0);
+				scale, text->rot, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text) ? 1 : 0);
 			tedax_fprint_escape(f, text->TextString);
 			fputc('\n', f);
 		} PCB_END_LOOP;

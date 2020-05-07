@@ -438,12 +438,15 @@ static void io_pcb_print_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_subc_t *sc)
 			pcb_io_incompat_save(sc->parent.data, (pcb_any_obj_t *)sc, "element-side", "Can not determine element side", "Missing or botched subc aux layer; can not tell if subc is on top or bottom layer, using top.");
 
 		if (trefdes != NULL) {
+			int scale;
+			if (pcb_text_old_scale(trefdes, &scale) != 0)
+				pcb_io_incompat_save(sc->data, (pcb_any_obj_t *)trefdes, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
 			rx = trefdes->X - ox;
 			ry = trefdes->Y - oy;
 			if (!pcb_text_old_direction(&rdir, trefdes->rot)) {
 TODO("textrot: incompatibility warning")
 			}
-			rscale = trefdes->Scale;
+			rscale = scale;
 		}
 		else {
 			const char *tmp;
@@ -634,10 +637,13 @@ static void WriteLayerData(FILE * FP, rnd_cardinal_t Number, pcb_layer_t *layer)
 		}
 		textlist_foreach(&layer->Text, &it, text) {
 			int dir;
+			int scale;
+			if (pcb_text_old_scale(text, &scale) != 0)
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
 			if (!pcb_text_old_direction(&dir, text->rot)) {
 TODO("textrot: incompatibility warning")
 			}
-			rnd_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, dir, text->Scale);
+			rnd_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, dir, scale);
 			pcb_print_quoted_string(FP, (char *) RND_EMPTY(text->TextString));
 			fprintf(FP, " %s]\n", F2S(text, PCB_OBJ_TEXT));
 		}

@@ -309,17 +309,21 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 	rnd_coord_t textOffsetY;
 	rnd_coord_t halfStringWidth;
 	rnd_coord_t halfStringHeight;
+	int scale;
 
 	if (!(kly->lyt & PCB_LYT_COPPER) && !(kly->lyt & PCB_LYT_SILK)) {
 		pcb_io_incompat_save(ctx->pcb->Data, (pcb_any_obj_t *)text, "text-layer", "Kicad supports text only on copper or silk - omitting text object on misc layer", NULL);
 		return;
 	}
 
+	if (pcb_text_old_scale(text, &scale) != 0)
+		pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
+
 	fprintf(ctx->f, "%*s", ind, "");
 	rnd_fprintf(ctx->f, "(gr_text %[4] ", text->TextString);
-	defaultXSize = 5 * PCB_SCALE_TEXT(mWidth, text->Scale) / 6; /* IIRC kicad treats this as kerned width of upper case m */
+	defaultXSize = 5 * PCB_SCALE_TEXT(mWidth, scale) / 6; /* IIRC kicad treats this as kerned width of upper case m */
 	defaultYSize = defaultXSize;
-	strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, text->Scale / 2);
+	strokeThickness = PCB_SCALE_TEXT(defaultStrokeThickness, scale / 2);
 	rotation = 0;
 	textOffsetX = 0;
 	textOffsetY = 0;

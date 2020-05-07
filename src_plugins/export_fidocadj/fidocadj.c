@@ -245,14 +245,18 @@ TODO(": fprintf() some curve using arc->*")
 			 * default_font stroke thickness = 800
 			 * giving sx = (4189+800)/(5333+800) ~= 0.813
 			 */
+			int scale, scret = pcb_text_old_scale(text, &scale);
 			rnd_coord_t x0 = text->X;
 			/*rnd_coord_t sx = text->BoundingBox.X2 - text->BoundingBox.X1; unused */
 			rnd_coord_t y0 = text->Y;
 			/* rnd_coord_t sy = text->BoundingBox.Y2 - text->BoundingBox.Y1; unused */
-			rnd_coord_t glyphy = 5789*(text->Scale); /* (ascent+descent)*Scale */
+			rnd_coord_t glyphy = 5789*(rnd_coord_t)scale; /* (ascent+descent)*Scale */
 			rnd_coord_t glyphx = 813*(glyphy/1000); /* based on 'm' glyph dimensions */
 			glyphy = 10*glyphy/7;  /* empirically determined */
 			glyphx = 10*glyphx/7;  /* scaling voodoo */
+			if (scret != 0)
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
+
 			/*switch(text->Direction) {
 				case 0:
 					x0 += sx;

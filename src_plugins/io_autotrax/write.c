@@ -437,6 +437,10 @@ static int wrax_text(wctx_t *ctx, rnd_cardinal_t number, pcb_layer_t *layer, rnd
 
 	int index = 0;
 
+	int scale;
+	if (pcb_text_old_scale(text, &scale) != 0)
+		pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
+
 TODO("why do we hardwire this here?")
 	default_stroke_thickness = 200000;
 
@@ -455,8 +459,8 @@ TODO("indicate save incompatibility")
 					fputs("CS\r\n", ctx->f);
 				else
 					fputs("FS\r\n", ctx->f);
-				strokeThickness = PCB_SCALE_TEXT(default_stroke_thickness, text->Scale / 2);
-				textHeight = PCB_SCALE_TEXT(mHeight, text->Scale);
+				strokeThickness = PCB_SCALE_TEXT(default_stroke_thickness, scale / 2);
+				textHeight = PCB_SCALE_TEXT(mHeight, scale);
 				rotation = 0;
 				if (current_layer == 6 || current_layer == 8) /* back copper or silk */
 					autotrax_mirrored = 16; /* mirrored */

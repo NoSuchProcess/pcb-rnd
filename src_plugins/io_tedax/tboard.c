@@ -203,9 +203,12 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 					const char **lyname = (const char **)vtp0_get(&ctx.g2n, rl->meta.real.grp, 0);
 					if (lyname != NULL) {
 						gds_t tmp;
+						int scale;
+						if (pcb_text_old_scale(text, &scale) != 0)
+							pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
 						rnd_fprintf(f, " place_text %s %s %.06mm %.06mm %.06mm %.06mm %d %f ",
 							refdes, *lyname, text->bbox_naked.X1, text->bbox_naked.Y1, text->bbox_naked.X2, text->bbox_naked.Y2,
-							text->Scale, text->rot);
+							scale, text->rot);
 						gds_init(&tmp);
 						pcb_append_dyntext(&tmp, (pcb_any_obj_t *)text, text->TextString);
 						tedax_fprint_escape(f, tmp.array);
