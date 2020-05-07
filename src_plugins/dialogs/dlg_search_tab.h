@@ -127,6 +127,8 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.x",               "X",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.y",               "Y",                &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 	{"@.scale",           "scale",            &op_tab[OPS_ANY], RIGHT_INT, NULL},
+	{"@.scale_x",         "scale_x",          &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
+	{"@.scale_y",         "scale_y",          &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
 	{"@.string",          "string",           &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.rotation",        "rotation",         &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
 	{"@.thickness",       "thickness",        &op_tab[OPS_ANY], RIGHT_COORD, NULL},
