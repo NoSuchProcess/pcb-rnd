@@ -24,6 +24,8 @@ angle
 start
 delta
 scale
+scale_x
+scale_y
 rotation
 rot
 direction
