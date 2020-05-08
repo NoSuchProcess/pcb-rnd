@@ -770,6 +770,8 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 		if (pcb_text_old_scale(text, &scale) != 0)
 			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-scale", "versions below lihata board v7 do not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
 		lht_dom_hash_put(obj, build_textf("scale", "%d", scale));
+		if (text->mirror_x)
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-mirror-x", "file format does not support different mirroring text in the x direction", "do not mirror, or mirror in the y direction (with the ONSOLDER flag)");
 	}
 
 	if (wrver >= 6) {
@@ -796,6 +798,10 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 	if ((wrver < 7) && ((av = rnd_attribute_get(&text->Attributes, "tight_clearance")) != NULL))
 		if (rnd_istrue(av))
 			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text_tight_clearance", "lihata boards before version v7 did not support text tight_clearance\n", "Either save in lihata v7+ or remove the tight_clearance attribute");
+
+	if ((wrver < 7) && ((av = rnd_attribute_get(&text->Attributes, "mirror_x")) != NULL))
+		if (rnd_istrue(av))
+			pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text_mirror_x", "lihata boards before version v7 did not support text mirror_x\n", "Either save in lihata v7+ or remove the mirror_x attribute");
 
 	return obj;
 }

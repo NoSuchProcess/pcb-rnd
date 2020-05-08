@@ -318,6 +318,8 @@ static void kicad_print_text(const wctx_t *ctx, const klayer_t *kly, pcb_text_t 
 
 	if (pcb_text_old_scale(text, &scale) != 0)
 		pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
+	if (text->mirror_x)
+		pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-mirror-x", "file format does not support different mirroring text in the x direction", "do not mirror, or mirror in the y direction (with the ONSOLDER flag)");
 
 	fprintf(ctx->f, "%*s", ind, "");
 	rnd_fprintf(ctx->f, "(gr_text %[4] ", text->TextString);

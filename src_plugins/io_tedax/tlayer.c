@@ -115,6 +115,8 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 			int scale;
 			if (pcb_text_old_scale(text, &scale) != 0)
 				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
+			if (text->mirror_x)
+				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-mirror-x", "file format does not support different mirroring text in the x direction", "do not mirror, or mirror in the y direction (with the ONSOLDER flag)");
 			rnd_fprintf(f, " text %.06mm %.06mm %.06mm %.06mm %d %f %.06mm ",
 				text->bbox_naked.X1, text->bbox_naked.Y1, text->bbox_naked.X2, text->bbox_naked.Y2,
 				scale, text->rot, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text) ? 1 : 0);

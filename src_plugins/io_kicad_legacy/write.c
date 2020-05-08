@@ -236,6 +236,8 @@ static int write_kicad_legacy_layout_text(FILE *FP, rnd_cardinal_t number, pcb_l
 				int scale;
 				if (pcb_text_old_scale(text, &scale) != 0)
 					pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
+				if (text->mirror_x)
+					pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-mirror-x", "file format does not support different mirroring text in the x direction", "do not mirror, or mirror in the y direction (with the ONSOLDER flag)");
 
 				fputs("$TEXTPCB\nTe \"", FP);
 				fputs(text->TextString, FP);

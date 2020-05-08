@@ -441,6 +441,9 @@ static void io_pcb_print_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_subc_t *sc)
 			int scale;
 			if (pcb_text_old_scale(trefdes, &scale) != 0)
 				pcb_io_incompat_save(sc->data, (pcb_any_obj_t *)trefdes, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
+			if (trefdes->mirror_x)
+				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)trefdes, "text-mirror-x", "file format does not support different mirroring text in the x direction", "do not mirror, or mirror in the y direction (with the ONSOLDER flag)");
+
 			rx = trefdes->X - ox;
 			ry = trefdes->Y - oy;
 			if (!pcb_text_old_direction(&rdir, trefdes->rot)) {
@@ -640,6 +643,8 @@ static void WriteLayerData(FILE * FP, rnd_cardinal_t Number, pcb_layer_t *layer)
 			int scale;
 			if (pcb_text_old_scale(text, &scale) != 0)
 				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
+			if (text->mirror_x)
+				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-mirror-x", "file format does not support different mirroring text in the x direction", "do not mirror, or mirror in the y direction (with the ONSOLDER flag)");
 			if (!pcb_text_old_direction(&dir, text->rot)) {
 TODO("textrot: incompatibility warning")
 			}
