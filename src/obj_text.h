@@ -49,6 +49,12 @@ struct pcb_text_s {
 	gdl_elem_t link;              /* a text is in a list of a layer */
 };
 
+typedef enum { /* bitfield - order matters for backward compatibility */
+	PCB_TXT_MIRROR_NO = 0,
+	PCB_TXT_MIRROR_Y = 1, /* change Y coords (mirror over the X axis) */
+	PCB_TXT_MIRROR_X = 2  /* change X coords (mirror over the Y axis) */
+} pcb_text_mirror_t;
+
 /* These need to be carefully written to avoid overflows, and return
    a Coord type.  */
 #define PCB_SCALE_TEXT(COORD,TEXTSCALE) ((rnd_coord_t)rnd_round((COORD) * ((double)(TEXTSCALE) / 100.0)))
@@ -105,7 +111,7 @@ void pcb_text_flagchg_pre(pcb_text_t *Text, unsigned long flagbits, void **save)
 void pcb_text_flagchg_post(pcb_text_t *Text, unsigned long oldflagbits, void **save);
 
 /* Low level draw call for direct rendering on preview */
-void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, int mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy);
+void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy);
 
 /* Recalculate the bounding box of all dynamic text objects that are
    directly under data - useful e.g. on parent attr change */
