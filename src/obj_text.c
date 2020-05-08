@@ -168,7 +168,7 @@ static const uundo_oper_t undo_text_geo = {
 };
 
 
-pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, double scx, double scy, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
+pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, pcb_text_mirror_t mirror, int Scale, double scx, double scy, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
 {
 	pcb_text_t *text;
 
@@ -178,6 +178,12 @@ pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X
 	text = pcb_text_alloc(Layer);
 	if (text == NULL)
 		return NULL;
+
+	/* Set up mirroring */
+	if (mirror & PCB_TXT_MIRROR_Y)
+		Flags.f |= PCB_FLAG_ONSOLDER;
+	if (mirror & PCB_TXT_MIRROR_X)
+		rnd_attribute_put(&text->Attributes, "mirror_x", "1");
 
 	/* copy values, width and height are set by drawing routine
 	 * because at this point we don't know which symbols are available
@@ -199,16 +205,16 @@ pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X
 /* creates a new text on a layer */
 pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
 {
-	pcb_text_t *text = pcb_text_new_(Layer, PCBFont, X, Y, rot, Scale, 0, 0, thickness, TextString, Flags);
+	pcb_text_t *text = pcb_text_new_(Layer, PCBFont, X, Y, rot, 0, Scale, 0, 0, thickness, TextString, Flags);
 
 	pcb_add_text_on_layer(Layer, text, PCBFont);
 
 	return text;
 }
 
-pcb_text_t *pcb_text_new_scaled(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, double scx, double scy, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
+pcb_text_t *pcb_text_new_scaled(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, pcb_text_mirror_t mirror, int Scale, double scx, double scy, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
 {
-	pcb_text_t *text = pcb_text_new_(Layer, PCBFont, X, Y, rot, Scale, scx, scy, thickness, TextString, Flags);
+	pcb_text_t *text = pcb_text_new_(Layer, PCBFont, X, Y, rot, mirror, Scale, scx, scy, thickness, TextString, Flags);
 
 	pcb_add_text_on_layer(Layer, text, PCBFont);
 
@@ -221,11 +227,7 @@ pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_co
 	double gsc, gscx, gscy, cs, sn;
 	pcb_text_t *t;
 	
-	if (mirror & PCB_TXT_MIRROR_Y)
-		Flags.f |= PCB_FLAG_ONSOLDER;
-	t = pcb_text_new_(Layer, PCBFont, 0, 0, 0, 100, 1, 1, thickness, TextString, Flags);
-	if (mirror & PCB_TXT_MIRROR_X)
-		rnd_attribute_put(&t->Attributes, "mirror_x", "1");
+	t = pcb_text_new_(Layer, PCBFont, 0, 0, 0, mirror, 100, 1, 1, thickness, TextString, Flags);
 
 	t->scale_x = scxy;
 	t->scale_y = 1;
@@ -275,16 +277,19 @@ static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
 	return dst;
 }
 
+#define text_mirror_bits(t) \
+	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (t)) ? PCB_TXT_MIRROR_Y : 0) | ((t)->mirror_x ? PCB_TXT_MIRROR_X : 0))
+
 pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src)
 {
-	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font(PCB, src->fid, 1), src->X, src->Y, src->rot, src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
+	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font(PCB, src->fid, 1), src->X, src->Y, src->rot, text_mirror_bits(src), src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
 	pcb_text_copy_meta(t, src);
 	return t;
 }
 
 pcb_text_t *pcb_text_dup_at(pcb_layer_t *dst, pcb_text_t *src, rnd_coord_t dx, rnd_coord_t dy)
 {
-	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font(PCB, src->fid, 1), src->X+dx, src->Y+dy, src->rot, src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
+	pcb_text_t *t = pcb_text_new_scaled(dst, pcb_font(PCB, src->fid, 1), src->X+dx, src->Y+dy, src->rot, text_mirror_bits(src), src->Scale, src->scale_x, src->scale_y, src->thickness, src->TextString, src->Flags);
 	pcb_text_copy_meta(t, src);
 	return t;
 }
@@ -395,9 +400,6 @@ int pcb_text_old_scale(pcb_text_t *text, int *scale_out)
 	*scale_out = rnd_round((scx + scy) / 2.0 * 100);
 	return -1;
 }
-
-#define text_mirror_bits(t) \
-	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (t)) ? PCB_TXT_MIRROR_Y : 0) | ((t)->mirror_x ? PCB_TXT_MIRROR_X : 0))
 
 /* creates the bounding box of a text object */
 void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
@@ -584,7 +586,7 @@ unsigned int pcb_text_hash(const pcb_host_trans_t *tr, const pcb_text_t *t)
 void *pcb_textop_add_to_buffer(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {
 	pcb_layer_t *layer = &ctx->buffer.dst->Layer[pcb_layer_id(ctx->buffer.src, Layer)];
-	pcb_text_t *t = pcb_text_new_scaled(layer, pcb_font(PCB, Text->fid, 1), Text->X, Text->Y, Text->rot, Text->Scale, Text->scale_x, Text->scale_y, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg));
+	pcb_text_t *t = pcb_text_new_scaled(layer, pcb_font(PCB, Text->fid, 1), Text->X, Text->Y, Text->rot, text_mirror_bits(Text), Text->Scale, Text->scale_x, Text->scale_y, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, ctx->buffer.extraflg));
 
 	pcb_text_copy_meta(t, Text);
 	if (ctx->buffer.keep_id) pcb_obj_change_id((pcb_any_obj_t *)t, Text->ID);
@@ -754,7 +756,7 @@ void *pcb_textop_copy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	pcb_text_t *text;
 
 	text = pcb_text_new_scaled(Layer, pcb_font(PCB, Text->fid, 1), Text->X + ctx->copy.DeltaX,
-											 Text->Y + ctx->copy.DeltaY, Text->rot, Text->Scale, Text->scale_x, Text->scale_y, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
+											 Text->Y + ctx->copy.DeltaY, Text->rot, text_mirror_bits(Text), Text->Scale, Text->scale_x, Text->scale_y, Text->thickness, Text->TextString, pcb_flag_mask(Text->Flags, PCB_FLAG_FOUND));
 	if (ctx->copy.keep_id)
 		text->ID = Text->ID;
 	pcb_text_copy_meta(text, Text);
