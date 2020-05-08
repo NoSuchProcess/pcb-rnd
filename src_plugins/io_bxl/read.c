@@ -419,12 +419,47 @@ void pcb_bxl_add_arc(pcb_bxl_ctx_t *ctx)
 		width, 0, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
 }
 
+pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, double rot, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
+{
+	rnd_coord_t obw, obh;
+	double gsc, gscx, gscy;
+	pcb_text_t *t = pcb_text_new_(Layer, PCBFont, 0, 0, 0, 100, thickness, TextString, Flags);
+
+	t->scale_x = scxy;
+	t->scale_y = 1;
+	pcb_text_bbox(PCBFont, t);
+
+	/* determine the final scaling */
+	obw = t->bbox_naked.X2 - t->bbox_naked.X1;
+	obh = t->bbox_naked.Y2 - t->bbox_naked.Y1;
+
+rnd_trace(" pcb-rnd: %ml %ml req: %ml %ml (%s) sc: %f %f\n", obw, obh, bbw, bbh, TextString, t->scale_x, t->scale_y);
+
+	gscx = (double)bbw/(double)obw;
+	gscy = (double)bbh/(double)obh;
+	gsc = gscx < gscy ? gscx : gscy;
+
+	t->scale_x *= gsc;
+	t->scale_y *= gsc;
+
+	/* placement */
+	t->X = X - anchx;
+	t->Y = Y - anchy - RND_MIL_TO_COORD(13);
+
+pcb_text_bbox(PCBFont, t);
+rnd_trace(" final: %ml %ml (%f %f -> %f) got:%f wanted:%f \n", t->bbox_naked.X2 - t->bbox_naked.X1, t->bbox_naked.Y2 - t->bbox_naked.Y1, gscx, gscy, gsc, t->scale_x/t->scale_y, scxy);
+
+	pcb_add_text_on_layer(Layer, t, PCBFont);
+	return t;
+}
+
 void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 {
 	pcb_flag_values_t flg = 0;
-	int scale, tlen;
+	int tlen;
 	rnd_coord_t bbw, bbh, anchx, anchy;
 	rnd_coord_t thickness;
+	double scxy;
 	SKIP;
 
 	if (!ctx->state.is_text && (ctx->state.attr_key != NULL)) {
@@ -467,18 +502,19 @@ rnd_trace("bxl text '%s' w=%ml h=%ml anchx=%ml anchy=%ml (%d %d)\n", ctx->state.
 
 	if ((ctx->state.text_str != NULL) && (ctx->state.is_visible)) {
 		if (ctx->state.text_style != NULL) {
-TODO("need to figure how text is scaled and justified in bxl");
-			scale = ctx->state.text_style->height/30*100;
+			rnd_trace("  wh: %ml %ml\n", RND_MIL_TO_COORD(ctx->state.text_style->char_width), RND_MIL_TO_COORD(ctx->state.text_style->height));
+			scxy = (double)ctx->state.text_style->char_width / (double)ctx->state.text_style->height;
 			thickness = RND_MIL_TO_COORD(ctx->state.text_style->width);
 		}
 		else {
-			scale = 100;
+			scxy = 1;
 			thickness = 0;
 		}
 
-		pcb_text_new(ctx->state.layer, pcb_font(ctx->pcb, 0, 1),
-			ctx->state.origin_x - anchx, ctx->state.origin_y - anchy - RND_MIL_TO_COORD(13),
-			ctx->state.rot, scale, thickness, ctx->state.text_str,
+		pcb_text_new_by_bbox(ctx->state.layer, pcb_font(ctx->pcb, 0, 1),
+			ctx->state.origin_x, ctx->state.origin_y,
+			bbw, bbh, anchx, anchy, scxy,
+			ctx->state.rot, thickness, ctx->state.text_str,
 			pcb_flag_make(PCB_FLAG_CLEARLINE | flg));
 	}
 	free(ctx->state.text_str);
