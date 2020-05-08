@@ -720,7 +720,7 @@ int io_bxl_test_parse2(rnd_hidlib_t *hl, pcb_plug_io_t *ctx, pcb_plug_iot_t typ,
 					rnd_trace("BXL testparse; footprint '%s'\n", lval.un.s);
 					if (pat_cb != NULL)
 						pat_cb(cbctx, lval.un.s);
-					if (typ & PCB_IOT_FOOTPRINT)
+					if ((typ & PCB_IOT_FOOTPRINT) || (typ & PCB_IOT_PCB))
 						ret++;
 					found_tok = T_ENDPATTERN;
 					break;
@@ -796,3 +796,67 @@ pcb_plug_fp_map_t *io_bxl_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char 
 
 	return head;
 }
+
+int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
+{
+	char *sep, *subfpname = NULL;
+	pcb_plug_fp_map_t *m, *map = NULL, *best, head = {0};
+
+	int res = -1;
+
+	sep = strstr(Filename, "::");
+	if (sep == NULL) {
+
+		int numfp;
+		FILE *f = rnd_fopen(&PCB->hidlib, Filename, "r");
+
+		if (f == NULL)
+			return -1;
+		map = io_bxl_map_footprint(ctx, f, Filename, &head, 0);
+		for(numfp = 0, m = map; m != NULL; m = m->next) {
+			if (m->type == PCB_FP_FILE) {
+				numfp++;
+				best = m;
+			}
+		}
+		
+		if (numfp == 0) {
+			fclose(f);
+			goto end;
+		}
+		if (numfp == 1) {
+			fclose(f);
+			subfpname = best->name;
+			best->name = NULL;
+			goto single;
+		}
+		for(m = map; m != NULL; m = m->next) {
+			printf(" bxl map: %s\n", m->name);
+		}
+
+		fclose(f);
+	}
+	else {
+		subfpname = rnd_strdup(sep+2);
+	}
+
+
+
+	single:;
+	Ptr->is_footprint = 1;
+	res = io_bxl_parse_footprint(ctx, Ptr->Data, Filename, subfpname);
+
+	if (res == 0) {
+		pcb_subc_t *sc = pcb_subclist_first(&Ptr->Data->subc);
+		pcb_layergrp_upgrade_to_pstk(Ptr);
+		pcb_layer_create_all_for_recipe(Ptr, sc->data->Layer, sc->data->LayerN);
+		pcb_subc_rebind(Ptr, sc);
+		pcb_data_clip_polys(sc->data);
+	}
+
+	end:;
+	TODO("free map");
+	free(subfpname);
+	return res;
+}
+

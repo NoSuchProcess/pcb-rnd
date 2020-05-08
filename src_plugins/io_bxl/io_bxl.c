@@ -46,7 +46,7 @@ int io_bxl_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 	if ((strcmp(ctx->description, fmt) != 0) && (rnd_strcasecmp(fmt, "bxl") != 0)) /* format name mismatch */
 		return 0;
 
-	if ((typ & (~(PCB_IOT_FOOTPRINT))) != 0) /* support only footprints */
+	if (((typ & (~(PCB_IOT_FOOTPRINT))) != 0) && ((typ & (~(PCB_IOT_PCB))) != 0)) /* support only footprints */
 		return 0;
 
 	if (wr) /* no footprint write yet */
@@ -70,7 +70,7 @@ int pplg_init_io_bxl(void)
 	io_bxl.plugin_data = NULL;
 	io_bxl.fmt_support_prio = io_bxl_fmt;
 	io_bxl.test_parse = io_bxl_test_parse;
-	io_bxl.parse_pcb = NULL;
+	io_bxl.parse_pcb = io_bxl_parse_pcb;
 	io_bxl.parse_footprint = io_bxl_parse_footprint;
 	io_bxl.map_footprint = io_bxl_map_footprint;
 	io_bxl.parse_font = NULL;
