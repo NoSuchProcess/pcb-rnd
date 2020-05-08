@@ -357,6 +357,7 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 static int attr_key_has_side_effect(const char *key)
 {
 	if (strcmp(key, "tight_clearance") == 0) return 1;
+	if (strcmp(key, "mirror_x") == 0) return 1;
 	return 0;
 }
 
@@ -392,8 +393,10 @@ static void toggle_attr(pcb_propset_ctx_t *st, rnd_attribute_list_t *list, int u
 		pcb_uchg_attr(st->pcb, obj, key, newval);
 	else
 		rnd_attribute_put(list, key, newval);
-	if ((obj != NULL) && side_effect)
+	if ((obj != NULL) && side_effect) {
+		
 		pcb_obj_post(obj);
+	}
 	st->set_cnt++;
 }
 
