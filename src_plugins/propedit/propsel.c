@@ -31,6 +31,7 @@
 #include "props.h"
 #include "propsel.h"
 #include "change.h"
+#include "draw.h"
 #include <librnd/core/misc_util.h>
 #include "flag_str.h"
 #include <librnd/core/compat_misc.h>
@@ -394,8 +395,9 @@ static void toggle_attr(pcb_propset_ctx_t *st, rnd_attribute_list_t *list, int u
 	else
 		rnd_attribute_put(list, key, newval);
 	if ((obj != NULL) && side_effect) {
-		
+		pcb_obj_update_bbox(st->pcb, obj);
 		pcb_obj_post(obj);
+		pcb_draw_invalidate(obj);
 	}
 	st->set_cnt++;
 }
@@ -433,8 +435,12 @@ printf("Side effect: %d key=%s\n", side_effect, key);
 	if (side_effect)
 		pcb_obj_pre(obj);
 	res = pcb_uchg_attr(st->pcb, obj, key, st->s);
-	if (side_effect)
+	if (side_effect) {
+		pcb_obj_update_bbox(st->pcb, obj);
 		pcb_obj_post(obj);
+		pcb_draw_invalidate(obj);
+	}
+
 
 	if (res != 0)
 		return;
