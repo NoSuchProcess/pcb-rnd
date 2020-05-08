@@ -215,6 +215,49 @@ pcb_text_t *pcb_text_new_scaled(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coo
 	return text;
 }
 
+pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, double rot, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
+{
+	rnd_coord_t obw, obh, nbw, nbh, nanchx, nanchy;
+	double gsc, gscx, gscy;
+	pcb_text_t *t = pcb_text_new_(Layer, PCBFont, 0, 0, 0, 100, 1, 1, thickness, TextString, Flags);
+
+	t->scale_x = scxy;
+	t->scale_y = 1;
+	pcb_text_bbox(PCBFont, t);
+
+	/* determine the final scaling */
+	obw = t->bbox_naked.X2 - t->bbox_naked.X1;
+	obh = t->bbox_naked.Y2 - t->bbox_naked.Y1;
+
+	/*rnd_trace(" pcb-rnd: %ml %ml req: %ml %ml (%s) sc: %f %f\n", obw, obh, bbw, bbh, TextString, t->scale_x, t->scale_y);*/
+
+	gscx = (double)bbw/(double)obw;
+	gscy = (double)bbh/(double)obh;
+	gsc = gscx < gscy ? gscx : gscy;
+
+	t->scale_x *= gsc;
+	t->scale_y *= gsc;
+
+	pcb_text_bbox(PCBFont, t);
+
+	/* figure new anchor points (on the new, typically smaller bbox) */
+	nbw = t->bbox_naked.X2 - t->bbox_naked.X1;
+	nbh = t->bbox_naked.Y2 - t->bbox_naked.Y1;
+
+	nanchx = (double)(anchx) / (double)bbw * (double)nbw;
+	nanchy = (double)(anchy) / (double)bbh * (double)nbh;
+
+	/* calculate final placement */
+	t->X = X - nanchx;
+	t->Y = Y - nanchy;
+
+	/*rnd_trace(" final: %ml %ml (%f %f -> %f) got:%f wanted:%f anch: %ml %ml -> %ml %ml\n", t->bbox_naked.X2 - t->bbox_naked.X1, t->bbox_naked.Y2 - t->bbox_naked.Y1, gscx, gscy, gsc, t->scale_x/t->scale_y, scxy, anchx, anchy, nanchx, nanchy);*/
+
+	pcb_add_text_on_layer(Layer, t, PCBFont);
+	return t;
+}
+
+
 static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
 {
 	if (dst == NULL)
