@@ -303,6 +303,12 @@ rectangular cutout. If the tight_clearance attribute on the text object
 is specified and the value is "yes" or "true" or "1", a more accurate
 clearance is calculated that follows the true shape of the text object.
 <p>
+The Y coordinates of a text object are mirrored if the ONSOLDER flag is set
+(which means the text is mirrored over the X axis). The X coordinates of a
+text object are mirrored if the mirror_x attribute is true (which means the
+text is mirrored over the Y axis). NOTE: the point of placement (which
+corner is placed at the specified X;Y coordinate) depends on mirroring.
+<p>
 Bug: copper text can not participate in short circuits, the galvanic connection
 checker code skips texts.
 
