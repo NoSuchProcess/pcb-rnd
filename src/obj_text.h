@@ -46,6 +46,7 @@ struct pcb_text_s {
 	rnd_coord_t clearance;        /* clearance around the object in polygon if flags have PCB_FLAG_CLEARLINE */
 	double rot;                   /* used when Direction is PCB_TEXT_FREEROT */
 	unsigned tight_clearance:1;   /* CACHED from attribute: when true, clearance is calculated to follow the true contour of the text; when false, the old, pre-v7 bbox based clearance is applied */
+	unsigned mirror_x:1;          /* CACHED from attribute: when true, mirror X coords (mirror over the Y axis) */
 	gdl_elem_t link;              /* a text is in a list of a layer */
 };
 

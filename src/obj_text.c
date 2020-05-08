@@ -390,6 +390,8 @@ int pcb_text_old_scale(pcb_text_t *text, int *scale_out)
 	return -1;
 }
 
+#define text_mirror_bits(t) \
+	((PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, (t)) ? PCB_TXT_MIRROR_Y : 0) | ((t)->mirror_x ? PCB_TXT_MIRROR_X : 0))
 
 /* creates the bounding box of a text object */
 void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
@@ -406,7 +408,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 	double scx, scy;
 	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
 	rnd_coord_t cx[4], cy[4];
-	pcb_text_mirror_t mirror = PCB_TXT_MIRROR_NO;
+	pcb_text_mirror_t mirror;
 
 	pcb_text_get_scale_xy(Text, &scx, &scy);
 
@@ -495,8 +497,7 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 		tx += symbol[*s].Width + space;
 	}
 
-	if (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text))
-		mirror |= PCB_TXT_MIRROR_Y;
+	mirror = text_mirror_bits(Text);
 
 	/* it is enough to do the transformations only once, on the raw bounding box */
 	pcb_xform_mx_translate(mx, Text->X, Text->Y);
@@ -1459,7 +1460,7 @@ void pcb_text_decompose_text(pcb_draw_info_t *info, pcb_text_t *text, pcb_draw_t
 	unsigned char *rendered = pcb_text_render_str(text);
 	double scx, scy;
 	pcb_text_get_scale_xy(text, &scx, &scy);
-	pcb_text_decompose_string(info, pcb_font(PCB, text->fid, 1), rendered, text->X, text->Y, scx, scy, text->rot, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, text), text->thickness, cb, cb_ctx);
+	pcb_text_decompose_string(info, pcb_font(PCB, text->fid, 1), rendered, text->X, text->Y, scx, scy, text->rot, text_mirror_bits(text), text->thickness, cb, cb_ctx);
 	pcb_text_free_str(text, rendered);
 }
 
@@ -1470,7 +1471,7 @@ static void DrawTextLowLevel_(pcb_draw_info_t *info, pcb_text_t *Text, rnd_coord
 	unsigned char *rendered = pcb_text_render_str(Text);
 	double scx, scy;
 	pcb_text_get_scale_xy(Text, &scx, &scy);
-	pcb_text_draw_string_(info, pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, scx, scy, Text->rot, PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, Text), Text->thickness, min_line_width, xordraw, xordx, xordy, tiny, NULL, NULL);
+	pcb_text_draw_string_(info, pcb_font(PCB, Text->fid, 1), rendered, Text->X, Text->Y, scx, scy, Text->rot, text_mirror_bits(Text), Text->thickness, min_line_width, xordraw, xordx, xordy, tiny, NULL, NULL);
 	pcb_text_free_str(Text, rendered);
 }
 

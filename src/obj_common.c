@@ -210,6 +210,10 @@ void pcb_obj_attrib_post_change(rnd_attribute_list_t *list, const char *name, co
 		pcb_text_t *t = (pcb_text_t *)obj;
 		t->tight_clearance = rnd_istrue(value);
 	}
+	else if ((obj->type == PCB_OBJ_TEXT) && (strcmp(name, "mirror_x") == 0)) {
+		pcb_text_t *t = (pcb_text_t *)obj;
+		t->mirror_x = rnd_istrue(value);
+	}
 }
 
 const char *pcb_obj_id_invalid(const char *id)
