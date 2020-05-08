@@ -864,93 +864,6 @@ static fgw_error_t pcb_act_RipUp(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_MinClearGap[] = "MinClearGap(delta)\n" "MinClearGap(Selected, delta)";
-static const char pcb_acth_MinClearGap[] = "Ensures that polygons are a minimum distance from objects.";
-/* DOC: mincleargap.html */
-static void minclr(pcb_data_t *data, rnd_coord_t value, int flags)
-{
-	PCB_SUBC_LOOP(data);
-	{
-		if (!PCB_FLAGS_TEST(flags, subc))
-			continue;
-		minclr(subc->data, value, 0);
-	}
-	PCB_END_LOOP;
-
-	PCB_PADSTACK_LOOP(data);
-	{
-		if (!PCB_FLAGS_TEST(flags, padstack))
-			continue;
-		if (padstack->Clearance < value) {
-			pcb_chg_obj_clear_size(PCB_OBJ_PSTK, padstack, 0, 0, value, 1);
-			pcb_undo_restore_serial();
-		}
-	}
-	PCB_END_LOOP;
-
-	PCB_LINE_ALL_LOOP(data);
-	{
-		if (!PCB_FLAGS_TEST(flags, line))
-			continue;
-		if ((line->Clearance != 0) && (line->Clearance < value)) {
-			pcb_chg_obj_clear_size(PCB_OBJ_LINE, layer, line, 0, value, 1);
-			pcb_undo_restore_serial();
-		}
-	}
-	PCB_ENDALL_LOOP;
-	PCB_ARC_ALL_LOOP(data);
-	{
-		if (!PCB_FLAGS_TEST(flags, arc))
-			continue;
-		if ((arc->Clearance != 0) && (arc->Clearance < value)) {
-			pcb_chg_obj_clear_size(PCB_OBJ_ARC, layer, arc, 0, value, 1);
-			pcb_undo_restore_serial();
-		}
-	}
-	PCB_ENDALL_LOOP;
-	PCB_POLY_ALL_LOOP(data);
-	{
-		if (!PCB_FLAGS_TEST(flags, polygon))
-			continue;
-		if ((polygon->Clearance != 0) && (polygon->Clearance < value)) {
-			pcb_chg_obj_clear_size(PCB_OBJ_POLY, layer, polygon, 0, value, 1);
-			pcb_undo_restore_serial();
-		}
-	}
-	PCB_ENDALL_LOOP;
-}
-
-static fgw_error_t pcb_act_MinClearGap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_board_t *pcb = PCB_ACT_BOARD;
-	const char *function;
-	const char *delta = NULL;
-	const char *units = NULL;
-	rnd_bool absolute;
-	rnd_coord_t value;
-	int flags;
-
-	RND_ACT_CONVARG(1, FGW_STR, MinClearGap, function = argv[1].val.str);
-	RND_ACT_MAY_CONVARG(2, FGW_STR, MinClearGap, delta = argv[2].val.str);
-	RND_ACT_MAY_CONVARG(3, FGW_STR, MinClearGap, delta = argv[3].val.str);
-
-	if (rnd_strcasecmp(function, "Selected") == 0)
-		flags = PCB_FLAG_SELECTED;
-	else {
-		units = delta;
-		delta = function;
-		flags = 0;
-	}
-	value = 2 * rnd_get_value(delta, units, &absolute, NULL);
-
-	pcb_undo_save_serial();
-	minclr(pcb->Data, value, flags);
-	pcb_undo_restore_serial();
-	pcb_undo_inc_serial();
-	RND_ACT_IRES(0);
-	return 0;
-}
-
 static const char pcb_acts_MoveLayer[] = "MoveLayer(old,new)\nMoveLayer(lid,group,gid)";
 static const char pcb_acth_MoveLayer[] = "Moves/Creates/Deletes Layers.";
 /* DOC: movelayer.html */
@@ -1209,7 +1122,6 @@ static rnd_action_t object_action_list[] = {
 	{"ElementList", pcb_act_ElementList, pcb_acth_ElementList, pcb_acts_ElementList},
 	{"ElementSetAttr", pcb_act_ElementSetAttr, pcb_acth_ElementSetAttr, pcb_acts_ElementSetAttr},
 	{"RipUp", pcb_act_RipUp, pcb_acth_RipUp, pcb_acts_RipUp},
-	{"MinClearGap", pcb_act_MinClearGap, pcb_acth_MinClearGap, pcb_acts_MinClearGap},
 	{"MoveLayer", pcb_act_MoveLayer, pcb_acth_MoveLayer, pcb_acts_MoveLayer},
 	{"subc", pcb_act_subc, pcb_acth_subc, pcb_acts_subc},
 	{"CreateText", pcb_act_CreateText, pcb_acth_CreateText, pcb_acts_CreateText},
