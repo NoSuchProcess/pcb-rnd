@@ -8,7 +8,7 @@
 <body>
 <h2 autotoc="yes"> Distalign plugin </h2>
 <div>
-Two actions for aligning and distributing subcircuits in pcb-rnd
+Two actions for aligning and distributing any objects in pcb-rnd
 <h3 id="use" autotoc="yes"> Action Syntax </h3>
 <p>
 <div>
@@ -19,10 +19,12 @@ Distribute(Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_cro
 <h3 id="description" autotoc="yes"> Description </h3>
 <p>
 <div>
-align() aligns selected subcircuits along the X or Y axis, relative to user selected reference points (like specific subcircuit edges, their centers, or marks)
+Align() aligns selected objects along the X or Y axis relative to the user specified reference point, .
 <p>
 <div>
-distribute() distributes selected subcircuits evenly between the first or last subcircuit or to the pcb crosshairs 
+Distribute() distributes selected objects relative to the specified reference point, evenly between the first, last, or to the pcb crosshair
+<p>
+Both actions can be used with gridless options to place parts in off grid location
 
 <h3 id="use" autotoc="yes"> Examples </h3>
 <p>
