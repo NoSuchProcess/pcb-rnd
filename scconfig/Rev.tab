@@ -1,3 +1,4 @@
+31249	configure	enabled io_bxl
 31116	configure	include libulzw in librnd 3rd
 31041	configure	pcb_ -> rnd_ renames in librnd
 30779	configure	remove distaligntext - all cases handled by distalign properly
