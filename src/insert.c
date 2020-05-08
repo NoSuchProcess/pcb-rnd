@@ -37,7 +37,6 @@
 #include "data.h"
 #include "select.h"
 #include "undo.h"
-#include "brave.h"
 
 #include "obj_line_op.h"
 #include "obj_arc_op.h"
@@ -83,75 +82,8 @@ void *pcb_insert_point_in_object(int Type, void *Ptr1, void *Ptr2, rnd_cardinal_
 rnd_point_t *pcb_adjust_insert_point(void)
 {
 	static rnd_point_t InsertedPoint;
-	double m;
-	rnd_coord_t x, y, m1, m2;
-	pcb_line_t *line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
 
-	if (!(pcb_brave & PCB_BRAVE_OLDINSERT)) {
-		InsertedPoint.X = pcb_crosshair.X;
-		InsertedPoint.Y = pcb_crosshair.Y;
-		return &InsertedPoint;
-	}
-
-	if (pcb_crosshair.AttachedObject.State == PCB_CH_STATE_FIRST)
-		return NULL;
-	pcb_crosshair.AttachedObject.Ptr3 = &InsertedPoint;
-	if (rnd_gui->shift_is_pressed(rnd_gui)) {
-		pcb_attached_line_t myline;
-		/* only force 45 degree for nearest point */
-		if (rnd_distance(pcb_crosshair.X, pcb_crosshair.Y, line->Point1.X, line->Point1.Y) <
-				rnd_distance(pcb_crosshair.X, pcb_crosshair.Y, line->Point2.X, line->Point2.Y))
-			myline.Point1 = myline.Point2 = line->Point1;
-		else
-			myline.Point1 = myline.Point2 = line->Point2;
-		pcb_line_45(&myline);
-		InsertedPoint.X = myline.Point2.X;
-		InsertedPoint.Y = myline.Point2.Y;
-		return &InsertedPoint;
-	}
-	if (PCB->RatDraw || conf_core.editor.all_direction_lines) {
-		InsertedPoint.X = pcb_crosshair.X;
-		InsertedPoint.Y = pcb_crosshair.Y;
-		return &InsertedPoint;
-	}
-	if (pcb_crosshair.X == line->Point1.X)
-		m1 = 2; /* 2 signals infinite slope */
-	else {
-		m = (double) (pcb_crosshair.Y - line->Point1.Y) / (pcb_crosshair.X - line->Point1.X);
-		m1 = 0;
-		if (m > RND_TAN_30_DEGREE)
-			m1 = (m > RND_TAN_60_DEGREE) ? 2 : 1;
-		else if (m < -RND_TAN_30_DEGREE)
-			m1 = (m < -RND_TAN_60_DEGREE) ? 2 : -1;
-	}
-	if (pcb_crosshair.X == line->Point2.X)
-		m2 = 2; /* 2 signals infinite slope */
-	else {
-		m = (double) (pcb_crosshair.Y - line->Point2.Y) / (pcb_crosshair.X - line->Point2.X);
-		m2 = 0;
-		if (m > RND_TAN_30_DEGREE)
-			m2 = (m > RND_TAN_60_DEGREE) ? 2 : 1;
-		else if (m < -RND_TAN_30_DEGREE)
-			m2 = (m < -RND_TAN_60_DEGREE) ? 2 : -1;
-	}
-	if (m1 == m2) {
-		InsertedPoint.X = line->Point1.X;
-		InsertedPoint.Y = line->Point1.Y;
-		return &InsertedPoint;
-	}
-	if (m1 == 2) {
-		x = line->Point1.X;
-		y = line->Point2.Y + m2 * (line->Point1.X - line->Point2.X);
-	}
-	else if (m2 == 2) {
-		x = line->Point2.X;
-		y = line->Point1.Y + m1 * (line->Point2.X - line->Point1.X);
-	}
-	else {
-		x = (line->Point2.Y - line->Point1.Y + m1 * line->Point1.X - m2 * line->Point2.X) / (m1 - m2);
-		y = (m1 * line->Point2.Y - m1 * m2 * line->Point2.X - m2 * line->Point1.Y + m1 * m2 * line->Point1.X) / (m1 - m2);
-	}
-	InsertedPoint.X = x;
-	InsertedPoint.Y = y;
+	InsertedPoint.X = pcb_crosshair.X;
+	InsertedPoint.Y = pcb_crosshair.Y;
 	return &InsertedPoint;
 }

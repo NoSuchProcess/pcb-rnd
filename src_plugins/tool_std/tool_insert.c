@@ -39,7 +39,6 @@
 #include "insert.h"
 #include "polygon.h"
 #include "search.h"
-#include "brave.h"
 #include <librnd/core/tool.h>
 
 
@@ -88,7 +87,7 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 					pcb_crosshair.AttachedObject.Ptr2 = &fake.line;
 
 				}
-				if (!(pcb_brave & PCB_BRAVE_OLDINSERT)) {
+				{
 					InsertedPoint = *pcb_adjust_insert_point();
 					pcb_crosshair_set_local_ref(InsertedPoint.X, InsertedPoint.Y, rnd_true);
 					if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_POLY)
@@ -104,10 +103,6 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 					pcb_crosshair.extobj_edit = NULL;
-				}
-				else {
-					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
-					InsertedPoint = *pcb_adjust_insert_point();
 				}
 			}
 		}

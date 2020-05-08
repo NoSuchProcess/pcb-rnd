@@ -54,7 +54,6 @@ static desc_t desc[] = {
 	{PCB_BRAVE_NOXOR, "noxor", "avoid xor drawing", "use alternative rendering instead of xor draw", 0},
 	{PCB_BRAVE_NOCLIPBATCH, "noclipbatch", "do not batch poly clipping", "skip optimization of batching polygon clipping in some expensive user operations", 0},
 	{PCB_BRAVE_LESSTIF_TREETABLE, "lesstifttbl", "lesstif tree table", "enable experimental lesstif tree table support", 0},
-	{PCB_BRAVE_OLDINSERT, "oldinsert", "old insert tool", "revert back to the old insert tool", 0},
 	{0, NULL, NULL, NULL}
 };
 
