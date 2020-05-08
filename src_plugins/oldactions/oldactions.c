@@ -373,7 +373,6 @@ static fgw_error_t pcb_act_ClearOctagon(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 static const char pcb_acts_MinClearGap[] = "MinClearGap(delta)\n" "MinClearGap(Selected, delta)";
 static const char pcb_acth_MinClearGap[] = "Ensures that polygons are a minimum distance from objects.";
-/* DOC: mincleargap.html */
 static void minclr(pcb_data_t *data, rnd_coord_t value, int flags)
 {
 	PCB_SUBC_LOOP(data);
