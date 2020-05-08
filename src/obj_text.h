@@ -67,6 +67,8 @@ pcb_text_t *pcb_text_dup(pcb_layer_t *dst, pcb_text_t *src);
 pcb_text_t *pcb_text_dup_at(pcb_layer_t *dst, pcb_text_t *src, rnd_coord_t dx, rnd_coord_t dy);
 void *pcb_text_destroy(pcb_layer_t *Layer, pcb_text_t *Text);
 
+/* creates the text object on the layer without rtree or poly clipping administration */
+pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags);
 
 /* Add objects without creating them or making any "sanity modifications" to them */
 void pcb_add_text_on_layer(pcb_layer_t *Layer, pcb_text_t *text, pcb_font_t *PCBFont);

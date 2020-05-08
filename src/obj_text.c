@@ -168,8 +168,7 @@ static const uundo_oper_t undo_text_geo = {
 };
 
 
-/* creates a new text on a layer */
-pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
+pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
 {
 	pcb_text_t *text;
 
@@ -192,6 +191,14 @@ pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X,
 	text->thickness = thickness;
 	text->TextString = rnd_strdup(TextString);
 	text->fid = PCBFont->id;
+
+	return text;
+}
+
+/* creates a new text on a layer */
+pcb_text_t *pcb_text_new(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, double rot, int Scale, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
+{
+	pcb_text_t *text = pcb_text_new_(Layer, PCBFont, X, Y, rot, Scale, thickness, TextString, Flags);
 
 	pcb_add_text_on_layer(Layer, text, PCBFont);
 
