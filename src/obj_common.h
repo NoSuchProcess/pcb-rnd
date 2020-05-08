@@ -291,6 +291,10 @@ RND_INLINE size_t pcb_obj_iid(pcb_any_obj_t *obj)
 	return (size_t)obj / pcb_size_class(sizeof(pcb_any_obj_t));
 }
 
+/* Recalculate the bounding box of the object */
+void pcb_obj_update_bbox(pcb_board_t *pcb, pcb_any_obj_t *obj);
+
+
 /* Assuming clearance is happening (flags), clearance of an object
    in a polygon is the bigger of the obj's ->clearance and the polygon's
    ->enforce_clearance */

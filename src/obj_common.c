@@ -453,3 +453,25 @@ unsigned char *pcb_obj_common_get_thermal(pcb_any_obj_t *obj, unsigned long lid,
 	return &obj->thermal;
 }
 
+
+void pcb_obj_update_bbox(pcb_board_t *pcb, pcb_any_obj_t *obj)
+{
+	switch(obj->type) {
+		case PCB_OBJ_ARC:  pcb_arc_bbox((pcb_arc_t *)obj); break;
+		case PCB_OBJ_LINE: pcb_line_bbox((pcb_line_t *)obj); break;
+		case PCB_OBJ_POLY: pcb_poly_bbox((pcb_poly_t *)obj); break;
+		case PCB_OBJ_TEXT: pcb_text_bbox(pcb_font(pcb, ((pcb_text_t *)obj)->fid, 1), (pcb_text_t *)obj); break;
+		case PCB_OBJ_SUBC: pcb_subc_bbox((pcb_subc_t *)obj); break;
+		case PCB_OBJ_PSTK: pcb_pstk_bbox((pcb_pstk_t *)obj); break;
+		case PCB_OBJ_GFX:  pcb_gfx_bbox((pcb_gfx_t *)obj); break;
+
+	case PCB_OBJ_RAT:
+		case PCB_OBJ_VOID:
+		case PCB_OBJ_NET:
+		case PCB_OBJ_NET_TERM:
+		case PCB_OBJ_LAYER:
+		case PCB_OBJ_LAYERGRP:
+			/* these don't have bbox */
+			break;
+	}
+}
