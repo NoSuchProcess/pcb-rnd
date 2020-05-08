@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.1 (svn r31044) an interactive printed circuit board editor ,  Revision: 31055
+This is pcb-rnd 2.2.1 (svn r31115) an interactive printed circuit board editor ,  Revision: 31216
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -218,7 +218,7 @@ This is pcb-rnd 2.2.1 (svn r31044) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#message">Message</a></td><td>Writes a message to the log window.</td><td>message([ERROR|WARNING|INFO|DEBUG,] message)</td><td></td>
 <tr><td>MessageBox</td><td>Open a modal message dialog box with title and label. If icon string is not empty, display the named icon on the left. Present one or more window close buttons with different text and return value.</td><td>MessageBox(icon, title, label, button_txt, button_retval, ...)</td><td></td>
 <tr><td>mill</td><td>Calculate toolpath for milling away copper</td><td>mill([script])</td><td>millpath plugin</td>
-<tr><td><a href="action_details.html#mincleargap">MinClearGap</a></td><td>Ensures that polygons are a minimum distance from objects.</td><td>MinClearGap(delta)<br>MinClearGap(Selected, delta)</td><td></td>
+<tr><td>MinClearGap</td><td>Ensures that polygons are a minimum distance from objects.</td><td>MinClearGap(delta)<br>MinClearGap(Selected, delta)</td><td>oldactions plugin</td>
 <tr><td>MinMaskGap</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#mode">Mode</a></td><td>Change or use the tool mode.</td><td>Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Tool(Press|Release|Cancel|Stroke)<br>Tool(Save|Restore)</td><td></td>
 <tr><td><a href="action_details.html#morphpolygon">MorphPolygon</a></td><td>Converts dead polygon islands into separate polygons.</td><td>pcb_poly_morph(Object|Selected)</td><td></td>
@@ -281,9 +281,10 @@ This is pcb-rnd 2.2.1 (svn r31044) an interactive printed circuit board editor ,
 <tr><td>PrintVersion</td><td>Print version.</td><td>PrintVersion()</td><td></td>
 <tr><td><a href="action_details.html#promptfor">PromptFor</a></td><td>Prompt for a string. Returns the string (or NULL on cancel)</td><td>PromptFor([message[,default[,title]]])</td><td></td>
 <tr><td>propedit</td><td></td><td>propedit(object[:id]|layer[:id]|layergrp[:id]|pcb|subc|selection|selected)</td><td>propedit</td>
-<tr><td>propget</td><td>Return the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().</td><td>propset([scope], name, [stattype])</td><td>propedit</td>
+<tr><td>propget</td><td>Return the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().</td><td>propget([scope], name, [stattype])</td><td>propedit</td>
 <tr><td>propprint</td><td>Print a property map of objects matching the scope. Scope is documented at PropEdit().</td><td>PropPrint([scope])</td><td>propedit</td>
 <tr><td>propset</td><td>Change the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().</td><td>propset([scope], name, value)</td><td>propedit</td>
+<tr><td>proptoggle</td><td>Toggle the named property of scope or all selected objects, assuming the property is boolean. Scope is documented at PropEdit(). If create is true, non-existing attributes are created as true.</td><td>proptoggle([scope], name, [create])</td><td>propedit</td>
 <tr><td>pscalib</td><td></td><td></td><td>ps HID</td>
 <tr><td>pstklib</td><td>Present the padstack library dialog on board padstacks or the padstacks of a subcircuit</td><td>pstklib([board|subcid|object])</td><td>dialogs plugin</td>
 <tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the idpath of the new object or 0 on error.</td><td>PstkNew([noundo,] data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
