@@ -423,7 +423,7 @@ pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_co
 {
 	rnd_coord_t obw, obh;
 	double gsc, gscx, gscy;
-	pcb_text_t *t = pcb_text_new_(Layer, PCBFont, 0, 0, 0, 100, thickness, TextString, Flags);
+	pcb_text_t *t = pcb_text_new_(Layer, PCBFont, 0, 0, 0, 100, 1, 1, thickness, TextString, Flags);
 
 	t->scale_x = scxy;
 	t->scale_y = 1;
