@@ -464,11 +464,11 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 		case PCB_BXL_JUST_CENTER: anchy = RND_MIL_TO_COORD(ctx->state.text_style->height)/2; break;
 	}
 
-rnd_trace("bxl text '%s' w=%ml h=%ml anchx=%ml anchy=%ml (%d %d)\n", ctx->state.text_str, bbw, bbh, anchx, anchy, ctx->state.hjust, ctx->state.vjust);
+/*rnd_trace("bxl text '%s' w=%ml h=%ml anchx=%ml anchy=%ml (%d %d)\n", ctx->state.text_str, bbw, bbh, anchx, anchy, ctx->state.hjust, ctx->state.vjust);*/
 
 	if ((ctx->state.text_str != NULL) && (ctx->state.is_visible)) {
 		if (ctx->state.text_style != NULL) {
-			rnd_trace("  wh: %ml %ml\n", RND_MIL_TO_COORD(ctx->state.text_style->char_width), RND_MIL_TO_COORD(ctx->state.text_style->height));
+/*			rnd_trace("  wh: %ml %ml\n", RND_MIL_TO_COORD(ctx->state.text_style->char_width), RND_MIL_TO_COORD(ctx->state.text_style->height));*/
 			scxy = (double)ctx->state.text_style->char_width / (double)ctx->state.text_style->height;
 			thickness = RND_MIL_TO_COORD(ctx->state.text_style->width);
 		}
