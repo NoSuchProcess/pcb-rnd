@@ -215,11 +215,17 @@ pcb_text_t *pcb_text_new_scaled(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coo
 	return text;
 }
 
-pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, double rot, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
+pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, pcb_text_mirror_t mirror, double rot, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
 {
 	rnd_coord_t obw, obh, nbw, nbh, nanchx, nanchy;
 	double gsc, gscx, gscy, cs, sn;
-	pcb_text_t *t = pcb_text_new_(Layer, PCBFont, 0, 0, 0, 100, 1, 1, thickness, TextString, Flags);
+	pcb_text_t *t;
+	
+	if (mirror & PCB_TXT_MIRROR_Y)
+		Flags.f |= PCB_FLAG_ONSOLDER;
+	t = pcb_text_new_(Layer, PCBFont, 0, 0, 0, 100, 1, 1, thickness, TextString, Flags);
+	if (mirror & PCB_TXT_MIRROR_X)
+		rnd_attribute_put(&t->Attributes, "mirror_x", "1");
 
 	t->scale_x = scxy;
 	t->scale_y = 1;

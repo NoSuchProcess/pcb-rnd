@@ -426,6 +426,7 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 	rnd_coord_t bbw, bbh, anchx, anchy;
 	rnd_coord_t thickness;
 	double scxy;
+	pcb_text_mirror_t mirror;
 	SKIP;
 
 	if (!ctx->state.is_text && (ctx->state.attr_key != NULL)) {
@@ -479,9 +480,10 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 			thickness = 0;
 		}
 
+		mirror = ctx->state.flipped ? PCB_TXT_MIRROR_X : 0;
 		pcb_text_new_by_bbox(ctx->state.layer, pcb_font(ctx->pcb, 0, 1),
 			ctx->state.origin_x, ctx->state.origin_y,
-			bbw, bbh, anchx, anchy, scxy,
+			bbw, bbh, anchx, anchy, scxy, mirror,
 			ctx->state.rot, thickness, ctx->state.text_str,
 			pcb_flag_make(PCB_FLAG_CLEARLINE | flg));
 	}

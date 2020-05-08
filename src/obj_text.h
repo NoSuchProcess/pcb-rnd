@@ -83,7 +83,7 @@ pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X
    text will typically be smaller than the input bounding box, with wither
    bbox width or bbox height matching the original, but text aspect ratio kept
    and anchor point placed at X;Y. */
-pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, double rot, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags);
+pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, pcb_text_mirror_t mirror, double rot, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags);
 
 
 /* Add objects without creating them or making any "sanity modifications" to them */
