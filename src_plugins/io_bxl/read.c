@@ -459,7 +459,7 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 
 	switch(ctx->state.vjust) {
 		case PCB_BXL_JUST_TOP:    anchy = 0; break;
-		case PCB_BXL_JUST_BOTTOM: printf("bottom\n");anchy = RND_MIL_TO_COORD(ctx->state.text_style->height); break;
+		case PCB_BXL_JUST_BOTTOM: anchy = RND_MIL_TO_COORD(ctx->state.text_style->height); break;
 		default:;
 		case PCB_BXL_JUST_CENTER: anchy = RND_MIL_TO_COORD(ctx->state.text_style->height)/2; break;
 	}
