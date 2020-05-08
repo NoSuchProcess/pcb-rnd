@@ -23,7 +23,7 @@
 - BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 - BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan]
 - BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
-- BUG: context click on klingon font obj (imported from edakrill) under cursor, open property editor.  editor is empty. select & {e p} does open obj property editor [report: Miloh]
++ BUG: context click on klingon font obj (imported from edakrill) under cursor, open property editor.  editor is empty. select & {e p} does open obj property editor [report: Miloh]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
