@@ -12,7 +12,7 @@
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 - FEATURE: layer binding dialog: manual layer binding (reuse csect?)
-- FEATURE: io_bxl text alignment & announcement [report: Igor2]
+- FEATURE: io_bxl text mirror & announcement [report: Igor2]
 - query & advanced search
 	- FEATURE: search expr wizard should pick up the expression from the button when clicked
 	- CLEANUP: make a run on a large board, speed test, with -O0 and -O3:
@@ -23,6 +23,7 @@
 - BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 - BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan]
 - BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
+- BUG: {a r a} broke: ratsnest is stale for the 7805 example with the poly and a few random lines removed [report: barjac]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
