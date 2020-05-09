@@ -563,11 +563,18 @@ do { \
 } while(0)
 
 
-static void pcb_bxl_init(pcb_bxl_ctx_t *bctx, pcb_board_t *pcb, const char *subfpname)
+static void pcb_bxl_init(pcb_bxl_ctx_t *bctx, pcb_board_t *pcb, pcb_data_t *data, const char *subfpname)
 {
 	memset(bctx, 0, sizeof(pcb_bxl_ctx_t));
 	bctx->pcb = pcb;
 	bctx->subc = pcb_subc_new();
+
+	if (data != NULL) {
+		if (!data->padstack_tree)
+			data->padstack_tree = rnd_r_create_tree();
+		bctx->subc->data->padstack_tree = data->padstack_tree;
+	}
+
 	if (subfpname == NULL)
 		bctx->in_target_fp = 1; /* read the first one if the user didn't name any */
 	bctx->subfpname = subfpname;
@@ -622,7 +629,7 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	if (f == NULL)
 		return -1;
 
-	pcb_bxl_init(&bctx, (pcb_board_t *)hl, subfpname);
+	pcb_bxl_init(&bctx, (pcb_board_t *)hl, data, subfpname);
 
 	pcb_bxl_decode_init(&hctx);
 	pcb_bxl_lex_init(&lctx, pcb_bxl_rules);
@@ -855,6 +862,7 @@ int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 	if (res == 0) {
 		pcb_subc_t *sc = pcb_subclist_first(&Ptr->Data->subc);
 		pcb_layergrp_upgrade_to_pstk(Ptr);
+
 		pcb_layer_create_all_for_recipe(Ptr, sc->data->Layer, sc->data->LayerN);
 		pcb_subc_rebind(Ptr, sc);
 		pcb_data_clip_polys(sc->data);
