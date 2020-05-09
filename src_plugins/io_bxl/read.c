@@ -860,7 +860,8 @@ int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 	}
 
 	end:;
-	TODO("free map");
+	if (map != NULL)
+		pcb_io_fp_map_free(map);
 	free(autofree);
 	return res;
 }
