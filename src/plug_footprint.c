@@ -490,6 +490,20 @@ const char *PCB_PTR_DOMAIN_FPMAP = "pcb_fgw_ptr_domain_fpmap";
 
 const char *pcb_fp_map_choose(rnd_hidlib_t *hidlib, const pcb_plug_fp_map_t *map)
 {
+	int numfp;
+	const pcb_plug_fp_map_t *bestm = NULL, *m;
+
+	/* if there's only one choice, don't present the dialog */
+	for(numfp = 0, m = map; m != NULL; m = m->next) {
+		if (m->type == PCB_FP_FILE) {
+			numfp++;
+			bestm = m;
+		}
+	}
+	if (numfp == 1)
+		return bestm->name;
+
+
 	if (RND_HAVE_GUI_ATTR_DLG) {
 		fgw_arg_t res;
 		fgw_arg_t args[2];
