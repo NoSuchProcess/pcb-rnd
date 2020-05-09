@@ -485,6 +485,8 @@ int pcb_fp_rehash(rnd_hidlib_t *hidlib, pcb_fplibrary_t *l)
 	return -1;
 }
 
+const char *PCB_PTR_DOMAIN_FPMAP = "pcb_fgw_ptr_domain_fpmap";
+
 const char *pcb_fp_map_choose(rnd_hidlib_t *hidlib, const pcb_plug_fp_map_t *map)
 {
 	if (RND_HAVE_GUI_ATTR_DLG) {
