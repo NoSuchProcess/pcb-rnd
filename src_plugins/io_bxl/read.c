@@ -800,7 +800,7 @@ pcb_plug_fp_map_t *io_bxl_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char 
 
 int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
-	char *sep;
+	char *sep, *autofree = NULL;
 	const char *subfpname = NULL;
 	pcb_plug_fp_map_t *m, *map = NULL, *best, head = {0};
 
@@ -836,6 +836,11 @@ int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 		subfpname = pcb_fp_map_choose(&PCB->hidlib, map);
 	}
 	else {
+		size_t offs = sep - Filename;
+		autofree = rnd_strdup(Filename);
+		Filename = autofree;
+		sep = Filename + offs;
+		*sep = '\0';
 		subfpname = sep+2;
 	}
 
@@ -855,6 +860,7 @@ int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 
 	end:;
 	TODO("free map");
+	free(autofree);
 	return res;
 }
 
