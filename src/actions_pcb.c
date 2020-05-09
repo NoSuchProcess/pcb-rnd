@@ -46,6 +46,7 @@
 const char *PCB_PTR_DOMAIN_LAYER = "pcb_fgw_ptr_domain_layer";
 const char *PCB_PTR_DOMAIN_LAYERGRP = "pcb_fgw_ptr_domain_layergrp";
 const char *PCB_PTR_DOMAIN_VIEWLIST = "pcb_fgw_ptr_domain_viewlist";
+const char *PCB_PTR_DOMAIN_FPMAP = "pcb_fgw_ptr_domain_fpmap";
 
 
 #define conv_str2layerid(dst, src) \

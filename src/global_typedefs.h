@@ -60,6 +60,7 @@ typedef struct pcb_any_line_s pcb_any_line_t;
 typedef union pcb_parent_s pcb_parent_t;
 
 typedef struct pcb_plug_io_s pcb_plug_io_t;
+typedef struct pcb_plug_fp_map_s pcb_plug_fp_map_t;
 
 typedef struct pcb_view_s pcb_view_t;
 #endif

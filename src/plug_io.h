@@ -43,7 +43,6 @@ typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not a
 } pcb_plug_iot_t;
 
 /* Returned by map_footprint() to tell what type of footprint(s) a file contains */
-typedef struct pcb_plug_fp_map_s pcb_plug_fp_map_t;
 struct pcb_plug_fp_map_s {
 	pcb_fptype_t type;
 	pcb_fplibrary_type_t libtype; /* normally LIB_FOOTPRINT */

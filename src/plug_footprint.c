@@ -34,7 +34,10 @@
 #include <genht/htsp.h>
 #include <genht/hash.h>
 #include "conf_core.h"
+#include "actions_pcb.h"
+#include "plug_io.h"
 #include <librnd/core/error.h>
+#include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 #include "event.h"
 
@@ -480,4 +483,25 @@ int pcb_fp_rehash(rnd_hidlib_t *hidlib, pcb_fplibrary_t *l)
 		return 0;
 	}
 	return -1;
+}
+
+const char *pcb_fp_map_choose(rnd_hidlib_t *hidlib, const pcb_plug_fp_map_t *map)
+{
+	if (RND_HAVE_GUI_ATTR_DLG) {
+		fgw_arg_t res;
+		fgw_arg_t args[2];
+
+		fgw_ptr_reg(&rnd_fgw, &args[1], PCB_PTR_DOMAIN_FPMAP, FGW_PTR | FGW_STRUCT, (void *)map);
+		rnd_actionv_bin(hidlib, "gui_fpmap_choose", &res, 2, args);
+		fgw_ptr_unreg(&rnd_fgw, &args[1], PCB_PTR_DOMAIN_FPMAP);
+
+		if (res.type & FGW_STR)
+			return res.val.str;
+	}
+	else {
+		rnd_message(RND_MSG_ERROR, "No gui available, automatically choosing the first footprint from the available footprints.\n");
+		return map->name;
+	}
+
+	return NULL;
 }

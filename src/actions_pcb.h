@@ -1,6 +1,7 @@
 extern const char *PCB_PTR_DOMAIN_LAYER;
 extern const char *PCB_PTR_DOMAIN_LAYERGRP;
 extern const char *PCB_PTR_DOMAIN_VIEWLIST;
+extern const char *PCB_PTR_DOMAIN_FPMAP;
 
 
 void pcb_actions_init_pcb_only(void);
