@@ -69,6 +69,8 @@ static fgw_error_t pcb_act_gui_fpmap_choose(fgw_arg_t *res, int argc, fgw_arg_t 
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
 	RND_DAD_END(dlg);
 
+	RND_DAD_DEFSIZE(dlg, 250, 350);
+
 	RND_DAD_NEW("fpmap", dlg, "Choose footprint", &resname, rnd_true, NULL);
 	RND_DAD_RUN(dlg);
 	RND_DAD_FREE(dlg);
