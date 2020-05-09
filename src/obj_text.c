@@ -229,6 +229,9 @@ pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_co
 	
 	t = pcb_text_new_(Layer, PCBFont, 0, 0, 0, mirror, 100, 1, 1, thickness, TextString, Flags);
 
+	if ((bbw <= 0) || (bbh <= 0))
+		rnd_message(RND_MSG_ERROR, "internal error in pcb_text_new_by_bbox(): invalid input bbox\n");
+
 	t->scale_x = scxy;
 	t->scale_y = 1;
 	pcb_text_bbox(PCBFont, t);
@@ -241,7 +244,12 @@ pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_co
 
 	gscx = (double)bbw/(double)obw;
 	gscy = (double)bbh/(double)obh;
-	gsc = gscx < gscy ? gscx : gscy;
+	gsc = ((gscx > 0) && (gscx < gscy)) ? gscx : gscy;
+
+	if (gsc <= 0) {
+		rnd_message(RND_MSG_ERROR, "internal error in pcb_text_new_by_bbox(): invalid text scaling\n");
+		gsc = 1;
+	}
 
 	t->scale_x *= gsc;
 	t->scale_y *= gsc;
