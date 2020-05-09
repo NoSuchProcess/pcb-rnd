@@ -445,6 +445,9 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 		rnd_attribute_put(&ctx->subc->Attributes, ctx->state.attr_key, ctx->state.attr_val);
 	}
 
+	if (ctx->state.text_style->char_width == 0)
+		ctx->state.text_style->char_width = ctx->state.text_style->height;
+
 	/* determine desired bounding box size */
 	tlen = ctx->state.text_str == NULL ? 0 : strlen(ctx->state.text_str);
 	bbw = RND_MIL_TO_COORD(ctx->state.text_style->char_width * tlen);
@@ -471,8 +474,6 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 	if ((ctx->state.text_str != NULL) && (ctx->state.is_visible)) {
 		if (ctx->state.text_style != NULL) {
 /*			rnd_trace("  wh: %ml %ml\n", RND_MIL_TO_COORD(ctx->state.text_style->char_width), RND_MIL_TO_COORD(ctx->state.text_style->height));*/
-			if (ctx->state.text_style->char_width == 0)
-				ctx->state.text_style->char_width = ctx->state.text_style->height;
 			scxy = (double)ctx->state.text_style->char_width / (double)ctx->state.text_style->height;
 			thickness = RND_MIL_TO_COORD(ctx->state.text_style->width);
 		}
