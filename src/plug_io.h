@@ -160,6 +160,8 @@ void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, con
 
 /* Free a map with a statically allocated head */
 void pcb_io_fp_map_free(pcb_plug_fp_map_t *head);
+void pcb_io_fp_map_free_fields(pcb_plug_fp_map_t *m);
+
 
 
 /********** common function used to be part of file.[ch] and friends **********/

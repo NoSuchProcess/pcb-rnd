@@ -201,8 +201,11 @@ TODO("fp: make this a configurable list")
 				}
 				else if ((res->libtype == PCB_LIB_FOOTPRINT) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
 					n_footprints++;
-					if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array, NULL))
+					if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array, NULL)) {
+						pcb_io_fp_map_free(res);
 						break;
+					}
+					pcb_io_fp_map_free(res);
 					continue;
 				}
 				else {
@@ -211,6 +214,7 @@ TODO("fp: make this a configurable list")
 						head.tags.alloced = head.tags.used = 0;
 					}
 				}
+				pcb_io_fp_map_free(res);
 			}
 
 			if ((S_ISDIR(buffer.st_mode)) || (RND_WRAP_S_ISLNK(buffer.st_mode))) {
@@ -264,7 +268,10 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 		l.is_virtual_dir = 1;
 		for(n = children; n != NULL; n = next) {
 			list_cb(&l, working, n->name, n->type, (void **)n->tags.array, NULL);
+			n->tags.array = NULL;
+			n->tags.used = 0;
 			next = n->next;
+			pcb_io_fp_map_free_fields(n);
 			free(n);
 			l.children++;
 		}

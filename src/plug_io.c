@@ -1100,7 +1100,7 @@ void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, con
 	}
 }
 
-static void pcb_io_fp_map_free_fields(pcb_plug_fp_map_t *m)
+void pcb_io_fp_map_free_fields(pcb_plug_fp_map_t *m)
 {
 	long n;
 	for(n = 0; n < m->tags.used; n++)
