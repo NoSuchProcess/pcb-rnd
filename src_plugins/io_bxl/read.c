@@ -38,6 +38,7 @@
 #include "board.h"
 
 #include "read.h"
+#include "plug_footprint.h"
 #include "bxl_decode.h"
 #include "bxl_lex.h"
 #include "bxl_gram.h"
@@ -799,7 +800,8 @@ pcb_plug_fp_map_t *io_bxl_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char 
 
 int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
-	char *sep, *subfpname = NULL;
+	char *sep;
+	const char *subfpname = NULL;
 	pcb_plug_fp_map_t *m, *map = NULL, *best, head = {0};
 
 	int res = -1;
@@ -827,17 +829,14 @@ int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 		if (numfp == 1) {
 			fclose(f);
 			subfpname = best->name;
-			best->name = NULL;
 			goto single;
 		}
-		for(m = map; m != NULL; m = m->next) {
-			printf(" bxl map: %s\n", m->name);
-		}
-
 		fclose(f);
+
+		subfpname = pcb_fp_map_choose(&PCB->hidlib, map);
 	}
 	else {
-		subfpname = rnd_strdup(sep+2);
+		subfpname = sep+2;
 	}
 
 
@@ -856,7 +855,6 @@ int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 
 	end:;
 	TODO("free map");
-	free(subfpname);
 	return res;
 }
 
