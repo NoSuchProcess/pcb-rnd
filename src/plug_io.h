@@ -137,6 +137,8 @@ struct pcb_plug_io_s {
 	const char *mime_type;
 
 	int save_preference_prio; /* all available save plugins are sorted by this before presenting them to the user to choose one */
+
+	unsigned multi_footprint:1; /* if a single footprint file may contain multiple footprints (footprint mapping needs to be called for direct load) */
 };
 extern pcb_plug_io_t *pcb_plug_io_chain;
 

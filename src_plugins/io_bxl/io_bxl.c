@@ -82,6 +82,7 @@ int pplg_init_io_bxl(void)
 	io_bxl.default_extension = ".bxl";
 	io_bxl.fp_extension = ".bxl";
 	io_bxl.mime_type = "application/x-bxl";
+	io_bxl.multi_footprint = 1;
 
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_bxl);
 

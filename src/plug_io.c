@@ -272,13 +272,32 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 
 	/* try all plugins that said it could handle the file */
 	for(n = 0; n < len; n++) {
+		pcb_plug_fp_map_t *map = NULL, head;
+		int subfpname_reset = 0;
 		if ((available[n].plug->parse_footprint == NULL) || (!accepts[n])) /* can't parse or doesn't want to parse this file */
 			continue;
+
+		if ((fctx.subfpname == NULL) && (available[n].plug->multi_footprint)) {
+			subfpname_reset = 1;
+			rewind(f);
+			map = available[n].plug->map_footprint(available[n].plug, f, fctx.filename, &head, 0);
+			rewind(f);
+			fctx.subfpname = pcb_fp_map_choose(&PCB->hidlib, map);
+			if (fctx.subfpname == NULL) /* cancel */
+				goto skip;
+		}
+
 		res = available[n].plug->parse_footprint(available[n].plug, Ptr, fctx.filename, fctx.subfpname);
 		if (res == 0) {
 			if (Ptr->loader == NULL) /* if the loader didn't set this (to some more fine grained, e.g. depending on file format version) */
 				Ptr->loader = available[n].plug;
 			break;
+		}
+
+		skip:;
+		if (subfpname_reset) {
+			fctx.subfpname = NULL;
+			TODO("free map");
 		}
 	}
 
