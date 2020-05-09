@@ -158,6 +158,9 @@ pcb_plug_fp_map_t *pcb_io_map_footprint_file(rnd_hidlib_t *hl, const char *fn, p
    the head item is converted into a footprint library */
 void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, const char *filename, const char *fpname);
 
+/* Free a map with a statically allocated head */
+void pcb_io_fp_map_free(pcb_plug_fp_map_t *head);
+
 
 /********** common function used to be part of file.[ch] and friends **********/
 int pcb_save_pcb(const char *, const char *fmt);

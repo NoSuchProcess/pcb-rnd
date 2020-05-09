@@ -297,7 +297,8 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 		skip:;
 		if (subfpname_reset) {
 			fctx.subfpname = NULL;
-			TODO("free map");
+			if (map != NULL)
+				pcb_io_fp_map_free(map);
 		}
 	}
 
@@ -1098,6 +1099,32 @@ void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, con
 			break;
 	}
 }
+
+static void pcb_io_fp_map_free_fields(pcb_plug_fp_map_t *m)
+{
+	long n;
+	for(n = 0; n < m->tags.used; n++)
+		free(m->tags.array[n]);
+	vts0_uninit(&m->tags);
+	free(m->name);
+	m->name = NULL;
+	m->type = 0;
+	m->libtype = 0;
+}
+
+void pcb_io_fp_map_free(pcb_plug_fp_map_t *head)
+{
+	pcb_plug_fp_map_t *m, *next;
+
+	pcb_io_fp_map_free_fields(head);
+
+	for(m = head->next; m != NULL; m = next) {
+		next = m->next;
+		pcb_io_fp_map_free_fields(m);
+		free(m);
+	}
+}
+
 
 void pcb_io_uninit(void)
 {
