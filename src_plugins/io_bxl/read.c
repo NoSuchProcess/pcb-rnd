@@ -803,7 +803,6 @@ int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 	char *sep, *autofree = NULL;
 	const char *subfpname = NULL;
 	pcb_plug_fp_map_t *m, *map = NULL, *best, head = {0};
-
 	int res = -1;
 
 	sep = strstr(Filename, "::");
@@ -834,6 +833,8 @@ int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 		fclose(f);
 
 		subfpname = pcb_fp_map_choose(&PCB->hidlib, map);
+		if (subfpname == NULL)
+			goto end;
 	}
 	else {
 		size_t offs = sep - Filename;
