@@ -105,6 +105,8 @@ install_all:
 	$(SCCBOX) $(HOW) 06_feature/djopt/viatrim.txt $(USERDIR)/06_feature/djopt/viatrim.txt
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/drc_query
 	$(SCCBOX) $(HOW) 06_feature/drc_query/index.html $(USERDIR)/06_feature/drc_query/index.html
+	$(SCCBOX) mkdir -p $(USERDIR)/06_feature
+	$(SCCBOX) $(HOW) 06_feature/index.html $(USERDIR)/06_feature/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/polystitch
 	$(SCCBOX) $(HOW) 06_feature/polystitch/index.html $(USERDIR)/06_feature/polystitch/index.html
 	$(SCCBOX) mkdir -p $(USERDIR)/06_feature/query
@@ -299,7 +301,6 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_src/m.html $(USERDIR)/09_appendix/action_src/m.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/markcrosshair.html $(USERDIR)/09_appendix/action_src/markcrosshair.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/message.html $(USERDIR)/09_appendix/action_src/message.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/mincleargap.html $(USERDIR)/09_appendix/action_src/mincleargap.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/mode.html $(USERDIR)/09_appendix/action_src/mode.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/morphpolygon.html $(USERDIR)/09_appendix/action_src/morphpolygon.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/movelayer.html $(USERDIR)/09_appendix/action_src/movelayer.html
