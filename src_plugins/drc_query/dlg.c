@@ -43,7 +43,7 @@ typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	rnd_conf_role_t role;
 	char *rule, *path;
-	int wtype, wtitle, wdisable, wdesc, wquery, wsave, wsaveroles;
+	int wtype, wtitle, wsource, wdisable, wdesc, wquery, wsave, wsaveroles;
 	gdl_elem_t link;
 } rule_edit_ctx_t;
 
@@ -90,6 +90,7 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 
 		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wtype,    str, textval(nd, "type"));
 		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wtitle,   str, textval(nd, "title"));
+		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wsource,  str, textval(nd, "source"));
 		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdisable, str, *dis ? "yes" : "no");
 		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdesc,    str, textval(nd, "desc"));
 
@@ -211,6 +212,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	MKDIR_ND_SET_TEXT(nd, "type", ctx->dlg[ctx->wtype].val.str);
 	MKDIR_ND_SET_TEXT(nd, "desc", ctx->dlg[ctx->wdesc].val.str);
 	MKDIR_ND_SET_TEXT(nd, "title", ctx->dlg[ctx->wtitle].val.str);
+	MKDIR_ND_SET_TEXT(nd, "source", ctx->dlg[ctx->wsource].val.str);
 	MKDIR_ND_SET_TEXT(nd, "query", txt->hid_get_text(atxt, hid_ctx));
 
 	rnd_conf_update(NULL, -1);
@@ -272,6 +274,12 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 			RND_DAD_STRING(ctx->dlg);
 			RND_DAD_WIDTH_CHR(ctx->dlg, 32);
 			ctx->wtitle = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_END(ctx->dlg);
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
+			RND_DAD_LABEL(ctx->dlg, "Rule source:");
+			RND_DAD_STRING(ctx->dlg);
+			RND_DAD_WIDTH_CHR(ctx->dlg, 32);
+			ctx->wsource = RND_DAD_CURRENT(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
 		RND_DAD_BEGIN_HBOX(ctx->dlg);
 			RND_DAD_LABEL(ctx->dlg, "Disable drc rule:");
@@ -389,6 +397,7 @@ static void drc_rlist_pcb2dlg(void)
 	cell[4] = NULL;
 
 	rnd_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
+		const char *src;
 		int *dis, dis_ = 0;
 		rnd_conf_role_t role;
 		lht_node_t *rule = i->prop.src;
@@ -402,6 +411,7 @@ static void drc_rlist_pcb2dlg(void)
 			dis = &dis_;
 
 		role = rnd_conf_lookup_role(rule);
+		src = textval(rule, "source");
 		cell[0] = rule->name;
 		cell[1] = rnd_strdup(rnd_conf_role_name(role));
 		cell[2] = *dis ? "YES" : "no";
@@ -409,7 +419,24 @@ static void drc_rlist_pcb2dlg(void)
 			cell[3] = rnd_strdup_printf("%.3fs", st->last_run_time);
 		else
 			cell[3] = "-";
-		rnd_dad_tree_append(attr, NULL, cell);
+
+		if (*src != '\0') {
+			rnd_hid_tree_t *tree = attr->wdata;
+			rnd_hid_row_t *parent = htsp_get(&tree->paths, src);
+			char *pcell[5];
+
+			if (parent == NULL) {
+				pcell[0] = src;
+				pcell[1] = "";
+				pcell[2] = "";
+				pcell[3] = "";
+				pcell[4] = NULL;
+				parent = rnd_dad_tree_append(tree->attrib, NULL, pcell);
+			}
+			rnd_dad_tree_append_under(tree->attrib, parent, cell);
+		}
+		else
+			rnd_dad_tree_append(attr, NULL, cell);
 	}
 
 	/* restore cursor */
@@ -451,6 +478,8 @@ do { \
 		rnd_message(RND_MSG_ERROR, "Select a rule first!\n"); \
 		return; \
 	} \
+	if (*row->cell[1] == '\0') \
+		return; \
 	role = rnd_conf_role_parse(row->cell[1]); \
 	if (role == RND_CFR_invalid) { \
 		rnd_message(RND_MSG_ERROR, "internal error: invalid role %s\n", row->cell[0]); \
@@ -458,15 +487,28 @@ do { \
 	} \
 } while(0)
 
+static const char *rule_basename(const char *cell0)
+{
+	const char *basename = strchr(cell0, '/');
+	if (basename == NULL)
+		return cell0;
+	return basename+1;
+}
+
 #define rlist_fetch_nd() \
 do { \
-	char *path = rnd_concat(DRC_CONF_PATH_RULES, row->cell[0], ":0", NULL); \
-	nd = rnd_conf_lht_get_at_mainplug(role, path, 1, 0); \
-	if (nd == NULL) { \
-		rnd_message(RND_MSG_ERROR, "internal error: rule not found at %s\n", path); \
-		return; \
+	if (*row->cell[1] != '\0') { \
+		const char *basename = rule_basename(row->cell[0]); \
+		char *path = rnd_concat(DRC_CONF_PATH_RULES, basename, ":0", NULL); \
+		nd = rnd_conf_lht_get_at_mainplug(role, path, 1, 0); \
+		if (nd == NULL) { \
+			rnd_message(RND_MSG_ERROR, "internal error: rule not found at %s\n", path); \
+			return; \
+		} \
+		free(path); \
 	} \
-	free(path); \
+	else \
+		return; \
 } while(0)
 
 static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
@@ -500,7 +542,7 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	}
 
 	view = calloc(sizeof(pcb_view_list_t), 1);
-	drc_qry_exec(NULL, pcb, view, row->cell[0], textval(nd, "type"), textval(nd, "title"), textval(nd, "desc"), script);
+	drc_qry_exec(NULL, pcb, view, rule_basename(row->cell[0]), textval(nd, "type"), textval(nd, "title"), textval(nd, "desc"), script);
 	drcq_open_view_win(&pcb->hidlib, view);
 	drc_rlist_pcb2dlg(); /* for the run time */
 }
@@ -568,7 +610,7 @@ static int pcb_dlg_drc_rlist(void)
 			RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* left */
 				RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
 				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Rules available:");
-				RND_DAD_TREE(drc_rlist_ctx.dlg, 4, 0, lst_hdr);
+				RND_DAD_TREE(drc_rlist_ctx.dlg, 4, 1, lst_hdr);
 					RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					drc_rlist_ctx.wlist = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
 					RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, selected_cb, rlist_select);
