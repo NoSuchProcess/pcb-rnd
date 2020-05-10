@@ -89,6 +89,15 @@ nodes within the <i>rules</i> list (merged from different config sources)
 determines the order in which tests are performed, but otherwise does not
 matter (as tests are independent).
 <p>
+Rules optionally can have a <i>source</i> field, which is a one word free form text,
+indicating where the rule is coming from. User specified/configured rules
+should leave this field empty. Rules imported from the schematics (or netlist)
+should set this field to sch. When present, the GUI will display rules from
+the same source groupped. But the real purpose of the source field is to make
+re-import of rules possible: when a new import from the same source is performed,
+the import code should remove all rules coming from the source and create
+new rules with the same source.
+<p>
 Query text may consists of multiple lines. The format is as described
 <a href="../query">at the query plugin</a>. There are two alternate forms:
 <ul>
