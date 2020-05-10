@@ -1216,13 +1216,14 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 	rnd_bool flip_y = rnd_conf.editor.view.flip_y; \
 	pcb_font_t *font = pcb_font(PCB, 0, 0); \
 	rnd_coord_t w, h, dx, dy; \
+	double scl = scale/100.0; \
 	if (vert) { \
-		h = pcb_text_width(font, scale, label); \
-		w = pcb_text_height(font, scale, label); \
+		h = pcb_text_width(font, scl, label); \
+		w = pcb_text_height(font, scl, label); \
 	} \
 	else { \
-		w = pcb_text_width(font, scale, label); \
-		h = pcb_text_height(font, scale, label); \
+		w = pcb_text_width(font, scl, label); \
+		h = pcb_text_height(font, scl, label); \
 	} \
 	dx = w / 2; \
 	dy = h / 2; \
