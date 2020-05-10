@@ -672,8 +672,8 @@ static int parse_rat(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	err |= parse_int(&tmp, hash_get(obj, "lgrp2", 0));
 	rat.group2 = tmp;
 
-	err |= parse_idpath(pcb, &rat.anchor[0], hash_get(obj, "anchor1", 0));
-	err |= parse_idpath(pcb, &rat.anchor[1], hash_get(obj, "anchor2", 0));
+	err |= parse_idpath(pcb, &rat.anchor[0], hash_get(obj, "anchor1", 1));
+	err |= parse_idpath(pcb, &rat.anchor[1], hash_get(obj, "anchor2", 1));
 
 	new_rat = pcb_rat_new(dt, rat.ID, rat.Point1.X, rat.Point1.Y, rat.Point2.X, rat.Point2.Y, rat.group1, rat.group2,
 		conf_core.appearance.rat_thickness, rat.Flags, NULL, NULL);
