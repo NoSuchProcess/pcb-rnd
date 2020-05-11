@@ -458,12 +458,12 @@ static int pcb_drc_query_rule_by_name(const char *name, lht_node_t **nd_out, int
 
 }
 
-static int pcb_drc_query_clear(rnd_hidlib_t *hidlib, const char *src)
+static int pcb_drc_query_clear(rnd_hidlib_t *hidlib, int is_rule, const char *src)
 {
 	return -1;
 }
 
-static int pcb_drc_query_create(rnd_hidlib_t *hidlib, const char *rule)
+static int pcb_drc_query_create(rnd_hidlib_t *hidlib, int is_rule, const char *rule)
 {
 	lht_node_t *nd;
 
@@ -473,7 +473,7 @@ static int pcb_drc_query_create(rnd_hidlib_t *hidlib, const char *rule)
 	return 0;
 }
 
-static int pcb_drc_query_set(rnd_hidlib_t *hidlib, const char *rule, const char *key, const char *val)
+static int pcb_drc_query_set(rnd_hidlib_t *hidlib, int is_rule, const char *rule, const char *key, const char *val)
 {
 	lht_node_t *nd;
 
@@ -485,7 +485,7 @@ static int pcb_drc_query_set(rnd_hidlib_t *hidlib, const char *rule, const char 
 	return 0;
 }
 
-static int pcb_drc_query_get(rnd_hidlib_t *hidlib, const char *rule, const char *key, fgw_arg_t *res)
+static int pcb_drc_query_get(rnd_hidlib_t *hidlib, int is_rule, const char *rule, const char *key, fgw_arg_t *res)
 {
 	lht_node_t *nd;
 
@@ -516,12 +516,40 @@ static fgw_error_t pcb_act_DrcQueryRuleMod(fgw_arg_t *res, int argc, fgw_arg_t *
 	RND_ACT_MAY_CONVARG(3, FGW_STR, DrcQueryRuleMod, key = argv[3].val.str);
 	RND_ACT_MAY_CONVARG(4, FGW_STR, DrcQueryRuleMod, val = argv[4].val.str);
 
-	if (strcmp(cmd, "clear") == 0) resi = pcb_drc_query_clear(hl, target);
-	else if (strcmp(cmd, "create") == 0) resi = pcb_drc_query_create(hl, target);
-	else if (strcmp(cmd, "set") == 0) resi = pcb_drc_query_set(hl, target, key, val);
-	else if (strcmp(cmd, "get") == 0) return pcb_drc_query_get(hl, target, key, res);
+	if (strcmp(cmd, "clear") == 0) resi = pcb_drc_query_clear(hl, 1, target);
+	else if (strcmp(cmd, "create") == 0) resi = pcb_drc_query_create(hl, 1, target);
+	else if (strcmp(cmd, "set") == 0) resi = pcb_drc_query_set(hl, 1, target, key, val);
+	else if (strcmp(cmd, "get") == 0) return pcb_drc_query_get(hl, 1, target, key, res);
 	else
 		RND_ACT_FAIL(DrcQueryRuleMod);
+
+	RND_ACT_IRES(resi);
+	return 0;
+}
+
+static const char pcb_acts_DrcQueryConstMod[] = \
+	"DrcQueryConstMod(clear, source)\n"
+	"DrcQueryConstMod(create, rule_name)\n"
+	"DrcQueryConstMod(get, rule_name, field_name)\n"
+	"DrcQueryConstMod(set, rule_name, field_name, value)\n";
+static const char pcb_acth_DrcQueryConstMod[] = "Automated DRC rule editing (for scripting and import)";
+static fgw_error_t pcb_act_DrcQueryConstMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *cmd, *target, *key = NULL, *val=NULL;
+	rnd_hidlib_t *hl = RND_ACT_HIDLIB;
+	int resi = -1;
+
+	RND_ACT_CONVARG(1, FGW_STR, DrcQueryConstMod, cmd = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, DrcQueryConstMod, target = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, DrcQueryConstMod, key = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, DrcQueryConstMod, val = argv[4].val.str);
+
+	if (strcmp(cmd, "clear") == 0) resi = pcb_drc_query_clear(hl, 0, target);
+	else if (strcmp(cmd, "create") == 0) resi = pcb_drc_query_create(hl, 0, target);
+	else if (strcmp(cmd, "set") == 0) resi = pcb_drc_query_set(hl, 0, target, key, val);
+	else if (strcmp(cmd, "get") == 0) return pcb_drc_query_get(hl, 0, target, key, res);
+	else
+		RND_ACT_FAIL(DrcQueryConstMod);
 
 	RND_ACT_IRES(resi);
 	return 0;
@@ -534,7 +562,8 @@ static pcb_drc_impl_t drc_query_impl = {"drc_query", "query() based DRC", "drcqu
 static rnd_action_t drc_query_action_list[] = {
 	{"DrcQueryListRules", pcb_act_DrcQueryListRules, pcb_acth_DrcQueryListRules, pcb_acts_DrcQueryListRules},
 	{"DrcQueryEditRule", pcb_act_DrcQueryEditRule, pcb_acth_DrcQueryEditRule, pcb_acts_DrcQueryEditRule},
-	{"DrcQueryRuleMod", pcb_act_DrcQueryRuleMod, pcb_acth_DrcQueryRuleMod, pcb_acts_DrcQueryRuleMod}
+	{"DrcQueryRuleMod", pcb_act_DrcQueryRuleMod, pcb_acth_DrcQueryRuleMod, pcb_acts_DrcQueryRuleMod},
+	{"DrcQueryConstMod", pcb_act_DrcQueryConstMod, pcb_acth_DrcQueryConstMod, pcb_acts_DrcQueryConstMod}
 };
 
 int pplg_check_ver_drc_query(int ver_needed) { return 0; }
