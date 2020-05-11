@@ -345,6 +345,38 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 	}
 }
 
+static int pcb_drc_query_rule_by_name(const char *name, rnd_conf_native_t **nat_out, lht_node_t **nd_out, int do_create)
+{
+	char *path = rnd_concat(DRC_CONF_PATH_RULES, name, NULL);
+	rnd_conf_native_t *nat = rnd_conf_get_field(path);
+	lht_node_t *nd = NULL;
+	int ret = -1;
+
+	if (!do_create) {
+		if (nat != NULL) {
+			nd = nat->prop[0].src;
+			ret = 0;
+		}
+	}
+	else {
+		if (nat == NULL) { /* allocate new node */
+TODO("allocate new rule here");
+		}
+		else { /* failed to allocate because it exists: return error, but also set the output */
+			ret = -1;
+		}
+	}
+
+	free(path);
+
+	if (nat_out != NULL)
+		*nat_out = nat;
+	if (nd_out != NULL)
+		*nd_out = nd;
+
+	return ret;
+}
+
 static int pcb_drc_query_clear(rnd_hidlib_t *hidlib, const char *src)
 {
 	return -1;
@@ -352,7 +384,12 @@ static int pcb_drc_query_clear(rnd_hidlib_t *hidlib, const char *src)
 
 static int pcb_drc_query_create(rnd_hidlib_t *hidlib, const char *rule)
 {
-	return -1;
+	lht_node_t *nd;
+
+	if (pcb_drc_query_rule_by_name(rule, NULL, &nd, 1) != 0)
+		return -1; /* do not re-create existing rule, force creating a new */
+
+	
 }
 
 static int pcb_drc_query_set(rnd_hidlib_t *hidlib, const char *rule, const char *key, const char *val)
