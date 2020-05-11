@@ -137,7 +137,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	role = save_rolee[ri];
 	nd = rnd_conf_lht_get_at_mainplug(role, ctx->path, 1, 0);
 	if (nd == NULL) {
-		MKDIR_RULE_ROOT(nd, role, return);
+		MKDIR_RULE_ROOT(nd, role, RND_POL_OVERWRITE, return);
 		MKDIR_RULES(nd, return);
 		if ((nd->data.list.first == NULL) && (role != RND_CFR_USER)) {
 			gdl_iterator_t it;
@@ -442,13 +442,11 @@ static const char *rule_basename(const char *cell0)
 do { \
 	if (*row->cell[1] != '\0') { \
 		const char *basename = rule_basename(row->cell[0]); \
-		char *path = rnd_concat(DRC_CONF_PATH_RULES, basename, ":0", NULL); \
-		nd = rnd_conf_lht_get_at_mainplug(role, path, 1, 0); \
+		pcb_drc_query_rule_by_name(basename, &nd, 0); \
 		if (nd == NULL) { \
-			rnd_message(RND_MSG_ERROR, "internal error: rule not found at %s\n", path); \
+			rnd_message(RND_MSG_ERROR, "internal error: rule %s not found\n", basename); \
 			return; \
 		} \
-		free(path); \
 	} \
 	else \
 		return; \

@@ -401,31 +401,38 @@ do { \
 	MKDIR_ND(nd, nd, LHT_LIST, "rules", errinstr); \
 } while(0)
 
-#define MKDIR_RULE_ROOT(nd, role, errinst) \
+#define MKDIR_RULE_ROOT(nd, role, pol, errinst) \
 do { \
-	nd = rnd_conf_lht_get_first(role, 1); \
+	nd = rnd_conf_lht_get_first_crpol(role, pol, 1); \
 	if (nd == NULL) { \
 		rnd_message(RND_MSG_ERROR, "Internal error: failed to create role root, rule is NOT saved\n"); \
 		errinst; \
 	} \
 } while(0)
 
-static int pcb_drc_query_rule_by_name(const char *name, rnd_conf_native_t **nat_out, lht_node_t **nd_out, int do_create)
+static int pcb_drc_query_rule_by_name(const char *name, lht_node_t **nd_out, int do_create)
 {
-	char *path = rnd_concat(DRC_CONF_PATH_RULES, name, NULL);
-	rnd_conf_native_t *nat = rnd_conf_get_field(path);
-	lht_node_t *nd = NULL;
+/*	char *path = rnd_concat(DRC_CONF_PATH_RULES, name, NULL);*/
+	lht_node_t *n = NULL, *nd = NULL;
 	int ret = -1, needs_update = 0;
+	gdl_iterator_t it;
+	rnd_conf_listitem_t *i;
 
-	if (!do_create) {
-		if (nat != NULL) {
-			nd = nat->prop[0].src;
-			ret = 0;
+	rnd_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
+		n = i->prop.src;
+		if ((n != NULL) && (strcmp(n->name, name) == 0)) {
+			nd = n;
+			break;
 		}
 	}
+
+	if (!do_create) {
+		if (nd != NULL)
+			ret = 0;
+	}
 	else {
-		if (nat == NULL) { /* allocate new node */
-			MKDIR_RULE_ROOT(nd, RND_CFR_DESIGN, goto skip);
+		if (nd == NULL) { /* allocate new node */
+			MKDIR_RULE_ROOT(nd, RND_CFR_DESIGN, RND_POL_APPEND, goto skip);
 			MKDIR_RULES(nd, goto skip);
 			MKDIR_ND(nd, nd, LHT_HASH, name, goto skip);
 			if (nd == NULL) /* failed to create */
@@ -442,10 +449,8 @@ static int pcb_drc_query_rule_by_name(const char *name, rnd_conf_native_t **nat_
 		rnd_conf_update(NULL, -1);
 
 	skip:;
-	free(path);
+/*	free(path);*/
 
-	if (nat_out != NULL)
-		*nat_out = nat;
 	if (nd_out != NULL)
 		*nd_out = nd;
 
@@ -462,7 +467,7 @@ static int pcb_drc_query_create(rnd_hidlib_t *hidlib, const char *rule)
 {
 	lht_node_t *nd;
 
-	if (pcb_drc_query_rule_by_name(rule, NULL, &nd, 1) != 0)
+	if (pcb_drc_query_rule_by_name(rule, &nd, 1) != 0)
 		return -1; /* do not re-create existing rule, force creating a new */
 
 	return 0;
@@ -472,7 +477,7 @@ static int pcb_drc_query_set(rnd_hidlib_t *hidlib, const char *rule, const char 
 {
 	lht_node_t *nd;
 
-	if (pcb_drc_query_rule_by_name(rule, NULL, &nd, 0) != 0)
+	if (pcb_drc_query_rule_by_name(rule, &nd, 0) != 0)
 		return -1;
 
 	MKDIR_ND_SET_TEXT(nd, rule, key, val -1);
@@ -484,7 +489,7 @@ static int pcb_drc_query_get(rnd_hidlib_t *hidlib, const char *rule, const char 
 {
 	lht_node_t *nd;
 
-	if (pcb_drc_query_rule_by_name(rule, NULL, &nd, 0) != 0)
+	if (pcb_drc_query_rule_by_name(rule, &nd, 0) != 0)
 		return -1;
 
 	res->type = FGW_STR;
