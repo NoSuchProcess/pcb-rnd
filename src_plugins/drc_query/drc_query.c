@@ -401,6 +401,15 @@ do { \
 	MKDIR_ND(nd, nd, LHT_LIST, "rules", errinstr); \
 } while(0)
 
+#define MKDIR_RULE_ROOT(nd, role, errinst) \
+do { \
+	nd = rnd_conf_lht_get_first(role, 1); \
+	if (nd == NULL) { \
+		rnd_message(RND_MSG_ERROR, "Internal error: failed to create role root, rule is NOT saved\n"); \
+		errinst; \
+	} \
+} while(0)
+
 static int pcb_drc_query_rule_by_name(const char *name, rnd_conf_native_t **nat_out, lht_node_t **nd_out, int do_create)
 {
 	char *path = rnd_concat(DRC_CONF_PATH_RULES, name, NULL);
@@ -416,6 +425,7 @@ static int pcb_drc_query_rule_by_name(const char *name, rnd_conf_native_t **nat_
 	}
 	else {
 		if (nat == NULL) { /* allocate new node */
+			MKDIR_RULE_ROOT(nd, RND_CFR_DESIGN, goto skip);
 			MKDIR_RULES(nd, goto skip);
 			MKDIR_ND(nd, nd, LHT_HASH, name, goto skip);
 			if (nd == NULL) /* failed to create */
@@ -429,7 +439,7 @@ static int pcb_drc_query_rule_by_name(const char *name, rnd_conf_native_t **nat_
 	}
 
 	if (needs_update)
-		rnd_conf_update(path, -1);
+		rnd_conf_update(NULL, -1);
 
 	skip:;
 	free(path);

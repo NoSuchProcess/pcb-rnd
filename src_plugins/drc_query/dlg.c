@@ -137,11 +137,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	role = save_rolee[ri];
 	nd = rnd_conf_lht_get_at_mainplug(role, ctx->path, 1, 0);
 	if (nd == NULL) {
-		nd = rnd_conf_lht_get_first(role, 1);
-		if (nd == NULL) {
-			rnd_message(RND_MSG_ERROR, "Internal error: failed to create role root, rule is NOT saved\n");
-			return;
-		}
+		MKDIR_RULE_ROOT(nd, role, return);
 		MKDIR_RULES(nd, return);
 		if ((nd->data.list.first == NULL) && (role != RND_CFR_USER)) {
 			gdl_iterator_t it;
