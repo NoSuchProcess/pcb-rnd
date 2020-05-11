@@ -65,7 +65,7 @@ static void rule_edit_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	free(ctx);
 }
 
-static const char *textval(lht_node_t *nd, const char *fname)
+static const char *textval_empty(lht_node_t *nd, const char *fname)
 {
 	lht_node_t *nt = lht_dom_hash_get(nd, fname);
 
@@ -88,13 +88,13 @@ static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 		if (dis == NULL)
 			dis = &dis_;
 
-		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wtype,    str, textval(nd, "type"));
-		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wtitle,   str, textval(nd, "title"));
-		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wsource,  str, textval(nd, "source"));
+		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wtype,    str, textval_empty(nd, "type"));
+		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wtitle,   str, textval_empty(nd, "title"));
+		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wsource,  str, textval_empty(nd, "source"));
 		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdisable, str, *dis ? "yes" : "no");
-		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdesc,    str, textval(nd, "desc"));
+		RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->wdesc,    str, textval_empty(nd, "desc"));
 
-		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, RND_HID_TEXT_REPLACE, textval(nd, "query"));
+		txt->hid_set_text(atxt, ctx->dlg_hid_ctx, RND_HID_TEXT_REPLACE, textval_empty(nd, "query"));
 	}
 	else {
 		rnd_message(RND_MSG_ERROR, "Rule %s disappeared from the config tree.\n", ctx->rule);
@@ -411,7 +411,7 @@ static void drc_rlist_pcb2dlg(void)
 			dis = &dis_;
 
 		role = rnd_conf_lookup_role(rule);
-		src = textval(rule, "source");
+		src = textval_empty(rule, "source");
 		cell[0] = rule->name;
 		cell[1] = rnd_strdup(rnd_conf_role_name(role));
 		cell[2] = *dis ? "YES" : "no";
@@ -535,14 +535,14 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	rlist_fetch();
 	rlist_fetch_nd();
 
-	script = textval(nd, "query");
+	script = textval_empty(nd, "query");
 	if (script == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can not run rule %s: no query specified\n", row->cell[0]);
 		return;
 	}
 
 	view = calloc(sizeof(pcb_view_list_t), 1);
-	drc_qry_exec(NULL, pcb, view, rule_basename(row->cell[0]), textval(nd, "type"), textval(nd, "title"), textval(nd, "desc"), script);
+	drc_qry_exec(NULL, pcb, view, rule_basename(row->cell[0]), textval_empty(nd, "type"), textval_empty(nd, "title"), textval_empty(nd, "desc"), script);
 	drcq_open_view_win(&pcb->hidlib, view);
 	drc_rlist_pcb2dlg(); /* for the run time */
 }
@@ -564,15 +564,15 @@ static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row
 	if (hv.str == NULL) hv.str = "<n/a>";
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wrule, &hv);
 
-	hv.str = textval(nd, "type");
+	hv.str = textval_empty(nd, "type");
 	if (hv.str == NULL) hv.str = "<n/a>";
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
 
-	hv.str = textval(nd, "title");
+	hv.str = textval_empty(nd, "title");
 	if (hv.str == NULL) hv.str = "<n/a>";
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtitle, &hv);
 
-	hv.str = textval(nd, "desc");
+	hv.str = textval_empty(nd, "desc");
 	if (hv.str == NULL) hv.str = "<n/a>";
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdesc, &hv);
 
