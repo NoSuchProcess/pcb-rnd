@@ -16,9 +16,9 @@ The main use case fpr the block is allowing schematics editors to
 translate design/layout requirements extracted from the schematics into
 a rule set that then can be checked by pcb-rnd.
 
-<h2> block </h2>
+<h2> blocks </h2>
 <p>
-Block type is "drc_query_rule" and "drc_query_const", version is "v1".
+Block type is "drc_query_rule" and "drc_query_def", version is "v1".
 The unique identifier should be single word rule name or constant name.
 <p>
 Commands for drc_query_rule are:
@@ -41,7 +41,7 @@ Commands for drc_query_rule are:
 
 
 <p>
-Commands for drc_query_const are:
+Commands for drc_query_def are:
 <table border=1>
 	<tr> <th> command <th> parameter names <th> explanation
 
@@ -61,11 +61,11 @@ Below is the hole overlap rule (standard drc_query script from the stock
 config) translated into tEDAx drc_query_* blocks:
 <pre>
 tEDAx v1
-begin drc_query_const v1 hole_overlap_factor
+begin drc_query_def v1 hole_overlap_factor
 	type real
 	default 0.0
 	desc How much drilled holes may overlap [-1..+1]; 0 means touching holes are reported; positive numbers allow more overlap, negative numbers report non-overlapping but close holes
-end drc_query_const
+end drc_query_def
 
 begin drc_query_rule v1 hole_overlap
 	type pair hole
