@@ -26,6 +26,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+/* This file is for the generic tEDAx DRC block ("begin drc...", as documented
+   in the tEDAx project) */
+
 #include "config.h"
 
 #include <stdio.h>
