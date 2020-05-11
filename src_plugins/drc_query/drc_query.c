@@ -345,6 +345,60 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 	}
 }
 
+static const char *textval_empty(lht_node_t *nd, const char *fname)
+{
+	lht_node_t *nt = lht_dom_hash_get(nd, fname);
+
+	if ((nt == NULL) || (nt->type != LHT_TEXT))
+		return "";
+
+	return nt->data.text.value;
+}
+
+#define MKDIR_ND(outnode, parent, ntype, nname) \
+do { \
+	lht_node_t *nnew; \
+	lht_err_t err; \
+	char *nname0 = nname; \
+	if (parent->type == LHT_LIST) nname0 = rnd_concat(nname, ":0", NULL); \
+	nnew = lht_tree_path_(parent->doc, parent, nname0, 1, 1, &err); \
+	if (parent->type == LHT_LIST) free(nname0); \
+	if ((nnew != NULL) && (nnew->type != ntype)) { \
+		rnd_message(RND_MSG_ERROR, "Internal error: invalid existing node type for %s: %d, rule is NOT saved\n", nname, nnew->type); \
+		return; \
+	} \
+	else if (nnew == NULL) { \
+		nnew = lht_dom_node_alloc(ntype, nname); \
+		switch(parent->type) { \
+			case LHT_HASH: err = lht_dom_hash_put(parent, nnew); break; \
+			case LHT_LIST: err = lht_dom_list_append(parent, nnew); break; \
+			default: \
+				rnd_message(RND_MSG_ERROR, "Internal error: invalid parent node type for %s: %d, rule is NOT saved\n", parent->name, parent->type); \
+				return; \
+		} \
+	} \
+	outnode = nnew; \
+} while(0)
+
+#define MKDIR_ND_SET_TEXT(parent, nname, nval) \
+do { \
+	lht_node_t *ntxt; \
+	MKDIR_ND(ntxt, parent, LHT_TEXT, nname); \
+	if (ntxt == NULL) { \
+		rnd_message(RND_MSG_ERROR, "Internal error: new text node for %s is NULL, rule is NOT saved\n", nname); \
+		return; \
+	} \
+	free(ntxt->data.text.value); \
+	ntxt->data.text.value = rnd_strdup(nval == NULL ? "" : nval); \
+} while(0)
+
+#define MKDIR_RULES(nd) \
+do { \
+	MKDIR_ND(nd, nd, LHT_HASH, "plugins"); \
+	MKDIR_ND(nd, nd, LHT_HASH, "drc_query"); \
+	MKDIR_ND(nd, nd, LHT_LIST, "rules"); \
+} while(0)
+
 static int pcb_drc_query_rule_by_name(const char *name, rnd_conf_native_t **nat_out, lht_node_t **nd_out, int do_create)
 {
 	char *path = rnd_concat(DRC_CONF_PATH_RULES, name, NULL);
@@ -361,6 +415,8 @@ static int pcb_drc_query_rule_by_name(const char *name, rnd_conf_native_t **nat_
 	else {
 		if (nat == NULL) { /* allocate new node */
 TODO("allocate new rule here");
+/*			MKDIR_RULES(nd)
+			MKDIR_ND(nd, nd, LHT_HASH, name);*/
 		}
 		else { /* failed to allocate because it exists: return error, but also set the output */
 			ret = -1;

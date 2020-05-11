@@ -65,16 +65,6 @@ static void rule_edit_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	free(ctx);
 }
 
-static const char *textval_empty(lht_node_t *nd, const char *fname)
-{
-	lht_node_t *nt = lht_dom_hash_get(nd, fname);
-
-	if ((nt == NULL) || (nt->type != LHT_TEXT))
-		return "";
-
-	return nt->data.text.value;
-}
-
 static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 {
 	rnd_dad_retovr_t retovr;
@@ -132,43 +122,6 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	drc_rlist_pcb2dlg(); /* for the run time */
 }
 
-#define MKDIR_ND(outnode, parent, ntype, nname) \
-do { \
-	lht_node_t *nnew; \
-	lht_err_t err; \
-	char *nname0 = nname; \
-	if (parent->type == LHT_LIST) nname0 = rnd_concat(nname, ":0", NULL); \
-	nnew = lht_tree_path_(parent->doc, parent, nname0, 1, 1, &err); \
-	if (parent->type == LHT_LIST) free(nname0); \
-	if ((nnew != NULL) && (nnew->type != ntype)) { \
-		rnd_message(RND_MSG_ERROR, "Internal error: invalid existing node type for %s: %d, rule is NOT saved\n", nname, nnew->type); \
-		return; \
-	} \
-	else if (nnew == NULL) { \
-		nnew = lht_dom_node_alloc(ntype, nname); \
-		switch(parent->type) { \
-			case LHT_HASH: err = lht_dom_hash_put(parent, nnew); break; \
-			case LHT_LIST: err = lht_dom_list_append(parent, nnew); break; \
-			default: \
-				rnd_message(RND_MSG_ERROR, "Internal error: invalid parent node type for %s: %d, rule is NOT saved\n", parent->name, parent->type); \
-				return; \
-		} \
-	} \
-	outnode = nnew; \
-} while(0)
-
-#define MKDIR_ND_SET_TEXT(parent, nname, nval) \
-do { \
-	lht_node_t *ntxt; \
-	MKDIR_ND(ntxt, parent, LHT_TEXT, nname); \
-	if (ntxt == NULL) { \
-		rnd_message(RND_MSG_ERROR, "Internal error: new text node for %s is NULL, rule is NOT saved\n", nname); \
-		return; \
-	} \
-	free(ntxt->data.text.value); \
-	ntxt->data.text.value = rnd_strdup(nval == NULL ? "" : nval); \
-} while(0)
-
 static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	rule_edit_ctx_t *ctx = caller_data;
@@ -191,9 +144,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 			rnd_message(RND_MSG_ERROR, "Internal error: failed to create role root, rule is NOT saved\n");
 			return;
 		}
-		MKDIR_ND(nd, nd, LHT_HASH, "plugins");
-		MKDIR_ND(nd, nd, LHT_HASH, "drc_query");
-		MKDIR_ND(nd, nd, LHT_LIST, "rules");
+		MKDIR_RULES(nd);
 		if ((nd->data.list.first == NULL) && (role != RND_CFR_USER)) {
 			gdl_iterator_t it;
 			rnd_conf_listitem_t *i;
