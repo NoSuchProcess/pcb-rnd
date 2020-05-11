@@ -1,3 +1,4 @@
+31295	configure	tEDAx drc_query block parse
 31249	configure	enabled io_bxl
 31116	configure	include libulzw in librnd 3rd
 31041	configure	pcb_ -> rnd_ renames in librnd
