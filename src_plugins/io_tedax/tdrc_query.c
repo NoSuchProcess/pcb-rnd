@@ -3,8 +3,8 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  tedax IO plugin - stackup import/export
- *  pcb-rnd Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  tedax IO plugin - load DRC rules and constants for drc_query
+ *  pcb-rnd Copyright (C) 2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -67,7 +67,6 @@ int tedax_drc_query_rule_parse(pcb_board_t *pcb, FILE *f, const char *src, char 
 
 
 	if (qry.used > 0) {
-printf("qry='%s'\n", qry.array);
 		rnd_actionva(&pcb->hidlib, MOD, "set", rule_name, "query", qry.array, NULL);
 		gds_uninit(&qry);
 	}
