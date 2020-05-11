@@ -455,16 +455,31 @@ static int pcb_drc_query_create(rnd_hidlib_t *hidlib, const char *rule)
 	if (pcb_drc_query_rule_by_name(rule, NULL, &nd, 1) != 0)
 		return -1; /* do not re-create existing rule, force creating a new */
 
-	return -1;
+	return 0;
 }
 
 static int pcb_drc_query_set(rnd_hidlib_t *hidlib, const char *rule, const char *key, const char *val)
 {
-	return -1;
+	lht_node_t *nd;
+
+	if (pcb_drc_query_rule_by_name(rule, NULL, &nd, 0) != 0)
+		return -1;
+
+	MKDIR_ND_SET_TEXT(nd, rule, key, val -1);
+
+	return 0;
 }
 
 static int pcb_drc_query_get(rnd_hidlib_t *hidlib, const char *rule, const char *key, fgw_arg_t *res)
 {
+	lht_node_t *nd;
+
+	if (pcb_drc_query_rule_by_name(rule, NULL, &nd, 0) != 0)
+		return -1;
+
+	res->type = FGW_STR;
+	res->val.str = textval_empty(nd, key);
+
 	return -1;
 }
 
