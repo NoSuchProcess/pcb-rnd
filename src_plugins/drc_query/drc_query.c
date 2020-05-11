@@ -401,6 +401,13 @@ do { \
 	MKDIR_ND(nd, nd, LHT_LIST, "rules", errinstr); \
 } while(0)
 
+#define MKDIR_CONSTS(nd, errinstr) \
+do { \
+	MKDIR_ND(nd, nd, LHT_HASH, "plugins", errinstr); \
+	MKDIR_ND(nd, nd, LHT_HASH, "drc_query", errinstr); \
+	MKDIR_ND(nd, nd, LHT_LIST, "definitions", errinstr); \
+} while(0)
+
 #define MKDIR_RULE_ROOT(nd, role, pol, errinst) \
 do { \
 	nd = rnd_conf_lht_get_first_crpol(role, pol, 1); \
@@ -410,15 +417,17 @@ do { \
 	} \
 } while(0)
 
-static int pcb_drc_query_rule_by_name(const char *name, lht_node_t **nd_out, int do_create)
+static int pcb_drc_query_any_by_name(const char *name, int is_rule, lht_node_t **nd_out, int do_create)
 {
-/*	char *path = rnd_concat(DRC_CONF_PATH_RULES, name, NULL);*/
 	lht_node_t *n = NULL, *nd = NULL;
 	int ret = -1, needs_update = 0;
 	gdl_iterator_t it;
+	rnd_conflist_t *l;
 	rnd_conf_listitem_t *i;
 
-	rnd_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
+	l = is_rule ? &conf_drc_query.plugins.drc_query.rules : &conf_drc_query.plugins.drc_query.definitions;
+
+	rnd_conflist_foreach(l, &it, i) {
 		n = i->prop.src;
 		if ((n != NULL) && (strcmp(n->name, name) == 0)) {
 			nd = n;
@@ -433,7 +442,10 @@ static int pcb_drc_query_rule_by_name(const char *name, lht_node_t **nd_out, int
 	else {
 		if (nd == NULL) { /* allocate new node */
 			MKDIR_RULE_ROOT(nd, RND_CFR_DESIGN, RND_POL_APPEND, goto skip);
-			MKDIR_RULES(nd, goto skip);
+			if (is_rule) 
+				MKDIR_RULES(nd, goto skip);
+			else
+				MKDIR_CONSTS(nd, goto skip);
 			MKDIR_ND(nd, nd, LHT_HASH, name, goto skip);
 			if (nd == NULL) /* failed to create */
 				ret = -1;
@@ -449,14 +461,17 @@ static int pcb_drc_query_rule_by_name(const char *name, lht_node_t **nd_out, int
 		rnd_conf_update(NULL, -1);
 
 	skip:;
-/*	free(path);*/
-
 	if (nd_out != NULL)
 		*nd_out = nd;
 
 	return ret;
-
 }
+
+static int pcb_drc_query_rule_by_name(const char *name, lht_node_t **nd_out, int do_create)
+{
+	return pcb_drc_query_any_by_name(name, 1, nd_out, do_create);
+}
+
 
 static int pcb_drc_query_clear(rnd_hidlib_t *hidlib, int is_rule, const char *src)
 {
@@ -467,7 +482,7 @@ static int pcb_drc_query_create(rnd_hidlib_t *hidlib, int is_rule, const char *r
 {
 	lht_node_t *nd;
 
-	if (pcb_drc_query_rule_by_name(rule, &nd, 1) != 0)
+	if (pcb_drc_query_any_by_name(rule, is_rule, &nd, 1) != 0)
 		return -1; /* do not re-create existing rule, force creating a new */
 
 	return 0;
@@ -477,7 +492,7 @@ static int pcb_drc_query_set(rnd_hidlib_t *hidlib, int is_rule, const char *rule
 {
 	lht_node_t *nd;
 
-	if (pcb_drc_query_rule_by_name(rule, &nd, 0) != 0)
+	if (pcb_drc_query_any_by_name(rule, is_rule, &nd, 0) != 0)
 		return -1;
 
 	MKDIR_ND_SET_TEXT(nd, key, val, return -1);
@@ -489,7 +504,7 @@ static int pcb_drc_query_get(rnd_hidlib_t *hidlib, int is_rule, const char *rule
 {
 	lht_node_t *nd;
 
-	if (pcb_drc_query_rule_by_name(rule, &nd, 0) != 0)
+	if (pcb_drc_query_any_by_name(rule, is_rule, &nd, 0) != 0)
 		return -1;
 
 	res->type = FGW_STR;
