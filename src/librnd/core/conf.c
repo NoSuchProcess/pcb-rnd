@@ -1123,7 +1123,7 @@ void rnd_conf_update(const char *path, int arr_idx)
 
 #define POL_ANY 63
 
-static lht_node_t *conf_lht_get_first_(lht_node_t *cwd, rnd_conf_policy_t pol, int create)
+static lht_node_t *conf_lht_get_first_(lht_node_t *cwd, rnd_conf_policy_t pol, int create, rnd_conf_policy_t create_pol)
 {
 	lht_node_t *ov; /* normally the "overwrite" node */
 
@@ -1140,7 +1140,7 @@ static lht_node_t *conf_lht_get_first_(lht_node_t *cwd, rnd_conf_policy_t pol, i
 				break;
 	}
 	else
-		pol = RND_POL_OVERWRITE; /* this is what is created by default */
+		pol = create_pol; /* this is what is created by default */
 
 	if (ov == NULL) {
 		lht_node_t *new_ov;
@@ -1163,8 +1163,19 @@ lht_node_t *rnd_conf_lht_get_first(rnd_conf_role_t target, int create)
 	assert(target < RND_CFR_max_alloc);
 	if (pcb_conf_main_root[target] == NULL)
 		return NULL;
-	return conf_lht_get_first_(pcb_conf_main_root[target]->root, POL_ANY, create);
+	return conf_lht_get_first_(pcb_conf_main_root[target]->root, POL_ANY, create, RND_POL_OVERWRITE);
 }
+
+lht_node_t *rnd_conf_lht_get_first_crpol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create)
+{
+	assert(target != RND_CFR_invalid);
+	assert(target >= 0);
+	assert(target < RND_CFR_max_alloc);
+	if (pcb_conf_main_root[target] == NULL)
+		return NULL;
+	return conf_lht_get_first_(pcb_conf_main_root[target]->root, pol, create, pol);
+}
+
 
 lht_node_t *pcb_conf_lht_get_first_plug(rnd_conf_role_t target, int create)
 {
@@ -1173,7 +1184,7 @@ lht_node_t *pcb_conf_lht_get_first_plug(rnd_conf_role_t target, int create)
 	assert(target < RND_CFR_max_alloc);
 	if (pcb_conf_plug_root[target] == NULL)
 		return NULL;
-	return conf_lht_get_first_(pcb_conf_plug_root[target]->root, POL_ANY, create);
+	return conf_lht_get_first_(pcb_conf_plug_root[target]->root, POL_ANY, create, RND_POL_OVERWRITE);
 }
 
 lht_node_t *rnd_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create)
@@ -1183,7 +1194,7 @@ lht_node_t *rnd_conf_lht_get_first_pol(rnd_conf_role_t target, rnd_conf_policy_t
 	assert(target < RND_CFR_max_alloc);
 	if (pcb_conf_main_root[target] == NULL)
 		return NULL;
-	return conf_lht_get_first_(pcb_conf_main_root[target]->root, pol, create);
+	return conf_lht_get_first_(pcb_conf_main_root[target]->root, pol, create, RND_POL_OVERWRITE);
 }
 
 static lht_node_t *conf_lht_get_at_(rnd_conf_role_t target, const char *conf_path, const char *lht_path, int allow_plug, int create)

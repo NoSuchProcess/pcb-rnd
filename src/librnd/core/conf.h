@@ -359,8 +359,11 @@ do { \
 
 /* get the first config subtree node (it's a hash and its children
    are "design", "rc", ...); if create is 1, and the subtree doesn't
-   exist, create an "overwrite". */
+   exist, create an "overwrite". The crpol variant creates the new subtree
+   with the requested policy. */
 lht_node_t *rnd_conf_lht_get_first(rnd_conf_role_t target, int create);
+lht_node_t *rnd_conf_lht_get_first_crpol(rnd_conf_role_t target, rnd_conf_policy_t pol, int create);
+
 
 /* loop helper */
 rnd_conf_listitem_t *rnd_conf_list_first_str(rnd_conflist_t *list, const char **item_str, int *idx);
