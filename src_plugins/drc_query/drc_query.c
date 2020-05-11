@@ -480,7 +480,7 @@ static int pcb_drc_query_set(rnd_hidlib_t *hidlib, const char *rule, const char 
 	if (pcb_drc_query_rule_by_name(rule, &nd, 0) != 0)
 		return -1;
 
-	MKDIR_ND_SET_TEXT(nd, rule, key, val -1);
+	MKDIR_ND_SET_TEXT(nd, key, val, return -1);
 
 	return 0;
 }
