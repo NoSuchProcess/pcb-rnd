@@ -40,7 +40,7 @@
 #include <librnd/core/actions.h>
 #include "tdrc_query.h"
 
-#define MOD "DrcQueryMod"
+#define MOD "DrcQueryRuleMod"
 
 int tedax_drc_query_rule_parse(pcb_board_t *pcb, FILE *f, const char *src, char *rule_name)
 {

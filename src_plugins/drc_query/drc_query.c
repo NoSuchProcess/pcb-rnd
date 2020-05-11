@@ -499,29 +499,29 @@ static int pcb_drc_query_get(rnd_hidlib_t *hidlib, const char *rule, const char 
 }
 
 
-static const char pcb_acts_DrcQueryMod[] = \
-	"DrcQueryMod(clear, source)\n"
-	"DrcQueryMod(create, rule_name)\n"
-	"DrcQueryMod(get, rule_name, field_name)\n"
-	"DrcQueryMod(set, rule_name, field_name, value)\n";
-static const char pcb_acth_DrcQueryMod[] = "Automated DRC rule editing (for scripting and import)";
-static fgw_error_t pcb_act_DrcQueryMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static const char pcb_acts_DrcQueryRuleMod[] = \
+	"DrcQueryRuleMod(clear, source)\n"
+	"DrcQueryRuleMod(create, rule_name)\n"
+	"DrcQueryRuleMod(get, rule_name, field_name)\n"
+	"DrcQueryRuleMod(set, rule_name, field_name, value)\n";
+static const char pcb_acth_DrcQueryRuleMod[] = "Automated DRC rule editing (for scripting and import)";
+static fgw_error_t pcb_act_DrcQueryRuleMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd, *target, *key = NULL, *val=NULL;
 	rnd_hidlib_t *hl = RND_ACT_HIDLIB;
 	int resi = -1;
 
-	RND_ACT_CONVARG(1, FGW_STR, DrcQueryMod, cmd = argv[1].val.str);
-	RND_ACT_CONVARG(2, FGW_STR, DrcQueryMod, target = argv[2].val.str);
-	RND_ACT_MAY_CONVARG(3, FGW_STR, DrcQueryMod, key = argv[3].val.str);
-	RND_ACT_MAY_CONVARG(4, FGW_STR, DrcQueryMod, val = argv[4].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, DrcQueryRuleMod, cmd = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, DrcQueryRuleMod, target = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, DrcQueryRuleMod, key = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, DrcQueryRuleMod, val = argv[4].val.str);
 
 	if (strcmp(cmd, "clear") == 0) resi = pcb_drc_query_clear(hl, target);
 	else if (strcmp(cmd, "create") == 0) resi = pcb_drc_query_create(hl, target);
 	else if (strcmp(cmd, "set") == 0) resi = pcb_drc_query_set(hl, target, key, val);
 	else if (strcmp(cmd, "get") == 0) return pcb_drc_query_get(hl, target, key, res);
 	else
-		RND_ACT_FAIL(DrcQueryMod);
+		RND_ACT_FAIL(DrcQueryRuleMod);
 
 	RND_ACT_IRES(resi);
 	return 0;
@@ -534,7 +534,7 @@ static pcb_drc_impl_t drc_query_impl = {"drc_query", "query() based DRC", "drcqu
 static rnd_action_t drc_query_action_list[] = {
 	{"DrcQueryListRules", pcb_act_DrcQueryListRules, pcb_acth_DrcQueryListRules, pcb_acts_DrcQueryListRules},
 	{"DrcQueryEditRule", pcb_act_DrcQueryEditRule, pcb_acth_DrcQueryEditRule, pcb_acts_DrcQueryEditRule},
-	{"DrcQueryMod", pcb_act_DrcQueryMod, pcb_acth_DrcQueryMod, pcb_acts_DrcQueryMod}
+	{"DrcQueryRuleMod", pcb_act_DrcQueryRuleMod, pcb_acth_DrcQueryRuleMod, pcb_acts_DrcQueryRuleMod}
 };
 
 int pplg_check_ver_drc_query(int ver_needed) { return 0; }
