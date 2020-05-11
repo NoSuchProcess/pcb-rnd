@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  tedax IO plugin - stackup import/export
+ *  tedax IO plugin - generic DRC import/export
  *  pcb-rnd Copyright (C) 2019 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
