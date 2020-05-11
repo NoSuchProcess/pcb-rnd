@@ -32,6 +32,8 @@
 
 #include <stdlib.h>
 #include <genht/hash.h>
+#include <liblihata/dom.h>
+#include <liblihata/tree.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
@@ -355,17 +357,17 @@ static const char *textval_empty(lht_node_t *nd, const char *fname)
 	return nt->data.text.value;
 }
 
-#define MKDIR_ND(outnode, parent, ntype, nname) \
+#define MKDIR_ND(outnode, parent, ntype, nname, errinstr) \
 do { \
 	lht_node_t *nnew; \
 	lht_err_t err; \
-	char *nname0 = nname; \
+	char *nname0 = (char *)nname; \
 	if (parent->type == LHT_LIST) nname0 = rnd_concat(nname, ":0", NULL); \
 	nnew = lht_tree_path_(parent->doc, parent, nname0, 1, 1, &err); \
 	if (parent->type == LHT_LIST) free(nname0); \
 	if ((nnew != NULL) && (nnew->type != ntype)) { \
 		rnd_message(RND_MSG_ERROR, "Internal error: invalid existing node type for %s: %d, rule is NOT saved\n", nname, nnew->type); \
-		return; \
+		errinstr; \
 	} \
 	else if (nnew == NULL) { \
 		nnew = lht_dom_node_alloc(ntype, nname); \
@@ -374,29 +376,29 @@ do { \
 			case LHT_LIST: err = lht_dom_list_append(parent, nnew); break; \
 			default: \
 				rnd_message(RND_MSG_ERROR, "Internal error: invalid parent node type for %s: %d, rule is NOT saved\n", parent->name, parent->type); \
-				return; \
+				errinstr; \
 		} \
 	} \
 	outnode = nnew; \
 } while(0)
 
-#define MKDIR_ND_SET_TEXT(parent, nname, nval) \
+#define MKDIR_ND_SET_TEXT(parent, nname, nval, errinstr) \
 do { \
 	lht_node_t *ntxt; \
-	MKDIR_ND(ntxt, parent, LHT_TEXT, nname); \
+	MKDIR_ND(ntxt, parent, LHT_TEXT, nname, errinstr); \
 	if (ntxt == NULL) { \
 		rnd_message(RND_MSG_ERROR, "Internal error: new text node for %s is NULL, rule is NOT saved\n", nname); \
-		return; \
+		errinstr; \
 	} \
 	free(ntxt->data.text.value); \
 	ntxt->data.text.value = rnd_strdup(nval == NULL ? "" : nval); \
 } while(0)
 
-#define MKDIR_RULES(nd) \
+#define MKDIR_RULES(nd, errinstr) \
 do { \
-	MKDIR_ND(nd, nd, LHT_HASH, "plugins"); \
-	MKDIR_ND(nd, nd, LHT_HASH, "drc_query"); \
-	MKDIR_ND(nd, nd, LHT_LIST, "rules"); \
+	MKDIR_ND(nd, nd, LHT_HASH, "plugins", errinstr); \
+	MKDIR_ND(nd, nd, LHT_HASH, "drc_query", errinstr); \
+	MKDIR_ND(nd, nd, LHT_LIST, "rules", errinstr); \
 } while(0)
 
 static int pcb_drc_query_rule_by_name(const char *name, rnd_conf_native_t **nat_out, lht_node_t **nd_out, int do_create)
@@ -404,7 +406,7 @@ static int pcb_drc_query_rule_by_name(const char *name, rnd_conf_native_t **nat_
 	char *path = rnd_concat(DRC_CONF_PATH_RULES, name, NULL);
 	rnd_conf_native_t *nat = rnd_conf_get_field(path);
 	lht_node_t *nd = NULL;
-	int ret = -1;
+	int ret = -1, needs_update = 0;
 
 	if (!do_create) {
 		if (nat != NULL) {
@@ -414,15 +416,22 @@ static int pcb_drc_query_rule_by_name(const char *name, rnd_conf_native_t **nat_
 	}
 	else {
 		if (nat == NULL) { /* allocate new node */
-TODO("allocate new rule here");
-/*			MKDIR_RULES(nd)
-			MKDIR_ND(nd, nd, LHT_HASH, name);*/
+			MKDIR_RULES(nd, goto skip);
+			MKDIR_ND(nd, nd, LHT_HASH, name, goto skip);
+			if (nd == NULL) /* failed to create */
+				ret = -1;
+			else
+				needs_update = 1;
 		}
 		else { /* failed to allocate because it exists: return error, but also set the output */
 			ret = -1;
 		}
 	}
 
+	if (needs_update)
+		rnd_conf_update(path, -1);
+
+	skip:;
 	free(path);
 
 	if (nat_out != NULL)
@@ -431,6 +440,7 @@ TODO("allocate new rule here");
 		*nd_out = nd;
 
 	return ret;
+
 }
 
 static int pcb_drc_query_clear(rnd_hidlib_t *hidlib, const char *src)
@@ -445,7 +455,7 @@ static int pcb_drc_query_create(rnd_hidlib_t *hidlib, const char *rule)
 	if (pcb_drc_query_rule_by_name(rule, NULL, &nd, 1) != 0)
 		return -1; /* do not re-create existing rule, force creating a new */
 
-	
+	return -1;
 }
 
 static int pcb_drc_query_set(rnd_hidlib_t *hidlib, const char *rule, const char *key, const char *val)

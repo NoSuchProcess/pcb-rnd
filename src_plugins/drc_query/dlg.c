@@ -31,8 +31,6 @@
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_tree.h>
 #include <genlist/gendlist.h>
-#include <liblihata/dom.h>
-#include <liblihata/tree.h>
 #include "actions_pcb.h"
 
 #define PCB dont_use
@@ -144,7 +142,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 			rnd_message(RND_MSG_ERROR, "Internal error: failed to create role root, rule is NOT saved\n");
 			return;
 		}
-		MKDIR_RULES(nd);
+		MKDIR_RULES(nd, return);
 		if ((nd->data.list.first == NULL) && (role != RND_CFR_USER)) {
 			gdl_iterator_t it;
 			rnd_conf_listitem_t *i;
@@ -156,21 +154,19 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 			}
 			rnd_message(RND_MSG_WARNING, "NOTE: Copying ALL drc rule to config role %s\n", ctx->rule, save_roles[ri]);
 		}
-		MKDIR_ND(nd, nd, LHT_HASH, ctx->rule);
+		MKDIR_ND(nd, nd, LHT_HASH, ctx->rule, return);
 		rnd_message(RND_MSG_INFO, "NOTE: Copying drc rule '%s' to config role %s\n", ctx->rule, save_roles[ri]);
 	}
 
-	MKDIR_ND_SET_TEXT(nd, "type", ctx->dlg[ctx->wtype].val.str);
-	MKDIR_ND_SET_TEXT(nd, "desc", ctx->dlg[ctx->wdesc].val.str);
-	MKDIR_ND_SET_TEXT(nd, "title", ctx->dlg[ctx->wtitle].val.str);
-	MKDIR_ND_SET_TEXT(nd, "source", ctx->dlg[ctx->wsource].val.str);
-	MKDIR_ND_SET_TEXT(nd, "query", txt->hid_get_text(atxt, hid_ctx));
+	MKDIR_ND_SET_TEXT(nd, "type", ctx->dlg[ctx->wtype].val.str, return);
+	MKDIR_ND_SET_TEXT(nd, "desc", ctx->dlg[ctx->wdesc].val.str, return);
+	MKDIR_ND_SET_TEXT(nd, "title", ctx->dlg[ctx->wtitle].val.str, return);
+	MKDIR_ND_SET_TEXT(nd, "source", ctx->dlg[ctx->wsource].val.str, return);
+	MKDIR_ND_SET_TEXT(nd, "query", txt->hid_get_text(atxt, hid_ctx), return);
 
 	rnd_conf_update(NULL, -1);
 	drc_rlist_pcb2dlg();
 }
-
-#undef MKDIR_ND
 
 static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 {
