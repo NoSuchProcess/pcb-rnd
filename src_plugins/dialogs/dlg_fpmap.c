@@ -77,7 +77,7 @@ static fgw_error_t pcb_act_gui_fpmap_choose(fgw_arg_t *res, int argc, fgw_arg_t 
 
 
 	res->type = FGW_STR;
-	res->val.str = resname;
+	res->val.cstr = resname;
 	return 0;
 }
 
