@@ -431,6 +431,9 @@ do { \
 	} \
 } while(0)
 
+#define dlist_fetch rlist_fetch
+
+
 static const char *rule_basename(const char *cell0)
 {
 	const char *basename = strchr(cell0, '/');
@@ -446,6 +449,20 @@ do { \
 		pcb_drc_query_rule_by_name(basename, &nd, 0); \
 		if (nd == NULL) { \
 			rnd_message(RND_MSG_ERROR, "internal error: rule %s not found\n", basename); \
+			return; \
+		} \
+	} \
+	else \
+		return; \
+} while(0)
+
+#define dlist_fetch_nd() \
+do { \
+	if (*row->cell[1] != '\0') { \
+		const char *basename = rule_basename(row->cell[0]); \
+		pcb_drc_query_def_by_name(basename, &nd, 0); \
+		if (nd == NULL) { \
+			rnd_message(RND_MSG_ERROR, "internal error: definition %s not found\n", basename); \
 			return; \
 		} \
 	} \
@@ -534,6 +551,110 @@ static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row
 	gds_uninit(&tmp);
 }
 
+static void drc_dlist_pcb2dlg(void)
+{
+	drc_rlist_ctx_t *ctx = &drc_rlist_ctx;
+	rnd_hid_attribute_t *attr;
+	rnd_hid_tree_t *tree;
+	rnd_hid_row_t *r;
+	char *cell[3], *cursor_path = NULL;
+	gdl_iterator_t it;
+	rnd_conf_listitem_t *i;
+	pcb_drcq_stat_t *st;
+
+	if (!ctx->active)
+		return;
+
+	attr = &ctx->dlg[ctx->wdlist];
+	tree = attr->wdata;
+
+	/* remember cursor */
+	r = rnd_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = rnd_strdup(r->cell[0]);
+
+	/* remove existing items */
+	rnd_dad_tree_clear(tree);
+
+	cell[2] = NULL;
+
+	rnd_conflist_foreach(&conf_drc_query.plugins.drc_query.definitions, &it, i) {
+		const char *src;
+		int *dis, dis_ = 0;
+		rnd_conf_role_t role;
+		lht_node_t *rule = i->prop.src;
+		st = pcb_drcq_stat_get(rule->name);
+
+		if (rule->type != LHT_HASH)
+			continue;
+
+		dis = drc_get_disable(rule->name);
+		if (dis == NULL)
+			dis = &dis_;
+
+		role = rnd_conf_lookup_role(rule);
+		src = textval_empty(rule, "source");
+		cell[0] = rule->name;
+		cell[1] = rnd_strdup(rnd_conf_role_name(role));
+
+		if (*src != '\0') {
+			rnd_hid_tree_t *tree = attr->wdata;
+			rnd_hid_row_t *parent = htsp_get(&tree->paths, src);
+			char *pcell[3];
+
+			if (parent == NULL) {
+				pcell[0] = src;
+				pcell[1] = "";
+				pcell[2] = NULL;
+				parent = rnd_dad_tree_append(tree->attrib, NULL, pcell);
+			}
+			rnd_dad_tree_append_under(tree->attrib, parent, cell);
+		}
+		else
+			rnd_dad_tree_append(attr, NULL, cell);
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		rnd_hid_attr_val_t hv;
+		hv.str = cursor_path;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdlist, &hv);
+		free(cursor_path);
+
+		r = rnd_dad_tree_get_selected(attr);
+		rlist_select(&ctx->dlg[ctx->wdlist], ctx->dlg_hid_ctx, r);
+	}
+}
+
+static void dlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
+{
+	rnd_hid_attr_val_t hv;
+	rnd_hid_tree_t *tree = attrib->wdata;
+	drc_rlist_ctx_t *ctx = tree->user_ctx;
+	lht_node_t *nd;
+	rnd_conf_role_t role;
+	pcb_drcq_stat_t *st;
+
+	dlist_fetch();
+	dlist_fetch_nd();
+
+	hv.str = nd->name;
+	if (hv.str == NULL) hv.str = "<n/a>";
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdef, &hv);
+
+	hv.str = textval_empty(nd, "type");
+	if (hv.str == NULL) hv.str = "<n/a>";
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdtype, &hv);
+
+	hv.str = textval_empty(nd, "desc");
+	if (hv.str == NULL) hv.str = "<n/a>";
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wddesc, &hv);
+
+	hv.str = textval_empty(nd, "default");
+	if (hv.str == NULL) hv.str = "<n/a>";
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdefault, &hv);
+}
+
 
 static void pcb_dlg_drc_rlist_rules(int *wpane)
 {
@@ -604,7 +725,7 @@ static void pcb_dlg_drc_rlist_defs(int *wpane)
 			RND_DAD_TREE(drc_rlist_ctx.dlg, 2, 1, lst_hdr);
 				RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 				drc_rlist_ctx.wdlist = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
-				RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, selected_cb, rlist_select);
+				RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, selected_cb, dlist_select);
 				RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, ctx, &drc_rlist_ctx);
 		RND_DAD_END(drc_rlist_ctx.dlg);
 
@@ -664,6 +785,7 @@ static int pcb_dlg_drc_rlist(void)
 	RND_DAD_SET_VALUE(drc_rlist_ctx.dlg_hid_ctx, wpaner,    dbl, 0.5);
 	RND_DAD_SET_VALUE(drc_rlist_ctx.dlg_hid_ctx, wpaned,    dbl, 0.5);
 	drc_rlist_pcb2dlg();
+	drc_dlist_pcb2dlg();
 	return 0;
 }
 

@@ -484,6 +484,11 @@ static int pcb_drc_query_rule_by_name(const char *name, lht_node_t **nd_out, int
 	return pcb_drc_query_any_by_name(name, 1, nd_out, do_create);
 }
 
+static int pcb_drc_query_def_by_name(const char *name, lht_node_t **nd_out, int do_create)
+{
+	return pcb_drc_query_any_by_name(name, 0, nd_out, do_create);
+}
+
 
 static int pcb_drc_query_clear(rnd_hidlib_t *hidlib, int is_rule, const char *src)
 {
