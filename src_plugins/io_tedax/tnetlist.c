@@ -45,6 +45,7 @@
 #include "netlist.h"
 
 #include "tnetlist.h"
+#include "tdrc_query.h"
 #include "parse.h"
 
 typedef struct {
