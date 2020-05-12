@@ -252,41 +252,16 @@ static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, rnd_hid
 }
 
 
-static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void pref_conf_edit_dlg(rnd_conf_native_t *nat, long idx, rnd_conf_role_t role, rnd_conflist_t *hlist)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	pref_ctx_t *pctx = caller_data;
 	confedit_ctx_t *ctx;
-	rnd_hid_row_t *r;
 	int b[4] = {0};
 
-	if (pctx->conf.selected_nat == NULL) {
-		rnd_message(RND_MSG_ERROR, "You need to select a conf leaf node to edit\nTry the tree on the left.\n");
-		return;
-	}
-
-	r = rnd_dad_tree_get_selected(&pctx->dlg[pctx->conf.wintree]);
-	if (r == NULL) {
-		rnd_message(RND_MSG_ERROR, "You need to select a role (upper right list)\n");
-		return;
-	}
-
-	if (pctx->conf.selected_idx >= pctx->conf.selected_nat->array_size) {
-		rnd_message(RND_MSG_ERROR, "Internal error: array index out of bounds\n");
-		return;
-	}
-
-	if (pctx->conf.selected_nat->type == RND_CFN_HLIST) {
-		if (pctx->conf.selected_nat->gui_edit_act == NULL) {
-			rnd_message(RND_MSG_ERROR, "ERROR: can not edit hash lists on GUI\n");
-			return;
-		}
-	}
-
 	ctx = calloc(sizeof(confedit_ctx_t), 1);
-	ctx->nat = pctx->conf.selected_nat;
-	ctx->idx = pctx->conf.selected_idx;
-	ctx->role = r->user_data2.lng;
+	ctx->nat = nat;
+	ctx->idx = idx;
+	ctx->role = role;
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
@@ -367,9 +342,14 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 					gdl_iterator_t it;
 					rnd_conf_listitem_t *i;
 
+					if (hlist == NULL) {
+						RND_DAD_LABEL(ctx->dlg, "ERROR: hlist not available");
+						break;
+					}
+
 					RND_DAD_BEGIN_VBOX(ctx->dlg);
 						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-						rnd_conflist_foreach(pctx->conf.selected_nat->val.list, &it, i) {
+						rnd_conflist_foreach(hlist, &it, i) {
 							lht_node_t *rule = i->prop.src;
 							RND_DAD_BUTTON(ctx->dlg, rule->name);
 								RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_hlist_cb);
@@ -405,6 +385,38 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 
 	confedit_brd2dlg(ctx);
+}
+
+
+static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	pref_ctx_t *pctx = caller_data;
+	rnd_hid_row_t *r;
+
+	if (pctx->conf.selected_nat == NULL) {
+		rnd_message(RND_MSG_ERROR, "You need to select a conf leaf node to edit\nTry the tree on the left.\n");
+		return;
+	}
+
+	r = rnd_dad_tree_get_selected(&pctx->dlg[pctx->conf.wintree]);
+	if (r == NULL) {
+		rnd_message(RND_MSG_ERROR, "You need to select a role (upper right list)\n");
+		return;
+	}
+
+	if (pctx->conf.selected_idx >= pctx->conf.selected_nat->array_size) {
+		rnd_message(RND_MSG_ERROR, "Internal error: array index out of bounds\n");
+		return;
+	}
+
+	if (pctx->conf.selected_nat->type == RND_CFN_HLIST) {
+		if (pctx->conf.selected_nat->gui_edit_act == NULL) {
+			rnd_message(RND_MSG_ERROR, "ERROR: can not edit hash lists on GUI\n");
+			return;
+		}
+	}
+
+	pref_conf_edit_dlg(pctx->conf.selected_nat, pctx->conf.selected_idx, r->user_data2.lng, pctx->conf.selected_nat->val.list);
 }
 
 static void pref_conf_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
