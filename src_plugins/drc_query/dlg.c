@@ -538,56 +538,56 @@ static void pcb_dlg_drc_rlist_rules(int *wpane)
 {
 	static const char *lst_hdr[] = {"rule name", "role", "disabled", "cost", NULL};
 
-		RND_DAD_BEGIN_HPANE(drc_rlist_ctx.dlg);
-			*wpane = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+	RND_DAD_BEGIN_HPANE(drc_rlist_ctx.dlg);
+		*wpane = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
 
-			RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* left */
-				RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Rules available:");
-				RND_DAD_TREE(drc_rlist_ctx.dlg, 4, 1, lst_hdr);
-					RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-					drc_rlist_ctx.wlist = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
-					RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, selected_cb, rlist_select);
-					RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, ctx, &drc_rlist_ctx);
-				RND_DAD_BEGIN_HBOX(drc_rlist_ctx.dlg);
-					RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Run");
-						RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_run_cb);
-					RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Edit...");
-						RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_edit_cb);
-					RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Toggle disable");
-						RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_toggle_cb);
-				RND_DAD_END(drc_rlist_ctx.dlg);
+		RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* left */
+			RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
+			RND_DAD_LABEL(drc_rlist_ctx.dlg, "Rules available:");
+			RND_DAD_TREE(drc_rlist_ctx.dlg, 4, 1, lst_hdr);
+				RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+				drc_rlist_ctx.wlist = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+				RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, selected_cb, rlist_select);
+				RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, ctx, &drc_rlist_ctx);
+			RND_DAD_BEGIN_HBOX(drc_rlist_ctx.dlg);
+				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Run");
+					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_run_cb);
+				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Edit...");
+					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_edit_cb);
+				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Toggle disable");
+					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_toggle_cb);
 			RND_DAD_END(drc_rlist_ctx.dlg);
-
-			RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* right */
-				RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_BEGIN_HBOX(drc_rlist_ctx.dlg);
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "Rule: ");
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "<no rule selected>");
-						drc_rlist_ctx.wrule = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
-				RND_DAD_END(drc_rlist_ctx.dlg);
-
-				RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg);
-					RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "Type/group:");
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
-						drc_rlist_ctx.wtype = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "");
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "Title:");
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
-						drc_rlist_ctx.wtitle = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "");
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "Description:");
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
-						drc_rlist_ctx.wdesc = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "");
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "Statistics:");
-					RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
-						drc_rlist_ctx.wstat = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
-				RND_DAD_END(drc_rlist_ctx.dlg);
-			RND_DAD_END(drc_rlist_ctx.dlg);
-
 		RND_DAD_END(drc_rlist_ctx.dlg);
+
+		RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* right */
+			RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
+			RND_DAD_BEGIN_HBOX(drc_rlist_ctx.dlg);
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Rule: ");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "<no rule selected>");
+					drc_rlist_ctx.wrule = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+			RND_DAD_END(drc_rlist_ctx.dlg);
+
+			RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg);
+				RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Type/group:");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
+					drc_rlist_ctx.wtype = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Title:");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
+					drc_rlist_ctx.wtitle = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Description:");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
+					drc_rlist_ctx.wdesc = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Statistics:");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
+					drc_rlist_ctx.wstat = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+			RND_DAD_END(drc_rlist_ctx.dlg);
+		RND_DAD_END(drc_rlist_ctx.dlg);
+
+	RND_DAD_END(drc_rlist_ctx.dlg);
 }
 
 static void pcb_dlg_drc_rlist_defs(int *wpane)
