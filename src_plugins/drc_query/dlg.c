@@ -534,19 +534,12 @@ static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row
 }
 
 
-static int pcb_dlg_drc_rlist(void)
+static void pcb_dlg_drc_rlist_rules(int *wpane)
 {
-	const char *lst_hdr[] = {"rule name", "role", "disabled", "cost", NULL};
-	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	int wpane;
+	static const char *lst_hdr[] = {"rule name", "role", "disabled", "cost", NULL};
 
-	if (drc_rlist_ctx.active)
-		return 0; /* do not open another */
-
-	RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg);
-		RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
 		RND_DAD_BEGIN_HPANE(drc_rlist_ctx.dlg);
-			wpane = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+			*wpane = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
 
 			RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* left */
 				RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
@@ -595,6 +588,24 @@ static int pcb_dlg_drc_rlist(void)
 			RND_DAD_END(drc_rlist_ctx.dlg);
 
 		RND_DAD_END(drc_rlist_ctx.dlg);
+}
+
+static void pcb_dlg_drc_rlist_defs(int *wpane)
+{
+
+}
+
+static int pcb_dlg_drc_rlist(void)
+{
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	int wpaner;
+
+	if (drc_rlist_ctx.active)
+		return 0; /* do not open another */
+
+	RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg);
+		RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
+		pcb_dlg_drc_rlist_rules(&wpaner);
 		RND_DAD_BUTTON_CLOSES(drc_rlist_ctx.dlg, clbtn);
 	RND_DAD_END(drc_rlist_ctx.dlg);
 
@@ -603,7 +614,7 @@ static int pcb_dlg_drc_rlist(void)
 
 	RND_DAD_DEFSIZE(drc_rlist_ctx.dlg, 550, 400);
 	RND_DAD_NEW("drc_query_list", drc_rlist_ctx.dlg, "drc_query: list of rules", &drc_rlist_ctx, rnd_false, drc_rlist_close_cb);
-	RND_DAD_SET_VALUE(drc_rlist_ctx.dlg_hid_ctx, wpane,    dbl, 0.5);
+	RND_DAD_SET_VALUE(drc_rlist_ctx.dlg_hid_ctx, wpaner,    dbl, 0.5);
 	drc_rlist_pcb2dlg();
 	return 0;
 }
