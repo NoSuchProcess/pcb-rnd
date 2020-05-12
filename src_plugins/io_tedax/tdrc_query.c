@@ -40,7 +40,8 @@
 #include <librnd/core/actions.h>
 #include "tdrc_query.h"
 
-#define MOD "DrcQueryRuleMod"
+#define RULEMOD "DrcQueryRuleMod"
+#define DEFMOD "DrcQueryDefMod"
 
 int tedax_drc_query_rule_parse(pcb_board_t *pcb, FILE *f, const char *src, char *rule_name)
 {
@@ -49,11 +50,11 @@ int tedax_drc_query_rule_parse(pcb_board_t *pcb, FILE *f, const char *src, char 
 	gds_t qry;
 
 	gds_init(&qry);
-	rnd_actionva(&pcb->hidlib, MOD, "create", rule_name, NULL);
+	rnd_actionva(&pcb->hidlib, RULEMOD, "create", rule_name, NULL);
 
 	while((argc = tedax_getline(f, line, sizeof(line), argv, 2)) >= 0) {
 		if ((strcmp(argv[0], "type") == 0) || (strcmp(argv[0], "title") == 0) || (strcmp(argv[0], "desc") == 0)) {
-			rnd_actionva(&pcb->hidlib, MOD, "set", rule_name, argv[0], argv[1], NULL);
+			rnd_actionva(&pcb->hidlib, RULEMOD, "set", rule_name, argv[0], argv[1], NULL);
 		}
 		else if (strcmp(argv[0], "query") == 0) {
 			gds_append_str(&qry, argv[1]);
@@ -62,13 +63,33 @@ int tedax_drc_query_rule_parse(pcb_board_t *pcb, FILE *f, const char *src, char 
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "drc_query_rule") == 0))
 			break;
 		else
-			rnd_message(RND_MSG_ERROR, "ignoring invalid command in drc_query %s\n", argv[0]);
+			rnd_message(RND_MSG_ERROR, "ignoring invalid command in drc_query_rule %s\n", argv[0]);
 	}
 
 
 	if (qry.used > 0) {
-		rnd_actionva(&pcb->hidlib, MOD, "set", rule_name, "query", qry.array, NULL);
+		rnd_actionva(&pcb->hidlib, RULEMOD, "set", rule_name, "query", qry.array, NULL);
 		gds_uninit(&qry);
+	}
+
+	return 0;
+}
+
+int tedax_drc_query_def_parse(pcb_board_t *pcb, FILE *f, const char *src, char *rule_name)
+{
+	int argc;
+	char line[520], *argv[4];
+
+	rnd_actionva(&pcb->hidlib, DEFMOD, "create", rule_name, NULL);
+
+	while((argc = tedax_getline(f, line, sizeof(line), argv, 2)) >= 0) {
+		if ((strcmp(argv[0], "type") == 0) || (strcmp(argv[0], "desc") == 0) || (strcmp(argv[0], "default") == 0)) {
+			rnd_actionva(&pcb->hidlib, DEFMOD, "set", rule_name, argv[0], argv[1], NULL);
+		}
+		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "drc_query_def") == 0))
+			break;
+		else
+			rnd_message(RND_MSG_ERROR, "ignoring invalid command in drc_query_def %s\n", argv[0]);
 	}
 
 	return 0;
@@ -97,6 +118,17 @@ int tedax_drc_query_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, const c
 			if (tedax_drc_query_rule_parse(pcb, f, src, argv[3]) < 0)
 				return -1;
 			cnt++;
+		}
+		if (strcmp(argv[1], "drc_query_def") == 0) {
+			if (strcmp(argv[2], "v1") != 0) {
+				if (!silent)
+					rnd_message(RND_MSG_ERROR, "Wrong drc_query_def version: %s\n", argv[2]);
+				continue;
+			}
+			if ((blk_id != NULL) && (strcmp(argv[3], blk_id) != 0))
+				continue;
+			if (tedax_drc_query_def_parse(pcb, f, src, argv[3]) < 0)
+				return -1;
 		}
 	}
 	return (cnt == 0) ? -1 : 0;
