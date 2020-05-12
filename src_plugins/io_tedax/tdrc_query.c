@@ -73,7 +73,7 @@ int tedax_drc_query_rule_parse(pcb_board_t *pcb, FILE *f, const char *src, char 
 	}
 
 	if (src != NULL)
-		rnd_actionva(&pcb->hidlib, RULEMOD, "set", rule_name, "src", src, NULL);
+		rnd_actionva(&pcb->hidlib, RULEMOD, "set", rule_name, "source", src, NULL);
 
 	return 0;
 }
@@ -96,7 +96,7 @@ int tedax_drc_query_def_parse(pcb_board_t *pcb, FILE *f, const char *src, char *
 	}
 
 	if (src != NULL)
-		rnd_actionva(&pcb->hidlib, DEFMOD, "set", rule_name, "src", src, NULL);
+		rnd_actionva(&pcb->hidlib, DEFMOD, "set", rule_name, "source", src, NULL);
 
 	return 0;
 }
