@@ -370,7 +370,7 @@ static void drc_rlist_pcb2dlg(void)
 			char *pcell[5];
 
 			if (parent == NULL) {
-				pcell[0] = src;
+				pcell[0] = (char *)src;
 				pcell[1] = "";
 				pcell[2] = "";
 				pcell[3] = "";
@@ -603,7 +603,7 @@ static void drc_dlist_pcb2dlg(void)
 			char *pcell[3];
 
 			if (parent == NULL) {
-				pcell[0] = src;
+				pcell[0] = (char *)src;
 				pcell[1] = "";
 				pcell[2] = NULL;
 				parent = rnd_dad_tree_append(tree->attrib, NULL, pcell);

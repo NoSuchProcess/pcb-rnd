@@ -548,7 +548,7 @@ static int pcb_drc_query_get(rnd_hidlib_t *hidlib, int is_rule, const char *rule
 		return -1;
 
 	res->type = FGW_STR;
-	res->val.str = textval_empty(nd, key);
+	res->val.cstr = textval_empty(nd, key);
 
 	return -1;
 }
