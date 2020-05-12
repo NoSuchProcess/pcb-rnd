@@ -1718,14 +1718,14 @@
  ../src_plugins/drc_orig/drc_orig_conf_fields.h
 ../src_plugins/drc_query/drc_query.o: \
  ../src_plugins/drc_query/drc_query.c ../config.h librnd/config.h \
- ../src_3rd/genht/hash.h librnd/core/actions.h librnd/core/hid.h \
- ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
- ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h librnd/core/attrib.h librnd/core/box.h \
- librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
- ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/genht/hash.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ ../src_3rd/liblihata/tree.h librnd/core/actions.h librnd/core/hid.h \
+ librnd/core/error.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
+ librnd/core/attrib.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h librnd/core/unit.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h librnd/core/conf.h librnd/core/rnd_printf.h \
@@ -1751,7 +1751,7 @@
  ../src_plugins/query/query.h ../src_plugins/drc_query/drc_query_stat.c \
  ../src_plugins/drc_query/dlg.c librnd/core/hid_dad.h \
  librnd/core/hid_attrib.h librnd/core/hid_dad_spin.h \
- librnd/core/hid_dad_tree.h ../src_3rd/liblihata/tree.h actions_pcb.h \
+ librnd/core/hid_dad_tree.h actions_pcb.h \
  ../src_plugins/drc_query/drc_query_conf_fields.h
 ../src_plugins/expfeat/expfeat.o: ../src_plugins/expfeat/expfeat.c \
  ../config.h librnd/config.h librnd/core/conf.h \
@@ -5088,7 +5088,8 @@
  librnd/core/compat_misc.h ../src_plugins/io_tedax/stackup.h \
  ../src_plugins/io_tedax/tlayer.h layer.h \
  ../src_plugins/io_tedax/tboard.h ../src_plugins/io_tedax/tdrc.h \
- ../src_plugins/io_tedax/tetest.h ../src_plugins/io_tedax/tnetlist.h
+ ../src_plugins/io_tedax/tdrc_query.h ../src_plugins/io_tedax/tetest.h \
+ ../src_plugins/io_tedax/tnetlist.h
 ../src_plugins/io_tedax/parse.o: ../src_plugins/io_tedax/parse.c \
  ../config.h librnd/config.h ../src_plugins/io_tedax/parse.h \
  librnd/core/error.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
@@ -5169,6 +5170,29 @@
  ../src_3rd/liblihata/parser.h ../src_3rd/genvector/vtp0.h \
  librnd/core/list_conf.h librnd/core/error.h \
  ../src_plugins/io_tedax/tdrc.h
+../src_plugins/io_tedax/tdrc_query.o: \
+ ../src_plugins/io_tedax/tdrc_query.c ../config.h librnd/config.h board.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
+ librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
+ librnd/core/unit.h librnd/core/attrib.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
+ librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
+ global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h ../src_3rd/genvector/gds_char.h obj_gfx_list.h \
+ obj_gfx.h layer_grp.h rats_patch.h board.h librnd/core/hidlib.h \
+ ../src_plugins/io_tedax/parse.h librnd/core/safe_fs.h librnd/core/conf.h \
+ librnd/core/rnd_printf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/list_conf.h librnd/core/error.h librnd/core/actions.h \
+ librnd/core/hid.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
+ ../src_plugins/io_tedax/tdrc_query.h
 ../src_plugins/io_tedax/tetest.o: ../src_plugins/io_tedax/tetest.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
