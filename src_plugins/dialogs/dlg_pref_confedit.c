@@ -252,7 +252,7 @@ static void pref_conf_editval_hlist_cb(void *hid_ctx, void *caller_data, rnd_hid
 }
 
 
-static void pref_conf_edit_dlg(rnd_conf_native_t *nat, long idx, rnd_conf_role_t role, rnd_conflist_t *hlist)
+static void pref_conf_edit_dlg(rnd_conf_native_t *nat, long idx, rnd_conf_role_t role, rnd_conflist_t *hlist, rnd_bool modal)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	confedit_ctx_t *ctx;
@@ -373,7 +373,7 @@ static void pref_conf_edit_dlg(rnd_conf_native_t *nat, long idx, rnd_conf_role_t
 		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	RND_DAD_END(ctx->dlg);
 
-	RND_DAD_NEW("pref_confedit", ctx->dlg, "pcb-rnd conf item", ctx, rnd_false, pref_conf_edit_close_cb);
+	RND_DAD_NEW("pref_confedit", ctx->dlg, "pcb-rnd conf item", ctx, modal, pref_conf_edit_close_cb);
 
 	if (is_read_only(ctx)) {
 		int n;
@@ -416,7 +416,7 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		}
 	}
 
-	pref_conf_edit_dlg(pctx->conf.selected_nat, pctx->conf.selected_idx, r->user_data2.lng, pctx->conf.selected_nat->val.list);
+	pref_conf_edit_dlg(pctx->conf.selected_nat, pctx->conf.selected_idx, r->user_data2.lng, pctx->conf.selected_nat->val.list, rnd_false);
 }
 
 static void pref_conf_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
