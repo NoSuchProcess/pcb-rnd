@@ -300,7 +300,8 @@ static fgw_error_t pcb_act_DrcQueryEditRule(fgw_arg_t *res, int argc, fgw_arg_t 
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
-	int wlist, wrule, wtype, wtitle, wdesc, wstat;
+	int wrlist, wrule, wtype, wtitle, wdesc, wstat; /* rule */
+	int wdlist, wdef, wdtype, wdefault, wddesc; /* define */
 } drc_rlist_ctx_t;
 
 static drc_rlist_ctx_t drc_rlist_ctx;
@@ -326,7 +327,7 @@ static void drc_rlist_pcb2dlg(void)
 	if (!ctx->active)
 		return;
 
-	attr = &ctx->dlg[ctx->wlist];
+	attr = &ctx->dlg[ctx->wrlist];
 	tree = attr->wdata;
 
 	/* remember cursor */
@@ -386,18 +387,18 @@ static void drc_rlist_pcb2dlg(void)
 	if (cursor_path != NULL) {
 		rnd_hid_attr_val_t hv;
 		hv.str = cursor_path;
-		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wrlist, &hv);
 		free(cursor_path);
 
 		r = rnd_dad_tree_get_selected(attr);
-		rlist_select(&ctx->dlg[ctx->wlist], ctx->dlg_hid_ctx, r);
+		rlist_select(&ctx->dlg[ctx->wrlist], ctx->dlg_hid_ctx, r);
 	}
 }
 
 static void rlist_btn_toggle_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
-	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wrlist]));
 	int *dis;
 
 	if (row == NULL) {
@@ -455,7 +456,7 @@ do { \
 static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
-	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wrlist]));
 	rnd_conf_role_t role;
 
 	rlist_fetch();
@@ -466,7 +467,7 @@ static void rlist_btn_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
 	drc_rlist_ctx_t *ctx = caller_data;
-	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wlist]));
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wrlist]));
 	lht_node_t *nd;
 	const char *script;
 	rnd_conf_role_t role;
@@ -546,7 +547,7 @@ static void pcb_dlg_drc_rlist_rules(int *wpane)
 			RND_DAD_LABEL(drc_rlist_ctx.dlg, "Rules available:");
 			RND_DAD_TREE(drc_rlist_ctx.dlg, 4, 1, lst_hdr);
 				RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
-				drc_rlist_ctx.wlist = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+				drc_rlist_ctx.wrlist = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
 				RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, selected_cb, rlist_select);
 				RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, ctx, &drc_rlist_ctx);
 			RND_DAD_BEGIN_HBOX(drc_rlist_ctx.dlg);
@@ -592,20 +593,66 @@ static void pcb_dlg_drc_rlist_rules(int *wpane)
 
 static void pcb_dlg_drc_rlist_defs(int *wpane)
 {
+	static const char *lst_hdr[] = {"rule name", "role", NULL};
+
+	RND_DAD_BEGIN_HPANE(drc_rlist_ctx.dlg);
+		*wpane = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+
+		RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* left */
+			RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
+			RND_DAD_LABEL(drc_rlist_ctx.dlg, "Definitions available:");
+			RND_DAD_TREE(drc_rlist_ctx.dlg, 2, 1, lst_hdr);
+				RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+				drc_rlist_ctx.wdlist = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+				RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, selected_cb, rlist_select);
+				RND_DAD_TREE_SET_CB(drc_rlist_ctx.dlg, ctx, &drc_rlist_ctx);
+		RND_DAD_END(drc_rlist_ctx.dlg);
+
+		RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg); /* right */
+			RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
+			RND_DAD_BEGIN_HBOX(drc_rlist_ctx.dlg);
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Definition: ");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "<no def. selected>");
+					drc_rlist_ctx.wdef = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+			RND_DAD_END(drc_rlist_ctx.dlg);
+
+			RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg);
+				RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Type:");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
+					drc_rlist_ctx.wdtype = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Description:");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
+					drc_rlist_ctx.wddesc = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Default:");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
+					drc_rlist_ctx.wdefault = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+			RND_DAD_END(drc_rlist_ctx.dlg);
+		RND_DAD_END(drc_rlist_ctx.dlg);
+
+	RND_DAD_END(drc_rlist_ctx.dlg);
 
 }
 
 static int pcb_dlg_drc_rlist(void)
 {
+	static const char *tabs[] = {"Rules", "Definitions", NULL};
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	int wpaner;
+	int wpaner, wpaned;
 
 	if (drc_rlist_ctx.active)
 		return 0; /* do not open another */
 
+
 	RND_DAD_BEGIN_VBOX(drc_rlist_ctx.dlg);
 		RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
-		pcb_dlg_drc_rlist_rules(&wpaner);
+		RND_DAD_BEGIN_TABBED(drc_rlist_ctx.dlg, tabs);
+			RND_DAD_COMPFLAG(drc_rlist_ctx.dlg, RND_HATF_EXPFILL);
+			pcb_dlg_drc_rlist_rules(&wpaner);
+			pcb_dlg_drc_rlist_defs(&wpaned);
+		RND_DAD_END(drc_rlist_ctx.dlg);
 		RND_DAD_BUTTON_CLOSES(drc_rlist_ctx.dlg, clbtn);
 	RND_DAD_END(drc_rlist_ctx.dlg);
 
@@ -615,6 +662,7 @@ static int pcb_dlg_drc_rlist(void)
 	RND_DAD_DEFSIZE(drc_rlist_ctx.dlg, 550, 400);
 	RND_DAD_NEW("drc_query_list", drc_rlist_ctx.dlg, "drc_query: list of rules", &drc_rlist_ctx, rnd_false, drc_rlist_close_cb);
 	RND_DAD_SET_VALUE(drc_rlist_ctx.dlg_hid_ctx, wpaner,    dbl, 0.5);
+	RND_DAD_SET_VALUE(drc_rlist_ctx.dlg_hid_ctx, wpaned,    dbl, 0.5);
 	drc_rlist_pcb2dlg();
 	return 0;
 }
