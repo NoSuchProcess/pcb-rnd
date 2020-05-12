@@ -127,9 +127,9 @@ pcb_opfunc_t ChangeRotFunctions = {
 static pcb_opfunc_t ChangeThermalFunctions = {
 	NULL, /* common_pre */
 	NULL, /* common_post */
-	pcb_anyop_change_thermal, /* line */
+	pcb_lineop_change_thermal,
 	NULL,
-	pcb_anyop_change_thermal, /* poly */
+	pcb_polyop_change_thermal,
 	NULL,
 	NULL,
 	NULL, /* arc */

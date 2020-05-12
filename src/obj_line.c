@@ -39,6 +39,7 @@
 #include "search.h"
 #include "polygon.h"
 #include "conf_core.h"
+#include "thermal.h"
 #include <librnd/core/compat_misc.h>
 #include "rotate.h"
 #include <librnd/core/hid_inlines.h>
@@ -828,6 +829,11 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 			rnd_r_search(Layer->line_tree, &sb, NULL, moveline_callback, &info, NULL);
 	}
 	return newone;
+}
+
+void *pcb_lineop_change_thermal(pcb_opctx_t *ctx, pcb_layer_t *ly, pcb_line_t *line)
+{
+	return pcb_anyop_change_thermal(ctx, (pcb_any_obj_t *)line);
 }
 
 /* destroys a line from a layer */

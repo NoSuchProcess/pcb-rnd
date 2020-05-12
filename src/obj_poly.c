@@ -40,6 +40,7 @@
 #include <librnd/poly/offset.h>
 #include "rotate.h"
 #include "search.h"
+#include "thermal.h"
 #include <librnd/core/hid_inlines.h>
 
 #include "conf_core.h"
@@ -676,6 +677,11 @@ void *pcb_polyop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_poly_t *p
 
 	pcb_poly_ppclear(polygon);
 	return polygon;
+}
+
+void *pcb_polyop_change_thermal(pcb_opctx_t *ctx, pcb_layer_t *ly, pcb_poly_t *poly)
+{
+	return pcb_anyop_change_thermal(ctx, (pcb_any_obj_t *)poly);
 }
 
 /* Handle attempts to change the clearance of a polygon. */

@@ -38,6 +38,7 @@
 #include "rotate.h"
 #include "move.h"
 #include "conf_core.h"
+#include "thermal.h"
 #include <librnd/core/compat_misc.h>
 #include "draw_wireframe.h"
 #include <librnd/core/hid_inlines.h>
@@ -479,6 +480,11 @@ void *pcb_arcop_move_buffer(pcb_opctx_t *ctx, pcb_layer_t *dstly, pcb_arc_t *arc
 	pcb_poly_clear_from_poly(ctx->buffer.dst, PCB_OBJ_ARC, dstly, arc);
 
 	return arc;
+}
+
+void *pcb_arcop_change_thermal(pcb_opctx_t *ctx, pcb_layer_t *ly, pcb_arc_t *arc)
+{
+	return pcb_anyop_change_thermal(ctx, (pcb_any_obj_t *)arc);
 }
 
 /* changes the size of an arc */

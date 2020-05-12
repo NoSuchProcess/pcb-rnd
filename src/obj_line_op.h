@@ -54,6 +54,8 @@ void *pcb_lineop_rotate90(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line
 void *pcb_lineop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
 void *pcb_lineop_change_flag(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_line_t *Line);
 void *pcb_lineop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_line_t *line);
+void *pcb_lineop_change_thermal(pcb_opctx_t *ctx, pcb_layer_t *ly, pcb_line_t *line);
+
 
 
 
