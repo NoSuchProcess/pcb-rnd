@@ -5291,7 +5291,7 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
  librnd/core/compat_misc.h librnd/core/actions.h librnd/core/safe_fs.h \
  obj_subc.h netlist.h ../src_plugins/io_tedax/tnetlist.h \
- ../src_plugins/io_tedax/parse.h
+ ../src_plugins/io_tedax/tdrc_query.h ../src_plugins/io_tedax/parse.h
 ../src_plugins/jostle/jostle.o: ../src_plugins/jostle/jostle.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
