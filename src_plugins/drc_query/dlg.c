@@ -626,6 +626,24 @@ static void drc_dlist_pcb2dlg(void)
 	}
 }
 
+static void dlist_btn_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	drc_rlist_ctx_t *ctx = caller_data;
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wdlist]));
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	lht_node_t *nd;
+	char *path;
+
+	dlist_fetch_nd();
+
+	if (nd == NULL)
+		return;
+
+	path = rnd_concat("design/drc/", nd->name, NULL);
+	rnd_actionva(hl, "dlg_confval_edit", path, "0", "design", NULL);
+	free(path);
+}
+
 static void dlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	char *path;
@@ -771,6 +789,7 @@ static void pcb_dlg_drc_rlist_defs(int *wpane)
 				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Current value:");
 				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "-");
 					drc_rlist_ctx.wvalue = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, dlist_btn_edit_cb);
 			RND_DAD_END(drc_rlist_ctx.dlg);
 		RND_DAD_END(drc_rlist_ctx.dlg);
 
