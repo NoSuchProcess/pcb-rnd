@@ -761,12 +761,12 @@ static gboolean ghid_gl_drawing_area_expose_cb(GtkWidget *widget, pcb_gtk_expose
 
 	ghid_gl_start_drawing(port);
 
-	ctx.view.X1 = MIN(Px(ev->area.x), Px(ev->area.x + ev->area.width + 1));
-	ctx.view.Y1 = MIN(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
-	ctx.view.X2 = MAX(Px(ev->area.x), Px(ev->area.x + ev->area.width + 1));
-	ctx.view.Y2 = MAX(Py(ev->area.y), Py(ev->area.y + ev->area.height + 1));
+	ctx.view.X1 = Px(0);
+	ctx.view.Y1 = Py(0);
+	ctx.view.X2 = Px(allocation.width);
+	ctx.view.Y2 = Py(allocation.height);
 
-	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, ev->area.x, allocation.height - ev->area.height - ev->area.y, ev->area.width, ev->area.height, &priv->offlimits_color);
+	pcb_gl_draw_expose_init(&gtk2_gl_hid, allocation.width, allocation.height, 0, 0, allocation.width, allocation.height, &priv->offlimits_color);
 
 	glScalef((rnd_conf.editor.view.flip_x ? -1. : 1.) / port->view.coord_per_px, (rnd_conf.editor.view.flip_y ? -1. : 1.) / port->view.coord_per_px, ((rnd_conf.editor.view.flip_x == rnd_conf.editor.view.flip_y) ? 1. : -1.) / port->view.coord_per_px);
 	glTranslatef(rnd_conf.editor.view.flip_x ? port->view.x0 - hidlib->size_x : -port->view.x0, rnd_conf.editor.view.flip_y ? port->view.y0 - hidlib->size_y : -port->view.y0, 0);
