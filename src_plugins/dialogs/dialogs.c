@@ -63,9 +63,14 @@ extern const conf_dialogs_t dialogs_conf;
 #include "dlg_view.h"
 #include "dlg_pref.h"
 
+extern const char pcb_acts_dlg_confval_edit[];
+extern const char pcb_acth_dlg_confval_edit[];
+extern fgw_error_t pcb_act_dlg_confval_edit(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+
 
 rnd_action_t dialogs_action_list[] = {
 	{"dlg_test", pcb_act_dlg_test, dlg_test_help, dlg_test_syntax},
+	{"dlg_confval_edit", pcb_act_dlg_confval_edit, pcb_acth_dlg_confval_edit, pcb_acts_dlg_confval_edit},
 	{"LayerBinding", pcb_act_LayerBinding, pcb_acth_LayerBinding, pcb_acts_LayerBinding},
 	{"FlagEdit", pcb_act_FlagEdit, pcb_acth_FlagEdit, pcb_acts_FlagEdit},
 	{"PadstackEdit", pcb_act_PadstackEdit, pcb_acth_PadstackEdit, pcb_acts_PadstackEdit},

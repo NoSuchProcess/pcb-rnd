@@ -419,6 +419,41 @@ static void pref_conf_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	pref_conf_edit_dlg(pctx->conf.selected_nat, pctx->conf.selected_idx, r->user_data2.lng, pctx->conf.selected_nat->val.list, rnd_false);
 }
 
+const char pcb_acts_dlg_confval_edit[] = "dlg_confval_edit(path, idx, role, [modal])\n";
+const char pcb_acth_dlg_confval_edit[] = "Present a dialog box for editing the value of a conf node at path.";
+fgw_error_t pcb_act_dlg_confval_edit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *path, *srole, *smodal;
+	rnd_bool modal;
+	long idx;
+	rnd_conf_native_t *nat;
+	rnd_conf_role_t role;
+
+	RND_ACT_CONVARG(1, FGW_STR, dlg_confval_edit, path = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_LONG, dlg_confval_edit, idx = argv[2].val.nat_long);
+	RND_ACT_CONVARG(3, FGW_STR, dlg_confval_edit, srole = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, dlg_confval_edit, smodal = argv[4].val.str);
+
+	nat = rnd_conf_get_field(path);
+	if (nat == NULL) {
+		rnd_message(RND_MSG_ERROR, "ERROR: no such config path: '%s'\n", path);
+		return -1;
+	}
+
+
+	modal = rnd_istrue(smodal);
+	role = rnd_conf_role_parse(srole);
+	if (role == RND_CFR_invalid) {
+		rnd_message(RND_MSG_ERROR, "ERROR: no such config role: '%s'\n", srole);
+		return -1;
+	}
+
+	pref_conf_edit_dlg(nat, idx, role, NULL, modal);
+	RND_ACT_IRES(0);
+	return 0;
+}
+
+
 static void pref_conf_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *pctx = caller_data;
