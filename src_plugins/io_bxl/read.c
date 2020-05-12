@@ -848,7 +848,7 @@ int io_bxl_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename,
 		size_t offs = sep - Filename;
 		autofree = rnd_strdup(Filename);
 		Filename = autofree;
-		sep = Filename + offs;
+		sep = autofree + offs;
 		*sep = '\0';
 		subfpname = sep+2;
 	}
