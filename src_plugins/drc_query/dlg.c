@@ -560,7 +560,6 @@ static void drc_dlist_pcb2dlg(void)
 	char *cell[3], *cursor_path = NULL;
 	gdl_iterator_t it;
 	rnd_conf_listitem_t *i;
-	pcb_drcq_stat_t *st;
 
 	if (!ctx->active)
 		return;
@@ -583,7 +582,6 @@ static void drc_dlist_pcb2dlg(void)
 		int *dis, dis_ = 0;
 		rnd_conf_role_t role;
 		lht_node_t *rule = i->prop.src;
-		st = pcb_drcq_stat_get(rule->name);
 
 		if (rule->type != LHT_HASH)
 			continue;
@@ -652,7 +650,6 @@ static void dlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row
 	drc_rlist_ctx_t *ctx = tree->user_ctx;
 	lht_node_t *nd;
 	rnd_conf_role_t role;
-	pcb_drcq_stat_t *st;
 	gds_t tmp;
 	rnd_conf_native_t *nat;
 
