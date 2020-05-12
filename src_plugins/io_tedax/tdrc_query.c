@@ -72,6 +72,9 @@ int tedax_drc_query_rule_parse(pcb_board_t *pcb, FILE *f, const char *src, char 
 		gds_uninit(&qry);
 	}
 
+	if (src != NULL)
+		rnd_actionva(&pcb->hidlib, RULEMOD, "set", rule_name, "src", src, NULL);
+
 	return 0;
 }
 
@@ -91,6 +94,9 @@ int tedax_drc_query_def_parse(pcb_board_t *pcb, FILE *f, const char *src, char *
 		else
 			rnd_message(RND_MSG_ERROR, "ignoring invalid command in drc_query_def %s\n", argv[0]);
 	}
+
+	if (src != NULL)
+		rnd_actionva(&pcb->hidlib, DEFMOD, "set", rule_name, "src", src, NULL);
 
 	return 0;
 }
