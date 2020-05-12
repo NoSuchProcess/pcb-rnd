@@ -131,17 +131,21 @@ do { \
 	} \
 } while(0)
 
-static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(netlist|board|footprint|stackup|layer|drc|drc_query, filename, [block_id, [silent]])";
+static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(netlist|board|footprint|stackup|layer|drc|drc_query, filename, [block_id, [silent, [src]]])";
 static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified block from a tedax file.";
 static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *fname = NULL, *type, *id = NULL, *silents = NULL;
+	const char *fname = NULL, *type, *id = NULL, *silents = NULL, *src = NULL;
 	int silent;
 
 	RND_ACT_CONVARG(1, FGW_STR, LoadtedaxFrom, type = argv[1].val.str);
 	RND_ACT_MAY_CONVARG(2, FGW_STR, LoadtedaxFrom, fname = argv[2].val.str);
 	RND_ACT_MAY_CONVARG(3, FGW_STR, LoadtedaxFrom, id = argv[3].val.str);
 	RND_ACT_MAY_CONVARG(4, FGW_STR, LoadtedaxFrom, silents = argv[4].val.str);
+	RND_ACT_MAY_CONVARG(5, FGW_STR, LoadtedaxFrom, src = argv[5].val.str);
+
+	if ((id != NULL) && (*id == '\0'))
+		id = NULL;
 
 	silent = (silents != NULL) && (rnd_strcasecmp(silents, "silent") == 0);
 
@@ -177,7 +181,7 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	}
 	if (rnd_strcasecmp(type, "drc_query") == 0) {
 		gen_load(drc_query, fname);
-		RND_ACT_IRES(tedax_drc_query_load(PCB, fname, id, NULL, silent));
+		RND_ACT_IRES(tedax_drc_query_load(PCB, fname, id, src, silent));
 		return 0;
 	}
 	RND_ACT_FAIL(LoadtedaxFrom);
