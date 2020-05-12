@@ -265,13 +265,32 @@ static int tedaxnet_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, c
 }
 
 
+int tedax_net_and_drc_load(const char *fname_net, int import_fp, int silent)
+{
+	FILE *fn;
+	int ret = 0;
+
+	fn = rnd_fopen(&PCB->hidlib, fname_net, "r");
+	if (fn == NULL) {
+		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname_net);
+		return -1;
+	}
+
+	ret = tedax_net_fload(fn, import_fp, NULL, silent);
+	rewind(fn);
+	ret |= tedax_drc_query_fload(PCB, fn, NULL, "netlist", silent);
+
+	fclose(fn);
+	return ret;
+}
+
 static int tedaxnet_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
 	if (numargs != 1) {
 		rnd_message(RND_MSG_ERROR, "import_tedaxnet: requires exactly 1 input file name\n");
 		return -1;
 	}
-	return tedax_net_load(args[0], 1, NULL, 0);
+	return tedax_net_and_drc_load(args[0], 1, 0);
 }
 
 static pcb_plug_import_t import_tedaxnet;
@@ -289,7 +308,7 @@ void pcb_tedax_net_init(void)
 	import_tedaxnet.fmt_support_prio = tedaxnet_support_prio;
 	import_tedaxnet.import           = tedaxnet_import;
 	import_tedaxnet.name             = "tEDAx";
-	import_tedaxnet.desc             = "netlist+footprints from tEDAx";
+	import_tedaxnet.desc             = "netlist+footprints+drc from tEDAx";
 	import_tedaxnet.ui_prio          = 100;
 	import_tedaxnet.single_arg       = 1;
 	import_tedaxnet.all_filenames    = 1;
