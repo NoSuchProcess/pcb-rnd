@@ -313,7 +313,8 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 
 
 			if (stype == NULL) {
-				rnd_message(RND_MSG_ERROR, "drc_query: missing type field for constant %s\n", nd->name);
+				if ((ndesc != NULL) || (sdefault != NULL))
+					rnd_message(RND_MSG_ERROR, "drc_query: missing type field for constant %s\n", nd->name);
 				goto fail;
 			}
 
