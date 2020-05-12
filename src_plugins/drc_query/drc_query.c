@@ -358,6 +358,16 @@ static const char *textval_empty(lht_node_t *nd, const char *fname)
 	return nt->data.text.value;
 }
 
+static const char *textval_null(lht_node_t *nd, const char *fname)
+{
+	lht_node_t *nt = lht_dom_hash_get(nd, fname);
+
+	if ((nt == NULL) || (nt->type != LHT_TEXT))
+		return NULL;
+
+	return nt->data.text.value;
+}
+
 #define MKDIR_ND(outnode, parent, ntype, nname, errinstr) \
 do { \
 	lht_node_t *nnew; \
@@ -418,15 +428,16 @@ do { \
 	} \
 } while(0)
 
+#define DRC_QUERY_RULE_OR_DEF(is_rule) \
+	((is_rule) ? &conf_drc_query.plugins.drc_query.rules : &conf_drc_query.plugins.drc_query.definitions)
+
 static int pcb_drc_query_any_by_name(const char *name, int is_rule, lht_node_t **nd_out, int do_create)
 {
 	lht_node_t *n = NULL, *nd = NULL;
 	int ret = -1, needs_update = 0;
+	const rnd_conflist_t *l = DRC_QUERY_RULE_OR_DEF(is_rule);
 	gdl_iterator_t it;
-	rnd_conflist_t *l;
 	rnd_conf_listitem_t *i;
-
-	l = is_rule ? &conf_drc_query.plugins.drc_query.rules : &conf_drc_query.plugins.drc_query.definitions;
 
 	rnd_conflist_foreach(l, &it, i) {
 		n = i->prop.src;
@@ -476,6 +487,29 @@ static int pcb_drc_query_rule_by_name(const char *name, lht_node_t **nd_out, int
 
 static int pcb_drc_query_clear(rnd_hidlib_t *hidlib, int is_rule, const char *src)
 {
+	const rnd_conflist_t *l = DRC_QUERY_RULE_OR_DEF(is_rule);
+	gdl_iterator_t it;
+	rnd_conf_listitem_t *i;
+	int needs_update = 0;
+
+	rnd_conflist_foreach(l, &it, i) {
+		const char *nsrc;
+		lht_node_t *n = i->prop.src;
+		if (n == NULL)
+			continue;
+		nsrc = textval_null(n, "src");
+		if (nsrc == NULL)
+			continue;
+		if (strcmp(nsrc, src) == 0) {
+			needs_update = 1;
+			i->prop.src = NULL;
+			lht_tree_del(n);
+		}
+	}
+
+	if (needs_update)
+		rnd_conf_update(NULL, -1);
+
 	return -1;
 }
 
