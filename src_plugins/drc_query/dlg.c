@@ -301,7 +301,7 @@ typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	int wrlist, wrule, wtype, wtitle, wdesc, wstat; /* rule */
-	int wdlist, wdef, wdtype, wdefault, wddesc; /* define */
+	int wdlist, wdef, wdtype, wdefault, wddesc, wvalue; /* define */
 } drc_rlist_ctx_t;
 
 static drc_rlist_ctx_t drc_rlist_ctx;
@@ -628,12 +628,15 @@ static void drc_dlist_pcb2dlg(void)
 
 static void dlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
+	char *path;
 	rnd_hid_attr_val_t hv;
 	rnd_hid_tree_t *tree = attrib->wdata;
 	drc_rlist_ctx_t *ctx = tree->user_ctx;
 	lht_node_t *nd;
 	rnd_conf_role_t role;
 	pcb_drcq_stat_t *st;
+	gds_t tmp;
+	rnd_conf_native_t *nat;
 
 	dlist_fetch();
 	dlist_fetch_nd();
@@ -653,6 +656,20 @@ static void dlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row
 	hv.str = textval_empty(nd, "default");
 	if (hv.str == NULL) hv.str = "<n/a>";
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdefault, &hv);
+
+	path = rnd_concat("design/drc/", nd->name, NULL);
+	nat = rnd_conf_get_field(path);
+	free(path);
+	gds_init(&tmp);
+	if (nat != NULL) {
+		rnd_conf_print_native((rnd_conf_pfn)rnd_append_printf, &tmp, "", 0, nat);
+		hv.str = tmp.array;
+	}
+	else
+		hv.str = "<n/a>";
+	if (hv.str == NULL) hv.str = "<n/a>";
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wvalue, &hv);
+	gds_uninit(&tmp);
 }
 
 
@@ -750,6 +767,10 @@ static void pcb_dlg_drc_rlist_defs(int *wpane)
 				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Default:");
 				RND_DAD_LABEL(drc_rlist_ctx.dlg, "-");
 					drc_rlist_ctx.wdefault = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "");
+				RND_DAD_LABEL(drc_rlist_ctx.dlg, "Current value:");
+				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "-");
+					drc_rlist_ctx.wvalue = RND_DAD_CURRENT(drc_rlist_ctx.dlg);
 			RND_DAD_END(drc_rlist_ctx.dlg);
 		RND_DAD_END(drc_rlist_ctx.dlg);
 
