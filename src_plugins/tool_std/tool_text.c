@@ -74,7 +74,7 @@ void pcb_tool_text_notify_mode(rnd_hidlib_t *hl)
 void pcb_tool_text_draw_attached(rnd_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
-	pcb_text_t text;
+	pcb_text_t text = {0};
 	int flag = PCB_FLAG_CLEARLINE;
 
 	if (pcb_layer_flags(pcb, PCB_CURRLID(pcb)) & PCB_LYT_BOTTOM)
@@ -82,15 +82,11 @@ void pcb_tool_text_draw_attached(rnd_hidlib_t *hl)
 
 	text.X = pcb_crosshair.X;
 	text.Y = pcb_crosshair.Y;
-	text.rot = 0;
 	text.Flags = pcb_flag_make(flag);
 	text.Scale = conf_core.design.text_scale;
-	text.scale_x = text.scale_y = 0;
 	text.thickness = conf_core.design.text_thickness;
 	text.TextString = "A";
 	text.fid = conf_core.design.text_font_id;
-	text.ID = 0;
-	text.BoundingBox.X1 = text.BoundingBox.Y1 = text.BoundingBox.X2 = text.BoundingBox.Y2 = 0;
 	pcb_text_draw_xor(&text,0,0);
 
 }
