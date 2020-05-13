@@ -52,14 +52,13 @@ static rnd_xform_t dxform;
 
 static pcb_text_t *dtext(int x, int y, int scale, pcb_font_id_t fid, const char *txt)
 {
-	static pcb_text_t t;
+	static pcb_text_t t = {0};
 
 	if (dinfo.xform == NULL) dinfo.xform = &dxform;
 
 	t.X = RND_MM_TO_COORD(x);
 	t.Y = RND_MM_TO_COORD(y);
 	t.TextString = (char *)txt;
-	t.rot = 0;
 	t.Scale = scale;
 	t.fid = fid;
 	t.Flags = pcb_no_flags();
