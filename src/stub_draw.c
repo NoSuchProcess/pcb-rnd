@@ -33,7 +33,7 @@
 /****** common code ******/
 void dummy_draw_text(pcb_draw_info_t *info, rnd_hid_gc_t gc, const char *str)
 {
-	pcb_text_t t;
+	pcb_text_t t = {0};
 
 	rnd_render->set_color(gc, rnd_color_red);
 

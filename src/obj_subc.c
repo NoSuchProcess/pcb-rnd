@@ -806,7 +806,7 @@ TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elli
 
 		textlist_foreach(&ly->Text, &it, text) {
 			if (mirr) {
-				pcb_text_t t;
+				pcb_text_t t = {0};
 				t = *text;
 				t.X = PCB_CSWAP_X(text->X, w, mirr);
 				t.Y = PCB_CSWAP_Y(text->Y, h, mirr);
