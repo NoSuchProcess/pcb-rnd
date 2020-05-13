@@ -1227,10 +1227,12 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 	} \
 	dx = w / 2; \
 	dy = h / 2; \
-	if (flip_x) \
-		dx = -dx; \
-	if (flip_y) \
-		dy = -dy; \
+	if (flip_x ^ flip_y) { \
+		if (vert) \
+			dx = -dx; \
+		else \
+			dy = -dy; \
+	} \
 	if (vert) \
 		dy = -dy; \
 	if (centered) { \
@@ -1244,8 +1246,8 @@ void pcb_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double 
 	int mirror, direction;
 	PCB_TERM_LABEL_SETUP((const unsigned char *)label);
 
-	mirror = (flip_x ^ flip_y);
-	direction = (vert ? 1 : 0) + (flip_x ? 2 : 0);
+	mirror = (flip_x ^ flip_y) ? PCB_TXT_MIRROR_Y : 0;
+	direction = (vert ? 1 : 0);
 
 	rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
 
