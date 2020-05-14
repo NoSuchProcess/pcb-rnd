@@ -168,8 +168,8 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	 * We ignore certain files which are not footprints.
 	 */
 	while ((subdirentry = rnd_readdir(subdirobj)) != NULL) {
-#ifdef DEBUG
-/*    printf("...  Examining file %s ... \n", subdirentry->d_name); */
+#ifdef FP_FS_TRACE
+	rnd_trace("readdir: '%s'\n", subdirentry->d_name);
 #endif
 
 		/* Ignore non-footprint files found in this directory
@@ -188,9 +188,6 @@ TODO("fp: make this a configurable list")
 				&& (l < 5 || RND_NSTRCMP(subdirentry->d_name + (l - 5), ".html") != 0)
 				&& (l < 4 || RND_NSTRCMP(subdirentry->d_name + (l - 4), ".pcb") != 0)) {
 
-#ifdef DEBUG
-/*	printf("...  Found a footprint %s ... \n", subdirentry->d_name); */
-#endif
 			strcpy(fn_end, subdirentry->d_name);
 			if ((S_ISREG(buffer.st_mode)) || (RND_WRAP_S_ISLNK(buffer.st_mode))) {
 				pcb_plug_fp_map_t head = {0}, *res;
