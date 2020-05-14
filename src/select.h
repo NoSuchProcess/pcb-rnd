@@ -38,7 +38,14 @@
 
 rnd_bool pcb_select_object(pcb_board_t *pcb);
 rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_rnd_box_t *Box, rnd_bool flag, rnd_bool vis_only, rnd_bool invert);
+
+/* List visible objects on screen within a box; return a list of IDs */
 long int *pcb_list_block(pcb_board_t *pcb, rnd_rnd_box_t *Box, int *len);
+
+/* List visible objects on screen within a box; return number of objects, call
+   a callback on each object found */
+int pcb_list_block_cb(pcb_board_t *pcb, rnd_rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx);
+
 
 rnd_bool pcb_select_connection(pcb_board_t *pcb, rnd_bool);
 

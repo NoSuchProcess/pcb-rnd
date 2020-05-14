@@ -216,7 +216,7 @@ do { \
  *  length of the list. Returns NULL on no match.
  */
 TODO("cleanup: should be rewritten with generic ops and rtree")
-static long int *ListBlock_(pcb_board_t *pcb, rnd_rnd_box_t *Box, rnd_bool Flag, int *len)
+static long int *ListBlock_(pcb_board_t *pcb, rnd_rnd_box_t *Box, rnd_bool Flag, int *len, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
 {
 	int changed = 0;
 	int used = 0, alloced = 0;
@@ -226,7 +226,7 @@ static long int *ListBlock_(pcb_board_t *pcb, rnd_rnd_box_t *Box, rnd_bool Flag,
 /*rnd_printf("box: %mm %mm - %mm %mm    [ %d ] %d %d\n", Box->X1, Box->Y1, Box->X2, Box->Y2, PCB_IS_BOX_NEGATIVE(Box), rnd_conf.editor.view.flip_x, rnd_conf.editor.view.flip_y);*/
 
 /* append an object to the return list OR set the flag if there's no list */
-#define append(undo_type, p1, obj) \
+#define append_list(undo_type, p1, obj) \
 do { \
 	if (len == NULL) { \
 		pcb_undo_add_obj_to_flag(obj); \
@@ -241,6 +241,16 @@ do { \
 		used++; \
 	} \
 	changed = 1; \
+} while(0)
+
+#define append(undo_type, p1, obj) \
+do { \
+	if (cb != NULL) { \
+		cb(ctx, (pcb_any_obj_t *)obj); \
+		used++; \
+	} \
+	else \
+		append_list(undo_type, p1, obj); \
 } while(0)
 
 	if (PCB_IS_BOX_NEGATIVE(Box) && ((Box->X1 == Box->X2) || (Box->Y2 == Box->Y1))) {
@@ -466,7 +476,14 @@ rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_rnd_box_t *Box, rnd_bool flag, r
  */
 long int *pcb_list_block(pcb_board_t *pcb, rnd_rnd_box_t *Box, int *len)
 {
-	return ListBlock_(pcb, Box, 1, len);
+	return ListBlock_(pcb, Box, 1, len, NULL, NULL);
+}
+
+int pcb_list_block_cb(pcb_board_t *pcb, rnd_rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
+{
+	int len = 0;
+	ListBlock_(pcb, Box, -1, &len, cb, ctx);
+	return len;
 }
 
 /* ----------------------------------------------------------------------
