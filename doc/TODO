@@ -11,7 +11,7 @@
 - FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
-- FEATURE: layer binding dialog: manual layer binding (reuse csect?)
++ FEATURE: layer binding dialog: manual layer binding (reuse csect?) -> announce!
 - query & advanced search
 	- FEATURE: search expr wizard should pick up the expression from the button when clicked
 	- CLEANUP: make a run on a large board, speed test, with -O0 and -O3:
