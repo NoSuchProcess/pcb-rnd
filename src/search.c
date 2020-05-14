@@ -1658,6 +1658,47 @@ int pcb_search_grid_slop(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1,
 	return ans;
 }
 
+int pcb_search_screen_selector(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
+{
+	vtp0_t objs;
+	rnd_rnd_box_t box;
+	rnd_coord_t radius;
+	pcb_any_obj_t *obj;
+
+	if ((!conf_core.editor.click_objlist) || (!RND_HAVE_GUI_ATTR_DLG))
+		return PCB_OBJ_VOID;
+
+	radius = PCB_SLOP * rnd_pixel_slop;
+	box.X2 = X - radius;
+	box.Y2 = Y - radius;
+	box.X1 = X + radius;
+	box.Y1 = Y + radius;
+
+	vtp0_init(&objs);
+	pcb_list_block_cb(PCB, &box, vtp0_append, &objs);
+
+rnd_trace("selector: %ld radius=%mm\n", objs.used, radius);
+
+	if (objs.used == 1) {
+		obj = objs.array[0];
+		goto found;
+	}
+
+	if (objs.used > 1) {
+
+	}
+
+	vtp0_uninit(&objs);
+	return PCB_OBJ_VOID;
+
+	found:;
+	vtp0_uninit(&objs);
+	*Result1 = obj->parent.any;
+	*Result2 = *Result3 = obj;
+	return obj->type;
+}
+
+
 int pcb_lines_intersect(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_coord_t ay2, rnd_coord_t bx1, rnd_coord_t by1, rnd_coord_t bx2, rnd_coord_t by2)
 {
 /* TODO: this should be long double if rnd_coord_t is 64 bits */

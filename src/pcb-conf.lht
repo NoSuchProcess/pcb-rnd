@@ -50,6 +50,7 @@ li:pcb-rnd-conf-v1 {
 			live_routing = 0
 			beep_when_finished = 0
 			click_time = 200
+			click_objlist = 0
 			auto_via = 1
 			io_incomp_popup = 1
 			io_incomp_style = list

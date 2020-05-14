@@ -63,6 +63,7 @@ typedef struct {
 		RND_CFT_STRING io_incomp_style;        /* view listing style (list or simple), when io_incomp_popup is true */
 
 		RND_CFT_INTEGER click_time;            /* default time for click expiration, in ms */
+		RND_CFT_BOOLEAN click_objlist;         /* if there are multiple objects available upon a click, present a modal dialog box to select from them */
 
 		struct {
 			RND_CFT_BOOLEAN disable_negative;    /* selection box behaviour: disable the negative-direction selection - any selection box will select only what's fully within the box */

@@ -194,6 +194,12 @@ double pcb_point_line_dist2(rnd_coord_t X, rnd_coord_t Y, pcb_line_t *Line);
 pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, rnd_coord_t x, rnd_coord_t y, rnd_angle_t *ang, rnd_bool no_subc_part, rnd_bool no_term);
 
 int pcb_search_screen(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
+
+/* If disabled and there's no GUI: return VOID immediatelly; else search
+   screen at X,Y for any Type; if 0 or 1 found, return immediately. If
+   there are more hits, present the object selector dialog (modal) */
+int pcb_search_screen_selector(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
+
 int pcb_search_grid_slop(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
 int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result2, void **Result3, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius);
 int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type);
