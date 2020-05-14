@@ -36,6 +36,7 @@
 
 #include <math.h>
 
+#include "actions_pcb.h"
 #include "board.h"
 #include "data.h"
 #include <librnd/core/error.h>
@@ -1685,7 +1686,11 @@ rnd_trace("selector: %ld radius=%mm\n", pcb_obj_list_vect.used, radius);
 	}
 
 	if (pcb_obj_list_vect.used > 1) {
-
+		long idx = rnd_actionva(&PCB->hidlib, "dlg_obj_list", NULL);
+		if ((idx >= 0) && (idx < pcb_obj_list_vect.used)) {
+			obj = pcb_obj_list_vect.array[idx];
+			goto found;
+		}
 	}
 
 	vtp0_uninit(&pcb_obj_list_vect);
@@ -1696,6 +1701,13 @@ rnd_trace("selector: %ld radius=%mm\n", pcb_obj_list_vect.used, radius);
 	*Result1 = obj->parent.any;
 	*Result2 = *Result3 = obj;
 	return obj->type;
+}
+
+int pcb_search_screen_maybe_selector(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
+{
+	int sr = pcb_search_screen_selector(X, Y, Type, Result1, Result2, Result3);
+	if (sr != PCB_OBJ_VOID) return sr;
+	return pcb_search_screen(X, Y, Type, Result1, Result2, Result3);
 }
 
 

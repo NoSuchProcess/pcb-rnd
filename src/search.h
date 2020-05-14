@@ -200,6 +200,9 @@ int pcb_search_screen(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, vo
    there are more hits, present the object selector dialog (modal) */
 int pcb_search_screen_selector(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
 
+int pcb_search_screen_maybe_selector(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
+
+
 int pcb_search_grid_slop(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3);
 int pcb_search_obj_by_location(unsigned long Type, void **Result1, void **Result2, void **Result3, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius);
 int pcb_search_obj_by_id(pcb_data_t *Base, void **Result1, void **Result2, void **Result3, int ID, int type);
