@@ -244,7 +244,7 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 		if (stat(subdirentry->d_name, &buffer) == 0) {
 			strcpy(fn_end, subdirentry->d_name);
 			if ((S_ISREG(buffer.st_mode)) || (RND_WRAP_S_ISLNK(buffer.st_mode))) {
-				pcb_plug_fp_map_t head = {0}, *res;
+				pcb_plug_fp_map_t *res;
 				res = pcb_io_map_footprint_file_cached(&PCB->hidlib, &fp_fs_cache, &buffer, fn);
 				if (res->libtype == PCB_LIB_DIR) {
 					cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_FILEDIR, NULL, res->next);
