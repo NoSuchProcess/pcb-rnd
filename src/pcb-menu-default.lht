@@ -357,6 +357,7 @@ ha:{
 						ha:Thin draw poly                   = { a={<key>m; <key>d; <key>p}; checked=editor/thin_draw_poly; action=conf(toggle, editor/thin_draw_poly, design); update_on={editor/thin_draw_poly} }
 						ha:poly as-drawn frame annotation   = { a={<key>m; <key>d; <key>d}; checked=editor/as_drawn_poly; action=conf(toggle, editor/as_drawn_poly, design); update_on={editor/as_drawn_poly} }
 						ha:Check polygons                   = { a={<key>m; <key>d; <key>c}; checked=editor/check_planes; action=conf(toggle, editor/check_planes, design) }
+						ha:Object list popup                = { a={<key>m; <key>d; <key>o}; checked=editor/click_objlist; action=conf(toggle, editor/click_objlist, design); tip={If there are multiple objects under the cursor when executing an action, present a popup dialog to select which object to operate on} }
 						-
 						ha:Lock floaters                    = { a={<key>m; <key>f; <key>l}; checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }
 						ha:Only floaters                    = { a={<key>m; <key>f; <key>o}; checked=editor/only_names; action=conf(toggle, editor/only_names, design) }
