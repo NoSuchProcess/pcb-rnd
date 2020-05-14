@@ -26,6 +26,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  *
  */
+
+/* Footprint libraries hosted in file system directories */
+
 #include "config.h"
 
 #include <stdlib.h>
@@ -50,9 +53,6 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
 
-/* ---------------------------------------------------------------------------
- * Parse the directory tree where newlib footprints are found
- */
 typedef struct list_dir_s list_dir_t;
 
 struct list_dir_s {
@@ -130,17 +130,17 @@ static int fp_fs_ignore_fn(const char *fn, int len)
 }
 
 static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
-								int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[], pcb_plug_fp_map_t *children),
-								void *cookie, int subdir_may_not_exist, int need_tags)
+	int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[], pcb_plug_fp_map_t *children),
+	void *cookie, int subdir_may_not_exist, int need_tags)
 {
-	char olddir[RND_PATH_MAX + 1];	/* The directory we start out in (cwd) */
+	char olddir[RND_PATH_MAX + 1];     /* The directory we start out in (cwd) */
 	char new_subdir[RND_PATH_MAX + 1];
 	char fn[RND_PATH_MAX + 1], *fn_end;
-	DIR *subdirobj;								/* Interable object holding all subdir entries */
-	struct dirent *subdirentry;		/* Individual subdir entry */
-	struct stat buffer;						/* Buffer used in stat */
+	DIR *subdirobj;                    /* Interable object holding all subdir entries */
+	struct dirent *subdirentry;        /* Individual subdir entry */
+	struct stat buffer;                /* Buffer used in stat */
 	size_t l;
-	int n_footprints = 0;					/* Running count of footprints found in this subdir */
+	int n_footprints = 0;              /* Running count of footprints found in this subdir */
 
 	/* Cache old dir, then cd into subdir because stat is given relative file names. */
 	memset(olddir, 0, sizeof olddir);
@@ -182,18 +182,16 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 	}
 
 	/* Now loop over files in this directory looking for files.
-	 * We ignore certain files which are not footprints.
-	 */
+	   We ignore certain files which are not footprints. */
 	while ((subdirentry = rnd_readdir(subdirobj)) != NULL) {
 #ifdef FP_FS_TRACE
 	rnd_trace("readdir: '%s'\n", subdirentry->d_name);
 #endif
 
 		/* Ignore non-footprint files found in this directory
-		 * We're skipping .png and .html because those
-		 * may exist in a library tree to provide an html browsable
-		 * index of the library.
-		 */
+		   We're skipping .png and .html because those
+		   may exist in a library tree to provide an html browsable
+		   index of the library. */
 		l = strlen(subdirentry->d_name);
 		if (fp_fs_ignore_fn(subdirentry->d_name, l)) continue;
 		if (stat(subdirentry->d_name, &buffer) == 0) {
@@ -246,7 +244,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 	list_dir_t *d, *nextd;
 	char working_[RND_PATH_MAX + 1];
 	const char *visible_subdir;
-	char *working;								/* String holding abs path to working dir */
+	char *working;  /* String holding abs path to working dir */
 
 	sprintf(working_, "%s%c%s", toppath, RND_DIR_SEPARATOR_C, subdir);
 	rnd_path_resolve(&PCB->hidlib, working_, &working, 0, rnd_false);
