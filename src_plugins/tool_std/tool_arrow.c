@@ -134,29 +134,14 @@ static void click_timer_cb(rnd_hidval_t hv)
 	}
 }
 
-void pcb_tool_arrow_notify_mode(rnd_hidlib_t *hl)
+static int pcb_tool_arrow_notify_mode_(rnd_hidlib_t *hl, int type, void *ptr1, void *ptr2, void *ptr3)
 {
-	void *ptr1, *ptr2, *ptr3;
-	int otype, type;
-	int test;
-	rnd_hidval_t hv;
+	int otype = type;
 
-	hl->tool_click = rnd_true;
-	/* do something after click time */
-	hv.ptr = hl;
-	rnd_gui->add_timer(rnd_gui, click_timer_cb, conf_core.editor.click_time, hv);
-
-	/* see if we clicked on something already selected
-	 * (pcb_crosshair_note.Moving) or clicked on a MOVE_TYPE
-	 * (hl->tool_hit)
-	 */
-	for (test = (PCB_SELECT_TYPES | PCB_MOVE_TYPES | PCB_OBJ_FLOATER | PCB_LOOSE_SUBC(PCB)) & ~PCB_OBJ_RAT; test; test &= ~otype) {
-		/* grab object/point (e.g. line endpoint) for edit */
-		otype = type = pcb_search_screen(hl->tool_x, hl->tool_y, test, &ptr1, &ptr2, &ptr3);
 		if (otype == PCB_OBJ_ARC_POINT) { /* ignore arc endpoints if arc radius is 0 (so arc center is grabbed) */
 			pcb_arc_t *arc = (pcb_arc_t *)ptr2;
 			if ((arc->Width == 0) && (arc->Height == 0))
-				continue;
+				return 0;
 		}
 		if (!hl->tool_hit && (type & PCB_MOVE_TYPES) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2)) {
 			hl->tool_hit = type;
@@ -173,6 +158,31 @@ void pcb_tool_arrow_notify_mode(rnd_hidlib_t *hl)
 			pcb_crosshair.AttachedObject.ty = pcb_crosshair.AttachedObject.Y = hl->tool_y;
 		}
 		if ((hl->tool_hit && pcb_crosshair_note.Moving) || type == PCB_OBJ_VOID)
+			return 1;
+
+	return 0;
+}
+
+void pcb_tool_arrow_notify_mode(rnd_hidlib_t *hl)
+{
+	void *ptr1, *ptr2, *ptr3;
+	int type;
+	int test;
+	rnd_hidval_t hv;
+
+	hl->tool_click = rnd_true;
+	/* do something after click time */
+	hv.ptr = hl;
+	rnd_gui->add_timer(rnd_gui, click_timer_cb, conf_core.editor.click_time, hv);
+
+	/* see if we clicked on something already selected
+	 * (pcb_crosshair_note.Moving) or clicked on a MOVE_TYPE
+	 * (hl->tool_hit)
+	 */
+	for (test = (PCB_SELECT_TYPES | PCB_MOVE_TYPES | PCB_OBJ_FLOATER | PCB_LOOSE_SUBC(PCB)) & ~PCB_OBJ_RAT; test; test &= ~type) {
+		/* grab object/point (e.g. line endpoint) for edit */
+		type = pcb_search_screen(hl->tool_x, hl->tool_y, test, &ptr1, &ptr2, &ptr3);
+		if (pcb_tool_arrow_notify_mode_(hl, type, ptr1, ptr2, ptr3))
 			return;
 	}
 }
