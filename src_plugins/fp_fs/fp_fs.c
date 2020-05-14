@@ -53,6 +53,53 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
 
+
+/*** low level map cache ***/
+
+typedef struct {
+	char *path; /* also the key */
+	pcb_plug_fp_map_t map;
+	time_t mtime;
+} pcb_fp_map_cache_t;
+
+htsp_t fp_fs_cache;
+
+pcb_plug_fp_map_t *pcb_io_map_footprint_file_cached(rnd_hidlib_t *hl, htsp_t *cache, struct stat *st, const char *path)
+{
+	pcb_fp_map_cache_t *c;
+	c = htsp_get(cache, path);
+	if ((c != NULL) && (c->mtime >= st->st_mtime))
+		return &c->map;
+
+	if (c == NULL) {
+		c = calloc(sizeof(pcb_fp_map_cache_t), 1);
+		c->path = rnd_strdup(path);
+		htsp_set(cache, c->path, c);
+	}
+	else
+		pcb_io_fp_map_free_fields(&c->map);
+
+	pcb_io_map_footprint_file(hl, path, &c->map, 1);
+	c->mtime = st->st_mtime;
+	return &c->map;
+}
+
+void fp_fs_cache_uninit(htsp_t *cache)
+{
+	htsp_entry_t *e;
+	for(e = htsp_first(cache); e != NULL; e = htsp_next(cache, e)) {
+		pcb_fp_map_cache_t *c = e->value;
+		free(c->path);
+		pcb_io_fp_map_free(&c->map);
+		free(c);
+	}
+	htsp_uninit(cache);
+}
+
+
+/*** list and search ***/
+
+
 typedef struct list_dir_s list_dir_t;
 
 struct list_dir_s {
@@ -198,27 +245,17 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 			strcpy(fn_end, subdirentry->d_name);
 			if ((S_ISREG(buffer.st_mode)) || (RND_WRAP_S_ISLNK(buffer.st_mode))) {
 				pcb_plug_fp_map_t head = {0}, *res;
-				res = pcb_io_map_footprint_file(&PCB->hidlib, subdirentry->d_name, &head, need_tags);
+				res = pcb_io_map_footprint_file_cached(&PCB->hidlib, &fp_fs_cache, &buffer, fn);
 				if (res->libtype == PCB_LIB_DIR) {
 					cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_FILEDIR, NULL, res->next);
-					res->next = NULL;
+/*					res->next = NULL;*/
 				}
 				else if ((res->libtype == PCB_LIB_FOOTPRINT) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
 					n_footprints++;
-					if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array, NULL)) {
-						pcb_io_fp_map_free(res);
+					if (cb(cookie, new_subdir, subdirentry->d_name, res->type, (void **)res->tags.array, NULL))
 						break;
-					}
-					pcb_io_fp_map_free(res);
 					continue;
 				}
-				else {
-					if (head.tags.array != NULL) {
-						free(head.tags.array);
-						head.tags.alloced = head.tags.used = 0;
-					}
-				}
-				pcb_io_fp_map_free(res);
 			}
 
 			if ((S_ISDIR(buffer.st_mode)) || (RND_WRAP_S_ISLNK(buffer.st_mode))) {
@@ -268,15 +305,10 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 	l.is_virtual_dir = 0;
 
 	if (children != NULL) {
-		pcb_plug_fp_map_t *n, *next;
+		pcb_plug_fp_map_t *n;
 		l.is_virtual_dir = 1;
-		for(n = children; n != NULL; n = next) {
+		for(n = children; n != NULL; n = n->next) {
 			list_cb(&l, working, n->name, n->type, (void **)n->tags.array, NULL);
-			n->tags.array = NULL;
-			n->tags.used = 0;
-			next = n->next;
-			pcb_io_fp_map_free_fields(n);
-			free(n);
 			l.children++;
 		}
 		free(working);
@@ -469,6 +501,8 @@ int pplg_check_ver_fp_fs(int ver_needed) { return 0; }
 void pplg_uninit_fp_fs(void)
 {
 	RND_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
+
+	fp_fs_cache_uninit(&fp_fs_cache);
 }
 
 int pplg_init_fp_fs(void)
@@ -479,5 +513,6 @@ int pplg_init_fp_fs(void)
 	fp_fs.fp_fopen = fp_fs_fopen;
 	fp_fs.fp_fclose = fp_fs_fclose;
 	RND_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
+	htsp_init(&fp_fs_cache, strhash, strkeyeq);
 	return 0;
 }
