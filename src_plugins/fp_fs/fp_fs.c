@@ -112,6 +112,23 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 	return 0;
 }
 
+/* returns whether file should be ignored by file name */
+TODO("fp: make this a configurable list")
+static int fp_fs_ignore_fn(const char *fn, int len)
+{
+	if (fn[0] == '.') return 1;
+	if (RND_NSTRCMP(fn, "CVS") == 0) return 1;
+	if (RND_NSTRCMP(fn, "Makefile") == 0) return 1;
+	if (RND_NSTRCMP(fn, "Makefile.am") == 0) return 1;
+	if (RND_NSTRCMP(fn, "Makefile.in") == 0) return 1;
+	
+	if ((len >= 4) && (RND_NSTRCMP(fn + (len - 4), ".png") == 0)) return 1;
+	if ((len >= 4) && (RND_NSTRCMP(fn + (len - 4), ".pcb") == 0)) return 1;
+	if ((len >= 5) && (RND_NSTRCMP(fn + (len - 5), ".html") == 0)) return 1;
+
+	return 0;
+}
+
 static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 								int (*cb) (void *cookie, const char *subdir, const char *name, pcb_fptype_t type, void *tags[], pcb_plug_fp_map_t *children),
 								void *cookie, int subdir_may_not_exist, int need_tags)
@@ -177,17 +194,9 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 		 * may exist in a library tree to provide an html browsable
 		 * index of the library.
 		 */
-TODO("fp: make this a configurable list")
 		l = strlen(subdirentry->d_name);
-		if (!stat(subdirentry->d_name, &buffer)
-				&& subdirentry->d_name[0] != '.'
-				&& RND_NSTRCMP(subdirentry->d_name, "CVS") != 0
-				&& RND_NSTRCMP(subdirentry->d_name, "Makefile") != 0
-				&& RND_NSTRCMP(subdirentry->d_name, "Makefile.am") != 0
-				&& RND_NSTRCMP(subdirentry->d_name, "Makefile.in") != 0 && (l < 4 || RND_NSTRCMP(subdirentry->d_name + (l - 4), ".png") != 0)
-				&& (l < 5 || RND_NSTRCMP(subdirentry->d_name + (l - 5), ".html") != 0)
-				&& (l < 4 || RND_NSTRCMP(subdirentry->d_name + (l - 4), ".pcb") != 0)) {
-
+		if (fp_fs_ignore_fn(subdirentry->d_name, l)) continue;
+		if (stat(subdirentry->d_name, &buffer) == 0) {
 			strcpy(fn_end, subdirentry->d_name);
 			if ((S_ISREG(buffer.st_mode)) || (RND_WRAP_S_ISLNK(buffer.st_mode))) {
 				pcb_plug_fp_map_t head = {0}, *res;
