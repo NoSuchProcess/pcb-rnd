@@ -52,7 +52,7 @@ void pcb_tool_lock_notify_mode(rnd_hidlib_t *hl)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 	
-	type = pcb_search_screen(hl->tool_x, hl->tool_y, PCB_OBJ_CLASS_LOCK, &ptr1, &ptr2, &ptr3);
+	type = pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_OBJ_CLASS_LOCK, &ptr1, &ptr2, &ptr3);
 
 	if (type == PCB_OBJ_SUBC) {
 		pcb_subc_t *subc = (pcb_subc_t *)ptr2;

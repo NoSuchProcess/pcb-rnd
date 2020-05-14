@@ -61,7 +61,7 @@ void pcb_tool_polyhole_notify_mode(rnd_hidlib_t *hl)
 	case PCB_CH_STATE_FIRST:
 		pcb_crosshair.AttachedPolygon_pts = 0;
 		pcb_crosshair.AttachedObject.Type =
-			pcb_search_screen(hl->tool_x, hl->tool_y, PCB_OBJ_POLY,
+			pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_OBJ_POLY,
 									 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 
 		if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_VOID) {

@@ -94,12 +94,12 @@ void pcb_tool_thermal_notify_mode(rnd_hidlib_t *hl)
 	void *ptr1, *ptr2, *ptr3;
 	int type;
 
-	if (((type = pcb_search_screen(hl->tool_x, hl->tool_y, PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
+	if (((type = pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_any_obj_t *) ptr3)) {
 		if (type == PCB_OBJ_PSTK)
 			pcb_tool_thermal_on_obj(ptr2, PCB_CURRLID(pcb));
 	}
-	else if (((type = pcb_search_screen(hl->tool_x, hl->tool_y, PCB_OBJ_CLASS_REAL, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
+	else if (((type = pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_OBJ_CLASS_REAL, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_any_obj_t *) ptr3)) {
 		pcb_tool_thermal_on_obj(ptr2, PCB_CURRLID(pcb));
 	}
