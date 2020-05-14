@@ -275,6 +275,7 @@ static int fp_fs_load_dir_(pcb_fplibrary_t *pl, const char *subdir, const char *
 			free(n);
 			l.children++;
 		}
+		free(working);
 		return l.children;
 	}
 
