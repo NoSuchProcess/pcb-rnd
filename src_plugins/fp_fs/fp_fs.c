@@ -248,7 +248,6 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 				res = pcb_io_map_footprint_file_cached(&PCB->hidlib, &fp_fs_cache, &buffer, fn);
 				if (res->libtype == PCB_LIB_DIR) {
 					cb(cookie, new_subdir, subdirentry->d_name, PCB_FP_FILEDIR, NULL, res->next);
-/*					res->next = NULL;*/
 				}
 				else if ((res->libtype == PCB_LIB_FOOTPRINT) && ((res->type == PCB_FP_FILE) || (res->type == PCB_FP_PARAMETRIC))) {
 					n_footprints++;
