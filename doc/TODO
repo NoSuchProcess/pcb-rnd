@@ -8,7 +8,7 @@
 - CLEANUP: lihata v7 -> make v7 the default high prio
 - FEATURE: make op change on enforce_clearance undoable [report: Igor2]
 - FEATURE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
-- FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
++ FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken] -> *announce*
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
 + FEATURE: layer binding dialog: manual layer binding (reuse csect?) -> announce!
