@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -193,7 +193,6 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		else
 			lid = ctx->no_layer;
 		RND_DAD_SET_VALUE(hid_ctx, w->layer, lng, lid);
-		rnd_gui->attr_dlg_widget_state(hid_ctx, w->layer, 0);
 	}
 }
 
@@ -235,10 +234,9 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 	}
 }
 
-
-static void lb_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void lb_update_left2right(void *hid_ctx, lb_ctx_t *ctx)
 {
-	lb_ctx_t *ctx = caller_data;
+rnd_trace("l2r!\n");
 	lb_dialog2data(hid_ctx, ctx);
 	if (ctx->subc != NULL) {
 		if (pcb_subc_rebind(ctx->pcb, ctx->subc) > 0)
@@ -249,6 +247,49 @@ static void lb_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 		rnd_gui->invalidate_all(rnd_gui);
 	}
 	lb_data2dialog(hid_ctx, ctx); /* update disables */
+}
+
+static void lb_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	if (attr->user_data == NULL) /* do not handle widgets globally if they have data - they then have a local callback too */
+		lb_update_left2right(hid_ctx, caller_data);
+}
+
+static void lb_attr_layer_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	lb_ctx_t *ctx = caller_data;
+	lb_widx_t *w = attr->user_data;
+	int didx = w - ctx->widx;
+	rnd_layer_id_t lid = attr->val.lng;
+	pcb_layer_t tmply, *dstly;
+
+	if ((lid < 0) || (lid >= PCB->Data->LayerN))
+		goto skip;
+
+	if ((didx < 0) || (didx >= ctx->data->LayerN)) {
+		rnd_message(RND_MSG_ERROR, "Internal error: lb_attr_layer_chg(): invalid idx %d (%d)\n", didx, ctx->data->LayerN);
+		goto skip;
+	}
+
+	/* change on the right side, target layer */
+	rnd_trace("layer! %d to %d\n", didx, lid);
+
+	memset(&tmply, 0, sizeof(tmply));
+	pcb_layer_real2bound(&tmply, &PCB->Data->Layer[lid], 0);
+	if (ctx->subc != NULL)
+		dstly = &ctx->subc->data->Layer[didx];
+	else
+		dstly = &ctx->data->Layer[didx];
+
+	dstly->meta.bound.type = tmply.meta.bound.type;
+	dstly->meta.bound.stack_offs = tmply.meta.bound.stack_offs;
+	free(dstly->meta.bound.purpose);
+	dstly->meta.bound.purpose = tmply.meta.bound.purpose;
+
+	lb_data2dialog(hid_ctx, ctx);
+
+	skip:;
+	lb_update_left2right(hid_ctx, ctx);
 }
 
 const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(selected)\nLayerBinding(buffer)\n";
@@ -359,6 +400,8 @@ TODO("subc TODO")
 						RND_DAD_LABEL(dlg, "Automatic");
 						RND_DAD_ENUM(dlg, ctx.layer_names);
 							w->layer = RND_DAD_CURRENT(dlg);
+							RND_DAD_CHANGE_CB(dlg, lb_attr_layer_chg);
+							RND_DAD_SET_ATTR_FIELD(dlg, user_data, w);
 					RND_DAD_END(dlg);
 				RND_DAD_END(dlg);
 			}
