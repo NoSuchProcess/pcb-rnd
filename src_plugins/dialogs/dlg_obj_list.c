@@ -41,7 +41,7 @@ static void view_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 
 	/* save object color and make it red */
 	saved_color = obj->override_color;
-	obj->override_color = (rnd_color_t *)&rnd_color_red;
+	obj->override_color = (rnd_color_t *)rnd_color_red;
 
 	/* draw the board */
 	memset(&xform, 0, sizeof(xform));
