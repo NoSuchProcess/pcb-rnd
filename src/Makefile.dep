@@ -1093,6 +1093,7 @@
  ../src_3rd/libuundo/uundo.h event.h librnd/core/event.h undo.h \
  undo_old.h ../src_plugins/dialogs/dlg_fpmap.c actions_pcb.h \
  plug_footprint.h vtlibrary.h plug_io.h ../src_3rd/genvector/vts0.h \
+ ../src_plugins/dialogs/dlg_obj_list.c \
  ../src_plugins/dialogs/dlg_netlist.c \
  ../src_plugins/dialogs/dlg_plugins.c \
  ../src_plugins/dialogs/dlg_printcalib.c librnd/core/hid_init.h \
