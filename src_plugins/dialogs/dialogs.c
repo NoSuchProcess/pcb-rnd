@@ -56,6 +56,7 @@ extern const conf_dialogs_t dialogs_conf;
 #include "dlg_search.h"
 #include "dlg_undo.c"
 #include "dlg_fpmap.c"
+#include "dlg_obj_list.c"
 #include "dlg_netlist.c"
 #include "dlg_plugins.c"
 #include "dlg_printcalib.c"
@@ -95,6 +96,7 @@ rnd_action_t dialogs_action_list[] = {
 	{"LibraryDialog", pcb_act_LibraryDialog, pcb_acth_LibraryDialog, pcb_acts_LibraryDialog},
 	{"SearchDialog", pcb_act_SearchDialog, pcb_acth_SearchDialog, pcb_acts_SearchDialog},
 	{"InfoBarFileChanged", pcb_act_InfoBarFileChanged, pcb_acth_InfoBarFileChanged, pcb_acts_InfoBarFileChanged},
+	{"dlg_obj_list", pcb_act_dlg_obj_list, pcb_acth_dlg_obj_list, pcb_acts_dlg_obj_list},
 	{"gui_fpmap_choose", pcb_act_gui_fpmap_choose, pcb_acth_gui_fpmap_choose, pcb_acts_gui_fpmap_choose}
 };
 
