@@ -71,16 +71,16 @@ rnd_bool pcb_select_object(pcb_board_t *pcb)
 
 	rnd_bool changed = rnd_true;
 
-	type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC(PCB) | PCB_OBJ_FLOATER, &ptr1, &ptr2, &ptr3);
+	type = pcb_search_screen_maybe_selector(pcb_crosshair.X, pcb_crosshair.Y, PCB_SELECT_TYPES | PCB_LOOSE_SUBC(PCB) | PCB_OBJ_FLOATER, &ptr1, &ptr2, &ptr3);
 	if (type == PCB_OBJ_VOID || PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *) ptr2))
 		return rnd_false;
 	switch (type) {
 
 	case PCB_OBJ_PSTK:
 		pcb_undo_add_obj_to_flag(ptr1);
-		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pstk_t *) ptr1);
-		pcb_pstk_invalidate_draw((pcb_pstk_t *) ptr1);
-		pcb_extobj_sync_floater_flags(pcb, (const pcb_any_obj_t *)ptr1, 1, 1);
+		PCB_FLAG_TOGGLE(PCB_FLAG_SELECTED, (pcb_pstk_t *) ptr2);
+		pcb_pstk_invalidate_draw((pcb_pstk_t *) ptr2);
+		pcb_extobj_sync_floater_flags(pcb, (const pcb_any_obj_t *)ptr2, 1, 1);
 		break;
 
 	case PCB_OBJ_LINE:
@@ -156,7 +156,7 @@ rnd_bool pcb_select_object(pcb_board_t *pcb)
 
 
 	case PCB_OBJ_SUBC:
-		pcb_subc_select(pcb, (pcb_subc_t *) ptr1, PCB_CHGFLG_TOGGLE, 1);
+		pcb_subc_select(pcb, (pcb_subc_t *) ptr2, PCB_CHGFLG_TOGGLE, 1);
 		break;
 	}
 	pcb_draw();
