@@ -43,12 +43,147 @@ typedef enum {
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	RND_DAD_DECL_NOINIT(dlg_login)
-	int wnick, wserver;
+	int wnick, wserver, wtxt, wscroll, winput;
 	irc_state_t state;
 	uirc_t irc;
+	rnd_hidval_t timer;
 } irc_ctx_t;
 
 irc_ctx_t irc_ctx;
+
+static void maybe_scroll_to_bottom()
+{
+	rnd_hid_attribute_t *atxt = &irc_ctx.dlg[irc_ctx.wtxt];
+	rnd_hid_text_t *txt = atxt->wdata;
+
+	if ((irc_ctx.dlg[irc_ctx.wscroll].val.lng) && (txt->hid_scroll_to_bottom != NULL))
+		txt->hid_scroll_to_bottom(atxt, irc_ctx.dlg_hid_ctx);
+}
+
+static void timer_cb(rnd_hidval_t hv)
+{
+	if (irc_ctx.state == IRC_ONLINE) {
+		uirc_event_t ev = uirc_poll(&irc_ctx.irc);
+		if (ev & UIRC_CONNECT)
+			uirc_raw(&irc_ctx.irc, "join :#dev");
+		rnd_gui->add_timer(rnd_gui, timer_cb, 100, hv);
+	}
+}
+
+static void irc_append(irc_ctx_t *ctx, const char *str)
+{
+	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
+	rnd_hid_text_t *txt = atxt->wdata;
+
+	txt->hid_set_text(atxt, ctx->dlg_hid_ctx, RND_HID_TEXT_APPEND, str);
+
+	maybe_scroll_to_bottom();
+/*	rnd_gui->attr_dlg_raise(ctx->dlg_hid_ctx);*/
+}
+
+#define irc_printf(fmt) \
+do { \
+	char *__tmp__ = rnd_strdup_printf fmt; \
+	irc_append(&irc_ctx, __tmp__); \
+	free(__tmp__); \
+} while(0)
+
+void on_me_join(uirc_t *ctx, int query, char *chan)
+{
+	irc_printf(("*** Connected. ***\n"));
+	rnd_gui->attr_dlg_widget_state(irc_ctx.dlg_hid_ctx, irc_ctx.winput, 1);
+}
+
+
+static void on_msg(uirc_t *ctx, char *from, int query, char *to, char *text)
+{
+	irc_printf(("<%s> %s\n", from, text));
+}
+
+static void on_notice(uirc_t *ctx, char *from, int query, char *to, char *text)
+{
+	irc_printf(("-%s- %s\n", from, text));
+}
+
+
+static void on_topic(uirc_t *ctx, char *from, int query, char *to, char *text)
+{
+	irc_printf(("*** topic on %s: %s\n", to, text));
+}
+
+static void disconnect(void)
+{
+	irc_printf(("*** Disconnected. ***\n"));
+	rnd_gui->attr_dlg_widget_state(irc_ctx.dlg_hid_ctx, irc_ctx.winput, 0);
+	uirc_disconnect(&irc_ctx.irc);
+	irc_ctx.state = IRC_DISCONNECTED;
+}
+
+static void on_me_part(uirc_t *ctx, int query, char *chan)
+{
+	disconnect();
+}
+
+static void irc_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
+{
+	irc_ctx_t *ctx = caller_data;
+
+	ctx->state = IRC_OFF;
+	uirc_disconnect(&ctx->irc);
+
+	RND_DAD_FREE(ctx->dlg);
+}
+
+
+
+static int pcb_dlg_irc(void)
+{
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+
+	RND_DAD_BEGIN_VBOX(irc_ctx.dlg);
+		RND_DAD_COMPFLAG(irc_ctx.dlg, RND_HATF_EXPFILL);
+
+		RND_DAD_TEXT(irc_ctx.dlg, &irc_ctx);
+			RND_DAD_COMPFLAG(irc_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+			irc_ctx.wtxt = RND_DAD_CURRENT(irc_ctx.dlg);
+
+		RND_DAD_STRING(irc_ctx.dlg);
+			RND_DAD_WIDTH_CHR(irc_ctx.dlg, 80);
+			irc_ctx.winput = RND_DAD_CURRENT(irc_ctx.dlg);
+
+		RND_DAD_BEGIN_HBOX(irc_ctx.dlg);
+			RND_DAD_BUTTON(irc_ctx.dlg, "Send ver");
+			RND_DAD_BUTTON(irc_ctx.dlg, "Save log");
+			RND_DAD_BUTTON(irc_ctx.dlg, "Reconnect");
+			RND_DAD_BOOL(irc_ctx.dlg, "");
+				irc_ctx.wscroll = RND_DAD_CURRENT(irc_ctx.dlg);
+				RND_DAD_DEFAULT_NUM(irc_ctx.dlg, 1);
+			RND_DAD_LABEL(irc_ctx.dlg, "scroll");
+			RND_DAD_BEGIN_VBOX(irc_ctx.dlg);
+				RND_DAD_COMPFLAG(irc_ctx.dlg, RND_HATF_EXPFILL);
+			RND_DAD_END(irc_ctx.dlg);
+			RND_DAD_BUTTON_CLOSES(irc_ctx.dlg, clbtn);
+		RND_DAD_END(irc_ctx.dlg);
+	RND_DAD_END(irc_ctx.dlg);
+
+	RND_DAD_DEFSIZE(irc_ctx.dlg, 400, 500);
+
+	RND_DAD_NEW("irc", irc_ctx.dlg, "pcb-rnd online-help: IRC", &irc_ctx, rnd_false, irc_close_cb);
+
+	{
+		rnd_hid_attribute_t *atxt = &irc_ctx.dlg[irc_ctx.wtxt];
+		rnd_hid_text_t *txt = atxt->wdata;
+		txt->hid_set_readonly(atxt, irc_ctx.dlg_hid_ctx, 1);
+	}
+
+	{
+		static rnd_hidval_t hv;
+		timer_cb(hv);
+	}
+	rnd_gui->attr_dlg_widget_state(irc_ctx.dlg_hid_ctx, irc_ctx.winput, 0);
+	return 0;
+}
+
 
 static void irc_login_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
@@ -60,8 +195,15 @@ static void irc_login_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 		const char *server = ctx->dlg_login[ctx->wserver].val.str;
 		ctx->state = IRC_ONLINE;
 		ctx->irc.nick = rnd_strdup(ctx->dlg_login[ctx->wnick].val.str);
+		ctx->irc.on_msg = on_msg;
+		ctx->irc.on_notice = on_notice;
+		ctx->irc.on_topic = on_topic;
+		ctx->irc.on_me_part = on_me_part;
+		ctx->irc.on_me_join = on_me_join;
+
 		if (uirc_connect(&ctx->irc, server, port, "pcb-rnd irc action") == 0) {
-			printf("conn!\n");
+			pcb_dlg_irc();
+			irc_printf(("*** Connecting %s:%d... ***\n", server, port));
 		}
 		else
 			rnd_message(RND_MSG_ERROR, "IRC: on-line support: failed to connect the server at %s:%p.\n", server, port);
@@ -85,7 +227,7 @@ static int pcb_dlg_login_irc_login(void)
 		free(nick);
 		r ^= rand();
 		r ^= time(NULL);
-		nick = rnd_strdup_printf("pcb-rnd-%d", r);
+		nick = rnd_strdup_printf("pcb-rnd-%d", r % 100000);
 	}
 
 	RND_DAD_BEGIN_VBOX(irc_ctx.dlg_login);
