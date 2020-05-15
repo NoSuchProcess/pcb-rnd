@@ -21,6 +21,7 @@
 
 
 #include "libuirc.h"
+#include <librnd/core/compat_misc.h>
 
 #include <stdio.h>
 
@@ -80,7 +81,7 @@ static uirc_event_t uirc_parse_001(uirc_t *ctx, char *arg)
 	return UIRC_CONNECT;
 }
 
-#define irc_strcasecmp strcasecmp
+#define irc_strcasecmp rnd_strcasecmp
 
 static uirc_event_t uirc_parse_join(uirc_t *ctx, char *nick, char *arg)
 {
@@ -101,7 +102,7 @@ static uirc_event_t uirc_parse_join(uirc_t *ctx, char *nick, char *arg)
 				return 0;
 			}
 			ctx->query[q].type = UIRC_CHAN;
-			ctx->query[q].name = strdup(arg);
+			ctx->query[q].name = rnd_strdup(arg);
 			ctx->last_new_query = q;
 			res |= UIRC_QUERY_BEGIN;
 		}
@@ -290,13 +291,13 @@ printf("line='%s'\n", line);
 		*end = '\0';
 
 	if (strcmp(cmd, "001") == 0) return res | uirc_parse_001(ctx, arg);
-	if (strcasecmp(cmd, "join") == 0) return res | uirc_parse_join(ctx, from, arg);
-	if (strcasecmp(cmd, "part") == 0) return res | uirc_parse_part(ctx, from, arg);
-	if (strcasecmp(cmd, "kick") == 0) return res | uirc_parse_kick(ctx, from, arg);
-	if (strcasecmp(cmd, "privmsg") == 0) return res | uirc_parse_msg(ctx, from, arg);
-	if (strcasecmp(cmd, "notice") == 0) return res | uirc_parse_notice(ctx, from, arg);
-	if (strcasecmp(cmd, "topic") == 0) return res | uirc_parse_topic(ctx, from, arg, 0);
-	if (strcasecmp(cmd, "332") == 0) return res | uirc_parse_topic(ctx, from, arg, 1);
+	if (irc_strcasecmp(cmd, "join") == 0) return res | uirc_parse_join(ctx, from, arg);
+	if (irc_strcasecmp(cmd, "part") == 0) return res | uirc_parse_part(ctx, from, arg);
+	if (irc_strcasecmp(cmd, "kick") == 0) return res | uirc_parse_kick(ctx, from, arg);
+	if (irc_strcasecmp(cmd, "privmsg") == 0) return res | uirc_parse_msg(ctx, from, arg);
+	if (irc_strcasecmp(cmd, "notice") == 0) return res | uirc_parse_notice(ctx, from, arg);
+	if (irc_strcasecmp(cmd, "topic") == 0) return res | uirc_parse_topic(ctx, from, arg, 0);
+	if (irc_strcasecmp(cmd, "332") == 0) return res | uirc_parse_topic(ctx, from, arg, 1);
 
 	return res;
 }
