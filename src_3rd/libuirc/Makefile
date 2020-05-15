@@ -1,5 +1,6 @@
 CFLAGS = -Wall -g -I..
-LIBS = ../libporty_net/libportytcp4.o ../genvector/gds_char.o
+LDFLAGS = -lm
+LIBS = ../libporty_net/libportytcp4.o ../genvector/gds_char.o ../../src/librnd/core/compat_misc.o
 
 main: main.o libuirc.o $(LIBS)
 

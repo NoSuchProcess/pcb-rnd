@@ -164,6 +164,7 @@ static uirc_event_t uirc_parse_kick(uirc_t *ctx, char *nick, char *arg)
 {
 	char *victim, *reason;
 	int q;
+	uirc_event_t res = 0;
 
 	payload(victim, arg);
 	payload(reason, victim);
@@ -180,15 +181,15 @@ static uirc_event_t uirc_parse_kick(uirc_t *ctx, char *nick, char *arg)
 		ctx->query[q].type = UIRC_UNUSED;
 		free(ctx->query[q].name);
 		ctx->query[q].name = NULL;
-		return UIRC_ME_PART | UIRC_QUERY_END;
+		res |= UIRC_ME_PART | UIRC_QUERY_END;
 	}
 
 	if (ctx->on_kick != NULL) {
 		ctx->on_kick(ctx, nick, q, arg, victim, reason);
-		return UIRC_KICK;
+		res |= UIRC_KICK;
 	}
 
-	return 0;
+	return res;
 }
 
 static uirc_event_t uirc_parse_msg(uirc_t *ctx, char *nick, char *arg)
