@@ -1,0 +1,8 @@
+$class feature
+$short on-line support (IRC)
+$long minimalistic IRC client for on-line support
+$package lib-gui
+$state works
+dep lib_portynet
+default buildin
+autoload 1

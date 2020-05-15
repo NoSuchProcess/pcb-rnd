@@ -80,6 +80,7 @@ include {../src_plugins/io_lihata/Plug.tmpasm}
 include {../src_plugins/io_mentor_cell/Plug.tmpasm}
 include {../src_plugins/io_pcb/Plug.tmpasm}
 include {../src_plugins/io_tedax/Plug.tmpasm}
+include {../src_plugins/irc/Plug.tmpasm}
 include {../src_plugins/jostle/Plug.tmpasm}
 include {../src_plugins/lib_compat_help/Plug.tmpasm}
 include {../src_plugins/lib_gensexpr/Plug.tmpasm}
