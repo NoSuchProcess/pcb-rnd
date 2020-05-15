@@ -33,8 +33,6 @@
 
 #include <libuirc/libuirc.h>
 
-/*#include "build_run.h"*/
-
 static int pcb_dlg_irc(void);
 
 typedef enum {
