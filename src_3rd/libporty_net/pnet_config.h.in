@@ -1,0 +1,204 @@
+/* === temporary: for -DUNIX, -DWIN32, etc. - long term we won't depend on this */
+#define ###sys/class### 1
+
+/* === P_poll() backend */
+###if libs/socket/poll/presents###
+#define P_NET_POLL 1
+/*#define P_NET_SELECT 1*/
+###else###
+###if libs/socket/select/presents###
+/*#define P_NET_POLL 1 */
+#define P_NET_SELECT 1
+###endif###
+###endif###
+
+/* === socket pair for local net */
+###if libs/socket/socketpair/presents###
+#define P_HAVE_SOCKETPAIR
+###else###
+/*#define P_HAVE_SOCKETPAIR */
+###endif###
+
+/* === precision time query and sleep */
+###if libs/time/usleep/presents###
+/* we have usleep, we won't need select() or Sleep() for subsecond sleeping */
+#define P_HAVE_USLEEP
+/*#define P_HAVE_WSLEEP*/
+#define P_TIME_INCLUDES_UNISTD
+###else###
+###if libs/time/Sleep/presents###
+/* we do not have usleep, but we have Sleep - must be windows... */
+/* #define P_HAVE_USLEEP */
+#define P_HAVE_WSLEEP
+#define P_TIME_INCLUDES_WSLEEP 1
+###else###
+/* we do not have usleep or Sleep, we need select() to emulate it*/
+/* #define P_HAVE_USLEEP */
+/* #define P_HAVE_WSLEEP */
+###if libs/socket/select/presents###
+/* we may (ab)use select if usleep is missing, even if we do P_NET_POLL for
+   networking */
+#define P_HAVE_SELECT 1
+#define P_TIME_INCLUDES_SELECT 1
+###else###
+#error can not find any way to do subsecond sleep; tried usleep(), Sleep() and select(), but this system does not have any of these.
+###endif###
+###endif###
+###endif###
+
+
+/* subsecond time query */###if libs/time/gettimeofday/presents###
+#define P_HAVE_GETTIMEOFDAY 1
+/* #define P_HAVE_FTIME 1 */
+###else###
+###if libs/time/ftime/presents###
+/* #define P_HAVE_GETTIMEOFDAY 1 */
+#define P_HAVE_FTIME 1
+###else###
+#error neither gettimeofday() nor ftime() found on your system.
+###endif###
+###endif###
+
+/* === socket related properties */
+/* if we have closesocket, we need to use that over close() */
+###if libs/socket/closesocket/presents###
+#define P_NET_CLOSESOCKET 1
+###else###
+/*#define P_NET_CLOSESOCKET 1*/
+###endif###
+
+/* if we have ioctlsocket, we need to use that over ioctl() on sockets */
+###if libs/socket/ioctlsocket/presents###
+#define P_HAVE_IOCTLSOCKET 1
+###else###
+/*#define P_HAVE_IOCTLSOCKET 1*/
+###endif###
+
+/* do we have the easy way for P_printf? */
+###if libs/vdprintf###
+#define P_HAVE_VDPRINTF
+###else###
+/*#define P_HAVE_VDPRINTF*/
+###endif###
+
+/* vsnprintf is an alternative */
+###if libs/vsnprintf###
+#define P_HAVE_VSNPRINTF
+###else###
+/*#define P_HAVE_VSNPRINTF*/
+###endif###
+
+###if libs/snprintf###
+#define P_HAVE_SNPRINTF
+###else###
+/*#define P_HAVE_SNPRINTF*/
+###endif###
+
+###if libs/snprintf_safe###
+#define P_HAVE_SNPRINTF_SAFE
+###else###
+/*#define P_HAVE_SNPRINTF_SAFE*/
+###endif###
+
+/* are SHUT_* constants available? */
+###if libs/socket/SHUT/presents###
+#define P_HAVE_SHUT
+###else###
+/*#define P_HAVE_SHUT*/
+###endif###
+
+/* are SD_* constants available? */
+###if libs/socket/SD/presents###
+#define P_HAVE_SD
+###else###
+/*#define P_HAVE_SD*/
+###endif###
+
+
+###if local/net/use_porty_resolver###
+#define P_USE_PORTY_RESOLVER
+###else###
+/*#define P_USE_PORTY_RESOLVER*/
+###endif###
+
+/* === hardware specific settings */
+/* Byte order */
+#define P_HOST_###sys/byte_order### 1
+
+/* === stdio properties */
+###if sys/class ~ WIN###
+/* on windows we assume stdio blocks */
+#define P_NET_STDIO_BLOCKS 1
+###else###
+/*#define P_NET_STDIO_BLOCKS 1*/
+###endif###
+
+/* === compiler settings */
+###if cc/inline###
+#define P_inline inline
+###else###
+#define P_inline
+###endif###
+
+###if cc/_exit/presents###
+#define P_HAVE__EXIT 1
+###else###
+/*#define P_HAVE__EXIT 1*/
+###endif###
+
+###if singal/names/SIGINT/terminates###
+#define P_SIGINT_TERMINATES 1
+###else###
+/*#define P_SIGINT_TERMINATES 1*/
+###endif###
+
+
+/* === file system */
+###if libs/fs/readdir/presents###
+#define P_HAVE_READDIR
+###else###
+/*#define P_HAVE_READDIR*/
+###endif###
+
+###if libs/fs/findnextfile/presents###
+#define P_HAVE_FINDNEXTFILE
+###else###
+/*#define P_HAVE_FINDNEXTFILE*/
+###endif###
+
+/* === shell */
+#define P_SHELL "###sys/shell###"
+###if sys/shell_needs_quote###
+#define P_SHELL_QUOTE "\""
+###else###
+#define P_SHELL_QUOTE ""
+###endif###
+
+/* === bgtask */
+###if libs/lpthread @###
+/* #define P_HAVE_PTHREAD */
+###else###
+#define P_HAVE_PTHREAD
+###endif###
+
+
+/* === math_wrap */
+/* log() */
+###if libs/math/cc/log/m_0/errno == 0###
+#define P_MBROKEN_LOG_M_0
+###else###
+/* #define P_MBROKEN_LOG_M_0 */
+###endif###
+
+###if libs/math/cc/log/p_0/errno == 0###
+#define P_MBROKEN_LOG_P_0
+###else###
+/* #define P_MBROKEN_LOG_P_0 */
+###endif###
+
+###if libs/math/cc/log/p_1/errno == 0###
+#define P_MBROKEN_LOG_P_1
+###else###
+/* #define P_MBROKEN_LOG_P_1 */
+###endif###
+
