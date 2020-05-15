@@ -123,6 +123,12 @@ static void on_topic(uirc_t *ctx, char *from, int query, char *to, char *text)
 	irc_printf(("*** topic on %s: %s\n", to, text));
 }
 
+
+static void on_kick(uirc_t *ctx, char *nick, int query, char *chan, char *victim, char *reason)
+{
+	irc_printf(("*** %s kicks %s from %s (%s)\n", nick, victim, chan, reason));
+}
+
 static void irc_disconnect(const char *reason)
 {
 	if (reason != NULL) {
@@ -252,7 +258,7 @@ static void irc_login_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 		ctx->irc.on_topic = on_topic;
 		ctx->irc.on_me_part = on_me_part;
 		ctx->irc.on_me_join = on_me_join;
-
+		ctx->irc.on_kick = on_kick;
 		irc_connect(1);
 	}
 	else {
