@@ -160,6 +160,14 @@ static void btn_reconn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	irc_connect(0);
 }
 
+static void enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	const char *txt = irc_ctx.dlg[irc_ctx.winput].val.str;
+	uirc_privmsg(&irc_ctx.irc, irc_ctx.chan, txt);
+	irc_printf(("> %s\n", txt));
+	RND_DAD_SET_VALUE(irc_ctx.dlg_hid_ctx, irc_ctx.winput, str, "");
+}
+
 static int pcb_dlg_irc(void)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -174,6 +182,7 @@ static int pcb_dlg_irc(void)
 		RND_DAD_STRING(irc_ctx.dlg);
 			RND_DAD_WIDTH_CHR(irc_ctx.dlg, 80);
 			irc_ctx.winput = RND_DAD_CURRENT(irc_ctx.dlg);
+			RND_DAD_ENTER_CB(irc_ctx.dlg, enter_cb);
 
 		RND_DAD_BEGIN_HBOX(irc_ctx.dlg);
 			RND_DAD_BUTTON(irc_ctx.dlg, "Send ver");
@@ -262,12 +271,12 @@ static int pcb_dlg_login_irc_login(void)
 
 			RND_DAD_LABEL(irc_ctx.dlg_login, "channel:");
 			RND_DAD_STRING(irc_ctx.dlg_login);
-				RND_DAD_DEFAULT_PTR(irc_ctx.dlg_login, "#pcb-rnd");
+				RND_DAD_DEFAULT_PTR(irc_ctx.dlg_login, rnd_strdup("#pcb-rnd"));
 				irc_ctx.wchan = RND_DAD_CURRENT(irc_ctx.dlg_login);
 
 			RND_DAD_LABEL(irc_ctx.dlg_login, "server:");
 			RND_DAD_STRING(irc_ctx.dlg_login);
-				RND_DAD_DEFAULT_PTR(irc_ctx.dlg_login, "irc.repo.hu");
+				RND_DAD_DEFAULT_PTR(irc_ctx.dlg_login, rnd_strdup("irc.repo.hu"));
 				irc_ctx.wserver = RND_DAD_CURRENT(irc_ctx.dlg_login);
 
 		RND_DAD_END(irc_ctx.dlg_login);
