@@ -1,0 +1,11 @@
+put /local/pcb/mod {lib_portynet}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/lib_portynet/lib_portynet.o
+	$(SRC_3RD_DIR)/libporty_net/libportytcp4.o
+@]
+
+switch /local/pcb/lib_portynet/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

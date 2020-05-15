@@ -13,6 +13,7 @@ plugin_def("lib_hid_gl",       "openGL rendering",                sdisable, 0, 0
 plugin_def("lib_hid_pcbui",    "common PCB-related GUI elements", sdisable, 0, 0)
 plugin_def("lib_netmap",       "map nets and objects",            sdisable, 0, 0)
 plugin_def("lib_polyhelp",     "polygon helpers",                 sbuildin, 1, 0)
+plugin_def("lib_portynet",     "#IPv4 tcp",                       sbuildin, 1, 0)
 plugin_def("lib_vfs",          "fetch data for VFS export",       sdisable, 0, 0)
 plugin_def("lib_wget",         "wget(1) wrapper",                 sdisable, 0, 0)
 
