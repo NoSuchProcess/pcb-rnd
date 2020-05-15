@@ -14,6 +14,7 @@
 
 #include "../src_3rd/puplug/scconfig_hooks.h"
 #include "../src_3rd/libfungw/scconfig_hooks.h"
+#include "../src_3rd/libporty_net/hooks_net.c"
 
 #include "librnd/scconfig/plugin_3state.h"
 #include "librnd/scconfig/hooks_common.h"
@@ -246,6 +247,8 @@ int hook_detect_target()
 		report("byaccic/ureglex are disabled, among with parser generation.\n");
 		put("/local/pcb/want_parsgen_byaccic", sfalse);
 	}
+
+	libporty_net_detect_target();
 
 	/* plugin dependencies */
 	plugin_deps(1);
