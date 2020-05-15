@@ -64,14 +64,20 @@ static void maybe_scroll_to_bottom()
 		txt->hid_scroll_to_bottom(atxt, irc_ctx.dlg_hid_ctx);
 }
 
+static void irc_poll(void)
+{
+	uirc_event_t ev = uirc_poll(&irc_ctx.irc);
+	if (ev & UIRC_CONNECT) {
+		char *tmp = rnd_concat("join :", irc_ctx.chan, NULL);
+		uirc_raw(&irc_ctx.irc, tmp);
+		free(tmp);
+	}
+}
+
 static void timer_cb(rnd_hidval_t hv)
 {
 	if (irc_ctx.state != IRC_OFF) {
-		uirc_event_t ev = uirc_poll(&irc_ctx.irc);
-		if (ev & UIRC_CONNECT) {
-			char *tmp = rnd_concat("join :", irc_ctx.chan, NULL);
-			uirc_raw(&irc_ctx.irc, tmp);
-		}
+		irc_poll();
 		rnd_gui->add_timer(rnd_gui, timer_cb, 100, hv);
 	}
 }
@@ -117,8 +123,15 @@ static void on_topic(uirc_t *ctx, char *from, int query, char *to, char *text)
 	irc_printf(("*** topic on %s: %s\n", to, text));
 }
 
-static void irc_disconnect(void)
+static void irc_disconnect(const char *reason)
 {
+	if (reason != NULL) {
+		char *tmp = rnd_concat("quit :", reason, NULL);
+		uirc_raw(&irc_ctx.irc, tmp);
+		free(tmp);
+		irc_poll();
+	}
+
 	irc_printf(("*** Disconnected. ***\n"));
 	rnd_gui->attr_dlg_widget_state(irc_ctx.dlg_hid_ctx, irc_ctx.winput, 0);
 	uirc_disconnect(&irc_ctx.irc);
@@ -138,7 +151,7 @@ static void irc_connect(int open_dlg)
 
 static void on_me_part(uirc_t *ctx, int query, char *chan)
 {
-	irc_disconnect();
+	irc_disconnect("quit on part");
 }
 
 static void irc_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
@@ -146,6 +159,10 @@ static void irc_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	irc_ctx_t *ctx = caller_data;
 
 	ctx->state = IRC_OFF;
+	{
+		uirc_raw(&irc_ctx.irc, "quit :closed");
+		irc_poll();
+	}
 	uirc_disconnect(&ctx->irc);
 
 	free(ctx->server); ctx->server = NULL;
@@ -156,7 +173,7 @@ static void irc_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 static void btn_reconn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	irc_disconnect();
+	irc_disconnect("reconnect");
 	irc_connect(0);
 }
 
@@ -164,7 +181,7 @@ static void enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr
 {
 	const char *txt = irc_ctx.dlg[irc_ctx.winput].val.str;
 	uirc_privmsg(&irc_ctx.irc, irc_ctx.chan, txt);
-	irc_printf(("> %s\n", txt));
+	irc_printf(("<%s> %s\n", irc_ctx.irc.nick, txt));
 	RND_DAD_SET_VALUE(irc_ctx.dlg_hid_ctx, irc_ctx.winput, str, "");
 }
 
