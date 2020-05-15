@@ -75,7 +75,6 @@ void uirc_disconnect(uirc_t *ctx)
 
 static uirc_event_t uirc_parse_001(uirc_t *ctx, char *arg)
 {
-/*:hu.irc.libgpmi.org 001 libuirc :Welcome to the Internet Relay Network libuirc!~libuirc@78-131-56-146.static.hdsnet.hu*/
 	if (ctx->on_connect != NULL)
 		ctx->on_connect(ctx);
 	return UIRC_CONNECT;
