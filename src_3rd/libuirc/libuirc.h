@@ -1,5 +1,5 @@
 #include <genvector/gds_char.h>
-#include <libporty/net/network.h>
+#include <libporty_net/libportytcp4.h>
 
 #define UIRC_MAX_QUERIES 16
 

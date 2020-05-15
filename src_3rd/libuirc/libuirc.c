@@ -1,6 +1,4 @@
 #include "libuirc.h"
-#include <libporty/net/tcp4.h>
-#include <libporty/net/os_dep.h>
 
 #include <stdio.h>
 
