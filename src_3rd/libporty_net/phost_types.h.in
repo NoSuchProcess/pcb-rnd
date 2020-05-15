@@ -1,0 +1,37 @@
+#ifndef P_TYPES_H
+#define P_TYPES_H
+/* Unsigned and signed integer types per width; do not support 64 bits as there
+   are platforms not offering any way to have 64 bit integers. */
+###if libs/types/stdint/presents###
+#include <stdint.h>
+###endif###
+###uniq \n sys/types/size_t/includes sys/types/off_t/includes sys/types/ptrdiff_t/includes###
+
+
+typedef ###sys/types/size/1_u_int### P_uint8_t;
+typedef ###sys/types/size/2_u_int### P_uint16_t;
+typedef ###sys/types/size/4_u_int### P_uint32_t;
+
+typedef ###sys/types/size/1_s_int### P_int8_t;
+typedef ###sys/types/size/2_s_int### P_int16_t;
+typedef ###sys/types/size/4_s_int### P_int32_t;
+
+###if sys/types/off_t/broken == false###
+typedef off_t P_off_t;
+###else###
+typedef P_uint###sys/ptrwidth###_t P_off_t;
+###endif###
+
+###if sys/types/ptrdiff_t/broken == false###
+typedef off_t P_ptrdiff_t;
+###else###
+typedef P_int###sys/ptrwidth###_t P_ptrdiff_t;
+###endif###
+
+###if sys/types/size_t/broken == false###
+typedef size_t P_size_t;
+###else###
+typedef P_off_t P_size_t;
+###endif###
+
+#endif
