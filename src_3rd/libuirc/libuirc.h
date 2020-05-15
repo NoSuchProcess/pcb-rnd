@@ -57,7 +57,7 @@ typedef enum { /* bitfield */
 	UIRC_PART             = 0x0400,
 	UIRC_MSG              = 0x0800,
 	UIRC_NOTICE           = 0x1000,
-	UIRC_KICK             = 0x2000,
+	UIRC_KICK             = 0x2000
 } uirc_event_t;
 
 typedef struct uirc_s uirc_t;
