@@ -104,6 +104,7 @@ do { \
 void on_me_join(uirc_t *ctx, int query, char *chan)
 {
 	irc_printf(("*** Connected. ***\n"));
+	irc_printf(("*** You may ask your question now - then please be patient. ***\n"));
 	rnd_gui->attr_dlg_widget_state(irc_ctx.dlg_hid_ctx, irc_ctx.winput, 1);
 }
 
