@@ -20,7 +20,7 @@
  *
  *  Contact:
  *    Project page: http://repo.hu/projects/pcb-rnd
- *    lead developer: http://repo.hu/projects/pcb-rnd/contact.html
+     lead developer: http://repo.hu/projects/pcb-rnd/contact.html
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
@@ -32,6 +32,8 @@
 #include <librnd/core/plugins.h>
 
 #include <libuirc/libuirc.h>
+
+/*#include "build_run.h"*/
 
 static int pcb_dlg_irc(void);
 
@@ -183,12 +185,21 @@ static void btn_reconn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	irc_connect(0);
 }
 
-static void enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void irc_msg(const char *txt)
 {
-	const char *txt = irc_ctx.dlg[irc_ctx.winput].val.str;
 	uirc_privmsg(&irc_ctx.irc, irc_ctx.chan, txt);
 	irc_printf(("<%s> %s\n", irc_ctx.irc.nick, txt));
+}
+
+static void enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	irc_msg(irc_ctx.dlg[irc_ctx.winput].val.str);
 	RND_DAD_SET_VALUE(irc_ctx.dlg_hid_ctx, irc_ctx.winput, str, "");
+}
+
+static void btn_sendver_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	irc_msg("pcb-rnd version: " PCB_VERSION " (" PCB_REVISION ")");
 }
 
 static int pcb_dlg_irc(void)
@@ -209,6 +220,7 @@ static int pcb_dlg_irc(void)
 
 		RND_DAD_BEGIN_HBOX(irc_ctx.dlg);
 			RND_DAD_BUTTON(irc_ctx.dlg, "Send ver");
+				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_sendver_cb);
 			RND_DAD_BUTTON(irc_ctx.dlg, "Save log");
 			RND_DAD_BUTTON(irc_ctx.dlg, "Reconnect");
 				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_reconn_cb);
