@@ -198,6 +198,7 @@ m;d;a	pcb-menu-default.lht	conf(toggle, editor\057live_routing, design) 	Show au
 m;d;c	pcb-menu-default.lht	conf(toggle, editor\057check_planes, design) 	Check polygons
 m;d;d	pcb-menu-default.lht	conf(toggle, editor\057as_drawn_poly, design)	poly as-drawn frame annotation
 m;d;h	pcb-menu-default.lht	conf(toggle, editor\057highlight_on_point, design) 	Highlighting on line, arc points
+m;d;o	pcb-menu-default.lht	conf(toggle, editor\057click_objlist, design)	Object list popup
 m;d;p	pcb-menu-default.lht	conf(toggle, editor\057thin_draw_poly, design)	Thin draw poly
 m;d;r	pcb-menu-default.lht		Reset
 m;d;t	pcb-menu-default.lht	conf(toggle, editor\057thin_draw, design) 	Thin draw
