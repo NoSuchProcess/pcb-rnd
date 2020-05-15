@@ -253,7 +253,7 @@ static uirc_event_t uirc_parse(uirc_t *ctx, char *line)
 	char *end, *arg, *cmd, *from = line;
 	uirc_event_t res = 0;
 
-printf("line='%s'\n", line);
+/*printf("line='%s'\n", line);*/
 
 	if (strncmp(line, "PING", 4) == 0) {
 		from[1] = 'O';
