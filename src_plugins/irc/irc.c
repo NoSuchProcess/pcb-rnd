@@ -25,6 +25,7 @@
  */
 
 #include "config.h"
+#include <ctype.h>
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/actions.h>
@@ -279,17 +280,22 @@ static void irc_login_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 static int pcb_dlg_login_irc_login(void)
 {
-	char *nick;
+	char *nick, *s;
 	rnd_hid_dad_buttons_t clbtn[] = {{"Connect!", IRC_LOGIN}, {"Cancel", 0}, {NULL, 0}};
 	if (irc_ctx.state != IRC_OFF)
 		return -1; /* do not open another */
 
-	nick = rnd_get_user_name();
+	nick = (char *)rnd_get_user_name();
+	if (nick != NULL) {
+		nick = rnd_strdup(nick);
+		for(s = nick; !isalnum(*s); s++) ;
+		*s = '\0';
+	}
 	if ((nick == NULL) || (*nick == '\0') || (strcmp(nick, "Unknown") == 0)) {
 		int r = rnd_getpid();
-		free(nick);
 		r ^= rand();
 		r ^= time(NULL);
+		free(nick);
 		nick = rnd_strdup_printf("pcb-rnd-%d", r % 100000);
 	}
 
