@@ -248,6 +248,28 @@ static uirc_event_t uirc_parse_topic(uirc_t *ctx, char *nick, char *arg, int num
 	return 0;
 }
 
+static void uirc_new_nick(uirc_t *ctx)
+{
+	int len = strlen(ctx->nick);
+	if (len == 0) {
+		free(ctx->nick);
+		ctx->nick = rnd_strdup("libuirc");
+		len = 7;
+	}
+	if (len < 9) {
+		char *nick = malloc(len+2);
+		memcpy(nick, ctx->nick, len);
+		nick[len] = (rand() % ('a'-'z')) + 'a';
+		nick[len+1] = '\0';
+		free(ctx->nick);
+		ctx->nick = nick;
+	}
+	else
+		ctx->nick[rand() % len] = (rand() % ('a'-'z')) + 'a';
+	gds_append_str(&ctx->obuf, "nick ");
+	gds_append_str(&ctx->obuf, ctx->nick);
+	gds_append(&ctx->obuf, '\n');
+}
 
 static uirc_event_t uirc_parse(uirc_t *ctx, char *line)
 {
@@ -301,6 +323,7 @@ printf("line='%s'\n", line);
 	if (irc_strcasecmp(cmd, "notice") == 0) return res | uirc_parse_notice(ctx, from, arg);
 	if (irc_strcasecmp(cmd, "topic") == 0) return res | uirc_parse_topic(ctx, from, arg, 0);
 	if (irc_strcasecmp(cmd, "332") == 0) return res | uirc_parse_topic(ctx, from, arg, 1);
+	if (irc_strcasecmp(cmd, "433") == 0) uirc_new_nick(ctx);
 
 	return res;
 }
