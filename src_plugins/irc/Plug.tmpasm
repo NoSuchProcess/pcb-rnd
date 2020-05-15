@@ -1,6 +1,7 @@
 put /local/pcb/mod {irc}
 put /local/pcb/mod/OBJS [@
- $(PLUGDIR)/irc/irc.o
+	$(PLUGDIR)/irc/irc.o
+	$(SRC_3RD_DIR)/libuirc/libuirc.o
 @]
 
 switch /local/pcb/irc/controls

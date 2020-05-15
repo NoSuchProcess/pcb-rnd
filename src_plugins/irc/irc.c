@@ -43,6 +43,7 @@ typedef enum {
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	RND_DAD_DECL_NOINIT(dlg_login)
+	int wnick, wserver;
 	irc_state_t state;
 	uirc_t irc;
 } irc_ctx_t;
@@ -55,6 +56,15 @@ static void irc_login_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 	if (ctx->dlg_login_ret_override->valid && (ctx->dlg_login_ret_override->value == IRC_LOGIN)) {
 		/* connect */
+		int port = 6667;
+		const char *server = ctx->dlg_login[ctx->wserver].val.str;
+		ctx->state = IRC_ONLINE;
+		ctx->irc.nick = rnd_strdup(ctx->dlg_login[ctx->wnick].val.str);
+		if (uirc_connect(&ctx->irc, server, port, "pcb-rnd irc action") == 0) {
+			printf("conn!\n");
+		}
+		else
+			rnd_message(RND_MSG_ERROR, "IRC: on-line support: failed to connect the server at %s:%p.\n", server, port);
 	}
 	else {
 		ctx->state = IRC_OFF;
@@ -84,6 +94,7 @@ static int pcb_dlg_login_irc_login(void)
 		RND_DAD_BEGIN_TABLE(irc_ctx.dlg_login, 2);
 			RND_DAD_LABEL(irc_ctx.dlg_login, "nickname:");
 			RND_DAD_STRING(irc_ctx.dlg_login);
+				irc_ctx.wnick = RND_DAD_CURRENT(irc_ctx.dlg_login);
 				RND_DAD_DEFAULT_PTR(irc_ctx.dlg_login, nick);
 
 			RND_DAD_LABEL(irc_ctx.dlg_login, "channel:");
@@ -93,6 +104,7 @@ static int pcb_dlg_login_irc_login(void)
 			RND_DAD_LABEL(irc_ctx.dlg_login, "server:");
 			RND_DAD_STRING(irc_ctx.dlg_login);
 				RND_DAD_DEFAULT_PTR(irc_ctx.dlg_login, "irc.repo.hu");
+				irc_ctx.wserver = RND_DAD_CURRENT(irc_ctx.dlg_login);
 
 		RND_DAD_END(irc_ctx.dlg_login);
 		RND_DAD_BUTTON_CLOSES(irc_ctx.dlg_login, clbtn);
