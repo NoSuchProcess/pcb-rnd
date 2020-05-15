@@ -234,7 +234,7 @@ int hook_detect_target()
 		put("/local/pcb/want_parsgen", sfalse);
 	}
 
-	/* byaccoc - are we able to regenerate languages? */
+	/* byaccic - are we able to regenerate languages? */
 	if (istrue(get("/local/pcb/want_byaccic"))) {
 		require("parsgen/byaccic/*", 0, 0);
 		require("parsgen/ureglex/*", 0, 0);
