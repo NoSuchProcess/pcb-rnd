@@ -5293,6 +5293,27 @@
  librnd/core/compat_misc.h librnd/core/actions.h librnd/core/safe_fs.h \
  obj_subc.h netlist.h ../src_plugins/io_tedax/tnetlist.h \
  ../src_plugins/io_tedax/tdrc_query.h ../src_plugins/io_tedax/parse.h
+../src_plugins/irc/irc.o: ../src_plugins/irc/irc.c ../config.h \
+ librnd/config.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
+ librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
+ librnd/core/attrib.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h librnd/core/unit.h librnd/core/hid_attrib.h \
+ ../src_3rd/genlist/gendlist.h librnd/core/color.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h librnd/core/actions.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
+ librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/rnd_printf.h \
+ ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
+ librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h ../src_3rd/libuirc/libuirc.h \
+ ../src_3rd/libporty_net/libportytcp4.h \
+ ../src_3rd/libporty_net/os_includes.h \
+ ../src_3rd/libporty_net/pnet_config.h \
+ ../src_3rd/libporty_net/phost_types.h
 ../src_plugins/jostle/jostle.o: ../src_plugins/jostle/jostle.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
@@ -6496,6 +6517,12 @@
  ../src_plugins/lib_polyhelp/triangulate.c ../config.h librnd/config.h \
  ../src_plugins/lib_polyhelp/triangulate.h \
  ../src_3rd/fast89-poly2tri/fast89_poly2tri.h
+../src_plugins/lib_portynet/lib_portynet.o: \
+ ../src_plugins/lib_portynet/lib_portynet.c ../config.h librnd/config.h \
+ librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h
 ../src_plugins/lib_vfs/lib_vfs.o: ../src_plugins/lib_vfs/lib_vfs.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
@@ -8302,9 +8329,24 @@
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h \
  ../src_3rd/libfungw/fungw_conv.h \
  ../src_3rd/libfungwbind/fawk/libfawk_sc/libfawk_sc_all.c
+../src_3rd/libporty_net/libportytcp4.o: \
+ ../src_3rd/libporty_net/libportytcp4.c \
+ ../src_3rd/libporty_net/libportytcp4.h \
+ ../src_3rd/libporty_net/os_includes.h \
+ ../src_3rd/libporty_net/pnet_config.h \
+ ../src_3rd/libporty_net/phost_types.h
 ../src_3rd/libuhpgl/parse.o: ../src_3rd/libuhpgl/parse.c \
  ../src_3rd/libuhpgl/uhpgl_math.h ../src_3rd/libuhpgl/libuhpgl.h \
  ../src_3rd/libuhpgl/parse.h ../src_3rd/libuhpgl/arc_iterate.h
+../src_3rd/libuirc/libuirc.o: ../src_3rd/libuirc/libuirc.c \
+ ../src_3rd/libuirc/libuirc.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h \
+ ../src_3rd/libporty_net/libportytcp4.h \
+ ../src_3rd/libporty_net/os_includes.h \
+ ../src_3rd/libporty_net/pnet_config.h \
+ ../src_3rd/libporty_net/phost_types.h librnd/core/compat_misc.h \
+ librnd/config.h
 ../src_3rd/genht/hash.o: ../src_3rd/genht/hash.c
 ../src_3rd/genht/htip.o: ../src_3rd/genht/htip.c ../src_3rd/genht/htip.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/ht.c \
@@ -10365,16 +10407,17 @@ search.o: search.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
- obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
- obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
- obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
- obj_text.h font.h ../src_3rd/genht/htip.h librnd/core/box.h \
- librnd/core/math_helper.h librnd/core/misc_util.h obj_gfx_list.h \
- obj_gfx.h layer_grp.h rats_patch.h librnd/core/hidlib.h data.h \
- crosshair.h vtonpoint.h librnd/core/hid.h librnd/core/error.h route.h \
- buffer.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
+ librnd/core/color.h actions_pcb.h board.h vtroutestyle.h \
+ librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h obj_gfx_list.h obj_gfx.h layer_grp.h \
+ rats_patch.h librnd/core/hidlib.h data.h crosshair.h vtonpoint.h \
+ librnd/core/hid.h librnd/core/error.h route.h buffer.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h obj_rat_list.h \
+ obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h librnd/poly/rtree2_compat.h \
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
