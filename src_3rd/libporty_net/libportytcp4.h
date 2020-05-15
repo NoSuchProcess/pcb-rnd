@@ -1,65 +1,8 @@
+
 #include "os_includes.h"
-#ifndef P_NETWORK_H
-#define P_NETWORK_H
-#include <libporty/config.h>
-#include <libporty/net/os_dep.h>
-#include <libporty/host/types.h>
+#include "pnet_config.h"
+#include "phost_types.h"
 
-/* address type for IPv4 IP addresses */
-typedef P_uint32_t P_ipv4_addr_t;
-
-/* Must be called before any other network related call; returns  0 on success */
-int P_net_init(void);
-
-/* Must be called at the end of the program; on some system this is required to
-   shut down open connections. */
-int P_net_uninit(void);
-
-
-
-typedef enum P_net_err {
-	P_net_err_dns       = -1,
-	P_net_err_socket    = -2,
-	P_net_err_reuse     = -3,
-	P_net_err_nonblock  = -4,
-	P_net_err_bind      = -5,
-	P_net_err_listen    = -6,
-	P_net_err_connect   = -7,
-	P_net_err_broadcast = -8,
-	P_net_err_accept    = -9,
-	P_net_err_alloc     = -10
-} P_net_err_t ;
-
-typedef enum P_net_nonblock_e {
-	P_net_nonblock_connect            = 1,    /* switch to non-blocking for connect */
-	P_net_nonblock_socket             = 2,    /* switch to non-blocking after connect */
-	P_net_nonblock_full               = 3,    /* do everything in non-blocking */
-	P_net_nonblock_quit_on_error      = 4     /* quit if can't be set to nonblock */
-} P_net_nonblock_t;
-
-typedef enum P_net_broadcast {
-	P_net_broadcast_socket            = 1,    /* switch the socket to broadcast */
-	P_net_broadcast_quit_on_error     = 2     /* quit if can't be set to broadcast */
-} P_net_broadcast_t;
-
-int P_net_close(P_net_socket s);
-
-/* use the following two calls exclusively for reading and writing sockets */
-P_size_t P_net_read(P_net_socket s, void *buf, P_size_t count);
-P_size_t P_net_write(P_net_socket s, void *buf, P_size_t count);
-extern int P_net_printf_minbuff, P_net_printf_maxbuff; /* buffer size control (writable); irrelevant on systems supporting vdprintf() */
-P_size_t P_net_printf(P_net_socket s, const char *format, ...);
-
-/* set socket properties */
-int P_net_set_nonblocking(int sock);
-int P_net_set_blocking(int sock);
-int P_net_enable_broadcast(int sock);
-
-/* shutdown() compatibility */
-#define P_net_shutdown(s, how) shutdown(s, how)
-
-#endif /* P_NETWORK_H */
-#include <libporty/config.h>
 
 /* UNIX */
 #if defined(UNIX)
@@ -183,10 +126,66 @@ P_net_socket P_socket(int af, int protocol, int type);
 #else
 #define P_socket socket
 #endif
+#ifndef P_NETWORK_H
+#define P_NETWORK_H
+
+/* address type for IPv4 IP addresses */
+typedef P_uint32_t P_ipv4_addr_t;
+
+/* Must be called before any other network related call; returns  0 on success */
+int P_net_init(void);
+
+/* Must be called at the end of the program; on some system this is required to
+   shut down open connections. */
+int P_net_uninit(void);
+
+
+
+typedef enum P_net_err {
+	P_net_err_dns       = -1,
+	P_net_err_socket    = -2,
+	P_net_err_reuse     = -3,
+	P_net_err_nonblock  = -4,
+	P_net_err_bind      = -5,
+	P_net_err_listen    = -6,
+	P_net_err_connect   = -7,
+	P_net_err_broadcast = -8,
+	P_net_err_accept    = -9,
+	P_net_err_alloc     = -10
+} P_net_err_t ;
+
+typedef enum P_net_nonblock_e {
+	P_net_nonblock_connect            = 1,    /* switch to non-blocking for connect */
+	P_net_nonblock_socket             = 2,    /* switch to non-blocking after connect */
+	P_net_nonblock_full               = 3,    /* do everything in non-blocking */
+	P_net_nonblock_quit_on_error      = 4     /* quit if can't be set to nonblock */
+} P_net_nonblock_t;
+
+typedef enum P_net_broadcast {
+	P_net_broadcast_socket            = 1,    /* switch the socket to broadcast */
+	P_net_broadcast_quit_on_error     = 2     /* quit if can't be set to broadcast */
+} P_net_broadcast_t;
+
+int P_net_close(P_net_socket s);
+
+/* use the following two calls exclusively for reading and writing sockets */
+P_size_t P_net_read(P_net_socket s, void *buf, P_size_t count);
+P_size_t P_net_write(P_net_socket s, void *buf, P_size_t count);
+extern int P_net_printf_minbuff, P_net_printf_maxbuff; /* buffer size control (writable); irrelevant on systems supporting vdprintf() */
+P_size_t P_net_printf(P_net_socket s, const char *format, ...);
+
+/* set socket properties */
+int P_net_set_nonblocking(int sock);
+int P_net_set_blocking(int sock);
+int P_net_enable_broadcast(int sock);
+
+/* shutdown() compatibility */
+#define P_net_shutdown(s, how) shutdown(s, how)
+
+#endif /* P_NETWORK_H */
 #ifndef P_NET_TCP4_H
 #define P_NET_TCP4_H
 
-#include <libporty/net/network.h>
 
 int P_tcp4_listen(P_net_socket *sock, const char *loc_hostname, int loc_port, P_net_nonblock_t non_blocking, int backlog);
 int P_tcp4_connect(P_net_socket *sock, const char *rem_hostname, int rem_port, const char *loc_hostname, int loc_port, P_net_nonblock_t non_blocking);
@@ -197,7 +196,6 @@ int P_tcp4_accept(P_net_socket *new_socket, P_net_socket listen_sock, P_ipv4_add
 #ifndef P_NET_DNS4_H
 #define P_NET_DNS4_H
 
-#include <libporty/net/network.h>
 
 /* Resolve hostname to IP; returns 0 on success. */
 int P_dns4_name_to_IP(P_ipv4_addr_t *ip, const char *hostname);
