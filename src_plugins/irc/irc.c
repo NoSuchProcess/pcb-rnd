@@ -107,6 +107,9 @@ static int pcb_dlg_login_irc_login(void)
 				irc_ctx.wserver = RND_DAD_CURRENT(irc_ctx.dlg_login);
 
 		RND_DAD_END(irc_ctx.dlg_login);
+
+		RND_DAD_LABEL(irc_ctx.dlg_login, "The 'Connect!' button will connect you to a public\nIRC server where pcb-rnd users and developers will\nhelp you in a chat.");
+
 		RND_DAD_BUTTON_CLOSES(irc_ctx.dlg_login, clbtn);
 	RND_DAD_END(irc_ctx.dlg_login);
 
