@@ -124,7 +124,7 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
  * resets the selected flag if requested
  * returns rnd_true if anything has changed
  */
-rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, rnd_bool on_locked_too)
+static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, rnd_bool on_locked_too, rnd_bool floater_only)
 {
 	rnd_bool changed = rnd_false;
 	pcb_any_obj_t *exto;
@@ -140,6 +140,8 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, line))
 				continue;
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
+				continue;
+			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, line))
 				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(line);
@@ -167,6 +169,8 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				continue;
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, arc))
 				continue;
+			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, arc))
+				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(arc);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, arc);
@@ -192,6 +196,8 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) || !pcb_text_is_visible(PCB, layer, text))
 				continue;
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, text))
+				continue;
+			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, text))
 				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(text);
@@ -219,6 +225,8 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				continue;
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon))
 				continue;
+			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, polygon))
+				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(polygon);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, polygon);
@@ -245,6 +253,8 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				continue;
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, gfx))
 				continue;
+			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, gfx))
+				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(gfx);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, gfx);
@@ -268,6 +278,8 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 		{
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, subc) && (subc->extobj == NULL)) /* extobj: even locked means floaters can be operated on */
 				continue;
+			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, subc))
+				continue;
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
 				if (Reset) {
 					pcb_undo_add_obj_to_flag(subc);
@@ -283,11 +295,25 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				if (exto != NULL) pcb_extobj_float_geo(exto);
 				if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)subc, NULL);
 				changed = rnd_true;
-			}
-			else if ((pcb->loose_subc) || (type & PCB_OBJ_SUBC_PART) || (subc->extobj != NULL)) {
-				if (pcb_selected_operation(pcb, subc->data, F, ctx, Reset, type, on_locked_too))
+
+				if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, on_locked_too, 1))
 					changed = rnd_true;
 			}
+			else if ((pcb->loose_subc) || (type & PCB_OBJ_SUBC_PART) || (subc->extobj != NULL)) {
+				if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, on_locked_too, 0))
+					changed = rnd_true;
+			}
+			else
+				if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, on_locked_too, 1))
+					changed = rnd_true;
+		}
+		PCB_END_LOOP;
+	}
+	else { /* there can be selected objects within subcircuits - but deal only with floaters */
+		PCB_SUBC_LOOP(data);
+		{
+			if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, on_locked_too, 1))
+				changed = rnd_true;
 		}
 		PCB_END_LOOP;
 	}
@@ -299,6 +325,8 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 			if (!PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack))
 				continue;
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack))
+				continue;
+			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, padstack))
 				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(padstack);
@@ -326,6 +354,8 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 				continue;
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 				continue;
+			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, line))
+				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(line);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, line);
@@ -347,3 +377,9 @@ rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t
 
 	return changed;
 }
+
+rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, rnd_bool on_locked_too)
+{
+	return pcb_selected_operation_(pcb, data, F, ctx, Reset, type, on_locked_too, 0);
+}
+
