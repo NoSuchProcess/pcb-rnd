@@ -33,6 +33,8 @@
 
 #include <libuirc/libuirc.h>
 
+static int pcb_dlg_irc(void);
+
 typedef enum {
 	IRC_OFF,
 	IRC_LOGIN,
@@ -43,10 +45,12 @@ typedef enum {
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	RND_DAD_DECL_NOINIT(dlg_login)
-	int wnick, wserver, wtxt, wscroll, winput;
+	int wnick, wserver, wchan,   wtxt, wscroll, winput;
 	irc_state_t state;
 	uirc_t irc;
 	rnd_hidval_t timer;
+	char *server, *chan;
+	int port;
 } irc_ctx_t;
 
 irc_ctx_t irc_ctx;
@@ -62,10 +66,12 @@ static void maybe_scroll_to_bottom()
 
 static void timer_cb(rnd_hidval_t hv)
 {
-	if (irc_ctx.state == IRC_ONLINE) {
+	if (irc_ctx.state != IRC_OFF) {
 		uirc_event_t ev = uirc_poll(&irc_ctx.irc);
-		if (ev & UIRC_CONNECT)
-			uirc_raw(&irc_ctx.irc, "join :#dev");
+		if (ev & UIRC_CONNECT) {
+			char *tmp = rnd_concat("join :", irc_ctx.chan, NULL);
+			uirc_raw(&irc_ctx.irc, tmp);
+		}
 		rnd_gui->add_timer(rnd_gui, timer_cb, 100, hv);
 	}
 }
@@ -111,7 +117,7 @@ static void on_topic(uirc_t *ctx, char *from, int query, char *to, char *text)
 	irc_printf(("*** topic on %s: %s\n", to, text));
 }
 
-static void disconnect(void)
+static void irc_disconnect(void)
 {
 	irc_printf(("*** Disconnected. ***\n"));
 	rnd_gui->attr_dlg_widget_state(irc_ctx.dlg_hid_ctx, irc_ctx.winput, 0);
@@ -119,9 +125,20 @@ static void disconnect(void)
 	irc_ctx.state = IRC_DISCONNECTED;
 }
 
+static void irc_connect(int open_dlg)
+{
+	if (uirc_connect(&irc_ctx.irc, irc_ctx.server, irc_ctx.port, "pcb-rnd irc action") == 0) {
+		if (open_dlg)
+			pcb_dlg_irc();
+		irc_printf(("*** Connecting %s:%d... ***\n", irc_ctx.server, irc_ctx.port));
+	}
+	else
+		irc_printf(("*** ERROR: failed to connect the server at %s:%p. ***\n", irc_ctx.server, irc_ctx.port));
+}
+
 static void on_me_part(uirc_t *ctx, int query, char *chan)
 {
-	disconnect();
+	irc_disconnect();
 }
 
 static void irc_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
@@ -131,10 +148,17 @@ static void irc_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	ctx->state = IRC_OFF;
 	uirc_disconnect(&ctx->irc);
 
+	free(ctx->server); ctx->server = NULL;
+	free(ctx->chan); ctx->chan = NULL;
+
 	RND_DAD_FREE(ctx->dlg);
 }
 
-
+static void btn_reconn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	irc_disconnect();
+	irc_connect(0);
+}
 
 static int pcb_dlg_irc(void)
 {
@@ -155,6 +179,7 @@ static int pcb_dlg_irc(void)
 			RND_DAD_BUTTON(irc_ctx.dlg, "Send ver");
 			RND_DAD_BUTTON(irc_ctx.dlg, "Save log");
 			RND_DAD_BUTTON(irc_ctx.dlg, "Reconnect");
+				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_reconn_cb);
 			RND_DAD_BOOL(irc_ctx.dlg, "");
 				irc_ctx.wscroll = RND_DAD_CURRENT(irc_ctx.dlg);
 				RND_DAD_DEFAULT_NUM(irc_ctx.dlg, 1);
@@ -191,8 +216,9 @@ static void irc_login_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 	if (ctx->dlg_login_ret_override->valid && (ctx->dlg_login_ret_override->value == IRC_LOGIN)) {
 		/* connect */
-		int port = 6667;
-		const char *server = ctx->dlg_login[ctx->wserver].val.str;
+		ctx->port = 6667;
+		ctx->server = rnd_strdup(ctx->dlg_login[ctx->wserver].val.str);
+		ctx->chan = rnd_strdup(ctx->dlg_login[ctx->wchan].val.str);
 		ctx->state = IRC_ONLINE;
 		ctx->irc.nick = rnd_strdup(ctx->dlg_login[ctx->wnick].val.str);
 		ctx->irc.on_msg = on_msg;
@@ -201,12 +227,7 @@ static void irc_login_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 		ctx->irc.on_me_part = on_me_part;
 		ctx->irc.on_me_join = on_me_join;
 
-		if (uirc_connect(&ctx->irc, server, port, "pcb-rnd irc action") == 0) {
-			pcb_dlg_irc();
-			irc_printf(("*** Connecting %s:%d... ***\n", server, port));
-		}
-		else
-			rnd_message(RND_MSG_ERROR, "IRC: on-line support: failed to connect the server at %s:%p.\n", server, port);
+		irc_connect(1);
 	}
 	else {
 		ctx->state = IRC_OFF;
@@ -242,6 +263,7 @@ static int pcb_dlg_login_irc_login(void)
 			RND_DAD_LABEL(irc_ctx.dlg_login, "channel:");
 			RND_DAD_STRING(irc_ctx.dlg_login);
 				RND_DAD_DEFAULT_PTR(irc_ctx.dlg_login, "#pcb-rnd");
+				irc_ctx.wchan = RND_DAD_CURRENT(irc_ctx.dlg_login);
 
 			RND_DAD_LABEL(irc_ctx.dlg_login, "server:");
 			RND_DAD_STRING(irc_ctx.dlg_login);
