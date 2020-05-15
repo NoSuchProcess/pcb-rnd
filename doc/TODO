@@ -11,7 +11,6 @@
 + FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken] -> *announce*
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
-+ FEATURE: layer binding dialog: manual layer binding (reuse csect?) -> announce!
 - query & advanced search
 	- FEATURE: search expr wizard should pick up the expression from the button when clicked
 	- CLEANUP: make a run on a large board, speed test, with -O0 and -O3:
@@ -161,6 +160,7 @@
 	- make saving selected, found and warn flags optional to reduce VCS noise [report: Igor2]
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
 	- remove via geometry from route style
+	- manual layer binding (to LID)
 
 4. Low prio ===============================================================================
 - FEATURE: footprint in-place replacement should match up floaters to keep their coords, as documented in ML/2304; also keep thermals per term ID [report: gpaubert]
