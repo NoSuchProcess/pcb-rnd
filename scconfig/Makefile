@@ -54,9 +54,9 @@ include src/sul/Makefile.plugin
 include src/menulib/Makefile.plugin
 
 #  Comment this line if you do not need generator (templating)
-#include src/generator/Makefile.plugin
+include src/generator/Makefile.plugin.legacy
 
-#  Comment this line if you do not need tmpasm (templating); conflicts with generator
+#  Comment this line if you do not need tmpasm (templating)
 include src/tmpasm/Makefile.plugin
 
 # --- you shouldn't edit the lines below ---
