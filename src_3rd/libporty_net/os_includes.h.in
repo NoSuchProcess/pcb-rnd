@@ -1,3 +1,3 @@
-###uniq \n libs/socket/poll/includes libs/socket/select/includes libs/socket/closesocket/includes libs/socket/socketpair/includes libs/socket/ioctl/includes libs/socket/ioctl/fionbio/includes libs/socket/sockaddr_in/includes libs/socket/lac/includes libs/socket/recvsend/includes libs/socket/readwrite/includes libs/socket/shutdown/includes libs/socket/SHUT/includes libs/socket/getnameinfo/includes libs/socket/gethostname/includes###
+###uniq \n libs/socket/poll/includes libs/socket/select/includes libs/socket/closesocket/includes libs/socket/socketpair/includes libs/socket/ioctl/includes libs/socket/ioctl/fionbio/includes libs/socket/sockaddr_in/includes libs/socket/lac/includes libs/socket/recvsend/includes libs/socket/readwrite/includes libs/socket/shutdown/includes libs/socket/SHUT/includes libs/socket/getnameinfo/includes libs/socket/gethostname/includes libs/socket/socklent/includes###
 
 #define P_AF_LOCAL ###libs/socket/socketpair/af_local###

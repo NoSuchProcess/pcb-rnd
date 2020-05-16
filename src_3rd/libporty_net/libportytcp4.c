@@ -445,7 +445,7 @@ int P_tcp4_accept(P_net_socket *new_socket, P_net_socket listen_sock, P_ipv4_add
 {
 	struct sockaddr_in sin;
 	int ret;
-	size_t len; /* should be socklen_t but that's not supported by many systems */
+	P_socklen_t len;
 
 	len = sizeof(sin);
 	ret = accept(listen_sock, (struct sockaddr *)&sin, &len);
@@ -632,12 +632,12 @@ int P_dns4_is_addr(const char *name)
 	char tmp[4];
 	char *d;
 	const char *s;
-	int c, dots;
+	int c;
 
 	*tmp = '\0';
 	tmp[3] = '\0';
 
-	for(s = name, c = 3, dots = 0, d = tmp;; s++) {
+	for(s = name, c = 3, d = tmp;; s++) {
 		if (isdigit(*s)) {
 			/* None of the tags may be longer than 3 characters */
 			c--;

@@ -4,6 +4,12 @@
 #include "phost_types.h"
 
 
+#ifdef P_HAVE_SOCKLEN_T
+	typedef socklen_t P_socklen_t;
+#else
+	typedef int P_socklen_t;
+#endif
+
 /* UNIX */
 #if defined(UNIX)
 
@@ -37,7 +43,6 @@
 
 #	if !(defined(__MINGW32__) || defined(__CYGWIN__))
 		typedef SSIZE_T ssize_t;
-		typedef int socklen_t;
 #	endif
 
 #	define GET_LAST_ERROR() WSAGetLastError()

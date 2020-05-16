@@ -19,6 +19,15 @@
 /*#define P_HAVE_SOCKETPAIR */
 ###endif###
 
+/* === socklen_t */
+###if libs/socket/socklen_t/presents###
+#define P_HAVE_SOCKLEN_T
+###else###
+/*#define P_HAVE_SOCKLEN_T */
+###endif###
+
+
+
 /* === precision time query and sleep */
 ###if libs/time/usleep/presents###
 /* we have usleep, we won't need select() or Sleep() for subsecond sleeping */
