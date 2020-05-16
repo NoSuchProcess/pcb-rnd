@@ -8,20 +8,15 @@
 - CLEANUP: lihata v7 -> make v7 the default high prio
 - FEATURE: make op change on enforce_clearance undoable [report: Igor2]
 - FEATURE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
-+ FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken] -> *announce*
++ FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
-- query & advanced search
-	- FEATURE: search expr wizard should pick up the expression from the button when clicked
-	- CLEANUP: make a run on a large board, speed test, with -O0 and -O3:
-		- iteration speed (a simple @)
-		- eval speed (a simple @ with a lot of constants in an expr)
-		- geo speed
-		- regex and string cmp match speed vs. select by name
+- FEATURE: search expr wizard should pick up the expression from the button when clicked
 - BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 - BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan]
 - BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
 - BUG: {a r a} broke: ratsnest is stale for the 7805 example with the poly and a few random lines removed [report: barjac]
+- ANNOUNCE: pool node: query_speed
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
