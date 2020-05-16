@@ -15,6 +15,7 @@ svn cat svn://repo.hu/libporty/trunk/src/libporty/host/time.h > time.h
 cp net/os_includes.h.in .
 
 (echo '
+#define _DEFAULT_SOURCE
 #include "os_includes.h"
 #include "pnet_config.h"
 #include "phost_types.h"
