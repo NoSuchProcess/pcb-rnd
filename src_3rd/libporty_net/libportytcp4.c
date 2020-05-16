@@ -278,6 +278,112 @@ P_net_socket P_socket(int af, int protocol, int type)
 }
 #endif
 /*
+    libporty - time/date functions
+    Copyright (C) 2011..2012  Tibor 'Igor2' Palinkas
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Library General Public
+    License as published by the Free Software Foundation; either
+    version 2 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Library General Public License for more details.
+
+    You should have received a copy of the GNU Library General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+    Project page: http://repo.hu/projects/libporty
+    Author: libporty@igor2.repo.hu
+*/
+
+#include <stdlib.h>
+
+
+#ifdef P_HAVE_GETTIMEOFDAY
+# include <sys/time.h>
+#else
+# ifdef P_HAVE_FTIME
+#  include <sys/timeb.h>
+# else
+#  error We have no gettimeofday() or ftime() - can not query for time!
+# endif
+#endif
+
+
+void P_ltime(P_time_t *secs, P_time_t *usecs)
+{
+#ifdef P_HAVE_GETTIMEOFDAY
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	*secs  = tv.tv_sec;
+	if (usecs != NULL)
+		*usecs = tv.tv_usec;
+#else
+#	ifdef P_HAVE_FTIME
+	struct timeb tb;
+	ftime(&tb);
+	*secs = tb.time;
+	if (usecs != NULL)
+		*usecs = (P_time_t)(tb.millitm) * 1000;
+#	endif
+#endif
+}
+
+double P_dtime(void)
+{
+	P_time_t s, u;
+
+	P_ltime(&s, &u);
+	return (double)u / 1000000.0 + (double)s;
+}
+
+void P_usleep(long int usecs)
+{
+#ifdef P_HAVE_USLEEP
+# define USLEEP_MAX (1000000-1)
+	while(usecs > USLEEP_MAX) {
+		usleep(USLEEP_MAX);
+		usecs -= USLEEP_MAX;
+	}
+	usleep(usecs);
+#else
+# ifdef P_HAVE_WSLEEP
+	int ms = usecs/1000;
+	if (ms < 1) ms = 1;
+	Sleep(ms);
+# else
+#  ifdef P_NET_SELECT
+	fd_set s;
+	struct timeval tv;
+
+	FD_ZERO(&s);
+	tv.tv_sec  = 0;
+	tv.tv_usec = usecs;
+	select(0, &s, &s, &s, &tv);
+#  endif
+# endif
+#endif
+}
+
+void P_dsleep(double secs)
+{
+	double finish_at, remaining;
+
+	finish_at = P_dtime() + secs;
+	remaining = secs * 1000000.0;
+
+	while(remaining > 0) {
+		if (remaining > 1000000)
+			remaining = 1000000;
+		P_usleep(remaining);
+		remaining = (finish_at - P_dtime()) * 1000000.0;
+	}
+}
+
+/*
     libporty - IPv4 TCP
     Copyright (C) 2005 gpmi-extension project
     Copyright (C) 2010..2012  Tibor 'Igor2' Palinkas

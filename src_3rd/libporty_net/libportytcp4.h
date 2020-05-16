@@ -131,6 +131,37 @@ P_net_socket P_socket(int af, int protocol, int type);
 #else
 #define P_socket socket
 #endif
+
+/* sub-second time queries; precision depends on system but is guaranteed
+   to be at least in the milliseconds range */
+
+/* 32 bit unsigned should be sufficient until around 2106 */
+typedef P_uint32_t P_time_t;
+
+/* return current time in double */
+double P_dtime(void);
+
+/* return current time in secs/usecs; usecs may be NULL, in which case
+   only secs is filled in. WARNING: granularity depends on system; it
+   is wise not to expect anything better than milisecond resolution. */
+void P_ltime(P_time_t *secs, P_time_t *usecs);
+
+/* sleep for some microseconds; actual sleep may be longer (because
+   of granularity and system overhead) and system calls (and signals)
+   may interrupt the sleep. Maximum value for usecs is 1000000.
+   Use this for short, inprecise timing. */
+void P_usleep(long int usecs);
+
+/* same as P_usleep, plus
+   - it takes a double argument in seconds (actual resolution won't be better tho)
+   - it can sleep slightly longer as well
+   - but it will never sleep less than specified
+   - there's no upper limit for secs
+   Use this for longer, guaranteed sleeps; has considerably higher
+   overhead than P_usleep().
+*/
+void P_dsleep(double secs);
+
 #ifndef P_NETWORK_H
 #define P_NETWORK_H
 
