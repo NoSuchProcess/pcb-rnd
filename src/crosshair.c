@@ -897,7 +897,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 
 	ans = PCB_OBJ_VOID;
 	if (!PCB->RatDraw)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
 
 	if (ans & PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = (pcb_subc_t *) ptr1;
@@ -909,7 +909,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	/*** padstack center ***/
 	ans = PCB_OBJ_VOID;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
 	/* Avoid snapping padstack to any other padstack */
 	if (rnd_conf.editor.mode == pcb_crosshair.tool_move && pcb_crosshair.AttachedObject.Type == PCB_OBJ_PSTK && (ans & PCB_OBJ_PSTK))
@@ -926,7 +926,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	/*** arc ***/
 	ans = PCB_OBJ_VOID;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE_POINT | PCB_OBJ_ARC_POINT | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_LINE_POINT | PCB_OBJ_ARC_POINT | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
 	if (ans == PCB_OBJ_ARC_POINT) {
 		/* Arc point needs special handling as it's not a real point but has to be calculated */
@@ -942,7 +942,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	/*** polygon terminal: center ***/
 	ans = PCB_OBJ_VOID;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_POLY | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_POLY | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
 	if (ans == PCB_OBJ_POLY) {
 		pcb_poly_t *p = ptr2;
@@ -958,7 +958,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	/*** gfx ***/
 	ans = PCB_OBJ_VOID;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_GFX | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_GFX | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
 	if (ans == PCB_OBJ_GFX) {
 		TODO("gfx");
@@ -970,7 +970,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 
 	ans = PCB_OBJ_VOID;
 	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_POLY_POINT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_POLY_POINT, &ptr1, &ptr2, &ptr3);
 
 	if (ans != PCB_OBJ_VOID) {
 		rnd_point_t *pnt = (rnd_point_t *) ptr3;
@@ -984,7 +984,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);
 
 	if (rnd_conf.editor.mode == pcb_crosshair.tool_arrow) {
-		ans = pcb_search_grid_slop(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE_POINT, &ptr1, &ptr2, &ptr3);
+		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_LINE_POINT, &ptr1, &ptr2, &ptr3);
 		if (ans == PCB_OBJ_VOID) {
 			if ((rnd_gui != NULL) && (rnd_gui->point_cursor != NULL))
 				rnd_gui->point_cursor(rnd_gui, rnd_false);
