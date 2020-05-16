@@ -888,11 +888,19 @@ fgw_error_t pcb_act_MoveLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			new_index = 0;
 	}
 	else if (strcmp(a1, "gi") == 0) {
-		RND_ACT_IRES(pcb_layer_move(pcb, -1, 0, pcb_actd_EditGroup_gid, 1));
+		pcb_layergrp_t *g = pcb_get_layergrp(pcb, pcb_actd_EditGroup_gid);
+		if ((g != NULL) && ((g->ltype & PCB_LYT_SUBSTRATE) == 0))
+			RND_ACT_IRES(pcb_layer_move(pcb, -1, 0, pcb_actd_EditGroup_gid, 1));
+		else
+			rnd_message(RND_MSG_ERROR, "Can not add layers in a substrate layer group.\n");
 		return 0;
 	}
 	else if (strcmp(a1, "ga") == 0) {
-		RND_ACT_IRES(pcb_layer_move(pcb, -1, 1, pcb_actd_EditGroup_gid, 1));
+		pcb_layergrp_t *g = pcb_get_layergrp(pcb, pcb_actd_EditGroup_gid);
+		if ((g != NULL) && ((g->ltype & PCB_LYT_SUBSTRATE) == 0))
+			RND_ACT_IRES(pcb_layer_move(pcb, -1, 1, pcb_actd_EditGroup_gid, 1));
+		else
+			rnd_message(RND_MSG_ERROR, "Can not add layers in a substrate layer group.\n");
 		return 0;
 	}
 	else if (strcmp(a1, "group") == 0) {
