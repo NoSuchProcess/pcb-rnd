@@ -31,6 +31,9 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/plugins.h>
+#include <librnd/core/safe_fs.h>
+
+#include "board.h"
 
 #include <libuirc/libuirc.h>
 
@@ -202,6 +205,24 @@ static void btn_sendver_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	irc_msg("pcb-rnd version: " PCB_VERSION " (" PCB_REVISION ")");
 }
 
+static void btn_savelog_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	char *fn = rnd_gui->fileselect(rnd_gui, "Export IRC log", NULL, "pcb-rnd.irc-log.txt", NULL, NULL, "log", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+	if (fn != NULL) {
+		FILE *f = rnd_fopen(&PCB->hidlib, fn, "w");
+		if (f != NULL) {
+			rnd_hid_attribute_t *atxt = &irc_ctx.dlg[irc_ctx.wtxt];
+			rnd_hid_text_t *txt = atxt->wdata;
+			const char *str = txt->hid_get_text(atxt, irc_ctx.dlg_hid_ctx);
+			fputs(str, f);
+			fclose(f);
+		}
+		else
+			rnd_message(RND_MSG_ERROR, "Can not open '%s' for write\n", fn);
+		free(fn);
+	}
+}
+
 static int pcb_dlg_irc(void)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -222,6 +243,7 @@ static int pcb_dlg_irc(void)
 			RND_DAD_BUTTON(irc_ctx.dlg, "Send ver");
 				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_sendver_cb);
 			RND_DAD_BUTTON(irc_ctx.dlg, "Save log");
+				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_savelog_cb);
 			RND_DAD_BUTTON(irc_ctx.dlg, "Reconnect");
 				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_reconn_cb);
 			RND_DAD_BOOL(irc_ctx.dlg, "");
