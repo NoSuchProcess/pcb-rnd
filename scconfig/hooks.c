@@ -7,6 +7,7 @@
 #include "db.h"
 #include "tmpasm.h"
 #include "tmpasm_scconfig.h"
+#include "generator.h"
 #include "util/arg_auto_set.h"
 #include "Rev.h"
 
