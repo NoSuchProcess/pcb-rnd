@@ -1,10 +1,3 @@
-Tests for compatibility with drc_orig:
-	+ (text->thickness < min_wid)
-	+ (line->Thickness < conf_core.design.min_wid) on copper lines and arcs
-	+ (line->Thickness < conf_core.design.min_slk) on silk lines and arcs
-	+ pcb_pstk_drc_check_and_warn(padstack, &ring, &hole); on all padstacks
-	+ drc_beyond_extents(lst, PCB->Data);
-
 User requested (accepted):
 	- silk over mask or paste [Vuokko]
 	- zone poly based short/broken test; ml=3926 [Vuokko]
