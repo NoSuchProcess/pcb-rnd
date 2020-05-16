@@ -228,7 +228,7 @@ static void btn_savelog_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 static int pcb_dlg_irc(void)
 {
-	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn[] = {{"Quit and close", 0}, {NULL, 0}};
 
 	RND_DAD_BEGIN_VBOX(irc_ctx.dlg);
 		RND_DAD_COMPFLAG(irc_ctx.dlg, RND_HATF_EXPFILL);
@@ -241,14 +241,18 @@ static int pcb_dlg_irc(void)
 			RND_DAD_WIDTH_CHR(irc_ctx.dlg, 80);
 			irc_ctx.winput = RND_DAD_CURRENT(irc_ctx.dlg);
 			RND_DAD_ENTER_CB(irc_ctx.dlg, enter_cb);
+			RND_DAD_HELP(irc_ctx.dlg, "Write your questions/messages here and press enter to send\nthen please be patient and wait for the answer (written above).");
 
 		RND_DAD_BEGIN_HBOX(irc_ctx.dlg);
 			RND_DAD_BUTTON(irc_ctx.dlg, "Send ver");
 				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_sendver_cb);
+				RND_DAD_HELP(irc_ctx.dlg, "Send your pcb-rnd version as if you typed it in");
 			RND_DAD_BUTTON(irc_ctx.dlg, "Save log");
 				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_savelog_cb);
+				RND_DAD_HELP(irc_ctx.dlg, "Save the chat log to a plain text file");
 			RND_DAD_BUTTON(irc_ctx.dlg, "Reconnect");
 				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_reconn_cb);
+				RND_DAD_HELP(irc_ctx.dlg, "Break existing connection to the IRC server and connect again");
 
 			RND_DAD_BEGIN_HBOX(irc_ctx.dlg);
 				RND_DAD_COMPFLAG(irc_ctx.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
@@ -256,6 +260,7 @@ static int pcb_dlg_irc(void)
 					irc_ctx.wscroll = RND_DAD_CURRENT(irc_ctx.dlg);
 					RND_DAD_DEFAULT_NUM(irc_ctx.dlg, 1);
 				RND_DAD_LABEL(irc_ctx.dlg, "scroll");
+				RND_DAD_HELP(irc_ctx.dlg, "Automatically scroll down to the bottom of the log\nwhen new lines are appended");
 			RND_DAD_END(irc_ctx.dlg);
 
 
@@ -265,6 +270,7 @@ static int pcb_dlg_irc(void)
 					irc_ctx.wraise = RND_DAD_CURRENT(irc_ctx.dlg);
 					RND_DAD_DEFAULT_NUM(irc_ctx.dlg, 1);
 				RND_DAD_LABEL(irc_ctx.dlg, "raise");
+				RND_DAD_HELP(irc_ctx.dlg, "Automatically rise the window when your nickname appears in the chat");
 			RND_DAD_END(irc_ctx.dlg);
 
 			RND_DAD_BEGIN_VBOX(irc_ctx.dlg);
@@ -347,16 +353,20 @@ static int pcb_dlg_login_irc_login(void)
 			RND_DAD_STRING(irc_ctx.dlg_login);
 				irc_ctx.wnick = RND_DAD_CURRENT(irc_ctx.dlg_login);
 				RND_DAD_DEFAULT_PTR(irc_ctx.dlg_login, nick);
+				RND_DAD_HELP(irc_ctx.dlg_login, "Your visible name in the chat.\nPlease choose something meaningful");
 
 			RND_DAD_LABEL(irc_ctx.dlg_login, "channel:");
 			RND_DAD_STRING(irc_ctx.dlg_login);
 				RND_DAD_DEFAULT_PTR(irc_ctx.dlg_login, rnd_strdup("#pcb-rnd"));
 				irc_ctx.wchan = RND_DAD_CURRENT(irc_ctx.dlg_login);
+				RND_DAD_HELP(irc_ctx.dlg_login, "IRC channel to join\n(You most probably don't need to change this)");
 
 			RND_DAD_LABEL(irc_ctx.dlg_login, "server:");
 			RND_DAD_STRING(irc_ctx.dlg_login);
 				RND_DAD_DEFAULT_PTR(irc_ctx.dlg_login, rnd_strdup("irc.repo.hu"));
 				irc_ctx.wserver = RND_DAD_CURRENT(irc_ctx.dlg_login);
+				RND_DAD_HELP(irc_ctx.dlg_login, "IRC server to connect\n(You most probably don't need to change this)");
+
 
 		RND_DAD_END(irc_ctx.dlg_login);
 
