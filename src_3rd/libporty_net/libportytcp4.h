@@ -1,5 +1,4 @@
 
-#include <unistd.h>
 #include "os_includes.h"
 #include "pnet_config.h"
 #include "phost_types.h"

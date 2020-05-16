@@ -36,6 +36,7 @@ void libporty_net_detect_target()
 	require("libs/socket/readwrite/presents", 1, 0);
 	require("libs/socket/shutdown/presents", 1, 1);
 	require("libs/socket/ntoh/presents", 1, 1);
+	require("libs/socket/gethostname/presents", 1, 1);
 	if (require("libs/socket/getaddrinfo/presents", 1, 0))
 		put("local/net/use_porty_resolver", strue);
 	else

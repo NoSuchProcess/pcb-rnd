@@ -13,7 +13,6 @@ svn cat svn://repo.hu/libporty/trunk/src/libporty/host/types.h.in > phost_types.
 cp net/os_includes.h.in .
 
 (echo '
-#include <unistd.h>
 #include "os_includes.h"
 #include "pnet_config.h"
 #include "phost_types.h"
