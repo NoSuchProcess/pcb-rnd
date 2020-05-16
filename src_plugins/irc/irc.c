@@ -49,7 +49,7 @@ typedef enum {
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	RND_DAD_DECL_NOINIT(dlg_login)
-	int wnick, wserver, wchan,   wtxt, wscroll, winput;
+	int wnick, wserver, wchan,   wtxt, wscroll, winput, wraise;
 	irc_state_t state;
 	uirc_t irc;
 	rnd_hidval_t timer;
@@ -86,7 +86,7 @@ static void timer_cb(rnd_hidval_t hv)
 	}
 }
 
-static void irc_append(irc_ctx_t *ctx, const char *str)
+static void irc_append(irc_ctx_t *ctx, const char *str, int may_hilight)
 {
 	rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wtxt];
 	rnd_hid_text_t *txt = atxt->wdata;
@@ -94,44 +94,47 @@ static void irc_append(irc_ctx_t *ctx, const char *str)
 	txt->hid_set_text(atxt, ctx->dlg_hid_ctx, RND_HID_TEXT_APPEND, str);
 
 	maybe_scroll_to_bottom();
-/*	rnd_gui->attr_dlg_raise(ctx->dlg_hid_ctx);*/
+	if (may_hilight && irc_ctx.dlg[irc_ctx.wraise].val.lng) {
+		if ((may_hilight == 2) || (strstr(str, irc_ctx.irc.nick) != NULL))
+			rnd_gui->attr_dlg_raise(irc_ctx.dlg_hid_ctx);
+	}
 }
 
-#define irc_printf(fmt) \
+#define irc_printf(may_hiliht, fmt) \
 do { \
 	char *__tmp__ = rnd_strdup_printf fmt; \
-	irc_append(&irc_ctx, __tmp__); \
+	irc_append(&irc_ctx, __tmp__, may_hiliht); \
 	free(__tmp__); \
 } while(0)
 
 void on_me_join(uirc_t *ctx, int query, char *chan)
 {
-	irc_printf(("*** Connected. ***\n"));
-	irc_printf(("*** You may ask your question now - then please be patient. ***\n"));
+	irc_printf(0, ("*** Connected. ***\n"));
+	irc_printf(0, ("*** You may ask your question now - then please be patient. ***\n"));
 	rnd_gui->attr_dlg_widget_state(irc_ctx.dlg_hid_ctx, irc_ctx.winput, 1);
 }
 
 
 static void on_msg(uirc_t *ctx, char *from, int query, char *to, char *text)
 {
-	irc_printf(("<%s> %s\n", from, text));
+	irc_printf(1, ("<%s> %s\n", from, text));
 }
 
 static void on_notice(uirc_t *ctx, char *from, int query, char *to, char *text)
 {
-	irc_printf(("-%s- %s\n", from, text));
+	irc_printf(1, ("-%s- %s\n", from, text));
 }
 
 
 static void on_topic(uirc_t *ctx, char *from, int query, char *to, char *text)
 {
-	irc_printf(("*** topic on %s: %s\n", to, text));
+	irc_printf(0, ("*** topic on %s: %s\n", to, text));
 }
 
 
 static void on_kick(uirc_t *ctx, char *nick, int query, char *chan, char *victim, char *reason)
 {
-	irc_printf(("*** %s kicks %s from %s (%s)\n", nick, victim, chan, reason));
+	irc_printf(1, ("*** %s kicks %s from %s (%s)\n", nick, victim, chan, reason));
 }
 
 static void irc_disconnect(const char *reason)
@@ -143,7 +146,7 @@ static void irc_disconnect(const char *reason)
 		irc_poll();
 	}
 
-	irc_printf(("*** Disconnected. ***\n"));
+	irc_printf(2, ("*** Disconnected. ***\n"));
 	rnd_gui->attr_dlg_widget_state(irc_ctx.dlg_hid_ctx, irc_ctx.winput, 0);
 	uirc_disconnect(&irc_ctx.irc);
 	irc_ctx.state = IRC_DISCONNECTED;
@@ -154,10 +157,10 @@ static void irc_connect(int open_dlg)
 	if (uirc_connect(&irc_ctx.irc, irc_ctx.server, irc_ctx.port, "pcb-rnd irc action") == 0) {
 		if (open_dlg)
 			pcb_dlg_irc();
-		irc_printf(("*** Connecting %s:%d... ***\n", irc_ctx.server, irc_ctx.port));
+		irc_printf(0, ("*** Connecting %s:%d... ***\n", irc_ctx.server, irc_ctx.port));
 	}
 	else
-		irc_printf(("*** ERROR: failed to connect the server at %s:%p. ***\n", irc_ctx.server, irc_ctx.port));
+		irc_printf(2, ("*** ERROR: failed to connect the server at %s:%p. ***\n", irc_ctx.server, irc_ctx.port));
 }
 
 static void on_me_part(uirc_t *ctx, int query, char *chan)
@@ -191,7 +194,7 @@ static void btn_reconn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 static void irc_msg(const char *txt)
 {
 	uirc_privmsg(&irc_ctx.irc, irc_ctx.chan, txt);
-	irc_printf(("<%s> %s\n", irc_ctx.irc.nick, txt));
+	irc_printf(0, ("<%s> %s\n", irc_ctx.irc.nick, txt));
 }
 
 static void enter_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -246,10 +249,24 @@ static int pcb_dlg_irc(void)
 				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_savelog_cb);
 			RND_DAD_BUTTON(irc_ctx.dlg, "Reconnect");
 				RND_DAD_CHANGE_CB(irc_ctx.dlg, btn_reconn_cb);
-			RND_DAD_BOOL(irc_ctx.dlg, "");
-				irc_ctx.wscroll = RND_DAD_CURRENT(irc_ctx.dlg);
-				RND_DAD_DEFAULT_NUM(irc_ctx.dlg, 1);
-			RND_DAD_LABEL(irc_ctx.dlg, "scroll");
+
+			RND_DAD_BEGIN_HBOX(irc_ctx.dlg);
+				RND_DAD_COMPFLAG(irc_ctx.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
+				RND_DAD_BOOL(irc_ctx.dlg, "");
+					irc_ctx.wscroll = RND_DAD_CURRENT(irc_ctx.dlg);
+					RND_DAD_DEFAULT_NUM(irc_ctx.dlg, 1);
+				RND_DAD_LABEL(irc_ctx.dlg, "scroll");
+			RND_DAD_END(irc_ctx.dlg);
+
+
+			RND_DAD_BEGIN_HBOX(irc_ctx.dlg);
+				RND_DAD_COMPFLAG(irc_ctx.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
+				RND_DAD_BOOL(irc_ctx.dlg, "");
+					irc_ctx.wraise = RND_DAD_CURRENT(irc_ctx.dlg);
+					RND_DAD_DEFAULT_NUM(irc_ctx.dlg, 1);
+				RND_DAD_LABEL(irc_ctx.dlg, "raise");
+			RND_DAD_END(irc_ctx.dlg);
+
 			RND_DAD_BEGIN_VBOX(irc_ctx.dlg);
 				RND_DAD_COMPFLAG(irc_ctx.dlg, RND_HATF_EXPFILL);
 			RND_DAD_END(irc_ctx.dlg);
