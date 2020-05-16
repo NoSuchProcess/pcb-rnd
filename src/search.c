@@ -1653,9 +1653,13 @@ int pcb_search_screen(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, vo
  */
 int pcb_search_grid_slop(rnd_coord_t X, rnd_coord_t Y, int Type, void **Result1, void **Result2, void **Result3)
 {
-	int ans;
+	int ans, n;
 
-	ans = pcb_search_obj_by_location(Type, Result1, Result2, Result3, X, Y, PCB->hidlib.grid / 2);
+	for(n = 8; n >= 2; n = n/2) {
+		ans = pcb_search_obj_by_location(Type, Result1, Result2, Result3, X, Y, PCB->hidlib.grid / n);
+		if (ans != PCB_OBJ_VOID) return ans;
+	}
+
 	return ans;
 }
 
