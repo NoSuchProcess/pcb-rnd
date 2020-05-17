@@ -18,6 +18,8 @@
 - BUG: {a r a} broke: ratsnest is stale for the 7805 example with the poly and a few random lines removed [report: barjac]
 - BUG: 4 pending parametric footprint related bugreports by Piotr (email)
 - ANNOUNCE: pool node: query_speed
+- ANNOUNCE: crosshair shape deprecation ml=2989
+- ANNOUNCE: old drc reoval after 2.2.2
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
