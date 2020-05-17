@@ -27,6 +27,7 @@ File formats and compatibility:
   - KiCad, eeschema netlist+footprint info (import)
   - tEDAx footprints (read, write)
   - tEDAx netlist (read)
+  - BXL footprints (import)
   - Autotrax (protel) pcb boards (read, write)
   - Eagle XML format boards and libraries (read)
   - Eagle binary format boards and libraries (read)
