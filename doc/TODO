@@ -97,9 +97,11 @@
 		- bin: need to add support for non top silk (tPlace), tDocu and top copper text in read.c
 		- bin: layouts, once loaded, have issue where deselection of elements only deselects element pins/pads. click-drag of element or saving the layout to .lht and reloading fixes the deselection issue. Example FTSH.... library file for a header exhibits this behaviour.
 	- revise all I/O plugins for:
-		- text thickness
-		- text rotation
-		- text scale_x and scale_y and mirror_x
+		- upgrade swith tandard text for rotation, scale_x, scale_y anbd mirror_x:
+			- kicad v4: test cases available
+			- kicad v5: (need test cases)
+			- autotrax: (need test cases)
+			- eagle: (need test cases)
 		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
