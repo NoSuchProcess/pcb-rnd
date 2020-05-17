@@ -1,0 +1,60 @@
+pcb_text_new_by_bbox()
+
+Typically used by alien format import code to scale and place a text
+object to look similar as it did in the original, despite the different
+fonts.
+
+1. Input bbox
+
+You need to calculate the unrotated input bounding box on the input, 
+considering only input properties (how the font looked like in the 
+original software) and absolutely no pcb-rnd things (e.g. how the font 
+works in pcb-rnd). This input bounding box will be the new reference 
+"coordinate system". The input bounding box is specified as 0;0 being the 
+upper left corner and a width and a height (bbw and bbh) you calculate.
+
+2. Text alignment
+
+You need to figure the alignment, how it worked in the original format. 
+For a specific text object, this means: "which point _within the input 
+bounding box_ is located at the target X;Y coord". In other words, "by 
+which point do we grab the whole text object for placing", relative to the 
+upper-left corner of the bbox. Or in short: the anchor point. This is 
+specified by anchx and anchy.
+
+For example if your text is placed at 150;143, the input bbox is 70x10 and 
+it is aligned vertical=center, horizontal=right, then your data is:
+
+X=150, Y=143, bbw=70, bbh=10, anchx=70, anchy=5.
+
+3. Scaling: scxy
+
+Scaling (determining text size) is automatic so the new font matches the 
+bounding box as much as possible. The only input besides the bbox is the 
+"scaling aspect" of the input font, which is sx/sy, or in other words 
+character/font width/height ratio of the input font. Normally this is 1, 
+that is, the font is as wide as high. A value if 2 means the text is 
+stretched horizontally by a factor of 2, while 0.33333 means the text is 
+stretched vertically so a character is 3x higher than wide compared to the 
+neutral sizing.
+
+4. Mirroring
+
+With the latest minor data model upgrades, you can independently mirror 
+the text object in x and y direction. This is passed in the mirror arg. 
+The mirroring happens in a way that the original anchor point remains in 
+place and the object (and resulting bbox) is mirrored around the anchor.
+
+5. Rotation
+
+The rot argument is CCW (when not mirrored), in degrees. The rotation 
+happens around the anchor point.
+
+6. Order of operations
+
+The code applies the above in this specific order: place at anchor, rotate 
+then mirror. So mirroring affects direction of rotation.
+
+7. Other arguments
+
+The rest of the arguments are the same as for normal pcb_text_new.
