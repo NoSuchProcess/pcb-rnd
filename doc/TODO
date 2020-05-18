@@ -19,6 +19,7 @@
 - BUG: left/right/up/down keysjump to 0;0 on a fresh empty board [report: Igor2]
 - BUG: propedit: padstack prototype shoudln't be coord but int [report: Igor2]
 - ANNOUNCE: deprecation: bgimage
+- ANNOUNCE: drc_zone_clr
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
