@@ -83,9 +83,7 @@ static int fnc_overlap(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 	if ((argc < 2) || (argv[0].type != PCBQ_VT_OBJ) || (argv[1].type != PCBQ_VT_OBJ))
 		return -1;
 	if (argc > 2) {
-		if ((argv[2].type != PCBQ_VT_COORD) && (argv[2].type != PCBQ_VT_LONG))
-			return -1;
-		fctx.bloat = argv[2].data.crd;
+		PCB_QRY_ARG_CONV_TO_COORD(fctx.bloat, &argv[2], return -1);
 	}
 	if (argc > 3)
 		return -1;

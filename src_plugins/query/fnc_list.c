@@ -43,6 +43,7 @@ static int fnc_mklist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	int n;
+	rnd_coord_t dummy;
 
 	if ((argc < 2) || (argc % 2 != 0))
 		return -1;
@@ -59,8 +60,7 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 				break;
 			case PCB_QRY_DRC_EXPECT:
 			case PCB_QRY_DRC_MEASURE:
-				if ((val->type != PCBQ_VT_COORD) && (val->type != PCBQ_VT_LONG) && (val->type != PCBQ_VT_DOUBLE))
-					return -1;
+				PCB_QRY_ARG_CONV_TO_COORD(dummy, val, return -1);
 				break;
 			case PCB_QRY_DRC_TEXT:
 				break; /* accept anything */
@@ -91,6 +91,14 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 			vtp0_append(&res->data.lst, argv[n].data.obj);
 			vtp0_append(&res->data.lst, str);
 			vtp0_append(&ectx->autofree, str);
+		}
+		else if ((ctrl == PCB_QRY_DRC_EXPECT) || (ctrl == PCB_QRY_DRC_MEASURE)) {
+			tmp = malloc(sizeof(pcb_obj_qry_const_t));
+			tmp->val.type = PCBQ_VT_COORD;
+			PCB_QRY_ARG_CONV_TO_COORD(tmp->val.data.crd, val, ;); /* can't fail, already checked above */
+			vtp0_append(&res->data.lst, argv[n].data.obj);
+			vtp0_append(&res->data.lst, tmp);
+			vtp0_append(&ectx->autofree, tmp);
 		}
 		else switch(val->type) {
 			case PCBQ_VT_OBJ:

@@ -123,5 +123,30 @@ do { \
 	return 0; \
 } while(0)
 
+/* Convert src_arg to coordinate and cache the result if src_arg is tied
+   to a tree node */
+#define PCB_QRY_ARG_CONV_TO_COORD(dst_crd, src_arg, err_inst) \
+do { \
+	rnd_bool succ; \
+	if ((src_arg)->type == PCBQ_VT_COORD)  { dst_crd = (src_arg)->data.crd; break; } \
+	if ((src_arg)->type == PCBQ_VT_LONG)   { dst_crd = (src_arg)->data.lng; break; } \
+	if ((src_arg)->type == PCBQ_VT_DOUBLE) { dst_crd = rnd_round((src_arg)->data.dbl); break; } \
+	if ((src_arg)->source != NULL) { \
+		if ((src_arg)->source->precomp.result.type == PCBQ_VT_COORD) { dst_crd = (src_arg)->source->precomp.result.data.crd; break; } \
+		if ((src_arg)->type == PCBQ_VT_STRING) { \
+			(src_arg)->source->precomp.result.data.crd = rnd_get_value((src_arg)->data.str, NULL, NULL, &succ); \
+			if (succ) { \
+				(src_arg)->source->precomp.result.type = PCBQ_VT_COORD; \
+				dst_crd = (src_arg)->source->precomp.result.data.crd; \
+				break; \
+			} \
+		} \
+	} \
+	else { \
+		dst_crd = rnd_get_value((src_arg)->data.str, NULL, NULL, &succ); \
+		if (succ) break; \
+	} \
+	err_inst; \
+} while(0)
 
 #endif

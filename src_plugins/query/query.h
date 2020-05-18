@@ -53,6 +53,8 @@ typedef enum pcb_qry_valtype_e {
 	PCBQ_VT_STRING
 } pcb_qry_valtype_t;
 
+typedef struct pcb_qry_node_s pcb_qry_node_t;
+
 struct pcb_qry_val_s {
 	pcb_qry_valtype_t type;
 	union {
@@ -63,10 +65,10 @@ struct pcb_qry_val_s {
 		long lng;
 		const char *str;
 	} data;
+	pcb_qry_node_t *source; /* for the cache */
 };
 
 /* Script parsed into a tree */
-typedef struct pcb_qry_node_s pcb_qry_node_t;
 typedef enum {
 	PCBQ_RULE,
 	PCBQ_RNAME,
@@ -131,7 +133,7 @@ struct pcb_qry_node_s {
 	} data;
 	union {                       /* field selection depends on ->type */
 		query_fields_keys_t fld;    /* field_sphash value from str */
-		pcb_qry_val_t result;       /* of pure functions and subtrees */
+		pcb_qry_val_t result;       /* of pure functions and subtrees and constant values converted e.g. to coord */
 		re_se_t *regex;
 		long cnst;                  /* named constant */
 		pcb_any_obj_t *obj;
