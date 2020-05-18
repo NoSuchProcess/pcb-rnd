@@ -112,6 +112,21 @@ rnd_bool pcb_net_integrity(pcb_board_t *pcb, pcb_any_obj_t *from, rnd_coord_t sh
 
 /*** cached object -> network-terminal ***/
 
+/* Whenever a net tag of an object is queried:
+   1. look at the cache - if the object is already mapped, return result from
+      cache (ec->obj2netterm)
+   2. else map the whole network segment starting from obj, using galvanic
+      connections only; remember every object being in the segment
+      (using ec->tmplst)
+   3. at the end of the mapping, select the best terminal object for the
+      segment: terminal with the lowest ID (when segment is part of a netlisted
+      net) or random object with the lowest ID (when segment is floating with
+      no connection to terminal)
+   4. assign the resulting terminal object to all objects on the net in
+      the cache (ec->obj2netterm) so subsequent calls on any segment object
+      will bail out in step 1
+*/
+
 typedef struct {
 	pcb_qry_exec_t *ec;
 	pcb_any_obj_t *best_term;
