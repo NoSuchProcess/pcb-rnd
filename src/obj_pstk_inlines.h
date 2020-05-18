@@ -81,7 +81,8 @@ RND_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape_(const pcb_data_t *data, rnd_c
 	return &pr->tr.array[protoi];
 }
 
-/* return the padstack prototype for a padstack reference - returns NULL if not found */
+/* return the padstack transformed shape for a padstack reference considering its
+   transformations - returns NULL if not found */
 RND_INLINE pcb_pstk_tshape_t *pcb_pstk_get_tshape(pcb_pstk_t *ps)
 {
 	if (ps->protoi < 0) { /* need to update this */

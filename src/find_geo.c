@@ -928,10 +928,23 @@ static rnd_bool_t pcb_isc_pstk_line_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, p
 	return rnd_false;
 }
 
+#define PCB_ISC_PSTK_ANYLAYER(ps, call) \
+do { \
+	int n; \
+	pcb_pstk_tshape_t *tshp = pcb_pstk_get_tshape(ps); \
+	for(n = 0; n < tshp->len; n++) \
+		if (call) \
+			return rnd_true; \
+	return rnd_false; \
+} while(0)
+
 rnd_bool_t pcb_isc_pstk_line(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line, rnd_bool anylayer)
 {
 	pcb_pstk_shape_t *shape;
 	pcb_pstk_proto_t *proto;
+
+	if (anylayer)
+		PCB_ISC_PSTK_ANYLAYER(ps, pcb_isc_pstk_line_shp(ctx, ps, line, &tshp->shape[n]));
 
 	shape = pcb_pstk_shape_at(PCB, ps, line->parent.layer);
 	if (pcb_isc_pstk_line_shp(ctx, ps, line, shape))
@@ -1002,6 +1015,9 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_arc(const pcb_find_t *ctx, pcb_pstk_t *ps, pc
 {
 	pcb_pstk_shape_t *shape;
 	pcb_pstk_proto_t *proto;
+
+	if (anylayer)
+		PCB_ISC_PSTK_ANYLAYER(ps, pcb_isc_pstk_arc_shp(ctx, ps, arc, &tshp->shape[n]));
 
 	shape = pcb_pstk_shape_at(PCB, ps, arc->parent.layer);
 	if (pcb_isc_pstk_arc_shp(ctx, ps, arc, shape))
@@ -1099,6 +1115,9 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, p
 {
 	pcb_pstk_shape_t *shape;
 	pcb_pstk_proto_t *proto;
+
+	if (anylayer)
+		PCB_ISC_PSTK_ANYLAYER(ps, pcb_isc_pstk_poly_shp(ctx, ps, poly, &tshp->shape[n]));
 
 	shape = pcb_pstk_shape_at(PCB, ps, poly->parent.layer);
 	if (pcb_isc_pstk_poly_shp(ctx, ps, poly, shape))
@@ -1209,6 +1228,18 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, 
 	pcb_layer_t *ly;
 	pcb_pstk_proto_t *proto1, *proto2;
 	int n;
+
+	if (anylayer) {
+		int n1, n2;
+		pcb_pstk_tshape_t *tshp1 = pcb_pstk_get_tshape(ps1), *tshp2 = pcb_pstk_get_tshape(ps2);
+		for(n1 = 0; n1 < tshp1->len; n1++) {
+			for(n2 = 0; n2 < tshp2->len; n2++) {
+				if (pcb_pstk_shape_intersect(ctx, ps1, &tshp1->shape[n1], ps2, &tshp2->shape[n2]))
+					return rnd_true;
+			}
+		}
+		return rnd_false;
+	}
 
 	proto1 = pcb_pstk_get_proto(ps1);
 	proto2 = pcb_pstk_get_proto(ps2);
