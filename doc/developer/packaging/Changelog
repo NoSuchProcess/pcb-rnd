@@ -7,6 +7,13 @@ How to get a release candidate tarball in /tmp:
 
 TODO: package deps and plugins
 
+Packaging changes between 2.2.1 and 2.2.2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- new plugins io_bxl and irc
+
+- make sure old drc is removed
+
 Packaging changes between 2.2.0 and 2.2.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A. changes that probably don't need action
