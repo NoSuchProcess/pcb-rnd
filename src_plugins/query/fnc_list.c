@@ -61,6 +61,7 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 			case PCB_QRY_DRC_EXPECT:
 			case PCB_QRY_DRC_MEASURE:
 				PCB_QRY_ARG_CONV_TO_COORD(dummy, val, return -1);
+				(void)dummy;
 				break;
 			case PCB_QRY_DRC_TEXT:
 				break; /* accept anything */
