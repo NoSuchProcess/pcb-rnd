@@ -146,18 +146,7 @@ do { \
 	if ((src_arg)->type == PCBQ_VT_COORD)  { dst_crd = (src_arg)->data.crd; break; } \
 	if ((src_arg)->type == PCBQ_VT_LONG)   { dst_crd = (src_arg)->data.lng; break; } \
 	if ((src_arg)->type == PCBQ_VT_DOUBLE) { dst_crd = rnd_round((src_arg)->data.dbl); break; } \
-	if ((src_arg)->source != NULL) { \
-		if ((src_arg)->source->precomp.result.type == PCBQ_VT_COORD) { dst_crd = (src_arg)->source->precomp.result.data.crd; break; } \
-		if ((src_arg)->type == PCBQ_VT_STRING) { \
-			(src_arg)->source->precomp.result.data.crd = rnd_get_value((src_arg)->data.str, NULL, NULL, &succ); \
-			if (succ) { \
-				(src_arg)->source->precomp.result.type = PCBQ_VT_COORD; \
-				dst_crd = (src_arg)->source->precomp.result.data.crd; \
-				break; \
-			} \
-		} \
-	} \
-	else if ((src_arg)->type == PCBQ_VT_STRING) { \
+	if ((src_arg)->type == PCBQ_VT_STRING) { \
 		dst_crd = rnd_get_value((src_arg)->data.str, NULL, NULL, &succ); \
 		if (succ) break; \
 	} \

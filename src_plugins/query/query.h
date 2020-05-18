@@ -65,7 +65,7 @@ struct pcb_qry_val_s {
 		long lng;
 		const char *str;
 	} data;
-	pcb_qry_node_t *source; /* for the cache */
+	void *source; /* TODO: for the cache */
 };
 
 /* Script parsed into a tree */

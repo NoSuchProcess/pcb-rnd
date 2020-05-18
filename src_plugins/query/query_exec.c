@@ -648,7 +648,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 
 		case PCBQ_VAR:
 			assert((node->data.crd >= 0) && (node->data.crd < ctx->iter->num_vars));
-			res->source = node;
+			res->source = NULL;
 			res->type = PCBQ_VT_VOID;
 			if (ctx->iter->vects[node->data.crd] == NULL)
 				return -1;
@@ -662,13 +662,13 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 		case PCBQ_LISTVAR: {
 			int vi = pcb_qry_iter_var(ctx->iter, node->data.str, 0);
 			if ((vi < 0) && (strcmp(node->data.str, "@") == 0)) {
-				res->source = node;
+				res->source = NULL;
 				res->type = PCBQ_VT_LST;
 				res->data.lst = ctx->all.data.lst;
 				return 0;
 			}
 			if (vi >= 0) {
-				res->source = node;
+				res->source = NULL;
 				res->type = PCBQ_VT_LST;
 				res->data.lst = ctx->iter->lst[vi].data.lst;
 				return 0;
