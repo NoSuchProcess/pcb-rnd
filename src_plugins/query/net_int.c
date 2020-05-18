@@ -121,6 +121,9 @@ typedef struct {
 static int parent_net_term_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
 	parent_net_term_t *ctx = fctx->user_data;
+
+	vtp0_append(&ctx->ec->tmplst, new_obj);
+
 	if (new_obj->term != NULL) {
 		if ((ctx->best_term == NULL) || (new_obj->ID < ctx->best_term->ID))
 			ctx->best_term = new_obj;
@@ -137,6 +140,10 @@ RND_INLINE pcb_any_obj_t *pcb_qry_parent_net_term_(pcb_qry_exec_t *ec, pcb_any_o
 {
 	pcb_find_t fctx;
 	parent_net_term_t ctx;
+	pcb_any_obj_t *res = NULL;
+	long n;
+
+	assert(ec->tmplst.used == 0); /* temp list must be empty so we are nto getting void * ptrs to anything else than we find */
 
 	ctx.ec = ec;
 	ctx.best_term = NULL;
@@ -152,10 +159,17 @@ RND_INLINE pcb_any_obj_t *pcb_qry_parent_net_term_(pcb_qry_exec_t *ec, pcb_any_o
 	if (ctx.best_term != NULL) {
 		pcb_net_term_t *t;
 		t = pcb_net_find_by_obj(&ec->pcb->netlist[PCB_NETLIST_EDITED], ctx.best_term);
-		return (t == NULL) ? ctx.best_term : (pcb_any_obj_t *)t;
+		res = (t == NULL) ? ctx.best_term : (pcb_any_obj_t *)t;
 	}
+	else
+		res = ctx.best_nonterm;
 
-	return ctx.best_nonterm;
+	for(n = 0; n < ec->tmplst.used; n++)
+		htpp_set(&ec->obj2netterm, ec->tmplst.array[n], res);
+
+	ec->tmplst.used = 0;
+
+	return res;
 }
 
 
@@ -170,10 +184,8 @@ pcb_any_obj_t *pcb_qry_parent_net_term(pcb_qry_exec_t *ec, pcb_any_obj_t *from)
 	else
 		res = htpp_get(&ec->obj2netterm, from);
 
-	if (res == NULL) {
+	if (res == NULL)
 		res = pcb_qry_parent_net_term_(ec, from);
-		htpp_set(&ec->obj2netterm, from, res);
-	}
 
 	return res;
 }

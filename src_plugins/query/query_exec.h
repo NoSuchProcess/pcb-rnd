@@ -43,6 +43,7 @@ struct pcb_qry_exec_s {
 
 	/* data/call cache */
 	htpp_t obj2netterm;   /* (pcb_any_obj_t *) object -> (pcb_any_obj_t *) terminal with the lowest ID on the net segment; for floating segments any object with the lowest ID will be accepted */
+	vtp0_t tmplst;        /* may be reused in a function call to save on allocation; always clear it at the end of the fnc */
 
 	unsigned obj2netterm_inited:1;
 };

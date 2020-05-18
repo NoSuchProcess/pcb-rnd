@@ -81,6 +81,8 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 
 	if (ctx->obj2netterm_inited)
 		htpp_uninit(&ctx->obj2netterm);
+
+	vtp0_uninit(&ctx->tmplst);
 }
 
 static void val_free_fields(pcb_qry_val_t *val)
