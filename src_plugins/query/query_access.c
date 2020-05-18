@@ -418,6 +418,7 @@ static int layer_of_obj(pcb_qry_exec_t *ec, pcb_qry_node_t *fld, pcb_qry_val_t *
 	fld2str_req(s1, fld, 0);
 
 	if (s1 == NULL) {
+		res->source = NULL;
 		res->type = PCBQ_VT_OBJ;
 		res->data.obj = (pcb_any_obj_t *)&(PCB->Data->Layer[id]);
 		return 0;
@@ -833,6 +834,7 @@ static int field_subc_obj(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t
 	/* check subfield, if there's none, return the subcircuit object */
 	fld2str_opt(s1, fld, 0);
 	if (s1 == NULL) {
+		res->source = NULL;
 		res->type = PCBQ_VT_OBJ;
 		res->data.obj = (pcb_any_obj_t *)parent;
 		return 0;

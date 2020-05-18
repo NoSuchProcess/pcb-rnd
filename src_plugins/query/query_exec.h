@@ -76,6 +76,7 @@ int pcb_qry_it_next(pcb_qry_exec_t *ctx);
 /* Helper macros: load value o and return 0 */
 #define PCB_QRY_RET_INT(o, value) \
 do { \
+	o->source = NULL; \
 	o->type = PCBQ_VT_LONG; \
 	o->data.lng = value; \
 	return 0; \
@@ -83,6 +84,7 @@ do { \
 
 #define PCB_QRY_RET_OBJ(o, value) \
 do { \
+	o->source = NULL; \
 	o->type = PCBQ_VT_OBJ; \
 	o->data.obj = value; \
 	return 0; \
@@ -90,6 +92,7 @@ do { \
 
 #define PCB_QRY_RET_DBL(o, value) \
 do { \
+	o->source = NULL; \
 	o->type = PCBQ_VT_DOUBLE; \
 	o->data.dbl = value; \
 	return 0; \
@@ -97,6 +100,7 @@ do { \
 
 #define PCB_QRY_RET_COORD(o, value) \
 do { \
+	o->source = NULL; \
 	o->type = PCBQ_VT_COORD; \
 	o->data.crd = value; \
 	return 0; \
@@ -104,6 +108,7 @@ do { \
 
 #define PCB_QRY_RET_STR(o, value) \
 do { \
+	o->source = NULL; \
 	o->type = PCBQ_VT_STRING; \
 	o->data.str = value; \
 	return 0; \
@@ -111,6 +116,7 @@ do { \
 
 #define PCB_QRY_RET_SIDE(o, on_bottom) \
 do { \
+	o->source = NULL; \
 	o->type = PCBQ_VT_STRING; \
 	o->data.str = on_bottom ? "BOTTOM" : "TOP"; \
 	return 0; \
@@ -119,6 +125,7 @@ do { \
 /* The case when the operation couldn't be carried out, sort of NaN */
 #define PCB_QRY_RET_INV(o) \
 do { \
+	o->source = NULL; \
 	o->type = PCBQ_VT_VOID; \
 	return 0; \
 } while(0)

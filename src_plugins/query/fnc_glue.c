@@ -85,18 +85,20 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 
 	/* convert action result to query result */
 
-#	define FGW_TO_QRY_NUM(lst, val)   res->type = PCBQ_VT_LONG; res->data.lng = val; goto fin;
-#	define FGW_TO_QRY_STR(lst, val)   res->type = PCBQ_VT_STRING; res->data.str = rnd_strdup(val == NULL ? "" : val); goto fin;
-#	define FGW_TO_QRY_NIL(lst, val)   res->type = PCBQ_VT_VOID; goto fin;
+#	define FGW_TO_QRY_NUM(lst, val)   res->source = NULL; res->type = PCBQ_VT_LONG; res->data.lng = val; goto fin;
+#	define FGW_TO_QRY_STR(lst, val)   res->source = NULL; res->type = PCBQ_VT_STRING; res->data.str = rnd_strdup(val == NULL ? "" : val); goto fin;
+#	define FGW_TO_QRY_NIL(lst, val)   res->source = NULL; res->type = PCBQ_VT_VOID; goto fin;
 
 /* has to free idpath and idpathlist return, noone else will have the chance */
 #	define FGW_TO_QRY_PTR(lst, val) \
 	if (val == NULL) { \
+		res->source = NULL; \
 		res->type = PCBQ_VT_VOID; \
 		goto fin; \
 	} \
 	else if (fgw_ptr_in_domain(&rnd_fgw, val, RND_PTR_DOMAIN_IDPATH)) { \
 		pcb_idpath_t *idp = val; \
+		res->source = NULL; \
 		res->type = PCBQ_VT_OBJ; \
 		res->data.obj = pcb_idpath2obj(ectx->pcb, idp); \
 		pcb_idpath_list_remove(idp); \
@@ -106,11 +108,13 @@ static int fnc_action(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 	} \
 	else if (fgw_ptr_in_domain(&rnd_fgw, val, RND_PTR_DOMAIN_IDPATH_LIST)) { \
 		rnd_message(RND_MSG_ERROR, "query action(): can not convert object list yet\n"); \
+		res->source = NULL; \
 		res->type = PCBQ_VT_VOID; \
 		goto fin; \
 	} \
 	else { \
 		rnd_message(RND_MSG_ERROR, "query action(): can not convert unknown pointer\n"); \
+		res->source = NULL; \
 		res->type = PCBQ_VT_VOID; \
 		goto fin; \
 	}
