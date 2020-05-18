@@ -157,7 +157,7 @@ do { \
 			} \
 		} \
 	} \
-	else { \
+	else if ((src_arg)->type == PCBQ_VT_STRING) { \
 		dst_crd = rnd_get_value((src_arg)->data.str, NULL, NULL, &succ); \
 		if (succ) break; \
 	} \
