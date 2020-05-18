@@ -4869,7 +4869,7 @@
  vtpadstack_t.h conf_core.h librnd/core/conf.h librnd/core/rnd_printf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h plug_io.h \
  vtlibrary.h ../src_3rd/genvector/vts0.h librnd/core/safe_fs.h \
- librnd/core/compat_misc.h netlist.h obj_subc.h \
+ librnd/core/compat_misc.h librnd/core/rotate.h netlist.h obj_subc.h \
  ../src_plugins/lib_compat_help/pstk_help.h obj_pstk.h \
  ../src_plugins/io_mentor_cell/font.c \
  ../src_plugins/io_mentor_cell/font_geo.c \
@@ -5309,7 +5309,16 @@
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h ../src_3rd/libuirc/libuirc.h \
+ ../src_3rd/puplug/error.h librnd/core/safe_fs.h librnd/core/conf.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
+ ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ board.h vtroutestyle.h layer.h globalconst.h librnd/core/globalconst.h \
+ obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
+ obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h layer_grp.h \
+ rats_patch.h board.h librnd/core/hidlib.h ../src_3rd/libuirc/libuirc.h \
  ../src_3rd/libporty_net/libportytcp4.h \
  ../src_3rd/libporty_net/os_includes.h \
  ../src_3rd/libporty_net/pnet_config.h \
@@ -7062,7 +7071,7 @@
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h layer.h \
  flag_str.h ../src_plugins/query/query_access.h \
  ../src_plugins/query/fnc_glue.c ../src_plugins/query/fnc_list.c \
- ../src_plugins/query/fnc_geo.c obj_poly.h
+ ../src_plugins/query/fnc_geo.c obj_poly.h data_it.h data.h
 ../src_plugins/query/net_int.o: ../src_plugins/query/net_int.c \
  ../config.h librnd/config.h ../src_3rd/genht/htpp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h board.h \
@@ -10421,8 +10430,9 @@ search.o: search.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/libminuid/libminuid.h librnd/poly/rtree2_compat.h \
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h find.h search.h \
- obj_subc_parent.h obj_pstk_inlines.h thermal.h operation.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
+ librnd/core/actions.h find.h search.h select.h operation.h \
+ obj_subc_parent.h obj_pstk_inlines.h thermal.h \
  librnd/poly/polygon1_gen.h
 select.o: select.c ../config.h librnd/config.h conf_core.h \
  librnd/core/conf.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
