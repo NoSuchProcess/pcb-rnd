@@ -76,26 +76,44 @@ static int isc_subc_subc(pcb_qry_exec_t *ectx, pcb_find_t *fctx, pcb_subc_t *sub
 	return 0;
 }
 
-static int fnc_overlap(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+static int overlap_(pcb_qry_exec_t *ectx, pcb_find_t *fctx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
-	static pcb_find_t fctx = {0};
-
 	if ((argc < 2) || (argv[0].type != PCBQ_VT_OBJ) || (argv[1].type != PCBQ_VT_OBJ))
 		return -1;
 	if (argc > 2) {
-		PCB_QRY_ARG_CONV_TO_COORD(fctx.bloat, &argv[2], return -1);
+		PCB_QRY_ARG_CONV_TO_COORD(fctx->bloat, &argv[2], return -1);
 	}
 	if (argc > 3)
 		return -1;
 
+	if ((argv[0].data.obj->type == PCB_OBJ_SUBC) && (argv[1].data.obj->type == PCB_OBJ_SUBC))
+		PCB_QRY_RET_INT(res, isc_subc_subc(ectx, fctx, (pcb_subc_t *)argv[0].data.obj, (pcb_subc_t *)argv[1].data.obj));
+	if (argv[0].data.obj->type == PCB_OBJ_SUBC)
+		PCB_QRY_RET_INT(res, isc_subc_obj(ectx, fctx, (pcb_subc_t *)argv[0].data.obj, argv[1].data.obj));
+	if (argv[1].data.obj->type == PCB_OBJ_SUBC)
+		PCB_QRY_RET_INT(res, isc_subc_obj(ectx, fctx, (pcb_subc_t *)argv[1].data.obj, argv[0].data.obj));
+
+	PCB_QRY_RET_INT(res, pcb_intersect_obj_obj(fctx, argv[0].data.obj, argv[1].data.obj));
+}
+
+static int fnc_overlap(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	static pcb_find_t fctx = {0};
+
 	fctx.ignore_clearance = 1;
 	fctx.allow_noncopper_pstk = 1;
-	if ((argv[0].data.obj->type == PCB_OBJ_SUBC) && (argv[1].data.obj->type == PCB_OBJ_SUBC))
-		PCB_QRY_RET_INT(res, isc_subc_subc(ectx, &fctx, (pcb_subc_t *)argv[0].data.obj, (pcb_subc_t *)argv[1].data.obj));
-	if (argv[0].data.obj->type == PCB_OBJ_SUBC)
-		PCB_QRY_RET_INT(res, isc_subc_obj(ectx, &fctx, (pcb_subc_t *)argv[0].data.obj, argv[1].data.obj));
-	if (argv[1].data.obj->type == PCB_OBJ_SUBC)
-		PCB_QRY_RET_INT(res, isc_subc_obj(ectx, &fctx, (pcb_subc_t *)argv[1].data.obj, argv[0].data.obj));
+	fctx.pstk_anylayer = 1;
 
-	PCB_QRY_RET_INT(res, pcb_intersect_obj_obj(&fctx, argv[0].data.obj, argv[1].data.obj));
+	return overlap_(ectx, &fctx, argc, argv, res);
 }
+
+static int fnc_intersect(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	static pcb_find_t fctx = {0};
+
+	fctx.ignore_clearance = 1;
+	fctx.allow_noncopper_pstk = 1;
+
+	return overlap_(ectx, &fctx, argc, argv, res);
+}
+

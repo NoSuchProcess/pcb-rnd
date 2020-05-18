@@ -85,4 +85,5 @@ void pcb_qry_basic_fnc_init(void)
 
 	pcb_qry_fnc_reg("poly_num_islands", fnc_poly_num_islands);
 	pcb_qry_fnc_reg("overlap", fnc_overlap);
+	pcb_qry_fnc_reg("intersect", fnc_intersect);
 }
