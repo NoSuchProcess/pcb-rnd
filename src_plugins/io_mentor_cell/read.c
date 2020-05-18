@@ -42,6 +42,7 @@
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/rotate.h>
 #include "netlist.h"
 
 #include "obj_subc.h"
@@ -674,11 +675,11 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		{
 		rnd_coord_t xaux1 = x2, yaux1 = y1;
 		rnd_coord_t xaux3 = x1, yaux3 = y2;
-		/* This handles bbox rotation. However I get rnd_rotate undefined reference ld linker error */
-		/* rnd_rotate(&xaux1, &yaux1, xc, yc, cosa, sina); */
-		/* rnd_rotate(&xaux3, &yaux3, xc, yc, cosa, sina); */
-		/* rnd_rotate(&x1, &y1, xc, yc, cosa, sina); */
-		/* rnd_rotate(&x2, &y2, xc, yc, cosa, sina); */
+		/* This handles bbox rotation. */
+		rnd_rotate(&xaux1, &yaux1, xc, yc, cosa, sina);
+		rnd_rotate(&xaux3, &yaux3, xc, yc, cosa, sina);
+		rnd_rotate(&x1, &y1, xc, yc, cosa, sina);
+		rnd_rotate(&x2, &y2, xc, yc, cosa, sina);
 		}
 
 		pcb_line_new(ly, x1, y1, x2, y1, thickness, cl, DEFAULT_OBJ_FLAG);
