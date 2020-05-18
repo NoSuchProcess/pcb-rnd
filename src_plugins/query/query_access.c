@@ -874,6 +874,7 @@ int pcb_qry_obj_field(pcb_qry_exec_t *ec, pcb_qry_val_t *objval, pcb_qry_node_t 
 
 	COMMON_FIELDS(ec, obj, fh1, fld, res);
 
+	res->source = fld;
 	switch(obj->type) {
 /*		case PCB_OBJ_POINT:    return field_point(ec, obj, fld, res);*/
 		case PCB_OBJ_LINE:     return field_line(ec, obj, fld, res);

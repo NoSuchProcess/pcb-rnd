@@ -74,61 +74,69 @@ int pcb_qry_it_next(pcb_qry_exec_t *ctx);
 
 
 /* Helper macros: load value o and return 0 */
-#define PCB_QRY_RET_INT(o, value) \
+#define PCB_QRY_RET_INT_SRC(o, value, node) \
 do { \
-	o->source = NULL; \
+	o->source = node; \
 	o->type = PCBQ_VT_LONG; \
 	o->data.lng = value; \
 	return 0; \
 } while(0)
+#define PCB_QRY_RET_INT(o, value) PCB_QRY_RET_INT_SRC(o, value, NULL)
 
-#define PCB_QRY_RET_OBJ(o, value) \
+
+#define PCB_QRY_RET_OBJ_SRC(o, value, node) \
 do { \
-	o->source = NULL; \
+	o->source = node; \
 	o->type = PCBQ_VT_OBJ; \
 	o->data.obj = value; \
 	return 0; \
 } while(0)
+#define PCB_QRY_RET_OBJ(o, value) PCB_QRY_RET_OBJ_SRC(o, value, NULL)
 
-#define PCB_QRY_RET_DBL(o, value) \
+#define PCB_QRY_RET_DBL_SRC(o, value, node) \
 do { \
-	o->source = NULL; \
+	o->source = node; \
 	o->type = PCBQ_VT_DOUBLE; \
 	o->data.dbl = value; \
 	return 0; \
 } while(0)
+#define PCB_QRY_RET_DBL(o, value) PCB_QRY_RET_DBL_SRC(o, value, NULL)
 
-#define PCB_QRY_RET_COORD(o, value) \
+#define PCB_QRY_RET_COORD_SRC(o, value, node) \
 do { \
-	o->source = NULL; \
+	o->source = node; \
 	o->type = PCBQ_VT_COORD; \
 	o->data.crd = value; \
 	return 0; \
 } while(0)
+#define PCB_QRY_RET_COORD(o, value) PCB_QRY_RET_COORD_SRC(o, value, NULL)
 
-#define PCB_QRY_RET_STR(o, value) \
+#define PCB_QRY_RET_STR_SRC(o, value, node) \
 do { \
-	o->source = NULL; \
+	o->source = node; \
 	o->type = PCBQ_VT_STRING; \
 	o->data.str = value; \
 	return 0; \
 } while(0)
+#define PCB_QRY_RET_STR(o, value) PCB_QRY_RET_STR_SRC(o, value, NULL)
 
-#define PCB_QRY_RET_SIDE(o, on_bottom) \
+#define PCB_QRY_RET_SIDE_SRC(o, on_bottom, node) \
 do { \
-	o->source = NULL; \
+	o->source = node; \
 	o->type = PCBQ_VT_STRING; \
 	o->data.str = on_bottom ? "BOTTOM" : "TOP"; \
 	return 0; \
 } while(0)
+#define PCB_QRY_RET_SIDE(o, value) PCB_QRY_RET_SIDE_SRC(o, value, NULL)
 
 /* The case when the operation couldn't be carried out, sort of NaN */
-#define PCB_QRY_RET_INV(o) \
+#define PCB_QRY_RET_INV_SRC(o, node) \
 do { \
-	o->source = NULL; \
+	o->source = node; \
 	o->type = PCBQ_VT_VOID; \
 	return 0; \
 } while(0)
+#define PCB_QRY_RET_INV(o) PCB_QRY_RET_INV_SRC(o, NULL)
 
 /* Convert src_arg to coordinate and cache the result if src_arg is tied
    to a tree node */

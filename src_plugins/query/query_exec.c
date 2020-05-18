@@ -700,12 +700,12 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			return fname->data.fnc(ctx, n, args, res);
 		}
 
-		case PCBQ_DATA_COORD:       PCB_QRY_RET_INT(res, node->data.crd);
-		case PCBQ_DATA_DOUBLE:      PCB_QRY_RET_DBL(res, node->data.dbl);
-		case PCBQ_DATA_STRING:      PCB_QRY_RET_STR(res, node->data.str);
-		case PCBQ_DATA_CONST:       PCB_QRY_RET_INT(res, node->precomp.cnst);
-		case PCBQ_DATA_OBJ:         PCB_QRY_RET_OBJ(res, node->precomp.obj);
-		case PCBQ_DATA_INVALID:     PCB_QRY_RET_INV(res);
+		case PCBQ_DATA_COORD:       PCB_QRY_RET_INT_SRC(res, node->data.crd, node);
+		case PCBQ_DATA_DOUBLE:      PCB_QRY_RET_DBL_SRC(res, node->data.dbl, node);
+		case PCBQ_DATA_STRING:      PCB_QRY_RET_STR_SRC(res, node->data.str, node);
+		case PCBQ_DATA_CONST:       PCB_QRY_RET_INT_SRC(res, node->precomp.cnst, node);
+		case PCBQ_DATA_OBJ:         PCB_QRY_RET_OBJ_SRC(res, node->precomp.obj, node);
+		case PCBQ_DATA_INVALID:     PCB_QRY_RET_INV_SRC(res, node);
 
 		/* not yet implemented: */
 		case PCBQ_RULE:
