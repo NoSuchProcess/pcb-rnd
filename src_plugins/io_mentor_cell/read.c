@@ -515,9 +515,9 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 {
 	node_t *attr, *tmp;
 	rnd_coord_t tx, ty, h, thickness = 0, width = 0, height = 0, ymin = 0;
-	rnd_coord_t x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+	rnd_coord_t x1 = 0, x2 = 0, y1 = 0, y2 = 0, xc=0, yc=0;
 
-	double rot = 0;
+	double rot = 0, rotbb = 0, sina = 0, cosa = 0;
 	unsigned long mirrored = 0;
 	long int font_id = 0;
 	char *tmp_char;
@@ -545,8 +545,10 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		return;
 	}
 	tmp = find_nth(attr->first_child, "ROTATION", 0);
-	if (tmp != NULL)
+	if (tmp != NULL) {
 		parse_rot(ctx, tmp, &rot, (pcb_layer_flags_(ly) & PCB_LYT_BOTTOM));
+		rotbb = rot;
+	}
 	else {
 		hkp_error(attr, "Can not find rotation of text. Text will be NOT rendered.\n");
 		return;
@@ -603,6 +605,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 
 	tmp = find_nth(attr->first_child, "HORZ_JUST", 0);
 	if (tmp != NULL) {
+		xc = tx;
 		if (strcmp(tmp->argv[1], "Left") == 0) {
 			x1 = tx;
 			if (mirrored == 0)
@@ -657,11 +660,26 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		return;
 	}
 
+	if (mirrored != 0) {
+		rotbb = -rotbb;
+	}
+
 	{
 		rnd_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
 
 		TODO("Remove this block after checking text bounding box calculations");
 		TODO("Use an UI layer for this.  UI layer API in src/layer_ui.h");
+		TODO("Use pcb_text_new_by_bbox() in src/obj_text.h ");
+		/* Rotate the points around center (xc,yc) */
+		sina = sin((double)rotbb / RND_RAD_TO_DEG);
+		cosa = cos((double)rotbb / RND_RAD_TO_DEG);
+		rnd_coord_t xaux1 = x2, yaux1 = y1;
+		rnd_coord_t xaux3 = x1, yaux3 = y2;
+		/* This handles bbox rotation. However I get rnd_rotate undefined reference ld linker error */
+		/* rnd_rotate(&xaux1, &yaux1, xc, yc, cosa, sina); */
+		/* rnd_rotate(&xaux3, &yaux3, xc, yc, cosa, sina); */
+		/* rnd_rotate(&x1, &y1, xc, yc, cosa, sina); */
+		/* rnd_rotate(&x2, &y2, xc, yc, cosa, sina); */
 
 		pcb_line_new(ly, x1, y1, x2, y1, thickness, cl, DEFAULT_OBJ_FLAG);
 		pcb_line_new(ly, x2, y1, x2, y2, thickness, cl, DEFAULT_OBJ_FLAG);
