@@ -57,6 +57,7 @@
 	- add text font, update the pool node text_edit [report: Igor2]
 - FEATURE: fontsel: ttf import?
 - FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
+- FEATURE: user script: bug_files/pstk_autonum.txt (when the footprint design pool note is being written) [report: Igor2]
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
 	- example of nonetlist: 1206 jumpers and logos
