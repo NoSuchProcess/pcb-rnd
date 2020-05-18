@@ -515,8 +515,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 {
 	node_t *attr, *tmp;
 	rnd_coord_t tx, ty, h, thickness = 0, width = 0, height = 0, ymin = 0;
-	rnd_coord_t x1 = 0, x2 = 0, y1 = 0, y2 = 0, xc=0, yc=0;
-
+	rnd_coord_t x1 = 0, x2 = 0, y1 = 0, y2 = 0, xc = 0, yc = 0;
 	double rot = 0, rotbb = 0, sina = 0, cosa = 0;
 	unsigned long mirrored = 0;
 	long int font_id = 0;
