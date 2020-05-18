@@ -1682,7 +1682,7 @@ int pcb_search_screen_selector(rnd_coord_t X, rnd_coord_t Y, int Type, void **Re
 	box.Y1 = Y + radius;
 
 	vtp0_init(&pcb_obj_list_vect);
-	pcb_list_block_cb(PCB, &box, vtp0_append, &pcb_obj_list_vect);
+	pcb_list_block_cb(PCB, &box, (void *(*)(void *, pcb_any_obj_t *))vtp0_append, &pcb_obj_list_vect);
 
 	if (pcb_obj_list_vect.used == 1) {
 		obj = pcb_obj_list_vect.array[0];
