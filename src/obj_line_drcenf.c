@@ -200,7 +200,7 @@ static rnd_r_dir_t drcPstk_callback(const rnd_rnd_box_t *b, void *cl)
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	struct drc_info *i = (struct drc_info *)cl;
 
-	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, ps) && pcb_isc_pstk_line(pcb_find0, ps, i->line))
+	if (!PCB_FLAG_TEST(PCB_FLAG_FOUND, ps) && pcb_isc_pstk_line(pcb_find0, ps, i->line, rnd_false))
 		longjmp(i->env, 1);
 	return RND_R_DIR_FOUND_CONTINUE;
 }

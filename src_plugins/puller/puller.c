@@ -747,7 +747,7 @@ static rnd_r_dir_t find_pair_pstkline_callback(const rnd_rnd_box_t *b, void *cl)
 
 	/* See if the line passes through this pin - if so, split it into two
 	   lines so they can be pulled independently. */
-	if (pcb_isc_pstk_line(pcb_find0, pin, line)) {
+	if (pcb_isc_pstk_line(pcb_find0, pin, line, rnd_false)) {
 #if TRACE1
 		rnd_printf("splitting line %#mD-%#mD because it passes through pin %#mD r%d\n",
 							 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, pin->x, pin->y, pin->Thickness / 2);

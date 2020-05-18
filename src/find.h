@@ -47,6 +47,7 @@ struct pcb_find_s {
 	rnd_coord_t bloat;              /* perform intersection tests with one object bloated up by this amount (can be negative for shrinking) */
 	unsigned ignore_clearance:1;    /* a flag dictated clearance is no excuse for intersection - useful for overlap calculation between objects on different layers */
 	unsigned allow_noncopper_pstk:1;/* when 1, even non-copper shapes of padstacks will "conduct" in a pstk-pstk check (useful for the drc) */
+	unsigned pstk_anylayer:1;       /* when 1, check every shape of the padstack for intersection, don't require it to be on the same layer */
 
 	/* high level (ignored by isc calls): */
 	unsigned stay_layergrp:1;       /* do not leave the layer (no padstack hop) */
@@ -105,7 +106,7 @@ rnd_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Pol
 rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, rnd_polyarea_t *pa);
 rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *Polygon);
 rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2);
-rnd_bool_t pcb_isc_pstk_line(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line);
+rnd_bool_t pcb_isc_pstk_line(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line, rnd_bool anylayer);
 
 /* Return whether obj is marked as already visited by the current search context */
 #define PCB_FIND_IS_MARKED(ctx, obj) PCB_DFLAG_TEST(&((obj)->Flags), (ctx)->mark)

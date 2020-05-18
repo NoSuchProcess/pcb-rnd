@@ -928,7 +928,7 @@ static rnd_bool_t pcb_isc_pstk_line_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, p
 	return rnd_false;
 }
 
-rnd_bool_t pcb_isc_pstk_line(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line)
+rnd_bool_t pcb_isc_pstk_line(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line_t *line, rnd_bool anylayer)
 {
 	pcb_pstk_shape_t *shape;
 	pcb_pstk_proto_t *proto;
@@ -998,7 +998,7 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_arc_shp(const pcb_find_t *ctx, pcb_pstk_t *ps
 	return rnd_false;
 }
 
-RND_INLINE rnd_bool_t pcb_isc_pstk_arc(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_arc_t *arc)
+RND_INLINE rnd_bool_t pcb_isc_pstk_arc(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_arc_t *arc, rnd_bool anylayer)
 {
 	pcb_pstk_shape_t *shape;
 	pcb_pstk_proto_t *proto;
@@ -1095,7 +1095,7 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *p
 	return rnd_false;
 }
 
-RND_INLINE rnd_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly)
+RND_INLINE rnd_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly, rnd_bool anylayer)
 {
 	pcb_pstk_shape_t *shape;
 	pcb_pstk_proto_t *proto;
@@ -1204,7 +1204,7 @@ RND_INLINE rnd_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t
 	return rnd_false;
 }
 
-RND_INLINE rnd_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_t *ps2)
+RND_INLINE rnd_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_t *ps2, rnd_bool anylayer)
 {
 	pcb_layer_t *ly;
 	pcb_pstk_proto_t *proto1, *proto2;
