@@ -40,10 +40,12 @@
 #include "board.h"
 #include "data.h"
 #include <librnd/core/error.h>
+#include <librnd/core/actions.h>
 #include <librnd/poly/polyarea.h>
 #include "find.h"
 #include "polygon.h"
 #include "search.h"
+#include "select.h"
 #include "obj_subc_parent.h"
 #include "obj_pstk_inlines.h"
 
