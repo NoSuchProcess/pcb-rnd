@@ -56,12 +56,34 @@ static int fnc_poly_num_islands(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *a
 	PCB_QRY_RET_INT(res, cnt);
 }
 
+/* pcb_intersect_obj_obj() wrapper that fails for layerobj-layerobj
+   check if they are in different groups */
+RND_INLINE int isc_obj_obj(pcb_find_t *fctx, pcb_any_obj_t *o1, pcb_any_obj_t *o2)
+{
+	/* in case of anylayer just skip, they don't have to be on the same layer group;
+	   else if any object is a padstack, the low level isc function will handle it */
+	if (fctx->pstk_anylayer || (o1->type == PCB_OBJ_PSTK) || (o2->type == PCB_OBJ_PSTK))
+		return pcb_intersect_obj_obj(fctx, o1, o2);
+
+	/* one final fallback: non-layer-objects can't be compared on group level */
+	if ((o1->parent_type != PCB_PARENT_LAYER) || (o2->parent_type != PCB_PARENT_LAYER))
+		return pcb_intersect_obj_obj(fctx, o1, o2);
+
+	/* we are not anylayer; if the two objects are not on the same layer group,
+	   it is impossible for them to intersect */
+	if ((o1->parent.layer != o2->parent.layer) && (pcb_layer_get_group_(o1->parent.layer) != pcb_layer_get_group_(o2->parent.layer)))
+		return rnd_false;
+
+
+	return pcb_intersect_obj_obj(fctx, o1, o2);
+}
+
 static int isc_subc_obj(pcb_qry_exec_t *ectx, pcb_find_t *fctx, pcb_subc_t *subc, pcb_any_obj_t *obj)
 {
 	pcb_any_obj_t *so;
 	pcb_data_it_t it;
 	for(so = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); so != NULL; so = pcb_data_next(&it))
-		if (pcb_intersect_obj_obj(fctx, obj, so))
+		if (isc_obj_obj(fctx, obj, so))
 			return 1;
 	return 0;
 }
@@ -93,7 +115,7 @@ static int overlap_(pcb_qry_exec_t *ectx, pcb_find_t *fctx, int argc, pcb_qry_va
 	if (argv[1].data.obj->type == PCB_OBJ_SUBC)
 		PCB_QRY_RET_INT(res, isc_subc_obj(ectx, fctx, (pcb_subc_t *)argv[1].data.obj, argv[0].data.obj));
 
-	PCB_QRY_RET_INT(res, pcb_intersect_obj_obj(fctx, argv[0].data.obj, argv[1].data.obj));
+	PCB_QRY_RET_INT(res, isc_obj_obj(fctx, argv[0].data.obj, argv[1].data.obj));
 }
 
 static int fnc_overlap(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
