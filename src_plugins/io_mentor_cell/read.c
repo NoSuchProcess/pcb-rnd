@@ -673,6 +673,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		/* Rotate the points around center (xc,yc) */
 		sina = sin((double)rotbb / RND_RAD_TO_DEG);
 		cosa = cos((double)rotbb / RND_RAD_TO_DEG);
+		{
 		rnd_coord_t xaux1 = x2, yaux1 = y1;
 		rnd_coord_t xaux3 = x1, yaux3 = y2;
 		/* This handles bbox rotation. However I get rnd_rotate undefined reference ld linker error */
@@ -680,6 +681,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		/* rnd_rotate(&xaux3, &yaux3, xc, yc, cosa, sina); */
 		/* rnd_rotate(&x1, &y1, xc, yc, cosa, sina); */
 		/* rnd_rotate(&x2, &y2, xc, yc, cosa, sina); */
+		}
 
 		pcb_line_new(ly, x1, y1, x2, y1, thickness, cl, DEFAULT_OBJ_FLAG);
 		pcb_line_new(ly, x2, y1, x2, y2, thickness, cl, DEFAULT_OBJ_FLAG);
