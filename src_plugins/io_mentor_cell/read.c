@@ -660,9 +660,8 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		return;
 	}
 
-	if (mirrored != 0) {
+	if (mirrored != 0)
 		rotbb = -rotbb;
-	}
 
 	{
 		rnd_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
