@@ -56,23 +56,22 @@ static int fnc_poly_num_islands(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *a
 	PCB_QRY_RET_INT(res, cnt);
 }
 
-static int isc_subc_obj(pcb_qry_exec_t *ectx, pcb_subc_t *subc, pcb_any_obj_t *obj)
+static int isc_subc_obj(pcb_qry_exec_t *ectx, pcb_find_t *fctx, pcb_subc_t *subc, pcb_any_obj_t *obj)
 {
-	static pcb_find_t fctx = {0};
 	pcb_any_obj_t *so;
 	pcb_data_it_t it;
 	for(so = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); so != NULL; so = pcb_data_next(&it))
-		if (pcb_intersect_obj_obj(&fctx, obj, so))
+		if (pcb_intersect_obj_obj(fctx, obj, so))
 			return 1;
 	return 0;
 }
 
-static int isc_subc_subc(pcb_qry_exec_t *ectx, pcb_subc_t *subc1, pcb_subc_t *subc2)
+static int isc_subc_subc(pcb_qry_exec_t *ectx, pcb_find_t *fctx, pcb_subc_t *subc1, pcb_subc_t *subc2)
 {
 	pcb_any_obj_t *so;
 	pcb_data_it_t it;
 	for(so = pcb_data_first(&it, subc1->data, PCB_OBJ_CLASS_REAL); so != NULL; so = pcb_data_next(&it))
-		if (isc_subc_obj(ectx, subc2, so))
+		if (isc_subc_obj(ectx, fctx, subc2, so))
 			return 1;
 	return 0;
 }
@@ -81,17 +80,24 @@ static int fnc_overlap(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 {
 	static pcb_find_t fctx = {0};
 
-	if ((argc != 2) || (argv[0].type != PCBQ_VT_OBJ) || (argv[1].type != PCBQ_VT_OBJ))
+	if ((argc < 2) || (argv[0].type != PCBQ_VT_OBJ) || (argv[1].type != PCBQ_VT_OBJ))
+		return -1;
+	if (argc > 2) {
+		if ((argv[2].type != PCBQ_VT_COORD) && (argv[2].type != PCBQ_VT_LONG))
+			return -1;
+		fctx.bloat = argv[2].data.crd;
+	}
+	if (argc > 3)
 		return -1;
 
 	fctx.ignore_clearance = 1;
 	fctx.allow_noncopper_pstk = 1;
 	if ((argv[0].data.obj->type == PCB_OBJ_SUBC) && (argv[1].data.obj->type == PCB_OBJ_SUBC))
-		PCB_QRY_RET_INT(res, isc_subc_subc(ectx, (pcb_subc_t *)argv[0].data.obj, (pcb_subc_t *)argv[1].data.obj));
+		PCB_QRY_RET_INT(res, isc_subc_subc(ectx, &fctx, (pcb_subc_t *)argv[0].data.obj, (pcb_subc_t *)argv[1].data.obj));
 	if (argv[0].data.obj->type == PCB_OBJ_SUBC)
-		PCB_QRY_RET_INT(res, isc_subc_obj(ectx, (pcb_subc_t *)argv[0].data.obj, argv[1].data.obj));
+		PCB_QRY_RET_INT(res, isc_subc_obj(ectx, &fctx, (pcb_subc_t *)argv[0].data.obj, argv[1].data.obj));
 	if (argv[1].data.obj->type == PCB_OBJ_SUBC)
-		PCB_QRY_RET_INT(res, isc_subc_obj(ectx, (pcb_subc_t *)argv[1].data.obj, argv[0].data.obj));
+		PCB_QRY_RET_INT(res, isc_subc_obj(ectx, &fctx, (pcb_subc_t *)argv[1].data.obj, argv[0].data.obj));
 
 	PCB_QRY_RET_INT(res, pcb_intersect_obj_obj(&fctx, argv[0].data.obj, argv[1].data.obj));
 }
