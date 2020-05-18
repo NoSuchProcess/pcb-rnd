@@ -346,10 +346,10 @@ uirc_event_t uirc_poll(uirc_t *ctx)
 			break;
 
 		if (fds[0].revents & P_POLLIN) {
-			P_size_t oused = ctx->ibuf.used;
+			P_size_t len, oused = ctx->ibuf.used;
 			gds_enlarge(&ctx->ibuf, ctx->ibuf.used + 600);
 			ctx->ibuf.used = oused;
-			P_size_t len = P_net_read(ctx->sk, ctx->ibuf.array + ctx->ibuf.used, 600);
+			len = P_net_read(ctx->sk, ctx->ibuf.array + ctx->ibuf.used, 600);
 			if (len < 0) {
 				if (P_net_inprogress)
 					continue;
