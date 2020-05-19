@@ -163,7 +163,6 @@ int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script,
 		return -1;
 	}
 
-	while(isspace(*script)) script++;
 	pcb_qry_set_input(script);
 	qry_parse(&prg);
 

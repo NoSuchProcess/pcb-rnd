@@ -142,6 +142,7 @@ static int qry_yy_input(char *buf, int buflen)
 
 void pcb_qry_set_input(const char *script)
 {
+	while(isspace(*script)) script++;
 	pcb_qry_program = pcb_qry_program_ptr = script;
 }
 
