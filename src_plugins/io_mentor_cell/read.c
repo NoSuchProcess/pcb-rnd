@@ -707,7 +707,7 @@ TODO("[easy] STROKE_WIDTH: we have support for that, but what's the unit? what i
 /*  The distance between those traces seems to depend on text height.*/
 /*  In brd2 example, it is 0.04mm for J1, assembly layer, and 0.02mm for R1.*/
 
-	pcb_text_new(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, rot, 100, 0, nt->argv[1], pcb_flag_make(flg | mirrored));
+	pcb_text_new_by_bbox(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, width, height, anchx, anchy, 1, 100, rot, thickness, nt->argv[1], pcb_flag_make(flg | mirrored));
 }
 
 static void parse_dgw_via(hkp_ctx_t *ctx, const hkp_netclass_t *nc, node_t *nv)
