@@ -48,44 +48,49 @@
 
 pcb_any_obj_t pcb_qry_drc_ctrl[PCB_QRY_DRC_invalid];
 
-const char *type_name[PCBQ_nodetype_max] = {
-	"PCBQ_RULE",
-	"PCBQ_RNAME",
-	"PCBQ_EXPR_PROG",
-	"PCBQ_EXPR",
-	"PCBQ_ASSERT",
-	"PCBQ_ITER_CTX",
-	"PCBQ_OP_THUS",
-	"PCBQ_OP_AND",
-	"PCBQ_OP_OR",
-	"PCBQ_OP_EQ",
-	"PCBQ_OP_NEQ",
-	"PCBQ_OP_GTEQ",
-	"PCBQ_OP_LTEQ",
-	"PCBQ_OP_GT",
-	"PCBQ_OP_LT",
-	"PCBQ_OP_ADD",
-	"PCBQ_OP_SUB",
-	"PCBQ_OP_MUL",
-	"PCBQ_OP_DIV",
-	"PCBQ_OP_MATCH",
-	"PCBQ_OP_NOT",
-	"PCBQ_FIELD",
-	"PCBQ_FIELD_OF",
-	"PCBQ_LISTVAR",
-	"PCBQ_LET",
-	"PCBQ_VAR",
-	"PCBQ_FNAME",
-	"PCBQ_FCALL",
-	"PCBQ_FLAG",
-	"PCBQ_DATA_COORD",
-	"PCBQ_DATA_DOUBLE",
-	"PCBQ_DATA_STRING",
-	"PCBQ_DATA_REGEX",
-	"PCBQ_DATA_CONST",
-	"PCBQ_DATA_OBJ",
-	"PCBQ_DATA_INVALID",
-	"PCBQ_DATA_LYTC"
+typedef struct {
+	const char *name;
+	int has_children;
+} pcb_qry_type_tab_t;
+
+const pcb_qry_type_tab_t type_tab[PCBQ_nodetype_max] = {
+	{"PCBQ_RULE", 0},
+	{"PCBQ_RNAME", 1},
+	{"PCBQ_EXPR_PROG", 1},
+	{"PCBQ_EXPR", 1},
+	{"PCBQ_ASSERT", 1},
+	{"PCBQ_ITER_CTX", 0},
+	{"PCBQ_OP_THUS", 1},
+	{"PCBQ_OP_AND", 1},
+	{"PCBQ_OP_OR", 1},
+	{"PCBQ_OP_EQ", 1},
+	{"PCBQ_OP_NEQ", 1},
+	{"PCBQ_OP_GTEQ", 1},
+	{"PCBQ_OP_LTEQ", 1},
+	{"PCBQ_OP_GT", 1},
+	{"PCBQ_OP_LT", 1},
+	{"PCBQ_OP_ADD", 1},
+	{"PCBQ_OP_SUB", 1},
+	{"PCBQ_OP_MUL", 1},
+	{"PCBQ_OP_DIV", 1},
+	{"PCBQ_OP_MATCH", 1},
+	{"PCBQ_OP_NOT", 1},
+	{"PCBQ_FIELD", 0},
+	{"PCBQ_FIELD_OF", 1},
+	{"PCBQ_LISTVAR", 0},
+	{"PCBQ_LET", 1},
+	{"PCBQ_VAR", 0},
+	{"PCBQ_FNAME", 0},
+	{"PCBQ_FCALL", 1},
+	{"PCBQ_FLAG", 0},
+	{"PCBQ_DATA_COORD", 0},
+	{"PCBQ_DATA_DOUBLE", 0},
+	{"PCBQ_DATA_STRING", 0},
+	{"PCBQ_DATA_REGEX", 0},
+	{"PCBQ_DATA_CONST", 0},
+	{"PCBQ_DATA_OBJ", 0},
+	{"PCBQ_DATA_INVALID", 0},
+	{"PCBQ_DATA_LYTC", 0}
 };
 
 char *pcb_query_sprint_val(pcb_qry_val_t *val)
@@ -107,7 +112,15 @@ const char *pcb_qry_nodetype_name(pcb_qry_nodetype_t ntype)
 	int type = ntype;
 	if ((type < 0) || (type >= PCBQ_nodetype_max))
 		return "<invalid>";
-	return type_name[type];
+	return type_tab[type].name;
+}
+
+int pcb_qry_nodetype_has_children(pcb_qry_nodetype_t ntype)
+{
+	int type = ntype;
+	if ((type < 0) || (type >= PCBQ_nodetype_max))
+		return 0;
+	return type_tab[type].has_children;
 }
 
 pcb_qry_node_t *pcb_qry_n_alloc(pcb_qry_nodetype_t ntype)

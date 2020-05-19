@@ -210,7 +210,7 @@ static int fnc_netshort(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb
 	return fnc_netint_any(ectx, argc, argv, res, 0);
 }
 
-static int fnc_getconf(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+int pcb_qry_fnc_getconf(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	rnd_conf_native_t *nat;
 

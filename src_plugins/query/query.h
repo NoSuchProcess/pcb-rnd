@@ -100,6 +100,7 @@ typedef enum {
 	PCBQ_VAR,
 	PCBQ_FNAME,
 	PCBQ_FCALL,
+
 	PCBQ_FLAG,         /* leaf */
 
 	PCBQ_DATA_COORD,   /* leaf */
@@ -113,7 +114,6 @@ typedef enum {
 
 	PCBQ_nodetype_max
 } pcb_qry_nodetype_t;
-
 
 struct pcb_qry_node_s {
 	pcb_qry_nodetype_t type;
@@ -176,6 +176,9 @@ pcb_query_iter_t *pcb_qry_find_iter(pcb_qry_node_t *node);
 
 char *pcb_query_sprint_val(pcb_qry_val_t *val);
 
+const char *pcb_qry_nodetype_name(pcb_qry_nodetype_t ntype);
+int pcb_qry_nodetype_has_children(pcb_qry_nodetype_t ntype);
+
 /* functions */
 int pcb_qry_fnc_reg(const char *name, pcb_qry_fnc_t fnc);
 pcb_qry_fnc_t pcb_qry_fnc_lookup(const char *name);
@@ -189,6 +192,11 @@ void qry_error(void *prog, const char *err);
 /* Compile and execute a script, calling cb for each object. Returns the number
    of evaluation errors or -1 if evaluation couldn't start */
 int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
+
+/* Extract a list of definitions used by the script (by compiling the script);
+   dst key is the definition name, val is the number of uses. Return value
+   is total number of definition usage. */
+int pcb_qry_extract_defs(htsi_t *dst, const char *script);
 
 /*** drc list-reports ***/
 

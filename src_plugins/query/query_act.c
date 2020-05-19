@@ -207,6 +207,57 @@ int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script,
 	return res;
 }
 
+extern int pcb_qry_fnc_getconf(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res);
+static void pcb_qry_extract_defs_(htsi_t *dst, pcb_qry_node_t *nd, int *total)
+{
+	if (nd->type == PCBQ_FCALL) {
+		pcb_qry_node_t *fname = nd->data.children;
+		if ((fname->type == PCBQ_FNAME) && (fname->data.fnc == pcb_qry_fnc_getconf) && (fname->next->type == PCBQ_DATA_STRING)) {
+			const char *name = fname->next->data.str;
+			htsi_entry_t *e;
+			if (strncmp(name, "design/drc/", 11) == 0) {
+				name += 11;
+				e = htsi_getentry(dst, name);
+				if (e == NULL) {
+					htsi_set(dst, rnd_strdup(name), 0);
+					e = htsi_getentry(dst, name);
+				}
+				e->value++;
+				(*total)++;
+			}
+		}
+	}
+
+	/* RULE needs special recursion */
+	if (nd->type == PCBQ_RULE) {
+		for(nd = nd->data.children->next->next; nd != NULL; nd = nd->next)
+			pcb_qry_extract_defs_(dst, nd, total);
+		return;
+	}
+
+	/* recurse */
+	if (pcb_qry_nodetype_has_children(nd->type))
+		for(nd = nd->data.children; nd != NULL; nd = nd->next)
+			pcb_qry_extract_defs_(dst, nd, total);
+}
+
+int pcb_qry_extract_defs(htsi_t *dst, const char *script)
+{
+	pcb_qry_node_t *prg = NULL;
+	int total = 0;
+
+	pcb_qry_set_input(script);
+	qry_parse(&prg);
+	if (prg == NULL)
+		return -1;
+
+	pcb_qry_extract_defs_(dst, prg, &total);
+
+	pcb_qry_n_free(prg);
+	return total;
+}
+
+
 static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *cmd, *arg = NULL, *scope = NULL;
