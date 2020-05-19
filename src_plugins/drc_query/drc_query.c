@@ -650,8 +650,8 @@ static fgw_error_t pcb_act_DrcQueryDefMod(fgw_arg_t *res, int argc, fgw_arg_t *a
 
 static const rnd_hid_fsd_filter_t *init_flt(const char **fmt)
 {
-	static const char *pat_tdx[] = {".tdx", NULL};
-	static const char *pat_lht[] = {".lht", NULL};
+	static const char *pat_tdx[] = {"*.tdx", NULL};
+	static const char *pat_lht[] = {"*.lht", NULL};
 	static const rnd_hid_fsd_filter_t flt[] = {
 		{"tEDAx", "tEDAx", pat_tdx},
 		{"lihata", "lihata", pat_lht},
