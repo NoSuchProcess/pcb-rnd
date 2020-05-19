@@ -206,11 +206,19 @@ static void print_multiline(FILE *f, const char *prefix, const char *text)
 
 int tedax_drc_query_def_fsave(pcb_board_t *pcb, const char *defid, FILE *f)
 {
+	int err = 0;
+
 	fprintf(f, "begin drc_query_def v1 ");
 	tedax_fprint_escape(f, defid);
 	fputc('\n', f);
 
+	fprintf(f, "	type %s\n",     drc_query_def_get(defid, "type", &err));
+	fprintf(f, "	default %s\n",  drc_query_def_get(defid, "default", &err));
+	fprintf(f, "	desc %s\n",     drc_query_def_get(defid, "desc", &err));
+
 	fprintf(f, "end drc_query_def\n");
+
+	return err;
 }
 
 
