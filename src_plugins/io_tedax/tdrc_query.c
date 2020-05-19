@@ -155,12 +155,58 @@ int tedax_drc_query_load(pcb_board_t *pcb, const char *fn, const char *blk_id, c
 	return res;
 }
 
+static const char *drc_query_any_get(const char *act, const char *ruleid, const char *field, int *err)
+{
+	fgw_error_t ferr;
+	fgw_arg_t res, args[4];
+
+	args[0].type = FGW_VOID;
+	args[1].type = FGW_STR; args[1].val.cstr = "get";
+	args[2].type = FGW_STR; args[2].val.cstr = ruleid;
+	args[3].type = FGW_STR; args[3].val.cstr = field;
+
+	ferr = rnd_actionv_bin(&PCB->hidlib, act, &res, 4, args);
+	if (ferr != 0) {
+		*err = 1;
+		return "-";
+	}
+	if (res.type != FGW_STR) {
+		fgw_arg_free(&rnd_fgw, &res);
+		*err = 1;
+		return "-";
+	}
+	return res.val.cstr;
+}
+
+static const char *drc_query_rule_get(const char *ruleid, const char *field, int *err)
+{
+	return drc_query_any_get("DrcQueryRuleMod", ruleid, field, err);
+}
+
+static const char *drc_query_def_get(const char *ruleid, const char *field, int *err)
+{
+	return drc_query_any_get("DrcQueryDefMod", ruleid, field, err);
+}
+
+static void print_multiline(FILE *f, const char *prefix, const char *text)
+{
+	const char *curr, *next;
+	for(curr = text; curr != NULL; curr = next) {
+		next = strchr(curr, '\n');
+		if (next != NULL) {
+			fprintf(f, "%s ", prefix);
+			fwrite(curr, next-curr, 1, f);
+			fputc('\n', f);
+			while(*next == '\n') next++;
+			if (*next == '\0') next = NULL;
+		}
+	}
+}
 
 int tedax_drc_query_rule_fsave(pcb_board_t *pcb, const char *ruleid, FILE *f, rnd_bool save_def)
 {
-	rnd_cardinal_t n;
-	htsp_entry_t *e;
-	pcb_netlist_t *nl = &pcb->netlist[PCB_NETLIST_EDITED];
+	
+	int err = 0;
 
 	if (save_def) {
 TODO("figure what's the related def and save that too");
@@ -170,9 +216,14 @@ TODO("figure what's the related def and save that too");
 	tedax_fprint_escape(f, ruleid);
 	fputc('\n', f);
 
+	fprintf(f, "	type %s\n",  drc_query_rule_get(ruleid, "type", &err));
+	fprintf(f, "	title %s\n", drc_query_rule_get(ruleid, "title", &err));
+	fprintf(f, "	desc %s\n",  drc_query_rule_get(ruleid, "desc", &err));
+
+	print_multiline(f, "	query", drc_query_rule_get(ruleid, "query", &err));
 
 	fprintf(f, "end drc_query_rule\n");
-	return 0;
+	return err;
 }
 
 int tedax_drc_query_save(pcb_board_t *pcb, const char *ruleid, const char *fn)
