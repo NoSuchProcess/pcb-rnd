@@ -506,6 +506,26 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	drc_rlist_pcb2dlg(); /* for the run time */
 }
 
+static void rlist_btn_export_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
+{
+	drc_rlist_ctx_t *ctx = caller_data;
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wrlist]));
+	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
+
+	if (row == NULL) {
+		rnd_message(RND_MSG_ERROR, "Select a rule first\n");
+		return;
+	}
+
+	rnd_actionva(&pcb->hidlib, "DrcQueryExport", row->cell[0], NULL);
+}
+
+static void rlist_btn_import_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
+{
+
+}
+
+
 static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
 	rnd_hid_attr_val_t hv;
@@ -710,6 +730,10 @@ static void pcb_dlg_drc_rlist_rules(int *wpane)
 					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_edit_cb);
 				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Toggle disable");
 					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_toggle_cb);
+				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Export...");
+					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_export_cb);
+				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Import...");
+					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_import_cb);
 			RND_DAD_END(drc_rlist_ctx.dlg);
 		RND_DAD_END(drc_rlist_ctx.dlg);
 
