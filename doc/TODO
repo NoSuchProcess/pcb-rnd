@@ -107,7 +107,7 @@
 			- kicad v5: (need test cases)
 			- autotrax: (need test cases)
 			- eagle: (need test cases)
-			- mentor_cell: test cases available
+			+ mentor_cell: done [report: Igor2]
 		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
