@@ -522,7 +522,10 @@ static void rlist_btn_export_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 
 static void rlist_btn_import_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
+	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
 
+	rnd_actionva(&pcb->hidlib, "DrcQueryImport", NULL);
+	drc_rlist_pcb2dlg();
 }
 
 
