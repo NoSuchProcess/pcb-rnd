@@ -208,7 +208,7 @@ int tedax_drc_query_def_fsave(pcb_board_t *pcb, const char *defid, FILE *f)
 {
 	int err = 0;
 
-	fprintf(f, "begin drc_query_def v1 ");
+	fprintf(f, "\nbegin drc_query_def v1 ");
 	tedax_fprint_escape(f, defid);
 	fputc('\n', f);
 
@@ -257,7 +257,7 @@ int tedax_drc_query_rule_fsave(pcb_board_t *pcb, const char *ruleid, FILE *f, rn
 		}
 	}
 
-	fprintf(f, "begin drc_query_rule v1 ");
+	fprintf(f, "\nbegin drc_query_rule v1 ");
 	tedax_fprint_escape(f, ruleid);
 	fputc('\n', f);
 
