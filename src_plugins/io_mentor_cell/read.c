@@ -516,7 +516,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 {
 	node_t *attr, *tmp;
 	rnd_coord_t tx, ty, h, thickness = 0, width = 0, height = 0, ymin = 0;
-	rnd_coord_t x1 = 0, x2 = 0, y1 = 0, y2 = 0, xc = 0, yc = 0;
+	rnd_coord_t x1 = 0, x2 = 0, y1 = 0, y2 = 0, xc = 0, yc = 0, anchx = 0, anchy = 0;
 	double rot = 0, rotbb = 0, sina = 0, cosa = 0;
 	unsigned long mirrored = 0;
 	long int font_id = 0;
@@ -608,6 +608,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		xc = tx;
 		if (strcmp(tmp->argv[1], "Left") == 0) {
 			x1 = tx;
+			anchx = 0;
 			if (mirrored == 0)
 				x2 = tx+width;
 			else
@@ -615,6 +616,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		}
 		else if (strcmp(tmp->argv[1], "Center") == 0) {
 			x1 = tx - (width >> 1);
+			anchx = width >> 1;
 			if (mirrored == 0)
 				x2 = tx + (width >> 1);
 			else
@@ -622,6 +624,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		}
 		else if (strcmp(tmp->argv[1], "Right") == 0) {
 			x2 = tx;
+			anchx = width;
 			if (mirrored == 0)
 				x1 = tx-width;
 			else
@@ -637,6 +640,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 
 	tmp = find_nth(attr->first_child, "VERT_JUST", 0);
 	if (tmp != NULL) {
+		yc = ty;
 		rnd_coord_t ymax = height+ymin;
 		TODO(
 			"Consider rotation, using:"
@@ -644,13 +648,16 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 			"Maybe:"
 			"  double sina = sin(-(double)rot / RND_RAD_TO_DEG), cosa = cos(-(double)rot / RND_RAD_TO_DEG);");
 		if (strcmp(tmp->argv[1], "Top") == 0) {
+			anchy = 0;
 			y1 = ty+height; y2 = ty;
 		}
 		else if (strcmp(tmp->argv[1], "Center") == 0) {
 			y1 = ty - ymin + (ymax >> 1); y2 = ty - (ymax >> 1);
+			anchy = ymax >> 1;
 		}
 		else if (strcmp(tmp->argv[1], "Bottom") == 0) {
 			y1=ty-ymin; y2=ty-ymin-height; /* ymin is negative */
+			anchy = height+ymin; /* ymin is negative */
 		}
 		else
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
