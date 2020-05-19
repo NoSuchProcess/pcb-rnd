@@ -156,3 +156,43 @@ int tedax_drc_query_load(pcb_board_t *pcb, const char *fn, const char *blk_id, c
 }
 
 
+int tedax_drc_query_rule_fsave(pcb_board_t *pcb, const char *ruleid, FILE *f, rnd_bool save_def)
+{
+	rnd_cardinal_t n;
+	htsp_entry_t *e;
+	pcb_netlist_t *nl = &pcb->netlist[PCB_NETLIST_EDITED];
+
+	if (save_def) {
+TODO("figure what's the related def and save that too");
+	}
+
+	fprintf(f, "begin drc_query_rule v1 ");
+	tedax_fprint_escape(f, ruleid);
+	fputc('\n', f);
+
+
+	fprintf(f, "end drc_query_rule\n");
+	return 0;
+}
+
+int tedax_drc_query_save(pcb_board_t *pcb, const char *ruleid, const char *fn)
+{
+	int res;
+	FILE *f;
+
+	if (ruleid == NULL) {
+TODO("save all");
+rnd_message(RND_MSG_ERROR, "Can't save all rules yet, please name one rule to save\n");
+		return -1;
+	}
+
+	f = rnd_fopen_askovr(&PCB->hidlib, fn, "w", NULL);
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "tedax_drc_query_save(): can't open %s for writing\n", fn);
+		return -1;
+	}
+	fprintf(f, "tEDAx v1\n");
+	res = tedax_drc_query_rule_fsave(pcb, ruleid, f, rnd_true);
+	fclose(f);
+	return res;
+}
