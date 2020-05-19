@@ -648,21 +648,29 @@ static fgw_error_t pcb_act_DrcQueryDefMod(fgw_arg_t *res, int argc, fgw_arg_t *a
 	return 0;
 }
 
+static const rnd_hid_fsd_filter_t *init_flt(const char **fmt)
+{
+	static const char *pat_tdx[] = {".tdx", NULL};
+	static const char *pat_lht[] = {".lht", NULL};
+	static const rnd_hid_fsd_filter_t flt[] = {
+		{"tEDAx", "tEDAx", pat_tdx},
+		{"lihata", "lihata", pat_lht},
+		{NULL, NULL, NULL}
+	};
+
+	*fmt = "tEDAx";
+	return flt;
+}
+
 static const char pcb_acts_DrcQueryExport[] = "DrcQueryExport(ruleID, [filename], [format])\n";
 static const char pcb_acth_DrcQueryExport[] = "Export a rule and related definitions to a file.";
 static fgw_error_t pcb_act_DrcQueryExport(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int ires = 0;
-	const char *id, *fn = NULL, *fmt = "tEDAx";
+	const char *id, *fn = NULL, *fmt;
 	char *autofree = NULL;
 	rnd_hidlib_t *hl = RND_ACT_HIDLIB;
-	const char *pat_tdx[] = {".tdx", NULL};
-	const char *pat_lht[] = {".lht", NULL};
-	const rnd_hid_fsd_filter_t flt[] = {
-		{"tEDAx", "tEDAx", pat_tdx},
-		{"lihata", "lihata", pat_lht},
-		{NULL, NULL, NULL}
-	};
+	const rnd_hid_fsd_filter_t *flt = init_flt(&fmt);
 
 	RND_ACT_CONVARG(1, FGW_STR, DrcQueryExport, id = argv[1].val.str);
 	RND_ACT_MAY_CONVARG(2, FGW_STR, DrcQueryExport, fn = argv[2].val.str);
