@@ -5191,9 +5191,9 @@
  librnd/core/rnd_printf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genvector/vtp0.h \
- librnd/core/list_conf.h librnd/core/error.h librnd/core/actions.h \
- librnd/core/hid.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- ../src_plugins/io_tedax/tdrc_query.h
+ librnd/core/list_conf.h librnd/core/compat_misc.h librnd/core/error.h \
+ librnd/core/actions.h librnd/core/hid.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h ../src_plugins/io_tedax/tdrc_query.h
 ../src_plugins/io_tedax/tetest.o: ../src_plugins/io_tedax/tetest.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
