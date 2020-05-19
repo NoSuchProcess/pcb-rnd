@@ -680,8 +680,8 @@ static fgw_error_t pcb_act_DrcQueryExport(fgw_arg_t *res, int argc, fgw_arg_t *a
 		const char *ext = ".tdx", *sep;
 		char *fnid = rnd_concat(id, ext, NULL);
 TODO("cleanup: fix format selection: generalize dlg_loadsave.c's subfmt code");
-		fn = autofree = rnd_gui->fileselect(rnd_gui, "Export drc_query rule", "Export a drc_query rule and related definitions",
-			fnid, ext, flt, "export_drc_query", 0, NULL);
+		fn = autofree = rnd_gui->fileselect(rnd_gui, "drc_query_rule", "Export a drc_query rule and related definitions",
+			fnid, ext, flt, "drc_query", 0, NULL);
 		free(fnid);
 		if (fn == NULL)
 			return -1;
@@ -706,6 +706,42 @@ TODO("cleanup: fix format selection: generalize dlg_loadsave.c's subfmt code");
 	return 0;
 }
 
+static const char pcb_acts_DrcQueryImport[] = "DrcQueryImport([filename])\n";
+static const char pcb_acth_DrcQueryImport[] = "Import a rule and related definitions from a file.";
+static fgw_error_t pcb_act_DrcQueryImport(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int ires = 0;
+	const char *fn = NULL, *fmt;
+	char *autofree = NULL, *sep;
+	rnd_hidlib_t *hl = RND_ACT_HIDLIB;
+	const rnd_hid_fsd_filter_t *flt = init_flt(&fmt);
+
+	RND_ACT_MAY_CONVARG(1, FGW_STR, DrcQueryExport, fn = argv[1].val.str);
+
+	if (fn == NULL) {
+		const char *ext = ".tdx";
+		fn = autofree = rnd_gui->fileselect(rnd_gui, "drc_query_rule", "Import a drc_query rule and related definitions",
+			NULL, ext, flt, "drc_query", RND_HID_FSD_READ, NULL);
+		if (fn == NULL)
+			return -1;
+
+	}
+
+	TODO("don't decide by file name, do a test-read of some sort");
+	sep = strrchr(fn, '.');
+	if (sep != NULL) {
+		sep++;
+		switch(*sep) {
+			case 't': case 'T': ires = rnd_actionva(hl, "loadtedaxfrom", "drc_query", fn, "", "0", NULL); break;
+			case 'l': case 'L': rnd_message(RND_MSG_ERROR, "Can not load in format '%s'\n", sep); ires = -1; break;
+		}
+	}
+
+	free(autofree);
+	RND_ACT_IRES(ires);
+	return 0;
+}
+
 #include "dlg.c"
 
 static pcb_drc_impl_t drc_query_impl = {"drc_query", "query() based DRC", "drcquerylistrules"};
@@ -715,7 +751,8 @@ static rnd_action_t drc_query_action_list[] = {
 	{"DrcQueryEditRule", pcb_act_DrcQueryEditRule, pcb_acth_DrcQueryEditRule, pcb_acts_DrcQueryEditRule},
 	{"DrcQueryRuleMod", pcb_act_DrcQueryRuleMod, pcb_acth_DrcQueryRuleMod, pcb_acts_DrcQueryRuleMod},
 	{"DrcQueryDefMod", pcb_act_DrcQueryDefMod, pcb_acth_DrcQueryDefMod, pcb_acts_DrcQueryDefMod},
-	{"DrcQueryExport", pcb_act_DrcQueryExport, pcb_acth_DrcQueryExport, pcb_acts_DrcQueryExport}
+	{"DrcQueryExport", pcb_act_DrcQueryExport, pcb_acth_DrcQueryExport, pcb_acts_DrcQueryExport},
+	{"DrcQueryImport", pcb_act_DrcQueryImport, pcb_acth_DrcQueryImport, pcb_acts_DrcQueryImport}
 };
 
 int pplg_check_ver_drc_query(int ver_needed) { return 0; }
