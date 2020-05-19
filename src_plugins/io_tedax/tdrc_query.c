@@ -36,6 +36,7 @@
 #include "board.h"
 #include "parse.h"
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/compat_misc.h>
 #include <librnd/core/error.h>
 #include <librnd/core/actions.h>
 #include "tdrc_query.h"
@@ -203,13 +204,49 @@ static void print_multiline(FILE *f, const char *prefix, const char *text)
 	}
 }
 
+int tedax_drc_query_def_fsave(pcb_board_t *pcb, const char *defid, FILE *f)
+{
+	fprintf(f, "begin drc_query_def v1 ");
+	tedax_fprint_escape(f, defid);
+	fputc('\n', f);
+
+	fprintf(f, "end drc_query_def\n");
+}
+
+
 int tedax_drc_query_rule_fsave(pcb_board_t *pcb, const char *ruleid, FILE *f, rnd_bool save_def)
 {
 	
 	int err = 0;
 
+	/* when enabled, get a list of definitions used by the rule and save them all */
 	if (save_def) {
-TODO("figure what's the related def and save that too");
+		fgw_error_t ferr;
+		fgw_arg_t res, args[4];
+
+		args[0].type = FGW_VOID;
+		args[1].type = FGW_STR; args[1].val.cstr = "get";
+		args[2].type = FGW_STR; args[2].val.cstr = ruleid;
+		args[3].type = FGW_STR; args[3].val.cstr = "defs";
+
+		ferr = rnd_actionv_bin(&PCB->hidlib, "DrcQueryRuleMod", &res, 4, args);
+		if (ferr == 0) {
+			if ((res.type & FGW_STR) && (res.val.str != NULL) && (*res.val.str != '\0')) {
+				char *lst, *curr, *next;
+				for(curr = lst = rnd_strdup(res.val.str); next != NULL; curr = next) {
+					next = strchr(curr, '\n');
+					if (next != NULL) *next = '\0';
+					if (tedax_drc_query_def_fsave(pcb, curr, f) != 0) {
+						err = -1;
+						break;
+					}
+				}
+				free(lst);
+			}
+			fgw_arg_free(&rnd_fgw, &res);
+			if (err != 0)
+				return err;
+		}
 	}
 
 	fprintf(f, "begin drc_query_rule v1 ");
