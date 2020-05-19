@@ -192,6 +192,7 @@ static const char *drc_query_def_get(const char *ruleid, const char *field, int 
 static void print_multiline(FILE *f, const char *prefix, const char *text)
 {
 	const char *curr, *next;
+	while(isspace(*text)) text++;
 	for(curr = text; curr != NULL; curr = next) {
 		next = strchr(curr, '\n');
 		if (next != NULL) {
