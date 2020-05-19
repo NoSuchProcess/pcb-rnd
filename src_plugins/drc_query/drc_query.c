@@ -737,6 +737,9 @@ static fgw_error_t pcb_act_DrcQueryImport(fgw_arg_t *res, int argc, fgw_arg_t *a
 		}
 	}
 
+	if (ires == 0)
+		pcb_board_set_changed_flag(rnd_true);
+
 	free(autofree);
 	RND_ACT_IRES(ires);
 	return 0;
