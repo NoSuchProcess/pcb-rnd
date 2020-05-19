@@ -1,6 +1,5 @@
 Active user wishes:
 	W4: user doc [Miloh]
-	W7: programmable drc (star grounding) [James]
 	W9: push & shove [Erich, Evan]
 
 Being done:
@@ -11,4 +10,5 @@ User wishes fulfilled:
 	W3: more generic footprints [Chris, Evan] -> subcircuits
 	W5: 3d modeller export [Miloh, Evan] (bdale's sponsoration)
 	W6:  GUI access to object attributes: gtk editor, find/select by attrib [James]
+	W7: programmable drc (star grounding is implemented with intconn) [James]
 	W8: gl support [Erich, Evan]
