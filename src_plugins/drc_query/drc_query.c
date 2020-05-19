@@ -553,6 +553,39 @@ static int pcb_drc_query_get(rnd_hidlib_t *hidlib, int is_rule, const char *rule
 	return 0;
 }
 
+static int pcb_drc_query_get_rule_defs(rnd_hidlib_t *hidlib, const char *rule, fgw_arg_t *res)
+{
+	htsi_t defs;
+	htsi_entry_t *e;
+	gds_t lst;
+
+	fgw_arg_t tmp;
+	if (pcb_drc_query_get(hidlib, 1, rule, "query", &tmp) != 0)
+		return -1;
+
+	gds_init(&lst);
+	htsi_init(&defs, strhash, strkeyeq);
+	pcb_qry_extract_defs(&defs, tmp.val.str);
+	for(e = htsi_first(&defs); e != NULL; e = htsi_next(&defs, e)) {
+		if (lst.used > 0)
+			gds_append(&lst, '\n');
+		gds_append_str(&lst, e->key);
+		free(e->key);
+	}
+	htsi_uninit(&defs);
+
+	if (lst.used == 0) {
+		gds_uninit(&lst);
+		res->type = FGW_STR;
+		res->val.cstr = "";
+		return 0;
+	}
+
+	res->type = FGW_STR | FGW_DYN;
+	res->val.str = lst.array;
+	return 0;
+}
+
 
 static const char pcb_acts_DrcQueryRuleMod[] = \
 	"DrcQueryRuleMod(clear, source)\n"
@@ -574,7 +607,12 @@ static fgw_error_t pcb_act_DrcQueryRuleMod(fgw_arg_t *res, int argc, fgw_arg_t *
 	if (strcmp(cmd, "clear") == 0) resi = pcb_drc_query_clear(hl, 1, target);
 	else if (strcmp(cmd, "create") == 0) resi = pcb_drc_query_create(hl, 1, target);
 	else if (strcmp(cmd, "set") == 0) resi = pcb_drc_query_set(hl, 1, target, key, val);
-	else if (strcmp(cmd, "get") == 0) return pcb_drc_query_get(hl, 1, target, key, res);
+	else if (strcmp(cmd, "get") == 0) {
+		if (strcmp(key, "defs") == 0)
+			return pcb_drc_query_get_rule_defs(hl, target, res);
+		else
+			return pcb_drc_query_get(hl, 1, target, key, res);
+	}
 	else
 		RND_ACT_FAIL(DrcQueryRuleMod);
 
