@@ -581,7 +581,7 @@ static void view_next_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 }
 
 
-static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title)
+static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title, void (*extra_buttons)(view_ctx_t *))
 {
 	const char *hdr[] = { "ID", "title", NULL };
 
@@ -646,6 +646,8 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 				RND_DAD_BUTTON(ctx->dlg, "Refresh");
 					RND_DAD_CHANGE_CB(ctx->dlg, view_refresh_btn_cb);
 			}
+			if (extra_buttons != NULL)
+				extra_buttons(ctx);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			RND_DAD_END(ctx->dlg);
@@ -732,6 +734,17 @@ static void drc_refresh(view_ctx_t *ctx)
 		simple_rewind(ctx);
 }
 
+static void drc_config_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	rnd_actionva(&PCB->hidlib, "preferences", "Sizes", NULL);
+}
+
+void drc_extra_buttons(view_ctx_t *ctx)
+{
+	RND_DAD_BUTTON(ctx->dlg, "Config...");
+		RND_DAD_CHANGE_CB(ctx->dlg, drc_config_btn_cb);
+}
+
 static view_ctx_t drc_gui_ctx = {0};
 const char pcb_acts_DrcDialog[] = "DrcDialog([list|simple])\n";
 const char pcb_acth_DrcDialog[] = "Execute drc checks and invoke a view list dialog box for presenting the results";
@@ -748,7 +761,7 @@ fgw_error_t pcb_act_DrcDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (rnd_strcasecmp(dlg_type, "simple") == 0)
 			pcb_dlg_view_simplified("drc_simple", &drc_gui_ctx, "DRC violations");
 		else
-			pcb_dlg_view_full("drc_full", &drc_gui_ctx, "DRC violations");
+			pcb_dlg_view_full("drc_full", &drc_gui_ctx, "DRC violations", drc_extra_buttons);
 	}
 
 	view2dlg(&drc_gui_ctx);
@@ -772,7 +785,7 @@ fgw_error_t pcb_act_IOIncompatListDialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		if (rnd_strcasecmp(dlg_type, "simple") == 0)
 			pcb_dlg_view_simplified("io_incompat_simple", &io_gui_ctx, "IO incompatibilities in last save");
 		else
-			pcb_dlg_view_full("io_incompat_full", &io_gui_ctx, "IO incompatibilities in last save");
+			pcb_dlg_view_full("io_incompat_full", &io_gui_ctx, "IO incompatibilities in last save", NULL);
 	}
 
 	view2dlg(&io_gui_ctx);
@@ -806,7 +819,7 @@ fgw_error_t pcb_act_ViewList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		ctx->lst = calloc(sizeof(pcb_view_list_t), 1);
 	ctx->list_alloced = 1;
 	ctx->refresh = NULL;
-	pcb_dlg_view_full(winid, ctx, name);
+	pcb_dlg_view_full(winid, ctx, name, NULL);
 	view2dlg(ctx);
 	return 0;
 }
