@@ -680,12 +680,12 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		rnd_rotate(&xaux3, &yaux3, xc, yc, cosa, sina);
 		rnd_rotate(&x1, &y1, xc, yc, cosa, sina);
 		rnd_rotate(&x2, &y2, xc, yc, cosa, sina);
-		}
 
-		pcb_line_new(ly, x1, y1, x2, y1, thickness, cl, DEFAULT_OBJ_FLAG);
-		pcb_line_new(ly, x2, y1, x2, y2, thickness, cl, DEFAULT_OBJ_FLAG);
-		pcb_line_new(ly, x2, y2, x1, y2, thickness, cl, DEFAULT_OBJ_FLAG);
-		pcb_line_new(ly, x1, y2, x1, y1, thickness, cl, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, x1, y1, xaux1, yaux1, thickness, cl, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, xaux1, yaux1, x2, y2, thickness, cl, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, x2, y2, xaux3, yaux3, thickness, cl, DEFAULT_OBJ_FLAG);
+		pcb_line_new(ly, xaux3, yaux3, x1, y1, thickness, cl, DEFAULT_OBJ_FLAG);
+		}
 	}
 
 
