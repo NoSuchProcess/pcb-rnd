@@ -1,0 +1,10 @@
+1: shorted nets: net too close to other net (zone)
+within (362.40, 293.65, 487.60, 356.35) mil
+required value 20.00 mil
+insufficient clearance between an object of the network and objects of other networks
+
+2: shorted nets: net too close to other net (zone)
+within (396.78, 168.65, 678.22, 231.35) mil
+required value 20.00 mil
+insufficient clearance between an object of the network and objects of other networks
+
