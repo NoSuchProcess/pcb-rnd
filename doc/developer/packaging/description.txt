@@ -13,6 +13,7 @@ Feature highlights:
   - strong CLI support
   - static footprints and parametric (generated) footprints
   - query language for advanced search & select
+  - powerful, user scriptable, modular Design Rule Checker (DRC)
   - layout optimizers such as teardrops and a trace puller
   - footprint library from local file systems, HTTP and board files
   - netlist management: imported and as-built; back annotation
