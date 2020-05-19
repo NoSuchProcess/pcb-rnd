@@ -66,14 +66,17 @@ int io_tedax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 }
 
 
-static const char pcb_acts_Savetedax[] = "SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)";
+static const char pcb_acts_Savetedax[] = 
+	"SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)\n"
+	"SaveTedax(drc_query, filename, [rule_name])";
 static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file.";
 static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *fname = NULL, *type;
+	const char *fname = NULL, *type, *id = NULL;
 
 	RND_ACT_CONVARG(1, FGW_STR, Savetedax, type = argv[1].val.str);
 	RND_ACT_MAY_CONVARG(2, FGW_STR, Savetedax, fname = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, Savetedax, id = argv[3].val.str);
 
 	if (rnd_strcasecmp(type, "netlist") == 0) {
 		RND_ACT_IRES(tedax_net_save(PCB, NULL, fname));
@@ -102,6 +105,11 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (rnd_strcasecmp(type, "drc") == 0) {
 		RND_ACT_IRES(tedax_drc_save(PCB, NULL, fname));
+		return 0;
+	}
+
+	if (rnd_strcasecmp(type, "drc_query") == 0) {
+		RND_ACT_IRES(tedax_drc_query_save(PCB, id, fname));
 		return 0;
 	}
 
