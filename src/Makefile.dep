@@ -1735,14 +1735,14 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/conf_hid.h \
- librnd/core/compat_misc.h board.h vtroutestyle.h layer.h globalconst.h \
- librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
- global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
- ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
- obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h layer_grp.h \
- rats_patch.h board.h librnd/core/hidlib.h drc.h view.h idpath.h view.h \
- conf_core.h find.h event.h librnd/core/event.h \
+ librnd/core/compat_misc.h librnd/core/safe_fs.h board.h vtroutestyle.h \
+ layer.h globalconst.h librnd/core/globalconst.h librnd/core/color.h \
+ obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
+ obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h \
+ layer_grp.h rats_patch.h board.h librnd/core/hidlib.h drc.h view.h \
+ idpath.h view.h conf_core.h find.h event.h librnd/core/event.h \
  ../src_plugins/drc_query/drc_query_conf.h \
  ../src_plugins/drc_query/conf_internal.c ../src_plugins/query/query.h \
  ../src_3rd/genvector/vti0.h ../src_3rd/genht/htsi.h \
@@ -1750,9 +1750,9 @@
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
  obj_common.h layer.h flag_str.h ../src_plugins/query/query_exec.h \
  ../src_plugins/query/query.h ../src_plugins/drc_query/drc_query_stat.c \
- ../src_plugins/drc_query/dlg.c librnd/core/hid_dad.h \
- librnd/core/hid_attrib.h librnd/core/hid_dad_spin.h \
- librnd/core/hid_dad_tree.h actions_pcb.h \
+ ../src_plugins/drc_query/drc_lht.c ../src_plugins/drc_query/dlg.c \
+ librnd/core/hid_dad.h librnd/core/hid_attrib.h \
+ librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h actions_pcb.h \
  ../src_plugins/drc_query/drc_query_conf_fields.h
 ../src_plugins/expfeat/expfeat.o: ../src_plugins/expfeat/expfeat.c \
  ../config.h librnd/config.h librnd/core/conf.h \
