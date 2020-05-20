@@ -83,11 +83,37 @@ static int drc_query_lht_save_rule(rnd_hidlib_t *hl, const char *fn, const char 
 	return res;
 }
 
+static int reloc_children(lht_node_t *dst, lht_node_t *src)
+{
+	lht_dom_iterator_t it;
+	lht_node_t *nd;
+	int res = 0;
+
+	if ((dst == NULL) || (dst->type != LHT_HASH) || (src == NULL) || (src->type != LHT_HASH))
+		return -1;
+
+	/* remove everything from dst */
+	for(nd = lht_dom_first(&it, dst); nd != NULL; nd = lht_dom_next(&it))
+		if (lht_tree_del(nd) != 0)
+			res = -1;
+
+	/* move src nodes to dst */
+	for(nd = lht_dom_first(&it, src); nd != NULL; nd = lht_dom_next(&it)) {
+		if (lht_tree_detach(nd) == 0)
+			lht_dom_hash_put(dst, nd);
+		else
+			res = -1;
+	}
+
+	return res;
+}
+
 static int drc_query_lht_load_rules(rnd_hidlib_t *hl, const char *fn)
 {
 	FILE *f;
 	lht_doc_t *doc;
-	lht_node_t *ndefs, *nrules;
+	lht_node_t *ndefs, *nrules, *nd, *dst;
+	int res = 0;
 
 	f = rnd_fopen(hl, fn, "r");
 	if (f == NULL)
@@ -113,9 +139,18 @@ static int drc_query_lht_load_rules(rnd_hidlib_t *hl, const char *fn)
 	if ((nrules->type != LHT_LIST) || (strcmp(nrules->name, "rules")))
 		goto error;
 
-rnd_trace("defs and rules found\n");
+rnd_trace("loading rules\n");
 
-	return 0;
+	for(nd = nrules->data.list.first; nd != NULL; nd = nd->next) {
+		if (pcb_drc_query_rule_by_name(nd->name, &dst, 1) == 0) {
+			if (reloc_children(dst, nd) != 0)
+				res = -1;
+		}
+		else
+			res = -1;
+	}
+
+	return res;
 
 	error:;
 	lht_dom_uninit(doc);
