@@ -139,7 +139,14 @@ static int drc_query_lht_load_rules(rnd_hidlib_t *hl, const char *fn)
 	if ((nrules->type != LHT_LIST) || (strcmp(nrules->name, "rules")))
 		goto error;
 
-rnd_trace("loading rules\n");
+	for(nd = ndefs->data.list.first; nd != NULL; nd = nd->next) {
+		if (pcb_drc_query_def_by_name(nd->name, &dst, 1) == 0) {
+			if (reloc_children(dst, nd) != 0)
+				res = -1;
+		}
+		else
+			res = -1;
+	}
 
 	for(nd = nrules->data.list.first; nd != NULL; nd = nd->next) {
 		if (pcb_drc_query_rule_by_name(nd->name, &dst, 1) == 0) {
