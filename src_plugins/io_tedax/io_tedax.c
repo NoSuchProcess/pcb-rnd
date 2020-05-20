@@ -41,6 +41,7 @@
 #include <librnd/core/hid.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
 #include "plug_io.h"
 #include "stackup.h"
 #include "tlayer.h"
@@ -195,9 +196,37 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	RND_ACT_FAIL(LoadtedaxFrom);
 }
 
+int pcb_io_tedax_test_parse(pcb_plug_io_t *plug_ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f);
+
+static const char pcb_acts_TedaxTestParse[] = "TedaxTestParse(filename|FILE*)";
+static const char pcb_acth_TedaxTestParse[] = "Returns 1 if the file looks like tEDAx (0 if not)";
+static fgw_error_t pcb_act_TedaxTestParse(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	if (argc < 2)
+		return -1;
+	if ((argv[1].type & FGW_STR) == FGW_STR) {
+		FILE *f = rnd_fopen(RND_ACT_HIDLIB, argv[1].val.str, "r");
+		if (f == NULL) {
+			RND_ACT_IRES(0);
+			return 0;
+		}
+		RND_ACT_IRES(pcb_io_tedax_test_parse(&io_tedax, 0, NULL, f));
+		fclose(f);
+		return 0;
+	}
+	else if (((argv[1].type & FGW_PTR) == FGW_PTR)) {
+		if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], RND_PTR_DOMAIN_FILE_PTR))
+			return FGW_ERR_PTR_DOMAIN;
+		RND_ACT_IRES(pcb_io_tedax_test_parse(&io_tedax, 0, NULL, argv[1].val.ptr_void));
+		return 0;
+	}
+	return FGW_ERR_ARG_CONV;
+}
+
 rnd_action_t tedax_action_list[] = {
 	{"LoadTedaxFrom", pcb_act_LoadtedaxFrom, pcb_acth_LoadtedaxFrom, pcb_acts_LoadtedaxFrom},
-	{"SaveTedax", pcb_act_Savetedax, pcb_acth_Savetedax, pcb_acts_Savetedax}
+	{"SaveTedax", pcb_act_Savetedax, pcb_acth_Savetedax, pcb_acts_Savetedax},
+	{"TedaxTestParse", pcb_act_TedaxTestParse, pcb_acth_TedaxTestParse, pcb_acts_TedaxTestParse}
 };
 
 static int io_tedax_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, const char *subfpname)
