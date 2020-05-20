@@ -61,6 +61,19 @@ static int fnc_distance(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb
 	PCB_QRY_RET_INV(res);
 }
 
+static int fnc_abs(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	if (argc == 1) {
+		switch(argv[0].type) {
+			case PCBQ_VT_COORD: PCB_QRY_RET_COORD(res, RND_ABS(argv[0].data.crd));
+			case PCBQ_VT_LONG: PCB_QRY_RET_INT(res, RND_ABS(argv[0].data.lng));
+			case PCBQ_VT_DOUBLE: PCB_QRY_RET_DBL(res, RND_ABS(argv[0].data.dbl));
+			default: break;
+		}
+	}
+	PCB_QRY_RET_INV(res);
+}
+
 #include "fnc_glue.c"
 #include "fnc_list.c"
 #include "fnc_geo.c"
@@ -68,6 +81,7 @@ static int fnc_distance(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb
 void pcb_qry_basic_fnc_init(void)
 {
 	pcb_qry_fnc_reg("llen", fnc_llen);
+	pcb_qry_fnc_reg("abs", fnc_abs);
 	pcb_qry_fnc_reg("distance", fnc_distance);
 	pcb_qry_fnc_reg("mklist", fnc_mklist);
 	pcb_qry_fnc_reg("violation", fnc_violation);
