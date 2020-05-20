@@ -82,3 +82,43 @@ static int drc_query_lht_save_rule(rnd_hidlib_t *hl, const char *fn, const char 
 
 	return res;
 }
+
+static int drc_query_lht_load_rules(rnd_hidlib_t *hl, const char *fn)
+{
+	FILE *f;
+	lht_doc_t *doc;
+	lht_node_t *ndefs, *nrules;
+
+	f = rnd_fopen(hl, fn, "r");
+	if (f == NULL)
+		return -1;
+
+	doc = lht_dom_load_stream(f, fn, NULL);
+	fclose(f);
+	if (doc == NULL)
+		return -1;
+
+	if ((doc->root->type != LHT_LIST) || (strcmp(doc->root->name, "pcb-rnd-drc-query-v1")))
+		goto error;
+
+	ndefs = doc->root->data.list.first;
+	if (ndefs == NULL)
+		goto error;
+	nrules = ndefs->next;
+	if (nrules == NULL)
+		goto error;
+
+	if ((ndefs->type != LHT_LIST) || (strcmp(ndefs->name, "definitions")))
+		goto error;
+	if ((nrules->type != LHT_LIST) || (strcmp(nrules->name, "rules")))
+		goto error;
+
+rnd_trace("defs and rules found\n");
+
+	return 0;
+
+	error:;
+	lht_dom_uninit(doc);
+	return -1;
+}
+

@@ -737,7 +737,8 @@ static fgw_error_t pcb_act_DrcQueryImport(fgw_arg_t *res, int argc, fgw_arg_t *a
 		sep++;
 		switch(*sep) {
 			case 't': case 'T': ires = rnd_actionva(hl, "loadtedaxfrom", "drc_query", fn, "", "0", NULL); break;
-			case 'l': case 'L': rnd_message(RND_MSG_ERROR, "Can not load in format '%s'\n", sep); ires = -1; break;
+			case 'l': case 'L': ires = drc_query_lht_load_rules(hl, fn); break;
+			default: rnd_message(RND_MSG_ERROR, "Can not load in format '%s'\n", sep); ires = -1; break;
 		}
 	}
 
