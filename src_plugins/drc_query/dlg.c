@@ -36,6 +36,7 @@
 #define PCB dont_use
 
 static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row);
+static void drc_dlist_pcb2dlg(void);
 
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
@@ -526,6 +527,7 @@ static void rlist_btn_import_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 
 	rnd_actionva(&pcb->hidlib, "DrcQueryImport", NULL);
 	drc_rlist_pcb2dlg();
+	drc_dlist_pcb2dlg();
 }
 
 
