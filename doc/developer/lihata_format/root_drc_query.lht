@@ -1,0 +1,41 @@
+ha:lht_tree_doc { ha:roots {
+
+	ha:pcb-rnd-drc-query-v* {
+		type=ha
+		desc={pcb-rnd drc_query script}
+		li:children {
+			ha:defs {
+				type=li
+				desc={Definitions of user tunable constants}
+				li:children {
+					ha:name {
+						type=ha
+						desc={each entry is identified by an unique name}
+						li:children {
+							ha:default      { valtype=string; desc={default value} }
+							ha:type         { valtype=string; desc={data type of the constant (a valid conf system type name, e.g. real, coord)} }
+							ha:desc         { valtype=string; desc={human readable description of the purpose of the constant} }
+						}
+					}
+				}
+			}
+			ha:rules {
+				type=li
+				desc={DRC rules}
+				li:children {
+					ha:name {
+						type=ha
+						desc={each entry is identified by an unique name}
+						li:children {
+							ha:type         { valtype=string; desc={violation type (for grouping violations in the drc report)} }
+							ha:title        { valtype=string; desc={title (short summary) of the violation} }
+							ha:desc         { valtype=string; desc={human readable description of the violation, with hints on how to resolve it} }
+							ha:query        { valtype=string; desc={query script to execute for finding violations} }
+						}
+					}
+				}
+			}
+		}
+	}
+
+}}

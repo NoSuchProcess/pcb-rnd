@@ -101,6 +101,23 @@
 <tr id="/lht_tree_doc/roots/pcb-rnd-conf-v1/children/prepend"><td> &nbsp;ha:prepend <td> &nbsp; <td> &nbsp; <td> prepend values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>
 <tr id="/lht_tree_doc/roots/pcb-rnd-conf-v1/children/append"><td> &nbsp;ha:append <td> &nbsp; <td> &nbsp; <td> append values while merging; children: a full or partial <a href="../../conf/groups.html#tree">config tree</a>
 </table>
+<h3 id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*">ha:pcb-rnd-drc-query-v*</h3>
+<p>
+<table border=0 cellspacing=0>
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*"><td> ha:pcb-rnd-drc-query-v* <td> &nbsp; <td> &nbsp; <td> pcb-rnd drc_query script
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*/children/defs"><td> &nbsp;li:defs <td> &nbsp; <td> &nbsp; <td> Definitions of user tunable constants
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*/children/defs/children/name"><td> &nbsp;&nbsp;ha:name <td> &nbsp; <td> &nbsp; <td> each entry is identified by an unique name
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*/children/defs/children/name/children/default"><td> &nbsp;&nbsp;&nbsp;default <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> default value
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*/children/defs/children/name/children/type"><td> &nbsp;&nbsp;&nbsp;type <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> data type of the constant (a valid conf system type name, e.g. real, coord)
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*/children/defs/children/name/children/desc"><td> &nbsp;&nbsp;&nbsp;desc <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> human readable description of the purpose of the constant
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*/children/rules"><td> &nbsp;li:rules <td> &nbsp; <td> &nbsp; <td> DRC rules
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*/children/rules/children/name"><td> &nbsp;&nbsp;ha:name <td> &nbsp; <td> &nbsp; <td> each entry is identified by an unique name
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*/children/rules/children/name/children/type"><td> &nbsp;&nbsp;&nbsp;type <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> violation type (for grouping violations in the drc report)
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*/children/rules/children/name/children/title"><td> &nbsp;&nbsp;&nbsp;title <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> title (short summary) of the violation
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*/children/rules/children/name/children/desc"><td> &nbsp;&nbsp;&nbsp;desc <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> human readable description of the violation, with hints on how to resolve it
+<tr id="/lht_tree_doc/roots/pcb-rnd-drc-query-v*/children/rules/children/name/children/query"><td> &nbsp;&nbsp;&nbsp;query <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> query script to execute for finding violations
+</table>
 <h3 id="/lht_tree_doc/roots/pcb-rnd-font-v1">li:pcb-rnd-font-v1</h3>
 <p>
 <table border=0 cellspacing=0>
