@@ -5086,9 +5086,9 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h librnd/core/actions.h \
- librnd/core/compat_misc.h ../src_plugins/io_tedax/stackup.h \
- ../src_plugins/io_tedax/tlayer.h layer.h \
- ../src_plugins/io_tedax/tboard.h ../src_plugins/io_tedax/tdrc.h \
+ librnd/core/compat_misc.h librnd/core/safe_fs.h \
+ ../src_plugins/io_tedax/stackup.h ../src_plugins/io_tedax/tlayer.h \
+ layer.h ../src_plugins/io_tedax/tboard.h ../src_plugins/io_tedax/tdrc.h \
  ../src_plugins/io_tedax/tdrc_query.h ../src_plugins/io_tedax/tetest.h \
  ../src_plugins/io_tedax/tnetlist.h
 ../src_plugins/io_tedax/parse.o: ../src_plugins/io_tedax/parse.c \
