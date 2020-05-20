@@ -41,6 +41,7 @@
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/list_conf.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/safe_fs.h>
 
 #include "board.h"
 #include "drc.h"
@@ -648,6 +649,8 @@ static fgw_error_t pcb_act_DrcQueryDefMod(fgw_arg_t *res, int argc, fgw_arg_t *a
 	return 0;
 }
 
+#include "drc_lht.c"
+
 static const rnd_hid_fsd_filter_t *init_flt(const char **fmt)
 {
 	static const char *pat_tdx[] = {"*.tdx", NULL};
@@ -698,6 +701,7 @@ TODO("cleanup: fix format selection: generalize dlg_loadsave.c's subfmt code");
 
 	switch(*fmt) {
 		case 't': case 'T': ires = rnd_actionva(hl, "savetedax", "drc_query", fn, id, NULL); break;
+		case 'l': case 'L': ires = drc_query_lht_save_rule(hl, fn, id); break;
 		default: rnd_message(RND_MSG_ERROR, "Can not save in format '%s'\n", fmt); ires = -1; break;
 	}
 
