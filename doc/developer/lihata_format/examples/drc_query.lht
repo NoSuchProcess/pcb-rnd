@@ -1,0 +1,22 @@
+li:pcb-rnd-drc-query-v1 {
+ li:definitions {
+  ha:hole_overlap_factor {
+   default = 0.0
+   type = real
+   desc = {How much drilled holes may overlap [-1..+1]; 0 means touching holes are reported; positive numbers allow more overlap, negative numbers report non-overlapping but close holes}
+  }
+ }
+ li:rules {
+  ha:hole_overlap {
+   type = pair hole
+   title = overlapping holes
+   desc = padstack holes overlap
+   query = {
+rule overlap
+let A @.type==PSTK
+let B A
+assert (A.IID > B.IID) && (distance(A.x, A.y, B.x, B.y) < (A.hole + B.hole)/(2*(1+$hole_overlap_factor))) thus violation(DRCGRP1, A, DRCGRP2, B, DRCMEASURE, distance(A.x, A.y, B.x, B.y), DRCEXPECT, (A.hole + B.hole)/(2*(1+$hole_overlap_factor)))
+						}
+  }
+ }
+}
