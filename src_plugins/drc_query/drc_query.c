@@ -717,8 +717,10 @@ static fgw_error_t pcb_act_DrcQueryImport(fgw_arg_t *res, int argc, fgw_arg_t *a
 {
 	int ires = 0;
 	const char *fn = NULL, *fmt;
-	char *autofree = NULL, *sep;
+	char *autofree = NULL;
 	rnd_hidlib_t *hl = RND_ACT_HIDLIB;
+	FILE *f;
+	fgw_arg_t args[2], tpres;
 	const rnd_hid_fsd_filter_t *flt = init_flt(&fmt);
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, DrcQueryExport, fn = argv[1].val.str);
@@ -729,19 +731,29 @@ static fgw_error_t pcb_act_DrcQueryImport(fgw_arg_t *res, int argc, fgw_arg_t *a
 			NULL, ext, flt, "drc_query", RND_HID_FSD_READ, NULL);
 		if (fn == NULL)
 			return -1;
-
 	}
 
-	TODO("don't decide by file name, do a test-read of some sort");
-	sep = strrchr(fn, '.');
-	if (sep != NULL) {
-		sep++;
-		switch(*sep) {
-			case 't': case 'T': ires = rnd_actionva(hl, "loadtedaxfrom", "drc_query", fn, "", "0", NULL); break;
-			case 'l': case 'L': ires = drc_query_lht_load_rules(hl, fn); break;
-			default: rnd_message(RND_MSG_ERROR, "Can not load in format '%s'\n", sep); ires = -1; break;
-		}
+
+	/* figure the format and load */
+	f = rnd_fopen(hl, fn, "r");
+	if (f == NULL)
+		return -1;
+
+	fgw_ptr_reg(&rnd_fgw, &args[1], RND_PTR_DOMAIN_FILE_PTR, FGW_PTR | FGW_STRUCT, f);
+
+	if ((rnd_actionv_bin(hl, "tedaxtestparse", &tpres, 2, args) == 0) && (tpres.type == FGW_INT) && (tpres.val.nat_int == 1)) {
+		ires = rnd_actionva(hl, "loadtedaxfrom", "drc_query", fn, "", "0", NULL);
+		goto done;
 	}
+
+	/* To check another format: rewind(f) and repeat the above if() */
+
+	/* fallback: io_lihata */
+	ires = drc_query_lht_load_rules(hl, fn);
+
+	done:;
+	fgw_ptr_unreg(&rnd_fgw, &args[1], RND_PTR_DOMAIN_FILE_PTR);
+	fclose(f);
 
 	if (ires == 0)
 		pcb_board_set_changed_flag(rnd_true);
