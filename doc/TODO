@@ -20,7 +20,6 @@
 - BUG: propedit: padstack prototype shoudln't be coord but int [report: Igor2]
 - ANNOUNCE: deprecation: bgimage
 - ANNOUNCE: drc_zone_clr
-- ANNOUNCE: drc_query script import/export in tdx and lht and pool node
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
