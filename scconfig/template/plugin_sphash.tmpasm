@@ -26,7 +26,7 @@ switch ?/local/pcb/mod/SPHASH
 			append /local/pcb/RULES [@
 # sphash for @/local/pcb/mod@
 @/local/bn@_sphash.c @/local/bn@_sphash.h: $(SPHASH) @/local/n@
-	$(SPHASH) @/local/aux@ --prefix @/local/pcb/mod@_@/local/pr@ --out @/local/bn@_sphash @/local/pcb/mod/SPHASH_ARGS@ < @/local/n@
+	$(SPHASH) @/local/aux@ --prefix @/local/pcb/mod@_@/local/pr@ --out @/local/bn@_sphash @?/local/pcb/mod/SPHASH_ARGS@ < @/local/n@
 @]
 			append /local/pcb/CLEANFILES [@@/local/bn@_sphash.c@]
 			append /local/pcb/CLEANFILES [@@/local/bn@_sphash.h@]
