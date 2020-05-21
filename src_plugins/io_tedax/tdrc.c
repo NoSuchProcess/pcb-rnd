@@ -39,21 +39,26 @@
 #include <librnd/core/error.h>
 #include "tdrc.h"
 
+/* Old, hardwired or stock rules - so there's no interference with user
+   settings */
 typedef struct {
-	const char *conf;    /* full path in the conf */
+	const char *oconf;   /* full path in the conf - old drc for compatibility */
+	const char *nconf;   /* full path in the conf - new drc (drc_query) */
 	const char *ttype;   /* tEDAx layer type */
 	const char *tkind;   /* tEDAx layer kind */
 } drc_rule_t;
 
-static const drc_rule_t rules[] = {
-	{"design/bloat",     "copper", "gap"},
-	{"design/shrink",    "copper", "overlap"},
-	{"design/min_wid",   "copper", "min_size"},
-	{"design/min_slk",   "silk",   "min_size"},
-	{"design/min_drill", "mech",   "min_size"},
+#define QDRC "plugins/drc_query/definitions/"
+
+static const drc_rule_t stock_rules[] = {
+	{"design/bloat",     QDRC "min_copper_clearance", "copper", "gap"},
+	{"design/shrink",    QDRC "min_copper_overlap",   "copper", "overlap"},
+	{"design/min_wid",   QDRC "min_copper_thickness", "copper", "min_size"},
+	{"design/min_slk",   QDRC "min_silk_thickness",   "silk",   "min_size"},
+	{"design/min_drill", QDRC "min_drill",            "mech",   "min_size"},
 };
 
-#define NUM_RULES (sizeof(rules) / sizeof(rules[0]))
+#define NUM_STOCK_RULES (sizeof(stock_rules) / sizeof(stock_rules[0]))
 
 int tedax_drc_fsave(pcb_board_t *pcb, const char *drcid, FILE *f)
 {
@@ -64,11 +69,13 @@ int tedax_drc_fsave(pcb_board_t *pcb, const char *drcid, FILE *f)
 	tedax_fprint_escape(f, drcid);
 	fputc('\n', f);
 
-	for(n = 0, r = rules; n < NUM_RULES; r++,n++) {
-		rnd_conf_native_t *nat = rnd_conf_get_field(r->conf);
+	for(n = 0, r = stock_rules; n < NUM_STOCK_RULES; r++,n++) {
+		rnd_conf_native_t *nat;
+		nat = rnd_conf_get_field(r->nconf);
 		if ((nat == NULL) || (nat->prop->src == NULL))
-			continue;
-		rnd_fprintf(f, " rule all %s %s %.06mm pcb_rnd_old_drc_from_conf\n", r->ttype, r->tkind, nat->val.coord[0]);
+			nat = rnd_conf_get_field(r->oconf);
+		if ((nat != NULL) && (nat->prop->src != NULL))
+			rnd_fprintf(f, " rule all %s %s %.06mm pcb_rnd_old_drc_from_conf\n", r->ttype, r->tkind, nat->val.coord[0]);
 	}
 
 	fprintf(f, "end drc\n");
@@ -96,7 +103,7 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 	const drc_rule_t *r;
 	char line[520], *argv[16];
 	int argc, n;
-	rnd_coord_t val[NUM_RULES] = {0};
+	rnd_coord_t val[NUM_STOCK_RULES] = {0};
 
 	if (tedax_seek_hdr(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
@@ -107,7 +114,7 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 	while((argc = tedax_getline(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
 		if (strcmp(argv[0], "rule") == 0) {
 			double d;
-			for(n = 0, r = rules; n < NUM_RULES; r++,n++) {
+			for(n = 0, r = stock_rules; n < NUM_STOCK_RULES; r++,n++) {
 				rnd_bool succ;
 				if ((strcmp(argv[2], r->ttype) != 0) || (strcmp(argv[3], r->tkind) != 0))
 					continue;
@@ -126,8 +133,10 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 			rnd_message(RND_MSG_ERROR, "ignoring invalid command in drc %s\n", argv[0]);
 	}
 
-	for(n = 0, r = rules; n < NUM_RULES; r++,n++)
-		rnd_conf_setf(RND_CFR_DESIGN, r->conf, -1, "%$mm", val[n]);
+	for(n = 0, r = stock_rules; n < NUM_STOCK_RULES; r++,n++) {
+		rnd_conf_setf(RND_CFR_DESIGN, r->oconf, -1, "%$mm", val[n]);
+		rnd_conf_setf(RND_CFR_DESIGN, r->nconf, -1, "%$mm", val[n]);
+	}
 	return 0;
 }
 
