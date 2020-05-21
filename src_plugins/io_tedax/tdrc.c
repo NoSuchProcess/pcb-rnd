@@ -98,6 +98,25 @@ int tedax_drc_save(pcb_board_t *pcb, const char *drcid, const char *fn)
 	return res;
 }
 
+static int load_stock_rule(char *argv[], double d, rnd_coord_t *val)
+{
+	const drc_rule_t *r;
+	int n;
+
+	for(n = 0, r = stock_rules; n < NUM_STOCK_RULES; r++,n++) {
+		if ((strcmp(argv[2], r->ttype) != 0) || (strcmp(argv[3], r->tkind) != 0))
+			continue;
+		val[n] = d;
+		return 0;
+	}
+	return -1;
+}
+
+static void load_drc_query_rule(char *argv[], double d)
+{
+
+}
+
 int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 {
 	const drc_rule_t *r;
@@ -112,20 +131,15 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 		return -1;
 
 	while((argc = tedax_getline(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
-		if (strcmp(argv[0], "rule") == 0) {
-			double d;
-			for(n = 0, r = stock_rules; n < NUM_STOCK_RULES; r++,n++) {
-				rnd_bool succ;
-				if ((strcmp(argv[2], r->ttype) != 0) || (strcmp(argv[3], r->tkind) != 0))
-					continue;
-				d = rnd_get_value(argv[4], "mm", NULL, &succ);
-				if (succ) {
-					if (d > val[n])
-						val[n] = d;
-				}
-				else
-					rnd_message(RND_MSG_ERROR, "ignoring invalid numeric value '%s'\n", argv[4]);
+		if ((strcmp(argv[0], "rule") == 0) && (argc > 4)) {
+			rnd_bool succ;
+			double d = rnd_get_value(argv[4], "mm", NULL, &succ);
+			if (succ) {
+				if (load_stock_rule(argv, d, val) != 0)
+					load_drc_query_rule(argv, d);
 			}
+			else
+				rnd_message(RND_MSG_ERROR, "ignoring invalid numeric value '%s'\n", argv[4]);;
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "drc") == 0))
 			break;
@@ -134,8 +148,10 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 	}
 
 	for(n = 0, r = stock_rules; n < NUM_STOCK_RULES; r++,n++) {
-		rnd_conf_setf(RND_CFR_DESIGN, r->oconf, -1, "%$mm", val[n]);
-		rnd_conf_setf(RND_CFR_DESIGN, r->nconf, -1, "%$mm", val[n]);
+		if (val[n] > 0) {
+			rnd_conf_setf(RND_CFR_DESIGN, r->oconf, -1, "%$mm", val[n]);
+			rnd_conf_setf(RND_CFR_DESIGN, r->nconf, -1, "%$mm", val[n]);
+		}
 	}
 	return 0;
 }
