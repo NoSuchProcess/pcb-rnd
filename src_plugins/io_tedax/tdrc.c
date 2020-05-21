@@ -39,6 +39,7 @@
 #include <librnd/core/error.h>
 #include "tdrc.h"
 #include "tdrc_query.h"
+#include "tdrc_keys_sphash.h"
 
 
 #define SOURCE "tedax_drc"
@@ -141,7 +142,7 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 			rnd_bool succ;
 			double d = rnd_get_value(argv[4], "mm", NULL, &succ);
 			if (succ) {
-				if ((stcmp(argv[1], "all") != 0) || (load_stock_rule(argv, d, val) != 0))
+				if ((strcmp(argv[1], "all") != 0) || (load_stock_rule(argv, d, val) != 0))
 					load_drc_query_rule(argv, d);
 			}
 			else

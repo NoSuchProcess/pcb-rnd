@@ -136,6 +136,7 @@ put /local/pcb/mod/LEX {}
 put /local/pcb/mod/BYACCIC {}
 put /local/pcb/mod/UREGLEX {}
 put /local/pcb/mod/SPHASH {}
+put /local/pcb/mod/SPHASH_ARGS {}
 put /local/pcb/mod/CLEANFILES {}
 put /local/pcb/mod/DISTCLEANFILES {}
 put /local/pcb/mod {}

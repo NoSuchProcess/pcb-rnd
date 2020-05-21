@@ -12,6 +12,9 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_tedax/parse.o
 @]
 
+put /local/pcb/mod/SPHASH  {$(PLUGDIR)/io_tedax/tdrc_keys.sphash}
+put /local/pcb/mod/SPHASH_ARGS {--multi}
+
 switch /local/pcb/io_tedax/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;

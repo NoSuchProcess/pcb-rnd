@@ -5150,7 +5150,7 @@
  plug_io.h vtlibrary.h ../src_3rd/genvector/vts0.h \
  ../src_plugins/io_tedax/tdrc.h ../src_plugins/io_tedax/tlayer.h layer.h \
  obj_pstk.h librnd/core/compat_misc.h ../src_plugins/io_tedax/tnetlist.h
-../src_plugins/io_tedax/tdrc.o: ../src_plugins/io_tedax/tdrc.c \
+../src_plugins/io_tedax/tdrc.o: ../src_plugins/io_tedax/tdrc.c ../src_plugins/io_tedax/tdrc_keys_sphash.h \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
