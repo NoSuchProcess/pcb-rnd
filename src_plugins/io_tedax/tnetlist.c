@@ -279,6 +279,7 @@ int tedax_net_and_drc_load(const char *fname_net, int import_fp, int silent)
 
 	ret = tedax_net_fload(fn, import_fp, NULL, silent);
 	rewind(fn);
+	tedax_drc_query_rule_clear(PCB, "netlist");
 	ret |= tedax_drc_query_fload(PCB, fn, NULL, "netlist", silent);
 
 	fclose(fn);

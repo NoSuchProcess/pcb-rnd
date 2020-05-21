@@ -44,6 +44,12 @@
 #define RULEMOD "DrcQueryRuleMod"
 #define DEFMOD "DrcQueryDefMod"
 
+int tedax_drc_query_rule_clear(pcb_board_t *pcb, const char *target_src)
+{
+	rnd_actionva(&pcb->hidlib, RULEMOD, "set", "clear", target_src, NULL);
+	rnd_actionva(&pcb->hidlib, DEFMOD, "set", "clear", target_src, NULL);
+}
+
 int tedax_drc_query_rule_parse(pcb_board_t *pcb, FILE *f, const char *src, char *rule_name)
 {
 	int argc;
