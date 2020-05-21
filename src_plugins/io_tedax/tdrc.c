@@ -38,6 +38,10 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/error.h>
 #include "tdrc.h"
+#include "tdrc_query.h"
+
+
+#define SOURCE "tedax_drc"
 
 /* Old, hardwired or stock rules - so there's no interference with user
    settings */
@@ -114,7 +118,7 @@ static int load_stock_rule(char *argv[], double d, rnd_coord_t *val)
 
 static void load_drc_query_rule(char *argv[], double d)
 {
-
+	
 }
 
 int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
@@ -130,12 +134,14 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 	if ((argc = tedax_seek_block(f, "drc", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) < 1)
 		return -1;
 
+	tedax_drc_query_rule_clear(pcb, SOURCE);
+
 	while((argc = tedax_getline(f, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
 		if ((strcmp(argv[0], "rule") == 0) && (argc > 4)) {
 			rnd_bool succ;
 			double d = rnd_get_value(argv[4], "mm", NULL, &succ);
 			if (succ) {
-				if (load_stock_rule(argv, d, val) != 0)
+				if ((stcmp(argv[1], "all") != 0) || (load_stock_rule(argv, d, val) != 0))
 					load_drc_query_rule(argv, d);
 			}
 			else

@@ -9,3 +9,6 @@ int tedax_drc_query_rule_fsave(pcb_board_t *pcb, const char *ruleid, FILE *f, rn
 
 /* clear all rules and defs with source matching target_src */
 int tedax_drc_query_rule_clear(pcb_board_t *pcb, const char *target_src);
+
+#define RULEMOD "DrcQueryRuleMod"
+#define DEFMOD "DrcQueryDefMod"
