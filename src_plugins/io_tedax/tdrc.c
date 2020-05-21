@@ -37,6 +37,7 @@
 #include "parse.h"
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/error.h>
+#include <librnd/core/actions.h>
 #include "tdrc.h"
 #include "tdrc_query.h"
 #include "tdrc_keys_sphash.h"
@@ -117,9 +118,129 @@ static int load_stock_rule(char *argv[], double d, rnd_coord_t *val)
 	return -1;
 }
 
-static void load_drc_query_rule(char *argv[], double d)
+static const char *op_title(int op)
 {
-	
+	switch(op) {
+		case io_tedax_tdrc_keys_op_min_object_around_cut:  return "min. object around cut";
+		case io_tedax_tdrc_keys_op_min_dist_from_boundary: return "min. distance from boundary";
+		case io_tedax_tdrc_keys_op_overlap:                return "min. object overlap";
+		case io_tedax_tdrc_keys_op_gap:                    return "min. object gap";
+		case io_tedax_tdrc_keys_op_max_size:               return "max. object size";
+		case io_tedax_tdrc_keys_op_min_size:               return "min. object size";
+	}
+	return NULL;
+}
+
+static char *op_cond(int op, const char **listing, const char *defid)
+{
+	*listing = "";
+	switch(op) {
+		case io_tedax_tdrc_keys_op_min_object_around_cut:
+			return NULL;
+		case io_tedax_tdrc_keys_op_min_dist_from_boundary:
+			*listing = "let B ((@.layer.type == MECH) || (@.layer.type == BOUNDARY)) thus @\n";
+			return rnd_strdup_printf("(overlap(@, B, $%s)) thus violation(DRCGRP1, @, DRCGRP2, B, DRCEXPECT, $%s)", defid, defid);
+		case io_tedax_tdrc_keys_op_overlap:
+			*listing = "let B @\n";
+			return rnd_strdup_printf("(@.IID < B.IID) && intersect(@, B) && (@.netname == B.netname) && (!intersect(@, B, -$%s)) thus violation(DRCGRP1, @, DRCGRP2, B, DRCEXPECT, $%s)", defid, defid);
+		case io_tedax_tdrc_keys_op_gap:
+			*listing = "let B @\n";
+			return rnd_strdup_printf("(@.IID < B.IID) && (@.netname != B.netname) && intersect(@, B, $%s) thus violation(DRCGRP1, @, DRCGRP2, B, DRCEXPECT, $%s)", defid, defid);
+		case io_tedax_tdrc_keys_op_max_size:
+			return rnd_strdup_printf("(@.thickness > $%s)", defid);
+		case io_tedax_tdrc_keys_op_min_size:
+			return rnd_strdup_printf("(@.thickness != 0) && (@.thickness < $%s)", defid);
+	}
+	return NULL;
+}
+
+static const char *type_cond(int type)
+{
+	switch(type) {
+		case io_tedax_tdrc_keys_type_all:    return "";
+		case io_tedax_tdrc_keys_type_mech:   return "(@.layer.type == MECH) && ";
+		case io_tedax_tdrc_keys_type_vcut:   return "((@.layer.type == MECH) || (@.layer.type == BOUNDARY)) && (@.layer.purpoe == \"vcut\") && ";
+		case io_tedax_tdrc_keys_type_umech:  return "((@.layer.type == MECH) || (@.layer.type == BOUNDARY)) && (@.layer.purpoe ~ \"^u\") && ";
+		case io_tedax_tdrc_keys_type_pmech:  return "((@.layer.type == MECH) || (@.layer.type == BOUNDARY)) && (@.layer.purpoe ~ \"^p\") && ";
+		case io_tedax_tdrc_keys_type_paste:  return "(@.layer.type == PASTE) && ";
+		case io_tedax_tdrc_keys_type_mask:   return "(@.layer.type == MASK) && ";
+		case io_tedax_tdrc_keys_type_silk:   return "(@.layer.type == SILK) && ";
+		case io_tedax_tdrc_keys_type_copper: return "(@.layer.type == COPPER) && ";
+	}
+	return NULL;
+}
+
+static const char *loc_cond(int loc)
+{
+	switch(loc) {
+		case io_tedax_tdrc_keys_loc_all:    return "";
+		case io_tedax_tdrc_keys_loc_outer:  return "((@.layer.position == TOP) || (@.layer.position == BOTTOM)) && ";
+		case io_tedax_tdrc_keys_loc_inner:  return "(@.layer.position == INTERN) && ";
+		case io_tedax_tdrc_keys_loc_bottom: return "(@.layer.position == BOTTOM) && ";
+		case io_tedax_tdrc_keys_loc_top:    return "(@.layer.position == TOP) && ";
+	}
+	return NULL;
+}
+
+static void reg_def_rule(pcb_board_t *pcb, const char *id, const char *title, const char *type, const char *query)
+{
+	rnd_actionva(&pcb->hidlib, RULEMOD, "create", id, NULL);
+	rnd_actionva(&pcb->hidlib, RULEMOD, "set", id, "title", title, NULL);
+	rnd_actionva(&pcb->hidlib, RULEMOD, "set", id, "type", type, NULL);
+	rnd_actionva(&pcb->hidlib, RULEMOD, "set", id, "query", query, NULL);
+
+	rnd_actionva(&pcb->hidlib, DEFMOD, "create", id, NULL);
+	rnd_actionva(&pcb->hidlib, DEFMOD, "set", id, "title", title, NULL);
+	rnd_actionva(&pcb->hidlib, DEFMOD, "set", id, "type", type, NULL);
+	rnd_actionva(&pcb->hidlib, DEFMOD, "set", id, "query", query, NULL);
+}
+
+static void load_drc_query_rule(pcb_board_t *pcb, char *argv[], double d, int loc)
+{
+	int op = io_tedax_tdrc_keys_sphash(argv[3]);
+	const char *title = op_title(op), *clisting;
+	char *sop, *defid, *stype = NULL, *query = NULL;
+
+	if (title == NULL) {
+		rnd_message(RND_MSG_ERROR, "tedax_drc_load(): invalid rule op: '%s'\n", argv[3]);
+		return;
+	}
+	defid = rnd_concat("tedax_", argv[1], "_", argv[2], "_", argv[3], NULL);
+	sop = op_cond(op, &clisting, defid);
+	if (sop == NULL) {
+		rnd_message(RND_MSG_ERROR, "tedax_drc_load(): can not apply op: '%s'\n", argv[3]);
+		free(defid);
+		return;
+	}
+
+	if (loc != io_tedax_tdrc_keys_loc_named) {
+		int type = io_tedax_tdrc_keys_sphash(argv[2]);
+		const char *ctype = type_cond(type);
+		const char *cloc = loc_cond(loc);
+
+		if (ctype == NULL) {
+			rnd_message(RND_MSG_ERROR, "tedax_drc_load(): invalid layer type: '%s'\n", argv[2]);
+			return;
+		}
+
+		if (cloc == NULL) {
+			rnd_message(RND_MSG_ERROR, "tedax_drc_load(): invalid location: '%s'\n", argv[1]);
+			return;
+		}
+
+		stype = rnd_concat(argv[1], " ", argv[2], " ", argv[3], NULL);
+		query = rnd_concat("rule tedax\n", clisting, "assert ", ctype, cloc, sop, "\n", NULL);
+		reg_def_rule(pcb, defid, title, stype, query);
+	}
+	else {
+		stype = rnd_concat("name ", argv[2], " ", argv[3], NULL);
+		query = rnd_strdup_printf("rule tedax\n%sassert (@.layer.name == \"%s\") && %s\n", clisting, argv[2], sop);
+		reg_def_rule(pcb, defid, title, stype, query);
+	}
+	free(sop);
+	free(query);
+	free(stype);
+	free(defid);
 }
 
 int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
@@ -142,8 +263,9 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 			rnd_bool succ;
 			double d = rnd_get_value(argv[4], "mm", NULL, &succ);
 			if (succ) {
-				if ((strcmp(argv[1], "all") != 0) || (load_stock_rule(argv, d, val) != 0))
-					load_drc_query_rule(argv, d);
+				int loc = io_tedax_tdrc_keys_sphash(argv[1]);
+				if ((loc != io_tedax_tdrc_keys_loc_all) || (load_stock_rule(argv, d, val) != 0))
+					load_drc_query_rule(pcb, argv, d, loc);
 			}
 			else
 				rnd_message(RND_MSG_ERROR, "ignoring invalid numeric value '%s'\n", argv[4]);;
