@@ -194,6 +194,7 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 		ret = pcb_qry_run_(ec, prg, 1, 0, cb, user_ctx);
 	}
 	else if (prg->type == PCBQ_RULE) {
+		while(prg != NULL) {
 		pcb_qry_node_t *n;
 
 		/* execute 'let' statements first */
@@ -221,6 +222,8 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 				default:;
 			}
 		}
+		prg = prg->next;
+	}
 	}
 	else
 		ret = -1;
