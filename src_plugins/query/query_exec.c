@@ -194,36 +194,36 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 		ret = pcb_qry_run_(ec, prg, 1, 0, cb, user_ctx);
 	}
 	else if (prg->type == PCBQ_RULE) {
-		while(prg != NULL) {
-		pcb_qry_node_t *n;
+		while(prg != NULL) { /* execute a list of rules */
+			pcb_qry_node_t *n;
 
-		/* execute 'let' statements first */
-		for(n = prg->data.children->next->next; n != NULL; n = n->next) {
-			if (n->type == PCBQ_LET)
-				pcb_qry_let(ec, n);
-		}
-
-		for(n = prg->data.children->next->next; n != NULL; n = n->next) {
-			switch(n->type) {
-				case PCBQ_LET: break;
-				case PCBQ_ASSERT:
-					ec->root = n;
-					if (ec->iter != NULL)
-						ec->iter->it_active = n->precomp.it_active;
-					r = pcb_qry_run_(ec, n->data.children, 1, 0, cb, user_ctx);
-					if (ec->iter != NULL)
-						ec->iter->it_active = NULL;
-					if (r < 0)
-						ret = r;
-					else if (ret >= 0)
-						ret += r;
-					ec->root = NULL;
-					break;
-				default:;
+			/* execute 'let' statements first */
+			for(n = prg->data.children->next->next; n != NULL; n = n->next) {
+				if (n->type == PCBQ_LET)
+					pcb_qry_let(ec, n);
 			}
+
+			for(n = prg->data.children->next->next; n != NULL; n = n->next) {
+				switch(n->type) {
+					case PCBQ_LET: break;
+					case PCBQ_ASSERT:
+						ec->root = n;
+						if (ec->iter != NULL)
+							ec->iter->it_active = n->precomp.it_active;
+						r = pcb_qry_run_(ec, n->data.children, 1, 0, cb, user_ctx);
+						if (ec->iter != NULL)
+							ec->iter->it_active = NULL;
+						if (r < 0)
+							ret = r;
+						else if (ret >= 0)
+							ret += r;
+						ec->root = NULL;
+						break;
+					default:;
+				}
+			}
+			prg = prg->next;
 		}
-		prg = prg->next;
-	}
 	}
 	else
 		ret = -1;
