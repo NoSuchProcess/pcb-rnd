@@ -686,6 +686,8 @@ static int pse_gen_shape(pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int shape,
 static void pse_drv_shape(pcb_pstk_proto_t *proto, pcb_pstk_tshape_t *ts, pcb_layer_type_t lyt, int paste)
 {
 	int srci = (lyt & PCB_LYT_TOP) ? 0 : 1;
+	if (srci >= proto->tr.array[0].len) srci--;
+	if ((srci < 0) || (srci >= proto->tr.array[0].len)) return;
 	pcb_pstk_shape_derive(proto, -1, srci, PCB_PROTO_MASK_BLOAT, lyt | PCB_LYT_MASK, PCB_LYC_SUB|PCB_LYC_AUTO);
 	if (paste)
 		pcb_pstk_shape_derive(proto, -1, srci, 0, lyt | PCB_LYT_PASTE, PCB_LYC_AUTO);
