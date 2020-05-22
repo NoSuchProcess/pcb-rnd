@@ -6,7 +6,6 @@
 + CLEANUP/BUG: bug_files/gtk_transient.txt: add config options on how gtk transient-for and (a new) raise should work [report: Bdale]
 + CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert]
 - FEATURE: make op change on enforce_clearance undoable [report: Igor2]
-- FEATURE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
 + FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
@@ -19,7 +18,7 @@
 - BUG: left/right/up/down keysjump to 0;0 on a fresh empty board [report: Igor2]
 - BUG: propedit: padstack prototype shoudln't be coord but int [report: Igor2]
 - ANNOUNCE: deprecation: bgimage
-- ANNOUNCE: drc_zone_clr
+- ANNOUNCE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
