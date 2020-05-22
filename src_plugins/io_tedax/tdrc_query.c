@@ -41,7 +41,7 @@
 #include <librnd/core/actions.h>
 #include "tdrc_query.h"
 
-int tedax_drc_query_rule_clear(pcb_board_t *pcb, const char *target_src)
+void tedax_drc_query_rule_clear(pcb_board_t *pcb, const char *target_src)
 {
 	rnd_actionva(&pcb->hidlib, RULEMOD, "clear", target_src, NULL);
 	rnd_actionva(&pcb->hidlib, DEFMOD, "clear", target_src, NULL);
