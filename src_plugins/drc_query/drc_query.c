@@ -203,6 +203,14 @@ static int *drc_get_disable(const char *name)
 	return nat->val.boolean;
 }
 
+typedef struct {
+	const char *name;
+	long script_total, script_at;
+	void *dialog;
+} drc_query_prog_t;
+
+static void drc_query_progress(pcb_qry_exec_t *ec, long at, long total);
+
 static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
@@ -211,12 +219,18 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_e
 	long cnt = 0;
 	int bufno = -1;
 	pcb_qry_exec_t ec;
-
+	drc_query_prog_t prog;
 
 	if (conf_drc_query.plugins.drc_query.disable)
 		return;
 
 	pcb_qry_init(&ec, pcb, NULL, bufno);
+	ec.progress_cb = drc_query_progress;
+	ec.progress_ctx = &prog;
+
+	prog.script_total = rnd_conflist_length(&conf_drc_query.plugins.drc_query.rules);
+	prog.script_at = 0;
+	prog.dialog = NULL;
 
 	rnd_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 		lht_node_t *rule = i->prop.src;
@@ -230,11 +244,15 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_e
 		if ((dis != NULL) && (*dis != 0))
 			continue;
 
+		prog.name = i->name;
 		cnt += drc_qry_exec(&ec, pcb, &pcb_drc_lst, i->name,
 			load_str(rule, i, "type"), load_str(rule, i, "title"), load_str(rule, i, "desc"),
 			load_str(rule, i, "query")
 		);
+		prog.script_at++;
 	}
+
+	drc_query_progress(&ec, -1, -1);
 
 	pcb_qry_uninit(&ec);
 	drc_rlist_pcb2dlg(); /* for the run time */

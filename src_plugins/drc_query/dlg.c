@@ -35,6 +35,87 @@
 
 #define PCB dont_use
 
+typedef struct{
+	RND_DAD_DECL_NOINIT(dlg)
+	drc_query_prog_t *prog;
+	int wname, wtotprog, wcurrprog;
+} progbar_t;
+
+static void drc_query_progress_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
+{
+	progbar_t *pb = caller_data;
+	pb->prog->dialog = NULL;
+	RND_DAD_FREE(pb->dlg);
+	free(pb);
+}
+
+void drc_query_progress_dlg(progbar_t *pb)
+{
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", 0}, {NULL, 0}};
+
+	RND_DAD_BEGIN_VBOX(pb->dlg);
+		RND_DAD_COMPFLAG(pb->dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_HBOX(pb->dlg);
+			RND_DAD_LABEL(pb->dlg, "DRC rule script:");
+			RND_DAD_LABEL(pb->dlg, "n/a");
+			pb->wname = RND_DAD_CURRENT(pb->dlg);
+		RND_DAD_END(pb->dlg);
+
+		RND_DAD_LABEL(pb->dlg, "Overall progress:");
+		RND_DAD_PROGRESS(pb->dlg);
+			pb->wtotprog = RND_DAD_CURRENT(pb->dlg);
+
+		RND_DAD_LABEL(pb->dlg, "Current execution progress:");
+		RND_DAD_PROGRESS(pb->dlg);
+			pb->wcurrprog = RND_DAD_CURRENT(pb->dlg);
+
+		RND_DAD_BUTTON_CLOSES(pb->dlg, clbtn);
+	RND_DAD_END(pb->dlg);
+
+	RND_DAD_DEFSIZE(pb->dlg, 200, 200);
+	RND_DAD_NEW("drc_query_progress", pb->dlg, "drc_query: DRC progress", pb, rnd_true, drc_query_progress_close_cb);
+}
+
+static void drc_query_progress(pcb_qry_exec_t *ec, long at, long total)
+{
+	drc_query_prog_t *prog = ec->progress_ctx;
+	progbar_t *pb = prog->dialog;
+	rnd_hid_attr_val_t hv;
+
+	if (!RND_HAVE_GUI_ATTR_DLG) {
+		fprintf(stderr, "DRC: %ld/%ld %s %ld/%ld\n", prog->script_at, prog->script_total, prog->name, at, total);
+		return;
+	}
+
+	if (total < 0) {
+		if (prog->dialog == NULL)
+			return;
+		RND_DAD_FREE(pb->dlg);
+		prog->dialog = NULL;
+		return;
+	}
+
+	if (prog->dialog == NULL) {
+		pb = calloc(sizeof(progbar_t), 1);
+		prog->dialog = pb;
+		pb->prog = prog;
+		drc_query_progress_dlg(pb);
+	}
+
+
+	hv.str = prog->name;
+	rnd_gui->attr_dlg_set_value(pb->dlg_hid_ctx, pb->wname, &hv);
+
+	hv.dbl = (double)prog->script_at / (double)prog->script_total;
+	rnd_gui->attr_dlg_set_value(pb->dlg_hid_ctx, pb->wtotprog, &hv);
+
+	hv.dbl = (double)at / (double)total;
+	rnd_gui->attr_dlg_set_value(pb->dlg_hid_ctx, pb->wcurrprog, &hv);
+
+	rnd_hid_iterate(rnd_gui);
+}
+
+
 static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row);
 static void drc_dlist_pcb2dlg(void);
 
