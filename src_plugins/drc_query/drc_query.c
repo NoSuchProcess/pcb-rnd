@@ -144,9 +144,17 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 	qctx->hit_cnt++;
 }
 
+typedef struct {
+	const char *name;
+	long script_total, script_at;
+	void *dialog;
+	drc_qry_ctx_t *qctx;
+} drc_query_prog_t;
+
 static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *lst, const char *name, const char *type, const char *title, const char *desc, const char *query)
 {
 	const char *scope = NULL;
+	drc_query_prog_t *prog = ec->progress_ctx;
 	drc_qry_ctx_t qctx;
 	pcb_drcq_stat_t *st;
 	double ts, te;
@@ -165,6 +173,7 @@ static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *
 	qctx.title = title;
 	qctx.desc = desc;
 	qctx.hit_cnt = 0;
+	prog->qctx = &qctx;
 
 	st = pcb_drcq_stat_get(name);
 
@@ -177,7 +186,7 @@ static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *
 	st->run_cnt++;
 	st->last_hit_cnt = qctx.hit_cnt;
 	st->sum_hit_cnt += qctx.hit_cnt;
-
+	prog->qctx =  0;
 	return 0;
 }
 
@@ -203,11 +212,6 @@ static int *drc_get_disable(const char *name)
 	return nat->val.boolean;
 }
 
-typedef struct {
-	const char *name;
-	long script_total, script_at;
-	void *dialog;
-} drc_query_prog_t;
 
 static void drc_query_progress(pcb_qry_exec_t *ec, long at, long total);
 

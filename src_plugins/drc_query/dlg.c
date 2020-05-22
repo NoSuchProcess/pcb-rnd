@@ -38,7 +38,7 @@
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	drc_query_prog_t *prog;
-	int wname, wtotprog, wcurrprog;
+	int wname, wtotprog, wcurrprog, wcnt;
 } progbar_t;
 
 static void drc_query_progress_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
@@ -69,6 +69,12 @@ void drc_query_progress_dlg(progbar_t *pb)
 		RND_DAD_PROGRESS(pb->dlg);
 			pb->wcurrprog = RND_DAD_CURRENT(pb->dlg);
 
+		RND_DAD_BEGIN_HBOX(pb->dlg);
+			RND_DAD_LABEL(pb->dlg, "Violatons so far:");
+			RND_DAD_LABEL(pb->dlg, "0");
+			pb->wcnt = RND_DAD_CURRENT(pb->dlg);
+		RND_DAD_END(pb->dlg);
+
 		RND_DAD_BUTTON_CLOSES(pb->dlg, clbtn);
 	RND_DAD_END(pb->dlg);
 
@@ -81,9 +87,14 @@ static void drc_query_progress(pcb_qry_exec_t *ec, long at, long total)
 	drc_query_prog_t *prog = ec->progress_ctx;
 	progbar_t *pb = prog->dialog;
 	rnd_hid_attr_val_t hv;
+	char tmp[128];
 
 	if (!RND_HAVE_GUI_ATTR_DLG) {
-		fprintf(stderr, "DRC: %ld/%ld %s %ld/%ld\n", prog->script_at, prog->script_total, prog->name, at, total);
+		fprintf(stderr, "DRC: %ld/%ld %s %ld/%ld", prog->script_at, prog->script_total, prog->name, at, total);
+		if (prog->qctx != NULL)
+			fprintf(stderr, " Violations: %ld\n", prog->qctx->hit_cnt);
+		else
+			fprintf(stderr, "\n");
 		return;
 	}
 
@@ -111,6 +122,12 @@ static void drc_query_progress(pcb_qry_exec_t *ec, long at, long total)
 
 	hv.dbl = (double)at / (double)total;
 	rnd_gui->attr_dlg_set_value(pb->dlg_hid_ctx, pb->wcurrprog, &hv);
+
+	if (prog->qctx != NULL) {
+		sprintf(tmp, "%ld", prog->qctx->hit_cnt);
+		hv.str = rnd_strdup(tmp);
+		rnd_gui->attr_dlg_set_value(pb->dlg_hid_ctx, pb->wcnt, &hv);
+	}
 
 	rnd_hid_iterate(rnd_gui);
 }
