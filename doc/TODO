@@ -8,7 +8,7 @@
 - FEATURE: make op change on enforce_clearance undoable [report: Igor2]
 + FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
-- FEATURE: lesstif DAD support for toggle buttons [report: Igor2]
+? FEATURE: lesstif DAD support for toggle buttons [report: Igor2] -> motif does not support this!
 - FEATURE: search expr wizard should pick up the expression from the button when clicked
 - BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 - BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan]
