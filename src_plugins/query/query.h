@@ -152,7 +152,7 @@ void pcb_qry_set_input(const char *script);
 
 struct pcb_query_iter_s {
 	htsi_t names;         /* name->index hash */
-	int num_vars;
+	int num_vars, last_active;
 
 	const char **vn;      /* pointers to the hash names so they can be indexed */
 	pcb_qry_val_t *lst;

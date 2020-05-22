@@ -341,6 +341,13 @@ static void setup_iter_list(pcb_qry_exec_t *ctx, int var_id, pcb_qry_val_t *list
 	ctx->iter->idx[var_id] = 0;
 }
 
+static int pcb_qry_it_active(pcb_query_iter_t *iter, int i)
+{
+	if (iter->it_active == NULL) return 1; /* no activity map: all iterators are active */
+	if (i >= iter->it_active->used) return 0;
+	return iter->it_active->array[i];
+}
+
 static int pcb_qry_it_reset_(pcb_qry_exec_t *ctx)
 {
 	int n;
@@ -353,6 +360,12 @@ static int pcb_qry_it_reset_(pcb_qry_exec_t *ctx)
 			break;
 		}
 	}
+
+	ctx->iter->last_active = -1;
+	for(n = 0; n < ctx->iter->num_vars; n++)
+		if ((ctx->iter->vects[n] != NULL) && pcb_qry_it_active(ctx->iter, n))
+			ctx->iter->last_active = n;
+
 	return 0;
 }
 
@@ -365,21 +378,30 @@ int pcb_qry_it_reset(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 	return pcb_qry_it_reset_(ctx);
 }
 
-static int pcb_qry_it_active(pcb_query_iter_t *iter, int i)
-{
-	if (iter->it_active == NULL) return 1; /* no activity map: all iterators are active */
-	if (i >= iter->it_active->used) return 0;
-	return iter->it_active->array[i];
-}
+
+#define PROGRESS_CB(ctx, at, total) \
+do { \
+	time_t now; \
+	if (ctx->progress_cb == NULL) break; \
+	now = time(NULL); \
+	if (now > ctx->last_prog_cb) { \
+		ctx->last_prog_cb = now; \
+		ctx->progress_cb(ctx, at, total); \
+	} \
+} while(0)
 
 int pcb_qry_it_next(pcb_qry_exec_t *ctx)
 {
 	int i;
 	for(i = 0; i < ctx->iter->num_vars; i++) {
 		if ((ctx->iter->vects[i] != NULL) && pcb_qry_it_active(ctx->iter, i)) {
-			ctx->iter->idx[i]++;
-			if (ctx->iter->idx[i] < vtp0_len(ctx->iter->vects[i]))
+			long ilen = vtp0_len(ctx->iter->vects[i]);
+			long at = ++ctx->iter->idx[i];
+			if (at < ilen) {
+				if (i == ctx->iter->last_active)
+					PROGRESS_CB(ctx, at, ilen);
 				return 1;
+			}
 		}
 		ctx->iter->idx[i] = 0;
 	}

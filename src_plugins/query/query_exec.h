@@ -31,6 +31,7 @@
 
 #include "query.h"
 #include <genht/htpp.h>
+#include <time.h>
 
 #define PCB_QRY_MAX_FUNC_ARGS 64
 
@@ -41,9 +42,12 @@ struct pcb_qry_exec_s {
 	pcb_query_iter_t *iter;  /* current iterator */
 	vtp0_t autofree;
 
+	void (*progress_cb)(void *pcb_qry_exec_s, long at, long total);
+
 	/* data/call cache */
 	htpp_t obj2netterm;   /* (pcb_any_obj_t *) object -> (pcb_any_obj_t *) terminal with the lowest ID on the net segment; for floating segments any object with the lowest ID will be accepted */
 	vtp0_t tmplst;        /* may be reused in a function call to save on allocation; always clear it at the end of the fnc */
+	time_t last_prog_cb;
 
 	unsigned obj2netterm_inited:1;
 };
