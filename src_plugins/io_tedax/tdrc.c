@@ -142,7 +142,7 @@ static char *op_cond(int op, const char **listing, const char *defid)
 			return rnd_strdup_printf("(overlap(@, B, $%s)) thus violation(DRCGRP1, @, DRCGRP2, B, DRCEXPECT, $%s)", defid, defid);
 		case io_tedax_tdrc_keys_op_overlap:
 			*listing = "let B @\n";
-			return rnd_strdup_printf("(@.IID < B.IID) && intersect(@, B) && (@.netname == B.netname) && (!intersect(@, B, -$%s)) thus violation(DRCGRP1, @, DRCGRP2, B, DRCEXPECT, $%s)", defid, defid);
+			return rnd_strdup_printf("(@.IID < B.IID) && intersect(@, B) && (@.netname == B.netname) && (!intersect(@, B, -1 * $%s)) thus violation(DRCGRP1, @, DRCGRP2, B, DRCEXPECT, $%s)", defid, defid);
 		case io_tedax_tdrc_keys_op_gap:
 			*listing = "let B @\n";
 			return rnd_strdup_printf("(@.IID < B.IID) && (@.netname != B.netname) && intersect(@, B, $%s) thus violation(DRCGRP1, @, DRCGRP2, B, DRCEXPECT, $%s)", defid, defid);
