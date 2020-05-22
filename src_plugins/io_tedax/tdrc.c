@@ -182,8 +182,12 @@ static const char *loc_cond(int loc)
 	return NULL;
 }
 
-static void reg_def_rule(pcb_board_t *pcb, const char *id, const char *title, const char *type, const char *query)
+static void reg_def_rule(pcb_board_t *pcb, const char *id, const char *title, const char *type, const char *query, const char *val_)
 {
+	char val[128];
+
+	rnd_snprintf(val, sizeof(val), "%smm", val_);
+
 	rnd_actionva(&pcb->hidlib, RULEMOD, "create", id, NULL);
 	rnd_actionva(&pcb->hidlib, RULEMOD, "set", id, "title", title, NULL);
 	rnd_actionva(&pcb->hidlib, RULEMOD, "set", id, "type", type, NULL);
@@ -191,11 +195,11 @@ static void reg_def_rule(pcb_board_t *pcb, const char *id, const char *title, co
 
 	rnd_actionva(&pcb->hidlib, DEFMOD, "create", id, NULL);
 	rnd_actionva(&pcb->hidlib, DEFMOD, "set", id, "title", title, NULL);
-	rnd_actionva(&pcb->hidlib, DEFMOD, "set", id, "type", type, NULL);
-	rnd_actionva(&pcb->hidlib, DEFMOD, "set", id, "query", query, NULL);
+	rnd_actionva(&pcb->hidlib, DEFMOD, "set", id, "type", "coord", NULL);
+	rnd_actionva(&pcb->hidlib, DEFMOD, "set", id, "default", val, NULL);
 }
 
-static void load_drc_query_rule(pcb_board_t *pcb, char *argv[], double d, int loc)
+static void load_drc_query_rule(pcb_board_t *pcb, char *argv[], int loc)
 {
 	int op = io_tedax_tdrc_keys_sphash(argv[3]);
 	const char *title = op_title(op), *clisting;
@@ -230,12 +234,12 @@ static void load_drc_query_rule(pcb_board_t *pcb, char *argv[], double d, int lo
 
 		stype = rnd_concat(argv[1], " ", argv[2], " ", argv[3], NULL);
 		query = rnd_concat("rule tedax\n", clisting, "assert ", ctype, cloc, sop, "\n", NULL);
-		reg_def_rule(pcb, defid, title, stype, query);
+		reg_def_rule(pcb, defid, title, stype, query, argv[4]);
 	}
 	else {
 		stype = rnd_concat("name ", argv[2], " ", argv[3], NULL);
 		query = rnd_strdup_printf("rule tedax\n%sassert (@.layer.name == \"%s\") && %s\n", clisting, argv[2], sop);
-		reg_def_rule(pcb, defid, title, stype, query);
+		reg_def_rule(pcb, defid, title, stype, query, argv[4]);
 	}
 	free(sop);
 	free(query);
@@ -265,7 +269,7 @@ int tedax_drc_fload(pcb_board_t *pcb, FILE *f, const char *blk_id, int silent)
 			if (succ) {
 				int loc = io_tedax_tdrc_keys_sphash(argv[1]);
 				if ((loc != io_tedax_tdrc_keys_loc_all) || (load_stock_rule(argv, d, val) != 0))
-					load_drc_query_rule(pcb, argv, d, loc);
+					load_drc_query_rule(pcb, argv, loc);
 			}
 			else
 				rnd_message(RND_MSG_ERROR, "ignoring invalid numeric value '%s'\n", argv[4]);;
