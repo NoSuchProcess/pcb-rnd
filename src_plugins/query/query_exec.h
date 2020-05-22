@@ -43,6 +43,7 @@ struct pcb_qry_exec_s {
 	vtp0_t autofree;
 
 	void (*progress_cb)(void *pcb_qry_exec_s, long at, long total);
+	void *progress_ctx;
 
 	/* data/call cache */
 	htpp_t obj2netterm;   /* (pcb_any_obj_t *) object -> (pcb_any_obj_t *) terminal with the lowest ID on the net segment; for floating segments any object with the lowest ID will be accepted */
