@@ -92,7 +92,7 @@ int tedax_drc_fsave(pcb_board_t *pcb, const char *drcid, FILE *f)
 		rnd_conf_listitem_t *i;
 		rnd_conflist_foreach(nat->val.list, &it, i) {
 			lht_node_t *def = i->prop.src;
-			char *tmp, *s, *start, *cfgpath, orig;
+			char *tmp, *s, *start, *cfgpath;
 			int token[4], n = 0, stay = 1;
 
 			if (strncmp(def->name, "tedax_", 6) != 0) continue;
