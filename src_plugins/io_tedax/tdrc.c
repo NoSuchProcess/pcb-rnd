@@ -38,6 +38,7 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/error.h>
 #include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
 #include "tdrc.h"
 #include "tdrc_query.h"
 #include "tdrc_keys_sphash.h"
@@ -69,6 +70,7 @@ static const drc_rule_t stock_rules[] = {
 int tedax_drc_fsave(pcb_board_t *pcb, const char *drcid, FILE *f)
 {
 	const drc_rule_t *r;
+	rnd_conf_native_t *nat, *val;
 	int n;
 
 	fprintf(f, "begin drc v1 ");
@@ -82,6 +84,60 @@ int tedax_drc_fsave(pcb_board_t *pcb, const char *drcid, FILE *f)
 			nat = rnd_conf_get_field(r->oconf);
 		if ((nat != NULL) && (nat->prop->src != NULL))
 			rnd_fprintf(f, " rule all %s %s %.06mm pcb_rnd_old_drc_from_conf\n", r->ttype, r->tkind, nat->val.coord[0]);
+	}
+
+	nat = rnd_conf_get_field("plugins/drc_query/definitions");
+	if (nat != NULL) {
+		gdl_iterator_t it;
+		rnd_conf_listitem_t *i;
+		rnd_conflist_foreach(nat->val.list, &it, i) {
+			lht_node_t *def = i->prop.src;
+			char *tmp, *s, *start, *cfgpath, orig;
+			int token[4], n = 0, stay = 1;
+
+			if (strncmp(def->name, "tedax_", 6) != 0) continue;
+
+			tmp = rnd_strdup(def->name+6);
+			for(start = s = tmp; stay; s++) {
+				if ((*s == '_') || (*s == '\0')) {
+					if (*s == '\0') stay = 0;
+					if (n < sizeof(token)/sizeof(token[0])) {
+						*s = '\0';
+						token[n++] = io_tedax_tdrc_keys_sphash(start);
+					}
+					if (stay)
+						*s = ' ';
+					start = s+1;
+				}
+			}
+
+			if (!io_tedax_tdrc_keys_loc_isvalid(token[0])) {
+				rnd_message(RND_MSG_ERROR, "invalid layer location for tEDAx DRC rule from drc_query '%s'\n", def->name);
+				goto skip;
+			}
+			if ((token[0] != io_tedax_tdrc_keys_loc_named) && (!io_tedax_tdrc_keys_type_isvalid(token[1]))) {
+				rnd_message(RND_MSG_ERROR, "invalid layer type for tEDAx DRC rule from drc_query '%s'\n", def->name);
+				goto skip;
+			}
+			if (!io_tedax_tdrc_keys_op_isvalid(token[2])) {
+				rnd_message(RND_MSG_ERROR, "invalid op for tEDAx DRC rule from drc_query '%s'\n", def->name);
+				goto skip;
+			}
+
+			cfgpath = rnd_concat("design/drc/", def->name, NULL);
+			val = rnd_conf_get_field(cfgpath);
+			if (val == NULL)
+				rnd_message(RND_MSG_ERROR, "tEDAx DRC rule: no configured value for '%s'\n", def->name);
+			else if (val->type != RND_CFN_COORD)
+				rnd_message(RND_MSG_ERROR, "tEDAx DRC rule: configured value for '%s' is not a coord\n", def->name);
+			else
+				rnd_fprintf(f, " rule %s %.08mm pcb_rnd_io_tedax_tdrc\n", tmp, val->val.coord[0]);
+
+			free(cfgpath);
+
+			skip:;
+			free(tmp);
+		}
 	}
 
 	fprintf(f, "end drc\n");
