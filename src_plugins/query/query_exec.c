@@ -384,7 +384,9 @@ do { \
 	time_t now; \
 	if (ctx->progress_cb == NULL) break; \
 	now = time(NULL); \
-	if (now > ctx->last_prog_cb) { \
+	if (ctx->last_prog_cb == 0) \
+		ctx->last_prog_cb = now; \
+	else if (now > ctx->last_prog_cb) { \
 		ctx->last_prog_cb = now; \
 		ctx->progress_cb(ctx, at, total); \
 	} \
