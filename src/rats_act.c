@@ -50,16 +50,23 @@
 #include "obj_rat_draw.h"
 
 
-static const char pcb_acts_AddRats[] = "AddRats(AllRats|SelectedRats|Close)";
+static const char pcb_acts_AddRats[] = "AddRats(AllRats|SelectedRats|Close, [manhattan])";
 static const char pcb_acth_AddRats[] = "Add one or more rat lines to the board.";
 /* DOC: addrats.html */
 static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	int op;
+	int op, flgs = PCB_RATACC_PRECISE;
+	const char *opts = NULL;
 	pcb_rat_t *shorty;
 	float len, small;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, AddRats, op = fgw_keyword(&argv[1]));
+
+	TODO("toporouter: autorotuer: remove this when the old autorouter is removed");
+	/* temporary hack for the old autorouter */
+	RND_ACT_MAY_CONVARG(2, FGW_STR, AddRats, opts = argv[2].val.str);
+	if ((opts != NULL) && (opts[0] == 'm'))
+		flgs = PCB_RATACC_ONLY_MANHATTAN;
 
 	if (conf_core.temp.rat_warn) {
 		pcb_data_clear_flag(PCB->Data, PCB_FLAG_WARN, 1, 0);
@@ -67,12 +74,12 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	switch (op) {
 		case F_AllRats:
-			if (pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE | PCB_RATACC_INFO) > 0)
+			if (pcb_net_add_all_rats(PCB, flgs | PCB_RATACC_INFO) > 0)
 				pcb_board_set_changed_flag(rnd_true);
 			break;
 		case F_SelectedRats:
 		case F_Selected:
-			if (pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE | PCB_RATACC_INFO | PCB_RATACC_ONLY_SELECTED) > 0)
+			if (pcb_net_add_all_rats(PCB, flgs | PCB_RATACC_INFO | PCB_RATACC_ONLY_SELECTED) > 0)
 				pcb_board_set_changed_flag(rnd_true);
 			break;
 		case F_Close:
