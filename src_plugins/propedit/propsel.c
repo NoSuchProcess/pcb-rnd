@@ -248,7 +248,7 @@ static void map_pstk(pcb_propedit_t *ctx, pcb_pstk_t *ps)
 	map_add_prop(ctx, "p/padstack/xmirror", rnd_coord_t, ps->xmirror);
 	map_add_prop(ctx, "p/padstack/smirror", rnd_coord_t, ps->smirror);
 	map_add_prop(ctx, "p/padstack/rotation", rnd_angle_t, ps->rot);
-	map_add_prop(ctx, "p/padstack/proto", rnd_coord_t, ps->proto);
+	map_add_prop(ctx, "p/padstack/proto", int, ps->proto);
 
 	proto = pcb_pstk_get_proto(ps);
 	map_add_prop(ctx, "p/padstack/clearance", rnd_coord_t, ps->Clearance);
