@@ -269,7 +269,7 @@ pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_co
 	rot = rot * mx *my;
 	cs = cos(rot / RND_RAD_TO_DEG);
 	sn = sin(rot / RND_RAD_TO_DEG);
-	t->X = X - (nanchx * cs * mx - nanchy * sn * my);
+	t->X = X - (nanchx * cs * mx + nanchy * sn * my);
 	t->Y = Y - (nanchy * cs * my - nanchx * sn * mx);
 	t->rot = rot;
 
