@@ -666,6 +666,10 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		hkp_error(attr, "Can not find vertical justification of text. Text will be NOT rendered.\n");
 		return;
 	}
+
+#if 0
+before enabling this, fix the code: do not ever draw debug on board layers;
+if you want to have debug draws, create a dedicated UI layer
 	{
 		rnd_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
 
@@ -690,7 +694,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		pcb_line_new(ly, xaux3, yaux3, x1, y1, thickness, cl, DEFAULT_OBJ_FLAG);
 		}
 	}
-
+#endif
 
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
 TODO("HEIGHT should become scale");
