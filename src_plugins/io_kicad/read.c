@@ -905,8 +905,6 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	}
 	yanch = RND_MM_TO_COORD(0.66*sy+RND_COORD_TO_MM(thickness));
 
-	/* rnd_trace("rot in: '%s' text %f:%d mod %f:%d \n", text, rotdeg, mirrored, mod_rot, mod_mirror); */
-
 	rotdeg -= mod_rot;
 	if (mirrored)
 		rotdeg = -rotdeg;
@@ -916,8 +914,6 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 		if (rotdeg > 360)
 			rotdeg -= 360;
 	}
-
-/* rnd_trace("bb=%mm;%mm anch=%mm;%mm rot=%f\n", bbw, bbh, xanch, yanch, rotdeg);*/
 
 	pcb_text_new_by_bbox(ly, pcb_font(PCB_FOR_FP, 0, 1), X, Y, bbw, bbh,
 		xanch, yanch, sx/sy, mirrored ? PCB_TXT_MIRROR_X : 0, rotdeg, thickness,
