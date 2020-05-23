@@ -722,6 +722,52 @@ void *pcb_polyop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_pol
 	return NULL;
 }
 
+/*** undoable enforce_clearance change ***/
+typedef struct {
+	pcb_data_t *data;
+	pcb_poly_t *poly; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
+	rnd_coord_t enfc;
+} undo_poly_enfc_t;
+
+static int undo_poly_enfc_swap(void *udata)
+{
+	undo_poly_enfc_t *g = udata;
+	pcb_layer_t *layer = g->poly->parent.layer;
+	rnd_coord_t tmp;
+
+	pcb_poly_restore_to_poly(g->data, PCB_OBJ_POLY, layer, g->poly);
+	pcb_poly_invalidate_erase(g->poly);
+	if (layer->polygon_tree != NULL)
+		rnd_r_delete_entry(layer->polygon_tree, (rnd_rnd_box_t *)g->poly);
+	tmp = g->poly->enforce_clearance;
+	g->poly->enforce_clearance = g->enfc;
+	g->enfc = tmp;
+	pcb_poly_bbox(g->poly);
+	if (layer->polygon_tree != NULL)
+		rnd_r_insert_entry(layer->polygon_tree, (rnd_rnd_box_t *)g->poly);
+	pcb_poly_clear_from_poly(g->data, PCB_OBJ_POLY, layer, g->poly);
+	if (layer->polygon_tree != NULL)
+		pcb_poly_invalidate_draw(layer, g->poly);
+
+	return 0;
+}
+
+static void undo_poly_enfc_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_poly_enfc_t *g = udata;
+	rnd_snprintf(dst, dst_len, "poly enforce_clearance=%$mm", g->enfc);
+}
+
+static const uundo_oper_t undo_poly_enfc = {
+	core_poly_cookie,
+	NULL,
+	undo_poly_enfc_swap,
+	undo_poly_enfc_swap,
+	undo_poly_enfc_print
+};
+
+
+
 /* Handle attempts to change the enforce_clearance of a polygon. */
 void *pcb_polyop_change_enforce_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *poly)
 {
@@ -733,16 +779,15 @@ void *pcb_polyop_change_enforce_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer,
 	if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0)
 		value = 0;
 	if (value != poly->enforce_clearance) {
-TODO("undo: enforce_clearance in poly");
-/*		pcb_undo_add_obj_to_clear_size(PCB_OBJ_POLY, Layer, poly, poly);*/
-		pcb_poly_restore_to_poly(ctx->chgsize.pcb->Data, PCB_OBJ_POLY, Layer, poly);
-		pcb_poly_invalidate_erase(poly);
-		rnd_r_delete_entry(Layer->polygon_tree, (rnd_rnd_box_t *)poly);
-		poly->enforce_clearance = value;
-		pcb_poly_bbox(poly);
-		rnd_r_insert_entry(Layer->polygon_tree, (rnd_rnd_box_t *)poly);
-		pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_OBJ_POLY, Layer, poly);
-		pcb_poly_invalidate_draw(Layer, poly);
+		undo_poly_enfc_t *g = pcb_undo_alloc(pcb_data_get_top(poly->parent.layer->parent.data), &undo_poly_enfc, sizeof(undo_poly_enfc_t));
+
+		g->data = ctx->chgsize.pcb->Data;
+		g->poly = poly;
+		g->enfc = value;
+
+		undo_poly_enfc_swap(g);
+		pcb_undo_inc_serial();
+
 		return poly;
 	}
 
