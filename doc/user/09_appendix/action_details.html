@@ -16,13 +16,13 @@
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-AddRats(AllRats|SelectedRats|Close)
+AddRats(AllRats|SelectedRats|Close, [manhattan])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Add one or more rat lines to the board.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
-Arguments: 
+First argument: 
 <p>
  
 <table border=1 cellspacing=0>
@@ -42,11 +42,13 @@ Arguments:
 <tr>
 
 <th>
-@item Close  
+ Close  
 <td>
  Selects the shortest unselected rat on the board. 
 </table>
-  
+ 
+<p>
+ The second argument is temporary and optional, for a workaround of a bug in the old (to be removed) autorouter. If the value of the second argument is "manhattan", non-axis-aligned lines are ignored when looking for rat anchor points.  
 </dd></dl>
 
 <h2 id="addtimer">AddTimer</h2>
@@ -2049,21 +2051,6 @@ DEBUG
  PCB_MSG_DEBUG 
 </table>
   
-</dd></dl>
-
-<h2 id="mincleargap">MinClearGap</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-MinClearGap(delta)
-MinClearGap(Selected, delta)
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Ensures that polygons are a minimum distance from objects.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-Checks all specified objects, and increases the polygon clearance if needed to ensure a minimum distance between their edges and the polygon edges.  
 </dd></dl>
 
 <h2 id="mode">Mode</h2>
