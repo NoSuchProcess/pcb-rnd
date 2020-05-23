@@ -17,6 +17,7 @@
 - BUG: propedit: padstack prototype shoudln't be coord but int [report: Igor2]
 - ANNOUNCE: deprecation: bgimage
 - ANNOUNCE: drc progress bar (requires API upgrade on query pcb_qry_run_script() - callback from the outmost iterator)
+- ANNOUNCE: io_kicad: text load xy scaling and x mirror
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
@@ -99,11 +100,8 @@
 		- bin: layouts, once loaded, have issue where deselection of elements only deselects element pins/pads. click-drag of element or saving the layout to .lht and reloading fixes the deselection issue. Example FTSH.... library file for a header exhibits this behaviour.
 	- revise all I/O plugins for:
 		- upgrade swith tandard text for rotation, scale_x, scale_y anbd mirror_x:
-			- kicad v4: test cases available
-			- kicad v5: test cases available
 			- autotrax: (need test cases)
 			- eagle: (need test cases)
-			+ mentor_cell: done [report: Igor2]
 		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
