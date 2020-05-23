@@ -184,10 +184,6 @@ static rnd_hid_gc_t ar_gc = 0;
      __next_one__ = x->which.next
 #define FOREACH_SUBNET(net, p) do {\
   routebox_t *_pp_;\
-  /* fail-fast: check subnet_processed flags */\
-  LIST_LOOP(net, same_net, p); \
-  assert(!p->flags.subnet_processed);\
-  PCB_END_LOOP;\
   /* iterate through *distinct* subnets */\
   LIST_LOOP(net, same_net, p); \
   if (!p->flags.subnet_processed) {\
@@ -4769,7 +4765,7 @@ donerouting:
 		/* optimize rats, we've changed connectivity a lot. */
 		pcb_rats_destroy(rnd_false /*all rats */ );
 		pcb_undo_restore_serial();
-		pcb_net_add_all_rats(PCB, PCB_RATACC_PRECISE);
+		pcb_net_add_all_rats(PCB, PCB_RATACC_ONLY_MANHATTAN);
 		pcb_undo_restore_serial();
 
 		pcb_undo_inc_serial();
