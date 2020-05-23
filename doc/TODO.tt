@@ -1,10 +1,7 @@
 1. [critical] handling resize
 
 pcb-rnd does rely on dynamic layouts, which means widgets need to be able 
-to resize. You can test this with the attached patch, applying it from 
-trunk (please don't commit it). Once applied, execute action d1 and you 
-will get a dialog. Please compare with gtk's behavior, when the COMPFLAG 
-line is present and when removed. 
+to resize.
 
 Mechanism: when EXPFILL is disabled, the widget needs to be as big as its 
 children wants it to be. Without scroll bar, that means as big as the 
@@ -42,7 +39,7 @@ automatic scroll bars depending on widget size vs. content size).
 
 3. [minor] header col padding doesn't work
 
-as the d1() example shows, if there's no content, only the header, the 
+{e p} with no object: if there's no content, only the header, the 
 columns are not separated by anything. I think the same spacing should 
 apply that we have for the non-header cells.
 
