@@ -595,12 +595,12 @@ ha:{
 
 						ha:Step Cursor {
 							li:submenu {
-								ha:Step Up                      = { li:a={{<Key>Up};{<Key>k;<Key>k};}; action=Cursor(Warp,0,1,grid) }
-								ha:Step Down                    = { li:a={{<Key>Down};{<Key>k;<Key>j};}; action=Cursor(Warp,0,-1,grid) }
+								ha:Step Up                      = { li:a={{<Key>Up};{<Key>k;<Key>k};}; action=Cursor(Warp,0,-1,grid) }
+								ha:Step Down                    = { li:a={{<Key>Down};{<Key>k;<Key>j};}; action=Cursor(Warp,0,1,grid) }
 								ha:Step Left                    = { li:a={{<Key>Left};{<Key>k;<Key>h};}; action=Cursor(Warp,-1,0,grid) }
 								ha:Step Right                   = { li:a={{<Key>Right};{<Key>k;<Key>l};}; action=Cursor(Warp,1,0,grid) }
-								ha:Step +Up                     = { a=Shift<Key>Up; action=Cursor(Pan,0,50,view) }
-								ha:Step +Down                   = { a=Shift<Key>Down; action=Cursor(Pan,0,-50,view) }
+								ha:Step +Up                     = { a=Shift<Key>Up; action=Cursor(Pan,0,-50,view) }
+								ha:Step +Down                   = { a=Shift<Key>Down; action=Cursor(Pan,0,50,view) }
 								ha:Step +Left                   = { a=Shift<Key>Left; action=Cursor(Pan,-50,0,view) }
 								ha:Step +Right                  = { a=Shift<Key>Right; action=Cursor(Pan,50,0,view) }
 								ha:Scroll Up                    = { li:a={{Ctrl<Key>Up};{<Key>j;<Key>k};}; action=Scroll(up) }
