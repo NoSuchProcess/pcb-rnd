@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.1 (svn r31115) an interactive printed circuit board editor ,  Revision: 31216
+This is pcb-rnd 2.2.1 (svn r31539) an interactive printed circuit board editor ,  Revision: 31543
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -96,11 +96,17 @@ This is pcb-rnd 2.2.1 (svn r31115) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#distribute">distribute</a></td><td>Distribute objects</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td>distributetext</td><td>Distribute objects</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#djopt">djopt</a></td><td>Perform various optimizations on the current board.</td><td>djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)<br>djopt(auto) - all of the above<br>djopt(miter)</td><td>djopt</td>
+<tr><td>dlg_confval_edit</td><td>Present a dialog box for editing the value of a conf node at path.</td><td>dlg_confval_edit(path, idx, role, [modal])</td><td>dialogs plugin</td>
+<tr><td>dlg_obj_list</td><td>Let the user select an object from a list of objects</td><td>dlg_obj_list()</td><td>dialogs plugin</td>
 <tr><td>dlg_test</td><td>test the attribute dialog</td><td>dlg_test()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#drc">DRC</a></td><td>Invoke the DRC check. Results are presented as the argument requests.</td><td>DRC([list|simple|print|log|dump])</td><td></td>
 <tr><td>DrcDialog</td><td>Execute drc checks and invoke a view list dialog box for presenting the results</td><td>DrcDialog([list|simple])</td><td>dialogs plugin</td>
+<tr><td>DrcQueryDefMod</td><td>Automated DRC rule editing (for scripting and import)</td><td>DrcQueryDefMod(clear, source)<br>DrcQueryDefMod(create, rule_name)<br>DrcQueryDefMod(get, rule_name, field_name)<br>DrcQueryDefMod(set, rule_name, field_name, value)</td><td>drc_query</td>
 <tr><td>DrcQueryEditRule</td><td>Interactive, GUI based DRC rule editor</td><td>DrcQueryEditRule(role, path, rule)<br>DrcQueryEditRule(role, rule)</td><td>drc_query</td>
+<tr><td>DrcQueryExport</td><td>Export a rule and related definitions to a file.</td><td>DrcQueryExport(ruleID, [filename], [format])</td><td>drc_query</td>
+<tr><td>DrcQueryImport</td><td>Import a rule and related definitions from a file.</td><td>DrcQueryImport([filename])</td><td>drc_query</td>
 <tr><td>DrcQueryListRules</td><td>List all drc rules implemented in drc_query</td><td>DrcQueryListRules()</td><td>drc_query</td>
+<tr><td>DrcQueryRuleMod</td><td>Automated DRC rule editing (for scripting and import)</td><td>DrcQueryRuleMod(clear, source)<br>DrcQueryRuleMod(create, rule_name)<br>DrcQueryRuleMod(get, rule_name, field_name)<br>DrcQueryRuleMod(set, rule_name, field_name, value)</td><td>drc_query</td>
 <tr><td>DumpActions</td><td>Dump all actions available.</td><td>DumpActions()</td><td></td>
 <tr><td>dumpconf</td><td>Perform various operations on the configuration tree.</td><td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td><td>diag plugin</td>
 <tr><td>DumpCsect</td><td>Print the cross-section of the board (layer stack)</td><td>DumpCsect()</td><td>draw_csect</td>
@@ -156,6 +162,7 @@ This is pcb-rnd 2.2.1 (svn r31115) an interactive printed circuit board editor ,
 <tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)</td><td></td>
 <tr><td>GroupPropGui</td><td>Change group flags and properties</td><td>GroupPropGui(groupid)</td><td>dialogs plugin</td>
 <tr><td>gui_FallbackColorPick</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
+<tr><td>gui_fpmap_choose</td><td>Internal call action for a dialog to select a footprint from a map.</td><td>gui_fpmap_choose(map)</td><td>dialogs plugin</td>
 <tr><td>gui_MayOverwriteFile</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
 <tr><td>gui_MessageBox</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
 <tr><td>gui_PromptFor</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
@@ -173,6 +180,7 @@ This is pcb-rnd 2.2.1 (svn r31115) an interactive printed circuit board editor ,
 <tr><td>IntersectObjObj</td><td>Returns 1 if point x;y with radius r is on the arc addressed by idpath, 0 else.</td><td>IntersectObjObj(idpath, idpath)</td><td>act_read</td>
 <tr><td>IOIncompatList</td><td>Present the format incompatibilities of the last save to file operation.</td><td>IOIncompatList([list|simple])</td><td></td>
 <tr><td>IOIncompatListDialog</td><td>Present the format incompatibilities of the last save to file operation in a GUI dialog.</td><td>IOIncompatListDialog([list|simple])</td><td>dialogs plugin</td>
+<tr><td>irc</td><td>non-modal, single-instance, single-server, single-channel irc window for online support</td><td>irc()</td><td>irc plugin</td>
 <tr><td>IsPointOnArc</td><td>Returns 1 if point x;y with radius r is on the arc addressed by idpath, 0 else.</td><td>IsPointOnArc(x, y, r, idpath)</td><td>act_read</td>
 <tr><td>IsPointOnLine</td><td>Returns 1 if point x;y with radius r is on the line addressed by idpath, 0 else.</td><td>IsPointOnLine(x, y, r, idpath)</td><td>act_read</td>
 <tr><td>jostle</td><td>Make room by moving wires away.</td><td>Jostle(diameter)</td><td>jostle plugin</td>
@@ -205,7 +213,7 @@ This is pcb-rnd 2.2.1 (svn r31115) an interactive printed circuit board editor ,
 <tr><td>LoadMentorFrom</td><td>Loads the specified Mentor Graphics Design Capture schematics flat .edf file.</td><td>LoadMentorFrom(filename)</td><td>mentor_sch importer</td>
 <tr><td>LoadMucsFrom</td><td>Loads the specified mucs routing file.</td><td>LoadMucsFrom(filename)</td><td>mucs importer</td>
 <tr><td><a href="action_details.html#loadscript">LoadScript</a></td><td>Load a fungw script</td><td>LoadScript(id, filename, [language])</td><td>script plugin</td>
-<tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file.</td><td>LoadTedaxFrom(netlist|board|footprint|stackup|layer, filename, [block_id, [silent]])</td><td>tEDAx IO</td>
+<tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file.</td><td>LoadTedaxFrom(netlist|board|footprint|stackup|layer|drc|drc_query, filename, [block_id, [silent, [src]]])</td><td>tEDAx IO</td>
 <tr><td>LoadTinycadFrom</td><td>Loads the specified tinycad .net file - the netlist must be tinycad netlist output.</td><td>LoadTinycadFrom(filename)</td><td>tinycad importer</td>
 <tr><td>LoadTtfGlyphs</td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars])</td><td>ttf importer</td>
 <tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
@@ -321,7 +329,7 @@ This is pcb-rnd 2.2.1 (svn r31115) an interactive printed circuit board editor ,
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
 <tr><td><a href="action_details.html#savelib">SaveLib</a></td><td>Saves all subcircuits to a library file or directory from a board or buffer.</td><td>SaveLib(file|dir, board|buffer, [filename], [fmt])</td><td></td>
 <tr><td>SavePatch</td><td>Save netlist patch for back annotation.</td><td>SavePatch(filename)</td><td></td>
-<tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)</td><td>tEDAx IO</td>
+<tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)<br>SaveTedax(drc_query, filename, [rule_name])</td><td>tEDAx IO</td>
 <tr><td><a href="action_details.html#saveto">SaveTo</a></td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
 <tr><td><a href="action_details.html#scriptcookie">ScriptCookie</a></td><td>Return a cookie specific to the current script instance during script initialization</td><td>ScriptCookie()</td><td>script plugin</td>
@@ -351,6 +359,7 @@ This is pcb-rnd 2.2.1 (svn r31115) an interactive printed circuit board editor ,
 <tr><td>System</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
 <tr><td>tang</td><td>Draw a line to be tangential to a circle</td><td>tang()</td><td>ddraft plugin</td>
 <tr><td>Teardrops</td><td></td><td></td><td>teardrops plugin</td>
+<tr><td>TedaxTestParse</td><td>Returns 1 if the file looks like tEDAx (0 if not)</td><td>TedaxTestParse(filename|FILE*)</td><td>tEDAx IO</td>
 <tr><td>TextNew</td><td>Create a pcb text on a layer. For now data must be "pcb". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the idpath of the new object or 0 on error.</td><td>TextNew([noundo,] data, layer, fontID, x, y, rot, scale, thickness, text_string, flags)</td><td>act_draw</td>
 <tr><td>ToggleHideName</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ToggleVendor</td><td>Toggles the state of automatic drill size mapping.</td><td>ToggleVendor()</td><td>oldactions plugin</td>
