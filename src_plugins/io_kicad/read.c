@@ -796,7 +796,7 @@ static char *fp_text_subst(char *text, pcb_flag_t *flg)
 }
 
 /* kicad_pcb/gr_text and fp_text */
-static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc, double mod_rot)
+static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc, double mod_rot, int mod_mirror)
 {
 	gsxl_node_t *l, *n, *m;
 	int i, mirrored = 0;
@@ -905,21 +905,16 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	}
 	yanch = RND_MM_TO_COORD(0.66*sy+RND_COORD_TO_MM(thickness));
 
-/*
-		if (mirrored != 0) {
-			if (direction % 2 == 0) {
-				rotdeg = fmod((rotdeg + 180.0), 360.0);
-				direction += 2;
-				direction = direction % 4;
-			}
-		}
-*/
-
-/*rnd_trace("rot in: '%s' %f mirr=%d %f \n", text, rotdeg, mirrored, mod_rot);*/
+	/* rnd_trace("rot in: '%s' text %f:%d mod %f:%d \n", text, rotdeg, mirrored, mod_rot, mod_mirror); */
 
 	rotdeg -= mod_rot;
-	if (mirrored) {
+	if (mirrored)
 		rotdeg = -rotdeg;
+
+	if (mod_mirror) {
+		rotdeg += 180;
+		if (rotdeg > 360)
+			rotdeg -= 360;
 	}
 
 /* rnd_trace("bb=%mm;%mm anch=%mm;%mm rot=%f\n", bbw, bbh, xanch, yanch, rotdeg);*/
@@ -935,7 +930,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree->str != NULL)
-		return kicad_parse_any_text(st, subtree, subtree->str, NULL, 0.0);
+		return kicad_parse_any_text(st, subtree, subtree->str, NULL, 0.0, 0);
 	return kicad_error(subtree, "failed to create text: missing text string");
 }
 
@@ -1822,7 +1817,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	return 0;
 }
 
-static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, int *foundRefdes, double mod_rot)
+static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, int *foundRefdes, double mod_rot, int mod_mirror)
 {
 	char *text;
 	int hidden = 0;
@@ -1856,7 +1851,7 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 	if (hidden)
 		return 0; /* pcb-rnd policy: there are no hidden objects; if an object is not needed, it is not created */
 
-	if (kicad_parse_any_text(st, n->children->next->next, text, subc, mod_rot) != 0)
+	if (kicad_parse_any_text(st, n->children->next->next, text, subc, mod_rot, mod_mirror) != 0)
 		return -1;
 	return 0;
 }
@@ -2401,7 +2396,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			TODO("save this as attribute");
 		}
 		else if (strcmp("fp_text", n->str) == 0) {
-			kicad_parse_fp_text(st, n, subc, &tally, &found_refdes, mod_rot);
+			kicad_parse_fp_text(st, n, subc, &tally, &found_refdes, mod_rot, on_bottom);
 		}
 		else if (strcmp("descr", n->str) == 0) {
 			SEEN_NO_DUP(tally, 11);
