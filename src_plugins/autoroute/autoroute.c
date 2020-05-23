@@ -4707,7 +4707,7 @@ rnd_bool AutoRoute(rnd_bool selected)
 				PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, rnd_true, line);
 				pcb_rat_invalidate_draw(line, 0);
 #endif /* DEBUG_STALE_RATS */
-				rnd_message(RND_MSG_ERROR, "The rats nest is stale! Aborting autoroute...\n");
+				rnd_message(RND_MSG_ERROR, "The rats nest is stale! Aborting autoroute...\nNOTE: you need to use the autoroute-specific rats\n the usual rats optimization won't work (check in the menu)!\n");
 				goto donerouting;
 			}
 			/* merge subnets into a net! */
