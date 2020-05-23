@@ -626,14 +626,6 @@ static int kicad_parse_title_block(read_state_t *st, gsxl_node_t *subtree)
 	return 0;
 }
 
-static int rotdeg_to_dir(double rotdeg)
-{
-	if ((rotdeg > 45.0) && (rotdeg <= 135.0))   return 1;
-	if ((rotdeg > 135.0) && (rotdeg <= 225.0))  return 2;
-	if ((rotdeg > 225.0) && (rotdeg <= 315.0))  return 3;
-	return 0;
-}
-
 /* Convert the string value of node to double and store it in res. On conversion
    error report error on node using errmsg. If node == NULL: report error
    on missnode, or ignore the problem if missnode is NULL. */
@@ -807,14 +799,11 @@ static char *fp_text_subst(char *text, pcb_flag_t *flg)
 static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc, double mod_rot)
 {
 	gsxl_node_t *l, *n, *m;
-	int i;
+	int i, mirrored = 0;
 	unsigned long tally = 0, required;
-	double rotdeg = 0.0;  /* default is horizontal */
-	rnd_coord_t X, Y, thickness = 0;
-	int scaling = 100;
-	int mirrored = 0;
+	double sx, sy, rotdeg = 0.0;
+	rnd_coord_t X, Y, thickness = 0, bbw, bbh, xanch, yanch;
 	int align = 0; /* -1 for left, 0 for center and +1 for right */
-	unsigned direction;
 	pcb_flag_t flg = pcb_flag_make(0); /* start with something bland here */
 	pcb_layer_t *ly;
 
@@ -830,7 +819,6 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 			PARSE_COORD(X, n, n->children, "text X1");
 			PARSE_COORD(Y, n, n->children->next, "text Y1");
 			PARSE_DOUBLE(rotdeg, NULL, n->children->next->next, "text rotation");
-			rotdeg -= mod_rot;
 			if (subc != NULL) {
 				rnd_coord_t sx, sy;
 				if (pcb_subc_get_origin(subc, &sx, &sy) == 0) {
@@ -838,7 +826,6 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 					Y += sy;
 				}
 			}
-			direction = rotdeg_to_dir(rotdeg); /* used for centering only */
 		}
 		else if (strcmp("layer", n->str) == 0) {
 			SEEN_NO_DUP(tally, 1);
@@ -861,13 +848,10 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 				if (strcmp("font", m->str) == 0) {
 					for(l = m->children; l != NULL; l = l->next) {
 						if (m->str != NULL && strcmp("size", l->str) == 0) {
-							double sx, sy;
 							SEEN_NO_DUP(tally, 2);
-							PARSE_DOUBLE(sx, l, l->children, "text size X");
-							PARSE_DOUBLE(sy, l, l->children->next, "text size Y");
-							scaling = (int)(100 * ((sx+sy)/2.0) / 1.27); /* standard glyph width ~= 1.27mm */
-							if (sx != sy)
-								kicad_warning(l->children, "text font size mismatch in X and Y direction - skretching is not yet supported, using the average");
+							/* accrding to gerber exports from v5, it seems the sizes are mixed up! */
+							PARSE_DOUBLE(sx, l, l->children->next, "text size X");
+							PARSE_DOUBLE(sy, l, l->children, "text size Y");
 						}
 						else if (strcmp("thickness", l->str) == 0) {
 							SEEN_NO_DUP(tally, 3);
@@ -910,74 +894,40 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	if ((tally & required) != required)
 		return kicad_error(subtree, "failed to create text due to missing fields");
 
-	{
-		rnd_coord_t mx, my, xalign, tw, th;
-		int swap;
-		pcb_text_t txt;
+	/* calculate input bounding box */
+	bbw = RND_MM_TO_COORD(2.0 * (sx+RND_COORD_TO_MM(thickness)) / 3.0 * strlen(text));
+	bbh = RND_MM_TO_COORD(1.25 * (sy+RND_COORD_TO_MM(thickness)));
 
-		if (mirrored) {
-			kicad_warning(subtree, "Text effect: can not mirror text horizontally");
-			/*flg.f |= PCB_FLAG_ONSOLDER; - this would be vertical */
-		}
+	switch(align) {
+		case -1: xanch = 0; break;
+		case 0:  xanch = bbw/2; break;
+		case +1: xanch = bbw; break;
+	}
+	yanch = RND_MM_TO_COORD(0.66*sy+RND_COORD_TO_MM(thickness));
 
-		memset(&txt, 0, sizeof(txt));
-		txt.Scale = scaling;
-		txt.rot = rotdeg;
-		txt.thickness = thickness;
-		txt.TextString = text;
-		txt.Flags = flg;
-		txt.parent_type = PCB_PARENT_LAYER;
-		txt.parent.layer = ly;
-
-		pcb_text_bbox(pcb_font(PCB, 0, 1), &txt);
-		tw = txt.bbox_naked.X2 - txt.bbox_naked.X1;
-		th = txt.bbox_naked.Y2 - txt.bbox_naked.Y1;
-
-
-		if (mirrored)
-			align = -align;
-
-		switch(align) {
-			case -1: xalign = 0 - thickness; break;
-			case 0:  xalign = tw/2 - thickness; break;
-			case +1: xalign = tw + thickness; break;
-		}
-
-		if (mirrored)
-			xalign = -xalign;
-
+/*
 		if (mirrored != 0) {
 			if (direction % 2 == 0) {
 				rotdeg = fmod((rotdeg + 180.0), 360.0);
 				direction += 2;
 				direction = direction % 4;
 			}
-			switch(direction) {
-				case 0: mx = -1; my = +1; swap = 0; break;
-				case 1: mx = -1; my = -1; swap = 1; break;
-				case 2: mx = +1; my = -1; swap = 0; break;
-				case 3: mx = +1; my = +1; swap = 1; break;
-			}
 		}
-		else { /* not back of board text */
-			switch(direction) {
-				case 0: mx = -1; my = -1; swap = 0; break;
-				case 1: mx = +1; my = -1; swap = 1; break;
-				case 2: mx = +1; my = +1; swap = 0; break;
-				case 3: mx = -1; my = +1; swap = 1; break;
-			}
-		}
+*/
 
-		if (swap) {
-			Y += mx * xalign;
-			X += my * th / 2.0; /* centre it vertically */
-		}
-		else {
-			X += mx * xalign;
-			Y += my * th / 2.0; /* centre it vertically */
-		}
-		pcb_text_new(ly, pcb_font(PCB_FOR_FP, 0, 1), X, Y, txt.rot, txt.Scale, txt.thickness, txt.TextString, txt.Flags);
+/*rnd_trace("rot in: '%s' %f mirr=%d %f \n", text, rotdeg, mirrored, mod_rot);*/
+
+	rotdeg -= mod_rot;
+	if (mirrored) {
+		rotdeg = -rotdeg;
 	}
+
+/* rnd_trace("bb=%mm;%mm anch=%mm;%mm rot=%f\n", bbw, bbh, xanch, yanch, rotdeg);*/
+
+	pcb_text_new_by_bbox(ly, pcb_font(PCB_FOR_FP, 0, 1), X, Y, bbw, bbh,
+		xanch, yanch, sx/sy, mirrored ? PCB_TXT_MIRROR_X : 0, rotdeg, thickness,
+		text, flg);
+
 	return 0; /* create new font */
 }
 
