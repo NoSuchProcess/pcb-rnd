@@ -1458,6 +1458,10 @@ int pcb_pstk_change_instance(pcb_pstk_t *ps, rnd_cardinal_t *proto, const rnd_co
 	long int parent_ID;
 	pcb_opctx_t ctx;
 
+	if ((proto != NULL) && (*proto < 0) || (*proto >= ps->parent.data->ps_protos.used))
+		return -1;
+
+
 	if (ps->ID <= 0) { /* off-board padstack: undo and clipping disabled */
 		if (proto != NULL) ps->proto = *proto;
 		if (clearance != NULL) ps->Clearance = *clearance;
