@@ -65,6 +65,8 @@ const char *pcb_obj_type_name(pcb_objtype_t type)
 		case PCB_OBJ_SUBC_PART:   return "subc_part";
 		case PCB_OBJ_LOCKED:      return "locked";
 		case PCB_OBJ_FLOATER:     return "floater";
+		case PCB_OBJ_GFX_POINT:   return "gfx_point";
+
 	}
 	return "<unknown/composite>";
 }
@@ -88,6 +90,7 @@ int pcb_obj_get_bbox_naked(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_rnd
 		return 0;
 	case PCB_OBJ_POLY_POINT:
 	case PCB_OBJ_LINE_POINT:
+	case PCB_OBJ_GFX_POINT:
 		*res = *(rnd_rnd_box_t *)Ptr3;
 		return 0;
 	case PCB_OBJ_ARC_POINT:

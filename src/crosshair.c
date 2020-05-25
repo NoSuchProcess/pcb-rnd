@@ -462,6 +462,22 @@ void pcb_xordraw_movecopy(void)
 			break;
 		}
 
+	case PCB_OBJ_GFX_POINT:
+		{
+			pcb_gfx_t *gfx;
+			rnd_point_t *point;
+			int point_idx;
+
+			gfx = (pcb_gfx_t *)pcb_crosshair.AttachedObject.Ptr2;
+			point = (rnd_point_t *)pcb_crosshair.AttachedObject.Ptr3;
+			point_idx = point - gfx->corner;
+			if ((point_idx < 0) || (point_idx > 3))
+				break;
+
+			TODO("gfx: crosshair");
+		}
+		break;
+
 	case PCB_OBJ_SUBC:
 		pcb_xordraw_subc((pcb_subc_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy, 0);
 		break;
@@ -961,7 +977,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_GFX | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 
 	if (ans == PCB_OBJ_GFX) {
-		TODO("gfx");
+		TODO("gfx: crosshair");
 	}
 
 	/* Snap to offgrid points on lines. */

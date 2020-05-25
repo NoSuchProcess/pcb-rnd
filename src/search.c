@@ -530,6 +530,70 @@ static rnd_bool SearchPointByLocation(unsigned long Type, unsigned long objst, u
 	return rnd_false;
 }
 
+/* ---------------------------------------------------------------------------
+ * searches a gfx-point on all layers that are switched on
+ * in layerstack order
+ */
+typedef struct {
+	double least;
+	rnd_bool found;
+	unsigned long Type;
+
+	/* result */
+	pcb_gfx_t **gfx;
+	rnd_point_t **Point;
+} gfxptcb_t;
+
+static rnd_r_dir_t gfxpoint_callback(const rnd_rnd_box_t *box, void *cl)
+{
+	pcb_gfx_t *gfx = (pcb_gfx_t *)box;
+	gfxptcb_t *ctx = (ptcb_t *)cl;
+	double d;
+	pcb_data_t *dt;
+	int n;
+
+	dt = gfx->parent.layer->parent.data; /* gfx -> layer -> data */
+	if ((dt != NULL) && (dt->parent_type == PCB_PARENT_SUBC)) {
+		/* do not find subc part poly points if not explicitly requested */
+		if (!(ctx->Type & PCB_OBJ_SUBC_PART))
+			return RND_R_DIR_NOT_FOUND;
+
+		/* don't find subc poly points even as subc part unless we are editing a subc */
+		if (!PCB->loose_subc)
+			return RND_R_DIR_NOT_FOUND;
+	}
+
+	for(n = 0; n < 4; n++) {
+		d = rnd_distance2(gfx->corner[n].X, gfx->corner[n].Y, PosX, PosY);
+		if (d < ctx->least) {
+			ctx->least = d;
+			*ctx->gfx = gfx;
+			*ctx->Point = &gfx->corner[n];
+			ctx->found = rnd_true;
+		}
+	}
+
+	return RND_R_DIR_NOT_FOUND;
+}
+
+static rnd_bool SearchGfxPointByLocation(unsigned long Type, unsigned long objst, unsigned long req_flag, pcb_layer_t **Layer, pcb_gfx_t **gfx, rnd_point_t **Point)
+{
+	gfxptcb_t ctx;
+
+	*Layer = SearchLayer;
+	ctx.Type = Type;
+	ctx.gfx = gfx;
+	ctx.Point = Point;
+	ctx.found = rnd_false;;
+	ctx.least = SearchRadius + RND_MAX_POLYGON_POINT_DISTANCE;
+	ctx.least = ctx.least * ctx.least;
+	rnd_r_search(SearchLayer->gfx_tree, &SearchBox, NULL, gfxpoint_callback, &ctx, NULL);
+
+	if (ctx.found)
+		return rnd_true;
+	return rnd_false;
+}
+
 
 static rnd_r_dir_t subc_callback(const rnd_rnd_box_t *box, void *cl)
 {
@@ -1210,6 +1274,11 @@ static int pcb_search_obj_by_loc_layer(unsigned long Type, void **Result1, void 
 {
 	if (SearchLayer->meta.real.vis) {
 		if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
+				Type & PCB_OBJ_GFX_POINT &&
+				SearchGfxPointByLocation(Type, objst, req_flag, (pcb_layer_t **) Result1, (pcb_gfx_t **) Result2, (rnd_point_t **) Result3))
+			return PCB_OBJ_GFX_POINT;
+
+		if ((HigherAvail & (PCB_OBJ_PSTK)) == 0 &&
 				Type & PCB_OBJ_POLY_POINT &&
 				SearchPointByLocation(Type, objst, req_flag, (pcb_layer_t **) Result1, (pcb_poly_t **) Result2, (rnd_point_t **) Result3))
 			return PCB_OBJ_POLY_POINT;
@@ -1546,13 +1615,16 @@ int pcb_search_obj_by_id_(pcb_data_t *Base, void **Result1, void **Result2, void
 		PCB_ENDALL_LOOP;
 	}
 
-	if (type == PCB_OBJ_GFX) {
+	if ((type == PCB_OBJ_GFX) || (type == PCB_OBJ_GFX_POINT)) {
 		PCB_GFX_ALL_LOOP(Base);
 		{
 			if (gfx->ID == ID) {
 				*Result1 = (void *)layer;
 				*Result2 = *Result3 = (void *)gfx;
 				return PCB_OBJ_GFX;
+			}
+			if (type == PCB_OBJ_GFX_POINT) {
+				TODO("gfx: id on point?");
 			}
 		}
 		PCB_ENDALL_LOOP;

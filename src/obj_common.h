@@ -63,7 +63,8 @@ typedef enum pcb_vobjtype_e {
 	PCB_OBJ_POLY_POINT = 0x0400000,
 	PCB_OBJ_SUBC_PART  = 0x0800000,
 	PCB_OBJ_LOCKED     = 0x1000000,
-	PCB_OBJ_FLOATER    = 0x2000000
+	PCB_OBJ_FLOATER    = 0x2000000,
+	PCB_OBJ_GFX_POINT  = 0x4000000
 } pcb_vobjtype_t;
 
 

@@ -93,6 +93,10 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 				res = F->Point(ctx, (pcb_layer_t *)Ptr1, (pcb_poly_t *)Ptr2, (rnd_point_t *)Ptr3);
 			break;
 
+		case PCB_OBJ_GFX_POINT:
+			TODO("gfx: operation");
+			break;
+
 		case PCB_OBJ_SUBC:
 			if (F->subc)
 				res = F->subc(ctx, (pcb_subc_t *)Ptr2);
