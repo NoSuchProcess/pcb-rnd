@@ -629,10 +629,31 @@ void pcb_gfx_set_pixmap_dup(pcb_gfx_t *gfx, const rnd_pixmap_t *pxm, rnd_bool un
 
 void pcb_gfx_resize_move_corner(pcb_gfx_t *gfx, int corn_idx, rnd_coord_t dx, rnd_coord_t dy, int undoable)
 {
+	rnd_point_t *corn;
+	double sgnx, sgny;
+	undo_gfx_geo_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(gfx->parent.layer->parent.data), &undo_gfx_geo, sizeof(undo_gfx_geo_t));
+
+
 	if ((corn_idx < 0) || (corn_idx > 3))
 		return;
+	corn = &gfx->corner[corn_idx];
 
-	rnd_trace("pcb_gfx_resize_move_corner pt %d %mm;%mm!\n", corn_idx, dx, dy);
+	sgnx = corn->X > gfx->cx ? 1 : -1;
+	sgny = corn->Y > gfx->cy ? 1 : -1;
+
+	g->gfx = gfx;
+	g->cx = gfx->cx + rnd_round((double)dx / 2.0);;
+	g->cy = gfx->cy + rnd_round((double)dy / 2.0);;
+	g->sx = gfx->sx + dx * sgnx;
+	g->sy = gfx->sy + dy * sgny;
+	g->rot = gfx->rot;
+
+	undo_gfx_geo_swap(g);
+	if (undoable) pcb_undo_inc_serial();
+
+/*	rnd_trace("pcb_gfx_resize_move_corner pt %d %mm;%mm %.0f;%.0f!\n", corn_idx, dx, dy, sgnx, sgny); */
 }
 
 
