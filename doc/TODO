@@ -8,6 +8,12 @@
 + FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 - FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: search expr wizard should pick up the expression from the button when clicked
+- FEATURE: trace length calculator (NGI0):
+	- click a line or arc or via
+	- start a search in two directions mapping lines, arcs and vias connected (green-highlight them, marking them found)
+	- stop at the first junction (anywhere where more than 2 objects are connected)
+	- stop at polygons
+	- display the number of vias and net trace length along the found objects
 - BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 ? BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan] -> can't reproduce; are you sure it depends only on 64 bit coords?
 - BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
@@ -161,12 +167,6 @@
 	- FEATURE: consider a move-only lock?
 	- BUG: when thermal and some other operations are applied on a locked element, indicate it
 - FEATURE: DRC should warn for thin poly hair
-- FEATURE: trace length calculator:
-	- click a line or arc or via
-	- start a search in two directions mapping lines, arcs and vias connected (green-highlight them, marking them found)
-	- stop at the first junction (anywhere where more than 2 objects are connected)
-	- stop at polygons
-	- display the number of vias and net trace length along the found objects
 - FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
 - FEATURE: scconfig: menuconfig and a config file for scconfig: requires a more declarative dependency handling system
 - lesstif blockers:
