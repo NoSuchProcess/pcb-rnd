@@ -9797,11 +9797,11 @@ obj_pstk_proto.o: obj_pstk_proto.c ../config.h librnd/config.h board.h \
  librnd/poly/rtree2_compat.h librnd/poly/rtree.h \
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
- obj_pstk_shape.h polygon.h vtpadstack_t.h data_list.h obj_pstk_inlines.h \
- thermal.h operation.h librnd/poly/polygon1_gen.h rotate.h \
- librnd/core/rotate.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_hash.h funchash_core.h librnd/core/funchash.h funchash_core_list.h \
- librnd/poly/offset.h
+ obj_pstk_shape.h polygon.h vtpadstack_t.h data_list.h obj_pstk_op.h \
+ operation.h obj_pstk_inlines.h thermal.h librnd/poly/polygon1_gen.h \
+ rotate.h librnd/core/rotate.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h obj_hash.h funchash_core.h librnd/core/funchash.h \
+ funchash_core_list.h librnd/poly/offset.h
 obj_rat.o: obj_rat.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
