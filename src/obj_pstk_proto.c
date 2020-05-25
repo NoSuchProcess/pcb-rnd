@@ -1395,7 +1395,12 @@ void pcb_pstk_shape_scale(pcb_pstk_proto_t *proto, int tridx, int shpidx, double
 	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
 	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
 
-	TODO("padstack: undo")
+	if (undoable) {
+		undo_shape_geo_t *g = pstk_shape_geo_undo_init(proto, tridx, shpidx);
+		pcb_pstk_shape_copy(&g->shp, shp);
+		g->shp_valid = 1;
+		pcb_undo_inc_serial();
+	}
 
 	pcb_pstk_shape_scale_(shp, sx, sy);
 }
