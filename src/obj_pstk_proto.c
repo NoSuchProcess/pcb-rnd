@@ -1365,11 +1365,13 @@ void pcb_pstk_shape_clr_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd
 {
 	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
 	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
-	undo_shape_geo_t *g = pstk_shape_geo_undo_init(proto, tridx, shpidx);
 
-	g->clr = shp->clearance;
-	g->clr_valid = 1;
-	pcb_undo_inc_serial();
+	if (undoable) {
+		undo_shape_geo_t *g = pstk_shape_geo_undo_init(proto, tridx, shpidx);
+		g->clr = shp->clearance;
+		g->clr_valid = 1;
+		pcb_undo_inc_serial();
+	}
 	pcb_pstk_shape_clr_grow_(shp, is_absolute, val);
 }
 
@@ -1378,11 +1380,12 @@ void pcb_pstk_shape_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd_boo
 	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
 	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
 
-	undo_shape_geo_t *g = pstk_shape_geo_undo_init(proto, tridx, shpidx);
-	pcb_pstk_shape_copy(&g->shp, shp);
-	g->shp_valid = 1;
-
-	pcb_undo_inc_serial();
+	if (undoable) {
+		undo_shape_geo_t *g = pstk_shape_geo_undo_init(proto, tridx, shpidx);
+		pcb_pstk_shape_copy(&g->shp, shp);
+		g->shp_valid = 1;
+		pcb_undo_inc_serial();
+	}
 
 	pcb_pstk_shape_grow_(shp, is_absolute, val);
 }
