@@ -626,7 +626,6 @@ static void ghid_init_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pxm)
 static void ghid_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, const rnd_pixmap_t *pixmap)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
-TODO("gfx: this use of sx/sy ignores rotation");
 
 	if (pixmap->hid_data == NULL)
 		ghid_init_pixmap(hid, pixmap);
@@ -634,7 +633,7 @@ TODO("gfx: this use of sx/sy ignores rotation");
 		double rsx, rsy, ca = cos(pixmap->tr_rot / RND_RAD_TO_DEG), sa = sin(pixmap->tr_rot / RND_RAD_TO_DEG);
 		rsx = (double)sx * ca + (double)sy * sa;
 		rsy = (double)sy * ca + (double)sx * sa;
-rnd_trace("GUI scale: %mm %mm -> %mm %mm\n", sx, sy, (rnd_coord_t)rsx, (rnd_coord_t)rsy);
+/*rnd_trace("GUI scale: %mm %mm -> %mm %mm\n", sx, sy, (rnd_coord_t)rsx, (rnd_coord_t)rsy);*/
 		gctx->impl.draw_pixmap(gctx->hidlib, pixmap->hid_data, cx - rsx/2.0, cy - rsy/2.0, rsx, rsy);
 	}
 }
