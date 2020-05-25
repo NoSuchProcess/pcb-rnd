@@ -627,6 +627,14 @@ void pcb_gfx_set_pixmap_dup(pcb_gfx_t *gfx, const rnd_pixmap_t *pxm, rnd_bool un
 	gfx->pxm_id = 0; /* no preference on the ID now */
 }
 
+void pcb_gfx_resize_move_corner(pcb_gfx_t *gfx, int corn_idx, rnd_coord_t dx, rnd_coord_t dy, int undoable)
+{
+	if ((corn_idx < 0) || (corn_idx > 3))
+		return;
+
+	rnd_trace("pcb_gfx_resize_move_corner pt %d %mm;%mm!\n", corn_idx, dx, dy);
+}
+
 
 /*** draw ***/
 

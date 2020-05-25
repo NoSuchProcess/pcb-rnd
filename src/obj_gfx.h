@@ -84,6 +84,9 @@ void pcb_gfx_set_pixmap_free(pcb_gfx_t *gfx, rnd_pixmap_t *pxm, rnd_bool undoabl
 /* same but dups pxm so it is never free'd */
 void pcb_gfx_set_pixmap_dup(pcb_gfx_t *gfx, const rnd_pixmap_t *pxm, rnd_bool undoable);
 
+/* Request a resize by moving one of the corners relative, by dx;dy */
+void pcb_gfx_resize_move_corner(pcb_gfx_t *gfx, int corn_idx, rnd_coord_t dx, rnd_coord_t dy, int undoable);
+
 
 /*** hash and eq ***/
 int pcb_gfx_eq(const pcb_host_trans_t *tr1, const pcb_gfx_t *g1, const pcb_host_trans_t *tr2, const pcb_gfx_t *g2);

@@ -41,6 +41,7 @@
 #include "tool_logic.h"
 #include <librnd/core/tool.h>
 #include "extobj.h"
+#include "obj_gfx.h"
 
 
 void pcb_tool_move_uninit(void)
@@ -82,7 +83,13 @@ void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 	case PCB_CH_STATE_SECOND:
 		dx = pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X;
 		dy = pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y;
-		if ((dx != 0) || (dy != 0)) {
+		if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_GFX_POINT) {
+			pcb_gfx_t *gfx = pcb_crosshair.AttachedObject.Ptr2;
+			rnd_point_t *point = (rnd_point_t *)pcb_crosshair.AttachedObject.Ptr3;
+			int point_idx = point - gfx->corner;
+			pcb_gfx_resize_move_corner(gfx, point_idx, dx, dy, 1);
+		}
+		else if ((dx != 0) || (dy != 0)) {
 			pcb_any_obj_t *newo = pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, dx, dy);
 			pcb_extobj_float_geo(newo);
 			if (!pcb_marked.user_placed)
