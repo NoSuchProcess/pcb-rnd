@@ -248,6 +248,31 @@ void pcb_xordraw_insert_pt_obj(void)
 	}
 }
 
+/* project dx;fy onto an orthogonal to vx;vy and return the offset */
+static void proj_extend(double *ox, double *oy, double vx, double vy, double dx, double dy)
+{
+	double nx, ny, l, offs;
+
+	if ((vx == 0) && (vy == 0)) {
+		*ox = *oy = 0;
+		return;
+	}
+
+	nx = -vy; ny = vx; /* normal vector */
+
+	l = nx*nx+ny*ny;
+
+	 /* normalize n */
+	l = sqrt(l);
+	nx /= l; ny /= l;
+
+	/* dot product: projected length */
+	offs = (dx * nx + dy * ny);
+
+	/* offsets: normal's direction * projected len */
+	*ox =nx * offs; *oy = ny * offs;
+}
+
 /* ---------------------------------------------------------------------------
  * draws the attached object while in tool mode move or copy
  */
@@ -465,8 +490,9 @@ void pcb_xordraw_movecopy(void)
 	case PCB_OBJ_GFX_POINT:
 		{
 			pcb_gfx_t *gfx;
-			rnd_point_t *point;
-			int point_idx;
+			rnd_point_t *point, *prev, *next, *opp;
+			int point_idx, i;
+			double px, py, nx, ny, cx, cy;
 
 			gfx = (pcb_gfx_t *)pcb_crosshair.AttachedObject.Ptr2;
 			point = (rnd_point_t *)pcb_crosshair.AttachedObject.Ptr3;
@@ -474,7 +500,26 @@ void pcb_xordraw_movecopy(void)
 			if ((point_idx < 0) || (point_idx > 3))
 				break;
 
-			TODO("gfx: crosshair");
+			cx = pcb_crosshair.X;
+			cy = pcb_crosshair.Y;
+
+			i = point_idx - 1;
+			if (i < 0) i = 3;
+			prev = gfx->corner + i;
+
+			i = (point_idx + 1) % 4;
+			next = gfx->corner + i;
+
+			i = (point_idx + 2) % 4;
+			opp = gfx->corner + i;
+
+			proj_extend(&px, &py, point->X - prev->X, point->Y - prev->Y, dx, dy);
+			proj_extend(&nx, &ny, point->X - next->X, point->Y - next->Y, dx, dy);
+
+			rnd_render->draw_line(pcb_crosshair.GC, opp->X, opp->Y, prev->X+px, prev->Y+py);
+			rnd_render->draw_line(pcb_crosshair.GC, opp->X, opp->Y, next->X+nx, next->Y+ny);
+			rnd_render->draw_line(pcb_crosshair.GC, cx, cy, prev->X+px, prev->Y+py);
+			rnd_render->draw_line(pcb_crosshair.GC, cx, cy, next->X+nx, next->Y+ny);
 		}
 		break;
 
