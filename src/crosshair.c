@@ -973,11 +973,13 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 
 	/*** gfx ***/
 	ans = PCB_OBJ_VOID;
-	if (conf_core.editor.snap_pin)
-		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_GFX | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
-
-	if (ans == PCB_OBJ_GFX) {
-		TODO("gfx: crosshair");
+	ans = pcb_search_grid_slop(X, Y, PCB_OBJ_GFX | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
+	if (ans == PCB_OBJ_VOID) {
+		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_GFX_POINT | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
+		if (ans != PCB_OBJ_VOID) {
+			rnd_point_t *pt = ptr3;
+			check_snap_object(&snap_data, pt->X, pt->Y, rnd_true, (pcb_any_obj_t *)NULL);
+		}
 	}
 
 	/* Snap to offgrid points on lines. */
