@@ -45,7 +45,7 @@
 		- TODO("gfx")
 		- act_draw() binding
 		- tool_arrow: resize
-		- rotated pixmap scale adjustment
+		- rotated pixmap scale adjustment: missing in lesstif, done in gtk ghid_draw_pixmap()
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
