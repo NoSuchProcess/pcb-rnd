@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
 #include "data.h"
 #include "data_list.h"
 #include "obj_pstk.h"
+#include "obj_pstk_op.h"
 #include "obj_pstk_inlines.h"
 #include "rotate.h"
 #include "undo.h"
@@ -1227,10 +1228,11 @@ void pcb_pstk_shape_clr_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_c
 		shp->clearance += val;
 }
 
+/*** undoable proto geo changes ***/
 
 typedef struct {
 	pcb_data_t *data;
-	int proto_id, tridx, shpidx;
+	long proto_id, tridx, shpidx;
 
 	pcb_pstk_shape_t shp;
 	rnd_coord_t clr;
@@ -1239,17 +1241,73 @@ typedef struct {
 	unsigned clr_valid:1;
 } undo_shape_geo_t;
 
+static void pstk_clip_all_proto(pcb_data_t *data, int proto_id, int pre)
+{
+	pcb_pstk_t *ps;
+	gdl_iterator_t it;
+	pcb_opctx_t ctx = {0};
+
+	if (pre) {
+		ctx.clip.clear = 0;
+		ctx.clip.restore = 1;
+	}
+	else {
+		ctx.clip.clear = 1;
+		ctx.clip.restore = 0;
+	}
+
+	padstacklist_foreach(&data->padstack, &it, ps)
+		if (ps->proto == proto_id)
+			pcb_pstkop_clip(&ctx, ps);
+}
+
 static int undo_shape_geo_swap(void *udata)
 {
-/*	undo_shape_geo_t *g = udata; */
-	TODO("unfinished undo");
+	undo_shape_geo_t *g = udata;
+	pcb_pstk_proto_t *proto;
+	pcb_pstk_tshape_t *tshp;
+	pcb_pstk_shape_t *shp;
+
+	if (g->proto_id >= g->data->ps_protos.used) {
+		rnd_message(RND_MSG_ERROR, "undo_shape_geo_swap(): invalid proto_id %ld >= %ld\n", g->proto_id, g->data->ps_protos.used);
+		return -1;
+	}
+	proto = g->data->ps_protos.array + g->proto_id;
+
+	if (!proto->in_use) {
+		rnd_message(RND_MSG_ERROR, "undo_shape_geo_swap(): unused proto\n");
+		return -1;
+	}
+
+	if (g->tridx >= proto->tr.used) {
+		rnd_message(RND_MSG_ERROR, "undo_shape_geo_swap(): invalid tridx %ld >= %ld\n", g->tridx, proto->tr.used);
+		return -1;
+	}
+	tshp = &proto->tr.array[g->tridx];
+
+	if (g->shpidx >= tshp->len) {
+		rnd_message(RND_MSG_ERROR, "undo_shape_geo_swap(): invalid shpidx %ld >= %ld\n", g->shpidx, tshp->len);
+		return -1;
+	}
+	shp = &tshp->shape[g->shpidx];
+
+	pstk_clip_all_proto(g->data, g->proto_id, 1);
+
+	if (g->clr_valid) {
+		rnd_coord_t tmp = g->clr;
+		g->clr = shp->clearance;
+		shp->clearance = tmp;
+	}
+
+	pstk_clip_all_proto(g->data, g->proto_id, 0);
+
 	return 0;
 }
 
 static void undo_shape_geo_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_shape_geo_t *g = udata;
-	rnd_snprintf(dst, dst_len, "pstk shape geo proto=%d %d/%d shape=%d clearance=%d", g->proto_id, g->tridx, g->shpidx, g->shp_valid, g->clr_valid);
+	rnd_snprintf(dst, dst_len, "pstk shape geo proto=%d %d/%d shape=%d clearance=%d (%$$ml)", g->proto_id, g->tridx, g->shpidx, g->shp_valid, g->clr_valid, g->clr);
 }
 
 static const char core_shape_cookie[] = "core-pstk-proto-shape";
@@ -1290,9 +1348,11 @@ void pcb_pstk_shape_clr_grow(pcb_pstk_proto_t *proto, int tridx, int shpidx, rnd
 {
 	pcb_pstk_tshape_t *tshp = &proto->tr.array[tridx];
 	pcb_pstk_shape_t *shp = &tshp->shape[shpidx];
+	undo_shape_geo_t *g = pstk_shape_geo_undo_init(proto, tridx, shpidx);
 
-TODO("padstack: undo")
-
+	g->clr_valid = 1;
+	g->clr = shp->clearance;
+	pcb_undo_inc_serial();
 	pcb_pstk_shape_clr_grow_(shp, is_absolute, val);
 }
 
