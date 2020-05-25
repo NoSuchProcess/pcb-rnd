@@ -1341,10 +1341,16 @@ static const uundo_oper_t undo_shape_geo = {
 static undo_shape_geo_t *pstk_shape_geo_undo_init(pcb_pstk_proto_t *proto, int tridx, int shpidx)
 {
 	pcb_data_t *data = proto->parent;
+	pcb_board_t *pcb;
 	long pid;
 	undo_shape_geo_t *g;
 
-	if ((data == NULL) || (data->parent_type != PCB_PARENT_BOARD) || (!proto->in_use))
+	if (data == NULL)
+		return NULL;
+
+	pcb = pcb_data_get_top(data);
+
+	if ((pcb == NULL) || (!proto->in_use))
 		return NULL;
 
 	pid = proto - data->ps_protos.array;
