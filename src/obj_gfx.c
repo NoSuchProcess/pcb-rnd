@@ -103,7 +103,7 @@ static rnd_rnd_box_t pcb_gfx_bbox_(const pcb_gfx_t *gfx)
 	rnd_rnd_box_t res = {+RND_COORD_MAX, +RND_COORD_MAX, -RND_COORD_MAX, -RND_COORD_MAX};
 	int n;
 	for(n = 0; n < 4; n++)
-		rnd_box_bump_point(&res, gfx->cox[n], gfx->coy[n]);
+		rnd_box_bump_point(&res, gfx->corner[n].X, gfx->corner[n].Y);
 	return res;
 }
 
@@ -121,16 +121,16 @@ void pcb_gfx_update(pcb_gfx_t *gfx)
 	rx = (double)gfx->sx / 2.0;
 	ry = (double)gfx->sy / 2.0;
 
-	gfx->cox[0] = rnd_round((double)gfx->cx + rx); gfx->coy[0] = rnd_round((double)gfx->cy + ry);
-	gfx->cox[1] = rnd_round((double)gfx->cx - rx); gfx->coy[1] = rnd_round((double)gfx->cy + ry);
-	gfx->cox[2] = rnd_round((double)gfx->cx - rx); gfx->coy[2] = rnd_round((double)gfx->cy - ry);
-	gfx->cox[3] = rnd_round((double)gfx->cx + rx); gfx->coy[3] = rnd_round((double)gfx->cy - ry);
+	gfx->corner[0].X = rnd_round((double)gfx->cx + rx); gfx->corner[0].Y = rnd_round((double)gfx->cy + ry);
+	gfx->corner[1].X = rnd_round((double)gfx->cx - rx); gfx->corner[1].Y = rnd_round((double)gfx->cy + ry);
+	gfx->corner[2].X = rnd_round((double)gfx->cx - rx); gfx->corner[2].Y = rnd_round((double)gfx->cy - ry);
+	gfx->corner[3].X = rnd_round((double)gfx->cx + rx); gfx->corner[3].Y = rnd_round((double)gfx->cy - ry);
 	if (gfx->rot != 0.0) {
 		a = gfx->rot / RND_RAD_TO_DEG;
 		cosa = cos(a);
 		sina = sin(a);
 		for(n = 0; n < 4; n++)
-			rnd_rotate(&gfx->cox[n], &gfx->coy[n], gfx->cx, gfx->cy, cosa, sina);
+			rnd_rotate(&gfx->corner[n].X, &gfx->corner[n].Y, gfx->cx, gfx->cy, cosa, sina);
 	}
 	pcb_gfx_bbox(gfx);
 }
@@ -658,10 +658,10 @@ void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 		rnd_render->set_color(pcb_draw_out.fgGC, color);
 		rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 		rnd_hid_set_line_width(pcb_draw_out.fgGC, -2);
-		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[1], gfx->coy[1]);
-		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[2], gfx->coy[2]);
-		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[2], gfx->coy[2], gfx->cox[3], gfx->coy[3]);
-		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[3], gfx->coy[3], gfx->cox[0], gfx->coy[0]);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->corner[0].X, gfx->corner[0].Y, gfx->corner[1].X, gfx->corner[1].Y);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->corner[1].X, gfx->corner[1].Y, gfx->corner[2].X, gfx->corner[2].Y);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->corner[2].X, gfx->corner[2].Y, gfx->corner[3].X, gfx->corner[3].Y);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->corner[3].X, gfx->corner[3].Y, gfx->corner[0].X, gfx->corner[0].Y);
 	}
 
 
@@ -669,8 +669,8 @@ void pcb_gfx_draw_(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 		rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.warn);
 		rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 		rnd_hid_set_line_width(pcb_draw_out.fgGC, RND_MM_TO_COORD(0.1));
-		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[0], gfx->coy[0], gfx->cox[2], gfx->coy[2]);
-		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->corner[0].X, gfx->corner[0].Y, gfx->corner[2].X, gfx->corner[2].Y);
+		rnd_render->draw_line(pcb_draw_out.fgGC, gfx->corner[1].X, gfx->corner[1].Y, gfx->corner[3].X, gfx->corner[3].Y);
 	}
 	else {
 		rnd_render->draw_pixmap(rnd_render, gfx->cx, gfx->cy, gfx->sx, gfx->sy, gfx->pxm_xformed);
@@ -718,8 +718,8 @@ void pcb_gfx_invalidate_draw(pcb_layer_t *Layer, pcb_gfx_t *gfx)
 
 void pcb_gfx_draw_xor(pcb_gfx_t *gfx, rnd_coord_t dx, rnd_coord_t dy)
 {
-	rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[0]+dx, gfx->coy[0]+dy, gfx->cox[1]+dx, gfx->coy[1]+dy);
-	rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[1]+dx, gfx->coy[1]+dy, gfx->cox[2]+dx, gfx->coy[2]+dy);
-	rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[2]+dx, gfx->coy[2]+dy, gfx->cox[3]+dx, gfx->coy[3]+dy);
-	rnd_render->draw_line(pcb_crosshair.GC, gfx->cox[3]+dx, gfx->coy[3]+dy, gfx->cox[0]+dx, gfx->coy[0]+dy);
+	rnd_render->draw_line(pcb_crosshair.GC, gfx->corner[0].X+dx, gfx->corner[0].Y+dy, gfx->corner[1].X+dx, gfx->corner[1].Y+dy);
+	rnd_render->draw_line(pcb_crosshair.GC, gfx->corner[1].X+dx, gfx->corner[1].Y+dy, gfx->corner[2].X+dx, gfx->corner[2].Y+dy);
+	rnd_render->draw_line(pcb_crosshair.GC, gfx->corner[2].X+dx, gfx->corner[2].Y+dy, gfx->corner[3].X+dx, gfx->corner[3].Y+dy);
+	rnd_render->draw_line(pcb_crosshair.GC, gfx->corner[3].X+dx, gfx->corner[3].Y+dy, gfx->corner[0].X+dx, gfx->corner[0].Y+dy);
 }

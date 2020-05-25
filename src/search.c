@@ -920,8 +920,8 @@ rnd_bool pcb_is_gfx_in_rectangle(const rnd_rnd_box_t *b, const pcb_gfx_t *gfx)
 		m = n+1;
 		if (m == 4)
 			m = 0;
-		l.Point1.X = gfx->cox[n]; l.Point1.Y = gfx->coy[n];
-		l.Point2.X = gfx->cox[m]; l.Point2.Y = gfx->coy[m];
+		l.Point1.X = gfx->corner[n].X; l.Point1.Y = gfx->corner[n].Y;
+		l.Point2.X = gfx->corner[m].X; l.Point2.Y = gfx->corner[m].Y;
 		if (PCB_LINE_TOUCHES_BOX(&l, b))
 			return rnd_true;
 	}
@@ -1056,7 +1056,7 @@ rnd_bool pcb_gfx_in_box(pcb_gfx_t *gfx, rnd_rnd_box_t *b)
 	int n;
 
 	for(n = 0; n < 4; n++)
-		if (!PCB_POINT_IN_BOX(gfx->cox[n], gfx->coy[n], b))
+		if (!PCB_POINT_IN_BOX(gfx->corner[n].X, gfx->corner[n].Y, b))
 			return rnd_false;
 
 	return rnd_true;
@@ -1144,14 +1144,14 @@ rnd_bool pcb_is_point_in_gfx(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, p
 	int n, m;
 
 	pt[0] = X; pt[1] = Y;
-	a[0] = gfx->cox[0]; a[1] = gfx->coy[0];
-	b[0] = gfx->cox[2]; b[1] = gfx->coy[2];
+	a[0] = gfx->corner[0].X; a[1] = gfx->corner[0].Y;
+	b[0] = gfx->corner[2].X; b[1] = gfx->corner[2].Y;
 
-	c[0] = gfx->cox[1]; c[1] = gfx->coy[1];
+	c[0] = gfx->corner[1].X; c[1] = gfx->corner[1].Y;
 	if (rnd_point_in_triangle(a, b, c, pt))
 		return rnd_true;
 
-	c[0] = gfx->cox[3]; c[1] = gfx->coy[3];
+	c[0] = gfx->corner[3].X; c[1] = gfx->corner[3].Y;
 	if (rnd_point_in_triangle(a, b, c, pt))
 		return rnd_true;
 
@@ -1160,12 +1160,12 @@ rnd_bool pcb_is_point_in_gfx(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, p
 		m = n+1;
 		if (m == 4)
 			m = 0;
-		if (pcb_is_point_on_thinline(X, Y, gfx->cox[n], gfx->coy[n], gfx->cox[m], gfx->coy[m]))
+		if (pcb_is_point_on_thinline(X, Y, gfx->corner[n].X, gfx->corner[n].Y, gfx->corner[m].X, gfx->corner[m].Y))
 			return rnd_true;
 	}
-	if (pcb_is_point_on_thinline(X, Y, gfx->cox[0], gfx->coy[0], gfx->cox[2], gfx->coy[2]))
+	if (pcb_is_point_on_thinline(X, Y, gfx->corner[0].X, gfx->corner[0].Y, gfx->corner[2].X, gfx->corner[2].Y))
 		return rnd_true;
-	if (pcb_is_point_on_thinline(X, Y, gfx->cox[1], gfx->coy[1], gfx->cox[3], gfx->coy[3]))
+	if (pcb_is_point_on_thinline(X, Y, gfx->corner[1].X, gfx->corner[1].Y, gfx->corner[3].X, gfx->corner[3].Y))
 		return rnd_true;
 
 	return rnd_false;

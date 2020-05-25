@@ -795,10 +795,10 @@ TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elli
 		}
 
 		gfxlist_foreach(&ly->Gfx, &it, gfx) {
-			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->cox[0], DY+gfx->coy[0], DX+gfx->cox[1], DY+gfx->coy[1]);
-			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->cox[1], DY+gfx->coy[1], DX+gfx->cox[2], DY+gfx->coy[2]);
-			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->cox[2], DY+gfx->coy[2], DX+gfx->cox[3], DY+gfx->coy[3]);
-			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->cox[3], DY+gfx->coy[3], DX+gfx->cox[0], DY+gfx->coy[0]);
+			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->corner[0].X, DY+gfx->corner[0].Y, DX+gfx->corner[1].X, DY+gfx->corner[1].Y);
+			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->corner[1].X, DY+gfx->corner[1].Y, DX+gfx->corner[2].X, DY+gfx->corner[2].Y);
+			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->corner[2].X, DY+gfx->corner[2].Y, DX+gfx->corner[3].X, DY+gfx->corner[3].Y);
+			rnd_render->draw_line(pcb_crosshair.GC, DX+gfx->corner[3].X, DY+gfx->corner[3].Y, DX+gfx->corner[0].X, DY+gfx->corner[0].Y);
 		}
 
 		polylist_foreach(&ly->Polygon, &it, poly)
