@@ -1452,6 +1452,38 @@ static fgw_error_t pcb_act_LayerVisReset(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
+static const char pcb_acts_GfxMod[] = "GfxMod(transparent)";
+static const char pcb_acth_GfxMod[] = "Modify a gfx object: set transparent pixel on the pixmap";
+static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int op;
+	void *ptr1, *ptr2, *ptr3;
+	pcb_gfx_t *gfx;
+	rnd_coord_t x, y;
+	long type;
+
+	RND_ACT_CONVARG(1, FGW_KEYWORD, GfxMod, op = fgw_keyword(&argv[1]));
+
+
+	rnd_hid_get_coords("Click on a gfx", &x, &y, 0);
+	type = pcb_search_screen(x, y, PCB_OBJ_GFX, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
+	if (type != PCB_OBJ_GFX) {
+		rnd_message(RND_MSG_ERROR, "No gfx on that location.\n");
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+	gfx = ptr2;
+
+	switch(op) {
+		case F_Transparent: gfx_set_transparent_gui(gfx); break;
+		default:
+			RND_ACT_FAIL(GfxMod);
+	}
+
+	RND_ACT_IRES(0);
+	return 0;
+}
+
 static rnd_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
@@ -1471,7 +1503,8 @@ static rnd_action_t gui_action_list[] = {
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
 	{"BoardFlip", pcb_act_boardflip, pcb_acth_boardflip, pcb_acts_boardflip},
 	{"ClipInhibit", pcb_act_ClipInhibit, pcb_acth_ClipInhibit, pcb_acts_ClipInhibit},
-	{"LayerVisReset", pcb_act_LayerVisReset, pcb_acth_LayerVisReset, pcb_acts_LayerVisReset}
+	{"LayerVisReset", pcb_act_LayerVisReset, pcb_acth_LayerVisReset, pcb_acts_LayerVisReset},
+	{"GfxMod", pcb_act_GfxMod, pcb_acth_GfxMod, pcb_acts_GfxMod}
 };
 
 void pcb_gui_act_init2(void)

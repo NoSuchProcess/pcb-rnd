@@ -786,6 +786,7 @@ ha:{
 				-
 				{ha:Render level: under}    { action=propset(object, "a/render_level", "under") }
 				{ha:Render level: above}    { action=propset(object, "a/render_level", "above") }
+				{ha:Set transparent pixel}  { action=GfxMod(transparent) }
 				-
 				ha:Remove gfx             { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }

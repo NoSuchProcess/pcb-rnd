@@ -32,6 +32,7 @@
 
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hid_inlines.h>
+#include <librnd/core/actions.h>
 
 
 #include "board.h"
@@ -656,6 +657,56 @@ void pcb_gfx_resize_move_corner(pcb_gfx_t *gfx, int corn_idx, rnd_coord_t dx, rn
 /*	rnd_trace("pcb_gfx_resize_move_corner pt %d %mm;%mm %.0f;%.0f!\n", corn_idx, dx, dy, sgnx, sgny); */
 }
 
+int gfx_screen2pixmap_coord(pcb_gfx_t *gfx, rnd_coord_t x, rnd_coord_t y, long *px, long *py)
+{
+	rnd_coord_t dx = x - gfx->cx, dy = y - gfx->cy;
+
+	if (gfx->pxm_neutral == NULL)
+		return -1;
+
+	rnd_rotate(&dx, &dy, 0, 0, cos(-gfx->rot / RND_RAD_TO_DEG), sin(-gfx->rot / RND_RAD_TO_DEG));
+	*px = floor((double)dx / (double)gfx->sx * (double)gfx->pxm_neutral->sx + (double)gfx->pxm_neutral->sx/2.0);
+	*py = floor((double)dy / (double)gfx->sy * (double)gfx->pxm_neutral->sy + (double)gfx->pxm_neutral->sy/2.0);
+
+	if ((*px < 0) || (*px >= gfx->pxm_neutral->sx) || (*py < 0) || (*py >= gfx->pxm_neutral->sy))
+		return -1;
+
+	return 0;
+}
+
+int gfx_set_transparent(pcb_gfx_t *gfx, unsigned char tr, unsigned char tg, unsigned char tb, int undoable)
+{
+	if (gfx->pxm_neutral == NULL)
+		return -1;
+
+TODO("gfx: make this undoable");
+	gfx->pxm_neutral->tr = gfx->pxm_xformed->tr = tr;
+	gfx->pxm_neutral->tg = gfx->pxm_xformed->tg = tg;
+	gfx->pxm_neutral->tb = gfx->pxm_xformed->tb = tb;
+	gfx->pxm_neutral->has_transp = gfx->pxm_xformed->has_transp = 1;
+	gfx->pxm_neutral->transp_valid = gfx->pxm_xformed->transp_valid = 1;
+	rnd_pixmap_free_hid_data(gfx->pxm_xformed);
+
+	return 0;
+}
+
+void gfx_set_transparent_gui(pcb_gfx_t *gfx)
+{
+	rnd_coord_t x, y;
+	long px, py;
+	unsigned char *t;
+
+	rnd_hid_get_coords("Click on the pixel that should be transparent", &x, &y, 1);
+
+	if (gfx_screen2pixmap_coord(gfx, x, y, &px, &py) != 0) {
+		rnd_message(RND_MSG_ERROR, "No pixmap available for this gfx objet or clicked outside of the pixmap\n");
+		return;
+	}
+
+	t = gfx->pxm_neutral->p + (px + py * gfx->pxm_neutral->sx) * 3;
+
+	gfx_set_transparent(gfx, t[0], t[1], t[2], 1);
+}
 
 /*** draw ***/
 
