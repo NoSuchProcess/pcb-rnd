@@ -50,5 +50,6 @@ void pcb_gtk_mode_cursor_main(void);
 void pcb_gtk_pan_common(void);
 
 
-void ghid_init_pixmap_(pcb_gtk_pixmap_t *gpm);
+void ghid_init_pixmap_low(pcb_gtk_pixmap_t *gpm);
+void ghid_uninit_pixmap_low(pcb_gtk_pixmap_t *gpm);
 

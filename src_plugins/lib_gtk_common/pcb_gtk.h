@@ -72,6 +72,7 @@ struct pcb_gtk_impl_s {
 
 	void (*set_special_colors)(rnd_conf_native_t *cfg);
 	void (*draw_pixmap)(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm, rnd_coord_t ox, rnd_coord_t oy, rnd_coord_t dw, rnd_coord_t dh);
+	void (*uninit_pixmap)(rnd_hidlib_t *hidlib, pcb_gtk_pixmap_t *gpm);
 };
 
 #include "../src_plugins/lib_gtk_common/ui_zoompan.h"

@@ -783,6 +783,24 @@ static void pcb_ltf_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, 
 		pcb_ltf_draw_pixmap_(ltf_hidlib, pixmap->hid_data, cx - sx/2, cy - sy/2, sx, sy);
 }
 
+static void pcb_ltf_uninit_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pixmap)
+{
+	pcb_ltf_pixmap_t *lpm = pixmap->hid_data;
+
+	if (lpm == NULL)
+		return;
+
+	if (lpm->img_scaled != NULL)
+		XDestroyImage(lpm->img_scaled); /* frees lpm->img_data */
+	if (lpm->mask_scaled != 0)
+		XFreePixmap(display, lpm->mask_scaled);
+	if (lpm->pm_scaled != 0)
+		XFreePixmap(display, lpm->pm_scaled);
+
+	free(lpm);
+	pixmap->hid_data = NULL;
+}
+
 
 static rnd_pixmap_t ltf_bg_img;
 static void DrawBackgroundImage()
@@ -3038,6 +3056,7 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.busy = ltf_busy;
 
 	lesstif_hid.draw_pixmap = pcb_ltf_draw_pixmap;
+	lesstif_hid.uninit_pixmap = pcb_ltf_uninit_pixmap;
 
 	lesstif_hid.set_hidlib = ltf_set_hidlib;
 

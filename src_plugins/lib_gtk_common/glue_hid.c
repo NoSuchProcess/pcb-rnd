@@ -620,7 +620,13 @@ static void ghid_init_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pxm)
 
 	gtk_px->pxm = pxm;
 	pxm->hid_data = gtk_px;
-	ghid_init_pixmap_(gtk_px);
+	ghid_init_pixmap_low(gtk_px);
+}
+
+static void ghid_uninit_pixmap_(rnd_hid_t *hid, rnd_pixmap_t *pxm)
+{
+	ghid_uninit_pixmap_low((pcb_gtk_pixmap_t *)(pxm->hid_data));
+	free(pxm->hid_data);
 }
 
 static void ghid_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t sx, rnd_coord_t sy, const rnd_pixmap_t *pixmap)
@@ -635,6 +641,14 @@ static void ghid_draw_pixmap(rnd_hid_t *hid, rnd_coord_t cx, rnd_coord_t cy, rnd
 		rsy = (double)sy * ca + (double)sx * sa;
 /*rnd_trace("GUI scale: %mm %mm -> %mm %mm\n", sx, sy, (rnd_coord_t)rsx, (rnd_coord_t)rsy);*/
 		gctx->impl.draw_pixmap(gctx->hidlib, pixmap->hid_data, cx - rsx/2.0, cy - rsy/2.0, rsx, rsy);
+	}
+}
+
+static void ghid_uninit_pixmap(rnd_hid_t *hid, rnd_pixmap_t *pixmap)
+{
+	if (pixmap->hid_data != NULL) {
+		ghid_uninit_pixmap_(hid, pixmap);
+		pixmap->hid_data = NULL;
 	}
 }
 
@@ -718,6 +732,7 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 	dst->usage = ghid_usage;
 
 	dst->draw_pixmap = ghid_draw_pixmap;
+	dst->uninit_pixmap = ghid_uninit_pixmap;
 
 	dst->hid_data = ghidgui;
 }

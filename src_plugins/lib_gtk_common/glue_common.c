@@ -255,7 +255,7 @@ void pcb_gtk_interface_input_signals_disconnect(void)
 /*** misc ***/
 
 /* import a core pixmap into a gdk pixmap */
-void ghid_init_pixmap_(pcb_gtk_pixmap_t *gpm)
+void ghid_init_pixmap_low(pcb_gtk_pixmap_t *gpm)
 {
 	int rowstd, nch, x, y;
 	unsigned char *dst, *dst_row, *src = gpm->pxm->p;
@@ -283,6 +283,11 @@ void ghid_init_pixmap_(pcb_gtk_pixmap_t *gpm)
 	}
 }
 
+void ghid_uninit_pixmap_low(pcb_gtk_pixmap_t *gpm)
+{
+	g_object_unref(gpm->image);
+}
+
 static void ghid_load_bg_image(void)
 {
 	static rnd_pixmap_t pxm;
@@ -295,7 +300,7 @@ static void ghid_load_bg_image(void)
 			return;
 		}
 		ghidgui->bg_pixmap.pxm = &pxm;
-		ghid_init_pixmap_(&ghidgui->bg_pixmap);
+		ghid_init_pixmap_low(&ghidgui->bg_pixmap);
 	}
 }
 
