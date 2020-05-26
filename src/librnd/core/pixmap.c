@@ -46,6 +46,12 @@ static unsigned int pixmap_hash_(const void *key_, int pixels)
 	i ^= longhash(key->sy);
 	i ^= longhash((long)(key->tr_rot * 1000.0) + (((long)key->tr_xmirror) << 3) + (((long)key->tr_ymirror) << 4));
 	i ^= longhash((long)(key->tr_xscale * 1000.0) + (long)(key->tr_yscale * 1000.0));
+	if (key->transp_valid) {
+		i ^= 0x900;
+		i ^= ((unsigned int)key->tr) << 6;
+		i ^= ((unsigned int)key->tg) << 14;
+		i ^= ((unsigned int)key->tb) << 22;
+	}
 	if (pixels) {
 		i ^= jenhash(key->p, key->size);
 		key->hash = i;
