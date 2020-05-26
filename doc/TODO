@@ -42,7 +42,6 @@
 	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
 - FEATURE: new breadboard
 	- FEATURE: PCB_OBJ_GFX
-		- TODO("gfx")
 		- act_draw() binding
 		- rotated pixmap scale adjustment: missing in lesstif, partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
 	- FEATURE: hidlib: render pixmap: test in gl
