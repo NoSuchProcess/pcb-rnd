@@ -633,9 +633,7 @@ void pcb_gfx_resize_move_corner(pcb_gfx_t *gfx, int corn_idx, rnd_coord_t dx, rn
 	rnd_point_t *corn;
 	double sgnx, sgny;
 	undo_gfx_geo_t gtmp, *g = &gtmp;
-
-	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(gfx->parent.layer->parent.data), &undo_gfx_geo, sizeof(undo_gfx_geo_t));
-
+	rnd_coord_t nsx, nsy;
 
 	if ((corn_idx < 0) || (corn_idx > 3))
 		return;
@@ -644,11 +642,21 @@ void pcb_gfx_resize_move_corner(pcb_gfx_t *gfx, int corn_idx, rnd_coord_t dx, rn
 	sgnx = corn->X > gfx->cx ? 1 : -1;
 	sgny = corn->Y > gfx->cy ? 1 : -1;
 
+	nsx = gfx->sx + dx * sgnx;
+	nsy = gfx->sy + dy * sgny;
+
+	if ((nsx < 128) || (nsy < 128)) {
+		rnd_message(RND_MSG_ERROR, "Invalid gfx size\n");
+		return;
+	}
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(gfx->parent.layer->parent.data), &undo_gfx_geo, sizeof(undo_gfx_geo_t));
+
 	g->gfx = gfx;
 	g->cx = gfx->cx + rnd_round((double)dx / 2.0);;
 	g->cy = gfx->cy + rnd_round((double)dy / 2.0);;
-	g->sx = gfx->sx + dx * sgnx;
-	g->sy = gfx->sy + dy * sgny;
+	g->sx = nsx;
+	g->sy = nsy;
 	g->rot = gfx->rot;
 
 	undo_gfx_geo_swap(g);
