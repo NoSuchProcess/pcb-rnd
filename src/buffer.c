@@ -45,6 +45,7 @@
 #include "undo.h"
 #include "funchash_core.h"
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/pixmap.h>
 #include "obj_arc_op.h"
 #include "obj_line_op.h"
 #include "obj_text_op.h"
@@ -278,6 +279,52 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_attribute_put(&s->Attributes, "value", value);
 
 	RND_ACT_IRES(0);
+	return 0;
+}
+
+static const char pcb_acts_LoadPixmap[] = "LoadPixmap([filename])";
+static const char pcb_acth_LoadPixmap[] = "Loads a pixmap image from disk and creates a gfx object in buffer.";
+fgw_error_t pcb_act_LoadPixmap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *fn = NULL;
+	double dpi = 600.0;
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	rnd_pixmap_t *pxm;
+	pcb_gfx_t *g;
+
+	RND_ACT_MAY_CONVARG(1, FGW_STR, LoadPixmap, fn = argv[1].val.str);
+
+	if (fn == NULL) {
+		static char *default_file = NULL;
+		char *nfn;
+		nfn = rnd_gui->fileselect(rnd_gui, "Load pixmap into buffer gfx...",
+			"Choose a file to load the pixmap\nfor the gfx object to be created\nin the buffer.\n",
+			default_file, ".*", NULL, "gfx", RND_HID_FSD_READ | RND_HID_FSD_MAY_NOT_EXIST, NULL);
+		if (default_file != NULL) {
+			free(default_file);
+			default_file = NULL;
+		}
+		if (nfn == NULL) { /* cancel */
+			RND_ACT_IRES(-1);
+			return 0;
+		}
+		fn = default_file = nfn;
+	}
+
+	pxm = rnd_pixmap_load(RND_ACT_HIDLIB, fn);
+	if (pxm == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to load pixmap from '%s' - is that file a pixmap in any of the supported formats?\n", fn);
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+
+	g = pcb_gfx_new(&PCB_PASTEBUFFER->Data->Layer[PCB_CURRLID(pcb)], 0, 0,
+		RND_MIL_TO_COORD((double)pxm->sx / dpi * 1000.0), RND_MIL_TO_COORD((double)pxm->sy / dpi * 1000.0),
+		0, pcb_flag_make(0));
+
+	pcb_gfx_set_pixmap_free(g, pxm, 0);
+
+	RND_ACT_IRES(-1);
 	return 0;
 }
 
@@ -1210,6 +1257,7 @@ static rnd_action_t buffer_action_list[] = {
 	{"FreeRotateBuffer", pcb_act_FreeRotateBuffer, pcb_acth_FreeRotateBuffer, pcb_acts_FreeRotateBuffer},
 	{"ScaleBuffer", pcb_act_ScaleBuffer, pcb_acth_ScaleBuffer, pcb_acts_ScaleBuffer},
 	{"LoadFootprint", pcb_act_LoadFootprint, pcb_acth_LoadFootprint, pcb_acts_LoadFootprint},
+	{"LoadPixmap", pcb_act_LoadPixmap, pcb_acth_LoadPixmap, pcb_acts_LoadPixmap},
 	{"PasteBuffer", pcb_act_PasteBuffer, pcb_acth_PasteBuffer, pcb_acts_PasteBuffer}
 };
 
