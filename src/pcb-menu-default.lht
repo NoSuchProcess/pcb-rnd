@@ -784,6 +784,9 @@ ha:{
 				ha:Edit properties        { action=propedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				-
+				{ha:Render level: under}    { action=propset(object, "a/render_level", "under") }
+				{ha:Render level: above}    { action=propset(object, "a/render_level", "above") }
+				-
 				ha:Remove gfx             { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
 				ha:Move to current layer  { action=MoveToCurrentLayer(object) }
