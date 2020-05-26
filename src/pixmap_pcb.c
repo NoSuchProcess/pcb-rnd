@@ -145,7 +145,6 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 		}
 	}
 
-	rnd_trace("sx;sy: %ld %ld -> %ld %ld\n", ipm->sx, ipm->sy, pm->sx, pm->sy);
 TODO("create the transformed version if not in the cache already (by headers)");
 
 	return pm;
