@@ -95,6 +95,7 @@ void gfx_set_transparent_gui(pcb_gfx_t *gfx);
 /* Resize the image by a pair of screen coords and an expected size; if allow_x
    or allow_y is zero, ignore the component in that direction (intrepreted on
    the rotated image) */
+int gfx_set_resize_by_pixel_dist(pcb_gfx_t *gfx, long pdx, long pdy, rnd_coord_t len, rnd_bool allow_x, rnd_bool allow_y, rnd_bool undoable);
 void gfx_set_resize_gui(rnd_hidlib_t *hl, pcb_gfx_t *gfx, rnd_bool allow_x, rnd_bool allow_y);
 
 

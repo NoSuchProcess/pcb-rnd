@@ -682,9 +682,10 @@ int gfx_screen2pixmap_coord(pcb_gfx_t *gfx, rnd_coord_t x, rnd_coord_t y, long *
 	return 0;
 }
 
-int gfx_set_resize_by_pixel_dist(pcb_gfx_t *gfx, long pdx, long pdy, rnd_coord_t len, rnd_bool allow_x, rnd_bool allow_y)
+int gfx_set_resize_by_pixel_dist(pcb_gfx_t *gfx, long pdx, long pdy, rnd_coord_t len, rnd_bool allow_x, rnd_bool allow_y, rnd_bool undoable)
 {
 	double lenx, leny;
+	rnd_coord_t nsx = 0, nsy = 0;
 
 	if (pdx < 10) allow_x = 0;
 	if (pdy < 10) allow_y = 0;
@@ -699,14 +700,21 @@ int gfx_set_resize_by_pixel_dist(pcb_gfx_t *gfx, long pdx, long pdy, rnd_coord_t
 	if (allow_x) {
 		double lenx = cos(-gfx->rot / RND_RAD_TO_DEG) * (double)len;
 		double sc = lenx / (double)pdx;
-		gfx->sx = gfx->pxm_neutral->sx * sc;
+		nsx = gfx->pxm_neutral->sx * sc;
 	}
 
 	if (allow_y) {
 		double leny = sin((90-gfx->rot) / RND_RAD_TO_DEG) * (double)len;
 		double sc = leny / (double)pdy;
-		gfx->sy = gfx->pxm_neutral->sy * sc;
+		nsy = gfx->pxm_neutral->sy * sc;
 	}
+
+	if ((nsx > 0) || (nsy > 0)) {
+		if (nsx <= 0) nsx = gfx->sx;
+		if (nsy <= 0) nsy = gfx->sy;
+		pcb_gfx_chg_geo(gfx, gfx->cx, gfx->cy, nsx, nsy,  gfx->rot, undoable);
+	}
+
 /*rnd_trace("resize2: %mm %mm\n", gfx->sx, gfx->sy);*/
 	return 0;
 }
@@ -750,7 +758,7 @@ void gfx_set_resize_gui(rnd_hidlib_t *hl, pcb_gfx_t *gfx, rnd_bool allow_x, rnd_
 
 	len = rnd_get_value(lens, NULL, NULL, &succ);
 	if (succ)
-		gfx_set_resize_by_pixel_dist(gfx, px2-px1, py2-py1, len, allow_x, allow_y);
+		gfx_set_resize_by_pixel_dist(gfx, px2-px1, py2-py1, len, allow_x, allow_y, 1);
 	free(lens);
 }
 
