@@ -78,6 +78,10 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 				res = F->ArcPoint(ctx, (pcb_layer_t *)Ptr1, (pcb_arc_t *)Ptr2, (int *)Ptr3);
 			break;
 
+		case PCB_OBJ_GFX_POINT:
+			/* at the moment there are no operations on GFX point so it's missing from the op struct */
+			break;
+
 		case PCB_OBJ_TEXT:
 			if (F->Text)
 				res = F->Text(ctx, (pcb_layer_t *)Ptr1, (pcb_text_t *)Ptr2);
@@ -91,10 +95,6 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 		case PCB_OBJ_POLY_POINT:
 			if (F->Point)
 				res = F->Point(ctx, (pcb_layer_t *)Ptr1, (pcb_poly_t *)Ptr2, (rnd_point_t *)Ptr3);
-			break;
-
-		case PCB_OBJ_GFX_POINT:
-			TODO("gfx: operation");
 			break;
 
 		case PCB_OBJ_SUBC:
