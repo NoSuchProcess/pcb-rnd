@@ -682,6 +682,80 @@ int gfx_screen2pixmap_coord(pcb_gfx_t *gfx, rnd_coord_t x, rnd_coord_t y, long *
 	return 0;
 }
 
+int gfx_set_resize_by_pixel_dist(pcb_gfx_t *gfx, long pdx, long pdy, rnd_coord_t len, rnd_bool allow_x, rnd_bool allow_y)
+{
+	double lenx, leny;
+
+	if (pdx < 10) allow_x = 0;
+	if (pdy < 10) allow_y = 0;
+
+	if ((allow_x == 0) && (allow_y == 0))
+		return -1;
+
+	if (gfx->pxm_neutral == NULL)
+		return -1;
+
+/*rnd_trace("resize1: %mm %mm (%d %d)\n", gfx->sx, gfx->sy, pdx, pdy);*/
+	if (allow_x) {
+		double lenx = cos(-gfx->rot / RND_RAD_TO_DEG) * (double)len;
+		double sc = lenx / (double)pdx;
+		gfx->sx = gfx->pxm_neutral->sx * sc;
+	}
+
+	if (allow_y) {
+		double leny = sin((90-gfx->rot) / RND_RAD_TO_DEG) * (double)len;
+		double sc = leny / (double)pdy;
+		gfx->sy = gfx->pxm_neutral->sy * sc;
+	}
+/*rnd_trace("resize2: %mm %mm\n", gfx->sx, gfx->sy);*/
+	return 0;
+}
+
+void gfx_set_resize_gui(rnd_hidlib_t *hl, pcb_gfx_t *gfx, rnd_bool allow_x, rnd_bool allow_y)
+{
+	char *lens;
+	rnd_coord_t x1, y1, x2, y2;
+	long px1, py1, px2, py2;
+	double len;
+	int dirs;
+	rnd_bool succ;
+	static const char *msg[4] = {
+		NULL,
+		"horizontal distance of these two points",
+		"vertical distance of these two points",
+		"distance distance of these two points",
+	};
+
+	dirs = ((int)allow_y) << 1 | (int)allow_x;
+	if (dirs == 0) {
+		rnd_message(RND_MSG_ERROR, "Invalid direction restriction: either allow_x or allow_y should be 1\n");
+		return;
+	}
+
+	if (gfx->pxm_neutral == NULL) {
+		rnd_message(RND_MSG_ERROR, "Missing pixmap\n");
+		return;
+	}
+
+	rnd_hid_get_coords("Click the first point", &x1, &y1, 1);
+	rnd_hid_get_coords("Click the second point", &x2, &y2, 1);
+	if ((gfx_screen2pixmap_coord(gfx, x1, y1, &px1, &py1) != 0) || (gfx_screen2pixmap_coord(gfx, x2, y2, &px2, &py2) != 0)) {
+		rnd_message(RND_MSG_ERROR, "No pixmap available for this gfx objet or clicked outside of the pixmap\n");
+		return;
+	}
+
+	lens = rnd_hid_prompt_for(hl, msg[dirs], "0", "distance");
+	if (lens == NULL)
+		return;
+
+	len = rnd_get_value(lens, NULL, NULL, &succ);
+	if (succ)
+		gfx_set_resize_by_pixel_dist(gfx, px2-px1, py2-py1, len, allow_x, allow_y);
+	free(lens);
+}
+
+
+/*** undoable transparent color set ***/
 typedef struct {
 	pcb_gfx_t *gfx; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
 	unsigned char tr, tg, tb;

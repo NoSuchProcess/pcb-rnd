@@ -92,6 +92,11 @@ void pcb_gfx_resize_move_corner(pcb_gfx_t *gfx, int corn_idx, rnd_coord_t dx, rn
 int gfx_set_transparent(pcb_gfx_t *gfx, unsigned char tr, unsigned char tg, unsigned char tb, int undoable);
 void gfx_set_transparent_gui(pcb_gfx_t *gfx);
 
+/* Resize the image by a pair of screen coords and an expected size; if allow_x
+   or allow_y is zero, ignore the component in that direction (intrepreted on
+   the rotated image) */
+void gfx_set_resize_gui(rnd_hidlib_t *hl, pcb_gfx_t *gfx, rnd_bool allow_x, rnd_bool allow_y);
+
 
 /*** hash and eq ***/
 int pcb_gfx_eq(const pcb_host_trans_t *tr1, const pcb_gfx_t *g1, const pcb_host_trans_t *tr2, const pcb_gfx_t *g2);

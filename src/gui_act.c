@@ -1452,7 +1452,7 @@ static fgw_error_t pcb_act_LayerVisReset(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
-static const char pcb_acts_GfxMod[] = "GfxMod(transparent)";
+static const char pcb_acts_GfxMod[] = "GfxMod(transparent|resize)";
 static const char pcb_acth_GfxMod[] = "Modify a gfx object: set transparent pixel on the pixmap";
 static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -1476,6 +1476,7 @@ static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	switch(op) {
 		case F_Transparent: gfx_set_transparent_gui(gfx); break;
+		case F_Resize: gfx_set_resize_gui(RND_ACT_HIDLIB, gfx, 1, 1); break;
 		default:
 			RND_ACT_FAIL(GfxMod);
 	}
