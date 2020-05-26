@@ -80,6 +80,8 @@ unsigned int rnd_pixmap_hash_pixels(const void *key);
 int rnd_pixmap_eq_meta(const void *keya, const void *keyb);
 int rnd_pixmap_eq_pixels(const void *keya, const void *keyb);
 
+
+void rnd_pixmap_free_hid_data(rnd_pixmap_t *pxm);
 void rnd_pixmap_free_fields(rnd_pixmap_t *pxm);
 void rnd_pixmap_free(rnd_pixmap_t *pxm);
 

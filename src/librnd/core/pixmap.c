@@ -31,7 +31,7 @@
 #include <string.h>
 
 #include <librnd/core/pixmap.h>
-
+#include <librnd/core/hid.h>
 #include <librnd/core/error.h>
 
 static unsigned int pixmap_hash_(const void *key_, int pixels)
@@ -184,6 +184,13 @@ rnd_pixmap_t *rnd_pixmap_dup(rnd_hidlib_t *hidlib, const rnd_pixmap_t *pxm)
 	return r;
 }
 
+void rnd_pixmap_free_hid_data(rnd_pixmap_t *pxm)
+{
+	if ((rnd_render != NULL) && (rnd_render->uninit_pixmap != NULL))
+		rnd_render->uninit_pixmap(rnd_render, pxm);
+	pxm->hid_data_valid = 0;
+	pxm->hid_data = NULL;
+}
 
 void rnd_pixmap_free_fields(rnd_pixmap_t *pxm)
 {
