@@ -288,12 +288,14 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* shift grid alignment */
 		case F_ToggleGrid:
 			{
-				rnd_coord_t oldGrid = RND_ACT_HIDLIB->grid;
+				rnd_coord_t old_grid = rnd_conf.editor.grid, x, y;
 
-				RND_ACT_HIDLIB->grid = 1;
-				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
+				rnd_hidlib_set_grid(RND_ACT_HIDLIB, 1, rnd_false, 0, 0);
+				rnd_hid_get_coords("Click to set the grid origin", &x, &y, 1);
+				if (pcb_crosshair_move_absolute(x, y))
 					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true); /* first notify was in MoveCrosshairAbs */
-				rnd_hidlib_set_grid(RND_ACT_HIDLIB, oldGrid, rnd_true, pcb_crosshair.X, pcb_crosshair.Y);
+				rnd_hidlib_set_grid(RND_ACT_HIDLIB, old_grid, rnd_true, x, y);
+
 				rnd_grid_inval();
 			}
 			break;

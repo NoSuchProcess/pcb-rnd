@@ -239,7 +239,7 @@ ha:{
 							ha:global grid density 16 = { checked={conf(iseq, plugins/hid_gtk/global_grid/min_dist_px, 16)}; li:action={conf(set, plugins/hid_gtk/global_grid/min_dist_px, 16, design); conf(set, plugins/hid_gtk/local_grid/enable, 0, design) } update_on={} }
 						}
 					}
-					ha:Realign grid               = { a={<key>g; <key>r}; action={ GetXY(Click to set the grid origin); Display(ToggleGrid) } }
+					ha:Realign grid               = { a={<key>g; <key>r}; action={ Display(ToggleGrid) } }
 					}
 				}
 				-
