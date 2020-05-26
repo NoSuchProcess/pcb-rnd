@@ -221,7 +221,6 @@ void pcb_obj_attrib_post_change(rnd_attribute_list_t *list, const char *name, co
 		pcb_gfx_t *g = (pcb_gfx_t *)obj;
 		if ((value != NULL) && ((*value == 'u') || (*value == 'U'))) g->render_under = 1;
 		else g->render_under = 0;
-rnd_trace("renderlevel: %s -> %d\n", value, g->render_under);
 	}
 }
 
