@@ -194,6 +194,7 @@ void rnd_pixmap_free_hid_data(rnd_pixmap_t *pxm)
 
 void rnd_pixmap_free_fields(rnd_pixmap_t *pxm)
 {
+	rnd_pixmap_free_hid_data(pxm);
 	free(pxm->p);
 }
 
