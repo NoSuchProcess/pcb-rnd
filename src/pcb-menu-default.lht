@@ -76,6 +76,7 @@ ha:{
 						ha:Load MUCS pl file                 = {                             action=LoadMucsFrom() }
 						ha:Load Hyperlynx .hyp file          = {                             action=LoadHypFrom() }
 						ha:Load HP-GL plot to paste-buffer   = {                             action=LoadHPGLFrom() }
+						ha:Load pixmap to paste-buffer gfx   = {                             li:action={PasteBuffer(Clear); LoadPixmap(); Tool(buffer);} }
 						-
 						ha:Import KiCad/eeschema schematics  = {                             action=LoadEeschemaFrom() }
 						ha:Import mentor graphics schematics = {                             action=LoadMentorFrom() }
