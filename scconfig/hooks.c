@@ -194,7 +194,7 @@ int hook_detect_target()
 	if (want_gd) {
 		require("libs/gui/gd/presents", 0, 0);
 		if (!istrue(get("libs/gui/gd/presents"))) {
-			report_repeat("WARNING: Since there's no libgd, disabling gd based exports (png)...\n");
+			report_repeat("WARNING: Since there's no libgd, disabling gd based exports and pixmap imports (png, gif, jpeg)...\n");
 			hook_custom_arg("disable-gd-gif", NULL);
 			hook_custom_arg("disable-gd-png", NULL);
 			hook_custom_arg("disable-gd-jpg", NULL);
