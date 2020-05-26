@@ -240,7 +240,7 @@ void pcb_buffer_move_selected(pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_coord_
 	pcb_undo_inc_serial();
 }
 
-static const char pcb_acts_LoadFootprint[] = "pcb_load_footprint(filename[,refdes,value])";
+static const char pcb_acts_LoadFootprint[] = "LoadFootprint(filename[,refdes,value])";
 static const char pcb_acth_LoadFootprint[] = "Loads a single footprint by name.";
 /* DOC: loadfootprint.html */
 fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
