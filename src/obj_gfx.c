@@ -682,21 +682,71 @@ int gfx_screen2pixmap_coord(pcb_gfx_t *gfx, rnd_coord_t x, rnd_coord_t y, long *
 	return 0;
 }
 
-int gfx_set_transparent(pcb_gfx_t *gfx, unsigned char tr, unsigned char tg, unsigned char tb, int undoable)
+typedef struct {
+	pcb_gfx_t *gfx; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
+	unsigned char tr, tg, tb;
+	unsigned char has_transp, transp_valid;
+} undo_gfx_transp_t;
+
+static int undo_gfx_transp_swap(void *udata)
 {
+	undo_gfx_transp_t *g = udata;
+	pcb_gfx_t *gfx = g->gfx;
+
 	if (gfx->pxm_neutral == NULL)
 		return -1;
 
-TODO("gfx: make this undoable");
-	gfx->pxm_neutral->tr = gfx->pxm_xformed->tr = tr;
-	gfx->pxm_neutral->tg = gfx->pxm_xformed->tg = tg;
-	gfx->pxm_neutral->tb = gfx->pxm_xformed->tb = tb;
-	gfx->pxm_neutral->has_transp = gfx->pxm_xformed->has_transp = 1;
-	gfx->pxm_neutral->transp_valid = gfx->pxm_xformed->transp_valid = 1;
+	rnd_swap(unsigned char,  gfx->pxm_xformed->tr, g->tr);
+	rnd_swap(unsigned char,  gfx->pxm_xformed->tg, g->tg);
+	rnd_swap(unsigned char,  gfx->pxm_xformed->tb, g->tb);
+	rnd_swap(unsigned char,  gfx->pxm_xformed->has_transp, g->has_transp);
+	rnd_swap(unsigned char,  gfx->pxm_xformed->transp_valid, g->transp_valid);
+
+	gfx->pxm_neutral->tr = gfx->pxm_xformed->tr;
+	gfx->pxm_neutral->tg = gfx->pxm_xformed->tg;
+	gfx->pxm_neutral->tb = gfx->pxm_xformed->tb;
+	gfx->pxm_neutral->has_transp = gfx->pxm_xformed->has_transp;
+	gfx->pxm_neutral->transp_valid = gfx->pxm_xformed->transp_valid;
 	rnd_pixmap_free_hid_data(gfx->pxm_xformed);
 
 	pcb_gfx_invalidate_draw(gfx->parent.layer, gfx);
 	pcb_draw();
+
+	return 0;
+}
+
+static void undo_gfx_transp_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_gfx_transp_t *g = udata;
+	rnd_snprintf(dst, dst_len, "gfx transp: %d %d #%02x%02x%02x", g->has_transp, g->transp_valid, g->tr, g->tg, g->tb);
+}
+
+static const uundo_oper_t undo_gfx_transp = {
+	core_gfx_cookie,
+	NULL,
+	undo_gfx_transp_swap,
+	undo_gfx_transp_swap,
+	undo_gfx_transp_print
+};
+
+int gfx_set_transparent(pcb_gfx_t *gfx, unsigned char tr, unsigned char tg, unsigned char tb, int undoable)
+{
+	undo_gfx_transp_t gtmp, *g = &gtmp;
+
+	if (gfx->pxm_neutral == NULL)
+		return -1;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(gfx->parent.layer->parent.data), &undo_gfx_transp, sizeof(undo_gfx_transp_t));
+
+	g->gfx = gfx;
+	g->tr = tr;
+	g->tg = tg;
+	g->tb = tb;
+	g->has_transp = g->transp_valid = 1;
+
+	undo_gfx_transp_swap(g);
+	if (undoable) pcb_undo_inc_serial();
+
 	return 0;
 }
 
