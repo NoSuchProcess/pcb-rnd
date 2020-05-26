@@ -48,7 +48,7 @@ typedef struct{
 
 #define PCB_FLAGEDIT_TYPES \
 	(PCB_OBJ_PSTK | PCB_OBJ_LINE | PCB_OBJ_POLY | \
-	PCB_OBJ_TEXT | PCB_OBJ_SUBC | PCB_OBJ_ARC)
+	PCB_OBJ_TEXT | PCB_OBJ_SUBC | PCB_OBJ_ARC | PCB_OBJ_GFX)
 
 static void fe_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
