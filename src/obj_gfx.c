@@ -718,12 +718,11 @@ void pcb_gfx_draw(pcb_draw_info_t *info, pcb_gfx_t *gfx, int allow_term_gfx)
 	pcb_gfx_draw_(info, gfx, allow_term_gfx);
 }
 
-rnd_r_dir_t pcb_gfx_draw_callback(const rnd_rnd_box_t *b, void *cl)
+RND_INLINE rnd_r_dir_t pcb_gfx_draw_callback_(pcb_gfx_t *gfx, void *cl)
 {
-	pcb_gfx_t *gfx = (pcb_gfx_t *)b;
 	pcb_draw_info_t *info = cl;
 
-	if (pcb_hidden_floater((pcb_any_obj_t*)b, info) || pcb_partial_export((pcb_any_obj_t*)b, info))
+	if (pcb_hidden_floater((pcb_any_obj_t*)gfx, info) || pcb_partial_export((pcb_any_obj_t*)gfx, info))
 		return RND_R_DIR_FOUND_CONTINUE;
 
 	if (!PCB->SubcPartsOn && pcb_lobj_parent_subc(gfx->parent_type, &gfx->parent))
@@ -731,6 +730,22 @@ rnd_r_dir_t pcb_gfx_draw_callback(const rnd_rnd_box_t *b, void *cl)
 
 	pcb_gfx_draw(info, gfx, 0);
 	return RND_R_DIR_FOUND_CONTINUE;
+}
+
+rnd_r_dir_t pcb_gfx_draw_under_callback(const rnd_rnd_box_t *b, void *cl)
+{
+	pcb_gfx_t *gfx = (pcb_gfx_t *)b;
+	if (!gfx->render_under)
+		return RND_R_DIR_FOUND_CONTINUE;
+	return pcb_gfx_draw_callback_(gfx, cl);
+}
+
+rnd_r_dir_t pcb_gfx_draw_above_callback(const rnd_rnd_box_t *b, void *cl)
+{
+	pcb_gfx_t *gfx = (pcb_gfx_t *)b;
+	if (gfx->render_under)
+		return RND_R_DIR_FOUND_CONTINUE;
+	return pcb_gfx_draw_callback_(gfx, cl);
 }
 
 /* erases a gfx on a layer */

@@ -47,6 +47,7 @@ struct pcb_gfx_s {       /* holds information about gfxs */
 	rnd_pixmap_t *pxm_xformed;     /* transformed version from the cache */
 
 	/* calculated/cached fields */
+	unsigned int render_under:1;   /* render under layer objects (default is 0=above) */
 	rnd_point_t corner[4];         /* the 4 corners - has to be point so search.c can return it for the crosshair to edit */
 	gdl_elem_t link;               /* an gfx is in a list on a layer */
 };
