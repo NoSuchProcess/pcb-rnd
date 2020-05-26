@@ -324,7 +324,7 @@ fgw_error_t pcb_act_LoadPixmap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	pcb_gfx_set_pixmap_free(g, pxm, 0);
 
-	RND_ACT_IRES(-1);
+	RND_ACT_IRES(0);
 	return 0;
 }
 
