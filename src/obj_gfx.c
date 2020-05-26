@@ -687,6 +687,8 @@ TODO("gfx: make this undoable");
 	gfx->pxm_neutral->transp_valid = gfx->pxm_xformed->transp_valid = 1;
 	rnd_pixmap_free_hid_data(gfx->pxm_xformed);
 
+	pcb_gfx_invalidate_draw(gfx->parent.layer, gfx);
+	pcb_draw();
 	return 0;
 }
 
