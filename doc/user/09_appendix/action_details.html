@@ -1533,6 +1533,36 @@ Get a coordinate. If x or y specified, the return value of the action is the x o
 Prompts the user for a coordinate, if one is not already selected. 
 </dd></dl>
 
+<h2 id="gfxmod">GfxMod</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+GfxMod(transparent, [idpath, [#rrggbb]])
+GfxMod(transparent, [idpath, [x, y]])
+GfxMod(resize, [idpath, [pdx, pdy1, len]])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Modify a gfx object: set transparent pixel on the pixmap or resize by measurement
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Commands: 
+<ul>
+  
+<li>
+ transparent, no more args: interactive way for the user to specify the transparent color by a click  
+<li>
+ transparent, idpath, #rrggbb: specify transparent color  
+<li>
+ transparent, idpath, px, py: specify transparent color by pixel coordinates within the pixmap  
+<li>
+ resize, no more args: interactive resizer where the user clicks on two points of the pixmap on screen and specifies the real disatnce between them and the code resizes the pixmap to match that  
+<li>
+ resize, idpath, pdx, pdy, len: resize pixmap so that pixel distance pdx;pdy will match len coord units 
+</ul>
+ 
+</dd></dl>
+
 <h2 id="import">Import</h2>
 <dl><dd>
 <p>
@@ -1846,7 +1876,7 @@ This action is a GUI front-end to the core's
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-pcb_load_footprint(filename[,refdes,value])
+LoadFootprint(filename[,refdes,value])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Loads a single footprint by name.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
