@@ -515,11 +515,11 @@ TODO("when to generate a rounded corner?");
 static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, const hkp_netclass_t *nc, node_t *nt, int omit_on_silk, pcb_flag_values_t flg)
 {
 	node_t *attr, *tmp;
-	rnd_coord_t tx, ty, h, thickness = 0, width = 0, height = 0, ymin = 0;
-	rnd_coord_t anchx = 0, anchy = 0;
-	double rot = 0;
+	rnd_coord_t tx, ty, h, thickness, width, height, ymin;
+	rnd_coord_t anchx, anchy;
+	double rot;
 	unsigned long mirrored = 0;
-	long int font_id = 0;
+	long int font_id;
 	char *tmp_char;
 	font_size_res_t result;
 
