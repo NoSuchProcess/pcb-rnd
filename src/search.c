@@ -547,7 +547,7 @@ typedef struct {
 static rnd_r_dir_t gfxpoint_callback(const rnd_rnd_box_t *box, void *cl)
 {
 	pcb_gfx_t *gfx = (pcb_gfx_t *)box;
-	gfxptcb_t *ctx = (ptcb_t *)cl;
+	gfxptcb_t *ctx = (gfxptcb_t *)cl;
 	double d;
 	pcb_data_t *dt;
 	int n;
