@@ -1121,29 +1121,61 @@ static fgw_error_t pcb_act_Rotate90(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_GfxMod[] = "GfxMod(transparent|resize)";
-static const char pcb_acth_GfxMod[] = "Modify a gfx object: set transparent pixel on the pixmap";
+static const char pcb_acts_GfxMod[] =
+	"GfxMod(transparent, [idpath, [#rrggbb]])\n"
+	"GfxMod(transparent, [idpath, [x, y]])\n"
+	"GfxMod(resize, [idpath, [px1, py1, px2, py2, len]])"
+	;
+static const char pcb_acth_GfxMod[] = "Modify a gfx object: set transparent pixel on the pixmap or resize by measurement";
 static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
 	void *ptr1, *ptr2, *ptr3;
 	pcb_gfx_t *gfx;
 	rnd_coord_t x, y;
+	pcb_idpath_t *idp;
 	long type;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, GfxMod, op = fgw_keyword(&argv[1]));
+	RND_ACT_MAY_CONVARG(2, FGW_IDPATH, GfxMod, idp = fgw_idpath(&argv[2]));
 
-	rnd_hid_get_coords("Click on a gfx", &x, &y, 0);
-	type = pcb_search_screen(x, y, PCB_OBJ_GFX, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
-	if (type != PCB_OBJ_GFX) {
-		rnd_message(RND_MSG_ERROR, "No gfx on that location.\n");
-		RND_ACT_IRES(-1);
-		return 0;
+	if (argc <= 2) {
+		rnd_hid_get_coords("Click on a gfx", &x, &y, 0);
+		type = pcb_search_screen(x, y, PCB_OBJ_GFX, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
+		if (type != PCB_OBJ_GFX) {
+			rnd_message(RND_MSG_ERROR, "No gfx on that location.\n");
+			RND_ACT_IRES(-1);
+			return 0;
+		}
+		gfx = ptr2;
 	}
-	gfx = ptr2;
+	else {
+		gfx = (pcb_gfx_t *)pcb_idpath2obj(PCB, idp);
+		if ((gfx == NULL) || (gfx->type != PCB_OBJ_GFX))
+			return FGW_ERR_ARG_CONV;
+	}
 
 	switch(op) {
-		case F_Transparent: gfx_set_transparent_gui(gfx); break;
+		case F_Transparent:
+			if (argc > 4) {
+				long px, py;
+				RND_ACT_CONVARG(3, FGW_LONG, GfxMod, px = argv[3].val.nat_long);
+				RND_ACT_CONVARG(4, FGW_LONG, GfxMod, py = argv[4].val.nat_long);
+				RND_ACT_IRES(gfx_set_transparent_by_coord(gfx, px, py));
+				return 0;
+			}
+			else if (argc > 3) {
+				rnd_color_t clr;
+				char *s;
+				RND_ACT_CONVARG(3, FGW_STR, GfxMod, s = argv[3].val.str);
+				if (rnd_color_load_str(&clr, s) == 0)
+					gfx_set_transparent(gfx, clr.r, clr.g, clr.b, 1);
+				else
+					RND_ACT_FAIL(GfxMod);
+			}
+			else
+				gfx_set_transparent_gui(gfx);
+			break;
 		case F_Resize: gfx_set_resize_gui(RND_ACT_HIDLIB, gfx, 1, 1); break;
 		default:
 			RND_ACT_FAIL(GfxMod);
