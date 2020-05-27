@@ -667,37 +667,6 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		return;
 	}
 
-#if 0
-before enabling this, fix the code: do not ever draw debug on board layers;
-if you want to have debug draws, create a dedicated UI layer
-	{
-		double sina = 0, cosa = 0, rotbb = 0;
-		rnd_coord_t xc = 0, yc = 0, x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-		rnd_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
-
-		TODO("Remove this block after checking text bounding box calculations");
-		TODO("Use an UI layer for this.  UI layer API in src/layer_ui.h");
-		TODO("Use pcb_text_new_by_bbox() in src/obj_text.h ");
-		/* Rotate the points around center (xc,yc) */
-		sina = sin((double)rotbb / RND_RAD_TO_DEG);
-		cosa = cos((double)rotbb / RND_RAD_TO_DEG);
-		{
-		rnd_coord_t xaux1 = x2, yaux1 = y1;
-		rnd_coord_t xaux3 = x1, yaux3 = y2;
-		/* This handles bbox rotation. */
-		rnd_rotate(&xaux1, &yaux1, xc, yc, cosa, sina);
-		rnd_rotate(&xaux3, &yaux3, xc, yc, cosa, sina);
-		rnd_rotate(&x1, &y1, xc, yc, cosa, sina);
-		rnd_rotate(&x2, &y2, xc, yc, cosa, sina);
-
-		pcb_line_new(ly, x1, y1, xaux1, yaux1, thickness, cl, DEFAULT_OBJ_FLAG);
-		pcb_line_new(ly, xaux1, yaux1, x2, y2, thickness, cl, DEFAULT_OBJ_FLAG);
-		pcb_line_new(ly, x2, y2, xaux3, yaux3, thickness, cl, DEFAULT_OBJ_FLAG);
-		pcb_line_new(ly, xaux3, yaux3, x1, y1, thickness, cl, DEFAULT_OBJ_FLAG);
-		}
-	}
-#endif
-
 TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
 TODO("HEIGHT should become scale");
 TODO("figure what TEXT_OPTIONS we have. One of them is MIRRORED (brd2 example)");
