@@ -557,7 +557,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	tmp = find_nth(attr->first_child, "TEXT_OPTIONS", 0);
 	if (tmp != NULL)
 		if (strcmp(tmp->argv[1], "MIRRORED") == 0) {
-			mirrored = PCB_FLAG_ONSOLDER;
+			mirrored = PCB_TXT_MIRROR_Y;
 			rot = rot + 180;
 			if (rot > 360) rot = rot - 360;
 		}
@@ -678,7 +678,9 @@ TODO("[easy] STROKE_WIDTH: we have support for that, but what's the unit? what i
 /*  The distance between those traces seems to depend on text height.*/
 /*  In brd2 example, it is 0.04mm for J1, assembly layer, and 0.02mm for R1.*/
 
-	pcb_text_new_by_bbox(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, width, height, anchx, anchy, 1, 100, rot, thickness, nt->argv[1], pcb_flag_make(flg | mirrored));
+	if (mirrored != 0)
+		rot = -rot;
+	pcb_text_new_by_bbox(ly, pcb_font(ctx->pcb, 0, 0), tx, ty, width, height, anchx, anchy, 1, mirrored, rot, thickness, nt->argv[1], pcb_flag_make(flg));
 }
 
 static void parse_dgw_via(hkp_ctx_t *ctx, const hkp_netclass_t *nc, node_t *nv)
