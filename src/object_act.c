@@ -1124,7 +1124,7 @@ static fgw_error_t pcb_act_Rotate90(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_GfxMod[] =
 	"GfxMod(transparent, [idpath, [#rrggbb]])\n"
 	"GfxMod(transparent, [idpath, [x, y]])\n"
-	"GfxMod(resize, [idpath, [px1, py1, px2, py2, len]])"
+	"GfxMod(resize, [idpath, [pdx, pdy1, len]])"
 	;
 static const char pcb_acth_GfxMod[] = "Modify a gfx object: set transparent pixel on the pixmap or resize by measurement";
 static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -1176,7 +1176,19 @@ static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else
 				gfx_set_transparent_gui(gfx);
 			break;
-		case F_Resize: gfx_set_resize_gui(RND_ACT_HIDLIB, gfx, 1, 1); break;
+		case F_Resize:
+			if (argc > 5) {
+				long pdx, pdy;
+				rnd_coord_t len;
+				RND_ACT_CONVARG(3, FGW_LONG, GfxMod, pdx = argv[3].val.nat_long);
+				RND_ACT_CONVARG(4, FGW_LONG, GfxMod, pdy = argv[4].val.nat_long);
+				RND_ACT_CONVARG(5, FGW_COORD, GfxMod, len = fgw_coord(&argv[5]));
+				RND_ACT_IRES(gfx_set_resize_by_pixel_dist(gfx, pdx, pdy, len, 1, 1, 1));
+				return 0;
+			}
+			else
+				gfx_set_resize_gui(RND_ACT_HIDLIB, gfx, 1, 1);
+			break;
 		default:
 			RND_ACT_FAIL(GfxMod);
 	}
