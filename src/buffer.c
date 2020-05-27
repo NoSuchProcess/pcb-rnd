@@ -288,7 +288,6 @@ fgw_error_t pcb_act_LoadPixmap(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fn = NULL;
 	double dpi = 600.0;
-	pcb_board_t *pcb = PCB_ACT_BOARD;
 	rnd_pixmap_t *pxm;
 	pcb_gfx_t *g;
 
