@@ -516,8 +516,8 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 {
 	node_t *attr, *tmp;
 	rnd_coord_t tx, ty, h, thickness = 0, width = 0, height = 0, ymin = 0;
-	rnd_coord_t x1 = 0, x2 = 0, y1 = 0, y2 = 0, xc = 0, yc = 0, anchx = 0, anchy = 0;
-	double rot = 0, rotbb = 0, sina = 0, cosa = 0;
+	rnd_coord_t anchx = 0, anchy = 0;
+	double rot = 0;
 	unsigned long mirrored = 0;
 	long int font_id = 0;
 	char *tmp_char;
@@ -547,7 +547,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	tmp = find_nth(attr->first_child, "ROTATION", 0);
 	if (tmp != NULL) {
 		parse_rot(ctx, tmp, &rot, (pcb_layer_flags_(ly) & PCB_LYT_BOTTOM));
-		rotbb = rot;
+/*		rotbb = rot; remove bbox */
 	}
 	else {
 		hkp_error(attr, "Can not find rotation of text. Text will be NOT rendered.\n");
@@ -605,30 +605,30 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 
 	tmp = find_nth(attr->first_child, "HORZ_JUST", 0);
 	if (tmp != NULL) {
-		xc = tx;
+/*		xc = tx; remove bbox */
 		if (strcmp(tmp->argv[1], "Left") == 0) {
-			x1 = tx;
+/*			x1 = tx; remove bbox */
 			anchx = 0;
-			if (mirrored == 0)
+/*			if (mirrored == 0)
 				x2 = tx+width;
 			else
-				x2 = tx-width;
+				x2 = tx-width; remove bbox */
 		}
 		else if (strcmp(tmp->argv[1], "Center") == 0) {
-			x1 = tx - (width >> 1);
+/*			x1 = tx - (width >> 1); remove bbox*/
 			anchx = width >> 1;
-			if (mirrored == 0)
+/*			if (mirrored == 0)
 				x2 = tx + (width >> 1);
 			else
-				x2 = tx - (width >> 1);
+				x2 = tx - (width >> 1); remove bbox*/
 		}
 		else if (strcmp(tmp->argv[1], "Right") == 0) {
-			x2 = tx;
+/*			x2 = tx; remove bbox */
 			anchx = width;
-			if (mirrored == 0)
+/*			if (mirrored == 0)
 				x1 = tx-width;
 			else
-				x1 = tx+width;
+				x1 = tx+width;*/
 		}
 		else
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
@@ -640,7 +640,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 
 	tmp = find_nth(attr->first_child, "VERT_JUST", 0);
 	if (tmp != NULL) {
-		yc = ty;
+/*		yc = ty; remove bbox*/
 		rnd_coord_t ymax = height+ymin;
 		TODO(
 			"Consider rotation, using:"
@@ -649,14 +649,14 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 			"  double sina = sin(-(double)rot / RND_RAD_TO_DEG), cosa = cos(-(double)rot / RND_RAD_TO_DEG);");
 		if (strcmp(tmp->argv[1], "Top") == 0) {
 			anchy = 0;
-			y1 = ty+height; y2 = ty;
+/*			y1 = ty+height; y2 = ty; remove bbox */
 		}
 		else if (strcmp(tmp->argv[1], "Center") == 0) {
-			y1 = ty - ymin + (ymax >> 1); y2 = ty - (ymax >> 1);
+/*			y1 = ty - ymin + (ymax >> 1); y2 = ty - (ymax >> 1); remove bbox*/
 			anchy = ymax >> 1;
 		}
 		else if (strcmp(tmp->argv[1], "Bottom") == 0) {
-			y1=ty-ymin; y2=ty-ymin-height; /* ymin is negative */
+/*			y1=ty-ymin; y2=ty-ymin-height; remove bbox; ymin is negative */
 			anchy = height+ymin; /* ymin is negative */
 		}
 		else
@@ -671,6 +671,8 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 before enabling this, fix the code: do not ever draw debug on board layers;
 if you want to have debug draws, create a dedicated UI layer
 	{
+		double sina = 0, cosa = 0, rotbb = 0;
+		rnd_coord_t xc = 0, yc = 0, x1 = 0, x2 = 0, y1 = 0, y2 = 0;
 		rnd_coord_t cl = net_get_clearance(ctx, ly, nc, HKP_CLR_POLY2TRACE, tmp) * 2;
 
 		TODO("Remove this block after checking text bounding box calculations");
