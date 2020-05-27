@@ -684,7 +684,6 @@ int gfx_screen2pixmap_coord(pcb_gfx_t *gfx, rnd_coord_t x, rnd_coord_t y, long *
 
 int gfx_set_resize_by_pixel_dist(pcb_gfx_t *gfx, long pdx, long pdy, rnd_coord_t len, rnd_bool allow_x, rnd_bool allow_y, rnd_bool undoable)
 {
-	double lenx, leny;
 	rnd_coord_t nsx = 0, nsy = 0;
 
 	if (pdx < 10) allow_x = 0;
