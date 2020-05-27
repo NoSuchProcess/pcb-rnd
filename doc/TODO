@@ -40,9 +40,7 @@
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
 - FEATURE: new breadboard
-	- FEATURE: PCB_OBJ_GFX
-		- act_draw() binding
-		- rotated pixmap scale adjustment: missing in lesstif, partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
+	- FEATURE: gfx rotated pixmap scale adjustment: missing in lesstif, partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
