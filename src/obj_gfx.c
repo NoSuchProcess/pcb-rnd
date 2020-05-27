@@ -832,6 +832,20 @@ int gfx_set_transparent(pcb_gfx_t *gfx, unsigned char tr, unsigned char tg, unsi
 	return 0;
 }
 
+int gfx_set_transparent_by_coord(pcb_gfx_t *gfx, long px, long py)
+{
+	unsigned char *t;
+
+	if (gfx->pxm_neutral == NULL)
+		return -1;
+
+	if ((px < 0) || (py < 0) || (px >= gfx->pxm_neutral->sx) || (py >= gfx->pxm_neutral->sy))
+		return -1;
+
+	t = gfx->pxm_neutral->p + (px + py * gfx->pxm_neutral->sx) * 3;
+	return gfx_set_transparent(gfx, t[0], t[1], t[2], 1);
+}
+
 void gfx_set_transparent_gui(pcb_gfx_t *gfx)
 {
 	rnd_coord_t x, y;

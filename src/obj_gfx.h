@@ -90,6 +90,7 @@ void pcb_gfx_resize_move_corner(pcb_gfx_t *gfx, int corn_idx, rnd_coord_t dx, rn
 
 /* Change the transparent pixel value on the underlying pixmap */
 int gfx_set_transparent(pcb_gfx_t *gfx, unsigned char tr, unsigned char tg, unsigned char tb, int undoable);
+int gfx_set_transparent_by_coord(pcb_gfx_t *gfx, long px, long py);
 void gfx_set_transparent_gui(pcb_gfx_t *gfx);
 
 /* Resize the image by a pair of screen coords and an expected size; if allow_x
