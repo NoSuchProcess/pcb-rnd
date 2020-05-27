@@ -1127,6 +1127,7 @@ static const char pcb_acts_GfxMod[] =
 	"GfxMod(resize, [idpath, [pdx, pdy1, len]])"
 	;
 static const char pcb_acth_GfxMod[] = "Modify a gfx object: set transparent pixel on the pixmap or resize by measurement";
+/* DOC: gfxmod.html */
 static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
