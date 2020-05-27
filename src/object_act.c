@@ -1121,6 +1121,38 @@ static fgw_error_t pcb_act_Rotate90(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_GfxMod[] = "GfxMod(transparent|resize)";
+static const char pcb_acth_GfxMod[] = "Modify a gfx object: set transparent pixel on the pixmap";
+static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int op;
+	void *ptr1, *ptr2, *ptr3;
+	pcb_gfx_t *gfx;
+	rnd_coord_t x, y;
+	long type;
+
+	RND_ACT_CONVARG(1, FGW_KEYWORD, GfxMod, op = fgw_keyword(&argv[1]));
+
+	rnd_hid_get_coords("Click on a gfx", &x, &y, 0);
+	type = pcb_search_screen(x, y, PCB_OBJ_GFX, (void **)&ptr1, (void **)&ptr2, (void **)&ptr3);
+	if (type != PCB_OBJ_GFX) {
+		rnd_message(RND_MSG_ERROR, "No gfx on that location.\n");
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+	gfx = ptr2;
+
+	switch(op) {
+		case F_Transparent: gfx_set_transparent_gui(gfx); break;
+		case F_Resize: gfx_set_resize_gui(RND_ACT_HIDLIB, gfx, 1, 1); break;
+		default:
+			RND_ACT_FAIL(GfxMod);
+	}
+
+	RND_ACT_IRES(0);
+	return 0;
+}
+
 static rnd_action_t object_action_list[] = {
 	{"Attributes", pcb_act_Attributes, pcb_acth_Attributes, pcb_acts_Attributes},
 	{"DisperseElements", pcb_act_DisperseElements, pcb_acth_DisperseElements, pcb_acts_DisperseElements},
@@ -1133,7 +1165,8 @@ static rnd_action_t object_action_list[] = {
 	{"MoveLayer", pcb_act_MoveLayer, pcb_acth_MoveLayer, pcb_acts_MoveLayer},
 	{"subc", pcb_act_subc, pcb_acth_subc, pcb_acts_subc},
 	{"CreateText", pcb_act_CreateText, pcb_acth_CreateText, pcb_acts_CreateText},
-	{"Rotate90", pcb_act_Rotate90, pcb_acth_Rotate90, pcb_acts_Rotate90}
+	{"Rotate90", pcb_act_Rotate90, pcb_acth_Rotate90, pcb_acts_Rotate90},
+	{"GfxMod", pcb_act_GfxMod, pcb_acth_GfxMod, pcb_acts_GfxMod}
 };
 
 void pcb_object_act_init2(void)
