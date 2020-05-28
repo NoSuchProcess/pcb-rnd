@@ -130,6 +130,7 @@ static int parent_net_len_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb
 	rnd_coord_t new_end[4], new_th, old_end[4], old_th;
 	double th;
 
+	if (arrived_from != NULL) {
 	if (obj_ends(new_obj, new_end, &new_th) != 0) {
 		rnd_trace("NSL: badobj: #%ld\n", new_obj->ID);
 		return -1;
@@ -163,6 +164,7 @@ static int parent_net_len_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb
 	if (conns > 1) {
 		rnd_trace("NSL: junction at: #%ld overlap with #%ld\n", new_obj->ID, arrived_from->ID);
 		return -1;
+	}
 	}
 
 	vtp0_append(&ctx->ec->tmplst, new_obj);
