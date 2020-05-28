@@ -31,6 +31,7 @@
 
 #include "query.h"
 #include <genht/htpp.h>
+#include <genht/htpi.h>
 #include <time.h>
 
 #define PCB_QRY_MAX_FUNC_ARGS 64
@@ -47,10 +48,13 @@ struct pcb_qry_exec_s {
 
 	/* data/call cache */
 	htpp_t obj2netterm;   /* (pcb_any_obj_t *) object -> (pcb_any_obj_t *) terminal with the lowest ID on the net segment; for floating segments any object with the lowest ID will be accepted */
+	htpp_t obj2lenseg;    /* (pcb_any_obj_t *) object -> (pcb_any_obj_t *) length-segment head: each length-segment is a junction-free part of the network */
+	htpi_t obj2lenseg_cc; /* (pcb_any_obj_t *) object -> connection-counter (how many different objects are connected) */
 	vtp0_t tmplst;        /* may be reused in a function call to save on allocation; always clear it at the end of the fnc */
 	time_t last_prog_cb;
 
 	unsigned obj2netterm_inited:1;
+	unsigned obj2lenseg_inited:1;
 };
 
 /* if bufno is -1, scope is the board, else scope is the buffer addressed by bufno */

@@ -32,6 +32,7 @@
 #include "query.h"
 #include "query_exec.h"
 #include "query_access.h"
+#include "net_len.h"
 #include <librnd/core/rnd_printf.h>
 
 #define PCB dontuse
@@ -81,6 +82,16 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 
 	if (ctx->obj2netterm_inited)
 		htpp_uninit(&ctx->obj2netterm);
+
+	if (ctx->obj2lenseg_inited) {
+		htpp_entry_t *e;
+		for(e = htpp_first(&ctx->obj2lenseg); e != NULL; e = htpp_next(&ctx->obj2lenseg, e)) {
+			pcb_qry_lenseg_free_fields((pcb_qry_netseg_len_t *)e->value);
+			free(e->value);
+		}
+		htpp_uninit(&ctx->obj2lenseg);
+		htpi_uninit(&ctx->obj2lenseg_cc);
+	}
 
 	vtp0_uninit(&ctx->tmplst);
 }

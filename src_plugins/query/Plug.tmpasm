@@ -8,6 +8,7 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/query/query_y.o
  $(PLUGDIR)/query/fnc.o
  $(PLUGDIR)/query/net_int.o
+ $(PLUGDIR)/query/net_len.o
  $(PLUGDIR)/query/fields_sphash.o
 @]
 put /local/pcb/mod/YACC {$(PLUGDIR)/query/query_y}
