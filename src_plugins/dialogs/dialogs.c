@@ -37,7 +37,7 @@
 #include "../src_plugins/lib_hid_common/dialogs_conf.h"
 
 /* from lib_hid_common */
-extern const conf_dialogs_t dialogs_conf;
+extern conf_dialogs_t dialogs_conf;
 
 /* include them all for static inlines */
 #include "dlg_test.c"

@@ -34,7 +34,7 @@
 static const char *place_cookie = "dialogs/place";
 
 #include "dialogs_conf.h"
-extern const conf_dialogs_t dialogs_conf;
+extern conf_dialogs_t dialogs_conf;
 
 
 typedef struct {

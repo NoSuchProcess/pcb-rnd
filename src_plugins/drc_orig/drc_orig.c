@@ -55,7 +55,7 @@
 
 static const char *drc_orig_cookie = "drc_orig";
 
-const conf_drc_orig_t conf_drc_orig;
+conf_drc_orig_t conf_drc_orig;
 #define DRC_ORIG_CONF_FN "drc_orig.conf"
 
 /* DRC clearance callback */

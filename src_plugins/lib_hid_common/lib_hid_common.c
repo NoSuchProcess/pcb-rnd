@@ -45,7 +45,7 @@
 #include "../src_plugins/lib_hid_common/zoompan.h"
 #include "../src_plugins/lib_hid_common/conf_internal.c"
 
-const conf_dialogs_t dialogs_conf;
+conf_dialogs_t dialogs_conf;
 #define DIALOGS_CONF_FN "dialogs.conf"
 
 

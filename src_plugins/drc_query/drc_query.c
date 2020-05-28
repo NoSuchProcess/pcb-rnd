@@ -62,7 +62,7 @@ static void drc_rlist_pcb2dlg(void);
 
 static const char *drc_query_cookie = "drc_query";
 
-const conf_drc_query_t conf_drc_query;
+extern conf_drc_query_t conf_drc_query;
 #define DRC_QUERY_CONF_FN "drc_query.conf"
 
 #define DRC_CONF_PATH_PLUGIN "plugins/drc_query/"
@@ -843,3 +843,5 @@ int pplg_init_drc_query(void)
 	return 0;
 }
 
+
+conf_drc_query_t conf_drc_query;
