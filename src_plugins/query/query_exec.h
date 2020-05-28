@@ -50,6 +50,7 @@ struct pcb_qry_exec_s {
 	htpp_t obj2netterm;   /* (pcb_any_obj_t *) object -> (pcb_any_obj_t *) terminal with the lowest ID on the net segment; for floating segments any object with the lowest ID will be accepted */
 	htpp_t obj2lenseg;    /* (pcb_any_obj_t *) object -> (pcb_any_obj_t *) length-segment head: each length-segment is a junction-free part of the network */
 	htpi_t obj2lenseg_cc; /* (pcb_any_obj_t *) object -> connection-counter (how many different objects are connected) */
+	vtp0_t obj2lenseg_free; /* delayed free of obj2lenseg_cc objects */
 	vtp0_t tmplst;        /* may be reused in a function call to save on allocation; always clear it at the end of the fnc */
 	time_t last_prog_cb;
 

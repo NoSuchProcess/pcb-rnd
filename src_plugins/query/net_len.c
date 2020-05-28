@@ -186,6 +186,8 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 
 	ctx.ec = ec;
 	ctx.best = NULL;
+	ctx.seglen = calloc(sizeof(pcb_qry_netseg_len_t), 1);
+	vtp0_append(&ec->obj2lenseg_free, ctx.seglen);
 
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.user_data = &ctx;
@@ -212,6 +214,7 @@ pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg(pcb_qry_exec_t *ec, pcb_any_obj_
 	if (!ec->obj2lenseg_inited) {
 		htpp_init(&ec->obj2lenseg, ptrhash, ptrkeyeq);
 		htpi_init(&ec->obj2lenseg_cc, ptrhash, ptrkeyeq);
+		vtp0_init(&ec->obj2lenseg_free);
 		ec->obj2lenseg_inited = 1;
 		res = NULL;
 	}
