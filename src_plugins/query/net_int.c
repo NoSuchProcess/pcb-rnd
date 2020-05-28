@@ -39,10 +39,6 @@
 
 #define PCB dontuse
 
-TODO("find: get rid of this global state")
-extern rnd_coord_t Bloat;
-
-
 /* evaluates to true if obj was marked on list (fa or fb) */
 #define IS_FOUND(obj, list) (PCB_DFLAG_TEST(&(obj->Flags), ctx->list.mark))
 
