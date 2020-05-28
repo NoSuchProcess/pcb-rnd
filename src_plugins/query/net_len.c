@@ -225,5 +225,5 @@ pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg(pcb_qry_exec_t *ec, pcb_any_obj_
 
 void pcb_qry_lenseg_free_fields(pcb_qry_netseg_len_t *ns)
 {
-
+	vtp0_uninit(&ns->objs);
 }
