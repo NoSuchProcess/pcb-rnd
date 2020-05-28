@@ -1,3 +1,5 @@
+#include "query_exec.h"
+
 typedef struct {
 	vtp0_t objs;
 	pcb_any_obj_t *junction1, *junction2; /* object with a junction on it before and afterthe list */
