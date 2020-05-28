@@ -126,6 +126,18 @@ $AWK -v "docdir=$1" '
 		return path
 	}
 
+	# structs on the first level must be const
+	/struct/ && (level == 0) {
+		if (!($0 ~ "struct *[a-z_]*temp_s")) { # special case for core/librnd temp storage
+			tmp=$0
+			sub("struct.*$", "", tmp)
+			if (!(tmp ~ "const")) {
+				print "First level structs must be const in line", NR > stderr
+				exit 1
+			}
+		}
+	}
+
 	/[{]/ {
 		uid = uids++
 		LEN[uid] = 0

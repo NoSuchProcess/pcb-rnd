@@ -12,7 +12,7 @@
 
 typedef struct {
 
-	struct {
+	struct pcb_rnd_core_temp_s {
 		RND_CFT_BOOLEAN rat_warn;              /* rats nest has set warnings */
 		RND_CFT_BOOLEAN clip_inhibit_chg;      /* dummy node to inform the menu about clip inhibit change */
 	} temp;
@@ -85,7 +85,7 @@ typedef struct {
 		RND_CFT_STRING subc_conv_refdes;       /* automatic refdes value assigned to new subcircuits on conversion from objects - if empty, no refdes text or attribute is added; if the value is <?>, the refdes text object is added but no refdes attribute is created */
 	} editor;
 
-	struct {
+	const struct {
 		struct {
 			RND_CFT_STRING method;             /* method/strategy of placement; one of: disperse, frame, fit */
 			RND_CFT_STRING location;           /* placement coordinate for methods that require it; if empty, use fixed coordinates at x,y; if non-empty, it may be: mark, center */

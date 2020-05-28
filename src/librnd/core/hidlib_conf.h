@@ -41,7 +41,7 @@ enum rnd_crosshair_shape_e {
 
 typedef struct {
 
-	struct {
+	struct rnd_conf_temp_s {
 		RND_CFT_BOOLEAN click_cmd_entry_active;/* true if the command line is active when the user click - this gives the command interpreter a chance to capture the click and use the coords */
 	} temp;
 
