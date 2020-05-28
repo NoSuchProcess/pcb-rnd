@@ -87,8 +87,11 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 		long n;
 		htpp_uninit(&ctx->obj2lenseg);
 		htpi_uninit(&ctx->obj2lenseg_cc);
-		for(n = 0; n < ctx->obj2lenseg_free.used; n++)
-			pcb_qry_lenseg_free_fields((pcb_qry_netseg_len_t *)ctx->obj2lenseg_free.array[n]);
+		for(n = 0; n < ctx->obj2lenseg_free.used; n++) {
+			pcb_qry_netseg_len_t *ns = ctx->obj2lenseg_free.array[n];
+			pcb_qry_lenseg_free_fields(ns);
+			free(ns);
+		}
 		vtp0_uninit(&ctx->obj2lenseg_free);
 	}
 
