@@ -31,6 +31,7 @@
 
 #include <genht/htpp.h>
 #include <genht/hash.h>
+#include <assert.h>
 
 #include "board.h"
 #include "find.h"
@@ -71,12 +72,15 @@ typedef struct {
 static int set_cc(parent_net_len_t *ctx, pcb_any_obj_t *o, int val)
 {
 	htpi_entry_t *e = htpi_getentry(&ctx->ec->obj2lenseg_cc, o);
+
+rnd_trace("set_cc: #%ld %d\n", o->ID, val);
+
 	if (e == NULL) {
 		htpi_set(&ctx->ec->obj2lenseg_cc, o, val);
 		return 0;
 	}
 
-	if (e->value & val)
+	if ((e->value & val) == val)
 		return 1;
 
 	e->value |= val;
@@ -143,7 +147,7 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 {
 	rnd_coord_t new_end[4], new_th, old_end[4], old_th;
 	double th, d2;
-	int n, conns = 0;
+	int n, conns = 0, bad = 0;
 
 	if (obj_ends(new_obj, new_end, &new_th) != 0) {
 		rnd_trace("NSL: badobj: #%ld\n", new_obj->ID);
@@ -160,10 +164,16 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 				*dist = sqrt(d2);
 				return 0;
 			}
-			if (set_cc(ctx, arrived_from, 0) != 0) {
-				rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[0], old_end[1]);
-				return -1;
+			if (set_cc(ctx, arrived_from, 1) != 0) {
+				rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", arrived_from->ID, old_end[0], old_end[1]);
+				bad = 1;
 			}
+			if (set_cc(ctx, new_obj, n == 0 ? 1 : 2) != 0) {
+				rnd_trace("NSL: junction at end: %d of #%ld at %$$mm;%$$mm\n", n, new_obj->ID, new_end[0+n], new_end[1+n]);
+				bad = 1;
+			}
+			if (bad)
+				return -1;
 			conns++;
 		}
 
@@ -173,10 +183,16 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 				*dist = sqrt(d2);
 				return 0;
 			}
-			if (set_cc(ctx, arrived_from, 1) != 0) {
-				rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[2], old_end[3]);
-				return -1;
+			if (set_cc(ctx, arrived_from, 2) != 0) {
+				rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", arrived_from->ID, old_end[2], old_end[3]);
+				bad = 1;
 			}
+			if (set_cc(ctx, new_obj, n == 0 ? 1 : 2) != 0) {
+				rnd_trace("NSL: junction at end: %d of #%ld at %$$mm;%$$mm\n", n, new_obj->ID, new_end[0+n], new_end[1+n]);
+				bad = 1;
+			}
+			if (bad)
+				return -1;
 			conns++;
 		}
 	}
@@ -199,9 +215,14 @@ static int parent_net_len_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb
 {
 	parent_net_len_t *ctx = fctx->user_data;
 
-	if (arrived_from != NULL)
-		if (endp_match(ctx, new_obj, arrived_from, NULL) != 0)
+	if (arrived_from != NULL) {
+		if (endp_match(ctx, new_obj, arrived_from, NULL) != 0) {
+			/* remove the last object added, which is new_obj, as it's behind the junction */
+rnd_trace("BUMP new=#%ld from=#%ld last=#%ld\n", new_obj->ID, arrived_from->ID, ((pcb_any_obj_t *)ctx->ec->tmplst.array[ctx->ec->tmplst.used-1])->ID);
+			assert(ctx->ec->tmplst.used > 0);
 			return PCB_FIND_DROP_THREAD;
+		}
+	}
 
 	vtp0_append(&ctx->ec->tmplst, new_obj);
 
@@ -249,7 +270,7 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 				else
 					revp = n;
 			}
-/*			rnd_trace("offs: #%ld #%ld: %$mm (%f)\n", ((pcb_any_obj_t *)ec->tmplst.array[n-1])->ID, o->ID, (rnd_coord_t)(offs), offs);*/
+/*			rnd_trace("offs: #%ld #%ld: %$mm (%f) %d\n", ((pcb_any_obj_t *)ec->tmplst.array[n-1])->ID, o->ID, (rnd_coord_t)(offs), offs);*/
 			ctx.seglen->len += offs;
 		}
 	}
