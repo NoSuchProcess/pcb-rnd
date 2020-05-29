@@ -810,8 +810,8 @@
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h draw.h layer.h intersect.h move.h netlist.h remove.h \
- rotate.h librnd/core/rotate.h obj_rat.h obj_term.h obj_pstk_inlines.h \
- data.h thermal.h operation.h librnd/poly/polygon1_gen.h data_it.h
+ operation.h rotate.h librnd/core/rotate.h obj_rat.h obj_term.h \
+ obj_pstk_inlines.h data.h thermal.h librnd/poly/polygon1_gen.h data_it.h
 ../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
  ../config.h librnd/config.h ../src_plugins/autoroute/autoroute.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
@@ -864,9 +864,9 @@
  ../src_plugins/autoroute/autoroute.h board.h vtroutestyle.h rats_patch.h \
  board.h draw.h find.h librnd/core/heap.h netlist.h \
  ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h \
- polygon.h remove.h obj_pinvia_therm.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h layer.h obj_line_draw.h draw.h obj_pstk_draw.h \
- obj_pstk_inlines.h data.h thermal.h operation.h \
+ polygon.h remove.h operation.h obj_pinvia_therm.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h layer.h obj_line_draw.h draw.h \
+ obj_pstk_draw.h obj_pstk_inlines.h data.h thermal.h \
  librnd/poly/polygon1_gen.h ../src_plugins/lib_compat_help/pstk_compat.h \
  obj_pstk.h
 ../src_plugins/autoroute/mtspace.o: ../src_plugins/autoroute/mtspace.c \
@@ -1571,15 +1571,16 @@
  ../src_3rd/libminuid/libminuid.h librnd/poly/rtree2_compat.h \
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h remove.h move.h \
- draw.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h flag_str.h find.h \
- layer.h librnd/core/compat_misc.h librnd/core/plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h librnd/core/actions.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h remove.h \
+ operation.h move.h draw.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ flag_str.h find.h layer.h librnd/core/compat_misc.h \
+ librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h librnd/core/actions.h \
  ../src_plugins/djopt/djopt_conf.h obj_line.h librnd/core/event.h \
- obj_pstk_inlines.h data.h thermal.h operation.h \
- librnd/poly/polygon1_gen.h ../src_plugins/djopt/djopt_conf_fields.h
+ obj_pstk_inlines.h data.h thermal.h librnd/poly/polygon1_gen.h \
+ ../src_plugins/djopt/djopt_conf_fields.h
 ../src_plugins/draw_csect/draw_csect.o: \
  ../src_plugins/draw_csect/draw_csect.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
@@ -2632,8 +2633,8 @@
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h buffer.h \
- librnd/core/paths.h remove.h librnd/core/safe_fs.h search.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
+ librnd/core/paths.h remove.h operation.h librnd/core/safe_fs.h search.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  ../src_plugins/io_lihata/io_lihata.h ../src_plugins/io_lihata/lht_conf.h \
  ../src_plugins/io_lihata/write.h plug_io.h vtlibrary.h \
  ../src_3rd/genvector/vts0.h ../src_plugins/io_lihata/read.h \
@@ -2703,11 +2704,11 @@
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h flag.h \
- layer.h move.h remove.h flag_str.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h librnd/core/actions.h \
+ layer.h move.h remove.h operation.h flag_str.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h librnd/core/plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h librnd/core/actions.h \
  librnd/core/compat_misc.h event.h librnd/core/event.h polygon.h \
  obj_poly_draw.h draw.h
 ../src_plugins/fp_board/fp_board.o: ../src_plugins/fp_board/fp_board.c \
@@ -4932,10 +4933,10 @@
  ../src_plugins/io_pcb/file.h board.h plug_io.h vtlibrary.h \
  ../src_3rd/genvector/vts0.h layer.h layer_grp.h move.h \
  ../src_plugins/io_pcb/parse_common.h polygon.h \
- librnd/poly/polygon1_gen.h remove.h flag_str.h librnd/core/compat_fs.h \
- librnd/core/compat_misc.h librnd/core/paths.h rats_patch.h \
- librnd/core/actions.h ../src_plugins/io_pcb/attribs.h route_style.h \
- obj_poly.h thermal.h operation.h event.h librnd/core/event.h \
+ librnd/poly/polygon1_gen.h remove.h operation.h flag_str.h \
+ librnd/core/compat_fs.h librnd/core/compat_misc.h librnd/core/paths.h \
+ rats_patch.h librnd/core/actions.h ../src_plugins/io_pcb/attribs.h \
+ route_style.h obj_poly.h thermal.h event.h librnd/core/event.h \
  funchash_core.h librnd/core/funchash.h funchash_core_list.h netlist.h \
  plug_footprint.h data.h ../src_plugins/lib_compat_help/layer_compat.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
@@ -5027,9 +5028,10 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_pcb/file.h plug_io.h vtlibrary.h \
  ../src_3rd/genvector/vts0.h ../src_plugins/io_pcb/parse_l.h polygon.h \
- remove.h flag_str.h obj_pinvia_therm.h rats_patch.h route_style.h \
- librnd/core/compat_misc.h ../src_plugins/lib_compat_help/pstk_compat.h \
- obj_pstk.h netlist.h ../src_plugins/io_pcb/parse_y.h
+ remove.h operation.h flag_str.h obj_pinvia_therm.h rats_patch.h \
+ route_style.h librnd/core/compat_misc.h \
+ ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h netlist.h \
+ ../src_plugins/io_pcb/parse_y.h
 ../src_plugins/io_tedax/footprint.o: ../src_plugins/io_tedax/footprint.c \
  ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/htip.h ../src_3rd/genht/hash.h \
@@ -5360,7 +5362,7 @@
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h polygon.h \
- librnd/poly/polygon1_gen.h remove.h librnd/core/rnd_printf.h \
+ librnd/poly/polygon1_gen.h remove.h operation.h librnd/core/rnd_printf.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
@@ -6866,8 +6868,8 @@
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h remove.h polygon.h flag_str.h find.h draw.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h librnd/core/plugins.h \
+ vtpadstack_t.h remove.h operation.h polygon.h flag_str.h find.h draw.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h librnd/core/plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h librnd/core/actions.h \
@@ -6897,11 +6899,12 @@
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h remove.h draw.h polygon.h librnd/core/plugins.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h librnd/core/actions.h \
- obj_poly.h obj_poly_draw.h draw.h
+ vtpadstack_t.h remove.h operation.h draw.h polygon.h \
+ librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h librnd/core/actions.h obj_poly.h \
+ obj_poly_draw.h draw.h
 ../src_plugins/propedit/propdlg.o: ../src_plugins/propedit/propdlg.c \
  ../config.h librnd/config.h ../src_3rd/genht/hash.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/gds_char.h \
@@ -7040,14 +7043,14 @@
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h move.h \
- remove.h flag_str.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
- layer.h librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ remove.h operation.h flag_str.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h layer.h librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h librnd/core/actions.h \
  librnd/core/compat_misc.h obj_pstk_inlines.h data.h thermal.h \
- operation.h librnd/poly/polygon1_gen.h funchash_core.h \
- librnd/core/funchash.h funchash_core_list.h search.h find.h
+ librnd/poly/polygon1_gen.h funchash_core.h librnd/core/funchash.h \
+ funchash_core_list.h search.h find.h
 ../src_plugins/query/fields_sphash.o: \
  ../src_plugins/query/fields_sphash.c
 ../src_plugins/query/fnc.o: ../src_plugins/query/fnc.c ../config.h \
@@ -7932,7 +7935,7 @@
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- librnd/core/actions.h remove.h move.h search.h select.h operation.h \
+ librnd/core/actions.h remove.h operation.h move.h search.h select.h \
  librnd/core/tool.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  extobj.h data.h obj_subc_parent.h draw.h tool_logic.h
 ../src_plugins/tool_std/tool_buffer.o: \
@@ -8185,9 +8188,9 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h librnd/core/error.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h remove.h search.h obj_rat.h \
- idpath.h librnd/core/tool.h ../src_3rd/genvector/vtp0.h crosshair.h \
- vtonpoint.h route.h tool_logic.h
+ ../src_3rd/libuundo/uundo.h undo_old.h remove.h operation.h search.h \
+ obj_rat.h idpath.h librnd/core/tool.h ../src_3rd/genvector/vtp0.h \
+ crosshair.h vtonpoint.h route.h tool_logic.h
 ../src_plugins/tool_std/tool_rotate.o: \
  ../src_plugins/tool_std/tool_rotate.c ../config.h librnd/config.h \
  conf_core.h librnd/core/conf.h librnd/core/global_typedefs.h \
@@ -8643,7 +8646,7 @@ buffer.o: buffer.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h plug_io.h \
  vtlibrary.h ../src_3rd/genvector/vts0.h rotate.h librnd/core/rotate.h \
- librnd/core/compat_misc.h remove.h select.h operation.h draw.h undo.h \
+ librnd/core/compat_misc.h remove.h operation.h select.h draw.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h \
  librnd/core/funchash.h funchash_core_list.h librnd/core/pixmap.h \
  obj_arc_op.h obj_line_op.h obj_text_op.h obj_subc_op.h obj_poly_op.h \
@@ -8923,8 +8926,8 @@ extobj.o: extobj.c ../config.h librnd/config.h \
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data_list.h remove.h \
- undo.h ../src_3rd/libuundo/uundo.h undo_old.h extobj.h board.h \
- vtroutestyle.h rats_patch.h obj_subc_parent.h draw.h
+ operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h extobj.h \
+ board.h vtroutestyle.h rats_patch.h obj_subc_parent.h draw.h
 extobj_act.o: extobj_act.c ../config.h librnd/config.h \
  librnd/core/actions.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
@@ -8981,9 +8984,9 @@ file_act.o: file_act.c ../config.h librnd/config.h board.h \
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h plug_io.h \
- vtlibrary.h ../src_3rd/genvector/vts0.h plug_import.h remove.h draw.h \
- event.h librnd/core/event.h find.h search.h librnd/core/actions.h \
- librnd/core/compat_misc.h librnd/core/hid_init.h \
+ vtlibrary.h ../src_3rd/genvector/vts0.h plug_import.h remove.h \
+ operation.h draw.h event.h librnd/core/event.h find.h search.h \
+ librnd/core/actions.h librnd/core/compat_misc.h librnd/core/hid_init.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h layer_vis.h librnd/core/safe_fs.h \
@@ -9471,9 +9474,9 @@ netlist.o: netlist.c ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
  conf_core.h librnd/core/conf.h librnd/core/rnd_printf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h obj_rat_draw.h obj_subc_parent.h \
- search.h remove.h draw.h netlist.h ../src_3rd/genlist/gentdlist_impl.c \
- netlist_geo.c obj_pstk_inlines.h thermal.h operation.h \
- librnd/poly/polygon1_gen.h
+ search.h remove.h operation.h draw.h netlist.h \
+ ../src_3rd/genlist/gentdlist_impl.c netlist_geo.c obj_pstk_inlines.h \
+ thermal.h librnd/poly/polygon1_gen.h
 netlist_act.o: netlist_act.c ../config.h librnd/config.h \
  ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h funchash_core.h librnd/core/funchash.h \
@@ -10051,8 +10054,8 @@ object_act.o: object_act.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/libuundo/uundo.h undo_old.h event.h librnd/core/event.h \
  funchash_core.h librnd/core/funchash.h funchash_core_list.h \
  librnd/core/funchash_core.h librnd/core/funchash_core_list.h search.h \
- draw.h move.h remove.h actions_pcb.h librnd/core/compat_misc.h \
- layer_vis.h operation.h rotate.h librnd/core/rotate.h \
+ draw.h move.h remove.h operation.h actions_pcb.h \
+ librnd/core/compat_misc.h layer_vis.h rotate.h librnd/core/rotate.h \
  librnd/core/actions.h view.h
 operation.o: operation.c ../config.h librnd/config.h operation.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
@@ -10190,14 +10193,15 @@ plug_io.o: plug_io.c ../config.h librnd/config.h conf_core.h \
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h plug_io.h \
- vtlibrary.h ../src_3rd/genvector/vts0.h remove.h librnd/core/paths.h \
- librnd/core/actions.h librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h event.h librnd/core/event.h \
- librnd/core/compat_misc.h route_style.h librnd/core/compat_fs.h \
- librnd/core/compat_lrealpath.h layer_vis.h librnd/core/safe_fs.h \
- plug_footprint.h librnd/core/file_loaded.h librnd/core/tool.h view.h
+ vtlibrary.h ../src_3rd/genvector/vts0.h remove.h operation.h \
+ librnd/core/paths.h librnd/core/actions.h librnd/core/plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h event.h \
+ librnd/core/event.h librnd/core/compat_misc.h route_style.h \
+ librnd/core/compat_fs.h librnd/core/compat_lrealpath.h layer_vis.h \
+ librnd/core/safe_fs.h plug_footprint.h librnd/core/file_loaded.h \
+ librnd/core/tool.h view.h
 polygon.o: polygon.c ../config.h librnd/config.h conf_core.h \
  librnd/core/conf.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
@@ -10223,7 +10227,7 @@ polygon.o: polygon.c ../config.h librnd/config.h conf_core.h \
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h remove.h \
- search.h thermal.h operation.h librnd/poly/polygon1_gen.h undo.h \
+ operation.h search.h thermal.h librnd/poly/polygon1_gen.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h obj_poly_draw.h obj_text_draw.h \
  librnd/poly/self_isc.h event.h librnd/core/event.h
 polygon_act.o: polygon_act.c ../config.h librnd/config.h \
@@ -10280,10 +10284,10 @@ rats_act.o: rats_act.c ../config.h librnd/config.h conf_core.h \
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h find.h remove.h funchash_core.h \
- librnd/core/funchash.h funchash_core_list.h librnd/core/actions.h \
- librnd/core/funchash_core.h librnd/core/funchash_core_list.h netlist.h \
- draw.h obj_rat_draw.h
+ ../src_3rd/libuundo/uundo.h undo_old.h find.h remove.h operation.h \
+ funchash_core.h librnd/core/funchash.h funchash_core_list.h \
+ librnd/core/actions.h librnd/core/funchash_core.h \
+ librnd/core/funchash_core_list.h netlist.h draw.h obj_rat_draw.h
 rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  librnd/config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
@@ -10339,7 +10343,7 @@ remove.o: remove.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h obj_subc_parent.h remove.h \
- select.h operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ operation.h select.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  obj_arc_op.h obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h \
  obj_subc_op.h obj_pstk_op.h obj_gfx_op.h
 remove_act.o: remove_act.c ../config.h librnd/config.h data.h \
@@ -10364,9 +10368,9 @@ remove_act.o: remove_act.c ../config.h librnd/config.h data.h \
  librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h librnd/core/actions.h librnd/core/tool.h remove.h board.h \
- vtroutestyle.h rats_patch.h funchash_core.h librnd/core/funchash.h \
- funchash_core_list.h
+ vtpadstack_t.h librnd/core/actions.h librnd/core/tool.h remove.h \
+ operation.h board.h vtroutestyle.h rats_patch.h funchash_core.h \
+ librnd/core/funchash.h funchash_core_list.h
 rotate.o: rotate.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
@@ -10637,9 +10641,9 @@ undo.o: undo.c ../config.h librnd/config.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h draw.h event.h librnd/core/event.h insert.h remove.h \
- rotate.h librnd/core/rotate.h librnd/core/compat_misc.h search.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h flag_str.h conf_core.h \
- librnd/core/conf.h librnd/core/rnd_printf.h \
+ operation.h rotate.h librnd/core/rotate.h librnd/core/compat_misc.h \
+ search.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h flag_str.h \
+ conf_core.h librnd/core/conf.h librnd/core/rnd_printf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h obj_poly_draw.h
 undo_act.o: undo_act.c ../config.h librnd/config.h conf_core.h \
  librnd/core/conf.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
@@ -10695,11 +10699,11 @@ undo_old.o: undo_old.c ../config.h librnd/config.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h draw.h move.h extobj.h obj_subc_parent.h insert.h \
- remove.h rotate.h librnd/core/rotate.h librnd/core/compat_misc.h \
- search.h undo.h undo_old.h flag_str.h conf_core.h librnd/core/conf.h \
- librnd/core/rnd_printf.h ../src_3rd/liblihata/lihata.h \
- librnd/core/list_conf.h netlist.h obj_poly_draw.h obj_term.h brave.h \
- undo_old_str.h
+ remove.h operation.h rotate.h librnd/core/rotate.h \
+ librnd/core/compat_misc.h search.h undo.h undo_old.h flag_str.h \
+ conf_core.h librnd/core/conf.h librnd/core/rnd_printf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h netlist.h \
+ obj_poly_draw.h obj_term.h brave.h undo_old_str.h
 view.o: view.c ../config.h librnd/config.h idpath.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
