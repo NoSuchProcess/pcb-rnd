@@ -77,7 +77,7 @@ static void click_timer_cb(rnd_hidval_t hv)
 			pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
 			pcb_buffer_add_selected(pcb, PCB_PASTEBUFFER, hl->tool_x, hl->tool_y, rnd_true, rnd_true);
 			pcb_undo_save_serial();
-			pcb_remove_selected(rnd_false);
+			pcb_remove_selected(PCB_OP_NO_SUBC_PART);
 			rnd_tool_save(hl);
 			rnd_tool_is_saved = rnd_true;
 			rnd_tool_select_by_name(hl, "buffer");
