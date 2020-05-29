@@ -139,49 +139,63 @@ static double dist2(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t 
 	return dx*dx + dy*dy;
 }
 
-static int parent_net_len_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, double *dist)
 {
-	int n, conns = 0;
-	parent_net_len_t *ctx = fctx->user_data;
 	rnd_coord_t new_end[4], new_th, old_end[4], old_th;
-	double th;
+	double th, d2;
+	int n, conns = 0;
 
-	if (arrived_from != NULL) {
-		if (obj_ends(new_obj, new_end, &new_th) != 0) {
-			rnd_trace("NSL: badobj: #%ld\n", new_obj->ID);
-			return -1;
-		}
-		obj_ends(arrived_from, old_end, &old_th);
-		th = RND_MIN(new_th, old_th) / 4;
-		th = th * th;
+	if (obj_ends(new_obj, new_end, &new_th) != 0) {
+		rnd_trace("NSL: badobj: #%ld\n", new_obj->ID);
+		return -1;
+	}
+	obj_ends(arrived_from, old_end, &old_th);
+	th = RND_MIN(new_th, old_th) / 4;
+	th = th * th;
 
-		for(n = 0; n < 2; n++) {
-			if (dist2(old_end[0], old_end[1], new_end[0+n], new_end[1+n]) < th) {
-				if (set_cc(ctx, arrived_from, 0) != 0) {
-					rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[0], old_end[1]);
-					return -1;
-				}
-				conns++;
+	for(n = 0; n < 2; n++) {
+		d2 = dist2(old_end[0], old_end[1], new_end[0+n], new_end[1+n]);
+		if (d2 < th) {
+			if (set_cc(ctx, arrived_from, 0) != 0) {
+				rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[0], old_end[1]);
+				return -1;
 			}
-				
-			if (dist2(old_end[2], old_end[3], new_end[0+n], new_end[1+n]) < th) {
-				if (set_cc(ctx, arrived_from, 1) != 0) {
-					rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[2], old_end[3]);
-					return -1;
-				}
-				conns++;
-			}
+			conns++;
+			if (dist != NULL)
+				*dist = sqrt(d2);
 		}
 
-		if (conns == 0) {
-			rnd_trace("NSL: junction at: middle of #%ld\n", new_obj->ID);
-			return -1;
-		}
-		if (conns > 1) {
-			rnd_trace("NSL: junction at: #%ld overlap with #%ld\n", new_obj->ID, arrived_from->ID);
-			return -1;
+		d2 = dist2(old_end[2], old_end[3], new_end[0+n], new_end[1+n]);
+		if (d2 < th) {
+			if (set_cc(ctx, arrived_from, 1) != 0) {
+				rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[2], old_end[3]);
+				return -1;
+			}
+			conns++;
+			if (dist != NULL)
+				*dist = sqrt(d2);
 		}
 	}
+
+	if (conns == 0) {
+		rnd_trace("NSL: junction at: middle of #%ld\n", new_obj->ID);
+		return -1;
+	}
+	if (conns > 1) {
+		rnd_trace("NSL: junction at: #%ld overlap with #%ld\n", new_obj->ID, arrived_from->ID);
+		return -1;
+	}
+
+	return 0;
+}
+
+static int parent_net_len_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+{
+	parent_net_len_t *ctx = fctx->user_data;
+
+	if (arrived_from != NULL)
+		if (endp_match(ctx, new_obj, arrived_from, NULL) != 0)
+			return -1;
 
 	vtp0_append(&ctx->ec->tmplst, new_obj);
 
