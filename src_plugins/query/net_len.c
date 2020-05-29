@@ -235,6 +235,13 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 		htpp_set(&ec->obj2lenseg, o, ctx.seglen);
 		ctx.seglen->len += obj_len(o);
 		vtp0_append(&ctx.seglen->objs, o);
+
+		if (n > 0) {
+			double offs = 0;
+			endp_match(&ctx, o, (pcb_any_obj_t *)ec->tmplst.array[n-1], &offs);
+/*			rnd_trace("offs: #%ld #%ld: %$mm (%f)\n", ((pcb_any_obj_t *)ec->tmplst.array[n-1])->ID, o->ID, (rnd_coord_t)(offs), offs);*/
+			ctx.seglen->len += offs;
+		}
 	}
 
 	ec->tmplst.used = 0;
