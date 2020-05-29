@@ -117,6 +117,22 @@ static int obj_ends(pcb_any_obj_t *o, rnd_coord_t ends[4], rnd_coord_t *thick)
 	return -1;
 }
 
+static rnd_coord_t obj_len(pcb_any_obj_t *o)
+{
+	switch(o->type) {
+		case PCB_OBJ_ARC:  return pcb_arc_length((pcb_arc_t *)o);
+		case PCB_OBJ_LINE: return pcb_line_length((pcb_line_t *)o);
+		case PCB_OBJ_PSTK: return 0;
+
+		/* netlen segment breaking objects */
+		case PCB_OBJ_VOID: case PCB_OBJ_POLY: case PCB_OBJ_TEXT: case PCB_OBJ_SUBC:
+		case PCB_OBJ_RAT: case PCB_OBJ_GFX: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM:
+		case PCB_OBJ_LAYER: case PCB_OBJ_LAYERGRP:
+			return -1;
+	}
+	return -1;
+}
+
 static double dist2(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	double dx = x2 - x1, dy = y2 - y1;
@@ -195,8 +211,12 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 	pcb_find_from_obj(&fctx, ec->pcb->Data, from);
 	pcb_find_free(&fctx);
 
-	for(n = 0; n < ec->tmplst.used; n++)
-		htpp_set(&ec->obj2lenseg, ec->tmplst.array[n], ctx.seglen);
+	for(n = 0; n < ec->tmplst.used; n++) {
+		pcb_any_obj_t *o = ec->tmplst.array[n];
+		htpp_set(&ec->obj2lenseg, o, ctx.seglen);
+		ctx.seglen->len += obj_len(o);
+		vtp0_append(&ctx.seglen->objs, o);
+	}
 
 	ec->tmplst.used = 0;
 
