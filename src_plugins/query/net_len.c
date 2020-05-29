@@ -156,24 +156,28 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 	for(n = 0; n < 2; n++) {
 		d2 = dist2(old_end[0], old_end[1], new_end[0+n], new_end[1+n]);
 		if (d2 < th) {
+			if (dist != NULL) {
+				*dist = sqrt(d2);
+				return 0;
+			}
 			if (set_cc(ctx, arrived_from, 0) != 0) {
 				rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[0], old_end[1]);
 				return -1;
 			}
 			conns++;
-			if (dist != NULL)
-				*dist = sqrt(d2);
 		}
 
 		d2 = dist2(old_end[2], old_end[3], new_end[0+n], new_end[1+n]);
 		if (d2 < th) {
+			if (dist != NULL) {
+				*dist = sqrt(d2);
+				return 0;
+			}
 			if (set_cc(ctx, arrived_from, 1) != 0) {
 				rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[2], old_end[3]);
 				return -1;
 			}
 			conns++;
-			if (dist != NULL)
-				*dist = sqrt(d2);
 		}
 	}
 
@@ -227,6 +231,7 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 
 	for(n = 0; n < ec->tmplst.used; n++) {
 		pcb_any_obj_t *o = ec->tmplst.array[n];
+
 		htpp_set(&ec->obj2lenseg, o, ctx.seglen);
 		ctx.seglen->len += obj_len(o);
 		vtp0_append(&ctx.seglen->objs, o);
