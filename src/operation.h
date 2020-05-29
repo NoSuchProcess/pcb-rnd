@@ -159,7 +159,11 @@ typedef struct {
 	unsigned int extobj_inhibit_regen:1;
 } pcb_opfunc_t;
 
+typedef enum {
+	PCB_OP_ON_LOCKED = 1
+} pcb_op_mode_t;
+
 void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
-rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, rnd_bool on_locked_too);
+rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, pcb_op_mode_t mode);
 
 #endif

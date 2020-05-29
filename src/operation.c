@@ -128,10 +128,11 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
  * resets the selected flag if requested
  * returns rnd_true if anything has changed
  */
-static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, rnd_bool on_locked_too, rnd_bool floater_only)
+static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, pcb_op_mode_t mode, rnd_bool floater_only)
 {
 	rnd_bool changed = rnd_false;
 	pcb_any_obj_t *exto;
+	int on_locked_too = (mode & PCB_OP_ON_LOCKED);
 
 	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH) && (data != NULL))
 		pcb_data_clip_inhibit_inc(data);
@@ -300,15 +301,15 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 				if (F->common_post != NULL) F->common_post(ctx, (pcb_any_obj_t *)subc, NULL);
 				changed = rnd_true;
 
-				if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, on_locked_too, 1))
+				if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, mode, 1))
 					changed = rnd_true;
 			}
 			else if ((pcb->loose_subc) || (type & PCB_OBJ_SUBC_PART) || (subc->extobj != NULL)) {
-				if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, on_locked_too, 0))
+				if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, mode, 0))
 					changed = rnd_true;
 			}
 			else
-				if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, on_locked_too, 1))
+				if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, mode, 1))
 					changed = rnd_true;
 		}
 		PCB_END_LOOP;
@@ -316,7 +317,7 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 	else { /* there can be selected objects within subcircuits - but deal only with floaters */
 		PCB_SUBC_LOOP(data);
 		{
-			if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, on_locked_too, 1))
+			if (pcb_selected_operation_(pcb, subc->data, F, ctx, Reset, type, mode, 1))
 				changed = rnd_true;
 		}
 		PCB_END_LOOP;
@@ -382,8 +383,8 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 	return changed;
 }
 
-rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, rnd_bool on_locked_too)
+rnd_bool pcb_selected_operation(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, pcb_op_mode_t mode)
 {
-	return pcb_selected_operation_(pcb, data, F, ctx, Reset, type, on_locked_too, 0);
+	return pcb_selected_operation_(pcb, data, F, ctx, Reset, type, mode, 0);
 }
 

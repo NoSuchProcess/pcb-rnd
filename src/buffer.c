@@ -212,7 +212,7 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 	rnd_hid_notify_crosshair_change(hidlib, rnd_false);
 	ctx.buffer.src = pcb->Data;
 	ctx.buffer.dst = Buffer->Data;
-	pcb_selected_operation(pcb, pcb->Data, fnc, &ctx, rnd_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), on_locked_too);
+	pcb_selected_operation(pcb, pcb->Data, fnc, &ctx, rnd_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), on_locked_too ? PCB_OP_ON_LOCKED : 0);
 
 	/* set origin to passed or current position */
 	if (X || Y) {

@@ -342,7 +342,7 @@ rnd_bool pcb_chg_selected_thermals(int types, int therm_style, unsigned long lid
 	ctx.chgtherm.style = therm_style;
 	ctx.chgtherm.lid = lid;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeThermalFunctions, &ctx, rnd_false, types, rnd_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeThermalFunctions, &ctx, rnd_false, types, 0);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -364,7 +364,7 @@ rnd_bool pcb_chg_selected_size(int types, rnd_coord_t Difference, rnd_bool fixIt
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeSizeFunctions, &ctx, rnd_false, types, rnd_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeSizeFunctions, &ctx, rnd_false, types, 0);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -386,7 +386,7 @@ rnd_bool pcb_chg_selected_clear_size(int types, rnd_coord_t Difference, rnd_bool
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeClearSizeFunctions, &ctx, rnd_false, types, rnd_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeClearSizeFunctions, &ctx, rnd_false, types, 0);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -408,7 +408,7 @@ rnd_bool pcb_chg_selected_2nd_size(int types, rnd_coord_t Difference, rnd_bool f
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &Change2ndSizeFunctions, &ctx, rnd_false, types, rnd_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &Change2ndSizeFunctions, &ctx, rnd_false, types, 0);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -430,7 +430,7 @@ rnd_bool pcb_chg_selected_rot(int types, double Difference, rnd_bool fixIt)
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeRotFunctions, &ctx, rnd_false, types, rnd_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeRotFunctions, &ctx, rnd_false, types, 0);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -449,7 +449,7 @@ rnd_bool pcb_chg_selected_join(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeJoinFunctions, &ctx, rnd_false, types, rnd_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeJoinFunctions, &ctx, rnd_false, types, 0);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -468,7 +468,7 @@ rnd_bool pcb_set_selected_join(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &SetJoinFunctions, &ctx, rnd_false, types, rnd_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &SetJoinFunctions, &ctx, rnd_false, types, 0);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -487,7 +487,7 @@ rnd_bool pcb_clr_selected_join(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ClrJoinFunctions, &ctx, rnd_false, types, rnd_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ClrJoinFunctions, &ctx, rnd_false, types, 0);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -506,7 +506,7 @@ rnd_bool pcb_chg_selected_nonetlist(int types)
 
 	ctx.chgsize.pcb = PCB;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeNonetlistFunctions, &ctx, rnd_false, types, rnd_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeNonetlistFunctions, &ctx, rnd_false, types, 0);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -528,7 +528,7 @@ rnd_bool pcb_chg_selected_angle(int types, int is_start, rnd_angle_t Difference,
 	ctx.chgangle.is_absolute = fixIt;
 	ctx.chgangle.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeAngleFunctions, &ctx, rnd_false, types, rnd_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeAngleFunctions, &ctx, rnd_false, types, 0);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();
@@ -550,7 +550,7 @@ rnd_bool pcb_chg_selected_radius(int types, int is_start, rnd_angle_t Difference
 	ctx.chgsize.is_absolute = fixIt;
 	ctx.chgsize.value = Difference;
 
-	change = pcb_selected_operation(PCB, PCB->Data, &ChangeRadiusFunctions, &ctx, rnd_false, types, rnd_false);
+	change = pcb_selected_operation(PCB, PCB->Data, &ChangeRadiusFunctions, &ctx, rnd_false, types, 0);
 	if (change) {
 		pcb_draw();
 		pcb_undo_inc_serial();

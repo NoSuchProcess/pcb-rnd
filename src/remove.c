@@ -97,7 +97,7 @@ rnd_bool pcb_remove_selected(rnd_bool locked_too)
 	ctx.remove.pcb = PCB;
 	ctx.remove.destroy_target = NULL;
 
-	if (pcb_selected_operation(PCB, PCB->Data, &pcb_RemoveFunctions, &ctx, rnd_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), locked_too)) {
+	if (pcb_selected_operation(PCB, PCB->Data, &pcb_RemoveFunctions, &ctx, rnd_false, PCB_OBJ_ANY & (~PCB_OBJ_SUBC_PART), locked_too ? PCB_OP_ON_LOCKED : 0)) {
 		pcb_undo_inc_serial();
 		pcb_draw();
 		return rnd_true;
