@@ -40,6 +40,8 @@ typedef enum {
 	PCB_FCT_START    = 8  /* starting object of a query */
 } pcb_found_conn_type_t;
 
+#define PCB_FIND_DROP_THREAD 4242
+
 typedef struct pcb_find_s pcb_find_t;
 struct pcb_find_s {
 	/* public config - all-zero uses the original method, except for flag set */
@@ -66,7 +68,10 @@ struct pcb_find_s {
 	   fields are updated for new_obj before the call. arrived_from is
 	   the previous object (that already triggered a callback) from which
 	   new_obj was first found; can be NULL for the starting object. ctype
-	   describes the relation between arrived_from and new_obj. */
+	   describes the relation between arrived_from and new_obj.
+	   If return PCB_FIND_DROP_THREAD, stop searching this thread of objects
+	   and continue elsewhere.
+	   */
 	int (*found_cb)(pcb_find_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype);
 
 	/* public state/result */

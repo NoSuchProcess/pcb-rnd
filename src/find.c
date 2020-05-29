@@ -43,6 +43,8 @@ const pcb_find_t pcb_find0_, *pcb_find0 = &pcb_find0_;
 /* Do everything that needs to be done for an object found */
 static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
+	int fr;
+
 	if (ctx->list_found)
 		vtp0_append(&ctx->found, obj);
 
@@ -57,7 +59,9 @@ static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *ar
 
 	ctx->nfound++;
 
-	if ((ctx->found_cb != NULL) && (ctx->found_cb(ctx, obj, arrived_from, ctype) != 0)) {
+	if ((ctx->found_cb != NULL) && ((fr = ctx->found_cb(ctx, obj, arrived_from, ctype)) != 0)) {
+		if (fr == PCB_FIND_DROP_THREAD)
+			return 0;
 		ctx->aborted = 1;
 		return 1;
 	}
