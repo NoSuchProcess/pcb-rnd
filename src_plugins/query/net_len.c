@@ -131,40 +131,40 @@ static int parent_net_len_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb
 	double th;
 
 	if (arrived_from != NULL) {
-	if (obj_ends(new_obj, new_end, &new_th) != 0) {
-		rnd_trace("NSL: badobj: #%ld\n", new_obj->ID);
-		return -1;
-	}
-	obj_ends(arrived_from, old_end, &old_th);
-	th = RND_MIN(new_th, old_th) / 4;
-	th = th * th;
-
-	for(n = 0; n < 2; n++) {
-		if (dist2(old_end[0], old_end[1], new_end[0+n], new_end[1+n]) < th) {
-			if (set_cc(ctx, arrived_from, 0) != 0) {
-				rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[0], old_end[1]);
-				return -1;
-			}
-			conns++;
+		if (obj_ends(new_obj, new_end, &new_th) != 0) {
+			rnd_trace("NSL: badobj: #%ld\n", new_obj->ID);
+			return -1;
 		}
-			
-		if (dist2(old_end[2], old_end[3], new_end[0+n], new_end[1+n]) < th) {
-			if (set_cc(ctx, arrived_from, 1) != 0) {
-				rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[2], old_end[3]);
-				return -1;
-			}
-			conns++;
-		}
-	}
+		obj_ends(arrived_from, old_end, &old_th);
+		th = RND_MIN(new_th, old_th) / 4;
+		th = th * th;
 
-	if (conns == 0) {
-		rnd_trace("NSL: junction at: middle of #%ld\n", new_obj->ID);
-		return -1;
-	}
-	if (conns > 1) {
-		rnd_trace("NSL: junction at: #%ld overlap with #%ld\n", new_obj->ID, arrived_from->ID);
-		return -1;
-	}
+		for(n = 0; n < 2; n++) {
+			if (dist2(old_end[0], old_end[1], new_end[0+n], new_end[1+n]) < th) {
+				if (set_cc(ctx, arrived_from, 0) != 0) {
+					rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[0], old_end[1]);
+					return -1;
+				}
+				conns++;
+			}
+				
+			if (dist2(old_end[2], old_end[3], new_end[0+n], new_end[1+n]) < th) {
+				if (set_cc(ctx, arrived_from, 1) != 0) {
+					rnd_trace("NSL: junction at end: 0 of #%ld at %$$mm;%$$mm\n", new_obj->ID, old_end[2], old_end[3]);
+					return -1;
+				}
+				conns++;
+			}
+		}
+
+		if (conns == 0) {
+			rnd_trace("NSL: junction at: middle of #%ld\n", new_obj->ID);
+			return -1;
+		}
+		if (conns > 1) {
+			rnd_trace("NSL: junction at: #%ld overlap with #%ld\n", new_obj->ID, arrived_from->ID);
+			return -1;
+		}
 	}
 
 	vtp0_append(&ctx->ec->tmplst, new_obj);
