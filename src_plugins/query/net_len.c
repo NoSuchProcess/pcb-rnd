@@ -215,11 +215,36 @@ static int parent_net_len_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb
 {
 	parent_net_len_t *ctx = fctx->user_data;
 
+rnd_trace("from: #%ld to #%ld\n", arrived_from == NULL ? 0 : arrived_from->ID, new_obj->ID);
+
 	if (arrived_from != NULL) {
 		if (endp_match(ctx, new_obj, arrived_from, NULL) != 0) {
+			long n;
+			double dummy;
 			/* remove the last object added, which is new_obj, as it's behind the junction */
 rnd_trace("BUMP new=#%ld from=#%ld last=#%ld\n", new_obj->ID, arrived_from->ID, ((pcb_any_obj_t *)ctx->ec->tmplst.array[ctx->ec->tmplst.used-1])->ID);
 			assert(ctx->ec->tmplst.used > 0);
+			/* remove anything from the open list has contect with the offending object,
+			   so we are not going to follow a thread that is also affected */
+			for(n = 0; n < fctx->open.used; n++) {
+				pcb_any_obj_t *o = fctx->open.array[n];
+
+				if (pcb_intersect_obj_obj(fctx, new_obj, o)) {
+					rnd_trace(" REMOVE1: #%ld\n", o->ID);
+					vtp0_remove(&fctx->open, n, 1);
+					n--;
+				}
+			}
+			
+			/* also remove affected objects from the found list */
+			for(n = 0; n < ctx->ec->tmplst.used; n++) {
+				pcb_any_obj_t *o = ctx->ec->tmplst.array[n];
+				if ((o != arrived_from) && (pcb_intersect_obj_obj(fctx, new_obj, o))) {
+					rnd_trace(" REMOVE2: #%ld\n", o->ID);
+					vtp0_remove(&ctx->ec->tmplst, n, 1);
+					n--;
+				}
+			}
 			return PCB_FIND_DROP_THREAD;
 		}
 	}
