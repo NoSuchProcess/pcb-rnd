@@ -216,7 +216,7 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 {
 	pcb_find_t fctx;
 	parent_net_len_t ctx;
-	long n;
+	long n, revp = -1;
 
 	assert(ec->tmplst.used == 0); /* temp list must be empty so we are nto getting void * ptrs to anything else than we find */
 
@@ -240,12 +240,34 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 
 		if (n > 0) {
 			double offs = 0;
-			endp_match(&ctx, o, (pcb_any_obj_t *)ec->tmplst.array[n-1], &offs);
+			if (endp_match(&ctx, o, (pcb_any_obj_t *)ec->tmplst.array[n-1], &offs) < 0) {
+				/* remember the first place in the list where endpoints don't meet - this
+				   must be the place where the search started in the other direction from
+				   the starting object - see below at "reversing" */
+				if (revp > 0)
+					rnd_message(RND_MSG_ERROR, "Internal error: pcb_qry_parent_net_lenseg_(): multiple revp's\n");
+				else
+					revp = n;
+			}
 /*			rnd_trace("offs: #%ld #%ld: %$mm (%f)\n", ((pcb_any_obj_t *)ec->tmplst.array[n-1])->ID, o->ID, (rnd_coord_t)(offs), offs);*/
 			ctx.seglen->len += offs;
 		}
 	}
 
+	/* reversing: take the following thread of lines by ID:
+	   #1 #5 #8 #11 #14
+	   A search starting from 8 will yield the following raw list:
+	   #8 #5 #1  #11 #14
+	   If there's no loop or other error, #1 and #11 won't have a common
+	   endpoint and thus revp will be set to 3, which is #11's IDX.
+	   When that happens, we need to reverse the order of items before revp to
+	   get:
+	   #1 #5 #8  #11 #14
+	*/
+	if (revp > 0) {
+		for(n = 0; n < revp/2; n++)
+			rnd_swap(void *, ctx.seglen->objs.array[n], ctx.seglen->objs.array[revp-n-1]);
+	}
 	ec->tmplst.used = 0;
 
 	return ctx.seglen;
