@@ -150,7 +150,7 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 		return -1;
 	}
 	obj_ends(arrived_from, old_end, &old_th);
-	th = RND_MIN(new_th, old_th) / 4;
+	th = RND_MIN(new_th, old_th) * 4 / 5;
 	th = th * th;
 
 	for(n = 0; n < 2; n++) {
