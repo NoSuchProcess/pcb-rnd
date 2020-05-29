@@ -153,7 +153,7 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 	th = RND_MIN(new_th, old_th) * 4 / 5;
 	th = th * th;
 
-	for(n = 0; n < 2; n++) {
+	for(n = 0; n < 4; n+=2) {
 		d2 = dist2(old_end[0], old_end[1], new_end[0+n], new_end[1+n]);
 		if (d2 < th) {
 			if (dist != NULL) {
