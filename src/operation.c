@@ -133,6 +133,7 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 	rnd_bool changed = rnd_false;
 	pcb_any_obj_t *exto;
 	int on_locked_too = (mode & PCB_OP_ON_LOCKED);
+	int no_subc_part = (mode & PCB_OP_NO_SUBC_PART);
 
 	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH) && (data != NULL))
 		pcb_data_clip_inhibit_inc(data);
@@ -147,6 +148,8 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
 				continue;
 			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, line))
+				continue;
+			if (no_subc_part && (pcb_lobj_parent_subc(line->parent_type, &line->parent) != NULL))
 				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(line);
@@ -176,6 +179,8 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 				continue;
 			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, arc))
 				continue;
+			if (no_subc_part && (pcb_lobj_parent_subc(arc->parent_type, &arc->parent) != NULL))
+				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(arc);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, arc);
@@ -203,6 +208,8 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, text))
 				continue;
 			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, text))
+				continue;
+			if (no_subc_part && (pcb_lobj_parent_subc(text->parent_type, &text->parent) != NULL))
 				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(text);
@@ -232,6 +239,8 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 				continue;
 			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, polygon))
 				continue;
+			if (no_subc_part && (pcb_lobj_parent_subc(polygon->parent_type, &polygon->parent) != NULL))
+				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(polygon);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, polygon);
@@ -260,6 +269,8 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 				continue;
 			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, gfx))
 				continue;
+			if (no_subc_part && (pcb_lobj_parent_subc(gfx->parent_type, &gfx->parent) != NULL))
+				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(gfx);
 				PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, gfx);
@@ -284,6 +295,8 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, subc) && (subc->extobj == NULL)) /* extobj: even locked means floaters can be operated on */
 				continue;
 			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, subc))
+				continue;
+			if (no_subc_part && (pcb_gobj_parent_subc(subc->parent_type, &subc->parent) != NULL))
 				continue;
 			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
 				if (Reset) {
@@ -332,6 +345,8 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 			if (!on_locked_too && PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack))
 				continue;
 			if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, padstack))
+				continue;
+			if (no_subc_part && (pcb_gobj_parent_subc(padstack->parent_type, &padstack->parent) != NULL))
 				continue;
 			if (Reset) {
 				pcb_undo_add_obj_to_flag(padstack);

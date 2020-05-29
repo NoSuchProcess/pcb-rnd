@@ -160,7 +160,8 @@ typedef struct {
 } pcb_opfunc_t;
 
 typedef enum {
-	PCB_OP_ON_LOCKED = 1
+	PCB_OP_ON_LOCKED = 1,
+	PCB_OP_NO_SUBC_PART = 2     /* ignore selected objects which are part of a subc (assume the operation on subc will cover them) */
 } pcb_op_mode_t;
 
 void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3);
