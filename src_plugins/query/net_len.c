@@ -182,7 +182,7 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 	}
 
 	if (conns == 0) {
-		rnd_trace("NSL: junction at: middle of #%ld\n", new_obj->ID);
+		rnd_trace("NSL: junction at: middle of #%ld vs. #%ld\n", new_obj->ID, arrived_from->ID);
 		return -1;
 	}
 	if (conns > 1) {
