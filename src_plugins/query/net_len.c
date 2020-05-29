@@ -201,7 +201,7 @@ static int parent_net_len_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb
 
 	if (arrived_from != NULL)
 		if (endp_match(ctx, new_obj, arrived_from, NULL) != 0)
-			return -1;
+			return PCB_FIND_DROP_THREAD;
 
 	vtp0_append(&ctx->ec->tmplst, new_obj);
 
