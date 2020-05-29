@@ -8,6 +8,7 @@
 + FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 + FEATURE: the padstack proto editor dialog changes are not undoable [report: Gabriel]
 - FEATURE: search expr wizard should pick up the expression from the button when clicked
+- FEATUER: thermal tab in padstacks
 - FEATURE: trace length calculator (NGI0):
 	- click a line or arc or via
 	- start a search in two directions mapping lines, arcs and vias connected (green-highlight them, marking them found)
