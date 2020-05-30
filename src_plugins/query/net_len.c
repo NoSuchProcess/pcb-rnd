@@ -347,7 +347,7 @@ static pcb_layergrp_t *get_obj_grp(pcb_board_t *pcb, pcb_any_obj_t *o)
 			return pcb_get_layergrp(pcb, pcb_layer_get_group_(o->parent.layer));
 
 		case PCB_OBJ_PSTK:
-			
+			TODO("special case: padstack with copper only on top or bottom");
 			return NULL;
 
 		/* netlen segment breaking objects */
