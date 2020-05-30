@@ -459,7 +459,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 		RND_DAD_END(netlist_ctx.dlg);
 
 		RND_DAD_BEGIN_HBOX(netlist_ctx.dlg); /* bottom button row */
-			RND_DAD_LABEL(netlist_ctx.dlg, "Claim net:");
+			RND_DAD_LABEL(netlist_ctx.dlg, "Claim:");
 				RND_DAD_HELP(netlist_ctx.dlg, "Map galvanic connection of existing objects and convert them into a network on the netlist");
 			RND_DAD_BUTTON(netlist_ctx.dlg, "click");
 				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);
@@ -470,9 +470,25 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 			RND_DAD_BUTTON(netlist_ctx.dlg, "found");
 				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_fnd_cb);
 				RND_DAD_HELP(netlist_ctx.dlg, "create a new network of all found (green) objects");
+
+			RND_DAD_LABEL(netlist_ctx.dlg, "Len:");
+			RND_DAD_BUTTON(netlist_ctx.dlg, "calc");
+/*				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);*/
+				RND_DAD_HELP(netlist_ctx.dlg, "Calculate the length of the selected network immediately");
+			RND_DAD_BUTTON(netlist_ctx.dlg, "on");
+/*				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);*/
+				RND_DAD_HELP(netlist_ctx.dlg, "Turn on auto-recaculate net length on refresh for the selected network");
+			RND_DAD_BUTTON(netlist_ctx.dlg, "off");
+/*				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);*/
+				RND_DAD_HELP(netlist_ctx.dlg, "Turn off auto-recaculate net length on refresh for the selected network");
+			RND_DAD_BUTTON(netlist_ctx.dlg, "refresh");
+/*				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);*/
+				RND_DAD_HELP(netlist_ctx.dlg, "Re-calculate the length of all networks marked for auto-recalculate");
+
 			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* fill between buttons and close */
 				RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
 			RND_DAD_END(netlist_ctx.dlg);
+		
 			RND_DAD_BUTTON_CLOSES(netlist_ctx.dlg, clbtn);
 		RND_DAD_END(netlist_ctx.dlg);
 	RND_DAD_END(netlist_ctx.dlg);
