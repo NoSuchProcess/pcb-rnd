@@ -503,6 +503,7 @@ ha:{
 					li:submenu {
 						ha:Visual length, from object             = { a={<key>n;<key>l;<key>o;}; action=NetLength(object) }
 						ha:Visual length, clear                   = { a={<key>n;<key>l;<key>k;}; action=NetLength(clear) }
+						ha:Netlist dialog, refresh lengths        = { a={<key>n;<key>l;<key>l;}; li:action={NetlistDialog(); NetlistDialog(RefreshNetLens);}}
 					}
 				}
 				-
