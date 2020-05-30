@@ -326,6 +326,27 @@ static void netlist_claim_fnd_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 	rnd_actionva(&ctx->pcb->hidlib, "ClaimNet", "found", NULL);
 }
 
+static void netlist_len_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	netlist_ctx_t *ctx = caller_data;
+	rnd_hid_attribute_t *atree = &ctx->dlg[ctx->wnetlist];
+	rnd_hid_tree_t *tree = atree->wdata;
+	htsp_entry_t *e;
+	long cnt = 0;
+
+	for(e = htsp_first(&tree->paths); e != NULL; e = htsp_next(&tree->paths, e)) {
+		rnd_hid_row_t *row = e->value;
+		if (row->cell[2][0] == '*') {
+			netlist_update_len_by_row(ctx, row);
+			cnt++;
+		}
+	}
+
+	if (cnt == 0)
+		rnd_message(RND_MSG_ERROR, "You need to enable auto-len on at least one network first\n");
+}
+
+
 static vtp0_t netlist_color_save;
 
 static void netlist_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
@@ -531,7 +552,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 				RND_DAD_HELP(netlist_ctx.dlg, "Turn off auto-recaculate net length on refresh for the selected network");
 			RND_DAD_BUTTON(netlist_ctx.dlg, "refresh");
-/*				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);*/
+				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_len_refresh_cb);
 				RND_DAD_HELP(netlist_ctx.dlg, "Re-calculate the length of all networks marked for auto-recalculate");
 
 			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* fill between buttons and close */
