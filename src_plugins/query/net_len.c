@@ -343,11 +343,34 @@ static int seg_dir_reversed(pcb_any_obj_t *o1, pcb_any_obj_t *o2)
 	return dx < 0;
 }
 
+static pcb_layergrp_t *get_obj_grp(pcb_board_t *pcb, pcb_any_obj_t *o)
+{
+	switch(o->type) {
+		case PCB_OBJ_ARC:
+		case PCB_OBJ_LINE:
+			/* plain layer obj */
+			assert(o->parent_type == PCB_PARENT_LAYER);
+			return pcb_get_layergrp(pcb, pcb_layer_get_group_(o->parent.layer));
+
+		case PCB_OBJ_PSTK:
+			
+			return NULL;
+
+		/* netlen segment breaking objects */
+		case PCB_OBJ_VOID: case PCB_OBJ_POLY: case PCB_OBJ_TEXT: case PCB_OBJ_SUBC:
+		case PCB_OBJ_RAT: case PCB_OBJ_GFX: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM:
+		case PCB_OBJ_LAYER: case PCB_OBJ_LAYERGRP:
+			return NULL;
+	}
+	return NULL;
+}
+
 RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, pcb_any_obj_t *from)
 {
 	pcb_find_t fctx;
 	parent_net_len_t ctx;
 	long n, revp = -1;
+	pcb_layergrp_t *lg;
 
 	assert(ec->tmplst.used == 0); /* temp list must be empty so we are nto getting void * ptrs to anything else than we find */
 
@@ -407,6 +430,23 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 		for(n = 0; n < ctx.seglen->objs.used/2; n++)
 			rnd_swap(void *, ctx.seglen->objs.array[n], ctx.seglen->objs.array[ctx.seglen->objs.used-n-1]);
 	}
+
+	/* count vias (layer jumps) */
+	lg = NULL;
+	ctx.seglen->num_vias = 0;
+	for(n = 0; n < ctx.seglen->objs.used; n++) {
+		pcb_any_obj_t *o = ctx.seglen->objs.array[n];
+		pcb_layergrp_t *g = get_obj_grp(ec->pcb, o);
+
+		if (g == NULL)
+			continue; /* multi-layer padstacks */
+		if ((lg != NULL) && (g != lg)) { /* layer group change other than the initial layer group */
+			ctx.seglen->num_vias++;
+			TODO("Add via length between the two layer groups lg and g to the total net length?");
+		}
+		lg = g;
+	}
+
 
 	ec->tmplst.used = 0;
 	return ctx.seglen;
