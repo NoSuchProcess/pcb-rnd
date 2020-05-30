@@ -407,11 +407,11 @@ static rnd_bool netlist_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *pr
 
 static void pcb_dlg_netlist(pcb_board_t *pcb)
 {
-	static const char *hdr[] = {"network", "no-rat", "auto-len", "network length", NULL};
+	static const char *hdr[] = {"network", "!rat", "len", "network length", NULL};
 	static const char *hdr2[] = {"terminals", NULL};
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
-	int wvpan;
+	int whpan, wvpan;
 
 	if (netlist_ctx.active)
 		return; /* do not open another */
@@ -427,6 +427,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 
 		RND_DAD_BEGIN_HPANE(netlist_ctx.dlg);
 			RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
+			whpan = RND_DAD_CURRENT(netlist_ctx.dlg);
 
 			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* left */
 				RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
@@ -575,6 +576,8 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 
 	{
 		rnd_hid_attr_val_t hv;
+		hv.dbl = 0.60;
+		rnd_gui->attr_dlg_set_value(netlist_ctx.dlg_hid_ctx, whpan, &hv);
 		hv.dbl = 0.33;
 		rnd_gui->attr_dlg_set_value(netlist_ctx.dlg_hid_ctx, wvpan, &hv);
 	}
