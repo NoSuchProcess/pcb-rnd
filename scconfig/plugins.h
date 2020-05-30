@@ -59,7 +59,7 @@ plugin_def("script",           "fungw turing complete scripting", sbuildin, 1, 0
 plugin_def("serpentine",       "Serpentine creation",             sdisable, 0, 0)
 plugin_def("shand_cmd",        "command shorthands",              sbuildin, 1, 0)
 plugin_def("shape",            "generate regular shapes",         sbuildin, 1, 0)
-plugin_def("sketch_route",     "assisted semi-auto-routing",      sdisable, 1, 0)
+plugin_def("sketch_route",     "assisted semi-auto-routing",      sdisable, 0, 0)
 plugin_def("smartdisperse",    "netlist based dispenser",         sbuildin, 1, 0)
 plugin_def("stroke",           "mouse gestures",                  sbuildin, 1, 1)
 plugin_def("teardrops",        "draw teardrops on pins",          sbuildin, 1, 0)

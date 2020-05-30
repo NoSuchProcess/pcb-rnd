@@ -1,7 +1,7 @@
 $class feature
 $short assisted semi-auto-routing
 $long TODO
-$state WIP
+$state dead
 #$package auto
-default disable
+default disable-all
 autoload 1
