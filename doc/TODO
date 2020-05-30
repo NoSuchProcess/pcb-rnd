@@ -10,10 +10,6 @@
 - FEATURE: search expr wizard should pick up the expression from the button when clicked
 - FEATUER: thermal tab in padstacks
 - FEATURE: trace length calculator (NGI0):
-	- click a line or arc or via
-	- start a search in two directions mapping lines, arcs and vias connected (green-highlight them, marking them found)
-	- stop at the first junction (anywhere where more than 2 objects are connected)
-	- stop at polygons
 	- display the number of vias and net trace length along the found objects
 - BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 ? BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan] -> can't reproduce; are you sure it depends only on 64 bit coords?
