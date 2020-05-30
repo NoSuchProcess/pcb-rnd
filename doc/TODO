@@ -10,7 +10,8 @@
 - FEATURE: search expr wizard should pick up the expression from the button when clicked
 - FEATUER: thermal tab in padstacks
 - FEATURE: trace length calculator (NGI0):
-	- display the number of vias and net trace length along the found objects
+	- display the number of vias and layer changes along the found objects
+	- on layer switch add via length (standardize layer group thickness attrib!)
 - BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 ? BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan] -> can't reproduce; are you sure it depends only on 64 bit coords?
 - BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
