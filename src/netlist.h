@@ -76,6 +76,7 @@ struct pcb_net_s {
 	char *name;
 	rnd_cardinal_t export_tmp; /* filled in and used by export code; valid only until the end of exporting */
 	unsigned inhibit_rats:1;
+	unsigned auto_len:1;
 	pcb_termlist_t conns;
 };
 

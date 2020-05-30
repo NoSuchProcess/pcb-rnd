@@ -165,6 +165,22 @@ static void pcb_netlist_unselect(pcb_net_t *new_net, pcb_net_term_t *term)
 	pcb_net_crawl_flag(PCB, pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0), 0, PCB_FLAG_SELECTED);
 }
 
+static void pcb_netlist_autolen(pcb_net_t *new_net, pcb_net_term_t *term)
+{
+	pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0);
+	if (n != NULL)
+		n->auto_len = 1;
+	pcb_netlist_changed(0);
+}
+
+static void pcb_netlist_noautolen(pcb_net_t *new_net, pcb_net_term_t *term)
+{
+	pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0);
+	if (n != NULL)
+		n->auto_len = 0;
+	pcb_netlist_changed(0);
+}
+
 static void pcb_netlist_rats(pcb_net_t *new_net, pcb_net_term_t *term)
 {
 	pcb_net_t *n = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_EDITED], new_net->name, 0);
@@ -424,6 +440,8 @@ static fgw_error_t pcb_act_Netlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Find: func = pcb_netlist_find; break;
 		case F_Select: func = pcb_netlist_select; break;
 		case F_Unselect: func = pcb_netlist_unselect; break;
+		case F_AutoLen: func = pcb_netlist_autolen; break;
+		case F_NoAutoLen: func = pcb_netlist_noautolen; break;
 		case F_Rats: func = pcb_netlist_rats; break;
 		case F_NoRats: func = pcb_netlist_norats; break;
 		case F_AllRats: return pcb_netlist_allrats();
