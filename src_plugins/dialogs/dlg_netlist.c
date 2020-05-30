@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include "event.h"
 #include "netlist.h"
 #include <genvector/vtp0.h>
+#include <librnd/core/hidlib_conf.h>
 
 const char *dlg_netlist_cookie = "netlist dialog";
 
@@ -60,7 +61,7 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 	rnd_hid_attribute_t *attr;
 	rnd_hid_tree_t *tree;
 	rnd_hid_row_t *r;
-	char *cell[4], *cursor_path = NULL;
+	char *cell[6], *cursor_path = NULL;
 	pcb_net_t **n, **nets;
 
 	attr = &ctx->dlg[ctx->wnetlist];
@@ -76,10 +77,12 @@ static char *netlist_data2dlg_netlist(netlist_ctx_t *ctx)
 
 	nets = pcb_netlist_sort(&ctx->pcb->netlist[1]);
 	if (nets != NULL) {
-		cell[2] = NULL;
+		cell[4] = NULL;
 		for(n = nets; *n != NULL; n++) {
 			cell[0] = rnd_strdup((*n)->name);
 			cell[1] = rnd_strdup((*n)->inhibit_rats ? "*" : "");
+			cell[2] = rnd_strdup((*n)->auto_len ? "*" : "");
+			cell[3] = rnd_strdup("");
 			rnd_dad_tree_append(attr, NULL, cell);
 		}
 		free(nets);
@@ -256,6 +259,9 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		free(tmp);
 	}
 	else if (w == ctx->wnlcalc) {
+		rnd_hid_row_t *row;
+		rnd_hid_attribute_t *atree = &ctx->dlg[ctx->wnetlist];
+		rnd_hid_tree_t *tree = atree->wdata;
 		fgw_arg_t nlres;
 		fgw_arg_t nlargv[2];
 		nlargv[1].type = FGW_STR; nlargv[1].val.cstr = name;
@@ -264,13 +270,18 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 			rnd_message(RND_MSG_ERROR, "Internal error: failed to execute QueryCalcNetLen() - is the query plugin enabled?\n");
 			return;
 		}
-		if ((nlres.type & FGW_STR) == FGW_STR)
-			rnd_message(RND_MSG_ERROR, "net len error: %s\n", nlres.val.str);
-		else if (nlres.type == FGW_COORD)
-			rnd_message(RND_MSG_ERROR, "net len: %$mm\n", fgw_coord(&nlres));
-		else
-			rnd_message(RND_MSG_ERROR, "net len error: invalid ret\n");
 
+		row = htsp_get(&tree->paths, name);
+
+		if (nlres.type == FGW_COORD) {
+			char tmp[128];
+			rnd_snprintf(tmp, sizeof(tmp), "%$m*", rnd_conf.editor.grid_unit->suffix, fgw_coord(&nlres));
+			rnd_dad_tree_modify_cell(atree, row, 3, tmp);
+		}
+		else if ((nlres.type & FGW_STR) == FGW_STR)
+			rnd_dad_tree_modify_cell(atree, row, 3, nlres.val.str);
+		else
+			rnd_dad_tree_modify_cell(atree, row, 3, "invalid return");
 	}
 	else {
 		rnd_message(RND_MSG_ERROR, "Internal error: netlist_button_cb() called from an invalid widget\n");
@@ -353,7 +364,7 @@ static rnd_bool netlist_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *pr
 
 static void pcb_dlg_netlist(pcb_board_t *pcb)
 {
-	static const char *hdr[] = {"network", "FR", NULL};
+	static const char *hdr[] = {"network", "no-rat", "auto-len", "network length", NULL};
 	static const char *hdr2[] = {"terminals", NULL};
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 
@@ -376,7 +387,7 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 
 			RND_DAD_BEGIN_VBOX(netlist_ctx.dlg); /* left */
 				RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_TREE(netlist_ctx.dlg, 2, 0, hdr);
+				RND_DAD_TREE(netlist_ctx.dlg, 4, 0, hdr);
 					RND_DAD_COMPFLAG(netlist_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 					netlist_ctx.wnetlist = RND_DAD_CURRENT(netlist_ctx.dlg);
 					RND_DAD_TREE_SET_CB(netlist_ctx.dlg, selected_cb, netlist_row_selected);
