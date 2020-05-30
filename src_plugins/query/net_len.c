@@ -73,17 +73,24 @@ static int set_cc(parent_net_len_t *ctx, pcb_any_obj_t *o, int val)
 {
 	htpi_entry_t *e = htpi_getentry(&ctx->ec->obj2lenseg_cc, o);
 
-rnd_trace("set_cc: #%ld %d\n", o->ID, val);
+rnd_trace("set_cc: #%ld %d pstk: %d\n", o->ID, val, (o->type == PCB_OBJ_PSTK));
 
 	if (e == NULL) {
 		htpi_set(&ctx->ec->obj2lenseg_cc, o, val);
 		return 0;
 	}
 
-	if ((e->value & val) == val)
-		return 1;
+	if (o->type == PCB_OBJ_PSTK) { /* padstacks have only one end */
+		e->value++;
+		if (e->value > 2)
+			return 1;
+	}
+	else {
+		if ((e->value & val) == val)
+			return 1;
 
-	e->value |= val;
+		e->value |= val;
+	}
 	return 0;
 }
 
@@ -107,7 +114,8 @@ static int obj_ends(pcb_any_obj_t *o, rnd_coord_t ends[4], rnd_coord_t *thick)
 			return 0;
 
 		case PCB_OBJ_PSTK:
-			ends[0] = ends[2] = p->x; ends[1] = ends[3] = p->y;
+			ends[0] = p->x; ends[1]  = p->y;
+			ends[2] = ends[3] = RND_COORD_MAX;
 			/* thickness estimation: smaller bbox size */
 			*thick = RND_MIN(p->bbox_naked.X2-p->bbox_naked.X1, p->bbox_naked.Y2-p->bbox_naked.Y1);
 			return 0;
