@@ -326,9 +326,8 @@ static void netlist_claim_fnd_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 	rnd_actionva(&ctx->pcb->hidlib, "ClaimNet", "found", NULL);
 }
 
-static void netlist_len_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void netlist_len_refresh(netlist_ctx_t *ctx)
 {
-	netlist_ctx_t *ctx = caller_data;
 	rnd_hid_attribute_t *atree = &ctx->dlg[ctx->wnetlist];
 	rnd_hid_tree_t *tree = atree->wdata;
 	htsp_entry_t *e;
@@ -344,6 +343,11 @@ static void netlist_len_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_att
 
 	if (cnt == 0)
 		rnd_message(RND_MSG_ERROR, "You need to enable auto-len on at least one network first\n");
+}
+
+static void netlist_len_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	netlist_len_refresh((netlist_ctx_t *)caller_data);
 }
 
 
@@ -578,10 +582,25 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 	netlist_data2dlg(&netlist_ctx);
 }
 
-static const char pcb_acts_NetlistDialog[] = "NetlistDialog()\n";
-static const char pcb_acth_NetlistDialog[] = "Open the netlist dialog.";
+static const char pcb_acts_NetlistDialog[] = "NetlistDialog([RefreshNetLens])\n";
+static const char pcb_acth_NetlistDialog[] = "Open the netlist dialog or refresh network lengths in an already open dialog.";
 static fgw_error_t pcb_act_NetlistDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	const char *cmd = NULL;
+	RND_ACT_MAY_CONVARG(1, FGW_STR, NetlistDialog, cmd = argv[1].val.str);
+
+	if (cmd != NULL) {
+		RND_ACT_IRES(0);
+		if (rnd_strcasecmp(cmd, "RefreshNetLens") == 0) {
+				if (!netlist_ctx.active)
+					return;
+			netlist_len_refresh(&netlist_ctx);
+		}
+
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+
 	if (strcmp(rnd_gui->name, "lesstif") == 0)
 		rnd_actionva(RND_ACT_HIDLIB, "DoWindows", "netlist");
 	else
