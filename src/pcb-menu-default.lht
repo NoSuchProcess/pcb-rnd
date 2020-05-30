@@ -499,6 +499,12 @@ ha:{
 						ha:Add All Rats                          = { action=AddRats(AllRats) }
 					}
 				}
+				ha:Network lengths {
+					li:submenu {
+						ha:Visual length, from object             = { a={<key>n;<key>l;<key>o;}; action=NetLength(object) }
+						ha:Visual length, clear                   = { a={<key>n;<key>l;<key>k;}; action=NetLength(clear) }
+					}
+				}
 				-
 				ha:Find Connections                          = { a={<key>c;<key>f;}; li:action={Connection(Reset); Connection(Find)} }
 				ha:Clear/reset lookup                        = { a={<key>c;<key>c;}; li:action={Connection(Reset); Display(Redraw)} }
