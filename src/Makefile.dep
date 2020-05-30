@@ -7402,33 +7402,39 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h \
- ../src_plugins/report/report.h librnd/core/math_helper.h crosshair.h \
- vtonpoint.h global_typedefs.h librnd/core/hid.h librnd/core/error.h \
- librnd/core/attrib.h librnd/core/box.h librnd/core/misc_util.h \
- librnd/core/hidlib.h obj_line.h ../src_3rd/genlist/gendlist.h \
- obj_common.h flag.h data_parent.h obj_poly.h librnd/poly/polyarea.h \
- route.h board.h vtroutestyle.h layer.h obj_arc_list.h obj_arc.h \
- obj_line_list.h obj_poly_list.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h layer_grp.h \
- rats_patch.h board.h data.h crosshair.h buffer.h \
- ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h obj_rat_list.h \
- obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h librnd/poly/rtree2_compat.h \
- librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h ht_subc.h \
- ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
- ../src_plugins/report/drill.h search.h flag_str.h undo.h \
+ ../src_plugins/query/net_len.h ../src_plugins/query/query_exec.h \
+ ../src_plugins/query/query.h ../src_3rd/genvector/vti0.h \
+ ../src_3rd/genht/htsi.h ../src_3rd/genregex/regex_se.h \
+ ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h flag.h \
+ librnd/core/attrib.h global_typedefs.h data_parent.h layer.h \
+ obj_common.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h obj_gfx_list.h obj_gfx.h flag_str.h \
+ ../src_3rd/genht/htpp.h ../src_3rd/genht/htpi.h \
+ ../src_plugins/report/report.h crosshair.h vtonpoint.h librnd/core/hid.h \
+ librnd/core/error.h librnd/core/hidlib.h route.h board.h vtroutestyle.h \
+ layer.h layer_grp.h rats_patch.h board.h data.h crosshair.h buffer.h \
+ ../src_3rd/libfungw/fungw.h obj_rat_list.h obj_rat.h idpath.h \
+ obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ librnd/poly/rtree2_compat.h librnd/poly/rtree.h \
+ ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
+ ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
+ obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
+ ../src_plugins/report/drill.h search.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h find.h draw.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h librnd/core/actions.h \
- ../src_plugins/report/report_conf.h librnd/core/compat_misc.h layer.h \
+ ../src_plugins/report/report_conf.h librnd/core/compat_misc.h layer_ui.h \
  obj_term.h obj_pstk.h obj_pstk_inlines.h thermal.h operation.h \
  librnd/poly/polygon1_gen.h obj_subc_parent.h librnd/core/hid_dad.h \
  librnd/core/hid_attrib.h librnd/core/hid_dad_spin.h netlist.h \
- ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
- ../src_3rd/genregex/regex.h ../src_plugins/report/report_conf_fields.h
+ ../src_3rd/genregex/regex_sei.h \
+ ../src_plugins/report/report_conf_fields.h
 ../src_plugins/rubberband_orig/fgeometry.o: \
  ../src_plugins/rubberband_orig/fgeometry.c \
  ../src_plugins/rubberband_orig/fgeometry.h obj_common.h flag.h \
