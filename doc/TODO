@@ -10,7 +10,7 @@
 - FEATURE: search expr wizard should pick up the expression from the button when clicked
 - FEATUER: thermal tab in padstacks
 - FEATURE: trace length calculator (NGI0):
-	- display: UI layer menu bindings; netlen-dialog
+	- display: netlen-dialog
 	- on layer switch add via length (standardize layer group thickness attrib!)
 - BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 ? BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan] -> can't reproduce; are you sure it depends only on 64 bit coords?

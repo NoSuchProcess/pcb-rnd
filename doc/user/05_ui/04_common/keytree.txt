@@ -100,12 +100,13 @@ c;c;	pcb-menu-default.lht	Connection(Reset);Display(Redraw)	Clear\057reset looku
 c;d;	pcb-menu-default.lht	Atomic(Save);Connection(Reset);Atomic(Restore);Unselect(All);Atomic(Restore);Connection(Find);Atomic(Restore);Select(Connection);Atomic(Restore);RemoveSelected();Atomic(Restore);Connection(Reset);Atomic(Restore);Unselect(All);Atomic(Block)	Del\057Remove Connected
 c;e;	pcb-menu-default.lht	DeleteRats(AllRats) 	Erase rats nest
 c;f;	pcb-menu-default.lht	Connection(Reset);Connection(Find)	Find Connections
+c;r-shift;	pcb-menu-default.lht	Atomic(Save);DeleteRats(AllRats);Atomic(Restore);AddRats(AllRats, manhattan);Atomic(Close)	Optimize rats nest - autorouter
 c;r;	pcb-menu-default.lht	Atomic(Save);DeleteRats(AllRats);Atomic(Restore);AddRats(AllRats);Atomic(Close)	Optimize rats nest
 c;s;	pcb-menu-default.lht	AddRats(Close) 	Select shortest rat
 delete	pcb-menu-default.lht	Tool(Save);Tool(remove);Tool(Press);Tool(Restore)	Remove object
-down	pcb-menu-default.lht	Cursor(Warp,0,-1,grid) 	Step Down
+down	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Down
 down-ctrl	pcb-menu-default.lht	Scroll(down) 	Scroll Down
-down-shift	pcb-menu-default.lht	Cursor(Pan,0,-50,view) 	Step +Down
+down-shift	pcb-menu-default.lht	Cursor(Pan,0,50,view) 	Step +Down
 e;c	pcb-menu-default.lht	GetXY(Click to set the snap point for this buffer);PasteBuffer(Clear);PasteBuffer(AddSelected);Unselect(All);Tool(buffer)	Copy selection to buffer
 e;d	pcb-menu-default.lht	Tool(Save);Tool(remove);Tool(Press);Tool(Restore)	Remove object
 e;f	pcb-menu-default.lht	FlagEdit() 	Object flags...
@@ -164,7 +165,7 @@ g;h	pcb-menu-default.lht	SetGrid(\0572) 	Grid \0572
 g;i	pcb-menu-default.lht	SetUnits(mil)	mil
 g;l	pcb-menu-default.lht	conf(toggle, plugins\057hid_gtk\057local_grid\057enable, design) 	Enable local grid
 g;m	pcb-menu-default.lht	SetUnits(mm)	mm
-g;r	pcb-menu-default.lht	 GetXY(Click to set the grid origin); Display(ToggleGrid) 	Realign grid
+g;r	pcb-menu-default.lht	 Display(ToggleGrid) 	Realign grid
 g;v	pcb-menu-default.lht	conf(toggle, editor\057draw_grid, design) 	Enable visible grid
 i;a	pcb-menu-default.lht	About() 	About...
 i;c;c	pcb-menu-default.lht	PrintCalibrate() 	Calibrate Printer...
@@ -180,8 +181,8 @@ j;j	pcb-menu-default.lht	Scroll(down) 	Scroll Down
 j;k	pcb-menu-default.lht	Scroll(up) 	Scroll Up
 j;l	pcb-menu-default.lht	Scroll(right) 	Scroll Right
 k;h	pcb-menu-default.lht	Cursor(Warp,-1,0,grid) 	Step Left
-k;j	pcb-menu-default.lht	Cursor(Warp,0,-1,grid) 	Step Down
-k;k	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Up
+k;j	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Down
+k;k	pcb-menu-default.lht	Cursor(Warp,0,-1,grid) 	Step Up
 k;l	pcb-menu-default.lht	Cursor(Warp,1,0,grid) 	Step Right
 k;r	pcb-menu-default.lht	Tool(Release);Popup(popup-obj, obj-type)	Click (right)
 k;space	pcb-menu-default.lht	Tool(Press);Tool(Release)	Click (left)
@@ -226,6 +227,8 @@ n-ctrl	pcb-menu-default.lht	New() 	Start New Layout
 n;c;f;	pcb-menu-default.lht	ClaimNet(found) 	claim net on found
 n;c;o;	pcb-menu-default.lht	ClaimNet(object) 	claim net by object
 n;c;s;	pcb-menu-default.lht	ClaimNet(selected) 	claim net on selected
+n;l;k;	pcb-menu-default.lht	NetLength(clear) 	Visual length, clear
+n;l;o;	pcb-menu-default.lht	NetLength(object) 	Visual length, from object
 p;m;p;	pcb-menu-default.lht	ManagePlugins() 	Manage plugins...
 p;m;s;	pcb-menu-default.lht	BrowseScripts() 	Manage scripts...
 p;p;c	pcb-menu-default.lht	Polygon(Close) 	Polygon Close
@@ -279,9 +282,9 @@ u;c	pcb-menu-default.lht	Undo(ClearList) 	Clear undo-buffer
 u;d;	pcb-menu-default.lht	UndoDialog() 	Undo dialog (for debugging)
 u;r	pcb-menu-default.lht	Redo() 	Redo last undone operation
 u;u	pcb-menu-default.lht	Undo() 	Undo last operation
-up	pcb-menu-default.lht	Cursor(Warp,0,1,grid) 	Step Up
+up	pcb-menu-default.lht	Cursor(Warp,0,-1,grid) 	Step Up
 up-ctrl	pcb-menu-default.lht	Scroll(up) 	Scroll Up
-up-shift	pcb-menu-default.lht	Cursor(Pan,0,50,view) 	Step +Up
+up-shift	pcb-menu-default.lht	Cursor(Pan,0,-50,view) 	Step +Up
 v;c	pcb-menu-default.lht	Center() 	Center cursor
 v;f	pcb-menu-default.lht	Zoom() 	Zoom Extents
 v;n	pcb-menu-default.lht	Display(PinOrPadName) 	Show padstack numbers in a subc
