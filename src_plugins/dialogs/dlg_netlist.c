@@ -206,6 +206,43 @@ static void termlist_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rn
 	free(refdes);
 }
 
+static void netlist_update_len_by_row(netlist_ctx_t *ctx, rnd_hid_row_t *row)
+{
+	rnd_hid_attribute_t *atree = &ctx->dlg[ctx->wnetlist];
+	const char *name = rnd_strdup(row->cell[0]);
+	fgw_arg_t nlres;
+	fgw_arg_t nlargv[2];
+	fgw_error_t err;
+
+	nlargv[1].type = FGW_STR; nlargv[1].val.cstr = name;
+	err = rnd_actionv_bin(&ctx->pcb->hidlib, "QueryCalcNetLen", &nlres, 2, nlargv);
+	if (err != 0) {
+		rnd_message(RND_MSG_ERROR, "Internal error: failed to execute QueryCalcNetLen() - is the query plugin enabled?\n");
+		return;
+	}
+
+	if (nlres.type == FGW_COORD) {
+		char tmp[128];
+		rnd_snprintf(tmp, sizeof(tmp), "%$m*", rnd_conf.editor.grid_unit->suffix, fgw_coord(&nlres));
+		rnd_dad_tree_modify_cell(atree, row, 3, tmp);
+	}
+	else if ((nlres.type & FGW_STR) == FGW_STR)
+		rnd_dad_tree_modify_cell(atree, row, 3, nlres.val.str);
+	else
+		rnd_dad_tree_modify_cell(atree, row, 3, "invalid return");
+}
+
+#if 0
+static void netlist_update_len_by_name(netlist_ctx_t *ctx, const char *name)
+{
+	rnd_hid_attribute_t *atree = &ctx->dlg[ctx->wnetlist];
+	rnd_hid_tree_t *tree = atree->wdata;
+	rnd_hid_row_t *row = htsp_get(&tree->paths, name);
+	if (row != NULL)
+		netlist_update_len_by_row(ctx, row);
+}
+#endif
+
 static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	netlist_ctx_t *ctx = caller_data;
@@ -258,31 +295,8 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		rnd_actionva(&ctx->pcb->hidlib, "propedit", tmp, NULL);
 		free(tmp);
 	}
-	else if (w == ctx->wnlcalc) {
-		rnd_hid_row_t *row;
-		rnd_hid_attribute_t *atree = &ctx->dlg[ctx->wnetlist];
-		rnd_hid_tree_t *tree = atree->wdata;
-		fgw_arg_t nlres;
-		fgw_arg_t nlargv[2];
-		nlargv[1].type = FGW_STR; nlargv[1].val.cstr = name;
-		fgw_error_t err = rnd_actionv_bin(&ctx->pcb->hidlib, "QueryCalcNetLen", &nlres, 2, nlargv);
-		if (err != 0) {
-			rnd_message(RND_MSG_ERROR, "Internal error: failed to execute QueryCalcNetLen() - is the query plugin enabled?\n");
-			return;
-		}
-
-		row = htsp_get(&tree->paths, name);
-
-		if (nlres.type == FGW_COORD) {
-			char tmp[128];
-			rnd_snprintf(tmp, sizeof(tmp), "%$m*", rnd_conf.editor.grid_unit->suffix, fgw_coord(&nlres));
-			rnd_dad_tree_modify_cell(atree, row, 3, tmp);
-		}
-		else if ((nlres.type & FGW_STR) == FGW_STR)
-			rnd_dad_tree_modify_cell(atree, row, 3, nlres.val.str);
-		else
-			rnd_dad_tree_modify_cell(atree, row, 3, "invalid return");
-	}
+	else if (w == ctx->wnlcalc)
+		netlist_update_len_by_row(ctx, r);
 	else if (w == ctx->wnlon)
 		rnd_actionva(&ctx->pcb->hidlib, "netlist", "autolen", name, NULL);
 	else if (w == ctx->wnloff)
