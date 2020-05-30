@@ -319,6 +319,29 @@ rnd_trace("from: #%ld to #%ld\n", arrived_from == NULL ? 0 : arrived_from->ID, n
 	return 0;
 }
 
+/* returns 1 if o1 and o2 are not ordered; ordered means left->right (x+)
+   or top->bottom (y+) direction between o1 and o2 center */
+static int seg_dir_reversed(pcb_any_obj_t *o1, pcb_any_obj_t *o2)
+{
+	rnd_coord_t x1, y1, x2, y2, dx, dy, adx, ady;
+
+	pcb_obj_center(o1, &x1, &y1);
+	pcb_obj_center(o2, &x2, &y2);
+	dx = x2 - x1;
+	dy = y2 - y1;
+
+	adx = RND_ABS(dx);
+	ady = RND_ABS(dy);
+
+	/* determine main direction */
+	if (adx > (ady+ady/4)) /* horizontal */
+		return dx < 0;
+	if (ady > (adx+adx/4)) /* vertical */
+		return dy < 0;
+
+	/* diagonal */
+	return dx < 0;
+}
 
 RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, pcb_any_obj_t *from)
 {
@@ -377,8 +400,15 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 		for(n = 0; n < revp/2; n++)
 			rnd_swap(void *, ctx.seglen->objs.array[n], ctx.seglen->objs.array[revp-n-1]);
 	}
-	ec->tmplst.used = 0;
 
+	/* make sure objects are always returned in the same order for the same net,
+	   no matter which object was the start of the mapping */
+	if ((ctx.seglen->objs.used > 1) && (seg_dir_reversed(ctx.seglen->objs.array[0], ctx.seglen->objs.array[ctx.seglen->objs.used-1]))) {
+		for(n = 0; n < ctx.seglen->objs.used/2; n++)
+			rnd_swap(void *, ctx.seglen->objs.array[n], ctx.seglen->objs.array[ctx.seglen->objs.used-n-1]);
+	}
+
+	ec->tmplst.used = 0;
 	return ctx.seglen;
 }
 
