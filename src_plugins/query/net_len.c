@@ -152,6 +152,7 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 	int n, conns = 0, bad = 0;
 
 	if (obj_ends(new_obj, new_end, &new_th) != 0) {
+		ctx->seglen->has_nontrace = 1;
 		rnd_trace("NSL: badobj: #%ld\n", new_obj->ID);
 		return -1;
 	}

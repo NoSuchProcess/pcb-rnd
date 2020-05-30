@@ -3,6 +3,7 @@
 typedef struct {
 	vtp0_t objs;
 	unsigned has_junction:1;
+	unsigned has_nontrace:1;
 	pcb_any_obj_t *junction1, *junction2; /* object with a junction on it before and afterthe list */
 	rnd_coord_t ex1, ey1, ex2, ey2; /* extend from the first and last object to the junction point */
 	rnd_coord_t len;
