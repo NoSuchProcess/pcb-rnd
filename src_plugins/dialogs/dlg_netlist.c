@@ -38,7 +38,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	rnd_rnd_box_t bb_prv;
 	int wnetlist, wprev, wtermlist;
-	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wallrats, wnoallrats, wripup, waddrats, wrename, wmerge, wattr;
+	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wallrats, wnoallrats, wripup, waddrats, wrename, wmerge, wattr, wnlcalc;
 	void *last_selected_row;
 	double last_selected_time;
 	int active; /* already open - allow only one instance */
@@ -254,6 +254,23 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		char *tmp = rnd_concat("net:", name, NULL);
 		rnd_actionva(&ctx->pcb->hidlib, "propedit", tmp, NULL);
 		free(tmp);
+	}
+	else if (w == ctx->wnlcalc) {
+		fgw_arg_t nlres;
+		fgw_arg_t nlargv[2];
+		nlargv[1].type = FGW_STR; nlargv[1].val.cstr = name;
+		fgw_error_t err = rnd_actionv_bin(&ctx->pcb->hidlib, "QueryCalcNetLen", &nlres, 2, nlargv);
+		if (err != 0) {
+			rnd_message(RND_MSG_ERROR, "Internal error: failed to execute QueryCalcNetLen() - is the query plugin enabled?\n");
+			return;
+		}
+		if ((nlres.type & FGW_STR) == FGW_STR)
+			rnd_message(RND_MSG_ERROR, "net len error: %s\n", nlres.val.str);
+		else if (nlres.type == FGW_COORD)
+			rnd_message(RND_MSG_ERROR, "net len: %$mm\n", fgw_coord(&nlres));
+		else
+			rnd_message(RND_MSG_ERROR, "net len error: invalid ret\n");
+
 	}
 	else {
 		rnd_message(RND_MSG_ERROR, "Internal error: netlist_button_cb() called from an invalid widget\n");
@@ -473,7 +490,8 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 
 			RND_DAD_LABEL(netlist_ctx.dlg, "Len:");
 			RND_DAD_BUTTON(netlist_ctx.dlg, "calc");
-/*				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);*/
+				netlist_ctx.wnlcalc = RND_DAD_CURRENT(netlist_ctx.dlg);
+				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 				RND_DAD_HELP(netlist_ctx.dlg, "Calculate the length of the selected network immediately");
 			RND_DAD_BUTTON(netlist_ctx.dlg, "on");
 /*				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);*/
