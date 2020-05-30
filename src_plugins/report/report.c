@@ -459,85 +459,55 @@ static int report_found_pins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-typedef struct {
-	pcb_board_t *pcb;
-	double length;
-	pcb_net_t *net;
-	rnd_cardinal_t terms, badterms, badobjs;
-} net_length_t;
-
-static int net_length_cb(pcb_find_t *fctx, pcb_any_obj_t *o, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+static double xy_to_net_length(pcb_board_t *pcb, rnd_coord_t x, rnd_coord_t y, int *found, gds_t *err)
 {
-	net_length_t *nt = fctx->user_data;
-	double dx, dy;
-	pcb_line_t *line = (pcb_line_t *)o;
-	pcb_arc_t *arc = (pcb_arc_t *)o;
+	long n, type, terms = 0;
+	void *p1, *p2, *p3;
+	pcb_qry_netseg_len_t *nl;
+	pcb_qry_exec_t ec;
+	double ret = -1;
+	pcb_net_t *onet = NULL;
 
-	if (o->term != NULL) {
-		pcb_net_term_t *t = pcb_net_find_by_obj(&nt->pcb->netlist[PCB_NETLIST_EDITED], o);
+	type = pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_PSTK, &p1, &p2, &p3);
+	if (type == PCB_OBJ_VOID) {
+		rnd_append_printf(err, "\nno suitable starting object there!");
+		*found = 0;
+		return -1;
+	}
+
+	pcb_qry_init(&ec, pcb, NULL, -1);
+	nl = pcb_qry_parent_net_lenseg(&ec, (pcb_any_obj_t *)p2);
+	ret = nl->len;
+	*found = nl->objs.used;
+
+	for(n = 0; n < nl->objs.used; n++) {
+		pcb_net_term_t *t = pcb_net_find_by_obj(&pcb->netlist[PCB_NETLIST_EDITED], nl->objs.array[n]);
 		if (t != NULL) {
 			pcb_net_t *net = t->parent.net;
 			assert(t->parent_type == PCB_PARENT_NET);
 			if (net != NULL) {
-				if (nt->net == NULL)
-					nt->net = net;
-				if (nt->net != net)
-					nt->badterms++;
-				else
-					nt->terms++;
+				if (onet != net)
+					rnd_append_printf(err, "\nterminals or other networks are connected (shorted)");
+				onet = net;
+				terms++;
 			}
 		}
 	}
 
-	switch(o->type) {
-		case PCB_OBJ_LINE:
-			dx = line->Point1.X - line->Point2.X;
-			dy = line->Point1.Y - line->Point2.Y;
-			nt->length += sqrt(dx * dx + dy * dy);
-			break;
-
-		case PCB_OBJ_ARC:
-			/* NOTE: this assumes circuilar arc! */
-			nt->length += M_PI * 2 * arc->Width * fabs(arc->Delta) / 360.0;
-			break;
-
-		case PCB_OBJ_POLY:
-		case PCB_OBJ_TEXT:
-			nt->badobjs++;
-			break;
-
-		default:
-			break; /* silently ignore anything else... */
-	}
-	return 0;
-}
-
-static double xy_to_net_length(rnd_coord_t x, rnd_coord_t y, int *found, gds_t *err)
-{
-	pcb_find_t fctx;
-	net_length_t nt;
-
-	memset(&nt, 0, sizeof(nt));
-	nt.pcb = PCB;
-
-	memset(&fctx, 0, sizeof(fctx));
-	fctx.consider_rats = 0;
-	fctx.user_data = &nt;
-	fctx.found_cb = net_length_cb;
-	*found = pcb_find_from_xy(&fctx, PCB->Data, x, y) > 0;
-	pcb_find_free(&fctx);
-
-	if (nt.net != NULL) {
-		rnd_cardinal_t explen = pcb_termlist_length(&nt.net->conns);
-		if (explen != nt.terms)
-			rnd_append_printf(err, "\nonly %ld terminals of the %ld on the network are connected!", (long)nt.terms, (long)explen);
-		if (nt.badterms != 0)
-			rnd_append_printf(err, "\n%ld terminals or other networks are connected (shorted)", (long)nt.badterms);
-		if (nt.badobjs != 0)
-			rnd_append_printf(err, "\n%ld polygons/texts are ignored while they may affect the signal path", (long)nt.badobjs);
+	if (onet != NULL) {
+		long explen = pcb_termlist_length(&onet->conns);
+		if (explen != terms)
+			rnd_append_printf(err, "\nonly %ld terminals of the %ld on the network are connected!", terms, explen);
 	}
 
-	return nt.length;
+	if (nl->has_nontrace)
+		rnd_append_printf(err, "\n%Partial result: polygons/texts blocked the search");
+	else if (nl->has_junction)
+		rnd_append_printf(err, "\n%Partial result: a junction blocked the search");
+
+	pcb_qry_uninit(&ec);
+
+	return ret;
 }
 
 static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -569,7 +539,7 @@ static int report_all_net_lengths(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_obj_center(term, &x, &y);
 
 			gds_init(&err);
-			length = xy_to_net_length(x, y, &found, &err);
+			length = xy_to_net_length(PCB_ACT_BOARD, x, y, &found, &err);
 
 			rnd_snprintf(buf, sizeof(buf), "%$m*", units_name, length);
 			if (err.used != 0)
@@ -618,7 +588,7 @@ static int report_net_length_(fgw_arg_t *res, int argc, fgw_arg_t *argv, rnd_coo
 	gds_t err;
 
 	gds_init(&err);
-	length = xy_to_net_length(x, y, &found, &err);
+	length = xy_to_net_length(PCB_ACT_BOARD, x, y, &found, &err);
 
 	if (found) {
 		char buf[50];
@@ -704,7 +674,7 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 	}
 }
 
-static int report_net_length_by_name(const char *tofind)
+static int report_net_length_by_name(pcb_board_t *pcb, const char *tofind)
 {
 	const char *netname = NULL;
 	pcb_net_t *net;
@@ -713,14 +683,14 @@ static int report_net_length_by_name(const char *tofind)
 	rnd_coord_t x, y;
 	gds_t err;
 
-	if (!PCB)
+	if (pcb == NULL)
 		return 1;
 
 	if (!tofind)
 		return 1;
 
 	{
-		net = pcb_net_get_user(PCB, &PCB->netlist[PCB_NETLIST_EDITED], tofind);
+		net = pcb_net_get_user(pcb, &pcb->netlist[PCB_NETLIST_EDITED], tofind);
 		if (net != NULL) {
 			pcb_net_term_t *term;
 			pcb_any_obj_t *obj = NULL;
@@ -732,7 +702,7 @@ static int report_net_length_by_name(const char *tofind)
 				return 1;
 			}
 
-			obj = pcb_term_find_name(PCB, PCB->Data, PCB_LYT_COPPER, term->refdes, term->term, NULL, NULL);
+			obj = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, term->refdes, term->term, NULL, NULL);
 			if (obj == NULL) {
 				rnd_message(RND_MSG_INFO, "Net found, but its terminal %s-%s is not on the board.\n", term->refdes, term->term);
 				return 1;
@@ -748,7 +718,7 @@ static int report_net_length_by_name(const char *tofind)
 
 
 	gds_init(&err);
-	length = xy_to_net_length(x, y, &found, &err);
+	length = xy_to_net_length(pcb, x, y, &found, &err);
 
 	if (!found) {
 		if (netname != NULL)
@@ -806,7 +776,7 @@ static fgw_error_t pcb_act_Report(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return report_all_net_lengths(res, argc, argv);
 	else if (rnd_strcasecmp(cmd, "NetLength") == 0) {
 		RND_ACT_CONVARG(2, FGW_STR, Report, name = argv[2].val.str);
-		return report_net_length_by_name(name);
+		return report_net_length_by_name(PCB_ACT_BOARD, name);
 	}
 
 	RND_ACT_FAIL(Report);
