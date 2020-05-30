@@ -41,8 +41,10 @@
 #include "obj_arc.h"
 #include "obj_line.h"
 #include "obj_pstk.h"
+#include "obj_term.h"
 
 #include <librnd/core/error.h>
+#include <librnd/core/actions.h>
 
 #define PCB dontuse
 
@@ -475,4 +477,61 @@ pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg(pcb_qry_exec_t *ec, pcb_any_obj_
 void pcb_qry_lenseg_free_fields(pcb_qry_netseg_len_t *ns)
 {
 	vtp0_uninit(&ns->objs);
+}
+
+const char pcb_acts_QueryCalcNetLen[] = "QueryCalcNetLen(netname)";
+const char pcb_acth_QueryCalcNetLen[] = "Calculates the network length by netname; returns an error message string or a positive coord with the length";
+fgw_error_t pcb_act_QueryCalcNetLen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	const char *netname, *err = NULL;
+	pcb_net_t *net;
+	pcb_net_term_t *t;
+	pcb_any_obj_t *obj;
+	pcb_qry_netseg_len_t *nl;
+	pcb_qry_exec_t ec;
+
+	RND_ACT_CONVARG(1, FGW_STR, QueryCalcNetLen, netname = argv[1].val.str);
+
+	pcb_qry_init(&ec, pcb, NULL, -1);
+
+	net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
+	if (net == NULL) {
+		err = "not found";
+		goto out;
+	}
+
+	if (pcb_termlist_length(&net->conns) > 2) {
+		err = "more than 2 terminals";
+		goto out;
+	}
+
+	t = pcb_termlist_first(&net->conns);
+	if ((t == NULL) || ((obj = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL)) == NULL)) {
+		err = "missing terminal";
+		goto out;
+	}
+
+	nl = pcb_qry_parent_net_lenseg(&ec, obj);
+
+	if (nl->has_nontrace) {
+		err = "not a trace";
+		goto out;
+	}
+	if (nl->has_junction) {
+		err = "junction";
+		goto out;
+	}
+
+	out:;
+	if (err != NULL) {
+		res->type = FGW_STR;
+		res->val.cstr = err;
+	}
+	else {
+		res->type = FGW_COORD;
+		fgw_coord(res) = nl->len;
+	}
+	pcb_qry_uninit(&ec);
+	return 0;
 }

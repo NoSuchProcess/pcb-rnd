@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@
 #include "idpath.h"
 #include "view.h"
 #include "actions_pcb.h"
+#include "net_len.h"
 #include <librnd/core/compat_misc.h>
 
 static const char pcb_acts_query[] =
@@ -597,10 +598,16 @@ static fgw_error_t pcb_act_QueryCompileField(fgw_arg_t *res, int argc, fgw_arg_t
 	return 0;
 }
 
+/* in net_len.c */
+extern const char pcb_acts_QueryCalcNetLen[];
+extern const char pcb_acth_QueryCalcNetLen[];
+extern fgw_error_t pcb_act_QueryCalcNetLen(fgw_arg_t *res, int argc, fgw_arg_t *argv);
+
 rnd_action_t query_action_list[] = {
 	{"query", pcb_act_query, pcb_acth_query, pcb_acts_query},
 	{"QueryObj", pcb_act_QueryObj, pcb_acth_QueryObj, pcb_acts_QueryObj},
-	{"QueryCompileField", pcb_act_QueryCompileField, pcb_acth_QueryCompileField, pcb_acts_QueryCompileField}
+	{"QueryCompileField", pcb_act_QueryCompileField, pcb_acth_QueryCompileField, pcb_acts_QueryCompileField},
+	{"QueryCalcNetLen", pcb_act_QueryCalcNetLen, pcb_acth_QueryCalcNetLen, pcb_acts_QueryCalcNetLen}
 };
 
 void query_action_reg(const char *cookie)
