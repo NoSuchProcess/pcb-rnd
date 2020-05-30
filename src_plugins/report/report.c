@@ -34,6 +34,7 @@
 
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
+#include "src_plugins/query/net_len.h"
 
 #include <math.h>
 
@@ -58,6 +59,7 @@
 #include "report_conf.h"
 #include <librnd/core/compat_misc.h>
 #include "layer.h"
+#include "layer_ui.h"
 #include "obj_term.h"
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
@@ -830,9 +832,138 @@ static fgw_error_t pcb_act_info(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static void print_net_length_label(pcb_board_t *pcb, pcb_layer_t *ly, pcb_qry_netseg_len_t *nl, rnd_coord_t atx, rnd_coord_t aty, rnd_coord_t ldx, rnd_coord_t ldy, rnd_coord_t th)
+{
+	rnd_coord_t tx, ty;
+	double dx, dy, len;
+	char tmp[256];
+	pcb_text_t *t;
+
+	if ((ldx == 0) && (ldy == 0))
+		ldx = ldy = 1;
+	len = sqrt((double)ldx*(double)ldx + (double)ldy*(double)ldy);
+	dx = (double)ldx / len; dy = (double)ldy / len;
+
+	rnd_snprintf(tmp, sizeof(tmp), "%m+len=%.02$$mS via=%d%s", rnd_conf.editor.grid_unit->allow, nl->len, nl->num_vias, nl->has_junction ? " BAD" : "");
+
+	tx = atx+dx*th*50; ty = aty+dy*th*50;
+	t = pcb_text_new(ly, pcb_font(pcb, 0, 1), tx, ty, 0, 25, th, tmp, pcb_no_flags());
+	if (nl->has_junction)
+		t->override_color = rnd_clrdup(rnd_color_red);
+
+	pcb_line_new(ly, t->bbox_naked.X1, t->bbox_naked.Y1, t->bbox_naked.X2, t->bbox_naked.Y1, th, 0, pcb_no_flags());
+	pcb_line_new(ly, t->bbox_naked.X1, t->bbox_naked.Y1, t->bbox_naked.X1, t->bbox_naked.Y2, th, 0, pcb_no_flags());
+	pcb_line_new(ly, t->bbox_naked.X2, t->bbox_naked.Y2, t->bbox_naked.X2, t->bbox_naked.Y1, th, 0, pcb_no_flags());
+	pcb_line_new(ly, t->bbox_naked.X2, t->bbox_naked.Y2, t->bbox_naked.X1, t->bbox_naked.Y2, th, 0, pcb_no_flags());
+
+	pcb_line_new(ly, atx, aty, t->bbox_naked.X1, t->bbox_naked.Y1, th, 0, pcb_no_flags());
+
+}
+
+static void print_net_length(pcb_board_t *pcb, pcb_layer_t *ly, pcb_qry_netseg_len_t *nl)
+{
+	pcb_any_obj_t *lo = NULL;
+	rnd_coord_t ldx, ldy, atx, aty;
+	long n;
+	static const rnd_coord_t th = RND_MM_TO_COORD(0.025);
+	for(n = 0; n < nl->objs.used; n++) {
+		pcb_line_t *l = (pcb_line_t *)nl->objs.array[n];
+		pcb_arc_t *a = (pcb_arc_t *)l;
+		pcb_pstk_t *ps = (pcb_pstk_t *)l;
+
+		switch(l->type) {
+			case PCB_OBJ_LINE:
+				pcb_line_new(ly, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, th, 0, pcb_no_flags());
+				if (n == 0) {
+					ldx = -(l->Point2.Y - l->Point1.Y); /* perpendicular to the line */
+					ldy = +(l->Point2.X - l->Point1.X);
+					atx = (l->Point1.X + l->Point2.X)/2;
+					aty = (l->Point1.Y + l->Point2.Y)/2;
+					lo = (pcb_any_obj_t *)l;
+				}
+				break;
+			case PCB_OBJ_ARC:
+				pcb_arc_new(ly, a->X, a->Y, a->Width, a->Height, a->StartAngle, a->Delta, th, 0, pcb_no_flags(), 0);
+				if (n == 0) {
+					ldx = -1;
+					ldy = -1;
+					atx = ps->x;
+					aty = ps->y;
+					lo = (pcb_any_obj_t *)l;
+				}
+				break;
+			case PCB_OBJ_PSTK:
+				pcb_arc_new(ly, ps->x, ps->y, th*4, th*4, 0, 360, th, 0, pcb_no_flags(), 0);
+				if (n == 0) {
+					
+					atx = ps->x;
+					aty = ps->y;
+					ldx = ldy = 1;
+					lo = (pcb_any_obj_t *)l;
+				}
+				break;
+			default: break;
+		}
+	}
+
+	if (lo != NULL)
+		print_net_length_label(pcb, ly, nl, atx, aty, ldx, ldy, th/4);
+}
+
+static const char pcb_acts_NetLength[] =
+	"NetLength(clear)\n"
+	"NetLength(object)\n";
+static const char pcb_acth_NetLength[] = "Report physical network length";
+static fgw_error_t pcb_act_NetLength(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	const char *cmd;
+	static pcb_layer_t *ly = NULL;
+
+	RND_ACT_CONVARG(1, FGW_STR, NetLength, cmd = argv[1].val.str);
+
+	if (strcmp(cmd, "clear") == 0) {
+		if (ly != NULL) {
+			pcb_uilayer_free(ly);
+			ly = NULL;
+		}
+		return 0;
+	}
+
+	/* anything below needs the layer */
+
+	if (ly == NULL)
+		ly = pcb_uilayer_alloc("NetLength", "Net length", rnd_color_blue);
+
+	if (strcmp(cmd, "object") == 0) {
+		int type;
+		rnd_coord_t x, y;
+		void *p1, *p2, *p3;
+		pcb_qry_netseg_len_t *nl;
+		pcb_qry_exec_t ec;
+
+		rnd_hid_get_coords("Click on an object for net length measurement", &x, &y, 0);
+
+		type = pcb_search_screen(x, y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_PSTK, &p1, &p2, &p3);
+		if (type == PCB_OBJ_VOID)
+			goto error;
+
+		pcb_qry_init(&ec, pcb, NULL, -1);
+		nl = pcb_qry_parent_net_lenseg(&ec, (pcb_any_obj_t *)p2);
+		print_net_length(pcb, ly, nl);
+		pcb_qry_uninit(&ec);
+	}
+
+	return 0;
+	error:
+	RND_ACT_IRES(-1);
+	return 0;
+}
+
 rnd_action_t report_action_list[] = {
 	{"ReportObject", pcb_act_report_dialog, pcb_acth_reportdialog, pcb_acts_reportdialog},
 	{"Report", pcb_act_Report, pcb_acth_Report, pcb_acts_Report},
+	{"NetLength", pcb_act_NetLength, pcb_acth_NetLength, pcb_acts_NetLength},
 	{"Info", pcb_act_info}
 };
 

@@ -3,5 +3,6 @@ $short report actions
 $long Report() and ReportObject() actions - print a report about design objects.
 $state works
 $package (core)
+dep query
 default buildin
 autoload 1

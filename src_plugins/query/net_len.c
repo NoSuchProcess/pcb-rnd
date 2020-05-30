@@ -145,12 +145,6 @@ static rnd_coord_t obj_len(pcb_any_obj_t *o)
 	return -1;
 }
 
-static double dist2(rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
-{
-	double dx = x2 - x1, dy = y2 - y1;
-	return dx*dx + dy*dy;
-}
-
 static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, double *dist)
 {
 	rnd_coord_t new_end[4], new_th, old_end[4], old_th;
@@ -166,7 +160,7 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 	th = th * th;
 
 	for(n = 0; n < 4; n+=2) {
-		d2 = dist2(old_end[0], old_end[1], new_end[0+n], new_end[1+n]);
+		d2 = rnd_distance2(old_end[0], old_end[1], new_end[0+n], new_end[1+n]);
 		if (d2 < th) {
 			if (dist != NULL) {
 				*dist = sqrt(d2);
@@ -185,7 +179,7 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 			conns++;
 		}
 
-		d2 = dist2(old_end[2], old_end[3], new_end[0+n], new_end[1+n]);
+		d2 = rnd_distance2(old_end[2], old_end[3], new_end[0+n], new_end[1+n]);
 		if (d2 < th) {
 			if (dist != NULL) {
 				*dist = sqrt(d2);
