@@ -39,7 +39,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	rnd_rnd_box_t bb_prv;
 	int wnetlist, wprev, wtermlist;
-	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wallrats, wnoallrats, wripup, waddrats, wrename, wmerge, wattr, wnlcalc;
+	int wsel, wunsel, wfind, wunfind, wrats, wnorats, wallrats, wnoallrats, wripup, waddrats, wrename, wmerge, wattr, wnlcalc, wnlon, wnloff;
 	void *last_selected_row;
 	double last_selected_time;
 	int active; /* already open - allow only one instance */
@@ -283,6 +283,10 @@ static void netlist_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		else
 			rnd_dad_tree_modify_cell(atree, row, 3, "invalid return");
 	}
+	else if (w == ctx->wnlon)
+		rnd_actionva(&ctx->pcb->hidlib, "netlist", "autolen", name, NULL);
+	else if (w == ctx->wnloff)
+		rnd_actionva(&ctx->pcb->hidlib, "netlist", "noautolen", name, NULL);
 	else {
 		rnd_message(RND_MSG_ERROR, "Internal error: netlist_button_cb() called from an invalid widget\n");
 		return;
@@ -505,10 +509,12 @@ static void pcb_dlg_netlist(pcb_board_t *pcb)
 				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 				RND_DAD_HELP(netlist_ctx.dlg, "Calculate the length of the selected network immediately");
 			RND_DAD_BUTTON(netlist_ctx.dlg, "on");
-/*				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);*/
+				netlist_ctx.wnlon = RND_DAD_CURRENT(netlist_ctx.dlg);
+				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 				RND_DAD_HELP(netlist_ctx.dlg, "Turn on auto-recaculate net length on refresh for the selected network");
 			RND_DAD_BUTTON(netlist_ctx.dlg, "off");
-/*				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);*/
+				netlist_ctx.wnloff = RND_DAD_CURRENT(netlist_ctx.dlg);
+				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_button_cb);
 				RND_DAD_HELP(netlist_ctx.dlg, "Turn off auto-recaculate net length on refresh for the selected network");
 			RND_DAD_BUTTON(netlist_ctx.dlg, "refresh");
 /*				RND_DAD_CHANGE_CB(netlist_ctx.dlg, netlist_claim_obj_cb);*/
