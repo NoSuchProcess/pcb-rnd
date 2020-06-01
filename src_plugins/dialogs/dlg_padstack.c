@@ -35,6 +35,7 @@
 #include "obj_subc_parent.h"
 #include "search.h"
 #include "operation.h"
+#include "undo.h"
 #include "dlg_lib_pstk.h"
 #include "dlg_padstack.h"
 
@@ -303,6 +304,7 @@ static void pse_chg_thermal(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	for(thi = 0; thi < pse->thermal.len; thi++) {
 		if (pse->thermal.wtype[thi] == wid) {
 			pcb_pstk_set_thermal(pse->ps, pse->thermal.lid[thi], thermal_bit[attr->val.lng], 1);
+			pcb_undo_inc_serial();
 			rnd_gui->invalidate_all(rnd_gui);
 			return;
 		}
