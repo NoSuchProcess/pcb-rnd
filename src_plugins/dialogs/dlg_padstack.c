@@ -362,6 +362,9 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, rnd_hid_attribut
 			return;
 		}
 
+
+		pcb_undo_freeze_serial();
+
 		ctx.clip.clear = 0;
 		ctx.clip.restore = 1;
 		pcb_pstkop_clip(&ctx, pse->ps);
@@ -372,6 +375,9 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		ctx.clip.clear = 1;
 		ctx.clip.restore = 0;
 		pcb_pstkop_clip(&ctx, pse->ps);
+
+		pcb_undo_unfreeze_serial();
+		pcb_undo_inc_serial();
 	}
 
 	lock++;
@@ -537,9 +543,14 @@ static void pse_shape_bloat(void *hid_ctx, void *caller_data, rnd_coord_t sign)
 		return;
 	}
 
+	pcb_undo_freeze_serial();
+
 	bloat *= sign;
 	for(n = 0; n < proto->tr.used; n++)
 		pcb_pstk_shape_grow(proto, n, dst_idx, rnd_false, bloat, 1);
+
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 
 	pcb_pstk_proto_update(proto);
 
