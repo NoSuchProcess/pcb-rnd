@@ -8,6 +8,7 @@
 + FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 - FEATURE: search expr wizard should pick up the expression from the button when clicked
 - FEATURE: trace length calculator (NGI0): on layer switch add via length (standardize layer group thickness attrib!)
++ BUG: 1. place 0603; 2. select; 3. cut to buffer; 4. undo -> 0603 put back but selection is lost; reason: the flag is removed in the buffer, but not in an undoable way as we don't have undo on buffer [report: miloh]
 - BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 ? BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan] -> can't reproduce; are you sure it depends only on 64 bit coords?
 - BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
@@ -147,7 +148,6 @@
 
 4. Low prio ===============================================================================
 - FEATURE: footprint in-place replacement should match up floaters to keep their coords, as documented in ML/2304; also keep thermals per term ID [report: gpaubert]
-- BUG: 1. place 0603; 2. select; 3. cut to buffer; 4. undo -> 0603 put back but selection is lost; reason: the flag is removed in the buffer, but not in an undoable way as we don't have undo on buffer [report: igor2, miloh]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
 - FEATURE: padstack label smarter print: in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
