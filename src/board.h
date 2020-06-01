@@ -178,7 +178,7 @@ void pcb_subc_as_board_update(pcb_board_t *pcb);
 
 /*** thickness ***/
 typedef enum pcb_board_thickness_flags_e { /* bitfield */
-	PCB_BRDTHICK_TOLERANT = 1,               /* return -1 if any substrate layer lacks thickness */
+	PCB_BRDTHICK_TOLERANT = 1,               /* do not return -1 if any substrate layer lacks thickness */
 	PCB_BRDTHICK_PRINT_ERROR = 2             /* print an error message for missing thickness attributes */
 } pcb_board_thickness_flags_t;
 
