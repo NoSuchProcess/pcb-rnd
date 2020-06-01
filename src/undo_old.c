@@ -952,6 +952,19 @@ void pcb_undo_move_obj_to_remove(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	if (!pcb_removelist)
 		pcb_removelist = pcb_buffer_new(NULL);
 
+	switch(o->type) {
+		case PCB_OBJ_SUBC:
+			/* UI special case: if a selected sucircuit is removed, restore selection after
+			   the undo placed back the subc on the board; this is needed because
+			   the code for subc move-to-buffer will remove selection flags from the
+			   subc. Here we really pretend the user has first unselected the subc. */
+			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
+				pcb_subc_select(PCB, (pcb_subc_t *)o, PCB_CHGFLG_CLEAR, 0);
+			break;
+		default:
+			break;
+	}
+
 	Entry = GetUndoSlot(PCB_UNDO_REMOVE, PCB_OBJECT_ID(Ptr3), Type);
 	r = &Entry->Data.Removed;
 	r->p_subc_id = 0;
