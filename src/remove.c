@@ -48,7 +48,7 @@ static int remove_pre(pcb_opctx_t *ctx, pcb_any_obj_t *obj, void *ptr3);
 pcb_opfunc_t pcb_RemoveFunctions = {
 	remove_pre,
 	NULL, /* common_post */
-		pcb_lineop_remove,
+	pcb_lineop_remove,
 	pcb_textop_remove,
 	pcb_polyop_remove,
 	pcb_lineop_remove_point,
