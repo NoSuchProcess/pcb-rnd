@@ -165,6 +165,17 @@ would follow:
 	<tr><td> mech      <td> finish.carbon<td> top or bottom <td> carbon finish (typical for under rubber push buttons)
 </table>
 
+<p>
+Layer group attributes interpreted by pcb-rnd core:
+<p>
+<table border=1>
+	<caption><b>Layer group attributes</b>
+	<tr><th> layer group attribute name <th> description
+	<tr><td> thickness                  <td> thickness of the physical layer, given with unit (e.g. 0.2mm or 200um or 50mil)
+	<tr><td> <i>plugin</i>::thickness   <td> overrides the above thickness value for a specific plugin, if the plugin supports it; for example openems::thickness will use a different layer group thickness for the given layer group when exporting to openems
+</table>
+<p>
+
 <h3 id="objects"> 2.4. Basic Drawing Objects </h3>
 <p>
 Pcb-rnd supports a small number of basic drawing objects, from which complex
