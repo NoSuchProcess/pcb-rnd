@@ -15,6 +15,11 @@ struct pse_s {
 
 	/* internal states */
 	int tab;
+	struct {
+		int len;
+		long lid[PCB_MAX_LAYER];
+		int wtype[PCB_MAX_LAYER];
+	} thermal;
 
 	/* widget IDs */
 	int but_instance, but_prototype;

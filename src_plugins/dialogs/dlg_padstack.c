@@ -41,6 +41,8 @@
 static const char *shapes[] = { "circle", "square", NULL };
 static const char *sides[] = { "all (top, bottom, intern)", "top & bottom only", "top only", "bottom only", "none", NULL };
 static pcb_layer_type_t sides_lyt[] = { PCB_LYT_TOP | PCB_LYT_BOTTOM | PCB_LYT_INTERN, PCB_LYT_TOP | PCB_LYT_BOTTOM, PCB_LYT_TOP, PCB_LYT_BOTTOM, 0 };
+static const char *thermal_type[] =  {"no thermal", "round", "sharp", "diagonal round", "diagonal sharp", "solid connection", "no shape", NULL};
+static pcb_thermal_t thermal_bit[] = {0, PCB_THERMAL_ON|PCB_THERMAL_ROUND, PCB_THERMAL_ON|PCB_THERMAL_SHARP, PCB_THERMAL_ON|PCB_THERMAL_ROUND|PCB_THERMAL_DIAGONAL, PCB_THERMAL_ON|PCB_THERMAL_SHARP|PCB_THERMAL_DIAGONAL, PCB_THERMAL_SOLID, PCB_THERMAL_NOSHAPE};
 
 /* build a group/layer name string in tmp */
 char *pse_group_string(pcb_board_t *pcb, pcb_layergrp_t *grp, char *out, int size)
@@ -65,7 +67,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 {
 	char tmp[256], *s;
 	const char *prn = "";
-	int n;
+	int n, i;
 	pcb_pstk_proto_t *proto;
 	rnd_layergrp_id_t top_gid, bottom_gid;
 	pcb_layergrp_t *top_grp, *bottom_grp;
@@ -82,7 +84,7 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	top_grp = pcb_get_layergrp(pse->pcb, top_gid);
 	bottom_grp = pcb_get_layergrp(pse->pcb, bottom_gid);
 
-	/* instance */
+	/* instance - main */
 	if ((proto != NULL) && (proto->name != NULL))
 		prn = proto->name;
 	rnd_snprintf(tmp, sizeof(tmp), "#%ld:%d (%s)", (long int)pse->ps->proto, pse->ps->protoi, prn);
@@ -91,6 +93,18 @@ static void pse_ps2dlg(void *hid_ctx, pse_t *pse)
 	RND_DAD_SET_VALUE(hid_ctx, pse->rot, dbl, pse->ps->rot);
 	RND_DAD_SET_VALUE(hid_ctx, pse->xmirror, lng, pse->ps->xmirror);
 	RND_DAD_SET_VALUE(hid_ctx, pse->smirror, lng, pse->ps->smirror);
+
+	/* instance - thermals */
+	for(n = 0; n < pse->thermal.len; n++) {
+		rnd_layer_id_t lid = pse->thermal.lid[n];
+		int th = lid < pse->ps->thermals.used ? pse->ps->thermals.shape[lid] : 0;
+		for(i = 0; i < sizeof(thermal_bit) / sizeof(thermal_bit[0]); i++) {
+			if (thermal_bit[i] == th) {
+				RND_DAD_SET_VALUE(hid_ctx, pse->thermal.wtype[n], lng, i);
+				break;
+			}
+		}
+	}
 
 	/* proto - layers */
 	memset(shp_found, 0, sizeof(shp_found));
@@ -782,7 +796,8 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 			if (!pse->disable_instance_tab) {
 				/* Tab 0: this instance */
 				RND_DAD_BEGIN_VBOX(dlg);
-					RND_DAD_BEGIN_VBOX(dlg);
+					RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL);
+					RND_DAD_BEGIN_VBOX(dlg); /* upper frame: instance settings */
 						RND_DAD_COMPFLAG(dlg, RND_HATF_FRAME);
 						RND_DAD_LABEL(dlg, "Settings that affect only this padstack instance");
 						RND_DAD_BEGIN_HBOX(dlg);
@@ -817,6 +832,33 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 							RND_DAD_BOOL(dlg, "");
 								pse->smirror = RND_DAD_CURRENT(dlg);
 								RND_DAD_CHANGE_CB(dlg, pse_chg_instance);
+						RND_DAD_END(dlg);
+					RND_DAD_END(dlg);
+					RND_DAD_BEGIN_VBOX(dlg); /* lower frame: thermals */
+						RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+						RND_DAD_LABEL(dlg, "Thermals per layer");
+						RND_DAD_BEGIN_TABLE(dlg, 2);
+						{
+							rnd_layergrp_id_t gid;
+							pse->thermal.len = 0;
+							for(gid = 0; gid < pse->pcb->LayerGroups.len; gid++) {
+								pcb_layergrp_t *g = &pse->pcb->LayerGroups.grp[gid];
+								if (!(g->ltype & PCB_LYT_COPPER))
+									continue;
+								for(n = 0; n < g->len; n++) {
+									pcb_layer_t *ly = pcb_get_layer(pse->pcb->Data, g->lid[n]);
+									if (ly == NULL)
+										continue;
+									RND_DAD_LABEL(dlg, ly->name);
+									pse->thermal.lid[pse->thermal.len] = g->lid[n];
+									RND_DAD_BEGIN_HBOX(dlg);
+										RND_DAD_ENUM(dlg, thermal_type);
+										pse->thermal.wtype[pse->thermal.len] = RND_DAD_CURRENT(dlg);
+									RND_DAD_END(dlg);
+									pse->thermal.len++;
+								}
+							}
+						}
 						RND_DAD_END(dlg);
 					RND_DAD_END(dlg);
 				RND_DAD_END(dlg);
