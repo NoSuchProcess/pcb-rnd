@@ -149,6 +149,7 @@ typedef struct {
 	long script_total, script_at;
 	void *dialog;
 	drc_qry_ctx_t *qctx;
+	unsigned cancel:1;
 } drc_query_prog_t;
 
 static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *lst, const char *name, const char *type, const char *title, const char *desc, const char *query)
@@ -158,6 +159,9 @@ static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *
 	drc_qry_ctx_t qctx;
 	pcb_drcq_stat_t *st;
 	double ts, te;
+
+	if ((prog != 0) && (prog->cancel))
+		return 0;
 
 	if (query == NULL) {
 		rnd_message(RND_MSG_ERROR, "drc_query: igoring rule with no query string:%s\n", name);
@@ -215,7 +219,7 @@ static int *drc_get_disable(const char *name)
 }
 
 
-static void drc_query_progress(pcb_qry_exec_t *ec, long at, long total);
+static int drc_query_progress(pcb_qry_exec_t *ec, long at, long total);
 
 static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
@@ -237,6 +241,7 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_e
 	prog.script_total = rnd_conflist_length(&conf_drc_query.plugins.drc_query.rules);
 	prog.script_at = 0;
 	prog.dialog = NULL;
+	prog.cancel = 0;
 
 	rnd_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
 		lht_node_t *rule = i->prop.src;

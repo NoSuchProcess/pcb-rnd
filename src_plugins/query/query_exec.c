@@ -392,16 +392,17 @@ int pcb_qry_it_reset(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 }
 
 
-#define PROGRESS_CB(ctx, at, total) \
+#define PROGRESS_CB(ctx, at, total, cancel) \
 do { \
 	time_t now; \
+	cancel = 0; \
 	if (ctx->progress_cb == NULL) break; \
 	now = time(NULL); \
 	if (ctx->last_prog_cb == 0) \
 		ctx->last_prog_cb = now; \
 	else if (now > ctx->last_prog_cb) { \
 		ctx->last_prog_cb = now; \
-		ctx->progress_cb(ctx, at, total); \
+		cancel = ctx->progress_cb(ctx, at, total); \
 	} \
 } while(0)
 
@@ -413,8 +414,12 @@ int pcb_qry_it_next(pcb_qry_exec_t *ctx)
 			long ilen = vtp0_len(ctx->iter->vects[i]);
 			long at = ++ctx->iter->idx[i];
 			if (at < ilen) {
-				if (i == ctx->iter->last_active)
-					PROGRESS_CB(ctx, at, ilen);
+				if (i == ctx->iter->last_active) {
+					int cancel;
+					PROGRESS_CB(ctx, at, ilen, cancel);
+					if (cancel)
+						return 0;
+				}
 				return 1;
 			}
 		}

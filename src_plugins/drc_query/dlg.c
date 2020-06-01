@@ -44,6 +44,8 @@ typedef struct{
 static void drc_query_progress_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	progbar_t *pb = caller_data;
+	if (!pb->force_close)
+		pb->prog->cancel = 1;
 	pb->prog->dialog = NULL;
 	if (!pb->force_close) {
 		RND_DAD_FREE(pb->dlg);
@@ -84,7 +86,7 @@ void drc_query_progress_dlg(progbar_t *pb)
 	RND_DAD_NEW("drc_query_progress", pb->dlg, "drc_query: DRC progress", pb, rnd_true, drc_query_progress_close_cb);
 }
 
-static void drc_query_progress(pcb_qry_exec_t *ec, long at, long total)
+static int drc_query_progress(pcb_qry_exec_t *ec, long at, long total)
 {
 	drc_query_prog_t *prog = ec->progress_ctx;
 	progbar_t *pb = prog->dialog;
@@ -97,17 +99,17 @@ static void drc_query_progress(pcb_qry_exec_t *ec, long at, long total)
 			fprintf(stderr, " Violations: %ld\n", prog->qctx->hit_cnt);
 		else
 			fprintf(stderr, "\n");
-		return;
+		return prog->cancel;
 	}
 
 	if (total < 0) {
 		if (prog->dialog == NULL)
-			return;
+			return 0;
 		prog->dialog = NULL;
 		pb->force_close = 1;
 		RND_DAD_FREE(pb->dlg);
 		free(pb);
-		return;
+		return 0;
 	}
 
 	if (prog->dialog == NULL) {
@@ -134,6 +136,7 @@ static void drc_query_progress(pcb_qry_exec_t *ec, long at, long total)
 	}
 
 	rnd_hid_iterate(rnd_gui);
+	return prog->cancel;
 }
 
 

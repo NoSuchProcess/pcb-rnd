@@ -43,7 +43,7 @@ struct pcb_qry_exec_s {
 	pcb_query_iter_t *iter;  /* current iterator */
 	vtp0_t autofree;
 
-	void (*progress_cb)(pcb_qry_exec_t *ec, long at, long total);
+	int (*progress_cb)(pcb_qry_exec_t *ec, long at, long total);
 	void *progress_ctx;
 
 	/* data/call cache */
