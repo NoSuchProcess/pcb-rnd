@@ -43,6 +43,7 @@
 #include "view.h"
 #include "actions_pcb.h"
 #include "net_len.h"
+#include "dlg_search.h"
 #include <librnd/core/compat_misc.h>
 
 static const char pcb_acts_query[] =
@@ -616,7 +617,8 @@ rnd_action_t query_action_list[] = {
 	{"query", pcb_act_query, pcb_acth_query, pcb_acts_query},
 	{"QueryObj", pcb_act_QueryObj, pcb_acth_QueryObj, pcb_acts_QueryObj},
 	{"QueryCompileField", pcb_act_QueryCompileField, pcb_acth_QueryCompileField, pcb_acts_QueryCompileField},
-	{"QueryCalcNetLen", pcb_act_QueryCalcNetLen, pcb_acth_QueryCalcNetLen, pcb_acts_QueryCalcNetLen}
+	{"QueryCalcNetLen", pcb_act_QueryCalcNetLen, pcb_acth_QueryCalcNetLen, pcb_acts_QueryCalcNetLen},
+	{"SearchDialog", pcb_act_SearchDialog, pcb_acth_SearchDialog, pcb_acts_SearchDialog}
 };
 
 void query_action_reg(const char *cookie)

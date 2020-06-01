@@ -1094,7 +1094,7 @@
  idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  ht_subc.h ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
  draw.h obj_term.h search.h search_r.h netlist.h \
- ../src_plugins/dialogs/dlg_search.h ../src_plugins/dialogs/dlg_undo.c \
+ ../src_plugins/dialogs/dlg_undo.c \
  ../src_3rd/libuundo/uundo.h event.h librnd/core/event.h undo.h \
  undo_old.h ../src_plugins/dialogs/dlg_fpmap.c actions_pcb.h \
  plug_footprint.h vtlibrary.h plug_io.h ../src_3rd/genvector/vts0.h \
@@ -1462,7 +1462,7 @@
  ../src_plugins/lib_hid_common/dialogs_conf.h \
  ../src_plugins/dialogs/dlg_pref_conf.c \
  ../src_plugins/dialogs/dlg_pref_confedit.c librnd/core/hid_dad_unit.h
-../src_plugins/dialogs/dlg_search.o: ../src_plugins/dialogs/dlg_search.c \
+../src_plugins/dialogs/dlg_search.o: \
  ../config.h librnd/config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/actions.h \
@@ -1485,8 +1485,8 @@
  obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h layer_grp.h \
- rats_patch.h board.h ../src_plugins/dialogs/dlg_search_tab.h \
- ../src_plugins/dialogs/dlg_search_edit.c librnd/core/hid_dad_tree.h \
+ rats_patch.h board.h  \
+  librnd/core/hid_dad_tree.h \
  ../src_3rd/genht/hash.h
 ../src_plugins/dialogs/dlg_view.o: ../src_plugins/dialogs/dlg_view.c \
  ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
