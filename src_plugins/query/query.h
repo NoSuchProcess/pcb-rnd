@@ -193,6 +193,10 @@ void qry_error(void *prog, const char *err);
    of evaluation errors or -1 if evaluation couldn't start */
 int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
 
+/* Compile a script; returns NULL on error, else the caller needs to call
+  pcb_qry_n_free() on the result to free it after use */
+pcb_qry_node_t *pcb_query_compile(const char *script);
+
 /* Extract a list of definitions used by the script (by compiling the script);
    dst key is the definition name, val is the number of uses. Return value
    is total number of definition usage. */

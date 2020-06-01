@@ -154,6 +154,15 @@ static void view_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 	pcb_view_list_append(view, v);
 }
 
+pcb_qry_node_t *pcb_query_compile(const char *script)
+{
+	pcb_qry_node_t *prg = NULL;
+
+	pcb_qry_set_input(script);
+	qry_parse(&prg);
+	return prg;
+}
+
 int pcb_qry_run_script(pcb_qry_exec_t *ec, pcb_board_t *pcb, const char *script, const char *scope, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_node_t *prg = NULL;
