@@ -1,5 +1,8 @@
 
 #define _DEFAULT_SOURCE
+#ifndef WIN32
+#include <unistd.h>
+#endif
 #include "os_includes.h"
 #include "pnet_config.h"
 #include "phost_types.h"
