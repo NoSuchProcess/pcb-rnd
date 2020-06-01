@@ -38,15 +38,17 @@
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	drc_query_prog_t *prog;
-	int wname, wtotprog, wcurrprog, wcnt;
+	int wname, wtotprog, wcurrprog, wcnt, force_close;
 } progbar_t;
 
 static void drc_query_progress_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	progbar_t *pb = caller_data;
 	pb->prog->dialog = NULL;
-	RND_DAD_FREE(pb->dlg);
-	free(pb);
+	if (!pb->force_close) {
+		RND_DAD_FREE(pb->dlg);
+		free(pb);
+	}
 }
 
 void drc_query_progress_dlg(progbar_t *pb)
@@ -101,8 +103,10 @@ static void drc_query_progress(pcb_qry_exec_t *ec, long at, long total)
 	if (total < 0) {
 		if (prog->dialog == NULL)
 			return;
-		RND_DAD_FREE(pb->dlg);
 		prog->dialog = NULL;
+		pb->force_close = 1;
+		RND_DAD_FREE(pb->dlg);
+		free(pb);
 		return;
 	}
 
