@@ -438,8 +438,14 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 		if (g == NULL)
 			continue; /* multi-layer padstacks */
 		if ((lg != NULL) && (g != lg)) { /* layer group change other than the initial layer group */
+			rnd_coord_t vert = pcb_stack_thickness(ec->pcb, NULL, 0, lg - ec->pcb->LayerGroups.grp, 0, g - ec->pcb->LayerGroups.grp, 0, PCB_LYT_SUBSTRATE | PCB_LYT_COPPER);
+			if ((vert <= 0) && (!ec->warned_missing_thickness)) {
+				ec->warned_missing_thickness = 1;
+				rnd_message(RND_MSG_ERROR, "Some of the substrate or copper layers are missing the 'thickness' attribute; network length does not include via length\n");
+			}
+			else
+				ctx.seglen->len += vert;
 			ctx.seglen->num_vias++;
-			TODO("Add via length between the two layer groups lg and g to the total net length?");
 		}
 		lg = g;
 	}
