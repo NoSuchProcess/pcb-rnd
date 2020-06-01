@@ -42,7 +42,7 @@ static const char *shapes[] = { "circle", "square", NULL };
 static const char *sides[] = { "all (top, bottom, intern)", "top & bottom only", "top only", "bottom only", "none", NULL };
 static pcb_layer_type_t sides_lyt[] = { PCB_LYT_TOP | PCB_LYT_BOTTOM | PCB_LYT_INTERN, PCB_LYT_TOP | PCB_LYT_BOTTOM, PCB_LYT_TOP, PCB_LYT_BOTTOM, 0 };
 static const char *thermal_type[] =  {"no thermal", "round", "sharp", "diagonal round", "diagonal sharp", "solid connection", "no shape", NULL};
-static pcb_thermal_t thermal_bit[] = {0, PCB_THERMAL_ON|PCB_THERMAL_ROUND, PCB_THERMAL_ON|PCB_THERMAL_SHARP, PCB_THERMAL_ON|PCB_THERMAL_ROUND|PCB_THERMAL_DIAGONAL, PCB_THERMAL_ON|PCB_THERMAL_SHARP|PCB_THERMAL_DIAGONAL, PCB_THERMAL_SOLID, PCB_THERMAL_NOSHAPE};
+static pcb_thermal_t thermal_bit[] = {0, PCB_THERMAL_ON|PCB_THERMAL_ROUND, PCB_THERMAL_ON|PCB_THERMAL_SHARP, PCB_THERMAL_ON|PCB_THERMAL_ROUND|PCB_THERMAL_DIAGONAL, PCB_THERMAL_ON|PCB_THERMAL_SHARP|PCB_THERMAL_DIAGONAL, PCB_THERMAL_ON|PCB_THERMAL_SOLID, PCB_THERMAL_ON|PCB_THERMAL_NOSHAPE};
 
 /* build a group/layer name string in tmp */
 char *pse_group_string(pcb_board_t *pcb, pcb_layergrp_t *grp, char *out, int size)
@@ -293,6 +293,22 @@ static void pse_chg_instance(void *hid_ctx, void *caller_data, rnd_hid_attribute
 
 	pse_changed(pse);
 	rnd_gui->invalidate_all(rnd_gui);
+}
+
+static void pse_chg_thermal(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	pse_t *pse = caller_data;
+	int thi, wid = attr - pse->attrs;
+
+	for(thi = 0; thi < pse->thermal.len; thi++) {
+		if (pse->thermal.wtype[thi] == wid) {
+			pcb_pstk_set_thermal(pse->ps, pse->thermal.lid[thi], thermal_bit[attr->val.lng], 1);
+			rnd_gui->invalidate_all(rnd_gui);
+			return;
+		}
+	}
+
+	rnd_message(RND_MSG_ERROR, "pse_chg_thermal(): internal error: invalid widget\n");
 }
 
 static void pse_chg_prname(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -854,6 +870,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 									RND_DAD_BEGIN_HBOX(dlg);
 										RND_DAD_ENUM(dlg, thermal_type);
 										pse->thermal.wtype[pse->thermal.len] = RND_DAD_CURRENT(dlg);
+										RND_DAD_CHANGE_CB(dlg, pse_chg_thermal);
 									RND_DAD_END(dlg);
 									pse->thermal.len++;
 								}
