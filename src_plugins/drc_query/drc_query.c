@@ -173,7 +173,8 @@ static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *
 	qctx.title = title;
 	qctx.desc = desc;
 	qctx.hit_cnt = 0;
-	prog->qctx = &qctx;
+	if (prog != NULL)
+		prog->qctx = &qctx;
 
 	st = pcb_drcq_stat_get(name);
 
@@ -186,7 +187,8 @@ static long drc_qry_exec(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_view_list_t *
 	st->run_cnt++;
 	st->last_hit_cnt = qctx.hit_cnt;
 	st->sum_hit_cnt += qctx.hit_cnt;
-	prog->qctx =  0;
+	if (prog != NULL)
+		prog->qctx = 0;
 	return 0;
 }
 

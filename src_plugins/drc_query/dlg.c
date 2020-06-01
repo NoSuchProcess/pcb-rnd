@@ -207,13 +207,16 @@ static void rule_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	char *script = txt->hid_get_text(atxt, hid_ctx);
 	pcb_view_list_t *view = calloc(sizeof(pcb_view_list_t), 1);
 	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
+	pcb_qry_exec_t ec;
 
-	drc_qry_exec(NULL, pcb, view, ctx->rule,
+	pcb_qry_init(&ec, pcb, NULL, -1);
+	drc_qry_exec(&ec, pcb, view, ctx->rule,
 		ctx->dlg[ctx->wtype].val.str,
 		ctx->dlg[ctx->wtitle].val.str,
 		ctx->dlg[ctx->wdesc].val.str,
 		script);
 	drcq_open_view_win(&pcb->hidlib, view);
+	pcb_qry_uninit(&ec);
 
 	free(script);
 	drc_rlist_pcb2dlg(); /* for the run time */
@@ -589,6 +592,7 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	rnd_conf_role_t role;
 	pcb_view_list_t *view;
 	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
+	pcb_qry_exec_t ec;
 
 	rlist_fetch();
 	rlist_fetch_nd();
@@ -600,8 +604,10 @@ static void rlist_btn_run_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	}
 
 	view = calloc(sizeof(pcb_view_list_t), 1);
-	drc_qry_exec(NULL, pcb, view, rule_basename(row->cell[0]), textval_empty(nd, "type"), textval_empty(nd, "title"), textval_empty(nd, "desc"), script);
+	pcb_qry_init(&ec, pcb, NULL, -1);
+	drc_qry_exec(&ec, pcb, view, rule_basename(row->cell[0]), textval_empty(nd, "type"), textval_empty(nd, "title"), textval_empty(nd, "desc"), script);
 	drcq_open_view_win(&pcb->hidlib, view);
+	pcb_qry_uninit(&ec);
 	drc_rlist_pcb2dlg(); /* for the run time */
 }
 
