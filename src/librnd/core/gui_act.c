@@ -219,6 +219,9 @@ static fgw_error_t pcb_act_Cursor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			dy += radius;
 	}
 
+	if (rnd_conf.editor.view.flip_x) dx = -dx;
+	if (rnd_conf.editor.view.flip_y) dy = -dy;
+
 	rnd_hidcore_crosshair_move_to(hidlib, hidlib->ch_x+dx, hidlib->ch_y+dy, 1);
 	rnd_gui->set_crosshair(rnd_gui, hidlib->ch_x, hidlib->ch_y, pan_warp);
 
