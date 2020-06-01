@@ -427,7 +427,7 @@ rnd_coord_t pcb_stack_thickness(pcb_board_t *pcb, const char *namespace, pcb_boa
 	if (to < from)
 		return -1;
 
-	for(gid = from, grp = pcb->LayerGroups.grp+from; gid <= pcb->LayerGroups.len+to; gid++,grp++) {
+	for(gid = from, grp = pcb->LayerGroups.grp+from; gid <= to; gid++,grp++) {
 		const char *s;
 
 		if (!(grp->ltype & accept))
