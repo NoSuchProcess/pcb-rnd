@@ -441,6 +441,7 @@ static void draw_csect(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	rnd_layergrp_id_t gid, outline_gid = -1;
 	int ystart = 10, x, y, last_copper_step = 5;
+	const char *thick;
 
 	reset_layer_coords();
 	csect_gc = gc;
@@ -502,6 +503,9 @@ TODO("layer: handle multiple outline layers")
 		rnd_render->set_color(gc, color);
 		dhrect(0, y, GROUP_WIDTH_MM, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
 		dtext_bg(gc, 5, y, 200, 0, g->name, &COLOR_BG, &COLOR_ANNOT);
+		thick = rnd_attribute_get(&g->Attributes, "thickness");
+		if (thick != NULL)
+			dtext_bg(gc, 45, y, 200, 0, thick, &COLOR_BG, &COLOR_ANNOT);
 		reg_group_coords(gid, RND_MM_TO_COORD(y), RND_MM_TO_COORD(y+th));
 
 
