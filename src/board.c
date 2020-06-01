@@ -409,16 +409,28 @@ int pcb_board_normalize(pcb_board_t *pcb)
 	return chg;
 }
 
-rnd_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags)
+rnd_coord_t pcb_stack_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags, rnd_layergrp_id_t from, rnd_bool include_from, rnd_layergrp_id_t to, rnd_bool include_to, pcb_layer_type_t accept)
 {
 	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
 	rnd_coord_t curr, total = 0;
 
-	for(gid = 0, grp = pcb->LayerGroups.grp; gid < pcb->LayerGroups.len; gid++,grp++) {
+	if (from > to)
+		rnd_swap(rnd_layergrp_id_t, from, to);
+
+	if (!include_from)
+		from++;
+
+	if (!include_to)
+		to--;
+
+	if (to < from)
+		return -1;
+
+	for(gid = 0, grp = pcb->LayerGroups.grp; gid <= pcb->LayerGroups.len; gid++,grp++) {
 		const char *s;
 
-		if (!(grp->ltype & PCB_LYT_COPPER) && !(grp->ltype & PCB_LYT_SUBSTRATE))
+		if (!(grp->ltype & accept))
 			continue;
 
 		if (namespace != NULL)
@@ -445,4 +457,9 @@ rnd_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_boa
 		total += curr;
 	}
 	return total;
+}
+
+rnd_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags)
+{
+	return pcb_stack_thickness(pcb, namespace, flags, 0, rnd_true, pcb->LayerGroups.len-1, rnd_true, PCB_LYT_COPPER | PCB_LYT_SUBSTRATE);
 }

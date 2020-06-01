@@ -182,6 +182,12 @@ typedef enum pcb_board_thickness_flags_e { /* bitfield */
 	PCB_BRDTHICK_PRINT_ERROR = 2             /* print an error message for missing thickness attributes */
 } pcb_board_thickness_flags_t;
 
+/* Return the total thickness of the stack between groups 'from' and 'to';
+   whether the own thickness of 'from' and 'to' are included in the
+   calculation depends on the corresponding include_ argument. Only groups
+   with type matching 'accept' will be considered. Return -1 on error. */
+rnd_coord_t pcb_stack_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags, rnd_layergrp_id_t from, rnd_bool include_from, rnd_layergrp_id_t to, rnd_bool include_to, pcb_layer_type_t accept);
+
 /* Return the board thickness or -1 on error */
 rnd_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags);
 
