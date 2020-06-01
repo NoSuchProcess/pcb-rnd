@@ -596,7 +596,7 @@ static fgw_error_t pcb_act_NetlistDialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		RND_ACT_IRES(0);
 		if (rnd_strcasecmp(cmd, "RefreshNetLens") == 0) {
 				if (!netlist_ctx.active)
-					return;
+					return 0;
 			netlist_len_refresh(&netlist_ctx);
 		}
 
