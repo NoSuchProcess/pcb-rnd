@@ -8,13 +8,13 @@
 + FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 + FEATURE: the padstack proto editor dialog changes are not undoable [report: gpaubert]
 - FEATURE: search expr wizard should pick up the expression from the button when clicked
-- FEATUER: thermal tab in padstacks
 - FEATURE: trace length calculator (NGI0): on layer switch add via length (standardize layer group thickness attrib!)
 - BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 ? BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan] -> can't reproduce; are you sure it depends only on 64 bit coords?
 - BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
 - BUG: 4 pending parametric footprint related bugreports by Piotr (email)
 - ANNOUNCE: io_kicad: text load xy scaling and x mirror
+- ANNOUNCE: thermal tab in padstacks: http://igor2.repo.hu/tmp/thermals.lht
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
