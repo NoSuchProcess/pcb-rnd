@@ -61,6 +61,7 @@ static int pick_obj(vtp0_t *objs, const char *ask_first, const char *ask_subseq)
 
 static const char pcb_acts_PolyBool[] = "PstkProto([noundo,] unite|isect|sub|xor, [poly1, poly2, [poly...]])\n";
 static const char pcb_acth_PolyBool[] = "Perform polygon boolean operation on the clipped polygons referred. A poly is either and idpath, selected, found or object (for the object under the cursor). When not specified, two object polygons are used.";
+/* doc: polybool.html */
 static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
