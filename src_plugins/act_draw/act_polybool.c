@@ -70,7 +70,6 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_bool_op_t bop;
 	const char *ask_first, *ask_subseq;
 	rnd_polyarea_t *pa, *ptmp;
-	pcb_poly_it_t it;
 	DRAWOPTARG;
 
 
@@ -129,7 +128,12 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pa = ptmp;
 	}
 
+	if (noundo)
+		pcb_undo_freeze_add();
 	pcb_poly_to_polygons_on_layer(pcb->Data, PCB_CURRLAYER(pcb), pa, pcb_flag_make(PCB_FLAG_CLEARLINE));
+	if (noundo)
+		pcb_undo_unfreeze_add();
+
 
 	rnd_polyarea_free(&pa);
 
