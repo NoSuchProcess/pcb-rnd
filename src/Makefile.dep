@@ -7039,16 +7039,20 @@
  librnd/core/rnd_printf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h librnd/core/hid_dad.h \
- librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- ../src_3rd/genlist/gendlist.h librnd/core/color.h \
+ ../src_3rd/genlist/gendlist.h librnd/core/hidlib_conf.h \
+ librnd/core/color.h librnd/core/hid_dad.h librnd/core/compat_misc.h \
+ librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  librnd/core/hid_dad_spin.h librnd/core/event.h librnd/core/hidlib.h \
- board.h vtroutestyle.h layer.h globalconst.h librnd/core/globalconst.h \
- obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
- obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
- librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h layer_grp.h \
- rats_patch.h board.h ../src_plugins/query/dlg_search_tab.h \
+ ../src_plugins/query/query.h ../src_3rd/genvector/vti0.h \
+ ../src_3rd/genht/htsi.h ../src_3rd/genregex/regex_se.h \
+ ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h flag.h globalconst.h \
+ librnd/core/globalconst.h global_typedefs.h data_parent.h layer.h \
+ obj_common.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h \
+ flag_str.h board.h vtroutestyle.h layer.h layer_grp.h rats_patch.h \
+ board.h ../src_plugins/query/dlg_search_tab.h \
  ../src_plugins/query/dlg_search_edit.c librnd/core/hid_dad_tree.h \
  ../src_3rd/genht/hash.h
 ../src_plugins/query/fields_sphash.o: \
