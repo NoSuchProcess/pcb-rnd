@@ -624,7 +624,8 @@
  crosshair.h vtonpoint.h route.h buffer.h obj_rat_list.h obj_rat.h \
  idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  ht_subc.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h \
- obj_pstk.h vtpadstack.h thermal.h operation.h librnd/poly/polygon1_gen.h
+ obj_pstk.h vtpadstack.h thermal.h operation.h librnd/poly/polygon1_gen.h \
+ ../src_plugins/act_draw/act_polybool.c
 ../src_plugins/act_draw/keywords_sphash.o: \
  ../src_plugins/act_draw/keywords_sphash.c
 ../src_plugins/act_read/act_read.o: ../src_plugins/act_read/act_read.c \
