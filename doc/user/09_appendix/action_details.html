@@ -2687,7 +2687,7 @@ The boolean operation argument is one of these:
 </ul>
  
 <p>
- A polygon is a pcb layer object, that is: if it's fullpoly, it may have multiple islands. The result is zero or more polygon layer objects, each with a single island, created on the current layer. 
+ A polygon is a pcb layer object, that is: if it's fullpoly, it may have multiple islands. The code operates on the clipped shape of the input polygons, not on the 'as drawn shape'. The result is zero or more polygon layer objects, each with a single island, created on the current layer. 
 <p>
  The rest of the arguments will build a flat list of polygon objects to work on and need to address at least two polygons. Each argument may be one of: 
 <ul>
@@ -2721,7 +2721,13 @@ found
 </i>
  to address polygons, if multiple polygons are selected or found at the time, the order they end up added to the operation object list is undefined. 
 <p>
- Input polygons are unchanged, new polygons are created on the current layer.  
+ Input polygons are unchanged, new polygons are created on the current layer. 
+<p>
+ Demo video: 
+<a href="https://archive.org/details/polybool">
+ PolyBool(sub) mini-howto.
+</a>
+  
 </dd></dl>
 
 <h2 id="polycombine">PolyCombine</h2>

@@ -1,0 +1,31 @@
+The boolean operation argument is one of these:
+<ul>
+	<li> unite: calculate the union of the polygons
+	<li> isect: calculate the intersection of all polygons; the result is the area where all argument polygons are present
+	<li> sub: subtract subsequent polygons from the first polygon
+</ul>
+<p>
+A polygon is a pcb layer object, that is: if it's fullpoly, it may have
+multiple islands. The code operates on the clipped shape of the input polygons,
+not on the 'as drawn shape'. The result is zero or more polygon layer objects,
+each with a single island, created on the current layer.
+<p>
+The rest of the arguments will build a flat list of polygon objects to
+work on and need to address at least two polygons. Each argument may be
+one of:
+<ul>
+	<li> object: the user needs to click an object using the GUI
+	<li> selected: all selected polygons are appended to the list
+	<li> found: all found (green highlight) polygons are appended to the list
+	<li> <i>ipdath</i>: address a specific polygon
+</ul>
+<p>
+Note: for the <i>sub</i> operation the first polygon is special, so order
+of attributes matter. When using <i>selected</i> or <i>found</i> to address
+polygons, if multiple polygons are selected or found at the time, the order
+they end up added to the operation object list is undefined.
+<p>
+Input polygons are unchanged, new polygons are created on the current layer.
+<p>
+Demo video: <a href="https://archive.org/details/polybool"> PolyBool(sub) mini-howto.</a>
+
