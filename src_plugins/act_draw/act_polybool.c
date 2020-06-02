@@ -28,13 +28,18 @@
 
 #include "obj_pstk_inlines.h"
 
-static void pick_obj(vtp0_t *objs, const char *ask_first, const char *ask_subseq)
+/* returns number of objects added before esc */
+static int pick_obj(vtp0_t *objs, const char *ask_first, const char *ask_subseq)
 {
+	int cnt = 0;
 	rnd_coord_t x, y;
 	const char *msg = objs->used == 0 ? ask_first : ask_subseq;
 	for(;;) {
 		int res = rnd_hid_get_coords(msg, &x, &y, 1);
+		if (res < 0)
+			return cnt;
 		rnd_trace("xy: %d %$mm %$mm\n", res, x, y);
+		cnt++;
 	}
 }
 
@@ -84,8 +89,14 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	while(objs.used < 2)
-		pick_obj(&objs, ask_first, ask_subseq);
+	while(objs.used < 2) {
+		if (pick_obj(&objs, ask_first, ask_subseq) == 0) {
+			rnd_trace("aborted\n");
+			goto error;
+		}
+	}
+
+	rnd_trace("has all objects!\n");
 
 	error:;
 	vtp0_uninit(&objs);
