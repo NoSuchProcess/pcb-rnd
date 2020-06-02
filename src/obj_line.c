@@ -171,75 +171,88 @@ struct line_info {
 	jmp_buf env;
 };
 
+typedef enum {
+	PCB_LINMER_NONE = 0,  /* no merge is possible */
+	PCB_LINMER_REMPT = 1, /* remove both endpoints passed back in out */
+	PCB_LINMER_SKIP = 2   /* do not create the new line at all */
+} pcb_line_merge_t;
+
+/* returns 0 if , 1 if merge is done, */
+RND_INLINE int can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out)
+{
+	/* do not merge to subc parts or terminals */
+	if ((pcb_obj_parent_subc((pcb_any_obj_t *)old_line) != NULL) || (old_line->term != NULL))
+		return PCB_LINMER_NONE;
+
+	/* 100% match on endpoints */
+	if (new_line->Point1.X == old_line->Point1.X && new_line->Point2.X == old_line->Point2.X && new_line->Point1.Y == old_line->Point1.Y && new_line->Point2.Y == old_line->Point2.Y)
+		return PCB_LINMER_SKIP;
+
+	/* 100% match on endpoints - check the other point order */
+	if (new_line->Point2.X == old_line->Point1.X && new_line->Point1.X == old_line->Point2.X && new_line->Point2.Y == old_line->Point1.Y && new_line->Point1.Y == old_line->Point2.Y)
+		return PCB_LINMER_SKIP;
+
+	/* don't merge lines if the clear flags or clearance or thickness differ */
+	if (old_line->Thickness != new_line->Thickness)
+		return PCB_LINMER_NONE;
+
+	if (old_line->Clearance != new_line->Clearance)
+		return PCB_LINMER_NONE;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, old_line) != PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, new_line))
+		return PCB_LINMER_NONE;
+
+	/* remove unnecessary line points */
+	if (old_line->Point1.X == new_line->Point1.X && old_line->Point1.Y == new_line->Point1.Y) {
+		out->Point1.X = old_line->Point2.X;
+		out->Point1.Y = old_line->Point2.Y;
+		out->Point2.X = new_line->Point2.X;
+		out->Point2.Y = new_line->Point2.Y;
+		if (pcb_is_point_on_line(new_line->Point1.X, new_line->Point1.Y, 1, out))
+			return PCB_LINMER_REMPT;
+	}
+	else if (old_line->Point2.X == new_line->Point1.X && old_line->Point2.Y == new_line->Point1.Y) {
+		out->Point1.X = old_line->Point1.X;
+		out->Point1.Y = old_line->Point1.Y;
+		out->Point2.X = new_line->Point2.X;
+		out->Point2.Y = new_line->Point2.Y;
+		if (pcb_is_point_on_line(new_line->Point1.X, new_line->Point1.Y, 1, out))
+			return PCB_LINMER_REMPT;
+	}
+	else if (old_line->Point1.X == new_line->Point2.X && old_line->Point1.Y == new_line->Point2.Y) {
+		out->Point1.X = old_line->Point2.X;
+		out->Point1.Y = old_line->Point2.Y;
+		out->Point2.X = new_line->Point1.X;
+		out->Point2.Y = new_line->Point1.Y;
+		if (pcb_is_point_on_line(new_line->Point2.X, new_line->Point2.Y, 1, out))
+			return PCB_LINMER_REMPT;
+	}
+	else if (old_line->Point2.X == new_line->Point2.X && old_line->Point2.Y == new_line->Point2.Y) {
+		out->Point1.X = old_line->Point1.X;
+		out->Point1.Y = old_line->Point1.Y;
+		out->Point2.X = new_line->Point1.X;
+		out->Point2.Y = new_line->Point1.Y;
+		if (pcb_is_point_on_line(new_line->Point2.X, new_line->Point2.Y, 1, out))
+			return PCB_LINMER_REMPT;
+	}
+
+	return PCB_LINMER_NONE;
+}
+
 static rnd_r_dir_t line_callback(const rnd_rnd_box_t * b, void *cl)
 {
+	int res;
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct line_info *i = (struct line_info *) cl;
 
-	/* do not merge to subc parts or terminals */
-	if ((pcb_obj_parent_subc((pcb_any_obj_t *)line) != NULL) || (line->term != NULL))
-		return RND_R_DIR_NOT_FOUND;
+	res = can_merge_lines(line, &i->lin, &i->test);
+	switch(res) {
+		case PCB_LINMER_NONE:  return RND_R_DIR_NOT_FOUND;
+		case PCB_LINMER_REMPT: i->ans = line; longjmp(i->env, 1); break;
+		case PCB_LINMER_SKIP:  i->ans = (pcb_line_t *)(-1); longjmp(i->env, 1); break;
+	}
 
-	if (line->Point1.X == i->lin.Point1.X && line->Point2.X == i->lin.Point2.X && line->Point1.Y == i->lin.Point1.Y && line->Point2.Y == i->lin.Point2.Y) {
-		i->ans = (pcb_line_t *) (-1);
-		longjmp(i->env, 1);
-	}
-	/* check the other point order */
-	if (line->Point1.X == i->lin.Point1.X && line->Point2.X == i->lin.Point2.X && line->Point1.Y == i->lin.Point1.Y && line->Point2.Y == i->lin.Point2.Y) {
-		i->ans = (pcb_line_t *) (-1);
-		longjmp(i->env, 1);
-	}
-	if (line->Point2.X == i->lin.Point1.X && line->Point1.X == i->lin.Point2.X && line->Point2.Y == i->lin.Point1.Y && line->Point1.Y == i->lin.Point2.Y) {
-		i->ans = (pcb_line_t *) - 1;
-		longjmp(i->env, 1);
-	}
-	/* remove unnecessary line points */
-	if (line->Thickness == i->lin.Thickness
-			/* don't merge lines if the clear flags or clearance differ  */
-			&& PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) == PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, &i->lin)
-			&& line->Clearance == i->lin.Clearance) {
-		if (line->Point1.X == i->lin.Point1.X && line->Point1.Y == i->lin.Point1.Y) {
-			i->test.Point1.X = line->Point2.X;
-			i->test.Point1.Y = line->Point2.Y;
-			i->test.Point2.X = i->lin.Point2.X;
-			i->test.Point2.Y = i->lin.Point2.Y;
-			if (pcb_is_point_on_line(i->lin.Point1.X, i->lin.Point1.Y, 1, &i->test)) {
-				i->ans = line;
-				longjmp(i->env, 1);
-			}
-		}
-		else if (line->Point2.X == i->lin.Point1.X && line->Point2.Y == i->lin.Point1.Y) {
-			i->test.Point1.X = line->Point1.X;
-			i->test.Point1.Y = line->Point1.Y;
-			i->test.Point2.X = i->lin.Point2.X;
-			i->test.Point2.Y = i->lin.Point2.Y;
-			if (pcb_is_point_on_line(i->lin.Point1.X, i->lin.Point1.Y, 1, &i->test)) {
-				i->ans = line;
-				longjmp(i->env, 1);
-			}
-		}
-		else if (line->Point1.X == i->lin.Point2.X && line->Point1.Y == i->lin.Point2.Y) {
-			i->test.Point1.X = line->Point2.X;
-			i->test.Point1.Y = line->Point2.Y;
-			i->test.Point2.X = i->lin.Point1.X;
-			i->test.Point2.Y = i->lin.Point1.Y;
-			if (pcb_is_point_on_line(i->lin.Point2.X, i->lin.Point2.Y, 1, &i->test)) {
-				i->ans = line;
-				longjmp(i->env, 1);
-			}
-		}
-		else if (line->Point2.X == i->lin.Point2.X && line->Point2.Y == i->lin.Point2.Y) {
-			i->test.Point1.X = line->Point1.X;
-			i->test.Point1.Y = line->Point1.Y;
-			i->test.Point2.X = i->lin.Point1.X;
-			i->test.Point2.Y = i->lin.Point1.Y;
-			if (pcb_is_point_on_line(i->lin.Point2.X, i->lin.Point2.Y, 1, &i->test)) {
-				i->ans = line;
-				longjmp(i->env, 1);
-			}
-		}
-	}
-	return RND_R_DIR_NOT_FOUND;
+	return RND_R_DIR_NOT_FOUND; /* should't ever get here */
 }
 
 
