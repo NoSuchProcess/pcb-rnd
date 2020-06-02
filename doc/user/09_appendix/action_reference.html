@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.1 (svn r31539) an interactive printed circuit board editor ,  Revision: 31613
+This is pcb-rnd 2.2.1 (svn r31696) an interactive printed circuit board editor ,  Revision: 31732
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -237,9 +237,10 @@ This is pcb-rnd 2.2.1 (svn r31539) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#moveobject">MoveObject</a></td><td>Moves the object under the crosshair.</td><td>pcb_move_obj(X,Y,[units])</td><td></td>
 <tr><td><a href="action_details.html#movetocurrentlayer">MoveToCurrentLayer</a></td><td>Moves objects to the current layer.</td><td>MoveToCurrentLayer(Object|SelectedObjects)</td><td></td>
 <tr><td>net</td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)Net([rename|merge],srcnet,dstnet)</td><td></td>
+<tr><td>NetLength</td><td>Report physical network length</td><td>NetLength(clear)<br>NetLength(object)</td><td>report plugin</td>
 <tr><td><a href="action_details.html#netlist">netlist</a></td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)Net([rename|merge],srcnet,dstnet)</td><td></td>
 <tr><td>NetlistChanged</td><td>Tells the GUI that the netlist has changed.</td><td>NetlistChanged()</td><td>oldactions plugin</td>
-<tr><td>NetlistDialog</td><td>Open the netlist dialog.</td><td>NetlistDialog()</td><td>dialogs plugin</td>
+<tr><td>NetlistDialog</td><td>Open the netlist dialog or refresh network lengths in an already open dialog.</td><td>NetlistDialog([RefreshNetLens])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#new">New</a></td><td>Starts a new layout.</td><td>New([name])</td><td></td>
 <tr><td>NewGroup</td><td>Create a new layer group with a single, positive drawn layer in it</td><td>NewGroup(type [,location [, purpose[, auto|sub [,name[,grp_attribs]]]])</td><td></td>
 <tr><td>Normalize</td><td>Move all objects within the drawing area (or buffer 0;0), align the drawing to 0;0 (or set buffer grab point to 0;0)</td><td>Normalize([board|buffer[n]])</td><td></td>
@@ -268,6 +269,7 @@ This is pcb-rnd 2.2.1 (svn r31539) an interactive printed circuit board editor ,
 <tr><td>pcb_tan</td><td></td><td></td><td>script plugin</td>
 <tr><td>perp</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>Pinout</td><td>Present the subcircuit pinout box</td><td>Pinout()</td><td>dialogs plugin</td>
+<tr><td>PolyBool</td><td>Perform polygon boolean operation on the clipped polygons referred. A poly is either and idpath, selected, found or object (for the object under the cursor). When not specified, two object polygons are used.</td><td>PstkProto([noundo,] unite|isect|sub|xor, [poly1, poly2, [poly...]])</td><td>act_draw</td>
 <tr><td><a href="action_details.html#polycombine">PolyCombine</a></td><td></td><td></td><td>polycombine plugin</td>
 <tr><td><a href="action_details.html#polygon">Polygon</a></td><td>Some polygon related stuff.</td><td>Polygon(Close|CloseHole|PreviousPoint)</td><td></td>
 <tr><td>PolyHatch</td><td>hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer; flags are h:horizontal, v:vertical, c:contour, p:poly</td><td>PolyHatch([spacing], [hvcp])<br>PolyHatch(interactive)</td><td>lib_polyhelp</td>
@@ -304,6 +306,7 @@ This is pcb-rnd 2.2.1 (svn r31539) an interactive printed circuit board editor ,
 <tr><td>q!</td><td>Quits the application without confirming.</td><td>q!</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#q">q</a></td><td>Quits the application after confirming.</td><td>q</td><td>shand_cmd plugin</td>
 <tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression<br>query(eval|evalidp, expr) - compile and evaluate an expression and print a list of results on stdout<br>query(select|unselect|view, expr) - select or unselect or build a view of objects matching an expression<br>query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression<br>query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist</td><td>query plugin</td>
+<tr><td>QueryCalcNetLen</td><td>Calculates the network length by netname; returns an error message string or a positive coord with the length</td><td>QueryCalcNetLen(netname)</td><td>query plugin</td>
 <tr><td>QueryCompileField</td><td>With "compile": precompiles textual field name to field ID; with "free": frees the memory allocated for a previously precompiled fieldID.</td><td>QueryCompileField(compile, fieldname)<br>QueryCompileField(free, fieldID)</td><td>query plugin</td>
 <tr><td>QueryObj</td><td>Return the value of a field of an object, addressed by the object's idpath and the field's name or precompiled ID. Returns NIL on error.</td><td>QueryObj(idpath, [.fieldname|fieldID])</td><td>query plugin</td>
 <tr><td><a href="action_details.html#quit">Quit</a></td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>
@@ -337,7 +340,7 @@ This is pcb-rnd 2.2.1 (svn r31539) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#scriptcookie">ScriptCookie</a></td><td>Return a cookie specific to the current script instance during script initialization</td><td>ScriptCookie()</td><td>script plugin</td>
 <tr><td><a href="action_details.html#scriptpersistency">ScriptPersistency</a></td><td>Read or remove script persistency data savd on preunload</td><td>ScriptPersistency(read|remove)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#scroll">Scroll</a></td><td>Scroll the viewport.</td><td>Scroll(up|down|left|right, [pixels])</td><td>lib_hid_common plugin</td>
-<tr><td>SearchDialog</td><td>Open the log dialog.</td><td>SearchDialog()</td><td>dialogs plugin</td>
+<tr><td>SearchDialog</td><td>Open the log dialog.</td><td>SearchDialog()</td><td>query plugin</td>
 <tr><td><a href="action_details.html#select">Select</a></td><td>Toggles or sets the selection.</td><td>Select(Object, [idpath])<br>Select(ToggleObject)<br>Select(All|Block|Connection|Invert)<br>Select(Convert)</td><td></td>
 <tr><td><a href="action_details.html#selectlayer">SelectLayer</a></td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
 <tr><td><a href="action_details.html#setflag">SetFlag</a></td><td>Sets flags on objects.</td><td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
@@ -349,9 +352,6 @@ This is pcb-rnd 2.2.1 (svn r31539) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#setunits">SetUnits</a></td><td>Set the default measurement units.</td><td>SetUnits(mm|mil)</td><td></td>
 <tr><td><a href="action_details.html#setvalue">SetValue</a></td><td>Change various board-wide values and sizes.</td><td>SetValue(Grid|Line|LineSize|Text|TextScale, delta)</td><td></td>
 <tr><td>shape</td><td>Interactive shape generator.</td><td>shape()</td><td>shape plugin</td>
-<tr><td>skline</td><td>Tool for drawing sketch lines</td><td>skline()</td><td>sketch_route plugin</td>
-<tr><td>skretriangulate</td><td>Reconstruct CDT on all layer groups</td><td>skretriangulate()</td><td>sketch_route plugin</td>
-<tr><td>sktransform</td><td>Transform sketch to geometrical wiring</td><td>sktransform(rect|oct|alldir)</td><td>sketch_route plugin</td>
 <tr><td><a href="action_details.html#smartdisperse">smartdisperse</a></td><td>Disperse subcircuits into clusters, by netlist connections</td><td>SmartDisperse([All|Selected])</td><td>smartdisperse plugin</td>
 <tr><td>split</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
 <tr><td>StatusSetText</td><td>Replace status printout with text temporarily; turn status printout back on if text is not provided.</td><td>StatusSetText([text])</td><td>lib_hid_pcbui/status</td>
