@@ -102,6 +102,7 @@
 - BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
+- BUG: query(eval, syntax-error) -> segf [report: Igor2]
 
 3. Long term ===============================================================================
 - version 3.0.0:
