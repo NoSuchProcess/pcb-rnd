@@ -166,9 +166,7 @@ static const uundo_oper_t undo_line_geo = {
 
 
 struct line_info {
-	rnd_coord_t X1, X2, Y1, Y2;
-	rnd_coord_t Thickness, Clearance;
-	pcb_flag_t Flags;
+	pcb_line_t lin;
 	pcb_line_t test, *ans;
 	jmp_buf env;
 };
@@ -182,60 +180,60 @@ static rnd_r_dir_t line_callback(const rnd_rnd_box_t * b, void *cl)
 	if ((pcb_obj_parent_subc((pcb_any_obj_t *)line) != NULL) || (line->term != NULL))
 		return RND_R_DIR_NOT_FOUND;
 
-	if (line->Point1.X == i->X1 && line->Point2.X == i->X2 && line->Point1.Y == i->Y1 && line->Point2.Y == i->Y2) {
+	if (line->Point1.X == i->lin.Point1.X && line->Point2.X == i->lin.Point2.X && line->Point1.Y == i->lin.Point1.Y && line->Point2.Y == i->lin.Point2.Y) {
 		i->ans = (pcb_line_t *) (-1);
 		longjmp(i->env, 1);
 	}
 	/* check the other point order */
-	if (line->Point1.X == i->X1 && line->Point2.X == i->X2 && line->Point1.Y == i->Y1 && line->Point2.Y == i->Y2) {
+	if (line->Point1.X == i->lin.Point1.X && line->Point2.X == i->lin.Point2.X && line->Point1.Y == i->lin.Point1.Y && line->Point2.Y == i->lin.Point2.Y) {
 		i->ans = (pcb_line_t *) (-1);
 		longjmp(i->env, 1);
 	}
-	if (line->Point2.X == i->X1 && line->Point1.X == i->X2 && line->Point2.Y == i->Y1 && line->Point1.Y == i->Y2) {
+	if (line->Point2.X == i->lin.Point1.X && line->Point1.X == i->lin.Point2.X && line->Point2.Y == i->lin.Point1.Y && line->Point1.Y == i->lin.Point2.Y) {
 		i->ans = (pcb_line_t *) - 1;
 		longjmp(i->env, 1);
 	}
 	/* remove unnecessary line points */
-	if (line->Thickness == i->Thickness
+	if (line->Thickness == i->lin.Thickness
 			/* don't merge lines if the clear flags or clearance differ  */
-			&& PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) == PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, i)
-			&& line->Clearance == i->Clearance) {
-		if (line->Point1.X == i->X1 && line->Point1.Y == i->Y1) {
+			&& PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) == PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, &i->lin)
+			&& line->Clearance == i->lin.Clearance) {
+		if (line->Point1.X == i->lin.Point1.X && line->Point1.Y == i->lin.Point1.Y) {
 			i->test.Point1.X = line->Point2.X;
 			i->test.Point1.Y = line->Point2.Y;
-			i->test.Point2.X = i->X2;
-			i->test.Point2.Y = i->Y2;
-			if (pcb_is_point_on_line(i->X1, i->Y1, 1, &i->test)) {
+			i->test.Point2.X = i->lin.Point2.X;
+			i->test.Point2.Y = i->lin.Point2.Y;
+			if (pcb_is_point_on_line(i->lin.Point1.X, i->lin.Point1.Y, 1, &i->test)) {
 				i->ans = line;
 				longjmp(i->env, 1);
 			}
 		}
-		else if (line->Point2.X == i->X1 && line->Point2.Y == i->Y1) {
+		else if (line->Point2.X == i->lin.Point1.X && line->Point2.Y == i->lin.Point1.Y) {
 			i->test.Point1.X = line->Point1.X;
 			i->test.Point1.Y = line->Point1.Y;
-			i->test.Point2.X = i->X2;
-			i->test.Point2.Y = i->Y2;
-			if (pcb_is_point_on_line(i->X1, i->Y1, 1, &i->test)) {
+			i->test.Point2.X = i->lin.Point2.X;
+			i->test.Point2.Y = i->lin.Point2.Y;
+			if (pcb_is_point_on_line(i->lin.Point1.X, i->lin.Point1.Y, 1, &i->test)) {
 				i->ans = line;
 				longjmp(i->env, 1);
 			}
 		}
-		else if (line->Point1.X == i->X2 && line->Point1.Y == i->Y2) {
+		else if (line->Point1.X == i->lin.Point2.X && line->Point1.Y == i->lin.Point2.Y) {
 			i->test.Point1.X = line->Point2.X;
 			i->test.Point1.Y = line->Point2.Y;
-			i->test.Point2.X = i->X1;
-			i->test.Point2.Y = i->Y1;
-			if (pcb_is_point_on_line(i->X2, i->Y2, 1, &i->test)) {
+			i->test.Point2.X = i->lin.Point1.X;
+			i->test.Point2.Y = i->lin.Point1.Y;
+			if (pcb_is_point_on_line(i->lin.Point2.X, i->lin.Point2.Y, 1, &i->test)) {
 				i->ans = line;
 				longjmp(i->env, 1);
 			}
 		}
-		else if (line->Point2.X == i->X2 && line->Point2.Y == i->Y2) {
+		else if (line->Point2.X == i->lin.Point2.X && line->Point2.Y == i->lin.Point2.Y) {
 			i->test.Point1.X = line->Point1.X;
 			i->test.Point1.Y = line->Point1.Y;
-			i->test.Point2.X = i->X1;
-			i->test.Point2.Y = i->Y1;
-			if (pcb_is_point_on_line(i->X2, i->Y2, 1, &i->test)) {
+			i->test.Point2.X = i->lin.Point1.X;
+			i->test.Point2.Y = i->lin.Point1.Y;
+			if (pcb_is_point_on_line(i->lin.Point2.X, i->lin.Point2.Y, 1, &i->test)) {
 				i->ans = line;
 				longjmp(i->env, 1);
 			}
@@ -259,13 +257,14 @@ pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y
 		search.Y2++;
 	if (search.X2 == search.X1)
 		search.X2++;
-	info.X1 = X1;
-	info.X2 = X2;
-	info.Y1 = Y1;
-	info.Y2 = Y2;
-	info.Thickness = Thickness;
-	info.Clearance = Clearance;
-	info.Flags = Flags;
+	memset(&info.lin, 0, sizeof(info.lin));
+	info.lin.Point1.X = X1;
+	info.lin.Point2.X = X2;
+	info.lin.Point1.Y = Y1;
+	info.lin.Point2.Y = Y2;
+	info.lin.Thickness = Thickness;
+	info.lin.Clearance = Clearance;
+	info.lin.Flags = Flags;
 	info.test.Thickness = 0;
 	info.test.Flags = pcb_no_flags();
 	info.ans = NULL;
