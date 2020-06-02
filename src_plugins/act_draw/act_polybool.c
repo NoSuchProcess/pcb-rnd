@@ -26,6 +26,8 @@
 
 /* included from act_draw.c */
 #include "search.h"
+#include "obj_poly.h"
+#include "data_list.h"
 
 /* returns number of objects added before esc */
 static int pick_obj(vtp0_t *objs, const char *ask_first, const char *ask_subseq)
@@ -37,7 +39,6 @@ static int pick_obj(vtp0_t *objs, const char *ask_first, const char *ask_subseq)
 		void *p1, *p2, *p3;
 		if (res < 0)
 			return 0;
-		rnd_trace("xy: %d %$mm %$mm\n", res, x, y);
 		res = pcb_search_screen(x, y, PCB_OBJ_POLY, &p1, &p2, &p3);
 		if (res == PCB_OBJ_POLY) {
 			int n, found = 0;
@@ -62,11 +63,14 @@ static const char pcb_acts_PolyBool[] = "PstkProto([noundo,] unite|isect|sub|xor
 static const char pcb_acth_PolyBool[] = "Perform polygon boolean operation on the clipped polygons referred. A poly is either and idpath, selected, found or object (for the object under the cursor). When not specified, two object polygons are used.";
 static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	char *cmd;
 	int cmdi, n;
 	vtp0_t objs;
 	rnd_bool_op_t bop;
 	const char *ask_first, *ask_subseq;
+	rnd_polyarea_t *pa, *ptmp;
+	pcb_poly_it_t it;
 	DRAWOPTARG;
 
 
@@ -89,9 +93,9 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (strcmp(argv[n].val.str, "object") == 0)
 				pick_obj(&objs, ask_first, ask_subseq);
 			else if (strcmp(argv[n].val.str, "selected") == 0)
-				pcb_data_list_by_flag(PCB_ACT_BOARD->Data, &objs, PCB_OBJ_POLY, PCB_FLAG_SELECTED);
+				pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_POLY, PCB_FLAG_SELECTED);
 			else if (strcmp(argv[n].val.str, "found") == 0)
-				pcb_data_list_by_flag(PCB_ACT_BOARD->Data, &objs, PCB_OBJ_POLY, PCB_FLAG_FOUND);
+				pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_POLY, PCB_FLAG_FOUND);
 			else {
 				rnd_message(RND_MSG_ERROR, "Invalid polygon specification string: '%s'\n", argv[n].val.str);
 				goto error;
@@ -108,13 +112,26 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	while(objs.used < 2) {
-		if (pick_obj(&objs, ask_first, ask_subseq) == 0) {
-			rnd_trace("aborted\n");
-			goto error;
-		}
+		if (pick_obj(&objs, ask_first, ask_subseq) == 0)
+			goto error; /* aborted */
 	}
 
-	rnd_trace("has all objects!\n");
+	/* set up the base poly in pa */
+	if (!rnd_polyarea_m_copy0(&pa, ((pcb_poly_t *)objs.array[0])->Clipped)) {
+		rnd_message(RND_MSG_ERROR, "Failed to copy the first polygon\n", n);
+		goto error;
+	}
+
+	/* peform the boolean ops */
+	for(n = 1; n < objs.used; n++) {
+		rnd_polyarea_boolean(pa, ((pcb_poly_t *)objs.array[n])->Clipped, &ptmp, bop);
+		rnd_polyarea_free(&pa);
+		pa = ptmp;
+	}
+
+	pcb_poly_to_polygons_on_layer(pcb->Data, PCB_CURRLAYER(pcb), pa, pcb_flag_make(PCB_FLAG_CLEARLINE));
+
+	rnd_polyarea_free(&pa);
 
 	error:;
 	vtp0_uninit(&objs);
