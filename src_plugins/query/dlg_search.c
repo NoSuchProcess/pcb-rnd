@@ -252,8 +252,9 @@ static int search_decompile_op(gds_t *dst, pcb_qry_node_t *nd)
 static int search_decompile_(search_ctx_t *ctx, pcb_qry_node_t *nd, int dry, int row, int col)
 {
 	int n, res;
-	const char *qopt = NULL;
-	gds_t op1, op2;
+	const char *qopt = NULL, *right;
+	char *left_end;
+	gds_t e;
 
 	if (nd->type == PCBQ_EXPR_PROG)
 		return search_decompile_(ctx, nd->data.children, dry, row, col);
@@ -288,17 +289,41 @@ static int search_decompile_(search_ctx_t *ctx, pcb_qry_node_t *nd, int dry, int
 	if (qopt == NULL)
 		return -1; /* unknown binary op */
 
-	gds_init(&op1);
-	gds_init(&op2);
+	gds_init(&e);
 
-	res = search_decompile_op(&op1, nd->data.children);
-	res |= search_decompile_op(&op2, nd->data.children->next);
+	res = search_decompile_op(&e, nd->data.children);
+	left_end = e.array + e.used;
+	gds_append(&e, '\n');
+	gds_append_str(&e, qopt);
+	gds_append(&e, '\n');
+	right = e.array + e.used;
+	res |= search_decompile_op(&e, nd->data.children->next);
 
-	if (res == 0)
-		rnd_trace("decomp: %d (%s) at %d;%d: %s %s\n", nd->type, qopt, row, col, op1.array, op2.array);
+	if (res == 0) {
+		rnd_hid_attr_val_t hv;
+		const expr_wizard_t *w;
 
-	gds_uninit(&op1);
-	gds_uninit(&op2);
+		*left_end = '\0';
+		for(w = expr_tab; w->left_desc != NULL; w++)
+			if ((w->left_var != NULL) && (strcmp(w->left_var, e.array) == 0))
+				break;
+		*left_end = '\n';
+
+		if (w->left_desc != NULL) {
+			ctx->expr[row][col].expr = w;
+			ctx->expr[row][col].op = qopt;
+			ctx->expr[row][col].right = rnd_strdup(right);
+			ctx->expr[row][col].valid = 1;
+
+			hv.str = e.array;
+			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wexpr_lab[row][col], &hv);
+			ctx->visible[row][col] = 1;
+		}
+		else
+			res = -1;
+	}
+
+	gds_uninit(&e);
 
 	return res;
 }
@@ -326,6 +351,7 @@ static void search_decompile(search_ctx_t *ctx)
 TODO("Clear the GUI");
 
 	search_decompile_(ctx, root, 0, 0, 0);
+	update_vis(ctx);
 }
 
 static void search_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
