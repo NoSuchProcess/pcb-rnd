@@ -30,6 +30,7 @@
 
 #include <librnd/core/actions.h>
 #include <librnd/core/conf_hid.h>
+#include <librnd/core/hidlib_conf.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/event.h>
 #include <librnd/core/error.h>
@@ -216,14 +217,14 @@ static void search_recompile(search_ctx_t *ctx)
 static const char *qop_text[]         = {"==",       "!=",        ">=",         "<=",         ">",        "<",        "~"};
 static const pcb_qry_nodetype_t qop[] = {PCBQ_OP_EQ, PCBQ_OP_NEQ, PCBQ_OP_GTEQ, PCBQ_OP_LTEQ, PCBQ_OP_GT, PCBQ_OP_LT, PCBQ_OP_MATCH};
 
-static int search_decompile_op(gds_t *dst, pcb_qry_node_t *nd)
+static int search_decompile_op(gds_t *dst, pcb_qry_node_t *nd, rnd_bool want_coord)
 {
 	int res;
 
 	switch(nd->type) {
 		case PCBQ_FIELD_OF:
 			for(nd = nd->data.children, res = 0; nd != NULL; nd = nd->next)
-				res |= search_decompile_op(dst, nd);
+				res |= search_decompile_op(dst, nd, want_coord);
 			return res;
 		case PCBQ_FIELD:
 			gds_append(dst, '.');
@@ -233,10 +234,13 @@ static int search_decompile_op(gds_t *dst, pcb_qry_node_t *nd)
 			gds_append(dst, '@');
 			return 0;
 		case PCBQ_DATA_COORD:
-			rnd_append_printf(dst, "%$mm", nd->data.crd);
+			rnd_append_printf(dst, "%m+%$mS", rnd_conf.editor.grid_unit->allow, nd->data.crd);
 			return 0;
 		case PCBQ_DATA_DOUBLE:
-			rnd_append_printf(dst, "%f", nd->data.dbl);
+			if (want_coord) 
+				rnd_append_printf(dst, "%m+%$mS", rnd_conf.editor.grid_unit->allow, (rnd_coord_t)nd->data.dbl);
+			else
+				rnd_append_printf(dst, "%f", nd->data.dbl);
 			return 0;
 		case PCBQ_DATA_STRING:
 		case PCBQ_DATA_REGEX:
@@ -253,8 +257,9 @@ static int search_decompile_(search_ctx_t *ctx, pcb_qry_node_t *nd, int dry, int
 {
 	int n, res;
 	const char *qopt = NULL, *right;
-	char *left_end;
 	gds_t e;
+	const expr_wizard_t *w;
+
 
 	if (nd->type == PCBQ_EXPR_PROG)
 		return search_decompile_(ctx, nd->data.children, dry, row, col);
@@ -291,25 +296,25 @@ static int search_decompile_(search_ctx_t *ctx, pcb_qry_node_t *nd, int dry, int
 
 	gds_init(&e);
 
-	res = search_decompile_op(&e, nd->data.children);
-	left_end = e.array + e.used;
+	res = search_decompile_op(&e, nd->data.children, 0);
+
+	/* look up the left side to know how to fill in the expr editor dialog */
+	for(w = expr_tab; w->left_desc != NULL; w++)
+		if ((w->left_var != NULL) && (strcmp(w->left_var, e.array) == 0))
+			break;
+	if (w->left_desc == NULL)
+		w = NULL;
+
 	gds_append(&e, '\n');
 	gds_append_str(&e, qopt);
 	gds_append(&e, '\n');
 	right = e.array + e.used;
-	res |= search_decompile_op(&e, nd->data.children->next);
+	res |= search_decompile_op(&e, nd->data.children->next, (w->rtype == RIGHT_COORD));
 
 	if (res == 0) {
 		rnd_hid_attr_val_t hv;
-		const expr_wizard_t *w;
 
-		*left_end = '\0';
-		for(w = expr_tab; w->left_desc != NULL; w++)
-			if ((w->left_var != NULL) && (strcmp(w->left_var, e.array) == 0))
-				break;
-		*left_end = '\n';
-
-		if (w->left_desc != NULL) {
+		if (w != NULL) {
 			ctx->expr[row][col].expr = w;
 			ctx->expr[row][col].op = qopt;
 			ctx->expr[row][col].right = rnd_strdup(right);
