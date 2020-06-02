@@ -216,11 +216,44 @@ static void search_recompile(search_ctx_t *ctx)
 static const char *qop_text[]         = {"==",       "!=",        ">=",         "<=",         ">",        "<",        "~"};
 static const pcb_qry_nodetype_t qop[] = {PCBQ_OP_EQ, PCBQ_OP_NEQ, PCBQ_OP_GTEQ, PCBQ_OP_LTEQ, PCBQ_OP_GT, PCBQ_OP_LT, PCBQ_OP_MATCH};
 
+static int search_decompile_op(gds_t *dst, pcb_qry_node_t *nd)
+{
+	int res;
+
+	switch(nd->type) {
+		case PCBQ_FIELD_OF:
+			for(nd = nd->data.children, res = 0; nd != NULL; nd = nd->next)
+				res |= search_decompile_op(dst, nd);
+			return res;
+		case PCBQ_FIELD:
+			gds_append(dst, '.');
+			gds_append_str(dst, nd->data.str);
+			return 0;
+		case PCBQ_VAR:
+			gds_append(dst, '@');
+			return 0;
+		case PCBQ_DATA_COORD:
+			rnd_append_printf(dst, "%$mm", nd->data.crd);
+			return 0;
+		case PCBQ_DATA_DOUBLE:
+			rnd_append_printf(dst, "%f", nd->data.dbl);
+			return 0;
+		case PCBQ_DATA_STRING:
+		case PCBQ_DATA_REGEX:
+		case PCBQ_DATA_CONST:
+			gds_append_str(dst, nd->data.str);
+			return 0;
+		default:
+			break;
+	}
+	return -1;
+}
 
 static int search_decompile_(search_ctx_t *ctx, pcb_qry_node_t *nd, int dry, int row, int col)
 {
-	int n;
+	int n, res;
 	const char *qopt = NULL;
+	gds_t op1, op2;
 
 	if (nd->type == PCBQ_EXPR_PROG)
 		return search_decompile_(ctx, nd->data.children, dry, row, col);
@@ -255,8 +288,19 @@ static int search_decompile_(search_ctx_t *ctx, pcb_qry_node_t *nd, int dry, int
 	if (qopt == NULL)
 		return -1; /* unknown binary op */
 
-rnd_trace("decomp: %d (%s) at %d;%d\n", nd->type, qopt, row, col);
-	return 0;
+	gds_init(&op1);
+	gds_init(&op2);
+
+	res = search_decompile_op(&op1, nd->data.children);
+	res |= search_decompile_op(&op2, nd->data.children->next);
+
+	if (res == 0)
+		rnd_trace("decomp: %d (%s) at %d;%d: %s %s\n", nd->type, qopt, row, col, op1.array, op2.array);
+
+	gds_uninit(&op1);
+	gds_uninit(&op2);
+
+	return res;
 }
 
 static void search_decompile(search_ctx_t *ctx)
