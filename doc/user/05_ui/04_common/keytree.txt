@@ -228,6 +228,7 @@ n;c;f;	pcb-menu-default.lht	ClaimNet(found) 	claim net on found
 n;c;o;	pcb-menu-default.lht	ClaimNet(object) 	claim net by object
 n;c;s;	pcb-menu-default.lht	ClaimNet(selected) 	claim net on selected
 n;l;k;	pcb-menu-default.lht	NetLength(clear) 	Visual length, clear
+n;l;l;	pcb-menu-default.lht	NetlistDialog();NetlistDialog(RefreshNetLens)	Netlist dialog, refresh lengths
 n;l;o;	pcb-menu-default.lht	NetLength(object) 	Visual length, from object
 p;m;p;	pcb-menu-default.lht	ManagePlugins() 	Manage plugins...
 p;m;s;	pcb-menu-default.lht	BrowseScripts() 	Manage scripts...
