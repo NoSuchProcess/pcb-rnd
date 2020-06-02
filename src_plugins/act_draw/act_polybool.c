@@ -59,7 +59,7 @@ static int pick_obj(vtp0_t *objs, const char *ask_first, const char *ask_subseq)
 	}
 }
 
-static const char pcb_acts_PolyBool[] = "PstkProto([noundo,] unite|isect|sub|xor, [poly1, poly2, [poly...]])\n";
+static const char pcb_acts_PolyBool[] = "PstkProto([noundo,] unite|isect|sub, [poly1, poly2, [poly...]])\n";
 static const char pcb_acth_PolyBool[] = "Perform polygon boolean operation on the clipped polygons referred. A poly is either and idpath, selected, found or object (for the object under the cursor). When not specified, two object polygons are used.";
 /* doc: polybool.html */
 static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -81,7 +81,7 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case act_draw_keywords_unite: bop = RND_PBO_UNITE; ask_first = ask_subseq = "click on polygon to unite, press esc after the last"; break;
 		case act_draw_keywords_isect: bop = RND_PBO_ISECT; ask_first = ask_subseq = "click on polygon to contribute in intersection, press esc after the last"; break;
 		case act_draw_keywords_sub:   bop = RND_PBO_SUB; ask_first = "click on polygon to subtract other polygons from"; ask_subseq = "click on polygon to subtract from the first, press esc after the last"; break;
-		case act_draw_keywords_xor:   bop = RND_PBO_XOR; ask_first = ask_subseq = "click on polygon to xor, press esc after the last"; break;
+/*		case act_draw_keywords_xor:   bop = RND_PBO_XOR; ask_first = ask_subseq = "click on polygon to xor, press esc after the last"; break;*/
 		default:
 			RND_ACT_FAIL(PolyBool);
 	}
