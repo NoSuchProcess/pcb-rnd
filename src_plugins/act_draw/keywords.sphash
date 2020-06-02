@@ -7,3 +7,7 @@ copy
 remove
 hdia
 shape:line
+unite
+isect
+sub
+xor

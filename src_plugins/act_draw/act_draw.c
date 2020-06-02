@@ -63,6 +63,7 @@ static int flg_error(const char *msg)
 	} while(0)
 
 #include "act_pstk_proto.c"
+#include "act_polybool.c"
 
 static const char pcb_acts_LineNew[] = "LineNew([noundo,] data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)";
 static const char pcb_acth_LineNew[] = "Create a pcb line segment on a layer. For now data must be \"pcb\". Returns the idpath of the new object or 0 on error.";
@@ -470,7 +471,8 @@ rnd_action_t act_draw_action_list[] = {
 	{"PolyNewEnd", pcb_act_PolyNewEnd, pcb_acth_PolyNewEnd, pcb_acts_PolyNewEnd},
 	{"PstkProtoTmp", pcb_act_PstkProtoTmp, pcb_acth_PstkProtoTmp, pcb_acts_PstkProtoTmp},
 	{"PstkProtoEdit", pcb_act_PstkProtoEdit, pcb_acth_PstkProtoEdit, pcb_acts_PstkProtoEdit},
-	{"LayerObjDup", pcb_act_LayerObjDup, pcb_acth_LayerObjDup, pcb_acts_LayerObjDup}
+	{"LayerObjDup", pcb_act_LayerObjDup, pcb_acth_LayerObjDup, pcb_acts_LayerObjDup},
+	{"PolyBool", pcb_act_PolyBool, pcb_acth_PolyBool, pcb_acts_PolyBool}
 };
 
 static const char *act_draw_cookie = "act_draw";
