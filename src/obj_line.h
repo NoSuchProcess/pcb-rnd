@@ -116,6 +116,15 @@ void pcb_line_enforce_drc(pcb_board_t *pcb);
    start and the new end. */
 double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *end, rnd_point_t *mid_out, rnd_bool way, rnd_bool optimize);
 
+/*** decide if two liens are overlapping in a way they can be simplified ***/
+typedef enum {
+	PCB_LINMER_NONE  = 0, /* no merge is possible */
+	PCB_LINMER_REMPT = 1, /* remove both endpoints passed back in out */
+	PCB_LINMER_SKIP  = 2  /* do not create the new line at all */
+} pcb_line_merge_t;
+
+int pcb_line_can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out);
+
 
 /* Rather than mode the line bounding box, we set it so the point bounding
  * boxes are updated too.

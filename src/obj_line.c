@@ -171,13 +171,6 @@ struct line_info {
 	jmp_buf env;
 };
 
-typedef enum {
-	PCB_LINMER_NONE = 0,  /* no merge is possible */
-	PCB_LINMER_REMPT = 1, /* remove both endpoints passed back in out */
-	PCB_LINMER_SKIP = 2   /* do not create the new line at all */
-} pcb_line_merge_t;
-
-/* returns 0 if , 1 if merge is done, */
 RND_INLINE int can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out)
 {
 	/* do not merge to subc parts or terminals */
@@ -238,6 +231,12 @@ RND_INLINE int can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new
 
 	return PCB_LINMER_NONE;
 }
+
+int pcb_line_can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out)
+{
+	return can_merge_lines(old_line, new_line, out);
+}
+
 
 static rnd_r_dir_t line_callback(const rnd_rnd_box_t * b, void *cl)
 {
