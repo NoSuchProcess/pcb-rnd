@@ -6,6 +6,9 @@
 + CLEANUP/BUG: bug_files/gtk_transient.txt: add config options on how gtk transient-for and (a new) raise should work [report: Bdale]
 + CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert]
 + FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
+- FEATURE: Polygon() action to expose our poly bool algebra, e.g. Evan's moon shaped poly example [report: Evan]
+- FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
+- FEATURE: user script: bug_files/pstk_autonum.txt (when the footprint design pool note is being written) [report: Igor2]
 + BUG: 1. place 0603; 2. select; 3. cut to buffer; 4. undo -> 0603 put back but selection is lost; reason: the flag is removed in the buffer, but not in an undoable way as we don't have undo on buffer [report: miloh]
 - BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 ? BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan] -> can't reproduce; are you sure it depends only on 64 bit coords?
@@ -37,7 +40,6 @@
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
-- FEATURE: Polygon() action to expose our poly bool algebra, e.g. Evan's moon shaped poly example [report: Evan]
 - FEATURE: (TT) route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
@@ -47,8 +49,6 @@
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 	- add text font, update the pool node text_edit [report: Igor2]
 - FEATURE: fontsel: ttf import?
-- FEATURE/BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
-- FEATURE: user script: bug_files/pstk_autonum.txt (when the footprint design pool note is being written) [report: Igor2]
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
 	- example of nonetlist: 1206 jumpers and logos
