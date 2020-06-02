@@ -337,6 +337,7 @@ static void search_decompile(search_ctx_t *ctx)
 {
 	const char *script = ctx->dlg[ctx->wexpr_str].val.str;
 	pcb_qry_node_t *root;
+	int row, col;
 
 	if (script == NULL) return;
 	while(isspace(*script)) script++;
@@ -353,7 +354,12 @@ static void search_decompile(search_ctx_t *ctx)
 		return;
 	}
 
-TODO("Clear the GUI");
+	for(row = 0; row < MAX_ROW; row++) {
+		for(col = 0; col < MAX_COL; col++) {
+			ctx->visible[row][col] = 0;
+			ctx->expr[row][col].valid = 0;
+		}
+	}
 
 	search_decompile_(ctx, root, 0, 0, 0);
 	update_vis(ctx);
