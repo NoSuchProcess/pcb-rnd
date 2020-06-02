@@ -25,21 +25,36 @@
  */
 
 /* included from act_draw.c */
-
-#include "obj_pstk_inlines.h"
+#include "search.h"
 
 /* returns number of objects added before esc */
 static int pick_obj(vtp0_t *objs, const char *ask_first, const char *ask_subseq)
 {
-	int cnt = 0;
 	rnd_coord_t x, y;
 	const char *msg = objs->used == 0 ? ask_first : ask_subseq;
 	for(;;) {
 		int res = rnd_hid_get_coords(msg, &x, &y, 1);
+		void *p1, *p2, *p3;
 		if (res < 0)
-			return cnt;
+			return 0;
 		rnd_trace("xy: %d %$mm %$mm\n", res, x, y);
-		cnt++;
+		res = pcb_search_screen(x, y, PCB_OBJ_POLY, &p1, &p2, &p3);
+		if (res == PCB_OBJ_POLY) {
+			int n, found = 0;
+			for(n = 0; n < objs->used; n++) {
+				if (objs->array[n] == p2) {
+					found = 1;
+					break;
+				}
+			}
+			if (found) {
+				rnd_message(RND_MSG_ERROR, "That polygon is already on the list! Try again or press esc!\n");
+				continue;
+			}
+			vtp0_append(objs, p2);
+			return 1;
+		}
+		rnd_message(RND_MSG_ERROR, "There's no polygon there. Try again or press esc!\n");
 	}
 }
 
