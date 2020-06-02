@@ -86,9 +86,12 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	vtp0_init(&objs);
 	for(n = 2+ao; n < argc; n++) {
 		if ((argv[n].type & FGW_STR) == FGW_STR) {
-			if (strcmp(argv[n].val.str, "object") == 0) {
+			if (strcmp(argv[n].val.str, "object") == 0)
 				pick_obj(&objs, ask_first, ask_subseq);
-			}
+			else if (strcmp(argv[n].val.str, "selected") == 0)
+				pcb_data_list_by_flag(PCB_ACT_BOARD->Data, &objs, PCB_OBJ_POLY, PCB_FLAG_SELECTED);
+			else if (strcmp(argv[n].val.str, "found") == 0)
+				pcb_data_list_by_flag(PCB_ACT_BOARD->Data, &objs, PCB_OBJ_POLY, PCB_FLAG_FOUND);
 			else {
 				rnd_message(RND_MSG_ERROR, "Invalid polygon specification string: '%s'\n", argv[n].val.str);
 				goto error;
