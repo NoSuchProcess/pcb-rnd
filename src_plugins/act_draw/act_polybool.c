@@ -96,18 +96,24 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_POLY, PCB_FLAG_SELECTED);
 			else if (strcmp(argv[n].val.str, "found") == 0)
 				pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_POLY, PCB_FLAG_FOUND);
-			else {
-				rnd_message(RND_MSG_ERROR, "Invalid polygon specification string: '%s'\n", argv[n].val.str);
-				goto error;
-			}
+			else
+				goto try_idp;
 		}
 		else {
 			pcb_idpath_t *idp;
+			pcb_any_obj_t *obj;
+			try_idp:;
 			RND_ACT_MAY_CONVARG(n, FGW_IDPATH, PolyBool, idp = fgw_idpath(&argv[n]));
 			if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[n], RND_PTR_DOMAIN_IDPATH)) {
-				rnd_message(RND_MSG_ERROR, "Invalid polygon specification idpath in arg %d\n", n);
+				rnd_message(RND_MSG_ERROR, "Invalid polygon specification idpath in arg %d: pointer domain error\n", n);
 				goto error;
 			}
+			obj = pcb_idpath2obj(PCB, idp);
+			if ((obj == NULL) || (obj->type != PCB_OBJ_POLY)) {
+				rnd_message(RND_MSG_ERROR, "Invalid polygon specification idpath in arg %d: object is not a polygon\n", n);
+				goto error;
+			}
+			vtp0_append(&objs, obj);
 		}
 	}
 
