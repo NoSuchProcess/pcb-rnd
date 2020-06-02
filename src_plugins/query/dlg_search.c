@@ -33,6 +33,7 @@
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/event.h>
 #include <librnd/core/error.h>
+#include "query.h"
 #include "board.h"
 
 #define MAX_ROW 8
@@ -212,6 +213,60 @@ static void search_recompile(search_ctx_t *ctx)
 	gds_uninit(&buf);
 }
 
+static int search_decompile_(search_ctx_t *ctx, pcb_qry_node_t *nd, int dry, int row, int col)
+{
+	if (nd->type == PCBQ_EXPR_PROG)
+		return search_decompile_(ctx, nd->data.children, dry, row, col);
+
+	if (nd->type == PCBQ_ITER_CTX)
+		return search_decompile_(ctx, nd->next, dry, row, col);
+
+	if (nd->type == PCBQ_OP_AND) {
+		if ((nd->parent == NULL) || ((nd->parent->type != PCBQ_OP_AND) && (nd->parent->type != PCBQ_EXPR_PROG))) /* first level of ops must be AND */
+			return -1;
+		if (search_decompile_(ctx, nd->data.children, dry, row, col) != 0)
+			return -1;
+		return search_decompile_(ctx, nd->data.children->next, dry, row+1, col);
+	}
+
+	if (nd->type == PCBQ_OP_OR) {
+		if ((nd->parent == NULL) || ((nd->parent->type != PCBQ_OP_AND) && (nd->parent->type != PCBQ_OP_OR))) /* second level of ops must be OR */
+			return -1;
+		if (search_decompile_(ctx, nd->data.children, dry, row, col) != 0)
+			return -1;
+		return search_decompile_(ctx, nd->data.children->next, dry, row, col+1);
+	}
+
+	/* plain op */
+rnd_trace("decomp: %d at %d;%d\n", nd->type, row, col);
+	return 0;
+}
+
+static void search_decompile(search_ctx_t *ctx)
+{
+	const char *script = ctx->dlg[ctx->wexpr_str].val.str;
+	pcb_qry_node_t *root;
+
+	if (script == NULL) return;
+	while(isspace(*script)) script++;
+	if (*script == '\0') return;
+
+	root = pcb_query_compile(script);
+	if (root == NULL) {
+		rnd_message(RND_MSG_ERROR, "Syntax error compiling the script\nThe GUI will not be filled in by the script\n");
+		return;
+	}
+
+	if (search_decompile_(ctx, root, 1, 0, 0) != 0) {
+		rnd_message(RND_MSG_ERROR, "The script is too complex for the GUI\nThe GUI will not be filled in by the script\n");
+		return;
+	}
+
+TODO("Clear the GUI");
+
+	search_decompile_(ctx, root, 0, 0, 0);
+}
+
 static void search_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
@@ -253,8 +308,11 @@ static void search_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 static void search_enable_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	search_ctx_t *ctx = caller_data;
-	if (WIZ(ctx))
+	if (WIZ(ctx)) {
+		search_decompile(ctx); /* fills in the GUI from the expression, if possible */
 		search_recompile(ctx); /* overwrite the edit box just in case the user had something custom in it */
+	}
+
 	update_vis(ctx);
 }
 
