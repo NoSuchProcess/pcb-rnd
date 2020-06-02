@@ -28,7 +28,7 @@
 
 #include "obj_pstk_inlines.h"
 
-static void pick_obj(vtp0_t *objs)
+static void pick_obj(vtp0_t *objs, const char *ask_first, const char *ask_subseq)
 {
 	rnd_coord_t x, y;
 	const char *msg = objs->used == 0 ? ask_first : ask_subseq;
@@ -54,10 +54,10 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	cmdi = act_draw_keywords_sphash(cmd);
 	switch(cmdi) {
-		case act_draw_keywords_unite: bop = RND_PBO_UNITE; ask_first = ask_subseq = "click on polygon to unite"; break;
-		case act_draw_keywords_isect: bop = RND_PBO_ISECT; ask_first = ask_subseq = "click on polygon to contribute in intersection"; break;
-		case act_draw_keywords_sub:   bop = RND_PBO_SUB; ask_first = "click on polygon to subtract other polygons from"; ask_subseq = "click on polygon to subtract from the first"; break;
-		case act_draw_keywords_xor:   bop = RND_PBO_XOR; ask_first = ask_subseq = "click on polygon to xor"; break;
+		case act_draw_keywords_unite: bop = RND_PBO_UNITE; ask_first = ask_subseq = "click on polygon to unite, press esc after the last"; break;
+		case act_draw_keywords_isect: bop = RND_PBO_ISECT; ask_first = ask_subseq = "click on polygon to contribute in intersection, press esc after the last"; break;
+		case act_draw_keywords_sub:   bop = RND_PBO_SUB; ask_first = "click on polygon to subtract other polygons from"; ask_subseq = "click on polygon to subtract from the first, press esc after the last"; break;
+		case act_draw_keywords_xor:   bop = RND_PBO_XOR; ask_first = ask_subseq = "click on polygon to xor, press esc after the last"; break;
 		default:
 			RND_ACT_FAIL(PolyBool);
 	}
@@ -67,7 +67,7 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	for(n = 2+ao; n < argc; n++) {
 		if ((argv[n].type & FGW_STR) == FGW_STR) {
 			if (strcmp(argv[n].val.str, "object") == 0) {
-				pick_obj(&objs);
+				pick_obj(&objs, ask_first, ask_subseq);
 			}
 			else {
 				rnd_message(RND_MSG_ERROR, "Invalid polygon specification string: '%s'\n", argv[n].val.str);
@@ -85,7 +85,7 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	while(objs.used < 2)
-		pick_obj(&objs);
+		pick_obj(&objs, ask_first, ask_subseq);
 
 	error:;
 	vtp0_uninit(&objs);
