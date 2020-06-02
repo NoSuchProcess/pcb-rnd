@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.1 (svn r31696) an interactive printed circuit board editor ,  Revision: 31732
+This is pcb-rnd 2.2.1 (svn r31696) an interactive printed circuit board editor ,  Revision: 31736
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -269,7 +269,7 @@ This is pcb-rnd 2.2.1 (svn r31696) an interactive printed circuit board editor ,
 <tr><td>pcb_tan</td><td></td><td></td><td>script plugin</td>
 <tr><td>perp</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>Pinout</td><td>Present the subcircuit pinout box</td><td>Pinout()</td><td>dialogs plugin</td>
-<tr><td>PolyBool</td><td>Perform polygon boolean operation on the clipped polygons referred. A poly is either and idpath, selected, found or object (for the object under the cursor). When not specified, two object polygons are used.</td><td>PstkProto([noundo,] unite|isect|sub|xor, [poly1, poly2, [poly...]])</td><td>act_draw</td>
+<tr><td><a href="action_details.html#polybool">PolyBool</a></td><td>Perform polygon boolean operation on the clipped polygons referred. A poly is either and idpath, selected, found or object (for the object under the cursor). When not specified, two object polygons are used.</td><td>PstkProto([noundo,] unite|isect|sub, [poly1, poly2, [poly...]])</td><td>act_draw</td>
 <tr><td><a href="action_details.html#polycombine">PolyCombine</a></td><td></td><td></td><td>polycombine plugin</td>
 <tr><td><a href="action_details.html#polygon">Polygon</a></td><td>Some polygon related stuff.</td><td>Polygon(Close|CloseHole|PreviousPoint)</td><td></td>
 <tr><td>PolyHatch</td><td>hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer; flags are h:horizontal, v:vertical, c:contour, p:poly</td><td>PolyHatch([spacing], [hvcp])<br>PolyHatch(interactive)</td><td>lib_polyhelp</td>
