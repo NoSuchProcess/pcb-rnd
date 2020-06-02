@@ -331,7 +331,8 @@ struct rnd_hid_s {
 	int (*control_is_pressed)(rnd_hid_t *hid);
 	int (*mod1_is_pressed)(rnd_hid_t *hid);
 
-	void (*get_coords)(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
+	/* Returns 0 on success, -1 on esc pressed */
+	int (*get_coords)(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 
 	/* Sets the crosshair, which may differ from the pointer depending
 	   on grid and pad snap.  Note that the HID is responsible for

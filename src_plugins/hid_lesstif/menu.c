@@ -135,7 +135,7 @@ static void stdarg_do_color(char *value, char *which)
 }
 #endif
 
-static int need_xy = 0, have_xy = 0, block_xy = 0, action_x, action_y;
+static int need_xy = 0, have_xy = 0, block_xy = 0, action_x, action_y, pressed_esc = 0;
 
 int lesstif_button_event(Widget w, XEvent * e)
 {
@@ -151,7 +151,7 @@ int lesstif_button_event(Widget w, XEvent * e)
 	return 0;
 }
 
-void lesstif_get_xy(const char *message)
+int lesstif_get_xy(const char *message)
 {
 	XmString ls = XmStringCreatePCB(message);
 	void *chst;
@@ -163,6 +163,7 @@ void lesstif_get_xy(const char *message)
 	XtSetValues(m_click, stdarg_args, stdarg_n);
 	/*printf("need xy: msg `%s'\n", msg); */
 	need_xy = 1;
+	pressed_esc = 0;
 	XBell(display, 100);
 	while (!have_xy) {
 		XEvent e;
@@ -173,20 +174,25 @@ void lesstif_get_xy(const char *message)
 	have_xy = 1;
 	XtUnmanageChild(m_click);
 	rnd_hidlib_crosshair_restore(ltf_hidlib, chst);
+	return pressed_esc ? -1 : 0;
 }
 
-void lesstif_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *px, rnd_coord_t *py, int force)
+int lesstif_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *px, rnd_coord_t *py, int force)
 {
+	int res = 0;
+
 	if ((force || !have_xy) && msg) {
 		if (force) {
 			have_xy = 0;
 			block_xy = 1;
 		}
-		lesstif_get_xy(msg);
+		res = lesstif_get_xy(msg);
 		block_xy = 0;
 	}
 	if (have_xy)
 		lesstif_coords_to_pcb(action_x, action_y, px, py);
+
+	return res;
 }
 
 static void callback(Widget w, lht_node_t * node, XmPushButtonCallbackStruct * pbcs)
@@ -268,6 +274,7 @@ int lesstif_key_event(XKeyEvent * e)
 		case XK_KP_Multiply: sym = '*'; break;
 		case XK_KP_Divide: sym = '/'; break;
 		case XK_KP_Enter: sym = XK_Return; break;
+		case XK_Escape: pressed_esc = 1; break;
 	}
 
 /* TODO#3: this works only on US keyboard */

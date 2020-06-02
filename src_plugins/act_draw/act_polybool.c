@@ -33,8 +33,8 @@ static void pick_obj(vtp0_t *objs, const char *ask_first, const char *ask_subseq
 	rnd_coord_t x, y;
 	const char *msg = objs->used == 0 ? ask_first : ask_subseq;
 	for(;;) {
-		rnd_hid_get_coords(msg, &x, &y, 1);
-		rnd_trace("xy: %$mm %$mm\n", x, y);
+		int res = rnd_hid_get_coords(msg, &x, &y, 1);
+		rnd_trace("xy: %d %$mm %$mm\n", res, x, y);
 	}
 }
 

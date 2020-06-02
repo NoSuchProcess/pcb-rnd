@@ -262,10 +262,10 @@ static void ghid_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int
 	pcb_gtk_crosshair_set(x, y, action, offset_x, offset_y, &gctx->port.view);
 }
 
-static void ghid_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
+static int ghid_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
-	pcb_gtk_get_coords(gctx, &gctx->port.view, msg, x, y, force);
+	return pcb_gtk_get_coords(gctx, &gctx->port.view, msg, x, y, force);
 }
 
 rnd_hidval_t ghid_add_timer(rnd_hid_t *hid, void (*func)(rnd_hidval_t user_data), unsigned long milliseconds, rnd_hidval_t user_data)

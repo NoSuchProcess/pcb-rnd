@@ -13,7 +13,7 @@ extern int ghid_wheel_zoom;
 
 rnd_hid_cfg_mod_t ghid_mouse_button(int ev_button);
 
-gboolean ghid_get_user_xy(pcb_gtk_t *ctx, const char *msg);
+int ghid_get_user_xy(pcb_gtk_t *ctx, const char *msg);
 
 gint ghid_port_window_mouse_scroll_cb(GtkWidget *widget, GdkEventScroll *ev, void *out);
 

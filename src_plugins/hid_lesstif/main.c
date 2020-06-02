@@ -2613,7 +2613,7 @@ static int lesstif_mod1_is_pressed(rnd_hid_t *hid)
 	return alt_pressed;
 }
 
-extern void lesstif_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
+extern int lesstif_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force);
 
 static void lesstif_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {

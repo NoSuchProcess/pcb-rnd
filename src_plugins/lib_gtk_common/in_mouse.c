@@ -105,7 +105,7 @@ void ghid_point_cursor(pcb_gtk_t *ctx, rnd_bool grabbed)
 typedef struct {
 	GMainLoop *loop;
 	pcb_gtk_t *gctx;
-	gboolean got_location;
+	gboolean got_location, pressed_esc;
 	gint last_press;
 } loop_ctx_t;
 
@@ -136,6 +136,10 @@ static gboolean loop_key_release_cb(GtkWidget *drawing_area, GdkEventKey *kev, l
 			g_main_loop_quit(lctx->loop);
 		break;
 
+	case PCB_GTK_KEY(Escape):
+		lctx->pressed_esc = TRUE;
+		/* fall through */
+
 	default:  /* Abort */
 		lctx->got_location = FALSE;
 		if (g_main_loop_is_running(lctx->loop))
@@ -158,8 +162,11 @@ static gboolean loop_button_press_cb(GtkWidget *drawing_area, GdkEventButton *ev
 /*  Run a glib GMainLoop which intercepts key and mouse button events from
     the top level loop.  When a mouse or key is hit in the Output drawing
     area, quit the loop so the top level loop can continue and use the
-    the mouse pointer coordinates at the time of the mouse button event. */
-static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
+    the mouse pointer coordinates at the time of the mouse button event. Return:
+    -1: esc pressed
+    0: got a click on a location
+    1: other error */
+static int run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 {
 	static int getting_loc = 0;
 	loop_ctx_t lctx;
@@ -170,7 +177,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	   ask for coord if the scrollwheel triggered the event, it may cause strange
 	   GUI lockups when done outside of the drawing area */
 	if ((getting_loc) || (ghid_wheel_zoom))
-		return rnd_false;
+		return 1;
 
 	getting_loc = 1;
 	rnd_actionva(ctx->hidlib, "StatusSetText", message, NULL);
@@ -186,6 +193,7 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 	pcb_gtk_interface_input_signals_disconnect();
 	pcb_gtk_interface_set_sensitive(FALSE);
 
+	lctx.pressed_esc = FALSE;
 	lctx.got_location = TRUE;   /* Will be unset by hitting most keys */
 
 	button_handler =
@@ -211,10 +219,12 @@ static gboolean run_get_location_loop(pcb_gtk_t *ctx, const gchar * message)
 
 	rnd_actionva(ctx->hidlib, "StatusSetText", NULL);
 	getting_loc = 0;
-	return lctx.got_location;
+	if (lctx.pressed_esc)
+		return -1;
+	return !lctx.got_location;
 }
 
-gboolean ghid_get_user_xy(pcb_gtk_t *ctx, const char *msg)
+int ghid_get_user_xy(pcb_gtk_t *ctx, const char *msg)
 {
 	return run_get_location_loop(ctx, msg);
 }

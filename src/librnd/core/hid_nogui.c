@@ -187,7 +187,7 @@ static int nogui_mod1_is_pressed(rnd_hid_t *hid)
 	return 0;
 }
 
-static void nogui_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
+static int nogui_get_coords(rnd_hid_t *hid, const char *msg, rnd_coord_t *x, rnd_coord_t *y, int force)
 {
 	CRASH("get_coords");
 }
