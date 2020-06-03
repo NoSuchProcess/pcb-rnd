@@ -914,6 +914,17 @@ ha:{
 								ha:placement, global            = { action={ NewGroup(doc, global, placement, -, place, "init-invis=true") } }
 							}
 						}
+						ha:Physical (silk, mask, paste) {
+							li:submenu {
+								ha:Top paste                    = { action={ NewGroup(paste, top, "", auto, "top_paste", "", unique_first) } }
+								ha:Top silk                     = { action={ NewGroup(silk, top, "", auto, "top_silk", "", unique_first) } }
+								ha:Top mask                     = { action={ NewGroup(mask, top, "", auto, "top_mask", "", unique_first) } }
+								ha:Bottom mask                  = { action={ NewGroup(mask, bottom, "", auto, "bottom_mask", "", unique_last) } }
+								ha:Bottom silk                  = { action={ NewGroup(silk, bottom, "", auto, "bottom_silk", "", unique_last) } }
+								ha:Bottom paste                 = { action={ NewGroup(paste, bottom, "", auto, "bottom_paste", "", unique_last) } }
+							}
+						}
+
 					}
 				}
 				ha:Remove group                     = { action={ DelGroup(@) } }
