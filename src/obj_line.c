@@ -168,6 +168,7 @@ static const uundo_oper_t undo_line_geo = {
 struct line_info {
 	pcb_line_t lin;
 	pcb_line_t test, *remove_line;
+	unsigned skip_new:1;
 	jmp_buf env;
 };
 
@@ -248,7 +249,7 @@ static rnd_r_dir_t line_callback(const rnd_rnd_box_t * b, void *cl)
 	switch(res) {
 		case PCB_LINMER_NONE:  return RND_R_DIR_NOT_FOUND;
 		case PCB_LINMER_REMPT: i->remove_line = line; longjmp(i->env, 1); break;
-		case PCB_LINMER_SKIP:  i->remove_line = (pcb_line_t *)(-1); longjmp(i->env, 1); break;
+		case PCB_LINMER_SKIP:  i->skip_new = 1; longjmp(i->env, 1); break;
 	}
 
 	return RND_R_DIR_NOT_FOUND; /* should't ever get here */
@@ -280,6 +281,7 @@ pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y
 	info.test.Thickness = 0;
 	info.test.Flags = pcb_no_flags();
 	info.remove_line = NULL;
+	info.skip_new = 0;
 	/* prevent stacking of duplicate lines
 	 * and remove needless intermediate points
 	 * verify that the layer is on the board first!
@@ -289,8 +291,9 @@ pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y
 		return pcb_line_new(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 	}
 
-	if ((void *) info.remove_line == (void *) (-1))
-		return NULL;								/* stacked line */
+	if (info.skip_new)
+		return NULL; /* skip creating the new line (e.g. stacked line) */
+
 	/* remove unnecessary points */
 	if (info.remove_line) {
 		/* must do this BEFORE getting new line memory */
