@@ -99,10 +99,8 @@
 		- new doc layers
 		- polygon side clearance (e.g. CUCP#38 provided by Karl)
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
-- BUG: bug_files/rat_shortest.lht: because of "don't add non-manhattan lines" part [report: pstuge]
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-
 
 3. Long term ===============================================================================
 - version 3.0.0:
