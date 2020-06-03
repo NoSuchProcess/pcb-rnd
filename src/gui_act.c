@@ -861,13 +861,15 @@ static fgw_error_t pcb_act_DelGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char pcb_acts_NewGroup[] = "NewGroup(type [,location [, purpose[, auto|sub [,name[,grp_attribs]]]])";
+static const char pcb_acts_NewGroup[] = "NewGroup(type [,location [, purpose[, auto|sub [,name[,grp_attribs[,unique|first|last]]]]])";
 static const char pcb_acth_NewGroup[] = "Create a new layer group with a single, positive drawn layer in it";
 static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *stype = NULL, *sloc = NULL, *spurp = NULL, *scomb = NULL, *name = NULL, *attr = NULL;
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	const char *stype = NULL, *sloc = NULL, *spurp = NULL, *scomb = NULL, *name = NULL, *attr = NULL, *show = NULL;
 	pcb_layergrp_t *g = NULL;
 	pcb_layer_type_t ltype = 0, lloc = 0;
+	int unique = 0, first = 0, last = 0;
 
 	RND_ACT_CONVARG(1, FGW_STR, NewGroup, stype = argv[1].val.str);
 	RND_ACT_MAY_CONVARG(2, FGW_STR, NewGroup, sloc = argv[2].val.str);
@@ -875,6 +877,13 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(4, FGW_STR, NewGroup, scomb = argv[4].val.str);
 	RND_ACT_MAY_CONVARG(5, FGW_STR, NewGroup, name = argv[5].val.str);
 	RND_ACT_MAY_CONVARG(6, FGW_STR, NewGroup, attr = argv[6].val.str);
+	RND_ACT_MAY_CONVARG(7, FGW_STR, NewGroup, show = argv[7].val.str);
+
+	if (show != NULL) {
+		if (strstr(show, "unique") != NULL) unique = 1;
+		if (strstr(show, "first") != NULL) first = 1;
+		if (strstr(show, "last") != NULL) last = 1;
+	}
 
 	ltype = pcb_layer_type_str2bit(stype) & PCB_LYT_ANYTHING;
 	if (ltype == 0) {
@@ -897,6 +906,24 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				RND_ACT_IRES(-1);
 				return 0;
 			}
+		}
+	}
+
+	/* empty purpose string is the same as unspecified */
+	if ((spurp != NULL) && (spurp[0] == '\0'))
+		spurp = NULL;
+
+	if (unique) {
+		int found;
+		rnd_layergrp_id_t gid;
+		if (spurp != NULL)
+			found = pcb_layergrp_listp(pcb, ltype|lloc, &gid, 1, -1, spurp);
+		else
+			found = pcb_layergrp_list(pcb, ltype|lloc, &gid, 1);
+
+		if (found) { /* do not create existing */
+			RND_ACT_IRES(-1);
+			return 0;
 		}
 	}
 
