@@ -25,7 +25,7 @@
 - CLEANUP/BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1; need to cache hole vs. shape overlap (1 bit per shape in the proto) [report: igor2]
 - CLEANUP/BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - CLEANUP: (TT) propedit revamp:
-	- test under lesstif
+	- switch over to new dialogs in lesstif, remove brave for tree-table
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
 	- CLEANUP: remove attrib.o from the hidlib objects
