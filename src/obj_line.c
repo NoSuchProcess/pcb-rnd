@@ -259,7 +259,7 @@ static rnd_r_dir_t line_callback(const rnd_rnd_box_t * b, void *cl)
 /* creates a new line on a layer and checks for overlap and extension */
 pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, rnd_coord_t Thickness, rnd_coord_t Clearance, pcb_flag_t Flags)
 {
-	struct line_info info;
+	struct line_info info = {0};
 	rnd_rnd_box_t search;
 
 	search.X1 = MIN(X1, X2);
@@ -270,7 +270,7 @@ pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y
 		search.Y2++;
 	if (search.X2 == search.X1)
 		search.X2++;
-	memset(&info.lin, 0, sizeof(info.lin));
+
 	info.lin.Point1.X = X1;
 	info.lin.Point2.X = X2;
 	info.lin.Point1.Y = Y1;
@@ -278,10 +278,7 @@ pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y
 	info.lin.Thickness = Thickness;
 	info.lin.Clearance = Clearance;
 	info.lin.Flags = Flags;
-	info.modpts.Thickness = 0;
-	info.modpts.Flags = pcb_no_flags();
-	info.remove_line = NULL;
-	info.skip_new = 0;
+
 	/* prevent stacking of duplicate lines
 	 * and remove needless intermediate points
 	 * verify that the layer is on the board first!
