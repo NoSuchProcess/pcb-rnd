@@ -373,12 +373,18 @@ void pcb_layergrp_setup(pcb_layergrp_t *g, pcb_board_t *parent)
 
 static pcb_layergrp_t *pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room, int bl, int omit_substrate)
 {
+	int n;
 	pcb_layer_stack_t *stack = &pcb->LayerGroups;
+
+	if (bl < stack->len-1)
+		for(n = stack->len-1; n >= bl; n--)
+			pcb_layergrp_move_onto(pcb, n+room, n);
 
 	stack->len += room;
 
 	stack->grp[bl].name = rnd_strdup("Intern");
 	stack->grp[bl].ltype = PCB_LYT_INTERN | PCB_LYT_COPPER;
+	stack->grp[bl].len = 0;
 	pcb_layergrp_setup(&stack->grp[bl], pcb);
 	bl++;
 	if (!omit_substrate)
@@ -447,11 +453,11 @@ pcb_layergrp_t *pcb_get_grp_new_misc(pcb_board_t *pcb)
 	return g;
 }
 
-pcb_layergrp_t *pcb_get_grp_new_raw(pcb_board_t *pcb)
+pcb_layergrp_t *pcb_get_grp_new_raw(pcb_board_t *pcb, int prepend)
 {
 	pcb_layergrp_t *g;
 	inhibit_notify++;
-	g = pcb_get_grp_new_intern_insert(pcb, 1, pcb->LayerGroups.len, 1);
+	g = pcb_get_grp_new_intern_insert(pcb, 1, prepend ? 0 : pcb->LayerGroups.len, 1);
 	inhibit_notify--;
 	NOTIFY(pcb);
 	return g;

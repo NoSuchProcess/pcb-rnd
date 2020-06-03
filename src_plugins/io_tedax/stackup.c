@@ -353,7 +353,7 @@ static pcb_layergrp_t *get_grp_by_name(tedax_stackup_t *ctx, pcb_board_t *pcb, c
 	if (grp == NULL) {
 		char *nn;
 
-		grp = pcb_get_grp_new_raw(pcb);
+		grp = pcb_get_grp_new_raw(pcb, 0);
 		grp->name = rnd_strdup(name);
 		nn = rnd_strdup(name);
 		htsp_set(&ctx->n2g, nn, grp);

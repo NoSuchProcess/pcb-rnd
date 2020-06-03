@@ -928,7 +928,14 @@ static fgw_error_t pcb_act_NewGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	pcb_layergrp_inhibit_inc();
-	g = pcb_get_grp_new_misc(PCB);
+
+	if (first)
+		g = pcb_get_grp_new_raw(pcb, 1);
+	else if (last)
+		g = pcb_get_grp_new_raw(pcb, 0);
+	else
+		g = pcb_get_grp_new_misc(pcb);
+
 	if (g != NULL) {
 		rnd_layer_id_t lid;
 
