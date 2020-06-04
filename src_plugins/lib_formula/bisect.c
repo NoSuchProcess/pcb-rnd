@@ -28,27 +28,37 @@
 #include <librnd/core/actions.h>
 #include "bisect.h"
 
-#define CALL(value) \
+#define CALL(dst, value) \
 do { \
+	argv[specn].type = FGW_DOUBLE; \
 	argv[specn].val.nat_double = value; \
-	ferr = rnd_actionv_(f, &r, argc-2, argv+2); \
+	r.val.nat_double = -1; r.type = FGW_DOUBLE; \
+	ferr = f->func(&r, argc-2, argv+2); \
 	if (ferr != 0) { \
 		rnd_message(RND_MSG_ERROR, "formula_bisect: '%s' returned error on value %f\n", actname, value); \
 		return -1; \
 	} \
-	fgw_arg_conv(&rnd_fgw, res, FGW_DOUBLE); \
-	if (res->type != FGW_DOUBLE) { \
+	fgw_arg_conv(&rnd_fgw, &r, FGW_DOUBLE); \
+	if (r.type != FGW_DOUBLE) { \
 		rnd_message(RND_MSG_ERROR, "formula_bisect: '%s' returned not-a-number on value %f\n", actname, value); \
 		return -1; \
 	} \
+	dst = r.val.nat_double; \
 } while(0)
+
+RND_INLINE int is_between(double target, double low, double high)
+{
+	if (low > high)
+		rnd_swap(double, low, high);
+	return (target > low) && (target < high);
+}
 
 const char pcb_acts_formula_bisect[] = "formula_bisect(action, res, args)";
 const char pcb_acth_formula_bisect[] = "Find the value for exactly one of the arguments that produces the expected result. One argument must be a string with type:min:max:precision, the rest of the arguments and res must be numeric.";
 fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *actname, *spec;
-	double target, min, max, err;
+	double target, min, max, minv, maxv, v, lastv, err, at;
 	fgw_arg_t r;
 	int n, specn = 0;
 	const fgw_func_t *f;
@@ -85,13 +95,36 @@ fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return FGW_ERR_ARG_CONV;
 	}
 
+	min = RND_MM_TO_COORD(min);
+	max = RND_MM_TO_COORD(max);
 
 	fgw_arg_free(&rnd_fgw, &argv[specn]);
 	argv[specn].type = FGW_DOUBLE;
 
-	CALL(min);
-	CALL(max);
+	CALL(minv, min);
+	if (fabs(minv - target) < err) goto found;
 
+	CALL(maxv, max);
+	if (fabs(maxv - target) < err) goto found;
+
+	for(n = 0;  (n < 256); n++) {
+		at = (min+max)/2.0;
+		CALL(v, at);
+rnd_trace("try1: [%f %f] %f -> %f\n", min, max, at, v);
+		if (fabs(v - target) < err)
+			break;
+
+		if (is_between(target, minv, v))
+			max = at;
+		else if (is_between(target, v, maxv))
+			min = at;
+		else {
+			rnd_message(RND_MSG_ERROR, "formula_bisect: convergence error\n");
+			return -1;
+		}
+	}
+
+	found:;
 
 	return 0;
 }
