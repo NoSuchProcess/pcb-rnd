@@ -6,6 +6,7 @@
 
 plugin_header("\nLibrary plugins:\n")
 plugin_def("lib_compat_help",  "#compatibility helper functions", sbuildin, 1, 0)
+plugin_def("lib_formula",      "mathematical forumlas",           sbuildin, 1, 0)
 plugin_def("lib_gensexpr",     "#s-expression library",           sdisable, 0, 0)
 plugin_def("lib_gtk_common",   "all-hid_gtk common code",         sdisable, 0, 0)
 plugin_def("lib_hid_common",   "all-gui-hid common code",         sdisable, 0, 1)

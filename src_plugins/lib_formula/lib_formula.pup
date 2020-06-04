@@ -1,0 +1,6 @@
+$class lib
+$short mathematical forumlas
+$long simple formulas, for efficient rule-of-thumb calculations
+$state works
+$package core
+default buildin
