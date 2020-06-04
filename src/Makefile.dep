@@ -625,7 +625,7 @@
  idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  ht_subc.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h thermal.h operation.h librnd/poly/polygon1_gen.h \
- ../src_plugins/act_draw/act_polybool.c
+ ../src_plugins/act_draw/act_polybool.c search.h obj_poly.h data_list.h
 ../src_plugins/act_draw/keywords_sphash.o: \
  ../src_plugins/act_draw/keywords_sphash.c
 ../src_plugins/act_read/act_read.o: ../src_plugins/act_read/act_read.c \
@@ -5390,6 +5390,12 @@
  ../src_plugins/lib_compat_help/media.c ../config.h librnd/config.h \
  librnd/core/unit.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  ../src_plugins/lib_compat_help/media.h
+../src_plugins/lib_formula/lib_formula.o: \
+ ../src_plugins/lib_formula/lib_formula.c ../config.h librnd/config.h \
+ librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/error.h ../src_plugins/lib_formula/impedance.h
 ../src_plugins/lib_gensexpr/lib_gensexpr.o: \
  ../src_plugins/lib_gensexpr/lib_gensexpr.c ../config.h librnd/config.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
