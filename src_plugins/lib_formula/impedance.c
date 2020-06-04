@@ -26,6 +26,10 @@
 
 #include "config.h"
 #include <math.h>
+#include <librnd/core/misc_util.h>
+#include <librnd/core/math_helper.h>
+#include <librnd/core/actions.h>
+#include "impedance.h"
 
 #define TOM(x) RND_COORD_TO_MM(x)
 #define SQR(x) ((x)*(x))
@@ -40,5 +44,23 @@ double pcb_impedance_microstrip(rnd_coord_t trace_width, rnd_coord_t trace_heigh
 	x1 = 4 * ((14*Er+8)/(11*Er)) * (h/weff);
 	x2 = sqrt(16 * SQR(h/weff) * SQR((14*Er+8)/(11*Er)) + ((Er+1)/(2*Er))*M_PI*M_PI);
 	return N0 / (2*M_PI * sqrt(2) * sqrt(Er+1)) * log(1+4*(h/weff)*(x1+x2));
+}
+
+
+const char pcb_acts_impedance_microstrip[] = "impedance_microstrip(trace_width, trace_height, subst_height, dielectric)";
+const char pcb_acth_impedance_microstrip[] = "Calculate the approximated impedance of a microstrip transmission line, in ohms";
+fgw_error_t pcb_act_impedance_microstrip(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	rnd_coord_t trace_width, trace_height, subst_height;
+	double dielectric;
+
+	RND_ACT_CONVARG(1, FGW_KEYWORD, impedance_microstrip, trace_width = fgw_coord(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_KEYWORD, impedance_microstrip, trace_height = fgw_coord(&argv[2]));
+	RND_ACT_CONVARG(3, FGW_KEYWORD, impedance_microstrip, subst_height = fgw_coord(&argv[3]));
+	RND_ACT_CONVARG(4, FGW_KEYWORD, impedance_microstrip, dielectric = argv[4].val.nat_double);
+
+	res->type = FGW_DOUBLE;
+	res->val.nat_double = pcb_impedance_microstrip(trace_width, trace_height, subst_height, dielectric);
+	return 0;
 }
 
