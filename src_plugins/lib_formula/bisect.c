@@ -60,7 +60,7 @@ fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *actname, *spec;
 	double target, min, max, minv, maxv, v, lastv, err, at, conv;
 	fgw_arg_t r;
-	int n, specn = 0, unitlen/*, var_is_coord = 0*/;
+	int n, specn = 0, unitlen, var_is_coord = 0;
 	const fgw_func_t *f;
 	fgw_error_t ferr;
 	const rnd_unit_t *unit;
@@ -116,7 +116,7 @@ fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		min = RND_MM_TO_COORD(min / unit->scale_factor);
 		max = RND_MM_TO_COORD(max / unit->scale_factor);
-/*		var_is_coord = ((unit->family == RND_UNIT_METRIC) || (unit->family == RND_UNIT_IMPERIAL));*/
+		var_is_coord = ((unit->family == RND_UNIT_METRIC) || (unit->family == RND_UNIT_IMPERIAL));
 	}
 
 	fgw_arg_free(&rnd_fgw, &argv[specn]);
@@ -133,7 +133,7 @@ fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		CALL(v, at);
 /*rnd_trace("try1: [%f %f] %f -> %f\n", min, max, at, v);*/
 		if (fabs(v - target) < err)
-			break;
+			goto found;
 
 		if (is_between(target, minv, v))
 			max = at;
@@ -145,7 +145,20 @@ fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
+	res->type = FGW_PTR;
+	res->val.ptr_void = NULL;
+	return 0;
+
 	found:;
+
+	if (var_is_coord) {
+		res->type = FGW_COORD;
+		fgw_coord(res) = at;
+	}
+	else {
+		res->type = FGW_DOUBLE;
+		res->val.nat_double = at;
+	}
 
 	return 0;
 }
