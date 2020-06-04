@@ -58,11 +58,13 @@ const char pcb_acth_formula_bisect[] = "Find the value for exactly one of the ar
 fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *actname, *spec;
-	double target, min, max, minv, maxv, v, lastv, err, at;
+	double target, min, max, minv, maxv, v, lastv, err, at, conv;
 	fgw_arg_t r;
-	int n, specn = 0;
+	int n, specn = 0, unitlen/*, var_is_coord = 0*/;
 	const fgw_func_t *f;
 	fgw_error_t ferr;
+	const rnd_unit_t *unit;
+	char sunit[32];
 
 	RND_ACT_CONVARG(1, FGW_STR, formula_bisect, actname = argv[1].val.str);
 	RND_ACT_CONVARG(2, FGW_DOUBLE, formula_bisect, target = argv[2].val.nat_double);
@@ -88,15 +90,34 @@ fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return FGW_ERR_ARG_CONV;
 	}
 
-
 	spec = strchr(argv[specn].val.str, ':');
+	unitlen = spec - argv[specn].val.str;
+	if (unitlen >= sizeof(sunit)) {
+		rnd_message(RND_MSG_ERROR, "formula_bisect: invalid unit spec (too long): '%s'\n", spec);
+		return FGW_ERR_ARG_CONV;
+	}
 	if (sscanf(spec+1, "%lf:%lf:%lf", &min, &max, &err) != 3) {
 		rnd_message(RND_MSG_ERROR, "formula_bisect: invalid range spec: '%s'\n", spec);
 		return FGW_ERR_ARG_CONV;
 	}
 
-	min = RND_MM_TO_COORD(min);
-	max = RND_MM_TO_COORD(max);
+	if (unitlen > 0) {
+		strncpy(sunit, argv[specn].val.str, unitlen);
+		sunit[unitlen] = '\0';
+	}
+	if ((unitlen == 0) || (strcmp(sunit, "double") == 0) || (strcmp(sunit, "num") == 0)) {
+		/* do nothing */
+	}
+	else {
+		unit = get_unit_by_suffix(sunit);
+		if (unit == NULL) {
+			rnd_message(RND_MSG_ERROR, "formula_bisect: invalid unit spec: '%s'\n", spec);
+			return FGW_ERR_ARG_CONV;
+		}
+		min = RND_MM_TO_COORD(min / unit->scale_factor);
+		max = RND_MM_TO_COORD(max / unit->scale_factor);
+/*		var_is_coord = ((unit->family == RND_UNIT_METRIC) || (unit->family == RND_UNIT_IMPERIAL));*/
+	}
 
 	fgw_arg_free(&rnd_fgw, &argv[specn]);
 	argv[specn].type = FGW_DOUBLE;
@@ -110,7 +131,7 @@ fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	for(n = 0;  (n < 256); n++) {
 		at = (min+max)/2.0;
 		CALL(v, at);
-rnd_trace("try1: [%f %f] %f -> %f\n", min, max, at, v);
+/*rnd_trace("try1: [%f %f] %f -> %f\n", min, max, at, v);*/
 		if (fabs(v - target) < err)
 			break;
 
