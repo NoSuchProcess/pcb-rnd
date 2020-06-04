@@ -54,7 +54,7 @@ fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const fgw_func_t *f;
 	fgw_error_t ferr;
 
-	RND_ACT_CONVARG(1, FGW_STRING, formula_bisect, actname = argv[1].val.str);
+	RND_ACT_CONVARG(1, FGW_STR, formula_bisect, actname = argv[1].val.str);
 	RND_ACT_CONVARG(2, FGW_DOUBLE, formula_bisect, target = argv[2].val.nat_double);
 	for(n = 3; n < argc; n++) {
 		if (((argv[n].type & FGW_STR) == FGW_STR) && (strchr(argv[n].val.str, ':') != NULL)) {
@@ -67,7 +67,7 @@ fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	if (specn < 0) {
+	if (specn <= 0) {
 		rnd_message(RND_MSG_ERROR, "formula_bisect: one argument needs to be a variable specification string\n");
 		return FGW_ERR_ARG_CONV;
 	}
