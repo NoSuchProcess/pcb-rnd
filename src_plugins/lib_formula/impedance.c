@@ -27,7 +27,7 @@
 #include "config.h"
 #include <math.h>
 
-#define TOM(x) (RND_COORD_TO_MM(x) * 1000.0)
+#define TOM(x) (RND_COORD_TO_MM(x) / 1000.0)
 #define SQR(x) ((x)*(x))
 #define N0 377
 
@@ -38,7 +38,7 @@ double pcb_impedance_microstrip(rnd_coord_t trace_thick, rnd_coord_t trace_heigh
 
 	weff = w + (t/M_PI) * log(4*M_E / sqrt(SQR(t/h)+SQR(t/(w*M_PI+1.1*t*M_PI)))) * (Er+1)/(2*Er);
 	x1 = 4 * ((14*Er+8)/(11*Er)) * (h/weff);
-	x2 = qsrt(16 * SQR(h/weff) * SQR((14*Er+8)/(11*Er)) + ((Er+1)/(2*Er))*M_PI;
+	x2 = sqrt(16 * SQR(h/weff) * SQR((14*Er+8)/(11*Er)) + ((Er+1)/(2*Er))*M_PI);
 	return N0 / (2*M_PI * sqrt(2) * sqrt(Er+1)) * log(1+4*(h/weff)*(x1+x2));
 }
 
