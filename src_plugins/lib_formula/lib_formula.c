@@ -30,6 +30,7 @@
 #include <librnd/core/plugins.h>
 
 #include "impedance.h"
+#include "bisect.h"
 
 int pplg_check_ver_lib_formula(int ver_needed) { return 0; }
 
