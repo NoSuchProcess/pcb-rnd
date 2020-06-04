@@ -54,10 +54,10 @@ fgw_error_t pcb_act_impedance_microstrip(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	rnd_coord_t trace_width, trace_height, subst_height;
 	double dielectric;
 
-	RND_ACT_CONVARG(1, FGW_KEYWORD, impedance_microstrip, trace_width = fgw_coord(&argv[1]));
-	RND_ACT_CONVARG(2, FGW_KEYWORD, impedance_microstrip, trace_height = fgw_coord(&argv[2]));
-	RND_ACT_CONVARG(3, FGW_KEYWORD, impedance_microstrip, subst_height = fgw_coord(&argv[3]));
-	RND_ACT_CONVARG(4, FGW_KEYWORD, impedance_microstrip, dielectric = argv[4].val.nat_double);
+	RND_ACT_CONVARG(1, FGW_COORD, impedance_microstrip, trace_width = fgw_coord(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_COORD, impedance_microstrip, trace_height = fgw_coord(&argv[2]));
+	RND_ACT_CONVARG(3, FGW_COORD, impedance_microstrip, subst_height = fgw_coord(&argv[3]));
+	RND_ACT_CONVARG(4, FGW_DOUBLE, impedance_microstrip, dielectric = argv[4].val.nat_double);
 
 	res->type = FGW_DOUBLE;
 	res->val.nat_double = pcb_impedance_microstrip(trace_width, trace_height, subst_height, dielectric);
