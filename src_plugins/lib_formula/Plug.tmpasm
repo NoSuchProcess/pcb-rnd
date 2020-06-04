@@ -1,6 +1,7 @@
 put /local/pcb/mod {lib_formula}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/lib_formula/lib_formula.o
+	$(PLUGDIR)/lib_formula/impedance.o
 @]
 
 switch /local/pcb/lib_formula/controls
