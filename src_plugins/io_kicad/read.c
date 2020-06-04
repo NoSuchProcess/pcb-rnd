@@ -782,21 +782,21 @@ static int kicad_parse_setup(read_state_t *st, gsxl_node_t *subtree)
 }
 
 
-static char *fp_text_subst(char *text, pcb_flag_t *flg)
+static char *fp_text_subst(char *text, pcb_flag_t *flg, int is_refdes)
 {
-	if (strcmp(text, "%R") == 0) {
-		flg->f |= PCB_FLAG_DYNTEXT;
+	if (is_refdes || (strcmp(text, "%R") == 0)) {
+		flg->f |= PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER;
 		return "%a.parent.refdes%";
 	}
 	if (strcmp(text, "%V") == 0) {
-		flg->f |= PCB_FLAG_DYNTEXT;
+		flg->f |= PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER;
 		return "%a.parent.value%";
 	}
 	return text;
 }
 
 /* kicad_pcb/gr_text and fp_text */
-static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc, double mod_rot, int mod_mirror)
+static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *text, pcb_subc_t *subc, double mod_rot, int mod_mirror, int is_refdes)
 {
 	gsxl_node_t *l, *n, *m;
 	int i, mirrored = 0;
@@ -809,7 +809,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 
 	/* fix up text for kicad's %R and %V */
 	if (subc != NULL)
-		text = fp_text_subst(text, &flg);
+		text = fp_text_subst(text, &flg, is_refdes);
 
 	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 		if (n->str == NULL)
@@ -832,7 +832,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 			PARSE_LAYER(ly, n->children, subc, "text");
 			if (subc == NULL) {
 				if (pcb_layer_flags_(ly) & PCB_LYT_BOTTOM)
-					flg = pcb_flag_make(PCB_FLAG_ONSOLDER);
+					flg.f |= PCB_FLAG_ONSOLDER;
 			}
 		}
 		else if (strcmp("hide", n->str) == 0) {
@@ -926,7 +926,7 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 static int kicad_parse_gr_text(read_state_t *st, gsxl_node_t *subtree)
 {
 	if (subtree->str != NULL)
-		return kicad_parse_any_text(st, subtree, subtree->str, NULL, 0.0, 0);
+		return kicad_parse_any_text(st, subtree, subtree->str, NULL, 0.0, 0, 0);
 	return kicad_error(subtree, "failed to create text: missing text string");
 }
 
@@ -1816,7 +1816,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, unsigned long *tally, int *foundRefdes, double mod_rot, int mod_mirror)
 {
 	char *text;
-	int hidden = 0;
+	int hidden = 0, refdes = 0;
 
 	if (n->children != NULL && n->children->str != NULL) {
 		char *key = n->children->str;
@@ -1847,7 +1847,10 @@ static int kicad_parse_fp_text(read_state_t *st, gsxl_node_t *n, pcb_subc_t *sub
 	if (hidden)
 		return 0; /* pcb-rnd policy: there are no hidden objects; if an object is not needed, it is not created */
 
-	if (kicad_parse_any_text(st, n->children->next->next, text, subc, mod_rot, mod_mirror) != 0)
+	if (strcmp("reference", n->children->str) == 0)
+		refdes = 1;
+
+	if (kicad_parse_any_text(st, n->children->next->next, text, subc, mod_rot, mod_mirror, refdes) != 0)
 		return -1;
 	return 0;
 }
