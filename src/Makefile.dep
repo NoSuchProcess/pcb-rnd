@@ -5390,12 +5390,37 @@
  ../src_plugins/lib_compat_help/media.c ../config.h librnd/config.h \
  librnd/core/unit.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  ../src_plugins/lib_compat_help/media.h
+../src_plugins/lib_formula/bisect.o: ../src_plugins/lib_formula/bisect.c \
+ ../config.h librnd/config.h librnd/core/actions.h librnd/core/hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
+ librnd/core/rnd_bool.h librnd/core/attrib.h librnd/core/box.h \
+ librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
+ ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
+ ../src_plugins/lib_formula/bisect.h
+../src_plugins/lib_formula/impedance.o: \
+ ../src_plugins/lib_formula/impedance.c ../config.h librnd/config.h \
+ librnd/core/misc_util.h librnd/core/unit.h librnd/core/global_typedefs.h \
+ librnd/core/rnd_bool.h librnd/core/math_helper.h librnd/core/actions.h \
+ librnd/core/hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
+ librnd/core/attrib.h librnd/core/box.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h ../src_plugins/lib_formula/impedance.h
 ../src_plugins/lib_formula/lib_formula.o: \
  ../src_plugins/lib_formula/lib_formula.c ../config.h librnd/config.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h ../src_plugins/lib_formula/impedance.h
+ ../src_3rd/puplug/error.h ../src_plugins/lib_formula/impedance.h \
+ librnd/core/actions.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
+ librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
+ librnd/core/attrib.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h librnd/core/unit.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h ../src_plugins/lib_formula/bisect.h
 ../src_plugins/lib_gensexpr/lib_gensexpr.o: \
  ../src_plugins/lib_gensexpr/lib_gensexpr.c ../config.h librnd/config.h \
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
