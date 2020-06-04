@@ -32,14 +32,23 @@
 #include "impedance.h"
 #include "bisect.h"
 
+static rnd_action_t lib_formula_action_list[] = {
+	{"impedance_microstrip", pcb_act_impedance_microstrip, pcb_acth_impedance_microstrip, pcb_acts_impedance_microstrip},
+	{"formula_bisect", pcb_act_formula_bisect, pcb_acth_formula_bisect, pcb_acts_formula_bisect}
+};
+
+char *lib_formula_cookie = "lib_formula plugin";
+
 int pplg_check_ver_lib_formula(int ver_needed) { return 0; }
 
 void pplg_uninit_lib_formula(void)
 {
+	rnd_remove_actions_by_cookie(lib_formula_cookie);
 }
 
 int pplg_init_lib_formula(void)
 {
 	RND_API_CHK_VER;
+	RND_REGISTER_ACTIONS(lib_formula_action_list, lib_formula_cookie);
 	return 0;
 }
