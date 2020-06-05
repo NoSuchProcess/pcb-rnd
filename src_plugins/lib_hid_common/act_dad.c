@@ -160,9 +160,6 @@ void dad_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_
 	prv_action(&PCB->hidlib, ctx->act_expose, gc, ctx->udata);
 }
 
-/*	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], RND_PTR_DOMAIN_GC))*/
-
-
 rnd_bool dad_prv_mouse_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	dad_prv_t *ctx = prv->user_ctx;
