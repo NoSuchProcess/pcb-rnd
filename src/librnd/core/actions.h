@@ -57,6 +57,7 @@ typedef enum {
 extern const char *RND_PTR_DOMAIN_IDPATH;
 extern const char *RND_PTR_DOMAIN_IDPATH_LIST;
 extern const char *RND_PTR_DOMAIN_FILE_PTR;
+extern const char *RND_PTR_DOMAIN_GC;
 
 void rnd_register_action(const rnd_action_t *a, const char *cookie);
 void rnd_register_actions(const rnd_action_t *a, int, const char *cookie);

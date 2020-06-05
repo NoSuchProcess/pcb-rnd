@@ -48,6 +48,7 @@ const rnd_action_t *rnd_current_action = NULL;
 const char *RND_PTR_DOMAIN_IDPATH = "pcb_fgw_ptr_domain_idpath";
 const char *RND_PTR_DOMAIN_IDPATH_LIST = "pcb_fgw_ptr_domain_idpath_list";
 const char *RND_PTR_DOMAIN_FILE_PTR = "pcb_fgw_ptr_domain_file_ptr";
+const char *RND_PTR_DOMAIN_GC = "pcb_fgw_ptr_gc_ptr";
 
 fgw_ctx_t rnd_fgw;
 fgw_obj_t *rnd_fgw_obj;
