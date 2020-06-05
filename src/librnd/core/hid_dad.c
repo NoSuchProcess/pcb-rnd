@@ -44,6 +44,7 @@ static comflag_name_t compflag_names[] = {
 	{RND_HATF_LEFT_TAB,      "left_tab"},
 	{RND_HATF_TREE_COL,      "tree_col"},
 	{RND_HATF_EXPFILL,       "expfill"},
+	{RND_HATF_TIGHT,         "tight"},
 	{0, NULL}
 };
 
