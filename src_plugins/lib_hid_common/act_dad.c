@@ -599,6 +599,10 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				res->type = FGW_INT;
 				res->val.nat_int = dad->dlg[wid].val.lng;
 				break;
+			case RND_HATT_REAL:
+				res->type = FGW_DOUBLE;
+				res->val.nat_double = dad->dlg[wid].val.dbl;
+				break;
 			case RND_HATT_STRING:
 			case RND_HATT_LABEL:
 			case RND_HATT_BUTTON:
