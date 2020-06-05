@@ -572,8 +572,8 @@ static fgw_error_t pcb_act_DrawColor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	static rnd_color_t clr;
 	const char *scolor;
 
-	RND_ACT_CONVARG(1, FGW_PTR, DrawText, gc = argv[1].val.ptr_void);
-	RND_ACT_CONVARG(2, FGW_STR, DrawText, scolor = argv[2].val.str);
+	RND_ACT_CONVARG(1, FGW_PTR, DrawColor, gc = argv[1].val.ptr_void);
+	RND_ACT_CONVARG(2, FGW_STR, DrawColor, scolor = argv[2].val.str);
 
 	if (rnd_color_load_str(&clr, scolor) != 0) {
 		rnd_message(RND_MSG_ERROR, "DrawColor(): invalid color value '%s'\n", scolor);
