@@ -36,6 +36,7 @@
 #include <librnd/core/hid_dad_tree.h>
 #include <librnd/core/error.h>
 
+#include "board.h"
 #include "act_dad.h"
 
 #define MAX_ENUM 128
@@ -133,20 +134,46 @@ typedef struct {
 	char *udata;
 } dad_prv_t;
 
+static void prv_action(rnd_hidlib_t *hl, const char *actname, rnd_hid_gc_t gc, const char *udata)
+{
+	fgw_arg_t r = {0};
+	fgw_arg_t args[3];
+
+	if ((actname == NULL) || (*actname == '\0'))
+		return;
+
+	if (gc == NULL) {
+		args[2].type = FGW_PTR; args[2].val.ptr_void = NULL;
+	}
+	else
+		fgw_ptr_reg(&rnd_fgw, &args[1], RND_PTR_DOMAIN_GC, FGW_PTR | FGW_STRUCT, gc);
+	args[2].type = FGW_STR; args[2].val.cstr = udata;
+	rnd_actionv_bin(hl, actname, &r, 3, args);
+	fgw_arg_free(&rnd_fgw, &r);
+	if (gc != NULL)
+		fgw_ptr_unreg(&rnd_fgw, &args[1], RND_PTR_DOMAIN_GC);
+}
+
 void dad_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	dad_prv_t *ctx = prv->user_ctx;
-/* call expose action with gc and ctx->udata */
+	prv_action(&PCB->hidlib, ctx->act_expose, gc, ctx->udata);
 }
+
+/*	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], RND_PTR_DOMAIN_GC))*/
+
 
 rnd_bool dad_prv_mouse_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	dad_prv_t *ctx = prv->user_ctx;
+	prv_action(&PCB->hidlib, ctx->act_mouse, NULL, ctx->udata);
 }
 
 void dad_prv_free_cb(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
 {
 	dad_prv_t *ctx = user_ctx;
+
+	prv_action(&PCB->hidlib, ctx->act_free, NULL, ctx->udata);
 
 	free(ctx->act_expose);
 	free(ctx->act_mouse);
@@ -352,9 +379,9 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		vb.X2 = vb.Y2 = RND_MM_TO_COORD(10);
 
 		uctx = malloc(sizeof(dad_prv_t));
-		uctx->act_expose = rnd_concat(prefix, "_expose", NULL);
-		uctx->act_mouse = rnd_concat(prefix, "_mouse", NULL);
-		uctx->act_free = rnd_concat(prefix, "_free", NULL);
+		uctx->act_expose = rnd_concat(prefix, "expose", NULL);
+		uctx->act_mouse = rnd_concat(prefix, "mouse", NULL);
+		uctx->act_free = rnd_concat(prefix, "free", NULL);
 		uctx->udata = rnd_strdup(suctx);
 		RND_DAD_PREVIEW(dad->dlg, dad_prv_expose_cb, dad_prv_mouse_cb, dad_prv_free_cb, &vb, sx, sy, uctx);
 	}
