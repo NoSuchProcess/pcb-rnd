@@ -38,6 +38,11 @@
 #include <librnd/core/plugins.h>
 #include "undo.h"
 
+#include "obj_text.h"
+#include "obj_line.h"
+#include "obj_text_draw.h"
+#include "obj_line_draw.h"
+
 #include "keywords_sphash.h"
 
 static const char *PTR_DOMAIN_POLY = "fgw_ptr_domain_poly";
@@ -459,6 +464,64 @@ TODO("implement noundo");
 	return 0;
 }
 
+/*** low level draw, e.g. for preview widgets ***/
+static pcb_draw_info_t def_info;
+static rnd_xform_t def_xform;
+
+static const char pcb_acts_DrawText[] = "DrawText(gc, x, y, string, rot, scale_percent)";
+static const char pcb_acth_DrawText[] = "Low level draw (render) a text object using graphic context gc.";
+static fgw_error_t pcb_act_DrawText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	static pcb_text_t t = {0};
+	rnd_hid_gc_t gc, ogc;
+
+	RND_ACT_CONVARG(1, FGW_PTR, DrawText, gc = argv[1].val.ptr_void);
+	RND_ACT_CONVARG(2, FGW_COORD, DrawText, t.X = fgw_coord(&argv[2]));
+	RND_ACT_CONVARG(3, FGW_COORD, DrawText, t.Y = fgw_coord(&argv[3]));
+	RND_ACT_CONVARG(4, FGW_STR, DrawText, t.TextString = argv[4].val.str);
+	RND_ACT_CONVARG(5, FGW_DOUBLE, DrawText, t.rot = argv[5].val.nat_double);
+	RND_ACT_CONVARG(6, FGW_INT, DrawText, t.Scale = argv[6].val.nat_int);
+
+	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], RND_PTR_DOMAIN_GC)) {
+		rnd_message(RND_MSG_ERROR, "DrawText(): invalid gc (pointer domain error)\n");
+		return FGW_ERR_ARG_CONV;
+	}
+
+
+	t.fid = 0; /* use the default font */
+	t.Flags = pcb_no_flags();
+	ogc = pcb_draw_out.fgGC;
+	pcb_draw_out.fgGC = gc;
+	pcb_text_draw_(&def_info, &t, 0, 0, PCB_TXT_TINY_ACCURATE);
+	pcb_draw_out.fgGC = ogc;
+	RND_ACT_IRES(0);
+	return 0;
+}
+
+static const char pcb_acts_DrawColor[] = "DrawColor(gc, colorstr)";
+static const char pcb_acth_DrawColor[] = "Set pen color in of a gc.";
+static fgw_error_t pcb_act_DrawColor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	rnd_hid_gc_t gc, ogc;
+	static rnd_color_t clr;
+	const char *scolor;
+
+	RND_ACT_CONVARG(1, FGW_PTR, DrawText, gc = argv[1].val.ptr_void);
+	RND_ACT_CONVARG(2, FGW_STR, DrawText, scolor = argv[2].val.str);
+
+	if (rnd_color_load_str(&clr, scolor) != 0) {
+		rnd_message(RND_MSG_ERROR, "DrawColor(): invalid color value '%s'\n", scolor);
+		return FGW_ERR_ARG_CONV;
+	}
+
+	ogc = pcb_draw_out.fgGC;
+	pcb_draw_out.fgGC = gc;
+	rnd_render->set_color(gc, &clr);
+	pcb_draw_out.fgGC = ogc;
+	RND_ACT_IRES(0);
+	return 0;
+}
+
 rnd_action_t act_draw_action_list[] = {
 	{"LineNew", pcb_act_LineNew, pcb_acth_LineNew, pcb_acts_LineNew},
 	{"ArcNew", pcb_act_ArcNew, pcb_acth_ArcNew, pcb_acts_ArcNew},
@@ -472,6 +535,8 @@ rnd_action_t act_draw_action_list[] = {
 	{"PstkProtoTmp", pcb_act_PstkProtoTmp, pcb_acth_PstkProtoTmp, pcb_acts_PstkProtoTmp},
 	{"PstkProtoEdit", pcb_act_PstkProtoEdit, pcb_acth_PstkProtoEdit, pcb_acts_PstkProtoEdit},
 	{"LayerObjDup", pcb_act_LayerObjDup, pcb_acth_LayerObjDup, pcb_acts_LayerObjDup},
+	{"DrawText", pcb_act_DrawText, pcb_acth_DrawText, pcb_acts_DrawText},
+	{"DrawColor", pcb_act_DrawColor, pcb_acth_DrawColor, pcb_acts_DrawColor},
 	{"PolyBool", pcb_act_PolyBool, pcb_acth_PolyBool, pcb_acts_PolyBool}
 };
 
@@ -488,5 +553,6 @@ int pplg_init_act_draw(void)
 {
 	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(act_draw_action_list, act_draw_cookie)
+	def_info.xform = &def_xform;
 	return 0;
 }
