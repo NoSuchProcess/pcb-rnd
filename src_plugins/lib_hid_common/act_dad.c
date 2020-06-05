@@ -128,6 +128,34 @@ static void dad_row_free_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_
 	fgw_ptr_unreg(&rnd_fgw, &res, dad->row_domain);
 }
 
+typedef struct {
+	char *act_expose, *act_mouse, *act_free;
+	char *udata;
+} dad_prv_t;
+
+void dad_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+{
+	dad_prv_t *ctx = prv->user_ctx;
+/* call expose action with gc and ctx->udata */
+}
+
+rnd_bool dad_prv_mouse_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
+{
+	dad_prv_t *ctx = prv->user_ctx;
+}
+
+void dad_prv_free_cb(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
+{
+	dad_prv_t *ctx = user_ctx;
+
+	free(ctx->act_expose);
+	free(ctx->act_mouse);
+	free(ctx->act_free);
+	free(ctx->udata);
+	free(ctx);
+}
+
+
 static char *tmp_str_dup(dad_t *dad, const char *txt)
 {
 	size_t len = strlen(txt);
@@ -181,6 +209,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, integer|real|coord, min, max, [label]) - append an input field\n"
 	"dad(dlgname, string) - append a single line text input field\n"
 	"dad(dlgname, progress) - append a progress bar (set to 0)\n"
+	"dad(dlgname, preview, cb_act_prefix, minsize_x, minsize_y, [ctx]) - append a preview with a viewbox of 10*10mm, minsize in pixels\n"
 	"dad(dlgname, tree, cols, istree, [header]) - append tree-table widget; header is like enum values\n"
 	"dad(dlgname, tree_append, row, cells) - append after row (0 means last item of the root); cells is like enum values; returns a row pointer\n"
 	"dad(dlgname, tree_append_under, row, cells) - append at the end of the list under row (0 means last item of the root); cells is like enum values; returns a row pointer\n"
@@ -307,6 +336,27 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (dad->running) goto cant_chg;
 		RND_DAD_PROGRESS(dad->dlg);
 		rv = RND_DAD_CURRENT(dad->dlg);
+	}
+	else if (rnd_strcasecmp(cmd, "preview") == 0) {
+		char *prefix, *suctx = "";
+		int sx, sy;
+		rnd_rnd_box_t vb;
+		dad_prv_t *uctx;
+
+		/* dad(dlgname, preview, cb_act_prefix, minsize_x, minsize_y, ctx) */
+		RND_ACT_CONVARG(3, FGW_STR, dad, prefix = argv[3].val.str);
+		RND_ACT_CONVARG(4, FGW_INT, dad, sx = argv[4].val.nat_int);
+		RND_ACT_CONVARG(5, FGW_INT, dad, sy = argv[5].val.nat_int);
+		RND_ACT_MAY_CONVARG(6, FGW_STR, dad, suctx = argv[6].val.str);
+		vb.X1 = vb.Y1 = 0;
+		vb.X2 = vb.Y2 = RND_MM_TO_COORD(10);
+
+		uctx = malloc(sizeof(dad_prv_t));
+		uctx->act_expose = rnd_concat(prefix, "_expose", NULL);
+		uctx->act_mouse = rnd_concat(prefix, "_mouse", NULL);
+		uctx->act_free = rnd_concat(prefix, "_free", NULL);
+		uctx->udata = rnd_strdup(suctx);
+		RND_DAD_PREVIEW(dad->dlg, dad_prv_expose_cb, dad_prv_mouse_cb, dad_prv_free_cb, &vb, sx, sy, uctx);
 	}
 	else if ((rnd_strcasecmp(cmd, "enum") == 0) || (rnd_strcasecmp(cmd, "begin_tabbed") == 0)) {
 		char **values = tmp_new_strlist(dad);
