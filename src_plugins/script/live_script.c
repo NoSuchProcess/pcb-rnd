@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ typedef struct {
 	char *name, *longname, *fn;
 	char **langs;
 	char **lang_engines;
-	int wtxt, wrerun, wrun, wstop, wundo, wload, wsave, wpers, wlang;
+	int wtxt, wrerun, wrun, wstop, wundo, wload, wsave, wreload, wpers, wlang;
 	uundo_serial_t undo_pre, undo_post; /* undo serials pre-run and post-run */
 	unsigned loaded:1;
 } live_script_t;
@@ -188,6 +188,7 @@ static void lvs_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	else if (w == lvs->wundo) arg = "undo";
 	else if (w == lvs->wload) arg = "load";
 	else if (w == lvs->wsave) arg = "save";
+	else if (w == lvs->wreload) arg = "reload-rerun";
 	else {
 		rnd_message(RND_MSG_ERROR, "lvs_button_cb(): internal error: unhandled switch case\n");
 		return;
@@ -243,6 +244,10 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 				lvs->wload = RND_DAD_CURRENT(lvs->dlg);
 				RND_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
 				RND_DAD_HELP(lvs->dlg, "Load script source from a file");
+			RND_DAD_BUTTON(lvs->dlg, "reload&rerun");
+				lvs->wreload = RND_DAD_CURRENT(lvs->dlg);
+				RND_DAD_CHANGE_CB(lvs->dlg, lvs_button_cb);
+				RND_DAD_HELP(lvs->dlg, "Reload script source and rerun\n(Ideal with external editor)");
 		RND_DAD_END(lvs->dlg);
 		RND_DAD_BEGIN_HBOX(lvs->dlg);
 			RND_DAD_BOOL(lvs->dlg, "");
@@ -362,6 +367,7 @@ static int live_load(rnd_hidlib_t *hl, live_script_t *lvs, const char *fn)
 			lvs->fn, default_ext, rnd_hid_fsd_filter_any, "live_script", RND_HID_FSD_READ, NULL);
 		if (fn == NULL)
 			return 0;
+		lvs->fn = rnd_strdup(fn);
 	}
 
 	f = rnd_fopen(hl, fn, "r");
@@ -491,6 +497,12 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		live_stop(lvs);
 	}
 	else if (rnd_strcasecmp(cmd, "rerun") == 0) {
+		live_stop(lvs);
+		live_undo(lvs);
+		live_run(NULL, lvs);
+	}
+	if (rnd_strcasecmp(cmd, "reload-rerun") == 0) {
+		RND_ACT_IRES(live_load(NULL, lvs, lvs->fn));
 		live_stop(lvs);
 		live_undo(lvs);
 		live_run(NULL, lvs);
