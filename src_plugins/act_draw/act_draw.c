@@ -525,6 +525,45 @@ static fgw_error_t pcb_act_DrawLine(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_DrawPoly[] = "DrawPoly(gc, x, y, x, y, x, y, [x, y...])";
+static const char pcb_acth_DrawPoly[] = "Low level draw (render) a polygon using graphic context gc.";
+static fgw_error_t pcb_act_DrawPoly(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	int n, len;
+	rnd_coord_t x[128], y[128];
+	rnd_hid_gc_t gc;
+
+	if (argc < 7) {
+		rnd_message(RND_MSG_ERROR, "DrawPoly(): need at least 3 pairs of coordinates\n");
+		return FGW_ERR_ARGC;
+	}
+
+	if ((argc % 2) != 0) {
+		rnd_message(RND_MSG_ERROR, "DrawPoly(): coordinates need to be in x,y pairs\n");
+		return FGW_ERR_ARGC;
+	}
+
+	if (argc-1 >= (sizeof(x)/sizeof(x[0]))*2) {
+		rnd_message(RND_MSG_ERROR, "DrawPoly(): too many pairs of coordinates\n");
+		return FGW_ERR_ARGC;
+	}
+
+	RND_ACT_CONVARG(1, FGW_PTR, DrawPoly, gc = argv[1].val.ptr_void);
+	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], RND_PTR_DOMAIN_GC)) {
+		rnd_message(RND_MSG_ERROR, "DrawPoly(): invalid gc (pointer domain error)\n");
+		return FGW_ERR_ARG_CONV;
+	}
+
+	for(len = 0, n = 2; n < argc; n += 2, len++) {
+		RND_ACT_CONVARG(n+0, FGW_COORD, DrawPoly, x[len] = fgw_coord(&argv[n+0]));
+		RND_ACT_CONVARG(n+1, FGW_COORD, DrawPoly, y[len] = fgw_coord(&argv[n+1]));
+	}
+
+	rnd_render->fill_polygon(gc, len, x, y);
+	RND_ACT_IRES(0);
+	return 0;
+}
+
 static const char pcb_acts_DrawColor[] = "DrawColor(gc, colorstr)";
 static const char pcb_acth_DrawColor[] = "Set pen color in of a gc.";
 static fgw_error_t pcb_act_DrawColor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -564,6 +603,7 @@ rnd_action_t act_draw_action_list[] = {
 	{"LayerObjDup", pcb_act_LayerObjDup, pcb_acth_LayerObjDup, pcb_acts_LayerObjDup},
 	{"DrawText", pcb_act_DrawText, pcb_acth_DrawText, pcb_acts_DrawText},
 	{"DrawLine", pcb_act_DrawLine, pcb_acth_DrawLine, pcb_acts_DrawLine},
+	{"DrawPoly", pcb_act_DrawPoly, pcb_acth_DrawPoly, pcb_acts_DrawPoly},
 	{"DrawColor", pcb_act_DrawColor, pcb_acth_DrawColor, pcb_acts_DrawColor},
 	{"PolyBool", pcb_act_PolyBool, pcb_acth_PolyBool, pcb_acts_PolyBool}
 };
