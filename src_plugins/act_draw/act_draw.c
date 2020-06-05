@@ -498,6 +498,33 @@ static fgw_error_t pcb_act_DrawText(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_DrawLine[] = "DrawLine(gc, x1, y1, x2, y2, thickness)";
+static const char pcb_acth_DrawLine[] = "Low level draw (render) a line using graphic context gc.";
+static fgw_error_t pcb_act_DrawLine(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	rnd_hid_gc_t gc, ogc;
+	pcb_line_t l = {0};
+
+	RND_ACT_CONVARG(1, FGW_PTR, DrawLine, gc = argv[1].val.ptr_void);
+	RND_ACT_CONVARG(2, FGW_COORD, DrawLine, l.Point1.X  = fgw_coord(&argv[2]));
+	RND_ACT_CONVARG(3, FGW_COORD, DrawLine, l.Point1.Y  = fgw_coord(&argv[3]));
+	RND_ACT_CONVARG(4, FGW_COORD, DrawLine, l.Point2.X  = fgw_coord(&argv[4]));
+	RND_ACT_CONVARG(5, FGW_COORD, DrawLine, l.Point2.Y  = fgw_coord(&argv[5]));
+	RND_ACT_CONVARG(6, FGW_COORD, DrawLine, l.Thickness = fgw_coord(&argv[6]));
+
+	if (!fgw_ptr_in_domain(&rnd_fgw, &argv[1], RND_PTR_DOMAIN_GC)) {
+		rnd_message(RND_MSG_ERROR, "DrawLine(): invalid gc (pointer domain error)\n");
+		return FGW_ERR_ARG_CONV;
+	}
+
+	ogc = pcb_draw_out.fgGC;
+	pcb_draw_out.fgGC = gc;
+	pcb_line_draw_(&def_info, &l, 0);
+	pcb_draw_out.fgGC = ogc;
+	RND_ACT_IRES(0);
+	return 0;
+}
+
 static const char pcb_acts_DrawColor[] = "DrawColor(gc, colorstr)";
 static const char pcb_acth_DrawColor[] = "Set pen color in of a gc.";
 static fgw_error_t pcb_act_DrawColor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -536,6 +563,7 @@ rnd_action_t act_draw_action_list[] = {
 	{"PstkProtoEdit", pcb_act_PstkProtoEdit, pcb_acth_PstkProtoEdit, pcb_acts_PstkProtoEdit},
 	{"LayerObjDup", pcb_act_LayerObjDup, pcb_acth_LayerObjDup, pcb_acts_LayerObjDup},
 	{"DrawText", pcb_act_DrawText, pcb_acth_DrawText, pcb_acts_DrawText},
+	{"DrawLine", pcb_act_DrawLine, pcb_acth_DrawLine, pcb_acts_DrawLine},
 	{"DrawColor", pcb_act_DrawColor, pcb_acth_DrawColor, pcb_acts_DrawColor},
 	{"PolyBool", pcb_act_PolyBool, pcb_acth_PolyBool, pcb_acts_PolyBool}
 };
