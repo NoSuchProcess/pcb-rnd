@@ -4,4 +4,5 @@ $long pcb-rnd query language: execute expressions on objects and rules for the p
 $state works
 $package (core)
 default buildin
+dep lib_formula
 autoload 1

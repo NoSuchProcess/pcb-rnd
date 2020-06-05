@@ -1,4 +1,4 @@
-31764	configure	new plugin: formula, for impedance calculations
+31776	configure	new plugin: formula, for impedance calculations
 31708	configure	query plugin: move the advanced search dialog from dialogs plugin to query to better access of internals
 31623	configure	query plugin: net length calculations
 31519	configure	io_tedax drc block upgrade for drc_query
