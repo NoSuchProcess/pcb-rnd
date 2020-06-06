@@ -391,7 +391,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (rnd_strcasecmp(cmd, "preview") == 0) {
 		char *prefix, *suctx = "";
 		int sx, sy;
-		rnd_rnd_box_t vb;
+		rnd_box_t vb;
 		dad_prv_t *uctx;
 
 		/* dad(dlgname, preview, cb_act_prefix, minsize_x, minsize_y, ctx) */

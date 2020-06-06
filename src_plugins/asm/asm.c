@@ -335,7 +335,7 @@ static void select_part(part_t *p)
 	void *r1, *r2, *r3;
 	pcb_subc_t *sc;
 	pcb_objtype_t type;
-	rnd_rnd_box_t view;
+	rnd_box_t view;
 
 	type = pcb_search_obj_by_id_(PCB->Data, &r1, &r2, &r3, p->id, PCB_OBJ_SUBC);
 	if (type != PCB_OBJ_SUBC)
@@ -354,7 +354,7 @@ static void asm_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid
 {
 	long n;
 	int isgrp = 0, ispart = 0;
-	rnd_rnd_box_t box;
+	rnd_box_t box;
 
 	/* unselect all */
 	box.X1 = -RND_MAX_COORD;

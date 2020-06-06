@@ -963,7 +963,7 @@ static void ps_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void ps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void ps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	global.drawing_mode = op;
 }

@@ -457,7 +457,7 @@ TODO("layer: make a real scoring mechanism here instead of ly1, ly2, ly3")
 
 	if (remove_src) {
 		if (src->parent.data->padstack_tree != NULL)
-			rnd_r_delete_entry(src->parent.data->padstack_tree, (rnd_rnd_box_t *)src);
+			rnd_r_delete_entry(src->parent.data->padstack_tree, (rnd_box_t *)src);
 		pcb_pstk_free(src);
 	}
 
@@ -483,7 +483,7 @@ int pcb_pstk_proto_conv_buffer(pcb_pstk_proto_t *dst, int quiet)
 	int ret;
 	vtp0_t objs;
 	rnd_coord_t ox, oy;
-	rnd_rnd_box_t bb;
+	rnd_box_t bb;
 
 	pcb_data_bbox(&bb, PCB_PASTEBUFFER->Data, 0);
 

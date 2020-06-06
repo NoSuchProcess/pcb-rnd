@@ -242,7 +242,7 @@ static void report_rat(gds_t *dst, pcb_rat_t *line)
 
 static void report_arc(gds_t *dst, pcb_arc_t *arc)
 {
-	rnd_rnd_box_t box;
+	rnd_box_t box;
 #ifndef NDEBUG
 	if (rnd_gui->shift_is_pressed(rnd_gui))
 		rnd_r_dump_tree(arc->parent.layer->arc_tree, 0);
@@ -647,21 +647,21 @@ static int report_net_length(fgw_arg_t *res, int argc, fgw_arg_t *argv, int spli
 #undef MINDIST2
 
 		rnd_message(RND_MSG_INFO, "The two arms of the net are:\n");
-		rnd_r_delete_entry(ly->line_tree, (rnd_rnd_box_t *)l);
+		rnd_r_delete_entry(ly->line_tree, (rnd_box_t *)l);
 		ox = l->Point1.X; oy = l->Point1.Y; l->Point1.X = x; l->Point1.Y = y;
-		rnd_r_insert_entry(ly->line_tree, (rnd_rnd_box_t *)l);
+		rnd_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
 		report_net_length_(res, argc, argv, x, y);
-		rnd_r_delete_entry(ly->line_tree, (rnd_rnd_box_t *)l);
+		rnd_r_delete_entry(ly->line_tree, (rnd_box_t *)l);
 		l->Point1.X = ox; l->Point1.Y = oy;
-		rnd_r_insert_entry(ly->line_tree, (rnd_rnd_box_t *)l);
+		rnd_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
 
-		rnd_r_delete_entry(ly->line_tree, (rnd_rnd_box_t *)l);
+		rnd_r_delete_entry(ly->line_tree, (rnd_box_t *)l);
 		ox = l->Point2.X; oy = l->Point2.Y; l->Point2.X = x; l->Point2.Y = y;
-		rnd_r_insert_entry(ly->line_tree, (rnd_rnd_box_t *)l);
+		rnd_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
 		report_net_length_(res, argc, argv, x, y);
-		rnd_r_delete_entry(ly->line_tree, (rnd_rnd_box_t *)l);
+		rnd_r_delete_entry(ly->line_tree, (rnd_box_t *)l);
 		l->Point2.X = ox; l->Point2.Y = oy;
-		rnd_r_insert_entry(ly->line_tree, (rnd_rnd_box_t *)l);
+		rnd_r_insert_entry(ly->line_tree, (rnd_box_t *)l);
 
 		PCB_FLAG_SET(PCB_FLAG_SELECTED, l);
 

@@ -96,7 +96,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* all objects in block */
 		case F_Block:
 			{
-				rnd_rnd_box_t box;
+				rnd_box_t box;
 
 				box.X1 = MIN(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
 				box.Y1 = MIN(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
@@ -116,7 +116,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* select all visible(?) objects */
 		case F_All:
 			{
-				rnd_rnd_box_t box;
+				rnd_box_t box;
 
 				box.X1 = -RND_MAX_COORD;
 				box.Y1 = -RND_MAX_COORD;
@@ -131,7 +131,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_Invert:
 			{
-				rnd_rnd_box_t box;
+				rnd_box_t box;
 
 				box.X1 = -RND_MAX_COORD;
 				box.Y1 = -RND_MAX_COORD;
@@ -197,7 +197,7 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* all objects in block */
 		case F_Block:
 			{
-				rnd_rnd_box_t box;
+				rnd_box_t box;
 
 				box.X1 = MIN(pcb_crosshair.AttachedBox.Point1.X, pcb_crosshair.AttachedBox.Point2.X);
 				box.Y1 = MIN(pcb_crosshair.AttachedBox.Point1.Y, pcb_crosshair.AttachedBox.Point2.Y);
@@ -216,7 +216,7 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* unselect all visible objects */
 		case F_All:
 			{
-				rnd_rnd_box_t box;
+				rnd_box_t box;
 
 				box.X1 = -RND_MAX_COORD;
 				box.Y1 = -RND_MAX_COORD;

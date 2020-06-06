@@ -5,7 +5,7 @@
 #include <genht/htip.h>
 
 typedef struct {
-	rnd_rnd_box_t bbox;
+	rnd_box_t bbox;
 	long int id;
 	long int came_from;
 	double gscore, fscore;
@@ -20,7 +20,7 @@ typedef struct {
 } pcb_meshgraph_t;
 
 void pcb_msgr_init(pcb_meshgraph_t *gr);
-long int pcb_msgr_add_node(pcb_meshgraph_t *gr, rnd_rnd_box_t *bbox, int score);
+long int pcb_msgr_add_node(pcb_meshgraph_t *gr, rnd_box_t *bbox, int score);
 int pcb_msgr_astar(pcb_meshgraph_t *gr, long int startid, long int endid);
 
 #endif

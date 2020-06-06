@@ -113,7 +113,7 @@ typedef struct rnd_hid_preview_s rnd_hid_preview_t;
 struct rnd_hid_preview_s {
 	rnd_hid_attribute_t *attrib;
 
-	rnd_rnd_box_t initial_view;
+	rnd_box_t initial_view;
 	unsigned initial_view_valid:1;
 
 	int min_sizex_px, min_sizey_px; /* hint: widget minimum size in pixels */
@@ -126,7 +126,7 @@ struct rnd_hid_preview_s {
 
 	/* optional callbacks HIDs may set after widget creation */
 	void *hid_wdata;
-	void (*hid_zoomto_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, const rnd_rnd_box_t *view);
+	void (*hid_zoomto_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata, const rnd_box_t *view);
 	void (*hid_free_cb)(rnd_hid_attribute_t *attrib, void *hid_wdata);
 };
 
@@ -360,10 +360,10 @@ do { \
 	prv->min_sizex_px = min_sizex_px_; \
 	prv->min_sizey_px = min_sizey_px_; \
 	if ((initial_view_box) != NULL) { \
-		prv->initial_view.X1 = ((rnd_rnd_box_t *)(initial_view_box))->X1; \
-		prv->initial_view.Y1 = ((rnd_rnd_box_t *)(initial_view_box))->Y1; \
-		prv->initial_view.X2 = ((rnd_rnd_box_t *)(initial_view_box))->X2; \
-		prv->initial_view.Y2 = ((rnd_rnd_box_t *)(initial_view_box))->Y2; \
+		prv->initial_view.X1 = ((rnd_box_t *)(initial_view_box))->X1; \
+		prv->initial_view.Y1 = ((rnd_box_t *)(initial_view_box))->Y1; \
+		prv->initial_view.X2 = ((rnd_box_t *)(initial_view_box))->X2; \
+		prv->initial_view.Y2 = ((rnd_box_t *)(initial_view_box))->Y2; \
 		prv->initial_view_valid = 1; \
 	} \
 	RND_DAD_ALLOC(table, RND_HATT_PREVIEW); \

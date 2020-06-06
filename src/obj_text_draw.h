@@ -33,8 +33,8 @@
 
 /* Include rtree.h for these */
 #ifdef RND_RTREE_H
-rnd_r_dir_t pcb_text_draw_callback(const rnd_rnd_box_t * b, void *cl);
-rnd_r_dir_t pcb_text_draw_term_callback(const rnd_rnd_box_t * b, void *cl);
+rnd_r_dir_t pcb_text_draw_callback(const rnd_box_t * b, void *cl);
+rnd_r_dir_t pcb_text_draw_term_callback(const rnd_box_t * b, void *cl);
 #endif
 
 typedef enum pcb_text_tiny_e { /* How to draw text that is too tiny to be readable */

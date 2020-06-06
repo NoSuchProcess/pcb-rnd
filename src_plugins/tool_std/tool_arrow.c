@@ -83,7 +83,7 @@ static void click_timer_cb(rnd_hidval_t hv)
 			rnd_tool_select_by_name(hl, "buffer");
 		}
 		else if (hl->tool_hit && !rnd_gui->shift_is_pressed(rnd_gui)) {
-			rnd_rnd_box_t box;
+			rnd_box_t box;
 
 			hl->tool_grabbed.status = rnd_true;
 			rnd_tool_save(hl);
@@ -109,7 +109,7 @@ static void click_timer_cb(rnd_hidval_t hv)
 			pcb_tool_attach_for_copy(hl, hl->tool_x, hl->tool_y, rnd_true);
 		}
 		else {
-			rnd_rnd_box_t box;
+			rnd_box_t box;
 
 			hl->tool_hit = 0;
 			pcb_crosshair_note.Moving = rnd_false;
@@ -189,11 +189,11 @@ void pcb_tool_arrow_notify_mode(rnd_hidlib_t *hl)
 
 void pcb_tool_arrow_release_mode(rnd_hidlib_t *hl)
 {
-	rnd_rnd_box_t box;
+	rnd_box_t box;
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
 	if (hl->tool_click) {
-		rnd_rnd_box_t box;
+		rnd_box_t box;
 
 		box.X1 = -RND_MAX_COORD;
 		box.Y1 = -RND_MAX_COORD;

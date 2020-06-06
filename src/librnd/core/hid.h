@@ -277,11 +277,11 @@ struct rnd_hid_s {
 
 	/* Composite layer drawing: manipulate the sketch canvas and set
 	   positive or negative drawing mode. The canvas covers the screen box. */
-	void (*set_drawing_mode)(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen);
+	void (*set_drawing_mode)(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen);
 
 	/* Announce start/end of a render burst for a specific screen screen box;
 	   A GUI hid should set the coord_per_pix value here for proper optimization. */
-	void (*render_burst)(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen);
+	void (*render_burst)(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_box_t *screen);
 
 	/*** gc vs. rnd_hid_t *: rnd_core_gc_t contains ->hid, so these calls don't
 	     need to get it as first arg. ***/
@@ -531,7 +531,7 @@ struct rnd_hid_s {
 	void (*pan_mode)(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool mode);
 
 	/* Load viewbox with the extents of visible pixels translated to board coords */
-	void (*view_get)(rnd_hid_t *hid, rnd_rnd_box_t *viewbox);
+	void (*view_get)(rnd_hid_t *hid, rnd_box_t *viewbox);
 
 	/*** misc GUI ***/
 	/* Open the command line */
@@ -563,7 +563,7 @@ struct rnd_hid_s {
 typedef void (*rnd_hid_expose_cb_t)(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e);
 
 struct rnd_hid_expose_ctx_s {
-	rnd_rnd_box_t view;
+	rnd_box_t view;
 	rnd_hid_expose_cb_t expose_cb;   /* function that is called on expose to get things drawn */
 	void *draw_data;                 /* user data for the expose function */
 };

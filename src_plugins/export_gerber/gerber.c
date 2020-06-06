@@ -294,7 +294,7 @@ static void maybe_close_f(FILE * f)
 	}
 }
 
-static rnd_rnd_box_t region;
+static rnd_box_t region;
 
 static void append_file_suffix(gds_t *dst, rnd_layergrp_id_t gid, rnd_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, int drill, int *merge_same)
 {
@@ -631,7 +631,7 @@ static void gerber_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void gerber_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
+static void gerber_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *drw_screen)
 {
 	gerber_drawing_mode = op;
 	if ((f != NULL) && (gerber_debug))

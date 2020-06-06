@@ -94,7 +94,7 @@ static void ltf_preview_set(lesstif_attr_dlg_t *ctx, int idx, double val)
 	pcb_ltf_preview_redraw(pd);
 }
 
-static void ltf_preview_zoomto(rnd_hid_attribute_t *attr, void *hid_ctx, const rnd_rnd_box_t *view)
+static void ltf_preview_zoomto(rnd_hid_attribute_t *attr, void *hid_ctx, const rnd_box_t *view)
 {
 	rnd_hid_preview_t *prv = attr->wdata;
 	pcb_ltf_preview_t *pd = prv->hid_wdata;

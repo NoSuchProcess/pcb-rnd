@@ -118,7 +118,7 @@ TODO("slot: this ignores slots")
 static void scad_draw_drills(void)
 {
 	rnd_rtree_it_t it;
-	rnd_rnd_box_t *obj;
+	rnd_box_t *obj;
 
 	fprintf(f, "module pcb_drill() {\n");
 

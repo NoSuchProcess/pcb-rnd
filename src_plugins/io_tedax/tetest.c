@@ -124,7 +124,7 @@ static void tedax_etest_fsave_pstk(FILE *f, pcb_pstk_t *ps, const char *netname,
 
 int tedax_etest_fsave(pcb_board_t *pcb, const char *etestid, FILE *f)
 {
-	rnd_rnd_box_t *b;
+	rnd_box_t *b;
 	rnd_rtree_it_t it;
 
 	fprintf(f, "begin etest v1 ");

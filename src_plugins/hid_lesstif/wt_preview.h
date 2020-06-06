@@ -43,7 +43,7 @@ void pcb_ltf_preview_getxy(pcb_ltf_preview_t *pd, int px, int py, rnd_coord_t *d
 
 /* invalidate (redraw) all preview widgets whose current view overlaps with
    the screen box; if screen is NULL, redraw all */
-void pcb_ltf_preview_invalidate(const rnd_rnd_box_t *screen);
+void pcb_ltf_preview_invalidate(const rnd_box_t *screen);
 
 
 void pcb_ltf_preview_add(pcb_ltf_preview_t *prv);

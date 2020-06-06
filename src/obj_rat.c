@@ -83,7 +83,7 @@ pcb_rat_t *pcb_rat_alloc(pcb_data_t *data)
 void pcb_rat_free(pcb_rat_t *rat)
 {
 	if ((rat->parent.data != NULL) && (rat->parent.data->rat_tree != NULL))
-		rnd_r_delete_entry(rat->parent.data->rat_tree, (rnd_rnd_box_t *)rat);
+		rnd_r_delete_entry(rat->parent.data->rat_tree, (rnd_box_t *)rat);
 	pcb_rat_unreg(rat);
 	free(rat->anchor[0]);
 	free(rat->anchor[1]);
@@ -214,7 +214,7 @@ static rnd_bool rat_meets_pstk(pcb_data_t *data, pcb_pstk_t *pstk, rnd_coord_t x
 static pcb_any_obj_t *find_obj_on_layer(rnd_coord_t x, rnd_coord_t y, pcb_layer_t *l)
 {
 	rnd_rtree_it_t it;
-	rnd_rnd_box_t *n;
+	rnd_box_t *n;
 	rnd_rtree_box_t sb;
 
 	sb.x1 = x; sb.x2 = x+1;
@@ -273,7 +273,7 @@ static pcb_any_obj_t *find_obj_on_grp(pcb_data_t *data, rnd_coord_t x, rnd_coord
 	int i;
 	rnd_rtree_box_t sb;
 	rnd_rtree_it_t it;
-	rnd_rnd_box_t *n;
+	rnd_box_t *n;
 	pcb_layergrp_t *g = pcb_get_layergrp(PCB, gid);
 
 	if (g == NULL)
@@ -367,7 +367,7 @@ void *pcb_ratop_add_to_buffer(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 /* moves a rat-line between board and buffer */
 void *pcb_ratop_move_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 {
-	rnd_r_delete_entry(ctx->buffer.src->rat_tree, (rnd_rnd_box_t *) rat);
+	rnd_r_delete_entry(ctx->buffer.src->rat_tree, (rnd_box_t *) rat);
 
 	pcb_rat_unreg(rat);
 	pcb_rat_reg(ctx->buffer.dst, rat);
@@ -376,7 +376,7 @@ void *pcb_ratop_move_buffer(pcb_opctx_t *ctx, pcb_rat_t * rat)
 
 	if (!ctx->buffer.dst->rat_tree)
 		ctx->buffer.dst->rat_tree = rnd_r_create_tree();
-	rnd_r_insert_entry(ctx->buffer.dst->rat_tree, (rnd_rnd_box_t *) rat);
+	rnd_r_insert_entry(ctx->buffer.dst->rat_tree, (rnd_box_t *) rat);
 
 	return rat;
 }
@@ -442,7 +442,7 @@ void *pcb_ratop_remove(pcb_opctx_t *ctx, pcb_rat_t *Rat)
 }
 
 /*** draw ***/
-rnd_r_dir_t pcb_rat_draw_callback(const rnd_rnd_box_t * b, void *cl)
+rnd_r_dir_t pcb_rat_draw_callback(const rnd_box_t * b, void *cl)
 {
 	pcb_rat_t *rat = (pcb_rat_t *) b;
 	pcb_draw_info_t *info = cl;
@@ -481,7 +481,7 @@ void pcb_rat_invalidate_erase(pcb_rat_t *Rat)
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, Rat)) {
 		rnd_coord_t w = Rat->Thickness;
 
-		rnd_rnd_box_t b;
+		rnd_box_t b;
 
 		b.X1 = Rat->Point1.X - w * 2 - w / 2;
 		b.X2 = Rat->Point1.X + w * 2 + w / 2;
@@ -502,7 +502,7 @@ void pcb_rat_invalidate_draw(pcb_rat_t *Rat)
 	if (PCB_FLAG_TEST(PCB_FLAG_VIA, Rat)) {
 		rnd_coord_t w = Rat->Thickness;
 
-		rnd_rnd_box_t b;
+		rnd_box_t b;
 
 		b.X1 = Rat->Point1.X - w * 2 - w / 2;
 		b.X2 = Rat->Point1.X + w * 2 + w / 2;

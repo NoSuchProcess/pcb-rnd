@@ -159,7 +159,7 @@ static int layer_sort(const void *va, const void *vb)
 }
 
 static const char *filename;
-static rnd_rnd_box_t *bounds;
+static rnd_box_t *bounds;
 static int in_mono, as_shown;
 
 static rnd_hid_attr_val_t *options_;
@@ -217,7 +217,7 @@ void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xf
 {
 	int i;
 	static int saved_layer_stack[PCB_MAX_LAYER];
-	rnd_rnd_box_t tmp, region;
+	rnd_box_t tmp, region;
 	rnd_hid_expose_ctx_t ctx;
 
 	options_ = options;
@@ -443,7 +443,7 @@ static void eps_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void eps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void eps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	if (direct)
 		return;

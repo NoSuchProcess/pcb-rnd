@@ -328,7 +328,7 @@ static void pcb_draw_boundary_mech(pcb_draw_info_t *info)
 
 /******** misc ********/
 
-static void pcb_draw_rats(pcb_draw_info_t *info, const rnd_rnd_box_t *drawn_area)
+static void pcb_draw_rats(pcb_draw_info_t *info, const rnd_box_t *drawn_area)
 {
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, drawn_area);
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, drawn_area);

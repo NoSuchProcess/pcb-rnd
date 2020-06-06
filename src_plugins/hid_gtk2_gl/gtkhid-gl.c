@@ -62,7 +62,7 @@ typedef struct rnd_hid_gc_s {
 	rnd_coord_t width;
 } rnd_hid_gc_s;
 
-void ghid_gl_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen)
+void ghid_gl_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_box_t *screen)
 {
 	rnd_gui->coord_per_pix = ghidgui->port.view.coord_per_px;
 }
@@ -188,7 +188,7 @@ void ghid_gl_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t c
 	grid_local_radius = pcb_conf_hid_gtk.plugins.hid_gtk.local_grid.radius;
 }
 
-static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_rnd_box_t *drawn_area)
+static void ghid_gl_draw_grid(rnd_hidlib_t *hidlib, rnd_box_t *drawn_area)
 {
 	render_priv_t *priv = ghidgui->port.render_priv;
 

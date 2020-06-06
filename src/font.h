@@ -55,7 +55,7 @@ typedef long int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pc
 
 struct pcb_font_s {          /* complete set of symbols */
 	rnd_coord_t MaxHeight, MaxWidth; /* maximum cell width and height */
-	rnd_rnd_box_t DefaultSymbol;     /* the default symbol is a filled box */
+	rnd_box_t DefaultSymbol;     /* the default symbol is a filled box */
 	pcb_symbol_t Symbol[PCB_MAX_FONTPOSITION + 1];
 	char *name;
 	pcb_font_id_t id;

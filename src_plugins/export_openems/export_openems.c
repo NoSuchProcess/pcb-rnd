@@ -708,7 +708,7 @@ static void openems_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void openems_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void openems_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	switch(op) {
 		case RND_HID_COMP_RESET:

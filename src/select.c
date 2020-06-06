@@ -164,7 +164,7 @@ rnd_bool pcb_select_object(pcb_board_t *pcb)
 	return changed;
 }
 
-static void fix_box_dir(rnd_rnd_box_t *Box, int force_pos)
+static void fix_box_dir(rnd_box_t *Box, int force_pos)
 {
 #define swap(a,b) \
 do { \
@@ -216,7 +216,7 @@ do { \
  *  length of the list. Returns NULL on no match.
  */
 TODO("cleanup: should be rewritten with generic ops and rtree")
-static long int *ListBlock_(pcb_board_t *pcb, rnd_rnd_box_t *Box, rnd_bool Flag, int *len, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
+static long int *ListBlock_(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool Flag, int *len, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
 {
 	int changed = 0;
 	int used = 0, alloced = 0;
@@ -403,7 +403,7 @@ do { \
 
 #undef append
 
-static int pcb_obj_near_box(pcb_any_obj_t *obj, rnd_rnd_box_t *box)
+static int pcb_obj_near_box(pcb_any_obj_t *obj, rnd_box_t *box)
 {
 	switch(obj->type) {
 		case PCB_OBJ_RAT:
@@ -420,12 +420,12 @@ static int pcb_obj_near_box(pcb_any_obj_t *obj, rnd_rnd_box_t *box)
 
 typedef struct {
 	pcb_board_t *pcb;
-	rnd_rnd_box_t box;
+	rnd_box_t box;
 	rnd_bool flag;
 	rnd_bool invert;
 } select_ctx_t;
 
-static rnd_r_dir_t pcb_select_block_cb(const rnd_rnd_box_t *box, void *cl)
+static rnd_r_dir_t pcb_select_block_cb(const rnd_box_t *box, void *cl)
 {
 	select_ctx_t *ctx = cl;
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
@@ -455,7 +455,7 @@ static rnd_r_dir_t pcb_select_block_cb(const rnd_rnd_box_t *box, void *cl)
  * Flag determines if the block is to be selected or unselected
  * returns rnd_true if the state of any object has changed
  */
-rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_rnd_box_t *Box, rnd_bool flag, rnd_bool vis_only, rnd_bool invert)
+rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool flag, rnd_bool vis_only, rnd_bool invert)
 {
 	select_ctx_t ctx;
 
@@ -474,12 +474,12 @@ rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_rnd_box_t *Box, rnd_bool flag, r
 /* ----------------------------------------------------------------------
  * List all visible objects within the passed box
  */
-long int *pcb_list_block(pcb_board_t *pcb, rnd_rnd_box_t *Box, int *len)
+long int *pcb_list_block(pcb_board_t *pcb, rnd_box_t *Box, int *len)
 {
 	return ListBlock_(pcb, Box, 1, len, NULL, NULL);
 }
 
-int pcb_list_block_cb(pcb_board_t *pcb, rnd_rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
+int pcb_list_block_cb(pcb_board_t *pcb, rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
 {
 	int len = 0;
 	ListBlock_(pcb, Box, -1, &len, cb, ctx);

@@ -45,7 +45,7 @@ void pcb_msgr_init(pcb_meshgraph_t *gr)
 	gr->next_id = 1;
 }
 
-long int pcb_msgr_add_node(pcb_meshgraph_t *gr, rnd_rnd_box_t *bbox, int score)
+long int pcb_msgr_add_node(pcb_meshgraph_t *gr, rnd_box_t *bbox, int score)
 {
 	pcb_meshnode_t *nd = malloc(sizeof(pcb_meshnode_t));
 	nd->bbox = *bbox;
@@ -103,7 +103,7 @@ int pcb_msgr_astar(pcb_meshgraph_t *gr, long int startid, long int endid)
 	htip_set(&open, startid, curr);
 	for(;;) {
 		rnd_rtree_box_t sb;
-		rnd_rnd_box_t *b;
+		rnd_box_t *b;
 		rnd_rtree_it_t it;
 		double tentative_g, best;
 

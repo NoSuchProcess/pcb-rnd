@@ -58,7 +58,7 @@ typedef struct {
 	pcb_dynf_t mark;
 } next_conn_t;
 
-static rnd_r_dir_t next_conn_found_arc(const rnd_rnd_box_t *box, void *cl)
+static rnd_r_dir_t next_conn_found_arc(const rnd_box_t *box, void *cl)
 {
 	rnd_coord_t ex, ey;
 	next_conn_t *ctx = cl;
@@ -82,7 +82,7 @@ static rnd_r_dir_t next_conn_found_arc(const rnd_rnd_box_t *box, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-static rnd_r_dir_t next_conn_found_line(const rnd_rnd_box_t *box, void *cl)
+static rnd_r_dir_t next_conn_found_line(const rnd_box_t *box, void *cl)
 {
 	next_conn_t *ctx = cl;
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
@@ -139,7 +139,7 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *cu
 	ctx.mark = df;
 
 	for(n = 0; n < 2; n++) {
-		rnd_rnd_box_t region;
+		rnd_box_t region;
 		int len;
 
 		region.X1 = cx[n]-1;

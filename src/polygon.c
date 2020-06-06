@@ -343,7 +343,7 @@ int pcb_poly_subtract(rnd_polyarea_t *np1, pcb_poly_t *p, rnd_bool fnp)
 	return Subtract(np1, p, fnp);
 }
 
-rnd_polyarea_t *pcb_poly_from_box_bloated(rnd_rnd_box_t * box, rnd_coord_t bloat)
+rnd_polyarea_t *pcb_poly_from_box_bloated(rnd_box_t * box, rnd_coord_t bloat)
 {
 	return rnd_poly_from_rect(box->X1 - bloat, box->X2 + bloat, box->Y1 - bloat, box->Y2 + bloat);
 }
@@ -439,7 +439,7 @@ static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 
 	if (by_bbox) {
 		/* old method: clear by bounding box */
-		const rnd_rnd_box_t *b = &text->BoundingBox;
+		const rnd_box_t *b = &text->BoundingBox;
 		rnd_coord_t clr = RND_MAX(conf_core.design.bloat, p->enforce_clearance);
 		rnd_polyarea_t *np;
 		if (!(np = rnd_poly_from_round_rect(b->X1 + conf_core.design.bloat, b->X2 - conf_core.design.bloat, b->Y1 + conf_core.design.bloat, b->Y2 - conf_core.design.bloat, clr)))
@@ -456,7 +456,7 @@ static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 }
 
 struct cpInfo {
-	const rnd_rnd_box_t *other;
+	const rnd_box_t *other;
 	pcb_data_t *data;
 	pcb_layer_t *layer;
 	pcb_poly_t *polygon;
@@ -488,7 +488,7 @@ do { \
 		return RND_R_DIR_FOUND_CONTINUE; \
 } while(0)
 
-static rnd_r_dir_t padstack_sub_callback(const rnd_rnd_box_t *b, void *cl)
+static rnd_r_dir_t padstack_sub_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	struct cpInfo *info = (struct cpInfo *)cl;
@@ -524,7 +524,7 @@ static rnd_r_dir_t padstack_sub_callback(const rnd_rnd_box_t *b, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-static rnd_r_dir_t arc_sub_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t arc_sub_callback(const rnd_box_t * b, void *cl)
 {
 	pcb_arc_t *arc = (pcb_arc_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -681,7 +681,7 @@ static int UnsubtractPolyPoly(pcb_poly_t *subpoly, pcb_poly_t *frompoly)
 	return 0;
 }
 
-static rnd_r_dir_t poly_sub_callback(const rnd_rnd_box_t *b, void *cl)
+static rnd_r_dir_t poly_sub_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_poly_t *subpoly = (pcb_poly_t *)b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -707,7 +707,7 @@ static rnd_r_dir_t poly_sub_callback(const rnd_rnd_box_t *b, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-static rnd_r_dir_t line_sub_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t line_sub_callback(const rnd_box_t * b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -738,7 +738,7 @@ static rnd_r_dir_t line_sub_callback(const rnd_rnd_box_t * b, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-static rnd_r_dir_t text_sub_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t text_sub_callback(const rnd_box_t * b, void *cl)
 {
 	pcb_text_t *text = (pcb_text_t *) b;
 	struct cpInfo *info = (struct cpInfo *) cl;
@@ -758,11 +758,11 @@ static rnd_r_dir_t text_sub_callback(const rnd_rnd_box_t * b, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-static rnd_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *polygon, const rnd_rnd_box_t *here, rnd_coord_t expand, int noop)
+static rnd_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *polygon, const rnd_box_t *here, rnd_coord_t expand, int noop)
 {
 	rnd_cardinal_t r = 0;
 	int seen;
-	rnd_rnd_box_t region;
+	rnd_box_t region;
 	struct cpInfo info;
 	rnd_layergrp_id_t group;
 	unsigned int gflg;
@@ -870,7 +870,7 @@ static int UnsubtractPadstack(pcb_data_t *data, pcb_pstk_t *ps, pcb_layer_t *l, 
 	if (!Unsubtract(np, p))
 		return 0;
 
-	clearPoly(PCB->Data, l, p, (const rnd_rnd_box_t *)ps, 2 * UNSUBTRACT_BLOAT * 400000, 0);
+	clearPoly(PCB->Data, l, p, (const rnd_box_t *)ps, 2 * UNSUBTRACT_BLOAT * 400000, 0);
 	return 1;
 }
 
@@ -890,7 +890,7 @@ static int UnsubtractArc(pcb_arc_t * arc, pcb_layer_t * l, pcb_poly_t * p)
 		return 0;
 	if (!Unsubtract(np, p))
 		return 0;
-	clearPoly(PCB->Data, l, p, (const rnd_rnd_box_t *) arc, 2 * UNSUBTRACT_BLOAT, 0);
+	clearPoly(PCB->Data, l, p, (const rnd_box_t *) arc, 2 * UNSUBTRACT_BLOAT, 0);
 	return 1;
 }
 
@@ -908,7 +908,7 @@ static int UnsubtractLine(pcb_line_t * line, pcb_layer_t * l, pcb_poly_t * p)
 		return 0;
 	if (!Unsubtract(np, p))
 		return 0;
-	clearPoly(PCB->Data, l, p, (const rnd_rnd_box_t *) line, 2 * UNSUBTRACT_BLOAT, 0);
+	clearPoly(PCB->Data, l, p, (const rnd_box_t *) line, 2 * UNSUBTRACT_BLOAT, 0);
 	return 1;
 }
 
@@ -926,7 +926,7 @@ static int UnsubtractText(pcb_text_t * text, pcb_layer_t * l, pcb_poly_t * p)
 		return -1;
 	if (!Unsubtract(np, p))
 		return 0;
-	clearPoly(PCB->Data, l, p, (const rnd_rnd_box_t *) text, 2 * UNSUBTRACT_BLOAT, 0);
+	clearPoly(PCB->Data, l, p, (const rnd_box_t *) text, 2 * UNSUBTRACT_BLOAT, 0);
 	return 1;
 }
 
@@ -1283,7 +1283,7 @@ void pcb_polygon_hole_create_from_attached(void)
  * the search.
  */
 int
-pcb_poly_holes(pcb_poly_t * polygon, const rnd_rnd_box_t * range, int (*callback) (rnd_pline_t * contour, void *user_data), void *user_data)
+pcb_poly_holes(pcb_poly_t * polygon, const rnd_box_t * range, int (*callback) (rnd_pline_t * contour, void *user_data), void *user_data)
 {
 	rnd_polyarea_t *pa = polygon->Clipped;
 	rnd_pline_t *pl;
@@ -1383,7 +1383,7 @@ int pcb_poly_unsub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon
 }
 
 
-static rnd_r_dir_t plow_callback(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t plow_callback(const rnd_box_t * b, void *cl)
 {
 	struct plow_info *plow = (struct plow_info *) cl;
 	pcb_poly_t *polygon = (pcb_poly_t *) b;
@@ -1405,7 +1405,7 @@ int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
 	rnd_r_dir_t (*call_back) (pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2, void *user_data),
 	void *user_data)
 {
-	rnd_rnd_box_t sb = ((pcb_any_obj_t *) ptr2)->BoundingBox;
+	rnd_box_t sb = ((pcb_any_obj_t *) ptr2)->BoundingBox;
 	int r = 0, seen;
 	struct plow_info info;
 
@@ -1550,7 +1550,7 @@ rnd_bool pcb_poly_is_rect_in_p(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, r
 	return pcb_poly_isects_poly(s, p, rnd_true);
 }
 
-void pcb_poly_no_holes_dicer(pcb_poly_t *p, const rnd_rnd_box_t *clip, void (*emit)(rnd_pline_t *, void *), void *user_data)
+void pcb_poly_no_holes_dicer(pcb_poly_t *p, const rnd_box_t *clip, void (*emit)(rnd_pline_t *, void *), void *user_data)
 {
 	rnd_polyarea_t *main_contour;
 
@@ -1613,7 +1613,7 @@ rnd_bool pcb_poly_morph(pcb_layer_t *layer, pcb_poly_t *poly)
 			newone->Clipped = p;
 			p = p->f;									/* go to next pline */
 			newone->Clipped->b = newone->Clipped->f = newone->Clipped;	/* unlink from others */
-			rnd_r_insert_entry(layer->polygon_tree, (rnd_rnd_box_t *) newone);
+			rnd_r_insert_entry(layer->polygon_tree, (rnd_box_t *) newone);
 			pcb_poly_invalidate_draw(layer, newone);
 		}
 		else {
@@ -1714,7 +1714,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 		pcb_poly_bbox(Polygon);
 		if (!Layer->polygon_tree)
 			Layer->polygon_tree = rnd_r_create_tree();
-		rnd_r_insert_entry(Layer->polygon_tree, (rnd_rnd_box_t *) Polygon);
+		rnd_r_insert_entry(Layer->polygon_tree, (rnd_box_t *) Polygon);
 
 		pcb_poly_invalidate_draw(Layer, Polygon);
 		/* add to undo list */

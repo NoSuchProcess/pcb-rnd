@@ -47,7 +47,7 @@ typedef struct {              /* currently marked block */
 typedef struct {              /* currently attached object */
 	rnd_coord_t X, Y;           /* saved position when tool is move */
 	rnd_coord_t tx, ty;         /* target position when tool is move */
-	rnd_rnd_box_t BoundingBox;
+	rnd_box_t BoundingBox;
 	long int Type;              /* object type */
 	long int State;
 	void *Ptr1, *Ptr2, *Ptr3;   /* three pointers to data, see search.c */

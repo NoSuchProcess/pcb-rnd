@@ -54,11 +54,11 @@ rnd_rtree_t *rnd_r_create_tree(void);
 void rnd_r_destroy_tree(rnd_rtree_t **tree);
 void rnd_r_free_tree_data(rnd_rtree_t *rtree, void (*free)(void *ptr));
 
-void rnd_r_insert_entry(rnd_rtree_t *rtree, const rnd_rnd_box_t *which);
-void rnd_r_insert_array(rnd_rtree_t *rtree, const rnd_rnd_box_t *boxlist[], rnd_cardinal_t len);
+void rnd_r_insert_entry(rnd_rtree_t *rtree, const rnd_box_t *which);
+void rnd_r_insert_array(rnd_rtree_t *rtree, const rnd_box_t *boxlist[], rnd_cardinal_t len);
 
-rnd_bool rnd_r_delete_entry(rnd_rtree_t *rtree, const rnd_rnd_box_t *which);
-rnd_bool rnd_r_delete_entry_free_data(rnd_rtree_t *rtree, rnd_rnd_box_t *box, void (*free_data)(void *d));
+rnd_bool rnd_r_delete_entry(rnd_rtree_t *rtree, const rnd_box_t *which);
+rnd_bool rnd_r_delete_entry_free_data(rnd_rtree_t *rtree, rnd_box_t *box, void (*free_data)(void *d));
 
 /* generic search routine */
 /* region_in_search should return rnd_true if "what you're looking for" is
@@ -72,13 +72,13 @@ rnd_bool rnd_r_delete_entry_free_data(rnd_rtree_t *rtree, rnd_rnd_box_t *box, vo
  * Look at the implementation of r_region_is_empty for how to
  * abort the search if that is the desired behavior.
  */
-rnd_r_dir_t rnd_r_search(rnd_rtree_t *rtree, const rnd_rnd_box_t *query,
-	rnd_r_dir_t (*region_in_search)(const rnd_rnd_box_t *region, void *closure),
-	rnd_r_dir_t (*rectangle_in_region)(const rnd_rnd_box_t *box, void *closure),
+rnd_r_dir_t rnd_r_search(rnd_rtree_t *rtree, const rnd_box_t *query,
+	rnd_r_dir_t (*region_in_search)(const rnd_box_t *region, void *closure),
+	rnd_r_dir_t (*rectangle_in_region)(const rnd_box_t *box, void *closure),
 	void *closure, int *num_found);
 
 /* return 0 if there are any rectangles in the given region. */
-int rnd_r_region_is_empty(rnd_rtree_t *rtree, const rnd_rnd_box_t *region);
+int rnd_r_region_is_empty(rnd_rtree_t *rtree, const rnd_box_t *region);
 
 void rnd_r_dump_tree(rnd_rtree_t *root, int unused);
 
@@ -87,10 +87,10 @@ void rnd_r_dump_tree(rnd_rtree_t *root, int unused);
 /* -- Iterate through an rtree; DO NOT modify the tree while iterating -- */
 
 /* Get the first item, get fields of iterator set up; return can be casted to an object; returns NULL if rtree is empty */
-rnd_rnd_box_t *rnd_r_first(rnd_rtree_t *tree, rnd_rtree_it_t *it);
+rnd_box_t *rnd_r_first(rnd_rtree_t *tree, rnd_rtree_it_t *it);
 
 /* Get the next item, return can be casted to an object; returns NULL if no more items */
-rnd_rnd_box_t *rnd_r_next(rnd_rtree_it_t *it);
+rnd_box_t *rnd_r_next(rnd_rtree_it_t *it);
 
 /* Free fields of the iterator - not needed anymore, will be removed */
 void rnd_r_end(rnd_rtree_it_t *it);

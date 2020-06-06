@@ -474,7 +474,7 @@ static void ghid_pan_mode(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool
 	gctx->port.view.panning = mode;
 }
 
-static void ghid_view_get(rnd_hid_t *hid, rnd_rnd_box_t *viewbox)
+static void ghid_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
 {
 	pcb_gtk_t *gctx = hid->hid_data;
 	viewbox->X1 = gctx->port.view.x0;

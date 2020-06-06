@@ -1065,7 +1065,7 @@ TODO("this does not handle return -1")
 	pcb_subc_bbox(new_module);
 	if (st->pcb->Data->subc_tree == NULL)
 		st->pcb->Data->subc_tree = rnd_r_create_tree();
-	rnd_r_insert_entry(st->pcb->Data->subc_tree, (rnd_rnd_box_t *)new_module);
+	rnd_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)new_module);
 	pcb_subc_rebind(st->pcb, new_module);
 
 	return 0;
@@ -1075,7 +1075,7 @@ TODO("this does not handle return -1")
 int io_autotrax_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	int readres = 0;
-	rnd_rnd_box_t board_size, *box;
+	rnd_box_t board_size, *box;
 	read_state_t st;
 	FILE *FP;
 	pcb_subc_t *subc = NULL;

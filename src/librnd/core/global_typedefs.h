@@ -29,7 +29,7 @@
 #define RND_GLOBAL_TYPEDEFS_H
 #include <librnd/config.h>
 
-struct rnd_rnd_box_s {        /* a bounding box */
+struct rnd_box_s {        /* a bounding box */
 	rnd_coord_t X1, Y1;     /* upper left */
 	rnd_coord_t X2, Y2;     /* and lower right corner */
 };
@@ -42,8 +42,8 @@ typedef double rnd_angle_t; /* degrees */
 typedef struct rnd_unit_s rnd_unit_t;
 
 typedef struct rnd_point_s rnd_point_t;
-typedef struct rnd_rnd_box_s rnd_rnd_box_t;
-typedef struct rnd_rnd_box_list_s rnd_rnd_box_list_t;
+typedef struct rnd_box_s rnd_box_t;
+typedef struct rnd_box_list_s rnd_box_list_t;
 typedef struct rnd_polyarea_s rnd_polyarea_t;
 
 typedef struct rnd_rtree_s rnd_rtree_t;

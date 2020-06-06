@@ -50,7 +50,7 @@ void layersel_free_cb(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx
 
 void pcb_dlg_pref_layer_create(pref_ctx_t *ctx)
 {
-	rnd_rnd_box_t vbox = {0, 0, RND_MM_TO_COORD(150), RND_MM_TO_COORD(150)};
+	rnd_box_t vbox = {0, 0, RND_MM_TO_COORD(150), RND_MM_TO_COORD(150)};
 
 	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 	RND_DAD_BEGIN_VBOX(ctx->dlg);

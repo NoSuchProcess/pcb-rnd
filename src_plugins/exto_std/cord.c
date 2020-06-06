@@ -174,7 +174,7 @@ static void pcb_cord_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
 	pcb_exto_draw_mark(info, subc);
 	if (subc->extobj_data == cord_footprint)
-		pcb_draw_subc_mark((const rnd_rnd_box_t *)subc, info);
+		pcb_draw_subc_mark((const rnd_box_t *)subc, info);
 }
 
 static void pcb_cord_float_pre(pcb_subc_t *subc, pcb_any_obj_t *floater)

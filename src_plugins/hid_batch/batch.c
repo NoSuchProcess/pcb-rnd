@@ -306,7 +306,7 @@ static void batch_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 }
 
 
-static void batch_view_get(rnd_hid_t *hid, rnd_rnd_box_t *viewbox)
+static void batch_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
 {
 	rnd_hidlib_t *hidlib = hid->hid_data;
 	viewbox->X1 = 0;

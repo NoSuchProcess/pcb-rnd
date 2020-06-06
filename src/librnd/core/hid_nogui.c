@@ -100,12 +100,12 @@ static void nogui_destroy_gc(rnd_hid_gc_t gc)
 {
 }
 
-static void nogui_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void nogui_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	CRASH("set_drawing_mode");
 }
 
-static void nogui_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen)
+static void nogui_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_box_t *screen)
 {
 	/* the HID may decide to ignore this hook */
 }

@@ -129,26 +129,26 @@ TODO("cleanup: remove this and use genvect")
 #define STEP_POINT 100
 
 /* get next slot for a box, allocates memory if necessary */
-static rnd_rnd_box_t *pcb_box_new(rnd_rnd_box_list_t *Boxes)
+static rnd_box_t *pcb_box_new(rnd_box_list_t *Boxes)
 {
-	rnd_rnd_box_t *box = Boxes->Box;
+	rnd_box_t *box = Boxes->Box;
 
 	/* realloc new memory if necessary and clear it */
 	if (Boxes->BoxN >= Boxes->BoxMax) {
 		Boxes->BoxMax = STEP_POINT + (2 * Boxes->BoxMax);
-		box = (rnd_rnd_box_t *) realloc(box, Boxes->BoxMax * sizeof(rnd_rnd_box_t));
+		box = (rnd_box_t *) realloc(box, Boxes->BoxMax * sizeof(rnd_box_t));
 		Boxes->Box = box;
-		memset(box + Boxes->BoxN, 0, (Boxes->BoxMax - Boxes->BoxN) * sizeof(rnd_rnd_box_t));
+		memset(box + Boxes->BoxN, 0, (Boxes->BoxMax - Boxes->BoxN) * sizeof(rnd_box_t));
 	}
 	return (box + Boxes->BoxN++);
 }
 
 /* frees memory used by a box list */
-static void pcb_box_free(rnd_rnd_box_list_t *Boxlist)
+static void pcb_box_free(rnd_box_list_t *Boxlist)
 {
 	if (Boxlist) {
 		free(Boxlist->Box);
-		memset(Boxlist, 0, sizeof(rnd_rnd_box_list_t));
+		memset(Boxlist, 0, sizeof(rnd_box_list_t));
 	}
 }
 
@@ -200,7 +200,7 @@ static vtp0_t collectSelectedSubcircuits()
 
 #if 0														/* only for debugging box lists */
 /* makes a line on the solder layer surrounding all boxes in blist */
-static void showboxes(rnd_rnd_box_list_t *blist)
+static void showboxes(rnd_box_list_t *blist)
 {
 	rnd_cardinal_t i;
 	pcb_layer_t *SLayer = &(PCB->Data->Layer[pcb_solder_silk_layer]);
@@ -220,8 +220,8 @@ static void showboxes(rnd_rnd_box_list_t *blist)
  */
 /*------ r_find_neighbor ------*/
 struct r_neighbor_info {
-	const rnd_rnd_box_t *neighbor;
-	rnd_rnd_box_t trap;
+	const rnd_box_t *neighbor;
+	rnd_box_t trap;
 	rnd_direction_t search_dir;
 };
 #define ROTATEBOX(box) { rnd_coord_t t;\
@@ -230,10 +230,10 @@ struct r_neighbor_info {
     t = (box).X1; (box).X1 =   (box).X2; (box).X2 = t;\
 }
 /* helper methods for __r_find_neighbor */
-static rnd_r_dir_t __r_find_neighbor_reg_in_sea(const rnd_rnd_box_t * region, void *cl)
+static rnd_r_dir_t __r_find_neighbor_reg_in_sea(const rnd_box_t * region, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
-	rnd_rnd_box_t query = *region;
+	rnd_box_t query = *region;
 	RND_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
 	 *  \            /               |__| query rect.
@@ -246,10 +246,10 @@ static rnd_r_dir_t __r_find_neighbor_reg_in_sea(const rnd_rnd_box_t * region, vo
 	return RND_R_DIR_NOT_FOUND;
 }
 
-static rnd_r_dir_t __r_find_neighbor_rect_in_reg(const rnd_rnd_box_t * box, void *cl)
+static rnd_r_dir_t __r_find_neighbor_rect_in_reg(const rnd_box_t * box, void *cl)
 {
 	struct r_neighbor_info *ni = (struct r_neighbor_info *) cl;
-	rnd_rnd_box_t query = *box;
+	rnd_box_t query = *box;
 	int r;
 	RND_BOX_ROTATE_TO_NORTH(query, ni->search_dir);
 	/*  ______________ __ trap.y1     __
@@ -270,10 +270,10 @@ static rnd_r_dir_t __r_find_neighbor_rect_in_reg(const rnd_rnd_box_t * box, void
 
 /* main r_find_neighbor routine.  Returns NULL if no neighbor in the
  * requested direction. */
-static const rnd_rnd_box_t *r_find_neighbor(rnd_rtree_t * rtree, const rnd_rnd_box_t * box, rnd_direction_t search_direction)
+static const rnd_box_t *r_find_neighbor(rnd_rtree_t * rtree, const rnd_box_t * box, rnd_direction_t search_direction)
 {
 	struct r_neighbor_info ni;
-	rnd_rnd_box_t bbox;
+	rnd_box_t bbox;
 
 	ni.neighbor = NULL;
 	ni.trap = *box;
@@ -320,9 +320,9 @@ static double ComputeCost(double T0, double T)
 	rnd_coord_t minx, maxx, miny, maxy;
 	rnd_bool allpads, allsameside;
 	rnd_cardinal_t thegroup;
-	rnd_rnd_box_list_t bounds = { 0, 0, NULL };	/* save bounding rectangles here */
-	rnd_rnd_box_list_t solderside = { 0, 0, NULL };	/* solder side component bounds */
-	rnd_rnd_box_list_t componentside = { 0, 0, NULL };	/* component side bounds */
+	rnd_box_list_t bounds = { 0, 0, NULL };	/* save bounding rectangles here */
+	rnd_box_list_t solderside = { 0, 0, NULL };	/* solder side component bounds */
+	rnd_box_list_t componentside = { 0, 0, NULL };	/* component side bounds */
 
 
 	{
@@ -380,8 +380,8 @@ static double ComputeCost(double T0, double T)
 	/* two lists for solder side / component side. */
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		rnd_rnd_box_list_t *thisside, *otherside;
-		rnd_rnd_box_t *box, *lastbox = NULL;
+		rnd_box_list_t *thisside, *otherside;
+		rnd_box_t *box, *lastbox = NULL;
 		rnd_coord_t clearance;
 		pcb_any_obj_t *o;
 		pcb_data_it_t it;
@@ -414,7 +414,7 @@ TODO("subc: look up clearance")
 			/* add a box for each thru-hole pin to the "opposite side":
 			 * surface mount components can't sit on top of pins */
 			if ((!CostParameter.fast) && (o->type == PCB_OBJ_PSTK)) {
-				rnd_rnd_box_t box2;
+				rnd_box_t box2;
 				box2.X1 = o->BoundingBox.X1 - clearance;
 				box2.Y1 = o->BoundingBox.Y1 - clearance;
 				box2.X2 = o->BoundingBox.X2 + clearance;
@@ -451,12 +451,12 @@ TODO("subc: look up clearance")
 		/* create r tree */
 		vtp0_t seboxes, ceboxes;
 		struct ebox {
-			rnd_rnd_box_t box;
+			rnd_box_t box;
 TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove the fields below")
 			pcb_any_obj_t *comp;
 			const char *refdes;
 			int rot90;
-			rnd_rnd_box_t *vbox;
+			rnd_box_t *vbox;
 		};
 		rnd_direction_t dir[4] = { RND_NORTH, RND_EAST, RND_SOUTH, RND_WEST };
 		struct ebox **boxpp, *boxp;
@@ -489,9 +489,9 @@ TODO("subc: when elements are removed, turn this into pcb_subc_t * and remove th
 		PCB_END_LOOP;
 
 		rt_s = rnd_r_create_tree();
-		rnd_r_insert_array(rt_s, (const rnd_rnd_box_t **) seboxes.array, vtp0_len(&seboxes));
+		rnd_r_insert_array(rt_s, (const rnd_box_t **) seboxes.array, vtp0_len(&seboxes));
 		rt_c = rnd_r_create_tree();
-		rnd_r_insert_array(rt_c, (const rnd_rnd_box_t **) ceboxes.array, vtp0_len(&ceboxes));
+		rnd_r_insert_array(rt_c, (const rnd_box_t **) ceboxes.array, vtp0_len(&ceboxes));
 		vtp0_uninit(&seboxes);
 		vtp0_uninit(&ceboxes);
 		/* now, for each subcircuit, find its neighbor on all four sides */
@@ -655,7 +655,7 @@ PerturbationType createPerturbation(vtp0_t *selected, double T)
 
 void doPerturb(vtp0_t *selected, PerturbationType *pt, rnd_bool undo)
 {
-	rnd_rnd_box_t *bb;
+	rnd_box_t *bb;
 	rnd_coord_t bbcx, bbcy;
 	pcb_subc_t *subc = (pcb_subc_t *)pt->comp;
 	/* compute center of element bounding box */

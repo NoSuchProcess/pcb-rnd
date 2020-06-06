@@ -156,7 +156,7 @@ int rnd_polyarea_and_subtract_free(rnd_polyarea_t *a, rnd_polyarea_t *b, rnd_pol
 int rnd_polyarea_save(rnd_polyarea_t *PA, char *fname);
 
 /* calculate the bounding box of a rnd_polyarea_t and save result in b */
-void rnd_polyarea_bbox(rnd_polyarea_t *p, rnd_rnd_box_t *b);
+void rnd_polyarea_bbox(rnd_polyarea_t *p, rnd_box_t *b);
 
 /* Move each point of pa1 by dx and dy */
 void rnd_polyarea_move(rnd_polyarea_t *pa1, rnd_coord_t dx, rnd_coord_t dy);

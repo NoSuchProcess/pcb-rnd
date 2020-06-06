@@ -505,7 +505,7 @@ static const char *or_empty(const char *s)
 static int wrax_subc(wctx_t *ctx, pcb_subc_t *subc)
 {
 	int res, on_bottom = 0, silk_layer;
-	rnd_rnd_box_t *box = &subc->BoundingBox;
+	rnd_box_t *box = &subc->BoundingBox;
 	rnd_coord_t xPos, yPos, yPos2, yPos3;
 
 TODO("do not hardcode things like this, especially when actual data is available")

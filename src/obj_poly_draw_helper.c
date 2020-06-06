@@ -145,7 +145,7 @@ static void fill_contour_cb(rnd_pline_t * pl, void *user_data)
 	rnd_poly_contours_free(&local_pl);
 }
 
-static void fill_clipped_contour(rnd_hid_gc_t gc, rnd_pline_t * pl, const rnd_rnd_box_t * clip_box)
+static void fill_clipped_contour(rnd_hid_gc_t gc, rnd_pline_t * pl, const rnd_box_t * clip_box)
 {
 	rnd_pline_t *pl_copy;
 	rnd_polyarea_t *clip_poly;
@@ -182,7 +182,7 @@ static void fill_clipped_contour(rnd_hid_gc_t gc, rnd_pline_t * pl, const rnd_rn
  * lets compute the complete no-holes polygon.
  */
 #define BOUNDS_INSIDE_CLIP_THRESHOLD 0.5
-static int should_compute_no_holes(pcb_poly_t * poly, const rnd_rnd_box_t * clip_box)
+static int should_compute_no_holes(pcb_poly_t * poly, const rnd_box_t * clip_box)
 {
 	rnd_coord_t x1, x2, y1, y2;
 	double poly_bounding_area;
@@ -214,7 +214,7 @@ static int should_compute_no_holes(pcb_poly_t * poly, const rnd_rnd_box_t * clip
 
 #undef BOUNDS_INSIDE_CLIP_THRESHOLD
 
-static void pcb_dhlp_fill_pcb_polygon(rnd_hid_gc_t gc, pcb_poly_t * poly, const rnd_rnd_box_t * clip_box)
+static void pcb_dhlp_fill_pcb_polygon(rnd_hid_gc_t gc, pcb_poly_t * poly, const rnd_box_t * clip_box)
 {
 	if (!poly->NoHolesValid) {
 		/* If enough of the polygon is on-screen, compute the entire
@@ -254,7 +254,7 @@ static int thindraw_hole_cb(rnd_pline_t * pl, void *user_data)
 	return 0;
 }
 
-static void pcb_dhlp_thindraw_pcb_polygon(rnd_hid_gc_t gc, pcb_poly_t * poly, const rnd_rnd_box_t * clip_box)
+static void pcb_dhlp_thindraw_pcb_polygon(rnd_hid_gc_t gc, pcb_poly_t * poly, const rnd_box_t * clip_box)
 {
 	thindraw_contour(gc, poly->Clipped->contours);
 	pcb_poly_holes(poly, clip_box, thindraw_hole_cb, gc);

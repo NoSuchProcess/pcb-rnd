@@ -85,7 +85,7 @@ static void log_destroy_gc(rnd_hid_gc_t gc)
 	delegatee_->destroy_gc(gc);
 }
 
-static void log_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *screen)
+static void log_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	if (screen != NULL)
 		rnd_fprintf(out_, "set_drawing_mode(%d,%d,[%mm;%mm,%mm;%mm])\n", op, direct, screen->X1, screen->Y1, screen->X2, screen->Y2);
@@ -94,7 +94,7 @@ static void log_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 	delegatee_->set_drawing_mode(hid, op, direct, screen);
 }
 
-static void log_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen)
+static void log_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_box_t *screen)
 {
 	rnd_fprintf(out_, "render_burst(%d,[%mm;%mm,%mm;%mm])\n", op, screen->X1, screen->Y1, screen->X2, screen->Y2);
 	delegatee_->render_burst(hid, op, screen);

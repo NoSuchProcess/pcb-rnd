@@ -505,7 +505,7 @@ static void plc_init(pcb_board_t *pcb, placer_t *plc)
 static void plc_place(placer_t *plc, rnd_coord_t *ox,  rnd_coord_t *oy)
 {
 	rnd_coord_t px = plc->lx, py = plc->ly;
-	rnd_rnd_box_t bbx;
+	rnd_box_t bbx;
 
 	switch(plc->plc_method) {
 		case PLC_FIT:

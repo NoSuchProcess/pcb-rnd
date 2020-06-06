@@ -57,7 +57,7 @@
 /* mtspace data structures are built on r-trees. */
 
 typedef struct mtspacebox {
-	const rnd_rnd_box_t box;
+	const rnd_box_t box;
 	rnd_coord_t clearance;								/* the smallest clearance around this box */
 } mtspacebox_t;
 
@@ -86,13 +86,13 @@ struct vetting {
 
 #define SPECIAL 823157
 
-mtspacebox_t *mtspace_create_box(const rnd_rnd_box_t * box, rnd_coord_t clearance)
+mtspacebox_t *mtspace_create_box(const rnd_box_t * box, rnd_coord_t clearance)
 {
 	mtspacebox_t *mtsb;
 	assert(rnd_box_is_good(box));
 	mtsb = (mtspacebox_t *) malloc(sizeof(*mtsb));
 	/* the box was sent to us pre-bloated by the clearance amount */
-	*((rnd_rnd_box_t *) & mtsb->box) = *box;
+	*((rnd_box_t *) & mtsb->box) = *box;
 	mtsb->clearance = clearance;
 	assert(rnd_box_is_good(&mtsb->box));
 	return mtsb;
@@ -128,12 +128,12 @@ void mtspace_destroy(mtspace_t ** mtspacep)
 
 struct mts_info {
 	rnd_coord_t clearance;
-	rnd_rnd_box_t box;
+	rnd_box_t box;
 	rnd_rtree_t *tree;
 	jmp_buf env;
 };
 
-static rnd_r_dir_t mts_remove_one(const rnd_rnd_box_t * b, void *cl)
+static rnd_r_dir_t mts_remove_one(const rnd_box_t * b, void *cl)
 {
 	struct mts_info *info = (struct mts_info *) cl;
 	mtspacebox_t *box = (mtspacebox_t *) b;
@@ -142,7 +142,7 @@ static rnd_r_dir_t mts_remove_one(const rnd_rnd_box_t * b, void *cl)
 	/* the info box is pre-bloated, so just check equality */
 	if (b->X1 == info->box.X1 && b->X2 == info->box.X2 &&
 			b->Y1 == info->box.Y1 && b->Y2 == info->box.Y2 && box->clearance == info->clearance) {
-		rnd_r_delete_entry_free_data(info->tree, (rnd_rnd_box_t *)b, free);
+		rnd_r_delete_entry_free_data(info->tree, (rnd_box_t *)b, free);
 		longjmp(info->env, 1);
 	}
 	return RND_R_DIR_NOT_FOUND;
@@ -161,17 +161,17 @@ rnd_rtree_t *which_tree(mtspace_t * mtspace, mtspace_type_t which)
 }
 
 /* add a space-filler to the empty space representation.  */
-void mtspace_add(mtspace_t * mtspace, const rnd_rnd_box_t * box, mtspace_type_t which, rnd_coord_t clearance)
+void mtspace_add(mtspace_t * mtspace, const rnd_box_t * box, mtspace_type_t which, rnd_coord_t clearance)
 {
 	mtspacebox_t *filler = mtspace_create_box(box, clearance);
-	rnd_r_insert_entry(which_tree(mtspace, which), (const rnd_rnd_box_t *) filler);
+	rnd_r_insert_entry(which_tree(mtspace, which), (const rnd_box_t *) filler);
 }
 
 /* remove a space-filler from the empty space representation. */
-void mtspace_remove(mtspace_t * mtspace, const rnd_rnd_box_t * box, mtspace_type_t which, rnd_coord_t clearance)
+void mtspace_remove(mtspace_t * mtspace, const rnd_box_t * box, mtspace_type_t which, rnd_coord_t clearance)
 {
 	struct mts_info cl;
-	rnd_rnd_box_t small_search;
+	rnd_box_t small_search;
 
 	cl.clearance = clearance;
 	cl.box = *box;
@@ -184,7 +184,7 @@ void mtspace_remove(mtspace_t * mtspace, const rnd_rnd_box_t * box, mtspace_type
 }
 
 struct query_closure {
-	rnd_rnd_box_t *cbox;
+	rnd_box_t *cbox;
 	heap_or_vector checking;
 	heap_or_vector touching;
 	rnd_cheap_point_t *desired;
@@ -193,7 +193,7 @@ struct query_closure {
 	rnd_bool touch_is_vec;
 };
 
-static inline void heap_append(rnd_heap_t * heap, rnd_cheap_point_t * desired, rnd_rnd_box_t * newone)
+static inline void heap_append(rnd_heap_t * heap, rnd_cheap_point_t * desired, rnd_box_t * newone)
 {
 	rnd_cheap_point_t p = *desired;
 	assert(desired);
@@ -201,7 +201,7 @@ static inline void heap_append(rnd_heap_t * heap, rnd_cheap_point_t * desired, r
 	rnd_heap_insert(heap, RND_ABS(p.X - desired->X) + (p.Y - desired->Y), newone);
 }
 
-static inline void append(struct query_closure *qc, rnd_rnd_box_t * newone)
+static inline void append(struct query_closure *qc, rnd_box_t * newone)
 {
 	if (qc->desired)
 		heap_append(qc->checking.h, qc->desired, newone);
@@ -213,7 +213,7 @@ static inline void append(struct query_closure *qc, rnd_rnd_box_t * newone)
  * First check if it does intersect, then break it into
  * overlaping regions that don't intersect this box.
  */
-static rnd_r_dir_t query_one(const rnd_rnd_box_t * box, void *cl)
+static rnd_r_dir_t query_one(const rnd_box_t * box, void *cl)
 {
 	struct query_closure *qc = (struct query_closure *) cl;
 	mtspacebox_t *mtsb = (mtspacebox_t *) box;
@@ -222,7 +222,7 @@ static rnd_r_dir_t query_one(const rnd_rnd_box_t * box, void *cl)
 #ifndef NDEBUG
 	{
 		/* work around rounding errors: grow both boxes by 2 nm */
-		rnd_rnd_box_t b1 = *qc->cbox, b2 = mtsb->box;
+		rnd_box_t b1 = *qc->cbox, b2 = mtsb->box;
 		b1.X1--;b1.Y1--;b1.X2++;b1.Y2++;
 		b2.X1--;b2.Y1--;b2.X2++;b2.Y2++;
 		assert(rnd_box_intersect(&b1, &b2));
@@ -244,7 +244,7 @@ static rnd_r_dir_t query_one(const rnd_rnd_box_t * box, void *cl)
 		rnd_coord_t Y1 = qc->cbox->Y1;
 		rnd_coord_t Y2 = mtsb->box.Y1 + shrink;
 		if (Y2 - Y1 >= 2 * (qc->radius + qc->clearance)) {
-			rnd_rnd_box_t *newone = (rnd_rnd_box_t *) malloc(sizeof(rnd_rnd_box_t));
+			rnd_box_t *newone = (rnd_box_t *) malloc(sizeof(rnd_box_t));
 			newone->X1 = qc->cbox->X1;
 			newone->X2 = qc->cbox->X2;
 			newone->Y1 = Y1;
@@ -257,7 +257,7 @@ static rnd_r_dir_t query_one(const rnd_rnd_box_t * box, void *cl)
 		rnd_coord_t Y1 = mtsb->box.Y2 - shrink;
 		rnd_coord_t Y2 = qc->cbox->Y2;
 		if (Y2 - Y1 >= 2 * (qc->radius + qc->clearance)) {
-			rnd_rnd_box_t *newone = (rnd_rnd_box_t *) malloc(sizeof(rnd_rnd_box_t));
+			rnd_box_t *newone = (rnd_box_t *) malloc(sizeof(rnd_box_t));
 			newone->X1 = qc->cbox->X1;
 			newone->X2 = qc->cbox->X2;
 			newone->Y2 = qc->cbox->Y2;
@@ -270,8 +270,8 @@ static rnd_r_dir_t query_one(const rnd_rnd_box_t * box, void *cl)
 		rnd_coord_t X1 = qc->cbox->X1;
 		rnd_coord_t X2 = mtsb->box.X1 + shrink;
 		if (X2 - X1 >= 2 * (qc->radius + qc->clearance)) {
-			rnd_rnd_box_t *newone;
-			newone = (rnd_rnd_box_t *) malloc(sizeof(rnd_rnd_box_t));
+			rnd_box_t *newone;
+			newone = (rnd_box_t *) malloc(sizeof(rnd_box_t));
 			newone->Y1 = qc->cbox->Y1;
 			newone->Y2 = qc->cbox->Y2;
 			newone->X1 = qc->cbox->X1;
@@ -284,7 +284,7 @@ static rnd_r_dir_t query_one(const rnd_rnd_box_t * box, void *cl)
 		rnd_coord_t X1 = mtsb->box.X2 - shrink;
 		rnd_coord_t X2 = qc->cbox->X2;
 		if (X2 - X1 >= 2 * (qc->radius + qc->clearance)) {
-			rnd_rnd_box_t *newone = (rnd_rnd_box_t *) malloc(sizeof(rnd_rnd_box_t));
+			rnd_box_t *newone = (rnd_box_t *) malloc(sizeof(rnd_box_t));
 			newone->Y1 = qc->cbox->Y1;
 			newone->Y2 = qc->cbox->Y2;
 			newone->X2 = qc->cbox->X2;
@@ -315,11 +315,11 @@ static rnd_r_dir_t query_one(const rnd_rnd_box_t * box, void *cl)
  */
 static void qloop(struct query_closure *qc, rnd_rtree_t * tree, heap_or_vector res, rnd_bool is_vec)
 {
-	rnd_rnd_box_t *cbox;
+	rnd_box_t *cbox;
 	int n;
 
 	while (!(qc->desired ? rnd_heap_is_empty(qc->checking.h) : vector_is_empty(qc->checking.v))) {
-		cbox = qc->desired ? (rnd_rnd_box_t *) rnd_heap_remove_smallest(qc->checking.h) : (rnd_rnd_box_t *) vector_remove_last(qc->checking.v);
+		cbox = qc->desired ? (rnd_box_t *) rnd_heap_remove_smallest(qc->checking.h) : (rnd_box_t *) vector_remove_last(qc->checking.v);
 		if (setjmp(qc->env) == 0) {
 			assert(rnd_box_is_good(cbox));
 			qc->cbox = cbox;
@@ -387,7 +387,7 @@ void mtsFreeWork(vetting_t ** w)
  * to search harder for such regions if the computation becomes
  * necessary.
  */
-vetting_t *mtspace_query_rect(mtspace_t * mtspace, const rnd_rnd_box_t * region,
+vetting_t *mtspace_query_rect(mtspace_t * mtspace, const rnd_box_t * region,
 															rnd_coord_t radius, rnd_coord_t clearance,
 															vetting_t * work,
 															vector_t * free_space_vec,
@@ -402,7 +402,7 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const rnd_rnd_box_t * region,
 	assert(hi_conflict_space_vec);
 	/* search out to anything that might matter */
 	if (region) {
-		rnd_rnd_box_t *cbox;
+		rnd_box_t *cbox;
 		assert(work == NULL);
 		assert(rnd_box_is_good(region));
 		assert(vector_is_empty(free_space_vec));
@@ -411,7 +411,7 @@ vetting_t *mtspace_query_rect(mtspace_t * mtspace, const rnd_rnd_box_t * region,
 		work = (vetting_t *) malloc(sizeof(vetting_t));
 		work->clearance = clearance;
 		work->radius = radius;
-		cbox = (rnd_rnd_box_t *) malloc(sizeof(rnd_rnd_box_t));
+		cbox = (rnd_box_t *) malloc(sizeof(rnd_box_t));
 		*cbox = rnd_bloat_box(region, clearance + radius);
 		if (desired) {
 			work->untested.h = rnd_heap_create();

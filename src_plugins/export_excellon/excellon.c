@@ -337,7 +337,7 @@ static void excellon_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void excellon_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
+static void excellon_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *drw_screen)
 {
 	switch(op) {
 		case RND_HID_COMP_RESET:

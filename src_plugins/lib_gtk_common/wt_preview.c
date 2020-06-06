@@ -70,7 +70,7 @@ static void pcb_gtk_preview_update_x0y0(pcb_gtk_preview_t *preview)
 	perview_update_offs(preview);
 }
 
-void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const rnd_rnd_box_t *data_view)
+void pcb_gtk_preview_zoomto(pcb_gtk_preview_t *preview, const rnd_box_t *data_view)
 {
 	int orig = preview->view.inhibit_pan_common;
 	preview->view.inhibit_pan_common = 1; /* avoid pan logic for the main window */
@@ -125,9 +125,9 @@ void pcb_gtk_preview_zoom_cursor_rel(pcb_gtk_preview_t *preview, rnd_coord_t cx,
 
 static void preview_set_view(pcb_gtk_preview_t *preview)
 {
-	rnd_rnd_box_t view;
+	rnd_box_t view;
 
-	memcpy(&view, preview->obj, sizeof(rnd_rnd_box_t)); /* assumes the object's first field is rnd_rnd_box_t */
+	memcpy(&view, preview->obj, sizeof(rnd_box_t)); /* assumes the object's first field is rnd_box_t */
 
 	pcb_gtk_preview_zoomto(preview, &view);
 }
@@ -295,7 +295,7 @@ static gboolean preview_configure_event_cb(GtkWidget *w, GdkEventConfigure *ev, 
 	preview->view.canvas_height = ev->height;
 
 	if (need_rezoom) {
-		rnd_rnd_box_t b;
+		rnd_box_t b;
 		b.X1 = b.Y1 = 0;
 		b.X2 = preview->view.width;
 		b.Y2 = preview->view.height;
@@ -583,14 +583,14 @@ static void get_ptr(pcb_gtk_preview_t *preview, rnd_coord_t *cx, rnd_coord_t *cy
 #undef SIDE_Y
 }
 
-void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const rnd_rnd_box_t *screen)
+void pcb_gtk_preview_invalidate(pcb_gtk_t *ctx, const rnd_box_t *screen)
 {
 	pcb_gtk_preview_t *prv;
 
 	for(prv = gdl_first(&ctx->previews); prv != NULL; prv = prv->link.next) {
 		if (!prv->redraw_with_board || prv->redrawing) continue;
 		if (screen != NULL) {
-			rnd_rnd_box_t pb;
+			rnd_box_t pb;
 			pb.X1 = prv->view.x0;
 			pb.Y1 = prv->view.y0;
 			pb.X2 = prv->view.x0 + prv->view.width;

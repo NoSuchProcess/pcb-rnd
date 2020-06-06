@@ -1541,7 +1541,7 @@ TODO("subc: TextFlags")
 
 	if (dt->subc_tree == NULL)
 		dt->subc_tree = rnd_r_create_tree();
-	rnd_r_insert_entry(dt->subc_tree, (rnd_rnd_box_t *)subc);
+	rnd_r_insert_entry(dt->subc_tree, (rnd_box_t *)subc);
 
 	pcb_subc_rebind(pcb, subc);
 
@@ -1581,7 +1581,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 
 	if (!dt->subc_tree)
 		dt->subc_tree = rnd_r_create_tree();
-	rnd_r_insert_entry(dt->subc_tree, (rnd_rnd_box_t *)sc);
+	rnd_r_insert_entry(dt->subc_tree, (rnd_box_t *)sc);
 
 	if (subc_out != NULL)
 		*subc_out = sc;
@@ -2544,7 +2544,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	   announce the clipping (it's slow, we may need a progress bar) */
 	{
 		rnd_rtree_it_t it;
-		rnd_rnd_box_t *b;
+		rnd_box_t *b;
 		int l;
 		for(l = 0; l < pcb->Data->LayerN; l++) {
 			pcb_layer_t *layer = pcb->Data->Layer + l;

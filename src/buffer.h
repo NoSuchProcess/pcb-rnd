@@ -36,8 +36,8 @@
 
 struct pcb_buffer_s {     /* information about the paste buffer */
 	rnd_coord_t X, Y;       /* offset */
-	rnd_rnd_box_t BoundingBox;
-	rnd_rnd_box_t bbox_naked;
+	rnd_box_t BoundingBox;
+	rnd_box_t bbox_naked;
 	pcb_data_t *Data;       /* data; not all members of pcb_board_t */
 	int from_outside;       /* data is coming from outside of the current board (lib, loaded board) */
 	char *source_path;      /* when from the outside, this field may remember the full path of the original source file */

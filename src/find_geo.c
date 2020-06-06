@@ -53,7 +53,7 @@
 /* This is required for fullpoly: whether an object bbox intersects a poly
    bbox can't be determined by a single contour check because there might be
    multiple contours. Returns 1 if obj bbox intersects any island's bbox */
-RND_INLINE int box_isc_poly_any_island_bbox(const pcb_find_t *ctx, const rnd_rnd_box_t *box, const pcb_poly_t *poly, int first_only)
+RND_INLINE int box_isc_poly_any_island_bbox(const pcb_find_t *ctx, const rnd_box_t *box, const pcb_poly_t *poly, int first_only)
 {
 	pcb_poly_it_t it;
 	rnd_polyarea_t *pa;
@@ -648,7 +648,7 @@ rnd_bool pcb_isc_line_arc(const pcb_find_t *ctx, pcb_line_t *Line, pcb_arc_t *Ar
  */
 rnd_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Polygon)
 {
-	rnd_rnd_box_t *Box = (rnd_rnd_box_t *) Arc;
+	rnd_box_t *Box = (rnd_box_t *) Arc;
 
 	/* arcs with clearance never touch polys */
 	if (!ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Arc))
@@ -667,7 +667,7 @@ rnd_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Pol
 
 rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, rnd_polyarea_t *pa)
 {
-	rnd_rnd_box_t *Box = (rnd_rnd_box_t *) Arc;
+	rnd_box_t *Box = (rnd_box_t *) Arc;
 	rnd_bool res = rnd_false;
 
 	/* arcs with clearance never touch polys */
@@ -694,7 +694,7 @@ rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, rnd_polyare
  */
 rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *Polygon)
 {
-	rnd_rnd_box_t *Box = (rnd_rnd_box_t *) Line;
+	rnd_box_t *Box = (rnd_box_t *) Line;
 	rnd_polyarea_t *lp;
 
 	/* lines with clearance never touch polygons */

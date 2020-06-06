@@ -245,10 +245,10 @@ static void dhrect(int x1, int y1, int x2, int y2, float thick_rect, float thick
 		hatch_box(x1, y1, x2, y2, thick_hatch, -step_back);
 }
 
-static rnd_rnd_box_t btn_addgrp, btn_delgrp, btn_addlayer, btn_dellayer, btn_addoutline;
-static rnd_rnd_box_t layer_crd[PCB_MAX_LAYER];
-static rnd_rnd_box_t group_crd[PCB_MAX_LAYERGRP];
-static rnd_rnd_box_t outline_crd;
+static rnd_box_t btn_addgrp, btn_delgrp, btn_addlayer, btn_dellayer, btn_addoutline;
+static rnd_box_t layer_crd[PCB_MAX_LAYER];
+static rnd_box_t group_crd[PCB_MAX_LAYERGRP];
+static rnd_box_t outline_crd;
 static char layer_valid[PCB_MAX_LAYER];
 static char group_valid[PCB_MAX_LAYERGRP];
 static char outline_valid;
@@ -317,7 +317,7 @@ static rnd_layergrp_id_t get_group_coords(rnd_coord_t y, rnd_coord_t *y1, rnd_co
 	return -1;
 }
 
-static rnd_coord_t create_button(rnd_hid_gc_t gc, int x, int y, const char *label, rnd_rnd_box_t *box)
+static rnd_coord_t create_button(rnd_hid_gc_t gc, int x, int y, const char *label, rnd_box_t *box)
 {
 	pcb_text_t *t;
 	t = dtext_bg(gc, x, y, 200, 0, label, &COLOR_BG, &COLOR_ANNOT);
@@ -330,7 +330,7 @@ static rnd_coord_t create_button(rnd_hid_gc_t gc, int x, int y, const char *labe
 	return RND_COORD_TO_MM(box->X2);
 }
 
-static int is_button(int x, int y, const rnd_rnd_box_t *box)
+static int is_button(int x, int y, const rnd_box_t *box)
 {
 	return (x >= box->X1) && (x <= box->X2) && (y >= box->Y1) && (y <= box->Y2);
 }

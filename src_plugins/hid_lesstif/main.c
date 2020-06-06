@@ -2193,12 +2193,12 @@ static void lesstif_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void lesstif_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_rnd_box_t *screen)
+static void lesstif_render_burst(rnd_hid_t *hid, rnd_burst_op_t op, const rnd_box_t *screen)
 {
 	rnd_gui->coord_per_pix = view_zoom;
 }
 
-static void lesstif_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_rnd_box_t *drw_screen)
+static void lesstif_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *drw_screen)
 {
 	lesstif_drawing_mode = op;
 
@@ -2915,7 +2915,7 @@ static void ltf_pan_mode(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, rnd_bool 
 }
 
 
-static void ltf_view_get(rnd_hid_t *hid, rnd_rnd_box_t *viewbox)
+static void ltf_view_get(rnd_hid_t *hid, rnd_box_t *viewbox)
 {
 	viewbox->X1 = view_left_x;
 	viewbox->Y1 = view_top_y;

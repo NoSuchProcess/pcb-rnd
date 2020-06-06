@@ -55,7 +55,7 @@ typedef struct pcb_draw_info_s {
 	int exporting;                         /* 1 if doing an export, 0 if working to screen */
 	const char *export_name;               /* name of the export plugin */
 	char noexport_name[64];                /* "noexport:" attribute name rendered for the current exporter */
-	const rnd_rnd_box_t *drawn_area;
+	const rnd_box_t *drawn_area;
 	rnd_xform_t *xform_caller;             /* the extra transformation the caller requested (the one who has initiated the rendering, e.g. throuh pcb_draw_everything()) */
 	rnd_xform_t *xform_exporter;           /* the extra transformation the exporter requested (e.g. because of cam) */
 	rnd_xform_t *xform;                    /* the final transformation applied on objects */
@@ -102,13 +102,13 @@ void pcb_draw_delay_obj_add(pcb_any_obj_t *obj);
 void pcb_draw_annotation_add(pcb_any_obj_t *obj);
 
 /* the minimum box that needs to be redrawn */
-extern rnd_rnd_box_t pcb_draw_invalidated;
+extern rnd_box_t pcb_draw_invalidated;
 
 /* Adds the update rect to the invalidated region. This schedules the object
-   for redraw (by pcb_draw()). obj is anything that can be casted to rnd_rnd_box_t */
+   for redraw (by pcb_draw()). obj is anything that can be casted to rnd_box_t */
 #define pcb_draw_invalidate(obj) \
 do { \
-	rnd_rnd_box_t *box = (rnd_rnd_box_t *)obj; \
+	rnd_box_t *box = (rnd_box_t *)obj; \
 	pcb_draw_invalidated.X1 = MIN(pcb_draw_invalidated.X1, box->X1); \
 	pcb_draw_invalidated.X2 = MAX(pcb_draw_invalidated.X2, box->X2); \
 	pcb_draw_invalidated.Y1 = MIN(pcb_draw_invalidated.Y1, box->Y1); \
@@ -130,19 +130,19 @@ void pcb_draw_dashed_line(pcb_draw_info_t *info, rnd_hid_gc_t GC, rnd_coord_t x1
 void pcb_draw(void);
 void pcb_draw_obj(pcb_any_obj_t *obj);
 void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *ly);
-void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *ly, const rnd_rnd_box_t *screen);
+void pcb_draw_layer_noxform(pcb_board_t *pcb, const pcb_layer_t *ly, const rnd_box_t *screen);
 
 /* Same as pcb_draw_layer(), but never draws an implicit outline and ignores
    objects that are not in the subtree of data - useful for drawing a subtree,
    e.g. a subc only */
-void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_rnd_box_t *screen, pcb_data_t *data, rnd_xform_t *xform);
+void pcb_draw_layer_under(pcb_board_t *pcb, const pcb_layer_t *Layer, const rnd_box_t *screen, pcb_data_t *data, rnd_xform_t *xform);
 
 /* Composite draw all layer groups matching lyt/purpi/purpose */
-void pcb_draw_groups(rnd_hid_t *hid, pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const rnd_rnd_box_t *screen, const rnd_color_t *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert);
+void pcb_draw_groups(rnd_hid_t *hid, pcb_board_t *pcb, pcb_layer_type_t lyt, int purpi, char *purpose, const rnd_box_t *screen, const rnd_color_t *default_color, pcb_layer_type_t pstk_lyt_match, int thin_draw, int invert);
 
 
 void pcb_erase_obj(int, void *, void *);
-void pcb_draw_pstk_names(pcb_draw_info_t *info, rnd_layergrp_id_t group, const rnd_rnd_box_t *drawn_area);
+void pcb_draw_pstk_names(pcb_draw_info_t *info, rnd_layergrp_id_t group, const rnd_box_t *drawn_area);
 
 /*#define PCB_BBOX_DEBUG*/
 

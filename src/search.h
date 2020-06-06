@@ -35,8 +35,8 @@
 #include "layer.h"
 
 int pcb_lines_intersect(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_coord_t ay2, rnd_coord_t bx1, rnd_coord_t by1, rnd_coord_t bx2, rnd_coord_t by2);
-rnd_bool pcb_arc_in_box(pcb_arc_t *arc, rnd_rnd_box_t *b);
-rnd_bool pcb_gfx_in_box(pcb_gfx_t *gfx, rnd_rnd_box_t *b);
+rnd_bool pcb_arc_in_box(pcb_arc_t *arc, rnd_box_t *b);
+rnd_bool pcb_gfx_in_box(pcb_gfx_t *gfx, rnd_box_t *b);
 
 #define PCB_SLOP 5
 
@@ -179,9 +179,9 @@ rnd_bool pcb_is_point_in_gfx(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, p
 rnd_bool pcb_is_line_in_rectangle(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, pcb_line_t *Line);
 rnd_bool pcb_is_line_in_quadrangle(rnd_point_t p[4], pcb_line_t *Line);
 rnd_bool pcb_is_arc_in_rectangle(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, pcb_arc_t *Arc);
-rnd_bool pcb_is_gfx_in_rectangle(const rnd_rnd_box_t *b, const pcb_gfx_t *gfx);
+rnd_bool pcb_is_gfx_in_rectangle(const rnd_box_t *b, const pcb_gfx_t *gfx);
 rnd_bool pcb_is_point_in_line(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_any_line_t *Pad);
-rnd_bool pcb_is_point_in_box(rnd_coord_t X, rnd_coord_t Y, rnd_rnd_box_t *box, rnd_coord_t Radius);
+rnd_bool pcb_is_point_in_box(rnd_coord_t X, rnd_coord_t Y, rnd_box_t *box, rnd_coord_t Radius);
 
 /* Return the distance^2 between a line-center and a point */
 double pcb_point_line_dist2(rnd_coord_t X, rnd_coord_t Y, pcb_line_t *Line);

@@ -43,7 +43,7 @@
 
 #include <librnd/core/global_typedefs.h>
 
-double pcb_intersect_box_box(rnd_rnd_box_list_t *boxlist);	/* will sort boxlist */
-double pcb_union_box_box(rnd_rnd_box_list_t *boxlist);
+double pcb_intersect_box_box(rnd_box_list_t *boxlist);	/* will sort boxlist */
+double pcb_union_box_box(rnd_box_list_t *boxlist);
 
 #endif

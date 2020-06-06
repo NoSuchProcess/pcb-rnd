@@ -57,7 +57,7 @@ void pcb_polygon_close_poly(void);
 void pcb_polygon_copy_attached_to_layer(void);
 void pcb_polygon_close_hole(void);
 void pcb_polygon_hole_create_from_attached(void);
-int pcb_poly_holes(pcb_poly_t * ptr, const rnd_rnd_box_t * range, int (*callback) (rnd_pline_t *, void *user_data), void *user_data);
+int pcb_poly_holes(pcb_poly_t * ptr, const rnd_box_t * range, int (*callback) (rnd_pline_t *, void *user_data), void *user_data);
 int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
 	rnd_r_dir_t (*cb)(pcb_data_t *data, pcb_layer_t *lay, pcb_poly_t *poly, int type, void *ptr1, void *ptr2, void *user_data),
 	void *user_data);
@@ -67,7 +67,7 @@ void pcb_poly_compute_no_holes(pcb_poly_t * poly);
 rnd_polyarea_t *pcb_poly_from_poly(pcb_poly_t *);
 rnd_polyarea_t *pcb_poly_from_pcb_line(pcb_line_t * l, rnd_coord_t thick);
 rnd_polyarea_t *pcb_poly_from_pcb_arc(pcb_arc_t * l, rnd_coord_t thick);
-rnd_polyarea_t *pcb_poly_from_box_bloated(rnd_rnd_box_t * box, rnd_coord_t radius);
+rnd_polyarea_t *pcb_poly_from_box_bloated(rnd_box_t * box, rnd_coord_t radius);
 rnd_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly, rnd_coord_t *clr_override, pcb_poly_t *in_poly); /* clearance shape for when clearpolypoly is set */
 
 int pcb_poly_init_clip(pcb_data_t * d, pcb_layer_t * l, pcb_poly_t * p);
@@ -97,7 +97,7 @@ rnd_bool pcb_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, r
 rnd_bool pcb_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r); /* circle is within the polyline; caller must make sure they do not cross! */
 rnd_bool pcb_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r); /* circle is within or is crossing the polyline */
 rnd_bool pcb_poly_morph(pcb_layer_t *, pcb_poly_t *);
-void pcb_poly_no_holes_dicer(pcb_poly_t * p, const rnd_rnd_box_t * clip, void (*emit) (rnd_pline_t *, void *), void *user_data);
+void pcb_poly_no_holes_dicer(pcb_poly_t * p, const rnd_box_t * clip, void (*emit) (rnd_pline_t *, void *), void *user_data);
 void pcb_poly_to_polygons_on_layer(pcb_data_t *, pcb_layer_t *, rnd_polyarea_t *, pcb_flag_t);
 
 rnd_bool pcb_pline_is_rectangle(rnd_pline_t *pl);

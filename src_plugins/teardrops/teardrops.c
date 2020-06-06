@@ -39,7 +39,7 @@ static rnd_coord_t thickness;
 
 static int new_arcs = 0;
 
-static rnd_r_dir_t check_line_callback(const rnd_rnd_box_t * box, void *cl)
+static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 {
 	pcb_layer_t *lay = &PCB->Data->Layer[layer];
 	pcb_line_t *l = (pcb_line_t *) box;
@@ -181,7 +181,7 @@ static void check_pstk(pcb_pstk_t *ps)
 	for (layer = 0; layer < pcb_max_layer(PCB); layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
 		pcb_pstk_shape_t *shp, tmpshp;
-		rnd_rnd_box_t spot;
+		rnd_box_t spot;
 		int n;
 		double mindist;
 
@@ -250,7 +250,7 @@ static void check_pstk(pcb_pstk_t *ps)
 
 static fgw_error_t pcb_act_teardrops(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_rnd_box_t *b;
+	rnd_box_t *b;
 	rnd_rtree_it_t it;
 	new_arcs = 0;
 

@@ -72,7 +72,7 @@ static rnd_bool ghid_preview_mouse(void *widget, void *draw_data, rnd_hid_mouse_
 	return rnd_false;
 }
 
-void ghid_preview_zoomto(rnd_hid_attribute_t *attrib, void *hid_ctx, const rnd_rnd_box_t *view)
+void ghid_preview_zoomto(rnd_hid_attribute_t *attrib, void *hid_ctx, const rnd_box_t *view)
 {
 	attr_dlg_t *ctx = hid_ctx;
 	int idx = attrib - ctx->attrs;

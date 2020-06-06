@@ -47,7 +47,7 @@ struct rnd_hidlib_s {
 	unsigned int tool_hit;                  /* optional: type of a hit object of RND_MOVE_TYPES; 0 if there was no RND_MOVE_TYPES object under the crosshair */
 	unsigned int tool_click:1;              /* optional: true if clicked somewhere with the arrow tool */
 	rnd_mark_t tool_grabbed;                /* point where a drag&drop operation started */
-	rnd_rnd_box_t *tool_snapped_obj_bbox;
+	rnd_box_t *tool_snapped_obj_bbox;
 
 	/* internal */
 	int *batch_ask_ovr;                /* if not NULL, override local ask-overwrite state - useful when manu operations that need to write files are ran in batch, e.g. in a cam job */

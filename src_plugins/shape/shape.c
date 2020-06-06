@@ -252,7 +252,7 @@ static pcb_poly_t *any_poly_place(pcb_data_t *data, pcb_layer_t *layer, pcb_poly
 	if (data != PCB->Data) {
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 		pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_OBJ_POLY, PCB_CURRLAYER(PCB), p, p);
-		rnd_r_delete_entry(PCB_CURRLAYER(PCB)->polygon_tree, (rnd_rnd_box_t *)p);
+		rnd_r_delete_entry(PCB_CURRLAYER(PCB)->polygon_tree, (rnd_box_t *)p);
 		pcb_poly_free_fields(p);
 		pcb_poly_free(p);
 		rnd_tool_select_by_name(&PCB->hidlib, "buffer");
@@ -301,7 +301,7 @@ static pcb_line_t *circle_place(pcb_data_t *data, pcb_layer_t *layer, rnd_coord_
 		if (data != PCB->Data) {
 			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 			pcb_copy_obj_to_buffer(PCB, data, PCB->Data, PCB_OBJ_LINE, PCB_CURRLAYER(PCB), l, l);
-			rnd_r_delete_entry(PCB_CURRLAYER(PCB)->line_tree, (rnd_rnd_box_t *)l);
+			rnd_r_delete_entry(PCB_CURRLAYER(PCB)->line_tree, (rnd_box_t *)l);
 			pcb_line_free(l);
 			rnd_tool_select_by_name(&PCB->hidlib, "buffer");
 		}
