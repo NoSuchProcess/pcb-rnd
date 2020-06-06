@@ -533,6 +533,12 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (dad->dlg[wid].type == RND_HATT_END) /* composite widget's end or real end - the spin macro handles both */
 			wtype = RND_DAD_SPIN_GET_TYPE(&dad->dlg[wid]);
 
+		if (dad->dlg_hid_ctx == NULL) {
+			rnd_message(RND_MSG_ERROR, "dad(): Dialog is not yet running, can't set\n");
+			RND_ACT_IRES(-1);
+			return 0;
+		}
+
 		switch(wtype) {
 			case RND_HATT_COORD:
 				RND_ACT_CONVARG(4, FGW_COORD, dad, c = fgw_coord(&argv[4]));
