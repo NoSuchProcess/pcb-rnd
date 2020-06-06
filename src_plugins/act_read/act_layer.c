@@ -47,7 +47,7 @@ static void append_type_bit(void *ctx, pcb_layer_type_t bit, const char *name, i
 
 static const char pcb_acts_ReadGroup[] =
 	"ReadGroup(length)\n"
-	"ReadGroup(field, group, [init_invis|ltype|ltypestr|name|open|purpose|vis|length])\n"
+	"ReadGroup(field, group, [init_invis|ltype|ltypestr|ltypehas|name|open|purpose|vis|length])\n"
 	"ReadGroup(layerid, group, idx)\n"
 	;
 static const char pcb_acth_ReadGroup[] = "Length returns the number of groups on the current PCB. Field returns one of the fields of the group named in groupid. Layerid returns the integer layer ID (as interpreted within data) for the idxth layer of the group.";
@@ -55,7 +55,7 @@ static fgw_error_t pcb_act_ReadGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int cmd, fld;
-	char *cmds, *flds;
+	char *cmds, *flds, *target;
 	rnd_layergrp_id_t gid;
 	pcb_layergrp_t *grp;
 	pcb_layer_type_t lyt;
@@ -109,6 +109,15 @@ static fgw_error_t pcb_act_ReadGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						pcb_layer_type_map(lyt, &tmp, append_type_bit);
 						res->type = FGW_STR | FGW_DYN; res->val.str = tmp.array;
 					}
+					return 0;
+				case act_read_keywords_ltypehas:
+					RND_ACT_CONVARG(4, FGW_STR, ReadGroup, target = argv[4].val.str);
+					lyt = pcb_layer_type_str2bit(target);
+					if (lyt == 0) {
+						rnd_message(RND_MSG_ERROR, "ReadGroup(): unknown layer type name: '%s'\n", target);
+						return FGW_ERR_ARG_CONV;
+					}
+					RND_ACT_IRES(!!(grp->ltype & lyt));
 					return 0;
 				case act_read_keywords_ltypestr_anything:
 					lyt = grp->ltype & PCB_LYT_ANYTHING;

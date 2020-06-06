@@ -15,6 +15,7 @@ remove
 
 init_invis
 ltype
+ltypehas
 ltype_anything
 ltype_anywhere
 ltypestr
