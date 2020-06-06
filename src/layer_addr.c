@@ -388,6 +388,13 @@ rnd_layergrp_id_t pcb_layergrp_str2id(pcb_board_t *pcb, const char *str)
 	int spc = 0, numg;
 	rnd_layergrp_id_t gids[PCB_MAX_LAYERGRP];
 
+	if (*str == '#') {
+		gid = strtol(str+1, &end, 10);
+		if ((*end != '\0') || (gid < 0) || (gid >= pcb->LayerGroups.len))
+			return -1;
+		return gid;
+	}
+
 	if (strchr(str, '(') != NULL) {
 		curr = tmp = rnd_strdup(str);
 		spc = sizeof(spk) / sizeof(spk[0]);
