@@ -545,6 +545,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				break;
 			case RND_HATT_INTEGER:
 			case RND_HATT_BOOL:
+			case RND_HATT_ENUM:
 				RND_ACT_CONVARG(4, FGW_INT, dad, i = argv[4].val.nat_int);
 				RND_DAD_SET_VALUE(dad->dlg_hid_ctx, wid, lng, i);
 				break;
