@@ -516,17 +516,21 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_RouteStyle[] = "RouteStyle(style_id|style_name)";
-static const char pcb_acth_RouteStyle[] = "Copies the indicated routing style into the current pen.";
+static const char pcb_acts_RouteStyle[] = "RouteStyle(style_id|style_name, [set|get, width|clearance, [value]])";
+static const char pcb_acth_RouteStyle[] = "Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.";
 static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	char *end;
-	const char *str = NULL;
+	const char *str = NULL, *cmd = "", *sfield = NULL;
 	pcb_route_style_t *rts;
+	rnd_coord_t c;
 	int number;
 
 	RND_ACT_IRES(0);
 	RND_ACT_CONVARG(1, FGW_STR, RouteStyle, str = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, RouteStyle, cmd = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, RouteStyle, sfield = argv[3].val.str);
+
 
 	number = strtol(str, &end, 10);
 
@@ -542,18 +546,62 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	if (number > 0 && number <= vtroutestyle_len(&PCB->RouteStyle)) {
-		rts = &PCB->RouteStyle.array[number - 1];
-		pcb_board_set_line_width(rts->Thick);
-		pcb_board_set_via_size(rts->Diameter, rnd_true);
-		pcb_board_set_via_drilling_hole(rts->Hole, rnd_true);
-		pcb_board_set_clearance(rts->Clearance);
-	}
-	else {
+	if ((number <= 0) || (number > vtroutestyle_len(&PCB->RouteStyle))) {
+		rnd_message(RND_MSG_ERROR, "RouteStyle: invalid route style name or index\n");
 		RND_ACT_IRES(-1);
-		rnd_message(RND_MSG_ERROR, "Error: invalid route style name or index\n");
+		return 0;
 	}
+
+	rts = &PCB->RouteStyle.array[number - 1];
+
+	switch(*cmd) {
+		case '\0':
+			pcb_board_set_line_width(rts->Thick);
+			pcb_board_set_via_size(rts->Diameter, rnd_true);
+			pcb_board_set_via_drilling_hole(rts->Hole, rnd_true);
+			pcb_board_set_clearance(rts->Clearance);
+			break;
+		case 's': /* set */
+			if (sfield == NULL) goto err_missing_field;
+
+			if (strcmp(sfield, "trace-thickness") == 0) {
+				RND_ACT_CONVARG(4, FGW_COORD, RouteStyle, c = fgw_coord(&argv[4]));
+				rts->Thick = c;
+			}
+			else if (strcmp(sfield, "trace-clearance") == 0) {
+				RND_ACT_CONVARG(4, FGW_COORD, RouteStyle, c = fgw_coord(&argv[4]));
+				rts->Clearance = c;
+			}
+			else goto err_bad_field;
+			break;
+		case 'g': /* get */
+			if (sfield == NULL) goto err_missing_field;
+			if (strcmp(sfield, "trace-thickness") == 0) {
+				res->type = FGW_COORD;
+				fgw_coord(res) = rts->Thick;
+			}
+			else if (strcmp(sfield, "trace-clearance") == 0) {
+				res->type = FGW_COORD;
+				fgw_coord(res) = rts->Clearance;
+			}
+			else goto err_bad_field;
+			break;
+		default:
+			RND_ACT_FAIL(RouteStyle);
+	}
+
 	return 0;
+
+	err_missing_field:;
+	rnd_message(RND_MSG_ERROR, "RouteStyle: missing field name\n");
+	RND_ACT_IRES(-1);
+	return 0;
+
+	err_bad_field:;
+	rnd_message(RND_MSG_ERROR, "RouteStyle: invalid field name '%s'\n", sfield);
+	RND_ACT_IRES(-1);
+	return 0;
+
 }
 
 /* --------------------------------------------------------------------------- */
