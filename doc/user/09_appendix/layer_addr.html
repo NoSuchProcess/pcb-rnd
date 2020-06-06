@@ -51,6 +51,11 @@ The <i>base</i> part is one of the following syntaxes:
 <tr><td> type:-offs
     <td> -offs is a negative integer; use the Nth group of that type from bottom
     <td> <i>copper:-3</i><br>matches the third copper layer group from the bottom; offs is counted from 1, -1 meaning bottom surface layer
+
+<tr><td> #group_id
+    <td> index by the ID of the group; useful for scripting
+    <td> <i>#4</i><br>picks group 4, counting from 0
+
 </table>
 <p id="supplements">
 When supplements are specified, it's a comma separated list of key=value pairs.
