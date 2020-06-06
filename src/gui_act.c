@@ -524,14 +524,15 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *str = NULL, *cmd = "", *sfield = NULL;
 	pcb_route_style_t *rts;
 	rnd_coord_t c;
-	int number;
+	int number, is_curr;
 
 	RND_ACT_IRES(0);
 	RND_ACT_CONVARG(1, FGW_STR, RouteStyle, str = argv[1].val.str);
 	RND_ACT_MAY_CONVARG(2, FGW_STR, RouteStyle, cmd = argv[2].val.str);
 	RND_ACT_MAY_CONVARG(3, FGW_STR, RouteStyle, sfield = argv[3].val.str);
 
-	if (strcmp(str, "@current") != 0) {
+	is_curr = (strcmp(str, "@current") == 0);
+	if (!is_curr) {
 		number = strtol(str, &end, 10);
 
 		if (*end != '\0') { /* if not an integer, find by name */
@@ -559,6 +560,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	switch(*cmd) {
 		case '\0':
+			do_select:;
 			pcb_board_set_line_width(rts->Thick);
 			pcb_board_set_via_size(rts->Diameter, rnd_true);
 			pcb_board_set_via_drilling_hole(rts->Hole, rnd_true);
@@ -576,6 +578,9 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rts->Clearance = c;
 			}
 			else goto err_bad_field;
+			rnd_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+			if (is_curr)
+				goto do_select;
 			break;
 		case 'g': /* get */
 			if (sfield == NULL) goto err_missing_field;
