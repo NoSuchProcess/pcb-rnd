@@ -232,6 +232,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, bool, [label]) - append an checkbox widget (default off)\n"
 	"dad(dlgname, integer|real|coord, min, max, [label]) - append an input field\n"
 	"dad(dlgname, string) - append a single line text input field\n"
+	"dad(dlgname, default) - set the default value of a widet while creating the dialog\n"
 	"dad(dlgname, progress) - append a progress bar (set to 0)\n"
 	"dad(dlgname, preview, cb_act_prefix, minsize_x, minsize_y, [ctx]) - append a preview with a viewbox of 10*10mm, minsize in pixels\n"
 	"dad(dlgname, tree, cols, istree, [header]) - append tree-table widget; header is like enum values\n"
@@ -355,6 +356,32 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (dad->running) goto cant_chg;
 		RND_DAD_STRING(dad->dlg);
 		rv = RND_DAD_CURRENT(dad->dlg);
+	}
+	else if (rnd_strcasecmp(cmd, "default") == 0) {
+		int i;
+		double d;
+		rnd_coord_t c;
+		switch(dad->dlg[RND_DAD_CURRENT(dad->dlg)].type) {
+			case RND_HATT_COORD:
+				RND_ACT_CONVARG(3, FGW_COORD, dad, c = fgw_coord(&argv[3]));
+				RND_DAD_DEFAULT_NUM(dad->dlg, c);
+				break;
+			case RND_HATT_REAL:
+			case RND_HATT_PROGRESS:
+				RND_ACT_CONVARG(3, FGW_DOUBLE, dad, d = argv[3].val.nat_double);
+				RND_DAD_DEFAULT_NUM(dad->dlg, d);
+				break;
+			case RND_HATT_INTEGER:
+			case RND_HATT_BOOL:
+			case RND_HATT_ENUM:
+				RND_ACT_CONVARG(3, FGW_INT, dad, i = argv[3].val.nat_int);
+				RND_DAD_DEFAULT_NUM(dad->dlg, i);
+				break;
+			default:
+				rnd_message(RND_MSG_ERROR, "dad(): Invalid widget type - can not change default value (set ignored)\n");
+				RND_ACT_IRES(-1);
+				return 0;
+		}
 	}
 	else if (rnd_strcasecmp(cmd, "progress") == 0) {
 		if (dad->running) goto cant_chg;
