@@ -516,7 +516,7 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_RouteStyle[] = "RouteStyle(style_id|style_name, [set|get, width|clearance, [value]])";
+static const char pcb_acts_RouteStyle[] = "RouteStyle(style_id|style_name|current, [set|get, width|clearance, [value]])";
 static const char pcb_acth_RouteStyle[] = "Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.";
 static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -531,20 +531,23 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(2, FGW_STR, RouteStyle, cmd = argv[2].val.str);
 	RND_ACT_MAY_CONVARG(3, FGW_STR, RouteStyle, sfield = argv[3].val.str);
 
+	if (strcmp(str, "@current") != 0) {
+		number = strtol(str, &end, 10);
 
-	number = strtol(str, &end, 10);
-
-	if (*end != '\0') { /* if not an integer, find by name */
-		int n;
-		number = -1;
-		for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
-			rts = &PCB->RouteStyle.array[n];
-			if (rnd_strcasecmp(rts->name, str) == 0) {
-				number = n + 1;
-				break;
+		if (*end != '\0') { /* if not an integer, find by name */
+			int n;
+			number = -1;
+			for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
+				rts = &PCB->RouteStyle.array[n];
+				if (rnd_strcasecmp(rts->name, str) == 0) {
+					number = n + 1;
+					break;
+				}
 			}
 		}
 	}
+	else
+		number = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL)+1;
 
 	if ((number <= 0) || (number > vtroutestyle_len(&PCB->RouteStyle))) {
 		rnd_message(RND_MSG_ERROR, "RouteStyle: invalid route style name or index\n");
