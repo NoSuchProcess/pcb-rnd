@@ -16,7 +16,6 @@
 - BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
 - BUG: 4 pending parametric footprint related bugreports by Piotr (email)
 - ANNOUNCE: io_kicad: text load xy scaling and x mirror
-- ANNOUNCE: thermal tab in padstacks: http://igor2.repo.hu/tmp/thermals.lht
 - ANNOUNCE: search expr wizard should pick up the expression from the button when clicked
 
 2. For later releases ===============================================================================
