@@ -58,7 +58,7 @@ const char pcb_acth_formula_bisect[] = "Find the value for exactly one of the ar
 fgw_error_t pcb_act_formula_bisect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *actname, *spec;
-	double target, min, max, minv, maxv, v, lastv, err, at, conv;
+	double target, min, max, minv, maxv, v, err, at;
 	fgw_arg_t r;
 	int n, specn = 0, unitlen, var_is_coord = 0;
 	const fgw_func_t *f;
