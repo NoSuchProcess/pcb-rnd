@@ -442,6 +442,16 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acth_ActionString[] = "Execute a pcb-rnd action parsing a string; syntac: \"action(arg,arg,arg)\"";
+static const char pcb_acts_ActionString[] = "ActionString(action)";
+static fgw_error_t pcb_act_ActionString(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *act;
+	RND_ACT_CONVARG(1, FGW_STR, ActionString, act = argv[1].val.str);
+	return rnd_parse_command_res(RND_ACT_HIDLIB, res, act, 1);
+}
+
+
 static const char pcb_acth_pcb_math1[] = "Single-argument math functions";
 static const char pcb_acts_pcb_math1[] = "pcb_MATHFUNC(val)";
 static fgw_error_t pcb_act_pcb_math1(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -521,6 +531,7 @@ static rnd_action_t script_action_list[] = {
 	{"python",      pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 #endif
 	{"Oneliner", pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"ActionString", pcb_act_ActionString, pcb_acth_ActionString, pcb_acts_ActionString},
 
 	/* math */
 	{"pcb_sin",     pcb_act_pcb_math1, NULL, NULL},
