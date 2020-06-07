@@ -676,9 +676,9 @@ void rnd_cli_uninit(void)
 		free(cli_pop());
 }
 
-int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_mode)
+int rnd_parse_command_res(rnd_hidlib_t *hl, fgw_arg_t *res, const char *str_, rnd_bool force_action_mode)
 {
-	fgw_arg_t res, args[2];
+	fgw_arg_t args[2];
 	fgw_func_t *f;
 	const rnd_action_t *a;
 	const char *end;
@@ -715,8 +715,16 @@ int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_
 		args[1].val.str[end - str_] = '\0';
 	}
 
-	if (rnd_actionv_(f, &res, 2, args) != 0)
-			return -1;
+	return rnd_actionv_(f, res, 2, args);
+}
+
+int rnd_parse_command(rnd_hidlib_t *hl, const char *str, rnd_bool force_action_mode)
+{
+	fgw_arg_t res;
+
+	if (rnd_parse_command_res(hl, &res, str, force_action_mode) < 0)
+		return -1;
+
 	fgw_arg_conv(&rnd_fgw, &res, FGW_INT);
 	return res.val.nat_int;
 }
