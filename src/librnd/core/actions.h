@@ -101,7 +101,10 @@ fgw_error_t rnd_actionv_bin(rnd_hidlib_t *hl, const char *name, fgw_arg_t *res, 
    Returns nonzero if the action handler(s) return nonzero. */
 int rnd_parse_command(rnd_hidlib_t *hl, const char *str_, rnd_bool force_action_mode);
 
-/* Same as rnd_parse_command() but actual result is returned in fungw conventions */
+/* Same as rnd_parse_command() but actual result is returned in
+   fungw conventions. res is the result of the last action. If there
+   are multiple actions, they are required to result in 0, but then those
+   return values are discarded. */
 int rnd_parse_command_res(rnd_hidlib_t *hl, fgw_arg_t *res, const char *str_, rnd_bool force_action_mode);
 
 /* Parse the given string into action calls, and call

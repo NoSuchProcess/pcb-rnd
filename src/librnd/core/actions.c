@@ -379,7 +379,22 @@ int rnd_hid_get_coords(const char *msg, rnd_coord_t *x, rnd_coord_t *y, int forc
 		return rnd_gui->get_coords(rnd_gui, msg, x, y, force);
 }
 
-static int hid_parse_actionstring(rnd_hidlib_t *hl, const char *rstr, char require_parens)
+static int is_res_non_zero(fgw_arg_t *res)
+{
+	switch(res->type) {
+		case FGW_INT: return (res->val.nat_int != 0);
+		case FGW_DOUBLE: return (res->val.nat_double != 0);
+		case FGW_LONG: return (res->val.nat_long != 0);
+		default: return -1;
+	}
+}
+
+/* Parse and execute actions from actionstring; stop at the first action that
+   failed. Failure is if the low level fungw call didn't result in success, or:
+    - any non-last action results a non-zero integer
+    - if last_int_fail is true, the last action results a non-zero integer
+*/
+static int hid_parse_actionstring(rnd_hidlib_t *hl, fgw_arg_t *res_, const char *rstr, char require_parens, int last_int_fail)
 {
 	const char **list = NULL;
 	int max = 0;
@@ -391,8 +406,12 @@ static int hid_parse_actionstring(rnd_hidlib_t *hl, const char *rstr, char requi
 	char in_quotes = 0;
 	char parens = 0;
 	int retcode = 0;
+	fgw_arg_t restmp, *res = res_ == NULL ? &restmp : res_;
 
 	/*fprintf(stderr, "invoke: `%s'\n", rstr); */
+
+	res->type = FGW_INT;
+	res->val.nat_int = 0;
 
 	sp = rstr;
 	str = (char *) malloc(strlen(rstr) + 1);
@@ -427,7 +446,13 @@ another:
 	 * with no parameters or event.
 	 */
 	if (*sp == '\0') {
-		retcode = rnd_actionv(hl, aname, 0, 0);
+		fgw_arg_t argv[2];
+		retcode = is_res_non_zero(res);
+		if (retcode)
+			goto cleanup;
+		retcode = rnd_actionv_bin(hl, aname, res, 1, argv);
+		if (retcode == 0)
+			retcode = is_res_non_zero(res);
 		goto cleanup;
 	}
 
@@ -450,10 +475,24 @@ another:
 		 * ","
 		 */
 		if (!maybe_empty && ((parens && *sp == ')') || (!parens && !*sp))) {
-			retcode = rnd_actionv(hl, aname, num, list);
+			fgw_arg_t argv[RND_ACTION_MAX_ARGS+1];
+			int an;
+
+			if (!last_int_fail) {
+				retcode = is_res_non_zero(res);
+				if (retcode)
+					goto cleanup; /* previous action failed */
+			}
+			fgw_arg_free(&rnd_fgw, res);
+			for(an = 0; an < num; an++) {
+				argv[an+1].type = FGW_STR;
+				argv[an+1].val.str = (char *)list[an];
+			}
+			retcode = rnd_actionv_bin(hl, aname, res, num+1, argv);
 			if (retcode)
 				goto cleanup;
-
+			if (last_int_fail && (retcode = is_res_non_zero(res))) /* if we are allowed to check last action, check them all after the execution */
+				goto cleanup;
 			/* strip any white space or ';' following the action */
 			if (parens)
 				sp++;
@@ -676,7 +715,7 @@ void rnd_cli_uninit(void)
 		free(cli_pop());
 }
 
-int rnd_parse_command_res(rnd_hidlib_t *hl, fgw_arg_t *res, const char *str_, rnd_bool force_action_mode)
+static int rnd_parse_command_res_(rnd_hidlib_t *hl, fgw_arg_t *res, const char *str_, rnd_bool force_action_mode, int last_int_fail)
 {
 	fgw_arg_t args[2];
 	fgw_func_t *f;
@@ -686,7 +725,7 @@ int rnd_parse_command_res(rnd_hidlib_t *hl, fgw_arg_t *res, const char *str_, rn
 	/* no backend or forced action mode: classic pcb-rnd action parse */
 	if (force_action_mode || (rnd_conf.rc.cli_backend == NULL) || (*rnd_conf.rc.cli_backend == '\0')) {
 		rnd_event(NULL, RND_EVENT_CLI_ENTER, "s", str_);
-		return hid_parse_actionstring(hl, str_, rnd_false);
+		return hid_parse_actionstring(hl, res, str_, rnd_false, last_int_fail);
 	}
 
 	/* backend: let the backend action handle it */
@@ -718,11 +757,16 @@ int rnd_parse_command_res(rnd_hidlib_t *hl, fgw_arg_t *res, const char *str_, rn
 	return rnd_actionv_(f, res, 2, args);
 }
 
+int rnd_parse_command_res(rnd_hidlib_t *hl, fgw_arg_t *res, const char *str_, rnd_bool force_action_mode)
+{
+	return rnd_parse_command_res_(hl, res, str_, force_action_mode, 0);
+}
+
 int rnd_parse_command(rnd_hidlib_t *hl, const char *str, rnd_bool force_action_mode)
 {
 	fgw_arg_t res;
 
-	if (rnd_parse_command_res(hl, &res, str, force_action_mode) < 0)
+	if (rnd_parse_command_res_(hl, &res, str, force_action_mode, 1) < 0)
 		return -1;
 
 	fgw_arg_conv(&rnd_fgw, &res, FGW_INT);
@@ -731,7 +775,7 @@ int rnd_parse_command(rnd_hidlib_t *hl, const char *str, rnd_bool force_action_m
 
 int rnd_parse_actions(rnd_hidlib_t *hl, const char *str_)
 {
-	return hid_parse_actionstring(hl, str_, rnd_true);
+	return hid_parse_actionstring(hl, NULL, str_, rnd_true, 1);
 }
 
 /*** custom fungw types ***/
