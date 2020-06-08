@@ -35,6 +35,8 @@
 #define SQR(x) ((x)*(x))
 #define N0 377
 
+/* Formulas from: https://www.eeweb.com/tools/microstrip-impedance
+   ref: "The source of this formula is based on Wheeler's equation." */
 double pcb_impedance_microstrip(rnd_coord_t trace_width, rnd_coord_t trace_height, rnd_coord_t subst_height, double dielect)
 {
 	double w = TOM(trace_width), t = TOM(trace_height), h = TOM(subst_height), Er = dielect;
