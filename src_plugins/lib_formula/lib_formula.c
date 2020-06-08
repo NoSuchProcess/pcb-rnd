@@ -34,6 +34,7 @@
 
 static rnd_action_t lib_formula_action_list[] = {
 	{"impedance_microstrip", pcb_act_impedance_microstrip, pcb_acth_impedance_microstrip, pcb_acts_impedance_microstrip},
+	{"impedance_coplanar_waveguide", pcb_act_impedance_coplanar_waveguide, pcb_acth_impedance_coplanar_waveguide, pcb_acts_impedance_coplanar_waveguide},
 	{"formula_bisect", pcb_act_formula_bisect, pcb_acth_formula_bisect, pcb_acts_formula_bisect}
 };
 
