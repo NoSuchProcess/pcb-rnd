@@ -95,7 +95,7 @@ static double ellint(double k)
 double pcb_impedance_coplanar_waveguide(rnd_coord_t trace_width, rnd_coord_t trace_clearance, rnd_coord_t subst_height, double dielect)
 {
 	double a = TOM(trace_width), clr = TOM(trace_clearance), h = TOM(subst_height), Er = dielect;
-	double b = clr+a+clr, z0, eeff, ktmp, k, k_, kl, kl_, ktmp2;
+	double b = clr+a+clr, eeff, ktmp, k, k_, kl, kl_, ktmp2;
 
 	k = a/b;
 	k_ = sqrt(1.0 - k*k);
