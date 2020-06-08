@@ -60,6 +60,9 @@ static int fnc_thermal_on(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, p
 	else
 		t = pcb_obj_common_get_thermal(obj, pcb_layer_id(ectx->pcb->Data, ly), 0);
 
+	if (t == NULL)
+		PCB_QRY_RET_STR(res, "");
+
 	pcb_thermal_bits2chars(res->data.local_str.tmp, t[0]);
 
 	PCB_QRY_RET_STR(res, res->data.local_str.tmp);
