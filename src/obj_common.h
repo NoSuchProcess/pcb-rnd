@@ -73,6 +73,8 @@ typedef enum pcb_objmask_e {
 	/* lists */
 	PCB_OBJ_CLASS_PIN  = (PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART),
 	PCB_OBJ_CLASS_TERM = (PCB_OBJ_CLASS_PIN | PCB_OBJ_SUBC_PART | PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_TEXT),
+	PCB_OBJ_CLASS_LAYER = (PCB_OBJ_ARC | PCB_OBJ_LINE | PCB_OBJ_POLY | PCB_OBJ_TEXT | PCB_OBJ_GFX),
+	PCB_OBJ_CLASS_GLOBAL = (PCB_OBJ_SUBC | PCB_OBJ_PSTK),
 
 	/* masks */
 	PCB_OBJ_CLASS_REAL = 0x0000FFF, /* global and on-layer objects (but not abstract things like layers) */
