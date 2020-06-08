@@ -54,6 +54,13 @@ pcb_thermal_t pcb_thermal_str2bits(const char *str);
    all words. */
 const char *pcb_thermal_bits2str(pcb_thermal_t *bits);
 
+/* Converts all bits of a thermal bitmask to a string that is:
+   - empty if there is no thermal
+   - starts with n, o, x or @ for no-shape, round, sharp or solid
+   - ends in d if diagonal
+*/
+void pcb_thermal_bits2chars(char dst[3], pcb_thermal_t bits);
+
 
 rnd_polyarea_t *pcb_thermal_area(pcb_board_t *p, pcb_any_obj_t *obj, rnd_layer_id_t lid, pcb_poly_t *in_poly);
 rnd_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, rnd_layer_id_t lid, pcb_poly_t *in_poly);

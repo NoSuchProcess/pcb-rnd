@@ -109,6 +109,28 @@ const char *pcb_thermal_bits2str(pcb_thermal_t *bit)
 	return NULL;
 }
 
+void pcb_thermal_bits2chars(char dst[3], pcb_thermal_t bits)
+{
+	char *end = dst;
+
+	if (!(bits & PCB_THERMAL_ON)) {
+		*end = '\0';
+		return;
+	}
+
+	switch(bits & 3) {
+		case PCB_THERMAL_NOSHAPE: *end++ = 'n'; break;
+		case PCB_THERMAL_ROUND: *end++ = 'o'; break;
+		case PCB_THERMAL_SHARP: *end++ = 'x'; break;
+		case PCB_THERMAL_SOLID: *end++ = '@'; break;
+	}
+
+	if (bits & PCB_THERMAL_DIAGONAL)
+		*end++ = 'd';
+
+	*end++ = '\0';
+}
+
 
 /* generate a round-cap line polygon */
 static rnd_polyarea_t *pa_line_at(double x1, double y1, double x2, double y2, rnd_coord_t clr, rnd_bool square)
