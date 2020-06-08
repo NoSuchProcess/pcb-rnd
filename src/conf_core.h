@@ -95,7 +95,7 @@ typedef struct {
 		} footprint_placement;
 
 		struct {
-			RND_CFT_STRING method;             /* method/strategy of removal; one of:  */
+			RND_CFT_STRING method;             /* method/strategy of removal; one of: select, remove, list */
 		} footprint_removal;
 	} import;
 
