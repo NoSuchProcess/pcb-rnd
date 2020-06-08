@@ -47,6 +47,7 @@
 	- load/import from buffer and file
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 	- add text font, update the pool node text_edit [report: Igor2]
+- FEATURE: finish drill/slot export in export_stl [report: Majenko]
 - FEATURE: fontsel: ttf import?
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
