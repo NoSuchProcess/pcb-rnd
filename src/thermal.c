@@ -119,15 +119,16 @@ void pcb_thermal_bits2chars(char dst[3], pcb_thermal_t bits)
 	}
 
 	switch(bits & 3) {
-		case PCB_THERMAL_NOSHAPE: *end++ = 'n'; break;
+		case PCB_THERMAL_NOSHAPE: *end++ = 'n'; goto skip_diag;
 		case PCB_THERMAL_ROUND: *end++ = 'o'; break;
 		case PCB_THERMAL_SHARP: *end++ = 'x'; break;
-		case PCB_THERMAL_SOLID: *end++ = '@'; break;
+		case PCB_THERMAL_SOLID: *end++ = '@'; goto skip_diag;
 	}
 
 	if (bits & PCB_THERMAL_DIAGONAL)
 		*end++ = 'd';
 
+	skip_diag:;
 	*end++ = '\0';
 }
 
