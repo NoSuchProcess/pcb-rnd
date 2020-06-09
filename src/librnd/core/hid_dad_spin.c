@@ -267,7 +267,13 @@ static double get_step(rnd_hid_dad_spin_t *spin, rnd_hid_attribute_t *end, rnd_h
 			break;
 		case RND_DAD_SPIN_DOUBLE:
 		case RND_DAD_SPIN_FREQ:
-			step = pow(10, floor(log10(fabs((double)end->val.dbl)) - 1.0));
+			v = end->val.dbl;
+			if (v == 0)
+				v = spin->vmax / 10;
+			if (v == 0)
+				step = 1;
+			else
+				step = pow(10, floor(log10(fabs(v)) - 1.0));
 			break;
 		case RND_DAD_SPIN_COORD:
 			if (spin->unit == NULL) {
