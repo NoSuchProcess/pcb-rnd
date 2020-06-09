@@ -4,7 +4,6 @@
 - TEST: footprints are open as binary file now (fopen's "b") - check on win32 if this breaks anything with any of our footprint formats
 + CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 + CLEANUP/BUG: bug_files/gtk_transient.txt: add config options on how gtk transient-for and (a new) raise should work [report: Bdale]
-+ CLEANUP/BUG: rtree getting very badly shaped in no-hole poly dicer, see bug_files/rtree ml=3498 [report: gpaubert]
 + FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
 + FEATURE: PolyBool() action to expose our poly bool algebra, e.g. Evan's moon shaped poly example [report: Evan]
 - BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
