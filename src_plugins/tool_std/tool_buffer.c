@@ -77,9 +77,15 @@ void pcb_tool_buffer_release_mode(rnd_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
-	if (pcb_crosshair_note.Moving) {
+	if (pcb_crosshair_note.Moving) { /* release of a drag&drop move of selected objects */
 		pcb_undo_restore_serial();
-		pcb_tool_buffer_notify_mode_(hl, rnd_true);
+		/* NOTE: can not keep ids:
+		    1. select an object, id #9
+		    2. drag&drop move
+		    3. drag&drop move it again (still selected)
+		    4. when undo, the removebuffer will have 2 objects with the same id #9!
+		*/
+		pcb_tool_buffer_notify_mode_(hl, rnd_false);
 		pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
 		pcb_buffer_set_number(pcb_crosshair_note.Buffer);
 		pcb_crosshair_note.Moving = rnd_false;
