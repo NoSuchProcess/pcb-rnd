@@ -798,7 +798,7 @@ static double crosshair_sq_dist(pcb_crosshair_t * crosshair, rnd_coord_t x, rnd_
 
 struct snap_data {
 	pcb_crosshair_t *crosshair;
-	double nearest_sq_dist;
+	double nearest_sq_dist, max_sq_dist;
 	rnd_bool nearest_is_grid;
 	rnd_coord_t x, y;
 };
@@ -827,6 +827,9 @@ static void check_snap_object(struct snap_data *snap_data, rnd_coord_t x, rnd_co
 	}
 
 	sq_dist = crosshair_sq_dist(snap_data->crosshair, x, y);
+	if (sq_dist > snap_data->max_sq_dist)
+		return;
+
 	if (sq_dist < snap_data->nearest_sq_dist || (prefer_to_grid && snap_data->nearest_is_grid && !rnd_gui->shift_is_pressed(rnd_gui))) {
 		snap_data->x = x;
 		snap_data->y = y;
@@ -955,16 +958,22 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	snap_data.nearest_is_grid = rnd_true;
 	snap_data.x = nearest_grid_x;
 	snap_data.y = nearest_grid_y;
+	snap_data.max_sq_dist = RND_MAX(rnd_conf.editor.grid * 1.5, rnd_pixel_slop*25);
+	snap_data.max_sq_dist = snap_data.max_sq_dist * snap_data.max_sq_dist;
 
 	ans = PCB_OBJ_VOID;
 	if (!PCB->RatDraw)
 		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
 
+	hidlib->tool_snapped_obj_bbox = NULL;
+
 	if (ans & PCB_OBJ_SUBC) {
 		pcb_subc_t *sc = (pcb_subc_t *) ptr1;
 		rnd_coord_t ox, oy;
-		if (pcb_subc_get_origin(sc, &ox, &oy) == 0)
+		if (pcb_subc_get_origin(sc, &ox, &oy) == 0) {
 			check_snap_object(&snap_data, ox, oy, rnd_true, (pcb_any_obj_t *)sc);
+			hidlib->tool_snapped_obj_bbox = &sc->BoundingBox;
+		}
 	}
 
 	/*** padstack center ***/
@@ -981,8 +990,6 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 		check_snap_object(&snap_data, ps->x, ps->y, rnd_true, (pcb_any_obj_t *)ps);
 		hidlib->tool_snapped_obj_bbox = &ps->BoundingBox;
 	}
-	else
-		hidlib->tool_snapped_obj_bbox = NULL;
 
 	/*** arc ***/
 	ans = PCB_OBJ_VOID;
