@@ -96,9 +96,8 @@ static long do_trim_split(vtp0_t *edges, int kwobj, int trim)
 	switch(kwobj) {
 		case F_Object:
 			for(;;) {
-				x = RND_MAX_COORD;
-				rnd_hid_get_coords("Select an object to cut or press esc", &x, &y, 1);
-				if (x == RND_MAX_COORD)
+				int cr = rnd_hid_get_coords("Select an object to cut or press esc", &x, &y, 1);
+				if (cr < 0)
 					break;
 
 				type = pcb_search_screen(x, y, CUT_TYPES, &ptr1, &ptr2, &ptr3);
