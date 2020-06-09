@@ -964,7 +964,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 		pcb_subc_t *sc = (pcb_subc_t *) ptr1;
 		rnd_coord_t ox, oy;
 		if (pcb_subc_get_origin(sc, &ox, &oy) == 0)
-			check_snap_object(&snap_data, ox, oy, rnd_false, (pcb_any_obj_t *)sc);
+			check_snap_object(&snap_data, ox, oy, rnd_true, (pcb_any_obj_t *)sc);
 	}
 
 	/*** padstack center ***/
