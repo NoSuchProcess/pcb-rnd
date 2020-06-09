@@ -1320,6 +1320,24 @@ rnd_bool pcb_selected_subc_change_side(void)
 	return change;
 }
 
+static int subc_bind_layer(pcb_layer_t *dl, pcb_layer_t *sl, int dst_is_pcb)
+{
+	int chg = 0;
+
+	if (!dst_is_pcb) {
+		/* keep only the layer binding match, unbound other aspects */
+		sl->meta.bound.real = NULL;
+		sl->arc_tree = sl->line_tree = sl->text_tree = sl->polygon_tree = NULL;
+		chg++;
+	}
+	else {
+		sl->meta.bound.real = dl;
+		chg++;
+	}
+
+	return chg;
+}
+
 
 static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_layer_t *sl, int src_has_real_layer, int dst_is_pcb, int move_obj)
 {
@@ -1424,16 +1442,22 @@ static int subc_relocate_layer_objs(pcb_layer_t *dl, pcb_data_t *src_data, pcb_l
 		}
 	}
 
-	if (!dst_is_pcb) {
-		/* keep only the layer binding match, unbound other aspects */
-		sl->meta.bound.real = NULL;
-		sl->arc_tree = sl->line_tree = sl->text_tree = sl->polygon_tree = NULL;
+	return chg + subc_bind_layer(dl, sl, dst_is_pcb);
+}
+
+static int subc_bind_globals(pcb_data_t *dst, pcb_subc_t *sc, int dst_is_pcb)
+{
+	int chg = 0;
+
+	if ((dst != NULL) && (dst_is_pcb)) {
+		if (dst->padstack_tree == NULL)
+			dst->padstack_tree = rnd_r_create_tree();
+		sc->data->padstack_tree = dst->padstack_tree;
 		chg++;
 	}
-	else {
-		sl->meta.bound.real = dl;
-		chg++;
-	}
+	else
+		sc->data->padstack_tree = NULL;
+
 	return chg;
 }
 
@@ -1467,16 +1491,7 @@ static int subc_relocate_globals(pcb_data_t *dst, pcb_data_t *new_parent, pcb_su
 		chg++;
 	}
 
-	/* bind globals */
-	if ((dst != NULL) && (dst_is_pcb)) {
-		if (dst->padstack_tree == NULL)
-			dst->padstack_tree = rnd_r_create_tree();
-		sc->data->padstack_tree = dst->padstack_tree;
-		chg++;
-	}
-	else
-		sc->data->padstack_tree = NULL;
-	return chg;
+	return chg + subc_bind_globals(dst, sc, dst_is_pcb);
 }
 
 /* change the parent of all global objects to new_parent */
@@ -1542,17 +1557,23 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 		else
 			dl = ctx->buffer.dst->Layer + n;
 
-		subc_relocate_layer_objs(dl, ctx->buffer.src, sl, src_has_real_layer, dst_is_pcb, 0);
+		if (dst_is_pcb)
+			subc_bind_layer(dl, sl, dst_is_pcb);
+		else
+			subc_relocate_layer_objs(dl, ctx->buffer.src, sl, src_has_real_layer, dst_is_pcb, 0);
 	}
 
-	subc_relocate_globals(ctx->buffer.dst, sc->data, sc, dst_is_pcb, 0);
-
 	if (dst_is_pcb) {
-		/* clear all pins/pads at once, at the new location */
+		subc_bind_globals(ctx->buffer.dst, sc, dst_is_pcb);
+
+		/* clear all pins/pads at once, at the new location; this does a relocation of all objects recursively */
 		clip.clip.restore = 0; clip.clip.clear = 1;
 		clip.clip.pcb = ctx->buffer.pcb;
 		pcb_subc_op(ctx->buffer.dst, sc, &ClipFunctions, &clip, PCB_SUBCOP_UNDO_SUBC);
 	}
+	else
+		subc_relocate_globals(ctx->buffer.dst, sc->data, sc, dst_is_pcb, 0);
+
 
 	PCB_FLAG_CLEAR(PCB_FLAG_WARN | PCB_FLAG_FOUND | PCB_FLAG_SELECTED, sc);
 	return sc;
