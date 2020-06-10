@@ -49,6 +49,7 @@ static int uirc_query_search(uirc_t *ctx, char *name)
 
 int uirc_connect(uirc_t *ctx, const char *server, int port, char *user)
 {
+	P_net_init();
 	if (P_tcp4_connect(&ctx->sk, server, port, NULL, 0, P_net_nonblock_full) != 0)
 		return -1;
 	ctx->connecting = 1;
