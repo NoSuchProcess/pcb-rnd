@@ -34,6 +34,8 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/rnd_printf.h>
 #include "obj_line.h"
+#include "undo_old.h"
+#include "undo.h"
 #include <librnd/core/box.h>
 #include <librnd/poly/offset.h>
 #include <librnd/core/hid_dad.h>
@@ -73,7 +75,7 @@ static void cross(FILE *f, rnd_coord_t x, rnd_coord_t y)
 }
 #endif
 
-rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const rnd_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
+rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const rnd_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags, rnd_bool undoable)
 {
 	rnd_cardinal_t cnt = 0;
 	vtp0_t tracks;
@@ -88,8 +90,13 @@ rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const rnd_pline_t *src, rnd_
 
 		v = track->head;
 		do {
+			pcb_line_t *l;
+
 			n = v->next;
-			pcb_line_new(dst, v->point[0], v->point[1], n->point[0], n->point[1], thickness, clearance, flags);
+			l = pcb_line_new(dst, v->point[0], v->point[1], n->point[0], n->point[1], thickness, clearance, flags);
+			if (undoable)
+				pcb_undo_add_obj_to_create(PCB_OBJ_LINE, dst, l, l);
+
 			cnt++;
 		}
 		while((v = v->next) != track->head);
@@ -350,15 +357,18 @@ typedef struct {
 	pcb_layer_t *dst;
 	rnd_coord_t thickness, clearance;
 	pcb_flag_t flags;
+	unsigned undoable:1;
 } hatch_ctx_t;
 
 static void hatch_cb(void *ctx_, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	hatch_ctx_t *ctx = (hatch_ctx_t *)ctx_;
-	pcb_line_new(ctx->dst, x1, y1, x2, y2, ctx->thickness, ctx->clearance, ctx->flags);
+	pcb_line_t *l = pcb_line_new(ctx->dst, x1, y1, x2, y2, ctx->thickness, ctx->clearance, ctx->flags);
+	if (ctx->undoable)
+		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, ctx->dst, l, l);
 }
 
-void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t period, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags)
+void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t period, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags, rnd_bool undoable)
 {
 	hatch_ctx_t ctx;
 
@@ -367,6 +377,7 @@ void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_ha
 	ctx.thickness = thickness;
 	ctx.clearance = clearance;
 	ctx.flags = flags;
+	ctx.undoable = undoable;
 
 	pcb_cpoly_hatch(src, dir, (thickness/2)+1, period, &ctx, hatch_cb);
 }
@@ -439,7 +450,7 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_coord_t period = 0;
 	pcb_cpoly_hatchdir_t dir = 0;
 	pcb_flag_t flg;
-	int want_contour = 0, want_poly = 0, cont_specd = 0;
+	int want_contour = 0, want_poly = 0, cont_specd = 0, undoable = 1;
 
 	RND_ACT_CONVARG(1, FGW_STR, PolyHatch, op = argv[1].val.str);
 	RND_ACT_MAY_CONVARG(2, FGW_STR, PolyHatch, arg = argv[2].val.str);
@@ -487,9 +498,9 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
 				rnd_pline_t *pl = pcb_poly_contour(&it);
 				if (pl != NULL) { /* we have a contour */
-					pcb_pline_to_lines(PCB_CURRLAYER(PCB), pl, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
+					pcb_pline_to_lines(PCB_CURRLAYER(PCB), pl, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg, undoable);
 					for(pl = pcb_poly_hole_first(&it); pl != NULL; pl = pcb_poly_hole_next(&it))
-						pcb_pline_to_lines(PCB_CURRLAYER(PCB), pl, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
+						pcb_pline_to_lines(PCB_CURRLAYER(PCB), pl, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg, undoable);
 				}
 			}
 		}
@@ -497,8 +508,11 @@ static fgw_error_t pcb_act_PolyHatch(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_poly_t *p = pcb_poly_new_from_poly(PCB_CURRLAYER(PCB), polygon, period, polygon->Clearance, polygon->Flags);
 			PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, p);
 		}
-		pcb_cpoly_hatch_lines(PCB_CURRLAYER(PCB), polygon, dir, period, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg);
+		pcb_cpoly_hatch_lines(PCB_CURRLAYER(PCB), polygon, dir, period, conf_core.design.line_thickness, conf_core.design.line_thickness * 2, flg, undoable);
 	} PCB_ENDALL_LOOP;
+
+	if (undoable)
+		pcb_undo_inc_serial();
 
 	RND_ACT_IRES(0);
 	return 0;

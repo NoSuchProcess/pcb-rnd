@@ -32,7 +32,7 @@ void pcb_pline_fprint_anim(FILE *f, const rnd_pline_t *pl);
 /* Add lines on dst tracing pline from the inner side (no line will extend
    outside of the original pline, except when the original polygon has a hair
    narrower than thickness). Returns number of lines created */
-rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const rnd_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags);
+rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const rnd_pline_t *src, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags, rnd_bool undoable);
 
 /* Returns whether the clipped polygon is a simple rectangle (single island,
    no-hole rectangle). */
@@ -69,7 +69,7 @@ typedef enum {
 
 /* hatch a polygon with horizontal and/or vertical lines drawn on dst,
    one line per period */
-void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t period, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags);
+void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t period, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags, rnd_bool undoable);
 
 /* Generic hor-ver hatch with a callback */
 void pcb_cpoly_hatch(const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t offs, rnd_coord_t period, void *ctx, void (*cb)(void *ctx, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2));
