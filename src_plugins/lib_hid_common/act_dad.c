@@ -141,7 +141,7 @@ static int prv_action(rnd_hidlib_t *hl, const char *actname, rnd_hid_gc_t gc, co
 	int rv = 0;
 
 	if ((actname == NULL) || (*actname == '\0'))
-		return;
+		return 0;
 
 	if (gc == NULL) {
 		args[2].type = FGW_PTR; args[2].val.ptr_void = NULL;
