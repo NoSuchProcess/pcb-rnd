@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- TEST: footprints are open as binary file now (fopen's "b") - check on win32 if this breaks anything with any of our footprint formats
 + CLEANUP: CAM: in ~2020: remove the hackish gerber layer suffix and auto-excellon in favor of CAM [report: Ade]
 + CLEANUP/BUG: bug_files/gtk_transient.txt: add config options on how gtk transient-for and (a new) raise should work [report: Bdale]
 + FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
