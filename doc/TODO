@@ -14,7 +14,7 @@
 + BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
 - BUG: 4 pending parametric footprint related bugreports by Piotr (email)
 + BUG: PolyHatch() is not undoable [report: Majenko]
-- BUG: windows (probably on wine too): the irc client crashes [report: aron]
++ BUG: windows (probably on wine too): the irc client crashes [report: aron]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
