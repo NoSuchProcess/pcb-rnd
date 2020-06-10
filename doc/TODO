@@ -10,9 +10,9 @@
 - FEATURE: user script: bug_files/pstk_autonum.txt (when the footprint design pool note is being written) [report: Igor2]
 + FEATURE: layers for top and bottom soldermask, if not present in loaded eagle file, i.e. tvbgone3.brd, do not export on creating gerbers, and cannot be added easily to layout via layer prefs, since ability to add a soldermask group is lacking [erich]
 + BUG: 1. place 0603; 2. select; 3. cut to buffer; 4. undo -> 0603 put back but selection is lost; reason: the flag is removed in the buffer, but not in an undoable way as we don't have undo on buffer [report: miloh]
-- BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
++ BUG: excess mkdir on cam export when outfile is edited ml=3959 [report: Majenko]
 ? BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan] -> can't reproduce; are you sure it depends only on 64 bit coords?
-- BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
++ BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
 - BUG: 4 pending parametric footprint related bugreports by Piotr (email)
 + BUG: PolyHatch() is not undoable [report: Majenko]
 
