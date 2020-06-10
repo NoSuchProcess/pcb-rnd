@@ -332,7 +332,7 @@ static int pcb_dlg_login_irc_login(void)
 		return -1; /* do not open another */
 
 	nick = (char *)rnd_get_user_name();
-	if (nick != NULL) {
+	if ((nick != NULL) &&( *nick != '\0')) {
 		nick = rnd_strdup(nick);
 		for(s = nick; !isalnum(*s); s++) ;
 		*s = '\0';
