@@ -110,10 +110,10 @@ static int cam_call(const char *job, cam_ctx_t *ctx)
 	return -1;
 }
 
-static int cam_parse_opt_outfile(cam_ctx_t *ctx, const char *optval)
+static int cam_parse_opt_outfile(cam_ctx_t *ctx, const char *optval, rnd_bool nomkdir)
 {
 	char *fn, *tmp = rnd_strdup(optval);
-	int dirlen = prefix_mkdir(tmp, &fn);
+	int dirlen = prefix_mkdir(tmp, &fn, nomkdir);
 
 	free(ctx->prefix);
 	if (dirlen > 0) {
@@ -145,7 +145,7 @@ static int cam_parse_set_var(cam_ctx_t *ctx, const char *opt)
 static int cam_parse_opt(cam_ctx_t *ctx, const char *opt)
 {
 	if (strncmp(opt, "outfile=", 8) == 0)
-		return cam_parse_opt_outfile(ctx, opt+8);
+		return cam_parse_opt_outfile(ctx, opt+8, 0);
 	else
 		return cam_parse_set_var(ctx, opt);
 
@@ -241,7 +241,7 @@ static int export_cam_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 		char *opt = (*argv)[s];
 		if (strcmp(opt, "--outfile") == 0) {
 			s++; (*argc)--;
-			cam_parse_opt_outfile(&cam_export_ctx, (*argv)[s]);
+			cam_parse_opt_outfile(&cam_export_ctx, (*argv)[s], 0);
 			cam_export_has_outfile = 1;
 		}
 		else if (strcmp(opt, "-o") == 0) {

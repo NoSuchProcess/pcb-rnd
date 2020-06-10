@@ -37,7 +37,7 @@
 
 
 /* mkdir -p on arg - changes the string in arg */
-static int prefix_mkdir(char *arg, char **filename)
+static int prefix_mkdir(char *arg, char **filename, rnd_bool nomkdir)
 {
 	char *curr, *next, *end;
 	int res;
@@ -59,7 +59,8 @@ static int prefix_mkdir(char *arg, char **filename)
 			next = strrchr(curr, RND_DIR_SEPARATOR_C);
 			if (next != NULL)
 				*next = '\0';
-			rnd_mkdir(&PCB->hidlib, arg, 0755);
+			if (!nomkdir)
+				rnd_mkdir(&PCB->hidlib, arg, 0755);
 			if (next != NULL) {
 				*next = RND_DIR_SEPARATOR_C;
 				next++;

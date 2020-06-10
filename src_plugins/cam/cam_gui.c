@@ -137,7 +137,7 @@ static void cam_gui_opts2dlg(cam_dlg_t *ctx)
 	rnd_hid_row_t *r;
 	char *cell[3], *cursor_path = NULL;
 
-	cam_parse_opt_outfile(&ctx->cam, ctx->dlg[ctx->woutfile].val.str);
+	cam_parse_opt_outfile(&ctx->cam, ctx->dlg[ctx->woutfile].val.str, 1);
 	hv.str = ctx->cam.prefix == NULL ? "" : ctx->cam.prefix;
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprefix, &hv);
 
