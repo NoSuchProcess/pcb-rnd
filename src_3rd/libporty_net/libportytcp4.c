@@ -243,16 +243,23 @@ P_size_t P_net_printf(P_net_socket s, const char *format, ...)
 #endif
 #endif
 
+static long P_net_inited = 0;
 
 #ifdef WIN32
 int P_net_init(void)
 {
 	WSADATA w;
-	return WSAStartup(MAKEWORD(2,2), &w);
+	P_net_inited++;
+	if (P_net_inited == 1)
+		return WSAStartup(MAKEWORD(2,2), &w);
+	return 0;
 }
 
 int P_net_uninit(void)
 {
+	P_net_inited--;
+	if (P_net_inited > 0)
+		return 0;
 	P_net_uninit_chain();
 	return WSACleanup();
 }
@@ -260,12 +267,17 @@ int P_net_uninit(void)
 #include <signal.h>
 int P_net_init(void)
 {
-	signal(SIGPIPE, SIG_IGN);
+	P_net_inited++;
+	if (P_net_inited == 1)
+		signal(SIGPIPE, SIG_IGN);
 	return 0;
 }
 
 int P_net_uninit(void)
 {
+	P_net_inited--;
+	if (P_net_inited > 0)
+		return 0;
 	P_net_uninit_chain();
 	return 0;
 }
