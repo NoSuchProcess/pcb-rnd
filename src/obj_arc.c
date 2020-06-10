@@ -916,6 +916,7 @@ void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc)
 			pcb_arc_set_angles(Layer, arc, arc->StartAngle, angle - arc->StartAngle - 360.0);
 		else
 			pcb_arc_set_angles(Layer, arc, arc->StartAngle, angle - arc->StartAngle);
+		pcb_undo_add_obj_to_create(PCB_OBJ_ARC, Layer, new_arc, new_arc);
 	}
 	return new_arc;
 }
