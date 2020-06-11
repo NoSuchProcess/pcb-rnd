@@ -1131,6 +1131,12 @@ void pcb_undo_add_obj_to_create(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 	pcb_poly_clear_from_poly(PCB->Data, Type, Ptr1, Ptr2);
 }
 
+void pcb_undo_add_obj_to_create_noclear(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
+{
+	if (!Locked)
+		GetUndoSlot(PCB_UNDO_CREATE, PCB_OBJECT_ID(Ptr3), Type);
+}
+
 /* ---------------------------------------------------------------------------
  * adds an object to the list of objects with flags changed
  */

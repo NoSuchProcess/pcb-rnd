@@ -95,7 +95,7 @@ rnd_cardinal_t pcb_pline_to_lines(pcb_layer_t *dst, const rnd_pline_t *src, rnd_
 			n = v->next;
 			l = pcb_line_new(dst, v->point[0], v->point[1], n->point[0], n->point[1], thickness, clearance, flags);
 			if (undoable)
-				pcb_undo_add_obj_to_create(PCB_OBJ_LINE, dst, l, l);
+				pcb_undo_add_obj_to_create_noclear(PCB_OBJ_LINE, dst, l, l);
 
 			cnt++;
 		}
@@ -365,7 +365,7 @@ static void hatch_cb(void *ctx_, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2,
 	hatch_ctx_t *ctx = (hatch_ctx_t *)ctx_;
 	pcb_line_t *l = pcb_line_new(ctx->dst, x1, y1, x2, y2, ctx->thickness, ctx->clearance, ctx->flags);
 	if (ctx->undoable)
-		pcb_undo_add_obj_to_create(PCB_OBJ_LINE, ctx->dst, l, l);
+		pcb_undo_add_obj_to_create_noclear(PCB_OBJ_LINE, ctx->dst, l, l);
 }
 
 void pcb_cpoly_hatch_lines(pcb_layer_t *dst, const pcb_poly_t *src, pcb_cpoly_hatchdir_t dir, rnd_coord_t period, rnd_coord_t thickness, rnd_coord_t clearance, pcb_flag_t flags, rnd_bool undoable)
