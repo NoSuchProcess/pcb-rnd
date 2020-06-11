@@ -90,7 +90,7 @@
 	- revise all I/O plugins for:
 		- upgrade swith tandard text for rotation, scale_x, scale_y anbd mirror_x:
 			- autotrax: (need test cases)
-			- eagle: (need test cases)
+			- eagle: (test cases available)
 		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
