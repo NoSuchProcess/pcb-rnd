@@ -106,6 +106,7 @@
 	- ./configure --config should default to /etc
 - BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - BUG: in poly lib rewrite: bug_files/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
+- BUG: in poly lib rewrite: bug_files/phatch.lht: maybe {m d t} and PolyHatch(0, c) -> poly offseting bug on sharp corners ml=4159 [report: Majenko]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is changed with the layer binding [report: jg]
 - FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough ; alternative: net name caching and display when zoomed in [report: Majenko]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
