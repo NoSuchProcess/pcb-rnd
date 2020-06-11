@@ -191,9 +191,9 @@ pcb_layer_t *pcb_subc_layer_create(pcb_subc_t *sc, const char *name, pcb_layer_t
 
 
 /* Copy non-layer, non-geometrical metadata (e.g. attributes) */
-pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, pcb_subc_t *src);
+pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, const pcb_subc_t *src);
 
-pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids);
+pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t *src, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids);
 
 /* Replace dst with a copy of src in place (preserving location and orientation
    and attributes. If add_undo is true, add the old subc del and the new subc

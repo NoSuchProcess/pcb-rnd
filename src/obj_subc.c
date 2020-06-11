@@ -859,7 +859,7 @@ do { \
 		dst->ID = src->ID; \
 } while(0)
 
-pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, pcb_subc_t *src)
+pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, const pcb_subc_t *src)
 {
 	if (dst == NULL)
 		return NULL;
@@ -868,7 +868,7 @@ pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, pcb_subc_t *src)
 }
 
 
-pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids)
+pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t *src, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids)
 {
 	pcb_board_t *src_pcb;
 	int n;
