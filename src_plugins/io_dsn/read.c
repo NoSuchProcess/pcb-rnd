@@ -1564,7 +1564,7 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 			return -1;
 		}
 
-		nsc = pcb_subc_dup_at(ctx->pcb, ctx->pcb->Data, subc, crd[0], crd[1], 0);
+		nsc = pcb_subc_dup_at(ctx->pcb, ctx->pcb->Data, subc, crd[0], crd[1], 0, rnd_false);
 		rnd_attribute_put(&nsc->Attributes, "refdes", refdes);
 
 		if (mirror_first) {

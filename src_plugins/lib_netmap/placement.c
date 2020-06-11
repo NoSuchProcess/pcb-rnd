@@ -48,7 +48,7 @@ void pcb_placement_build(pcb_placement_t *ctx, pcb_data_t *data)
 		if (!htscp_has(&ctx->subcs, subc)) {
 			pcb_host_trans_t tr;
 			pcb_data_t *oldhack;
-			pcb_subc_t *proto = pcb_subc_dup_at(ctx->pcb, &ctx->data, subc, 0, 0, 0); /* do not keep IDs because that fools pstk parent logic */
+			pcb_subc_t *proto = pcb_subc_dup_at(ctx->pcb, &ctx->data, subc, 0, 0, 0, rnd_true); /* do not keep IDs because that fools pstk parent logic */
 			pcb_subc_get_host_trans(subc, &tr, 1);
 
 			oldhack = pcb_pstk_data_hack;

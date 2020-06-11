@@ -150,7 +150,7 @@ static void library_update_preview(library_ctx_t *ctx, pcb_subc_t *sc, pcb_fplib
 
 	gds_init(&tmp);
 	if (sc != NULL) {
-		ctx->sc = pcb_subc_dup_at(ctx->prev_pcb, ctx->prev_pcb->Data, sc, 0, 0, 1);
+		ctx->sc = pcb_subc_dup_at(ctx->prev_pcb, ctx->prev_pcb->Data, sc, 0, 0, 1, rnd_false);
 		pcb_data_bbox(&bbox, ctx->sc->data, 0);
 		rnd_dad_preview_zoomto(&ctx->dlg[ctx->wpreview], &bbox);
 	}

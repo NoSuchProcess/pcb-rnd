@@ -868,12 +868,12 @@ pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, const pcb_subc_t *src)
 }
 
 
-pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t *src, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids)
+pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t *src, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids, rnd_bool undoable)
 {
 	pcb_board_t *src_pcb;
 	int n;
 	pcb_subc_t *sc = pcb_subc_alloc();
-	int undoable_psproto = dst->parent_type == PCB_PARENT_BOARD;
+	int undoable_psproto = (undoable && (dst->parent_type == PCB_PARENT_BOARD));
 
 	if (keep_ids)
 		sc->ID = src->ID;
@@ -1055,7 +1055,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t 
 
 pcb_subc_t *pcb_subc_dup(pcb_board_t *pcb, pcb_data_t *dst, pcb_subc_t *src)
 {
-	return pcb_subc_dup_at(pcb, dst, src, 0, 0, rnd_false);
+	return pcb_subc_dup_at(pcb, dst, src, 0, 0, rnd_false, rnd_true);
 }
 
 void pcb_subc_bbox(pcb_subc_t *sc)
@@ -1210,7 +1210,7 @@ void *pcb_subcop_copy(pcb_opctx_t *ctx, pcb_subc_t *src)
 {
 	pcb_subc_t *sc;
 
-	sc = pcb_subc_dup_at(PCB, PCB->Data, src, ctx->copy.DeltaX, ctx->copy.DeltaY, ctx->copy.keep_id);
+	sc = pcb_subc_dup_at(PCB, PCB->Data, src, ctx->copy.DeltaX, ctx->copy.DeltaY, ctx->copy.keep_id, rnd_true);
 
 	pcb_undo_add_obj_to_create(PCB_OBJ_SUBC, sc, sc, sc);
 
@@ -1582,7 +1582,7 @@ void *pcb_subcop_move_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 void *pcb_subcop_add_to_buffer(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
 	pcb_subc_t *nsc;
-	nsc = pcb_subc_dup_at(NULL, ctx->buffer.dst, sc, 0, 0, ctx->buffer.keep_id);
+	nsc = pcb_subc_dup_at(NULL, ctx->buffer.dst, sc, 0, 0, ctx->buffer.keep_id, rnd_true);
 
 	if (ctx->buffer.extraflg & PCB_FLAG_SELECTED) {
 		pcb_undo_freeze_serial();
@@ -2356,7 +2356,7 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	}
 
 
-	placed = pcb_subc_dup_at(pcb, data, src, ox - osx, oy - osy, 0);
+	placed = pcb_subc_dup_at(pcb, data, src, ox - osx, oy - osy, 0, rnd_true);
 	pcb_subc_get_side(placed, &src_on_bottom);
 
 	{ /* copy attributes */

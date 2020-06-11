@@ -300,7 +300,7 @@ static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, rnd_coord_t *pw, rnd_coo
 			return;
 		}
 		
-		sc_rot0 = pcb_subc_dup_at(NULL, tmp, ctx->subc, 0, 0, 0);
+		sc_rot0 = pcb_subc_dup_at(NULL, tmp, ctx->subc, 0, 0, 0, rnd_false);
 		ang = ctx->theta / RND_RAD_TO_DEG;
 		pcb_subc_rotate(sc_rot0, 0, 0, cos(ang), sin(ang), ctx->theta);
 
