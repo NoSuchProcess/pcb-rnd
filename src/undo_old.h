@@ -44,6 +44,7 @@ void pcb_undo_add_obj_to_change_pinnum(int, void *, void *, void *, char *);
 void pcb_undo_add_obj_to_rotate90(int, void *, void *, void *, rnd_coord_t, rnd_coord_t, unsigned int);
 void pcb_undo_add_obj_to_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t CenterX, rnd_coord_t CenterY, rnd_angle_t angle);
 void pcb_undo_add_obj_to_create(int, void *, void *, void *);
+void pcb_undo_add_obj_to_create_noclear(int Type, void *Ptr1, void *Ptr2, void *Ptr3);
 void pcb_undo_add_obj_to_create_nocreate(int, void *, void *, void *);
 void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t yoff);
 void pcb_undo_add_obj_to_move_to_layer(int, void *, void *, void *);
