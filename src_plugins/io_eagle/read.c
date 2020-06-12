@@ -551,11 +551,13 @@ static int eagle_strlen2(const char *str)
 static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
-	rnd_coord_t X, Y, size, bbw, bbh;
-	const char *rot, *text_val;
+	rnd_coord_t X, Y, size, bbw, bbh, anchx, anchy, basel;
+	const char *rot, *text_val, *align;
 	unsigned int rotdeg = 0, text_scaling = 100;
+	enum { ALEFT=-1, ATOP=-1, CENTER=0, ARIGHT=+1, ABOTTOM=+1 } ax = ALEFT, ay = ABOTTOM; /* anchor position (text alignment) */
 	pcb_flag_t text_flags = pcb_flag_make(0);
 	pcb_layer_t *ly;
+
 	ly = eagle_layer_get(st, ln, type, obj);
 	if (ly == NULL) {
 		rnd_message(RND_MSG_ERROR, "Failed to allocate text layer 'ly' to 'ln:%d' in eagle_read_text()\n", ln);
@@ -576,10 +578,42 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 	}
 	X = eagle_get_attrc(st, subtree, "x", -1);
 	Y = eagle_get_attrc(st, subtree, "y", -1);
+
+	/* bounding box and anchor calculation */
 	size = eagle_get_attrc(st, subtree, "size", -1);
 	bbw = (double)size * 0.905 * (double)eagle_strlen2(text_val) / 2.0;
 	bbh = (double)size * 1.45;
-rnd_trace("text=%s bbw=%mm bbh=%mm\n", text_val, bbw, bbh);
+	align = eagle_get_attrs(st, subtree, "align", NULL);
+	if (align != 0) {
+		if (rnd_strncasecmp(align, "bottom", 6) == 0) { align+=6; ay = -1; }
+		else if (rnd_strncasecmp(align, "top", 3) == 0) { align+=3; ay = +1; }
+		else if (rnd_strncasecmp(align, "center", 6) == 0) { align+=6; ax = ay = 0; } /* plain "center" means "center-center" */
+		else
+			rnd_message(RND_MSG_WARNING, "Ignoring invalid vertical text alignment '%s'\n", align);
+		if (*align == '-') {
+			align++;
+			if (rnd_strcasecmp(align, "left") == 0) ax = -1;
+			else if (rnd_strcasecmp(align, "right") == 0) ax = +1;
+			else if (rnd_strcasecmp(align, "center") == 0) ax = 0;
+			else
+				rnd_message(RND_MSG_WARNING, "Ignoring invalid horizontal text alignment '%s'\n", align);
+		}
+	}
+
+	switch(ax) {
+		case -1: anchx = 0; break;
+		case +1: anchx = bbw; break;
+		default: anchx = bbw/2;
+	}
+	basel = 4*bbh/5;
+	switch(ay) {
+		case -1: anchy = 0; break;
+		case +1: anchy = basel; break;
+		default: anchy = basel/2;
+	}
+
+rnd_trace("text=%s bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text_val, bbw, bbh, ax, ay, anchx, anchy);
+
 	text_scaling = (int)((double)size/(double)EAGLE_TEXT_SIZE_100 * 100);
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
 	if (rot != NULL) {
