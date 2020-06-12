@@ -821,11 +821,17 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int Laye
 				/* finalize group */
 				if (loc & PCB_LYT_INTERN) {
 					g = pcb_get_grp_new_intern(pcb, -1);
-					assert(g != NULL);
+					if (g == NULL) {
+						rnd_message(RND_MSG_ERROR, "pcb_layer_parse_group_string(): unable to insert layer groups for copper\n");
+						goto error;
+					}
 				}
 				else {
 					g = pcb_get_grp(LayerGroup, loc, PCB_LYT_COPPER);
-					assert(g != NULL);
+					if (g == NULL) {
+						rnd_message(RND_MSG_ERROR, "pcb_layer_parse_group_string(): unable to insert layer groups for copper\n");
+						goto error;
+					}
 				}
 
 				for(n = 0; n < lids_len; n++) {
