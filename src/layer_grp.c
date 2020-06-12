@@ -405,11 +405,6 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substr
 	if (!force_end)
 	for(bl = stack->len; bl >= 0; bl--) {
 		if ((stack->grp[bl].ltype & PCB_LYT_BOTTOM) && (stack->grp[bl].ltype & PCB_LYT_COPPER)) {
-
-			/* insert a new internal layer: move existing layers to make room */
-			for(n = stack->len-1; n >= bl; n--)
-				pcb_layergrp_move_onto(pcb, n+room, n);
-			
 			pcb_get_grp_new_intern_insert(pcb, room, bl, omit_substrate);
 			return &stack->grp[bl];
 		}
