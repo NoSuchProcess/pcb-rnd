@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2019,2020 Tibor 'Igor2' Palinkas
  *  Copyright (C) 2017 Erich S. Heinzle
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -523,6 +523,30 @@ static int eagle_rot2steps(const char *rot)
 
 /****************** drawing primitives ******************/
 
+/* Return the length of a string in drawing character units considering
+   which characters are half-wide in eagle's default font. Returns
+   size*2. */
+static int eagle_strlen2(const char *str)
+{
+	static int inited = 0;
+	static char half[256] = {0};
+	const char *s;
+	int size;
+
+	if (!inited) { /* create the half[] table from a static list */
+		static const char *halves = "fijkltI[]||:;'.()`!";
+		for(s = halves; *s != '\0'; s++)
+			half[(int)*s] = 1;
+		inited = 1;
+	}
+
+	for(size = 0, s = str; *s != '\0'; s++) {
+		if (half[(int)*s]) size++;
+		else size += 2;
+	}
+
+	return size;
+}
 
 static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
