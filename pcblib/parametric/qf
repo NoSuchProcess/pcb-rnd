@@ -101,7 +101,7 @@
 #@@optional:pinoffs
 #@@default:pinoffs 0
 
-#@@include silkmark.help
+#@@include silkmark_qf.help
 #@@optional:silkmark
 #@@default:silkmark square
 #@@preview_args:silkmark 4,4
