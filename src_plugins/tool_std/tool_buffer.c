@@ -79,7 +79,7 @@ void pcb_tool_buffer_release_mode(rnd_hidlib_t *hl)
 
 	if (pcb_crosshair_note.Moving) { /* release of a drag&drop move of selected objects */
 		pcb_undo_restore_serial();
-		/* NOTE: can not keep ids:
+		/* NOTE: can not keep ids: TODO27:
 		    1. select an object, id #9
 		    2. drag&drop move
 		    3. drag&drop move it again (still selected)
