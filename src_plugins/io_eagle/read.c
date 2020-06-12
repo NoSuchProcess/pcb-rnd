@@ -603,8 +603,8 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 	}
 
 	switch(ax) {
-		case ALEFT: anchx = 0; break;
-		case ARIGHT: anchx = bbw; break;
+		case ALEFT: anchx = bbw; break;
+		case ARIGHT: anchx = 0; break;
 		default: anchx = bbw/2;
 	}
 	basel = 4*bbh/5;
@@ -635,6 +635,7 @@ rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text
 			rnd_message(RND_MSG_WARNING, "Ignoring invalid text rotation '%s' (missing R prefix)\n", rot);
 	}
 
+	Y += ay*bbh*4/5; /* compensate for Y mirroring */
 	pcb_text_new_by_bbox(ly, pcb_font(st->pcb, 0, 1), X, Y, bbw, bbh, anchx, anchy, 1, mirror, rotdeg, 0, text_val, text_flags);
 
 	return 0;
@@ -1797,7 +1798,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp, NULL, 0);
 	if (res == 0) {
 		pcb_undo_freeze_add();
-		pcb_data_mirror(pcb->Data, 0, PCB_TXM_COORD, 0, 0);
+		pcb_data_mirror(pcb->Data, 0, 0, 0, 0);
 		pcb_undo_unfreeze_add();
 	}
 	pcb_create_being_lenient = old_leni;
