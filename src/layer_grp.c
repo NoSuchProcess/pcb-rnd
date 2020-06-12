@@ -824,10 +824,14 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int Laye
 				if (flush_item(s, start, lids, &lids_len, &loc) != 0)
 					goto error;
 				/* finalize group */
-				if (loc & PCB_LYT_INTERN)
+				if (loc & PCB_LYT_INTERN) {
 					g = pcb_get_grp_new_intern(pcb, -1);
-				else
+					assert(g != NULL);
+				}
+				else {
 					g = pcb_get_grp(LayerGroup, loc, PCB_LYT_COPPER);
+					assert(g != NULL);
+				}
 
 				for(n = 0; n < lids_len; n++) {
 					if (lids[n] < 0)
@@ -839,6 +843,10 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int Laye
 						}
 						else
 							rnd_message(RND_MSG_ERROR, "outline layer can not be on the solder or component side - converting it into a copper layer\n");
+					}
+					if (g == NULL) {
+						rnd_message(RND_MSG_ERROR, "pcb_layer_parse_group_string(): unable to find copper group for creating the copper layer\n");
+						goto error;
 					}
 					pcb_layer_add_in_group_(pcb, g, g - LayerGroup->grp, lids[n]);
 				}
@@ -858,9 +866,18 @@ int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int Laye
 
 	/* set the two silks */
 	g = pcb_get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_SILK);
+	if (g == NULL) {
+		rnd_message(RND_MSG_ERROR, "pcb_layer_parse_group_string(): unable to find bottom silk layer group\n");
+		goto error;
+	}
 	pcb_layer_add_in_group_(pcb, g, g - LayerGroup->grp, LayerN-2);
 
+
 	g = pcb_get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_SILK);
+	if (g == NULL) {
+		rnd_message(RND_MSG_ERROR, "pcb_layer_parse_group_string(): unable to find top silk layer group\n");
+		goto error;
+	}
 	pcb_layer_add_in_group_(pcb, g, g - LayerGroup->grp, LayerN-1);
 
 	inhibit_notify--;
