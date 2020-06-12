@@ -336,7 +336,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 			case RND_HATT_COORD:
 			case RND_HATT_END:
 				val = buff;
-				rnd_snprintf(buff, sizeof(buff), "%$$mH", a->val.crd);
+				rnd_snprintf(buff, sizeof(buff), "%.09$$mH", a->val.crd);
 				break;
 			default:;
 		}
