@@ -557,6 +557,8 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	enum { ALEFT=-1, ATOP=-1, CENTER=0, ARIGHT=+1, ABOTTOM=+1 } ax = ALEFT, ay = ABOTTOM; /* anchor position (text alignment) */
 	pcb_flag_t text_flags = pcb_flag_make(0);
 	pcb_layer_t *ly;
+	pcb_text_mirror_t mirror = 0;
+
 
 	ly = eagle_layer_get(st, ln, type, obj);
 	if (ly == NULL) {
@@ -585,15 +587,15 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 	bbh = (double)size * 1.45;
 	align = eagle_get_attrs(st, subtree, "align", NULL);
 	if (align != 0) {
-		if (rnd_strncasecmp(align, "bottom", 6) == 0) { align+=6; ay = -1; }
-		else if (rnd_strncasecmp(align, "top", 3) == 0) { align+=3; ay = +1; }
+		if (rnd_strncasecmp(align, "bottom", 6) == 0) { align+=6; ay = ABOTTOM; }
+		else if (rnd_strncasecmp(align, "top", 3) == 0) { align+=3; ay = ATOP; }
 		else if (rnd_strncasecmp(align, "center", 6) == 0) { align+=6; ax = ay = 0; } /* plain "center" means "center-center" */
 		else
 			rnd_message(RND_MSG_WARNING, "Ignoring invalid vertical text alignment '%s'\n", align);
 		if (*align == '-') {
 			align++;
-			if (rnd_strcasecmp(align, "left") == 0) ax = -1;
-			else if (rnd_strcasecmp(align, "right") == 0) ax = +1;
+			if (rnd_strcasecmp(align, "left") == 0) ax = ALEFT;
+			else if (rnd_strcasecmp(align, "right") == 0) ax = ARIGHT;
 			else if (rnd_strcasecmp(align, "center") == 0) ax = 0;
 			else
 				rnd_message(RND_MSG_WARNING, "Ignoring invalid horizontal text alignment '%s'\n", align);
@@ -601,18 +603,18 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 	}
 
 	switch(ax) {
-		case -1: anchx = 0; break;
-		case +1: anchx = bbw; break;
+		case ALEFT: anchx = 0; break;
+		case ARIGHT: anchx = bbw; break;
 		default: anchx = bbw/2;
 	}
 	basel = 4*bbh/5;
 	switch(ay) {
-		case -1: anchy = 0; break;
-		case +1: anchy = basel; break;
+		case ATOP: anchy = 0; break;
+		case ABOTTOM: anchy = basel; break;
 		default: anchy = basel/2;
 	}
 
-rnd_trace("text=%s bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text_val, bbw, bbh, ax, ay, anchx, anchy);
+rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text_val, X, Y, bbw, bbh, ax, ay, anchx, anchy);
 
 	text_scaling = (int)((double)size/(double)EAGLE_TEXT_SIZE_100 * 100);
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
@@ -632,8 +634,9 @@ rnd_trace("text=%s bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text_val, bb
 		else
 			rnd_message(RND_MSG_WARNING, "Ignoring invalid text rotation '%s' (missing R prefix)\n", rot);
 	}
-TODO("{text_size} calculate bounding box, requires size_bump(st, X, Y)")
-	pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, rotdeg, text_scaling, 0, text_val, text_flags);
+
+	pcb_text_new_by_bbox(ly, pcb_font(st->pcb, 0, 1), X, Y, bbw, bbh, anchx, anchy, 1, mirror, rotdeg, 0, text_val, text_flags);
+
 	return 0;
 }
 
