@@ -15,6 +15,7 @@
 + BUG: PolyHatch() is not undoable [report: Majenko]
 
 2. For later releases ===============================================================================
+- CLEANUP: move layer_parse_group_str() from core to io_pcb, probably together with the default stackup setup code [report: Igor2]
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - CLEANUP/BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1; need to cache hole vs. shape overlap (1 bit per shape in the proto) [report: igor2]
