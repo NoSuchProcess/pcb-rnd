@@ -7,7 +7,6 @@
 + BUG: 1. place 0603; 2. select; 3. cut to buffer; 4. undo -> 0603 put back but selection is lost; reason: the flag is removed in the buffer, but not in an undoable way as we don't have undo on buffer [report: miloh]
 ? BUG: 64 bit coords: make test fails on drc_query thicknesses ml=3953 [report: Evan] -> can't reproduce; are you sure it depends only on 64 bit coords?
 + BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
-+ BUG: PolyHatch() is not undoable [report: Majenko]
 
 1. For the upcoming release ===============================================================================
 - BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
