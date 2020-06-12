@@ -182,6 +182,9 @@ rnd_hid_gc_t ghid_gl_make_gc(rnd_hid_t *hid)
 
 void ghid_gl_draw_grid_local(rnd_hidlib_t *hidlib, rnd_coord_t cx, rnd_coord_t cy)
 {
+	if (hidlib->grid <= 0)
+		return;
+
 	/* cx and cy are the actual cursor snapped to wherever - round them to the nearest real grid point */
 	grid_local_x = (cx / hidlib->grid) * hidlib->grid + hidlib->grid_ox;
 	grid_local_y = (cy / hidlib->grid) * hidlib->grid + hidlib->grid_oy;
