@@ -2373,7 +2373,10 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	pcb_subc_remove(dst);
 
 	pcb_obj_id_del(data, placed);
-	placed->ID = target_id;
+/* NOTE: Can not keep ID because that would fool the undo system: double-replace
+   a subc and there will be two instances with the same ID on the undo list
+   and searching by ID will get fooled! */
+/*	placed->ID = target_id;*/ (void)target_id;
 	pcb_obj_id_reg(data, placed);
 	placed->Flags.f &= ~fmask;
 	placed->Flags.f |= flags;
