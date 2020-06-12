@@ -14,7 +14,7 @@
 - BUG: parametric fp: screw() gui edit -> preview not updated [report: Piotr]
 - BUG: parametric fp: qf() gui edit -> silk marks don't work [report: Piotr]
 - BUG: parametric fp: qf() gui edit -> unit doesn't stick to user choice um [report: Piotr]
-- BUG: parametric fp: qf()->qfn() gui edit parameter leak? [report: Piotr]
++ BUG: parametric fp: qf()->qfn() gui edit parameter leak? [report: Piotr]
 
 2. For later releases ===============================================================================
 - CLEANUP: move layer_parse_group_str() from core to io_pcb, probably together with the default stackup setup code [report: Igor2]
