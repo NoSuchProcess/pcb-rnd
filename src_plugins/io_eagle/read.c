@@ -551,7 +551,7 @@ static int eagle_strlen2(const char *str)
 static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
-	rnd_coord_t X, Y, height;
+	rnd_coord_t X, Y, size, bbw, bbh;
 	const char *rot, *text_val;
 	unsigned int rotdeg = 0, text_scaling = 100;
 	pcb_flag_t text_flags = pcb_flag_make(0);
@@ -576,8 +576,11 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 	}
 	X = eagle_get_attrc(st, subtree, "x", -1);
 	Y = eagle_get_attrc(st, subtree, "y", -1);
-	height = eagle_get_attrc(st, subtree, "size", -1);
-	text_scaling = (int)((double)height/(double)EAGLE_TEXT_SIZE_100 * 100);
+	size = eagle_get_attrc(st, subtree, "size", -1);
+	bbw = (double)size * 0.905 * (double)eagle_strlen2(text_val) / 2.0;
+	bbh = (double)size * 1.45;
+rnd_trace("text=%s bbw=%mm bbh=%mm\n", text_val, bbw, bbh);
+	text_scaling = (int)((double)size/(double)EAGLE_TEXT_SIZE_100 * 100);
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
 	if (rot != NULL) {
 		if (*rot == 'R') {
