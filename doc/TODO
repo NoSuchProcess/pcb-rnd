@@ -11,7 +11,10 @@
 1. For the upcoming release ===============================================================================
 - BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 - FEATURE: user script: bug_files/pstk_autonum.txt (when the footprint design pool note is being written) [report: Igor2]
-- BUG: 4 pending parametric footprint related bugreports by Piotr (email)
+- BUG: parametric fp: screw() gui edit -> preview not updated [report: Piotr]
+- BUG: parametric fp: qf() gui edit -> silk marks don't work [report: Piotr]
+- BUG: parametric fp: qf() gui edit -> unit doesn't stick to user choice um [report: Piotr]
+- BUG: parametric fp: qf()->qfn() gui edit parameter leak? [report: Piotr]
 
 2. For later releases ===============================================================================
 - CLEANUP: move layer_parse_group_str() from core to io_pcb, probably together with the default stackup setup code [report: Igor2]
