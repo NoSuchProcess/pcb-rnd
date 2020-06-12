@@ -306,7 +306,7 @@ static char *gen_cmd(library_ctx_t *ctx)
 		const char *val;
 		rnd_hid_attribute_t *a = &ctx->pdlg[ctx->pwid[n]];
 
-		if ((n >= ctx->first_optional) && ((!a->changed) || (a->empty)))
+		if (((n >= ctx->first_optional) && (!a->changed)) || (a->empty))
 			continue;
 
 		switch(a->type) {
@@ -327,6 +327,8 @@ static char *gen_cmd(library_ctx_t *ctx)
 				break;
 			case RND_HATT_STRING:
 				val = a->val.str;
+				if ((val != NULL) && (*val == '\0'))
+					continue;
 				break;
 			case RND_HATT_BOOL:
 				val = a->val.lng ? "yes" : "no";
