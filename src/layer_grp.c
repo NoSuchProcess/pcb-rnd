@@ -395,7 +395,7 @@ static pcb_layergrp_t *pcb_get_grp_new_intern_insert(pcb_board_t *pcb, int room,
 static pcb_layergrp_t *pcb_get_grp_new_intern_(pcb_board_t *pcb, int omit_substrate, int force_end)
 {
 	pcb_layer_stack_t *stack = &pcb->LayerGroups;
-	int bl, n;
+	int bl;
 	int room = omit_substrate ? 1 : 2;
 
 	if ((stack->len + room) >= PCB_MAX_LAYERGRP)
