@@ -501,6 +501,7 @@ void pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	}
 
 	if (filter_txt != NULL) {
+		const char *n1, *n2;
 		char *prm = strchr(filter_txt, '(');
 
 		/* if filter text doesn't have parameters, try the example */
@@ -511,6 +512,19 @@ void pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 				rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
 				prm = strchr(filter_txt, '(');
 			}
+		}
+
+		/* do not load parameters from the comamnd of a differently named
+		   footprint to avoid invalid mixing of similar named parameters; in
+		   that case rather fill in the dialog with the example */
+		for(n1 = filter_txt, n2 = l->name;; n1++, n2++) {
+			if (*n1 != *n2) {
+				prm = ctx->example;
+				while((*prm != '(') && (*prm != '\0')) prm++;
+				break;
+			}
+			else if ((*n1 == '(') || (*n1 == '\0'))
+				break;
 		}
 
 		if (prm != NULL)
