@@ -619,6 +619,10 @@ rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text
 	text_scaling = (int)((double)size/(double)EAGLE_TEXT_SIZE_100 * 100);
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
 	if (rot != NULL) {
+		if (*rot == 'M') {
+			mirror = PCB_TXT_MIRROR_X;
+			rot++;
+		}
 		if (*rot == 'R') {
 			char *end;
 			rotdeg = strtol(rot+1, &end, 10);
