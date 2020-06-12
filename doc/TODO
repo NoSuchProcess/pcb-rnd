@@ -13,7 +13,6 @@
 - FEATURE: user script: bug_files/pstk_autonum.txt (when the footprint design pool note is being written) [report: Igor2]
 - BUG: parametric fp: screw() gui edit -> preview not updated [report: Piotr]
 - BUG: parametric fp: qf() gui edit -> silk marks don't work [report: Piotr]
-- BUG: parametric fp: qf() gui edit -> unit doesn't stick to user choice um [report: Piotr]
 + BUG: parametric fp: qf()->qfn() gui edit parameter leak? [report: Piotr]
 
 2. For later releases ===============================================================================
