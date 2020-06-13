@@ -365,10 +365,21 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "default") == 0) {
-		int i;
+		int i, ty = dad->dlg[RND_DAD_CURRENT(dad->dlg)].type;
 		double d;
 		rnd_coord_t c;
-		switch(dad->dlg[RND_DAD_CURRENT(dad->dlg)].type) {
+
+		if (ty == RND_HATT_END) {
+			rnd_hid_dad_spin_t *spin = dad->dlg[RND_DAD_CURRENT(dad->dlg)].wdata;
+			switch(spin->type) {
+				case RND_DAD_SPIN_INT:     ty = RND_HATT_INTEGER; break;
+				case RND_DAD_SPIN_DOUBLE:  ty = RND_HATT_REAL; break;
+				case RND_DAD_SPIN_FREQ:    ty = RND_HATT_REAL; break;
+				case RND_DAD_SPIN_COORD:   ty = RND_HATT_COORD; break;
+			}
+		}
+
+		switch(ty) {
 			case RND_HATT_COORD:
 				RND_ACT_CONVARG(3, FGW_COORD, dad, c = fgw_coord(&argv[3]));
 				RND_DAD_DEFAULT_NUM(dad->dlg, c);
