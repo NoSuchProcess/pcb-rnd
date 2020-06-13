@@ -132,6 +132,7 @@ static void dad_row_free_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_
 typedef struct {
 	char *act_expose, *act_mouse, *act_free;
 	char *udata;
+	rnd_hidlib_t *hidlib;
 } dad_prv_t;
 
 static int prv_action(rnd_hidlib_t *hl, const char *actname, rnd_hid_gc_t gc, const char *udata)
@@ -162,20 +163,20 @@ static int prv_action(rnd_hidlib_t *hl, const char *actname, rnd_hid_gc_t gc, co
 void dad_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	dad_prv_t *ctx = prv->user_ctx;
-	prv_action(&PCB->hidlib, ctx->act_expose, gc, ctx->udata);
+	prv_action(ctx->hidlib, ctx->act_expose, gc, ctx->udata);
 }
 
 rnd_bool dad_prv_mouse_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y)
 {
 	dad_prv_t *ctx = prv->user_ctx;
-	return prv_action(&PCB->hidlib, ctx->act_mouse, NULL, ctx->udata);
+	return prv_action(ctx->hidlib, ctx->act_mouse, NULL, ctx->udata);
 }
 
 void dad_prv_free_cb(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
 {
 	dad_prv_t *ctx = user_ctx;
 
-	prv_action(&PCB->hidlib, ctx->act_free, NULL, ctx->udata);
+	prv_action(ctx->hidlib, ctx->act_free, NULL, ctx->udata);
 
 	free(ctx->act_expose);
 	free(ctx->act_mouse);
@@ -418,6 +419,7 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		uctx->act_mouse = rnd_concat(prefix, "mouse", NULL);
 		uctx->act_free = rnd_concat(prefix, "free", NULL);
 		uctx->udata = rnd_strdup(suctx);
+		uctx->hidlib = RND_ACT_HIDLIB;
 		RND_DAD_PREVIEW(dad->dlg, dad_prv_expose_cb, dad_prv_mouse_cb, dad_prv_free_cb, &vb, sx, sy, uctx);
 	}
 	else if ((rnd_strcasecmp(cmd, "enum") == 0) || (rnd_strcasecmp(cmd, "begin_tabbed") == 0)) {
