@@ -1,15 +1,15 @@
 x: shorted nets: net too close to other net
-within (36.40, 86.95, 124.64, 149.65) mil
+within (23.98, 7.31, 126.02, 183.43) mil
 required value 0.00
 insufficient clearance between an object of the network and objects of other networks
 
 x: shorted nets: net too close to other net
-within (27.91, 7.31, 90.61, 183.43) mil
+within (23.98, 7.31, 126.02, 183.43) mil
 required value 0.00
 insufficient clearance between an object of the network and objects of other networks
 
 x: broken net: insufficient overlap
-within (18.65, 113.55, 81.35, 227.25) mil
+within (17.50, 111.25, 91.76, 248.01) mil
 required value 0.00
 the overlap between two objects in the net is insufficient and can lead to broken network during board fabrication
 

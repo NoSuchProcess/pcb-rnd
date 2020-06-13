@@ -58,6 +58,8 @@ typedef struct {
 		RND_CFT_BOOLEAN move_linepoint_uses_route;	/* Moving a line point calculates a new line route. This allows 45/90 line modes when editing lines. */
 		RND_CFT_BOOLEAN auto_via;              /* when drawing traces and switching layers or when moving an object from one layer to another, try to keep connections by automatically inserting vias. */
 		RND_CFT_REAL route_radius;             /* temporary: route draw helper's arc radius at corners (factor of the trace thickness) */
+		RND_CFT_BOOLEAN drc_inclusive_bbox;    /* when enabled, the drc view will always include all red and blue objects (turns off optimization that focuses on red objects) */
+
 
 		RND_CFT_BOOLEAN io_incomp_popup;       /* wether to enable popping up the io incompatibility list dialog on save incompatibility errors */
 		RND_CFT_STRING io_incomp_style;        /* view listing style (list or simple), when io_incomp_popup is true */

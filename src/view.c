@@ -45,6 +45,8 @@
 #include <librnd/core/error.h>
 #include <librnd/core/rnd_printf.h>
 
+#include "conf_core.h"
+
 static unsigned long int pcb_view_next_uid = 0;
 
 void pcb_view_free(pcb_view_t *item)
@@ -175,7 +177,7 @@ void pcb_view_set_bbox_by_objs(pcb_data_t *data, pcb_view_t *v)
 		return;
 
 	/* special case: single objet in group A, use the center */
-	if (pcb_idpath_list_length(&v->objs[0]) == 1) {
+	if (!conf_core.editor.drc_inclusive_bbox && (pcb_idpath_list_length(&v->objs[0]) == 1)) {
 		idp = pcb_idpath_list_first(&v->objs[0]);
 		obj = pcb_idpath2obj_in(data, idp);
 		if (obj != NULL) {

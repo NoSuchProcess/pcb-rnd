@@ -4,7 +4,7 @@ SRC=$(ROOT)/src
 TDIR=../tests/drc_query
 FLT=$(TDIR)/drc_filter.sh
 PCBRND=./pcb-rnd
-GLOBARGS=-c rc/library_search_paths=../tests/RTT/lib -c rc/quiet=1
+GLOBARGS=-c rc/library_search_paths=../tests/RTT/lib -c rc/quiet=1 -c editor/drc_inclusive_bbox=1
 
 TESTS = \
 thickness.diff overlap.diff netint.diff dwg_area.diff fullpoly.diff \
