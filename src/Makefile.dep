@@ -6503,6 +6503,7 @@
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/unit.h obj_line.h \
+ undo_old.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  librnd/core/box.h librnd/core/misc_util.h librnd/poly/offset.h \
  ../src_3rd/genvector/vtp0.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h librnd/core/hid.h \
@@ -10775,7 +10776,9 @@ view.o: view.c ../config.h librnd/config.h idpath.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/actions.h librnd/core/hid.h \
  librnd/core/error.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- librnd/core/compat_misc.h librnd/core/rnd_printf.h
+ librnd/core/compat_misc.h librnd/core/rnd_printf.h conf_core.h \
+ librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h librnd/core/color.h
 vtlibrary.o: vtlibrary.c vtlibrary.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
