@@ -1,11 +1,11 @@
-1: single hole: hole too small
-within (20.00, 245.00, 130.00, 355.00) mil
-required value 0.00
-padstack hole diameter is too small
-
-2: pair hole: overlapping holes
+x: pair hole: overlapping holes
 within (20.00, 145.00, 130.00, 255.00) mil
 required value 31.50 mil
 measured value 25.00 mil
 padstack holes overlap
+
+x: single hole: hole too small
+within (20.00, 245.00, 130.00, 355.00) mil
+required value 0.00
+padstack hole diameter is too small
 

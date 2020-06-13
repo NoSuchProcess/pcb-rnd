@@ -1,20 +1,20 @@
-1: object beyond drawing area: Objects located outside of the drawing area
-within (112.40, -106.35, 237.60, -43.65) mil
+x: object beyond drawing area: Objects located outside of the drawing area
+within (487.40, 43.65, 612.60, 106.35) mil
 required value 0.00
 Objects may be omitted from exports or may be outside of the board contour.
 
-2: object beyond drawing area: Objects located outside of the drawing area
-within (-212.60, 43.65, -87.40, 106.35) mil
-required value 0.00
-Objects may be omitted from exports or may be outside of the board contour.
-
-3: object beyond drawing area: Objects located outside of the drawing area
+x: object beyond drawing area: Objects located outside of the drawing area
 within (112.40, 193.65, 237.60, 256.35) mil
 required value 0.00
 Objects may be omitted from exports or may be outside of the board contour.
 
-4: object beyond drawing area: Objects located outside of the drawing area
-within (487.40, 43.65, 612.60, 106.35) mil
+x: object beyond drawing area: Objects located outside of the drawing area
+within (112.40, -106.35, 237.60, -43.65) mil
+required value 0.00
+Objects may be omitted from exports or may be outside of the board contour.
+
+x: object beyond drawing area: Objects located outside of the drawing area
+within (-212.60, 43.65, -87.40, 106.35) mil
 required value 0.00
 Objects may be omitted from exports or may be outside of the board contour.
 
