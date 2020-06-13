@@ -126,6 +126,8 @@ static int ReadNetlist(const char *filename)
 			while (inputline[i] != '\0' && BLANK(inputline[i]))
 				i++;
 			if (kind == 0) {
+				if (!pcb_net_name_valid(temp))
+					rnd_message(RND_MSG_ERROR, "gEDA/PCB netlist: invalid net name: '%s'\n", temp);
 				net = pcb_net_get(PCB, &PCB->netlist[PCB_NETLIST_INPUT], temp, PCB_NETA_ALLOC);
 				kind++;
 			}
