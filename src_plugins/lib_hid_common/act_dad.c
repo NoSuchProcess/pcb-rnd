@@ -238,7 +238,7 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, bool, [label]) - append an checkbox widget (default off)\n"
 	"dad(dlgname, integer|real|coord, min, max, [label]) - append an input field\n"
 	"dad(dlgname, string) - append a single line text input field\n"
-	"dad(dlgname, default) - set the default value of a widet while creating the dialog\n"
+	"dad(dlgname, default, val) - set the default value of a widet while creating the dialog\n"
 	"dad(dlgname, help, tooltip) - set the help (tooltip) text for the current widget\n"
 	"dad(dlgname, progress) - append a progress bar (set to 0)\n"
 	"dad(dlgname, preview, cb_act_prefix, minsize_x, minsize_y, [ctx]) - append a preview with a viewbox of 10*10mm, minsize in pixels\n"
