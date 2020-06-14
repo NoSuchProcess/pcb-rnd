@@ -263,15 +263,27 @@ TODO("Dangerous: rather support subc's data with IDPATH");
 	abort();
 }
 
+#define conv_struct_from_str(str, DOMAIN, TYPE) \
+	if ((str[0] == '0') && (str[1] == 'x')) { \
+		fgw_arg_conv(&rnd_fgw, arg, FGW_PTR); \
+			if (fgw_ptr_in_domain(&rnd_fgw, arg, DOMAIN)) { \
+			arg->type = TYPE | FGW_PTR; \
+			return 0; \
+		} \
+		arg->type = FGW_INVALID; \
+		return -1; \
+	}
+
 static int idpath_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 {
 	if (target == FGW_IDPATH) { /* convert to idpath */
 		if (FGW_BASE_TYPE(arg->type) == FGW_STR) {
 			const char *str = arg->val.str;
+
+			conv_struct_from_str(str, RND_PTR_DOMAIN_IDPATH, FGW_IDPATH);
 			pcb_idpath_t *idp = pcb_str2idpath(PCB, str);
 			if (idp != NULL) {
 				fgw_ptr_reg(&rnd_fgw, arg, RND_PTR_DOMAIN_IDPATH, FGW_IDPATH, idp);
-/*FGW_PTR | FGW_STRUCT*/
 				return 0;
 			}
 		}
