@@ -112,7 +112,8 @@ rnd_action_t act_read_action_list[] = {
 
 	{"IsPointOnArc", pcb_act_IsPointOnArc, pcb_acth_IsPointOnArc, pcb_acts_IsPointOnArc},
 	{"IsPointOnLine", pcb_act_IsPointOnLine, pcb_acth_IsPointOnLine, pcb_acts_IsPointOnLine},
-	{"IntersectObjObj", pcb_act_IntersectObjObj, pcb_acth_IntersectObjObj, pcb_acts_IntersectObjObj}
+	{"IntersectObjObj", pcb_act_IntersectObjObj, pcb_acth_IntersectObjObj, pcb_acts_IntersectObjObj},
+	{"ObjCenter", pcb_act_ObjCenter, pcb_acth_ObjCenter, pcb_acts_ObjCenter}
 };
 
 static const char *act_read_cookie = "act_read";

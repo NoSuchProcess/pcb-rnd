@@ -102,3 +102,32 @@ static fgw_error_t pcb_act_IntersectObjObj(fgw_arg_t *res, int argc, fgw_arg_t *
 	return 0;
 }
 
+
+static const char pcb_acts_ObjCenter[] = "ObjCenter(idpath, x|y)";
+static const char pcb_acth_ObjCenter[] = "Returns the x or y coordinate of the center of an object";
+static fgw_error_t pcb_act_ObjCenter(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_idpath_t *idp;
+	pcb_any_obj_t *obj;
+	const char *which;
+	rnd_coord_t x, y;
+
+	RND_ACT_CONVARG(1, FGW_IDPATH, ObjCenter, idp = fgw_idpath(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_STR, ObjCenter, which = argv[2].val.str);
+
+	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[1], RND_PTR_DOMAIN_IDPATH))
+		return FGW_ERR_PTR_DOMAIN;
+	obj = pcb_idpath2obj(PCB, idp);
+	if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0))
+		return FGW_ERR_ARG_CONV;
+
+	pcb_obj_center(obj, &x, &y);
+	res->type = FGW_COORD;
+	switch(*which) {
+		case 'x': case 'X': fgw_coord(res) = x; return 0;
+		case 'y': case 'Y': fgw_coord(res) = y; return 0;
+	}
+
+	return FGW_ERR_ARG_CONV;
+}
+
