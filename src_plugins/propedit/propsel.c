@@ -431,7 +431,7 @@ static void set_attr_obj(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 	}
 
 	side_effect = attr_key_has_side_effect(key);
-printf("Side effect: %d key=%s\n", side_effect, key);
+
 	if (side_effect)
 		pcb_obj_pre(obj);
 	res = pcb_uchg_attr(st->pcb, obj, key, st->s);
