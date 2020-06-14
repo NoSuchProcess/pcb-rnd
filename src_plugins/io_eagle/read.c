@@ -553,7 +553,7 @@ static int eagle_read_text(read_state_t *st, trnode_t *subtree, void *obj, int t
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	rnd_coord_t X, Y, size, bbw, bbh, anchx, anchy, basel;
 	const char *rot, *text_val, *align;
-	unsigned int rotdeg = 0, text_scaling = 100;
+	unsigned int rotdeg = 0;
 	enum { ALEFT=-1, ATOP=-1, CENTER=0, ARIGHT=+1, ABOTTOM=+1 } ax = ALEFT, ay = ABOTTOM; /* anchor position (text alignment) */
 	pcb_flag_t text_flags = pcb_flag_make(0);
 	pcb_layer_t *ly;
@@ -616,7 +616,6 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 
 rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text_val, X, Y, bbw, bbh, ax, ay, anchx, anchy);
 
-	text_scaling = (int)((double)size/(double)EAGLE_TEXT_SIZE_100 * 100);
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
 	if (rot != NULL) {
 		if (*rot == 'M') {
