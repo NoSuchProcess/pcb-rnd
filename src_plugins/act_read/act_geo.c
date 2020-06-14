@@ -122,10 +122,10 @@ static fgw_error_t pcb_act_ObjCenter(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return FGW_ERR_ARG_CONV;
 
 	pcb_obj_center(obj, &x, &y);
-	res->type = FGW_COORD;
+	res->type = FGW_DOUBLE;
 	switch(*which) {
-		case 'x': case 'X': fgw_coord(res) = x; return 0;
-		case 'y': case 'Y': fgw_coord(res) = y; return 0;
+		case 'x': case 'X': res->val.nat_double = x; return 0;
+		case 'y': case 'Y': res->val.nat_double = y; return 0;
 	}
 
 	return FGW_ERR_ARG_CONV;
