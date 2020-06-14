@@ -138,8 +138,8 @@ static int undo_text_geo_swap(void *udata)
 	pcb_poly_restore_to_poly(layer->parent.data, PCB_OBJ_TEXT, layer, g->text);
 
 	rnd_swap(int, g->Scale, g->text->Scale);
-	rnd_swap(int, g->scale_x, g->text->scale_x);
-	rnd_swap(int, g->scale_y, g->text->scale_y);
+	rnd_swap(double, g->scale_x, g->text->scale_x);
+	rnd_swap(double, g->scale_y, g->text->scale_y);
 	rnd_swap(rnd_coord_t, g->X, g->text->X);
 	rnd_swap(rnd_coord_t, g->Y, g->text->Y);
 	rnd_swap(rnd_coord_t, g->thickness, g->text->thickness);
