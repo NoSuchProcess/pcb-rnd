@@ -1770,7 +1770,7 @@ static int post_process_polyholes(read_state_t *st)
 int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	int pp_res, res, old_leni;
-	read_state_t st;
+	read_state_t st = {0};
 
 	static const dispatch_t disp[] = { /* possible children of root */
 		{"drawing",        eagle_read_drawing},
@@ -1833,7 +1833,7 @@ err:;
 int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, rnd_conf_role_t settings_dest)
 {
 	int pp_res, res, old_leni;
-	read_state_t st;
+	read_state_t st = {0};
 
 	static const dispatch_t disp_1[] = { /* possible children of root */
 		{"drawing",        eagle_read_nop},
