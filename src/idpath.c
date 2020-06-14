@@ -142,6 +142,10 @@ pcb_idpath_t *pcb_str2idpath(pcb_board_t *pcb, const char *str)
 	for(s = ps; *s != '\0'; s++) {
 		if ((s[0] == '/') && (s[1] != '/') && (s[1] != '\0'))
 			len++;
+		else if ((!isdigit(*s)) && (*s != '/')) {
+			rnd_trace("bad idpath: '%s' in '%s'\n", s, ps);
+			return NULL;
+		}
 	}
 
 	idp = pcb_idpath_alloc(len);
