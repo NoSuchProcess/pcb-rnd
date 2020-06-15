@@ -602,17 +602,6 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 		}
 	}
 
-	switch(ax) {
-		case ALEFT: anchx = 0; break;
-		case ARIGHT: anchx = bbw; break;
-		default: anchx = bbw/2;
-	}
-	basel = 4*bbh/5;
-	switch(ay) {
-		case ATOP: anchy = 0; break;
-		case ABOTTOM: anchy = -basel; break;
-		default: anchy = -basel/2;
-	}
 
 rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text_val, X, Y, bbw, bbh, ax, ay, anchx, anchy);
 
@@ -632,15 +621,26 @@ rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text
 			if (*end != '\0')
 				rnd_message(RND_MSG_WARNING, "Ignoring invalid text rotation '%s' (requires integer)\n", rot);
 
-				TODO("but: alignment changed, see {text_rot}");
-/*
-			if ((rotdeg > 90) && (rotdeg <= 270))
-				rotdeg = rotdeg - 180;
-*/
+			if (!spin && (rotdeg > 90) && (rotdeg <= 270)) { /* when spin is not enabled, eagle rotates the text so it's readable from bottom and right */
+				rotdeg -= 180;
+				ax = -ax;
+			}
 			rotdeg = 360-rotdeg; /* compensate for the y mirror at the end */
 		}
 		else
 			rnd_message(RND_MSG_WARNING, "Ignoring invalid text rotation '%s' (missing R prefix)\n", rot);
+	}
+
+	switch(ax) {
+		case ALEFT: anchx = 0; break;
+		case ARIGHT: anchx = bbw; break;
+		default: anchx = bbw/2;
+	}
+	basel = 4*bbh/5;
+	switch(ay) {
+		case ATOP: anchy = 0; break;
+		case ABOTTOM: anchy = -basel; break;
+		default: anchy = -basel/2;
 	}
 
 	pcb_text_new_by_bbox(ly, pcb_font(st->pcb, 0, 1), X, Y, bbw, bbh, anchx, anchy, 1, mirror, rotdeg, 0, text_val, text_flags);
