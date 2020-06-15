@@ -1034,7 +1034,7 @@ static unsigned long load_ubf(unsigned char *src, int offs, unsigned long field)
 	len = (field >> 16) & 0xff;
 	first = (field >> 8) & 0xff;
 	last = field & 0xff;
-	mask = (1 << (first - last + 1)) - 1;
+	mask = (1 << (last - first + 1)) - 1;
 
 	val = load_ulong(src, offs, len);
 	val >>= first;
