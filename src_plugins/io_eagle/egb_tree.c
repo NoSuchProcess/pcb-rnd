@@ -61,9 +61,16 @@ egb_node_t *egb_node_append(egb_node_t *parent, egb_node_t *node)
 
 void egb_node_prop_set(egb_node_t *node, const char *key, const char *val)
 {
+	htss_entry_t *e;
 	if (node->props.table == NULL)
 		htss_init(&node->props, strhash, strkeyeq);
-	htss_set(&node->props, rnd_strdup(key), rnd_strdup(val));
+	e = htss_getentry(&node->props, key);
+	if (e != NULL) {
+		free(e->value);
+		e->value = rnd_strdup(val);
+	}
+	else
+		htss_set(&node->props, rnd_strdup(key), rnd_strdup(val));
 }
 
 char *egb_node_prop_get(egb_node_t *node, const char *key)
