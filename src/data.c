@@ -444,7 +444,7 @@ void pcb_data_mirror(pcb_data_t *data, rnd_coord_t y_offs, pcb_data_mirror_text_
 	}
 	PCB_ENDALL_LOOP;
 
-	switch(mtxt) {
+	switch(mtxt & PCB_TXM_MASK_OP) {
 		case PCB_TXM_NONE:
 			break;
 		case PCB_TXM_SIDE:
@@ -462,6 +462,17 @@ void pcb_data_mirror(pcb_data_t *data, rnd_coord_t y_offs, pcb_data_mirror_text_
 			PCB_ENDALL_LOOP;
 			break;
 	}
+
+	if(mtxt & PCB_TXM_ROT) {
+		PCB_TEXT_ALL_LOOP(data);
+		{
+			if (text->rot != 0) {
+				text->rot = -text->rot;
+			}
+		}
+		PCB_ENDALL_LOOP;
+	}
+
 	pcb_data_clip_inhibit_dec(data, 0);
 	pcb_undo_unfreeze_serial();
 	pcb_undo_inc_serial();

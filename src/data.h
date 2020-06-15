@@ -167,10 +167,21 @@ pcb_board_t *pcb_data_get_top(pcb_data_t *data);
 void pcb_data_set_parent_globals(pcb_data_t *data, pcb_data_t *new_parent);
 
 typedef enum pcb_data_mirror_text_e {
+	/* main operation - choose one: */
 	PCB_TXM_NONE = 0, /* do not mirror text */
-	PCB_TXM_SIDE = 1, /* mirror text, changing side */
-	PCB_TXM_COORD    /* mirror text base coords only */
+	PCB_TXM_SIDE,     /* mirror text, changing side */
+	PCB_TXM_COORD,    /* mirror text base coords only */
+
+	/* modifier bits, can be OR'd: */
+	PCB_TXM_ROT = 32,  /* mirror text rotation angle */
+
+	/* msic */
+	PCB_TXM_MASK_OP = PCB_TXM_ROT-1
 } pcb_data_mirror_text_t;
+
+
+
+
 void pcb_data_mirror(pcb_data_t *data, rnd_coord_t y_offs, pcb_data_mirror_text_t mtxt, rnd_bool pstk_smirror, rnd_bool undoable);
 
 void pcb_data_move(pcb_data_t *data, rnd_coord_t dx, rnd_coord_t dy, int undoable);
