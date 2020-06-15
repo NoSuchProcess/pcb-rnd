@@ -603,9 +603,10 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 	}
 
 
-rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text_val, X, Y, bbw, bbh, ax, ay, anchx, anchy);
 
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
+rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm rot=%s\n", text_val, X, Y, bbw, bbh, ax, ay, anchx, anchy, rot);
+
 	if (rot != NULL) { /* strict order seems to be: SMR */
 		if (*rot == 'S') {
 			spin = 1;
@@ -621,7 +622,7 @@ rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text
 			if (*end != '\0')
 				rnd_message(RND_MSG_WARNING, "Ignoring invalid text rotation '%s' (requires integer)\n", rot);
 
-			if (!spin && (rotdeg > 90) && (rotdeg <= 270)) { /* when spin is not enabled, eagle rotates the text so it's readable from bottom and right */
+			if (!spin && (rotdeg >= 90) && (rotdeg < 270)) { /* when spin is not enabled, eagle rotates the text so it's readable from bottom and right */
 				rotdeg -= 180;
 				ax = -ax;
 			}
