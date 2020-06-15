@@ -622,7 +622,7 @@ rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm rot=%s\n
 			if (*end != '\0')
 				rnd_message(RND_MSG_WARNING, "Ignoring invalid text rotation '%s' (requires integer)\n", rot);
 
-			if (!spin && (rotdeg >= 90) && (rotdeg < 270)) { /* when spin is not enabled, eagle rotates the text so it's readable from bottom and right */
+			if (!spin && (rotdeg > 90) && (rotdeg <= 270)) { /* when spin is not enabled, eagle rotates the text so it's readable from bottom and right */
 				rotdeg -= 180;
 				ax = -ax;
 			}
@@ -1871,7 +1871,7 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	res |= eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp_2, NULL, 0);
 	if (res == 0) {
 		pcb_undo_freeze_add();
-		pcb_data_mirror(pcb->Data, 0, PCB_TXM_COORD, 0, 0);
+		pcb_data_mirror(pcb->Data, 0, PCB_TXM_COORD | PCB_TXM_ROT, 0, 0);
 		pcb_undo_unfreeze_add();
 	}
 	pcb_create_being_lenient = old_leni;
