@@ -1876,25 +1876,19 @@ static int postprocess_circles(void *ctx, egb_node_t *root)
 /* post process rotation to make the rotation values xml format 'RXXX' compliant */
 static int postprocess_rotation(void *ctx, egb_node_t *root, int node_type)
 {
-	htss_entry_t *e;
 	egb_node_t *n;
-	char tmp[32];
+	char *v, tmp[32];
 	int mirrored = 0; /* default not mirrored */
 
 	if (root != NULL && root->id == node_type) {
-		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
-			if (e->key != NULL &&  strcmp(e->key, "mirrored") == 0) {
-				if (e->value != NULL)
-					mirrored = (*e->value != '0');
-				break; 
-			}
-		}
-		for (e = htss_first(&root->props); e; e = htss_next(&root->props, e)) {
-			if (e->key != NULL &&  strcmp(e->key, "bin_rot") == 0) {
-				bin_rot2degrees(e->value, tmp, mirrored);
-				egb_node_prop_set(root, "rot", tmp);
-				break; /* NB if no break here, htss_next(&root->props, e) fails */
-			}
+		v = htss_get(&root->props, "mirrored");
+		if (v != NULL)
+			mirrored = (*v != '0');
+
+		v = htss_get(&root->props, "bin_rot");
+		if (v != NULL) {
+			bin_rot2degrees(v, tmp, mirrored);
+			egb_node_prop_set(root, "rot", tmp);
 		}
 	}
 	for(n = root->first_child; n != NULL; n = n->next)
