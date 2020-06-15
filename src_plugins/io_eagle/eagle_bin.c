@@ -2027,6 +2027,8 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 			}
 		}
 		/* we now add element x,y fields to refdes/value element2 node */
+TODO("What this code is supposed to do? element2 doesn't have x;y, when this is enabled it overwrites perfectly good subc x;y with 0");
+#if 0
 		for (e = htss_first(&n->props); e; e = htss_next(&n->props, e)) {
 			if (strcmp(e->key, "x") == 0) {
 				egb_node_prop_set(el2, "x", e->value);
@@ -2035,6 +2037,7 @@ static int postproc_elements(void *ctx, egb_ctx_t *egb_ctx)
 				egb_node_prop_set(el2, "y", e->value);
 			}
 		}
+#endif
 		/* could potentially add default size, rot to text somewhere around here
 		   or look harder for other optional nodes defining these parameters here */
 	}
