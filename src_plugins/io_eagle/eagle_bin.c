@@ -1056,35 +1056,38 @@ static double load_double(unsigned char *src, int offs, unsigned long len)
 	return d;
 }
 
-/* a function to convert binary format rotations into XML compatible RXXX format */
-int bin_rot2degrees(const char *rot, char *tmp, int mirrored)
+/* a function to convert binary format rotations into XML compatible SMRXXX format */
+int bin_rot2degrees(const char *rot, char *tmp, int mirrored, int spin)
 {
 	long deg;
-	char *end;
+	char *end, *cend;
 	if (rot == NULL) {
 		return -1;
 	} else {
-		tmp[0] = 'M';
-		tmp[mirrored] = 'R';
-		tmp[mirrored + 1] = '0';
-		tmp[mirrored + 2] = '\0'; /* default "R0" for v3,4,5 where bin_rot == 0*/
-		deg = strtol(rot, &end, 10);
+		end = tmp;
+		if (spin) *end++ = 'S';
+		if (mirrored) *end++ = 'M';
+		*end++ = 'R';
+		end[0] = '0';
+		end[1] = '\0'; /* default "R0" for v3,4,5 where bin_rot == 0*/
+
+		deg = strtol(rot, &cend, 10);
 		/*printf("Calculated deg == %ld pre bin_rot2degree conversion\n", deg);*/
-		if (*end != '\0') {
+		if (*cend != '\0') {
 TODO(": convert this to proper error reporting")
 			printf("unexpected binary field 'rot' value suffix\n");
 			return -1;
 		}
 		if (deg >= 1024) {
 			deg = (360*deg)/4096; /* v4, v5 do n*1024 */
-			sprintf(&tmp[mirrored + 1], "%ld", deg);
+			sprintf(end, "%ld", deg);
 			/*printf("Did deg == %ld bin_rot2degree conversion\n", deg);*/
 			return 0;
 		} else if (deg > 0) { /* v3 */
 			deg = deg & 0x00f0; /* only need bottom 4 bits for v3, it seems*/
 			deg = deg*90;
 			/*printf("About to do deg < 1024 bin_rot2degree conversion\n");*/
-			sprintf(&tmp[mirrored + 1], "%ld", deg);
+			sprintf(end, "%ld", deg);
 			return 0;
 		} else {
 			/*printf("Default deg == 0 bin_rot2degree conversion\n");*/
@@ -1878,16 +1881,20 @@ static int postprocess_rotation(void *ctx, egb_node_t *root, int node_type)
 {
 	egb_node_t *n;
 	char *v, tmp[32];
-	int mirrored = 0; /* default not mirrored */
+	int spin = 0, mirrored = 0; /* default not mirrored, not spinning */
 
 	if (root != NULL && root->id == node_type) {
 		v = htss_get(&root->props, "mirrored");
 		if (v != NULL)
 			mirrored = (*v != '0');
 
+		v = htss_get(&root->props, "spin");
+		if (v != NULL)
+			spin = (*v != '0');
+
 		v = htss_get(&root->props, "bin_rot");
 		if (v != NULL) {
-			bin_rot2degrees(v, tmp, mirrored);
+			bin_rot2degrees(v, tmp, mirrored, spin);
 			egb_node_prop_set(root, "rot", tmp);
 		}
 	}
