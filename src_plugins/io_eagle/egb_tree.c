@@ -75,10 +75,12 @@ char *egb_node_prop_get(egb_node_t *node, const char *key)
 
 void egb_node_free(egb_node_t *node)
 {
-	egb_node_t *n;
+	egb_node_t *n, *next;
 
-	for(n = node->first_child; n != NULL; n = n->next)
+	for(n = node->first_child; n != NULL; n = next) {
+		next = n->next;
 		egb_node_free(n);
+	}
 
 	if (node->props.table != NULL) {
 		htss_entry_t *e;

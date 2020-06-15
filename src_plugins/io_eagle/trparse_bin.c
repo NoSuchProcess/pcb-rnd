@@ -72,6 +72,7 @@ static int eagle_bin_load(trparse_t *pst, const char *fn)
 static int eagle_bin_unload(trparse_t *pst)
 {
 	egb_node_free(pst->root);
+	pst->root = NULL;
 	return 0;
 }
 
