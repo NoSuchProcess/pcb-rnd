@@ -605,7 +605,7 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 
 
 	rot = eagle_get_attrs(st, subtree, "rot", NULL);
-rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm rot=%s\n", text_val, X, Y, bbw, bbh, ax, ay, anchx, anchy, rot);
+/*rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm rot=%s\n", text_val, X, Y, bbw, bbh, ax, ay, anchx, anchy, rot);*/
 
 	if (rot != NULL) { /* strict order seems to be: SMR */
 		if (*rot == 'S') {
