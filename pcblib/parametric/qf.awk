@@ -138,17 +138,17 @@ BEGIN {
 	bodysilk = P["bodysilk"]
 	if ((bodysilk == "corners") || (bodysilk == "")) {
 		subc_rectangle_corners("top-silk", -width/2, -height/2, width/2, height/2, wx, wy)
-		silkmark(P["silkmark"], -width/2 - wx/2, -height/2+wy*1.5, (wx+wy)/4)
+		silkmark(P["silkmark"], -width/2, -height/2, (wx+wy)/3)
 	}
 	else if (bodysilk == "full") {
 		subc_rectangle("top-silk", -width/2, -height/2, width/2, height/2)
-		silkmark(P["silkmark"], -width/2 + wx*3, -height/2+wy*3, (wx+wy)/2)
+		silkmark(P["silkmark"], -width/2, -height/2, (wx+wy)/2)
 	}
 	else if (bodysilk == "plcc") {
 		r = (width+height)/10
 		subc_rectangle("top-silk", -width/2, -height/2, width/2, height/2, "arc,NE,SW,SE", r)
 		subc_line("top-silk", -width/2, -height/2+r, width/2, -height/2+r)
-		silkmark(P["silkmark"], 0, -height*0.2, height/40)
+		silkmark(P["silkmark"], 0, -height*0.2-r, height/40)
 	}
 	else if (bodysilk != "none")
 		error("invalid bodysilk parameter")
