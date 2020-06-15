@@ -637,6 +637,7 @@ rnd_trace("text=%s %mm;%mm bbw=%mm bbh=%mm align: %d %d anchor: %mm %mm\n", text
 			if ((rotdeg > 90) && (rotdeg <= 270))
 				rotdeg = rotdeg - 180;
 */
+			rotdeg = 360-rotdeg; /* compensate for the y mirror at the end */
 		}
 		else
 			rnd_message(RND_MSG_WARNING, "Ignoring invalid text rotation '%s' (missing R prefix)\n", rot);
@@ -1804,7 +1805,7 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp, NULL, 0);
 	if (res == 0) {
 		pcb_undo_freeze_add();
-		pcb_data_mirror(pcb->Data, 0, PCB_TXM_COORD, 0, 0);
+		pcb_data_mirror(pcb->Data, 0, PCB_TXM_COORD | PCB_TXM_ROT, 0, 0);
 		pcb_undo_unfreeze_add();
 	}
 	pcb_create_being_lenient = old_leni;
