@@ -76,7 +76,7 @@
 - BUG: I/O bugs:
 	- eagle:
 		- BUG: xml: arc angles in aux/curve_trace/broken_curve [report: vuokko]
-		- BUG: bin: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. -> eagle_bin.c ignores spin and potentially reads mirrored too late [erich]
+		- BUG: bin: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. -> the alignment bits are not parsed; the little crosses on the png should show the alignment [erich]
 		- BUG: xml: eagle XML import fails on polygon import reported by miloh, test file pcb-rnd-aux poly_selfi/eagle_polygon_crash.brd [report: erich], due to input file containing an invalid polygon: a self intersecting poly in line 156 - consider handling "width"?
 		- bin: eagle binary format appended text block needs to be parsed and the text strings allocated to ASCII-127 references in preceding text blocks [erich] 
 		- bin: eagle binary format v3 and libraries do not have a DRC block specifying restring or minimum feature widths. Binary loader should add a DRC block in these cases to the tree with the minimum settings needed for padstacks and features to load sensibly. [erich].
