@@ -759,6 +759,11 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 	sa = 180.0 - atan2(y1 - cy, x1 - cx) * RND_RAD_TO_DEG;
 	ea = 180.0 - atan2(y2 - cy, x2 - cx) * RND_RAD_TO_DEG;
 	da = ea - sa;
+
+	/* direction of the arc is choosen from 2 possibilities by looking at which one results in less than 180 deg span */
+	if (da > 180)
+		da = -(360-da);
+
 /*	rnd_trace("  r=%mm %f %f -> %f\n", (rnd_coord_t)r, sa, ea, da);*/
 	arc = pcb_arc_new(ly, cx, cy, r, r, sa, da, th, st->md_wire_wire*2, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
 
