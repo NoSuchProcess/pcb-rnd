@@ -1789,6 +1789,8 @@ int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	if (st.parser.calls->load(&st.parser, Filename) != 0)
 		return -1;
 
+	pcb->suppress_warn_missing_font = 1;
+
 	st.pcb = pcb;
 	st.elem_by_name = 1;
 	st.default_unit = "mm";
@@ -1856,6 +1858,8 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 		printf("parser error\n");
 		return -1;
 	}
+
+	pcb->suppress_warn_missing_font = 1;
 
 	st.pcb = pcb;
 	st.elem_by_name = 0;
