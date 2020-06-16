@@ -9,6 +9,9 @@
 that order of objects within the svg does not matter, only layering and
 geometry do. This is done by sorting group objects, assuming each object
 is a single line.
+<p>
+Note: stored reference files are of format boardname.ref or boardname.ref.gz
+if they are compressed.
 </description>
 
 <options>
