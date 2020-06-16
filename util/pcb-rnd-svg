@@ -30,13 +30,15 @@ svg_sort()
 # svg file names are $1 and $2, diff is written on stdout
 svg_diff()
 {
-	local t1=`mktemp` t2=`mktemp`
+	local t1=`mktemp` t2=`mktemp` res
 	svg_sort < "$1" > $t1
 	svg_sort < "$2" > $t2
 
 	diff -u $t1 $t2
+	res=$?
 
 	rm $t1 $t2
+	return $res
 }
 
 # calculate the diff between two pcb-rnd loadable board files
