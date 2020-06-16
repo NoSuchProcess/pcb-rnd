@@ -75,11 +75,6 @@ svg_vis_comp()
 	' < $1
 }
 
-help()
-{
-:
-}
-
 pcb_rnd_test()
 {
 	local fn d
@@ -113,6 +108,25 @@ pcb_rnd_test_all()
 	done
 }
 
+help()
+{
+echo 'pcb-rnd-svg - compare pcb-rnd svg renders
+Syntax: pcb-rnd-svg command [args]
+Commands available:
+
+svg-sort            reads a pcb-rnd generated svg on stdin, prints sorted svg
+svg-diff s1 s2      soft pcb-rnd generated svgs s1 and s2 and print diff s1 s2
+svg-vis-comp s1 s2  generate a visual comparison of s1 and s2, diffs highlighted
+test brd            run pcb-rnd on brd and compare the resulting svg to brd.ref
+test-all dir        run test on all boards with a ref available under dir
+
+'
+}
+
+
+
+### MAIN ###
+
 if test $# -lt 1
 then
 	help
@@ -134,4 +148,6 @@ case "$cmd" in
 			pcb_rnd_test_all "$@"
 		fi
 		;;
+	help) help "$@";;
+	*) echo "Unknown command $cmd; try --help" >&2; exit 1 ;;
 esac
