@@ -82,7 +82,35 @@ help()
 
 pcb_rnd_test()
 {
-:
+	local fn d
+	for fn in "$@"
+	do
+		pcb-rnd -x svg --outfile "$fn.svg" "$fn"
+		if test -f "$fn.ref"
+		then
+			d=`svg_diff $fn.ref $fn.svg`
+			if test ! -z "$d"
+			then
+				echo "$d"
+				svg_vis_comp "$fn.ref" "$fn.svg" > "$fn.diff.svg"
+			fi
+		else
+			echo "No ref svg available for $fn" >&2
+		fi
+	done
+}
+
+pcb_rnd_test_all()
+{
+	local d
+
+	for d in "$@"
+	do
+		find "$d" -name '*.ref'
+	done | sort | uniq | while read fn
+	do
+		pcb_rnd_test ${fn%%.ref}
+	done
 }
 
 if test $# -lt 1
@@ -98,4 +126,12 @@ case "$cmd" in
 	svg-diff|--svg-diff) svg_diff "$@" ;;
 	svg-vis-comp|--svg-vis-comp) svg_vis_comp "$@" ;;
 	test) pcb_rnd_test "$@" ;;
+	test-all|--test-all)
+		if test -z "$@"
+		then
+			pcb_rnd_test_all "."
+		else
+			pcb_rnd_test_all "$@"
+		fi
+		;;
 esac
