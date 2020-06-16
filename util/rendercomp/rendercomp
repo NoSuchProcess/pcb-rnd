@@ -75,4 +75,27 @@ svg_vis_comp()
 	' < $1
 }
 
+help()
+{
+:
+}
 
+pcb_rnd_test()
+{
+:
+}
+
+if test $# -lt 1
+then
+	help
+	exit 1
+fi
+
+cmd="$1"
+shift 1
+case "$cmd" in
+	svg-sort|--svg-sort) svg_sort "$@" ;;
+	svg-diff|--svg-diff) svg_diff "$@" ;;
+	svg-vis-comp|--svg-vis-comp) svg_vis_comp "$@" ;;
+	test) pcb_rnd_test "$@" ;;
+esac
