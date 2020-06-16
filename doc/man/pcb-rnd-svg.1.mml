@@ -27,10 +27,25 @@ is a single line.
 	</item>
 
 	<item>
+		<key> diff b1 b2</key>
+		<value> run pcb-rnd to generate svgs of b1 and b2 and print their diff;
+		        result written to stdout in diff -u format. Boards can be of
+		        any format pcb-rnd can load. </value>
+	</item>
+
+	<item>
 		<key> svg-vis-comp s1 s2</key>
 		<value> generate a visual comparison of s1 and s2, diffs highlighted: - lines of
 		        the diff with blue, + lines with red in a new group, over the faded
 		        version of s1. </value>
+	</item>
+
+	<item>
+		<key> vis-comp b1 b2</key>
+		<value> generate a svg visual comparison of board files b1 and b2,
+		         diffs highlighted: - lines of
+		        the diff with blue, + lines with red in a new group, over the faded
+		        svg render of b1. Boards can be of any format pcb-rnd can load. </value>
 	</item>
 
 	<item>
