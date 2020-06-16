@@ -6,6 +6,7 @@ How to get a release candidate tarball in /tmp:
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
 TODO: package deps and plugins
+TODO: new util pcb-rnd-svg
 
 Packaging changes between 2.2.1 and 2.2.2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
