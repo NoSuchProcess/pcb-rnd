@@ -124,6 +124,13 @@ pcb_rnd_test()
 	for fn in "$@"
 	do
 		pcb-rnd -x svg --outfile "$fn.svg" "$fn"
+		if test -f "$fn.ref.gz" -a ! -f "$fn.ref"
+		then
+			gzip -d -k "$fn.ref.gz"
+			del="$fn.ref"
+		else
+			del=""
+		fi
 		if test -f "$fn.ref"
 		then
 			d=`svg_diff $fn.ref $fn.svg`
@@ -136,6 +143,10 @@ pcb_rnd_test()
 		else
 			echo "No ref svg available for $fn" >&2
 		fi
+		if test ! -z "$del"
+		then
+			rm "$del"
+		fi
 	done
 
 	return $res
@@ -143,14 +154,15 @@ pcb_rnd_test()
 
 pcb_rnd_test_all()
 {
-	local d res
+	local d res r
 
 	for d in "$@"
 	do
-		find "$d" -name '*.ref'
+		find "$d" -name '*.ref' -o -name '*.ref.gz'
 	done | sort | uniq | while read fn
 	do
-		pcb_rnd_test ${fn%%.ref}
+		r=${fn%%.gz}
+		pcb_rnd_test ${r%%.ref}
 		if test ! -z $?
 		then
 			res=1
@@ -165,6 +177,7 @@ gen_ref()
 	for fn in "$@"
 	do
 		pcb-rnd -x svg --outfile $fn.ref $fn
+		gzip -9 $fn.ref
 	done
 }
 
