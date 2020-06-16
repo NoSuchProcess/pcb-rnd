@@ -39,6 +39,28 @@ svg_diff()
 	rm $t1 $t2
 }
 
+# calculate the diff between two pcb-rnd loadable board files
+# board file names are $1 and $2, diff is written on stdout
+brd_diff()
+{
+	local s1=`mktemp` s2=`mktemp` res
+
+	pcb-rnd -x svg --outfile "$s1" "$1"
+	pcb-rnd -x svg --outfile "$s2" "$2"
+	if test $? -ne 0
+	then
+		echo "Failed to render board." >&2
+		rm $s1 $s2
+		exit 1
+	fi
+
+	svg_diff $s1 $s2
+	res=$?
+
+	rm $s1 $s2
+	return $res
+}
+
 # Compare pcb-rnd generated svg file $1 to $2, generate a visual difference
 # file using $1 as canvas. Output written to stdout
 svg_vis_comp()
@@ -73,6 +95,25 @@ svg_vis_comp()
 		{ print $0 }
 
 	' < $1
+}
+
+# Compare pcb-rnd loadable board file $1 to $2, generate a visual difference
+# file using $1's svg render as canvas. Output written to stdout
+brd_vis_comp()
+{
+	local s1=`mktemp` s2=`mktemp`
+
+	pcb-rnd -x svg --outfile "$s1" "$1" && pcb-rnd -x svg --outfile "$s2" "$2"
+	if test $? -ne 0
+	then
+		rm $s1 $s2
+		echo "Failed to render board." >&2
+		exit 1
+	fi
+
+	svg_vis_comp $s1 $s2
+
+	rm $s1 $s2
 }
 
 pcb_rnd_test()
@@ -116,7 +157,9 @@ Commands available:
 
 svg-sort            reads a pcb-rnd generated svg on stdin, prints sorted svg
 svg-diff s1 s2      sort pcb-rnd generated svgs s1 and s2 and print diff s1 s2
+diff b1 b2          run pcb-rnd on b1 and b2 and print svg diff b1 b2
 svg-vis-comp s1 s2  generate a visual comparison of s1 and s2, diffs highlighted
+vis-comp b1 b2      visual comparison svg of boards b1 and b2, diffs highlighted
 test brd            run pcb-rnd on brd and compare the resulting svg to brd.ref
 test-all dir        run test on all boards with a ref available under dir
 
@@ -138,7 +181,9 @@ shift 1
 case "$cmd" in
 	svg-sort|--svg-sort) svg_sort "$@" ;;
 	svg-diff|--svg-diff) svg_diff "$@" ;;
+	diff|--diff) brd_diff "$@" ;;
 	svg-vis-comp|--svg-vis-comp) svg_vis_comp "$@" ;;
+	vis-comp|--vis-comp) brd_vis_comp "$@" ;;
 	test) pcb_rnd_test "$@" ;;
 	test-all|--test-all)
 		if test -z "$@"
