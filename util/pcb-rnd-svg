@@ -159,6 +159,15 @@ pcb_rnd_test_all()
 	return $res
 }
 
+gen_ref()
+{
+	local fn
+	for fn in "$@"
+	do
+		pcb-rnd -x svg --outfile $fn.ref $fn
+	done
+}
+
 help()
 {
 echo 'pcb-rnd-svg - compare pcb-rnd svg renders
@@ -172,6 +181,7 @@ svg-vis-comp s1 s2  generate a visual comparison of s1 and s2, diffs highlighted
 vis-comp b1 b2      visual comparison svg of boards b1 and b2, diffs highlighted
 test brd            run pcb-rnd on brd and compare the resulting svg to brd.ref
 test-all dir        run test on all boards with a ref available under dir
+gen-ref filenames   run on each board file and generate the reference svg
 
 '
 }
@@ -195,6 +205,7 @@ case "$cmd" in
 	svg-vis-comp|--svg-vis-comp) svg_vis_comp "$@" ;;
 	vis-comp|--vis-comp) brd_vis_comp "$@" ;;
 	test) pcb_rnd_test "$@" ;;
+	gen-ref) gen_ref "$@" ;;
 	test-all|--test-all)
 		if test -z "$@"
 		then
