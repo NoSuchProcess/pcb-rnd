@@ -1,0 +1,78 @@
+#!/bin/sh
+
+# sort objects within groups of a pcb-rnd generated svg so diff will return
+# zero difference if only order of objects differ
+# file is loaded on stdin, written to stdout
+svg_sort()
+{
+
+	awk '
+		BEGIN {
+			sort = "sort"
+		}
+
+		/^<.g>/ {
+			close(sort);
+			ingrp=0;
+			print $0;
+			next;
+		}
+
+		(ingrp) { print $0 | sort; next }
+
+		/^<g/ { ingrp=1; }
+
+		{ print $0; }
+	'
+}
+
+# calculate the diff between two pcb-rnd generated svg files
+# svg file names are $1 and $2, diff is written on stdout
+svg_diff()
+{
+	local t1=`mktemp` t2=`mktemp`
+	svg_sort < "$1" > $t1
+	svg_sort < "$2" > $t2
+
+	diff -u $t1 $t2
+
+	rm $t1 $t2
+}
+
+# Compare pcb-rnd generated svg file $1 to $2, generate a visual difference
+# file using $1 as canvas. Output written to stdout
+svg_vis_comp()
+{
+	local td=`mktemp`
+	svg_diff "$@" > $td
+	awk -v "diff=$td" '
+		/^<g/ {
+			line=$0;
+			sub("opacity", "old_opacity", line);
+			sub(">", " opacity=\"0.25\">", line);
+			$0=line
+		}
+		/^<.svg/ {
+			print "<g id=\"diff\" opacity=\"0.8\">";
+			getline line < diff;
+			getline line < diff;
+			while(getline line < diff) {
+				color="";
+				if (line ~ "^[+]") color = "red";
+				else if (line ~ "^[-]") color = "blue";
+				if (color != "") {
+					sub("^.", "",  line);
+					sub("stroke=", "stroke=\"" color "\" old_stroke=", line);
+					sub("fill=", "fill=\"" color "\" old_fill=", line);
+					print line;
+				}
+			}
+			print "</g>"
+		}
+
+		{ print $0 }
+
+	' < $1
+}
+
+
