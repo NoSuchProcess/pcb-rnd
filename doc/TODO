@@ -8,7 +8,6 @@
 - BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 + BUG: parametric fp: qf() gui edit -> silk marks don't work [report: Piotr]
 ? BUG: eagle bin: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop -> no such file in svn (commit only if free) [report: Erich]
-+ BUG: eagle bin: text rotations not quite right in eagle binary format layouts. See bug_files/tvbgone3-brd-in-eagle.png. Seems 180 and 270ccw rotation are rendered as upright an 90ccw rotation. -> the spin bit was not parsed [report: erich]
 
 2. For later releases ===============================================================================
 - CLEANUP: move layer_parse_group_str() from core to io_pcb, probably together with the default stackup setup code [report: Igor2]
