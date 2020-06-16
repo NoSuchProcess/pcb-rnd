@@ -165,7 +165,7 @@ pcb_rnd_test_all()
 	do
 		r=${fn%%.gz}
 		pcb_rnd_test ${r%%.ref}
-		if test ! -z $?
+		if test ! $? -ne 0
 		then
 			res=1
 		fi
@@ -222,7 +222,7 @@ case "$cmd" in
 	test) pcb_rnd_test "$@" ;;
 	gen-ref) gen_ref "$@" ;;
 	test-all|--test-all)
-		if test -z "$@"
+		if test -z "$*"
 		then
 			pcb_rnd_test_all "."
 		else
