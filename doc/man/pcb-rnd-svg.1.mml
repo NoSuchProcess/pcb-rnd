@@ -60,5 +60,10 @@ is a single line.
 		        listed, recursively. </value>
 	</item>
 
+	<item>
+		<key> gen-ref brd1 [brd2 brdN...]</key>
+		<value> generate the initial svg reference file for all board files named </value>
+	</item>
+
 </kvlist>
 </options>
