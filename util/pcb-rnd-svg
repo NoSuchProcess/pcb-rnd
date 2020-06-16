@@ -133,12 +133,14 @@ pcb_rnd_test()
 		fi
 		if test -f "$fn.ref"
 		then
-			d=`svg_diff $fn.ref $fn.svg`
+			d=`svg_diff "$fn.ref" "$fn.svg"`
 			if test ! -z "$d"
 			then
 				echo "$d"
 				svg_vis_comp "$fn.ref" "$fn.svg" > "$fn.diff.svg"
 				res=1
+			else
+				rm "$fn.svg"
 			fi
 		else
 			echo "No ref svg available for $fn" >&2
