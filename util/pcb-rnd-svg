@@ -120,7 +120,7 @@ brd_vis_comp()
 
 pcb_rnd_test()
 {
-	local fn d
+	local fn d res=0
 	for fn in "$@"
 	do
 		pcb-rnd -x svg --outfile "$fn.svg" "$fn"
@@ -131,16 +131,19 @@ pcb_rnd_test()
 			then
 				echo "$d"
 				svg_vis_comp "$fn.ref" "$fn.svg" > "$fn.diff.svg"
+				res=1
 			fi
 		else
 			echo "No ref svg available for $fn" >&2
 		fi
 	done
+
+	return $res
 }
 
 pcb_rnd_test_all()
 {
-	local d
+	local d res
 
 	for d in "$@"
 	do
@@ -148,7 +151,12 @@ pcb_rnd_test_all()
 	done | sort | uniq | while read fn
 	do
 		pcb_rnd_test ${fn%%.ref}
+		if test ! -z $?
+		then
+			res=1
+		fi
 	done
+	return $res
 }
 
 help()
