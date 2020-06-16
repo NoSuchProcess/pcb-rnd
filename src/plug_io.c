@@ -581,7 +581,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 
 		/* enable default font if necessary */
 		if (!PCB->fontkit.valid) {
-			if ((require_font) && (!PCB->is_footprint))
+			if ((require_font) && (!PCB->is_footprint) && (!PCB->suppress_warn_missing_font))
 				rnd_message(RND_MSG_WARNING, "File '%s' has no font information, using default font\n", new_filename);
 			PCB->fontkit.valid = rnd_true;
 		}

@@ -94,6 +94,10 @@ struct pcb_board_s {
 /* netlist states */
 	int netlist_frozen;                             /* counter */
 	unsigned netlist_needs_update:1;
+
+
+	/* random */
+	unsigned suppress_warn_missing_font:1;          /* do not warn for missing font; useful for alien formats not having embedded font */
 };
 
 extern pcb_board_t *PCB; /* the board being edited */
