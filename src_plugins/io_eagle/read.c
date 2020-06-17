@@ -733,13 +733,14 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 {
 	pcb_arc_t *arc;
 	rnd_coord_t x1, y1, x2, y2, th, cx, cy;
-	double sidex, sidey, sidelen, nx, ny, midx, midy, r, sa, ea, da, dx, dy;
+	double sidex, sidey, sidelen, nx, ny, midx, midy, r, sa, ea, da, dx, dy, sa2, curve;
 
 	x1 = eagle_get_attrc(st, subtree, "x1", -1);
 	y1 = eagle_get_attrc(st, subtree, "y1", -1);
 	x2 = eagle_get_attrc(st, subtree, "x2", -1);
 	y2 = eagle_get_attrc(st, subtree, "y2", -1);
 	th = eagle_get_attrc(st, subtree, "width", -1);
+	curve = eagle_get_attrd(st, subtree, "curve", -1);
 
 	midx = (x2 + x1) / 2.0;
 	midy = (y2 + y1) / 2.0;
@@ -758,11 +759,8 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 	r = sqrt(dx * dx + dy * dy);
 	sa = 180.0 - atan2(y1 - cy, x1 - cx) * RND_RAD_TO_DEG;
 	ea = 180.0 - atan2(y2 - cy, x2 - cx) * RND_RAD_TO_DEG;
-	da = ea - sa;
 
-	/* direction of the arc is choosen from 2 possibilities by looking at which one results in less than 180 deg span */
-	if (da > 180)
-		da = -(360-da);
+	da = -curve;
 
 /*	rnd_trace("  r=%mm %f %f -> %f\n", (rnd_coord_t)r, sa, ea, da);*/
 	arc = pcb_arc_new(ly, cx, cy, r, r, sa, da, th, st->md_wire_wire*2, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
