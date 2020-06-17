@@ -52,6 +52,7 @@ typedef struct {
 	void (*dad)(int idx);
 	char *(*get)(int idx);
 	void (*ser)(int idx, int save);  /* serialization: if save is 1, set attributes, else load attributes */
+	int type_id;
 } exc_t;
 
 
@@ -322,10 +323,11 @@ static void exc_user_ser(int idx, int save)
 /*** generic code ***/
 
 static const exc_t excitations[] = {
-	{ "gaussian",      exc_gaus_dad, exc_gaus_get, exc_gaus_ser },
-	{ "sinusoidal",    exc_sin_dad,  exc_sin_get,  exc_sin_ser  },
-	{ "custom",        exc_cust_dad, exc_cust_get, exc_cust_ser },
-	{ "user-defined",  exc_user_dad, exc_user_get, exc_user_ser },
+	{ "gaussian",      exc_gaus_dad, exc_gaus_get, exc_gaus_ser, 0 },
+	{ "sinusoidal",    exc_sin_dad,  exc_sin_get,  exc_sin_ser,  1 },
+	{ "custom",        exc_cust_dad, exc_cust_get, exc_cust_ser, 10 },
+	{ "user-defined",  exc_user_dad, exc_user_get, exc_user_ser, -1 },
+	/* pending IDs: dirac=2, step=3 */
 	{ NULL, NULL}
 };
 
