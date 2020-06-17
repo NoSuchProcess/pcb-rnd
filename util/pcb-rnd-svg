@@ -136,6 +136,7 @@ pcb_rnd_test()
 			d=`svg_diff "$fn.ref" "$fn.svg"`
 			if test ! -z "$d"
 			then
+				echo "*** $fn"
 				echo "$d"
 				svg_vis_comp "$fn.ref" "$fn.svg" > "$fn.diff.svg"
 				res=1
