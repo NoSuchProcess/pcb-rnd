@@ -638,7 +638,7 @@ static void openems_hid_export_to_file(const char *filename, FILE *the_file, FIL
 static void openems_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *filename;
-	char *runfn, *end;
+	char *runfn = NULL, *end;
 	int save_ons[PCB_MAX_LAYER];
 	int i, len, fmt_matlab;
 	FILE *fsim;
