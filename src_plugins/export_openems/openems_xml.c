@@ -24,8 +24,24 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+static long def_num_timesteps = 1000000000;
+static double def_end_crit = 1e-05;
+static long def_f_max = 2100000000;
+
 static void openems_wr_xml(wctx_t *ctx)
 {
+	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
 
+	fprintf(ctx->f, "<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>\n");
+	fprintf(ctx->f, "<openEMS>\n");
+	fprintf(ctx->f, "  <FDTD NumberOfTimesteps='%ld' endCriteria='%f' f_max='%ld'>\n", def_num_timesteps, def_end_crit, def_f_max);
+	fprintf(ctx->f, "    <Excitation Type='0' f0='1100000000' fc='1000000000'>\n");
+	fprintf(ctx->f, "    </Excitation>\n");
+	if ((mesh != NULL) && (mesh->bnd[0] != NULL)) {
+		fprintf(ctx->f, "    <BoundaryCond xmin='%s' xmax='%s' ymin='%s' ymax='%s' zmin='%s' zmax='%s'>\n", mesh->bnd[0], mesh->bnd[1], mesh->bnd[2], mesh->bnd[3], mesh->bnd[4], mesh->bnd[5]);
+		fprintf(ctx->f, "    </BoundaryCond>\n");
+	}
+	fprintf(ctx->f, "  </FDTD>\n");
+	fprintf(ctx->f, "</openEMS>\n");
 }
 
