@@ -518,7 +518,7 @@ static void openems_wr_m_mesh_lines(wctx_t *ctx, pcb_mesh_lines_t *l)
 static void openems_wr_m_mesh1(wctx_t *ctx)
 {
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
-	char *exc = pcb_openems_excitation_get(ctx->pcb);
+	char *exc = pcb_openems_excitation_get(ctx->pcb, 1);
 	int n;
 
 	fprintf(ctx->fsim, "%%%%%% Board mesh, part 1\n");

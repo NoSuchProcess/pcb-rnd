@@ -50,10 +50,12 @@ exc_ctx_t exc_ctx;
 typedef struct {
 	const char *name;
 	void (*dad)(int idx);
-	char *(*get)(int idx);
+	char *(*get)(int idx, int fmt_matlab);
 	void (*ser)(int idx, int save);  /* serialization: if save is 1, set attributes, else load attributes */
 	int type_id;
 } exc_t;
+#define MAX_EXC_TYPES 5
+static const exc_t excitations[MAX_EXC_TYPES];
 
 
 static void ser_save(const char *data, const char *attrkey)
@@ -183,7 +185,7 @@ static void exc_gaus_dad(int idx)
 }
 
 
-static char *exc_gaus_get(int idx)
+static char *exc_gaus_get(int idx, int fmt_matlab)
 {
 	double f0 = 0, fc = 0;
 
@@ -193,7 +195,10 @@ static char *exc_gaus_get(int idx)
 	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "gaussian::fc"), &fc))
 		rnd_message(RND_MSG_ERROR, "Gauss excitation: unable to parse frequency gaussian::fc\n");
 
-	return rnd_strdup_printf("FDTD = SetGaussExcite(FDTD, %f, %f);", fc, f0);
+	if (fmt_matlab)
+		return rnd_strdup_printf("FDTD = SetGaussExcite(FDTD, %f, %f);", fc, f0);
+
+	return rnd_strdup_printf("type='%d' f0='%f' fc='%f'", excitations[idx].type_id, fc, f0);
 }
 
 static void exc_gaus_ser(int idx, int save)
@@ -221,14 +226,16 @@ static void exc_sin_dad(int idx)
 	RND_DAD_END(exc_ctx.dlg);
 }
 
-static char *exc_sin_get(int idx)
+static char *exc_sin_get(int idx, int fmt_matlab)
 {
 	double f0;
 
 	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "sinusoidal::f0"), &f0))
 		rnd_message(RND_MSG_ERROR, "Sinus excitation: unable to parse frequency sinusoidal::f0\n");
 
-	return rnd_strdup_printf("FDTD = SetSinusExcite(FDTD, %f);", f0);
+	if (fmt_matlab)
+		return rnd_strdup_printf("FDTD = SetSinusExcite(FDTD, %f);", f0);
+	return rnd_strdup_printf("type='%d' f0='%f'", excitations[idx].type_id, f0);
 }
 
 static void exc_sin_ser(int idx, int save)
@@ -261,15 +268,22 @@ static void exc_cust_dad(int idx)
 	RND_DAD_END(exc_ctx.dlg);
 }
 
-static char *exc_cust_get(int idx)
+static char *exc_cust_get(int idx, int fmt_matlab)
 {
 	double f0;
 
 	if (!to_hz(rnd_attribute_get(&PCB->Attributes, AEPREFIX "custom::f0"), &f0))
 		rnd_message(RND_MSG_ERROR, "Custom excitation: unable to parse frequency custom::f0\n");
 
-	return rnd_strdup_printf(
-		"FDTD = SetCustomExcite(FDTD, %f, %s)",
+	if (fmt_matlab)
+		return rnd_strdup_printf(
+			"FDTD = SetCustomExcite(FDTD, %f, %s)",
+			f0,
+			rnd_attribute_get(&PCB->Attributes, AEPREFIX "custom::func")
+		);
+
+	return rnd_strdup_printf("type='%d' f0='%f' Function='%s'",
+		excitations[idx].type_id,
 		f0,
 		rnd_attribute_get(&PCB->Attributes, AEPREFIX "custom::func")
 	);
@@ -301,9 +315,11 @@ static void exc_user_dad(int idx)
 	RND_DAD_END(exc_ctx.dlg);
 }
 
-static char *exc_user_get(int idx)
+static char *exc_user_get(int idx, int fmt_matlab)
 {
-	return rnd_strdup(rnd_attribute_get(&PCB->Attributes, AEPREFIX "user-defined::script"));
+	if (fmt_matlab)
+		return rnd_strdup(rnd_attribute_get(&PCB->Attributes, AEPREFIX "user-defined::script"));
+	return NULL;
 }
 
 static void exc_user_ser(int idx, int save)
@@ -322,7 +338,7 @@ static void exc_user_ser(int idx, int save)
 #undef I_SCRIPT
 /*** generic code ***/
 
-static const exc_t excitations[] = {
+static const exc_t excitations[MAX_EXC_TYPES] = {
 	{ "gaussian",      exc_gaus_dad, exc_gaus_get, exc_gaus_ser, 0 },
 	{ "sinusoidal",    exc_sin_dad,  exc_sin_get,  exc_sin_ser,  1 },
 	{ "custom",        exc_cust_dad, exc_cust_get, exc_cust_ser, 10 },
@@ -527,13 +543,16 @@ static fgw_error_t pcb_act_OpenemsExcitation(fgw_arg_t *res, int argc, fgw_arg_t
 	return 0;
 }
 
-static char *pcb_openems_excitation_get(pcb_board_t *pcb)
+static char *pcb_openems_excitation_get(pcb_board_t *pcb, int fmt_matlab)
 {
 	if ((exc_ctx.selected < 0) || (exc_ctx.selected >= sizeof(excitations)/sizeof(excitations[0]))) {
 		rnd_message(RND_MSG_ERROR, "No excitation selected\n");
-		return rnd_strdup("%% ERROR: no excitation selected\n");
+		if (fmt_matlab)
+			return rnd_strdup("%% ERROR: no excitation selected\n");
+		else
+			return NULL;
 	}
-	return excitations[exc_ctx.selected].get(exc_ctx.selected);
+	return excitations[exc_ctx.selected].get(exc_ctx.selected, fmt_matlab);
 }
 
 static void exc_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
