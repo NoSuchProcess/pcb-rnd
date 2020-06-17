@@ -1984,18 +1984,30 @@ TODO("TODO padstacks - need to convert obround pins to appropriate padstack type
 	return 0;
 }
 
-/* we post process the PCB_EGKW_SECT_TEXT for 'free text' (long text)
-substitution */
+static void fix_long_text(egb_ctx_t *egb_ctx, egb_node_t *root, const char *field_name)
+{
+	htss_entry_t *e = htss_getentry(&root->props, field_name);
+	if (*e->value == 127) {
+		free(e->value);
+		e->value = rnd_strdup(egb_next_long_text(egb_ctx));
+	}
+}
+
+/* we post process the PCB_EGKW_SECT_TEXT for 'free text' (long text) substitution */
 static int postprocess_free_text(egb_ctx_t *egb_ctx, egb_node_t *root)
 {
 	egb_node_t *n;
 
-	if (root->id == PCB_EGKW_SECT_TEXT) {
-		htss_entry_t *e = htss_getentry(&root->props, "textfield");
-		if (*e->value == 127) {
-			free(e->value);
-			e->value = rnd_strdup(egb_next_long_text(egb_ctx));
-		}
+	switch(root->id) {
+		case PCB_EGKW_SECT_TEXT:
+		case PCB_EGKW_SECT_NETBUSLABEL:
+		case PCB_EGKW_SECT_SMASHEDNAME:
+		case PCB_EGKW_SECT_SMASHEDVALUE:
+		case PCB_EGKW_SECT_SMASHEDPART:
+		case PCB_EGKW_SECT_SMASHEDGATE:
+		case PCB_EGKW_SECT_ATTRIBUTE:
+		case PCB_EGKW_SECT_SMASHEDXREF:
+			fix_long_text(egb_ctx, root, "textfield");
 	}
 
 	for(n = root->first_child; n != NULL; n = n->next)
