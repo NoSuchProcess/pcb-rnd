@@ -1107,7 +1107,7 @@ int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 	egb_ctx->free_text_cursor = NULL;
 
 	if (fread(block, 1, 8, f) != 8) {
-		rnd_message(RND_MSG_ERROR, "Short attempted free text section read. Text section not found.\n");
+		rnd_message(RND_MSG_ERROR, "Short read in free text section preamble. Text section not found.\n");
 		return -1;
 	}
 
@@ -1124,13 +1124,13 @@ int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 TODO("TODO instead of skipping the text, we need to load it completely with drc_ctx->free_text pointing to it")
 	while (text_remaining > 400) {
 		if (fread(free_text, 1, 400, f) != 400) {
-			rnd_message(RND_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
+			rnd_message(RND_MSG_ERROR, "Short read: free text block content. Truncated file?\n");
 			return -1;
 		}
 		text_remaining -= 400;
 	}
 	if (fread(free_text, 1, text_remaining, f) != text_remaining) {
-		rnd_message(RND_MSG_ERROR, "Short attempted free text block read. Truncated file?\n");
+		rnd_message(RND_MSG_ERROR, "Short read: free text block content. Truncated file?\n");
 		return -1;
 	}
 	return 0;
