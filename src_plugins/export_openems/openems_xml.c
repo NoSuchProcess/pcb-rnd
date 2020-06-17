@@ -28,6 +28,20 @@ static long def_num_timesteps = 1000000000;
 static double def_end_crit = 1e-05;
 static long def_f_max = 2100000000;
 
+static void openems_wr_xml_layers(wctx_t *ctx)
+{
+	fprintf(ctx->f, "    <Properties>\n");
+
+	fprintf(ctx->f, "    </Properties>\n");
+}
+
+static void openems_wr_xml_grid(wctx_t *ctx)
+{
+	fprintf(ctx->f, "    <RectilinearGrid DeltaUnit='0.001' CoordSystem='0'>\n");
+
+	fprintf(ctx->f, "    </RectilinearGrid>\n");
+}
+
 static void openems_wr_xml(wctx_t *ctx)
 {
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
@@ -53,6 +67,12 @@ static void openems_wr_xml(wctx_t *ctx)
 		fprintf(ctx->f, "    <BoundaryCond xmin='%s' xmax='%s' ymin='%s' ymax='%s' zmin='%s' zmax='%s'>\n", mesh->bnd[0], mesh->bnd[1], mesh->bnd[2], mesh->bnd[3], mesh->bnd[4], mesh->bnd[5]);
 		fprintf(ctx->f, "    </BoundaryCond>\n");
 	}
+
+	fprintf(ctx->f, "  <ContinuousStructure CoordSystem='0'>\n");
+	openems_wr_xml_layers(ctx);
+	openems_wr_xml_grid(ctx);
+	fprintf(ctx->f, "  </ContinuousStructure>\n");
+
 
 	fprintf(ctx->f, "  </FDTD>\n");
 	fprintf(ctx->f, "</openEMS>\n");
