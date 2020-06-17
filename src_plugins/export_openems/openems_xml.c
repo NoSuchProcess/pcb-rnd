@@ -43,8 +43,10 @@ static void openems_wr_xml(wctx_t *ctx)
 		fprintf(ctx->f, "    <Excitation %s>\n", exc);
 		fprintf(ctx->f, "    </Excitation>\n");
 	}
-	else
-		fprintf(ctx->f, "<!-- ERROR: no excitation selected -->\n");
+	else {
+		fprintf(ctx->f, "<!-- ERROR: no excitation selected or invalid excitation -->\n");
+		rnd_message(RND_MSG_ERROR, "openems xml: no excitation selected or invalid excitation\n");
+	}
 	free(exc);
 
 	if ((mesh != NULL) && (mesh->bnd[0] != NULL)) {
