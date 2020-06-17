@@ -197,7 +197,7 @@ static void find_origin(wctx_t *ctx)
 	pcb_loop_layers(ctx->pcb, ctx, NULL, find_origin_bump, NULL, NULL, NULL, NULL);
 }
 
-static void openems_write_tunables(wctx_t *ctx)
+static void openems_wr_m_tunables(wctx_t *ctx)
 {
 	fprintf(ctx->f, "%%%%%% User tunables\n");
 	fprintf(ctx->f, "\n");
@@ -256,7 +256,7 @@ TODO(": try openems::attr first - make a new core call for prefixed get, this wi
 		rnd_fprintf(ctx->f, fmt, ctx->options[opt].crd);
 }
 
-static void openems_write_layers(wctx_t *ctx)
+static void openems_wr_m_layers(wctx_t *ctx)
 {
 	rnd_layergrp_id_t gid;
 	int next = 1;
@@ -318,7 +318,7 @@ static void openems_write_layers(wctx_t *ctx)
 	ctx->lg_next = next;
 }
 
-static void openems_write_init(wctx_t *ctx)
+static void openems_wr_m_init(wctx_t *ctx)
 {
 	fprintf(ctx->f, "%%%%%% Initialize pcb2csx\n");
 	fprintf(ctx->f, "PCBRND = InitPCBRND(layers, layer_types, void, base_priority, offset, kludge);\n");
@@ -326,7 +326,7 @@ static void openems_write_init(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 }
 
-static void openems_write_outline(wctx_t *ctx)
+static void openems_wr_m_outline(wctx_t *ctx)
 {
 	int n;
 	pcb_any_obj_t *out1;
@@ -451,7 +451,7 @@ rnd_layergrp_id_t openems_vport_aux_group(pcb_board_t *pcb, rnd_layergrp_id_t gi
 
 
 #define TPMASK (PCB_OBJ_LINE | PCB_OBJ_PSTK | PCB_OBJ_SUBC)
-static void openems_write_testpoints(wctx_t *ctx, pcb_data_t *data)
+static void openems_wr_m_testpoints(wctx_t *ctx, pcb_data_t *data)
 {
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
@@ -459,7 +459,7 @@ static void openems_write_testpoints(wctx_t *ctx, pcb_data_t *data)
 	for(o = pcb_data_first(&it, data, TPMASK); o != NULL; o = pcb_data_next(&it)) {
 		const char *port_name;
 		if (o->type == PCB_OBJ_SUBC)
-			openems_write_testpoints(ctx, ((pcb_subc_t *)o)->data);
+			openems_wr_m_testpoints(ctx, ((pcb_subc_t *)o)->data);
 
 		port_name = rnd_attribute_get(&o->Attributes, "openems::vport");
 		if (port_name == NULL)
@@ -508,14 +508,14 @@ TODO(": check if there is copper object on hid2 at x;y")
 	}
 }
 
-static void openems_write_mesh_lines(wctx_t *ctx, pcb_mesh_lines_t *l)
+static void openems_wr_m_mesh_lines(wctx_t *ctx, pcb_mesh_lines_t *l)
 {
 	rnd_cardinal_t n;
 	for(n = 0; n < vtc0_len(&l->result); n++)
 		rnd_fprintf(ctx->f, "%s%mm", (n == 0 ? "" : " "), l->result.array[n]);
 }
 
-static void openems_write_mesh1(wctx_t *ctx)
+static void openems_wr_m_mesh1(wctx_t *ctx)
 {
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
 	char *exc = pcb_openems_excitation_get(ctx->pcb);
@@ -544,7 +544,7 @@ static void openems_write_mesh1(wctx_t *ctx)
 	fprintf(ctx->fsim, "\n");
 }
 
-static void openems_write_mesh2(wctx_t *ctx)
+static void openems_wr_m_mesh2(wctx_t *ctx)
 {
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
 
@@ -557,15 +557,15 @@ static void openems_write_mesh2(wctx_t *ctx)
 	rnd_fprintf(ctx->f, "z_bottom_copper=%mm\n", mesh->z_bottom_copper);
 
 	fprintf(ctx->f, "mesh.y=[");
-	openems_write_mesh_lines(ctx, &mesh->line[PCB_MESH_HORIZONTAL]);
+	openems_wr_m_mesh_lines(ctx, &mesh->line[PCB_MESH_HORIZONTAL]);
 	fprintf(ctx->f, "];\n");
 
 	fprintf(ctx->f, "mesh.x=[");
-	openems_write_mesh_lines(ctx, &mesh->line[PCB_MESH_VERTICAL]);
+	openems_wr_m_mesh_lines(ctx, &mesh->line[PCB_MESH_VERTICAL]);
 	fprintf(ctx->f, "];\n");
 
 	fprintf(ctx->f, "mesh.z=[");
-	openems_write_mesh_lines(ctx, &mesh->line[PCB_MESH_Z]);
+	openems_wr_m_mesh_lines(ctx, &mesh->line[PCB_MESH_Z]);
 	fprintf(ctx->f, "];\n");
 
 	fprintf(ctx->f, "mesh.x = mesh.x .+ offset.x;\n");
@@ -577,9 +577,9 @@ static void openems_write_mesh2(wctx_t *ctx)
 	fprintf(ctx->f, "\n");
 }
 
-static void openems_write_sim(wctx_t *wctx)
+static void openems_wr_m_sim(wctx_t *wctx)
 {
-	openems_write_mesh1(wctx);
+	openems_wr_m_mesh1(wctx);
 
 	fprintf(wctx->fsim, "run %s\n\n", wctx->filename);
 
@@ -588,8 +588,9 @@ static void openems_write_sim(wctx_t *wctx)
 	fprintf(wctx->fsim, "WriteOpenEMS( [Sim_Path '/' Sim_CSX], FDTD, CSX );\n");
 }
 
+#include "openems_xml.c"
 
-void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim, rnd_hid_attr_val_t *options)
+static void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim, rnd_hid_attr_val_t *options, int fmt_matlab)
 {
 	rnd_hid_expose_ctx_t ctx;
 	wctx_t wctx;
@@ -612,18 +613,24 @@ void openems_hid_export_to_file(const char *filename, FILE *the_file, FILE *fsim
 	rnd_conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 	find_origin(&wctx);
-	openems_write_sim(&wctx);
-	openems_write_tunables(&wctx);
-	openems_write_mesh2(&wctx);
-	openems_write_layers(&wctx);
-	openems_write_init(&wctx);
-	openems_write_outline(&wctx);
 
-	fprintf(wctx.f, "%%%%%% Copper objects\n");
-	rnd_expose_main(&openems_hid, &ctx, NULL);
+	if (fmt_matlab) {
+		openems_wr_m_sim(&wctx);
+		openems_wr_m_tunables(&wctx);
+		openems_wr_m_mesh2(&wctx);
+		openems_wr_m_layers(&wctx);
+		openems_wr_m_init(&wctx);
+		openems_wr_m_outline(&wctx);
 
-	fprintf(wctx.f, "%%%%%% Port(s) on terminals\n");
-	openems_write_testpoints(&wctx, wctx.pcb->Data);
+		fprintf(wctx.f, "%%%%%% Copper objects\n");
+		rnd_expose_main(&openems_hid, &ctx, NULL);
+
+		fprintf(wctx.f, "%%%%%% Port(s) on terminals\n");
+		openems_wr_m_testpoints(&wctx, wctx.pcb->Data);
+	}
+	else { /* xml */
+		openems_wr_xml(&wctx);
+	}
 
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
@@ -633,7 +640,7 @@ static void openems_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	const char *filename;
 	char *runfn, *end;
 	int save_ons[PCB_MAX_LAYER];
-	int i, len;
+	int i, len, fmt_matlab;
 	FILE *fsim;
 
 	openems_ovr = 0;
@@ -655,28 +662,38 @@ static void openems_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		return;
 	}
 
-	/* create the run.m file */
-	len = strlen(filename);
-	runfn = malloc(len+16);
-	memcpy(runfn, filename, len+1);
-	end = runfn + len - 2;
-	if (strcmp(end, ".m") != 0)
-		end = runfn + len;
-	strcpy(end, ".sim.m");
-	fsim = rnd_fopen_askovr(&PCB->hidlib, runfn, "wb", &openems_ovr);
-	if (fsim == NULL) {
-		perror(runfn);
-		return;
+	end = strrchr(filename, '.');
+	fmt_matlab = !((end != NULL) && (rnd_strcasecmp(end, ".xml") == 0));
+
+	if (fmt_matlab) {
+		/* create the run.m file */
+		len = strlen(filename);
+		runfn = malloc(len+16);
+		memcpy(runfn, filename, len+1);
+		end = runfn + len - 2;
+		if (strcmp(end, ".m") != 0)
+			end = runfn + len;
+		strcpy(end, ".sim.m");
+
+		fsim = rnd_fopen_askovr(&PCB->hidlib, runfn, "wb", &openems_ovr);
+		if (fsim == NULL) {
+			perror(runfn);
+			return;
+		}
+	}
+	else { /* xml */
+		fsim = NULL;
 	}
 
 	pcb_hid_save_and_show_layer_ons(save_ons);
 
-	openems_hid_export_to_file(filename, f, fsim, options);
+	openems_hid_export_to_file(filename, f, fsim, options, fmt_matlab);
 
 	pcb_hid_restore_layer_ons(save_ons);
 
 	fclose(f);
-	fclose(fsim);
+	if (fsim != NULL)
+		fclose(fsim);
 	f = NULL;
 	free(runfn);
 }
