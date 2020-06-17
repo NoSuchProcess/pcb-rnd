@@ -220,8 +220,8 @@ case "$cmd" in
 	diff|--diff) brd_diff "$@" ;;
 	svg-vis-comp|--svg-vis-comp) svg_vis_comp "$@" ;;
 	vis-comp|--vis-comp) brd_vis_comp "$@" ;;
-	test) pcb_rnd_test "$@" ;;
-	gen-ref) gen_ref "$@" ;;
+	test|--test) pcb_rnd_test "$@" ;;
+	gen-ref|--gen-ref) gen_ref "$@" ;;
 	test-all|--test-all)
 		if test -z "$*"
 		then
