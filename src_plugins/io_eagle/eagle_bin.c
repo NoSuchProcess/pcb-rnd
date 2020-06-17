@@ -1986,7 +1986,11 @@ TODO("TODO padstacks - need to convert obround pins to appropriate padstack type
 
 static void fix_long_text(egb_ctx_t *egb_ctx, egb_node_t *root, const char *field_name)
 {
-	htss_entry_t *e = htss_getentry(&root->props, field_name);
+	htss_entry_t *e;
+
+	if (root->props.table == NULL) return;
+	e = htss_getentry(&root->props, field_name);
+	if (e == NULL) return;
 	if (*e->value == 127) {
 		free(e->value);
 		e->value = rnd_strdup(egb_next_long_text(egb_ctx));
@@ -2008,6 +2012,52 @@ static int postprocess_free_text(egb_ctx_t *egb_ctx, egb_node_t *root)
 		case PCB_EGKW_SECT_ATTRIBUTE:
 		case PCB_EGKW_SECT_SMASHEDXREF:
 			fix_long_text(egb_ctx, root, "textfield");
+			break;
+		case PCB_EGKW_SECT_LAYER:
+		case PCB_EGKW_SECT_LIBRARY:
+		case PCB_EGKW_SECT_SIGNAL:
+		case PCB_EGKW_SECT_SYMBOL:
+		case PCB_EGKW_SECT_SCHEMANET:
+		case PCB_EGKW_SECT_PAD:
+		case PCB_EGKW_SECT_SMD:
+		case PCB_EGKW_SECT_PIN:
+		case PCB_EGKW_SECT_GATE:
+			fix_long_text(egb_ctx, root, "name");
+			break;
+		case PCB_EGKW_SECT_ELEMENT2:
+		case PCB_EGKW_SECT_PART:
+			fix_long_text(egb_ctx, root, "name");
+			fix_long_text(egb_ctx, root, "value");
+			break;
+		case PCB_EGKW_SECT_DEVICES:
+		case PCB_EGKW_SECT_SYMBOLS:
+			fix_long_text(egb_ctx, root, "library");
+			break;
+		case PCB_EGKW_SECT_PACKAGEVARIANT:
+			fix_long_text(egb_ctx, root, "table");
+			fix_long_text(egb_ctx, root, "name");
+			break;
+		case PCB_EGKW_SECT_PACKAGE:
+			fix_long_text(egb_ctx, root, "desc");
+			fix_long_text(egb_ctx, root, "name");
+			break;
+		case PCB_EGKW_SECT_PACKAGES:
+			fix_long_text(egb_ctx, root, "desc");
+			fix_long_text(egb_ctx, root, "library");
+			break;
+		case PCB_EGKW_SECT_SCHEMA:
+			fix_long_text(egb_ctx, root, "xref_format");
+			break;
+		case PCB_EGKW_SECT_ATTRIBUTEVALUE:
+			fix_long_text(egb_ctx, root, "symbol");
+			fix_long_text(egb_ctx, root, "attribute");
+			break;
+		case PCB_EGKW_SECT_DEVICE:
+			fix_long_text(egb_ctx, root, "prefix");
+			fix_long_text(egb_ctx, root, "desc");
+			fix_long_text(egb_ctx, root, "name");
+			break;
+		default:;
 	}
 
 	for(n = root->first_child; n != NULL; n = n->next)
