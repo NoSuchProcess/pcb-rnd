@@ -7,6 +7,7 @@
 1. For the upcoming release ===============================================================================
 - BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 + BUG: parametric fp: qf() gui edit -> silk marks don't work [report: Piotr]
++ BUG: xml: arc angles in aux/curve_trace/broken_curve [report: vuokko]
 ? BUG: eagle bin: on loading bug_files/diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop -> no such file in svn (commit only if free) [report: Erich]
 
 2. For later releases ===============================================================================
@@ -72,7 +73,6 @@
 	- BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
 - BUG: I/O bugs:
 	- eagle:
-		- BUG: xml: arc angles in aux/curve_trace/broken_curve [report: vuokko]
 		- BUG: xml: eagle XML import fails on polygon import reported by miloh, test file pcb-rnd-aux poly_selfi/eagle_polygon_crash.brd [report: erich], due to input file containing an invalid polygon: a self intersecting poly in line 156 - consider handling "width"?
 		- bin: eagle binary format appended text block needs to be parsed and the text strings allocated to ASCII-127 references in preceding text blocks [erich] 
 		- bin: eagle binary format v3 and libraries do not have a DRC block specifying restring or minimum feature widths. Binary loader should add a DRC block in these cases to the tree with the minimum settings needed for padstacks and features to load sensibly. [erich].
