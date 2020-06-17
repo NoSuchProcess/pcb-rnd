@@ -733,7 +733,7 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 {
 	pcb_arc_t *arc;
 	rnd_coord_t x1, y1, x2, y2, th, cx, cy;
-	double sidex, sidey, sidelen, nx, ny, midx, midy, r, sa, ea, da, dx, dy, sa2, curve;
+	double sidex, sidey, sidelen, nx, ny, midx, midy, r, sa, da, dx, dy, sa2, curve;
 
 	x1 = eagle_get_attrc(st, subtree, "x1", -1);
 	y1 = eagle_get_attrc(st, subtree, "y1", -1);
@@ -758,7 +758,7 @@ static int eagle_read_wire_curve(read_state_t *st, trnode_t *subtree, void *obj,
 	dy = y1 - cy;
 	r = sqrt(dx * dx + dy * dy);
 	sa = 180.0 - atan2(y1 - cy, x1 - cx) * RND_RAD_TO_DEG;
-	ea = 180.0 - atan2(y2 - cy, x2 - cx) * RND_RAD_TO_DEG;
+/*	ea = 180.0 - atan2(y2 - cy, x2 - cx) * RND_RAD_TO_DEG;*/
 
 	da = -curve;
 
