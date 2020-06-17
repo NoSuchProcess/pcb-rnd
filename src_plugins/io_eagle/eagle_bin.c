@@ -41,6 +41,7 @@
 #include <librnd/core/error.h>
 #include <librnd/core/math_helper.h>
 #include <librnd/core/misc_util.h>
+#include <librnd/core/compat_misc.h>
 
 /* Describe a bitfield: width of the field that hosts the bitfield, first
 and last bit offsets, inclusive. Bit offsets are starting from 0 at LSB. */
@@ -1097,10 +1098,29 @@ TODO(": convert this to proper error reporting")
 	return -1; /* should not get here */
 }
 
+static const char *egb_next_long_text(egb_ctx_t *egb_ctx)
+{
+	const char *res = egb_ctx->free_text_cursor;
+
+	if (res == NULL) {
+		rnd_message(RND_MSG_ERROR, "Invalid free-text reference (out of strings)\n");
+		return "<invalid>";
+	}
+
+	/* seek the next string */
+	while(*egb_ctx->free_text_cursor != '\0') egb_ctx->free_text_cursor++;
+	egb_ctx->free_text_cursor++;
+
+	/* detect end of list by the terminating empty string */
+	if (*egb_ctx->free_text_cursor == '\0')
+		egb_ctx->free_text_cursor = NULL;
+
+	return res;
+}
+
 int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 {
 	unsigned char block[8];
-	unsigned char free_text[400];
 	int text_remaining = 0;
 	egb_ctx->free_text_len = 0;
 	egb_ctx->free_text = NULL;
@@ -1122,17 +1142,13 @@ int read_notes(void *ctx, FILE *f, const char *fn, egb_ctx_t *egb_ctx)
 	text_remaining += 4; /* there seems to be a 4 byte checksum or something at the end */
 
 TODO("TODO instead of skipping the text, we need to load it completely with drc_ctx->free_text pointing to it")
-	while (text_remaining > 400) {
-		if (fread(free_text, 1, 400, f) != 400) {
-			rnd_message(RND_MSG_ERROR, "Short read: free text block content. Truncated file?\n");
-			return -1;
-		}
-		text_remaining -= 400;
-	}
-	if (fread(free_text, 1, text_remaining, f) != text_remaining) {
+	egb_ctx->free_text = malloc(text_remaining);
+	if (fread(egb_ctx->free_text, 1, text_remaining, f) != text_remaining) {
 		rnd_message(RND_MSG_ERROR, "Short read: free text block content. Truncated file?\n");
 		return -1;
 	}
+	egb_ctx->free_text_cursor = egb_ctx->free_text;
+
 	return 0;
 }
 
@@ -1968,6 +1984,25 @@ TODO("TODO padstacks - need to convert obround pins to appropriate padstack type
 	return 0;
 }
 
+/* we post process the PCB_EGKW_SECT_TEXT for 'free text' (long text)
+substitution */
+static int postprocess_free_text(egb_ctx_t *egb_ctx, egb_node_t *root)
+{
+	egb_node_t *n;
+
+	if (root->id == PCB_EGKW_SECT_TEXT) {
+		htss_entry_t *e = htss_getentry(&root->props, "textfield");
+		if (*e->value == 127) {
+			free(e->value);
+			e->value = rnd_strdup(egb_next_long_text(egb_ctx));
+		}
+	}
+
+	for(n = root->first_child; n != NULL; n = n->next)
+		postprocess_free_text(egb_ctx, n);
+	return 0;
+}
+
 /* look for contactrefs, and  1) append "name"="refdes" fields to contactref nodes as "element" "refdes" and 2) append "pad" = (pin_name(if present) or default pin_num) for netlist loading */
 static int postproc_contactrefs(void *ctx, egb_ctx_t *egb_ctx)
 {
@@ -2218,6 +2253,7 @@ TODO(": convert this to proper error reporting")
 		|| postprocess_wires(ctx, root) || postprocess_arcs(ctx, root)
 		|| postprocess_circles(ctx, root) || postprocess_smd(ctx, root)
 		|| postprocess_dimensions(ctx, root)
+		|| postprocess_free_text(drc_ctx, root)
 		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMD)
 		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_PIN)
 		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_RECTANGLE)
@@ -2232,6 +2268,12 @@ TODO(": convert this to proper error reporting")
 		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_SMASHEDPART)
 		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_INSTANCE)
 		|| postprocess_rotation(ctx, root, PCB_EGKW_SECT_ELEMENT);
+}
+
+static void egb_free_ctx(egb_ctx_t *egb_ctx)
+{
+	free(egb_ctx->free_text);
+	egb_ctx->free_text = egb_ctx->free_text_cursor = NULL;
 }
 
 int pcb_egle_bin_load(void *ctx, FILE *f, const char *fn, egb_node_t **root)
@@ -2262,6 +2304,8 @@ TODO(": convert this to proper error reporting")
 		rnd_trace("No DRC section found, either a v3 binary file or a binary library file.\n");
 	} /* we now use the eagle_bin_ctx results for post_proc */
 
-	return postproc(ctx, *root, &eagle_bin_ctx);
+	res = postproc(ctx, *root, &eagle_bin_ctx);
+	egb_free_ctx(&eagle_bin_ctx);
+	return res;
 }
 
