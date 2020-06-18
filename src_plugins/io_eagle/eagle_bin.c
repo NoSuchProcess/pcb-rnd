@@ -991,8 +991,8 @@ static const pcb_eagle_script_t pcb_eagle_script[] = {
 	},
 
 	/* unknown leaves */
-	{ 0x5300, 0xFFFF },
-
+	{ 0x5300,  0xFFFF },
+	{ 0x2d84,  0xFFFF },
 	/* end of table */
 	{ 0 }
 };
