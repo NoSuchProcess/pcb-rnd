@@ -7,7 +7,7 @@
 1. For the upcoming release ===============================================================================
 - BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 + BUG: parametric fp: qf() gui edit -> silk marks don't work [report: Piotr]
-- BUG: eagle bin: diode.lbr, teh older, v3 version now refuses to load, perhaps due to appended text block parsing changes for v4, v5 binary. [report: Erich]
+- BUG: eagle bin: diode.lbr, teh older, v3 version now refuses to load -> unknown blockid 0x2d84 at 25296 [report: Erich]
 
 2. For later releases ===============================================================================
 - CLEANUP: move layer_parse_group_str() from core to io_pcb, probably together with the default stackup setup code [report: Igor2]
