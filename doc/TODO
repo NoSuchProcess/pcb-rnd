@@ -5,7 +5,6 @@
 + BUG: insert tool undo:  draw an arc, use insert tool on arc creating two arc objects. then undo. new arc is copied on top of original whole arc. [report: Miloh]
 
 1. For the upcoming release ===============================================================================
-- BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 + BUG: parametric fp: qf() gui edit -> silk marks don't work [report: Piotr]
 + BUG: eagle bin: diode.lbr, teh older, v3 version now refuses to load -> has an unknown blockid 0x2d84 at 25296 (ignored now) [report: Erich]
 
@@ -85,6 +84,7 @@
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
+- BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 
 3. Long term ===============================================================================
 - version 3.0.0:
