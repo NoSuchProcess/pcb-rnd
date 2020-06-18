@@ -8,7 +8,6 @@
 - BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 + BUG: parametric fp: qf() gui edit -> silk marks don't work [report: Piotr]
 + BUG: eagle bin: on loading (non-free) diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: Erich]
-+ BUG: eagle bin: long/free text: any text names in the binary tree, if starting with ASCII 127, sequentially reference strings in the text block which comes immediately after the board/design tree. In later eagle binary versions, the text block seems to become a node of the tree, but a node of arbitrary length, not 24 bytes, with length of block still encoded in first few bytes.
 ? BUG: eagle bin: layouts, once loaded, have issue where deselection of elements only deselects element pins/pads. click-drag of element or saving the layout to .lht and reloading fixes the deselection issue. Example FTSH.... library file for a header exhibits this behaviour. [report: Erich] -> need a test file
 
 2. For later releases ===============================================================================
