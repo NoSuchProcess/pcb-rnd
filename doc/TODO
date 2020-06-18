@@ -7,7 +7,7 @@
 1. For the upcoming release ===============================================================================
 - BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 + BUG: parametric fp: qf() gui edit -> silk marks don't work [report: Piotr]
-+ BUG: eagle bin: on loading (non-free) diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop [report: Erich]
++ BUG: eagle bin: on loading (non-free) diode.lbr, pcb-rnd's clipping polygon out of existence routine seems to go into a non terminating loop. Additional 18-06-2020 diode.lbr now refuses to load, perhaps due to appended text block parsing changes for v4, v5 binary. [report: Erich]
 
 2. For later releases ===============================================================================
 - CLEANUP: move layer_parse_group_str() from core to io_pcb, probably together with the default stackup setup code [report: Igor2]
