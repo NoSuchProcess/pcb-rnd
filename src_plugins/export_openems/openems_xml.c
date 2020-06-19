@@ -28,10 +28,35 @@ static long def_num_timesteps = 1000000000;
 static double def_end_crit = 1e-05;
 static long def_f_max = 2100000000;
 
+static void openems_wr_xml_grp_copper(wctx_t *ctx, pcb_layergrp_t *g)
+{
+TODO("Fix hardwired constants");
+	fprintf(ctx->f, "      <ConductingSheet Name='%s' Conductivity='56000000' Thickness='7e-05'>\n", g->name);
+	fprintf(ctx->f, "        <Primitives>\n");
+	fprintf(ctx->f, "        </Primitives>\n");
+	fprintf(ctx->f, "      </ConductingSheet>\n");
+}
+
+static void openems_wr_xml_grp_substrate(wctx_t *ctx, pcb_layergrp_t *g)
+{
+TODO("Fix hardwired constants");
+	fprintf(ctx->f, "      <Material Name='%s'>\n", g->name);
+	fprintf(ctx->f, "        <Property Epsilon='4.8' Kappa=''>");
+	fprintf(ctx->f, "        </Property>");
+	fprintf(ctx->f, "      </Material>\n");
+}
+
 static void openems_wr_xml_layers(wctx_t *ctx)
 {
+	rnd_cardinal_t gid;
 	fprintf(ctx->f, "    <Properties>\n");
-
+	for(gid = 0; gid < ctx->pcb->LayerGroups.len; gid++) {
+		pcb_layergrp_t *g = &ctx->pcb->LayerGroups.grp[gid];
+		if (g->ltype & PCB_LYT_COPPER)
+			openems_wr_xml_grp_copper(ctx, g);
+		else if (g->ltype & PCB_LYT_SUBSTRATE)
+			openems_wr_xml_grp_substrate(ctx, g);
+	}
 	fprintf(ctx->f, "    </Properties>\n");
 }
 
@@ -82,6 +107,8 @@ static void openems_wr_xml(wctx_t *ctx)
 	}
 
 	fprintf(ctx->f, "  <ContinuousStructure CoordSystem='0'>\n");
+	fprintf(ctx->f, "    <BackgroundMaterial Epsilon='%f' Mue='%f' Kappa='0' Sigma='0'/>\n", ctx->options[HA_void_epsilon].dbl, ctx->options[HA_void_mue].dbl);
+
 	openems_wr_xml_layers(ctx);
 	openems_wr_xml_grid(ctx, mesh);
 	fprintf(ctx->f, "  </ContinuousStructure>\n");
