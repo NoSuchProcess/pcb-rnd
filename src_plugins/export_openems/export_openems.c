@@ -116,7 +116,7 @@ rnd_export_opt_t openems_attribute_list[] = {
 #define HA_def_substrate_thick 2
 
 	{"def-copper-cond", "Default copper conductivity",
-	 RND_HATT_STRING, 0, 0, {0, "56*10^6", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "56e6", 0}, 0, 0},
 #define HA_def_copper_cond 3
 
 	{"def-subst-epsilon", "Default substrate epsilon",
