@@ -41,6 +41,7 @@ static void openems_wr_xml_layergrp_end(wctx_t *ctx)
 static void openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
 {
 	openems_wr_xml_layergrp_end(ctx);
+TODO("Fix hardwired constants");
 	fprintf(ctx->f, "      <ConductingSheet Name='%s' Conductivity='56000000' Thickness='7e-05'>\n", g->name);
 	fprintf(ctx->f, "        <Primitives>\n");
 	ctx->cond_sheet_open = 1;
