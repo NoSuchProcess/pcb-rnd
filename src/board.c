@@ -426,8 +426,10 @@ rnd_coord_t pcb_stack_thickness(pcb_board_t *pcb, const char *namespace, pcb_boa
 	pcb_layergrp_t *grp;
 	rnd_coord_t curr, total = 0;
 
-	if (from > to)
+	if (from > to) {
 		rnd_swap(rnd_layergrp_id_t, from, to);
+		rnd_swap(int, include_from, include_to);
+	}
 
 	if (!include_from)
 		from++;
