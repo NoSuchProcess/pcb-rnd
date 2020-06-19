@@ -86,6 +86,9 @@ typedef struct {
 	unsigned warn_subc_term:1;
 	unsigned warn_port_pstk:1;
 	unsigned fmt_matlab:1; /* when 1, use matlab syntax; 0 means xml syntax */
+
+	/* xml */
+	unsigned cond_sheet_open:1;
 } wctx_t;
 
 static FILE *f = NULL;
@@ -711,6 +714,8 @@ static int openems_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, cons
 {
 	if (flags & PCB_LYT_COPPER) { /* export copper layers only */
 		ems_ctx->clayer = ems_ctx->lg_pcb2ems[group];
+		if ((!ems_ctx->fmt_matlab) && (!is_empty))
+			openems_wr_xml_layergrp_begin(ems_ctx, &ems_ctx->pcb->LayerGroups.grp[group]);
 		return 1;
 	}
 	return 0;

@@ -28,13 +28,22 @@ static long def_num_timesteps = 1000000000;
 static double def_end_crit = 1e-05;
 static long def_f_max = 2100000000;
 
-static void openems_wr_xml_grp_copper(wctx_t *ctx, pcb_layergrp_t *g)
+static void openems_wr_xml_layergrp_end(wctx_t *ctx)
 {
-TODO("Fix hardwired constants");
+	if (ctx->cond_sheet_open) {
+		fprintf(ctx->f, "        </Primitives>\n");
+		fprintf(ctx->f, "      </ConductingSheet>\n");
+		ctx->cond_sheet_open = 0;
+	}
+
+}
+
+static void openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
+{
+	openems_wr_xml_layergrp_end(ctx);
 	fprintf(ctx->f, "      <ConductingSheet Name='%s' Conductivity='56000000' Thickness='7e-05'>\n", g->name);
 	fprintf(ctx->f, "        <Primitives>\n");
-	fprintf(ctx->f, "        </Primitives>\n");
-	fprintf(ctx->f, "      </ConductingSheet>\n");
+	ctx->cond_sheet_open = 1;
 }
 
 static void openems_wr_xml_grp_substrate(wctx_t *ctx, pcb_layergrp_t *g)
@@ -52,13 +61,6 @@ static void openems_wr_xml_layers(wctx_t *ctx)
 	rnd_cardinal_t gid;
 
 	fprintf(ctx->f, "    <Properties>\n");
-	for(gid = 0; gid < ctx->pcb->LayerGroups.len; gid++) {
-		pcb_layergrp_t *g = &ctx->pcb->LayerGroups.grp[gid];
-		if (g->ltype & PCB_LYT_COPPER)
-			openems_wr_xml_grp_copper(ctx, g);
-		else if (g->ltype & PCB_LYT_SUBSTRATE)
-			openems_wr_xml_grp_substrate(ctx, g);
-	}
 
 	ectx.view.X1 = 0;
 	ectx.view.Y1 = 0;
@@ -66,6 +68,15 @@ static void openems_wr_xml_layers(wctx_t *ctx)
 	ectx.view.Y2 = ctx->pcb->hidlib.size_y;
 
 	rnd_expose_main(&openems_hid, &ectx, NULL);
+	openems_wr_xml_layergrp_end(ctx);
+
+	/* export substrate bricks */
+	for(gid = 0; gid < ctx->pcb->LayerGroups.len; gid++) {
+		pcb_layergrp_t *g = &ctx->pcb->LayerGroups.grp[gid];
+		if (g->ltype & PCB_LYT_SUBSTRATE)
+			openems_wr_xml_grp_substrate(ctx, g);
+	}
+
 
 	fprintf(ctx->f, "    </Properties>\n");
 }
