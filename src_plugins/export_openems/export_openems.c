@@ -639,7 +639,8 @@ static void openems_hid_export_to_file(const char *filename, FILE *the_file, FIL
 		openems_wr_m_testpoints(&wctx, wctx.pcb->Data);
 	}
 	else { /* xml */
-		openems_wr_xml(&wctx);
+		if (openems_wr_xml(&wctx) != 0)
+			rnd_message(RND_MSG_ERROR, "openEMS: Due to errors, the exported file is invalid.\n");
 	}
 
 	rnd_conf_update(NULL, -1); /* restore forced sets */
@@ -719,7 +720,8 @@ static int openems_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, cons
 	if (flags & PCB_LYT_COPPER) { /* export copper layers only */
 		ems_ctx->clayer = ems_ctx->lg_pcb2ems[group];
 		if ((!ems_ctx->fmt_matlab) && (!is_empty))
-			openems_wr_xml_layergrp_begin(ems_ctx, &ems_ctx->pcb->LayerGroups.grp[group]);
+			if (openems_wr_xml_layergrp_begin(ems_ctx, &ems_ctx->pcb->LayerGroups.grp[group]) != 0)
+				return 0;
 		return 1;
 	}
 	return 0;

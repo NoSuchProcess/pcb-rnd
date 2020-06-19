@@ -55,7 +55,7 @@ static rnd_coord_t get_grp_elev(wctx_t *ctx, pcb_layergrp_t *g)
 	return pcb_stack_thickness(ctx->pcb, "openems", PCB_BRDTHICK_PRINT_ERROR, from, 1, to, 0, PCB_LYT_SUBSTRATE|PCB_LYT_COPPER);
 }
 
-static void openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
+static int openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
 {
 	rnd_coord_t th;
 	pcb_layer_t *ly = NULL;
@@ -80,8 +80,10 @@ static void openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
 	fprintf(ctx->f, "        <Primitives>\n");
 	ctx->cond_sheet_open = 1;
 	th = get_grp_elev(ctx, g);
-TODO("check for -1 and return error");
+	if (th < 0)
+		return -1;
 	ctx->elevation = RND_COORD_TO_MM(th);
+	return 0;
 }
 
 static int openems_wr_xml_outline(wctx_t *ctx, pcb_layergrp_t *g)
@@ -124,10 +126,12 @@ TODO("layer: consider multiple outline layers instead")
 }
 
 
-static void openems_wr_xml_grp_substrate(wctx_t *ctx, pcb_layergrp_t *g)
+static int openems_wr_xml_grp_substrate(wctx_t *ctx, pcb_layergrp_t *g)
 {
 	rnd_coord_t th = get_grp_elev(ctx, g);
-TODO("check for -1 and return error");
+
+	if (th < 0)
+		return -1;
 	ctx->elevation = RND_COORD_TO_MM(th);
 
 TODO("Fix hardwired constants");
@@ -139,12 +143,14 @@ TODO("Fix hardwired constants");
 	openems_wr_xml_outline(ctx, g);
 	fprintf(ctx->f, "        </Primitives>\n");
 	fprintf(ctx->f, "      </Material>\n");
+	return 0;
 }
 
-static void openems_wr_xml_layers(wctx_t *ctx)
+static int openems_wr_xml_layers(wctx_t *ctx)
 {
 	rnd_hid_expose_ctx_t ectx = {0};
 	rnd_cardinal_t gid;
+	int err = 0;
 
 	fprintf(ctx->f, "    <Properties>\n");
 
@@ -160,11 +166,12 @@ static void openems_wr_xml_layers(wctx_t *ctx)
 	for(gid = 0; gid < ctx->pcb->LayerGroups.len; gid++) {
 		pcb_layergrp_t *g = &ctx->pcb->LayerGroups.grp[gid];
 		if (g->ltype & PCB_LYT_SUBSTRATE)
-			openems_wr_xml_grp_substrate(ctx, g);
+			err |= openems_wr_xml_grp_substrate(ctx, g);
 	}
 
 
 	fprintf(ctx->f, "    </Properties>\n");
+	return err;
 }
 
 static void openems_wr_xml_mesh_lines(wctx_t *ctx, pcb_mesh_t *mesh, char axis, pcb_mesh_lines_t *l, rnd_coord_t scale)
@@ -187,11 +194,11 @@ static void openems_wr_xml_grid(wctx_t *ctx, pcb_mesh_t *mesh)
 	fprintf(ctx->f, "    </RectilinearGrid>\n");
 }
 
-static void openems_wr_xml(wctx_t *ctx)
+static int openems_wr_xml(wctx_t *ctx)
 {
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
 	char *exc;
-
+	int err = 0;
 
 	fprintf(ctx->f, "<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>\n");
 	fprintf(ctx->f, "<openEMS>\n");
@@ -217,11 +224,12 @@ static void openems_wr_xml(wctx_t *ctx)
 	fprintf(ctx->f, "  <ContinuousStructure CoordSystem='0'>\n");
 	fprintf(ctx->f, "    <BackgroundMaterial Epsilon='%f' Mue='%f' Kappa='0' Sigma='0'/>\n", ctx->options[HA_void_epsilon].dbl, ctx->options[HA_void_mue].dbl);
 
-	openems_wr_xml_layers(ctx);
+	err |= openems_wr_xml_layers(ctx);
 	openems_wr_xml_grid(ctx, mesh);
 	fprintf(ctx->f, "  </ContinuousStructure>\n");
 
 
 	fprintf(ctx->f, "</openEMS>\n");
+	return err;
 }
 
