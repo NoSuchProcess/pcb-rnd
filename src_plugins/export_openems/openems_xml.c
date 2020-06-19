@@ -48,7 +48,9 @@ TODO("Fix hardwired constants");
 
 static void openems_wr_xml_layers(wctx_t *ctx)
 {
+	rnd_hid_expose_ctx_t ectx = {0};
 	rnd_cardinal_t gid;
+
 	fprintf(ctx->f, "    <Properties>\n");
 	for(gid = 0; gid < ctx->pcb->LayerGroups.len; gid++) {
 		pcb_layergrp_t *g = &ctx->pcb->LayerGroups.grp[gid];
@@ -57,6 +59,14 @@ static void openems_wr_xml_layers(wctx_t *ctx)
 		else if (g->ltype & PCB_LYT_SUBSTRATE)
 			openems_wr_xml_grp_substrate(ctx, g);
 	}
+
+	ectx.view.X1 = 0;
+	ectx.view.Y1 = 0;
+	ectx.view.X2 = ctx->pcb->hidlib.size_x;
+	ectx.view.Y2 = ctx->pcb->hidlib.size_y;
+
+	rnd_expose_main(&openems_hid, &ectx, NULL);
+
 	fprintf(ctx->f, "    </Properties>\n");
 }
 

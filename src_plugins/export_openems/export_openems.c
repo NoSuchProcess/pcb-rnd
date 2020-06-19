@@ -85,11 +85,13 @@ typedef struct {
 	rnd_coord_t ox, oy;
 	unsigned warn_subc_term:1;
 	unsigned warn_port_pstk:1;
+	unsigned fmt_matlab:1; /* when 1, use matlab syntax; 0 means xml syntax */
 } wctx_t;
 
 static FILE *f = NULL;
 static wctx_t *ems_ctx;
 static int openems_ovr;
+
 
 #define THMAX RND_MM_TO_COORD(100)
 
@@ -601,6 +603,7 @@ static void openems_hid_export_to_file(const char *filename, FILE *the_file, FIL
 	wctx.fsim = fsim;
 	wctx.pcb = PCB;
 	wctx.options = options;
+	wctx.fmt_matlab = fmt_matlab;
 	ems_ctx = &wctx;
 
 	ctx.view.X1 = 0;
@@ -778,21 +781,32 @@ static void openems_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy,
 	wctx_t *ctx = ems_ctx;
 	long oid = ctx->oid++;
 
-	rnd_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, cx, oid, -cy);
-	rnd_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, cx, oid, -cy);
-	rnd_fprintf(ctx->f, "CSX = AddPcbrndTrace(CSX, PCBRND, %d, points%ld, %mm, 0);\n", ctx->clayer, oid, radius*2);
+	if (ctx->fmt_matlab) {
+		rnd_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, cx, oid, -cy);
+		rnd_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, cx, oid, -cy);
+		rnd_fprintf(ctx->f, "CSX = AddPcbrndTrace(CSX, PCBRND, %d, points%ld, %mm, 0);\n", ctx->clayer, oid, radius*2);
+	}
+	else {
+		rnd_fprintf(ctx->f, "TODO: fill circle %mm;%mm\n", cx, cy);
+	}
 }
 
 static void openems_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	wctx_t *ctx = ems_ctx;
 	int n;
-	long oid = ctx->oid++;
 
-	for(n = 0; n < n_coords; n++)
-		rnd_fprintf(ctx->f, "poly%ld_xy(1, %ld) = %mm; poly%ld_xy(2, %ld) = %mm;\n", oid, n+1, x[n]+dx, oid, n+1, -(y[n]+dy));
+	if (ctx->fmt_matlab) {
+		long oid = ctx->oid++;
 
-	fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, poly%ld_xy, 1);\n", ctx->clayer, oid);
+		for(n = 0; n < n_coords; n++)
+			rnd_fprintf(ctx->f, "poly%ld_xy(1, %ld) = %mm; poly%ld_xy(2, %ld) = %mm;\n", oid, n+1, x[n]+dx, oid, n+1, -(y[n]+dy));
+
+		fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, poly%ld_xy, 1);\n", ctx->clayer, oid);
+	}
+	else {
+		rnd_fprintf(ctx->f, "TODO: poly offs %mm;%mm\n", dx, dy);
+	}
 }
 
 static void openems_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
@@ -800,25 +814,39 @@ static void openems_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, 
 	openems_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
+static void openems_draw_line_body(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	rnd_coord_t x[4], y[4];
+	pcb_line_t tmp = {0};
+	tmp.Point1.X = x1;
+	tmp.Point1.Y = y1;
+	tmp.Point2.X = x2;
+	tmp.Point2.Y = y2;
+	tmp.Thickness = gc->width;
+	pcb_sqline_to_rect(&tmp, x, y);
+	openems_fill_polygon_offs(gc, 4, x, y, 0, 0);
+
+}
+
 static void openems_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	wctx_t *ctx = ems_ctx;
 
 	if (gc->cap == rnd_cap_square) {
-		rnd_coord_t x[4], y[4];
-		pcb_line_t tmp;
-		tmp.Point1.X = x1;
-		tmp.Point1.Y = y1;
-		tmp.Point2.X = x2;
-		tmp.Point2.Y = y2;
-		pcb_sqline_to_rect(&tmp, x, y);
-		openems_fill_polygon_offs(gc, 4, x, y, 0, 0);
+		openems_draw_line_body(gc, x1, y1, x2, y2);
+		return;
 	}
-	else {
+
+	if (ctx->fmt_matlab) {
 		long oid = ctx->oid++;
 		rnd_fprintf(ctx->f, "points%ld(1, 1) = %mm; points%ld(2, 1) = %mm;\n", oid, x1, oid, -y1);
 		rnd_fprintf(ctx->f, "points%ld(1, 2) = %mm; points%ld(2, 2) = %mm;\n", oid, x2, oid, -y2);
 		rnd_fprintf(ctx->f, "CSX = AddPcbrndTrace(CSX, PCBRND, %d, points%ld, %mm, 0);\n", ctx->clayer, oid, gc->width);
+	}
+	else {
+		openems_fill_circle(gc, x1, y1, gc->width/2);
+		openems_fill_circle(gc, x2, y2, gc->width/2);
+		openems_draw_line_body(gc, x1, y1, x2, y2);
 	}
 }
 
