@@ -153,6 +153,7 @@ static void openems_wr_xml(wctx_t *ctx)
 		fprintf(ctx->f, "    <BoundaryCond xmin='%s' xmax='%s' ymin='%s' ymax='%s' zmin='%s' zmax='%s'>\n", mesh->bnd[0], mesh->bnd[1], mesh->bnd[2], mesh->bnd[3], mesh->bnd[4], mesh->bnd[5]);
 		fprintf(ctx->f, "    </BoundaryCond>\n");
 	}
+	fprintf(ctx->f, "  </FDTD>\n");
 
 	fprintf(ctx->f, "  <ContinuousStructure CoordSystem='0'>\n");
 	fprintf(ctx->f, "    <BackgroundMaterial Epsilon='%f' Mue='%f' Kappa='0' Sigma='0'/>\n", ctx->options[HA_void_epsilon].dbl, ctx->options[HA_void_mue].dbl);
@@ -162,7 +163,6 @@ static void openems_wr_xml(wctx_t *ctx)
 	fprintf(ctx->f, "  </ContinuousStructure>\n");
 
 
-	fprintf(ctx->f, "  </FDTD>\n");
 	fprintf(ctx->f, "</openEMS>\n");
 }
 
