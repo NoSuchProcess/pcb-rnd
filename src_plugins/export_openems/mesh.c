@@ -994,10 +994,27 @@ static void ia_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 	fclose(f);
 }
 
+static int ia_load_file(const char *fname)
+{
+	FILE *f;
+	int res;
+
+	f = rnd_fopen(&PCB->hidlib, fname, "r");
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "Can not open '%s' for read\n", fname);
+		return -1;
+	}
+
+	res = mesh_load_file(&ia, f);
+	if (res != 0)
+		rnd_message(RND_MSG_ERROR, "Loading mesh settings from '%s' failed.\n", fname);
+	fclose(f);
+	return res;
+}
+
 static void ia_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	char *fname = NULL;
-	FILE *f;
 
 	fname = rnd_gui->fileselect(rnd_gui, "Load mesh settings...",
 															"Picks file for loading mesh settings from.\n",
@@ -1009,15 +1026,7 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 		free(default_file);
 		default_file = rnd_strdup(fname);
 	}
-
-	f = rnd_fopen(&PCB->hidlib, fname, "r");
-	if (f == NULL) {
-		rnd_message(RND_MSG_ERROR, "Can not open '%s' for read\n", fname);
-		return;
-	}
-	if (mesh_load_file(&ia, f) != 0)
-		rnd_message(RND_MSG_ERROR, "Loading mesh settings from '%s' failed.\n", fname);
-	fclose(f);
+	ia_load_file(fname);
 }
 
 static void ia_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
