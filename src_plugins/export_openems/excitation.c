@@ -198,7 +198,7 @@ static char *exc_gaus_get(int idx, int fmt_matlab)
 	if (fmt_matlab)
 		return rnd_strdup_printf("FDTD = SetGaussExcite(FDTD, %f, %f);", fc, f0);
 
-	return rnd_strdup_printf("type='%d' f0='%f' fc='%f'", excitations[idx].type_id, fc, f0);
+	return rnd_strdup_printf("Type='%d' f0='%f' fc='%f'", excitations[idx].type_id, fc, f0);
 }
 
 static void exc_gaus_ser(int idx, int save)
@@ -235,7 +235,7 @@ static char *exc_sin_get(int idx, int fmt_matlab)
 
 	if (fmt_matlab)
 		return rnd_strdup_printf("FDTD = SetSinusExcite(FDTD, %f);", f0);
-	return rnd_strdup_printf("type='%d' f0='%f'", excitations[idx].type_id, f0);
+	return rnd_strdup_printf("Type='%d' f0='%f'", excitations[idx].type_id, f0);
 }
 
 static void exc_sin_ser(int idx, int save)
@@ -282,7 +282,7 @@ static char *exc_cust_get(int idx, int fmt_matlab)
 			rnd_attribute_get(&PCB->Attributes, AEPREFIX "custom::func")
 		);
 
-	return rnd_strdup_printf("type='%d' f0='%f' Function='%s'",
+	return rnd_strdup_printf("Type='%d' f0='%f' Function='%s'",
 		excitations[idx].type_id,
 		f0,
 		rnd_attribute_get(&PCB->Attributes, AEPREFIX "custom::func")
