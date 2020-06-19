@@ -801,7 +801,7 @@ static void openems_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy,
 		if (step < 8) step = 8;
 		step = 2*M_PI/step;
 
-		rnd_fprintf(ctx->f, "          <Polygon Priority='%d' CoordSystem='0' Elevation='%f' NormDir='2' QtyVertices='10'>", PRIO_COPPER, ctx->elevation);
+		rnd_fprintf(ctx->f, "          <Polygon Priority='%d' CoordSystem='0' Elevation='%f' NormDir='2' QtyVertices='%.0f'>\n", PRIO_COPPER, ctx->elevation, floor(2*M_PI/step));
 		for(a = 0; a < 2*M_PI; a += step)
 			rnd_fprintf(ctx->f, "            <Vertex X1='%f' X2='%f'/>\n", x + cos(a)*r, y + sin(a)*r);
 		rnd_fprintf(ctx->f, "          </Polygon>\n");
@@ -822,7 +822,7 @@ static void openems_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t
 		fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, poly%ld_xy, 1);\n", ctx->clayer, oid);
 	}
 	else {
-		rnd_fprintf(ctx->f, "          <Polygon Priority='%d' CoordSystem='0' Elevation='%f' NormDir='2' QtyVertices='10'>", PRIO_COPPER, ctx->elevation);
+		rnd_fprintf(ctx->f, "          <Polygon Priority='%d' CoordSystem='0' Elevation='%f' NormDir='2' QtyVertices='%d'>\n", PRIO_COPPER, ctx->elevation, n_coords);
 		for(n = 0; n < n_coords; n++)
 			rnd_fprintf(ctx->f, "            <Vertex X1='%f' X2='%f'/>\n", RND_COORD_TO_MM(x[n]+dx), RND_COORD_TO_MM(-(y[n]+dy)));
 		rnd_fprintf(ctx->f, "          </Polygon>\n");
