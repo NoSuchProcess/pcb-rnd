@@ -134,11 +134,14 @@ static int openems_wr_xml_grp_substrate(wctx_t *ctx, pcb_layergrp_t *g)
 		return -1;
 	ctx->elevation = RND_COORD_TO_MM(th);
 
-TODO("Fix hardwired constants");
 	fprintf(ctx->f, "      <Material Name='%s'>\n", g->name);
 	fprintf(ctx->f, "        <FillColor R='220' G='180' B='100' a='50'/>\n");
 	fprintf(ctx->f, "        <EdgeColor R='220' G='180' B='100' a='100'/>\n");
-	fprintf(ctx->f, "        <Property Epsilon='4.8' Kappa=''/>\n");
+	fprintf(ctx->f, "        <Property Epsilon='");
+		print_lparm(ctx, g, "epsilon", -1, HA_def_subst_epsilon, NULL, NULL);
+		fprintf(ctx->f, "' Kappa='");
+		print_lparm(ctx, g, "kappa", -1, HA_def_subst_kappa, NULL, NULL);
+		fprintf(ctx->f, "'/>\n");
 	fprintf(ctx->f, "        <Primitives>\n");
 	openems_wr_xml_outline(ctx, g);
 	fprintf(ctx->f, "        </Primitives>\n");
@@ -176,11 +179,32 @@ static int openems_wr_xml_layers(wctx_t *ctx)
 
 static void openems_wr_xml_mesh_lines(wctx_t *ctx, pcb_mesh_t *mesh, char axis, pcb_mesh_lines_t *l, rnd_coord_t scale)
 {
-	rnd_cardinal_t n;
-TODO("AddPML seems to modify the grid");
+	rnd_cardinal_t n, i = 0, len = vtc0_len(&l->result);
+	rnd_coord_t delta, at;
+
 	fprintf(ctx->f, "      <%cLines>", axis);
-	for(n = 0; n < vtc0_len(&l->result); n++)
-		rnd_fprintf(ctx->f, "%s%mm", (n == 0 ? "" : ","), (rnd_coord_t)(l->result.array[n]*scale));
+
+	if (mesh->pml > 0) {
+		delta = (l->result.array[1] - l->result.array[0]) * scale;
+		at = l->result.array[0] + delta * (mesh->pml+1);
+		for(n = 0; n < mesh->pml; n++) {
+			at -= delta;
+			rnd_fprintf(ctx->f, "%s%mm", (i++ == 0 ? "" : ","), (rnd_coord_t)(at*scale));
+		}
+	}
+
+	for(n = 0; n < len; n++)
+		rnd_fprintf(ctx->f, "%s%mm", (i++ == 0 ? "" : ","), (rnd_coord_t)(l->result.array[n]*scale));
+
+	if (mesh->pml > 0) {
+		delta = (l->result.array[len-1] - l->result.array[len-2]) * scale;
+		at = l->result.array[len-1];
+		for(n = 0; n < mesh->pml; n++) {
+			at += delta;
+			rnd_fprintf(ctx->f, "%s%mm", (i++ == 0 ? "" : ","), (rnd_coord_t)(at*scale));
+		}
+	}
+
 	fprintf(ctx->f, "</%cLines>\n", axis);
 }
 
