@@ -249,6 +249,9 @@ static int openems_wr_xml(wctx_t *ctx)
 	fprintf(ctx->f, "    <BackgroundMaterial Epsilon='%f' Mue='%f' Kappa='0' Sigma='0'/>\n", ctx->options[HA_void_epsilon].dbl, ctx->options[HA_void_mue].dbl);
 
 	err |= openems_wr_xml_layers(ctx);
+
+	openems_wr_testpoints(ctx, ctx->pcb->Data);
+
 	openems_wr_xml_grid(ctx, mesh);
 	fprintf(ctx->f, "  </ContinuousStructure>\n");
 

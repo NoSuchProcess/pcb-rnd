@@ -369,14 +369,21 @@ TODO("layer: consider multiple outline layers instead")
 	fprintf(ctx->f, "\n");
 }
 
+static void openems_wr_m_vport(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid1, rnd_layergrp_id_t gid2, const char *safe_name, double resistance, int act)
+{
+	ctx->port_id++;
+
+	rnd_fprintf(ctx->f, "\npoint%s(1, 1) = %mm; point%s(2, 1) = %mm;\n", safe_name, x, safe_name, -y);
+	fprintf(ctx->f, "[start%s, stop%s] = CalcPcbrnd2PortV(PCBRND, point%s, %d, %d);\n", safe_name, safe_name, safe_name, ctx->lg_pcb2ems[gid1], ctx->lg_pcb2ems[gid2]);
+	fprintf(ctx->f, "[CSX, port{%ld}] = AddLumpedPort(CSX, 999, %ld, %f, start%s, stop%s, [0 0 -1]%s);\n", ctx->port_id, ctx->port_id, resistance, safe_name, safe_name, act ? ", true" : "");
+}
+
 static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid1, rnd_layergrp_id_t gid2, const char *port_name)
 {
 	char *end, *s, *safe_name = rnd_strdup(port_name);
 	const char *att;
 	double resistance = ctx->options[HA_def_port_res].dbl;
 	int act = 1;
-
-	ctx->port_id++;
 
 	att = rnd_attribute_get(&o->Attributes, "openems::resistance");
 	if (att != NULL) {
@@ -401,9 +408,10 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rn
 		if (!isalnum(*s))
 			*s = '_';
 
-	rnd_fprintf(ctx->f, "\npoint%s(1, 1) = %mm; point%s(2, 1) = %mm;\n", safe_name, x, safe_name, -y);
-	fprintf(ctx->f, "[start%s, stop%s] = CalcPcbrnd2PortV(PCBRND, point%s, %d, %d);\n", safe_name, safe_name, safe_name, ctx->lg_pcb2ems[gid1], ctx->lg_pcb2ems[gid2]);
-	fprintf(ctx->f, "[CSX, port{%ld}] = AddLumpedPort(CSX, 999, %ld, %f, start%s, stop%s, [0 0 -1]%s);\n", ctx->port_id, ctx->port_id, resistance, safe_name, safe_name, act ? ", true" : "");
+	if (ctx->fmt_matlab)
+		openems_wr_m_vport(ctx, o, x, y, gid1, gid2, safe_name, resistance, act);
+/*	else
+		openems_wr_xml_vport(ctx, o, x, y, gid1, gid2, safe_name, resistance, act);*/
 
 	free(safe_name);
 }
@@ -460,7 +468,7 @@ rnd_layergrp_id_t openems_vport_aux_group(pcb_board_t *pcb, rnd_layergrp_id_t gi
 
 
 #define TPMASK (PCB_OBJ_LINE | PCB_OBJ_PSTK | PCB_OBJ_SUBC)
-static void openems_wr_m_testpoints(wctx_t *ctx, pcb_data_t *data)
+static void openems_wr_testpoints(wctx_t *ctx, pcb_data_t *data)
 {
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
@@ -468,7 +476,7 @@ static void openems_wr_m_testpoints(wctx_t *ctx, pcb_data_t *data)
 	for(o = pcb_data_first(&it, data, TPMASK); o != NULL; o = pcb_data_next(&it)) {
 		const char *port_name;
 		if (o->type == PCB_OBJ_SUBC)
-			openems_wr_m_testpoints(ctx, ((pcb_subc_t *)o)->data);
+			openems_wr_testpoints(ctx, ((pcb_subc_t *)o)->data);
 
 		port_name = rnd_attribute_get(&o->Attributes, "openems::vport");
 		if (port_name == NULL)
@@ -636,7 +644,7 @@ static void openems_hid_export_to_file(const char *filename, FILE *the_file, FIL
 		rnd_expose_main(&openems_hid, &ctx, NULL);
 
 		fprintf(wctx.f, "%%%%%% Port(s) on terminals\n");
-		openems_wr_m_testpoints(&wctx, wctx.pcb->Data);
+		openems_wr_testpoints(&wctx, wctx.pcb->Data);
 	}
 	else { /* xml */
 		if (openems_wr_xml(&wctx) != 0)
