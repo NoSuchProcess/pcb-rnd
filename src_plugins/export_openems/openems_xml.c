@@ -31,6 +31,7 @@ static long def_f_max = 2100000000;
 TODO("remove this once the function is moved and published in core")
 extern const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace);
 
+
 static void openems_wr_xml_layergrp_end(wctx_t *ctx)
 {
 	if (ctx->cond_sheet_open) {
@@ -217,6 +218,55 @@ static void openems_wr_xml_grid(wctx_t *ctx, pcb_mesh_t *mesh)
 	openems_wr_xml_mesh_lines(ctx, mesh, 'Z', &mesh->line[PCB_MESH_Z], 1);
 	fprintf(ctx->f, "    </RectilinearGrid>\n");
 }
+
+static void openems_wr_xml_vport(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid1, rnd_layergrp_id_t gid2, const char *safe_name, double resistance, int act)
+{
+	pcb_layergrp_t *g1, *g2;
+	rnd_coord_t e1, e2, em;
+
+	g1 = pcb_get_layergrp(ctx->pcb, gid1);
+	g2 = pcb_get_layergrp(ctx->pcb, gid2);
+	if ((g1 == NULL) || (g2 == NULL)) {
+		rnd_message(RND_MSG_ERROR, "openems_wr_xml_vport: invalid layer groups");
+		return 0;
+	}
+	e1 = get_grp_elev(ctx, g1);
+	e2 = get_grp_elev(ctx, g2);
+	if ((e1 < 0) || (e2 < 0)) {
+		rnd_message(RND_MSG_ERROR, "openems_wr_xml_vport: can not determine layer group elevations");
+		return 0;
+	}
+	em = rnd_round((double)(e1+e2)/2.0);
+
+	ctx->port_id++;
+
+	rnd_fprintf(ctx->f, "      <LumpedElement Name='port_resist_%d' Direction='2' Caps='1' R='%f'>\n", ctx->port_id, resistance);
+	rnd_fprintf(ctx->f, "        <Primitives>\n");
+	rnd_fprintf(ctx->f, "          <Box Priority='%d'>\n", PRIO_PORT);
+	rnd_fprintf(ctx->f, "            <P1 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e1);
+	rnd_fprintf(ctx->f, "            <P2 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e2);
+	rnd_fprintf(ctx->f, "          </Box>\n");
+	rnd_fprintf(ctx->f, "        </Primitives>\n");
+	rnd_fprintf(ctx->f, "      </LumpedElement>\n");
+
+	rnd_fprintf(ctx->f, "      <ProbeBox Name='port_ut%d' Type='0' Weight='1'>\n", ctx->port_id);
+	rnd_fprintf(ctx->f, "        <Primitives>\n");
+	rnd_fprintf(ctx->f, "          <Box Priority='999'>\n");
+	rnd_fprintf(ctx->f, "            <P1 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e1);
+	rnd_fprintf(ctx->f, "            <P2 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e2);
+	rnd_fprintf(ctx->f, "          </Box>\n");
+	rnd_fprintf(ctx->f, "        </Primitives>\n");
+	rnd_fprintf(ctx->f, "      </ProbeBox>\n");
+	rnd_fprintf(ctx->f, "      <ProbeBox Name='port_it%d' Type='1' Weight='-1' NormDir='2'>\n", ctx->port_id);
+	rnd_fprintf(ctx->f, "        <Primitives>\n");
+	rnd_fprintf(ctx->f, "          <Box Priority='999'>\n");
+	rnd_fprintf(ctx->f, "            <P1 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, em);
+	rnd_fprintf(ctx->f, "            <P2 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, em);
+	rnd_fprintf(ctx->f, "          </Box>\n");
+	rnd_fprintf(ctx->f, "        </Primitives>\n");
+	rnd_fprintf(ctx->f, "      </ProbeBox>\n");
+}
+
 
 static int openems_wr_xml(wctx_t *ctx)
 {

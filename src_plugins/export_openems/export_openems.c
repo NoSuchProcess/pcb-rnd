@@ -63,6 +63,7 @@ const char *openems_cookie = "openems HID";
 
 #define PRIO_SUBSTRATE 1
 #define PRIO_COPPER 2
+#define PRIO_PORT 999
 
 typedef struct rnd_hid_gc_s {
 	rnd_core_gc_t core_gc;
@@ -378,6 +379,8 @@ static void openems_wr_m_vport(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rnd
 	fprintf(ctx->f, "[CSX, port{%ld}] = AddLumpedPort(CSX, 999, %ld, %f, start%s, stop%s, [0 0 -1]%s);\n", ctx->port_id, ctx->port_id, resistance, safe_name, safe_name, act ? ", true" : "");
 }
 
+static void openems_wr_xml_vport(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid1, rnd_layergrp_id_t gid2, const char *safe_name, double resistance, int act);
+
 static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rnd_coord_t y, rnd_layergrp_id_t gid1, rnd_layergrp_id_t gid2, const char *port_name)
 {
 	char *end, *s, *safe_name = rnd_strdup(port_name);
@@ -410,8 +413,8 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rn
 
 	if (ctx->fmt_matlab)
 		openems_wr_m_vport(ctx, o, x, y, gid1, gid2, safe_name, resistance, act);
-/*	else
-		openems_wr_xml_vport(ctx, o, x, y, gid1, gid2, safe_name, resistance, act);*/
+	else
+		openems_wr_xml_vport(ctx, o, x, y, gid1, gid2, safe_name, resistance, act);
 
 	free(safe_name);
 }
