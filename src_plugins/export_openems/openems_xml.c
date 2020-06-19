@@ -265,6 +265,20 @@ static void openems_wr_xml_vport(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, r
 	rnd_fprintf(ctx->f, "          </Box>\n");
 	rnd_fprintf(ctx->f, "        </Primitives>\n");
 	rnd_fprintf(ctx->f, "      </ProbeBox>\n");
+
+	TODO("Check if it is true:");
+	/* excitation is always fed in on port 1 */
+	if (ctx->port_id == 1) {
+		rnd_fprintf(ctx->f, "      <Excitation Name='port_excite_1' Type='0' Excite='0,0,-1'>\n");
+		rnd_fprintf(ctx->f, "        <Primitives>\n");
+		rnd_fprintf(ctx->f, "          <Box Priority='999'>\n");
+		rnd_fprintf(ctx->f, "            <P1 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e2);
+		rnd_fprintf(ctx->f, "            <P2 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e1);
+		rnd_fprintf(ctx->f, "          </Box>\n");
+		rnd_fprintf(ctx->f, "        </Primitives>\n");
+		rnd_fprintf(ctx->f, "      </Excitation>\n");
+	}
+
 }
 
 
