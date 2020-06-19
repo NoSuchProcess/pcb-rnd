@@ -1029,12 +1029,10 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 	ia_load_file(fname);
 }
 
-static void ia_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void ia_gen(void)
 {
 	mesh_layer_reset();
 	mesh.layer = PCB_CURRLAYER(PCB);
-
-	dlg2mesh();
 
 	if (ia.dlg[ia.hor].val.lng)
 		mesh_auto(&mesh, PCB_MESH_HORIZONTAL);
@@ -1052,6 +1050,13 @@ static void ia_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 
 	rnd_gui->invalidate_all(rnd_gui);
+}
+
+static void ia_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+
+	dlg2mesh();
+	ia_gen();
 }
 
 pcb_mesh_t *pcb_mesh_get(const char *name)
