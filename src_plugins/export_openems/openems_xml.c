@@ -156,7 +156,6 @@ static int openems_wr_xml_layers(wctx_t *ctx)
 	rnd_cardinal_t gid;
 	int err = 0;
 
-	fprintf(ctx->f, "    <Properties>\n");
 
 	ectx.view.X1 = 0;
 	ectx.view.Y1 = 0;
@@ -173,8 +172,6 @@ static int openems_wr_xml_layers(wctx_t *ctx)
 			err |= openems_wr_xml_grp_substrate(ctx, g);
 	}
 
-
-	fprintf(ctx->f, "    </Properties>\n");
 	return err;
 }
 
@@ -312,9 +309,10 @@ static int openems_wr_xml(wctx_t *ctx)
 	fprintf(ctx->f, "  <ContinuousStructure CoordSystem='0'>\n");
 	fprintf(ctx->f, "    <BackgroundMaterial Epsilon='%f' Mue='%f' Kappa='0' Sigma='0'/>\n", ctx->options[HA_void_epsilon].dbl, ctx->options[HA_void_mue].dbl);
 
+	fprintf(ctx->f, "    <Properties>\n");
 	err |= openems_wr_xml_layers(ctx);
-
 	openems_wr_testpoints(ctx, ctx->pcb->Data);
+	fprintf(ctx->f, "    </Properties>\n");
 
 	openems_wr_xml_grid(ctx, mesh);
 	fprintf(ctx->f, "  </ContinuousStructure>\n");
