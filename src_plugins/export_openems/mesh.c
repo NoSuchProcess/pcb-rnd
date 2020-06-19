@@ -1029,6 +1029,18 @@ static void ia_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 	ia_load_file(fname);
 }
 
+static void mesh_sort_uniq(pcb_mesh_lines_t *l)
+{
+		qsort(l->result.array, vtc0_len(&l->result), sizeof(rnd_coord_t), cmp_coord);
+}
+
+static void mesh_sort_uniq_all(pcb_mesh_t *mesh)
+{
+	mesh_sort_uniq(&mesh->line[PCB_MESH_HORIZONTAL]);
+	mesh_sort_uniq(&mesh->line[PCB_MESH_VERTICAL]);
+	mesh_sort_uniq(&mesh->line[PCB_MESH_Z]);
+}
+
 static void ia_gen(void)
 {
 	mesh_layer_reset();
@@ -1042,6 +1054,8 @@ static void ia_gen(void)
 	mesh_auto_z(&mesh);
 	if (mesh.ui_layer_z != NULL)
 		mesh_vis_z(&mesh);
+
+	mesh_sort_uniq_all(&mesh);
 
 	free(mesh.ui_name_xy);
 	free((char *)mesh.ui_layer_xy->name); /* we have strdup'd it */
