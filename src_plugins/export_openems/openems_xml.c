@@ -35,16 +35,29 @@ static void openems_wr_xml_layergrp_end(wctx_t *ctx)
 		fprintf(ctx->f, "      </ConductingSheet>\n");
 		ctx->cond_sheet_open = 0;
 	}
+}
 
+static rnd_coord_t get_grp_elev(wctx_t *ctx, pcb_layergrp_t *g)
+{
+	rnd_layergrp_id_t from, to;
+
+	if (pcb_layergrp_list(ctx->pcb, PCB_LYT_BOTTOM|PCB_LYT_COPPER, &from, 1) != 1) {
+		ctx->elevation = 0;
+		rnd_message(RND_MSG_ERROR, "Missing bottom copper layer group - can not simulate\n");
+		return -1;
+	}
+	to = g - ctx->pcb->LayerGroups.grp;
+	if (from == to)
+		return 0;
+	return pcb_stack_thickness(ctx->pcb, "openems", PCB_BRDTHICK_PRINT_ERROR, from, 1, to, 0, PCB_LYT_SUBSTRATE|PCB_LYT_COPPER);
 }
 
 static void openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
 {
-	rnd_layergrp_id_t from, to;
-
-	openems_wr_xml_layergrp_end(ctx);
 	rnd_coord_t th;
 	pcb_layer_t *ly = NULL;
+
+	openems_wr_xml_layergrp_end(ctx);
 
 	if (g->len < 0) {
 		/* shouldn't happen: we are not called for empty layer groups */
@@ -61,24 +74,68 @@ TODO("Fix hardwired constants");
 
 	fprintf(ctx->f, "        <Primitives>\n");
 	ctx->cond_sheet_open = 1;
-
-	if (pcb_layergrp_list(ctx->pcb, PCB_LYT_BOTTOM|PCB_LYT_COPPER, &from, 1) != 1) {
-		ctx->elevation = 0;
-		rnd_message(RND_MSG_ERROR, "Missing bottom copper layer group - can not simulate\n");
-		TODO("return error");
-	}
-	to = g - ctx->pcb->LayerGroups.grp;
-	th = pcb_stack_thickness(ctx->pcb, "openems", PCB_BRDTHICK_PRINT_ERROR, from, 1, to, 0, PCB_LYT_SUBSTRATE|PCB_LYT_COPPER);
+	th = get_grp_elev(ctx, g);
 TODO("check for -1 and return error");
 	ctx->elevation = RND_COORD_TO_MM(th);
 }
 
+TODO("remove this once the function is moved and published in core")
+extern const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace);
+
+static int openems_wr_xml_outline(wctx_t *ctx, pcb_layergrp_t *g)
+{
+	int n;
+	pcb_any_obj_t *out1;
+	const char *s;
+	rnd_coord_t th = 0;
+
+	s = pcb_layergrp_thickness_attr(g, "openems");
+	if (s != NULL)
+		th = rnd_get_value(s, NULL, NULL, NULL);
+
+	if (th <= 0) {
+		rnd_message(RND_MSG_ERROR, "Substrate thickness is missing or invalid - can't export\n");
+		return -1;
+	}
+
+TODO("layer: consider multiple outline layers instead")
+	out1 = pcb_topoly_find_1st_outline(ctx->pcb);
+
+	rnd_fprintf(ctx->f, "          <LinPoly Priority='%d' Elevation='%f' Length='%mm' NormDir='2' CoordSystem='0'>\n", PRIO_SUBSTRATE, ctx->elevation, th);
+	if (out1 != NULL) {
+		long n;
+		pcb_poly_t *p = pcb_topoly_conn(ctx->pcb, out1, PCB_TOPOLY_KEEP_ORIG | PCB_TOPOLY_FLOATING);
+
+		for(n = 0; n < p->PointN; n++)
+			rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", p->Points[n].X, -p->Points[n].Y);
+		pcb_poly_free(p);
+	}
+	else {
+		/* rectangular board size */
+		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", 0, 0);
+		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", ctx->pcb->hidlib.size_x, 0);
+		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", ctx->pcb->hidlib.size_x, -ctx->pcb->hidlib.size_y);
+		rnd_fprintf(ctx->f, "            <Vertex X1='%mm' X2='%mm'/>\n", 0, -ctx->pcb->hidlib.size_y);
+	}
+	rnd_fprintf(ctx->f, "          </LinPoly>\n");
+	return 0;
+}
+
+
 static void openems_wr_xml_grp_substrate(wctx_t *ctx, pcb_layergrp_t *g)
 {
+	rnd_coord_t th = get_grp_elev(ctx, g);
+TODO("check for -1 and return error");
+	ctx->elevation = RND_COORD_TO_MM(th);
+
 TODO("Fix hardwired constants");
 	fprintf(ctx->f, "      <Material Name='%s'>\n", g->name);
-	fprintf(ctx->f, "        <Property Epsilon='4.8' Kappa=''>");
-	fprintf(ctx->f, "        </Property>");
+	fprintf(ctx->f, "        <FillColor R='220' G='180' B='100' a='50'/>\n");
+	fprintf(ctx->f, "        <EdgeColor R='220' G='180' B='100' a='100'/>\n");
+	fprintf(ctx->f, "        <Property Epsilon='4.8' Kappa=''/>\n");
+	fprintf(ctx->f, "        <Primitives>\n");
+	openems_wr_xml_outline(ctx, g);
+	fprintf(ctx->f, "        </Primitives>\n");
 	fprintf(ctx->f, "      </Material>\n");
 }
 

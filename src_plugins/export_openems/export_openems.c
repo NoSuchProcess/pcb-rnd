@@ -61,7 +61,8 @@ const char *openems_cookie = "openems HID";
 
 #define MESH_NAME "openems"
 
-#define PRIO_COPPER 1
+#define PRIO_SUBSTRATE 1
+#define PRIO_COPPER 2
 
 typedef struct rnd_hid_gc_s {
 	rnd_core_gc_t core_gc;
