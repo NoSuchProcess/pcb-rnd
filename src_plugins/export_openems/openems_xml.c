@@ -165,13 +165,13 @@ static void openems_wr_xml_layers(wctx_t *ctx)
 	fprintf(ctx->f, "    </Properties>\n");
 }
 
-static void openems_wr_xml_mesh_lines(wctx_t *ctx, pcb_mesh_t *mesh, char axis, pcb_mesh_lines_t *l)
+static void openems_wr_xml_mesh_lines(wctx_t *ctx, pcb_mesh_t *mesh, char axis, pcb_mesh_lines_t *l, rnd_coord_t scale)
 {
 	rnd_cardinal_t n;
 TODO("AddPML seems to modify the grid");
 	fprintf(ctx->f, "      <%cLines>", axis);
 	for(n = 0; n < vtc0_len(&l->result); n++)
-		rnd_fprintf(ctx->f, "%s%mm", (n == 0 ? "" : ","), l->result.array[n]);
+		rnd_fprintf(ctx->f, "%s%mm", (n == 0 ? "" : ","), (rnd_coord_t)(l->result.array[n]*scale));
 	fprintf(ctx->f, "</%cLines>\n", axis);
 }
 
@@ -179,9 +179,9 @@ TODO("AddPML seems to modify the grid");
 static void openems_wr_xml_grid(wctx_t *ctx, pcb_mesh_t *mesh)
 {
 	fprintf(ctx->f, "    <RectilinearGrid DeltaUnit='0.001' CoordSystem='0'>\n");
-	openems_wr_xml_mesh_lines(ctx, mesh, 'Y', &mesh->line[PCB_MESH_HORIZONTAL]);
-	openems_wr_xml_mesh_lines(ctx, mesh, 'X', &mesh->line[PCB_MESH_VERTICAL]);
-	openems_wr_xml_mesh_lines(ctx, mesh, 'Z', &mesh->line[PCB_MESH_Z]);
+	openems_wr_xml_mesh_lines(ctx, mesh, 'Y', &mesh->line[PCB_MESH_HORIZONTAL], -1);
+	openems_wr_xml_mesh_lines(ctx, mesh, 'X', &mesh->line[PCB_MESH_VERTICAL], 1);
+	openems_wr_xml_mesh_lines(ctx, mesh, 'Z', &mesh->line[PCB_MESH_Z], 1);
 	fprintf(ctx->f, "    </RectilinearGrid>\n");
 }
 
