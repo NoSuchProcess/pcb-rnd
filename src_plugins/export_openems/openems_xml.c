@@ -215,7 +215,7 @@ static void openems_wr_xml_grid(wctx_t *ctx, pcb_mesh_t *mesh)
 	fprintf(ctx->f, "    <RectilinearGrid DeltaUnit='0.001' CoordSystem='0'>\n");
 	openems_wr_xml_mesh_lines(ctx, mesh, 'Y', &mesh->line[PCB_MESH_HORIZONTAL], -1);
 	openems_wr_xml_mesh_lines(ctx, mesh, 'X', &mesh->line[PCB_MESH_VERTICAL], 1);
-	openems_wr_xml_mesh_lines(ctx, mesh, 'Z', &mesh->line[PCB_MESH_Z], -1);
+	openems_wr_xml_mesh_lines(ctx, mesh, 'Z', &mesh->line[PCB_MESH_Z], 1);
 	fprintf(ctx->f, "    </RectilinearGrid>\n");
 }
 
