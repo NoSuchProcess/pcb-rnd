@@ -198,7 +198,7 @@ static void openems_wr_xml_mesh_lines(wctx_t *ctx, pcb_mesh_t *mesh, char axis, 
 		rnd_fprintf(ctx->f, "%s%mm", (i++ == 0 ? "" : ","), (rnd_coord_t)(l->result.array[n]*scale));
 
 	if (mesh->pml > 0) {
-		delta = (l->result.array[len-1] - l->result.array[len-2]) * scale;
+		delta = (l->result.array[len-1] - l->result.array[len-2]);
 		at = l->result.array[len-1];
 		for(n = 0; n < mesh->pml; n++) {
 			at += delta;
