@@ -44,8 +44,21 @@ static void openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
 
 	openems_wr_xml_layergrp_end(ctx);
 	rnd_coord_t th;
+	pcb_layer_t *ly = NULL;
+
+	if (g->len < 0) {
+		/* shouldn't happen: we are not called for empty layer groups */
+		return;
+	}
+	ly = pcb_get_layer(ctx->pcb->Data, g->lid[0]);
+
 TODO("Fix hardwired constants");
 	fprintf(ctx->f, "      <ConductingSheet Name='%s' Conductivity='56000000' Thickness='7e-05'>\n", g->name);
+	if (ly != NULL) {
+		fprintf(ctx->f, "        <FillColor R='%d' G='%d' B='%d' a='128'/>\n", ly->meta.real.color.r, ly->meta.real.color.g, ly->meta.real.color.b);
+		fprintf(ctx->f, "        <EdgeColor R='%d' G='%d' B='%d' a='192'/>\n", ly->meta.real.color.r, ly->meta.real.color.g, ly->meta.real.color.b);
+	}
+
 	fprintf(ctx->f, "        <Primitives>\n");
 	ctx->cond_sheet_open = 1;
 
