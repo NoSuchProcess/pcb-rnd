@@ -45,7 +45,7 @@ static rnd_coord_t get_grp_elev(wctx_t *ctx, pcb_layergrp_t *g)
 {
 	rnd_layergrp_id_t from, to;
 
-	if (pcb_layergrp_list(ctx->pcb, PCB_LYT_BOTTOM|PCB_LYT_COPPER, &from, 1) != 1) {
+	if (pcb_layergrp_list(ctx->pcb, PCB_LYT_TOP|PCB_LYT_COPPER, &from, 1) != 1) {
 		ctx->elevation = 0;
 		rnd_message(RND_MSG_ERROR, "Missing bottom copper layer group - can not simulate\n");
 		return -1;
@@ -243,8 +243,8 @@ static void openems_wr_xml_vport(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, r
 	rnd_fprintf(ctx->f, "      <LumpedElement Name='port_resist_%d' Direction='2' Caps='1' R='%f'>\n", ctx->port_id, resistance);
 	rnd_fprintf(ctx->f, "        <Primitives>\n");
 	rnd_fprintf(ctx->f, "          <Box Priority='%d'>\n", PRIO_PORT);
-	rnd_fprintf(ctx->f, "            <P1 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e1);
-	rnd_fprintf(ctx->f, "            <P2 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e2);
+	rnd_fprintf(ctx->f, "            <P1 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e2);
+	rnd_fprintf(ctx->f, "            <P2 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e1);
 	rnd_fprintf(ctx->f, "          </Box>\n");
 	rnd_fprintf(ctx->f, "        </Primitives>\n");
 	rnd_fprintf(ctx->f, "      </LumpedElement>\n");
@@ -252,8 +252,8 @@ static void openems_wr_xml_vport(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, r
 	rnd_fprintf(ctx->f, "      <ProbeBox Name='port_ut%d' Type='0' Weight='1'>\n", ctx->port_id);
 	rnd_fprintf(ctx->f, "        <Primitives>\n");
 	rnd_fprintf(ctx->f, "          <Box Priority='999'>\n");
-	rnd_fprintf(ctx->f, "            <P1 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e1);
-	rnd_fprintf(ctx->f, "            <P2 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e2);
+	rnd_fprintf(ctx->f, "            <P1 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e2);
+	rnd_fprintf(ctx->f, "            <P2 X='%mm' Y='%mm' Z='%mm'/>\n", x, -y, e1);
 	rnd_fprintf(ctx->f, "          </Box>\n");
 	rnd_fprintf(ctx->f, "        </Primitives>\n");
 	rnd_fprintf(ctx->f, "      </ProbeBox>\n");
