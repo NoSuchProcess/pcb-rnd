@@ -40,11 +40,24 @@ static void openems_wr_xml_layergrp_end(wctx_t *ctx)
 
 static void openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
 {
+	rnd_layergrp_id_t from, to;
+
 	openems_wr_xml_layergrp_end(ctx);
+	rnd_coord_t th;
 TODO("Fix hardwired constants");
 	fprintf(ctx->f, "      <ConductingSheet Name='%s' Conductivity='56000000' Thickness='7e-05'>\n", g->name);
 	fprintf(ctx->f, "        <Primitives>\n");
 	ctx->cond_sheet_open = 1;
+
+	if (pcb_layergrp_list(ctx->pcb, PCB_LYT_BOTTOM|PCB_LYT_COPPER, &from, 1) != 1) {
+		ctx->elevation = 0;
+		rnd_message(RND_MSG_ERROR, "Missing bottom copper layer group - can not simulate\n");
+		TODO("return error");
+	}
+	to = g - ctx->pcb->LayerGroups.grp;
+	th = pcb_stack_thickness(ctx->pcb, "openems", PCB_BRDTHICK_PRINT_ERROR, from, 1, to, 0, PCB_LYT_SUBSTRATE|PCB_LYT_COPPER);
+TODO("check for -1 and return error");
+	ctx->elevation = RND_COORD_TO_MM(th);
 }
 
 static void openems_wr_xml_grp_substrate(wctx_t *ctx, pcb_layergrp_t *g)

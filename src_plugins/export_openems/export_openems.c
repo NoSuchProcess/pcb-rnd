@@ -61,6 +61,8 @@ const char *openems_cookie = "openems HID";
 
 #define MESH_NAME "openems"
 
+#define PRIO_COPPER 1
+
 typedef struct rnd_hid_gc_s {
 	rnd_core_gc_t core_gc;
 	rnd_hid_t *me_pointer;
@@ -89,6 +91,7 @@ typedef struct {
 
 	/* xml */
 	unsigned cond_sheet_open:1;
+	double elevation; /* in mm */
 } wctx_t;
 
 static FILE *f = NULL;
@@ -792,7 +795,15 @@ static void openems_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy,
 		rnd_fprintf(ctx->f, "CSX = AddPcbrndTrace(CSX, PCBRND, %d, points%ld, %mm, 0);\n", ctx->clayer, oid, radius*2);
 	}
 	else {
-		rnd_fprintf(ctx->f, "TODO: fill circle %mm;%mm\n", cx, cy);
+		double a, step, x = RND_COORD_TO_MM(cx), y = -RND_COORD_TO_MM(cy), r = RND_COORD_TO_MM(radius);
+		step = r*10;
+		if (step < 8) step = 8;
+		step = 2*M_PI/step;
+
+		rnd_fprintf(ctx->f, "          <Polygon Priority='%d' CoordSystem='0' Elevation='%f' NormDir='2' QtyVertices='10'>", PRIO_COPPER, ctx->elevation);
+		for(a = 0; a < 2*M_PI; a += step)
+			rnd_fprintf(ctx->f, "            <Vertex X1='%f' X2='%f'/>\n", x + cos(a)*r, y + sin(a)*r);
+		rnd_fprintf(ctx->f, "          </Polygon>\n");
 	}
 }
 
@@ -810,7 +821,10 @@ static void openems_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t
 		fprintf(ctx->f, "CSX = AddPcbrndPoly(CSX, PCBRND, %d, poly%ld_xy, 1);\n", ctx->clayer, oid);
 	}
 	else {
-		rnd_fprintf(ctx->f, "TODO: poly offs %mm;%mm\n", dx, dy);
+		rnd_fprintf(ctx->f, "          <Polygon Priority='%d' CoordSystem='0' Elevation='%f' NormDir='2' QtyVertices='10'>", PRIO_COPPER, ctx->elevation);
+		for(n = 0; n < n_coords; n++)
+			rnd_fprintf(ctx->f, "            <Vertex X1='%f' X2='%f'/>\n", RND_COORD_TO_MM(x[n]+dx), RND_COORD_TO_MM(-(y[n]+dy)));
+		rnd_fprintf(ctx->f, "          </Polygon>\n");
 	}
 }
 
