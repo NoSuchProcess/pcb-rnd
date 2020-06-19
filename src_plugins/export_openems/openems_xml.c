@@ -28,6 +28,9 @@ static long def_num_timesteps = 1000000000;
 static double def_end_crit = 1e-05;
 static long def_f_max = 2100000000;
 
+TODO("remove this once the function is moved and published in core")
+extern const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace);
+
 static void openems_wr_xml_layergrp_end(wctx_t *ctx)
 {
 	if (ctx->cond_sheet_open) {
@@ -65,8 +68,10 @@ static void openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
 	}
 	ly = pcb_get_layer(ctx->pcb->Data, g->lid[0]);
 
-TODO("Fix hardwired constants");
-	fprintf(ctx->f, "      <ConductingSheet Name='%s' Conductivity='56000000' Thickness='7e-05'>\n", g->name);
+	fprintf(ctx->f, "      <ConductingSheet Name='%s' Conductivity='", g->name);
+		print_lparm(ctx, g, "conductivity", HA_def_copper_cond, -1, NULL, NULL);
+		rnd_fprintf(ctx->f, "' Thickness='%.09mm'>\n", th);
+
 	if (ly != NULL) {
 		fprintf(ctx->f, "        <FillColor R='%d' G='%d' B='%d' a='128'/>\n", ly->meta.real.color.r, ly->meta.real.color.g, ly->meta.real.color.b);
 		fprintf(ctx->f, "        <EdgeColor R='%d' G='%d' B='%d' a='192'/>\n", ly->meta.real.color.r, ly->meta.real.color.g, ly->meta.real.color.b);
@@ -78,9 +83,6 @@ TODO("Fix hardwired constants");
 TODO("check for -1 and return error");
 	ctx->elevation = RND_COORD_TO_MM(th);
 }
-
-TODO("remove this once the function is moved and published in core")
-extern const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace);
 
 static int openems_wr_xml_outline(wctx_t *ctx, pcb_layergrp_t *g)
 {
