@@ -536,6 +536,8 @@ static int field_arc(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld
 		case query_fields_x:         PCB_QRY_RET_COORD(res, a->X);
 		case query_fields_cy:
 		case query_fields_y:         PCB_QRY_RET_COORD(res, a->Y);
+		case query_fields_width:     PCB_QRY_RET_COORD(res, a->Width);
+		case query_fields_height:    PCB_QRY_RET_COORD(res, a->Height);
 		case query_fields_thickness: PCB_QRY_RET_COORD(res, a->Thickness);
 		case query_fields_clearance: PCB_QRY_RET_COORD(res, (rnd_coord_t)rnd_round((double)a->Clearance/2.0));
 		case query_fields_length:
