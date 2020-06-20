@@ -15,11 +15,14 @@ generate it.
 <p>
 A rule consists of three parts:
 <ul>
-	<li> the rule keyword; syntax: rule NAME
-	<li> build variables (lists) using search statements
-	<li> state assertions about those lists.
+	<li> the <i>rule</i> keyword; syntax: <b>rule NAME</b>, where NAME is an arbitrary string
+	<li> build variables (lists) using search statements, using the <i>let</i> keyword
+	<li> state assertions about those lists, using the <i>assert</i> keyword
 	<li> comments, empty lines
 </ul>
+<p>
+A simpler variant of a rule is a single expression, without any <i>rule</i> or
+<i>let</i> or <i>assert</i> keywords in it.
 
 <h3 autotoc="yes"> Variables (lists) </h3>
 <p>
