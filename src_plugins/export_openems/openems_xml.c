@@ -61,7 +61,7 @@ static int openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
 
 	if (g->len < 0) {
 		/* shouldn't happen: we are not called for empty layer groups */
-		return;
+		return -1;
 	}
 	ly = pcb_get_layer(ctx->pcb->Data, g->lid[0]);
 
@@ -215,13 +215,13 @@ static void openems_wr_xml_vport(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, r
 	g2 = pcb_get_layergrp(ctx->pcb, gid2);
 	if ((g1 == NULL) || (g2 == NULL)) {
 		rnd_message(RND_MSG_ERROR, "openems_wr_xml_vport: invalid layer groups");
-		return 0;
+		return;
 	}
 	e1 = get_grp_elev(ctx, g1);
 	e2 = get_grp_elev(ctx, g2);
 	if ((e1 < 0) || (e2 < 0)) {
 		rnd_message(RND_MSG_ERROR, "openems_wr_xml_vport: can not determine layer group elevations");
-		return 0;
+		return;
 	}
 	em = rnd_round((double)(e1+e2)/2.0);
 
