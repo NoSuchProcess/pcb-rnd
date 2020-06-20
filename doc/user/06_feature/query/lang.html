@@ -30,17 +30,15 @@ single-expression variant) to find/select/list drawing objects.
 
 <h3 autotoc="yes"> Variables (lists) </h3>
 <p>
-Variables are named by the user and are local to the rule. TODO
-Lists are ordered.
-A list is consists of zero or more objects. An object is:
+Variables are named by the user and are local to the rule. A variable
+always holds a <i>list</i> of objects. Lists are ordered.
+A list is consists of zero or more objects. An object is on of the following:
 <ul>
 	<li> the board
 	<li> a layer
-	<li> a board drawing primitive (line, arc, polygon, via, text)
-	<li> an element primitive (element line, element arc(?), pin, pad, element name)
-	<li> an element as a whole
+	<li> a drawing primitive (line, arc, polygon, padstack, text), whether it is part of a subcircuit or is directly on the board
+	<li> a subcircuit
 	<li> a net
-	<li> a 2D coordinate with or without layer information
 </ul>
 
 <p>
