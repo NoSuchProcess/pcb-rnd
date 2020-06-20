@@ -186,18 +186,16 @@ object does not have a thickness and .p.thickness on a polygon is invalid.
 An user attribute reference (e.g. field .a.baz) is valid if the attribute
 key exists in the given object.
 <p>
-Invalid fields are skipped in iterations. Thus if variable BLOBB is a list
-that consists of 3 line, 2 arc and a layer objects, the following assert
-will result in 2 comparisons only:
+Invalid fields evaluate to value void (and is not considered an error).
+Thus if variable BLOBB is a list
+that consists of 3 line, 2 arc and a layer objects, the following expression
+will be void (false) for at least the 3 line objects and can be true
+for at most 2 cases (the arc objects):
 <pre>
 (BLOBB.p.width &gt;= 10 mm)
 </pre>
-(because only arc objects have valid .p.width field).
-
-<p>
-An invalid field in an expression is never considered an
-error. In an assert statement it causes skipping an iteration. In a
-search statement it evaluates to void.
+(because only arc objects have valid .p.width field, which is the horizontal
+radius of an arc).
 
 <p>
 A void value is never equal to anything. A void value is not equal
