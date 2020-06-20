@@ -82,21 +82,20 @@ subcircuits), in random order.
 
 <h3 autotoc="yes"> Expressions and values </h3>
 <p>
-An expression returns a value. A value can be:
+An expression is evaluated to a value. A value can be:
 <ul>
 	<li>an object
 	<li>a list
 	<li>scalar: a number or string (might be suffixed, like "42 mm")
-	<li>void (empty, also known as false)
+	<li>void (empty, nil, also known as false)
 </ul>
 
 <p>
 A value is considered true if:
 <ul>
-	<li>it is an existing object
-	<li>it is a non-empty list
+	<li>it is an existing object; or
+	<li>it is a non-empty list; or
 	<li>it is a non-zero number or non-empty string
-	<li>it is a valid coordinate
 </ul>
 
 <p>
@@ -108,13 +107,13 @@ An expression is one of:
 <tr><td>EXPR || EXPR                <td>logical OR (result: number)
 <tr><td>EXPR &amp;&amp; EXPR        <td>logical AND (result: number)
 <tr><td>EXPR1 thus EXPR2            <td>evaluate to EXPR2 if EXPR1 is true, else to void
-<tr><td>EXPR + EXPR                 <td>add (number only)
-<tr><td>EXPR - EXPR                 <td>subtract (number only)
-<tr><td>EXPR * EXPR                 <td>multiply or ... (number only)
-<tr><td>EXPR / EXPR                 <td>multiply or ... (number only)
-<tr><td>EXPR == EXPR                <td>the two values are equal
-<tr><td>EXPR != EXPR                <td>the two values are not equal
-<tr><td>EXPR ~ string               <td>regex match left EXPR using pattern right string
+<tr><td>EXPR + EXPR                 <td>add (numbers only)
+<tr><td>EXPR - EXPR                 <td>subtract (numbers only)
+<tr><td>EXPR * EXPR                 <td>multiply (numbers only)
+<tr><td>EXPR / EXPR                 <td>divide (numbers only)
+<tr><td>EXPR == EXPR                <td>the two values are equal (result: number)
+<tr><td>EXPR != EXPR                <td>the two values are not equal (result: number)
+<tr><td>EXPR ~ string               <td>regex match left EXPR using pattern right string (result: number)
 <tr><td>EXPR &gt; EXPR              <td>left EXPR is greater than right EXPR (number only)
 <tr><td>EXPR &gt;= EXPR             <td>left EXPR is greater than or equal to right EXPR (number only)
 <tr><td>EXPR &lt; EXPR              <td>left EXPR is less than right EXPR (number only)
@@ -131,11 +130,17 @@ assert EXPR
 </pre>
 
 <p>
-If the EXPR in an assert evaluates to false, a DRC violation is generated.
+When running the DRC, if the EXPR in an assert evaluates to false, a
+DRC violation is generated. The return value of such an expression should
+normally be a list generated using the violation() function, so that it
+can pass on all relevant details (such as expected value, affected objects)
+to the DRC display.
+<p>
+When running a search, normally the result of an assert should be an object.
 
 <p>
-If an assert EXPR is a list anywhere else than in a function argument, it is
-evaluated for all valid members of the list (see P45, P46). For example
+If an EXPR references a variable (list), it is evaluated for all
+valid members of the list (see P45, P46), in order of the list. For example
 if there is a variable called FOO, which is a list of objects
 (built using a search statement), expression
 <pre>
@@ -161,6 +166,18 @@ the potential number of iterations is still 4*15, and not 4*4*15 (FOO is
 not iterated twice). In practice the engine leverages lazy evaluation so
 if FOO.p.clearance is smaller than 10 mil, the right size is not evaluated.
 See also: P45, P46.
+<p>
+If a function needs to be called with a whole list passed instead of
+calling to function for each element of the list, the special list()
+built-in function should be used. For example assume FOO is a list of 5
+objects:
+<pre>
+llen(list(FOO))
+</pre>
+<p>
+will pass FOO as a list to function llen(), which is called only once. Without
+the list() wrapping, llen() would be called five times, once for each item
+in the list.
 <p>
 A field reference is valid if the field exists. For example a line object
 has a thickness attribute, thus the .p.thickness is valid, but a polygon
