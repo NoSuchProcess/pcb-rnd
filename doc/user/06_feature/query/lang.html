@@ -140,16 +140,15 @@ When running a search, normally the result of an assert should be an object.
 
 <p>
 If an EXPR references a variable (list), it is evaluated for all
-valid members of the list (see P45, P46), in order of the list. For example
+valid members of the list, in order of the list. For example
 if there is a variable called FOO, which is a list of objects
 (built using a search statement), expression
 <pre>
 FOO.p.thickness
 </pre>
 <p>
-is evaluated as many times as many objects are on the list, and the
-full assert is checked each case. If there is another similar list
-called BAR, an expression:
+is evaluated as many times as many objects are on the list.
+If there is another similar list called BAR, an expression:
 <pre>
 (FOO.p.thickness &lt; BAR.p.thickness)
 </pre>
@@ -164,8 +163,8 @@ times in the same expression. For example, with the above lists:
 </pre>
 the potential number of iterations is still 4*15, and not 4*4*15 (FOO is
 not iterated twice). In practice the engine leverages lazy evaluation so
-if FOO.p.clearance is smaller than 10 mil, the right size is not evaluated.
-See also: P45, P46.
+if FOO.p.clearance is smaller than 10 mil, the right side is not evaluated,
+which saves a few comparisons. See also: <a href="#fields">fields</a>.
 <p>
 If a function needs to be called with a whole list passed instead of
 calling to function for each element of the list, the special list()
@@ -178,7 +177,9 @@ llen(list(FOO))
 will pass FOO as a list to function llen(), which is called only once. Without
 the list() wrapping, llen() would be called five times, once for each item
 in the list.
-<p>
+
+<h3 autotoc="yes"> Fields (properties and atributes) </h3>
+<p id="fields">
 A field reference is valid if the field exists. For example a line object
 has a thickness attribute, thus the .p.thickness is valid, but a polygon
 object does not have a thickness and .p.thickness on a polygon is invalid.
