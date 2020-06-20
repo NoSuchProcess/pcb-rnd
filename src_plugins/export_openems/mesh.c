@@ -121,6 +121,21 @@ TODO("enum lookup");
 #	define mesh_trace pcb_trace
 #endif
 
+TODO("remove this once the function is moved and published in core")
+extern const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace);
+
+rnd_coord_t mesh_layergrp_thickness(pcb_layergrp_t *grp, rnd_coord_t fallback)
+{
+	rnd_coord_t th = fallback;
+	const char *s = pcb_layergrp_thickness_attr(grp, "openems");
+	if (s != NULL)
+		th = rnd_get_value(s, NULL, NULL, NULL);
+	else
+		rnd_message(RND_MSG_ERROR, "openEMS: thickness of layer group '%s' is not available, using default for type\n(You should fix your layer group attributes!)\n", grp->name);
+	return th;
+}
+
+
 TODO("reorder to avoid fwd decl")
 static void mesh_auto_add_smooth(vtc0_t *v, rnd_coord_t c1, rnd_coord_t c2, rnd_coord_t d1, rnd_coord_t d, rnd_coord_t d2);
 
@@ -630,10 +645,15 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 	for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
 		pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
 		if (grp->ltype & PCB_LYT_COPPER) {
+			rnd_coord_t th = mesh_layergrp_thickness(grp, mesh->def_copper_thick);
 			/* Ignore the thickness of copper layers for now: copper sheets are modelled in 2d */
+/*
+			y += th;
+			ybottom = y;
+*/
 		}
 		else if (grp->ltype & PCB_LYT_SUBSTRATE) {
-			rnd_coord_t d, t = mesh->def_subs_thick;
+			rnd_coord_t d, t = mesh_layergrp_thickness(grp, mesh->def_subs_thick);
 			double dens = (double)t/(double)lns;
 			bottom_dens = rnd_round(dens);
 			if (lns != 0) {

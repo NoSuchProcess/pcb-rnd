@@ -192,18 +192,9 @@ TODO(": when export dialogs change into DAD, this hack to convert the strings to
 	return openems_attribute_list;
 }
 
-TODO("remove this once the function is moved and published in core")
-extern const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace);
-
 rnd_coord_t ems_layergrp_thickness(pcb_layergrp_t *grp)
 {
-	rnd_coord_t th = (grp->ltype & PCB_LYT_COPPER) ? openems_attribute_list[HA_def_copper_thick].default_val.crd : openems_attribute_list[HA_def_substrate_thick].default_val.crd;
-	const char *s = pcb_layergrp_thickness_attr(grp, "openems");
-	if (s != NULL)
-		th = rnd_get_value(s, NULL, NULL, NULL);
-	else
-		rnd_message(RND_MSG_ERROR, "openEMS: thickness of layer group '%s' is not available, using default for type\n(You should fix your layer group attributes!)\n", grp->name);
-	return th;
+	return mesh_layergrp_thickness(grp, (grp->ltype & PCB_LYT_COPPER) ? openems_attribute_list[HA_def_copper_thick].default_val.crd : openems_attribute_list[HA_def_substrate_thick].default_val.crd);
 }
 
 

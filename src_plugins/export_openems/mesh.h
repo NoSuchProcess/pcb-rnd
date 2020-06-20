@@ -48,3 +48,7 @@ fgw_error_t pcb_act_mesh(fgw_arg_t *res, int oargc, fgw_arg_t *oargv);
 
 /* Get one of the configured meshes */
 pcb_mesh_t *pcb_mesh_get(const char *name);
+
+/* Return layer group thickness, warn for missing value and use fallback */
+rnd_coord_t mesh_layergrp_thickness(pcb_layergrp_t *grp, rnd_coord_t fallback);
+
