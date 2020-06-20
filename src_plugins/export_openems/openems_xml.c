@@ -54,7 +54,7 @@ static rnd_coord_t get_grp_elev(wctx_t *ctx, pcb_layergrp_t *g)
 
 static int openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
 {
-	rnd_coord_t th;
+	rnd_coord_t elev, th = ems_layergrp_thickness(g);
 	pcb_layer_t *ly = NULL;
 
 	openems_wr_xml_layergrp_end(ctx);
@@ -76,10 +76,10 @@ static int openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
 
 	fprintf(ctx->f, "        <Primitives>\n");
 	ctx->cond_sheet_open = 1;
-	th = get_grp_elev(ctx, g);
-	if (th < 0)
+	elev = get_grp_elev(ctx, g);
+	if (elev < 0)
 		return -1;
-	ctx->elevation = RND_COORD_TO_MM(th);
+	ctx->elevation = RND_COORD_TO_MM(elev);
 	return 0;
 }
 
