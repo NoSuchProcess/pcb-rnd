@@ -42,6 +42,10 @@ Arguments:
 Return value: floating point distance value in nanometers.
 
 
+<h3 autotoc="yes"> abs(number) </h3>
+<p>
+Returns the absolute value of a number
+
 <h3 autotoc="yes"> violation(i1, v1, ..., iN, vN) </h3>
 <p>
 Build a DRC violation report.
@@ -202,14 +206,27 @@ flag and is sliced into multiple parts not naturally connected by the polygon
 itself.
 
 
-<h3 autotoc="yes"> overlap(obj1, obj2) </h3>
+<h3 autotoc="yes"> overlap(obj1, obj2, [bloat]) </h3>
 <p>
 Returns 1 if obj1 and obj2 overlap (even if they are on different layers)
 <p>
 Arguments:
 <ul>
-	<li> obj1 and obj2 are objects.
+	<li> obj1 and obj2 are objects;
+	<li> an optional bloat value, in coords: bloat up (or shrink, if negative) one of the objects by this value before the test.
 </ul>
 <p>
 Return value: 1 for overlap, 0 for no overlap.
+
+<h3 autotoc="yes"> intersect(obj1, obj2, [bloat]) </h3>
+<p>
+Returns 1 if obj1 and obj2 intersect (must share a layer)
+<p>
+Arguments:
+<ul>
+	<li> obj1 and obj2 are objects;
+	<li> an optional bloat value, in coords: bloat up (or shrink, if negative) one of the objects by this value before the test.
+</ul>
+<p>
+Return value: 1 for intersection, 0 for no overlap.
 
