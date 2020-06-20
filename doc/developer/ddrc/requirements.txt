@@ -1,20 +1,19 @@
 The Dynamic DRC should be able to solve at least these tasks:
 	- check star grounding
-	- require subcircuit placement on same layer 
-		- specify subcircuit proximity to each other on same layer
-		- specify subcircuit proximity to the edge
-		- specify subcircuit proximity to network or other copper feature
-		on the same layer
-	- perform copper vs. copper checks
-		- minimal gap between an object or network and anything else
-		- minimal gap between high voltage and low voltage networks
-	- perform copper geometry checks
-		- detect minimal width (high current)
+	+ require subcircuit placement on same layer 
+		+ specify subcircuit proximity to each other on same layer
+		+ specify subcircuit proximity to the edge
+		+ specify subcircuit proximity to network or other copper feature on the same layer
+	+ perform copper vs. copper checks
+		+ minimal gap between an object or network and anything else
+		+ minimal gap between high voltage and low voltage networks
+	+ perform copper geometry checks
+		+ detect minimal width (high current)
 		- detect poly hairpin
 		- number and length of stubs (hight freq)
 		- "via cage": a given network needs to be surrounded by a set of gnd vias
 	- network related copper checks
-		- matched length lines (e.g. fast dram bus)
+		+ matched length lines (e.g. fast dram bus)
 		- balanced transmission line (distance between the tracks)
 		- match and/or limit number of vias
 		- limit layer usage
