@@ -27,7 +27,12 @@ Functions listed below can be called from a query expression.
 	Variable number of objects.
 	<p>
 	Return value: a list built of the objects passed.
-	
+
+	<h4 autotoc="yes"> layerlist() </h4>
+	<p>
+	Returns a list of all layers.
+
+
 <h3 autotoc="yes"> Math & abstract geometry </h3>
 
 	<h4 autotoc="yes"> distance(x1, y1, x2, y2) </h4>
@@ -200,8 +205,27 @@ Functions listed below can be called from a query expression.
 	polygons and a positive integer higher than 1 if the polygon has the FULLPOLY
 	flag and is sliced into multiple parts not naturally connected by the polygon
 	itself.
-	
-	
+
+	<h4 autotoc="yes"> thermal_on(tobj, lobj) </h4>
+	<p>
+	Return a string description of thermals of tobj on layer corrseponding to lobj.
+	<p>
+	Arguments:
+	<ul>
+		<li> tobj is the object whose thermals are being queried
+		<li> lobj is either a layer or an object-on-a-layer, and it addresses the layer to query the thermals on
+	</ul>
+	<p>
+	Return value: a string that consists of:
+	<ul>
+		<li> empty if there's no thermal; or
+		<li> a single 'n' for no-shape; or
+		<li> a single '@' for solid connection; or
+		<li> 'o' for round, 'x' for sharp thermal
+		<li> in case of round or sharp thermal, a 'd' suffix if it is diagonal
+	</ul>
+
+
 <h3 autotoc="yes"> Misc </h3>
 
 	<h4 autotoc="yes"> action(args...) </h4>
