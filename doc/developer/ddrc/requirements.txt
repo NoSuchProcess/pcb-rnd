@@ -1,5 +1,5 @@
 The Dynamic DRC should be able to solve at least these tasks:
-	- check start grounding
+	- check star grounding
 	- require element placement on same layer 
 		- specify element proximity to each other on same layer
 		- specify element proximity to the edge
