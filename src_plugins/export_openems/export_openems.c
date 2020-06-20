@@ -192,6 +192,19 @@ TODO(": when export dialogs change into DAD, this hack to convert the strings to
 	return openems_attribute_list;
 }
 
+TODO("remove this once the function is moved and published in core")
+extern const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace);
+
+rnd_coord_t ems_layergrp_thickness(pcb_layergrp_t *grp)
+{
+	rnd_coord_t th;
+	const char *s = pcb_layergrp_thickness_attr(grp, "openems");
+	if (s != NULL)
+		th = rnd_get_value(s, NULL, NULL, NULL);
+	return th;
+}
+
+
 /* Find the openems 0;0 mark, if there is any */
 static void find_origin_bump(void *ctx_, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {

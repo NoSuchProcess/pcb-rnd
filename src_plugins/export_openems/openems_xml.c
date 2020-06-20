@@ -28,10 +28,6 @@ static long def_num_timesteps = 1000000000;
 static double def_end_crit = 1e-05;
 static long def_f_max = 2100000000;
 
-TODO("remove this once the function is moved and published in core")
-extern const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace);
-
-
 static void openems_wr_xml_layergrp_end(wctx_t *ctx)
 {
 	if (ctx->cond_sheet_open) {
@@ -89,14 +85,8 @@ static int openems_wr_xml_layergrp_begin(wctx_t *ctx, pcb_layergrp_t *g)
 
 static int openems_wr_xml_outline(wctx_t *ctx, pcb_layergrp_t *g)
 {
-	int n;
 	pcb_any_obj_t *out1;
-	const char *s;
-	rnd_coord_t th = 0;
-
-	s = pcb_layergrp_thickness_attr(g, "openems");
-	if (s != NULL)
-		th = rnd_get_value(s, NULL, NULL, NULL);
+	rnd_coord_t th = ems_layergrp_thickness(g);
 
 	if (th <= 0) {
 		rnd_message(RND_MSG_ERROR, "Substrate thickness is missing or invalid - can't export\n");
