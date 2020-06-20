@@ -646,11 +646,8 @@ static int mesh_auto_z(pcb_mesh_t *mesh)
 		pcb_layergrp_t *grp = &PCB->LayerGroups.grp[gid];
 		if (grp->ltype & PCB_LYT_COPPER) {
 			rnd_coord_t th = mesh_layergrp_thickness(grp, mesh->def_copper_thick);
-			/* Ignore the thickness of copper layers for now: copper sheets are modelled in 2d */
-/*
 			y += th;
 			ybottom = y;
-*/
 		}
 		else if (grp->ltype & PCB_LYT_SUBSTRATE) {
 			rnd_coord_t d, t = mesh_layergrp_thickness(grp, mesh->def_subs_thick);
