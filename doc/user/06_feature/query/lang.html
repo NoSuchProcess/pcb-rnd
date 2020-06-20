@@ -54,12 +54,12 @@ Objects have named properties (or fields):
 <p>
 Note: the language is case sensitive with keywords and builtins using
 lowercase only. For better readability, in syntax description in this
-document uppercase words are user chosen identifiers or fields. Whitespace
-character sequences are usually treated as a single whitespace. (This
+document uppercase words are user chosen identifiers or fields.  (This
 does not mean identifiers have to be uppercase in a program.)
-
 <p>
-The syntax of a search statement is:
+Whitespace character sequences are usually treated as a single whitespace.
+<p>
+The syntax of a search statement that stores a result in a list is:
 <pre>
 let LISTNAME EXPR
 </pre>
@@ -67,15 +67,20 @@ let LISTNAME EXPR
 <p>
 It creates a list called LISTNAME and evaluates expression EXPR to all
 available objects and adds the objects that match EXPR to the list. Each
-matching object is added only once. The particular order of objects on
-the list is random. Object "matches EXPR" when the EXPR evaluated on
-the object yields true.
+matching object is added only once.
+<p>
+The particular order of objects on the list depends on how iterations are
+taken in EXPR. For example if EXPR refers to only one list (e.g. @), the
+ordering of that list is preserved in the result as well.
+<p>
+Object "matches EXPR" when the EXPR evaluated on the object yields true.
 
 <p>
-The current object used in the iteration during the search is called @.
+A special list that always exist is called @, and contains all subcircuits
+and drawing objects present on the board (including those that are part of
+subcircuits), in random order.
 
 <h3 autotoc="yes"> Expressions and values </h3>
-
 <p>
 An expression returns a value. A value can be:
 <ul>
