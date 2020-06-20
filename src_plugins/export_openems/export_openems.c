@@ -197,10 +197,12 @@ extern const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *
 
 rnd_coord_t ems_layergrp_thickness(pcb_layergrp_t *grp)
 {
-	rnd_coord_t th;
+	rnd_coord_t th = (grp->ltype & PCB_LYT_COPPER) ? openems_attribute_list[HA_def_copper_thick].default_val.crd : openems_attribute_list[HA_def_substrate_thick].default_val.crd;
 	const char *s = pcb_layergrp_thickness_attr(grp, "openems");
 	if (s != NULL)
 		th = rnd_get_value(s, NULL, NULL, NULL);
+	else
+		rnd_message(RND_MSG_ERROR, "openEMS: thickness of layer group '%s' is not available, using default for type\n(You should fix your layer group attributes!)\n", grp->name);
 	return th;
 }
 
