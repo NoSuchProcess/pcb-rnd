@@ -22,8 +22,8 @@ P5  A list is consists of zero or more objects. An object is:
 P6   - the board
 P7   - a layer
 P8   - a board drawing primitive (line, arc, polygon, via, text)
-P9   - an element primitive (element line, element arc(?), pin, pad, element name)
-P10  - an element as a whole
+P9   - an subcircuit primitive (subcircuit line, subcircuit arc(?), pin, pad, subcircuit name)
+P10  - an subcircuit as a whole
 P11  - a net
 P61  - a 2D coordinate with or without layer information
 
@@ -219,8 +219,8 @@ P60 type(EXPR, TYPENAME)
     EXPR is an object. Returns the object if it's type matches TYPENAME, else
     returns void (a.k.a. false). This call is useful to decide whether an
     object is of a specific type. TYPENAME is one of:
-     - drawing primitive type: arc, line, polygon, text, via, element
-     - element primitive type: element_line, element_name, pin, pad
+     - drawing primitive type: arc, line, polygon, text, via, subcircuit
+     - subcircuit primitive type: subcircuit_line, subcircuit_name, pin, pad
      - misc type: layer, net
      - meta-type, or a group:
        - copper: primitive that results in copper (arc, line, polygon, text (on copper), via, pin, pad)
@@ -235,7 +235,7 @@ P63  - for lines and arcs, the points are evenly spaced on the centerlane with
         else it may be smaller than NUM1.
 P64  - for polygons take a grid of NUM1*NUM2 spacing (NUM1 is always axis
        aligned to X, NUM2 to Y). The offset of the grid is unspecified
-P65  - element and text are ignored
+P65  - subcircuit and text are ignored
 P66  - a pad or pin is approximated with a polygon
 P67  - for networks, iterate over all objects and append unique coordinates on
        the resulting list

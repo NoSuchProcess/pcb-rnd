@@ -1,9 +1,9 @@
 The Dynamic DRC should be able to solve at least these tasks:
 	- check star grounding
-	- require element placement on same layer 
-		- specify element proximity to each other on same layer
-		- specify element proximity to the edge
-		- specify element proximity to network or other copper feature
+	- require subcircuit placement on same layer 
+		- specify subcircuit proximity to each other on same layer
+		- specify subcircuit proximity to the edge
+		- specify subcircuit proximity to network or other copper feature
 		on the same layer
 	- perform copper vs. copper checks
 		- minimal gap between an object or network and anything else
