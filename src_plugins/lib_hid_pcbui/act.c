@@ -225,7 +225,7 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &o1, &o2, &o3);
 					o = o2;
 					if ((type == 0) || ((o != NULL) && (pcb_gobj_parent_subc(o->parent_type, &o->parent) == NULL))) {
-						type = pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL, &o1, &o2, &o3);
+						type = pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL | PCB_LOOSE_SUBC(PCB_ACT_BOARD), &o1, &o2, &o3);
 
 						switch(type) {
 							case 0: tn = "none"; break;

@@ -77,7 +77,7 @@ int prop_scope_add(pcb_propedit_t *pe, const char *cmd, int quiet)
 
 			type = pcb_search_obj_by_location(PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &o1, &o2, &o3, pcb_crosshair.X, pcb_crosshair.Y, PCB_SLOP);
 			if (type == 0)
-				type = pcb_search_obj_by_location(PCB_OBJ_CLASS_REAL, &o1, &o2, &o3, pcb_crosshair.X, pcb_crosshair.Y, PCB_SLOP);
+				type = pcb_search_obj_by_location(PCB_OBJ_CLASS_REAL | PCB_LOOSE_SUBC(pe->pcb), &o1, &o2, &o3, pcb_crosshair.X, pcb_crosshair.Y, PCB_SLOP);
 			if (type == 0) {
 				if (!quiet)
 					rnd_message(RND_MSG_ERROR, "No object under the cursor\n");
