@@ -556,7 +556,9 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	tmp = find_nth(attr->first_child, "TEXT_OPTIONS", 0);
 	if (tmp != NULL)
 		if (strcmp(tmp->argv[1], "MIRRORED") == 0) {
-			mirrored = PCB_TXT_MIRROR_X;
+			mirrored = PCB_TXT_MIRROR_Y;
+			rot = rot + 180;
+			if (rot > 360) rot = rot - 360;
 		}
 
 	tmp = find_nth(attr->first_child, "HEIGHT", 0);
