@@ -1,7 +1,6 @@
 $class feature
 $short the original DRC code
 $long A few simple, hardwired Design Rule Checks.
-$package (core)
 default disable-all
 dep query
 autoload 1
