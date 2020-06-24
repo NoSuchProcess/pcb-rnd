@@ -5,17 +5,29 @@ How to get a release candidate tarball in /tmp:
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
-TODO: package deps and plugins
-TODO: new util pcb-rnd-svg
-
 Packaging changes between 2.2.1 and 2.2.2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
 
-- new plugins io_bxl and irc
+1. plugin removed: import_sch from package pcb-rnd-import-net
 
-- make sure old drc is removed
+2. plugin removed: distaligntext from package pcb-rnd-extra
 
-- description changes!
+3. plugin removed: drc_orig from package core
+
+B. changes that probably DO need action
+
+1. as always, the ./configure line has changed for plugin changes, see packages.html
+
+2. the description of pcb-rnd has changed, please copy it from description.txt
+
+3. new plugin: irc in package pcb-rnd-lib-gui
+
+4. new plugins: lib_formula and lib_portynet in package pcb-rnd-core
+
+5. new plugin: io_bxl in pcb-rnd-io-alien
+
+6. new util: pcb-rnd-svg; has an executable and a manual page in the install
 
 Packaging changes between 2.2.0 and 2.2.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
