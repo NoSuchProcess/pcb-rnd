@@ -80,6 +80,7 @@
 		- new outline/mech layers and slots
 		- new doc layers
 		- polygon side clearance (e.g. CUCP#38 provided by Karl)
+- BUG: locally debian packaged version: run ./pcb-rnd from src with no X, exit -> tons of warnings
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
