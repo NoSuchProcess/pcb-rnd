@@ -15,8 +15,10 @@ all: bxl2txt$(LIBRND_EXE) txt2bxl$(LIBRND_EXE)
 include ../../Makefile.conf
 
 bxl2txt$(LIBRND_EXE): bxl2txt.o bxl_decode.o
+	$(CC) -o bxl2txt$(LIBRND_EXE) $(LDFLAGS) bxl2txt.o bxl_decode.o
 
 txt2bxl$(LIBRND_EXE): txt2bxl.o bxl_decode.o
+	$(CC) -o txt2bxl$(LIBRND_EXE) $(LDFLAGS) txt2bxl.o bxl_decode.o
 
 txt2bxl.o: txt2bxl.c $(PLUG)/bxl_decode.h
 	$(CC) -c $(CFLAGS) txt2bxl.c -o txt2bxl.o
