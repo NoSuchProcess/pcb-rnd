@@ -1,3 +1,394 @@
+pcb-rnd 2.2.2 (r32050)
+~~~~~~~~~~~~~~~~~~~~~~
+	[act_draw]
+		-Add: PolyBool() action
+		-Add: low level draw using gc: DrawText() and DrawColor()
+		-Add: DrawLine() for low level, gc based rendering
+		-Add: DrawPoly() for low level, gc based rendering
+
+	[act_read]
+		-Fix: missing argument in ReadGroup() syntax description
+		-Add: ReadGroup() field accessor: ltypehas matches the 4th argument's layer type flag (specified as a string) and returns 0 or 1 if the layer group has that type
+		-Add: ObjCenter() action that returns the x or y coord of the center of an object (for scripting)
+
+	[autoroute]
+		-Fix: optimize with manhattan lines only
+		-Fix: refine the 'netlist stale' error message to get the user use the right rats optimization
+		-Del: false-positive(?) assert
+		-Add: temporary rats nest optimization for the old autorouter (manhattan)
+	[build]
+		-Add: detect byaccic and ureglex unless disabled
+		-Add: generate byaccic and ureglex rules
+	[cam]
+		-Fix: GUI: do not create excess directories while the user is typing an output path
+
+	[clearance]
+		-Add: polygon's enforce_clearance field
+
+	[conf]
+		-Add: public counter on how many times each conf root got replaced; this helps the caller detect side effects of e.g. loading a design file thay brought its own design level conf
+
+	[core]
+		-Fix: when freeing a subc, don't unreg it if parent is INVALID: it may simply be an unregistered subcircuit
+		-Fix: idpath: str->idpath conversion went wrong when path was prefixed with data address
+		-Fix: idpath: idpath->str in non-relative mode shall insert data name in front of the path
+		-Fix: when loading a new board, if it doesn't have a conf subtree make sure to reset the design role conf tree upon succesful load so the design conf of the previous board won't leak in
+		-Fix: unnecessary recursion in dynflag clear (turned O(n) into O(n^2))
+		-Fix: padstack broken ring check: a ring can not be broken if there's no hole
+		-Fix: io incompat listing in batch mode
+		-Fix: selected operation shall recurse and apply to subc floaters
+		-Fix: MoveLayer() gi and ga shouldn't allow creating new layers in a substrate group (happened on the cross-section view)
+		-Fix: object snap: use mouse coord, not crosshair coord so multiple snap points in between grid points are accessible; screen-search for snapping start with grid/8, then check grid/4 radius before searching in the original grid/2 - this gives it a chance to find the closer object first
+		-Fix: PCB_FP_FOPEN_IN_DST_ shouldn't use FILE as sizeof(FILE) is not always known
+		-Fix: cursor key direction mixed up in menu file
+		-Fix: toss buffer should not copy/move objects that are part of a subc (fixes bug: floater refdes text copied as a standalone second text object)
+		-Fix: RouteStyle() set generates the necessary route-style-changed event and if we were setting the current style, updates the pen too, so the current style stays selected
+		-Fix: do not double-add subc-parts in the rtree on move-buffer undo
+		-Fix: snap: grid realign should use crosshair coords, not mosue cursor coords, but grid size is still set to 0;0 - this allows both picking the alignment to a "background image" and realign to an object
+		-Fix: snap: prefer snapping to subc origin over snapping to grid
+		-Fix: arc split undo: add the new arc to the remove list
+		-Del: layer naming styles other then pcb-rnd and fixed (old, pre-CAM gerber layer namings)
+		-Del: special case code that placed donut rats
+		-Cleanup: prefix LIB_ enum members with PCB_ to keep the namespace clean
+		-Move: deprecate the MinClearGap() action; move it from core to oldactions plugin
+		-Add: footprint API: new hook for moving file type detection from fp_fs to format plugins
+		-Add: extend the fp_fopen() API so it can split up the file name to sub-footprint name and this info is accessible for the caller
+		-Add: subfpname parameter to the footprint parse API so multi-footprint files get which footprint to load
+		-Add: implement pstk prototype free fields (also fixes related memleaks)
+		-Add: fungw: automatic idpath type conversions
+		-Add: inline function to calculate object iid
+		-Add: Netlist() action commands for enabling/disabling all rats
+		-Add: text clearance style is determined by 'boolean' text attribute "tight_clearance"
+		-Add: text scale_x and scale_y
+		-Add: generic call for retrieving a pointer to the thermal char of any object (to unify padstack and non-padstack access)
+		-Add: undoable any-object thermal operation (works on lines and polygons)
+		-Add: text placement by bbox: create text utility function by bbox/anchor scaling/placement (useful for alien formats)
+		-Add: when a footprint format supports multiple footprints per file, map the file and offer selection on import
+		-Add: optional interactive object list selector for the case there are multiple objects found on a screen search (the user can pick one)
+		-Add: local (per layer-type) clearance change in prototypes are undoable
+		-Add: make padstack proto shape grow undoable
+		-Add: pstk proto scale is undoable
+		-Add: Netlist(): AutoLen and NoAutoLen actions to change automatic net calculation bit of a net
+		-Add: generalize the board thickness calculation function so it can calculate the thickness of a stack between two layer groups, optionally filtering for layer group type as well; also works for a subset of the stack
+		-Add: expose the API for deciding if two lines overlap and can be simplified
+		-Add: layer group addressing syntax: #gid, for use from scripts
+		-Add: RouteStyle(): upgrade to be able to set and get some fields
+		-Add: RouteStyle() accepts "@current" as first argument for working with the current style (useful for set and get)
+
+	[ddraft]
+		-Fix: trim's esc handling
+
+	[dialogs]
+		-Fix: printing padstack proto details respects grid unit when choosing unit
+		-Fix: padstack generator: don't derive from non-existing shapes
+		-Fix: padstack dialog: undo on shape grow/shrink: group all transformed-shape undos into one serial so it can all be undone at once
+		-Fix: parametric footprint edit dialog: when generating the command, always include the mandatory parameters
+		-Fix: parametric footprint edit: don't print empty parameter even if it changed
+		-Fix: parametric footprint dialog: truncate trailing zeros after decimal point when printing coords
+		-Fix: parametric footprint dialog: do not use parameters of a different footprint to fill in the newly open dialog
+		-Add: conf tree: explicit indication, with a long help text, of read-only tree nodes
+		-Add: conf tree: explicit note about creating a new value with a long help text explaining the special case for bools
+		-Add: netlist dialog: button for enabling/disabling all rats
+		-Add: netlist dialog: double click on a net row will toggle disable on it
+		-Add: advanced search: expose text scale_x and scale_y fields
+		-Add: footprint map chooser dialog - used when multiple footprints are available for loaing frmo a file
+		-Add: layer bindings: allow changing the target layer on the right side and recalculate the recipe for it
+		-Add: object list selector dialog: when enabled, clicking on a location with multiple objects offer a selection window
+		-Add: drc dialog: extra button that jumps to the drc configuration dialog in preferences
+		-Add: tooltips for the netlist dialog
+		-Add: netlist dialog: buttons for net length calculation to display net length calc results in the netlist table
+		-Add: padstack dialog: padstack thermal summary on the instance tab
+
+	[distalign]
+		-Del: distaligntext plugin -> distalign can handle every case
+
+	[doc]
+		-Fix: conf merging: use a more clear terminology on board files
+		-Fix: terminology (Element vs. subcircuit, property vs. attribute
+		-Fix: query: lists are always iterated, even in function arguments, except when wrapped in list()
+		-Del: remove the documentation of MinClearGap - it's deprecated
+		-Update: conf: preferences dialog is not gtk-only anymore
+		-Update: linux official package availability: remove arch, because it is not maintained; add the debian derived systems that picked it up and a link to repology for the full list
+		-Add: Marks and Gridless recommendations for distalign actions
+		-Add: io_lihata v7 changelog
+		-Add: data model doc includes poly enforce_clearance
+		-Add: document text object's tight_clearance attribute (with lihata v7)
+		-Add: gfx in data model
+		-Add: data model: document text scale_x and scale_y fields
+		-Add: privacy policy
+		-Add: developer doc: API doc on pcb_text_by_bbox
+		-Add: lihata format doc: document pcb-rnd-drc-query-v*
+		-Add: layer groups attributes: thickness and  "dielectric" for Er
+		-Add: document the new PolyBool() action
+		-Add: layer group addressing syntax: #gid
+		-Add: query: convert language description to html and move it to the user doc
+		-Add: query: explain keywords and describe very simple rules that are a single expression with no keywords
+		-Add: query: explain query usage outside of the DRC
+		-Add: query: make sure all functions are documented and groupped by topic
+
+	[draw_csect]
+		-Add: print layer group thickness attribute on cross section when available
+
+	[draw_fontsel]
+		-Cleanup: initialize all fields of sample text to 0 to avoid accidental mirroring
+
+	[drc_query]
+		-Fix: missing const definitions for min_copper_overlap and min_copper_clearance
+		-Cleanup: use IID comparisons instead of ID or bbox comparisons for making object pairs uniqe - more robust solution
+		-Add: drc rule for "ko.id" layer groups
+		-Add: dialog box upgrades for the optional rule source field
+		-Add: DrcQueryRuleMod(): action to modify drc_query rules
+		-Add: DrcQueryDefMod(): action to modify drc_query definitions
+		-Add: rule import/export in tEDAx format
+		-Add: rule import/export in lihata format
+		-Add: progress bar (and CLI progress report) on DRC execution; also prints number of violations found
+
+	[export_gerber]
+		-Del: the layer naming style option: only the default pcb-rnd naming style is available
+		-Del: all excellon cross-call related code
+
+	[export_openems]
+		-Chnage: centralize layer group thickness function so later on every part of the code gets the same thickness; make sure the mesher uses the same layer thicknesses as the xml export code
+		-Add: optional xml output for direct flow
+		-Add: layer group thickness falls back to openems export default per layer group type (copper or substrate) with an error message, if it is not specified in the stackup
+
+	[export_svg]
+		-Add: --true-size changes the <svg> header to write width and height in mm, matching the viewport
+
+	[find.c]
+		-Fix: don't require object parent layer group to exist - it won't in case of unbound subc layers
+		-Cleanup: remove global var Bloat, use reentrant ctx->bloat instead
+		-Cleanup: remove long unused macro EXPAND_BOUNDS
+		-Add: option to ignore clearances in low level isc
+		-Add: allow_noncopper_pstk option to let non-copper shapes of padstacks "conduct" for special tests
+		-Add: implement "anylayer" option for pstk vs. anything intersection calculation (for calculating overlaps properly)
+
+	[formula]
+		-Add: action for microstrip impedance
+		-Add: action for coplanar wave guide
+		-Add: generic non-linear equation "solver" based on a single variable, bisecting within an expected range of that variable looking for the right result of a random function (action) within the specified error margin
+		-Add: the query plugin should depend on lib_forumla because drc scripts may want to run the actions for calculating e.g. microstrip impedance
+
+	[fp_fs]
+		-Fix: don't crash when popen fails
+		-Fix: popen() won't work with "rb", only with "r"
+		-Cleanup: memory leak on working directory
+		-Split: move out format detection from fp_fs so io_ plugins can do the file format
+		-Change: open footprint files in binary mode instead of text: text parsers should be fine with this while it is essential for binary parsers on win32
+		-Add: create footprint lib out of a file that contains multiple footprints
+		-Add: optimization: cache fp map result per file, using the file's mtime
+
+	[gfx]
+		-Fix: bbox calculation should reset the bbox to invalid coords instead of 0;0 so the upper left corner of the bbox will come out right
+		-Fix: FlagEdit() should work on gfx objects
+		-Add: the gfx object should remember preferred pixmap ID for a save/load/save round trip
+		-Add: set pixmap ref ID to 0 when a new pixmap is assigned to a gfx so its ID will be determined automatically on save
+		-Add: keep pixmap id on dup
+		-Add: subc convert and xor draw frame in subc
+		-Add: update() should recalculate the bbox (it's cheap and depends on the corners that are just updated)
+		-Add: support gfx in subc dup_at()
+		-Add: PCB_OBJ_GFX_POINT: use rnd_point_t to track gfx conrers so that the tool infra can grab them for resize
+		-Add: crosshair snap to gfx corner points
+		-Add: gfx resize xor-draw: ortho-project dx/dy to the sides to calculate how the new pixmap rectangle would look like
+		-Add: undoable resize-by-corner-move implementation
+		-Add: action to load pixmap into a gfx object in buffer
+		-Add: Import pixmap to buffer in the menu: File/Import
+		-Add: attribute render_level, with value "above" or "under" to control rendering order within the layer
+		-Add: interactive, measure based resizer
+		-Add: upgrade GfxMod() so it can set transparent color by idpath and color or pixel coords
+		-Add: upgrade GfxMod(resize) so it accepts idpath, pdx, pdy, len (for scripting)
+		-Add: menu, action and low level code for manually picking the transparent color
+
+	[gtk]
+		-Add: new config options to control whether a window is set transient-for and/or "presented" after creation
+
+	[hid_gtk2_gl]
+		-Fix: Draw everything in expose events instead of only the dirty rect because scissor isn't used
+
+	[import_sch2]
+		-Del: old import schematics plugin - use the new one
+		-Fix: the automatically selected tEDAx import format should work even if the user did not change format selection
+
+	[io_bxl]
+		-Add: load footprints from BXL files
+
+	[io_eagle]
+		-Fix: initialize state struct to 0 to avoid depending on uninitialized memory when some default settings are not present in the file
+		-Fix: binary: invalid memory handlig on binary tree free
+		-Fix: binary: when overwrites an existing property do not leak memory on the old key and value: keep the old hash table entry, free and replace the old value
+		-Fix: binary: text mirroring applied to angles too; this once again inverts 90/270 edge cases
+		-Fix: binary: bitfield extraction mask calculated wrong, causing extra bits to leak in
+		-Fix: binary: do not ingore the spin bit of text objects
+		-Fix: binary: disable the code that ruined subc coords
+		-Fix: binary: oad long/free text; better error messages on free text read errors
+		-Fix: binary: register 0x2d84 as unknown block
+		-Fix: do not warn for missing fonts, the format does not have embedded font
+		-Fix: arc angles: derive delta angle from the curve parameter
+		-Add: function to calculate on-screen length of a string in eagle default font
+		-Add: calculate bbox width and height of text assuming default eagle font
+		-Add: text object: calculate anchor x;y position using the align field and bbox sizes
+		-Add: use bbox based text placement for higher precision
+		-Add: support for (x) mirrored text
+		-Add: parse the spin bit of rotation for text
+
+	[io_kicad]
+		-Fix: kicad_parse_any_text() needs to get parent module mirror bit because the text object suffers that transformation too
+		-Fix: set refdes text floater and pick up "reference" text as refdes
+		-Cleanup: remove old element terminology
+		-Add: rewrite the code to use the central bbox based text placement to support X mirror and x/y scaling
+
+	[io_lihata]
+		-Add: faster parametric footprint detection: anything starting with #! should be parametric
+		-Add: support loading v7 boards (new default file format)
+
+	[io_pcb]
+		-Cleanup: use RND_FUNC_UNUSED, which is scconfig detected, instead of a gcc version dependent macro
+		-Cleanup: don't depend on compat_cc.h, it's for the poly code only now
+		-Fix: when setting conf nodes also reset and bump conf tree counter to make sure the settings are preserved
+
+	[io_tedax]
+		-Cleanup: remove old element terminology
+		-Add: load and save drc_query_rule blocks
+		-Add: when importing through the central netlist import infra, also load drc blocks
+		-Add: action to run a test parse on a file name or an open FILE *
+		-Add: create drc_query rules for tEDAx drc block
+
+	[irc]
+		-Add: a minimalistic IRC client behind the 'online support' button
+
+	[lib_compat_help]
+		-Fix: create heavy->light converted padstacks with the right origin, not with 0;0
+
+	[lib_hid_common]
+		-Fix: Dad() shouldn't crash when "set" called before the dialog box is runing
+		-Add: Dad() action: preview widget creation
+		-Add: Dad(set) works on input fields typed "real"
+		-Add: Dad(): set enum as int
+		-Add: Dad(default) to set widget default value on creation
+		-Add: Dad() set/get works on tabbed
+		-Add: Dad() returns the return value of the callback action for the preview widget mouse event callbacks
+		-Add: Dad() "help" command to add tooltip
+
+	[lib_hid_pcbui]
+		-Fix: respect loose subc and allow popup() to pick up objects from the subc
+		-Add: comment to clarify the main usage of the DecribeLocation action
+		-Add: DescribeLocation (tooltip) prints rat line info when cursor lands on a rat line
+		-Add: DescribeLocation print terminal name in parenthesis after the terminal ID when it differs from the terminal ID
+		-Add: big blue button for on-line support (minimalistic IRC client)
+
+	[lib_polyhelp]
+		-Fix: make PolyHatch() undoable
+
+	[librnd]
+		-Fix: pixmap hash should use transparent pixel values in the hash as they are also used in key comparison
+		-Fix: when free'ing pixmap fields, also free the renderer's cache
+		-Fix: hid action parse can properly return the real result of the last action while keeping the "stop executing multiple actions if any fails" concept
+		-Fix: dad spin on real numbers: don't use step 0 at value 0 for up/down spin buttons, that wouldn't change the value!
+		-Cleanup: rename pcb_ prefix to rnd_ prefix
+		-Cleanup: centralize istrue() to rnd_istrue(), plus add rnd_isfalse() helper to complement it
+		-Add: portable RND_MIN, RND_MAX and RND_SGN so the code long term won't depend on redefining MIN/MAX
+		-Add: base64 string encode/decode
+		-Add: compile and include libulzw in 3rd lib
+		-Add: fungw pointer domain for FILE*
+		-Add: pixmap: low level pixmap dup
+		-Add: pixmap: call to free hid side cache (useful for redraw after changing pixels)
+		-Add: HID API: pixmap uninit call so the HID cache can be invalidated on core pixmap change
+		-Add: the get_coords API (librnd's and HID's) return int to indicate if esc was pressed
+		-Add: #define M_E for c89-portability
+		-Add: fungw ptr domain for GC (for scripted low level draws)
+		-Add: DAD: str<->bit conversion of HATF_TIGHT
+		-Add: expose the low level of rnd_parse_command(): rnd_parse_command_res() that can return a typed result properly
+
+	[netlist]
+		-Fix: consider only the first island of non-full-polys when figuring where rats are to be connected so they won't end up connecting to invisible polygon islands
+
+	[pcblib]
+		-Fix: qf(): silkmark position was away from the corner
+		-Add: qf() silkmark help: mention that it is drawn only if bodysilk is also drawn
+
+	[propedit]
+		-Fix: when tight_clearance is toggled, run pre/post of the object
+		-Fix: when changing objects with side effect, recalculate bbox and redraw them
+		-Fix: padstack proto is not a coord but an int
+		-Fix: respect loose subc and allow propedit(object) to pick up objects from the subc
+		-Add: map and set enforce_clearance
+		-Add: PropToggle() action to toggle flags and attributes
+		-Add: introduce data type 'double' for editing text scale
+		-Add: change text scale_x and scale_y
+
+	[query]
+		-Fix: coord conv: don't try to convert VOID as string
+		-Fix: execute multiple rules per program
+		-Fix: query(dump) doesn't crash on syntax error but returns error
+		-Change: .netseg returns an object, not an object ID (object IDs are not always unique because of subcircuits)
+		-Move: search dialog from dialogs to query because it will be more tightly coupled with the query compiler
+		-Add: overlap() ignores clearances
+		-Add: overlap() uses allow_noncopper_pstk so pstk-pstk overlap can be tested with non-copper
+		-Add: layerlist() for listing all layers in order of appearance in data
+		-Add: accept .layer.type for layer's type, as .type may be processed by the caller for object type
+		-Add: \ protected newline is ignored like whitespace - this allows multi-line rules
+		-Add: violation list can contain text that is then appended to the drc description
+		-Add: .IID field for instance ID (useful for (A.IID <= B.IID) checks for sorting pairs)
+		-Add: support for text scale_x and scale_y
+		-Add: overlap() takes an optional bloat argument
+		-Add: intersect() is a variant of overlap, requires layer objects to be in the same layer group
+		-Add: abs() function
+		-Add: progress bar
+		-Add: net segment length calculator
+		-Add: net seg len: report if the search was blocked by a bad object
+		-Add: helper action: QueryCalcNetLen() for calculation simple net length or return error on the complex case
+		-Add: search dialog decompile: if the expression is in a valid form, fill in the GUI dialog
+		-Add: thermal_on(): query function to get thermal shape bits translated into a string of characters
+		-Add: arc .width and .height properties
+
+	[report]
+		-Change: replace local net length implementation with query's
+		-Add: print idpath at the end of the object report
+		-Add: polygon report mentions polygon enforced minimum clearance, when it is not 0
+		-Add: print rat anchors as well, for debugging
+		-Add: print text scales
+		-Add: UI layer based net length report
+
+	[res]
+		-Add: menu for toggling tight_clearance of text objects
+		-Add: obj list popup control submenu on {m d o}
+		-Add: menu items for visual net length reports
+		-Add: netlist length menu: {n l l} for refresh netlist lengths in the netlist dialog (opens the dialog if not already open)
+		-Add: layer group context menu to create top/bottom silk/paste/mask layer groups
+
+	[scconfig]
+		-Fix: repo.hu -> svn.repo.hu in externs (more reliable hostname)
+		-Split: librnd split: separate the code that is used for librnd
+		-Del: dmalloc support - use valgrind instead
+		-Add: allow plugins to inject extra args to sphash (e.g. for --multi)
+		-Add: gen_conf: require first level const struct be const, except for special temp structs in core and librnd
+
+	[script]
+		-Add: live script reload&rerun button for better support of using external editors
+		-Add: ActionString() action so scritps can build a call in a string
+
+	[tests]
+		-Fix: drc_query test: sort output so it does not depend on order of reports
+		-Fix: drc_query: zone clear: change the drawing so the drc error occurs at a single pinpoint instead of on a parallel line-line that may yield in different bbox depending on order of objects
+		-Fix: drc_query reproducability: introduce a conf node for getting the drc always use the bbox of all red and blue objects, without optimization and focus on red, for reproducible view box output for tests
+		-Update: pcb-printf test for the new function name
+		-Update: propedit test for the new print file name
+		-Add: base64 tester
+		-Add: propedit: include testing doubles
+
+	[tool_std]
+		-Fix: the text tool applies pen (routing style) attributes
+		-Fix: don't limit thermal tool to padstacks
+		-Fix: uninitialized text field for the size indication 'A' of the text tool
+		-Fix: can not keep ids on "drag & drop move selected" (explanation in comment); fixes undo bug with multiple moves of the same selected object
+		-Add: simplified insert tool, make it the default
+		-Add: allow the optional object selector for insert, lock, polyhole, remove and thermal
+
+	[util]
+		-Add: sign.sh: sign files with openssl
+		-Add: pcb-rnd-svg: compare pcb-rnd renders using svg
+
+
 pcb-rnd 2.2.1 (r30749)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[autoplace]
