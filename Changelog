@@ -28,13 +28,13 @@ pcb-rnd 2.2.2 (r32050)
 		-Add: polygon's enforce_clearance field
 
 	[conf]
-		-Add: public counter on how many times each conf root got replaced; this helps the caller detect side effects of e.g. loading a design file thay brought its own design level conf
+		-Add: public counter on how many times each conf root got replaced; this helps the caller detect side effects of e.g. loading a design file that brought its own design level conf
 
 	[core]
 		-Fix: when freeing a subc, don't unreg it if parent is INVALID: it may simply be an unregistered subcircuit
 		-Fix: idpath: str->idpath conversion went wrong when path was prefixed with data address
 		-Fix: idpath: idpath->str in non-relative mode shall insert data name in front of the path
-		-Fix: when loading a new board, if it doesn't have a conf subtree make sure to reset the design role conf tree upon succesful load so the design conf of the previous board won't leak in
+		-Fix: when loading a new board, if it doesn't have a conf subtree make sure to reset the design role conf tree upon successful load so the design conf of the previous board won't leak in
 		-Fix: unnecessary recursion in dynflag clear (turned O(n) into O(n^2))
 		-Fix: padstack broken ring check: a ring can not be broken if there's no hole
 		-Fix: io incompat listing in batch mode
@@ -46,7 +46,7 @@ pcb-rnd 2.2.2 (r32050)
 		-Fix: toss buffer should not copy/move objects that are part of a subc (fixes bug: floater refdes text copied as a standalone second text object)
 		-Fix: RouteStyle() set generates the necessary route-style-changed event and if we were setting the current style, updates the pen too, so the current style stays selected
 		-Fix: do not double-add subc-parts in the rtree on move-buffer undo
-		-Fix: snap: grid realign should use crosshair coords, not mosue cursor coords, but grid size is still set to 0;0 - this allows both picking the alignment to a "background image" and realign to an object
+		-Fix: snap: grid realign should use crosshair coords, not mouse cursor coords, but grid size is still set to 0;0 - this allows both picking the alignment to a "background image" and realign to an object
 		-Fix: snap: prefer snapping to subc origin over snapping to grid
 		-Fix: arc split undo: add the new arc to the remove list
 		-Del: layer naming styles other then pcb-rnd and fixed (old, pre-CAM gerber layer namings)
@@ -93,7 +93,7 @@ pcb-rnd 2.2.2 (r32050)
 		-Add: netlist dialog: button for enabling/disabling all rats
 		-Add: netlist dialog: double click on a net row will toggle disable on it
 		-Add: advanced search: expose text scale_x and scale_y fields
-		-Add: footprint map chooser dialog - used when multiple footprints are available for loaing frmo a file
+		-Add: footprint map chooser dialog - used when multiple footprints are available for loading from a file
 		-Add: layer bindings: allow changing the target layer on the right side and recalculate the recipe for it
 		-Add: object list selector dialog: when enabled, clicking on a location with multiple objects offer a selection window
 		-Add: drc dialog: extra button that jumps to the drc configuration dialog in preferences
@@ -126,7 +126,7 @@ pcb-rnd 2.2.2 (r32050)
 		-Add: query: convert language description to html and move it to the user doc
 		-Add: query: explain keywords and describe very simple rules that are a single expression with no keywords
 		-Add: query: explain query usage outside of the DRC
-		-Add: query: make sure all functions are documented and groupped by topic
+		-Add: query: make sure all functions are documented and grouped by topic
 
 	[draw_csect]
 		-Add: print layer group thickness attribute on cross section when available
@@ -150,7 +150,7 @@ pcb-rnd 2.2.2 (r32050)
 		-Del: all excellon cross-call related code
 
 	[export_openems]
-		-Chnage: centralize layer group thickness function so later on every part of the code gets the same thickness; make sure the mesher uses the same layer thicknesses as the xml export code
+		-Change: centralize layer group thickness function so later on every part of the code gets the same thickness; make sure the mesher uses the same layer thicknesses as the xml export code
 		-Add: optional xml output for direct flow
 		-Add: layer group thickness falls back to openems export default per layer group type (copper or substrate) with an error message, if it is not specified in the stackup
 
