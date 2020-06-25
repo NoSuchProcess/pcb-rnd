@@ -79,6 +79,7 @@
 		- new outline/mech layers and slots
 		- new doc layers
 		- polygon side clearance (e.g. CUCP#38 provided by Karl)
+- BUG: padstack editor top/bottom gets mixed up on other-side on display (but not in data!) ml=4221 [report: Majenko]
 - BUG: locally debian packaged version: run ./pcb-rnd from src with no X, exit -> tons of warnings
 - BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
