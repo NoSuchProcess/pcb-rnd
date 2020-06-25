@@ -16,9 +16,11 @@ pcb-rnd 2.2.2 (r32050)
 		-Fix: refine the 'netlist stale' error message to get the user use the right rats optimization
 		-Del: false-positive(?) assert
 		-Add: temporary rats nest optimization for the old autorouter (manhattan)
+
 	[build]
 		-Add: detect byaccic and ureglex unless disabled
 		-Add: generate byaccic and ureglex rules
+
 	[cam]
 		-Fix: GUI: do not create excess directories while the user is typing an output path
 
