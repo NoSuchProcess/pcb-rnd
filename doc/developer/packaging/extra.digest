@@ -7,6 +7,7 @@
 @appendfiles pcb-rnd-core $PREFIX/share/pcb-rnd/pcblib/*
 @appendfiles pcb-rnd-io-alien $PREFIX/share/man/man1/txt2bxl.1 $PREFIX/share/man/man1/bxl2txt.1
 @appendfiles pcb-rnd-io-alien $PREFIX/bin/txt2bxl $PREFIX/bin/bxl2txt
+@appendfiles pcb-rnd-export $PREFIX/bin/pcb-rnd-svg $PREFIX/share/man/man1/pcb-rnd-svg.1
 @appendfiles pcb-rnd-import-net $PREFIX/bin/gsch2pcb-rnd $PREFIX/lib/pcb-rnd/*.scm $PREFIX/share/man/man1/gsch2pcb-rnd.1
 @appendfiles librnd-dev $PREFIX/share/librnd/librnd.mak $PREFIX/lib/librnd
 @appendfiles librnd-dev $PREFIX/lib/*.so

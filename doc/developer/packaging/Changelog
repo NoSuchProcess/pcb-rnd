@@ -28,7 +28,7 @@ B. changes that probably DO need action
 5. new plugin: io_bxl in pcb-rnd-io-alien
 
 6. new util: pcb-rnd-svg; has an executable and a manual page in the install
-   Should be in package pcb-rnd-core
+   Should be in package pcb-rnd-export
 
 6. new util: bxl2txt and txt2bxl; executable and manual pages
    Should be in package pcb-rnd-io-alien
