@@ -5,6 +5,8 @@
 @appendfiles pcb-rnd-core $PREFIX/share/pcb-rnd/default2.lht $PREFIX/share/pcb-rnd/default4.lht $PREFIX/share/pcb-rnd/default_font
 @appendfiles pcb-rnd-core $PREFIX/bin/fp2preview $PREFIX/bin/fp2subc $PREFIX/bin/pcb-prj2lht $PREFIX/share/man/man1/fp2preview.1 $PREFIX/share/man/man1/fp2subc.1 $PREFIX/share/man/man1/pcb-prj2lht.1
 @appendfiles pcb-rnd-core $PREFIX/share/pcb-rnd/pcblib/*
+@appendfiles pcb-rnd-core $PREFIX/share/man/man1/txt2bxl.1 $PREFIX/share/man/man1/bxl2txt.1
+@appendfiles pcb-rnd-core $PREFIX/bin/txt2bxl $PREFIX/bin/bxl2txt
 @appendfiles pcb-rnd-import-net $PREFIX/bin/gsch2pcb-rnd $PREFIX/lib/pcb-rnd/*.scm $PREFIX/share/man/man1/gsch2pcb-rnd.1
 @appendfiles librnd-dev $PREFIX/share/librnd/librnd.mak $PREFIX/lib/librnd
 @appendfiles librnd-dev $PREFIX/lib/*.so
