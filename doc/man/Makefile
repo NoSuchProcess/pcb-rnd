@@ -49,6 +49,8 @@ install_all:
 	$(SCCBOX) $(HOW) "fp2preview.1" "$(MAN1DIR)/fp2preview.1"
 	$(SCCBOX) $(HOW) "fp2subc.1" "$(MAN1DIR)/fp2subc.1"
 	$(SCCBOX) $(HOW) "pcb-rnd-svg.1" "$(MAN1DIR)/pcb-rnd-svg.1"
+	$(SCCBOX) $(HOW) "bxl2txt.1" "$(MAN1DIR)/bxl2txt.1"
+	$(SCCBOX) $(HOW) "txt2bxl.1" "$(MAN1DIR)/txt2bxl.1"
 
 install:
 	$(MAKE) install_all HOW="install -f"
