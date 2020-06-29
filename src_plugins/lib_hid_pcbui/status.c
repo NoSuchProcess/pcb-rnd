@@ -470,13 +470,15 @@ fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(1, FGW_COORD, StatusSetText, x = fgw_coord(&argv[1]));
 	RND_ACT_MAY_CONVARG(2, FGW_COORD, StatusSetText, y = fgw_coord(&argv[2]));
 
+	desc.used = 0;
+	if (desc.array != NULL)
+		desc.array[0] = '\0';
+
 	/* check if there are any pins or pads at that position */
 	rattype = pcb_search_obj_by_location(PCB_OBJ_RAT, &rptr1, &rptr2, &rptr3, x, y, 0);
 	type = pcb_search_obj_by_location(PCB_OBJ_CLASS_TERM, &ptr1, &ptr2, &ptr3, x, y, 0);
 	if ((type == PCB_OBJ_VOID) && (rattype == PCB_OBJ_VOID))
 		goto fin;
-
-	desc.used = 0;
 
 	/* don't mess with silk objects! */
 	if ((type & PCB_DESCRIBE_TYPE) && (pcb_layer_flags_((pcb_layer_t *)ptr1) & PCB_LYT_SILK))
