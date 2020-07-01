@@ -100,4 +100,10 @@ void pcb_tmp_data_remove(void);
 
 pcb_plug_fp_map_t *io_pcb_map_footprint(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
 
+/* parses the group definition string which is a colon separated list of
+   comma separated layer numbers (1,2,b:4,6,8,t); oldfmt is 0 or 1
+   depending on PCB() or PCB[] in the file header. */
+int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, int LayerN, int oldfmt);
+
+
 #endif

@@ -201,16 +201,6 @@ void pcb_layergrp_create_missing_substrate(pcb_board_t *pcb);
 /* Call this after creating grp to add the creation to the undo list */
 void pcb_layergrp_undoable_created(pcb_layergrp_t *grp);
 
-
-/********* OBSOLETE functions, do not use in new code *********/
-/* parses the group definition string which is a colon separated list of
-   comma separated layer numbers (1,2,b:4,6,8,t); oldfmt is 0 or 1
-   depending on PCB() or PCB[] in the file header.
-
-   OBSOLETE, do not use in new code: only the conf system and io_pcb
-   may need this. */
-int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *s, int LayerN, int oldfmt);
-
 #define PCB_COPPER_GROUP_LOOP(data, group) do { 	\
 	rnd_cardinal_t entry; \
 	pcb_board_t *cgl__pcb = pcb_data_get_top(data); \

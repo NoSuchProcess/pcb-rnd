@@ -297,25 +297,6 @@ int pcb_layergrp_move_onto(pcb_board_t *pcb, rnd_layergrp_id_t dst, rnd_layergrp
 	return 0;
 }
 
-static int flush_item(const char *s, const char *start, rnd_layer_id_t *lids, int *lids_len, pcb_layer_type_t *loc)
-{
-	char *end;
-	rnd_layer_id_t lid;
-	switch (*start) {
-		case 'c': case 'C': case 't': case 'T': *loc = PCB_LYT_TOP; break;
-		case 's': case 'S': case 'b': case 'B': *loc = PCB_LYT_BOTTOM; break;
-		default:
-			lid = strtol(start, &end, 10)-1;
-			if (end != s)
-				return -1;
-			if ((*lids_len) >= PCB_MAX_LAYER)
-				return -1;
-			lids[*lids_len] = lid;
-			(*lids_len)++;
-	}
-	return 0;
-}
-
 pcb_layergrp_t *pcb_get_grp(pcb_layer_stack_t *stack, pcb_layer_type_t loc, pcb_layer_type_t typ)
 {
 	int n;
@@ -768,6 +749,7 @@ void pcb_layergrp_fix_turn_to_outline(pcb_layergrp_t *g)
 }
 
 
+/* old outline rules from geda/pcb */
 #define LAYER_IS_OUTLINE(idx) ((pcb->Data->Layer[idx].name != NULL) && ((strcmp(pcb->Data->Layer[idx].name, "route") == 0 || rnd_strcasecmp(pcb->Data->Layer[(idx)].name, "outline") == 0)))
 
 void pcb_layergrp_fix_old_outline_detect(pcb_board_t *pcb, pcb_layergrp_t *g)
@@ -790,105 +772,6 @@ void pcb_layergrp_fix_old_outline_detect(pcb_board_t *pcb, pcb_layergrp_t *g)
 		for(n = 0; n < g->len; n++)
 			pcb->Data->Layer[g->lid[n]].comb = PCB_LYC_AUTO;
 	}
-}
-
-int pcb_layer_parse_group_string(pcb_board_t *pcb, const char *grp_str, int LayerN, int oldfmt)
-{
-	const char *s, *start;
-	rnd_layer_id_t lids[PCB_MAX_LAYER];
-	int lids_len = 0;
-	pcb_layer_type_t loc = PCB_LYT_INTERN;
-	pcb_layergrp_t *g;
-	int n;
-	pcb_layer_stack_t *LayerGroup = &pcb->LayerGroups;
-
-	inhibit_notify++;
-
-	/* clear struct */
-	pcb_layer_group_setup_default(pcb);
-
-	for(start = s = grp_str; ; s++) {
-		switch(*s) {
-			case ',':
-				if (flush_item(s, start, lids, &lids_len, &loc) != 0)
-					goto error;
-				start = s+1;
-				break;
-			case '\0':
-			case ':':
-				if (flush_item(s, start, lids, &lids_len, &loc) != 0)
-					goto error;
-				/* finalize group */
-				if (loc & PCB_LYT_INTERN) {
-					g = pcb_get_grp_new_intern(pcb, -1);
-					if (g == NULL) {
-						rnd_message(RND_MSG_ERROR, "pcb_layer_parse_group_string(): unable to insert layer groups for copper\n");
-						goto error;
-					}
-				}
-				else {
-					g = pcb_get_grp(LayerGroup, loc, PCB_LYT_COPPER);
-					if (g == NULL) {
-						rnd_message(RND_MSG_ERROR, "pcb_layer_parse_group_string(): unable to insert layer groups for copper\n");
-						goto error;
-					}
-				}
-
-				for(n = 0; n < lids_len; n++) {
-					if (lids[n] < 0)
-						continue;
-					if (LAYER_IS_OUTLINE(lids[n])) {
-						if (g->ltype & PCB_LYT_INTERN) {
-							pcb_layergrp_fix_turn_to_outline(g);
-							pcb->Data->Layer[lids[n]].comb |= PCB_LYC_AUTO;
-						}
-						else
-							rnd_message(RND_MSG_ERROR, "outline layer can not be on the solder or component side - converting it into a copper layer\n");
-					}
-					if (g == NULL) {
-						rnd_message(RND_MSG_ERROR, "pcb_layer_parse_group_string(): unable to find copper group for creating the copper layer\n");
-						goto error;
-					}
-					pcb_layer_add_in_group_(pcb, g, g - LayerGroup->grp, lids[n]);
-				}
-
-				lids_len = 0;
-
-				/* prepare for next iteration */
-				loc = PCB_LYT_INTERN;
-				start = s+1;
-				break;
-		}
-		if (*s == '\0')
-			break;
-	}
-
-	pcb_layergrp_fix_old_outline(pcb);
-
-	/* set the two silks */
-	g = pcb_get_grp(LayerGroup, PCB_LYT_BOTTOM, PCB_LYT_SILK);
-	if (g == NULL) {
-		rnd_message(RND_MSG_ERROR, "pcb_layer_parse_group_string(): unable to find bottom silk layer group\n");
-		goto error;
-	}
-	pcb_layer_add_in_group_(pcb, g, g - LayerGroup->grp, LayerN-2);
-
-
-	g = pcb_get_grp(LayerGroup, PCB_LYT_TOP, PCB_LYT_SILK);
-	if (g == NULL) {
-		rnd_message(RND_MSG_ERROR, "pcb_layer_parse_group_string(): unable to find top silk layer group\n");
-		goto error;
-	}
-	pcb_layer_add_in_group_(pcb, g, g - LayerGroup->grp, LayerN-1);
-
-	inhibit_notify--;
-	return 0;
-
-	/* reset structure on error */
-error:
-	inhibit_notify--;
-	memset(LayerGroup, 0, sizeof(pcb_layer_stack_t));
-	return 1;
 }
 
 int pcb_layer_gui_set_layer(rnd_layergrp_id_t gid, const pcb_layergrp_t *grp, int is_empty, rnd_xform_t **xform)
