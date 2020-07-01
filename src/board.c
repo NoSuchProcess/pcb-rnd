@@ -409,7 +409,7 @@ int pcb_board_normalize(pcb_board_t *pcb)
 	return chg;
 }
 
-TODO("Move this to layer_grp.[ch]");
+TODO("Move this to layer_grp.[ch]")
 const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace)
 {
 	const char *s = NULL;
