@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#define RND_DAD_CFG_NOLABEL 1
+
 #include <librnd/config.h>
 
 #include <librnd/core/actions.h>
@@ -154,7 +156,7 @@ static void log_window_create(rnd_hidlib_t *hidlib)
 				RND_DAD_CHANGE_CB(ctx->dlg, btn_export_cb);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
-				RND_DAD_BOOL(ctx->dlg, "");
+				RND_DAD_BOOL(ctx->dlg);
 					ctx->wscroll = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "scroll");
 			RND_DAD_END(ctx->dlg);

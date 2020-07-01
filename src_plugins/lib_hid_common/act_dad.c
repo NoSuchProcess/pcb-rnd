@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#define RND_DAD_CFG_NOLABEL 1
+
 #include <librnd/config.h>
 
 #include <genht/htsp.h>
@@ -235,8 +237,8 @@ const char pcb_acts_dad[] =
 	"dad(dlgname, button, text) - append a button widget\n"
 	"dad(dlgname, button_closes, label, retval, ...) - standard close buttons\n"
 	"dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list\n"
-	"dad(dlgname, bool, [label]) - append an checkbox widget (default off)\n"
-	"dad(dlgname, integer|real|coord, min, max, [label]) - append an input field\n"
+	"dad(dlgname, bool) - append an checkbox widget (default off)\n"
+	"dad(dlgname, integer|real|coord, min, max) - append an input field\n"
 	"dad(dlgname, string) - append a single line text input field\n"
 	"dad(dlgname, default, val) - set the default value of a widet while creating the dialog\n"
 	"dad(dlgname, help, tooltip) - set the help (tooltip) text for the current widget\n"
@@ -321,41 +323,33 @@ fgw_error_t pcb_act_dad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (rnd_strcasecmp(cmd, "bool") == 0) {
 		if (dad->running) goto cant_chg;
-		txt = "";
-		RND_ACT_MAY_CONVARG(3, FGW_STR, dad, txt = argv[3].val.str);
-		RND_DAD_BOOL(dad->dlg, txt);
+		RND_DAD_BOOL(dad->dlg);
 		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "integer") == 0) {
 		long vmin, vmax;
 		if (dad->running) goto cant_chg;
-		txt = "";
 		RND_ACT_CONVARG(3, FGW_LONG, dad, vmin = argv[3].val.nat_long);
 		RND_ACT_CONVARG(4, FGW_LONG, dad, vmax = argv[4].val.nat_long);
-		RND_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
-		RND_DAD_INTEGER(dad->dlg, txt);
+		RND_DAD_INTEGER(dad->dlg);
 		RND_DAD_MINMAX(dad->dlg, vmin, vmax);
 		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "real") == 0) {
 		double vmin, vmax;
 		if (dad->running) goto cant_chg;
-		txt = "";
 		RND_ACT_CONVARG(3, FGW_DOUBLE, dad, vmin = argv[3].val.nat_double);
 		RND_ACT_CONVARG(4, FGW_DOUBLE, dad, vmax = argv[4].val.nat_double);
-		RND_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
-		RND_DAD_REAL(dad->dlg, txt);
+		RND_DAD_REAL(dad->dlg);
 		RND_DAD_MINMAX(dad->dlg, vmin, vmax);
 		rv = RND_DAD_CURRENT(dad->dlg);
 	}
 	else if (rnd_strcasecmp(cmd, "coord") == 0) {
 		rnd_coord_t vmin, vmax;
 		if (dad->running) goto cant_chg;
-		txt = "";
 		RND_ACT_CONVARG(3, FGW_COORD_, dad, vmin = fgw_coord(&argv[3]));
 		RND_ACT_CONVARG(4, FGW_COORD_, dad, vmax = fgw_coord(&argv[4]));
-		RND_ACT_MAY_CONVARG(5, FGW_STR, dad, txt = argv[5].val.str);
-		RND_DAD_COORD(dad->dlg, txt);
+		RND_DAD_COORD(dad->dlg);
 		RND_DAD_MINMAX(dad->dlg, vmin, vmax);
 		rv = RND_DAD_CURRENT(dad->dlg);
 	}

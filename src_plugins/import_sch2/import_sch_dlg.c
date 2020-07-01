@@ -329,7 +329,7 @@ static int do_dialog(void)
 		RND_DAD_BEGIN_VBOX(isch_ctx.dlg); /* generic settings */
 			RND_DAD_BEGIN_HBOX(isch_ctx.dlg);
 				RND_DAD_LABEL(isch_ctx.dlg, "Verbose import:");
-				RND_DAD_BOOL(isch_ctx.dlg, "");
+				RND_DAD_BOOL(isch_ctx.dlg);
 					isch_ctx.wverbose = RND_DAD_CURRENT(isch_ctx.dlg);
 					RND_DAD_CHANGE_CB(isch_ctx.dlg, isch_generic_chg_cb);
 			RND_DAD_END(isch_ctx.dlg);

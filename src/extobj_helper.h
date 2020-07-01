@@ -184,7 +184,7 @@ do { \
 	currval = d; \
 	RND_DAD_LABEL(dlg, vis_name); \
 		if (help != NULL) RND_DAD_HELP(dlg, help); \
-	RND_DAD_COORD(dlg, ""); \
+	RND_DAD_COORD(dlg); \
 		if (help != NULL) RND_DAD_HELP(dlg, help); \
 		RND_DAD_CHANGE_CB(dlg, pcb_exto_dlg_coord_cb); \
 		wid = RND_DAD_CURRENT(dlg); \
@@ -240,7 +240,7 @@ do { \
 		currval = strtol(sval, NULL, 10); \
 	RND_DAD_LABEL(dlg, vis_name); \
 		if (help != NULL) RND_DAD_HELP(dlg, help); \
-	RND_DAD_INTEGER(dlg, ""); \
+	RND_DAD_INTEGER(dlg); \
 		if (help != NULL) RND_DAD_HELP(dlg, help); \
 		RND_DAD_CHANGE_CB(dlg, pcb_exto_dlg_int_cb); \
 		wid = RND_DAD_CURRENT(dlg); \

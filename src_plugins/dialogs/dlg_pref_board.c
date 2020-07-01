@@ -88,7 +88,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 			ctx->dlg[ctx->board.wname].val.str = rnd_strdup(RND_EMPTY(PCB->hidlib.name));
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		RND_DAD_LABEL(ctx->dlg, "Thermal scale");
-		RND_DAD_REAL(ctx->dlg, "");
+		RND_DAD_REAL(ctx->dlg);
 			ctx->board.wthermscale = RND_DAD_CURRENT(ctx->dlg);
 			RND_DAD_MINMAX(ctx->dlg, 0.01, 100);
 			ctx->dlg[ctx->board.wthermscale].val.dbl = PCB->ThermScale;

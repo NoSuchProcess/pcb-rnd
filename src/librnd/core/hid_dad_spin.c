@@ -197,14 +197,14 @@ static void spin_unit_dialog(void *spin_hid_ctx, rnd_hid_dad_spin_t *spin, rnd_h
 			
 			if (spin->unit_family == (RND_UNIT_METRIC | RND_UNIT_IMPERIAL)) {
 				RND_DAD_LABEL(ctx.dlg, "Use the global");
-				RND_DAD_BOOL(ctx.dlg, "");
+				RND_DAD_BOOL_(ctx.dlg);
 					RND_DAD_HELP(ctx.dlg, "Ignore the above unit selection,\nuse the global unit (grid unit) in this spinbox,\nfollow changes of the global unit");
 					ctx.wglob = RND_DAD_CURRENT(ctx.dlg);
 					RND_DAD_DEFAULT_NUM(ctx.dlg, (spin->unit == NULL));
 					RND_DAD_CHANGE_CB(ctx.dlg, spin_unit_chg_cb);
 
 				RND_DAD_LABEL(ctx.dlg, "Stick to unit");
-				RND_DAD_BOOL(ctx.dlg, "");
+				RND_DAD_BOOL_(ctx.dlg);
 					RND_DAD_HELP(ctx.dlg, "Upon any update from software, switch back to\the selected unit even if the user specified\na different unit in the text field.");
 					ctx.wstick = RND_DAD_CURRENT(ctx.dlg);
 					RND_DAD_DEFAULT_NUM(ctx.dlg, spin->no_unit_chg);

@@ -359,7 +359,7 @@ static void setup_fmt_sub(save_t *save, pcb_plug_iot_t save_type)
 		RND_DAD_BEGIN_HBOX(save->fmtsub->dlg);
 			RND_DAD_LABEL(save->fmtsub->dlg, "Guess format:");
 				RND_DAD_HELP(save->fmtsub->dlg, guess_help);
-			RND_DAD_BOOL(save->fmtsub->dlg, "");
+			RND_DAD_BOOL(save->fmtsub->dlg);
 				save->wguess = RND_DAD_CURRENT(save->fmtsub->dlg);
 				RND_DAD_CHANGE_CB(save->fmtsub->dlg, guess_chg);
 				RND_DAD_DEFAULT_NUM(save->fmtsub->dlg, !!dialogs_conf.plugins.dialogs.file_select_dialog.save_as_format_guess);

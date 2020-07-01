@@ -130,7 +130,7 @@ fgw_error_t pcb_act_FlagEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			for(n = 0; n < pcb_object_flagbits_len; n++) {
 				if (pcb_object_flagbits[n].object_types & ctx.obj_type) {
 					RND_DAD_BEGIN_HBOX(dlg);
-						RND_DAD_BOOL(dlg, "");
+						RND_DAD_BOOL(dlg);
 							RND_DAD_HELP(dlg, pcb_object_flagbits[n].help);
 						ctx.wid[ctx.len] = RND_DAD_CURRENT(dlg);
 						ctx.flag_bit[ctx.len] = pcb_object_flagbits[n].mask;

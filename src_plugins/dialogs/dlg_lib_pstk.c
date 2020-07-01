@@ -569,7 +569,7 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 
 				RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 					RND_DAD_LABEL(ctx->dlg, "Grid:");
-					RND_DAD_COORD(ctx->dlg, "");
+					RND_DAD_COORD(ctx->dlg);
 						ctx->wgrid = RND_DAD_CURRENT(ctx->dlg);
 						RND_DAD_MINMAX(ctx->dlg, RND_MM_TO_COORD(0.01), RND_MM_TO_COORD(10));
 						RND_DAD_DEFAULT_NUM(ctx->dlg, (rnd_coord_t)RND_MM_TO_COORD(1));
@@ -585,11 +585,11 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 					for(n = 0; n < pcb_proto_num_layers; n++) {
 						RND_DAD_LABEL(ctx->dlg, pcb_proto_layers[n].name);
 						RND_DAD_BEGIN_HBOX(ctx->dlg);
-							RND_DAD_BOOL(ctx->dlg, "");
+							RND_DAD_BOOL(ctx->dlg);
 								RND_DAD_DEFAULT_NUM(ctx->dlg, 1);
 								RND_DAD_CHANGE_CB(ctx->dlg, pstklib_update_prv);
 								ctx->wlayerv[n] = RND_DAD_CURRENT(ctx->dlg);
-							RND_DAD_BOOL(ctx->dlg, "");
+							RND_DAD_BOOL(ctx->dlg);
 								RND_DAD_DEFAULT_NUM(ctx->dlg, (pcb_proto_layers[n].mask == (PCB_LYT_TOP | PCB_LYT_COPPER)));
 								RND_DAD_CHANGE_CB(ctx->dlg, pstklib_update_layerc);
 								ctx->wlayerc[n] = RND_DAD_CURRENT(ctx->dlg);

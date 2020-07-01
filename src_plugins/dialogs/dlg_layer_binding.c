@@ -372,7 +372,7 @@ TODO("subc TODO")
 							w->type = RND_DAD_CURRENT(dlg);
 					RND_DAD_END(dlg);
 					RND_DAD_BEGIN_HBOX(dlg);
-						RND_DAD_INTEGER(dlg, NULL);
+						RND_DAD_INTEGER(dlg);
 							RND_DAD_MINVAL(dlg, 0);
 							RND_DAD_MAXVAL(dlg, num_copper);
 							w->offs = RND_DAD_CURRENT(dlg);

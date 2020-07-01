@@ -335,7 +335,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 		RND_DAD_END(ctx->dlg);
 		RND_DAD_BEGIN_HBOX(ctx->dlg);
 			RND_DAD_LABEL(ctx->dlg, "Disable drc rule:");
-			RND_DAD_BOOL(ctx->dlg, "");
+			RND_DAD_BOOL(ctx->dlg);
 			ctx->wdisable = RND_DAD_CURRENT(ctx->dlg);
 		RND_DAD_END(ctx->dlg);
 		RND_DAD_LABEL(ctx->dlg, "DRC violation description:");

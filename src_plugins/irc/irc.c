@@ -256,7 +256,7 @@ static int pcb_dlg_irc(void)
 
 			RND_DAD_BEGIN_HBOX(irc_ctx.dlg);
 				RND_DAD_COMPFLAG(irc_ctx.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
-				RND_DAD_BOOL(irc_ctx.dlg, "");
+				RND_DAD_BOOL(irc_ctx.dlg);
 					irc_ctx.wscroll = RND_DAD_CURRENT(irc_ctx.dlg);
 					RND_DAD_DEFAULT_NUM(irc_ctx.dlg, 1);
 				RND_DAD_LABEL(irc_ctx.dlg, "scroll");
@@ -266,7 +266,7 @@ static int pcb_dlg_irc(void)
 
 			RND_DAD_BEGIN_HBOX(irc_ctx.dlg);
 				RND_DAD_COMPFLAG(irc_ctx.dlg, RND_HATF_TIGHT | RND_HATF_FRAME);
-				RND_DAD_BOOL(irc_ctx.dlg, "");
+				RND_DAD_BOOL(irc_ctx.dlg);
 					irc_ctx.wraise = RND_DAD_CURRENT(irc_ctx.dlg);
 					RND_DAD_DEFAULT_NUM(irc_ctx.dlg, 1);
 				RND_DAD_LABEL(irc_ctx.dlg, "raise");

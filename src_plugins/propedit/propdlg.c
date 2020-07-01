@@ -501,13 +501,13 @@ static void build_propval(propdlg_t *ctx)
 		RND_DAD_END(ctx->dlg);
 		RND_DAD_BEGIN_VBOX(ctx->dlg);
 			RND_DAD_LABEL(ctx->dlg, "Data type: coord");
-			RND_DAD_COORD(ctx->dlg, "");
+			RND_DAD_COORD(ctx->dlg);
 				ctx->wedit[2] = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, -RND_MAX_COORD, RND_MAX_COORD);
 				RND_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "abs");
-				RND_DAD_BOOL(ctx->dlg, "");
+				RND_DAD_BOOL(ctx->dlg);
 					ctx->wabs[2] = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_HELP(ctx->dlg, abshelp);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
@@ -519,13 +519,13 @@ static void build_propval(propdlg_t *ctx)
 		RND_DAD_END(ctx->dlg);
 		RND_DAD_BEGIN_VBOX(ctx->dlg);
 			RND_DAD_LABEL(ctx->dlg, "Data type: angle");
-			RND_DAD_REAL(ctx->dlg, "");
+			RND_DAD_REAL(ctx->dlg);
 				ctx->wedit[3] = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, -360.0, +360.0);
 				RND_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "abs");
-				RND_DAD_BOOL(ctx->dlg, "");
+				RND_DAD_BOOL(ctx->dlg);
 					ctx->wabs[3] = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_HELP(ctx->dlg, abshelp);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
@@ -537,13 +537,13 @@ static void build_propval(propdlg_t *ctx)
 		RND_DAD_END(ctx->dlg);
 		RND_DAD_BEGIN_VBOX(ctx->dlg);
 			RND_DAD_LABEL(ctx->dlg, "Data type: double");
-			RND_DAD_REAL(ctx->dlg, "");
+			RND_DAD_REAL(ctx->dlg);
 				ctx->wedit[4] = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, -1000, +1000);
 				RND_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "abs");
-				RND_DAD_BOOL(ctx->dlg, "");
+				RND_DAD_BOOL(ctx->dlg);
 					ctx->wabs[4] = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_HELP(ctx->dlg, abshelp);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
@@ -557,13 +557,13 @@ static void build_propval(propdlg_t *ctx)
 
 		RND_DAD_BEGIN_VBOX(ctx->dlg);
 			RND_DAD_LABEL(ctx->dlg, "Data type: int");
-			RND_DAD_INTEGER(ctx->dlg, "");
+			RND_DAD_INTEGER(ctx->dlg);
 				ctx->wedit[5] = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_ENTER_CB(ctx->dlg, prop_data_auto_cb);
 			RND_DAD_MINMAX(ctx->dlg, -(1<<30), 1<<30);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "abs");
-				RND_DAD_BOOL(ctx->dlg, "");
+				RND_DAD_BOOL(ctx->dlg);
 					ctx->wabs[5] = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_HELP(ctx->dlg, abshelp);
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
@@ -576,7 +576,7 @@ static void build_propval(propdlg_t *ctx)
 
 		RND_DAD_BEGIN_VBOX(ctx->dlg);
 			RND_DAD_LABEL(ctx->dlg, "Data type: boolean");
-			RND_DAD_BOOL(ctx->dlg, "");
+			RND_DAD_BOOL(ctx->dlg);
 				ctx->wedit[6] = RND_DAD_CURRENT(ctx->dlg);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				ctx->wabs[6] = 0;

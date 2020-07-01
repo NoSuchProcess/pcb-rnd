@@ -663,7 +663,7 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 				pse->shrink = RND_DAD_CURRENT(dlg);
 				RND_DAD_CHANGE_CB(dlg, pse_shape_shrink);
 				RND_DAD_HELP(dlg, "Make the shape smaller by the selected amount");
-			RND_DAD_COORD(dlg, "");
+			RND_DAD_COORD(dlg);
 				pse->amount = RND_DAD_CURRENT(dlg);
 				RND_DAD_MINMAX(dlg, 1, RND_MM_TO_COORD(100));
 			RND_DAD_BUTTON(dlg, "Grow");
@@ -830,24 +830,24 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 						RND_DAD_END(dlg);
 						RND_DAD_BEGIN_TABLE(dlg, 2);
 							RND_DAD_LABEL(dlg, "Clearance");
-							RND_DAD_COORD(dlg, "");
+							RND_DAD_COORD(dlg);
 								pse->clearance = RND_DAD_CURRENT(dlg);
 								RND_DAD_MINVAL(dlg, 0);
 								RND_DAD_MAXVAL(dlg, RND_MM_TO_COORD(1000));
 								RND_DAD_CHANGE_CB(dlg, pse_chg_instance);
 								RND_DAD_HELP(dlg, "global clearance (affects all layers)");
 							RND_DAD_LABEL(dlg, "Rotation");
-							RND_DAD_REAL(dlg, "");
+							RND_DAD_REAL(dlg);
 								pse->rot = RND_DAD_CURRENT(dlg);
 								RND_DAD_MINVAL(dlg, 0);
 								RND_DAD_MAXVAL(dlg, 360);
 								RND_DAD_CHANGE_CB(dlg, pse_chg_instance);
 							RND_DAD_LABEL(dlg, "X-mirror");
-							RND_DAD_BOOL(dlg, "");
+							RND_DAD_BOOL(dlg);
 								pse->xmirror = RND_DAD_CURRENT(dlg);
 								RND_DAD_CHANGE_CB(dlg, pse_chg_instance);
 							RND_DAD_LABEL(dlg, "S-mirror");
-							RND_DAD_BOOL(dlg, "");
+							RND_DAD_BOOL(dlg);
 								pse->smirror = RND_DAD_CURRENT(dlg);
 								RND_DAD_CHANGE_CB(dlg, pse_chg_instance);
 						RND_DAD_END(dlg);
@@ -951,7 +951,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 									RND_DAD_CHANGE_CB(dlg, pse_chg_shape);
 									RND_DAD_HELP(dlg, "Change the shape on this layer type");
 								RND_DAD_LABEL(dlg, "      ");
-								RND_DAD_COORD(dlg, "");
+								RND_DAD_COORD(dlg);
 									pse->proto_clr[n] = RND_DAD_CURRENT(dlg);
 									RND_DAD_MINVAL(dlg, 1);
 									RND_DAD_MAXVAL(dlg, RND_MM_TO_COORD(1000));
@@ -969,7 +969,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 							pse->hole_header = RND_DAD_CURRENT(dlg);
 						spring(dlg);
 						RND_DAD_LABEL(dlg, "Hole diameter:");
-						RND_DAD_COORD(dlg, "");
+						RND_DAD_COORD(dlg);
 							pse->hdia = RND_DAD_CURRENT(dlg);
 							RND_DAD_MINVAL(dlg, 0);
 							RND_DAD_MAXVAL(dlg, RND_MM_TO_COORD(1000));
@@ -977,7 +977,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 							RND_DAD_WIDTH_CHR(dlg, 10);
 						spring(dlg);
 						RND_DAD_LABEL(dlg, "Hole/slot plating:");
-						RND_DAD_BOOL(dlg, "");
+						RND_DAD_BOOL(dlg);
 							pse->hplated = RND_DAD_CURRENT(dlg);
 							RND_DAD_CHANGE_CB(dlg, pse_chg_hole);
 							RND_DAD_HELP(dlg, "A plated hole galvanically connects layers");
@@ -987,7 +987,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 					RND_DAD_BEGIN_TABLE(dlg, 4);
 						/* table row 1 */
 						RND_DAD_LABEL(dlg, "Hole/slot top:");
-						RND_DAD_INTEGER(dlg, "");
+						RND_DAD_INTEGER(dlg);
 							pse->htop_val = RND_DAD_CURRENT(dlg);
 							RND_DAD_MINVAL(dlg, -(pse->pcb->LayerGroups.cache.copper_len-1));
 							RND_DAD_MAXVAL(dlg, pse->pcb->LayerGroups.cache.copper_len-1);
@@ -1001,7 +1001,7 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 
 						/* table row 2 */
 						RND_DAD_LABEL(dlg, "Hole/slot bottom:");
-						RND_DAD_INTEGER(dlg, "");
+						RND_DAD_INTEGER(dlg);
 							pse->hbot_val = RND_DAD_CURRENT(dlg);
 							RND_DAD_MINVAL(dlg, -(pse->pcb->LayerGroups.cache.copper_len-1));
 							RND_DAD_MAXVAL(dlg, pse->pcb->LayerGroups.cache.copper_len-1);
@@ -1028,13 +1028,13 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 							pse->gen_shp = RND_DAD_CURRENT(dlg);
 
 						RND_DAD_LABEL(dlg, "Size (circle diameter or square side):");
-						RND_DAD_COORD(dlg, "");
+						RND_DAD_COORD(dlg);
 							pse->gen_size = RND_DAD_CURRENT(dlg);
 							RND_DAD_MINVAL(dlg, 1);
 							RND_DAD_MAXVAL(dlg, RND_MM_TO_COORD(1000));
 
 						RND_DAD_LABEL(dlg, "Drill diameter (0 means no hole):");
-						RND_DAD_COORD(dlg, "");
+						RND_DAD_COORD(dlg);
 							pse->gen_drill = RND_DAD_CURRENT(dlg);
 							RND_DAD_MINVAL(dlg, 1);
 							RND_DAD_MAXVAL(dlg, RND_MM_TO_COORD(1000));
@@ -1044,11 +1044,11 @@ void pcb_pstkedit_dialog(pse_t *pse, int target_tab)
 							pse->gen_sides = RND_DAD_CURRENT(dlg);
 
 						RND_DAD_LABEL(dlg, "Expose top/bottom copper:");
-						RND_DAD_BOOL(dlg, "");
+						RND_DAD_BOOL(dlg);
 							pse->gen_expose = RND_DAD_CURRENT(dlg);
 
 						RND_DAD_LABEL(dlg, "Paste exposed copper:");
-						RND_DAD_BOOL(dlg, "");
+						RND_DAD_BOOL(dlg);
 							pse->gen_paste = RND_DAD_CURRENT(dlg);
 
 						RND_DAD_LABEL(dlg, "");

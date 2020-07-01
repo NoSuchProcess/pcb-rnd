@@ -315,19 +315,19 @@ static int srchedit_window(search_expr_t *expr)
 				ctx->wright[RIGHT_STR] = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
-			RND_DAD_INTEGER(ctx->dlg, "");
+			RND_DAD_INTEGER(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
 				ctx->wright[RIGHT_INT] = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, -(1L<<30), (1L<<30));
 				RND_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
-			RND_DAD_REAL(ctx->dlg, "");
+			RND_DAD_REAL(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
 				ctx->wright[RIGHT_DOUBLE] = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, -(1L<<30), (1L<<30));
 				RND_DAD_CHANGE_CB(ctx->dlg, srchexpr_right_cb);
 
-			RND_DAD_COORD(ctx->dlg, "");
+			RND_DAD_COORD(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_HIDE);
 				ctx->wright[RIGHT_COORD] = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, -RND_MAX_COORD, RND_MAX_COORD);

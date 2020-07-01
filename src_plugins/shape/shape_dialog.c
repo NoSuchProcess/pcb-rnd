@@ -161,7 +161,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 				RND_DAD_BEGIN_TABLE(shp->dlg, 2);
 					RND_DAD_LABEL(shp->dlg, "Number of corners");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_INTEGER(shp->dlg, "");
+						RND_DAD_INTEGER(shp->dlg);
 							shp->corners = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINVAL(shp->dlg, 3);
 							RND_DAD_MAXVAL(shp->dlg, 64);
@@ -171,7 +171,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "Shape radius");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_COORD(shp->dlg, "");
+						RND_DAD_COORD(shp->dlg);
 							shp->prx = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINMAX(shp->dlg, 0, maxr);
 							RND_DAD_DEFAULT_NUM(shp->dlg, mm2);
@@ -181,7 +181,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_COORD(shp->dlg, "");
+						RND_DAD_COORD(shp->dlg);
 							shp->pry = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINMAX(shp->dlg, 0, maxr);
 							RND_DAD_DEFAULT_NUM(shp->dlg, mm2);
@@ -191,7 +191,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_BOOL(shp->dlg, "");
+						RND_DAD_BOOL(shp->dlg);
 							shp->pell = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_CHANGE_CB(shp->dlg, shp_chg_regpoly);
 						RND_DAD_LABEL(shp->dlg, "elliptical");
@@ -199,7 +199,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "Rotation angle:");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_REAL(shp->dlg, "");
+						RND_DAD_REAL(shp->dlg);
 							shp->prot = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINVAL(shp->dlg, -360);
 							RND_DAD_MAXVAL(shp->dlg, 360);
@@ -209,7 +209,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "Center offset");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_COORD(shp->dlg, "");
+						RND_DAD_COORD(shp->dlg);
 							shp->pcx = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINMAX(shp->dlg, 0, maxr);
 							RND_DAD_CHANGE_CB(shp->dlg, shp_chg_regpoly);
@@ -218,7 +218,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_COORD(shp->dlg, "");
+						RND_DAD_COORD(shp->dlg);
 							shp->pcy = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINMAX(shp->dlg, 0, maxr);
 							RND_DAD_CHANGE_CB(shp->dlg, shp_chg_regpoly);
@@ -235,7 +235,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "Rectangle size");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_COORD(shp->dlg, "");
+						RND_DAD_COORD(shp->dlg);
 							shp->w = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINMAX(shp->dlg, 0, maxr);
 							RND_DAD_DEFAULT_NUM(shp->dlg, mm2);
@@ -245,7 +245,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_COORD(shp->dlg, "");
+						RND_DAD_COORD(shp->dlg);
 							shp->h = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINMAX(shp->dlg, 0, maxr);
 							RND_DAD_DEFAULT_NUM(shp->dlg, mm2);
@@ -255,7 +255,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_BOOL(shp->dlg, "");
+						RND_DAD_BOOL(shp->dlg);
 							shp->rrect = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
 						RND_DAD_LABEL(shp->dlg, "rectangular");
@@ -263,7 +263,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "Rounding radius");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_COORD(shp->dlg, "");
+						RND_DAD_COORD(shp->dlg);
 							shp->rx = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINMAX(shp->dlg, 0, maxr);
 							RND_DAD_DEFAULT_NUM(shp->dlg, mm2/10);
@@ -273,7 +273,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_COORD(shp->dlg, "");
+						RND_DAD_COORD(shp->dlg);
 							shp->ry = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINMAX(shp->dlg, 0, maxr);
 							RND_DAD_DEFAULT_NUM(shp->dlg, mm2/10);
@@ -283,7 +283,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_BOOL(shp->dlg, "");
+						RND_DAD_BOOL(shp->dlg);
 							shp->rell = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
 						RND_DAD_LABEL(shp->dlg, "elliptical");
@@ -291,7 +291,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "Arc resolution factor:");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_REAL(shp->dlg, "");
+						RND_DAD_REAL(shp->dlg);
 							shp->rres = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINVAL(shp->dlg, 0.1);
 							RND_DAD_MAXVAL(shp->dlg, 5);
@@ -301,7 +301,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "Rotation angle:");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_REAL(shp->dlg, "");
+						RND_DAD_REAL(shp->dlg);
 							shp->rrot = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINVAL(shp->dlg, -360);
 							RND_DAD_MAXVAL(shp->dlg, 360);
@@ -311,7 +311,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "Center offset");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_COORD(shp->dlg, "");
+						RND_DAD_COORD(shp->dlg);
 							shp->rcx = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINMAX(shp->dlg, 0, maxr);
 							RND_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
@@ -320,7 +320,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 					RND_DAD_LABEL(shp->dlg, "");
 					RND_DAD_BEGIN_HBOX(shp->dlg);
-						RND_DAD_COORD(shp->dlg, "");
+						RND_DAD_COORD(shp->dlg);
 							shp->rcy = RND_DAD_CURRENT(shp->dlg);
 							RND_DAD_MINMAX(shp->dlg, 0, maxr);
 							RND_DAD_CHANGE_CB(shp->dlg, shp_chg_roundrect);
@@ -352,7 +352,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 				RND_DAD_LABEL(shp->dlg, "Generate filled circle");
 				RND_DAD_BEGIN_HBOX(shp->dlg);
 					RND_DAD_LABEL(shp->dlg, "Diameter:");
-					RND_DAD_COORD(shp->dlg, "");
+					RND_DAD_COORD(shp->dlg);
 						shp->dia = RND_DAD_CURRENT(shp->dlg);
 						RND_DAD_MINMAX(shp->dlg, 0, maxr);
 						RND_DAD_DEFAULT_NUM(shp->dlg, mm2);
@@ -361,7 +361,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 				RND_DAD_LABEL(shp->dlg, "Center offset");
 				RND_DAD_BEGIN_HBOX(shp->dlg);
-					RND_DAD_COORD(shp->dlg, "");
+					RND_DAD_COORD(shp->dlg);
 						shp->ccx = RND_DAD_CURRENT(shp->dlg);
 						RND_DAD_MINMAX(shp->dlg, 0, maxr);
 						RND_DAD_CHANGE_CB(shp->dlg, shp_chg_circle);
@@ -370,7 +370,7 @@ void pcb_shape_dialog(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *layer, rn
 
 				RND_DAD_LABEL(shp->dlg, "");
 				RND_DAD_BEGIN_HBOX(shp->dlg);
-					RND_DAD_COORD(shp->dlg, "");
+					RND_DAD_COORD(shp->dlg);
 						shp->ccy = RND_DAD_CURRENT(shp->dlg);
 						RND_DAD_MINMAX(shp->dlg, 0, maxr);
 						RND_DAD_CHANGE_CB(shp->dlg, shp_chg_circle);

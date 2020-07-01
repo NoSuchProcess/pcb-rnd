@@ -502,7 +502,7 @@ static void search_window_create(void)
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			RND_DAD_BEGIN_HBOX(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "Enable the wizard:");
-				RND_DAD_BOOL(ctx->dlg, "");
+				RND_DAD_BOOL(ctx->dlg);
 					ctx->wwizard = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_DEFAULT_NUM(ctx->dlg, 1);
 					RND_DAD_CHANGE_CB(ctx->dlg, search_enable_cb);

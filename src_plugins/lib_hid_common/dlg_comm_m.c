@@ -28,6 +28,8 @@
    Even the core will run some of these, through a dispatcher (e.g.
    action). */
 
+#define RND_DAD_CFG_NOLABEL 1
+
 #include <librnd/config.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_dad.h>
@@ -176,17 +178,17 @@ fgw_error_t pcb_act_gui_FallbackColorPick(fgw_arg_t *res, int argc, fgw_arg_t *a
 			RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_CLR_STATIC);
 		RND_DAD_BEGIN_TABLE(ctx.dlg, 2);
 			RND_DAD_LABEL(ctx.dlg, "red");
-			RND_DAD_INTEGER(ctx.dlg, "");
+			RND_DAD_INTEGER(ctx.dlg);
 				RND_DAD_MINMAX(ctx.dlg, 0, 255);
 				RND_DAD_CHANGE_CB(ctx.dlg, color_change_cb);
 				ctx.wr = RND_DAD_CURRENT(ctx.dlg);
 			RND_DAD_LABEL(ctx.dlg, "green");
-			RND_DAD_INTEGER(ctx.dlg, "");
+			RND_DAD_INTEGER(ctx.dlg);
 				RND_DAD_MINMAX(ctx.dlg, 0, 255);
 				RND_DAD_CHANGE_CB(ctx.dlg, color_change_cb);
 				ctx.wg = RND_DAD_CURRENT(ctx.dlg);
 			RND_DAD_LABEL(ctx.dlg, "blue");
-			RND_DAD_INTEGER(ctx.dlg, "");
+			RND_DAD_INTEGER(ctx.dlg);
 				RND_DAD_MINMAX(ctx.dlg, 0, 255);
 				RND_DAD_CHANGE_CB(ctx.dlg, color_change_cb);
 				ctx.wb = RND_DAD_CURRENT(ctx.dlg);
@@ -259,7 +261,7 @@ fgw_error_t pcb_act_gui_MayOverwriteFile(fgw_arg_t *res, int argc, fgw_arg_t *ar
 				RND_DAD_LABEL(dlg, "Do you want to overwrite that file?");
 
 				RND_DAD_BEGIN_HBOX(dlg);
-					RND_DAD_BOOL(dlg, "");
+					RND_DAD_BOOL(dlg);
 					wdontask = RND_DAD_CURRENT(dlg);
 					RND_DAD_LABEL(dlg, "do not ask, always overwrite");
 					RND_DAD_HELP(dlg, "saved in your user config under plugins/dialogs/file_overwrite_dialog/dont_ask");

@@ -1112,7 +1112,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_COMPFLAG(ia.dlg, RND_HATF_FRAME);
 				RND_DAD_LABEL(ia.dlg, "XY-mesh");
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_COORD(ia.dlg, "");
+					RND_DAD_COORD(ia.dlg);
 						ia.dens_obj = RND_DAD_CURRENT(ia.dlg);
 						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "copper dens.");
@@ -1120,7 +1120,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_COORD(ia.dlg, "");
+					RND_DAD_COORD(ia.dlg);
 						ia.dens_gap = RND_DAD_CURRENT(ia.dlg);
 						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "gap dens.");
@@ -1128,7 +1128,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_COORD(ia.dlg, "");
+					RND_DAD_COORD(ia.dlg);
 						ia.min_space = RND_DAD_CURRENT(ia.dlg);
 						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "min. spacing");
@@ -1136,28 +1136,28 @@ int pcb_mesh_interactive(void)
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_BOOL(ia.dlg, "");
+					RND_DAD_BOOL(ia.dlg);
 						ia.smooth = RND_DAD_CURRENT(ia.dlg);
 					RND_DAD_LABEL(ia.dlg, "smooth mesh");
 					RND_DAD_HELP(ia.dlg, "avoid jumps between different mesh densities,\nuse smooth (gradual) changes");
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_BOOL(ia.dlg, "");
+					RND_DAD_BOOL(ia.dlg);
 						ia.hor = RND_DAD_CURRENT(ia.dlg);
 					RND_DAD_LABEL(ia.dlg, "horizontal");
 					RND_DAD_HELP(ia.dlg, "enable adding horizontal mesh lines");
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_BOOL(ia.dlg, "");
+					RND_DAD_BOOL(ia.dlg);
 						ia.ver = RND_DAD_CURRENT(ia.dlg);
 					RND_DAD_LABEL(ia.dlg, "vertical");
 					RND_DAD_HELP(ia.dlg, "enable adding vertical mesh lines");
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_BOOL(ia.dlg, "");
+					RND_DAD_BOOL(ia.dlg);
 						ia.noimpl = RND_DAD_CURRENT(ia.dlg);
 					RND_DAD_LABEL(ia.dlg, "omit implicit");
 					RND_DAD_HELP(ia.dlg, "add only the mesh lines for boundaries,\nomit in-material meshing");
@@ -1176,7 +1176,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_COORD(ia.dlg, "");
+					RND_DAD_COORD(ia.dlg);
 						ia.def_subs_thick = RND_DAD_CURRENT(ia.dlg);
 						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "def. subst. thick");
@@ -1184,7 +1184,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_COORD(ia.dlg, "");
+					RND_DAD_COORD(ia.dlg);
 						ia.def_copper_thick = RND_DAD_CURRENT(ia.dlg);
 						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "def. copper thick");
@@ -1192,14 +1192,14 @@ int pcb_mesh_interactive(void)
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_BOOL(ia.dlg, "");
+					RND_DAD_BOOL(ia.dlg);
 						ia.air_top = RND_DAD_CURRENT(ia.dlg);
 					RND_DAD_LABEL(ia.dlg, "in air top");
 					RND_DAD_HELP(ia.dlg, "add mesh lines in air above the top of the board");
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_BOOL(ia.dlg, "");
+					RND_DAD_BOOL(ia.dlg);
 						ia.air_bot = RND_DAD_CURRENT(ia.dlg);
 					RND_DAD_LABEL(ia.dlg, "in air bottom");
 					RND_DAD_HELP(ia.dlg, "add mesh lines in air below the bottom of the board");
@@ -1207,7 +1207,7 @@ int pcb_mesh_interactive(void)
 
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_COORD(ia.dlg, "");
+					RND_DAD_COORD(ia.dlg);
 						ia.dens_air = RND_DAD_CURRENT(ia.dlg);
 						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "dens. air");
@@ -1215,7 +1215,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_COORD(ia.dlg, "");
+					RND_DAD_COORD(ia.dlg);
 						ia.max_air = RND_DAD_CURRENT(ia.dlg);
 						RND_DAD_MINMAX(ia.dlg, 0, RND_MM_TO_COORD(5));
 					RND_DAD_LABEL(ia.dlg, "air thickness");
@@ -1223,7 +1223,7 @@ int pcb_mesh_interactive(void)
 				RND_DAD_END(ia.dlg);
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
-					RND_DAD_BOOL(ia.dlg, "");
+					RND_DAD_BOOL(ia.dlg);
 						ia.smoothz = RND_DAD_CURRENT(ia.dlg);
 					RND_DAD_LABEL(ia.dlg, "smooth mesh");
 					RND_DAD_HELP(ia.dlg, "avoid jumps between different mesh densities,\nuse smooth (gradual) changes");
@@ -1250,7 +1250,7 @@ int pcb_mesh_interactive(void)
 
 				RND_DAD_BEGIN_HBOX(ia.dlg);
 					RND_DAD_LABEL(ia.dlg, "PML cells:");
-					RND_DAD_INTEGER(ia.dlg, "");
+					RND_DAD_INTEGER(ia.dlg);
 						ia.pml = RND_DAD_CURRENT(ia.dlg);
 						RND_DAD_MINMAX(ia.dlg, 0, 32);
 						RND_DAD_DEFAULT_NUM(ia.dlg, 8);

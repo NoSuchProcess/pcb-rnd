@@ -62,6 +62,8 @@ print [@
    as ~/DOT_PCB_RND/ */
 #define DOT_PCB_RND "@/local/pcb/dot_pcb_rnd@"
 
+/* librnd transition */
+#define RND_DAD_CFG_NOLABEL 1
 
 #endif
 @]

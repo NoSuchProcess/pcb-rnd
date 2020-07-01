@@ -263,42 +263,42 @@ static int pcb_dlg_rstdlg(int rst_idx)
 				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			RND_DAD_LABEL(rstdlg_ctx.dlg, "Line thick.:");
-			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+			RND_DAD_COORD(rstdlg_ctx.dlg);
 				rstdlg_ctx.wlineth = RND_DAD_CURRENT(rstdlg_ctx.dlg);
 				RND_DAD_HELP(rstdlg_ctx.dlg, "Thickness of line/arc objects");
 				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
 				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			RND_DAD_LABEL(rstdlg_ctx.dlg, "Text scale:");
-			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+			RND_DAD_COORD(rstdlg_ctx.dlg);
 				rstdlg_ctx.wtxtscale = RND_DAD_CURRENT(rstdlg_ctx.dlg);
 				RND_DAD_HELP(rstdlg_ctx.dlg, "Text size scale in %; 100 means normal size");
 				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
 				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			RND_DAD_LABEL(rstdlg_ctx.dlg, "Clearance:");
-			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+			RND_DAD_COORD(rstdlg_ctx.dlg);
 				rstdlg_ctx.wclr = RND_DAD_CURRENT(rstdlg_ctx.dlg);
 				RND_DAD_HELP(rstdlg_ctx.dlg, "Object clearance: any object placed with this style\nwill clear this much from sorrunding clearing-enabled polygons\n(unless the object is joined to the polygon)");
 				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
 				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			RND_DAD_LABEL(rstdlg_ctx.dlg, "Text thick.:");
-			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+			RND_DAD_COORD(rstdlg_ctx.dlg);
 				rstdlg_ctx.wtxtth = RND_DAD_CURRENT(rstdlg_ctx.dlg);
 				RND_DAD_HELP(rstdlg_ctx.dlg, "Text stroke thickness;\nif 0 use the default heuristics that\ncalculates it from text scale");
 				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
 				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			RND_DAD_LABEL(rstdlg_ctx.dlg, "*Via hole:");
-			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+			RND_DAD_COORD(rstdlg_ctx.dlg);
 				rstdlg_ctx.wviahole = RND_DAD_CURRENT(rstdlg_ctx.dlg);
 				RND_DAD_HELP(rstdlg_ctx.dlg, "Via hole diameter\nwarning: will be replaced with the padstack selector");
 				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
 				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			RND_DAD_LABEL(rstdlg_ctx.dlg, "*Via ring:");
-			RND_DAD_COORD(rstdlg_ctx.dlg, "");
+			RND_DAD_COORD(rstdlg_ctx.dlg);
 				rstdlg_ctx.wviaring = RND_DAD_CURRENT(rstdlg_ctx.dlg);
 				RND_DAD_HELP(rstdlg_ctx.dlg, "Via ring diameter\nwarning: will be replaced with the padstack selector");
 				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);

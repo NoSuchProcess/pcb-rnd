@@ -200,17 +200,17 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 							
 							switch(opts[i].type) {
 								case RND_HATT_COORD:
-									RND_DAD_COORD(export_ctx.dlg, opts[i].name);
+									RND_DAD_COORD(export_ctx.dlg);
 									RND_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
 									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.crd);
 									break;
 								case RND_HATT_INTEGER:
-									RND_DAD_INTEGER(export_ctx.dlg, opts[i].name);
+									RND_DAD_INTEGER(export_ctx.dlg);
 									RND_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
 									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.lng);
 									break;
 								case RND_HATT_REAL:
-									RND_DAD_REAL(export_ctx.dlg, opts[i].name);
+									RND_DAD_REAL(export_ctx.dlg);
 									RND_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
 									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.dbl);
 									break;

@@ -250,7 +250,7 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 				RND_DAD_HELP(lvs->dlg, "Reload script source and rerun\n(Ideal with external editor)");
 		RND_DAD_END(lvs->dlg);
 		RND_DAD_BEGIN_HBOX(lvs->dlg);
-			RND_DAD_BOOL(lvs->dlg, "");
+			RND_DAD_BOOL(lvs->dlg);
 				lvs->wpers = RND_DAD_CURRENT(lvs->dlg);
 			RND_DAD_LABEL(lvs->dlg, "persistent");
 				RND_DAD_HELP(lvs->dlg, "Persistent mode: keep the script loaded and running\n(useful if the script registers actions)\nNon-persistent mode: run once then unload.");

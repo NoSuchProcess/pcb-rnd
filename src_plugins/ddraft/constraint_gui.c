@@ -211,7 +211,7 @@ int constraint_gui(void)
 			RND_DAD_BEGIN_VBOX(cnstgui_ctx.dlg);
 				RND_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 					RND_DAD_LABEL(cnstgui_ctx.dlg, "All direction lines:");
-					RND_DAD_BOOL(cnstgui_ctx.dlg, "");
+					RND_DAD_BOOL(cnstgui_ctx.dlg);
 						cnstgui_ctx.alldir = RND_DAD_CURRENT(cnstgui_ctx.dlg);
 						RND_DAD_CHANGE_CB(cnstgui_ctx.dlg, set_alldir);
 						RND_DAD_HELP(cnstgui_ctx.dlg, "Constraints work well only when\nthe all-direction-lines is enabled");
@@ -226,7 +226,7 @@ int constraint_gui(void)
 				RND_DAD_END(cnstgui_ctx.dlg);
 				RND_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 					RND_DAD_LABEL(cnstgui_ctx.dlg, "Angle modulo:");
-					RND_DAD_REAL(cnstgui_ctx.dlg, "");
+					RND_DAD_REAL(cnstgui_ctx.dlg);
 						cnstgui_ctx.line_angle_mod = RND_DAD_CURRENT(cnstgui_ctx.dlg);
 						RND_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 						RND_DAD_MAXVAL(cnstgui_ctx.dlg, 180);
@@ -243,7 +243,7 @@ int constraint_gui(void)
 				RND_DAD_END(cnstgui_ctx.dlg);
 				RND_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 					RND_DAD_LABEL(cnstgui_ctx.dlg, "Length modulo:");
-					RND_DAD_COORD(cnstgui_ctx.dlg, "");
+					RND_DAD_COORD(cnstgui_ctx.dlg);
 						cnstgui_ctx.line_length_mod = RND_DAD_CURRENT(cnstgui_ctx.dlg);
 						RND_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 						RND_DAD_MAXVAL(cnstgui_ctx.dlg, RND_MM_TO_COORD(1000));
@@ -286,7 +286,7 @@ int constraint_gui(void)
 				RND_DAD_END(cnstgui_ctx.dlg);
 				RND_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 					RND_DAD_LABEL(cnstgui_ctx.dlg, "Angle modulo:");
-					RND_DAD_REAL(cnstgui_ctx.dlg, "");
+					RND_DAD_REAL(cnstgui_ctx.dlg);
 						cnstgui_ctx.move_angle_mod = RND_DAD_CURRENT(cnstgui_ctx.dlg);
 						RND_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 						RND_DAD_MAXVAL(cnstgui_ctx.dlg, 180);
@@ -303,7 +303,7 @@ int constraint_gui(void)
 				RND_DAD_END(cnstgui_ctx.dlg);
 				RND_DAD_BEGIN_HBOX(cnstgui_ctx.dlg);
 					RND_DAD_LABEL(cnstgui_ctx.dlg, "Length modulo:");
-					RND_DAD_COORD(cnstgui_ctx.dlg, "");
+					RND_DAD_COORD(cnstgui_ctx.dlg);
 						cnstgui_ctx.move_length_mod = RND_DAD_CURRENT(cnstgui_ctx.dlg);
 						RND_DAD_MINVAL(cnstgui_ctx.dlg, 0);
 						RND_DAD_MAXVAL(cnstgui_ctx.dlg, RND_MM_TO_COORD(1000));

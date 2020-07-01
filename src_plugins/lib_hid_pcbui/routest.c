@@ -180,7 +180,7 @@ static void rst_docked_create()
 			RND_DAD_BEGIN_HBOX(rst.sub.dlg);
 				RND_DAD_COMPFLAG(rst.sub.dlg, RND_HATF_HIDE);
 					rst.whbox[n] = RND_DAD_CURRENT(rst.sub.dlg);
-				RND_DAD_BOOL(rst.sub.dlg, "");
+				RND_DAD_BOOL(rst.sub.dlg);
 					rst.wchk[n] = RND_DAD_CURRENT(rst.sub.dlg);
 					RND_DAD_CHANGE_CB(rst.sub.dlg, rst_select_cb);
 				RND_DAD_LABEL(rst.sub.dlg, "unused");

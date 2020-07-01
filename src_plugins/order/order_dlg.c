@@ -70,11 +70,11 @@ void pcb_order_dad_field(order_ctx_t *octx, pcb_order_field_t *f)
 				RND_DAD_DEFAULT_NUM(octx->dlg, f->val.lng);
 				break;
 			case RND_HATT_INTEGER:
-				RND_DAD_INTEGER(octx->dlg, "");
+				RND_DAD_INTEGER(octx->dlg);
 				RND_DAD_DEFAULT_NUM(octx->dlg, f->val.lng);
 				break;
 			case RND_HATT_COORD:
-				RND_DAD_COORD(octx->dlg, "");
+				RND_DAD_COORD(octx->dlg);
 				RND_DAD_DEFAULT_NUM(octx->dlg, f->val.crd);
 				break;
 			case RND_HATT_STRING:

@@ -203,7 +203,7 @@ static int brave_interact(void)
 			for(d = desc, len=0; d->name != NULL; d++,len++) {
 				RND_DAD_LABEL(dlg, d->name);
 					RND_DAD_HELP(dlg, d->lng);
-				RND_DAD_BOOL(dlg, "");
+				RND_DAD_BOOL(dlg);
 					d->widget = RND_DAD_CURRENT(dlg);
 					RND_DAD_CHANGE_CB(dlg, brave_dialog_chg);
 					RND_DAD_HELP(dlg, d->lng);

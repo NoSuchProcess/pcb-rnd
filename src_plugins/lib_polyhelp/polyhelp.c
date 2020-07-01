@@ -392,29 +392,29 @@ static int polyhatch_gui(rnd_coord_t *period, pcb_cpoly_hatchdir_t *dir, pcb_fla
 		RND_DAD_BEGIN_TABLE(dlg, 2);
 
 			RND_DAD_LABEL(dlg, "Spacing");
-			RND_DAD_COORD(dlg, "");
+			RND_DAD_COORD(dlg);
 				RND_DAD_HELP(dlg, "Distance between centerlines of adjacent hatch lines for vertical and horizontal hatching");
 				RND_DAD_DEFAULT_NUM(dlg, conf_core.design.line_thickness * 2);
 				RND_DAD_MINMAX(dlg, 1, RND_MM_TO_COORD(100));
 				wspc = RND_DAD_CURRENT(dlg);
 
 			RND_DAD_LABEL(dlg, "Draw contour");
-			RND_DAD_BOOL(dlg, "");
+			RND_DAD_BOOL(dlg);
 				RND_DAD_HELP(dlg, "Draw the contour of the polygon");
 				wcont = RND_DAD_CURRENT(dlg);
 
 			RND_DAD_LABEL(dlg, "Draw horizontal hatch");
-			RND_DAD_BOOL(dlg, "");
+			RND_DAD_BOOL(dlg);
 				RND_DAD_HELP(dlg, "Draw evenly spaced horizontal hatch lines");
 				whor = RND_DAD_CURRENT(dlg);
 
 			RND_DAD_LABEL(dlg, "Draw vertical hatch");
-			RND_DAD_BOOL(dlg, "");
+			RND_DAD_BOOL(dlg);
 				RND_DAD_HELP(dlg, "Draw evenly spaced vertical hatch lines");
 				wver = RND_DAD_CURRENT(dlg);
 
 			RND_DAD_LABEL(dlg, "Clear-line");
-			RND_DAD_BOOL(dlg, "");
+			RND_DAD_BOOL(dlg);
 				RND_DAD_HELP(dlg, "Hatch lines have clearance");
 				wclr = RND_DAD_CURRENT(dlg);
 

@@ -277,12 +277,12 @@ static void pref_conf_edit_dlg(rnd_conf_native_t *nat, long idx, rnd_conf_role_t
 					b[0] = RND_DAD_CURRENT(ctx->dlg);
 				break;
 			case RND_CFN_BOOLEAN:
-				RND_DAD_BOOL(ctx->dlg, "");
+				RND_DAD_BOOL(ctx->dlg);
 					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_CHANGE_CB(ctx->dlg, pref_conf_editval_cb);
 				break;
 			case RND_CFN_INTEGER:
-				RND_DAD_INTEGER(ctx->dlg, "");
+				RND_DAD_INTEGER(ctx->dlg);
 					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
 				RND_DAD_BUTTON(ctx->dlg, "apply");
@@ -290,7 +290,7 @@ static void pref_conf_edit_dlg(rnd_conf_native_t *nat, long idx, rnd_conf_role_t
 					b[0] = RND_DAD_CURRENT(ctx->dlg);
 				break;
 			case RND_CFN_REAL:
-				RND_DAD_REAL(ctx->dlg, "");
+				RND_DAD_REAL(ctx->dlg);
 					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_MINMAX(ctx->dlg, -(1<<30), +(1<<30));
 				RND_DAD_BUTTON(ctx->dlg, "apply");
@@ -298,7 +298,7 @@ static void pref_conf_edit_dlg(rnd_conf_native_t *nat, long idx, rnd_conf_role_t
 					b[0] = RND_DAD_CURRENT(ctx->dlg);
 				break;
 			case RND_CFN_COORD:
-				RND_DAD_COORD(ctx->dlg, "");
+				RND_DAD_COORD(ctx->dlg);
 					ctx->wnewval = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_MINMAX(ctx->dlg, -RND_MM_TO_COORD(1000), +RND_MM_TO_COORD(1000));
 				RND_DAD_BUTTON(ctx->dlg, "apply");

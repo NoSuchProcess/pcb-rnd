@@ -570,19 +570,19 @@ static int pcb_actgui_ScaleBuffer(rnd_hidlib_t *hidlib, double *x, double *y)
 			RND_DAD_COMPFLAG(ctx.dlg, RND_HATF_EXPFILL);
 
 			RND_DAD_LABEL(ctx.dlg, "scale X");
-			RND_DAD_REAL(ctx.dlg, "");
+			RND_DAD_REAL(ctx.dlg);
 				ctx.wx = RND_DAD_CURRENT(ctx.dlg);
 				RND_DAD_DEFAULT_NUM(ctx.dlg, 1);
 				RND_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
 
 			RND_DAD_LABEL(ctx.dlg, "same");
-			RND_DAD_BOOL(ctx.dlg, "");
+			RND_DAD_BOOL(ctx.dlg);
 				ctx.wlock = RND_DAD_CURRENT(ctx.dlg);
 				RND_DAD_DEFAULT_NUM(ctx.dlg, 1);
 				RND_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
 
 			RND_DAD_LABEL(ctx.dlg, "scale Y");
-			RND_DAD_REAL(ctx.dlg, "");
+			RND_DAD_REAL(ctx.dlg);
 				ctx.wy = RND_DAD_CURRENT(ctx.dlg);
 				RND_DAD_DEFAULT_NUM(ctx.dlg, 1);
 				RND_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);

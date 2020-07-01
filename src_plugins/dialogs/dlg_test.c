@@ -161,7 +161,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				RND_DAD_ENUM(ctx.dlg, vals);
 					RND_DAD_CHANGE_CB(ctx.dlg, pcb_act_attr_chg);
 					attr_idx = RND_DAD_CURRENT(ctx.dlg);
-				RND_DAD_INTEGER(ctx.dlg, "text2e");
+				RND_DAD_INTEGER(ctx.dlg);
 					RND_DAD_MINVAL(ctx.dlg, 1);
 					RND_DAD_MAXVAL(ctx.dlg, 10);
 					RND_DAD_DEFAULT_NUM(ctx.dlg, 3);
@@ -205,7 +205,7 @@ static fgw_error_t pcb_act_dlg_test(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						RND_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_append);
 					RND_DAD_BUTTON(ctx.dlg, "jump!");
 						RND_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_jump);
-					RND_DAD_BOOL(ctx.dlg, "filter");
+					RND_DAD_BOOL(ctx.dlg);
 						RND_DAD_CHANGE_CB(ctx.dlg, cb_ttbl_filt);
 				RND_DAD_END(ctx.dlg);
 				RND_DAD_BEGIN_VBOX(ctx.dlg);

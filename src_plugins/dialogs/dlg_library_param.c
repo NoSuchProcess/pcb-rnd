@@ -146,7 +146,7 @@ do { \
 	switch(curr_type) { \
 		case RND_HATT_COORD: \
 		case RND_HATT_END: \
-			RND_DAD_COORD(library_ctx.pdlg, ""); \
+			RND_DAD_COORD(library_ctx.pdlg); \
 				ctx->pwid[curr] = RND_DAD_CURRENT(library_ctx.pdlg); \
 				RND_DAD_MINMAX(library_ctx.pdlg, 0, RND_MM_TO_COORD(512)); \
 				RND_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
@@ -157,7 +157,7 @@ do { \
 				RND_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
 			break; \
 		case RND_HATT_BOOL: \
-			RND_DAD_BOOL(library_ctx.pdlg, ""); \
+			RND_DAD_BOOL(library_ctx.pdlg); \
 				ctx->pwid[curr] = RND_DAD_CURRENT(library_ctx.pdlg); \
 				RND_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
 			break; \
