@@ -1,6 +1,4 @@
 0. old, still waiting for ack
-+ FEATURE: optional: when clicked (or pressed a button on) multiple overlapping objects, offer a view about which one to operate on [report: keantoken]
-+ BUG: parametric fp: qf() gui edit -> silk marks don't work [report: Piotr]
 
 1. For the upcoming release ===============================================================================
 
