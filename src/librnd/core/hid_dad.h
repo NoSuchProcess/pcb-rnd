@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017,2018,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017..2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,19 @@
 #include <librnd/core/global_typedefs.h>
 
 #include <genlist/gendlist.h>
+
+/* temporary, until 3.0.0: omit labels for new code */
+#ifdef RND_DAD_CFG_NOLABEL
+#	define RND_DAD_BOOL(table) RND_DAD_BOOL_(table)
+#	define RND_DAD_INTEGER(table) RND_DAD_INTEGER_(table)
+#	define RND_DAD_REAL(table) RND_DAD_REAL_(table)
+#	define RND_DAD_COORD(table) RND_DAD_COORD_(table)
+#else
+#	define RND_DAD_BOOL(table, label) RND_DAD_BOOL_(table)
+#	define RND_DAD_INTEGER(table, label) RND_DAD_INTEGER_(table)
+#	define RND_DAD_REAL(table, label) RND_DAD_REAL_(table)
+#	define RND_DAD_COORD(table, label) RND_DAD_COORD_(table)
+#endif
 
 typedef enum {
 	RND_HID_TEXT_INSERT,           /* insert at cursor or replace selection */
@@ -274,32 +287,11 @@ do { \
 	RND_DAD_SET_ATTR_FIELD(table, wdata, choices); \
 } while(0)
 
-#define RND_DAD_BOOL(table, label) \
-do { \
-	RND_DAD_ALLOC(table, RND_HATT_BOOL); \
-	RND_DAD_SET_ATTR_FIELD(table, name, rnd_strdup(label)); \
-} while(0)
-
-#define RND_DAD_INTEGER(table, label) \
-do { \
-	RND_DAD_SPIN_INT(table); \
-	RND_DAD_SET_ATTR_FIELD(table, name, label); \
-} while(0)
-
-#define RND_DAD_REAL(table, label) \
-do { \
-	RND_DAD_SPIN_DOUBLE(table); \
-	RND_DAD_SET_ATTR_FIELD(table, name, label); \
-} while(0)
-
-#define RND_DAD_COORD(table, label) \
-do { \
-	RND_DAD_SPIN_COORD(table); \
-	RND_DAD_SET_ATTR_FIELD(table, name, label); \
-} while(0)
-
-#define RND_DAD_STRING(table) \
-	RND_DAD_ALLOC(table, RND_HATT_STRING); \
+#define RND_DAD_BOOL_(table)      RND_DAD_ALLOC(table, RND_HATT_BOOL);
+#define RND_DAD_STRING(table)     RND_DAD_ALLOC(table, RND_HATT_STRING);
+#define RND_DAD_INTEGER_(table)   RND_DAD_SPIN_INT(table);
+#define RND_DAD_REAL_(table)      RND_DAD_SPIN_DOUBLE(table);
+#define RND_DAD_COORD_(table)     RND_DAD_SPIN_COORD(table);
 
 #define RND_DAD_TEXT(table, user_ctx_) \
 do { \
