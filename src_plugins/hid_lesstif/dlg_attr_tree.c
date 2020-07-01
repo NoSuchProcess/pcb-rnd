@@ -397,7 +397,7 @@ static void ltf_tt_xevent_cb(const tt_table_event_data_t *data)
 	}
 }
 
-static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
+static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
 {
 	rnd_hid_tree_t *ht = attr->wdata;
 	ltf_tree_t *lt = calloc(sizeof(ltf_tree_t), 1);
@@ -431,19 +431,4 @@ static Widget ltf_tree_create_(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_a
 
 	XtManageChild(table);
 	return table;
-}
-
-static Widget ltf_tree_create(lesstif_attr_dlg_t *ctx, Widget parent, rnd_hid_attribute_t *attr)
-{
-	Widget w;
-
-	if (pcb_brave & PCB_BRAVE_LESSTIF_TREETABLE)
-		return ltf_tree_create_(ctx, parent, attr);
-
-	stdarg_n = 0;
-	stdarg(XmNalignment, XmALIGNMENT_BEGINNING);
-	stdarg(XmNlabelString, XmStringCreatePCB("TODO: tree table"));
-	w = XmCreateLabel(parent, XmStrCast("TODO"), stdarg_args, stdarg_n);
-
-	return w;
 }

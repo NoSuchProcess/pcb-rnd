@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: (TT) propedit revamp:
-	- switch over to new dialogs in lesstif, remove brave for tree-table
+	- switch over to new dialogs in lesstif
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
 	- CLEANUP: remove attrib.o from the hidlib objects
