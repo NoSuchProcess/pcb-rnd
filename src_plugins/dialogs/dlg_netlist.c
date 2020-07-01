@@ -604,10 +604,7 @@ static fgw_error_t pcb_act_NetlistDialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		return 0;
 	}
 
-	if (strcmp(rnd_gui->name, "lesstif") == 0)
-		rnd_actionva(RND_ACT_HIDLIB, "DoWindows", "netlist");
-	else
-		pcb_dlg_netlist(PCB);
+	pcb_dlg_netlist(PCB);
 	RND_ACT_IRES(0);
 	return 0;
 }

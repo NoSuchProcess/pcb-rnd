@@ -719,10 +719,7 @@ const char pcb_acts_LibraryDialog[] = "libraryDialog()\n";
 const char pcb_acth_LibraryDialog[] = "Open the library dialog.";
 fgw_error_t pcb_act_LibraryDialog(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv)
 {
-	if (strcmp(rnd_gui->name, "lesstif") == 0)
-		rnd_actionva(oargv[0].val.argv0.user_call_ctx, "DoWindows", "library");
-	else
-		pcb_dlg_library();
+	pcb_dlg_library();
 	return 0;
 }
 
