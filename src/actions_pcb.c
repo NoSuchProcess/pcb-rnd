@@ -279,9 +279,10 @@ static int idpath_arg_conv(fgw_ctx_t *ctx, fgw_arg_t *arg, fgw_type_t target)
 	if (target == FGW_IDPATH) { /* convert to idpath */
 		if (FGW_BASE_TYPE(arg->type) == FGW_STR) {
 			const char *str = arg->val.str;
+			pcb_idpath_t *idp;
 
 			conv_struct_from_str(str, RND_PTR_DOMAIN_IDPATH, FGW_IDPATH);
-			pcb_idpath_t *idp = pcb_str2idpath(PCB, str);
+			idp = pcb_str2idpath(PCB, str);
 			if (idp != NULL) {
 				fgw_ptr_reg(&rnd_fgw, arg, RND_PTR_DOMAIN_IDPATH, FGW_IDPATH, idp);
 				return 0;
