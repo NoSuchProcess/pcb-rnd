@@ -853,13 +853,13 @@ static fgw_error_t pcb_act_DoWindows(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (strcmp(a, "1") == 0 || rnd_strcasecmp(a, "Layout") == 0) {
 	}
 	else if (strcmp(a, "2") == 0 || rnd_strcasecmp(a, "Library") == 0) {
-		lesstif_show_library();
+		rnd_actionva(ltf_hidlib, "LibraryDialog", NULL);
 	}
 	else if (strcmp(a, "3") == 0 || rnd_strcasecmp(a, "Log") == 0) {
 		rnd_actionva(ltf_hidlib, "LogDialog", NULL);
 	}
 	else if (strcmp(a, "4") == 0 || rnd_strcasecmp(a, "Netlist") == 0) {
-		lesstif_show_netlist();
+		rnd_actionva(ltf_hidlib, "NetlistDialog", NULL);
 	}
 	else {
 		RND_ACT_FAIL(DoWindows);
