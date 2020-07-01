@@ -2,10 +2,8 @@ put /local/pcb/mod {hid_lesstif}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/hid_lesstif/dialogs.o
 	$(PLUGDIR)/hid_lesstif/dlg_fileselect.o
-	$(PLUGDIR)/hid_lesstif/library.o
 	$(PLUGDIR)/hid_lesstif/main.o
 	$(PLUGDIR)/hid_lesstif/menu.o
-	$(PLUGDIR)/hid_lesstif/netlist.o
 	$(PLUGDIR)/hid_lesstif/ltf_stdarg.o
 	$(PLUGDIR)/hid_lesstif/wt_colorbtn.o
 	$(PLUGDIR)/hid_lesstif/wt_xpm.o

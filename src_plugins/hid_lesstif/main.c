@@ -422,7 +422,6 @@ static void ltf_set_hidlib(rnd_hid_t *hid, rnd_hidlib_t *hidlib)
 	XtSetValues(vscroll, stdarg_args, stdarg_n);
 	zoom_max();
 
-	LesstifNetlistChanged(ltf_hidlib, NULL, 0, NULL);
 	lesstif_update_layer_groups();
 	return;
 }
@@ -3064,9 +3063,6 @@ int pplg_init_hid_lesstif(void)
 
 	lesstif_hid.get_dad_hidlib = ltf_attr_get_dad_hidlib;
 
-	rnd_event_bind(PCB_EVENT_NETLIST_CHANGED, LesstifNetlistChanged, NULL, lesstif_cookie);
-	rnd_event_bind(PCB_EVENT_LIBRARY_CHANGED, LesstifLibraryChanged, NULL, lesstif_cookie);
-
 	rnd_hid_register_hid(&lesstif_hid);
 	if (lesstif_conf_id < 0)
 		lesstif_conf_id = rnd_conf_hid_reg(lesstif_cookie, &ccb);
@@ -3090,10 +3086,8 @@ extern void pcb_ltf_netlist_init2(void);
 
 static void lesstif_begin(void)
 {
-	pcb_ltf_library_init2();
 	lesstif_reg_attrs();
 	pcb_ltf_dialogs_init2();
-	pcb_ltf_netlist_init2();
 	lesstif_active = 1;
 }
 

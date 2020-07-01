@@ -1,3 +1,4 @@
+32099	configure	remove lesstif local dialog implementations: library, netlist
 31776	configure	new plugin: formula, for impedance calculations
 31708	configure	query plugin: move the advanced search dialog from dialogs plugin to query to better access of internals
 31623	configure	query plugin: net length calculations
