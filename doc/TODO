@@ -5,7 +5,6 @@
 - CLEANUP: librnd sep:
 	- hid: remove edit_attributes call from the API, from lesstif and gtk (make sure the propedit is called instead from core)
 	- CLEANUP: remove attrib.o from the hidlib objects
-	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
 - FEATURE: (TT) route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
