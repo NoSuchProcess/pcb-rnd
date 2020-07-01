@@ -1,31 +1,13 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-
-2. For later releases ===============================================================================
 - CLEANUP: move layer_parse_group_str() from core to io_pcb, probably together with the default stackup setup code [report: Igor2]
-- CLEANUP: TODO27: undo's removed list shouldn't depend on pobject IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
-- CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
-	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- CLEANUP/BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1; need to cache hole vs. shape overlap (1 bit per shape in the proto) [report: igor2]
-- CLEANUP/BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - CLEANUP: (TT) propedit revamp:
 	- switch over to new dialogs in lesstif, remove brave for tree-table
 	- CLEANUP: remove Attrbute() and pcb_act_Attributes -> remove; this should be handled by the property editor when lesstif already supports it.
 	- CLEANUP: after the attribute dialog, remove the label argument from the DAD API [report: igor2]
 	- CLEANUP: remove attrib.o from the hidlib objects
-- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
-	- BUG: propedit adding/deleting attributes inconsistency; search depth problem (see TODO#28)  bug_files/subcsel.bug [report: Ade]
 - CLEANUP: lesstif DAD support for top window docks [report: Igor2]
-- CLEANUP: layer order from data
-	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
-	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
-	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
-- FEATURE: new breadboard
-	- FEATURE: gfx rotated pixmap scale adjustment: missing in lesstif, partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
-	- FEATURE: hidlib: render pixmap: test in gl
-	- DOC: pool node on how to use pixmap for breadboading
-- FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: (TT) route style upgrade to prototypes:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
@@ -34,18 +16,6 @@
 	- load/import from buffer and file
 	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
 	- add text font, update the pool node text_edit [report: Igor2]
-- FEATURE: orthogonal move of polygon edge (or angle-keeping move of corner?) for rectangle enlarge [report: Majenko]
-- FEATURE: finish drill/slot export in export_stl [report: Majenko]
-- FEATURE: fontsel: ttf import?
-- FEATURE: DOC: new examples
-	- blinking led with parametric footprints
-	- example of nonetlist: 1206 jumpers and logos
-- export_dsn/new io_dsn (with King Kevin and celem) (NGI0):
-	- missing global padstack (via) export:
-		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
-		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
-	- BUG: elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
-- FEATURE: preview widget: allow to handle keys both in gtk and lesstif
 - res/menu (NGI0):
 	- FEATURE: load/swap menus (TODO#1)
 	- CLEANUP: search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
@@ -55,6 +25,40 @@
 		- action to reload if file name is known
 		- gui load dialog with tags listed
 	- FEATURE: project specific menus from extra lihata files - maybe from project.lht
+- FEATURE: orthogonal move of polygon edge (or angle-keeping move of corner?) for rectangle enlarge [report: Majenko]
+- FEATURE: finish drill/slot export in export_stl [report: Majenko]
+- FEATURE: preview widget: allow to handle keys both in gtk and lesstif
+- BUG: padstack editor top/bottom gets mixed up on other-side on display (but not in data!) ml=4221 [report: Majenko]
+- BUG: locally debian packaged version: run ./pcb-rnd from src with no X, exit -> tons of warnings
+- BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
+- BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
+
+2. For later releases ===============================================================================
+- CLEANUP: TODO27: undo's removed list shouldn't depend on pobject IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
+- CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
+	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
+- CLEANUP/BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1; need to cache hole vs. shape overlap (1 bit per shape in the proto) [report: igor2]
+- CLEANUP/BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
+- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
+	- BUG: propedit adding/deleting attributes inconsistency; search depth problem (see TODO#28)  bug_files/subcsel.bug [report: Ade]
+- CLEANUP: layer order from data
+	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
+	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
+	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
+- FEATURE: new breadboard
+	- FEATURE: gfx rotated pixmap scale adjustment: missing in lesstif, partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
+	- FEATURE: hidlib: render pixmap: test in gl
+	- DOC: pool node on how to use pixmap for breadboading
+- FEATURE: library window: allow long tags and long location text to split: rich text widget
+- FEATURE: fontsel: ttf import?
+- FEATURE: DOC: new examples
+	- blinking led with parametric footprints
+	- example of nonetlist: 1206 jumpers and logos
+- export_dsn/new io_dsn (with King Kevin and celem) (NGI0):
+	- missing global padstack (via) export:
+		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
+		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
+	- BUG: elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: FONTS: second font indents incorrectly
@@ -75,12 +79,8 @@
 		- new outline/mech layers and slots
 		- new doc layers
 		- polygon side clearance (e.g. CUCP#38 provided by Karl)
-- BUG: padstack editor top/bottom gets mixed up on other-side on display (but not in data!) ml=4221 [report: Majenko]
-- BUG: locally debian packaged version: run ./pcb-rnd from src with no X, exit -> tons of warnings
-- BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
-- BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
+- BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, bisect; broke before r14572 [report: Igor2]
 
 3. Long term ===============================================================================
 - version 3.0.0:
