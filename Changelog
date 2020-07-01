@@ -1,4 +1,4 @@
-pcb-rnd 2.2.2 (r32050)
+pcb-rnd 2.2.2 (r32086)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]
 		-Add: PolyBool() action
@@ -18,6 +18,7 @@ pcb-rnd 2.2.2 (r32050)
 		-Add: temporary rats nest optimization for the old autorouter (manhattan)
 
 	[build]
+		-Change: set drc_orig to disable-all to make sure it doesn't end up in production unless explicitly enabled
 		-Add: detect byaccic and ureglex unless disabled
 		-Add: generate byaccic and ureglex rules
 
@@ -273,6 +274,7 @@ pcb-rnd 2.2.2 (r32050)
 
 	[lib_hid_pcbui]
 		-Fix: respect loose subc and allow popup() to pick up objects from the subc
+		-Fix: do not describe location for the wrong object (from cached temp string), misleading the user
 		-Add: comment to clarify the main usage of the DecribeLocation action
 		-Add: DescribeLocation (tooltip) prints rat line info when cursor lands on a rat line
 		-Add: DescribeLocation print terminal name in parenthesis after the terminal ID when it differs from the terminal ID
@@ -286,8 +288,10 @@ pcb-rnd 2.2.2 (r32050)
 		-Fix: when free'ing pixmap fields, also free the renderer's cache
 		-Fix: hid action parse can properly return the real result of the last action while keeping the "stop executing multiple actions if any fails" concept
 		-Fix: dad spin on real numbers: don't use step 0 at value 0 for up/down spin buttons, that wouldn't change the value!
+		-Fix: missing compat macro for PCB_ACT_MAY_CONVARG()
 		-Cleanup: rename pcb_ prefix to rnd_ prefix
 		-Cleanup: centralize istrue() to rnd_istrue(), plus add rnd_isfalse() helper to complement it
+		-Add: install pcb_compat.h and pcb-printf.h for allowing compilation of older versions of ringdove apps for a while
 		-Add: portable RND_MIN, RND_MAX and RND_SGN so the code long term won't depend on redefining MIN/MAX
 		-Add: base64 string encode/decode
 		-Add: compile and include libulzw in 3rd lib
