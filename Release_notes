@@ -22,7 +22,6 @@ Feature highlight:
    Importing a tEDAx netlist automatically loads DRC rules, allowing
    schematics to specify rules.
 
-
 4. Dedicated GUI and network dialog upgrade for easier network length
    tracking.
 
