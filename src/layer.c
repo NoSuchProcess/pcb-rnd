@@ -1485,13 +1485,6 @@ int pcb_layer_gui_set_g_ui(pcb_layer_t *first, int is_empty, rnd_xform_t **xform
 	return 1;
 }
 
-void pcb_layer_edit_attrib(pcb_layer_t *layer)
-{
-	char *buf = rnd_strdup_printf("Layer %s Attributes", layer->name);
-	rnd_gui->edit_attributes(rnd_gui, buf, &(layer->Attributes));
-	free(buf);
-}
-
 const pcb_menu_layers_t *pcb_menu_layer_find(const char *name_or_abbrev)
 {
 	const pcb_menu_layers_t *ml;

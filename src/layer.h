@@ -327,9 +327,6 @@ pcb_layer_type_t pcb_layer_mirror_type(pcb_layer_type_t lyt);
 /* Modify tree pointers in dst to point to src's; allocates trees for src if they are not yet allocated */
 void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src);
 
-/* Open the attribute editor for a layer */
-void pcb_layer_edit_attrib(pcb_layer_t *layer);
-
 /* How deep subcs can be nested */
 #define PCB_MAX_BOUND_LAYER_RECURSION 128
 
