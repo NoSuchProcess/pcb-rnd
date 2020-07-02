@@ -60,7 +60,6 @@ put /local/pcb/OBJS_C99_HIDLIB [@
 
 append /local/pcb/OBJS_HIDLIB [@
 	$(LIBRND)/core/actions.o
-	$(LIBRND)/core/attrib.o
 	$(LIBRND)/core/base64.o
 	$(LIBRND)/core/box.o
 	$(LIBRND)/core/color.o
@@ -152,6 +151,7 @@ append /local/pcb/OBJS /local/pcb/OBJS_3RDLIB
 append /local/pcb/OBJS /local/pcb/OBJS_POLYLIB
 append /local/pcb/OBJS [@
 	actions_pcb.o
+	attrib.o
 	board.o
 	brave.o
 	buffer.o

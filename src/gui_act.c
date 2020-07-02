@@ -56,7 +56,7 @@
 #include "layer_ui.h"
 #include "layer_grp.h"
 #include "layer_vis.h"
-#include <librnd/core/attrib.h>
+#include "attrib.h"
 #include <librnd/core/hid_attrib.h>
 #include "operation.h"
 #include "obj_subc_op.h"

@@ -51,7 +51,7 @@ enum {
 #include "vtroutestyle.h"
 #include "layer.h"
 #include "layer_grp.h"
-#include <librnd/core/attrib.h>
+#include "attrib.h"
 #include "rats_patch.h"
 #include "font.h"
 #include <librnd/core/hidlib.h>

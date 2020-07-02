@@ -32,7 +32,7 @@
 #include <math.h>
 #include <string.h>
 #include "flag.h"
-#include <librnd/core/attrib.h>
+#include "attrib.h"
 #include "global_typedefs.h"
 #include "data_parent.h"
 

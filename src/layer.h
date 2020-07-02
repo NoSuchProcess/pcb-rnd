@@ -109,8 +109,8 @@ typedef enum { /* bitfield */
 
 #include "globalconst.h"
 #include <librnd/core/global_typedefs.h>
-#include <librnd/core/attrib.h>
 #include <librnd/core/color.h>
+#include "attrib.h"
 #include "obj_common.h"
 #include "obj_arc_list.h"
 #include "obj_line_list.h"

@@ -37,7 +37,7 @@
 #include "parse.h"
 
 #include <librnd/core/unit.h>
-#include <librnd/core/attrib.h>
+#include "attrib.h"
 #include <librnd/core/error.h>
 #include "data.h"
 #include "board.h"

@@ -50,7 +50,7 @@
 #include "move.h"
 #include "rotate.h"
 #include <librnd/core/safe_fs.h>
-#include <librnd/core/attrib.h>
+#include "attrib.h"
 #include "netlist.h"
 #include <librnd/core/math_helper.h>
 #include "obj_pstk_inlines.h"

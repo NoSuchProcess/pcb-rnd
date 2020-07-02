@@ -33,7 +33,7 @@
 #include <string.h>
 #include <librnd/config.h>
 #include <librnd/core/compat_misc.h>
-#include <librnd/core/attrib.h>
+#include "attrib.h"
 
 #define NOTIFY(list, name, value) \
 do { \

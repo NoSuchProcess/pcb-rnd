@@ -17,7 +17,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h librnd/core/safe_fs.h
 ../src/librnd/core/attrib.o: ../src/librnd/core/attrib.c librnd/config.h \
- librnd/core/compat_misc.h librnd/core/attrib.h
+ librnd/core/compat_misc.h attrib.h
 ../src/librnd/core/base64.o: ../src/librnd/core/base64.c \
  librnd/core/base64.h
 ../src/librnd/core/box.o: ../src/librnd/core/box.c librnd/config.h \
@@ -517,7 +517,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -549,7 +549,7 @@
  ../config.h librnd/config.h ../src_3rd/genht/hash.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -588,7 +588,7 @@
  librnd/core/color.h librnd/core/actions.h librnd/core/hid.h \
  librnd/core/error.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h librnd/core/attrib.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h attrib.h \
  layer.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -615,7 +615,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -652,7 +652,7 @@
  ../src_3rd/genht/htpi.h ../src_3rd/genht/ht.h board.h \
  ../src_3rd/genht/htsp.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -687,7 +687,7 @@
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/genlist/gendlist.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h layer.h globalconst.h \
+ librnd/core/unit.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -719,7 +719,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -756,7 +756,7 @@
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
- vtroutestyle.h librnd/core/attrib.h \
+ vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -772,7 +772,7 @@
  ../src_plugins/autoplace/autoplace.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -801,7 +801,7 @@
  ../config.h librnd/config.h ../src_plugins/autoroute/autoroute.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -833,7 +833,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h data.h layer.h librnd/core/attrib.h obj_common.h \
+ librnd/core/color.h data.h layer.h attrib.h obj_common.h \
  flag.h global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -870,7 +870,7 @@
  ../src_3rd/genvector/genvector_undef.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -904,7 +904,7 @@
 ../src_plugins/ddraft/centgeo.o: ../src_plugins/ddraft/centgeo.c \
  ../config.h librnd/config.h ../src_plugins/ddraft/centgeo.h obj_line.h \
  ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ librnd/core/globalconst.h attrib.h global_typedefs.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h data_parent.h \
  obj_arc.h librnd/core/math_helper.h librnd/core/compat_misc.h search.h \
  layer.h librnd/core/color.h ../src_3rd/genvector/genvector_impl.h \
@@ -932,7 +932,7 @@
  librnd/core/event.h librnd/core/hidlib.h librnd/core/actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h funchash_core.h \
  librnd/core/funchash.h funchash_core_list.h search.h layer.h \
- globalconst.h librnd/core/globalconst.h librnd/core/attrib.h \
+ globalconst.h librnd/core/globalconst.h attrib.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -963,7 +963,7 @@
 ../src_plugins/diag/diag.o: ../src_plugins/diag/diag.c ../config.h \
  librnd/config.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1013,7 +1013,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -1055,7 +1055,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_plugins/dialogs/dlg_test.c board.h \
- vtroutestyle.h librnd/core/attrib.h layer.h globalconst.h \
+ vtroutestyle.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -1116,7 +1116,7 @@
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h librnd/core/attrib.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1154,7 +1154,7 @@
  ../src_3rd/genvector/genvector_undef.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h flag.h \
  globalconst.h librnd/core/globalconst.h flag_str.h flag.h change.h \
- board.h vtroutestyle.h librnd/core/attrib.h layer.h obj_common.h \
+ board.h vtroutestyle.h attrib.h layer.h obj_common.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
@@ -1172,7 +1172,7 @@
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
- vtroutestyle.h librnd/core/attrib.h \
+ vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1197,7 +1197,7 @@
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
- vtroutestyle.h librnd/core/attrib.h \
+ vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1223,7 +1223,7 @@
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
- vtroutestyle.h librnd/core/attrib.h \
+ vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1250,7 +1250,7 @@
  ../src_plugins/dialogs/dlg_layer_flags.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1278,7 +1278,7 @@
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h data.h globalconst.h \
- librnd/core/globalconst.h layer.h librnd/core/attrib.h \
+ librnd/core/globalconst.h layer.h attrib.h \
  librnd/core/color.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -1313,7 +1313,7 @@
  librnd/core/error.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  librnd/core/unit.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- board.h vtroutestyle.h librnd/core/attrib.h layer.h globalconst.h \
+ board.h vtroutestyle.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -1349,7 +1349,7 @@
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
- vtroutestyle.h librnd/core/attrib.h layer.h globalconst.h \
+ vtroutestyle.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -1390,7 +1390,7 @@
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  funchash_core.h librnd/core/funchash.h funchash_core_list.h obj_pstk.h \
  obj_common.h flag.h globalconst.h librnd/core/globalconst.h \
- librnd/core/attrib.h global_typedefs.h data_parent.h layer.h \
+ attrib.h global_typedefs.h data_parent.h layer.h \
  obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h obj_pstk_shape.h \
@@ -1432,7 +1432,7 @@
  ../src_plugins/dialogs/dlg_pref_win.h \
  ../src_plugins/dialogs/dlg_pref_conf.h \
  ../src_plugins/dialogs/dlg_pref_sizes.c board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -1455,7 +1455,7 @@
  librnd/core/error.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  librnd/core/unit.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- board.h vtroutestyle.h librnd/core/attrib.h \
+ board.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1477,7 +1477,7 @@
  ../src_plugins/distalign/distalign.c board.h ../config.h librnd/config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1517,7 +1517,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -1544,7 +1544,7 @@
  ../src_plugins/draw_csect/draw_csect.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1578,7 +1578,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -1615,7 +1615,7 @@
  ../src_plugins/draw_fontsel/draw_fontsel.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1651,7 +1651,7 @@
  idpath.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
  obj_common.h flag.h globalconst.h librnd/core/globalconst.h \
- librnd/core/attrib.h data_parent.h librnd/core/box.h \
+ attrib.h data_parent.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h view.h data_it.h \
  data.h layer.h librnd/core/color.h obj_arc_list.h obj_arc.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
@@ -1702,7 +1702,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/conf_hid.h \
  librnd/core/compat_misc.h librnd/core/safe_fs.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -1733,7 +1733,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h data.h globalconst.h \
- librnd/core/globalconst.h layer.h librnd/core/attrib.h \
+ librnd/core/globalconst.h layer.h attrib.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -1765,7 +1765,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h ../src_3rd/genvector/vts0.h build_run.h board.h \
- vtroutestyle.h librnd/core/attrib.h layer.h obj_common.h flag.h \
+ vtroutestyle.h attrib.h layer.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -1791,7 +1791,7 @@
  ../src_3rd/genvector/genvector_undef.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -1833,7 +1833,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/math_helper.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -1874,7 +1874,7 @@
  ../src_plugins/export_excellon/excellon.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1914,7 +1914,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h ../src_3rd/genht/htsi.h librnd/core/math_helper.h \
- board.h vtroutestyle.h librnd/core/attrib.h layer.h obj_common.h flag.h \
+ board.h vtroutestyle.h attrib.h layer.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -1946,7 +1946,7 @@
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
- vtroutestyle.h librnd/core/attrib.h \
+ vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -1970,7 +1970,7 @@
  librnd/core/math_helper.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -2009,7 +2009,7 @@
  ../src_plugins/export_ipcd356/ipcd356.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -2043,7 +2043,7 @@
 ../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
  ../config.h librnd/config.h data.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -2086,7 +2086,7 @@
  librnd/core/color.h librnd/core/actions.h librnd/core/hid.h \
  librnd/core/error.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h librnd/core/attrib.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h attrib.h \
  layer.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -2119,7 +2119,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -2149,7 +2149,7 @@
  ../src_plugins/export_openems/mesh.c ../config.h librnd/config.h \
  ../src_plugins/export_openems/mesh.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -2190,7 +2190,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h ../src_3rd/genvector/vti0.h \
- librnd/core/compat_misc.h board.h vtroutestyle.h librnd/core/attrib.h \
+ librnd/core/compat_misc.h board.h vtroutestyle.h attrib.h \
  layer.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -2229,7 +2229,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h ../src_3rd/genht/htpp.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -2265,7 +2265,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/math_helper.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -2289,7 +2289,7 @@
  librnd/config.h librnd/core/math_helper.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -2334,7 +2334,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h ../src_3rd/genht/htsi.h ../src_3rd/genht/hash.h \
- librnd/core/math_helper.h board.h vtroutestyle.h librnd/core/attrib.h \
+ librnd/core/math_helper.h board.h vtroutestyle.h attrib.h \
  layer.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -2370,7 +2370,7 @@
  ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h hid_cam.h layer.h \
- globalconst.h librnd/core/globalconst.h librnd/core/attrib.h \
+ globalconst.h librnd/core/globalconst.h attrib.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -2398,7 +2398,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/math_helper.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -2432,7 +2432,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h build_run.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -2466,7 +2466,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h build_run.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -2500,7 +2500,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h build_run.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -2535,7 +2535,7 @@
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h \
  ../src_3rd/genvector/vts0.h librnd/core/math_helper.h build_run.h \
- board.h vtroutestyle.h librnd/core/attrib.h layer.h obj_common.h flag.h \
+ board.h vtroutestyle.h attrib.h layer.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -2575,7 +2575,7 @@
  librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h board.h vtroutestyle.h librnd/core/attrib.h \
+ ../src_3rd/puplug/error.h board.h vtroutestyle.h attrib.h \
  layer.h globalconst.h librnd/core/globalconst.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -2601,7 +2601,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -2648,7 +2648,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -2677,7 +2677,7 @@
  vtlibrary.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h data.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -2705,7 +2705,7 @@
  librnd/config.h librnd/core/compat_inc.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -2742,7 +2742,7 @@
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  ../src_plugins/fp_wget/wget_common.h ../src_plugins/fp_wget/edakrill.h \
  plug_footprint.h vtlibrary.h data.h globalconst.h \
- librnd/core/globalconst.h layer.h librnd/core/attrib.h \
+ librnd/core/globalconst.h layer.h attrib.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -2771,7 +2771,7 @@
  plug_footprint.h vtlibrary.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h data.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -2806,7 +2806,7 @@
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  ../src_plugins/fp_wget/wget_common.h \
  ../src_plugins/fp_wget/gedasymbols.h plug_footprint.h vtlibrary.h data.h \
- globalconst.h librnd/core/globalconst.h layer.h librnd/core/attrib.h \
+ globalconst.h librnd/core/globalconst.h layer.h attrib.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -2848,7 +2848,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -2893,7 +2893,7 @@
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  librnd/core/hidlib.h obj_line.h ../src_3rd/genlist/gendlist.h \
  obj_common.h flag.h globalconst.h librnd/core/globalconst.h \
- librnd/core/attrib.h data_parent.h obj_poly.h librnd/poly/polyarea.h \
+ attrib.h data_parent.h obj_poly.h librnd/poly/polyarea.h \
  route.h draw.h layer.h obj_arc_list.h obj_arc.h obj_line_list.h \
  obj_poly_list.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h librnd/core/grid.h \
@@ -2956,7 +2956,7 @@
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  librnd/core/hidlib.h obj_line.h ../src_3rd/genlist/gendlist.h \
  obj_common.h flag.h globalconst.h librnd/core/globalconst.h \
- librnd/core/attrib.h data_parent.h obj_poly.h librnd/poly/polyarea.h \
+ attrib.h data_parent.h obj_poly.h librnd/poly/polyarea.h \
  route.h draw.h layer.h librnd/core/color.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_poly_list.h \
@@ -3041,7 +3041,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
  ../src_plugins/hid_lesstif/FillBox.h librnd/core/compat_misc.h data.h \
- globalconst.h librnd/core/globalconst.h layer.h librnd/core/attrib.h \
+ globalconst.h librnd/core/globalconst.h layer.h attrib.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -3083,7 +3083,7 @@
  librnd/core/hid_cfg.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/hid.h librnd/core/error.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
- librnd/core/unit.h board.h vtroutestyle.h librnd/core/attrib.h \
+ librnd/core/unit.h board.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -3119,7 +3119,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h librnd/core/hidlib.h \
- librnd/core/pixmap.h data.h layer.h librnd/core/attrib.h obj_common.h \
+ librnd/core/pixmap.h data.h layer.h attrib.h obj_common.h \
  flag.h global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -3163,7 +3163,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h data.h layer.h librnd/core/attrib.h obj_common.h \
+ librnd/core/color.h data.h layer.h attrib.h obj_common.h \
  flag.h global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -3216,7 +3216,7 @@
  ../src_plugins/hid_remote/proto_lowcommon.h \
  ../src_plugins/hid_remote/proto_lowsend.h librnd/core/base64.h \
  ../src_plugins/hid_remote/proto_lowparse.h layer.h globalconst.h \
- librnd/core/globalconst.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/globalconst.h attrib.h librnd/core/color.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -3229,7 +3229,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -3261,7 +3261,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -3293,7 +3293,7 @@
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -3325,7 +3325,7 @@
  librnd/core/math_helper.h board.h ../config.h librnd/config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -3357,7 +3357,7 @@
  ../src_plugins/import_edif/import_edif.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -3390,7 +3390,7 @@
  ../src_3rd/qparse/qparse.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -3436,7 +3436,7 @@
  librnd/core/paths.h librnd/core/actions.h librnd/core/hid.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- librnd/core/hid_init.h board.h vtroutestyle.h librnd/core/attrib.h \
+ librnd/core/hid_init.h board.h vtroutestyle.h attrib.h \
  layer.h globalconst.h librnd/core/globalconst.h librnd/core/color.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
@@ -3451,7 +3451,7 @@
  ../src_3rd/libuhpgl/parse.h ../src_3rd/libuhpgl/libuhpgl.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -3483,7 +3483,7 @@
  ../src_plugins/import_ipcd356/ipcd356.c ../config.h librnd/config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
  board.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
- vtroutestyle.h librnd/core/unit.h librnd/core/attrib.h \
+ vtroutestyle.h librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -3516,7 +3516,7 @@
  ../src_3rd/qparse/qparse.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -3547,7 +3547,7 @@
  ../src_plugins/import_mentor_sch/mentor_sch.c ../config.h \
  librnd/config.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -3605,7 +3605,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -3636,7 +3636,7 @@
  ../src_plugins/import_net_action/import_net_action.c ../config.h \
  librnd/config.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -3677,7 +3677,7 @@
  librnd/core/compat_misc.h librnd/core/actions.h librnd/core/hid.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
- vtroutestyle.h librnd/core/attrib.h layer.h globalconst.h \
+ vtroutestyle.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
@@ -3688,7 +3688,7 @@
  ../src_plugins/import_netlist/import_netlist.c ../config.h \
  librnd/config.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -3772,7 +3772,7 @@
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
  librnd/core/hid_dad_spin.h librnd/core/conf_hid.h \
  librnd/core/compat_fs.h globalconst.h librnd/core/globalconst.h board.h \
- vtroutestyle.h librnd/core/attrib.h layer.h globalconst.h obj_common.h \
+ vtroutestyle.h attrib.h layer.h globalconst.h obj_common.h \
  flag.h global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -3786,7 +3786,7 @@
  ../src_3rd/qparse/qparse.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -3821,7 +3821,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -3866,7 +3866,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_plugins/io_autotrax/write.h data.h \
- globalconst.h librnd/core/globalconst.h layer.h librnd/core/attrib.h \
+ globalconst.h librnd/core/globalconst.h layer.h attrib.h \
  librnd/core/color.h obj_common.h flag.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -3888,7 +3888,7 @@
  librnd/core/compat_misc.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -3921,7 +3921,7 @@
  ../config.h librnd/config.h librnd/core/compat_misc.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -3954,7 +3954,7 @@
  ../src_plugins/io_bxl/bxl_gram.h ../src_plugins/io_bxl/bxl.h data.h \
  globalconst.h librnd/core/globalconst.h librnd/config.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h layer.h \
- librnd/core/attrib.h librnd/core/color.h \
+ attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -3980,7 +3980,7 @@
  librnd/core/compat_misc.h librnd/config.h \
  ../src_plugins/io_bxl/bxl_gram.h ../src_plugins/io_bxl/bxl.h data.h \
  globalconst.h librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -4033,7 +4033,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/compat_misc.h board.h \
- vtroutestyle.h librnd/core/attrib.h layer.h globalconst.h \
+ vtroutestyle.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
@@ -4076,7 +4076,7 @@
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h board.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -4116,7 +4116,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/error.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -4159,7 +4159,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_plugins/io_eagle/read.h board.h \
- vtroutestyle.h librnd/core/attrib.h layer.h globalconst.h \
+ vtroutestyle.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
@@ -4172,7 +4172,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -4216,7 +4216,7 @@
  librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  conf_core.h globalconst.h librnd/core/globalconst.h librnd/core/color.h \
- librnd/core/safe_fs.h board.h vtroutestyle.h librnd/core/attrib.h \
+ librnd/core/safe_fs.h board.h vtroutestyle.h attrib.h \
  layer.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -4256,7 +4256,7 @@
  librnd/core/rnd_bool.h board.h ../config.h librnd/config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -4271,7 +4271,7 @@
  ../src_plugins/io_hyp/parser.h librnd/core/rnd_bool.h board.h \
  ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -4305,7 +4305,7 @@
  librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_plugins/io_hyp/parser.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -4315,7 +4315,7 @@
  ../src_plugins/io_hyp/parser.h librnd/core/rnd_bool.h board.h \
  ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -4357,7 +4357,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -4391,7 +4391,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_plugins/io_kicad/write.h data.h \
- globalconst.h librnd/core/globalconst.h layer.h librnd/core/attrib.h \
+ globalconst.h librnd/core/globalconst.h layer.h attrib.h \
  librnd/core/color.h obj_common.h flag.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -4409,7 +4409,7 @@
 ../src_plugins/io_kicad/layertab.o: ../src_plugins/io_kicad/layertab.c \
  ../config.h librnd/config.h ../src_plugins/io_kicad/layertab.h layer.h \
  globalconst.h librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -4428,7 +4428,7 @@
  ../src_3rd/genvector/genvector_undef.h librnd/core/compat_misc.h board.h \
  ../src_3rd/genht/htsp.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -4464,7 +4464,7 @@
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h board.h vtroutestyle.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -4498,7 +4498,7 @@
  ../config.h librnd/config.h librnd/core/compat_misc.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -4545,7 +4545,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_plugins/io_kicad_legacy/write.h \
  data.h globalconst.h librnd/core/globalconst.h layer.h \
- librnd/core/attrib.h librnd/core/color.h obj_common.h flag.h \
+ attrib.h librnd/core/color.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -4563,7 +4563,7 @@
  librnd/core/compat_misc.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -4594,7 +4594,7 @@
 ../src_plugins/io_lihata/common.o: ../src_plugins/io_lihata/common.c \
  ../config.h librnd/config.h data.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -4643,7 +4643,7 @@
  ../src_3rd/genht/htsp.h ../src_3rd/libminuid/libminuid.h ../config.h \
  librnd/config.h board.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -4684,7 +4684,7 @@
  ../src_3rd/libminuid/libminuid.h ../src_3rd/libulzw/libulzw.h \
  ../config.h librnd/config.h board.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -4751,7 +4751,7 @@
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h board.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -4790,7 +4790,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -4811,7 +4811,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h buffer.h obj_common.h \
- flag.h librnd/core/attrib.h global_typedefs.h data_parent.h \
+ flag.h attrib.h global_typedefs.h data_parent.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h change.h board.h \
  vtroutestyle.h layer.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
@@ -4854,7 +4854,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_plugins/io_pcb/file.h board.h \
- vtroutestyle.h librnd/core/attrib.h layer.h globalconst.h \
+ vtroutestyle.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
@@ -4878,7 +4878,7 @@
  global_typedefs.h librnd/core/hid.h librnd/core/error.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  librnd/core/hidlib.h obj_line.h ../src_3rd/genlist/gendlist.h \
- obj_common.h librnd/core/attrib.h data_parent.h obj_poly.h \
+ obj_common.h attrib.h data_parent.h obj_poly.h \
  librnd/poly/polyarea.h route.h data.h layer.h obj_arc_list.h obj_arc.h \
  obj_line_list.h obj_poly_list.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h crosshair.h buffer.h \
@@ -4899,7 +4899,7 @@
  librnd/core/globalconst.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h librnd/core/color.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h \
@@ -4932,7 +4932,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/htip.h ../src_3rd/genht/hash.h \
  ../src_plugins/io_tedax/footprint.h data.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -4962,7 +4962,7 @@
 ../src_plugins/io_tedax/io_tedax.o: ../src_plugins/io_tedax/io_tedax.c \
  ../config.h librnd/config.h ../src_plugins/io_tedax/footprint.h data.h \
  globalconst.h librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -5004,7 +5004,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/htip.h ../src_3rd/genht/hash.h \
  ../src_plugins/io_tedax/stackup.h board.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -5026,7 +5026,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/htsi.h ../src_3rd/genht/hash.h \
  ../src_plugins/lib_netmap/placement.h board.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -5058,7 +5058,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -5084,7 +5084,7 @@
  ../src_plugins/io_tedax/tdrc_query.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -5107,7 +5107,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -5142,7 +5142,7 @@
  ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h data.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -5172,7 +5172,7 @@
  ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h board.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -5221,7 +5221,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
  librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- board.h vtroutestyle.h librnd/core/attrib.h layer.h globalconst.h \
+ board.h vtroutestyle.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -5235,7 +5235,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -5271,7 +5271,7 @@
  ../src_plugins/lib_compat_help/layer_compat.c ../config.h \
  librnd/config.h ../src_plugins/lib_compat_help/layer_compat.h layer.h \
  globalconst.h librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -5358,7 +5358,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -5394,7 +5394,7 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h board.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -5517,7 +5517,7 @@
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h librnd/core/event.h \
  librnd/core/hidlib.h conf_core.h globalconst.h librnd/core/globalconst.h \
- librnd/core/hidlib_conf.h board.h vtroutestyle.h librnd/core/attrib.h \
+ librnd/core/hidlib_conf.h board.h vtroutestyle.h attrib.h \
  layer.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -5640,7 +5640,7 @@
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
- vtroutestyle.h librnd/core/attrib.h \
+ vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -5766,7 +5766,7 @@
  librnd/core/hidlib.h librnd/core/hidlib_conf.h \
  ../src_plugins/lib_gtk_common/glue_common.h \
  ../src_plugins/lib_hid_pcbui/util.h data.h globalconst.h \
- librnd/core/globalconst.h layer.h librnd/core/attrib.h obj_common.h \
+ librnd/core/globalconst.h layer.h attrib.h obj_common.h \
  flag.h global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h obj_gfx_list.h \
@@ -5892,7 +5892,7 @@
  ../src_plugins/lib_gtk_common/bu_command.h librnd/core/event.h \
  librnd/core/hidlib.h ../src_plugins/lib_gtk_common/wt_preview.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h obj_gfx_list.h \
@@ -5917,7 +5917,7 @@
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h board.h \
- ../config.h vtroutestyle.h librnd/core/attrib.h layer.h globalconst.h \
+ ../config.h vtroutestyle.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -6136,7 +6136,7 @@
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h librnd/core/attrib.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -6164,7 +6164,7 @@
  ../src_plugins/lib_hid_pcbui/layer_menu.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -6204,7 +6204,7 @@
  librnd/core/color.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
  librnd/core/actions.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h librnd/core/attrib.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h attrib.h \
  layer.h globalconst.h librnd/core/globalconst.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -6248,7 +6248,7 @@
  ../src_plugins/lib_hid_pcbui/status.h ../src_plugins/lib_hid_pcbui/act.h \
  ../src_plugins/lib_hid_pcbui/util.c ../src_plugins/lib_hid_pcbui/util.h \
  data.h globalconst.h librnd/core/globalconst.h layer.h \
- librnd/core/attrib.h librnd/core/color.h obj_common.h flag.h \
+ attrib.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -6267,7 +6267,7 @@
  ../src_plugins/lib_hid_pcbui/routest.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -6296,7 +6296,7 @@
  ../src_3rd/genvector/genvector_undef.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -6327,7 +6327,7 @@
  ../src_3rd/genht/ht.h ../src_plugins/lib_netmap/netmap.h board.h \
  ../src_3rd/genht/htsp.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -6356,7 +6356,7 @@
  ../src_plugins/lib_netmap/placement.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -6381,7 +6381,7 @@
  ../src_plugins/lib_polyhelp/polyhelp.c ../config.h librnd/config.h \
  ../src_plugins/lib_polyhelp/polyhelp.h obj_poly.h \
  ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ librnd/core/globalconst.h attrib.h global_typedefs.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h data_parent.h \
  librnd/poly/polyarea.h polygon.h librnd/poly/rtree.h \
  ../src_3rd/genrtree/genrtree_api.h librnd/core/math_helper.h \
@@ -6420,7 +6420,7 @@
  ../src_plugins/lib_polyhelp/topoly.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -6455,7 +6455,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -6520,7 +6520,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h data.h globalconst.h \
- librnd/core/globalconst.h layer.h librnd/core/attrib.h \
+ librnd/core/globalconst.h layer.h attrib.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -6552,7 +6552,7 @@
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  ../src_plugins/millpath/toolpath.h layer.h globalconst.h \
- librnd/core/globalconst.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/globalconst.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -6573,7 +6573,7 @@
  ../config.h librnd/config.h ../src_3rd/qparse/qparse.h \
  ../src_plugins/millpath/toolpath.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -6614,7 +6614,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -6661,7 +6661,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h data.h globalconst.h \
- librnd/core/globalconst.h layer.h librnd/core/attrib.h \
+ librnd/core/globalconst.h layer.h attrib.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -6690,7 +6690,7 @@
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h librnd/core/attrib.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -6724,7 +6724,7 @@
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/genvector/vts0.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h layer.h globalconst.h \
+ librnd/core/unit.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -6753,7 +6753,7 @@
  ../src_plugins/polycombine/polycombine.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -6784,7 +6784,7 @@
  ../src_plugins/polystitch/polystitch.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -6818,7 +6818,7 @@
  ../src_3rd/genvector/genvector_undef.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -6841,7 +6841,7 @@
  board.h ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -6878,7 +6878,7 @@
  ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ librnd/core/globalconst.h attrib.h global_typedefs.h \
  data_parent.h librnd/core/color.h ../src_3rd/genht/ht.h \
  ../src_plugins/propedit/propsel.h librnd/core/compat_misc.h board.h \
  vtroutestyle.h librnd/core/unit.h layer.h obj_arc_list.h obj_arc.h \
@@ -6894,7 +6894,7 @@
 ../src_plugins/propedit/propsel.o: ../src_plugins/propedit/propsel.c \
  ../config.h librnd/config.h data.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -6935,7 +6935,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -6979,7 +6979,7 @@
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
  obj_common.h flag.h globalconst.h librnd/core/globalconst.h \
- librnd/core/attrib.h global_typedefs.h data_parent.h layer.h \
+ attrib.h global_typedefs.h data_parent.h layer.h \
  obj_common.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
  obj_text.h font.h ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h \
@@ -7003,7 +7003,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/compat_misc.h \
  ../src_3rd/libfungw/fungw_conv.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -7030,7 +7030,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h board.h \
  ../src_3rd/genht/htsp.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -7053,7 +7053,7 @@
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h board.h \
  ../src_3rd/genht/htsp.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -7087,7 +7087,7 @@
  ../src_3rd/genht/htsp.h ../src_3rd/genvector/vtp0.h \
  librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h data.h \
- globalconst.h librnd/core/globalconst.h layer.h librnd/core/attrib.h \
+ globalconst.h librnd/core/globalconst.h layer.h attrib.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -7116,7 +7116,7 @@
  librnd/core/compat_misc.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -7164,7 +7164,7 @@
  ../src_3rd/genvector/vti0.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h flag.h librnd/core/attrib.h global_typedefs.h data_parent.h \
+ obj_common.h flag.h attrib.h global_typedefs.h data_parent.h \
  layer.h obj_common.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -7178,7 +7178,7 @@
 ../src_plugins/query/query_exec.o: ../src_plugins/query/query_exec.c \
  ../config.h librnd/config.h data.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -7214,7 +7214,7 @@
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
  obj_common.h flag.h globalconst.h librnd/core/globalconst.h \
- librnd/core/attrib.h global_typedefs.h data_parent.h layer.h \
+ attrib.h global_typedefs.h data_parent.h layer.h \
  librnd/core/color.h obj_common.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -7234,7 +7234,7 @@
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
  obj_common.h flag.h globalconst.h librnd/core/globalconst.h \
- librnd/core/attrib.h global_typedefs.h data_parent.h layer.h \
+ attrib.h global_typedefs.h data_parent.h layer.h \
  librnd/core/color.h obj_common.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -7248,7 +7248,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -7280,7 +7280,7 @@
  ../src_plugins/renumber/renumberblock.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -7307,7 +7307,7 @@
 ../src_plugins/report/drill.o: ../src_plugins/report/drill.c ../config.h \
  librnd/config.h data.h globalconst.h librnd/core/globalconst.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h layer.h \
- librnd/core/attrib.h librnd/core/color.h \
+ attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -7348,7 +7348,7 @@
  ../src_3rd/genht/htsi.h ../src_3rd/genregex/regex_se.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h \
  ../src_plugins/query/fields_sphash.h obj_common.h flag.h \
- librnd/core/attrib.h global_typedefs.h data_parent.h layer.h \
+ attrib.h global_typedefs.h data_parent.h layer.h \
  obj_common.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -7380,13 +7380,13 @@
  ../src_plugins/rubberband_orig/fgeometry.c \
  ../src_plugins/rubberband_orig/fgeometry.h obj_common.h flag.h \
  globalconst.h librnd/core/globalconst.h librnd/config.h \
- librnd/core/attrib.h global_typedefs.h librnd/core/global_typedefs.h \
+ attrib.h global_typedefs.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h data_parent.h
 ../src_plugins/rubberband_orig/rubberband.o: \
  ../src_plugins/rubberband_orig/rubberband.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -7490,7 +7490,7 @@
  librnd/core/hid.h librnd/core/error.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/hidlib.h \
  obj_line.h ../src_3rd/genlist/gendlist.h obj_common.h flag.h \
- librnd/core/attrib.h data_parent.h obj_poly.h librnd/poly/polyarea.h \
+ attrib.h data_parent.h obj_poly.h librnd/poly/polyarea.h \
  route.h board.h vtroutestyle.h layer.h obj_arc_list.h obj_arc.h \
  obj_line_list.h obj_poly_list.h obj_text_list.h obj_text.h font.h \
  ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h layer_grp.h \
@@ -7521,7 +7521,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -7546,7 +7546,7 @@
  librnd/config.h ../src_plugins/shape/shape.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -7633,7 +7633,7 @@
  ../src_plugins/sketch_route/pointdata.h \
  ../src_plugins/sketch_route/sktypedefs.h \
  ../src_plugins/sketch_route/spoke.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/config.h librnd/core/attrib.h \
+ librnd/core/globalconst.h librnd/config.h attrib.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  data_parent.h ../src_plugins/sketch_route/ewire.h ../config.h \
  ../src_plugins/sketch_route/ewire_point.h \
@@ -7656,7 +7656,7 @@
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h librnd/core/attrib.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -7707,7 +7707,7 @@
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h ../src_plugins/sketch_route/spoke.h \
  ../src_plugins/sketch_route/sktypedefs.h obj_common.h flag.h \
- librnd/core/attrib.h global_typedefs.h data_parent.h \
+ attrib.h global_typedefs.h data_parent.h \
  ../src_plugins/sketch_route/ewire.h \
  ../src_plugins/sketch_route/ewire_point.h \
  ../src_plugins/sketch_route/cdt/point.h \
@@ -7721,7 +7721,7 @@
  ../src_plugins/sketch_route/pointdata.h \
  ../src_plugins/sketch_route/sktypedefs.h \
  ../src_plugins/sketch_route/spoke.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/config.h librnd/core/attrib.h \
+ librnd/core/globalconst.h librnd/config.h attrib.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  data_parent.h ../src_plugins/sketch_route/ewire.h ../config.h \
  ../src_plugins/sketch_route/ewire_point.h \
@@ -7740,7 +7740,7 @@
  ../src_3rd/genht/ht.h ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -7771,7 +7771,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -7801,7 +7801,7 @@
  librnd/core/math_helper.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -7840,7 +7840,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -7868,7 +7868,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -7897,7 +7897,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -7918,7 +7918,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -7937,7 +7937,7 @@
  ../src_plugins/tool_std/tool_insert.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -7967,7 +7967,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -7990,7 +7990,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -8016,7 +8016,7 @@
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -8050,7 +8050,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -8074,7 +8074,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -8098,7 +8098,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -8119,7 +8119,7 @@
  ../src_plugins/tool_std/tool_remove.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -8153,7 +8153,7 @@
  librnd/core/color.h librnd/core/actions.h librnd/core/hid.h \
  librnd/core/error.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h librnd/core/attrib.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h attrib.h \
  layer.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -8180,7 +8180,7 @@
  global_typedefs.h librnd/core/hid.h librnd/core/error.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  librnd/core/hidlib.h obj_line.h ../src_3rd/genlist/gendlist.h \
- obj_common.h flag.h librnd/core/attrib.h data_parent.h obj_poly.h \
+ obj_common.h flag.h attrib.h data_parent.h obj_poly.h \
  librnd/poly/polyarea.h route.h ../src_plugins/tool_std/tool_arc.h \
  ../src_plugins/tool_std/tool_arrow.h \
  ../src_plugins/tool_std/tool_buffer.h \
@@ -8207,7 +8207,7 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -8227,7 +8227,7 @@
  ../src_plugins/tool_std/tool_thermal.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -8263,7 +8263,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -8295,7 +8295,7 @@
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h change.h \
- board.h vtroutestyle.h librnd/core/attrib.h layer.h obj_common.h flag.h \
+ board.h vtroutestyle.h attrib.h layer.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -8490,7 +8490,7 @@ actions_pcb.o: actions_pcb.c ../config.h librnd/config.h \
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h librnd/core/attrib.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -8514,7 +8514,7 @@ actions_pcb.o: actions_pcb.c ../config.h librnd/config.h \
 board.o: board.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -8549,7 +8549,7 @@ brave.o: brave.c ../config.h librnd/config.h \
  ../src_3rd/genvector/genvector_undef.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -8577,7 +8577,7 @@ buffer.o: buffer.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h buffer.h obj_common.h flag.h librnd/core/attrib.h \
+ librnd/core/color.h buffer.h obj_common.h flag.h attrib.h \
  global_typedefs.h data_parent.h ../src_3rd/libfungw/fungw.h \
  ../src_3rd/genht/htpp.h board.h vtroutestyle.h layer.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
@@ -8611,7 +8611,7 @@ build_run.o: build_run.c ../config.h librnd/config.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -8640,7 +8640,7 @@ change.o: change.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h change.h board.h vtroutestyle.h librnd/core/attrib.h \
+ librnd/core/color.h change.h board.h vtroutestyle.h attrib.h \
  layer.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
@@ -8670,7 +8670,7 @@ change_act.o: change_act.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h data.h layer.h librnd/core/attrib.h obj_common.h \
+ librnd/core/color.h data.h layer.h attrib.h obj_common.h \
  flag.h global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -8691,7 +8691,7 @@ change_act.o: change_act.c ../config.h librnd/config.h conf_core.h \
 conf_act.o: conf_act.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -8742,7 +8742,7 @@ crosshair.o: crosshair.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -8765,7 +8765,7 @@ crosshair.o: crosshair.c ../config.h librnd/config.h conf_core.h \
 data.o: data.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -8804,7 +8804,7 @@ draw.o: draw.c ../config.h librnd/config.h conf_core.h librnd/core/conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h librnd/core/math_helper.h \
- board.h vtroutestyle.h librnd/core/attrib.h layer.h obj_common.h flag.h \
+ board.h vtroutestyle.h attrib.h layer.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -8830,7 +8830,7 @@ drc.o: drc.c ../config.h librnd/config.h librnd/core/actions.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
- vtroutestyle.h librnd/core/attrib.h \
+ vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -8853,7 +8853,7 @@ extobj.o: extobj.c ../config.h librnd/config.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h data.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -8889,7 +8889,7 @@ extobj_act.o: extobj_act.c ../config.h librnd/config.h \
  librnd/core/color.h funchash_core.h librnd/core/funchash.h \
  funchash_core_list.h librnd/core/hid_dad.h librnd/core/compat_misc.h \
  librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
- librnd/core/hid_dad_spin.h search.h layer.h librnd/core/attrib.h \
+ librnd/core/hid_dad_spin.h search.h layer.h attrib.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -8905,7 +8905,7 @@ extobj_act.o: extobj_act.c ../config.h librnd/config.h \
 file_act.o: file_act.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -8942,7 +8942,7 @@ find.o: find.c ../config.h librnd/config.h find.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h flag.h \
  globalconst.h librnd/core/globalconst.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h obj_subc_parent.h data.h layer.h \
- librnd/core/attrib.h librnd/core/color.h obj_common.h data_parent.h \
+ attrib.h librnd/core/color.h obj_common.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
@@ -8969,13 +8969,13 @@ flag.o: flag.c ../config.h librnd/config.h flag.h globalconst.h \
 flag_str.o: flag_str.c ../config.h librnd/config.h flag_str.h flag.h \
  globalconst.h librnd/core/globalconst.h librnd/core/compat_misc.h \
  librnd/core/misc_util.h librnd/core/unit.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h obj_common.h librnd/core/attrib.h \
+ librnd/core/rnd_bool.h obj_common.h attrib.h \
  global_typedefs.h data_parent.h
 font.o: font.c ../config.h librnd/config.h ../src_3rd/genht/hash.h font.h \
  ../src_3rd/genht/htip.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h obj_poly.h \
  ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ librnd/core/globalconst.h attrib.h global_typedefs.h \
  data_parent.h librnd/poly/polyarea.h obj_poly_list.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_arc.h obj_arc_list.h \
@@ -8996,7 +8996,7 @@ font.o: font.c ../config.h librnd/config.h ../src_3rd/genht/hash.h font.h \
 font_act.o: font_act.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9018,7 +9018,7 @@ font_act.o: font_act.c ../config.h librnd/config.h board.h \
 gui_act.o: gui_act.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9054,7 +9054,7 @@ gui_act.o: gui_act.c ../config.h librnd/config.h board.h \
 hid_cam.o: hid_cam.c ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h board.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9082,7 +9082,7 @@ hid_cam.o: hid_cam.c ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
 hidlib_pcb.o: hidlib_pcb.c board.h ../config.h librnd/config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9099,7 +9099,7 @@ ht_subc.o: ht_subc.c ../config.h librnd/config.h obj_subc_list.h \
  obj_subc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/libminuid/libminuid.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ librnd/core/globalconst.h attrib.h global_typedefs.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h data_parent.h \
  layer.h librnd/core/color.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_arc_list.h obj_arc.h \
@@ -9119,7 +9119,7 @@ idpath.o: idpath.c ../config.h librnd/config.h idpath.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ librnd/core/globalconst.h attrib.h global_typedefs.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h data_parent.h \
  ../src_3rd/genlist/gentdlist_impl.c board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h vtroutestyle.h librnd/core/unit.h layer.h \
@@ -9148,7 +9148,7 @@ insert.o: insert.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -9170,7 +9170,7 @@ intersect.o: intersect.c ../config.h librnd/config.h intersect.h \
 layer.o: layer.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9202,7 +9202,7 @@ layer_addr.o: layer_addr.c ../config.h librnd/config.h \
  ../src_3rd/genvector/genvector_undef.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -9224,7 +9224,7 @@ layer_addr.o: layer_addr.c ../config.h librnd/config.h \
 layer_grp.o: layer_grp.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9251,7 +9251,7 @@ layer_grp.o: layer_grp.c ../config.h librnd/config.h board.h \
 layer_ui.o: layer_ui.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9268,7 +9268,7 @@ layer_ui.o: layer_ui.c ../config.h librnd/config.h board.h \
 layer_vis.o: layer_vis.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9297,7 +9297,7 @@ main.o: main.c ../config.h librnd/config.h \
  ../src_3rd/libminuid/libminuid.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -9333,7 +9333,7 @@ main.o: main.c ../config.h librnd/config.h \
 main_act.o: main_act.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9372,7 +9372,7 @@ move.o: move.c ../config.h librnd/config.h conf_core.h librnd/core/conf.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -9395,7 +9395,7 @@ netlist.o: netlist.c ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h board.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -9427,7 +9427,7 @@ netlist_act.o: netlist_act.c ../config.h librnd/config.h \
  ../src_3rd/genregex/regex.h funchash_core.h librnd/core/funchash.h \
  funchash_core_list.h data.h globalconst.h librnd/core/globalconst.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h layer.h \
- librnd/core/attrib.h librnd/core/color.h \
+ attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -9455,7 +9455,7 @@ netlist_act.o: netlist_act.c ../config.h librnd/config.h \
 obj_arc.o: obj_arc.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9485,7 +9485,7 @@ obj_arc.o: obj_arc.c ../config.h librnd/config.h board.h \
  draw.h obj_arc_draw.h
 obj_arc_list.o: obj_arc_list.c obj_arc_list.h obj_common.h flag.h \
  globalconst.h librnd/core/globalconst.h librnd/config.h \
- librnd/core/attrib.h global_typedefs.h librnd/core/global_typedefs.h \
+ attrib.h global_typedefs.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h data_parent.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -9500,7 +9500,7 @@ obj_arc_ui.o: obj_arc_ui.c ../config.h librnd/config.h obj_arc_ui.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  librnd/core/hidlib.h obj_line.h ../src_3rd/genlist/gendlist.h \
  obj_common.h flag.h globalconst.h librnd/core/globalconst.h \
- librnd/core/attrib.h data_parent.h obj_poly.h librnd/poly/polyarea.h \
+ attrib.h data_parent.h obj_poly.h librnd/poly/polyarea.h \
  route.h obj_arc.h
 obj_common.o: obj_common.c ../config.h librnd/config.h conf_core.h \
  librnd/core/conf.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
@@ -9514,7 +9514,7 @@ obj_common.o: obj_common.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h flag_str.h flag.h librnd/core/error.h obj_common.h \
- librnd/core/attrib.h global_typedefs.h data_parent.h obj_arc_ui.h \
+ attrib.h global_typedefs.h data_parent.h obj_arc_ui.h \
  crosshair.h vtonpoint.h librnd/core/hid.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/hidlib.h \
  obj_line.h ../src_3rd/genlist/gendlist.h obj_poly.h \
@@ -9537,7 +9537,7 @@ obj_gfx.o: obj_gfx.c ../config.h librnd/config.h \
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h librnd/core/globalconst.h \
  librnd/core/actions.h ../src_3rd/libfungw/fungw.h \
- ../src_3rd/genht/htpp.h board.h vtroutestyle.h librnd/core/attrib.h \
+ ../src_3rd/genht/htpp.h board.h vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/color.h obj_common.h flag.h global_typedefs.h data_parent.h \
@@ -9561,7 +9561,7 @@ obj_gfx.o: obj_gfx.c ../config.h librnd/config.h \
  obj_hash.h draw.h obj_gfx_draw.h
 obj_gfx_list.o: obj_gfx_list.c obj_gfx_list.h obj_common.h flag.h \
  globalconst.h librnd/core/globalconst.h librnd/config.h \
- librnd/core/attrib.h global_typedefs.h librnd/core/global_typedefs.h \
+ attrib.h global_typedefs.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h data_parent.h obj_gfx.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -9570,7 +9570,7 @@ obj_line.o: obj_line.c ../config.h librnd/config.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h global_typedefs.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9610,7 +9610,7 @@ obj_line_drcenf.o: obj_line_drcenf.c ../config.h librnd/config.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/math_helper.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -9625,7 +9625,7 @@ obj_line_drcenf.o: obj_line_drcenf.c ../config.h librnd/config.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h find.h
 obj_line_list.o: obj_line_list.c obj_line_list.h obj_line.h \
  ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/config.h librnd/core/attrib.h \
+ librnd/core/globalconst.h librnd/config.h attrib.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  data_parent.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -9633,7 +9633,7 @@ obj_line_list.o: obj_line_list.c obj_line_list.h obj_line.h \
 obj_pinvia_therm.o: obj_pinvia_therm.c ../config.h librnd/config.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9651,7 +9651,7 @@ obj_pinvia_therm.o: obj_pinvia_therm.c ../config.h librnd/config.h \
 obj_poly.o: obj_poly.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9681,7 +9681,7 @@ obj_poly.o: obj_poly.c ../config.h librnd/config.h board.h \
  obj_subc_parent.h obj_hash.h obj_poly_draw_helper.c
 obj_poly_list.o: obj_poly_list.c obj_poly_list.h obj_poly.h ../config.h \
  librnd/config.h ../src_3rd/genlist/gendlist.h obj_common.h flag.h \
- globalconst.h librnd/core/globalconst.h librnd/core/attrib.h \
+ globalconst.h librnd/core/globalconst.h attrib.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  data_parent.h librnd/poly/polyarea.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -9689,7 +9689,7 @@ obj_poly_list.o: obj_poly_list.c obj_poly_list.h obj_poly.h ../config.h \
 obj_pstk.o: obj_pstk.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9722,7 +9722,7 @@ obj_pstk_act.o: obj_pstk_act.c ../config.h librnd/config.h obj_pstk.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ librnd/core/globalconst.h attrib.h global_typedefs.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h data_parent.h \
  layer.h librnd/core/color.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -9750,7 +9750,7 @@ obj_pstk_list.o: obj_pstk_list.c obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/config.h librnd/core/attrib.h \
+ librnd/core/globalconst.h librnd/config.h attrib.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  data_parent.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -9758,7 +9758,7 @@ obj_pstk_list.o: obj_pstk_list.c obj_pstk_list.h obj_pstk.h \
 obj_pstk_proto.o: obj_pstk_proto.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9789,7 +9789,7 @@ obj_pstk_proto.o: obj_pstk_proto.c ../config.h librnd/config.h board.h \
 obj_rat.o: obj_rat.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9818,7 +9818,7 @@ obj_rat.o: obj_rat.c ../config.h librnd/config.h board.h \
 obj_rat_list.o: obj_rat_list.c ../config.h librnd/config.h layer_grp.h \
  layer.h globalconst.h librnd/core/globalconst.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
- librnd/core/attrib.h librnd/core/color.h \
+ attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -9833,7 +9833,7 @@ obj_rat_list.o: obj_rat_list.c ../config.h librnd/config.h layer_grp.h \
 obj_subc.o: obj_subc.c ../config.h librnd/config.h \
  ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h buffer.h obj_common.h flag.h \
- globalconst.h librnd/core/globalconst.h librnd/core/attrib.h \
+ globalconst.h librnd/core/globalconst.h attrib.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  data_parent.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/htpp.h board.h vtroutestyle.h \
@@ -9862,7 +9862,7 @@ obj_subc.o: obj_subc.c ../config.h librnd/config.h \
  librnd/core/hidlib_conf.h librnd/core/hid_inlines.h extobj.h
 obj_subc_hash.o: obj_subc_hash.c ../config.h librnd/config.h data.h \
  globalconst.h librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -9886,7 +9886,7 @@ obj_subc_hash.o: obj_subc_hash.c ../config.h librnd/config.h data.h \
 obj_subc_list.o: obj_subc_list.c ../config.h librnd/config.h obj_subc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/libminuid/libminuid.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h obj_common.h flag.h \
- globalconst.h librnd/core/globalconst.h librnd/core/attrib.h \
+ globalconst.h librnd/core/globalconst.h attrib.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  data_parent.h layer.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -9906,7 +9906,7 @@ obj_term.o: obj_term.c ../config.h librnd/config.h \
  ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h change.h board.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h layer.h globalconst.h \
+ librnd/core/unit.h attrib.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
@@ -9931,7 +9931,7 @@ obj_text.o: obj_text.c ../config.h librnd/config.h rotate.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rotate.h librnd/core/compat_misc.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -9960,7 +9960,7 @@ obj_text.o: obj_text.c ../config.h librnd/config.h rotate.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h
 obj_text_list.o: obj_text_list.c obj_poly_list.h obj_poly.h ../config.h \
  librnd/config.h ../src_3rd/genlist/gendlist.h obj_common.h flag.h \
- globalconst.h librnd/core/globalconst.h librnd/core/attrib.h \
+ globalconst.h librnd/core/globalconst.h attrib.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  data_parent.h librnd/poly/polyarea.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
@@ -9982,7 +9982,7 @@ object_act.o: object_act.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h data.h layer.h \
- librnd/core/attrib.h obj_common.h flag.h global_typedefs.h data_parent.h \
+ attrib.h obj_common.h flag.h global_typedefs.h data_parent.h \
  obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h \
  obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
  obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h \
@@ -10005,7 +10005,7 @@ object_act.o: object_act.c ../config.h librnd/config.h conf_core.h \
 operation.o: operation.c ../config.h librnd/config.h operation.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -10037,13 +10037,13 @@ pixmap_pcb.o: pixmap_pcb.c ../config.h librnd/config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/pixmap.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/error.h \
  pixmap_pcb.h ../src_3rd/genht/htpp.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ librnd/core/globalconst.h attrib.h global_typedefs.h \
  data_parent.h
 plug_footprint.o: plug_footprint.c ../config.h librnd/config.h \
  plug_footprint.h vtlibrary.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h data.h globalconst.h \
  librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -10077,7 +10077,7 @@ plug_footprint_act.o: plug_footprint_act.c ../config.h librnd/config.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h board.h \
- vtroutestyle.h librnd/core/attrib.h \
+ vtroutestyle.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -10124,7 +10124,7 @@ plug_io.o: plug_io.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h change.h board.h \
- vtroutestyle.h librnd/core/attrib.h layer.h obj_common.h flag.h \
+ vtroutestyle.h attrib.h layer.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -10158,7 +10158,7 @@ polygon.o: polygon.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -10187,7 +10187,7 @@ polygon_act.o: polygon_act.c ../config.h librnd/config.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ attrib.h layer.h globalconst.h librnd/core/globalconst.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -10215,7 +10215,7 @@ rats_act.o: rats_act.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -10236,7 +10236,7 @@ rats_act.o: rats_act.c ../config.h librnd/config.h conf_core.h \
 rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  librnd/config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -10273,7 +10273,7 @@ remove.o: remove.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -10293,7 +10293,7 @@ remove.o: remove.c ../config.h librnd/config.h conf_core.h \
  obj_subc_op.h obj_pstk_op.h obj_gfx_op.h
 remove_act.o: remove_act.c ../config.h librnd/config.h data.h \
  globalconst.h librnd/core/globalconst.h librnd/core/global_typedefs.h \
- librnd/core/rnd_bool.h layer.h librnd/core/attrib.h librnd/core/color.h \
+ librnd/core/rnd_bool.h layer.h attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -10319,7 +10319,7 @@ remove_act.o: remove_act.c ../config.h librnd/config.h data.h \
 rotate.o: rotate.c ../config.h librnd/config.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -10359,7 +10359,7 @@ route.o: route.c ../config.h librnd/config.h librnd/core/compat_misc.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h librnd/core/math_helper.h \
- board.h vtroutestyle.h librnd/core/attrib.h layer.h obj_common.h flag.h \
+ board.h vtroutestyle.h attrib.h layer.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
  obj_poly.h librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -10380,7 +10380,7 @@ route_style.o: route_style.c ../config.h librnd/config.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/unit.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h route_style.h \
- vtroutestyle.h librnd/core/attrib.h librnd/core/error.h \
+ vtroutestyle.h attrib.h librnd/core/error.h \
  librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
@@ -10407,7 +10407,7 @@ search.o: search.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h actions_pcb.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -10436,7 +10436,7 @@ select.o: select.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
  librnd/core/color.h librnd/core/hidlib_conf.h board.h vtroutestyle.h \
- librnd/core/attrib.h layer.h obj_common.h flag.h global_typedefs.h \
+ attrib.h layer.h obj_common.h flag.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h ../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
@@ -10467,7 +10467,7 @@ select_act.o: select_act.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -10492,7 +10492,7 @@ stub_draw.o: stub_draw.c ../config.h librnd/config.h stub_draw.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  draw.h layer.h globalconst.h librnd/core/globalconst.h \
- librnd/core/attrib.h librnd/core/color.h \
+ attrib.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -10503,7 +10503,7 @@ stub_draw.o: stub_draw.c ../config.h librnd/config.h stub_draw.h \
  ../src_3rd/genht/htip.h ../src_3rd/genvector/gds_char.h obj_gfx_list.h \
  obj_gfx.h obj_text_draw.h
 thermal.o: thermal.c ../config.h librnd/config.h thermal.h obj_common.h \
- flag.h globalconst.h librnd/core/globalconst.h librnd/core/attrib.h \
+ flag.h globalconst.h librnd/core/globalconst.h attrib.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  data_parent.h operation.h layer.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -10547,7 +10547,7 @@ tool_logic.o: tool_logic.c ../config.h librnd/config.h \
  librnd/core/actions.h librnd/core/hid.h librnd/core/error.h \
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h librnd/core/tool.h \
- librnd/core/conf_hid.h board.h vtroutestyle.h librnd/core/attrib.h \
+ librnd/core/conf_hid.h board.h vtroutestyle.h attrib.h \
  layer.h globalconst.h librnd/core/globalconst.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
@@ -10564,7 +10564,7 @@ undo.o: undo.c ../config.h librnd/config.h \
  ../src_3rd/libuundo/uundo_debug.h ../src_3rd/libuundo/uundo.h board.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
- librnd/core/unit.h librnd/core/attrib.h \
+ librnd/core/unit.h attrib.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
@@ -10601,7 +10601,7 @@ undo_act.o: undo_act.c ../config.h librnd/config.h conf_core.h \
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h globalconst.h librnd/core/globalconst.h \
- librnd/core/color.h board.h vtroutestyle.h librnd/core/attrib.h layer.h \
+ librnd/core/color.h board.h vtroutestyle.h attrib.h layer.h \
  obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
  obj_arc.h ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
@@ -10623,7 +10623,7 @@ undo_old.o: undo_old.c ../config.h librnd/config.h \
  ../src_3rd/libuundo/uundo.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
  librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -10655,7 +10655,7 @@ view.o: view.c ../config.h librnd/config.h idpath.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/core/attrib.h global_typedefs.h \
+ librnd/core/globalconst.h attrib.h global_typedefs.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h data_parent.h \
  view.h librnd/core/unit.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h ../src_3rd/genlist/gentdlist_impl.c \
@@ -10678,7 +10678,7 @@ vtonpoint.o: vtonpoint.c ../config.h librnd/config.h vtonpoint.h \
 vtpadstack.o: vtpadstack.c obj_pstk.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h obj_common.h flag.h globalconst.h \
- librnd/core/globalconst.h librnd/config.h librnd/core/attrib.h \
+ librnd/core/globalconst.h librnd/config.h attrib.h \
  global_typedefs.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  data_parent.h layer.h librnd/core/color.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
@@ -10700,7 +10700,7 @@ vtpadstack_t.o: vtpadstack_t.c ../src_3rd/genvector/vtp0.h \
  globalconst.h librnd/core/globalconst.h librnd/poly/rtree.h \
  ../src_3rd/genrtree/genrtree_api.h librnd/core/math_helper.h \
  librnd/poly/polyarea.h librnd/poly/rtree2_compat.h layer.h \
- librnd/core/attrib.h obj_common.h data_parent.h obj_arc_list.h obj_arc.h \
+ attrib.h obj_common.h data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
@@ -10713,6 +10713,6 @@ vtr0.o: vtr0.c vtr0.h ../config.h librnd/config.h \
  ../src_3rd/genvector/genvector_impl.c
 vtroutestyle.o: vtroutestyle.c vtroutestyle.h librnd/core/unit.h \
  librnd/core/global_typedefs.h librnd/config.h librnd/core/rnd_bool.h \
- librnd/core/attrib.h ../src_3rd/genvector/genvector_impl.h \
+ attrib.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/genvector/genvector_impl.c
