@@ -578,7 +578,6 @@ int rnd_safe_append_vprintf(gds_t *string, rnd_safe_printf_t safe, const char *f
 				if (safe & RND_SAFEPRINT_COORD_ONLY)
 					return -1;
 				if (spec.array[0] == 'l') {
-					/* TODO: convert wchar to char and append it */
 					fprintf(stderr, "Internal error: appending %%ls is not supported\n");
 					abort();
 				}
