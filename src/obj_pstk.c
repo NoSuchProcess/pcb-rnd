@@ -1070,27 +1070,6 @@ int pcb_is_point_in_pstk(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, pcb_p
 	return pcb_is_point_in_pstk_(ps, x, y, radius, shp);
 }
 
-int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, rnd_coord_t min_clr)
-{
-	int n;
-	pcb_pstk_tshape_t *ts;
-
-	/* global clearance */
-	if (ps->Clearance > 0)
-		return pcb_obj_clearance(ps, polygon) < 2 * conf_core.design.bloat;
-
-	/* else check each shape; it's safest to run this check on the canonical
-	   transformed shape, that's always available */
-	ts = pcb_pstk_get_tshape_(ps->parent.data, ps->proto, 0);
-	for(n = 0; n < ts->len; n++) {
-		rnd_coord_t clr = RND_MAX(ts->shape[n].clearance, polygon->enforce_clearance);
-		if ((clr > 0) && (clr < 2 * conf_core.design.bloat))
-			return 1;
-	}
-
-	return 0;
-}
-
 /* Check the minimum distance between a hole's edge and a shape's edge and
    indicate error if it's smaller than min */
 static rnd_bool pcb_pstk_shape_hole_break(pcb_pstk_shape_t *shp, rnd_coord_t hdia, rnd_coord_t min)

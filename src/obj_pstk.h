@@ -160,9 +160,6 @@ void pcb_pstk_shape_free_poly(pcb_pstk_poly_t *poly);
 int pcb_pstk_near_box(pcb_pstk_t *ps, rnd_box_t *box, pcb_layer_t *layer);
 int pcb_is_point_in_pstk(rnd_coord_t x, rnd_coord_t y, rnd_coord_t radius, pcb_pstk_t *ps, pcb_layer_t *layer);
 
-/* Check if padstack has the proper clearance against polygon; returns 0 if everything's fine */
-int pcb_pstk_drc_check_clearance(pcb_pstk_t *ps, pcb_poly_t *polygon, rnd_coord_t min_clr);
-
 /* Check all possible local drc errors regarding to pad stacks - errors that
    depend only on the padstack, not on other objects. load err_minring and
    err_minhole with the relevant data for the report when ring or hole rules
