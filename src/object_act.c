@@ -60,82 +60,6 @@
 #include <librnd/core/actions.h>
 #include "view.h"
 
-static const char pcb_acts_Attributes[] = "Attributes(Layout|Layer|Element|Subc)\n" "Attributes(Layer,layername)";
-static const char pcb_acth_Attributes[] =
-	"Let the user edit the attributes of the layout, current or given\n"
-	"layer, or selected subcircuit.";
-/* DOC: attributes.html */
-static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	pcb_board_t *pcb = PCB_ACT_BOARD;
-	int id;
-	const char *layername = NULL;
-
-	RND_ACT_CONVARG(1, FGW_KEYWORD, Attributes, id = fgw_keyword(&argv[1]));
-	RND_ACT_MAY_CONVARG(2, FGW_STR, Attributes, layername = argv[2].val.str);
-	RND_ACT_IRES(0);
-
-	switch(id) {
-	case F_Layout:
-		rnd_actionl("propedit", "board", NULL);
-		break;
-
-	case F_Layer:
-		if (layername != NULL) {
-			char *tmp = rnd_concat("layer:", layername, NULL);
-			rnd_actionl("propedit", tmp, NULL);
-			free(tmp);
-		}
-		else
-			rnd_actionl("propedit", "layer", NULL);
-		break;
-
-	case F_Element:
-	case F_Subc:
-		{
-			int n_found = 0;
-			pcb_subc_t *s = NULL;
-			PCB_SUBC_LOOP(pcb->Data);
-			{
-				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc)) {
-					s = subc;
-					n_found++;
-				}
-			}
-			PCB_END_LOOP;
-			if (n_found > 1) {
-				rnd_message(RND_MSG_ERROR, "Too many subcircuits selected\n");
-				return 1;
-			}
-			if (n_found == 0) {
-				rnd_coord_t x, y;
-				void *ptrtmp;
-				rnd_hid_get_coords("Click on a subcircuit", &x, &y, 0);
-				if ((pcb_search_screen(x, y, PCB_OBJ_SUBC, &ptrtmp, &ptrtmp, &ptrtmp)) != PCB_OBJ_VOID)
-					s = (pcb_subc_t *)ptrtmp;
-				else {
-					rnd_message(RND_MSG_ERROR, "No subcircuit found there\n");
-					RND_ACT_IRES(-1);
-					return 0;
-				}
-			}
-
-			{
-				char *tmp = rnd_strdup_printf("object:%ld", s->ID);
-				rnd_actionl("propedit", tmp, NULL);
-				free(tmp);
-			}
-
-			break;
-		}
-
-	default:
-		RND_ACT_FAIL(Attributes);
-	}
-
-	return 0;
-}
-
 static const char pcb_acts_DisperseElements[] = "DisperseElements(All|Selected)";
 static const char pcb_acth_DisperseElements[] = "Disperses subcircuits.";
 
@@ -1180,7 +1104,6 @@ static fgw_error_t pcb_act_GfxMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 static rnd_action_t object_action_list[] = {
-	{"Attributes", pcb_act_Attributes, pcb_acth_Attributes, pcb_acts_Attributes},
 	{"DisperseElements", pcb_act_DisperseElements, pcb_acth_DisperseElements, pcb_acts_DisperseElements},
 	{"Flip", pcb_act_Flip, pcb_acth_Flip, pcb_acts_Flip},
 	{"MoveObject", pcb_act_MoveObject, pcb_acth_MoveObject, pcb_acts_MoveObject},
