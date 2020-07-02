@@ -1,3 +1,4 @@
+32109	configure	removing custom per hid attribute editor in favor of generic central propedit
 32103	configure	librnd DAD API transition (label cleanup)
 32099	configure	remove lesstif local dialog implementations: library, netlist
 31776	configure	new plugin: formula, for impedance calculations

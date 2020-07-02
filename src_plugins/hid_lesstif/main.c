@@ -3026,7 +3026,6 @@ int pplg_init_hid_lesstif(void)
 	lesstif_hid.supports_dad_text_markup = 0;
 
 	lesstif_hid.beep = lesstif_beep;
-	lesstif_hid.edit_attributes = lesstif_attributes_dialog;
 	lesstif_hid.point_cursor = PointCursor;
 	lesstif_hid.command_entry = lesstif_command_entry;
 	lesstif_hid.clip_set = ltf_clip_set;

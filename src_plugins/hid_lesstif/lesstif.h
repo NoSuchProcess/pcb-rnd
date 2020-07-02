@@ -49,7 +49,6 @@ extern void lesstif_pan_fixup(void);
 extern Pixel lesstif_parse_color(const rnd_color_t *value);
 extern void lesstif_update_layer_groups();
 extern void lesstif_update_status_line();
-extern void lesstif_attributes_dialog(rnd_hid_t *hid, const char *, rnd_attribute_list_t *);
 void *lesstif_attr_sub_new(Widget parent_box, rnd_hid_attribute_t *attrs, int n_attrs, void *caller_data);
 char *pcb_ltf_fileselect(rnd_hid_t *hid, const char *title, const char *descr, const char *default_file, const char *default_ext, const rnd_hid_fsd_filter_t *flt, const char *history_tag, rnd_hid_fsd_flags_t flags, rnd_hid_dad_subdialog_t *sub);
 rnd_hidlib_t *ltf_attr_get_dad_hidlib(void *hid_ctx);

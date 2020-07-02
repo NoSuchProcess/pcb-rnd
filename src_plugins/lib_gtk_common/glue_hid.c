@@ -16,7 +16,6 @@
 #include "ui_crosshair.h"
 #include "dlg_fileselect.h"
 #include "dlg_attribute.h"
-#include "dlg_attributes.h"
 #include "util_listener.h"
 #include "util_timer.h"
 #include "util_watch.h"
@@ -292,12 +291,6 @@ static void *ghid_attr_dlg_new_(rnd_hid_t *hid, const char *id, rnd_hid_attribut
 static void ghid_beep(rnd_hid_t *hid)
 {
 	gdk_beep();
-}
-
-static void ghid_attributes(rnd_hid_t *hid, const char *owner, rnd_attribute_list_t *attrs)
-{
-	pcb_gtk_t *gctx = hid->hid_data;
-	pcb_gtk_dlg_attributes(gctx->port.top_window, owner, attrs);
 }
 
 static void PointCursor(rnd_hid_t *hid, rnd_bool grabbed)
@@ -696,7 +689,6 @@ void ghid_glue_hid_init(rnd_hid_t *dst)
 	dst->dock_leave = ghid_dock_leave;
 
 	dst->beep = ghid_beep;
-	dst->edit_attributes = ghid_attributes;
 	dst->point_cursor = PointCursor;
 	dst->benchmark = ghid_benchmark;
 

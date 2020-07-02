@@ -440,7 +440,7 @@ struct rnd_hid_s {
 	/* Something to alert the user.  */
 	void (*beep)(rnd_hid_t *hid);
 
-	void (*edit_attributes)(rnd_hid_t *hid, const char *owner, rnd_attribute_list_t *attrlist);
+	void (*placeholder1)(rnd_hid_t *, const char *, rnd_attribute_list_t *);
 
 	/* Creates a new menu and/or submenus
 	 * menu_path is a / separated path to the new menu (parents are silently created).
