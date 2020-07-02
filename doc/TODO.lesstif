@@ -9,6 +9,10 @@
 		- BUG: { s s } doesn't hide unused expressions, issues 94 lines to stderr Warning: Null child found in argument list to unmanage [report: Miloh]
 	- FEATURE: lesstif DAD support for toggle pushbuttons (with label or picture, see existing infra) -> motif does not support this!
 
+**** lesstif low prio ****
+
+- FEATURE: lesstif: implement/enable local grid in lesstif (menu option is disabled)
+
 
 **** tree table detailed bugreports ****
 
