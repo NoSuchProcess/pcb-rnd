@@ -7,7 +7,6 @@
 #include <librnd/config.h>
 #include <librnd/core/error.h>
 #include <librnd/core/global_typedefs.h>
-#include <librnd/core/attrib.h>
 #include <librnd/core/box.h>
 
 /* attribute dialog properties */
@@ -440,7 +439,7 @@ struct rnd_hid_s {
 	/* Something to alert the user.  */
 	void (*beep)(rnd_hid_t *hid);
 
-	void (*placeholder1)(rnd_hid_t *, const char *, rnd_attribute_list_t *);
+	void (*placeholder1)(rnd_hid_t *, const char *, void *);
 
 	/* Creates a new menu and/or submenus
 	 * menu_path is a / separated path to the new menu (parents are silently created).

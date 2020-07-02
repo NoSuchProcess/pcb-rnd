@@ -41,7 +41,6 @@
 #include <librnd/core/hid_init.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/event.h>
-#include <librnd/core/attrib.h>
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/tool.h>
 
