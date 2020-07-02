@@ -69,44 +69,26 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int id;
-	const char *layername;
-	char *buf;
+	const char *layername = NULL;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, Attributes, id = fgw_keyword(&argv[1]));
-	RND_ACT_MAY_CONVARG(1, FGW_STR, Attributes, layername = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, Attributes, layername = argv[2].val.str);
 	RND_ACT_IRES(0);
-
-	if (!rnd_gui->edit_attributes) {
-		rnd_message(RND_MSG_ERROR, "This GUI doesn't support Attribute Editing\n");
-		return FGW_ERR_UNKNOWN;
-	}
 
 	switch(id) {
 	case F_Layout:
-		{
-			rnd_gui->edit_attributes(rnd_gui, "Layout Attributes", &(pcb->Attributes));
-			return 0;
-		}
+		rnd_actionl("propedit", "board", NULL);
+		break;
 
 	case F_Layer:
-		{
-			pcb_layer_t *layer = PCB_CURRLAYER(pcb);
-			if (layername) {
-				int i;
-				layer = NULL;
-				for (i = 0; i < pcb_max_layer(pcb); i++)
-					if (strcmp(pcb->Data->Layer[i].name, layername) == 0) {
-						layer = &(pcb->Data->Layer[i]);
-						break;
-					}
-				if (layer == NULL) {
-					rnd_message(RND_MSG_ERROR, "No layer named %s\n", layername);
-					return 1;
-				}
-			}
-			pcb_layer_edit_attrib(layer);
-			return 0;
+		if (layername != NULL) {
+			char *tmp = rnd_concat("layer:", layername, NULL);
+			rnd_actionl("propedit", tmp, NULL);
+			free(tmp);
 		}
+		else
+			rnd_actionl("propedit", "layer", NULL);
+		break;
 
 	case F_Element:
 	case F_Subc:
@@ -138,13 +120,12 @@ static fgw_error_t pcb_act_Attributes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 			}
 
-			if (s->refdes != NULL)
-				buf = rnd_strdup_printf("Subcircuit %s Attributes", s->refdes);
-			else
-				buf = rnd_strdup("Unnamed Subcircuit's Attributes");
+			{
+				char *tmp = rnd_strdup_printf("object:%ld", s->ID);
+				rnd_actionl("propedit", tmp, NULL);
+				free(tmp);
+			}
 
-			rnd_gui->edit_attributes(rnd_gui, buf, &(s->Attributes));
-			free(buf);
 			break;
 		}
 
