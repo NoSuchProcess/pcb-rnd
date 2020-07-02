@@ -1,3 +1,17 @@
+**** lesstif blockers ****
+
+- lesstif blockers:
+	- BUG: lesstif hbox/vbox allocation issues: test with bug_files/ltf_fillbox/ patches applied, with the fontsel action; opening it multiple times will randomly show or hide the button
+		- hvbox: fontsel, about dialog: resize to smaller doesn't re-layout
+		- tabbed: redisplay bug in the about box (box opens broken, first tab switch fixes it)
+		- re-enable HPANE: pstklib(), netlistdialog(), propedit(), BrowseScripts, preferences dialog config tab
+		- tree-table bugs; see TOTO.tt; preferences dialog: only when tree table is enabled: library, layers tabs are unusable
+		- BUG: { s s } doesn't hide unused expressions, issues 94 lines to stderr Warning: Null child found in argument list to unmanage [report: Miloh]
+	- FEATURE: lesstif DAD support for toggle pushbuttons (with label or picture, see existing infra) -> motif does not support this!
+
+
+**** tree table detailed bugreports ****
+
 1. [critical] handling resize
 
 pcb-rnd does rely on dynamic layouts, which means widgets need to be able 
