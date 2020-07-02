@@ -18,6 +18,7 @@
 - BUG: locally debian packaged version: run ./pcb-rnd from src with no X, exit -> tons of warnings
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
+- BUG: irc client: doesn't indicate when disconnected [report: Erich]
 
 2. For later releases ===============================================================================
 - CLEANUP: TODO27: undo's removed list shouldn't depend on pobject IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
