@@ -202,7 +202,7 @@ rnd_coord_t ems_layergrp_thickness(pcb_layergrp_t *grp)
 static void find_origin_bump(void *ctx_, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)
 {
 	wctx_t *ctx = ctx_;
-	if (rnd_attribute_get(&line->Attributes, "openems-origin") != NULL) {
+	if (pcb_attribute_get(&line->Attributes, "openems-origin") != NULL) {
 		ctx->ox = (line->BoundingBox.X1 + line->BoundingBox.X2) / 2;
 		ctx->oy = (line->BoundingBox.Y1 + line->BoundingBox.Y2) / 2;
 	}
@@ -251,7 +251,7 @@ static void print_lparm(wctx_t *ctx, pcb_layergrp_t *grp, const char *attr, int 
 TODO(": this needs layer group attributes in core (planned for lihata v5)")
 #if 0
 TODO(": try openems::attr first - make a new core call for prefixed get, this will be a real common pattern")
-	const char *val = rnd_attribute_get(&grp->Attributes, attr);
+	const char *val = pcb_attribute_get(&grp->Attributes, attr);
 
 	if (val != NULL) {
 		/* specified by a layer group attribute: overrides anything else */
@@ -394,7 +394,7 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rn
 	double resistance = ctx->options[HA_def_port_res].dbl;
 	int act = 1;
 
-	att = rnd_attribute_get(&o->Attributes, "openems::resistance");
+	att = pcb_attribute_get(&o->Attributes, "openems::resistance");
 	if (att != NULL) {
 		double tmp = strtod(att, &end);
 		if (*end == '\0')
@@ -403,7 +403,7 @@ static void openems_vport_write(wctx_t *ctx, pcb_any_obj_t *o, rnd_coord_t x, rn
 			rnd_message(RND_MSG_WARNING, "Ignoring invalid openems::resistance value for port %s: '%s' (must be a number without suffix)\n", port_name, att);
 	}
 
-	att = rnd_attribute_get(&o->Attributes, "openems::active");
+	att = pcb_attribute_get(&o->Attributes, "openems::active");
 	if (att != NULL) {
 		if (rnd_strcasecmp(att, "true") == 0)
 			act = 1;
@@ -487,7 +487,7 @@ static void openems_wr_testpoints(wctx_t *ctx, pcb_data_t *data)
 		if (o->type == PCB_OBJ_SUBC)
 			openems_wr_testpoints(ctx, ((pcb_subc_t *)o)->data);
 
-		port_name = rnd_attribute_get(&o->Attributes, "openems::vport");
+		port_name = pcb_attribute_get(&o->Attributes, "openems::vport");
 		if (port_name == NULL)
 			continue;
 
@@ -519,7 +519,7 @@ static void openems_wr_testpoints(wctx_t *ctx, pcb_data_t *data)
 
 TODO(": check if there is copper object on hid2 at x;y")
 
-					if (rnd_attribute_get(&o->Attributes, "openems::vport-reverse") == NULL)
+					if (pcb_attribute_get(&o->Attributes, "openems::vport-reverse") == NULL)
 						openems_vport_write(ctx, (pcb_any_obj_t *)ps, ps->x, ps->y, gid1, gid2, port_name);
 					else
 						openems_vport_write(ctx, (pcb_any_obj_t *)ps, ps->x, ps->y, gid2, gid1, port_name);

@@ -196,7 +196,7 @@ void pcb_bxl_add_property(pcb_bxl_ctx_t *ctx, pcb_any_obj_t *obj, const char *ke
 	tmp = rnd_strdup(keyval);
 	tmp[sep-keyval] = '\0';
 	val = tmp+(sep-keyval)+1;
-	rnd_attribute_put(&obj->Attributes, tmp, val);
+	pcb_attribute_put(&obj->Attributes, tmp, val);
 	free(tmp);
 }
 
@@ -361,12 +361,12 @@ void pcb_bxl_pad_end(pcb_bxl_ctx_t *ctx)
 
 	if (ps != NULL) {
 		if (ctx->state.pin_name != NULL)
-			rnd_attribute_put(&ps->Attributes, "name", ctx->state.pin_name);
+			pcb_attribute_put(&ps->Attributes, "name", ctx->state.pin_name);
 
 		if (ctx->state.pin_number >= 0) {
 			char tmp[32];
 			sprintf(tmp, "%d", ctx->state.pin_number);
-			rnd_attribute_put(&ps->Attributes, "term", tmp);
+			pcb_attribute_put(&ps->Attributes, "term", tmp);
 		}
 	}
 	else
@@ -442,7 +442,7 @@ void pcb_bxl_add_text(pcb_bxl_ctx_t *ctx)
 			ctx->state.text_str = rnd_strdup("%a.parent.refdes%");
 			ctx->state.is_visible = 1;
 		}
-		rnd_attribute_put(&ctx->subc->Attributes, ctx->state.attr_key, ctx->state.attr_val);
+		pcb_attribute_put(&ctx->subc->Attributes, ctx->state.attr_key, ctx->state.attr_val);
 	}
 
 	if (ctx->state.text_style->char_width == 0)

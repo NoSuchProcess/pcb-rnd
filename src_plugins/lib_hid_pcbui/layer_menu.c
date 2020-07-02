@@ -171,7 +171,7 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 
 static void custom_layer_attr_key(pcb_layer_t *l, rnd_layer_id_t lid, const char *attrname, const char *menu_prefix, const char *action_prefix, rnd_menu_prop_t *keyprops, char *path, char *end, int len_avail)
 {
-	char *key = rnd_attribute_get(&l->Attributes, attrname);
+	char *key = pcb_attribute_get(&l->Attributes, attrname);
 	if (key != NULL) {
 		keyprops->accel = key;
 		rnd_snprintf(end, len_avail, "%s %ld:%s", menu_prefix, lid+1, l->name);

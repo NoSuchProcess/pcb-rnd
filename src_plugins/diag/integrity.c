@@ -73,8 +73,8 @@ static void chk_layers(const char *whose, pcb_data_t *data, pcb_parenttype_t pt,
 
 static void chk_term(const char *whose, pcb_any_obj_t *obj)
 {
-	const char *aterm = rnd_attribute_get(&obj->Attributes, "term");
-	const char *s_intconn = rnd_attribute_get(&obj->Attributes, "intconn");
+	const char *aterm = pcb_attribute_get(&obj->Attributes, "term");
+	const char *s_intconn = pcb_attribute_get(&obj->Attributes, "intconn");
 
 	if (pcb_obj_id_invalid(aterm))
 		rnd_message(RND_MSG_ERROR, CHK "%s %ld has term attribute '%s' with invalid characters\n", whose, obj->ID, aterm);
@@ -108,7 +108,7 @@ static void chk_term(const char *whose, pcb_any_obj_t *obj)
 
 static void chk_subc_cache(pcb_subc_t *subc)
 {
-	const char *arefdes = rnd_attribute_get(&subc->Attributes, "refdes");
+	const char *arefdes = pcb_attribute_get(&subc->Attributes, "refdes");
 
 	if (pcb_obj_id_invalid(arefdes))
 		rnd_message(RND_MSG_ERROR, CHK "subc %ld has refdes attribute '%s' with invalid characters\n", subc->ID, arefdes);

@@ -312,7 +312,7 @@ TODO("textrot: can we exprot rotation with %f?")
 	PCB_END_LOOP;
 
 	PCB_SUBC_LOOP(PCB->Data) {
-		const char *fp = rnd_attribute_get(&subc->Attributes, "footprint");
+		const char *fp = pcb_attribute_get(&subc->Attributes, "footprint");
 		if ((fp != NULL) && have_lib && (htsi_get(&lib_names, fp))) {
 			rnd_coord_t x, y;
 			double rot = 0.0;

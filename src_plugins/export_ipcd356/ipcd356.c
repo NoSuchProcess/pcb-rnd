@@ -71,7 +71,7 @@ typedef struct {
 
 static int getattr(pcb_any_obj_t *o, const char *key)
 {
-	char *val = rnd_attribute_get(&o->Attributes, key);
+	char *val = pcb_attribute_get(&o->Attributes, key);
 	if (val == NULL) return 0;
 	if (rnd_strcasecmp(val, "yes") == 0) return 1;
 	return 0;

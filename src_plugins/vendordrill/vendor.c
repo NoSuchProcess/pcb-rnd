@@ -549,7 +549,7 @@ TODO(": these 3 loops should be wrapped in a single loop that iterates over attr
 		}
 	}
 	if (noskip) {
-		const char *vl = rnd_attribute_get(&subc->Attributes, "value");
+		const char *vl = pcb_attribute_get(&subc->Attributes, "value");
 		for (i = 0; i < n_value; i++) {
 			if ((RND_NSTRCMP(RND_UNKNOWN(vl), ignore_value[i]) == 0)
 					|| rematch(ignore_value[i], RND_UNKNOWN(vl))) {
@@ -560,7 +560,7 @@ TODO(": these 3 loops should be wrapped in a single loop that iterates over attr
 	}
 
 	if (noskip) {
-		const char *fp = rnd_attribute_get(&subc->Attributes, "footprint");
+		const char *fp = pcb_attribute_get(&subc->Attributes, "footprint");
 		for (i = 0; i < n_descr; i++) {
 			if ((RND_NSTRCMP(RND_UNKNOWN(fp), ignore_descr[i]) == 0)
 					|| rematch(ignore_descr[i], RND_UNKNOWN(fp))) {

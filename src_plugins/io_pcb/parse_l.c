@@ -2815,7 +2815,7 @@ int io_pcb_ParsePCB(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, 
 	}
 	if (retval == 0) {
 		/* restore loader so the next save will use the same units */
-		const char *loader = rnd_attribute_get(&PCB->Attributes, "PCB::loader");
+		const char *loader = pcb_attribute_get(&PCB->Attributes, "PCB::loader");
 		if (loader != NULL) {
 			pcb_find_io_t f;
 			int len;

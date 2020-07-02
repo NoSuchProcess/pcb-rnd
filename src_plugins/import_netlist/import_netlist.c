@@ -134,7 +134,7 @@ static int ReadNetlist(const char *filename)
 			else {
 				if (kind == 1 && strchr(temp, '-') == NULL) {
 					kind++;
-					rnd_attribute_put(&net->Attributes, "style", temp);
+					pcb_attribute_put(&net->Attributes, "style", temp);
 				}
 				else {
 					pcb_net_term_get_by_pinname(net, temp, PCB_NETA_ALLOC);

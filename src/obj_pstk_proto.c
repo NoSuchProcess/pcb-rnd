@@ -452,7 +452,7 @@ TODO("layer: make a real scoring mechanism here instead of ly1, ly2, ly3")
 				continue;
 		}
 		if (src->term != NULL)
-			rnd_attribute_put(&no->Attributes, "term", src->term);
+			pcb_attribute_put(&no->Attributes, "term", src->term);
 	}
 
 	if (remove_src) {

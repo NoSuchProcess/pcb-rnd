@@ -84,7 +84,7 @@ extern int yyElemFixLayers;
 
 static char *layer_group_string;
 
-static rnd_attribute_list_t *attr_list;
+static pcb_attribute_list_t *attr_list;
 
 int yyerror(const char *s);
 int yylex();
@@ -1034,7 +1034,7 @@ pin_hi_format
 				pcb_pstk_t *pin = io_pcb_element_pin_new(yysubc, NU ($3) + yysubc_ox,
 					NU ($4) + yysubc_oy, NU ($5), NU ($6), NU ($7), NU ($8), $9,
 					$10, $11);
-				rnd_attrib_compat_set_intconn(&pin->Attributes, yy_intconn);
+				pcb_attrib_compat_set_intconn(&pin->Attributes, yy_intconn);
 				free ($9);
 				free ($10);
 			}
@@ -1107,7 +1107,7 @@ pad_hi_format
 					NU ($5) + yysubc_ox,
 					NU ($6) + yysubc_oy, NU ($7), NU ($8), NU ($9),
 					$10, $11, $12);
-				rnd_attrib_compat_set_intconn(&pad->Attributes, yy_intconn);
+				pcb_attrib_compat_set_intconn(&pad->Attributes, yy_intconn);
 				free ($10);
 				free ($11);
 			}
@@ -1246,7 +1246,7 @@ net
 			{
 				currnet = pcb_net_get(yyPCB, &yyPCB->netlist[PCB_NETLIST_INPUT], $3, PCB_NETA_ALLOC);
 				if (($4 != NULL) && (*$4 != '\0'))
-					rnd_attribute_put(&currnet->Attributes, "style", $4);
+					pcb_attribute_put(&currnet->Attributes, "style", $4);
 				free ($3);
 				free ($4);
 			}
@@ -1321,11 +1321,11 @@ attribute
 		: T_ATTRIBUTE '(' STRING STRING ')'
 			{
 				char *old_val, *key = $3, *val = $4 ? $4 : (char *)"";
-				old_val = rnd_attribute_get(attr_list, key);
+				old_val = pcb_attribute_get(attr_list, key);
 				if (old_val != NULL)
 					rnd_message(RND_MSG_ERROR, "mutliple values for attribute %s: '%s' and '%s' - ignoring '%s'\n", key, old_val, val, val);
 				else
-					rnd_attribute_put(attr_list, key, val);
+					pcb_attribute_put(attr_list, key, val);
 				free(key);
 				free(val);
 			}

@@ -205,7 +205,7 @@ long int pcb_create_ID_get(void);
    is not NULL, it is the source object - be smart about extobj and other
    attribute side effects (some of those will not be copied or will be
    changed); src_obj should be the objec src attributes are coming from */
-void pcb_obj_add_attribs(pcb_any_obj_t *obj, const rnd_attribute_list_t *src, pcb_any_obj_t *src_obj);
+void pcb_obj_add_attribs(pcb_any_obj_t *obj, const pcb_attribute_list_t *src, pcb_any_obj_t *src_obj);
 
 /* ---------------------------------------------------------------------------
  * Do not change the following definitions even if they're not very
@@ -223,7 +223,7 @@ void pcb_obj_add_attribs(pcb_any_obj_t *obj, const rnd_attribute_list_t *src, pc
 	pcb_parenttype_t     parent_type; \
 	pcb_parent_t         parent; \
 	rnd_box_t            bbox_naked; \
-	rnd_attribute_list_t Attributes \
+	pcb_attribute_list_t Attributes \
 
 #define PCB_ANY_PRIMITIVE_FIELDS \
 	PCB_ANY_OBJ_FIELDS; \
@@ -264,7 +264,7 @@ rnd_coord_t pcb_obj_clearance_at(pcb_board_t *pcb, const pcb_any_obj_t *o, pcb_l
 unsigned char *pcb_obj_common_get_thermal(pcb_any_obj_t *obj, unsigned long lid, rnd_bool_t alloc);
 
 /* Update cached attributes (->term) */
-void pcb_obj_attrib_post_change(rnd_attribute_list_t *list, const char *name, const char *value);
+void pcb_obj_attrib_post_change(pcb_attribute_list_t *list, const char *name, const char *value);
 
 /* Returns the first invalid character of an ID (terminal, refdes) or NULL */
 const char *pcb_obj_id_invalid(const char *id);
@@ -326,7 +326,7 @@ void pcb_obj_update_bbox(pcb_board_t *pcb, pcb_any_obj_t *obj);
 do { \
 	if (obj->noexport) { \
 		if (info->exporting) { \
-			if (!obj->noexport_named || (rnd_attribute_get(&obj->Attributes, info->noexport_name) != NULL)) { \
+			if (!obj->noexport_named || (pcb_attribute_get(&obj->Attributes, info->noexport_name) != NULL)) { \
 				inhibit; \
 			} \
 		} \

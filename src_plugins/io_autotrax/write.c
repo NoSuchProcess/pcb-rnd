@@ -527,8 +527,8 @@ TODO("do not hardwire these layers, even if the autotrax format hardwires them -
 		silk_layer = 7;
 
 	fprintf(ctx->f, "COMP\r\n%s\r\n", or_empty(subc->refdes));
-	fprintf(ctx->f, "%s\r\n", or_empty(rnd_attribute_get(&subc->Attributes, "footprint")));
-	fprintf(ctx->f, "%s\r\n", or_empty(rnd_attribute_get(&subc->Attributes, "value")));
+	fprintf(ctx->f, "%s\r\n", or_empty(pcb_attribute_get(&subc->Attributes, "footprint")));
+	fprintf(ctx->f, "%s\r\n", or_empty(pcb_attribute_get(&subc->Attributes, "value")));
 	rnd_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos, silk_layer); /* designator */
 	rnd_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos2, silk_layer); /* pattern */
 	rnd_fprintf(ctx->f, "%.0ml %.0ml 100 0 10 %d\r\n", xPos, yPos3, silk_layer); /* comment field */

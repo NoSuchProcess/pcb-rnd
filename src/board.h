@@ -84,12 +84,12 @@ struct pcb_board_s {
 	pcb_netlist_t netlist[PCB_NUM_NETLISTS];
 	/* htsp_t netlist_subc[PCB_NUM_NETLISTS]; hierarchic netlists */
 	pcb_ratspatch_line_t *NetlistPatches, *NetlistPatchLast;
-	rnd_attribute_list_t Attributes;
+	pcb_attribute_list_t Attributes;
 
 	pcb_data_t *Data;                               /* entire database */
 	rnd_bool is_footprint;                          /* If set, the user has loaded a footprint, not a pcb. */
 
-	const rnd_attribute_list_t *pen_attr;
+	const pcb_attribute_list_t *pen_attr;
 
 /* netlist states */
 	int netlist_frozen;                             /* counter */

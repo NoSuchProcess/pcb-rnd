@@ -595,7 +595,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 		/* just in case a bad file saved file is loaded */
 
 		/* geda/pcb compatibility: use attribute PCB::grid::unit as unit, if present */
-		unit_suffix = rnd_attrib_get(PCB, "PCB::grid::unit");
+		unit_suffix = pcb_attrib_get(PCB, "PCB::grid::unit");
 		if (unit_suffix && *unit_suffix) {
 			lht_node_t *nat = rnd_conf_lht_get_at(RND_CFR_DESIGN, "editor/grid_unit", 0);
 			if (nat == NULL) {

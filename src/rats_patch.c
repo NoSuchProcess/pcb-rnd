@@ -296,9 +296,9 @@ static int rats_patch_apply_attrib(pcb_board_t *pcb, pcb_ratspatch_line_t *patch
 	if (net == NULL)
 		return 1;
 	if ((patch->arg2.attrib_val == NULL) || (*patch->arg2.attrib_val == '\0'))
-		rnd_attribute_remove(&net->Attributes, patch->arg1.attrib_name);
+		pcb_attribute_remove(&net->Attributes, patch->arg1.attrib_name);
 	else
-		rnd_attribute_put(&net->Attributes, patch->arg1.attrib_name, patch->arg2.attrib_val);
+		pcb_attribute_put(&net->Attributes, patch->arg1.attrib_name, patch->arg2.attrib_val);
 	return 0;
 }
 

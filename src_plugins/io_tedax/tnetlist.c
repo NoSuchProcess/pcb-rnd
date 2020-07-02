@@ -189,7 +189,7 @@ int tedax_net_fsave(pcb_board_t *pcb, const char *netlistid, FILE *f)
 	}
 
 	PCB_SUBC_LOOP(pcb->Data) {
-		rnd_attribute_t *a;
+		pcb_attribute_t *a;
 
 		if ((subc->refdes == NULL) || (*subc->refdes == '\0') || PCB_FLAG_TEST(PCB_FLAG_NONETLIST, subc))
 			continue;

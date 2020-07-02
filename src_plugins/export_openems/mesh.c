@@ -358,7 +358,7 @@ static int mesh_gen_obj(pcb_mesh_t *mesh, pcb_layer_t *layer, pcb_mesh_dir_t dir
 	gdl_iterator_t it;
 
 	padstacklist_foreach(&data->padstack, &it, ps) {
-		if (rnd_attribute_get(&ps->Attributes, "openems::vport") != 0) {
+		if (pcb_attribute_get(&ps->Attributes, "openems::vport") != 0) {
 			switch(dir) {
 				case PCB_MESH_HORIZONTAL: mesh_add_edge(mesh, dir, ps->y); break;
 				case PCB_MESH_VERTICAL:   mesh_add_edge(mesh, dir, ps->x); break;

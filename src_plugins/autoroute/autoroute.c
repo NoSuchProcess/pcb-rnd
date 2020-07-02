@@ -1068,7 +1068,7 @@ static void CreateRouteData_nets(routedata_t *rd, vtp0_t *layergroupboxes)
 		size_t sni;
 		routebox_t *last_in_net = NULL;
 		pcb_net_t *net = e->value;
-		const char *style = rnd_attribute_get(&net->Attributes, "style");
+		const char *style = pcb_attribute_get(&net->Attributes, "style");
 		int j;
 
 		if (style == NULL)

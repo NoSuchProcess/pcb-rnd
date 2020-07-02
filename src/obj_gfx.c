@@ -160,7 +160,7 @@ static pcb_gfx_t *pcb_gfx_copy_meta(pcb_gfx_t *dst, pcb_gfx_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	rnd_attribute_copy_all(&dst->Attributes, &src->Attributes);
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	return dst;
 }
 
@@ -207,7 +207,7 @@ void pcb_gfx_free(pcb_gfx_t *gfx)
 {
 	if ((gfx->parent.layer != NULL) && (gfx->parent.layer->gfx_tree != NULL))
 		rnd_r_delete_entry(gfx->parent.layer->gfx_tree, (rnd_box_t *)gfx);
-	rnd_attribute_free(&gfx->Attributes);
+	pcb_attribute_free(&gfx->Attributes);
 	pcb_gfx_unreg(gfx);
 	pcb_obj_common_free((pcb_any_obj_t *)gfx);
 	free(gfx);

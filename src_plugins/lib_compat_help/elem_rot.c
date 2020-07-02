@@ -155,7 +155,7 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, rnd_coord_t *cx, rnd_coord_t *cy, double 
 		centroidx = sumx / (double) pin_cnt;
 		centroidy = sumy / (double) pin_cnt;
 
-		if (!autodetect && (RND_NSTRCMP(rnd_attribute_get(&subc->Attributes, "xy-centre"), "origin") == 0)) {
+		if (!autodetect && (RND_NSTRCMP(pcb_attribute_get(&subc->Attributes, "xy-centre"), "origin") == 0)) {
 			*cx = ox;
 			*cy = oy;
 		}
@@ -164,7 +164,7 @@ void pcb_subc_xy_rot(pcb_subc_t *subc, rnd_coord_t *cx, rnd_coord_t *cy, double 
 			*cy = centroidy;
 		}
 
-		fixed_rotation = rnd_attribute_get(&subc->Attributes, "xy-fixed-rotation");
+		fixed_rotation = pcb_attribute_get(&subc->Attributes, "xy-fixed-rotation");
 		if (fixed_rotation != NULL) {
 			/* The user specified a fixed rotation */
 			*theta = atof(fixed_rotation);
@@ -236,9 +236,9 @@ void pcb_subc_xy_rot_pnp(pcb_subc_t *subc, rnd_coord_t subc_ox, rnd_coord_t subc
 	pcb_subc_xy_rot(subc, &cx, &cy, &rot, &tmp, 1);
 
 	/* unless xy-centre or pnp-centre is set to origin, place a pnp origin mark */
-	cent = rnd_attribute_get(&subc->Attributes, "xy-centre");
+	cent = pcb_attribute_get(&subc->Attributes, "xy-centre");
 	if (cent == NULL)
-		cent = rnd_attribute_get(&subc->Attributes, "pnp-centre");
+		cent = pcb_attribute_get(&subc->Attributes, "pnp-centre");
 	if ((cent == NULL) || (strcmp(cent, "origin") != 0))
 		pcb_subc_create_aux_point(subc, cx, cy, "pnp-origin");
 

@@ -81,7 +81,7 @@ static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet,
 		if (num_cand[l] == 1) {
 			vtp0_append(&tmp, cand[l]);
 			if (term == NULL)
-				term = rnd_attribute_get(&cand[l]->Attributes, "term");
+				term = pcb_attribute_get(&cand[l]->Attributes, "term");
 		}
 	}
 
@@ -97,7 +97,7 @@ static int vect2pstk_conv_cand(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet,
 			pcb_pstk_t *ps = pcb_pstk_new(data, -1, pid, cx, cy, 0, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_FOUND));
 			vtp0_append(objs, ps);
 			if (term != NULL)
-				rnd_attribute_put(&ps->Attributes, "term", term);
+				pcb_attribute_put(&ps->Attributes, "term", term);
 			/* got our new proto - remove the objects we used */
 			for(ci = 0; ci < tmp.used; ci++) {
 				int i;

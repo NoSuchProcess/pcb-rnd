@@ -65,7 +65,7 @@ void pcb_board_free(pcb_board_t * pcb)
 	for (i = 0; i < PCB_NUM_NETLISTS; i++)
 		pcb_netlist_uninit(&(pcb->netlist[i]));
 	vtroutestyle_uninit(&pcb->RouteStyle);
-	rnd_attribute_free(&pcb->Attributes);
+	pcb_attribute_free(&pcb->Attributes);
 
 	pcb_layergroup_free_stack(&pcb->LayerGroups);
 
@@ -414,9 +414,9 @@ const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespa
 {
 	const char *s = NULL;
 	if (namespace != NULL)
-		s = rnd_attribute_get_namespace(&grp->Attributes, namespace, "thickness");
+		s = pcb_attribute_get_namespace(&grp->Attributes, namespace, "thickness");
 	if (s == NULL)
-		s = rnd_attribute_get(&grp->Attributes, "thickness");
+		s = pcb_attribute_get(&grp->Attributes, "thickness");
 	return s;
 }
 

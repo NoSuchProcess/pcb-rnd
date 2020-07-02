@@ -448,7 +448,7 @@ static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 				if ((o->term != NULL) && (RND_NSTRCMP(pinnum, o->term) == 0)) {
 TODO(": make this undoable")
-					rnd_attribute_put(&o->Attributes, "name", pinname);
+					pcb_attribute_put(&o->Attributes, "name", pinname);
 					pcb_board_set_changed_flag(rnd_true);
 					changed++;
 				}

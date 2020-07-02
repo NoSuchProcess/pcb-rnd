@@ -64,11 +64,11 @@ const char *oldconn_cookie = "export_oldconn HID";
 static void print_subc_name(FILE *f, pcb_subc_t *subc)
 {
 	fputc('(', f);
-	pcb_print_quoted_string(f, (char *)RND_EMPTY(rnd_attribute_get(&subc->Attributes, "footprint")));
+	pcb_print_quoted_string(f, (char *)RND_EMPTY(pcb_attribute_get(&subc->Attributes, "footprint")));
 	fputc(' ', f);
 	pcb_print_quoted_string(f, (char *)RND_EMPTY(subc->refdes));
 	fputc(' ', f);
-	pcb_print_quoted_string(f, (char *)RND_EMPTY(rnd_attribute_get(&subc->Attributes, "value")));
+	pcb_print_quoted_string(f, (char *)RND_EMPTY(pcb_attribute_get(&subc->Attributes, "value")));
 	fputs(")\n", f);
 }
 

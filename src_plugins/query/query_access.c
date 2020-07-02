@@ -287,7 +287,7 @@ do { \
 		fld2str_req(s2, fld, 1); \
 		if (!PCB_OBJ_IS_CLASS(obj->type, PCB_OBJ_CLASS_OBJ)) \
 			PCB_QRY_RET_INV(res); \
-		PCB_QRY_RET_STR(res, rnd_attribute_get(&obj->Attributes, s2)); \
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&obj->Attributes, s2)); \
 	} \
  \
 	if (fh1 == query_fields_ID) { \
@@ -381,7 +381,7 @@ static int field_layer(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *f
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, rnd_attribute_get(&l->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&l->Attributes, s2));
 	}
 
 	if (fld->next != NULL)
@@ -445,7 +445,7 @@ static int field_line(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, rnd_attribute_get(&l->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&l->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_layer) {
@@ -506,7 +506,7 @@ static int field_arc(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, rnd_attribute_get(&a->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&a->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_angle) {
@@ -572,7 +572,7 @@ static int field_gfx(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, rnd_attribute_get(&g->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&g->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_layer) {
@@ -607,7 +607,7 @@ static int field_text(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, rnd_attribute_get(&t->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&t->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_layer) {
@@ -649,7 +649,7 @@ static int field_polygon(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t 
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, rnd_attribute_get(&p->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&p->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_layer) {
@@ -708,7 +708,7 @@ static int field_pstk(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, rnd_attribute_get(&p->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&p->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_shape) {
@@ -764,7 +764,7 @@ static int field_net(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, rnd_attribute_get(&net->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&net->Attributes, s2));
 	}
 
 	if (fld->next != NULL)
@@ -791,7 +791,7 @@ static int field_subc(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 	if (fh1 == query_fields_a) {
 		const char *s2;
 		fld2str_req(s2, fld, 1);
-		PCB_QRY_RET_STR(res, rnd_attribute_get(&p->Attributes, s2));
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&p->Attributes, s2));
 	}
 
 	if (fh1 == query_fields_layer)

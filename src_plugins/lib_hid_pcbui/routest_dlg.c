@@ -60,7 +60,7 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	pcb_route_style_t *rst;
 	rnd_hid_attribute_t *attr;
 	rnd_hid_tree_t *tree;
-	rnd_attribute_t *a;
+	pcb_attribute_t *a;
 
 	if (!rstdlg_ctx.active)
 		return;
@@ -203,7 +203,7 @@ static void rst_add_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	char *key = NULL, *val = NULL;
 
 	if (rst_edit_attr(&key, &val) == 0) {
-		rnd_attribute_put(&rst->attr, key, val);
+		pcb_attribute_put(&rst->attr, key, val);
 		rst_updated(rst);
 	}
 }
@@ -222,8 +222,8 @@ static void rst_edit_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	val = row->cell[1];
 
 	if (rst_edit_attr(&key, &val) == 0) {
-		rnd_attribute_remove(&rst->attr, row->cell[0]);
-		rnd_attribute_put(&rst->attr, key, val);
+		pcb_attribute_remove(&rst->attr, row->cell[0]);
+		pcb_attribute_put(&rst->attr, key, val);
 		rst_updated(rst);
 	}
 }
@@ -237,7 +237,7 @@ static void rst_del_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	if (row == NULL)
 		return;
 
-	rnd_attribute_remove(&rst->attr, row->cell[0]);
+	pcb_attribute_remove(&rst->attr, row->cell[0]);
 	rst_updated(rst);
 }
 

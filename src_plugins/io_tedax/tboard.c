@@ -108,7 +108,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	htsi_entry_t *re;
 	rnd_layergrp_id_t gid;
 	int n;
-	rnd_attribute_t *a;
+	pcb_attribute_t *a;
 	tedax_stackup_t ctx;
 	pcb_placement_t plc;
 	static const char *stackupid = "board_stackup";
@@ -169,7 +169,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 	PCB_END_LOOP;
 
 	PCB_SUBC_LOOP(pcb->Data) {
-		rnd_attribute_t *a;
+		pcb_attribute_t *a;
 		pcb_host_trans_t tr;
 		char fpname[256], refdes[256];
 		pcb_subc_t *proto = htscp_get(&plc.subcs, subc);
@@ -389,7 +389,7 @@ static int tedax_board_parse(pcb_board_t *pcb, FILE *f, char *buff, int buff_siz
 		}
 		else if (strcmp(argv[0], "attr") == 0) {
 			reqarg("attr", 3);
-			rnd_attribute_put(&PCB->Attributes, argv[1], argv[2]);
+			pcb_attribute_put(&PCB->Attributes, argv[1], argv[2]);
 		}
 		else if (strcmp(argv[0], "stackup") == 0) {
 			remember(stackup);

@@ -257,7 +257,7 @@ static pcb_arc_t *pcb_arc_copy_meta(pcb_arc_t *dst, pcb_arc_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	rnd_attribute_copy_all(&dst->Attributes, &src->Attributes);
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	return dst;
 }
 
@@ -293,7 +293,7 @@ void pcb_arc_free(pcb_arc_t *arc)
 {
 	if ((arc->parent.layer != NULL) && (arc->parent.layer->arc_tree != NULL))
 		rnd_r_delete_entry(arc->parent.layer->arc_tree, (rnd_box_t *)arc);
-	rnd_attribute_free(&arc->Attributes);
+	pcb_attribute_free(&arc->Attributes);
 	pcb_arc_unreg(arc);
 	pcb_obj_common_free((pcb_any_obj_t *)arc);
 	free(arc);

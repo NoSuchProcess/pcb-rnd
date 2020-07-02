@@ -41,7 +41,7 @@ do { \
 		list->post_change(list, name, value); \
 } while(0)
 
-char *rnd_attribute_get(const rnd_attribute_list_t *list, const char *name)
+char *pcb_attribute_get(const pcb_attribute_list_t *list, const char *name)
 {
 	int i;
 	for (i = 0; i < list->Number; i++)
@@ -50,7 +50,7 @@ char *rnd_attribute_get(const rnd_attribute_list_t *list, const char *name)
 	return NULL;
 }
 
-char **rnd_attribute_get_ptr(const rnd_attribute_list_t *list, const char *name)
+char **pcb_attribute_get_ptr(const pcb_attribute_list_t *list, const char *name)
 {
 	int i;
 	for (i = 0; i < list->Number; i++)
@@ -59,7 +59,7 @@ char **rnd_attribute_get_ptr(const rnd_attribute_list_t *list, const char *name)
 	return NULL;
 }
 
-char **rnd_attribute_get_namespace_ptr(const rnd_attribute_list_t *list, const char *plugin, const char *key)
+char **pcb_attribute_get_namespace_ptr(const pcb_attribute_list_t *list, const char *plugin, const char *key)
 {
 	int i, glb = -1, plugin_len = strlen(plugin);
 
@@ -76,15 +76,15 @@ char **rnd_attribute_get_namespace_ptr(const rnd_attribute_list_t *list, const c
 	return NULL; /* nothing */
 }
 
-char *rnd_attribute_get_namespace(const rnd_attribute_list_t *list, const char *plugin, const char *key)
+char *pcb_attribute_get_namespace(const pcb_attribute_list_t *list, const char *plugin, const char *key)
 {
-	char **res = rnd_attribute_get_namespace_ptr(list, plugin, key);
+	char **res = pcb_attribute_get_namespace_ptr(list, plugin, key);
 	if (res == NULL)
 		return NULL;
 	return *res;
 }
 
-int rnd_attribute_put(rnd_attribute_list_t * list, const char *name, const char *value)
+int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char *value)
 {
 	int i;
 
@@ -106,7 +106,7 @@ int rnd_attribute_put(rnd_attribute_list_t * list, const char *name, const char 
 	   list.  See if there's room.  */
 	if (list->Number >= list->Max) {
 		list->Max += 10;
-		list->List = (rnd_attribute_t *) realloc(list->List, list->Max * sizeof(rnd_attribute_t));
+		list->List = (pcb_attribute_t *) realloc(list->List, list->Max * sizeof(pcb_attribute_t));
 	}
 
 	/* Now add the new attribute.  */
@@ -119,7 +119,7 @@ int rnd_attribute_put(rnd_attribute_list_t * list, const char *name, const char 
 	return 0;
 }
 
-int rnd_attribute_remove_idx(rnd_attribute_list_t * list, int idx)
+int pcb_attribute_remove_idx(pcb_attribute_list_t * list, int idx)
 {
 	int j;
 	char *old_name = list->List[idx].name, *old_value = list->List[idx].value;
@@ -134,18 +134,18 @@ int rnd_attribute_remove_idx(rnd_attribute_list_t * list, int idx)
 	return 0;
 }
 
-int rnd_attribute_remove(rnd_attribute_list_t * list, const char *name)
+int pcb_attribute_remove(pcb_attribute_list_t * list, const char *name)
 {
 	int i, found = 0;
 	for (i = 0; i < list->Number; i++)
 		if (strcmp(name, list->List[i].name) == 0) {
 			found++;
-			rnd_attribute_remove_idx(list, i);
+			pcb_attribute_remove_idx(list, i);
 		}
 	return found;
 }
 
-void rnd_attribute_free(rnd_attribute_list_t *list)
+void pcb_attribute_free(pcb_attribute_list_t *list)
 {
 	int i;
 
@@ -162,16 +162,16 @@ void rnd_attribute_free(rnd_attribute_list_t *list)
 	list->Max = 0;
 }
 
-void rnd_attribute_copy_all(rnd_attribute_list_t *dest, const rnd_attribute_list_t *src)
+void pcb_attribute_copy_all(pcb_attribute_list_t *dest, const pcb_attribute_list_t *src)
 {
 	int i;
 
 	for (i = 0; i < src->Number; i++)
-		rnd_attribute_put(dest, src->List[i].name, src->List[i].value);
+		pcb_attribute_put(dest, src->List[i].name, src->List[i].value);
 }
 
 
-void rnd_attribute_copyback_begin(rnd_attribute_list_t *dst)
+void pcb_attribute_copyback_begin(pcb_attribute_list_t *dst)
 {
 	int i;
 
@@ -179,7 +179,7 @@ void rnd_attribute_copyback_begin(rnd_attribute_list_t *dst)
 		dst->List[i].cpb_written = 0;
 }
 
-void rnd_attribute_copyback(rnd_attribute_list_t *dst, const char *name, const char *value)
+void pcb_attribute_copyback(pcb_attribute_list_t *dst, const char *name, const char *value)
 {
 	int i;
 	for (i = 0; i < dst->Number; i++) {
@@ -194,19 +194,19 @@ void rnd_attribute_copyback(rnd_attribute_list_t *dst, const char *name, const c
 			return;
 		}
 	}
-	rnd_attribute_put(dst, name, value);
+	pcb_attribute_put(dst, name, value);
 }
 
-void rnd_attribute_copyback_end(rnd_attribute_list_t *dst)
+void pcb_attribute_copyback_end(pcb_attribute_list_t *dst)
 {
 	int i;
 	for (i = 0; i < dst->Number; i++)
 		if (!dst->List[i].cpb_written)
-			rnd_attribute_remove_idx(dst, i);
+			pcb_attribute_remove_idx(dst, i);
 }
 
 
-void rnd_attrib_compat_set_intconn(rnd_attribute_list_t *dst, int intconn)
+void pcb_attrib_compat_set_intconn(pcb_attribute_list_t *dst, int intconn)
 {
 	char buff[32];
 
@@ -214,6 +214,6 @@ void rnd_attrib_compat_set_intconn(rnd_attribute_list_t *dst, int intconn)
 		return;
 
 	sprintf(buff, "%d", intconn & 0xFF);
-	rnd_attribute_put(dst, "intconn", buff);
+	pcb_attribute_put(dst, "intconn", buff);
 }
 

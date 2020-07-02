@@ -107,7 +107,7 @@ void pcb_pstk_free(pcb_pstk_t *ps)
 {
 	if ((ps->parent.data != NULL) && (ps->parent.data->padstack_tree != NULL))
 		rnd_r_delete_entry(ps->parent.data->padstack_tree, (rnd_box_t *)ps);
-	rnd_attribute_free(&ps->Attributes);
+	pcb_attribute_free(&ps->Attributes);
 	pcb_pstk_unreg(ps);
 	free(ps->thermals.shape);
 	pcb_obj_common_free((pcb_any_obj_t *)ps);
@@ -269,7 +269,7 @@ pcb_pstk_t *pcb_pstk_copy_meta(pcb_pstk_t *dst, pcb_pstk_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	rnd_attribute_copy_all(&dst->Attributes, &src->Attributes);
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	dst->thermals.used = src->thermals.used;
 	if (dst->thermals.used > 0) {
 		dst->thermals.shape = malloc(dst->thermals.used * sizeof(dst->thermals.shape[0]));

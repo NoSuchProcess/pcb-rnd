@@ -73,7 +73,7 @@ do { \
 	pcb_props_add(ctx, name, type2TYPE_ ## type, v); \
 } while(0)
 
-static void map_attr(void *ctx, const rnd_attribute_list_t *list)
+static void map_attr(void *ctx, const pcb_attribute_list_t *list)
 {
 	int i, bl = 0;
 	char small[256];
@@ -362,10 +362,10 @@ static int attr_key_has_side_effect(const char *key)
 	return 0;
 }
 
-static void toggle_attr(pcb_propset_ctx_t *st, rnd_attribute_list_t *list, int undoable, pcb_any_obj_t *obj)
+static void toggle_attr(pcb_propset_ctx_t *st, pcb_attribute_list_t *list, int undoable, pcb_any_obj_t *obj)
 {
 	const char *key = st->name+2, *newval = NULL;
-	const char *orig = rnd_attribute_get(list, key);
+	const char *orig = pcb_attribute_get(list, key);
 	int side_effect = 0;
 
 	if (orig == NULL) {
@@ -393,7 +393,7 @@ static void toggle_attr(pcb_propset_ctx_t *st, rnd_attribute_list_t *list, int u
 	if (undoable)
 		pcb_uchg_attr(st->pcb, obj, key, newval);
 	else
-		rnd_attribute_put(list, key, newval);
+		pcb_attribute_put(list, key, newval);
 	if ((obj != NULL) && side_effect) {
 		pcb_obj_update_bbox(st->pcb, obj);
 		pcb_obj_post(obj);
@@ -402,7 +402,7 @@ static void toggle_attr(pcb_propset_ctx_t *st, rnd_attribute_list_t *list, int u
 	st->set_cnt++;
 }
 
-static void set_attr_raw(pcb_propset_ctx_t *st, rnd_attribute_list_t *list)
+static void set_attr_raw(pcb_propset_ctx_t *st, pcb_attribute_list_t *list)
 {
 	const char *key = st->name+2;
 	const char *orig;
@@ -412,11 +412,11 @@ static void set_attr_raw(pcb_propset_ctx_t *st, rnd_attribute_list_t *list)
 		return;
 	}
 
-	orig = rnd_attribute_get(list, key);
+	orig = pcb_attribute_get(list, key);
 	if ((orig != NULL) && (strcmp(orig, st->s) == 0))
 		return;
 
-	rnd_attribute_put(list, key, st->s);
+	pcb_attribute_put(list, key, st->s);
 	st->set_cnt++;
 }
 
@@ -572,7 +572,7 @@ static void set_net(pcb_propset_ctx_t *st, const char *netname)
 
 	if (st->is_attr) {
 		const char *key = st->name+2;
-		const char *orig = rnd_attribute_get(&net->Attributes, key);
+		const char *orig = pcb_attribute_get(&net->Attributes, key);
 
 		if ((orig != NULL) && (strcmp(orig, st->s) == 0))
 			return;
@@ -1059,9 +1059,9 @@ int pcb_propsel_toggle(pcb_propedit_t *ctx, const char *prop, rnd_bool create)
 
 /*******************/
 
-static long del_attr(void *ctx, rnd_attribute_list_t *list, const char *key)
+static long del_attr(void *ctx, pcb_attribute_list_t *list, const char *key)
 {
-	if (rnd_attribute_remove(list, key))
+	if (pcb_attribute_remove(list, key))
 		return 1;
 	return 0;
 }
@@ -1079,7 +1079,7 @@ static long del_layergrp(void *ctx, pcb_layergrp_t *grp, const char *key)
 static long del_net(pcb_propedit_t *ctx, const char *netname, const char *key)
 {
 	pcb_net_t *net = pcb_net_get(ctx->pcb, &ctx->pcb->netlist[PCB_NETLIST_EDITED], netname, 0);
-	if ((net == NULL) || (rnd_attribute_get(&net->Attributes, key) == NULL))
+	if ((net == NULL) || (pcb_attribute_get(&net->Attributes, key) == NULL))
 		return 0;
 
 	pcb_ratspatch_append_optimize(ctx->pcb, RATP_CHANGE_ATTRIB, netname, key, NULL);

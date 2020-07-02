@@ -321,13 +321,13 @@ static pcb_subc_t *pcb_bus_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *
 	subc = pcb_exto_create(dst, "bus", layers, l->Point1.X, l->Point1.Y, 0, copy_from);
 	if (copy_from == NULL) {
 		char tmp[32];
-		rnd_attribute_put(&subc->Attributes, "extobj::width", "2");
+		pcb_attribute_put(&subc->Attributes, "extobj::width", "2");
 		rnd_sprintf(tmp, "%$$mH", conf_core.design.line_thickness + conf_core.design.clearance/2);
-		rnd_attribute_put(&subc->Attributes, "extobj::pitch", tmp);
+		pcb_attribute_put(&subc->Attributes, "extobj::pitch", tmp);
 		rnd_sprintf(tmp, "%$$mH", conf_core.design.line_thickness);
-		rnd_attribute_put(&subc->Attributes, "extobj::thickness", tmp);
+		pcb_attribute_put(&subc->Attributes, "extobj::thickness", tmp);
 		rnd_sprintf(tmp, "%$$mH", conf_core.design.clearance);
-		rnd_attribute_put(&subc->Attributes, "extobj::clearance", tmp);
+		pcb_attribute_put(&subc->Attributes, "extobj::clearance", tmp);
 	}
 
 	if (layers[1].lyt & PCB_LYT_INTERN) {
@@ -343,7 +343,7 @@ TODO("set vthickness");
 		l = pcb_line_dup(ly, objs->array[n]);
 		PCB_FLAG_SET(PCB_FLAG_FLOATER, l);
 		PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, l);
-		rnd_attribute_put(&l->Attributes, "extobj::role", "edit");
+		pcb_attribute_put(&l->Attributes, "extobj::role", "edit");
 rnd_trace(" subc=%p l=%p\n", subc, ly);
 	}
 

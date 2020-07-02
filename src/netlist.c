@@ -56,7 +56,7 @@ static const char core_net_cookie[] = "core-net";
 
 void pcb_net_term_free_fields(pcb_net_term_t *term)
 {
-	rnd_attribute_free(&term->Attributes);
+	pcb_attribute_free(&term->Attributes);
 	free(term->refdes);
 	free(term->term);
 }
@@ -421,7 +421,7 @@ pcb_net_t *pcb_net_get_user(pcb_board_t *pcb, pcb_netlist_t *nl, const char *nam
 
 void pcb_net_free_fields(pcb_net_t *net)
 {
-	rnd_attribute_free(&net->Attributes);
+	pcb_attribute_free(&net->Attributes);
 	free(net->name);
 	for(;;) {
 		pcb_net_term_t *term = pcb_termlist_first(&net->conns);
@@ -928,11 +928,11 @@ void pcb_netlist_copy(pcb_board_t *pcb, pcb_netlist_t *dst, pcb_netlist_t *src)
 		dst_net = pcb_net_alloc(pcb, dst, src_net->name, PCB_NETA_ALLOC);
 		dst_net->export_tmp = src_net->export_tmp;
 		dst_net->inhibit_rats = src_net->inhibit_rats;
-		rnd_attribute_copy_all(&dst_net->Attributes, &src_net->Attributes);
+		pcb_attribute_copy_all(&dst_net->Attributes, &src_net->Attributes);
 
 		for(src_term = pcb_termlist_first(&src_net->conns); src_term != NULL; src_term = pcb_termlist_next(src_term)) {
 			dst_term = pcb_net_term_alloc(dst_net, src_term->refdes, src_term->term);
-			rnd_attribute_copy_all(&dst_term->Attributes, &src_term->Attributes);
+			pcb_attribute_copy_all(&dst_term->Attributes, &src_term->Attributes);
 		}
 	}
 }

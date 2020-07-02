@@ -48,11 +48,11 @@
 
 static const char *ipcd356_cookie = "ipcd356 importer";
 
-static void set_src(rnd_attribute_list_t *a, const char *fn, long lineno)
+static void set_src(pcb_attribute_list_t *a, const char *fn, long lineno)
 {
 	char src[8192];
 	rnd_snprintf(src, sizeof(src), "ipcd356::%s:%ld", fn, lineno);
-	rnd_attribute_put(a, "source", src);
+	pcb_attribute_put(a, "source", src);
 }
 
 static int netname_valid(const char *netname)
@@ -277,11 +277,11 @@ static void create_feature(pcb_board_t *pcb, pcb_data_t *data, test_feature_t *t
 	ps = pcb_pstk_new_from_shape(data, tf->cx, y, tf->hole, tf->is_plated, conf_core.design.bloat, sh);
 
 	if (tf->is_middle)
-		rnd_attribute_put(&ps->Attributes, "ipcd356::mid", "yes");
+		pcb_attribute_put(&ps->Attributes, "ipcd356::mid", "yes");
 	if (tf->is_tooling)
-		rnd_attribute_put(&ps->Attributes, "ipcd356::tooling", "yes");
+		pcb_attribute_put(&ps->Attributes, "ipcd356::tooling", "yes");
 	if (term)
-		rnd_attribute_put(&ps->Attributes, "term", term);
+		pcb_attribute_put(&ps->Attributes, "term", term);
 }
 
 static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs, int want_net, int want_pads)
@@ -323,9 +323,9 @@ static int ipc356_parse(pcb_board_t *pcb, FILE *f, const char *fn, htsp_t *subcs
 					if (sc == NULL) {
 						const char *nr;
 						sc = pcb_subc_alloc();
-						rnd_attribute_put(&sc->Attributes, "refdes", refdes);
+						pcb_attribute_put(&sc->Attributes, "refdes", refdes);
 						set_src(&sc->Attributes, fn, lineno);
-						nr = rnd_attribute_get(&sc->Attributes, "refdes");
+						nr = pcb_attribute_get(&sc->Attributes, "refdes");
 						htsp_set(subcs, (char *)nr, sc);
 						pcb_subc_reg(pcb->Data, sc);
 						pcb_subc_bind_globals(pcb, sc);

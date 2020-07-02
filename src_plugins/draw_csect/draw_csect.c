@@ -503,7 +503,7 @@ TODO("layer: handle multiple outline layers")
 		rnd_render->set_color(gc, color);
 		dhrect(0, y, GROUP_WIDTH_MM, y+th,  1, 0.5,  stepf, stepb, OMIT_LEFT | OMIT_RIGHT);
 		dtext_bg(gc, 5, y, 200, 0, g->name, &COLOR_BG, &COLOR_ANNOT);
-		thick = rnd_attribute_get(&g->Attributes, "thickness");
+		thick = pcb_attribute_get(&g->Attributes, "thickness");
 		if (thick != NULL)
 			dtext_bg(gc, 45, y, 200, 0, thick, &COLOR_BG, &COLOR_ANNOT);
 		reg_group_coords(gid, RND_MM_TO_COORD(y), RND_MM_TO_COORD(y+th));

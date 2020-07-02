@@ -41,14 +41,14 @@ static char cord_footprint[] = "fp";
 
 static const char *group_of(pcb_any_obj_t *floater)
 {
-	const char *grp = rnd_attribute_get(&floater->Attributes, "cord::group");
+	const char *grp = pcb_attribute_get(&floater->Attributes, "cord::group");
 	if ((grp == NULL) || (*grp == '\0')) return NULL;
 	return grp;
 }
 
 static void set_grp(pcb_any_obj_t *obj, const char *grp)
 {
-	rnd_attribute_put(&obj->Attributes, "cord::group", grp);
+	pcb_attribute_put(&obj->Attributes, "cord::group", grp);
 }
 
 static void cord_clear_ly(pcb_subc_t *subc, pcb_layer_t *ly, const char *group)
@@ -85,14 +85,14 @@ static void cord_get_ends(pcb_subc_t *subc, const char *group, pcb_pstk_t **end1
 	*ctrl1 = *ctrl2 = NULL;
 
 	for(p = padstacklist_first(&subc->data->padstack); p != NULL; p = padstacklist_next(p)) {
-		const char *lg = group_of((pcb_any_obj_t *)p), *idxs = rnd_attribute_get(&p->Attributes, "extobj::idx");
+		const char *lg = group_of((pcb_any_obj_t *)p), *idxs = pcb_attribute_get(&p->Attributes, "extobj::idx");
 		if ((lg == NULL) || (strcmp(lg, group) != 0) || (idxs == NULL)) continue;
 		if (idxs[0] == '0') *end1 = p;
 		else if (idxs[0] == '1') *end2 = p;
 	}
 
 	for(a = arclist_first(&ely->Arc); a != NULL; a = arclist_next(a)) {
-		const char *lg = group_of((pcb_any_obj_t *)a), *idxs = rnd_attribute_get(&a->Attributes, "extobj::idx");
+		const char *lg = group_of((pcb_any_obj_t *)a), *idxs = pcb_attribute_get(&a->Attributes, "extobj::idx");
 		if ((lg == NULL) || (strcmp(lg, group) != 0) || (idxs == NULL)) continue;
 		if (idxs[0] == '0') *ctrl1 = a;
 		else if (idxs[0] == '1') *ctrl2 = a;
@@ -120,14 +120,14 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 	if (a1 != NULL) {
 		l = pcb_line_new(elyr, e1->x, e1->y, a1->X, a1->Y,
 			1, 0, pcb_flag_make(0));
-		rnd_attribute_put(&l->Attributes, "extobj::role", "gfx");
+		pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
 		set_grp((pcb_any_obj_t *)l, group);
 	}
 
 	if (a2 != NULL) {
 		l = pcb_line_new(elyr, e2->x, e2->y, a2->X, a2->Y,
 			1, 0, pcb_flag_make(0));
-		rnd_attribute_put(&l->Attributes, "extobj::role", "gfx");
+		pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
 		set_grp((pcb_any_obj_t *)l, group);
 	}
 
@@ -152,7 +152,7 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 
 			l = pcb_line_new(lyr, lx, ly, x, y,
 				RND_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
-			rnd_attribute_put(&l->Attributes, "extobj::role", "gfx");
+			pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
 			set_grp((pcb_any_obj_t *)l, group);
 
 			lx = x; ly = y;
@@ -162,7 +162,7 @@ static int cord_gen(pcb_subc_t *subc, const char *group)
 	else {
 		l = pcb_line_new(lyr, e1->x, e1->y, e2->x, e2->y,
 			RND_MM_TO_COORD(0.25), 0, pcb_flag_make(0));
-		rnd_attribute_put(&l->Attributes, "extobj::role", "gfx");
+		pcb_attribute_put(&l->Attributes, "extobj::role", "gfx");
 		set_grp((pcb_any_obj_t *)l, group);
 	}
 
@@ -207,7 +207,7 @@ static void pcb_cord_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 
 	cord_gen(subc, grp);
 
-	if ((floater->type == PCB_OBJ_LINE) && (rnd_attribute_get(&subc->Attributes, "extobj::fixed_origin") == NULL)) {
+	if ((floater->type == PCB_OBJ_LINE) && (pcb_attribute_get(&subc->Attributes, "extobj::fixed_origin") == NULL)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)floater;
 		pcb_subc_move_origin_to(subc, ps->x + RND_MM_TO_COORD(0.3), ps->y + RND_MM_TO_COORD(0.3), 0);
 	}
@@ -282,11 +282,11 @@ static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, rnd_cardinal_
 
 	ps = pcb_pstk_new(subc->data, -1, pid, x, y, 0, pcb_flag_make(0));
 	set_grp((pcb_any_obj_t *)ps, grp);
-	rnd_attribute_put(&ps->Attributes, "extobj::role", "endpt");
-	rnd_attribute_put(&ps->Attributes, "extobj::idx", ptidx);
-	rnd_attribute_put(&ps->Attributes, "intconn", grp);
+	pcb_attribute_put(&ps->Attributes, "extobj::role", "endpt");
+	pcb_attribute_put(&ps->Attributes, "extobj::idx", ptidx);
+	pcb_attribute_put(&ps->Attributes, "intconn", grp);
 	if (term != NULL)
-		rnd_attribute_put(&ps->Attributes, "term", term);
+		pcb_attribute_put(&ps->Attributes, "term", term);
 
 
 #ifdef BEZIER
@@ -294,8 +294,8 @@ static pcb_pstk_t *endpt_pstk(pcb_subc_t *subc, const char *ptidx, rnd_cardinal_
 	pcb_arc_t *a;
 	a = pcb_arc_new(ely, cpx, cpy, 0, 0, 0, 360, cpr, cpr*2, pcb_flag_make(0), 0);
 	set_grp((pcb_any_obj_t *)a, grp);
-	rnd_attribute_put(&a->Attributes, "extobj::role", "control");
-	rnd_attribute_put(&a->Attributes, "extobj::idx", ptidx);
+	pcb_attribute_put(&a->Attributes, "extobj::role", "control");
+	pcb_attribute_put(&a->Attributes, "extobj::idx", ptidx);
 	PCB_FLAG_SET(PCB_FLAG_FLOATER, a);
 	}
 #endif
@@ -417,7 +417,7 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 		pcb_subc_t *s = objs->array[n];
 		if (s->type != PCB_OBJ_SUBC) continue;
 
-		rnd_attribute_copy_all(&subc->Attributes, &s->Attributes);
+		pcb_attribute_copy_all(&subc->Attributes, &s->Attributes);
 
 		for(lid = 0; lid < s->data->LayerN; lid++) {
 			gdl_iterator_t it;
@@ -467,7 +467,7 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 
 	if (has_subc) {
-		rnd_attribute_put(&subc->Attributes, "extobj::fixed_origin", "(yes)");
+		pcb_attribute_put(&subc->Attributes, "extobj::fixed_origin", "(yes)");
 
 		pcb_subc_unreg(subc);
 		pcb_subc_bbox(subc);

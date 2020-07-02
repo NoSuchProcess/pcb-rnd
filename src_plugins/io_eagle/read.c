@@ -1012,7 +1012,7 @@ TODO("{clearance} this should be coming from the eagle file")
 		rnd_message(RND_MSG_ERROR, "Failed to load smd pad\n");
 
 	if (name != NULL)
-		rnd_attribute_put(&ps->Attributes, "term", name);
+		pcb_attribute_put(&ps->Attributes, "term", name);
 
 	return 0;
 }
@@ -1078,7 +1078,7 @@ TODO("variable mask is ignored");
 	ps = eagle_create_pstk(st, data, x, y, sh, diax, diay, clr, drill, roundness, rot, onbottom, plated);
 
 	if (name != NULL)
-		rnd_attribute_put(&ps->Attributes, "term", name);
+		pcb_attribute_put(&ps->Attributes, "term", name);
 
 	switch(loc) {
 		case IN_SUBC: break;
@@ -1240,7 +1240,7 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 			pcb_subc_t *subc;
 
 			subc = pcb_subc_alloc();
-			rnd_attribute_put(&subc->Attributes, "refdes", "K1");
+			pcb_attribute_put(&subc->Attributes, "refdes", "K1");
 			pcb_subc_reg(st->pcb->Data, subc);
 			pcb_subc_bind_globals(st->pcb, subc);
 			eagle_read_pkg(st, n, subc);
@@ -1250,9 +1250,9 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 				continue;
 			}
 
-			rnd_attribute_put(&subc->Attributes, "refdes", eagle_get_attrs(st, n, "name", NULL));
-			rnd_attribute_put(&subc->Attributes, "value", eagle_get_attrs(st, n, "value", NULL));
-			rnd_attribute_put(&subc->Attributes, "footprint", eagle_get_attrs(st, n, "package", NULL));
+			pcb_attribute_put(&subc->Attributes, "refdes", eagle_get_attrs(st, n, "name", NULL));
+			pcb_attribute_put(&subc->Attributes, "value", eagle_get_attrs(st, n, "value", NULL));
+			pcb_attribute_put(&subc->Attributes, "footprint", eagle_get_attrs(st, n, "package", NULL));
 
 			pcb_subc_bbox(subc);
 TODO("subc: revise this: are we loading an instance here? do we need to place it? do not even bump if not!")
@@ -1425,7 +1425,7 @@ static int eagle_read_signals(read_state_t *st, trnode_t *subtree, void *obj, in
 
 static void eagle_read_subc_attrs(read_state_t *st, trnode_t *nd, pcb_subc_t *subc, rnd_coord_t x, rnd_coord_t y, const char *attname, const char *subc_attr, const char *str, rnd_bool add_text)
 {
-	rnd_attribute_put(&subc->Attributes, subc_attr, str);
+	pcb_attribute_put(&subc->Attributes, subc_attr, str);
 	if (!add_text)
 		return;
 

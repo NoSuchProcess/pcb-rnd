@@ -324,7 +324,7 @@ static void report_subc(gds_t *dst, pcb_subc_t *subc)
 		subc->BoundingBox.X1, subc->BoundingBox.Y1,
 		subc->BoundingBox.X2, subc->BoundingBox.Y2,
 		RND_EMPTY(subc->refdes),
-		RND_EMPTY(rnd_attribute_get(&subc->Attributes, "footprint")),
+		RND_EMPTY(pcb_attribute_get(&subc->Attributes, "footprint")),
 		gen_locked(subc));
 }
 

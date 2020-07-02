@@ -120,7 +120,7 @@ static void save_prop(pcb_board_t *pcb, FILE *f, const char *name, const char *k
 static void save_user_props(pcb_board_t *pcb, FILE *f, pcb_layergrp_t *grp, const char *name)
 {
 	int n;
-	rnd_attribute_t *a;
+	pcb_attribute_t *a;
 	char *mat = NULL, *thermk = NULL, *thick = NULL, *fab_color = NULL, *dielect = NULL;
 
 	for(n = 0, a = grp->Attributes.List; n < grp->Attributes.Number; n++,a++) {
@@ -386,7 +386,7 @@ int tedax_stackup_parse(tedax_stackup_t *ctx, pcb_board_t *pcb, FILE *f, char *b
 				}
 			}
 			else
-				rnd_attribute_put(&grp->Attributes, argv[2], argv[3]);
+				pcb_attribute_put(&grp->Attributes, argv[2], argv[3]);
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "stackup") == 0))
 			break;

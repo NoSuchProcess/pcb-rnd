@@ -139,7 +139,7 @@ static void iolht_warn(lht_node_t *nd, int wbit, char *fmt, ...)
 
 static lht_node_t missing_ok;
 
-static int parse_attributes(rnd_attribute_list_t *list, lht_node_t *nd)
+static int parse_attributes(pcb_attribute_list_t *list, lht_node_t *nd)
 {
 	lht_node_t *n;
 	lht_dom_iterator_t it;
@@ -155,7 +155,7 @@ static int parse_attributes(rnd_attribute_list_t *list, lht_node_t *nd)
 
 	for(n = lht_dom_first(&it, nd); n != NULL; n = lht_dom_next(&it)) {
 		if (n->type == LHT_TEXT)
-			rnd_attribute_put(list, n->name, n->data.text.value);
+			pcb_attribute_put(list, n->name, n->data.text.value);
 	}
 
 	return 0;
@@ -626,7 +626,7 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coor
 
 	line = pcb_line_alloc_id(ly, id);
 	parse_flags(&line->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_LINE, &intconn, 0);
-	rnd_attrib_compat_set_intconn(&line->Attributes, intconn);
+	pcb_attrib_compat_set_intconn(&line->Attributes, intconn);
 	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	if (rdver >= 4)
@@ -708,7 +708,7 @@ static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord
 
 	arc = pcb_arc_alloc_id(ly, id);
 	parse_flags(&arc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ARC, &intconn, 0);
-	rnd_attrib_compat_set_intconn(&arc->Attributes, intconn);
+	pcb_attrib_compat_set_intconn(&arc->Attributes, intconn);
 	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	if (rdver >= 4)
@@ -890,7 +890,7 @@ static int parse_gfx(pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coo
 
 	gfx = pcb_gfx_alloc_id(ly, id);
 	parse_flags(&gfx->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ARC, &intconn, 0);
-	rnd_attrib_compat_set_intconn(&gfx->Attributes, intconn);
+	pcb_attrib_compat_set_intconn(&gfx->Attributes, intconn);
 	parse_attributes(&gfx->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	if (rdver >= 4)
@@ -946,7 +946,7 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 		return -1;
 	poly = pcb_poly_alloc_id(ly, id);
 	parse_flags(&poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_POLY, &intconn, 0);
-	rnd_attrib_compat_set_intconn(&poly->Attributes, intconn);
+	pcb_attrib_compat_set_intconn(&poly->Attributes, intconn);
 	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	if (rdver >= 3)
@@ -1043,7 +1043,7 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 		return iolht_error(obj, "failed to allocate text object\n");
 
 	parse_flags(&text->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_TEXT, &intconn, 0);
-	rnd_attrib_compat_set_intconn(&text->Attributes, intconn);
+	pcb_attrib_compat_set_intconn(&text->Attributes, intconn);
 	parse_attributes(&text->Attributes, lht_dom_hash_get(obj, "attributes"));
 	err |= parse_int(&text->Scale, hash_get(obj, "scale", 0));
 	err |= parse_double(&text->scale_x, hash_get(obj, "scale_x", 1));
@@ -1291,7 +1291,7 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	ps = pcb_pstk_alloc_id(dt, id);
 
 	parse_flags(&ps->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_PSTK, &intconn, 0);
-	rnd_attrib_compat_set_intconn(&ps->Attributes, intconn);
+	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
 	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	err |= parse_coord(&ps->x,    hash_get(obj, "x", 0));
@@ -1397,15 +1397,15 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, rnd_coord_t dx, rnd_coord_
 		return 0;
 	}
 
-	rnd_attrib_compat_set_intconn(&ps->Attributes, intconn);
+	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
 	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	parse_thermal_old((pcb_any_obj_t *)ps, fln);
 
 	if (Number != NULL)
-		rnd_attribute_put(&ps->Attributes, "term", Number);
+		pcb_attribute_put(&ps->Attributes, "term", Number);
 	if (Name != NULL)
-		rnd_attribute_put(&ps->Attributes, "name", Name);
+		pcb_attribute_put(&ps->Attributes, "name", Name);
 
 	if (subc_on_bottom)
 		pcb_pstk_mirror(ps, PCB_PSTK_DONT_MIRROR_COORDS, 1, 0, 0);
@@ -1445,14 +1445,14 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, rnd_coord_t dx, rnd_coor
 
 	p = pcb_pstk_new_compat_pad(subc->data, id, X1+dx, Y1+dy, X2+dx, Y2+dy, Thickness, Clearance, Mask, flg.f & PCB_FLAG_SQUARE, flg.f & PCB_FLAG_NOPASTE, (!!(flg.f & PCB_FLAG_ONSOLDER)));
 	if (Number != NULL)
-		rnd_attribute_put(&p->Attributes, "term", Number);
+		pcb_attribute_put(&p->Attributes, "term", Number);
 	if (Name != NULL)
-		rnd_attribute_put(&p->Attributes, "name", Name);
+		pcb_attribute_put(&p->Attributes, "name", Name);
 
 	if (subc_on_bottom)
 		pcb_pstk_mirror(p, PCB_PSTK_DONT_MIRROR_COORDS, 1, 0, 0);
 
-	rnd_attrib_compat_set_intconn(&p->Attributes, intconn);
+	pcb_attrib_compat_set_intconn(&p->Attributes, intconn);
 	parse_attributes(&p->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	return 0;
@@ -1514,9 +1514,9 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 				if ((role != NULL) && (role->type == LHT_TEXT) && (string != NULL) && (string->type == LHT_TEXT)) {
 					const char *key = role->data.text.value;
 					const char *val = string->data.text.value;
-					if (strcmp(key, "desc") == 0)   rnd_attribute_put(&subc->Attributes, "footprint", val);
-					if (strcmp(key, "value") == 0)  rnd_attribute_put(&subc->Attributes, "value", val);
-					if (strcmp(key, "name") == 0)   rnd_attribute_put(&subc->Attributes, "refdes", val);
+					if (strcmp(key, "desc") == 0)   pcb_attribute_put(&subc->Attributes, "footprint", val);
+					if (strcmp(key, "value") == 0)  pcb_attribute_put(&subc->Attributes, "value", val);
+					if (strcmp(key, "name") == 0)   pcb_attribute_put(&subc->Attributes, "refdes", val);
 					err |= parse_coord(&tx,     hash_get(n, "x", 0));
 					err |= parse_coord(&ty,     hash_get(n, "y", 0));
 					err |= parse_coord(&tdir,   hash_get(n, "direction", 1));
@@ -1559,7 +1559,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 
 	parse_id(&sc->ID, obj, 5);
 	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ELEMENT, &intconn, 0);
-	rnd_attrib_compat_set_intconn(&sc->Attributes, intconn);
+	pcb_attrib_compat_set_intconn(&sc->Attributes, intconn);
 	parse_attributes(&sc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_minuid(sc->uid, lht_dom_hash_get(obj, "uid"));
 
@@ -2381,7 +2381,7 @@ static int parse_netlist_input(pcb_board_t *pcb, pcb_netlist_t *nl, lht_node_t *
 				return iolht_error(nattr, "failed to load attributes\n");
 		}
 		if (style != NULL)
-			rnd_attribute_put(&net->Attributes, "style", style);
+			pcb_attribute_put(&net->Attributes, "style", style);
 	}
 	return 0;
 }

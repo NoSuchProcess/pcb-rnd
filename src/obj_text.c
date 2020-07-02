@@ -106,7 +106,7 @@ void pcb_text_free(pcb_text_t *text)
 {
 	if ((text->parent.layer != NULL) && (text->parent.layer->text_tree != NULL))
 		rnd_r_delete_entry(text->parent.layer->text_tree, (rnd_box_t *)text);
-	rnd_attribute_free(&text->Attributes);
+	pcb_attribute_free(&text->Attributes);
 	pcb_text_unreg(text);
 	free(text->TextString);
 	pcb_obj_common_free((pcb_any_obj_t *)text);
@@ -183,7 +183,7 @@ pcb_text_t *pcb_text_new_(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X
 	if (mirror & PCB_TXT_MIRROR_Y)
 		Flags.f |= PCB_FLAG_ONSOLDER;
 	if (mirror & PCB_TXT_MIRROR_X)
-		rnd_attribute_put(&text->Attributes, "mirror_x", "1");
+		pcb_attribute_put(&text->Attributes, "mirror_x", "1");
 
 	/* copy values, width and height are set by drawing routine
 	 * because at this point we don't know which symbols are available
@@ -284,7 +284,7 @@ static pcb_text_t *pcb_text_copy_meta(pcb_text_t *dst, pcb_text_t *src)
 {
 	if (dst == NULL)
 		return NULL;
-	rnd_attribute_copy_all(&dst->Attributes, &src->Attributes);
+	pcb_attribute_copy_all(&dst->Attributes, &src->Attributes);
 	return dst;
 }
 
@@ -330,7 +330,7 @@ static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
 	*input += len+1;
 
 	if ((key[0] == 'a') && (key[1] == '.')) {
-		const rnd_attribute_list_t *attr = &text->Attributes;
+		const pcb_attribute_list_t *attr = &text->Attributes;
 		path = key+2;
 		if ((path[0] == 'p') && (memcmp(path, "parent.", 7) == 0)) {
 			pcb_data_t *par = text->parent.layer->parent.data;
@@ -346,7 +346,7 @@ static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
 			path+=7;
 		}
 		if (attr != NULL) {
-			attrs = rnd_attribute_get(attr, path);
+			attrs = pcb_attribute_get(attr, path);
 			if (attrs != NULL)
 				gds_append_str(s, attrs);
 		}
