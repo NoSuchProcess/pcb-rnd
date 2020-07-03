@@ -894,7 +894,6 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 
 		/* set up a dummy board to work around that pcb_pstkop_copy() requires a
 		   pcb_board_t instead of a pcb_data_t */
-TODO("subc: fix this after the element removal")
 		if (pcb->is_footprint) {
 			pcb_subc_t *sc = pcb_subclist_first(&pcb->Data->subc);
 			if (sc != NULL) {
