@@ -31,6 +31,7 @@ distclean: FORCE
 	cd src_3rd/liblihata && $(MAKE) clean ; true
 	cd src_3rd/liblihata/genht && $(MAKE) clean ; true
 	cd src_3rd/qparse && $(MAKE) clean ; true
+	cd src_3rd/libporty_net && $(MAKE) distclean ; true
 	cd scconfig && $(MAKE) distclean ; true
 
 
