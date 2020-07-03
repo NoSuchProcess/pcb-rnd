@@ -44,6 +44,9 @@ uninstall:
 	$(MAKE) install_all HOW="uninstall"
 
 clean:
-	$(SCCBOX) rm -f -q  bxl2txt.o bxl_decode.o bxl2txt$(LIBRND_EXE)
+	$(SCCBOX) rm -f -q  bxl2txt.o txt2bxl.o bxl_decode.o bxl2txt$(LIBRND_EXE) txt2bxl$(LIBRND_EXE)
+
+distclean: clean
+	$(SCCBOX) rm -f -q Makefile
 
 @]

@@ -13,6 +13,7 @@ clean:
 
 distclean:
 	cd gsch2pcb-rnd && $(MAKE) distclean
+	cd bxl2txt && $(MAKE) distclean
 
 install_all:
 	$(SCCBOX) mkdir -p  "$(BINDIR)" "$(LIBDIR)"
