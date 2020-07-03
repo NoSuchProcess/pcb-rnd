@@ -247,7 +247,7 @@ function subc_rect(layer, x1, y1, x2, y2, clearance, flags, attributes     ,s)
 }
 
 # start generating a subcircuit
-function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir)
+function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir, ATTR    ,a)
 {
 	print "li:pcb-rnd-subcircuit-v6 {"
 	print " ha:subc." (++objid) "{"
@@ -255,6 +255,8 @@ function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir)
 	print "   footprint = " lht_str(footprint)
 	if (refdes != "")
 		print "   refdes = " lht_str(refdes)
+	for(a in ATTR)
+		print "   " a " = " lht_str(ATTR[a]);
 	print "  }"
 
 
