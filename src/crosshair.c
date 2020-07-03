@@ -472,6 +472,7 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 			pcb_poly_t *polygon;
 			rnd_point_t *point;
 			rnd_cardinal_t point_idx, prev, next;
+			rnd_coord_t px, py, x, y, nx, ny;
 
 			polygon = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
 			point = (rnd_point_t *) pcb_crosshair.AttachedObject.Ptr3;
@@ -481,9 +482,14 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 			prev = pcb_poly_contour_prev_point(polygon, point_idx);
 			next = pcb_poly_contour_next_point(polygon, point_idx);
 
+			px = polygon->Points[prev].X; py = polygon->Points[prev].Y;
+			x = point->X + dx; y = point->Y + dy;
+			nx = polygon->Points[next].X; ny = polygon->Points[next].Y;
+
+
 			/* draw the two segments */
-			rnd_render->draw_line(pcb_crosshair.GC, polygon->Points[prev].X, polygon->Points[prev].Y, point->X + dx, point->Y + dy);
-			rnd_render->draw_line(pcb_crosshair.GC, point->X + dx, point->Y + dy, polygon->Points[next].X, polygon->Points[next].Y);
+			rnd_render->draw_line(pcb_crosshair.GC, px, py, x, y);
+			rnd_render->draw_line(pcb_crosshair.GC, x, y, nx, ny);
 			break;
 		}
 
