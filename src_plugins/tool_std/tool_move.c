@@ -90,8 +90,27 @@ void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 			pcb_gfx_resize_move_corner(gfx, point_idx, dx, dy, 1);
 		}
 		else if ((dx != 0) || (dy != 0)) {
-			pcb_any_obj_t *newo = pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, dx, dy);
-			pcb_extobj_float_geo(newo);
+			pcb_any_obj_t *newo;
+
+			if ((pcb_crosshair.AttachedObject.Type == PCB_OBJ_POLY_POINT) && pcb_crosshair.edit_poly_point_extra.active) {
+				int n;
+
+				/* when modifier was pressed during the moving of a polygon point:
+				   angle-keeping move; this is really just moving 3 points in a batch */
+				pcb_undo_freeze_serial();
+				newo = pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, dx, dy);
+				pcb_extobj_float_geo(newo);
+				for(n = 0; n < 2; n++) {
+					newo = pcb_move_obj_and_rubberband(PCB_OBJ_POLY_POINT, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.edit_poly_point_extra.point[n], pcb_crosshair.edit_poly_point_extra.dx[n], pcb_crosshair.edit_poly_point_extra.dy[n]);
+					pcb_extobj_float_geo(newo);
+				}
+				pcb_undo_unfreeze_serial();
+			}
+			else {
+				newo = pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, dx, dy);
+				pcb_extobj_float_geo(newo);
+			}
+
 			if (!pcb_marked.user_placed)
 				pcb_crosshair_set_local_ref(0, 0, rnd_false);
 			pcb_subc_as_board_update(PCB);

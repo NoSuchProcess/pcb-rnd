@@ -485,7 +485,7 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 		{
 			pcb_poly_t *polygon;
 			rnd_point_t *point;
-			rnd_cardinal_t point_idx, prev, next;
+			rnd_cardinal_t point_idx, prev, next, prev2, next2;
 			rnd_coord_t px, py, x, y, nx, ny;
 
 			polygon = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
@@ -501,12 +501,16 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 			nx = polygon->Points[next].X; ny = polygon->Points[next].Y;
 
 			if (modifier) {
-				rnd_coord_t ppx, ppy, nnx, nny;
+				rnd_coord_t ppx, ppy, nnx, nny, ox[2], oy[2];
 
-				prev = pcb_poly_contour_prev_point(polygon, prev);
-				next = pcb_poly_contour_next_point(polygon, next);
-				ppx = polygon->Points[prev].X; ppy = polygon->Points[prev].Y;
-				nnx = polygon->Points[next].X; nny = polygon->Points[next].Y;
+				pcb_crosshair.edit_poly_point_extra.active = 1;
+				pcb_crosshair.edit_poly_point_extra.point[0] = &polygon->Points[prev];
+				pcb_crosshair.edit_poly_point_extra.point[1] = &polygon->Points[next];
+
+				prev2 = pcb_poly_contour_prev_point(polygon, prev);
+				next2 = pcb_poly_contour_next_point(polygon, next);
+				ppx = polygon->Points[prev2].X; ppy = polygon->Points[prev2].Y;
+				nnx = polygon->Points[next2].X; nny = polygon->Points[next2].Y;
 
 				perp_extend(ppx, ppy, &px, &py, x, y, dx, dy);
 				perp_extend(nnx, nny, &nx, &ny, x, y, dx, dy);
@@ -514,7 +518,14 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 				/* draw the extra two segments on prev-prev and next-next */
 				rnd_render->draw_line(pcb_crosshair.GC, ppx, ppy, px, py);
 				rnd_render->draw_line(pcb_crosshair.GC, nnx, nny, nx, ny);
+
+				pcb_crosshair.edit_poly_point_extra.dx[0] = px - polygon->Points[prev].X;
+				pcb_crosshair.edit_poly_point_extra.dy[0] = py - polygon->Points[prev].Y;
+				pcb_crosshair.edit_poly_point_extra.dx[1] = nx - polygon->Points[next].X;
+				pcb_crosshair.edit_poly_point_extra.dy[1] = ny - polygon->Points[next].Y;
 			}
+			else
+				pcb_crosshair.edit_poly_point_extra.active = 0;
 
 			/* draw the two segments */
 			rnd_render->draw_line(pcb_crosshair.GC, px, py, x, y);

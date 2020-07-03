@@ -75,6 +75,13 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 	int drags_len, drags_current;
 	rnd_coord_t dragx, dragy;              /* the point where drag started */
 
+	/* tool-specific temporary storage */
+	struct {
+		int active;
+		rnd_point_t *point[2];
+		rnd_coord_t dx[2], dy[2];
+	} edit_poly_point_extra;
+
 	/* cached tool IDs */
 	int tool_arrow, tool_line, tool_move, tool_arc, tool_poly, tool_poly_hole;
 } pcb_crosshair_t;
