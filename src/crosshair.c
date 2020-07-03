@@ -500,7 +500,8 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 			x = point->X + dx; y = point->Y + dy;
 			nx = polygon->Points[next].X; ny = polygon->Points[next].Y;
 
-			if (modifier) {
+			/* modified version: angle keeper; run only on every even call to not mess up the xor */
+			if (modifier && pcb_crosshair.edit_poly_point_extra.last_active) {
 				rnd_coord_t ppx, ppy, nnx, nny, ox[2], oy[2];
 
 				pcb_crosshair.edit_poly_point_extra.active = 1;
@@ -526,6 +527,8 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 			}
 			else
 				pcb_crosshair.edit_poly_point_extra.active = 0;
+
+			pcb_crosshair.edit_poly_point_extra.last_active = modifier;
 
 			/* draw the two segments */
 			rnd_render->draw_line(pcb_crosshair.GC, px, py, x, y);

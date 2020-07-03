@@ -77,7 +77,7 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 
 	/* tool-specific temporary storage */
 	struct {
-		int active;
+		int active, last_active;
 		rnd_point_t *point[2];
 		rnd_coord_t dx[2], dy[2];
 	} edit_poly_point_extra;
