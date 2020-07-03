@@ -743,37 +743,6 @@ void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 	}
 	PCB_ENDALL_LOOP;
 
-	/* swap silkscreen layers */
-	pcb_layer_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, &SLayer, 1);
-	pcb_layer_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, &CLayer, 1);
-	assert(SLayer != -1);
-	assert(CLayer != -1);
-	swap = Buffer->Data->Layer[SLayer];
-	Buffer->Data->Layer[SLayer] = Buffer->Data->Layer[CLayer];
-	Buffer->Data->Layer[CLayer] = swap;
-
-	/* swap layer groups when balanced */
-	sgroup = pcb_layer_get_group(pcb, SLayer);
-	cgroup = pcb_layer_get_group(pcb, CLayer);
-TODO("layer: revise this code for the generic physical layer support; move this code to layer*.c")
-	if (pcb->LayerGroups.grp[cgroup].len == pcb->LayerGroups.grp[sgroup].len) {
-		for (j = k = 0; j < pcb->LayerGroups.grp[sgroup].len; j++) {
-			rnd_layer_id_t cnumber = pcb->LayerGroups.grp[cgroup].lid[k];
-			rnd_layer_id_t snumber = pcb->LayerGroups.grp[sgroup].lid[j];
-
-			if ((pcb_layer_flags(pcb, snumber)) & PCB_LYT_SILK)
-				continue;
-			swap = Buffer->Data->Layer[snumber];
-
-			while ((pcb_layer_flags(pcb, cnumber)) & PCB_LYT_SILK) {
-				k++;
-				cnumber = pcb->LayerGroups.grp[cgroup].lid[k];
-			}
-			Buffer->Data->Layer[snumber] = Buffer->Data->Layer[cnumber];
-			Buffer->Data->Layer[cnumber] = swap;
-			k++;
-		}
-	}
 	pcb_set_buffer_bbox(Buffer);
 }
 
