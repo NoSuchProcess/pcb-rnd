@@ -113,7 +113,7 @@ void pcb_xordraw_poly(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, int d
 void pcb_xordraw_poly_subc(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, rnd_coord_t w, rnd_coord_t h, int mirr);
 void pcb_xordraw_attached_arc(rnd_coord_t thick);
 void pcb_xordraw_buffer(pcb_buffer_t *Buffer);
-void pcb_xordraw_movecopy(void);
+void pcb_xordraw_movecopy(rnd_bool modifier);
 void pcb_xordraw_insert_pt_obj(void);
 
 #endif

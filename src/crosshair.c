@@ -276,7 +276,7 @@ static void proj_extend(double *ox, double *oy, double vx, double vy, double dx,
 /* ---------------------------------------------------------------------------
  * draws the attached object while in tool mode move or copy
  */
-void pcb_xordraw_movecopy(void)
+void pcb_xordraw_movecopy(rnd_bool modifier)
 {
 	rnd_coord_t dx = pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X;
 	rnd_coord_t dy = pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y;
