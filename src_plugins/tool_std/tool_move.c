@@ -124,7 +124,7 @@ void pcb_tool_move_adjust_attached_objects(rnd_hidlib_t *hl)
 
 void pcb_tool_move_draw_attached(rnd_hidlib_t *hl)
 {
-	pcb_xordraw_movecopy();
+	pcb_xordraw_movecopy(rnd_gui->control_is_pressed(rnd_gui));
 }
 
 rnd_bool pcb_tool_move_undo_act(rnd_hidlib_t *hl)
