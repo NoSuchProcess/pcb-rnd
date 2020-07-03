@@ -273,6 +273,20 @@ static void proj_extend(double *ox, double *oy, double vx, double vy, double dx,
 	*ox =nx * offs; *oy = ny * offs;
 }
 
+
+/* extend the pine between px;py and (already moved) x;y knowing the previous
+   point beyond px;py (which is ppx;ppy) */
+static void perp_extend(rnd_coord_t ppx, rnd_coord_t ppy, rnd_coord_t *px, rnd_coord_t *py, rnd_coord_t x, rnd_coord_t y, rnd_coord_t dx, rnd_coord_t dy)
+{
+	rnd_coord_t ix, iy;
+
+	pcb_lines_intersect_at(ppx, ppy, *px, *py,   (*px) + dx, (*py) + dy, x, y,  &ix, &iy);
+
+	*px = ix;
+	*py = iy;
+}
+
+
 /* ---------------------------------------------------------------------------
  * draws the attached object while in tool mode move or copy
  */
@@ -486,6 +500,21 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 			x = point->X + dx; y = point->Y + dy;
 			nx = polygon->Points[next].X; ny = polygon->Points[next].Y;
 
+			if (modifier) {
+				rnd_coord_t ppx, ppy, nnx, nny;
+
+				prev = pcb_poly_contour_prev_point(polygon, prev);
+				next = pcb_poly_contour_next_point(polygon, next);
+				ppx = polygon->Points[prev].X; ppy = polygon->Points[prev].Y;
+				nnx = polygon->Points[next].X; nny = polygon->Points[next].Y;
+
+				perp_extend(ppx, ppy, &px, &py, x, y, dx, dy);
+				perp_extend(nnx, nny, &nx, &ny, x, y, dx, dy);
+
+				/* draw the extra two segments on prev-prev and next-next */
+				rnd_render->draw_line(pcb_crosshair.GC, ppx, ppy, px, py);
+				rnd_render->draw_line(pcb_crosshair.GC, nnx, nny, nx, ny);
+			}
 
 			/* draw the two segments */
 			rnd_render->draw_line(pcb_crosshair.GC, px, py, x, y);

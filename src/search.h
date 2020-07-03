@@ -34,6 +34,7 @@
 #include <librnd/core/global_typedefs.h>
 #include "layer.h"
 
+int pcb_lines_intersect_at(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_coord_t ay2, rnd_coord_t bx1, rnd_coord_t by1, rnd_coord_t bx2, rnd_coord_t by2, rnd_coord_t *iscx, rnd_coord_t *iscy);
 int pcb_lines_intersect(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_coord_t ay2, rnd_coord_t bx1, rnd_coord_t by1, rnd_coord_t bx2, rnd_coord_t by2);
 rnd_bool pcb_arc_in_box(pcb_arc_t *arc, rnd_box_t *b);
 rnd_bool pcb_gfx_in_box(pcb_gfx_t *gfx, rnd_box_t *b);

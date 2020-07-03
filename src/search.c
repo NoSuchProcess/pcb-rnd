@@ -1787,7 +1787,7 @@ int pcb_search_screen_maybe_selector(rnd_coord_t X, rnd_coord_t Y, int Type, voi
 }
 
 
-int pcb_lines_intersect(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_coord_t ay2, rnd_coord_t bx1, rnd_coord_t by1, rnd_coord_t bx2, rnd_coord_t by2)
+int pcb_lines_intersect_at(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_coord_t ay2, rnd_coord_t bx1, rnd_coord_t by1, rnd_coord_t bx2, rnd_coord_t by2, rnd_coord_t *iscx, rnd_coord_t *iscy)
 {
 /* TODO: this should be long double if rnd_coord_t is 64 bits */
 	double ua, xi, yi, X1, Y1, X2, Y2, X3, Y3, X4, Y4, tmp;
@@ -1834,6 +1834,11 @@ int pcb_lines_intersect(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_c
 	xi = X1 + ua * (X2 - X1);
 	yi = Y1 + ua * (Y2 - Y1);
 
+	if (iscx != NULL)
+		*iscx = xi;
+	if (iscy != NULL)
+		*iscy = yi;
+
 #define check(e1, e2, i) \
 	if (e1 < e2) { \
 		if ((i < e1) || (i > e2)) \
@@ -1851,6 +1856,10 @@ int pcb_lines_intersect(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_c
 	return 1;
 }
 
+int pcb_lines_intersect(rnd_coord_t ax1, rnd_coord_t ay1, rnd_coord_t ax2, rnd_coord_t ay2, rnd_coord_t bx1, rnd_coord_t by1, rnd_coord_t bx2, rnd_coord_t by2)
+{
+	return pcb_lines_intersect_at(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2, NULL, NULL);
+}
 
 rnd_r_dir_t pcb_search_data_by_loc(pcb_data_t *data, pcb_objtype_t type, const rnd_box_t *query_box, rnd_r_dir_t (*cb_)(void *closure, pcb_any_obj_t *obj, void *box), void *closure)
 {
