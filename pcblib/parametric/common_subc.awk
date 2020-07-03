@@ -179,7 +179,9 @@ function subc_text(layer, x, y, str, scale, rot, flags, attributes      ,s)
 	s = s "       x = " unit(x) NL
 	s = s "       y = " unit(y) NL
 	s = s "       rot = " either(rot, 0) NL
-	s = s "       string = %a.parent.refdes%" NL
+	if (str == "")
+		str = "%a.parent.refdes%"
+	s = s "       string = " str NL
 	s = s "       fid = 0" NL
 	s = s "       ha:flags {" flags "}" NL
 	s = s "      }" NL
