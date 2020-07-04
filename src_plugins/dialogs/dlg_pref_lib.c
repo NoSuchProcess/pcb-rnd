@@ -129,24 +129,6 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 	pref_lib_update_buttons();
 }
 
-TODO(": move this to liblihata")
-static void lht_clean_list(lht_node_t * lst)
-{
-	lht_node_t *n;
-	while (lst->data.list.first != NULL) {
-		n = lst->data.list.first;
-		if (n->doc == NULL) {
-			if (lst->data.list.last == n)
-				lst->data.list.last = NULL;
-			lst->data.list.first = n->next;
-		}
-		else
-			lht_tree_unlink(n);
-		lht_dom_node_free(n);
-	}
-	lst->data.list.last = NULL;
-}
-
 /* Dialog box to current libraries in config */
 static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
@@ -164,7 +146,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		rnd_conf_set(ctx->role, "rc/library_search_paths", 0, "", RND_POL_OVERWRITE);
 	lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
 	assert(lst != NULL);
-	lht_clean_list(lst);
+	lht_list_clean(lst);
 
 	/* append items from the widget */
 	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_next(&tree->rows, r)) {
