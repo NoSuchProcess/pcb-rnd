@@ -577,9 +577,15 @@ static void pse_shape_bloat(void *hid_ctx, void *caller_data, rnd_coord_t sign)
 
 	pcb_undo_freeze_serial();
 
-	bloat *= sign;
-	for(n = 0; n < proto->tr.used; n++)
-		pcb_pstk_shape_grow(proto, n, dst_idx, rnd_false, bloat, 1);
+	if (sign == 0) {
+		for(n = 0; n < proto->tr.used; n++)
+			pcb_pstk_shape_grow(proto, n, dst_idx, rnd_true, bloat, 1);
+	}
+	else {
+		bloat *= sign;
+		for(n = 0; n < proto->tr.used; n++)
+			pcb_pstk_shape_grow(proto, n, dst_idx, rnd_false, bloat, 1);
+	}
 
 	pcb_undo_unfreeze_serial();
 	pcb_undo_inc_serial();
@@ -599,6 +605,11 @@ static void pse_shape_shrink(void *hid_ctx, void *caller_data, rnd_hid_attribute
 static void pse_shape_grow(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pse_shape_bloat(hid_ctx, caller_data, +1);
+}
+
+static void pse_shape_setsize(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	pse_shape_bloat(hid_ctx, caller_data, 0);
 }
 
 static void pse_chg_shape(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -670,6 +681,10 @@ static void pse_chg_shape(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 				pse->grow = RND_DAD_CURRENT(dlg);
 				RND_DAD_CHANGE_CB(dlg, pse_shape_grow);
 				RND_DAD_HELP(dlg, "Make the shape larger by the selected amount");
+			RND_DAD_BUTTON(dlg, "Set");
+				pse->grow = RND_DAD_CURRENT(dlg);
+				RND_DAD_CHANGE_CB(dlg, pse_shape_setsize);
+				RND_DAD_HELP(dlg, "Set shape size to absolute value; this means, per shape:\nline - set thickness\ncircle - set diameter\npolygon - set the biggest edge distance (\"set longer side\")");
 		RND_DAD_END(dlg);
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
 	RND_DAD_END(dlg);
