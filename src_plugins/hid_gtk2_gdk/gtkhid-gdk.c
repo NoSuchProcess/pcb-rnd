@@ -1221,97 +1221,13 @@ static void ghid_gdk_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complet
 	}
 }
 
-static void draw_right_cross(GdkGC *xor_gc, gint x, gint y)
+static void draw_crosshair(GdkGC *xor_gc, gint x, gint y)
 {
 	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
 
 	gdk_draw_line(window, xor_gc, x, 0, x, ghidgui->port.view.canvas_height);
 	gdk_draw_line(window, xor_gc, 0, y, ghidgui->port.view.canvas_width, y);
-}
 
-static void draw_slanted_cross(GdkGC *xor_gc, gint x, gint y)
-{
-	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
-	gint x0, y0, x1, y1;
-
-	x0 = x + (ghidgui->port.view.canvas_height - y);
-	x0 = MAX(0, MIN(x0, ghidgui->port.view.canvas_width));
-	x1 = x - y;
-	x1 = MAX(0, MIN(x1, ghidgui->port.view.canvas_width));
-	y0 = y + (ghidgui->port.view.canvas_width - x);
-	y0 = MAX(0, MIN(y0, ghidgui->port.view.canvas_height));
-	y1 = y - x;
-	y1 = MAX(0, MIN(y1, ghidgui->port.view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
-
-	x0 = x - (ghidgui->port.view.canvas_height - y);
-	x0 = MAX(0, MIN(x0, ghidgui->port.view.canvas_width));
-	x1 = x + y;
-	x1 = MAX(0, MIN(x1, ghidgui->port.view.canvas_width));
-	y0 = y + x;
-	y0 = MAX(0, MIN(y0, ghidgui->port.view.canvas_height));
-	y1 = y - (ghidgui->port.view.canvas_width - x);
-	y1 = MAX(0, MIN(y1, ghidgui->port.view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
-}
-
-static void draw_dozen_cross(GdkGC *xor_gc, gint x, gint y)
-{
-	GdkWindow *window = gtkc_widget_get_window(ghidgui->port.drawing_area);
-	gint x0, y0, x1, y1;
-	gdouble tan60 = sqrt(3);
-
-	x0 = x + (ghidgui->port.view.canvas_height - y) / tan60;
-	x0 = MAX(0, MIN(x0, ghidgui->port.view.canvas_width));
-	x1 = x - y / tan60;
-	x1 = MAX(0, MIN(x1, ghidgui->port.view.canvas_width));
-	y0 = y + (ghidgui->port.view.canvas_width - x) * tan60;
-	y0 = MAX(0, MIN(y0, ghidgui->port.view.canvas_height));
-	y1 = y - x * tan60;
-	y1 = MAX(0, MIN(y1, ghidgui->port.view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
-
-	x0 = x + (ghidgui->port.view.canvas_height - y) * tan60;
-	x0 = MAX(0, MIN(x0, ghidgui->port.view.canvas_width));
-	x1 = x - y * tan60;
-	x1 = MAX(0, MIN(x1, ghidgui->port.view.canvas_width));
-	y0 = y + (ghidgui->port.view.canvas_width - x) / tan60;
-	y0 = MAX(0, MIN(y0, ghidgui->port.view.canvas_height));
-	y1 = y - x / tan60;
-	y1 = MAX(0, MIN(y1, ghidgui->port.view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
-
-	x0 = x - (ghidgui->port.view.canvas_height - y) / tan60;
-	x0 = MAX(0, MIN(x0, ghidgui->port.view.canvas_width));
-	x1 = x + y / tan60;
-	x1 = MAX(0, MIN(x1, ghidgui->port.view.canvas_width));
-	y0 = y + x * tan60;
-	y0 = MAX(0, MIN(y0, ghidgui->port.view.canvas_height));
-	y1 = y - (ghidgui->port.view.canvas_width - x) * tan60;
-	y1 = MAX(0, MIN(y1, ghidgui->port.view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
-
-	x0 = x - (ghidgui->port.view.canvas_height - y) * tan60;
-	x0 = MAX(0, MIN(x0, ghidgui->port.view.canvas_width));
-	x1 = x + y * tan60;
-	x1 = MAX(0, MIN(x1, ghidgui->port.view.canvas_width));
-	y0 = y + x / tan60;
-	y0 = MAX(0, MIN(y0, ghidgui->port.view.canvas_height));
-	y1 = y - (ghidgui->port.view.canvas_width - x) / tan60;
-	y1 = MAX(0, MIN(y1, ghidgui->port.view.canvas_height));
-	gdk_draw_line(window, xor_gc, x0, y0, x1, y1);
-}
-
-static void draw_crosshair(GdkGC *xor_gc, gint x, gint y)
-{
-	static enum rnd_crosshair_shape_e prev = rnd_ch_shape_basic;
-
-	draw_right_cross(xor_gc, x, y);
-	if (prev == rnd_ch_shape_union_jack)
-		draw_slanted_cross(xor_gc, x, y);
-	if (prev == rnd_ch_shape_dozen)
-		draw_dozen_cross(xor_gc, x, y);
-	prev = rnd_conf.editor.crosshair_shape_idx;
 }
 
 static void show_crosshair(gboolean paint_new_location)

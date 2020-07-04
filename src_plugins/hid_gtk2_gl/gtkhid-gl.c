@@ -550,55 +550,15 @@ static void ghid_gl_notify_mark_change(rnd_hid_t *hid, rnd_bool changes_complete
 	ghid_gl_invalidate_all(hid);
 }
 
-static void pcb_gl_draw_right_cross(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
+static void pcb_gl_draw_crosshair(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
 {
+	if (!ghidgui->topwin.active || !ghidgui->port.view.has_entered)
+		return;
+
 	glVertex3i(x, miny, z);
 	glVertex3i(x, maxy, z);
 	glVertex3i(minx, y, z);
 	glVertex3i(maxx, y, z);
-}
-
-static void pcb_gl_draw_slanted_cross(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
-{
-	rnd_coord_t cmax = MAX(maxx-minx, maxy-miny);
-
-	glVertex3i(x-cmax, y-cmax, z);
-	glVertex3i(x+cmax, y+cmax, z);
-
-	glVertex3i(x-cmax, y+cmax, z);
-	glVertex3i(x+cmax, y-cmax, z);
-}
-
-static void pcb_gl_draw_dozen_cross(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
-{
-	rnd_coord_t cmax = MAX(maxx-minx, maxy-miny);
-	double c30 = cos(M_PI/6.0), s30 = sin(M_PI/6.0);
-	double c60 = cos(M_PI/3.0), s60 = sin(M_PI/3.0);
-
-	glVertex3i(x-cmax*c30, y-cmax*s30, z);
-	glVertex3i(x+cmax*c30, y+cmax*s30, z);
-	glVertex3i(x-cmax*c60, y-cmax*s60, z);
-	glVertex3i(x+cmax*c60, y+cmax*s60, z);
-
-	glVertex3i(x-cmax*c30, y+cmax*s30, z);
-	glVertex3i(x+cmax*c30, y-cmax*s30, z);
-	glVertex3i(x-cmax*c60, y+cmax*s60, z);
-	glVertex3i(x+cmax*c60, y-cmax*s60, z);
-}
-
-static void pcb_gl_draw_crosshair(rnd_hidlib_t *hidlib, GLint x, GLint y, GLint z, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
-{
-	static enum rnd_crosshair_shape_e prev = rnd_ch_shape_basic;
-
-	if (!ghidgui->topwin.active || !ghidgui->port.view.has_entered)
-		return;
-
-	pcb_gl_draw_right_cross(hidlib, x, y, z, minx, miny, maxx, maxy);
-	if (prev == rnd_ch_shape_union_jack)
-		pcb_gl_draw_slanted_cross(hidlib, x, y, z, minx, miny, maxx, maxy);
-	if (prev == rnd_ch_shape_dozen)
-		pcb_gl_draw_dozen_cross(hidlib, x, y, z, minx, miny, maxx, maxy);
-	prev = rnd_conf.editor.crosshair_shape_idx;
 }
 
 static void ghid_gl_show_crosshair(rnd_hidlib_t *hidlib, gboolean paint_new_location, rnd_coord_t minx, rnd_coord_t miny, rnd_coord_t maxx, rnd_coord_t maxy)
