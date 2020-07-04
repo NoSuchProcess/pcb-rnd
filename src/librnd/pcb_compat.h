@@ -943,7 +943,6 @@
 #define pcbhl_app_url rnd_app_url
 #define pcb_hidcore_crosshair_move_to rnd_hidcore_crosshair_move_to
 #define pcb_hidlib_default_embedded_menu rnd_hidlib_default_embedded_menu
-#define pcb_crosshair_shape_e rnd_crosshair_shape_e
 #define pcb_ch_shape_basic rnd_ch_shape_basic
 #define pcb_ch_shape_union_jack rnd_ch_shape_union_jack
 #define pcb_ch_shape_dozen rnd_ch_shape_dozen

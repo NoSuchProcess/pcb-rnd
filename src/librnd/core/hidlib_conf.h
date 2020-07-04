@@ -30,13 +30,6 @@
 #include <librnd/core/conf.h>
 #include <librnd/core/color.h>
 
-enum rnd_crosshair_shape_e {
-	rnd_ch_shape_basic       = 0,    /*  4-ray */
-	rnd_ch_shape_union_jack  = 1,    /*  8-ray */
-	rnd_ch_shape_dozen       = 2,    /* 12-ray */
-	rnd_ch_shape_NUM
-};
-
 /* to @conf_gen.sh: begin hidlib */
 
 typedef struct {
