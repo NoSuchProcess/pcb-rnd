@@ -93,7 +93,7 @@ typedef struct {
 		RND_CFT_BOOLEAN draw_grid;             /* draw grid points */
 		RND_CFT_BOOLEAN auto_place;            /* force placement of GUI windows (dialogs), trying to override the window manager */
 		RND_CFT_BOOLEAN fullscreen;            /* hide widgets to make more room for the drawing */
-		RND_CFT_INTEGER crosshair_shape_idx;   /* crosshair shape as defined in rnd_crosshair_shape_e */
+		RND_CFT_INTEGER crosshair_shape_idx;   /* OBSOLETE: do not use */
 		RND_CFT_BOOLEAN enable_stroke;         /* Enable libstroke gestures on middle mouse button when non-zero */
 
 		const struct {
