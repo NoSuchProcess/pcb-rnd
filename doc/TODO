@@ -93,6 +93,7 @@
 	- padstack
 	- clearing polygon
 	- text
+- FEATURE: openems mesher: do not ignore padstack copper [report: Evan]
 - FEATURE: padstack bbox:
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
 	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
