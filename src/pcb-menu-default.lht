@@ -16,7 +16,6 @@ ha:{
 			li:press         = { Tool(Stroke) }
 			li:release       = { Tool(Release); Popup(popup-obj, obj-type) }
 			li:shift-release = { Popup(popup-obj-misc) }
-			li:press-ctrl    = { Display(CycleCrosshair) }
 		}
 		li:scroll-up {
 			li:press        = { Zoom(0.8) }

@@ -71,7 +71,7 @@
 static const char pcb_acts_Display[] =
 	"Display(SubcID, template)\n"
 	"Display(Grid|Redraw|Pinout|PinOrPadName)\n"
-	"Display(CycleClip|CycleCrosshair|ToggleAllDirections|ToggleStartDirection)\n"
+	"Display(CycleClip|ToggleAllDirections|ToggleStartDirection)\n"
 	"Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)\n"
 	"Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)\n"
 	"Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)\n"
@@ -161,11 +161,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 		case F_CycleCrosshair:
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
-			rnd_conf_setf(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "%d", CrosshairShapeIncrement(rnd_conf.editor.crosshair_shape_idx));
-			if (rnd_ch_shape_NUM == rnd_conf.editor.crosshair_shape_idx)
-				rnd_conf_set(RND_CFR_CLI, "editor/crosshair_shape_idx", 0, "0", RND_POL_OVERWRITE);
-			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+			rnd_message(RND_MSG_ERROR, "CycleCrosshair: not supported any more\n");
 			break;
 
 		case F_ToggleRubberBandMode:
