@@ -1128,89 +1128,10 @@ static void work_area_input(Widget w, XtPointer v, XEvent * e, Boolean * ctd)
 		XmProcessTraversal(m_cmd, XmTRAVERSE_CURRENT);
 }
 
-static void draw_right_cross(GC xor_gc, int x, int y, int view_width, int view_height)
+static void draw_crosshair(GC xor_gc, int x, int y, int view_width, int view_height)
 {
 	XDrawLine(display, window, xor_gc, 0, y, view_width, y);
 	XDrawLine(display, window, xor_gc, x, 0, x, view_height);
-}
-
-static void draw_slanted_cross(GC xor_gc, int x, int y, int view_width, int view_height)
-{
-	int x0, y0, x1, y1;
-
-	x0 = x + (view_height - y);
-	x0 = MAX(0, MIN(x0, view_width));
-	x1 = x - y;
-	x1 = MAX(0, MIN(x1, view_width));
-	y0 = y + (view_width - x);
-	y0 = MAX(0, MIN(y0, view_height));
-	y1 = y - x;
-	y1 = MAX(0, MIN(y1, view_height));
-	XDrawLine(display, window, xor_gc, x0, y0, x1, y1);
-	x0 = x - (view_height - y);
-	x0 = MAX(0, MIN(x0, view_width));
-	x1 = x + y;
-	x1 = MAX(0, MIN(x1, view_width));
-	y0 = y + x;
-	y0 = MAX(0, MIN(y0, view_height));
-	y1 = y - (view_width - x);
-	y1 = MAX(0, MIN(y1, view_height));
-	XDrawLine(display, window, xor_gc, x0, y0, x1, y1);
-}
-
-static void draw_dozen_cross(GC xor_gc, int x, int y, int view_width, int view_height)
-{
-	int x0, y0, x1, y1;
-	double tan60 = sqrt(3);
-
-	x0 = x + (view_height - y) / tan60;
-	x0 = MAX(0, MIN(x0, view_width));
-	x1 = x - y / tan60;
-	x1 = MAX(0, MIN(x1, view_width));
-	y0 = y + (view_width - x) * tan60;
-	y0 = MAX(0, MIN(y0, view_height));
-	y1 = y - x * tan60;
-	y1 = MAX(0, MIN(y1, view_height));
-	XDrawLine(display, window, xor_gc, x0, y0, x1, y1);
-
-	x0 = x + (view_height - y) * tan60;
-	x0 = MAX(0, MIN(x0, view_width));
-	x1 = x - y * tan60;
-	x1 = MAX(0, MIN(x1, view_width));
-	y0 = y + (view_width - x) / tan60;
-	y0 = MAX(0, MIN(y0, view_height));
-	y1 = y - x / tan60;
-	y1 = MAX(0, MIN(y1, view_height));
-	XDrawLine(display, window, xor_gc, x0, y0, x1, y1);
-
-	x0 = x - (view_height - y) / tan60;
-	x0 = MAX(0, MIN(x0, view_width));
-	x1 = x + y / tan60;
-	x1 = MAX(0, MIN(x1, view_width));
-	y0 = y + x * tan60;
-	y0 = MAX(0, MIN(y0, view_height));
-	y1 = y - (view_width - x) * tan60;
-	y1 = MAX(0, MIN(y1, view_height));
-	XDrawLine(display, window, xor_gc, x0, y0, x1, y1);
-
-	x0 = x - (view_height - y) * tan60;
-	x0 = MAX(0, MIN(x0, view_width));
-	x1 = x + y * tan60;
-	x1 = MAX(0, MIN(x1, view_width));
-	y0 = y + x / tan60;
-	y0 = MAX(0, MIN(y0, view_height));
-	y1 = y - (view_width - x) / tan60;
-	y1 = MAX(0, MIN(y1, view_height));
-	XDrawLine(display, window, xor_gc, x0, y0, x1, y1);
-}
-
-static void draw_crosshair(GC xor_gc, int x, int y, int view_width, int view_height)
-{
-	draw_right_cross(xor_gc, x, y, view_width, view_height);
-	if (rnd_conf.editor.crosshair_shape_idx == rnd_ch_shape_union_jack)
-		draw_slanted_cross(xor_gc, x, y, view_width, view_height);
-	if (rnd_conf.editor.crosshair_shape_idx == rnd_ch_shape_dozen)
-		draw_dozen_cross(xor_gc, x, y, view_width, view_height);
 }
 
 void lesstif_show_crosshair(int show)
