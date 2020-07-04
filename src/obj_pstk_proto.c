@@ -1121,6 +1121,8 @@ static void pcb_pstk_poly_center(const pcb_pstk_poly_t *poly, rnd_coord_t *cx, r
 	*cy = rnd_round(y);
 }
 
+
+
 void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord_t val)
 {
 	rnd_coord_t cx, cy;
@@ -1149,9 +1151,29 @@ void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord
 			pcb_pstk_poly_center(&shp->data.poly, &cx, &cy);
 			rnd_polyarea_free(&shp->data.poly.pa);
 			if (is_absolute) {
-TODO("TODO")
+				int n;
+				double maxs2 = 0, s;
+				/* determine the max edge center distance from the shape center; this
+				   is effectivel the "radius" of the shape measured on sides, not on corners */
+				for(n = 0; n < shp->data.poly.len; n++) {
+					double s2, x = shp->data.poly.x[n], y = shp->data.poly.y[n], xn = shp->data.poly.x[(n+1) % shp->data.poly.len], yn = shp->data.poly.y[(n+1) % shp->data.poly.len];
+					x = (x+xn)/2.0; y = (y+yn)/2.0;
+					s2 = rnd_distance2(cx, cy, x, y);
+					if (s2 > maxs2)
+						maxs2 = s2;
+					
+				}
+				if (maxs2 == 0)
+					break;
+
+				/* calculate the delta value: biggest side distance should match the expected val */
+				val = val - (sqrt(maxs2) * 2);
+
+				/* fall through to relative grow */
 			}
-			else {
+			
+			/* relative growth */
+			{
 				rnd_polo_t *p, p_st[32];
 				double vl = rnd_round(val/2);
 
