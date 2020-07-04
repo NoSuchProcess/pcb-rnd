@@ -80,25 +80,6 @@ static const char pcb_acts_Display[] =
 
 static const char pcb_acth_Display[] = "Several display-related actions.";
 /* DOC: display.html */
-static enum rnd_crosshair_shape_e CrosshairShapeIncrement(enum rnd_crosshair_shape_e shape)
-{
-	switch (shape) {
-	case rnd_ch_shape_basic:
-		shape = rnd_ch_shape_union_jack;
-		break;
-	case rnd_ch_shape_union_jack:
-		shape = rnd_ch_shape_dozen;
-		break;
-	case rnd_ch_shape_dozen:
-		shape = rnd_ch_shape_NUM;
-		break;
-	case rnd_ch_shape_NUM:
-		shape = rnd_ch_shape_basic;
-		break;
-	}
-	return shape;
-}
-
 extern pcb_opfunc_t ChgFlagFunctions;
 static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
