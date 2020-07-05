@@ -292,7 +292,7 @@ static void lb_attr_layer_chg(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	lb_update_left2right(hid_ctx, ctx);
 }
 
-const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(selected)\nLayerBinding(buffer)\n";
+const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(buffer)\n";
 const char pcb_acth_LayerBinding[] = "Change the layer binding.";
 fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -316,11 +316,6 @@ fgw_error_t pcb_act_LayerBinding(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		ctx.subc = ptr2;
 		ctx.data = ctx.subc->data;
-	}
-	else if (op == F_Selected) {
-TODO("subc TODO")
-		rnd_message(RND_MSG_ERROR, "TODO\n");
-		return 1;
 	}
 	else if (op == F_Buffer) {
 		ctx.data = PCB_PASTEBUFFER->Data;
