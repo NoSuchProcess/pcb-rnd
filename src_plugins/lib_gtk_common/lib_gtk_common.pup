@@ -1,8 +1,0 @@
-$class lib
-$short all-hid_gtk common code
-$long hid_gtk* common code (regardless of rendering mechanism: for both gdk sw rendering and gl)
-$state works
-$package lib-gtk
-dep lib_hid_common
-default disable-all
-

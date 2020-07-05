@@ -1,6 +1,0 @@
-$class feature
-$short diagnostics: log HID calls
-$long Sits between a HID (or exporter) and the core and logs all core->plugin calls made through the HID structure.
-$state WIP
-default disable
-autoload 1

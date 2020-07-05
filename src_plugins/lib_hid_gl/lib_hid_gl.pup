@@ -1,6 +1,0 @@
-$class lib
-$short openGL rendering
-$long generic openGL renderer shared among GUI HIDs
-$state works
-$package lib-gl
-default disable-all

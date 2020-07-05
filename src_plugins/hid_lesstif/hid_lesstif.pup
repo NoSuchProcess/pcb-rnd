@@ -1,8 +1,0 @@
-$class hid
-$short the lesstif gui
-$long GUI: the lesstif HID.
-$state works
-$package hid-lesstif
-default buildin
-dep lib_hid_common
-autoload 1
