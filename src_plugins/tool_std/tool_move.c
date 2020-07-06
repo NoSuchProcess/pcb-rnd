@@ -42,7 +42,7 @@
 #include <librnd/core/tool.h>
 #include "extobj.h"
 #include "obj_gfx.h"
-
+#include "undo.h"
 
 void pcb_tool_move_uninit(void)
 {
