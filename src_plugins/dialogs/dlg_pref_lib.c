@@ -146,7 +146,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		rnd_conf_set(ctx->role, "rc/library_search_paths", 0, "", RND_POL_OVERWRITE);
 	lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
 	assert(lst != NULL);
-	lht_list_clean(lst);
+	lht_tree_list_clean(lst);
 
 	/* append items from the widget */
 	for(r = gdl_first(&tree->rows); r != NULL; r = gdl_next(&tree->rows, r)) {
