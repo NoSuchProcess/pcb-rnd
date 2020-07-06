@@ -699,11 +699,6 @@ void pcb_buffer_scale(pcb_buffer_t *Buffer, double sx, double sy, double sth, in
 
 void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer)
 {
-	int j, k;
-	rnd_layer_id_t SLayer = -1, CLayer = -1;
-	rnd_layergrp_id_t sgroup, cgroup;
-	pcb_layer_t swap;
-
 #if 0
 /* this results in saving flipped (bottom-side) footprints whenlooking at the board from the bottom */
 	PCB_SUBC_LOOP(Buffer->Data);
