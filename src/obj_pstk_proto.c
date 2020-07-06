@@ -1152,7 +1152,7 @@ void pcb_pstk_shape_grow_(pcb_pstk_shape_t *shp, rnd_bool is_absolute, rnd_coord
 			rnd_polyarea_free(&shp->data.poly.pa);
 			if (is_absolute) {
 				int n;
-				double maxs2 = 0, s;
+				double maxs2 = 0;
 				/* determine the max edge center distance from the shape center; this
 				   is effectivel the "radius" of the shape measured on sides, not on corners */
 				for(n = 0; n < shp->data.poly.len; n++) {

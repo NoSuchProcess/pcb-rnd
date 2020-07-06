@@ -502,7 +502,7 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 
 			/* modified version: angle keeper; run only on every even call to not mess up the xor */
 			if (modifier && pcb_crosshair.edit_poly_point_extra.last_active) {
-				rnd_coord_t ppx, ppy, nnx, nny, ox[2], oy[2];
+				rnd_coord_t ppx, ppy, nnx, nny;
 
 				pcb_crosshair.edit_poly_point_extra.active = 1;
 				pcb_crosshair.edit_poly_point_extra.point[0] = &polygon->Points[prev];
