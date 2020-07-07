@@ -138,8 +138,8 @@ TODO("padstack: remove some paths when route style has proto")
 	rnd_event_bind(PCB_EVENT_LAYER_KEY_CHANGE, pcb_layer_menu_key_update_ev, NULL, layer_cookie);
 	rnd_event_bind(PCB_EVENT_ROUTE_STYLES_CHANGED, pcb_rst_update_ev, NULL, rst_cookie);
 	rnd_event_bind(RND_EVENT_BOARD_CHANGED, pcb_rst_update_ev, NULL, rst_cookie);
-	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_layersel_gui_init_ev, NULL, layersel_cookie);
 	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_rst_gui_init_ev, NULL, rst_cookie);
+	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_layersel_gui_init_ev, NULL, layersel_cookie);
 	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_status_gui_init_ev, NULL, status_cookie);
 	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_rendering_gui_init_ev, NULL, rendering_cookie);
 	rnd_event_bind(RND_EVENT_USER_INPUT_KEY, pcb_status_st_update_ev, NULL, status_cookie);
