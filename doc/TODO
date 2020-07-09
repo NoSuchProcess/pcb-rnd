@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: lesstif DAD support for top window docks [report: Igor2]
 - res/menu (NGI0):
 	- FEATURE: load/swap menus (TODO#1)
 	- CLEANUP: search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
