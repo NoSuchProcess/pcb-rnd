@@ -266,9 +266,10 @@ pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_co
 	/* calculate final placement and enable rotation */
 	if (mirror & PCB_TXT_MIRROR_X) mx = -1;
 	if (mirror & PCB_TXT_MIRROR_Y) my = -1;
-	rot = rot * mx *my;
-	cs = cos(rot / RND_RAD_TO_DEG);
-	sn = sin(rot / RND_RAD_TO_DEG);
+
+	cs = cos(rot*mx*my / RND_RAD_TO_DEG);
+	sn = sin(rot*mx*my / RND_RAD_TO_DEG);
+
 	t->X = X - (nanchx * cs * mx + nanchy * sn * my);
 	t->Y = Y - (nanchy * cs * my - nanchx * sn * mx);
 	t->rot = rot;
@@ -520,10 +521,10 @@ void pcb_text_bbox(pcb_font_t *FontPtr, pcb_text_t *Text)
 
 	/* it is enough to do the transformations only once, on the raw bounding box */
 	pcb_xform_mx_translate(mx, Text->X, Text->Y);
-	pcb_xform_mx_rotate(mx, Text->rot);
-	pcb_xform_mx_scale(mx, scx, scy);
 	if (mirror != PCB_TXT_MIRROR_NO)
 		pcb_xform_mx_scale(mx, (mirror & PCB_TXT_MIRROR_X) ? -1 : 1, (mirror & PCB_TXT_MIRROR_Y) ? -1 : 1);
+	pcb_xform_mx_rotate(mx, Text->rot);
+	pcb_xform_mx_scale(mx, scx, scy);
 
 	/* calculate the transformed coordinates of all 4 corners of the raw
 	   (non-axis-aligned) bounding box */
@@ -1323,10 +1324,10 @@ RND_INLINE void pcb_text_draw_string_(pcb_draw_info_t *info, pcb_font_t *font, c
 	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
 
 	pcb_xform_mx_translate(mx, x0, y0);
-	pcb_xform_mx_rotate(mx, rotdeg);
-	pcb_xform_mx_scale(mx, scx, scy);
 	if (mirror != PCB_TXT_MIRROR_NO)
 		pcb_xform_mx_scale(mx, (mirror & PCB_TXT_MIRROR_X) ? -1 : 1, (mirror & PCB_TXT_MIRROR_Y) ? -1 : 1);
+	pcb_xform_mx_rotate(mx, rotdeg);
+	pcb_xform_mx_scale(mx, scx, scy);
 
 	/* Text too small at this zoom level: cheap draw */
 	if ((tiny != PCB_TXT_TINY_ACCURATE) && (cb == NULL)) {
