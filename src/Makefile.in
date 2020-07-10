@@ -87,6 +87,7 @@ append /local/pcb/OBJS_HIDLIB [@
 	$(LIBRND)/core/hid_dad_spin.o
 	$(LIBRND)/core/hid_dad_unit.o
 	$(LIBRND)/core/hid_init.o
+	$(LIBRND)/core/hid_menu.o
 	$(LIBRND)/core/hid_nogui.o
 	$(LIBRND)/core/hidlib.o
 	$(LIBRND)/core/hidlib_conf.o
