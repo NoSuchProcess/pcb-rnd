@@ -1,15 +1,15 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- res/menu (NGI0):
-	- FEATURE: load/swap menus (TODO#1)
-	- CLEANUP: search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
+- res/menu (NGI0): load new res on the fly (patch the menu system):
+	- low level patching (tree compare)
+	- high level patching (patch instruction apply)
+	- gui load dialog
+	- swich over create menu and remove menu actions to patches
 	- FEATURE: fungw: auto-remove menus by cookie (TODO#2)
-	- FEATURE: load new res on the fly (replace the menu system):
-		- low level reload code (re-add the dynamic menus too!)
-		- action to reload if file name is known
-		- gui load dialog with tags listed
-	- FEATURE: project specific menus from extra lihata files - maybe from project.lht
+	- remove the old menu helper code that tried to manipulate the lihata tree directly
+	- FEATURE: project specific menus from extra lihata files - maybe from project.lht or a .d
+	- CLEANUP: search for vendor in the hid plugins, there should be no trace of it (vendor should register its in submenus with anchors)
 - FEATURE: finish drill/slot export in export_stl [report: Majenko]
 - FEATURE: preview widget: allow to handle keys both in gtk and lesstif
 - BUG: padstack editor top/bottom gets mixed up on other-side on display (but not in data!) ml=4221 [report: Majenko]
