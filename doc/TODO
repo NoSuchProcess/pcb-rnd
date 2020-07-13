@@ -2,10 +2,10 @@
 
 1. For the upcoming release ===============================================================================
 - res/menu (NGI0): load new res on the fly (patch the menu system):
+	- swich over plugins to create menus using patching
 	- low level patching (tree compare)
 	- high level patching (patch instruction apply)
 	- gui load dialog
-	- swich over create menu and remove menu actions to patches
 	- FEATURE: fungw: auto-remove menus by cookie (TODO#2)
 	- remove the old menu helper code that tried to manipulate the lihata tree directly
 	- FEATURE: project specific menus from extra lihata files - maybe from project.lht or a .d
