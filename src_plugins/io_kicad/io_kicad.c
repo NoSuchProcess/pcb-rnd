@@ -29,11 +29,14 @@
 
 #include "config.h"
 #include <librnd/core/plugins.h>
+#include <librnd/core/hid_menu.h>
 #include "plug_io.h"
 #include "write.h"
 #include "read.h"
 #include "read_net.h"
 #include <librnd/core/actions.h>
+
+#include "menu_internal.c"
 
 static pcb_plug_io_t io_kicad;
 static const char *kicad_cookie = "kicad plugin";
@@ -62,6 +65,7 @@ void pplg_uninit_io_kicad(void)
 	rnd_remove_actions_by_cookie(kicad_cookie);
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_kicad);
 	pcb_eeschema_uninit();
+	rnd_hid_menu_unload(rnd_gui, kicad_cookie);
 }
 
 int pplg_init_io_kicad(void)
@@ -94,6 +98,8 @@ int pplg_init_io_kicad(void)
 	RND_REGISTER_ACTIONS(eeschema_action_list, kicad_cookie);
 
 	pcb_eeschema_init();
+
+	rnd_hid_menu_load(rnd_gui, NULL, kicad_cookie, 190, NULL, 0, kicad_menu, "plugin: io_kicad");
 
 	/* TODO: Alloc plugin-globals here. */
 

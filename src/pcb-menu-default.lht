@@ -74,7 +74,6 @@ ha:rnd-menu-v1 {
 						@import_geo
 						-
 						@import_sch
-						ha:Import KiCad/eeschema schematics  = {                             action=LoadEeschemaFrom() }
 						ha:Import mentor graphics schematics = {                             action=LoadMentorFrom() }
 						ha:Load netlist file                 = {                             action=Load(Netlist) }
 						ha:Load IPC-D-356 netlist            = {                             action=LoadIpc356From() }

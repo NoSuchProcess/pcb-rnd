@@ -4228,6 +4228,7 @@
  ../src_plugins/lib_netmap/netmap.h netlist.h funchash_core.h \
  librnd/core/funchash.h funchash_core_list.h ../src_3rd/genht/htpi.h
 ../src_plugins/io_kicad/io_kicad.o: ../src_plugins/io_kicad/io_kicad.c \
+ ../src_plugins/io_kicad/menu_internal.c \
  ../config.h librnd/config.h librnd/core/plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
