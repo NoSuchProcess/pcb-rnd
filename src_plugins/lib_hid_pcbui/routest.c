@@ -34,10 +34,11 @@
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_menu.h>
 
 #include "routest.h"
 
-#define ANCH "@routestyles"
+#define ANCH "/anchored/@routestyles"
 
 #define MAX_STYLES 64
 
@@ -51,32 +52,43 @@ static rst_ctx_t rst;
 
 #include "routest_dlg.c"
 
-static void rst_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
+static void rst_install_menu(void)
 {
 	rnd_menu_prop_t props;
-	char *end = path + strlen(path);
-	char act[256], chk[256];
+	char act[256], chk[256], *path, *end;
 	int idx;
+	size_t len = 0;
+
+	for(idx = vtroutestyle_len(&PCB->RouteStyle)-1; idx >= 0; idx--) {
+		size_t l = strlen(PCB->RouteStyle.array[idx].name);
+		if (l > len) len = l;
+	}
+
+	path = malloc(len + 32);
+	strcpy(path, ANCH);
+	end = path + strlen(ANCH);
 
 	memset(&props, 0,sizeof(props));
 	props.action = act;
 	props.checked = chk;
 	props.update_on = "";
-	props.cookie = ANCH;
-
-	rnd_hid_cfg_del_anchor_menus(node, ANCH);
+	props.cookie = "lib_hid_pcbui route styles";
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
 	*end = '/';
 	end++;
 
+	rnd_hid_menu_merge_inhibit_inc();
+	rnd_hid_menu_unload(rnd_gui, props.cookie);
 	/* have to go reverse to keep order because this will insert items */
 	for(idx = vtroutestyle_len(&PCB->RouteStyle)-1; idx >= 0; idx--) {
 		sprintf(act, "RouteStyle(%d)", idx+1); /* for historical reasons this action counts from 1 */
 		sprintf(chk, "ChkRst(%d)", idx);
 		strcpy(end, PCB->RouteStyle.array[idx].name);
-		rnd_gui->create_menu(rnd_gui, path, &props);
+		rnd_hid_menu_create(path, &props);
 	}
+	rnd_hid_menu_merge_inhibit_dec();
+	free(path);
 }
 
 /* Update the edit dialog and all checkboxes, but nothing else on the sub */
@@ -97,7 +109,7 @@ static void rst_update()
 {
 	if (rst_lock) return;
 	rst_lock++;
-	rnd_hid_cfg_map_anchor_menus(ANCH, rst_install_menu, NULL);
+	rst_install_menu();
 
 	if (rst.sub_inited) {
 		int n, target;
