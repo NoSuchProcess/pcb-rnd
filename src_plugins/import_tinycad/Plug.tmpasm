@@ -1,5 +1,7 @@
 put /local/pcb/mod {import_tinycad}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_tinycad/tinycad.o @]
+put /local/pcb/mod/MENUFILE {tinycad-menu.lht}
+put /local/pcb/mod/MENUVAR {tinycad_menu}
 
 switch /local/pcb/import_tinycad/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

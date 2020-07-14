@@ -41,10 +41,12 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
-
+#include <librnd/core/hid_menu.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
+
+#include "menu_internal.c"
 
 static const char *tinycad_cookie = "tinycad importer";
 
@@ -253,6 +255,7 @@ void pplg_uninit_import_tinycad(void)
 {
 	rnd_remove_actions_by_cookie(tinycad_cookie);
 	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tinycad);
+	rnd_hid_menu_unload(rnd_gui, tinycad_cookie);
 }
 
 int pplg_init_import_tinycad(void)
@@ -274,5 +277,6 @@ int pplg_init_import_tinycad(void)
 	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_tinycad);
 
 	RND_REGISTER_ACTIONS(tinycad_action_list, tinycad_cookie)
+	rnd_hid_menu_load(rnd_gui, NULL, tinycad_cookie, 175, NULL, 0, tinycad_menu, "plugin: import tinycad");
 	return 0;
 }

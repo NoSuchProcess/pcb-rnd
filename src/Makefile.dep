@@ -3639,7 +3639,7 @@
  plug_import.h ../src_plugins/import_sch2/import_sch_conf.h \
  ../src_plugins/import_sch2/import_sch_dlg.c \
  ../src_plugins/import_sch2/import_sch_conf_fields.h
-../src_plugins/import_tinycad/tinycad.o: \
+../src_plugins/import_tinycad/tinycad.o: ../src_plugins/import_tinycad/menu_internal.c \
  ../src_plugins/import_tinycad/tinycad.c ../config.h librnd/config.h \
  ../src_3rd/qparse/qparse.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
