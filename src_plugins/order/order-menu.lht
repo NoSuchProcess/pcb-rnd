@@ -1,0 +1,9 @@
+ha:rnd-menu-v1 {
+	li:anchored {
+		ha:@feature_plugins {
+			li:submenu {
+				ha:Order PCB = { a={<Key>f;<Key>x;<Key>o}; action=OrderPCB(gui); tip={Order your PCB from a fab\nusing a dialog box} }
+			}
+		}
+	}
+}

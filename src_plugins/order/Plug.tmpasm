@@ -2,6 +2,8 @@ put /local/pcb/mod {order}
 put /local/pcb/mod/CONF {$(PLUGDIR)/order/order_conf.h}
 put /local/pcb/mod/CONFFILE {order.conf}
 put /local/pcb/mod/CONFVAR {order_conf_internal}
+put /local/pcb/mod/MENUFILE {order-menu.lht}
+put /local/pcb/mod/MENUVAR {order_menu}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/order/order.o
 @]

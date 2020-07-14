@@ -35,6 +35,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid_menu.h>
 #include "layer.h"
 #include <librnd/core/event.h>
 #include "order_conf.h"
@@ -42,12 +43,12 @@
 
 #include "order.h"
 
+#include "menu_internal.c"
+
 static const char *order_cookie = "order plugin";
 
 conf_order_t conf_order;
 #define ORDER_CONF_FN "order.conf"
-
-#define ANCH "@feature_plugins"
 
 vtp0_t pcb_order_imps;
 
@@ -80,26 +81,6 @@ fgw_error_t pcb_act_OrderPCB(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static rnd_action_t order_action_list[] = {
 	{"OrderPCB", pcb_act_OrderPCB, pcb_acth_OrderPCB, pcb_acts_OrderPCB}
 };
-
-static void order_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
-{
-	char *end = path + strlen(path);
-	rnd_menu_prop_t props;
-	char act[256];
-
-	memset(&props, 0,sizeof(props));
-	props.action = act;
-	props.tip = "Order your PCB from a fab\nusing a dialog box";
-	props.accel = "<Key>f;<Key>x;<Key>o";
-	props.cookie = ANCH;
-
-	/* prepare for appending the strings at the end of the path, "under" the anchor */
-	*end = '/';
-	end++;
-
-	strcpy(end, "Order PCB"); strcpy(act, "OrderPCB(gui)");
-	rnd_gui->create_menu(rnd_gui, path, &props);
-}
 
 void pcb_order_free_field_data(order_ctx_t *octx, pcb_order_field_t *f)
 {
@@ -193,19 +174,14 @@ void pcb_order_autoload_field(order_ctx_t *octx, pcb_order_field_t *f)
 }
 
 
-static void order_menu_init(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
-{
-	rnd_hid_cfg_map_anchor_menus(ANCH, order_install_menu, NULL);
-}
-
 int pplg_check_ver_order(int ver_needed) { return 0; }
 
 void pplg_uninit_order(void)
 {
 	rnd_remove_actions_by_cookie(order_cookie);
-	rnd_event_unbind_allcookie(order_cookie);
 	rnd_conf_unreg_file(ORDER_CONF_FN, order_conf_internal);
 	rnd_conf_unreg_fields("plugins/order/");
+	rnd_hid_menu_unload(rnd_gui, order_cookie);
 }
 
 int pplg_init_order(void)
@@ -218,6 +194,6 @@ int pplg_init_order(void)
 #include "order_conf_fields.h"
 
 	RND_REGISTER_ACTIONS(order_action_list, order_cookie)
-	rnd_event_bind(RND_EVENT_GUI_INIT, order_menu_init, NULL, order_cookie);
+	rnd_hid_menu_load(rnd_gui, NULL, order_cookie, 110, NULL, 0, order_menu, "plugin: order pcb");
 	return 0;
 }
