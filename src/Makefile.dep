@@ -3373,7 +3373,7 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
  ../src_plugins/lib_compat_help/pstk_help.h obj_pstk.h plug_import.h
-../src_plugins/import_ltspice/ltspice.o: \
+../src_plugins/import_ltspice/ltspice.o: ../src_plugins/import_ltspice/menu_internal.o \
  ../src_plugins/import_ltspice/ltspice.c ../config.h librnd/config.h \
  ../src_3rd/qparse/qparse.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \

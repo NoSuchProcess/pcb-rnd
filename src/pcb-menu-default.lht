@@ -75,7 +75,6 @@ ha:rnd-menu-v1 {
 						-
 						@import_sch
 						ha:Load netlist file                 = {                             action=Load(Netlist) }
-						ha:Load LTSpice .net and .asc files  = {                             action=LoadLTSpiceFrom() }
 						ha:Load FreePCB netlist (EasyEDA)    = {                             action=LoadFpcbnlFrom() }
 					}
 				}

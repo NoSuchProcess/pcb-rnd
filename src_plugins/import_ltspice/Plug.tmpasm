@@ -1,5 +1,7 @@
 put /local/pcb/mod {import_ltspice}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_ltspice/ltspice.o @]
+put /local/pcb/mod/MENUFILE {ltspice-menu.lht}
+put /local/pcb/mod/MENUVAR {ltspice_menu}
 
 switch /local/pcb/import_ltspice/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

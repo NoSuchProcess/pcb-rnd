@@ -42,10 +42,12 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_fs.h>
-
+#include <librnd/core/hid_menu.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
+
+#include "menu_internal.c"
 
 static const char *ltspice_cookie = "ltspice importer";
 
@@ -384,6 +386,7 @@ void pplg_uninit_import_ltspice(void)
 {
 	rnd_remove_actions_by_cookie(ltspice_cookie);
 	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ltspice);
+	rnd_hid_menu_unload(rnd_gui, ltspice_cookie);
 }
 
 int pplg_init_import_ltspice(void)
@@ -405,5 +408,6 @@ int pplg_init_import_ltspice(void)
 	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ltspice);
 
 	RND_REGISTER_ACTIONS(ltspice_action_list, ltspice_cookie)
+	rnd_hid_menu_load(rnd_gui, NULL, ltspice_cookie, 165, NULL, 0, ltspice_menu, "plugin: ltspice netlist import");
 	return 0;
 }
