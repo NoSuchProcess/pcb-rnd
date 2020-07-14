@@ -3,6 +3,8 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/import_hpgl/hpgl.o
 	$(SRC_3RD_DIR)/libuhpgl/parse.o
 @]
+put /local/pcb/mod/MENUFILE {hpgl-menu.lht}
+put /local/pcb/mod/MENUVAR {hpgl_menu}
 
 switch /local/pcb/import_hpgl/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

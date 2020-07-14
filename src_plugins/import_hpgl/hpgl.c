@@ -42,10 +42,12 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
-
+#include <librnd/core/hid_menu.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
+
+#include "menu_internal.c"
 
 static const char *hpgl_cookie = "hpgl importer";
 
@@ -180,11 +182,13 @@ int pplg_check_ver_import_hpgl(int ver_needed) { return 0; }
 void pplg_uninit_import_hpgl(void)
 {
 	rnd_remove_actions_by_cookie(hpgl_cookie);
+	rnd_hid_menu_unload(rnd_gui, hpgl_cookie);
 }
 
 int pplg_init_import_hpgl(void)
 {
 	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(hpgl_action_list, hpgl_cookie)
+	rnd_hid_menu_load(rnd_gui, NULL, hpgl_cookie, 135, NULL, 0, hpgl_menu, "plugin: import_hpgl");
 	return 0;
 }
