@@ -68,15 +68,16 @@ ha:rnd-menu-v1 {
 						ha:Configure import schematics...    = {                             action=ImportSch(dialog) }
 						ha:Import tEDAx schematics           = {                             action=LoadTedaxFrom(netlist) }
 						-
+						@import_geo
 						ha:Load subcircuit data to paste-buffer = {                          li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
 						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
-						ha:Load vendor resource file         = {                             action=LoadVendorFrom() }
 						ha:Load routed dsn or ses file       = {                             action=LoadDsnFrom() }
 						ha:Load MUCS pl file                 = {                             action=LoadMucsFrom() }
 						ha:Load Hyperlynx .hyp file          = {                             action=LoadHypFrom() }
 						ha:Load HP-GL plot to paste-buffer   = {                             action=LoadHPGLFrom() }
 						ha:Load pixmap to paste-buffer gfx   = {                             li:action={PasteBuffer(Clear); LoadPixmap(); Tool(buffer);} }
 						-
+						@import_sch
 						ha:Import KiCad/eeschema schematics  = {                             action=LoadEeschemaFrom() }
 						ha:Import mentor graphics schematics = {                             action=LoadMentorFrom() }
 						ha:Load netlist file                 = {                             action=Load(Netlist) }
@@ -381,7 +382,6 @@ ha:rnd-menu-v1 {
 				ha:Mincut on shorts                 = { checked=plugins/mincut/enable; action=conf(toggle, plugins/mincut/enable, design) }
 				ha:Auto-zero delta measurements     = { checked=editor/local_ref; action=conf(toggle, editor/local_ref, design) }
 				ha:Brave mode                       = { action=brave() }
-				ha:Vendor drill mapping             = { checked=plugins/vendor/enable; action=conf(toggle, plugins/vendor/enable, design) }
 				ha:Loose subcircuits (no subc lock) = { a={<key>m; <key>k; <key>s}; checked=subc(loose, check); action=subc(loose, toggle); update_on={} }
 				ha:Tool {
 					li:submenu {
@@ -550,8 +550,6 @@ ha:rnd-menu-v1 {
 				}
 				-
 				ha:Design Rule Checker = { a={<key>a;<key>x;}; action=DRC() }
-				-
-				ha:Apply vendor drill mapping = { action=ApplyVendor() }
 				-
 				ha:Design changes (back annotation) {
 					li:submenu {
