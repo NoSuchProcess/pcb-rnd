@@ -3461,6 +3461,7 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h
 ../src_plugins/import_mucs/mucs.o: ../src_plugins/import_mucs/mucs.c \
+ ../src_plugins/import_mucs/menu_internal.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h attrib.h \

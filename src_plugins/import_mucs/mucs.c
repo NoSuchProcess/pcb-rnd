@@ -44,12 +44,14 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
-
+#include <librnd/core/hid_menu.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include "layer.h"
 #include "conf_core.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
+
+#include "menu_internal.c"
 
 static const char *mucs_cookie = "mucs importer";
 
@@ -163,11 +165,13 @@ int pplg_check_ver_import_mucs(int ver_needed) { return 0; }
 void pplg_uninit_import_mucs(void)
 {
 	rnd_remove_actions_by_cookie(mucs_cookie);
+	rnd_hid_menu_unload(rnd_gui, mucs_cookie);
 }
 
 int pplg_init_import_mucs(void)
 {
 	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(mucs_action_list, mucs_cookie)
+	rnd_hid_menu_load(rnd_gui, NULL, mucs_cookie, 125, NULL, 0, mucs_menu, "plugin: import_mucs");
 	return 0;
 }

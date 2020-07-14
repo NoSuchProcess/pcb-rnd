@@ -72,7 +72,6 @@ ha:rnd-menu-v1 {
 						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
 						ha:Load pixmap to paste-buffer gfx   = {                             li:action={PasteBuffer(Clear); LoadPixmap(); Tool(buffer);} }
 						@import_geo
-						ha:Load MUCS pl file                 = {                             action=LoadMucsFrom() }
 						ha:Load Hyperlynx .hyp file          = {                             action=LoadHypFrom() }
 						ha:Load HP-GL plot to paste-buffer   = {                             action=LoadHPGLFrom() }
 						-
