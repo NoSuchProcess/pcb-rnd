@@ -355,7 +355,7 @@ int pplg_init_import_dsn(void)
 {
 	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
-	rnd_hid_menu_load(rnd_gui, NULL, dsn_cookie, 191, NULL, 0, dsn_menu, "plugin: import_dsn");
+	rnd_hid_menu_load(rnd_gui, NULL, dsn_cookie, 190, NULL, 0, dsn_menu, "plugin: import_dsn");
 	return 0;
 }
 

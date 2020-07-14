@@ -68,13 +68,13 @@ ha:rnd-menu-v1 {
 						ha:Configure import schematics...    = {                             action=ImportSch(dialog) }
 						ha:Import tEDAx schematics           = {                             action=LoadTedaxFrom(netlist) }
 						-
-						@import_geo
 						ha:Load subcircuit data to paste-buffer = {                          li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
 						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
+						ha:Load pixmap to paste-buffer gfx   = {                             li:action={PasteBuffer(Clear); LoadPixmap(); Tool(buffer);} }
+						@import_geo
 						ha:Load MUCS pl file                 = {                             action=LoadMucsFrom() }
 						ha:Load Hyperlynx .hyp file          = {                             action=LoadHypFrom() }
 						ha:Load HP-GL plot to paste-buffer   = {                             action=LoadHPGLFrom() }
-						ha:Load pixmap to paste-buffer gfx   = {                             li:action={PasteBuffer(Clear); LoadPixmap(); Tool(buffer);} }
 						-
 						@import_sch
 						ha:Import KiCad/eeschema schematics  = {                             action=LoadEeschemaFrom() }
