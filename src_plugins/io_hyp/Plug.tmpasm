@@ -1,4 +1,6 @@
 put /local/pcb/mod {io_hyp}
+put /local/pcb/mod/MENUFILE {hyp-menu.lht}
+put /local/pcb/mod/MENUVAR {hyp_menu}
 
 append /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_hyp/io_hyp.o

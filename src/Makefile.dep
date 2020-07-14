@@ -4136,6 +4136,7 @@
  obj_gfx.h layer_grp.h rats_patch.h board.h librnd/core/hidlib.h \
  ../src_plugins/io_hyp/hyp_l.h
 ../src_plugins/io_hyp/io_hyp.o: ../src_plugins/io_hyp/io_hyp.c \
+ ../src_plugins/io_hyp/menu_internal.c \
  ../config.h librnd/config.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \

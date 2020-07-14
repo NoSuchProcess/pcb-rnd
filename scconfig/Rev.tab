@@ -1,4 +1,4 @@
-32196	configure	cleanup: eahc plugin shall register its own menus
+32198	configure	cleanup: eahc plugin shall register its own menus
 32187	configure	librnd: infra for menu patching
 32169	configure	hid_lesstif is part of the hidlib
 32120	configure	removing the old drc in favor of drc_query

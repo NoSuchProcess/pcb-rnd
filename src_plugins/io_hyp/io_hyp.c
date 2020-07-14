@@ -37,6 +37,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hid_attrib.h>
+#include <librnd/core/hid_menu.h>
 #include <librnd/core/plugins.h>
 #include "event.h"
 #include "plug_io.h"
@@ -44,6 +45,8 @@
 #include "board.h"
 #include "write.h"
 #include "obj_rat.h"
+
+#include "menu_internal.c"
 
 static const char *hyp_cookie = "hyp importer";
 
@@ -162,7 +165,7 @@ void pplg_uninit_io_hyp(void)
 {
 	rnd_remove_actions_by_cookie(hyp_cookie);
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_hyp);
-
+	rnd_hid_menu_unload(rnd_gui, hyp_cookie);
 }
 
 int pplg_init_io_hyp(void)
@@ -191,7 +194,10 @@ TODO(": look these up")
 
 
 	RND_REGISTER_ACTIONS(hyp_action_list, hyp_cookie)
-		return 0;
+
+	rnd_hid_menu_load(rnd_gui, NULL, hyp_cookie, 130, NULL, 0, hyp_menu, "plugin: io_hyp");
+
+	return 0;
 }
 
 /* not truncated */
