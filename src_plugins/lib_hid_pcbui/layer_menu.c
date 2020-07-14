@@ -46,14 +46,9 @@
 
 static const char *menu_cookie = "lib_hid_pcbui layer menus";
 
-typedef struct {
-	const char *anch;
-	int view;
-} ly_ctx_t;
-
-static void layer_install_menu1(ly_ctx_t *ctx)
+static void layer_install_menu1(const char *anch, int view)
 {
-	int plen = strlen(ctx->anch);
+	int plen = strlen(anch);
 	rnd_menu_prop_t props;
 	char act[256], chk[256];
 	int idx, max_ml, sect;
@@ -67,12 +62,12 @@ static void layer_install_menu1(ly_ctx_t *ctx)
 	props.cookie = menu_cookie;
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
-	gds_append_str(&path, ctx->anch);
+	gds_append_str(&path, anch);
 	gds_append(&path, '/');
 	plen++;
 
 	/* ui layers; have to go reverse to keep order because this will insert items */
-	if ((ctx->view) && (vtp0_len(&pcb_uilayers) > 0)) {
+	if ((view) && (vtp0_len(&pcb_uilayers) > 0)) {
 		for(idx = vtp0_len(&pcb_uilayers)-1; idx >= 0; idx--) {
 			pcb_layer_t *ly = pcb_uilayers.array[idx];
 			if ((ly == NULL) || (ly->name == NULL))
@@ -100,7 +95,7 @@ static void layer_install_menu1(ly_ctx_t *ctx)
 	for(idx = max_ml-1; idx >= 0; idx--) {
 		ml = &pcb_menu_layers[idx];
 		props.checked = chk;
-		if (ctx->view) {
+		if (view) {
 			sprintf(act, "ToggleView(%s)", ml->abbrev);
 			sprintf(chk, "ChkView(%s)", ml->abbrev);
 		}
@@ -151,7 +146,7 @@ static void layer_install_menu1(ly_ctx_t *ctx)
 				props.background = &l->meta.real.color;
 				props.foreground = &rnd_conf.appearance.color.background;
 				props.checked = chk;
-				if (ctx->view) {
+				if (view) {
 					sprintf(act, "ToggleView(%ld)", lid+1);
 					sprintf(chk, "ChkView(%ld)", lid+1);
 				}
@@ -192,9 +187,9 @@ static void custom_layer_attr_key(pcb_layer_t *l, rnd_layer_id_t lid, const char
 }
 
 
-static void layer_install_menu_key(ly_ctx_t *ctx)
+static void layer_install_menu_key(const char *anch, int view)
 {
-	int plen = strlen(ctx->anch);
+	int plen = strlen(anch);
 	char act[256];
 	rnd_layer_id_t lid;
 	pcb_layer_t *l;
@@ -202,7 +197,7 @@ static void layer_install_menu_key(ly_ctx_t *ctx)
 	gds_t path = {0};
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
-	gds_append_str(&path, ctx->anch);
+	gds_append_str(&path, anch);
 	gds_append(&path, '/');
 	plen++;
 
@@ -220,34 +215,18 @@ static void layer_install_menu_key(ly_ctx_t *ctx)
 	gds_uninit(&path);
 }
 
-static void layer_install_menu_keys(void)
-{
-	ly_ctx_t ctx;
-
-	ctx.view = 0;
-	ctx.anch = "/anchored/@layerkeys";
-	layer_install_menu_key(&ctx);
-}
-
 static int layer_menu_install_timer_active = 0;
 static rnd_hidval_t layer_menu_install_timer;
 
 static void layer_install_menu_cb(rnd_hidval_t user_data)
 {
-	ly_ctx_t ctx;
-
 	rnd_hid_menu_merge_inhibit_inc();
 	rnd_hid_menu_unload(rnd_gui, menu_cookie);
 
-	ctx.view = 1;
-	ctx.anch = "/anchored/@layerview";
-	layer_install_menu1(&ctx);
+	layer_install_menu1("/anchored/@layerview", 1);
+	layer_install_menu1("/anchored/@layerpick", 0);
+	layer_install_menu_key("/anchored/@layerkeys", 0);
 
-	ctx.view = 0;
-	ctx.anch = "/anchored/@layerpick";
-	layer_install_menu1(&ctx);
-
-	layer_install_menu_keys();
 	layer_menu_install_timer_active = 0;
 
 	rnd_hid_menu_merge_inhibit_dec();
@@ -291,7 +270,7 @@ static rnd_hidval_t layer_menu_key_timer;
 static void timed_layer_menu_key_update_cb(rnd_hidval_t user_data)
 {
 /*	rnd_trace("************ layer key update timer!\n");*/
-	layer_install_menu_keys();
+	layer_install_menu_key("/anchored/@layerkeys", 0);
 	layer_menu_key_timer_active = 0;
 }
 
