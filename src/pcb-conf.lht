@@ -230,9 +230,6 @@ li:pcb-rnd-conf-v1 {
 			ha:djopt {
 				auto_only = 1
 			}
-			ha:vendor {
-				enable = 0
-			}
 			ha:diag {
 				auto_integrity = 0
 			}
