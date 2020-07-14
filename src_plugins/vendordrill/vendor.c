@@ -662,6 +662,7 @@ void pplg_uninit_vendordrill(void)
 	rnd_remove_actions_by_cookie(vendor_cookie);
 	vendor_free_all();
 	rnd_conf_unreg_fields("plugins/vendor/");
+	rnd_hid_menu_unload(rnd_gui, vendor_cookie);
 }
 
 int pplg_init_vendordrill(void)
