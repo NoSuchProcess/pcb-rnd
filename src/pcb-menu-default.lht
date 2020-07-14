@@ -71,7 +71,6 @@ ha:rnd-menu-v1 {
 						@import_geo
 						ha:Load subcircuit data to paste-buffer = {                          li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
 						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }
-						ha:Load routed dsn or ses file       = {                             action=LoadDsnFrom() }
 						ha:Load MUCS pl file                 = {                             action=LoadMucsFrom() }
 						ha:Load Hyperlynx .hyp file          = {                             action=LoadHypFrom() }
 						ha:Load HP-GL plot to paste-buffer   = {                             action=LoadHPGLFrom() }

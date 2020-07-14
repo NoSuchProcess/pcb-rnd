@@ -3152,6 +3152,7 @@
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h
 ../src_plugins/import_dsn/dsn.o: ../src_plugins/import_dsn/dsn.c \
+../src_plugins/import_dsn/menu_internal.c \
  ../config.h librnd/config.h ../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
  board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \

@@ -42,9 +42,13 @@
 
 #include <librnd/core/actions.h>
 #include <librnd/core/hid.h>
+#include <librnd/core/hid_menu.h>
 #include <librnd/core/plugins.h>
 
 #include "src_plugins/lib_compat_help/pstk_compat.h"
+
+#include "menu_internal.c"
+
 
 static const char *dsn_cookie = "dsn importer";
 
@@ -344,13 +348,14 @@ int pplg_check_ver_import_dsn(int ver_needed) { return 0; }
 void pplg_uninit_import_dsn(void)
 {
 	rnd_remove_actions_by_cookie(dsn_cookie);
-
+	rnd_hid_menu_unload(rnd_gui, dsn_cookie);
 }
 
 int pplg_init_import_dsn(void)
 {
 	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
+	rnd_hid_menu_load(rnd_gui, NULL, dsn_cookie, 191, NULL, 0, dsn_menu, "plugin: import_dsn");
 	return 0;
 }
 

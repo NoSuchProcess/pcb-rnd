@@ -1,5 +1,7 @@
 put /local/pcb/mod {import_dsn}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_dsn/dsn.o @]
+put /local/pcb/mod/MENUFILE {dsn-menu.lht}
+put /local/pcb/mod/MENUVAR {dsn_menu}
 
 switch /local/pcb/import_dsn/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
