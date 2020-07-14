@@ -3404,7 +3404,7 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h
-../src_plugins/import_mentor_sch/mentor_sch.o: \
+../src_plugins/import_mentor_sch/mentor_sch.o: ../src_plugins/import_mentor_sch/menu_internal.c \
  ../src_plugins/import_mentor_sch/mentor_sch.c ../config.h \
  librnd/config.h board.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \

@@ -4,6 +4,8 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/import_mentor_sch/mentor_sch.o
 @]
 put /local/pcb/mod/CONF {$(PLUGDIR)/import_mentor_sch/mentor_sch_conf.h}
+put /local/pcb/mod/MENUFILE {mentor-menu.lht}
+put /local/pcb/mod/MENUVAR {mentor_menu}
 
 
 switch /local/pcb/import_mentor_sch/controls

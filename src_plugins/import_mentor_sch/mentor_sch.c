@@ -39,7 +39,7 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include <gensexpr/gsxl.h>
-
+#include <librnd/core/hid_menu.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
@@ -48,6 +48,8 @@
 #include <librnd/core/safe_fs.h>
 
 #include "netlist_helper.h"
+
+#include "menu_internal.c"
 
 conf_mentor_sch_t conf_mentor;
 
@@ -311,6 +313,7 @@ void pplg_uninit_import_mentor_sch(void)
 	rnd_remove_actions_by_cookie(mentor_sch_cookie);
 	rnd_conf_unreg_fields("plugins/import_mentor_sch/");
 	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_mentor_sch);
+	rnd_hid_menu_unload(rnd_gui, mentor_sch_cookie);
 }
 
 int pplg_init_import_mentor_sch(void)
@@ -336,5 +339,6 @@ int pplg_init_import_mentor_sch(void)
 	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_mentor_sch);
 
 	RND_REGISTER_ACTIONS(mentor_sch_action_list, mentor_sch_cookie)
+	rnd_hid_menu_load(rnd_gui, NULL, mentor_sch_cookie, 185, NULL, 0, mentor_menu, "plugin: mentor_sch");
 	return 0;
 }
