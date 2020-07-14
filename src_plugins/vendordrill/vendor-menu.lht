@@ -1,0 +1,23 @@
+ha:rnd-menu-v1 {
+	li:main_menu {
+		ha:Mode = {
+			li:submenu {
+				ha:Vendor drill mapping = { checked=plugins/vendor/enable; action=conf(toggle, plugins/vendor/enable, design) }
+			}
+		}
+
+		ha:Connects = {
+			li:submenu {
+				ha:Apply vendor drill mapping = { action=ApplyVendor() }
+			}
+		}
+	}
+
+	li:anchored {
+		ha:@import_geo {
+			li:submenu {
+				ha:Load vendor resource file = { action=LoadVendorFrom() }
+			}
+		}
+	}
+}

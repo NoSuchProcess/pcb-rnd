@@ -53,6 +53,8 @@
 #include <liblihata/lihata.h>
 #include <liblihata/tree.h>
 
+#include "menu_internal.c"
+
 conf_vendor_t conf_vendor;
 
 static void add_to_drills(char *);
@@ -671,5 +673,6 @@ int pplg_init_vendordrill(void)
 
 	rnd_event_bind(PCB_EVENT_NEW_PSTK, vendor_new_pstk, NULL, vendor_cookie);
 	RND_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
+	rnd_hid_menu_load(rnd_gui, NULL, vendor_cookie, 190, NULL, 0, vendor_menu, "vendor drill mapping menus");
 	return 0;
 }

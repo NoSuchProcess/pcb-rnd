@@ -8036,6 +8036,7 @@
  ../src_3rd/libuundo/uundo.h undo_old.h obj_pstk_draw.h draw.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/vendordrill/vendor.o: ../src_plugins/vendordrill/vendor.c \
+ ../src_plugins/vendordrill/menu_internal.c \
  ../config.h librnd/config.h conf_core.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
