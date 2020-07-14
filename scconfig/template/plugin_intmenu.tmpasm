@@ -1,0 +1,31 @@
+# Set up internal embedde dconfig
+# Input: /local/pcb/mod/MENUFILE is the file name of the conf file (without path)
+#        /local/pcb/mod/MENUVAR is the variable name to use in menu_internal.c
+
+switch ?/local/pcb/mod/MENUFILE
+case {...}
+put /local/pcb/MMENU [@$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/MENUFILE@@]
+put /local/pcb/IMENU [@$(PLUGDIR)/@/local/pcb/mod@/menu_internal.c@]
+
+append /local/pcb/DEPDEPS [@ @/local/pcb/IMENU@ @]
+append /local/pcb/DISTCLEANFILES [@ @/local/pcb/IMENU@ @]
+append /local/pcb/RULES [@
+@/local/pcb/IMENU@: @/local/pcb/MMENU@ $(CQUOTE)
+	$(CQUOTE) -n @/local/pcb/mod/MENUVAR@ < @/local/pcb/MMENU@ > @/local/pcb/IMENU@
+@]
+
+
+# plugin menu exists only as internal for now
+#switch /local/pcb/mod/enabled
+#	case {1}
+#		append /local/pcb/rules/install_ [@
+#	$(SCCBOX) $(HOW) "@/local/pcb/MMENU@" "$(CONFDIR)/@/local/pcb/mod/MENUFILE@"@]
+#	end
+#	default end;
+#end
+
+end
+default
+end
+end
+

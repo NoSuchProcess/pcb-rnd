@@ -122,6 +122,7 @@ put /local/pcb/mod/enabled {1}
 include  /local/pcb/tmpasm/plugin_conf
 include  /local/pcb/tmpasm/plugin_sphash
 include  /local/pcb/tmpasm/plugin_intconf
+include  /local/pcb/tmpasm/plugin_intmenu
 
 append /local/pcb/CLEANFILES ?/local/pcb/mod/CLEANFILES
 append /local/pcb/DISTCLEANFILES ?/local/pcb/mod/DISTCLEANFILES
@@ -142,3 +143,5 @@ put /local/pcb/mod/DISTCLEANFILES {}
 put /local/pcb/mod {}
 put /local/pcb/mod/CONFFILE {}
 put /local/pcb/mod/CONFVAR  {}
+put /local/pcb/mod/MENUFILE {}
+put /local/pcb/mod/MENUVAR  {}

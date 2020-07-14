@@ -1,4 +1,4 @@
-32181	configure	librnd: infra for menu patching
+32187	configure	librnd: infra for menu patching
 32169	configure	hid_lesstif is part of the hidlib
 32120	configure	removing the old drc in favor of drc_query
 32113	configure	removing custom per hid attribute editor in favor of generic central propedit
