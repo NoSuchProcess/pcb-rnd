@@ -1,0 +1,9 @@
+ha:rnd-menu-v1 {
+	li:anchored {
+		ha:@import_top {
+			li:submenu {
+				ha:Import tEDAx schematics           = { action=LoadTedaxFrom(netlist) }
+			}
+		}
+	}
+}

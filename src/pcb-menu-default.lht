@@ -66,7 +66,7 @@ ha:rnd-menu-v1 {
 					li:submenu {
 						ha:Import schematics...              = {                             action=ImportSch() }
 						ha:Configure import schematics...    = {                             action=ImportSch(dialog) }
-						ha:Import tEDAx schematics           = {                             action=LoadTedaxFrom(netlist) }
+						@import_top
 						-
 						ha:Load subcircuit data to paste-buffer = {                          li:action={PasteBuffer(Clear); Load(ElementTobuffer)} }
 						ha:Load layout data to paste-buffer  = {                             li:action={PasteBuffer(Clear); Load(LayoutTobuffer)} }

@@ -12,6 +12,8 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_tedax/tetest.o
 	$(PLUGDIR)/io_tedax/parse.o
 @]
+put /local/pcb/mod/MENUFILE {tedax-menu.lht}
+put /local/pcb/mod/MENUVAR {tedax_menu}
 
 put /local/pcb/mod/SPHASH  {$(PLUGDIR)/io_tedax/tdrc_keys.sphash}
 put /local/pcb/mod/SPHASH_ARGS {--multi}

@@ -42,6 +42,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/hid_menu.h>
 #include "plug_io.h"
 #include "stackup.h"
 #include "tlayer.h"
@@ -50,6 +51,8 @@
 #include "tdrc_query.h"
 #include "tetest.h"
 #include "tnetlist.h"
+
+#include "menu_internal.c"
 
 static const char *tedax_cookie = "tEDAx IO";
 static pcb_plug_io_t io_tedax;
@@ -298,6 +301,7 @@ void pplg_uninit_io_tedax(void)
 	tedax_etest_uninit();
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_tedax);
 	pcb_tedax_net_uninit();
+	rnd_hid_menu_unload(rnd_gui, tedax_cookie);
 }
 
 int pplg_init_io_tedax(void)
@@ -330,6 +334,6 @@ int pplg_init_io_tedax(void)
 
 	RND_REGISTER_ACTIONS(tedax_action_list, tedax_cookie)
 	pcb_tedax_net_init();
-
+	rnd_hid_menu_load(rnd_gui, NULL, tedax_cookie, 195, NULL, 0, tedax_menu, "plugin: io_tedax");
 	return 0;
 }

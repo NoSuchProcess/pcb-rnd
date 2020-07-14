@@ -4812,6 +4812,7 @@
  ../src_plugins/lib_compat_help/subc_help.h obj_subc.h layer.h \
  ../src_plugins/lib_compat_help/pstk_help.h
 ../src_plugins/io_tedax/io_tedax.o: ../src_plugins/io_tedax/io_tedax.c \
+ ../src_plugins/io_tedax/menu_internal.c \
  ../config.h librnd/config.h ../src_plugins/io_tedax/footprint.h data.h \
  globalconst.h librnd/core/globalconst.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h layer.h librnd/core/color.h \
