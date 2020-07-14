@@ -3247,7 +3247,7 @@
  librnd/core/rnd_printf.h ../src_3rd/liblihata/lihata.h \
  librnd/core/list_conf.h plug_import.h rats_patch.h plug_io.h vtlibrary.h \
  ../src_3rd/genvector/vts0.h
-../src_plugins/import_fpcb_nl/fpcb_nl.o: \
+../src_plugins/import_fpcb_nl/fpcb_nl.o: ../src_plugins/import_fpcb_nl/menu_internal.c \
  ../src_plugins/import_fpcb_nl/fpcb_nl.c ../config.h librnd/config.h \
  ../src_3rd/qparse/qparse.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \

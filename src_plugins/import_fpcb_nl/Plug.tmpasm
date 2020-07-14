@@ -1,5 +1,7 @@
 put /local/pcb/mod {import_fpcb_nl}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_fpcb_nl/fpcb_nl.o @]
+put /local/pcb/mod/MENUFILE {fpcb_nl-menu.lht}
+put /local/pcb/mod/MENUVAR {fpcb_nl_menu}
 
 switch /local/pcb/import_fpcb_nl/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

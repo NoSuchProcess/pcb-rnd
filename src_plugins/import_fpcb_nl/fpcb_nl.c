@@ -40,10 +40,12 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
-
+#include <librnd/core/hid_menu.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
+
+#include "menu_internal.c"
 
 static const char *fpcb_nl_cookie = "fpcb_nl importer";
 
@@ -233,6 +235,7 @@ void pplg_uninit_import_fpcb_nl(void)
 {
 	rnd_remove_actions_by_cookie(fpcb_nl_cookie);
 	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_fpcb_nl);
+	rnd_hid_menu_unload(rnd_gui, fpcb_nl_cookie);
 }
 
 int pplg_init_import_fpcb_nl(void)
@@ -255,5 +258,6 @@ int pplg_init_import_fpcb_nl(void)
 
 
 	RND_REGISTER_ACTIONS(fpcb_nl_action_list, fpcb_nl_cookie)
+	rnd_hid_menu_load(rnd_gui, NULL, fpcb_nl_cookie, 165, NULL, 0, fpcb_nl_menu, "plugin: fpcb_nl import");
 	return 0;
 }
