@@ -42,6 +42,7 @@
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/rnd_printf.h>
+#include <librnd/core/hid_menu.h>
 #include "globalconst.h"
 
 #include "script.h"
@@ -111,8 +112,7 @@ static int script_save_preunload(script_t *s, const char *data)
    the standard script cookie */
 static void script_unreg(const char *cookie)
 {
-	if ((rnd_gui != NULL) && (rnd_gui->remove_menu != NULL))
-		rnd_gui->remove_menu(rnd_gui, cookie);
+	rnd_hid_menu_unload(rnd_gui, cookie);
 }
 
 /* unload a script, free all memory and remove it from all lists/hashes.
