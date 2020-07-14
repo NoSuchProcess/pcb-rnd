@@ -1,5 +1,7 @@
 put /local/pcb/mod {import_calay}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_calay/calay.o @]
+put /local/pcb/mod/MENUFILE {calay-menu.lht}
+put /local/pcb/mod/MENUVAR {calay_menu}
 
 switch /local/pcb/import_calay/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

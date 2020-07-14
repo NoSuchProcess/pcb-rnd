@@ -3121,6 +3121,7 @@
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  librnd/core/hid_init.h ../src_3rd/genvector/vtp0.h
 ../src_plugins/import_calay/calay.o: ../src_plugins/import_calay/calay.c \
+ ../src_plugins/import_calay/menu_internal.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
  librnd/core/rnd_bool.h vtroutestyle.h librnd/core/unit.h attrib.h \

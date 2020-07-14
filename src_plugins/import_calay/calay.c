@@ -39,13 +39,15 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
-
+#include <librnd/core/hid_menu.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
 
 #define NETEXT ".net"
 #define CMPEXT ".cmp"
+
+#include "menu_internal.c"
 
 static const char *calay_cookie = "calay importer";
 
@@ -269,6 +271,7 @@ void pplg_uninit_import_calay(void)
 {
 	rnd_remove_actions_by_cookie(calay_cookie);
 	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_calay);
+	rnd_hid_menu_unload(rnd_gui, calay_cookie);
 }
 
 int pplg_init_import_calay(void)
@@ -291,5 +294,6 @@ int pplg_init_import_calay(void)
 
 
 	RND_REGISTER_ACTIONS(calay_action_list, calay_cookie)
+	rnd_hid_menu_load(rnd_gui, NULL, calay_cookie, 170, NULL, 0, calay_menu, "plugin: import calay");
 	return 0;
 }
