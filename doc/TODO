@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - res/menu (NGI0): load new res on the fly (patch the menu system):
-	- swich over plugins to create menus using patching
 	- low level patching (tree compare)
 	- high level patching (patch instruction apply)
 	- gui load dialog
