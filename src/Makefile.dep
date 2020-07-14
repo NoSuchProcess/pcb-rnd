@@ -7214,6 +7214,7 @@
  ../src_3rd/genvector/genvector_impl.c \
  ../src_plugins/rubberband_orig/rubberband_conf_fields.h
 ../src_plugins/script/live_script.o: ../src_plugins/script/live_script.c \
+ ../src_plugins/script/menu_internal.c \
  ../config.h librnd/config.h ../src_3rd/genvector/vtp0.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h ../src_3rd/genht/htsp.h \

@@ -39,6 +39,7 @@
 #include <librnd/core/safe_fs_dir.h>
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/event.h>
+#include <librnd/core/hid_menu.h>
 #include "undo.h"
 #include "globalconst.h"
 
@@ -46,8 +47,9 @@
 
 #include "live_script.h"
 
+#include "menu_internal.c"
+
 static const char *lvs_cookie = "live_script";
-#define ANCH "@scripts"
 
 
 typedef struct {
@@ -511,37 +513,10 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void lvs_install_menu(void *ctx, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
-{
-	char *end = path + strlen(path);
-	rnd_menu_prop_t props;
-	char act[256];
-
-	memset(&props, 0,sizeof(props));
-	props.action = act;
-	props.cookie = ANCH;
-
-	/* prepare for appending the strings at the end of the path, "under" the anchor */
-	*end = '/';
-	end++;
-
-	strcpy(end, "Open live script dialog...."); strcpy(act, "LiveScript(new)"); 
-	rnd_gui->create_menu(rnd_gui, path, &props);
-
-/*	strcpy(end, "Load live script...."); strcpy(act, "LiveScript(load)");
-	rnd_gui->create_menu(rnd_gui, path, &props);*/
-}
-
-
-static void lvs_menu_init(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
-{
-	rnd_hid_cfg_map_anchor_menus(ANCH, lvs_install_menu, NULL);
-}
-
 void pcb_live_script_init(void)
 {
 	htsp_init(&pcb_live_scripts, strhash, strkeyeq);
-	rnd_event_bind(RND_EVENT_GUI_INIT, lvs_menu_init, NULL, lvs_cookie);
+	rnd_hid_menu_load(rnd_gui, NULL, lvs_cookie, 110, NULL, 0, script_menu, "plugin: live scripting");
 }
 
 void pcb_live_script_uninit(void)
@@ -552,8 +527,7 @@ void pcb_live_script_uninit(void)
 		lvs_close_cb(lvs, RND_HID_ATTR_EV_CODECLOSE);
 	}
 	htsp_uninit(&pcb_live_scripts);
-	if ((rnd_gui != NULL) && (rnd_gui->remove_menu != NULL))
-		rnd_gui->remove_menu(rnd_gui, lvs_cookie);
 	rnd_event_unbind_allcookie(lvs_cookie);
+	rnd_hid_menu_unload(rnd_gui, lvs_cookie);
 }
 
