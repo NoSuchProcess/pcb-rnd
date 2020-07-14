@@ -41,10 +41,13 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/poly/rtree.h>
+#include <librnd/core/hid_menu.h>
 
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 
 #include "plug_import.h"
+
+#include "menu_internal.c"
 
 static const char *ipcd356_cookie = "ipcd356 importer";
 
@@ -491,6 +494,7 @@ void pplg_uninit_import_ipcd356(void)
 {
 	rnd_remove_actions_by_cookie(ipcd356_cookie);
 	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_ipcd356);
+	rnd_hid_menu_unload(rnd_gui, ipcd356_cookie);
 }
 
 int pplg_init_import_ipcd356(void)
@@ -513,5 +517,6 @@ int pplg_init_import_ipcd356(void)
 
 
 	RND_REGISTER_ACTIONS(import_ipcd356_action_list, ipcd356_cookie);
+	rnd_hid_menu_load(rnd_gui, NULL, ipcd356_cookie, 180, NULL, 0, ipcd356_menu, "ipcd356 import");
 	return 0;
 }

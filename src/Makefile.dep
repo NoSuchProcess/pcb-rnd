@@ -3340,7 +3340,7 @@
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h
-../src_plugins/import_ipcd356/ipcd356.o: \
+../src_plugins/import_ipcd356/ipcd356.o: ../src_plugins/import_ipcd356/menu_internal.c \
  ../src_plugins/import_ipcd356/ipcd356.c ../config.h librnd/config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
  board.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \

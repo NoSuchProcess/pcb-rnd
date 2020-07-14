@@ -1,5 +1,7 @@
 put /local/pcb/mod {import_ipcd356}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_ipcd356/ipcd356.o @]
+put /local/pcb/mod/MENUFILE {ipcd356-menu.lht}
+put /local/pcb/mod/MENUVAR {ipcd356_menu}
 
 switch /local/pcb/import_ipcd356/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

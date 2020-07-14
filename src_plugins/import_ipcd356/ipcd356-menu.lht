@@ -1,0 +1,9 @@
+ha:rnd-menu-v1 {
+	li:anchored {
+		ha:@import_sch {
+			li:submenu {
+				ha:Load IPC-D-356 netlist = { action=LoadIpc356From() }
+			}
+		}
+	}
+}
