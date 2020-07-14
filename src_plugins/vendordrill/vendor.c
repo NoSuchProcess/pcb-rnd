@@ -46,6 +46,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_cfg.h>
+#include <librnd/core/hid_menu.h>
 #include "vendor_conf.h"
 #include <librnd/core/compat_misc.h>
 #include "obj_pstk_inlines.h"
