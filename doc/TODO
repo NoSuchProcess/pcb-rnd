@@ -9,6 +9,7 @@
 	- FEATURE: fungw: auto-remove menus by cookie (TODO#2)
 	- remove the old menu helper code that tried to manipulate the lihata tree directly
 	- FEATURE: project specific menus from extra lihata files - maybe from project.lht or a .d
+	- BUG: hid_common/grid_menu.c: doesn't checkmark initial grid setting, doesn't remove check on grid(set, 11mil) [report: Igor2]
 - FEATURE: finish drill/slot export in export_stl [report: Majenko]
 - FEATURE: preview widget: allow to handle keys both in gtk and lesstif
 - BUG: padstack editor top/bottom gets mixed up on other-side on display (but not in data!) ml=4221 [report: Majenko]
