@@ -26,6 +26,7 @@
 
 #include "config.h"
 
+#include <genvector/gds_char.h>
 #include "board.h"
 #include "data.h"
 #include "conf_core.h"
@@ -43,33 +44,32 @@
 /* How much to wait to batch menu refresh events */
 #define MENU_REFRESH_TIME_MS 200
 
+static const char *menu_cookie = "lib_hid_pcbui layer menus";
+
 typedef struct {
 	const char *anch;
 	int view;
 } ly_ctx_t;
 
-static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
+static void layer_install_menu1(ly_ctx_t *ctx)
 {
-	ly_ctx_t *ctx = ctx_;
-	int plen = strlen(path);
-	int len_avail = 125;
-	char *end = path + plen;
+	int plen = strlen(ctx->anch);
 	rnd_menu_prop_t props;
 	char act[256], chk[256];
 	int idx, max_ml, sect;
 	rnd_layergrp_id_t gid;
 	const pcb_menu_layers_t *ml;
+	gds_t path = {0};
 
 	memset(&props, 0, sizeof(props));
 	props.action = act;
 	props.update_on = "";
-	props.cookie = ctx->anch;
-
-	rnd_hid_cfg_del_anchor_menus(node, ctx->anch);
+	props.cookie = menu_cookie;
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
-	*end = '/';
-	end++;
+	gds_append_str(&path, ctx->anch);
+	gds_append(&path, '/');
+	plen++;
 
 	/* ui layers; have to go reverse to keep order because this will insert items */
 	if ((ctx->view) && (vtp0_len(&pcb_uilayers) > 0)) {
@@ -82,13 +82,17 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 			sprintf(act, "ToggleView(ui:%d)", idx);
 			sprintf(chk, "ChkView(ui:%d)", idx);
 
-			rnd_snprintf(end, len_avail, "  %s", ly->name);
-			rnd_gui->create_menu(rnd_gui, path, &props);
+			gds_truncate(&path, plen);
+			gds_append_str(&path, "  ");
+			gds_append_str(&path, ly->name);
+			rnd_hid_menu_create(path.array, &props);
 		}
 
 		props.checked = NULL;
-		rnd_snprintf(end, len_avail, "[UI]");
-		rnd_gui->create_menu(rnd_gui, path, &props);
+		gds_truncate(&path, plen);
+		gds_append_str(&path, "[UI]");
+
+		rnd_hid_menu_create(path.array, &props);
 	}
 
 	/* menu-only virtual layers; have to go reverse to keep order because this will insert items */
@@ -106,25 +110,28 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 			sprintf(act, "SelectLayer(%s)", ml->abbrev);
 			sprintf(chk, "ChkLayer(%s)", ml->abbrev);
 		}
-		rnd_snprintf(end, len_avail, "  %s", ml->name);
-		rnd_gui->create_menu(rnd_gui, path, &props);
+		gds_truncate(&path, plen);
+		gds_append_str(&path, "  ");
+		gds_append_str(&path, ml->name);
+		rnd_hid_menu_create(path.array, &props);
 	}
 
 	props.checked = NULL;
-	rnd_snprintf(end, len_avail, "[virtual]");
-	rnd_gui->create_menu(rnd_gui, path, &props);
+	gds_truncate(&path, plen);
+	gds_append_str(&path, "[virtual]");
+	rnd_hid_menu_create(path.array, &props);
 
 
 	/* have to go reverse to keep order because this will insert items */
 	for(sect = 0; sect < 2; sect++) {
-
-		rnd_snprintf(end, len_avail, "-");
+		gds_truncate(&path, plen);
+		gds_append(&path, '-');
 		props.foreground = NULL;
 		props.background = NULL;
 		props.checked = NULL;
 		*act = '\0';
 		*chk = '\0';
-		rnd_gui->create_menu(rnd_gui, path, &props);
+		rnd_hid_menu_create(path.array, &props);
 
 		for(gid = pcb_max_group(PCB)-1; gid >= 0; gid--) {
 			pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
@@ -152,63 +159,65 @@ static void layer_install_menu1(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node
 					sprintf(act, "SelectLayer(%ld)", lid+1);
 					sprintf(chk, "ChkLayer(%ld)", lid+1);
 				}
-				rnd_snprintf(end, len_avail, "  %s", l->name);
-				rnd_gui->create_menu(rnd_gui, path, &props);
+				gds_truncate(&path, plen);
+				gds_append_str(&path, "  ");
+				gds_append_str(&path, l->name);
+				rnd_hid_menu_create(path.array, &props);
 			}
 
 			props.foreground = NULL;
 			props.background = NULL;
 			props.checked = NULL;
-			rnd_snprintf(end, len_avail, "[%s]", g->name);
-			rnd_gui->create_menu(rnd_gui, path, &props);
+			gds_truncate(&path, plen);
+			gds_append(&path, '[');
+			gds_append_str(&path, g->name);
+			gds_append(&path, ']');
+			rnd_hid_menu_create(path.array, &props);
 		}
 	}
 
-	/* restore the path */
-	end--;
-	*end = '\0';
+	gds_uninit(&path);
 }
 
-static void custom_layer_attr_key(pcb_layer_t *l, rnd_layer_id_t lid, const char *attrname, const char *menu_prefix, const char *action_prefix, rnd_menu_prop_t *keyprops, char *path, char *end, int len_avail)
+static void custom_layer_attr_key(pcb_layer_t *l, rnd_layer_id_t lid, const char *attrname, const char *menu_prefix, const char *action_prefix, rnd_menu_prop_t *keyprops, gds_t *path, int plen)
 {
 	char *key = pcb_attribute_get(&l->Attributes, attrname);
 	if (key != NULL) {
 		keyprops->accel = key;
-		rnd_snprintf(end, len_avail, "%s %ld:%s", menu_prefix, lid+1, l->name);
+		gds_truncate(path, plen);
+		rnd_append_printf(path, "%s %ld:%s", menu_prefix, lid+1, l->name);
 		sprintf((char *)keyprops->action, "%s(%ld)", action_prefix, lid+1);
-		rnd_gui->create_menu(rnd_gui, path, keyprops);
+		rnd_hid_menu_create(path->array, keyprops);
 	}
 }
 
 
-static void layer_install_menu_key(void *ctx_, rnd_hid_cfg_t *cfg, lht_node_t *node, char *path)
+static void layer_install_menu_key(ly_ctx_t *ctx)
 {
-	ly_ctx_t *ctx = ctx_;
-	int plen = strlen(path);
-	int len_avail = 125;
-	char *end = path + plen;
+	int plen = strlen(ctx->anch);
 	char act[256];
 	rnd_layer_id_t lid;
 	pcb_layer_t *l;
 	rnd_menu_prop_t keyprops;
-
-	rnd_hid_cfg_del_anchor_menus(node, ctx->anch);
+	gds_t path = {0};
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
-	*end = '/';
-	end++;
+	gds_append_str(&path, ctx->anch);
+	gds_append(&path, '/');
+	plen++;
 
 	memset(&keyprops, 0, sizeof(keyprops));
 	keyprops.action = act;
 	keyprops.update_on = "";
-	keyprops.cookie = ctx->anch;
+	keyprops.cookie = menu_cookie;
 	
 
 	for(lid = 0, l = PCB->Data->Layer; lid < PCB->Data->LayerN; lid++,l++) {
-		custom_layer_attr_key(l, lid, "pcb-rnd::key::select", "select", "SelectLayer", &keyprops, path, end, len_avail);
-		custom_layer_attr_key(l, lid, "pcb-rnd::key::vis",    "vis",    "ToggleView", &keyprops, path, end, len_avail);
+		custom_layer_attr_key(l, lid, "pcb-rnd::key::select", "select", "SelectLayer", &keyprops, &path, plen);
+		custom_layer_attr_key(l, lid, "pcb-rnd::key::vis",    "vis",    "ToggleView", &keyprops, &path, plen);
 	}
 
+	gds_uninit(&path);
 }
 
 static void layer_install_menu_keys(void)
@@ -216,8 +225,8 @@ static void layer_install_menu_keys(void)
 	ly_ctx_t ctx;
 
 	ctx.view = 0;
-	ctx.anch = "@layerkeys";
-	rnd_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu_key, &ctx);
+	ctx.anch = "/anchored/@layerkeys";
+	layer_install_menu_key(&ctx);
 }
 
 static int layer_menu_install_timer_active = 0;
@@ -227,16 +236,21 @@ static void layer_install_menu_cb(rnd_hidval_t user_data)
 {
 	ly_ctx_t ctx;
 
+	rnd_hid_menu_merge_inhibit_inc();
+	rnd_hid_menu_unload(rnd_gui, menu_cookie);
+
 	ctx.view = 1;
-	ctx.anch = "@layerview";
-	rnd_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu1, &ctx);
+	ctx.anch = "/anchored/@layerview";
+	layer_install_menu1(&ctx);
 
 	ctx.view = 0;
-	ctx.anch = "@layerpick";
-	rnd_hid_cfg_map_anchor_menus(ctx.anch, layer_install_menu1, &ctx);
+	ctx.anch = "/anchored/@layerpick";
+	layer_install_menu1(&ctx);
 
 	layer_install_menu_keys();
 	layer_menu_install_timer_active = 0;
+
+	rnd_hid_menu_merge_inhibit_dec();
 }
 
 static void layer_install_menu(void)
