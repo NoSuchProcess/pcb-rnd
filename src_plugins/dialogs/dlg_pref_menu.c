@@ -142,6 +142,12 @@ static void menu_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_
 
 static void pref_menu_load(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
+	char *fn = rnd_gui->fileselect(rnd_gui, "menu patch load", "Load a menu patch to file", "menu_patch.lht", "lht", NULL, "menu_patch_load", RND_HID_FSD_READ, NULL);
+	if (fn == NULL)
+		return;
+	if (rnd_hid_menu_load(rnd_gui, NULL, "preferences", 300, fn, 1, NULL, "User reuqested load through the preferences dialog") != 0)
+		rnd_message(RND_MSG_ERROR, "Failed to load/parse menu file '%s' - menu file not loaded\n", fn);
+	free(fn);
 }
 
 static void pref_menu_unload(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -177,6 +183,7 @@ static void pref_menu_export(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	f = rnd_fopen(NULL, fn, "w");
 	lht_dom_export(m->cfg.doc->root, f, "");
 	fclose(f);
+	free(fn);
 }
 
 #define NONPERS "\nNon-persistent: the file not will be loaded automatically\nafter pcb-rnd is restarted"
