@@ -33,6 +33,33 @@ extern conf_dialogs_t dialogs_conf;
 extern void pcb_wplc_save_to_role(rnd_conf_role_t role);
 extern int pcb_wplc_save_to_file(const char *fn);
 
+#define GET_ROW(ctx) \
+	rnd_hid_attribute_t *lattr= &((pref_ctx_t *)ctx)->dlg[((pref_ctx_t *)ctx)->menu.wlist]; \
+	rnd_hid_row_t *r = rnd_dad_tree_get_selected(lattr); \
+
+#define GET_ROW_AND_MENU(ctx) \
+	GET_ROW(ctx); \
+	rnd_menu_patch_t *m; \
+	if (r == NULL) {rnd_message(RND_MSG_ERROR, "Select a menu file first\n"); return; } \
+	m = r->user_data; \
+	if (m == NULL) {rnd_message(RND_MSG_ERROR, "Invalid menu file selection\n"); return; } \
+
+static void pref_menu_btn_update(pref_ctx_t *ctx)
+{
+	rnd_menu_patch_t *m;
+	GET_ROW(ctx);
+
+	if ((r == NULL) || (r->user_data == NULL)) {
+		rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wunload, 0);
+		rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wreload, 0);
+		return;
+	}
+
+	m = r->user_data;
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wunload, 1);
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wreload, 1);
+}
+
 static void pref_menu_brd2dlg(pref_ctx_t *ctx)
 {
 	rnd_hid_attribute_t *attr;
@@ -76,6 +103,7 @@ static void pref_menu_brd2dlg(pref_ctx_t *ctx)
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->menu.wlist, &hv);
 		free(cursor_path);
 	}
+	pref_menu_btn_update(ctx);
 }
 
 void pcb_dlg_pref_menu_open(pref_ctx_t *ctx)
@@ -104,9 +132,26 @@ static void menu_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_
 	hv.str = m->desc == NULL ? "" : m->desc;
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->menu.wdesc, &hv);
 
-
+	pref_menu_btn_update(ctx);
 }
 
+
+
+static void pref_menu_load(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+}
+
+static void pref_menu_unload(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	GET_ROW_AND_MENU(caller_data);
+}
+
+static void pref_menu_reload(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	GET_ROW_AND_MENU(caller_data);
+}
+
+#define NONPERS "\nNon-persistent: the file not will be loaded automatically\nafter pcb-rnd is restarted"
 
 void pcb_dlg_pref_menu_create(pref_ctx_t *ctx)
 {
@@ -121,6 +166,20 @@ void pcb_dlg_pref_menu_create(pref_ctx_t *ctx)
 	RND_DAD_BEGIN_HBOX(ctx->dlg);
 		RND_DAD_LABEL(ctx->dlg, "Description:");
 		RND_DAD_LABEL(ctx->dlg, "");
-		ctx->menu.wdesc = RND_DAD_CURRENT(ctx->dlg);
+			ctx->menu.wdesc = RND_DAD_CURRENT(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
+	RND_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_BUTTON(ctx->dlg, "Load...");
+			ctx->menu.wload = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_CHANGE_CB(ctx->dlg, pref_menu_load);
+			RND_DAD_HELP(ctx->dlg, "Load a new menu (patch) file" NONPERS);
+		RND_DAD_BUTTON(ctx->dlg, "Unload");
+			ctx->menu.wunload = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_CHANGE_CB(ctx->dlg, pref_menu_unload);
+			RND_DAD_HELP(ctx->dlg, "Remove the selected menu (patch) from the menu system" NONPERS);
+		RND_DAD_BUTTON(ctx->dlg, "Reload");
+			ctx->menu.wreload = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_CHANGE_CB(ctx->dlg, pref_menu_reload);
+			RND_DAD_HELP(ctx->dlg, "Reload the menu file from disk\nand re-merge the menu system");
 	RND_DAD_END(ctx->dlg);
 }
