@@ -2,12 +2,12 @@
 
 1. For the upcoming release ===============================================================================
 - res/menu (NGI0): load new res on the fly (patch the menu system):
-	- high level patching (patch instruction apply)
-	- gui load dialog
+	- gui load dialog (preferences dialog?)
 	- FEATURE: project specific menus from extra lihata files - maybe from project.lht or a .d
 	- BUG: hid_common/grid_menu.c: doesn't checkmark initial grid setting, doesn't remove check on grid(set, 11mil) [report: Igor2]
 	- DOC: re-check script menu creation: probably can be in BEGIN even for persistent scripts [report: Igor2]
 	- re-check script menu creation: auto-remove menus by cookie on script unload
+	- DOC: user doc, pool node, announcement
 - FEATURE: finish drill/slot export in export_stl [report: Majenko]
 - FEATURE: preview widget: allow to handle keys both in gtk and lesstif
 - BUG: padstack editor top/bottom gets mixed up on other-side on display (but not in data!) ml=4221 [report: Majenko]
