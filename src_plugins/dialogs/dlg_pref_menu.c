@@ -144,6 +144,7 @@ static void pref_menu_load(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 static void pref_menu_unload(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	GET_ROW_AND_MENU(caller_data);
+	rnd_hid_menu_unload_patch(rnd_gui, m);
 }
 
 static void pref_menu_reload(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
