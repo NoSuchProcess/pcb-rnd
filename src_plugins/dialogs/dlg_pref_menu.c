@@ -28,6 +28,7 @@
 
 #include "dlg_pref.h"
 #include <librnd/core/hid_menu.h>
+#include <librnd/core/safe_fs.h>
 
 extern conf_dialogs_t dialogs_conf;
 extern void pcb_wplc_save_to_role(rnd_conf_role_t role);
@@ -52,12 +53,14 @@ static void pref_menu_btn_update(pref_ctx_t *ctx)
 	if ((r == NULL) || (r->user_data == NULL)) {
 		rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wunload, 0);
 		rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wreload, 0);
+		rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wexport, 0);
 		return;
 	}
 
 	m = r->user_data;
 	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wunload, 1);
 	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wreload, m->has_file);
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wexport, 1);
 }
 
 static void pref_menu_brd2dlg(pref_ctx_t *ctx)
@@ -161,6 +164,21 @@ static void pref_menu_reload(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	rnd_hid_menu_merge_inhibit_dec();
 }
 
+static void pref_menu_export(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	FILE *f;
+	char *fn;
+	GET_ROW_AND_MENU(caller_data);
+
+	fn = rnd_gui->fileselect(rnd_gui, "menu patch export", "Export a menu patch to file for debugging", "menu_patch.lht", "lht", NULL, "menu_patch_export", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+	if (fn == NULL)
+		return;
+
+	f = rnd_fopen(NULL, fn, "w");
+	lht_dom_export(m->cfg.doc->root, f, "");
+	fclose(f);
+}
+
 #define NONPERS "\nNon-persistent: the file not will be loaded automatically\nafter pcb-rnd is restarted"
 
 void pcb_dlg_pref_menu_create(pref_ctx_t *ctx)
@@ -191,5 +209,9 @@ void pcb_dlg_pref_menu_create(pref_ctx_t *ctx)
 			ctx->menu.wreload = RND_DAD_CURRENT(ctx->dlg);
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_menu_reload);
 			RND_DAD_HELP(ctx->dlg, "Reload the menu file from disk\nand re-merge the menu system");
+		RND_DAD_BUTTON(ctx->dlg, "Export...");
+			ctx->menu.wexport = RND_DAD_CURRENT(ctx->dlg);
+			RND_DAD_CHANGE_CB(ctx->dlg, pref_menu_export);
+			RND_DAD_HELP(ctx->dlg, "Export menu file to disk\n(useful for debuggin)");
 	RND_DAD_END(ctx->dlg);
 }
