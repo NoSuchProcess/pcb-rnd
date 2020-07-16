@@ -57,7 +57,7 @@ static void pref_menu_btn_update(pref_ctx_t *ctx)
 
 	m = r->user_data;
 	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wunload, 1);
-	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wreload, 1);
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->menu.wreload, m->has_file);
 }
 
 static void pref_menu_brd2dlg(pref_ctx_t *ctx)
