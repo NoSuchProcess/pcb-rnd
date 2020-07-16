@@ -223,6 +223,7 @@ static void pref_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	pcb_dlg_pref_lib_close(ctx);
 	pcb_dlg_pref_color_close(ctx);
 	pcb_dlg_pref_win_close(ctx);
+	pcb_dlg_pref_menu_close(ctx);
 
 	for(n = 0; n < ctx->auto_free.used; n++)
 		free(ctx->auto_free.array[n]);
@@ -335,6 +336,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 	pcb_dlg_pref_lib_open(&pref_ctx);
 	pcb_dlg_pref_color_open(&pref_ctx);
 	pcb_dlg_pref_win_open(&pref_ctx);
+	pcb_dlg_pref_menu_open(&pref_ctx);
 	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == sizeof(tabs)/sizeof(tabs[0]) - 2) ? tabarg : NULL);
 	if (target_tab >= 0)
 		RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, lng, target_tab);

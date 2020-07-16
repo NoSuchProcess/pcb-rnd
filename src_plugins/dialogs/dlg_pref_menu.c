@@ -24,13 +24,10 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/* Preferences dialog, window geometry tab */
+/* Preferences dialog, menu tab */
 
 #include "dlg_pref.h"
-#include <librnd/core/conf.h>
-#include "conf_core.h"
-#include <librnd/core/hidlib_conf.h>
-#include "../src_plugins/lib_hid_common/dialogs_conf.h"
+#include <librnd/core/hid_menu.h>
 
 extern conf_dialogs_t dialogs_conf;
 extern void pcb_wplc_save_to_role(rnd_conf_role_t role);
@@ -38,6 +35,47 @@ extern int pcb_wplc_save_to_file(const char *fn);
 
 static void pref_menu_brd2dlg(pref_ctx_t *ctx)
 {
+	rnd_hid_attribute_t *attr;
+	rnd_hid_tree_t *tree;
+	rnd_hid_row_t *r;
+	char *cursor_path = NULL, *cell[5];
+	long n;
+
+	attr = &ctx->dlg[ctx->menu.wlist];
+	tree = attr->wdata;
+
+	/* remember cursor */
+	r = rnd_dad_tree_get_selected(attr);
+	if (r != NULL)
+		cursor_path = rnd_strdup(r->cell[0]);
+
+	/* remove existing items */
+	rnd_dad_tree_clear(tree);
+
+	/* add all items */
+	for(n = 0; n < rnd_menu_sys.patches.used; n++) {
+		rnd_menu_patch_t *m = rnd_menu_sys.patches.array[n];
+		rnd_hid_row_t *row;
+		const char *fn = m->cfg.doc->root->file_name;
+
+		cell[0] = rnd_strdup_printf("%ld", m->uid);
+		cell[1] = rnd_strdup((n == 0 ? "base " : "addon"));
+		cell[2] = rnd_strdup_printf("%d", m->prio);
+		cell[3] = rnd_strdup_printf("%s", m->cookie);
+		cell[4] = rnd_strdup_printf("%s", fn == NULL ? "" : fn);
+		cell[5] = NULL;
+
+		row = rnd_dad_tree_append(attr, NULL, cell);
+		row->user_data = m;
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		rnd_hid_attr_val_t hv;
+		hv.str = cursor_path;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->menu.wlist, &hv);
+		free(cursor_path);
+	}
 }
 
 void pcb_dlg_pref_menu_open(pref_ctx_t *ctx)
@@ -52,6 +90,10 @@ void pcb_dlg_pref_menu_close(pref_ctx_t *ctx)
 
 void pcb_dlg_pref_menu_create(pref_ctx_t *ctx)
 {
+	static const char *hdr[] = {"uid", "type", "prio", "cookie", "file", NULL};
+
 	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-	RND_DAD_LABEL(ctx->dlg, "TODO");
+	RND_DAD_TREE(ctx->dlg, 5, 0, hdr);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+		ctx->menu.wlist = RND_DAD_CURRENT(ctx->dlg);
 }
