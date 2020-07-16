@@ -2,8 +2,8 @@
 
 1. For the upcoming release ===============================================================================
 - res/menu (NGI0): load new res on the fly (patch the menu system):
-	- FEATURE: project specific menus from extra lihata files - maybe from project.lht or a .d
 	- BUG: hid_common/grid_menu.c: doesn't checkmark initial grid setting, doesn't remove check on grid(set, 11mil) [report: Igor2]
+	- BUG: hotkey collision handling: remove a layer in the layer selector, get tons of key collision warnings
 	- DOC: re-check script menu creation: probably can be in BEGIN even for persistent scripts [report: Igor2]
 	- re-check script menu creation: auto-remove menus by cookie on script unload
 	- DOC: user doc, pool node, announcement
