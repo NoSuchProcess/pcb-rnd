@@ -38,7 +38,7 @@ extern int pcb_wplc_save_to_file(const char *fn);
 	rnd_hid_row_t *r = rnd_dad_tree_get_selected(lattr); \
 
 #define GET_ROW_AND_MENU(ctx) \
-	GET_ROW(ctx); \
+	GET_ROW(ctx) \
 	rnd_menu_patch_t *m; \
 	if (r == NULL) {rnd_message(RND_MSG_ERROR, "Select a menu file first\n"); return; } \
 	m = r->user_data; \
@@ -148,7 +148,16 @@ static void pref_menu_unload(void *hid_ctx, void *caller_data, rnd_hid_attribute
 
 static void pref_menu_reload(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
+	const char *fn;
 	GET_ROW_AND_MENU(caller_data);
+
+	fn = m->cfg.doc->root->file_name;
+	rnd_hid_menu_merge_inhibit_inc();
+	if (rnd_hid_menu_load(rnd_gui, NULL, m->cookie, m->prio, fn, 1, NULL, m->desc) != 0)
+		rnd_message(RND_MSG_ERROR, "Failed to load/parse menu file '%s' - menu file not reloaded\n", fn);
+	else
+		rnd_hid_menu_unload_patch(rnd_gui, m);
+	rnd_hid_menu_merge_inhibit_dec();
 }
 
 #define NONPERS "\nNon-persistent: the file not will be loaded automatically\nafter pcb-rnd is restarted"
