@@ -11,6 +11,7 @@ typedef struct pref_ctx_s pref_ctx_t;
 #include "dlg_pref_lib.h"
 #include "dlg_pref_color.h"
 #include "dlg_pref_win.h"
+#include "dlg_pref_menu.h"
 #include "dlg_pref_conf.h"
 
 typedef struct pref_conflist_s pref_confitem_t;
@@ -32,6 +33,7 @@ struct pref_ctx_s {
 	pref_lib_t lib;
 	pref_color_t color;
 	pref_win_t win;
+	pref_menu_t menu;
 	pref_conf_t conf;
 
 	rnd_conf_role_t role; /* where changes are saved to */

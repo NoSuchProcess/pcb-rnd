@@ -49,6 +49,7 @@
 #include "dlg_pref_layer.c"
 #include "dlg_pref_color.c"
 #include "dlg_pref_win.c"
+#include "dlg_pref_menu.c"
 #include "dlg_pref_conf.c"
 
 pref_ctx_t pref_ctx;
@@ -247,7 +248,7 @@ static int pref_strcmp(const char *fixed, const char *inp)
 
 static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 {
-	const char *tabs[] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Config tree", NULL };
+	const char *tabs[] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Menu", "Config tree", NULL };
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	int target_tab = -1;
 
@@ -300,6 +301,10 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 
 			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Window */
 				pcb_dlg_pref_win_create(&pref_ctx);
+			RND_DAD_END(pref_ctx.dlg);
+
+			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Menu */
+				pcb_dlg_pref_menu_create(&pref_ctx);
 			RND_DAD_END(pref_ctx.dlg);
 
 			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Config tree */
