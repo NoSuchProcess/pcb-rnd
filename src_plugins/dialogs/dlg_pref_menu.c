@@ -145,7 +145,7 @@ static void pref_menu_load(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	char *fn = rnd_gui->fileselect(rnd_gui, "menu patch load", "Load a menu patch to file", "menu_patch.lht", "lht", NULL, "menu_patch_load", RND_HID_FSD_READ, NULL);
 	if (fn == NULL)
 		return;
-	if (rnd_hid_menu_load(rnd_gui, NULL, "preferences", 300, fn, 1, NULL, "User reuqested load through the preferences dialog") != 0)
+	if (rnd_hid_menu_load(rnd_gui, NULL, "preferences", 300, fn, 1, NULL, "User reuqested load through the preferences dialog") == NULL)
 		rnd_message(RND_MSG_ERROR, "Failed to load/parse menu file '%s' - menu file not loaded\n", fn);
 	free(fn);
 }
@@ -163,7 +163,7 @@ static void pref_menu_reload(void *hid_ctx, void *caller_data, rnd_hid_attribute
 
 	fn = m->cfg.doc->root->file_name;
 	rnd_hid_menu_merge_inhibit_inc();
-	if (rnd_hid_menu_load(rnd_gui, NULL, m->cookie, m->prio, fn, 1, NULL, m->desc) != 0)
+	if (rnd_hid_menu_load(rnd_gui, NULL, m->cookie, m->prio, fn, 1, NULL, m->desc) == NULL)
 		rnd_message(RND_MSG_ERROR, "Failed to load/parse menu file '%s' - menu file not reloaded\n", fn);
 	else
 		rnd_hid_menu_unload_patch(rnd_gui, m);
