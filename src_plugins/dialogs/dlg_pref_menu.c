@@ -45,6 +45,8 @@ extern int pcb_wplc_save_to_file(const char *fn);
 	m = r->user_data; \
 	if (m == NULL) {rnd_message(RND_MSG_ERROR, "Invalid menu file selection\n"); return; } \
 
+/* Update button states: disable or enable them depending on what kind of
+   menu patch row is selected from the list */
 static void pref_menu_btn_update(pref_ctx_t *ctx)
 {
 	rnd_menu_patch_t *m;
