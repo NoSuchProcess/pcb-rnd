@@ -366,6 +366,14 @@ static void pref_ev_board_meta_changed(rnd_hidlib_t *hidlib, void *user_data, in
 	pref_win_brd2dlg(ctx);
 }
 
+static void pref_ev_menu_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	pref_ctx_t *ctx = user_data;
+	if (!pref_ctx.active)
+		return;
+	pref_menu_brd2dlg(ctx);
+}
+
 void pref_conf_changed(rnd_conf_native_t *cfg, int arr_idx)
 {
 	pref_confitem_t *i;
@@ -383,6 +391,7 @@ void pcb_dlg_pref_init(void)
 	pref_conf_cb.val_change_post = pref_conf_changed;
 	rnd_event_bind(RND_EVENT_BOARD_CHANGED, pref_ev_board_changed, &pref_ctx, pref_cookie);
 	rnd_event_bind(RND_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
+	rnd_event_bind(RND_EVENT_MENU_CHANGED, pref_ev_menu_changed, &pref_ctx, pref_cookie);
 	pref_hid = rnd_conf_hid_reg(pref_cookie, &pref_conf_cb);
 	pcb_dlg_pref_sizes_init(&pref_ctx);
 	pcb_dlg_pref_lib_init(&pref_ctx);
