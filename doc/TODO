@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - res/menu (NGI0): load new res on the fly (patch the menu system):
-	- low level patching (tree compare)
 	- high level patching (patch instruction apply)
 	- gui load dialog
 	- FEATURE: project specific menus from extra lihata files - maybe from project.lht or a .d
