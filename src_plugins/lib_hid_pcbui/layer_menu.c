@@ -218,7 +218,7 @@ void pcb_layer_menu_batch_timer_ev(rnd_hidlib_t *hidlib, void *user_data, int ar
 	int keys_done = 0;
 
 	if (need_layer_menu_update) {
-rnd_trace("layer menu update.\n");
+/*rnd_trace("layer menu update.\n");*/
 		rnd_hid_menu_unload(rnd_gui, menu_cookie);
 
 		layer_install_menu1("/anchored/@layerview", 1);
@@ -230,7 +230,7 @@ rnd_trace("layer menu update.\n");
 	}
 
 	if (need_layer_key_update) {
-rnd_trace("layer key update timer!\n");
+/*rnd_trace("layer key update timer!\n");*/
 		if (!keys_done)
 			layer_install_menu_key("/anchored/@layerkeys", 0);
 		need_layer_key_update = 0;
