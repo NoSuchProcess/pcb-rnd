@@ -104,12 +104,26 @@ static void rst_force_update_chk_and_dlg()
 	rstdlg_pcb2dlg(target);
 }
 
+static int need_rst_menu = 0;
+
+void pcb_rst_menu_batch_timer_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	if (need_rst_menu) {
+/*		rnd_trace("layer key update timer!\n");*/
+		rst_install_menu();
+		need_rst_menu = 0;
+	}
+}
+
+
 static int rst_lock = 0;
-static void rst_update()
+static void rst_update(rnd_hidlib_t *hidlib)
 {
 	if (rst_lock) return;
 	rst_lock++;
-	rst_install_menu();
+
+	need_rst_menu = 1;
+	rnd_hid_gui_batch_timer(hidlib);
 
 	if (rst.sub_inited) {
 		int n, target;
@@ -215,7 +229,7 @@ static void rst_docked_create()
 
 void pcb_rst_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	rst_update();
+	rst_update(hidlib);
 }
 
 void pcb_rst_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
@@ -225,7 +239,7 @@ void pcb_rst_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_ev
 		if (rnd_hid_dock_enter(&rst.sub, RND_HID_DOCK_LEFT, "Route styles") == 0)
 			rst.sub_inited = 1;
 	}
-	rst_update();
+	rst_update(hidlib);
 }
 
 void pcb_rst_update_conf(rnd_conf_native_t *cfg, int arr_idx)
