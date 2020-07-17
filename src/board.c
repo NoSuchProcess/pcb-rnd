@@ -34,6 +34,7 @@
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/paths.h>
+#include <librnd/core/hid_menu.h>
 #include <librnd/poly/rtree.h>
 #include "undo.h"
 #include "draw.h"
@@ -115,7 +116,9 @@ pcb_board_t *pcb_board_new(int inhibit_events)
 
 	dpcb = -1;
 	pcb_io_err_inhibit_inc();
+	rnd_hid_menu_merge_inhibit_inc();
 	rnd_conf_list_foreach_path_first(NULL, dpcb, &conf_core.rc.default_pcb_file, pcb_load_pcb(__path__, NULL, rnd_false, 1 | 0x10 | inh));
+	rnd_hid_menu_merge_inhibit_dec();
 	pcb_io_err_inhibit_dec();
 
 	if (dpcb != 0) { /* no default PCB in file, use embedded version */

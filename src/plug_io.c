@@ -60,6 +60,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
+#include <librnd/core/hid_menu.h>
 #include "event.h"
 #include <librnd/core/compat_misc.h>
 #include "route_style.h"
@@ -539,6 +540,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 	pcb_board_t *newPCB = pcb_board_new_(rnd_false);
 	pcb_board_t *oldPCB;
 	rnd_conf_role_t settings_dest;
+	int pres;
 #ifdef DEBUG
 	double elapsed;
 	clock_t start, end;
@@ -562,7 +564,11 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 	}
 
 	/* new data isn't added to the undo list */
-	if (!pcb_parse_pcb(PCB, new_filename, fmt, settings_dest, how & 0x10)) {
+	rnd_hid_menu_merge_inhibit_inc();
+	pres = pcb_parse_pcb(PCB, new_filename, fmt, settings_dest, how & 0x10);
+	rnd_hid_menu_merge_inhibit_dec();
+
+	if (!pres) {
 		pcb_board_remove(oldPCB);
 
 		pcb_board_new_postproc(PCB, 0);
