@@ -16,7 +16,7 @@ The same default menu file is used in all GUI HIDs. It comes with multi-stroke
 key bindings, plus only a very few, alternative keys that use modifiers
 (mostly ctrl). A multi-stroke key binding requires the user to type in a
 sequence of keys, e.g. pressing 't' and 'l' (written as {t l} in this document)
-will make pcb-rnd switch to the line tool. There are two major advanatges of
+will make pcb-rnd switch to the line tool. There are two major advantages of
 using multi-stroke instead of modifiers:
 <ul>
 	<li> It is often easier to remember them, e.g. the above {t l} can be
@@ -24,11 +24,11 @@ using multi-stroke instead of modifiers:
 	     and {t, p} for 'tool, polygon'. The old menu file had these as F2, F3
 	     and F6. They could be also ctrl+l, ctrl+a, ctrl+p, but then if another
 	     group of functionality required similar letters, like l for list or
-	     p for print, they would ned to use a different modifier, e.g. alt+l
+	     p for print, they would need to use a different modifier, e.g. alt+l
 	     and alt+p. At the end there would be a random set of alt, ctrl, shift
 	     combinations that are real hard to remember - this is exactly how
 	     the old (pre-2.0.0) default menu file was.
-	<li> Since pcb-rnd is a graphical CAD, the mouse is an inportant user input
+	<li> Since pcb-rnd is a graphical CAD, the mouse is an important user input
 	     device. Most users will have one hand constantly on the mouse. It is much
 	     faster to type a sequence of 2 or rarely 3 plain keys with one hand than
 	     doing the acrobatics for something like ctrl+t or even alt+shif+u.
@@ -40,7 +40,7 @@ as a tree: e.g. in a 3-key sequence, starting from the root
 (nothing is pressed) the first key select a chapter, the second
 key narrows it down to a subchapter and the third key (leaf) selects the actual
 action within the subchapter. The <a href="keytree.svg">current key tree</a> is
-accessible in a large svg drawing or in a script-digestable
+accessible in a large svg drawing or in a script-digestible
 <a href="keytree.txt">flat list</a>.
 
 <h3> 5.4.2 Grid </h3>
@@ -49,7 +49,7 @@ The grid is an imaginary set of points over the drawing. The crosshair
 can snap to the grid, helping the user to keep coordinates of objects
 distributed evenly.
 <p>
-The only grid geometr pcb-rnd supports is a regular, rectangular grid, that
+The only grid geometry pcb-rnd supports is a regular, rectangular grid, that
 is: grid points spaced evenly in x and y directions, aligned into horizontal
 and vertical rows. The grid also has an optional offset in x and y directions
 (which is usually set to 0;0).
@@ -149,7 +149,7 @@ of a menu file is ha:rnd-menu-v1.
 <p>
 A menu patch file contains an ordered list of instructions on how to
 make modifications to the current in-memory menu image. The menu patch
-file is a lihata document as follos:
+file is a lihata document as follows:
 <pre>
 ha:rnd-menu-patch-v1 {
 	prio=456
@@ -247,5 +247,5 @@ hotkeys or create new menu items, the following process should be followed:
 <ul>
 	<li> 1. create the menu file/patch using a text editor
 	<li> 2. use the preferences window or a text editor to modify the config node rc/menu_patches
-	<li> 3. pcb-rnd will automatically update the in-memory menu file/patch list and will redo the menu mergig once the config node is modified
+	<li> 3. pcb-rnd will automatically update the in-memory menu file/patch list and will redo the menu merging once the config node is modified
 </ul>
