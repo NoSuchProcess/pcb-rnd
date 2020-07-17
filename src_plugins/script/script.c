@@ -43,6 +43,7 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/hid_menu.h>
+#include <librnd/core/event.h>
 #include "globalconst.h"
 
 #include "script.h"
@@ -442,6 +443,8 @@ void pplg_uninit_script(void)
 #ifndef RND_HAVE_SYS_FUNGW
 	pplg_uninit_fungw_fawk();
 #endif
+
+	rnd_event_unbind_allcookie(script_cookie);
 }
 
 int pplg_init_script(void)
@@ -458,5 +461,6 @@ int pplg_init_script(void)
 	pup_init(&script_pup);
 	pcb_live_script_init();
 	perma_script_init();
+	rnd_event_bind(RND_EVENT_GUI_INIT, script_timer_gui_init_ev, NULL, script_cookie);
 	return 0;
 }

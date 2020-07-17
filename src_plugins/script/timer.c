@@ -39,7 +39,7 @@ typedef struct {
 } script_timer_t;
 
 vtp0_t timers;
-int timer_running = 0;
+int timer_running = 0, want_timer = 0;
 
 static void start_timer(void);
 static void timer_cb(rnd_hidval_t hv)
@@ -110,10 +110,19 @@ static void timer_cb(rnd_hidval_t hv)
 static void start_timer(void)
 {
 	static rnd_hidval_t hv;
+	if (!rnd_gui->gui) {
+		want_timer = 1;
+		return;
+	}
 	timer_running = 1;
 	rnd_gui->add_timer(rnd_gui, timer_cb, 100, hv);
 }
 
+static void script_timer_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	if (want_timer && !timer_running) /* script created a timer before gui init */
+		start_timer();
+}
 
 static const char pcb_acth_AddTimer[] = "Add a new timer";
 static const char pcb_acts_AddTimer[] = "AddTimer(action, period, [repeat], [userdata])";
@@ -151,3 +160,4 @@ static fgw_error_t pcb_act_AddTimer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_IRES(0);
 	return 0;
 }
+
