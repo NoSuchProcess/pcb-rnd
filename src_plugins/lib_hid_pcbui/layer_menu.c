@@ -41,9 +41,6 @@
 
 #include "layer_menu.h"
 
-/* How much to wait to batch menu refresh events */
-#define MENU_REFRESH_TIME_MS 200
-
 static const char *menu_cookie = "lib_hid_pcbui layer menus";
 
 static void layer_install_menu1(const char *anch, int view)
@@ -215,44 +212,40 @@ static void layer_install_menu_key(const char *anch, int view)
 	gds_uninit(&path);
 }
 
-static int layer_menu_install_timer_active = 0;
-static rnd_hidval_t layer_menu_install_timer;
-
-static void layer_install_menu_cb(rnd_hidval_t user_data)
+static int need_layer_menu_update = 0, need_layer_key_update = 0;
+void pcb_layer_menu_batch_timer_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	rnd_hid_menu_merge_inhibit_inc();
-	rnd_hid_menu_unload(rnd_gui, menu_cookie);
+	int keys_done = 0;
 
-	layer_install_menu1("/anchored/@layerview", 1);
-	layer_install_menu1("/anchored/@layerpick", 0);
-	layer_install_menu_key("/anchored/@layerkeys", 0);
+	if (need_layer_menu_update) {
+rnd_trace("layer menu update.\n");
+		rnd_hid_menu_unload(rnd_gui, menu_cookie);
 
-	layer_menu_install_timer_active = 0;
+		layer_install_menu1("/anchored/@layerview", 1);
+		layer_install_menu1("/anchored/@layerpick", 0);
+		layer_install_menu_key("/anchored/@layerkeys", 0);
 
-	rnd_hid_menu_merge_inhibit_dec();
-}
-
-static void layer_install_menu(void)
-{
-	rnd_hidval_t timerdata;
-
-	if ((rnd_gui == NULL) || (!rnd_gui->gui))
-		return;
-
-	if (layer_menu_install_timer_active) {
-		rnd_gui->stop_timer(rnd_gui, layer_menu_install_timer);
-		layer_menu_install_timer_active = 0;
+		need_layer_menu_update = 0;
+		keys_done = 1;
 	}
 
-	timerdata.ptr = NULL;
-	layer_menu_install_timer = rnd_gui->add_timer(rnd_gui, layer_install_menu_cb, MENU_REFRESH_TIME_MS, timerdata);
-	layer_menu_install_timer_active = 1;
+	if (need_layer_key_update) {
+rnd_trace("layer key update timer!\n");
+		if (!keys_done)
+			layer_install_menu_key("/anchored/@layerkeys", 0);
+		need_layer_key_update = 0;
+	}
+}
 
+static void layer_install_menu(rnd_hidlib_t *hidlib)
+{
+	need_layer_menu_update = 1;
+	rnd_hid_gui_batch_timer(hidlib);
 }
 
 void pcb_layer_menu_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	layer_install_menu();
+	layer_install_menu(hidlib);
 	if ((rnd_gui != NULL) && (rnd_gui->update_menu_checkbox != NULL))
 		rnd_gui->update_menu_checkbox(rnd_gui, NULL);
 }
@@ -263,35 +256,8 @@ void pcb_layer_menu_vis_update_ev(rnd_hidlib_t *hidlib, void *user_data, int arg
 		rnd_gui->update_menu_checkbox(rnd_gui, NULL);
 }
 
-
-static int layer_menu_key_timer_active = 0;
-static rnd_hidval_t layer_menu_key_timer;
-
-static void timed_layer_menu_key_update_cb(rnd_hidval_t user_data)
-{
-/*	rnd_trace("************ layer key update timer!\n");*/
-	rnd_hid_menu_merge_inhibit_inc();
-	layer_install_menu_key("/anchored/@layerkeys", 0);
-	layer_menu_key_timer_active = 0;
-	rnd_hid_menu_merge_inhibit_dec();
-}
-
-
 void pcb_layer_menu_key_update_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	rnd_hidval_t timerdata;
-
-/*	rnd_trace("************ layer key update ev!\n");*/
-
-	if ((rnd_gui == NULL) || (!rnd_gui->gui))
-		return;
-
-	if (layer_menu_key_timer_active) {
-		rnd_gui->stop_timer(rnd_gui, layer_menu_key_timer);
-		layer_menu_key_timer_active = 0;
-	}
-
-	timerdata.ptr = NULL;
-	layer_menu_key_timer = rnd_gui->add_timer(rnd_gui, timed_layer_menu_key_update_cb, MENU_REFRESH_TIME_MS, timerdata);
-	layer_menu_key_timer_active = 1;
+	need_layer_key_update = 1;
+	rnd_hid_gui_batch_timer(hidlib);
 }
