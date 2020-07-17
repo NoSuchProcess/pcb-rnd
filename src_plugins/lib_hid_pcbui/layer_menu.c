@@ -270,8 +270,10 @@ static rnd_hidval_t layer_menu_key_timer;
 static void timed_layer_menu_key_update_cb(rnd_hidval_t user_data)
 {
 /*	rnd_trace("************ layer key update timer!\n");*/
+	rnd_hid_menu_merge_inhibit_inc();
 	layer_install_menu_key("/anchored/@layerkeys", 0);
 	layer_menu_key_timer_active = 0;
+	rnd_hid_menu_merge_inhibit_dec();
 }
 
 
