@@ -109,3 +109,143 @@ The current grid is stored as grid distance and x;y offset. Regardless of
 the configured presets, these properties of the current grid can be changed
 any time, using the SetValue() action or using the menu.
 
+
+<h3 id="menu"> 5.4.5. The extensible menu system </h3>
+
+<h4> 5.4.5.1. Menu files, patches and sources </h4>
+<p>
+The menu system is loaded and merged from multiple menu files and is dynamic
+(can be changed while pcb-rnd is running). There is a base menu file
+(file name is partially configured by conf node rc/menu_file), typically
+/usr/share/pcb-menu-default.lht. This is file is loaded first, with priority 0.
+Then pcb-rnd loads further menu files and menu file patches, for feature plugins,
+scripts or user addons at higher priority.
+<p>
+All menu files and menu patches are kept in memory. Upon loading,
+unloading or modifying any of these in-memory menu images, pcb-rnd will
+merge them into the final menu tree, which is what the GUI menu layout is
+modified to.
+<p>
+The following menu file/patch sources are supported:
+<p>
+<table border=1>
+	<tr><th> source            <th> usual prio    <th> description
+	<tr><td> base              <td> 0             <td> factory menu file, normally /usr/share/pcb-menu-default.lht
+	<tr><td> plugins (static)  <td> 100..199      <td> menu files embedded in feature plugins (e.g. to create import menus per format)
+	<tr><td> user              <td> 300..400      <td> menu files/patches loaded upon user request (conf node: rc/menu_patches)
+	<tr><td> action (scripts)  <td> 500           <td> using the CreateMenu() action
+	<tr><td> plugins (dynamic) <td> 500           <td> e.g. route style or layer menus that are generated from board data
+</table>
+
+<h4> 5.4.5.2. Menu files vs. menu patches </h4>
+<p>
+Menu files describe the menu tree, or a part of the menu tree, in its final
+form. The base of the menu system, at priority 0, must be a menu file. When
+a menu file is used to patch an existing in-memory menu image (at priority
+higher than 0), it can overwrite existing parts of the image or it can
+append to existing menus and submenus. But it can not remove submenus or
+modify existing submenus without fully overwriting them. The root node
+of a menu file is ha:rnd-menu-v1.
+<p>
+A menu patch file contains an ordered list of instructions on how to
+make modifications to the current in-memory menu image. The menu patch
+file is a lihata document as follos:
+<pre>
+ha:rnd-menu-patch-v1 {
+	prio=456
+	li:patch {
+		<i>...instructions (see below)...</i>
+	}
+}
+</pre>
+<p>
+The priority value is optional; when specified, it is used to position the
+patch in the order of merging. Instructions are executed in the order they
+are specified in the file.
+<p>
+An instruction can be one of these:
+<p>
+<ul>
+<li> a. append_menu:
+<pre>
+ha:append_menu {
+ path = /main_menu/File/Reports
+ li:submenu {
+  ha:foobar  = { a={&lt;key&gt;i;&lt;key&gt;5}; action=wow() }
+ }
+}
+</pre>
+<p>Appends (or overwrites) items under the menu path specified in <i>path</i>, with
+the menu subtree taken from the <i>submenu</i> node. The structure of the submenu
+node matches the structure of the plain menu file. The capabilities of this
+instruction is similar to a plain menu file's; the reason for using this
+variant is that it can be part of a menu patch instruction list.
+
+<li> b. remove_menu:
+<pre>
+ha:remove_menu {
+ path = /main_menu/File/Reports/Generate drill summary
+}
+</pre>
+<p>
+Removes a menu or a whole menu subtree at the specified path, if it exists
+(no error or warning is generated when it does not).
+
+<li> c. overwrite_menu_props:
+<pre>
+ha:overwrite_menu_props {
+ path = /main_menu/File/Reports/Report found padstacks
+ ha:props { a={&lt;key&gt;i;ctrl&lt;key&gt;1};}
+}
+
+</pre>
+<p>
+If the menu path specified in <i>path</i> exists and is a plain submenu item,
+its properties specified in <i>props</i> are overwritten. If a property is
+not present in the original menu node, it is added. The above example replaces
+the hotkey of an existing menu item. If the menu node at the given path is not
+found, the instruction is silently ignored.
+
+
+<h4> 5.4.5.3. The merge process </h4>
+<p>
+Pcb-rnd maintains a list of menu files and menu patches ordered by priority.
+Any change to this list triggers a menu merge. In the menu merge a new lihata
+document is created in-memory (called the <i>menu image</i>). This document
+is initially the copy of the base menu file (priority 0 on the list). Then
+each menu file/patch is taken, in ascending order by priority and is applied
+to the menu image. Plain menu files simply append/overwrite subtrees, menu
+patch files are interpreted and executed instruction by instruction. Each menu
+file/patch manipulates the menu image as-is at the moment the file/patch is
+applied - that is, modified by previously applied files/patches.
+<p>
+Once the merge process finished, the new menu image is ready. It is compared
+with the last menu image and differences are used to update the GUI so that
+the menu system will reflect the content of the new menu image by updating
+from the previous image with the least number of steps.
+Once the GUI menu update process finishes, the old menu image is discarded
+as the new menu image is in effect.
+
+<h4> 5.4.5.4. User interface </h4>
+<p>
+Menu files and menu patches are created and edited using a text editor.
+<p>
+The list of menu files loaded at the moment can be viewed on the menu
+tab of the preferences window or can be printed using the following
+action:
+<pre>
+MenuPatch(list)
+</pre>
+<p>
+Menu files/patches can be loaded and unloaded manually; even those can
+be unloaded that are created by feature plugins. Such operation is possible
+both from the preferences window and from the MenuPatch action. These modifications
+however affect only the in-memory list of files/patches and are not permanent.
+<p>
+To permanently add user supplied menu files/patches, typically to change
+hotkeys or create new menu items, the following process should be followed:
+<ul>
+	<li> 1. create the menu file/patch using a text editor
+	<li> 2. use the preferences window or a text editor to modify the config node rc/menu_patches
+	<li> 3. pcb-rnd will automatically update the in-memory menu file/patch list and will redo the menu mergig once the config node is modified
+</ul>
