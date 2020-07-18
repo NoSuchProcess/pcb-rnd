@@ -190,7 +190,6 @@ typedef struct {
 	int nunplated;
 } hole_count_t;
 
-TODO("padstack: move this to obj_pstk.c after pinvia removal")
 #include "obj_pstk_inlines.h"
 static rnd_r_dir_t hole_counting_callback(const rnd_box_t * b, void *cl)
 {
