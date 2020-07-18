@@ -1584,3 +1584,13 @@ rnd_bool pcb_has_explicit_outline(pcb_board_t *pcb)
 			return 1;
 	return 0;
 }
+
+const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace)
+{
+	const char *s = NULL;
+	if (namespace != NULL)
+		s = pcb_attribute_get_namespace(&grp->Attributes, namespace, "thickness");
+	if (s == NULL)
+		s = pcb_attribute_get(&grp->Attributes, "thickness");
+	return s;
+}

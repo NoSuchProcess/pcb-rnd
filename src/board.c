@@ -411,17 +411,6 @@ int pcb_board_normalize(pcb_board_t *pcb)
 	return chg;
 }
 
-TODO("Move this to layer_grp.[ch]")
-const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace)
-{
-	const char *s = NULL;
-	if (namespace != NULL)
-		s = pcb_attribute_get_namespace(&grp->Attributes, namespace, "thickness");
-	if (s == NULL)
-		s = pcb_attribute_get(&grp->Attributes, "thickness");
-	return s;
-}
-
 rnd_coord_t pcb_stack_thickness(pcb_board_t *pcb, const char *namespace, pcb_board_thickness_flags_t flags, rnd_layergrp_id_t from, rnd_bool include_from, rnd_layergrp_id_t to, rnd_bool include_to, pcb_layer_type_t accept)
 {
 	rnd_layergrp_id_t gid;

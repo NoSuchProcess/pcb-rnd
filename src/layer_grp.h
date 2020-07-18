@@ -300,4 +300,9 @@ void pcb_layergrp_set_dflgly(pcb_board_t *pcb, pcb_layergrp_t *grp, const pcb_df
 /* Return true if the board has an outline layer with at least one object on it */
 rnd_bool pcb_has_explicit_outline(pcb_board_t *pcb);
 
+/* Return the thickness attribute of a layer group, optionally considering
+   the namespace based override attribute, when present; returns NULL if
+   attribute is not found. */
+const char *pcb_layergrp_thickness_attr(pcb_layergrp_t *grp, const char *namespace);
+
 #endif
