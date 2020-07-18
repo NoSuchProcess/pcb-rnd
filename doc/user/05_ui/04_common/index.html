@@ -139,7 +139,9 @@ The following menu file/patch sources are supported:
 
 <h4 id="menu_patches"> 5.4.5.2. Menu files vs. menu patches </h4>
 <p>
-Menu files describe the menu tree, or a part of the menu tree, in its final
+Menu files describe the 
+<a href="../../../developer/lihata_format/tree.html#/lht_tree_doc/roots/menu">
+menu tree</a>, or a part of the menu tree, in its final
 form. The base of the menu system, at priority 0, must be a menu file. When
 a menu file is used to patch an existing in-memory menu image (at priority
 higher than 0), it can overwrite existing parts of the image or it can
@@ -147,7 +149,9 @@ append to existing menus and submenus. But it can not remove submenus or
 modify existing submenus without fully overwriting them. The root node
 of a menu file is ha:rnd-menu-v1.
 <p>
-A menu patch file contains an ordered list of instructions on how to
+A <a href="../../../developer/lihata_format/tree.html#/lht_tree_doc/roots/menu_patch">
+menu patch </a>
+file contains an ordered list of instructions on how to
 make modifications to the current in-memory menu image. The menu patch
 file is a lihata document as follows:
 <pre>
