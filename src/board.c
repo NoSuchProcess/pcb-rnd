@@ -188,7 +188,7 @@ void pcb_layer_colors_from_conf(pcb_board_t *ptr, int force)
 typedef struct {
 	int nplated;
 	int nunplated;
-} HoleCountStruct;
+} hole_count_t;
 
 TODO("padstack: move this to obj_pstk.c after pinvia removal")
 #include "obj_pstk_inlines.h"
@@ -196,7 +196,7 @@ static rnd_r_dir_t hole_counting_callback(const rnd_box_t * b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
-	HoleCountStruct *hcs = (HoleCountStruct *)cl;
+	hole_count_t *hcs = (hole_count_t *)cl;
 
 	if ((proto != NULL) && (proto->hdia > 0)) {
 		if (proto->hplated)
@@ -211,7 +211,7 @@ static rnd_r_dir_t slot_counting_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
-	HoleCountStruct *hcs = (HoleCountStruct *)cl;
+	hole_count_t *hcs = (hole_count_t *)cl;
 
 	if ((proto != NULL) && (proto->mech_idx >= 0)) {
 		if (proto->hplated)
@@ -224,7 +224,7 @@ static rnd_r_dir_t slot_counting_callback(const rnd_box_t *b, void *cl)
 
 void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const rnd_box_t *within_area)
 {
-	HoleCountStruct hcs = { 0, 0 };
+	hole_count_t hcs = { 0, 0 };
 
 	rnd_r_search(pcb->Data->padstack_tree, within_area, NULL, hole_counting_callback, &hcs, NULL);
 
@@ -236,7 +236,7 @@ void pcb_board_count_holes(pcb_board_t *pcb, int *plated, int *unplated, const r
 
 void pcb_board_count_slots(pcb_board_t *pcb, int *plated, int *unplated, const rnd_box_t *within_area)
 {
-	HoleCountStruct hcs = { 0, 0 };
+	hole_count_t hcs = { 0, 0 };
 
 	rnd_r_search(pcb->Data->padstack_tree, within_area, NULL, slot_counting_callback, &hcs, NULL);
 
