@@ -246,6 +246,44 @@ function subc_rect(layer, x1, y1, x2, y2, clearance, flags, attributes     ,s)
 	LAYER[layer] = LAYER[layer] NL s
 }
 
+# POLY[] is an array indexed between 0 to 2*N-1 for a polygon of N
+# vertices, packed as x0;y0;x1;y1;x2;y2 ... xN;yN. The usual pcb-rnd
+# polygon rules apply: at least 3 vertices, no self-intersection. This
+# call does not make any attempt on cheking polygon validity.
+function subc_poly(layer, POLY, clearance, flags, attributes     ,s,n)
+{
+	w = w/2
+	h = h/2
+	s = s "          ha:polygon." (++objid) " {" NL
+	s = s "           clearance=" unit(clearance) NL
+	s = s "           li:geometry {" NL
+	s = s "             ta:contour {" NL
+	for(n = 0; (n in POLY); n += 2)
+		s = s "              { " unit(POLY[n]) "; " unit(POLY[n+1]) " }" NL
+	s = s "             }" NL
+	s = s "           }" NL
+	s = s "           ha:attributes {" attributes "}" NL
+	s = s "           ha:flags {" flags "}" NL
+	s = s "          }" NL
+
+	LAYER[layer] = LAYER[layer] NL s
+}
+
+# reset a polygon so it has no vertices
+function poly_reset(POLY     ,n)
+{
+	for(n = 0; (n in POLY); n += 2)
+		delete POLY[n]
+	POLY["len"] = 0
+}
+
+# append x;y to the end of a polygon's vertex list
+function poly_append(POLY, x, y)
+{
+	POLY[POLY["len"]++] = x;
+	POLY[POLY["len"]++] = y;
+}
+
 # start generating a subcircuit
 function subc_begin(footprint, refdes, refdes_x, refdes_y, refdes_dir, ATTR    ,a)
 {
