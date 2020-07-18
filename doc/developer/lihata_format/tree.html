@@ -213,6 +213,22 @@
 <tr id="/lht_tree_doc/roots/menu/children/scripts"><td> &nbsp;ha:scripts <td> &nbsp; <td> &nbsp; <td>  a collection of named action scripts that can be symnlinked from elsewhere in the menu file 
 <tr id="/lht_tree_doc/roots/menu/children/scripts/children/SCRIPTNAME"><td> &nbsp;&nbsp;li:SCRIPTNAME <td> &nbsp; <td> &nbsp; <td> action script
 </table>
+<h3 id="/lht_tree_doc/roots/menu_patch">ha:menu_patch</h3>
+<p>
+<table border=0 cellspacing=0>
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
+<tr id="/lht_tree_doc/roots/menu_patch"><td> ha:rnd-menu-patch-v1 <td> &nbsp; <td> &nbsp; <td> Menu patch instructions
+<tr id="/lht_tree_doc/roots/menu_patch/children/prio"><td> &nbsp;te:prio <td> &nbsp; <td> &nbsp; <td> optional; integer priority value used in ordering the menu files/patches before merging 
+<tr id="/lht_tree_doc/roots/menu_patch/children/patch"><td> &nbsp;li:patch <td> &nbsp; <td> &nbsp; <td> ordered list of patch instructions
+<tr id="/lht_tree_doc/roots/menu_patch/children/patch/children/append_menu"><td> &nbsp;&nbsp;ha:append_menu <td> &nbsp; <td> &nbsp; <td> append (or overwrite) a submenu tree at a given path
+<tr id="/lht_tree_doc/roots/menu_patch/children/patch/children/append_menu/children/path"><td> &nbsp;&nbsp;&nbsp;te:path <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/path">path to a menu item, starting from the menu tree root; e.g. /main_menu/File/Revert  -&gt; </a>
+<tr id="/lht_tree_doc/roots/menu_patch/children/patch/children/append_menu/children/submenu"><td> &nbsp;&nbsp;&nbsp;li:submenu <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/submenu">ordered list of menu items for a submenu -&gt; </a>
+<tr id="/lht_tree_doc/roots/menu_patch/children/patch/children/remove_menu"><td> &nbsp;&nbsp;ha:remove_menu <td> &nbsp; <td> &nbsp; <td> remove a submenu or menu item at a given path
+<tr id="/lht_tree_doc/roots/menu_patch/children/patch/children/remove_menu/children/path"><td> &nbsp;&nbsp;&nbsp;te:path <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/path">path to a menu item, starting from the menu tree root; e.g. /main_menu/File/Revert  -&gt; </a>
+<tr id="/lht_tree_doc/roots/menu_patch/children/patch/children/overwrite_menu_props"><td> &nbsp;&nbsp;ha:overwrite_menu_props <td> &nbsp; <td> &nbsp; <td> overwrite properties of an existing menu
+<tr id="/lht_tree_doc/roots/menu_patch/children/patch/children/overwrite_menu_props/children/path"><td> &nbsp;&nbsp;&nbsp;te:path <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/path">path to a menu item, starting from the menu tree root; e.g. /main_menu/File/Revert  -&gt; </a>
+<tr id="/lht_tree_doc/roots/menu_patch/children/patch/children/overwrite_menu_props/children/props"><td> &nbsp;&nbsp;&nbsp;ha:props <td> &nbsp; <td> &nbsp; <td> same as menu properties documented at LEAFSUBMENUNAME
+</table>
 <h3 id="/lht_tree_doc/roots/coraleda-project-v1">ha:coraleda-project-v1</h3>
 <p>
 <table border=0 cellspacing=0>
@@ -675,6 +691,12 @@
 <tr id="/lht_tree_doc/comm/submenu/children/LEAFSUBMENUNAME/children/tip"><td> &nbsp;&nbsp;tip <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> tooltip text
 <tr id="/lht_tree_doc/comm/submenu/children/LEAFSUBMENUNAME/children/checked"><td> &nbsp;&nbsp;checked <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> the menu item has a checkbox; value is the action to execute to determine whether the menu item's checkbox is checked or not
 <tr id="/lht_tree_doc/comm/submenu/children/LEAFSUBMENUNAME/children/update_on"><td> &nbsp;&nbsp;update_on <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> path of a conf node that triggers re-evaluation of the checkbox state
+</table>
+<h3 id="/lht_tree_doc/comm/path">te:path</h3>
+<p>
+<table border=0 cellspacing=0>
+<tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
+<tr id="/lht_tree_doc/comm/path"><td> te:path <td> &nbsp; <td> &nbsp; <td> path to a menu item, starting from the menu tree root; e.g. /main_menu/File/Revert 
 </table>
 <h2 id="types"> Types </h2>
 <p>

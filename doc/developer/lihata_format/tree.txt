@@ -202,6 +202,21 @@ ha:rnd-menu-v1                 Menu file
  ha:scripts                    a collection of named action scripts that can be symnlinked from elsewhere in the menu file
   li:SCRIPTNAME                action script
 
+ha:menu_patch
+
+type:name                 value ver description
+ha:rnd-menu-patch-v1                Menu patch instructions
+ te:prio                            optional; integer priority value used in ordering the menu files/patches before merging
+ li:patch                           ordered list of patch instructions
+  ha:append_menu                    append (or overwrite) a submenu tree at a given path
+   te:path                          path to a menu item, starting from the menu tree root; e.g. /main_menu/File/Revert ->
+   li:submenu                       ordered list of menu items for a submenu ->
+  ha:remove_menu                    remove a submenu or menu item at a given path
+   te:path                          path to a menu item, starting from the menu tree root; e.g. /main_menu/File/Revert ->
+  ha:overwrite_menu_props           overwrite properties of an existing menu
+   te:path                          path to a menu item, starting from the menu tree root; e.g. /main_menu/File/Revert ->
+   ha:props                         same as menu properties documented at LEAFSUBMENUNAME
+
 ha:coraleda-project-v1
 
 type:name              value  ver description
@@ -661,6 +676,11 @@ li:submenu                     ordered list of menu items for a submenu
   tip               string     tooltip text
   checked           string     the menu item has a checkbox; value is the action to execute to determine whether the menu item's checkbox is checked or not
   update_on         string     path of a conf node that triggers re-evaluation of the checkbox state
+
+te:path
+
+type:name value ver description
+te:path             path to a menu item, starting from the menu tree root; e.g. /main_menu/File/Revert
 
 Types
 

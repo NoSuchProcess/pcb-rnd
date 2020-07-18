@@ -103,6 +103,47 @@ ha:roots {
 			}
 		}
 	}
+
+	ha:menu_patch {
+		type=ha
+		name={rnd-menu-patch-v1}
+		desc={Menu patch instructions}
+		li:children {
+			ha:prio {
+				type=te
+				desc={optional; integer priority value used in ordering the menu files/patches before merging }
+			}
+			ha:patch {
+				type=li
+				desc={ordered list of patch instructions}
+				li:children {
+					ha:append_menu {
+						type=ha
+						desc={append (or overwrite) a submenu tree at a given path}
+						li:children {
+							sy:path = {/lht_tree_doc/comm/path}
+							sy:submenu = {/lht_tree_doc/comm/submenu}
+						}
+					}
+					ha:remove_menu {
+						type=ha
+						desc={remove a submenu or menu item at a given path}
+						li:children {
+							sy:path = {/lht_tree_doc/comm/path}
+						}
+					}
+					ha:overwrite_menu_props {
+						type=ha
+						desc={overwrite properties of an existing menu}
+						li:children {
+							sy:path = {/lht_tree_doc/comm/path}
+							ha:props = {type=ha; desc={same as menu properties documented at LEAFSUBMENUNAME}}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 ha:comm {
@@ -181,6 +222,10 @@ ha:comm {
 				}
 			}
 		}
+	}
+	ha:path {
+		type=te
+		desc={path to a menu item, starting from the menu tree root; e.g. /main_menu/File/Revert }
 	}
 }
 }
