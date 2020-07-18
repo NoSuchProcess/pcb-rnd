@@ -3,7 +3,7 @@ ha:lht_tree_doc {
 ha:roots {
 	ha:menu {
 		type=ha
-		name={}
+		name={rnd-menu-v1}
 		desc={Menu file}
 		li:children {
 			ha:mouse {
@@ -62,6 +62,42 @@ ha:roots {
 							sy:m@dup = {/lht_tree_doc/comm/submenu/children/m}
 							sy:submenu = {/lht_tree_doc/comm/submenu}
 						}
+					}
+				}
+			}
+			ha:toolbar_static {
+				type=li
+				desc={ordered list (from left to right) of toolbar icons}
+				li:children {
+					ha:TOOLNAME {
+						type=ha
+						desc={tool menu name, e.g. "polyhole" for the polygon hole draw tool}
+						li:children {
+							ha:tip { type=te; desc={tooltip for the icon button} }
+						}
+					}
+				}
+			}
+			ha:anchored {
+				type=li
+				desc={list of submenus; child of submenu would be copied and appended after ever occurance of the ANCHORNAME }
+				li:children {
+					ha:@ANCHORNAME {
+						type=ha
+						desc={list menu items/subtrees to be copied after each @ANCHORNAME in the menu system}
+						li:children {
+							sy:submenu = {/lht_tree_doc/comm/submenu}
+						}
+					}
+				}
+			}
+			ha:scripts {
+				type=ha
+				desc={ a collection of named action scripts that can be symnlinked from elsewhere in the menu file }
+				li:children {
+					ha:SCRIPTNAME {
+						type=li
+						desc={action script}
 					}
 				}
 			}

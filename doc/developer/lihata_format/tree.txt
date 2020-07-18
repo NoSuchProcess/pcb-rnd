@@ -154,7 +154,7 @@ ha:pcb-rnd-log-v*              pcb-rnd message log dump
 ha:menu
 
 type:name           value  ver description
-ha:                            Menu file
+ha:rnd-menu-v1                 Menu file
  li:mouse                      mouse bindings
   li:left                      actions to execute on left button click
    li:press                    actions to execute on mouse button press when no modifier is pressed
@@ -193,6 +193,14 @@ ha:                            Menu file
   ha:POPUPNAME                 popup menu name, e.g. "layer" for layer context menu
    m                string     mnemonic: single character that should be underlined and used as a hot key in the menu name
    li:submenu                  ordered list of menu items for a submenu ->
+ li:toolbar_static             ordered list (from left to right) of toolbar icons
+  ha:TOOLNAME                  tool menu name, e.g. "polyhole" for the polygon hole draw tool
+   te:tip                      tooltip for the icon button
+ li:anchored                   list of submenus; child of submenu would be copied and appended after ever occurance of the ANCHORNAME
+  ha:@ANCHORNAME               list menu items/subtrees to be copied after each @ANCHORNAME in the menu system
+   li:submenu                  ordered list of menu items for a submenu ->
+ ha:scripts                    a collection of named action scripts that can be symnlinked from elsewhere in the menu file
+  li:SCRIPTNAME                action script
 
 ha:coraleda-project-v1
 

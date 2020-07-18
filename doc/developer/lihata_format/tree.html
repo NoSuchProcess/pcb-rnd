@@ -165,7 +165,7 @@
 <p>
 <table border=0 cellspacing=0>
 <tr><th align=left> type:name <th align=left> value <th align=left> <a href="#ver">ver</a> <th align=left> description
-<tr id="/lht_tree_doc/roots/menu"><td> ha: <td> &nbsp; <td> &nbsp; <td> Menu file
+<tr id="/lht_tree_doc/roots/menu"><td> ha:rnd-menu-v1 <td> &nbsp; <td> &nbsp; <td> Menu file
 <tr id="/lht_tree_doc/roots/menu/children/mouse"><td> &nbsp;li:mouse <td> &nbsp; <td> &nbsp; <td> mouse bindings
 <tr id="/lht_tree_doc/roots/menu/children/mouse/children/left"><td> &nbsp;&nbsp;li:left <td> &nbsp; <td> &nbsp; <td> actions to execute on left button click
 <tr id="/lht_tree_doc/comm/mouse_actions/children/press"><td> &nbsp;&nbsp;&nbsp;li:press <td> &nbsp; <td> &nbsp; <td> actions to execute on mouse button press when no modifier is pressed
@@ -204,6 +204,14 @@
 <tr id="/lht_tree_doc/roots/menu/children/popups/children/POPUPNAME"><td> &nbsp;&nbsp;ha:POPUPNAME <td> &nbsp; <td> &nbsp; <td> popup menu name, e.g. "layer" for layer context menu
 <tr id="/lht_tree_doc/comm/submenu/children/m"><td> &nbsp;&nbsp;&nbsp;m <td> <a href="#valtype:string">string</a> <td> &nbsp; <td> mnemonic: single character that should be underlined and used as a hot key in the menu name
 <tr id="/lht_tree_doc/roots/menu/children/popups/children/POPUPNAME/children/submenu"><td> &nbsp;&nbsp;&nbsp;li:submenu <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/submenu">ordered list of menu items for a submenu -&gt; </a>
+<tr id="/lht_tree_doc/roots/menu/children/toolbar_static"><td> &nbsp;li:toolbar_static <td> &nbsp; <td> &nbsp; <td> ordered list (from left to right) of toolbar icons
+<tr id="/lht_tree_doc/roots/menu/children/toolbar_static/children/TOOLNAME"><td> &nbsp;&nbsp;ha:TOOLNAME <td> &nbsp; <td> &nbsp; <td> tool menu name, e.g. "polyhole" for the polygon hole draw tool
+<tr id="/lht_tree_doc/roots/menu/children/toolbar_static/children/TOOLNAME/children/tip"><td> &nbsp;&nbsp;&nbsp;te:tip <td> &nbsp; <td> &nbsp; <td> tooltip for the icon button
+<tr id="/lht_tree_doc/roots/menu/children/anchored"><td> &nbsp;li:anchored <td> &nbsp; <td> &nbsp; <td> list of submenus; child of submenu would be copied and appended after ever occurance of the ANCHORNAME 
+<tr id="/lht_tree_doc/roots/menu/children/anchored/children/@ANCHORNAME"><td> &nbsp;&nbsp;ha:@ANCHORNAME <td> &nbsp; <td> &nbsp; <td> list menu items/subtrees to be copied after each @ANCHORNAME in the menu system
+<tr id="/lht_tree_doc/roots/menu/children/anchored/children/@ANCHORNAME/children/submenu"><td> &nbsp;&nbsp;&nbsp;li:submenu <td> &nbsp; <td> &nbsp; <td> <a href="#/lht_tree_doc/comm/submenu">ordered list of menu items for a submenu -&gt; </a>
+<tr id="/lht_tree_doc/roots/menu/children/scripts"><td> &nbsp;ha:scripts <td> &nbsp; <td> &nbsp; <td>  a collection of named action scripts that can be symnlinked from elsewhere in the menu file 
+<tr id="/lht_tree_doc/roots/menu/children/scripts/children/SCRIPTNAME"><td> &nbsp;&nbsp;li:SCRIPTNAME <td> &nbsp; <td> &nbsp; <td> action script
 </table>
 <h3 id="/lht_tree_doc/roots/coraleda-project-v1">ha:coraleda-project-v1</h3>
 <p>
