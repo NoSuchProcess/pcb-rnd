@@ -249,3 +249,30 @@ hotkeys or create new menu items, the following process should be followed:
 	<li> 2. use the preferences window or a text editor to modify the config node rc/menu_patches
 	<li> 3. pcb-rnd will automatically update the in-memory menu file/patch list and will redo the menu merging once the config node is modified
 </ul>
+
+<h4> 5.4.5.5. Menu file layout </h4>
+<p>
+A menu file has the following main trees:
+<p>
+<ul>
+	<li> <i>li:mouse</i> defines the mouse bindings
+	<li> <i>li:toolbar_static</i> specifies the static part of the toolbar (the "left side"; plugins can still add anything not listed here and those will end up in the dynamic section on the right end in random order)
+	<li> <i>li:main_menu</i> the menu tree for the main menu of the top window
+	<li> <i>li:popups</i> named popup menu trees; each child is the root of an independent popup menu that is invoked by name
+	<li> <i>li:scripts</i> named action scripts that can be symlinked from any of the above trees so long scripts don't scatter single-line menu item descriptions
+	<li> <i>li:anchored</i> each item is a ha:@anchor { li:submenu { ... } }, where @anchor refers to anchor(s) placed in the tree, by name; the content of the submenu is copied after each instance of the anchor in the main_menu or plugins tree
+</ul>
+
+<h4> 5.4.5.6. Separators and anchors </h4>
+<p>
+If a submenu item is a text node with a plain dash ("-") as value, it will
+appear as a horizontal separator line in the menu.
+<p>
+If a submenu item is a text node with a text starting with the character @,
+it is a named anchor. An anchor is invisible placeholder. Plugins and scripts
+and user menu files may refer to these anchors from their <i>anchored</i>
+subtree to get submenus placed at specific (named) parts of the menu system
+without having to hardwire a path to those parts. The same anchor name may
+appear multiple times. Anchors are allowed only under the main_menu and popups
+tree.
+
