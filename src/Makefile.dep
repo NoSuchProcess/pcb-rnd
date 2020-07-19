@@ -10387,7 +10387,7 @@ undo_old.o: undo_old.c ../config.h librnd/config.h \
  librnd/core/compat_misc.h search.h undo.h undo_old.h flag_str.h \
  conf_core.h librnd/core/conf.h librnd/core/rnd_printf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h netlist.h \
- obj_poly_draw.h obj_term.h brave.h undo_old_str.h
+ obj_poly_draw.h obj_term.h brave.h
 view.o: view.c ../config.h librnd/config.h idpath.h \
  ../src_3rd/genlist/gendlist.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
