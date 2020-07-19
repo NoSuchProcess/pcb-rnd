@@ -24,7 +24,7 @@ struct pref_conflist_s {
 
 struct pref_ctx_s {
 	RND_DAD_DECL_NOINIT(dlg)
-	int wtab, wrole;
+	int wtab, wrole, wrolebox;
 	int active; /* already open - allow only one instance */
 
 	pref_sizes_t sizes;

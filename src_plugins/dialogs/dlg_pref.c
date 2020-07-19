@@ -262,6 +262,7 @@ static void pref_role_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 static void pref_tab_chosen(pref_ctx_t *ctx, int tab)
 {
 	rnd_trace("tab: %d %d\n", tab, pref_tab_cfgs[tab]);
+	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wrolebox, !pref_tab_cfgs[tab]);
 }
 
 static void pref_tab_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -374,10 +375,13 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 		RND_DAD_BEGIN_VBOX(pref_ctx.dlg);
 			RND_DAD_BEGIN_HBOX(pref_ctx.dlg);
 				RND_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_LABEL(pref_ctx.dlg, "All changes are made to role:");
-				RND_DAD_ENUM(pref_ctx.dlg, role_names);
-					pref_ctx.wrole = RND_DAD_CURRENT(pref_ctx.dlg);
-					RND_DAD_CHANGE_CB(pref_ctx.dlg, pref_role_cb);
+				RND_DAD_BEGIN_HBOX(pref_ctx.dlg);
+					pref_ctx.wrolebox = RND_DAD_CURRENT(pref_ctx.dlg);
+					RND_DAD_LABEL(pref_ctx.dlg, "All changes are made to role:");
+					RND_DAD_ENUM(pref_ctx.dlg, role_names);
+						pref_ctx.wrole = RND_DAD_CURRENT(pref_ctx.dlg);
+						RND_DAD_CHANGE_CB(pref_ctx.dlg, pref_role_cb);
+				RND_DAD_END(pref_ctx.dlg);
 				RND_DAD_BUTTON_CLOSES_NAKED(pref_ctx.dlg, clbtn);
 			RND_DAD_END(pref_ctx.dlg);
 		RND_DAD_END(pref_ctx.dlg);
