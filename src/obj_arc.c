@@ -230,9 +230,27 @@ pcb_arc_t *pcb_arc_new(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd_c
 
 		for(o = rnd_rtree_first(&it, Layer->arc_tree, (rnd_rtree_box_t *)&b); o != NULL; o = rnd_rtree_next(&it)) {
 			pcb_arc_t *arc = (pcb_arc_t *)o;
-TODO(": this does not catch all cases; there are more ways two arcs can be the same because of the angles")
-			if (arc->X == X1 && arc->Y == Y1 && arc->Width == width && rnd_normalize_angle(arc->StartAngle) == rnd_normalize_angle(sa) && arc->Delta == dir)
-				return NULL; /* prevent stacked arcs */
+			if ((arc->X == X1) && (arc->Y == Y1) && (arc->Width == width)) {
+				double s1, s2, d1 = arc->Delta, d2 = dir;
+
+				/* there are two ways normalized arcs can be the same: with + and with - delta */
+				if (d1 < 0) {
+					s1 = rnd_normalize_angle(arc->StartAngle + d1);
+					d1 = -d1;
+				}
+				else
+					s1 = rnd_normalize_angle(arc->StartAngle);
+
+				if (d2 < 0) {
+					s2 = rnd_normalize_angle(sa + d2);
+					d2 = -d2;
+				}
+				else
+					s2 = rnd_normalize_angle(sa);
+
+				if ((s1 == s2) && (d1 == d2))
+					return NULL; /* prevent stacked arcs */
+			}
 		}
 	}
 
