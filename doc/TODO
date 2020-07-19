@@ -41,7 +41,7 @@
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
 	- example of nonetlist: 1206 jumpers and logos
-- export_dsn/new io_dsn (with King Kevin and celem) (NGI0):
+- FEATURE: export_dsn/new io_dsn (with King Kevin and celem) (NGI0):
 	- missing global padstack (via) export:
 		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
 		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
