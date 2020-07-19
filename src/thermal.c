@@ -187,8 +187,9 @@ rnd_polyarea_t *pcb_thermal_area_line(pcb_board_t *pcb, pcb_line_t *line, rnd_la
 
 	if ((line->Point1.X == line->Point2.X) && (line->Point1.Y == line->Point2.Y)) {
 		/* corner case zero-long line is a circle: do the same as for vias */
-TODO("thermal TODO")
-		abort();
+		lclr = pcb_obj_clearance_o05(line, in_poly);
+		/* PCB is use for the thermal scale here */
+		return ThermPoly_(pcb == NULL ? PCB : pcb, line->Point1.X, line->Point1.Y, line->Thickness, lclr * 2, pcb_themal_style_new2old(line->thermal & 3));
 	}
 
 	x1 = line->Point1.X;
