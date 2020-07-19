@@ -448,6 +448,23 @@ function subc_pstk_add_shape_line(proto, layer, x1, y1, x2, y2, thick    ,s)
 	PROTO[proto] = PROTO[proto] s
 }
 
+# POLY[] is an array indexed between 0 to 2*N-1 for a polygon of N
+# vertices, packed as x0;y0;x1;y1;x2;y2 ... xN;yN. The usual pcb-rnd
+# polygon rules apply: at least 3 vertices, no self-intersection. This
+# call does not make any attempt on cheking polygon validity.
+function subc_pstk_add_shape_poly(proto, layer, POLY    ,s,n)
+{
+	s = s "      ha:ps_shape_v4 {" NL
+	s = s "       clearance = 0" NL
+	s = s "       li:ps_poly {" NL
+	for(n = 0; (n in POLY); n += 2)
+		s = s "         { " unit(POLY[n]) "; " unit(POLY[n+1]) " }" NL
+	s = s "       }" NL
+	s = s subc_pstk_shape_layer(layer)
+	s = s "      }" NL
+	PROTO[proto] = PROTO[proto] s
+}
+
 function subc_proto_create_pin_round(drill_dia, ring_dia, mask_dia      ,proto)
 {
 	proto = subc_proto_alloc()
