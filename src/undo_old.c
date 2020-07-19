@@ -77,12 +77,12 @@
 
 /*** undo_old_str ***/
 
-typedef struct {								/* information about a change command */
+typedef struct {              /* information about a change command */
 	char *Name;
 } ChangeNameType, *ChangeNameTypePtr;
 
-typedef struct {								/* information about a move command */
-	rnd_coord_t DX, DY;									/* movement vector */
+typedef struct {              /* information about a move command */
+	rnd_coord_t DX, DY;         /* movement vector */
 } MoveType, *MoveTypePtr;
 
 typedef struct {
@@ -90,24 +90,24 @@ typedef struct {
 	int p_subc_layer;           /* parent subc layer index, for layer objects */
 } Removed;
 
-typedef struct {								/* information about removed polygon points */
-	rnd_coord_t X, Y;										/* data */
+typedef struct {              /* information about removed polygon points */
+	rnd_coord_t X, Y;           /* data */
 	int ID;
-	rnd_cardinal_t Index;								/* index in a polygons array of points */
-	rnd_bool last_in_contour;					/* Whether the point was the last in its contour */
+	rnd_cardinal_t Index;       /* index in a polygons array of points */
+	rnd_bool last_in_contour;   /* Whether the point was the last in its contour */
 } RemovedPointType, *RemovedPointTypePtr;
 
-typedef struct {								/* information about rotation */
-	rnd_coord_t CenterX, CenterY;				/* center of rotation */
-	rnd_cardinal_t Steps;								/* number of steps */
+typedef struct {                 /* information about rotation */
+	rnd_coord_t CenterX, CenterY;  /* center of rotation */
+	rnd_cardinal_t Steps;          /* number of steps */
 } RotateType, *RotateTypePtr;
 
-typedef struct {								/* information about moves between layers */
-	rnd_cardinal_t OriginalLayer;				/* the index of the original layer */
+typedef struct {                 /* information about moves between layers */
+	rnd_cardinal_t OriginalLayer;  /* the index of the original layer */
 } MoveToLayer;
 
-typedef struct {								/* information about poly clear/restore */
-	rnd_bool Clear;										/* rnd_true was clear, rnd_false was restore */
+typedef struct {                 /* information about poly clear/restore */
+	rnd_bool Clear;                /* rnd_true was clear, rnd_false was restore */
 	pcb_layer_t *Layer;
 } ClearPolyType, *ClearPolyTypePtr;
 
@@ -115,17 +115,17 @@ typedef struct {
 	rnd_angle_t angle[2];
 } AngleChangeType;
 
-typedef struct {								/* information about netlist lib changes */
+typedef struct {                 /* information about netlist lib changes */
 	pcb_net_t *old;
 	pcb_net_t *lib;
 } NetlistChangeType, *NetlistChangeTypePtr;
 
-typedef struct {								/* holds information about an operation */
-	int Serial;										/* serial number of operation */
-	int Type;											/* type of operation */
-	pcb_objtype_t Kind;						/* type of object with given ID */
-	long int ID;									/* object ID */
-	union {												/* some additional information */
+typedef struct {                 /* holds information about an operation */
+	int Serial;                    /* serial number of operation */
+	int Type;                      /* type of operation */
+	pcb_objtype_t Kind;            /* type of object with given ID */
+	long int ID;                   /* object ID */
+	union {                        /* some additional information */
 		ChangeNameType ChangeName;
 		MoveType Move;
 		Removed Removed;
