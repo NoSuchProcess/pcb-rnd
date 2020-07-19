@@ -179,7 +179,10 @@
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h librnd/core/error.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h librnd/core/box.h \
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
- librnd/core/event.h librnd/core/hidlib.h
+ librnd/core/hid_menu.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
+ ../src_3rd/genvector/vtp0.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h librnd/core/event.h \
+ librnd/core/hidlib.h
 ../src/librnd/core/hid_attrib.o: ../src/librnd/core/hid_attrib.c \
  librnd/config.h librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  librnd/core/hid.h ../src_3rd/liblihata/dom.h \
@@ -342,8 +345,9 @@
  librnd/core/color.h ../src/librnd/core/paths.h \
  ../src/librnd/core/funchash_core.h librnd/core/funchash.h \
  librnd/core/funchash_core_list.h ../src/librnd/core/compat_misc.h \
- ../src/librnd/core/hid_menu.h librnd/core/hid_cfg.h \
- librnd/core/hid_menu.h
+ ../src/librnd/core/event.h librnd/core/hidlib.h \
+ ../src/librnd/core/conf_hid.h ../src/librnd/core/hid_menu.h \
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h
 ../src/librnd/core/hid_nogui.o: ../src/librnd/core/hid_nogui.c \
  librnd/config.h librnd/core/actions.h librnd/core/hid.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -1460,7 +1464,8 @@
  draw.h ../src_plugins/dialogs/dlg_pref_color.c \
  ../src_plugins/dialogs/dlg_pref_win.c librnd/core/hidlib_conf.h \
  ../src_plugins/lib_hid_common/dialogs_conf.h \
- ../src_plugins/dialogs/dlg_pref_menu.c \
+ ../src_plugins/dialogs/dlg_pref_menu.c librnd/core/hid_menu.h \
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/safe_fs.h \
  ../src_plugins/dialogs/dlg_pref_conf.c \
  ../src_plugins/dialogs/dlg_pref_confedit.c librnd/core/hid_dad_unit.h
 ../src_plugins/dialogs/dlg_view.o: ../src_plugins/dialogs/dlg_view.c \
@@ -3054,6 +3059,8 @@
  ../src_plugins/hid_lesstif/wt_preview.h \
  ../src_plugins/hid_lesstif/dlg_fileselect.h \
  ../src_plugins/hid_lesstif/FillBox.h \
+ ../src_plugins/lib_hid_common/lib_hid_common.h \
+ ../src_plugins/lib_hid_common/dialogs_conf.h \
  ../src_plugins/lib_hid_common/clip.h \
  ../src_plugins/lib_hid_common/cli_history.h \
  ../src_plugins/hid_lesstif/mouse.c ../src_3rd/genvector/genvector_impl.c \
@@ -5452,6 +5459,8 @@
  ../src_plugins/lib_gtk_common/hid_gtk_conf.h \
  ../src_plugins/lib_gtk_common/lib_gtk_config.h \
  ../src_plugins/lib_gtk_common/glue_common.h \
+ ../src_plugins/lib_hid_common/lib_hid_common.h \
+ ../src_plugins/lib_hid_common/dialogs_conf.h \
  ../src_plugins/lib_hid_common/menu_helper.h
 ../src_plugins/lib_gtk_common/in_keyboard.o: \
  ../src_plugins/lib_gtk_common/in_keyboard.c ../config.h librnd/config.h \
@@ -5834,8 +5843,9 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/error.h librnd/core/event.h \
- librnd/core/hidlib.h librnd/core/actions.h librnd/core/hid.h \
- librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
+ librnd/core/hidlib.h librnd/core/hid_menu.h librnd/core/hid_cfg.h \
+ librnd/core/hid.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h librnd/core/hid_menu.h librnd/core/actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  ../src_plugins/lib_hid_common/grid_menu.h \
  ../src_plugins/lib_hid_common/cli_history.h \
@@ -7263,15 +7273,15 @@
  ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/hid_menu.h \
- librnd/core/hid_cfg.h librnd/core/hid_menu.h globalconst.h \
- librnd/core/globalconst.h ../src_plugins/script/script.h \
- ../src_plugins/script/c_script.c librnd/core/fptr_cast.h \
- librnd/core/hidlib_conf.h librnd/core/color.h \
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/event.h \
+ librnd/core/hidlib.h globalconst.h librnd/core/globalconst.h \
+ ../src_plugins/script/script.h ../src_plugins/script/c_script.c \
+ librnd/core/fptr_cast.h librnd/core/hidlib_conf.h librnd/core/color.h \
  ../src_plugins/script/timer.c ../src_plugins/script/perma.c \
- librnd/core/hidlib.h ../src_plugins/script/script_act.c \
- librnd/core/hid_dad.h librnd/core/hid_attrib.h \
- ../src_3rd/genlist/gendlist.h librnd/core/hid_dad_spin.h \
- librnd/core/hid_dad_tree.h ../src_plugins/script/live_script.h
+ ../src_plugins/script/script_act.c librnd/core/hid_dad.h \
+ librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
+ librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h \
+ ../src_plugins/script/live_script.h
 ../src_plugins/serpentine/serpentine.o: \
  ../src_plugins/serpentine/serpentine.c ../config.h librnd/config.h \
  conf_core.h librnd/core/conf.h librnd/core/global_typedefs.h \
@@ -8323,7 +8333,8 @@ board.o: board.c ../config.h librnd/config.h board.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  librnd/core/hidlib_conf.h plug_io.h vtlibrary.h \
  ../src_3rd/genvector/vts0.h librnd/core/compat_misc.h \
- librnd/core/actions.h librnd/core/paths.h undo.h \
+ librnd/core/actions.h librnd/core/paths.h librnd/core/hid_menu.h \
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h draw.h event.h \
  librnd/core/event.h librnd/core/safe_fs.h librnd/core/tool.h netlist.h \
  defpcb_internal.c obj_pstk_inlines.h thermal.h operation.h \
@@ -9890,8 +9901,9 @@ plug_io.o: plug_io.c ../config.h librnd/config.h conf_core.h \
  librnd/core/paths.h librnd/core/actions.h librnd/core/plugins.h \
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h event.h \
- librnd/core/event.h librnd/core/compat_misc.h route_style.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h \
+ librnd/core/hid_menu.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
+ event.h librnd/core/event.h librnd/core/compat_misc.h route_style.h \
  librnd/core/compat_fs.h librnd/core/compat_lrealpath.h layer_vis.h \
  librnd/core/safe_fs.h plug_footprint.h librnd/core/file_loaded.h \
  librnd/core/tool.h view.h
