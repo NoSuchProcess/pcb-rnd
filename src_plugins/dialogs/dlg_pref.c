@@ -42,6 +42,10 @@
 
 #include "dlg_pref.h"
 
+#define PREF_TABS 9
+static const char *pref_tabs[PREF_TABS+1] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Menu", "Config tree", NULL };
+static const int pref_tab_cfgs[PREF_TABS] = {    1,        0,           1,               1,        0,        1,        1,       0,          0      };
+
 static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx);
 static void pref_dlg2conf_post(pref_ctx_t *ctx);
 
@@ -257,7 +261,7 @@ static void pref_role_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 static void pref_tab_chosen(pref_ctx_t *ctx, int tab)
 {
-	rnd_trace("tab: %d\n", tab);
+	rnd_trace("tab: %d %d\n", tab, pref_tab_cfgs[tab]);
 }
 
 static void pref_tab_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -300,11 +304,8 @@ static int pref_strcmp(const char *fixed, const char *inp)
 	}
 }
 
-#define PREF_TABS 9
-
 static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 {
-	const char *pref_tabs[PREF_TABS+1] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Menu", "Config tree", NULL };
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	int target_tab = -1;
 
