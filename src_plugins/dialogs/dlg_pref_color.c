@@ -73,7 +73,14 @@ static void pref_color_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 {
 	pref_ctx_t *ctx = caller_data;
 	const char *path = attr->user_data;
+
+	if (pref_dlg2conf_pre(ctx) == NULL)
+		return;
+
 	rnd_conf_setf(ctx->role, path, -1, "%s", attr->val.clr.str);
+
+	pref_dlg2conf_post(ctx);
+
 	rnd_gui->invalidate_all(rnd_gui);
 }
 
@@ -81,7 +88,13 @@ static void pref_color_layer_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 {
 	pref_ctx_t *ctx = caller_data;
 	int idx = (int *)attr->user_data - ctx->color.wlayer;
+
+	if (pref_dlg2conf_pre(ctx) == NULL)
+		return;
+
 	rnd_conf_setf(ctx->role, "appearance/color/layer", idx, "%s", attr->val.clr.str);
+
+	pref_dlg2conf_post(ctx);
 }
 
 
