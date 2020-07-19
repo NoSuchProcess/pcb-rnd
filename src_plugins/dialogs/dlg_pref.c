@@ -371,7 +371,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 			RND_DAD_END(pref_ctx.dlg);
 
 		RND_DAD_END(pref_ctx.dlg);
-			RND_DAD_BEGIN_VBOX(pref_ctx.dlg);
+		RND_DAD_BEGIN_VBOX(pref_ctx.dlg);
 			RND_DAD_BEGIN_HBOX(pref_ctx.dlg);
 				RND_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL);
 				RND_DAD_LABEL(pref_ctx.dlg, "All changes are made to role:");
