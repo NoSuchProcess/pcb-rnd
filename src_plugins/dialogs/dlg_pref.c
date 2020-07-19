@@ -255,6 +255,16 @@ static void pref_role_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	ctx->role = roles[attr->val.lng];
 }
 
+static void pref_tab_chosen(pref_ctx_t *ctx, int tab)
+{
+	rnd_trace("tab: %d\n", tab);
+}
+
+static void pref_tab_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	pref_tab_chosen(caller_data, attr->val.lng);
+}
+
 static void pref_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	long n;
@@ -290,9 +300,11 @@ static int pref_strcmp(const char *fixed, const char *inp)
 	}
 }
 
+#define PREF_TABS 9
+
 static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 {
-	const char *tabs[] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Menu", "Config tree", NULL };
+	const char *pref_tabs[PREF_TABS+1] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Menu", "Config tree", NULL };
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	int target_tab = -1;
 
@@ -300,7 +312,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 		const char **t;
 		int tt;
 
-		for(tt = 0, t = tabs; *t != NULL; t++,tt++) {
+		for(tt = 0, t = pref_tabs; *t != NULL; t++,tt++) {
 			if (pref_strcmp(*t, target_tab_str) == 0) {
 				target_tab = tt;
 				break;
@@ -316,9 +328,11 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 
 	RND_DAD_BEGIN_VBOX(pref_ctx.dlg);
 		RND_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL);
-		RND_DAD_BEGIN_TABBED(pref_ctx.dlg, tabs);
+		RND_DAD_BEGIN_TABBED(pref_ctx.dlg, pref_tabs);
 			RND_DAD_COMPFLAG(pref_ctx.dlg, RND_HATF_EXPFILL);
 			pref_ctx.wtab = RND_DAD_CURRENT(pref_ctx.dlg);
+			RND_DAD_CHANGE_CB(pref_ctx.dlg, pref_tab_cb);
+
 			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* General */
 				pcb_dlg_pref_general_create(&pref_ctx);
 			RND_DAD_END(pref_ctx.dlg);
@@ -380,9 +394,13 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 	pcb_dlg_pref_color_open(&pref_ctx);
 	pcb_dlg_pref_win_open(&pref_ctx);
 	pcb_dlg_pref_menu_open(&pref_ctx);
-	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == sizeof(tabs)/sizeof(tabs[0]) - 2) ? tabarg : NULL);
-	if (target_tab >= 0)
+	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == PREF_TABS - 2) ? tabarg : NULL);
+	if ((target_tab >= 0) && (target_tab < PREF_TABS)) {
 		RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, lng, target_tab);
+		pref_tab_chosen(&pref_ctx, target_tab);
+	}
+	else
+		pref_tab_chosen(&pref_ctx, 0);
 }
 
 static void pref_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
