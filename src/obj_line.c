@@ -72,8 +72,11 @@ void pcb_line_reg(pcb_layer_t *layer, pcb_line_t *line)
 	if (layer->parent_type == PCB_PARENT_UI)
 		return;
 
-	if (layer->parent_type == PCB_PARENT_DATA)
+	if (layer->parent_type == PCB_PARENT_DATA) {
 		pcb_obj_id_reg(layer->parent.data, line);
+		pcb_obj_id_reg(layer->parent.data, &line->Point1);
+		pcb_obj_id_reg(layer->parent.data, &line->Point2);
+	}
 }
 
 void pcb_line_unreg(pcb_line_t *line)
@@ -84,6 +87,8 @@ void pcb_line_unreg(pcb_line_t *line)
 	if (layer->parent_type != PCB_PARENT_UI) {
 		assert(layer->parent_type == PCB_PARENT_DATA);
 		pcb_obj_id_del(layer->parent.data, line);
+		pcb_obj_id_del(layer->parent.data, &line->Point1);
+		pcb_obj_id_del(layer->parent.data, &line->Point2);
 	}
 	PCB_CLEAR_PARENT(line);
 }
@@ -316,7 +321,6 @@ pcb_line_t *pcb_line_new(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y1, rnd
 	Line->Clearance = Clearance;
 	Line->Point1.X = X1;
 	Line->Point1.Y = Y1;
-TODO("ID: register points too")
 	Line->Point1.ID = pcb_create_ID_get();
 	Line->Point2.X = X2;
 	Line->Point2.Y = Y2;
