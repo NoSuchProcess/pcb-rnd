@@ -137,31 +137,10 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	lht_node_t *m, *lst, *nd;
 	rnd_hid_row_t *r;
 
-	m = rnd_conf_lht_get_first(ctx->role, 0);
-	if (m == NULL) {
-		if (ctx->role == RND_CFR_PROJECT) {
-			const char *pcb_fn = (PCB == NULL ? NULL : PCB->hidlib.filename);
-			const char *try, *fn = rnd_conf_get_project_conf_name(NULL, pcb_fn, &try);
-			if (fn == NULL) {
-				rnd_message(RND_MSG_ERROR, "Failed to create the project file\n");
-				return;
-			}
-			rnd_conf_reset(ctx->role, fn);
-			rnd_conf_makedirty(ctx->role);
-			rnd_conf_save_file(&PCB->hidlib, fn, pcb_fn, ctx->role, NULL);
-			m = rnd_conf_lht_get_first(ctx->role, 0);
-			if (m == NULL) {
-				rnd_message(RND_MSG_ERROR, "Failed to create the project file %s\n", fn);
-				return;
-			}
-				rnd_message(RND_MSG_INFO, "Created the project file\n");
-		}
-		else {
-			rnd_message(RND_MSG_ERROR, "Failed to create config file for role %s\n", rnd_conf_role_name(ctx->role));
-			return;
-		}
-	}
 
+	m = pref_dlg2conf_pre(ctx);
+	if (m == NULL)
+		return;
 
 	ctx->lib.lock++;
 	/* get the list and clean it */
@@ -185,10 +164,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	rnd_conf_update("rc/library_search_paths", -1);
 	rnd_conf_makedirty(ctx->role); /* low level lht_dom_node_alloc() wouldn't make user config to be saved! */
 
-	if ((ctx->role == RND_CFR_USER) || (ctx->role == RND_CFR_PROJECT))
-		rnd_conf_save_file(&PCB->hidlib, NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), ctx->role, NULL);
-	else if (ctx->role == RND_CFR_DESIGN)
-		pcb_board_set_changed_flag(1);
+	pref_dlg2conf_post(ctx);
 
 	ctx->lib.lock--;
 }

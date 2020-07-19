@@ -42,6 +42,9 @@
 
 #include "dlg_pref.h"
 
+static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx);
+static void pref_dlg2conf_post(pref_ctx_t *ctx);
+
 #include "dlg_pref_sizes.c"
 #include "dlg_pref_board.c"
 #include "dlg_pref_general.c"
@@ -58,6 +61,46 @@ rnd_conf_hid_id_t pref_hid;
 
 static const char *role_names[] =  { "user",   "project",   "design",   "cli", NULL };
 static const rnd_conf_role_t roles[] = { RND_CFR_USER, RND_CFR_PROJECT, RND_CFR_DESIGN, RND_CFR_CLI, 0 };
+
+static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx)
+{
+	lht_node_t *m;
+
+	m = rnd_conf_lht_get_first(ctx->role, 0);
+	if (m == NULL) {
+		if (ctx->role == RND_CFR_PROJECT) {
+			const char *pcb_fn = (PCB == NULL ? NULL : PCB->hidlib.filename);
+			const char *try, *fn = rnd_conf_get_project_conf_name(NULL, pcb_fn, &try);
+			if (fn == NULL) {
+				rnd_message(RND_MSG_ERROR, "Failed to create the project file\n");
+				return;
+			}
+			rnd_conf_reset(ctx->role, fn);
+			rnd_conf_makedirty(ctx->role);
+			rnd_conf_save_file(&PCB->hidlib, fn, pcb_fn, ctx->role, NULL);
+			m = rnd_conf_lht_get_first(ctx->role, 0);
+			if (m == NULL) {
+				rnd_message(RND_MSG_ERROR, "Failed to create the project file %s\n", fn);
+				return NULL;
+			}
+				rnd_message(RND_MSG_INFO, "Created the project file\n");
+		}
+		else {
+			rnd_message(RND_MSG_ERROR, "Failed to create config file for role %s\n", rnd_conf_role_name(ctx->role));
+			return NULL;
+		}
+	}
+
+	return m;
+}
+
+static void pref_dlg2conf_post(pref_ctx_t *ctx)
+{
+	if ((ctx->role == RND_CFR_USER) || (ctx->role == RND_CFR_PROJECT))
+		rnd_conf_save_file(&PCB->hidlib, NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), ctx->role, NULL);
+	else if (ctx->role == RND_CFR_DESIGN)
+		pcb_board_set_changed_flag(1);
+}
 
 void pcb_pref_conf2dlg_item(rnd_conf_native_t *cn, pref_confitem_t *item)
 {
