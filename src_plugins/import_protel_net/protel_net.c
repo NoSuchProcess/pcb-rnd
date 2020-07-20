@@ -31,7 +31,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <qparse/qparse.h>
 
 #include "board.h"
 #include "data.h"
@@ -60,20 +59,38 @@ static const char *protel_net_cookie = "protel_net importer";
 		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--) \
 			*end = '\0'; \
 	} while(0)
+
+#define LOAD(dst) \
+do { \
+	dst.used = 0; \
+	*line = '\0'; \
+	fgets(line, sizeof(line), fn); \
+	s = line; \
+	ltrim(s); \
+	rtrim(s); \
+	gds_append_str(&dst, s); \
+} while(0)
+
+#define FREE(dst) gds_truncate(&dst, 0)
+
 static int protel_net_parse_net(FILE *fn)
 {
-	char line[1024], signal[1024];
+	char line[1024];
 	enum { NONE, NET, PART, CFG } mode = NONE;
+	gds_t refdes, footprint, value, netname;
+
+	gds_init(&refdes);
+	gds_init(&footprint);
+	gds_init(&value);
+	gds_init(&netname);
 
 	rnd_actionva(&PCB->hidlib, "ElementList", "start", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
-	*signal = '\0';
-
 	while(fgets(line, sizeof(line), fn) != NULL) {
 		int argc;
-		char **argv, *s, *next, *pin;
+		char **argv, *s, *end;
 
 		s = line;
 		ltrim(s);
@@ -83,35 +100,47 @@ static int protel_net_parse_net(FILE *fn)
 			case NONE:
 				if (*s == '[')
 					mode = PART;
-				else if (*s == '(')
+				else if (*s == '(') {
+					LOAD(netname);
 					mode = NET;
+				}
 				else if (*s == '{')
 					mode = CFG;
 				break;
 
 			case PART:
 				if (*s == ']') {
-rnd_trace("part end\n");
+					rnd_actionva(&PCB->hidlib, "ElementList", "Need", refdes.array, footprint.array, value.array, NULL);
+					FREE(refdes);
+					FREE(footprint);
+					FREE(value);
 					mode = NONE;
 				}
+				else if (strcmp(s, "DESIGNATOR") == 0)
+					LOAD(refdes);
+				else if (strcmp(s, "FOOTPRINT") == 0)
+					LOAD(footprint);
+				else if (strcmp(s, "PARTTYPE") == 0)
+					LOAD(value);
 				break;
 
 			case NET:
 				if (*s == ')') {
-rnd_trace("net end\n");
+					FREE(netname);
 					mode = NONE;
+				}
+				else {
+					end = strchr(s, ' ');
+					if (end != NULL)
+						*end = '\0';
+					rnd_actionva(&PCB->hidlib, "Netlist", "Add",  netname.array, s, NULL);
 				}
 				break;
 
 			case CFG:
-				if (*s == '}') {
-rnd_trace("cfg end\n");
+				if (*s == '}')
 					mode = NONE;
-				}
 				break;
-
-/*				rnd_actionva(&PCB->hidlib, "ElementList", "Need", argv[0], argv[1], "", NULL);*/
-/*				rnd_actionva(&PCB->hidlib, "Netlist", "Add",  signal, s, NULL);*/
 		}
 	}
 
@@ -121,6 +150,11 @@ rnd_trace("cfg end\n");
 	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
 	rnd_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
+
+	gds_uninit(&refdes);
+	gds_uninit(&footprint);
+	gds_uninit(&value);
+	gds_uninit(&netname);
 
 	return 0;
 }
