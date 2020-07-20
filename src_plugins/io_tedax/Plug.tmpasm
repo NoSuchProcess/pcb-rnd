@@ -9,6 +9,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_tedax/tdrc.o
 	$(PLUGDIR)/io_tedax/tdrc_keys_sphash.o
 	$(PLUGDIR)/io_tedax/tdrc_query.o
+	$(PLUGDIR)/io_tedax/trouter.o
 	$(PLUGDIR)/io_tedax/tetest.o
 	$(PLUGDIR)/io_tedax/parse.o
 @]
