@@ -1,4 +1,4 @@
-32317	configure	new netlist import plugins: pads ascii netlist, orcad pcb II netlist, accel net
+32326	configure	new netlist import plugins: pads ascii netlist, orcad pcb II netlist, accel netliet, protel netlist 2.0
 32284	configure	io_tedax: file format support for autorouters
 32216	configure	cleanup: eahc plugin shall register its own menus
 32187	configure	librnd: infra for menu patching

@@ -1,0 +1,10 @@
+put /local/pcb/mod {import_protel_net}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_protel_net/protel_net.o @]
+put /local/pcb/mod/MENUFILE {protel_net-menu.lht}
+put /local/pcb/mod/MENUVAR {protel_net_menu}
+
+switch /local/pcb/import_protel_net/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
