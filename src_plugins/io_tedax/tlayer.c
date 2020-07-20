@@ -41,10 +41,70 @@
 #include "obj_poly.h"
 #include <librnd/core/vtc0.h>
 #include "plug_io.h"
+#include "obj_pstk_inlines.h"
 
 #include "common_inlines.h"
 
 #define LAYERNET(obj) if (nmap != NULL) tedax_finsert_layernet_tags(f, nmap, (pcb_any_obj_t *)obj)
+
+static void tedax_layer_fsave_pstk_polys(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *ly, FILE *f)
+{
+	PCB_PADSTACK_LOOP(data) {
+		pcb_pstk_shape_t *shp = pcb_pstk_shape_at(pcb, padstack, ly);
+		if ((shp != NULL) && (shp->shape == PCB_PSSH_POLY)) {
+			int n;
+			fprintf(f, "begin polyline v1 pstk_%p_%p\n", (void *)padstack, (void *)ly);
+			for(n = 0; n < shp->data.poly.len; n++)
+				rnd_fprintf(f, " v %.06mm %.06mm\n", shp->data.poly.x[n], shp->data.poly.y[n]);
+			fprintf(f, "end polyline\n");
+		}
+	}
+	PCB_END_LOOP;
+
+	PCB_SUBC_LOOP(data) {
+		tedax_layer_fsave_pstk_polys(pcb, subc->data, ly, f);
+	}
+	PCB_END_LOOP;
+}
+
+static void tedax_layer_fsave_pstk_shape(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *ly, FILE *f, pcb_netmap_t *nmap)
+{
+	PCB_PADSTACK_LOOP(data) {
+		pcb_pstk_shape_t *shp = pcb_pstk_shape_at(pcb, padstack, ly);
+		if (shp == NULL)
+			continue;
+		switch(shp->shape) {
+			case PCB_PSSH_HSHADOW: /* no shape drawn */ break;
+			case PCB_PSSH_LINE:
+				rnd_fprintf(f, " line");
+				LAYERNET(padstack);
+				rnd_fprintf(f, " %.06mm %.06mm %.06mm %.06mm %.06mm %.06mm\n",
+					padstack->x + shp->data.line.x1, padstack->y + shp->data.line.y1,
+					padstack->x + shp->data.line.x2, padstack->y + shp->data.line.y2,
+					shp->data.line.thickness, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, padstack) ? (rnd_coord_t)rnd_round(padstack->Clearance/2) : 0);
+				break;
+			case PCB_PSSH_CIRC:
+				rnd_fprintf(f, " line");
+				LAYERNET(padstack);
+				rnd_fprintf(f, " %.06mm %.06mm %.06mm %.06mm %.06mm %.06mm\n",
+					padstack->x + shp->data.circ.x, padstack->y + shp->data.circ.y,
+					padstack->x + shp->data.circ.x, padstack->y + shp->data.circ.y,
+					shp->data.circ.dia, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, padstack) ? (rnd_coord_t)rnd_round(padstack->Clearance/2) : 0);
+				break;
+			case PCB_PSSH_POLY:
+				rnd_fprintf(f, " poly");
+				LAYERNET(padstack);
+				rnd_fprintf(f, " pstk_%p_%p 0 0\n", (void *)padstack, (void *)ly);
+				break;
+		}
+	}
+	PCB_END_LOOP;
+
+	PCB_SUBC_LOOP(data) {
+		tedax_layer_fsave_pstk_shape(pcb, subc->data, ly, f, nmap);
+	}
+	PCB_END_LOOP;
+}
 
 int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layname, FILE *f, pcb_netmap_t *nmap)
 {
@@ -95,6 +155,9 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 				rnd_fprintf(f, " v %.06mm %.06mm\n", text->bbox_naked.X2, text->bbox_naked.Y1);
 				fprintf(f, "end polyline\n");
 			} PCB_END_LOOP;
+
+			if (lno == 0)
+				tedax_layer_fsave_pstk_polys(pcb, pcb->Data, ly, f);
 		}
 	}
 
@@ -160,7 +223,8 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 				rnd_fprintf(f, " pllay_%ld_%ld_%ld 0 0\n", gid, polygon->ID, plid);
 			}
 		} PCB_END_LOOP;
-
+		if (lno == 0)
+			tedax_layer_fsave_pstk_shape(pcb, pcb->Data, ly, f, nmap);
 	}
 	fprintf(f, "end %s\n", blockid);
 	return 0;
