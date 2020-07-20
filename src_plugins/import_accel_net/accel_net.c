@@ -54,7 +54,7 @@ static const char *accel_net_cookie = "accel_net importer";
 static int accel_net_parse_net(FILE *fn)
 {
 	gsxl_dom_t dom;
-	gsxl_node_t *n, *footprint, *refdes, *noise, *net;
+	gsxl_node_t *netlist, *n, *m, *footprint, *refdes, *noise, *net;
 	int res, c, restore;
 	gds_t tmp;
 	char line[1024];
@@ -66,8 +66,16 @@ static int accel_net_parse_net(FILE *fn)
 
 	dom.parse.line_comment_char = '#';
 	dom.parse.brace_quote = 1;
+
+ /* need to fake a root because there are multiple roots in the file */
+	gsxl_parse_char(&dom, '(');
+	gsxl_parse_char(&dom, 'R');
+	gsxl_parse_char(&dom, ' ');
+
 	do {
 		c = fgetc(fn);
+		if (c == EOF)
+			gsxl_parse_char(&dom, ')'); /* close fake root first */
 	} while((res = gsxl_parse_char(&dom, c)) == GSX_RES_NEXT);
 
 	if (res != GSX_RES_EOE) {
@@ -78,13 +86,58 @@ static int accel_net_parse_net(FILE *fn)
 	/* compact and simplify the tree */
 	gsxl_compact_tree(&dom);
 
+	if ((dom.root->children == NULL) || (dom.root->children->next == NULL)) {
+		rnd_message(RND_MSG_ERROR, "accel: missing root node or netlist\n");
+		return -1;
+	}
+
+	if (strcmp(dom.root->children->str, "asciiHeader") != 0) {
+		rnd_message(RND_MSG_ERROR, "accel: invalid root node; espected 'asciiHeader', got '%s'\n", dom.root->str);
+		return -1;
+	}
+
+	netlist = dom.root->children->next;
+	if (strcmp(netlist->str, "netlist") != 0) {
+		rnd_message(RND_MSG_ERROR, "accel: invalid root node; espected 'asciiHeader', got '%s'\n", dom.root->str);
+		return -1;
+	}
 
 	rnd_actionva(&PCB->hidlib, "ElementList", "start", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
+
+	netlist = netlist->children->next; /* first item was the netlist name */
+	for(n = netlist; n != NULL; n = n->next) {
+		if (strcmp(n->str, "compInst") == 0) {
+			char *refdes = n->children->str, *footprint = NULL, *value = NULL;
+			for(m = n->children; m != NULL; m = m->next) {
+				if (strcmp(m->str, "originalName") == 0) footprint = m->children->str;
+				if (strcmp(m->str, "compValue") == 0) value = m->children->str;
+			}
+			if (footprint != NULL)
+				rnd_actionva(&PCB->hidlib, "ElementList", "Need", refdes, footprint, value, NULL);
+			else
+				rnd_message(RND_MSG_ERROR, "accel: can't import %s: no footprint\n", refdes);
+		}
+		else if (strcmp(n->str, "net") == 0) {
+			char *netname = n->children->str;
+			for(m = n->children; m != NULL; m = m->next) {
+				char *refdes = NULL, *pin = NULL;
+				if (strcmp(m->str, "node") == 0) {
+					refdes = m->children->str;
+					pin = m->children->next->str;
+					tmp.used = 0;
+					gds_append_str(&tmp, refdes);
+					gds_append(&tmp, '-');
+					gds_append_str(&tmp, pin);
+					rnd_actionva(&PCB->hidlib, "Netlist", "Add",  netname, tmp.array, NULL);
+/*					printf("NET: %s %s %s\n", netname, refdes, pin);*/
+				}
+			}
+		}
+		
 #if 0
-	for(n = dom.root->children; n != NULL; n = n->next) {
 		footprint = n->children;
 		if ((footprint == NULL) || (footprint->next == NULL) || (footprint->next->next == NULL)) {
 			rnd_message(RND_MSG_ERROR, "accel: missing footprint or refdes in %d:%d\n", n->line, n->col);
@@ -96,10 +149,6 @@ static int accel_net_parse_net(FILE *fn)
 /*pcb_trace("@ '%s' '%s'\n", footprint->str, refdes->str);*/
 		rnd_actionva(&PCB->hidlib, "ElementList", "Need", refdes->str, footprint->str, "", NULL);
 
-		tmp.used = 0;
-		gds_append_str(&tmp, refdes->str);
-		gds_append(&tmp, '-');
-		restore = tmp.used;
 	
 		for(net = noise->next; net != NULL; net = net->next) {
 			if (net->children == NULL) {
@@ -112,8 +161,8 @@ static int accel_net_parse_net(FILE *fn)
 			rnd_actionva(&PCB->hidlib, "Netlist", "Add",  net->children->str, tmp.array, NULL);
 /*pcb_trace(" net %s %s\n", tmp.array, net->children->str);*/
 		}
-	}
 #endif
+	}
 
 	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
