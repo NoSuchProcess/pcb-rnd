@@ -63,7 +63,7 @@ static const char *protel_net_cookie = "protel_net importer";
 static int protel_net_parse_net(FILE *fn)
 {
 	char line[1024], signal[1024];
-	enum { NONE, NET, PART } mode = NONE;
+	enum { NONE, NET, PART, CFG } mode = NONE;
 
 	rnd_actionva(&PCB->hidlib, "ElementList", "start", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
@@ -79,10 +79,44 @@ static int protel_net_parse_net(FILE *fn)
 		ltrim(s);
 		rtrim(s);
 
+		switch(mode) {
+			case NONE:
+				if (*s == '[')
+					mode = PART;
+				else if (*s == '(')
+					mode = NET;
+				else if (*s == '{')
+					mode = CFG;
+				break;
+
+			case PART:
+				if (*s == ']') {
+rnd_trace("part end\n");
+					mode = NONE;
+				}
+				break;
+
+			case NET:
+				if (*s == ')') {
+rnd_trace("net end\n");
+					mode = NONE;
+				}
+				break;
+
+			case CFG:
+				if (*s == '}') {
+rnd_trace("cfg end\n");
+					mode = NONE;
+				}
+				break;
+
 /*				rnd_actionva(&PCB->hidlib, "ElementList", "Need", argv[0], argv[1], "", NULL);*/
 /*				rnd_actionva(&PCB->hidlib, "Netlist", "Add",  signal, s, NULL);*/
 		}
 	}
+
+	if (mode != NONE)
+		rnd_message(RND_MSG_ERROR, "protel: last block is not closed\n");
 
 	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
@@ -110,7 +144,7 @@ static int protel_net_load(const char *fname_net)
 }
 
 static const char pcb_acts_LoadProtelNetFrom[] = "LoadProtelNetFrom(filename)";
-static const char pcb_acth_LoadProtelNetFrom[] = "Loads the specified pads ascii netlist .asc file.";
+static const char pcb_acth_LoadProtelNetFrom[] = "Loads the specified protel netlist 2.0 file.";
 fgw_error_t pcb_act_LoadProtelNetFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL;
@@ -121,7 +155,7 @@ fgw_error_t pcb_act_LoadProtelNetFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname || !*fname) {
 		fname = rnd_gui->fileselect(rnd_gui, "Load pads ascii netlist file...",
 																"Picks a pads ascii netlist file to load.\n",
-																default_file, ".asc", NULL, "protel_net", RND_HID_FSD_READ, NULL);
+																default_file, ".net", NULL, "protel_net", RND_HID_FSD_READ, NULL);
 		if (fname == NULL)
 			return 1;
 		if (default_file != NULL) {
