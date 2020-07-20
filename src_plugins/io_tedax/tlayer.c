@@ -42,6 +42,37 @@
 #include <librnd/core/vtc0.h>
 #include "plug_io.h"
 
+static void tedax_layer_fsave_layernet(FILE *f, pcb_netmap_t *nmap, pcb_any_obj_t *obj)
+{
+	long oid = 0;
+	pcb_net_t *net = htpp_get(&nmap->o2n, obj);
+	char constr[3], *end;
+	const char *netname;
+
+	end = constr;
+
+	/* for now do not allow the autorouter to move or delete anything */
+	*end++ = 'm';
+	*end++ = 'd';
+
+	if (end == constr)
+		*end++ = '-';
+	*end = '\0';
+
+	/* calculate the netname */
+	if (net != NULL) {
+		netname = net->name;
+		if (strncmp(netname, "netmap_anon_", 12) == 0)
+			netname = "-";
+	}
+	else
+		netname = "-";
+
+	fprintf(f, " %ld %s %s\n", oid, netname, constr);
+}
+
+#define LAYERNET(obj) if (nmap != NULL) tedax_layer_fsave_layernet(f, nmap, (pcb_any_obj_t *)obj)
+
 int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layname, FILE *f, pcb_netmap_t *nmap)
 {
 	char lntmp[64];
@@ -90,6 +121,7 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 			continue;
 		PCB_LINE_LOOP(ly) {
 			rnd_fprintf(f, " line");
+			LAYERNET(line);
 			rnd_fprintf(f, " %.06mm %.06mm %.06mm %.06mm %.06mm %.06mm\n",
 				line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
 				line->Thickness, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) ? rnd_round(line->Clearance/2) : 0);
@@ -104,6 +136,7 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 			pcb_arc_get_end(arc, 1, &ex, &ey);
 			clr = PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, arc) ? rnd_round(arc->Clearance/2) : 0;
 			rnd_fprintf(f, " arc");
+			LAYERNET(arc);
 			rnd_fprintf(f, " %.06mm %.06mm %.06mm %f %f %.06mm %.06mm ",
 				arc->X, arc->Y, arc->Width, arc->StartAngle, arc->Delta, arc->Thickness, clr);
 			rnd_fprintf(f, "%.06mm %.06mm %.06mm %.06mm\n", sx, sy, ex, ey);
@@ -135,6 +168,7 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 		PCB_POLY_LOOP(ly) {
 			for(pl = polygon->NoHoles, plid = 0; pl != NULL; pl = pl->next, plid++) {
 				rnd_fprintf(f, " poly");
+				LAYERNET(polygon);
 				rnd_fprintf(f, " pllay_%ld_%ld_%ld 0 0\n", gid, polygon->ID, plid);
 			}
 		} PCB_END_LOOP;
