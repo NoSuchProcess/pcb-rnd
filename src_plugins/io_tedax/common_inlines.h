@@ -28,10 +28,10 @@
 
 RND_INLINE void tedax_finsert_layernet_tags(FILE *f, pcb_netmap_t *nmap, pcb_any_obj_t *obj)
 {
-	long oid = 0;
 	pcb_net_t *net = htpp_get(&nmap->o2n, obj);
-	char constr[3], *end;
+	char constr[3], *end, *tmp;
 	const char *netname;
+	pcb_idpath_t *idp;
 
 	end = constr;
 
@@ -52,7 +52,13 @@ RND_INLINE void tedax_finsert_layernet_tags(FILE *f, pcb_netmap_t *nmap, pcb_any
 	else
 		netname = "-";
 
-	fprintf(f, " %ld ", oid);
+	idp = pcb_obj2idpath(obj);
+	tmp = pcb_idpath2str(idp, 0);
+
+	fprintf(f, " %s ", tmp);
 	tedax_fprint_escape(f, netname);
 	fprintf(f, " %s", constr);
+
+	free(tmp);
+	pcb_idpath_destroy(idp);
 }
