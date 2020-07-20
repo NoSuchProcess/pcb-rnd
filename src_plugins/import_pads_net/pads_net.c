@@ -69,8 +69,9 @@ typedef struct {
 
 static int pads_net_parse_net(FILE *fn)
 {
-	char line[1024];
+	char line[1024], signal[1024];
 	symattr_t sattr;
+	enum { NONE, NET, PART } mode = NONE;
 
 	memset(&sattr, 0, sizeof(sattr));
 
@@ -78,18 +79,55 @@ static int pads_net_parse_net(FILE *fn)
 	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
+	*signal = '\0';
+
 	while(fgets(line, sizeof(line), fn) != NULL) {
 		int argc;
-		char **argv, *s;
+		char **argv, *s, *next, *pin;
 
 		s = line;
 		ltrim(s);
-		if (*s == ';') /* comment */
-			continue;
 		rtrim(s);
-		argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE);
-/*					rnd_actionva(&PCB->hidlib, "Netlist", "Add",  argv[2], curr, NULL);*/
-		qparse_free(argc, &argv);
+
+		if (strcmp(s, "*NET*") == 0)  { mode = NET; continue; }
+		if (strncmp(s, "*PART*", 6) == 0) { mode = PART; continue; }
+		if (strcmp(s, "*END*") == 0) { break; }
+
+		if (strncmp(s, "*SIGNAL*", 8) == 0) {
+			s = line + 8;
+			ltrim(s);
+			strncpy(signal, s, sizeof(signal));
+			continue;
+		}
+
+		switch(mode) {
+			case PART:
+				argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE | QPARSE_MULTISEP);
+				rnd_actionva(&PCB->hidlib, "ElementList", "Need", argv[0], argv[1], "", NULL);
+				qparse_free(argc, &argv);
+				break;
+			case NET:
+				if (*signal == '\0') {
+					rnd_message(RND_MSG_ERROR, "pads_net: not importing net=%s: no signal specified\n", line);
+					continue;
+				}
+				for(s = line; (s != NULL) && (*s != '\0'); s = next) {
+					next = strpbrk(s, " \t");
+					if (next != NULL) {
+						*next = '\0';
+						next++;
+						ltrim(next);
+					}
+					pin = strchr(s, '.');
+					if (pin == NULL) {
+						rnd_message(RND_MSG_ERROR, "pads_net: not importing pin='%s' for net %s: no terminal ID\n", s, signal);
+						continue;
+					}
+					*pin = '-';
+					rnd_actionva(&PCB->hidlib, "Netlist", "Add",  signal, s, NULL);
+				}
+				break;
+		}
 	}
 
 	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
