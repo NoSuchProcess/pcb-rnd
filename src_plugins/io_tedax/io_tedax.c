@@ -47,6 +47,7 @@
 #include "stackup.h"
 #include "tlayer.h"
 #include "tboard.h"
+#include "trouter.h"
 #include "tdrc.h"
 #include "tdrc_query.h"
 #include "tetest.h"
