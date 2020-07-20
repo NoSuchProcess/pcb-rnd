@@ -165,7 +165,7 @@ fgw_error_t pcb_act_LoadOrcadNetFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static int orcad_net_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
 	FILE *f;
-	unsigned int good = 0;
+	unsigned int good = 0, limit;
 
 	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs != 1))
 		return 0; /* only pure netlist import is supported from a single file*/
@@ -174,19 +174,13 @@ static int orcad_net_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, 
 	if (f == NULL)
 		return 0;
 
-	for(;;) {
+	for(limit = 0; limit < 8; limit++) {
 		char *s, line[1024];
 		s = fgets(line, sizeof(line), f);
 		if (s == NULL)
 			break;
 		while(isspace(*s)) s++;
-		if (strncmp(s, "!PADS-", 6) == 0)
-			good |= 1;
-		else if (strncmp(s, "*PART*", 6) == 0)
-			good |= 2;
-		else if (strncmp(s, "*NET*", 5) == 0)
-			good |= 4;
-		if (good == (1|2|4)) {
+		if (strstr(s, "OrCAD/PCB II Netlist") == 0) {
 			fclose(f);
 			return 100;
 		}
