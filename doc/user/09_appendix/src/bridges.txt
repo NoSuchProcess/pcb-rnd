@@ -18,6 +18,7 @@
 |[hkp_ ]|   |                                                                |   |           |
 |[fpcb ]|   |                                                                |   |           |
 |[padsn]|   |                                                                |   |           |
+|[orcdn]|   |                                                                |   |           |
 |[msch ]|   +----------------------------------------------------------------+   +-----------+
 +-------+
           *out----------------------------------------------------------------+
@@ -99,6 +100,9 @@ OA
 
 [padsn]
 	label PADS ASCII\n(netlist)
+
+[orcdn]
+	label Orcad\n(netlist)
 
 [msch]
 	label Mentor grp.\n(netlist)
@@ -299,6 +303,9 @@ OA
 	label import\nnetlist
 
 -> padsn.e pcbrnd
+	label import\nschematics
+
+-> orcdn.e pcbrnd
 	label import\nschematics
 
 -> msch.e pcbrnd
