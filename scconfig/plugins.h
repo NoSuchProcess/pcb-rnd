@@ -85,6 +85,8 @@ plugin_def("import_mucs",      "import mucs routing",             sbuildin, 1, 0
 plugin_def("import_net_action","import net: action script",       sbuildin, 1, 0)
 plugin_def("import_net_cmd",   "sch/net import: run custom cmd",  sbuildin, 1, 0)
 plugin_def("import_netlist",   "import netlist",                  sbuildin, 1, 0)
+plugin_def("import_orcad_net", "import Orcad netlist",            sbuildin, 1, 0)
+plugin_def("import_pads_net",  "import PADS ascii netlist .asc",  sbuildin, 1, 0)
 plugin_def("import_pads_net",  "import PADS ascii netlist .asc",  sbuildin, 1, 0)
 plugin_def("import_pxm_gd",    "import pixmaps from png/gif/jpg", sbuildin, 1, 0)
 plugin_def("import_pxm_pnm",   "import pixmaps from pnm ",        sbuildin, 1, 0)

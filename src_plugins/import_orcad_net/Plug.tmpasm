@@ -1,0 +1,10 @@
+put /local/pcb/mod {import_orcad_net}
+put /local/pcb/mod/OBJS [@ $(PLUGDIR)/import_orcad_net/orcad_net.o @]
+put /local/pcb/mod/MENUFILE {orcad_net-menu.lht}
+put /local/pcb/mod/MENUVAR {orcad_net_menu}
+
+switch /local/pcb/import_orcad_net/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
