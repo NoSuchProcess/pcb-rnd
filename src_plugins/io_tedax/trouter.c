@@ -124,6 +124,9 @@ int tedax_route_req_fsave(pcb_board_t *pcb, FILE *f)
 	if (tedax_global_via_fwrite(pcb, pcb->Data, f, &nmap) != 0)
 		goto error;
 
+	/* For now only full-routing is specified */
+	fprintf(f, " route_all\n");
+
 	fprintf(f, "end route_req\n");
 
 	res = 0;
