@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  sch import: PADS netlist ASCII (powerpcb?)
+ *  sch import: orcad netlist
  *  pcb-rnd Copyright (C) 2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
