@@ -52,9 +52,9 @@
 
 #define LAYERNET(obj) tedax_finsert_layernet_tags(f, nmap, (pcb_any_obj_t *)obj)
 
-static int tedax_global_via_fwrite(pcb_board_t *pcb, FILE *f, pcb_netmap_t *nmap)
+static int tedax_global_via_fwrite(pcb_board_t *pcb, pcb_data_t *data, FILE *f, pcb_netmap_t *nmap)
 {
-	PCB_PADSTACK_LOOP(pcb->Data) {
+	PCB_PADSTACK_LOOP(data) {
 		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
 		if (proto != NULL) {
 			rnd_coord_t cx, cy, dia = 0;
@@ -78,6 +78,10 @@ static int tedax_global_via_fwrite(pcb_board_t *pcb, FILE *f, pcb_netmap_t *nmap
 	}
 	PCB_END_LOOP;
 
+	PCB_SUBC_LOOP(data) {
+		tedax_global_via_fwrite(pcb, subc->data, f, nmap);
+	}
+	PCB_END_LOOP;
 	return 0;
 }
 
@@ -117,7 +121,7 @@ int tedax_route_req_fsave(pcb_board_t *pcb, FILE *f)
 
 	rnd_fprintf(f, " stackup %s\n", stackupid);
 
-	if (tedax_global_via_fwrite(pcb, f, &nmap) != 0)
+	if (tedax_global_via_fwrite(pcb, pcb->Data, f, &nmap) != 0)
 		goto error;
 
 	fprintf(f, "end route_req\n");
