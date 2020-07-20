@@ -58,6 +58,7 @@ static int orcad_net_parse_net(FILE *fn)
 	gsxl_init(&dom, gsxl_node_t);
 
 	dom.parse.line_comment_char = '#';
+	dom.parse.brace_quote = 1;
 	do {
 		c = fgetc(fn);
 	} while((res = gsxl_parse_char(&dom, c)) == GSX_RES_NEXT);
@@ -106,7 +107,7 @@ static int orcad_net_load(const char *fname_net)
 }
 
 static const char pcb_acts_LoadOrcadNetFrom[] = "LoadOrcadNetFrom(filename)";
-static const char pcb_acth_LoadOrcadNetFrom[] = "Loads the specified pads ascii netlist .asc file.";
+static const char pcb_acth_LoadOrcadNetFrom[] = "Loads the specified pads ascii netlist .net file.";
 fgw_error_t pcb_act_LoadOrcadNetFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL;
@@ -117,7 +118,7 @@ fgw_error_t pcb_act_LoadOrcadNetFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname || !*fname) {
 		fname = rnd_gui->fileselect(rnd_gui, "Load pads ascii netlist file...",
 																"Picks a pads ascii netlist file to load.\n",
-																default_file, ".asc", NULL, "orcad_net", RND_HID_FSD_READ, NULL);
+																default_file, ".net", NULL, "orcad_net", RND_HID_FSD_READ, NULL);
 		if (fname == NULL)
 			return 1;
 		if (default_file != NULL) {
