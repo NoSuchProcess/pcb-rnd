@@ -60,20 +60,10 @@ static const char *pads_net_cookie = "pads_net importer";
 		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--) \
 			*end = '\0'; \
 	} while(0)
-
-typedef struct {
-	char *refdes;
-	char *value;
-	char *footprint;
-} symattr_t;
-
 static int pads_net_parse_net(FILE *fn)
 {
 	char line[1024], signal[1024];
-	symattr_t sattr;
 	enum { NONE, NET, PART } mode = NONE;
-
-	memset(&sattr, 0, sizeof(sattr));
 
 	rnd_actionva(&PCB->hidlib, "ElementList", "start", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
