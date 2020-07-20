@@ -44,6 +44,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
+#include <gensexpr/gsxl.h>
 
 #include "menu_internal.c"
 
@@ -51,6 +52,24 @@ static const char *orcad_net_cookie = "orcad_net importer";
 
 static int orcad_net_parse_net(FILE *fn)
 {
+	gsxl_dom_t dom;
+	int res, c;
+
+	gsxl_init(&dom, gsxl_node_t);
+
+	dom.parse.line_comment_char = '#';
+	do {
+		c = fgetc(fn);
+	} while((res = gsxl_parse_char(&dom, c)) == GSX_RES_NEXT);
+
+	if (res != GSX_RES_EOE) {
+		rnd_message(RND_MSG_ERROR, "s-expression parse error\n");
+		return -1;
+	}
+
+	/* compact and simplify the tree */
+	gsxl_compact_tree(&dom);
+
 
 	rnd_actionva(&PCB->hidlib, "ElementList", "start", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
@@ -62,6 +81,8 @@ static int orcad_net_parse_net(FILE *fn)
 	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
 	rnd_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
+
+	gsxl_uninit(&dom);
 
 	return 0;
 }
