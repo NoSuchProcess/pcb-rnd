@@ -85,6 +85,17 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 				fprintf(f, "end polyline\n");
 			}
 		} PCB_END_LOOP;
+
+		if (nmap != NULL) { /* text objets have to be approximated with a rectangular polygon "keepout" */
+			PCB_TEXT_LOOP(ly) {
+				fprintf(f, "begin polyline v1 txlay_%ld\n", text->ID);
+				rnd_fprintf(f, " v %.06mm %.06mm\n", text->bbox_naked.X1, text->bbox_naked.Y1);
+				rnd_fprintf(f, " v %.06mm %.06mm\n", text->bbox_naked.X1, text->bbox_naked.Y2);
+				rnd_fprintf(f, " v %.06mm %.06mm\n", text->bbox_naked.X2, text->bbox_naked.Y2);
+				rnd_fprintf(f, " v %.06mm %.06mm\n", text->bbox_naked.X2, text->bbox_naked.Y1);
+				fprintf(f, "end polyline\n");
+			} PCB_END_LOOP;
+		}
 	}
 
 	fprintf(f, "begin %s v1 %s\n", blockid, layname);
@@ -135,7 +146,11 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 			} PCB_END_LOOP;
 		}
 		else {
-			TODO("save a bbox polygon for blocking this area");
+			PCB_TEXT_LOOP(ly) {
+				rnd_fprintf(f, " poly");
+				LAYERNET(text);
+				rnd_fprintf(f, " txlay_%ld 0 0\n", text->ID);
+			} PCB_END_LOOP;
 		}
 
 		PCB_POLY_LOOP(ly) {
