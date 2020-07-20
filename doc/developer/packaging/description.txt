@@ -47,6 +47,7 @@ File formats and compatibility:
   - PADS ASCII netlist+footprint info (import)
   - Orcad netlist+footprint info (import)
   - Accel EDA netlist+footprint info (import)
+  - Protel netlist 2.0, netlist+footprint info (import)
   - breadboard assembly drawing png (export)
   - BoM (Bill of Materials; export)
   - dxf, 2d drawings (export)

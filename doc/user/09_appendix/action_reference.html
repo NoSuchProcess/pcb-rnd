@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.2 (svn r32316) an interactive printed circuit board editor ,  Revision: 32323
+This is pcb-rnd 2.2.2 (svn r32320) an interactive printed circuit board editor ,  Revision: 32329
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -225,6 +225,7 @@ This is pcb-rnd 2.2.2 (svn r32316) an interactive printed circuit board editor ,
 <tr><td>LoadOrcadNetFrom</td><td>Loads the specified pads ascii netlist .net file.</td><td>LoadOrcadNetFrom(filename)</td><td>orcad_net importer</td>
 <tr><td>LoadPadsNetFrom</td><td>Loads the specified pads ascii netlist .asc file.</td><td>LoadPadsNetFrom(filename)</td><td>pads_net importer</td>
 <tr><td>LoadPixmap</td><td>Loads a pixmap image from disk and creates a gfx object in buffer.</td><td>LoadPixmap([filename])</td><td></td>
+<tr><td>LoadProtelNetFrom</td><td>Loads the specified protel netlist 2.0 file.</td><td>LoadProtelNetFrom(filename)</td><td>protel_net importer</td>
 <tr><td><a href="action_details.html#loadscript">LoadScript</a></td><td>Load a fungw script</td><td>LoadScript(id, filename, [language])</td><td>script plugin</td>
 <tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file.</td><td>LoadTedaxFrom(netlist|board|footprint|stackup|layer|drc|drc_query, filename, [block_id, [silent, [src]]])</td><td>tEDAx IO</td>
 <tr><td>LoadTinycadFrom</td><td>Loads the specified tinycad .net file - the netlist must be tinycad netlist output.</td><td>LoadTinycadFrom(filename)</td><td>tinycad importer</td>

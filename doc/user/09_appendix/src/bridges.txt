@@ -20,6 +20,7 @@
 |[padsn]|   |                                                                |   |           |
 |[orcdn]|   |                                                                |   |           |
 |[accln]|   |                                                                |   |           |
+|[prtln]|   |                                                                |   |           |
 |[msch ]|   +----------------------------------------------------------------+   +-----------+
 +-------+
           *out----------------------------------------------------------------+
@@ -107,6 +108,9 @@ OA
 
 [accln]
 	label Accel EDA\n(netlist)
+
+[prtln]
+	label Protel\n(netlist)
 
 [msch]
 	label Mentor grp.\n(netlist)
@@ -313,6 +317,9 @@ OA
 	label import\nschematics
 
 -> accln.e pcbrnd
+	label import\nschematics
+
+-> prtln.e pcbrnd
 	label import\nschematics
 
 -> msch.e pcbrnd
