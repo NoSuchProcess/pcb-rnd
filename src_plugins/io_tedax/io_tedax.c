@@ -72,7 +72,8 @@ int io_tedax_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt
 
 static const char pcb_acts_Savetedax[] = 
 	"SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)\n"
-	"SaveTedax(drc_query, filename, [rule_name])";
+	"SaveTedax(drc_query, filename, [rule_name])"
+	"SaveTedax(route_req, filename)";
 static const char pcb_acth_Savetedax[] = "Saves the specific type of data in a tEDAx file.";
 static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -119,6 +120,11 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (rnd_strcasecmp(type, "etest") == 0) {
 		RND_ACT_IRES(tedax_etest_save(PCB, NULL, fname));
+		return 0;
+	}
+
+	if (rnd_strcasecmp(type, "route_req") == 0) {
+		RND_ACT_IRES(tedax_route_req_save(PCB, fname));
 		return 0;
 	}
 
