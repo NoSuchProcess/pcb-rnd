@@ -42,12 +42,13 @@
 #include <librnd/core/vtc0.h>
 #include "plug_io.h"
 
-int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layname, FILE *f)
+int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layname, FILE *f, pcb_netmap_t *nmap)
 {
 	char lntmp[64];
 	int lno;
 	rnd_pline_t *pl;
 	long plid;
+	const char *blockid = ((nmap == NULL) ? "layer" : "layernet");
 	pcb_layergrp_t *g = pcb_get_layergrp(pcb, gid);
 
 	if (g == NULL)
@@ -82,13 +83,14 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 		} PCB_END_LOOP;
 	}
 
-	fprintf(f, "begin layer v1 %s\n", layname);
+	fprintf(f, "begin %s v1 %s\n", blockid, layname);
 	for(lno = 0; lno < g->len; lno++) {
 		pcb_layer_t *ly = pcb_get_layer(pcb->Data, g->lid[lno]);
 		if (ly == NULL)
 			continue;
 		PCB_LINE_LOOP(ly) {
-			rnd_fprintf(f, " line %.06mm %.06mm %.06mm %.06mm %.06mm %.06mm\n",
+			rnd_fprintf(f, " line");
+			rnd_fprintf(f, " %.06mm %.06mm %.06mm %.06mm %.06mm %.06mm\n",
 				line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y,
 				line->Thickness, PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, line) ? rnd_round(line->Clearance/2) : 0);
 		} PCB_END_LOOP;
@@ -101,8 +103,8 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 			pcb_arc_get_end(arc, 0, &sx, &sy);
 			pcb_arc_get_end(arc, 1, &ex, &ey);
 			clr = PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, arc) ? rnd_round(arc->Clearance/2) : 0;
-
-			rnd_fprintf(f, " arc %.06mm %.06mm %.06mm %f %f %.06mm %.06mm ",
+			rnd_fprintf(f, " arc");
+			rnd_fprintf(f, " %.06mm %.06mm %.06mm %f %f %.06mm %.06mm ",
 				arc->X, arc->Y, arc->Width, arc->StartAngle, arc->Delta, arc->Thickness, clr);
 			rnd_fprintf(f, "%.06mm %.06mm %.06mm %.06mm\n", sx, sy, ex, ey);
 		} PCB_END_LOOP;
@@ -111,6 +113,8 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 			for(gfx = gfxlist_first(&ly->Gfx); gfx != NULL; gfx = gfxlist_next(gfx))
 				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)gfx, "gfx", "gfx can not be exported", "please use the lihata board format");
 		}
+
+		if (nmap == NULL) {
 		PCB_TEXT_LOOP(ly) {
 			int scale;
 			if (pcb_text_old_scale(text, &scale) != 0)
@@ -123,14 +127,20 @@ int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layna
 			tedax_fprint_escape(f, text->TextString);
 			fputc('\n', f);
 		} PCB_END_LOOP;
+		}
+		else {
+			TODO("save a bbox polygon for blocking this area");
+		}
 
 		PCB_POLY_LOOP(ly) {
-			for(pl = polygon->NoHoles, plid = 0; pl != NULL; pl = pl->next, plid++)
-				rnd_fprintf(f, " poly pllay_%ld_%ld_%ld 0 0\n", gid, polygon->ID, plid);
+			for(pl = polygon->NoHoles, plid = 0; pl != NULL; pl = pl->next, plid++) {
+				rnd_fprintf(f, " poly");
+				rnd_fprintf(f, " pllay_%ld_%ld_%ld 0 0\n", gid, polygon->ID, plid);
+			}
 		} PCB_END_LOOP;
 
 	}
-	fprintf(f, "end layer\n");
+	fprintf(f, "end %s\n", blockid);
 	return 0;
 }
 
@@ -145,7 +155,7 @@ int tedax_layer_save(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *laynam
 		return -1;
 	}
 	fprintf(f, "tEDAx v1\n");
-	res = tedax_layer_fsave(pcb, gid, layname, f);
+	res = tedax_layer_fsave(pcb, gid, layname, f, NULL);
 	fclose(f);
 	return res;
 }

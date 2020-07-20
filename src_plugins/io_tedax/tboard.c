@@ -138,7 +138,7 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 		char *name = ctx.g2n.array[gid];
 		if (name != NULL) {
 			fputc('\n', f);
-			tedax_layer_fsave(pcb, gid, name, f);
+			tedax_layer_fsave(pcb, gid, name, f, NULL);
 		}
 	}
 
