@@ -45,6 +45,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
 #include <gensexpr/gsxl.h>
+#include <genvector/gds_char.h>
 
 #include "menu_internal.c"
 
@@ -53,8 +54,11 @@ static const char *orcad_net_cookie = "orcad_net importer";
 static int orcad_net_parse_net(FILE *fn)
 {
 	gsxl_dom_t dom;
-	int res, c;
+	gsxl_node_t *n, *footprint, *refdes, *noise, *net;
+	int res, c, restore;
+	gds_t tmp;
 
+	gds_init(&tmp);
 	gsxl_init(&dom, gsxl_node_t);
 
 	dom.parse.line_comment_char = '#';
@@ -64,7 +68,7 @@ static int orcad_net_parse_net(FILE *fn)
 	} while((res = gsxl_parse_char(&dom, c)) == GSX_RES_NEXT);
 
 	if (res != GSX_RES_EOE) {
-		rnd_message(RND_MSG_ERROR, "s-expression parse error\n");
+		rnd_message(RND_MSG_ERROR, "orcad: s-expression parse error\n");
 		return -1;
 	}
 
@@ -76,15 +80,42 @@ static int orcad_net_parse_net(FILE *fn)
 	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
-/*	rnd_actionva(&PCB->hidlib, "ElementList", "Need", argv[0], argv[1], "", NULL); */
-/*	rnd_actionva(&PCB->hidlib, "Netlist", "Add",  signal, s, NULL); */
+	for(n = dom.root->children; n != NULL; n = n->next) {
+		footprint = n->children;
+		if ((footprint == NULL) || (footprint->next == NULL) || (footprint->next->next == NULL)) {
+			rnd_message(RND_MSG_ERROR, "orcad: missing footprint or refdes in %d:%d\n", n->line, n->col);
+			continue;
+		}
+		refdes = footprint->next;
+		noise = refdes->next;
+
+/*pcb_trace("@ '%s' '%s'\n", footprint->str, refdes->str);*/
+		rnd_actionva(&PCB->hidlib, "ElementList", "Need", refdes->str, footprint->str, "", NULL);
+
+		tmp.used = 0;
+		gds_append_str(&tmp, refdes->str);
+		gds_append(&tmp, '-');
+		restore = tmp.used;
+	
+		for(net = noise->next; net != NULL; net = net->next) {
+			if (net->children == NULL) {
+				rnd_message(RND_MSG_ERROR, "orcad: missing terminal ID in %d:%d\n", n->line, n->col);
+				continue;
+			}
+
+			tmp.used = restore;
+			gds_append_str(&tmp, net->str);
+			rnd_actionva(&PCB->hidlib, "Netlist", "Add",  net->children->str, tmp.array, NULL);
+/*pcb_trace(" net %s %s\n", tmp.array, net->children->str);*/
+		}
+	}
 
 	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
 	rnd_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
 
 	gsxl_uninit(&dom);
-
+	gds_uninit(&tmp);
 	return 0;
 }
 
