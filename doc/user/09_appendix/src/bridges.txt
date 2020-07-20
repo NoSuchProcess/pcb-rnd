@@ -17,6 +17,7 @@
 |[hpgl ]|   |                                                                |   |           |
 |[hkp_ ]|   |                                                                |   |           |
 |[fpcb ]|   |                                                                |   |           |
+|[padsn]|   |                                                                |   |           |
 |[msch ]|   +----------------------------------------------------------------+   +-----------+
 +-------+
           *out----------------------------------------------------------------+
@@ -95,6 +96,9 @@ OA
 
 [fpcb]
 	label FreePCB\n(netlist)
+
+[padsn]
+	label PADS ASCII\n(netlist)
 
 [msch]
 	label Mentor grp.\n(netlist)
@@ -293,6 +297,9 @@ OA
 
 -> fpcb.e pcbrnd
 	label import\nnetlist
+
+-> padsn.e pcbrnd
+	label import\nschematics
 
 -> msch.e pcbrnd
 	label import\nnetlist
