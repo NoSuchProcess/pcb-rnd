@@ -96,7 +96,7 @@ int tedax_route_req_fsave(pcb_board_t *pcb, FILE *f)
 
 	tedax_stackup_init(&ctx);
 	fputc('\n', f);
-	if (tedax_stackup_fsave(&ctx, pcb, stackupid, f) != 0) {
+	if (tedax_stackup_fsave(&ctx, pcb, stackupid, f, PCB_LYT_COPPER) != 0) {
 		rnd_message(RND_MSG_ERROR, "internal error: failed to save the stackup\n");
 		goto error;
 	}

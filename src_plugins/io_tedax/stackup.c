@@ -273,7 +273,7 @@ static int tedax_layer_set_by_str(pcb_board_t *pcb, pcb_layergrp_t *grp, const c
 	return -1;
 }
 
-int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *stackid, FILE *f)
+int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *stackid, FILE *f, pcb_layer_type_t lyt)
 {
 	int prefix = 0;
 	rnd_layergrp_id_t gid;
@@ -288,8 +288,11 @@ int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *stac
 		char tname[66], *tn;
 		const char *lloc;
 		pcb_layer_t *ly = NULL;
-		const tedax_layer_t *lt = tedax_layer_lookup_by_type(pcb, grp, &lloc);
+		const tedax_layer_t *lt;
 
+		if ((grp->ltype & lyt) == 0) continue;
+
+		lt = tedax_layer_lookup_by_type(pcb, grp, &lloc);
 		if (lt == NULL) {
 			char *title = rnd_strdup_printf("Unsupported group: %s", grp->name);
 			pcb_io_incompat_save(pcb->Data, NULL, "stackup", title, "Layer type/purpose/location is not supported by tEDAx, layer will be omitted from the save.");
@@ -340,7 +343,7 @@ int tedax_stackup_save(pcb_board_t *pcb, const char *stackid, const char *fn)
 	}
 	tedax_stackup_init(&ctx);
 	fprintf(f, "tEDAx v1\n");
-	res = tedax_stackup_fsave(&ctx, pcb, stackid, f);
+	res = tedax_stackup_fsave(&ctx, pcb, stackid, f, PCB_LYT_ANYTHING);
 	fclose(f);
 	tedax_stackup_uninit(&ctx);
 	return res;
