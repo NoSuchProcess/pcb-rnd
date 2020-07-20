@@ -138,7 +138,7 @@ static int orcad_net_load(const char *fname_net)
 }
 
 static const char pcb_acts_LoadOrcadNetFrom[] = "LoadOrcadNetFrom(filename)";
-static const char pcb_acth_LoadOrcadNetFrom[] = "Loads the specified pads ascii netlist .net file.";
+static const char pcb_acth_LoadOrcadNetFrom[] = "Loads the specified Orcad netlist file.";
 fgw_error_t pcb_act_LoadOrcadNetFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL;

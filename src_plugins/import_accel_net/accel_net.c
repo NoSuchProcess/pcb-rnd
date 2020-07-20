@@ -165,7 +165,7 @@ static int accel_net_load(const char *fname_net)
 }
 
 static const char pcb_acts_LoadAccelNetFrom[] = "LoadAccelNetFrom(filename)";
-static const char pcb_acth_LoadAccelNetFrom[] = "Loads the specified pads ascii netlist .net file.";
+static const char pcb_acth_LoadAccelNetFrom[] = "Loads the specified Accel EDA netlist file.";
 fgw_error_t pcb_act_LoadAccelNetFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL;
