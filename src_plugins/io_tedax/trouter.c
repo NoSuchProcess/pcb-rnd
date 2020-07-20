@@ -50,7 +50,7 @@
 
 #include "common_inlines.h"
 
-#define LAYERNET(obj) tedax_layer_fsave_layernet(f, nmap, (pcb_any_obj_t *)obj)
+#define LAYERNET(obj) tedax_finsert_layernet_tags(f, nmap, (pcb_any_obj_t *)obj)
 
 static int tedax_global_via_fwrite(pcb_board_t *pcb, FILE *f, pcb_netmap_t *nmap)
 {

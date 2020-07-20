@@ -44,7 +44,7 @@
 
 #include "common_inlines.h"
 
-#define LAYERNET(obj) if (nmap != NULL) tedax_layer_fsave_layernet(f, nmap, (pcb_any_obj_t *)obj)
+#define LAYERNET(obj) if (nmap != NULL) tedax_finsert_layernet_tags(f, nmap, (pcb_any_obj_t *)obj)
 
 int tedax_layer_fsave(pcb_board_t *pcb, rnd_layergrp_id_t gid, const char *layname, FILE *f, pcb_netmap_t *nmap)
 {

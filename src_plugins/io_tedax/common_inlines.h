@@ -26,7 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-RND_INLINE void tedax_layer_fsave_layernet(FILE *f, pcb_netmap_t *nmap, pcb_any_obj_t *obj)
+RND_INLINE void tedax_finsert_layernet_tags(FILE *f, pcb_netmap_t *nmap, pcb_any_obj_t *obj)
 {
 	long oid = 0;
 	pcb_net_t *net = htpp_get(&nmap->o2n, obj);
