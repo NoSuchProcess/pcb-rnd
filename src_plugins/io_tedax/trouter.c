@@ -69,7 +69,7 @@ static int tedax_global_via_fwrite(pcb_board_t *pcb, FILE *f, pcb_netmap_t *nmap
 			}
 			
 			if (dia > 0) {
-				fprintf(f, "	via");
+				fprintf(f, " via");
 				LAYERNET(padstack);
 				rnd_fprintf(f, " %.06mm %.06mm %.06mm 0\n", cx, cy, dia);
 				TODO("bbvia: two more arguments");
@@ -110,15 +110,16 @@ int tedax_route_req_fsave(pcb_board_t *pcb, FILE *f)
 	}
 
 	fputc('\n', f);
-	if (tedax_global_via_fwrite(pcb, f, &nmap) != 0)
-		goto error;
 
 	fprintf(f, "\nbegin route_req v1 ");
 	tedax_fprint_escape(f, pcb->hidlib.name);
 	fputc('\n', f);
 
-
 	rnd_fprintf(f, " stackup %s\n", stackupid);
+
+	if (tedax_global_via_fwrite(pcb, f, &nmap) != 0)
+		goto error;
+
 	fprintf(f, "end route_req\n");
 
 	res = 0;
