@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.2 (svn r32310) an interactive printed circuit board editor ,  Revision: 32314
+This is pcb-rnd 2.2.2 (svn r32316) an interactive printed circuit board editor ,  Revision: 32323
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -208,6 +208,7 @@ This is pcb-rnd 2.2.2 (svn r32310) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#listscripts">ListScripts</a></td><td>List fungw scripts, optionally filtered wiht regex pat.</td><td>ListScripts([pat])</td><td>script plugin</td>
 <tr><td><a href="action_details.html#livescript">LiveScript</a></td><td>Manage a live script</td><td>LiveScript([new], [name])<br>LiveScript(load|save, name, [filame])<br>LiveScript(run|stop|rerun|undo, name)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#load">Load</a></td><td>Load layout data from a user-selected file.</td><td>Load()<br>Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)</td><td>dialogs plugin</td>
+<tr><td>LoadAccelNetFrom</td><td>Loads the specified pads ascii netlist .net file.</td><td>LoadAccelNetFrom(filename)</td><td>accel_net importer</td>
 <tr><td>LoadCalayFrom</td><td>Loads the specified calay netlist/component file pair.</td><td>LoadCalayFrom(filename)</td><td>calay importer</td>
 <tr><td>LoadDsnFrom</td><td>Loads the specified routed dsn file.</td><td>LoadDsnFrom(filename)</td><td>dsn importer</td>
 <tr><td>LoadEeschemaFrom</td><td>Loads the specified eeschema .net file - the netlist must be an s-expression.</td><td>LoadEeschemaFrom(filename)</td><td>kicad plugin</td>

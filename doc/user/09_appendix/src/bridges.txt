@@ -19,6 +19,7 @@
 |[fpcb ]|   |                                                                |   |           |
 |[padsn]|   |                                                                |   |           |
 |[orcdn]|   |                                                                |   |           |
+|[accln]|   |                                                                |   |           |
 |[msch ]|   +----------------------------------------------------------------+   +-----------+
 +-------+
           *out----------------------------------------------------------------+
@@ -103,6 +104,9 @@ OA
 
 [orcdn]
 	label Orcad\n(netlist)
+
+[accln]
+	label Accel EDA\n(netlist)
 
 [msch]
 	label Mentor grp.\n(netlist)
@@ -306,6 +310,9 @@ OA
 	label import\nschematics
 
 -> orcdn.e pcbrnd
+	label import\nschematics
+
+-> accln.e pcbrnd
 	label import\nschematics
 
 -> msch.e pcbrnd
