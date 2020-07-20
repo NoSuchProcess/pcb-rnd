@@ -226,7 +226,7 @@ int pplg_init_import_orcad_net(void)
 	import_orcad_net.fmt_support_prio = orcad_net_support_prio;
 	import_orcad_net.import           = orcad_net_import;
 	import_orcad_net.name             = "orcad_net";
-	import_orcad_net.desc             = "schamtics from pads ascii netlist";
+	import_orcad_net.desc             = "schamtics from orcad netlist";
 	import_orcad_net.ui_prio          = 50;
 	import_orcad_net.single_arg       = 1;
 	import_orcad_net.all_filenames    = 1;

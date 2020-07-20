@@ -253,7 +253,7 @@ int pplg_init_import_accel_net(void)
 	import_accel_net.fmt_support_prio = accel_net_support_prio;
 	import_accel_net.import           = accel_net_import;
 	import_accel_net.name             = "accel_net";
-	import_accel_net.desc             = "schamtics from pads ascii netlist";
+	import_accel_net.desc             = "schamtics from accel EDA netlist";
 	import_accel_net.ui_prio          = 50;
 	import_accel_net.single_arg       = 1;
 	import_accel_net.all_filenames    = 1;
