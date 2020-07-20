@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  sch import: PADS netlist ASCII (powerpcb?)
+ *  sch import: ACCEL netlist
  *  pcb-rnd Copyright (C) 2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -132,36 +132,9 @@ static int accel_net_parse_net(FILE *fn)
 					gds_append(&tmp, '-');
 					gds_append_str(&tmp, pin);
 					rnd_actionva(&PCB->hidlib, "Netlist", "Add",  netname, tmp.array, NULL);
-/*					printf("NET: %s %s %s\n", netname, refdes, pin);*/
 				}
 			}
 		}
-		
-#if 0
-		footprint = n->children;
-		if ((footprint == NULL) || (footprint->next == NULL) || (footprint->next->next == NULL)) {
-			rnd_message(RND_MSG_ERROR, "accel: missing footprint or refdes in %d:%d\n", n->line, n->col);
-			continue;
-		}
-		refdes = footprint->next;
-		noise = refdes->next;
-
-/*pcb_trace("@ '%s' '%s'\n", footprint->str, refdes->str);*/
-		rnd_actionva(&PCB->hidlib, "ElementList", "Need", refdes->str, footprint->str, "", NULL);
-
-	
-		for(net = noise->next; net != NULL; net = net->next) {
-			if (net->children == NULL) {
-				rnd_message(RND_MSG_ERROR, "accel: missing terminal ID in %d:%d\n", n->line, n->col);
-				continue;
-			}
-
-			tmp.used = restore;
-			gds_append_str(&tmp, net->str);
-			rnd_actionva(&PCB->hidlib, "Netlist", "Add",  net->children->str, tmp.array, NULL);
-/*pcb_trace(" net %s %s\n", tmp.array, net->children->str);*/
-		}
-#endif
 	}
 
 	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
