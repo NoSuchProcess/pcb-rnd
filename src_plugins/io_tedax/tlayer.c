@@ -42,34 +42,7 @@
 #include <librnd/core/vtc0.h>
 #include "plug_io.h"
 
-static void tedax_layer_fsave_layernet(FILE *f, pcb_netmap_t *nmap, pcb_any_obj_t *obj)
-{
-	long oid = 0;
-	pcb_net_t *net = htpp_get(&nmap->o2n, obj);
-	char constr[3], *end;
-	const char *netname;
-
-	end = constr;
-
-	/* for now do not allow the autorouter to move or delete anything */
-	*end++ = 'm';
-	*end++ = 'd';
-
-	if (end == constr)
-		*end++ = '-';
-	*end = '\0';
-
-	/* calculate the netname */
-	if (net != NULL) {
-		netname = net->name;
-		if (strncmp(netname, "netmap_anon_", 12) == 0)
-			netname = "-";
-	}
-	else
-		netname = "-";
-
-	fprintf(f, " %ld %s %s\n", oid, netname, constr);
-}
+#include "common_inlines.h"
 
 #define LAYERNET(obj) if (nmap != NULL) tedax_layer_fsave_layernet(f, nmap, (pcb_any_obj_t *)obj)
 
