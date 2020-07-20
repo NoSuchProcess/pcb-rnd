@@ -4870,7 +4870,8 @@
  librnd/core/compat_misc.h librnd/core/safe_fs.h librnd/core/hid_menu.h \
  librnd/core/hid_cfg.h librnd/core/hid_menu.h \
  ../src_plugins/io_tedax/stackup.h ../src_plugins/io_tedax/tlayer.h \
- layer.h ../src_plugins/io_tedax/tboard.h ../src_plugins/io_tedax/tdrc.h \
+ layer.h ../src_plugins/lib_netmap/netmap.h netlist.h \
+ ../src_plugins/io_tedax/tboard.h ../src_plugins/io_tedax/tdrc.h \
  ../src_plugins/io_tedax/tdrc_query.h ../src_plugins/io_tedax/tetest.h \
  ../src_plugins/io_tedax/tnetlist.h \
  ../src_plugins/io_tedax/menu_internal.c
@@ -4931,7 +4932,8 @@
  ../src_plugins/io_tedax/stackup.h ../src_plugins/io_tedax/footprint.h \
  plug_io.h vtlibrary.h ../src_3rd/genvector/vts0.h \
  ../src_plugins/io_tedax/tdrc.h ../src_plugins/io_tedax/tlayer.h layer.h \
- obj_pstk.h librnd/core/compat_misc.h ../src_plugins/io_tedax/tnetlist.h
+ ../src_plugins/lib_netmap/netmap.h netlist.h obj_pstk.h \
+ librnd/core/compat_misc.h ../src_plugins/io_tedax/tnetlist.h
 ../src_plugins/io_tedax/tdrc.o: ../src_plugins/io_tedax/tdrc.c \
  ../config.h librnd/config.h board.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
@@ -5040,11 +5042,13 @@
  ../src_3rd/genht/ht.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h ../src_plugins/io_tedax/tlayer.h board.h vtroutestyle.h \
- rats_patch.h board.h layer.h librnd/core/safe_fs.h librnd/core/conf.h \
+ rats_patch.h board.h layer.h ../src_plugins/lib_netmap/netmap.h \
+ netlist.h librnd/core/safe_fs.h librnd/core/conf.h \
  librnd/core/rnd_printf.h ../src_3rd/liblihata/lihata.h \
  librnd/core/list_conf.h ../src_plugins/io_tedax/parse.h \
  librnd/core/compat_misc.h obj_line.h obj_arc.h obj_poly.h \
- librnd/core/vtc0.h plug_io.h vtlibrary.h ../src_3rd/genvector/vts0.h
+ librnd/core/vtc0.h plug_io.h vtlibrary.h ../src_3rd/genvector/vts0.h \
+ ../src_plugins/io_tedax/common_inlines.h
 ../src_plugins/io_tedax/tnetlist.o: ../src_plugins/io_tedax/tnetlist.c \
  ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h board.h \
@@ -5078,6 +5082,39 @@
  librnd/core/compat_misc.h librnd/core/actions.h librnd/core/safe_fs.h \
  obj_subc.h netlist.h ../src_plugins/io_tedax/tnetlist.h \
  ../src_plugins/io_tedax/tdrc_query.h ../src_plugins/io_tedax/parse.h
+../src_plugins/io_tedax/trouter.o: ../src_plugins/io_tedax/trouter.c \
+ ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/genht/htsi.h ../src_3rd/genht/hash.h \
+ ../src_plugins/lib_netmap/placement.h board.h \
+ librnd/core/global_typedefs.h librnd/core/rnd_bool.h vtroutestyle.h \
+ librnd/core/unit.h attrib.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genvector/genvector_undef.h layer.h globalconst.h \
+ librnd/core/globalconst.h librnd/core/color.h obj_common.h flag.h \
+ global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h librnd/core/box.h librnd/core/math_helper.h \
+ librnd/core/misc_util.h ../src_3rd/genvector/gds_char.h obj_gfx_list.h \
+ obj_gfx.h layer_grp.h rats_patch.h board.h librnd/core/hidlib.h data.h \
+ crosshair.h vtonpoint.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
+ librnd/core/error.h route.h buffer.h ../src_3rd/libfungw/fungw.h \
+ ../src_3rd/genht/htpp.h obj_rat_list.h obj_rat.h idpath.h \
+ obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ librnd/poly/rtree2_compat.h librnd/poly/rtree.h \
+ ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
+ obj_pstk_list.h obj_pstk.h ../src_3rd/genvector/vtp0.h vtpadstack.h \
+ obj_pstk_shape.h polygon.h vtpadstack_t.h ht_subc.h \
+ ../src_plugins/io_tedax/tboard.h ../src_plugins/io_tedax/parse.h \
+ librnd/core/safe_fs.h librnd/core/conf.h librnd/core/rnd_printf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h obj_pstk_inlines.h \
+ data.h thermal.h operation.h librnd/poly/polygon1_gen.h \
+ ../src_plugins/io_tedax/stackup.h ../src_plugins/io_tedax/tlayer.h \
+ layer.h ../src_plugins/lib_netmap/netmap.h netlist.h obj_pstk.h \
+ librnd/core/compat_misc.h plug_io.h vtlibrary.h \
+ ../src_3rd/genvector/vts0.h ../src_plugins/io_tedax/common_inlines.h
 ../src_plugins/irc/irc.o: ../src_plugins/irc/irc.c ../config.h \
  librnd/config.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
