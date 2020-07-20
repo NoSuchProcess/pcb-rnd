@@ -44,6 +44,7 @@ File formats and compatibility:
   - MUCS unixplot (partial import: lines, vias)
   - gEDA/gschem netlist+footprint info (import)
   - TinyCAD netlist+footprint info (import)
+  - PADS ASCII netlist+footprint info (import)
   - breadboard assembly drawing png (export)
   - BoM (Bill of Materials; export)
   - dxf, 2d drawings (export)
