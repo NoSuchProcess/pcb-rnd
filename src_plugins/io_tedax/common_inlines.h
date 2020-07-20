@@ -52,5 +52,7 @@ RND_INLINE void tedax_layer_fsave_layernet(FILE *f, pcb_netmap_t *nmap, pcb_any_
 	else
 		netname = "-";
 
-	fprintf(f, " %ld %s %s\n", oid, netname, constr);
+	fprintf(f, " %ld ", oid);
+	tedax_fprint_escape(f, netname);
+	fprintf(f, " %s\n", constr);
 }
