@@ -31,7 +31,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <qparse/qparse.h>
 
 #include "board.h"
 #include "data.h"
@@ -92,9 +91,15 @@ static int pads_net_parse_net(FILE *fn)
 
 		switch(mode) {
 			case PART:
-				argc = qparse2(s, &argv, QPARSE_DOUBLE_QUOTE | QPARSE_SINGLE_QUOTE | QPARSE_MULTISEP);
-				rnd_actionva(&PCB->hidlib, "ElementList", "Need", argv[0], argv[1], "", NULL);
-				qparse_free(argc, &argv);
+				next = strchr(s, ' ');
+				if (next == NULL) {
+					rnd_message(RND_MSG_ERROR, "pads_net: not importing part=%s: no footprint specified\n", s);
+					break;
+				}
+				*next = '\0';
+				next++;
+				ltrim(next);
+				rnd_actionva(&PCB->hidlib, "ElementList", "Need", s, next, "", NULL);
 				break;
 			case NET:
 				if (*signal == '\0') {
