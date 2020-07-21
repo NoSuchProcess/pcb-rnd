@@ -110,7 +110,7 @@ static int accel_net_parse_net(FILE *fn)
 	netlist = netlist->children->next; /* first item was the netlist name */
 	for(n = netlist; n != NULL; n = n->next) {
 		if (strcmp(n->str, "compInst") == 0) {
-			char *refdes = n->children->str, *footprint = NULL, *value = NULL;
+			char *refdes = n->children->str, *footprint = NULL, *value = "";
 			for(m = n->children; m != NULL; m = m->next) {
 				if (strcmp(m->str, "originalName") == 0) footprint = m->children->str;
 				if (strcmp(m->str, "compValue") == 0) value = m->children->str;
