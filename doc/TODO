@@ -11,6 +11,7 @@
 - BUG: buffer scale doesn't work on subcircuits [report: Erich]
 - BUG: unknown command entered in the command line (or coming from the menu) doesn't trigger an error message [report: Igor2]
 - BUG: hid_common/grid_menu.c: doesn't checkmark initial grid setting, doesn't remove check on grid(set, 11mil) [report: Igor2]
+- DOC: datasheet and package description file format lists should be generated [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP: TODO27: undo's removed list shouldn't depend on pobject IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
