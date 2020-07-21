@@ -94,7 +94,7 @@ static void tedax_layer_fsave_pstk_shape(pcb_board_t *pcb, pcb_data_t *data, pcb
 			case PCB_PSSH_POLY:
 				rnd_fprintf(f, " poly");
 				LAYERNET(padstack);
-				rnd_fprintf(f, " pstk_%p_%p 0 0\n", (void *)padstack, (void *)ly);
+				rnd_fprintf(f, " pstk_%p_%p %.06mm %.06mm\n", (void *)padstack, (void *)ly, padstack->x, padstack->y);
 				break;
 		}
 	}
