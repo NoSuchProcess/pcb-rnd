@@ -29,13 +29,15 @@
 RND_INLINE void tedax_finsert_layernet_tags(FILE *f, pcb_netmap_t *nmap, pcb_any_obj_t *obj)
 {
 	pcb_net_t *net = htpp_get(&nmap->o2n, obj);
-	char constr[3], *end, *tmp;
+	char constr[4], *end, *tmp;
 	const char *netname;
 	pcb_idpath_t *idp;
 
 	end = constr;
 
 	/* for now do not allow the autorouter to move or delete anything */
+	if (obj->term != NULL)
+		*end++ = 't';
 	*end++ = 'm';
 	*end++ = 'd';
 
