@@ -617,11 +617,6 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 	tmp = find_nth(attr->first_child, "VERT_JUST", 0);
 	if (tmp != NULL) {
 		rnd_coord_t ymax = height+ymin;
-		TODO(
-			"Consider rotation, using:"
-			"  rnd_rotate(rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina)"
-			"Maybe:"
-			"  double sina = sin(-(double)rot / RND_RAD_TO_DEG), cosa = cos(-(double)rot / RND_RAD_TO_DEG);");
 		if (strcmp(tmp->argv[1], "Top") == 0)
 			anchy = 0;
 		else if (strcmp(tmp->argv[1], "Center") == 0)
@@ -636,16 +631,7 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		return;
 	}
 
-TODO("we should compensate for HOTIZ_JUST and VERT_JUST but for that we need to figure how big the text is originally");
-TODO("HEIGHT should become scale");
 TODO("figure what TEXT_OPTIONS we have. One of them is MIRRORED (brd2 example)");
-TODO("[easy] STROKE_WIDTH: we have support for that, but what's the unit? what if it is 0?. STROKE_WIDTH == 0 and != 0 in brd1 example");
-/* STROKE_WIDTH is the thickness of the "pen" drawing the text. */
-/*  Its units are mm or inches, whatever is used in the file at that moment */
-/*  When it is 0, original SW draws the outline of the letters, with 0.005mm pen thickness.*/
-/*  When drawing the outline of a vertical trace for '1' character, there are two thin traces.*/
-/*  The distance between those traces seems to depend on text height.*/
-/*  In brd2 example, it is 0.04mm for J1, assembly layer, and 0.02mm for R1.*/
 
 	if (mirrored != 0)
 		rot = -rot;
