@@ -545,9 +545,8 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 		return;
 	}
 	tmp = find_nth(attr->first_child, "ROTATION", 0);
-	if (tmp != NULL) {
+	if (tmp != NULL)
 		parse_rot(ctx, tmp, &rot, (pcb_layer_flags_(ly) & PCB_LYT_BOTTOM));
-	}
 	else {
 		hkp_error(attr, "Can not find rotation of text. Text will be NOT rendered.\n");
 		return;
@@ -555,9 +554,8 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 
 	tmp = find_nth(attr->first_child, "TEXT_OPTIONS", 0);
 	if (tmp != NULL)
-		if (strcmp(tmp->argv[1], "MIRRORED") == 0) {
+		if (strcmp(tmp->argv[1], "MIRRORED") == 0)
 			mirrored = PCB_TXT_MIRROR_X;
-		}
 
 	tmp = find_nth(attr->first_child, "HEIGHT", 0);
 	if (tmp != NULL)
@@ -602,15 +600,12 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 
 	tmp = find_nth(attr->first_child, "HORZ_JUST", 0);
 	if (tmp != NULL) {
-		if (strcmp(tmp->argv[1], "Left") == 0) {
+		if (strcmp(tmp->argv[1], "Left") == 0)
 			anchx = 0;
-		}
-		else if (strcmp(tmp->argv[1], "Center") == 0) {
+		else if (strcmp(tmp->argv[1], "Center") == 0)
 			anchx = width >> 1;
-		}
-		else if (strcmp(tmp->argv[1], "Right") == 0) {
+		else if (strcmp(tmp->argv[1], "Right") == 0)
 			anchx = width;
-		}
 		else
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
 	}
@@ -627,15 +622,12 @@ static void parse_dwg_text(hkp_ctx_t *ctx, pcb_subc_t *subc, pcb_layer_t *ly, co
 			"  rnd_rotate(rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t cx, rnd_coord_t cy, double cosa, double sina)"
 			"Maybe:"
 			"  double sina = sin(-(double)rot / RND_RAD_TO_DEG), cosa = cos(-(double)rot / RND_RAD_TO_DEG);");
-		if (strcmp(tmp->argv[1], "Top") == 0) {
+		if (strcmp(tmp->argv[1], "Top") == 0)
 			anchy = 0;
-		}
-		else if (strcmp(tmp->argv[1], "Center") == 0) {
+		else if (strcmp(tmp->argv[1], "Center") == 0)
 			anchy = ymax >> 1;
-		}
-		else if (strcmp(tmp->argv[1], "Bottom") == 0) {
+		else if (strcmp(tmp->argv[1], "Bottom") == 0)
 			anchy = height+ymin; /* ymin is negative */
-		}
 		else
 			hkp_error(tmp, "Unknown horizontal alignment (%s). Text will be rendered, but it may not have a correct size.\n", tmp->argv[1]);
 	}
