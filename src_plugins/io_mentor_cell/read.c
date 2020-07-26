@@ -742,8 +742,8 @@ static int parse_side(node_t *n, pcb_subc_t *subc, pcb_layer_type_t *side, const
 		}
 	}
 
-	/* In some sections, like ..ASSEMBLY_OUTLINE inside .PACKAGE_CELL (a subcircuit), there is no explicit SIDE line. */
-	/* So if this is a subcircuit, and there is no SIDE line, get the side from subc side.*/
+	/* In some sections, like ..ASSEMBLY_OUTLINE inside .PACKAGE_CELL (a subcircuit), there is no explicit SIDE line.
+	   So if this is a subcircuit, and there is no SIDE line, get the side from subc side.*/
 	tmp = find_nth(n->first_child, "SIDE", 0);
 	if (tmp == NULL) {
 		if (subc != NULL) {
