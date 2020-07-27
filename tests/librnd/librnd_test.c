@@ -10,13 +10,75 @@
 
 #include "glue.c"
 
-/*** init test ***/
+
+/*
+static void print_pline(rnd_pline_t *pl)
+{
+	rnd_vnode_t *n = pl->head;
+	printf("poliline:\n");
+	do {
+		printf(" %ld %ld\n", n->point[0], n->point[1]);
+		n = n->next;
+	} while(n != pl->head);
+	
+}
+*/
+
+/*** poly contour vs. point test ***/
 
 static void poly_test()
 {
+	static rnd_pline_t pl;
+	int res;
+
+	rnd_vector_t v;
 	rnd_polyarea_t pa;
 	rnd_polyarea_init(&pa);
+
+
+	rnd_poly_contour_init(&pl);
+
+	v[0] = 10; v[1] = 0;
+	rnd_poly_vertex_include(pl.head->prev, rnd_poly_node_create(v));
+
+	v[0] = 0; v[1] = 0;
+	rnd_poly_vertex_include(pl.head->prev, rnd_poly_node_create(v));
+
+	v[0] = 0; v[1] = 15;
+	rnd_poly_vertex_include(pl.head->prev, rnd_poly_node_create(v));
+
+	v[0] = 5; v[1] = 12;
+	rnd_poly_vertex_include(pl.head->prev, rnd_poly_node_create(v));
+
+	v[0] = 8; v[1] = 12;
+	rnd_poly_vertex_include(pl.head->prev, rnd_poly_node_create(v));
+
+	v[0] = 10; v[1] = 15;
+	rnd_poly_vertex_include(pl.head->prev, rnd_poly_node_create(v));
+
+	v[0] = 10; v[1] = 0;
+	rnd_poly_vertex_include(pl.head->prev, rnd_poly_node_create(v));
+
+/*	print_pline(&pl);*/
+
+	rnd_poly_contour_pre(&pl, 1);
+
+/*	print_pline(&pl);*/
+
+	v[0] = 2; v[1] = 12;
+	res = rnd_poly_contour_inside(&pl, v);
+	assert(res == -1);
+
+	v[0] = -2; v[1] = 12;
+	res = rnd_poly_contour_inside(&pl, v);
+	assert(res == 0);
+
+
+
+	rnd_polyarea_contour_include(&pa, &pl);
+
 	rnd_poly_valid(&pa);
+
 }
 
 int main(int argc, char *argv[])
