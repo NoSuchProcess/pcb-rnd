@@ -77,7 +77,7 @@ static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx)
 			const char *try, *fn = rnd_conf_get_project_conf_name(NULL, pcb_fn, &try);
 			if (fn == NULL) {
 				rnd_message(RND_MSG_ERROR, "Failed to create the project file\n");
-				return;
+				return NULL;
 			}
 			rnd_conf_reset(ctx->role, fn);
 			rnd_conf_makedirty(ctx->role);
