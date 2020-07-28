@@ -70,7 +70,7 @@ static void pref_menu_brd2dlg(pref_ctx_t *ctx)
 	rnd_hid_attribute_t *attr;
 	rnd_hid_tree_t *tree;
 	rnd_hid_row_t *r;
-	char *cursor_path = NULL, *cell[5];
+	char *cursor_path = NULL, *cell[6];
 	long n;
 
 	attr = &ctx->dlg[ctx->menu.wlist];
