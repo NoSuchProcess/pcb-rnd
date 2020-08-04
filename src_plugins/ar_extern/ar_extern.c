@@ -37,6 +37,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/compat_misc.h>
 #include "conf_core.h"
 #include "obj_pstk_inlines.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
@@ -44,15 +45,71 @@
 
 static const char *extern_cookie = "extern autorouter plugin";
 
+typedef enum {
+	ERSC_BOARD, ERSC_SELECTED
+} ext_route_scope_t;
+
+typedef struct {
+	const char *name;
+	int (*route)(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv);
+} ext_router_t;
+
+#include "e_route-rnd.c"
+
+static const ext_router_t *routers[] = { &route_rnd, NULL };
+
+static const ext_router_t *find_router(const char *name)
+{
+	const ext_router_t **r;
+
+	for(r = routers; *r != NULL; r++)
+		if (strcmp((*r)->name, name) == 0)
+			return *r;
+
+	return NULL;
+}
 
 static const char pcb_acts_extroute[] = "extroute(board|selected, router, [confkey=value, ...])";
 static const char pcb_acth_extroute[] = "Executed external autorouter to route the board or parts of the board";
 fgw_error_t pcb_act_extroute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *scope, *router;
-	RND_ACT_CONVARG(1, FGW_STR, extroute, scope = argv[1].val.str);
-	RND_ACT_CONVARG(2, FGW_STR, extroute, scope = argv[2].val.str);
+	const char *scope, *router_;
+	char *router, *method;
+	ext_route_scope_t scp;
+	const ext_router_t *r;
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 
+
+	RND_ACT_CONVARG(1, FGW_STR, extroute, scope = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, extroute, router_ = argv[2].val.str);
+	
+	if (strcmp(scope, "board") == 0) scp = ERSC_BOARD;
+	else if (strcmp(scope, "selected") == 0) scp = ERSC_SELECTED;
+	else {
+		rnd_message(RND_MSG_ERROR, "Invalid scope: '%s'\n", scope);
+		return FGW_ERR_ARG_CONV;
+	}
+
+	router = rnd_strdup(router_);
+	method = strchr(router, '/');
+	if (method != NULL) {
+		*method = '\0';
+		method++;
+		if (*method == '\0')
+			method = NULL;
+	}
+
+	r = find_router(router);
+	if (r == NULL) {
+		free(router);
+		rnd_message(RND_MSG_ERROR, "Invalid router: '%s'\n", scope);
+		return FGW_ERR_ARG_CONV;
+	}
+
+	if (r->route != NULL)
+		RND_ACT_IRES(r->route(pcb, scp, method, argc-3, argv+3));
+
+	free(router);
 	return 0;
 }
 
