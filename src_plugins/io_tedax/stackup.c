@@ -44,6 +44,7 @@ void tedax_stackup_init(tedax_stackup_t *ctx)
 {
 	htsp_init(&ctx->n2g, strhash, strkeyeq);
 	vtp0_init(&ctx->g2n);
+	ctx->include_grp_id = 0;
 }
 
 void tedax_stackup_uninit(tedax_stackup_t *ctx)
@@ -53,12 +54,17 @@ void tedax_stackup_uninit(tedax_stackup_t *ctx)
 }
 
 
-static void gen_layer_name(char dst[65], const char *name, int prefix)
+static void gen_layer_name(tedax_stackup_t *ctx, char dst[65], const char *name, int prefix, rnd_layergrp_id_t gid)
 {
 	char *d = dst;
 	int rem = 64, l;
 
-	if (prefix != 0) {
+	if (ctx->include_grp_id) {
+		l = sprintf(dst, "%ld.", gid);
+		rem -= l;
+		d += l;
+	}
+	else if (prefix != 0) {
 		l = sprintf(dst, "%d_", prefix);
 		rem -= l;
 		d += l;
@@ -300,10 +306,10 @@ int tedax_stackup_fsave(tedax_stackup_t *ctx, pcb_board_t *pcb, const char *stac
 			continue;
 		}
 
-		gen_layer_name(tname, grp->name, 0);
-		if (htsp_has(&ctx->n2g, tname)) {
+		gen_layer_name(ctx, tname, grp->name, 0, gid);
+		if (!ctx->include_grp_id && (htsp_has(&ctx->n2g, tname))) {
 			prefix++;
-			gen_layer_name(tname, grp->name, prefix);
+			gen_layer_name(ctx, tname, grp->name, prefix, gid);
 		}
 
 		if (grp->len > 1) {

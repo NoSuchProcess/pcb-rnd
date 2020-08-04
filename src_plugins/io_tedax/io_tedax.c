@@ -52,6 +52,7 @@
 #include "tdrc_query.h"
 #include "tetest.h"
 #include "tnetlist.h"
+#include "trouter.h"
 
 #include "menu_internal.c"
 
@@ -150,7 +151,7 @@ do { \
 	} \
 } while(0)
 
-static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(netlist|board|footprint|stackup|layer|drc|drc_query, filename, [block_id, [silent, [src]]])";
+static const char pcb_acts_LoadtedaxFrom[] = "LoadTedaxFrom(netlist|board|footprint|stackup|layer|drc|drc_query|route_res, filename, [block_id, [silent, [src]]])";
 static const char pcb_acth_LoadtedaxFrom[] = "Loads the specified block from a tedax file.";
 static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -171,6 +172,11 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	if (rnd_strcasecmp(type, "netlist") == 0) {
 		gen_load(netlist, fname);
 		RND_ACT_IRES(tedax_net_load(fname, 1, id, silent));
+		return 0;
+	}
+	if (rnd_strcasecmp(type, "route_res") == 0) {
+		gen_load(route_res, fname);
+		RND_ACT_IRES(tedax_route_res_load(fname, id, silent));
 		return 0;
 	}
 	if (rnd_strcasecmp(type, "board") == 0) {

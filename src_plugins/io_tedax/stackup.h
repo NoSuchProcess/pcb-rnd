@@ -5,6 +5,7 @@
 typedef struct {
 	htsp_t n2g; /* tedax name to layer group pointer */
 	vtp0_t g2n; /* group ID to tedax layer name */
+	unsigned include_grp_id:1; /* whether to include group IDs in the name as prefix */
 } tedax_stackup_t;
 
 
