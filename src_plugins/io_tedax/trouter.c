@@ -179,18 +179,31 @@ int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
 
 	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
 		if ((argc > 5) && (strcmp(argv[0], "add") == 0)) {
-			rnd_layer_id_t lid = pcb_layer_by_name(PCB->Data, argv[1]);
+			rnd_layergrp_id_t gid;
 			pcb_layer_t *ly;
+			pcb_layergrp_t *grp;
+			char *end;
 
 			if ((argc == 11) && (strcmp(argv[2], "via") == 0)) { /* special case: won't have a layer */
 				continue;
 			}
 
-			if (lid == -1) {
-				rnd_message(RND_MSG_ERROR, "External autorouter: invalid layer '%s'\n", argv[1]);
+			/* convert the layer */
+			gid = strtol(argv[1], &end, 10);
+			if ((*end != '.') || (gid < 0) || (gid >= PCB->LayerGroups.len)) {
+				rnd_message(RND_MSG_ERROR, "External autorouter: invalid layer group '%s'\n", argv[1]);
 				continue;
 			}
-			ly = &PCB->Data->Layer[lid];
+			grp = &PCB->LayerGroups.grp[gid];
+			if ((!(grp->ltype & PCB_LYT_COPPER)) || (grp->len < 1)) {
+				rnd_message(RND_MSG_ERROR, "External autorouter: on layer group '%s' which is either not copper or doesn't have layers\n", argv[1]);
+				continue;
+			}
+			ly = pcb_get_layer(PCB->Data, grp->lid[0]);
+			if (ly == NULL) {
+				rnd_message(RND_MSG_ERROR, "External autorouter: on layer group '%s' which is broken\n", argv[1]);
+				continue;
+			}
 
 			if ((argc == 11) && (strcmp(argv[2], "line") == 0)) {
 				rnd_coord_t x1, y1, x2, y2, th, cl;
