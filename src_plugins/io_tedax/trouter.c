@@ -34,6 +34,7 @@
 #include <genht/hash.h>
 
 #include "../src_plugins/lib_netmap/placement.h"
+#include "../src_plugins/lib_compat_help/pstk_compat.h"
 
 #include "board.h"
 #include "data.h"
@@ -47,6 +48,7 @@
 #include "obj_pstk.h"
 #include <librnd/core/compat_misc.h>
 #include "plug_io.h"
+#include "conf_core.h"
 
 #include "common_inlines.h"
 
@@ -184,7 +186,22 @@ int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
 			pcb_layergrp_t *grp;
 			char *end;
 
-			if ((argc == 11) && (strcmp(argv[2], "via") == 0)) { /* special case: won't have a layer */
+			if ((argc == 9) && (strcmp(argv[2], "via") == 0)) { /* special case: won't have a layer */
+				pcb_pstk_t *ps;
+				rnd_coord_t cx, cy, th, clr, hole;
+
+				PARSE_COORD(cx, argv[5]);
+				PARSE_COORD(cy, argv[6]);
+				PARSE_COORD(th, argv[7]);
+				PARSE_COORD(clr, argv[8]);
+
+				hole = conf_core.design.via_drilling_hole;
+				if (hole > th*4/5)
+					hole = th*4/5;
+
+				ps = pcb_pstk_new_compat_via(PCB->Data, -1, cx, cy, hole, th, clr, 0, PCB_PSTK_COMPAT_ROUND, rnd_true);
+
+				PCB_FLAG_SET(PCB_FLAG_AUTO, ps);
 				continue;
 			}
 
