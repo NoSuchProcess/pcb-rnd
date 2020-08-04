@@ -152,3 +152,98 @@ int tedax_route_req_save(pcb_board_t *pcb, const char *fn)
 	fclose(f);
 	return res;
 }
+
+
+
+#define PARSE_COORD(dst, src) \
+	dst = rnd_get_value(src, "mm", NULL, &succ); \
+	if (!succ) { \
+		rnd_message(RND_MSG_ERROR, "External autorouter: invalid coordinate '%s'\n", src); \
+		continue; \
+	}
+
+int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
+{
+	char line[520];
+	char *argv[16];
+	int argc;
+	long cnt_add = 0, cnt_del = 0;
+	rnd_bool succ;
+
+	if (tedax_seek_hdr(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		return -1;
+
+	if (tedax_seek_block(fn, "route_res", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		return -1;
+
+	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
+		if ((argc > 5) && (strcmp(argv[0], "add") == 0)) {
+			rnd_layer_id_t lid = pcb_layer_by_name(PCB->Data, argv[1]);
+			pcb_layer_t *ly;
+
+			if ((argc == 11) && (strcmp(argv[2], "via") == 0)) { /* special case: won't have a layer */
+				continue;
+			}
+
+			if (lid == -1) {
+				rnd_message(RND_MSG_ERROR, "External autorouter: invalid layer '%s'\n", argv[1]);
+				continue;
+			}
+			ly = &PCB->Data->Layer[lid];
+
+			if ((argc == 11) && (strcmp(argv[2], "line") == 0)) {
+				rnd_coord_t x1, y1, x2, y2, th, cl;
+				PARSE_COORD(x1, argv[5]);
+				PARSE_COORD(y1, argv[6]);
+				PARSE_COORD(x2, argv[7]);
+				PARSE_COORD(y2, argv[8]);
+				PARSE_COORD(th, argv[9]);
+				PARSE_COORD(cl, argv[10]);
+				pcb_line_new_merge(ly, x1, y1, x2, y2, th, cl, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_AUTO));
+			}
+			else
+				rnd_message(RND_MSG_ERROR, "External autorouter: can't add object type '%s' with %d args\n", argv[2], argc);
+			cnt_add++;
+		}
+		else if (strcmp(argv[0], "del") == 0) {
+		}
+		else if ((argc == 3) && (strcmp(argv[0], "log") == 0)) {
+			rnd_message_level_t level = RND_MSG_DEBUG;
+			switch(argv[1][0]) {
+				case 'I': level = RND_MSG_INFO; break;
+				case 'W': level = RND_MSG_WARNING; break;
+				case 'E': level = RND_MSG_ERROR; break;
+			}
+			if (level == RND_MSG_DEBUG) break;
+			rnd_message(level, "%s\n", argv[2]);
+		}
+		else if (strcmp(argv[0], "stat") == 0) {
+		}
+		else if (strcmp(argv[0], "confkey") == 0) {
+		}
+		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "route_res") == 0))
+			break;
+	}
+
+	rnd_message(RND_MSG_INFO, "External autorouter: imported %ld objects, removed %ld objets\n", cnt_add, cnt_del);
+
+	return 0;
+}
+
+
+int tedax_route_res_load(const char *fname, const char *blk_id, int silent)
+{
+	FILE *fn;
+	int ret = 0;
+
+	fn = rnd_fopen(&PCB->hidlib, fname, "r");
+	if (fn == NULL) {
+		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname);
+		return -1;
+	}
+
+	ret = tedax_route_res_fload(fn, blk_id, silent);
+
+	fclose(fn);
+	return ret;
+}
