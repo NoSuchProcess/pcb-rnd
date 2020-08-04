@@ -1,0 +1,9 @@
+$class feature
+$short external autorouter
+$long Autoroute using external process
+$state WIP
+$package auto
+default buildin
+dep io_tedax
+autoload 1
+
