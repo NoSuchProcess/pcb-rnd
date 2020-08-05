@@ -70,6 +70,15 @@ static const ext_router_t *find_router(const char *name)
 	return NULL;
 }
 
+static void extroute_gui(pcb_board_t *pcb)
+{
+	const ext_router_t **r;
+	printf("GUI!\n");
+	for(r = routers; *r != NULL; r++) {
+		(*r)->list_conf(NULL);
+	}
+}
+
 static const char pcb_acts_extroute[] = "extroute(board|selected, router, [confkey=value, ...])";
 static const char pcb_acth_extroute[] = "Executed external autorouter to route the board or parts of the board";
 fgw_error_t pcb_act_extroute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -80,6 +89,12 @@ fgw_error_t pcb_act_extroute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const ext_router_t *r;
 	pcb_board_t *pcb = PCB_ACT_BOARD;
 
+	RND_ACT_IRES(0);
+	if (argc < 2) {
+		extroute_gui(pcb);
+		/* GUI is non-modal so always succesful */
+		return 0;
+	}
 
 	RND_ACT_CONVARG(1, FGW_STR, extroute, scope = argv[1].val.str);
 	RND_ACT_CONVARG(2, FGW_STR, extroute, router_ = argv[2].val.str);
