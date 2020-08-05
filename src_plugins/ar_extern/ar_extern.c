@@ -79,13 +79,16 @@ static void extroute_gui(pcb_board_t *pcb)
 	printf("GUI!\n");
 	for(r = routers; *r != NULL; r++) {
 		int n;
+		rnd_export_opt_t *table, *cfg;
 
 		printf(" router=%s\n", (*r)->name);
 		methods.used = 0;
 		(*r)->list_methods(&pcb->hidlib, &methods);
 		for(n = 0; n < methods.used; n+=2) {
 			printf("  method=%s (%s)\n", methods.array[n], methods.array[n+1]);
-			(*r)->list_conf(&pcb->hidlib, methods.array[n]);
+			table = (*r)->list_conf(&pcb->hidlib, methods.array[n]);
+			for(cfg = table; cfg->name != NULL; cfg++)
+				printf("    %s: %s\n", cfg->name, cfg->help_text);
 			free(methods.array[n]);
 			free(methods.array[n+1]);
 		}
