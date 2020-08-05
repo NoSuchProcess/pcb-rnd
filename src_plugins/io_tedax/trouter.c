@@ -278,3 +278,45 @@ int tedax_route_res_load(const char *fname, const char *blk_id, int silent)
 	fclose(fn);
 	return ret;
 }
+
+
+int tedax_route_conf_keys_fload(FILE *fn, const char *blk_id, int silent)
+{
+	char line[520];
+	char *argv[16];
+	int argc;
+	long cnt = 0;
+
+
+	if (tedax_seek_hdr(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		return -1;
+
+	if (tedax_seek_block(fn, "route_res", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
+		return -1;
+
+	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
+		if (strcmp(argv[0], "confkey") == 0) {
+			cnt++;
+		}
+		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "route_res") == 0))
+			break;
+	}
+	return NULL;
+}
+
+void *tedax_route_conf_keys_load(const char *fname, const char *blk_id, int silent)
+{
+	FILE *fn;
+	void *ret;
+
+	fn = rnd_fopen(&PCB->hidlib, fname, "r");
+	if (fn == NULL) {
+		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fname);
+		return NULL;
+	}
+
+	ret = tedax_route_conf_keys_fload(fn, blk_id, silent);
+
+	fclose(fn);
+	return ret;
+}

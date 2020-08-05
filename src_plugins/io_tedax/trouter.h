@@ -7,3 +7,5 @@ int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent);
 int tedax_route_res_load(const char *fname, const char *blk_id, int silent);
 
 
+void *tedax_route_conf_keys_load(const char *fname, const char *blk_id, int silent);
+

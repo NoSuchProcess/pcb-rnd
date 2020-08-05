@@ -179,6 +179,12 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		RND_ACT_IRES(tedax_route_res_load(fname, id, silent));
 		return 0;
 	}
+	if (rnd_strcasecmp(type, "route_conf_keys") == 0) { /* intentionally undocumented - for internal use, returns a pointer */
+		gen_load(route_conf_keys, fname);
+		res->type = FGW_PTR;
+		res->val.ptr_void = tedax_route_conf_keys_load(fname, id, silent);
+		return 0;
+	}
 	if (rnd_strcasecmp(type, "board") == 0) {
 		gen_load(board, fname);
 		RND_ACT_IRES(tedax_board_load(PCB, fname, id, silent));
