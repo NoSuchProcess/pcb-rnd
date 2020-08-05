@@ -68,8 +68,6 @@ static int rtrnd_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
 	FILE *f;
 	char *cmd, line[1024];
 
-	printf("fos\n");
-
 	cmd = rnd_strdup_printf("%s -M", exe);
 	f = rnd_popen(hl, cmd, "r");
 	free(cmd);
@@ -99,7 +97,31 @@ static int rtrnd_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
 
 static rnd_hid_attribute_t *rtrnd_list_conf(rnd_hidlib_t *hl, const char *method)
 {
-	return NULL;
+	char *cmd;
+	const char *route_lst = "rtrnd.l.tdx";
+	int r;
+	fgw_error_t err;
+	fgw_arg_t res;
+	fgw_arg_t argv[3];
+
+	cmd = rnd_strdup_printf("%s -l -m '%s' > '%s'", exe, method, route_lst);
+	r = rnd_system(hl, cmd);
+	if (r != 0) {
+		rnd_message(RND_MSG_ERROR, "route-rnd: failed to execute the router: '%s'\n", cmd);
+		free(cmd);
+		return NULL;
+	}
+	free(cmd);
+
+	argv[1].type = FGW_STR; argv[1].val.cstr = "route_conf_keys";
+	argv[2].type = FGW_STR; argv[2].val.cstr = route_lst;
+	err = rnd_actionv_bin(hl, "LoadTedaxFrom", &res, 3, argv);
+	if ((err != 0) || !(res.type & FGW_PTR)) {
+		rnd_message(RND_MSG_ERROR, "route-rnd: failed to import the conf key list from tEDAx\n");
+		return NULL;
+	}
+
+	return res.val.ptr_void;
 }
 
 static const ext_router_t route_rnd = {
