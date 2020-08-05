@@ -47,6 +47,7 @@
 #include "tlayer.h"
 #include "obj_pstk.h"
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/hid_attrib.h>
 #include "plug_io.h"
 #include "conf_core.h"
 
@@ -280,28 +281,84 @@ int tedax_route_res_load(const char *fname, const char *blk_id, int silent)
 }
 
 
-int tedax_route_conf_keys_fload(FILE *fn, const char *blk_id, int silent)
+#define LOAD_MINMAX(s) \
+do { \
+	cfg->min_val = -HUGE_VAL; cfg->max_val = HUGE_VAL; \
+	v = strtod(s, &end); \
+	if (*end == ':') { \
+		cfg->min_val = strtod(s, &end); \
+		if (*end == ':') \
+			cfg->max_val = strtod(s, &end); \
+	} \
+} while(0)
+
+void *tedax_route_conf_keys_fload(FILE *fn, const char *blk_id, int silent)
 {
 	char line[520];
-	char *argv[16];
+	char *argv[16], *end;
 	int argc;
-	long cnt = 0;
+	long start, cnt = 0;
+	rnd_export_opt_t *table, *cfg;
+	double v;
 
 
 	if (tedax_seek_hdr(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
-		return -1;
+		return NULL;
 
 	if (tedax_seek_block(fn, "route_res", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
-		return -1;
+		return NULL;
 
+	start = ftell(fn);
 	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
-		if (strcmp(argv[0], "confkey") == 0) {
+		if (strcmp(argv[0], "confkey") == 0)
 			cnt++;
+		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "route_res") == 0))
+			break;
+	}
+
+	cfg = table = calloc(sizeof(rnd_hid_attribute_t), cnt+1);
+
+	fseek(fn, start, SEEK_SET);
+	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
+		if ((argc == 5) && (strcmp(argv[0], "confkey") == 0)) {
+			cfg->name = rnd_strdup(argv[1]);
+			cfg->help_text = rnd_strdup(argv[4]);
+			if (strcmp(argv[2], "boolean") == 0) cfg->type = RND_HATT_BOOL;
+			else if (strcmp(argv[2], "integer") == 0) cfg->type = RND_HATT_INTEGER;
+			else if (strcmp(argv[2], "double") == 0) cfg->type = RND_HATT_REAL;
+			else if (strcmp(argv[2], "coord") == 0) cfg->type = RND_HATT_COORD;
+			else if (strcmp(argv[2], "string") == 0) cfg->type = RND_HATT_STRING;
+			else cfg->type = RND_HATT_LABEL;
+
+			switch(cfg->type) {
+				case RND_HATT_BOOL:
+					cfg->default_val.lng = rnd_istrue(argv[3]);
+					break;
+				case RND_HATT_INTEGER:
+					LOAD_MINMAX(argv[3]);
+					cfg->default_val.lng = v;
+					break;
+				case RND_HATT_REAL:
+					LOAD_MINMAX(argv[3]);
+					cfg->default_val.dbl = v;
+					break;
+				case RND_HATT_COORD:
+					LOAD_MINMAX(argv[3]);
+					cfg->default_val.crd = RND_MM_TO_COORD(v);
+					break;
+				case RND_HATT_STRING:
+					cfg->default_val.str = rnd_strdup(argv[3]);
+					break;
+				default:
+					break;
+			}
+			cfg++;
 		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "route_res") == 0))
 			break;
 	}
-	return NULL;
+
+	return table;
 }
 
 void *tedax_route_conf_keys_load(const char *fname, const char *blk_id, int silent)
