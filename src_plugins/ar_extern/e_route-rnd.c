@@ -26,9 +26,12 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+TODO("this should be in config")
+static const char *exe = "route-rnd";
+
 static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv)
 {
-	const char *exe = "route-rnd", *route_req = "rtrnd.1.tdx", *route_res = "rtrnd.2.tdx";
+	const char *route_req = "rtrnd.1.tdx", *route_res = "rtrnd.2.tdx";
 	rnd_hidlib_t *hl = &pcb->hidlib;
 	char *cmd;
 	int r;
@@ -60,7 +63,41 @@ static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *me
 	return 0;
 }
 
-static rnd_hid_attribute_t *rtrnd_list_conf(const char *method)
+static int rtrnd_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
+{
+	FILE *f;
+	char *cmd, line[1024];
+
+	printf("fos\n");
+
+	cmd = rnd_strdup_printf("%s -M", exe);
+	f = rnd_popen(hl, cmd, "r");
+	free(cmd);
+	if (f == NULL)
+		return -1;
+
+	while(fgets(line, sizeof(line), f) != NULL) {
+		char *name, *desc;
+		name = line;
+		while(isspace(*name)) name++;
+		if (*name == '\0') continue;
+		desc = strchr(name, '\t');
+		if (desc != NULL) {
+			*desc = '\0';
+			desc++;
+		}
+		else
+			desc = "n/a";
+		vts0_append(dst, rnd_strdup(name));
+		vts0_append(dst, rnd_strdup(desc));
+	}
+
+	fclose(f);
+	return 0;
+}
+
+
+static rnd_hid_attribute_t *rtrnd_list_conf(rnd_hidlib_t *hl, const char *method)
 {
 	return NULL;
 }
@@ -68,5 +105,6 @@ static rnd_hid_attribute_t *rtrnd_list_conf(const char *method)
 static const ext_router_t route_rnd = {
 	"route-rnd",
 	rtrnd_route,
+	rtrnd_list_methods,
 	rtrnd_list_conf
 };

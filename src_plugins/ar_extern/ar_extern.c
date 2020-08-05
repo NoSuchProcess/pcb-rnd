@@ -29,8 +29,7 @@
 #include "config.h"
 
 #include <stdio.h>
-#include <gensexpr/gsxl.h>
-#include <genht/htpi.h>
+#include <genvector/vts0.h>
 
 #include "board.h"
 #include "data.h"
@@ -52,7 +51,8 @@ typedef enum {
 typedef struct {
 	const char *name;
 	int (*route)(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv);
-	rnd_hid_attribute_t *(*list_conf)(const char *method);
+	int (*list_methods)(rnd_hidlib_t *hl, vts0_t *dst);
+	rnd_hid_attribute_t *(*list_conf)(rnd_hidlib_t *hl, const char *method);
 } ext_router_t;
 
 #include "e_route-rnd.c"
@@ -73,10 +73,23 @@ static const ext_router_t *find_router(const char *name)
 static void extroute_gui(pcb_board_t *pcb)
 {
 	const ext_router_t **r;
+		vts0_t methods = {0};
+
 	printf("GUI!\n");
 	for(r = routers; *r != NULL; r++) {
-		(*r)->list_conf(NULL);
+		int n;
+
+		printf(" router=%s\n", (*r)->name);
+		methods.used = 0;
+		(*r)->list_methods(&pcb->hidlib, &methods);
+		for(n = 0; n < methods.used; n+=2) {
+			printf("  method=%s (%s)\n", methods.array[n], methods.array[n+1]);
+			(*r)->list_conf(&pcb->hidlib, methods.array[n]);
+			free(methods.array[n]);
+			free(methods.array[n+1]);
+		}
 	}
+	vts0_uninit(&methods);
 }
 
 static const char pcb_acts_extroute[] = "extroute(board|selected, router, [confkey=value, ...])";
