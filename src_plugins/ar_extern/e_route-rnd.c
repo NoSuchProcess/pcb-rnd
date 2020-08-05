@@ -39,7 +39,10 @@ static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *me
 		return 1;
 	}
 
-	cmd = rnd_strdup_printf("%s '%s' -o '%s'", exe, route_req, route_res);
+	if (method != NULL)
+		cmd = rnd_strdup_printf("%s '%s' -m '%s' -o '%s'", exe, route_req, method, route_res);
+	else
+		cmd = rnd_strdup_printf("%s '%s' -o '%s'", exe, route_req, route_res);
 	r = rnd_system(hl, cmd);
 	if (r != 0) {
 		rnd_message(RND_MSG_ERROR, "route-rnd: failed to execute the router: '%s'\n", cmd);
