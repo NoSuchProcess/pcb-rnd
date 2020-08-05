@@ -52,6 +52,7 @@ typedef enum {
 typedef struct {
 	const char *name;
 	int (*route)(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv);
+	rnd_hid_attribute_t *(*list_conf)(const char *method);
 } ext_router_t;
 
 #include "e_route-rnd.c"

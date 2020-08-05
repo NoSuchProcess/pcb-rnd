@@ -57,7 +57,13 @@ static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *me
 	return 0;
 }
 
+static rnd_hid_attribute_t *rtrnd_list_conf(const char *method)
+{
+	return NULL;
+}
+
 static const ext_router_t route_rnd = {
 	"route-rnd",
-	rtrnd_route
+	rtrnd_route,
+	rtrnd_list_conf
 };
