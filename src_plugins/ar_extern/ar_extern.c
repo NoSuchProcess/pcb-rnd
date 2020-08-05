@@ -35,6 +35,7 @@
 #include "data.h"
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
+#include <librnd/core/hid_attrib.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
 #include "conf_core.h"
@@ -52,7 +53,7 @@ typedef struct {
 	const char *name;
 	int (*route)(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv);
 	int (*list_methods)(rnd_hidlib_t *hl, vts0_t *dst);
-	rnd_hid_attribute_t *(*list_conf)(rnd_hidlib_t *hl, const char *method);
+	rnd_export_opt_t *(*list_conf)(rnd_hidlib_t *hl, const char *method);
 } ext_router_t;
 
 #include "e_route-rnd.c"

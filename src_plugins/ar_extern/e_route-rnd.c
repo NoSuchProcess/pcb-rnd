@@ -95,7 +95,7 @@ static int rtrnd_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
 }
 
 
-static rnd_hid_attribute_t *rtrnd_list_conf(rnd_hidlib_t *hl, const char *method)
+static rnd_export_opt_t *rtrnd_list_conf(rnd_hidlib_t *hl, const char *method)
 {
 	char *cmd;
 	const char *route_lst = "rtrnd.l.tdx";
