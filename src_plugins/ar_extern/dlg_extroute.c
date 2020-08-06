@@ -71,6 +71,7 @@ static void extroute_gui(pcb_board_t *pcb)
 					router_method_t *m = &a->methods[mn];
 					char *title;
 					int *wid;
+					rnd_hid_attr_val_t *val;
 					rnd_export_opt_t *cfg;
 
 					RND_DAD_BEGIN_VBOX(ar_ctx.dlg);
@@ -82,31 +83,31 @@ static void extroute_gui(pcb_board_t *pcb)
 						RND_DAD_LABEL(ar_ctx.dlg, m->desc);
 						free(title);
 
-						for(cfg = m->confkeys, wid = m->w; cfg->name != NULL; cfg++, wid++) {
+						for(cfg = m->confkeys, wid = m->w, val = m->val; cfg->name != NULL; cfg++, wid++, val++) {
 							RND_DAD_BEGIN_HBOX(ar_ctx.dlg);
 							switch(cfg->type) {
 								case RND_HATT_BOOL:
 									RND_DAD_BOOL(ar_ctx.dlg);
-									RND_DAD_DEFAULT_NUM(ar_ctx.dlg, cfg->default_val.lng);
+									RND_DAD_DEFAULT_NUM(ar_ctx.dlg, val->lng);
 									break;
 								case RND_HATT_INTEGER:
 									RND_DAD_INTEGER(ar_ctx.dlg);
 									RND_DAD_MINMAX(ar_ctx.dlg, cfg->min_val, cfg->max_val);
-									RND_DAD_DEFAULT_NUM(ar_ctx.dlg, cfg->default_val.lng);
+									RND_DAD_DEFAULT_NUM(ar_ctx.dlg, val->lng);
 									break;
 								case RND_HATT_REAL:
 									RND_DAD_REAL(ar_ctx.dlg);
 									RND_DAD_MINMAX(ar_ctx.dlg, cfg->min_val, cfg->max_val);
-									RND_DAD_DEFAULT_NUM(ar_ctx.dlg, cfg->default_val.dbl);
+									RND_DAD_DEFAULT_NUM(ar_ctx.dlg, val->dbl);
 									break;
 								case RND_HATT_COORD:
 									RND_DAD_COORD(ar_ctx.dlg);
 									RND_DAD_MINMAX(ar_ctx.dlg, cfg->min_val, cfg->max_val);
-									RND_DAD_DEFAULT_NUM(ar_ctx.dlg, cfg->default_val.crd);
+									RND_DAD_DEFAULT_NUM(ar_ctx.dlg, val->crd);
 									break;
 								case RND_HATT_STRING:
 									RND_DAD_STRING(ar_ctx.dlg);
-									RND_DAD_DEFAULT_PTR(ar_ctx.dlg, cfg->default_val.str);
+									RND_DAD_DEFAULT_PTR(ar_ctx.dlg, val->str);
 									break;
 								default:
 									break;

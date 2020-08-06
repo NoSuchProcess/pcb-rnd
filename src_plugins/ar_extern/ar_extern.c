@@ -77,7 +77,7 @@ typedef struct router_method_s {
 	char *name, *desc;
 	int len;
 	rnd_export_opt_t *confkeys;
-	rnd_hid_attr_val_t *val;
+	rnd_hid_attr_val_t *val; /* current values (user set) */
 	int *w; /* widget ID when dialog is open */
 } router_method_t;
 
