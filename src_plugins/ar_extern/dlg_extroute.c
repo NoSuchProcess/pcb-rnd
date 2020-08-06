@@ -33,7 +33,7 @@ typedef struct {
 	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	vts0_t tabs;
-	int whatever;
+	int wtabs;
 } ar_ctx_t;
 
 static ar_ctx_t ar_ctx;
@@ -236,6 +236,75 @@ static void load_conf_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	free(fname);
 }
 
+static int val_eq(rnd_hid_attr_type_t type, const rnd_hid_attr_val_t *v1, const rnd_hid_attr_val_t *v2)
+{
+	switch(type) {
+		case RND_HATT_BOOL:
+		case RND_HATT_INTEGER: return v1->lng == v2->lng;
+		case RND_HATT_REAL:    return v1->dbl == v2->dbl;
+		case RND_HATT_COORD:   return v1->crd == v2->crd;
+		case RND_HATT_STRING:  return strcmp(v1->str, v2->str) == 0;
+		default:               rnd_message(RND_MSG_ERROR, "external router: internal error: unhandled val type - report this bug!\n");
+	}
+	return 0; /* better stay with the default */
+}
+
+static void route_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	int an, mn, cnt = 0, target = ar_ctx.dlg[ar_ctx.wtabs].val.lng;
+	rnd_export_opt_t *cfg;
+	router_method_t *m;
+	rnd_hid_attr_val_t *val;
+	router_api_t *a;
+
+	/* count with cnt until reaching target; mn is then the method */
+	for(an = 0; an < router_apis.used; an++) {
+		a = router_apis.array[an];
+		for(mn = 0; mn < a->num_methods; mn++)
+			if (cnt++ == target)
+				goto out;
+	}
+
+	rnd_message(RND_MSG_ERROR, "external router: can't find the router for this tab (%d/%d; internal error)\n", cnt, target);
+
+	out:;
+	dlg2mem();
+	m = &a->methods[mn];
+	for(cfg = m->confkeys, val = m->val; cfg->name != NULL; cfg++, val++) {
+		char *s = NULL;
+
+		if (val_eq(cfg->type, val, &cfg->default_val))
+			continue;
+
+		switch(cfg->type) {
+			case RND_HATT_BOOL:
+			case RND_HATT_INTEGER:
+				s = rnd_strdup_printf("%s=%d", cfg->name, val->lng);
+				break;
+			case RND_HATT_REAL:
+				s = rnd_strdup_printf("%s=%f", cfg->name, val->dbl);
+				break;
+			case RND_HATT_COORD:
+				s = rnd_strdup_printf("%s=%.06mm", cfg->name, val->crd);
+				break;
+			case RND_HATT_STRING:
+				s = rnd_concat(cfg->name, "=", val->str, NULL);
+				break;
+			default: break;
+		}
+		printf(" s='%s'\n", s);
+	}
+
+}
+
+static void reroute_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	TODO("remove all auto-routed objects");
+	
+}
+
+
+
 static void ar_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	ar_ctx_t *ctx = caller_data;
@@ -264,6 +333,7 @@ static void extroute_gui(pcb_board_t *pcb)
 	RND_DAD_BEGIN_VBOX(ar_ctx.dlg);
 		RND_DAD_BEGIN_TABBED(ar_ctx.dlg, ar_ctx.tabs.array);
 			RND_DAD_COMPFLAG(ar_ctx.dlg, RND_HATF_LEFT_TAB|RND_HATF_EXPFILL);
+			ar_ctx.wtabs = RND_DAD_CURRENT(ar_ctx.dlg);
 			for(an = 0; an < router_apis.used; an++) {
 				router_api_t *a = router_apis.array[an];
 				for(mn = 0; mn < a->num_methods; mn++) {
@@ -322,7 +392,9 @@ static void extroute_gui(pcb_board_t *pcb)
 
 		RND_DAD_BEGIN_HBOX(ar_ctx.dlg);
 			RND_DAD_BUTTON(ar_ctx.dlg, "Route");
+				RND_DAD_CHANGE_CB(ar_ctx.dlg, route_cb);
 			RND_DAD_BUTTON(ar_ctx.dlg, "Re-route");
+				RND_DAD_CHANGE_CB(ar_ctx.dlg, reroute_cb);
 			RND_DAD_BUTTON(ar_ctx.dlg, "Save");
 				RND_DAD_CHANGE_CB(ar_ctx.dlg, save_conf_cb);
 			RND_DAD_BUTTON(ar_ctx.dlg, "Load");
