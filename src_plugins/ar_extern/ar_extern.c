@@ -71,12 +71,11 @@ static const ext_router_t *find_router(const char *name)
 	return NULL;
 }
 
-static void extroute_gui(pcb_board_t *pcb)
+static void extroute_query_conf(pcb_board_t *pcb)
 {
 	const ext_router_t **r;
-		vts0_t methods = {0};
+	vts0_t methods = {0};
 
-	printf("GUI!\n");
 	for(r = routers; *r != NULL; r++) {
 		int n;
 		rnd_export_opt_t *table, *cfg;
@@ -96,6 +95,9 @@ static void extroute_gui(pcb_board_t *pcb)
 	vts0_uninit(&methods);
 }
 
+#include "dlg_extroute.c"
+
+/*** actions ***/
 static const char pcb_acts_extroute[] = "extroute(board|selected, router, [confkey=value, ...])";
 static const char pcb_acth_extroute[] = "Executed external autorouter to route the board or parts of the board";
 fgw_error_t pcb_act_extroute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
