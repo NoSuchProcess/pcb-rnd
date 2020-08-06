@@ -70,6 +70,7 @@ static void extroute_gui(pcb_board_t *pcb)
 				for(mn = 0; mn < a->num_methods; mn++) {
 					router_method_t *m = &a->methods[mn];
 					char *title;
+					int *wid;
 					rnd_export_opt_t *cfg;
 
 					RND_DAD_BEGIN_VBOX(ar_ctx.dlg);
@@ -81,7 +82,7 @@ static void extroute_gui(pcb_board_t *pcb)
 						RND_DAD_LABEL(ar_ctx.dlg, m->desc);
 						free(title);
 
-						for(cfg = m->confkeys; cfg->name != NULL; cfg++) {
+						for(cfg = m->confkeys, wid = m->w; cfg->name != NULL; cfg++, wid++) {
 							RND_DAD_BEGIN_HBOX(ar_ctx.dlg);
 							switch(cfg->type) {
 								case RND_HATT_BOOL:
@@ -110,6 +111,7 @@ static void extroute_gui(pcb_board_t *pcb)
 								default:
 									break;
 						}
+						*wid = RND_DAD_CURRENT(ar_ctx.dlg);
 						RND_DAD_LABEL(ar_ctx.dlg, cfg->name);
 						RND_DAD_END(ar_ctx.dlg);
 					}

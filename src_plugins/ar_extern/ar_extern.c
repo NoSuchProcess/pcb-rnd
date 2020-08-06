@@ -78,6 +78,7 @@ typedef struct router_method_s {
 	int len;
 	rnd_export_opt_t *confkeys;
 	rnd_hid_attr_val_t *val;
+	int *w; /* widget ID when dialog is open */
 } router_method_t;
 
 typedef struct router_api_s {
@@ -102,6 +103,7 @@ static void extroute_free_method(router_method_t *method)
 	}
 	free(method->confkeys);
 
+	free(method->w);
 	free(method->name);
 	free(method->desc);
 	free(method->val);
@@ -158,6 +160,7 @@ static void extroute_query_conf(pcb_board_t *pcb)
 				rapi->methods[m].len++;
 				printf("    %s: %s\n", cfg->name, cfg->help_text);
 			}
+			rapi->methods[m].w = malloc(sizeof(int) * rapi->methods[m].len);
 			rapi->methods[m].val = malloc(sizeof(rnd_hid_attr_val_t) * rapi->methods[m].len);
 			for(i = 0, cfg = rapi->methods[m].confkeys; cfg->name != NULL; i++, cfg++)
 				rapi->methods[m].val[i] = cfg->default_val;
