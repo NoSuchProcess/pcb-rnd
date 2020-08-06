@@ -306,6 +306,7 @@ static void route_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr
 	}
 
 	a->router->route(PCB, ERSC_BOARD, m->name, argc, argv);
+	rnd_gui->invalidate_all(rnd_gui);
 
 	fgw_argv_free(&rnd_fgw, argc, argv);
 	free(argv);
