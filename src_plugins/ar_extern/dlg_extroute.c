@@ -37,10 +37,32 @@ typedef struct {
 
 static ar_ctx_t ar_ctx;
 
+/* copy values from the dialog box to the memory representation (router_apis) */
+static void dlg2mem(void)
+{
+	int an, mn;
+
+	if (!ar_ctx.active)
+		return;
+
+	for(an = 0; an < router_apis.used; an++) {
+		router_api_t *a = router_apis.array[an];
+		for(mn = 0; mn < a->num_methods; mn++) {
+			router_method_t *m = &a->methods[mn];
+			int *wid;
+			rnd_hid_attr_val_t *val;
+			rnd_export_opt_t *cfg;
+
+			for(cfg = m->confkeys, wid = m->w, val = m->val; cfg->name != NULL; cfg++, wid++, val++)
+				*val = ar_ctx.dlg[*wid].val;
+		}
+	}
+}
+
 static void ar_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
-	long n;
 	ar_ctx_t *ctx = caller_data;
+	dlg2mem();
 	RND_DAD_FREE(ctx->dlg);
 	vts0_uninit(&ctx->tabs);
 	memset(ctx, 0, sizeof(ar_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
