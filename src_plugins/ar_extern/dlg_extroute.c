@@ -251,11 +251,12 @@ static int val_eq(rnd_hid_attr_type_t type, const rnd_hid_attr_val_t *v1, const 
 
 static void route_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	int an, mn, cnt = 0, target = ar_ctx.dlg[ar_ctx.wtabs].val.lng;
+	int  argc, an, mn, cnt = 0, target = ar_ctx.dlg[ar_ctx.wtabs].val.lng;
 	rnd_export_opt_t *cfg;
 	router_method_t *m;
 	rnd_hid_attr_val_t *val;
 	router_api_t *a;
+	fgw_arg_t *argv;
 
 	/* count with cnt until reaching target; mn is then the method */
 	for(an = 0; an < router_apis.used; an++) {
@@ -268,8 +269,16 @@ static void route_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr
 	rnd_message(RND_MSG_ERROR, "external router: can't find the router for this tab (%d/%d; internal error)\n", cnt, target);
 
 	out:;
+
+	if (a->router->route == NULL) {
+		rnd_message(RND_MSG_ERROR, "external router: internal error: this router does not implement the ->route call\n");
+		return;
+	}
+
 	dlg2mem();
 	m = &a->methods[mn];
+	argc = 0;
+	argv = calloc(sizeof(fgw_arg_t), m->len);
 	for(cfg = m->confkeys, val = m->val; cfg->name != NULL; cfg++, val++) {
 		char *s = NULL;
 
@@ -292,15 +301,20 @@ static void route_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr
 				break;
 			default: break;
 		}
-		printf(" s='%s'\n", s);
+		argv[argc].type = FGW_STR; argv[argc].val.str = s;
+		argc++;
 	}
 
+	a->router->route(PCB, ERSC_BOARD, m->name, argc, argv);
+
+	fgw_argv_free(&rnd_fgw, argc, argv);
+	free(argv);
 }
 
 static void reroute_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	TODO("remove all auto-routed objects");
-	
+	route_cb(hid_ctx, caller_data, attr);
 }
 
 
