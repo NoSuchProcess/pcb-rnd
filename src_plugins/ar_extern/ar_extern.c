@@ -71,25 +71,50 @@ static const ext_router_t *find_router(const char *name)
 	return NULL;
 }
 
+typedef struct router_method_s {
+	const ext_router_t *router;
+	char *name, *desc;
+	rnd_export_opt_t *confkeys;
+} router_method_t;
+
+typedef struct router_api_s {
+	const ext_router_t *router;
+	int num_methods;
+	router_method_t *methods;
+} router_api_t;
+
+static vtp0_t router_apis; /* of router_api_t */
+
 static void extroute_query_conf(pcb_board_t *pcb)
 {
 	const ext_router_t **r;
 	vts0_t methods = {0};
 
 	for(r = routers; *r != NULL; r++) {
-		int n;
-		rnd_export_opt_t *table, *cfg;
+		router_api_t *rapi;
+		int n, m;
+		rnd_export_opt_t *cfg;
 
 		printf(" router=%s\n", (*r)->name);
 		methods.used = 0;
 		(*r)->list_methods(&pcb->hidlib, &methods);
-		for(n = 0; n < methods.used; n+=2) {
+		if (methods.used == 0)
+			continue;
+		rapi = calloc(sizeof(router_api_t), 1);
+		rapi->router = *r;
+		rapi->num_methods = methods.used/2;
+		rapi->methods = calloc(sizeof(router_method_t), rapi->num_methods);
+		vtp0_append(&router_apis, rapi);
+
+		for(m = n = 0; n < methods.used; m++, n+=2) {
 			printf("  method=%s (%s)\n", methods.array[n], methods.array[n+1]);
-			table = (*r)->list_conf(&pcb->hidlib, methods.array[n]);
-			for(cfg = table; cfg->name != NULL; cfg++)
+			rapi->methods[m].router = *r;
+			rapi->methods[m].confkeys = (*r)->list_conf(&pcb->hidlib, methods.array[n]);
+			rapi->methods[m].name = methods.array[n];   /* allocation ownership taken over to rapi->methods[m] */
+			rapi->methods[m].desc = methods.array[n+1]; /* allocation ownership taken over to rapi->methods[m] */
+
+			for(cfg = rapi->methods[m].confkeys; cfg->name != NULL; cfg++)
 				printf("    %s: %s\n", cfg->name, cfg->help_text);
-			free(methods.array[n]);
-			free(methods.array[n+1]);
 		}
 	}
 	vts0_uninit(&methods);
