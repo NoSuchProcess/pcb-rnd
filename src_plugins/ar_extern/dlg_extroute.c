@@ -26,6 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <librnd/core/safe_fs.h>
 #include <librnd/core/hid_dad.h>
 
 typedef struct {
@@ -57,6 +58,76 @@ static void dlg2mem(void)
 				*val = ar_ctx.dlg[*wid].val;
 		}
 	}
+}
+
+static void save_conf(FILE *f)
+{
+	int an, mn;
+
+	dlg2mem();
+	fprintf(f, "ha:autorouter-settings-v1 {\n");
+	fprintf(f, " ha:confkeys {\n");
+
+	for(an = 0; an < router_apis.used; an++) {
+		router_api_t *a = router_apis.array[an];
+		fprintf(f, "  ha:%s {\n", a->router->name);
+		for(mn = 0; mn < a->num_methods; mn++) {
+			router_method_t *m = &a->methods[mn];
+			int *wid;
+			rnd_hid_attr_val_t *val;
+			rnd_export_opt_t *cfg;
+
+			fprintf(f, "   ha:%s {\n", m->name);
+			for(cfg = m->confkeys, wid = m->w, val = m->val; cfg->name != NULL; cfg++, wid++, val++) {
+				switch(cfg->type) {
+					case RND_HATT_BOOL:
+					case RND_HATT_INTEGER:
+						fprintf(f, "    %s=%ld\n", cfg->name, val->lng);
+						break;
+					case RND_HATT_REAL:
+						fprintf(f, "    %s=%f\n", cfg->name, val->dbl);
+						break;
+					case RND_HATT_COORD:
+						rnd_fprintf(f, "    %s=%$mH", cfg->name, val->crd);
+						fprintf(f, "\n");
+						break;
+					case RND_HATT_STRING:
+						fprintf(f, "    %s={%s}\n", cfg->name, val->str);
+						break;
+					default: break;
+				}
+			}
+			fprintf(f, "   }\n");
+		}
+		fprintf(f, "  }\n");
+	}
+	fprintf(f, " }\n");
+	fprintf(f, "}\n");
+}
+
+
+static void save_conf_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	FILE *f;
+	char *fname;
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+
+
+	fname = rnd_gui->fileselect(rnd_gui, "Save autoroute settings to...",
+		"Pick a file for saving autoroute settings to.\n",
+		"autoroute.cfg.lht", ".lht", NULL, "ar_extern", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+
+	if (fname == NULL)
+		return;
+
+	f = rnd_fopen(hl, fname, "w");
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to open '%s' for write\n", fname);
+		return;
+	}
+
+	save_conf(f);
+	fclose(f);
 }
 
 static void ar_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
@@ -147,6 +218,7 @@ static void extroute_gui(pcb_board_t *pcb)
 			RND_DAD_BUTTON(ar_ctx.dlg, "Route");
 			RND_DAD_BUTTON(ar_ctx.dlg, "Re-route");
 			RND_DAD_BUTTON(ar_ctx.dlg, "Save");
+				RND_DAD_CHANGE_CB(ar_ctx.dlg, save_conf_cb);
 			RND_DAD_BUTTON(ar_ctx.dlg, "Load");
 			RND_DAD_BEGIN_HBOX(ar_ctx.dlg);
 				RND_DAD_COMPFLAG(ar_ctx.dlg, RND_HATF_EXPFILL);
