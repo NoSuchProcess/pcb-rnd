@@ -37,7 +37,7 @@ static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *me
 	int n, r, sargc;
 	fgw_arg_t sres = {0}, *sargv;
 
-	sargc = argc + 4;
+	sargc = argc + 3;
 	sargv = calloc(sizeof(fgw_arg_t), sargc);
 	sargv[1].type = FGW_STR; sargv[1].val.cstr = "route_req";
 	sargv[2].type = FGW_STR; sargv[2].val.cstr = route_req;

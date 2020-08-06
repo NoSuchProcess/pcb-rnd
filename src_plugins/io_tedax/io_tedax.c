@@ -126,7 +126,7 @@ static fgw_error_t pcb_act_Savetedax(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (rnd_strcasecmp(type, "route_req") == 0) {
-		RND_ACT_IRES(tedax_route_req_save(PCB, fname, argc-4, argv+3));
+		RND_ACT_IRES(tedax_route_req_save(PCB, fname, argc-3, argv+3));
 		return 0;
 	}
 
