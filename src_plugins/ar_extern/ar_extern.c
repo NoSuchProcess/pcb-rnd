@@ -71,11 +71,12 @@ static const ext_router_t *find_router(const char *name)
 	return NULL;
 }
 
+/*** route confkey listing ***/
 typedef struct router_method_s {
 	const ext_router_t *router;
 	char *name, *desc;
 	int len;
-	const rnd_export_opt_t *confkeys;
+	rnd_export_opt_t *confkeys;
 	rnd_hid_attr_val_t *val;
 } router_method_t;
 
@@ -87,6 +88,40 @@ typedef struct router_api_s {
 
 static vtp0_t router_apis; /* of router_api_t */
 static int router_api_inited = 0;
+
+static void extroute_free_method(router_method_t *method)
+{
+	int n;
+
+	for(n = 0; n < method->len; n++) {
+		free(method->confkeys[n].name);
+		free(method->confkeys[n].help_text);
+		if (method->confkeys[n].type == RND_HATT_STRING)
+			free(method->confkeys[n].default_val.str);
+		
+	}
+	free(method->confkeys);
+
+	free(method->name);
+	free(method->desc);
+	free(method->val);
+}
+
+static void extroute_free_conf(void)
+{
+	long n;
+	for(n = 0; n < router_apis.used; n++) {
+		router_api_t *r = router_apis.array[n];
+		int i;
+
+		for(i = 0; i < r->num_methods; i++)
+			extroute_free_method(&r->methods[i]);
+
+		free(r->methods);
+		free(r);
+	}
+	vtp0_uninit(&router_apis);
+}
 
 static void extroute_query_conf(pcb_board_t *pcb)
 {
@@ -193,6 +228,7 @@ int pplg_check_ver_ar_extern(int ver_needed) { return 0; }
 
 void pplg_uninit_ar_extern(void)
 {
+	extroute_free_conf();
 	rnd_remove_actions_by_cookie(extern_cookie);
 }
 
