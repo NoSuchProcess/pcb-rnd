@@ -60,10 +60,11 @@ static void extroute_gui(pcb_board_t *pcb)
 		RND_DAD_BEGIN_HBOX(ar_ctx.dlg);
 			RND_DAD_BUTTON(ar_ctx.dlg, "Route");
 			RND_DAD_BUTTON(ar_ctx.dlg, "Re-route");
-			RND_DAD_BUTTON(ar_ctx.dlg, "Save conf");
-			RND_DAD_BUTTON(ar_ctx.dlg, "Load conf");
-			RND_DAD_BEGIN_VBOX(ar_ctx.dlg);
+			RND_DAD_BUTTON(ar_ctx.dlg, "Save");
+			RND_DAD_BUTTON(ar_ctx.dlg, "Load");
+			RND_DAD_BEGIN_HBOX(ar_ctx.dlg);
 				RND_DAD_COMPFLAG(ar_ctx.dlg, RND_HATF_EXPFILL);
+				RND_DAD_PROGRESS(ar_ctx.dlg);
 			RND_DAD_END(ar_ctx.dlg);
 			RND_DAD_BUTTON_CLOSES(ar_ctx.dlg, clbtn);
 		RND_DAD_END(ar_ctx.dlg);
