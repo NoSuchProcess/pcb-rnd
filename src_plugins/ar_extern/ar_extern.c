@@ -74,7 +74,9 @@ static const ext_router_t *find_router(const char *name)
 typedef struct router_method_s {
 	const ext_router_t *router;
 	char *name, *desc;
-	rnd_export_opt_t *confkeys;
+	int len;
+	const rnd_export_opt_t *confkeys;
+	rnd_hid_attr_val_t *val;
 } router_method_t;
 
 typedef struct router_api_s {
@@ -96,7 +98,7 @@ static void extroute_query_conf(pcb_board_t *pcb)
 
 	for(r = routers; *r != NULL; r++) {
 		router_api_t *rapi;
-		int n, m;
+		int n, m, i;
 		rnd_export_opt_t *cfg;
 
 		printf(" router=%s\n", (*r)->name);
@@ -117,8 +119,13 @@ static void extroute_query_conf(pcb_board_t *pcb)
 			rapi->methods[m].name = methods.array[n];   /* allocation ownership taken over to rapi->methods[m] */
 			rapi->methods[m].desc = methods.array[n+1]; /* allocation ownership taken over to rapi->methods[m] */
 
-			for(cfg = rapi->methods[m].confkeys; cfg->name != NULL; cfg++)
+			for(cfg = rapi->methods[m].confkeys; cfg->name != NULL; cfg++) {
+				rapi->methods[m].len++;
 				printf("    %s: %s\n", cfg->name, cfg->help_text);
+			}
+			rapi->methods[m].val = malloc(sizeof(rnd_hid_attr_val_t) * rapi->methods[m].len);
+			for(i = 0, cfg = rapi->methods[m].confkeys; cfg->name != NULL; i++, cfg++)
+				rapi->methods[m].val[i] = cfg->default_val;
 		}
 	}
 	vts0_uninit(&methods);
