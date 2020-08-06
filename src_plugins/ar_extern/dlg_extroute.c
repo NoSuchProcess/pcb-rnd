@@ -105,13 +105,94 @@ static void save_conf(FILE *f)
 	fprintf(f, "}\n");
 }
 
+static void load_conf(FILE *f, const char *fn)
+{
+	char *errmsg = NULL;
+	int an, mn;
+	lht_doc_t *doc = lht_dom_load(fn, &errmsg);
+	lht_node_t *croot, *nrouter, *nmethod, *n;
+	
+	if (doc == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to parse autorouter settings: %s\n", errmsg);
+		free(errmsg);
+		return;
+	}
+	free(errmsg);
+
+	if ((doc->root == NULL) || (doc->root->type != LHT_HASH) || (strcmp(doc->root->name, "autorouter-settings-v1") != 0)) {
+		rnd_message(RND_MSG_ERROR, "Failed to load autorouter settings from %s: invalid root node (expected ha:autorouter-settings-v1)\n", fn);
+		return;
+	}
+
+	croot = lht_dom_hash_get(doc->root, "confkeys");
+	if ((croot == NULL) || (croot->type != LHT_HASH)) {
+		rnd_message(RND_MSG_ERROR, "Failed to load autorouter settings from %s: no confkeys under\n", fn);
+		return;
+	}
+
+
+	for(an = 0; an < router_apis.used; an++) {
+		router_api_t *a = router_apis.array[an];
+		nrouter = lht_dom_hash_get(croot, a->router->name);
+		if ((nrouter == NULL) || (nrouter->type != LHT_HASH))
+			continue;
+		for(mn = 0; mn < a->num_methods; mn++) {
+			router_method_t *m = &a->methods[mn];
+			int *wid;
+			rnd_hid_attr_val_t *val;
+			rnd_export_opt_t *cfg;
+
+			nmethod = lht_dom_hash_get(nrouter, m->name);
+			if ((nmethod == NULL) || (nmethod->type != LHT_HASH))
+				continue;
+
+			for(cfg = m->confkeys, wid = m->w, val = m->val; cfg->name != NULL; cfg++, wid++, val++) {
+				char *end;
+				long l;
+				double d;
+				rnd_bool succ;
+
+				n = lht_dom_hash_get(nmethod, cfg->name);
+				if ((n == NULL) || (n->type != LHT_TEXT))
+					continue;
+
+				switch(cfg->type) {
+					case RND_HATT_BOOL:
+					case RND_HATT_INTEGER:
+						l = strtol(n->data.text.value, &end, 10);
+						if (*end == '\0')
+							val->lng = l;
+						break;
+					case RND_HATT_REAL:
+						d = strtod(n->data.text.value, &end);
+						if (*end == '\0')
+							val->dbl = d;
+						break;
+					case RND_HATT_COORD:
+						d = rnd_get_value(n->data.text.value, NULL, NULL, &succ);
+						if (succ)
+							val->crd = d;
+						break;
+					case RND_HATT_STRING:
+						free(val->str);
+						val->str = n->data.text.value;
+						n->data.text.value = NULL; /* took over ownership */
+						break;
+					default: break;
+				}
+				rnd_gui->attr_dlg_set_value(ar_ctx.dlg_hid_ctx, *wid, val);
+			}
+		}
+	}
+
+	lht_dom_uninit(doc);
+}
 
 static void save_conf_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	FILE *f;
 	char *fname;
 	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
-
 
 	fname = rnd_gui->fileselect(rnd_gui, "Save autoroute settings to...",
 		"Pick a file for saving autoroute settings to.\n",
@@ -128,6 +209,31 @@ static void save_conf_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 	save_conf(f);
 	fclose(f);
+	free(fname);
+}
+
+static void load_conf_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	FILE *f;
+	char *fname;
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+
+	fname = rnd_gui->fileselect(rnd_gui, "Load autoroute settings from...",
+		"Pick a file for loading autoroute settings from.\n",
+		"autoroute.cfg.lht", ".lht", NULL, "ar_extern", 0, NULL);
+
+	if (fname == NULL)
+		return;
+
+	f = rnd_fopen(hl, fname, "r");
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to open '%s' for read\n", fname);
+		return;
+	}
+
+	load_conf(f, fname);
+	fclose(f);
+	free(fname);
 }
 
 static void ar_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
@@ -220,6 +326,7 @@ static void extroute_gui(pcb_board_t *pcb)
 			RND_DAD_BUTTON(ar_ctx.dlg, "Save");
 				RND_DAD_CHANGE_CB(ar_ctx.dlg, save_conf_cb);
 			RND_DAD_BUTTON(ar_ctx.dlg, "Load");
+				RND_DAD_CHANGE_CB(ar_ctx.dlg, load_conf_cb);
 			RND_DAD_BEGIN_HBOX(ar_ctx.dlg);
 				RND_DAD_COMPFLAG(ar_ctx.dlg, RND_HATF_EXPFILL);
 				RND_DAD_PROGRESS(ar_ctx.dlg);
