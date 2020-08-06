@@ -34,14 +34,30 @@ static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *me
 	const char *route_req = "rtrnd.1.tdx", *route_res = "rtrnd.2.tdx";
 	rnd_hidlib_t *hl = &pcb->hidlib;
 	char *cmd;
-	int r;
+	int n, r, sargc;
+	fgw_arg_t sres = {0}, *sargv;
 
-	r = rnd_actionva(hl, "SaveTedax", "route_req", route_req, NULL);
-	if (r != 0) {
+	sargc = argc + 4;
+	sargv = calloc(sizeof(fgw_arg_t), sargc);
+	sargv[1].type = FGW_STR; sargv[1].val.cstr = "route_req";
+	sargv[2].type = FGW_STR; sargv[2].val.cstr = route_req;
+
+	/* copy the rest of the conf arguments */
+	for(n = 0; n < argc; n++) {
+		sargv[n+3] = argv[n];
+		sargv[n+3].type &= ~FGW_DYN;
+	}
+
+	/* export */
+	r = rnd_actionv_bin(hl, "SaveTedax", &sres, sargc, sargv);
+	free(sargv);
+	fgw_arg_conv(&rnd_fgw, &sres, FGW_INT);
+	if ((r != 0) || (sres.val.nat_int != 0)) {
 		rnd_message(RND_MSG_ERROR, "route-rnd: failed to export route request in tEDAx\n");
 		return 1;
 	}
 
+	/* run the router */
 	if (method != NULL)
 		cmd = rnd_strdup_printf("%s '%s' -m '%s' -o '%s'", exe, route_req, method, route_res);
 	else
