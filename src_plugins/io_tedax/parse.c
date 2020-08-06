@@ -125,13 +125,13 @@ int tedax_seek_block(FILE *f, const char *blk_name, const char *blk_ver, const c
 	return argc;
 }
 
-void tedax_fprint_escape(FILE *f, const char *val)
+void tedax_fnprint_escape(FILE *f, const char *val, int len)
 {
 	if ((val == NULL) || (*val == '\0')) {
 		fputc('-', f);
 		return;
 	}
-	for(; *val != '\0'; val++) {
+	for(; (*val != '\0') && (len > 0); val++,len--) {
 		switch(*val) {
 			case '\\': fputc('\\', f); fputc('\\', f); break;
 			case '\n': fputc('\\', f); fputc('n', f); break;
@@ -142,6 +142,11 @@ void tedax_fprint_escape(FILE *f, const char *val)
 				fputc(*val, f);
 		}
 	}
+}
+
+void tedax_fprint_escape(FILE *f, const char *val)
+{
+	tedax_fnprint_escape(f, val, 510);
 }
 
 #define APPEND(c)  \

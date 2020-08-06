@@ -48,6 +48,7 @@
 #include "obj_pstk.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/hid_attrib.h>
+#include <librnd/core/actions.h>
 #include "plug_io.h"
 #include "conf_core.h"
 
@@ -88,7 +89,36 @@ static int tedax_global_via_fwrite(pcb_board_t *pcb, pcb_data_t *data, FILE *f, 
 	return 0;
 }
 
-int tedax_route_req_fsave(pcb_board_t *pcb, FILE *f)
+static void write_conf(FILE *f, int argc, fgw_arg_t *argv)
+{
+	int n;
+
+	for(n = 0; n < argc; n++) {
+		const char *key, *sep;
+		if (fgw_arg_conv(&rnd_fgw, &argv[n], FGW_STR) != 0) {
+			rnd_message(RND_MSG_ERROR, "Error: route_req: confkey #%d can not be converted to string and is ignored\n", n);
+			continue;
+		}
+		key = argv[n].val.str;
+		sep = strchr(key, '=');
+		if (sep == NULL) {
+			rnd_message(RND_MSG_ERROR, "Error: route_req: confkey %s: no '=' and no value\n", key);
+			continue;
+		}
+		if (strlen(key) > 500) {
+			rnd_message(RND_MSG_ERROR, "Error: route_req: confkey %s: value too long\n", key);
+			continue;
+		}
+		sep++;
+		fprintf(f, " conf ");
+		tedax_fnprint_escape(f, key, sep-key-1);
+		fprintf(f, " ");
+		tedax_fprint_escape(f, sep);
+		fprintf(f, "\n");
+	}
+}
+
+int tedax_route_req_fsave(pcb_board_t *pcb, FILE *f, int cfg_argc, fgw_arg_t *cfg_argv)
 {
 	rnd_layergrp_id_t gid;
 	int res = -1;
@@ -123,6 +153,8 @@ int tedax_route_req_fsave(pcb_board_t *pcb, FILE *f)
 	tedax_fprint_escape(f, pcb->hidlib.name);
 	fputc('\n', f);
 
+	write_conf(f, cfg_argc, cfg_argv);
+
 	rnd_fprintf(f, " stackup %s\n", stackupid);
 
 	if (tedax_global_via_fwrite(pcb, pcb->Data, f, &nmap) != 0)
@@ -141,7 +173,7 @@ int tedax_route_req_fsave(pcb_board_t *pcb, FILE *f)
 }
 
 
-int tedax_route_req_save(pcb_board_t *pcb, const char *fn)
+int tedax_route_req_save(pcb_board_t *pcb, const char *fn, int cfg_argc, fgw_arg_t *cfg_argv)
 {
 	int res;
 	FILE *f;
@@ -152,7 +184,7 @@ int tedax_route_req_save(pcb_board_t *pcb, const char *fn)
 		return -1;
 	}
 	fprintf(f, "tEDAx v1\n");
-	res = tedax_route_req_fsave(pcb, f);
+	res = tedax_route_req_fsave(pcb, f, cfg_argc, cfg_argv);
 	fclose(f);
 	return res;
 }
