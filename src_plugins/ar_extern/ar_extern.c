@@ -84,11 +84,15 @@ typedef struct router_api_s {
 } router_api_t;
 
 static vtp0_t router_apis; /* of router_api_t */
+static int router_api_inited = 0;
 
 static void extroute_query_conf(pcb_board_t *pcb)
 {
 	const ext_router_t **r;
 	vts0_t methods = {0};
+
+	if (router_api_inited)
+		return;
 
 	for(r = routers; *r != NULL; r++) {
 		router_api_t *rapi;
@@ -118,6 +122,7 @@ static void extroute_query_conf(pcb_board_t *pcb)
 		}
 	}
 	vts0_uninit(&methods);
+	router_api_inited = 1;
 }
 
 #include "dlg_extroute.c"
