@@ -174,7 +174,7 @@ static void load_conf(FILE *f, const char *fn)
 							val->crd = d;
 						break;
 					case RND_HATT_STRING:
-						free(val->str);
+						free((char *)val->str);
 						val->str = n->data.text.value;
 						n->data.text.value = NULL; /* took over ownership */
 						break;

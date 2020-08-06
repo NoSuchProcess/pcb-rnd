@@ -95,10 +95,10 @@ static void extroute_free_method(router_method_t *method)
 	int n;
 
 	for(n = 0; n < method->len; n++) {
-		free(method->confkeys[n].name);
-		free(method->confkeys[n].help_text);
+		free((char *)method->confkeys[n].name);
+		free((char *)method->confkeys[n].help_text);
 		if (method->confkeys[n].type == RND_HATT_STRING)
-			free(method->confkeys[n].default_val.str);
+			free((char *)method->confkeys[n].default_val.str);
 		
 	}
 	free(method->confkeys);
