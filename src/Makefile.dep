@@ -739,13 +739,18 @@
  ../src_3rd/puplug/error.h librnd/core/actions.h librnd/core/hid_attrib.h \
  librnd/core/safe_fs.h librnd/core/conf.h librnd/core/rnd_printf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
- librnd/core/compat_misc.h conf_core.h obj_pstk_inlines.h data.h \
- thermal.h operation.h librnd/poly/polygon1_gen.h \
+ librnd/core/compat_misc.h librnd/core/hid_menu.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h conf_core.h obj_pstk_inlines.h data.h thermal.h \
+ operation.h librnd/poly/polygon1_gen.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/lib_netmap/netmap.h netlist.h \
+ ../src_plugins/ar_extern/ar_extern_conf.h \
+ ../src_plugins/ar_extern/conf_internal.c \
+ ../src_plugins/ar_extern/menu_internal.c \
  ../src_plugins/ar_extern/e_route-rnd.c \
  ../src_plugins/ar_extern/dlg_extroute.c librnd/core/hid_dad.h \
- librnd/core/hid_dad_spin.h
+ librnd/core/hid_dad_spin.h \
+ ../src_plugins/ar_extern/ar_extern_conf_fields.h
 ../src_plugins/asm/asm.o: ../src_plugins/asm/asm.c ../config.h \
  librnd/config.h ../src_3rd/genvector/gds_char.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -5286,8 +5291,8 @@
  data.h thermal.h operation.h librnd/poly/polygon1_gen.h \
  ../src_plugins/io_tedax/stackup.h ../src_plugins/io_tedax/tlayer.h \
  layer.h ../src_plugins/lib_netmap/netmap.h netlist.h \
- librnd/core/compat_misc.h librnd/core/hid_attrib.h plug_io.h vtlibrary.h \
- ../src_3rd/genvector/vts0.h conf_core.h \
+ librnd/core/compat_misc.h librnd/core/hid_attrib.h librnd/core/actions.h \
+ plug_io.h vtlibrary.h ../src_3rd/genvector/vts0.h conf_core.h \
  ../src_plugins/io_tedax/common_inlines.h
 ../src_plugins/irc/irc.o: ../src_plugins/irc/irc.c ../config.h \
  librnd/config.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
