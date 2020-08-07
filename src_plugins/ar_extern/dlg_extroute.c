@@ -339,6 +339,11 @@ static void extroute_gui(pcb_board_t *pcb)
 
 	extroute_query_conf(pcb);
 
+	if (router_apis.used < 1) {
+		rnd_message(RND_MSG_ERROR, "No external autorouter installed. Please install one, e.g.\nfrom http://www.repo.hu/projects/route-rnd/\n");
+		return;
+	}
+
 	for(an = 0; an < router_apis.used; an++) {
 		router_api_t *a = router_apis.array[an];
 		for(mn = 0; mn < a->num_methods; mn++)
