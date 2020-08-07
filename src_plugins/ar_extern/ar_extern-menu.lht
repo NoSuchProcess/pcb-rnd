@@ -1,0 +1,9 @@
+ha:rnd-menu-v1 {
+	li:anchored {
+		ha:@autoroute {
+			li:submenu {
+				ha:External autorouter = { action=ExtRoute() }
+			}
+		}
+	}
+}

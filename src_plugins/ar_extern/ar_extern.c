@@ -38,12 +38,15 @@
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/hid_menu.h>
 #include "conf_core.h"
 #include "obj_pstk_inlines.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "src_plugins/lib_netmap/netmap.h"
 
 static const char *extern_cookie = "extern autorouter plugin";
+
+#include "menu_internal.c"
 
 typedef enum {
 	ERSC_BOARD, ERSC_SELECTED
@@ -233,6 +236,7 @@ void pplg_uninit_ar_extern(void)
 {
 	extroute_free_conf();
 	rnd_remove_actions_by_cookie(extern_cookie);
+	rnd_hid_menu_unload(rnd_gui, extern_cookie);
 }
 
 
@@ -241,6 +245,8 @@ int pplg_init_ar_extern(void)
 	RND_API_CHK_VER;
 
 	RND_REGISTER_ACTIONS(extern_action_list, extern_cookie)
+
+	rnd_hid_menu_load(rnd_gui, NULL, extern_cookie, 100, NULL, 0, ar_extern_menu, "plugin: ar_extern");
 
 	return 0;
 }
