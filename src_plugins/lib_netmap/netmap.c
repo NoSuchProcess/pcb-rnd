@@ -120,7 +120,7 @@ TODO("subc: heavy terminals - test on io_hyp")
 	return 0;
 }
 
-int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb)
+int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb, pcb_netmap_control_t how)
 {
 	htpp_init(&map->o2n, ptrhash, ptrkeyeq);
 	htpp_init(&map->n2o, ptrhash, ptrkeyeq);

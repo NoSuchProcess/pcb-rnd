@@ -126,7 +126,7 @@ int tedax_route_req_fsave(pcb_board_t *pcb, FILE *f, int cfg_argc, fgw_arg_t *cf
 	pcb_netmap_t nmap;
 	static const char *stackupid = "board_stackup";
 
-	if (pcb_netmap_init(&nmap, pcb) != 0) {
+	if (pcb_netmap_init(&nmap, pcb, PCB_NETMAPCTRL_RATTED) != 0) {
 		rnd_message(RND_MSG_ERROR, "internal error: failed to map networks\n");
 		goto error;
 	}

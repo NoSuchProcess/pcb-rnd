@@ -495,7 +495,7 @@ static int write_nets(hyp_wr_t * wr)
 	htpp_entry_t *e;
 	pcb_netmap_t map;
 
-	pcb_netmap_init(&map, wr->pcb);
+	pcb_netmap_init(&map, wr->pcb, 0);
 	for (e = htpp_first(&map.n2o); e != NULL; e = htpp_next(&map.n2o, e)) {
 		dyn_obj_t *o;
 		pcb_net_t *net = e->key;

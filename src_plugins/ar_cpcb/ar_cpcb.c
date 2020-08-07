@@ -79,7 +79,7 @@ static int cpcb_map_nets(pcb_board_t *pcb, cpcb_netmap_t *dst)
 	htpp_entry_t *e;
 	long id;
 
-	if (pcb_netmap_init(&dst->netmap, pcb) != 0)
+	if (pcb_netmap_init(&dst->netmap, pcb, 0) != 0)
 		return -1;
 
 	dst->maxnets = 0;

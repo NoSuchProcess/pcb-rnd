@@ -50,6 +50,10 @@ typedef struct pcb_netmap_s {
 	dyn_net_t *dyn_nets;
 } pcb_netmap_t;
 
-int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb);
+typedef enum { /* bits */
+	PCB_NETMAPCTRL_RATTED = 1      /* ignore nets that with disabled rats */
+} pcb_netmap_control_t;
+
+int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb, pcb_netmap_control_t how);
 int pcb_netmap_uninit(pcb_netmap_t *map);
 

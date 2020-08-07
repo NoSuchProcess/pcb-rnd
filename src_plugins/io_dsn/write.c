@@ -132,7 +132,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 	const char *s;
 	int res = 0;
 
-	if (pcb_netmap_init(&wctx->nmap, wctx->pcb) != 0) {
+	if (pcb_netmap_init(&wctx->nmap, wctx->pcb, 0) != 0) {
 		rnd_message(RND_MSG_ERROR, "Can not set up net map\n");
 		return -1;
 	}
