@@ -233,6 +233,7 @@ int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
 					hole = th*4/5;
 
 				ps = pcb_pstk_new_compat_via(PCB->Data, -1, cx, cy, hole, th, clr, 0, PCB_PSTK_COMPAT_ROUND, rnd_true);
+				pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 
 				PCB_FLAG_SET(PCB_FLAG_AUTO, ps);
 				continue;
@@ -257,13 +258,15 @@ int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
 
 			if ((argc == 11) && (strcmp(argv[2], "line") == 0)) {
 				rnd_coord_t x1, y1, x2, y2, th, cl;
+				pcb_line_t *line;
 				PARSE_COORD(x1, argv[5]);
 				PARSE_COORD(y1, argv[6]);
 				PARSE_COORD(x2, argv[7]);
 				PARSE_COORD(y2, argv[8]);
 				PARSE_COORD(th, argv[9]);
 				PARSE_COORD(cl, argv[10]);
-				pcb_line_new_merge(ly, x1, y1, x2, y2, th, cl, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_AUTO));
+				line = pcb_line_new_merge(ly, x1, y1, x2, y2, th, cl, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_AUTO));
+				pcb_undo_add_obj_to_create(PCB_OBJ_LINE, ly, line, line);
 			}
 			else
 				rnd_message(RND_MSG_ERROR, "External autorouter: can't add object type '%s' with %d args\n", argv[2], argc);
