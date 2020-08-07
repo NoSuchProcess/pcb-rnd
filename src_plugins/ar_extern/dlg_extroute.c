@@ -314,7 +314,7 @@ static void route_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr
 
 static void reroute_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	TODO("remove all auto-routed objects");
+	rnd_actionva(&PCB->hidlib, "RipUp", "All", NULL);
 	route_cb(hid_ctx, caller_data, attr);
 }
 
