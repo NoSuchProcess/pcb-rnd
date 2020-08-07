@@ -27,8 +27,6 @@
  */
 
 TODO("this should be in config")
-static const char *exe = "route-rnd";
-static int debug = 0;
 
 static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv)
 {
@@ -60,9 +58,9 @@ static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *me
 
 	/* run the router */
 	if (method != NULL)
-		cmd = rnd_strdup_printf("%s '%s' -m '%s' -o '%s'", exe, route_req, method, route_res);
+		cmd = rnd_strdup_printf("%s '%s' -m '%s' -o '%s'", conf_ar_extern.plugins.ar_extern.route_rnd.exe, route_req, method, route_res);
 	else
-		cmd = rnd_strdup_printf("%s '%s' -o '%s'", exe, route_req, route_res);
+		cmd = rnd_strdup_printf("%s '%s' -o '%s'", conf_ar_extern.plugins.ar_extern.route_rnd.exe, route_req, route_res);
 	r = rnd_system(hl, cmd);
 	if (r != 0) {
 		rnd_message(RND_MSG_ERROR, "route-rnd: failed to execute the router: '%s'\n", cmd);
@@ -80,7 +78,7 @@ static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *me
 	rv = 0; /* success! */
 
 	exit:;
-	if (!debug) {
+	if (!conf_ar_extern.plugins.ar_extern.route_rnd.debug) {
 		rnd_unlink(hl, route_req);
 		rnd_unlink(hl, route_res);
 	}
@@ -92,7 +90,7 @@ static int rtrnd_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
 	FILE *f;
 	char *cmd, line[1024];
 
-	cmd = rnd_strdup_printf("%s -M", exe);
+	cmd = rnd_strdup_printf("%s -M", conf_ar_extern.plugins.ar_extern.route_rnd.exe);
 	f = rnd_popen(hl, cmd, "r");
 	free(cmd);
 	if (f == NULL)
@@ -129,7 +127,7 @@ static rnd_export_opt_t *rtrnd_list_conf(rnd_hidlib_t *hl, const char *method)
 	fgw_arg_t argv[3];
 	rnd_export_opt_t *rv = NULL;
 
-	cmd = rnd_strdup_printf("%s -l -m '%s' > '%s'", exe, method, route_lst);
+	cmd = rnd_strdup_printf("%s -l -m '%s' > '%s'", conf_ar_extern.plugins.ar_extern.route_rnd.exe, method, route_lst);
 	r = rnd_system(hl, cmd);
 	if (r != 0) {
 		rnd_message(RND_MSG_ERROR, "route-rnd: failed to execute the router: '%s'\n", cmd);
@@ -149,7 +147,7 @@ static rnd_export_opt_t *rtrnd_list_conf(rnd_hidlib_t *hl, const char *method)
 	rv = res.val.ptr_void; /* success! */
 
 	exit:;
-	if (!debug)
+	if (!conf_ar_extern.plugins.ar_extern.route_rnd.debug)
 		rnd_unlink(hl, route_lst);
 	return rv;
 }

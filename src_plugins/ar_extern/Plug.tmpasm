@@ -1,6 +1,9 @@
 put /local/pcb/mod {ar_extern}
 put /local/pcb/mod/MENUFILE {ar_extern-menu.lht}
 put /local/pcb/mod/MENUVAR {ar_extern_menu}
+put /local/pcb/mod/CONF {$(PLUGDIR)/ar_extern/ar_extern_conf.h}
+put /local/pcb/mod/CONFFILE {ar_extern.conf}
+put /local/pcb/mod/CONFVAR {ar_extern_conf_internal}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/ar_extern/ar_extern.o
 @]

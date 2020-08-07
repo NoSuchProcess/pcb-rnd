@@ -43,9 +43,14 @@
 #include "obj_pstk_inlines.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "src_plugins/lib_netmap/netmap.h"
+#include "ar_extern_conf.h"
+
+#define AR_EXTERN_CONF_FN "ar_extern.conf"
+conf_ar_extern_t conf_ar_extern;
 
 static const char *extern_cookie = "extern autorouter plugin";
 
+#include "conf_internal.c"
 #include "menu_internal.c"
 
 typedef enum {
@@ -235,6 +240,8 @@ int pplg_check_ver_ar_extern(int ver_needed) { return 0; }
 void pplg_uninit_ar_extern(void)
 {
 	extroute_free_conf();
+	rnd_conf_unreg_file(AR_EXTERN_CONF_FN, ar_extern_conf_internal);
+	rnd_conf_unreg_fields("plugins/ar_extern/");
 	rnd_remove_actions_by_cookie(extern_cookie);
 	rnd_hid_menu_unload(rnd_gui, extern_cookie);
 }
@@ -245,6 +252,12 @@ int pplg_init_ar_extern(void)
 	RND_API_CHK_VER;
 
 	RND_REGISTER_ACTIONS(extern_action_list, extern_cookie)
+
+	rnd_conf_reg_file(AR_EXTERN_CONF_FN, ar_extern_conf_internal);
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	rnd_conf_reg_field(conf_ar_extern, field,isarray,type_name,cpath,cname,desc,flags);
+#include "ar_extern_conf_fields.h"
 
 	rnd_hid_menu_load(rnd_gui, NULL, extern_cookie, 100, NULL, 0, ar_extern_menu, "plugin: ar_extern");
 
