@@ -511,6 +511,7 @@ ha:rnd-menu-v1 {
 					li:submenu {
 						ha:Auto-route selected rats              = { a={<key>a;<key>r;<key>s;}; action=AutoRoute(SelectedRats) }
 						ha:Auto-route all rats                   = { a={<key>a;<key>r;<key>a;}; action=AutoRoute(AllRats) }
+						@autoroute
 						ha:Rip up selected auto-routed tracks    = { a={<key>a;<key>r;<key>t;}; action=RipUp(Selected) }
 						ha:Rip up all auto-routed tracks         = { a={<key>a;<key>r;<key>r;}; action=RipUp(All) }
 					}
