@@ -26,8 +26,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-TODO("this should be in config")
-
 static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv)
 {
 	const char *route_req = "rtrnd.1.tdx", *route_res = "rtrnd.2.tdx";
