@@ -28,13 +28,14 @@
 
 TODO("this should be in config")
 static const char *exe = "route-rnd";
+static int debug = 0;
 
 static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv)
 {
 	const char *route_req = "rtrnd.1.tdx", *route_res = "rtrnd.2.tdx";
 	rnd_hidlib_t *hl = &pcb->hidlib;
 	char *cmd;
-	int n, r, sargc;
+	int n, r, sargc, rv = 1;
 	fgw_arg_t sres = {0}, *sargv;
 
 	sargc = argc + 3;
@@ -54,7 +55,7 @@ static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *me
 	fgw_arg_conv(&rnd_fgw, &sres, FGW_INT);
 	if ((r != 0) || (sres.val.nat_int != 0)) {
 		rnd_message(RND_MSG_ERROR, "route-rnd: failed to export route request in tEDAx\n");
-		return 1;
+		goto exit;
 	}
 
 	/* run the router */
@@ -66,17 +67,24 @@ static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *me
 	if (r != 0) {
 		rnd_message(RND_MSG_ERROR, "route-rnd: failed to execute the router: '%s'\n", cmd);
 		free(cmd);
-		return 1;
+		goto exit;
 	}
 	free(cmd);
 
 	r = rnd_actionva(hl, "LoadTedaxFrom", "route_res", route_res, NULL);
 	if (r != 0) {
 		rnd_message(RND_MSG_ERROR, "route-rnd: failed to import the route result from tEDAx\n");
-		return 1;
+		goto exit;
 	}
 
-	return 0;
+	rv = 0; /* success! */
+
+	exit:;
+	if (!debug) {
+		rnd_unlink(hl, route_req);
+		rnd_unlink(hl, route_res);
+	}
+	return rv;
 }
 
 static int rtrnd_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
@@ -119,13 +127,14 @@ static rnd_export_opt_t *rtrnd_list_conf(rnd_hidlib_t *hl, const char *method)
 	fgw_error_t err;
 	fgw_arg_t res;
 	fgw_arg_t argv[3];
+	rnd_export_opt_t *rv = NULL;
 
 	cmd = rnd_strdup_printf("%s -l -m '%s' > '%s'", exe, method, route_lst);
 	r = rnd_system(hl, cmd);
 	if (r != 0) {
 		rnd_message(RND_MSG_ERROR, "route-rnd: failed to execute the router: '%s'\n", cmd);
 		free(cmd);
-		return NULL;
+		goto exit;
 	}
 	free(cmd);
 
@@ -134,10 +143,15 @@ static rnd_export_opt_t *rtrnd_list_conf(rnd_hidlib_t *hl, const char *method)
 	err = rnd_actionv_bin(hl, "LoadTedaxFrom", &res, 3, argv);
 	if ((err != 0) || !(res.type & FGW_PTR)) {
 		rnd_message(RND_MSG_ERROR, "route-rnd: failed to import the conf key list from tEDAx\n");
-		return NULL;
+		goto exit;
 	}
 
-	return res.val.ptr_void;
+	rv = res.val.ptr_void; /* success! */
+
+	exit:;
+	if (!debug)
+		rnd_unlink(hl, route_lst);
+	return rv;
 }
 
 static const ext_router_t route_rnd = {
