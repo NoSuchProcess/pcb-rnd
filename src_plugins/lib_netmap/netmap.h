@@ -41,6 +41,10 @@ struct dyn_obj_s {
 	dyn_obj_t *next;
 };
 
+typedef enum { /* bits */
+	PCB_NETMAPCTRL_RATTED = 1      /* ignore nets that with disabled rats */
+} pcb_netmap_control_t;
+
 typedef struct pcb_netmap_s {
 	htpp_t o2n;   /* of (pcb_net_t *); tells the net for an object */
 	htpp_t n2o;   /* of (dyn_obj_t *); tells the object list for a net */
@@ -48,11 +52,11 @@ typedef struct pcb_netmap_s {
 	pcb_board_t *pcb;
 	pcb_net_t *curr_net;
 	dyn_net_t *dyn_nets;
+
+	/* internal */
+	pcb_netmap_control_t how;
 } pcb_netmap_t;
 
-typedef enum { /* bits */
-	PCB_NETMAPCTRL_RATTED = 1      /* ignore nets that with disabled rats */
-} pcb_netmap_control_t;
 
 int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb, pcb_netmap_control_t how);
 int pcb_netmap_uninit(pcb_netmap_t *map);

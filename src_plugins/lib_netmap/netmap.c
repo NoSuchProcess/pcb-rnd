@@ -72,8 +72,10 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 
 	if (obj->term != NULL) {
 		pcb_net_term_t *t = pcb_net_find_by_obj(&pcb->netlist[PCB_NETLIST_EDITED], obj);
-		if (t != NULL)
-			map->curr_net = t->parent.net;
+		if (t != NULL) {
+			if (!((map->how & PCB_NETMAPCTRL_RATTED) && (t->parent.net->inhibit_rats)))
+				map->curr_net = t->parent.net;
+		}
 	}
 
 	if (htpp_get(&map->o2n, obj) != NULL)
@@ -128,6 +130,7 @@ int pcb_netmap_init(pcb_netmap_t *map, pcb_board_t *pcb, pcb_netmap_control_t ho
 	map->curr_net = NULL;
 	map->dyn_nets = 0;
 	map->pcb = pcb;
+	map->how = how;
 
 /* step 1: find known nets (from terminals) */
 	pcb_loop_all(PCB, map,
