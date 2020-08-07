@@ -236,6 +236,7 @@ int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
 				pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 
 				PCB_FLAG_SET(PCB_FLAG_AUTO, ps);
+				cnt_add++;
 				continue;
 			}
 
@@ -291,6 +292,9 @@ int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "route_res") == 0))
 			break;
 	}
+
+	if ((cnt_add > 0) || (cnt_del > 0))
+		pcb_undo_inc_serial();
 
 	rnd_message(RND_MSG_INFO, "External autorouter: imported %ld objects, removed %ld objets\n", cnt_add, cnt_del);
 
