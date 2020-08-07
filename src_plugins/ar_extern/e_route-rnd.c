@@ -28,7 +28,7 @@
 
 TODO("this should be in config")
 static const char *exe = "route-rnd";
-static int debug = 1;
+static int debug = 0;
 
 static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv)
 {
