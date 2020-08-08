@@ -89,8 +89,7 @@ static int protel_net_parse_net(FILE *fn)
 	rnd_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
-		int argc;
-		char **argv, *s, *end;
+		char *s, *end;
 
 		s = line;
 		ltrim(s);
@@ -205,7 +204,6 @@ fgw_error_t pcb_act_LoadProtelNetFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static int protel_net_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
 	FILE *f;
-	unsigned int good = 0;
 
 	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs != 1))
 		return 0; /* only pure netlist import is supported from a single file*/
