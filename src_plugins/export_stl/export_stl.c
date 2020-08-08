@@ -33,6 +33,11 @@
 #include <librnd/core/hid_nogui.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/plugins.h>
+#include <librnd/poly/rtree.h>
+#include <librnd/poly/rtree2_compat.h>
+#include "data.h"
+#include "layer.h"
+#include "obj_pstk_inlines.h"
 
 #include "../lib_polyhelp/topoly.h"
 #include "../lib_polyhelp/triangulate.h"
@@ -129,13 +134,87 @@ static void stl_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coor
 	fprintf(f, "	endfacet\n");
 }
 
+static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, fp2t_t *tri, rnd_coord_t maxy)
+{
+	pcb_pstk_shape_t shp;
+	int segs = 0;
+
+	if (pcb_pstk_shape_mech_or_hole_at(pcb, pstk, layer, &shp) == NULL)
+		return 0;
+
+	switch(shp.shape) {
+		case PCB_PSSH_POLY: segs = shp.data.poly.len; break;
+		case PCB_PSSH_LINE: break;
+		case PCB_PSSH_CIRC: segs = RND_COORD_TO_MM(shp.data.circ.dia)*8+6; break;
+		case PCB_PSSH_HSHADOW: return 0;
+	}
+
+	if (tri != NULL) {
+		switch(shp.shape) {
+			case PCB_PSSH_POLY:
+			case PCB_PSSH_LINE: break;
+			case PCB_PSSH_CIRC:
+				{
+					double a, step = 2*M_PI/segs, r = (double)shp.data.circ.dia / 2.0;
+					int n;
+					for(n = 0, a = 0; n < segs; n++, a += step) {
+						fp2t_point_t *pt = fp2t_push_point(tri);
+						rnd_coord_t x, y;
+						pt->X = x = pstk->x + shp.data.circ.x + rnd_round(cos(a) * r);
+						pt->Y = y = maxy - (pstk->y + shp.data.circ.y + rnd_round(sin(a) * r));
+					}
+					fp2t_add_hole(tri);
+				}
+			case PCB_PSSH_HSHADOW: return 0;
+		}
+	}
+
+
+	return segs;
+}
+
+static void add_holes_pstk(fp2t_t *tri, pcb_board_t *pcb, pcb_layer_t *toply, rnd_coord_t maxy)
+{
+	rnd_rtree_it_t it;
+	rnd_box_t *n;
+
+	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it)) {
+		pcb_pstk_t *ps = (pcb_pstk_t *)n;
+		pstk_points(pcb, ps, toply, tri, maxy);
+	}
+}
+
+static long estimate_hole_pts_pstk(pcb_board_t *pcb, pcb_layer_t *toply)
+{
+	rnd_rtree_it_t it;
+	rnd_box_t *n;
+	long cnt = 0;
+
+	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it)) {
+		pcb_pstk_t *ps = (pcb_pstk_t *)n;
+		cnt += pstk_points(pcb, ps, toply, NULL, 0);
+	}
+
+	return cnt;
+}
+
 int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
 {
 	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB, PCB_TOPOLY_FLOATING);
 	size_t mem_req = fp2t_memory_required(poly->PointN);
 	void *mem = calloc(mem_req, 1);
 	fp2t_t tri;
-	long n, pn, nn;
+	long n, pn, nn, pstk_points;
+	rnd_layer_id_t lid = -1;
+	pcb_layer_t *toply;
+
+	if ((pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &lid, 1) != 1) && (pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &lid, 1) != 1)) {
+		rnd_message(RND_MSG_ERROR, "A top or bottom copper layer is required for stl export\n");
+		return -1;
+	}
+	toply = pcb_get_layer(PCB->Data, lid);
+
+	pstk_points = estimate_hole_pts_pstk(PCB, toply);
 
 	if (!fp2t_init(&tri, mem, poly->PointN)) {
 		free(mem);
@@ -151,10 +230,11 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 		pt->X = poly->Points[n].X;
 		pt->Y = maxy - poly->Points[n].Y;
 	}
-
 	fp2t_add_edge(&tri);
 
-	TODO("add holes");
+	add_holes_pstk(&tri, PCB, toply, maxy);
+
+	TODO("add holes drawn with lines and arcs");
 	fp2t_triangulate(&tri);
 
 	fprintf(f, "solid pcb\n");
