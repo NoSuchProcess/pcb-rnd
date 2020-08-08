@@ -54,8 +54,8 @@ static const char *accel_net_cookie = "accel_net importer";
 static int accel_net_parse_net(FILE *fn)
 {
 	gsxl_dom_t dom;
-	gsxl_node_t *netlist, *n, *m, *footprint, *refdes, *noise, *net;
-	int res, c, restore;
+	gsxl_node_t *netlist, *n, *m;
+	int res, c;
 	gds_t tmp;
 	char line[1024];
 
@@ -192,7 +192,7 @@ fgw_error_t pcb_act_LoadAccelNetFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static int accel_net_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
 	FILE *f;
-	unsigned int good = 0, limit;
+	unsigned int limit;
 
 	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs != 1))
 		return 0; /* only pure netlist import is supported from a single file*/
