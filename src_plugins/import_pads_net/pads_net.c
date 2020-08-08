@@ -71,8 +71,7 @@ static int pads_net_parse_net(FILE *fn)
 	*signal = '\0';
 
 	while(fgets(line, sizeof(line), fn) != NULL) {
-		int argc;
-		char **argv, *s, *next, *pin;
+		char *s, *next, *pin;
 
 		s = line;
 		ltrim(s);
