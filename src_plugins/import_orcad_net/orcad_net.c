@@ -165,7 +165,7 @@ fgw_error_t pcb_act_LoadOrcadNetFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static int orcad_net_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
 {
 	FILE *f;
-	unsigned int good = 0, limit;
+	unsigned int limit;
 
 	if ((aspects != IMPORT_ASPECT_NETLIST) || (numargs != 1))
 		return 0; /* only pure netlist import is supported from a single file*/
