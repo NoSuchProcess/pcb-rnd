@@ -51,6 +51,8 @@
 #include <librnd/core/actions.h>
 #include "plug_io.h"
 #include "conf_core.h"
+#include "undo_old.h"
+#include "undo.h"
 
 #include "common_inlines.h"
 
