@@ -89,6 +89,7 @@ static int pads_net_parse_net(FILE *fn)
 		}
 
 		switch(mode) {
+			case NONE: break;
 			case PART:
 				next = strchr(s, ' ');
 				if (next == NULL) {
