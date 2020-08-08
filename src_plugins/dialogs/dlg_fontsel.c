@@ -175,7 +175,7 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 		ctx->txt_id = NULL;
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		RND_DAD_PREVIEW(ctx->dlg, fontsel_expose_cb, fontsel_mouse_cb, fontsel_free_cb, &vbox, 200, 200, ctx);
+		RND_DAD_PREVIEW(ctx->dlg, fontsel_expose_cb, fontsel_mouse_cb, NULL, fontsel_free_cb, &vbox, 200, 200, ctx);
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			ctx->wprev = RND_DAD_CURRENT(ctx->dlg);
 		RND_DAD_BEGIN_HBOX(ctx->dlg);

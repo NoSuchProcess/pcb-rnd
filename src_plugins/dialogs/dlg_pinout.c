@@ -146,7 +146,7 @@ static void pcb_dlg_pinout(pcb_board_t *pcb, pcb_data_t *data, pcb_subc_t *sc)
 	ctx->subc_id = sc->ID;
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		RND_DAD_PREVIEW(ctx->dlg, pinout_expose, pinout_mouse, NULL, &sc->BoundingBox, 200, 200, ctx);
+		RND_DAD_PREVIEW(ctx->dlg, pinout_expose, pinout_mouse, NULL, NULL, &sc->BoundingBox, 200, 200, ctx);
 		RND_DAD_BEGIN_HBOX(ctx->dlg);
 			RND_DAD_LABEL(ctx->dlg, "Term ID:");
 			RND_DAD_LABEL(ctx->dlg, "");

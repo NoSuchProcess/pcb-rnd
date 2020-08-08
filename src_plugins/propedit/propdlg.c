@@ -647,7 +647,7 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 			RND_DAD_BEGIN_VBOX(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				RND_DAD_BEGIN_VBOX(ctx->dlg);
-					RND_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, &prvbb, 100, 100, ctx);
+					RND_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, NULL, &prvbb, 100, 100, ctx);
 				RND_DAD_END(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "<scope>");
 					ctx->wscope = RND_DAD_CURRENT(ctx->dlg);

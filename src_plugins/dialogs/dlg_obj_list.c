@@ -83,7 +83,7 @@ static fgw_error_t pcb_act_dlg_obj_list(fgw_arg_t *res, int argc, fgw_arg_t *arg
 		RND_DAD_BEGIN_VBOX(dlg);
 			RND_DAD_COMPFLAG(dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			for(n = 0; n < pcb_obj_list_vect.used; n++) {
-				RND_DAD_PREVIEW(dlg, view_expose_cb, view_mouse_cb, NULL, NULL, 100, 100, &pcb_obj_list_vect.array[n]);
+				RND_DAD_PREVIEW(dlg, view_expose_cb, view_mouse_cb, NULL, NULL, NULL, 100, 100, &pcb_obj_list_vect.array[n]);
 			}
 		RND_DAD_END(dlg);
 		RND_DAD_BUTTON_CLOSES(dlg, clbtn);

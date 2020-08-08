@@ -563,7 +563,7 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 			/* right */
 			RND_DAD_BEGIN_VBOX(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				RND_DAD_PREVIEW(ctx->dlg, pstklib_expose, NULL, NULL, NULL, 200, 200, ctx);
+				RND_DAD_PREVIEW(ctx->dlg, pstklib_expose, NULL, NULL, NULL, NULL, 200, 200, ctx);
 					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 					ctx->wprev = RND_DAD_CURRENT(ctx->dlg);
 

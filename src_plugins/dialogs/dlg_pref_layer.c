@@ -44,6 +44,11 @@ rnd_bool layersel_mouse_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 	return pcb_stub_draw_csect_mouse_ev(kind, x, y);
 }
 
+rnd_bool layersel_key_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_bool release, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
+{
+	printf("KEY: release=%d mods=%d raw=%d tr=%d\n", release, mods, key_raw, key_tr);
+}
+
 void layersel_free_cb(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
 {
 }
@@ -55,7 +60,7 @@ void pcb_dlg_pref_layer_create(pref_ctx_t *ctx)
 	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		RND_DAD_PREVIEW(ctx->dlg, layersel_expose_cb, layersel_mouse_cb, layersel_free_cb, &vbox, 200, 200, ctx);
+		RND_DAD_PREVIEW(ctx->dlg, layersel_expose_cb, layersel_mouse_cb, layersel_key_cb, layersel_free_cb, &vbox, 200, 200, ctx);
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 	RND_DAD_END(ctx->dlg);
 }

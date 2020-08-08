@@ -684,7 +684,7 @@ static void pcb_dlg_library(void)
 			RND_DAD_BEGIN_VPANE(library_ctx.dlg);
 				RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
 				/* right top */
-				RND_DAD_PREVIEW(library_ctx.dlg, library_expose, library_mouse, NULL, NULL, 100, 100, &library_ctx);
+				RND_DAD_PREVIEW(library_ctx.dlg, library_expose, library_mouse, NULL, NULL, NULL, 100, 100, &library_ctx);
 					library_ctx.wpreview = RND_DAD_CURRENT(library_ctx.dlg);
 
 				/* right bottom */
