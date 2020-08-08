@@ -111,10 +111,11 @@
  librnd/core/hidlib.h librnd/core/hid_dad.h librnd/core/compat_misc.h \
  librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  librnd/core/color.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- librnd/core/safe_fs.h librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
+ ../src_3rd/genvector/genvector_undef.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ librnd/core/hid_dad_spin.h librnd/core/safe_fs.h librnd/core/conf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/hidlib_conf.h
 ../src/librnd/core/event.o: ../src/librnd/core/event.c librnd/config.h \
@@ -246,8 +247,10 @@
  librnd/core/rnd_bool.h librnd/core/box.h librnd/core/math_helper.h \
  librnd/core/misc_util.h librnd/core/unit.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h
+ ../src_3rd/genvector/genvector_undef.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ librnd/core/hid_dad_spin.h
 ../src/librnd/core/hid_dad_spin.o: ../src/librnd/core/hid_dad_spin.c \
  librnd/config.h librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  librnd/core/hid.h ../src_3rd/liblihata/dom.h \
@@ -257,12 +260,13 @@
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  librnd/core/color.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/hid_dad.h \
- librnd/core/compat_misc.h librnd/core/rnd_printf.h \
+ librnd/core/compat_misc.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
+ ../src_3rd/genvector/vtp0.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
  librnd/core/hid_dad_unit.h librnd/core/hidlib_conf.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h
 ../src/librnd/core/hid_dad_tree.o: ../src/librnd/core/hid_dad_tree.c \
  librnd/config.h librnd/core/hid_dad_tree.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/hid.h \
@@ -273,7 +277,8 @@
  librnd/core/misc_util.h librnd/core/unit.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/hid_dad.h \
- librnd/core/compat_misc.h librnd/core/rnd_printf.h \
+ librnd/core/compat_misc.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
+ ../src_3rd/genvector/vtp0.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
  ../src_3rd/genht/hash.h
 ../src/librnd/core/hid_dad_unit.o: ../src/librnd/core/hid_dad_unit.c \
@@ -285,7 +290,8 @@
  librnd/core/math_helper.h librnd/core/misc_util.h librnd/core/unit.h \
  librnd/core/color.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/hid_dad.h \
- librnd/core/compat_misc.h librnd/core/rnd_printf.h \
+ librnd/core/compat_misc.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
+ ../src_3rd/genvector/vtp0.h librnd/core/rnd_printf.h \
  ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
  librnd/core/hid_dad_unit.h
 ../src/librnd/core/hid_dlg.o: ../src/librnd/core/hid_dlg.c \
@@ -299,9 +305,10 @@
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- librnd/core/hid_nogui.h
+ ../src_3rd/genvector/genvector_undef.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ librnd/core/hid_dad_spin.h librnd/core/hid_nogui.h
 ../src/librnd/core/hid_init.o: ../src/librnd/core/hid_init.c \
  librnd/config.h ../src_3rd/genvector/vts0.h \
  ../src_3rd/genvector/genvector_impl.h \
@@ -319,14 +326,15 @@
  librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  librnd/core/color.h librnd/core/hid_init.h ../src_3rd/genvector/vtp0.h \
  librnd/core/hid_dad_unit.h librnd/core/hid_dad.h \
- librnd/core/compat_misc.h librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- librnd/core/compat_inc.h librnd/core/compat_fs.h \
- librnd/core/file_loaded.h librnd/core/hidlib_conf.h librnd/core/conf.h \
+ librnd/core/compat_misc.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
+ librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ librnd/core/hid_dad_spin.h librnd/core/compat_inc.h \
+ librnd/core/compat_fs.h librnd/core/file_loaded.h \
+ librnd/core/hidlib_conf.h librnd/core/conf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/funchash.h \
- librnd/core/hid_menu.h librnd/core/hid_cfg.h librnd/core/hid_menu.h
+ librnd/core/hid_menu.h
 ../src/librnd/core/hid_menu.o: ../src/librnd/core/hid_menu.c \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/tree.h \
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
@@ -780,9 +788,10 @@
  ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/error.h librnd/core/actions.h \
  librnd/core/compat_misc.h obj_subc.h librnd/core/rnd_printf.h \
- librnd/core/hid_dad.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h search.h draw.h \
- select.h operation.h ../src_plugins/asm/asm_conf.h librnd/core/conf.h \
+ librnd/core/hid_dad.h librnd/core/hid_attrib.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
+ librnd/core/hid_dad_tree.h search.h draw.h select.h operation.h \
+ ../src_plugins/asm/asm_conf.h librnd/core/conf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  ../src_plugins/asm/conf_internal.c ../src_plugins/asm/asm_conf_fields.h
 ../src_plugins/autocrop/autocrop.o: ../src_plugins/autocrop/autocrop.c \
@@ -966,8 +975,9 @@
  obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/cam/cam_compile.h layer_vis.h event.h librnd/core/event.h \
  ../src_3rd/genvector/genvector_impl.c ../src_plugins/cam/cam_gui.c \
- librnd/core/hid_dad.h librnd/core/hid_dad_spin.h \
- librnd/core/hid_dad_tree.h ../src_plugins/cam/cam_conf_fields.h
+ librnd/core/hid_dad.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
+ librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h \
+ ../src_plugins/cam/cam_conf_fields.h
 ../src_plugins/ddraft/centgeo.o: ../src_plugins/ddraft/centgeo.c \
  ../config.h librnd/config.h ../src_plugins/ddraft/centgeo.h obj_line.h \
  ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h \
@@ -1020,10 +1030,10 @@
  librnd/core/conf_hid.h librnd/core/vtc0.h ../src_plugins/ddraft/trim.c \
  undo_old.h ../src_plugins/ddraft/constraint.c crosshair.h \
  librnd/core/tool.h ../src_plugins/ddraft/constraint_gui.c \
- librnd/core/hid_dad.h librnd/core/compat_misc.h \
- librnd/core/hid_dad_spin.h ../src_plugins/ddraft/cli.c \
- librnd/core/hid_inlines.h librnd/core/hidlib_conf.h \
- ../src_plugins/ddraft/cli_line.c
+ librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
+ ../src_plugins/ddraft/cli.c librnd/core/hid_inlines.h \
+ librnd/core/hidlib_conf.h ../src_plugins/ddraft/cli_line.c
 ../src_plugins/ddraft/fields_sphash.o: \
  ../src_plugins/ddraft/fields_sphash.c
 ../src_plugins/diag/diag.o: ../src_plugins/diag/diag.c ../config.h \
@@ -1057,11 +1067,11 @@
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h librnd/core/event.h \
  ../src_plugins/diag/integrity.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad.h librnd/core/compat_misc.h \
- librnd/core/hid_dad_spin.h search.h plug_footprint.h vtlibrary.h \
- plug_io.h ../src_3rd/genvector/vts0.h funchash_core.h \
- librnd/core/funchash.h funchash_core_list.h conf_core.h find.h \
- ../src_plugins/diag/diag_conf_fields.h
+ librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h search.h \
+ plug_footprint.h vtlibrary.h plug_io.h ../src_3rd/genvector/vts0.h \
+ funchash_core.h librnd/core/funchash.h funchash_core_list.h conf_core.h \
+ find.h ../src_plugins/diag/diag_conf_fields.h
 ../src_plugins/diag/diag_conf.o: ../src_plugins/diag/diag_conf.c \
  ../config.h librnd/config.h librnd/core/conf.h \
  librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
@@ -1109,15 +1119,16 @@
  librnd/core/color.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h funchash_core.h librnd/core/funchash.h \
- funchash_core_list.h ../src_plugins/lib_hid_common/dialogs_conf.h \
- librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
- ../src_3rd/genvector/vtp0.h librnd/core/list_conf.h \
+ librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ librnd/core/hid_dad_spin.h librnd/core/plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h funchash_core.h \
+ librnd/core/funchash.h funchash_core_list.h \
+ ../src_plugins/lib_hid_common/dialogs_conf.h librnd/core/conf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h ../src_plugins/dialogs/dlg_test.c board.h \
  vtroutestyle.h attrib.h layer.h globalconst.h librnd/core/globalconst.h \
@@ -1172,7 +1183,8 @@
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h build_run.h \
  librnd/core/file_loaded.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- ../src_3rd/genlist/gendlist.h librnd/core/color.h \
+ ../src_3rd/genlist/gendlist.h librnd/core/color.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
  librnd/core/rnd_printf.h librnd/core/hid_dad_spin.h \
  ../src_plugins/dialogs/dlg_about.h
 ../src_plugins/dialogs/dlg_export.o: ../src_plugins/dialogs/dlg_export.c \
@@ -1201,11 +1213,12 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h layer_vis.h event.h librnd/core/event.h \
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- librnd/core/rnd_printf.h librnd/core/hid_dad_spin.h \
- librnd/core/hid_dad_unit.h librnd/core/hid_init.h \
- ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
- ../src_3rd/puplug/libs.h ../src_plugins/dialogs/dlg_export.h
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/rnd_printf.h \
+ librnd/core/hid_dad_spin.h librnd/core/hid_dad_unit.h \
+ librnd/core/hid_init.h ../src_3rd/puplug/puplug.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
+ ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
+ ../src_plugins/dialogs/dlg_export.h
 ../src_plugins/dialogs/dlg_flag_edit.o: \
  ../src_plugins/dialogs/dlg_flag_edit.c ../config.h librnd/config.h \
  librnd/core/actions.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
@@ -1217,10 +1230,12 @@
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h flag.h \
- globalconst.h librnd/core/globalconst.h flag_str.h flag.h change.h \
- board.h vtroutestyle.h attrib.h layer.h obj_common.h global_typedefs.h \
+ ../src_3rd/genvector/genvector_undef.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ librnd/core/hid_dad_spin.h flag.h globalconst.h \
+ librnd/core/globalconst.h flag_str.h flag.h change.h board.h \
+ vtroutestyle.h attrib.h layer.h obj_common.h global_typedefs.h \
  data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
@@ -1252,7 +1267,8 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
  librnd/core/list_conf.h event.h librnd/core/event.h \
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad_spin.h stub_draw.h draw.h idpath.h search.h \
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
+ stub_draw.h draw.h idpath.h search.h \
  ../src_plugins/dialogs/dlg_fontsel.h
 ../src_plugins/dialogs/dlg_infobar.o: \
  ../src_plugins/dialogs/dlg_infobar.c ../config.h librnd/config.h \
@@ -1273,12 +1289,12 @@
  ../src_3rd/genht/htip.h ../src_3rd/genvector/gds_char.h obj_gfx_list.h \
  obj_gfx.h layer_grp.h rats_patch.h board.h librnd/core/hidlib.h \
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
  librnd/core/rnd_printf.h librnd/core/hid_dad_spin.h \
  ../src_plugins/lib_hid_common/xpm.h \
  ../src_plugins/lib_hid_common/dlg_comm_m.h plug_io.h vtlibrary.h \
  ../src_3rd/genvector/vts0.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- librnd/core/list_conf.h
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h
 ../src_plugins/dialogs/dlg_layer_binding.o: \
  ../src_plugins/dialogs/dlg_layer_binding.c ../config.h librnd/config.h \
  librnd/core/actions.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
@@ -1306,8 +1322,9 @@
  vtpadstack_t.h librnd/core/event.h conf_core.h librnd/core/conf.h \
  librnd/core/rnd_printf.h ../src_3rd/liblihata/lihata.h \
  librnd/core/list_conf.h librnd/core/compat_misc.h librnd/core/hid_dad.h \
- librnd/core/hid_attrib.h librnd/core/hid_dad_spin.h funchash_core.h \
- librnd/core/funchash.h funchash_core_list.h obj_subc.h search.h \
+ librnd/core/hid_attrib.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
+ librnd/core/hid_dad_spin.h funchash_core.h librnd/core/funchash.h \
+ funchash_core_list.h obj_subc.h search.h \
  ../src_plugins/dialogs/dlg_layer_binding.h
 ../src_plugins/dialogs/dlg_layer_flags.o: \
  ../src_plugins/dialogs/dlg_layer_flags.c ../config.h librnd/config.h \
@@ -1328,7 +1345,8 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  librnd/core/error.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  event.h librnd/core/event.h librnd/core/hid_dad.h \
- librnd/core/compat_misc.h librnd/core/hid_attrib.h \
+ librnd/core/compat_misc.h librnd/core/hid_attrib.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
  librnd/core/rnd_printf.h librnd/core/hid_dad_spin.h \
  ../src_plugins/dialogs/dlg_layer_binding.h \
  ../src_plugins/dialogs/dlg_layer_flags.h
@@ -1357,11 +1375,12 @@
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h obj_subc.h vtpadstack.h librnd/core/hid_inlines.h \
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- librnd/core/rnd_printf.h librnd/core/hid_dad_spin.h \
- librnd/core/hid_dad_tree.h obj_pstk.h obj_pstk_inlines.h board.h \
- vtroutestyle.h rats_patch.h data.h thermal.h operation.h \
- librnd/poly/polygon1_gen.h obj_text_draw.h draw.h obj_pstk_draw.h \
- undo_old.h select.h search.h ../src_plugins/dialogs/dlg_padstack.h \
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/rnd_printf.h \
+ librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h obj_pstk.h \
+ obj_pstk_inlines.h board.h vtroutestyle.h rats_patch.h data.h thermal.h \
+ operation.h librnd/poly/polygon1_gen.h obj_text_draw.h draw.h \
+ obj_pstk_draw.h undo_old.h select.h search.h \
+ ../src_plugins/dialogs/dlg_padstack.h \
  ../src_plugins/dialogs/dlg_lib_pstk.h
 ../src_plugins/dialogs/dlg_library.o: \
  ../src_plugins/dialogs/dlg_library.c ../config.h librnd/config.h \
@@ -1395,11 +1414,11 @@
  librnd/core/event.h obj_subc.h plug_footprint.h vtlibrary.h data.h \
  librnd/core/tool.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h \
- librnd/core/hid_init.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_plugins/dialogs/dlg_library.h \
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
+ librnd/core/hid_dad_tree.h librnd/core/hid_init.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_plugins/dialogs/dlg_library.h \
  ../src_plugins/dialogs/dlg_library_param.c librnd/core/safe_fs.h
 ../src_plugins/dialogs/dlg_loadsave.o: \
  ../src_plugins/dialogs/dlg_loadsave.c ../config.h librnd/config.h \
@@ -1426,10 +1445,10 @@
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  ../src_3rd/genvector/vtp0.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h librnd/core/event.h librnd/core/hid_dad.h \
- librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- librnd/core/rnd_printf.h librnd/core/hid_dad_spin.h \
- librnd/core/compat_fs.h conf_core.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ librnd/core/compat_misc.h librnd/core/hid_attrib.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/rnd_printf.h \
+ librnd/core/hid_dad_spin.h librnd/core/compat_fs.h conf_core.h \
+ librnd/core/conf.h ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  librnd/core/hidlib_conf.h plug_io.h vtlibrary.h \
  ../src_3rd/genvector/vts0.h ../src_plugins/lib_hid_common/dialogs_conf.h \
  ../src_plugins/dialogs/dlg_loadsave.h
@@ -1444,27 +1463,28 @@
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- librnd/core/hidlib_conf.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- funchash_core.h librnd/core/funchash.h funchash_core_list.h obj_pstk.h \
- obj_common.h flag.h globalconst.h librnd/core/globalconst.h attrib.h \
- global_typedefs.h data_parent.h layer.h obj_arc_list.h obj_arc.h \
- obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
- librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h obj_pstk_shape.h \
- polygon.h librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h \
- librnd/poly/rtree2_compat.h vtpadstack_t.h obj_pstk_op.h operation.h \
- obj_pstk_inlines.h board.h vtroutestyle.h layer_grp.h rats_patch.h \
- librnd/core/hidlib.h data.h crosshair.h vtonpoint.h route.h buffer.h \
- obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h ht_subc.h ../src_3rd/genht/ht.h \
- ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
- thermal.h librnd/poly/polygon1_gen.h obj_subc_parent.h search.h \
- operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ ../src_3rd/genvector/genvector_undef.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ librnd/core/hid_dad_spin.h librnd/core/hidlib_conf.h librnd/core/conf.h \
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h funchash_core.h librnd/core/funchash.h \
+ funchash_core_list.h obj_pstk.h obj_common.h flag.h globalconst.h \
+ librnd/core/globalconst.h attrib.h global_typedefs.h data_parent.h \
+ layer.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h \
+ obj_pstk_shape.h polygon.h librnd/poly/rtree.h \
+ ../src_3rd/genrtree/genrtree_api.h librnd/poly/rtree2_compat.h \
+ vtpadstack_t.h obj_pstk_op.h operation.h obj_pstk_inlines.h board.h \
+ vtroutestyle.h layer_grp.h rats_patch.h librnd/core/hidlib.h data.h \
+ crosshair.h vtonpoint.h route.h buffer.h obj_rat_list.h obj_rat.h \
+ idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ ht_subc.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h \
+ obj_pstk.h vtpadstack.h thermal.h librnd/poly/polygon1_gen.h \
+ obj_subc_parent.h search.h operation.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h \
  ../src_plugins/dialogs/dlg_lib_pstk.h \
  ../src_plugins/dialogs/dlg_padstack.h
 ../src_plugins/dialogs/dlg_pref.o: ../src_plugins/dialogs/dlg_pref.c \
@@ -1483,9 +1503,10 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/conf_hid.h \
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h \
- ../src_3rd/genht/hash.h ../src_plugins/dialogs/dlg_pref.h \
+ ../src_3rd/genlist/gendlist.h librnd/core/color.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
+ librnd/core/hid_dad_tree.h ../src_3rd/genht/hash.h \
+ ../src_plugins/dialogs/dlg_pref.h \
  ../src_plugins/dialogs/dlg_pref_sizes.h \
  ../src_plugins/dialogs/dlg_pref_board.h \
  ../src_plugins/dialogs/dlg_pref_general.h \
@@ -1508,8 +1529,7 @@
  ../src_plugins/dialogs/dlg_pref_win.c librnd/core/hidlib_conf.h \
  ../src_plugins/lib_hid_common/dialogs_conf.h \
  ../src_plugins/dialogs/dlg_pref_menu.c librnd/core/hid_menu.h \
- librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/safe_fs.h \
- ../src_plugins/dialogs/dlg_pref_conf.c \
+ librnd/core/safe_fs.h ../src_plugins/dialogs/dlg_pref_conf.c \
  ../src_plugins/dialogs/dlg_pref_confedit.c librnd/core/hid_dad_unit.h
 ../src_plugins/dialogs/dlg_view.o: ../src_plugins/dialogs/dlg_view.c \
  ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
@@ -1534,8 +1554,9 @@
  librnd/core/list_conf.h librnd/core/hidlib_conf.h view.h idpath.h draw.h \
  drc.h view.h actions_pcb.h librnd/core/event.h librnd/core/hid_inlines.h \
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h librnd/core/safe_fs.h
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
+ librnd/core/hid_dad_tree.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ librnd/core/safe_fs.h
 ../src_plugins/distalign/distalign.o: \
  ../src_plugins/distalign/distalign.c board.h ../config.h librnd/config.h \
  ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
@@ -1737,8 +1758,9 @@
  ../src_plugins/query/query.h ../src_3rd/genht/htpi.h \
  ../src_plugins/drc_query/drc_query_stat.c \
  ../src_plugins/drc_query/drc_lht.c ../src_plugins/drc_query/dlg.c \
- librnd/core/hid_dad.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h actions_pcb.h \
+ librnd/core/hid_dad.h librnd/core/hid_attrib.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
+ librnd/core/hid_dad_tree.h actions_pcb.h \
  ../src_plugins/drc_query/drc_query_conf_fields.h
 ../src_plugins/expfeat/expfeat.o: ../src_plugins/expfeat/expfeat.c \
  ../config.h librnd/config.h librnd/core/conf.h \
@@ -2016,9 +2038,9 @@
  librnd/core/funchash.h funchash_core_list.h \
  ../src_plugins/export_gerber/gerber_conf.h librnd/core/event.h \
  librnd/core/hid_nogui.h librnd/core/hid_init.h librnd/core/hid_inlines.h \
- librnd/core/hid_dad.h librnd/core/hid_dad_spin.h conf_core.h \
- librnd/core/hidlib_conf.h librnd/core/actions.h \
- ../src_plugins/export_excellon/aperture.h \
+ librnd/core/hid_dad.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
+ librnd/core/hid_dad_spin.h conf_core.h librnd/core/hidlib_conf.h \
+ librnd/core/actions.h ../src_plugins/export_excellon/aperture.h \
  ../src_plugins/lib_hid_common/xpm.h \
  ../src_plugins/export_gerber/gerber_conf_fields.h
 ../src_plugins/export_ipcd356/ipcd356.o: \
@@ -2158,8 +2180,8 @@
  ../src_plugins/lib_polyhelp/topoly.h obj_common.h \
  ../src_plugins/export_openems/mesh.h layer.h librnd/core/vtc0.h vtr0.h \
  ../src_plugins/export_openems/excitation.c librnd/core/hid_dad.h \
- librnd/core/hid_dad_spin.h event.h librnd/core/event.h \
- ../src_plugins/export_openems/openems_xml.c
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
+ event.h librnd/core/event.h ../src_plugins/export_openems/openems_xml.c
 ../src_plugins/export_openems/mesh.o: \
  ../src_plugins/export_openems/mesh.c ../config.h librnd/config.h \
  ../src_plugins/export_openems/mesh.h layer.h globalconst.h \
@@ -2187,10 +2209,11 @@
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
  ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
  obj_pstk_shape.h polygon.h vtpadstack_t.h librnd/core/hid_dad.h \
- librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- librnd/core/rnd_printf.h librnd/core/hid_dad_spin.h event.h \
- librnd/core/event.h librnd/core/safe_fs.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h
+ librnd/core/compat_misc.h librnd/core/hid_attrib.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/rnd_printf.h \
+ librnd/core/hid_dad_spin.h event.h librnd/core/event.h \
+ librnd/core/safe_fs.h librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
+ librnd/core/list_conf.h
 ../src_plugins/export_openscad/export_openscad.o: \
  ../src_plugins/export_openscad/export_openscad.c ../config.h \
  librnd/config.h conf_core.h librnd/core/conf.h \
@@ -2577,21 +2600,22 @@
  librnd/core/color.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h board.h vtroutestyle.h attrib.h layer.h \
- globalconst.h librnd/core/globalconst.h obj_common.h flag.h \
- global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
- obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
- obj_text.h font.h ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h \
- layer_grp.h rats_patch.h board.h librnd/core/hidlib.h \
- librnd/core/compat_fs.h conf_core.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ librnd/core/hid_dad_spin.h librnd/core/plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h board.h \
+ vtroutestyle.h attrib.h layer.h globalconst.h librnd/core/globalconst.h \
+ obj_common.h flag.h global_typedefs.h data_parent.h obj_arc_list.h \
+ obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ librnd/poly/polyarea.h obj_text_list.h obj_text.h font.h \
+ ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h layer_grp.h \
+ rats_patch.h board.h librnd/core/hidlib.h librnd/core/compat_fs.h \
+ conf_core.h librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
  librnd/core/list_conf.h data.h crosshair.h vtonpoint.h route.h buffer.h \
  obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h librnd/poly/rtree2_compat.h \
@@ -2636,9 +2660,10 @@
  extobj_helper.h conf_core.h librnd/core/conf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  librnd/core/hid_inlines.h librnd/core/hid_dad.h \
- librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad_spin.h change.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h conf_core.h ../src_plugins/exto_std/line_of_vias.c \
+ librnd/core/compat_misc.h librnd/core/hid_attrib.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h change.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h \
+ ../src_plugins/exto_std/line_of_vias.c \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/exto_std/dimension.c search.h \
  ../src_plugins/exto_std/cord.c data_parent.h \
@@ -3829,8 +3854,8 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h librnd/core/conf_hid.h \
+ ../src_3rd/genlist/gendlist.h librnd/core/color.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h librnd/core/conf_hid.h \
  librnd/core/compat_fs.h globalconst.h librnd/core/globalconst.h board.h \
  vtroutestyle.h attrib.h layer.h globalconst.h obj_common.h flag.h \
  global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h \
@@ -4769,9 +4794,9 @@
  idpath.h librnd/core/paths.h obj_subc_list.h pcb_minuid.h \
  librnd/core/safe_fs.h thermal.h operation.h librnd/poly/polygon1_gen.h \
  funchash_core.h librnd/core/funchash.h funchash_core_list.h netlist.h \
- librnd/core/hid_dad.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad_spin.h ../src_plugins/lib_compat_help/pstk_compat.h \
- obj_pstk.h
+ librnd/core/hid_dad.h librnd/core/hid_attrib.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
+ ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/io_lihata/write_style.o: \
  ../src_plugins/io_lihata/write_style.c ../config.h librnd/config.h \
  ../src_plugins/io_lihata/write_style.h ../src_3rd/liblhtpers/lhtpers.h \
@@ -5304,16 +5329,17 @@
  librnd/core/color.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/core/actions.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h librnd/core/safe_fs.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/libuirc/libuirc.h ../src_3rd/libporty_net/libportytcp4.h \
+ librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ librnd/core/hid_dad_spin.h librnd/core/plugins.h \
+ ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
+ ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
+ ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h librnd/core/safe_fs.h \
+ librnd/core/conf.h ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/libuirc/libuirc.h \
+ ../src_3rd/libporty_net/libportytcp4.h \
  ../src_3rd/libporty_net/os_includes.h \
  ../src_3rd/libporty_net/pnet_config.h \
  ../src_3rd/libporty_net/phost_types.h
@@ -5550,19 +5576,20 @@
  librnd/core/unit.h librnd/core/hid_dad.h librnd/core/compat_misc.h \
  librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
  librnd/core/color.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- ../src_plugins/lib_gtk_common/compat.h librnd/core/event.h \
- librnd/core/hidlib.h librnd/core/safe_fs.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
+ ../src_3rd/genvector/genvector_undef.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ librnd/core/hid_dad_spin.h ../src_plugins/lib_gtk_common/compat.h \
+ librnd/core/event.h librnd/core/hidlib.h librnd/core/safe_fs.h \
+ librnd/core/conf.h ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h \
  ../src_plugins/lib_gtk_common/dlg_attribute.h \
  ../src_plugins/lib_gtk_common/pcb_gtk.h \
  ../src_plugins/lib_gtk_common/ui_zoompan.h \
  ../src_plugins/lib_gtk_common/in_mouse.h librnd/core/hid_cfg_input.h \
- ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h \
- librnd/core/hid_menu.h ../src_plugins/lib_gtk_common/pcb_gtk.h \
+ ../src_3rd/genht/htip.h ../src_3rd/genht/htpp.h \
+ ../src_plugins/lib_gtk_common/pcb_gtk.h \
  ../src_plugins/lib_gtk_common/bu_menu.h librnd/core/conf_hid.h \
  ../src_plugins/lib_gtk_common/bu_command.h \
  ../src_plugins/lib_gtk_common/dlg_topwin.h \
@@ -5960,7 +5987,8 @@
  librnd/core/box.h librnd/core/math_helper.h librnd/core/misc_util.h \
  librnd/core/unit.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  librnd/core/compat_misc.h librnd/core/hid_dad.h librnd/core/hid_attrib.h \
- ../src_3rd/genlist/gendlist.h librnd/core/color.h \
+ ../src_3rd/genlist/gendlist.h librnd/core/color.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
  librnd/core/hid_dad_spin.h librnd/core/hid_dad_tree.h \
  ../src_plugins/lib_hid_common/act_dad.h
@@ -5991,15 +6019,17 @@
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
  ../src_3rd/genlist/gendlist.h librnd/core/color.h \
  ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h librnd/core/hid_dad_spin.h \
- librnd/core/hidlib.h ../src_plugins/lib_hid_common/xpm.h \
+ ../src_3rd/genvector/genvector_undef.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
+ librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
+ librnd/core/hid_dad_spin.h librnd/core/hidlib.h \
+ ../src_plugins/lib_hid_common/xpm.h \
  ../src_plugins/lib_hid_common/dlg_comm_m.h \
  ../src_plugins/lib_hid_common/lib_hid_common.h \
  ../src_plugins/lib_hid_common/dialogs_conf.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- librnd/core/list_conf.h ../src_3rd/genlist/gentdlist_undef.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h
 ../src_plugins/lib_hid_common/dlg_log.o: \
  ../src_plugins/lib_hid_common/dlg_log.c librnd/config.h \
  librnd/core/actions.h librnd/core/hid.h ../src_3rd/liblihata/dom.h \
@@ -6015,9 +6045,9 @@
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/genlist/gendlist.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- ../src_3rd/genlist/gendlist.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h librnd/core/event.h librnd/core/hidlib.h \
- ../src_plugins/lib_hid_common/dlg_log.h
+ ../src_3rd/genlist/gendlist.h librnd/core/color.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h librnd/core/event.h \
+ librnd/core/hidlib.h ../src_plugins/lib_hid_common/dlg_log.h
 ../src_plugins/lib_hid_common/grid_menu.o: \
  ../src_plugins/lib_hid_common/grid_menu.c librnd/config.h \
  librnd/core/conf.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
@@ -6438,13 +6468,13 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/error.h librnd/core/color.h \
- librnd/core/hid_dad_spin.h ../src_plugins/lib_polyhelp/topoly.h board.h \
- vtroutestyle.h layer.h obj_arc_list.h obj_arc.h \
- ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
- ../src_3rd/genlist/gentdlist_undef.h obj_line_list.h obj_line.h \
- obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
- ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h layer_grp.h \
- rats_patch.h board.h librnd/core/hidlib.h obj_common.h \
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
+ ../src_plugins/lib_polyhelp/topoly.h board.h vtroutestyle.h layer.h \
+ obj_arc_list.h obj_arc.h ../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/genlist/gendlist.h ../src_3rd/genlist/gentdlist_undef.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h \
+ layer_grp.h rats_patch.h board.h librnd/core/hidlib.h obj_common.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h data.h crosshair.h \
  vtonpoint.h route.h buffer.h obj_rat_list.h obj_rat.h idpath.h \
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
@@ -6737,11 +6767,10 @@
  ../src_3rd/puplug/puplug.h ../src_3rd/puplug/libs.h \
  ../src_3rd/puplug/os_dep.h ../src_3rd/puplug/config.h \
  ../src_3rd/puplug/libs.h ../src_3rd/puplug/error.h librnd/core/hid_dad.h \
- librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad_spin.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
- librnd/core/hid_menu.h layer.h librnd/core/event.h \
- ../src_plugins/order/order_conf.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
+ librnd/core/compat_misc.h librnd/core/hid_attrib.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h librnd/core/hid_menu.h \
+ layer.h librnd/core/event.h ../src_plugins/order/order_conf.h \
+ librnd/core/conf.h ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  ../src_plugins/order/conf_internal.c ../src_plugins/order/order.h \
  ../src_plugins/order/order_conf.h ../src_plugins/order/menu_internal.c \
  ../src_plugins/order/order_dlg.c \
@@ -6772,7 +6801,8 @@
  librnd/core/paths.h librnd/core/compat_fs.h \
  ../src_plugins/lib_wget/lib_wget.h ../src_plugins/order/order.h \
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- librnd/core/hid.h librnd/core/error.h librnd/core/hid_dad_spin.h \
+ librnd/core/hid.h librnd/core/error.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
  ../src_plugins/order/order_conf.h \
  ../src_plugins/order_pcbway/order_pcbway_conf.h \
  ../src_plugins/order_pcbway/conf_internal.c \
@@ -6857,12 +6887,12 @@
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  librnd/core/error.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
  librnd/core/hid_dad.h librnd/core/compat_misc.h librnd/core/hid_attrib.h \
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h ../src_3rd/genvector/vtp0.h \
  librnd/core/rnd_printf.h librnd/core/hid_dad_spin.h \
  librnd/core/hid_dad_tree.h librnd/core/conf_hid.h librnd/core/conf.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
- librnd/core/list_conf.h netlist.h ../src_plugins/propedit/props.h \
- ../src_3rd/genvector/vtl0.h idpath.h ../src_3rd/genht/ht.h \
- ../src_plugins/propedit/propsel.h
+ ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h netlist.h \
+ ../src_plugins/propedit/props.h ../src_3rd/genvector/vtl0.h idpath.h \
+ ../src_3rd/genht/ht.h ../src_plugins/propedit/propsel.h
 ../src_plugins/propedit/propedit.o: ../src_plugins/propedit/propedit.c \
  board.h ../config.h librnd/config.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h librnd/core/global_typedefs.h \
@@ -6999,8 +7029,9 @@
  ../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gendlist.h \
  librnd/core/hidlib_conf.h librnd/core/color.h librnd/core/hid_dad.h \
  librnd/core/compat_misc.h librnd/core/hid_attrib.h \
- ../src_3rd/genlist/gendlist.h librnd/core/hid_dad_spin.h \
- librnd/core/event.h librnd/core/hidlib.h ../src_plugins/query/query.h \
+ ../src_3rd/genlist/gendlist.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h librnd/core/event.h \
+ librnd/core/hidlib.h ../src_plugins/query/query.h \
  ../src_3rd/genvector/vti0.h ../src_3rd/genht/htsi.h \
  ../src_3rd/genregex/regex_se.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
@@ -7394,8 +7425,8 @@
  ../src_plugins/report/report_conf.h librnd/core/compat_misc.h layer_ui.h \
  obj_term.h obj_pstk.h obj_pstk_inlines.h thermal.h operation.h \
  librnd/poly/polygon1_gen.h obj_subc_parent.h librnd/core/hid_dad.h \
- librnd/core/hid_attrib.h librnd/core/hid_dad_spin.h netlist.h \
- ../src_3rd/genregex/regex_sei.h \
+ librnd/core/hid_attrib.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
+ librnd/core/hid_dad_spin.h netlist.h ../src_3rd/genregex/regex_sei.h \
  ../src_plugins/report/report_conf_fields.h
 ../src_plugins/rubberband_orig/fgeometry.o: \
  ../src_plugins/rubberband_orig/fgeometry.c \
@@ -7599,7 +7630,8 @@
  librnd/core/list_conf.h event.h librnd/core/event.h obj_poly.h \
  obj_poly_draw.h draw.h rotate.h librnd/core/rotate.h librnd/core/tool.h \
  ../src_plugins/shape/shape_dialog.c librnd/core/hid_dad.h \
- librnd/core/hid_attrib.h librnd/core/hid_dad_spin.h
+ librnd/core/hid_attrib.h librnd/core/hid_cfg.h librnd/core/hid_menu.h \
+ librnd/core/hid_dad_spin.h
 ../src_plugins/sketch_route/cdt/cdt.o: \
  ../src_plugins/sketch_route/cdt/cdt.c \
  ../src_plugins/sketch_route/cdt/cdt.h \
@@ -8575,8 +8607,8 @@ brave.o: brave.c ../config.h librnd/config.h \
  conf_core.h librnd/core/conf.h librnd/core/rnd_printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/genvector/vtp0.h \
  librnd/core/list_conf.h librnd/core/conf_hid.h librnd/core/compat_misc.h \
- librnd/core/hid_dad.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad_spin.h
+ librnd/core/hid_dad.h librnd/core/hid_attrib.h librnd/core/hid_cfg.h \
+ librnd/core/hid_menu.h librnd/core/hid_dad_spin.h
 buffer.o: buffer.c ../config.h librnd/config.h conf_core.h \
  librnd/core/conf.h librnd/core/global_typedefs.h librnd/core/rnd_bool.h \
  librnd/core/rnd_printf.h ../src_3rd/genvector/gds_char.h \
@@ -8610,7 +8642,7 @@ buffer.o: buffer.c ../config.h librnd/config.h conf_core.h \
  obj_pstk_op.h obj_gfx_op.h obj_rat_op.h librnd/core/event.h \
  librnd/core/safe_fs.h librnd/core/actions.h librnd/core/tool.h extobj.h \
  obj_subc_parent.h librnd/core/hid_dad.h librnd/core/hid_attrib.h \
- librnd/core/hid_dad_spin.h
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/hid_dad_spin.h
 build_run.o: build_run.c ../config.h librnd/config.h \
  ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h conf_core.h librnd/core/conf.h \
@@ -8895,11 +8927,12 @@ extobj_act.o: extobj_act.c ../config.h librnd/config.h \
  librnd/core/color.h funchash_core.h librnd/core/funchash.h \
  funchash_core_list.h librnd/core/hid_dad.h librnd/core/compat_misc.h \
  librnd/core/hid_attrib.h ../src_3rd/genlist/gendlist.h \
- librnd/core/hid_dad_spin.h search.h layer.h attrib.h obj_common.h flag.h \
- global_typedefs.h data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h \
- obj_line.h obj_poly_list.h obj_poly.h librnd/poly/polyarea.h \
- obj_text_list.h obj_text.h font.h ../src_3rd/genht/htip.h obj_gfx_list.h \
- obj_gfx.h librnd/core/tool.h extobj.h board.h vtroutestyle.h layer_grp.h \
+ librnd/core/hid_cfg.h librnd/core/hid_menu.h librnd/core/hid_dad_spin.h \
+ search.h layer.h attrib.h obj_common.h flag.h global_typedefs.h \
+ data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h librnd/poly/polyarea.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/genht/htip.h obj_gfx_list.h obj_gfx.h \
+ librnd/core/tool.h extobj.h board.h vtroutestyle.h layer_grp.h \
  rats_patch.h librnd/core/hidlib.h data.h crosshair.h vtonpoint.h route.h \
  buffer.h obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h librnd/poly/rtree2_compat.h \
