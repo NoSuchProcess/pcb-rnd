@@ -334,7 +334,7 @@ pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb)
 }
 #undef check
 
-pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how)
+pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_dynf_t df)
 {
 	pcb_poly_t *poly;
 	pcb_any_obj_t *start = pcb_topoly_find_1st_outline(pcb);
@@ -347,9 +347,14 @@ pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how)
 		pcb_poly_point_new(poly, 0, pcb->hidlib.size_y);
 	}
 	else
-		poly = pcb_topoly_conn(pcb, start, how);
+		poly = pcb_topoly_conn_with(pcb, start, how, df);
 
 	return poly;
+}
+
+pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how)
+{
+	return pcb_topoly_1st_outline_with(pcb, how, 0);
 }
 
 const char pcb_acts_topoly[] = "ToPoly()\nToPoly(outline)\n";

@@ -45,6 +45,7 @@ pcb_poly_t *pcb_topoly_conn_with(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_top
 
 /* Find the first line/arc on the outline layer from top-left */
 pcb_any_obj_t *pcb_topoly_find_1st_outline(pcb_board_t *pcb);
+pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_dynf_t df);
 
 /* Construct apolygon of the first line/arc on the outline layer from top-left */
 pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how);
