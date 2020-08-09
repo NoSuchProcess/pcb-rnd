@@ -169,14 +169,10 @@ static pcb_any_obj_t *next_conn(vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *cu
 	return NULL; /* nothing found */
 }
 
-static int map_contour(pcb_data_t *data, vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *start)
+static int map_contour_with(pcb_data_t *data, vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *start, pcb_dynf_t df)
 {
 	long i;
 	pcb_any_obj_t *n;
-	pcb_dynf_t df;
-
-	df = pcb_dynflag_alloc("topoly_map_contour");
-	pcb_data_dynflag_clear(data, df);
 
 /*rnd_trace("loop start: %d\n", start->ID);*/
 	vtp0_append(list, start);
@@ -190,8 +186,20 @@ static int map_contour(pcb_data_t *data, vtp0_t *list, vti0_t *endlist, pcb_any_
 			PCB_DFLAG_CLR(&start->Flags, df); /* allow finding the start object again for proper closing */
 	}
 
-	pcb_dynflag_free(df);
 	return 0;
+}
+
+static int map_contour(pcb_data_t *data, vtp0_t *list, vti0_t *endlist, pcb_any_obj_t *start)
+{
+	int res;
+	pcb_dynf_t df;
+	df = pcb_dynflag_alloc("topoly_map_contour");
+	pcb_data_dynflag_clear(data, df);
+
+	res = map_contour_with(data, list, endlist, start, df);
+
+	pcb_dynflag_free(df);
+	return res;
 }
 
 static int contour2poly_cb(void *uctx, rnd_coord_t x, rnd_coord_t y)
@@ -245,7 +253,7 @@ TODO(": use pcb_board_set_changed_flag(), but decouple that from PCB")
 	return poly;
 }
 
-pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t how)
+pcb_poly_t *pcb_topoly_conn_with(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t how, pcb_dynf_t df)
 {
 	vtp0_t objs;
 	vti0_t ends;
@@ -259,7 +267,10 @@ pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t
 
 	vtp0_init(&objs);
 	vti0_init(&ends);
-	res = map_contour(pcb->Data, &objs, &ends, start);
+	if (df == 0)
+		res = map_contour(pcb->Data, &objs, &ends, start);
+	else
+		res = map_contour_with(pcb->Data, &objs, &ends, start, df);
 	if (res != 0) {
 		rnd_message(RND_MSG_ERROR, "pcb_topoly_conn(): failed to find a closed loop of lines and arcs\n");
 		vtp0_uninit(&objs);
@@ -273,6 +284,12 @@ pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t
 	vti0_uninit(&ends);
 	return poly;
 }
+
+pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t how)
+{
+	return pcb_topoly_conn_with(pcb, start, how, 0);
+}
+
 
 #define check(x, y, obj) \
 do { \
