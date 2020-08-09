@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -267,7 +267,7 @@ pcb_poly_t *pcb_topoly_conn_with(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_top
 
 	vtp0_init(&objs);
 	vti0_init(&ends);
-	if (df == 0)
+	if (df < 0)
 		res = map_contour(pcb->Data, &objs, &ends, start);
 	else
 		res = map_contour_with(pcb->Data, &objs, &ends, start, df);
@@ -287,7 +287,7 @@ pcb_poly_t *pcb_topoly_conn_with(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_top
 
 pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t how)
 {
-	return pcb_topoly_conn_with(pcb, start, how, 0);
+	return pcb_topoly_conn_with(pcb, start, how, -1);
 }
 
 
@@ -354,7 +354,7 @@ pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_
 
 pcb_poly_t *pcb_topoly_1st_outline(pcb_board_t *pcb, pcb_topoly_t how)
 {
-	return pcb_topoly_1st_outline_with(pcb, how, 0);
+	return pcb_topoly_1st_outline_with(pcb, how, -1);
 }
 
 const char pcb_acts_topoly[] = "ToPoly()\nToPoly(outline)\n";
