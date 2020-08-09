@@ -137,31 +137,48 @@ static void stl_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coor
 
 static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, fp2t_t *tri, rnd_coord_t maxy, vtd0_t *contours)
 {
-	pcb_pstk_shape_t shp;
+	pcb_pstk_shape_t *shp, tmp;
 	int segs = 0;
 
-	if (pcb_pstk_shape_mech_or_hole_at(pcb, pstk, layer, &shp) == NULL)
+	shp = pcb_pstk_shape_mech_or_hole_at(pcb, pstk, layer, &tmp);
+	if (shp == NULL)
 		return 0;
 
-	switch(shp.shape) {
-		case PCB_PSSH_POLY: segs = shp.data.poly.len; break;
+	switch(shp->shape) {
+		case PCB_PSSH_POLY: segs = shp->data.poly.len; break;
 		case PCB_PSSH_LINE: break;
-		case PCB_PSSH_CIRC: segs = RND_COORD_TO_MM(shp.data.circ.dia)*8+6; break;
+		case PCB_PSSH_CIRC: segs = RND_COORD_TO_MM(shp->data.circ.dia)*8+6; break;
 		case PCB_PSSH_HSHADOW: return 0;
 	}
 
 	if (tri != NULL) {
-		switch(shp.shape) {
+		switch(shp->shape) {
 			case PCB_PSSH_POLY:
+				{
+					int n;
+					for(n = 0; n < shp->data.poly.len; n++) {
+						fp2t_point_t *pt = fp2t_push_point(tri);
+						pt->X = pstk->x + shp->data.poly.x[n];
+						pt->Y = maxy - (pstk->y + shp->data.poly.y[n]);
+						if (contours != NULL) {
+							vtd0_append(contours, pt->X);
+							vtd0_append(contours, pt->Y);
+						}
+					}
+					fp2t_add_hole(tri);
+					vtd0_append(contours, HUGE_VAL);
+					vtd0_append(contours, HUGE_VAL);
+				}
+				break;
 			case PCB_PSSH_LINE: break;
 			case PCB_PSSH_CIRC:
 				{
-					double a, step = 2*M_PI/segs, r = (double)shp.data.circ.dia / 2.0;
+					double a, step = 2*M_PI/segs, r = (double)shp->data.circ.dia / 2.0;
 					int n;
 					for(n = 0, a = 0; n < segs; n++, a += step) {
 						fp2t_point_t *pt = fp2t_push_point(tri);
-						pt->X = pstk->x + shp.data.circ.x + rnd_round(cos(a) * r);
-						pt->Y = maxy - (pstk->y + shp.data.circ.y + rnd_round(sin(a) * r));
+						pt->X = pstk->x + shp->data.circ.x + rnd_round(cos(a) * r);
+						pt->Y = maxy - (pstk->y + shp->data.circ.y + rnd_round(sin(a) * r));
 						if (contours != NULL) {
 							vtd0_append(contours, pt->X);
 							vtd0_append(contours, pt->Y);
