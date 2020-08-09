@@ -201,8 +201,8 @@ static long estimate_hole_pts_pstk(pcb_board_t *pcb, pcb_layer_t *toply)
 int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
 {
 	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB, PCB_TOPOLY_FLOATING);
-	size_t mem_req = fp2t_memory_required(poly->PointN);
-	void *mem = calloc(mem_req, 1);
+	size_t mem_req;
+	void *mem;
 	fp2t_t tri;
 	long n, pn, nn, pstk_points;
 	rnd_layer_id_t lid = -1;
@@ -216,7 +216,9 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 
 	pstk_points = estimate_hole_pts_pstk(PCB, toply);
 
-	if (!fp2t_init(&tri, mem, poly->PointN)) {
+	mem_req = fp2t_memory_required(poly->PointN + pstk_points);
+	mem = calloc(mem_req, 1);
+	if (!fp2t_init(&tri, mem, poly->PointN + pstk_points)) {
 		free(mem);
 		pcb_poly_free(poly);
 		return -1;
