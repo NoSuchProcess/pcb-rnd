@@ -26,6 +26,7 @@
 
 #include "config.h"
 
+#include <genvector/vtd0.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_init.h>
 #include <librnd/core/hid_attrib.h>
@@ -134,7 +135,7 @@ static void stl_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coor
 	fprintf(f, "	endfacet\n");
 }
 
-static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, fp2t_t *tri, rnd_coord_t maxy)
+static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, fp2t_t *tri, rnd_coord_t maxy, vtd0_t *contours)
 {
 	pcb_pstk_shape_t shp;
 	int segs = 0;
@@ -159,28 +160,35 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 					int n;
 					for(n = 0, a = 0; n < segs; n++, a += step) {
 						fp2t_point_t *pt = fp2t_push_point(tri);
-						rnd_coord_t x, y;
-						pt->X = x = pstk->x + shp.data.circ.x + rnd_round(cos(a) * r);
-						pt->Y = y = maxy - (pstk->y + shp.data.circ.y + rnd_round(sin(a) * r));
+						pt->X = pstk->x + shp.data.circ.x + rnd_round(cos(a) * r);
+						pt->Y = maxy - (pstk->y + shp.data.circ.y + rnd_round(sin(a) * r));
+						if (contours != NULL) {
+							vtd0_append(contours, pt->X);
+							vtd0_append(contours, pt->Y);
+						}
 					}
 					fp2t_add_hole(tri);
+					vtd0_append(contours, HUGE_VAL);
+					vtd0_append(contours, HUGE_VAL);
 				}
 			case PCB_PSSH_HSHADOW: return 0;
 		}
 	}
 
+	if (contours != NULL)
+		vtd0_append(contours, tri->PointPoolCount);
 
 	return segs;
 }
 
-static void add_holes_pstk(fp2t_t *tri, pcb_board_t *pcb, pcb_layer_t *toply, rnd_coord_t maxy)
+static void add_holes_pstk(fp2t_t *tri, pcb_board_t *pcb, pcb_layer_t *toply, rnd_coord_t maxy, vtd0_t *contours)
 {
 	rnd_rtree_it_t it;
 	rnd_box_t *n;
 
 	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)n;
-		pstk_points(pcb, ps, toply, tri, maxy);
+		pstk_points(pcb, ps, toply, tri, maxy, contours);
 	}
 }
 
@@ -192,7 +200,7 @@ static long estimate_hole_pts_pstk(pcb_board_t *pcb, pcb_layer_t *toply)
 
 	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)n;
-		cnt += pstk_points(pcb, ps, toply, NULL, 0);
+		cnt += pstk_points(pcb, ps, toply, NULL, 0, NULL);
 	}
 
 	return cnt;
@@ -204,9 +212,10 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	size_t mem_req;
 	void *mem;
 	fp2t_t tri;
-	long n, pn, nn, pstk_points;
+	long cn_start, cn, n, pn, pstk_points;
 	rnd_layer_id_t lid = -1;
 	pcb_layer_t *toply;
+	vtd0_t contours = {0};
 
 	if ((pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &lid, 1) != 1) && (pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &lid, 1) != 1)) {
 		rnd_message(RND_MSG_ERROR, "A top or bottom copper layer is required for stl export\n");
@@ -231,10 +240,14 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 		fp2t_point_t *pt = fp2t_push_point(&tri);
 		pt->X = poly->Points[n].X;
 		pt->Y = maxy - poly->Points[n].Y;
+		vtd0_append(&contours, pt->X);
+		vtd0_append(&contours, pt->Y);
 	}
 	fp2t_add_edge(&tri);
+	vtd0_append(&contours, HUGE_VAL);
+	vtd0_append(&contours, HUGE_VAL);
 
-	add_holes_pstk(&tri, PCB, toply, maxy);
+	add_holes_pstk(&tri, PCB, toply, maxy, &contours);
 
 	TODO("add holes drawn with lines and arcs");
 	fp2t_triangulate(&tri);
@@ -247,17 +260,29 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 		stl_print_horiz_tri(f, tri.Triangles[n], 1, z1);
 	}
 
-	/* write the side */
-	for(n = pn-1; n >= 0; n--) {
-		nn = n-1;
-		if (nn < 0)
-			nn = pn-1;
-		stl_print_vert_tri(f, poly->Points[n].X, maxy - poly->Points[n].Y, poly->Points[nn].X, maxy - poly->Points[nn].Y, z0, z1);
+	/* write the vertical side */
+	for(cn_start = 0, cn = 2; cn < contours.used; cn+=2) {
+		if (contours.array[cn] == HUGE_VAL) {
+			double cx, cy, px, py;
+			long n, pn;
+/*			rnd_trace("contour: %ld..%ld\n", cn_start, cn);*/
+			for(n = cn-2; n >= cn_start; n-=2) {
+				pn = n-2;
+				if (pn < cn_start)
+					pn = cn-2;
+				px = contours.array[pn], py = contours.array[pn+1];
+				cx = contours.array[n], cy = contours.array[n+1];
+/*				rnd_trace(" [%ld <- %ld] c:%f;%f p:%f;%f\n", n, pn, cx/1000000.0, cy/1000000.0, px/1000000.0, py/1000000.0);*/
+				stl_print_vert_tri(f, cx, cy, px, py, z0, z1);
+			}
+			cn += 2;
+			cn_start = cn;
+		}
 	}
-
 
 	fprintf(f, "endsolid\n");
 
+	vtd0_uninit(&contours);
 	free(mem);
 	pcb_poly_free(poly);
 	return 0;
