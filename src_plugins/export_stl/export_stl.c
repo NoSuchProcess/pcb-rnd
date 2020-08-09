@@ -37,6 +37,7 @@
 #include <librnd/poly/rtree.h>
 #include <librnd/poly/rtree2_compat.h>
 #include "data.h"
+#include "funchash_core.h"
 #include "layer.h"
 #include "obj_pstk_inlines.h"
 
@@ -260,6 +261,33 @@ static long estimate_hole_pts_pstk(pcb_board_t *pcb, pcb_layer_t *toply)
 	return cnt;
 }
 
+static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df)
+{
+	rnd_layer_id_t lid;
+	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
+		pcb_layer_type_t lyt = pcb_layer_flags(pcb, lid);
+		int purpi = pcb_layer_purpose(pcb, lid, NULL);
+		pcb_layer_t *layer = &pcb->Data->Layer[lid];
+		pcb_poly_t *poly;
+
+		if (!PCB_LAYER_IS_ROUTE(lyt, purpi)) continue;
+		rnd_trace("Outline [%ld]\n", lid);
+		PCB_LINE_LOOP(layer) {
+			if (PCB_DFLAG_TEST(&line->Flags, df)) continue; /* object already found - either as outline or as a cutout */
+			poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)line, PCB_TOPOLY_FLOATING, df);
+			vtp0_append(cutouts, poly);
+			printf(" line: %ld %d -> %p\n", line->ID, PCB_DFLAG_TEST(&line->Flags, df), poly);
+		} PCB_END_LOOP;
+		PCB_ARC_LOOP(layer) {
+			if (PCB_DFLAG_TEST(&arc->Flags, df)) continue; /* object already found - either as outline or as a cutout */
+			poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)arc, PCB_TOPOLY_FLOATING, df);
+			vtp0_append(cutouts, poly);
+			printf(" arc: %ld %d -> %p\n", arc->ID, PCB_DFLAG_TEST(&arc->Flags, df), poly);
+		} PCB_END_LOOP;
+	}
+	return 0;
+}
+
 int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
 {
 	pcb_dynf_t df;
@@ -267,10 +295,11 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	size_t mem_req;
 	void *mem;
 	fp2t_t tri;
-	long cn_start, cn, n, pn, pstk_points;
+	long cn_start, cn, n, pn, pstk_points, cutout_points;
 	rnd_layer_id_t lid = -1;
 	pcb_layer_t *toply;
 	vtd0_t contours = {0};
+	vtp0_t cutouts = {0};
 
 	if ((pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &lid, 1) != 1) && (pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &lid, 1) != 1)) {
 		rnd_message(RND_MSG_ERROR, "A top or bottom copper layer is required for stl export\n");
@@ -279,13 +308,14 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	toply = pcb_get_layer(PCB->Data, lid);
 
 
-	df = pcb_dynflag_alloc("topoly_map_contour");
+	df = pcb_dynflag_alloc("export_stl_map_contour");
 	pcb_data_dynflag_clear(PCB->Data, df);
 	brdpoly = pcb_topoly_1st_outline_with(PCB, PCB_TOPOLY_FLOATING, df);
 
 	pstk_points = estimate_hole_pts_pstk(PCB, toply);
+	cutout_points = estimate_cutout_pts(PCB, &cutouts, df);
 
-	mem_req = fp2t_memory_required(brdpoly->PointN + pstk_points);
+	mem_req = fp2t_memory_required(brdpoly->PointN + pstk_points + cutout_points);
 	mem = calloc(mem_req, 1);
 	if (!fp2t_init(&tri, mem, brdpoly->PointN + pstk_points)) {
 		free(mem);
@@ -345,6 +375,9 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 
 	fprintf(f, "endsolid\n");
 
+	vtp0_uninit(&cutouts);
+	for(n = 0; n < cutouts.used; n++)
+		pcb_poly_free((pcb_poly_t *)cutouts.array[n]);
 	vtd0_uninit(&contours);
 	free(mem);
 	pcb_poly_free(brdpoly);
