@@ -262,7 +262,8 @@ static long estimate_hole_pts_pstk(pcb_board_t *pcb, pcb_layer_t *toply)
 
 int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
 {
-	pcb_poly_t *poly = pcb_topoly_1st_outline(PCB, PCB_TOPOLY_FLOATING);
+	pcb_dynf_t df;
+	pcb_poly_t *brdpoly;
 	size_t mem_req;
 	void *mem;
 	fp2t_t tri;
@@ -277,23 +278,31 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	}
 	toply = pcb_get_layer(PCB->Data, lid);
 
+
+	df = pcb_dynflag_alloc("topoly_map_contour");
+	pcb_data_dynflag_clear(PCB->Data, df);
+	brdpoly = pcb_topoly_1st_outline_with(PCB, PCB_TOPOLY_FLOATING, df);
+
 	pstk_points = estimate_hole_pts_pstk(PCB, toply);
 
-	mem_req = fp2t_memory_required(poly->PointN + pstk_points);
+	mem_req = fp2t_memory_required(brdpoly->PointN + pstk_points);
 	mem = calloc(mem_req, 1);
-	if (!fp2t_init(&tri, mem, poly->PointN + pstk_points)) {
+	if (!fp2t_init(&tri, mem, brdpoly->PointN + pstk_points)) {
 		free(mem);
-		pcb_poly_free(poly);
+		pcb_poly_free(brdpoly);
+		pcb_dynflag_free(df);
 		return -1;
 	}
 
-	TODO("this is less if there are holes:");
-	pn = poly->PointN;
+	/* there are no holes in the brdpoly so this simple approach for determining
+	   the number of contour points works (cutouts are applied separately on
+	   the triangulation lib level) */
+	pn = brdpoly->PointN;
 
 	for(n = pn-1; n >= 0; n--) {
 		fp2t_point_t *pt = fp2t_push_point(&tri);
-		pt->X = poly->Points[n].X;
-		pt->Y = maxy - poly->Points[n].Y;
+		pt->X = brdpoly->Points[n].X;
+		pt->Y = maxy - brdpoly->Points[n].Y;
 		vtd0_append(&contours, pt->X);
 		vtd0_append(&contours, pt->Y);
 	}
@@ -338,7 +347,8 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 
 	vtd0_uninit(&contours);
 	free(mem);
-	pcb_poly_free(poly);
+	pcb_poly_free(brdpoly);
+	pcb_dynflag_free(df);
 	return 0;
 }
 
