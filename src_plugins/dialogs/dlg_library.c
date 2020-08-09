@@ -666,7 +666,7 @@ static void pcb_dlg_library(void)
 					library_ctx.wtree = RND_DAD_CURRENT(library_ctx.dlg);
 				RND_DAD_BEGIN_HBOX(library_ctx.dlg);
 					RND_DAD_STRING(library_ctx.dlg);
-						RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL);
+						RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_INIT_FOCUS);
 						RND_DAD_HELP(library_ctx.dlg, "filter: display only footprints matching this text\n(if empty: display all)");
 						RND_DAD_CHANGE_CB(library_ctx.dlg, library_filter_cb);
 						library_ctx.wfilt = RND_DAD_CURRENT(library_ctx.dlg);
