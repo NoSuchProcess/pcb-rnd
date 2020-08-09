@@ -138,6 +138,7 @@ static void stl_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coor
 static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, fp2t_t *tri, rnd_coord_t maxy, vtd0_t *contours)
 {
 	pcb_pstk_shape_t *shp, tmp;
+	rnd_polyarea_t *pa = NULL;
 	int segs = 0;
 
 	shp = pcb_pstk_shape_mech_or_hole_at(pcb, pstk, layer, &tmp);
@@ -146,9 +147,27 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 
 	switch(shp->shape) {
 		case PCB_PSSH_POLY: segs = shp->data.poly.len; break;
-		case PCB_PSSH_LINE: break;
 		case PCB_PSSH_CIRC: segs = RND_COORD_TO_MM(shp->data.circ.dia)*8+6; break;
 		case PCB_PSSH_HSHADOW: return 0;
+		case PCB_PSSH_LINE:
+			{
+				pcb_line_t l = {0};
+				rnd_pline_t *pl;
+				rnd_vnode_t *n;
+				l.Point1.X = pstk->x + shp->data.line.x1; l.Point1.Y = pstk->y + shp->data.line.y1;
+				l.Point2.X = pstk->x + shp->data.line.x2; l.Point2.Y = pstk->y + shp->data.line.y2;
+				l.Thickness = shp->data.line.thickness;
+				if (shp->data.line.square)
+					PCB_FLAG_SET(PCB_FLAG_SQUARE, &l);
+				pa = pcb_poly_from_pcb_line(&l, l.Thickness);
+				pl = pa->contours;
+				n = pl->head;
+				do {
+					segs++;
+					n = n->next;
+				} while(n != pl->head);
+			}
+			break;
 	}
 
 	if (tri != NULL) {
@@ -170,7 +189,25 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 					vtd0_append(contours, HUGE_VAL);
 				}
 				break;
-			case PCB_PSSH_LINE: break;
+			case PCB_PSSH_LINE:
+				{
+					rnd_pline_t *pl = pa->contours;
+					rnd_vnode_t *n = pl->head;
+					do {
+						fp2t_point_t *pt = fp2t_push_point(tri);
+						pt->X = n->point[0];
+						pt->Y = maxy - n->point[1];
+						if (contours != NULL) {
+							vtd0_append(contours, pt->X);
+							vtd0_append(contours, pt->Y);
+						}
+						n = n->next;
+					} while(n != pl->head);
+					fp2t_add_hole(tri);
+					vtd0_append(contours, HUGE_VAL);
+					vtd0_append(contours, HUGE_VAL);
+				}
+				break;
 			case PCB_PSSH_CIRC:
 				{
 					double a, step = 2*M_PI/segs, r = (double)shp->data.circ.dia / 2.0;
@@ -192,8 +229,8 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 		}
 	}
 
-	if (contours != NULL)
-		vtd0_append(contours, tri->PointPoolCount);
+	if (pa != NULL)
+		rnd_polyarea_free(&pa);
 
 	return segs;
 }
