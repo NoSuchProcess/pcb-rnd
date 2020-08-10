@@ -305,6 +305,28 @@ static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df
 	return cnt;
 }
 
+static void add_holes_cutout(fp2t_t *tri, pcb_board_t *pcb, rnd_coord_t maxy, vtp0_t *cutouts, vtd0_t *contours)
+{
+	long np;
+	for(np = 0; np < cutouts->used; np++) {
+		pcb_poly_t *poly = cutouts->array[np];
+		int n;
+
+		for(n = 0; n < poly->PointN; n++) {
+			fp2t_point_t *pt = fp2t_push_point(tri);
+			pt->X = poly->Points[n].X;
+			pt->Y = maxy - poly->Points[n].Y;
+			vtd0_append(contours, pt->X);
+			vtd0_append(contours, pt->Y);
+		}
+
+		fp2t_add_hole(tri);
+		vtd0_append(contours, HUGE_VAL);
+		vtd0_append(contours, HUGE_VAL);
+	}
+}
+
+
 int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
 {
 	pcb_dynf_t df;
@@ -358,8 +380,8 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	vtd0_append(&contours, HUGE_VAL);
 
 	add_holes_pstk(&tri, PCB, toply, maxy, &contours);
+	add_holes_cutout(&tri, PCB, maxy, &cutouts, &contours);
 
-	TODO("add holes drawn with lines and arcs");
 	fp2t_triangulate(&tri);
 
 	fprintf(f, "solid pcb\n");
