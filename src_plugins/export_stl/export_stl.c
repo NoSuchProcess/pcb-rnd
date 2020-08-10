@@ -136,6 +136,26 @@ static void stl_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coor
 	fprintf(f, "	endfacet\n");
 }
 
+static long pa_len(const rnd_polyarea_t *pa)
+{
+	rnd_pline_t *pl;
+	rnd_vnode_t *n;
+	long cnt = 0;
+
+	pl = pa->contours;
+	n = pl->head;
+	do {
+		cnt++;
+		n = n->next;
+	} while(n != pl->head);
+	return cnt;
+}
+
+static long poly_len(const pcb_poly_t *poly)
+{
+	return poly->PointN; /* assume no holes */
+}
+
 static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, fp2t_t *tri, rnd_coord_t maxy, vtd0_t *contours)
 {
 	pcb_pstk_shape_t *shp, tmp;
@@ -153,20 +173,13 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 		case PCB_PSSH_LINE:
 			{
 				pcb_line_t l = {0};
-				rnd_pline_t *pl;
-				rnd_vnode_t *n;
 				l.Point1.X = pstk->x + shp->data.line.x1; l.Point1.Y = pstk->y + shp->data.line.y1;
 				l.Point2.X = pstk->x + shp->data.line.x2; l.Point2.Y = pstk->y + shp->data.line.y2;
 				l.Thickness = shp->data.line.thickness;
 				if (shp->data.line.square)
 					PCB_FLAG_SET(PCB_FLAG_SQUARE, &l);
 				pa = pcb_poly_from_pcb_line(&l, l.Thickness);
-				pl = pa->contours;
-				n = pl->head;
-				do {
-					segs++;
-					n = n->next;
-				} while(n != pl->head);
+				segs += pa_len(pa);
 			}
 			break;
 	}
@@ -264,6 +277,8 @@ static long estimate_hole_pts_pstk(pcb_board_t *pcb, pcb_layer_t *toply)
 static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df)
 {
 	rnd_layer_id_t lid;
+	long cnt = 0;
+
 	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
 		pcb_layer_type_t lyt = pcb_layer_flags(pcb, lid);
 		int purpi = pcb_layer_purpose(pcb, lid, NULL);
@@ -276,16 +291,18 @@ static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df
 			if (PCB_DFLAG_TEST(&line->Flags, df)) continue; /* object already found - either as outline or as a cutout */
 			poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)line, PCB_TOPOLY_FLOATING, df);
 			vtp0_append(cutouts, poly);
-			printf(" line: %ld %d -> %p\n", line->ID, PCB_DFLAG_TEST(&line->Flags, df), poly);
+			cnt += poly_len(poly);
+/*			rnd_trace(" line: %ld %d -> %p\n", line->ID, PCB_DFLAG_TEST(&line->Flags, df), poly);*/
 		} PCB_END_LOOP;
 		PCB_ARC_LOOP(layer) {
 			if (PCB_DFLAG_TEST(&arc->Flags, df)) continue; /* object already found - either as outline or as a cutout */
 			poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)arc, PCB_TOPOLY_FLOATING, df);
 			vtp0_append(cutouts, poly);
-			printf(" arc: %ld %d -> %p\n", arc->ID, PCB_DFLAG_TEST(&arc->Flags, df), poly);
+			cnt += poly_len(poly);
+/*			rnd_trace(" arc: %ld %d -> %p\n", arc->ID, PCB_DFLAG_TEST(&arc->Flags, df), poly);*/
 		} PCB_END_LOOP;
 	}
-	return 0;
+	return cnt;
 }
 
 int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
