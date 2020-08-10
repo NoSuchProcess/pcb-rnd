@@ -12,7 +12,7 @@ stl_facet_t *stl_solid_load(rnd_hidlib_t *hl, const char *fn)
 	if (f == NULL)
 		return NULL;
 
-	res = stl_solid_fload(hl, fn);
+	res = stl_solid_fload(hl, f);
 
 	fclose(f);
 
