@@ -64,17 +64,21 @@ rnd_export_opt_t stl_attribute_list[] = {
 	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_minline 3
 
+	{"slot-poly", "draw cutouts for slots specified as padstack polygons",
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+#define HA_slotpoly 4
+
 	{"override-thickness", "override calculated board thickness (when non-zero)",
 	 RND_HATT_COORD, 0, 0, {1, 0, 0}, 0, 0},
-#define HA_ovrthick 4
+#define HA_ovrthick 5
 
 	{"z-center", "when true: z=0 is the center of board cross section, instead of being at the bottom side",
 	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_zcent 5
+#define HA_zcent 6
 
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 6
+#define HA_cam 7
 };
 
 #define NUM_OPTIONS (sizeof(stl_attribute_list)/sizeof(stl_attribute_list[0]))
@@ -171,7 +175,11 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 		return 0;
 
 	switch(shp->shape) {
-		case PCB_PSSH_POLY: segs = shp->data.poly.len; break;
+		case PCB_PSSH_POLY:
+			if (!options[HA_slotpoly].lng)
+				return 0;
+			segs = shp->data.poly.len;
+			break;
 		case PCB_PSSH_CIRC:
 			if (shp->data.circ.dia < options[HA_mindrill].crd)
 				return 0;
