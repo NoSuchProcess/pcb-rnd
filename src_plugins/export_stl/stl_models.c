@@ -213,7 +213,7 @@ RND_INLINE void mx_mult(double dst[16], double a[16], double b[16])
 	}
 }
 
-void stl_solid_print_facets(FILE *f, stl_facet_t *head, double rotx, double roty, double rotz, double xlatex, double xlatey, double xlatez, double maxy)
+void stl_solid_print_facets(FILE *f, stl_facet_t *head, double rotx, double roty, double rotz, double xlatex, double xlatey, double xlatez)
 {
 	double mxn[16], mx[16], tmp[16], tmp2[16];
 
@@ -237,7 +237,7 @@ void stl_solid_print_facets(FILE *f, stl_facet_t *head, double rotx, double roty
 		for(n = 0; n < 3; n++) {
 			p[0] = head->vx[n]; p[1] = head->vy[n]; p[2] = head->vz[n];
 			v_transform(v, p, mx);
-			fprintf(f, "   vertex %f %f %f\n", v[0], maxy-v[1], v[2]);
+			fprintf(f, "   vertex %f %f %f\n", v[0], v[1], v[2]);
 		}
 		fprintf(f, "  endloop\n");
 		fprintf(f, " endfacet\n");

@@ -10,7 +10,7 @@ int main()
 
 	f = fopen("A.stl", "w");
 	fprintf(f, "solid t1\n");
-	stl_solid_print_facets(f, solid,    0, 0, M_PI/6,    12, 0, 0,    0);
+	stl_solid_print_facets(f, solid,    0, 0, M_PI/6,    12, 0, 0);
 	fprintf(f, "endsolid\n");
 	fclose(f);
 
