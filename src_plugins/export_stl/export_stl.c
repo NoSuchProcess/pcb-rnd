@@ -56,21 +56,25 @@ rnd_export_opt_t stl_attribute_list[] = {
 	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_models 1
 
-	{"min-drill", "minimum circular hole diameter to render",
+	{"min-drill", "minimum circular hole diameter to render (smaller ones are not drawn)",
 	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_mindrill 2
 
+	{"min-slot-line", "minimum thickness of padstakc slots specified as lines (smaller ones are not drawn)",
+	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_minline 3
+
 	{"override-thickness", "override calculated board thickness (when non-zero)",
 	 RND_HATT_COORD, 0, 0, {1, 0, 0}, 0, 0},
-#define HA_ovrthick 3
+#define HA_ovrthick 4
 
 	{"z-center", "when true: z=0 is the center of board cross section, instead of being at the bottom side",
 	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_zcent 4
+#define HA_zcent 5
 
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 5
+#define HA_cam 6
 };
 
 #define NUM_OPTIONS (sizeof(stl_attribute_list)/sizeof(stl_attribute_list[0]))
@@ -175,6 +179,9 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 			break;
 		case PCB_PSSH_HSHADOW: return 0;
 		case PCB_PSSH_LINE:
+			if (shp->data.line.thickness < options[HA_minline].crd)
+				return 0;
+
 			{
 				pcb_line_t l = {0};
 				l.Point1.X = pstk->x + shp->data.line.x1; l.Point1.Y = pstk->y + shp->data.line.y1;
