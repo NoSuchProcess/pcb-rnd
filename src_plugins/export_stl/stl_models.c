@@ -159,41 +159,38 @@ static const double mx_ident[16] = {
 RND_INLINE void mx_rot_x(double mx_dst[16], double a)
 {
 	double s = sin(a), c = cos(a);
-	memcpy(mx_dst, (double[16]) {
-		1,  0,  0,  0,
-		0,  c,  s,  0,
-		0, -s,  c,  0,
-		0,  0,  0,  1 }, sizeof(double[16]));
+	mx_dst[ 0] = 1; mx_dst[ 1] =  0; mx_dst[ 2] = 0; mx_dst[ 3] = 0;
+	mx_dst[ 4] = 0; mx_dst[ 5] =  c; mx_dst[ 6] = s; mx_dst[ 7] = 0;
+	mx_dst[ 8] = 0; mx_dst[ 9] = -s; mx_dst[10] = c; mx_dst[11] = 0;
+	mx_dst[12] = 0; mx_dst[13] =  0; mx_dst[14] = 0; mx_dst[15] = 1;
 }
 
 
 RND_INLINE void mx_rot_y(double mx_dst[16], double a)
 {
 	double s = sin(a), c = cos(a);
-	memcpy(mx_dst, (double[16]) {
-		c,  0, -s,  0,
-		0,  1,  0,  0,
-		s,  0,  c,  0,
-		0,  0,  0,  1 }, sizeof(double[16]));
+
+	mx_dst[ 0] = c;  mx_dst[ 1] = 0; mx_dst[ 2] = -s; mx_dst[ 3] = 0;
+	mx_dst[ 4] = 0;  mx_dst[ 5] = 1; mx_dst[ 6] =  0; mx_dst[ 7] = 0;
+	mx_dst[ 8] = s;  mx_dst[ 9] = 0; mx_dst[10] =  c; mx_dst[11] = 0;
+	mx_dst[12] = 0;  mx_dst[13] = 0; mx_dst[14] =  0; mx_dst[15] = 1;
 }
 
 RND_INLINE void mx_rot_z(double mx_dst[16], double a)
 {
 	double s = sin(a), c = cos(a);
-	memcpy(mx_dst, (double[16]) {
-		 c,  s,  0,  0,
-		-s,  c,  0,  0,
-		 0,  0,  1,  0,
-		 0,  0,  0,  1 }, sizeof(double[16]));
+	mx_dst[ 0] =  c; mx_dst[ 1] = s; mx_dst[ 2] = 0; mx_dst[ 3] = 0;
+	mx_dst[ 4] = -s; mx_dst[ 5] = c; mx_dst[ 6] = 0; mx_dst[ 7] = 0;
+	mx_dst[ 8] =  0; mx_dst[ 9] = 0; mx_dst[10] = 1; mx_dst[11] = 0;
+	mx_dst[12] =  0; mx_dst[13] = 0; mx_dst[14] = 0; mx_dst[15] = 1;
 }
 
 RND_INLINE void mx_xlate(double mx_dst[16], double x, double y, double z)
 {
-	memcpy(mx_dst, (double[16]) {
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		x, y, z, 1 }, sizeof(double[16]));
+	mx_dst[ 0] = 1; mx_dst[ 1] = 0; mx_dst[ 2] = 0; mx_dst[ 3] = 0;
+	mx_dst[ 4] = 0; mx_dst[ 5] = 1; mx_dst[ 6] = 0; mx_dst[ 7] = 0;
+	mx_dst[ 8] = 0; mx_dst[ 9] = 0; mx_dst[10] = 1; mx_dst[11] = 0;
+	mx_dst[12] = x; mx_dst[13] = y; mx_dst[14] = z; mx_dst[15] = 1;
 }
 
 RND_INLINE void mx_mult(double dst[16], double a[16], double b[16])
