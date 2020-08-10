@@ -239,7 +239,7 @@ void stl_solid_print_facets(FILE *f, stl_facet_t *head, double rotx, double roty
 
 #ifndef STL_TESTER
 
-static void stl_model_place(rnd_hidlib_t *hl, htsp_t *models, const char *name, rnd_coord_t ox, rnd_coord_t oy, double rotdeg, int on_bottom, const char *user_xlate, const char *user_rot, double maxy)
+static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const char *name, rnd_coord_t ox, rnd_coord_t oy, double rotdeg, int on_bottom, const char *user_xlate, const char *user_rot, double maxy)
 {
 	stl_facet_t *head = NULL;
 	double xlate[3], rot[3];
@@ -265,18 +265,19 @@ printf("model: %s -> %s\n", name, full_path);
 	if (head == NULL)
 		return;
 
-	xlate[0] = ox;
-	xlate[1] = maxy - oy;
-	xlate[2] = 0;
+	xlate[0] = RND_COORD_TO_MM(ox);
+	xlate[1] = RND_COORD_TO_MM(maxy - oy);
+	xlate[2] = 1.6;
 
 	rot[0] = 0;
 	rot[1] = on_bottom ? M_PI : 0;
 	rot[2] = rotdeg / RND_RAD_TO_DEG;
 
+	stl_solid_print_facets(outf, head, rot[0], rot[1], rot[2], xlate[0], xlate[1], xlate[2]);
 }
 
 
-void stl_models_print(pcb_board_t *pcb, double maxy)
+void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy)
 {
 	htsp_t models;
 	const char *mod;
@@ -302,7 +303,7 @@ void stl_models_print(pcb_board_t *pcb, double maxy)
 			sxlate = pcb_attribute_get(&subc->Attributes, "stl::translate");
 			srot = pcb_attribute_get(&subc->Attributes, "stl::rotate");
 
-			stl_model_place(&pcb->hidlib, &models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy);
+			stl_model_place(&pcb->hidlib, outf, &models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy);
 		}
 	} PCB_END_LOOP;
 

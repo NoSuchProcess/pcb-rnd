@@ -441,7 +441,7 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	}
 
 	if (options[HA_models].lng)
-		stl_models_print(PCB, maxy);
+		stl_models_print(PCB, f, maxy);
 
 	fprintf(f, "endsolid\n");
 
