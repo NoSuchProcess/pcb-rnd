@@ -1,3 +1,5 @@
+#include "safe_fs.h"
+#include "error.h"
 #include "../stl_models.c"
 
 int main()

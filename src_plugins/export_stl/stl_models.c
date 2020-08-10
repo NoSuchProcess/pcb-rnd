@@ -31,9 +31,6 @@
 #include <string.h>
 #include <math.h>
 
-#include "safe_fs.h"
-#include "error.h"
-
 typedef struct stl_facet_s stl_facet_t;
 
 struct stl_facet_s {

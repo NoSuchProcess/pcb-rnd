@@ -350,6 +350,7 @@ static void add_holes_cutout(fp2t_t *tri, pcb_board_t *pcb, rnd_coord_t maxy, vt
 	}
 }
 
+#include "stl_models.c"
 
 int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
 {
