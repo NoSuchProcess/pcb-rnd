@@ -213,7 +213,7 @@ RND_INLINE void mx_mult(double dst[16], double a[16], double b[16])
 	}
 }
 
-void stl_solid_print_facets(FILE *f, stl_facet_t *head, double rotx, double roty, double rotz, double xlatex, double xlatey, double xlatez)
+void stl_solid_print_facets(FILE *f, stl_facet_t *head, double rotx, double roty, double rotz, double xlatex, double xlatey, double xlatez, double maxy)
 {
 	double mxn[16], mx[16], tmp[16], tmp2[16];
 
@@ -232,16 +232,69 @@ void stl_solid_print_facets(FILE *f, stl_facet_t *head, double rotx, double roty
 		double v[3], p[3];
 		int n;
 		v_transform(v, head->n, mxn);
-		fprintf(f, " facet normal %f %f %f\n", v[0], v[1], v[2]);
+		fprintf(f, " facet normal %f %f %f\n", v[0], -v[1], v[2]);
 		fprintf(f, "  outer loop\n");
 		for(n = 0; n < 3; n++) {
 			p[0] = head->vx[n]; p[1] = head->vy[n]; p[2] = head->vz[n];
 			v_transform(v, p, mx);
-			fprintf(f, "   vertex %f %f %f\n", v[0], v[1], v[2]);
+			fprintf(f, "   vertex %f %f %f\n", v[0], maxy-v[1], v[2]);
 		}
 		fprintf(f, "  endloop\n");
 		fprintf(f, " endfacet\n");
 	}
+}
+
+#ifndef STL_TESTER
+
+static void stl_model_place(htsp_t *models, const char *mod, rnd_coord_t ox, rnd_coord_t oy, double rotdeg, int on_bottom, const char *user_xlate, const char *user_rot, double maxy)
+{
+	double xlate[3], rot[3];
+
+	xlate[0] = ox;
+	xlate[1] = maxy - oy;
+	xlate[2] = 0;
+
+	rot[0] = 0;
+	rot[1] = on_bottom ? M_PI : 0;
+	rot[2] = rotdeg / RND_RAD_TO_DEG;
+}
+
+
+void stl_models_print(pcb_board_t *pcb, double maxy)
+{
+	htsp_t models;
+	const char *mod;
+	htsp_entry_t *e;
+
+	htsp_init(&models, strhash, strkeyeq);
+
+	PCB_SUBC_LOOP(PCB->Data); {
+		mod = pcb_attribute_get(&subc->Attributes, "stl");
+		if (mod != NULL) {
+			rnd_coord_t ox, oy;
+			double rot = 0;
+			int on_bottom = 0;
+			const char *srot, *sxlate;
+			
+			if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
+				continue;
+			}
+			pcb_subc_get_rotation(subc, &rot);
+			pcb_subc_get_side(subc, &on_bottom);
+
+			sxlate = pcb_attribute_get(&subc->Attributes, "stl::translate");
+			srot = pcb_attribute_get(&subc->Attributes, "stl::rotate");
+
+			stl_model_place(&models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy);
+		}
+	} PCB_END_LOOP;
+
+	for (e = htsp_first(&models); e; e = htsp_next(&models, e))
+		free(e->value);
+
+	htsp_uninit(&models);
 
 }
 
+#endif

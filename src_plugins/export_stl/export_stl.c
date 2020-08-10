@@ -40,6 +40,7 @@
 #include "funchash_core.h"
 #include "layer.h"
 #include "obj_pstk_inlines.h"
+#include "plug_io.h"
 
 #include "../lib_polyhelp/topoly.h"
 #include "../lib_polyhelp/triangulate.h"
@@ -436,6 +437,9 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 			cn_start = cn;
 		}
 	}
+
+	if (options[HA_models].lng)
+		stl_models_print(PCB, maxy);
 
 	fprintf(f, "endsolid\n");
 
