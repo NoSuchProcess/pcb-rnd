@@ -309,7 +309,7 @@ static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df
 		pcb_poly_t *poly;
 
 		if (!PCB_LAYER_IS_ROUTE(lyt, purpi)) continue;
-		rnd_trace("Outline [%ld]\n", lid);
+/*		rnd_trace("Outline [%ld]\n", lid);*/
 		PCB_LINE_LOOP(layer) {
 			if (PCB_DFLAG_TEST(&line->Flags, df)) continue; /* object already found - either as outline or as a cutout */
 			poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)line, PCB_TOPOLY_FLOATING, df);
