@@ -56,9 +56,9 @@ rnd_export_opt_t stl_attribute_list[] = {
 	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_models 1
 
-	{"drill", "enable drilling holes",
-	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
-#define HA_drill 2
+	{"min-drill", "minimum circular hole diameter to render",
+	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0, 0},
+#define HA_mindrill 2
 
 	{"override-thickness", "override calculated board thickness (when non-zero)",
 	 RND_HATT_COORD, 0, 0, {1, 0, 0}, 0, 0},
@@ -156,7 +156,7 @@ static long poly_len(const pcb_poly_t *poly)
 	return poly->PointN; /* assume no holes */
 }
 
-static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, fp2t_t *tri, rnd_coord_t maxy, vtd0_t *contours)
+static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, fp2t_t *tri, rnd_coord_t maxy, vtd0_t *contours, rnd_hid_attr_val_t *options)
 {
 	pcb_pstk_shape_t *shp, tmp;
 	rnd_polyarea_t *pa = NULL;
@@ -168,7 +168,11 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 
 	switch(shp->shape) {
 		case PCB_PSSH_POLY: segs = shp->data.poly.len; break;
-		case PCB_PSSH_CIRC: segs = RND_COORD_TO_MM(shp->data.circ.dia)*8+6; break;
+		case PCB_PSSH_CIRC:
+			if (shp->data.circ.dia < options[HA_mindrill].crd)
+				return 0;
+			segs = RND_COORD_TO_MM(shp->data.circ.dia)*8+6;
+			break;
 		case PCB_PSSH_HSHADOW: return 0;
 		case PCB_PSSH_LINE:
 			{
@@ -243,18 +247,18 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 	return segs;
 }
 
-static void add_holes_pstk(fp2t_t *tri, pcb_board_t *pcb, pcb_layer_t *toply, rnd_coord_t maxy, vtd0_t *contours)
+static void add_holes_pstk(fp2t_t *tri, pcb_board_t *pcb, pcb_layer_t *toply, rnd_coord_t maxy, vtd0_t *contours, rnd_hid_attr_val_t *options)
 {
 	rnd_rtree_it_t it;
 	rnd_box_t *n;
 
 	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)n;
-		pstk_points(pcb, ps, toply, tri, maxy, contours);
+		pstk_points(pcb, ps, toply, tri, maxy, contours, options);
 	}
 }
 
-static long estimate_hole_pts_pstk(pcb_board_t *pcb, pcb_layer_t *toply)
+static long estimate_hole_pts_pstk(pcb_board_t *pcb, pcb_layer_t *toply, rnd_hid_attr_val_t *options)
 {
 	rnd_rtree_it_t it;
 	rnd_box_t *n;
@@ -262,7 +266,7 @@ static long estimate_hole_pts_pstk(pcb_board_t *pcb, pcb_layer_t *toply)
 
 	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)n;
-		cnt += pstk_points(pcb, ps, toply, NULL, 0, NULL);
+		cnt += pstk_points(pcb, ps, toply, NULL, 0, NULL, options);
 	}
 
 	return cnt;
@@ -345,7 +349,7 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	pcb_data_dynflag_clear(PCB->Data, df);
 	brdpoly = pcb_topoly_1st_outline_with(PCB, PCB_TOPOLY_FLOATING, df);
 
-	pstk_points = estimate_hole_pts_pstk(PCB, toply);
+	pstk_points = estimate_hole_pts_pstk(PCB, toply, options);
 	cutout_points = estimate_cutout_pts(PCB, &cutouts, df);
 
 	mem_req = fp2t_memory_required(brdpoly->PointN + pstk_points + cutout_points);
@@ -373,7 +377,7 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	vtd0_append(&contours, HUGE_VAL);
 	vtd0_append(&contours, HUGE_VAL);
 
-	add_holes_pstk(&tri, PCB, toply, maxy, &contours);
+	add_holes_pstk(&tri, PCB, toply, maxy, &contours, options);
 	add_holes_cutout(&tri, PCB, maxy, &cutouts, &contours);
 
 	fp2t_triangulate(&tri);
