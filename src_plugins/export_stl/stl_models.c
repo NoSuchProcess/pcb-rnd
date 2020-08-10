@@ -297,7 +297,11 @@ void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0,
 			pcb_subc_get_side(subc, &on_bottom);
 
 			sxlate = pcb_attribute_get(&subc->Attributes, "stl::translate");
+			if (sxlate == NULL)
+				sxlate = pcb_attribute_get(&subc->Attributes, "stl-translate");
 			srot = pcb_attribute_get(&subc->Attributes, "stl::rotate");
+			if (srot == NULL)
+				srot = pcb_attribute_get(&subc->Attributes, "stl-rotate");
 
 			stl_model_place(&pcb->hidlib, outf, &models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy, z0, z1);
 		}
