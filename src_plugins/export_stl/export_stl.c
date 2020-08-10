@@ -34,6 +34,7 @@
 #include <librnd/core/hid_nogui.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/plugins.h>
+#include <librnd/core/compat_misc.h>
 #include <librnd/poly/rtree.h>
 #include <librnd/poly/rtree2_compat.h>
 #include "data.h"
@@ -41,6 +42,7 @@
 #include "layer.h"
 #include "obj_pstk_inlines.h"
 #include "plug_io.h"
+#include "conf_core.h"
 
 #include "../lib_polyhelp/topoly.h"
 #include "../lib_polyhelp/triangulate.h"

@@ -59,21 +59,16 @@ void stl_solid_free(stl_facet_t *head)
 	}
 }
 
-stl_facet_t *stl_solid_load(rnd_hidlib_t *hl, const char *fn)
+stl_facet_t *stl_solid_fload(rnd_hidlib_t *hl, FILE *f)
 {
-	FILE *f;
 	stl_facet_t *head = NULL, *tail = NULL, *t;
 	char *cmd, line[512];
-
-	f = rnd_fopen(hl, fn, "r");
-	if (f == NULL)
-		return NULL;
 
 	/* find the 'solid' header */
 	cmd = stl_getline(line, sizeof(line), f);
 	if ((cmd == NULL) || (strncmp(cmd, "solid", 5) != 0)) {
 		rnd_message(RND_MSG_ERROR, "Invalid stl file: first line is not a 'solid'\n");
-		goto err0;
+		return NULL;
 	}
 
 	for(;;) {
@@ -82,14 +77,14 @@ stl_facet_t *stl_solid_load(rnd_hidlib_t *hl, const char *fn)
 		cmd = stl_getline(line, sizeof(line), f);
 		if (cmd == NULL) {
 			rnd_message(RND_MSG_ERROR, "Invalid stl file: premature end of file in solid\n");
-			goto err1;
+			goto error;
 		}
 		if (strncmp(cmd, "endsolid", 8) == 0)
 			break; /* normal end of file */
 
 		if (strncmp(cmd, "facet normal", 12) != 0) {
 			rnd_message(RND_MSG_ERROR, "Invalid stl file: expected facet, got %s\n", cmd);
-			goto err1;
+			goto error;
 		}
 
 		t = malloc(sizeof(stl_facet_t));
@@ -104,47 +99,45 @@ stl_facet_t *stl_solid_load(rnd_hidlib_t *hl, const char *fn)
 		cmd += 12;
 		if (sscanf(cmd, "%lf %lf %lf", &t->n[0], &t->n[1], &t->n[2]) != 3) {
 			rnd_message(RND_MSG_ERROR, "Invalid stl file: wrong facet normals '%s'\n", cmd);
-			goto err1;
+			goto error;
 		}
 
 		cmd = stl_getline(line, sizeof(line), f);
 		if (strncmp(cmd, "outer loop", 10) != 0) {
 			rnd_message(RND_MSG_ERROR, "Invalid stl file: expected outer loop, got %s\n", cmd);
-			goto err1;
+			goto error;
 		}
 
 		for(n = 0; n < 3; n++) {
 			cmd = stl_getline(line, sizeof(line), f);
 			if (strncmp(cmd, "vertex", 6) != 0) {
 				rnd_message(RND_MSG_ERROR, "Invalid stl file: expected vertex, got %s\n", cmd);
-				goto err1;
+				goto error;
 			}
 			cmd+=6;
 			if (sscanf(cmd, "%lf %lf %lf", &t->vx[n], &t->vy[n], &t->vz[n]) != 3) {
 				rnd_message(RND_MSG_ERROR, "Invalid stl file: wrong facet vertex '%s'\n", cmd);
-				goto err1;
+				goto error;
 			}
 		}
 
 		cmd = stl_getline(line, sizeof(line), f);
 		if (strncmp(cmd, "endloop", 7) != 0) {
 			rnd_message(RND_MSG_ERROR, "Invalid stl file: expected endloop, got %s\n", cmd);
-			goto err1;
+			goto error;
 		}
 
 		cmd = stl_getline(line, sizeof(line), f);
 		if (strncmp(cmd, "endfacet", 8) != 0) {
 			rnd_message(RND_MSG_ERROR, "Invalid stl file: expected endfacet, got %s\n", cmd);
-			goto err1;
+			goto error;
 		}
 	}
 
 
-	fclose(f);
-	err0:;
 	return head;
 
-	err1:;
+	error:;
 	stl_solid_free(head);
 	fclose(f);
 	return NULL;
@@ -246,9 +239,31 @@ void stl_solid_print_facets(FILE *f, stl_facet_t *head, double rotx, double roty
 
 #ifndef STL_TESTER
 
-static void stl_model_place(htsp_t *models, const char *mod, rnd_coord_t ox, rnd_coord_t oy, double rotdeg, int on_bottom, const char *user_xlate, const char *user_rot, double maxy)
+static void stl_model_place(rnd_hidlib_t *hl, htsp_t *models, const char *name, rnd_coord_t ox, rnd_coord_t oy, double rotdeg, int on_bottom, const char *user_xlate, const char *user_rot, double maxy)
 {
+	stl_facet_t *head = NULL;
 	double xlate[3], rot[3];
+
+	if (!htsp_has(models, name)) {
+		char *full_path;
+		FILE *f = rnd_fopen_first(&PCB->hidlib, &conf_core.rc.library_search_paths, name, "r", &full_path, rnd_true);
+		if (f != NULL) {
+			head = stl_solid_fload(hl, f);
+			if (head == NULL)
+				rnd_message(RND_MSG_ERROR, "STL model failed to load: %s\n", full_path);
+		}
+		else
+			rnd_message(RND_MSG_ERROR, "STL model not found: %s\n", name);
+printf("model: %s -> %s\n", name, full_path);
+		free(full_path);
+		fclose(f);
+		htsp_set(models, rnd_strdup(name), head);
+	}
+	else
+		head = htsp_get(models, name);
+
+	if (head == NULL)
+		return;
 
 	xlate[0] = ox;
 	xlate[1] = maxy - oy;
@@ -257,6 +272,7 @@ static void stl_model_place(htsp_t *models, const char *mod, rnd_coord_t ox, rnd
 	rot[0] = 0;
 	rot[1] = on_bottom ? M_PI : 0;
 	rot[2] = rotdeg / RND_RAD_TO_DEG;
+
 }
 
 
@@ -286,12 +302,14 @@ void stl_models_print(pcb_board_t *pcb, double maxy)
 			sxlate = pcb_attribute_get(&subc->Attributes, "stl::translate");
 			srot = pcb_attribute_get(&subc->Attributes, "stl::rotate");
 
-			stl_model_place(&models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy);
+			stl_model_place(&pcb->hidlib, &models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy);
 		}
 	} PCB_END_LOOP;
 
-	for (e = htsp_first(&models); e; e = htsp_next(&models, e))
-		free(e->value);
+	for (e = htsp_first(&models); e; e = htsp_next(&models, e)) {
+		free(e->key);
+		stl_solid_free((stl_facet_t *)e->value);
+	}
 
 	htsp_uninit(&models);
 
