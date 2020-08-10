@@ -68,17 +68,21 @@ rnd_export_opt_t stl_attribute_list[] = {
 	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
 #define HA_slotpoly 4
 
+	{"cutouts", "draw cutouts drawn on 'route' layer groups (outline/slot mech layer groups)",
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+#define HA_cutouts 5
+
 	{"override-thickness", "override calculated board thickness (when non-zero)",
 	 RND_HATT_COORD, 0, 0, {1, 0, 0}, 0, 0},
-#define HA_ovrthick 5
+#define HA_ovrthick 6
 
 	{"z-center", "when true: z=0 is the center of board cross section, instead of being at the bottom side",
 	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_zcent 6
+#define HA_zcent 7
 
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
-#define HA_cam 7
+#define HA_cam 8
 };
 
 #define NUM_OPTIONS (sizeof(stl_attribute_list)/sizeof(stl_attribute_list[0]))
@@ -287,10 +291,13 @@ static long estimate_hole_pts_pstk(pcb_board_t *pcb, pcb_layer_t *toply, rnd_hid
 	return cnt;
 }
 
-static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df)
+static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df, rnd_hid_attr_val_t *options)
 {
 	rnd_layer_id_t lid;
 	long cnt = 0;
+
+	if (!options[HA_cutouts].lng)
+		return 0;
 
 	for(lid = 0; lid < pcb->Data->LayerN; lid++) {
 		pcb_layer_type_t lyt = pcb_layer_flags(pcb, lid);
@@ -318,9 +325,13 @@ static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df
 	return cnt;
 }
 
-static void add_holes_cutout(fp2t_t *tri, pcb_board_t *pcb, rnd_coord_t maxy, vtp0_t *cutouts, vtd0_t *contours)
+static void add_holes_cutout(fp2t_t *tri, pcb_board_t *pcb, rnd_coord_t maxy, vtp0_t *cutouts, vtd0_t *contours, rnd_hid_attr_val_t *options)
 {
 	long np;
+
+	if (!options[HA_cutouts].lng)
+		return;
+
 	for(np = 0; np < cutouts->used; np++) {
 		pcb_poly_t *poly = cutouts->array[np];
 		int n;
@@ -365,7 +376,7 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	brdpoly = pcb_topoly_1st_outline_with(PCB, PCB_TOPOLY_FLOATING, df);
 
 	pstk_points = estimate_hole_pts_pstk(PCB, toply, options);
-	cutout_points = estimate_cutout_pts(PCB, &cutouts, df);
+	cutout_points = estimate_cutout_pts(PCB, &cutouts, df, options);
 
 	mem_req = fp2t_memory_required(brdpoly->PointN + pstk_points + cutout_points);
 	mem = calloc(mem_req, 1);
@@ -393,7 +404,7 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	vtd0_append(&contours, HUGE_VAL);
 
 	add_holes_pstk(&tri, PCB, toply, maxy, &contours, options);
-	add_holes_cutout(&tri, PCB, maxy, &cutouts, &contours);
+	add_holes_cutout(&tri, PCB, maxy, &cutouts, &contours, options);
 
 	fp2t_triangulate(&tri);
 
