@@ -193,10 +193,8 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 						fp2t_point_t *pt = fp2t_push_point(tri);
 						pt->X = pstk->x + shp->data.poly.x[n];
 						pt->Y = maxy - (pstk->y + shp->data.poly.y[n]);
-						if (contours != NULL) {
-							vtd0_append(contours, pt->X);
-							vtd0_append(contours, pt->Y);
-						}
+						vtd0_append(contours, pt->X);
+						vtd0_append(contours, pt->Y);
 					}
 					fp2t_add_hole(tri);
 					vtd0_append(contours, HUGE_VAL);
@@ -211,10 +209,8 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 						fp2t_point_t *pt = fp2t_push_point(tri);
 						pt->X = n->point[0];
 						pt->Y = maxy - n->point[1];
-						if (contours != NULL) {
-							vtd0_append(contours, pt->X);
-							vtd0_append(contours, pt->Y);
-						}
+						vtd0_append(contours, pt->X);
+						vtd0_append(contours, pt->Y);
 						n = n->next;
 					} while(n != pl->head);
 					fp2t_add_hole(tri);
@@ -230,10 +226,8 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 						fp2t_point_t *pt = fp2t_push_point(tri);
 						pt->X = pstk->x + shp->data.circ.x + rnd_round(cos(a) * r);
 						pt->Y = maxy - (pstk->y + shp->data.circ.y + rnd_round(sin(a) * r));
-						if (contours != NULL) {
-							vtd0_append(contours, pt->X);
-							vtd0_append(contours, pt->Y);
-						}
+						vtd0_append(contours, pt->X);
+						vtd0_append(contours, pt->Y);
 					}
 					fp2t_add_hole(tri);
 					vtd0_append(contours, HUGE_VAL);
