@@ -236,10 +236,33 @@ void stl_solid_print_facets(FILE *f, stl_facet_t *head, double rotx, double roty
 
 #ifndef STL_TESTER
 
+static void parse_utrans(double dst[3], const char *src)
+{
+	double tmp[3];
+	int n;
+	const char *s = src;
+	char *end;
+
+	if (src == NULL)
+		return;
+
+	for(n = 0; n < 3; n++) {
+		if (s == NULL)
+			break;
+		tmp[n] = strtod(s, &end);
+		if ((!isspace(*end)) && (*end != ',') && (*end != ';') && (*end != '\0')) {
+			rnd_message(RND_MSG_ERROR, "stl: Invalis user coords in footprint transformation attribute: %s\n", src);
+			return;
+		}
+		s = end+1;
+	}
+	memcpy(dst, tmp, sizeof(tmp));
+}
+
 static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const char *name, rnd_coord_t ox, rnd_coord_t oy, double rotdeg, int on_bottom, const char *user_xlate, const char *user_rot, double maxy, rnd_coord_t z0, rnd_coord_t z1)
 {
 	stl_facet_t *head = NULL;
-	double xlate[3], rot[3];
+	double uxlate[3] = {0,0,0}, xlate[3], urot[3] = {0,0,0}, rot[3];
 
 	if (!htsp_has(models, name)) {
 		char *full_path;
@@ -261,13 +284,15 @@ static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const 
 	if (head == NULL)
 		return;
 
-	xlate[0] = RND_COORD_TO_MM(ox);
-	xlate[1] = RND_COORD_TO_MM(maxy - oy);
-	xlate[2] = on_bottom ? RND_COORD_TO_MM(z0) : RND_COORD_TO_MM(z1);
+	parse_utrans(uxlate, user_xlate);
+	xlate[0] = RND_COORD_TO_MM(ox) + uxlate[0];
+	xlate[1] = RND_COORD_TO_MM(maxy - (oy)) + uxlate[1];
+	xlate[2] = RND_COORD_TO_MM((on_bottom ? z0 : z1)) + uxlate[3];
 
-	rot[0] = 0;
-	rot[1] = on_bottom ? M_PI : 0;
-	rot[2] = rotdeg / RND_RAD_TO_DEG;
+	parse_utrans(urot, user_rot);
+	rot[0] = 0 + urot[0] / RND_RAD_TO_DEG;
+	rot[1] = (on_bottom ? M_PI : 0) + urot[1] / RND_RAD_TO_DEG;
+	rot[2] = rotdeg / RND_RAD_TO_DEG + urot[2] / RND_RAD_TO_DEG;
 
 	stl_solid_print_facets(outf, head, rot[0], rot[1], rot[2], xlate[0], xlate[1], xlate[2]);
 }
