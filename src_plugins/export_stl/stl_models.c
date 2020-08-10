@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <math.h>
 
 #include "safe_fs.h"
 #include "error.h"
@@ -36,7 +37,7 @@
 typedef struct stl_facet_s stl_facet_t;
 
 struct stl_facet_s {
-	double nx, ny, nz;
+	double n[3];
 	double vx[3], vy[3], vz[3];
 	stl_facet_t *next;
 };
@@ -104,7 +105,7 @@ stl_facet_t *stl_solid_load(rnd_hidlib_t *hl, const char *fn)
 			head = tail = t;
 
 		cmd += 12;
-		if (sscanf(cmd, "%lf %lf %lf", &t->nx, &t->ny, &t->nz) != 3) {
+		if (sscanf(cmd, "%lf %lf %lf", &t->n[0], &t->n[1], &t->n[2]) != 3) {
 			rnd_message(RND_MSG_ERROR, "Invalid stl file: wrong facet normals '%s'\n", cmd);
 			goto err1;
 		}
@@ -151,3 +152,99 @@ stl_facet_t *stl_solid_load(rnd_hidlib_t *hl, const char *fn)
 	fclose(f);
 	return NULL;
 }
+
+RND_INLINE void v_transform(double dst[3], double src[3], double mx[16])
+{
+	dst[0] = src[0]*mx[0] + src[1]*mx[4] + src[2]*mx[8]  + mx[12];
+	dst[1] = src[0]*mx[1] + src[1]*mx[5] + src[2]*mx[9]  + mx[13];
+	dst[2] = src[0]*mx[2] + src[1]*mx[6] + src[2]*mx[10] + mx[14];
+}
+
+static const double mx_ident[16] = {
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	0, 0, 0, 1 };
+
+RND_INLINE void mx_rot_x(double mx_dst[16], double a)
+{
+	double s = sin(a), c = cos(a);
+	memcpy(mx_dst, (double[16]) {
+		1,  0,  0,  0,
+		0,  c,  s,  0,
+		0, -s,  c,  0,
+		0,  0,  0,  1 }, sizeof(double[16]));
+}
+
+
+RND_INLINE void mx_rot_y(double mx_dst[16], double a)
+{
+	double s = sin(a), c = cos(a);
+	memcpy(mx_dst, (double[16]) {
+		c,  0, -s,  0,
+		0,  1,  0,  0,
+		s,  0,  c,  0,
+		0,  0,  0,  1 }, sizeof(double[16]));
+}
+
+RND_INLINE void mx_rot_z(double mx_dst[16], double a)
+{
+	double s = sin(a), c = cos(a);
+	memcpy(mx_dst, (double[16]) {
+		 c,  s,  0,  0,
+		-s,  c,  0,  0,
+		 0,  0,  1,  0,
+		 0,  0,  0,  1 }, sizeof(double[16]));
+}
+
+RND_INLINE void mx_xlate(double mx_dst[16], double x, double y, double z)
+{
+	memcpy(mx_dst, (double[16]) {
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		x, y, z, 1 }, sizeof(double[16]));
+}
+
+RND_INLINE void mx_mult(double dst[16], double a[16], double b[16])
+{
+	int n, m, k, l;
+	for(n = 0; n<16; n++) {
+		dst[n] = 0;
+		for(m = 0, k = n & 3, l = n & 12; m < 4; m++, k += 4, l++)
+			dst[n] = dst[n] + b[k] * a[l];
+	}
+}
+
+void stl_solid_print_facets(FILE *f, stl_facet_t *head, double rotx, double roty, double rotz, double xlatex, double xlatey, double xlatez)
+{
+	double mxn[16], mx[16], tmp[16], tmp2[16];
+
+	memcpy(mx, mx_ident, sizeof(mx_ident));
+	if (rotx != 0) { mx_rot_x(tmp, rotx); mx_mult(tmp2, mx, tmp); memcpy(mx, tmp2, sizeof(tmp2)); }
+	if (roty != 0) { mx_rot_y(tmp, roty); mx_mult(tmp2, mx, tmp); memcpy(mx, tmp2, sizeof(tmp2)); }
+	if (rotz != 0) { mx_rot_z(tmp, rotz); mx_mult(tmp2, mx, tmp); memcpy(mx, tmp2, sizeof(tmp2)); }
+	memcpy(mxn, mx, sizeof(mx));
+	if ((xlatex != 0) || (xlatey != 0) || (xlatez != 0)) {
+		mx_xlate(tmp, xlatex, xlatey, xlatez);
+		mx_mult(tmp2, mx, tmp);
+		memcpy(mx, tmp2, sizeof(tmp2));
+	}
+
+	for(; head != NULL; head = head->next) {
+		double v[3], p[3];
+		int n;
+		v_transform(v, head->n, mxn);
+		fprintf(f, " facet normal %f %f %f\n", v[0], v[1], v[2]);
+		fprintf(f, "  outer loop\n");
+		for(n = 0; n < 3; n++) {
+			p[0] = head->vx[n]; p[1] = head->vy[n]; p[2] = head->vz[n];
+			v_transform(v, p, mx);
+			fprintf(f, "   vertex %f %f %f\n", v[0], v[1], v[2]);
+		}
+		fprintf(f, "  endloop\n");
+		fprintf(f, " endfacet\n");
+	}
+
+}
+
