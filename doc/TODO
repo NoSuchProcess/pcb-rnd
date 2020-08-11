@@ -2,6 +2,8 @@
 
 1. For the upcoming release ===============================================================================
 + FEATURE: finish drill/slot export in export_stl [report: Majenko]
+- FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
+- FEATURE: padstack label smarter print: in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
 - BUG: padstack editor top/bottom gets mixed up on other-side on display (but not in data!) ml=4221 [report: Majenko]
 - BUG: locally debian packaged version: run ./pcb-rnd from src with no X, exit -> tons of warnings
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
@@ -79,7 +81,6 @@
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is changed with the layer binding [report: jg]
 - FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough ; alternative: net name caching and display when zoomed in [report: Majenko]
 - FEATURE: netlist2: bug_files/ratside.txt optional rats constraints [report: Vuokko]
-- FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 - FEATURE: draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a ... (not only when placing it) [report: wojciechk8]
 	- need to precalculate and cache clearance shape in crosshair (polyarea!) because recalculating these for padstacks would be expensive (also rewrite lines and arcs)
 	- padstack
@@ -116,7 +117,6 @@
 - FEATURE: footprint in-place replacement should match up floaters to keep their coords, as documented in ML/2304; also keep thermals per term ID [report: gpaubert]
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
 - BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
-- FEATURE: padstack label smarter print: in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
 - improve locking:
 	- FEATURE: consider a move-only lock?
 	- BUG: when thermal and some other operations are applied on a locked element, indicate it
