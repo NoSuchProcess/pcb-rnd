@@ -4,6 +4,7 @@
 + FEATURE: finish drill/slot export in export_stl [report: Majenko]
 - FEATURE: drc preview: follow board flips (should be a DAD preview flag) [report: Igor2]
 - FEATURE: padstack label smarter print: in case of full overlap of a bottom and top "pad", arrange other-side labels to avoid overlaps [report: al3x]
+- BUG: DAD raise problem on gtk: {f e}, move the dialog under the top window, {f e} again: it is not raised; export(haha) -> error message; close the message window; export(haha) again and it is not raised upon the new error [report: Igor2]
 - BUG: padstack editor top/bottom gets mixed up on other-side on display (but not in data!) ml=4221 [report: Majenko]
 - BUG: locally debian packaged version: run ./pcb-rnd from src with no X, exit -> tons of warnings
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
