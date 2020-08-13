@@ -17,7 +17,7 @@ cache_decompress="xz -d"
 cache_compsuffix=".xz"
 
 # url to use
-url=svn://repo.hu/pcb-rnd/trunk
+url=svn://svn.repo.hu/pcb-rnd/trunk
 
 # relative path of the executabe from url
 exe=src/pcb-rnd
