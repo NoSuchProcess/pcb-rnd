@@ -581,11 +581,13 @@ static void view_next_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 }
 
 
-static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title, void (*extra_buttons)(view_ctx_t *))
+static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title, void (*extra_buttons)(view_ctx_t *), unsigned long preview_flipflags)
 {
 	const char *hdr[] = { "ID", "title", NULL };
 
 	ctx->wpos = -1;
+
+	preview_flipflags &= (RND_HATF_PRV_GFLIP | RND_HATF_PRV_LFLIP);
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
@@ -629,7 +631,7 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				RND_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, NULL, 100, 100, ctx);
 					ctx->wprev = RND_DAD_CURRENT(ctx->dlg);
-					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD | preview_flipflags);
 				RND_DAD_LABEL(ctx->dlg, "(description)");
 					ctx->wdescription = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "(measure)");
@@ -661,9 +663,11 @@ static void pcb_dlg_view_full(const char *id, view_ctx_t *ctx, const char *title
 	ctx->active = 1;
 }
 
-static void pcb_dlg_view_simplified(const char *id, view_ctx_t *ctx, const char *title)
+static void pcb_dlg_view_simplified(const char *id, view_ctx_t *ctx, const char *title, unsigned long preview_flipflags)
 {
 	pcb_view_t *v;
+
+	preview_flipflags &= (RND_HATF_PRV_GFLIP | RND_HATF_PRV_LFLIP);
 
 	ctx->wlist = -1;
 
@@ -674,7 +678,7 @@ static void pcb_dlg_view_simplified(const char *id, view_ctx_t *ctx, const char 
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 			RND_DAD_PREVIEW(ctx->dlg, view_expose_cb, view_mouse_cb, NULL, NULL, NULL, 100, 100, ctx);
 				ctx->wprev = RND_DAD_CURRENT(ctx->dlg);
-				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_PRV_BOARD | preview_flipflags);
 			RND_DAD_BEGIN_VBOX(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "(description)");
 					ctx->wdescription = RND_DAD_CURRENT(ctx->dlg);
@@ -746,11 +750,13 @@ void drc_extra_buttons(view_ctx_t *ctx)
 }
 
 static view_ctx_t drc_gui_ctx = {0};
-const char pcb_acts_DrcDialog[] = "DrcDialog([list|simple])\n";
+const char pcb_acts_DrcDialog[] = "DrcDialog([list|simple]\n";
 const char pcb_acth_DrcDialog[] = "Execute drc checks and invoke a view list dialog box for presenting the results";
 fgw_error_t pcb_act_DrcDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *dlg_type = "list";
+	unsigned long flip_flags = RND_HATF_PRV_GFLIP;
+
 	RND_ACT_MAY_CONVARG(1, FGW_STR, DrcDialog, dlg_type = argv[1].val.str);
 
 	if (!drc_gui_ctx.active) {
@@ -759,9 +765,9 @@ fgw_error_t pcb_act_DrcDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		drc_gui_ctx.refresh = drc_refresh;
 		pcb_drc_all();
 		if (rnd_strcasecmp(dlg_type, "simple") == 0)
-			pcb_dlg_view_simplified("drc_simple", &drc_gui_ctx, "DRC violations");
+			pcb_dlg_view_simplified("drc_simple", &drc_gui_ctx, "DRC violations", flip_flags);
 		else
-			pcb_dlg_view_full("drc_full", &drc_gui_ctx, "DRC violations", drc_extra_buttons);
+			pcb_dlg_view_full("drc_full", &drc_gui_ctx, "DRC violations", drc_extra_buttons, flip_flags);
 	}
 
 	view2dlg(&drc_gui_ctx);
@@ -783,9 +789,9 @@ fgw_error_t pcb_act_IOIncompatListDialog(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		io_gui_ctx.lst = &pcb_io_incompat_lst;
 		io_gui_ctx.refresh = NULL;
 		if (rnd_strcasecmp(dlg_type, "simple") == 0)
-			pcb_dlg_view_simplified("io_incompat_simple", &io_gui_ctx, "IO incompatibilities in last save");
+			pcb_dlg_view_simplified("io_incompat_simple", &io_gui_ctx, "IO incompatibilities in last save", 0);
 		else
-			pcb_dlg_view_full("io_incompat_full", &io_gui_ctx, "IO incompatibilities in last save", NULL);
+			pcb_dlg_view_full("io_incompat_full", &io_gui_ctx, "IO incompatibilities in last save", NULL, 0);
 	}
 
 	view2dlg(&io_gui_ctx);
@@ -819,7 +825,7 @@ fgw_error_t pcb_act_ViewList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		ctx->lst = calloc(sizeof(pcb_view_list_t), 1);
 	ctx->list_alloced = 1;
 	ctx->refresh = NULL;
-	pcb_dlg_view_full(winid, ctx, name, NULL);
+	pcb_dlg_view_full(winid, ctx, name, NULL, 0);
 	view2dlg(ctx);
 	return 0;
 }
