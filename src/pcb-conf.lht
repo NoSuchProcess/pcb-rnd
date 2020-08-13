@@ -150,6 +150,7 @@ li:pcb-rnd-conf-v1 {
 			subc_layer_per_side = 1
 			invis_other_groups = 0
 			black_current_group = 0
+			smart_labels = 0
 			label_thickness = 1nm
 
 			ha:loglevels {
