@@ -191,6 +191,7 @@ typedef struct {
 		RND_CFT_BOOLEAN invis_other_groups;    /* render non-current group layers with the inivisble color */
 		RND_CFT_BOOLEAN black_current_group;   /* render all layers of the current group black, for maximum contrast */
 		RND_CFT_BOOLEAN smart_labels;          /* attempt to place terminal labels in a way they don't overlap (costs extra CPU cycles, may slow down on-screen rendering) */
+		RND_CFT_COORD label_thickness;         /* font thickness for labels (e.g. terminal labels); thinnest possible is 1nm */
 
 		struct {                           /* color */
 			RND_CFT_COLOR crosshair;             /* obsolete - DO NOT USE - kept for compatibility (use appearance/color/cross instead) */
