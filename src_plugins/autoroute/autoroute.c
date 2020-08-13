@@ -1797,7 +1797,11 @@ static rnd_box_t edge_to_box(const routebox_t * rb, rnd_direction_t expand_dir)
 		b.X2 = b.X1 + 1;
 		break;
 	default:
-		assert(0);
+		/* This used to be an assert(0), but it seems a polygon connected to
+		   a terminal triggers it while simply falling through doesn't cause
+		   any problem. This bug is present in both the 2011 version of
+		   PCB and in PCB 4.2.0 as well. */
+		break;
 	}
 	/* done! */
 	return b;
