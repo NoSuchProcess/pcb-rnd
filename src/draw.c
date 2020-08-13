@@ -1268,7 +1268,7 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 	}
 
 
-void pcb_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const char *label)
+void pcb_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const char *label, int prio)
 {
 	int mirror, direction;
 
@@ -1288,7 +1288,7 @@ void pcb_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double 
 			pcb_draw_force_termlab--;
 	}
 	else
-		pcb_label_smart_add(info, x, y, scale/100.0, direction*90.0, mirror, w, h, label);
+		pcb_label_smart_add(info, x, y, scale/100.0, direction*90.0, mirror, w, h, label, prio);
 }
 
 
@@ -1311,8 +1311,30 @@ void pcb_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool v
 void pcb_term_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const pcb_any_obj_t *obj)
 {
 	char buff[128];
+	int prio = 1; /* slightly lower prio than subc */
+	int on_bottom, flips;
 	const char *label = lab_with_intconn(obj, obj->intconn, obj->term, buff, sizeof(buff));
-	pcb_label_draw(info, x, y, scale, vert, centered, label);
+
+	flips = !!(rnd_conf.editor.view.flip_x ^ rnd_conf.editor.view.flip_y);
+
+	switch(obj->type) {
+		case PCB_OBJ_PSTK: /* top prio */
+			break;
+		case PCB_OBJ_LINE:
+		case PCB_OBJ_ARC:
+		case PCB_OBJ_TEXT:
+		case PCB_OBJ_POLY:
+		case PCB_OBJ_GFX:
+			on_bottom = !!(pcb_layer_flags_(obj->parent.layer) & PCB_LYT_BOTTOM);
+			if (on_bottom == flips)
+				prio += 1;
+			else
+				prio += 2; /* other-side object penalty */
+			break;
+		default:
+			prio += 10;
+	}
+	pcb_label_draw(info, x, y, scale, vert, centered, label, prio);
 }
 
 void pcb_term_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const pcb_any_obj_t *obj)

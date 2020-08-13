@@ -6,6 +6,7 @@ struct pcb_smart_label_s {
 	rnd_coord_t y;
 	double scale;
 	double rot;
+	int prio;
 	rnd_bool mirror;
 	rnd_coord_t w;
 	rnd_coord_t h;
@@ -15,7 +16,7 @@ struct pcb_smart_label_s {
 
 static pcb_smart_label_t *smart_labels = NULL;
 
-RND_INLINE void pcb_label_smart_add(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double scale, double rot, rnd_bool mirror, rnd_coord_t w, rnd_coord_t h, const char *label)
+RND_INLINE void pcb_label_smart_add(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double scale, double rot, rnd_bool mirror, rnd_coord_t w, rnd_coord_t h, const char *label, int prio)
 {
 	int len = strlen(label);
 	pcb_smart_label_t *l = malloc(sizeof(pcb_smart_label_t) + len + 1);
@@ -25,6 +26,7 @@ RND_INLINE void pcb_label_smart_add(pcb_draw_info_t *info, rnd_coord_t x, rnd_co
 	l->rot = rot;
 	l->mirror = mirror;
 	l->w = w; l->h = h;
+	l->prio = prio;
 	memcpy(l->label, label, len+1);
 
 	l->next = smart_labels;
@@ -51,6 +53,7 @@ RND_INLINE void pcb_label_smart_flush(pcb_draw_info_t *info)
 
 	for(l = smart_labels; l != NULL; l = next) {
 		next = l->next;
+/*printf("l->prio=%d\n", l->prio);*/
 		pcb_text_draw_string(info, font, (unsigned const char *)l->label, l->x, l->y, l->scale, l->scale, l->rot, l->mirror, 1, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
 		free(l);
 	}

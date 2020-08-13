@@ -2114,7 +2114,7 @@ rnd_r_dir_t draw_subc_label_callback(const rnd_box_t *b, void *cl)
 					next++;
 					ctrl = 1;
 				}
-				pcb_label_draw(info, x, y, conf_core.appearance.term_label_size/2, 0, 0, curr);
+				pcb_label_draw(info, x, y, conf_core.appearance.term_label_size/2, 0, 0, curr, 0);
 				if (ctrl) {
 					switch(*next) {
 						case 'n': y += dy; x = x0; break;
@@ -2124,10 +2124,10 @@ rnd_r_dir_t draw_subc_label_callback(const rnd_box_t *b, void *cl)
 			}
 		}
 		else
-			pcb_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, "<err>");
+			pcb_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, "<err>", 0);
 	}
 	else if (subc->refdes != NULL)
-		pcb_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, subc->refdes);
+		pcb_label_draw(info, x0, y0, conf_core.appearance.term_label_size/2.0, 0, 0, subc->refdes, 0);
 
 	return RND_R_DIR_FOUND_CONTINUE;
 }
