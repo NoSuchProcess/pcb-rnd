@@ -127,7 +127,7 @@ void EraseSubc(pcb_subc_t *sc);
 
 /* calculate geometrical properties using the aux layer; return 0 on success */
 int pcb_subc_get_origin(pcb_subc_t *sc, rnd_coord_t *x, rnd_coord_t *y);
-int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot);
+int pcb_subc_get_rotation(pcb_subc_t *sc, double *rot); /* in deg */
 int pcb_subc_get_side(pcb_subc_t *sc, int *on_bottom);
 
 /* get all the above transformatoins at once. If neg is 0, these are the

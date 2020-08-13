@@ -624,6 +624,8 @@ static void pcb_draw_ppv(pcb_draw_info_t *info, rnd_layergrp_id_t group)
 	}
 }
 
+#include "draw_label_smart.c"
+
 /* ---------------------------------------------------------------------------
  * Draws padstacks' names - Always draws for non-gui HIDs,
  * otherwise drawing depends on PCB->pstk_on
@@ -635,6 +637,7 @@ void pcb_draw_pstk_names(pcb_draw_info_t *info, rnd_layergrp_id_t group, const r
 		for(n = 0; n < delayed_labels.used; n++)
 			pcb_draw_obj_label(info, group, delayed_labels.array[n]);
 	}
+	pcb_label_smart_flush(info);
 	delayed_labels.used = 0;
 }
 
@@ -1268,19 +1271,26 @@ static const char *lab_with_intconn(const pcb_any_obj_t *term, int intconn, cons
 void pcb_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const char *label)
 {
 	int mirror, direction;
+
 	PCB_TERM_LABEL_SETUP((const unsigned char *)label);
 
 	mirror = (flip_x ^ flip_y) ? PCB_TXT_MIRROR_Y : 0;
 	direction = (vert ? 1 : 0);
 
-	rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
+	if (!conf_core.appearance.smart_labels) {
 
-	if (rnd_render->gui)
-		pcb_draw_force_termlab++;
-	pcb_text_draw_string(info, font, (unsigned const char *)label, x, y, scale/100, scale/100, direction*90.0, mirror, 1, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
-	if (rnd_render->gui)
-		pcb_draw_force_termlab--;
+		rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
+
+		if (rnd_render->gui)
+			pcb_draw_force_termlab++;
+		pcb_text_draw_string(info, font, (unsigned const char *)label, x, y, scale/100, scale/100, direction*90.0, mirror, 1, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
+		if (rnd_render->gui)
+			pcb_draw_force_termlab--;
+	}
+	else
+		pcb_label_smart_add(info, x, y, scale/100.0, direction*90.0, mirror, w, h, label);
 }
+
 
 void pcb_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_bool vert, rnd_bool centered, const char *label)
 {

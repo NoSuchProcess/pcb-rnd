@@ -190,6 +190,7 @@ typedef struct {
 		RND_CFT_BOOLEAN subc_layer_per_side;   /* hide top or bottom placed subcircuit annotations if the view is showing the other side */
 		RND_CFT_BOOLEAN invis_other_groups;    /* render non-current group layers with the inivisble color */
 		RND_CFT_BOOLEAN black_current_group;   /* render all layers of the current group black, for maximum contrast */
+		RND_CFT_BOOLEAN smart_labels;          /* attempt to place terminal labels in a way they don't overlap (costs extra CPU cycles, may slow down on-screen rendering) */
 
 		struct {                           /* color */
 			RND_CFT_COLOR crosshair;             /* obsolete - DO NOT USE - kept for compatibility (use appearance/color/cross instead) */
