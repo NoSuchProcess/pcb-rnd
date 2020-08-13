@@ -70,7 +70,6 @@
 		- new doc layers
 		- polygon side clearance (e.g. CUCP#38 provided by Karl)
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG: autorouter broke on polygons: bug_files/ara.lht, {a r a}, happens only with configure --debug bisect: broke between r1930 and r1940 [report: Igor2]
 
 3. Long term ===============================================================================
 - version 3.0.0:
