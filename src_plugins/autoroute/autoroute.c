@@ -612,7 +612,6 @@ static routebox_t *AddTerm_(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_r
 	assert(*rbpp);
 	(*rbpp)->group = layergroup;
 	clr = pcb_obj_clearance_at(PCB, term, layer);
-rnd_printf("***** CLR=%mm\n", clr);
 	init_const_box(*rbpp,
 								 /*X1 */ term->BoundingBox.X1 + clr,
 								 /*Y1 */ term->BoundingBox.Y1 + clr,
