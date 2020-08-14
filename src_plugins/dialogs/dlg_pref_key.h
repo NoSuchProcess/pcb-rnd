@@ -3,6 +3,7 @@
 
 typedef struct {
 	int wlist;
+	int lock;
 } pref_key_t;
 
 void pcb_dlg_pref_key_create(pref_ctx_t *ctx);
