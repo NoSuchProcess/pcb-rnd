@@ -11,6 +11,7 @@ typedef struct pref_ctx_s pref_ctx_t;
 #include "dlg_pref_lib.h"
 #include "dlg_pref_color.h"
 #include "dlg_pref_win.h"
+#include "dlg_pref_key.h"
 #include "dlg_pref_menu.h"
 #include "dlg_pref_conf.h"
 
@@ -33,6 +34,7 @@ struct pref_ctx_s {
 	pref_lib_t lib;
 	pref_color_t color;
 	pref_win_t win;
+	pref_key_t key;
 	pref_menu_t menu;
 	pref_conf_t conf;
 

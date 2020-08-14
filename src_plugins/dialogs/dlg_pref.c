@@ -42,9 +42,9 @@
 
 #include "dlg_pref.h"
 
-#define PREF_TABS 9
-static const char *pref_tabs[PREF_TABS+1] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Menu", "Config tree", NULL };
-static const int pref_tab_cfgs[PREF_TABS] = {    1,        0,           1,               1,        0,        1,        1,       0,          0      };
+#define PREF_TABS 10
+static const char *pref_tabs[PREF_TABS+1] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Key", "Menu", "Config tree", NULL };
+static const int pref_tab_cfgs[PREF_TABS] = {    1,        0,           1,               1,        0,        1,        1,        1,     0,          0      };
 
 static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx);
 static void pref_dlg2conf_post(pref_ctx_t *ctx);
@@ -56,6 +56,7 @@ static void pref_dlg2conf_post(pref_ctx_t *ctx);
 #include "dlg_pref_layer.c"
 #include "dlg_pref_color.c"
 #include "dlg_pref_win.c"
+#include "dlg_pref_key.c"
 #include "dlg_pref_menu.c"
 #include "dlg_pref_conf.c"
 
@@ -281,6 +282,7 @@ static void pref_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	pcb_dlg_pref_lib_close(ctx);
 	pcb_dlg_pref_color_close(ctx);
 	pcb_dlg_pref_win_close(ctx);
+	pcb_dlg_pref_key_close(ctx);
 	pcb_dlg_pref_menu_close(ctx);
 
 	for(n = 0; n < ctx->auto_free.used; n++)
@@ -363,6 +365,10 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 				pcb_dlg_pref_win_create(&pref_ctx);
 			RND_DAD_END(pref_ctx.dlg);
 
+			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Key */
+				pcb_dlg_pref_key_create(&pref_ctx);
+			RND_DAD_END(pref_ctx.dlg);
+
 			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Menu */
 				pcb_dlg_pref_menu_create(&pref_ctx);
 			RND_DAD_END(pref_ctx.dlg);
@@ -398,6 +404,7 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 	pcb_dlg_pref_lib_open(&pref_ctx);
 	pcb_dlg_pref_color_open(&pref_ctx);
 	pcb_dlg_pref_win_open(&pref_ctx);
+	pcb_dlg_pref_key_open(&pref_ctx);
 	pcb_dlg_pref_menu_open(&pref_ctx);
 	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == PREF_TABS - 2) ? tabarg : NULL);
 	if ((target_tab >= 0) && (target_tab < PREF_TABS)) {
