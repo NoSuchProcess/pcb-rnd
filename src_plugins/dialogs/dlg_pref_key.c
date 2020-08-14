@@ -30,6 +30,7 @@
 #include <librnd/core/conf.h>
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
+#include <librnd/core/hid_cfg_input.h>
 
 static void pref_key_brd2dlg(pref_ctx_t *ctx)
 {
@@ -149,16 +150,72 @@ static void pref_key_remove(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	pref_key_mod_post(&pref_ctx);
 }
 
+/*** key detector GUI ***/
+
+typedef struct {
+	RND_DAD_DECL_NOINIT(dlg)
+	int wkdesc;
+} kd_ctx_t;
+
+static kd_ctx_t kd;
+
+void dummy_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+{
+}
+
+rnd_bool key_press_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_bool release, rnd_hid_cfg_mod_t mods, unsigned short int key_raw, unsigned short int key_tr)
+{
+	rnd_hid_attr_val_t hv;
+	char *desc;
+
+	if (release)
+		return 0;
+
+	desc = rnd_hid_cfg_keys_gen_desc(mods, key_raw, 0);
+	if (desc == NULL) {
+/* Can't do this yet because mods are passed on too:
+		rnd_message(RND_MSG_ERROR, "Failed to recognize that key (%d %d)\n", key_raw, key_tr);*/
+		return 0;
+	}
+	hv.str = desc;
+	rnd_gui->attr_dlg_set_value(kd.dlg_hid_ctx, kd.wkdesc, &hv);
+
+	free(desc);
+	return 0;
+}
 
 static void pref_key_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *battr)
 {
+	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"add", 0}, {NULL, 0}};
 	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.key.wlist];
 	rnd_hid_tree_t *tree = attr->wdata;
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
 	lht_node_t *lst = pref_key_mod_pre(&pref_ctx);
+	rnd_box_t vbox = {0, 0, RND_MM_TO_COORD(55), RND_MM_TO_COORD(55)};
 
-	if ((row == NULL) || (lst == NULL))
+	if (lst == NULL)
 		return;
+
+	RND_DAD_BEGIN_VBOX(kd.dlg);
+		RND_DAD_COMPFLAG(kd.dlg, RND_HATF_EXPFILL);
+		RND_DAD_BEGIN_HBOX(kd.dlg);
+			RND_DAD_LABEL(kd.dlg, "Key pressed:");
+			RND_DAD_STRING(kd.dlg);
+				kd.wkdesc = RND_DAD_CURRENT(kd.dlg);
+			RND_DAD_PREVIEW(kd.dlg,  dummy_expose_cb, NULL, key_press_cb, NULL, &vbox, 20, 20, /**/NULL);
+				RND_DAD_COMPFLAG(kd.dlg, RND_HATF_FRAME);
+				RND_DAD_HELP(kd.dlg, "Click here then press a key and it will be filled in automatically");
+		RND_DAD_END(kd.dlg);
+		RND_DAD_BEGIN_HBOX(kd.dlg);
+			RND_DAD_LABEL(kd.dlg, "Translated to:");
+			RND_DAD_STRING(kd.dlg);
+		RND_DAD_END(kd.dlg);
+		RND_DAD_BUTTON_CLOSES(kd.dlg, clbtn);
+	RND_DAD_END(kd.dlg);
+
+	RND_DAD_NEW("pref_key_set", kd.dlg, "set key translation", /**/NULL, rnd_true, NULL);
+	RND_DAD_RUN(kd.dlg);
+	RND_DAD_FREE(kd.dlg);
 }
 
 
