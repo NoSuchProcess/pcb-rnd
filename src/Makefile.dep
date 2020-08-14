@@ -225,7 +225,8 @@
  ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
  ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/genht/ht_utils.h ../src_3rd/genvector/gds_char.h \
+ ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h librnd/config.h \
  librnd/core/hid_cfg_input.h ../src_3rd/genht/htip.h \
  ../src_3rd/genht/htpp.h librnd/core/hid_cfg.h \
@@ -1169,6 +1170,7 @@
  ../src_plugins/dialogs/dlg_pref_lib.h \
  ../src_plugins/dialogs/dlg_pref_color.h \
  ../src_plugins/dialogs/dlg_pref_win.h \
+ ../src_plugins/dialogs/dlg_pref_key.h \
  ../src_plugins/dialogs/dlg_pref_menu.h \
  ../src_plugins/dialogs/dlg_pref_conf.h
 ../src_plugins/dialogs/dlg_about.o: ../src_plugins/dialogs/dlg_about.c \
@@ -1513,6 +1515,7 @@
  ../src_plugins/dialogs/dlg_pref_lib.h \
  ../src_plugins/dialogs/dlg_pref_color.h \
  ../src_plugins/dialogs/dlg_pref_win.h \
+ ../src_plugins/dialogs/dlg_pref_key.h \
  ../src_plugins/dialogs/dlg_pref_menu.h \
  ../src_plugins/dialogs/dlg_pref_conf.h \
  ../src_plugins/dialogs/dlg_pref_sizes.c board.h vtroutestyle.h attrib.h \
@@ -1528,6 +1531,7 @@
  draw.h ../src_plugins/dialogs/dlg_pref_color.c \
  ../src_plugins/dialogs/dlg_pref_win.c librnd/core/hidlib_conf.h \
  ../src_plugins/lib_hid_common/dialogs_conf.h \
+ ../src_plugins/dialogs/dlg_pref_key.c \
  ../src_plugins/dialogs/dlg_pref_menu.c librnd/core/hid_menu.h \
  librnd/core/safe_fs.h ../src_plugins/dialogs/dlg_pref_conf.c \
  ../src_plugins/dialogs/dlg_pref_confedit.c librnd/core/hid_dad_unit.h
