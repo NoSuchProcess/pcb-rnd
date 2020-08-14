@@ -44,7 +44,7 @@
 
 #define PREF_TABS 10
 static const char *pref_tabs[PREF_TABS+1] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Key", "Menu", "Config tree", NULL };
-static const int pref_tab_cfgs[PREF_TABS] = {    1,        0,           1,               1,        0,        1,        1,        1,     0,          0      };
+static const int pref_tab_cfgs[PREF_TABS] = {    1,        0,           1,               1,        0,        1,        1,        0,     0,          0      };
 
 static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx);
 static void pref_dlg2conf_post(pref_ctx_t *ctx);
@@ -282,7 +282,6 @@ static void pref_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	pcb_dlg_pref_lib_close(ctx);
 	pcb_dlg_pref_color_close(ctx);
 	pcb_dlg_pref_win_close(ctx);
-	pcb_dlg_pref_key_close(ctx);
 	pcb_dlg_pref_menu_close(ctx);
 
 	for(n = 0; n < ctx->auto_free.used; n++)

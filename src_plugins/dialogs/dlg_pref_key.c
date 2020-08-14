@@ -33,6 +33,44 @@
 
 static void pref_key_brd2dlg(pref_ctx_t *ctx)
 {
+	rnd_hid_attribute_t *attr;
+	rnd_hid_tree_t *tree;
+	rnd_hid_row_t *row, *r;
+	rnd_conf_native_t *nat = rnd_conf_get_field("editor/translate_key");
+	char *cursor_path = NULL, *cell[3];
+	long n;
+	gdl_iterator_t it;
+	rnd_conf_listitem_t *kt;
+
+	attr = &ctx->dlg[ctx->key.wlist];
+	tree = attr->wdata;
+
+	/* remember cursor */
+	r = rnd_dad_tree_get_selected(attr);
+	if ((r != NULL) && (nat != NULL))
+		cursor_path = rnd_strdup(r->cell[0]);
+
+	/* remove existing items */
+	rnd_dad_tree_clear(tree);
+
+	if (nat == NULL)
+		return;
+
+	/* add all items */
+	rnd_conflist_foreach(nat->val.list, &it, kt) {
+		cell[0] = rnd_strdup(kt->name);
+		cell[1] = rnd_strdup(kt->payload);
+		row = rnd_dad_tree_append(attr, NULL, cell);
+		row->user_data = kt;
+	}
+
+	/* restore cursor */
+	if (cursor_path != NULL) {
+		rnd_hid_attr_val_t hv;
+		hv.str = cursor_path;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->menu.wlist, &hv);
+		free(cursor_path);
+	}
 }
 
 void pcb_dlg_pref_key_open(pref_ctx_t *ctx)
@@ -40,13 +78,22 @@ void pcb_dlg_pref_key_open(pref_ctx_t *ctx)
 	pref_key_brd2dlg(ctx);
 }
 
-void pcb_dlg_pref_key_close(pref_ctx_t *ctx)
-{
-}
-
 
 void pcb_dlg_pref_key_create(pref_ctx_t *ctx)
 {
+	static const char *hdr[] = {"pressed", "translated to", NULL};
+
 	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		RND_DAD_LABEL(ctx->dlg, "TODO");
+
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_SCROLL | RND_HATF_EXPFILL);
+		RND_DAD_TREE(ctx->dlg, 3, 0, hdr);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			ctx->key.wlist = RND_DAD_CURRENT(ctx->dlg);
+	RND_DAD_END(ctx->dlg);
+
+	RND_DAD_BEGIN_HBOX(ctx->dlg);
+		RND_DAD_BUTTON(ctx->dlg, "Remove");
+		RND_DAD_BUTTON(ctx->dlg, "Add new...");
+	RND_DAD_END(ctx->dlg);
 }
