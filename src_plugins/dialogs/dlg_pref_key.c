@@ -39,7 +39,6 @@ static void pref_key_brd2dlg(pref_ctx_t *ctx)
 	rnd_hid_row_t *row, *r;
 	rnd_conf_native_t *nat = rnd_conf_get_field("editor/translate_key");
 	char *cursor_path = NULL, *cell[3];
-	long n;
 	gdl_iterator_t it;
 	rnd_conf_listitem_t *kt;
 
@@ -188,8 +187,6 @@ static void pref_key_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"add", 0}, {NULL, 0}};
 	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.key.wlist];
-	rnd_hid_tree_t *tree = attr->wdata;
-	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
 	lht_node_t *nd, *lst = pref_key_mod_pre(&pref_ctx);
 	rnd_box_t vbox = {0, 0, RND_MM_TO_COORD(55), RND_MM_TO_COORD(55)};
 	int res;
@@ -217,7 +214,7 @@ static void pref_key_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 		RND_DAD_BUTTON_CLOSES(kd.dlg, clbtn);
 	RND_DAD_END(kd.dlg);
 
-	RND_DAD_NEW("pref_key_set", kd.dlg, "set key translation", /**/NULL, rnd_true, NULL);
+	RND_DAD_NEW("pref_key_set", kd.dlg, "set key translation", NULL, rnd_true, NULL);
 	res = RND_DAD_RUN(kd.dlg);
 
 	if (res == 0) {
@@ -227,7 +224,7 @@ static void pref_key_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 			cell[0] = rnd_strdup(k1);
 			cell[1] = rnd_strdup(k2);
 			cell[2] = NULL;
-			row = rnd_dad_tree_append(attr, NULL, cell);
+			rnd_dad_tree_append(attr, NULL, cell);
 
 			nd = lht_dom_node_alloc(LHT_TEXT, k1);
 			nd->data.text.value = rnd_strdup(k2);
