@@ -89,7 +89,6 @@
 	- per layer: keep a bbox per transformed shape per prototype, then getting the bbox of a padstack ref on a specific layer is looking up the shape, then 4 integer additions [report: Wojciech]
 	- when calculating overall padstack bbox, ignore layers that are not present? but then a layer change would require a recalc (but this is true for subcs too!) [report: Wojciech]
 - FEATURE: depth controlled mech layers (routed) for internal cavities: http://www.saturnelectronics.com/products_capabilities/internal-cavity_boards.html -> user script, similar to on_every_layer: convert lines into bbvia slot padstacks; only when we already export bbvia in excellon; alternative: layer attribute on mech layers
-- FEATURE: key rewrite: (base key swap bug (q<->a, y<->z)): GUI for learning key for non-US users
 - XOR rendering upgrade:
 		- experiment with 'emboss' kind of drawing instead of xor so rendering can stay 'direct'
 		- if worked: allow padstack xor draw to draw all shapes on all layers
