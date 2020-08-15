@@ -218,17 +218,17 @@ static void pref_key_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	res = RND_DAD_RUN(kd.dlg);
 
 	if (res == 0) {
-			const char *k1 = kd.dlg[kd.wkdesc].val.str, *k2 = kd.dlg[kd.wtdesc].val.str;
-			char *cell[3];
+		const char *k1 = kd.dlg[kd.wkdesc].val.str, *k2 = kd.dlg[kd.wtdesc].val.str;
+		char *cell[3];
 
-			cell[0] = rnd_strdup(k1);
-			cell[1] = rnd_strdup(k2);
-			cell[2] = NULL;
-			rnd_dad_tree_append(attr, NULL, cell);
+		cell[0] = rnd_strdup(k1);
+		cell[1] = rnd_strdup(k2);
+		cell[2] = NULL;
+		rnd_dad_tree_append(attr, NULL, cell);
 
-			nd = lht_dom_node_alloc(LHT_TEXT, k1);
-			nd->data.text.value = rnd_strdup(k2);
-			lht_dom_list_append(lst, nd);
+		nd = lht_dom_node_alloc(LHT_TEXT, k1);
+		nd->data.text.value = rnd_strdup(k2);
+		lht_dom_list_append(lst, nd);
 	}
 
 	pref_key_mod_post(&pref_ctx);
