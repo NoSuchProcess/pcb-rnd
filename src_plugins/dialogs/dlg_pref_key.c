@@ -203,7 +203,7 @@ static void pref_key_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 			RND_DAD_LABEL(kd.dlg, "Key pressed:");
 			RND_DAD_STRING(kd.dlg);
 				kd.wkdesc = RND_DAD_CURRENT(kd.dlg);
-				RND_DAD_HELP(kd.dlg, "Enter a key description here\nTypical examples: <char>t or <char>|\nOr use the key detection box on the right");
+				RND_DAD_HELP(kd.dlg, "Enter a key description here\nTypical examples: <key>t or Alt<key>w\nOr use the key detection box on the right");
 			RND_DAD_PREVIEW(kd.dlg,  dummy_expose_cb, NULL, key_press_cb, NULL, &vbox, 20, 20, NULL);
 				RND_DAD_COMPFLAG(kd.dlg, RND_HATF_FRAME);
 				RND_DAD_HELP(kd.dlg, "Click here then press a key and it will be filled in automatically");
@@ -212,7 +212,7 @@ static void pref_key_append(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 			RND_DAD_LABEL(kd.dlg, "Translated to:");
 			RND_DAD_STRING(kd.dlg);
 				kd.wtdesc = RND_DAD_CURRENT(kd.dlg);
-			RND_DAD_HELP(kd.dlg, "Enter a key description here\nTypical examples: <char>t or <char>|");
+			RND_DAD_HELP(kd.dlg, "Enter a key description here\nTypical examples: <key>t or <char>|");
 		RND_DAD_END(kd.dlg);
 		RND_DAD_BUTTON_CLOSES(kd.dlg, clbtn);
 	RND_DAD_END(kd.dlg);
