@@ -269,7 +269,8 @@ int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
 				PARSE_COORD(th, argv[9]);
 				PARSE_COORD(cl, argv[10]);
 				line = pcb_line_new_merge(ly, x1, y1, x2, y2, th, cl, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_AUTO));
-				pcb_undo_add_obj_to_create(PCB_OBJ_LINE, ly, line, line);
+				if (line != NULL)
+					pcb_undo_add_obj_to_create(PCB_OBJ_LINE, ly, line, line);
 			}
 			else
 				rnd_message(RND_MSG_ERROR, "External autorouter: can't add object type '%s' with %d args\n", argv[2], argc);
