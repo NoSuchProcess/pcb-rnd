@@ -180,7 +180,7 @@ static int orcad_net_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, 
 		if (s == NULL)
 			break;
 		while(isspace(*s)) s++;
-		if (strstr(s, "OrCAD/PCB II Netlist") == 0) {
+		if (strstr(s, "OrCAD/PCB II Netlist") != NULL) {
 			fclose(f);
 			return 100;
 		}
