@@ -576,7 +576,7 @@ static int net_short_check(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj
 		pcb_short_ctx_t *sctx = fctx->user_data;
 		pcb_subc_t *sc = pcb_obj_parent_subc(new_obj);
 
-		if ((sc == NULL) || (sc->refdes == NULL))
+		if ((sc == NULL) || (sc->refdes == NULL) || PCB_FLAG_TEST(PCB_FLAG_NONETLIST, sc))
 			return 0;
 
 		/* if new_obj is a terminal on our net, return */
