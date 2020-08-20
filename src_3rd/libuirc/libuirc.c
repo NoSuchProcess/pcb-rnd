@@ -87,7 +87,6 @@ static uirc_event_t uirc_parse_001(uirc_t *ctx, char *arg)
 static uirc_event_t uirc_parse_join(uirc_t *ctx, char *nick, char *arg)
 {
 	int q;
-/*:libuirc!~libuirc@78-131-56-146.static.hdsnet.hu JOIN :#dev*/
 
 	if (*arg == ':') arg++;
 
