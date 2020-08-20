@@ -11,7 +11,8 @@
 - DOC: datasheet and package description file format lists should be generated [report: Igor2]
 - BUG: enable both rubberbands; place a subc term on a track; rotate subc so track is distorted; undo; track change is not undone [report: Igor2]
 - BUG: polygon-side enforced clearance; draw a line with smaller clearance over the poly then press {e j} -> artifacts [Igor2]
-- BUG: ribber band line move happoly modifies an existing line that's part of a subc [report: Majenko]
+- BUG: edit buses in rubber band mode -> double free [report: Igor2]
+- BUG: rubber band line move happoly modifies an existing line that's part of a subc [report: Majenko]
 - defaults change:
 	- import schematics: insert to frame
 	- import schematics: removal?
