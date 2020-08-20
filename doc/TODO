@@ -12,7 +12,7 @@
 - DOC: datasheet and package description file format lists should be generated [report: Igor2]
 - BUG: enable both rubberbands; place a subc term on a track; rotate subc so track is distorted; undo; track change is not undone [report: Igor2]
 - BUG: polygon-side enforced clearance; draw a line with smaller clearance over the poly then press {e j} -> artifacts [Igor2]
-- BUG: search.c: draw an extended object where the E mark is covered by the object (e.g. a thick bus) -> can't click the bus without hiding the drawing layer [Majenko]
++ BUG: context menu right click: an extended object where the E mark is covered by the object (e.g. a thick bus) -> can't click the bus without hiding the drawing layer [Majenko]
 - defaults change:
 	- import schematics: insert to frame
 	- import schematics: removal?
