@@ -32,6 +32,7 @@
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
+- FEATURE: optional: when hovering over an editable object, draw edit/grab points as labels [report: Majenko]
 - FEATURE: fontsel: ttf import?
 - FEATURE: (TT) route style upgrade to prototypes - requires lihata v8:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
