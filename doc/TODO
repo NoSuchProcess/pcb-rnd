@@ -33,6 +33,7 @@
 	- FEATURE: gfx rotated pixmap scale adjustment: missing in lesstif, partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
+- FEATURE: if drc_query is disabled, it is hard to figure because the preferences window or the drc_query dialog doesn't show [report: Majenko]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: optional: when hovering over an editable object, draw edit/grab points as labels [report: Majenko]
 - FEATURE: fontsel: ttf import?
