@@ -532,7 +532,7 @@ fgw_error_t pcb_act_FreeRotateBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 typedef struct {
 	RND_DAD_DECL_NOINIT(dlg)
-	int wx, wy, wlock;
+	int wx, wy, wlock, wth, wrecurse;
 } scale_t;
 
 /* make sure x;y values are synced when lock is active */
@@ -556,7 +556,7 @@ static void scale_chg_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 }
 
 /* returns 0 on OK */
-static int pcb_actgui_ScaleBuffer(rnd_hidlib_t *hidlib, double *x, double *y)
+static int pcb_actgui_ScaleBuffer(rnd_hidlib_t *hidlib, double *x, double *y, double *th, int *recurse)
 {
 	scale_t ctx;
 	int res;
@@ -587,6 +587,16 @@ static int pcb_actgui_ScaleBuffer(rnd_hidlib_t *hidlib, double *x, double *y)
 				RND_DAD_DEFAULT_NUM(ctx.dlg, 1);
 				RND_DAD_CHANGE_CB(ctx.dlg, scale_chg_cb);
 
+			RND_DAD_LABEL(ctx.dlg, "scale thickness");
+			RND_DAD_REAL(ctx.dlg);
+				ctx.wth = RND_DAD_CURRENT(ctx.dlg);
+				RND_DAD_DEFAULT_NUM(ctx.dlg, 1);
+
+			RND_DAD_LABEL(ctx.dlg, "subcircuits");
+			RND_DAD_BOOL(ctx.dlg);
+				ctx.wrecurse = RND_DAD_CURRENT(ctx.dlg);
+				RND_DAD_DEFAULT_NUM(ctx.dlg, 0);
+
 		RND_DAD_BUTTON_CLOSES(ctx.dlg, clbtn);
 	RND_DAD_END(ctx.dlg);
 
@@ -594,6 +604,8 @@ static int pcb_actgui_ScaleBuffer(rnd_hidlib_t *hidlib, double *x, double *y)
 	res = RND_DAD_RUN(ctx.dlg);
 	*x = ctx.dlg[ctx.wx].val.dbl;
 	*y = ctx.dlg[ctx.wy].val.dbl;
+	*th = ctx.dlg[ctx.wth].val.dbl;
+	*recurse = ctx.dlg[ctx.wrecurse].val.lng;
 	RND_DAD_FREE(ctx.dlg);
 	return res;
 }
@@ -621,11 +633,10 @@ fgw_error_t pcb_act_ScaleBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		y = th = x;
 	}
 	else {
-		if (pcb_actgui_ScaleBuffer(RND_ACT_HIDLIB, &x, &y) != 0) {
+		if (pcb_actgui_ScaleBuffer(RND_ACT_HIDLIB, &x, &y, &th, &recurse) != 0) {
 			RND_ACT_IRES(-1);
 			return 0;
 		}
-		th = 1;
 	}
 
 	RND_ACT_MAY_CONVARG(2, FGW_DOUBLE, ScaleBuffer, y = argv[2].val.nat_double);
