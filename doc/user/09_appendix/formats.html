@@ -35,11 +35,11 @@
 <td>no
 <td>works
  <td>
-  autotrax PCB, version 4
+  autotrax PCB board, version 4
   <br>
-  autotrax PCB, version 5
+  autotrax PCB board, version 5
  <td>
-  autotrax PCB, version 4
+  autotrax PCB board, version 4
 <tr><th>io_bxl
 <td>no
 <td>WIP
@@ -58,13 +58,13 @@ n/a
 <td>no
 <td>works
  <td>
-  eagle xml board version 6, 7 and 8
+  eagle xml board version 6, 7, 8
   <br>
-  eagle xml library
+  eagle xml footprint lib
   <br>
-  eagle binary board version 3, 4 and 5
+  eagle binary board version 3, 4, 5
   <br>
-  eagle binary library
+  eagle binary footprint lib
   <br>
   eagle DRU (design rules)
  <td>
@@ -125,6 +125,8 @@ n/a
   tEDAx footprint (any version)
   <br>
   tEDAx drc
+  <br>
+  tEDAx pcb-rnd drc script
  <td>
   tEDAx netlist (any version)
   <br>
@@ -133,25 +135,27 @@ n/a
   tEDAx etest
   <br>
   tEDAx drc
+  <br>
+  tEDAx pcb-rnd drc script
 <tr><th>import_accel_net
 <td>no
 <td>works
  <td>
-  import netlist and footprint info from Accel ASCII netlists
+  Accel ASCII netlists + footprint info
  <td>
 n/a
 <tr><th>import_calay
 <td>no
 <td>works
  <td>
-  import netlist and footprint info from calay netlists
+  calay (netlists + footprint info)
  <td>
 n/a
 <tr><th>import_dsn
 <td>no
 <td>works
  <td>
-  import wires and vias from specctra .dsn
+  specctra .dsn (wires and vias)
  <td>
 n/a
 <tr><th>import_edif
@@ -165,21 +169,21 @@ n/a
 <td>no
 <td>works
  <td>
-  import netlist and footprint names from freepcb netlist
+  freepcb netlist + footprint info
  <td>
 n/a
 <tr><th>import_gnetlist
 <td>no
 <td>works
  <td>
-  import gEDA/gschem schematics running gnetlist
+  gEDA/gschem (netlist + footpritn info, running gnetlist)
  <td>
 n/a
 <tr><th>import_hpgl
 <td>no
 <td>works
  <td>
-  import lines, arcs and polygons from HPGL plot files
+  HPGL plot (lines, arcs, polygons)
  <td>
 n/a
 <tr><th>import_ipcd356
@@ -188,98 +192,98 @@ n/a
  <td>
 n/a
  <td>
-  import IPC-D-356 Netlist (from automated testing)
+  IPC-D-356 Netlist (from automated testing)
 <tr><th>import_ltspice
 <td>no
 <td>works
  <td>
-  import netlist and footprint names from ltspice .net and .asc file pairs
+  import ltspice .net and .asc (netlist and footprint info)
  <td>
 n/a
 <tr><th>import_mentor_sch
 <td>no
 <td>works
  <td>
-  import netlist and footprint names from a flat .edf produced by Mentor Graphics Design Capture
+  flat .edf (netlist + footprint info, produced by Mentor Graphics Design Capture)
  <td>
 n/a
 <tr><th>import_mucs
 <td>no
 <td>works
  <td>
-  import lines and vias from MUCS unixplot .pl files
+  MUCS unixplot .pl (lines and vias)
  <td>
 n/a
 <tr><th>import_net_action
 <td>no
 <td>works
  <td>
-  import netlist and footprint info from pcb-rnd action script
+  pcb-rnd action script (netlist + footprint info)
  <td>
 n/a
 <tr><th>import_net_cmd
 <td>no
 <td>works
  <td>
-  Import schematics by running a commandline
+  schematics import by running a commandline
   <br>
-  Import netlist by running a commandline
+  netlist import by running a commandline
  <td>
 n/a
 <tr><th>import_netlist
 <td>no
 <td>works
  <td>
-  import plain text gEDA netlist files
+  gEDA netlist (plain text, no footprint info)
  <td>
 n/a
 <tr><th>import_orcad_net
 <td>no
 <td>works
  <td>
-  import netlist and footprint info from Orcad PCB II netlists
+  Orcad PCB II (netlist + footprint info)
  <td>
 n/a
 <tr><th>import_pads_net
 <td>no
 <td>works
  <td>
-  import netlist and footprint info from PADS ascii (.asc) netlists
+  PADS ascii (.asc; netlists + footprint info)
  <td>
 n/a
 <tr><th>import_protel_net
 <td>no
 <td>works
  <td>
-  import netlist and footprint info from Protel netlists 2.0
+  Protel netlists 2.0 + footprint info
  <td>
 n/a
 <tr><th>import_pxm_gd
 <td>no
 <td>works
  <td>
-  import pixmap
+  pixmap (e.g. png)
  <td>
 n/a
 <tr><th>import_pxm_pnm
 <td>no
 <td>works
  <td>
-  import pixmap
+  pnm (pixmap)
  <td>
 n/a
 <tr><th>import_sch2
 <td>no
 <td>WIP
  <td>
-  import netlist and footprint info from schematics or netlist
+n/a
  <td>
 n/a
 <tr><th>import_tinycad
 <td>no
 <td>works
  <td>
-  import netlist and footprint info from tinycad .net netlists
+  tinycad .net (netlists + footprint info)
  <td>
 n/a
 <tr><th>import_ttf
@@ -295,35 +299,35 @@ n/a
  <td>
 n/a
  <td>
-  export bom (Bill of Materials) in plain text
+  bom (Bill of Materials; text)
 <tr><th>export_dsn
 <td>no
 <td>works
  <td>
 n/a
  <td>
-  export specctra .dsn files with padstacks and subcircuits (usable for freerouting)
+  specctra .dsn (padstacks and subcircuits; works with freerouting.net)
 <tr><th>export_dxf
 <td>no
 <td>works
  <td>
 n/a
  <td>
-  export to 2D .dxf (for mech CADs)
+  .dxf (2D drawing for mech CADs)
 <tr><th>export_excellon
 <td>no
 <td>works
  <td>
 n/a
  <td>
-  export excellon drill/cnc for PCB fabbing, multiple files (configurable)
+  excellon drill/cnc (for PCB fabbing)
 <tr><th>export_fidocadj
 <td>no
 <td>WIP
  <td>
 n/a
  <td>
-  partial export in fidocad .fcd format
+  fidocad .fcd (partial export)
 <tr><th>export_gcode
 <td>no
 <td>WIP
@@ -337,53 +341,53 @@ n/a
  <td>
 n/a
  <td>
-  export gerber for PCB fabbing, multiple files (configurable)
+  gerber for PCB fabbing
 <tr><th>export_ipcd356
 <td>no
 <td>works
  <td>
 n/a
  <td>
-  export IPC-D-356 Netlist (for automated testing)
+  IPC-D-356 Netlist (for automated testing)
 <tr><th>export_lpr
 <td>no
 <td>works
  <td>
 n/a
  <td>
-  use export_ps and lpr to print a board directly
+  printer (using ps)
 <tr><th>export_oldconn
 <td>no
 <td>works
  <td>
 n/a
  <td>
-  export a list of terminal connections in an old, custom file format
+  list of terminal connections (old, custom format)
 <tr><th>export_openems
 <td>no
 <td>WIP
  <td>
 n/a
  <td>
-  export a matlab file suitable for OpenEMS simulation
+  OpenEMS (simulation; matlab files)
 <tr><th>export_openscad
 <td>no
 <td>WIP
  <td>
 n/a
  <td>
-  export a colored 3D model as an openscad script
+  openscad script (colored 3D model)
 <tr><th>export_png
 <td>no
 <td>works
  <td>
 n/a
  <td>
-  render the on-screen version or emulated photo mode version in .png
+  render in .png
   <br>
-  render the on-screen version or emulated photo mode version in .gif
+  render in .gif
   <br>
-  render the on-screen version or emulated photo mode version in .jpeg
+  render in .jpeg
 <tr><th>export_ps
 <td>no
 <td>works
@@ -399,21 +403,21 @@ n/a
  <td>
 n/a
  <td>
-  export a lihata file with anonimized statistics of the board
+  anonimized board statistics in lihata
 <tr><th>export_stl
 <td>no
 <td>WIP
  <td>
 n/a
  <td>
-  export a three dimensional triangulated surface model in stl
+  stl (3d triangulated surface model)
 <tr><th>export_svg
 <td>no
 <td>works
  <td>
 n/a
  <td>
-  write an svg (Scalable Vector Graphics)
+  svg (Scalable Vector Graphics)
 <tr><th>export_test
 <td>
 <td>WIP
