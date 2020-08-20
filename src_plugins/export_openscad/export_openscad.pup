@@ -3,7 +3,7 @@ $short openscad pcb_exporter
 $long Export openscad
 $state WIP
 $fmt-native no
-$fmt-feature-w export a colored 3D model as an openscad script
+$fmt-feature-w openscad script (colored 3D model)
 $package export
 dep lib_polyhelp
 default buildin

@@ -3,7 +3,7 @@ $short old connection data format
 $long Export subc/terminal connection map in an old, custom file format
 $state works
 $fmt-native no
-$fmt-feature-w export a list of terminal connections in an old, custom file format
+$fmt-feature-w list of terminal connections (old, custom format)
 $package export-extra
 default buildin
 autoload 1

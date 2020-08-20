@@ -3,7 +3,7 @@ $short openems exporter
 $long Export copper to OpenEMS simulation
 $state WIP
 $fmt-native no
-$fmt-feature-w export a matlab file suitable for OpenEMS simulation
+$fmt-feature-w OpenEMS (simulation; matlab files)
 $package export-sim
 dep lib_polyhelp
 default buildin

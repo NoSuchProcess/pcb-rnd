@@ -3,7 +3,7 @@ $short import netlist
 $long Import plugin for netlists in the classic pcb netlist format.
 $state works
 $fmt-native no
-$fmt-feature-r import plain text gEDA netlist files
+$fmt-feature-r  gEDA netlist (plain text, no footprint info)
 $package import-net
 default buildin
 autoload 1

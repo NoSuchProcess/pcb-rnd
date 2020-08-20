@@ -3,7 +3,7 @@ $short import freepcb netlist
 $long Import the netlist and footprints from freepcb format (exported by e.g. easyeda)
 $state works
 $fmt-native no
-$fmt-feature-r import netlist and footprint names from freepcb netlist
+$fmt-feature-r freepcb netlist + footprint info
 $package import-net
 default buildin
 autoload 1

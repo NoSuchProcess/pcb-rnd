@@ -3,7 +3,7 @@ $short lpr pcb_exporter (printer)
 $long Export to lpr (using export_ps to generate postscript)
 $state works
 $fmt-native no
-$fmt-feature-w use export_ps and lpr to print a board directly
+$fmt-feature-w printer (using ps)
 $package export-extra
 default buildin
 dep export_ps

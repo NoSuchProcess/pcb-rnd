@@ -3,7 +3,7 @@ $short specctra .dsn importer
 $long Import specctra .dsn files
 $state works
 $fmt-native no
-$fmt-feature-r import wires and vias from specctra .dsn
+$fmt-feature-r specctra .dsn (wires and vias)
 $package auto
 default buildin
 dep lib_compat_help

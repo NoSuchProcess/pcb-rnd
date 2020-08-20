@@ -3,7 +3,7 @@ $short import Accel netlist
 $long Import the netlist and footprints from a Accel netlist.
 $state works
 $fmt-native no
-$fmt-feature-r import netlist and footprint info from Accel ASCII netlists
+$fmt-feature-r Accel ASCII netlists + footprint info
 $package import-net
 default buildin
 dep lib_gensexpr

@@ -2,7 +2,7 @@ $class export
 $short SVG pcb_exporter
 $long Scalable Vector Graphics (SVG) exporter
 $fmt-native no
-$fmt-feature-w write an svg (Scalable Vector Graphics)
+$fmt-feature-w svg (Scalable Vector Graphics)
 $state works
 $package export
 default buildin

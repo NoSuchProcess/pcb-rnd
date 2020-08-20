@@ -3,7 +3,7 @@ $short IPC-D-356 Netlist pcb_exporter
 $long IPC-D-356 Netlist export.
 $state works
 $fmt-native no
-$fmt-feature-w export IPC-D-356 Netlist (for automated testing)
+$fmt-feature-w IPC-D-356 Netlist (for automated testing)
 $package export-extra
 dep lib_compat_help
 default buildin

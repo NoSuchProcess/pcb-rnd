@@ -3,9 +3,9 @@ $short autotrax (freeware PCB CAD)
 $long Import and export autotrax layouts and footprints.
 $state works
 $fmt-native no
-$fmt-feature-r autotrax PCB, version 4
-$fmt-feature-r autotrax PCB, version 5
-$fmt-feature-w autotrax PCB, version 4
+$fmt-feature-r autotrax PCB board, version 4
+$fmt-feature-r autotrax PCB board, version 5
+$fmt-feature-w autotrax PCB board, version 4
 $package io-alien
 default buildin
 dep lib_polyhelp

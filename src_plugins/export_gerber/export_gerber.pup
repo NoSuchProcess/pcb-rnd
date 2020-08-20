@@ -3,7 +3,7 @@ $short Gerber pcb_exporter
 $long Export to gerber
 $state works
 $fmt-native no
-$fmt-feature-w export gerber for PCB fabbing, multiple files (configurable)
+$fmt-feature-w gerber for PCB fabbing
 $package export
 dep export_excellon
 default buildin

@@ -3,7 +3,7 @@ $short import mentor graphics sch
 $long Import Mentor Graphics Design Capture from flattened .edf netlist, using a parts conversion table.
 $state works
 $fmt-native no
-$fmt-feature-r import netlist and footprint names from a flat .edf produced by Mentor Graphics Design Capture
+$fmt-feature-r flat .edf (netlist + footprint info, produced by Mentor Graphics Design Capture)
 $package import-net
 default buildin
 dep lib_gensexpr

@@ -3,7 +3,7 @@ $short import tinycad .net
 $long Import the netlist and footprints from a tinycad netlist.
 $state works
 $fmt-native no
-$fmt-feature-r import netlist and footprint info from tinycad .net netlists
+$fmt-feature-r tinycad .net (netlists + footprint info)
 $package import-net
 default buildin
 autoload 1

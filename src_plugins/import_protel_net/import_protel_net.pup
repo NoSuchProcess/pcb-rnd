@@ -3,7 +3,7 @@ $short import Protel netlist 2.0
 $long Import the netlist and footprints from a Protel netlist.
 $state works
 $fmt-native no
-$fmt-feature-r import netlist and footprint info from Protel netlists 2.0
+$fmt-feature-r Protel netlists 2.0 + footprint info
 $package import-net
 default buildin
 autoload 1

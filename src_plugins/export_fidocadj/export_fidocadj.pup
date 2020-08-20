@@ -3,7 +3,7 @@ $short FidoCadJ .fcd pcb_exporter
 $long Export to FidoCadJ format (.fcd)
 $state WIP
 $fmt-native no
-$fmt-feature-w partial export in fidocad .fcd format
+$fmt-feature-w fidocad .fcd (partial export)
 $package export-extra
 dep lib_compat_help
 default buildin
