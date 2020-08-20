@@ -261,6 +261,7 @@ static void pcb_bus_float_geo(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 static pcb_extobj_new_t pcb_bus_float_new(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
 	rnd_trace("bus: float new %ld %ld\n", subc->ID, floater->ID);
+	bus_clear(subc); /* a new floater may affect existing rendered line lengths at junctions, it's better to recalc the whole bus */
 	return PCB_EXTONEW_FLOATER;
 }
 
