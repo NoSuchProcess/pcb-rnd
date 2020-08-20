@@ -345,6 +345,8 @@ void pcb_main_uninit(void)
 	}
 	PCB = NULL;
 
+	pcb_extobj_uninit();
+
 	rnd_hidlib_uninit(); /* plugin unload */
 
 	rnd_funchash_uninit();
@@ -353,7 +355,6 @@ void pcb_main_uninit(void)
 	rnd_cli_uninit();
 	pcb_dynflag_uninit();
 
-	pcb_extobj_uninit();
 	pcb_import_uninit();
 	pcb_pixmap_uninit();
 	pcb_io_uninit();
