@@ -222,24 +222,26 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_any_obj_t *o;
 
 					rnd_hid_get_coords("context sensitive popup: select object", &x, &y, 0);
+
+					/* the 'E' mark of an extended object shall be top prio so it can be clicked even over some other subc part of the extobj */
+					type = pcb_search_screen(x, y, PCB_OBJ_SUBC, &o1, &o2, &o3);
+					if ((type == PCB_OBJ_SUBC) && (pcb_attribute_get(&((pcb_any_obj_t *)o2)->Attributes, "extobj") != 0)) {
+						sprintf(name, "/popups/%s-extobj-subcircuit", a0);
+						goto do_popup;
+					}
+
+					/* Normal search: lookg for padstacks ("pins") first */
 					type = pcb_search_screen(x, y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &o1, &o2, &o3);
 					o = o2;
 					if ((type == 0) || ((o != NULL) && (pcb_gobj_parent_subc(o->parent_type, &o->parent) == NULL))) {
+						/* ...or anything else as a fallback */
 						type = pcb_search_screen(x, y, PCB_OBJ_CLASS_REAL | PCB_LOOSE_SUBC(PCB_ACT_BOARD), &o1, &o2, &o3);
-
 						switch(type) {
 							case 0: tn = "none"; break;
-							case PCB_OBJ_SUBC:
-								if (pcb_attribute_get(&((pcb_any_obj_t *)o2)->Attributes, "extobj") != 0) {
-									tn = "extobj-subcircuit";
-									break;
-								}
-								/* fall through */
 							default:
 								tn = pcb_obj_type_name(type);
 								break;
 						}
-
 						sprintf(name, "/popups/%s-%s", a0, tn);
 					}
 					else
@@ -254,6 +256,7 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
+	do_popup:;
 	if (*name != '\0')
 		r = rnd_gui->open_popup(rnd_gui, name);
 	if ((r != 0) && (*name2 != '\0'))
