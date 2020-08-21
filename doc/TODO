@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ FEATURE: finish drill/slot export in export_stl [report: Majenko]
 - BUG: padstack editor top/bottom gets mixed up on other-side on display (but not in data!) ml=4221 [report: Majenko]
 - BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) [report: aron]
 - BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
