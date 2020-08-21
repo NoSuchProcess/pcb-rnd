@@ -1,5 +1,8 @@
 # shell lib
 
+# Read and parse all pups, make an array of file formats of
+# FMTS[import|export, type] then read stdin and execute the awk
+# script specified in $1 on it
 awk_on_formats()
 {
 (for n in ../src_plugins/*/*.pup
