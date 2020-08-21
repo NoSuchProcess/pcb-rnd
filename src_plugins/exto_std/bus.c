@@ -203,7 +203,7 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 			new_line = pcb_line_new(tly,
 				l->Point1.X + nx * o + vx * tune1 * o2, l->Point1.Y + ny * o + vy * tune1 * o2,
 				l->Point2.X + nx * o + vx * tune2 * o2, l->Point2.Y + ny * o + vy * tune2 * o2,
-				bus->thickness, bus->clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+				bus->thickness, bus->clearance*2, pcb_flag_make(PCB_FLAG_CLEARLINE));
 			if (new_line != NULL)
 				pcb_poly_clear_from_poly(tly->parent.data, PCB_OBJ_LINE, tly, new_line);
 		}
