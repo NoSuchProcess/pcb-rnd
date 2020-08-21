@@ -1451,6 +1451,8 @@ TODO("{libtext} some text objects should be already created in the library; we s
 static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	trnode_t *n, *nlib;
+	double ang;
+
 	if (st->elem_by_name)
 		nlib = NULL;
 	else
@@ -1527,7 +1529,7 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 
 			if (rot != NULL) {
 				char *end;
-				double ang = strtod(rot+1, &end);
+				ang = strtod(rot+1, &end);
 				if (*end == '\0') {
 					if (fmod(ang, 90) == 0) { /* use lossles rotation without any sin() */
 						int steps = eagle_rot2steps(rot);
@@ -1549,9 +1551,13 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 				else
 					rnd_message(RND_MSG_ERROR, "syntax error in element rotation '%s': %s/%s/%s\n", rot, name, pkg, lib);
 			}
+			else
+				ang = 0;
 
 			if (back)
 				pcb_subc_change_side(new_subc, 2 * y - st->pcb->hidlib.size_y);
+
+			pcb_subc_create_aux(new_subc, x, y, ang, back);
 
 			size_bump(st, new_subc->BoundingBox.X2, new_subc->BoundingBox.Y2);
 		}
