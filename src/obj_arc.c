@@ -1026,7 +1026,7 @@ void pcb_arc_approx(const pcb_arc_t *arc, double res, int reverse, void *uctx, i
 	if (ea > sa) {
 		if (step < 0) step = -step;
 		ea2 = ea - step/3;
-		for(a = arc->StartAngle; a < ea2; a += step)
+		for(a = sa; a < ea2; a += step)
 			if (cb(uctx, rnd_round((double)arc->X - (double)arc->Width * cos(a * RND_M180)), rnd_round((double)arc->Y + (double)arc->Height * sin(a * RND_M180))) != 0)
 				return;
 	}
