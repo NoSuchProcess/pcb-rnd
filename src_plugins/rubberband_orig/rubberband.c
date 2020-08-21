@@ -141,6 +141,20 @@ static void CheckLinePointForRubberbandArcConnection(rubber_ctx_t *rbnd, pcb_lay
 static rnd_r_dir_t rubber_callback(const rnd_box_t *b, void *cl);
 static rnd_r_dir_t rubber_callback_arc(const rnd_box_t *b, void *cl);
 
+/* Returns whether obj is under subc lock: part of a subc and is not a floater */
+static int rbe_subc_locked(pcb_any_obj_t *obj)
+{
+	pcb_data_t *data = obj->parent.layer->parent.data;
+
+	if ((data == NULL) || (data->parent_type != PCB_PARENT_SUBC))
+		return 0;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, obj))
+		return 0;
+
+	return 1;
+}
+
 static rnd_r_dir_t rubber_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_line_t *line = (pcb_line_t *) b;
@@ -169,6 +183,10 @@ static rnd_r_dir_t rubber_callback(const rnd_box_t *b, void *cl)
 		return RND_R_DIR_NOT_FOUND;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
+		return RND_R_DIR_NOT_FOUND;
+
+	/* subc lock: only floaters may be modified */
+	if (rbe_subc_locked((pcb_any_obj_t *)line))
 		return RND_R_DIR_NOT_FOUND;
 
 	if (line == i->line)
@@ -296,6 +314,10 @@ static rnd_r_dir_t rubber_callback_arc(const rnd_box_t *b, void *cl)
 
 	/* If the arc is locked then don't add it to the rubberband list. */
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, arc))
+		return RND_R_DIR_NOT_FOUND;
+
+	/* subc lock: only floaters may be modified */
+	if (rbe_subc_locked((pcb_any_obj_t *)arc))
 		return RND_R_DIR_NOT_FOUND;
 
 	/* Don't add the arc if both ends of it are already in the list. */
@@ -620,7 +642,7 @@ static void CheckEntireArcForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_
 					rnd_bool touches2 = rnd_false;
 					int l;
 
-					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
+					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line) || rbe_subc_locked((pcb_any_obj_t *)line))
 						continue;
 
 					/* Check whether the line is already in the rubberband list. */
@@ -686,7 +708,7 @@ static void CheckPolygonForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t 
 					int touches1 = 0, touches2 = 0;
 					int l;
 
-					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
+					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line) || rbe_subc_locked((pcb_any_obj_t *)line))
 						continue;
 					if ((pcb_layer_flags_(layer) & PCB_LYT_COPPER) && clearpoly && PCB_OBJ_HAS_CLEARANCE(line))
 						continue;
@@ -752,7 +774,7 @@ static void CheckLineForRubberbandConnection(rubber_ctx_t *rbnd, pcb_layer_t *La
 					rnd_bool touches2 = rnd_false;
 					int l;
 
-					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
+					if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line) || rbe_subc_locked((pcb_any_obj_t *)line))
 						continue;
 
 					/* Check whether the line is already in the rubberband list. */
@@ -811,7 +833,7 @@ static void CheckPadStackForRubberbandConnection(rubber_ctx_t *rbnd, pcb_pstk_t 
 						rnd_bool touches2 = rnd_false;
 						int l;
 
-						if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line))
+						if (PCB_FLAG_TEST(PCB_FLAG_LOCK, line) || rbe_subc_locked((pcb_any_obj_t *)line))
 							continue;
 
 						/* Check whether the line is already in the rubberband list. */
