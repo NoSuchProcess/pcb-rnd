@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.2 (svn r32320) an interactive printed circuit board editor ,  Revision: 32329
+This is pcb-rnd 2.2.2 (svn r32473) an interactive printed circuit board editor ,  Revision: 32507
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -105,7 +105,7 @@ This is pcb-rnd 2.2.2 (svn r32320) an interactive printed circuit board editor ,
 <tr><td>DrawPoly</td><td>Low level draw (render) a polygon using graphic context gc.</td><td>DrawPoly(gc, x, y, x, y, x, y, [x, y...])</td><td>act_draw</td>
 <tr><td>DrawText</td><td>Low level draw (render) a text object using graphic context gc.</td><td>DrawText(gc, x, y, string, rot, scale_percent)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#drc">DRC</a></td><td>Invoke the DRC check. Results are presented as the argument requests.</td><td>DRC([list|simple|print|log|dump])</td><td></td>
-<tr><td>DrcDialog</td><td>Execute drc checks and invoke a view list dialog box for presenting the results</td><td>DrcDialog([list|simple])</td><td>dialogs plugin</td>
+<tr><td>DrcDialog</td><td>Execute drc checks and invoke a view list dialog box for presenting the results</td><td>DrcDialog([list|simple]</td><td>dialogs plugin</td>
 <tr><td>DrcQueryDefMod</td><td>Automated DRC rule editing (for scripting and import)</td><td>DrcQueryDefMod(clear, source)<br>DrcQueryDefMod(create, rule_name)<br>DrcQueryDefMod(get, rule_name, field_name)<br>DrcQueryDefMod(set, rule_name, field_name, value)</td><td>drc_query</td>
 <tr><td>DrcQueryEditRule</td><td>Interactive, GUI based DRC rule editor</td><td>DrcQueryEditRule(role, path, rule)<br>DrcQueryEditRule(role, rule)</td><td>drc_query</td>
 <tr><td>DrcQueryExport</td><td>Export a rule and related definitions to a file.</td><td>DrcQueryExport(ruleID, [filename], [format])</td><td>drc_query</td>
@@ -145,6 +145,7 @@ This is pcb-rnd 2.2.2 (svn r32320) an interactive printed circuit board editor ,
 <tr><td>extedit</td><td>extedit(object|selected|buffer, [interactive|method])</td><td>Invoke an external program to edit a specific part of the current board.</td><td>extedit plugin</td>
 <tr><td>ExtobjConvFrom</td><td>Create a new extended object of extotype by converting existing objects</td><td>ExtobjConvFrom(selected|buffer, extotype)<br>ExtobjConvFrom(object, extotype, [idpath])</td><td></td>
 <tr><td>ExtobjGUIPropEdit</td><td>Invoke the extobj-implementation-specific GUI property editor, if available</td><td>ExtobjGUIPropEdit([object, [idpath]])</td><td></td>
+<tr><td>extroute</td><td>Executed external autorouter to route the board or parts of the board</td><td>extroute(board|selected, router, [confkey=value, ...])</td><td>extern autorouter plugin</td>
 <tr><td>fawk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>fbas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>find2perf</td><td>Measure the peformance of find2.c</td><td>find2perf()</td><td>diag plugin</td>
@@ -208,7 +209,7 @@ This is pcb-rnd 2.2.2 (svn r32320) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#listscripts">ListScripts</a></td><td>List fungw scripts, optionally filtered wiht regex pat.</td><td>ListScripts([pat])</td><td>script plugin</td>
 <tr><td><a href="action_details.html#livescript">LiveScript</a></td><td>Manage a live script</td><td>LiveScript([new], [name])<br>LiveScript(load|save, name, [filame])<br>LiveScript(run|stop|rerun|undo, name)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#load">Load</a></td><td>Load layout data from a user-selected file.</td><td>Load()<br>Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)</td><td>dialogs plugin</td>
-<tr><td>LoadAccelNetFrom</td><td>Loads the specified pads ascii netlist .net file.</td><td>LoadAccelNetFrom(filename)</td><td>accel_net importer</td>
+<tr><td>LoadAccelNetFrom</td><td>Loads the specified Accel EDA netlist file.</td><td>LoadAccelNetFrom(filename)</td><td>accel_net importer</td>
 <tr><td>LoadCalayFrom</td><td>Loads the specified calay netlist/component file pair.</td><td>LoadCalayFrom(filename)</td><td>calay importer</td>
 <tr><td>LoadDsnFrom</td><td>Loads the specified routed dsn file.</td><td>LoadDsnFrom(filename)</td><td>dsn importer</td>
 <tr><td>LoadEeschemaFrom</td><td>Loads the specified eeschema .net file - the netlist must be an s-expression.</td><td>LoadEeschemaFrom(filename)</td><td>kicad plugin</td>
@@ -222,12 +223,12 @@ This is pcb-rnd 2.2.2 (svn r32320) an interactive printed circuit board editor ,
 <tr><td>LoadLtspiceFrom</td><td>Loads the specified ltspice .net and .asc file - the netlist must be mentor netlist.</td><td>LoadLtspiceFrom(filename)</td><td>ltspice importer</td>
 <tr><td>LoadMentorFrom</td><td>Loads the specified Mentor Graphics Design Capture schematics flat .edf file.</td><td>LoadMentorFrom(filename)</td><td>mentor_sch importer</td>
 <tr><td>LoadMucsFrom</td><td>Loads the specified mucs routing file.</td><td>LoadMucsFrom(filename)</td><td>mucs importer</td>
-<tr><td>LoadOrcadNetFrom</td><td>Loads the specified pads ascii netlist .net file.</td><td>LoadOrcadNetFrom(filename)</td><td>orcad_net importer</td>
+<tr><td>LoadOrcadNetFrom</td><td>Loads the specified Orcad netlist file.</td><td>LoadOrcadNetFrom(filename)</td><td>orcad_net importer</td>
 <tr><td>LoadPadsNetFrom</td><td>Loads the specified pads ascii netlist .asc file.</td><td>LoadPadsNetFrom(filename)</td><td>pads_net importer</td>
 <tr><td>LoadPixmap</td><td>Loads a pixmap image from disk and creates a gfx object in buffer.</td><td>LoadPixmap([filename])</td><td></td>
 <tr><td>LoadProtelNetFrom</td><td>Loads the specified protel netlist 2.0 file.</td><td>LoadProtelNetFrom(filename)</td><td>protel_net importer</td>
 <tr><td><a href="action_details.html#loadscript">LoadScript</a></td><td>Load a fungw script</td><td>LoadScript(id, filename, [language])</td><td>script plugin</td>
-<tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file.</td><td>LoadTedaxFrom(netlist|board|footprint|stackup|layer|drc|drc_query, filename, [block_id, [silent, [src]]])</td><td>tEDAx IO</td>
+<tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file.</td><td>LoadTedaxFrom(netlist|board|footprint|stackup|layer|drc|drc_query|route_res, filename, [block_id, [silent, [src]]])</td><td>tEDAx IO</td>
 <tr><td>LoadTinycadFrom</td><td>Loads the specified tinycad .net file - the netlist must be tinycad netlist output.</td><td>LoadTinycadFrom(filename)</td><td>tinycad importer</td>
 <tr><td>LoadTtfGlyphs</td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars])</td><td>ttf importer</td>
 <tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
@@ -348,7 +349,7 @@ This is pcb-rnd 2.2.2 (svn r32320) an interactive printed circuit board editor ,
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
 <tr><td><a href="action_details.html#savelib">SaveLib</a></td><td>Saves all subcircuits to a library file or directory from a board or buffer.</td><td>SaveLib(file|dir, board|buffer, [filename], [fmt])</td><td></td>
 <tr><td>SavePatch</td><td>Save netlist patch for back annotation.</td><td>SavePatch(filename)</td><td></td>
-<tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)<br>SaveTedax(drc_query, filename, [rule_name])SaveTedax(route_req, filename)</td><td>tEDAx IO</td>
+<tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)<br>SaveTedax(drc_query, filename, [rule_name])SaveTedax(route_req, filename, [confkey=value, confkey=value, ...])</td><td>tEDAx IO</td>
 <tr><td><a href="action_details.html#saveto">SaveTo</a></td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
 <tr><td><a href="action_details.html#scriptcookie">ScriptCookie</a></td><td>Return a cookie specific to the current script instance during script initialization</td><td>ScriptCookie()</td><td>script plugin</td>
