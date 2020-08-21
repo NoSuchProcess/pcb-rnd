@@ -9,7 +9,6 @@
 + BUG: buffer scale doesn't work on subcircuits [report: Erich]
 - BUG: hid_common/grid_menu.c: doesn't checkmark initial grid setting, doesn't remove check on grid(set, 11mil) [report: Igor2]
 - DOC: package description file format lists should be generated [report: Igor2]
-+ BUG: rubber band line move happily modifies an existing line that's part of a subc (detected with the bus extended object when connected plain line is moved) [report: Majenko]
 - defaults change:
 	- import schematics: insert to frame
 	- import schematics: removal?
