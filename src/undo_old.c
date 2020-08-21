@@ -227,7 +227,10 @@ static rnd_bool UndoRotate90(UndoListTypePtr Entry)
 	/* lookup entry by it's ID */
 	type = pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, Entry->ID, Entry->Kind);
 	if (type != PCB_OBJ_VOID) {
-		pcb_obj_rotate90(PCB, ptr2, Entry->Data.Rotate.CenterX, Entry->Data.Rotate.CenterY, (4 - Entry->Data.Rotate.Steps) & 0x03);
+		if (type == PCB_OBJ_LINE_POINT) /* rubber band, needs ptr3 */
+			pcb_point_rotate90(ptr3, Entry->Data.Rotate.CenterX, Entry->Data.Rotate.CenterY, (4 - Entry->Data.Rotate.Steps) & 0x03);
+		else
+			pcb_obj_rotate90(PCB, ptr2, Entry->Data.Rotate.CenterX, Entry->Data.Rotate.CenterY, (4 - Entry->Data.Rotate.Steps) & 0x03);
 		Entry->Data.Rotate.Steps = (4 - Entry->Data.Rotate.Steps) & 0x03;
 		return rnd_true;
 	}
