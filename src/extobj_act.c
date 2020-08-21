@@ -153,7 +153,7 @@ fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_ExtobjGUIPropEdit[] = "ExtobjGUIPropEdit([object, [idpath]])";
 static const char pcb_acth_ExtobjGUIPropEdit[] = "Invoke the extobj-implementation-specific GUI property editor, if available";
 
-static int exto_get_obj(fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_subc_t **dst_obj, pcb_extobj_t **dst_eo)
+static int exto_get_obj(fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_subc_t **dst_obj, pcb_extobj_t **dst_eo, rnd_bool require_extobj)
 {
 	int op = F_Object;
 	pcb_extobj_t *eo;
@@ -195,15 +195,21 @@ static int exto_get_obj(fgw_arg_t *res, int argc, fgw_arg_t *argv, pcb_subc_t **
 			RND_ACT_FAIL(ExtobjConvFrom);
 	}
 
-	if ((obj == NULL) || (obj->type != PCB_OBJ_SUBC) || (obj->extobj == NULL)) {
-		rnd_message(RND_MSG_ERROR, "Object is not an extended object");
+	if ((obj == NULL) || (obj->type != PCB_OBJ_SUBC)) {
+		rnd_message(RND_MSG_ERROR, "Object is not an extended object (not even a subcircuit)\n");
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+
+	if (require_extobj &&  (obj->extobj == NULL)) {
+		rnd_message(RND_MSG_ERROR, "Subcircuit is not an extended object\n");
 		RND_ACT_IRES(-1);
 		return 0;
 	}
 
 	eo = pcb_extobj_get(obj);
-	if (eo == NULL) {
-		rnd_message(RND_MSG_ERROR, "Extended object '%s' is not available", obj->extobj);
+	if (require_extobj && (eo == NULL)) {
+		rnd_message(RND_MSG_ERROR, "Extended object '%s' is not available\n", obj->extobj);
 		RND_ACT_IRES(1);
 		return 0;
 	}
@@ -218,7 +224,7 @@ fgw_error_t pcb_act_ExtobjGUIPropEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_extobj_t *eo;
 	pcb_subc_t *obj;
-	int rv = exto_get_obj(res, argc, argv, &obj, &eo);
+	int rv = exto_get_obj(res, argc, argv, &obj, &eo, 1);
 
 	if (obj == NULL) {
 		RND_ACT_IRES(1);
@@ -234,9 +240,45 @@ fgw_error_t pcb_act_ExtobjGUIPropEdit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_ExtobjToggle[] = "ExtobjToggle([object, [idpath]])";
+static const char pcb_acth_ExtobjToggle[] = "Convert an extobj into a plain subc or back";
+fgw_error_t pcb_act_ExtobjToggle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_extobj_t *eo;
+	pcb_subc_t *obj;
+	int rv = exto_get_obj(res, argc, argv, &obj, &eo, 0);
+
+	if (obj == NULL) {
+		RND_ACT_IRES(1);
+		return rv;
+	}
+
+	if (eo != NULL) {
+		pcb_attribute_put(&obj->Attributes, "disabled_extobj", obj->extobj);
+		pcb_attribute_remove(&obj->Attributes, "extobj");
+		PCB_FLAG_CLEAR(PCB_FLAG_LOCK, obj);
+	}
+	else {
+		const char *type = pcb_attribute_get(&obj->Attributes, "disabled_extobj");
+		if (type == NULL) {
+			rnd_message(RND_MSG_ERROR, "Subcircuit was not an extended object\n");
+			RND_ACT_IRES(1);
+			return 0;
+		}
+		pcb_attribute_put(&obj->Attributes, "extobj", type);
+		pcb_attribute_remove(&obj->Attributes, "disabled_extobj");
+		PCB_FLAG_SET(PCB_FLAG_LOCK, obj);
+	}
+
+	RND_ACT_IRES(0);
+	return 0;
+}
+
+
 static rnd_action_t pcb_extobj_action_list[] = {
 	{"ExtobjConvFrom", pcb_act_ExtobjConvFrom, pcb_acth_ExtobjConvFrom, pcb_acts_ExtobjConvFrom},
-	{"ExtobjGUIPropEdit", pcb_act_ExtobjGUIPropEdit, pcb_acth_ExtobjGUIPropEdit, pcb_acts_ExtobjGUIPropEdit}
+	{"ExtobjGUIPropEdit", pcb_act_ExtobjGUIPropEdit, pcb_acth_ExtobjGUIPropEdit, pcb_acts_ExtobjGUIPropEdit},
+	{"ExtobjToggle", pcb_act_ExtobjToggle, pcb_acth_ExtobjToggle, pcb_acts_ExtobjToggle}
 };
 
 void pcb_extobj_act_init2(void)
