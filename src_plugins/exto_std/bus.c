@@ -77,6 +77,7 @@ static void bus_clear(pcb_subc_t *subc)
 	for(l = linelist_first(&ely->Line); l != NULL; l = next) {
 		next = linelist_next(l);
 		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, l)) continue; /* do not free the floater */
+		pcb_poly_restore_to_poly(ely->parent.data, PCB_OBJ_LINE, ely, l);
 		pcb_line_free(l);
 	}
 }
@@ -196,12 +197,15 @@ static int bus_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 
 		for(n = 0; n < bus->width; n++,o-=bus->pitch) {
 			double o2 = -o;
+			pcb_line_t *new_line;
 /*			rnd_trace(" off1: %f %f %ml = %ml\n", vx, tune1, (rnd_coord_t)o, (rnd_coord_t)(vx * tune1 * o));
 			rnd_trace(" off2: %f %f %ml = %ml\n", vx, tune2, (rnd_coord_t)o, (rnd_coord_t)(vx * tune2 * o));*/
-			pcb_line_new(tly,
+			new_line = pcb_line_new(tly,
 				l->Point1.X + nx * o + vx * tune1 * o2, l->Point1.Y + ny * o + vy * tune1 * o2,
 				l->Point2.X + nx * o + vx * tune2 * o2, l->Point2.Y + ny * o + vy * tune2 * o2,
 				bus->thickness, bus->clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			if (new_line != NULL)
+				pcb_poly_clear_from_poly(tly->parent.data, PCB_OBJ_LINE, tly, new_line);
 		}
 
 	}
