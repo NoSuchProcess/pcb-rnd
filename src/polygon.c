@@ -343,9 +343,16 @@ int pcb_poly_subtract(rnd_polyarea_t *np1, pcb_poly_t *p, rnd_bool fnp)
 	return Subtract(np1, p, fnp);
 }
 
+static rnd_polyarea_t *pcb_poly_from_box_bloated_(rnd_box_t * box, rnd_coord_t bloat, rnd_coord_t enforce_clr, rnd_coord_t obj_clr)
+{
+	if ((enforce_clr != 0) && (enforce_clr*2 > obj_clr)) /* in case of poly-side clearance, the bounding box has to be adjusted: original object side clearance removed, larger poly side clearance added */
+		bloat += obj_clr - enforce_clr/2;
+	return rnd_poly_from_rect(box->X1 - bloat, box->X2 + bloat, box->Y1 - bloat, box->Y2 + bloat);
+}
+
 rnd_polyarea_t *pcb_poly_from_box_bloated(rnd_box_t * box, rnd_coord_t bloat)
 {
-	return rnd_poly_from_rect(box->X1 - bloat, box->X2 + bloat, box->Y1 - bloat, box->Y2 + bloat);
+	return pcb_poly_from_box_bloated_(box, bloat, 0, 0);
 }
 
 /* remove the padstack clearance from the polygon */
@@ -863,7 +870,7 @@ static int UnsubtractPadstack(pcb_data_t *data, pcb_pstk_t *ps, pcb_layer_t *l, 
 	rnd_polyarea_t *np;
 
 	/* overlap a bit to prevent gaps from rounding errors */
-	np = pcb_poly_from_box_bloated(&ps->BoundingBox, UNSUBTRACT_BLOAT * 400000);
+	np = pcb_poly_from_box_bloated_(&ps->BoundingBox, UNSUBTRACT_BLOAT * 400000, p->enforce_clearance, ps->Clearance);
 
 	if (!np)
 		return 0;
@@ -884,7 +891,7 @@ static int UnsubtractArc(pcb_arc_t * arc, pcb_layer_t * l, pcb_poly_t * p)
 		return 0;
 
 	/* overlap a bit to prevent gaps from rounding errors */
-	np = pcb_poly_from_box_bloated(&arc->BoundingBox, UNSUBTRACT_BLOAT);
+	np = pcb_poly_from_box_bloated_(&arc->BoundingBox, UNSUBTRACT_BLOAT, p->enforce_clearance, arc->Clearance);
 
 	if (!np)
 		return 0;
@@ -902,7 +909,7 @@ static int UnsubtractLine(pcb_line_t * line, pcb_layer_t * l, pcb_poly_t * p)
 		return 0;
 
 	/* overlap a bit to prevent notches from rounding errors */
-	np = pcb_poly_from_box_bloated(&line->BoundingBox, UNSUBTRACT_BLOAT);
+	np = pcb_poly_from_box_bloated_(&line->BoundingBox, UNSUBTRACT_BLOAT, p->enforce_clearance, line->Clearance);
 
 	if (!np)
 		return 0;
@@ -920,7 +927,7 @@ static int UnsubtractText(pcb_text_t * text, pcb_layer_t * l, pcb_poly_t * p)
 		return 0;
 
 	/* overlap a bit to prevent notches from rounding errors */
-	np = pcb_poly_from_box_bloated(&text->BoundingBox, UNSUBTRACT_BLOAT);
+	np = pcb_poly_from_box_bloated_(&text->BoundingBox, UNSUBTRACT_BLOAT, p->enforce_clearance, text->clearance);
 
 	if (!np)
 		return -1;
