@@ -21,6 +21,7 @@
 - CLEANUP/BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
 - CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
 	- BUG: propedit adding/deleting attributes inconsistency; search depth problem (see TODO#28)  bug_files/subcsel.bug [report: Ade]
+- CLEANUP: extobj copy/move: two set of bugs: ml4290 and ml4291 [report: Majenko]
 - CLEANUP: layer order from data
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
