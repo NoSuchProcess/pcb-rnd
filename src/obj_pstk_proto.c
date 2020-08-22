@@ -623,12 +623,8 @@ void pcb_pstk_tshape_xmirror(pcb_pstk_tshape_t *ts)
 	}
 }
 
-void pcb_pstk_tshape_smirror(pcb_pstk_tshape_t *ts)
+RND_INLINE pcb_pstk_shape_smirror_(pcb_pstk_shape_t *sh)
 {
-	int n;
-
-	for(n = 0; n < ts->len; n++) {
-		pcb_pstk_shape_t *sh = &ts->shape[n];
 		if (sh->layer_mask & PCB_LYT_TOP) {
 			sh->layer_mask &= ~PCB_LYT_TOP;
 			sh->layer_mask |= PCB_LYT_BOTTOM;
@@ -637,7 +633,19 @@ void pcb_pstk_tshape_smirror(pcb_pstk_tshape_t *ts)
 			sh->layer_mask &= ~PCB_LYT_BOTTOM;
 			sh->layer_mask |= PCB_LYT_TOP;
 		}
-	}
+}
+
+void pcb_pstk_shape_smirror(pcb_pstk_shape_t *sh)
+{
+	return pcb_pstk_shape_smirror_(sh);
+}
+
+void pcb_pstk_tshape_smirror(pcb_pstk_tshape_t *ts)
+{
+	int n;
+
+	for(n = 0; n < ts->len; n++)
+		pcb_pstk_shape_smirror_(&ts->shape[n]);
 }
 
 void pcb_pstk_proto_copy(pcb_pstk_proto_t *dst, const pcb_pstk_proto_t *src)
@@ -1473,6 +1481,8 @@ void pcb_pstk_shape_derive(pcb_pstk_proto_t *proto, int dst_idx, int src_idx, rn
 		pcb_pstk_shape_copy(&proto->tr.array[n].shape[d], &proto->tr.array[n].shape[src_idx]);
 		proto->tr.array[n].shape[d].layer_mask = mask;
 		proto->tr.array[n].shape[d].comb = comb;
+		if (proto->tr.array[n].smirror)
+			pcb_pstk_shape_smirror_(&proto->tr.array[n].shape[d]);
 		if (bloat != 0)
 			pcb_pstk_shape_grow(proto, n, d, rnd_false, bloat, undoable);
 	}

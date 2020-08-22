@@ -77,5 +77,6 @@ typedef struct pcb_pstk_tshape_s {
 } pcb_pstk_tshape_t;
 
 void pcb_pstk_shape_rot(pcb_pstk_shape_t *sh, double sina, double cosa, double angle);
+void pcb_pstk_shape_smirror(pcb_pstk_shape_t *sh);
 
 #endif
