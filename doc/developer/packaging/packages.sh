@@ -1,5 +1,36 @@
 #!/bin/sh
-proot=../../../src_plugins
+ROOT=../../..
+proot=$ROOT/src_plugins
+
+### generate description.txt (file formats) ###
+
+. $ROOT/util/devhelpers/awk_on_formats.sh
+
+awk_on_formats  '
+{ print $0 }
+
+function out(dir, type  ,n,v,A,tmp)
+{
+	v = split(FMTS[dir, type], A, " *<br> *")
+	if (v < 1) return
+	print "  -", dir, type ":"
+	for(n = 1; n <= v; n++) {
+		tmp = A[n]
+		sub("^ *", "", tmp)
+		print "    * " tmp
+	}
+}
+
+/(lihata)/ {
+	t = split(types, T, " ")
+	for(n = 1; n <= t; n++)
+		out("import", T[n]);
+		out("export", T[n]);
+	exit
+}
+' < description.txt > description2.txt && mv description2.txt description.txt
+
+### generate packages.html and auto/ ###
 
 meta_deps="core io-standard io-alien hid-gtk2-gl hid-gtk2-gdk export export-sim export-extra auto extra cloud doc import-net"
 
