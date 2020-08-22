@@ -199,6 +199,8 @@ static fgw_error_t pcb_act_PstkProtoEdit(fgw_arg_t *res, int argc, fgw_arg_t *ar
 				pcb_pstk_shape_copy(&proto->tr.array[n].shape[dst_idx], &proto->tr.array[n].shape[src_idx]);
 				proto->tr.array[n].shape[dst_idx].layer_mask = dlyt;
 				proto->tr.array[n].shape[dst_idx].comb = dlyc;
+				if (proto->tr.array[n].smirror)
+					pcb_pstk_shape_smirror(&proto->tr.array[n].shape[dst_idx]);
 			}
 			pcb_pstk_proto_update(proto);
 			RND_ACT_IRES(0);
