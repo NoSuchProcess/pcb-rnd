@@ -5,7 +5,7 @@
 # script specified in $1 on it
 awk_on_formats()
 {
-(for n in ../src_plugins/*/*.pup
+(for n in $ROOT/src_plugins/*/*.pup
 do
 	echo "@@@ $n"
 	cat $n
@@ -16,6 +16,7 @@ cat
 
 BEGIN {
 	osep = " <br> "
+	types="netlist footprint board image misc"
 }
 
 ($1 == "@@@") {
@@ -37,6 +38,8 @@ BEGIN {
 
 function add(name, dir   ,type)
 {
+
+# DO NOT FORGET TO UDPATE types IN BEGIN ^^^
 	if (name ~ "netlist")
 		type = "netlist"
 	else if (name ~ "schematic")
@@ -49,6 +52,7 @@ function add(name, dir   ,type)
 		type = "image"
 	else
 		type = "misc"
+# DO NOT FORGET TO UDPATE types IN BEGIN ^^^
 
 	if (FMTS[dir, type] == "")
 		FMTS[dir, type] = name

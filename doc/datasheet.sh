@@ -1,6 +1,7 @@
 #!/bin/sh
 
-. ../util/devhelpers/awk_on_formats.sh
+ROOT=..
+. $ROOT/util/devhelpers/awk_on_formats.sh
 
 awk_on_formats  '
 ($1 == "<!--") && ($2 == "begin") && ($3 == "fmt") { ignore = 1; print $0; next }
