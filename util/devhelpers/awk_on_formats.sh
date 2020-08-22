@@ -16,7 +16,7 @@ cat
 
 BEGIN {
 	osep = " <br> "
-	types="netlist footprint board image misc"
+	types="board footprint netlist image misc"
 }
 
 ($1 == "@@@") {
