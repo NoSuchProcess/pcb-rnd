@@ -6,7 +6,6 @@
 - BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 + BUG: irc client: doesn't indicate when disconnected -> testing: start pcb-rnd from a shell, connect to irc, press ctrl+z in the shell to suspend pcb-rnd; after 5 minutes type fg in the shell to get it back, by then it is disconnected [report: Erich]
 + BUG: buffer scale doesn't work on subcircuits [report: Erich]
-- BUG: hid_common/grid_menu.c: doesn't checkmark initial grid setting [report: Igor2]
 - DOC: package description file format lists should be generated [report: Igor2]
 - defaults change:
 	- import schematics: insert to frame
