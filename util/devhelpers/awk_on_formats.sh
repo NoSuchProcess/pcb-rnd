@@ -36,19 +36,27 @@ BEGIN {
 	next
 }
 
-function add(name, dir   ,type)
+function add(name, dir   ,type,lname)
 {
-
+	lname = tolower(name)
 # DO NOT FORGET TO UDPATE types IN BEGIN ^^^
 	if (name ~ "netlist")
 		type = "netlist"
-	else if (name ~ "schematic")
+	else if (lname ~ "schematic")
 		type = "netlist"
-	else if (name ~ "footprint")
+	else if (lname ~ "footprint")
 		type = "footprint"
-	else if (name ~ "board")
+	else if (lname ~ "kicad.*module")
+		type = "footprint"
+	else if (lname ~ "board")
 		type = "board"
-	else if (name ~ "render")
+	else if (lname ~ "render")
+		type = "image"
+	else if (lname ~ "pixmap")
+		type = "image"
+	else if (lname ~ "bitmap")
+		type = "image"
+	else if (lname ~ "graphic")
 		type = "image"
 	else
 		type = "misc"
