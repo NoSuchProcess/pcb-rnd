@@ -1055,6 +1055,10 @@ static void rbe_move(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_
 	pcb_rb_line_t *ptr = rbnd->lines.array;
 	int direct = argv[1].d.i;
 
+	if (conf_core.editor.line_refraction == 0) {
+		TODO("what to do in ortho mode? - disable rubber band for now");
+		return;
+	}
 
 	while(rbnd->lines.used) {
 		const int dindex1 = ptr->delta_index[0];
@@ -1157,6 +1161,11 @@ static void rbe_draw(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_
 	pcb_rb_line_t *ptr;
 	rnd_cardinal_t i;
 	int direct = argv[1].d.i;
+
+	if (conf_core.editor.line_refraction == 0) {
+		TODO("what to do in ortho mode? - disable rubber band for now");
+		return;
+	}
 
 	/* draw the attached rubberband lines too */
 	i = rbnd->lines.used;
