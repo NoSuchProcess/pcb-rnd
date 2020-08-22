@@ -20,6 +20,39 @@ Feature highlights:
 
 File formats and compatibility:
   - text based, tree structured native file format (lihata)
+  - import board:
+    * autotrax PCB board, version 4
+    * autotrax PCB board, version 5
+    * dsn board
+    * eagle xml board version 6, 7, 8
+    * eagle binary board version 3, 4, 5
+    * hyperlynx board, version 2 and above
+    * kicad board, version 3, 4 and 5 (s-expr)
+    * lihata pcb-rnd board (any version)
+    * gEDA/PCB .pcb board (any version up to 2017)
+  - export board:
+    * anonimized board statistics in lihata
+    * autotrax PCB board, version 4
+    * dsn board
+    * hyperlynx board, version 2.0
+    * kicad board, version 3 (s-expr)
+    * kicad pcbnew-board, version 1 (legacy plain text format)
+    * lihata pcb-rnd board (any version)
+    * gEDA/PCB .pcb board (various version up to 2017 )
+  - import footprint:
+    * BXL footprints
+    * eagle xml footprint lib
+    * eagle binary footprint lib
+    * lihata pcb-rnd footprint (any version)
+    * Mentor Graphics cell footprints
+    * gEDA/PCB .fp footprints
+    * tEDAx footprint (any version)
+  - export footprint:
+    * kicad module (s-expr, according to version 3)
+    * kicad pcbnew-module (legacy plain text format)
+    * lihata pcb-rnd footprint (any version)
+    * gEDA/PCB .fp footprints
+    * tEDAx footprint (any version)
   - import netlist:
     * Accel ASCII netlists + footprint info
     * calay (netlists + footprint info)
@@ -40,49 +73,20 @@ File formats and compatibility:
     * tEDAx netlist (any version)
   - export netlist:
     * tEDAx netlist (any version)
-  - import footprint:
-    * BXL footprints
-    * eagle xml footprint lib
-    * eagle binary footprint lib
-    * lihata pcb-rnd footprint (any version)
-    * Mentor Graphics cell footprints
-    * gEDA/PCB .fp footprints
-    * tEDAx footprint (any version)
-  - export footprint:
-    * lihata pcb-rnd footprint (any version)
-    * gEDA/PCB .fp footprints
-    * tEDAx footprint (any version)
-  - import board:
-    * autotrax PCB board, version 4
-    * autotrax PCB board, version 5
-    * dsn board
-    * eagle xml board version 6, 7, 8
-    * eagle binary board version 3, 4, 5
-    * hyperlynx board, version 2 and above
-    * kicad board, version 3, 4 and 5 (s-expr)
-    * lihata pcb-rnd board (any version)
-    * gEDA/PCB .pcb board (any version up to 2017)
-  - export board:
-    * anonimized board statistics in lihata
-    * autotrax PCB board, version 4
-    * dsn board
-    * hyperlynx board, version 2.0
-    * kicad board, version 3 (s-expr)
-    * kicad pcbnew-board, version 1 (legacy plain text format)
-    * lihata pcb-rnd board (any version)
-    * gEDA/PCB .pcb board (various version up to 2017 )
+  - import image:
+    * pixmap (e.g. png)
+    * pnm (pixmap)
   - export image:
     * render in .png
     * render in .gif
     * render in .jpeg
     * render black&white postscript (single or multiple files)
     * render black&white or color embedded postscript (single file)
+    * svg (Scalable Vector Graphics)
   - import misc:
     * specctra .dsn (wires and vias)
     * HPGL plot (lines, arcs, polygons)
     * MUCS unixplot .pl (lines and vias)
-    * pixmap (e.g. png)
-    * pnm (pixmap)
     * ttf font
     * eagle DRU (design rules)
     * lihata pcb-rnd font (any version)
@@ -103,15 +107,12 @@ File formats and compatibility:
     * OpenEMS (simulation; matlab files)
     * openscad script (colored 3D model)
     * stl (3d triangulated surface model)
-    * svg (Scalable Vector Graphics)
     * geda/PCB xy
     * gxyrs
     * Macrofab's pick&place
     * pick&place file for the TM220/TM240 device
     * KiCad .pos file
     * IPC-D-356 Netlist (from automated testing)
-    * kicad module (s-expr, according to version 3)
-    * kicad pcbnew-module (legacy plain text format)
     * lihata pcb-rnd font (any version)
     * tEDAx etest
     * tEDAx drc
