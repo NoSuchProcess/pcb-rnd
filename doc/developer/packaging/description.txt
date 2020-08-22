@@ -17,43 +17,54 @@ Feature highlights:
   - layout optimizers such as teardrops and a trace puller
   - footprint library from local file systems, HTTP and board files
   - netlist management: imported and as-built; back annotation
-  - design rule checker
 
 File formats and compatibility:
-  - text based, tree structured native file format
-  - gerber (export)
-  - KiCad, s-expr format boards (read, write)
-  - KiCad, s-expr format elements (write)
-  - KiCad, legacy text format boards (write)
-  - KiCad, eeschema netlist+footprint info (import)
-  - tEDAx footprints (read, write)
-  - tEDAx netlist (read)
-  - BXL footprints (import)
-  - Autotrax (protel) pcb boards (read, write)
-  - Eagle XML format boards and libraries (read)
-  - Eagle binary format boards and libraries (read)
-  - Eagle DRU files (read)
-  - Mentor Graphics Hyperlynx (read/write)
-  - gEDA/PCB (read, write)
-  - Specctra DSN (partial import/export, for freerouting.net)
-  - flat EDIF netlist (import)
-  - HPGL plot files (import)
-  - openSCAD colored 3d model script (export)
-  - ltspice netlist+footprint info (import)
-  - Mentor Graphics Design Capture netlist+footprint info (import)
-  - MUCS unixplot (partial import: lines, vias)
-  - gEDA/gschem netlist+footprint info (import)
-  - TinyCAD netlist+footprint info (import)
-  - PADS ASCII netlist+footprint info (import)
-  - Orcad netlist+footprint info (import)
-  - Accel EDA netlist+footprint info (import)
-  - Protel netlist 2.0, netlist+footprint info (import)
-  - breadboard assembly drawing png (export)
-  - BoM (Bill of Materials; export)
-  - dxf, 2d drawings (export)
-  - fidocadj board (export)
-  - gcode (export)
-  - PNG, JPEG, GIF (export with photo-realistic render option)
-  - postscript: ps, eps (export)
-  - svg (export)
-  - xy: template based, multi-format footprint/coord list (export)
+  - text based, tree structured native file format (lihata)
+  - import netlist:
+    * Accel ASCII netlists + footprint info
+    * calay (netlists + footprint info)
+    * flat netlist from EDIF
+    * freepcb netlist + footprint info
+    * gEDA/gschem (netlist + footpritn info, running gnetlist)
+    * import ltspice .net and .asc (netlist and footprint info)
+    * flat .edf (netlist + footprint info, produced by Mentor Graphics Design Capture)
+    * pcb-rnd action script (netlist + footprint info)
+    * schematics import by running a commandline
+    * netlist import by running a commandline
+    * gEDA netlist (plain text, no footprint info)
+    * Orcad PCB II (netlist + footprint info)
+    * PADS ascii (.asc; netlists + footprint info)
+    * Protel netlists 2.0 + footprint info
+    * tinycad .net (netlists + footprint info)
+    * eeschema netlist and footprint info
+    * tEDAx netlist (any version)
+  - import footprint:
+    * BXL footprints
+    * eagle xml footprint lib
+    * eagle binary footprint lib
+    * lihata pcb-rnd footprint (any version)
+    * Mentor Graphics cell footprints
+    * gEDA/PCB .fp footprints
+    * tEDAx footprint (any version)
+  - import board:
+    * autotrax PCB board, version 4
+    * autotrax PCB board, version 5
+    * dsn board
+    * eagle xml board version 6, 7, 8
+    * eagle binary board version 3, 4, 5
+    * hyperlynx board, version 2 and above
+    * kicad board, version 3, 4 and 5 (s-expr)
+    * lihata pcb-rnd board (any version)
+    * gEDA/PCB .pcb board (any version up to 2017)
+  - import misc:
+    * specctra .dsn (wires and vias)
+    * HPGL plot (lines, arcs, polygons)
+    * MUCS unixplot .pl (lines and vias)
+    * pixmap (e.g. png)
+    * pnm (pixmap)
+    * ttf font
+    * eagle DRU (design rules)
+    * lihata pcb-rnd font (any version)
+    * gEDA/PCB font
+    * tEDAx drc
+    * tEDAx pcb-rnd drc script

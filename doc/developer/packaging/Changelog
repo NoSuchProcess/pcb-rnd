@@ -7,7 +7,8 @@ How to get a release candidate tarball in /tmp:
 
 Packaging changes between 2.2.4 and 2.2.3
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TODO: new import netlist plugins (+desc change!): import_pads_net, import_orcad_net, accel, protel
+TODO: new import netlist plugins: import_pads_net, import_orcad_net, accel, protel
+TODO: desc change
 
 Packaging changes between 2.2.3 and 2.2.2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
