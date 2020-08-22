@@ -216,6 +216,15 @@ li:pcb-rnd-conf-v1 {
 #			} misc;
 		} # appearance;
 
+		ha:import {
+			ha:footprint_placement {
+				method = frame
+			}
+			ha:footprint_removal {
+				method = remove
+			}
+		}
+
 		ha:plugins {
 			ha:lib_hid_common {
 				ha:cli_history {
