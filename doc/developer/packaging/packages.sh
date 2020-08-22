@@ -23,9 +23,10 @@ function out(dir, type  ,n,v,A,tmp)
 
 /(lihata)/ {
 	t = split(types, T, " ")
-	for(n = 1; n <= t; n++)
+	for(n = 1; n <= t; n++) {
 		out("import", T[n]);
 		out("export", T[n]);
+	}
 	exit
 }
 ' < description.txt > description2.txt && mv description2.txt description.txt
