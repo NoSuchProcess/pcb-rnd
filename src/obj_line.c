@@ -303,9 +303,7 @@ void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 				rnd_trace("MERGE2: %ml;%ml %ml;%ml %ld\n", line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->ID);
 				rnd_trace("        %ml;%ml %ml;%ml %ld\n", l2->Point1.X, l2->Point1.Y, l2->Point2.X, l2->Point2.Y, l2->ID);
 				pcb_undo_move_obj_to_remove(PCB_OBJ_LINE, layer, new_line, new_line);
-				maybe_move_line_pt(layer, new_line, &old_line->Point1, &out.Point1);
-				maybe_move_line_pt(layer, new_line, &old_line->Point2, &out.Point2);
-				goto retry;
+				break;
 		}
 	}
 }
