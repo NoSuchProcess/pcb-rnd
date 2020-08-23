@@ -297,6 +297,7 @@ void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 				pcb_undo_move_obj_to_remove(PCB_OBJ_LINE, layer, old_line, old_line);
 				maybe_move_line_pt(layer, new_line, &new_line->Point1, &out.Point1);
 				maybe_move_line_pt(layer, new_line, &new_line->Point2, &out.Point2);
+				line = new_line;
 				goto retry;
 
 			case PCB_LINMER_SKIP:
