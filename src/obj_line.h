@@ -123,7 +123,7 @@ typedef enum {
 	PCB_LINMER_SKIP  = 2  /* do not create the new line at all */
 } pcb_line_merge_t;
 
-int pcb_line_can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out);
+pcb_line_merge_t pcb_line_can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out);
 
 
 /* Rather than mode the line bounding box, we set it so the point bounding

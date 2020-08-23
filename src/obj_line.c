@@ -177,7 +177,7 @@ struct line_info {
 	jmp_buf env;
 };
 
-RND_INLINE int can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out)
+RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out)
 {
 	/* do not merge to subc parts or terminals */
 	if ((pcb_obj_parent_subc((pcb_any_obj_t *)old_line) != NULL) || (old_line->term != NULL))
@@ -238,7 +238,7 @@ RND_INLINE int can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new
 	return PCB_LINMER_NONE;
 }
 
-int pcb_line_can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out)
+pcb_line_merge_t pcb_line_can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out)
 {
 	return can_merge_lines(old_line, new_line, out);
 }
