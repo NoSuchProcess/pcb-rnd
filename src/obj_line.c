@@ -201,6 +201,8 @@ RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pc
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, old_line) != PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, new_line))
 		return PCB_LINMER_NONE;
 
+	out->Thickness = 4; /* theoretical line for the on-point check should have small thicnkess - but leave some room for rouding errors */
+
 	/* remove unnecessary line points */
 	if (old_line->Point1.X == new_line->Point1.X && old_line->Point1.Y == new_line->Point1.Y) {
 		out->Point1.X = old_line->Point2.X;
@@ -286,7 +288,6 @@ void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 			new_line = line;
 		}
 
-		out.Thickness = 4;
 		res = can_merge_lines(old_line, new_line, &out);
 		switch(res) {
 			case PCB_LINMER_NONE: break;
