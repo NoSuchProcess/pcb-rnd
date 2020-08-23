@@ -222,9 +222,6 @@ RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pc
 		out->Point1.Y = old_line->Point1.Y;
 		out->Point2.X = new_line->Point2.X;
 		out->Point2.Y = new_line->Point2.Y;
-rnd_trace("    new: %ml;%ml %ml;%ml\n", new_line->Point1.X, new_line->Point1.Y, new_line->Point2.X, new_line->Point2.Y);
-rnd_trace("    new: %ml;%ml %ml;%ml\n", old_line->Point1.X, old_line->Point1.Y, old_line->Point2.X, old_line->Point2.Y);
-rnd_trace("on line: %ml;%ml\nout=%ml;%ml %ml;%ml\n", new_line->Point1.X, new_line->Point1.Y, out->Point1.X, out->Point1.Y, out->Point2.X, out->Point2.Y);
 		if (pcb_is_point_on_line(new_line->Point1.X, new_line->Point1.Y, 1, out))
 			return PCB_LINMER_REMPT;
 		return PCB_LINMER_NONE;
@@ -359,8 +356,6 @@ void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 		switch(res) {
 			case PCB_LINMER_NONE: break;
 			case PCB_LINMER_REMPT:
-				rnd_trace("MERGE1: %ml;%ml %ml;%ml %ld\n", line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->ID);
-				rnd_trace("        %ml;%ml %ml;%ml %ld\n", l2->Point1.X, l2->Point1.Y, l2->Point2.X, l2->Point2.Y, l2->ID);
 				pcb_undo_move_obj_to_remove(PCB_OBJ_LINE, layer, old_line, old_line);
 				maybe_move_line_pt(layer, new_line, &new_line->Point1, &out.Point1);
 				maybe_move_line_pt(layer, new_line, &new_line->Point2, &out.Point2);
@@ -368,8 +363,6 @@ void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 				goto retry;
 
 			case PCB_LINMER_SKIP:
-				rnd_trace("MERGE2: %ml;%ml %ml;%ml %ld\n", line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->ID);
-				rnd_trace("        %ml;%ml %ml;%ml %ld\n", l2->Point1.X, l2->Point1.Y, l2->Point2.X, l2->Point2.Y, l2->ID);
 				pcb_undo_move_obj_to_remove(PCB_OBJ_LINE, layer, new_line, new_line);
 				break;
 		}
