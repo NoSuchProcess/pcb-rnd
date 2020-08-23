@@ -1093,6 +1093,7 @@ static void rbe_move(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_
 				if (direct) {
 					pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point1, ctx.move.dx, ctx.move.dy);
 					pcb_lineop_move_point(&ctx, ptr->Layer, ptr->Line, &ptr->Line->Point1);
+					pcb_line_mod_merge(ptr->Line, 1);
 				}
 				else
 					pcb_lineop_move_point_with_route(&ctx, ptr->Layer, ptr->Line, &ptr->Line->Point1);
@@ -1108,6 +1109,7 @@ static void rbe_move(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_
 				if (direct) {
 					pcb_undo_add_obj_to_move(PCB_OBJ_LINE_POINT, ptr->Layer, ptr->Line, &ptr->Line->Point2, ctx.move.dx, ctx.move.dy);
 					pcb_lineop_move_point(&ctx, ptr->Layer, ptr->Line, &ptr->Line->Point2);
+					pcb_line_mod_merge(ptr->Line, 1);
 				}
 				else
 					pcb_lineop_move_point_with_route(&ctx, ptr->Layer, ptr->Line, &ptr->Line->Point2);
