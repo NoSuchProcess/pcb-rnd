@@ -236,6 +236,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 					ctx.move.dx = dx2;
 					ctx.move.dy = dy2;
 					ptr2 = pcb_lineop_move_point(&ctx, Ptr1, line, &line->Point2);
+					pcb_line_mod_merge(line, 1);
 				}
 				/* Otherwise make a normal move */
 				else {
