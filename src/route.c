@@ -481,6 +481,9 @@ int pcb_route_apply_to_line(const pcb_route_t *p_route, pcb_layer_t *apply_to_li
 					if (exto != NULL)
 						pcb_extobj_float_geo(exto);
 
+					/* if the modified line can be merged with an existing line, do it */
+					pcb_line_mod_merge(apply_to_line, 1);
+
 					/* The existing line has been used so forget about it. */
 					apply_to_line = NULL;
 					applied = 1;

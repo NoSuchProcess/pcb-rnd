@@ -241,6 +241,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 				else {
 					pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, dx1, dy1);
 					ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+					pcb_line_mod_merge(ptr2, 1);
 				}
 			}
 			break;
@@ -249,6 +250,7 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 			rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE, "icc", 0, DX, DY);
 			pcb_undo_add_obj_to_move(Type, Ptr1, Ptr2, Ptr3, DX, DY);
 			ptr2 = pcb_object_operation(&MoveFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3);
+			pcb_line_mod_merge(ptr2, 1);
 			break;
 	}
 
