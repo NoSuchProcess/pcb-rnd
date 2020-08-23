@@ -243,6 +243,72 @@ pcb_line_merge_t pcb_line_can_merge_lines(const pcb_line_t *old_line, const pcb_
 	return can_merge_lines(old_line, new_line, out);
 }
 
+static void maybe_move_line_pt(pcb_layer_t *layer, pcb_line_t *line, rnd_point_t *pt, rnd_point_t *new_loc)
+{
+	rnd_coord_t dx = new_loc->X - pt->X, dy = new_loc->Y - pt->Y;
+	if ((dx == 0) && (dy == 0))
+		return;
+	pcb_move_obj(PCB_OBJ_LINE_POINT, layer, line, pt, dx, dy);
+}
+
+void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
+{
+	pcb_layer_t *layer = line->parent.layer;
+	rnd_rtree_it_t it;
+	pcb_line_t *l2, *old_line, *new_line, out;
+	rnd_box_t search;
+
+	assert(undoable); /* non-undoable is not yet supported */
+
+	retry:;
+
+	search.X1 = MIN(line->Point1.X, line->Point2.X);
+	search.X2 = MAX(line->Point1.X, line->Point2.X);
+	search.Y1 = MIN(line->Point1.Y, line->Point2.Y);
+	search.Y2 = MAX(line->Point1.Y, line->Point2.Y);
+	if (search.Y2 == search.Y1)
+		search.Y2++;
+	if (search.X2 == search.X1)
+		search.X2++;
+
+	for(l2 = rnd_rtree_first(&it, layer->line_tree, (rnd_rtree_box_t *)&search); l2 != NULL; l2 = rnd_rtree_next(&it)) {
+		pcb_line_merge_t res;
+
+		if (line == l2)
+			continue;
+
+		if (line->ID < l2->ID) {
+			old_line = line;
+			new_line = l2;
+		}
+		else {
+			old_line = l2;
+			new_line = line;
+		}
+
+		out.Thickness = 4;
+		res = can_merge_lines(old_line, new_line, &out);
+		switch(res) {
+			case PCB_LINMER_NONE: break;
+			case PCB_LINMER_REMPT:
+				rnd_trace("MERGE1: %ml;%ml %ml;%ml %ld\n", line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->ID);
+				rnd_trace("        %ml;%ml %ml;%ml %ld\n", l2->Point1.X, l2->Point1.Y, l2->Point2.X, l2->Point2.Y, l2->ID);
+				pcb_undo_move_obj_to_remove(PCB_OBJ_LINE, layer, old_line, old_line);
+				maybe_move_line_pt(layer, new_line, &new_line->Point1, &out.Point1);
+				maybe_move_line_pt(layer, new_line, &new_line->Point2, &out.Point2);
+				goto retry;
+
+			case PCB_LINMER_SKIP:
+				rnd_trace("MERGE2: %ml;%ml %ml;%ml %ld\n", line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, line->ID);
+				rnd_trace("        %ml;%ml %ml;%ml %ld\n", l2->Point1.X, l2->Point1.Y, l2->Point2.X, l2->Point2.Y, l2->ID);
+				pcb_undo_move_obj_to_remove(PCB_OBJ_LINE, layer, new_line, new_line);
+				maybe_move_line_pt(layer, new_line, &old_line->Point1, &out.Point1);
+				maybe_move_line_pt(layer, new_line, &old_line->Point2, &out.Point2);
+				goto retry;
+		}
+	}
+}
+
 
 static rnd_r_dir_t line_callback(const rnd_box_t * b, void *cl)
 {

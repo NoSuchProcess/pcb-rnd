@@ -126,6 +126,10 @@ typedef enum {
 pcb_line_merge_t pcb_line_can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out);
 
 
+/* Check if line can be merged with any other line and do the merge if so
+   (typically called after line has been modified) */
+void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable);
+
 /* Rather than mode the line bounding box, we set it so the point bounding
  * boxes are updated too.
  */
