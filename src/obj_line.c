@@ -179,6 +179,9 @@ struct line_info {
 
 RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pcb_line_t *new_line, pcb_line_t *out)
 {
+	int ov_n1o, ov_n2o, ov_o1n, ov_o2n;
+	pcb_line_t tmp;
+
 	/* do not merge to subc parts or terminals */
 	if ((pcb_obj_parent_subc((pcb_any_obj_t *)old_line) != NULL) || (old_line->term != NULL))
 		return PCB_LINMER_NONE;
@@ -201,6 +204,7 @@ RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pc
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, old_line) != PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, new_line))
 		return PCB_LINMER_NONE;
 
+	/*** matching endpoint ***/
 	out->Thickness = 4; /* theoretical line for the on-point check should have small thicnkess - but leave some room for rouding errors */
 
 	/* remove unnecessary line points */
@@ -211,14 +215,19 @@ RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pc
 		out->Point2.Y = new_line->Point2.Y;
 		if (pcb_is_point_on_line(new_line->Point1.X, new_line->Point1.Y, 1, out))
 			return PCB_LINMER_REMPT;
+		return PCB_LINMER_NONE;
 	}
 	else if (old_line->Point2.X == new_line->Point1.X && old_line->Point2.Y == new_line->Point1.Y) {
 		out->Point1.X = old_line->Point1.X;
 		out->Point1.Y = old_line->Point1.Y;
 		out->Point2.X = new_line->Point2.X;
 		out->Point2.Y = new_line->Point2.Y;
+rnd_trace("    new: %ml;%ml %ml;%ml\n", new_line->Point1.X, new_line->Point1.Y, new_line->Point2.X, new_line->Point2.Y);
+rnd_trace("    new: %ml;%ml %ml;%ml\n", old_line->Point1.X, old_line->Point1.Y, old_line->Point2.X, old_line->Point2.Y);
+rnd_trace("on line: %ml;%ml\nout=%ml;%ml %ml;%ml\n", new_line->Point1.X, new_line->Point1.Y, out->Point1.X, out->Point1.Y, out->Point2.X, out->Point2.Y);
 		if (pcb_is_point_on_line(new_line->Point1.X, new_line->Point1.Y, 1, out))
 			return PCB_LINMER_REMPT;
+		return PCB_LINMER_NONE;
 	}
 	else if (old_line->Point1.X == new_line->Point2.X && old_line->Point1.Y == new_line->Point2.Y) {
 		out->Point1.X = old_line->Point2.X;
@@ -227,6 +236,7 @@ RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pc
 		out->Point2.Y = new_line->Point1.Y;
 		if (pcb_is_point_on_line(new_line->Point2.X, new_line->Point2.Y, 1, out))
 			return PCB_LINMER_REMPT;
+		return PCB_LINMER_NONE;
 	}
 	else if (old_line->Point2.X == new_line->Point2.X && old_line->Point2.Y == new_line->Point2.Y) {
 		out->Point1.X = old_line->Point1.X;
@@ -235,7 +245,64 @@ RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pc
 		out->Point2.Y = new_line->Point1.Y;
 		if (pcb_is_point_on_line(new_line->Point2.X, new_line->Point2.Y, 1, out))
 			return PCB_LINMER_REMPT;
+		return PCB_LINMER_NONE;
 	}
+
+	/*** Partial overlap ***/
+
+	tmp = *old_line;
+	tmp.Thickness = 4;
+	ov_n1o = pcb_is_point_on_line(new_line->Point1.X, new_line->Point1.Y, 1, &tmp);
+	ov_n2o = pcb_is_point_on_line(new_line->Point2.X, new_line->Point2.Y, 1, &tmp);
+
+	/* new line fully within old line */
+	if (ov_n1o && ov_n2o)
+		return PCB_LINMER_SKIP;
+
+	tmp = *new_line;
+	tmp.Thickness = 4;
+	ov_o1n = pcb_is_point_on_line(old_line->Point1.X, old_line->Point1.Y, 1, &tmp);
+	ov_o2n = pcb_is_point_on_line(old_line->Point2.X, old_line->Point2.Y, 1, &tmp);
+
+	/* old line fully covered by the new line */
+	if (ov_o1n && ov_o2n) {
+		*out = *new_line;
+		return PCB_LINMER_REMPT;
+	}
+
+	/* common overlapping segment */
+	if (ov_o1n && ov_n2o) {
+		out->Point1.X = old_line->Point2.X;
+		out->Point1.Y = old_line->Point2.Y;
+		out->Point2.X = new_line->Point1.X;
+		out->Point2.Y = new_line->Point1.Y;
+		return PCB_LINMER_REMPT;
+	}
+
+	if (ov_o1n && ov_n1o) {
+		out->Point1.X = old_line->Point2.X;
+		out->Point1.Y = old_line->Point2.Y;
+		out->Point2.X = new_line->Point2.X;
+		out->Point2.Y = new_line->Point2.Y;
+		return PCB_LINMER_REMPT;
+	}
+
+	if (ov_o2n && ov_n2o) {
+		out->Point1.X = old_line->Point1.X;
+		out->Point1.Y = old_line->Point1.Y;
+		out->Point2.X = new_line->Point1.X;
+		out->Point2.Y = new_line->Point1.Y;
+		return PCB_LINMER_REMPT;
+	}
+
+	if (ov_o2n && ov_n1o) {
+		out->Point1.X = old_line->Point1.X;
+		out->Point1.Y = old_line->Point1.Y;
+		out->Point2.X = new_line->Point2.X;
+		out->Point2.Y = new_line->Point2.Y;
+		return PCB_LINMER_REMPT;
+	}
+
 
 	return PCB_LINMER_NONE;
 }
