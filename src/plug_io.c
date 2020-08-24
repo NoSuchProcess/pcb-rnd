@@ -283,6 +283,8 @@ int pcb_parse_footprint(pcb_data_t *Ptr, const char *Filename, const char *fmt)
 			rewind(f);
 			map = available[n].plug->map_footprint(available[n].plug, f, fctx.filename, &head, 0);
 			rewind(f);
+			if (map == NULL)
+				goto skip;
 			fctx.subfpname = pcb_fp_map_choose(&PCB->hidlib, map);
 			if (fctx.subfpname == NULL) /* cancel */
 				goto skip;
