@@ -317,6 +317,7 @@ ha:rnd-menu-v1 {
 						ha:Cycle line clip/refraction       = { li:a={{<key>m; <key>l; <key>f}; {<char>/};}; action=Display(CycleClip) }
 						ha:Auto swap line start angle       = { checked=editor/swap_start_direction; action=conf(toggle, editor/swap_start_direction, design) }
 						ha:Auto enforce DRC clearance       = { a={<key>m; <key>l; <key>d}; checked=editor/auto_drc; action=conf(toggle, editor/auto_drc, design) }
+						ha:Automatic trace merging          = { a={<key>m; <key>l; <key>m}; checked=editor/trace_auto_merge; action=conf(toggle, editor/trace_auto_merge, design) }
 						-
 						ha:Rubber band mode                 = { a={<key>m; <key>r; <key>r}; checked=editor/rubber_band_mode; action=conf(toggle, editor/rubber_band_mode, design) }
 						ha:Rubber band keeps middle line dir= { a={<key>m; <key>r; <key>m}; checked=editor/rubber_band_keep_midlinedir; action=conf(toggle, editor/rubber_band_keep_midlinedir, design) }
