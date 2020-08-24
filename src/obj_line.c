@@ -326,6 +326,7 @@ void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 	rnd_rtree_it_t it;
 	pcb_line_t *l2, *old_line, *new_line, out;
 	rnd_box_t search;
+	int retries = 16;
 
 	if (!conf_core.editor.trace_auto_merge)
 		return;
@@ -333,6 +334,9 @@ void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 	assert(undoable); /* non-undoable is not yet supported */
 
 	retry:;
+
+	if (retries-- == 0)
+		return; /* fallback: avoid infinite loop in any case */
 
 	search.X1 = MIN(line->Point1.X, line->Point2.X);
 	search.X2 = MAX(line->Point1.X, line->Point2.X);
