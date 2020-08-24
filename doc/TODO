@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG: bug_files/rubberx.lht: move the horizontal line upward, rubber band breaks the traces (ortho mode) -> rubber band is disabled in ortho mode because it is not clear what exactly it should do [report: aron]
 + BUG: bug_files/lines - remove zero length objects if they are created as the result of rubber banding [report: Evan]
 + BUG: irc client: doesn't indicate when disconnected -> testing: start pcb-rnd from a shell, connect to irc, press ctrl+z in the shell to suspend pcb-rnd; after 5 minutes type fg in the shell to get it back, by then it is disconnected [report: Erich]
 + BUG: buffer scale doesn't work on subcircuits [report: Erich]
