@@ -34,6 +34,7 @@ li:pcb-rnd-conf-v1 {
 			show_number = 0
 			orthogonal_moves = 0
 			reset_after_element = 1
+			trace_auto_merge = 1
 			auto_place = 0
 			lock_names = 0
 			only_names = 0

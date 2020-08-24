@@ -182,6 +182,9 @@ RND_INLINE pcb_line_merge_t can_merge_lines(const pcb_line_t *old_line, const pc
 	int ov_n1o, ov_n2o, ov_o1n, ov_o2n;
 	pcb_line_t tmp;
 
+	if (!conf_core.editor.trace_auto_merge)
+		return PCB_LINMER_NONE;
+
 	/* do not merge to subc parts or terminals */
 	if ((pcb_obj_parent_subc((pcb_any_obj_t *)old_line) != NULL) || (old_line->term != NULL))
 		return PCB_LINMER_NONE;
@@ -324,6 +327,9 @@ void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 	pcb_line_t *l2, *old_line, *new_line, out;
 	rnd_box_t search;
 
+	if (!conf_core.editor.trace_auto_merge)
+		return;
+
 	assert(undoable); /* non-undoable is not yet supported */
 
 	retry:;
@@ -392,6 +398,9 @@ pcb_line_t *pcb_line_new_merge(pcb_layer_t *Layer, rnd_coord_t X1, rnd_coord_t Y
 {
 	struct line_info info = {0};
 	rnd_box_t search;
+
+	if (!conf_core.editor.trace_auto_merge)
+		return pcb_line_new(Layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags);
 
 	search.X1 = MIN(X1, X2);
 	search.X2 = MAX(X1, X2);

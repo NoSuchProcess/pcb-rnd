@@ -53,6 +53,7 @@ typedef struct {
 		RND_CFT_BOOLEAN hide_names;            /* when set, subc floater text objects (typical use case: refdes text) are not drawn. */
 		RND_CFT_BOOLEAN description;           /* obsolete - DO NOT USE - kept for compatibility */
 		RND_CFT_BOOLEAN name_on_pcb;           /* obsolete - DO NOT USE - kept for compatibility */
+		RND_CFT_BOOLEAN trace_auto_merge;      /* automatically merge trace overlapping trace lines while drawing or moving traces */
 		RND_CFT_STRING  subc_id;               /* subcircuit ID template for diplaying the subcircuit label on the subcircuit layer; default to displaying the refes, if empty; syntax if the same as for DYNTEXT */
 		RND_CFT_STRING  term_id;               /* terminal ID template for diplaying the subcircuit label on the subcircuit layer; default to displaying termid[intconn], if empty; syntax if the same as for DYNTEXT */
 		RND_CFT_BOOLEAN move_linepoint_uses_route;	/* Moving a line point calculates a new line route. This allows 45/90 line modes when editing lines. */
