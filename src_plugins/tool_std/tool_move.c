@@ -130,8 +130,10 @@ void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 void pcb_tool_move_release_mode(rnd_hidlib_t *hl)
 {
 	if (hl->tool_hit) {
+		pcb_line_mod_merge_inhibit_inc((pcb_board_t *)hl);
 		pcb_tool_move_notify_mode(hl);
 		hl->tool_hit = 0;
+		pcb_line_mod_merge_inhibit_dec((pcb_board_t *)hl);
 	}
 }
 
