@@ -334,7 +334,7 @@
  librnd/core/hidlib_conf.h librnd/core/conf.h \
  ../src_3rd/liblihata/lihata.h librnd/core/list_conf.h \
  ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h librnd/core/funchash.h \
+ ../src_3rd/genlist/gendlist.h librnd/core/grid.h librnd/core/funchash.h \
  librnd/core/hid_menu.h
 ../src/librnd/core/hid_menu.o: ../src/librnd/core/hid_menu.c \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/tree.h \
@@ -1531,7 +1531,7 @@
  draw.h ../src_plugins/dialogs/dlg_pref_color.c \
  ../src_plugins/dialogs/dlg_pref_win.c librnd/core/hidlib_conf.h \
  ../src_plugins/lib_hid_common/dialogs_conf.h \
- ../src_plugins/dialogs/dlg_pref_key.c \
+ ../src_plugins/dialogs/dlg_pref_key.c librnd/core/hid_cfg_input.h \
  ../src_plugins/dialogs/dlg_pref_menu.c librnd/core/hid_menu.h \
  librnd/core/safe_fs.h ../src_plugins/dialogs/dlg_pref_conf.c \
  ../src_plugins/dialogs/dlg_pref_confedit.c librnd/core/hid_dad_unit.h
