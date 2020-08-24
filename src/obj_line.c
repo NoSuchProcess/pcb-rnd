@@ -320,6 +320,46 @@ static void maybe_move_line_pt(pcb_layer_t *layer, pcb_line_t *line, rnd_point_t
 	pcb_move_obj(PCB_OBJ_LINE_POINT, layer, line, pt, dx, dy);
 }
 
+
+void pcb_line_mod_merge_inhibit_inc(pcb_board_t *pcb)
+{
+	if (pcb->line_mod_merge_inhibit > 8192) {
+		rnd_message(RND_MSG_ERROR, "internal error: pcb_line_mod_merge_inhibit_dec overflow\n");
+		return;
+	}
+	pcb->line_mod_merge_inhibit++;
+}
+
+void pcb_line_mod_merge_inhibit_dec(pcb_board_t *pcb)
+{
+	if (pcb->line_mod_merge_inhibit == 0) {
+		rnd_message(RND_MSG_ERROR, "internal error: pcb_line_mod_merge_inhibit_dec underflow\n");
+		return;
+	}
+	pcb->line_mod_merge_inhibit--;
+	if (pcb->line_mod_merge_inhibit == 0) {
+		long n;
+		if (pcb->line_mod_merge == NULL)
+			return;
+		for(n = 0; n < pcb->line_mod_merge->used; n++)
+			if (pcb->line_mod_merge->array[n] != NULL)
+				pcb_line_mod_merge(pcb->line_mod_merge->array[n], 1);
+	}
+}
+
+static void line_mod_merge_removed(pcb_board_t *pcb, pcb_line_t *line)
+{
+	long n;
+	if (pcb->line_mod_merge == NULL)
+		return;
+	for(n = 0; n < pcb->line_mod_merge->used; n++) {
+		if (pcb->line_mod_merge->array[n] == line) {
+			pcb->line_mod_merge->array[n] = NULL;
+			return;
+		}
+	}
+}
+
 void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 {
 	pcb_layer_t *layer = line->parent.layer;
@@ -327,14 +367,29 @@ void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 	pcb_line_t *l2, *old_line, *new_line, out;
 	rnd_box_t search;
 	int retries = 16;
+	pcb_board_t *pcb;
 
 	if (!conf_core.editor.trace_auto_merge)
 		return;
 
+	pcb = pcb_data_get_top(line->parent.layer->parent.data);
+	if (pcb == NULL)
+		return;
+
+	if (pcb->line_mod_merge_inhibit) { /* delay removal */
+		long n;
+		if (pcb->line_mod_merge == NULL)
+			pcb->line_mod_merge = calloc(sizeof(vtp0_t), 1);
+		for(n = 0; n < pcb->line_mod_merge->used; n++)
+			if (pcb->line_mod_merge->array[n] == line)
+				return;
+		vtp0_append(pcb->line_mod_merge, line);
+		return;
+	}
+
 	assert(undoable); /* non-undoable is not yet supported */
 
 	retry:;
-
 	if (retries-- == 0)
 		return; /* fallback: avoid infinite loop in any case */
 
@@ -366,14 +421,16 @@ void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable)
 		switch(res) {
 			case PCB_LINMER_NONE: break;
 			case PCB_LINMER_REMPT:
-				pcb_undo_move_obj_to_remove(PCB_OBJ_LINE, layer, old_line, old_line);
-				maybe_move_line_pt(layer, new_line, &new_line->Point1, &out.Point1);
-				maybe_move_line_pt(layer, new_line, &new_line->Point2, &out.Point2);
-				line = new_line;
+				pcb_undo_move_obj_to_remove(PCB_OBJ_LINE, layer, new_line, new_line);
+				line_mod_merge_removed(pcb, new_line);
+				maybe_move_line_pt(layer, old_line, &old_line->Point1, &out.Point1);
+				maybe_move_line_pt(layer, old_line, &old_line->Point2, &out.Point2);
+				line = old_line;
 				goto retry;
 
 			case PCB_LINMER_SKIP:
 				pcb_undo_move_obj_to_remove(PCB_OBJ_LINE, layer, new_line, new_line);
+				line_mod_merge_removed(pcb, new_line);
 				break;
 		}
 	}

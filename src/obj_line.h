@@ -130,6 +130,11 @@ pcb_line_merge_t pcb_line_can_merge_lines(const pcb_line_t *old_line, const pcb_
    (typically called after line has been modified) */
 void pcb_line_mod_merge(pcb_line_t *line, rnd_bool undoable);
 
+/* Batch line merge optimization */
+void pcb_line_mod_merge_inhibit_inc(pcb_board_t *pcb);
+void pcb_line_mod_merge_inhibit_dec(pcb_board_t *pcb);
+
+
 /* Rather than mode the line bounding box, we set it so the point bounding
  * boxes are updated too.
  */

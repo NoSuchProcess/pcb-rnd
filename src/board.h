@@ -95,6 +95,9 @@ struct pcb_board_s {
 	int netlist_frozen;                             /* counter */
 	unsigned netlist_needs_update:1;
 
+	/* delayed trace optimization */
+	int line_mod_merge_inhibit;
+	struct vtp0_s *line_mod_merge;
 
 	/* random */
 	unsigned suppress_warn_missing_font:1;          /* do not warn for missing font; useful for alien formats not having embedded font */

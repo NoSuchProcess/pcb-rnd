@@ -55,6 +55,7 @@ void pcb_board_free(pcb_board_t * pcb)
 	if (pcb == NULL)
 		return;
 
+	free(pcb->line_mod_merge);
 	free(pcb->hidlib.name);
 	free(pcb->hidlib.filename);
 	free(pcb->PrintFilename);
