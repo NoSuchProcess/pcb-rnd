@@ -344,6 +344,7 @@ void pcb_line_mod_merge_inhibit_dec(pcb_board_t *pcb)
 		for(n = 0; n < pcb->line_mod_merge->used; n++)
 			if (pcb->line_mod_merge->array[n] != NULL)
 				pcb_line_mod_merge(pcb->line_mod_merge->array[n], 1);
+		pcb->line_mod_merge->used = 0;
 	}
 }
 
