@@ -79,14 +79,11 @@ static void scad_insert_model(htsp_t *models, const char *name, rnd_coord_t x0, 
 		ind++;
 		tab[ind] = '\0';
 
-		if (on_bottom) {
-			rnd_append_printf(&model_calls, "	%smirror([0,0,1])\n", tab);
+		if ((rot != 0) || on_bottom) {
+			rnd_append_printf(&model_calls, "	%srotate([%d,0,%f])\n", tab, (on_bottom ? 180 : 0), rot);
 			tab[ind] = '\t'; ind++; tab[ind] = '\0';
 		}
-		if (rot != 0) {
-			rnd_append_printf(&model_calls, "	%srotate([0,0,%f])\n", tab, rot);
-			tab[ind] = '\t'; ind++; tab[ind] = '\0';
-		}
+
 		if (transf != NULL) {
 			rnd_append_printf(&model_calls, "	%s%s\n", tab, transf);
 			tab[ind] = '\t'; ind++; tab[ind] = '\0';
