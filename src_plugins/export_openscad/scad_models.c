@@ -46,10 +46,19 @@ static void scad_insert_model(htsp_t *models, const char *name, rnd_coord_t x0, 
 
 			/* replace the module line */
 			while(fgets(buff, sizeof(buff), fin) != NULL) {
-				if (strstr(buff, "module") != NULL) {
-					fprintf(f, "module pcb_part_%s()", safe_name);
-					if (strchr(buff, '{') != NULL)
-						fprintf(f, "{\n");
+				char *mod = strstr(buff, "module"), *par;
+				if (mod != NULL) {
+					mod += 6;
+					*mod = '\0';
+					mod++;
+					fprintf(f, "%s", buff);
+					while(isspace(*mod)) mod++;
+					if (!isalpha(*mod) && (*mod != '_'))
+						rnd_message(RND_MSG_ERROR, "Openscad model '%s': module name must be in the same line as the module keyword\n", full_path);
+					fprintf(f, " pcb_part_%s", safe_name);
+					par = strchr(mod, '(');
+					if (par != NULL)
+						fprintf(f, "%s", par);
 					else
 						fprintf(f, "\n");
 					break;
