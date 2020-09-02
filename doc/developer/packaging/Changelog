@@ -29,7 +29,8 @@ B. changes that probably DO need action
    is much longer as it now really includes all file formats pcb-rnd supports.
    Please make sure to include the new package description: it is important
    that the end user finds pcb-rnd when he has a file of some exotic
-   file format and is searching for a tool for it.
+   file format and is searching for a tool for it. I've also removed
+   a redundant DRC item from the feature list.
 
 
 Packaging changes between 2.2.3 and 2.2.2
