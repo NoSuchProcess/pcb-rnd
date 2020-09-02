@@ -12,10 +12,10 @@
 <tr><th>pcb-rnd-lib-gl<td> pcb-rnd-core<td> lib_hid_gl
 <tr><th>pcb-rnd-import-geo<td> pcb-rnd-core<td> import_hpgl import_pxm_gd import_pxm_pnm import_ttf
 <tr><th>pcb-rnd-hid-gtk2-gl<td> pcb-rnd-core pcb-rnd-lib-gtk pcb-rnd-lib-gl<td> hid_gtk2_gl
-<tr><th>pcb-rnd-import-net<td> pcb-rnd-core pcb-rnd-lib-io<td> import_calay import_edif import_fpcb_nl import_gnetlist import_ipcd356 import_ltspice import_mentor_sch import_net_action import_net_cmd import_netlist import_sch2 import_tinycad
+<tr><th>pcb-rnd-import-net<td> pcb-rnd-core pcb-rnd-lib-io<td> import_accel_net import_calay import_edif import_fpcb_nl import_gnetlist import_ipcd356 import_ltspice import_mentor_sch import_net_action import_net_cmd import_netlist import_orcad_net import_pads_net import_protel_net import_sch2 import_tinycad
 <tr><th>pcb-rnd<td>pcb-rnd-core pcb-rnd-io-standard pcb-rnd-io-alien pcb-rnd-hid-gtk2-gl pcb-rnd-hid-gtk2-gdk pcb-rnd-export pcb-rnd-export-sim pcb-rnd-export-extra pcb-rnd-auto pcb-rnd-extra pcb-rnd-cloud pcb-rnd-doc pcb-rnd-import-net<td>&lt;metapackage&gt;
 <tr><th>librnd-dev<td> librnd2 pcb-rnd-core<td><i>n/a</i>
-<tr><th>pcb-rnd-auto<td> pcb-rnd-core pcb-rnd-lib-io<td> ar_cpcb asm autoplace autoroute export_dsn import_dsn import_mucs smartdisperse
+<tr><th>pcb-rnd-auto<td> pcb-rnd-core pcb-rnd-lib-io pcb-rnd-io-standard<td> ar_cpcb ar_extern asm autoplace autoroute export_dsn import_dsn import_mucs smartdisperse
 <tr><th>pcb-rnd-lib-io<td> pcb-rnd-core<td> lib_gensexpr lib_netmap
 <tr><th>pcb-rnd-io-standard<td> pcb-rnd-core pcb-rnd-lib-io<td> io_pcb io_tedax
 <tr><th>pcb-rnd-lib-gui<td> pcb-rnd-core<td> dialogs draw_fontsel irc lib_hid_common lib_hid_pcbui
@@ -39,10 +39,10 @@
 <tr><th>pcb-rnd-lib-gl<td> $P/lib_hid_gl.pup $P/lib_hid_gl.so <i></i><td>	Support library for rendering with opengl.<td> 	Provides plugins for driving an opengl output, rendering pcb-rnd 	views on opengl.  
 <tr><th>pcb-rnd-import-geo<td> $P/import_hpgl.pup $P/import_hpgl.so $P/import_pxm_gd.pup $P/import_pxm_gd.so $P/import_pxm_pnm.pup $P/import_pxm_pnm.so $P/import_ttf.pup $P/import_ttf.so <i></i><td>	Geometry import plugins.<td> 	Import geometry from HPGL plots. HPGL can be produced (plotted) with 	most mechanical cads.  
 <tr><th>pcb-rnd-hid-gtk2-gl<td> $P/hid_gtk2_gl.pup $P/hid_gtk2_gl.so <i></i><td>	GUI: gtk2, opengl<td> 	Hardware accelerated (opengl) rendering on gtk2.  
-<tr><th>pcb-rnd-import-net<td> $P/import_calay.pup $P/import_calay.so $P/import_edif.pup $P/import_edif.so $P/import_fpcb_nl.pup $P/import_fpcb_nl.so $P/import_gnetlist.pup $P/import_gnetlist.so $P/import_ipcd356.pup $P/import_ipcd356.so $P/import_ltspice.pup $P/import_ltspice.so $P/import_mentor_sch.pup $P/import_mentor_sch.so $P/import_net_action.pup $P/import_net_action.so $P/import_net_cmd.pup $P/import_net_cmd.so $P/import_netlist.pup $P/import_netlist.so $P/import_sch2.pup $P/import_sch2.so $P/import_tinycad.pup $P/import_tinycad.so $PREFIX/bin/gsch2pcb-rnd $PREFIX/lib/pcb-rnd/*.scm $PREFIX/share/man/man1/gsch2pcb-rnd.1 <i>$C/import_gnetlist.conf</i><td>	Netlist/schematics import plugins.<td> 	Import netlist and footprint information from edif, ltspice, mentor graphics, 	gschem and tinycad.  
+<tr><th>pcb-rnd-import-net<td> $P/import_accel_net.pup $P/import_accel_net.so $P/import_calay.pup $P/import_calay.so $P/import_edif.pup $P/import_edif.so $P/import_fpcb_nl.pup $P/import_fpcb_nl.so $P/import_gnetlist.pup $P/import_gnetlist.so $P/import_ipcd356.pup $P/import_ipcd356.so $P/import_ltspice.pup $P/import_ltspice.so $P/import_mentor_sch.pup $P/import_mentor_sch.so $P/import_net_action.pup $P/import_net_action.so $P/import_net_cmd.pup $P/import_net_cmd.so $P/import_netlist.pup $P/import_netlist.so $P/import_orcad_net.pup $P/import_orcad_net.so $P/import_pads_net.pup $P/import_pads_net.so $P/import_protel_net.pup $P/import_protel_net.so $P/import_sch2.pup $P/import_sch2.so $P/import_tinycad.pup $P/import_tinycad.so $PREFIX/bin/gsch2pcb-rnd $PREFIX/lib/pcb-rnd/*.scm $PREFIX/share/man/man1/gsch2pcb-rnd.1 <i>$C/import_gnetlist.conf</i><td>	Netlist/schematics import plugins.<td> 	Import netlist and footprint information from edif, ltspice, mentor graphics, 	gschem and tinycad.  
 <tr><th>pcb-rnd<td> <i></i><td>	Standard installation of pcb-rnd<td> 	Install pcb-rnd core and the most commonly used plugins.  
 <tr><th>librnd-dev<td>$PREFIX/include/librnd/* $PREFIX/share/librnd/librnd.mak $PREFIX/lib/librnd $PREFIX/lib/*.so $PREFIX/lib/librnd/gen_conf $PREFIX/lib/librnd/puplug <i></i><td>	pcb-rnd library, headers.<td> 	HID, polygons, infrastructure for 3rd party applications. 
-<tr><th>pcb-rnd-auto<td> $P/ar_cpcb.pup $P/ar_cpcb.so $P/asm.pup $P/asm.so $P/autoplace.pup $P/autoplace.so $P/autoroute.pup $P/autoroute.so $P/export_dsn.pup $P/export_dsn.so $P/import_dsn.pup $P/import_dsn.so $P/import_mucs.pup $P/import_mucs.so $P/smartdisperse.pup $P/smartdisperse.so <i>$C/asm.conf</i><td>	Autoroute and autoplace.<td> 	Feature plugins for automated component placing and track routing  
+<tr><th>pcb-rnd-auto<td> $P/ar_cpcb.pup $P/ar_cpcb.so $P/ar_extern.pup $P/ar_extern.so $P/asm.pup $P/asm.so $P/autoplace.pup $P/autoplace.so $P/autoroute.pup $P/autoroute.so $P/export_dsn.pup $P/export_dsn.so $P/import_dsn.pup $P/import_dsn.so $P/import_mucs.pup $P/import_mucs.so $P/smartdisperse.pup $P/smartdisperse.so <i>$C/ar_extern.conf $C/asm.conf</i><td>	Autoroute and autoplace.<td> 	Feature plugins for automated component placing and track routing  
 <tr><th>pcb-rnd-lib-io<td> $P/lib_gensexpr.pup $P/lib_gensexpr.so $P/lib_netmap.pup $P/lib_netmap.so <i></i><td>	Support library for alien file formats.<td> 	Provides generic, low level parsers (such as s-expression 	parser) for I/O plugins that need to deal with alien file formats.  
 <tr><th>pcb-rnd-io-standard<td> $P/io_pcb.pup $P/io_pcb.so $P/io_tedax.pup $P/io_tedax.so <i></i><td>	Commonly used non-native board and footprint file formats<td> 	Plugins for tEDAx footprint format and the gEDA/PCB file formats 	(footprint and board).  
 <tr><th>pcb-rnd-lib-gui<td> $P/dialogs.pup $P/dialogs.so $P/draw_fontsel.pup $P/draw_fontsel.so $P/irc.pup $P/irc.so $P/lib_hid_common.pup $P/lib_hid_common.so $P/lib_hid_pcbui.pup $P/lib_hid_pcbui.so <i>$C/dialogs.conf</i><td>	Support library for building the GUI.<td> 	Provides pcb-rnd specific dialog boxes (e.g. fontsel) and top 	window GUI elements.  
@@ -115,6 +115,7 @@
 --plugin-shand_cmd
 --plugin-import_tinycad
 --plugin-export_openems
+--plugin-import_orcad_net
 --plugin-import_ltspice
 --plugin-export_dxf
 --plugin-lib_gtk_common
@@ -123,12 +124,14 @@
 --plugin-import_mentor_sch
 --plugin-import_dsn
 --plugin-export_ps
+--plugin-import_accel_net
 --plugin-hid_gtk2_gdk
 --plugin-millpath
 --plugin-djopt
 --plugin-hid_gtk2_gl
 --plugin-import_edif
 --plugin-hid_lesstif
+--plugin-import_protel_net
 --plugin-lib_gensexpr
 --plugin-import_sch2
 --plugin-diag
@@ -142,6 +145,7 @@
 --plugin-fontmode
 --plugin-import_netlist
 --plugin-polystitch
+--plugin-import_pads_net
 --plugin-dialogs
 --plugin-io_dsn
 --plugin-export_xy
@@ -165,6 +169,7 @@
 --plugin-vendordrill
 --plugin-export_gerber
 --plugin-io_bxl
+--plugin-ar_extern
 --plugin-import_net_action
 
 </body>
