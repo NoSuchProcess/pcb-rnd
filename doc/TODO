@@ -39,6 +39,7 @@
 		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
 		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
 	- BUG: elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
+- BUG: bug_files/drc_poly.lht - DRC misses insufficient poly clearance ml=4316 [report: Majenko]
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: FONTS: second font indents incorrectly
