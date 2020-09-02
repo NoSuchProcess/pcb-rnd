@@ -66,7 +66,7 @@ File formats and compatibility:
     * netlist import by running a commandline
     * gEDA netlist (plain text, no footprint info)
     * Orcad PCB II (netlist + footprint info)
-    * PADS ascii (.asc; netlists + footprint info)
+    * PADS ascii (.asc, netlists + footprint info)
     * Protel netlists 2.0 + footprint info
     * tinycad .net (netlists + footprint info)
     * eeschema netlist and footprint info
@@ -94,8 +94,8 @@ File formats and compatibility:
     * tEDAx drc
     * tEDAx pcb-rnd drc script
   - export misc:
-    * bom (Bill of Materials; text)
-    * specctra .dsn (padstacks and subcircuits; works with freerouting.net)
+    * bom (Bill of Materials, text)
+    * specctra .dsn (padstacks and subcircuits, works with freerouting.net)
     * .dxf (2D drawing for mech CADs)
     * excellon drill/cnc (for PCB fabbing)
     * fidocad .fcd (partial export)
@@ -104,7 +104,7 @@ File formats and compatibility:
     * IPC-D-356 Netlist (for automated testing)
     * printer (using ps)
     * list of terminal connections (old, custom format)
-    * OpenEMS (simulation; matlab files)
+    * OpenEMS (simulation, matlab files)
     * openscad script (colored 3D model)
     * stl (3d triangulated surface model)
     * geda/PCB xy
