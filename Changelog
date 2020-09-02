@@ -1,3 +1,325 @@
+pcb-rnd 2.2.4 (r32600)
+~~~~~~~~~~~~~~~~~~~~~~
+pcb-rnd part:
+
+	[act_draw]
+		-Fix: when introducing a new per layer shape in a transformed shape respect smirror
+
+	[ar_extern]
+		-Add: generic external autorouter plugin with GUI and CLI; supports route-rnd
+
+	[autoroute]
+		-Fix: remove seemingly false positive assert(0) when box expansion is called on "any dir" - which probably shouldn't happen but doesn't seem to cause any problem (test file: bug_files/ara.lht; bug inherited from PCB, still present in 4.2.0)
+
+	[core]
+		-Del: move Attributes() from core to oldactions - propedit took over this role long ago
+		-Del: pcb_layer_edit_attrib() - nothing uses this helper function anymore, we switched to propedit
+		-Del: pcb_pstk_drc_check_clearance() - was used by drc_orig only; this is generally not the right way of checking the clearance anyway
+		-Del: buffer side mirroring: old silk layer swap code that depended on special behaviour of silk layers before the data model rewrite
+		-Del: crosshair shapes from the menu and action code, crosshair shape increment function
+		-Cleanup: remove CamelCase internal type name
+		-Cleanup: move layer group thickness attribute function from board.c to layer_grp.c where it really belongs
+		-Cleanup: remove undo_old_str.h, only undo_old depends on it
+		-Change: default conf for sch import; footprint placement: around frame, footprint removal: remove
+		-Fix: register line points in id2obj hash
+		-Fix: detect both ways two arcs can be the same (positive and negative delta angle) to prevent dups on GUI create
+		-Fix: uninit the extobj infra before plugin unload to avoid invalid memory addressing
+		-Fix: old undo: line point rotate90's undo shouldn't rotate the whole line, only the point (broke rubber banded rotation)
+		-Fix: poly side clearance: poly restore artifacts because object bounding box includes only the object side clearance and have to be adjusted with the poly enforced clearance value if it is larger
+		-Fix: arc approximation bug for negative delta angles (wrong start angle)
+		-Fix: automatically remove overlapping line segments drawn, even if they are pre-existing lines moved
+		-Fix: don't crash if footprint file could not be mapped - no map means no footprint in a multi-footprint format
+		-Add: pcb_xordraw_movecopy() gets an arg for whether the modifier key is pressed so the operation can behave differently
+		-Add: crosshair poly point move: calculate angle-keeping move for the xor-draw, when modifier is pressed
+		-Add: pstk shape absolute set for polygon shapes size
+		-Add: missing thermal calculation for line corner case: 0-long line
+		-Add: smart label placing ("smart" as in: try to avoid overlaps)
+		-Add: new conf node: appearance/label_thickness to make label text thickness configurable
+		-Add: buffer scale GUI offers entries for thickness scale and subc recursion
+
+	[dialogs]
+		-Del: don't call the old, lesstif-specific dialog implementations for library and netlistm always use the new, centralized dialogs
+		-Cleanup: generalize the project conf save mechanism and centralize it from the lib tab so other tabs can use it too
+		-Fix: preferences: general and sizes and color and window tabs save in project file
+		-Fix: library param dialog shouldn't crash if the example string got from the parametric footprint is empty
+		-Fix: preferences dialog: create and save library changes in project file by creating the project file as needed
+		-Fix: library dialog focus set to the filter entry on dialog creation
+		-Change: drc viewlist preview is flipped globally
+		-Add: padstack editor: absolute shape size set (next to grow and shrink)
+		-Add: preferences: show config role target only for tabs where it matters
+		-Add: preferences: key tab for configuring key translations/overrides
+
+	[doc]
+		-Add: missing conf tree node doc for design/drc* and design/thermal
+		-Add: missing conf subtree doc for import/footprint_removal
+		-Add: document the basic menu layout and anchors
+		-Add: document menu file nodes: /scripts, /static_toolbar, /anchored
+		-Add: document menu file root name
+		-Add: document the menu patch file format
+		-Add: link user doc from menus to the formal lihata tree description in the developer doc
+		-Add: bugreport howto section for export related bugs
+		-Add: auto-generate the file format support part of the datasheet
+		-Add: auto-generate the file format section of the package description
+
+	[drc_orig]
+		-Del: whole plugin, use drc_query instead
+
+	[export_openscad]
+		-Fix: bottom-side models shall not be mirrored but rotated 180 degrees vertically else asymmetric models will break (bugfix proposed by Alexey)
+		-Fix: when creating a local copy of a model module, keep the parameter list in the module definition
+
+	[export_stl]
+		-Cleanup: simplify the code: contour is always available during triangulation
+		-Add: cut out padstack holes from the face polys before triangulation
+		-Add: create cutout for polygon and line shaped slots
+		-Add: create cutout for manually drawn internal contour loops
+		-Add: implement drill dia filter
+		-Add: --min-slot-line to control how to export line-slots
+		-Add: --slot-poly (and --no-slot-poly) to control whether polygon based slots are exported
+		-Add: --cutouts/--no-cutouts to control if manual drawn cutouts should be included
+		-Add: model support (with minimal stl parser for loading the models)
+
+	[exto_std]
+		-Fix: bus: make sure the bus is cleared and recalculated when a new floater is added, since the new floater may affect existing segments at junctions
+		-Fix: bus: removeing/generating the copper trace lines should update polygon clipping for clearance
+		-Fix: bus: clearance value is not halved anymore
+
+	[extobj]
+		-Add: action ExtobjToggle to convert between static subcircuit and extended object forth and back
+		-Add: menu item in the context popup for converting between extobj and static subc
+
+	[import_accel_net]
+		-Add: infra for the accel_net import plugin
+
+	[import_orcad_net]
+		-Add: import plugin for orcad netlists
+
+	[import_pads_net]
+		-Add: import plugin for PADS netlists
+
+	[import_protel_net]
+		-Add: import plugin for protel netlist 2.0
+
+	[io_eagle]
+		-Fix: create the aux layer of subcircuits on load
+
+	[io_pcb]
+		-Cleanup: move layer group string parser from core to io_pcb, that's the only one format that should ever use it, for compatibility
+
+	[io_tedax]
+		-Add: extend the layer write function to also write layernet blocks used in route_req
+		-Add: write route_req blocks
+		-Add: extend the stackup save API so it can be limited to specific layer group types - useful for saving only copper groups in a route_req
+		-Add: route_res parser
+		-Add: read conf lists from external autorouters
+		-Add: list drc scripts as plugin capability
+
+	[lib_hid_pcbui]
+		-Update: swap order of layersel and rotue style docked subbox creation so that layersel ends up on top
+		-Fix: context popup click: prefer the 'E' mark of extended objects over anything else
+
+	[librnd]
+		-Del: edit_attributes from the HID API - use the propedit instead
+		-Del: TODO on wchar: won't be supported, by policy
+		-Cleanup: remove the unused label argument from the scalar DAD entries (inherited from the old, export-oriented attribute system)
+		-Cleanup: move attrib.[ch] out, back to pcb-rnd core - it's pcb-rnd specific code that got in the hidlib only because of the old custom per hid attribute dialog implementations
+		-Change: mark crosshair shapes related conf node obsolete
+		-Change: replace local librnd from the dedicated repo
+		-Add: extend the preview dad creation macro with the keyboard event callback
+		-Add: feature macro for configuring the hid api to work without the excess label macro arguments (transition toward 3.0.0)
+
+	[menu]
+		-Cleanup: remove vendor drill menu items, insert anchors in preparation of plugin installed menus
+		-Cleanup: simplify timed layer menu and layer key updates using the new hid GUI batch timer - also makes sure there's only one update
+		-Cleanup: run route-style update from the same central hid gui timer batch callback that layer menu update is running from to minimize the number of merges
+		-Cleanup: simplify calling conventions in layer_menu code - there are no callbacks, remove the excess context struct
+		-Move: import_dsn menu from core to plugin
+		-Move: import_mucs menu from core to plugin
+		-Move: io_hyp menu from core to plugin
+		-Move: import_hpgl menu from core to plugin
+		-Move: io_kicad menu from core to plugin
+		-Move: import_mentor_sch menu from core to plugin
+		-Move: import_ipcd356 menu from core to plugin
+		-Move: import_tinycad menu from core to plugin
+		-Move: import_calay menu from core to plugin
+		-Move: import_ltspice menu from core to plugin
+		-Move: import_fpcb_nl menu from core to plugin
+		-Move: io_tedax menu from core to plugin
+		-Change: use the menu merging mechanism for installing the route style menus
+		-Change: use the menu merging mechanism for installing the layer menus
+		-Change: use the menu merging mechanism for installing the live scripting menus
+		-Change: use the menu merging mechanism for installing the order pcb plugin
+		-Add: preferences dialog: tab for the menu files (patches)
+		-Add: name the root node to identify the file
+		-Add: build infra for plugin embedded menu patch files
+		-Add: anchor for autorouters
+		-Add: checkbox menu item for controlling automatic trace merging
+
+	[netlist]
+		-Fix: do not ignore subcircuit nonetlist flag
+
+	[pcblib]
+		-Fix: subc common: do not ignore text string argument when creating subc text
+		-Add: subc common: subc begin function gets an optional attribute array for the new subc's attributes
+		-Add: common_subc: layer polygon functions
+		-Add: common_subc helper for creating poly shape for padstacks
+
+	[pstk]
+		-Fix: when a shape is derived (copied), transformed shapes that are smirrored shall use the mirrored layer type flags (fixes the bug of bottom side smd pad getting a 'top side' mask that should appear on the bottom side because of the subc flip but with the bug appeared on top side until reload)
+		-Fix: no return value in void functions
+
+	[rubberband_orig]
+		-Fix: don't let rubberband mess with subc locked lines and arcs
+		-Fix: disable rubber band in ortho refraction because it does stupid things
+		-Fix: auto-remove overlapping line segments introduced by moving line endpoints around
+
+	[scconfig]
+		-Fix: do not hardwire -ldl, use scconfig detected link flag
+
+	[script]
+		-Fix: if a script creates a timer before the GUI is started, do not start the timer (it requires the GUI), but remember to start the timer after the GUI init
+
+	[tool_std]
+		-Add: moving poly point: pass on whether the control key is pressed
+		-Add: batch line merge optimization in move so rubber banding won't get confused with lines disappearing in the middle of the operation
+
+	[util]
+		-Fix: make distclean should remove bxl2txt objects and generated Makefile
+		-Fix: fp2preview: use full path of the footprint file for loading
+		-Update: bisecter default svn url points to svn.repo.hu instead of plain repo.hu for stability on server reorgs
+
+	[vendordrill]
+		-Add: plugin embedded menu patch for creating all the menus the plugin needs
+
+librnd part:
+
+	[core]
+		-Del: edit_attributes from the HID API - use the propedit instead
+		-Del: internal attrib.h dependency
+		-Del: TODO on wchar: won't be supported, by policy
+		-Del: crosshair shape enum; mark crosshair shapes related conf node obsolete
+		-Cleanup: move attrib.[ch] out, back to pcb-rnd core - it's pcb-rnd specific code that got in the hidlib only because of the old custom per hid attribute dialog implementations
+		-Cleanup: (optionally) remove the unused label argument from the scalar DAD entries (inherited from the old, export-oriented attribute system); depends on feature macro for configuring the hid api to work without the excess label macro arguments (transition toward 3.0.0)
+		-Move: key modifiers to hid_cfg.h - it belongs there by prefix and hid_dad will need it too
+		-Update: dad preview API change for scripting
+		-Fix: print error message on actions not found in interactive command parsing mode
+		-Fix: automatically update editor/grids_idx on grid change (unless it's rooted in a grids_idx change)
+		-Fix: update menu checkboxes after menu merge
+		-Fix: don't run the menu checkbox update if there's no gui or the gui doesn't support it
+		-Add: HID API: preview keypress callback hook
+		-Add: load the keyboard callback for preview widget on creation
+		-Add: HATF for initial focus of a widget on widget creation; useful in corner cases like the library window where the filter text shall have the initial focus instead of buttons or the tree
+		-Add: DAD: hatf for setting preview flip to local or global
+		-Add: comment/doc: explain what raw and translated key codes stand for
+		-Add: configurable key translation table (useful for non-US layout)
+		-Add: input key to key desc converter
+
+	[gtk]
+		-Del: custom attributes editor window - use the propedit instead
+		-Del: crosshair shapes
+		-Del: unnecessary pcb-rnd dependency
+		-Cleanup: menu accel text leak
+		-Cleanup: use the side-correct GUI zoom/pan function for previews; remove the old, non-side-correct zoom/pan function
+		-Cleanup: rename zoom/pan function, remove the _side suffix - we have only the side-correct version now
+		-Cleanup: simplify and centralize the global/local flip logics
+		-Split: keyboard: key translation function from top window key handling so it can be reused for preview later
+		-Fix: don't force-show all widgets in a dockbox on creation
+		-Fix: menu insert position: ignore anchors properly
+		-Fix: decouple preview from global board flip; consider local flip when calculating zoom-to-win
+		-Fix: local preview flip: keep the view box after the flip
+		-Fix: global flip following previews should adjust view box to remain at the same location on board flip
+		-Fix: don't update menu checkbox states during menu merge inhibit: there will be a single update at the end
+		-Add: make docked subwindow positions persistent, per dock box
+		-Add: preview widget taking focus to handle keyboard event after mouse clicks
+		-Add: implement RND_HATF_INIT_FOCUS
+		-Add: support for preview hatf on global flip
+		-Add: temporary tab key handler for local flipped preview widgets
+
+	[hid]
+		-Cleanup: centralize sending the GUI_INITED event so that inhibits can be added in one place
+		-Cleanup: free menu key structs and hashes (memory leak)
+		-Add: HID API extension: create menu from existing lihata tree node
+		-Add: helper: GUI batch timer to simplify plugin timed updates
+
+	[irc]
+		-Fix: remove pcb-rnd dependency
+		-Fix: handle disconnect event and mark the connection broken
+		-Fix: set initial widget focus on the text input box
+
+	[lesstif]
+		-Del: brave setting for the new tree-table widget - always enabled, to help the transition
+		-Del: locally implemented library and netlist dialogs
+		-Del: custom attributes editor window - use the propedit instead
+		-Del: crosshair shapes
+		-Del: unnecessary pcb-rnd dependencies
+		-Del: special casing of thin draw render - pcb-rnd-dependent, the core should decide about these things, not the HIDs
+		-Del: remove dummy text object from dock window
+		-Cleanup: remove pcb-rnd dependency on mark draw callback
+		-Cleanup: remove pcb-rnd crosshair.h dependency with some dead code
+		-Cleanup: remove dead code from old status bar
+		-Cleanup: remove pcb-rnd dependency on layer_vis
+		-Cleanup: remove pcb-rnd dependencies from menu
+		-Cleanup: split up top window creation to smaller pieces to make the code easier to follow
+		-Cleanup: remove code duplication on command line hiding, making sure all code paths will set back the focus on the drawing area
+		-Change: DoWindows() action calls through to the new dialog actions instead of activating the old, local dialog implementations
+		-Fix: DAD: remember wltop for hbox and box: some code will hide/show whole boxes
+		-Fix: show bottom dockbox when command line is open in full screen mode
+		-Fix: make sure it's always the drawing area that gets the keyboard events
+		-Fix: pretend picture labels and text labels are buttons so they can receive clicks
+		-Fix: FillBox: get preferred (should-be-minimal) widget size instead of current widget size so that negative sizing is possible
+		-Fix: scrolled box: force minimum size so dialogs can be resized to smaller
+		-Fix: the Pages widget allows resizing to smaller
+		-Fix: menu insert position: ignore anchors properly
+		-Fix: mangle key events in the main drawing area return so pressing tab to flip board won't get interpreted by motif to change widget focus
+		-Fix: don't update menu checkbox states during menu merge inhibit: there will be a single update at the end
+		-Split: preview input callback for mouse and keyboard
+		-Split: key translation from top window key handling so it can be reused in preview key handling later
+		-Add: TOP_INFOBAR dock, TOP_RIGHT dock and TOP_LEFT dock (toolbar under the menu)
+		-Add: implement dock_leave() hook
+		-Add: support for full screen mode
+		-Add: emulate vertical text using \n's for now
+		-Add: enable left side dock (layer selector and route style edit)
+		-Add: fillbox: minsize property to bypass the xt/xm preferred size mechanism that doesn't seem to work well with scrolled boxes
+		-Add: key handling for the preview widget
+		-Add: implement RND_HATF_INIT_FOCUS
+		-Add: implement local and global flip for preview widgets
+
+	[lib_hid_common]
+		-Fix: do not accidentally overwrite the gui inited flag on log window open - fixes: once closed log window not reopening/popping-up on new warnings/errors
+
+	[libporty_net]
+		-Fix: make distclean removes generated files
+
+	[menu]
+		-Del: remove the old dynamic menu API - everything must use the merging API now
+		-Split: move menu related code from hid_cfg to hid_menu; add top comment to explain what hid_cfg and hid_menu are for
+		-Rename: hid's ->hid_cfg to ->menu as it holds only the menu by now
+		-Cleanup: load the menu centrally, instead of each hid trying to load it
+		-Cleanup: rename menu loader function - it's not a generic cfg loader but a dedicated menu loader
+		-Cleanup: move the high level file name assembly part from the low level menu loader into the caller, hid_init
+		-Cleanup: type correctness in menu create API call in lesstif
+		-Change: use the menu merging mechanism for installing the grid menu
+		-Fix: menu loading from NULL file name is normal - skip the file instead of a crash
+		-Fix: CreateMenu(): print an error if creating the menu failed
+		-Add: MenuPatch action
+		-Add: "menu system", with an ordered (by prio) list of patches and priority based menu file merging
+		-Add: API for the GUI HIDs to announce when they are ready for the menus
+		-Add: reimplement CreateMenu() and RemoveMenu() actions based on menu merging
+		-Add: props based API for menu creation for plugins that need to create menus dynamically
+
+	[poly]
+		-Del: octagon generator - legacy code, required only for io compatibility, already impleented in the related pcb-rnd plugin
+		-Del: rnd_poly_square_pin_factors() - used only in pcb-rnd legacy IO
+		-Add: comment/explain the is-point-inside-the-poly function (after decoding the code)
+
+	[scconfig]
+		-Del: pcb-rnd related parts from hooks.c and Makefile template
+		-Del: pcb-rnd-specific dotdir from config
+		-Update: make lesstif part of the hidlib
+		-Fix: hidlib static link flags: make sure -lXm is before -lXt else motif won't initialize
+		-Fix: do not hardwire -ldl, use scconfig detected link flag
+		-Fix: gui detect logics: don't crash on missing settings
+
 pcb-rnd 2.2.2 (r32086)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]
