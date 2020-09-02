@@ -21,3 +21,6 @@ Feature highlight:
    A new plugin that supports both "single click/action" CLI and GUI for
    export-execute-import iterations using external autorouters such as
    route-rnd.
+
+4. Import plugins for four new netlist file formats
+   Including: Accel EDA, Orcad, PADS and Protel netlists.
