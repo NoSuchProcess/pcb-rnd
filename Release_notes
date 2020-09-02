@@ -1,39 +1,23 @@
-pcb-rnd 2.2.2
+pcb-rnd 2.2.4
 ~~~~~~~~~~~~~
 
-This version is mainly a feature release which extends I/O support and
-the DRC. There are some smallish features and a lot of bugfixes, please
-refer to the changelog for detauls.
+This version is mainly a cleanup release that makes the next major step
+in librnd separation. It also features important infrastructural improvements.
 
 Feature highlight:
 
-1. BXL support: footprints available in the (binary) BXL format can be
-   loaded, imported or used from the library (directy, or using any of
-   the schematics import methods). A BXL file may contain multiple
-   footprints; in the library such a BXL file shows up as a virtual
-   subdirectory. When importing a BXL file name directly, if there are
-   multiple footprints in it pcb-rnd will offer the choice which one to load.
+1. Librnd separation
+   Split the SVN repositories, librnd is in a separate repository
+   and can be compiled stand-alone (but for this release, it's still
+   spread across pcb-rnd source tree in forms of svn:externs).
 
-2. query/drc_query: access a list of layers, network segments, net segment
-   lengths, more geometrical and mathematical functions for more powerful
-   DRC rules.
+2. Menu patching
+   Be able to load menu files and menu patches and merge them runtime.
+   This allows plugins and user patch files to make modifications to the
+   menu, without having to edit and then maintain diffs of the central menu
+   file.
 
-3. Save/load DRC rules: implemented native lihata format and tEDAx format.
-   Importing a tEDAx netlist automatically loads DRC rules, allowing
-   schematics to specify rules.
-
-4. Dedicated GUI and network dialog upgrade for easier network length
-   tracking.
-
-5. Lihata board v7: new native file format version with more powerful text
-   object support, new gfx object support and more.
-
-6. Online help/support: minimalistic IRC client for direct real-time contact
-   to the developers to reach out for yet passive users.
-
-7. Alien format handling: upgrade text object load to a bounding box based
-   algorithm to overcome text alignment and font difference problems
-
-8. librnd (hidlib) separation: rename all public API symbols to start with
-   rnd instead of pcb
-
+3. Generic support for external autorouters
+   A new plugin that supports both "single click/action" CLI and GUI for
+   export-execute-import iterations using external autorouters such as
+   route-rnd.
