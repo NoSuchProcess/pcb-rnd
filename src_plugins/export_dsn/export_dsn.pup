@@ -3,7 +3,7 @@ $short specctra .dsn pcb_exporter
 $long Export specctra .dsn files
 $state works
 $fmt-native no
-$fmt-feature-w specctra .dsn (padstacks and subcircuits; works with freerouting.net)
+$fmt-feature-w specctra .dsn (padstacks and subcircuits, works with freerouting.net)
 $package auto
 default buildin
 autoload 1

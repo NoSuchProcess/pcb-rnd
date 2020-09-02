@@ -3,7 +3,7 @@ $short import PADS ascii netlist .asc
 $long Import the netlist and footprints from a PADS netlist.
 $state works
 $fmt-native no
-$fmt-feature-r PADS ascii (.asc; netlists + footprint info)
+$fmt-feature-r PADS ascii (.asc, netlists + footprint info)
 $package import-net
 default buildin
 autoload 1
