@@ -5,7 +5,7 @@ SRC=src
 BIN=src
 
 #  what cflags to use to compile scconfig
-USER_CFLAGS = -DGENCALL -Isrc
+USER_CFLAGS = -DGENCALL -Isrc -I../src_3rd
 #USER_CFLAGS = -Wall -Wextra -g -DGENCALL -Isrc
 
 #  what ldflags to use to link scconfig
@@ -84,7 +84,8 @@ menucfg: $(OBJS) $(MENULIB_OBJS) src/default/main_lib.o src/default/main_custom_
 menucfg.o: menucfg.c
 	$(CC) -c $(CFLAGS) -o menucfg.o menucfg.c
 
-RNDHOOKS=librnd/scconfig/plugin_3state.h librnd/scconfig/hooks_common.h librnd/scconfig/hooks_gui.c librnd/scconfig/rnd_hook_detect.h
+LIBRNDSCC=../src_3rd/librnd/scconfig
+RNDHOOKS=$(LIBRNDSCC)/plugin_3state.h $(LIBRNDSCC)/hooks_common.h $(LIBRNDSCC)/hooks_gui.c $(LIBRNDSCC)/rnd_hook_detect.h
 hooks.o: hooks.c $(RNDHOOKS)  plugins.h Rev.h ../src_3rd/puplug/scconfig_hooks.h ../src_3rd/libfungw/scconfig_hooks.h ../src_3rd/libporty_net/hooks_net.c
 
 src/util/arg_auto_set.o: src/util/arg_auto_set.c src/util/arg_auto_set.h

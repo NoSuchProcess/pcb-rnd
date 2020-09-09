@@ -13,6 +13,7 @@
 
 #define version "2.2.4"
 
+#define LIBRND_ROOT "../src_3rd/librnd"
 #include "../src_3rd/puplug/scconfig_hooks.h"
 #include "../src_3rd/libfungw/scconfig_hooks.h"
 #include "../src_3rd/libporty_net/hooks_net.c"

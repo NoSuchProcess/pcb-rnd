@@ -386,7 +386,7 @@ LIBMINUID_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 LIBMINUID_LDFLAGS=@cc/ldflags@
 GENLIST_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 GENLIST_LDFLAGS=@cc/ldflags@
-LIBRND=../src/librnd
+LIBRND=../src_3rd/librnd
 
 all:
 	$(MAKE) revcheck
@@ -520,7 +520,7 @@ all-local: pcbtest.sh
 conf_core_fields.h: conf_core.h $(ROOT)/doc/conf/tree/rc.html
 	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh  < conf_core.h > conf_core_fields.h
 
-librnd/core/hidlib_conf_fields.h: $(LIBRND)/core/hidlib_conf.h $(ROOT)/doc/conf/tree/rc.html
+$(LIBRND)/core/hidlib_conf_fields.h: $(LIBRND)/core/hidlib_conf.h $(ROOT)/doc/conf/tree/rc.html
 	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh < $(LIBRND)/core/hidlib_conf.h > $(LIBRND)/core/hidlib_conf_fields.h
 
 $(ROOT)/doc/conf/tree/rc.html: $(LIBRND)/core/hidlib_conf.h conf_core.h
@@ -573,8 +573,8 @@ install_librnd_:
 	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
 	$(SCCBOX) $(HOW) "../src_3rd/puplug/util/puplug" "$(HL_LIBDIR)/librnd/puplug"
 	$(SCCBOX) $(HOW) "../scconfig/gen_conf.sh" "$(HL_LIBDIR)/librnd/gen_conf"
-	$(SCCBOX) $(HOW) "../scconfig/librnd/scconfig/hooks_common.h" "$(HL_INCDIR)/scconfig/hooks_common.h"
-	$(SCCBOX) $(HOW) "../scconfig/librnd/scconfig/plugin_3state.h" "$(HL_INCDIR)/scconfig/plugin_3state.h"
+	$(SCCBOX) $(HOW) "$(LIBRND)/scconfig/hooks_common.h" "$(HL_INCDIR)/scconfig/hooks_common.h"
+	$(SCCBOX) $(HOW) "$(LIBRND)/scconfig/plugin_3state.h" "$(HL_INCDIR)/scconfig/plugin_3state.h"
 	cd ../src_3rd/puplug && $(MAKE) install_hdr_ MKDR="../$(SCCBOX) mkdir -p" INST="../$(SCCBOX) $(HOW)" INCDIR="$(HL_INCDIR)/src_3rd/puplug"
 @]
 
