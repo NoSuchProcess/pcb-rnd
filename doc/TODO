@@ -45,6 +45,7 @@
 		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
 		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
 	- BUG: elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
+- BUG: openscad export: unticking top copper (and probably others) in the export dialog doesn't stop the plugin from exporting everything [report: Bdale]
 - BUG: advanced search: no quote around strings for subc footprint; no padstack in the type listing; propset(padstack/clearance, 20mil) doesn't work ml=4321 [report: Igor2]
 - BUG: bug_files/drc_poly.lht - DRC misses insufficient poly clearance ml=4316 [report: Majenko]
 - BUG: Lihata persistent save:
