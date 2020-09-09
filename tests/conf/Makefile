@@ -1,5 +1,5 @@
 ROOT=../..
-include $(ROOT)/src/librnd/core/librnd.mak
+include $(ROOT)/src_3rd/librnd/core/librnd.mak
 include $(ROOT)/Makefile.conf
 
 CFLAGS = $(PCB_RND_C89FLAGS) -I../.. -I../../src_3rd -I../../src $(CFLAGS_LIBRND_FUNGW)
@@ -22,9 +22,9 @@ LIB_PCBRND_OBJS=\
 	../../src/conf_internal.o
 
 DEPH = \
-	../../src/librnd/core/conf.h \
-	../../src/librnd/core/conf_hid.h \
-	../../src/librnd/core/compat_misc.h \
+	../../src_3rd/librnd/core/conf.h \
+	../../src_3rd/librnd/core/conf_hid.h \
+	../../src_3rd/librnd/core/compat_misc.h \
 	../../src/conf_core.h \
 	../../src_plugins/diag/diag_conf.h \
 

@@ -3,7 +3,7 @@ all: test_parse
 ROOT=../..
 include $(ROOT)/Makefile.conf
 REM=$(ROOT)/src_plugins/hid_remote
-CFLAGS = $(PCB_RND_C89FLAGS) -g -I$(REM) -I$(ROOT)/src -I$(ROOT)
+CFLAGS = $(PCB_RND_C89FLAGS) -g -I$(REM) -I$(ROOT)/src -I$(ROOT)/src_3rd -I$(ROOT)
 
 
 test_parse: test_parse.o

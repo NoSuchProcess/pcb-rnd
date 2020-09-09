@@ -6,7 +6,8 @@ include $(ROOT)/Makefile.conf
 UNM=$(ROOT)/src_plugins/io_kicad
 LHT=$(ROOT)/src_3rd
 SRC=$(ROOT)/src
-LIBRND=$(SRC)/librnd
+SRC_3RD=$(ROOT)/src_3rd
+LIBRND=$(SRC_3RD)/librnd
 CFLAGS = $(PCB_RND_C89FLAGS) -I$(UNM) -I$(LHT) -I$(SRC) -I$(ROOT)
 LDLIBS = -lm
 LIB_OBJS=$(LHT)/genht/htsp.o $(LHT)/genht/hash.o $(LIBRND)/core/compat_misc.o $(LHT)/genvector/gds_char.o

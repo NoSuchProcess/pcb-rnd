@@ -6,7 +6,8 @@ ROOT=../..
 include $(ROOT)/Makefile.conf
 
 SRC=$(TRUNK)/src
-LIBRND=$(SRC)/librnd
+SRC_3RD=$(TRUNK)/src_3rd
+LIBRND=$(SRC_3RD)/librnd
 CFLAGS_OP = -O3
 CFLAGS = $(PCB_RND_C89FLAGS) -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd -I$(TRUNK)/src_3rd/liblihata
 LDLIBS = -lm
