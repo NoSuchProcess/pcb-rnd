@@ -34,7 +34,7 @@
 #include "layer_menu.h"
 #include "layersel.h"
 #include "routest.h"
-#include "../../src_plugins/lib_hid_common/toolbar.h"
+#include "lib_hid_common/toolbar.h"
 #include "status.h"
 #include "act.h"
 

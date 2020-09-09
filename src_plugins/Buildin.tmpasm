@@ -7,7 +7,6 @@
 
 append /local/pcb/buildin_init_extern    [@extern pcb_uninit_t hid_@/local/pcb/mod@_init();@] {\n}
 
-append /local/pcb/buildin_pups [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
 
 append /local/pcb/buildin_init_code    [@
 	uninit_func = hid_@/local/pcb/mod@_init();
@@ -37,6 +36,8 @@ then
 
 	append /local/pcb/LDFLAGS_HIDLIB_STATIC   /local/pcb/mod/LDFLAGS
 	append /local/pcb/CFLAGS_HIDLIB_STATIC    /local/pcb/mod/CFLAGS
+else
+	append /local/pcb/buildin_pups [@@/local/pcb/mod@=@/local/pcb/mod@/@/local/pcb/mod@.pup@] {\n}
 end
 
 include /local/pcb/tmpasm/common_enabled

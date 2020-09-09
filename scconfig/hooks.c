@@ -13,7 +13,8 @@
 
 #define version "2.2.4"
 
-#define LIBRND_ROOT "../src_3rd/librnd"
+#define LIBRND_ROOT         "../src_3rd/librnd"
+#define LIBRND_PLUGIN_ROOT  "../src_3rd/librnd_plugins"
 #include "../src_3rd/puplug/scconfig_hooks.h"
 #include "../src_3rd/libfungw/scconfig_hooks.h"
 #include "../src_3rd/libporty_net/hooks_net.c"
@@ -324,8 +325,6 @@ int hook_generate()
 	printf("Generating src_3rd/libporty_net/phost_types.h (%d)\n", generr |= generate("../src_3rd/libporty_net/phost_types.h.in", "../src_3rd/libporty_net/phost_types.h"));
 
 	printf("Generating pcb-rnd config.h (%d)\n", generr |= tmpasm("..", "config.h.in", "config.h"));
-
-	printf("Generating opengl.h (%d)\n", generr |= tmpasm("../src_plugins/lib_hid_gl", "opengl.h.in", "opengl.h"));
 
 	printf("Generating tests/librnd/inc_all.h (%d)\n", generr |= tmpasm("../tests/librnd", "inc_all.h.in", "inc_all.h"));
 

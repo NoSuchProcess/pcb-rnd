@@ -33,7 +33,7 @@
 #include <librnd/core/safe_fs.h>
 #include "globalconst.h"
 
-#include "../src_plugins/lib_wget/lib_wget.h"
+#include "lib_wget/lib_wget.h"
 
 int fp_wget_offline = 0;
 

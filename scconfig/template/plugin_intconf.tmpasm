@@ -4,8 +4,17 @@
 
 switch ?/local/pcb/mod/CONFFILE
 case {...}
-put /local/pcb/MCFG [@$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/CONFFILE@@]
-put /local/pcb/ICFG [@$(PLUGDIR)/@/local/pcb/mod@/conf_internal.c@]
+
+put /local/pcb/mod/is_hidlib  [@/local/pcb/@/local/pcb/mod@/hidlib@]
+resolve /local/pcb/mod/is_hidlib ?/local/pcb/mod/is_hidlib
+if ?/local/pcb/mod/is_hidlib
+then
+	put /local/pcb/MCFG [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/CONFFILE@@]
+	put /local/pcb/ICFG [@$(LIBRND_PLUGDIR)/@/local/pcb/mod@/conf_internal.c@]
+else
+	put /local/pcb/MCFG [@$(PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod/CONFFILE@@]
+	put /local/pcb/ICFG [@$(PLUGDIR)/@/local/pcb/mod@/conf_internal.c@]
+end
 
 append /local/pcb/DEPDEPS [@ @/local/pcb/ICFG@ @]
 append /local/pcb/DISTCLEANFILES [@ @/local/pcb/ICFG@ @]

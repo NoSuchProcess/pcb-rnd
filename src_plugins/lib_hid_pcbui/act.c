@@ -39,7 +39,7 @@
 #include "search.h"
 #include "obj_subc_parent.h"
 
-#include "../src_plugins/lib_hid_common/zoompan.h"
+#include "lib_hid_common/zoompan.h"
 
 #include "util.h"
 #include "act.h"

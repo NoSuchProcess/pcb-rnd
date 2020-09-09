@@ -36,7 +36,7 @@
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
 #include "plug_io.h"
-#include "../src_plugins/lib_hid_common/dialogs_conf.h"
+#include "lib_hid_common/dialogs_conf.h"
 
 #include "dlg_loadsave.h"
 

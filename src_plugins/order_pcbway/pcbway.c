@@ -38,7 +38,7 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/paths.h>
 #include <librnd/core/compat_fs.h>
-#include "../src_plugins/lib_wget/lib_wget.h"
+#include "lib_wget/lib_wget.h"
 #include "../src_plugins/order/order.h"
 #include "order_pcbway_conf.h"
 #include "../src_plugins/order_pcbway/conf_internal.c"

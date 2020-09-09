@@ -1,4 +1,4 @@
-append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -I../src -I../src_3rd/liblihata }
+append /local/pcb/CFLAGS {-I. -I.. -I../src_3rd -I../src_3rd/librnd_plugins -I../src -I../src_3rd/liblihata }
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
@@ -347,6 +347,7 @@ ROOT=..
 
 # plugin source
 PLUGDIR=$(ROOT)/src_plugins
+LIBRND_PLUGDIR=$(ROOT)/src_3rd/librnd_plugins
 
 # plugin source install - so that pcb-rnd runs from source properly
 PLUGIDIR=plugins
@@ -467,7 +468,7 @@ buildin.h: $(PLUGDIR)/.builtin.pups $(PUPLUG)
 	$(PUPLUG) buildin.h > buildin.h
 
 buildin.hidlib.c: $(PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
-	cd $(PLUGDIR) && $(PUPLUG) buildin.c "-" < $(PLUGDIR)/.builtin.hidlib.pups > $(ROOT)/src/buildin.hidlib.c
+	cd $(LIBRND_PLUGDIR) && ../$(PUPLUG) buildin.c "-" < ../$(PLUGDIR)/.builtin.hidlib.pups > ../$(ROOT)/src/buildin.hidlib.c
 
 $(LIBRND)/core/buildin.hidlib.h: $(PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
 	$(PUPLUG) buildin.h > $(LIBRND)/core/buildin.hidlib.h
