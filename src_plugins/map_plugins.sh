@@ -7,7 +7,7 @@
 export LANG=C
 PUPLUG=../src_3rd/puplug/util/puplug
 
-dirs="../src_plugins ../src_3rd/librnd_plugins"
+dirs="../src_plugins ../src_3rd/librnd/plugins"
 
 # generate scconfig's 3 state plugin list
 for dir in $dirs
