@@ -16,7 +16,7 @@ include Makefile.dep
 DEPDEPS=@/local/pcb/DEPDEPS_SORTED@
 
 dep: FORCE $(DEPDEPS)
-	make -f Makefile.depgen PLUGDIR=$(PLUGDIR) SRC_3RD_DIR=$(SRC_3RD_DIR)
+	make -f Makefile.depgen PLUGDIR=$(PLUGDIR) LIBRND=$(LIBRND) LIBRND_PLUGDIR=$(LIBRND)/plugins SRC_3RD_DIR=$(SRC_3RD_DIR)
 @]
 
 append /local/dep/CFLAGS {-D_PCB_DEP_}
