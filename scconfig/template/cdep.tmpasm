@@ -49,6 +49,9 @@ foreach /local/c in /local/dep/SRCS_SORTED
 		case {$(PLUGDIR)}
 			print [@	gcc -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ @/local/pcb/DEPCFLAGS@ >> Makefile.dep
 @]; end
+		case {$(LIBRND_PLUGDIR)}
+			print [@	gcc  -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep
+@]; end
 		case {$(LIBRND)}
 			print [@	gcc  -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep
 @]; end
