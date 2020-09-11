@@ -1,3 +1,4 @@
+### Generated file, do not edit, run make dep ###
 
 ../src_3rd/librnd/core/actions.o: ../src_3rd/librnd/core/actions.c \
  ../src_3rd/librnd/config.h ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \

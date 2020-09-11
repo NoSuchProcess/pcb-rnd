@@ -68,5 +68,5 @@ foreach /local/c in /local/dep/SRCS_SORTED
 end
 
 print [@
-	sed "s^ librnd/^ ../src_3rd/librnd/^g" < Makefile.dep.tmp > Makefile.dep
+	sed "s^ librnd/^ ../src_3rd/librnd/^g" < Makefile.dep.tmp > Makefile.dep && rm Makefile.dep.tmp
 @]
