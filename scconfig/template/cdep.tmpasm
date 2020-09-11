@@ -22,7 +22,7 @@ dep: FORCE $(DEPDEPS)
 append /local/dep/CFLAGS {-D_PCB_DEP_}
 gsub /local/dep/CFLAGS {-I} {-isystem }
 gsub /local/dep/CFLAGS {-isystem [.][.]} {-I ..}
-gsub /local/dep/CFLAGS {-isystem [.]} { }
+gsub /local/dep/CFLAGS {-isystem [.]} { -I. }
 sortuniq /local/dep/SRCS_SORTED /local/dep/SRCS
 
 redir {Makefile.depgen}
@@ -36,8 +36,8 @@ LIBRND=../src/librnd
 # SRC_3RD_DIR and PLUGDIR are set
 
 all:
-	echo "### Generated file, do not edit, run make dep ###" > Makefile.dep
-	echo "" >> Makefile.dep
+	echo "### Generated file, do not edit, run make dep ###" > Makefile.dep.tmp
+	echo "" >> Makefile.dep.tmp
 @]
 
 foreach /local/c in /local/dep/SRCS_SORTED
@@ -47,22 +47,26 @@ foreach /local/c in /local/dep/SRCS_SORTED
 	switch /local/c
 		case {/src_plugins/} end
 		case {$(PLUGDIR)}
-			print [@	gcc -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ @/local/pcb/DEPCFLAGS@ >> Makefile.dep
+			print [@	gcc -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ @/local/pcb/DEPCFLAGS@ >> Makefile.dep.tmp
 @]; end
 		case {$(LIBRND_PLUGDIR)}
-			print [@	gcc  -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep
+			print [@	gcc  -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep.tmp
 @]; end
 		case {$(LIBRND)}
-			print [@	gcc  -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep
+			print [@	gcc  -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep.tmp
 @]; end
 		case {$(SRC_3RD_DIR)}
-			print [@	gcc -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep
+			print [@	gcc -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep.tmp
 @]; end
 		case {../src_3rd/}
-			print [@	gcc -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep
+			print [@	gcc -MT @/local/o@ -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep.tmp
 @]; end
 
-		default print [@	gcc -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep
+		default print [@	gcc -MM @/local/c@ @/local/dep/CFLAGS@ >> Makefile.dep.tmp
 @]; end
 	end
 end
+
+print [@
+	sed "s^ librnd/^ ../src_3rd/librnd/^g" < Makefile.dep.tmp > Makefile.dep
+@]
