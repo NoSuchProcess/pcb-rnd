@@ -2,9 +2,8 @@
 
 1. For the upcoming release ===============================================================================
 	- CLEANUP: librnd sep
-		- make sure pcb-rnd compiles and installs with plugins + test-package deb
+		- test-package deb
 		- tests/librnd should be moved from pcb-rnd to librnd - but then get the autobuild to trigger on librnd commits as well!
-		- dialogs plugin depends dialogs.conf from librnd, why?
 
 2. For later releases ===============================================================================
 - CLEANUP: move out Wojciech's cdt to a minimlib; he gave permission to license it under the LGPL2+
