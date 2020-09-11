@@ -34,7 +34,7 @@
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/plugins.h>
 #include "funchash_core.h"
-#include "lib_hid_common/dialogs_conf.h"
+#include <librnd/plugins/lib_hid_common/dialogs_conf.h>
 
 /* from lib_hid_common */
 extern conf_dialogs_t dialogs_conf;

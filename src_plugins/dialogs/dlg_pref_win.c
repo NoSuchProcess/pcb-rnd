@@ -30,7 +30,7 @@
 #include <librnd/core/conf.h>
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
-#include "lib_hid_common/dialogs_conf.h"
+#include <librnd/plugins/lib_hid_common/dialogs_conf.h>
 
 extern conf_dialogs_t dialogs_conf;
 extern void pcb_wplc_save_to_role(rnd_conf_role_t role);

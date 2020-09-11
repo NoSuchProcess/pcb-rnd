@@ -39,7 +39,7 @@
 
 #include "../src_plugins/export_excellon/aperture.h"
 
-#include "lib_hid_common/xpm.h"
+#include <librnd/plugins/lib_hid_common/xpm.h>
 
 
 const char *gerber_cookie = "gerber HID";

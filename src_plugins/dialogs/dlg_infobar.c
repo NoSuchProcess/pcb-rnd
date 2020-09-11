@@ -32,8 +32,8 @@
 #include <librnd/core/actions.h>
 #include "board.h"
 #include <librnd/core/hid_dad.h>
-#include "lib_hid_common/xpm.h"
-#include "lib_hid_common/dlg_comm_m.h"
+#include <librnd/plugins/lib_hid_common/xpm.h>
+#include <librnd/plugins/lib_hid_common/dlg_comm_m.h>
 #include "plug_io.h"
 
 static void ifb_file_chg_reload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
