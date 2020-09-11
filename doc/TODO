@@ -2,12 +2,11 @@
 
 1. For the upcoming release ===============================================================================
 	- CLEANUP: librnd sep
-		- rerun make dep, make sure it uses the right paths
-		- make sure camv-rnd and sch-rnd compile
+		- make sure pcb-rnd compiles and installs with plugins + test-package deb
 		- scconfig/gen_conf.sh should be in librnd
-		- remove unused src_3rd externs from librnd
 		- tests/librnd should be moved from pcb-rnd to librnd - but then get the autobuild to trigger on librnd commits as well!
 		- src_plugins/map_plugins should be moved to librnd
+		- dialogs plugin depends dialogs.conf from librnd, why?
 
 2. For later releases ===============================================================================
 - CLEANUP: move out Wojciech's cdt to a minimlib; he gave permission to license it under the LGPL2+
