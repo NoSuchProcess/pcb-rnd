@@ -2,7 +2,7 @@ put /local/pcb/CFLAGS cc/cflags
 append /local/pcb/CFLAGS {-I../.. -I../../src_3rd -I../../src -I../../src_3rd/liblihata -DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS ?/target/libs/ldl
-include {../scconfig/template/debug.tmpasm}
+include {../src_3rd/librnd/scconfig/template/debug.tmpasm}
 
 print [@
 ROOT=../..
@@ -86,7 +86,7 @@ $(ROOT)/src/librnd-3rd.a:
 
 # generate explicit rules for .c -> .o
 put /local/comp/OBJS /local/pcb/OBJS
-include {../scconfig/template/compile.tmpasm}
+include {../src_3rd/librnd/scconfig/template/compile.tmpasm}
 
 print [@
 

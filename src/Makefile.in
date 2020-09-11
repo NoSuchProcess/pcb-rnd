@@ -40,7 +40,7 @@ end
 # These files are to be generated before make dep is run
 put /local/pcb/DEPDEPS { $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c defpcb_internal.c buildin.c buildin.hidlib.c pcb_menu_default.c }
 
-include {../scconfig/template/debug.tmpasm}
+include {../src_3rd/librnd/scconfig/template/debug.tmpasm}
 
 # main: objects
 # hidlib will be a library that provides:
@@ -294,10 +294,10 @@ put /local/pcb/tmpasm/buildin         {../src_plugins/Buildin.tmpasm}
 put /local/pcb/tmpasm/plugin          {../src_plugins/Plugin.tmpasm}
 put /local/pcb/tmpasm/disable         {../src_plugins/Disable.tmpasm}
 put /local/pcb/tmpasm/common_enabled  {../src_plugins/Common_enabled.tmpasm}
-put /local/pcb/tmpasm/plugin_sphash   {../scconfig/template/plugin_sphash.tmpasm}
-put /local/pcb/tmpasm/plugin_conf     {../scconfig/template/plugin_conf.tmpasm}
-put /local/pcb/tmpasm/plugin_intconf  {../scconfig/template/plugin_intconf.tmpasm}
-put /local/pcb/tmpasm/plugin_intmenu  {../scconfig/template/plugin_intmenu.tmpasm}
+put /local/pcb/tmpasm/plugin_sphash   {../src_3rd/librnd/scconfig/template/plugin_sphash.tmpasm}
+put /local/pcb/tmpasm/plugin_conf     {../src_3rd/librnd/scconfig/template/plugin_conf.tmpasm}
+put /local/pcb/tmpasm/plugin_intconf  {../src_3rd/librnd/scconfig/template/plugin_intconf.tmpasm}
+put /local/pcb/tmpasm/plugin_intmenu  {../src_3rd/librnd/scconfig/template/plugin_intmenu.tmpasm}
 
 include {../src_plugins/plugins_ALL.tmpasm}
 
@@ -677,13 +677,13 @@ map_plugins:
 # generate explicit rules for .c -> .o
 put /local/comp/OBJS /local/pcb/OBJS
 put /local/comp/OBJS_C99 ?/local/pcb/OBJS_C99
-include {../scconfig/template/compile.tmpasm}
+include {../src_3rd/librnd/scconfig/template/compile.tmpasm}
 
 print [@
 # for extern utils:@]
 
 put /local/comp/OBJS /local/pcb/OBJS_UTIL
-include {../scconfig/template/compile.tmpasm}
+include {../src_3rd/librnd/scconfig/template/compile.tmpasm}
 
 # generate deps
 put /local/dep/CFLAGS /local/pcb/CFLAGS
@@ -691,7 +691,7 @@ put /local/dep/SRCS /local/pcb/SRCS
 
 gsub /local/pcb/DEPSRCS {.o } {.c }
 append /local/dep/SRCS /local/pcb/DEPSRCS
-include {../scconfig/template/cdep.tmpasm}
+include {../src_3rd/librnd/scconfig/template/cdep.tmpasm}
 
 # librnd separation, temporary workaround:
 # since pcb-rnd is trying to build everything without using librnd's build system
