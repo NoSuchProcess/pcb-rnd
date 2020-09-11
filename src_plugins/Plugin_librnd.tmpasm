@@ -1,0 +1,48 @@
+# tmpasm script for compiling a plugin_src/ module as a plugin
+# Requires variables before the include:
+#  /local/pcb/mod       basename of the module (e.g. autoplace)
+#  /local/pcb/mod/OBJS  full path of all object files
+#  /local/pcb/mod/OBJS_C99  full path of all object files for non-c89
+
+# clean up input vars
+uniq /local/pcb/mod/OBJS
+uniq /local/pcb/mod/OBJS_C99
+uniq /local/pcb/mod/CFLAGS
+uniq /local/pcb/mod/LDFLAGS
+uniq /local/pcb/mod/LIBS
+
+# generate .c -> .o rules in /local/comp/output
+put /local/comp/OBJS ?/local/pcb/mod/OBJS
+put /local/comp/OBJS_C99 ?/local/pcb/mod/OBJS_C99
+put /local/comp/CFLAGS /local/pcb/mod/CFLAGS
+include {../src_3rd/librnd/scconfig/template/comp_var.tmpasm}
+
+append /local/pcb/all   [@ $(PLUGIDIR)/@/local/pcb/mod@.so @]
+
+append /local/pcb/rules/install_ [@
+	$(SCCBOX) $(HOW) "$(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so" "$(LIBDIR)/plugins/@/local/pcb/mod@.so"
+	$(SCCBOX) $(HOW) "$(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.pup" "$(LIBDIR)/plugins/@/local/pcb/mod@.pup"@]
+
+append /local/pcb/CLEANFILES [@ $(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so $(PLUGIDIR)/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@  @/local/pcb/mod/OBJS_C99@ @]
+
+append /local/pcb/RULES [@
+
+### Module @/local/pcb/mod@: plugin ###
+
+$(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so: @/local/pcb/mod/OBJS@ @/local/pcb/mod/OBJS_C99@
+	$(CC) -shared @cc/rdynamic@ -o $(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so @/local/pcb/mod/OBJS@ @/local/pcb/mod/OBJS_C99@  $(LDFLAGS) @/local/pcb/mod/LDFLAGS@
+
+mod_@/local/pcb/mod@: $(PLUGIDIR)/@/local/pcb/mod@.so
+
+$(PLUGIDIR)/@/local/pcb/mod@.so: $(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so
+	$(MKDIR) $(PLUGIDIR)
+	$(CP) $(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.so $(PLUGIDIR)/@/local/pcb/mod@.so
+	$(CP) $(LIBRND_PLUGDIR)/@/local/pcb/mod@/@/local/pcb/mod@.pup $(PLUGIDIR)/@/local/pcb/mod@.pup
+
+# module .c -> .o rules
+@/local/comp/output@
+
+### Module @/local/pcb/mod@ end ###
+@]
+
+include /local/pcb/tmpasm/common_enabled

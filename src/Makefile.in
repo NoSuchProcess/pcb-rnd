@@ -292,6 +292,8 @@ put /local/pcb/mod/UREGLEX {}
 
 put /local/pcb/tmpasm/buildin         {../src_plugins/Buildin.tmpasm}
 put /local/pcb/tmpasm/plugin          {../src_plugins/Plugin.tmpasm}
+put /local/pcb/tmpasm/plugin_local    {../src_plugins/Plugin_local.tmpasm}
+put /local/pcb/tmpasm/plugin_librnd   {../src_plugins/Plugin_librnd.tmpasm}
 put /local/pcb/tmpasm/disable         {../src_plugins/Disable.tmpasm}
 put /local/pcb/tmpasm/common_enabled  {../src_plugins/Common_enabled.tmpasm}
 put /local/pcb/tmpasm/plugin_sphash   {../src_3rd/librnd/scconfig/template/plugin_sphash.tmpasm}
@@ -698,7 +700,7 @@ include {../src_3rd/librnd/scconfig/template/cdep.tmpasm}
 # our local builtins must contain librnd plugins too; but those plugins are
 # in a different subdir. The workaround is extending the file names with local,
 # relative path to that dir.
-put /local/pcb/buildin_hidlib_pups_fullpath /local/pcb/buildin_hidlib_pups
+put /local/pcb/buildin_hidlib_pups_fullpath ?/local/pcb/buildin_hidlib_pups
 gsub /local/pcb/buildin_hidlib_pups_fullpath {=} {=../src_3rd/librnd/plugins/}
 
 redir {../src_plugins/.builtin.pups}
