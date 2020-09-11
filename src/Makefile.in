@@ -670,7 +670,7 @@ uninstall:
 	$(MAKE) install_librnd_ HOW="uninstall"
 
 map_plugins:
-	cd ../src_plugins && ./map_plugins.sh
+	cd ../src_plugins && PUPLUG=../src_3rd/puplug/util/puplug ../src_3rd/librnd/plugins/map_plugins.sh ../src_plugins ../src_3rd/librnd/plugins
 
 @]
 
