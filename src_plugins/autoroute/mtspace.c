@@ -50,6 +50,7 @@
 #include <librnd/core/box.h>
 #include <librnd/core/heap.h>
 #include <librnd/poly/rtree.h>
+#include "box_dir.h"
 #include "mtspace.h"
 #include "vector.h"
 #include <librnd/poly/rtree2_compat.h>

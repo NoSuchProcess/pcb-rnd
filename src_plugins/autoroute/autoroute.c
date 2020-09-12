@@ -69,6 +69,7 @@
 #include "autoroute.h"
 #include <librnd/core/box.h>
 #include "draw.h"
+#include "box_dir.h"
 #include <librnd/core/error.h>
 #include "find.h"
 #include <librnd/core/heap.h>

@@ -52,6 +52,7 @@
 #include "autoplace.h"
 #include <librnd/core/box.h>
 #include <librnd/core/compat_misc.h>
+#include "box_dir.h"
 #include "data.h"
 #include "draw.h"
 #include <librnd/core/error.h>
