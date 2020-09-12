@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-	- CLEANUP: librnd sep: move autorouter related enums and structs (e.g. 'NORTH')
 
 2. For later releases ===============================================================================
 - CLEANUP: move out Wojciech's cdt to a minimlib; he gave permission to license it under the LGPL2+
