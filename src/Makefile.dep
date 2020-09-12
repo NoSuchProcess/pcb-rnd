@@ -2383,8 +2383,8 @@
  ../src_3rd/librnd/core/misc_util.h ../src_3rd/genvector/gds_char.h \
  obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h \
  ../src_3rd/librnd/core/hidlib.h ../src_plugins/autoplace/autoplace.h \
- ../src_3rd/librnd/core/compat_misc.h data.h crosshair.h vtonpoint.h \
- ../src_3rd/librnd/core/hid.h ../src_3rd/liblihata/dom.h \
+ ../src_3rd/librnd/core/compat_misc.h box_dir.h data.h crosshair.h \
+ vtonpoint.h ../src_3rd/librnd/core/hid.h ../src_3rd/liblihata/dom.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
  ../src_3rd/librnd/core/error.h route.h buffer.h \
  ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h obj_rat_list.h \
@@ -2455,7 +2455,7 @@
  ht_subc.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/autoroute/autoroute.h board.h vtroutestyle.h rats_patch.h \
- board.h draw.h find.h ../src_3rd/librnd/core/heap.h netlist.h \
+ board.h draw.h box_dir.h find.h ../src_3rd/librnd/core/heap.h netlist.h \
  ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h \
  polygon.h remove.h operation.h obj_pinvia_therm.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h layer.h obj_line_draw.h draw.h \
@@ -2469,8 +2469,8 @@
  ../src_3rd/librnd/core/rnd_bool.h ../src_3rd/librnd/core/misc_util.h \
  ../src_3rd/librnd/core/unit.h ../src_3rd/librnd/core/heap.h \
  ../src_3rd/librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h \
- ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h \
- ../src_3rd/librnd/poly/rtree2_compat.h
+ box_dir.h ../src_plugins/autoroute/mtspace.h \
+ ../src_plugins/autoroute/vector.h ../src_3rd/librnd/poly/rtree2_compat.h
 ../src_plugins/autoroute/vector.o: ../src_plugins/autoroute/vector.c \
  ../config.h ../src_3rd/librnd/config.h ../src_3rd/librnd/core/math_helper.h \
  ../src_plugins/autoroute/vector.h
