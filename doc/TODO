@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 	- CLEANUP: librnd sep
-		- test-package deb
 		- tests/librnd should be moved from pcb-rnd to librnd - but then get the autobuild to trigger on librnd commits as well!
 
 2. For later releases ===============================================================================
