@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: move out Wojciech's cdt to a minimlib; he gave permission to license it under the LGPL2+
 - CLEANUP: TODO27: undo's removed list shouldn't depend on object IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
 - CLEANUP/BUG: bug_files/pstk_offs.lht - most of the code gets confused if a padstack's shape is far away from the padstack origin; try {c r} or {c f} on R8-1; need to cache hole vs. shape overlap (1 bit per shape in the proto) [report: igor2]
 - CLEANUP/BUG: find.c: unplated padtsacks shall not connect layers; bug_files/unplated1.lht; problem: a padstack is either found or not, this affects all layers, there's no info about which layer is found; padstack update should check the hole/slot geo and update a bit for each shape telling whether it's connected or not
