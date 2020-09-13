@@ -55,7 +55,7 @@
 #include "ewire_point.h"
 #include "pointdata.h"
 #include "spoke.h"
-#include "cdt/cdt.h"
+#include <libcdtr/cdt.h>
 #include <genht/htip.h>
 #include <genht/htpp.h>
 #include <genvector/vtp0.h>

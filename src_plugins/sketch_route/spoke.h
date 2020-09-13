@@ -4,7 +4,7 @@
 #include "sktypedefs.h"
 #include "obj_common.h"
 #include "ewire.h"
-#include "cdt/point.h"
+#include <libcdtr/point.h>
 
 #include <genvector/vtp0.h>
 

@@ -8755,42 +8755,42 @@
  ../src_plugins/shape/shape_dialog.c ../src_3rd/librnd/core/hid_dad.h \
  ../src_3rd/librnd/core/hid_attrib.h ../src_3rd/librnd/core/hid_cfg.h \
  ../src_3rd/librnd/core/hid_menu.h ../src_3rd/librnd/core/hid_dad_spin.h
-../src_plugins/sketch_route/cdt/cdt.o: \
- ../src_plugins/sketch_route/cdt/cdt.c \
- ../src_plugins/sketch_route/cdt/cdt.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/point.h \
- ../src_plugins/sketch_route/cdt/list/list.h \
+../src_3rd/libcdtr/cdt.o: \
+ ../src_3rd/libcdtr/cdt.c \
+ ../src_3rd/libcdtr/cdt.h \
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/point.h \
+ ../src_3rd/libcdtr/list/list.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
- ../src_plugins/sketch_route/cdt/edge.h \
- ../src_plugins/sketch_route/cdt/triangle.h
-../src_plugins/sketch_route/cdt/edge.o: \
- ../src_plugins/sketch_route/cdt/edge.c \
- ../src_plugins/sketch_route/cdt/edge.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/list/list.h \
+ ../src_3rd/libcdtr/edge.h \
+ ../src_3rd/libcdtr/triangle.h
+../src_3rd/libcdtr/edge.o: \
+ ../src_3rd/libcdtr/edge.c \
+ ../src_3rd/libcdtr/edge.h \
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/list/list.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
- ../src_plugins/sketch_route/cdt/list/list.c \
+ ../src_3rd/libcdtr/list/list.c \
  ../src_3rd/genvector/genvector_impl.c
-../src_plugins/sketch_route/cdt/point.o: \
- ../src_plugins/sketch_route/cdt/point.c \
- ../src_plugins/sketch_route/cdt/point.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/list/list.h \
+../src_3rd/libcdtr/point.o: \
+ ../src_3rd/libcdtr/point.c \
+ ../src_3rd/libcdtr/point.h \
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/list/list.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
- ../src_plugins/sketch_route/cdt/list/list.c \
+ ../src_3rd/libcdtr/list/list.c \
  ../src_3rd/genvector/genvector_impl.c
-../src_plugins/sketch_route/cdt/triangle.o: \
- ../src_plugins/sketch_route/cdt/triangle.c \
- ../src_plugins/sketch_route/cdt/triangle.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/list/list.h \
+../src_3rd/libcdtr/triangle.o: \
+ ../src_3rd/libcdtr/triangle.c \
+ ../src_3rd/libcdtr/triangle.h \
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/list/list.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
- ../src_plugins/sketch_route/cdt/list/list.c \
+ ../src_3rd/libcdtr/list/list.c \
  ../src_3rd/genvector/genvector_impl.c
 ../src_plugins/sketch_route/ewire.o: ../src_plugins/sketch_route/ewire.c \
  ../src_plugins/sketch_route/ewire.h ../config.h ../src_3rd/librnd/config.h \
@@ -8818,12 +8818,12 @@
  ../src_plugins/sketch_route/ewire_point.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
- ../src_plugins/sketch_route/cdt/point.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/list/list.h ../src_3rd/genvector/vtp0.h \
+ ../src_3rd/libcdtr/point.h \
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/list/list.h ../src_3rd/genvector/vtp0.h \
  ../src_plugins/sketch_route/wire.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/list/list.h
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/list/list.h
 ../src_plugins/sketch_route/sketch_route.o: \
  ../src_plugins/sketch_route/sketch_route.c ../config.h ../src_3rd/librnd/config.h \
  ../src_3rd/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
@@ -8864,19 +8864,19 @@
  ../src_3rd/librnd/core/tool.h layer_ui.h netlist.h \
  ../src_plugins/sketch_route/sktypedefs.h \
  ../src_plugins/sketch_route/wire.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/list/list.h \
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/list/list.h \
  ../src_plugins/sketch_route/ewire.h \
  ../src_plugins/sketch_route/ewire_point.h \
  ../src_plugins/sketch_route/pointdata.h \
  ../src_plugins/sketch_route/spoke.h obj_common.h \
- ../src_plugins/sketch_route/cdt/point.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/list/list.h \
- ../src_plugins/sketch_route/cdt/cdt.h \
- ../src_plugins/sketch_route/cdt/point.h \
- ../src_plugins/sketch_route/cdt/edge.h \
- ../src_plugins/sketch_route/cdt/triangle.h
+ ../src_3rd/libcdtr/point.h \
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/list/list.h \
+ ../src_3rd/libcdtr/cdt.h \
+ ../src_3rd/libcdtr/point.h \
+ ../src_3rd/libcdtr/edge.h \
+ ../src_3rd/libcdtr/triangle.h
 ../src_plugins/sketch_route/spoke.o: ../src_plugins/sketch_route/spoke.c \
  ../config.h ../src_3rd/librnd/config.h conf_core.h ../src_3rd/librnd/core/conf.h \
  ../src_3rd/librnd/core/global_typedefs.h \
@@ -8894,13 +8894,13 @@
  ../src_plugins/sketch_route/sktypedefs.h obj_common.h flag.h attrib.h \
  global_typedefs.h data_parent.h ../src_plugins/sketch_route/ewire.h \
  ../src_plugins/sketch_route/ewire_point.h \
- ../src_plugins/sketch_route/cdt/point.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/list/list.h \
+ ../src_3rd/libcdtr/point.h \
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/list/list.h \
  ../src_plugins/sketch_route/pointdata.h \
  ../src_plugins/sketch_route/wire.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/list/list.h
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/list/list.h
 ../src_plugins/sketch_route/wire.o: ../src_plugins/sketch_route/wire.c \
  ../src_plugins/sketch_route/pointdata.h \
  ../src_plugins/sketch_route/sktypedefs.h \
@@ -8912,13 +8912,13 @@
  ../src_plugins/sketch_route/ewire_point.h \
  ../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/genvector/genvector_undef.h \
- ../src_plugins/sketch_route/cdt/point.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/list/list.h ../src_3rd/genvector/vtp0.h \
+ ../src_3rd/libcdtr/point.h \
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/list/list.h ../src_3rd/genvector/vtp0.h \
  ../src_plugins/sketch_route/wire.h \
- ../src_plugins/sketch_route/cdt/typedefs.h \
- ../src_plugins/sketch_route/cdt/list/list.h \
- ../src_plugins/sketch_route/cdt/list/list.c \
+ ../src_3rd/libcdtr/typedefs.h \
+ ../src_3rd/libcdtr/list/list.h \
+ ../src_3rd/libcdtr/list/list.c \
  ../src_3rd/genvector/genvector_impl.c
 ../src_plugins/smartdisperse/smartdisperse.o: \
  ../src_plugins/smartdisperse/smartdisperse.c ../src_3rd/genht/htpi.h \

@@ -20,7 +20,7 @@ typedef triangle_t* triangle_ptr_t;
 #define LST_ITEM_T triangle_ptr_t
 #define LST_DONT_TYPEDEF_NODE
 
-#include "list/list.h"
+#include <libcdtr/list/list.h>
 
 #ifndef LST_DONT_UNDEF
 	#undef LST

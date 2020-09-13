@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "config.h"
-#include "cdt/typedefs.h"
+#include <libcdtr/typedefs.h>
 #include "sktypedefs.h"
 
 
@@ -43,7 +43,7 @@ int wire_point_position(wire_point_t *wp); /* counting from the inside */
 #define LST_ITEM_T wire_ptr_t
 #define LST_DONT_TYPEDEF_NODE
 
-#include "cdt/list/list.h"
+#include <libcdtr/list/list.h>
 
 #ifndef LST_DONT_UNDEF
 	#undef LST

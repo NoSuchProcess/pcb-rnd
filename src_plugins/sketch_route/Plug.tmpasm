@@ -6,10 +6,10 @@ append /local/pcb/mod/OBJS [@
  $(PLUGDIR)/sketch_route/ewire_point.o
  $(PLUGDIR)/sketch_route/spoke.o
  $(PLUGDIR)/sketch_route/pointdata.o
- $(PLUGDIR)/sketch_route/cdt/cdt.o
- $(PLUGDIR)/sketch_route/cdt/edge.o
- $(PLUGDIR)/sketch_route/cdt/point.o
- $(PLUGDIR)/sketch_route/cdt/triangle.o
+ $(SRC_3RD_DIR)/libcdtr/cdt.o
+ $(SRC_3RD_DIR)/libcdtr/edge.o
+ $(SRC_3RD_DIR)/libcdtr/point.o
+ $(SRC_3RD_DIR)/libcdtr/triangle.o
 @]
 
 switch /local/pcb/sketch_route/controls
