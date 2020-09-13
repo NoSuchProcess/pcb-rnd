@@ -2,6 +2,8 @@ li:pcb-rnd-subcircuit-v6 {
  ha:subc.5 {
   ha:attributes {
    footprint = TANT_D Tantalum SMT capacitor (pin 1 is +)
+   openscad = TANT.scad
+   openscad-param = {"D"}
   }
   ha:data {
    li:padstack_prototypes {
