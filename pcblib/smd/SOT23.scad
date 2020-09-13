@@ -1,5 +1,6 @@
-
 module sot23()
+{
+module sot23_()
 {
 
 	// pin prototype
@@ -29,8 +30,6 @@ module sot23()
 		}
 	}
 }
-
-
-sot23();
-
-cube([0.1,0.1,0.1]);
+	rotate([0,0,90])
+		sot23_();
+}
