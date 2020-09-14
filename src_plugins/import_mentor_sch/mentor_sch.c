@@ -34,6 +34,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "undo.h"
 #include "plug_import.h"
 #include <librnd/core/error.h>
 #include <librnd/core/rnd_printf.h>
@@ -179,6 +180,8 @@ static int mentor_parse_tree(gsxl_dom_t *dom)
 		return -1;
 	}
 
+	pcb_undo_freeze_serial();
+
 	rnd_actionva(&PCB->hidlib, "Netlist", "Freeze", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Clear", NULL);
 	rnd_actionva(&PCB->hidlib, "ElementList", "start", NULL);
@@ -204,6 +207,9 @@ static int mentor_parse_tree(gsxl_dom_t *dom)
 	rnd_actionva(&PCB->hidlib, "ElementList", "Done", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
+
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 
 /*	for(n = library->children; n != NULL; n = n->next) {
 		printf("n=%s\n", n->str);
