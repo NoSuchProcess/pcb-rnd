@@ -245,7 +245,6 @@ append /local/pcb/OBJS [@
 	undo_old.o
 	view.o
 	vtlibrary.o
-	vtonpoint.o
 	vtpadstack.o
 	vtpadstack_t.o
 	vtr0.o

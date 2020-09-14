@@ -1,3 +1,4 @@
+32667	configure	code removal: the onpoint feature doesn't need a special array type anymore
 32636	configure	librnd separation
 32394	configure	autoroute plugin: menu and conf
 32327	configure	new autoroute plugin for external autorouters

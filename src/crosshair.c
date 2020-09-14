@@ -43,7 +43,6 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_inlines.h>
 #include <librnd/core/compat_misc.h>
-#include "vtonpoint.h"
 #include "find.h"
 #include "undo.h"
 #include "event.h"
