@@ -460,6 +460,8 @@ static int set_common(pcb_propset_ctx_t *st, pcb_any_obj_t *obj)
 		if (i->mask & PCB_FLAG_CLEARLINE)
 			pcb_obj_pre(obj);
 
+		pcb_undo_add_obj_to_flag(obj);
+
 		if (st->toggle)
 			pcb_flag_change(st->pcb, PCB_CHGFLG_TOGGLE, i->mask, obj->type, obj->parent.any, obj, obj);
 		else
