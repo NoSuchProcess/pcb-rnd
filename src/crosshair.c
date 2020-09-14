@@ -728,7 +728,7 @@ static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t * box, void *cl)
 		return RND_R_DIR_NOT_FOUND;
 }
 
-static void DrawLineOrArc(pcb_any_obj_t *o)
+static void draw_line_or_arc(pcb_any_obj_t *o)
 {
 	switch(o->type) {
 		case PCB_OBJ_LINE_POINT: pcb_line_invalidate_draw(o->parent.layer, (pcb_line_t *)o); break;
@@ -797,7 +797,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t
 			continue;
 
 		PCB_FLAG_CLEAR(PCB_FLAG_ONPOINT, op);
-		DrawLineOrArc(op);
+		draw_line_or_arc(op);
 		redraw = rnd_true;
 	}
 
@@ -808,7 +808,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t
 		/* only draw those which aren't in the old list */
 		if (onpoint_find(&crosshair->old_onpoint_objs, op) != NULL)
 			continue;
-		DrawLineOrArc(op);
+		draw_line_or_arc(op);
 		redraw = rnd_true;
 	}
 
