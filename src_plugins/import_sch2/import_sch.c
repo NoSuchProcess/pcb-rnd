@@ -142,7 +142,10 @@ static int do_import(void)
 	for(n = 0, ci = rnd_conflist_first((rnd_conflist_t *)&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = rnd_conflist_next(ci), n++)
 		a[n] = ci->val.string[0];
 	rnd_message(RND_MSG_DEBUG, "import_sch2: reimport with %s -> %p\n", imp_name, p);
+	pcb_undo_freeze_serial();
 	res = p->import(p, IMPORT_ASPECT_NETLIST, a, len);
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 	free(a);
 	return res;
 }
