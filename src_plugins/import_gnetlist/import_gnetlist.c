@@ -122,7 +122,10 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 	if (res == 0) {
 		if (verbose)
 			rnd_message(RND_MSG_DEBUG, "pcb_gnetlist:  about to run pcb_act_ExecuteFile, file = %s\n", tmpfn);
+		pcb_undo_freeze_serial();
 		fgw_uvcall(&rnd_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, tmpfn, 0);
+		pcb_undo_unfreeze_serial();
+		pcb_undo_inc_serial();
 	}
 	for(n = 0; n < numfns; n++)
 		free(cmd[n+8]);
