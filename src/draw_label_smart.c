@@ -66,7 +66,6 @@ RND_INLINE int lsm_shuffle_try(rnd_rtree_t *rt, pcb_smart_label_t *l, rnd_coord_
 {
 	rnd_box_t b;
 	rnd_rtree_it_t it;
-	pcb_smart_label_t *c;
 
 	b.X1 = x; b.Y1 = y;
 	b.X2 = x + l->w; b.Y2 = y + l->h;
