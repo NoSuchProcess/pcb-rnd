@@ -416,7 +416,7 @@ rnd_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
 		pcb_crosshair.AttachedLine.Point2.X = ptr2->Point1.X;
 		pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point1.Y;
 		if ((type = pcb_undo(rnd_true)) == 0)
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		/* check that the undo was of the right type */
 		if ((type & PCB_UNDO_CREATE) == 0) {
 			/* wrong undo type, restore anchor points */
@@ -464,7 +464,7 @@ rnd_bool pcb_tool_line_redo_act(rnd_hidlib_t *hl)
 	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_SECOND)
 		return rnd_false;
 	if (pcb_redo(rnd_true)) {
-		pcb_board_set_changed_flag(rnd_true);
+		pcb_board_set_changed_flag(pcb, rnd_true);
 		if (pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST) {
 			pcb_line_t *line = linelist_last(&PCB_CURRLAYER(pcb)->Line);
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = line->Point2.X;

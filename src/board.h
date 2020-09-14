@@ -169,7 +169,7 @@ void pcb_board_set_text_scale(int Scale);
 int pcb_board_normalize(pcb_board_t *pcb);
 
 /* sets or resets changed flag and redraws status */
-void pcb_board_set_changed_flag(rnd_bool New);
+void pcb_board_set_changed_flag(pcb_board_t *pcb, rnd_bool New);
 
 /* Shorthand for emitting a board changed event (RND_EVENT_BOARD_CHANGED) */
 void pcb_board_changed(int reverted);

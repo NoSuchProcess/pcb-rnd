@@ -785,7 +785,7 @@ static fgw_error_t pcb_act_DrcQueryImport(fgw_arg_t *res, int argc, fgw_arg_t *a
 	fclose(f);
 
 	if (ires == 0)
-		pcb_board_set_changed_flag(rnd_true);
+		pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_true);
 
 	free(autofree);
 	RND_ACT_IRES(ires);

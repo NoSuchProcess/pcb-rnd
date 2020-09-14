@@ -104,7 +104,7 @@ static void pref_dlg2conf_post(pref_ctx_t *ctx)
 	if ((ctx->role == RND_CFR_USER) || (ctx->role == RND_CFR_PROJECT))
 		rnd_conf_save_file(&PCB->hidlib, NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), ctx->role, NULL);
 	else if (ctx->role == RND_CFR_DESIGN)
-		pcb_board_set_changed_flag(1);
+		pcb_board_set_changed_flag(PCB, 1);
 }
 
 void pcb_pref_conf2dlg_item(rnd_conf_native_t *cn, pref_confitem_t *item)

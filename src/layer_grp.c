@@ -50,7 +50,7 @@ do { \
 		rnd_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL); \
 		if ((rnd_gui != NULL) && (rnd_exporter == NULL)) \
 			rnd_gui->invalidate_all(rnd_gui); \
-		pcb_board_set_changed_flag(rnd_true); \
+		pcb_board_set_changed_flag(pcb, rnd_true); \
 	} \
 } while(0)
 

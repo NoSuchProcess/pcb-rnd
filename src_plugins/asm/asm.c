@@ -362,7 +362,7 @@ static void asm_row_selected(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid
 	box.X2 = RND_MAX_COORD;
 	box.Y2 = RND_MAX_COORD;
 	if (pcb_select_block(PCB, &box, rnd_false, rnd_false, rnd_false))
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(PCB, rnd_true);
 
 	if (row == NULL) {
 		goto skip;

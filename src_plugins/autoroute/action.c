@@ -53,12 +53,12 @@ static fgw_error_t pcb_act_AutoRoute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_AllRats:
 		case F_All:
 			if (AutoRoute(rnd_false))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(PCB, rnd_true);
 			break;
 		case F_SelectedRats:
 		case F_Selected:
 			if (AutoRoute(rnd_true))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(PCB, rnd_true);
 			break;
 		default:
 			RND_ACT_FAIL(AutoRoute);

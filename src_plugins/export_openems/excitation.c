@@ -63,7 +63,7 @@ static void ser_save(const char *data, const char *attrkey)
 	const char *orig = pcb_attribute_get(&PCB->Attributes, attrkey);
 	if ((orig == NULL) || (strcmp(orig, data) != 0)) {
 		pcb_attribute_put(&PCB->Attributes, attrkey, data);
-		pcb_board_set_changed_flag(rnd_true);
+		pcb_board_set_changed_flag(PCB, rnd_true);
 	}
 }
 
@@ -399,7 +399,7 @@ static void select_update(int setattr)
 		const char *orig = pcb_attribute_get(&PCB->Attributes, "openems::excitation::type");
 		if ((orig == NULL) || (strcmp(orig, excitations[exc_ctx.selected].name) != 0)) {
 			pcb_attribute_put(&PCB->Attributes, "openems::excitation::type", excitations[exc_ctx.selected].name);
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(PCB, rnd_true);
 		}
 	}
 }

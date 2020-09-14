@@ -371,14 +371,14 @@ void pcb_board_set_text_scale(int Scale)
 }
 
 /* sets or resets changed flag and redraws status */
-void pcb_board_set_changed_flag(rnd_bool New)
+void pcb_board_set_changed_flag(pcb_board_t *pcb, rnd_bool New)
 {
-	rnd_bool old = PCB->Changed;
+	rnd_bool old = pcb->Changed;
 
-	PCB->Changed = New;
+	pcb->Changed = New;
 
 	if (old != New)
-		rnd_event(&PCB->hidlib, RND_EVENT_BOARD_META_CHANGED, NULL);
+		rnd_event(&pcb->hidlib, RND_EVENT_BOARD_META_CHANGED, NULL);
 }
 
 

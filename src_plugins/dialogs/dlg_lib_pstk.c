@@ -444,7 +444,7 @@ static void pstklib_proto_select(void *hid_ctx, void *caller_data, rnd_hid_attri
 	}
 
 	if (changed) {
-		pcb_board_set_changed_flag(rnd_true);
+		pcb_board_set_changed_flag(PCB, rnd_true);
 		rnd_gui->invalidate_all(rnd_gui);
 	}
 }

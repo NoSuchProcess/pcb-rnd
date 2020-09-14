@@ -208,7 +208,7 @@ void pcb_undo_inc_serial(void)
 	if (!Locked) {
 		/* Set the changed flag if anything was added prior to this bump */
 		if ((pcb_uundo.tail != NULL) && (pcb_uundo.tail->serial == pcb_uundo.serial))
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(PCB, rnd_true);
 
 		uundo_inc_serial(&pcb_uundo);
 		pcb_bumped = rnd_true;

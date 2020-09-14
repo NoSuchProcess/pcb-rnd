@@ -81,7 +81,7 @@ void pcb_tool_copy_notify_mode(rnd_hidlib_t *hl)
 							 pcb_crosshair.AttachedObject.Ptr2,
 							 pcb_crosshair.AttachedObject.Ptr3, pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X, pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y);
 			pcb_subc_as_board_update(PCB);
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		}
 
 		/* reset identifiers */

@@ -55,7 +55,7 @@
 
 #define PCB (do not use PCB directly)
 
-static void ChangeFlag(const char *, const char *, int, const char *);
+static void ChangeFlag(pcb_board_t *, const char *, const char *, int, const char *);
 static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
 static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *ores, int oargc, fgw_arg_t *oargv);
 
@@ -70,6 +70,7 @@ static const char pcb_acth_ChangeClearSize[] = "Changes the clearance size of ob
 /* DOC: changeclearsize.html */
 static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *function;
 	const char *delta = NULL;
 	const char *units = NULL;
@@ -115,27 +116,27 @@ static fgw_error_t pcb_act_ChangeClearSize(fgw_arg_t *res, int argc, fgw_arg_t *
 			{
 				if (type != PCB_OBJ_VOID)
 					if (pcb_chg_obj_clear_size(type, ptr1, ptr2, ptr3, value, absolute))
-						pcb_board_set_changed_flag(rnd_true);
+						pcb_board_set_changed_flag(pcb, rnd_true);
 				break;
 			}
 		case F_SelectedVias:
 		case F_SelectedPads:
 		case F_SelectedPins:
 			if (pcb_chg_selected_clear_size(PCB_OBJ_PSTK, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 		case F_SelectedLines:
 			if (pcb_chg_selected_clear_size(PCB_OBJ_LINE, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 		case F_SelectedArcs:
 			if (pcb_chg_selected_clear_size(PCB_OBJ_ARC, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 		case F_Selected:
 		case F_SelectedObjects:
 			if (pcb_chg_selected_clear_size(PCB_CHANGECLEARSIZE_TYPES, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 		}
 	}
@@ -165,13 +166,13 @@ static fgw_error_t pcb_act_ChangeFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (value != 0 && value != 1)
 		RND_ACT_FAIL(ChangeFlag);
 
-	ChangeFlag(function, flag, value, "ChangeFlag");
+	ChangeFlag(PCB_ACT_BOARD, function, flag, value, "ChangeFlag");
 	RND_ACT_IRES(0);
 	return 0;
 }
 
 
-static void ChangeFlag(const char *what, const char *flag_name, int value,
+static void ChangeFlag(pcb_board_t *pcb, const char *what, const char *flag_name, int value,
 											 const char *cmd_name)
 {
 	rnd_bool(*set_object) (int, void *, void *, void *);
@@ -203,7 +204,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 					rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 			}
 			if (set_object(type, ptr1, ptr2, ptr3))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 		}
 
@@ -211,17 +212,17 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 	case F_SelectedPins:
 	case F_SelectedPads:
 		if (set_selected(PCB_OBJ_PSTK))
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		break;
 
 	case F_SelectedLines:
 		if (set_selected(PCB_OBJ_LINE))
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		break;
 
 	case F_SelectedTexts:
 		if (set_selected(PCB_OBJ_TEXT))
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		break;
 
 	case F_SelectedNames:
@@ -232,7 +233,7 @@ static void ChangeFlag(const char *what, const char *flag_name, int value,
 	case F_Selected:
 	case F_SelectedObjects:
 		if (set_selected(PCB_CHANGESIZE_TYPES))
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		break;
 	}
 }
@@ -272,6 +273,7 @@ static const char pcb_acth_ChangeSize[] = "Changes the size of objects.";
 /* DOC: changesize.html */
 static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *function;
 	const char *delta;
 	const char *units = NULL;
@@ -312,11 +314,11 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 				if (tostyle) {
 					if (pcb_chg_obj_1st_size(type, ptr1, ptr2, ptr3, value, absolute))
-						pcb_board_set_changed_flag(rnd_true);
+						pcb_board_set_changed_flag(pcb, rnd_true);
 				}
 				else {
 					if (pcb_chg_obj_size(type, ptr1, ptr2, ptr3, value, absolute))
-						pcb_board_set_changed_flag(rnd_true);
+						pcb_board_set_changed_flag(pcb, rnd_true);
 				}
 				break;
 			}
@@ -324,22 +326,22 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_SelectedPins:
 		case F_SelectedPads:
 			if (pcb_chg_selected_size(PCB_OBJ_PSTK, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 		case F_SelectedArcs:
 			if (pcb_chg_selected_size(PCB_OBJ_ARC, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 		case F_SelectedLines:
 			if (pcb_chg_selected_size(PCB_OBJ_LINE, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 		case F_SelectedTexts:
 			if (pcb_chg_selected_size(PCB_OBJ_TEXT, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 		case F_SelectedNames:
@@ -350,7 +352,7 @@ static fgw_error_t pcb_act_ChangeSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case F_Selected:
 		case F_SelectedObjects:
 			if (pcb_chg_selected_size(PCB_CHANGESIZE_TYPES, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 		}
 	}
@@ -368,6 +370,7 @@ static const char pcb_acth_Change2ndSize[] = "Changes the drilling hole size of 
 
 static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *function;
 	const char *delta;
 	const char *units = NULL;
@@ -403,7 +406,7 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 				if (type != PCB_OBJ_VOID)
 					if (pcb_chg_obj_2nd_size(type, ptr1, ptr2, ptr3, value, absolute, rnd_true))
-						pcb_board_set_changed_flag(rnd_true);
+						pcb_board_set_changed_flag(pcb, rnd_true);
 				break;
 			}
 
@@ -411,13 +414,13 @@ static fgw_error_t pcb_act_Change2ndSize(fgw_arg_t *res, int argc, fgw_arg_t *ar
 		case F_SelectedVias:
 		case F_SelectedPins:
 			if (pcb_chg_selected_2nd_size(PCB_OBJ_PSTK, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (pcb_chg_selected_2nd_size(PCB_OBJ_CLASS_PIN, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 		}
 	}
@@ -432,6 +435,7 @@ static const char pcb_acth_ChangePinName[] = "Sets the name of a specific pin on
 /* DOC: changepinname.html */
 static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	rnd_cardinal_t changed = 0;
 	const char *refdes, *pinnum, *pinname;
 
@@ -448,7 +452,7 @@ static fgw_error_t pcb_act_ChangePinName(fgw_arg_t *res, int argc, fgw_arg_t *ar
 			for(o = pcb_data_first(&it, subc->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
 				if ((o->term != NULL) && (RND_NSTRCMP(pinnum, o->term) == 0)) {
 					pcb_attribute_set(PCB_ACT_BOARD, &o->Attributes, "name", pinname, 1);
-					pcb_board_set_changed_flag(rnd_true);
+					pcb_board_set_changed_flag(pcb, rnd_true);
 					changed++;
 				}
 			}
@@ -478,6 +482,7 @@ static const char pcb_acth_ChangeName[] = "Sets the name, text string, terminal 
 /* DOC: changename.html */
 static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int op;
 	char *name;
 	pcb_objtype_t type;
@@ -507,7 +512,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_undo_save_serial();
 					if (pcb_chg_obj_name_query(ptr2)) {
 						rnd_hid_redraw(PCB);
-						pcb_board_set_changed_flag(rnd_true);
+						pcb_board_set_changed_flag(pcb, rnd_true);
 						rnd_actionva(RND_ACT_HIDLIB, "DeleteRats", "AllRats", NULL);
 					}
 					if (op == F_Object) {
@@ -515,7 +520,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						if ((subc != NULL) && subc->auto_termname_display) {
 							pcb_undo_add_obj_to_flag(ptr2);
 							PCB_FLAG_SET(PCB_FLAG_TERMNAME, (pcb_any_obj_t *)ptr2);
-							pcb_board_set_changed_flag(rnd_true);
+							pcb_board_set_changed_flag(pcb, rnd_true);
 							pcb_undo_inc_serial();
 							pcb_draw();
 						}
@@ -529,7 +534,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			name = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layout name:", RND_EMPTY(RND_ACT_HIDLIB->name), "Layout name");
 			/* NB: ChangeLayoutName takes ownership of the passed memory */
 			if (name && pcb_board_change_name(name))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 			/* change the name of the active layer */
@@ -537,7 +542,7 @@ static fgw_error_t pcb_act_ChangeName(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			name = rnd_hid_prompt_for(RND_ACT_HIDLIB, "Enter the layer name:", RND_EMPTY(PCB_CURRLAYER(PCB_ACT_BOARD)->name), "Layer name");
 			/* NB: pcb_layer_rename_ takes ownership of the passed memory */
 			if (name && (pcb_layer_rename_(PCB_CURRLAYER(PCB_ACT_BOARD), name, 1) == 0))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			else
 				free(name);
 			break;
@@ -560,6 +565,7 @@ static const char pcb_acth_ChangeJoin[] = "Changes the join (clearance through p
 
 static fgw_error_t pcb_act_ChangeJoin(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int op;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, ChangeJoin, op = fgw_keyword(&argv[1]));
@@ -575,24 +581,24 @@ static fgw_error_t pcb_act_ChangeJoin(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_hid_get_coords("Select an Object", &x, &y, 0);
 				if ((type = pcb_search_screen(x, y, PCB_CHANGEJOIN_TYPES, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 					if (pcb_chg_obj_join(type, ptr1, ptr2, ptr3))
-						pcb_board_set_changed_flag(rnd_true);
+						pcb_board_set_changed_flag(pcb, rnd_true);
 				break;
 			}
 
 		case F_SelectedLines:
 			if (pcb_chg_selected_join(PCB_OBJ_LINE))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 		case F_SelectedArcs:
 			if (pcb_chg_selected_join(PCB_OBJ_ARC))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (pcb_chg_selected_join(PCB_CHANGEJOIN_TYPES))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 		default:
@@ -608,6 +614,7 @@ static const char pcb_acts_ChangeNonetlist[] =
 static const char pcb_acth_ChangeNonetlist[] = "Changes the nonetlist flag of subcircuits.";
 static fgw_error_t pcb_act_ChangeNonetlist(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int op;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, ChangeJoin, op = fgw_keyword(&argv[1]));
@@ -625,14 +632,14 @@ static fgw_error_t pcb_act_ChangeNonetlist(fgw_arg_t *res, int argc, fgw_arg_t *
 				ptr3 = NULL;
 				type = pcb_search_screen(x, y, PCB_CHANGENONETLIST_TYPES, &ptr1, &ptr2, &ptr3);
 				if (pcb_chg_obj_nonetlist(type, ptr1, ptr2, ptr3))
-					pcb_board_set_changed_flag(rnd_true);
+					pcb_board_set_changed_flag(pcb, rnd_true);
 				break;
 			}
 		case F_SelectedElements:
 		case F_Selected:
 		case F_SelectedObjects:
 			if (pcb_chg_selected_nonetlist(PCB_OBJ_SUBC))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 		default:
@@ -721,7 +728,7 @@ static fgw_error_t pcb_act_SetFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
 	RND_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
 
-	ChangeFlag(function, flag, 1, "SetFlag");
+	ChangeFlag(PCB_ACT_BOARD, function, flag, 1, "SetFlag");
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -744,7 +751,7 @@ static fgw_error_t pcb_act_ClrFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(1, FGW_STR, SetFlag, function = argv[1].val.str);
 	RND_ACT_CONVARG(2, FGW_STR, SetFlag, flag = argv[2].val.str);
 
-	ChangeFlag(function, flag, 0, "ClrFlag");
+	ChangeFlag(PCB_ACT_BOARD, function, flag, 0, "ClrFlag");
 
 	RND_ACT_IRES(0);
 	return 0;
@@ -804,6 +811,7 @@ static const char pcb_acts_ChangeAngle[] =
 static const char pcb_acth_ChangeAngle[] = "Changes the start angle, delta angle or both angles of an arc.";
 static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *prim;
 	const char *delta;
 	rnd_bool absolute;								/* indicates if absolute size is given */
@@ -850,7 +858,7 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 						rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 					else {
 						if (pcb_chg_obj_angle(type, ptr1, ptr2, ptr3, which, value, absolute))
-							pcb_board_set_changed_flag(rnd_true);
+							pcb_board_set_changed_flag(pcb, rnd_true);
 					}
 				}
 				break;
@@ -858,13 +866,13 @@ static fgw_error_t pcb_act_ChangeAngle(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		case F_SelectedArcs:
 			if (pcb_chg_selected_angle(PCB_OBJ_ARC, which, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (pcb_chg_selected_angle(PCB_CHANGESIZE_TYPES, which, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 	}
 
@@ -881,6 +889,7 @@ static const char pcb_acts_ChangeRadius[] =
 static const char pcb_acth_ChangeRadius[] = "Changes the width or height (radius) of an arc.";
 static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *prim;
 	const char *delta;
 	const char *units;
@@ -919,7 +928,7 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 						rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
 					else {
 						if (pcb_chg_obj_radius(type, ptr1, ptr2, ptr3, which, value, absolute))
-							pcb_board_set_changed_flag(rnd_true);
+							pcb_board_set_changed_flag(pcb, rnd_true);
 					}
 				}
 				break;
@@ -927,13 +936,13 @@ static fgw_error_t pcb_act_ChangeRadius(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 		case F_SelectedArcs:
 			if (pcb_chg_selected_radius(PCB_OBJ_ARC, which, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 
 		case F_Selected:
 		case F_SelectedObjects:
 			if (pcb_chg_selected_radius(PCB_CHANGESIZE_TYPES, which, value, absolute))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			break;
 	}
 

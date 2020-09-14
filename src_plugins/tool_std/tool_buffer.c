@@ -63,7 +63,7 @@ static void pcb_tool_buffer_notify_mode_(rnd_hidlib_t *hl, rnd_bool keep_ids)
 	}
 
 	if (pcb_buffer_copy_to_layout(pcb, pcb_crosshair.AttachedObject.tx, pcb_crosshair.AttachedObject.ty, keep_ids)) {
-		pcb_board_set_changed_flag(rnd_true);
+		pcb_board_set_changed_flag(pcb, rnd_true);
 		rnd_gui->invalidate_all(rnd_gui);
 	}
 }

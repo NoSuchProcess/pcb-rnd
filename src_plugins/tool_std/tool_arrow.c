@@ -120,7 +120,7 @@ static void click_timer_cb(rnd_hidval_t hv)
 			box.Y2 = RND_MAX_COORD;
 			/* unselect first if shift key not down */
 			if (!rnd_gui->shift_is_pressed(rnd_gui) && pcb_select_block(pcb, &box, rnd_false, rnd_false, rnd_false))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(PCB, rnd_true);
 			pcb_tool_notify_block();
 			pcb_crosshair.AttachedBox.Point1.X = hl->tool_x;
 			pcb_crosshair.AttachedBox.Point1.Y = hl->tool_y;
@@ -205,7 +205,7 @@ void pcb_tool_arrow_release_mode(rnd_hidlib_t *hl)
 		/* unselect first if shift key not down */
 		if (!rnd_gui->shift_is_pressed(rnd_gui)) {
 			if (pcb_select_block(pcb, &box, rnd_false, rnd_false, rnd_false))
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			if (pcb_crosshair_note.Moving) {
 				pcb_crosshair_note.Moving = 0;
 				hl->tool_hit = 0;
@@ -216,7 +216,7 @@ void pcb_tool_arrow_release_mode(rnd_hidlib_t *hl)
 		   gets the same SN. */
 		pcb_undo_restore_serial();
 		if (pcb_select_object(PCB))
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		else
 			pcb_undo_inc_serial(); /* We didn't select anything new, so, the deselection should get its  own SN. */
 		hl->tool_hit = 0;
@@ -230,7 +230,7 @@ void pcb_tool_arrow_release_mode(rnd_hidlib_t *hl)
 
 		pcb_undo_restore_serial();
 		if (pcb_select_block(pcb, &box, rnd_true, rnd_true, rnd_false)) {
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 			pcb_undo_inc_serial();
 		}
 		else if (pcb_bumped)

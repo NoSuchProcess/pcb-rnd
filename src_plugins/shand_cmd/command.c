@@ -167,14 +167,14 @@ static fgw_error_t pcb_act_SaveLayout(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (filename == NULL) {
 		if (PCB->hidlib.filename) {
 			if (pcb_save_pcb(PCB->hidlib.filename, NULL) == 0)
-				pcb_board_set_changed_flag(rnd_false);
+				pcb_board_set_changed_flag(PCB, rnd_false);
 		}
 		else
 			rnd_message(RND_MSG_ERROR, "No filename to save to yet\n");
 	}
 	else {
 		if (pcb_save_pcb(filename, NULL) == 0) {
-			pcb_board_set_changed_flag(rnd_false);
+			pcb_board_set_changed_flag(PCB, rnd_false);
 			free(PCB->hidlib.filename);
 			PCB->hidlib.filename = rnd_strdup(filename);
 			rnd_event(&PCB->hidlib, RND_EVENT_BOARD_FN_CHANGED, NULL);

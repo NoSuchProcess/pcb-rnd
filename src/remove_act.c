@@ -85,11 +85,11 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		break;
 	case F_AllRats:
 		if (pcb_rats_destroy(rnd_false))
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_true);
 		break;
 	case F_SelectedRats:
 		if (pcb_rats_destroy(rnd_true))
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_true);
 		break;
 	}
 
@@ -102,7 +102,7 @@ static const char pcb_acth_RemoveSelected[] = "Removes any selected objects.";
 static fgw_error_t pcb_act_RemoveSelected(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	if (pcb_remove_selected(0))
-		pcb_board_set_changed_flag(rnd_true);
+		pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_true);
 	RND_ACT_IRES(0);
 	return 0;
 }

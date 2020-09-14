@@ -550,7 +550,7 @@ rnd_layer_id_t pcb_layer_create(pcb_board_t *pcb, rnd_layergrp_id_t grp, const c
 	pcb->Data->Layer[id].Attributes.post_change = layer_post_change;
 
 	if (pcb == PCB)
-		pcb_board_set_changed_flag(1);
+		pcb_board_set_changed_flag(pcb, 1);
 
 	if (undoable)
 		pcb_layer_undoable_created(pcb, &pcb->Data->Layer[id]);

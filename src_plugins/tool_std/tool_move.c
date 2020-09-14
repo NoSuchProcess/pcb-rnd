@@ -55,6 +55,7 @@ void pcb_tool_move_uninit(void)
 
 void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 	rnd_coord_t dx, dy;
 
 	switch (pcb_crosshair.AttachedObject.State) {
@@ -114,7 +115,7 @@ void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 			if (!pcb_marked.user_placed)
 				pcb_crosshair_set_local_ref(0, 0, rnd_false);
 			pcb_subc_as_board_update(PCB);
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		}
 		else if (pcb_crosshair.extobj_edit != NULL)
 			pcb_extobj_float_geo(pcb_crosshair.extobj_edit);

@@ -61,6 +61,7 @@ static const char pcb_acth_Select[] = "Toggles or sets the selection.";
 /* DOC: select.html */
 static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int op;
 	RND_ACT_CONVARG(1, FGW_KEYWORD, Select, op = fgw_keyword(&argv[1]));
 
@@ -82,12 +83,12 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_undo_add_obj_to_flag(obj);
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, obj);
 				pcb_draw_invalidate(obj);
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			}
 			else {
 		case F_ToggleObject:
 				if (pcb_select_object(PCB)) {
-					pcb_board_set_changed_flag(rnd_true);
+					pcb_board_set_changed_flag(pcb, rnd_true);
 					rnd_gui->invalidate_all(rnd_gui);
 				}
 			}
@@ -105,7 +106,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 				pcb_tool_notify_block();
 				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, rnd_true, rnd_true, rnd_false)) {
-					pcb_board_set_changed_flag(rnd_true);
+					pcb_board_set_changed_flag(pcb, rnd_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
 				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
@@ -123,7 +124,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.X2 = RND_MAX_COORD;
 				box.Y2 = RND_MAX_COORD;
 				if (pcb_select_block(PCB, &box, rnd_true, rnd_true, rnd_false)) {
-					pcb_board_set_changed_flag(rnd_true);
+					pcb_board_set_changed_flag(pcb, rnd_true);
 					rnd_gui->invalidate_all(rnd_gui);
 				}
 				break;
@@ -138,7 +139,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.X2 = RND_MAX_COORD;
 				box.Y2 = RND_MAX_COORD;
 				if (pcb_select_block(PCB, &box, rnd_true, rnd_true, rnd_true)) {
-					pcb_board_set_changed_flag(rnd_true);
+					pcb_board_set_changed_flag(pcb, rnd_true);
 					rnd_gui->invalidate_all(rnd_gui);
 				}
 				break;
@@ -149,7 +150,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (pcb_select_connection(PCB, rnd_true)) {
 				pcb_draw();
 				pcb_undo_inc_serial();
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			}
 			break;
 
@@ -189,6 +190,7 @@ static const char pcb_acth_Unselect[] = "Unselects the object at the pointer loc
 /* DOC: unselect.html */
 static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int op;
 	RND_ACT_CONVARG(1, FGW_KEYWORD, Unselect, op = fgw_keyword(&argv[1]));
 
@@ -206,7 +208,7 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 				pcb_tool_notify_block();
 				if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_THIRD && pcb_select_block(PCB, &box, rnd_false, rnd_true, rnd_false)) {
-					pcb_board_set_changed_flag(rnd_true);
+					pcb_board_set_changed_flag(pcb, rnd_true);
 					pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
 				}
 				rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
@@ -223,7 +225,7 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				box.X2 = RND_MAX_COORD;
 				box.Y2 = RND_MAX_COORD;
 				if (pcb_select_block(PCB, &box, rnd_false, rnd_false, rnd_false))
-					pcb_board_set_changed_flag(rnd_true);
+					pcb_board_set_changed_flag(pcb, rnd_true);
 				break;
 			}
 
@@ -232,7 +234,7 @@ static fgw_error_t pcb_act_Unselect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (pcb_select_connection(PCB, rnd_false)) {
 				pcb_draw();
 				pcb_undo_inc_serial();
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(pcb, rnd_true);
 			}
 			break;
 

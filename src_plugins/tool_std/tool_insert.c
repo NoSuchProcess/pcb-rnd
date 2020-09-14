@@ -62,6 +62,7 @@ void pcb_tool_insert_uninit(void)
 
 void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 	switch (pcb_crosshair.AttachedObject.State) {
 		/* first notify, lookup object */
 	case PCB_CH_STATE_FIRST:
@@ -98,7 +99,7 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 						pcb_insert_point_in_object(pcb_crosshair.AttachedObject.Type,
 																	pcb_crosshair.AttachedObject.Ptr1,
 																	pcb_crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, rnd_false, rnd_false);
-					pcb_board_set_changed_flag(rnd_true);
+					pcb_board_set_changed_flag(pcb, rnd_true);
 
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
@@ -118,7 +119,7 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 			pcb_insert_point_in_object(pcb_crosshair.AttachedObject.Type,
 														pcb_crosshair.AttachedObject.Ptr1,
 														pcb_crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, rnd_false, rnd_false);
-		pcb_board_set_changed_flag(rnd_true);
+		pcb_board_set_changed_flag(pcb, rnd_true);
 
 		/* reset identifiers */
 		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;

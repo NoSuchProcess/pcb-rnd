@@ -83,6 +83,7 @@ static const char pcb_acth_Display[] = "Several display-related actions.";
 extern pcb_opfunc_t ChgFlagFunctions;
 static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *str_dir = NULL;
 	int id;
 	int err = 0;
@@ -328,7 +329,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 					pcb_undo_add_obj_to_flag(ptr2);
 					PCB_FLAG_TOGGLE(PCB_FLAG_TERMNAME, obj);
-					pcb_board_set_changed_flag(rnd_true);
+					pcb_board_set_changed_flag(pcb, rnd_true);
 					pcb_undo_inc_serial();
 					pcb_draw();
 				}
@@ -666,6 +667,7 @@ static const char pcb_acts_EditLayer[] = "Editlayer([@layer], [name=text|auto=[0
 static const char pcb_acth_EditLayer[] = "Change a property or attribute of a layer. If the first argument starts with @, it is taken as the layer name to manipulate, else the action uses the current layer. Without arguments or if only a layer name is specified, interactive runs editing.";
 static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int ret = 0, n, interactive = 1, explicit = 0;
 	pcb_layer_t *ly = PCB_CURRLAYER(PCB_ACT_BOARD);
 
@@ -684,7 +686,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else if (strncmp(arg, "name=", 5) == 0) {
 			interactive = 0;
 			ret |= pcb_layer_rename_(ly, rnd_strdup(arg+5), 1);
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		}
 		else if (strncmp(arg, "auto=", 5) == 0) {
 			interactive = 0;
@@ -692,7 +694,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				ly->comb |= PCB_LYC_AUTO;
 			else
 				ly->comb &= ~PCB_LYC_AUTO;
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		}
 		else if (strncmp(arg, "sub=", 4) == 0) {
 			interactive = 0;
@@ -700,7 +702,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				ly->comb |= PCB_LYC_SUB;
 			else
 				ly->comb &= ~PCB_LYC_SUB;
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		}
 		else if (strncmp(arg, "attrib", 6) == 0) {
 			char *key, *val;
@@ -723,7 +725,7 @@ static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			else
 				ret |= pcb_attribute_put(&ly->Attributes, key, val);
 			free(key);
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		}
 		else {
 			rnd_message(RND_MSG_ERROR, "Invalid EditLayer() command: %s\n", arg);
@@ -758,6 +760,7 @@ static const char pcb_acts_EditGroup[] = "Editgroup([@group], [name=text|type=+b
 static const char pcb_acth_EditGroup[] = "Change a property or attribute of a layer group. If the first argument starts with @, it is taken as the group name to manipulate, else the action uses the current layer's group. Without arguments or if only a layer name is specified, interactive runs editing.";
 static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int ret = 0, n, interactive = 1, explicit = 0;
 	pcb_layergrp_t *g = NULL;
 
@@ -790,7 +793,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else if (strncmp(arg, "name=", 5) == 0) {
 			interactive = 0;
 			ret |= pcb_layergrp_rename_(g, rnd_strdup(arg+5), 1);
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		}
 		else if (strncmp(arg, "type=", 5) == 0) {
 			const char *sbit = arg+5;
@@ -809,7 +812,7 @@ static fgw_error_t pcb_act_EditGroup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				case '-': g->ltype &= ~bit; break;
 			}
 			interactive = 0;
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 		}
 		else if (strncmp(arg, "attrib", 6) == 0) {
 			char *key, *val;

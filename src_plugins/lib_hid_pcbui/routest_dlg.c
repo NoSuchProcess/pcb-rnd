@@ -111,7 +111,7 @@ static void rst_updated(pcb_route_style_t *rst)
 	if (rst != NULL)
 		pcb_use_route_style(rst);
 	rnd_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
-	pcb_board_set_changed_flag(1);
+	pcb_board_set_changed_flag(PCB, 1);
 }
 
 static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)

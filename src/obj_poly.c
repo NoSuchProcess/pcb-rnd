@@ -838,7 +838,7 @@ void *pcb_polyop_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *
 			Polygon->HoleIndex[n]++;
 
 	Polygon->Points[ctx->insert.idx] = save;
-	pcb_board_set_changed_flag(rnd_true);
+	pcb_board_set_changed_flag(PCB, rnd_true);
 	pcb_undo_add_obj_to_insert_point(PCB_OBJ_POLY_POINT, Layer, Polygon, &Polygon->Points[ctx->insert.idx]);
 
 	pcb_poly_bbox(Polygon);

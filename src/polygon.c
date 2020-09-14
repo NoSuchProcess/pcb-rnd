@@ -1213,7 +1213,7 @@ void pcb_polygon_copy_attached_to_layer(void)
 
 	pcb_poly_init_clip(PCB->Data, layer, polygon);
 	pcb_poly_invalidate_draw(layer, polygon);
-	pcb_board_set_changed_flag(rnd_true);
+	pcb_board_set_changed_flag(PCB, rnd_true);
 
 	/* reset state of attached line */
 	pcb_crosshair.AttachedLine.State = PCB_CH_STATE_FIRST;
@@ -1729,7 +1729,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 	}
 	while ((pa = pa->f) != Input);
 
-	pcb_board_set_changed_flag(rnd_true);
+	pcb_board_set_changed_flag(PCB, rnd_true);
 }
 
 rnd_bool pcb_pline_is_rectangle(rnd_pline_t *pl)

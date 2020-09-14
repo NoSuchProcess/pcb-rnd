@@ -106,7 +106,7 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 		if (rnd_tool_undo_act(RND_ACT_HIDLIB))
 			if (pcb_undo(rnd_true) == 0)
-				pcb_board_set_changed_flag(rnd_true);
+				pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_true);
 	}
 	else if (function) {
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
@@ -137,7 +137,7 @@ fgw_error_t pcb_act_Redo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 	if (rnd_tool_redo_act(RND_ACT_HIDLIB))
 		if (pcb_redo(rnd_true))
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_true);
 	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 	RND_ACT_IRES(0);
 	return 0;

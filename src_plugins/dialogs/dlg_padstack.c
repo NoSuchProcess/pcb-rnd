@@ -223,7 +223,7 @@ static void pse_changed(pse_t *pse)
 		pcb_subc_bbox(pdt->parent.subc);
 
 	if (pcb_data_get_top(pse->data) != NULL)
-		pcb_board_set_changed_flag(1);
+		pcb_board_set_changed_flag(PCB, 1);
 }
 
 static void pse_chg_protoid(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)

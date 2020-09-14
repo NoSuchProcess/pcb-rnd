@@ -598,7 +598,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 		PCB->loose_subc = PCB->is_footprint;
 
 		/* clear 'changed flag' */
-		pcb_board_set_changed_flag(rnd_false);
+		pcb_board_set_changed_flag(PCB, rnd_false);
 		PCB->hidlib.filename = new_filename;
 		/* just in case a bad file saved file is loaded */
 

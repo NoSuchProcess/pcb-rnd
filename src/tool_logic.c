@@ -195,7 +195,7 @@ static void pcb_press_mode(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_
 
 	if (conf_core.temp.rat_warn) {
 		if (pcb_data_clear_flag(pcb->Data, PCB_FLAG_WARN, 1, 0) > 0)
-			pcb_board_set_changed_flag(rnd_true);
+			pcb_board_set_changed_flag(pcb, rnd_true);
 	}
 	pcb_draw();
 }

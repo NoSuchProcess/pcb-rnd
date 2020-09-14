@@ -331,7 +331,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		pcb_netlist_changed(0);
 		pcb_undo_inc_serial();
-		pcb_board_set_changed_flag(rnd_true);
+		pcb_board_set_changed_flag(PCB_ACT_BOARD, rnd_true);
 	}
 
 	free(locked_subc_list);

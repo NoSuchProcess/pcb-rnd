@@ -1170,7 +1170,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 				oldx = x;
 				oldy = y;
 				if (pcb_buffer_copy_to_layout(PCB, x, y, rnd_false))
-					pcb_board_set_changed_flag(rnd_true);
+					pcb_board_set_changed_flag(PCB, rnd_true);
 			}
 			break;
 

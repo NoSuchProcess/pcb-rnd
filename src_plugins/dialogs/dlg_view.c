@@ -519,7 +519,7 @@ static void view_select_obj(view_ctx_t *ctx, pcb_view_t *v)
 	}
 
 	if (chg) {
-		pcb_board_set_changed_flag(rnd_true);
+		pcb_board_set_changed_flag(PCB, rnd_true);
 		view_preview_update(ctx);
 	}
 }

@@ -1000,7 +1000,7 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 	if (ctx->board)
 		set_board(sctx, ctx->pcb);
 
-	pcb_board_set_changed_flag(rnd_true);
+	pcb_board_set_changed_flag(ctx->pcb, rnd_true);
 	pcb_undo_inc_serial();
 	return sctx->set_cnt;
 }
@@ -1139,7 +1139,7 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 	if (ctx->board)
 		del_cnt += del_board(&ctx, ctx->pcb, key);
 
-	pcb_board_set_changed_flag(rnd_true);
+	pcb_board_set_changed_flag(ctx->pcb, rnd_true);
 	return del_cnt;
 }
 

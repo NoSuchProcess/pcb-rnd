@@ -189,7 +189,7 @@ static void pref_conf_editval_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 	if ((ctx->role == RND_CFR_USER) || (ctx->role == RND_CFR_PROJECT))
 		rnd_conf_save_file(&PCB->hidlib, NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), ctx->role, NULL);
 	else if (ctx->role == RND_CFR_DESIGN)
-		pcb_board_set_changed_flag(1);
+		pcb_board_set_changed_flag(PCB, 1);
 
 	rnd_gui->invalidate_all(rnd_gui);
 }
