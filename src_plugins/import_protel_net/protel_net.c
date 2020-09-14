@@ -34,6 +34,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "undo.h"
 #include "plug_import.h"
 
 #include <librnd/core/error.h>
@@ -170,7 +171,10 @@ static int protel_net_load(const char *fname_net)
 		return -1;
 	}
 
+	pcb_undo_freeze_serial();
 	ret = protel_net_parse_net(fn);
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 
 	fclose(fn);
 	return ret;
