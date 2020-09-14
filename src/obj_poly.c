@@ -53,9 +53,6 @@
 #include "obj_subc_parent.h"
 #include "obj_hash.h"
 
-/* TODO: get rid of these: */
-#include "draw.h"
-
 #define	STEP_POLYGONPOINT	10
 #define	STEP_POLYGONHOLEINDEX	10
 
