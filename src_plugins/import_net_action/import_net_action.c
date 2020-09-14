@@ -33,6 +33,7 @@
 #include <ctype.h>
 
 #include "board.h"
+#include "undo.h"
 #include "actions_pcb.h"
 #include "plug_import.h"
 
@@ -90,7 +91,10 @@ static int net_action_import(pcb_plug_import_t *ctx, unsigned int aspects, const
 		rnd_message(RND_MSG_ERROR, "import_net_action: requires exactly 1 input file name\n");
 		return -1;
 	}
+	pcb_undo_freeze_serial();
 	pcb_act_execute_file(&PCB->hidlib, args[0]);
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 	return 0; /* some parts of the script may fail (e.g. footprint not found) - that doesn't mean a real error */
 }
 
