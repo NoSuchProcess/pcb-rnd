@@ -1421,11 +1421,16 @@ static rnd_r_dir_t gp_pstk_cb(const rnd_box_t *b, void *cb)
 				gp_point(ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n], 0, 0);
 			break;
 		case PCB_PSSH_LINE:
-TODO("we lump poly padstacks in with square; safe, but not optimal; rather use the real shape")
-			gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y1, 0, 0);
-			gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y2, 0, 0);
-			gp_point(ps->BoundingBox.X2, ps->BoundingBox.Y1, 0, 0);
-			gp_point(ps->BoundingBox.X2, ps->BoundingBox.Y2, 0, 0);
+			if (shape->data.line.square) {
+				gp_point(ps->bbox_naked.X1, ps->bbox_naked.Y1, 0, 0);
+				gp_point(ps->bbox_naked.X1, ps->bbox_naked.Y2, 0, 0);
+				gp_point(ps->bbox_naked.X2, ps->bbox_naked.Y1, 0, 0);
+				gp_point(ps->bbox_naked.X2, ps->bbox_naked.Y2, 0, 0);
+			}
+			else {
+				gp_point(ps->x + shape->data.line.x1, ps->y + shape->data.line.y1, shape->data.line.thickness/2, 0);
+				gp_point(ps->x + shape->data.line.x2, ps->y + shape->data.line.y2, shape->data.line.thickness/2, 0);
+			}
 			break;
 	}
 	return RND_R_DIR_NOT_FOUND;
