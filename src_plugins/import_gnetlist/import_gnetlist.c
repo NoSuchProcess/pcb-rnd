@@ -39,6 +39,7 @@
 #include <librnd/core/hid_init.h>
 
 #include "board.h"
+#include "undo.h"
 #include "plug_import.h"
 
 #include "import_gnetlist_conf.h"

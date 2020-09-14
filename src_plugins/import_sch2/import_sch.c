@@ -36,6 +36,7 @@
 #include "globalconst.h"
 
 #include "board.h"
+#include "undo.h"
 #include "plug_import.h"
 #include "import_sch_conf.h"
 

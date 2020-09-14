@@ -37,6 +37,7 @@
 #include "conf_core.h"
 #include <librnd/core/error.h>
 #include "data.h"
+#include "undo.h"
 #include "rats_patch.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/paths.h>
