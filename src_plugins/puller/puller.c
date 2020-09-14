@@ -1400,6 +1400,7 @@ static rnd_r_dir_t gp_pstk_cb(const rnd_box_t *b, void *cb)
 	pcb_pstk_t *ps = (pcb_pstk_t *)b; /* have to drop const because we may update the cache in ps */
 	pcb_layer_t *layer = PCB_CURRLAYER(PCB);
 	pcb_pstk_shape_t *shape = pcb_pstk_shape_at(PCB, ps, layer), tmpshp;
+	int n;
 
 	if (ps == start_pinpad || ps == end_pinpad)
 		return RND_R_DIR_NOT_FOUND;
@@ -1416,8 +1417,11 @@ static rnd_r_dir_t gp_pstk_cb(const rnd_box_t *b, void *cb)
 			gp_point(ps->x + shape->data.circ.x, ps->y + shape->data.circ.y, shape->data.circ.dia/2, 0);
 			break;
 		case PCB_PSSH_POLY:
-TODO(": we lump poly padstacks in with square; safe, but not optimal; rather use the real shape")
+			for(n = 0; n < shape->data.poly.len; n++)
+				gp_point(ps->x + shape->data.poly.x[n], ps->y + shape->data.poly.y[n], 0, 0);
+			break;
 		case PCB_PSSH_LINE:
+TODO("we lump poly padstacks in with square; safe, but not optimal; rather use the real shape")
 			gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y1, 0, 0);
 			gp_point(ps->BoundingBox.X1, ps->BoundingBox.Y2, 0, 0);
 			gp_point(ps->BoundingBox.X2, ps->BoundingBox.Y1, 0, 0);
