@@ -31,6 +31,8 @@
 #ifndef PCB_ATTRIB_H
 #define PCB_ATTRIB_H
 
+#include "global_typedefs.h"
+
 typedef struct pcb_attribute_list_s pcb_attribute_list_t;
 
 typedef struct pcb_attribute_s {
@@ -67,6 +69,10 @@ int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char 
 int pcb_attribute_remove(pcb_attribute_list_t * list, const char *name);
 /* Simplistic version of Remove.  */
 #define pcb_attrib_remove(OBJ, name) pcb_attribute_remove(&(OBJ->Attributes), name)
+
+/* Universal, optionally undoable set/del: value==NULL means remove */
+void pcb_attribute_set(pcb_board_t *pcb, pcb_attribute_list_t *list, const char *name, const char *value, rnd_bool undoable);
+
 
 /* remove item by index - WARNING: no checks are made, idx has to be valid! */
 int pcb_attribute_remove_idx(pcb_attribute_list_t * list, int idx);

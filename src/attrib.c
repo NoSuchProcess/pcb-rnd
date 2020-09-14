@@ -33,7 +33,12 @@
 #include <string.h>
 #include <librnd/config.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/misc_util.h>
+#include <librnd/core/rnd_printf.h>
 #include "attrib.h"
+#include "undo.h"
+
+static const char core_attribute_cookie[] = "core-attribute";
 
 #define NOTIFY(list, name, value) \
 do { \
@@ -57,6 +62,15 @@ char **pcb_attribute_get_ptr(const pcb_attribute_list_t *list, const char *name)
 		if (strcmp(name, list->List[i].name) == 0)
 			return &list->List[i].value;
 	return NULL;
+}
+
+int pcb_attribute_get_idx(const pcb_attribute_list_t *list, const char *name)
+{
+	int i;
+	for(i = 0; i < list->Number; i++)
+		if (strcmp(name, list->List[i].name) == 0)
+			return i;
+	return -1;
 }
 
 char **pcb_attribute_get_namespace_ptr(const pcb_attribute_list_t *list, const char *plugin, const char *key)
@@ -84,6 +98,26 @@ char *pcb_attribute_get_namespace(const pcb_attribute_list_t *list, const char *
 	return *res;
 }
 
+/* assumes name and value strdup'd by the caller! */
+RND_INLINE int pcb_attribute_put_append(pcb_attribute_list_t *list, char *name, char *value)
+{
+	int i;
+
+	if (list->Number >= list->Max) {
+		list->Max += 10;
+		list->List = (pcb_attribute_t *) realloc(list->List, list->Max * sizeof(pcb_attribute_t));
+	}
+
+	/* Now add the new attribute.  */
+	i = list->Number;
+	list->List[i].name = name;
+	list->List[i].value = value;
+	list->List[i].cpb_written = 1;
+	NOTIFY(list, list->List[i].name, list->List[i].value);
+	list->Number++;
+	return 0;
+}
+
 int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char *value)
 {
 	int i;
@@ -104,19 +138,7 @@ int pcb_attribute_put(pcb_attribute_list_t * list, const char *name, const char 
 
 	/* At this point, we're going to need to add a new attribute to the
 	   list.  See if there's room.  */
-	if (list->Number >= list->Max) {
-		list->Max += 10;
-		list->List = (pcb_attribute_t *) realloc(list->List, list->Max * sizeof(pcb_attribute_t));
-	}
-
-	/* Now add the new attribute.  */
-	i = list->Number;
-	list->List[i].name = rnd_strdup_null(name);
-	list->List[i].value = rnd_strdup_null(value);
-	list->List[i].cpb_written = 1;
-	NOTIFY(list, list->List[i].name, list->List[i].value);
-	list->Number++;
-	return 0;
+	return pcb_attribute_put_append(list, rnd_strdup_null(name), rnd_strdup_null(value));
 }
 
 int pcb_attribute_remove_idx(pcb_attribute_list_t * list, int idx)
@@ -215,5 +237,85 @@ void pcb_attrib_compat_set_intconn(pcb_attribute_list_t *dst, int intconn)
 
 	sprintf(buff, "%d", intconn & 0xFF);
 	pcb_attribute_put(dst, "intconn", buff);
+}
+
+
+
+/*** undoable attribute set/del */
+typedef struct {
+	pcb_attribute_list_t *list; /* it is safe to save the object pointer because it is persistent (through the removed object list) */
+	char *name;
+	char *value;
+} undo_attribute_set_t;
+
+static int undo_attribute_set_swap(void *udata)
+{
+	undo_attribute_set_t *g = udata;
+	int idx = pcb_attribute_get_idx(g->list, g->name);
+	char **slot = NULL;
+
+	if (idx >= 0)
+		slot = &g->list->List[idx].value;
+
+	/* want to delete */
+	if (g->value == NULL) {
+		if (slot == NULL) /* but it does not exist */
+			return 0;
+
+		/* save old value and remove */
+		g->value = *slot;
+		*slot = NULL;
+		pcb_attribute_remove_idx(g->list, idx);
+		return 0;
+	}
+
+	/* old value doesn't exist: need to create it */
+	if (slot == NULL) {
+		pcb_attribute_put_append(g->list, rnd_strdup(g->name), g->value);
+		g->value = NULL;
+		return 0;
+	}
+
+	/* replace the existing value */
+	rnd_swap(char *, *slot, g->value);
+	NOTIFY(g->list, g->name, *slot);
+	return 0;
+}
+
+static void undo_attribute_set_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_attribute_set_t *g = udata;
+	rnd_snprintf(dst, dst_len, "attribute set %s to %s", g->name, g->value == NULL ? "<remove>" : g->value);
+}
+
+static void undo_attribute_set_free(void *udata)
+{
+	undo_attribute_set_t *g = udata;
+	free(g->name);
+	free(g->value);
+}
+
+static const uundo_oper_t undo_attribute_set = {
+	core_attribute_cookie,
+	undo_attribute_set_free,
+	undo_attribute_set_swap,
+	undo_attribute_set_swap,
+	undo_attribute_set_print
+};
+
+
+
+void pcb_attribute_set(pcb_board_t *pcb, pcb_attribute_list_t *list, const char *name, const char *value, rnd_bool undoable)
+{
+	undo_attribute_set_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb, &undo_attribute_set, sizeof(undo_attribute_set_t));
+
+	g->list = list;
+	g->name = rnd_strdup_null(name);
+	g->value = rnd_strdup_null(value);
+
+	undo_attribute_set_swap(g);
+	if (undoable) pcb_undo_inc_serial();
 }
 
