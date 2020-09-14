@@ -558,9 +558,9 @@ rnd_bool pcb_chg_selected_radius(int types, int is_start, rnd_angle_t Difference
 	return change;
 }
 
-TODO("subc: check if it is true:")
 /* ---------------------------------------------------------------------------
- * changes the size of the passed object; subc size is silk size (TODO: check if it is true)
+ * Changes the size of the passed object;
+ * subc size is line, arc and padstack sizes.
  * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt)
