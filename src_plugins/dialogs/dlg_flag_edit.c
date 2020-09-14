@@ -69,6 +69,10 @@ static void fe_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 
 	/* Note: this function is called upon each change so only one of these will be non-zero: */
 
+	if (set || clr)
+		pcb_undo_add_obj_to_flag(ctx->obj);
+
+
 	if (set != 0)
 		pcb_flag_change(ctx->pcb, PCB_CHGFLG_SET, set, ctx->obj_type, ctx->ptr1, ctx->obj, ctx->obj);
 
