@@ -612,10 +612,7 @@ unsigned int pcb_line_hash(const pcb_host_trans_t *tr, const pcb_line_t *l)
 
 rnd_coord_t pcb_line_length(const pcb_line_t *line)
 {
-	rnd_coord_t dx = line->Point1.X - line->Point2.X;
-	rnd_coord_t dy = line->Point1.Y - line->Point2.Y;
-TODO(": use the distance func instead")
-	return rnd_round(sqrt((double)dx*(double)dx + (double)dy*(double)dy));
+	return rnd_round(rnd_distance((double)line->Point1.X, (double)line->Point1.Y, (double)line->Point2.X, (double)line->Point2.Y));
 }
 
 double pcb_line_area(const pcb_line_t *line)
