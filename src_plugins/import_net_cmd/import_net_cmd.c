@@ -35,6 +35,7 @@
 #include <librnd/core/actions.h>
 
 #include "board.h"
+#include "undo.h"
 #include "plug_import.h"
 
 static pcb_plug_import_t import_net_cmd;
@@ -80,7 +81,10 @@ static int net_cmd_import(pcb_plug_import_t *ctx, unsigned int aspects, const ch
 	if (res == 0) {
 		if (verbose)
 			rnd_message(RND_MSG_DEBUG, "pcb_net_cmd:  about to run pcb_act_ExecuteFile, outfn='%s'\n", outfn);
+		pcb_undo_freeze_serial();
 		pcb_import_netlist(&PCB->hidlib, outfn);
+		pcb_undo_unfreeze_serial();
+		pcb_undo_inc_serial();
 	}
 	if (tmpfn != NULL)
 		rnd_tempfile_unlink(tmpfn);
