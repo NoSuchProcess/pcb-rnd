@@ -33,6 +33,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "undo.h"
 #include "plug_import.h"
 #include "plug_io.h"
 #include <librnd/core/error.h>
@@ -163,7 +164,10 @@ int tedax_net_load(const char *fname_net, int import_fp, const char *blk_id, int
 		return -1;
 	}
 
+	pcb_undo_freeze_serial();
 	ret = tedax_net_fload(fn, import_fp, blk_id, silent);
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 
 	fclose(fn);
 	return ret;
