@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *
  *  pixmap loader for pnm
- *  pcb-rnd Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2019,2020 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
