@@ -729,8 +729,10 @@ static void LayersFixup(void)
 		chg = 1;
 	}
 
-	if (chg)
+	if (chg) {
+		rnd_message(RND_MSG_ERROR, "The geda/pcb file format requires top and bottom silk be the last layers in the list.\nI had to swap layers in your board _before_ the save.\nAt the moment this is not undoable!\n");
 		rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	}
 }
 
 static void WriteLayers(FILE *FP, pcb_data_t *data)
