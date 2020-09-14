@@ -36,6 +36,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "undo.h"
 #include "plug_import.h"
 #include <librnd/core/error.h>
 #include <librnd/core/rnd_printf.h>
@@ -312,7 +313,10 @@ fgw_error_t pcb_act_LoadLtspiceFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	gen_filenames(fname, &fname_net, &fname_asc);
 
+	pcb_undo_freeze_serial();
 	rs = ltspice_load(fname_net, fname_asc);
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 
 	free(fname_asc);
 	free(fname_net);
