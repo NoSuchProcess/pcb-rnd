@@ -659,7 +659,7 @@ void pcb_data_list_by_flag(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type, un
 
 void pcb_data_list_terms(pcb_data_t *data, vtp0_t *dst, pcb_objtype_t type)
 {
-TODO("subc TODO: subc in subc")
+TODO("subc TODO: subc-in-subc")
 /*	if (type & PCB_OBJ_SUBC) PCB_SUBC_LOOP(data); {
 		if (subc->term != NULL) vtp0_append(dst, subc);
 	} PCB_END_LOOP;*/

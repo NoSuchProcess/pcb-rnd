@@ -152,7 +152,7 @@ unsigned int pcb_subc_hash(pcb_subc_t *sc)
 	/* hash global objects */
 	{
 		pcb_pstk_t *ps;
-TODO("subc: subc in subc: trans in trans")
+TODO("subc: subc-in-subc: trans in trans")
 #if 0
 		pcb_subc_t *s;
 		subclist_foreach(&sc->data->subc, &it, s)
