@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.2 (svn r32473) an interactive printed circuit board editor ,  Revision: 32507
+This is pcb-rnd 2.2.4 (svn r32639) an interactive printed circuit board editor ,  Revision: 32696
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -145,6 +145,7 @@ This is pcb-rnd 2.2.2 (svn r32473) an interactive printed circuit board editor ,
 <tr><td>extedit</td><td>extedit(object|selected|buffer, [interactive|method])</td><td>Invoke an external program to edit a specific part of the current board.</td><td>extedit plugin</td>
 <tr><td>ExtobjConvFrom</td><td>Create a new extended object of extotype by converting existing objects</td><td>ExtobjConvFrom(selected|buffer, extotype)<br>ExtobjConvFrom(object, extotype, [idpath])</td><td></td>
 <tr><td>ExtobjGUIPropEdit</td><td>Invoke the extobj-implementation-specific GUI property editor, if available</td><td>ExtobjGUIPropEdit([object, [idpath]])</td><td></td>
+<tr><td>ExtobjToggle</td><td>Convert an extobj into a plain subc or back</td><td>ExtobjToggle([object, [idpath]])</td><td></td>
 <tr><td>extroute</td><td>Executed external autorouter to route the board or parts of the board</td><td>extroute(board|selected, router, [confkey=value, ...])</td><td>extern autorouter plugin</td>
 <tr><td>fawk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>fbas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
@@ -367,6 +368,9 @@ This is pcb-rnd 2.2.2 (svn r32473) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#setunits">SetUnits</a></td><td>Set the default measurement units.</td><td>SetUnits(mm|mil)</td><td></td>
 <tr><td><a href="action_details.html#setvalue">SetValue</a></td><td>Change various board-wide values and sizes.</td><td>SetValue(Grid|Line|LineSize|Text|TextScale, delta)</td><td></td>
 <tr><td>shape</td><td>Interactive shape generator.</td><td>shape()</td><td>shape plugin</td>
+<tr><td>skline</td><td>Tool for drawing sketch lines</td><td>skline()</td><td>sketch_route plugin</td>
+<tr><td>skretriangulate</td><td>Reconstruct CDT on all layer groups</td><td>skretriangulate()</td><td>sketch_route plugin</td>
+<tr><td>sktransform</td><td>Transform sketch to geometrical wiring</td><td>sktransform(rect|oct|alldir)</td><td>sketch_route plugin</td>
 <tr><td><a href="action_details.html#smartdisperse">smartdisperse</a></td><td>Disperse subcircuits into clusters, by netlist connections</td><td>SmartDisperse([All|Selected])</td><td>smartdisperse plugin</td>
 <tr><td>split</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
 <tr><td>StatusSetText</td><td>Replace status printout with text temporarily; turn status printout back on if text is not provided.</td><td>StatusSetText([text])</td><td>lib_hid_pcbui/status</td>
