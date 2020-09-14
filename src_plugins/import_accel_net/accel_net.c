@@ -46,6 +46,7 @@
 #include <librnd/core/hid.h>
 #include <gensexpr/gsxl.h>
 #include <genvector/gds_char.h>
+#include "undo.h"
 
 #include "menu_internal.c"
 
@@ -158,7 +159,10 @@ static int accel_net_load(const char *fname_net)
 		return -1;
 	}
 
+	pcb_undo_freeze_serial();
 	ret = accel_net_parse_net(fn);
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 
 	fclose(fn);
 	return ret;
