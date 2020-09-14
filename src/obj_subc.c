@@ -1796,10 +1796,12 @@ void *pcb_subcop_change_2nd_size(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_change_nonetlist(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
-TODO("subc: add undo")
+	pcb_undo_add_obj_to_flag(sc);
+
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, sc))
 		return NULL;
 	PCB_FLAG_TOGGLE(PCB_FLAG_NONETLIST, sc);
+
 	return sc;
 }
 
