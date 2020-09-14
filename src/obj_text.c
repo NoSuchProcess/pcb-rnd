@@ -1136,19 +1136,23 @@ void pcb_text_dyn_bbox_update(pcb_data_t *data)
 
 int pcb_text_chg_scale(pcb_text_t *text, double scx, rnd_bool absx, double scy, rnd_bool absy, rnd_bool undoable)
 {
-	int onbrd = (text->parent.layer != NULL) && (!text->parent.layer->is_bound);
+	undo_text_geo_t gtmp, *g = &gtmp;
 
-	TODO("undo: make this undoable");
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(text->parent.layer->parent.data), &undo_text_geo, sizeof(undo_text_geo_t));
 
-	if (onbrd)
-		pcb_text_pre(text);
+	g->text = text;
+	g->X = text->X;
+	g->Y = text->Y;
+	g->Scale = text->Scale;
+	g->scale_x = absx ? scx : text->scale_x + scx;
+	g->scale_y = absy ? scy : text->scale_y + scy;
+	g->thickness = text->thickness;
+	g->clearance = text->clearance;
+	g->rot = text->rot;
 
-	text->scale_x = absx ? scx : text->scale_x + scx;
-	text->scale_y = absy ? scy : text->scale_y + scy;
+	undo_text_geo_swap(g);
+	if (undoable) pcb_undo_inc_serial();
 
-	pcb_text_bbox(pcb_font(PCB, text->fid, 1), text);
-	if (onbrd)
-		pcb_text_post(text);
 	return 0;
 }
 
