@@ -581,9 +581,8 @@ rnd_bool pcb_chg_obj_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coor
 	return change;
 }
 
-TODO("subc: check if it is true:")
 /* ---------------------------------------------------------------------------
- * changes the size of the passed object; element size is pin ring sizes
+ * changes the size of the passed object; subcircuits pass this on to their parts
  * Returns rnd_true if anything is changed
  */
 rnd_bool pcb_chg_obj_1st_size(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t Difference, rnd_bool fixIt)
