@@ -730,8 +730,10 @@ static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t * box, void *cl)
 static void draw_line_or_arc(pcb_any_obj_t *o)
 {
 	switch(o->type) {
-		case PCB_OBJ_LINE_POINT: pcb_line_invalidate_draw(o->parent.layer, (pcb_line_t *)o); break;
-		case PCB_OBJ_ARC_POINT:  pcb_arc_invalidate_draw(o->parent.layer, (pcb_arc_t *)o); break;
+		case PCB_OBJ_LINE: pcb_line_invalidate_draw(o->parent.layer, (pcb_line_t *)o); break;
+		case PCB_OBJ_ARC:  pcb_arc_invalidate_draw(o->parent.layer, (pcb_arc_t *)o); break;
+			break;
+		default: assert(!"draw_line_or_arc() expects line or arc point");
 	}
 }
 
