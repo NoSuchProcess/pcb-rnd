@@ -34,6 +34,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "undo.h"
 #include "plug_import.h"
 #include <librnd/core/error.h>
 #include <librnd/core/rnd_printf.h>
@@ -186,7 +187,10 @@ static int calay_load(const char *fname_net, const char *fname_cmp)
 	if (f == NULL)
 		rnd_message(RND_MSG_ERROR, "can't open calay component file '%s' for read\n(non-fatal, but footprints will not be placed)\n", fname_cmp);
 
+	pcb_undo_freeze_serial();
 	ret = calay_parse_comp(f);
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 
 	fclose(f);
 	return ret;
