@@ -698,9 +698,8 @@ static rnd_r_dir_t onpoint_line_callback(const rnd_box_t * box, void *cl)
 		pcb_line_invalidate_draw(NULL, line);
 		return RND_R_DIR_FOUND_CONTINUE;
 	}
-	else {
+	else
 		return RND_R_DIR_NOT_FOUND;
-	}
 }
 
 #define close_enough(v1, v2) (coord_abs((v1)-(v2)) < 10)
@@ -725,9 +724,8 @@ static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t * box, void *cl)
 		pcb_arc_invalidate_draw(NULL, arc);
 		return RND_R_DIR_FOUND_CONTINUE;
 	}
-	else {
+	else
 		return RND_R_DIR_NOT_FOUND;
-	}
 }
 
 void DrawLineOrArc(pcb_any_obj_t *o)
@@ -814,9 +812,8 @@ static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t
 		redraw = rnd_true;
 	}
 
-	if (redraw) {
+	if (redraw)
 		rnd_hid_redraw(PCB);
-	}
 }
 
 static double square(double x)
