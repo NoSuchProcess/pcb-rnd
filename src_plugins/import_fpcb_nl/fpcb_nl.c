@@ -35,6 +35,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "undo.h"
 #include "plug_import.h"
 #include <librnd/core/error.h>
 #include <librnd/core/rnd_printf.h>
@@ -184,7 +185,10 @@ fgw_error_t pcb_act_LoadFpcbnlFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
+	pcb_undo_freeze_serial();
 	RND_ACT_IRES(fpcb_nl_load(fname));
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 	return 0;
 }
 
@@ -216,11 +220,18 @@ static int fpcb_nl_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 
 static int fpcb_nl_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
+	int ret;
 	if (numfns != 1) {
 		rnd_message(RND_MSG_ERROR, "import_fpcb_nl: requires exactly 1 input file name\n");
 		return -1;
 	}
-	return fpcb_nl_load(fns[0]);
+
+	pcb_undo_freeze_serial();
+	ret = fpcb_nl_load(fns[0]);
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
+
+	return ret;
 }
 
 static pcb_plug_import_t import_fpcb_nl;
