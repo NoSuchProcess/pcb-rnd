@@ -28,7 +28,7 @@
  */
 
 
-TODO(": implement text intersections")
+TODO("implement text intersections; same problem as with padstacks: can't mark a whole test as found")
 rnd_bool pcb_isc_text_line(const pcb_find_t *ctx, pcb_text_t *a, pcb_line_t *b) { return rnd_false; }
 rnd_bool pcb_isc_text_text(const pcb_find_t *ctx, pcb_text_t *a, pcb_text_t *b) { return rnd_false; }
 rnd_bool pcb_isc_text_poly(const pcb_find_t *ctx, pcb_text_t *a, pcb_poly_t *b) { return rnd_false; }
