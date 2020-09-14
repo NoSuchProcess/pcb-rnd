@@ -33,6 +33,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "undo.h"
 #include <librnd/core/safe_fs.h>
 
 #include "conf_core.h"
@@ -407,6 +408,8 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		scs = &subcs;
 	}
 
+	pcb_undo_freeze_serial();
+
 	if (want_net) {
 		rnd_actionva(RND_ACT_HIDLIB, "Netlist", "Freeze", NULL);
 		rnd_actionva(RND_ACT_HIDLIB, "Netlist", "Clear", NULL);
@@ -433,6 +436,9 @@ fgw_error_t pcb_act_LoadIpc356From(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 		htsp_uninit(&subcs);
 	}
+
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
 
 	RND_ACT_IRES(rs);
 	return 0;
