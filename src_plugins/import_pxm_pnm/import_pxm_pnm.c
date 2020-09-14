@@ -35,32 +35,48 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/pixmap.h>
 #include <librnd/core/safe_fs.h>
+#include <librnd/core/error.h>
 
 static const char *import_pxm_pnm_cookie = "import_pxm_pnm";
 
-#define ADDPX(pxm, r_, g_, b_, transparent) \
+#define ADDPX(pxm, r_, g_, b_, not_transparent) \
 do { \
 	int r = r_, g = g_, b = b_; \
 	if ((r < 0) || (g < 0) || (b < 0)) \
 		goto error; \
-	if (transparent) { \
-		*o++ = pxm->tr; \
-		*o++ = pxm->tg; \
-		*o++ = pxm->tb; \
-	} \
-	else { \
-		if ((r == pxm->tr) && (g == pxm->tg) && (b == pxm->tb)) \
-			b--; \
-		*o++ = r; \
-		*o++ = g; \
-		*o++ = b; \
-	} \
+	if (not_transparent && (r == pxm->tr) && (g == pxm->tg) && (b == pxm->tb)) \
+		b--; \
+	*o++ = r; \
+	*o++ = g; \
+	*o++ = b; \
 } while(0)
+
+static void decode_comment(rnd_pixmap_t *pxm, char *comment)
+{
+	while(isspace(*comment)) comment++;
+	if (rnd_strncasecmp(comment, "transparent pixel:", 18) == 0) {
+		int r, g, b;
+		if (sscanf(comment+18, "%d %d %d", &r, &g, &b) == 3) {
+			if ((r >= 0) && (r <= 255) && (g >= 0) && (g <= 255) && (b >= 0) && (b <= 255)) {
+				pxm->tr = r;
+				pxm->tg = g;
+				pxm->tb = b;
+				pxm->has_transp = 1;
+			}
+			else
+				rnd_message(RND_MSG_ERROR, "pnm_load(): ignoring invalid transparent pixel: value out of range (%d %d %d)\n", r, g, b);
+		}
+		else
+			rnd_message(RND_MSG_ERROR, "pnm_load(): ignoring invalid transparent pixel: need 3 integers (got: %s)\n", comment+18);
+	}
+}
 
 #define GETLINE \
 while(fgets(line, sizeof(line) - 1, f) != NULL) { \
-	if (*line == '#') \
+	if (*line == '#') {\
+		decode_comment(pxm, line+1); \
 		continue; \
+	} \
 	break; \
 }
 
@@ -74,13 +90,18 @@ static int pnm_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 	f = rnd_fopen(hidlib, fn, "rb");
 	if (f == NULL)
 		return -1;
-	
+
+	pxm->tr = pxm->tg = 127;
+	pxm->tb = 128;
+	pxm->has_transp = 0;
+
 	GETLINE;
 	if ((line[0] != 'P') || ((line[1] != '4') && (line[1] != '5') && (line[1] != '6')) || (line[2] != '\n')) {
 		fclose(f);
 		return -1;
 	}
 	type = line[1];
+
 
 	GETLINE;
 	s = strchr(line, ' ');
@@ -98,10 +119,6 @@ static int pnm_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 		return -1;
 	}
 
-TODO("Pick up transparent pixel from comment");
-	pxm->tr = pxm->tg = 127;
-	pxm->tb = 128;
-	pxm->has_transp = 0;
 	n = pxm->sx * pxm->sy;
 	pxm->size = n * 3;
 	o = pxm->p = malloc(pxm->size);
