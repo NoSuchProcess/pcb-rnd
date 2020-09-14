@@ -51,8 +51,6 @@
 #include "obj_subc_parent.h"
 #include "obj_hash.h"
 
-/* TODO: maybe remove this and move lines from draw here? */
-#include "draw.h"
 #include "draw_wireframe.h"
 #include "obj_line_draw.h"
 #include "obj_rat_draw.h"
