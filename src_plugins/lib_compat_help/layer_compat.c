@@ -35,22 +35,27 @@
 #include "board.h"
 #include "data.h"
 
-TODO("padstack: rewrite this for padstack, if needed")
-#if 0
-static void swap_one_thermal(int lid1, int lid2, pcb_pin_t * pin)
+static void swap_one_thermal(pcb_pstk_t *pstk, int lid1, int lid2, int udoable)
 {
-	int was_on_l1 = !!PCB_FLAG_THERM_GET(lid1, pin);
-	int was_on_l2 = !!PCB_FLAG_THERM_GET(lid2, pin);
+	unsigned char *p1 = pcb_pstk_get_thermal(pstk, lid1, 0);
+	unsigned char *p2 = pcb_pstk_get_thermal(pstk, lid2, 0);
+	unsigned char t1, t2;
 
-	PCB_FLAG_THERM_ASSIGN(lid2, was_on_l1, pin);
-	PCB_FLAG_THERM_ASSIGN(lid1, was_on_l2, pin);
+	t1 = (p1 == NULL) ? 0 : *p1;
+	t2 = (p2 == NULL) ? 0 : *p2;
+
+	if (t1 == t2) return;
+
+	pcb_pstk_set_thermal(pstk, lid1, t2, udoable);
+	pcb_pstk_set_thermal(pstk, lid2, t1, udoable);
 }
-#endif
 
 int pcb_layer_swap(pcb_board_t *pcb, rnd_layer_id_t lid1, rnd_layer_id_t lid2)
 {
+	rnd_rtree_it_t it;
 	pcb_layer_t l1tmp, l2tmp;
 	rnd_layergrp_id_t gid;
+	rnd_box_t *n;
 
 	if (lid1 == lid2)
 		return 0;
@@ -61,14 +66,10 @@ int pcb_layer_swap(pcb_board_t *pcb, rnd_layer_id_t lid1, rnd_layer_id_t lid2)
 	pcb_layer_move_(&pcb->Data->Layer[lid1], &l2tmp);
 	pcb_layer_move_(&pcb->Data->Layer[lid2], &l1tmp);
 
-TODO("padstack: rewrite this for padstack, if needed")
-#if 0
-	PCB_VIA_LOOP(pcb->Data);
-	{
-		swap_one_thermal(lid1, lid2, via);
-	}
-	PCB_END_LOOP;
-#endif
+	/* thermals are referenced by layer IDs which are going to change now */
+	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it))
+		swap_one_thermal((pcb_pstk_t *)n, lid1, lid2, 0);
+	rnd_r_end(&it);
 
 	for(gid = 0; gid < pcb_max_group(pcb); gid++) {
 		pcb_layergrp_t *g = &pcb->LayerGroups.grp[gid];
