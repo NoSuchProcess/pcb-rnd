@@ -2190,7 +2190,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 
 pcb_subc_t *pcb_subc_by_refdes(pcb_data_t *base, const char *name)
 {
-TODO("subc: hierarchy")
+TODO("subc: subc-in-subc hierarchy")
 	PCB_SUBC_LOOP(base);
 	{
 		if ((subc->refdes != NULL) && (RND_NSTRCMP(subc->refdes, name) == 0))
@@ -2209,7 +2209,7 @@ pcb_subc_t *pcb_subc_by_id(pcb_data_t *base, long int ID)
 	   the subc is being rotated.
 	
 	   The solution will be the ID hash. */
-TODO("subc: hierarchy")
+TODO("subc: subc-in-subc hierarchy")
 	PCB_SUBC_LOOP(base);
 	{
 		if (subc->ID == ID)
