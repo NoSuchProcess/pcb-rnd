@@ -693,10 +693,7 @@ static rnd_r_dir_t onpoint_line_callback(const rnd_box_t * box, void *cl)
 				 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 #endif
 	if ((line->Point1.X == info->X && line->Point1.Y == info->Y) || (line->Point2.X == info->X && line->Point2.Y == info->Y)) {
-		pcb_onpoint_t op;
-		op.type = PCB_OBJ_LINE;
-		op.obj.line = line;
-		vtop_append(&crosshair->onpoint_objs, op);
+		vtp0_append(&crosshair->onpoint_objs, line);
 		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) line);
 		pcb_line_invalidate_draw(NULL, line);
 		return RND_R_DIR_FOUND_CONTINUE;
@@ -723,10 +720,7 @@ static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t * box, void *cl)
 	/* printf("p1=%ld;%ld p2=%ld;%ld info=%ld;%ld\n", p1x, p1y, p2x, p2y, info->X, info->Y); */
 
 	if ((close_enough(p1x, info->X) && close_enough(p1y, info->Y)) || (close_enough(p2x, info->X) && close_enough(p2y, info->Y))) {
-		pcb_onpoint_t op;
-		op.type = PCB_OBJ_ARC;
-		op.obj.arc = arc;
-		vtop_append(&crosshair->onpoint_objs, op);
+		vtp0_append(&crosshair->onpoint_objs, arc);
 		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) arc);
 		pcb_arc_invalidate_draw(NULL, arc);
 		return RND_R_DIR_FOUND_CONTINUE;
@@ -757,18 +751,18 @@ void DrawLineOrArc(int type, void *obj)
 
 #define op_swap(crosshair) \
 do { \
-	vtop_t __tmp__ = crosshair->onpoint_objs; \
+	vtp0_t __tmp__ = crosshair->onpoint_objs; \
 	crosshair->onpoint_objs = crosshair->old_onpoint_objs; \
 	crosshair->old_onpoint_objs = __tmp__; \
 } while(0)
 
-static void *onpoint_find(vtop_t *vect, void *obj_ptr)
+static void *onpoint_find(vtp0_t *vect, pcb_any_obj_t *obj_ptr)
 {
 	int i;
 
 	for (i = 0; i < vect->used; i++) {
-		pcb_onpoint_t *op = &(vect->array[i]);
-		if (op->obj.any == obj_ptr)
+		pcb_any_obj_t *op = vect->array[i];
+		if (op == obj_ptr)
 			return op;
 	}
 	return NULL;
@@ -789,7 +783,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t
 	op_swap(crosshair);
 
 	/* Do not truncate to 0 because that may free the array */
-	vtop_truncate(&crosshair->onpoint_objs, 1);
+	vtp0_truncate(&crosshair->onpoint_objs, 1);
 	crosshair->onpoint_objs.used = 0;
 
 
@@ -808,25 +802,25 @@ static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t
 
 	/* Undraw the old objects */
 	for (i = 0; i < crosshair->old_onpoint_objs.used; i++) {
-		pcb_onpoint_t *op = &crosshair->old_onpoint_objs.array[i];
+		pcb_any_obj_t *op = crosshair->old_onpoint_objs.array[i];
 
 		/* only remove and redraw those which aren't in the new list */
-		if (onpoint_find(&crosshair->onpoint_objs, op->obj.any) != NULL)
+		if (onpoint_find(&crosshair->onpoint_objs, op) != NULL)
 			continue;
 
-		PCB_FLAG_CLEAR(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) op->obj.any);
-		DrawLineOrArc(op->type, op->obj.any);
+		PCB_FLAG_CLEAR(PCB_FLAG_ONPOINT, op);
+		DrawLineOrArc(op->type, op);
 		redraw = rnd_true;
 	}
 
 	/* draw the new objects */
 	for (i = 0; i < crosshair->onpoint_objs.used; i++) {
-		pcb_onpoint_t *op = &crosshair->onpoint_objs.array[i];
+		pcb_any_obj_t *op = crosshair->onpoint_objs.array[i];
 
 		/* only draw those which aren't in the old list */
-		if (onpoint_find(&crosshair->old_onpoint_objs, op->obj.any) != NULL)
+		if (onpoint_find(&crosshair->old_onpoint_objs, op) != NULL)
 			continue;
-		DrawLineOrArc(op->type, op->obj.any);
+		DrawLineOrArc(op->type, op);
 		redraw = rnd_true;
 	}
 
@@ -1188,8 +1182,8 @@ static void pcb_crosshair_gui_init(rnd_hidlib_t *hidlib, void *user_data, int ar
 void pcb_crosshair_init(void)
 {
 	/* Initialize the onpoint data. */
-	memset(&pcb_crosshair.onpoint_objs, 0, sizeof(vtop_t));
-	memset(&pcb_crosshair.old_onpoint_objs, 0, sizeof(vtop_t));
+	memset(&pcb_crosshair.onpoint_objs, 0, sizeof(vtp0_t));
+	memset(&pcb_crosshair.old_onpoint_objs, 0, sizeof(vtp0_t));
 
 	/* clear the mark */
 	pcb_marked.status = rnd_false;

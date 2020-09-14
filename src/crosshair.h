@@ -31,7 +31,7 @@
 #define PCB_CROSSHAIR_H
 
 #include "config.h"
-#include "vtonpoint.h"
+#include <genvector/vtp0.h>
 #include <librnd/core/hid.h>
 #include <librnd/core/hidlib.h>
 #include "obj_line.h"
@@ -66,8 +66,8 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 	int AttachedPolygon_pts;               /* number of valid points ever seen for this poly */
 	pcb_attached_object_t AttachedObject;  /* data of attached objects */
 	pcb_route_t Route;                     /* Calculated line route in LINE or MOVE(LINE) mode */ 
-	vtop_t onpoint_objs;
-	vtop_t old_onpoint_objs;
+	vtp0_t onpoint_objs;
+	vtp0_t old_onpoint_objs;
 	pcb_any_obj_t *extobj_edit;            /* refers to the editobject (of an extobj) being edited */
 
 	/* list of object IDs that could have been dragged so that they can be cycled */
