@@ -730,20 +730,20 @@ static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t * box, void *cl)
 	}
 }
 
-void DrawLineOrArc(int type, void *obj)
+void DrawLineOrArc(pcb_any_obj_t *o)
 {
-	switch (type) {
+	switch(o->type) {
 	case PCB_OBJ_LINE_POINT:
 		/* Attention: We can use a NULL pointer here for the layer,
 		 * because it is not used in the pcb_line_invalidate_draw() function anyways.
 		 * ATM pcb_line_invalidate_draw() only calls AddPart() internally, which invalidates
 		 * the area specified by the line's bounding box.
 		 */
-		pcb_line_invalidate_draw(NULL, (pcb_line_t *) obj);
+		pcb_line_invalidate_draw(NULL, (pcb_line_t *)o);
 		break;
 	case PCB_OBJ_ARC_POINT:
 		/* See comment above */
-		pcb_arc_invalidate_draw(NULL, (pcb_arc_t *) obj);
+		pcb_arc_invalidate_draw(NULL, (pcb_arc_t *)o);
 		break;
 	}
 }
@@ -809,7 +809,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t
 			continue;
 
 		PCB_FLAG_CLEAR(PCB_FLAG_ONPOINT, op);
-		DrawLineOrArc(op->type, op);
+		DrawLineOrArc(op);
 		redraw = rnd_true;
 	}
 
@@ -820,7 +820,7 @@ static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t
 		/* only draw those which aren't in the old list */
 		if (onpoint_find(&crosshair->old_onpoint_objs, op) != NULL)
 			continue;
-		DrawLineOrArc(op->type, op);
+		DrawLineOrArc(op);
 		redraw = rnd_true;
 	}
 
