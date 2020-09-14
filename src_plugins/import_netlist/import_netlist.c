@@ -169,11 +169,18 @@ static int netlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, co
 
 static int netlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const char **fns, int numfns)
 {
+	int res;
 	if (numfns != 1) {
 		rnd_message(RND_MSG_ERROR, "import_netlist: requires exactly 1 input file name\n");
 		return -1;
 	}
-	return ReadNetlist(fns[0]);
+
+	pcb_undo_freeze_serial();
+	res = ReadNetlist(fns[0]);
+	pcb_undo_unfreeze_serial();
+	pcb_undo_inc_serial();
+
+	return res;
 }
 
 int pplg_check_ver_import_netlist(int ver_needed) { return 0; }
