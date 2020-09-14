@@ -728,7 +728,7 @@ static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t * box, void *cl)
 		return RND_R_DIR_NOT_FOUND;
 }
 
-void DrawLineOrArc(pcb_any_obj_t *o)
+static void DrawLineOrArc(pcb_any_obj_t *o)
 {
 	switch(o->type) {
 		case PCB_OBJ_LINE_POINT: pcb_line_invalidate_draw(o->parent.layer, (pcb_line_t *)o); break;
