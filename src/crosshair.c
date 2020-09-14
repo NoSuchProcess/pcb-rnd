@@ -734,16 +734,10 @@ void DrawLineOrArc(pcb_any_obj_t *o)
 {
 	switch(o->type) {
 	case PCB_OBJ_LINE_POINT:
-		/* Attention: We can use a NULL pointer here for the layer,
-		 * because it is not used in the pcb_line_invalidate_draw() function anyways.
-		 * ATM pcb_line_invalidate_draw() only calls AddPart() internally, which invalidates
-		 * the area specified by the line's bounding box.
-		 */
-		pcb_line_invalidate_draw(NULL, (pcb_line_t *)o);
+		pcb_line_invalidate_draw(o->parent.layer, (pcb_line_t *)o);
 		break;
 	case PCB_OBJ_ARC_POINT:
-		/* See comment above */
-		pcb_arc_invalidate_draw(NULL, (pcb_arc_t *)o);
+		pcb_arc_invalidate_draw(o->parent.layer, (pcb_arc_t *)o);
 		break;
 	}
 }
