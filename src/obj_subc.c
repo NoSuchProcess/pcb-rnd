@@ -867,6 +867,62 @@ pcb_subc_t *pcb_subc_copy_meta(pcb_subc_t *dst, const pcb_subc_t *src)
 	return dst;
 }
 
+void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *sl, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids)
+{
+		pcb_line_t *line, *nline;
+		pcb_text_t *text, *ntext;
+		pcb_arc_t *arc, *narc;
+		pcb_gfx_t *gfx, *ngfx;
+		gdl_iterator_t it;
+
+		linelist_foreach(&sl->Line, &it, line) {
+			nline = pcb_line_dup_at(dl, line, dx, dy);
+			MAYBE_KEEP_ID(nline, line);
+			if (nline != NULL) {
+				PCB_SET_PARENT(nline, layer, dl);
+				if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, nline)) {
+					pcb_box_bump_box_noflt(&dst_sc->BoundingBox, &nline->BoundingBox);
+					pcb_box_bump_box_noflt(&dst_sc->bbox_naked, &nline->bbox_naked);
+				}
+			}
+		}
+
+		arclist_foreach(&sl->Arc, &it, arc) {
+			narc = pcb_arc_dup_at(dl, arc, dx, dy);
+			MAYBE_KEEP_ID(narc, arc);
+			if (narc != NULL) {
+				PCB_SET_PARENT(narc, layer, dl);
+				if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, narc)) {
+					pcb_box_bump_box_noflt(&dst_sc->BoundingBox, &narc->BoundingBox);
+					pcb_box_bump_box_noflt(&dst_sc->bbox_naked, &narc->bbox_naked);
+				}
+			}
+		}
+
+		gfxlist_foreach(&sl->Gfx, &it, gfx) {
+			ngfx = pcb_gfx_dup_at(dl, gfx, dx, dy);
+			MAYBE_KEEP_ID(ngfx, gfx);
+			if (ngfx != NULL) {
+				PCB_SET_PARENT(ngfx, layer, dl);
+				if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, ngfx)) {
+					pcb_box_bump_box_noflt(&dst_sc->BoundingBox, &ngfx->BoundingBox);
+					pcb_box_bump_box_noflt(&dst_sc->bbox_naked, &ngfx->bbox_naked);
+				}
+			}
+		}
+
+		textlist_foreach(&sl->Text, &it, text) {
+			ntext = pcb_text_dup_at(dl, text, dx, dy);
+			MAYBE_KEEP_ID(ntext, text);
+			if (ntext != NULL) {
+				PCB_SET_PARENT(ntext, layer, dl);
+				if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, ntext)) {
+					pcb_box_bump_box_noflt(&dst_sc->BoundingBox, &ntext->BoundingBox);
+					pcb_box_bump_box_noflt(&dst_sc->bbox_naked, &ntext->bbox_naked);
+				}
+			}
+		}
+}
 
 pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t *src, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids, rnd_bool undoable)
 {
@@ -898,11 +954,6 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t 
 	for(n = 0; n < src->data->LayerN; n++) {
 		pcb_layer_t *sl = src->data->Layer + n;
 		pcb_layer_t *dl = sc->data->Layer + n;
-		pcb_line_t *line, *nline;
-		pcb_text_t *text, *ntext;
-		pcb_arc_t *arc, *narc;
-		pcb_gfx_t *gfx, *ngfx;
-		gdl_iterator_t it;
 
 		/* bind layer/resolve layers */
 		dl->is_bound = 1;
@@ -941,55 +992,7 @@ pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t 
 			dl->comb = sl->comb;
 		}
 
-
-		linelist_foreach(&sl->Line, &it, line) {
-			nline = pcb_line_dup_at(dl, line, dx, dy);
-			MAYBE_KEEP_ID(nline, line);
-			if (nline != NULL) {
-				PCB_SET_PARENT(nline, layer, dl);
-				if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, nline)) {
-					pcb_box_bump_box_noflt(&sc->BoundingBox, &nline->BoundingBox);
-					pcb_box_bump_box_noflt(&sc->bbox_naked, &nline->bbox_naked);
-				}
-			}
-		}
-
-		arclist_foreach(&sl->Arc, &it, arc) {
-			narc = pcb_arc_dup_at(dl, arc, dx, dy);
-			MAYBE_KEEP_ID(narc, arc);
-			if (narc != NULL) {
-				PCB_SET_PARENT(narc, layer, dl);
-				if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, narc)) {
-					pcb_box_bump_box_noflt(&sc->BoundingBox, &narc->BoundingBox);
-					pcb_box_bump_box_noflt(&sc->bbox_naked, &narc->bbox_naked);
-				}
-			}
-		}
-
-		gfxlist_foreach(&sl->Gfx, &it, gfx) {
-			ngfx = pcb_gfx_dup_at(dl, gfx, dx, dy);
-			MAYBE_KEEP_ID(ngfx, gfx);
-			if (ngfx != NULL) {
-				PCB_SET_PARENT(ngfx, layer, dl);
-				if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, ngfx)) {
-					pcb_box_bump_box_noflt(&sc->BoundingBox, &ngfx->BoundingBox);
-					pcb_box_bump_box_noflt(&sc->bbox_naked, &ngfx->bbox_naked);
-				}
-			}
-		}
-
-		textlist_foreach(&sl->Text, &it, text) {
-			ntext = pcb_text_dup_at(dl, text, dx, dy);
-			MAYBE_KEEP_ID(ntext, text);
-			if (ntext != NULL) {
-				PCB_SET_PARENT(ntext, layer, dl);
-				if (!PCB_FLAG_TEST(PCB_FLAG_FLOATER, ntext)) {
-					pcb_box_bump_box_noflt(&sc->BoundingBox, &ntext->BoundingBox);
-					pcb_box_bump_box_noflt(&sc->bbox_naked, &ntext->bbox_naked);
-				}
-			}
-		}
-
+		pcb_subc_dup_layer_objs(sc, dl, sl, dx, dy, keep_ids);
 	}
 	sc->data->LayerN = src->data->LayerN;
 
