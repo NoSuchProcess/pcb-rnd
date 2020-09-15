@@ -171,6 +171,10 @@ void pcb_subc_part_changed_inhibit_inc(pcb_subc_t *sc);
 void pcb_subc_part_changed_inhibit_dec(pcb_subc_t *sc);
 
 
+/*** Internal, low level ***/
+/* Copy layer objects from source layer sl to destination layer dl into dst_sc */
+void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *sl, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids);
+
 /*** subc creation helpers ***/
 
 /* Create the aux layer for a subc, set origin to ox;oy and rotation to rot */
