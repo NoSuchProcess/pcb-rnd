@@ -65,13 +65,15 @@
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/elem_rot.h"
 
-TODO("cleanup: put these in a gloal load-context-struct")
-vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
-static int rdver;
-unsigned long warned, old_model_warned;
-static rnd_conf_role_t cfg_dest;
+typedef struct {
+	vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
+	int rdver;
+	unsigned long warned, old_model_warned;
+	rnd_conf_role_t cfg_dest;
+} lht_read_t;
 
 static pcb_data_t DUMMY_BUFFER_SUBC;
+static lht_read_t rctx_, *rctx = &rctx_;
 
 /* Note: this works because of using str_flag compat_types */
 #define PCB_OBJ_VIA PCB_OBJ_PSTK
@@ -110,9 +112,9 @@ static void iolht_warn(lht_node_t *nd, int wbit, char *fmt, ...)
 
 	if (wbit >= 0) {
 		unsigned long bv = 1ul << wbit;
-		if (warned & bv)
+		if (rctx->warned & bv)
 			return;
-		warned |= bv;
+		rctx->warned |= bv;
 	}
 
 	gds_init(&str);
@@ -135,7 +137,7 @@ static void iolht_warn(lht_node_t *nd, int wbit, char *fmt, ...)
    known-IDs are allocated, the unknonw-ID objects are allocated a fresh
    ID. This makes sure they don't occupy IDs that would be used by known-ID
    objects during the load. */
-#define post_id_req(obj) vtp0_append(&post_ids, &((obj)->ID))
+#define post_id_req(obj) vtp0_append(&rctx->post_ids, &((obj)->ID))
 
 static lht_node_t missing_ok;
 
@@ -403,8 +405,8 @@ static int parse_coord_conf(const char *path, lht_node_t *nd)
 	if (parse_coord(&tmp, nd) != 0)
 		return -1;
 
-	if (cfg_dest != RND_CFR_invalid)
-		rnd_conf_set(cfg_dest, path, -1, nd->data.text.value, RND_POL_OVERWRITE);
+	if (rctx->cfg_dest != RND_CFR_invalid)
+		rnd_conf_set(rctx->cfg_dest, path, -1, nd->data.text.value, RND_POL_OVERWRITE);
 	return 0;
 }
 
@@ -452,7 +454,7 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "drc");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
-		if (rdver >= 5)
+		if (rctx->rdver >= 5)
 			iolht_warn(grp, 5, "Lihata board v5+ should not have drc metadata saved in board header (use the config)\n");
 		err |= parse_coord_conf("design/bloat", hash_get(grp, "bloat", 1));
 		err |= parse_coord_conf("design/shrink", hash_get(grp, "shrink", 1));
@@ -466,7 +468,7 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 
 	grp = lht_dom_hash_get(nd, "cursor");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
-		if (rdver >= 5)
+		if (rctx->rdver >= 5)
 			iolht_warn(grp, 0, "Lihata board v5+ should not have cursor metadata saved\n");
 	}
 
@@ -523,7 +525,7 @@ static int post_thermal_assign(pcb_board_t *pcb, vtp0_t *old, vtp0_t *heavy)
 					int layer = pcb_layer_by_name(pcb->Data, n->name);
 					if (layer < 0)
 						return iolht_error(n, "Invalid layer name in thermal: '%s'\n", n->name);
-					ps->thermals.shape[layer] = io_lihata_resolve_thermal_style_old(n->data.text.value, rdver);
+					ps->thermals.shape[layer] = io_lihata_resolve_thermal_style_old(n->data.text.value, rctx->rdver);
 				}
 			}
 		}
@@ -554,7 +556,7 @@ static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned 
 	if (fn != NULL) {
 		int n;
 		for (n = 0; n < pcb_object_flagbits_len; n++) {
-			long my_types = pcb_object_flagbits[n].object_types | ((rdver <= 4) ? pcb_object_flagbits[n].compat_types : 0);
+			long my_types = pcb_object_flagbits[n].object_types | ((rctx->rdver <= 4) ? pcb_object_flagbits[n].compat_types : 0);
 			if (my_types & object_type) {
 				rnd_bool b = 0;
 				if ((parse_bool(&b, hash_get(fn, pcb_object_flagbits[n].name, 1)) == 0) && b)
@@ -569,7 +571,7 @@ static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned 
 		if (parse_int(&n, lht_dom_hash_get(fn, "shape")) == 0)
 			fh.Flags.q = n;
 
-		if ((intconn != NULL) && (rdver < 3))
+		if ((intconn != NULL) && (rctx->rdver < 3))
 			if (parse_int(&n, lht_dom_hash_get(fn, "intconn")) == 0)
 				*intconn = n;
 	}
@@ -590,7 +592,7 @@ static void parse_thermal_old(pcb_any_obj_t *obj, lht_node_t *fn)
 		return;
 
 	thr->user_data = obj;
-	vtp0_append(&post_thermal_old, thr);
+	vtp0_append(&rctx->post_thermal_old, thr);
 }
 
 /* heavy terminal thermal: save for later processing */
@@ -603,7 +605,7 @@ static int parse_thermal_heavy(pcb_any_obj_t *obj, lht_node_t *src)
 		return iolht_error(src, "heavy thermal must be a list\n");
 
 	src->user_data = obj;
-	vtp0_append(&post_thermal_heavy, src);
+	vtp0_append(&rctx->post_thermal_heavy, src);
 
 	return 0;
 }
@@ -629,7 +631,7 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coor
 	pcb_attrib_compat_set_intconn(&line->Attributes, intconn);
 	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
 
-	if (rdver >= 4)
+	if (rctx->rdver >= 4)
 		parse_thermal_heavy((pcb_any_obj_t *)line, lht_dom_hash_get(obj, "thermal"));
 
 	err |= parse_coord(&line->Thickness, hash_get(obj, "thickness", 0));
@@ -711,7 +713,7 @@ static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord
 	pcb_attrib_compat_set_intconn(&arc->Attributes, intconn);
 	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
 
-	if (rdver >= 4)
+	if (rctx->rdver >= 4)
 		parse_thermal_heavy((pcb_any_obj_t *)arc, lht_dom_hash_get(obj, "thermal"));
 
 	err |= parse_coord(&arc->Thickness,  hash_get(obj, "thickness", 0));
@@ -850,7 +852,7 @@ static int pxm_inited = 0;
 static void pxm_init(lht_node_t *pixmaps)
 {
 	pxm_root = NULL;
-	if (rdver >= 7)
+	if (rctx->rdver >= 7)
 		pxm_root = pixmaps;
 	htip_init(&id2pxm, longhash, longkeyeq);
 	pxm_inited = 1;
@@ -893,7 +895,7 @@ static int parse_gfx(pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coo
 	pcb_attrib_compat_set_intconn(&gfx->Attributes, intconn);
 	parse_attributes(&gfx->Attributes, lht_dom_hash_get(obj, "attributes"));
 
-	if (rdver >= 4)
+	if (rctx->rdver >= 4)
 		parse_thermal_heavy((pcb_any_obj_t *)gfx, lht_dom_hash_get(obj, "thermal"));
 
 	err |= parse_coord(&gfx->cx,         hash_get(obj, "cx", 0));
@@ -949,13 +951,13 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 	pcb_attrib_compat_set_intconn(&poly->Attributes, intconn);
 	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
 
-	if (rdver >= 3)
+	if (rctx->rdver >= 3)
 		err |= parse_coord(&poly->Clearance, hash_get(obj, "clearance", 1));
 
-	if (rdver >= 7)
+	if (rctx->rdver >= 7)
 		err |= parse_coord(&poly->enforce_clearance, hash_get(obj, "enforce_clearance", 1));
 
-	if (rdver >= 4)
+	if (rctx->rdver >= 4)
 		parse_thermal_heavy((pcb_any_obj_t *)poly, lht_dom_hash_get(obj, "thermal"));
 
 	geo = lht_dom_hash_get(obj, "geometry");
@@ -1062,18 +1064,18 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 
 
 	if (nthickness != NULL) {
-		if (rdver < 6)
+		if (rctx->rdver < 6)
 			iolht_warn(nthickness, -1, "Text thickness should not be present in a file with version lower than v6\n");
 		err |= parse_coord(&text->thickness, nthickness);
 	}
 	else
 		text->thickness = 0;
 
-	if ((ndir != NULL) && (rdver >= 6))
+	if ((ndir != NULL) && (rctx->rdver >= 6))
 		iolht_warn(nthickness, -1, "Text direction should not be present in a file with version higher than v5 - use text rot instead\n");
 
 	if (nrot != 0) {
-		if (rdver < 6)
+		if (rctx->rdver < 6)
 			iolht_warn(nthickness, -1, "Text rot should not be present in a file with version lower than v6\n");
 		err |= parse_double(&text->rot, nrot);
 	}
@@ -1107,7 +1109,7 @@ static int parse_layer_type(pcb_layer_type_t *dst, const char **dst_purpose, lht
 
 	for(flg = lht_dom_first(&itt, nd); flg != NULL; flg = lht_dom_next(&itt)) {
 		pcb_layer_type_t val;
-		if (rdver < 6) {
+		if (rctx->rdver < 6) {
 			if (strcmp(flg->name, "outline") == 0) {
 				*dst |= PCB_LYT_BOUNDARY;
 				*dst_purpose = "uroute";
@@ -1119,7 +1121,7 @@ static int parse_layer_type(pcb_layer_type_t *dst, const char **dst_purpose, lht
 		if (val == 0)
 			iolht_error(flg, "Invalid type name: '%s' in %s (ignoring the type flag)\n", flg->name, loc);
 		*dst |= val;
-		if (rdver < 6) {
+		if (rctx->rdver < 6) {
 			if (val & (PCB_LYT_MECH | PCB_LYT_DOC | PCB_LYT_BOUNDARY))
 				iolht_warn(flg, -1, "Potentially invalid type name: '%s' in %s - lihata board before v6 did not support it\n(accepting it for now, but expect broken layer stack)\n", flg->name, loc);
 		}
@@ -1168,13 +1170,13 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 
 	ncmb = lht_dom_hash_get(grp, "combining");
 	if (ncmb != NULL) {
-		if (rdver < 2)
+		if (rctx->rdver < 2)
 			iolht_warn(ncmb, 1, "Version 1 lihata board should not have combining subtree for layers\n");
 		ly->comb = parse_comb(pcb, ncmb);
 	}
 
 	npurp = lht_dom_hash_get(grp, "purpose");
-	if ((rdver < 6) && (npurp != NULL))
+	if ((rctx->rdver < 6) && (npurp != NULL))
 		iolht_warn(npurp, -1, "Lihata board below v6 should not have layer purpose (the file may not load correctly in older versions of pcb-rnd)\n");
 
 	if (!bound && (npurp != NULL))
@@ -1211,8 +1213,8 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 		ly->name = rnd_strdup(grp->name);
 		nclr = hash_get(grp, "color", 1);
 		if ((nclr != NULL) && (nclr->type != LHT_INVALID_TYPE)) {
-			if (rdver < 5)
-				iolht_warn(nclr, 1, "layer color was not supprted before lihata board v5 (reading from v%d)\n", rdver);
+			if (rctx->rdver < 5)
+				iolht_warn(nclr, 1, "layer color was not supprted before lihata board v5 (reading from v%d)\n", rctx->rdver);
 			if (nclr->type == LHT_TEXT) {
 				if (rnd_color_load_str(&ly->meta.real.color, nclr->data.text.value) != 0)
 					return iolht_error(nclr, "Invalid color: '%s'\n", nclr->data.text.value);
@@ -1222,8 +1224,8 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 		}
 
 		nvis = hash_get(grp, "visible", 1);
-		if ((nvis != &missing_ok) && rdver >= 6)
-			iolht_warn(nvis, -1, "saving layer visibility was supported only before lihata board v6 (reading from v%d)\n", rdver);
+		if ((nvis != &missing_ok) && rctx->rdver >= 6)
+			iolht_warn(nvis, -1, "saving layer visibility was supported only before lihata board v6 (reading from v%d)\n", rctx->rdver);
 		parse_bool(&ly->meta.real.vis, nvis);
 		if (pcb != NULL) {
 			int grp_id;
@@ -1353,10 +1355,10 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 static void warn_old_model(lht_node_t *obj, char *type, int warnid)
 {
 	unsigned long warnbit = 1ul << warnid;
-	if ((rdver < 5) || (old_model_warned & warnbit))
+	if ((rctx->rdver < 5) || (rctx->old_model_warned & warnbit))
 		return;
 
-	old_model_warned |= warnbit;
+	rctx->old_model_warned |= warnbit;
 	iolht_warn(obj, -1, "Lihata from v5 does not support the old data model (elements, pins, pads and vias);\nyour file contains %s that will be converted to the new model\n", type);
 }
 
@@ -1726,14 +1728,14 @@ static int validate_layer_stack_lyr(pcb_board_t *pcb, lht_node_t *loc)
 		}
 	}
 
-	if (rdver == 1) { /* v1 used to require top and bottom silk */
+	if (rctx->rdver == 1) { /* v1 used to require top and bottom silk */
 		if (pcb_layer_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
 			iolht_warn(loc, -1, "Strange layer stackup for v1: top silk layer missing\n");
 		if (pcb_layer_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
 			iolht_warn(loc, -1, "Strange layer stackup for v1: bottom silk layer missing\n");
 	}
 
-	if (rdver < 6) {
+	if (rctx->rdver < 6) {
 		if (pcb_layer_list(pcb, PCB_LYT_BOUNDARY, tmp, 2) > 1)
 			return iolht_error(loc, "Unsupported layer stackup: multiple outline layers was not possible before lihata board v6\n");
 	}
@@ -1744,13 +1746,13 @@ static int validate_layer_stack_grp(pcb_board_t *pcb, lht_node_t *loc)
 {
 	rnd_layergrp_id_t tmp[2];
 
-	if (rdver == 1) { /*v1 required top and bottom silk */
+	if (rctx->rdver == 1) { /*v1 required top and bottom silk */
 		if (pcb_layergrp_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
 			iolht_warn(loc, -1, "Strange layer stackup in v1: top silk layer group missing\n");
 		if (pcb_layergrp_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
 			iolht_warn(loc, -1, "Strange layer stackup in v1: bottom silk layer group missing\n");
 	}
-	if ((pcb_layergrp_list(pcb, PCB_LYT_BOUNDARY, tmp, 2) > 1) && (rdver < 6))
+	if ((pcb_layergrp_list(pcb, PCB_LYT_BOUNDARY, tmp, 2) > 1) && (rctx->rdver < 6))
 		return iolht_error(loc, "Unsupported layer stackup: multiple outline layer groups was not possible before lihata board v6\n");
 	return 0;
 }
@@ -1806,14 +1808,14 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			g->name = rnd_strdup(name->data.text.value);
 		parse_layer_type(&g->ltype, &prp, lht_dom_hash_get(grp, "type"), g->name);
 
-		if (rdver < 6) {
+		if (rctx->rdver < 6) {
 			if ((g->ltype & PCB_LYT_DOC) || (g->ltype & PCB_LYT_MECH))
 				iolht_warn(grp, -1, "Layer groups could not have type DOC or MECH before lihata v6 - still loading these types,\nbut they will be ignored by older versions of pcb-rnd.\n");
 		}
 
 		npurp = lht_dom_hash_get(grp, "purpose");
 		if (npurp != NULL) { /* use the explicit purpose field if found */
-			if (rdver < 6)
+			if (rctx->rdver < 6)
 				iolht_warn(grp, -1, "Layer groups could not have a purpose field before lihata v6 - still loading the purpose,\nbut it will be ignored by older versions of pcb-rnd.\n");
 			if (npurp->type == LHT_TEXT)
 				pcb_layergrp_set_purpose__(g, rnd_strdup(npurp->data.text.value), 0);
@@ -1826,7 +1828,7 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		/* load attributes */
 		nattr = lht_dom_hash_get(grp, "attributes");
 		if (nattr != NULL) {
-			if (rdver < 5)
+			if (rctx->rdver < 5)
 				iolht_warn(nattr, 3, "Layer groups could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.\n");
 			if (parse_attributes(&g->Attributes, nattr) < 0)
 				return iolht_error(nattr, "failed to load attributes\n");
@@ -1915,7 +1917,7 @@ static int parse_data_pstk_shape_circ(pcb_board_t *pcb, pcb_pstk_shape_t *dst, l
 static int parse_data_pstk_shape_hshadow(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	dst->shape = PCB_PSSH_HSHADOW;
-	if (rdver < 6)
+	if (rctx->rdver < 6)
 		iolht_warn(nshape, 7, "lihata board before v6 did not support padstack shape hshadow\n");
 	return 0;
 }
@@ -1968,11 +1970,11 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 
 	switch(prver) {
 		case 4:
-			if (rdver >= 6)
+			if (rctx->rdver >= 6)
 				iolht_warn(nproto, 6, "lihata board from v6 should use padstack prototype v6\n");
 			break;
 		case 6:
-			if (rdver < 6)
+			if (rctx->rdver < 6)
 				iolht_warn(nproto, 6, "lihata board nefore v6 did not have padstack prototype v6\n");
 			break;
 		default:
@@ -1982,7 +1984,7 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 	n = lht_dom_hash_get(nproto, "name");
 	if (n != NULL) {
 		dst->name = rnd_strdup(n->data.text.value);
-		if (rdver < 5)
+		if (rctx->rdver < 5)
 			iolht_warn(n, 6, "lihata board before v5 did not support padstack prototype names\n");
 	}
 	else
@@ -2096,13 +2098,13 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
 	if ((grp != NULL) && (grp->type == LHT_LIST))
 		parse_data_layers(pcb, dt, grp, bound_layers, subc_parent);
 
-	if (rdver == 1)
+	if (rctx->rdver == 1)
 		layer_fixup(pcb);
 
-	if ((rdver < 6) && (pcb != NULL))
+	if ((rctx->rdver < 6) && (pcb != NULL))
 		outline_fixup(pcb);
 
-	if (rdver >= 4) {
+	if (rctx->rdver >= 4) {
 		grp = lht_dom_hash_get(nd, "padstack_prototypes");
 		if ((grp != NULL) && (grp->type == LHT_LIST))
 			parse_data_pstk_protos(pcb, dt, grp, subc_parent);
@@ -2303,7 +2305,7 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 			s->textt = 0;
 			if (tt != NULL) {
 				err |= parse_coord(&s->textt,  tt);
-				if (rdver < 6)
+				if (rctx->rdver < 6)
 					iolht_warn(stn, -1, "text_thick in route style before v6 was not supported\n(accepting it for now, but older versions of pcb-rnd won't)\n");
 			}
 		}
@@ -2315,12 +2317,12 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 			s->texts = 0;
 			if (ts != NULL) {
 				err |= parse_int(&s->texts, ts);
-				if (rdver < 6)
+				if (rctx->rdver < 6)
 					iolht_warn(stn, -1, "text_scale in route style before v6 was not supported\n(accepting it for now, but older versions of pcb-rnd won't)\n");
 			}
 		}
 
-		if (rdver >= 5) {
+		if (rctx->rdver >= 5) {
 			lht_node_t *vp = lht_dom_hash_get(stn, "via_proto");
 			if (vp != NULL) {
 				unsigned long pid;
@@ -2375,7 +2377,7 @@ static int parse_netlist_input(pcb_board_t *pcb, pcb_netlist_t *nl, lht_node_t *
 		}
 
 		if (nattr != NULL) {
-			if (rdver < 5)
+			if (rctx->rdver < 5)
 				iolht_warn(nattr, 4, "Netlist could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.\n");
 			if (parse_attributes(&net->Attributes, nattr) < 0)
 				return iolht_error(nattr, "failed to load attributes\n");
@@ -2446,9 +2448,9 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 
 static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 {
-	if (cfg_dest == RND_CFR_invalid)
+	if (rctx->cfg_dest == RND_CFR_invalid)
 		return;
-	if (rnd_conf_insert_tree_as(cfg_dest, sub) != 0)
+	if (rnd_conf_insert_tree_as(rctx->cfg_dest, sub) != 0)
 		rnd_message(RND_MSG_ERROR, "Failed to insert the config subtree '%s' found in %s\n", sub->name, pcb->hidlib.filename);
 	else
 		rnd_conf_update(NULL, -1);
@@ -2460,10 +2462,10 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	lht_node_t *sub;
 	pcb_plug_io_t *loader;
 
-	warned = 0;
-	old_model_warned = 0;
-	rdver = atoi(nd->name+15);
-	switch(rdver) {
+	rctx->warned = 0;
+	rctx->old_model_warned = 0;
+	rctx->rdver = atoi(nd->name+15);
+	switch(rctx->rdver) {
 		case 1: loader = &plug_io_lihata_v1; break;
 		case 2: loader = &plug_io_lihata_v2; break;
 		case 3: loader = &plug_io_lihata_v3; break;
@@ -2473,12 +2475,12 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		case 7: loader = &plug_io_lihata_v7; break;
 		default:
 			return iolht_error(nd, "Lihata board version %d not supported;\n"
-				"must be 1, 2, 3, 4, 5, 6 or 7.\n", rdver);
+				"must be 1, 2, 3, 4, 5, 6 or 7.\n", rctx->rdver);
 	}
 
-	vtp0_init(&post_ids);
-	vtp0_init(&post_thermal_old);
-	vtp0_init(&post_thermal_heavy);
+	vtp0_init(&rctx->post_ids);
+	vtp0_init(&rctx->post_thermal_old);
+	vtp0_init(&rctx->post_thermal_heavy);
 	pxm_init(lht_dom_hash_get(nd, "pixmaps"));
 
 	pcb_rat_all_anchor_guess(pcb->Data);
@@ -2497,7 +2499,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		goto error;
 	PCB->fontkit.valid = 1;
 
-	if (rdver >= 2) {
+	if (rctx->rdver >= 2) {
 		sub = lht_dom_hash_get(nd, "layer_stack");
 		if (sub != NULL) {
 			if (parse_layer_stack(pcb, sub) != 0)
@@ -2534,8 +2536,8 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		goto error;
 	}
 
-	post_ids_assign(&post_ids);
-	if (post_thermal_assign(pcb, &post_thermal_old, &post_thermal_heavy) != 0) {
+	post_ids_assign(&rctx->post_ids);
+	if (post_thermal_assign(pcb, &rctx->post_thermal_old, &rctx->post_thermal_heavy) != 0) {
 		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 		goto error;
 	}
@@ -2560,7 +2562,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	if (sub != NULL)
 		parse_conf(pcb, sub);
 
-	if (rdver < 5) {
+	if (rctx->rdver < 5) {
 		/* have to parse meta again to get config values overwritten */
 		sub = lht_dom_hash_get(nd, "meta");
 		if (sub != NULL)
@@ -2584,7 +2586,7 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	char *errmsg = NULL, *realfn;
 	lht_doc_t *doc = NULL;
 
-	cfg_dest = settings_dest;
+	rctx->cfg_dest = settings_dest;
 
 	realfn = rnd_fopen_check(NULL, Filename, "r");
 	if (realfn != NULL)
@@ -2603,9 +2605,9 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	else if ((doc->root->type == LHT_LIST) && (strncmp(doc->root->name, "pcb-rnd-subcircuit-v", 20) == 0)) {
 		pcb_subc_t *sc;
 
-		warned = 0;
-		old_model_warned = 0;
-		rdver = atoi(doc->root->name+20);
+		rctx->warned = 0;
+		rctx->old_model_warned = 0;
+		rctx->rdver = atoi(doc->root->name+20);
 		Ptr->is_footprint = 1;
 		res = parse_subc(NULL, Ptr->Data, doc->root->data.list.first, &sc);
 
@@ -2632,7 +2634,7 @@ int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *f
 	char *errmsg = NULL, *realfn;
 	lht_doc_t *doc = NULL;
 
-	cfg_dest = RND_CFR_invalid;
+	rctx->cfg_dest = RND_CFR_invalid;
 
 	realfn = rnd_fopen_check(NULL, filename, "r");
 	if (realfn != NULL)
@@ -2766,7 +2768,7 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 	FILE *f;
 	pcb_subc_t *sc;
 
-	cfg_dest = RND_CFR_invalid;
+	rctx->cfg_dest = RND_CFR_invalid;
 
 	f = pcb_fp_fopen(&conf_core.rc.library_search_paths, name, &st, NULL);
 
@@ -2789,10 +2791,10 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 		return -1;
 	}
 
-	warned = 0;
-	old_model_warned = 0;
-	rdver = atoi(doc->root->name+20);
-	if (rdver < 3) {
+	rctx->warned = 0;
+	rctx->old_model_warned = 0;
+	rctx->rdver = atoi(doc->root->name+20);
+	if (rctx->rdver < 3) {
 		if (!pcb_io_err_inhibit)
 			rnd_message(RND_MSG_ERROR, "io_lihata: invalid subc file version: %s (expected 3 or higher)\n", doc->root->name+20);
 		free(errmsg);
