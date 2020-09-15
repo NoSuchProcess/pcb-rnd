@@ -2993,7 +2993,7 @@ script plugin
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 RenumberBlock(old_base,new_base)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-TODO
+Renumber selected subcircuit refdes attributes by adding (new_base-old_base).
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
 renumber plugin
 </table>
@@ -3002,7 +3002,7 @@ renumber plugin
 Example: RenumberBlock(oldnum,newnum) <br>
  
 <p>
- All selected elements are renumbered by adding (newnum-oldnum) to the existing number. 
+ All selected subcircuit refdes attributes are renumbered by adding (newnum-oldnum) to the existing number. 
 <p>
  
 Example: RenumberBlock(100,200) <br>
@@ -3014,9 +3014,9 @@ Example: RenumberBlock(100,200) <br>
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-RenumberBlock(old_base,new_base)
+RenumberBuffer(old_base,new_base)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-TODO
+Renumber buffer subcircuit refdes attributes by adding (new_base-old_base).
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
 renumber plugin
 </table>

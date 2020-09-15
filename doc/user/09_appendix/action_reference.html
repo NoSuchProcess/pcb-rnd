@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.4 (svn r32639) an interactive printed circuit board editor ,  Revision: 32696
+This is pcb-rnd 2.2.4 (svn r32688) an interactive printed circuit board editor ,  Revision: 32720
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -334,8 +334,8 @@ This is pcb-rnd 2.2.4 (svn r32639) an interactive printed circuit board editor ,
 <tr><td>RemoveMenu</td><td>Recursively removes a new menu, popup (only path specified) or submenu. </td><td>RemoveMenu(path, cookie)</td><td></td>
 <tr><td>RemoveSelected</td><td>Removes any selected objects.</td><td>pcb_remove_selected()</td><td></td>
 <tr><td>Renumber</td><td>Renumber all subcircuits.  The changes will be recorded to filename<br>for use in backannotating these changes to the schematic.</td><td>Renumber()<br>Renumber(filename)</td><td>renumber plugin</td>
-<tr><td><a href="action_details.html#renumberblock">RenumberBlock</a></td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
-<tr><td><a href="action_details.html#renumberbuffer">RenumberBuffer</a></td><td>TODO</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
+<tr><td><a href="action_details.html#renumberblock">RenumberBlock</a></td><td>Renumber selected subcircuit refdes attributes by adding (new_base-old_base).</td><td>RenumberBlock(old_base,new_base)</td><td>renumber plugin</td>
+<tr><td><a href="action_details.html#renumberbuffer">RenumberBuffer</a></td><td>Renumber buffer subcircuit refdes attributes by adding (new_base-old_base).</td><td>RenumberBuffer(old_base,new_base)</td><td>renumber plugin</td>
 <tr><td><a href="action_details.html#replacefootprint">ReplaceFootprint</a></td><td>Replace the footprint of the selected components with the footprint specified.</td><td>ReplaceFootprint([Selected|Object], [footprint], [dumb])</td><td></td>
 <tr><td><a href="action_details.html#report">Report</a></td><td>Produce various report.</td><td>Report([DrillReport|FoundPins|NetLengthTo])<br>Report(NetLength, [netname])<br>Report(Object|Subc, [log])<br>Report(AllNetLengths, [unit])</td><td>report plugin</td>
 <tr><td>ReportObject</td><td>Report on the object under the crosshair</td><td>ReportObject()</td><td>report plugin</td>
