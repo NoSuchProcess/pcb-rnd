@@ -56,9 +56,7 @@
 #include "fp_fs_conf.h"
 
 #define FP_FS_CONF_FN "ar_extern.conf"
-conf_fp_fs_t conf_fp_fs;
-
-static const char *fp_fs_cookie = "fp_fs plugin";
+static conf_fp_fs_t conf_fp_fs;
 
 #include "conf_internal.c"
 
@@ -171,12 +169,25 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 TODO("fp: make this a configurable list")
 static int fp_fs_ignore_fn(const char *fn, int len)
 {
-	if (fn[0] == '.') return 1;
-	if (RND_NSTRCMP(fn, "CVS") == 0) return 1;
-	if (RND_NSTRCMP(fn, "Makefile") == 0) return 1;
-	if (RND_NSTRCMP(fn, "Makefile.am") == 0) return 1;
-	if (RND_NSTRCMP(fn, "Makefile.in") == 0) return 1;
-	
+	int n;
+	rnd_conf_listitem_t *ci;
+	const char *p;
+
+	if (fn == NULL) return 1;
+
+	if (fn[0] == '.') { /* do not depend on config in avoiding infinite recursion on . and .. */
+		if (fn[1] == '\0') return 1;
+		if ((fn[1] == '.') && (fn[2] == '\0')) return 1;
+	}
+
+	rnd_conf_loop_list_str(&conf_fp_fs.plugins.fp_fs.ignore_prefix, ci, p, n) {
+		const char *s1, *s2;
+		for(s1 = fn, s2 = p; *s1 == *s2; s1++, s2++) {
+			if (*s2 == '\0') return 1;
+			if (*s1 == '\0') break;
+		}
+	}
+
 	if ((len >= 4) && (RND_NSTRCMP(fn + (len - 4), ".png") == 0)) return 1;
 	if ((len >= 4) && (RND_NSTRCMP(fn + (len - 4), ".pcb") == 0)) return 1;
 	if ((len >= 5) && (RND_NSTRCMP(fn + (len - 5), ".html") == 0)) return 1;
@@ -248,7 +259,10 @@ static int fp_fs_list(pcb_fplibrary_t *pl, const char *subdir, int recurse,
 		   may exist in a library tree to provide an html browsable
 		   index of the library. */
 		l = strlen(subdirentry->d_name);
-		if (fp_fs_ignore_fn(subdirentry->d_name, l)) continue;
+		if (fp_fs_ignore_fn(subdirentry->d_name, l)) {
+			printf("ignored: '%s'\n", subdirentry->d_name);
+			continue;
+		}
 		if (stat(subdirentry->d_name, &buffer) == 0) {
 			strcpy(fn_end, subdirentry->d_name);
 			if ((S_ISREG(buffer.st_mode)) || (RND_WRAP_S_ISLNK(buffer.st_mode))) {
