@@ -73,7 +73,6 @@ typedef struct {
 } lht_read_t;
 
 static pcb_data_t DUMMY_BUFFER_SUBC;
-static lht_read_t rctx_, *rctx = &rctx_;
 
 /* Note: this works because of using str_flag compat_types */
 #define PCB_OBJ_VIA PCB_OBJ_PSTK
@@ -81,7 +80,7 @@ static lht_read_t rctx_, *rctx = &rctx_;
 #define PCB_OBJ_PAD PCB_OBJ_PSTK
 #define PCB_OBJ_ELEMENT PCB_OBJ_SUBC
 
-static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd, pcb_data_t *subc_parent);
+static pcb_data_t *parse_data(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd, pcb_data_t *subc_parent);
 
 static int iolht_error(lht_node_t *nd, char *fmt, ...)
 {
@@ -105,7 +104,7 @@ static int iolht_error(lht_node_t *nd, char *fmt, ...)
 	return -1;
 }
 
-static void iolht_warn(lht_node_t *nd, int wbit, char *fmt, ...)
+static void iolht_warn(lht_read_t *rctx, lht_node_t *nd, int wbit, char *fmt, ...)
 {
 	gds_t str;
 	va_list ap;
@@ -394,7 +393,7 @@ static int parse_bool(rnd_bool *res, lht_node_t *nd)
 	return iolht_error(nd, "Invalid bool value: '%s'\n", nd->data.text.value);
 }
 
-static int parse_coord_conf(const char *path, lht_node_t *nd)
+static int parse_coord_conf(lht_read_t *rctx, const char *path, lht_node_t *nd)
 {
 	rnd_coord_t tmp;
 
@@ -421,7 +420,7 @@ static lht_node_t *hash_get(lht_node_t *hash, const char *name, int optional)
 	return NULL;
 }
 
-static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
+static int parse_meta(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *grp;
 	int err = 0;
@@ -446,7 +445,7 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
 		err |= parse_coord(&pcb->hidlib.size_x, hash_get(grp, "x", 0));
 		err |= parse_coord(&pcb->hidlib.size_y, hash_get(grp, "y", 0));
-		err |= parse_coord_conf("design/poly_isle_area", hash_get(grp, "isle_area_nm2", 1));
+		err |= parse_coord_conf(rctx, "design/poly_isle_area", hash_get(grp, "isle_area_nm2", 1));
 		err |= parse_double(&pcb->ThermScale, hash_get(grp, "thermal_scale", 1));
 		if (err != 0)
 			return -1;
@@ -455,13 +454,13 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 	grp = lht_dom_hash_get(nd, "drc");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
 		if (rctx->rdver >= 5)
-			iolht_warn(grp, 5, "Lihata board v5+ should not have drc metadata saved in board header (use the config)\n");
-		err |= parse_coord_conf("design/bloat", hash_get(grp, "bloat", 1));
-		err |= parse_coord_conf("design/shrink", hash_get(grp, "shrink", 1));
-		err |= parse_coord_conf("design/min_wid", hash_get(grp, "min_width", 1));
-		err |= parse_coord_conf("design/min_slk", hash_get(grp, "min_silk", 1));
-		err |= parse_coord_conf("design/min_drill", hash_get(grp, "min_drill", 1));
-		err |= parse_coord_conf("design/min_ring", hash_get(grp, "min_ring", 1));
+			iolht_warn(rctx, grp, 5, "Lihata board v5+ should not have drc metadata saved in board header (use the config)\n");
+		err |= parse_coord_conf(rctx, "design/bloat", hash_get(grp, "bloat", 1));
+		err |= parse_coord_conf(rctx, "design/shrink", hash_get(grp, "shrink", 1));
+		err |= parse_coord_conf(rctx, "design/min_wid", hash_get(grp, "min_width", 1));
+		err |= parse_coord_conf(rctx, "design/min_slk", hash_get(grp, "min_silk", 1));
+		err |= parse_coord_conf(rctx, "design/min_drill", hash_get(grp, "min_drill", 1));
+		err |= parse_coord_conf(rctx, "design/min_ring", hash_get(grp, "min_ring", 1));
 		if (err != 0)
 			return 1;
 	}
@@ -469,7 +468,7 @@ static int parse_meta(pcb_board_t *pcb, lht_node_t *nd)
 	grp = lht_dom_hash_get(nd, "cursor");
 	if ((grp != NULL) && (grp->type == LHT_HASH)) {
 		if (rctx->rdver >= 5)
-			iolht_warn(grp, 0, "Lihata board v5+ should not have cursor metadata saved\n");
+			iolht_warn(rctx, grp, 0, "Lihata board v5+ should not have cursor metadata saved\n");
 	}
 
 	return 0;
@@ -495,7 +494,7 @@ static int parse_thermal(unsigned char *dst, lht_node_t *src)
    data set to the object. Look up layer info and build the thermal. This
    needs to be done in a separate pass at the end of parsing because
    vias may precede layers in the lihata input file. */
-static int post_thermal_assign(pcb_board_t *pcb, vtp0_t *old, vtp0_t *heavy)
+static int post_thermal_assign(lht_read_t *rctx, pcb_board_t *pcb, vtp0_t *old, vtp0_t *heavy)
 {
 	int i;
 	lht_node_t *n;
@@ -547,7 +546,7 @@ static int post_thermal_assign(pcb_board_t *pcb, vtp0_t *old, vtp0_t *heavy)
 	return 0;
 }
 
-static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned char *intconn, int can_have_thermal)
+static int parse_flags(lht_read_t *rctx, pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned char *intconn, int can_have_thermal)
 {
 	io_lihata_flag_holder fh;
 
@@ -580,7 +579,7 @@ static int parse_flags(pcb_flag_t *f, lht_node_t *fn, int object_type, unsigned 
 	return 0;
 }
 
-static void parse_thermal_old(pcb_any_obj_t *obj, lht_node_t *fn)
+static void parse_thermal_old(lht_read_t *rctx, pcb_any_obj_t *obj, lht_node_t *fn)
 {
 	lht_node_t *thr;
 
@@ -596,7 +595,7 @@ static void parse_thermal_old(pcb_any_obj_t *obj, lht_node_t *fn)
 }
 
 /* heavy terminal thermal: save for later processing */
-static int parse_thermal_heavy(pcb_any_obj_t *obj, lht_node_t *src)
+static int parse_thermal_heavy(lht_read_t *rctx, pcb_any_obj_t *obj, lht_node_t *src)
 {
 	if (src == NULL)
 		return 0;
@@ -610,7 +609,7 @@ static int parse_thermal_heavy(pcb_any_obj_t *obj, lht_node_t *src)
 	return 0;
 }
 
-static int parse_line(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy)
+static int parse_line(lht_read_t *rctx, pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_line_t *line;
 	unsigned char intconn = 0;
@@ -627,12 +626,12 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coor
 		return -1;
 
 	line = pcb_line_alloc_id(ly, id);
-	parse_flags(&line->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_LINE, &intconn, 0);
+	parse_flags(rctx, &line->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_LINE, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&line->Attributes, intconn);
 	parse_attributes(&line->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	if (rctx->rdver >= 4)
-		parse_thermal_heavy((pcb_any_obj_t *)line, lht_dom_hash_get(obj, "thermal"));
+		parse_thermal_heavy(rctx, (pcb_any_obj_t *)line, lht_dom_hash_get(obj, "thermal"));
 
 	err |= parse_coord(&line->Thickness, hash_get(obj, "thickness", 0));
 	err |= parse_coord(&line->Clearance, hash_get(obj, "clearance", 0));
@@ -655,14 +654,14 @@ static int parse_line(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coor
 	return err;
 }
 
-static int parse_rat(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
+static int parse_rat(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 {
 	pcb_rat_t rat, *new_rat;
 	int tmp, err = 0;
 
 	if (parse_id(&rat.ID, obj, 4) != 0)
 		return -1;
-	parse_flags(&rat.Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_LINE, NULL, 0);
+	parse_flags(rctx, &rat.Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_LINE, NULL, 0);
 
 	err |= parse_coord(&rat.Point1.X, hash_get(obj, "x1", 0));
 	err |= parse_coord(&rat.Point1.Y, hash_get(obj, "y1", 0));
@@ -692,7 +691,7 @@ static int parse_rat(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	return err;
 }
 
-static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy)
+static int parse_arc(lht_read_t *rctx, pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_arc_t *arc;
 	unsigned char intconn = 0;
@@ -709,12 +708,12 @@ static int parse_arc(pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord
 		return -1;
 
 	arc = pcb_arc_alloc_id(ly, id);
-	parse_flags(&arc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ARC, &intconn, 0);
+	parse_flags(rctx, &arc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ARC, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&arc->Attributes, intconn);
 	parse_attributes(&arc->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	if (rctx->rdver >= 4)
-		parse_thermal_heavy((pcb_any_obj_t *)arc, lht_dom_hash_get(obj, "thermal"));
+		parse_thermal_heavy(rctx, (pcb_any_obj_t *)arc, lht_dom_hash_get(obj, "thermal"));
 
 	err |= parse_coord(&arc->Thickness,  hash_get(obj, "thickness", 0));
 	err |= parse_coord(&arc->Clearance,  hash_get(obj, "clearance", 0));
@@ -849,7 +848,7 @@ static rnd_pixmap_t *parse_pxm(long int ID)
 
 
 static int pxm_inited = 0;
-static void pxm_init(lht_node_t *pixmaps)
+static void pxm_init(lht_read_t *rctx, lht_node_t *pixmaps)
 {
 	pxm_root = NULL;
 	if (rctx->rdver >= 7)
@@ -871,7 +870,7 @@ static void pxm_uninit(void)
 }
 
 
-static int parse_gfx(pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy)
+static int parse_gfx(lht_read_t *rctx, pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_gfx_t *gfx;
 	unsigned char intconn = 0;
@@ -891,12 +890,12 @@ static int parse_gfx(pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coo
 		return -1;
 
 	gfx = pcb_gfx_alloc_id(ly, id);
-	parse_flags(&gfx->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ARC, &intconn, 0);
+	parse_flags(rctx, &gfx->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ARC, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&gfx->Attributes, intconn);
 	parse_attributes(&gfx->Attributes, lht_dom_hash_get(obj, "attributes"));
 
 	if (rctx->rdver >= 4)
-		parse_thermal_heavy((pcb_any_obj_t *)gfx, lht_dom_hash_get(obj, "thermal"));
+		parse_thermal_heavy(rctx, (pcb_any_obj_t *)gfx, lht_dom_hash_get(obj, "thermal"));
 
 	err |= parse_coord(&gfx->cx,         hash_get(obj, "cx", 0));
 	err |= parse_coord(&gfx->cy,         hash_get(obj, "cy", 0));
@@ -932,7 +931,7 @@ static int parse_gfx(pcb_board_t *pcb, pcb_layer_t *ly, lht_node_t *obj, rnd_coo
 }
 
 
-static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
+static int parse_polygon(lht_read_t *rctx, pcb_layer_t *ly, lht_node_t *obj)
 {
 	pcb_poly_t *poly;
 	lht_node_t *geo;
@@ -947,7 +946,7 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 	if (parse_id(&id, obj, 8) != 0)
 		return -1;
 	poly = pcb_poly_alloc_id(ly, id);
-	parse_flags(&poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_POLY, &intconn, 0);
+	parse_flags(rctx, &poly->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_POLY, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&poly->Attributes, intconn);
 	parse_attributes(&poly->Attributes, lht_dom_hash_get(obj, "attributes"));
 
@@ -958,7 +957,7 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 		err |= parse_coord(&poly->enforce_clearance, hash_get(obj, "enforce_clearance", 1));
 
 	if (rctx->rdver >= 4)
-		parse_thermal_heavy((pcb_any_obj_t *)poly, lht_dom_hash_get(obj, "thermal"));
+		parse_thermal_heavy(rctx, (pcb_any_obj_t *)poly, lht_dom_hash_get(obj, "thermal"));
 
 	geo = lht_dom_hash_get(obj, "geometry");
 	if ((geo != NULL) && (geo->type == LHT_LIST)) {
@@ -1018,7 +1017,7 @@ static int parse_polygon(pcb_layer_t *ly, lht_node_t *obj)
 	return 0;
 }
 
-static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
+static int parse_pcb_text(lht_read_t *rctx, pcb_layer_t *ly, lht_node_t *obj)
 {
 	pcb_text_t *text;
 	lht_node_t *role, *nthickness, *nrot, *ndir;
@@ -1044,7 +1043,7 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 	if (text == NULL)
 		return iolht_error(obj, "failed to allocate text object\n");
 
-	parse_flags(&text->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_TEXT, &intconn, 0);
+	parse_flags(rctx, &text->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_TEXT, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&text->Attributes, intconn);
 	parse_attributes(&text->Attributes, lht_dom_hash_get(obj, "attributes"));
 	err |= parse_int(&text->Scale, hash_get(obj, "scale", 0));
@@ -1065,18 +1064,18 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 
 	if (nthickness != NULL) {
 		if (rctx->rdver < 6)
-			iolht_warn(nthickness, -1, "Text thickness should not be present in a file with version lower than v6\n");
+			iolht_warn(rctx, nthickness, -1, "Text thickness should not be present in a file with version lower than v6\n");
 		err |= parse_coord(&text->thickness, nthickness);
 	}
 	else
 		text->thickness = 0;
 
 	if ((ndir != NULL) && (rctx->rdver >= 6))
-		iolht_warn(nthickness, -1, "Text direction should not be present in a file with version higher than v5 - use text rot instead\n");
+		iolht_warn(rctx, nthickness, -1, "Text direction should not be present in a file with version higher than v5 - use text rot instead\n");
 
 	if (nrot != 0) {
 		if (rctx->rdver < 6)
-			iolht_warn(nthickness, -1, "Text rot should not be present in a file with version lower than v6\n");
+			iolht_warn(rctx, nthickness, -1, "Text rot should not be present in a file with version lower than v6\n");
 		err |= parse_double(&text->rot, nrot);
 	}
 	else {
@@ -1097,7 +1096,7 @@ static int parse_pcb_text(pcb_layer_t *ly, lht_node_t *obj)
 	return err;
 }
 
-static int parse_layer_type(pcb_layer_type_t *dst, const char **dst_purpose, lht_node_t *nd, const char *loc)
+static int parse_layer_type(lht_read_t *rctx, pcb_layer_type_t *dst, const char **dst_purpose, lht_node_t *nd, const char *loc)
 {
 	lht_node_t *flg;
 	lht_dom_iterator_t itt;
@@ -1123,7 +1122,7 @@ static int parse_layer_type(pcb_layer_type_t *dst, const char **dst_purpose, lht
 		*dst |= val;
 		if (rctx->rdver < 6) {
 			if (val & (PCB_LYT_MECH | PCB_LYT_DOC | PCB_LYT_BOUNDARY))
-				iolht_warn(flg, -1, "Potentially invalid type name: '%s' in %s - lihata board before v6 did not support it\n(accepting it for now, but expect broken layer stack)\n", flg->name, loc);
+				iolht_warn(rctx, flg, -1, "Potentially invalid type name: '%s' in %s - lihata board before v6 did not support it\n(accepting it for now, but expect broken layer stack)\n", flg->name, loc);
 		}
 	}
 
@@ -1151,7 +1150,7 @@ static pcb_layer_combining_t parse_comb(pcb_board_t *pcb, lht_node_t *ncmb)
 	return comb;
 }
 
-static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id, int bound, pcb_data_t *subc_parent)
+static int parse_data_layer(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int layer_id, int bound, pcb_data_t *subc_parent)
 {
 	lht_node_t *n, *lst, *ncmb, *nvis, *npurp;
 	lht_dom_iterator_t it;
@@ -1171,30 +1170,30 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 	ncmb = lht_dom_hash_get(grp, "combining");
 	if (ncmb != NULL) {
 		if (rctx->rdver < 2)
-			iolht_warn(ncmb, 1, "Version 1 lihata board should not have combining subtree for layers\n");
+			iolht_warn(rctx, ncmb, 1, "Version 1 lihata board should not have combining subtree for layers\n");
 		ly->comb = parse_comb(pcb, ncmb);
 	}
 
 	npurp = lht_dom_hash_get(grp, "purpose");
 	if ((rctx->rdver < 6) && (npurp != NULL))
-		iolht_warn(npurp, -1, "Lihata board below v6 should not have layer purpose (the file may not load correctly in older versions of pcb-rnd)\n");
+		iolht_warn(rctx, npurp, -1, "Lihata board below v6 should not have layer purpose (the file may not load correctly in older versions of pcb-rnd)\n");
 
 	if (!bound && (npurp != NULL))
-		iolht_warn(npurp, -1, "Only bound layers should have purpose - ignoring this field\n");
+		iolht_warn(rctx, npurp, -1, "Only bound layers should have purpose - ignoring this field\n");
 
 	if (bound) {
 		const char *prp;
 		ly->is_bound = 1;
 		ly->name = rnd_strdup(grp->name);
 		parse_int(&dt->Layer[layer_id].meta.bound.stack_offs, lht_dom_hash_get(grp, "stack_offs"));
-		parse_layer_type(&dt->Layer[layer_id].meta.bound.type, &prp, lht_dom_hash_get(grp, "type"), "bound layer");
+		parse_layer_type(rctx, &dt->Layer[layer_id].meta.bound.type, &prp, lht_dom_hash_get(grp, "type"), "bound layer");
 		if (npurp != NULL) { /* use the explicit purpose if it is set */
 			if (npurp->type == LHT_TEXT)
 				dt->Layer[layer_id].meta.bound.purpose = rnd_strdup(npurp->data.text.value);
 			else
-				iolht_warn(npurp, -1, "Layers purpose shall be text - ignoring this field\n");
+				iolht_warn(rctx, npurp, -1, "Layers purpose shall be text - ignoring this field\n");
 		}
-		else if (prp != NULL) /* or the implicit one from parse_layer_type(), for old versions */
+		else if (prp != NULL) /* or the implicit one from parse_layer_type(rctx, ), for old versions */
 			dt->Layer[layer_id].meta.bound.purpose = rnd_strdup(prp);
 
 		if (pcb != NULL) {
@@ -1202,7 +1201,7 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 			if (dt->Layer[layer_id].meta.bound.real != NULL)
 				pcb_layer_link_trees(&dt->Layer[layer_id], dt->Layer[layer_id].meta.bound.real);
 			else if (!(dt->Layer[layer_id].meta.bound.type & PCB_LYT_VIRTUAL))
-				iolht_warn(ncmb, 2, "Can't bind subcircuit layer %s: can't find anything similar on the current board\n", dt->Layer[layer_id].name);
+				iolht_warn(rctx, ncmb, 2, "Can't bind subcircuit layer %s: can't find anything similar on the current board\n", dt->Layer[layer_id].name);
 			if (subc_parent != NULL)
 				dt->padstack_tree = subc_parent->padstack_tree;
 		}
@@ -1214,18 +1213,18 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 		nclr = hash_get(grp, "color", 1);
 		if ((nclr != NULL) && (nclr->type != LHT_INVALID_TYPE)) {
 			if (rctx->rdver < 5)
-				iolht_warn(nclr, 1, "layer color was not supprted before lihata board v5 (reading from v%d)\n", rctx->rdver);
+				iolht_warn(rctx, nclr, 1, "layer color was not supprted before lihata board v5 (reading from v%d)\n", rctx->rdver);
 			if (nclr->type == LHT_TEXT) {
 				if (rnd_color_load_str(&ly->meta.real.color, nclr->data.text.value) != 0)
 					return iolht_error(nclr, "Invalid color: '%s'\n", nclr->data.text.value);
 			}
 			else
-				iolht_warn(nclr, 1, "Ignoring color: text node required\n");
+				iolht_warn(rctx, nclr, 1, "Ignoring color: text node required\n");
 		}
 
 		nvis = hash_get(grp, "visible", 1);
 		if ((nvis != &missing_ok) && rctx->rdver >= 6)
-			iolht_warn(nvis, -1, "saving layer visibility was supported only before lihata board v6 (reading from v%d)\n", rctx->rdver);
+			iolht_warn(rctx, nvis, -1, "saving layer visibility was supported only before lihata board v6 (reading from v%d)\n", rctx->rdver);
 		parse_bool(&ly->meta.real.vis, nvis);
 		if (pcb != NULL) {
 			int grp_id;
@@ -1242,22 +1241,22 @@ static int parse_data_layer(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, i
 
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
-				parse_line(ly, n, 0, 0);
+				parse_line(rctx, ly, n, 0, 0);
 			if (strncmp(n->name, "arc.", 4) == 0)
-				parse_arc(ly, n, 0, 0);
+				parse_arc(rctx, ly, n, 0, 0);
 			if (strncmp(n->name, "gfx.", 4) == 0)
-				parse_gfx(pcb, ly, n, 0, 0);
+				parse_gfx(rctx, pcb, ly, n, 0, 0);
 			if (strncmp(n->name, "polygon.", 8) == 0)
-				parse_polygon(ly, n);
+				parse_polygon(rctx, ly, n);
 			if (strncmp(n->name, "text.", 5) == 0)
-				parse_pcb_text(ly, n);
+				parse_pcb_text(rctx, ly, n);
 		}
 	}
 
 	return 0;
 }
 
-static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int bound, pcb_data_t *subc_parent)
+static int parse_data_layers(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, int bound, pcb_data_t *subc_parent)
 {
 	int id;
 	lht_node_t *n;
@@ -1265,13 +1264,13 @@ static int parse_data_layers(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *grp, 
 
 	for(id = 0, n = lht_dom_first(&it, grp); n != NULL; id++, n = lht_dom_next(&it))
 		if (n->type == LHT_HASH)
-			if (parse_data_layer(pcb, dt, n, id, bound, subc_parent) < 0)
+			if (parse_data_layer(rctx, pcb, dt, n, id, bound, subc_parent) < 0)
 				return -1;
 
 	return 0;
 }
 
-static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
+static int parse_pstk(lht_read_t *rctx, pcb_data_t *dt, lht_node_t *obj)
 {
 	pcb_pstk_t *ps;
 	lht_node_t *thl, *t;
@@ -1292,7 +1291,7 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 
 	ps = pcb_pstk_alloc_id(dt, id);
 
-	parse_flags(&ps->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_PSTK, &intconn, 0);
+	parse_flags(rctx, &ps->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_PSTK, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
 	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
 
@@ -1352,17 +1351,17 @@ static int parse_pstk(pcb_data_t *dt, lht_node_t *obj)
 	return 0;
 }
 
-static void warn_old_model(lht_node_t *obj, char *type, int warnid)
+static void warn_old_model(lht_read_t *rctx, lht_node_t *obj, char *type, int warnid)
 {
 	unsigned long warnbit = 1ul << warnid;
 	if ((rctx->rdver < 5) || (rctx->old_model_warned & warnbit))
 		return;
 
 	rctx->old_model_warned |= warnbit;
-	iolht_warn(obj, -1, "Lihata from v5 does not support the old data model (elements, pins, pads and vias);\nyour file contains %s that will be converted to the new model\n", type);
+	iolht_warn(rctx, obj, -1, "Lihata from v5 does not support the old data model (elements, pins, pads and vias);\nyour file contains %s that will be converted to the new model\n", type);
 }
 
-static int parse_via(pcb_data_t *dt, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy, int subc_on_bottom)
+static int parse_via(lht_read_t *rctx, pcb_data_t *dt, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy, int subc_on_bottom)
 {
 	pcb_pstk_t *ps;
 	unsigned char intconn = 0;
@@ -1376,9 +1375,9 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, rnd_coord_t dx, rnd_coord_
 	if (dt == NULL)
 		return -1;
 
-	warn_old_model(obj, "via", 1);
+	warn_old_model(rctx, obj, "via", 1);
 
-	parse_flags(&flg, fln=lht_dom_hash_get(obj, "flags"), PCB_OBJ_VIA, &intconn, 1);
+	parse_flags(rctx, &flg, fln=lht_dom_hash_get(obj, "flags"), PCB_OBJ_VIA, &intconn, 1);
 	err |= parse_coord(&Thickness,    hash_get(obj, "thickness", 0));
 	err |= parse_coord(&Clearance,    hash_get(obj, "clearance", 0));
 	err |= parse_coord(&Mask,         hash_get(obj, "mask", 1));
@@ -1402,7 +1401,7 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, rnd_coord_t dx, rnd_coord_
 	pcb_attrib_compat_set_intconn(&ps->Attributes, intconn);
 	parse_attributes(&ps->Attributes, lht_dom_hash_get(obj, "attributes"));
 
-	parse_thermal_old((pcb_any_obj_t *)ps, fln);
+	parse_thermal_old(rctx, (pcb_any_obj_t *)ps, fln);
 
 	if (Number != NULL)
 		pcb_attribute_put(&ps->Attributes, "term", Number);
@@ -1415,7 +1414,7 @@ static int parse_via(pcb_data_t *dt, lht_node_t *obj, rnd_coord_t dx, rnd_coord_
 	return err;
 }
 
-static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy, int subc_on_bottom)
+static int parse_pad(lht_read_t *rctx, pcb_subc_t *subc, lht_node_t *obj, rnd_coord_t dx, rnd_coord_t dy, int subc_on_bottom)
 {
 	pcb_pstk_t *p;
 	unsigned char intconn = 0;
@@ -1425,9 +1424,9 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, rnd_coord_t dx, rnd_coor
 	int err = 0;
 	long int id;
 
-	warn_old_model(obj, "pad", 2);
+	warn_old_model(rctx, obj, "pad", 2);
 
-	parse_flags(&flg, lht_dom_hash_get(obj, "flags"), PCB_OBJ_PAD, &intconn, 0);
+	parse_flags(rctx, &flg, lht_dom_hash_get(obj, "flags"), PCB_OBJ_PAD, &intconn, 0);
 
 	err |= parse_coord(&Thickness, hash_get(obj, "thickness", 0));
 	err |= parse_coord(&Clearance, hash_get(obj, "clearance", 0));
@@ -1461,7 +1460,7 @@ static int parse_pad(pcb_subc_t *subc, lht_node_t *obj, rnd_coord_t dx, rnd_coor
 }
 
 
-static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
+static int parse_element(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 {
 	pcb_subc_t *subc = pcb_subc_alloc();
 	pcb_layer_t *silk = NULL;
@@ -1472,7 +1471,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	pcb_text_t *txt;
 	int err = 0;
 
-	warn_old_model(obj, "element", 3);
+	warn_old_model(rctx, obj, "element", 3);
 
 	if (parse_id(&subc->ID, obj, 8) != 0)
 		return -1;
@@ -1480,7 +1479,7 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	pcb_subc_reg(dt, subc);
 	pcb_obj_id_reg(dt, subc);
 
-	parse_flags(&subc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ELEMENT, NULL, 0);
+	parse_flags(rctx, &subc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ELEMENT, NULL, 0);
 	parse_attributes(&subc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	err |= parse_coord(&ox, hash_get(obj, "x", 0));
 	err |= parse_coord(&oy, hash_get(obj, "y", 0));
@@ -1507,9 +1506,9 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 	if (lst->type == LHT_LIST) {
 		for(n = lht_dom_first(&it, lst); n != NULL; n = lht_dom_next(&it)) {
 			if (strncmp(n->name, "line.", 5) == 0)
-				parse_line(silk, n, ox, oy);
+				parse_line(rctx, silk, n, ox, oy);
 			if (strncmp(n->name, "arc.", 4) == 0)
-				parse_arc(silk, n, ox, oy);
+				parse_arc(rctx, silk, n, ox, oy);
 			if (strncmp(n->name, "text.", 5) == 0) {
 				lht_node_t *role   = lht_dom_hash_get(n, "role");
 				lht_node_t *string = lht_dom_hash_get(n, "string");
@@ -1526,9 +1525,9 @@ static int parse_element(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj)
 				}
 			}
 			if (strncmp(n->name, "pin.", 4) == 0)
-				parse_via(subc->data, n, ox, oy, onsld);
+				parse_via(rctx, subc->data, n, ox, oy, onsld);
 			if (strncmp(n->name, "pad.", 4) == 0)
-				parse_pad(subc, n, ox, oy, onsld);
+				parse_pad(rctx, subc, n, ox, oy, onsld);
 		}
 	}
 	else
@@ -1550,7 +1549,7 @@ TODO("subc: TextFlags")
 	return err;
 }
 
-static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_subc_t **subc_out)
+static int parse_subc(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_subc_t **subc_out)
 {
 	pcb_subc_t *sc = pcb_subc_alloc();
 	unsigned char intconn = 0;
@@ -1560,7 +1559,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 		return iolht_error(obj, "subc.ID must be a hash\n");
 
 	parse_id(&sc->ID, obj, 5);
-	parse_flags(&sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ELEMENT, &intconn, 0);
+	parse_flags(rctx, &sc->Flags, lht_dom_hash_get(obj, "flags"), PCB_OBJ_ELEMENT, &intconn, 0);
 	pcb_attrib_compat_set_intconn(&sc->Attributes, intconn);
 	parse_attributes(&sc->Attributes, lht_dom_hash_get(obj, "attributes"));
 	parse_minuid(sc->uid, lht_dom_hash_get(obj, "uid"));
@@ -1572,7 +1571,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 	pcb_subc_reg(dt, sc);
 	pcb_obj_id_reg(dt, sc);
 
-	if (parse_data(pcb, sc->data, lht_dom_hash_get(obj, "data"), dt) == 0)
+	if (parse_data(rctx, pcb, sc->data, lht_dom_hash_get(obj, "data"), dt) == 0)
 		return iolht_error(obj, "Invalid subc: no data\n");
 
 	for(n = 0; n < sc->data->LayerN; n++)
@@ -1592,7 +1591,7 @@ static int parse_subc(pcb_board_t *pcb, pcb_data_t *dt, lht_node_t *obj, pcb_sub
 }
 
 
-static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_node_t *grp)
+static int parse_data_objects(lht_read_t *rctx, pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_node_t *grp)
 {
 	lht_node_t *n;
 	lht_dom_iterator_t it;
@@ -1602,15 +1601,15 @@ static int parse_data_objects(pcb_board_t *pcb_for_font, pcb_data_t *dt, lht_nod
 
 	for(n = lht_dom_first(&it, grp); n != NULL; n = lht_dom_next(&it)) {
 		if (strncmp(n->name, "padstack_ref.", 13) == 0)
-			parse_pstk(dt, n);
+			parse_pstk(rctx, dt, n);
 		if (strncmp(n->name, "via.", 4) == 0)
-			parse_via(dt, n, 0, 0, 0);
+			parse_via(rctx, dt, n, 0, 0, 0);
 		if (strncmp(n->name, "rat.", 4) == 0)
-			parse_rat(pcb_for_font, dt, n);
+			parse_rat(rctx, pcb_for_font, dt, n);
 		else if (strncmp(n->name, "element.", 8) == 0)
-			parse_element(pcb_for_font, dt, n);
+			parse_element(rctx, pcb_for_font, dt, n);
 		else if (strncmp(n->name, "subc.", 5) == 0)
-			if (parse_subc(pcb_for_font, dt, n, NULL) != 0)
+			if (parse_subc(rctx, pcb_for_font, dt, n, NULL) != 0)
 				return iolht_error(n, "failed to parse subcircuit\n");
 	}
 
@@ -1689,7 +1688,7 @@ static void outline_fixup(pcb_board_t *pcb)
 	pcb_layergrp_inhibit_dec();
 }
 
-static int validate_layer_stack_lyr(pcb_board_t *pcb, lht_node_t *loc)
+static int validate_layer_stack_lyr(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *loc)
 {
 	rnd_layer_id_t tmp[2], lid;
 	rnd_layergrp_id_t gid;
@@ -1730,9 +1729,9 @@ static int validate_layer_stack_lyr(pcb_board_t *pcb, lht_node_t *loc)
 
 	if (rctx->rdver == 1) { /* v1 used to require top and bottom silk */
 		if (pcb_layer_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
-			iolht_warn(loc, -1, "Strange layer stackup for v1: top silk layer missing\n");
+			iolht_warn(rctx, loc, -1, "Strange layer stackup for v1: top silk layer missing\n");
 		if (pcb_layer_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
-			iolht_warn(loc, -1, "Strange layer stackup for v1: bottom silk layer missing\n");
+			iolht_warn(rctx, loc, -1, "Strange layer stackup for v1: bottom silk layer missing\n");
 	}
 
 	if (rctx->rdver < 6) {
@@ -1742,22 +1741,22 @@ static int validate_layer_stack_lyr(pcb_board_t *pcb, lht_node_t *loc)
 	return 0;
 }
 
-static int validate_layer_stack_grp(pcb_board_t *pcb, lht_node_t *loc)
+static int validate_layer_stack_grp(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *loc)
 {
 	rnd_layergrp_id_t tmp[2];
 
 	if (rctx->rdver == 1) { /*v1 required top and bottom silk */
 		if (pcb_layergrp_list(pcb, PCB_LYT_TOP | PCB_LYT_SILK, tmp, 2) < 1)
-			iolht_warn(loc, -1, "Strange layer stackup in v1: top silk layer group missing\n");
+			iolht_warn(rctx, loc, -1, "Strange layer stackup in v1: top silk layer group missing\n");
 		if (pcb_layergrp_list(pcb, PCB_LYT_BOTTOM | PCB_LYT_SILK, tmp, 2) < 1)
-			iolht_warn(loc, -1, "Strange layer stackup in v1: bottom silk layer group missing\n");
+			iolht_warn(rctx, loc, -1, "Strange layer stackup in v1: bottom silk layer group missing\n");
 	}
 	if ((pcb_layergrp_list(pcb, PCB_LYT_BOUNDARY, tmp, 2) > 1) && (rctx->rdver < 6))
 		return iolht_error(loc, "Unsupported layer stackup: multiple outline layer groups was not possible before lihata board v6\n");
 	return 0;
 }
 
-static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
+static int parse_layer_stack(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *grps, *grp, *name, *layers, *lyr, *nattr, *npurp;
 	lht_dom_iterator_t it, itt;
@@ -1806,30 +1805,30 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 		}
 		else
 			g->name = rnd_strdup(name->data.text.value);
-		parse_layer_type(&g->ltype, &prp, lht_dom_hash_get(grp, "type"), g->name);
+		parse_layer_type(rctx, &g->ltype, &prp, lht_dom_hash_get(grp, "type"), g->name);
 
 		if (rctx->rdver < 6) {
 			if ((g->ltype & PCB_LYT_DOC) || (g->ltype & PCB_LYT_MECH))
-				iolht_warn(grp, -1, "Layer groups could not have type DOC or MECH before lihata v6 - still loading these types,\nbut they will be ignored by older versions of pcb-rnd.\n");
+				iolht_warn(rctx, grp, -1, "Layer groups could not have type DOC or MECH before lihata v6 - still loading these types,\nbut they will be ignored by older versions of pcb-rnd.\n");
 		}
 
 		npurp = lht_dom_hash_get(grp, "purpose");
 		if (npurp != NULL) { /* use the explicit purpose field if found */
 			if (rctx->rdver < 6)
-				iolht_warn(grp, -1, "Layer groups could not have a purpose field before lihata v6 - still loading the purpose,\nbut it will be ignored by older versions of pcb-rnd.\n");
+				iolht_warn(rctx, grp, -1, "Layer groups could not have a purpose field before lihata v6 - still loading the purpose,\nbut it will be ignored by older versions of pcb-rnd.\n");
 			if (npurp->type == LHT_TEXT)
 				pcb_layergrp_set_purpose__(g, rnd_strdup(npurp->data.text.value), 0);
 			else
-				iolht_warn(npurp, -1, "Group purpose shall be text - ignoring this field\n");
+				iolht_warn(rctx, npurp, -1, "Group purpose shall be text - ignoring this field\n");
 		}
-		else if (prp != NULL) /* or the implicit one returned by parse_layer_type() */
+		else if (prp != NULL) /* or the implicit one returned by parse_layer_type(rctx, ) */
 			pcb_layergrp_set_purpose__(g, rnd_strdup(prp), 0);
 
 		/* load attributes */
 		nattr = lht_dom_hash_get(grp, "attributes");
 		if (nattr != NULL) {
 			if (rctx->rdver < 5)
-				iolht_warn(nattr, 3, "Layer groups could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.\n");
+				iolht_warn(rctx, nattr, 3, "Layer groups could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.\n");
 			if (parse_attributes(&g->Attributes, nattr) < 0)
 				return iolht_error(nattr, "failed to load attributes\n");
 		}
@@ -1857,10 +1856,10 @@ static int parse_layer_stack(pcb_board_t *pcb, lht_node_t *nd)
 			}
 		}
 	}
-	return validate_layer_stack_grp(pcb, nd);
+	return validate_layer_stack_grp(rctx, pcb, nd);
 }
 
-static int parse_data_pstk_shape_poly(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+static int parse_data_pstk_shape_poly(lht_read_t *rctx, pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	lht_node_t *n;
 	rnd_cardinal_t i;
@@ -1886,7 +1885,7 @@ static int parse_data_pstk_shape_poly(pcb_board_t *pcb, pcb_pstk_shape_t *dst, l
 	return 0;
 }
 
-static int parse_data_pstk_shape_line(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+static int parse_data_pstk_shape_line(lht_read_t *rctx, pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	int sq;
 	int err = 0;
@@ -1903,7 +1902,7 @@ static int parse_data_pstk_shape_line(pcb_board_t *pcb, pcb_pstk_shape_t *dst, l
 	return err;
 }
 
-static int parse_data_pstk_shape_circ(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+static int parse_data_pstk_shape_circ(lht_read_t *rctx, pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	int err = 0;
 	dst->shape = PCB_PSSH_CIRC;
@@ -1914,15 +1913,15 @@ static int parse_data_pstk_shape_circ(pcb_board_t *pcb, pcb_pstk_shape_t *dst, l
 	return err;
 }
 
-static int parse_data_pstk_shape_hshadow(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+static int parse_data_pstk_shape_hshadow(lht_read_t *rctx, pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	dst->shape = PCB_PSSH_HSHADOW;
 	if (rctx->rdver < 6)
-		iolht_warn(nshape, 7, "lihata board before v6 did not support padstack shape hshadow\n");
+		iolht_warn(rctx, nshape, 7, "lihata board before v6 did not support padstack shape hshadow\n");
 	return 0;
 }
 
-static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
+static int parse_data_pstk_shape_v4(lht_read_t *rctx, pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht_node_t *nshape, pcb_data_t *subc_parent)
 {
 	lht_node_t *ncmb, *nlyt, *ns;
 	int res = -1;
@@ -1930,7 +1929,7 @@ static int parse_data_pstk_shape_v4(pcb_board_t *pcb, pcb_pstk_shape_t *dst, lht
 
 	nlyt = lht_dom_hash_get(nshape, "layer_mask");
 	if ((nlyt != NULL) && (nlyt->type == LHT_HASH))
-		res = parse_layer_type(&dst->layer_mask, &prp, nlyt, "padstack shape");
+		res = parse_layer_type(rctx, &dst->layer_mask, &prp, nlyt, "padstack shape");
 
 TODO("layer: shape v6 and support for prp")
 
@@ -1938,7 +1937,7 @@ TODO("layer: shape v6 and support for prp")
 		return iolht_error(nlyt != NULL ? nlyt : nshape, "Failed to parse pad stack shape (layer mask)\n");
 
 	if (dst->layer_mask == 0)
-		iolht_warn(nlyt, -1, "Failed to parse pad stack shape (empty layer mask)\nThe padstack may have shapes that will behave strangely - please fix it manually\n");
+		iolht_warn(rctx, nlyt, -1, "Failed to parse pad stack shape (empty layer mask)\nThe padstack may have shapes that will behave strangely - please fix it manually\n");
 
 	ncmb = lht_dom_hash_get(nshape, "combining");
 	if ((ncmb != NULL) && (ncmb->type == LHT_HASH))
@@ -1947,22 +1946,22 @@ TODO("layer: shape v6 and support for prp")
 	if (parse_coord(&dst->clearance, lht_dom_hash_get(nshape, "clearance")) != 0) return -1;
 
 	ns = lht_dom_hash_get(nshape, "ps_poly");
-	if ((ns != NULL) && (ns->type == LHT_LIST)) return parse_data_pstk_shape_poly(pcb, dst, ns, subc_parent);
+	if ((ns != NULL) && (ns->type == LHT_LIST)) return parse_data_pstk_shape_poly(rctx, pcb, dst, ns, subc_parent);
 
 	ns = lht_dom_hash_get(nshape, "ps_line");
-	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_pstk_shape_line(pcb, dst, ns, subc_parent);
+	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_pstk_shape_line(rctx, pcb, dst, ns, subc_parent);
 
 	ns = lht_dom_hash_get(nshape, "ps_circ");
-	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_pstk_shape_circ(pcb, dst, ns, subc_parent);
+	if ((ns != NULL) && (ns->type == LHT_HASH)) return parse_data_pstk_shape_circ(rctx, pcb, dst, ns, subc_parent);
 
 	ns = lht_dom_hash_get(nshape, "ps_hshadow");
-	if ((ns != NULL) && (ns->type == LHT_TEXT)) return parse_data_pstk_shape_hshadow(pcb, dst, ns, subc_parent);
+	if ((ns != NULL) && (ns->type == LHT_TEXT)) return parse_data_pstk_shape_hshadow(rctx, pcb, dst, ns, subc_parent);
 
 	return iolht_error(nshape, "Failed to parse pad stack: missing shape\n");
 }
 
 
-static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_node_t *nproto, pcb_data_t *subc_parent, int prver)
+static int parse_data_pstk_proto(lht_read_t *rctx, pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_node_t *nproto, pcb_data_t *subc_parent, int prver)
 {
 	int itmp, i;
 	lht_node_t *nshape, *n;
@@ -1971,11 +1970,11 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 	switch(prver) {
 		case 4:
 			if (rctx->rdver >= 6)
-				iolht_warn(nproto, 6, "lihata board from v6 should use padstack prototype v6\n");
+				iolht_warn(rctx, nproto, 6, "lihata board from v6 should use padstack prototype v6\n");
 			break;
 		case 6:
 			if (rctx->rdver < 6)
-				iolht_warn(nproto, 6, "lihata board nefore v6 did not have padstack prototype v6\n");
+				iolht_warn(rctx, nproto, 6, "lihata board nefore v6 did not have padstack prototype v6\n");
 			break;
 		default:
 			return iolht_error(nproto, "invalid padstack prototype version\n");
@@ -1985,7 +1984,7 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 	if (n != NULL) {
 		dst->name = rnd_strdup(n->data.text.value);
 		if (rctx->rdver < 5)
-			iolht_warn(n, 6, "lihata board before v5 did not support padstack prototype names\n");
+			iolht_warn(rctx, n, 6, "lihata board before v5 did not support padstack prototype names\n");
 	}
 	else
 		dst->name = NULL;
@@ -2014,7 +2013,7 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 
 	for(n = nshape->data.list.first, i = 0; n != NULL; n = n->next, i++)
 		if ((n->type == LHT_HASH) && (strcmp(n->name, "ps_shape_v4") == 0))
-			if (parse_data_pstk_shape_v4(pcb, ts->shape+i, n, subc_parent) != 0)
+			if (parse_data_pstk_shape_v4(rctx, pcb, ts->shape+i, n, subc_parent) != 0)
 				goto error;
 
 	pcb_pstk_proto_update(dst);
@@ -2027,7 +2026,7 @@ static int parse_data_pstk_proto(pcb_board_t *pcb, pcb_pstk_proto_t *dst, lht_no
 	return iolht_error(n, "failed to parse padstack due to bad shape\n");
 }
 
-static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *pp, pcb_data_t *subc_parent)
+static int parse_data_pstk_protos(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *pp, pcb_data_t *subc_parent)
 {
 	rnd_cardinal_t pid, len;
 	lht_node_t *pr;
@@ -2063,7 +2062,7 @@ static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t 
 				return iolht_error(pr, "Invalid padstack proto ID '%s' (syntax)\n", sid);
 			if (pid >= dst->ps_protos.used)
 				pcb_vtpadstack_proto_enlarge(&dst->ps_protos, pid);
-			res = parse_data_pstk_proto(pcb, dst->ps_protos.array + pid, pr, dst, prver);
+			res = parse_data_pstk_proto(rctx, pcb, dst->ps_protos.array + pid, pr, dst, prver);
 			if (res != 0)
 				return iolht_error(pr, "Invalid padstack proto definition\n");
 		}
@@ -2074,7 +2073,7 @@ static int parse_data_pstk_protos(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t 
 	return res;
 }
 
-static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd, pcb_data_t *subc_parent)
+static pcb_data_t *parse_data(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd, pcb_data_t *subc_parent)
 {
 	pcb_data_t *dt;
 	lht_node_t *grp;
@@ -2096,7 +2095,7 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
 
 	grp = lht_dom_hash_get(nd, "layers");
 	if ((grp != NULL) && (grp->type == LHT_LIST))
-		parse_data_layers(pcb, dt, grp, bound_layers, subc_parent);
+		parse_data_layers(rctx, pcb, dt, grp, bound_layers, subc_parent);
 
 	if (rctx->rdver == 1)
 		layer_fixup(pcb);
@@ -2107,12 +2106,12 @@ static pcb_data_t *parse_data(pcb_board_t *pcb, pcb_data_t *dst, lht_node_t *nd,
 	if (rctx->rdver >= 4) {
 		grp = lht_dom_hash_get(nd, "padstack_prototypes");
 		if ((grp != NULL) && (grp->type == LHT_LIST))
-			parse_data_pstk_protos(pcb, dt, grp, subc_parent);
+			parse_data_pstk_protos(rctx, pcb, dt, grp, subc_parent);
 	}
 
 	grp = lht_dom_hash_get(nd, "objects");
 	if (grp != NULL)
-		if (parse_data_objects(pcb, dt, grp) != 0)
+		if (parse_data_objects(rctx, pcb, dt, grp) != 0)
 			return NULL;
 
 	return dt;
@@ -2263,7 +2262,7 @@ static void post_ids_assign(vtp0_t *ids)
 	vtp0_uninit(ids);
 }
 
-static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
+static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 {
 	lht_node_t *stn;
 	lht_dom_iterator_t it;
@@ -2281,7 +2280,7 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 		
 		/* safe copy the name */
 		if (name_len > sizeof(s->name)-1) {
-			iolht_warn(stn, -1, "Route style name too long: '%s' (should be less than %d characters); name will be truncated\n", stn->name, sizeof(s->name)-1);
+			iolht_warn(rctx, stn, -1, "Route style name too long: '%s' (should be less than %d characters); name will be truncated\n", stn->name, sizeof(s->name)-1);
 			memcpy(s->name, stn->name, sizeof(s->name)-2);
 			s->name[sizeof(s->name)-1] = '\0';
 		}
@@ -2306,7 +2305,7 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 			if (tt != NULL) {
 				err |= parse_coord(&s->textt,  tt);
 				if (rctx->rdver < 6)
-					iolht_warn(stn, -1, "text_thick in route style before v6 was not supported\n(accepting it for now, but older versions of pcb-rnd won't)\n");
+					iolht_warn(rctx, stn, -1, "text_thick in route style before v6 was not supported\n(accepting it for now, but older versions of pcb-rnd won't)\n");
 			}
 		}
 
@@ -2318,7 +2317,7 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 			if (ts != NULL) {
 				err |= parse_int(&s->texts, ts);
 				if (rctx->rdver < 6)
-					iolht_warn(stn, -1, "text_scale in route style before v6 was not supported\n(accepting it for now, but older versions of pcb-rnd won't)\n");
+					iolht_warn(rctx, stn, -1, "text_scale in route style before v6 was not supported\n(accepting it for now, but older versions of pcb-rnd won't)\n");
 			}
 		}
 
@@ -2331,14 +2330,14 @@ static int parse_styles(pcb_data_t *dt, vtroutestyle_t *styles, lht_node_t *nd)
 				s->via_proto = pid;
 				s->via_proto_set = 1;
 				if (pcb_pstk_get_proto_(dt, pid) == NULL)
-					iolht_warn(vp, -1, "Route style %s references to non-existent prototype %ld\n", s->via_proto);
+					iolht_warn(rctx, vp, -1, "Route style %s references to non-existent prototype %ld\n", s->via_proto);
 			}
 		}
 	}
 	return 0;
 }
 
-static int parse_netlist_input(pcb_board_t *pcb, pcb_netlist_t *nl, lht_node_t *netlist)
+static int parse_netlist_input(lht_read_t *rctx, pcb_board_t *pcb, pcb_netlist_t *nl, lht_node_t *netlist)
 {
 	lht_node_t *nnet;
 	if (netlist->type != LHT_LIST)
@@ -2378,7 +2377,7 @@ static int parse_netlist_input(pcb_board_t *pcb, pcb_netlist_t *nl, lht_node_t *
 
 		if (nattr != NULL) {
 			if (rctx->rdver < 5)
-				iolht_warn(nattr, 4, "Netlist could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.\n");
+				iolht_warn(rctx, nattr, 4, "Netlist could not have attributes before lihata v5 - still loading these attributes,\nbut they will be ignored by older versions of pcb-rnd.\n");
 			if (parse_attributes(&net->Attributes, nattr) < 0)
 				return iolht_error(nattr, "failed to load attributes\n");
 		}
@@ -2428,7 +2427,7 @@ static int parse_netlist_patch(pcb_board_t *pcb, lht_node_t *patches)
 	return 0;
 }
 
-static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
+static int parse_netlists(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *netlists)
 {
 	lht_node_t *sub;
 
@@ -2436,7 +2435,7 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 		return iolht_error(netlists, "netlists must be a hash\n");
 
 	sub = lht_dom_hash_get(netlists, "input");
-	if ((sub != NULL) && (parse_netlist_input(pcb, pcb->netlist+PCB_NETLIST_INPUT, sub) != 0))
+	if ((sub != NULL) && (parse_netlist_input(rctx, pcb, pcb->netlist+PCB_NETLIST_INPUT, sub) != 0))
 		return iolht_error(sub, "failed to parse the input netlist\n");
 
 	sub = lht_dom_hash_get(netlists, "netlist_patch");
@@ -2446,7 +2445,7 @@ static int parse_netlists(pcb_board_t *pcb, lht_node_t *netlists)
 	return 0;
 }
 
-static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
+static void parse_conf(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *sub)
 {
 	if (rctx->cfg_dest == RND_CFR_invalid)
 		return;
@@ -2457,7 +2456,7 @@ static void parse_conf(pcb_board_t *pcb, lht_node_t *sub)
 }
 
 
-static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
+static int parse_board(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *nd)
 {
 	lht_node_t *sub;
 	pcb_plug_io_t *loader;
@@ -2481,7 +2480,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	vtp0_init(&rctx->post_ids);
 	vtp0_init(&rctx->post_thermal_old);
 	vtp0_init(&rctx->post_thermal_heavy);
-	pxm_init(lht_dom_hash_get(nd, "pixmaps"));
+	pxm_init(rctx, lht_dom_hash_get(nd, "pixmaps"));
 
 	pcb_rat_all_anchor_guess(pcb->Data);
 
@@ -2491,7 +2490,7 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		goto error;
 
 	sub = lht_dom_hash_get(nd, "meta");
-	if ((sub != NULL) && (parse_meta(pcb, sub) != 0))
+	if ((sub != NULL) && (parse_meta(rctx, pcb, sub) != 0))
 		goto error;
 
 	sub = lht_dom_hash_get(nd, "font");
@@ -2502,10 +2501,10 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 	if (rctx->rdver >= 2) {
 		sub = lht_dom_hash_get(nd, "layer_stack");
 		if (sub != NULL) {
-			if (parse_layer_stack(pcb, sub) != 0)
+			if (parse_layer_stack(rctx, pcb, sub) != 0)
 				goto error;
 		}
-		else if (validate_layer_stack_grp(pcb, nd) != 0)
+		else if (validate_layer_stack_grp(rctx, pcb, nd) != 0)
 			goto error;
 	}
 
@@ -2516,28 +2515,28 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 		return iolht_error(nd, "Lihata board without data\n");
 	}
-	if (parse_data(pcb, pcb->Data, sub, NULL) == NULL) {
+	if (parse_data(rctx, pcb, pcb->Data, sub, NULL) == NULL) {
 		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 		goto error;
 	}
 
-	if (validate_layer_stack_lyr(pcb, sub) != 0)
+	if (validate_layer_stack_lyr(rctx, pcb, sub) != 0)
 		goto error;
 
 	sub = lht_dom_hash_get(nd, "styles");
-	if ((sub != NULL) && (parse_styles(pcb->Data, &pcb->RouteStyle, sub) != 0)) {
+	if ((sub != NULL) && (parse_styles(rctx, pcb->Data, &pcb->RouteStyle, sub) != 0)) {
 		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 		goto error;
 	}
 
 	sub = lht_dom_hash_get(nd, "netlists");
-	if ((sub != NULL) && (parse_netlists(pcb, sub) != 0)) {
+	if ((sub != NULL) && (parse_netlists(rctx, pcb, sub) != 0)) {
 		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 		goto error;
 	}
 
 	post_ids_assign(&rctx->post_ids);
-	if (post_thermal_assign(pcb, &rctx->post_thermal_old, &rctx->post_thermal_heavy) != 0) {
+	if (post_thermal_assign(rctx, pcb, &rctx->post_thermal_old, &rctx->post_thermal_heavy) != 0) {
 		pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
 		goto error;
 	}
@@ -2560,13 +2559,13 @@ static int parse_board(pcb_board_t *pcb, lht_node_t *nd)
 
 	sub = lht_dom_hash_get(nd, "pcb-rnd-conf-v1");
 	if (sub != NULL)
-		parse_conf(pcb, sub);
+		parse_conf(rctx, pcb, sub);
 
 	if (rctx->rdver < 5) {
 		/* have to parse meta again to get config values overwritten */
 		sub = lht_dom_hash_get(nd, "meta");
 		if (sub != NULL)
-			parse_meta(pcb, sub);
+			parse_meta(rctx, pcb, sub);
 	}
 
 	pcb_data_clip_inhibit_dec(pcb->Data, rnd_true);
@@ -2585,8 +2584,9 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	int res;
 	char *errmsg = NULL, *realfn;
 	lht_doc_t *doc = NULL;
+	lht_read_t rctx = {0};
 
-	rctx->cfg_dest = settings_dest;
+	rctx.cfg_dest = settings_dest;
 
 	realfn = rnd_fopen_check(NULL, Filename, "r");
 	if (realfn != NULL)
@@ -2600,16 +2600,16 @@ int io_lihata_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filena
 	}
 
 	if ((doc->root->type == LHT_HASH) && (strncmp(doc->root->name, "pcb-rnd-board-v", 15) == 0)) {
-		res = parse_board(Ptr, doc->root);
+		res = parse_board(&rctx, Ptr, doc->root);
 	}
 	else if ((doc->root->type == LHT_LIST) && (strncmp(doc->root->name, "pcb-rnd-subcircuit-v", 20) == 0)) {
 		pcb_subc_t *sc;
 
-		rctx->warned = 0;
-		rctx->old_model_warned = 0;
-		rctx->rdver = atoi(doc->root->name+20);
+		rctx.warned = 0;
+		rctx.old_model_warned = 0;
+		rctx.rdver = atoi(doc->root->name+20);
 		Ptr->is_footprint = 1;
-		res = parse_subc(NULL, Ptr->Data, doc->root->data.list.first, &sc);
+		res = parse_subc(&rctx, NULL, Ptr->Data, doc->root->data.list.first, &sc);
 
 		if (res == 0) {
 			pcb_layergrp_upgrade_to_pstk(Ptr);
@@ -2633,8 +2633,9 @@ int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *f
 	int res;
 	char *errmsg = NULL, *realfn;
 	lht_doc_t *doc = NULL;
+	lht_read_t rctx = {0};
 
-	rctx->cfg_dest = RND_CFR_invalid;
+	rctx.cfg_dest = RND_CFR_invalid;
 
 	realfn = rnd_fopen_check(NULL, filename, "r");
 	if (realfn != NULL)
@@ -2654,7 +2655,7 @@ int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *f
 			res = -1;
 		}
 		else
-			res = (parse_data(NULL, buff->Data, datand, &DUMMY_BUFFER_SUBC) == NULL);
+			res = (parse_data(&rctx, NULL, buff->Data, datand, &DUMMY_BUFFER_SUBC) == NULL);
 
 		if (res == 0) {
 			lht_node_t *ndx = lht_dom_hash_get(doc->root, "x"), *ndy = lht_dom_hash_get(doc->root, "y");
@@ -2767,8 +2768,9 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 	pcb_fp_fopen_ctx_t st;
 	FILE *f;
 	pcb_subc_t *sc;
+	lht_read_t rctx = {0};
 
-	rctx->cfg_dest = RND_CFR_invalid;
+	rctx.cfg_dest = RND_CFR_invalid;
 
 	f = pcb_fp_fopen(&conf_core.rc.library_search_paths, name, &st, NULL);
 
@@ -2791,10 +2793,10 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 		return -1;
 	}
 
-	rctx->warned = 0;
-	rctx->old_model_warned = 0;
-	rctx->rdver = atoi(doc->root->name+20);
-	if (rctx->rdver < 3) {
+	rctx.warned = 0;
+	rctx.old_model_warned = 0;
+	rctx.rdver = atoi(doc->root->name+20);
+	if (rctx.rdver < 3) {
 		if (!pcb_io_err_inhibit)
 			rnd_message(RND_MSG_ERROR, "io_lihata: invalid subc file version: %s (expected 3 or higher)\n", doc->root->name+20);
 		free(errmsg);
@@ -2805,7 +2807,7 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 	for(n = doc->root->data.list.first; n != NULL; n = n->next) {
 		if (strcmp(n->name, "pixmaps") == 0) {
 			if (n->type == LHT_HASH) {
-				pxm_init(n);
+				pxm_init(&rctx, n);
 				break;
 			}
 			else
@@ -2813,7 +2815,7 @@ int io_lihata_parse_subc(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, 
 		}
 	}
 
-	res = parse_subc(NULL, Ptr, doc->root->data.list.first, &sc);
+	res = parse_subc(&rctx, NULL, Ptr, doc->root->data.list.first, &sc);
 	pxm_uninit();
 	if (res == 0)
 		pcb_data_clip_polys(sc->data);
