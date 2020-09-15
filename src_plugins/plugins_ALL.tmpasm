@@ -50,7 +50,6 @@ include {../src_plugins/export_ps/Plug.tmpasm}
 include {../src_plugins/export_stat/Plug.tmpasm}
 include {../src_plugins/export_stl/Plug.tmpasm}
 include {../src_plugins/export_svg/Plug.tmpasm}
-include {../src_plugins/export_test/Plug.tmpasm}
 include {../src_plugins/export_vfs_fuse/Plug.tmpasm}
 include {../src_plugins/export_vfs_mc/Plug.tmpasm}
 include {../src_plugins/export_xy/Plug.tmpasm}

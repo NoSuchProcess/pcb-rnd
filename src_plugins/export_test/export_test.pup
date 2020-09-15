@@ -1,6 +1,0 @@
-$class export
-$short dummy test pcb_exporter
-$long A thin layer of code to dump exporter calls for testing the HID exporter API.
-$state WIP
-default disable
-autoload 1

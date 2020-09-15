@@ -116,7 +116,6 @@ plugin_def("export_ps",        "postscript pcb_exporter",         sbuildin, 1, 0
 plugin_def("export_stat",      "export board statistics",         sbuildin, 1, 0)
 plugin_def("export_stl",       "3d export: STL",                  sbuildin, 1, 0)
 plugin_def("export_svg",       "SVG pcb_exporter",                sbuildin, 1, 0)
-plugin_def("export_test",      "dummy test pcb_exporter",         sdisable, 1, 0)
 plugin_def("export_vfs_fuse",  "FUSE VFS server",                 sdisable, 1, 0)
 plugin_def("export_vfs_mc",    "GNU mc VFS server",               sdisable, 1, 0)
 plugin_def("export_xy",        "xy (centroid) pcb_exporter",      sbuildin, 1, 0)
