@@ -166,7 +166,6 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 }
 
 /* returns whether file should be ignored by file name */
-TODO("fp: make this a configurable list")
 static int fp_fs_ignore_fn(const char *fn, int len)
 {
 	int n;
