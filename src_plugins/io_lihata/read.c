@@ -776,8 +776,6 @@ static rnd_pixmap_t *parse_pxm_(lht_node_t *obj)
 		has_transp = 1;
 	}
 
-	TODO("load transparent color");
-
 	pmn = hash_get(obj, "pixmap", 0);
 	if ((pmn == NULL) || (pmn->type != LHT_TEXT)) {
 		iolht_error(obj, "Failed to find a valid gfx pixmap node\n");
