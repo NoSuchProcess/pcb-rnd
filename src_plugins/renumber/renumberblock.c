@@ -26,7 +26,7 @@
 #include "conf_core.h"
 
 const char pcb_acts_RenumberBlock[] = "RenumberBlock(old_base,new_base)\n";
-const char pcb_acth_RenumberBlock[] = "TODO";
+const char pcb_acth_RenumberBlock[] = "Renumber selected subcircuit refdes attributes by adding (new_base-old_base).";
 /* DOC: renumberblock.html */
 fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -70,8 +70,8 @@ fgw_error_t pcb_act_RenumberBlock(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-const char pcb_acts_RenumberBuffer[] = "RenumberBlock(old_base,new_base)\n";
-const char pcb_acth_RenumberBuffer[] = "TODO";
+const char pcb_acts_RenumberBuffer[] = "RenumberBuffer(old_base,new_base)\n";
+const char pcb_acth_RenumberBuffer[] = "Renumber buffer subcircuit refdes attributes by adding (new_base-old_base).";
 /* DOC: renumberbuffer.html */
 fgw_error_t pcb_act_RenumberBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
