@@ -53,6 +53,14 @@
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/safe_fs_dir.h>
 
+#include "fp_fs_conf.h"
+
+#define FP_FS_CONF_FN "ar_extern.conf"
+conf_fp_fs_t conf_fp_fs;
+
+static const char *fp_fs_cookie = "fp_fs plugin";
+
+#include "conf_internal.c"
 
 /*** low level map cache ***/
 
@@ -501,7 +509,10 @@ void pplg_uninit_fp_fs(void)
 {
 	RND_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
 
+	rnd_conf_unreg_file(FP_FS_CONF_FN, fp_fs_conf_internal);
+
 	fp_fs_cache_uninit(&fp_fs_cache);
+	rnd_conf_unreg_fields("plugins/fp_fs/");
 }
 
 int pplg_init_fp_fs(void)
@@ -513,5 +524,12 @@ int pplg_init_fp_fs(void)
 	fp_fs.fp_fclose = fp_fs_fclose;
 	RND_HOOK_REGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
 	htsp_init(&fp_fs_cache, strhash, strkeyeq);
+
+	rnd_conf_reg_file(FP_FS_CONF_FN, fp_fs_conf_internal);
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	rnd_conf_reg_field(conf_fp_fs, field,isarray,type_name,cpath,cname,desc,flags);
+#include "fp_fs_conf_fields.h"
+
 	return 0;
 }
