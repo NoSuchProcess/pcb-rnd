@@ -54,6 +54,8 @@
 #include "obj_common.h"
 #include <librnd/core/hid_init.h>
 
+#define PCB do_not_use_PCB
+
 /* print usage lines */
 static inline void u(const char *fmt, ...)
 {
