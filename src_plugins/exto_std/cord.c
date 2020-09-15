@@ -420,11 +420,6 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 		pcb_attribute_copy_all(&subc->Attributes, &s->Attributes);
 
 		for(lid = 0; lid < s->data->LayerN; lid++) {
-			gdl_iterator_t it;
-			pcb_line_t *line;
-			pcb_arc_t *arc;
-			pcb_text_t *text;
-			pcb_poly_t *poly;
 			pcb_layer_t *sl = &s->data->Layer[lid], *dl;
 
 			if (strcmp(sl->name, "subc-aux") == 0) continue;
