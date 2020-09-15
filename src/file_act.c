@@ -56,12 +56,14 @@
 #include "netlist.h"
 #include "plug_io.h"
 
+#define PCB (do_not_use_PCB)
 
 static const char pcb_acts_LoadFrom[] = "LoadFrom(Layout|LayoutToBuffer|SubcToBuffer|Netlist|Revert,filename[,format])";
 static const char pcb_acth_LoadFrom[] = "Load layout data from a file.";
 /* DOC: loadfrom.html */
 fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *name, *format = NULL;
 	int op;
 
@@ -84,35 +86,35 @@ fgw_error_t pcb_act_LoadFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		case F_LayoutToBuffer:
 			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
-			if (pcb_buffer_load_layout(PCB, PCB_PASTEBUFFER, name, format))
+			if (pcb_buffer_load_layout(pcb, PCB_PASTEBUFFER, name, format))
 				rnd_tool_select_by_name(RND_ACT_HIDLIB, "buffer");
 			rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 			break;
 
 		case F_Layout:
-			if (!PCB->Changed ||  rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
+			if (!pcb->Changed ||  rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "File overwrite", "OK to override layout data?", "cancel", 0, "ok", 1, NULL))
 				pcb_load_pcb(name, format, rnd_true, 0);
 			break;
 
 		case F_Netlist:
-			if (PCB->Netlistname)
-				free(PCB->Netlistname);
-			PCB->Netlistname = rnd_strdup_strip_wspace(name);
+			if (pcb->Netlistname)
+				free(pcb->Netlistname);
+			pcb->Netlistname = rnd_strdup_strip_wspace(name);
 			{
 				int i;
 				for (i = 0; i < PCB_NUM_NETLISTS; i++) {
-					pcb_netlist_uninit(&(PCB->netlist[i]));
-					pcb_netlist_init(&(PCB->netlist[i]));
+					pcb_netlist_uninit(&(pcb->netlist[i]));
+					pcb_netlist_init(&(pcb->netlist[i]));
 				}
 			}
-			if (!pcb_import_netlist(RND_ACT_HIDLIB, PCB->Netlistname))
+			if (!pcb_import_netlist(RND_ACT_HIDLIB, pcb->Netlistname))
 				pcb_netlist_changed(1);
 			else
 				rnd_message(RND_MSG_ERROR, "None of the netlist import plugins could handle that file (unknown or broken file format?)\n");
 			break;
 
 		case F_Revert:
-			if (RND_ACT_HIDLIB->filename && (!PCB->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
+			if (RND_ACT_HIDLIB->filename && (!pcb->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Revert: lose data", "Really revert all modifications?", "no", 0, "yes", 1, NULL) == 1)))
 				pcb_revert_pcb();
 			break;
 
@@ -131,12 +133,13 @@ static const char pcb_acth_New[] = "Starts a new layout.";
 /* DOC: new.html */
 static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *argument_name = NULL;
 	char *name = NULL;
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, New, argument_name = argv[1].val.str);
 
-	if (!PCB->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
+	if (!pcb->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "New pcb", "OK to clear layout data?", "cancel", 0, "yes", 1, NULL) == 1)) {
 		if (argument_name)
 			name = rnd_strdup(argument_name);
 		else
@@ -145,37 +148,37 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (!name)
 			return 1;
 
-/* PCB usgae: at the moment, while having only one global PCB, this function
+/* pcb usgae: at the moment, while having only one global pcb, this function
    legitimately uses that */
 
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
 		/* do emergency saving
 		 * clear the old struct and allocate memory for the new one
 		 */
-		if (PCB->Changed && conf_core.editor.save_in_tmp)
+		if (pcb->Changed && conf_core.editor.save_in_tmp)
 			pcb_save_in_tmp();
 		if (rnd_gui->set_hidlib != NULL)
 			rnd_gui->set_hidlib(rnd_gui, NULL);
 
 		pcb_draw_inhibit_inc();
-		pcb_board_remove(PCB);
-		PCB = pcb_board_new(1);
-		pcb_board_new_postproc(PCB, 1);
+		pcb_board_remove(pcb);
+		pcb = pcb_board_new(1);
+		pcb_board_new_postproc(pcb, 1);
 		if (rnd_gui->set_hidlib != NULL)
-			rnd_gui->set_hidlib(rnd_gui, &PCB->hidlib);
+			rnd_gui->set_hidlib(rnd_gui, &pcb->hidlib);
 		pcb_draw_inhibit_dec();
 
 		pcb_set_design_dir(NULL);
 		rnd_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, "0", RND_POL_OVERWRITE); /* we have only one font now, make sure it is selected */
 
 		/* setup the new name and reset some values to default */
-		free(PCB->hidlib.name);
-		PCB->hidlib.name = name;
+		free(pcb->hidlib.name);
+		pcb->hidlib.name = name;
 
-		pcb_layervis_reset_stack(&PCB->hidlib);
-		pcb_center_display(PCB->hidlib.size_x / 2, PCB->hidlib.size_y / 2);
+		pcb_layervis_reset_stack(&pcb->hidlib);
+		pcb_center_display(pcb->hidlib.size_x / 2, pcb->hidlib.size_y / 2);
 		pcb_board_changed(0);
-		rnd_hid_redraw(PCB);
+		rnd_hid_redraw(pcb);
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 		RND_ACT_IRES(0);
 		return 0;
@@ -189,12 +192,13 @@ static const char pcb_acts_normalize[] = "Normalize([board|buffer[n]])";
 static const char pcb_acth_normalize[] = "Move all objects within the drawing area (or buffer 0;0), align the drawing to 0;0 (or set buffer grab point to 0;0)";
 static fgw_error_t pcb_act_normalize(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *target = "board";
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, normalize, target = argv[1].val.str);
 	
 	if (strcmp(target, "board") == 0)
-		RND_ACT_IRES(pcb_board_normalize(PCB));
+		RND_ACT_IRES(pcb_board_normalize(pcb));
 	else if (strncmp(target, "buffer", 6) == 0) {
 		int bn;
 		char *end;
@@ -353,6 +357,7 @@ static const char pcb_acth_SaveLib[] = "Saves all subcircuits to a library file 
 /* DOC: savelib.html */
 fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *method, *source, *fn = NULL, *fmt = NULL;
 	pcb_data_t *src;
 
@@ -361,7 +366,7 @@ fgw_error_t pcb_act_SaveLib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(3, FGW_STR, SaveLib, fn = argv[3].val.str);
 	RND_ACT_MAY_CONVARG(4, FGW_STR, SaveLib, fmt = argv[4].val.str);
 
-	if (rnd_strcasecmp(source, "board") == 0) src = PCB->Data;
+	if (rnd_strcasecmp(source, "board") == 0) src = pcb->Data;
 	else if (rnd_strcasecmp(source, "buffer") == 0) src = PCB_PASTEBUFFER->Data;
 	else
 		RND_ACT_FAIL(SaveLib);
@@ -467,12 +472,13 @@ static const char pcb_acth_Quit[] = "Quits the application after confirming.";
 /* DOC: quit.html */
 static fgw_error_t pcb_act_Quit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *force = NULL;
 	RND_ACT_MAY_CONVARG(1, FGW_STR, Quit, force = argv[1].val.str);
 
 	if ((force != NULL) && (rnd_strcasecmp(force, "force") == 0))
 		exit(0);
-	if (!PCB->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
+	if (!pcb->Changed || (rnd_hid_message_box(RND_ACT_HIDLIB, "warning", "Close: lose data", "OK to lose data?", "cancel", 0, "ok", 1, NULL) == 1))
 		pcb_quit_app();
 	RND_ACT_IRES(-1);
 	return 0;
