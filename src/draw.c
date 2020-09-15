@@ -1102,7 +1102,10 @@ static void expose_begin(pcb_output_t *save, rnd_hid_t *hid)
 	vtp0_truncate(&delayed_labels, 0);
 	vtp0_truncate(&delayed_objs, 0);
 
-	rnd_render = pcb_draw_out.hid = hid;
+	if ((rnd_render != NULL) && (!rnd_render->override_render))
+		rnd_render = hid;
+	pcb_draw_out.hid = rnd_render;
+
 	pcb_draw_out.fgGC = rnd_hid_make_gc();
 	pcb_draw_out.padGC = rnd_hid_make_gc();
 	pcb_draw_out.backpadGC = rnd_hid_make_gc();
