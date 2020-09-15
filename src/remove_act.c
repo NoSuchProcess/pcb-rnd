@@ -40,6 +40,8 @@
 #include "board.h"
 #include "funchash_core.h"
 
+#define PCB (do_not_use_PCB)
+
 static const char pcb_acts_Delete[] = 
 	"Delete(Object [,idpath])\n"
 	"Delete(Selected)\n"
@@ -47,6 +49,7 @@ static const char pcb_acts_Delete[] =
 static const char pcb_acth_Delete[] = "Delete stuff.";
 static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int id;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, Delete, id = fgw_keyword(&argv[1]));
@@ -64,7 +67,7 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			RND_ACT_CONVARG(2, FGW_IDPATH, Delete, idp = fgw_idpath(&argv[2]));
 			if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH))
 				return FGW_ERR_PTR_DOMAIN;
-			obj = pcb_idpath2obj(PCB, idp);
+			obj = pcb_idpath2obj(pcb, idp);
 			if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0)) {
 				RND_ACT_IRES(-1);
 				return 0;
