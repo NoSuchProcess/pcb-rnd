@@ -45,6 +45,8 @@
 
 #include "keywords_sphash.h"
 
+#define PCB (do_not_use_PCB)
+
 static const char *PTR_DOMAIN_POLY = "fgw_ptr_domain_poly";
 
 static int flg_error(const char *msg)
@@ -74,6 +76,7 @@ static const char pcb_acts_LineNew[] = "LineNew([noundo,] data, layer, X1, Y1, X
 static const char pcb_acth_LineNew[] = "Create a pcb line segment on a layer. For now data must be \"pcb\". Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_LineNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *sflg;
 	pcb_line_t *line;
 	pcb_data_t *data;
@@ -93,7 +96,7 @@ static fgw_error_t pcb_act_LineNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(8+ao, FGW_COORD, LineNew, cl = fgw_coord(&argv[8+ao]));
 	RND_ACT_CONVARG(9+ao, FGW_STR, LineNew, sflg = argv[9+ao].val.str);
 
-	if ((data != PCB->Data) || (layer == NULL))
+	if ((data != pcb->Data) || (layer == NULL))
 		return 0;
 
 	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
@@ -111,6 +114,7 @@ static const char pcb_acts_ArcNew[] = "ArcNew([noundo,] data, layer, centx, cent
 static const char pcb_acth_ArcNew[] = "Create a pcb arc segment on a layer. For now data must be \"pcb\". Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *sflg;
 	pcb_arc_t *arc;
 	pcb_data_t *data;
@@ -133,7 +137,7 @@ static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(10+ao, FGW_COORD, ArcNew, cl = fgw_coord(&argv[10+ao]));
 	RND_ACT_CONVARG(11+ao, FGW_STR, ArcNew, sflg = argv[11+ao].val.str);
 
-	if ((data != PCB->Data) || (layer == NULL))
+	if ((data != pcb->Data) || (layer == NULL))
 		return 0;
 
 	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
@@ -151,6 +155,7 @@ static const char pcb_acts_TextNew[] = "TextNew([noundo,] data, layer, fontID, x
 static const char pcb_acth_TextNew[] = "Create a pcb text on a layer. For now data must be \"pcb\". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *sflg, *str;
 	pcb_text_t *text = NULL;
 	pcb_data_t *data;
@@ -174,10 +179,10 @@ static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(9+ao, FGW_STR, TextNew, str = argv[9+ao].val.str);
 	RND_ACT_CONVARG(10+ao, FGW_STR, TextNew, sflg = argv[10+ao].val.str);
 
-	if ((data != PCB->Data) || (layer == NULL))
+	if ((data != pcb->Data) || (layer == NULL))
 		return 0;
 
-	font = pcb_font(PCB, fontid, 0);
+	font = pcb_font(pcb, fontid, 0);
 	if (font != NULL) {
 		flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
 		text = pcb_text_new(layer, font, x, y, rot, scale, th, str, flags);
@@ -228,6 +233,7 @@ static const char pcb_acts_PolyNewFromRectangle[] = "PolyNewFromRectangle([nound
 static const char pcb_acth_PolyNewFromRectangle[] = "Create a rectangular polygon. For now data must be \"pcb\". Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *sflg;
 	pcb_poly_t *poly;
 	pcb_data_t *data;
@@ -246,7 +252,7 @@ static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_ar
 	RND_ACT_CONVARG(7+ao, FGW_COORD, PolyNewFromRectangle, cl = fgw_coord(&argv[7+ao]));
 	RND_ACT_CONVARG(8+ao, FGW_STR, PolyNewFromRectangle, sflg = argv[8+ao].val.str);
 
-	if (data != PCB->Data)
+	if (data != pcb->Data)
 		return 0;
 
 	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
@@ -299,6 +305,7 @@ static const char pcb_acts_PolyNewFromPoints[] = "PolyNewFromRectangle([noundo,]
 static const char pcb_acth_PolyNewFromPoints[] = "Create a polygon. For now data must be \"pcb\". ptlist is a comma separated list of coordinates (untiless coordinates are treated as mm). Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *sflg, *ptlist;
 	pcb_poly_t *poly;
 	pcb_data_t *data;
@@ -314,7 +321,7 @@ static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t
 	RND_ACT_CONVARG(4+ao, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[4+ao]));
 	RND_ACT_CONVARG(5+ao, FGW_STR, PolyNewFromPoints, sflg = argv[5+ao].val.str);
 
-	if (data != PCB->Data)
+	if (data != pcb->Data)
 		return 0;
 
 	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
@@ -336,6 +343,7 @@ static const char pcb_acts_PolyNew[] = "PolyNew([noundo,] data, layer, ptlist, c
 static const char pcb_acth_PolyNew[] = "Create an empty polygon. For now data must be \"pcb\". Use PolyNewPoint to add points. Returns a polygon pointer valid until PolyNewEnd() is called.";
 static fgw_error_t pcb_act_PolyNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *sflg;
 	pcb_poly_t *poly;
 	pcb_data_t *data;
@@ -351,7 +359,7 @@ static fgw_error_t pcb_act_PolyNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(3+ao, FGW_COORD, PolyNewFromPoints, cl = fgw_coord(&argv[3+ao]));
 	RND_ACT_CONVARG(4+ao, FGW_STR, PolyNewFromPoints, sflg = argv[4+ao].val.str);
 
-	if (data != PCB->Data)
+	if (data != pcb->Data)
 		return 0;
 
 	flags = pcb_strflg_s2f(sflg, flg_error, NULL, 0);
@@ -424,6 +432,7 @@ static const char pcb_acts_LayerObjDup[] = "LayerObjDup([noundo,] data, layer, s
 static const char pcb_acth_LayerObjDup[] = "Duplicate srcobj on a layer. Srcobj is specified by an idpath. For now data must be \"pcb\". Returns the idpath of the new object or 0 on error.";
 static fgw_error_t pcb_act_LayerObjDup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	pcb_data_t *data;
 	pcb_layer_t *layer;
 	pcb_any_obj_t *src, *dst;
@@ -441,7 +450,7 @@ TODO("implement noundo");
 		rnd_message(RND_MSG_ERROR, "LayerObjDup: invalid object pointer\n");
 		return FGW_ERR_PTR_DOMAIN;
 	}
-	src = pcb_idpath2obj(PCB, idp);
+	src = pcb_idpath2obj(pcb, idp);
 	if (src == NULL)
 		return FGW_ERR_ARG_CONV;
 

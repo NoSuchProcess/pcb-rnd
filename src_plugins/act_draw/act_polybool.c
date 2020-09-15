@@ -108,7 +108,7 @@ static fgw_error_t pcb_act_PolyBool(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				rnd_message(RND_MSG_ERROR, "Invalid polygon specification idpath in arg %d: pointer domain error\n", n);
 				goto error;
 			}
-			obj = pcb_idpath2obj(PCB, idp);
+			obj = pcb_idpath2obj(pcb, idp);
 			if ((obj == NULL) || (obj->type != PCB_OBJ_POLY)) {
 				rnd_message(RND_MSG_ERROR, "Invalid polygon specification idpath in arg %d: object is not a polygon\n", n);
 				goto error;

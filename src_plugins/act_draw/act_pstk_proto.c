@@ -41,6 +41,7 @@ static const char pcb_acth_PstkProtoTmp[] = "Allocate, insert or free a temporar
 
 static int get_obj_and_data_from_idp(int argc, fgw_arg_t *argv, int aidx, pcb_any_obj_t **obj_out, pcb_data_t **data_out)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	pcb_any_obj_t *obj;
 	pcb_idpath_t *idp;
 
@@ -53,7 +54,7 @@ static int get_obj_and_data_from_idp(int argc, fgw_arg_t *argv, int aidx, pcb_an
 	RND_ACT_CONVARG(aidx, FGW_IDPATH, PstkProtoTmp, idp = fgw_idpath(&argv[aidx]));
 	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[aidx], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
-	obj = pcb_idpath2obj(PCB, idp);
+	obj = pcb_idpath2obj(pcb, idp);
 	if ((obj == NULL) || (obj->type != PCB_OBJ_PSTK) || (obj->parent_type != PCB_PARENT_DATA))
 		return -1;
 	*obj_out = obj;
