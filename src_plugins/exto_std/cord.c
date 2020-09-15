@@ -429,16 +429,7 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 			if (strcmp(sl->name, "subc-aux") == 0) continue;
 
-			TODO("this layer copy is code dup from subc_dup_at(); make it common");
-			dl = &subc->data->Layer[subc->data->LayerN++];
-			dl->is_bound = 1;
-			dl->type = PCB_OBJ_LAYER;
-			memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
-			dl->name = rnd_strdup(sl->name);
-			dl->comb = sl->comb;
-			if (dl->meta.bound.real != NULL)
-				pcb_layer_link_trees(dl, dl->meta.bound.real);
-
+			dl = pcb_subc_alloc_layer_like(subc, sl);
 			pcb_subc_dup_layer_objs(subc, dl, sl, 0, 0, 0);
 		}
 	}
