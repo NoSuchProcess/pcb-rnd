@@ -446,9 +446,8 @@ static void io_pcb_print_subc(pcb_plug_io_t *ctx, FILE *FP, pcb_subc_t *sc)
 
 			rx = trefdes->X - ox;
 			ry = trefdes->Y - oy;
-			if (!pcb_text_old_direction(&rdir, trefdes->rot)) {
-TODO("textrot: incompatibility warning")
-			}
+			if (!pcb_text_old_direction(&rdir, trefdes->rot))
+				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)trefdes, "text rotation", "text rotation angle rounded", "the gEDA/PCB file format does not support text rotation other than multiple of 90 degree");
 			rscale = scale;
 		}
 		else {
@@ -645,9 +644,8 @@ static void WriteLayerData(FILE * FP, rnd_cardinal_t Number, pcb_layer_t *layer)
 				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
 			if (text->mirror_x)
 				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-mirror-x", "file format does not support different mirroring text in the x direction", "do not mirror, or mirror in the y direction (with the ONSOLDER flag)");
-			if (!pcb_text_old_direction(&dir, text->rot)) {
-TODO("textrot: incompatibility warning")
-			}
+			if (!pcb_text_old_direction(&dir, text->rot))
+				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text rotation", "text rotation angle rounded", "the gEDA/PCB file format does not support text rotation other than multiple of 90 degree");
 			rnd_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, dir, scale);
 			pcb_print_quoted_string(FP, (char *) RND_EMPTY(text->TextString));
 			fprintf(FP, " %s]\n", F2S(text, PCB_OBJ_TEXT));
