@@ -439,29 +439,7 @@ static pcb_subc_t *pcb_cord_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 			if (dl->meta.bound.real != NULL)
 				pcb_layer_link_trees(dl, dl->meta.bound.real);
 
-			linelist_foreach(&sl->Line, &it, line) {
-				pcb_line_t *nline = pcb_line_dup_at(dl, line, 0, 0);
-				if (nline != NULL)
-					PCB_SET_PARENT(nline, layer, dl);
-			}
-
-			arclist_foreach(&sl->Arc, &it, arc) {
-				pcb_arc_t *narc = pcb_arc_dup_at(dl, arc, 0, 0);
-				if (narc != NULL)
-					PCB_SET_PARENT(narc, layer, dl);
-			}
-
-			textlist_foreach(&sl->Text, &it, text) {
-				pcb_text_t *ntext = pcb_text_dup_at(dl, text, 0, 0);
-				if (ntext != NULL)
-					PCB_SET_PARENT(ntext, layer, dl);
-			}
-
-			polylist_foreach(&sl->Polygon, &it, poly) {
-				pcb_poly_t *npoly = pcb_poly_dup_at(dl, poly, 0, 0);
-				if (npoly != NULL)
-					PCB_SET_PARENT(npoly, layer, dl);
-			}
+			pcb_subc_dup_layer_objs(subc, dl, sl, 0, 0, 0);
 		}
 	}
 
