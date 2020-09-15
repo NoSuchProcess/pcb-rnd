@@ -38,6 +38,7 @@ static const char pcb_acts_IsPointOnLine[] = "IsPointOnLine(x, y, r, idpath)";
 static const char pcb_acth_IsPointOnLine[] = "Returns 1 if point x;y with radius r is on the line addressed by idpath, 0 else.";
 static fgw_error_t pcb_act_IsPointOnLine(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	rnd_coord_t x, y, r;
 	pcb_idpath_t *idp;
 	pcb_any_obj_t *obj;
@@ -48,7 +49,7 @@ static fgw_error_t pcb_act_IsPointOnLine(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	RND_ACT_CONVARG(4, FGW_IDPATH, IsPointOnLine, idp = fgw_idpath(&argv[4]));
 	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[4], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
-	obj = pcb_idpath2obj(PCB, idp);
+	obj = pcb_idpath2obj(pcb, idp);
 	if ((obj == NULL) || (obj->type != PCB_OBJ_LINE))
 		return FGW_ERR_ARG_CONV;
 
@@ -61,6 +62,7 @@ static const char pcb_acts_IsPointOnArc[] = "IsPointOnArc(x, y, r, idpath)";
 static const char pcb_acth_IsPointOnArc[] = "Returns 1 if point x;y with radius r is on the arc addressed by idpath, 0 else.";
 static fgw_error_t pcb_act_IsPointOnArc(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	rnd_coord_t x, y, r;
 	pcb_idpath_t *idp;
 	pcb_any_obj_t *obj;
@@ -71,7 +73,7 @@ static fgw_error_t pcb_act_IsPointOnArc(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	RND_ACT_CONVARG(4, FGW_IDPATH, IsPointOnArc, idp = fgw_idpath(&argv[4]));
 	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[4], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
-	obj = pcb_idpath2obj(PCB, idp);
+	obj = pcb_idpath2obj(pcb, idp);
 	if ((obj == NULL) || (obj->type != PCB_OBJ_ARC))
 		return FGW_ERR_ARG_CONV;
 
@@ -84,6 +86,7 @@ static const char pcb_acts_IntersectObjObj[] = "IntersectObjObj(idpath, idpath)"
 static const char pcb_acth_IntersectObjObj[] = "Returns 1 if point x;y with radius r is on the arc addressed by idpath, 0 else.";
 static fgw_error_t pcb_act_IntersectObjObj(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	pcb_idpath_t *idp1, *idp2;
 	pcb_any_obj_t *obj1, *obj2;
 
@@ -93,8 +96,8 @@ static fgw_error_t pcb_act_IntersectObjObj(fgw_arg_t *res, int argc, fgw_arg_t *
 		return FGW_ERR_PTR_DOMAIN;
 	if ((idp2 == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[2], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
-	obj1 = pcb_idpath2obj(PCB, idp1);
-	obj2 = pcb_idpath2obj(PCB, idp2);
+	obj1 = pcb_idpath2obj(pcb, idp1);
+	obj2 = pcb_idpath2obj(pcb, idp2);
 	if ((obj1 == NULL) || ((obj1->type & PCB_OBJ_CLASS_REAL) == 0) || (obj2 == NULL) || ((obj2->type & PCB_OBJ_CLASS_REAL) == 0))
 		return FGW_ERR_ARG_CONV;
 
@@ -107,6 +110,7 @@ static const char pcb_acts_ObjCenter[] = "ObjCenter(idpath, x|y)";
 static const char pcb_acth_ObjCenter[] = "Returns the x or y coordinate of the center of an object";
 static fgw_error_t pcb_act_ObjCenter(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	pcb_idpath_t *idp;
 	pcb_any_obj_t *obj;
 	const char *which;
@@ -117,7 +121,7 @@ static fgw_error_t pcb_act_ObjCenter(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if ((idp == NULL) || !fgw_ptr_in_domain(&rnd_fgw, &argv[1], RND_PTR_DOMAIN_IDPATH))
 		return FGW_ERR_PTR_DOMAIN;
-	obj = pcb_idpath2obj(PCB, idp);
+	obj = pcb_idpath2obj(pcb, idp);
 	if ((obj == NULL) || ((obj->type & PCB_OBJ_CLASS_REAL) == 0))
 		return FGW_ERR_ARG_CONV;
 

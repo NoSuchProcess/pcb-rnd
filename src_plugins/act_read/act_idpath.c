@@ -129,6 +129,7 @@ static const char pcb_acts_IDP[] = "IDP([print|free|dup], idpath)\n";
 static const char pcb_acth_IDP[] = "Basic idpath manipulation.";
 static fgw_error_t pcb_act_IDP(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *cmd;
 	pcb_idpath_t *idp;
 	pcb_any_obj_t *obj;
@@ -148,7 +149,7 @@ static fgw_error_t pcb_act_IDP(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 
 		case act_read_keywords_dup:
-			obj = pcb_idpath2obj(PCB, idp);
+			obj = pcb_idpath2obj(pcb, idp);
 			idp = pcb_obj2idpath(obj);
 			res->type = FGW_IDPATH;
 			fgw_ptr_reg(&rnd_fgw, res, RND_PTR_DOMAIN_IDPATH, FGW_PTR | FGW_STRUCT, idp);
@@ -167,8 +168,9 @@ static const char pcb_acts_GetParentData[] = "GetParentData([root_data,] idpath)
 static const char pcb_acth_GetParentData[] = "Return the closest upstream pcb_data_t * parent of an object";
 static fgw_error_t pcb_act_GetParentData(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	pcb_idpath_t *idp;
-	pcb_data_t *root_data = PCB->Data;
+	pcb_data_t *root_data = pcb->Data;
 	int iidx = 1;
 	pcb_any_obj_t *obj;
 

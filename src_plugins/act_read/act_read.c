@@ -37,10 +37,11 @@
 
 #include "keywords_sphash.h"
 
+#define PCB (do_not_use_PCB)
+
 #include "act_idpath.c"
 #include "act_geo.c"
 #include "act_layer.c"
-
 
 static const char pcb_acts_GetValue[] = "GetValue(input, units, relative, default_unit)";
 static const char pcb_acth_GetValue[] = "Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps rnd_get_value_ex().";
