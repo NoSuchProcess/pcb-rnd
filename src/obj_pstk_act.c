@@ -37,6 +37,8 @@
 #include "search.h"
 #include "data_list.h"
 
+#define PCB do_not_use_PCB
+
 static const char pcb_acts_padstackconvert[] = "PadstackConvert(buffer|selected, [originx, originy])";
 static const char pcb_acth_padstackconvert[] = "Convert selection or current buffer to padstack";
 fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -45,6 +47,7 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_coord_t x, y;
 	rnd_cardinal_t pid;
 	pcb_pstk_proto_t tmp, *p;
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
 
@@ -60,12 +63,12 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			x = pcb_crosshair.X;
 			y = pcb_crosshair.Y;
 		}
-		pid = pcb_pstk_conv_selection(PCB, 0, x, y);
+		pid = pcb_pstk_conv_selection(pcb, 0, x, y);
 
 		if (pid != PCB_PADSTACK_INVALID) {
-			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+			pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
 			p = pcb_vtpadstack_proto_alloc_append(&PCB_PASTEBUFFER->Data->ps_protos, 1);
-			pcb_pstk_proto_copy(p, &PCB->Data->ps_protos.array[pid]);
+			pcb_pstk_proto_copy(p, &pcb->Data->ps_protos.array[pid]);
 			p->parent = PCB_PASTEBUFFER->Data;
 			pid = pcb_pstk_get_proto_id(p); /* should be 0 because of the clear, but just in case... */
 		}
@@ -77,7 +80,7 @@ fgw_error_t pcb_act_padstackconvert(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* have to save and restore the prototype around the buffer clear */
 			tmp = PCB_PASTEBUFFER->Data->ps_protos.array[pid];
 			memset(&PCB_PASTEBUFFER->Data->ps_protos.array[pid], 0, sizeof(PCB_PASTEBUFFER->Data->ps_protos.array[0]));
-			pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
+			pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
 			p = pcb_vtpadstack_proto_alloc_append(&PCB_PASTEBUFFER->Data->ps_protos, 1);
 			*p = tmp;
 			p->parent = PCB_PASTEBUFFER->Data;
@@ -107,6 +110,7 @@ static const char pcb_acts_padstackbreakup[] = "PadstackBreakup(buffer|selected|
 static const char pcb_acth_padstackbreakup[] = "Break up a padstack into one non-padstack object per layer type (the hole is ignored)";
 fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int op;
 	RND_ACT_CONVARG(1, FGW_KEYWORD, padstackconvert, op = fgw_keyword(&argv[1]));
 	RND_ACT_IRES(-1);
@@ -129,7 +133,7 @@ fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					rnd_message(RND_MSG_ERROR, "Sorry, that padstack is locked\n");
 					break;
 				}
-				RND_ACT_IRES(pcb_pstk_proto_breakup(PCB->Data, ps, 1));
+				RND_ACT_IRES(pcb_pstk_proto_breakup(pcb->Data, ps, 1));
 			}
 			break;
 		case F_Selected:
@@ -140,9 +144,9 @@ fgw_error_t pcb_act_padstackbreakup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_any_obj_t **o;
 
 				vtp0_init(&objs);
-				pcb_data_list_by_flag(PCB->Data, &objs, PCB_OBJ_PSTK, PCB_FLAG_SELECTED);
+				pcb_data_list_by_flag(pcb->Data, &objs, PCB_OBJ_PSTK, PCB_FLAG_SELECTED);
 				for(n = 0, o = (pcb_any_obj_t **)objs.array; n < vtp0_len(&objs); n++,o++)
-					ret |= pcb_pstk_proto_breakup(PCB->Data, (pcb_pstk_t *)*o, 1);
+					ret |= pcb_pstk_proto_breakup(pcb->Data, (pcb_pstk_t *)*o, 1);
 				RND_ACT_IRES(ret);
 				vtp0_uninit(&objs);
 			}
@@ -166,6 +170,7 @@ static const char pcb_acts_padstackplace[] = "PadstackPlace([proto_id|default], 
 static const char pcb_acth_padstackplace[] = "Place a pad stack (either proto_id, or if not specified, the default for style)";
 fgw_error_t pcb_act_padstackplace(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *pids = NULL;
 	rnd_cardinal_t pid;
 	pcb_pstk_t *ps;
@@ -197,12 +202,12 @@ TODO("pstk: style default proto")
 		}
 	}
 
-	if ((pid >= PCB->Data->ps_protos.used) || (PCB->Data->ps_protos.array[pid].in_use == 0)) {
+	if ((pid >= pcb->Data->ps_protos.used) || (pcb->Data->ps_protos.array[pid].in_use == 0)) {
 		rnd_message(RND_MSG_ERROR, "Invalid padstack proto %ld\n", (long)pid);
 		return -1;
 	}
 
-	ps = pcb_pstk_new(PCB->Data, -1, pid, x, y, conf_core.design.clearance, pcb_no_flags());
+	ps = pcb_pstk_new(pcb->Data, -1, pid, x, y, conf_core.design.clearance, pcb_no_flags());
 	if (ps == NULL) {
 		rnd_message(RND_MSG_ERROR, "Failed to place padstack\n");
 		return -1;
