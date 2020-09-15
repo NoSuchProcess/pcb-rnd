@@ -4188,41 +4188,6 @@
  funchash_core.h ../src_3rd/librnd/core/funchash.h funchash_core_list.h \
  ../src_3rd/librnd/core/hid_nogui.h ../src_3rd/librnd/core/hid_init.h \
  ../src_3rd/librnd/core/hid_attrib.h hid_cam.h
-../src_plugins/export_test/export_test.o: \
- ../src_plugins/export_test/export_test.c ../config.h ../src_3rd/librnd/config.h \
- conf_core.h ../src_3rd/librnd/core/conf.h \
- ../src_3rd/librnd/core/global_typedefs.h \
- ../src_3rd/librnd/core/rnd_bool.h ../src_3rd/librnd/core/rnd_printf.h \
- ../src_3rd/genvector/gds_char.h ../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/genvector/genvector_undef.h ../src_3rd/librnd/core/unit.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
- ../src_3rd/genvector/vtp0.h ../src_3rd/librnd/core/list_conf.h \
- ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/genlist/gendlist.h globalconst.h \
- ../src_3rd/librnd/core/globalconst.h ../src_3rd/librnd/core/color.h \
- build_run.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
- obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
- ../src_3rd/genlist/gendlist.h obj_line_list.h obj_line.h obj_poly_list.h \
- obj_poly.h ../src_3rd/librnd/poly/polyarea.h obj_text_list.h obj_text.h \
- font.h ../src_3rd/genht/htip.h ../src_3rd/librnd/core/box.h \
- ../src_3rd/librnd/core/math_helper.h ../src_3rd/librnd/core/misc_util.h \
- obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h \
- ../src_3rd/librnd/core/hidlib.h data.h crosshair.h \
- ../src_3rd/librnd/core/hid.h ../src_3rd/librnd/core/error.h route.h \
- buffer.h ../src_3rd/libfungw/fungw.h ../src_3rd/genht/htpp.h \
- obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h ../src_3rd/librnd/poly/rtree2_compat.h \
- ../src_3rd/librnd/poly/rtree.h ../src_3rd/genrtree/genrtree_api.h \
- ht_subc.h ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h \
- obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_3rd/librnd/core/plugins.h ../src_3rd/puplug/puplug.h \
- ../src_3rd/puplug/libs.h ../src_3rd/puplug/os_dep.h \
- ../src_3rd/puplug/config.h ../src_3rd/puplug/libs.h \
- ../src_3rd/puplug/error.h ../src_3rd/librnd/core/hid_nogui.h \
- ../src_3rd/librnd/core/hid_attrib.h hid_cam.h \
- ../src_3rd/librnd/core/hid_init.h
 ../src_plugins/export_vfs_fuse/export_vfs_fuse.o: \
  ../src_plugins/export_vfs_fuse/export_vfs_fuse.c \
  ../src_plugins/export_vfs_fuse/fuse_includes.h ../config.h \
