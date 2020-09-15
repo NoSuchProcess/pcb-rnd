@@ -175,6 +175,10 @@ void pcb_subc_part_changed_inhibit_dec(pcb_subc_t *sc);
 /* Copy layer objects from source layer sl to destination layer dl into dst_sc */
 void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *sl, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids);
 
+/* Allocate and return a new layer in subc, copying binding and basic
+   properties from another subc layer (potentially from another subc) from sl */
+pcb_layer_t *pcb_subc_alloc_layer_like(pcb_subc_t *subc, const pcb_layer_t *sl);
+
 /*** subc creation helpers ***/
 
 /* Create the aux layer for a subc, set origin to ox;oy and rotation to rot */

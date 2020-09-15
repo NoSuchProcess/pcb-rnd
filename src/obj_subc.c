@@ -853,6 +853,25 @@ TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elli
 	pcb_subc_draw_origin(pcb_crosshair.GC, sc, DX, DY);
 }
 
+pcb_layer_t *pcb_subc_alloc_layer_like(pcb_subc_t *subc, const pcb_layer_t *sl)
+{
+	pcb_layer_t *dl;
+
+	if (subc->data->LayerN >= PCB_MAX_LAYER)
+		return NULL;
+
+	dl = &subc->data->Layer[subc->data->LayerN++];
+	dl->is_bound = 1;
+	dl->type = PCB_OBJ_LAYER;
+	memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
+	dl->name = rnd_strdup(sl->name);
+	dl->comb = sl->comb;
+	if (dl->meta.bound.real != NULL)
+		pcb_layer_link_trees(dl, dl->meta.bound.real);
+
+	return dl;
+}
+
 #define MAYBE_KEEP_ID(dst, src) \
 do { \
 	if ((keep_ids) && (dst != NULL)) \
