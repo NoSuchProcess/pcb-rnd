@@ -34,12 +34,15 @@
 #include <librnd/core/error.h>
 #include <librnd/core/tool.h>
 
+#define PCB do_not_use_PCB
+
 /*------------ get/chk (check flag actions for menus) ------------------*/
 static const char pcb_acts_GetStyle[] = "GetStyle()" ;
 static const char pcb_acth_GetStyle[] = "Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)";
 fgw_error_t pcb_act_GetStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	RND_ACT_IRES(pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL));
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	RND_ACT_IRES(pcb_route_style_lookup(&pcb->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL));
 	return 0;
 }
 
