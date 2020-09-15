@@ -66,7 +66,7 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* Called with both function and file name -> no gui */
 	if (argc > 2)
-		return RND_ACT_CALL_C(pcb_act_LoadFrom, res, argc, argv);
+		return RND_ACT_CALL_C(RND_ACT_HIDLIB, pcb_act_LoadFrom, res, argc, argv);
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
 
@@ -408,7 +408,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	is_dialog = (function != NULL) && (rnd_strncasecmp(function, "Dialog", 6) == 0);
 
 	if ((!is_dialog) && (argc > 2))
-		return RND_ACT_CALL_C(pcb_act_SaveTo, res, argc, argv);
+		return RND_ACT_CALL_C(RND_ACT_HIDLIB, pcb_act_SaveTo, res, argc, argv);
 
 	memset(&save, 0, sizeof(save));
 

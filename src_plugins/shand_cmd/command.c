@@ -190,7 +190,7 @@ static const char pcb_acth_SaveLayoutAndQuit[] = "Saves the layout data and quit
 /* DOC: wq.html */
 static fgw_error_t pcb_act_SaveLayoutAndQuit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	if (RND_ACT_CALL_C(pcb_act_SaveLayout, res, argc, argv) == 0)
+	if (RND_ACT_CALL_C(RND_ACT_HIDLIB, pcb_act_SaveLayout, res, argc, argv) == 0)
 		return pcb_act_Quit(res, argc, argv);
 
 	RND_ACT_IRES(1);
