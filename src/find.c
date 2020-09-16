@@ -214,7 +214,7 @@ RND_INLINE int pcb_find_mark_get_pstk_on_layer(pcb_find_t *ctx, pcb_any_obj_t *o
 	rnd_layer_id_t lid;
 
 	/* do anything only if there are disjoint copper shapes */
-	if ((proto == NULL) || (proto->all_copper_connd))
+	if ((proto == NULL) || (proto->all_copper_connd && proto->hplated))
 		return 1;
 
 	mm = pcb_find_get_mm(ctx, obj);
