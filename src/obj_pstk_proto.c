@@ -67,7 +67,7 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 {
 	static pcb_pstk_t dummy_ps = {0};
 	pcb_pstk_tshape_t *ts = &dst->tr.array[0];
-	unsigned int n;
+	unsigned int n, coppers = 0;
 
 	dst->hash = pcb_pstk_proto_hash(dst);
 	dst->mech_idx = -1;
@@ -89,6 +89,8 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 		hole = pcb_pstk_shape_mech_or_hole_(NULL, dst, &holetmp);
 		dst->all_copper_connd = (hole != NULL);
 		for(n = 0; n < ts->len; n++) {
+			if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && !(ts->shape[n].layer_mask & PCB_LYT_INTERN))
+				coppers++;
 			if (hole == &ts->shape[n])
 				ts->shape[n].hconn = 1;
 			else if (hole != NULL) {
@@ -100,6 +102,12 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 				ts->shape[n].hconn = 0;
 /*rnd_trace(" [%d]: %d\n", n, ts->shape[n].hconn);*/
 		}
+		
+		/* special case: if there's only one non-intern copper shape and no hole/slot
+		   (which is the common "SMD pad" case), allow find.c to run the quick
+		   code by admitting all copper shapes are connected */
+		if ((hole == NULL) && (coppers == 1))
+			dst->all_copper_connd = 1;
 /*rnd_trace(" all: %d\n", dst->all_copper_connd);*/
 	}
 }
