@@ -77,6 +77,7 @@ typedef struct pcb_pstk_proto_s {
 	unsigned long hash;            /* optimization: linear search compare speeded up: go into detailed match only if hash matches */
 	pcb_data_t *parent;
 	int mech_idx;                  /* -1 or index to the first shape[] that is of PCB_LYT_MECH */
+	unsigned all_copper_connd:1;   /* 1 if all copper shapes are connected by the hole/slot (regardless of plating!) */
 } pcb_pstk_proto_t;
 
 /* Whether a proto cuts through board layers (has a hole or slot) */

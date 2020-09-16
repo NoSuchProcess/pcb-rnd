@@ -87,15 +87,20 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 
 		/* mark each shape with whether it overlaps with the hole/mech shape or not */
 		hole = pcb_pstk_shape_mech_or_hole_(NULL, dst, &holetmp);
+		dst->all_copper_connd = (hole != NULL);
 		for(n = 0; n < ts->len; n++) {
 			if (hole == &ts->shape[n])
 				ts->shape[n].hconn = 1;
-			else if (hole != NULL)
+			else if (hole != NULL) {
 				ts->shape[n].hconn = pcb_pstk_shape_intersect(&dummy_ps, &ts->shape[n], &dummy_ps, hole);
+				if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && !ts->shape[n].hconn)
+					dst->all_copper_connd = 0;
+			}
 			else
 				ts->shape[n].hconn = 0;
 /*rnd_trace(" [%d]: %d\n", n, ts->shape[n].hconn);*/
 		}
+/*rnd_trace(" all: %d\n", dst->all_copper_connd);*/
 	}
 }
 
