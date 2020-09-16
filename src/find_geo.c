@@ -1153,7 +1153,7 @@ RND_INLINE rnd_bool_t pstk_shape_isc_circ_line(const pcb_find_t *ctx, pcb_pstk_t
 	return pcb_is_point_in_line(sc->data.circ.x + c->x, sc->data.circ.y + c->y, sc->data.circ.dia/2, &tmp);
 }
 
-RND_INLINE rnd_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2)
+RND_INLINE rnd_bool_t pcb_pstk_shape_intersect_(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2)
 {
 	if ((shape1->shape == PCB_PSSH_POLY) && (shape1->data.poly.pa == NULL))
 		pcb_pstk_shape_update_pa(&shape1->data.poly);
@@ -1223,6 +1223,13 @@ RND_INLINE rnd_bool_t pcb_pstk_shape_intersect(const pcb_find_t *ctx, pcb_pstk_t
 	return rnd_false;
 }
 
+rnd_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2)
+{
+	static const pcb_find_t ctx = {0};
+	return pcb_pstk_shape_intersect_(&ctx, ps1, shape1, ps2, shape2);
+}
+
+
 RND_INLINE rnd_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, pcb_pstk_t *ps2, rnd_bool anylayer)
 {
 	pcb_layer_t *ly;
@@ -1234,7 +1241,7 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, 
 		pcb_pstk_tshape_t *tshp1 = pcb_pstk_get_tshape(ps1), *tshp2 = pcb_pstk_get_tshape(ps2);
 		for(n1 = 0; n1 < tshp1->len; n1++) {
 			for(n2 = 0; n2 < tshp2->len; n2++) {
-				if (pcb_pstk_shape_intersect(ctx, ps1, &tshp1->shape[n1], ps2, &tshp2->shape[n2]))
+				if (pcb_pstk_shape_intersect_(ctx, ps1, &tshp1->shape[n1], ps2, &tshp2->shape[n2]))
 					return rnd_true;
 			}
 		}
@@ -1255,16 +1262,16 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_pstk(const pcb_find_t *ctx, pcb_pstk_t *ps1, 
 		shape1 = pcb_pstk_shape_at(PCB, ps1, ly);
 		shape2 = pcb_pstk_shape_at(PCB, ps2, ly);
 
-		if ((shape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect(ctx, ps1, shape1, ps2, shape2)) return rnd_true;
+		if ((shape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect_(ctx, ps1, shape1, ps2, shape2)) return rnd_true;
 
 		if (proto1->hplated)
 			slshape1 = pcb_pstk_shape_mech_or_hole_at(PCB, ps1, ly, &sltmp1);
 		if (proto2->hplated)
 			slshape2 = pcb_pstk_shape_mech_or_hole_at(PCB, ps2, ly, &sltmp2);
 
-		if ((slshape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect(ctx, ps1, slshape1, ps2, shape2)) return rnd_true;
-		if ((slshape2 != NULL) && (shape1 != NULL) && pcb_pstk_shape_intersect(ctx, ps2, slshape2, ps1, shape1)) return rnd_true;
-		if ((slshape1 != NULL) && (slshape2 != NULL) && pcb_pstk_shape_intersect(ctx, ps1, slshape1, ps2, slshape2)) return rnd_true;
+		if ((slshape1 != NULL) && (shape2 != NULL) && pcb_pstk_shape_intersect_(ctx, ps1, slshape1, ps2, shape2)) return rnd_true;
+		if ((slshape2 != NULL) && (shape1 != NULL) && pcb_pstk_shape_intersect_(ctx, ps2, slshape2, ps1, shape1)) return rnd_true;
+		if ((slshape1 != NULL) && (slshape2 != NULL) && pcb_pstk_shape_intersect_(ctx, ps1, slshape1, ps2, slshape2)) return rnd_true;
 	}
 	return rnd_false;
 }

@@ -64,6 +64,7 @@ typedef struct pcb_pstk_shape_s {
 		PCB_PSSH_HSHADOW             /* for clearance: pretend the shape is the same as the drill's or slot's; but do not add anything positive to the target layer */
 	} shape;
 	rnd_coord_t clearance;         /* per layer clearance: internal layer clearance is sometimes different for production or insulation reasons (IPC2221A) */
+	unsigned hconn:1;              /* shape is connected to hole/slot; this is abstract, it ignores plating and bbvia aspects */
 } pcb_pstk_shape_t;
 
 /* transformed prototype */
@@ -78,5 +79,9 @@ typedef struct pcb_pstk_tshape_s {
 
 void pcb_pstk_shape_rot(pcb_pstk_shape_t *sh, double sina, double cosa, double angle);
 void pcb_pstk_shape_smirror(pcb_pstk_shape_t *sh);
+
+/* Return whether shape1 in ps1 intersects with shape2 in ps2 (regardless
+   of layer positions) */
+rnd_bool_t pcb_pstk_shape_intersect(pcb_pstk_t *ps1, pcb_pstk_shape_t *shape1, pcb_pstk_t *ps2, pcb_pstk_shape_t *shape2);
 
 #endif
