@@ -65,7 +65,7 @@ void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst)
 
 void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 {
-	static const pcb_pstk_t dummy_ps = {0};
+	static pcb_pstk_t dummy_ps = {0};
 	pcb_pstk_tshape_t *ts = &dst->tr.array[0];
 	unsigned int n;
 
