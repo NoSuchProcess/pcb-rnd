@@ -942,6 +942,9 @@ static int undo_change_hole_swap(void *udata)
 	swap(proto->hdia,    u->hdia,    rnd_coord_t);
 	swap(proto->htop,    u->htop,    int);
 	swap(proto->hbottom, u->hbottom, int);
+
+	pcb_pstk_proto_update(proto);
+
 	return 0;
 }
 
