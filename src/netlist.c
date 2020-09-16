@@ -1116,7 +1116,7 @@ rnd_cardinal_t pcb_net_ripup(pcb_board_t *pcb, pcb_net_t *net)
 	lasto = NULL;
 	o = pcb_data_first(&it, pcb->Data, PCB_OBJ_CLASS_REAL & (~PCB_OBJ_SUBC));
 	for(;;) {
-		if ((lasto != NULL) && (PCB_DFLAG_TEST(&lasto->Flags, fctx.mark))) {
+		if ((lasto != NULL) && (PCB_FIND_IS_MARKED(&fctx, lasto))) {
 			pcb_remove_object(lasto->type, lasto->parent.any, lasto, lasto);
 			res++;
 		}
