@@ -18,7 +18,7 @@
 @pcb-rnd-auto
 	Autoroute and autoplace.
 
-	Feature plugins for automated component placing and track routing
+	Feature plugins for automated component placing and track routing.
 
 @pcb-rnd-cloud
 	Networking plugins.
