@@ -332,17 +332,13 @@ RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_at(pcb_board_t *pcb, pcb_pstk_t
 	return pcb_pstk_shape_mech_gid(pcb, ps, layer->meta.real.grp);
 }
 
-/* Returns a shape correspinding to the hole or the mech shape (slot) if
-   it affects layer; hole shape is created in holetmp */
-RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_or_hole_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer, pcb_pstk_shape_t *holetmp)
+/* Returns a shape corresponding to the hole or the mech shape (slot) regardless
+   of layers. 
+   *DO NOT USE*, this call is designed for padstack internal code. Use
+   pcb_pstk_shape_mech_or_hole_at() instead. (Hole shape is created in holetmp) */
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_or_hole_(pcb_pstk_t *ps, pcb_pstk_proto_t *proto, pcb_pstk_shape_t *holetmp)
 {
 	pcb_pstk_tshape_t *ts;
-	pcb_pstk_proto_t *proto;
-
-	layer = pcb_layer_get_real(layer);
-
-	if (!pcb_pstk_bb_drills(pcb, ps, pcb_layer_get_group_(layer), &proto))
-		return NULL;
 
 	/* hole has priority */
 	if (proto->hdia > 0) {
@@ -358,6 +354,20 @@ RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_or_hole_at(pcb_board_t *pcb, pc
 
 	ts = pcb_pstk_get_tshape(ps);
 	return ts->shape + proto->mech_idx;
+}
+
+/* Returns a shape corresponding to the hole or the mech shape (slot) if
+   it affects layer; hole shape is created in holetmp */
+RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_or_hole_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer, pcb_pstk_shape_t *holetmp)
+{
+	pcb_pstk_proto_t *proto;
+
+	layer = pcb_layer_get_real(layer);
+
+	if (!pcb_pstk_bb_drills(pcb, ps, pcb_layer_get_group_(layer), &proto))
+		return NULL;
+
+	return pcb_pstk_shape_mech_or_hole_(ps, proto, holetmp);
 }
 
 /* Return the shape of the hshadow, if it is not the same as the forbidden

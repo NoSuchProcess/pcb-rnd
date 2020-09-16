@@ -72,11 +72,16 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 	dst->mech_idx = -1;
 
 	if (ts != NULL) {
+		/* find and cache the index of the mech shape (slot) */
 		for(n = 0; n < ts->len; n++) {
 			if (ts->shape[n].layer_mask & PCB_LYT_MECH) {
 				dst->mech_idx = n;
 				break;
 			}
+		}
+
+		/* mark each copper shape with whether it overlaps with the hole/mech shape or not */
+		for(n = 0; n < ts->len; n++) {
 		}
 	}
 }
