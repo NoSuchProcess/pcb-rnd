@@ -28,7 +28,7 @@
 @pcb-rnd-debug
 	Debug and diagnostics.
 
-	Extra action commands to help debugging and diagnostize problems and bugs.
+	Extra action commands to help in debugging and diagnosing problems and bugs.
 
 @pcb-rnd-export-extra
 	Export formats: special/extra
