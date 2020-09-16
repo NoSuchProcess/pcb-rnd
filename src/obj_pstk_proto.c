@@ -88,7 +88,9 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 		/* mark each shape with whether it overlaps with the hole/mech shape or not */
 		hole = pcb_pstk_shape_mech_or_hole_(NULL, dst, &holetmp);
 		for(n = 0; n < ts->len; n++) {
-			if (hole != NULL)
+			if (hole == &ts->shape[n])
+				ts->shape[n].hconn = 1;
+			else if (hole != NULL)
 				ts->shape[n].hconn = pcb_pstk_shape_intersect(&dummy_ps, &ts->shape[n], &dummy_ps, hole);
 			else
 				ts->shape[n].hconn = 0;
