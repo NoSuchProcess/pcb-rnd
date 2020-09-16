@@ -65,6 +65,7 @@ void pcb_pstk_proto_free_fields(pcb_pstk_proto_t *dst)
 
 void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 {
+	static const pcb_pstk_t dummy_ps = {0};
 	pcb_pstk_tshape_t *ts = &dst->tr.array[0];
 	unsigned int n;
 
@@ -72,6 +73,8 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 	dst->mech_idx = -1;
 
 	if (ts != NULL) {
+		pcb_pstk_shape_t *hole, holetmp;
+
 		/* find and cache the index of the mech shape (slot) */
 		for(n = 0; n < ts->len; n++) {
 			if (ts->shape[n].layer_mask & PCB_LYT_MECH) {
@@ -80,8 +83,16 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 			}
 		}
 
-		/* mark each copper shape with whether it overlaps with the hole/mech shape or not */
+/*rnd_trace("pstk_upd:\n");*/
+
+		/* mark each shape with whether it overlaps with the hole/mech shape or not */
+		hole = pcb_pstk_shape_mech_or_hole_(NULL, dst, &holetmp);
 		for(n = 0; n < ts->len; n++) {
+			if (hole != NULL)
+				ts->shape[n].hconn = pcb_pstk_shape_intersect(&dummy_ps, &ts->shape[n], &dummy_ps, hole);
+			else
+				ts->shape[n].hconn = 0;
+/*rnd_trace(" [%d]: %d\n", n, ts->shape[n].hconn);*/
 		}
 	}
 }

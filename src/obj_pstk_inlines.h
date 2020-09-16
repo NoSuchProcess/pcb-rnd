@@ -352,7 +352,10 @@ RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_or_hole_(pcb_pstk_t *ps, pcb_ps
 	if (proto->mech_idx < 0)
 		return NULL; /* no mech shape -> no slot */
 
-	ts = pcb_pstk_get_tshape(ps);
+	if (ps == NULL)
+		ts = &proto->tr.array[0];
+	else
+		ts = pcb_pstk_get_tshape(ps);
 	return ts->shape + proto->mech_idx;
 }
 

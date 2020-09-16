@@ -64,7 +64,7 @@ typedef struct pcb_pstk_shape_s {
 		PCB_PSSH_HSHADOW             /* for clearance: pretend the shape is the same as the drill's or slot's; but do not add anything positive to the target layer */
 	} shape;
 	rnd_coord_t clearance;         /* per layer clearance: internal layer clearance is sometimes different for production or insulation reasons (IPC2221A) */
-	unsigned hconn:1;              /* shape is connected to hole/slot; this is abstract, it ignores plating and bbvia aspects */
+	unsigned hconn:1;              /* shape is connected to hole/slot; this is abstract, it ignores plating and bbvia aspects; valid only in the non-transformed proto, tr[0] */
 } pcb_pstk_shape_t;
 
 /* transformed prototype */
