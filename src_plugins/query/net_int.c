@@ -40,7 +40,7 @@
 #define PCB dontuse
 
 /* evaluates to true if obj was marked on list (fa or fb) */
-#define IS_FOUND(obj, list) (PCB_DFLAG_TEST(&(obj->Flags), ctx->list.mark))
+#define IS_FOUND(obj, list) PCB_FIND_IS_MARKED(&ctx->list, obj)
 
 static int pcb_int_broken_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
