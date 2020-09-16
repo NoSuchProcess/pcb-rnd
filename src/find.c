@@ -40,6 +40,17 @@ const pcb_find_t pcb_find0_, *pcb_find0 = &pcb_find0_;
    at least for appending. But as long as only the last item is removed,
    it's also cheap on remove! */
 
+/* if arrived_from is NULL, obj is a starting point for the search */
+RND_INLINE void pcb_find_mark_set(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from)
+{
+	PCB_DFLAG_SET(&obj->Flags, ctx->mark);
+}
+
+RND_INLINE int pcb_find_mark_get(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from)
+{
+	return PCB_DFLAG_TEST(&obj->Flags, ctx->mark);
+}
+
 /* Do everything that needs to be done for an object found */
 static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
@@ -69,10 +80,10 @@ static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *ar
 	return 0;
 }
 
-
 static int pcb_find_addobj(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype, int jump)
 {
-	PCB_DFLAG_SET(&obj->Flags, ctx->mark);
+	pcb_find_mark_set(ctx, obj, arrived_from);
+
 	if (jump)
 		vtp0_append(&ctx->open, obj);
 
@@ -94,6 +105,10 @@ static void find_int_conn(pcb_find_t *ctx, pcb_any_obj_t *from_)
 		return;
 
 	ic = from_->intconn;
+
+	/* it is okay to test for mark directly here: internal connection
+	   assumes all-layer affection as it is a special case mostly used for SMD pads
+	   and thru-hole pins; the flag means "found in any way" */
 
 	PCB_PADSTACK_LOOP(s->data);
 	{
@@ -163,7 +178,7 @@ static rnd_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
 #define PCB_FIND_CHECK(ctx, curr, obj, ctype, retstmt) \
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
-		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
+		if (!pcb_find_mark_get(ctx, __obj__, (curr))) { \
 			if (!INOCONN(curr, obj) && (pcb_intersect_obj_obj(ctx, curr, __obj__))) {\
 				if (pcb_find_addobj(ctx, __obj__, curr, ctype, 1) != 0) { retstmt; } \
 				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \
@@ -175,7 +190,7 @@ static rnd_bool int_noconn(pcb_any_obj_t *a, pcb_any_obj_t *b)
 #define PCB_FIND_CHECK_RAT(ctx, curr, obj, ctype, retstmt) \
 	do { \
 		pcb_any_obj_t *__obj__ = (pcb_any_obj_t *)obj; \
-		if (!(PCB_DFLAG_TEST(&(__obj__->Flags), ctx->mark))) { \
+		if (!pcb_find_mark_get(ctx, __obj__, (curr))) { \
 			if (!INOCONN(curr, obj) && (pcb_intersect_obj_obj(ctx, curr, __obj__))) {\
 				if (pcb_find_addobj(ctx, __obj__, curr, ctype, ctx->consider_rats) != 0) { retstmt; } \
 				if ((__obj__->term != NULL) && (!ctx->ignore_intconn) && (__obj__->intconn > 0)) \

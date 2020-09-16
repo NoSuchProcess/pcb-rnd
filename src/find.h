@@ -83,7 +83,7 @@ struct pcb_find_s {
 	pcb_data_t *data;
 	pcb_board_t *pcb;
 	pcb_layergrp_t *start_layergrp;
-	pcb_dynf_t mark;
+	pcb_dynf_t mark;                /* marks if the object is ever found; in some cases this can be partial: e.g. in some padstacks not all copper shapes are connected and there's an extra bitfield for per-layer found bool */
 	unsigned long nfound;
 	unsigned in_use:1;
 	unsigned aborted:1;
