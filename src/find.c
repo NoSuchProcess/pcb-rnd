@@ -27,6 +27,7 @@
 /* Follow galvanic connections through overlapping objects */
 
 #include "config.h"
+#include <genht/ht_utils.h>
 #include "find.h"
 #include "undo.h"
 #include "obj_subc_parent.h"
@@ -36,14 +37,50 @@ const pcb_find_t pcb_find0_, *pcb_find0 = &pcb_find0_;
 #include "find_geo.c"
 #include "find_any_isect.c"
 
+typedef union pcb_find_mm_s {
+	unsigned char layers[(PCB_MAX_LAYER / 8)+1]; /* for pstk */
+} pcb_find_mm_t;
+
 /* trickery: keeping vtp0 is reentrant and is cheaper than keeping lists,
    at least for appending. But as long as only the last item is removed,
    it's also cheap on remove! */
+
+RND_INLINE pcb_find_mm_t *pcb_find_get_mm(pcb_find_t *ctx, pcb_any_obj_t *obj)
+{
+	pcb_find_mm_t *mm;
+
+	if (!ctx->multimark_inited) {
+		htpp_init(&ctx->multimark, ptrhash, ptrkeyeq);
+		mm = NULL;
+	}
+	else
+		mm = htpp_get(&ctx->multimark, obj);
+
+	if (mm != NULL)
+		return mm;
+
+	mm = calloc(sizeof(pcb_find_mm_t), 1);
+	htpp_set(&ctx->multimark, obj, mm);
+	return mm;
+}
 
 /* if arrived_from is NULL, obj is a starting point for the search */
 RND_INLINE void pcb_find_mark_set(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from)
 {
 	PCB_DFLAG_SET(&obj->Flags, ctx->mark);
+	switch(obj->type) {
+		case PCB_OBJ_PSTK:
+		{
+			pcb_find_mm_t *mm;
+			pcb_pstk_proto_t *proto = pcb_pstk_get_proto((pcb_pstk_t *)obj);
+			if ((proto == NULL) || (proto->all_copper_connd))
+				return;
+			mm = pcb_find_get_mm(ctx, obj);
+			
+		}
+		break;
+		default: break;
+	}
 }
 
 RND_INLINE int pcb_find_mark_get(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from)
@@ -404,6 +441,12 @@ void pcb_find_free(pcb_find_t *ctx)
 {
 	if (!ctx->in_use)
 		return;
+	if (ctx->multimark_inited) {
+		genht_uninit_deep(htpp, &ctx->multimark, {
+			free(htent->value);
+		}); \
+		ctx->multimark_inited = 0;
+	}
 	if (ctx->list_found)
 		vtp0_uninit(&ctx->found);
 	vtp0_uninit(&ctx->open);

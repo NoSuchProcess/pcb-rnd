@@ -29,6 +29,7 @@
 #ifndef PCB_FIND2_H
 #define PCB_FIND2_H
 
+#include <genht/htpp.h>
 #include <genvector/vtp0.h>
 #include "global_typedefs.h"
 #include "flag.h"
@@ -83,10 +84,18 @@ struct pcb_find_s {
 	pcb_data_t *data;
 	pcb_board_t *pcb;
 	pcb_layergrp_t *start_layergrp;
-	pcb_dynf_t mark;                /* marks if the object is ever found; in some cases this can be partial: e.g. in some padstacks not all copper shapes are connected and there's an extra bitfield for per-layer found bool */
+
+	/* marks if the object is ever found; in some cases this can be partial:
+	   e.g. in some padstacks not all copper shapes are connected and there's
+	   an extra bitfield for per-layer found bool; the extra per-component
+	   found flags are stored in multimark */
+	pcb_dynf_t mark;
+	htpp_t multimark; /* key=(pcb_any_obj_t *), value=(pcb_find_mm_t *), private to find.c */
+
 	unsigned long nfound;
 	unsigned in_use:1;
 	unsigned aborted:1;
+	unsigned multimark_inited:1;
 };
 
 extern const pcb_find_t *pcb_find0; /* nop-configuration for calling isc functions */
