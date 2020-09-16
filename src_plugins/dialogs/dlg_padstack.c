@@ -357,6 +357,9 @@ static void pse_chg_hole(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 		pse->attrs[pse->hplated].val.lng = hp;
 		pse->attrs[pse->htop_val].val.lng = ht;
 		pse->attrs[pse->hbot_val].val.lng = hb;
+
+		/* make sure the hash and other caches are updated */
+		pcb_pstk_proto_update(proto);
 	}
 
 	lock++;
@@ -407,6 +410,9 @@ static void pse_chg_proto_clr(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		ctx.clip.clear = 1;
 		ctx.clip.restore = 0;
 		pcb_pstkop_clip(&ctx, pse->ps);
+
+		/* make sure the hash and other caches are updated */
+		pcb_pstk_proto_update(proto);
 
 		pcb_undo_unfreeze_serial();
 		pcb_undo_inc_serial();
