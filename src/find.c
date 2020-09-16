@@ -103,7 +103,7 @@ RND_INLINE void pcb_find_mark_set_pstk(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_
 	pcb_pstk_shape_t *shp;
 
 	/* do anything only if there are disjoint copper shapes */
-	if ((proto == NULL) || (proto->all_copper_connd && proto->hplated))
+	if ((proto == NULL) || (proto->all_copper_connd && proto->hplated) || ((pcb_pstk_t *)obj)->term)
 		return;
 
 	mm = pcb_find_get_mm(ctx, obj);
@@ -126,7 +126,8 @@ RND_INLINE void pcb_find_mark_set_pstk(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_
 				mm->layers[lid / 8] |= (1 << (lid % 8));
 
 				/* propagate the mark if the shape is connected to the hole/slot
-				   (hconn) and the hole/slot is plated */
+				   (hconn) and the hole/slot is 
+				   plated */
 				if ((ctx->pcb != NULL) && (proto->hplated)) {
 					shp = pcb_pstk_shape_at(ctx->pcb, (pcb_pstk_t *)obj, ly);
 					if (shp->hconn)
@@ -171,7 +172,7 @@ RND_INLINE int pcb_find_mark_get_pstk(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_a
 	rnd_layer_id_t lid;
 
 	/* do anything only if there are disjoint copper shapes */
-	if ((proto == NULL) || (proto->all_copper_connd && proto->hplated))
+	if ((proto == NULL) || (proto->all_copper_connd && proto->hplated) || ((pcb_pstk_t *)obj)->term)
 		return 1;
 
 	mm = pcb_find_get_mm(ctx, obj);
@@ -214,7 +215,7 @@ RND_INLINE int pcb_find_mark_get_pstk_on_layer(pcb_find_t *ctx, pcb_any_obj_t *o
 	rnd_layer_id_t lid;
 
 	/* do anything only if there are disjoint copper shapes */
-	if ((proto == NULL) || (proto->all_copper_connd && proto->hplated))
+	if ((proto == NULL) || (proto->all_copper_connd && proto->hplated) || ((pcb_pstk_t *)obj)->term)
 		return 1;
 
 	mm = pcb_find_get_mm(ctx, obj);
