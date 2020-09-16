@@ -41,10 +41,6 @@ typedef union pcb_find_mm_s {
 	unsigned char layers[(PCB_MAX_LAYER / 8)+1]; /* for pstk */
 } pcb_find_mm_t;
 
-/* trickery: keeping vtp0 is reentrant and is cheaper than keeping lists,
-   at least for appending. But as long as only the last item is removed,
-   it's also cheap on remove! */
-
 RND_INLINE pcb_find_mm_t *pcb_find_get_mm(pcb_find_t *ctx, pcb_any_obj_t *obj)
 {
 	pcb_find_mm_t *mm;
@@ -87,6 +83,10 @@ RND_INLINE int pcb_find_mark_get(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_ob
 {
 	return PCB_DFLAG_TEST(&obj->Flags, ctx->mark);
 }
+
+/* trickery: keeping vtp0 is reentrant and is cheaper than keeping lists,
+   at least for appending. But as long as only the last item is removed,
+   it's also cheap on remove! */
 
 /* Do everything that needs to be done for an object found */
 static int pcb_find_found(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
