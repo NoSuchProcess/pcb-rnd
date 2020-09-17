@@ -135,7 +135,8 @@ RND_INLINE void pcb_find_mark_set_pstk(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_
 				}
 				break;
 			case PCB_OBJ_PSTK:
-				rnd_message(RND_MSG_ERROR, "BUG: disjoint padstack overlap with disjoint padstack - not handled correctly\nPlease report htis bug with your board file!\n");
+				if (arrived_from != obj)
+					rnd_message(RND_MSG_ERROR, "BUG: disjoint padstack overlap with disjoint padstack - not handled correctly\nPlease report htis bug with your board file!\n");
 				goto fallback1;
 			default:
 				assert(!"pcb_find_mark_set: invalid arrived_from object type");
@@ -194,7 +195,8 @@ RND_INLINE int pcb_find_mark_get_pstk(pcb_find_t *ctx, pcb_any_obj_t *obj, pcb_a
 				}
 				return !!(mm->layers[lid / 8] & (1 << (lid % 8)));
 			case PCB_OBJ_PSTK:
-				rnd_message(RND_MSG_ERROR, "BUG: disjoint padstack overlap with disjoint padstack - not handled correctly\nPlease report htis bug with your board file!\n");
+				if (arrived_from != obj)
+					rnd_message(RND_MSG_ERROR, "BUG: disjoint padstack overlap with disjoint padstack - not handled correctly\nPlease report htis bug with your board file!\n");
 				return 1;
 			default:
 				assert(!"pcb_find_mark_get: invalid arrived_from object type");
