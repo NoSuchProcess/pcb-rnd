@@ -1,6 +1,6 @@
 # pcb-rnd official 4-layer default board
 
-ha:pcb-rnd-board-v6 {
+ha:pcb-rnd-board-v7 {
  li:styles {
    ha:Signal {
     diameter = 2mm
