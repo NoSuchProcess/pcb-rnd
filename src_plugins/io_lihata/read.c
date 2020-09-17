@@ -724,6 +724,16 @@ static int parse_arc(lht_read_t *rctx, pcb_layer_t *ly, lht_node_t *obj, rnd_coo
 	err |= parse_angle(&arc->StartAngle, hash_get(obj, "astart", 0));
 	err |= parse_angle(&arc->Delta,      hash_get(obj, "adelta", 0));
 
+	if (arc->Width < 0) {
+		arc->Width = 0;
+		iolht_error(obj, "negative radius in arc - replaced it with 0\n");
+	}
+
+	if (arc->Height < 0) {
+		arc->Height = 0;
+		iolht_error(obj, "negative radius in arc - replaced it with 0\n");
+	}
+
 	arc->X += dx;
 	arc->Y += dy;
 
