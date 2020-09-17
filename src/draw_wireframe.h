@@ -49,7 +49,9 @@ RND_INLINE void pcb_draw_wireframe_arc(rnd_hid_gc_t gc, pcb_arc_t *arc, rnd_coor
 
 	rnd_render->draw_arc(gc, arc->X, arc->Y, arc->Width + wid, arc->Height + wid, arc->StartAngle, arc->Delta);
 	if (wid > rnd_pixel_slop) {
-		rnd_render->draw_arc(gc, arc->X, arc->Y, arc->Width - wid, arc->Height - wid, arc->StartAngle, arc->Delta);
+		rnd_coord_t w = (wid < arc->Width) ? (arc->Width - wid) : 0;
+		rnd_coord_t h = (wid < arc->Height) ? (arc->Height - wid) : 0;
+		rnd_render->draw_arc(gc, arc->X, arc->Y, w, h, arc->StartAngle, arc->Delta);
 		rnd_render->draw_arc(gc, x1, y1, wid, wid, arc->StartAngle, -180 * SGN(arc->Delta));
 		rnd_render->draw_arc(gc, x2, y2, wid, wid, arc->StartAngle + arc->Delta, 180 * SGN(arc->Delta));
 	}
