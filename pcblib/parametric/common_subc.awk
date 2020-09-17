@@ -1039,10 +1039,12 @@ function tobool(x)
 # x,y: the coordinates of the origin corner (top-left)
 # half: half the stepping of the pin grid - the size of the mark
 # step: optional size of the external arrow or square (defaults to 2*half)
-function silkmark(style, x, y, half,    step,   S,n,v)
+function silkmark(style, x, y, half,    step,   S,n,v,r)
 {
 	if (step == "")
 	step = half*2
+	r = step
+	if (r < 5) r = 5;
 
 	v = split(style, S, ":")
 
@@ -1070,13 +1072,13 @@ function silkmark(style, x, y, half,    step,   S,n,v)
 			subc_line("top-silk", x-half, y-half/3, x-half/3, y-half)
 		}
 		else if (S[n] == "arc") {
-			subc_arc("top-silk", x, y, step/2, 180, 270)
+			subc_arc("top-silk", x, y, r/2, 180, 270)
 		}
 		else if (S[n] == "circle") {
-			subc_arc("top-silk", x, y, step/2, 0, 360)
+			subc_arc("top-silk", x, y, r/2, 0, 360)
 		}
 		else if (S[n] == "dot") {
-			subc_arc("top-silk", x-step/2, y-step/2, step/4, 0, 360)
+			subc_arc("top-silk", x-step/2, y-step/2, r/4, 0, 360)
 		}
 		else if ((S[n] != "none") && (S[n] != "")) {
 			error("invalid silkmark parameter: " S[n])
