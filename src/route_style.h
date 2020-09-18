@@ -68,4 +68,4 @@ int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id);
 int pcb_route_style_change(pcb_board_t *pcb, int rstidx, rnd_coord_t *thick, rnd_coord_t *textt, int *texts, rnd_coord_t *clearance, rnd_cardinal_t *via_proto, rnd_bool undoable);
 
 /* Change the name. Returns 0 on success. */
-int pcb_route_style_change_name(pcb_board_t *pcb, int rstidx, char *new_name, rnd_bool undoable);
+int pcb_route_style_change_name(pcb_board_t *pcb, int rstidx, const char *new_name, rnd_bool undoable);

@@ -319,7 +319,7 @@ int pcb_route_style_change(pcb_board_t *pcb, int rstidx, rnd_coord_t *thick, rnd
 	return 0;
 }
 
-int pcb_route_style_change_name(pcb_board_t *pcb, int rstidx, char *new_name, rnd_bool undoable)
+int pcb_route_style_change_name(pcb_board_t *pcb, int rstidx, const char *new_name, rnd_bool undoable)
 {
 	undo_rst_t gtmp, *g = &gtmp;
 	pcb_route_style_t *rst = vtroutestyle_get(&pcb->RouteStyle, rstidx, 0);
