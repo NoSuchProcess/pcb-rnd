@@ -35,11 +35,14 @@
 #include <librnd/core/conf.h>
 #include <librnd/core/misc_util.h>
 #include "board.h"
+#include "undo.h"
 #include "funchash_core.h"
 #include "conf_core.h"
+#include "event.h"
 
 pcb_route_style_t pcb_custom_route_style;
 
+static const char rst_cookie[] = "core route style";
 
 static rnd_coord_t pcb_get_num(char **s, const char *default_unit)
 {
@@ -242,5 +245,76 @@ int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id)
 		rnd_message(RND_MSG_ERROR, "Sorry, can't change style of every selected object\n");
 		return -1;
 	}
+	return 0;
+}
+
+
+
+typedef struct {
+	pcb_board_t *pcb;
+	int idx;
+	pcb_route_style_t rst;
+} undo_rst_t;
+
+static int undo_rst_swap(void *udata)
+{
+	undo_rst_t *g = udata;
+	pcb_route_style_t *rst = vtroutestyle_get(&g->pcb->RouteStyle, g->idx, 0);
+
+	if (rst == NULL) {
+		rnd_message(RND_MSG_ERROR, "undo_rst_swap(): internal error: route %d does not exist\b", g->idx);
+		return -1;
+	}
+
+	rnd_swap(pcb_route_style_t, *rst, g->rst);
+	rnd_event(&g->pcb->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+	pcb_board_set_changed_flag(g->pcb, 1);
+
+	return 0;
+}
+
+static void undo_rst_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_rst_t *g = udata;
+
+	rnd_snprintf(dst, dst_len, "route style: thick=%.03$mH textt=%.03$mH texts=%.03$mH Clearance=%.03$mH texts=%.03$mH proto=%ld",
+		g->rst.Thick, g->rst.textt, g->rst.texts, g->rst.Clearance, (long)(g->rst.via_proto_set ? g->rst.via_proto : -1));
+}
+
+static const uundo_oper_t undo_rst = {
+	rst_cookie,
+	NULL,
+	undo_rst_swap,
+	undo_rst_swap,
+	undo_rst_print
+};
+
+
+int pcb_route_style_change(pcb_board_t *pcb, int rstidx, rnd_coord_t *thick, rnd_coord_t *textt, rnd_coord_t *texts, rnd_coord_t *clearance, rnd_cardinal_t *via_proto, rnd_bool undoable)
+{
+	undo_rst_t gtmp, *g = &gtmp;
+	pcb_route_style_t *rst = vtroutestyle_get(&pcb->RouteStyle, rstidx, 0);
+
+	if (rst == NULL)
+		return -1;
+
+	if (undoable) g = pcb_undo_alloc(pcb, &undo_rst, sizeof(undo_rst_t));
+
+	g->pcb = pcb;
+	g->idx = rstidx;
+	g->rst = *rst;
+	if (thick != NULL)      g->rst.Thick = *thick;
+	if (textt != NULL)      g->rst.textt = *textt;
+	if (texts != NULL)      g->rst.texts = *texts;
+	if (clearance != NULL)  g->rst.Clearance = *clearance;
+	if (via_proto != NULL) {
+		g->rst.via_proto = *via_proto;
+		g->rst.via_proto_set = (*via_proto != -1);
+			
+	}
+
+	undo_rst_swap(g);
+	if (undoable) pcb_undo_inc_serial();
+
 	return 0;
 }
