@@ -12,6 +12,7 @@
 - BUG: advanced search: no quote around strings for subc footprint; no padstack in the type listing; propset(padstack/clearance, 20mil) doesn't work ml=4321 [report: Igor2]
 - BUG: bug_files/drc_poly.lht - DRC misses insufficient poly clearance ml=4316 [report: Majenko]
 - BUG: RTT: if compare(1) is not installed, don't run png tests and do not fail (after issuing the warning) [report: SnakesAndStuff]
+- BUG: CLI: enter invalid action with (), e.g. foo() -> no error message (works without the ()) [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
