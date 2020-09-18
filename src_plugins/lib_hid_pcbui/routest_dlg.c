@@ -133,13 +133,13 @@ TODO("This change is not undoable");
 		strncpy(rst->name, s, sizeof(rst->name));
 	}
 	else if (idx == rstdlg_ctx.wlineth)
-		rst->Thick = attr->val.crd;
+		pcb_route_style_change(PCB, rstdlg_ctx.curr, &attr->val.crd, NULL, NULL, NULL, NULL, 1);
 	else if (idx == rstdlg_ctx.wtxtth)
-		rst->textt = attr->val.crd;
+		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, &attr->val.crd, NULL, NULL, NULL, 1);
 	else if (idx == rstdlg_ctx.wtxtscale)
-		rst->texts = attr->val.crd;
+		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, &attr->val.crd, NULL, NULL, 1);
 	else if (idx == rstdlg_ctx.wclr)
-		rst->Clearance = attr->val.crd;
+		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, NULL, &attr->val.crd, NULL, 1);
 	else if (idx == rstdlg_ctx.wviahole) {
 		rst->Hole = attr->val.crd;
 		if (rst->Hole * 1.1 >= rstdlg_ctx.dlg[rstdlg_ctx.wviaring].val.crd) {
