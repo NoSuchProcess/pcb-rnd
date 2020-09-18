@@ -318,3 +318,23 @@ int pcb_route_style_change(pcb_board_t *pcb, int rstidx, rnd_coord_t *thick, rnd
 
 	return 0;
 }
+
+int pcb_route_style_change_name(pcb_board_t *pcb, int rstidx, char *new_name, rnd_bool undoable)
+{
+	undo_rst_t gtmp, *g = &gtmp;
+	pcb_route_style_t *rst = vtroutestyle_get(&pcb->RouteStyle, rstidx, 0);
+
+	if (rst == NULL)
+		return -1;
+
+	if (undoable) g = pcb_undo_alloc(pcb, &undo_rst, sizeof(undo_rst_t));
+
+	g->pcb = pcb;
+	g->idx = rstidx;
+	g->rst = *rst;
+	strncpy(g->rst.name, new_name, sizeof(g->rst.name));
+	undo_rst_swap(g);
+	if (undoable) pcb_undo_inc_serial();
+
+	return 0;
+}
