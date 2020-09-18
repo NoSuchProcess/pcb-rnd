@@ -290,7 +290,7 @@ static const uundo_oper_t undo_rst = {
 };
 
 
-int pcb_route_style_change(pcb_board_t *pcb, int rstidx, rnd_coord_t *thick, rnd_coord_t *textt, rnd_coord_t *texts, rnd_coord_t *clearance, rnd_cardinal_t *via_proto, rnd_bool undoable)
+int pcb_route_style_change(pcb_board_t *pcb, int rstidx, rnd_coord_t *thick, rnd_coord_t *textt, int *texts, rnd_coord_t *clearance, rnd_cardinal_t *via_proto, rnd_bool undoable)
 {
 	undo_rst_t gtmp, *g = &gtmp;
 	pcb_route_style_t *rst = vtroutestyle_get(&pcb->RouteStyle, rstidx, 0);

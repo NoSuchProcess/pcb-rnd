@@ -72,7 +72,7 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	hv.crd = rst->textt;
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtth, &hv);
 
-	hv.crd = rst->texts;
+	hv.lng = rst->texts;
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtscale, &hv);
 
 	hv.crd = rst->Clearance;
@@ -163,7 +163,7 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	else if (idx == rstdlg_ctx.wtxtth)
 		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, &attr->val.crd, NULL, NULL, NULL, 1);
 	else if (idx == rstdlg_ctx.wtxtscale)
-		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, &attr->val.crd, NULL, NULL, 1);
+		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, &attr->val.lng, NULL, NULL, 1);
 	else if (idx == rstdlg_ctx.wclr)
 		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, NULL, &attr->val.crd, NULL, 1);
 	else if (idx == rstdlg_ctx.wviahole) {
@@ -313,10 +313,10 @@ static int pcb_dlg_rstdlg(int rst_idx)
 				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			RND_DAD_LABEL(rstdlg_ctx.dlg, "Text scale:");
-			RND_DAD_COORD(rstdlg_ctx.dlg);
+			RND_DAD_INTEGER(rstdlg_ctx.dlg);
 				rstdlg_ctx.wtxtscale = RND_DAD_CURRENT(rstdlg_ctx.dlg);
 				RND_DAD_HELP(rstdlg_ctx.dlg, "Text size scale in %; 100 means normal size");
-				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
+				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, 100000);
 				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			RND_DAD_LABEL(rstdlg_ctx.dlg, "Clearance:");
