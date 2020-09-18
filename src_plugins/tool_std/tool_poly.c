@@ -50,9 +50,6 @@ void pcb_tool_poly_uninit(void)
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
-TODO("remove this when pcb_tool_poly_notify_mode() loses PCB")
-#include "board.h"
-
 void pcb_tool_poly_notify_mode(rnd_hidlib_t *hl)
 {
 	rnd_point_t *points = pcb_crosshair.AttachedPolygon.Points;
