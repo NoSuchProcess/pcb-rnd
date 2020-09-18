@@ -109,7 +109,6 @@ static void name_chg_cb_silent(int silent)
 {
 	if (rstdlg_ctx.name_pending) {
 		pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
-TODO("This change is not undoable");
 		pcb_route_style_change_name(PCB, rstdlg_ctx.curr, rstdlg_ctx.name, 1);
 		rstdlg_ctx.name_pending = 0;
 		rst_updated(silent ? NULL : rst);
