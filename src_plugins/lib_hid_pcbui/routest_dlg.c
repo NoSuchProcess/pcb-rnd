@@ -33,25 +33,15 @@ typedef struct{
 	int active; /* already open - allow only one instance */
 	int curr;
 	int wname, wlineth, wclr, wtxtscale, wtxtth, wviahole, wviaring, wattr;
+
+	rnd_hidval_t name_timer;
+
+	char name[PCB_RST_NAME_LEN];
+	unsigned name_pending:1;
 } rstdlg_ctx_t;
 
 rstdlg_ctx_t rstdlg_ctx;
 
-static void rstdlg_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
-{
-	rstdlg_ctx_t *ctx = caller_data;
-
-	{ /* can be safely removed when route style switches over to padstacks */
-		pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, ctx->curr, 0);
-		if (rst->Diameter <= rst->Hole) {
-			rnd_message(RND_MSG_ERROR, "had to increase the via ring diameter - can not be smaller than the hole");
-			rst->Diameter = rst->Hole+RND_MIL_TO_COORD(1);
-		}
-	}
-
-	RND_DAD_FREE(ctx->dlg);
-	memset(ctx, 0, sizeof(rstdlg_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
-}
 
 static void rstdlg_pcb2dlg(int rst_idx)
 {
@@ -114,6 +104,34 @@ static void rst_updated(pcb_route_style_t *rst)
 	pcb_board_set_changed_flag(PCB, 1);
 }
 
+/* if the change is silent, do not use the new route style */
+static void name_chg_cb_silent(int silent)
+{
+	if (rstdlg_ctx.name_pending) {
+		pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, rstdlg_ctx.curr, 0);
+TODO("This change is not undoable");
+		strncpy(rst->name, rstdlg_ctx.name, sizeof(rst->name));
+		rstdlg_ctx.name_pending = 0;
+		rst_updated(silent ? NULL : rst);
+	}
+}
+
+/* delayed name change */
+static void name_chg_cb(rnd_hidval_t data)
+{
+	name_chg_cb_silent(0);
+}
+
+/* call this if idx changes */
+static void idx_changed(void)
+{
+	if (rstdlg_ctx.name_pending) { /* make sure pending name update is executed on the old style */
+		if (rnd_gui->stop_timer != NULL)
+			rnd_gui->stop_timer(rnd_gui, rstdlg_ctx.name_timer);
+		name_chg_cb_silent(1);
+	}
+}
+
 static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int idx = attr - rstdlg_ctx.dlg;
@@ -125,12 +143,21 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 		return;
 	}
 
-TODO("This change is not undoable");
-
 	if (idx == rstdlg_ctx.wname) {
 		const char *s = attr->val.str;
 		while(isspace(*s)) s++;
-		strncpy(rst->name, s, sizeof(rst->name));
+		strncpy(rstdlg_ctx.name, s, sizeof(rst->name));
+
+		/* If we already have a timer going, then cancel it out */
+		if (rstdlg_ctx.name_pending && (rnd_gui->stop_timer != NULL))
+			rnd_gui->stop_timer(rnd_gui, rstdlg_ctx.name_timer);
+
+		/* Start up a new timer */
+		rstdlg_ctx.name_pending = 1;
+		if (rnd_gui->add_timer != NULL)
+			rstdlg_ctx.name_timer = rnd_gui->add_timer(rnd_gui, name_chg_cb, 1000 * 2, rstdlg_ctx.name_timer);
+		else
+			name_chg_cb(rstdlg_ctx.name_timer);
 	}
 	else if (idx == rstdlg_ctx.wlineth)
 		pcb_route_style_change(PCB, rstdlg_ctx.curr, &attr->val.crd, NULL, NULL, NULL, NULL, 1);
@@ -147,6 +174,7 @@ TODO("This change is not undoable");
 			rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
 			rst->Diameter = hv.crd;
 		}
+		rst_updated(rst);
 	}
 	else if (idx == rstdlg_ctx.wviaring) {
 		rst->Diameter = attr->val.crd;
@@ -155,14 +183,12 @@ TODO("This change is not undoable");
 			rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviahole, &hv);
 			rst->Hole = hv.crd;
 		}
-
+		rst_updated(rst);
 	}
 	else {
 		rnd_message(RND_MSG_ERROR, "Internal error: route style field does not exist");
 		return;
 	}
-
-	rst_updated(rst);
 }
 
 static int rst_edit_attr(char **key, char **val)
@@ -241,6 +267,23 @@ static void rst_del_attr_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rst_updated(rst);
 }
 
+static void rstdlg_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
+{
+	rstdlg_ctx_t *ctx = caller_data;
+
+	idx_changed(); /* flush pending timed changes */
+
+	{ /* can be safely removed when route style switches over to padstacks */
+		pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, ctx->curr, 0);
+		if (rst->Diameter <= rst->Hole) {
+			rnd_message(RND_MSG_ERROR, "had to increase the via ring diameter - can not be smaller than the hole");
+			rst->Diameter = rst->Hole+RND_MIL_TO_COORD(1);
+		}
+	}
+
+	RND_DAD_FREE(ctx->dlg);
+	memset(ctx, 0, sizeof(rstdlg_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
+}
 
 static int pcb_dlg_rstdlg(int rst_idx)
 {
@@ -248,6 +291,7 @@ static int pcb_dlg_rstdlg(int rst_idx)
 	static const char *attr_hdr[] = {"attribute key", "attribute value", NULL};
 
 	if (rstdlg_ctx.active) { /* do not open another, just refresh data to target */
+		idx_changed();
 		rstdlg_pcb2dlg(rst_idx);
 		return 0;
 	}

@@ -97,6 +97,8 @@ static void rst_force_update_chk_and_dlg()
 	int n, target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 	rnd_hid_attr_val_t hv;
 
+	idx_changed();
+
 	for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
 		hv.lng = (n == target);
 		rnd_gui->attr_dlg_set_value(rst.sub.dlg_hid_ctx, rst.wchk[n], &hv);
