@@ -498,7 +498,7 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_RouteStyle[] = "RouteStyle(style_id|style_name|@current, [set|get, trace-thickness|trace-clearance|text-thickness|text-scale|name, [value]])";
+static const char pcb_acts_RouteStyle[] = "RouteStyle(style_id|style_name|@current, [set|get], trace-thickness|trace-clearance|text-thickness|text-scale|name, [value]])";
 static const char pcb_acth_RouteStyle[] = "Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.";
 static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
