@@ -107,14 +107,20 @@ static void notify_line(rnd_hidlib_t *hl)
 			pcb_crosshair_set_local_ref(pcb_crosshair.X, pcb_crosshair.Y, rnd_true);
 	switch (pcb_crosshair.AttachedLine.State) {
 	case PCB_CH_STATE_FIRST:						/* first point */
-TODO("subc: this should work on heavy terminals too!")
-		if (pcb->RatDraw && pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr1, &ptr1) == PCB_OBJ_VOID) {
-			rnd_gui->beep(rnd_gui);
-			break;
+		if (pcb->RatDraw) {
+			/* prefer light terminal but also check for heavy terminals */
+			if ((type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3)) == PCB_OBJ_VOID)
+				type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
+			/* but make sure it is a terminal, not a via or plain object */
+			if ((type == PCB_OBJ_VOID) || (((pcb_any_obj_t *)ptr2)->term == NULL)) {
+				rnd_gui->beep(rnd_gui);
+				break;
+			}
 		}
 		if (conf_core.editor.auto_drc) {
 			pcb_find_t fctx;
-			type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
+			if (type == PCB_OBJ_VOID)
+				type = pcb_search_screen(pcb_crosshair.X, pcb_crosshair.Y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3);
 			memset(&fctx, 0, sizeof(fctx));
 			fctx.flag_set = PCB_FLAG_FOUND;
 			fctx.flag_chg_undoable = 1;
