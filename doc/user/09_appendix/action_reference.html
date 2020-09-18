@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.4 (svn r32688) an interactive printed circuit board editor ,  Revision: 32720
+This is pcb-rnd 2.2.4 (svn r32730) an interactive printed circuit board editor ,  Revision: 32792
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -343,7 +343,7 @@ This is pcb-rnd 2.2.4 (svn r32688) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#rn">rn</a></td><td>Reads netlist.</td><td>rn [name]</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#rotate90">Rotate90</a></td><td>Rotates the object under the crosshair by 90 degree steps.</td><td>pcb_move_obj(steps)</td><td></td>
 <tr><td>roundrect</td><td>Generate a rectangle with round corners</td><td>roundrect([where,] width[;height] [,rx[;ry] [,rotation [,cornstyle [,roundness]]]])</td><td>shape plugin</td>
-<tr><td>RouteStyle</td><td>Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.</td><td>RouteStyle(style_id|style_name|current, [set|get, width|clearance, [value]])</td><td></td>
+<tr><td><a href="action_details.html#routestyle">RouteStyle</a></td><td>Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.</td><td>RouteStyle(style_id|style_name|@current, [set|get, trace-thickness|trace-clearance|text-thickness|text-scale|name, [value]])</td><td></td>
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout|LayoutAs)<br>Save(AllConnections|AllUnusedPins|ElementConnections)<br>Save(PasteBuffer)<br>Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])</td><td>dialogs plugin</td>
@@ -368,9 +368,6 @@ This is pcb-rnd 2.2.4 (svn r32688) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#setunits">SetUnits</a></td><td>Set the default measurement units.</td><td>SetUnits(mm|mil)</td><td></td>
 <tr><td><a href="action_details.html#setvalue">SetValue</a></td><td>Change various board-wide values and sizes.</td><td>SetValue(Grid|Line|LineSize|Text|TextScale, delta)</td><td></td>
 <tr><td>shape</td><td>Interactive shape generator.</td><td>shape()</td><td>shape plugin</td>
-<tr><td>skline</td><td>Tool for drawing sketch lines</td><td>skline()</td><td>sketch_route plugin</td>
-<tr><td>skretriangulate</td><td>Reconstruct CDT on all layer groups</td><td>skretriangulate()</td><td>sketch_route plugin</td>
-<tr><td>sktransform</td><td>Transform sketch to geometrical wiring</td><td>sktransform(rect|oct|alldir)</td><td>sketch_route plugin</td>
 <tr><td><a href="action_details.html#smartdisperse">smartdisperse</a></td><td>Disperse subcircuits into clusters, by netlist connections</td><td>SmartDisperse([All|Selected])</td><td>smartdisperse plugin</td>
 <tr><td>split</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
 <tr><td>StatusSetText</td><td>Replace status printout with text temporarily; turn status printout back on if text is not provided.</td><td>StatusSetText([text])</td><td>lib_hid_pcbui/status</td>

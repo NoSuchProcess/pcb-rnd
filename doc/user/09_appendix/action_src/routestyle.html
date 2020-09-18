@@ -1,0 +1,15 @@
+Reads or writes route style properties.
+<p>
+The first argument addresses the style and is one of:
+<ul>
+	<li> an integer greater than zero: style ID (styles are counted from 1)
+	<li> @current, which will pick the style currently selected
+	<li> an arbitrary style name, which will pick the first style with matching name
+</ul>
+<p>
+The second argument is <b>set</b> which will modify the addressed style
+using the 4th argment <arg>value</arg> or <b>get</b>, where the 4th argument
+is omitted and the return value of the action holds the resulting value of
+the query. All sets are undoable.
+<p>
+The 3rd argument addresses the property of the style.
