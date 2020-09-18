@@ -51,9 +51,6 @@ void pcb_tool_polyhole_uninit(void)
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
 }
 
-TODO("remove this when pcb_tool_polyhole_notify_mode() loses PCB")
-#include "board.h"
-
 void pcb_tool_polyhole_notify_mode(rnd_hidlib_t *hl)
 {
 	switch (pcb_crosshair.AttachedObject.State) {
