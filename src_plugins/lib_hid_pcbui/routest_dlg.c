@@ -162,8 +162,10 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 		pcb_route_style_change(PCB, rstdlg_ctx.curr, &attr->val.crd, NULL, NULL, NULL, NULL, 1);
 	else if (idx == rstdlg_ctx.wtxtth)
 		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, &attr->val.crd, NULL, NULL, NULL, 1);
-	else if (idx == rstdlg_ctx.wtxtscale)
-		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, &attr->val.lng, NULL, NULL, 1);
+	else if (idx == rstdlg_ctx.wtxtscale) {
+		int tmp = attr->val.lng;
+		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, &tmp, NULL, NULL, 1);
+	}
 	else if (idx == rstdlg_ctx.wclr)
 		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, NULL, &attr->val.crd, NULL, 1);
 	else if (idx == rstdlg_ctx.wviahole) {
