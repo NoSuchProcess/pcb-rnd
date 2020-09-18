@@ -553,11 +553,11 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			if (strcmp(sfield, "trace-thickness") == 0) {
 				RND_ACT_CONVARG(4, FGW_COORD, RouteStyle, c = fgw_coord(&argv[4]));
-				rts->Thick = c;
+				pcb_route_style_change(PCB, number-1, &c, NULL, NULL, NULL, NULL, 1);
 			}
 			else if (strcmp(sfield, "trace-clearance") == 0) {
 				RND_ACT_CONVARG(4, FGW_COORD, RouteStyle, c = fgw_coord(&argv[4]));
-				rts->Clearance = c;
+				pcb_route_style_change(PCB, number-1, NULL, NULL, NULL, &c, NULL, 1);
 			}
 			else goto err_bad_field;
 			rnd_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
