@@ -64,7 +64,7 @@ static void str_uninit(pcb_ttf_stroke_t *s)
 }
 
 #define TRX(x) RND_MM_TO_COORD((x) * str->scale_x + str->dx)
-#define TRY(y) RND_MM_TO_COORD((y) * str->scale_y + str->dy)
+#define TRY(y) RND_MM_TO_COORD((str->ttf->face->height - (y) - str->ttf->face->ascender - str->ttf->face->descender) * str->scale_y + str->dy)
 
 static int str_move_to(const FT_Vector *to, void *s_)
 {
@@ -117,6 +117,7 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	stroke.scale_x = stroke.scale_y = 0.001;
 	stroke.sym = &f->Symbol['A'];
+	stroke.ttf = &ctx;
 
 	pcb_font_free_symbol(stroke.sym);
 
