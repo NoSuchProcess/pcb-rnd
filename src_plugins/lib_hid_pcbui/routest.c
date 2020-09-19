@@ -175,26 +175,16 @@ static void rst_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 
 static void rst_new_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	int target = vtroutestyle_len(&PCB->RouteStyle);
-	pcb_route_style_t *rst = vtroutestyle_alloc_append(&PCB->RouteStyle, 1);
-
-	strcpy(rst->name, "new style");
-	rst->Thick = conf_core.design.line_thickness;
-	rst->textt = conf_core.design.text_thickness;
-	rst->texts = conf_core.design.text_scale;
-	rst->Clearance = conf_core.design.clearance;
-	rst->Diameter = conf_core.design.via_thickness*2;
-	rst->Hole = conf_core.design.via_drilling_hole;
-
+	int target = pcb_route_style_new(PCB, "new style", 1);
+	pcb_use_route_style(&(PCB->RouteStyle.array[target]));
 	pcb_dlg_rstdlg(target);
-	rst_updated(rst);
 }
 
 static void rst_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
 	if (target >= 0) {
-		vtroutestyle_remove(&PCB->RouteStyle, target, 1);
+		pcb_route_style_del(PCB, target, 1);
 		rst_updated(NULL);
 		rst_force_update_chk_and_dlg();
 	}

@@ -61,6 +61,13 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	if (rst_idx < 0)
 		rst_idx = rstdlg_ctx.curr;
 
+	if ((rst_idx < 0) || (rst_idx >= vtroutestyle_len(&PCB->RouteStyle))) {
+		hv.str = "<invalid>";
+		rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wname, &hv);
+		return;
+	}
+
+
 	rst = vtroutestyle_get(&PCB->RouteStyle, rst_idx, 0);
 
 	hv.str = rst->name;
