@@ -78,6 +78,9 @@ static int str_line_to(const FT_Vector *to, void *s_)
 	pcb_ttf_stroke_t *str = s_;
 	double x = to->x * str->scale_x + str->dx, y = to->y * str->scale_y + str->dy;
 	rnd_trace(" line %f;%f %f;%f\n", str->x, str->y, x, y);
+	pcb_font_new_line_in_sym(str->sym,
+		RND_MM_TO_COORD(str->x), RND_MM_TO_COORD(str->y),
+		RND_MM_TO_COORD(x), RND_MM_TO_COORD(y), 1);
 	str->x = x;
 	str->y = y;
 	return 0;
@@ -88,10 +91,12 @@ static const char pcb_acts_LoadTtfGlyphs[] = "LoadTtfGlyphs(filename, srcglyps, 
 static const char pcb_acth_LoadTtfGlyphs[] = "Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font";
 fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	const char *fn;
 	pcb_ttf_t ctx = {0};
 	pcb_ttf_stroke_t stroke = {0};
 	int r;
+	pcb_font_t *f = pcb_font(pcb, 0, 1);
 
 	RND_ACT_CONVARG(1, FGW_STR, LoadTtfGlyphs, fn = argv[1].val.str);
 
@@ -108,10 +113,15 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	stroke.finish = str_finish;
 	stroke.uninit = str_uninit;
 
-	stroke.scale_x = stroke.scale_y = 0.01;
+	stroke.scale_x = stroke.scale_y = 0.001;
+	stroke.sym = &f->Symbol['A'];
 
-	r = pcb_ttf_trace(&ctx, 'A', 'o', &stroke, 1);
+	pcb_font_free_symbol(stroke.sym);
+
+
+	r = pcb_ttf_trace(&ctx, 'A', 'A', &stroke, 1);
 	rnd_trace("ttf trace; %d\n", r);
+	stroke.sym->Valid = 1;
 
 	pcb_ttf_unload(&ctx);
 	RND_ACT_IRES(-1);

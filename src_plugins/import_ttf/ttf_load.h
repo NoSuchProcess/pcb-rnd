@@ -32,6 +32,8 @@
 #include <ft2build.h>
 #include <freetype.h>
 
+#include "font.h"
+
 typedef struct pcb_ttf_s {
 	FT_Library library;
 	FT_Face face;
@@ -49,6 +51,7 @@ struct pcb_ttf_stroke_s {
 
 	double x, y;
 	double dx, dy, scale_x, scale_y;
+	pcb_symbol_t *sym;
 };
 
 /* Load the ttf font from fn; return 0 on success */
