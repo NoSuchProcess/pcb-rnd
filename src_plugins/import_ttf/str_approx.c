@@ -50,13 +50,13 @@ int stroke_approx_conic_to(const FT_Vector *control, const FT_Vector *to, void *
 	double nodes = 10, td = 1.0 / nodes;
 	FT_Vector v;
 
-	if (str_approx_comment != NULL) printf("%s conic to {\n", str_approx_comment);
+	if (str_approx_comment != NULL) rnd_trace("%s conic to {\n", str_approx_comment);
 	for(t = 0.0; t <= 1.0; t += td) {
 		v.x = sqr(1.0-t) * s->x + 2.0*t*(1.0-t)*(double)control->x + t*t*(double)to->x;
 		v.y = sqr(1.0-t) * s->y + 2.0*t*(1.0-t)*(double)control->y + t*t*(double)to->y;
 		s->funcs.line_to(&v, s);
 	}
-	if (str_approx_comment != NULL) printf("%s }\n", str_approx_comment);
+	if (str_approx_comment != NULL) rnd_trace("%s }\n", str_approx_comment);
 
 	s->funcs.line_to(to, s);
 	return 0;
@@ -69,13 +69,13 @@ int stroke_approx_cubic_to(const FT_Vector *control1, const FT_Vector *control2,
 	double nodes = 10, td = 1.0 / nodes;
 	FT_Vector v;
 
-	if (str_approx_comment != NULL) printf("%s cubic to {\n", str_approx_comment);
+	if (str_approx_comment != NULL) rnd_trace("%s cubic to {\n", str_approx_comment);
 	for(t = 0.0; t <= 1.0; t += td) {
 		v.x = cub(1.0-t)*s->x + 3.0*t*sqr(1.0-t)*(double)control1->x + 3.0*sqr(t)*(1.0-t)*(double)control2->x + cub(t)*(double)to->x;
 		v.y = cub(1.0-t)*s->y + 3.0*t*sqr(1.0-t)*(double)control1->y + 3.0*sqr(t)*(1.0-t)*(double)control2->y + cub(t)*(double)to->y;
 		s->funcs.line_to(&v, s);
 	}
-	if (str_approx_comment != NULL) printf("%s }\n", str_approx_comment);
+	if (str_approx_comment != NULL) rnd_trace("%s }\n", str_approx_comment);
 	s->funcs.line_to(to, s);
 	return 0;
 }
