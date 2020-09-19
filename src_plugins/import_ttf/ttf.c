@@ -66,6 +66,9 @@ static void str_uninit(pcb_ttf_stroke_t *s)
 #define TRX(x) RND_MM_TO_COORD((x) * str->scale_x + str->dx)
 #define TRY(y) RND_MM_TO_COORD((str->ttf->face->height - (y) - str->ttf->face->ascender - str->ttf->face->descender) * str->scale_y + str->dy)
 
+#define TRX_(x) RND_MM_TO_COORD((x) * stroke.scale_x)
+#define TRY_(y) RND_MM_TO_COORD((y) * stroke.scale_y)
+
 static int str_move_to(const FT_Vector *to, void *s_)
 {
 	pcb_ttf_stroke_t *str = s_;
@@ -125,6 +128,10 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	r = pcb_ttf_trace(&ctx, 'A', 'A', &stroke, 1);
 	rnd_trace("ttf trace; %d\n", r);
 	stroke.sym->Valid = 1;
+
+	stroke.sym->Width  = TRX_(ctx.face->glyph->advance.x);
+	stroke.sym->Height = TRY_(ctx.face->ascender + ctx.face->descender);
+	stroke.sym->Delta = RND_MIL_TO_COORD(12);
 
 	pcb_ttf_unload(&ctx);
 	RND_ACT_IRES(-1);
