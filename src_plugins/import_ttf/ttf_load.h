@@ -49,7 +49,7 @@ struct pcb_ttf_stroke_s {
 	void (*finish)(pcb_ttf_stroke_t *s);
 	void (*uninit)(pcb_ttf_stroke_t *s);
 
-	double x, y;
+	double x, y; /* in freeftype's coords */
 	double dx, dy, scale_x, scale_y;
 	pcb_symbol_t *sym;
 };

@@ -63,26 +63,28 @@ static void str_uninit(pcb_ttf_stroke_t *s)
 	rnd_trace("stroke uninit\n");
 }
 
+#define TRX(x) RND_MM_TO_COORD((x) * str->scale_x + str->dx)
+#define TRY(y) RND_MM_TO_COORD((y) * str->scale_y + str->dy)
+
 static int str_move_to(const FT_Vector *to, void *s_)
 {
 	pcb_ttf_stroke_t *str = s_;
-	double x = to->x * str->scale_x + str->dx, y = to->y * str->scale_y + str->dy;
-	rnd_trace(" line %f;%f %f;%f\n", str->x, str->y, x, y);
-	str->x = x;
-	str->y = y;
+	rnd_trace(" move %f;%f %ld;%ld\n", str->x, str->y, to->x, to->y);
+	str->x = to->x;
+	str->y = to->y;
 	return 0;
 }
 
 static int str_line_to(const FT_Vector *to, void *s_)
 {
 	pcb_ttf_stroke_t *str = s_;
-	double x = to->x * str->scale_x + str->dx, y = to->y * str->scale_y + str->dy;
-	rnd_trace(" line %f;%f %f;%f\n", str->x, str->y, x, y);
+	rnd_trace(" line %f;%f %ld;%ld\n", str->x, str->y, to->x, to->y);
 	pcb_font_new_line_in_sym(str->sym,
-		RND_MM_TO_COORD(str->x), RND_MM_TO_COORD(str->y),
-		RND_MM_TO_COORD(x), RND_MM_TO_COORD(y), 1);
-	str->x = x;
-	str->y = y;
+		TRX(str->x), TRY(str->y),
+		TRX(to->x),  TRY(to->y),
+		1);
+	str->x = to->x;
+	str->y = to->y;
 	return 0;
 }
 
