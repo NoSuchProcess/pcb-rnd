@@ -58,8 +58,7 @@ int stroke_approx_conic_to(const FT_Vector *control, const FT_Vector *to, void *
 	}
 	if (str_approx_comment != NULL) printf("%s }\n", str_approx_comment);
 
-	s->x = to->x;
-	s->y = to->y;
+	s->funcs.line_to(to, s);
 	return 0;
 }
 
@@ -77,7 +76,6 @@ int stroke_approx_cubic_to(const FT_Vector *control1, const FT_Vector *control2,
 		s->funcs.line_to(&v, s);
 	}
 	if (str_approx_comment != NULL) printf("%s }\n", str_approx_comment);
-	s->x = to->x;
-	s->y = to->y;
+	s->funcs.line_to(to, s);
 	return 0;
 }
