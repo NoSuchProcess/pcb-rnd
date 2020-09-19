@@ -334,28 +334,33 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
 	return f;
 }
 
+void pcb_font_free_symbol(pcb_symbol_t *s)
+{
+	pcb_poly_t *p;
+	pcb_arc_t *a;
+
+	free(s->Line);
+
+	for(p = polylist_first(&s->polys); p != NULL; p = polylist_first(&s->polys)) {
+		polylist_remove(p);
+		pcb_poly_free_fields(p);
+		free(p);
+	}
+
+	for(a = arclist_first(&s->arcs); a != NULL; a = arclist_first(&s->arcs)) {
+		arclist_remove(a);
+		free(a);
+	}
+
+	memset (s, 0, sizeof(pcb_symbol_t));
+}
+
 void pcb_font_free(pcb_font_t *f)
 {
 	int i;
-	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
-		pcb_poly_t *p;
-		pcb_arc_t *a;
+	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
+		pcb_font_free_symbol(&f->Symbol[i]);
 
-		free(f->Symbol[i].Line);
-
-		for(p = polylist_first(&f->Symbol[i].polys); p != NULL; p = polylist_first(&f->Symbol[i].polys)) {
-			polylist_remove(p);
-			pcb_poly_free_fields(p);
-			free(p);
-		}
-
-		for(a = arclist_first(&f->Symbol[i].arcs); a != NULL; a = arclist_first(&f->Symbol[i].arcs)) {
-			arclist_remove(a);
-			free(a);
-		}
-		
-		memset (&f->Symbol[i], 0, sizeof(f->Symbol[0]));
-	}
 	free(f->name);
 	f->name = NULL;
 	f->id = -1;

@@ -81,6 +81,9 @@ pcb_poly_t *pcb_font_new_poly_in_sym(pcb_symbol_t *Symbol, int num_points);
 
 void pcb_font_free(pcb_font_t *f);
 
+/* Free all drawing primitives of a symbol, leaving it empty */
+void pcb_font_free_symbol(pcb_symbol_t *s);
+
 /*** font kit handling ***/
 void pcb_fontkit_free(pcb_fontkit_t *fk);
 pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name);
