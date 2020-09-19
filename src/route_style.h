@@ -69,3 +69,9 @@ int pcb_route_style_change(pcb_board_t *pcb, int rstidx, rnd_coord_t *thick, rnd
 
 /* Change the name. Returns 0 on success. */
 int pcb_route_style_change_name(pcb_board_t *pcb, int rstidx, const char *new_name, rnd_bool undoable);
+
+/* Returns the index (counted from 0) or -1 on error */
+int pcb_route_style_new(pcb_board_t *pcb, const char *name, rnd_bool undoable);
+
+/* Returns 0 on success. */
+int pcb_route_style_del(pcb_board_t *pcb, int idx, rnd_bool undoable);

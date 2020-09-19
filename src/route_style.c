@@ -254,19 +254,34 @@ typedef struct {
 	pcb_board_t *pcb;
 	int idx;
 	pcb_route_style_t rst;
+	enum { RST_SET, RST_NEW, RST_DEL } cmd;
 } undo_rst_t;
 
 static int undo_rst_swap(void *udata)
 {
 	undo_rst_t *g = udata;
-	pcb_route_style_t *rst = vtroutestyle_get(&g->pcb->RouteStyle, g->idx, 0);
+	pcb_route_style_t *rst;
 
-	if (rst == NULL) {
-		rnd_message(RND_MSG_ERROR, "undo_rst_swap(): internal error: route %d does not exist\b", g->idx);
-		return -1;
+	if (g->cmd != RST_NEW) {
+		rst = vtroutestyle_get(&g->pcb->RouteStyle, g->idx, 0);
+		if (rst == NULL) {
+			rnd_message(RND_MSG_ERROR, "undo_rst_swap(): internal error: route %d does not exist\b", g->idx);
+			return -1;
+		}
 	}
+	else
+		rst = vtroutestyle_alloc_insert(&g->pcb->RouteStyle, g->idx, 1);
 
 	rnd_swap(pcb_route_style_t, *rst, g->rst);
+
+	if (g->cmd == RST_DEL)
+		vtroutestyle_remove(&g->pcb->RouteStyle, g->idx, 1);
+
+	/* invert new/del */
+	if (g->cmd == RST_NEW) g->cmd = RST_DEL;
+	else if (g->cmd == RST_DEL) g->cmd = RST_NEW;
+
+
 	rnd_event(&g->pcb->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	pcb_board_set_changed_flag(g->pcb, 1);
 
@@ -303,6 +318,7 @@ int pcb_route_style_change(pcb_board_t *pcb, int rstidx, rnd_coord_t *thick, rnd
 	g->pcb = pcb;
 	g->idx = rstidx;
 	g->rst = *rst;
+	g->cmd = RST_SET;
 	if (thick != NULL)      g->rst.Thick = *thick;
 	if (textt != NULL)      g->rst.textt = *textt;
 	if (texts != NULL)      g->rst.texts = *texts;
@@ -332,9 +348,55 @@ int pcb_route_style_change_name(pcb_board_t *pcb, int rstidx, const char *new_na
 	g->pcb = pcb;
 	g->idx = rstidx;
 	g->rst = *rst;
+	g->cmd = RST_SET;
 	strncpy(g->rst.name, new_name, sizeof(g->rst.name));
 	undo_rst_swap(g);
 	if (undoable) pcb_undo_inc_serial();
 
 	return 0;
 }
+
+int pcb_route_style_new(pcb_board_t *pcb, const char *name, rnd_bool undoable)
+{
+
+	undo_rst_t gtmp, *g = &gtmp;
+	if (undoable) g = pcb_undo_alloc(pcb, &undo_rst, sizeof(undo_rst_t));
+
+	g->pcb = pcb;
+	g->idx = vtroutestyle_len(&PCB->RouteStyle);
+	g->cmd = RST_NEW;
+
+	memset(&g->rst, 0, sizeof(g->rst));
+
+	strncpy(g->rst.name, name, sizeof(g->rst.name));
+
+	g->rst.Thick = conf_core.design.line_thickness;
+	g->rst.textt = conf_core.design.text_thickness;
+	g->rst.texts = conf_core.design.text_scale;
+	g->rst.Clearance = conf_core.design.clearance;
+	g->rst.Diameter = conf_core.design.via_thickness*2;
+	g->rst.Hole = conf_core.design.via_drilling_hole;
+
+	undo_rst_swap(g);
+	if (undoable) pcb_undo_inc_serial();
+
+	return g->idx;
+}
+
+int pcb_route_style_del(pcb_board_t *pcb, int idx, rnd_bool undoable)
+{
+	undo_rst_t gtmp, *g = &gtmp;
+	if (undoable) g = pcb_undo_alloc(pcb, &undo_rst, sizeof(undo_rst_t));
+
+	g->pcb = pcb;
+	g->idx = idx;
+	g->cmd = RST_DEL;
+
+	memset(&g->rst, 0, sizeof(g->rst));
+
+	undo_rst_swap(g);
+	if (undoable) pcb_undo_inc_serial();
+
+	return g->idx;
+}
+
