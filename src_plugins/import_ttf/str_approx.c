@@ -38,6 +38,11 @@ static double sqr(double a)
 	return a*a;
 }
 
+static double cub(double a)
+{
+	return a*a*a;
+}
+
 int stroke_approx_conic_to(const FT_Vector *control, const FT_Vector *to, void *s_)
 {
 	pcb_ttf_stroke_t *s = (pcb_ttf_stroke_t *)s_;
@@ -61,7 +66,18 @@ int stroke_approx_conic_to(const FT_Vector *control, const FT_Vector *to, void *
 int stroke_approx_cubic_to(const FT_Vector *control1, const FT_Vector *control2, const FT_Vector *to, void *s_)
 {
 	pcb_ttf_stroke_t *s = (pcb_ttf_stroke_t *)s_;
+	double t;
+	double nodes = 10, td = 1.0 / nodes;
+	FT_Vector v;
+
 	if (str_approx_comment != NULL) printf("%s cubic to {\n", str_approx_comment);
+	for(t = 0.0; t <= 1.0; t += td) {
+		v.x = cub(1.0-t)*s->x + 3.0*t*sqr(1.0-t)*(double)control1->x + 3.0*sqr(t)*(1.0-t)*(double)control2->x + cub(t)*(double)to->x;
+		v.y = cub(1.0-t)*s->y + 3.0*t*sqr(1.0-t)*(double)control1->y + 3.0*sqr(t)*(1.0-t)*(double)control2->y + cub(t)*(double)to->y;
+		s->funcs.line_to(&v, s);
+	}
 	if (str_approx_comment != NULL) printf("%s }\n", str_approx_comment);
+	s->x = to->x;
+	s->y = to->y;
 	return 0;
 }
