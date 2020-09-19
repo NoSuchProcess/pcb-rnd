@@ -3206,13 +3206,20 @@ Rotates the object under the mouse pointer by 90 degree
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-RouteStyle(style_id|style_name|@current, [set|get, trace-thickness|trace-clearance|text-thickness|text-scale|name, [value]])
+RouteStyle(style_id|style_name|@current, [set|get|del], [trace-thickness|trace-clearance|text-thickness|text-scale|name], [value]])
+RouteStyle(new, [name])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
 Reads or writes route style properties. 
+<p>
+ If the first argument is 
+<b>
+new
+</b>
+, a new style is created, optionally using the name provided as the second argument; else the following happens. 
 <p>
  The first argument addresses the style and is one of: 
 <ul>
@@ -3226,19 +3233,35 @@ Reads or writes route style properties.
 </ul>
  
 <p>
- The second argument is 
+ The second argument is one of: 
+<ul>
+  
+<li>
+ 
 <b>
 set
 </b>
- which will modify the addressed style using the 4th argment 
+, which will modify the addressed style using the 4th argment 
 <i>value</i>
- or 
+  
+<li>
+ 
 <b>
 get
 </b>
-, where the 4th argument is omitted and the return value of the action holds the resulting value of the query. All sets are undoable. 
+, where the 4th argument is omitted and the return value of the action holds the resulting value of the query  
+<li>
+ 
+<b>
+del
+</b>
+, which will remove the style addressed. 
+</ul>
+ 
 <p>
  The 3rd argument addresses the property of the style. 
+<p>
+ Note: all operations by this action are undoable. 
 </dd></dl>
 
 <h2 id="s">s</h2>

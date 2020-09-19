@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.4 (svn r32730) an interactive printed circuit board editor ,  Revision: 32792
+This is pcb-rnd 2.2.4 (svn r32730) an interactive printed circuit board editor ,  Revision: 32805
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -343,7 +343,7 @@ This is pcb-rnd 2.2.4 (svn r32730) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#rn">rn</a></td><td>Reads netlist.</td><td>rn [name]</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#rotate90">Rotate90</a></td><td>Rotates the object under the crosshair by 90 degree steps.</td><td>pcb_move_obj(steps)</td><td></td>
 <tr><td>roundrect</td><td>Generate a rectangle with round corners</td><td>roundrect([where,] width[;height] [,rx[;ry] [,rotation [,cornstyle [,roundness]]]])</td><td>shape plugin</td>
-<tr><td><a href="action_details.html#routestyle">RouteStyle</a></td><td>Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.</td><td>RouteStyle(style_id|style_name|@current, [set|get, trace-thickness|trace-clearance|text-thickness|text-scale|name, [value]])</td><td></td>
+<tr><td><a href="action_details.html#routestyle">RouteStyle</a></td><td>Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.</td><td>RouteStyle(style_id|style_name|@current, [set|get|del], [trace-thickness|trace-clearance|text-thickness|text-scale|name], [value]])<br>RouteStyle(new, [name])</td><td></td>
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout|LayoutAs)<br>Save(AllConnections|AllUnusedPins|ElementConnections)<br>Save(PasteBuffer)<br>Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])</td><td>dialogs plugin</td>
