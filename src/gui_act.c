@@ -498,7 +498,9 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_RouteStyle[] = "RouteStyle(style_id|style_name|@current, [set|get], trace-thickness|trace-clearance|text-thickness|text-scale|name, [value]])";
+static const char pcb_acts_RouteStyle[] = 
+	"RouteStyle(style_id|style_name|@current, [set|get|del], [trace-thickness|trace-clearance|text-thickness|text-scale|name], [value]])\n"
+	"RouteStyle(new, [name])";
 static const char pcb_acth_RouteStyle[] = "Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.";
 /* DOC: routestyle.html */
 static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -513,6 +515,14 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_CONVARG(1, FGW_STR, RouteStyle, str = argv[1].val.str);
 	RND_ACT_MAY_CONVARG(2, FGW_STR, RouteStyle, cmd = argv[2].val.str);
 	RND_ACT_MAY_CONVARG(3, FGW_STR, RouteStyle, sfield = argv[3].val.str);
+
+	if (strcmp(str, "new") == 0) {
+		str = "new style1";
+		RND_ACT_MAY_CONVARG(2, FGW_STR, RouteStyle, str = argv[2].val.str);
+		res->type = FGW_INT;
+		res->val.nat_int = pcb_route_style_new(PCB, str, 1);
+		return 0;
+	}
 
 	is_curr = (strcmp(str, "@current") == 0);
 	if (!is_curr) {
@@ -549,6 +559,10 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_board_set_via_drilling_hole(rts->Hole, rnd_true);
 			pcb_board_set_clearance(rts->Clearance);
 			break;
+		case 'd': /* del */
+			res->type = FGW_INT;
+			res->val.nat_int = pcb_route_style_del(PCB, number-1, 1);
+			return 0;
 		case 's': /* set */
 			if (sfield == NULL) goto err_missing_field;
 
