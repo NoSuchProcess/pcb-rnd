@@ -118,8 +118,22 @@ static fgw_error_t pcb_act_IDPList(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			return 0;
 
 		case act_read_keywords_print:
-TODO("print");
-			break;
+			{
+				gds_t tmp;
+				int first = 1;
+
+				gds_init(&tmp);
+				for(idp = pcb_idpath_list_first(list); idp != NULL; idp = pcb_idpath_list_next(idp)) {
+					if (!first)
+						gds_append(&tmp, ' ');
+					pcb_append_idpath(&tmp, idp, 0);
+					first = 0;
+				}
+				res->type = FGW_STR | FGW_DYN;
+				res->val.str = tmp.array;
+			}
+			return 0;
+
 	}
 
 	return -1;
