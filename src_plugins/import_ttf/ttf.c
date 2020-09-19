@@ -39,13 +39,81 @@
 #include <librnd/core/hid.h>
 
 #include "ttf_load.h"
+#include "str_approx.h"
 
 static const char *ttf_cookie = "ttf importer";
+
+static void str_init(pcb_ttf_stroke_t *s)
+{
+	rnd_trace("stroke init\n");
+}
+
+static void str_start(pcb_ttf_stroke_t *s, int chr)
+{
+	rnd_trace("stroke start\n");
+}
+
+static void str_finish(pcb_ttf_stroke_t *s)
+{
+	rnd_trace("stroke finish\n");
+}
+
+static void str_uninit(pcb_ttf_stroke_t *s)
+{
+	rnd_trace("stroke uninit\n");
+}
+
+static int str_move_to(const FT_Vector *to, void *s_)
+{
+	pcb_ttf_stroke_t *str = s_;
+	double x = to->x * str->scale_x + str->dx, y = to->y * str->scale_y + str->dy;
+	rnd_trace(" line %f;%f %f;%f\n", str->x, str->y, x, y);
+	str->x = x;
+	str->y = y;
+	return 0;
+}
+
+static int str_line_to(const FT_Vector *to, void *s_)
+{
+	pcb_ttf_stroke_t *str = s_;
+	double x = to->x * str->scale_x + str->dx, y = to->y * str->scale_y + str->dy;
+	rnd_trace(" line %f;%f %f;%f\n", str->x, str->y, x, y);
+	str->x = x;
+	str->y = y;
+	return 0;
+}
+
 
 static const char pcb_acts_LoadTtfGlyphs[] = "LoadTtfGlyphs(filename, srcglyps, [dstchars])";
 static const char pcb_acth_LoadTtfGlyphs[] = "Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font";
 fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	const char *fn;
+	pcb_ttf_t ctx = {0};
+	pcb_ttf_stroke_t stroke = {0};
+	int r;
+
+	RND_ACT_CONVARG(1, FGW_STR, LoadTtfGlyphs, fn = argv[1].val.str);
+
+	r = pcb_ttf_load(&ctx, fn);
+	rnd_trace("ttf load; %d\n", r);
+
+	stroke.funcs.move_to = str_move_to;
+	stroke.funcs.line_to = str_line_to;
+	stroke.funcs.conic_to = stroke_approx_conic_to;
+	stroke.funcs.cubic_to = stroke_approx_cubic_to;
+	
+	stroke.init   = str_init;
+	stroke.start  = str_start;
+	stroke.finish = str_finish;
+	stroke.uninit = str_uninit;
+
+	stroke.scale_x = stroke.scale_y = 0.01;
+
+	r = pcb_ttf_trace(&ctx, 'A', 'o', &stroke, 1);
+	rnd_trace("ttf trace; %d\n", r);
+
+	pcb_ttf_unload(&ctx);
 	RND_ACT_IRES(-1);
 	return 0;
 }
