@@ -517,7 +517,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(3, FGW_STR, RouteStyle, sfield = argv[3].val.str);
 
 	if (strcmp(str, "new") == 0) {
-		str = "new style1";
+		str = "new style";
 		RND_ACT_MAY_CONVARG(2, FGW_STR, RouteStyle, str = argv[2].val.str);
 		res->type = FGW_INT;
 		res->val.nat_int = pcb_route_style_new(PCB, str, 1);
