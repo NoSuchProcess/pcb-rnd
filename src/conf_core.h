@@ -36,8 +36,8 @@ typedef struct {
 		RND_CFT_BOOLEAN rubber_band_mode;      /* move, rotate use rubberband connections */
 		RND_CFT_BOOLEAN rubber_band_keep_midlinedir; /* keep line direction when a middle line is moved */
 		RND_CFT_BOOLEAN swap_start_direction;  /* change starting direction after each click */
-		RND_CFT_BOOLEAN show_drc;              /* show drc region on crosshair */
-		RND_CFT_BOOLEAN auto_drc;              /* when set, PCB doesn't let you place copper that violates DRC. */
+		RND_CFT_BOOLEAN show_drc;              /* (misnomer) show style clearance on crosshair */
+		RND_CFT_BOOLEAN auto_drc;              /* (misnomer) block drawing traces that get too close (according to style clearance) to other nets */
 		RND_CFT_BOOLEAN conn_find_rat;         /* connection find includes rats; when off, only existing galvanic connections are mapped */
 		RND_CFT_BOOLEAN show_number;           /* OBSOLETE: pinout shows number */
 		RND_CFT_BOOLEAN orthogonal_moves;      /* move items orthogonally. */
