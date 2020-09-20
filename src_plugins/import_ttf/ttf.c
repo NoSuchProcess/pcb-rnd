@@ -192,13 +192,13 @@ static int conv_char_desc(const char *s, const char **end)
 	/* unicode &# code point, hex or dec */
 	if ((s[0] == '&') && (s[1] == '#')) {
 		if (s[2] == 'x')
-			return strtol(s+3, end, 16);
-		return strtol(s+2, end, 10);
+			return strtol(s+3, (char **)end, 16);
+		return strtol(s+2, (char **)end, 10);
 	}
 
 	/* unicode U+ code point, hex */
 	if ((s[0] == 'U') && (s[1] == '+'))
-		return strtol(s+2, end, 16);
+		return strtol(s+2, (char **)end, 16);
 
 	/* assume plain character */
 	*end = s+1;
