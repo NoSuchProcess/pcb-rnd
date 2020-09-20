@@ -57,7 +57,7 @@ static void drc_rules_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	rnd_actionva(&PCB->hidlib, attr->user_data, NULL);
 }
 
-static pref_confitem_t drc_sizes[] = {
+static pref_confitem_t limit_sizes[] = {
 	{"Minimum copper spacing", "design/bloat", 0, NULL},
 	{"Minimum copper width", "design/min_wid", 0, NULL},
 	{"Minimum silk width", "design/min_slk", 0, NULL},
@@ -65,14 +65,14 @@ static pref_confitem_t drc_sizes[] = {
 	{NULL, NULL, 0}
 };
 
-static void pref_sizes_drc_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void pref_sizes_limit_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
 
 	if (pref_dlg2conf_pre(ctx) == NULL)
 		return;
 
-	pcb_pref_dlg2conf_table(ctx, drc_sizes, attr);
+	pcb_pref_dlg2conf_table(ctx, limit_sizes, attr);
 
 	pref_dlg2conf_post(ctx);
 }
@@ -96,7 +96,7 @@ static void pref_isle_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 void pcb_dlg_pref_sizes_close(pref_ctx_t *ctx)
 {
-	pcb_pref_conflist_remove(ctx, drc_sizes);
+	pcb_pref_conflist_remove(ctx, limit_sizes);
 }
 
 void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
@@ -127,7 +127,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 		RND_DAD_LABEL(ctx->dlg, "Limiting sizes (not DRC)");
 		RND_DAD_LABEL(ctx->dlg, "(Used when the code needs to figure the absolute global smallest value)");
 		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
-			pcb_pref_create_conftable(ctx, drc_sizes, pref_sizes_drc_dlg2conf);
+			pcb_pref_create_conftable(ctx, limit_sizes, pref_sizes_limit_dlg2conf);
 		RND_DAD_END(ctx->dlg);
 
 		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
