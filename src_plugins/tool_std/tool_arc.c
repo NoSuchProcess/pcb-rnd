@@ -145,7 +145,7 @@ void pcb_tool_arc_draw_attached(rnd_hidlib_t *hl)
 		pcb_xordraw_attached_arc(conf_core.design.line_thickness);
 		if (conf_core.editor.show_drc) {
 			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
-			pcb_xordraw_attached_arc(conf_core.design.line_thickness + 2 * (conf_core.design.bloat + 1));
+			pcb_xordraw_attached_arc(conf_core.design.line_thickness + 2 * (conf_core.design.clearance + 1));
 			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 		}
 	}
@@ -164,7 +164,7 @@ void pcb_tool_arc_draw_attached(rnd_hidlib_t *hl)
 			pcb_draw_wireframe_line(pcb_crosshair.GC,
 				pcb_crosshair.X, pcb_crosshair.Y,
 				pcb_crosshair.X, pcb_crosshair.Y,
-				conf_core.design.line_thickness + (2 * conf_core.design.bloat), 0);
+				conf_core.design.line_thickness + (2 * conf_core.design.clearance), 0);
 			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 		}
 	}

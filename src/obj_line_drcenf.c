@@ -243,7 +243,7 @@ double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *en
 	line1.Flags = line2.Flags = pcb_no_flags();
 	line1.parent_type = line2.parent_type = PCB_PARENT_LAYER;
 	line1.parent.layer = line2.parent.layer = PCB_CURRLAYER(PCB);
-	line1.Thickness = conf_core.design.line_thickness + 2 * (conf_core.design.bloat + 1);
+	line1.Thickness = conf_core.design.line_thickness + 2 * (conf_core.design.clearance + 1);
 	line2.Thickness = line1.Thickness;
 	line1.Clearance = line2.Clearance = 0;
 	line1.Point1.X = start->X;
