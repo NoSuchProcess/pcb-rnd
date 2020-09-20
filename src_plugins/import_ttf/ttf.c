@@ -177,16 +177,43 @@ static int str_line_to(const FT_Vector *to, void *s_)
 	return 0;
 }
 
+static int conv_char_desc(const char *s, const char **end)
+{
+	/* explicit '' */
+	if (s[0] == '\'') {
+		if (s[2] == '\'') {
+			*end = s+3;
+			return s[1];
+		}
+		*end = s+2;
+		return -1;
+	}
+
+	/* unicode &# code point, hex or dec */
+	if ((s[0] == '&') && (s[1] == '#')) {
+		if (s[2] == 'x')
+			return strtol(s+3, end, 16);
+		return strtol(s+2, end, 10);
+	}
+
+	/* unicode U+ code point, hex */
+	if ((s[0] == 'U') && (s[1] == '+'))
+		return strtol(s+2, end, 16);
+
+	/* assume plain character */
+	*end = s+1;
+	return s[0];
+}
 
 static const char pcb_acts_LoadTtfGlyphs[] = "LoadTtfGlyphs(filename, srcglyps, [dstchars], [outline|polygon], [scale], [offset])";
 static const char pcb_acth_LoadTtfGlyphs[] = "Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font";
 fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	const char *fn, *ssrc, *smode, *sdst, *sscale, *soffs;
+	const char *fn, *ssrc, *smode = "polygon", *sdst = NULL, *sscale = NULL, *soffs = NULL, *end = NULL;
 	pcb_ttf_t ctx = {0};
 	pcb_ttf_stroke_t stroke = {0};
-	int r, ret = 0;
+	int r, ret = 0, src, dst, src_from, src_to;
 	pcb_font_t *f = pcb_font(pcb, 0, 1);
 
 	RND_ACT_CONVARG(1, FGW_STR, LoadTtfGlyphs, fn = argv[1].val.str);
@@ -203,38 +230,64 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	rnd_trace("ttf load; %d\n", r);
 
+	src_from = conv_char_desc(ssrc, &end);
+	if ((end[0] == '.') && (end[1] == '.'))
+		src_to = conv_char_desc(end+2, &end);
+	else
+		src_to = src_from;
+
+	if ((end[0] != '\0') || (src_from < 0) || (src_to < 0)) {
+		rnd_message(RND_MSG_ERROR, "LoadTtfGlyphs(): invalid source character: %s\n", ssrc);
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+
+	if (sdst != NULL) {
+		dst = conv_char_desc(sdst, &end);
+		if ((end[0] != '\0') || (dst < 0) || (dst > 255)) {
+			rnd_message(RND_MSG_ERROR, "LoadTtfGlyphs(): invalid destination character: %s\n", sdst);
+			RND_ACT_IRES(-1);
+			return 0;
+		}
+	}
+	else
+		dst = src_from;
+
 	stroke.funcs.move_to = str_move_to;
 	stroke.funcs.line_to = str_line_to;
 	stroke.funcs.conic_to = stroke_approx_conic_to;
 	stroke.funcs.cubic_to = stroke_approx_cubic_to;
-	
+
 	stroke.init   = str_init;
 	stroke.start  = str_start;
 	stroke.finish = str_finish;
 	stroke.uninit = str_uninit;
 
 	stroke.scale_x = stroke.scale_y = 0.001;
-	stroke.sym = &f->Symbol['A'];
 	stroke.ttf = &ctx;
 
-	stroke.want_poly = 1;
+	for(src = src_from; src <= src_to; src++,dst++) {
+		rnd_trace("face: %d -> %d\n", src, dst);
+		stroke.sym = &f->Symbol[dst];
 
-	pcb_font_free_symbol(stroke.sym);
+		stroke.want_poly = 1;
 
+		pcb_font_free_symbol(stroke.sym);
 
-	r = pcb_ttf_trace(&ctx, 'A', 'A', &stroke, 1);
-	if (r != 0)
-		ret = -1;
+		r = pcb_ttf_trace(&ctx, src, src, &stroke, 1);
+		if (r != 0)
+			ret = -1;
 
-	if (stroke.want_poly) {
-		poly_flush(&stroke);
-		poly_apply(&stroke);
+		if (stroke.want_poly) {
+			poly_flush(&stroke);
+			poly_apply(&stroke);
+		}
+
+		stroke.sym->Valid = 1;
+		stroke.sym->Width  = TRX_(ctx.face->glyph->advance.x);
+		stroke.sym->Height = TRY_(ctx.face->ascender + ctx.face->descender);
+		stroke.sym->Delta = RND_MIL_TO_COORD(12);
 	}
-
-	stroke.sym->Valid = 1;
-	stroke.sym->Width  = TRX_(ctx.face->glyph->advance.x);
-	stroke.sym->Height = TRY_(ctx.face->ascender + ctx.face->descender);
-	stroke.sym->Delta = RND_MIL_TO_COORD(12);
 
 	pcb_ttf_unload(&ctx);
 	RND_ACT_IRES(ret);
