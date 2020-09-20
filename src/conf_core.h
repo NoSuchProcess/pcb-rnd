@@ -150,13 +150,13 @@ typedef struct {
 		RND_CFT_COORD line_thickness;
 		RND_CFT_COORD clearance;
 
-		/* old drc settings */
-		RND_CFT_COORD bloat;                   /* minimum space between copper features on different networks */
-		RND_CFT_COORD shrink;                  /* minimum overlap between connected copper features */
-		RND_CFT_COORD min_wid;                 /* minimum copper width */
-		RND_CFT_COORD min_slk;                 /* minimum silk width */
-		RND_CFT_COORD min_drill;               /* minimum drill diameter */
-		RND_CFT_COORD min_ring;                /* minimum annular ring */
+		/* limiting sizes (old DRC) settings */
+		RND_CFT_COORD bloat;                   /* core: size of box-style clearance around text objects; old plugins: gap between copper features on different nets */
+		RND_CFT_COORD shrink;                  /* [OBSOLETE] minimum overlap between connected copper features */
+		RND_CFT_COORD min_wid;                 /* core: minimum copper thickness in stroked text, core+plugins: implicit outline rectangle thickness */
+		RND_CFT_COORD min_slk;                 /* core: minimum silk thickness in stroked text, core+plugins: implicit outline rectangle thickness on silk layers */
+		RND_CFT_COORD min_drill;               /* [OBSOLETE] minimum drill diameter */
+		RND_CFT_COORD min_ring;                /* [OBSOLETE] minimum annular ring */
 
 		struct {                           /* drc: new, flexible drc settings */
 			RND_CFT_COORD min_copper_clearance;  /* minimum space between copper features on different networks (default when the net attributes or other settings don't specify a different value) */
