@@ -29,8 +29,15 @@
 #ifndef PCB_TTF_LOAD_H
 #define PCB_TTF_LOAD_H
 
+#include "config.h"
+
 #include <ft2build.h>
 #include <freetype.h>
+#include <math.h>
+
+#include <genvector/vtp0.h>
+#include <librnd/poly/rtree.h>
+#include <librnd/poly/polyarea.h>
 
 #include "font.h"
 
@@ -53,6 +60,12 @@ struct pcb_ttf_stroke_s {
 	double dx, dy, scale_x, scale_y;
 	pcb_symbol_t *sym;
 	pcb_ttf_t *ttf;
+
+
+	unsigned want_poly:1;
+
+	vtp0_t poly_pos, poly_neg; /* of (rnd_polyarea_t *) */
+	rnd_pline_t *contour;
 };
 
 /* Load the ttf font from fn; return 0 on success */
