@@ -253,6 +253,16 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		dst = src_from;
 
+	if (strncmp(smode, "poly", 4) == 0)
+		stroke.want_poly = 1;
+	else if (strcmp(smode, "outline") == 0)
+		stroke.want_poly = 0;
+	else {
+		rnd_message(RND_MSG_ERROR, "LoadTtfGlyphs(): invalid mode: %s\n", smode);
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+
 	stroke.funcs.move_to = str_move_to;
 	stroke.funcs.line_to = str_line_to;
 	stroke.funcs.conic_to = stroke_approx_conic_to;
@@ -270,7 +280,6 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_trace("face: %d -> %d\n", src, dst);
 		stroke.sym = &f->Symbol[dst];
 
-		stroke.want_poly = 1;
 
 		pcb_font_free_symbol(stroke.sym);
 
