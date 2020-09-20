@@ -129,6 +129,16 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			pcb_pref_create_conftable(ctx, drc_sizes, pref_sizes_drc_dlg2conf);
 		RND_DAD_END(ctx->dlg);
+
+		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
+			RND_DAD_LABEL(ctx->dlg, "polygon isle minimum size\n[square um]");
+			RND_DAD_REAL(ctx->dlg);
+				ctx->sizes.wisle = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_MINMAX(ctx->dlg, 0, RND_MAX_COORD);
+				ctx->dlg[ctx->sizes.wisle].val.dbl = (conf_core.design.poly_isle_area / 1000000.0);
+				RND_DAD_CHANGE_CB(ctx->dlg, pref_isle_dlg2brd);
+		RND_DAD_END(ctx->dlg);
+
 	RND_DAD_END(ctx->dlg);
 
 	RND_DAD_BEGIN_HBOX(ctx->dlg);
@@ -142,19 +152,6 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 				RND_DAD_SET_ATTR_FIELD(ctx->dlg, user_data, ra);
 				RND_DAD_CHANGE_CB(ctx->dlg, drc_rules_cb);
 		}
-	RND_DAD_END(ctx->dlg);
-
-	RND_DAD_BEGIN_VBOX(ctx->dlg);
-		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
-		RND_DAD_LABEL(ctx->dlg, "misc sizes");
-		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
-			RND_DAD_LABEL(ctx->dlg, "polygon isle minimum size\n[square um]");
-			RND_DAD_REAL(ctx->dlg);
-				ctx->sizes.wisle = RND_DAD_CURRENT(ctx->dlg);
-				RND_DAD_MINMAX(ctx->dlg, 0, RND_MAX_COORD);
-				ctx->dlg[ctx->sizes.wisle].val.dbl = (conf_core.design.poly_isle_area / 1000000.0);
-				RND_DAD_CHANGE_CB(ctx->dlg, pref_isle_dlg2brd);
-		RND_DAD_END(ctx->dlg);
 	RND_DAD_END(ctx->dlg);
 }
 
