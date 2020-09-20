@@ -61,7 +61,6 @@ static pref_confitem_t limit_sizes[] = {
 	{"Minimum copper spacing", "design/bloat", 0, NULL},
 	{"Minimum copper width", "design/min_wid", 0, NULL},
 	{"Minimum silk width", "design/min_slk", 0, NULL},
-	{"Minimum drill diameter", "design/min_drill", 0, NULL},
 	{NULL, NULL, 0}
 };
 
