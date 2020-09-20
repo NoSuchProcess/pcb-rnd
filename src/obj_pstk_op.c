@@ -306,8 +306,8 @@ void *pcb_pstkop_change_2nd_size(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	pcb_pstk_proto_copy(&proto, pcb_pstk_get_proto(ps));
 	if (!ctx->chgsize.is_absolute) {
 		proto.hdia += ctx->chgsize.value;
-		if (proto.hdia < conf_core.design.min_drill)
-			proto.hdia = conf_core.design.min_drill;
+		if (proto.hdia < 2)
+			proto.hdia = 2;
 	}
 	else
 		proto.hdia = ctx->chgsize.value;
