@@ -30,6 +30,7 @@
 
 #include "ttf_load.h"
 #include "str_approx.h"
+#include <librnd/core/error.h>
 
 char *str_approx_comment = "!!";
 
