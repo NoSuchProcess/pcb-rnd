@@ -5,6 +5,9 @@
 - CLEANUP: extobj copy/move: two set of bugs: ml4290 and ml4291 [report: Majenko]
 + CLEANUP: change show/enforce DRC to show/enforce routing style clearance [report: Ade]
 - FEATURE: if drc_query is disabled, it is hard to figure because the preferences window or the drc_query dialog doesn't show; plus the drc window should also list the number of drc plugins ran [report: Majenko]
+- FEATURE: DRC: net attribute based clearance [report: Nicklas]
+- FEATURE: optional: when hovering over an editable object, draw edit/grab points as labels [report: Majenko]
+- FEATURE: fontsel: ttf import?
 - BUG: openscad export: unticking top copper (and probably others) in the export dialog doesn't stop the plugin from exporting everything [report: Bdale]
 - BUG: openscad export: load a board from menu, {f e} export; load another board from menu, {f e} export: output is set to the old file name! [report: Igor2]
 - BUG: advanced search: no quote around strings for subc footprint; no padstack in the type listing; propset(padstack/clearance, 20mil) doesn't work ml=4321 [report: Igor2]
@@ -26,10 +29,7 @@
 	- FEATURE: gfx rotated pixmap scale adjustment: missing in lesstif, partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
-- FEATURE: DRC: net attribute based clearance [report: Nicklas]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
-- FEATURE: optional: when hovering over an editable object, draw edit/grab points as labels [report: Majenko]
-- FEATURE: fontsel: ttf import?
 - FEATURE: (TT) route style upgrade to prototypes - requires lihata v8:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
