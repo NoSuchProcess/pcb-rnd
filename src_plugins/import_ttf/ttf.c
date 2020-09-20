@@ -205,12 +205,28 @@ static int conv_char_desc(const char *s, const char **end)
 	return s[0];
 }
 
+static int conv_coord_pair(const char *s, double *x, double *y)
+{
+	char *end;
+	*x = strtod(s, &end);
+	if (*end == '\0') {
+		*y = *x;
+		return 0;
+	}
+	if ((*end != ',') && (*end != ';') && (*end != 'x') && (*end != '*') && (*end != '/'))
+		return -1;
+	*y = strtod(end+1, &end);
+	if (*end == '\0')
+		return 0;
+	return -1;
+}
+
 static const char pcb_acts_LoadTtfGlyphs[] = "LoadTtfGlyphs(filename, srcglyps, [dstchars], [outline|polygon], [scale], [offset])";
 static const char pcb_acth_LoadTtfGlyphs[] = "Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font";
 fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	const char *fn, *ssrc, *smode = "polygon", *sdst = NULL, *sscale = NULL, *soffs = NULL, *end = NULL;
+	const char *fn, *ssrc, *smode = "polygon", *sdst = NULL, *sscale = "0.001", *soffs = "0", *end = NULL;
 	pcb_ttf_t ctx = {0};
 	pcb_ttf_stroke_t stroke = {0};
 	int r, ret = 0, src, dst, src_from, src_to;
@@ -263,6 +279,18 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
+	if (conv_coord_pair(sscale, &stroke.scale_x, &stroke.scale_y) != 0) {
+		rnd_message(RND_MSG_ERROR, "LoadTtfGlyphs(): invalid scale: %s\n", sscale);
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+	
+	if (conv_coord_pair(soffs,  &stroke.dx, &stroke.dy) != 0) {
+		rnd_message(RND_MSG_ERROR, "LoadTtfGlyphs(): invalid offs: %s\n", sscale);
+		RND_ACT_IRES(-1);
+		return 0;
+	}
+
 	stroke.funcs.move_to = str_move_to;
 	stroke.funcs.line_to = str_line_to;
 	stroke.funcs.conic_to = stroke_approx_conic_to;
@@ -273,13 +301,11 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	stroke.finish = str_finish;
 	stroke.uninit = str_uninit;
 
-	stroke.scale_x = stroke.scale_y = 0.001;
 	stroke.ttf = &ctx;
 
 	for(src = src_from; src <= src_to; src++,dst++) {
 		rnd_trace("face: %d -> %d\n", src, dst);
 		stroke.sym = &f->Symbol[dst];
-
 
 		pcb_font_free_symbol(stroke.sym);
 
@@ -297,6 +323,8 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		stroke.sym->Height = TRY_(ctx.face->ascender + ctx.face->descender);
 		stroke.sym->Delta = RND_MIL_TO_COORD(12);
 	}
+
+rnd_trace(" xform: %f;%f %f;%f\n", stroke.scale_x, stroke.scale_y, stroke.dx, stroke.dy);
 
 	pcb_ttf_unload(&ctx);
 	RND_ACT_IRES(ret);
