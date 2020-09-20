@@ -60,10 +60,8 @@ static void drc_rules_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 static pref_confitem_t drc_sizes[] = {
 	{"Minimum copper spacing", "design/bloat", 0, NULL},
 	{"Minimum copper width", "design/min_wid", 0, NULL},
-	{"Minimum copper overlap", "design/shrink", 0, NULL},
 	{"Minimum silk width", "design/min_slk", 0, NULL},
 	{"Minimum drill diameter", "design/min_drill", 0, NULL},
-	{"Minimum annular ring", "design/min_ring", 0, NULL},
 	{NULL, NULL, 0}
 };
 
@@ -126,10 +124,8 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
-		RND_DAD_LABEL(ctx->dlg, "*OBSOLETE* DRC; do not use; details:");
-		RND_DAD_STRING(ctx->dlg);
-		RND_DAD_DEFAULT_PTR(ctx->dlg, "http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=deprecation#olddrc");
-		RND_DAD_WIDTH_CHR(ctx->dlg, 64);
+		RND_DAD_LABEL(ctx->dlg, "Limiting sizes (not DRC)");
+		RND_DAD_LABEL(ctx->dlg, "(Used when the code needs to figure the absolute global smallest value)");
 		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			pcb_pref_create_conftable(ctx, drc_sizes, pref_sizes_drc_dlg2conf);
 		RND_DAD_END(ctx->dlg);
