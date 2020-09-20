@@ -178,20 +178,29 @@ static int str_line_to(const FT_Vector *to, void *s_)
 }
 
 
-static const char pcb_acts_LoadTtfGlyphs[] = "LoadTtfGlyphs(filename, srcglyps, [dstchars])";
+static const char pcb_acts_LoadTtfGlyphs[] = "LoadTtfGlyphs(filename, srcglyps, [dstchars], [outline|polygon], [scale], [offset])";
 static const char pcb_acth_LoadTtfGlyphs[] = "Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font";
 fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	const char *fn;
+	const char *fn, *ssrc, *smode, *sdst, *sscale, *soffs;
 	pcb_ttf_t ctx = {0};
 	pcb_ttf_stroke_t stroke = {0};
-	int r;
+	int r, ret = 0;
 	pcb_font_t *f = pcb_font(pcb, 0, 1);
 
 	RND_ACT_CONVARG(1, FGW_STR, LoadTtfGlyphs, fn = argv[1].val.str);
+	RND_ACT_CONVARG(2, FGW_STR, LoadTtfGlyphs, ssrc = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_STR, LoadTtfGlyphs, smode = argv[3].val.str);
+	RND_ACT_MAY_CONVARG(4, FGW_STR, LoadTtfGlyphs, sdst = argv[4].val.str);
+	RND_ACT_MAY_CONVARG(5, FGW_STR, LoadTtfGlyphs, sscale = argv[5].val.str);
+	RND_ACT_MAY_CONVARG(6, FGW_STR, LoadTtfGlyphs, soffs = argv[6].val.str);
 
 	r = pcb_ttf_load(&ctx, fn);
+	if (r != 0) {
+		RND_ACT_IRES(-1);
+		return 0;
+	}
 	rnd_trace("ttf load; %d\n", r);
 
 	stroke.funcs.move_to = str_move_to;
@@ -214,7 +223,8 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 	r = pcb_ttf_trace(&ctx, 'A', 'A', &stroke, 1);
-	rnd_trace("ttf trace; %d\n", r);
+	if (r != 0)
+		ret = -1;
 
 	if (stroke.want_poly) {
 		poly_flush(&stroke);
@@ -227,7 +237,7 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	stroke.sym->Delta = RND_MIL_TO_COORD(12);
 
 	pcb_ttf_unload(&ctx);
-	RND_ACT_IRES(-1);
+	RND_ACT_IRES(ret);
 	return 0;
 }
 
