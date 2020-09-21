@@ -33,6 +33,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "conf_core.h"
 
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
@@ -231,7 +232,7 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_ttf_t ctx = {0};
 	pcb_ttf_stroke_t stroke = {0};
 	int r, ret = 0, src, dst, src_from, src_to;
-	pcb_font_t *f = pcb_font(pcb, 0, 1);
+	pcb_font_t *f = pcb_font(pcb, conf_core.design.text_font_id, 1);
 
 	RND_ACT_CONVARG(1, FGW_STR, LoadTtfGlyphs, fn = argv[1].val.str);
 	RND_ACT_CONVARG(2, FGW_STR, LoadTtfGlyphs, ssrc = argv[2].val.str);
