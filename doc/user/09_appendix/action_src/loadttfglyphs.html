@@ -1,0 +1,37 @@
+Import a range of glyphs from ttf outline font into the current font as
+symbols, starting from a specific character position. Note: pcb-rnd
+font symbols are not unicode code poitns, but consists of a single,
+8 bit ASCII code page, thus values above 255 are invalid as destination
+symbol code.
+<p>
+The <arg>srcglyph</arg> argumnet is a single <i>character description</i> or
+a pair of <i>character descriptions</i> separated with two dots (".."). In the
+former case the import is a single glyph, in the latter case the import
+is the whole range between the two characters, inclusive (one or more glyphs).
+<p>
+The <arg>dstchars</arg> argumnet is always a single <i>character description</i>,
+addressing within the 0..255 range of the pcb-rnd font. This argment determines
+the first destination symbol that is going to be overwritten. If <arg>srcglyph</arg>
+specifies multiple characters, <arg>dstchars</arg> is internally stepped
+after each glyp import, up to 255, where the import stops.
+<p>
+A <i>character description</i> addresses a code point on the input or
+a character code on the output, using one fo the following syntax variants:
+<ul>
+	<li> 'A' is converted to 65 (as a single charatcer using the 8 bit ASCII table)
+	<li> &#10 is converted as decimal number 10
+	<li> &#x10 is converted as hexadecimal number, to 16
+	<li> U+10 is converted as hexadecimal number, to 16
+	<li> anything else is taken as a single character and is converted as it was wrapped in ''
+</ul>
+<p>
+The 4th argument is either polygon or line. When it is polygon, the glyph is
+imported as a polygon (with or without holes). When it is line, all contours
+of the glyph is imported as a series of lines. When not specified, it defaults
+to polygon.
+<p>
+Finally, <arg>scale</arg> and <arg>offset</arg> specifies the transformation
+during the import. Each argument is either a single number or a pair of numbers
+separated with comma or semicolon or / or * or x, and specify the x and y
+components of the transformation. When only the x component is specified, y
+is assumed to be the same (this is useful for scale).

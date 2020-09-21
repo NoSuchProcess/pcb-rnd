@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.4 (svn r32730) an interactive printed circuit board editor ,  Revision: 32805
+This is pcb-rnd 2.2.4 (svn r32730) an interactive printed circuit board editor ,  Revision: 32837
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -231,7 +231,7 @@ This is pcb-rnd 2.2.4 (svn r32730) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#loadscript">LoadScript</a></td><td>Load a fungw script</td><td>LoadScript(id, filename, [language])</td><td>script plugin</td>
 <tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file.</td><td>LoadTedaxFrom(netlist|board|footprint|stackup|layer|drc|drc_query|route_res, filename, [block_id, [silent, [src]]])</td><td>tEDAx IO</td>
 <tr><td>LoadTinycadFrom</td><td>Loads the specified tinycad .net file - the netlist must be tinycad netlist output.</td><td>LoadTinycadFrom(filename)</td><td>tinycad importer</td>
-<tr><td>LoadTtfGlyphs</td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars])</td><td>ttf importer</td>
+<tr><td><a href="action_details.html#loadttfglyphs">LoadTtfGlyphs</a></td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars], [outline|polygon], [scale], [offset])</td><td>ttf importer</td>
 <tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
 <tr><td>Log</td><td>Manages the central, in-memory log.</td><td>Log(clear, [fromID, [toID])<br>Log(export, [filename, [text|lihata])</td><td></td>
 <tr><td>LogDialog</td><td>Open the log dialog.</td><td>LogDialog()</td><td>lib_hid_common plugin</td>
