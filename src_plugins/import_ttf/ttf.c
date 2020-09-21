@@ -38,6 +38,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
+#include <librnd/core/hid_dad.h>
 
 #include "ttf_load.h"
 #include "str_approx.h"
@@ -343,8 +344,57 @@ rnd_trace(" xform: %f;%f %f;%f\n", stroke.scale_x, stroke.scale_y, stroke.dx, st
 	return 0;
 }
 
+/*** dialog ***/
+typedef struct{
+	RND_DAD_DECL_NOINIT(dlg)
+	int active;
+	pcb_ttf_t ttf;
+	int loaded; /* ttf loaded */
+} ttfgui_ctx_t;
+
+ttfgui_ctx_t ttfgui_ctx;
+
+
+static void ttfgui_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
+{
+	ttfgui_ctx_t *ctx = caller_data;
+
+	if (ctx->loaded)
+		pcb_ttf_unload(&ctx->ttf);
+
+	RND_DAD_FREE(ctx->dlg);
+	memset(ctx, 0, sizeof(ttfgui_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
+}
+
+
+static const char pcb_acts_LoadTtf[] = "LoadTtf()";
+static const char pcb_acth_LoadTtf[] = "Presents a GUI dialog for interactively loading glyphs from from a ttf file";
+fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	ttfgui_ctx_t *ctx = &ttfgui_ctx;
+	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+
+	RND_ACT_IRES(0);
+	if (ctx->active)
+		return 0; /* do not open another */
+
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_LABEL(ctx->dlg, "foo");
+		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+	RND_DAD_END(ctx->dlg);
+
+	/* set up the context */
+	ctx->active = 1;
+
+	RND_DAD_NEW("load_ttf", ctx->dlg, "Load glyphs from ttf font", ctx, rnd_false, ttfgui_close_cb);
+
+	return 0;
+}
+
 rnd_action_t ttf_action_list[] = {
-	{"LoadTtfGlyphs", pcb_act_LoadTtfGlyphs, pcb_acth_LoadTtfGlyphs, pcb_acts_LoadTtfGlyphs}
+	{"LoadTtfGlyphs", pcb_act_LoadTtfGlyphs, pcb_acth_LoadTtfGlyphs, pcb_acts_LoadTtfGlyphs},
+	{"LoadTtf", pcb_act_LoadTtf, pcb_acth_LoadTtf, pcb_acts_LoadTtf}
 };
 
 int pplg_check_ver_import_ttf(int ver_needed) { return 0; }
