@@ -223,6 +223,7 @@ static int conv_coord_pair(const char *s, double *x, double *y)
 
 static const char pcb_acts_LoadTtfGlyphs[] = "LoadTtfGlyphs(filename, srcglyps, [dstchars], [outline|polygon], [scale], [offset])";
 static const char pcb_acth_LoadTtfGlyphs[] = "Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font";
+/* DOC: loadttfglyphs.html */
 fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
@@ -303,7 +304,7 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	stroke.ttf = &ctx;
 
-	for(src = src_from; src <= src_to; src++,dst++) {
+	for(src = src_from; (src <= src_to) && (dst < (PCB_MAX_FONTPOSITION+1)); src++,dst++) {
 		rnd_trace("face: %d -> %d\n", src, dst);
 		stroke.sym = &f->Symbol[dst];
 
