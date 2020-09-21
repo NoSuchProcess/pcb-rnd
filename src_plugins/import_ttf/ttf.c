@@ -69,8 +69,8 @@ static void str_uninit(pcb_ttf_stroke_t *s)
 #define TRX(x) RND_MM_TO_COORD((x) * str->scale_x + str->dx)
 #define TRY(y) RND_MM_TO_COORD((str->ttf->face->height - (y) - str->ttf->face->ascender - str->ttf->face->descender) * str->scale_y + str->dy)
 
-#define TRX_(x) RND_MM_TO_COORD((x) * stroke.scale_x)
-#define TRY_(y) RND_MM_TO_COORD((y) * stroke.scale_y)
+#define TRX_(x) RND_MM_TO_COORD((x) * stroke->scale_x)
+#define TRY_(y) RND_MM_TO_COORD((y) * stroke->scale_y)
 
 static void poly_flush(pcb_ttf_stroke_t *str)
 {
@@ -222,6 +222,48 @@ static int conv_coord_pair(const char *s, double *x, double *y)
 	return -1;
 }
 
+static int ttf_import(pcb_board_t *pcb, pcb_ttf_t *ctx, pcb_ttf_stroke_t *stroke, int src_from, int src_to, int dst)
+{
+	int r, src, ret = 0;
+	pcb_font_t *f = pcb_font(pcb, conf_core.design.text_font_id, 1);
+
+
+	stroke->funcs.move_to = str_move_to;
+	stroke->funcs.line_to = str_line_to;
+	stroke->funcs.conic_to = stroke_approx_conic_to;
+	stroke->funcs.cubic_to = stroke_approx_cubic_to;
+
+	stroke->init   = str_init;
+	stroke->start  = str_start;
+	stroke->finish = str_finish;
+	stroke->uninit = str_uninit;
+
+	stroke->ttf = ctx;
+
+	for(src = src_from; (src <= src_to) && (dst < (PCB_MAX_FONTPOSITION+1)); src++,dst++) {
+		rnd_trace("face: %d -> %d\n", src, dst);
+		stroke->sym = &f->Symbol[dst];
+
+		pcb_font_free_symbol(stroke->sym);
+
+		r = pcb_ttf_trace(ctx, src, src, stroke, 1);
+		if (r != 0)
+			ret = -1;
+
+		if (stroke->want_poly) {
+			poly_flush(stroke);
+			poly_apply(stroke);
+		}
+
+		stroke->sym->Valid = 1;
+		stroke->sym->Width  = TRX_(ctx->face->glyph->advance.x);
+		stroke->sym->Height = TRY_(ctx->face->ascender + ctx->face->descender);
+		stroke->sym->Delta = RND_MIL_TO_COORD(12);
+	}
+
+	return ret;
+}
+
 static const char pcb_acts_LoadTtfGlyphs[] = "LoadTtfGlyphs(filename, srcglyps, [dstchars], [outline|polygon], [scale], [offset])";
 static const char pcb_acth_LoadTtfGlyphs[] = "Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font";
 /* DOC: loadttfglyphs.html */
@@ -231,8 +273,7 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *fn, *ssrc, *smode = "polygon", *sdst = NULL, *sscale = "0.001", *soffs = "0", *end = NULL;
 	pcb_ttf_t ctx = {0};
 	pcb_ttf_stroke_t stroke = {0};
-	int r, ret = 0, src, dst, src_from, src_to;
-	pcb_font_t *f = pcb_font(pcb, conf_core.design.text_font_id, 1);
+	int r, ret = 0, dst, src_from, src_to;
 
 	RND_ACT_CONVARG(1, FGW_STR, LoadTtfGlyphs, fn = argv[1].val.str);
 	RND_ACT_CONVARG(2, FGW_STR, LoadTtfGlyphs, ssrc = argv[2].val.str);
@@ -293,38 +334,7 @@ fgw_error_t pcb_act_LoadTtfGlyphs(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	stroke.funcs.move_to = str_move_to;
-	stroke.funcs.line_to = str_line_to;
-	stroke.funcs.conic_to = stroke_approx_conic_to;
-	stroke.funcs.cubic_to = stroke_approx_cubic_to;
-
-	stroke.init   = str_init;
-	stroke.start  = str_start;
-	stroke.finish = str_finish;
-	stroke.uninit = str_uninit;
-
-	stroke.ttf = &ctx;
-
-	for(src = src_from; (src <= src_to) && (dst < (PCB_MAX_FONTPOSITION+1)); src++,dst++) {
-		rnd_trace("face: %d -> %d\n", src, dst);
-		stroke.sym = &f->Symbol[dst];
-
-		pcb_font_free_symbol(stroke.sym);
-
-		r = pcb_ttf_trace(&ctx, src, src, &stroke, 1);
-		if (r != 0)
-			ret = -1;
-
-		if (stroke.want_poly) {
-			poly_flush(&stroke);
-			poly_apply(&stroke);
-		}
-
-		stroke.sym->Valid = 1;
-		stroke.sym->Width  = TRX_(ctx.face->glyph->advance.x);
-		stroke.sym->Height = TRY_(ctx.face->ascender + ctx.face->descender);
-		stroke.sym->Delta = RND_MIL_TO_COORD(12);
-	}
+	ret = ttf_import(pcb, &ctx, &stroke, src_from, src_to, dst);
 
 rnd_trace(" xform: %f;%f %f;%f\n", stroke.scale_x, stroke.scale_y, stroke.dx, stroke.dy);
 
