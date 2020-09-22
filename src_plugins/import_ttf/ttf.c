@@ -44,6 +44,7 @@
 #include "str_approx.h"
 
 #include <librnd/poly/polygon1_gen.h>
+#include <librnd/poly/self_isc.h>
 
 static const char *ttf_cookie = "ttf importer";
 
@@ -73,10 +74,22 @@ static void str_uninit(pcb_ttf_stroke_t *s)
 #define TRX_(x) RND_MM_TO_COORD((x) * stroke->scale_x)
 #define TRY_(y) RND_MM_TO_COORD((y) * stroke->scale_y)
 
+static void poly_create(pcb_ttf_stroke_t *str, rnd_pline_t *pl, int is_neg)
+{
+	rnd_polyarea_t *pa;
+
+	if (pl->Count < 3)
+		return;
+
+	pa = rnd_polyarea_create();
+	rnd_polyarea_contour_include(pa, pl);
+	vtp0_append((is_neg ? &str->poly_neg : &str->poly_pos), pa);
+rnd_trace("poly append: %d [%f] on %s\n", pl->Count, pl->area/1000000000.0, is_neg ? "neg" : "pos");
+}
+
 static void poly_flush(pcb_ttf_stroke_t *str)
 {
 	int is_neg = 0;
-	rnd_polyarea_t *pa;
 
 	if (!str->want_poly || (str->contour == NULL))
 		return;
@@ -87,10 +100,21 @@ static void poly_flush(pcb_ttf_stroke_t *str)
 		is_neg = 1;
 	}
 
-	pa = rnd_polyarea_create();
-	rnd_polyarea_contour_include(pa, str->contour);
-	vtp0_append((is_neg ? &str->poly_neg : &str->poly_pos), pa);
-rnd_trace("poly append: %d [%f] on %s\n", str->contour->Count, str->contour->area/1000000000.0, is_neg ? "neg" : "pos");
+	if (rnd_pline_is_selfint(str->contour)) {
+		int n;
+		vtp0_t pls;
+		vtp0_init(&pls);
+		rnd_pline_split_selfint(str->contour, &pls);
+		for(n = 0; n < pls.used; n++) {
+			rnd_pline_t *pln = (rnd_pline_t *)pls.array[n];
+			poly_create(str, pln, is_neg);
+		}
+		vtp0_uninit(&pls);
+		rnd_poly_contour_del(&str->contour);
+	}
+	else
+		poly_create(str, str->contour, is_neg);
+
 	str->contour = NULL;
 }
 
@@ -120,7 +144,7 @@ static void poly_apply(pcb_ttf_stroke_t *str)
 			if (rnd_poly_contour_in_contour(pap->contours, pan->contours)) {
 				str->poly_pos.array[n] = NULL;
 				rnd_polyarea_boolean_free(pap, pan, &res, RND_PBO_SUB);
-				pap = res;
+				str->poly_pos.array[p] = pap = res;
 				str->poly_neg.array[n] = NULL; /* already freed, do not reuse */
 			}
 		}
