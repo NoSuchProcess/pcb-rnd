@@ -350,7 +350,7 @@ typedef struct{
 	int active;
 	pcb_ttf_t ttf;
 	int loaded; /* ttf loaded */
-	int wfont, wsrc, wdst, wrend, wscale, wox, woy;
+	int wmsg, wfont, wsrc, wdst, wrend, wscale, wox, woy, wimport;
 	int timer_active;
 	rnd_hidval_t timer;
 } ttfgui_ctx_t;
@@ -427,13 +427,26 @@ static void font_change_timer_cb(rnd_hidval_t user_data)
 	ttfgui_ctx_t *ctx = user_data.ptr;
 	if (ctx->active) {
 		int r;
+		const char *fn = ctx->dlg[ctx->wfont].val.str;
+		char *tmp;
+		rnd_hid_attr_val_t hv;
 
 		ttfgui_unload(ctx);
-		r = pcb_ttf_load(&ctx->ttf, ctx->dlg[ctx->wfont].val.str);
+		r = pcb_ttf_load(&ctx->ttf, fn);
 		if (r == 0) {
 			ctx->loaded = 1;
+			tmp = rnd_strdup_printf("Loaded %s", fn);
+			rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wimport, 1);
 		}
-		printf("font chg: %d\n", r);
+		else {
+			tmp = rnd_strdup_printf("ERROR: failed to load %s", fn);
+			rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wimport, 0);
+		}
+
+		hv.str = tmp;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wmsg, &hv);
+
+		free(tmp);
 	}
 	ctx->timer_active = 0;
 }
@@ -482,6 +495,8 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 							RND_DAD_CHANGE_CB(ctx->dlg, font_change_cb);
 						RND_DAD_BUTTON(ctx->dlg, "Browse");
 					RND_DAD_END(ctx->dlg);
+					RND_DAD_LABEL(ctx->dlg, "");
+						ctx->wmsg = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 						RND_DAD_LABEL(ctx->dlg, "Source character(s):");
 						RND_DAD_STRING(ctx->dlg);
@@ -517,6 +532,7 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 					RND_DAD_END(ctx->dlg);
 					RND_DAD_BUTTON(ctx->dlg, "Import!");
+						ctx->wimport = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_END(ctx->dlg);
 				RND_DAD_END(ctx->dlg);
 
@@ -543,7 +559,7 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		bbox.Y2 = RND_MM_TO_COORD(32);
 		rnd_dad_preview_zoomto(&ctx->dlg[wprv], &bbox);
 	}
-
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wimport, 0); /* disable import button before a file name is specified */
 
 	return 0;
 }
