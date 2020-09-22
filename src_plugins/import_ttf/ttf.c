@@ -138,14 +138,17 @@ static void poly_apply(pcb_ttf_stroke_t *str)
 	rnd_trace("poly apply:\n");
 	for(p = 0; p < str->poly_pos.used; p++) {
 		rnd_polyarea_t *pap = str->poly_pos.array[p];
+		if (pap == NULL) continue;
 		for(n = 0; n < str->poly_neg.used; n++) {
 			rnd_polyarea_t *res, *pan = str->poly_neg.array[n];
 			if (pan == NULL) continue;
 			if (rnd_poly_contour_in_contour(pap->contours, pan->contours)) {
 				str->poly_pos.array[n] = NULL;
 				rnd_polyarea_boolean_free(pap, pan, &res, RND_PBO_SUB);
-				str->poly_pos.array[p] = pap = res;
-				str->poly_neg.array[n] = NULL; /* already freed, do not reuse */
+				if (res != NULL) {
+					str->poly_pos.array[p] = pap = res;
+					str->poly_neg.array[n] = NULL; /* already freed, do not reuse */
+				}
 			}
 		}
 		str->poly_pos.array[p] = pap; /* may have changed during the poly bool ops */
