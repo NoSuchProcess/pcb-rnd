@@ -1,3 +1,4 @@
+32857	configure	menu item for import_ttf
 32739	configure	export_test plugin removed in favor of the loghid plugin
 32715	configure	fp_fs plugin conf subtree
 32667	configure	code removal: the onpoint feature doesn't need a special array type anymore

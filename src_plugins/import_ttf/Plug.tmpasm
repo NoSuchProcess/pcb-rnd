@@ -1,4 +1,6 @@
 put /local/pcb/mod {import_ttf}
+put /local/pcb/mod/MENUFILE {import_ttf-menu.lht}
+put /local/pcb/mod/MENUVAR {import_ttf_menu}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/import_ttf/ttf.o
 	$(PLUGDIR)/import_ttf/ttf_load.o

@@ -39,6 +39,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_dad.h>
+#include <librnd/core/hid_menu.h>
 
 #include "ttf_load.h"
 #include "str_approx.h"
@@ -47,6 +48,8 @@
 #include <librnd/poly/self_isc.h>
 
 static const char *ttf_cookie = "ttf importer";
+
+#include "menu_internal.c"
 
 static void str_init(pcb_ttf_stroke_t *s)
 {
@@ -664,6 +667,7 @@ int pplg_check_ver_import_ttf(int ver_needed) { return 0; }
 
 void pplg_uninit_import_ttf(void)
 {
+	rnd_hid_menu_unload(rnd_gui, ttf_cookie);
 	rnd_remove_actions_by_cookie(ttf_cookie);
 }
 
@@ -671,5 +675,6 @@ int pplg_init_import_ttf(void)
 {
 	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(ttf_action_list, ttf_cookie)
+	rnd_hid_menu_load(rnd_gui, NULL, ttf_cookie, 50, NULL, 0, import_ttf_menu, "plugin: import_ttf");
 	return 0;
 }
