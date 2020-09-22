@@ -375,7 +375,7 @@ typedef struct{
 	int active;
 	pcb_ttf_t ttf;
 	int loaded; /* ttf loaded */
-	int wmsg, wfont, wsrc, wdst, wrend, wscale, wox, woy, wimport;
+	int wmsg, wfont, wsrc, wdst, wrend, wscale, wox, woy, wimport, wprv;
 	int timer_active;
 	rnd_hidval_t timer;
 } ttfgui_ctx_t;
@@ -511,6 +511,16 @@ static void font_browse_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	font_change_timer(caller_data, 100);
 }
 
+static void rezoom(ttfgui_ctx_t *ctx)
+{
+	rnd_box_t bbox;
+	bbox.X1 = 0;
+	bbox.Y1 = 0;
+	bbox.X2 = RND_MM_TO_COORD(32);
+	bbox.Y2 = RND_MM_TO_COORD(32);
+	rnd_dad_preview_zoomto(&ctx->dlg[ctx->wprv], &bbox);
+}
+
 static void import_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int src_from, src_to, dst, ret;
@@ -543,6 +553,10 @@ static void import_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	ret = ttf_import(PCB, &ctx->ttf, &stroke, src_from, src_to, dst);
 	if (ret != 0)
 		rnd_message(RND_MSG_ERROR, "ttf import failed - make sure your character range settings are good\n");
+
+	/* redraw */
+	rnd_gui->invalidate_all(rnd_gui);
+	rezoom(ctx);
 }
 
 
@@ -553,7 +567,6 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	static const char *rend_names[] =  {"polygon", "outline", NULL};
 	ttfgui_ctx_t *ctx = &ttfgui_ctx;
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	int wprv;
 
 	RND_ACT_IRES(0);
 	if (ctx->active)
@@ -624,7 +637,7 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				/* right */
 				RND_DAD_BEGIN_VBOX(ctx->dlg);
 					RND_DAD_PREVIEW(ctx->dlg, ttf_expose, NULL, NULL, NULL, NULL, 300, 300, ctx);
-					wprv = RND_DAD_CURRENT(ctx->dlg);
+					ctx->wprv = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_END(ctx->dlg);
 
 			RND_DAD_END(ctx->dlg);
@@ -636,14 +649,7 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_DAD_NEW("load_ttf", ctx->dlg, "Load glyphs from ttf font", ctx, rnd_false, ttfgui_close_cb);
 
-	{
-		rnd_box_t bbox;
-		bbox.X1 = 0;
-		bbox.Y1 = 0;
-		bbox.X2 = RND_MM_TO_COORD(32);
-		bbox.Y2 = RND_MM_TO_COORD(32);
-		rnd_dad_preview_zoomto(&ctx->dlg[wprv], &bbox);
-	}
+	rezoom(ctx);
 	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wimport, 0); /* disable import button before a file name is specified */
 
 	return 0;
