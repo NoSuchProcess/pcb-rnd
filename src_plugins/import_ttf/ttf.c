@@ -366,13 +366,33 @@ static void ttfgui_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(ttfgui_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
+static void ttf_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+{
+	ttfgui_ctx_t *ctx = prv->user_ctx;
+	char s[17];
+	int x, y, v;
+
+	rnd_render->set_color(gc, rnd_color_black);
+
+	s[16] = '\0';
+	v = 0;
+	for(y = 0; y < 16; y++) {
+		for(x = 0; x < 16; x++)
+			s[x] = v++;
+		pcb_text_draw_string_simple(NULL, s, RND_MM_TO_COORD(0), RND_MM_TO_COORD(y*2), 1.0, 1.0, 0.0, 0, 0, 0, 0, 0);
+	}
+
+}
+
 
 static const char pcb_acts_LoadTtf[] = "LoadTtf()";
 static const char pcb_acth_LoadTtf[] = "Presents a GUI dialog for interactively loading glyphs from from a ttf file";
 fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	static const char *rend_names[] =  {"polygon", "outline", NULL};
 	ttfgui_ctx_t *ctx = &ttfgui_ctx;
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	int wprv;
 
 	RND_ACT_IRES(0);
 	if (ctx->active)
@@ -380,7 +400,46 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		RND_DAD_LABEL(ctx->dlg, "foo");
+
+			RND_DAD_BEGIN_HPANE(ctx->dlg);
+				/* left */
+				RND_DAD_BEGIN_VBOX(ctx->dlg);
+					RND_DAD_BEGIN_HBOX(ctx->dlg);
+						RND_DAD_LABEL(ctx->dlg, "Font:");
+						RND_DAD_STRING(ctx->dlg);
+							RND_DAD_WIDTH_CHR(ctx->dlg, 32);
+						RND_DAD_BUTTON(ctx->dlg, "Browse");
+					RND_DAD_END(ctx->dlg);
+					RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
+						RND_DAD_LABEL(ctx->dlg, "Source character(s):");
+						RND_DAD_STRING(ctx->dlg);
+						RND_DAD_LABEL(ctx->dlg, "Destination start:");
+						RND_DAD_STRING(ctx->dlg);
+						RND_DAD_LABEL(ctx->dlg, "Rendering:");
+						RND_DAD_ENUM(ctx->dlg, rend_names);
+						RND_DAD_LABEL(ctx->dlg, "Scale:");
+						RND_DAD_REAL(ctx->dlg);
+						RND_DAD_LABEL(ctx->dlg, "X offset:");
+						RND_DAD_REAL(ctx->dlg);
+						RND_DAD_LABEL(ctx->dlg, "Y offset:");
+						RND_DAD_REAL(ctx->dlg);
+					RND_DAD_END(ctx->dlg);
+
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_BUTTON(ctx->dlg, "All");
+					RND_DAD_BUTTON(ctx->dlg, "Alpha");
+					RND_DAD_BUTTON(ctx->dlg, "Number");
+					RND_DAD_BUTTON(ctx->dlg, "Import glyph(s)!");
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_END(ctx->dlg);
+
+				/* right */
+				RND_DAD_BEGIN_VBOX(ctx->dlg);
+					RND_DAD_PREVIEW(ctx->dlg, ttf_expose, NULL, NULL, NULL, NULL, 300, 300, ctx);
+					wprv = RND_DAD_CURRENT(ctx->dlg);
+				RND_DAD_END(ctx->dlg);
+
+			RND_DAD_END(ctx->dlg);
 		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	RND_DAD_END(ctx->dlg);
 
@@ -388,6 +447,16 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	ctx->active = 1;
 
 	RND_DAD_NEW("load_ttf", ctx->dlg, "Load glyphs from ttf font", ctx, rnd_false, ttfgui_close_cb);
+
+	{
+		rnd_box_t bbox;
+		bbox.X1 = 0;
+		bbox.Y1 = 0;
+		bbox.X2 = RND_MM_TO_COORD(32);
+		bbox.Y2 = RND_MM_TO_COORD(32);
+		rnd_dad_preview_zoomto(&ctx->dlg[wprv], &bbox);
+	}
+
 
 	return 0;
 }
