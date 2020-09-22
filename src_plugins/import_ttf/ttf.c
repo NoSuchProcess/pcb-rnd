@@ -451,18 +451,21 @@ static void font_change_timer_cb(rnd_hidval_t user_data)
 	ctx->timer_active = 0;
 }
 
-
-static void font_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+static void font_change_timer(ttfgui_ctx_t *ctx, int period)
 {
-	ttfgui_ctx_t *ctx = caller_data;
 	rnd_hidval_t hv;
 
 	if (ctx->timer_active && (rnd_gui->stop_timer != NULL))
 		rnd_gui->stop_timer(rnd_gui, ctx->timer);
 
 	hv.ptr = ctx;
-	ctx->timer = rnd_gui->add_timer(rnd_gui, font_change_timer_cb, 750, hv);
+	ctx->timer = rnd_gui->add_timer(rnd_gui, font_change_timer_cb, period, hv);
 	ctx->timer_active = 1;
+}
+
+static void font_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	font_change_timer(caller_data, 750);
 }
 
 
