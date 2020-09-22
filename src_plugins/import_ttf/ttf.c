@@ -350,6 +350,7 @@ typedef struct{
 	int active;
 	pcb_ttf_t ttf;
 	int loaded; /* ttf loaded */
+	int wsrc, wdst, wrend, wscale, wox, woy;
 } ttfgui_ctx_t;
 
 ttfgui_ctx_t ttfgui_ctx;
@@ -381,9 +382,38 @@ static void ttf_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_
 			s[x] = v++;
 		pcb_text_draw_string_simple(NULL, s, RND_MM_TO_COORD(0), RND_MM_TO_COORD(y*2), 1.0, 1.0, 0.0, 0, 0, 0, 0, 0);
 	}
-
 }
 
+static load_src_dst(ttfgui_ctx_t *ctx, const char *ssrc, const char *sdst)
+{
+	rnd_hid_attr_val_t hv;
+
+	hv.str = ssrc;
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wsrc, &hv);
+
+	hv.str = sdst;
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdst, &hv);
+}
+
+static void load_all_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	load_src_dst(caller_data, "&#32..&#126", "&#32");
+}
+
+static void load_low_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	load_src_dst(caller_data, "a..z", "a");
+}
+
+static void load_up_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	load_src_dst(caller_data, "A..Z", "A");
+}
+
+static void load_num_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	load_src_dst(caller_data, "0..9", "0");
+}
 
 static const char pcb_acts_LoadTtf[] = "LoadTtf()";
 static const char pcb_acth_LoadTtf[] = "Presents a GUI dialog for interactively loading glyphs from from a ttf file";
@@ -402,6 +432,8 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 			RND_DAD_BEGIN_HPANE(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+
 				/* left */
 				RND_DAD_BEGIN_VBOX(ctx->dlg);
 					RND_DAD_BEGIN_HBOX(ctx->dlg);
@@ -413,23 +445,38 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 						RND_DAD_LABEL(ctx->dlg, "Source character(s):");
 						RND_DAD_STRING(ctx->dlg);
+							ctx->wsrc = RND_DAD_CURRENT(ctx->dlg);
 						RND_DAD_LABEL(ctx->dlg, "Destination start:");
 						RND_DAD_STRING(ctx->dlg);
+							ctx->wdst = RND_DAD_CURRENT(ctx->dlg);
 						RND_DAD_LABEL(ctx->dlg, "Rendering:");
 						RND_DAD_ENUM(ctx->dlg, rend_names);
+							ctx->wrend = RND_DAD_CURRENT(ctx->dlg);
 						RND_DAD_LABEL(ctx->dlg, "Scale:");
 						RND_DAD_REAL(ctx->dlg);
+							ctx->wscale = RND_DAD_CURRENT(ctx->dlg);
 						RND_DAD_LABEL(ctx->dlg, "X offset:");
 						RND_DAD_REAL(ctx->dlg);
+							ctx->wox = RND_DAD_CURRENT(ctx->dlg);
 						RND_DAD_LABEL(ctx->dlg, "Y offset:");
 						RND_DAD_REAL(ctx->dlg);
+							ctx->woy = RND_DAD_CURRENT(ctx->dlg);
 					RND_DAD_END(ctx->dlg);
 
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 					RND_DAD_BUTTON(ctx->dlg, "All");
-					RND_DAD_BUTTON(ctx->dlg, "Alpha");
+						RND_DAD_CHANGE_CB(ctx->dlg, load_all_cb);
+					RND_DAD_BUTTON(ctx->dlg, "Lowercase");
+						RND_DAD_CHANGE_CB(ctx->dlg, load_low_cb);
+					RND_DAD_BUTTON(ctx->dlg, "Uppercase");
+						RND_DAD_CHANGE_CB(ctx->dlg, load_up_cb);
 					RND_DAD_BUTTON(ctx->dlg, "Number");
-					RND_DAD_BUTTON(ctx->dlg, "Import glyph(s)!");
+						RND_DAD_CHANGE_CB(ctx->dlg, load_num_cb);
+					RND_DAD_BEGIN_VBOX(ctx->dlg);
+						RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+					RND_DAD_END(ctx->dlg);
+					RND_DAD_BUTTON(ctx->dlg, "Import!");
 				RND_DAD_END(ctx->dlg);
 				RND_DAD_END(ctx->dlg);
 
