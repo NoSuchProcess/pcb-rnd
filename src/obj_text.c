@@ -1465,10 +1465,14 @@ void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigne
 
 void pcb_text_draw_string_simple(pcb_font_t *font, const char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy)
 {
+	static rnd_xform_t xform = {0};
+	static pcb_draw_info_t info = {0};
+
+	info.xform = &xform;
 	if (font == NULL)
 		font = pcb_font(PCB, 0, 0);
 
-	pcb_text_draw_string_(NULL, font, (const unsigned char *)string, x0, y0, scx, scy, rotdeg, mirror, thickness, 0, xordraw, xordx, xordy, PCB_TXT_TINY_CHEAP, NULL, NULL);
+	pcb_text_draw_string_(&info, font, (const unsigned char *)string, x0, y0, scx, scy, rotdeg, mirror, thickness, 0, xordraw, xordx, xordy, PCB_TXT_TINY_CHEAP, NULL, NULL);
 }
 
 
