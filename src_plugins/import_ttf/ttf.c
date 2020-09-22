@@ -468,6 +468,24 @@ static void font_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	font_change_timer(caller_data, 750);
 }
 
+static void font_browse_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	char *fn;
+	ttfgui_ctx_t *ctx = caller_data;
+		rnd_hid_attr_val_t hv;
+
+	fn = rnd_gui->fileselect(rnd_gui, "Import ttf file", "Select a ttf file (or other font file that libfreetype can load) for importing glyphs from",
+		NULL, "ttf", NULL, "import_ttf", RND_HID_FSD_READ, NULL);
+
+	if (fn == NULL)
+		return;
+
+	hv.str = fn;
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfont, &hv);
+	free(fn);
+	font_change_timer(caller_data, 100);
+}
+
 
 static const char pcb_acts_LoadTtf[] = "LoadTtf()";
 static const char pcb_acth_LoadTtf[] = "Presents a GUI dialog for interactively loading glyphs from from a ttf file";
@@ -497,6 +515,7 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 							RND_DAD_WIDTH_CHR(ctx->dlg, 32);
 							RND_DAD_CHANGE_CB(ctx->dlg, font_change_cb);
 						RND_DAD_BUTTON(ctx->dlg, "Browse");
+							RND_DAD_CHANGE_CB(ctx->dlg, font_browse_cb);
 					RND_DAD_END(ctx->dlg);
 					RND_DAD_LABEL(ctx->dlg, "");
 						ctx->wmsg = RND_DAD_CURRENT(ctx->dlg);
