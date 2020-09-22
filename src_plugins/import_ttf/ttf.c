@@ -531,6 +531,11 @@ static void import_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 	const char *end;
 	ttfgui_ctx_t *ctx = caller_data;
 
+	if ((ctx->dlg[ctx->wsrc].val.str == NULL) || (ctx->dlg[ctx->wdst].val.str == NULL)) {
+		rnd_message(RND_MSG_ERROR, "missing from/to ranges for the character mapping\n");
+		return;
+	}
+
 	src_from = conv_char_desc(ctx->dlg[ctx->wsrc].val.str, &end);
 	if ((end[0] == '.') && (end[1] == '.'))
 		src_to = conv_char_desc(end+2, &end);
