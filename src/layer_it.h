@@ -71,10 +71,10 @@ RND_INLINE rnd_layer_id_t pcb_layer_next(pcb_layer_it_t *it)
 			it->lidx = 0;
 			continue; /* skip to next group */
 		}
-		/* TODO: check group flags against mask here for more efficiency */
+
 		lid = g->lid[it->lidx];
 		it->lidx++;
-		hit = pcb_layer_flags(PCB, lid) & it->mask;
+		hit = g->ltype & it->mask;
 		if (it->exact) {
 			if (hit == it->mask)
 				return lid;
