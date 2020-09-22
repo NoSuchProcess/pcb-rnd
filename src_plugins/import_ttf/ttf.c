@@ -486,6 +486,40 @@ static void font_browse_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	font_change_timer(caller_data, 100);
 }
 
+static void import_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	int src_from, src_to, dst, ret;
+	pcb_ttf_stroke_t stroke = {0};
+	const char *end;
+	ttfgui_ctx_t *ctx = caller_data;
+
+	src_from = conv_char_desc(ctx->dlg[ctx->wsrc].val.str, &end);
+	if ((end[0] == '.') && (end[1] == '.'))
+		src_to = conv_char_desc(end+2, &end);
+	else
+		src_to = src_from;
+	if ((end[0] != '\0') || (src_from < 0) || (src_to < 0)) {
+		rnd_message(RND_MSG_ERROR, "invalid source character\n");
+		return;
+	}
+
+	dst = conv_char_desc(ctx->dlg[ctx->wdst].val.str, &end);
+	if ((end[0] != '\0') || (dst < 0) || (dst > 255)) {
+		rnd_message(RND_MSG_ERROR, "invalid destination character\n");
+		return;
+	}
+
+	stroke.want_poly = (ctx->dlg[ctx->wrend].val.lng == 0);
+
+	stroke.scale_x = stroke.scale_y = ctx->dlg[ctx->wscale].val.dbl;
+	stroke.dx = ctx->dlg[ctx->wox].val.dbl;
+	stroke.dy = ctx->dlg[ctx->woy].val.dbl;
+
+	ret = ttf_import(PCB, &ctx->ttf, &stroke, src_from, src_to, dst);
+	if (ret != 0)
+		rnd_message(RND_MSG_ERROR, "ttf import failed - make sure your character range settings are good\n");
+}
+
 
 static const char pcb_acts_LoadTtf[] = "LoadTtf()";
 static const char pcb_acth_LoadTtf[] = "Presents a GUI dialog for interactively loading glyphs from from a ttf file";
@@ -532,12 +566,15 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						RND_DAD_LABEL(ctx->dlg, "Scale:");
 						RND_DAD_REAL(ctx->dlg);
 							ctx->wscale = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_DEFAULT_NUM(ctx->dlg, 0.001);
 						RND_DAD_LABEL(ctx->dlg, "X offset:");
 						RND_DAD_REAL(ctx->dlg);
 							ctx->wox = RND_DAD_CURRENT(ctx->dlg);
+							RND_DAD_DEFAULT_NUM(ctx->dlg, 0);
 						RND_DAD_LABEL(ctx->dlg, "Y offset:");
 						RND_DAD_REAL(ctx->dlg);
 							ctx->woy = RND_DAD_CURRENT(ctx->dlg);
+							RND_DAD_DEFAULT_NUM(ctx->dlg, 0);
 					RND_DAD_END(ctx->dlg);
 
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
@@ -555,6 +592,7 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					RND_DAD_END(ctx->dlg);
 					RND_DAD_BUTTON(ctx->dlg, "Import!");
 						ctx->wimport = RND_DAD_CURRENT(ctx->dlg);
+						RND_DAD_CHANGE_CB(ctx->dlg, import_cb);
 				RND_DAD_END(ctx->dlg);
 				RND_DAD_END(ctx->dlg);
 
