@@ -350,19 +350,26 @@ typedef struct{
 	int active;
 	pcb_ttf_t ttf;
 	int loaded; /* ttf loaded */
-	int wsrc, wdst, wrend, wscale, wox, woy;
+	int wfont, wsrc, wdst, wrend, wscale, wox, woy;
+	int timer_active;
+	rnd_hidval_t timer;
 } ttfgui_ctx_t;
 
 ttfgui_ctx_t ttfgui_ctx;
 
+static void ttfgui_unload(ttfgui_ctx_t *ctx)
+{
+	if (!ctx->loaded) return;
+
+	pcb_ttf_unload(&ctx->ttf);
+	ctx->loaded = 0;
+}
 
 static void ttfgui_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	ttfgui_ctx_t *ctx = caller_data;
 
-	if (ctx->loaded)
-		pcb_ttf_unload(&ctx->ttf);
-
+	ttfgui_unload(ctx);
 	RND_DAD_FREE(ctx->dlg);
 	memset(ctx, 0, sizeof(ttfgui_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
@@ -384,7 +391,7 @@ static void ttf_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_
 	}
 }
 
-static load_src_dst(ttfgui_ctx_t *ctx, const char *ssrc, const char *sdst)
+static void load_src_dst(ttfgui_ctx_t *ctx, const char *ssrc, const char *sdst)
 {
 	rnd_hid_attr_val_t hv;
 
@@ -415,6 +422,37 @@ static void load_num_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 	load_src_dst(caller_data, "0..9", "0");
 }
 
+static void font_change_timer_cb(rnd_hidval_t user_data)
+{
+	ttfgui_ctx_t *ctx = user_data.ptr;
+	if (ctx->active) {
+		int r;
+
+		ttfgui_unload(ctx);
+		r = pcb_ttf_load(&ctx->ttf, ctx->dlg[ctx->wfont].val.str);
+		if (r == 0) {
+			ctx->loaded = 1;
+		}
+		printf("font chg: %d\n", r);
+	}
+	ctx->timer_active = 0;
+}
+
+
+static void font_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	ttfgui_ctx_t *ctx = caller_data;
+	rnd_hidval_t hv;
+
+	if (ctx->timer_active && (rnd_gui->stop_timer != NULL))
+		rnd_gui->stop_timer(rnd_gui, ctx->timer);
+
+	hv.ptr = ctx;
+	ctx->timer = rnd_gui->add_timer(rnd_gui, font_change_timer_cb, 750, hv);
+	ctx->timer_active = 1;
+}
+
+
 static const char pcb_acts_LoadTtf[] = "LoadTtf()";
 static const char pcb_acth_LoadTtf[] = "Presents a GUI dialog for interactively loading glyphs from from a ttf file";
 fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -439,7 +477,9 @@ fgw_error_t pcb_act_LoadTtf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					RND_DAD_BEGIN_HBOX(ctx->dlg);
 						RND_DAD_LABEL(ctx->dlg, "Font:");
 						RND_DAD_STRING(ctx->dlg);
+							ctx->wfont = RND_DAD_CURRENT(ctx->dlg);
 							RND_DAD_WIDTH_CHR(ctx->dlg, 32);
+							RND_DAD_CHANGE_CB(ctx->dlg, font_change_cb);
 						RND_DAD_BUTTON(ctx->dlg, "Browse");
 					RND_DAD_END(ctx->dlg);
 					RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
