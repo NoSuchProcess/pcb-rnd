@@ -138,7 +138,6 @@ static void poly_apply(pcb_ttf_stroke_t *str)
 	rnd_trace("poly apply:\n");
 	for(p = 0; p < str->poly_pos.used; p++) {
 		rnd_polyarea_t *pap = str->poly_pos.array[p];
-		if (pap == NULL) continue;
 		for(n = 0; n < str->poly_neg.used; n++) {
 			rnd_polyarea_t *res, *pan = str->poly_neg.array[n];
 			if (pan == NULL) continue;
@@ -151,7 +150,6 @@ static void poly_apply(pcb_ttf_stroke_t *str)
 				}
 			}
 		}
-		str->poly_pos.array[p] = pap; /* may have changed during the poly bool ops */
 	}
 
 	/* dice and free positive poly areas */
