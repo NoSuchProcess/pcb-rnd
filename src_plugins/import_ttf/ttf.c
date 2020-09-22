@@ -143,7 +143,7 @@ static void poly_apply(pcb_ttf_stroke_t *str)
 			rnd_polyarea_t *res, *pan = str->poly_neg.array[n];
 			if (pan == NULL) continue;
 			if (rnd_poly_contour_in_contour(pap->contours, pan->contours)) {
-				str->poly_pos.array[n] = NULL;
+				str->poly_neg.array[n] = NULL;
 				rnd_polyarea_boolean_free(pap, pan, &res, RND_PBO_SUB);
 				if (res != NULL) {
 					str->poly_pos.array[p] = pap = res;
