@@ -1,6 +1,7 @@
 #!/bin/sh
 ROOT=../../..
 proot=$ROOT/src_plugins
+rnd_proot=$ROOT/src_3rd/librnd/plugins
 
 ### generate description.txt (file formats) ###
 
@@ -41,13 +42,13 @@ meta_deps="core io-standard io-alien hid-gtk2-gl hid-gtk2-gdk export export-sim 
 '
 
 (
-for n in $proot/*/*.pup
+for n in $proot/*/*.pup $rnd_proot/*/*.pup
 do
 	pkg=`basename $n`
 	sed "s/^/$pkg /" < $n
 done 
 
-for n in $proot/*/*.tmpasm
+for n in $proot/*/*.tmpasm $rnd_proot/*/*.tmpasm
 do
 	sed "s@^@$n @" < $n
 done
