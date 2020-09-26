@@ -15,7 +15,7 @@ pcb_library_t *pcb_fp_mkdir_p(const char *path)
 	return (library_t *)&ltmp;
 }
 
-pcb_library_t *pcb_fp_append_entry(library_t *parent, const char *name, pcb_fp_type_t type, void *tags[])
+pcb_library_t *pcb_fp_append_entry(library_t *parent, const char *name, pcb_fp_type_t type, void *tags[], rnd_bool dup_tags)
 {
 	printf("lib entry: '%s'\n", name);
 	return (library_t *)&ltmp;

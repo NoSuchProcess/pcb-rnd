@@ -142,7 +142,7 @@ static int list_cb(void *cookie, const char *subdir, const char *name, pcb_fptyp
 	}
 
 	l->children++;
-	e = pcb_fp_append_entry(l->menu, name, type, tags);
+	e = pcb_fp_append_entry(l->menu, name, type, tags, 1);
 
 /* Avoid using rnd_concat() - would be a new dependency for gsch2pcb-rnd */
 	{

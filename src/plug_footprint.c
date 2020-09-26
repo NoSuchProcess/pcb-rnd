@@ -163,7 +163,7 @@ void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx)
 	fctx->free_filename = 0;
 }
 
-pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[])
+pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[], rnd_bool dup_tags)
 {
 	pcb_fplibrary_t *entry;   /* Pointer to individual menu entry */
 
