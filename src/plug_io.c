@@ -745,7 +745,7 @@ int pcb_save_pcb(const char *file, const char *fmt)
 	if (conf_core.editor.io_incomp_popup) {
 		long int len = pcb_view_list_length(&pcb_io_incompat_lst);
 		if (len > 0) {
-			rnd_message(RND_MSG_ERROR, "There were %ld save incompatibility errors.\nData in memory is not affected, but the file created may be slightly broken.\nSee the popup view listing for detauls.\n", len);
+			rnd_message(RND_MSG_ERROR, "There were %ld save incompatibility errors.\nData in memory is not affected, but the file created may be slightly broken.\nSee the popup view listing for details.\n", len);
 			rnd_actionva(&PCB->hidlib, "IOincompatList", conf_core.editor.io_incomp_style, "auto", NULL);
 		}
 	}
