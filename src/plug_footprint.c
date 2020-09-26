@@ -176,7 +176,7 @@ static void **pcb_fp_dup_tags(void *tags[])
 	res = malloc(sizeof(void *) * (len+1));
 
 	for(src = tags, dst = res; *src != NULL; src++, dst++)
-		*dst = rnd_strdup(*src);
+		*dst = *src; /* these are coming from the central hash, it is safe to keep them */
 
 	*dst = NULL;
 	return res;

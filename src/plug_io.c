@@ -1110,9 +1110,12 @@ void pcb_io_fp_map_append(pcb_plug_fp_map_t **tail, pcb_plug_fp_map_t *head, con
 
 void pcb_io_fp_map_free_fields(pcb_plug_fp_map_t *m)
 {
+/*
+	Do NOTE free tag values, they are allocated by the central fp hash
 	long n;
 	for(n = 0; n < m->tags.used; n++)
 		free(m->tags.array[n]);
+*/
 	vts0_uninit(&m->tags);
 	free(m->name);
 	m->name = NULL;
