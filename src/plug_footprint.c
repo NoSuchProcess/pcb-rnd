@@ -163,6 +163,25 @@ void pcb_fp_fclose(FILE * f, pcb_fp_fopen_ctx_t *fctx)
 	fctx->free_filename = 0;
 }
 
+static void **pcb_fp_dup_tags(void *tags[])
+{
+	long len = 0;
+	void **src, **dst, **res;
+
+	if (tags == NULL)
+		return NULL;
+
+	for(src = tags; *src != NULL; src++) len++;
+
+	res = malloc(sizeof(void *) * (len+1));
+
+	for(src = tags, dst = res; *src != NULL; src++, dst++)
+		*dst = rnd_strdup(*src);
+
+	*dst = NULL;
+	return res;
+}
+
 pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[], rnd_bool dup_tags)
 {
 	pcb_fplibrary_t *entry;   /* Pointer to individual menu entry */
@@ -185,7 +204,7 @@ pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, 
 
 	entry->type = PCB_LIB_FOOTPRINT;
 	entry->data.fp.type = type;
-	entry->data.fp.tags = tags;
+	entry->data.fp.tags = dup_tags ? pcb_fp_dup_tags(tags) : tags;
 	entry->data.fp.loc_info = NULL;
 	entry->data.fp.backend_data = NULL;
 	return entry;
