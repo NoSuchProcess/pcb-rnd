@@ -70,7 +70,11 @@ struct pcb_fplibrary_s {
 			char *loc_info;
 			void *backend_data;
 			pcb_fptype_t type;
-			void **tags;        /* an array of void * tag IDs; last tag ID is NULL */
+
+			/* an array of void * tag IDs; last tag ID is NULL; the array is
+			   locally allocated but values are stored in a central hash and
+			   must be allocated by pcb_fp_tag() and never free'd manually */
+			void **tags;
 		} fp;
 	} data;
 } ;
