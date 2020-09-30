@@ -142,7 +142,6 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 
 	for(arc = (pcb_arc_t *)rnd_r_first(layer->arc_tree, &it); arc != NULL; arc = (pcb_arc_t *)rnd_r_next(&it))
 		sub_layer_arc(pcb, result, layer, arc, centerline);
-	rnd_r_end(&it);
 
 	for(poly = (pcb_poly_t *)rnd_r_first(layer->polygon_tree, &it); poly != NULL; poly = (pcb_poly_t *)rnd_r_next(&it))
 		sub_layer_poly(pcb, result, layer, poly, centerline);
