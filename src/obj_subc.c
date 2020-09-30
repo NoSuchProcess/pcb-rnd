@@ -1207,8 +1207,22 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 
 	rnd_close_box(&sc->BoundingBox);
 	rnd_close_box(&sc->bbox_naked);
-	if (pcb_data_get_top(Data) != NULL)
-		rnd_r_insert_entry(Data->subc_tree, (rnd_box_t *)sc);
+	if (pcb_data_get_top(Data) != NULL) {
+		int doit = 1;
+		if (sc->extobj != NULL) { /* ugly corner case: extobj calls may have added the subc to the rtree already, do not add it twice */
+			rnd_rtree_it_t it;
+			rnd_box_t *b;
+
+			for(b = rnd_r_first(Data->subc_tree, &it); b != NULL; b = rnd_r_next(&it)) {
+				if (b == sc) {
+					doit = 0;
+					break;
+				}
+			}
+		}
+		if (doit)
+			rnd_r_insert_entry(Data->subc_tree, (rnd_box_t *)sc);
+	}
 
 	sc->part_changed_bbox_dirty = 0; /* we've just recalculated the bbox */
 	pcb_subc_part_changed_inhibit_dec(sc);
