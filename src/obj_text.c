@@ -144,7 +144,8 @@ static int undo_text_geo_swap(void *udata)
 	rnd_swap(rnd_coord_t, g->clearance, g->text->clearance);
 	rnd_swap(double, g->rot, g->text->rot);
 
-	pcb_text_bbox(pcb_font(pcb, g->text->fid, 1), g->text);
+	if (pcb != NULL)
+		pcb_text_bbox(pcb_font(pcb, g->text->fid, 1), g->text);
 	if (layer->text_tree != NULL)
 		rnd_r_insert_entry(layer->text_tree, (rnd_box_t *)g->text);
 	pcb_poly_clear_from_poly(layer->parent.data, PCB_OBJ_TEXT, layer, g->text);
