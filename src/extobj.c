@@ -230,5 +230,8 @@ rnd_cardinal_t pcb_extobj_sync_floater_flags(pcb_board_t *pcb, const pcb_any_obj
 			cnt++;
 		}
 	}
+
+	PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, sel, subc);
+
 	return cnt;
 }
