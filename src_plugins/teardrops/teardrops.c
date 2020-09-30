@@ -256,7 +256,6 @@ static fgw_error_t pcb_act_teardrops(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	for(b = rnd_r_first(PCB->Data->padstack_tree, &it); b != NULL; b = rnd_r_next(&it))
 		check_pstk((pcb_pstk_t *)b);
-	rnd_r_end(&it);
 
 	rnd_gui->invalidate_all(rnd_gui);
 

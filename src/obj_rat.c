@@ -220,48 +220,27 @@ static pcb_any_obj_t *find_obj_on_layer(rnd_coord_t x, rnd_coord_t y, pcb_layer_
 	sb.x1 = x; sb.x2 = x+1;
 	sb.y1 = y; sb.y2 = y+1;
 
-	if (l->line_tree != NULL) {
-		for(n = rnd_rtree_first(&it, l->line_tree, &sb); n != NULL; n = rnd_rtree_next(&it)) {
-			if (rat_meets_line((pcb_line_t *)n, x, y, -1)) {
-				rnd_r_end(&it);
+	if (l->line_tree != NULL)
+		for(n = rnd_rtree_first(&it, l->line_tree, &sb); n != NULL; n = rnd_rtree_next(&it))
+			if (rat_meets_line((pcb_line_t *)n, x, y, -1))
 				return (pcb_any_obj_t *)n;
-			}
-		}
-		rnd_r_end(&it);
-	}
 
-	if (l->arc_tree != NULL) {
-		for(n = rnd_rtree_first(&it, l->arc_tree, &sb); n != NULL; n = rnd_rtree_next(&it)) {
-			if (rat_meets_arc((pcb_arc_t *)n, x, y, -1)) {
-				rnd_r_end(&it);
+	if (l->arc_tree != NULL)
+		for(n = rnd_rtree_first(&it, l->arc_tree, &sb); n != NULL; n = rnd_rtree_next(&it))
+			if (rat_meets_arc((pcb_arc_t *)n, x, y, -1))
 				return (pcb_any_obj_t *)n;
-			}
-		}
-		rnd_r_end(&it);
-	}
 
-	if (l->polygon_tree != NULL) {
-		for(n = rnd_rtree_first(&it, l->polygon_tree, &sb); n != NULL; n = rnd_rtree_next(&it)) {
-			if (rat_meets_poly((pcb_poly_t *)n, x, y, -1)) {
-				rnd_r_end(&it);
+	if (l->polygon_tree != NULL)
+		for(n = rnd_rtree_first(&it, l->polygon_tree, &sb); n != NULL; n = rnd_rtree_next(&it))
+			if (rat_meets_poly((pcb_poly_t *)n, x, y, -1))
 				return (pcb_any_obj_t *)n;
-			}
-		}
-		rnd_r_end(&it);
-	}
 
 TODO("find through text");
 #if 0
-	if (l->text_tree != NULL) {
-		for(n = rnd_rtree_first(&it, l->text_tree, &sb); n != NULL; n = rnd_rtree_next(&it)) {
-			if (rat_meets_text((pcb_text_t *)n, x, y, -1)) {
-				rnd_r_end(&it);
+	if (l->text_tree != NULL)
+		for(n = rnd_rtree_first(&it, l->text_tree, &sb); n != NULL; n = rnd_rtree_next(&it))
+			if (rat_meets_text((pcb_text_t *)n, x, y, -1))
 				return (pcb_any_obj_t *)n;
-			}
-		}
-
-		rnd_r_end(&it);
-	}
 #endif
 	return NULL;
 }
@@ -282,15 +261,10 @@ static pcb_any_obj_t *find_obj_on_grp(pcb_data_t *data, rnd_coord_t x, rnd_coord
 	sb.x1 = x; sb.x2 = x+1;
 	sb.y1 = y; sb.y2 = y+1;
 
-	if (PCB->Data->padstack_tree != NULL) {
-		for(n = rnd_rtree_first(&it, data->padstack_tree, &sb); n != NULL; n = rnd_rtree_next(&it)) {
-			if (rat_meets_pstk(data, (pcb_pstk_t *)n, x, y, gid)) {
-				rnd_r_end(&it);
+	if (PCB->Data->padstack_tree != NULL)
+		for(n = rnd_rtree_first(&it, data->padstack_tree, &sb); n != NULL; n = rnd_rtree_next(&it))
+			if (rat_meets_pstk(data, (pcb_pstk_t *)n, x, y, gid))
 				return (pcb_any_obj_t *)n;
-			}
-		}
-		rnd_r_end(&it);
-	}
 
 	for(i = 0; i < g->len; i++) {
 		pcb_any_obj_t *o = find_obj_on_layer(x, y, &data->Layer[g->lid[i]]);

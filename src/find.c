@@ -403,29 +403,21 @@ void pcb_find_on_layer(pcb_find_t *ctx, pcb_layer_t *l, pcb_any_obj_t *curr, rnd
 	rnd_rtree_it_t it;
 	rnd_box_t *n;
 
-	if (l->line_tree != NULL) {
+	if (l->line_tree != NULL)
 		for(n = rnd_rtree_first(&it, l->line_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
-		rnd_r_end(&it);
-	}
 
-	if (l->arc_tree != NULL) {
+	if (l->arc_tree != NULL)
 		for(n = rnd_rtree_first(&it, l->arc_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
-		rnd_r_end(&it);
-	}
 
-	if (l->polygon_tree != NULL) {
+	if (l->polygon_tree != NULL)
 		for(n = rnd_rtree_first(&it, l->polygon_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
-		rnd_r_end(&it);
-	}
 
-	if (l->text_tree != NULL) {
+	if (l->text_tree != NULL)
 		for(n = rnd_rtree_first(&it, l->text_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 			PCB_FIND_CHECK(ctx, curr, n, ctype, return);
-		rnd_r_end(&it);
-	}
 }
 
 void pcb_find_on_layergrp(pcb_find_t *ctx, pcb_layergrp_t *g, pcb_any_obj_t *curr, rnd_rtree_box_t *sb, pcb_found_conn_type_t ctype)
@@ -477,20 +469,14 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 			rnd_box_t *n;
 			rnd_rtree_box_t *sb = (rnd_rtree_box_t *)&curr->bbox_naked;
 
-			if (PCB->Data->padstack_tree != NULL) {
-				for(n = rnd_rtree_first(&it, PCB->Data->padstack_tree, sb); n != NULL; n = rnd_rtree_next(&it)) {
+			if (PCB->Data->padstack_tree != NULL)
+				for(n = rnd_rtree_first(&it, PCB->Data->padstack_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 					PCB_FIND_CHECK(ctx, curr, n, ctype, return ctx->nfound);
-				}
-				rnd_r_end(&it);
-			}
 
-			if ((ctx->consider_rats || ctx->only_mark_rats) && (PCB->Data->rat_tree != NULL)) {
-				if (PCB->Data->padstack_tree != NULL) {
+			if ((ctx->consider_rats || ctx->only_mark_rats) && (PCB->Data->rat_tree != NULL))
+				if (PCB->Data->padstack_tree != NULL)
 					for(n = rnd_rtree_first(&it, PCB->Data->rat_tree, sb); n != NULL; n = rnd_rtree_next(&it))
 						PCB_FIND_CHECK_RAT(ctx, curr, n, PCB_FCT_RAT, return ctx->nfound);
-					rnd_r_end(&it);
-				}
-			}
 
 			if (curr->type == PCB_OBJ_PSTK) {
 				int li;

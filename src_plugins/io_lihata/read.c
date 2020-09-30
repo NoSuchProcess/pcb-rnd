@@ -2561,7 +2561,6 @@ static int parse_board(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *nd)
 				pcb_poly_t *p = (pcb_poly_t *)b;
 				pcb_poly_init_clip(pcb->Data, layer, p);
 			}
-			rnd_r_end(&it);
 		}
 	}
 

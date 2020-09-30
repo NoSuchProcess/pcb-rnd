@@ -139,7 +139,6 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 
 	for(line = (pcb_line_t *)rnd_r_first(layer->line_tree, &it); line != NULL; line = (pcb_line_t *)rnd_r_next(&it))
 		sub_layer_line(pcb, result, layer, line, centerline);
-	rnd_r_end(&it);
 
 	for(arc = (pcb_arc_t *)rnd_r_first(layer->arc_tree, &it); arc != NULL; arc = (pcb_arc_t *)rnd_r_next(&it))
 		sub_layer_arc(pcb, result, layer, arc, centerline);
@@ -147,7 +146,6 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 
 	for(poly = (pcb_poly_t *)rnd_r_first(layer->polygon_tree, &it); poly != NULL; poly = (pcb_poly_t *)rnd_r_next(&it))
 		sub_layer_poly(pcb, result, layer, poly, centerline);
-	rnd_r_end(&it);
 
 	slt.pcb = pcb;
 	slt.layer = layer;
@@ -155,8 +153,6 @@ static void sub_layer_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layer
 	slt.result = result;
 	for(text = (pcb_text_t *)rnd_r_first(layer->text_tree, &it); text != NULL; text = (pcb_text_t *)rnd_r_next(&it))
 		pcb_text_decompose_text(NULL, text, sub_layer_text, &slt);
-	rnd_r_end(&it);
-
 }
 
 
@@ -181,7 +177,6 @@ static void sub_global_all(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_laye
 		ps_tmp.thermals.used = 0;
 		pcb_poly_sub_obj(pcb->Data, layer, result->fill, PCB_OBJ_PSTK, &ps_tmp);
 	}
-	rnd_r_end(&it);
 }
 
 static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_layergrp_t *grp)
@@ -255,11 +250,9 @@ static void setup_remove_poly(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_l
 
 			for(line = (pcb_line_t *)rnd_r_first(l->line_tree, &it); line != NULL; line = (pcb_line_t *)rnd_r_next(&it))
 				rnd_box_bump_box(&otlbb, (rnd_box_t *)line);
-			rnd_r_end(&it);
 
 			for(arc = (pcb_arc_t *)rnd_r_first(l->arc_tree, &it); arc != NULL; arc = (pcb_arc_t *)rnd_r_next(&it))
 				rnd_box_bump_box(&otlbb, (rnd_box_t *)arc);
-			rnd_r_end(&it);
 		}
 		result->fill = pcb_poly_new_from_rectangle(result->res_ply, otlbb.X1, otlbb.Y1, otlbb.X2, otlbb.Y2, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));
 		result->remain = pcb_poly_new_from_rectangle(result->res_remply, otlbb.X1, otlbb.Y1, otlbb.X2, otlbb.Y2, 0, pcb_flag_make(PCB_FLAG_FULLPOLY));

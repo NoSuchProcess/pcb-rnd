@@ -147,8 +147,6 @@ int tedax_etest_fsave(pcb_board_t *pcb, const char *etestid, FILE *f)
 			continue;
 		tedax_etest_fsave_pstk(f, ps, t->parent.net->name, sc->refdes, ps->term);
 	}
-	rnd_r_end(&it);
-
 
 	fprintf(f, "end etest\n");
 	return 0;

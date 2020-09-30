@@ -112,7 +112,6 @@ pcb_drill_info_t *drill_get_info(pcb_data_t *top)
 				drill_fill(Drill, (pcb_any_obj_t *)ps, !proto->hplated);
 		}
 	}
-	rnd_r_end(&it);
 
 	qsort(AllDrills->Drill, AllDrills->DrillN, sizeof(pcb_drill_t), drill_qsort_cmp);
 	return AllDrills;
