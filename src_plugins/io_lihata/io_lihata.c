@@ -36,7 +36,7 @@ pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3,
               plug_io_lihata_v7;
 conf_io_lihata_t conf_io_lihata;
 
-pcb_plug_io_t *plug_io_lihata_default = &plug_io_lihata_v6;
+pcb_plug_io_t *plug_io_lihata_default = &plug_io_lihata_v7;
 
 int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
