@@ -52,6 +52,13 @@ int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fm
 			return 40;
 	}
 
+	if ((lih) && (typ & PCB_IOT_PADSTACK)) {
+		if (wr && (ctx->write_padstack != NULL))
+			return 100;
+		if (!wr && (ctx->parse_padstack != NULL))
+			return 100;
+	}
+
 	if (!lih || ((typ & (~(PCB_IOT_PCB | PCB_IOT_FONT | PCB_IOT_FOOTPRINT))) != 0))
 		return 0;
 
@@ -90,6 +97,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v7.parse_buffer = io_lihata_parse_buffer;
 	plug_io_lihata_v7.write_font = io_lihata_write_font;
 	plug_io_lihata_v7.write_buffer = io_lihata_write_buffer;
+	plug_io_lihata_v7.write_padstack = io_lihata_write_padstack;
 	plug_io_lihata_v7.write_subcs_head = io_lihata_write_subcs_head;
 	plug_io_lihata_v7.write_subcs_subc = io_lihata_write_subcs_subc;
 	plug_io_lihata_v7.write_subcs_tail = io_lihata_write_subcs_tail;

@@ -2011,6 +2011,28 @@ int io_lihata_write_buffer(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff)
 
 }
 
+int io_lihata_write_padstack(pcb_plug_io_t *ctx, FILE *f, pcb_pstk_proto_t *proto)
+{
+	int res;
+	lht_doc_t *doc;
+
+	wrver = plug2ver(ctx);
+	if (wrver < 6)
+		wrver = 6;
+
+	io_lihata_full_tree = 1;
+	doc = lht_dom_init();
+	doc->root = lht_dom_node_alloc(LHT_HASH, "pcb-rnd-padstack-v0");
+
+	clean_invalid(doc->root); /* remove invalid nodes placed for persistency */
+	res = lht_dom_export(doc->root, f, "");
+
+	lht_dom_uninit(doc);
+	io_lihata_full_tree = 0;
+	return res;
+
+}
+
 typedef struct {
 	int womit_font, womit_config, womit_styles;
 	int ver;
