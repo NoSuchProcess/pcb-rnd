@@ -2030,7 +2030,8 @@ int io_lihata_write_padstack(pcb_plug_io_t *ctx, FILE *f, pcb_pstk_proto_t *prot
 
 	io_lihata_full_tree = 1;
 	doc = lht_dom_init();
-	doc->root = lht_dom_node_alloc(LHT_HASH, "pcb-rnd-padstack-v0");
+	doc->root =lht_dom_node_alloc(LHT_HASH, "pcb-rnd-padstack-v6");
+	lht_dom_hash_put(doc->root, build_pstk_proto(NULL, proto, 0));
 
 	clean_invalid(doc->root); /* remove invalid nodes placed for persistency */
 	res = lht_dom_export(doc->root, f, "");
