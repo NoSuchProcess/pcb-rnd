@@ -404,7 +404,7 @@ static void ttfgui_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 static void ttf_expose(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
-	ttfgui_ctx_t *ctx = prv->user_ctx;
+/*	ttfgui_ctx_t *ctx = prv->user_ctx;*/
 	char s[17];
 	int x, y, v;
 
