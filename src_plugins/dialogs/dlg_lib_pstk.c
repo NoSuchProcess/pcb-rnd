@@ -34,11 +34,13 @@
 #include <librnd/core/hid_inlines.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_tree.h>
+#include <librnd/core/safe_fs.h>
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
 #include "obj_text_draw.h"
 #include "obj_pstk_draw.h"
 #include "undo_old.h"
+#include "plug_io.h"
 #include "select.h"
 #include "search.h"
 #include "dlg_padstack.h"
@@ -375,6 +377,40 @@ static void pstklib_proto_dup(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	pstklib_proto_new_(hid_ctx, caller_data, attr, 1);
 }
 
+static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
+	pcb_pstk_proto_t *proto;
+	FILE *f;
+	static char *fn = NULL;
+
+	if ((data == NULL) || (row == NULL))
+		return;
+
+	proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
+	if (proto == NULL)
+		return;
+
+	rnd_trace("Save!\n");
+
+	fn = rnd_gui->fileselect(rnd_gui, "Save padstack", "Select a file the padstack prototype is saved to", fn, ".lht", NULL, "padstack", 0, NULL);
+	if (fn == NULL)
+		return; /* cancel */
+
+	f = rnd_fopen(&ctx->pcb->hidlib, fn, "w");
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to open %s for write.\n", fn);
+		return;
+	}
+
+	if (pcb_write_padstack(f, proto, "lihata") == 0)
+		rnd_message(RND_MSG_INFO, "Padstack saved to %s.\n", fn);
+	else
+		rnd_message(RND_MSG_ERROR, "Padstack not saved to %s.\n", fn);
+}
+
 static void pstklib_proto_switch(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
@@ -557,6 +593,14 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 					RND_DAD_BUTTON(ctx->dlg, "Del unused");
 						RND_DAD_HELP(ctx->dlg, "Update prototype usage stats and\nremove prototypes that are not\nused by any padstack");
 						RND_DAD_CHANGE_CB(ctx->dlg, pstklib_del_unused);
+				RND_DAD_END(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
+					RND_DAD_BUTTON(ctx->dlg, "Load...");
+						RND_DAD_HELP(ctx->dlg, "Replace the selected padstack with one loaded from a file");
+/*						RND_DAD_CHANGE_CB(ctx->dlg, pstklib_load);*/
+					RND_DAD_BUTTON(ctx->dlg, "Save...");
+						RND_DAD_HELP(ctx->dlg, "Save the selected padstack to a file");
+						RND_DAD_CHANGE_CB(ctx->dlg, pstklib_save);
 				RND_DAD_END(ctx->dlg);
 			RND_DAD_END(ctx->dlg);
 
