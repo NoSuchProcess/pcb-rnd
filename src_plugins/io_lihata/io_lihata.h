@@ -32,5 +32,5 @@ extern pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3,
                      plug_io_lihata_v4, plug_io_lihata_v5, plug_io_lihata_v6,
                      plug_io_lihata_v7;
 
-/* The one extedit and othe code should cross-call */
+/* The one extedit and other code should cross-call */
 extern pcb_plug_io_t *plug_io_lihata_default;
