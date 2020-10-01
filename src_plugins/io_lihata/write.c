@@ -944,10 +944,10 @@ static void build_data_layer_comb(void *ctx, pcb_layer_combining_t bit, const ch
 }
 
 
-static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *pp)
+static lht_node_t *build_pstk_proto(pcb_data_t *data, pcb_pstk_proto_t *proto, long pid)
 {
-	lht_node_t *lst, *nproto, *nmask, *nshape, *nshapelst, *ncomb, *nshapeo;
-	rnd_cardinal_t n, sn, pn;
+	lht_node_t *nproto, *nmask, *nshape, *nshapelst, *ncomb, *nshapeo;
+	rnd_cardinal_t sn, pn;
 	pcb_pstk_tshape_t *ts;
 	char tmp[64];
 	pcb_layer_type_t lyt_permit = PCB_LYT_ANYWHERE | PCB_LYT_COPPER | PCB_LYT_SILK | PCB_LYT_MASK | PCB_LYT_PASTE;
@@ -955,21 +955,12 @@ static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *p
 	if (wrver >= 6)
 		lyt_permit |= PCB_LYT_MECH;
 
-	lst = lht_dom_node_alloc(LHT_LIST, "padstack_prototypes");
-	for(n = 0; n < pcb_vtpadstack_proto_len(pp); n++) {
-		pcb_pstk_proto_t *proto = pp->array+n;
+	if (wrver < 6)
+		sprintf(tmp, "ps_proto_v4.%ld", pid);
+	else
+		sprintf(tmp, "ps_proto_v6.%ld", pid);
 
-		if (!proto->in_use) {
-			lht_dom_list_append(lst, build_text("unused", "1"));
-			continue;
-		}
-
-		if (wrver < 6)
-			sprintf(tmp, "ps_proto_v4.%ld", (long)n);
-		else
-			sprintf(tmp, "ps_proto_v6.%ld", (long)n);
-
-		lht_dom_list_append(lst, nproto = lht_dom_node_alloc(LHT_HASH, tmp));
+	nproto = lht_dom_node_alloc(LHT_HASH, tmp);
 
 		lht_dom_hash_put(nproto, build_textf("hdia", CFMT, proto->hdia));
 		lht_dom_hash_put(nproto, build_textf("htop", "%d", proto->htop));
@@ -1046,6 +1037,23 @@ static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *p
 			}
 			lht_dom_hash_put(nshape, nshapeo);
 		}
+
+	return nproto;
+}
+
+static lht_node_t *build_pstk_protos(pcb_data_t *data, pcb_vtpadstack_proto_t *pp)
+{
+	lht_node_t *lst;
+	rnd_cardinal_t n;
+
+	lst = lht_dom_node_alloc(LHT_LIST, "padstack_prototypes");
+	for(n = 0; n < pcb_vtpadstack_proto_len(pp); n++) {
+		pcb_pstk_proto_t *proto = pp->array+n;
+
+		if (proto->in_use)
+			lht_dom_list_append(lst, build_pstk_proto(data, proto, n));
+		else
+			lht_dom_list_append(lst, build_text("unused", "1"));
 	}
 
 	return lst;
