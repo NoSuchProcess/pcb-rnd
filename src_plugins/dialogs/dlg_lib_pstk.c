@@ -377,6 +377,8 @@ static void pstklib_proto_dup(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	pstklib_proto_new_(hid_ctx, caller_data, attr, 1);
 }
 
+static char *proto_save_fn = NULL;
+
 static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
@@ -385,7 +387,6 @@ static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	pcb_pstk_proto_t *proto;
 	FILE *f;
 	char *old_fn;
-	static char *fn = NULL;
 
 	if ((data == NULL) || (row == NULL))
 		return;
@@ -396,24 +397,24 @@ static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 	rnd_trace("Save!\n");
 
-	if (fn == NULL)
-		fn = rnd_strdup("padstack.lht");
-	old_fn = fn;
-	fn = rnd_gui->fileselect(rnd_gui, "Save padstack", "Select a file the padstack prototype is saved to", old_fn, ".lht", NULL, "padstack", 0, NULL);
-	if (fn == NULL)
+	if (proto_save_fn == NULL)
+		proto_save_fn = rnd_strdup("padstack.lht");
+	old_fn = proto_save_fn;
+	proto_save_fn = rnd_gui->fileselect(rnd_gui, "Save padstack", "Select a file the padstack prototype is saved to", old_fn, ".lht", NULL, "padstack", 0, NULL);
+	if (proto_save_fn == NULL)
 		return; /* cancel */
 	free(old_fn);
 
-	f = rnd_fopen(&ctx->pcb->hidlib, fn, "w");
+	f = rnd_fopen(&ctx->pcb->hidlib, proto_save_fn, "w");
 	if (f == NULL) {
-		rnd_message(RND_MSG_ERROR, "Failed to open %s for write.\n", fn);
+		rnd_message(RND_MSG_ERROR, "Failed to open %s for write.\n", proto_save_fn);
 		return;
 	}
 
 	if (pcb_write_padstack(f, proto, "lihata") == 0)
-		rnd_message(RND_MSG_INFO, "Padstack saved to %s.\n", fn);
+		rnd_message(RND_MSG_INFO, "Padstack saved to %s.\n", proto_save_fn);
 	else
-		rnd_message(RND_MSG_ERROR, "Padstack not saved to %s.\n", fn);
+		rnd_message(RND_MSG_ERROR, "Padstack not saved to %s.\n", proto_save_fn);
 }
 
 static void pstklib_proto_switch(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
@@ -715,4 +716,6 @@ void pcb_dlg_pstklib_uninit(void)
 	for(e = htip_first(&pstk_libs); e != NULL; e = htip_next(&pstk_libs, e))
 		pstklib_close_cb(e->value, 0);
 	htip_uninit(&pstk_libs);
+	free(proto_save_fn);
+	proto_save_fn = NULL;
 }
