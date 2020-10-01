@@ -388,8 +388,14 @@ static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	FILE *f;
 	char *old_fn;
 
-	if ((data == NULL) || (row == NULL))
+	if (data == NULL)
 		return;
+
+	if (row == NULL) {
+		rnd_message(RND_MSG_ERROR, "First select a prototype to save\n");
+		return;
+	}
+
 
 	proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
 	if (proto == NULL)
@@ -424,8 +430,13 @@ static void pstklib_load(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	char *old_fn;
 	rnd_hid_attr_val_t hv;
 
-	if ((data == NULL) || (row == NULL))
+	if (data == NULL)
 		return;
+
+	if (row == NULL) {
+		rnd_message(RND_MSG_ERROR, "First select a prototype to load into\n");
+		return;
+	}
 
 	proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
 	if (proto == NULL)
