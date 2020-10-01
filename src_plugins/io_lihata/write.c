@@ -962,81 +962,81 @@ static lht_node_t *build_pstk_proto(pcb_data_t *data, pcb_pstk_proto_t *proto, l
 
 	nproto = lht_dom_node_alloc(LHT_HASH, tmp);
 
-		lht_dom_hash_put(nproto, build_textf("hdia", CFMT, proto->hdia));
-		lht_dom_hash_put(nproto, build_textf("htop", "%d", proto->htop));
-		lht_dom_hash_put(nproto, build_textf("hbottom", "%d", proto->hbottom));
-		lht_dom_hash_put(nproto, build_textf("hplated", "%d", proto->hplated));
-		if (proto->name != NULL) {
-			if (wrver >= 5)
-				lht_dom_hash_put(nproto, build_text("name", proto->name));
-			else
-				pcb_io_incompat_save(NULL, NULL, "padstack-name", "versions below lihata board v5 do not support padstack prototype names\n", "Be aware that padstack proto names are lost in save or use lihata board v5 or higher");
-		}
+	lht_dom_hash_put(nproto, build_textf("hdia", CFMT, proto->hdia));
+	lht_dom_hash_put(nproto, build_textf("htop", "%d", proto->htop));
+	lht_dom_hash_put(nproto, build_textf("hbottom", "%d", proto->hbottom));
+	lht_dom_hash_put(nproto, build_textf("hplated", "%d", proto->hplated));
+	if (proto->name != NULL) {
+		if (wrver >= 5)
+			lht_dom_hash_put(nproto, build_text("name", proto->name));
 		else
-			lht_dom_hash_put(nproto, dummy_node("name"));
+			pcb_io_incompat_save(NULL, NULL, "padstack-name", "versions below lihata board v5 do not support padstack prototype names\n", "Be aware that padstack proto names are lost in save or use lihata board v5 or higher");
+	}
+	else
+		lht_dom_hash_put(nproto, dummy_node("name"));
 
-		/* save each shape */
-		lht_dom_hash_put(nproto, nshapelst = lht_dom_node_alloc(LHT_LIST, "shape"));
-		ts = &proto->tr.array[0]; /* save the canonical shape only, the transformation cache is generated runtime */
-		if (ts != NULL)
-		for(sn = 0; sn < ts->len; sn++) {
-			pcb_pstk_shape_t *shape = ts->shape + sn;
-			pcb_layer_type_t save_mask;
+	/* save each shape */
+	lht_dom_hash_put(nproto, nshapelst = lht_dom_node_alloc(LHT_LIST, "shape"));
+	ts = &proto->tr.array[0]; /* save the canonical shape only, the transformation cache is generated runtime */
+	if (ts != NULL)
+	for(sn = 0; sn < ts->len; sn++) {
+		pcb_pstk_shape_t *shape = ts->shape + sn;
+		pcb_layer_type_t save_mask;
 
-			save_mask = shape->layer_mask & lyt_permit;
-			if (save_mask != shape->layer_mask) {
-				pcb_io_incompat_save(data, NULL, "padstack-layer", "Can not save padstack prototype properly because it uses a layer type not supported by this version of lihata padstack.", "Either save in the latest lihata - or accept that some shapes are omitted");
-				continue;
-			}
-
-			lht_dom_list_append(nshapelst, nshape = lht_dom_node_alloc(LHT_HASH, "ps_shape_v4"));
-
-			lht_dom_hash_put(nshape, nmask = lht_dom_node_alloc(LHT_HASH, "layer_mask"));
-			pcb_layer_type_map(save_mask, nmask, build_layer_stack_flag);
-
-			lht_dom_hash_put(nshape, ncomb = lht_dom_node_alloc(LHT_HASH, "combining"));
-			pcb_layer_comb_map(shape->comb, ncomb, build_data_layer_comb);
-
-			lht_dom_hash_put(nshape, build_textf("clearance", CFMT, shape->clearance));
-
-			switch(shape->shape) {
-				case PCB_PSSH_POLY:
-					nshapeo = lht_dom_node_alloc(LHT_LIST, "ps_poly");
-					for(pn = 0; pn < shape->data.poly.len; pn++) {
-						lht_dom_list_append(nshapeo, build_textf(NULL, CFMT, shape->data.poly.x[pn]));
-						lht_dom_list_append(nshapeo, build_textf(NULL, CFMT, shape->data.poly.y[pn]));
-					}
-					break;
-				case PCB_PSSH_LINE:
-					nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_line");
-					lht_dom_hash_put(nshapeo, build_textf("x1", CFMT, shape->data.line.x1));
-					lht_dom_hash_put(nshapeo, build_textf("y1", CFMT, shape->data.line.y1));
-					lht_dom_hash_put(nshapeo, build_textf("x2", CFMT, shape->data.line.x2));
-					lht_dom_hash_put(nshapeo, build_textf("y2", CFMT, shape->data.line.y2));
-					lht_dom_hash_put(nshapeo, build_textf("thickness", CFMT, shape->data.line.thickness));
-					lht_dom_hash_put(nshapeo, build_textf("square", "%d", shape->data.line.square));
-					break;
-				case PCB_PSSH_CIRC:
-					nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_circ");
-					lht_dom_hash_put(nshapeo, build_textf("x", CFMT, shape->data.circ.x));
-					lht_dom_hash_put(nshapeo, build_textf("y", CFMT, shape->data.circ.y));
-					lht_dom_hash_put(nshapeo, build_textf("dia", CFMT, shape->data.circ.dia));
-					break;
-				case PCB_PSSH_HSHADOW:
-					if (wrver < 6) {
-						pcb_io_incompat_save(data, NULL, "padstack-shape", "Can not save padstack prototype shape \"hshadow\" in lihata formats below version 6.", "Either save in lihata v6 - or accept that the padstack will connect more layers than it should.");
-						nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_circ");
-						lht_dom_hash_put(nshapeo, build_textf("dia", CFMT, 1));
-					}
-					else
-						nshapeo = build_text("ps_hshadow", "");
-					break;
-				default:
-					rnd_message(RND_MSG_ERROR, "Internal error: unimplemented pad stack shape %d\n", shape->shape);
-					abort();
-			}
-			lht_dom_hash_put(nshape, nshapeo);
+		save_mask = shape->layer_mask & lyt_permit;
+		if (save_mask != shape->layer_mask) {
+			pcb_io_incompat_save(data, NULL, "padstack-layer", "Can not save padstack prototype properly because it uses a layer type not supported by this version of lihata padstack.", "Either save in the latest lihata - or accept that some shapes are omitted");
+			continue;
 		}
+
+		lht_dom_list_append(nshapelst, nshape = lht_dom_node_alloc(LHT_HASH, "ps_shape_v4"));
+
+		lht_dom_hash_put(nshape, nmask = lht_dom_node_alloc(LHT_HASH, "layer_mask"));
+		pcb_layer_type_map(save_mask, nmask, build_layer_stack_flag);
+
+		lht_dom_hash_put(nshape, ncomb = lht_dom_node_alloc(LHT_HASH, "combining"));
+		pcb_layer_comb_map(shape->comb, ncomb, build_data_layer_comb);
+
+		lht_dom_hash_put(nshape, build_textf("clearance", CFMT, shape->clearance));
+
+		switch(shape->shape) {
+			case PCB_PSSH_POLY:
+				nshapeo = lht_dom_node_alloc(LHT_LIST, "ps_poly");
+				for(pn = 0; pn < shape->data.poly.len; pn++) {
+					lht_dom_list_append(nshapeo, build_textf(NULL, CFMT, shape->data.poly.x[pn]));
+					lht_dom_list_append(nshapeo, build_textf(NULL, CFMT, shape->data.poly.y[pn]));
+				}
+				break;
+			case PCB_PSSH_LINE:
+				nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_line");
+				lht_dom_hash_put(nshapeo, build_textf("x1", CFMT, shape->data.line.x1));
+				lht_dom_hash_put(nshapeo, build_textf("y1", CFMT, shape->data.line.y1));
+				lht_dom_hash_put(nshapeo, build_textf("x2", CFMT, shape->data.line.x2));
+				lht_dom_hash_put(nshapeo, build_textf("y2", CFMT, shape->data.line.y2));
+				lht_dom_hash_put(nshapeo, build_textf("thickness", CFMT, shape->data.line.thickness));
+				lht_dom_hash_put(nshapeo, build_textf("square", "%d", shape->data.line.square));
+				break;
+			case PCB_PSSH_CIRC:
+				nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_circ");
+				lht_dom_hash_put(nshapeo, build_textf("x", CFMT, shape->data.circ.x));
+				lht_dom_hash_put(nshapeo, build_textf("y", CFMT, shape->data.circ.y));
+				lht_dom_hash_put(nshapeo, build_textf("dia", CFMT, shape->data.circ.dia));
+				break;
+			case PCB_PSSH_HSHADOW:
+				if (wrver < 6) {
+					pcb_io_incompat_save(data, NULL, "padstack-shape", "Can not save padstack prototype shape \"hshadow\" in lihata formats below version 6.", "Either save in lihata v6 - or accept that the padstack will connect more layers than it should.");
+					nshapeo = lht_dom_node_alloc(LHT_HASH, "ps_circ");
+					lht_dom_hash_put(nshapeo, build_textf("dia", CFMT, 1));
+				}
+				else
+					nshapeo = build_text("ps_hshadow", "");
+				break;
+			default:
+				rnd_message(RND_MSG_ERROR, "Internal error: unimplemented pad stack shape %d\n", shape->shape);
+				abort();
+		}
+		lht_dom_hash_put(nshape, nshapeo);
+	}
 
 	return nproto;
 }
