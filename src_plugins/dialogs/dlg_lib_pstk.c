@@ -384,6 +384,7 @@ static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
 	pcb_pstk_proto_t *proto;
 	FILE *f;
+	char *old_fn;
 	static char *fn = NULL;
 
 	if ((data == NULL) || (row == NULL))
@@ -395,9 +396,13 @@ static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 	rnd_trace("Save!\n");
 
-	fn = rnd_gui->fileselect(rnd_gui, "Save padstack", "Select a file the padstack prototype is saved to", fn, ".lht", NULL, "padstack", 0, NULL);
+	if (fn == NULL)
+		fn = rnd_strdup("padstack.lht");
+	old_fn = fn;
+	fn = rnd_gui->fileselect(rnd_gui, "Save padstack", "Select a file the padstack prototype is saved to", old_fn, ".lht", NULL, "padstack", 0, NULL);
 	if (fn == NULL)
 		return; /* cancel */
+	free(old_fn);
 
 	f = rnd_fopen(&ctx->pcb->hidlib, fn, "w");
 	if (f == NULL) {
