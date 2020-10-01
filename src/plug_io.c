@@ -477,6 +477,35 @@ int pcb_write_padstack(FILE *f, pcb_pstk_proto_t *proto, const char *fmt)
 	return res;
 }
 
+int pcb_load_padstack(rnd_hidlib_t *hidlib, pcb_pstk_proto_t *proto, const char *fn, const char *fmt)
+{
+	int res = -1, len, n;
+	pcb_find_io_t available[PCB_IO_MAX_FORMATS];
+	int accepts[PCB_IO_MAX_FORMATS]; /* test-parse output */
+	int accept_total = 0;
+	FILE *ft;
+
+	ft = rnd_fopen(hidlib, fn, "r");
+	len = pcb_test_parse_all(ft, fn, fmt, PCB_IOT_PADSTACK, available, accepts, &accept_total, sizeof(available)/sizeof(available[0]), 0, 0);
+	if (ft != NULL)
+		fclose(ft);
+	if (len < 0)
+		return -1;
+
+	/* try all plugins that said it could handle the file */
+	for(n = 0; n < len; n++) {
+		if ((available[n].plug->parse_padstack == NULL) || (!accepts[n])) /* can't parse or doesn't want to parse this file */
+			continue;
+		res = available[n].plug->parse_padstack(available[n].plug, proto, fn);
+		if (res == 0)
+			break;
+	}
+
+	pcb_plug_io_err(hidlib, res, "load padstack", fn);
+	return res;
+}
+
+
 int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_idx)
 {
 	int res, newfmt = 0;

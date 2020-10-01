@@ -189,6 +189,7 @@ int pcb_write_pcb_file(const char *Filename, rnd_bool thePcb, const char *fmt, r
 void pcb_set_design_dir(const char *fn);
 int pcb_load_buffer(rnd_hidlib_t *hidlib, pcb_buffer_t *buff, const char *fn, const char *fmt);
 int pcb_write_padstack(FILE *f, pcb_pstk_proto_t *proto, const char *fmt);
+int pcb_load_padstack(rnd_hidlib_t *hidlib, pcb_pstk_proto_t *proto, const char *fn, const char *fmt);
 
 /* Find the plugin that offers the highest write prio for the format */
 pcb_plug_io_t *pcb_io_find_writer(pcb_plug_iot_t typ, const char *fmt);
