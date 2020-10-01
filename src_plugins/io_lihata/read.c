@@ -2006,8 +2006,10 @@ static int parse_data_pstk_proto(lht_read_t *rctx, pcb_board_t *pcb, pcb_pstk_pr
 	dst->in_use = 1;
 	if (subc_parent != NULL)
 		dst->parent = subc_parent;
-	else
+	else if (pcb != NULL)
 		dst->parent = pcb->Data;
+	else
+		dst->parent = NULL;
 
 	/* read shapes */
 	nshape = lht_dom_hash_get(nproto, "shape");
@@ -2680,6 +2682,45 @@ int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *f
 	return res;
 }
 
+int io_lihata_parse_padstack(pcb_plug_io_t *ctx, pcb_pstk_proto_t *proto, const char *filename)
+{
+	int res;
+	char *errmsg = NULL, *realfn;
+	lht_doc_t *doc = NULL;
+	lht_read_t rctx = {0};
+
+	rctx.cfg_dest = RND_CFR_invalid;
+
+	realfn = rnd_fopen_check(NULL, filename, "r");
+	if (realfn != NULL)
+		doc = lht_dom_load(realfn, &errmsg);
+	free(realfn);
+
+	if (doc == NULL) {
+		rnd_message(RND_MSG_ERROR, "Error loading '%s': %s\n", filename, errmsg);
+		free(errmsg);
+		return -1;
+	}
+
+	if ((doc->root->type == LHT_HASH) && (strncmp(doc->root->name, "pcb-rnd-padstack-v", 18) == 0)) {
+		lht_node_t *datand = lht_dom_hash_get(doc->root, "ps_proto_v6.0");
+		if (datand == NULL) {
+			iolht_error(doc->root, "Error loading '%s': padstack has no ps_proto_v6\n", filename);
+			res = -1;
+		}
+		else
+			res = parse_data_pstk_proto(&rctx, NULL, proto, datand, NULL, 6);
+	}
+	else {
+		iolht_error(doc->root, "Error loading '%s': not a pcb-rnd paste buffer\n", filename);
+		res = -1;
+	}
+
+	lht_dom_uninit(doc);
+	free(errmsg);
+	return res;
+}
+
 
 typedef enum {
 	TPS_UNDECIDED,
@@ -2697,6 +2738,8 @@ void test_parse_ev(lht_parse_t *ctx, lht_event_t ev, lht_node_type_t nt, const c
 		else if ((nt == LHT_HASH) && (strncmp(name, "pcb-rnd-buffer-v", 16) == 0))
 			*state = TPS_GOOD;
 		else if ((nt == LHT_LIST) && (strncmp(name, "pcb-rnd-subcircuit-v", 20) == 0))
+			*state = TPS_GOOD;
+		else if ((nt == LHT_HASH) && (strncmp(name, "pcb-rnd-padstack-v", 18) == 0))
 			*state = TPS_GOOD;
 		else
 			*state = TPS_BAD;

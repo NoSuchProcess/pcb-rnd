@@ -95,6 +95,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v7.parse_footprint = io_lihata_parse_subc;
 	plug_io_lihata_v7.parse_font = io_lihata_parse_font;
 	plug_io_lihata_v7.parse_buffer = io_lihata_parse_buffer;
+	plug_io_lihata_v7.parse_padstack = io_lihata_parse_padstack;
 	plug_io_lihata_v7.write_font = io_lihata_write_font;
 	plug_io_lihata_v7.write_buffer = io_lihata_write_buffer;
 	plug_io_lihata_v7.write_padstack = io_lihata_write_padstack;
