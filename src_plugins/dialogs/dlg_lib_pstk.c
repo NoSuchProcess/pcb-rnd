@@ -377,7 +377,7 @@ static void pstklib_proto_dup(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	pstklib_proto_new_(hid_ctx, caller_data, attr, 1);
 }
 
-static char *proto_save_fn = NULL;
+static char *proto_save_fn = NULL, *proto_load_fn = NULL;
 
 static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
@@ -394,8 +394,6 @@ static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
 	if (proto == NULL)
 		return;
-
-	rnd_trace("Save!\n");
 
 	if (proto_save_fn == NULL)
 		proto_save_fn = rnd_strdup("padstack.lht");
@@ -415,6 +413,42 @@ static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 		rnd_message(RND_MSG_INFO, "Padstack saved to %s.\n", proto_save_fn);
 	else
 		rnd_message(RND_MSG_ERROR, "Padstack not saved to %s.\n", proto_save_fn);
+}
+
+static void pstklib_load(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
+	pcb_pstk_proto_t *proto;
+	char *old_fn;
+	rnd_hid_attr_val_t hv;
+
+	if ((data == NULL) || (row == NULL))
+		return;
+
+	proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
+	if (proto == NULL)
+		return;
+
+	if (proto_load_fn == NULL)
+		proto_load_fn = rnd_strdup("padstack.lht");
+	old_fn = proto_load_fn;
+	proto_load_fn = rnd_gui->fileselect(rnd_gui, "Save padstack", "Select a file the padstack prototype is loaded from", old_fn, ".lht", NULL, "padstack", RND_HID_FSD_READ, NULL);
+	if (proto_load_fn == NULL)
+		return; /* cancel */
+	free(old_fn);
+
+	if (pcb_load_padstack(&ctx->pcb->hidlib, proto, proto_load_fn, NULL) == 0)
+		rnd_message(RND_MSG_INFO, "Padstack loaded from %s.\n", proto_load_fn);
+	else
+		rnd_message(RND_MSG_ERROR, "Padstack failed to load from %s.\n", proto_load_fn);
+
+	proto->parent = data;
+
+	/* redraw */
+	hv.str = NULL;
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
 static void pstklib_proto_switch(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
@@ -603,7 +637,7 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_BUTTON(ctx->dlg, "Load...");
 						RND_DAD_HELP(ctx->dlg, "Replace the selected padstack with one loaded from a file");
-/*						RND_DAD_CHANGE_CB(ctx->dlg, pstklib_load);*/
+						RND_DAD_CHANGE_CB(ctx->dlg, pstklib_load);
 					RND_DAD_BUTTON(ctx->dlg, "Save...");
 						RND_DAD_HELP(ctx->dlg, "Save the selected padstack to a file");
 						RND_DAD_CHANGE_CB(ctx->dlg, pstklib_save);
@@ -717,5 +751,6 @@ void pcb_dlg_pstklib_uninit(void)
 		pstklib_close_cb(e->value, 0);
 	htip_uninit(&pstk_libs);
 	free(proto_save_fn);
-	proto_save_fn = NULL;
+	free(proto_load_fn);
+	proto_save_fn = proto_load_fn = NULL;
 }
