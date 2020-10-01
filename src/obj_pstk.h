@@ -63,7 +63,7 @@ struct pcb_pstk_s {
 #include "obj_pstk_shape.h"
 #include "vtpadstack_t.h"
 
-typedef struct pcb_pstk_proto_s {
+struct pcb_pstk_proto_s {
 	unsigned in_use:1;             /* 1 if the slot is in use */
 
 	unsigned hplated:1;            /* if > 0, whether the hole is plated */
@@ -78,7 +78,7 @@ typedef struct pcb_pstk_proto_s {
 	pcb_data_t *parent;
 	int mech_idx;                  /* -1 or index to the first shape[] that is of PCB_LYT_MECH */
 	unsigned all_copper_connd:1;   /* 1 if all copper shapes are connected by the hole/slot (regardless of plating!) */
-} pcb_pstk_proto_t;
+};
 
 /* Whether a proto cuts through board layers (has a hole or slot) */
 #define PCB_PSTK_PROTO_CUTS(proto) (((proto)->hdia > 0) || ((proto)->mech_idx >= 0))

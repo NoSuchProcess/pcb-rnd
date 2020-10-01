@@ -39,7 +39,8 @@ typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not a
 	PCB_IOT_PCB        = 1,
 	PCB_IOT_FOOTPRINT  = 2,
 	PCB_IOT_FONT       = 4,
-	PCB_IOT_BUFFER     = 8
+	PCB_IOT_BUFFER     = 8,
+	PCB_IOT_PADSTACK   = 16
 } pcb_plug_iot_t;
 
 /* Returned by map_footprint() to tell what type of footprint(s) a file contains */
@@ -97,6 +98,12 @@ struct pcb_plug_io_s {
 	/* Attempt to load a complete buffer from a file. Return 0 on success. */
 	int (*parse_buffer)(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *filename);
 
+	/* Attempt to load padstack prototype */
+	int (*parse_padstack)(pcb_plug_io_t *ctx, pcb_pstk_proto_t *dst, const char *filename);
+
+
+	/* Write a padstack prototype to a file. Return 0 on success. */
+	int (*write_padstack)(pcb_plug_io_t *ctx, FILE *f, pcb_pstk_proto_t *dst);
 
 	/* Write the buffer to a file. Return 0 on success. */
 	int (*write_buffer)(pcb_plug_io_t *ctx, FILE *f, pcb_buffer_t *buff);

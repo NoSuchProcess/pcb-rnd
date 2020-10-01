@@ -49,6 +49,7 @@ typedef struct pcb_rat_line_s pcb_rat_t;
 
 typedef struct pcb_poly_s pcb_poly_t;
 typedef struct pcb_pstk_s pcb_pstk_t;
+typedef struct pcb_pstk_proto_s pcb_pstk_proto_t;
 
 typedef struct pcb_ratspatch_line_s pcb_ratspatch_line_t;
 typedef struct pcb_subc_s pcb_subc_t;
