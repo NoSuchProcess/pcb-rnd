@@ -217,6 +217,12 @@ ha:rnd-menu-patch-v1                Menu patch instructions
    te:path                          path to a menu item, starting from the menu tree root; e.g. /main_menu/File/Revert ->
    ha:props                         same as menu properties documented at LEAFSUBMENUNAME
 
+li:pcb-rnd-padstack-v*
+
+type:name               value ver description
+li:pcb-rnd-padstack-v*        >=6 A singe padstack prototype
+ ha:ps_proto_v6.0                 padstack prototype specification, as introduced in lihata board v4 ->
+
 ha:coraleda-project-v1
 
 type:name              value  ver description

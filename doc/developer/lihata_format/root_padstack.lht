@@ -1,0 +1,11 @@
+ha:lht_tree_doc { ha:roots {
+
+	ha:pcb-rnd-padstack-v* {
+		type=li
+		desc={A singe padstack prototype}
+		ver = {>=6}
+		li:children {
+			sy:ps_proto_v6.0   = {/lht_tree_doc/comm/data/children/padstack_prototypes/children/ps_proto_v4.PID}
+		}
+	}
+}}

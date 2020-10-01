@@ -5,7 +5,8 @@ DOTS = \
  pcb-rnd-conf-v1.dot \
  pcb-rnd-font-v1.dot \
  pcb-rnd-subcircuit-v.dot \
- submenu.dot
+ submenu.dot \
+ padstack.dot
 
 all: tree.html tree.txt $(DOTS)
 
