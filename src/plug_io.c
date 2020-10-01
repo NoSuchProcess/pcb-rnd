@@ -460,6 +460,23 @@ static int pcb_write_buffer(FILE *f, pcb_buffer_t *buff, const char *fmt, rnd_bo
 	return res;
 }
 
+int pcb_write_padstack(FILE *f, pcb_pstk_proto_t *proto, const char *fmt)
+{
+	int res = -1/*, newfmt = 0*/;
+	pcb_plug_io_t *p = pcb_io_find_writer(PCB_IOT_PADSTACK, fmt);
+
+	if ((p != NULL) && (p->write_padstack != NULL)) {
+		res = p->write_padstack(p, f, proto);
+		/*newfmt = 1;*/
+	}
+
+/*	if ((res == 0) && (newfmt))
+		PCB->Data->loader = p;*/
+
+	pcb_plug_io_err(&PCB->hidlib, res, "write padstack", NULL);
+	return res;
+}
+
 int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_idx)
 {
 	int res, newfmt = 0;
