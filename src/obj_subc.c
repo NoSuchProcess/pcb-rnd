@@ -1214,7 +1214,7 @@ void *pcb_subc_op(pcb_data_t *Data, pcb_subc_t *sc, pcb_opfunc_t *opfunc, pcb_op
 			rnd_box_t *b;
 
 			for(b = rnd_r_first(Data->subc_tree, &it); b != NULL; b = rnd_r_next(&it)) {
-				if (b == sc) {
+				if (b == (rnd_box_t *)sc) {
 					doit = 0;
 					break;
 				}
