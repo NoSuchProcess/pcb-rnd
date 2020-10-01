@@ -2962,10 +2962,13 @@
  ../src_3rd/librnd/core/hid_attrib.h ../src_3rd/librnd/core/hid_cfg.h \
  ../src_3rd/librnd/core/hid_menu.h ../src_3rd/librnd/core/rnd_printf.h \
  ../src_3rd/librnd/core/hid_dad_spin.h \
- ../src_3rd/librnd/core/hid_dad_tree.h obj_pstk.h obj_pstk_inlines.h \
- board.h vtroutestyle.h rats_patch.h data.h thermal.h operation.h \
+ ../src_3rd/librnd/core/hid_dad_tree.h ../src_3rd/librnd/core/safe_fs.h \
+ ../src_3rd/librnd/core/conf.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/librnd/core/list_conf.h obj_pstk.h obj_pstk_inlines.h board.h \
+ vtroutestyle.h rats_patch.h data.h thermal.h operation.h \
  ../src_3rd/librnd/poly/polygon1_gen.h obj_text_draw.h draw.h \
- obj_pstk_draw.h undo_old.h select.h search.h \
+ obj_pstk_draw.h undo_old.h plug_io.h vtlibrary.h \
+ ../src_3rd/genvector/vts0.h select.h search.h \
  ../src_plugins/dialogs/dlg_padstack.h \
  ../src_plugins/dialogs/dlg_lib_pstk.h
 ../src_plugins/dialogs/dlg_library.o: \
