@@ -308,6 +308,9 @@ static void perp_extend(rnd_coord_t ppx, rnd_coord_t ppy, rnd_coord_t *px, rnd_c
 	*py = iy;
 }
 
+
+/*** draw the attached object while in tool mode move or copy ***/
+
 typedef struct {
 	rnd_pline_t *pline;
 	rnd_polyarea_t *pa;
@@ -315,9 +318,7 @@ typedef struct {
 
 static xordraw_cache_t xordraw_cache;
 
-/* ---------------------------------------------------------------------------
- * draws the attached object while in tool mode move or copy
- */
+
 void pcb_xordraw_movecopy(rnd_bool modifier)
 {
 	rnd_coord_t dx = pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X;
@@ -361,9 +362,7 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 
 	case PCB_OBJ_LINE:
 		{
-			/* We move a local copy of the line -the real line hasn't moved, 
-			 * only the preview.
-			 */			
+			/* We move a local copy of the line -the real line hasn't moved, only the preview. */
 			int constrained = 0;
 			pcb_line_t line;
 			
@@ -511,24 +510,17 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 				}
 			}
 			else {
-				pcb_route_t	route;
+				pcb_route_t route;
 				pcb_route_init(&route);
-				pcb_route_calculate(	PCB,
-															&route,
-															point1,
-															&point2,
-															pcb_layer_id(PCB->Data,(pcb_layer_t *)pcb_crosshair.AttachedObject.Ptr1),
-															line->Thickness,
-															line->Clearance,
-															line->Flags,
-															rnd_gui->shift_is_pressed(rnd_gui),
-															rnd_gui->control_is_pressed(rnd_gui) );
+				pcb_route_calculate(PCB,
+					&route, point1, &point2, pcb_layer_id(PCB->Data,(pcb_layer_t *)pcb_crosshair.AttachedObject.Ptr1),
+					line->Thickness, line->Clearance, line->Flags,
+					rnd_gui->shift_is_pressed(rnd_gui), rnd_gui->control_is_pressed(rnd_gui));
 				pcb_route_draw(&route,pcb_crosshair.GC);
 				if (conf_core.editor.show_drc) 
 					pcb_route_draw_drc(&route,pcb_crosshair.GC);
-				pcb_route_destroy(&route);		
+				pcb_route_destroy(&route);
 			}
-
 			break;
 		}
 
