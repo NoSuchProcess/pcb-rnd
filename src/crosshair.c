@@ -649,22 +649,21 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 	int event_sent = 0;
 	
 	switch (pcb_crosshair.AttachedObject.Type) {
-	case PCB_OBJ_PSTK:        xordraw_movecopy_pstk(modifier, &event_sent, dx, dy); break;
-	case PCB_OBJ_LINE:        xordraw_movecopy_line(modifier, &event_sent, dx, dy); break;
-	case PCB_OBJ_ARC:         xordraw_movecopy_arc(modifier, &event_sent, dx, dy); break;
-	case PCB_OBJ_POLY:        xordraw_movecopy_poly(modifier, &event_sent, dx, dy); break;
-	case PCB_OBJ_TEXT:        xordraw_movecopy_text(modifier, &event_sent, dx, dy); break;
-	case PCB_OBJ_GFX:         xordraw_movecopy_gfx(modifier, &event_sent, dx, dy); break;
-	case PCB_OBJ_LINE_POINT:  xordraw_movecopy_line_point(modifier, &event_sent, dx, dy); break;
-	case PCB_OBJ_ARC_POINT:   xordraw_movecopy_arc_point(modifier, &event_sent, dx, dy); break;
-	case PCB_OBJ_POLY_POINT:  xordraw_movecopy_poly_point(modifier, &event_sent, dx, dy); break;
-	case PCB_OBJ_GFX_POINT:   xordraw_movecopy_gfx_point(modifier, &event_sent, dx, dy); break;
-	case PCB_OBJ_SUBC:        pcb_xordraw_subc((pcb_subc_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy, 0); break;
+		case PCB_OBJ_PSTK:        xordraw_movecopy_pstk(modifier, &event_sent, dx, dy); break;
+		case PCB_OBJ_LINE:        xordraw_movecopy_line(modifier, &event_sent, dx, dy); break;
+		case PCB_OBJ_ARC:         xordraw_movecopy_arc(modifier, &event_sent, dx, dy); break;
+		case PCB_OBJ_POLY:        xordraw_movecopy_poly(modifier, &event_sent, dx, dy); break;
+		case PCB_OBJ_TEXT:        xordraw_movecopy_text(modifier, &event_sent, dx, dy); break;
+		case PCB_OBJ_GFX:         xordraw_movecopy_gfx(modifier, &event_sent, dx, dy); break;
+		case PCB_OBJ_LINE_POINT:  xordraw_movecopy_line_point(modifier, &event_sent, dx, dy); break;
+		case PCB_OBJ_ARC_POINT:   xordraw_movecopy_arc_point(modifier, &event_sent, dx, dy); break;
+		case PCB_OBJ_POLY_POINT:  xordraw_movecopy_poly_point(modifier, &event_sent, dx, dy); break;
+		case PCB_OBJ_GFX_POINT:   xordraw_movecopy_gfx_point(modifier, &event_sent, dx, dy); break;
+		case PCB_OBJ_SUBC:        pcb_xordraw_subc((pcb_subc_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy, 0); break;
 	}
 
 	/* floaters have a link back to their parent subc */
-	if (pcb_crosshair.AttachedObject.Ptr2 != NULL
-			&& PCB_FLAG_TEST(PCB_FLAG_FLOATER, (pcb_any_obj_t *)pcb_crosshair.AttachedObject.Ptr2)) {
+	if ((pcb_crosshair.AttachedObject.Ptr2 != NULL) && PCB_FLAG_TEST(PCB_FLAG_FLOATER, (pcb_any_obj_t *)pcb_crosshair.AttachedObject.Ptr2)) {
 		pcb_any_obj_t *obj = pcb_crosshair.AttachedObject.Ptr2;
 		if (obj->parent_type == PCB_PARENT_LAYER) {
 			pcb_data_t *data = obj->parent.layer->parent.data;
@@ -678,7 +677,7 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 	}
 
 	if(!event_sent)
-		rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
+		rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy);
 }
 
 void pcb_crosshair_attached_clean(rnd_hidlib_t *hidlib)
