@@ -227,7 +227,7 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_e
 	gdl_iterator_t it;
 	rnd_conf_listitem_t *i;
 	long cnt = 0;
-	int bufno = -1;
+	int bufno = -1, *ran;
 	pcb_qry_exec_t ec;
 	drc_query_prog_t prog;
 
@@ -254,6 +254,10 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_e
 		dis = drc_get_disable(i->name);
 		if ((dis != NULL) && (*dis != 0))
 			continue;
+
+		assert(argv[1].type == RND_EVARG_PTR);
+		ran = argv[1].d.p;
+		(*ran)++;
 
 		prog.name = i->name;
 		cnt += drc_qry_exec(&ec, pcb, &pcb_drc_lst, i->name,

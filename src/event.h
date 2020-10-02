@@ -53,7 +53,7 @@ enum {
 
 	PCB_EVENT_DRAW_CROSSHAIR_CHATT,       /* called from crosshair code upon attached object recalculation; event handlers can use this hook to enforce various geometric restrictions */
 
-	PCB_EVENT_DRC_RUN,                    /* called from core to run all configured DRCs (implemented in plugins) */
+	PCB_EVENT_DRC_RUN,                    /* called from core to run all configured DRCs (implemented in plugins). Args: (int *) that each DRC plugin shall increase if it did any check */
 
 	PCB_EVENT_NET_INDICATE_SHORT,         /* called by core to get a shortcircuit indicated (e.g. by mincut). Args: (pcb_net_t *net, pcb_any_obj_t *offending_term, pcb_net_t *offending_net, int *handled, int *cancel) - if *handled is non-zero, the short is already indicated; if *cancel is non-zero the whole process is cancelled, no more advanced short checking should take place in this session */
 

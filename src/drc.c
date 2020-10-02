@@ -152,8 +152,11 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 
 void pcb_drc_all(void)
 {
+	int ran = 0;
 	pcb_view_list_free_fields(&pcb_drc_lst);
-	rnd_event(&PCB->hidlib, PCB_EVENT_DRC_RUN, NULL);
+	rnd_event(&PCB->hidlib, PCB_EVENT_DRC_RUN, "p", &ran);
+	if (ran == 0)
+		rnd_message(RND_MSG_ERROR, "No DRC tests ran. Is any DRC plugin compiled? Are they disabled? Are all rules disabled?\n");
 }
 
 static const char pcb_acts_DRC[] = "DRC([list|simple|print|log|dump])";
