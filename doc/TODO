@@ -99,6 +99,7 @@
 	- FEATURE: vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 	- FEATURE: add round down
 - FEATURE: lihata v8
+	- load/save text clearance (and make sure the GUI can set it), then remove the 0.5mm hardwired value from polygon.c
 	- deprecate saving rats [report: Igor2]
 	- make saving selected, found and warn flags optional to reduce VCS noise [report: Igor2]
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
