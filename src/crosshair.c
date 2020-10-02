@@ -46,6 +46,7 @@
 #include "find.h"
 #include "undo.h"
 #include "event.h"
+#include "thermal.h"
 #include <librnd/core/grid.h>
 
 #include "obj_line_draw.h"
@@ -329,6 +330,32 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 		{
 			pcb_pstk_t *ps = (pcb_pstk_t *) pcb_crosshair.AttachedObject.Ptr2;
 			thindraw_moved_ps(ps, dx, dy);
+
+			if (conf_core.editor.show_drc) {
+				if (xordraw_cache.pa == NULL) {
+					static pcb_poly_t in_poly = {0};
+					rnd_layergrp_id_t gid;
+
+					/* build an union of all-layer clearances since a padstack affects multiple layers */
+					for(gid = 0; gid < PCB->LayerGroups.len; gid++) {
+						pcb_layergrp_t *g = &PCB->LayerGroups.grp[gid];
+						rnd_polyarea_t *cla, *tmp;
+						if (!(g->ltype & PCB_LYT_COPPER) || (g->len < 1))  continue;
+						cla = pcb_thermal_area_pstk(PCB, ps, g->lid[0], &in_poly);
+						if (xordraw_cache.pa != NULL) {
+							rnd_polyarea_boolean_free(xordraw_cache.pa, cla, &tmp, RND_PBO_UNITE);
+							xordraw_cache.pa = tmp;
+						}
+						else
+							xordraw_cache.pa = cla;
+					}
+				}
+				if (xordraw_cache.pa != NULL) {
+					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+					pcb_xordraw_polyarea(xordraw_cache.pa, dx, dy);
+					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+				}
+			}
 			break;
 		}
 
