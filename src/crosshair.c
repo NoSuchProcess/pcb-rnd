@@ -369,9 +369,7 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 		{
 			pcb_poly_t *polygon = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
 
-			/* the tmp polygon has n+1 points because the first
-			 * and the last one are set to the same coordinates
-			 */
+			/* the tmp polygon has n+1 points because the first and the last one are set to the same coordinates */
 			pcb_xordraw_poly(polygon, dx, dy, 0);
 			break;
 		}
