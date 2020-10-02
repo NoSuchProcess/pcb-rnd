@@ -815,10 +815,10 @@ TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elli
 				t.BoundingBox.X2 = PCB_CSWAP_X(text->BoundingBox.X2, w, mirr);
 				t.BoundingBox.Y2 = PCB_CSWAP_Y(text->BoundingBox.Y2, h, mirr);
 				PCB_FLAG_TOGGLE(PCB_FLAG_ONSOLDER, &t);
-				pcb_text_draw_xor(&t, DX, DY);
+				pcb_text_draw_xor(&t, DX, DY, 1);
 			}
 			else
-				pcb_text_draw_xor(text, DX, DY);
+				pcb_text_draw_xor(text, DX, DY, 1);
 		}
 	}
 

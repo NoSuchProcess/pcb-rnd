@@ -46,7 +46,7 @@ typedef enum pcb_text_tiny_e { /* How to draw text that is too tiny to be readab
 void pcb_text_draw_(pcb_draw_info_t *info, pcb_text_t *Text, rnd_coord_t min_line_width, int allow_term_gfx, pcb_text_tiny_t tiny);
 void pcb_text_invalidate_erase(pcb_layer_t *Layer, pcb_text_t *Text);
 void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text);
-void pcb_text_draw_xor(pcb_text_t *text, rnd_coord_t x, rnd_coord_t y);
+void pcb_text_draw_xor(pcb_text_t *text, rnd_coord_t x, rnd_coord_t y, rnd_bool want_box);
 void pcb_text_name_invalidate_draw(pcb_text_t *txt);
 void pcb_text_draw_label(pcb_draw_info_t *info, pcb_text_t *text);
 

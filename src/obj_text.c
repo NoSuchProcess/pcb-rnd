@@ -1636,11 +1636,11 @@ void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text)
 static pcb_draw_info_t txor_info;
 static rnd_xform_t txor_xform;
 
-void pcb_text_draw_xor(pcb_text_t *text, rnd_coord_t x, rnd_coord_t y)
+void pcb_text_draw_xor(pcb_text_t *text, rnd_coord_t x, rnd_coord_t y, rnd_bool want_box)
 {
 	txor_info.xform = &txor_xform;
 	DrawTextLowLevel_(&txor_info, text, 0, 1, x, y, PCB_TXT_TINY_CHEAP);
-	if ((conf_core.appearance.text_host_bbox) && (text->BoundingBox.X1 != text->BoundingBox.X2)) {
+	if (want_box && (conf_core.appearance.text_host_bbox) && (text->BoundingBox.X1 != text->BoundingBox.X2)) {
 		rnd_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);
 		rnd_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X1, y + text->BoundingBox.Y1, x + text->BoundingBox.X2, y + text->BoundingBox.Y1);
 		rnd_render->draw_line(pcb_crosshair.GC, x + text->BoundingBox.X2, y + text->BoundingBox.Y2, x + text->BoundingBox.X1, y + text->BoundingBox.Y2);

@@ -87,7 +87,7 @@ void pcb_tool_text_draw_attached(rnd_hidlib_t *hl)
 	text.thickness = conf_core.design.text_thickness;
 	text.TextString = "A";
 	text.fid = conf_core.design.text_font_id;
-	pcb_text_draw_xor(&text,0,0);
+	pcb_text_draw_xor(&text,0,0,1);
 
 }
 

@@ -210,7 +210,7 @@ void pcb_xordraw_buffer(pcb_buffer_t *Buffer)
 			PCB_END_LOOP;
 			PCB_TEXT_LOOP(layer);
 			{
-				pcb_text_draw_xor(text, x, y);
+				pcb_text_draw_xor(text, x, y, 1);
 			}
 			PCB_END_LOOP;
 			/* the tmp polygon has n+1 points because the first
@@ -425,8 +425,8 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 
 	case PCB_OBJ_TEXT:
 		{
+			int want_box = 1;
 			pcb_text_t *text = (pcb_text_t *)pcb_crosshair.AttachedObject.Ptr2;
-			pcb_text_draw_xor(text, dx, dy);
 			if (conf_core.editor.show_drc) {
 				if (xordraw_cache.pa == NULL)
 					xordraw_cache.pa = pcb_poly_construct_text_clearance(text);
@@ -440,9 +440,10 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 						pa = pa->f;
 					} while(pa != xordraw_cache.pa);
 					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+					want_box = 0;
 				}
 			}
-			
+			pcb_text_draw_xor(text, dx, dy, want_box);
 			break;
 		}
 
