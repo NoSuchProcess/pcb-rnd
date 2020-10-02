@@ -42,6 +42,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_inlines.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/poly/offset.h>
 #include "find.h"
 #include "undo.h"
 #include "event.h"
@@ -105,6 +106,17 @@ void pcb_xordraw_poly(pcb_poly_t *polygon, rnd_coord_t dx, rnd_coord_t dy, int d
 								 polygon->Points[i].X + dx,
 								 polygon->Points[i].Y + dy, polygon->Points[next].X + dx, polygon->Points[next].Y + dy);
 	}
+}
+
+void pcb_xordraw_pline(rnd_pline_t *pline, rnd_coord_t dx, rnd_coord_t dy)
+{
+	rnd_vnode_t *n = pline->head;
+	do {
+		rnd_render->draw_line(pcb_crosshair.GC,
+			 n->point[0] + dx, n->point[1] + dy,
+			 n->next->point[0] + dx, n->next->point[1] + dy);
+		n = n->next;
+	} while(n != pline->head);
 }
 
 /* ---------------------------------------------------------------------------
@@ -284,6 +296,11 @@ static void perp_extend(rnd_coord_t ppx, rnd_coord_t ppy, rnd_coord_t *px, rnd_c
 	*py = iy;
 }
 
+typedef struct {
+	rnd_pline_t *pline;
+} xordraw_cache_t;
+
+static xordraw_cache_t xordraw_cache;
 
 /* ---------------------------------------------------------------------------
  * draws the attached object while in tool mode move or copy
@@ -371,6 +388,37 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 
 			/* the tmp polygon has n+1 points because the first and the last one are set to the same coordinates */
 			pcb_xordraw_poly(polygon, dx, dy, 0);
+
+			/* if show_drc is enabled and polygon is trying to clear other polygons,
+			   calculate the offset poly and cache */
+			if ((conf_core.editor.show_drc) && (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, polygon))) {
+				if (xordraw_cache.pline == NULL) {
+					long n;
+					rnd_vector_t v;
+					rnd_pline_t *pl;
+
+					for(n = 0; n < polygon->PointN; n++) {
+						v[0] = polygon->Points[n].X; v[1] = polygon->Points[n].Y;
+						if (n == 0)
+							pl = rnd_poly_contour_new(v);
+						else
+							rnd_poly_vertex_include(pl->head->prev, rnd_poly_node_create(v));
+					}
+					rnd_poly_contour_pre(pl, 1);
+					if (pl->Flags.orient)
+						rnd_poly_contour_inv(pl);
+
+					xordraw_cache.pline = rnd_pline_dup_offset(pl, -conf_core.design.clearance);
+					rnd_poly_contour_del(&pl);
+				}
+				
+				/* draw the clearance offset poly */
+				if (xordraw_cache.pline != NULL) {
+					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+					pcb_xordraw_pline(xordraw_cache.pline, dx, dy);
+					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+				}
+			}
 			break;
 		}
 
@@ -594,7 +642,8 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 
 void pcb_crosshair_attached_clean(rnd_hidlib_t *hidlib)
 {
-
+	if (xordraw_cache.pline != NULL)
+		rnd_poly_contour_del(&xordraw_cache.pline);
 }
 
 void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
