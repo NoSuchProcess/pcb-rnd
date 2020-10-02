@@ -47,6 +47,7 @@
 void pcb_tool_move_uninit(void)
 {
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
+	pcb_crosshair_attached_clean(&PCB->hidlib);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
@@ -64,6 +65,7 @@ void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 		{
 			int types = PCB_MOVE_TYPES;
 
+			pcb_crosshair_attached_clean(hl);
 			pcb_crosshair.AttachedObject.Type =
 				pcb_search_screen(hl->tool_x, hl->tool_y, types,
 										 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
@@ -71,6 +73,7 @@ void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 				pcb_any_obj_t *obj = (pcb_any_obj_t *)pcb_crosshair.AttachedObject.Ptr2;
 				if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
 					rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+					pcb_crosshair_attached_clean(hl);
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 					pcb_crosshair.extobj_edit = NULL;
 				}
@@ -121,6 +124,7 @@ void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 			pcb_extobj_float_geo(pcb_crosshair.extobj_edit);
 
 		/* reset identifiers */
+		pcb_crosshair_attached_clean(hl);
 		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 		pcb_crosshair.extobj_edit = NULL;

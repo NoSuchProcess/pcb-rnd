@@ -53,6 +53,7 @@
 void pcb_tool_arrow_uninit(void)
 {
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
+	pcb_crosshair_attached_clean(&PCB->hidlib);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.AttachedBox.State = PCB_CH_STATE_FIRST;
@@ -89,6 +90,7 @@ static void click_timer_cb(rnd_hidval_t hv)
 			rnd_tool_save(hl);
 			rnd_tool_is_saved = rnd_true;
 			rnd_tool_select_by_name(hl, rnd_gui->control_is_pressed(rnd_gui)? "copy" : "move");
+			pcb_crosshair_attached_clean(hl);
 			pcb_crosshair.AttachedObject.Ptr1 = pcb_crosshair_note.ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = pcb_crosshair_note.ptr2;
 			pcb_crosshair.AttachedObject.Ptr3 = pcb_crosshair_note.ptr3;

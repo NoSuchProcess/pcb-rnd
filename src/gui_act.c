@@ -392,6 +392,7 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			/* line has two endpoints, check which one is close to the original x;y */
 			pcb_line_t *l = ptr2;
 			if (close_enough(hidlib->tool_x, l->Point1.X) && close_enough(hidlib->tool_y, l->Point1.Y)) {
+				pcb_crosshair_attached_clean(hidlib);
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_LINE_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
@@ -399,6 +400,7 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				goto switched;
 			}
 			if (close_enough(hidlib->tool_x, l->Point2.X) && close_enough(hidlib->tool_y, l->Point2.Y)) {
+				pcb_crosshair_attached_clean(hidlib);
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_LINE_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
@@ -410,6 +412,7 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rnd_coord_t ex, ey;
 			pcb_arc_get_end((pcb_arc_t *)ptr2, 0, &ex, &ey);
 			if (close_enough(hidlib->tool_x, ex) && close_enough(hidlib->tool_y, ey)) {
+				pcb_crosshair_attached_clean(hidlib);
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
@@ -418,6 +421,7 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 			pcb_arc_get_end((pcb_arc_t *)ptr2, 1, &ex, &ey);
 			if (close_enough(hidlib->tool_x, ex) && close_enough(hidlib->tool_y, ey)) {
+				pcb_crosshair_attached_clean(hidlib);
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_ARC_POINT;
 				pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 				pcb_crosshair.AttachedObject.Ptr2 = ptr2;
@@ -426,6 +430,7 @@ static fgw_error_t pcb_act_CycleDrag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			}
 		}
 		else if (pcb_search_obj_by_id(PCB->Data, &ptr1, &ptr2, &ptr3, pcb_crosshair.drags[pcb_crosshair.drags_current], PCB_OBJ_ARC) != PCB_OBJ_VOID) {
+				pcb_crosshair_attached_clean(hidlib);
 			pcb_crosshair.AttachedObject.Type = PCB_OBJ_ARC;
 			pcb_crosshair.AttachedObject.Ptr1 = ptr1;
 			pcb_crosshair.AttachedObject.Ptr2 = ptr2;

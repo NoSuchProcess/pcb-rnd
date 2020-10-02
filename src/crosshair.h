@@ -123,4 +123,7 @@ void pcb_xordraw_buffer(pcb_buffer_t *Buffer);
 void pcb_xordraw_movecopy(rnd_bool modifier);
 void pcb_xordraw_insert_pt_obj(void);
 
+/* Always call this before changing the attached object of the crosshair */
+void pcb_crosshair_attached_clean(rnd_hidlib_t *hidlib);
+
 #endif

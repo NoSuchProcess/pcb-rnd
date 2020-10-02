@@ -54,6 +54,7 @@ static rnd_cardinal_t polyIndex = 0;
 void pcb_tool_insert_uninit(void)
 {
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
+	pcb_crosshair_attached_clean(&PCB->hidlib);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	pcb_crosshair.extobj_edit = NULL;
@@ -66,6 +67,7 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 	switch (pcb_crosshair.AttachedObject.State) {
 		/* first notify, lookup object */
 	case PCB_CH_STATE_FIRST:
+		pcb_crosshair_attached_clean(hl);
 		pcb_crosshair.AttachedObject.Type =
 			pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_INSERT_TYPES,
 									 &pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
@@ -74,6 +76,7 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 			pcb_any_obj_t *obj = (pcb_any_obj_t *)pcb_crosshair.AttachedObject.Ptr2;
 			if (PCB_FLAG_TEST(PCB_FLAG_LOCK, obj)) {
 				rnd_message(RND_MSG_WARNING, "Sorry, %s object is locked\n", pcb_obj_type_name(obj->type));
+				pcb_crosshair_attached_clean(hl);
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 				pcb_crosshair.extobj_edit = NULL;
 				break;
@@ -101,6 +104,7 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 																	pcb_crosshair.AttachedObject.Ptr2, &polyIndex, InsertedPoint.X, InsertedPoint.Y, rnd_false, rnd_false);
 					pcb_board_set_changed_flag(pcb, rnd_true);
 
+					pcb_crosshair_attached_clean(hl);
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 					pcb_crosshair.extobj_edit = NULL;
@@ -111,6 +115,7 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 
 		/* second notify, insert new point into object */
 	case PCB_CH_STATE_SECOND:
+		pcb_crosshair_attached_clean(hl);
 		if (pcb_crosshair.AttachedObject.Type == PCB_OBJ_POLY)
 			pcb_insert_point_in_object(PCB_OBJ_POLY,
 														pcb_crosshair.AttachedObject.Ptr1, fake.poly,
@@ -122,6 +127,7 @@ void pcb_tool_insert_notify_mode(rnd_hidlib_t *hl)
 		pcb_board_set_changed_flag(pcb, rnd_true);
 
 		/* reset identifiers */
+		pcb_crosshair_attached_clean(hl);
 		pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 		pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 		pcb_crosshair.extobj_edit = NULL;

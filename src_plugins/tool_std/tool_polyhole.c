@@ -56,6 +56,7 @@ void pcb_tool_polyhole_notify_mode(rnd_hidlib_t *hl)
 	switch (pcb_crosshair.AttachedObject.State) {
 		/* first notify, lookup object */
 	case PCB_CH_STATE_FIRST:
+		pcb_crosshair_attached_clean(hl);
 		pcb_crosshair.AttachedPolygon_pts = 0;
 		pcb_crosshair.AttachedObject.Type =
 			pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_OBJ_POLY,
@@ -68,6 +69,7 @@ void pcb_tool_polyhole_notify_mode(rnd_hidlib_t *hl)
 
 		if (PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_poly_t *)pcb_crosshair.AttachedObject.Ptr2)) {
 			rnd_message(RND_MSG_WARNING, "Sorry, poly object is locked\n");
+			pcb_crosshair_attached_clean(hl);
 			pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 			pcb_crosshair.extobj_edit = NULL;
 			break;

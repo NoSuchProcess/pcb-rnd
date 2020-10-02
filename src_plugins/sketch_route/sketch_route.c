@@ -1012,6 +1012,7 @@ static void tool_skline_uninit(void)
 {
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 	attached_path_uninit();
+	pcb_crosshair_attached_clean(&PCB->hidlib);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
@@ -1033,6 +1034,7 @@ static void tool_skline_notify_mode(rnd_hidlib_t *hl)
 					&& ((type == PCB_OBJ_PSTK && pcb_pstk_shape_at(PCB, (pcb_pstk_t *) term_obj, PCB_CURRLAYER(PCB)) != NULL)
 							|| type != PCB_OBJ_PSTK)
 					&& attached_path_init(PCB_CURRLAYER(PCB), term_obj)) {
+				pcb_crosshair_attached_clean(hl);
 				pcb_crosshair.AttachedObject.Type = PCB_OBJ_LINE;
 				pcb_crosshair.AttachedObject.State = PCB_CH_STATE_SECOND;
 			}
@@ -1051,6 +1053,7 @@ static void tool_skline_notify_mode(rnd_hidlib_t *hl)
 							|| type != PCB_OBJ_PSTK)) {
 				if (attached_path_finish(term_obj) == rnd_true) {
 					attached_path_uninit();
+					pcb_crosshair_attached_clean(hl);
 					pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 					pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 				} else {

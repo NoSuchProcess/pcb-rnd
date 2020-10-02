@@ -592,6 +592,11 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 		rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icc", 0, dx, dy );
 }
 
+void pcb_crosshair_attached_clean(rnd_hidlib_t *hidlib)
+{
+
+}
+
 void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {
 	if (!inhibit_drawing_mode) {
@@ -616,7 +621,6 @@ void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 	if (!inhibit_drawing_mode)
 		rnd_render->set_drawing_mode(rnd_gui, RND_HID_COMP_FLUSH, 1, NULL);
 }
-
 
 void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
 {

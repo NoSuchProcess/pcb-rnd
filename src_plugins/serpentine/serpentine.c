@@ -292,6 +292,7 @@ static void tool_serpentine_init(void)
 static void tool_serpentine_uninit(void)
 {
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
+	pcb_crosshair_attached_clean(&PCB->hidlib);
 	pcb_crosshair.AttachedObject.Type = PCB_OBJ_VOID;
 	pcb_crosshair.AttachedObject.State = PCB_CH_STATE_FIRST;
 	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
@@ -304,6 +305,7 @@ static void tool_serpentine_notify_mode(rnd_hidlib_t *hl)
 
 	switch (pcb_crosshair.AttachedObject.State) {
 	case PCB_CH_STATE_FIRST:
+		pcb_crosshair_attached_clean(hl);
 		pcb_crosshair.AttachedObject.Type = pcb_search_screen(hl->tool_x, hl->tool_y, PCB_OBJ_LINE, 
 						&pcb_crosshair.AttachedObject.Ptr1, &pcb_crosshair.AttachedObject.Ptr2, &pcb_crosshair.AttachedObject.Ptr3);
 		/* TODO: check if an object is on the current layer */
