@@ -111,4 +111,9 @@ int pcb_poly_sub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, 
 int pcb_poly_unsub_obj(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *Polygon, int type, void *obj);
 
 
+/* Construct a polygon that represents the clearance around a text object
+   (assuming a polygon with no enforce clearance). This can be a round rect
+   (old method) or a complex polygon for tight_clearance */
+rnd_polyarea_t *pcb_poly_construct_text_clearance(pcb_text_t *text);
+
 #endif

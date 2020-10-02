@@ -405,11 +405,13 @@ static int SubtractArc(pcb_arc_t * arc, pcb_poly_t * p)
 typedef struct {
 	pcb_poly_t *poly;
 	rnd_coord_t clearance;
-} poly_sub_text_t;
+	unsigned sub:1;
+	rnd_polyarea_t *pa; /* in case of sub==0 the result is accumulated here */
+} poly_poly_text_t;
 
 static void poly_sub_text_cb(void *ctx_, pcb_any_obj_t *obj)
 {
-	poly_sub_text_t *ctx = ctx_;
+	poly_poly_text_t *ctx = ctx_;
 	pcb_line_t *line = (pcb_line_t *)obj;
 	pcb_poly_t *poly = (pcb_poly_t *)obj;
 	pcb_arc_t *arc = (pcb_arc_t *)obj;
@@ -428,8 +430,19 @@ static void poly_sub_text_cb(void *ctx_, pcb_any_obj_t *obj)
 	}
 
 	if (np != NULL) {
-		Subtract(np, ctx->poly, rnd_true);
-		ctx->poly->NoHolesValid = 0;
+		if (ctx->sub) { /* subtract from ctx->poly directly (drawing clearance) */
+			Subtract(np, ctx->poly, rnd_true);
+			ctx->poly->NoHolesValid = 0;
+		}
+		else { /* add to ctx->pa (constructing the clearance polygon for other purposes) */
+			if (ctx->pa != NULL) {
+				rnd_polyarea_t *tmp;
+				rnd_polyarea_boolean_free(ctx->pa, np, &tmp, RND_PBO_UNITE);
+				ctx->pa = tmp;
+			}
+			else
+				ctx->pa = np;
+		}
 	}
 }
 
@@ -438,7 +451,7 @@ static rnd_xform_t tsub_xform;
 
 static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 {
-	poly_sub_text_t sctx;
+	poly_poly_text_t sctx;
 	int by_bbox = !text->tight_clearance;
 
 	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text))
@@ -457,10 +470,38 @@ static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 	/* new method: detailed clearance */
 	sctx.poly = p;
 	sctx.clearance = text->clearance + RND_MM_TO_COORD(0.5);
+	sctx.sub = 1;
 	tsub_info.xform = &tsub_xform;
 	pcb_text_decompose_text(&tsub_info, text, poly_sub_text_cb, &sctx);
 	return 1;
 }
+
+rnd_polyarea_t *pcb_poly_construct_text_clearance(pcb_text_t *text)
+{
+	poly_poly_text_t sctx;
+	pcb_poly_t dummy = {0};
+	int by_bbox = !text->tight_clearance;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text))
+		return NULL;
+
+	if (by_bbox) {
+		/* old method: clear by bounding box */
+		const rnd_box_t *b = &text->BoundingBox;
+		rnd_coord_t clr = conf_core.design.bloat;
+		return rnd_poly_from_round_rect(b->X1 + conf_core.design.bloat, b->X2 - conf_core.design.bloat, b->Y1 + conf_core.design.bloat, b->Y2 - conf_core.design.bloat, clr);
+	}
+
+	/* new method: detailed clearance */
+	sctx.poly = &dummy;
+	sctx.pa = NULL;
+	sctx.clearance = text->clearance + RND_MM_TO_COORD(0.5);
+	sctx.sub = 0;
+	tsub_info.xform = &tsub_xform;
+	pcb_text_decompose_text(&tsub_info, text, poly_sub_text_cb, &sctx);
+	return sctx.pa;
+}
+
 
 struct cpInfo {
 	const rnd_box_t *other;
