@@ -323,7 +323,7 @@ static xordraw_cache_t xordraw_cache;
 
 RND_INLINE void xordraw_movecopy_pstk(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
 {
-	pcb_pstk_t *ps = (pcb_pstk_t *) pcb_crosshair.AttachedObject.Ptr2;
+	pcb_pstk_t *ps = (pcb_pstk_t *)pcb_crosshair.AttachedObject.Ptr2;
 	thindraw_moved_ps(ps, dx, dy);
 
 	if (conf_core.editor.show_drc) {
@@ -355,14 +355,13 @@ RND_INLINE void xordraw_movecopy_pstk(rnd_bool modifier, int *event_sent, rnd_co
 
 RND_INLINE void xordraw_movecopy_line(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
 {
-	/* We move a local copy of the line -the real line hasn't moved, only the preview. */
+	/* We move a local copy of the line - the real line hasn't moved, only the preview. */
 	int constrained = 0;
 	pcb_line_t line;
-	
 	rnd_coord_t dx1 = dx, dx2 = dx;
 	rnd_coord_t dy1 = dy, dy2 = dy;
 	
-	memcpy(&line, (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2, sizeof(line));
+	memcpy(&line, (pcb_line_t *)pcb_crosshair.AttachedObject.Ptr2, sizeof(line));
 
 	if(conf_core.editor.rubber_band_keep_midlinedir)
 		rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, "pppppp", &line, &constrained, &dx1, &dy1, &dx2, &dy2);
@@ -376,16 +375,15 @@ RND_INLINE void xordraw_movecopy_line(rnd_bool modifier, int *event_sent, rnd_co
 	line.Point2.Y += dy2;
 
 	pcb_draw_wireframe_line(pcb_crosshair.GC,
-													line.Point1.X, line.Point1.Y,
-													line.Point2.X, line.Point2.Y, 
-													line.Thickness, 0);
-	
+		line.Point1.X, line.Point1.Y, line.Point2.X, line.Point2.Y,
+		line.Thickness, 0);
+
 	/* Draw the DRC outline if it is enabled */
 	if (conf_core.editor.show_drc) {
 		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
-		pcb_draw_wireframe_line(pcb_crosshair.GC,line.Point1.X, line.Point1.Y,
-														line.Point2.X, line.Point2.Y,
-														line.Thickness + 2 * (conf_core.design.clearance + 1), 0);
+		pcb_draw_wireframe_line(pcb_crosshair.GC,
+			line.Point1.X, line.Point1.Y, line.Point2.X, line.Point2.Y,
+			line.Thickness + 2 * (conf_core.design.clearance + 1), 0);
 		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 	}
 }
@@ -393,7 +391,7 @@ RND_INLINE void xordraw_movecopy_line(rnd_bool modifier, int *event_sent, rnd_co
 RND_INLINE void xordraw_movecopy_arc(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
 {
 	/* Make a temporary arc and move it by dx,dy */
-	pcb_arc_t arc = *((pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2);
+	pcb_arc_t arc = *((pcb_arc_t *)pcb_crosshair.AttachedObject.Ptr2);
 	rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, dx, dy, dx, dy);
 	*event_sent = 1;
 	
@@ -414,7 +412,7 @@ RND_INLINE void xordraw_movecopy_arc(rnd_bool modifier, int *event_sent, rnd_coo
 
 RND_INLINE void xordraw_movecopy_poly(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
 {
-	pcb_poly_t *polygon = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
+	pcb_poly_t *polygon = (pcb_poly_t *)pcb_crosshair.AttachedObject.Ptr2;
 
 	/* the tmp polygon has n+1 points because the first and the last one are set to the same coordinates */
 	pcb_xordraw_poly(polygon, dx, dy, 0);
@@ -477,23 +475,22 @@ RND_INLINE void xordraw_movecopy_gfx(rnd_bool modifier, int *event_sent, rnd_coo
 RND_INLINE void xordraw_movecopy_line_point(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_line_t *line;
-	rnd_point_t *point,*point1,point2;
+	rnd_point_t *point, *point1, point2;
 
-	line = (pcb_line_t *) pcb_crosshair.AttachedObject.Ptr2;
-	point = (rnd_point_t *) pcb_crosshair.AttachedObject.Ptr3;
+	line = (pcb_line_t *)pcb_crosshair.AttachedObject.Ptr2;
+	point = (rnd_point_t *)pcb_crosshair.AttachedObject.Ptr3;
 	point1 = (point == &line->Point1 ? &line->Point2 : &line->Point1);
 	point2 = *point;
 	point2.X += dx;
 	point2.Y += dy;
 
-	if(conf_core.editor.move_linepoint_uses_route == 0) {/* config setting for selecting new 45/90 method */ 
+	if(conf_core.editor.move_linepoint_uses_route == 0) { /* config setting for selecting new 45/90 method */
 		pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, point2.Y, line->Thickness, 0);
 
 		/* Draw the DRC outline if it is enabled */
 		if (conf_core.editor.show_drc) {
 			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
-			pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, 
-															point2.Y,line->Thickness + 2 * (conf_core.design.clearance + 1), 0);
+			pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, point2.Y,line->Thickness + 2 * (conf_core.design.clearance + 1), 0);
 			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 		}
 	}
@@ -514,8 +511,8 @@ RND_INLINE void xordraw_movecopy_line_point(rnd_bool modifier, int *event_sent, 
 RND_INLINE void xordraw_movecopy_arc_point(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
 {
 	pcb_arc_t arc = *((pcb_arc_t *)pcb_crosshair.AttachedObject.Ptr2);
-	rnd_coord_t ox1,ox2,oy1,oy2;
-	rnd_coord_t nx1,nx2,ny1,ny2;
+	rnd_coord_t ox1, ox2, oy1, oy2;
+	rnd_coord_t nx1, nx2, ny1, ny2;
 
 	/* Get the initial position of the arc point */
 	pcb_arc_get_end(&arc,0, &ox1, &oy1);
@@ -545,11 +542,11 @@ RND_INLINE void xordraw_movecopy_arc_point(rnd_bool modifier, int *event_sent, r
 	}
 
 	/* Get the new arc point positions, calculate the movement deltas and send them 
-	 * in a rubber_move_draw event */
+	   in a rubber_move_draw event */
 	pcb_arc_get_end(&arc,0, &nx1, &ny1);
 	pcb_arc_get_end(&arc,1, &nx2, &ny2);
 
-	rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, nx1-ox1,ny1-oy1,nx2-ox2,ny2-oy2);
+	rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, nx1-ox1, ny1-oy1, nx2-ox2, ny2-oy2);
 	*event_sent = 1;
 }
 
