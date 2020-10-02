@@ -298,6 +298,7 @@ static void perp_extend(rnd_coord_t ppx, rnd_coord_t ppy, rnd_coord_t *px, rnd_c
 
 typedef struct {
 	rnd_pline_t *pline;
+	rnd_polyarea_t *pa;
 } xordraw_cache_t;
 
 static xordraw_cache_t xordraw_cache;
@@ -426,6 +427,22 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 		{
 			pcb_text_t *text = (pcb_text_t *)pcb_crosshair.AttachedObject.Ptr2;
 			pcb_text_draw_xor(text, dx, dy);
+			if (conf_core.editor.show_drc) {
+				if (xordraw_cache.pa == NULL)
+					xordraw_cache.pa = pcb_poly_construct_text_clearance(text);
+				if (xordraw_cache.pa != NULL) {
+					rnd_polyarea_t *pa = xordraw_cache.pa;
+					rnd_pline_t *pl;
+					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+					do {
+						for(pl = pa->contours; pl != NULL; pl = pl->next)
+							pcb_xordraw_pline(pl, dx, dy);
+						pa = pa->f;
+					} while(pa != xordraw_cache.pa);
+					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+				}
+			}
+			
 			break;
 		}
 
@@ -644,6 +661,9 @@ void pcb_crosshair_attached_clean(rnd_hidlib_t *hidlib)
 {
 	if (xordraw_cache.pline != NULL)
 		rnd_poly_contour_del(&xordraw_cache.pline);
+
+	if (xordraw_cache.pa != NULL)
+		rnd_polyarea_free(&xordraw_cache.pa);
 }
 
 void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode)
