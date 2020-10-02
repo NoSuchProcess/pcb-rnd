@@ -1663,15 +1663,15 @@
 <!-- m_c_c -->
 <g id="node159" class="node">
 <title>m_c_c</title>
-<ellipse fill="none" stroke="#000000" cx="649.5103" cy="-8244.8701" rx="135.5294" ry="26.7407"/>
+<ellipse fill="none" stroke="#000000" cx="649.5103" cy="-8244.8701" rx="134.2007" ry="26.7407"/>
 <text text-anchor="middle" x="649.5103" y="-8248.6701" font-family="Times,serif" font-size="14.00" fill="#000000">{m c c} </text>
-<text text-anchor="middle" x="649.5103" y="-8233.6701" font-family="Times,serif" font-size="14.00" fill="#000000">Crosshair shows DRC clearance</text>
+<text text-anchor="middle" x="649.5103" y="-8233.6701" font-family="Times,serif" font-size="14.00" fill="#000000">Crosshair shows style clearance</text>
 </g>
 <!-- m_c&#45;&gt;m_c_c -->
 <g id="edge142" class="edge">
 <title>m_c&#45;&gt;m_c_c</title>
-<path fill="none" stroke="#000000" d="M370.4155,-8095.7351C402.523,-8097.3169 438.5335,-8105.1997 462.2691,-8128.8701 487.8279,-8154.3586 451.1524,-8182.9458 476.2691,-8208.8701 486.0734,-8218.9896 497.9257,-8226.6385 510.7775,-8232.3774"/>
-<polygon fill="#000000" stroke="#000000" points="509.7143,-8235.7227 520.2972,-8236.2266 512.3383,-8229.2331 509.7143,-8235.7227"/>
+<path fill="none" stroke="#000000" d="M370.4155,-8095.7351C402.523,-8097.3169 438.5335,-8105.1997 462.2691,-8128.8701 487.8279,-8154.3586 451.1524,-8182.9458 476.2691,-8208.8701 486.3422,-8219.2671 498.5773,-8227.0562 511.837,-8232.8452"/>
+<polygon fill="#000000" stroke="#000000" points="510.5803,-8236.112 521.1665,-8236.5409 513.1584,-8229.604 510.5803,-8236.112"/>
 </g>
 <!-- m_c_o -->
 <g id="node160" class="node">
@@ -1923,15 +1923,15 @@
 <!-- m_l_d -->
 <g id="node181" class="node">
 <title>m_l_d</title>
-<ellipse fill="none" stroke="#000000" cx="649.5103" cy="-6804.8701" rx="123.0732" ry="26.7407"/>
+<ellipse fill="none" stroke="#000000" cx="649.5103" cy="-6804.8701" rx="121.7449" ry="26.7407"/>
 <text text-anchor="middle" x="649.5103" y="-6808.6701" font-family="Times,serif" font-size="14.00" fill="#000000">{m l d} </text>
-<text text-anchor="middle" x="649.5103" y="-6793.6701" font-family="Times,serif" font-size="14.00" fill="#000000">Auto enforce DRC clearance</text>
+<text text-anchor="middle" x="649.5103" y="-6793.6701" font-family="Times,serif" font-size="14.00" fill="#000000">Auto enforce style clearance</text>
 </g>
 <!-- m_l&#45;&gt;m_l_d -->
 <g id="edge164" class="edge">
 <title>m_l&#45;&gt;m_l_d</title>
-<path fill="none" stroke="#000000" d="M392.4763,-6831.3172C434.071,-6827.0374 483.6739,-6821.9336 528.1595,-6817.3563"/>
-<polygon fill="#000000" stroke="#000000" points="528.5702,-6820.8326 538.1594,-6816.3274 527.8537,-6813.8694 528.5702,-6820.8326"/>
+<path fill="none" stroke="#000000" d="M392.4763,-6831.3172C434.3533,-6827.0083 484.3476,-6821.8643 529.0647,-6817.2632"/>
+<polygon fill="#000000" stroke="#000000" points="529.525,-6820.7344 539.1142,-6816.2291 528.8084,-6813.7711 529.525,-6820.7344"/>
 </g>
 <!-- m_l_f -->
 <g id="node182" class="node">

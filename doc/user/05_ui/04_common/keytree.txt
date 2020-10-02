@@ -191,7 +191,7 @@ l;l	pcb-menu-default.lht	LayerByStack(Select, Next)	Select next layer
 left	pcb-menu-default.lht	Cursor(Warp,-1,0,grid) 	Step Left
 left-ctrl	pcb-menu-default.lht	Scroll(left) 	Scroll Left
 left-shift	pcb-menu-default.lht	Cursor(Pan,-50,0,view) 	Step +Left
-m;c;c	pcb-menu-default.lht	conf(toggle, editor\057show_drc, design) 	Crosshair shows DRC clearance
+m;c;c	pcb-menu-default.lht	conf(toggle, editor\057show_drc, design) 	Crosshair shows style clearance
 m;c;o	pcb-menu-default.lht	conf(toggle, editor\057orthogonal_moves, design) 	Orthogonal moves
 m;c;p	pcb-menu-default.lht	conf(toggle, editor\057snap_pin, design) 	Crosshair snaps to padstacks
 m;c;s	pcb-menu-default.lht	conf(toggle, editor\057snap_offgrid_line, design) 	Crosshair snaps to off-grid points on lines
@@ -212,7 +212,7 @@ m;l;+	pcb-menu-default.lht	SetValue(LineSize,+5,mil) 	Line Tool size +5 mil
 m;l;-	pcb-menu-default.lht	SetValue(LineSize,-5,mil) 	Line Tool size -5 mil
 m;l;a	pcb-menu-default.lht	conf(toggle, editor\057all_direction_lines, design)	'All-direction' lines
 m;l;c	pcb-menu-default.lht	conf(toggle, editor\057clear_line, design) 	New lines, arcs clear polygons
-m;l;d	pcb-menu-default.lht	conf(toggle, editor\057auto_drc, design) 	Auto enforce DRC clearance
+m;l;d	pcb-menu-default.lht	conf(toggle, editor\057auto_drc, design) 	Auto enforce style clearance
 m;l;f	pcb-menu-default.lht	Display(CycleClip) 	Cycle line clip\057refraction
 m;l;m	pcb-menu-default.lht	conf(toggle, editor\057trace_auto_merge, design) 	Automatic trace merging
 m;o;b	pcb-menu-default.lht	conf(toggle, appearance\057black_current_group, design) 	black current group
