@@ -311,6 +311,9 @@ static void perp_extend(rnd_coord_t ppx, rnd_coord_t ppy, rnd_coord_t *px, rnd_c
 
 /*** draw the attached object while in tool mode move or copy ***/
 
+/* Some complex objects (padstacks, text, polygons) need to cache their
+   clearance outline because it's too expensive to calculate on every
+   screen update */
 typedef struct {
 	rnd_pline_t *pline;
 	rnd_polyarea_t *pa;
