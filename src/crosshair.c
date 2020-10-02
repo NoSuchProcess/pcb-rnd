@@ -321,17 +321,8 @@ typedef struct {
 
 static xordraw_cache_t xordraw_cache;
 
-
-void pcb_xordraw_movecopy(rnd_bool modifier)
+RND_INLINE void xordraw_movecopy_pstk(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
 {
-	rnd_coord_t dx = pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X;
-	rnd_coord_t dy = pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y;
-	int event_sent = 0;
-	
-	switch (pcb_crosshair.AttachedObject.Type) {
-
-	case PCB_OBJ_PSTK:
-		{
 			pcb_pstk_t *ps = (pcb_pstk_t *) pcb_crosshair.AttachedObject.Ptr2;
 			thindraw_moved_ps(ps, dx, dy);
 
@@ -360,11 +351,10 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 				}
 			}
-			break;
-		}
+}
 
-	case PCB_OBJ_LINE:
-		{
+RND_INLINE void xordraw_movecopy_line(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
+{
 			/* We move a local copy of the line -the real line hasn't moved, only the preview. */
 			int constrained = 0;
 			pcb_line_t line;
@@ -378,7 +368,7 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 				rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_CONSTRAIN_MAIN_LINE, "pppppp", &line, &constrained, &dx1, &dy1, &dx2, &dy2);
 			rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", constrained, dx1, dy1, dx2, dy2);
 
-			event_sent = 1;
+			*event_sent = 1;
 
 			line.Point1.X += dx1;
 			line.Point1.Y += dy1;
@@ -398,15 +388,14 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 																line.Thickness + 2 * (conf_core.design.clearance + 1), 0);
 				rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 			}
-			break;
-		}
+}
 
-	case PCB_OBJ_ARC:
-		{
+RND_INLINE void xordraw_movecopy_arc(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
+{
 			/* Make a temporary arc and move it by dx,dy */
 			pcb_arc_t arc = *((pcb_arc_t *) pcb_crosshair.AttachedObject.Ptr2);
 			rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, dx, dy, dx, dy);
-			event_sent = 1;
+			*event_sent = 1;
 			
 			arc.X += dx;
 			arc.Y += dy;
@@ -420,11 +409,11 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 				pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
 				rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 			}
-			break;
-		}
+}
 
-	case PCB_OBJ_POLY:
-		{
+
+RND_INLINE void xordraw_movecopy_poly(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
+{
 			pcb_poly_t *polygon = (pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2;
 
 			/* the tmp polygon has n+1 points because the first and the last one are set to the same coordinates */
@@ -460,11 +449,10 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 				}
 			}
-			break;
-		}
+}
 
-	case PCB_OBJ_TEXT:
-		{
+RND_INLINE void xordraw_movecopy_text(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
+{
 			int want_box = 1;
 			pcb_text_t *text = (pcb_text_t *)pcb_crosshair.AttachedObject.Ptr2;
 			if (conf_core.editor.show_drc) {
@@ -478,19 +466,16 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 				}
 			}
 			pcb_text_draw_xor(text, dx, dy, want_box);
-			break;
-		}
+}
 
-	case PCB_OBJ_GFX:
-		{
+RND_INLINE void xordraw_movecopy_gfx(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
+{
 			pcb_gfx_t *gfx = (pcb_gfx_t *)pcb_crosshair.AttachedObject.Ptr2;
 			pcb_gfx_draw_xor(gfx, dx, dy);
-			break;
-		}
+}
 
-
-	case PCB_OBJ_LINE_POINT:
-		{
+RND_INLINE void xordraw_movecopy_line_point(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
+{
 			pcb_line_t *line;
 			rnd_point_t *point,*point1,point2;
 
@@ -524,11 +509,10 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 					pcb_route_draw_drc(&route,pcb_crosshair.GC);
 				pcb_route_destroy(&route);
 			}
-			break;
-		}
+}
 
-	case PCB_OBJ_ARC_POINT:
-		{
+RND_INLINE void xordraw_movecopy_arc_point(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
+{
 			pcb_arc_t arc = *((pcb_arc_t *)pcb_crosshair.AttachedObject.Ptr2);
 			rnd_coord_t ox1,ox2,oy1,oy2;
 			rnd_coord_t nx1,nx2,ny1,ny2;
@@ -566,12 +550,11 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 			pcb_arc_get_end(&arc,1, &nx2, &ny2);
 
 			rnd_event(&PCB->hidlib, PCB_EVENT_RUBBER_MOVE_DRAW, "icccc", 0, nx1-ox1,ny1-oy1,nx2-ox2,ny2-oy2);
-			event_sent = 1;
-			break;
-		}
+			*event_sent = 1;
+}
 
-	case PCB_OBJ_POLY_POINT:
-		{
+RND_INLINE void xordraw_movecopy_poly_point(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
+{
 			pcb_poly_t *polygon;
 			rnd_point_t *point;
 			rnd_cardinal_t point_idx, prev, next, prev2, next2;
@@ -622,11 +605,10 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 			/* draw the two segments */
 			rnd_render->draw_line(pcb_crosshair.GC, px, py, x, y);
 			rnd_render->draw_line(pcb_crosshair.GC, x, y, nx, ny);
-			break;
-		}
+}
 
-	case PCB_OBJ_GFX_POINT:
-		{
+RND_INLINE void xordraw_movecopy_gfx_point(rnd_bool modifier, int *event_sent, rnd_coord_t dx, rnd_coord_t dy)
+{
 			pcb_gfx_t *gfx;
 			rnd_point_t *point, *prev, *next, *opp;
 			int point_idx, i;
@@ -636,7 +618,7 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 			point = (rnd_point_t *)pcb_crosshair.AttachedObject.Ptr3;
 			point_idx = point - gfx->corner;
 			if ((point_idx < 0) || (point_idx > 3))
-				break;
+				return;
 
 			cx = pcb_crosshair.X;
 			cy = pcb_crosshair.Y;
@@ -658,12 +640,26 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 			rnd_render->draw_line(pcb_crosshair.GC, opp->X, opp->Y, next->X+nx, next->Y+ny);
 			rnd_render->draw_line(pcb_crosshair.GC, cx, cy, prev->X+px, prev->Y+py);
 			rnd_render->draw_line(pcb_crosshair.GC, cx, cy, next->X+nx, next->Y+ny);
-		}
-		break;
+}
 
-	case PCB_OBJ_SUBC:
-		pcb_xordraw_subc((pcb_subc_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy, 0);
-		break;
+void pcb_xordraw_movecopy(rnd_bool modifier)
+{
+	rnd_coord_t dx = pcb_crosshair.AttachedObject.tx - pcb_crosshair.AttachedObject.X;
+	rnd_coord_t dy = pcb_crosshair.AttachedObject.ty - pcb_crosshair.AttachedObject.Y;
+	int event_sent = 0;
+	
+	switch (pcb_crosshair.AttachedObject.Type) {
+	case PCB_OBJ_PSTK:        xordraw_movecopy_pstk(modifier, &event_sent, dx, dy); break;
+	case PCB_OBJ_LINE:        xordraw_movecopy_line(modifier, &event_sent, dx, dy); break;
+	case PCB_OBJ_ARC:         xordraw_movecopy_arc(modifier, &event_sent, dx, dy); break;
+	case PCB_OBJ_POLY:        xordraw_movecopy_poly(modifier, &event_sent, dx, dy); break;
+	case PCB_OBJ_TEXT:        xordraw_movecopy_text(modifier, &event_sent, dx, dy); break;
+	case PCB_OBJ_GFX:         xordraw_movecopy_gfx(modifier, &event_sent, dx, dy); break;
+	case PCB_OBJ_LINE_POINT:  xordraw_movecopy_line_point(modifier, &event_sent, dx, dy); break;
+	case PCB_OBJ_ARC_POINT:   xordraw_movecopy_arc_point(modifier, &event_sent, dx, dy); break;
+	case PCB_OBJ_POLY_POINT:  xordraw_movecopy_poly_point(modifier, &event_sent, dx, dy); break;
+	case PCB_OBJ_GFX_POINT:   xordraw_movecopy_gfx_point(modifier, &event_sent, dx, dy); break;
+	case PCB_OBJ_SUBC:        pcb_xordraw_subc((pcb_subc_t *) pcb_crosshair.AttachedObject.Ptr2, dx, dy, 0); break;
 	}
 
 	/* floaters have a link back to their parent subc */
