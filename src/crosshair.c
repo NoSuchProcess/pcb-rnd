@@ -119,6 +119,17 @@ void pcb_xordraw_pline(rnd_pline_t *pline, rnd_coord_t dx, rnd_coord_t dy)
 	} while(n != pline->head);
 }
 
+void pcb_xordraw_polyarea(rnd_polyarea_t *parea, rnd_coord_t dx, rnd_coord_t dy)
+{
+	rnd_polyarea_t *pa = parea;
+	rnd_pline_t *pl;
+	do {
+		for(pl = pa->contours; pl != NULL; pl = pl->next)
+			pcb_xordraw_pline(pl, dx, dy);
+		pa = pa->f;
+	} while(pa != parea);
+}
+
 /* ---------------------------------------------------------------------------
  * creates a tmp polygon with coordinates converted to screen system, designed
  * for subc paste xor-draw
@@ -431,14 +442,8 @@ void pcb_xordraw_movecopy(rnd_bool modifier)
 				if (xordraw_cache.pa == NULL)
 					xordraw_cache.pa = pcb_poly_construct_text_clearance(text);
 				if (xordraw_cache.pa != NULL) {
-					rnd_polyarea_t *pa = xordraw_cache.pa;
-					rnd_pline_t *pl;
 					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
-					do {
-						for(pl = pa->contours; pl != NULL; pl = pl->next)
-							pcb_xordraw_pline(pl, dx, dy);
-						pa = pa->f;
-					} while(pa != xordraw_cache.pa);
+					pcb_xordraw_polyarea(xordraw_cache.pa, dx, dy);
 					rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 					want_box = 0;
 				}
