@@ -62,7 +62,6 @@ struct onpoint_search_info {
 static rnd_r_dir_t onpoint_line_callback(const rnd_box_t *box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *)cl;
-	pcb_crosshair_t *crosshair = info->crosshair;
 	pcb_line_t *line = (pcb_line_t *)box;
 
 #ifdef DEBUG_ONPOINT
@@ -84,7 +83,6 @@ static rnd_r_dir_t onpoint_line_callback(const rnd_box_t *box, void *cl)
 static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t *box, void *cl)
 {
 	struct onpoint_search_info *info = (struct onpoint_search_info *)cl;
-	pcb_crosshair_t *crosshair = info->crosshair;
 	pcb_arc_t *arc = (pcb_arc_t *)box;
 	rnd_coord_t p1x, p1y, p2x, p2y;
 
@@ -196,7 +194,7 @@ static void pcb_ch_onpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_
 {
 	pcb_crosshair_t *ch = argv[1].d.p;
 	if (conf_core.editor.highlight_on_point) {
-		rnd_tool_t *tool = rnd_tool_get(rnd_conf.editor.mode);
+		const rnd_tool_t *tool = rnd_tool_get(rnd_conf.editor.mode);
 		if (tool->user_flags & PCB_TLF_EDIT)
 			onpoint_work(ch, ch->X, ch->Y);
 	}
