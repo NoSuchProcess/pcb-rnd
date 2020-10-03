@@ -42,7 +42,7 @@
 #include "crosshair.h"
 #include "data.h"
 #include "event.h"
-
+#include "obj_arc.h"
 
 static const char pcb_ch_onpoint_cookie[] = "ch_onpoint plugin";
 
@@ -81,10 +81,8 @@ static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t *box, void *cl)
 	pcb_arc_t *arc = (pcb_arc_t *)box;
 	rnd_coord_t p1x, p1y, p2x, p2y;
 
-	p1x = arc->X - arc->Width * cos(RND_TO_RADIANS(arc->StartAngle));
-	p1y = arc->Y + arc->Height * sin(RND_TO_RADIANS(arc->StartAngle));
-	p2x = arc->X - arc->Width * cos(RND_TO_RADIANS(arc->StartAngle + arc->Delta));
-	p2y = arc->Y + arc->Height * sin(RND_TO_RADIANS(arc->StartAngle + arc->Delta));
+	pcb_arc_get_end(arc, 0, &p1x, &p1y);
+	pcb_arc_get_end(arc, 1, &p2x, &p2y);
 
 #ifdef DEBUG_ONPOINT
 	rnd_trace("onpoint p1=%mm;%mm p2=%mm;%mm info=%mm;%mm\n", p1x, p1y, p2x, p2y, info->X, info->Y);
