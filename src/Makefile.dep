@@ -2583,7 +2583,8 @@
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
  ../src_3rd/genht/ht.h ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h event.h \
- ../src_3rd/librnd/core/event.h obj_arc.h
+ ../src_3rd/librnd/core/event.h obj_arc.h obj_arc_draw.h draw.h \
+ obj_line_draw.h
 ../src_plugins/ddraft/centgeo.o: ../src_plugins/ddraft/centgeo.c \
  ../config.h ../src_3rd/librnd/config.h ../src_plugins/ddraft/centgeo.h obj_line.h \
  ../src_3rd/genlist/gendlist.h obj_common.h flag.h globalconst.h \
