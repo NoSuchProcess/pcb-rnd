@@ -156,7 +156,7 @@ static void pcb_ch_editpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rn
 	pcb_crosshair_t *ch = argv[1].d.p;
 	if (conf_ch_editpoint.plugins.ch_editpoint.enable) {
 		const rnd_tool_t *tool = rnd_tool_get(rnd_conf.editor.mode);
-		if (tool->user_flags & PCB_TLF_EDIT)
+		if ((tool != NULL) && (tool->user_flags & PCB_TLF_EDIT))
 			editpoint_work(ch, ch->X, ch->Y);
 	}
 }

@@ -197,7 +197,7 @@ static void pcb_ch_onpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_
 	pcb_crosshair_t *ch = argv[1].d.p;
 	if (conf_core.editor.highlight_on_point) {
 		const rnd_tool_t *tool = rnd_tool_get(rnd_conf.editor.mode);
-		if (tool->user_flags & PCB_TLF_EDIT)
+		if ((tool != NULL) && (tool->user_flags & PCB_TLF_EDIT))
 			onpoint_work(ch, ch->X, ch->Y);
 	}
 }
