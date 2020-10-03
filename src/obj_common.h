@@ -348,6 +348,21 @@ do { \
 	rnd_render->draw_line(pcb_draw_out.fgGC, cx+radius, cy-radius, cx-radius, cy+radius); \
 } while(0)
 
+#define pcb_obj_editpont_setup() \
+do { \
+	rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.subc); \
+	rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round); \
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, -2); \
+} while(0)
+
+#define pcb_obj_editpont_cross(x, y) \
+do { \
+	static const rnd_coord_t radius = RND_MM_TO_COORD(0.2); \
+	rnd_render->draw_line(pcb_draw_out.fgGC, (x)-radius, (y), (x)+radius, (y)); \
+	rnd_render->draw_line(pcb_draw_out.fgGC, (x), (y)-radius, (x), (y)+radius); \
+} while(0)
+
+
 #define pcb_hidden_floater(obj,info) ((info)->xform->hide_floaters &&  PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
 #define pcb_hidden_floater_gui(obj) (conf_core.editor.hide_names &&  PCB_FLAG_TEST(PCB_FLAG_FLOATER, (obj)))
 #define pcb_partial_export(obj,info) (((info)->xform != NULL) && (info)->xform->partial_export && (!PCB_FLAG_TEST(PCB_FLAG_EXPORTSEL, (obj))))

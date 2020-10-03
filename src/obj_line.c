@@ -1368,12 +1368,20 @@ void pcb_line_draw_label(pcb_draw_info_t *info, pcb_line_t *line)
 			conf_core.appearance.term_label_size, is_line_term_vert(line), rnd_true, (pcb_any_obj_t *)line);
 	if (line->noexport)
 		pcb_obj_noexport_mark(line, (line->Point1.X+line->Point2.X)/2, (line->Point1.Y+line->Point2.Y)/2);
+
+	if (line->ind_editpoint) {
+		pcb_obj_editpont_setup();
+		pcb_obj_editpont_cross(line->Point1.X, line->Point1.Y);
+		if ((line->Point1.X != line->Point2.X) || (line->Point1.Y != line->Point2.Y))
+			pcb_obj_editpont_cross(line->Point2.X, line->Point2.Y);
+	}
 }
 
 
 void pcb_line_draw_(pcb_draw_info_t *info, pcb_line_t *line, int allow_term_gfx)
 {
 	rnd_coord_t thickness = line->Thickness;
+	int draw_lab;
 
 	if (delayed_terms_enabled && (line->term != NULL)) {
 		pcb_draw_delay_obj_add((pcb_any_obj_t *)line);
@@ -1411,10 +1419,11 @@ void pcb_line_draw_(pcb_draw_info_t *info, pcb_line_t *line, int allow_term_gfx)
 		}
 	}
 
-	if (line->term != NULL) {
-		if ((pcb_draw_force_termlab) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, line))
-			pcb_draw_delay_label_add((pcb_any_obj_t *)line);
-	}
+	draw_lab = (line->term != NULL) && ((pcb_draw_force_termlab) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, line));
+	draw_lab |= line->ind_editpoint;
+
+	if (draw_lab)
+		pcb_draw_delay_label_add((pcb_any_obj_t *)line);
 }
 
 static void pcb_line_draw(pcb_draw_info_t *info, pcb_line_t *line, int allow_term_gfx)
