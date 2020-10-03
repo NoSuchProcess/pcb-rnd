@@ -52,11 +52,11 @@ struct onpoint_search_info {
 	rnd_coord_t Y;
 };
 
-static rnd_r_dir_t onpoint_line_callback(const rnd_box_t * box, void *cl)
+static rnd_r_dir_t onpoint_line_callback(const rnd_box_t *box, void *cl)
 {
-	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
+	struct onpoint_search_info *info = (struct onpoint_search_info *)cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
-	pcb_line_t *line = (pcb_line_t *) box;
+	pcb_line_t *line = (pcb_line_t *)box;
 
 #ifdef DEBUG_ONPOINT
 	rnd_trace("onpoint X=%mm Y=%mm    X1=%mm Y1=%mm X2=%mm Y2=%mm\n",
@@ -64,7 +64,7 @@ static rnd_r_dir_t onpoint_line_callback(const rnd_box_t * box, void *cl)
 #endif
 	if ((line->Point1.X == info->X && line->Point1.Y == info->Y) || (line->Point2.X == info->X && line->Point2.Y == info->Y)) {
 		vtp0_append(&crosshair->onpoint_objs, line);
-		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) line);
+		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *)line);
 		pcb_line_invalidate_draw(NULL, line);
 		return RND_R_DIR_FOUND_CONTINUE;
 	}
@@ -74,11 +74,11 @@ static rnd_r_dir_t onpoint_line_callback(const rnd_box_t * box, void *cl)
 
 #define close_enough(v1, v2) (coord_abs((v1)-(v2)) < 10)
 
-static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t * box, void *cl)
+static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t *box, void *cl)
 {
-	struct onpoint_search_info *info = (struct onpoint_search_info *) cl;
+	struct onpoint_search_info *info = (struct onpoint_search_info *)cl;
 	pcb_crosshair_t *crosshair = info->crosshair;
-	pcb_arc_t *arc = (pcb_arc_t *) box;
+	pcb_arc_t *arc = (pcb_arc_t *)box;
 	rnd_coord_t p1x, p1y, p2x, p2y;
 
 	p1x = arc->X - arc->Width * cos(RND_TO_RADIANS(arc->StartAngle));
@@ -92,7 +92,7 @@ static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t * box, void *cl)
 
 	if ((close_enough(p1x, info->X) && close_enough(p1y, info->Y)) || (close_enough(p2x, info->X) && close_enough(p2y, info->Y))) {
 		vtp0_append(&crosshair->onpoint_objs, arc);
-		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *) arc);
+		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *)arc);
 		pcb_arc_invalidate_draw(NULL, arc);
 		return RND_R_DIR_FOUND_CONTINUE;
 	}
@@ -132,7 +132,7 @@ static void *onpoint_find(vtp0_t *vect, pcb_any_obj_t *obj_ptr)
 
 /* Searches for lines/arcs which have points that are exactly at the given coords
    and adds them to the object list along with their respective type. */
-static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t Y)
+static void onpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_t Y)
 {
 	rnd_box_t SearchBox = rnd_point_box(X, Y);
 	struct onpoint_search_info info;
