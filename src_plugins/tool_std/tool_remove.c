@@ -128,5 +128,5 @@ rnd_tool_t pcb_tool_remove = {
 	NULL,
 	NULL, /* escape */
 	
-	PCB_TLF_RAT
+	PCB_TLF_RAT | PCB_TLF_EDIT
 };

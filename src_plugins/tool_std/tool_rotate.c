@@ -40,6 +40,7 @@
 #include "rotate.h"
 #include <librnd/core/tool.h>
 #include "crosshair.h"
+#include "tool_logic.h"
 
 
 void pcb_tool_rotate_notify_mode(rnd_hidlib_t *hl)
@@ -107,5 +108,5 @@ rnd_tool_t pcb_tool_rotate = {
 	NULL,
 	NULL, /* escape */
 	
-	0
+	PCB_TLF_EDIT
 };

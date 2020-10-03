@@ -28,7 +28,8 @@
 #define PCB_TOOL_LOGIC_H
 
 typedef enum { /* bitfield */
-	PCB_TLF_RAT = 1   /* tool can be used on the rat layer */
+	PCB_TLF_RAT  = 1,  /* tool can be used on the rat layer */
+	PCB_TLF_EDIT = 2   /* tool can edit the geometry of existing objects */
 } pcb_tool_user_flags_t;
 
 void pcb_tool_logic_init(void);

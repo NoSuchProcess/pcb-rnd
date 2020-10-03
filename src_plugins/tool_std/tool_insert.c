@@ -39,6 +39,7 @@
 #include "insert.h"
 #include "polygon.h"
 #include "search.h"
+#include "tool_logic.h"
 #include <librnd/core/tool.h>
 
 
@@ -199,5 +200,5 @@ rnd_tool_t pcb_tool_insert = {
 	NULL,
 	NULL, /* escape */
 	
-	0
+	PCB_TLF_EDIT
 };
