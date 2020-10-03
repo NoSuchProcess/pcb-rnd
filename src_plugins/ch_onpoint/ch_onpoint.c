@@ -47,6 +47,8 @@
 #include "data.h"
 #include "event.h"
 #include "obj_arc.h"
+#include "obj_arc_draw.h"
+#include "obj_line_draw.h"
 
 static const char pcb_ch_onpoint_cookie[] = "ch_onpoint plugin";
 
