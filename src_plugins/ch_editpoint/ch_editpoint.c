@@ -45,6 +45,7 @@
 #include "data.h"
 #include "draw.h"
 #include "event.h"
+#include "obj_pstk.h"
 #include "polygon.h"
 #include "search.h"
 #include "tool_logic.h"
@@ -71,6 +72,7 @@ static rnd_r_dir_t editpoint_callback(const rnd_box_t *box, void *cl)
 		case PCB_OBJ_LINE: if (!pcb_is_point_on_line(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_line_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
 		case PCB_OBJ_ARC:  if (!pcb_is_point_on_arc(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_arc_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
 		case PCB_OBJ_POLY: if (!pcb_poly_is_point_in_p(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_poly_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
+		case PCB_OBJ_PSTK: if (!pcb_is_point_in_pstk(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_pstk_t *)obj, NULL)) return RND_R_DIR_FOUND_CONTINUE; break;
 		default: break;
 	}
 
@@ -118,6 +120,8 @@ static void editpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_
 		rnd_r_search(layer->arc_tree, &SearchBox, NULL, editpoint_callback, crosshair, NULL);
 		rnd_r_search(layer->polygon_tree, &SearchBox, NULL, editpoint_callback, crosshair, NULL);
 	}
+	rnd_r_search(PCB->Data->padstack_tree, &SearchBox, NULL, editpoint_callback, crosshair, NULL);
+
 
 	/* Undraw the old objects */
 	for(n = 0; n < old_editpoint_objs->used; n++) {
