@@ -26,7 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/* Draw the editpoints of objects which are under the crosshair */
+/* Draw the editpoints of objects which are under the cursor (pointer) */
 
 #include "config.h"
 
@@ -42,6 +42,8 @@
 #include "data.h"
 #include "draw.h"
 #include "event.h"
+#include "polygon.h"
+#include "search.h"
 
 
 static const char pcb_ch_editpoint_cookie[] = "ch_editpoint plugin";
@@ -51,7 +53,15 @@ static vtp0_t *editpoint_objs = &editpoint_raw[0], *old_editpoint_objs = &editpo
 
 static rnd_r_dir_t editpoint_callback(const rnd_box_t *box, void *cl)
 {
+	pcb_crosshair_t *crosshair = cl;
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
+
+	switch(obj->type) {
+		case PCB_OBJ_LINE: if (!pcb_is_point_on_line(crosshair->ptr_x, crosshair->ptr_y, PCB_SLOP * rnd_pixel_slop, (pcb_line_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
+		case PCB_OBJ_ARC:  if (!pcb_is_point_on_arc(crosshair->ptr_x, crosshair->ptr_y, PCB_SLOP * rnd_pixel_slop, (pcb_arc_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
+		case PCB_OBJ_POLY: if (!pcb_poly_is_point_in_p(crosshair->ptr_x, crosshair->ptr_y, PCB_SLOP * rnd_pixel_slop, (pcb_poly_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
+		default: break;
+	}
 
 	vtp0_append(editpoint_objs, obj);
 	obj->ind_editpoint = 1;
@@ -93,9 +103,9 @@ static void editpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_
 		/* Only find points of arcs and lines on currently visible layers. */
 		if (!layer->meta.real.vis)
 			continue;
-		rnd_r_search(layer->line_tree, &SearchBox, NULL, editpoint_callback, NULL, NULL);
-		rnd_r_search(layer->arc_tree, &SearchBox, NULL, editpoint_callback, NULL, NULL);
-		rnd_r_search(layer->polygon_tree, &SearchBox, NULL, editpoint_callback, NULL, NULL);
+		rnd_r_search(layer->line_tree, &SearchBox, NULL, editpoint_callback, crosshair, NULL);
+		rnd_r_search(layer->arc_tree, &SearchBox, NULL, editpoint_callback, crosshair, NULL);
+		rnd_r_search(layer->polygon_tree, &SearchBox, NULL, editpoint_callback, crosshair, NULL);
 	}
 
 	/* Undraw the old objects */
