@@ -67,7 +67,7 @@ static rnd_r_dir_t onpoint_line_callback(const rnd_box_t *box, void *cl)
 #endif
 	if ((line->Point1.X == info->X && line->Point1.Y == info->Y) || (line->Point2.X == info->X && line->Point2.Y == info->Y)) {
 		vtp0_append(&onpoint_objs, line);
-		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *)line);
+		line->ind_onpoint = 1;
 		pcb_line_invalidate_draw(NULL, line);
 		return RND_R_DIR_FOUND_CONTINUE;
 	}
@@ -93,7 +93,7 @@ static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t *box, void *cl)
 
 	if ((close_enough(p1x, info->X) && close_enough(p1y, info->Y)) || (close_enough(p2x, info->X) && close_enough(p2y, info->Y))) {
 		vtp0_append(&onpoint_objs, arc);
-		PCB_FLAG_SET(PCB_FLAG_ONPOINT, (pcb_any_obj_t *)arc);
+		arc->ind_onpoint = 1;
 		pcb_arc_invalidate_draw(NULL, arc);
 		return RND_R_DIR_FOUND_CONTINUE;
 	}
@@ -168,7 +168,7 @@ static void onpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_t 
 		if (onpoint_find(&onpoint_objs, op) != NULL)
 			continue;
 
-		PCB_FLAG_CLEAR(PCB_FLAG_ONPOINT, op);
+		op->ind_onpoint = 0;
 		draw_line_or_arc(op);
 		redraw = rnd_true;
 	}

@@ -1147,7 +1147,7 @@ static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_g
 	else
 		color = &layer->meta.real.color;
 
-	if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_ONPOINT, arc)) {
+	if (info->xform->flag_color && arc->ind_onpoint) {
 		pcb_lighten_color(color, &buf, 1.75);
 		color = &buf;
 	}

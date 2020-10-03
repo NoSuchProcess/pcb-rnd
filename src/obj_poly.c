@@ -1478,7 +1478,7 @@ static void pcb_poly_draw(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_
 	}
 	else if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_FOUND, polygon))
 		color = &conf_core.appearance.color.connected;
-	else if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_ONPOINT, polygon)) {
+	else if (info->xform->flag_color && polygon->ind_onpoint) {
 		pcb_lighten_color(color, &buf, 1.75);
 		color = &buf;
 	}

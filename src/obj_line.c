@@ -1448,7 +1448,7 @@ static void pcb_line_draw(pcb_draw_info_t *info, pcb_line_t *line, int allow_ter
 	else
 		color = &layer->meta.real.color;
 
-	if (info->xform->flag_color && PCB_FLAG_TEST(PCB_FLAG_ONPOINT, line)) {
+	if (info->xform->flag_color && line->ind_onpoint) {
 		pcb_lighten_color(color, &buf, 1.75);
 		color = &buf;
 	}

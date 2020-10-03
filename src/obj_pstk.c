@@ -365,7 +365,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 			else
 				color = &conf_core.appearance.color.connected;
 
-			if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, ps)) {
+			if (ps->ind_onpoint) {
 				pcb_lighten_color(color, &buf, 1.75);
 				color = &buf;
 			}
@@ -391,7 +391,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 			else
 				color = &conf_core.appearance.color.connected;
 
-			if (PCB_FLAG_TEST(PCB_FLAG_ONPOINT, ps)) {
+			if (ps->ind_onpoint) {
 				pcb_lighten_color(color, &buf, 1.75);
 				color = &buf;
 			}
