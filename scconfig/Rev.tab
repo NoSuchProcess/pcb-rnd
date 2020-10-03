@@ -1,4 +1,4 @@
-32946	configure	new plugin: ch_editpoint draw edit points of objects
+32951	configure	new plugin: ch_editpoint draw edit points of objects
 32934	configure	moving onpoint from core to plugin
 32857	configure	menu item for import_ttf
 32739	configure	export_test plugin removed in favor of the loghid plugin

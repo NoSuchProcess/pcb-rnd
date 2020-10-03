@@ -1,4 +1,7 @@
 put /local/pcb/mod {ch_editpoint}
+put /local/pcb/mod/CONF {$(PLUGDIR)/ch_editpoint/ch_editpoint_conf.h}
+put /local/pcb/mod/CONFFILE {ch_editpoint.conf}
+put /local/pcb/mod/CONFVAR {ch_editpoint_conf_internal}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/ch_editpoint/ch_editpoint.o
 @]

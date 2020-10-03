@@ -44,6 +44,11 @@
 #include "event.h"
 #include "polygon.h"
 #include "search.h"
+#include "../src_plugins/ch_editpoint/ch_editpoint_conf.h"
+#include "../src_plugins/ch_editpoint/conf_internal.c"
+
+conf_ch_editpoint_t conf_ch_editpoint;
+#define CH_EDITPOINT_CONF_FN "ch_editpoint.conf"
 
 
 static const char pcb_ch_editpoint_cookie[] = "ch_editpoint plugin";
@@ -139,7 +144,7 @@ static void editpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_
 static void pcb_ch_editpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_crosshair_t *ch = argv[1].d.p;
-	if (conf_core.editor.highlight_on_point)
+	if (conf_ch_editpoint.plugins.ch_editpoint.enable)
 		editpoint_work(ch, ch->X, ch->Y);
 }
 
@@ -150,11 +155,19 @@ void pplg_uninit_ch_editpoint(void)
 	rnd_event_unbind_allcookie(pcb_ch_editpoint_cookie);
 	vtp0_uninit(editpoint_objs);
 	vtp0_uninit(old_editpoint_objs);
+
+	rnd_conf_unreg_file(CH_EDITPOINT_CONF_FN, ch_editpoint_conf_internal);
+	rnd_conf_unreg_fields("plugins/ch_editpoint/");
 }
 
 int pplg_init_ch_editpoint(void)
 {
 	RND_API_CHK_VER;
+
+	rnd_conf_reg_file(CH_EDITPOINT_CONF_FN, ch_editpoint_conf_internal);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	rnd_conf_reg_field(conf_ch_editpoint, field,isarray,type_name,cpath,cname,desc,flags);
+#include "ch_editpoint_conf_fields.h"
 
 	rnd_event_bind(PCB_EVENT_CROSSHAIR_NEW_POS, pcb_ch_editpoint, NULL, pcb_ch_editpoint_cookie);
 
