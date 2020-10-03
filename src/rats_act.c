@@ -101,7 +101,7 @@ static fgw_error_t pcb_act_AddRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				PCB_FLAG_SET(PCB_FLAG_SELECTED, shorty);
 				pcb_rat_invalidate_draw(shorty);
 				pcb_draw();
-				pcb_center_display((shorty->Point2.X + shorty->Point1.X) / 2, (shorty->Point2.Y + shorty->Point1.Y) / 2);
+				pcb_center_display(PCB, (shorty->Point2.X + shorty->Point1.X) / 2, (shorty->Point2.Y + shorty->Point1.Y) / 2);
 			}
 			break;
 

@@ -148,7 +148,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (!name)
 			return 1;
 
-/* pcb usgae: at the moment, while having only one global pcb, this function
+/* pcb usage: at the moment, while having only one global pcb, this function
    legitimately uses that */
 
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
@@ -162,7 +162,9 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		pcb_draw_inhibit_inc();
 		pcb_board_remove(pcb);
-		pcb = pcb_board_new(1);
+#undef PCB
+		PCB = pcb = pcb_board_new(1);
+#define PCB do_not_use
 		pcb_board_new_postproc(pcb, 1);
 		if (rnd_gui->set_hidlib != NULL)
 			rnd_gui->set_hidlib(rnd_gui, &pcb->hidlib);
@@ -176,7 +178,7 @@ static fgw_error_t pcb_act_New(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		pcb->hidlib.name = name;
 
 		pcb_layervis_reset_stack(&pcb->hidlib);
-		pcb_center_display(pcb->hidlib.size_x / 2, pcb->hidlib.size_y / 2);
+		pcb_center_display(pcb, pcb->hidlib.size_x / 2, pcb->hidlib.size_y / 2);
 		pcb_board_changed(0);
 		rnd_hid_redraw(pcb);
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);

@@ -102,12 +102,12 @@ extern rnd_mark_t pcb_marked;  /* the point the user explicitly marked, or in so
 
 void pcb_notify_mark_change(rnd_bool changes_complete);
 void pcb_crosshair_move_relative(rnd_coord_t, rnd_coord_t);
-rnd_bool pcb_crosshair_move_absolute(rnd_coord_t, rnd_coord_t);
+rnd_bool pcb_crosshair_move_absolute(pcb_board_t *pcb, rnd_coord_t, rnd_coord_t);
 void pcb_crosshair_init(void);
 void pcb_crosshair_pre_init(void);
 void pcb_crosshair_uninit(void);
-void pcb_crosshair_grid_fit(rnd_coord_t, rnd_coord_t);
-void pcb_center_display(rnd_coord_t X, rnd_coord_t Y);
+void pcb_crosshair_grid_fit(pcb_board_t *pcb, rnd_coord_t, rnd_coord_t);
+void pcb_center_display(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y);
 
 void pcb_crosshair_set_local_ref(rnd_coord_t X, rnd_coord_t Y, rnd_bool Showing);
 

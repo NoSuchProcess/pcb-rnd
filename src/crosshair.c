@@ -903,9 +903,9 @@ static void check_snap_offgrid_line(pcb_board_t *pcb, struct snap_data *snap_dat
 /* ---------------------------------------------------------------------------
  * recalculates the passed coordinates to fit the current grid setting
  */
-void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
+void pcb_crosshair_grid_fit(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y)
 {
-	rnd_hidlib_t *hidlib = &PCB->hidlib;
+	rnd_hidlib_t *hidlib = &pcb->hidlib;
 	rnd_coord_t nearest_grid_x, nearest_grid_y, oldx, oldy;
 	void *ptr1, *ptr2, *ptr3;
 	struct snap_data snap_data;
@@ -913,11 +913,12 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 
 	oldx = pcb_crosshair.X;
 	oldy = pcb_crosshair.Y;
-	PCB->hidlib.ch_x = pcb_crosshair.X = RND_CLAMP(X, -PCB->hidlib.size_x/2, PCB->hidlib.size_x*3/2);
-	PCB->hidlib.ch_y = pcb_crosshair.Y = RND_CLAMP(Y, -PCB->hidlib.size_y/2, PCB->hidlib.size_y*3/2);
+	pcb->hidlib.ch_x = pcb_crosshair.X = RND_CLAMP(X, -pcb->hidlib.size_x/2, pcb->hidlib.size_x*3/2);
+	pcb->hidlib.ch_y = pcb_crosshair.Y = RND_CLAMP(Y, -pcb->hidlib.size_y/2, pcb->hidlib.size_y*3/2);
 
-	nearest_grid_x = rnd_grid_fit(pcb_crosshair.X, PCB->hidlib.grid, PCB->hidlib.grid_ox);
-	nearest_grid_y = rnd_grid_fit(pcb_crosshair.Y, PCB->hidlib.grid, PCB->hidlib.grid_oy);
+	nearest_grid_x = rnd_grid_fit(pcb_crosshair.X, pcb->hidlib.grid, pcb->hidlib.grid_ox);
+	nearest_grid_y = rnd_grid_fit(pcb_crosshair.Y, pcb->hidlib.grid, pcb->hidlib.grid_oy);
+
 
 	if (pcb_marked.status && conf_core.editor.orthogonal_moves) {
 		rnd_coord_t dx = pcb_crosshair.X - hidlib->tool_grabbed.X;
@@ -937,7 +938,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	snap_data.max_sq_dist = snap_data.max_sq_dist * snap_data.max_sq_dist;
 
 	ans = PCB_OBJ_VOID;
-	if (!PCB->RatDraw)
+	if (!pcb->RatDraw)
 		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_SUBC, &ptr1, &ptr2, &ptr3);
 
 	hidlib->tool_snapped_obj_bbox = NULL;
@@ -1011,7 +1012,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 
 	/* Snap to offgrid points on lines. */
 	if (conf_core.editor.snap_offgrid_line)
-		check_snap_offgrid_line(PCB, &snap_data, nearest_grid_x, nearest_grid_y);
+		check_snap_offgrid_line(pcb, &snap_data, nearest_grid_x, nearest_grid_y);
 
 	ans = PCB_OBJ_VOID;
 	if (conf_core.editor.snap_pin)
@@ -1024,8 +1025,8 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 
 	newpos = (snap_data.x != oldx) || (snap_data.y != oldy);
 
-	PCB->hidlib.ch_x = pcb_crosshair.X = snap_data.x;
-	PCB->hidlib.ch_y = pcb_crosshair.Y = snap_data.y;
+	pcb->hidlib.ch_x = pcb_crosshair.X = snap_data.x;
+	pcb->hidlib.ch_y = pcb_crosshair.Y = snap_data.y;
 
 	if (newpos)
 		rnd_event(hidlib, PCB_EVENT_CROSSHAIR_NEW_POS, "pcc", &pcb_crosshair, oldx, oldy);
@@ -1043,7 +1044,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	}
 
 	if (rnd_conf.editor.mode == pcb_crosshair.tool_line && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST && conf_core.editor.auto_drc)
-		pcb_line_enforce_drc(PCB);
+		pcb_line_enforce_drc(pcb);
 
 	rnd_gui->set_crosshair(rnd_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_DO_NOTHING);
 }
@@ -1053,33 +1054,33 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
  */
 void pcb_crosshair_move_relative(rnd_coord_t DeltaX, rnd_coord_t DeltaY)
 {
-	pcb_crosshair_grid_fit(pcb_crosshair.X + DeltaX, pcb_crosshair.Y + DeltaY);
+	pcb_crosshair_grid_fit(PCB, pcb_crosshair.X + DeltaX, pcb_crosshair.Y + DeltaY);
 }
 
 /* ---------------------------------------------------------------------------
  * move crosshair absolute
  * return rnd_true if the crosshair was moved from its existing position
  */
-rnd_bool pcb_crosshair_move_absolute(rnd_coord_t X, rnd_coord_t Y)
+rnd_bool pcb_crosshair_move_absolute(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y)
 {
 	rnd_coord_t x, y, z;
 	pcb_crosshair.ptr_x = X;
 	pcb_crosshair.ptr_y = Y;
 	x = pcb_crosshair.X;
 	y = pcb_crosshair.Y;
-	pcb_crosshair_grid_fit(X, Y);
+	pcb_crosshair_grid_fit(pcb, X, Y);
 	if (pcb_crosshair.X != x || pcb_crosshair.Y != y) {
 		/* back up to old position to notify the GUI
 		 * (which might want to erase the old crosshair) */
 		z = pcb_crosshair.X;
-		PCB->hidlib.ch_x = pcb_crosshair.X = x;
+		pcb->hidlib.ch_x = pcb_crosshair.X = x;
 		x = z;
 		z = pcb_crosshair.Y;
-		PCB->hidlib.ch_y = pcb_crosshair.Y = y;
-		rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false); /* Our caller notifies when it has done */
+		pcb->hidlib.ch_y = pcb_crosshair.Y = y;
+		rnd_hid_notify_crosshair_change(&pcb->hidlib, rnd_false); /* Our caller notifies when it has done */
 		/* now move forward again */
-		PCB->hidlib.ch_x = pcb_crosshair.X = x;
-		PCB->hidlib.ch_y = pcb_crosshair.Y = z;
+		pcb->hidlib.ch_x = pcb_crosshair.X = x;
+		pcb->hidlib.ch_y = pcb_crosshair.Y = z;
 		return rnd_true;
 	}
 	return rnd_false;
@@ -1088,14 +1089,14 @@ rnd_bool pcb_crosshair_move_absolute(rnd_coord_t X, rnd_coord_t Y)
 /* ---------------------------------------------------------------------------
  * centers the displayed PCB around the specified point (X,Y)
  */
-void pcb_center_display(rnd_coord_t X, rnd_coord_t Y)
+void pcb_center_display(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y)
 {
-	rnd_coord_t save_grid = PCB->hidlib.grid;
-	PCB->hidlib.grid = 1;
-	if (pcb_crosshair_move_absolute(X, Y))
-		rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true);
+	rnd_coord_t save_grid = pcb->hidlib.grid;
+	pcb->hidlib.grid = 1;
+	if (pcb_crosshair_move_absolute(pcb, X, Y))
+		rnd_hid_notify_crosshair_change(&pcb->hidlib, rnd_true);
 	rnd_gui->set_crosshair(rnd_gui, pcb_crosshair.X, pcb_crosshair.Y, HID_SC_WARP_POINTER);
-	PCB->hidlib.grid = save_grid;
+	pcb->hidlib.grid = save_grid;
 }
 
 /* allocate GC only when the GUI is already up and running */
@@ -1165,7 +1166,7 @@ void pcb_crosshair_set_local_ref(rnd_coord_t X, rnd_coord_t Y, rnd_bool Showing)
 
 static void pcb_event_move_crosshair(rnd_coord_t ev_x, rnd_coord_t ev_y)
 {
-	if (pcb_crosshair_move_absolute(ev_x, ev_y)) {
+	if (pcb_crosshair_move_absolute(PCB, ev_x, ev_y)) {
 		/* update object position and cursor location */
 		rnd_tool_adjust_attached(&PCB->hidlib);
 		rnd_event(&PCB->hidlib, PCB_EVENT_DRAW_CROSSHAIR_CHATT, NULL);
@@ -1211,7 +1212,7 @@ void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord
 {
 	if (!mouse_mot) {
 		rnd_hid_notify_crosshair_change(hl, rnd_false);
-		if (pcb_crosshair_move_absolute(abs_x, abs_y))
+		if (pcb_crosshair_move_absolute((pcb_board_t *)hl, abs_x, abs_y))
 			rnd_hid_notify_crosshair_change(hl, rnd_true);
 		rnd_hid_notify_crosshair_change(hl, rnd_true);
 	}

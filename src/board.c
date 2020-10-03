@@ -334,7 +334,7 @@ void pcb_board_set_line_width(rnd_coord_t Size)
 	if (Size >= PCB_MIN_THICKNESS && Size <= PCB_MAX_THICKNESS) {
 		rnd_conf_set_design("design/line_thickness", "%$mS", Size);
 		if (conf_core.editor.auto_drc)
-			pcb_crosshair_grid_fit(pcb_crosshair.X, pcb_crosshair.Y);
+			pcb_crosshair_grid_fit(PCB, pcb_crosshair.X, pcb_crosshair.Y);
 	}
 }
 

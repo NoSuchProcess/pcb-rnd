@@ -274,7 +274,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				   crosshair is snapped, we are aligning to an object(point), else
 				   we are aligning to whatever fine point the user clicked */
 				rnd_hid_get_coords("Click to set the grid origin", &x, &y, 1);
-				if (pcb_crosshair_move_absolute(pcb_crosshair.X, pcb_crosshair.Y))
+				if (pcb_crosshair_move_absolute(PCB_ACT_BOARD, pcb_crosshair.X, pcb_crosshair.Y))
 					rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true); /* first notify was in MoveCrosshairAbs */
 				rnd_hidlib_set_grid(RND_ACT_HIDLIB, old_grid, rnd_true, pcb_crosshair.X, pcb_crosshair.Y);
 
