@@ -1304,6 +1304,13 @@ void pcb_poly_draw_label(pcb_draw_info_t *info, pcb_poly_t *poly)
 
 	if (poly->noexport)
 		pcb_obj_noexport_mark(poly, (poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2);
+
+	if (poly->ind_editpoint) {
+		long n;
+		pcb_obj_editpont_setup();
+		for(n = 0; n < poly->PointN; n++)
+			pcb_obj_editpont_cross(poly->Points[n].X, poly->Points[n].Y);
+	}
 }
 
 void pcb_poly_draw_annotation(pcb_draw_info_t *info, pcb_poly_t *poly)
@@ -1398,6 +1405,7 @@ static pcb_poly_t *pcb_poly_draw_tr(pcb_draw_info_t *info, pcb_poly_t *polygon)
 void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_gfx)
 {
 	pcb_poly_t *trpoly = NULL;
+	int draw_lab;
 
 	if (delayed_terms_enabled && (polygon->term != NULL)) {
 		pcb_draw_delay_obj_add((pcb_any_obj_t *)polygon);
@@ -1448,10 +1456,11 @@ TODO("subc: check if x;y is within the poly, but use a cheaper method than the o
 			pcb_dhlp_thindraw_pcb_polygon(pcb_draw_out.fgGC, &poly, info->drawn_area);
 	}
 
-	if (polygon->term != NULL) {
-		if ((pcb_draw_force_termlab) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, polygon))
-			pcb_draw_delay_label_add((pcb_any_obj_t *)polygon);
-	}
+	draw_lab = (polygon->term != NULL) && ((pcb_draw_force_termlab) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, polygon));
+	draw_lab |= polygon->ind_editpoint;
+
+	if (draw_lab)
+		pcb_draw_delay_label_add((pcb_any_obj_t *)polygon);
 
 	if (trpoly != NULL)
 		pcb_poly_free(trpoly);
