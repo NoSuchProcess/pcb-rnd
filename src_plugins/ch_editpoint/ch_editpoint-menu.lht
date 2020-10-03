@@ -1,0 +1,9 @@
+ha:rnd-menu-v1 {
+	li:anchored {
+		ha:@indications {
+			li:submenu {
+				ha:Indicate edit points on hover = { a={<key>m; <key>d; <key>e}; checked=plugins/ch_editpoint/enable; action=conf(toggle, plugins/ch_editpoint/enable, design) }
+			}
+		}
+	}
+}

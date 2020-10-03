@@ -36,6 +36,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/poly/rtree.h>
 #include <librnd/poly/rtree2_compat.h>
+#include <librnd/core/hid_menu.h>
 #include "board.h"
 #include "conf_core.h"
 #include "crosshair.h"
@@ -45,7 +46,9 @@
 #include "polygon.h"
 #include "search.h"
 #include "../src_plugins/ch_editpoint/ch_editpoint_conf.h"
+
 #include "../src_plugins/ch_editpoint/conf_internal.c"
+#include "../src_plugins/ch_editpoint/menu_internal.c"
 
 conf_ch_editpoint_t conf_ch_editpoint;
 #define CH_EDITPOINT_CONF_FN "ch_editpoint.conf"
@@ -157,6 +160,7 @@ void pplg_uninit_ch_editpoint(void)
 	vtp0_uninit(old_editpoint_objs);
 
 	rnd_conf_unreg_file(CH_EDITPOINT_CONF_FN, ch_editpoint_conf_internal);
+	rnd_hid_menu_unload(rnd_gui, pcb_ch_editpoint_cookie);
 	rnd_conf_unreg_fields("plugins/ch_editpoint/");
 }
 
@@ -170,6 +174,8 @@ int pplg_init_ch_editpoint(void)
 #include "ch_editpoint_conf_fields.h"
 
 	rnd_event_bind(PCB_EVENT_CROSSHAIR_NEW_POS, pcb_ch_editpoint, NULL, pcb_ch_editpoint_cookie);
+
+	rnd_hid_menu_load(rnd_gui, NULL, pcb_ch_editpoint_cookie, 100, NULL, 0, ch_editpoint_menu, "plugin: ch_editpoint");
 
 	return 0;
 }

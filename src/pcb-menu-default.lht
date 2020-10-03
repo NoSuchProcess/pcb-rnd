@@ -341,6 +341,7 @@ ha:rnd-menu-v1 {
 				}
 				ha:Drawing {
 					li:submenu {
+						@indications
 						ha:Show autorouter trials           = { a={<key>m; <key>d; <key>a}; checked=editor/live_routing; action=conf(toggle, editor/live_routing, design) }
 						ha:Highlighting on line, arc points = { a={<key>m; <key>d; <key>h}; checked=editor/highlight_on_point; action=conf(toggle, editor/highlight_on_point, design) }
 						ha:Wireframe draw                   = { li:a={{<key>m; <key>d; <key>w}; {<char>|};}; checked=editor/wireframe_draw; action=conf(toggle, editor/wireframe_draw, design) }
