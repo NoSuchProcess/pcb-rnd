@@ -27,6 +27,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+/* Implementation of the "highlight on endpoint" functionality. This highlights
+   lines and arcs when the crosshair is on of their (two) endpoints. */
+
 #include "config.h"
 
 #include <stdio.h>
@@ -43,11 +46,6 @@
 
 static const char pcb_ch_onpoint_cookie[] = "ch_onpoint plugin";
 
-/*
- * Below is the implementation of the "highlight on endpoint" functionality.
- * This highlights lines and arcs when the crosshair is on of their (two)
- * endpoints.
- */
 struct onpoint_search_info {
 	pcb_crosshair_t *crosshair;
 	rnd_coord_t X;
@@ -130,11 +128,8 @@ static void *onpoint_find(vtp0_t *vect, pcb_any_obj_t *obj_ptr)
 	return NULL;
 }
 
-/*
- * Searches for lines or arcs which have points that are exactly
- * at the given coordinates and adds them to the crosshair's
- * object list along with their respective type.
- */
+/* Searches for lines/arcs which have points that are exactly at the given coords
+   and adds them to the object list along with their respective type. */
 static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t Y)
 {
 	rnd_box_t SearchBox = rnd_point_box(X, Y);
