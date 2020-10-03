@@ -48,7 +48,8 @@ static const char *pcb_evnames[] = {
 	"pcbev_draw_crosshair_chatt",
 	"pcbev_drc_run",
 	"pcbev_net_indicate_short",
-	"pcbev_layer_key_change"
+	"pcbev_layer_key_change",
+	"pcbev_crosshair_new_pos"
 };
 
 void pcb_event_init_app(void)

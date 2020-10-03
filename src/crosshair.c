@@ -1054,11 +1054,13 @@ static void check_snap_offgrid_line(pcb_board_t *pcb, struct snap_data *snap_dat
 void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 {
 	rnd_hidlib_t *hidlib = &PCB->hidlib;
-	rnd_coord_t nearest_grid_x, nearest_grid_y;
+	rnd_coord_t nearest_grid_x, nearest_grid_y, oldx, oldy;
 	void *ptr1, *ptr2, *ptr3;
 	struct snap_data snap_data;
-	int ans;
+	int ans, newpos;
 
+	oldx = pcb_crosshair.X;
+	oldy = pcb_crosshair.Y;
 	PCB->hidlib.ch_x = pcb_crosshair.X = RND_CLAMP(X, -PCB->hidlib.size_x/2, PCB->hidlib.size_x*3/2);
 	PCB->hidlib.ch_y = pcb_crosshair.Y = RND_CLAMP(Y, -PCB->hidlib.size_y/2, PCB->hidlib.size_y*3/2);
 
@@ -1168,11 +1170,16 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 		check_snap_object(&snap_data, pnt->X, pnt->Y, rnd_true, NULL);
 	}
 
+	newpos = (snap_data.x != oldx) || (snap_data.y != oldy);
+
 	PCB->hidlib.ch_x = pcb_crosshair.X = snap_data.x;
 	PCB->hidlib.ch_y = pcb_crosshair.Y = snap_data.y;
 
 	if (conf_core.editor.highlight_on_point)
 		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);
+
+	if (newpos)
+		rnd_event(hidlib, PCB_EVENT_CROSSHAIR_NEW_POS, NULL);
 
 	if (rnd_conf.editor.mode == pcb_crosshair.tool_arrow) {
 		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_LINE_POINT, &ptr1, &ptr2, &ptr3);
