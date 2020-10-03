@@ -343,7 +343,7 @@ static void all_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 /* Select the first visible layer (physically) below the one turned off or
    reenable the original if all are off; this how we ensure the current layer
    is visible and avoid drawing on inivisible layers */
-static void ensure_visible_current(layersel_ctx_t *ls)
+static void ensure_visible_current(pcb_board_t *pcb, layersel_ctx_t *ls)
 {
 	pcb_layer_t *ly;
 	rnd_layer_id_t lid;
@@ -352,38 +352,38 @@ static void ensure_visible_current(layersel_ctx_t *ls)
 	ls_layer_t *lys;
 	int repeat = 0;
 
-	ly = PCB_CURRLAYER(PCB);
+	ly = PCB_CURRLAYER(pcb);
 	if ((ly == NULL) || (ly->meta.real.vis))
 		return;
 
 	/* currently selected layer lost visible state - choose another */
 
 	/* At the moment the layer selector displays only board layers which are always real */
-	assert(!PCB_CURRLAYER(PCB)->is_bound);
+	assert(!PCB_CURRLAYER(pcb)->is_bound);
 
 	/* look for the next one to enable, group-wise */
-	for(gid = PCB_CURRLAYER(PCB)->meta.real.grp + 1; gid != PCB_CURRLAYER(PCB)->meta.real.grp; gid++) {
+	for(gid = PCB_CURRLAYER(pcb)->meta.real.grp + 1; gid != PCB_CURRLAYER(pcb)->meta.real.grp; gid++) {
 		pcb_layergrp_t *g;
-		if (gid >= pcb_max_group(PCB)) {
+		if (gid >= pcb_max_group(pcb)) {
 			gid = 0;
 			repeat++;
 			if (repeat > 1)
 				break; /* failed to find one */
 		}
-		g = &PCB->LayerGroups.grp[gid];
+		g = &pcb->LayerGroups.grp[gid];
 		if (g->len < 1)
 			continue;
-		l = PCB->Data->Layer + g->lid[0];
+		l = pcb->Data->Layer + g->lid[0];
 		if (l->meta.real.vis)
 			goto change_selection;
 	}
 
 	/* fallback: all off; turn the current one back on */
-	l = PCB_CURRLAYER(PCB);
+	l = PCB_CURRLAYER(pcb);
 
 	change_selection:;
-	lid = pcb_layer_id(PCB->Data, l);
-	pcb_layervis_change_group_vis(&PCB->hidlib, lid, 1, 1);
+	lid = pcb_layer_id(pcb->Data, l);
+	pcb_layervis_change_group_vis(&pcb->hidlib, lid, 1, 1);
 
 	lys = lys_get(ls, &ls->real_layer, lid, 0);
 	if (lys != 0)
@@ -415,7 +415,7 @@ static void layer_vis_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 		locked_layervis_ev(lys->ls);
 	}
 
-	ensure_visible_current(lys->ls);
+	ensure_visible_current(PCB, lys->ls);
 
 	rnd_hid_redraw(PCB);
 }
@@ -799,7 +799,7 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 		rnd_bool *b;
 		if (*lys == NULL)
 			continue;
-		b = (rnd_bool *)((char *)PCB + ml->vis_offs);
+		b = (rnd_bool *)((char *)pcb + ml->vis_offs);
 		lys_update_vis(*lys, *b);
 	}
 
@@ -821,12 +821,12 @@ static void layersel_update_vis(layersel_ctx_t *ls, pcb_board_t *pcb)
 	}
 
 	{ /* ifPCB_CURRLAYER(PCB) is not selected, select it */
-		ls_layer_t *lys = lys_get(ls, &ls->real_layer, pcb_layer_id(PCB->Data,PCB_CURRLAYER(PCB)), 0);
+		ls_layer_t *lys = lys_get(ls, &ls->real_layer, pcb_layer_id(pcb->Data,PCB_CURRLAYER(pcb)), 0);
 		if ((lys != NULL) && (lys->wlab != ls->w_last_sel))
 			locked_layersel(ls, lys->wlab, lys->wunsel_closed, lys->wsel_closed);
 	}
 
-	ensure_visible_current(ls);
+	ensure_visible_current(pcb, ls);
 }
 
 static void layersel_build(void)
@@ -846,9 +846,10 @@ void pcb_layersel_gui_init_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, r
 
 void pcb_layersel_vis_chg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	if ((!layersel.sub_inited) || (layersel.lock_vis > 0))
 		return;
-	layersel_update_vis(&layersel, PCB);
+	layersel_update_vis(&layersel, pcb);
 }
 
 void pcb_layersel_stack_chg_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
