@@ -575,6 +575,9 @@ rnd_r_dir_t pcb_pstk_draw_callback(const rnd_box_t *b, void *cl)
 			pcb_pstk_draw_shape_solid(info, pcb_draw_out.fgGC, ps, shape);
 	}
 
+	if (ps->ind_editpoint)
+		pcb_draw_delay_label_add((pcb_any_obj_t *)ps);
+
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
