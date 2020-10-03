@@ -1,0 +1,11 @@
+put /local/pcb/mod {ch_onpoint}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/ch_onpoint/ch_onpoint.o
+@]
+
+
+switch /local/pcb/ch_onpoint/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

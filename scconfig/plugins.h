@@ -28,6 +28,7 @@ plugin_def("asm",              "assembly GUI",                    sbuildin, 1, 0
 plugin_def("autocrop",         "crop board to fit objects",       sbuildin, 1, 0)
 plugin_def("autoplace",        "auto place components",           sbuildin, 1, 0)
 plugin_def("autoroute",        "the original autorouter",         sbuildin, 1, 0)
+plugin_def("ch_onpoint",       "crosshair: on-point highlight",   sbuildin, 1, 0)
 plugin_def("diag",             "diagnostic acts. for devs",       sdisable, 1, 0)
 plugin_def("dialogs",          "HID-independent GUI dialogs",     sdisable, 1, 0)
 plugin_def("distalign",        "distribute and align objs",       sbuildin, 1, 0)
