@@ -190,8 +190,9 @@ static void onpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_t 
 
 static void pcb_ch_onpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
+	pcb_crosshair_t *ch = argv[1].d.p;
 	if (conf_core.editor.highlight_on_point)
-		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);
+		onpoint_work(ch, ch->X, ch->Y);
 }
 
 int pplg_check_ver_ch_onpoint(int ver_needed) { return 0; }

@@ -1028,7 +1028,7 @@ void pcb_crosshair_grid_fit(rnd_coord_t X, rnd_coord_t Y)
 	PCB->hidlib.ch_y = pcb_crosshair.Y = snap_data.y;
 
 	if (newpos)
-		rnd_event(hidlib, PCB_EVENT_CROSSHAIR_NEW_POS, NULL);
+		rnd_event(hidlib, PCB_EVENT_CROSSHAIR_NEW_POS, "pcc", &pcb_crosshair, oldx, oldy);
 
 	if (rnd_conf.editor.mode == pcb_crosshair.tool_arrow) {
 		ans = pcb_search_grid_slop(X, Y, PCB_OBJ_LINE_POINT, &ptr1, &ptr2, &ptr3);

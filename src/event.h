@@ -59,7 +59,7 @@ enum {
 
 	PCB_EVENT_LAYER_KEY_CHANGE,           /* called by core if a pcb-rnd::key::* attribute on a layer changes */
 
-	PCB_EVENT_CROSSHAIR_NEW_POS,          /* called when the crosshair is moved to a new position; screen indications may need to be updated */
+	PCB_EVENT_CROSSHAIR_NEW_POS,          /* called when the crosshair is moved to a new position; screen indications may need to be updated; args: (pcb_crosshair_t *), pcb_coord_t oldx, pcb_coord_t oldy */
 
 	PCB_EVENT_last                        /* not a real event */
 };
