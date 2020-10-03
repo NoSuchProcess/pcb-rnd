@@ -55,14 +55,14 @@ static struct {
 /* ---------------------------------------------------------------------------
  * move layer (number is passed in) to top of layerstack
  */
-static void PushOnTopOfLayerStack(int NewTop)
+static void PushOnTopOfLayerStack(pcb_board_t *pcb, int NewTop)
 {
 	int i;
 
 	/* ignore silk layers */
-	if (NewTop < pcb_max_layer(PCB)) {
+	if (NewTop < pcb_max_layer(pcb)) {
 		/* first find position of passed one */
-		for (i = 0; i < pcb_max_layer(PCB); i++)
+		for (i = 0; i < pcb_max_layer(pcb); i++)
 			if (pcb_layer_stack[i] == NewTop)
 				break;
 
@@ -75,6 +75,7 @@ static void PushOnTopOfLayerStack(int NewTop)
 
 int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, rnd_layer_id_t Layer, int On, rnd_bool ChangeStackOrder)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 	rnd_layergrp_id_t group;
 	int i, changed = 1; /* at least the current layer changes */
 
@@ -91,65 +92,66 @@ int pcb_layervis_change_group_vis(rnd_hidlib_t *hl, rnd_layer_id_t Layer, int On
 	}
 
 	if (On < 0)
-		On = !PCB->Data->Layer[Layer].meta.real.vis;
+		On = !pcb->Data->Layer[Layer].meta.real.vis;
 
 	/* decrement 'i' to keep stack in order of layergroup */
-	if ((group = pcb_layer_get_group(PCB, Layer)) >= 0) {
-		for (i = PCB->LayerGroups.grp[group].len; i;) {
-			rnd_layer_id_t layer = PCB->LayerGroups.grp[group].lid[--i];
+	if ((group = pcb_layer_get_group(pcb, Layer)) >= 0) {
+		for (i = pcb->LayerGroups.grp[group].len; i;) {
+			rnd_layer_id_t layer = pcb->LayerGroups.grp[group].lid[--i];
 
 			/* don't count the passed member of the group */
-			if (layer != Layer && layer < pcb_max_layer(PCB)) {
-				PCB->Data->Layer[layer].meta.real.vis = On;
+			if (layer != Layer && layer < pcb_max_layer(pcb)) {
+				pcb->Data->Layer[layer].meta.real.vis = On;
 
 				/* push layer on top of stack if switched on */
 				if (On && ChangeStackOrder)
-					PushOnTopOfLayerStack(layer);
+					PushOnTopOfLayerStack(pcb, layer);
 				changed++;
 			}
 		}
-		PCB->LayerGroups.grp[group].vis = On;
+		pcb->LayerGroups.grp[group].vis = On;
 	}
 
 	/* change at least the passed layer */
-	PCB->Data->Layer[Layer].meta.real.vis = On;
+	pcb->Data->Layer[Layer].meta.real.vis = On;
 	if (On && ChangeStackOrder)
-		PushOnTopOfLayerStack(Layer);
+		PushOnTopOfLayerStack(pcb, Layer);
 
 	done:;
 	/* update control panel and exit */
 	if (ChangeStackOrder)
-		PCB->RatDraw = 0; /* any layer selection here means we can not be in rat mode */
+		pcb->RatDraw = 0; /* any layer selection here means we can not be in rat mode */
 	rnd_event(hl, PCB_EVENT_LAYERVIS_CHANGED, NULL);
 	return changed;
 }
 
 void pcb_layervis_reset_stack(rnd_hidlib_t *hl)
 {
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 	rnd_layer_id_t comp;
 	rnd_cardinal_t i;
 
-	assert(PCB->Data->LayerN <= PCB_MAX_LAYER);
-	for (i = 0; i < pcb_max_layer(PCB); i++) {
-		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, PCB->Data->Layer[i].meta.real.grp);
+	assert(pcb->Data->LayerN <= PCB_MAX_LAYER);
+	for (i = 0; i < pcb_max_layer(pcb); i++) {
+		pcb_layergrp_t *grp = pcb_get_layergrp(pcb, pcb->Data->Layer[i].meta.real.grp);
 
-		if (!(pcb_layer_flags(PCB, i) & PCB_LYT_SILK))
+		if (!(pcb_layer_flags(pcb, i) & PCB_LYT_SILK))
 			pcb_layer_stack[i] = i;
 		if (grp != NULL)
-			PCB->Data->Layer[i].meta.real.vis = !grp->init_invis;
+			pcb->Data->Layer[i].meta.real.vis = !grp->init_invis;
 		else
-			PCB->Data->Layer[i].meta.real.vis = rnd_true;
+			pcb->Data->Layer[i].meta.real.vis = rnd_true;
 	}
-	PCB->InvisibleObjectsOn = rnd_true;
-	PCB->pstk_on = rnd_true;
-	PCB->SubcOn = rnd_true;
-	PCB->SubcPartsOn = rnd_true;
-	PCB->RatOn = rnd_true;
-	PCB->padstack_mark_on = rnd_true;
-	PCB->hole_on = rnd_true;
+	pcb->InvisibleObjectsOn = rnd_true;
+	pcb->pstk_on = rnd_true;
+	pcb->SubcOn = rnd_true;
+	pcb->SubcPartsOn = rnd_true;
+	pcb->RatOn = rnd_true;
+	pcb->padstack_mark_on = rnd_true;
+	pcb->hole_on = rnd_true;
 
 	/* Bring the top copper group to the front and make it active.  */
-	if (pcb_layer_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &comp, 1) > 0)
+	if (pcb_layer_list(pcb, PCB_LYT_TOP | PCB_LYT_COPPER, &comp, 1) > 0)
 		pcb_layervis_change_group_vis(hl, comp, 1, 1);
 }
 

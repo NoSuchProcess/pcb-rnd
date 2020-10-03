@@ -1198,6 +1198,7 @@ const char pcb_acth_chklayer[] = "Returns 1 if the specified layer is the active
 /* DOC: chklayer.html */
 static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	rnd_layer_id_t lid;
 	pcb_layer_t *ly;
 	char *end;
@@ -1211,7 +1212,7 @@ static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		ml = pcb_menu_layer_find(name);
 		if (ml != NULL) {
 			if (ml->sel_offs != 0) {
-				rnd_bool *s = (rnd_bool *)((char *)PCB + ml->sel_offs);
+				rnd_bool *s = (rnd_bool *)((char *)pcb + ml->sel_offs);
 				RND_ACT_IRES(*s);
 			}
 			else
@@ -1225,7 +1226,7 @@ static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* if any virtual is selected, do not accept PCB_CURRLAYER(PCB_ACT_BOARD) as selected */
 	for(ml = pcb_menu_layers; ml->name != NULL; ml++) {
-		rnd_bool *s = (rnd_bool *)((char *)PCB + ml->sel_offs);
+		rnd_bool *s = (rnd_bool *)((char *)pcb + ml->sel_offs);
 		if ((ml->sel_offs != 0) && (*s)) {
 			RND_ACT_IRES(0);
 			return 0;
@@ -1233,7 +1234,7 @@ static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	lid--;
-	ly = pcb_get_layer(PCB->Data, lid);
+	ly = pcb_get_layer(pcb->Data, lid);
 	if (ly == NULL)
 		RND_ACT_IRES(-1);
 	else
@@ -1331,6 +1332,7 @@ const char pcb_acth_chkview[] = "Return 1 if layerid is visible.";
 /* DOC: chkview.html */
 static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	rnd_layer_id_t lid;
 	pcb_layer_t *ly;
 	char *end;
@@ -1354,7 +1356,7 @@ static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		const pcb_menu_layers_t *ml = pcb_menu_layer_find(name);
 
 		if (ml != NULL) {
-			rnd_bool *v = (rnd_bool *)((char *)PCB + ml->vis_offs);
+			rnd_bool *v = (rnd_bool *)((char *)pcb + ml->vis_offs);
 			RND_ACT_IRES(*v);
 			return 0;
 		}
@@ -1364,7 +1366,7 @@ static fgw_error_t pcb_act_ChkView(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	lid--;
-	ly = pcb_get_layer(PCB->Data, lid);
+	ly = pcb_get_layer(pcb->Data, lid);
 	if (ly == NULL) {
 		RND_ACT_IRES(-1);
 		return 0;
