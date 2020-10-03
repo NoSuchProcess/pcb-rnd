@@ -224,6 +224,7 @@ void pcb_obj_add_attribs(pcb_any_obj_t *obj, const pcb_attribute_list_t *src, pc
 	pcb_parent_t         parent; \
 	rnd_box_t            bbox_naked; \
 	unsigned             ind_onpoint:1; \
+	unsigned             ind_editpoint:1; \
 	pcb_attribute_list_t Attributes \
 
 #define PCB_ANY_PRIMITIVE_FIELDS \

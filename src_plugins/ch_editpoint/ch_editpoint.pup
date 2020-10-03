@@ -1,0 +1,8 @@
+$class feature
+$short crosshair: on-point highlight
+$long crosshair: highlight object upon crosshair on edit point
+$state works
+$package core
+default buildin
+autoload 1
+
