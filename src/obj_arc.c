@@ -1064,11 +1064,26 @@ void pcb_arc_draw_label(pcb_draw_info_t *info, pcb_arc_t *arc)
 		pcb_arc_middle(arc, &cx, &cy);
 		pcb_obj_noexport_mark(arc, cx, cy);
 	}
+
+	if (arc->ind_editpoint) {
+		rnd_coord_t x1, y1, x2, y2;
+		pcb_obj_editpont_setup();
+
+		pcb_arc_get_end(arc, 0, &x1, &y1);
+		pcb_arc_get_end(arc, 1, &x2, &y2);
+
+		pcb_obj_editpont_cross(arc->X, arc->Y);
+		if ((arc->X != x1) || (arc->Y != y1))
+			pcb_obj_editpont_cross(x1, y1);
+		if ((x2 != x1) || (y2 != y1))
+			pcb_obj_editpont_cross(x2, y2);
+	}
 }
 
 void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 {
 	rnd_coord_t thickness = arc->Thickness;
+	int draw_lab;
 
 	if (arc->Thickness < 0)
 		return;
@@ -1110,10 +1125,12 @@ void pcb_arc_draw_(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
 		if(info->xform->wireframe)
 			pcb_draw_wireframe_arc(pcb_draw_out.fgGC, arc, thickness);
 	}
-	if (arc->term != NULL) {
-		if ((pcb_draw_force_termlab) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, arc))
-			pcb_draw_delay_label_add((pcb_any_obj_t *)arc);
-	}
+
+	draw_lab = (arc->term != NULL) && ((pcb_draw_force_termlab) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, arc));
+	draw_lab |= arc->ind_editpoint;
+
+	if (draw_lab)
+		pcb_draw_delay_label_add((pcb_any_obj_t *)arc);
 }
 
 static void pcb_arc_draw(pcb_draw_info_t *info, pcb_arc_t *arc, int allow_term_gfx)
