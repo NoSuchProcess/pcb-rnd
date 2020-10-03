@@ -26,7 +26,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-/* Draw the editpoints of objects which are under the cursor (pointer) */
+/* Draw the editpoints of objects which are under the crosshair */
 
 #include "config.h"
 
@@ -65,9 +65,9 @@ static rnd_r_dir_t editpoint_callback(const rnd_box_t *box, void *cl)
 	pcb_any_obj_t *obj = (pcb_any_obj_t *)box;
 
 	switch(obj->type) {
-		case PCB_OBJ_LINE: if (!pcb_is_point_on_line(crosshair->ptr_x, crosshair->ptr_y, PCB_SLOP * rnd_pixel_slop, (pcb_line_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
-		case PCB_OBJ_ARC:  if (!pcb_is_point_on_arc(crosshair->ptr_x, crosshair->ptr_y, PCB_SLOP * rnd_pixel_slop, (pcb_arc_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
-		case PCB_OBJ_POLY: if (!pcb_poly_is_point_in_p(crosshair->ptr_x, crosshair->ptr_y, PCB_SLOP * rnd_pixel_slop, (pcb_poly_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
+		case PCB_OBJ_LINE: if (!pcb_is_point_on_line(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_line_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
+		case PCB_OBJ_ARC:  if (!pcb_is_point_on_arc(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_arc_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
+		case PCB_OBJ_POLY: if (!pcb_poly_is_point_in_p(crosshair->X, crosshair->Y, PCB_SLOP * rnd_pixel_slop, (pcb_poly_t *)obj)) return RND_R_DIR_FOUND_CONTINUE; break;
 		default: break;
 	}
 
