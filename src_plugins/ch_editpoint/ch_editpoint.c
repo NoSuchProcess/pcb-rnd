@@ -34,9 +34,11 @@
 
 #include <genvector/vtp0.h>
 #include <librnd/core/plugins.h>
+#include <librnd/core/tool.h>
 #include <librnd/poly/rtree.h>
 #include <librnd/poly/rtree2_compat.h>
 #include <librnd/core/hid_menu.h>
+#include <librnd/core/hidlib_conf.h>
 #include "board.h"
 #include "conf_core.h"
 #include "crosshair.h"
@@ -45,6 +47,7 @@
 #include "event.h"
 #include "polygon.h"
 #include "search.h"
+#include "tool_logic.h"
 #include "../src_plugins/ch_editpoint/ch_editpoint_conf.h"
 
 #include "../src_plugins/ch_editpoint/conf_internal.c"
@@ -147,8 +150,11 @@ static void editpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_
 static void pcb_ch_editpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_crosshair_t *ch = argv[1].d.p;
-	if (conf_ch_editpoint.plugins.ch_editpoint.enable)
-		editpoint_work(ch, ch->X, ch->Y);
+	if (conf_ch_editpoint.plugins.ch_editpoint.enable) {
+		rnd_tool_t *tool = rnd_tool_get(rnd_conf.editor.mode);
+		if (tool->user_flags & PCB_TLF_EDIT)
+			editpoint_work(ch, ch->X, ch->Y);
+	}
 }
 
 int pplg_check_ver_ch_editpoint(int ver_needed) { return 0; }
