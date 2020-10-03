@@ -36,8 +36,11 @@
 
 #include <genvector/vtp0.h>
 #include <librnd/core/plugins.h>
+#include <librnd/core/tool.h>
 #include <librnd/poly/rtree.h>
 #include <librnd/poly/rtree2_compat.h>
+#include <librnd/core/hidlib_conf.h>
+#include "tool_logic.h"
 #include "board.h"
 #include "conf_core.h"
 #include "crosshair.h"
@@ -192,8 +195,11 @@ static void onpoint_work(pcb_crosshair_t *crosshair, rnd_coord_t X, rnd_coord_t 
 static void pcb_ch_onpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	pcb_crosshair_t *ch = argv[1].d.p;
-	if (conf_core.editor.highlight_on_point)
-		onpoint_work(ch, ch->X, ch->Y);
+	if (conf_core.editor.highlight_on_point) {
+		rnd_tool_t *tool = rnd_tool_get(rnd_conf.editor.mode);
+		if (tool->user_flags & PCB_TLF_EDIT)
+			onpoint_work(ch, ch->X, ch->Y);
+	}
 }
 
 int pplg_check_ver_ch_onpoint(int ver_needed) { return 0; }
