@@ -59,8 +59,8 @@ static rnd_r_dir_t onpoint_line_callback(const rnd_box_t * box, void *cl)
 	pcb_line_t *line = (pcb_line_t *) box;
 
 #ifdef DEBUG_ONPOINT
-	printf("X=%ld Y=%ld    X1=%ld Y1=%ld X2=%ld Y2=%ld\n", info->X, info->Y,
-				 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
+	rnd_trace("onpoint X=%mm Y=%mm    X1=%mm Y1=%mm X2=%mm Y2=%mm\n",
+		info->X, info->Y, line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y);
 #endif
 	if ((line->Point1.X == info->X && line->Point1.Y == info->Y) || (line->Point2.X == info->X && line->Point2.Y == info->Y)) {
 		vtp0_append(&crosshair->onpoint_objs, line);
@@ -86,7 +86,9 @@ static rnd_r_dir_t onpoint_arc_callback(const rnd_box_t * box, void *cl)
 	p2x = arc->X - arc->Width * cos(RND_TO_RADIANS(arc->StartAngle + arc->Delta));
 	p2y = arc->Y + arc->Height * sin(RND_TO_RADIANS(arc->StartAngle + arc->Delta));
 
-	/* printf("p1=%ld;%ld p2=%ld;%ld info=%ld;%ld\n", p1x, p1y, p2x, p2y, info->X, info->Y); */
+#ifdef DEBUG_ONPOINT
+	rnd_trace("onpoint p1=%mm;%mm p2=%mm;%mm info=%mm;%mm\n", p1x, p1y, p2x, p2y, info->X, info->Y);
+#endif
 
 	if ((close_enough(p1x, info->X) && close_enough(p1y, info->Y)) || (close_enough(p2x, info->X) && close_enough(p2y, info->Y))) {
 		vtp0_append(&crosshair->onpoint_objs, arc);
@@ -187,7 +189,6 @@ static void onpoint_work(pcb_crosshair_t * crosshair, rnd_coord_t X, rnd_coord_t
 
 static void pcb_ch_onpoint(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	rnd_trace("ch_onpoint %ml;%ml\n", pcb_crosshair.X, pcb_crosshair.Y);
 	if (conf_core.editor.highlight_on_point)
 		onpoint_work(&pcb_crosshair, pcb_crosshair.X, pcb_crosshair.Y);
 }
