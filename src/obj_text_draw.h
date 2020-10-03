@@ -48,7 +48,7 @@ void pcb_text_invalidate_erase(pcb_layer_t *Layer, pcb_text_t *Text);
 void pcb_text_invalidate_draw(pcb_layer_t *Layer, pcb_text_t *Text);
 void pcb_text_draw_xor(pcb_text_t *text, rnd_coord_t x, rnd_coord_t y, rnd_bool want_box);
 void pcb_text_name_invalidate_draw(pcb_text_t *txt);
-void pcb_text_draw_label(pcb_draw_info_t *info, pcb_text_t *text);
+void pcb_text_draw_label(pcb_draw_info_t *info, pcb_text_t *text, rnd_bool vis_side);
 
 /* lowlevel drawing routine for text strings */
 void pcb_text_draw_string(pcb_draw_info_t *info, pcb_font_t *font, const unsigned char *string, rnd_coord_t x0, rnd_coord_t y0, double scx, double scy, double rotdeg, pcb_text_mirror_t mirror, rnd_coord_t thickness, rnd_coord_t min_line_width, int xordraw, rnd_coord_t xordx, rnd_coord_t xordy, pcb_text_tiny_t tiny);

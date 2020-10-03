@@ -1296,13 +1296,13 @@ void pcb_poly_name_invalidate_draw(pcb_poly_t *poly)
 	}
 }
 
-void pcb_poly_draw_label(pcb_draw_info_t *info, pcb_poly_t *poly)
+void pcb_poly_draw_label(pcb_draw_info_t *info, pcb_poly_t *poly, rnd_bool vis_side)
 {
-	if (poly->term != NULL)
+	if ((poly->term != NULL) && (vis_side))
 		pcb_term_label_draw(info, (poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2,
 			conf_core.appearance.term_label_size, is_poly_term_vert(poly), rnd_true, (pcb_any_obj_t *)poly);
 
-	if (poly->noexport)
+	if (poly->noexport && vis_side)
 		pcb_obj_noexport_mark(poly, (poly->BoundingBox.X1 + poly->BoundingBox.X2)/2, (poly->BoundingBox.Y1 + poly->BoundingBox.Y2)/2);
 
 	if (poly->ind_editpoint) {

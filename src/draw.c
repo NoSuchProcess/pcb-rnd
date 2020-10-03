@@ -1068,6 +1068,8 @@ void pcb_draw_obj(pcb_any_obj_t *obj)
 
 static void pcb_draw_obj_label(pcb_draw_info_t *info, rnd_layergrp_id_t gid, pcb_any_obj_t *obj)
 {
+	rnd_bool vis_side = 1;
+
 	if (pcb_hidden_floater(obj, info))
 		return;
 
@@ -1075,16 +1077,16 @@ static void pcb_draw_obj_label(pcb_draw_info_t *info, rnd_layergrp_id_t gid, pcb
 	if ((!pcb_draw_force_termlab) && (obj->parent_type == PCB_PARENT_LAYER)) {
 		pcb_layer_t *ly = pcb_layer_get_real(obj->parent.layer);
 		if ((ly != NULL) && (ly->meta.real.grp != gid))
-			return;
+			vis_side = 0;
 	}
 
 	switch(obj->type) {
-		case PCB_OBJ_LINE:    pcb_line_draw_label(info, (pcb_line_t *)obj); return;
-		case PCB_OBJ_ARC:     pcb_arc_draw_label(info, (pcb_arc_t *)obj); return;
-		case PCB_OBJ_GFX:     pcb_gfx_draw_label(info, (pcb_gfx_t *)obj); return;
-		case PCB_OBJ_POLY:    pcb_poly_draw_label(info, (pcb_poly_t *)obj); return;
-		case PCB_OBJ_TEXT:    pcb_text_draw_label(info, (pcb_text_t *)obj); return;
-		case PCB_OBJ_PSTK:    pcb_pstk_draw_label(info, (pcb_pstk_t *)obj); return;
+		case PCB_OBJ_LINE:    pcb_line_draw_label(info, (pcb_line_t *)obj, vis_side); return;
+		case PCB_OBJ_ARC:     pcb_arc_draw_label(info, (pcb_arc_t *)obj, vis_side); return;
+		case PCB_OBJ_GFX:     pcb_gfx_draw_label(info, (pcb_gfx_t *)obj, vis_side); return;
+		case PCB_OBJ_POLY:    pcb_poly_draw_label(info, (pcb_poly_t *)obj, vis_side); return;
+		case PCB_OBJ_TEXT:    pcb_text_draw_label(info, (pcb_text_t *)obj, vis_side); return;
+		case PCB_OBJ_PSTK:    pcb_pstk_draw_label(info, (pcb_pstk_t *)obj, vis_side); return;
 		default: break;
 	}
 }

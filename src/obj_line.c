@@ -1361,12 +1361,12 @@ void pcb_line_name_invalidate_draw(pcb_line_t *line)
 	}
 }
 
-void pcb_line_draw_label(pcb_draw_info_t *info, pcb_line_t *line)
+void pcb_line_draw_label(pcb_draw_info_t *info, pcb_line_t *line, rnd_bool vis_side)
 {
-	if (line->term != NULL)
+	if ((line->term != NULL) && vis_side)
 		pcb_term_label_draw(info, (line->Point1.X + line->Point2.X)/2, (line->Point1.Y + line->Point2.Y)/2,
 			conf_core.appearance.term_label_size, is_line_term_vert(line), rnd_true, (pcb_any_obj_t *)line);
-	if (line->noexport)
+	if (line->noexport && vis_side)
 		pcb_obj_noexport_mark(line, (line->Point1.X+line->Point2.X)/2, (line->Point1.Y+line->Point2.Y)/2);
 
 	if (line->ind_editpoint) {

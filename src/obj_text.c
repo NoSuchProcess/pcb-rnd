@@ -1525,12 +1525,12 @@ void pcb_text_name_invalidate_draw(pcb_text_t *text)
 			100.0, is_text_term_vert(text), rnd_true, (pcb_any_obj_t *)text);
 }
 
-void pcb_text_draw_label(pcb_draw_info_t *info, pcb_text_t *text)
+void pcb_text_draw_label(pcb_draw_info_t *info, pcb_text_t *text, rnd_bool vis_side)
 {
-	if (text->term != NULL)
+	if ((text->term != NULL) && vis_side)
 		pcb_term_label_draw(info, (text->BoundingBox.X1 + text->BoundingBox.X2)/2, (text->BoundingBox.Y1 + text->BoundingBox.Y2)/2,
 			conf_core.appearance.term_label_size, is_text_term_vert(text), rnd_true, (pcb_any_obj_t *)text);
-	if (text->noexport)
+	if (text->noexport && vis_side)
 		pcb_obj_noexport_mark(text, (text->BoundingBox.X1 + text->BoundingBox.X2)/2, (text->BoundingBox.Y1 + text->BoundingBox.Y2)/2);
 }
 

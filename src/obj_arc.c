@@ -1050,16 +1050,16 @@ void pcb_arc_name_invalidate_draw(pcb_arc_t *arc)
 	}
 }
 
-void pcb_arc_draw_label(pcb_draw_info_t *info, pcb_arc_t *arc)
+void pcb_arc_draw_label(pcb_draw_info_t *info, pcb_arc_t *arc, rnd_bool vis_side)
 {
-	if (arc->term != NULL) {
+	if ((arc->term != NULL) && vis_side) {
 		rnd_coord_t x0, y0;
 		rnd_bool_t vert;
 
 		arc_label_pos(arc, &x0, &y0, &vert);
 		pcb_term_label_draw(info, x0, y0, conf_core.appearance.term_label_size, vert, rnd_true, (pcb_any_obj_t *)arc);
 	}
-	if (arc->noexport) {
+	if (arc->noexport && vis_side) {
 		rnd_coord_t cx, cy;
 		pcb_arc_middle(arc, &cx, &cy);
 		pcb_obj_noexport_mark(arc, cx, cy);

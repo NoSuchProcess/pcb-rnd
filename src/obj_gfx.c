@@ -870,10 +870,10 @@ void pcb_gfx_name_invalidate_draw(pcb_gfx_t *gfx)
 	/* ->term: can't be a terminal, no label to draw */
 }
 
-void pcb_gfx_draw_label(pcb_draw_info_t *info, pcb_gfx_t *gfx)
+void pcb_gfx_draw_label(pcb_draw_info_t *info, pcb_gfx_t *gfx, rnd_bool vis_side)
 {
 	/* ->term: can't be a terminal, no label to draw */
-	if (gfx->noexport)
+	if (gfx->noexport && vis_side)
 		pcb_obj_noexport_mark(gfx, gfx->cx, gfx->cy);
 }
 

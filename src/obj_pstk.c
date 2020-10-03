@@ -617,7 +617,7 @@ rnd_r_dir_t pcb_pstk_draw_label_callback(const rnd_box_t *b, void *cl)
 	/* draw the label if enabled, after everything else is drawn */
 	if (ps->term != NULL) {
 		if ((pcb_draw_force_termlab) || PCB_FLAG_TEST(PCB_FLAG_TERMNAME, ps))
-			pcb_pstk_draw_label(info, ps);
+			pcb_pstk_draw_label(info, ps, 1);
 	}
 
 	if (ps->noexport)
@@ -759,7 +759,7 @@ void pcb_pstk_thindraw(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps)
 		pcb_pstk_draw_shape_thin(info, gc, ps, shape);
 }
 
-void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps)
+void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps, rnd_bool vis_side)
 {
 	rnd_bool vert;
 	rnd_coord_t dx, dy;
