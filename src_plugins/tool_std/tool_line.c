@@ -446,7 +446,7 @@ rnd_bool pcb_tool_line_undo_act(rnd_hidlib_t *hl)
 			pcb_crosshair.AttachedLine.Point1.X = pcb_crosshair.AttachedLine.Point2.X = ptr2->Point2.X;
 			pcb_crosshair.AttachedLine.Point1.Y = pcb_crosshair.AttachedLine.Point2.Y = ptr2->Point2.Y;
 		}
-		pcb_crosshair_grid_fit(pcb_crosshair.X, pcb_crosshair.Y);
+		pcb_crosshair_grid_fit(pcb, pcb_crosshair.X, pcb_crosshair.Y);
 		rnd_tool_adjust_attached(hl);
 		if (--pcb_added_lines == 0) {
 			pcb_crosshair.AttachedLine.State = PCB_CH_STATE_SECOND;
