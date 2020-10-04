@@ -206,6 +206,9 @@ void pcb_layer_free_fields(pcb_layer_t *layer, rnd_bool undoable);
 /* Return the layer pointer (or NULL on invalid or virtual layers) for an id */
 pcb_layer_t *pcb_get_layer(pcb_data_t *data, rnd_layer_id_t id);
 
+/* Return the layer ID within data, or -1 if ly is not in data */
+rnd_layer_id_t pcb_layer2id(pcb_data_t *data, pcb_layer_t *ly);
+
 /* Return the name of a layer (real or virtual) or NULL on error
    NOTE: layer names may not be unique; returns the first case sensitive hit;
    slow linear search */

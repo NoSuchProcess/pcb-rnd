@@ -1115,6 +1115,19 @@ pcb_layer_t *pcb_get_layer(pcb_data_t *data, rnd_layer_id_t id)
 	return NULL;
 }
 
+rnd_layer_id_t pcb_layer2id(pcb_data_t *data, pcb_layer_t *ly)
+{
+	long lid;
+
+	if (ly == NULL) return -1;
+
+	lid = ly - data->Layer;
+	if ((lid < 0) || (lid >= data->LayerN))
+		return -1;
+
+	return lid;
+}
+
 void pcb_layer_link_trees(pcb_layer_t *dst, pcb_layer_t *src)
 {
 	/* we can't link non-existing trees - make sure src does have the trees initialized */
