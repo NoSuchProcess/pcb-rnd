@@ -29,12 +29,14 @@
 #include <genvector/vtp0.h>
 #include <genht/htip.h>
 #include <genht/hash.h>
+#include <genht/ht_utils.h>
 
 #include "buffer.h"
 #include "board.h"
 #include "crosshair.h"
 #include "brave.h"
 #include "data.h"
+#include "data_it.h"
 #include <librnd/core/error.h>
 #include "obj_subc.h"
 #include "obj_subc_op.h"
@@ -2364,17 +2366,92 @@ const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name)
 /*** subc replace: in-place replacement of a subcircuit with another, trying to keep as much local changes as possible ***/
 
 typedef struct {
-	htsp_t thermal;        /* value is (char *) thermal shapes; for layer objects it's a single character, for padstacks it's as long as many layers pcb currently has */
+	pcb_board_t *pcb;
+	htsp_t thermal;        /* value is (char *) thermal shapes; it's as long as many layers pcb currently has */
 } pcb_subc_replace_t;
 
-static void pcb_subcrepl_map_thermals(pcb_subc_replace_t *repl, pcb_subc_t *src)
+/* map thermals of src to repl */
+static void pcb_subcrepl_map_thermals(pcb_subc_replace_t *repl, const pcb_subc_t *src)
 {
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
+	char *s;
+
 	htsp_init(&repl->thermal, strhash, strkeyeq);
+
+	for(o = pcb_data_first(&it, src->data, PCB_OBJ_CLASS_LAYER); o != NULL; o = pcb_data_next(&it)) {
+		rnd_layer_id_t lid;
+
+		if ((o->term == NULL) || (o->thermal == 0)) continue;
+		s = htsp_get(&repl->thermal, o->term);
+		if (s != NULL) continue; /* save the "first" only */
+
+		lid = pcb_layer2id(repl->pcb->Data, pcb_layer_get_real(o->parent.layer));
+		if (lid == -1) continue;
+
+		s = calloc(repl->pcb->Data->LayerN, 1);
+		s[lid] = o->thermal;
+		htsp_set(&repl->thermal, rnd_strdup(o->term), s);
+	}
+
+	for(o = pcb_data_first(&it, src->data, PCB_OBJ_PSTK); o != NULL; o = pcb_data_next(&it)) {
+		pcb_pstk_t *ps = (pcb_pstk_t *)o;
+
+		if ((o->term == NULL) || (ps->thermals.used == 0)) continue;
+		s = htsp_get(&repl->thermal, o->term);
+		if (s != NULL) continue; /* save the "first" only */
+
+		s = calloc(repl->pcb->Data->LayerN, 1);
+		memcpy(s, ps->thermals.shape, ps->thermals.used);
+		htsp_set(&repl->thermal, rnd_strdup(o->term), s);
+	}
 }
 
-static void pcb_subcrepl_apply_thermals(pcb_subc_replace_t *repl, pcb_subc_t *placed)
+/* Set thermals on the new subc terminals from repl; return 1 if there was any
+   thermal set (and thus polygons need to be updated) */
+static int pcb_subcrepl_apply_thermals(pcb_subc_replace_t *repl, pcb_subc_t *placed)
 {
-	htsp_uninit(&repl->thermal);
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
+	htsp_entry_t *e;
+	int has_thermal = 0;
+
+	for(o = pcb_data_first(&it, placed->data, PCB_OBJ_CLASS_LAYER); o != NULL; o = pcb_data_next(&it)) {
+		rnd_layer_id_t lid;
+		char *s;
+
+		if ((o->term == NULL) || (o->thermal == 0)) continue;
+		e = htsp_popentry(&repl->thermal, o->term);
+		if (e == NULL) continue; /* save the "first" only */
+
+		lid = pcb_layer2id(repl->pcb->Data, pcb_layer_get_real(o->parent.layer));
+		if (lid == -1) continue;
+
+		s = e->value;
+		o->thermal = s[lid];
+		free(e->key);
+		free(e->value);
+		has_thermal = 1;
+	}
+
+	for(o = pcb_data_first(&it, placed->data, PCB_OBJ_PSTK); o != NULL; o = pcb_data_next(&it)) {
+		pcb_pstk_t *ps = (pcb_pstk_t *)o;
+
+		if ((o->term == NULL) || (ps->thermals.used == 0)) continue;
+		e = htsp_popentry(&repl->thermal, o->term);
+		if (e == NULL) continue; /* save the "first" only */
+		ps->thermals.used = repl->pcb->Data->LayerN;
+		ps->thermals.shape = e->value;
+		
+		free(e->key);
+		has_thermal = 1;
+	}
+
+	genht_uninit_deep(htsp, &repl->thermal, {
+		free(htent->key);
+		free(htent->value);
+	});
+	return has_thermal;
 }
 
 pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src, rnd_bool add_undo, rnd_bool dumb)
@@ -2404,8 +2481,10 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 		}
 		pcb_subc_get_rotation(dst, &rot);
 		pcb_subc_get_side(dst, &dst_on_bottom);
-		pcb_subcrepl_map_thermals(&repl, src);
 	}
+
+	repl.pcb = pcb;
+	pcb_subcrepl_map_thermals(&repl, dst);
 
 	if (pcb_subc_get_origin(src, &osx, &osy) != 0) {
 		osx = (dst->BoundingBox.X1 + dst->BoundingBox.X2) / 2;
@@ -2447,8 +2526,14 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	if (dst_on_bottom != src_on_bottom)
 		pcb_subc_change_side(placed, 2 * oy - PCB->hidlib.size_y);
 
-	if (!dumb)
-		pcb_subcrepl_apply_thermals(&repl, placed);
+	if (pcb_subcrepl_apply_thermals(&repl, placed)) {
+		pcb_opctx_t clip;
+		clip.clip.pcb = pcb;
+		clip.clip.restore = 1; clip.clip.clear = 0;
+		pcb_subc_op(pcb->Data, placed, &ClipFunctions, &clip, PCB_SUBCOP_UNDO_NORMAL);
+		clip.clip.restore = 0; clip.clip.clear = 1;
+		pcb_subc_op(pcb->Data, placed, &ClipFunctions, &clip, PCB_SUBCOP_UNDO_NORMAL);
+	}
 
 	pcb_undo_freeze_add();
 	pcb_subc_select(pcb, placed, (flags & PCB_FLAG_SELECTED) ? PCB_CHGFLG_SET : PCB_CHGFLG_CLEAR, 0);
