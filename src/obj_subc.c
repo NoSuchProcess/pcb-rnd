@@ -55,6 +55,7 @@
 #include "polygon.h"
 #include "operation.h"
 #include "undo.h"
+#include "move.h"
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/math_helper.h>
 #include "pcb_minuid.h"
@@ -2365,13 +2366,161 @@ const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name)
 
 /*** subc replace: in-place replacement of a subcircuit with another, trying to keep as much local changes as possible ***/
 
+typedef struct pcb_sucbrepl_floater_s pcb_sucbrepl_floater_t;
+
+struct pcb_sucbrepl_floater_s { /* digest of a floater for matching up */
+	/* desired state */
+	rnd_coord_t x, y;
+	double rot;
+
+	/* admiin */
+	pcb_sucbrepl_floater_t *next;
+
+	/* matching */
+	pcb_objtype_t type;
+	rnd_layer_id_t lid;
+	char str[1]; /* dynamic length */
+};
+
 typedef struct {
 	pcb_board_t *pcb;
 	htsp_t thermal;        /* value is (char *) thermal shapes; it's as long as many layers pcb currently has */
+	pcb_sucbrepl_floater_t *flt;
 } pcb_subc_replace_t;
 
-/* map thermals of src to repl */
-static void pcb_subcrepl_map_thermals(pcb_subc_replace_t *repl, const pcb_subc_t *src)
+static void pcb_subcrepl_map_floater(pcb_subc_replace_t *repl, const pcb_subc_t *src, pcb_any_obj_t *o)
+{
+	pcb_sucbrepl_floater_t *f;
+	pcb_text_t *txt = (pcb_text_t *)o;
+
+	if ((txt->type == PCB_OBJ_TEXT) && (txt->TextString != NULL) && (*txt->TextString != '\0')) {
+		long len = strlen(txt->TextString);
+		f = malloc(sizeof(pcb_sucbrepl_floater_t) + len + 1);
+		strcpy(f->str, txt->TextString);
+	}
+	else {
+		f = malloc(sizeof(pcb_sucbrepl_floater_t));
+		f->str[0] = '\0';
+	}
+
+	f->type = o->type;
+	if (PCB_OBJ_CLASS_LAYER & o->type)
+		f->lid = pcb_layer2id(repl->pcb->Data, pcb_layer_get_real(o->parent.layer));
+	else
+		f->lid = -1;
+
+	switch(o->type) {
+		case PCB_OBJ_ARC:
+			f->x = ((pcb_arc_t *)o)->X;
+			f->y = ((pcb_arc_t *)o)->Y;
+			break;
+		case PCB_OBJ_LINE:
+			f->x = ((pcb_line_t *)o)->Point1.X;
+			f->y = ((pcb_line_t *)o)->Point1.Y;
+			break;
+		case PCB_OBJ_TEXT:
+			f->x = ((pcb_text_t *)o)->X;
+			f->y = ((pcb_text_t *)o)->Y;
+			f->rot = ((pcb_text_t *)o)->rot;
+			break;
+		case PCB_OBJ_PSTK:
+			f->x = ((pcb_pstk_t *)o)->x;
+			f->y = ((pcb_pstk_t *)o)->y;
+			f->rot = ((pcb_pstk_t *)o)->rot;
+			break;
+		case PCB_OBJ_GFX:
+			f->x = ((pcb_gfx_t *)o)->cx;
+			f->y = ((pcb_gfx_t *)o)->cy;
+			f->rot = ((pcb_gfx_t *)o)->rot;
+			break;
+
+		case PCB_OBJ_SUBC: /* may matter in subc-in-subc, for subc terminals */
+		case PCB_OBJ_POLY: /* no idea which point to use */
+		case PCB_OBJ_RAT:
+		case PCB_OBJ_NET:
+		case PCB_OBJ_NET_TERM:
+		case PCB_OBJ_LAYER:
+		case PCB_OBJ_LAYERGRP:
+		case PCB_OBJ_VOID:
+			break;
+	}
+	f->next = repl->flt;
+	repl->flt = f;
+}
+
+static void pcb_subcrepl_apply_floater(pcb_subc_replace_t *repl, const pcb_subc_t *src, pcb_any_obj_t *o)
+{
+	pcb_sucbrepl_floater_t *n;
+	rnd_layer_id_t lid;
+
+	for(n = repl->flt; n != NULL; n = n->next) {
+		if (n->type != o->type) continue;
+
+		if (PCB_OBJ_CLASS_LAYER & o->type)
+			lid = pcb_layer2id(repl->pcb->Data, pcb_layer_get_real(o->parent.layer));
+		else
+			lid = -1;
+		if (n->lid != lid) continue;
+
+		if (o->type == PCB_OBJ_TEXT) {
+			const char *s = ((pcb_text_t *)o)->TextString;
+			if (s == NULL) s = "";
+			if (strcmp(n->str, s) != 0) continue;
+		}
+
+		/* match! */
+		switch(o->type) {
+			case PCB_OBJ_ARC:
+				pcb_move_obj(o->type, o->parent.any, o, o, n->x - ((pcb_arc_t *)o)->X, n->y - ((pcb_arc_t *)o)->Y);
+				break;
+			case PCB_OBJ_LINE:
+				pcb_move_obj(o->type, o->parent.any, o, o, n->x - ((pcb_line_t *)o)->Point1.X, n->y - ((pcb_line_t *)o)->Point1.Y);
+				break;
+			case PCB_OBJ_TEXT:
+				pcb_move_obj(o->type, o->parent.any, o, o, n->x - ((pcb_text_t *)o)->X, n->y - ((pcb_text_t *)o)->Y);
+				if (n->rot != ((pcb_text_t *)o)->rot) {
+					double ang = n->rot - ((pcb_text_t *)o)->rot;
+					pcb_text_rotate((pcb_text_t *)o, ((pcb_text_t *)o)->X, ((pcb_text_t *)o)->Y, cos(ang), sin(ang), ang);
+				}
+				break;
+			case PCB_OBJ_PSTK:
+				pcb_move_obj(o->type, o->parent.any, o, o, n->x - ((pcb_pstk_t *)o)->x, n->y - ((pcb_pstk_t *)o)->y);
+				if (n->rot != ((pcb_pstk_t *)o)->rot) {
+					double ang = n->rot - ((pcb_text_t *)o)->rot;
+					pcb_pstk_rotate((pcb_pstk_t *)o, ((pcb_pstk_t *)o)->x, ((pcb_pstk_t *)o)->y, cos(ang), sin(ang), ang);
+				}
+				break;
+			case PCB_OBJ_GFX:
+				pcb_gfx_chg_geo((pcb_gfx_t *)o, n->x, n->y, ((pcb_gfx_t *)o)->sx, ((pcb_gfx_t *)o)->sy,  n->rot, 0);
+				break;
+
+			case PCB_OBJ_SUBC: /* may matter in subc-in-subc, for subc terminals */
+			case PCB_OBJ_POLY: /* no idea which point to use */
+			case PCB_OBJ_RAT:
+			case PCB_OBJ_NET:
+			case PCB_OBJ_NET_TERM:
+			case PCB_OBJ_LAYER:
+			case PCB_OBJ_LAYERGRP:
+			case PCB_OBJ_VOID:
+				break;
+		}
+
+		n->type = PCB_OBJ_VOID; /* use each input floater only once */
+	}
+}
+
+static void pcb_subcrepl_free_floaters(pcb_subc_replace_t *repl)
+{
+	pcb_sucbrepl_floater_t *n, *next;
+	for(n = repl->flt; n != NULL; n = next) {
+		next = n->next;
+		free(n);
+	}
+}
+
+
+/* map thermals and floaters of src to repl */
+static void pcb_subcrepl_map_thermals_floaters(pcb_subc_replace_t *repl, const pcb_subc_t *src)
 {
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
@@ -2381,6 +2530,9 @@ static void pcb_subcrepl_map_thermals(pcb_subc_replace_t *repl, const pcb_subc_t
 
 	for(o = pcb_data_first(&it, src->data, PCB_OBJ_CLASS_LAYER); o != NULL; o = pcb_data_next(&it)) {
 		rnd_layer_id_t lid;
+
+		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, o))
+			pcb_subcrepl_map_floater(repl, src, o);
 
 		if ((o->term == NULL) || (o->thermal == 0)) continue;
 		s = htsp_get(&repl->thermal, o->term);
@@ -2397,6 +2549,9 @@ static void pcb_subcrepl_map_thermals(pcb_subc_replace_t *repl, const pcb_subc_t
 	for(o = pcb_data_first(&it, src->data, PCB_OBJ_PSTK); o != NULL; o = pcb_data_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)o;
 
+		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, o))
+			pcb_subcrepl_map_floater(repl, src, o);
+
 		if ((o->term == NULL) || (ps->thermals.used == 0)) continue;
 		s = htsp_get(&repl->thermal, o->term);
 		if (s != NULL) continue; /* save the "first" only */
@@ -2408,8 +2563,9 @@ static void pcb_subcrepl_map_thermals(pcb_subc_replace_t *repl, const pcb_subc_t
 }
 
 /* Set thermals on the new subc terminals from repl; return 1 if there was any
-   thermal set (and thus polygons need to be updated) */
-static int pcb_subcrepl_apply_thermals(pcb_subc_replace_t *repl, pcb_subc_t *placed)
+   thermal set (and thus polygons need to be updated); also move/rotate floaters
+   trying to match the original placement */
+static int pcb_subcrepl_apply_thermals_floaters(pcb_subc_replace_t *repl, pcb_subc_t *placed)
 {
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
@@ -2419,6 +2575,9 @@ static int pcb_subcrepl_apply_thermals(pcb_subc_replace_t *repl, pcb_subc_t *pla
 	for(o = pcb_data_first(&it, placed->data, PCB_OBJ_CLASS_LAYER); o != NULL; o = pcb_data_next(&it)) {
 		rnd_layer_id_t lid;
 		char *s;
+
+		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, o))
+			pcb_subcrepl_apply_floater(repl, placed, o);
 
 		if ((o->term == NULL) || (o->thermal == 0)) continue;
 		e = htsp_popentry(&repl->thermal, o->term);
@@ -2437,6 +2596,9 @@ static int pcb_subcrepl_apply_thermals(pcb_subc_replace_t *repl, pcb_subc_t *pla
 	for(o = pcb_data_first(&it, placed->data, PCB_OBJ_PSTK); o != NULL; o = pcb_data_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)o;
 
+		if (PCB_FLAG_TEST(PCB_FLAG_FLOATER, o))
+			pcb_subcrepl_apply_floater(repl, placed, o);
+
 		if ((o->term == NULL) || (ps->thermals.used == 0)) continue;
 		e = htsp_popentry(&repl->thermal, o->term);
 		if (e == NULL) continue; /* save the "first" only */
@@ -2451,6 +2613,7 @@ static int pcb_subcrepl_apply_thermals(pcb_subc_replace_t *repl, pcb_subc_t *pla
 		free(htent->key);
 		free(htent->value);
 	});
+	pcb_subcrepl_free_floaters(repl);
 	return has_thermal;
 }
 
@@ -2484,7 +2647,7 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	}
 
 	repl.pcb = pcb;
-	pcb_subcrepl_map_thermals(&repl, dst);
+	pcb_subcrepl_map_thermals_floaters(&repl, dst);
 
 	if (pcb_subc_get_origin(src, &osx, &osy) != 0) {
 		osx = (dst->BoundingBox.X1 + dst->BoundingBox.X2) / 2;
@@ -2526,7 +2689,7 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	if (dst_on_bottom != src_on_bottom)
 		pcb_subc_change_side(placed, 2 * oy - PCB->hidlib.size_y);
 
-	if (pcb_subcrepl_apply_thermals(&repl, placed)) {
+	if (pcb_subcrepl_apply_thermals_floaters(&repl, placed)) {
 		pcb_opctx_t clip;
 		clip.clip.pcb = pcb;
 		clip.clip.restore = 1; clip.clip.clear = 0;
