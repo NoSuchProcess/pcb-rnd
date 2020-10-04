@@ -27,6 +27,8 @@
 #include "config.h"
 
 #include <genvector/vtp0.h>
+#include <genht/htip.h>
+#include <genht/hash.h>
 
 #include "buffer.h"
 #include "board.h"
@@ -2359,6 +2361,21 @@ const char *pcb_subc_name(pcb_subc_t *subc, const char *local_name)
 	return val;
 }
 
+/*** subc replace: in-place replacement of a subcircuit with another, trying to keep as much local changes as possible ***/
+
+typedef struct {
+	htsp_t thermal;        /* value is (char *) thermal shapes; for layer objects it's a single character, for padstacks it's as long as many layers pcb currently has */
+} pcb_subc_replace_t;
+
+static void pcb_subcrepl_map_thermals(pcb_subc_replace_t *repl, pcb_subc_t *src)
+{
+	htsp_init(&repl->thermal, strhash, strkeyeq);
+}
+
+static void pcb_subcrepl_apply_thermals(pcb_subc_replace_t *repl, pcb_subc_t *placed)
+{
+	htsp_uninit(&repl->thermal);
+}
 
 pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src, rnd_bool add_undo, rnd_bool dumb)
 {
@@ -2371,6 +2388,7 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 	static const pcb_flag_values_t fmask = PCB_FLAG_SELECTED | \
 		PCB_FLAG_ONSOLDER | PCB_FLAG_AUTO | PCB_FLAG_NONETLIST;
 	pcb_flag_values_t flags;
+	pcb_subc_replace_t repl = {0};
 
 	assert(dst->parent_type == PCB_PARENT_DATA);
 	assert(src != NULL);
@@ -2386,6 +2404,7 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 		}
 		pcb_subc_get_rotation(dst, &rot);
 		pcb_subc_get_side(dst, &dst_on_bottom);
+		pcb_subcrepl_map_thermals(&repl, src);
 	}
 
 	if (pcb_subc_get_origin(src, &osx, &osy) != 0) {
@@ -2427,6 +2446,9 @@ pcb_subc_t *pcb_subc_replace(pcb_board_t *pcb, pcb_subc_t *dst, pcb_subc_t *src,
 
 	if (dst_on_bottom != src_on_bottom)
 		pcb_subc_change_side(placed, 2 * oy - PCB->hidlib.size_y);
+
+	if (!dumb)
+		pcb_subcrepl_apply_thermals(&repl, placed);
 
 	pcb_undo_freeze_add();
 	pcb_subc_select(pcb, placed, (flags & PCB_FLAG_SELECTED) ? PCB_CHGFLG_SET : PCB_CHGFLG_CLEAR, 0);
