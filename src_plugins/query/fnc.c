@@ -58,7 +58,6 @@ static int fnc_llen(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry
 
 static int fnc_isvoid(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
-printf("isvoid argc=%d type=%d\n", argc, argv[0].type);
 	if (argc != 1)
 		return -1;
 	PCB_QRY_RET_INT(res, argv[0].type == PCBQ_VT_VOID);
