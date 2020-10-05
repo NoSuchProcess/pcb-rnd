@@ -40,6 +40,7 @@
 #include "obj_term.h"
 #include "netlist.h"
 #include "net_int.h"
+#include "net_len.h"
 
 #include "query_access.h"
 #include "query_exec.h"
@@ -113,6 +114,7 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("action", fnc_action);
 	pcb_qry_fnc_reg("getconf", pcb_qry_fnc_getconf);
 	pcb_qry_fnc_reg("pstkring", fnc_pstkring);
+	pcb_qry_fnc_reg("netlen", fnc_netlen);
 
 	pcb_qry_fnc_reg("thermal_on", fnc_thermal_on);
 

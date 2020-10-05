@@ -264,3 +264,43 @@ static int fnc_pstkring(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb
 
 	PCB_QRY_RET_INT(res, cnt);
 }
+
+static int fnc_netlen(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	pcb_board_t *pcb = ectx->pcb;
+	pcb_net_t *net = NULL;
+	pcb_net_term_t *t;
+	pcb_any_obj_t *obj;
+	pcb_qry_netseg_len_t *nl;
+
+	if (argc != 1)
+		return -1;
+
+	switch(argv[0].type) {
+		case PCBQ_VT_STRING:
+			net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_EDITED], argv[0].data.str, 0);
+			break;
+		case PCBQ_VT_OBJ:
+			if (argv[0].data.obj->type == PCB_OBJ_NET)
+				net = (pcb_net_t *)argv[0].data.obj;
+		default:
+			break;
+	}
+
+	if (net == NULL)
+		return -1;
+
+	if (pcb_termlist_length(&net->conns) > 2)
+		return -1;
+
+	t = pcb_termlist_first(&net->conns);
+	if ((t == NULL) || ((obj = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL)) == NULL))
+		return -1;
+
+	nl = pcb_qry_parent_net_lenseg(ectx, obj);
+
+	if ((nl->has_nontrace) || (nl->has_junction))
+		return -1;
+
+	PCB_QRY_RET_COORD(res, nl->len);
+}
