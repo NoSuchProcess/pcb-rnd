@@ -1,0 +1,11 @@
+     END
++    ha:hello {
++     checked = foo
++     action = {bar }
++    }
+    }
+       @testanchor
++      ha:hallo {
++       action = {foobar() }
++      }
+       ha:POST {

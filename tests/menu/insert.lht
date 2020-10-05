@@ -1,0 +1,17 @@
+ha:rnd-menu-v1 {
+	li:main_menu {
+		ha:File = {
+			li:submenu {
+				ha:hello = { checked=foo; action=bar }
+			}
+		}
+	}
+	
+	li:anchored {
+		ha:@testanchor {
+			li:submenu {
+				ha:hallo = { action=foobar() }
+			}
+		}
+	}
+}
