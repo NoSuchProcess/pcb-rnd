@@ -8,6 +8,7 @@
 - FEATURE: DRC: net attribute based clearance [report: Nicklas]
 + FEATURE: when hovering over an editable object, draw edit/grab points as labels [report: Majenko]
 + FEATURE: footprint in-place replacement should match up floaters to keep their coords, as documented in ML/2304; also keep thermals per term ID [report: gpaubert]
+- FEATURE: revise which feature plugins need local menu (asm!) [report: Igor2]
 - BUG: openscad export: unticking top copper (and probably others) in the export dialog doesn't stop the plugin from exporting everything [report: Bdale]
 - BUG: openscad export: load a board from menu, {f e} export; load another board from menu, {f e} export: output is set to the old file name! [report: Igor2]
 - BUG: advanced search: no quote around strings for subc footprint; no padstack in the type listing; propset(padstack/clearance, 20mil) doesn't work ml=4321 [report: Igor2]
