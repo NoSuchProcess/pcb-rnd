@@ -288,19 +288,19 @@ static int fnc_netlen(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 	}
 
 	if (net == NULL)
-		return -1;
+		PCB_QRY_RET_INV(res);
 
 	if (pcb_termlist_length(&net->conns) > 2)
-		return -1;
+		PCB_QRY_RET_INV(res);
 
 	t = pcb_termlist_first(&net->conns);
 	if ((t == NULL) || ((obj = pcb_term_find_name(pcb, pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL)) == NULL))
-		return -1;
+		PCB_QRY_RET_INV(res);
 
 	nl = pcb_qry_parent_net_lenseg(ectx, obj);
 
 	if ((nl->has_nontrace) || (nl->has_junction))
-		return -1;
+		PCB_QRY_RET_INV(res);
 
 	PCB_QRY_RET_COORD(res, nl->len);
 }
