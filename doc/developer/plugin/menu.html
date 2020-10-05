@@ -1,0 +1,64 @@
+<html>
+<body>
+<h1> pcb-rnd - plugin development - per plugin menus </h1>
+<p>
+Some plugins may need to create menu items. This should not be done in
+the central menu file, because the plugin may be disabled leaving
+defunct menu items in the menu system. Instead, each such plugin shall
+inject a menu patch file on load and remove the menu patch on plugin unload.
+
+<h2> the menu file </h2>
+<p>
+The <a href="menu.lht">menu file</a> is normally not a menu patch file but
+a plain menu file since it only needs to extend the existing menu system and
+this is the easiest way to do so. It's recommended to insert menus under
+anchors because this method provides better stability over menu file changes.
+<p>
+The menu file is typically called: <i>pluginname</i>-menu.lht
+
+<h2> tmpasm </h2>
+<p>
+The menu file must be registered in the tmpasm file. Add these lines in
+Plug.tmpasm to set the file name:
+<pre>
+put /local/pcb/mod/MENUFILE {<i>pluginname</i>-menu.lht}
+put /local/pcb/mod/MENUVAR {<i>pluginname</i>_menu}
+</pre>
+
+<h2> Create the menu variable </h2>
+<p>
+Menu patch requires the following lines around the top of the plugin code:
+<pre>
+#include &lt;librnd/core/hid_menu.h&gt;
+#include "menu_internal.c"
+</pre>
+<p>
+The menu file is translated to a variable named in MENUVAR above, typically
+<i>pluginname</i>_menu - this is the "internal" version embedded in the
+executable, fallback in case the menu file is not found.
+
+<h2> plugin init </h2>
+<p>
+Copy these lines in the plugin init callback:
+<pre>
+	rnd_hid_menu_load(rnd_gui, NULL, <i>pluginname</i>_cookie, 175, NULL, 0, <i>pluginname</i>_menu, "plugin: <i>pluginname</i>");
+</pre>
+<p>
+Replace 175 with the patch priority - in the most common setup this controls
+the order of newly created menu items under the same anchor.
+
+<h2> plugin uninit </h2>
+<p>
+On uninit the menu patch needs to be unloaded:
+<pre>
+	rnd_hid_menu_unload(rnd_gui, <i>pluginname</i>_cookie);
+</pre>
+
+<h2> make dep </h2>
+<p>
+After committing all these, you will need to run make dep in src/. Before committing
+that, double check svn diff: it must not have any unrelated change, only files
+related to your plugin.
+
+</body>
+</html>

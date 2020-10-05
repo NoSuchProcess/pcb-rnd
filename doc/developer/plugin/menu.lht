@@ -1,0 +1,9 @@
+ha:rnd-menu-v1 {
+	li:anchored {
+		ha:@import_sch {
+			li:submenu {
+				ha:Load TinyCAD .net file = { action=LoadTinyCADFrom() }
+			}
+		}
+	}
+}
