@@ -13,3 +13,5 @@ test:
 	@diff overwrite_p.ref overwrite_p.out
 	@./test_patch.sh 'MenuPatch(load, test, "new_submenu.lht");' > new_submenu.out
 	@diff new_submenu.ref new_submenu.out
+
+clean:

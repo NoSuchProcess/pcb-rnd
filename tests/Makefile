@@ -11,6 +11,7 @@ test:
 #	cd gsch2pcb-rnd && $(MAKE) all && $(MAKE) test
 	cd drc_query && $(MAKE) test
 	cd query && $(MAKE) test
+	cd menu && $(MAKE) test
 	@echo " "
 	@echo "+-------------------------------------------------+"
 	@echo "+  All tests passed, pcb-rnd is safe to install.  +"
@@ -29,4 +30,5 @@ clean:
 #	cd gsch2pcb-rnd && $(MAKE) clean
 	cd drc_query && $(MAKE) clean
 	cd query && $(MAKE) clean
+	cd menu && $(MAKE) clean
 
