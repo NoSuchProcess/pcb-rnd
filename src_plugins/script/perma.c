@@ -32,6 +32,7 @@
 #include <stdio.h>
 
 #include <librnd/core/hidlib.h>
+#include <librnd/core/hid_init.h>
 
 static const char *guess_lang(const char *ext);
 
@@ -121,6 +122,19 @@ static void perma_script_load_conf(const char *dir)
 
 static void perma_script_init(void)
 {
+	static int inited = 0;
+
+	if (inited) return;
+
 	perma_script_load_conf(rnd_conf_userdir_path);
 	perma_script_load_conf(rnd_conf_sysdir_path);
+
+	inited = 1;
 }
+
+static void script_mainloop_perma_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	if (rnd_hid_in_main_loop)
+		perma_script_init();
+}
+

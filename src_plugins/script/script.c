@@ -460,7 +460,10 @@ int pplg_init_script(void)
 	htsp_init(&scripts, strhash, strkeyeq);
 	pup_init(&script_pup);
 	pcb_live_script_init();
-	perma_script_init();
+	if (rnd_hid_in_main_loop)
+		perma_script_init();
+	else
+		rnd_event_bind(RND_EVENT_MAINLOOP_CHANGE, script_mainloop_perma_ev, NULL, script_cookie);
 	rnd_event_bind(RND_EVENT_GUI_INIT, script_timer_gui_init_ev, NULL, script_cookie);
 	return 0;
 }
