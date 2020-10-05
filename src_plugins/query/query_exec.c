@@ -297,7 +297,7 @@ static int promote(pcb_qry_val_t *a, pcb_qry_val_t *b)
 			return -1;
 		case PCBQ_VT_LONG:
 			if (b->type == PCBQ_VT_DOUBLE)  PCB_QRY_RET_DBL(a, a->data.lng);
-			if (b->type == PCBQ_VT_COORD)   PCB_QRY_RET_DBL(a, a->data.lng);
+			if (b->type == PCBQ_VT_COORD)   PCB_QRY_RET_COORD(a, a->data.lng);
 			return -1;
 		case PCBQ_VT_DOUBLE:
 			if (b->type == PCBQ_VT_COORD)  PCB_QRY_RET_DBL(b, b->data.crd);
