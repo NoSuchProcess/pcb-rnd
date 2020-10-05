@@ -1,0 +1,7 @@
+     ha:Revert {
+-     action = Load(Revert,none)
++     a = {<key>f;shift<key>r}
+      tip = {Revert to the layout stored on disk }
+-     a = {<key>f;<key>r}
++     action = Load(Revert,none)
+     }

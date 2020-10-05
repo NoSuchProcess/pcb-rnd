@@ -1,0 +1,10 @@
+ha:rnd-menu-v1 {
+ li:main_menu {
+  ha:File {
+   li:submenu {
+    ha:Revert = { action=message(ERROR, "revert is too dangerous!") }
+   }
+  }
+ }
+}
+

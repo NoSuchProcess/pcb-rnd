@@ -1,0 +1,7 @@
+     ha:Revert {
+-     action = Load(Revert,none)
+-     tip = {Revert to the layout stored on disk }
+      a = {<key>f;<key>r}
++     tip = {Revert to the layout stored on disk }
++     action = {Load(Revert,none)message(ERROR, "revert is too dangerous!") }
+     }

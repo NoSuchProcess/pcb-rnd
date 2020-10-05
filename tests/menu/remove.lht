@@ -1,0 +1,8 @@
+ha:rnd-menu-patch-v1 {
+	prio=400
+	li:patch {
+		ha:remove_menu {
+			path = /main_menu/File/Revert
+		}
+	}
+}

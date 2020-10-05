@@ -1,0 +1,14 @@
+     END
++    ha:demo {
++     li:submenu {
++      ha:hello {
++       a = {<key>h;<key>h}
++       action = {message(hello) }
++      }
++      ha:world {
++       a = {<key>h;<key>w}
++       action = {message(world) }
++      }
++     }
++    }
+    }

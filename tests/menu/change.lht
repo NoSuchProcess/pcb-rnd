@@ -1,0 +1,9 @@
+ha:rnd-menu-patch-v1 {
+ prio=400
+ li:patch {
+  ha:overwrite_menu_props {
+   path = /main_menu/File/Revert
+   ha:props { a={<key>f;shift<key>r};}
+  }
+ }
+}
