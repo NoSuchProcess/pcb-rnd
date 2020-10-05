@@ -56,6 +56,14 @@ static int fnc_llen(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry
 	PCB_QRY_RET_INT(res, vtp0_len(&argv[0].data.lst));
 }
 
+static int fnc_isvoid(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+printf("isvoid argc=%d type=%d\n", argc, argv[0].type);
+	if (argc != 1)
+		return -1;
+	PCB_QRY_RET_INT(res, argv[0].type == PCBQ_VT_VOID);
+}
+
 static int fnc_distance(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	if ((argc == 4) && (argv[0].type == PCBQ_VT_COORD) && (argv[1].type == PCBQ_VT_COORD) && (argv[2].type == PCBQ_VT_COORD) && (argv[3].type == PCBQ_VT_COORD))
@@ -99,6 +107,7 @@ void pcb_qry_basic_fnc_init(void)
 {
 	pcb_qry_fnc_reg("llen", fnc_llen);
 	pcb_qry_fnc_reg("abs", fnc_abs);
+	pcb_qry_fnc_reg("isvoid", fnc_isvoid);
 	pcb_qry_fnc_reg("coord", fnc_coord);
 	pcb_qry_fnc_reg("distance", fnc_distance);
 	pcb_qry_fnc_reg("mklist", fnc_mklist);
