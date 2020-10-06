@@ -208,6 +208,8 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 	}
 	else
 	while(prg != NULL) { /* execute a list of rules */
+		int is_ret = 0;
+
 		if (prg->type == PCBQ_FUNCTION) {
 			prg = prg->next;
 			continue;
@@ -224,6 +226,8 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 			for(n = prg->data.children->next->next; n != NULL; n = n->next) {
 				switch(n->type) {
 					case PCBQ_LET: break;
+					case PCBQ_RETURN:
+						is_ret = 1;
 					case PCBQ_ASSERT:
 						ec->root = n;
 						if (ec->iter != NULL)
@@ -239,13 +243,17 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 						break;
 					default:;
 				}
+				if (is_ret)
+					break;
 			}
-			prg = prg->next;
 		}
 		else {
 			ret = -1;
 			break;
 		}
+		if (is_ret)
+			break;
+		prg = prg->next;
 	}
 
 	if (ec_uninit)
