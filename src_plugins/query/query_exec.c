@@ -187,26 +187,10 @@ static void pcb_qry_let(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 	ctx->iter->idx[vi] = 0;
 }
 
-int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+static int pcb_qry_run_all(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
-	int ret = 0, r, ec_uninit = 0;
-	pcb_qry_exec_t ec_local;
+	int r;
 
-	if (ec == NULL) {
-		ec = &ec_local;
-		ec_uninit = 1;
-		pcb_qry_init(ec, pcb, prg, bufno);
-	}
-	else {
-		if (ec->pcb != pcb)
-			return -1;
-		pcb_qry_setup(ec, pcb, prg);
-	}
-
-	if (prg->type == PCBQ_EXPR_PROG) {
-		ret = pcb_qry_run_(ec, prg, 1, 0, cb, user_ctx);
-	}
-	else
 	while(prg != NULL) { /* execute a list of rules */
 		int is_ret = 0;
 
@@ -255,6 +239,30 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 			break;
 		prg = prg->next;
 	}
+
+	return ret;
+}
+
+int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int bufno, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+{
+	int ret = 0, ec_uninit = 0;
+	pcb_qry_exec_t ec_local;
+
+	if (ec == NULL) {
+		ec = &ec_local;
+		ec_uninit = 1;
+		pcb_qry_init(ec, pcb, prg, bufno);
+	}
+	else {
+		if (ec->pcb != pcb)
+			return -1;
+		pcb_qry_setup(ec, pcb, prg);
+	}
+
+	if (prg->type == PCBQ_EXPR_PROG)
+		ret = pcb_qry_run_(ec, prg, 1, 0, cb, user_ctx);
+	else
+		ret = pcb_qry_run_all(ec, prg, ret, cb, user_ctx);
 
 	if (ec_uninit)
 		pcb_qry_uninit(&ec_local);
