@@ -393,13 +393,23 @@ fdefname:
 	;
 
 fdef_:
-	  T_FUNCTION fdefname '(' fdefargs ')'    { $$ = pcb_qry_n_alloc(PCBQ_FUNCTION); $$->data.children = $2; $$->data.children->next = $4; $2->parent = $4->parent = $$; }
-	| T_FUNCTION fdefname '(' ')'             { $$ = pcb_qry_n_alloc(PCBQ_FUNCTION); $$->data.children = $2; $2->parent = $$; }
+	  '(' fdefargs ')'    { $$ = $2; }
+	| '(' ')'             { $$ = NULL; }
 	;
 
 fdef:
-	fdef_ {
+	T_FUNCTION fdefname
+		{ iter_ctx = pcb_qry_iter_alloc(); }
+	 fdef_ {
 		pcb_qry_node_t *nd;
+
+		$$ = pcb_qry_n_alloc(PCBQ_FUNCTION);
+
+		if ($4 != NULL)
+			pcb_qry_n_append($$, $4);
+
+		pcb_qry_n_insert($$, $2);
+
 		nd = pcb_qry_n_alloc(PCBQ_ITER_CTX);
 		nd->data.iter_ctx = iter_ctx;
 		pcb_qry_n_insert($$, nd);
