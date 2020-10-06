@@ -7,7 +7,6 @@
 + FEATURE: if drc_query is disabled, it is hard to figure because the preferences window or the drc_query dialog doesn't show; plus the drc window should also list the number of drc plugins ran -> drc throws an error if all tests/plugins are disabled; preferences dialog prints an error if 0 drc plugins found [report: Majenko]
 - FEATURE: DRC: net attribute based clearance [report: Nicklas]
 + FEATURE: when hovering over an editable object, draw edit/grab points as labels [report: Majenko]
-+ FEATURE: footprint in-place replacement should match up floaters to keep their coords, as documented in ML/2304; also keep thermals per term ID [report: gpaubert]
 - FEATURE: revise which feature plugins need local menu (asm!) [report: Igor2]
 - BUG: openscad export: unticking top copper (and probably others) in the export dialog doesn't stop the plugin from exporting everything [report: Bdale]
 - BUG: openscad export: load a board from menu, {f e} export; load another board from menu, {f e} export: output is set to the old file name! [report: Igor2]
