@@ -57,20 +57,22 @@ extern int qry_debug;
     T_FLD_P = 263,
     T_FLD_A = 264,
     T_FLD_FLAG = 265,
-    T_OR = 266,
-    T_AND = 267,
-    T_EQ = 268,
-    T_NEQ = 269,
-    T_GTEQ = 270,
-    T_LTEQ = 271,
-    T_NL = 272,
-    T_UNIT = 273,
-    T_STR = 274,
-    T_QSTR = 275,
-    T_INT = 276,
-    T_DBL = 277,
-    T_CONST = 278,
-    T_THUS = 279
+    T_FUNCTION = 266,
+    T_RETURN = 267,
+    T_OR = 268,
+    T_AND = 269,
+    T_EQ = 270,
+    T_NEQ = 271,
+    T_GTEQ = 272,
+    T_LTEQ = 273,
+    T_NL = 274,
+    T_UNIT = 275,
+    T_STR = 276,
+    T_QSTR = 277,
+    T_INT = 278,
+    T_DBL = 279,
+    T_CONST = 280,
+    T_THUS = 281
   };
 #endif
 
@@ -87,7 +89,7 @@ union YYSTYPE
 	const rnd_unit_t *u;
 	pcb_qry_node_t *n;
 
-#line 91 "query_y.h" /* yacc.c:1921  */
+#line 93 "query_y.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;

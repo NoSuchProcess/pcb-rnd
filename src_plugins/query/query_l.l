@@ -46,6 +46,8 @@ static pcb_qry_node_t *make_const_obj(char *str, pcb_any_obj_t *obj);
 let             { return T_LET; }
 assert          { return T_ASSERT; }
 rule            { return T_RULE; }
+function        { return T_FUNCTION; }
+return          { return T_RETURN; }
 list            { return T_LIST; }
 invalid         { return T_INVALID; }
 p[.]            { return T_FLD_P; }

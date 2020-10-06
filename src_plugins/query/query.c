@@ -82,6 +82,9 @@ const pcb_qry_type_tab_t type_tab[PCBQ_nodetype_max] = {
 	{"PCBQ_VAR", 0},
 	{"PCBQ_FNAME", 0},
 	{"PCBQ_FCALL", 1},
+	{"PCBQ_FUNCTION", 1},
+	{"PCBQ_RETURN", 1},
+	{"PCBQ_ARG", 0},
 	{"PCBQ_FLAG", 0},
 	{"PCBQ_DATA_COORD", 0},
 	{"PCBQ_DATA_DOUBLE", 0},
@@ -211,6 +214,25 @@ pcb_qry_node_t *pcb_qry_n_insert(pcb_qry_node_t *parent, pcb_qry_node_t *ch)
 	ch->parent = parent;
 	return parent;
 }
+
+pcb_qry_node_t *pcb_qry_n_append(pcb_qry_node_t *parent, pcb_qry_node_t *ch)
+{
+	pcb_qry_node_t *n;
+
+	if (parent->data.children != NULL) {
+		for(n = parent->data.children; n->next != NULL; n = n->next) ;
+		n->next = ch;
+	}
+	else
+		parent->data.children = ch;
+
+	/* set parent of all nodes */
+	for(n = ch; n != NULL; n = n->next)
+		n->parent = parent;
+
+	return parent;
+}
+
 
 static char ind[] = "                                                                                ";
 void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_query_iter_t *it_ctx)

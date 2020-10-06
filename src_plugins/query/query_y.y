@@ -125,6 +125,7 @@ static pcb_qry_node_t *make_flag_free(char *str)
 }
 
 %token     T_LET T_ASSERT T_RULE T_LIST T_INVALID T_FLD_P T_FLD_A T_FLD_FLAG
+%token     T_FUNCTION T_RETURN
 %token     T_OR T_AND T_EQ T_NEQ T_GTEQ T_LTEQ
 %token     T_NL
 %token <u> T_UNIT
@@ -148,8 +149,9 @@ static pcb_qry_node_t *make_flag_free(char *str)
 
 %left '('
 
-%type <n> number fields attribs let assert var constant fname fcall fargs words
-%type <n> string_literal expr rule_item program_expr program_rules rule flg
+%type <n> number fields attribs let assert var constant fcallname fcall
+%type <n> fargs words freturn fdefarg fdefargs fdef_ fdef fdefname rule_or_fdef
+%type <n> string_literal expr rule_item program_expr program_rules rule
 %type <u> maybe_unit
 
 %%
@@ -179,28 +181,23 @@ program_rules:
 	;
 
 rule:
-	T_RULE words T_NL
-	{ iter_ctx = pcb_qry_iter_alloc(); }
-	rule_item {
-		pcb_qry_node_t *nd, *tmp;
-		$$ = pcb_qry_n_alloc(PCBQ_RULE);
+	rule_or_fdef T_NL rule_item {
+		$$ = $1;
+		if ($3 != NULL)
+			pcb_qry_n_append($$, $3);
+	}
+	;
 
-		if ($5 != NULL) {
-			tmp = $5->next; /* assume $$ has no children, keep $5's original children */
-			pcb_qry_n_insert($$, $5);
-			$5->next = tmp;
-			
-			/* set parent of all nodes */
-			for(tmp = $5; tmp != NULL; tmp = tmp->next)
-				tmp->parent = $$;
-		}
-
-		pcb_qry_n_insert($$, $2);
-
-		nd = pcb_qry_n_alloc(PCBQ_ITER_CTX);
-		nd->data.iter_ctx = iter_ctx;
-		pcb_qry_n_insert($$, nd);
-
+rule_or_fdef:
+	  fdef { $$ = $1; }
+	| T_RULE words  {
+			pcb_qry_node_t *nd;
+			iter_ctx = pcb_qry_iter_alloc();
+			$$ = pcb_qry_n_alloc(PCBQ_RULE);
+			pcb_qry_n_insert($$, $2);
+			nd = pcb_qry_n_alloc(PCBQ_ITER_CTX);
+			nd->data.iter_ctx = iter_ctx;
+			pcb_qry_n_insert($$, nd);
 	}
 	;
 
@@ -208,6 +205,7 @@ rule_item:
 	  /* empty */                      { $$ = NULL; }
 	| assert T_NL rule_item            { $$ = $1; $1->next = $3; }
 	| let T_NL rule_item               { $$ = $1; $1->next = $3; }
+	| freturn T_NL rule_item           { $$ = $1; $1->next = $3; }
 	;
 
 expr:
@@ -309,6 +307,20 @@ assert:
 		}
 	;
 
+freturn:
+	T_RETURN
+		{
+			iter_active_ctx = calloc(sizeof(vti0_t), 1);
+		}
+		expr
+		{
+			$$ = pcb_qry_n_alloc(PCBQ_RETURN);
+			$$->precomp.it_active = iter_active_ctx;
+			iter_active_ctx = NULL;
+			pcb_qry_n_insert($$, $3);
+		}
+	;
+
 var:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1, 1); if (iter_active_ctx != NULL) vti0_set(iter_active_ctx, $$->data.crd, 1); free($1); }
 	| T_LIST '(' '@' ')'     { $$ = pcb_qry_n_alloc(PCBQ_LISTVAR); $$->data.str = rnd_strdup("@"); /* delibertely not setting iter_active, list() protects against turning it into an iterator */ }
@@ -336,11 +348,11 @@ constant:
 	;
 
 fcall:
-	  fname '(' fargs ')'    { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->data.children = $1; $$->data.children->next = $3; $1->parent = $3->parent = $$; }
-	| fname '(' ')'          { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->data.children = $1; $1->parent = $$; }
+	  fcallname '(' fargs ')'    { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->data.children = $1; $$->data.children->next = $3; $1->parent = $3->parent = $$; }
+	| fcallname '(' ')'          { $$ = pcb_qry_n_alloc(PCBQ_FCALL); $$->data.children = $1; $1->parent = $$; }
 	;
 
-fname:
+fcallname:
 	T_STR   {
 		$$ = pcb_qry_n_alloc(PCBQ_FNAME);
 		$$->data.fnc = pcb_qry_fnc_lookup($1);
@@ -359,6 +371,40 @@ fargs:
 	| expr ',' fargs         { $$ = $1; $$->next = $3; }
 	;
 
+
+fdefarg:
+	T_STR {
+		$$ = pcb_qry_n_alloc(PCBQ_ARG);
+		$$->data.str =rnd_strdup($1);
+	}
+	;
+
+fdefargs:
+	  fdefarg                  { $$ = $1; }
+	| fdefarg ',' fdefarg      { $$ = $1; $$->next = $3; }
+	;
+
+fdefname:
+	T_STR   {
+		$$ = pcb_qry_n_alloc(PCBQ_FNAME);
+		$$->data.str =rnd_strdup($1);
+		free($1);
+	}
+	;
+
+fdef_:
+	  T_FUNCTION fdefname '(' fdefargs ')'    { $$ = pcb_qry_n_alloc(PCBQ_FUNCTION); $$->data.children = $2; $$->data.children->next = $4; $2->parent = $4->parent = $$; }
+	| T_FUNCTION fdefname '(' ')'             { $$ = pcb_qry_n_alloc(PCBQ_FUNCTION); $$->data.children = $2; $2->parent = $$; }
+	;
+
+fdef:
+	fdef_ {
+		pcb_qry_node_t *nd;
+		nd = pcb_qry_n_alloc(PCBQ_ITER_CTX);
+		nd->data.iter_ctx = iter_ctx;
+		pcb_qry_n_insert($$, nd);
+	}
+	;
 words:
 	  /* empty */            { $$ = pcb_qry_n_alloc(PCBQ_RNAME); $$->data.str = (const char *)rnd_strdup(""); }
 	| T_STR words            {
