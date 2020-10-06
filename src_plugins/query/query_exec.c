@@ -203,8 +203,13 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 		pcb_qry_setup(ec, pcb, prg);
 	}
 
+	next:;
 	if (prg->type == PCBQ_EXPR_PROG) {
 		ret = pcb_qry_run_(ec, prg, 1, 0, cb, user_ctx);
+	}
+	else if (prg->type == PCBQ_FUNCTION) {
+		prg = prg->next;
+		goto next;
 	}
 	else if (prg->type == PCBQ_RULE) {
 		while(prg != NULL) { /* execute a list of rules */
