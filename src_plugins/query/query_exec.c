@@ -754,7 +754,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (fname == NULL)
 				return -1;
 			farg = fname->next;
-			if ((fname->type !=  PCBQ_FNAME) || (fname->precomp.fnc == NULL))
+			if ((fname->type !=  PCBQ_FNAME) || (fname->precomp.fnc.bui == NULL))
 				return -1;
 			memset(args, 0, sizeof(args));
 			for(n = 0; (n < PCB_QRY_MAX_FUNC_ARGS) && (farg != NULL); n++, farg = farg->next)
@@ -765,7 +765,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				rnd_message(RND_MSG_ERROR, "too many function arguments\n");
 				return -1;
 			}
-			return fname->precomp.fnc(ctx, n, args, res);
+			return fname->precomp.fnc.bui(ctx, n, args, res);
 		}
 
 		case PCBQ_DATA_COORD:       PCB_QRY_RET_INT_SRC(res, node->data.crd, node);

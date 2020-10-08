@@ -259,15 +259,15 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 				printf("<invalid:%d>\n", nd->data.crd);
 			break;
 		case PCBQ_FNAME:
-			if (nd->precomp.fnc != NULL) {
-				const char *name = pcb_qry_fnc_name(nd->precomp.fnc);
+			if (nd->precomp.fnc.bui != NULL) {
+				const char *name = pcb_qry_fnc_name(nd->precomp.fnc.bui);
 				if (name == NULL)
 					rnd_printf("%s%s <unknown>\n", prefix, ind);
 				else
 					rnd_printf("%s%s builtin %s()\n", prefix, ind, name);
 			}
 			else
-				rnd_printf("%s%s user %s()\n", prefix, ind, nd->data.str);
+				rnd_printf("%s%s user %s()%s\n", prefix, ind, nd->data.str, (nd->precomp.fnc.uf == NULL ? " ERROR: not found" : ""));
 			break;
 		case PCBQ_RULE:
 			rnd_printf("%s%s%s\n", prefix, ind, nd->data.children->next->data.str);

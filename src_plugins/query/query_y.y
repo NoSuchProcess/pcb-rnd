@@ -121,19 +121,18 @@ static void link_user_funcs_(pcb_qry_node_t *root, int allow)
 			link_user_funcs_(n->data.children, allow);
 		if (n->type == PCBQ_FCALL) {
 			fname = n->data.children;
-			if (fname->precomp.fnc != NULL) /* builtin */
+			if (fname->precomp.fnc.bui != NULL) /* builtin */
 				continue;
 
 			if (user_funcs != NULL)
 				f = htsp_get(user_funcs, fname->data.str);
 			else
 				f = NULL;
-printf("HHHHHH %s->%f\n", fname->data.str, f);
-			if (f != NULL) {
-				
-			}
-			else {
-				yyerror(NULL, "user function not defined");
+
+			fname->precomp.fnc.uf = f;
+			if (f == NULL) {
+				yyerror(NULL, "user function not defined:");
+				yyerror(NULL, fname->data.str);
 			}
 		}
 	}
@@ -379,7 +378,7 @@ constant:
 
 			fname = pcb_qry_n_alloc(PCBQ_FNAME);
 			fname->data.str = NULL;
-			fname->precomp.fnc = pcb_qry_fnc_lookup("getconf");
+			fname->precomp.fnc.bui = pcb_qry_fnc_lookup("getconf");
 
 			$$ = pcb_qry_n_alloc(PCBQ_FCALL);
 			fname->parent = nname->parent = $$;
@@ -396,8 +395,8 @@ fcall:
 fcallname:
 	T_STR   {
 		$$ = pcb_qry_n_alloc(PCBQ_FNAME);
-		$$->precomp.fnc = pcb_qry_fnc_lookup($1);
-		if ($$->precomp.fnc != NULL) {
+		$$->precomp.fnc.bui = pcb_qry_fnc_lookup($1);
+		if ($$->precomp.fnc.bui != NULL) {
 			/* builtin function */
 			free($1);
 			$$->data.str = NULL;

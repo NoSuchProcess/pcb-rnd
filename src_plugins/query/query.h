@@ -145,7 +145,10 @@ struct pcb_qry_node_s {
 		pcb_any_obj_t *obj;
 		const pcb_flag_bits_t *flg;
 		vti0_t *it_active;
-		pcb_qry_fnc_t fnc;          /* FCALL's FNAME: if not NULL, then data.str is NULL and this is a builtin call; if NULL, this is an user function call to ... */
+		struct {                    /* FCALL's FNAME*/
+			pcb_qry_fnc_t bui;        /* if not NULL, then data.str is NULL and this is a builtin call; if NULL, this is an user function call to node .uf */
+			pcb_qry_node_t *uf;
+		} fnc;
 	} precomp;
 };
 
