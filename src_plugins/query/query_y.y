@@ -29,6 +29,8 @@
 /* Query language - compiler: grammar */
 
 #include <assert.h>
+#include <genht/htsp.h>
+#include <genht/hash.h>
 #include <librnd/core/unit.h>
 #include "query.h"
 #include "query_l.h"
@@ -68,6 +70,7 @@ do { \
 
 static pcb_query_iter_t *iter_ctx;
 static vti0_t *iter_active_ctx;
+static htsp_t *user_funcs;
 
 static char *attrib_prepend_free(char *orig, char *prep, char sep)
 {
@@ -107,6 +110,43 @@ static pcb_qry_node_t *make_flag_free(char *str)
 	nd->precomp.flg = i;
 	free(str);
 	return nd;
+}
+
+static void link_user_funcs_(pcb_qry_node_t *root, int allow)
+{
+	pcb_qry_node_t *n, *f, *fname;
+
+	for(n = root; n != NULL; n = n->next) {
+		if (pcb_qry_nodetype_has_children(n->type))
+			link_user_funcs_(n->data.children, allow);
+		if (n->type == PCBQ_FCALL) {
+			fname = n->data.children;
+			if (fname->precomp.fnc != NULL) /* builtin */
+				continue;
+
+			if (user_funcs != NULL)
+				f = htsp_get(user_funcs, fname->data.str);
+			else
+				f = NULL;
+printf("HHHHHH %s->%f\n", fname->data.str, f);
+			if (f != NULL) {
+				
+			}
+			else {
+				yyerror(NULL, "user function not defined");
+			}
+		}
+	}
+
+}
+
+static void link_user_funcs(pcb_qry_node_t *root, int allow)
+{
+	link_user_funcs_(root, allow);
+
+	if (user_funcs != NULL)
+		htsp_free(user_funcs);
+	user_funcs = NULL;
 }
 
 
@@ -157,8 +197,8 @@ static pcb_qry_node_t *make_flag_free(char *str)
 %%
 
 program:
-	  program_rules    { *prg_out = $1; }
-	| program_expr     { *prg_out = $1; }
+	  program_rules    { *prg_out = $1; link_user_funcs($1, 1); }
+	| program_expr     { *prg_out = $1; assert(user_funcs == NULL); link_user_funcs($1, 0); }
 	;
 
 /* The program is a single expression - useful for search */
@@ -338,7 +378,8 @@ constant:
 			free($2);
 
 			fname = pcb_qry_n_alloc(PCBQ_FNAME);
-			fname->data.fnc = pcb_qry_fnc_lookup("getconf");
+			fname->data.str = NULL;
+			fname->precomp.fnc = pcb_qry_fnc_lookup("getconf");
 
 			$$ = pcb_qry_n_alloc(PCBQ_FCALL);
 			fname->parent = nname->parent = $$;
@@ -355,13 +396,14 @@ fcall:
 fcallname:
 	T_STR   {
 		$$ = pcb_qry_n_alloc(PCBQ_FNAME);
-		$$->data.fnc = pcb_qry_fnc_lookup($1);
-		if ($$->data.fnc == NULL) {
-			yyerror(NULL, "Unknown function");
+		$$->precomp.fnc = pcb_qry_fnc_lookup($1);
+		if ($$->precomp.fnc != NULL) {
+			/* builtin function */
 			free($1);
-			return -1;
+			$$->data.str = NULL;
 		}
-		free($1);
+		else
+			$$->data.str = $1; /* user function: save the name */
 	}
 	;
 
@@ -387,8 +429,7 @@ fdefargs:
 fdefname:
 	T_STR   {
 		$$ = pcb_qry_n_alloc(PCBQ_FNAME);
-		$$->data.str =rnd_strdup($1);
-		free($1);
+		$$->data.str = $1;
 	}
 	;
 
@@ -413,6 +454,10 @@ fdef:
 		nd = pcb_qry_n_alloc(PCBQ_ITER_CTX);
 		nd->data.iter_ctx = iter_ctx;
 		pcb_qry_n_insert($$, nd);
+
+		if (user_funcs == NULL)
+			user_funcs = htsp_alloc(strhash, strkeyeq);
+		htsp_set(user_funcs, (char *)$2->data.str, $$);
 	}
 	;
 words:

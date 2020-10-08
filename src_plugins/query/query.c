@@ -144,6 +144,7 @@ void pcb_qry_n_free(pcb_qry_node_t *nd)
 		case PCBQ_DATA_STRING:
 		case PCBQ_DATA_CONST:
 		case PCBQ_DATA_OBJ:
+		case PCBQ_FNAME:
 			free((char *)nd->data.str);
 			break;
 
@@ -156,7 +157,6 @@ void pcb_qry_n_free(pcb_qry_node_t *nd)
 			pcb_qry_iter_free(nd->data.iter_ctx);
 			break;
 
-		case PCBQ_FNAME:
 		case PCBQ_FLAG:
 		case PCBQ_DATA_COORD:
 		case PCBQ_DATA_DOUBLE:
@@ -259,13 +259,15 @@ void pcb_qry_dump_tree_(const char *prefix, int level, pcb_qry_node_t *nd, pcb_q
 				printf("<invalid:%d>\n", nd->data.crd);
 			break;
 		case PCBQ_FNAME:
-			{
-				const char *name = pcb_qry_fnc_name(nd->data.fnc);
+			if (nd->precomp.fnc != NULL) {
+				const char *name = pcb_qry_fnc_name(nd->precomp.fnc);
 				if (name == NULL)
 					rnd_printf("%s%s <unknown>\n", prefix, ind);
 				else
-					rnd_printf("%s%s %s()\n", prefix, ind, name);
+					rnd_printf("%s%s builtin %s()\n", prefix, ind, name);
 			}
+			else
+				rnd_printf("%s%s user %s()\n", prefix, ind, nd->data.str);
 			break;
 		case PCBQ_RULE:
 			rnd_printf("%s%s%s\n", prefix, ind, nd->data.children->next->data.str);

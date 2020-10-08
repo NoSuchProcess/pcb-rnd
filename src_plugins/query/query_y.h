@@ -81,7 +81,7 @@ extern int qry_debug;
 
 union YYSTYPE
 {
-#line 119 "query_y.y" /* yacc.c:1921  */
+#line 159 "query_y.y" /* yacc.c:1921  */
 
 	char *s;
 	rnd_coord_t c;

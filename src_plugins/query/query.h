@@ -132,7 +132,6 @@ struct pcb_qry_node_s {
 		const char *str;
 		pcb_query_iter_t *iter_ctx;
 		pcb_qry_node_t *children;   /* first child (NULL for a leaf node) */
-		pcb_qry_fnc_t fnc;
 		struct pcb_qry_lytc_s {
 			pcb_layer_type_t lyt;
 			pcb_layer_combining_t lyc;
@@ -146,6 +145,7 @@ struct pcb_qry_node_s {
 		pcb_any_obj_t *obj;
 		const pcb_flag_bits_t *flg;
 		vti0_t *it_active;
+		pcb_qry_fnc_t fnc;          /* FCALL's FNAME: if not NULL, then data.str is NULL and this is a builtin call; if NULL, this is an user function call to ... */
 	} precomp;
 };
 

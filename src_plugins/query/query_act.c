@@ -222,7 +222,7 @@ static void pcb_qry_extract_defs_(htsi_t *dst, pcb_qry_node_t *nd, int *total)
 {
 	if (nd->type == PCBQ_FCALL) {
 		pcb_qry_node_t *fname = nd->data.children;
-		if ((fname->type == PCBQ_FNAME) && (fname->data.fnc == pcb_qry_fnc_getconf) && (fname->next->type == PCBQ_DATA_STRING)) {
+		if ((fname->type == PCBQ_FNAME) && (fname->precomp.fnc == pcb_qry_fnc_getconf) && (fname->next->type == PCBQ_DATA_STRING)) {
 			const char *name = fname->next->data.str;
 			htsi_entry_t *e;
 			if (strncmp(name, "design/drc/", 11) == 0) {
