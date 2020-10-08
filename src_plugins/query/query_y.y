@@ -462,7 +462,7 @@ fdef:
 words:
 	  /* empty */            { $$ = pcb_qry_n_alloc(PCBQ_RNAME); $$->data.str = (const char *)rnd_strdup(""); }
 	| T_STR words            {
-			char *old = $2->data.str, *sep = ((*old != '\0') ? " " : "");
+			char *old = (char *)$2->data.str, *sep = ((*old != '\0') ? " " : "");
 			$2->data.str = rnd_concat($1, sep, old, NULL);
 			free(old);
 			free($1);

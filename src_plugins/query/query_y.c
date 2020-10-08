@@ -2078,7 +2078,7 @@ yyreduce:
   case 79:
 #line 464 "query_y.y" /* yacc.c:1652  */
     {
-			char *old = (yyvsp[0].n)->data.str, *sep = ((*old != '\0') ? " " : "");
+			char *old = (char *)(yyvsp[0].n)->data.str, *sep = ((*old != '\0') ? " " : "");
 			(yyvsp[0].n)->data.str = rnd_concat((yyvsp[-1].s), sep, old, NULL);
 			free(old);
 			free((yyvsp[-1].s));
