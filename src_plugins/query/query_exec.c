@@ -271,6 +271,14 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 	return ret;
 }
 
+static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fname, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+/*	printf("********user func: %s %p\n", fname->data.str, fname->precomp.fnc.uf);*/
+/*	pcb_qry_run_all(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)*/
+/*	PCB_QRY_RET_STR(res, "20");*/
+	return 0;
+}
+
 /* load unary operand to o1 */
 #define UNOP() \
 do { \
@@ -754,7 +762,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (fname == NULL)
 				return -1;
 			farg = fname->next;
-			if ((fname->type !=  PCBQ_FNAME) || (fname->precomp.fnc.bui == NULL))
+			if (fname->type !=  PCBQ_FNAME)
 				return -1;
 			memset(args, 0, sizeof(args));
 			for(n = 0; (n < PCB_QRY_MAX_FUNC_ARGS) && (farg != NULL); n++, farg = farg->next)
@@ -765,7 +773,10 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				rnd_message(RND_MSG_ERROR, "too many function arguments\n");
 				return -1;
 			}
-			return fname->precomp.fnc.bui(ctx, n, args, res);
+			if (fname->precomp.fnc.bui != NULL)
+				return fname->precomp.fnc.bui(ctx, n, args, res);
+			else
+				return qry_exec_user_func(ctx, fname, n, args, res);
 		}
 
 		case PCBQ_DATA_COORD:       PCB_QRY_RET_INT_SRC(res, node->data.crd, node);
