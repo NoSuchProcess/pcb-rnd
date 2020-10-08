@@ -54,8 +54,8 @@ typedef struct {
 } pcb_qry_type_tab_t;
 
 const pcb_qry_type_tab_t type_tab[PCBQ_nodetype_max] = {
-	{"PCBQ_RULE", 0},
-	{"PCBQ_RNAME", 1},
+	{"PCBQ_RULE", 1},
+	{"PCBQ_RNAME", 0},
 	{"PCBQ_EXPR_PROG", 1},
 	{"PCBQ_EXPR", 1},
 	{"PCBQ_ASSERT", 1},
