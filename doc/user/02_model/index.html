@@ -381,9 +381,6 @@ Commonly used subcircuit attributes:
 	<tr><td> value                     <td> informal value, e.g. "15 pF"
 	<tr><td> footprint                 <td> informal footprint description, e.g. "1206"
 </table>
-<p>
-If the <i>nonetlist</i> flag is set, the subcircuit is not intended to be
-part of the netlist
 
 <p>
 When a subcircuit is a footprint, it normally has the <i>refdes</i> attribute set.
@@ -400,6 +397,10 @@ it is called a <i>heavy terminal</i>.
 A connection on the netlist is identified as <i>refdes</i>-<i>term</i>, e.g.
 U5-3 means "the object(s) whose term attribute is 3 within the subcircuit
 whose refdes attribute is 'U5'".
+<p>
+If its <i>nonetlist</i> flag is set, the subcircuit is not intended to be
+part of the netlist; that is, it will not cause shorts and will not be
+removed on a forward annotation (schematics/netlist import).
 
 <h5> 2.4.5.2 Subcircuits as repetitive modules </h5>
 <p>
