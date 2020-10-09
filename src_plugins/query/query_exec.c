@@ -125,7 +125,7 @@ static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int it_reset, i
 		return -1;
 
 	do {
-		if (pcb_qry_eval(ec, prg, &res) == 0) {
+		if (pcb_qry_eval(ec, prg, &res, cb, user_ctx) == 0) {
 			if ((eval_list) && (res.type == PCBQ_VT_LST)) {
 				long n;
 
@@ -271,12 +271,25 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 	return ret;
 }
 
-static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fname, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fdef, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
-/*	printf("********user func: %s %p\n", fname->data.str, fname->precomp.fnc.uf);*/
-/*	pcb_qry_run_all(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)*/
-/*	PCB_QRY_RET_STR(res, "20");*/
-	return 0;
+	pcb_qry_exec_t fctx;
+	int n, ret;
+	fctx = *ectx;
+
+	assert(fdef->type == PCBQ_FUNCTION);
+	assert(fdef->data.children->type == PCBQ_ITER_CTX);
+	fctx.iter = fdef->data.children->data.iter_ctx;
+
+	pcb_qry_iter_init(fctx.iter);
+	for(n = 0; n < argc; n++) {
+		fctx.iter->lst[n] = argv[n];
+		fctx.iter->vects[n] = &fctx.iter->lst[n].data.lst;
+	}
+	printf("********user func: %s %p\n", fdef->data.str, fdef->precomp.fnc.uf);
+	ret = pcb_qry_run_all(&fctx, fdef->next, 0, cb, user_ctx);
+	PCB_QRY_RET_STR(res, "20");
+	return ret;
 }
 
 /* load unary operand to o1 */
@@ -284,7 +297,7 @@ static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fname, int a
 do { \
 	if ((node->data.children == NULL) || (node->data.children->next != NULL)) \
 		return -1; \
-	if (pcb_qry_eval(ctx, node->data.children, &o1) < 0) \
+	if (pcb_qry_eval(ctx, node->data.children, &o1, cb, user_ctx) < 0) \
 		return -1; \
 } while(0)
 
@@ -293,14 +306,14 @@ do { \
 do { \
 	if ((node->data.children == NULL) || (node->data.children->next == NULL) || (node->data.children->next->next != NULL)) \
 		return -1; \
-	if (pcb_qry_eval(ctx, node->data.children, &o1) < 0) \
+	if (pcb_qry_eval(ctx, node->data.children, &o1, cb, user_ctx) < 0) \
 		return -1; \
 } while(0)
 
 /* load 2nd binary operand to o2 */
 #define BINOPS2() \
 do { \
-	if (pcb_qry_eval(ctx, node->data.children->next, &o2) < 0) \
+	if (pcb_qry_eval(ctx, node->data.children->next, &o2, cb, user_ctx) < 0) \
 		return -1; \
 } while(0)
 
@@ -480,7 +493,7 @@ do { \
 	if (s2 == NULL) s2 = pcb_qry_empty; \
 } while(0)
 
-int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
+int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_val_t o1, o2;
 	pcb_any_obj_t **tmp;
@@ -488,7 +501,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 
 	switch(node->type) {
 		case PCBQ_EXPR:
-			return pcb_qry_eval(ctx, node->data.children, res);
+			return pcb_qry_eval(ctx, node->data.children, res, cb, user_ctx);
 
 		case PCBQ_EXPR_PROG: {
 			pcb_qry_node_t *itn, *exprn;
@@ -502,7 +515,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				return -1;
 			if (ctx->iter != itn->data.iter_ctx)
 				return -1;
-			return pcb_qry_eval(ctx, exprn, res);
+			return pcb_qry_eval(ctx, exprn, res, cb, user_ctx);
 		}
 
 
@@ -710,7 +723,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 		case PCBQ_FIELD_OF:
 			if ((node->data.children == NULL) || (node->data.children->next == NULL))
 				return -1;
-			if (pcb_qry_eval(ctx, node->data.children, &o1) < 0)
+			if (pcb_qry_eval(ctx, node->data.children, &o1, cb, user_ctx) < 0)
 				return -1;
 			return pcb_qry_obj_field(ctx, &o1, node->data.children->next, res);
 
@@ -766,7 +779,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 				return -1;
 			memset(args, 0, sizeof(args));
 			for(n = 0; (n < PCB_QRY_MAX_FUNC_ARGS) && (farg != NULL); n++, farg = farg->next)
-				if (pcb_qry_eval(ctx, farg, &args[n]) < 0)
+				if (pcb_qry_eval(ctx, farg, &args[n], cb, user_ctx) < 0)
 					return -1;
 
 			if (farg != NULL) {
@@ -776,7 +789,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res)
 			if (fname->precomp.fnc.bui != NULL)
 				return fname->precomp.fnc.bui(ctx, n, args, res);
 			else
-				return qry_exec_user_func(ctx, fname, n, args, res);
+				return qry_exec_user_func(ctx, fname->precomp.fnc.uf, n, args, res, cb, user_ctx);
 		}
 
 		case PCBQ_DATA_COORD:       PCB_QRY_RET_INT_SRC(res, node->data.crd, node);

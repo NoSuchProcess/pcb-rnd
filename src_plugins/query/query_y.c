@@ -2002,7 +2002,7 @@ yyreduce:
 #line 417 "query_y.y" /* yacc.c:1652  */
     {
 		(yyval.n) = pcb_qry_n_alloc(PCBQ_ARG);
-		(yyval.n)->data.str =rnd_strdup((yyvsp[0].s));
+		(yyval.n)->data.crd = pcb_qry_iter_var(iter_ctx, (yyvsp[0].s), 1);
 	}
 #line 2008 "query_y.c" /* yacc.c:1652  */
     break;

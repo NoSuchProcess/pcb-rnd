@@ -75,7 +75,7 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 
 int pcb_qry_is_true(pcb_qry_val_t *val);
 
-int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res);
+int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
 
 int pcb_qry_it_reset(pcb_qry_exec_t *ctx, pcb_qry_node_t *node);
 

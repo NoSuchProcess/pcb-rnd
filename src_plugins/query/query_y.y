@@ -416,7 +416,7 @@ fargs:
 fdefarg:
 	T_STR {
 		$$ = pcb_qry_n_alloc(PCBQ_ARG);
-		$$->data.str =rnd_strdup($1);
+		$$->data.crd = pcb_qry_iter_var(iter_ctx, $1, 1);
 	}
 	;
 
