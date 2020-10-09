@@ -168,6 +168,7 @@ void pcb_qry_n_free(pcb_qry_node_t *nd)
 
 		case PCBQ_LET:
 		case PCBQ_ASSERT:
+		case PCBQ_FUNCTION:
 			if (nd->precomp.it_active != NULL) {
 				vti0_uninit(nd->precomp.it_active);
 				free(nd->precomp.it_active);
