@@ -207,7 +207,6 @@ rnd_trace("TRACE: %p %s\n", prg, pcb_qry_nodetype_name(prg->type));
 			/* execute 'let' statements first */
 			run_all:;
 			for(n = start; n != NULL; n = n->next) {
-rnd_trace("trace: %p %s\n", n, pcb_qry_nodetype_name(n->type));
 				if (n->type == PCBQ_LET)
 					pcb_qry_let(ec, n);
 				if (n->type == PCBQ_RETURN)
@@ -215,6 +214,7 @@ rnd_trace("trace: %p %s\n", n, pcb_qry_nodetype_name(n->type));
 			}
 
 			for(n = start; n != NULL; n = n->next) {
+rnd_trace("trace: %p %s\n", n, pcb_qry_nodetype_name(n->type));
 				switch(n->type) {
 					case PCBQ_LET: break;
 					case PCBQ_RETURN:
@@ -286,9 +286,13 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fdef, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_exec_t fctx;
-	int n, ret;
-	fctx = *ectx;
+	int n, ret, alloced[PCB_QRY_MAX_FUNC_ARGS];
 	pcb_qry_node_t *fname;
+
+	if (argc > PCB_QRY_MAX_FUNC_ARGS)
+		return -1;
+
+	fctx = *ectx;
 
 	assert(fdef->type == PCBQ_FUNCTION);
 	fname = fdef->data.children;
@@ -297,16 +301,35 @@ static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fdef, int ar
 	fname = fname->next; /* skip iter */
 
 	pcb_qry_iter_init(fctx.iter);
+
+	/* accept only objects and lists as argument */
 	for(n = 0; n < argc; n++) {
-		fctx.iter->lst[n] = argv[n];
-		fctx.iter->vects[n] = &fctx.iter->lst[n].data.lst;
+		if ((argv[n].type != PCBQ_VT_OBJ) && (argv[n].type != PCBQ_VT_LST))
+			return -1;
 	}
 
-	printf("********user func: %s %p\n", fname->data.str, fname->precomp.fnc.uf);
+	for(n = 0; n < argc; n++) {
+		if (argv[n].type == PCBQ_VT_OBJ) {
+			fctx.iter->lst[n].type = PCBQ_VT_LST;
+			vtp0_init(&fctx.iter->lst[n].data.lst);
+			vtp0_append(&fctx.iter->lst[n].data.lst, argv[n].data.obj);
+			alloced[n] = 1;
+		}
+		else {
+			fctx.iter->lst[n] = argv[n];
+			alloced[n] = 0;
+		}
+		fctx.iter->vects[n] = &fctx.iter->lst[n].data.lst;
+		fctx.iter->idx[n] = 0;
+	}
+
+	rnd_trace("********user func: %s %p %d %d\n", fname->data.str, fname->precomp.fnc.uf, fctx.iter->num_vars, argc);
 	ret = pcb_qry_run_one(&fctx, fdef, 0, cb, user_ctx);
+TODO("free lists if alloced[n] == 1");
+	rnd_trace("**func returned\n");
+	if (ret < 0)
+		return ret;
 	PCB_QRY_RET_STR(res, "20");
-	printf("func returned\n");
-	return ret;
 }
 
 /* load unary operand to o1 */
