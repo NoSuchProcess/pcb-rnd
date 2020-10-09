@@ -169,7 +169,7 @@ struct pcb_query_iter_s {
 	pcb_qry_val_t *lst;
 	vti0_t *it_active;    /* points to a char array of which iterators are active */
 
-	/* iterator state for each variable - point into the correspoinding lst[] */
+	/* iterator state for each variable - point into the corresponding lst[] */
 	vtp0_t **vects;
 	rnd_cardinal_t *idx;
 
