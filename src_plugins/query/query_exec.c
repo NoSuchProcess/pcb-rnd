@@ -325,7 +325,12 @@ static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fdef, int ar
 
 	rnd_trace("********user func: %s %p %d %d\n", fname->data.str, fname->precomp.fnc.uf, fctx.iter->num_vars, argc);
 	ret = pcb_qry_run_one(&fctx, fdef, 0, cb, user_ctx);
-TODO("free lists if alloced[n] == 1");
+
+	for(n = 0; n < argc; n++) {
+		if (alloced[n])
+			vtp0_uninit(&fctx.iter->lst[n].data.lst);
+	}
+
 	rnd_trace("**func returned\n");
 	if (ret < 0)
 		return ret;
