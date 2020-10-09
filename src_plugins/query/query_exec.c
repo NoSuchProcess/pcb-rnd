@@ -187,30 +187,38 @@ static void pcb_qry_let(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 	ctx->iter->idx[vi] = 0;
 }
 
-static int pcb_qry_run_all(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+static int pcb_qry_run_one(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	int r;
+	pcb_qry_node_t *start;
+	int is_ret = 0;
 
-	while(prg != NULL) { /* execute a list of rules */
-		int is_ret = 0;
-
+rnd_trace("TRACE: %p %s\n", prg, pcb_qry_nodetype_name(prg->type));
 		if (prg->type == PCBQ_FUNCTION) {
-			prg = prg->next;
-			continue;
+			start = prg->data.children->next->next;
+			while(start->type == PCBQ_ARG)
+				start = start->next;
+			goto run_all;
 		}
 		else if (prg->type == PCBQ_RULE) {
 			pcb_qry_node_t *n;
+			start = prg->data.children->next->next;
 
 			/* execute 'let' statements first */
-			for(n = prg->data.children->next->next; n != NULL; n = n->next) {
+			run_all:;
+			for(n = start; n != NULL; n = n->next) {
+rnd_trace("trace: %p %s\n", n, pcb_qry_nodetype_name(n->type));
 				if (n->type == PCBQ_LET)
 					pcb_qry_let(ec, n);
+				if (n->type == PCBQ_RETURN)
+					break;
 			}
 
-			for(n = prg->data.children->next->next; n != NULL; n = n->next) {
+			for(n = start; n != NULL; n = n->next) {
 				switch(n->type) {
 					case PCBQ_LET: break;
 					case PCBQ_RETURN:
+rnd_trace("ret3\n");
 						is_ret = 1;
 					case PCBQ_ASSERT:
 						ec->root = n;
@@ -231,15 +239,19 @@ static int pcb_qry_run_all(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, voi
 					break;
 			}
 		}
-		else {
-			ret = -1;
-			break;
-		}
-		if (is_ret)
-			break;
+		else
+			return -1;
+
+	return ret;
+}
+
+static int pcb_qry_run_all(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+{
+	while(prg != NULL) { /* execute a list of rules */
+		if (prg->type != PCBQ_FUNCTION)
+			ret = pcb_qry_run_one(ec, prg, ret, cb, user_ctx);
 		prg = prg->next;
 	}
-
 	return ret;
 }
 
@@ -276,19 +288,24 @@ static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fdef, int ar
 	pcb_qry_exec_t fctx;
 	int n, ret;
 	fctx = *ectx;
+	pcb_qry_node_t *fname;
 
 	assert(fdef->type == PCBQ_FUNCTION);
-	assert(fdef->data.children->type == PCBQ_ITER_CTX);
-	fctx.iter = fdef->data.children->data.iter_ctx;
+	fname = fdef->data.children;
+	assert(fname->type == PCBQ_ITER_CTX);
+	fctx.iter = fname->data.iter_ctx;
+	fname = fname->next; /* skip iter */
 
 	pcb_qry_iter_init(fctx.iter);
 	for(n = 0; n < argc; n++) {
 		fctx.iter->lst[n] = argv[n];
 		fctx.iter->vects[n] = &fctx.iter->lst[n].data.lst;
 	}
-	printf("********user func: %s %p\n", fdef->data.str, fdef->precomp.fnc.uf);
-	ret = pcb_qry_run_all(&fctx, fdef->next, 0, cb, user_ctx);
+
+	printf("********user func: %s %p\n", fname->data.str, fname->precomp.fnc.uf);
+	ret = pcb_qry_run_one(&fctx, fdef, 0, cb, user_ctx);
 	PCB_QRY_RET_STR(res, "20");
+	printf("func returned\n");
 	return ret;
 }
 
