@@ -8,6 +8,7 @@
 - FEATURE: DRC: net attribute based clearance [report: Nicklas]
 + FEATURE: when hovering over an editable object, draw edit/grab points as labels [report: Majenko]
 - FEATURE: revise which feature plugins need local menu (asm!) [report: Igor2]
+- FEATURE: {p m p} plugin list: make it more interactive and ordered [report: SnakesAndStuff]
 - BUG: openscad export: unticking top copper (and probably others) in the export dialog doesn't stop the plugin from exporting everything [report: Bdale]
 - BUG: openscad export: load a board from menu, {f e} export; load another board from menu, {f e} export: output is set to the old file name! [report: Igor2]
 - BUG: advanced search: no quote around strings for subc footprint; no padstack in the type listing; propset(padstack/clearance, 20mil) doesn't work ml=4321 [report: Igor2]
