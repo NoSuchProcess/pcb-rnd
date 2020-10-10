@@ -83,9 +83,9 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 				case PCBQ_VT_VOID:   str = "<void>"; break;
 				case PCBQ_VT_OBJ:    str = "<obj>"; break;
 				case PCBQ_VT_LST:    str = "<list>"; break;
-				case PCBQ_VT_COORD:  rnd_snprintf(buff, sizeof(buff), "%mH$", argv[n+1].data.crd); break;
-				case PCBQ_VT_LONG:   rnd_snprintf(buff, sizeof(buff), "%ld", argv[n+1].data.lng); break;
-				case PCBQ_VT_DOUBLE: rnd_snprintf(buff, sizeof(buff), "%f", argv[n+1].data.dbl); break;
+				case PCBQ_VT_COORD:  rnd_snprintf(buff, sizeof(buff), "%mH$", argv[n+1].data.crd); str = buff; break;
+				case PCBQ_VT_LONG:   rnd_snprintf(buff, sizeof(buff), "%ld", argv[n+1].data.lng); str = buff; break;
+				case PCBQ_VT_DOUBLE: rnd_snprintf(buff, sizeof(buff), "%f", argv[n+1].data.dbl); str = buff; break;
 				case PCBQ_VT_STRING: str = (char *)argv[n+1].data.str; break;
 			}
 			str = rnd_strdup(str == NULL ? "" : str);
