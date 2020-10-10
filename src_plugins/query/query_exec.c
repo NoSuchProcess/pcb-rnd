@@ -116,32 +116,39 @@ static void val_free_fields(pcb_qry_val_t *val)
 	}
 }
 
-static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int it_reset, int eval_list, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, pcb_qry_val_t *res, int it_reset, int eval_list, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
-	pcb_qry_val_t res;
-	int errs = 0;
+	pcb_qry_val_t restmp;
+	int errs = 0, keep_res = 1;
 
 	if (it_reset && (pcb_qry_it_reset(ec, prg) != 0))
 		return -1;
 
+	if (res == NULL) {
+		res = &restmp;
+		keep_res = 0;
+	}
+	res->type = PCBQ_VT_VOID;
+
 	do {
-		if (pcb_qry_eval(ec, prg, &res, cb, user_ctx) == 0) {
-			if ((eval_list) && (res.type == PCBQ_VT_LST)) {
+		val_free_fields(res);
+		if (pcb_qry_eval(ec, prg, res, cb, user_ctx) == 0) {
+			if ((eval_list) && (res->type == PCBQ_VT_LST)) {
 				long n;
 
 				/* special case: result is a list, need to return each object so 'let' gets it */
-				for(n = 0; n < res.data.lst.used; n++)
-					cb(user_ctx, &res, res.data.lst.array[n]);
+				for(n = 0; n < res->data.lst.used; n++)
+					cb(user_ctx, res, res->data.lst.array[n]);
 			}
 			else if (ec->iter->last_obj != NULL) {
-				cb(user_ctx, &res, ec->iter->last_obj);
+				cb(user_ctx, res, ec->iter->last_obj);
 			}
-
-			val_free_fields(&res);
 		}
 		else
 			errs++;
 	} while(pcb_qry_it_next(ec));
+	if (!keep_res)
+		val_free_fields(res);
 	return errs;
 }
 
@@ -179,7 +186,7 @@ static void pcb_qry_let(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 	/* evaluate 'let' the expression, filling up the list */
 	pcb_qry_it_reset_(lctx.ctx);
 	ctx->iter->it_active = node->precomp.it_active;
-	pcb_qry_run_(lctx.ctx, expr, 0, 1,let_cb, &lctx);
+	pcb_qry_run_(lctx.ctx, expr, NULL, 0, 1,let_cb, &lctx);
 	ctx->iter->it_active = NULL;
 
 	/* initialize the iterator */
@@ -230,7 +237,7 @@ rnd_trace("ret3\n");
 						ec->root = n;
 						if (ec->iter != NULL)
 							ec->iter->it_active = n->precomp.it_active;
-						r = pcb_qry_run_(ec, n->data.children, 1, 0, cb, user_ctx);
+						r = pcb_qry_run_(ec, n->data.children, (is_ret ? res : NULL), 1, 0, cb, user_ctx);
 						if (ec->iter != NULL)
 							ec->iter->it_active = NULL;
 						if (r < 0)
@@ -278,7 +285,7 @@ int pcb_qry_run(pcb_qry_exec_t *ec, pcb_board_t *pcb, pcb_qry_node_t *prg, int b
 	}
 
 	if (prg->type == PCBQ_EXPR_PROG)
-		ret = pcb_qry_run_(ec, prg, 1, 0, cb, user_ctx);
+		ret = pcb_qry_run_(ec, prg, NULL, 1, 0, cb, user_ctx);
 	else
 		ret = pcb_qry_run_all(ec, prg, ret, cb, user_ctx);
 
