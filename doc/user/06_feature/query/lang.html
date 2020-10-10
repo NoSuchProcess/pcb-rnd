@@ -201,6 +201,35 @@ radius of an arc).
 A void value is never equal to anything. A void value is not equal
 even to another void value.
 
+<h3 autotoc="yes"> User functions </h3>
+<p id="user_func">
+User functions are defined with the <i>function</i> keyword, followed
+by the function name and a comma separated list of argument names in
+parenthesis. The argument list may be empty. Each argument passed must be
+an object or a list (i.e. numbers can not be passed).
+<p>
+The body of the function may contain the same constructs as the body of a rule.
+<p>
+A function definition ends with a <i>return</i> keyword followed by an expression.
+The experession is evaluated and the resulting value is returned. If the
+expression iterates, the last evaluated value is returned.
+<p>
+Example (counts the number of non-terminal, holed padstacks on a net object
+called LNET):
+<pre>
+function count_vias(LNET)
+let OBJS netobjs(LNET)
+let VIAS (OBJS.type == PSTK) &amp;&amp; (OBJS.hole &gt; 0) &amp;&amp; (OBJS.a."term" == "")
+return llen(list(VIAS))
+</pre>
+<p>
+On the calling side user functions are the same as built-in functions, e.g.
+the above functions can be called as:
+<pre>
+let ALLNETS netlist()
+assert (count_vias(ALLNETS) != 4)
+</pre>
+
 <h3 autotoc="yes"> Misc </h3>
 <p>
 Comments are lines starting with #
