@@ -336,6 +336,13 @@ static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fdef, int ar
 		fctx.iter->idx[n] = 0;
 	}
 
+	/* reset lists from the previous calls */
+	for(; n < fctx.iter->num_vars; n++) {
+		vtp0_t *v = fctx.iter->vects[n];
+		if (v != NULL)
+			v->used = 0;
+	}
+
 	rnd_trace("********user func: %s %p %d %d\n", fname->data.str, fname->precomp.fnc.uf, fctx.iter->num_vars, argc);
 	ret = pcb_qry_run_one(&fctx, fdef, 0, res, cb, user_ctx);
 
