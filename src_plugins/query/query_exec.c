@@ -206,8 +206,9 @@ static int pcb_qry_run_one(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, pcb
 	if (res != NULL)
 		res->type = PCBQ_VT_VOID;
 
-rnd_trace("TRACE: %p %s\n", prg, pcb_qry_nodetype_name(prg->type));
 		if (prg->type == PCBQ_FUNCTION) {
+			if (ec->trace)
+				rnd_message(RND_MSG_INFO, "query: entering user function %s\n", prg->data.children->next->data.str);
 			start = prg->data.children->next->next;
 			while(start->type == PCBQ_ARG)
 				start = start->next;
@@ -227,11 +228,11 @@ rnd_trace("TRACE: %p %s\n", prg, pcb_qry_nodetype_name(prg->type));
 			}
 
 			for(n = start; n != NULL; n = n->next) {
-rnd_trace("trace: %p %s\n", n, pcb_qry_nodetype_name(n->type));
+				if (ec->trace)
+					rnd_message(RND_MSG_INFO, "query: %p %s\n", n, pcb_qry_nodetype_name(n->type));
 				switch(n->type) {
 					case PCBQ_LET: break;
 					case PCBQ_RETURN:
-rnd_trace("ret3\n");
 						is_ret = 1;
 					case PCBQ_ASSERT:
 						ec->root = n;
@@ -343,7 +344,6 @@ static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fdef, int ar
 			v->used = 0;
 	}
 
-	rnd_trace("********user func: %s %p %d %d\n", fname->data.str, fname->precomp.fnc.uf, fctx.iter->num_vars, argc);
 	ret = pcb_qry_run_one(&fctx, fdef, 0, res, cb, user_ctx);
 
 	for(n = 0; n < argc; n++) {
@@ -351,7 +351,6 @@ static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fdef, int ar
 			vtp0_uninit(&fctx.iter->lst[n].data.lst);
 	}
 
-	rnd_trace("**func returned\n");
 	return ret;
 }
 

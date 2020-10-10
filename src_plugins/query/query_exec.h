@@ -57,6 +57,7 @@ struct pcb_qry_exec_s {
 	unsigned obj2netterm_inited:1;
 	unsigned obj2lenseg_inited:1;
 	unsigned warned_missing_thickness:1;
+	unsigned trace:1;
 };
 
 /* if bufno is -1, scope is the board, else scope is the buffer addressed by bufno */
