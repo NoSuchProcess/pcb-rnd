@@ -276,9 +276,9 @@ void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix)
 		case PCB_VIEW_DRC:
 			rnd_append_printf(dst, "%s  data_type = drc\n", prefix);
 			rnd_append_printf(dst, "%s  ha:data {\n", prefix);
-			rnd_append_printf(dst, "%s    required_value = %.08$$mm\n", prefix, v->data.drc.required_value);
+			rnd_append_printf(dst, "%s    required_value = %mw\n", prefix, v->data.drc.required_value);
 			if (v->data.drc.have_measured)
-				rnd_append_printf(dst, "%s    measured_value = %.08$$mm\n", prefix, v->data.drc.measured_value);
+				rnd_append_printf(dst, "%s    measured_value = %mw\n", prefix, v->data.drc.measured_value);
 			rnd_append_printf(dst, "%s  }\n", prefix);
 			break;
 	}
@@ -383,6 +383,40 @@ static void pcb_view_load_objs(pcb_view_t *dst, int grp, lht_node_t *olist)
 			rnd_message(RND_MSG_ERROR, LOADERR "Invalid object id-path\n");
 		nope:;
 	}
+}
+
+static fgw_arg_t load_drc_val(const char *val)
+{
+	const rnd_unit_t *u;
+	double d;
+	fgw_arg_t a;
+	char *end;
+
+	if (rnd_get_value_unit(val, NULL, 1, &d, &u)) {
+		a.type = FGW_COORD;
+		fgw_coord(&a) = d;
+		return a;
+	}
+
+	if (strchr(val, '.')) {
+		d = strtod(val, &end);
+		if (*end == '\0') {
+			a.type = FGW_DOUBLE;
+			a.val.nat_double = d;
+			return a;
+		}
+	}
+	else {
+		long l = strtol(val, &end, 10);
+		if (*end == '\0') {
+			a.type = FGW_LONG;
+			a.val.nat_long = l;
+			return a;
+		}
+	}
+
+	a.type = FGW_VOID;
+	return a;
 }
 
 pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
@@ -508,13 +542,14 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 			if ((n != NULL) && (n->type == LHT_HASH)) {
 				c = lht_dom_hash_get(n, "required_value");
 				if ((c != NULL) && (c->type == LHT_TEXT)) {
-					dst->data.drc.required_value = rnd_get_value(c->data.text.value, NULL, NULL, &succ);
+					dst->data.drc.required_value = load_drc_val(c->data.text.value);
+					
 					if (!succ)
 						rnd_message(RND_MSG_ERROR, LOADERR "invalid drc required value: '%s'\n", c->data.text.value);
 				}
 				c = lht_dom_hash_get(n, "measured_value");
 				if ((c != NULL) && (c->type == LHT_TEXT)) {
-					dst->data.drc.measured_value = rnd_get_value(c->data.text.value, NULL, NULL, &succ);
+					dst->data.drc.measured_value = load_drc_val(c->data.text.value);
 					if (succ)
 						dst->data.drc.have_measured = 1;
 					else

@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <genlist/gendlist.h>
 #include <genvector/gds_char.h>
+#include <libfungw/fungw.h>
 #include "global_typedefs.h"
 #include <librnd/core/unit.h>
 #include "idpath.h"
@@ -69,8 +70,8 @@ struct pcb_view_s {
 	union {
 		struct {
 			unsigned have_measured:1;
-			rnd_coord_t measured_value;
-			rnd_coord_t required_value;
+			fgw_arg_t measured_value; /* should be long, double or coord */
+			fgw_arg_t required_value; /* should be long, double or coord */
 		} drc;
 	} data;
 

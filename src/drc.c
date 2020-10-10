@@ -52,7 +52,7 @@ void pcb_drc_impl_unreg(pcb_drc_impl_t *impl)
 
 
 
-void pcb_drc_set_data(pcb_view_t *violation, const rnd_coord_t *measured_value, rnd_coord_t required_value)
+void pcb_drc_set_data(pcb_view_t *violation, const fgw_arg_t *measured_value, fgw_arg_t required_value)
 {
 	violation->data_type = PCB_VIEW_DRC;
 	violation->data.drc.required_value = required_value;
@@ -100,9 +100,9 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 				rnd_printf("%m+within %$m4\n", rnd_conf.editor.grid_unit->allow, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
 			if (v->have_xy)
 				rnd_printf("%m+at %$m2\n", rnd_conf.editor.grid_unit->allow, v->x, v->y);
-			rnd_printf("%m+required value %$mS\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value);
+			rnd_printf("%m+required value %mw\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value);
 			if (v->data.drc.have_measured)
-				rnd_printf("%m+measured value %$mS\n", rnd_conf.editor.grid_unit->allow, v->data.drc.measured_value);
+				rnd_printf("%m+measured value %mw\n", rnd_conf.editor.grid_unit->allow, v->data.drc.measured_value);
 			printf("%s\n\n", v->description);
 		}
 	}
@@ -114,9 +114,9 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 				rnd_message(RND_MSG_INFO, "%m+within %$m4\n", rnd_conf.editor.grid_unit->allow, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
 			if (v->have_xy)
 				rnd_message(RND_MSG_INFO, "%m+at %$m2\n", rnd_conf.editor.grid_unit->allow, v->x, v->y);
-			rnd_printf("%m+required value %$mS\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value);
+			rnd_printf("%m+required value %$mw\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value);
 			if (v->data.drc.have_measured)
-				rnd_message(RND_MSG_INFO, "%m+measured value %$mS\n", rnd_conf.editor.grid_unit->allow, v->data.drc.measured_value);
+				rnd_message(RND_MSG_INFO, "%m+measured value %$mw\n", rnd_conf.editor.grid_unit->allow, v->data.drc.measured_value);
 			rnd_message(RND_MSG_INFO, "%s\n\n", v->description);
 		}
 	}
@@ -131,9 +131,9 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 				rnd_printf("B%mm %mm %mm %mm mm\n", v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
 			if (v->have_xy)
 				rnd_printf("A%mm %mm mm\n", v->x, v->y);
-			rnd_printf("R%$mm\n", v->data.drc.required_value);
+			rnd_printf("R%$mw\n", v->data.drc.required_value);
 			if (v->data.drc.have_measured)
-				rnd_printf("M%$mm\n", v->data.drc.measured_value);
+				rnd_printf("M%$mw\n", v->data.drc.measured_value);
 			for(s = v->description; *s != '\0'; s++)
 				if (*s == '\n')
 					*s = ' ';

@@ -43,8 +43,9 @@ typedef struct pcb_drc_impl_s {
 	gdl_elem_t link;
 } pcb_drc_impl_t;
 
-/* Load drc-specific fields of a view; if measured_value is NULL, it is not available */
-void pcb_drc_set_data(pcb_view_t *violation, const rnd_coord_t *measured_value, rnd_coord_t required_value);
+/* Load drc-specific fields of a view; if measured_value is NULL, it
+   is not available. Values should be long, double or coord */
+void pcb_drc_set_data(pcb_view_t *violation, const fgw_arg_t *measured_value, fgw_arg_t required_value);
 
 extern pcb_view_list_t pcb_drc_lst;
 

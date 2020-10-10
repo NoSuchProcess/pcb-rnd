@@ -80,20 +80,37 @@ typedef struct {
 	long hit_cnt;
 } drc_qry_ctx_t;
 
-rnd_coord_t load_obj_const(pcb_obj_qry_const_t *cnst)
+static fgw_arg_t load_obj_const(pcb_obj_qry_const_t *cnst)
 {
+	fgw_arg_t a;
+
 	switch(cnst->val.type) {
-		case PCBQ_VT_COORD: return cnst->val.data.crd;
-		case PCBQ_VT_LONG: return cnst->val.data.lng;
-		case PCBQ_VT_DOUBLE: return cnst->val.data.dbl;
-		
+		case PCBQ_VT_COORD:
+			a.type = FGW_COORD;
+			fgw_coord(&a) = cnst->val.data.crd;
+			return a;
+		case PCBQ_VT_LONG:
+			a.type = FGW_LONG;
+			a.val.nat_long = cnst->val.data.lng;
+			return a;
+		case PCBQ_VT_DOUBLE:
+			a.type = FGW_DOUBLE;
+			a.val.nat_double = cnst->val.data.dbl;
+			return a;
+
+		case PCBQ_VT_STRING:
+			a.type = FGW_STR | FGW_DYN;
+			a.val.str = rnd_strdup(cnst->val.data.str);
+			return a;
+
 		case PCBQ_VT_VOID:
 		case PCBQ_VT_OBJ:
 		case PCBQ_VT_LST:
-		case PCBQ_VT_STRING:
 			break;
 	}
-	return 0;
+
+	a.type = FGW_VOID;
+	return a;
 }
 
 void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
@@ -117,7 +134,7 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 	violation = pcb_view_new(&qctx->pcb->hidlib, qctx->type, qctx->title, qctx->desc);
 	if (res->type == PCBQ_VT_LST) {
 		int i;
-		rnd_coord_t *expv = NULL, expv_, *mesv = NULL, mesv_;
+		fgw_arg_t *expv = NULL, expv_, *mesv = NULL, mesv_;
 		for(i = 0; i < res->data.lst.used-1; i+=2) {
 			pcb_any_obj_t *cmd = res->data.lst.array[i], *obj = res->data.lst.array[i+1];
 			pcb_qry_drc_ctrl_t ctrl = pcb_qry_drc_ctrl_decode(cmd);

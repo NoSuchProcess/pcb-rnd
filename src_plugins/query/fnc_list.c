@@ -60,9 +60,7 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 				break;
 			case PCB_QRY_DRC_EXPECT:
 			case PCB_QRY_DRC_MEASURE:
-				PCB_QRY_ARG_CONV_TO_COORD(dummy, val, return -1);
-				(void)dummy;
-				break;
+				break; /* accept as is */
 			case PCB_QRY_DRC_TEXT:
 				break; /* accept anything */
 			default:
@@ -95,8 +93,8 @@ static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pc
 		}
 		else if ((ctrl == PCB_QRY_DRC_EXPECT) || (ctrl == PCB_QRY_DRC_MEASURE)) {
 			tmp = malloc(sizeof(pcb_obj_qry_const_t));
-			tmp->val.type = PCBQ_VT_COORD;
-			PCB_QRY_ARG_CONV_TO_COORD(tmp->val.data.crd, val, ;); /* can't fail, already checked above */
+			tmp->val = *val;
+			tmp->type = PCB_OBJ_QRY_CONST;
 			vtp0_append(&res->data.lst, argv[n].data.obj);
 			vtp0_append(&res->data.lst, tmp);
 			vtp0_append(&ectx->autofree, tmp);
