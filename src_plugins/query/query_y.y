@@ -363,6 +363,7 @@ freturn:
 var:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, $1, 1); if (iter_active_ctx != NULL) vti0_set(iter_active_ctx, $$->data.crd, 1); free($1); }
 	| T_LIST '(' '@' ')'     { $$ = pcb_qry_n_alloc(PCBQ_LISTVAR); $$->data.str = rnd_strdup("@"); /* delibertely not setting iter_active, list() protects against turning it into an iterator */ }
+	| T_LIST '(' T_STR ')'   { $$ = pcb_qry_n_alloc(PCBQ_LISTVAR); $$->data.str = $3; /* delibertely not setting iter_active, list() protects against turning it into an iterator */ }
 	| '@'                    { $$ = pcb_qry_n_alloc(PCBQ_VAR); $$->data.crd = pcb_qry_iter_var(iter_ctx, "@", 1); if (iter_active_ctx != NULL) vti0_set(iter_active_ctx, $$->data.crd, 1); }
 	;
 
