@@ -187,11 +187,17 @@ static void pcb_qry_let(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 	ctx->iter->idx[vi] = 0;
 }
 
-static int pcb_qry_run_one(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
+/* Run one node; increment ret by the number of hits and return that, or -1 on error.
+   If res is not NULL the value of PCBQ_RETURN is loaded in it.
+   Call cb/user_ctx when assert is true. */
+static int pcb_qry_run_one(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, pcb_qry_val_t *res, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	int r;
 	pcb_qry_node_t *start;
 	int is_ret = 0;
+
+	if (res != NULL)
+		res->type = PCBQ_VT_VOID;
 
 rnd_trace("TRACE: %p %s\n", prg, pcb_qry_nodetype_name(prg->type));
 		if (prg->type == PCBQ_FUNCTION) {
@@ -249,7 +255,7 @@ static int pcb_qry_run_all(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, voi
 {
 	while(prg != NULL) { /* execute a list of rules */
 		if (prg->type != PCBQ_FUNCTION)
-			ret = pcb_qry_run_one(ec, prg, ret, cb, user_ctx);
+			ret = pcb_qry_run_one(ec, prg, ret, NULL, cb, user_ctx);
 		prg = prg->next;
 	}
 	return ret;
@@ -324,7 +330,7 @@ static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fdef, int ar
 	}
 
 	rnd_trace("********user func: %s %p %d %d\n", fname->data.str, fname->precomp.fnc.uf, fctx.iter->num_vars, argc);
-	ret = pcb_qry_run_one(&fctx, fdef, 0, cb, user_ctx);
+	ret = pcb_qry_run_one(&fctx, fdef, 0, res, cb, user_ctx);
 
 	for(n = 0; n < argc; n++) {
 		if (alloced[n])
@@ -332,9 +338,7 @@ static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fdef, int ar
 	}
 
 	rnd_trace("**func returned\n");
-	if (ret < 0)
-		return ret;
-	PCB_QRY_RET_STR(res, "20");
+	return ret;
 }
 
 /* load unary operand to o1 */
