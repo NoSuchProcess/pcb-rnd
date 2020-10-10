@@ -16,6 +16,7 @@
 - BUG: RTT: if compare(1) is not installed, don't run png tests and do not fail (after issuing the warning) [report: SnakesAndStuff]
 - BUG: CLI: enter invalid action with (), e.g. foo() -> no error message (works without the ()) [report: Igor2]
 - BUG: shape round rect is generated far away from the cursor after some operations [report: Aron]
+- DOC: regex (genregex), reference it from query() and advanced search docs [report: TwisteR]
 
 2. For later releases ===============================================================================
 - CLEANUP: TODO27: undo's removed list shouldn't depend on object IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
