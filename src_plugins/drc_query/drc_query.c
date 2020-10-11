@@ -109,7 +109,7 @@ static fgw_arg_t load_obj_const(pcb_obj_qry_const_t *cnst)
 			break;
 	}
 
-	a.type = FGW_VOID;
+	a.type = FGW_INVALID;
 	return a;
 }
 
