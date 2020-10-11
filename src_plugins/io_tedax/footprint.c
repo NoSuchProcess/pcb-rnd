@@ -608,6 +608,10 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			res = 0;
 			break;
 		}
+		else {
+			rnd_message(RND_MSG_ERROR, "tEDAx footprint load: invalid object %s with %d fields\n", argv[0], argc);
+			return -1;
+		}
 	}
 
 	/* By now we have heavy terminals and a list of object for each terminal in
