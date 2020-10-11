@@ -1,9 +1,0 @@
-tEDAx v1
-
-begin footprint v1 BT840
-        polygon primary silk - 0.000 3 10.0000 10.0000 15.0000 15.0000 10.0000 15.0000  
-        line primary silk - 0.0000 0.0000 0.0000 4.0000 0.2540 0.0000
-        line primary silk - 14.0000 0.0000 14.0000 4.0000 0.2540 0.0000
-        line primary silk - 0.0000 0.0000 14.0000 0.0000 0.2540 0.0000
-        line primary silk - 0.0000 16.0000 14.0000 16.0000 0.2540 0.0000
-end footprint
