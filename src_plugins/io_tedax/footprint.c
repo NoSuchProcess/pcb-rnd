@@ -499,7 +499,10 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 		else if ((argc > 12) && (strcmp(argv[0], "polygon") == 0)) {
 			pcb_poly_t *p;
 			ly = subc_get_layer(subc, argv[1], argv[2]);
-			if (ly == NULL) return -1;
+			if (ly == NULL) {
+				rnd_message(RND_MSG_ERROR, "tEDAx footprint load: invalid polygon layer %s %s\n", argv[1], argv[2]);
+				return -1;
+			}
 
 			numpt = load_poly(px, py, (sizeof(px) / sizeof(px[0])), argc-5, argv+5);
 			if (numpt < 0) {
@@ -528,6 +531,10 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			pcb_line_t *l;
 
 			ly = subc_get_layer(subc, argv[1], argv[2]);
+			if (ly == NULL) {
+				rnd_message(RND_MSG_ERROR, "tEDAx footprint load: invalid line layer %s %s\n", argv[1], argv[2]);
+				return -1;
+			}
 
 			load_val(x1, argv[4], "invalid line x1");
 			load_val(y1, argv[5], "invalid line y1");
@@ -547,6 +554,10 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			pcb_arc_t *a;
 
 			ly = subc_get_layer(subc, argv[1], argv[2]);
+			if (ly == NULL) {
+				rnd_message(RND_MSG_ERROR, "tEDAx footprint load: invalid arc layer %s %s\n", argv[1], argv[2]);
+				return -1;
+			}
 
 			load_val(cx, argv[4], "invalid arc cx");
 			load_val(cy, argv[5], "invalid arc cy");
@@ -578,6 +589,11 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			pcb_line_t *l;
 
 			ly = subc_get_layer(subc, argv[1], argv[2]);
+			if (ly == NULL) {
+				rnd_message(RND_MSG_ERROR, "tEDAx footprint load: invalid fillcircle layer %s %s\n", argv[1], argv[2]);
+				return -1;
+			}
+
 			load_val(cx, argv[4], "invalid fillcircle cx");
 			load_val(cy, argv[5], "invalid fillcircle cy");
 			load_val(r, argv[6], "invalid fillcircle radius");
