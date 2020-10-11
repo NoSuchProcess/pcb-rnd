@@ -228,6 +228,9 @@ int tedax_fp_fsave_subc_(pcb_subc_t *subc, const char *fpname, int lyrecipe, FIL
 				rnd_coord_t x, y;
 				pcb_poly_it_t it;
 
+				if (polygon->Clipped == NULL)
+					pcb_poly_init_clip(polygon->parent.layer->parent.data, polygon->parent.layer, polygon);
+
 				pcb_poly_iterate_polyarea(polygon->Clipped, &it);
 				if (pcb_poly_contour(&it) == NULL) {
 					rnd_message(RND_MSG_ERROR, "tEDAx footprint export: omitting subc polygon with no clipped contour\n");
