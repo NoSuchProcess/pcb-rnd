@@ -6,6 +6,7 @@ padstack holes overlap
 
 x: single hole: hole too small
 within (20.00, 245.00, 130.00, 355.00) mil
-required value 0.00
+required value 15.00 mil
+measured value 1.50 mil
 padstack hole diameter is too small
 
