@@ -100,8 +100,9 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 				rnd_printf("%m+within %$m4\n", rnd_conf.editor.grid_unit->allow, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
 			if (v->have_xy)
 				rnd_printf("%m+at %$m2\n", rnd_conf.editor.grid_unit->allow, v->x, v->y);
-			rnd_printf("%m+required value %mw\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value);
-			if (v->data.drc.have_measured)
+			if (v->data.drc.required_value.type != FGW_INVALID)
+				rnd_printf("%m+required value %mw\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value);
+			if ((v->data.drc.have_measured) && (v->data.drc.measured_value.type != FGW_INVALID))
 				rnd_printf("%m+measured value %mw\n", rnd_conf.editor.grid_unit->allow, v->data.drc.measured_value);
 			printf("%s\n\n", v->description);
 		}
@@ -114,9 +115,10 @@ static fgw_error_t view_dlg(fgw_arg_t *res, int argc, fgw_arg_t *argv, const cha
 				rnd_message(RND_MSG_INFO, "%m+within %$m4\n", rnd_conf.editor.grid_unit->allow, v->bbox.X1, v->bbox.Y1, v->bbox.X2, v->bbox.Y2);
 			if (v->have_xy)
 				rnd_message(RND_MSG_INFO, "%m+at %$m2\n", rnd_conf.editor.grid_unit->allow, v->x, v->y);
-			rnd_printf("%m+required value %$mw\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value);
-			if (v->data.drc.have_measured)
-				rnd_message(RND_MSG_INFO, "%m+measured value %$mw\n", rnd_conf.editor.grid_unit->allow, v->data.drc.measured_value);
+			if (v->data.drc.required_value.type != FGW_INVALID)
+				rnd_printf("%m+required value %mw\n", rnd_conf.editor.grid_unit->allow, v->data.drc.required_value);
+			if ((v->data.drc.have_measured) && (v->data.drc.measured_value.type != FGW_INVALID))
+				rnd_message(RND_MSG_INFO, "%m+measured value %mw\n", rnd_conf.editor.grid_unit->allow, v->data.drc.measured_value);
 			rnd_message(RND_MSG_INFO, "%s\n\n", v->description);
 		}
 	}
