@@ -496,7 +496,7 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 			term = term_new(argv[2], argv[4]);
 			htip_set(&terms, termid, term);
 		}
-		else if ((argc > 12) && (strcmp(argv[0], "polygon") == 0)) {
+		else if ((argc >= 12) && (strcmp(argv[0], "polygon") == 0)) {
 			pcb_poly_t *p;
 			ly = subc_get_layer(subc, argv[1], argv[2]);
 			if (ly == NULL) {
