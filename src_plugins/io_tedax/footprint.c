@@ -392,13 +392,11 @@ do { \
 
 #define load_term(obj, src, msg) \
 do { \
-	int termid; \
 	term_t *term; \
 	if ((src[0] == '-') && (src[1] == '\0')) break; \
-	load_int(termid, src, msg); \
-	term = htip_get(&terms, termid); \
+	term = htsp_get(&terms, src); \
 	if (term == NULL) { \
-		rnd_message(RND_MSG_ERROR, "undefined terminal %s - skipping footprint\n", src); \
+		rnd_message(RND_MSG_ERROR, msg, src); \
 		return -1; \
 	} \
 	pcb_attribute_put(&obj->Attributes, "term", term->name); \
@@ -482,19 +480,18 @@ static pcb_layer_t **subc_get_layer(pcb_subc_t *subc, const char *lloc, const ch
 /* Parse one footprint block */
 static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size)
 {
-	int argc, termid, numpt, res = -1;
-	htip_entry_t *ei;
-	htip_t terms;
+	int argc, numpt, res = -1;
+	htsp_entry_t *ei;
+	htsp_t terms;
 	term_t *term;
 	rnd_coord_t px[256], py[256], clr;
 	pcb_layer_t **ly;
 
-	htip_init(&terms, longhash, longkeyeq);
+	htsp_init(&terms, strhash, strkeyeq);
 	while((argc = tedax_getline(fn, buff, buff_size, argv, argv_size)) >= 0) {
 		if ((argc == 5) && (strcmp(argv[0], "term") == 0)) {
-			load_int(termid, argv[1], "invalid term ID '%s', skipping footprint\n");
 			term = term_new(argv[2], argv[4]);
-			htip_set(&terms, termid, term);
+			htsp_set(&terms, rnd_strdup(argv[1]), term);
 		}
 		else if ((argc >= 12) && (strcmp(argv[0], "polygon") == 0)) {
 			pcb_poly_t *p;
@@ -617,12 +614,13 @@ static int tedax_parse_1fp_(pcb_subc_t *subc, FILE *fn, char *buff, int buff_siz
 	/* By now we have heavy terminals and a list of object for each terminal in
 	   the terms hash. Iterate over the terminals and try to convert the objects
 	   into one or more padstacks */
-	for (ei = htip_first(&terms); ei; ei = htip_next(&terms, ei)) {
+	for(ei = htsp_first(&terms); ei; ei = htsp_next(&terms, ei)) {
 		term = ei->value;
 		pcb_pstk_vect2pstk(subc->data, &term->objs, rnd_true);
 		term_destroy(term);
+		free(ei->key);
 	}
-	htip_uninit(&terms);
+	htsp_uninit(&terms);
 
 	pcb_attribute_put(&subc->Attributes, "refdes", "X1");
 	pcb_subc_add_refdes_text(subc, 0, 0, 0, 100, rnd_false);
