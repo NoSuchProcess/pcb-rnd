@@ -49,6 +49,7 @@
 #include "obj_poly_op.h"
 #include "obj_poly_list.h"
 #include "obj_poly_draw.h"
+#include "obj_term.h"
 
 #include "obj_subc_parent.h"
 #include "obj_hash.h"
@@ -75,6 +76,8 @@ void pcb_poly_reg(pcb_layer_t *layer, pcb_poly_t *poly)
 void pcb_poly_unreg(pcb_poly_t *poly)
 {
 	pcb_layer_t *layer = poly->parent.layer;
+
+	pcb_term_del_auto((pcb_any_obj_t *)poly);
 	assert(poly->parent_type == PCB_PARENT_LAYER);
 	polylist_remove(poly);
 	if (layer->parent_type != PCB_PARENT_UI) {
@@ -981,6 +984,7 @@ void *pcb_polyop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_poly_t
 /* destroys a polygon from a layer */
 void *pcb_polyop_destroy(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_poly_t *Polygon)
 {
+	pcb_term_del_auto((pcb_any_obj_t *)Polygon);
 	rnd_r_delete_entry(Layer->polygon_tree, (rnd_box_t *) Polygon);
 	pcb_poly_free_fields(Polygon);
 

@@ -110,6 +110,20 @@ pcb_term_err_t pcb_term_del(htsp_t *terminals, const char *termid, pcb_any_obj_t
 	return PCB_TERM_ERR_NOT_IN_TERMINAL;
 }
 
+pcb_term_err_t pcb_term_del_auto(pcb_any_obj_t *obj)
+{
+	pcb_subc_t *subc;
+
+	if (obj->term == NULL)
+		return PCB_TERM_ERR_SUCCESS;
+
+	subc = pcb_obj_parent_subc(obj);
+	if (subc == NULL)
+		return PCB_TERM_ERR_SUCCESS;
+
+	return pcb_term_del(&subc->terminals, obj->term, obj);
+}
+
 static pcb_term_err_t pcb_term_remove_entry(htsp_t *terminals, htsp_entry_t *e)
 {
 	vtp0_t *v = e->value;

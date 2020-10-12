@@ -70,6 +70,9 @@ pcb_term_err_t pcb_term_add(htsp_t *terminals, pcb_any_obj_t *obj);
    Removes terminal if it becomes empty. */
 pcb_term_err_t pcb_term_del(htsp_t *terminals, const char *termid, pcb_any_obj_t *obj);
 
+/* Automatically call pcb_term_del() on obj if needed - call this before removing an object */
+pcb_term_err_t pcb_term_del_auto(pcb_any_obj_t *obj);
+
 /* Remove a terminal from, calling pcb_term_del() on all objects in it. */
 pcb_term_err_t pcb_term_remove(htsp_t *terminals, const char *tname);
 
