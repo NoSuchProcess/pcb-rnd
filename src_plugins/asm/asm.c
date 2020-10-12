@@ -41,11 +41,13 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_tree.h>
+#include <librnd/core/hid_menu.h>
 #include "search.h"
 #include "draw.h"
 #include "select.h"
 #include "asm_conf.h"
 #include "../src_plugins/asm/conf_internal.c"
+#include "menu_internal.c"
 
 conf_asm_t conf_asm;
 #define ASM_CONF_FN "asm.conf"
@@ -633,6 +635,7 @@ int pplg_check_ver_asm(int ver_needed) { return 0; }
 
 void pplg_uninit_asm(void)
 {
+	rnd_hid_menu_unload(rnd_gui, asm_cookie);
 	rnd_remove_actions_by_cookie(asm_cookie);
 	rnd_conf_unreg_file(ASM_CONF_FN, asm_conf_internal);
 	rnd_conf_unreg_fields("plugins/asm1/");
@@ -647,6 +650,8 @@ int pplg_init_asm(void)
 #include "asm_conf_fields.h"
 
 	RND_REGISTER_ACTIONS(asm_action_list, asm_cookie)
+
+	rnd_hid_menu_load(rnd_gui, NULL, asm_cookie, 175, NULL, 0, asm_menu, "plugin: asm");
 
 	return 0;
 }

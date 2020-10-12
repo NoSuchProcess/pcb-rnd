@@ -1,0 +1,9 @@
+ha:rnd-menu-v1 {
+	li:anchored {
+		ha:@feature_plugins {
+			li:submenu {
+				ha:Shape generator (interactive) = { action=shape() }
+			}
+		}
+	}
+}

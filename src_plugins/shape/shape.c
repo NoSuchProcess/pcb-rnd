@@ -44,6 +44,8 @@
 #include "obj_poly_draw.h"
 #include "rotate.h"
 #include <librnd/core/tool.h>
+#include <librnd/core/hid_menu.h>
+#include "menu_internal.c"
 
 const char *pcb_shape_corner_name[] = {"Rn", "Ch", "Sq", NULL};
 
@@ -627,6 +629,7 @@ int pplg_check_ver_shape(int ver_needed) { return 0; }
 
 void pplg_uninit_shape(void)
 {
+	rnd_hid_menu_unload(rnd_gui, pcb_shape_cookie);
 	rnd_event_unbind_allcookie(pcb_shape_cookie);
 	rnd_remove_actions_by_cookie(pcb_shape_cookie);
 }
@@ -638,5 +641,6 @@ int pplg_init_shape(void)
 
 	rnd_event_bind(PCB_EVENT_LAYERVIS_CHANGED, shape_layer_chg, NULL, pcb_shape_cookie);
 
+	rnd_hid_menu_load(rnd_gui, NULL, pcb_shape_cookie, 175, NULL, 0, shape_menu, "plugin: shape");
 	return 0;
 }
