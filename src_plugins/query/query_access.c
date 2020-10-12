@@ -329,6 +329,8 @@ do { \
  \
 } while(0)
 
+static int field_net(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res);
+
 #define NETNAME_FIELDS(ec) \
 do { \
 	if (fh1 == query_fields_netname) { \
@@ -341,6 +343,26 @@ do { \
 			if ((net == NULL) || (net->type != PCB_OBJ_NET)) \
 				PCB_QRY_RET_INV(res); \
 			PCB_QRY_RET_STR(res, net->name); \
+		} \
+		else \
+			PCB_QRY_RET_INV(res); \
+	} \
+	if (fh1 == query_fields_net) { \
+		if (ec != NULL) { \
+			pcb_any_obj_t *term = pcb_qry_parent_net_term(ec, obj); \
+			pcb_net_t *net; \
+			if ((term == NULL) || (term->type != PCB_OBJ_NET_TERM)) \
+				PCB_QRY_RET_INV(res); \
+			net = term->parent.net; \
+			if ((net == NULL) || (net->type != PCB_OBJ_NET)) \
+				PCB_QRY_RET_INV(res); \
+			if (fld->next == NULL) \
+				PCB_QRY_RET_OBJ(res, (pcb_any_obj_t *)net); \
+			else { \
+				pcb_qry_node_t *__fn__ = (fld)->next; \
+				return field_net(ec, (pcb_any_obj_t *)net, __fn__, res); \
+			} \
+			PCB_QRY_RET_INV(res); \
 		} \
 		else \
 			PCB_QRY_RET_INV(res); \
