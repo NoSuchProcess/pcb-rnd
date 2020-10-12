@@ -64,3 +64,16 @@ no subsequent make install is needed after a recompilation if no new
 files appeared (useful for developers):
 
   make linstall
+
+
+5. Packaging
+
+If you are planning to package pcb-rnd, please read
+doc/developer/packaging.txt and if it is binary packaging, please consider
+following the package naming and layout documented in
+doc/developer/packaging/packaging/packages.html - this way different
+distros will have similar packages which will make both users' and developers'
+life easier while supporting the software.
+
+
+
