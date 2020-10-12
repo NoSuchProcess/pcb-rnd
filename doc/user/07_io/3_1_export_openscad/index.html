@@ -49,7 +49,10 @@ If the openscad attribute is not present, no 3d model is inserted.
 If openscad-transformation is specified, it is inserted before the model
 call; it typically contains a transform() and/or a rotate() to modify the
 placement of the model. The 0;0;0 point of the placement is the origin of
-the subcircuit in pcb-rnd, on the surface of the board.
+the subcircuit in pcb-rnd, on the surface of the board. (Note: it is used to
+match the model to the footprint; subcircuit rotation and translation are
+automatically inserted by pcb-rnd on top of this. This attribute is empty
+or not present when the model lines up with the neutral state of the footprint.)
 <p>
 If openscad-param is specified, the module is called with this parameter
 list, else the model is called with empty parameter list.
