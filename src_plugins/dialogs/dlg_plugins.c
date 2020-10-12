@@ -48,10 +48,13 @@ static int plugin_cmp(const void *v1, const void *v2)
 static void plugins2dlg(plugins_ctx_t *ctx)
 {
 	rnd_hid_attribute_t *attr= &ctx->dlg[ctx->wtree];
+	rnd_hid_tree_t *tree = attr->wdata;
 	char *cell[3];
 	pup_plugin_t *p;
 	vtp0_t tmp;
 	long n;
+
+	rnd_dad_tree_clear(tree);
 
 	/* sort plugins */
 	vtp0_init(&tmp);
@@ -75,6 +78,26 @@ static void plugins2dlg(plugins_ctx_t *ctx)
 	vtp0_uninit(&tmp);
 }
 
+static void unload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	plugins_ctx_t *ctx = caller_data;
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
+	pup_plugin_t *p;
+
+	if (row == NULL)
+		return;
+
+	p = row->user_data;
+	if (p->flags & PUP_FLG_STATIC) {
+		rnd_message(RND_MSG_ERROR, "Can not unload '%s', it is builtin (static linked into the executable)\n", p->name);
+		return;
+	}
+
+	pup_unload(&rnd_pup, p, NULL);
+
+	/* rebuild the whole tree since we may have unloaded more than one plugins */
+	plugins2dlg(ctx);
+}
 
 static const char pcb_acts_ManagePlugins[] = "ManagePlugins()\n";
 static const char pcb_acth_ManagePlugins[] = "Manage plugins dialog.";
@@ -95,10 +118,18 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 /*			RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, library_select);
 			RND_DAD_TREE_SET_CB(ctx->dlg, ctx, &library_ctx);*/
 			ctx->wtree = RND_DAD_CURRENT(ctx->dlg);
-		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+
+		RND_DAD_BEGIN_HBOX(ctx->dlg);
+			RND_DAD_BUTTON(ctx->dlg, "Unload selected");
+			RND_DAD_CHANGE_CB(ctx->dlg, unload_cb);
+			RND_DAD_BEGIN_VBOX(ctx->dlg);
+				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_END(ctx->dlg);
+			RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+		RND_DAD_END(ctx->dlg);
 	RND_DAD_END(ctx->dlg);
 
-	RND_DAD_DEFSIZE(ctx->dlg, 200, 400);
+	RND_DAD_DEFSIZE(ctx->dlg, 300, 400);
 
 	plugins2dlg(ctx);
 
