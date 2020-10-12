@@ -103,8 +103,6 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	plugins2dlg(ctx);
 
 	RND_DAD_NEW("plugins", ctx->dlg, "Manage plugins", ctx, rnd_false, plugins_close_cb);
-/*	RND_DAD_RUN(ctx->dlg);
-	RND_DAD_FREE(ctx->dlg);*/
 
 	ctx->active = 1;
 	return 0;
