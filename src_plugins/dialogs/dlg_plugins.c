@@ -24,66 +24,88 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+typedef struct {
+	RND_DAD_DECL_NOINIT(dlg)
+	int active; /* already open - allow only one instance */
+	int wtree;
+} plugins_ctx_t;
+
+plugins_ctx_t plugins_ctx;
+
+static void plugins_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
+{
+	plugins_ctx_t *ctx = caller_data;
+	RND_DAD_FREE(ctx->dlg);
+	memset(ctx, 0, sizeof(plugins_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
+}
+
+static int plugin_cmp(const void *v1, const void *v2)
+{
+	const pup_plugin_t **p1 = (const pup_plugin_t **)v1, **p2 = (const pup_plugin_t **)v2;
+	return strcmp((*p1)->name, (*p2)->name);
+}
+
+static void plugins2dlg(plugins_ctx_t *ctx)
+{
+	rnd_hid_attribute_t *attr= &ctx->dlg[ctx->wtree];
+	char *cell[3];
+	pup_plugin_t *p;
+	vtp0_t tmp;
+	long n;
+
+	/* sort plugins */
+	vtp0_init(&tmp);
+	for(p = rnd_pup.plugins; p != NULL; p = p->next)
+		vtp0_append(&tmp, p);
+
+	qsort(tmp.array, tmp.used, sizeof(pup_plugin_t *), plugin_cmp);
+
+
+	/* add all items */
+	for(n = 0; n < tmp.used; n++) {
+		rnd_hid_row_t *row;
+
+		p = tmp.array[n];
+		cell[0] = rnd_strdup(p->name);
+		cell[1] = rnd_strdup((p->flags & PUP_FLG_STATIC) ? "buildin" : "plugin");
+		row = rnd_dad_tree_append(attr, NULL, cell);
+		row->user_data = p;
+	}
+
+	vtp0_uninit(&tmp);
+}
+
+
 static const char pcb_acts_ManagePlugins[] = "ManagePlugins()\n";
 static const char pcb_acth_ManagePlugins[] = "Manage plugins dialog.";
 static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pup_plugin_t *p;
-	int nump = 0, numb = 0;
-	gds_t str;
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	RND_DAD_DECL(dlg);
+	static const char *hdr[] = {"plugin", "type", NULL};
+	plugins_ctx_t *ctx = &plugins_ctx;
 
-	gds_init(&str);
-
-	for (p = rnd_pup.plugins; p != NULL; p = p->next)
-		if (p->flags & PUP_FLG_STATIC)
-			numb++;
-		else
-			nump++;
-
-	gds_append_str(&str, "Plugins loaded:\n");
-	if (nump > 0) {
-		for (p = rnd_pup.plugins; p != NULL; p = p->next) {
-			if (!(p->flags & PUP_FLG_STATIC)) {
-				gds_append(&str, ' ');
-				gds_append_str(&str, p->name);
-				gds_append(&str, ' ');
-				gds_append_str(&str, p->path);
-				gds_append(&str, '\n');
-			}
-		}
-	}
-	else
-		gds_append_str(&str, " (none)\n");
-
-	gds_append_str(&str, "\n\nBuildins:\n");
-	if (numb > 0) {
-		for (p = rnd_pup.plugins; p != NULL; p = p->next) {
-			if (p->flags & PUP_FLG_STATIC) {
-				gds_append(&str, ' ');
-				gds_append_str(&str, p->name);
-				gds_append(&str, '\n');
-			}
-		}
-	}
-	else
-		gds_append_str(&str, " (none)\n");
-
-	gds_append_str(&str, "\n\nNOTE: this is the alpha version, can only list plugins/buildins\n");
-
-
-	RND_DAD_BEGIN_VBOX(dlg);
-		RND_DAD_COMPFLAG(dlg, RND_HATF_SCROLL | RND_HATF_EXPFILL);
-		RND_DAD_LABEL(dlg, str.array);
-		RND_DAD_BUTTON_CLOSES(dlg, clbtn);
-	RND_DAD_END(dlg);
-
-	RND_DAD_NEW("plugins", dlg, "Manage plugins", NULL, rnd_true, NULL);
-	RND_DAD_RUN(dlg);
-	RND_DAD_FREE(dlg);
-
-	gds_uninit(&str);
 	RND_ACT_IRES(0);
+	if (ctx->active)
+		return 0;
+
+	RND_DAD_BEGIN_VBOX(ctx->dlg);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+		RND_DAD_TREE(ctx->dlg, 2, 0, hdr);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
+/*			RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, library_select);
+			RND_DAD_TREE_SET_CB(ctx->dlg, ctx, &library_ctx);*/
+			ctx->wtree = RND_DAD_CURRENT(ctx->dlg);
+		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+	RND_DAD_END(ctx->dlg);
+
+	RND_DAD_DEFSIZE(ctx->dlg, 200, 400);
+
+	plugins2dlg(ctx);
+
+	RND_DAD_NEW("plugins", ctx->dlg, "Manage plugins", ctx, rnd_false, plugins_close_cb);
+/*	RND_DAD_RUN(ctx->dlg);
+	RND_DAD_FREE(ctx->dlg);*/
+
+	ctx->active = 1;
 	return 0;
 }
