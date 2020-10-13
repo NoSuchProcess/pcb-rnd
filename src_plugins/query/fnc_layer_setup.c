@@ -256,9 +256,9 @@ static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const
 	/* require above/below layer's type */
 	if ((ls->require_lyt[LSL_ABOVE] != 0) && (!lse_next_layer_type(ectx, obj, grp, ls->require_lyt[LSL_ABOVE], above_dir)))
 		return 0;
-	if ((ls->refuse_lyt[LSL_ABOVE] != 0) && (!lse_next_layer_type(ectx, obj, grp, ls->refuse_lyt[LSL_ABOVE], above_dir)))
+	if ((ls->refuse_lyt[LSL_ABOVE] != 0) && (lse_next_layer_type(ectx, obj, grp, ls->refuse_lyt[LSL_ABOVE], above_dir)))
 		return 0;
-	if ((ls->require_lyt[LSL_BELOW] != 0) && (lse_next_layer_type(ectx, obj, grp, ls->require_lyt[LSL_BELOW], -above_dir)))
+	if ((ls->require_lyt[LSL_BELOW] != 0) && (!lse_next_layer_type(ectx, obj, grp, ls->require_lyt[LSL_BELOW], -above_dir)))
 		return 0;
 	if ((ls->refuse_lyt[LSL_BELOW] != 0) && (lse_next_layer_type(ectx, obj, grp, ls->refuse_lyt[LSL_BELOW], -above_dir)))
 		return 0;
