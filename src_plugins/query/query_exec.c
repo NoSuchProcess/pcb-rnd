@@ -206,55 +206,55 @@ static int pcb_qry_run_one(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, pcb
 	if (res != NULL)
 		res->type = PCBQ_VT_VOID;
 
-		if (prg->type == PCBQ_FUNCTION) {
+	if (prg->type == PCBQ_FUNCTION) {
+		if (ec->trace)
+			rnd_message(RND_MSG_INFO, "query: entering user function %s\n", prg->data.children->next->data.str);
+		start = prg->data.children->next->next;
+		while(start->type == PCBQ_ARG)
+			start = start->next;
+		goto run_all;
+	}
+	else if (prg->type == PCBQ_RULE) {
+		pcb_qry_node_t *n;
+		start = prg->data.children->next->next;
+
+		/* execute 'let' statements first */
+		run_all:;
+		for(n = start; n != NULL; n = n->next) {
+			if (n->type == PCBQ_LET)
+				pcb_qry_let(ec, n);
+			if (n->type == PCBQ_RETURN)
+				break;
+		}
+
+		for(n = start; n != NULL; n = n->next) {
 			if (ec->trace)
-				rnd_message(RND_MSG_INFO, "query: entering user function %s\n", prg->data.children->next->data.str);
-			start = prg->data.children->next->next;
-			while(start->type == PCBQ_ARG)
-				start = start->next;
-			goto run_all;
-		}
-		else if (prg->type == PCBQ_RULE) {
-			pcb_qry_node_t *n;
-			start = prg->data.children->next->next;
-
-			/* execute 'let' statements first */
-			run_all:;
-			for(n = start; n != NULL; n = n->next) {
-				if (n->type == PCBQ_LET)
-					pcb_qry_let(ec, n);
-				if (n->type == PCBQ_RETURN)
+				rnd_message(RND_MSG_INFO, "query: %p %s\n", n, pcb_qry_nodetype_name(n->type));
+			switch(n->type) {
+				case PCBQ_LET: break;
+				case PCBQ_RETURN:
+					is_ret = 1;
+				case PCBQ_ASSERT:
+					ec->root = n;
+					if (ec->iter != NULL)
+						ec->iter->it_active = n->precomp.it_active;
+					r = pcb_qry_run_(ec, n->data.children, (is_ret ? res : NULL), 1, 0, cb, user_ctx);
+					if (ec->iter != NULL)
+						ec->iter->it_active = NULL;
+					if (r < 0)
+						ret = r;
+					else if (ret >= 0)
+						ret += r;
+					ec->root = NULL;
 					break;
+				default:;
 			}
-
-			for(n = start; n != NULL; n = n->next) {
-				if (ec->trace)
-					rnd_message(RND_MSG_INFO, "query: %p %s\n", n, pcb_qry_nodetype_name(n->type));
-				switch(n->type) {
-					case PCBQ_LET: break;
-					case PCBQ_RETURN:
-						is_ret = 1;
-					case PCBQ_ASSERT:
-						ec->root = n;
-						if (ec->iter != NULL)
-							ec->iter->it_active = n->precomp.it_active;
-						r = pcb_qry_run_(ec, n->data.children, (is_ret ? res : NULL), 1, 0, cb, user_ctx);
-						if (ec->iter != NULL)
-							ec->iter->it_active = NULL;
-						if (r < 0)
-							ret = r;
-						else if (ret >= 0)
-							ret += r;
-						ec->root = NULL;
-						break;
-					default:;
-				}
-				if (is_ret)
-					break;
-			}
+			if (is_ret)
+				break;
 		}
-		else
-			return -1;
+	}
+	else
+		return -1;
 
 	return ret;
 }
