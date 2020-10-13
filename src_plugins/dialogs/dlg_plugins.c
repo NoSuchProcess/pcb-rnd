@@ -49,7 +49,7 @@ static void plugins2dlg(plugins_ctx_t *ctx)
 {
 	rnd_hid_attribute_t *attr= &ctx->dlg[ctx->wtree];
 	rnd_hid_tree_t *tree = attr->wdata;
-	char *cell[3];
+	char *cell[4];
 	pup_plugin_t *p;
 	vtp0_t tmp;
 	long n;
@@ -71,6 +71,7 @@ static void plugins2dlg(plugins_ctx_t *ctx)
 		p = tmp.array[n];
 		cell[0] = rnd_strdup(p->name);
 		cell[1] = rnd_strdup((p->flags & PUP_FLG_STATIC) ? "buildin" : "plugin");
+		cell[2] = rnd_strdup_printf("%d", p->references);
 		row = rnd_dad_tree_append(attr, NULL, cell);
 		row->user_data = p;
 	}
@@ -104,7 +105,7 @@ static const char pcb_acth_ManagePlugins[] = "Manage plugins dialog.";
 static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	static const char *hdr[] = {"plugin", "type", NULL};
+	static const char *hdr[] = {"plugin", "type", "refco", NULL};
 	plugins_ctx_t *ctx = &plugins_ctx;
 
 	RND_ACT_IRES(0);
@@ -113,7 +114,7 @@ static fgw_error_t pcb_act_ManagePlugins(fgw_arg_t *res, int argc, fgw_arg_t *ar
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-		RND_DAD_TREE(ctx->dlg, 2, 0, hdr);
+		RND_DAD_TREE(ctx->dlg, 3, 0, hdr);
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 /*			RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, library_select);
 			RND_DAD_TREE_SET_CB(ctx->dlg, ctx, &library_ctx);*/
