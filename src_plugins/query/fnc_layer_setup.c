@@ -87,7 +87,7 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 
 	LSC_RESET();
 
-	/* above-type:air,below-net:gnd;below-netmargin:10mil */
+	/* above-type:!copper,below-net:gnd;below-netmargin:10mil */
 	for(s = s_;;) {
 		while(isspace(*s) || (*s == '-')) s++;
 		if ((*s == '\0') || (*s == ',') || (*s == ';') || (*s == ':')) {
@@ -105,15 +105,15 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 			/* close current rule */
 			switch(target) {
 				case TYPE:
-					LSC_GET_VAL({
-						rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: invalid layer type value '%s'\n", val == NULL ? s_ : val);
-						return -1;
-					});
-					if (strcmp(tmp, "air") == 0)
-						ls->refuse_lyt[loc] = PCB_LYT_COPPER;
-					else {
+					{
 						int invert = 0;
 						pcb_layer_type_t lyt;
+
+						LSC_GET_VAL({
+							rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: invalid layer type value '%s'\n", val == NULL ? s_ : val);
+							return -1;
+						});
+
 						lys = tmp;
 						if (*lys == '!') {
 							invert = 1;
