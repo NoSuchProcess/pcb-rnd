@@ -43,7 +43,6 @@ static int fnc_mklist(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 static int fnc_violation(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	int n;
-	rnd_coord_t dummy;
 
 	if ((argc < 2) || (argc % 2 != 0))
 		return -1;
