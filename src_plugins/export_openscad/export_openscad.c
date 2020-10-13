@@ -663,6 +663,7 @@ void pplg_uninit_export_openscad(void)
 {
 	rnd_export_remove_opts_by_cookie(openscad_cookie);
 	rnd_remove_actions_by_cookie(openscad_cookie);
+	rnd_hid_remove_hid(&openscad_hid);
 }
 
 int pplg_init_export_openscad(void)

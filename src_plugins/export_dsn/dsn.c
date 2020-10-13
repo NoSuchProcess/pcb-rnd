@@ -606,6 +606,7 @@ int pplg_check_ver_export_dsn(int ver_needed) { return 0; }
 void pplg_uninit_export_dsn(void)
 {
 	rnd_export_remove_opts_by_cookie(dsn_cookie);
+	rnd_hid_remove_hid(&dsn_hid);
 }
 
 int pplg_init_export_dsn(void)

@@ -648,6 +648,11 @@ static int eps_usage(rnd_hid_t *hid, const char *topic)
 	return 0;
 }
 
+void hid_eps_uninit()
+{
+	rnd_hid_remove_hid(&eps_hid);
+}
+
 void hid_eps_init()
 {
 	memset(&eps_hid, 0, sizeof(rnd_hid_t));

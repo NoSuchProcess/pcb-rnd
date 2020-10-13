@@ -920,6 +920,7 @@ void pplg_uninit_export_openems(void)
 	pcb_openems_excitation_uninit();
 	rnd_remove_actions_by_cookie(openems_cookie);
 	rnd_export_remove_opts_by_cookie(openems_cookie);
+	rnd_hid_remove_hid(&openems_hid);
 }
 
 int pplg_init_export_openems(void)

@@ -365,6 +365,7 @@ int pplg_check_ver_export_fidocadj(int ver_needed) { return 0; }
 void pplg_uninit_export_fidocadj(void)
 {
 	rnd_export_remove_opts_by_cookie(fidocadj_cookie);
+	rnd_hid_remove_hid(&fidocadj_hid);
 }
 
 int pplg_init_export_fidocadj(void)

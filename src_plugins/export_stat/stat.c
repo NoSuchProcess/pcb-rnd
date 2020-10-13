@@ -394,6 +394,7 @@ void pplg_uninit_export_stat(void)
 	stat_attribute_list[HA_first_ver].default_val.str = NULL;
 	stat_attribute_list[HA_license].default_val.str = NULL;
 	rnd_export_remove_opts_by_cookie(stat_cookie);
+	rnd_hid_remove_hid(&stat_hid);
 }
 
 int pplg_init_export_stat(void)

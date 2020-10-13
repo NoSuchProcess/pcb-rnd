@@ -278,6 +278,8 @@ static void export_cam_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	cam_export_job = NULL;
 }
 
+rnd_hid_t export_cam_hid;
+
 int pplg_check_ver_cam(int ver_needed) { return 0; }
 
 void pplg_uninit_cam(void)
@@ -286,9 +288,8 @@ void pplg_uninit_cam(void)
 	rnd_conf_unreg_fields("plugins/cam/");
 	rnd_remove_actions_by_cookie(cam_cookie);
 	rnd_export_remove_opts_by_cookie(cam_cookie);
+	rnd_hid_remove_hid(&export_cam_hid);
 }
-
-rnd_hid_t export_cam_hid;
 
 int pplg_init_cam(void)
 {

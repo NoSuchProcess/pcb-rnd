@@ -1067,6 +1067,7 @@ void pplg_uninit_export_gerber(void)
 	rnd_export_remove_opts_by_cookie(gerber_cookie);
 	rnd_conf_unreg_fields("plugins/export_gerber/");
 	rnd_event_unbind_allcookie(gerber_cookie);
+	rnd_hid_remove_hid(&gerber_hid);
 }
 
 int pplg_init_export_gerber(void)

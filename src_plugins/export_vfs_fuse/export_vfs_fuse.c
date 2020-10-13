@@ -361,6 +361,7 @@ void pplg_uninit_export_vfs_fuse(void)
 	fuse_argv = NULL;
 	free(fuse_ret_argv);
 	fuse_ret_argv = NULL;
+	rnd_hid_remove_hid(&export_vfs_fuse_hid);
 }
 
 int pplg_init_export_vfs_fuse(void)

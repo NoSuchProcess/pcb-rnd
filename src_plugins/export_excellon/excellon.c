@@ -488,6 +488,7 @@ void pplg_uninit_export_excellon(void)
 	free(filename);
 	rnd_conf_unreg_fields("plugins/export_excellon/");
 	rnd_event_unbind_allcookie(excellon_cookie);
+	rnd_hid_remove_hid(&excellon_hid);
 }
 
 int pplg_init_export_excellon(void)

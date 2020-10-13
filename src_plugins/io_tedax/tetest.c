@@ -244,6 +244,7 @@ static rnd_hid_t exp_tedax_etest;
 void tedax_etest_uninit(void)
 {
 	rnd_export_remove_opts_by_cookie(tedax_etest_cookie);
+	rnd_hid_remove_hid(&exp_tedax_etest);
 }
 
 void tedax_etest_init(void)

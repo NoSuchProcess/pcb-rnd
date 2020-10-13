@@ -856,6 +856,7 @@ void pplg_uninit_export_xy(void)
 	free_fmts();
 	vts0_uninit(&fmt_names);
 	vts0_uninit(&fmt_ids);
+	rnd_hid_remove_hid(&xy_hid);
 }
 
 

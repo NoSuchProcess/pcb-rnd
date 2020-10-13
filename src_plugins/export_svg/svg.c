@@ -897,6 +897,7 @@ int pplg_check_ver_export_svg(int ver_needed) { return 0; }
 void pplg_uninit_export_svg(void)
 {
 	rnd_export_remove_opts_by_cookie(svg_cookie);
+	rnd_hid_remove_hid(&svg_hid);
 }
 
 int pplg_init_export_svg(void)

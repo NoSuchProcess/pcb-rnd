@@ -1480,6 +1480,8 @@ int pplg_check_ver_export_ps(int ver_needed) { return 0; }
 void pplg_uninit_export_ps(void)
 {
 	plugin_ps_uninit();
+	rnd_hid_remove_hid(&ps_hid);
+	hid_eps_uninit();
 }
 
 int pplg_init_export_ps(void)

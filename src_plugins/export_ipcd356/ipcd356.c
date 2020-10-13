@@ -478,6 +478,7 @@ int pplg_check_ver_export_ipcd356(int ver_needed) { return 0; }
 void pplg_uninit_export_ipcd356(void)
 {
 	rnd_export_remove_opts_by_cookie(ipcd356_cookie);
+	rnd_hid_remove_hid(&ipcd356_hid);
 }
 
 int pplg_init_export_ipcd356(void)

@@ -398,6 +398,7 @@ int pplg_check_ver_export_gcode(int ver_needed) { return 0; }
 
 void pplg_uninit_export_gcode(void)
 {
+	rnd_hid_remove_hid(&gcode_hid);
 }
 
 
