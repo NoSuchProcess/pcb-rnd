@@ -110,7 +110,7 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 						return -1;
 					});
 					if (strcmp(tmp, "air") == 0)
-						ls->refuse_lyt[loc] = PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_PASTE;
+						ls->refuse_lyt[loc] = PCB_LYT_COPPER;
 					else {
 						int invert = 0;
 						pcb_layer_type_t lyt;
@@ -196,10 +196,74 @@ static const layer_setup_t *layer_setup_compile(pcb_qry_exec_t *ectx, const char
 	return ls;
 }
 
+/* retruns 1 if there is an "adjacent" layer group of lyt in direction dir */
+static rnd_bool lse_next_layer_type(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, pcb_layergrp_t *grp, pcb_layer_type_t lyt, int dir)
+{
+	pcb_layer_type_t nextloc = (dir == -1) ? PCB_LYT_TOP : PCB_LYT_BOTTOM;
+	rnd_layergrp_id_t tmp;
+
+	/* assuming nextloc=top; want to have mask/silk/whatever over us;
+	   only top copper/silk/mask/etc will have a chance to be above */
+	if ((lyt & (PCB_LYT_MASK | PCB_LYT_PASTE | PCB_LYT_SILK)) && (!(grp->ltype & nextloc)))
+			return 0;
+
+	/* assuming nextloc=top; want to have copper over us;
+	   only top copper should fail*/
+	if ((lyt & PCB_LYT_COPPER) && (grp->ltype & nextloc))
+		return 0;
+
+	/* make sure the referenced layers do exist */
+	if ((lyt & PCB_LYT_MASK) && (pcb_layergrp_list(ectx->pcb, PCB_LYT_MASK | nextloc, &tmp, 1) < 1))
+			return 0;
+	if ((lyt & PCB_LYT_SILK) && (pcb_layergrp_list(ectx->pcb, PCB_LYT_SILK | nextloc, &tmp, 1) < 1))
+			return 0;
+	if ((lyt & PCB_LYT_PASTE) && (pcb_layergrp_list(ectx->pcb, PCB_LYT_PASTE | nextloc, &tmp, 1) < 1))
+			return 0;
+
+	return 1;
+}
+
 /* execute ls on obj, assuming 'above' is in layer stack direction 'above_dir';
    returns true if ls matches obj's current setup */
 static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const layer_setup_t *ls, int above_dir)
 {
+	pcb_layer_t *ly;
+	pcb_layergrp_t *grp;
+	rnd_layergrp_id_t gid;
+
+	/* only layer objects may match */
+	if (obj->parent_type != PCB_PARENT_LAYER)
+		return 0;
+
+	ly = pcb_layer_get_real(obj->parent.layer);
+	if (ly == NULL)
+		return 0;
+	gid = pcb_layer_get_group_(ly);
+	if (gid == -1)
+		return 0;
+	grp = &ectx->pcb->LayerGroups.grp[gid];
+
+	/*** find any rule we fail to match and return false ***/
+
+	/* require object's layer type */
+	if ((ls->require_lyt[LSL_ON] != 0) && ((ls->require_lyt[LSL_ON] & pcb_layer_flags_(ly) == 0)))
+		return 0;
+	if ((ls->refuse_lyt[LSL_ON] != 0) && ((ls->refuse_lyt[LSL_ON] & pcb_layer_flags_(ly) != 0)))
+		return 0;
+
+
+	/* require above/below layer's type */
+	if ((ls->require_lyt[LSL_ABOVE] != 0) && (!lse_next_layer_type(ectx, obj, grp, ls->require_lyt[LSL_ABOVE], above_dir)))
+		return 0;
+	if ((ls->refuse_lyt[LSL_ABOVE] != 0) && (!lse_next_layer_type(ectx, obj, grp, ls->refuse_lyt[LSL_ABOVE], above_dir)))
+		return 0;
+	if ((ls->require_lyt[LSL_BELOW] != 0) && (lse_next_layer_type(ectx, obj, grp, ls->require_lyt[LSL_BELOW], -above_dir)))
+		return 0;
+	if ((ls->refuse_lyt[LSL_BELOW] != 0) && (lse_next_layer_type(ectx, obj, grp, ls->refuse_lyt[LSL_BELOW], -above_dir)))
+		return 0;
+
+
+/* (lse_covered(ectx, obj, ls->require_lyt[LSL_ABOVE], above_dir, 0))*/
 
 	/* if nothing failed, we have a match */
 	return 1;
