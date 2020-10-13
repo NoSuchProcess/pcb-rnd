@@ -248,9 +248,17 @@ static rnd_bool lse_fully_covered(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, rnd_
 	vtp0_t *objs = &ectx->layer_setup_netobjs;
 	rnd_rtree_it_t it;
 	pcb_any_obj_t *o;
-	int n;
+	rnd_polyarea_t *iceberg, *ptmp;
+	rnd_bool dummy1;
+	static rnd_coord_t zero = 0;
+	long n;
+	int res;
 
 	if (ngid == -1)
+		return 0;
+
+	/* handle only the simple cases for now */
+	if ((obj->type != PCB_OBJ_LINE) && (obj->type != PCB_OBJ_ARC) && (obj->type != PCB_OBJ_POLY))
 		return 0;
 
 	grp = &ectx->pcb->LayerGroups.grp[ngid];
@@ -276,7 +284,38 @@ rnd_trace("objects on the right net: %d\n", objs->used);
 	if (objs->used == 0) /* no object found */
 		return 0;
 
+	/* create the bloated polygon of the initial object; use the resulting
+	   polyarea as the 'iceberg, then...' */
+	switch(obj->type) {
+		case PCB_OBJ_LINE: iceberg = pcb_poly_from_pcb_line((pcb_line_t *)obj, ((pcb_line_t *)obj)->Thickness + 2*bloat); break;
+		case PCB_OBJ_ARC:  iceberg = pcb_poly_from_pcb_arc((pcb_arc_t *)obj, ((pcb_arc_t *)obj)->Thickness + 2*bloat); break;
+		case PCB_OBJ_POLY: iceberg = pcb_poly_clearance_construct((pcb_poly_t *)obj, &bloat, NULL); break;
+		default: return 0; /* shouldn't get here because input sanity check */
+	}
 
+	/* ...subtract each object found from the 'iceberg', melting it down... */
+	for(n = 0; n < objs->used; n++) {
+		pcb_any_obj_t *o = objs->array[n];
+		rnd_polyarea_t *heat;
+		switch(o->type) {
+			case PCB_OBJ_LINE: heat = pcb_poly_from_pcb_line((pcb_line_t *)o, ((pcb_line_t *)o)->Thickness); break;
+			case PCB_OBJ_ARC:  heat = pcb_poly_from_pcb_arc((pcb_arc_t *)o, ((pcb_arc_t *)o)->Thickness); break;
+			case PCB_OBJ_POLY: heat = pcb_poly_clearance_construct((pcb_poly_t *)o, &zero, NULL); break;
+			default: heat = 0;
+		}
+		if (heat != 0) {
+rnd_trace(" sub! %p %$mm\n", iceberg, (rnd_coord_t)sqrt(iceberg->contours->area));
+			rnd_polyarea_boolean_free(iceberg, heat, &ptmp, RND_PBO_SUB);
+			iceberg = ptmp;
+		}
+	}
+
+rnd_trace(" res=%$mm\n", (rnd_coord_t)sqrt(iceberg->contours->area));
+
+	rnd_polyarea_free(&iceberg);
+
+	/* by now iceberg contains 'exposed' parts, anything not covered by objects
+	   found; if it is not empty, the cover was not full */
 	return 1;
 }
 
