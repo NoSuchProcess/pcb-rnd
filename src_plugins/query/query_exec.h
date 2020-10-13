@@ -52,10 +52,12 @@ struct pcb_qry_exec_s {
 	htpi_t obj2lenseg_cc; /* (pcb_any_obj_t *) object -> connection-counter (how many different objects are connected) */
 	vtp0_t obj2lenseg_free; /* delayed free of obj2lenseg_cc objects */
 	vtp0_t tmplst;        /* may be reused in a function call to save on allocation; always clear it at the end of the fnc */
+	htpp_t layer_setup_precomp;
 	time_t last_prog_cb;
 
 	unsigned obj2netterm_inited:1;
 	unsigned obj2lenseg_inited:1;
+	unsigned layer_setup_inited:1;
 	unsigned warned_missing_thickness:1;
 	unsigned trace:1;
 };

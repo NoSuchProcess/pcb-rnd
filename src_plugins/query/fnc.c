@@ -101,6 +101,7 @@ static int fnc_coord(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qr
 #include "fnc_list.c"
 #include "fnc_geo.c"
 #include "fnc_obj.c"
+#include "fnc_layer_setup.c"
 
 void pcb_qry_basic_fnc_init(void)
 {
@@ -129,4 +130,6 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("poly_num_islands", fnc_poly_num_islands);
 	pcb_qry_fnc_reg("overlap", fnc_overlap);
 	pcb_qry_fnc_reg("intersect", fnc_intersect);
+
+	pcb_qry_fnc_reg("layer_setup", fnc_layer_setup);
 }

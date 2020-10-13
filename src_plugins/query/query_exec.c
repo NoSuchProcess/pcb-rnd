@@ -74,6 +74,8 @@ void pcb_qry_autofree(pcb_qry_exec_t *ctx)
 	ctx->iter = NULL; /* no need to free the iterator: ctx->root free handled that as it was allocated in one of the nodes */
 }
 
+extern void pcb_qry_uninit_layer_setup(pcb_qry_exec_t *ectx);
+
 void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 {
 	pcb_qry_autofree(ctx);
@@ -96,6 +98,7 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 	}
 
 	vtp0_uninit(&ctx->tmplst);
+	pcb_qry_uninit_layer_setup(ctx);
 }
 
 static void val_free_fields(pcb_qry_val_t *val)
