@@ -28,6 +28,8 @@
 
 #include "config.h"
 
+#include <genht/hash.h>
+#include <genht/ht_utils.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/compat_misc.h>
