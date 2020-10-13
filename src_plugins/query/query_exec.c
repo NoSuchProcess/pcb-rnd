@@ -306,6 +306,11 @@ static int qry_exec_user_func(pcb_qry_exec_t *ectx, pcb_qry_node_t *fdef, int ar
 	if (argc > PCB_QRY_MAX_FUNC_ARGS)
 		return -1;
 
+	if (fdef == NULL) {
+		rnd_message(RND_MSG_ERROR, "call to unknown/undefined function\n");
+		return -1;
+	}
+
 	fctx = *ectx;
 
 	assert(fdef->type == PCBQ_FUNCTION);
