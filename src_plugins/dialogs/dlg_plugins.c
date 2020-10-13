@@ -94,6 +94,11 @@ static void unload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 		return;
 	}
 
+	if (p->references > 1) {
+		rnd_message(RND_MSG_ERROR, "Can not unload '%s' while other active plugins still depend on it\n", p->name);
+		return;
+	}
+
 	pup_unload(&rnd_pup, p, NULL);
 
 	/* rebuild the whole tree since we may have unloaded more than one plugins */
