@@ -636,6 +636,9 @@ void pcb_poly_pa_clearance_construct(rnd_polyarea_t **dst, pcb_poly_it_t *it, rn
 	else
 		rnd_polyarea_copy0(dst, it->pa);
 
+	if (clearance == 0)
+		return;
+
 	clearance *= 2;
 
 	/* care about the outer contours only */
