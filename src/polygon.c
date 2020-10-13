@@ -678,7 +678,8 @@ rnd_polyarea_t *pcb_poly_clearance_construct(pcb_poly_t *subpoly, rnd_coord_t *c
 	else
 		clr = subpoly->Clearance/2;
 
-	clr = RND_MAX(clr, in_poly->enforce_clearance);
+	if (in_poly != NULL)
+		clr = RND_MAX(clr, in_poly->enforce_clearance);
 	/* iterate over all islands of a polygon */
 	for(pa = pcb_poly_island_first(subpoly, &it); pa != NULL; pa = pcb_poly_island_next(&it))
 		pcb_poly_pa_clearance_construct(&ret, &it, clr);
