@@ -196,9 +196,18 @@ static const layer_setup_t *layer_setup_compile(pcb_qry_exec_t *ectx, const char
 	return ls;
 }
 
+/* execute ls on obj, assuming 'above' is in layer stack direction 'above_dir';
+   returns true if ls matches obj's current setup */
+static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const layer_setup_t *ls, int above_dir)
+{
+
+	/* if nothing failed, we have a match */
+	return 1;
+}
+
 static int fnc_layer_setup(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
-	pcb_any_obj_t *obj, *lo;
+	pcb_any_obj_t *obj;
 	pcb_layer_t *ly = NULL;
 	const char *lss;
 	const layer_setup_t *ls;
@@ -213,8 +222,20 @@ static int fnc_layer_setup(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, 
 
 	obj = (pcb_any_obj_t *)argv[0].data.obj;
 	ls = layer_setup_compile(ectx, lss, 1);
+
 rnd_trace("layer_setup: %p/'%s' -> %p\n", lss, lss, ls);
 
-	PCB_QRY_RET_INV(res);
+TODO("cache result: obj-ls -> direction (+1 or -1) where it was true or 0 if it was false");
+
+	/* try above=-1, below=+1 (directions matching normal layer stack ordering) */
+	if (layer_setup_exec(ectx, obj, ls, -1))
+		PCB_QRY_RET_INT(res, 1);
+
+	/* try above=+1, below=-1 (opposite directions to normal layer stack ordering)  */
+	if (layer_setup_exec(ectx, obj, ls, 1))
+		PCB_QRY_RET_INT(res, 1);
+
+	/* both failed -> this layer setup is invalid in any direction */
+	PCB_QRY_RET_INT(res, 0);
 }
 
