@@ -111,15 +111,22 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 					});
 					if (strcmp(tmp, "air") == 0)
 						ls->refuse_lyt[loc] = PCB_LYT_COPPER | PCB_LYT_MASK | PCB_LYT_PASTE;
-					else if (strcmp(tmp, "noncopper") == 0)
-						ls->refuse_lyt[loc] = PCB_LYT_COPPER;
 					else {
-						pcb_layer_type_t lyt = pcb_layer_type_str2bit(val);
+						int invert = 0;
+						pcb_layer_type_t lyt;
+						if (*val == '!') {
+							invert = 1;
+							val++;
+						}
+						lyt = pcb_layer_type_str2bit(val);
 						if ((lyt == -1) || ((lyt & lyt_allow) != lyt)) {
 							rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: invalid netmargin value '%s'\n", val);
 							return -1;
 						}
-						ls->require_lyt[loc] = lyt;
+						if (invert)
+							ls->refuse_lyt[loc] = lyt;
+						else
+							ls->require_lyt[loc] = lyt;
 					}
 					break;
 
