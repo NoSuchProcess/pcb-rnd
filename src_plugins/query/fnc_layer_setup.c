@@ -75,7 +75,7 @@ do { \
 
 static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const char *s_, rnd_bool composite)
 {
-	const char *val;
+	const char *val, *lys;
 	layer_setup_loc_t loc;
 	layer_setup_target_t target;
 	const char *s;
@@ -114,11 +114,12 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 					else {
 						int invert = 0;
 						pcb_layer_type_t lyt;
-						if (*val == '!') {
+						lys = tmp;
+						if (*lys == '!') {
 							invert = 1;
-							val++;
+							lys++;
 						}
-						lyt = pcb_layer_type_str2bit(val);
+						lyt = pcb_layer_type_str2bit(lys);
 						if ((lyt == -1) || ((lyt & lyt_allow) != lyt)) {
 							rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: invalid netmargin value '%s'\n", val);
 							return -1;
