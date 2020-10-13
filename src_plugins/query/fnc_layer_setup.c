@@ -49,6 +49,7 @@ void pcb_qry_uninit_layer_setup(pcb_qry_exec_t *ectx)
 		free(htent->value);
 	});
 
+	vtp0_uninit(&ectx->layer_setup_netobjs);
 	ectx->layer_setup_inited = 0;
 }
 
@@ -56,6 +57,7 @@ static void pcb_qry_init_layer_setup(pcb_qry_exec_t *ectx)
 {
 	htpp_init(&ectx->layer_setup_precomp, ptrhash, ptrkeyeq);
 	ectx->layer_setup_inited = 1;
+	vtp0_init(&ectx->layer_setup_netobjs);
 }
 
 #define LSC_RESET() \
@@ -224,6 +226,60 @@ static rnd_bool lse_next_layer_type(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, pc
 	return 1;
 }
 
+/* append obj to objs if obj is on net */
+static void lse_netcover_add_obj(pcb_qry_exec_t *ectx, vtp0_t *objs, pcb_any_obj_t *obj, pcb_net_t *net)
+{
+	pcb_any_obj_t *term = pcb_qry_parent_net_term(ectx, obj);
+
+	if ((term == NULL) || (term->type != PCB_OBJ_NET_TERM))
+		return;
+	if (term->parent.net != net)
+		return;
+
+	vtp0_append(objs, obj);
+}
+
+/* retruns 1 if the adjacent copper layer group in direction dir has objects
+   of net fully covering obj bloated by bloat */
+static rnd_bool lse_fully_covered(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, rnd_layergrp_id_t ogid, pcb_net_t *net, int dir, rnd_coord_t bloat)
+{
+	rnd_layergrp_id_t ngid = pcb_layergrp_step(ectx->pcb, ogid, dir, PCB_LYT_COPPER);
+	pcb_layergrp_t *grp;
+	vtp0_t *objs = &ectx->layer_setup_netobjs;
+	rnd_rtree_it_t it;
+	pcb_any_obj_t *o;
+	int n;
+
+	if (ngid == -1)
+		return 0;
+
+	grp = &ectx->pcb->LayerGroups.grp[ngid];
+	objs->used = 0;
+
+	/* gather objects that might be overlapping the target object and are on
+	   the target net */
+	for(n = 0; n < grp->len; n++) {
+		pcb_layer_t *ly = pcb_get_layer(ectx->pcb->Data, grp->lid[n]);
+		if (ly->arc_tree != NULL)
+			for(o = rnd_rtree_first(&it, ly->arc_tree, (rnd_rtree_box_t *)&obj->bbox_naked); o != NULL; o = rnd_rtree_next(&it))
+				lse_netcover_add_obj(ectx, objs, o, net);
+		if (ly->line_tree != NULL)
+			for(o = rnd_rtree_first(&it, ly->line_tree, (rnd_rtree_box_t *)&obj->bbox_naked); o != NULL; o = rnd_rtree_next(&it))
+				lse_netcover_add_obj(ectx, objs, o, net);
+		if (ly->polygon_tree != NULL)
+			for(o = rnd_rtree_first(&it, ly->polygon_tree, (rnd_rtree_box_t *)&obj->bbox_naked); o != NULL; o = rnd_rtree_next(&it))
+				lse_netcover_add_obj(ectx, objs, o, net);
+	}
+
+rnd_trace("objects on the right net: %d\n", objs->used);
+
+	if (objs->used == 0) /* no object found */
+		return 0;
+
+
+	return 1;
+}
+
 /* execute ls on obj, assuming 'above' is in layer stack direction 'above_dir';
    returns true if ls matches obj's current setup */
 static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const layer_setup_t *ls, int above_dir)
@@ -247,9 +303,9 @@ static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const
 	/*** find any rule we fail to match and return false ***/
 
 	/* require object's layer type */
-	if ((ls->require_lyt[LSL_ON] != 0) && ((ls->require_lyt[LSL_ON] & pcb_layer_flags_(ly) == 0)))
+	if ((ls->require_lyt[LSL_ON] != 0) && (((ls->require_lyt[LSL_ON] & pcb_layer_flags_(ly)) == 0)))
 		return 0;
-	if ((ls->refuse_lyt[LSL_ON] != 0) && ((ls->refuse_lyt[LSL_ON] & pcb_layer_flags_(ly) != 0)))
+	if ((ls->refuse_lyt[LSL_ON] != 0) && (((ls->refuse_lyt[LSL_ON] & pcb_layer_flags_(ly)) != 0)))
 		return 0;
 
 
@@ -263,8 +319,11 @@ static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const
 	if ((ls->refuse_lyt[LSL_BELOW] != 0) && (lse_next_layer_type(ectx, obj, grp, ls->refuse_lyt[LSL_BELOW], -above_dir)))
 		return 0;
 
-
-/* (lse_covered(ectx, obj, ls->require_lyt[LSL_ABOVE], above_dir, 0))*/
+	/* check for net coverage on adjacent layer */
+	if ((ls->require_net[LSL_ABOVE] != NULL) && (!lse_fully_covered(ectx, obj, gid, ls->require_net[LSL_ABOVE], above_dir, ls->net_margin[LSL_ABOVE])))
+		return 0;
+	if ((ls->require_net[LSL_BELOW] != NULL) && (!lse_fully_covered(ectx, obj, gid, ls->require_net[LSL_BELOW], -above_dir, ls->net_margin[LSL_BELOW])))
+		return 0;
 
 	/* if nothing failed, we have a match */
 	return 1;
@@ -273,7 +332,6 @@ static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const
 static int fnc_layer_setup(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	pcb_any_obj_t *obj;
-	pcb_layer_t *ly = NULL;
 	const char *lss;
 	const layer_setup_t *ls;
 
