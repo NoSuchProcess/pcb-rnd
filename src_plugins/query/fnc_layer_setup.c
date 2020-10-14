@@ -239,9 +239,9 @@ static void lse_netcover_add_obj(pcb_qry_exec_t *ectx, vtp0_t *objs, pcb_any_obj
 	vtp0_append(objs, obj);
 }
 
-/* retruns 1 if the adjacent copper layer group in direction dir has objects
-   of net fully covering obj bloated by bloat */
-static rnd_bool lse_fully_covered(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, rnd_layergrp_id_t ogid, pcb_net_t *net, int dir, rnd_coord_t bloat)
+/* returns uncovered area on the adjacent copper layer group in direction
+   dir has objects of net, obj bloated by bloat first */
+static double lse_non_covered(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, rnd_layergrp_id_t ogid, pcb_net_t *net, int dir, rnd_coord_t bloat)
 {
 	rnd_layergrp_id_t ngid = pcb_layergrp_step(ectx->pcb, ogid, dir, PCB_LYT_COPPER);
 	pcb_layergrp_t *grp;
@@ -252,7 +252,7 @@ static rnd_bool lse_fully_covered(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, rnd_
 	rnd_bool dummy1;
 	static rnd_coord_t zero = 0;
 	long n;
-	int res;
+	double res;
 
 	if (ngid == -1)
 		return 0;
@@ -310,13 +310,14 @@ rnd_trace(" sub! %p %$mm\n", iceberg, (rnd_coord_t)sqrt(iceberg->contours->area)
 		}
 	}
 
-rnd_trace(" res=%$mm\n", (rnd_coord_t)sqrt(iceberg->contours->area));
+	res = sqrt(iceberg->contours->area);
+rnd_trace(" res=%$mm\n", (rnd_coord_t)res);
 
 	rnd_polyarea_free(&iceberg);
 
 	/* by now iceberg contains 'exposed' parts, anything not covered by objects
-	   found; if it is not empty, the cover was not full */
-	return 1;
+	   found; if it is not zero, the cover was not full */
+	return res;
 }
 
 /* execute ls on obj, assuming 'above' is in layer stack direction 'above_dir';
@@ -359,9 +360,9 @@ static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const
 		return 0;
 
 	/* check for net coverage on adjacent layer */
-	if ((ls->require_net[LSL_ABOVE] != NULL) && (!lse_fully_covered(ectx, obj, gid, ls->require_net[LSL_ABOVE], above_dir, ls->net_margin[LSL_ABOVE])))
+	if ((ls->require_net[LSL_ABOVE] != NULL) && (lse_non_covered(ectx, obj, gid, ls->require_net[LSL_ABOVE], above_dir, ls->net_margin[LSL_ABOVE]) > 0))
 		return 0;
-	if ((ls->require_net[LSL_BELOW] != NULL) && (!lse_fully_covered(ectx, obj, gid, ls->require_net[LSL_BELOW], -above_dir, ls->net_margin[LSL_BELOW])))
+	if ((ls->require_net[LSL_BELOW] != NULL) && (lse_non_covered(ectx, obj, gid, ls->require_net[LSL_BELOW], -above_dir, ls->net_margin[LSL_BELOW]) > 0))
 		return 0;
 
 	/* if nothing failed, we have a match */
