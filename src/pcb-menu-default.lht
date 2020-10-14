@@ -143,6 +143,8 @@ ha:rnd-menu-v1 {
 								ha:ChangeSize -5 mil            = { a={<key>e; <key>g; Shift<key>s}; action=ChangeSize(Object,-5,mil) }
 								ha:ChangeDrill +5 mil           = { a={<key>e; <key>g; <key>d}; action=ChangeDrillSize(Object,+5,mil) }
 								ha:ChangeDrill -5 mil           = { a={<key>e; <key>g; Shift<key>d}; action=ChangeDrillSize(Object,-5,mil) }
+								-
+								ha:Edit padstack geometry/prototype = {a={<key>e; <key>g; <key>g}; action=padstackedit }
 							}
 						}
 					}
