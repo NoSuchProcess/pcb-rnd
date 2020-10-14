@@ -343,7 +343,7 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 		char *path = rnd_concat(DRC_CONF_PATH_CONST, nd->name, NULL);
 		rnd_coord_t *c;
 
-		if (rnd_conf_get_field(path) == NULL) {
+		{
 			union {
 				rnd_coord_t c;
 				double d;
@@ -357,11 +357,12 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 			lht_node_t *nlegacy = lht_dom_hash_get(nd, "legacy");
 			const char *sdesc = "n/a", *stype = NULL, *sdefault = NULL, *slegacy = NULL;
 			rnd_conf_native_type_t type;
+			int pathfree = 1;
+
 			if ((ndesc != NULL) && (ndesc->type == LHT_TEXT)) sdesc = ndesc->data.text.value;
 			if ((ntype != NULL) && (ntype->type == LHT_TEXT)) stype = ntype->data.text.value;
 			if ((ndefault != NULL) && (ndefault->type == LHT_TEXT)) sdefault = ndefault->data.text.value;
 			if ((nlegacy != NULL) && (nlegacy->type == LHT_TEXT)) slegacy = nlegacy->data.text.value;
-
 
 			if (stype == NULL) {
 				if ((ndesc != NULL) || (sdefault != NULL))
@@ -375,24 +376,31 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 				goto fail;
 			}
 
-			c = calloc(sizeof(anyval), 1);
-			nat = rnd_conf_reg_field_(c, 1, type, path, rnd_strdup(sdesc), 0);
+			/* create the new conf node for the def if it doesn't already exist */
+			nat = rnd_conf_get_field(path);
 			if (nat == NULL) {
-				free(c);
-				rnd_message(RND_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
-				goto fail;
+				c = calloc(sizeof(anyval), 1);
+				pathfree = 0;
+				nat = rnd_conf_reg_field_(c, 1, type, path, rnd_strdup(sdesc), 0);
+				if (nat == NULL) {
+					free(c);
+					rnd_message(RND_MSG_ERROR, "drc_query: failed to register conf node '%s'\n", path);
+					goto fail;
+				}
+
+				nat->random_flags.dyn_hash_path = 1;
+				nat->random_flags.dyn_desc = 1;
+				nat->random_flags.dyn_val = 1;
+				vtp0_append(&free_drc_conf_nodes, nat);
 			}
 
-			nat->random_flags.dyn_hash_path = 1;
-			nat->random_flags.dyn_desc = 1;
-			nat->random_flags.dyn_val = 1;
-			vtp0_append(&free_drc_conf_nodes, nat);
-
+			/* set default value */
 			if (slegacy != NULL)
 				pcb_conf_legacy(path, slegacy);
 			else if (sdefault != NULL)
 				rnd_conf_set(RND_CFR_INTERNAL, path, -1, sdefault, RND_POL_OVERWRITE);
-			path = NULL; /* hash key shall not be free'd */
+			if (!pathfree)
+				path = NULL; /* hash key shall not be free'd */
 		}
 		fail:;
 		free(path);
@@ -580,6 +588,8 @@ static int pcb_drc_query_create(rnd_hidlib_t *hidlib, int is_rule, const char *r
 	return 0;
 }
 
+void d2() {}
+
 static int pcb_drc_query_set(rnd_hidlib_t *hidlib, int is_rule, const char *rule, const char *key, const char *val)
 {
 	lht_node_t *nd;
@@ -588,6 +598,20 @@ static int pcb_drc_query_set(rnd_hidlib_t *hidlib, int is_rule, const char *rule
 		return -1;
 
 	MKDIR_ND_SET_TEXT(nd, key, val, return -1);
+
+	/* copy default value when set in a separate step, after node creation */
+	if (!is_rule && (nat_defs != NULL)) {
+		char *path = rnd_concat(DRC_CONF_PATH_CONST, nd->name, NULL);
+		rnd_conf_native_t *nat = rnd_conf_get_field(path);
+
+		/* set value only if it's a new node, so existing value is not overwritten */
+		if ((nat == NULL) || (nat->used == 0)) {
+			rnd_conf_listitem_t i = {0};
+			i.prop.src = nd;
+			drc_query_newconf(nat_defs, &i);
+		}
+		free(path);
+	}
 
 	return 0;
 }
@@ -610,7 +634,6 @@ static int pcb_drc_query_get_rule_defs(rnd_hidlib_t *hidlib, const char *rule, f
 	htsi_t defs;
 	htsi_entry_t *e;
 	gds_t lst;
-
 	fgw_arg_t tmp;
 	if (pcb_drc_query_get(hidlib, 1, rule, "query", &tmp) != 0)
 		return -1;
