@@ -27,17 +27,18 @@
 /* Query language - layer setup checks */
 
 typedef enum { LSL_ON, LSL_BELOW, LSL_ABOVE, LSL_max } layer_setup_loc_t;
-typedef enum { NONE = 0x1000, TYPE, NET, NETMARGIN } layer_setup_target_t;
+typedef enum { NONE, TYPE, NET, NETMARGIN, RESULT, UNCOVERED } layer_setup_target_t;
 
 typedef struct {
-	/* for a composite check */
+	/* condition/check */
 	pcb_layer_type_t require_lyt[LSL_max];
 	pcb_layer_type_t refuse_lyt[LSL_max];
 	pcb_net_t *require_net[LSL_max];
 	rnd_coord_t net_margin[LSL_max];
 
-	/* for an atomic query: loc|target */
-	unsigned long loc_target;
+	/* query result: loc and target */
+	layer_setup_loc_t res_loc;
+	layer_setup_target_t res_target;
 } layer_setup_t;
 
 void pcb_qry_uninit_layer_setup(pcb_qry_exec_t *ectx)
@@ -75,9 +76,25 @@ do { \
 	tmp[len] = '\0'; \
 } while(0)
 
-static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const char *s_, rnd_bool composite)
+#define LSC_PARSE_LOCTARGET(s) \
+do { \
+		if (strncmp(s, "above", 5) == 0)           { s += 5; loc = LSL_ABOVE; } \
+		else if (strncmp(s, "below", 5) == 0)      { s += 5; loc = LSL_BELOW; } \
+		else if (strncmp(s, "result", 6) == 0)     { s += 6; target = RESULT; } \
+		else if (strncmp(s, "netmargin", 9) == 0)  { s += 9; target = NETMARGIN; } \
+		else if (strncmp(s, "uncovered", 9) == 0)  { s += 9; target = UNCOVERED; } \
+		else if (strncmp(s, "type", 4) == 0)       { s += 4; target = TYPE; } \
+		else if (strncmp(s, "net", 3) == 0)        { s += 3; target = NET; } \
+		else if (strncmp(s, "on", 2) == 0)         { s += 2; loc = LSL_ON; } \
+		else { \
+			rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: invalid target or location in '%s'\n", s); \
+			return -1; \
+		} \
+} while(0)
+
+static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const char *s_)
 {
-	const char *val, *lys;
+	const char *val, *lys, *rest;
 	layer_setup_loc_t loc;
 	layer_setup_target_t target;
 	const char *s;
@@ -93,19 +110,37 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 	for(s = s_;;) {
 		while(isspace(*s) || (*s == '-')) s++;
 		if ((*s == '\0') || (*s == ',') || (*s == ';') || (*s == ':')) {
-			ls->loc_target = loc | target;
 
 			if (*s == ':') {
 				s++;
 				val = s;
-				while((*s != '\0') && (*s != ',') && (*s != ';')) s++;
+				if (target != RESULT) /* result has its own parser, don't change s */
+					while((*s != '\0') && (*s != ',') && (*s != ';')) s++;
 			}
-
-			if (!composite)
-				return 0;
 
 			/* close current rule */
 			switch(target) {
+				case RESULT:
+					/* parse the result part on the right of ':' */
+					rest = s;
+					LSC_RESET();
+					
+					for(;;) {
+						while(isspace(*s) || (*s == '-')) s++;
+						if ((*s == '\0') || (*s == ',') || (*s == ';'))
+							break;
+						LSC_PARSE_LOCTARGET(s);
+					}
+					ls->res_loc = loc;
+					ls->res_target = target;
+					switch(target) {
+						case TYPE: case NET: case NETMARGIN:
+							rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: invalid result in '%s'\n", rest);
+							return -1;
+						default:;
+					}
+					printf("RESULT: %d %d\n", loc, target);
+					break;
 				case TYPE:
 					{
 						int invert = 0;
@@ -158,6 +193,9 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 				case NONE:
 					rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: missing target in '%s'\n", s_);
 					return -1;
+				default:
+					rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: wrong target for check in '%s'\n", s_);
+					return -1;
 			}
 
 			/* continue with the next rule */
@@ -168,25 +206,15 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 			continue;
 		}
 
+		LSC_PARSE_LOCTARGET(s);
 
-
-		if (strncmp(s, "above", 5) == 0)           { s += 5; loc = LSL_ABOVE; }
-		else if (strncmp(s, "below", 5) == 0)      { s += 5; loc = LSL_BELOW; }
-		else if (strncmp(s, "netmargin", 9) == 0)  { s += 9; target = NETMARGIN; }
-		else if (strncmp(s, "type", 4) == 0)       { s += 4; target = TYPE; }
-		else if (strncmp(s, "net", 3) == 0)        { s += 3; target = NET; }
-		else if (strncmp(s, "on", 2) == 0)         { s += 2; loc = LSL_ON; }
-		else {
-			rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: invalid target or location in '%s'\n", s);
-			return -1;
-		}
 	}
 
 	return 0;
 }
 
 /* Cache access wrapper around compile - assume the same string will have the same pointer (e.g. net attribute) */
-static const layer_setup_t *layer_setup_compile(pcb_qry_exec_t *ectx, const char *s, rnd_bool composite)
+static const layer_setup_t *layer_setup_compile(pcb_qry_exec_t *ectx, const char *s)
 {
 	layer_setup_t *ls;
 	ls = htpp_get(&ectx->layer_setup_precomp, s);
@@ -194,7 +222,7 @@ static const layer_setup_t *layer_setup_compile(pcb_qry_exec_t *ectx, const char
 		return ls;
 
 	ls = calloc(sizeof(layer_setup_t), 1);
-	layer_setup_compile_(ectx, ls, s, composite);
+	layer_setup_compile_(ectx, ls, s);
 	htpp_set(&ectx->layer_setup_precomp, (void *)s, ls);
 	return ls;
 }
@@ -390,7 +418,7 @@ static int fnc_layer_setup(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, 
 		pcb_qry_init_layer_setup(ectx);
 
 	obj = (pcb_any_obj_t *)argv[0].data.obj;
-	ls = layer_setup_compile(ectx, lss, 1);
+	ls = layer_setup_compile(ectx, lss);
 
 rnd_trace("layer_setup: %p/'%s' -> %p\n", lss, lss, ls);
 
