@@ -506,7 +506,7 @@ static int pcb_drc_query_any_by_name(const char *name, int is_rule, lht_node_t *
 		if (nd == NULL) { /* allocate new node */
 			ret = 0;
 			MKDIR_RULE_ROOT(nd, RND_CFR_DESIGN, RND_POL_APPEND, goto skip);
-			if (is_rule) 
+			if (is_rule)
 				MKDIR_RULES(nd, goto skip);
 			else
 				MKDIR_CONSTS(nd, goto skip);
