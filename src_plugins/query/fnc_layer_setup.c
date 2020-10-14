@@ -27,7 +27,7 @@
 /* Query language - layer setup checks */
 
 typedef enum { LSL_ON, LSL_BELOW, LSL_ABOVE, LSL_max } layer_setup_loc_t;
-typedef enum { NONE, TYPE, NET, NETMARGIN, RESULT, UNCOVERED } layer_setup_target_t;
+typedef enum { LST_NONE, LST_TYPE, LST_NET, LST_NETMARGIN, LST_RESULT, LST_UNCOVERED } layer_setup_target_t;
 
 typedef struct {
 	/* condition/check */
@@ -74,7 +74,7 @@ static void pcb_qry_init_layer_setup(pcb_qry_exec_t *ectx)
 do { \
 	val = NULL; \
 	loc = LSL_ON; \
-	target = NONE; \
+	target = LST_NONE; \
 } while(0)
 
 #define LSC_GET_VAL(err_stmt) \
@@ -89,11 +89,11 @@ do { \
 do { \
 		if (strncmp(s, "above", 5) == 0)           { s += 5; loc = LSL_ABOVE; } \
 		else if (strncmp(s, "below", 5) == 0)      { s += 5; loc = LSL_BELOW; } \
-		else if (strncmp(s, "result", 6) == 0)     { s += 6; target = RESULT; } \
-		else if (strncmp(s, "netmargin", 9) == 0)  { s += 9; target = NETMARGIN; } \
-		else if (strncmp(s, "uncovered", 9) == 0)  { s += 9; target = UNCOVERED; } \
-		else if (strncmp(s, "type", 4) == 0)       { s += 4; target = TYPE; } \
-		else if (strncmp(s, "net", 3) == 0)        { s += 3; target = NET; } \
+		else if (strncmp(s, "result", 6) == 0)     { s += 6; target = LST_RESULT; } \
+		else if (strncmp(s, "netmargin", 9) == 0)  { s += 9; target = LST_NETMARGIN; } \
+		else if (strncmp(s, "uncovered", 9) == 0)  { s += 9; target = LST_UNCOVERED; } \
+		else if (strncmp(s, "type", 4) == 0)       { s += 4; target = LST_TYPE; } \
+		else if (strncmp(s, "net", 3) == 0)        { s += 3; target = LST_NET; } \
 		else if (strncmp(s, "on", 2) == 0)         { s += 2; loc = LSL_ON; } \
 		else { \
 			rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: invalid target or location in '%s'\n", s); \
@@ -123,13 +123,13 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 			if (*s == ':') {
 				s++;
 				val = s;
-				if (target != RESULT) /* result has its own parser, don't change s */
+				if (target != LST_RESULT) /* result has its own parser, don't change s */
 					while((*s != '\0') && (*s != ',') && (*s != ';')) s++;
 			}
 
 			/* close current rule */
 			switch(target) {
-				case RESULT:
+				case LST_RESULT:
 					/* parse the result part on the right of ':' */
 					rest = s;
 					LSC_RESET();
@@ -143,14 +143,13 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 					ls->res_loc = loc;
 					ls->res_target = target;
 					switch(target) {
-						case TYPE: case NET: case NETMARGIN:
+						case LST_TYPE: case LST_NET: case LST_NETMARGIN:
 							rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: invalid result in '%s'\n", rest);
 							return -1;
 						default:;
 					}
-					printf("RESULT: %d %d\n", loc, target);
 					break;
-				case TYPE:
+				case LST_TYPE:
 					{
 						int invert = 0;
 						pcb_layer_type_t lyt;
@@ -177,7 +176,7 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 					}
 					break;
 
-				case NET:
+				case LST_NET:
 					LSC_GET_VAL({
 						rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: invalid net name '%s'\n", val == NULL ? s_ : val);
 						return -1;
@@ -190,7 +189,7 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 					ls->require_net[loc] = net;
 					break;
 
-				case NETMARGIN:
+				case LST_NETMARGIN:
 					LSC_GET_VAL(goto err_coord);
 					ls->net_margin[loc] = rnd_get_value(tmp, NULL, NULL, &succ);
 					if (!succ) {
@@ -199,7 +198,7 @@ static long layer_setup_compile_(pcb_qry_exec_t *ectx, layer_setup_t *ls, const 
 						return -1;
 					}
 					break;
-				case NONE:
+				case LST_NONE:
 					rnd_message(RND_MSG_ERROR, "layer_setup() compilation error: missing target in '%s'\n", s_);
 					return -1;
 				default:
@@ -412,7 +411,7 @@ static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const
 		return 0;
 
 	/* if condition didn't calculate the result, do it now */
-	if ((ls->res_target == UNCOVERED) && ((ls->res_loc == LSL_BELOW) || (ls->res_loc == LSL_ABOVE))) {
+	if ((ls->res_target == LST_UNCOVERED) && ((ls->res_loc == LSL_BELOW) || (ls->res_loc == LSL_ABOVE))) {
 		if (lsr->uncovered[ls->res_loc] < 0) {
 			int dir = (ls->res_loc == LSL_ABOVE) ? above_dir : -above_dir;
 			lse_non_covered(ectx, obj, gid, ls->require_net[ls->res_loc], dir, ls->net_margin[ls->res_loc], &lsr->uncovered[ls->res_loc]);
