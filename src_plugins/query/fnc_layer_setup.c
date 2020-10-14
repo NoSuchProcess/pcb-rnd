@@ -36,12 +36,19 @@ typedef struct {
 	pcb_net_t *require_net[LSL_max];
 	rnd_coord_t net_margin[LSL_max];
 
-	/* query result: loc and target */
+
+	/* query result request: loc and target */
 	layer_setup_loc_t res_loc;
 	layer_setup_target_t res_target;
 
 	unsigned valid:1; /* 0 on syntax error */
 } layer_setup_t;
+
+/* measurements saved during the condition/check phase */
+typedef struct {
+	int matched;                /* 1 if condition matched, 0 otherwise */
+	double uncovered[LSL_max];  /* area of uncovered portion in nm^2, after a require_net check */
+} layer_setup_res_t;
 
 void pcb_qry_uninit_layer_setup(pcb_qry_exec_t *ectx)
 {
@@ -270,9 +277,9 @@ static void lse_netcover_add_obj(pcb_qry_exec_t *ectx, vtp0_t *objs, pcb_any_obj
 	vtp0_append(objs, obj);
 }
 
-/* returns uncovered area on the adjacent copper layer group in direction
-   dir has objects of net, obj bloated by bloat first */
-static double lse_non_covered(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, rnd_layergrp_id_t ogid, pcb_net_t *net, int dir, rnd_coord_t bloat)
+/* returns 1 if object is fully covered on adjacent copper layer group in direction
+   dir by objects of net (obj bloated by bloat first); tolerance for full cover is 0.1 mm^2 */
+static int lse_non_covered(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, rnd_layergrp_id_t ogid, pcb_net_t *net, int dir, rnd_coord_t bloat, double *area_out)
 {
 	rnd_layergrp_id_t ngid = pcb_layergrp_step(ectx->pcb, ogid, dir, PCB_LYT_COPPER);
 	pcb_layergrp_t *grp;
@@ -280,10 +287,9 @@ static double lse_non_covered(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, rnd_laye
 	rnd_rtree_it_t it;
 	pcb_any_obj_t *o;
 	rnd_polyarea_t *iceberg, *ptmp;
-	rnd_bool dummy1;
 	static rnd_coord_t zero = 0;
 	long n;
-	double res;
+	double final_area2;
 
 	if (ngid == -1)
 		return 0;
@@ -344,26 +350,28 @@ rnd_trace(" sub! %p %$mm\n", iceberg, (rnd_coord_t)sqrt(iceberg->contours->area)
 	}
 
 	if (iceberg != NULL) {
-		res = sqrt(iceberg->contours->area);
+		final_area2 = iceberg->contours->area;
+		*area_out = sqrt(final_area2);
 		rnd_polyarea_free(&iceberg);
 	}
 	else
-		res = 0;
-
-rnd_trace(" res=%$mm\n", (rnd_coord_t)res);
+		*area_out = final_area2 = 0;
 
 	/* by now iceberg contains 'exposed' parts, anything not covered by objects
 	   found; if it is not zero, the cover was not full */
-	return res;
+	return final_area2 < RND_MM_TO_COORD(0.01);
 }
 
 /* execute ls on obj, assuming 'above' is in layer stack direction 'above_dir';
    returns true if ls matches obj's current setup */
-static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const layer_setup_t *ls, int above_dir)
+static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const layer_setup_t *ls, int above_dir, layer_setup_res_t *lsr)
 {
 	pcb_layer_t *ly;
 	pcb_layergrp_t *grp;
 	rnd_layergrp_id_t gid;
+
+	lsr->matched = 0;
+	lsr->uncovered[LSL_ABOVE] = lsr->uncovered[LSL_BELOW] = -1;
 
 	/* only layer objects may match */
 	if (obj->parent_type != PCB_PARENT_LAYER)
@@ -396,13 +404,23 @@ static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const
 	if ((ls->refuse_lyt[LSL_BELOW] != 0) && (lse_next_layer_type(ectx, obj, grp, ls->refuse_lyt[LSL_BELOW], -above_dir)))
 		return 0;
 
+
 	/* check for net coverage on adjacent layer */
-	if ((ls->require_net[LSL_ABOVE] != NULL) && (lse_non_covered(ectx, obj, gid, ls->require_net[LSL_ABOVE], above_dir, ls->net_margin[LSL_ABOVE]) > 0))
+	if ((ls->require_net[LSL_ABOVE] != NULL) && (!lse_non_covered(ectx, obj, gid, ls->require_net[LSL_ABOVE], above_dir, ls->net_margin[LSL_ABOVE], &lsr->uncovered[LSL_ABOVE])))
 		return 0;
-	if ((ls->require_net[LSL_BELOW] != NULL) && (lse_non_covered(ectx, obj, gid, ls->require_net[LSL_BELOW], -above_dir, ls->net_margin[LSL_BELOW]) > 0))
+	if ((ls->require_net[LSL_BELOW] != NULL) && (!lse_non_covered(ectx, obj, gid, ls->require_net[LSL_BELOW], -above_dir, ls->net_margin[LSL_BELOW], &lsr->uncovered[LSL_BELOW])))
 		return 0;
 
+	/* if condition didn't calculate the result, do it now */
+	if ((ls->res_target == UNCOVERED) && ((ls->res_loc == LSL_BELOW) || (ls->res_loc == LSL_ABOVE))) {
+		if (lsr->uncovered[ls->res_loc] < 0) {
+			int dir = (ls->res_loc == LSL_ABOVE) ? above_dir : -above_dir;
+			lse_non_covered(ectx, obj, gid, ls->require_net[ls->res_loc], dir, ls->net_margin[ls->res_loc], &lsr->uncovered[ls->res_loc]);
+		}
+	}
+
 	/* if nothing failed, we have a match */
+	lsr->matched = 1;
 	return 1;
 }
 
@@ -411,6 +429,7 @@ static int fnc_layer_setup(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, 
 	pcb_any_obj_t *obj;
 	const char *lss;
 	const layer_setup_t *ls;
+	layer_setup_res_t lsr;
 
 	if ((argc != 2) || (argv[0].type != PCBQ_VT_OBJ) || (argv[1].type != PCBQ_VT_STRING))
 		return -1;
@@ -431,11 +450,11 @@ rnd_trace("layer_setup: %p/'%s' -> %p\n", lss, lss, ls);
 TODO("cache result: obj-ls -> direction (+1 or -1) where it was true or 0 if it was false");
 
 	/* try above=-1, below=+1 (directions matching normal layer stack ordering) */
-	if (layer_setup_exec(ectx, obj, ls, -1))
+	if (layer_setup_exec(ectx, obj, ls, -1, &lsr))
 		PCB_QRY_RET_INT(res, 1);
 
 	/* try above=+1, below=-1 (opposite directions to normal layer stack ordering)  */
-	if (layer_setup_exec(ectx, obj, ls, 1))
+	if (layer_setup_exec(ectx, obj, ls, 1, &lsr))
 		PCB_QRY_RET_INT(res, 1);
 
 	/* both failed -> this layer setup is invalid in any direction */
