@@ -307,13 +307,19 @@ rnd_trace("objects on the right net: %d\n", objs->used);
 rnd_trace(" sub! %p %$mm\n", iceberg, (rnd_coord_t)sqrt(iceberg->contours->area));
 			rnd_polyarea_boolean_free(iceberg, heat, &ptmp, RND_PBO_SUB);
 			iceberg = ptmp;
+			if (iceberg == NULL)
+				break;
 		}
 	}
 
-	res = sqrt(iceberg->contours->area);
-rnd_trace(" res=%$mm\n", (rnd_coord_t)res);
+	if (iceberg != NULL) {
+		res = sqrt(iceberg->contours->area);
+		rnd_polyarea_free(&iceberg);
+	}
+	else
+		res = 0;
 
-	rnd_polyarea_free(&iceberg);
+rnd_trace(" res=%$mm\n", (rnd_coord_t)res);
 
 	/* by now iceberg contains 'exposed' parts, anything not covered by objects
 	   found; if it is not zero, the cover was not full */
