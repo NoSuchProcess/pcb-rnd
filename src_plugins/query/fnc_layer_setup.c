@@ -39,6 +39,8 @@ typedef struct {
 	/* query result: loc and target */
 	layer_setup_loc_t res_loc;
 	layer_setup_target_t res_target;
+
+	unsigned valid:1; /* 0 on syntax error */
 } layer_setup_t;
 
 void pcb_qry_uninit_layer_setup(pcb_qry_exec_t *ectx)
@@ -222,7 +224,8 @@ static const layer_setup_t *layer_setup_compile(pcb_qry_exec_t *ectx, const char
 		return ls;
 
 	ls = calloc(sizeof(layer_setup_t), 1);
-	layer_setup_compile_(ectx, ls, s);
+	if (layer_setup_compile_(ectx, ls, s) == 0)
+		ls->valid = 1;
 	htpp_set(&ectx->layer_setup_precomp, (void *)s, ls);
 	return ls;
 }
@@ -419,6 +422,9 @@ static int fnc_layer_setup(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, 
 
 	obj = (pcb_any_obj_t *)argv[0].data.obj;
 	ls = layer_setup_compile(ectx, lss);
+
+	if (!ls->valid)
+		return -1;
 
 rnd_trace("layer_setup: %p/'%s' -> %p\n", lss, lss, ls);
 
