@@ -65,9 +65,10 @@ int pcb_fp_dupname(const char *name, char **basename, char **params)
 	/* split at '(' */
 	*s = '\0';
 	*params = s + 1;
-	s = *params + strlen(*params) - 1;
 
 	/* strip ')' */
+	s = *params + strlen(*params) - 1;
+	while(isspace(*s) && (s > *params)) s--;
 	if (*s == ')')
 		*s = '\0';
 
