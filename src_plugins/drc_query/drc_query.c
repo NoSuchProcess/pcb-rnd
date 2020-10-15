@@ -342,15 +342,15 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 		lht_node_t *nd = i->prop.src;
 		char *path = rnd_concat(DRC_CONF_PATH_CONST, nd->name, NULL);
 		rnd_coord_t *c;
+		rnd_conf_native_t *nat = rnd_conf_get_field(path);
 
-		{
+		if ((nat == NULL) || (nat->used == 0)) { /* create the definition and set default value (but only once) */
 			union {
 				rnd_coord_t c;
 				double d;
 				void *ptr;
 				char *str;
 			} anyval;
-			rnd_conf_native_t *nat;
 			lht_node_t *ndesc = lht_dom_hash_get(nd, "desc");
 			lht_node_t *ntype = lht_dom_hash_get(nd, "type");
 			lht_node_t *ndefault = lht_dom_hash_get(nd, "default");
@@ -377,7 +377,6 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 			}
 
 			/* create the new conf node for the def if it doesn't already exist */
-			nat = rnd_conf_get_field(path);
 			if (nat == NULL) {
 				c = calloc(sizeof(anyval), 1);
 				pathfree = 0;
