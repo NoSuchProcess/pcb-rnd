@@ -8127,11 +8127,12 @@
 ../src_plugins/query/fields_sphash.o: \
  ../src_plugins/query/fields_sphash.c
 ../src_plugins/query/fnc.o: ../src_plugins/query/fnc.c ../config.h \
- ../src_3rd/librnd/config.h ../src_3rd/librnd/core/actions.h \
- ../src_3rd/librnd/core/hid.h ../src_3rd/liblihata/dom.h \
- ../src_3rd/liblihata/lihata.h ../src_3rd/liblihata/parser.h \
- ../src_3rd/genht/htsp.h ../src_3rd/genht/ht.h \
- ../src_3rd/librnd/core/error.h ../src_3rd/librnd/core/global_typedefs.h \
+ ../src_3rd/librnd/config.h ../src_3rd/genht/hash.h ../src_3rd/genht/ht_utils.h \
+ ../src_3rd/librnd/core/actions.h ../src_3rd/librnd/core/hid.h \
+ ../src_3rd/liblihata/dom.h ../src_3rd/liblihata/lihata.h \
+ ../src_3rd/liblihata/parser.h ../src_3rd/genht/htsp.h \
+ ../src_3rd/genht/ht.h ../src_3rd/librnd/core/error.h \
+ ../src_3rd/librnd/core/global_typedefs.h \
  ../src_3rd/librnd/core/rnd_bool.h ../src_3rd/librnd/core/box.h \
  ../src_3rd/librnd/core/math_helper.h ../src_3rd/librnd/core/misc_util.h \
  ../src_3rd/librnd/core/unit.h ../src_3rd/libfungw/fungw.h \
@@ -8154,8 +8155,8 @@
  obj_subc.h ../src_3rd/libminuid/libminuid.h \
  ../src_3rd/librnd/poly/rtree2_compat.h ../src_3rd/librnd/poly/rtree.h \
  ../src_3rd/genrtree/genrtree_api.h ht_subc.h ../src_3rd/genht/ht.h \
- ../src_3rd/genht/hash.h obj_pstk_list.h obj_pstk.h vtpadstack.h \
- obj_pstk_shape.h polygon.h vtpadstack_t.h find.h obj_term.h netlist.h \
+ obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
+ vtpadstack_t.h find.h obj_term.h netlist.h \
  ../src_plugins/query/net_int.h obj_common.h \
  ../src_plugins/query/query_exec.h ../src_plugins/query/query.h \
  ../src_3rd/genvector/vti0.h ../src_3rd/genht/htsi.h \
