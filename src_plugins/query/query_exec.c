@@ -135,7 +135,7 @@ static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, pcb_qry_val_t *
 
 	do {
 		val_free_fields(res);
-		if (pcb_qry_eval(ec, prg, res, cb, user_ctx) == 0) {
+		if ((pcb_qry_eval(ec, prg, res, cb, user_ctx) == 0) && (cb != NULL)) {
 			if ((eval_list) && (res->type == PCBQ_VT_LST)) {
 				long n;
 
@@ -241,7 +241,7 @@ static int pcb_qry_run_one(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, int ret, pcb
 					ec->root = n;
 					if (ec->iter != NULL)
 						ec->iter->it_active = n->precomp.it_active;
-					r = pcb_qry_run_(ec, n->data.children, (is_ret ? res : NULL), 1, 0, cb, user_ctx);
+					r = pcb_qry_run_(ec, n->data.children, (is_ret ? res : NULL), 1, 0, (n->type == PCBQ_RETURN ? NULL : cb), user_ctx);
 					if (ec->iter != NULL)
 						ec->iter->it_active = NULL;
 					if (r < 0)
