@@ -474,13 +474,35 @@ rnd_trace("layer_setup: %p/'%s' -> %p (ls_res=%p)\n", lss, lss, ls, ls_res);
 
 	/* try above=-1, below=+1 (directions matching normal layer stack ordering) */
 	if (layer_setup_exec(ectx, obj, ls, ls_res, -1, &lsr))
-		PCB_QRY_RET_INT(res, 1);
+		goto done;
 
 	/* try above=+1, below=-1 (opposite directions to normal layer stack ordering)  */
 	if (layer_setup_exec(ectx, obj, ls, ls_res, 1, &lsr))
-		PCB_QRY_RET_INT(res, 1);
+		goto done;
 
 	/* both failed -> this layer setup is invalid in any direction */
-	PCB_QRY_RET_INT(res, 0);
+
+	/* generate the result according to ls_res */
+	done:;
+	switch(ls_res->res_target) {
+		case LST_NONE:
+			PCB_QRY_RET_INT(res, lsr.matched);
+
+		case LST_UNCOVERED:
+			if (!lsr.matched) PCB_QRY_RET_INV(res);
+			PCB_QRY_RET_DBL(res, lsr.uncovered[ls_res->res_loc]);
+
+		case LST_SUBSTRATE:
+			if (!lsr.matched) PCB_QRY_RET_INV(res);
+			PCB_QRY_RET_OBJ(res, lsr.substrate[ls_res->res_loc]);
+
+		case LST_TYPE:
+		case LST_NET:
+		case LST_NETMARGIN:
+		case LST_RESULT:
+			PCB_QRY_RET_INV(res);
+	}
+
+	return -1;
 }
 
