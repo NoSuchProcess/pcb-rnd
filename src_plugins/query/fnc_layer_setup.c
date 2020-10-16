@@ -27,7 +27,7 @@
 /* Query language - layer setup checks */
 
 typedef enum { LSL_ON, LSL_BELOW, LSL_ABOVE, LSL_max } layer_setup_loc_t;
-typedef enum { LST_NONE, LST_TYPE, LST_NET, LST_NETMARGIN, LST_RESULT, LST_UNCOVERED } layer_setup_target_t;
+typedef enum { LST_NONE, LST_TYPE, LST_NET, LST_NETMARGIN, LST_RESULT, LST_UNCOVERED, LST_SUBSTRATE } layer_setup_target_t;
 
 typedef struct {
 	/* condition/check */
@@ -48,6 +48,7 @@ typedef struct {
 typedef struct {
 	int matched;                /* 1 if condition matched, 0 otherwise */
 	double uncovered[LSL_max];  /* area of uncovered portion in nm^2, after a require_net check */
+	pcb_layergrp_t *substrate[LSL_max];
 } layer_setup_res_t;
 
 void pcb_qry_uninit_layer_setup(pcb_qry_exec_t *ectx)
@@ -90,6 +91,7 @@ do { \
 		if (strncmp(s, "above", 5) == 0)           { s += 5; loc = LSL_ABOVE; } \
 		else if (strncmp(s, "below", 5) == 0)      { s += 5; loc = LSL_BELOW; } \
 		else if (strncmp(s, "result", 6) == 0)     { s += 6; target = LST_RESULT; } \
+		else if (strncmp(s, "substrate", 9) == 0)  { s += 9; target = LST_SUBSTRATE; } \
 		else if (strncmp(s, "netmargin", 9) == 0)  { s += 9; target = LST_NETMARGIN; } \
 		else if (strncmp(s, "uncovered", 9) == 0)  { s += 9; target = LST_UNCOVERED; } \
 		else if (strncmp(s, "type", 4) == 0)       { s += 4; target = LST_TYPE; } \
@@ -367,7 +369,7 @@ static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const
 {
 	pcb_layer_t *ly;
 	pcb_layergrp_t *grp;
-	rnd_layergrp_id_t gid;
+	rnd_layergrp_id_t gid, sgid;
 
 	lsr->matched = 0;
 	lsr->uncovered[LSL_ABOVE] = lsr->uncovered[LSL_BELOW] = -1;
@@ -414,6 +416,12 @@ TODO("cache result: (obj::ls::above_dir) -> lsr where it was true or 0 if it was
 
 	/* if nothing failed, we have a match */
 	lsr->matched = 1;
+
+	/* store above/below substrate */
+	sgid = pcb_layergrp_step(ectx->pcb, gid, above_dir, PCB_LYT_SUBSTRATE);
+	lsr->substrate[LSL_ABOVE] = (sgid != -1) ? &ectx->pcb->LayerGroups.grp[sgid] : NULL;
+	sgid = pcb_layergrp_step(ectx->pcb, gid, -above_dir, PCB_LYT_SUBSTRATE);
+	lsr->substrate[LSL_BELOW] = (sgid != -1) ? &ectx->pcb->LayerGroups.grp[sgid] : NULL;
 
 	/* calculate the return value; use ->res_* fields from ls_res */
 	/* if condition didn't calculate the result, do it now */
