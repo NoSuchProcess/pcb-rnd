@@ -424,9 +424,64 @@ static int field_layer(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *f
 	PCB_QRY_RET_INV(res);
 }
 
+static int field_layergrp(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	pcb_layergrp_t *g = (pcb_layergrp_t *)obj;
+	query_fields_keys_t fh1;
+
+	fld2hash_req(fh1, fld, 0);
+
+	/* in some cases .type will do the wrong thing at the caller; the escape is .layer.type; drop the redundant .layer */
+	if (fh1 == query_fields_layergroup) {
+		fld = fld->next;
+		fld2hash_req(fh1, fld, 0);
+	}
+
+	if (fh1 == query_fields_a) {
+		const char *s2;
+		fld2str_req(s2, fld, 1);
+		PCB_QRY_RET_STR(res, pcb_attribute_get(&g->Attributes, s2));
+	}
+
+	if (fld->next != NULL)
+		PCB_QRY_RET_INV(res);
+
+	switch(fh1) {
+		case query_fields_IID:      PCB_QRY_RET_INT(res, pcb_obj_iid((pcb_any_obj_t *)g));
+		case query_fields_name:     PCB_QRY_RET_STR(res, g->name);
+		case query_fields_visible:  PCB_QRY_RET_INT(res, g - ec->pcb->LayerGroups.grp);
+		case query_fields_position: PCB_QRY_RET_INT(res, g->ltype & PCB_LYT_ANYWHERE);
+		case query_fields_type:     PCB_QRY_RET_INT(res, g->ltype & PCB_LYT_ANYTHING);
+		case query_fields_purpose:  PCB_QRY_RET_STR(res, g->purpose);
+		default:;
+	}
+
+	PCB_QRY_RET_INV(res);
+}
+
 static int field_layer_from_ptr(pcb_qry_exec_t *ec, pcb_layer_t *l, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	return field_layer(ec, (pcb_any_obj_t *)l, fld, res);
+}
+
+static int field_layergrp_from_ptr(pcb_qry_exec_t *ec, pcb_layergrp_t *l, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	return field_layergrp(ec, (pcb_any_obj_t *)l, fld, res);
+}
+
+static int field_layergrp_from_layer_ptr(pcb_qry_exec_t *ec, pcb_layer_t *l, pcb_qry_node_t *fld, pcb_qry_val_t *res)
+{
+	pcb_layergrp_t *grp;
+
+	l = pcb_layer_get_real(l);
+	if (l == NULL)
+		PCB_QRY_RET_INV(res);
+
+	grp = pcb_get_layergrp(ec->pcb, l->meta.real.grp);
+	if (grp == NULL)
+		PCB_QRY_RET_INV(res);
+
+	return field_layergrp(ec, (pcb_any_obj_t *)grp, fld, res);
 }
 
 /* process from .layer */
@@ -448,6 +503,27 @@ static int layer_of_obj(pcb_qry_exec_t *ec, pcb_qry_node_t *fld, pcb_qry_val_t *
 	}
 
 	return field_layer_from_ptr(ec, PCB->Data->Layer+id, fld, res);
+}
+
+/* process from .layergroup */
+static int layergrp_of_obj(pcb_qry_exec_t *ec, pcb_qry_node_t *fld, pcb_qry_val_t *res, pcb_layer_type_t mask)
+{
+	rnd_layergrp_id_t id;
+	const char *s1;
+
+	if (pcb_layergrp_list(PCB, mask, &id, 1) != 1)
+		PCB_QRY_RET_INV(res);
+
+	fld2str_req(s1, fld, 0);
+
+	if (s1 == NULL) {
+		res->source = NULL;
+		res->type = PCBQ_VT_OBJ;
+		res->data.obj = (pcb_any_obj_t *)&(PCB->LayerGroups.grp[id]);
+		return 0;
+	}
+
+	return field_layergrp_from_ptr(ec, PCB->LayerGroups.grp+id, fld, res);
 }
 
 static double pcb_line_len2(pcb_line_t *l)
@@ -473,6 +549,12 @@ static int field_line(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
 			return field_layer_from_ptr(ec, obj->parent.layer, fld->next, res);
+		else
+			PCB_QRY_RET_INV(res);
+	}
+	else if (fh1 == query_fields_layergroup) {
+		if (obj->parent_type == PCB_PARENT_LAYER)
+			return field_layergrp_from_layer_ptr(ec, obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
 	}
@@ -547,6 +629,12 @@ static int field_arc(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld
 		else
 			PCB_QRY_RET_INV(res);
 	}
+	else if (fh1 == query_fields_layergroup) {
+		if (obj->parent_type == PCB_PARENT_LAYER)
+			return field_layergrp_from_layer_ptr(ec, obj->parent.layer, fld->next, res);
+		else
+			PCB_QRY_RET_INV(res);
+	}
 
 	NETNAME_FIELDS(ec);
 
@@ -603,6 +691,12 @@ static int field_gfx(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld
 		else
 			PCB_QRY_RET_INV(res);
 	}
+	else if (fh1 == query_fields_layergroup) {
+		if (obj->parent_type == PCB_PARENT_LAYER)
+			return field_layergrp_from_layer_ptr(ec, obj->parent.layer, fld->next, res);
+		else
+			PCB_QRY_RET_INV(res);
+	}
 
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
@@ -635,6 +729,12 @@ static int field_text(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
 			return field_layer_from_ptr(ec, obj->parent.layer, fld->next, res);
+		else
+			PCB_QRY_RET_INV(res);
+	}
+	else if (fh1 == query_fields_layergroup) {
+		if (obj->parent_type == PCB_PARENT_LAYER)
+			return field_layergrp_from_layer_ptr(ec, obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
 	}
@@ -677,6 +777,12 @@ static int field_polygon(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t 
 	if (fh1 == query_fields_layer) {
 		if (obj->parent_type == PCB_PARENT_LAYER)
 			return field_layer_from_ptr(ec, obj->parent.layer, fld->next, res);
+		else
+			PCB_QRY_RET_INV(res);
+	}
+	else if (fh1 == query_fields_layergroup) {
+		if (obj->parent_type == PCB_PARENT_LAYER)
+			return field_layergrp_from_layer_ptr(ec, obj->parent.layer, fld->next, res);
 		else
 			PCB_QRY_RET_INV(res);
 	}
@@ -819,6 +925,9 @@ static int field_subc(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 	if (fh1 == query_fields_layer)
 		return layer_of_obj(ec, fld->next, res, PCB_LYT_SILK | (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
 
+	if (fh1 == query_fields_layergroup)
+		return layergrp_of_obj(ec, fld->next, res, PCB_LYT_SILK | (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, p) ? PCB_LYT_BOTTOM : PCB_LYT_TOP));
+
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
 
@@ -914,8 +1023,7 @@ int pcb_qry_obj_field(pcb_qry_exec_t *ec, pcb_qry_val_t *objval, pcb_qry_node_t 
 
 		case PCB_OBJ_NET:      return field_net(ec, obj, fld, res);
 		case PCB_OBJ_LAYER:    return field_layer(ec, obj, fld, res);
-TODO("layer TODO")
-		case PCB_OBJ_LAYERGRP:
+		case PCB_OBJ_LAYERGRP: return field_layergrp(ec, obj, fld, res);
 		default:;
 	}
 
