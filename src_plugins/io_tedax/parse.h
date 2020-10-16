@@ -11,7 +11,7 @@
 		char *end; \
 		for(end = s + strlen(s) - 1; (end >= s) && ((*end == '\r') || (*end == '\n')); end--) \
 			*end = '\0'; \
-		if (*end == '\\') \
+		if ((end[0] == '\\') && ((end == s) || (end[-1] != '\\'))) \
 			return -1; \
 	} while(0)
 
