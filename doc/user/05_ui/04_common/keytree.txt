@@ -114,6 +114,7 @@ e;g;c	pcb-menu-default.lht	ChangeClearSize(Object,+2,mil) 	Clearance +2 mil
 e;g;c-shift	pcb-menu-default.lht	ChangeClearSize(Object,-2,mil) 	Clearance -2 mil
 e;g;d	pcb-menu-default.lht	ChangeDrillSize(Object,+5,mil) 	ChangeDrill +5 mil
 e;g;d-shift	pcb-menu-default.lht	ChangeDrillSize(Object,-5,mil) 	ChangeDrill -5 mil
+e;g;g	pcb-menu-default.lht	padstackedit 	Edit padstack geometry\057prototype
 e;g;s	pcb-menu-default.lht	ChangeSize(Object,+5,mil) 	ChangeSize +5 mil
 e;g;s-shift	pcb-menu-default.lht	ChangeSize(Object,-5,mil) 	ChangeSize -5 mil
 e;g;y	pcb-menu-default.lht	ChangeSizes(Object,style,mil) 	ChangeSizes to Route style
@@ -186,8 +187,10 @@ k;k	pcb-menu-default.lht	Cursor(Warp,0,-1,grid) 	Step Up
 k;l	pcb-menu-default.lht	Cursor(Warp,1,0,grid) 	Step Right
 k;r	pcb-menu-default.lht	Tool(Release);Popup(popup-obj, obj-type)	Click (right)
 k;space	pcb-menu-default.lht	Tool(Press);Tool(Release)	Click (left)
+l;h;	pcb-menu-default.lht	ToggleView(all, vis, clear) 	all layers off
 l;k	pcb-menu-default.lht	LayerByStack(Select, Prev)	Select previous layer
 l;l	pcb-menu-default.lht	LayerByStack(Select, Next)	Select next layer
+l;v;	pcb-menu-default.lht	ToggleView(all, vis, set) 	all layers on
 left	pcb-menu-default.lht	Cursor(Warp,-1,0,grid) 	Step Left
 left-ctrl	pcb-menu-default.lht	Scroll(left) 	Scroll Left
 left-shift	pcb-menu-default.lht	Cursor(Pan,-50,0,view) 	Step +Left
