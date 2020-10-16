@@ -85,6 +85,44 @@ static int fnc_abs(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_
 	PCB_QRY_RET_INV(res);
 }
 
+static int fnc_double(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	char *end;
+	double d;
+	if (argc == 1) {
+		switch(argv[0].type) {
+			case PCBQ_VT_COORD: PCB_QRY_RET_DBL(res, argv[0].data.crd);
+			case PCBQ_VT_LONG: PCB_QRY_RET_DBL(res, argv[0].data.lng);
+			case PCBQ_VT_DOUBLE: PCB_QRY_RET_DBL(res, argv[0].data.dbl);
+			case PCBQ_VT_STRING:
+				d = strtod(argv[0].data.str, &end);
+				if (*end == '\0')
+					PCB_QRY_RET_DBL(res, d);
+			default: break;
+		}
+	}
+	PCB_QRY_RET_INV(res);
+}
+
+static int fnc_int(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	char *end;
+	long d;
+	if (argc == 1) {
+		switch(argv[0].type) {
+			case PCBQ_VT_COORD: PCB_QRY_RET_INT(res, argv[0].data.crd);
+			case PCBQ_VT_LONG: PCB_QRY_RET_INT(res, argv[0].data.lng);
+			case PCBQ_VT_DOUBLE: PCB_QRY_RET_INT(res, argv[0].data.dbl);
+			case PCBQ_VT_STRING:
+				d = strtol(argv[0].data.str, &end, 10);
+				if (*end == '\0')
+					PCB_QRY_RET_INT(res, d);
+			default: break;
+		}
+	}
+	PCB_QRY_RET_INV(res);
+}
+
 static int fnc_coord(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
 	if (argc == 1) {
@@ -109,6 +147,8 @@ void pcb_qry_basic_fnc_init(void)
 {
 	pcb_qry_fnc_reg("llen", fnc_llen);
 	pcb_qry_fnc_reg("abs", fnc_abs);
+	pcb_qry_fnc_reg("double", fnc_double);
+	pcb_qry_fnc_reg("int", fnc_int);
 	pcb_qry_fnc_reg("isvoid", fnc_isvoid);
 	pcb_qry_fnc_reg("coord", fnc_coord);
 	pcb_qry_fnc_reg("distance", fnc_distance);
