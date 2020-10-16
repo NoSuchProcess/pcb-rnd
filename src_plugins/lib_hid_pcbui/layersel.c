@@ -127,6 +127,38 @@ static const char *all_closed_xpm[] = {
 "          ",
 };
 
+static const char *all_vis_xpm[] = {
+"12 9 3 1",
+" 	c None",
+"@	c #6EA5D7",
+"+	c #000000",
+"            ",
+"    ++++    ",
+"  ++@@@@++  ",
+" +@@@++@@@+ ",
+"+@@@++++@@@+",
+" +@@@++@@@+ ",
+"  ++@@@@++  ",
+"    ++++    ",
+"            ",
+};
+
+static const char *all_invis_xpm[] = {
+"12 9 3 1",
+" 	c None",
+"@	c #6EA5D7",
+"+	c #000000",
+" @+@        ",
+"  @+@+++    ",
+"  +@+@@@++  ",
+" +@@@+@@@@+ ",
+"+@@@+@+@@@@+",
+" +@@@+@+@@+ ",
+"  ++@@@@+@  ",
+"    ++++@+@ ",
+"         @+@",
+};
+
 
 typedef struct {
 	char buf[32][20];
@@ -338,6 +370,16 @@ static void all_open_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 static void all_close_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	all_open_close(0);
+}
+
+static void all_vis_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	rnd_actionva(rnd_gui->get_dad_hidlib(hid_ctx), "ToggleView", "all", "vis", "set", NULL);
+}
+
+static void all_invis_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	rnd_actionva(rnd_gui->get_dad_hidlib(hid_ctx), "ToggleView", "all", "vis", "clear", NULL);
 }
 
 /* Select the first visible layer (physically) below the one turned off or
@@ -766,6 +808,12 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 			RND_DAD_PICBUTTON(ls->sub.dlg, all_closed_xpm);
 				RND_DAD_HELP(ls->sub.dlg, "collapse/close all layer groups\nso that layer names are\nnot displayed,\neach row is a layer group");
 				RND_DAD_CHANGE_CB(ls->sub.dlg, all_close_cb);
+			RND_DAD_PICBUTTON(ls->sub.dlg, all_vis_xpm);
+				RND_DAD_HELP(ls->sub.dlg, "all layers visible");
+				RND_DAD_CHANGE_CB(ls->sub.dlg, all_vis_cb);
+			RND_DAD_PICBUTTON(ls->sub.dlg, all_invis_xpm);
+				RND_DAD_HELP(ls->sub.dlg, "all layers invisible\nexcept for the current layer group");
+				RND_DAD_CHANGE_CB(ls->sub.dlg, all_invis_cb);
 			RND_DAD_BEGIN_HBOX(ls->sub.dlg);
 				RND_DAD_COMPFLAG(ls->sub.dlg, RND_HATF_EXPFILL);
 			RND_DAD_END(ls->sub.dlg);
