@@ -17,6 +17,7 @@
 - BUG: CLI: enter invalid action with (), e.g. foo() -> no error message (works without the ()) [report: Igor2]
 - BUG: shape round rect is generated far away from the cursor after some operations [report: Aron]
 - BUG: library window refresh button: doesn't seem to work when cursor is on a footprint [report: SnakesAndStuff]
+- BUG: gdk: empty board, right click layer, all layers on -> assert [report: Igor2]
 - DOC: regex (genregex), reference it from query() and advanced search docs [report: TwisteR]
 
 2. For later releases ===============================================================================
