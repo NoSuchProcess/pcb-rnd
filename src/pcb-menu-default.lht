@@ -842,8 +842,8 @@ ha:rnd-menu-v1 {
 				ha:Insert new, before this layer    = { action={ MoveLayer(-1, c); EditLayer() } }
 				ha:Insert new, after this layer     = { action={ Undo(FreezeSerial); MoveLayer(-1, c); MoveLayer(c, step+); Undo(UnFreezeSerial); Undo(IncSerial); EditLayer() } }
 				-
-				ha:all layers on                    = { action=ToggleView(all, vis, set) }
-				ha:all layers off                   = { action=ToggleView(all, vis, clear) }
+				ha:all layers on                    = { a={<key>l;<key>v;}; action=ToggleView(all, vis, set) }
+				ha:all layers off                   = { a={<key>l;<key>i;}; action=ToggleView(all, vis, clear) }
 			}
 		} # layer
 
