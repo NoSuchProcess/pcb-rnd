@@ -272,7 +272,7 @@ expr:
 	| T_CONST                { $$ = $1; }
 	| var                    { $$ = $1; }
 	| constant               { $$ = $1; }
-	| var '.' fields         {
+	| expr '.' fields        {
 		pcb_qry_node_t *n;
 		$$ = pcb_qry_n_alloc(PCBQ_FIELD_OF);
 		$$->data.children = $1;
