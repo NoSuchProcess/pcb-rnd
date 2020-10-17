@@ -449,7 +449,7 @@ ha:rnd-menu-v1 {
 				-
 				ha:Clear buffer                    = { a={<key>b;<key>c;<key>c;}; action=PasteBuffer(Clear) }
 				ha:Save buffer content to file     = { a={<key>b;<key>f;<key>s;}; action=PasteBuffer(SaveAll) }
-				ha:Load buffer content from file   = { a={<key>b;<key>f;<key>l;}; action=PasteBuffer(LoadAll) }
+				ha:Load buffer content from file   = { a={<key>b;<key>f;<key>l;}; li:action={PasteBuffer(Clear); PasteBuffer(LoadAll)} }
 				-
 				ha:Convert buffer to subcircuit    = { a={<key>b;<key>c;<key>s}; action=PasteBuffer(ConvertSubc) }
 				ha:Convert buffer to padstack      = { a={<key>b;<key>c;<key>p}; li:action={PadstackConvert(buffer); Tool(buffer);} }
