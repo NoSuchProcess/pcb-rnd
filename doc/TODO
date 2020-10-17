@@ -7,6 +7,7 @@
 + FEATURE: if drc_query is disabled, it is hard to figure because the preferences window or the drc_query dialog doesn't show; plus the drc window should also list the number of drc plugins ran -> drc throws an error if all tests/plugins are disabled; preferences dialog prints an error if 0 drc plugins found [report: Majenko]
 + FEATURE: DRC: net attribute based clearance [report: Nicklas]
 + FEATURE: when hovering over an editable object, draw edit/grab points as labels [report: Majenko]
+- FEATURE: DRC: check for floating copper
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 - BUG: openscad export: unticking top copper (and probably others) in the export dialog doesn't stop the plugin from exporting everything [report: Bdale]
 - BUG: openscad export: load a board from menu, {f e} export; load another board from menu, {f e} export: output is set to the old file name! [report: Igor2]
@@ -18,7 +19,9 @@
 - BUG: shape round rect is generated far away from the cursor after some operations [report: Aron]
 - BUG: library window refresh button: doesn't seem to work when cursor is on a footprint [report: SnakesAndStuff]
 - BUG: gdk: empty board, right click layer, all layers on -> assert [report: Igor2]
+- BUG: shift-tab or ctrl-tab while term IDs and subc refdes are visible on overlay: they are mirrored [report: SnakesAndStuff]
 - DOC: regex (genregex), reference it from query() and advanced search docs [report: TwisteR]
+- DOC: query: int() and double()
 
 2. For later releases ===============================================================================
 - CLEANUP: TODO27: undo's removed list shouldn't depend on object IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
