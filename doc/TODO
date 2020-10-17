@@ -8,6 +8,7 @@
 + FEATURE: DRC: net attribute based clearance [report: Nicklas]
 + FEATURE: when hovering over an editable object, draw edit/grab points as labels [report: Majenko]
 - FEATURE: DRC: check for floating copper
+- BUG: file revert {f r}, or file new {f n} -> xor draw stops working with the line tool [report: aron]
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 - BUG: openscad export: unticking top copper (and probably others) in the export dialog doesn't stop the plugin from exporting everything [report: Bdale]
 - BUG: openscad export: load a board from menu, {f e} export; load another board from menu, {f e} export: output is set to the old file name! [report: Igor2]
