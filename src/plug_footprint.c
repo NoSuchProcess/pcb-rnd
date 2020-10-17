@@ -29,6 +29,8 @@
 
 #include "config.h"
 
+#include <ctype.h>
+
 #include "plug_footprint.h"
 #include <librnd/core/plugins.h>
 
