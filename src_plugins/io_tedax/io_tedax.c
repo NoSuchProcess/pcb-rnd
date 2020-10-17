@@ -192,7 +192,7 @@ static fgw_error_t pcb_act_LoadtedaxFrom(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	}
 	if (rnd_strcasecmp(type, "footprint") == 0) {
 		gen_load(footprint, fname);
-		RND_ACT_IRES(tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0, id, silent));
+		RND_ACT_IRES(tedax_fp_load(PCB_PASTEBUFFER->Data, fname, 0, id, silent, 0));
 		return 0;
 	}
 	if (rnd_strcasecmp(type, "stackup") == 0) {
@@ -253,7 +253,7 @@ rnd_action_t tedax_action_list[] = {
 
 static int io_tedax_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *Ptr, const char *name, const char *subfpname)
 {
-	return tedax_fp_load(Ptr, name, 0, NULL, 0);
+	return tedax_fp_load(Ptr, name, 0, NULL, 0, 1);
 }
 
 int io_tedax_fp_write_subcs_head(pcb_plug_io_t *ctx, void **udata, FILE *f, int lib, long num_subcs)
@@ -299,7 +299,7 @@ int io_tedax_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filenam
 
 	Ptr->is_footprint = 1;
 
-	res = tedax_fp_load(Ptr->Data, Filename, 0, NULL, 0);
+	res = tedax_fp_load(Ptr->Data, Filename, 0, NULL, 0, 0);
 	if (res == 0) {
 		pcb_subc_t *sc = Ptr->Data->subc.lst.first;
 

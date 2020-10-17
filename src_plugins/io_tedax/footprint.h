@@ -5,7 +5,7 @@
 int tedax_fp_save(pcb_data_t *data, const char *fn, long subc_idx);
 int tedax_fp_fsave(pcb_data_t *data, FILE *f, long subc_idx);
 int tedax_fp_fsave_subc(pcb_subc_t *subc, FILE *f);
-int tedax_fp_load(pcb_data_t *data, const char *fn, int multi, const char *blk_id, int silent);
+int tedax_fp_load(pcb_data_t *data, const char *fn, int multi, const char *blk_id, int silent, int searchlib);
 
 /* parse a single footprint at current file pos; returns NULL on error */
 pcb_subc_t *tedax_parse_1fp(pcb_data_t *data, FILE *fn, char *buff, int buff_size, char *argv[], int argv_size);

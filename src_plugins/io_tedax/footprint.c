@@ -41,6 +41,8 @@
 #include <librnd/core/error.h>
 #include "data.h"
 #include "board.h"
+#include "conf_core.h"
+#include "plug_footprint.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/safe_fs.h>
@@ -666,12 +668,17 @@ static int tedax_parse_fp(pcb_data_t *data, FILE *fn, int multi, const char *blk
 	return 0;
 }
 
-int tedax_fp_load(pcb_data_t *data, const char *fn, int multi, const char *blk_id, int silent)
+int tedax_fp_load(pcb_data_t *data, const char *fn, int multi, const char *blk_id, int silent, int searchlib)
 {
 	FILE *f;
 	int ret = 0;
+	pcb_fp_fopen_ctx_t st;
 
-	f = rnd_fopen(&PCB->hidlib, fn, "r");
+
+	if (searchlib)
+		f = pcb_fp_fopen(&conf_core.rc.library_search_paths, fn, &st, NULL);
+	else
+		f = rnd_fopen(&PCB->hidlib, fn, "r");
 	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "can't open file '%s' for read\n", fn);
 		return -1;
@@ -679,7 +686,10 @@ int tedax_fp_load(pcb_data_t *data, const char *fn, int multi, const char *blk_i
 
 	ret = tedax_parse_fp(data, f, multi, blk_id, silent);
 
-	fclose(f);
+	if (searchlib)
+		pcb_fp_fclose(f, &st);
+	else
+		fclose(f);
 	return ret;
 }
 
