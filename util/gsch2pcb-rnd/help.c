@@ -33,7 +33,7 @@
 extern char *pcb_file_name, *pcb_new_file_name, *bak_file_name, *pins_file_name, *net_file_name;
 
 static char *usage_string0a =
-	"usage: gsch2pcb [options] {project | foo.sch [foo1.sch ...]}\n"
+	"usage: gsch2pcb-rnd [options] {project | foo.sch [foo1.sch ...]}\n"
 	"\n"
 	"Generate a PCB annotation file from a set of gschem schematics.\n"
 	"   gnetlist -g PCB is run to generate foo.net from the schematics.\n" "\n";
@@ -112,7 +112,7 @@ static char *usage_string1b =
 	"       --fix-elements    If a schematic component footprint is not equal\n"
 	"                         to its PCB element Description, update the\n"
 	"                         Description instead of replacing the element.\n"
-	"                         Do this the first time gsch2pcb is used with\n"
+	"                         Do this the first time gsch2pcb-rnd is used with\n"
 	"                         PCB files originally created with gschem2pcb.\n";
 static char *usage_string1c =
 	"   -v, --verbose         Use -v -v for additional file element debugging.\n"
