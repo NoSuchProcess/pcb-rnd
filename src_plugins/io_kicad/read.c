@@ -2627,6 +2627,8 @@ static int kicad_parse_pcb(read_state_t *st)
 	if ((st->dom.root->str == NULL) || (strcmp(st->dom.root->str, "kicad_pcb") != 0))
 		return -1;
 
+	pcb_data_clip_inhibit_inc(st->pcb);
+
 	/* Call the corresponding subtree parser for each child node of the root
 	   node; if any of them fail, parse fails */
 	ret = kicad_foreach_dispatch(st, st->dom.root->children, disp);
@@ -2641,6 +2643,8 @@ static int kicad_parse_pcb(read_state_t *st)
 		if (ly != NULL)
 			ly->comb = PCB_LYC_AUTO;
 	}
+
+	pcb_data_clip_inhibit_dec(st->pcb, rnd_true);
 
 	return ret;
 }
