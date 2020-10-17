@@ -235,6 +235,79 @@ Functions listed below can be called from a query expression.
 	</ul>
 
 
+<h3 autotoc="yes"> Advanced layer access </h3>
+
+	<h4 autotoc="yes"> layer_setup(obj, directive [, res]) </h4>
+	<p id="layer_setup">
+	Takes an object and executes a directive on the layer setup of the object.
+	If the directive matches, retruns either a measure (if result is specified)
+	or returns true.
+	<p>
+	Directive is a comma separated list of requirements; the directive matches
+	only if all requirements matched. A requirement is specified in the form
+	of <i>key:value</i>.
+	<p>
+	<i>Key</i> is a dash separated list of:
+	<ul>
+		<li> <i>above</i> - match a layer group that is above the object's layer (location modifier)
+		<li> <i>below</i> - match a layer group that is below the object's layer (location modifier)
+		<li> <i>on</i> - match the layer group of the object (location modifier)
+		<li> <i>type</i> - match a layer group type; <i>value</i> is a layer group type
+		<li> <i>net</i> - objects belonging to a specific net on an adjacent copper layer group that covers the current object; <i>value</i> is the name of a net
+		<li> <i>netmargin</i> - supplement for the <i>net</i> key: require the cover to extend the specified; <i>value</i> is a size (coord)
+	</ul>
+	<p>
+	Examples requirements:
+	<ul>
+		<li> <i>above-type:copper</i> - there is an adjacent copper layer group above the object's layer
+		<li> <i>below-type:!copper</i> - there is no adjacent copper layer group below the object's layer
+		<li> <i>above-net:vcc</i> - there are copper objects connected to the net called "vcc" on the adjacent copper layer group above the current object
+		<li> <i>above-net:vcc,above-netmargin:1.3mm</i> - there are copper objects connected to the net called "vcc" on the adjacent copper layer group above the current object; coverage calculated +1.3mm around the object; defaults to 0 if not specified
+	</ul>
+	<p>
+	"Above" and "below" are not in the board's coordinate system, but are
+	relative to the object. In other words, the function first assumes
+	above is upward and below is downward, then runs all requirements on the object.
+	If there is no match, above/below directions are reversed and the test is ran
+	again.
+	<p>
+	Example directive:
+	<p><i>above-type:!copper,below-net:gnd,below-netmargin:125mil</i>
+	<p>This directive requires:
+	<ul>
+		<li> there's no copper layer group above the object (so that the object is on the top or bottom copper layer group)
+		<li> the object is fully covered on the adjacent copper layer group "below" by copper objects belonging to the network named "gnd"
+		<li> plus this coverage extends beyond the object to 125mil in every direction
+	</ul>
+	<p>
+	Normally the return value is integer 0 (no match) or 1 (match).
+	<p>
+	If the optional <i>res</i> parameter is specified, it must be a requirement
+	where key is <i>result</i>. Alternatively the <i>result</i> requirement can
+	be specified in the <i>directive</i> parameter. When a <i>result</i> is
+	specified, the return value of layer_setup() will not be a 0/1 boolean but
+	a readout specified by the <i>result</i> requirement (or the <i>invalid value</i>
+	is returned on no match). The value of a
+	<i>result</i> requirement is one of:
+	<ul>
+		<li> <i>above</i> - use a layer group that is above the object's layer (location modifier)
+		<li> <i>below</i> - use a layer group that is below the object's layer (location modifier)
+		<li> <i>on</i> - use the layer group of the object (location modifier)
+		<li> <i>substrate</i> - return the substrate layer group (using the location)
+		<li> <i>uncovered</i> - return the area (in square nanometers) that are not covered by the "net" directive; note: the total area is the area of the original object bloated by netmargin
+	</ul>
+	<p>
+	Complex query script example:
+	<p>layer_setup(OBJ, "above-type:!copper,below-net:gnd", "result:below-substrate").a."thickness"
+	<p>
+	OBJ will match if it is on the top or bottom copper layer and is fully
+	covered by gnd copper on the adjacent copper layer group on the next internal
+	copper layer group. When matched, the return value of layer_setup is the
+	substrate layer group between the object's layer and that adjacent
+	internal layer group. The .a."thickness" part retrieves the value of
+	the thickness attribute of this substrate layer. On mismatch, the whole expression
+	evaluates to the <i>invalid value</i>.
+
 <h3 autotoc="yes"> Misc </h3>
 
 	<h4 autotoc="yes"> action(args...) </h4>
