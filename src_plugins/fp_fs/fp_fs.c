@@ -42,12 +42,14 @@
 #include "data.h"
 #include <librnd/core/paths.h>
 #include <librnd/core/plugins.h>
+#include <genregex/regex_sei.h>
 #include "plug_footprint.h"
 #include "plug_io.h"
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/error.h>
 #include <librnd/core/conf.h>
+#include <librnd/core/conf_hid.h>
 #include "conf_core.h"
 #include <librnd/core/hid_init.h>
 #include <librnd/core/safe_fs.h>
@@ -57,6 +59,9 @@
 
 #define FP_FS_CONF_FN "ar_extern.conf"
 static conf_fp_fs_t conf_fp_fs;
+static const char fp_fs_cookie[] = "fp_fs plugin";
+
+static vtp0_t remove_regex;
 
 #include "conf_internal.c"
 
@@ -512,8 +517,34 @@ static void fp_fs_fclose(pcb_plug_fp_t *ctx, FILE * f, pcb_fp_fopen_ctx_t *fctx)
 		rnd_tempfile_unlink((char *)fctx->field[F_TMPNAME].p);
 }
 
+static void fp_fs_free_remove_regex(void)
+{
+	long n;
+	for(n = 0; n < remove_regex.used; n++)
+		re_sei_free(remove_regex.array[n]);
+	vtp0_uninit(&remove_regex);
+}
+
+static void fp_fs_cfg_cb(rnd_conf_native_t *cfg, int arr_idx)
+{
+	int n;
+	rnd_conf_listitem_t *ci;
+	const char *p;
+
+	fp_fs_free_remove_regex();
+	vtp0_init(&remove_regex);
+	rnd_conf_loop_list_str(&conf_fp_fs.plugins.fp_fs.remove_regex, ci, p, n) {
+		re_sei_t *regex = re_sei_comp(p);
+		if (regex != NULL)
+			vtp0_append(&remove_regex, regex);
+		else
+			rnd_message(RND_MSG_ERROR, "fp_fs: failed to compile remove_regex: '%s'\n", p);
+	}
+}
+
 
 static pcb_plug_fp_t fp_fs;
+static rnd_conf_hid_id_t cfgid;
 
 int pplg_check_ver_fp_fs(int ver_needed) { return 0; }
 
@@ -521,14 +552,19 @@ void pplg_uninit_fp_fs(void)
 {
 	RND_HOOK_UNREGISTER(pcb_plug_fp_t, pcb_plug_fp_chain, &fp_fs);
 
+	rnd_conf_hid_unreg(fp_fs_cookie);
+
 	rnd_conf_unreg_file(FP_FS_CONF_FN, fp_fs_conf_internal);
 
 	fp_fs_cache_uninit(&fp_fs_cache);
 	rnd_conf_unreg_fields("plugins/fp_fs/");
+	fp_fs_free_remove_regex();
 }
 
 int pplg_init_fp_fs(void)
 {
+	static rnd_conf_hid_callbacks_t cbs;
+
 	RND_API_CHK_VER;
 	fp_fs.plugin_data = NULL;
 	fp_fs.load_dir = fp_fs_load_dir;
@@ -542,6 +578,10 @@ int pplg_init_fp_fs(void)
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_fp_fs, field,isarray,type_name,cpath,cname,desc,flags);
 #include "fp_fs_conf_fields.h"
+
+	cfgid = rnd_conf_hid_reg(fp_fs_cookie, NULL);
+	cbs.val_change_post = fp_fs_cfg_cb;
+	rnd_conf_hid_set_cb(rnd_conf_get_field("plugins/fp_fs/remove_regex"), cfgid, &cbs);
 
 	return 0;
 }
