@@ -6794,9 +6794,9 @@
  ../src_3rd/librnd/core/conf.h ../src_3rd/librnd/core/rnd_printf.h \
  ../src_3rd/liblihata/lihata.h ../src_3rd/librnd/core/list_conf.h \
  ../src_plugins/io_tedax/parse.h attrib.h board.h vtroutestyle.h \
- rats_patch.h board.h ../src_3rd/librnd/core/compat_misc.h \
- ../src_3rd/librnd/core/safe_fs.h obj_line.h obj_arc.h obj_pstk.h \
- obj_pstk_inlines.h data.h thermal.h operation.h \
+ rats_patch.h board.h conf_core.h plug_footprint.h data.h \
+ ../src_3rd/librnd/core/compat_misc.h ../src_3rd/librnd/core/safe_fs.h \
+ obj_line.h obj_arc.h obj_pstk.h obj_pstk_inlines.h thermal.h operation.h \
  ../src_3rd/librnd/poly/polygon1_gen.h \
  ../src_plugins/lib_compat_help/subc_help.h obj_subc.h layer.h \
  ../src_plugins/lib_compat_help/pstk_help.h
