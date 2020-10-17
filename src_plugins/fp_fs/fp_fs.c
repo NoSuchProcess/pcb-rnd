@@ -379,7 +379,7 @@ static int fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_
 	if ((strncmp(ctx->target, name, ctx->target_len) == 0) && ((! !ctx->parametric) == (type == PCB_FP_PARAMETRIC))) {
 		const char *suffix = name + ctx->target_len;
 		/* ugly heuristics: footprint names may end in .fp or .ele or .subc.lht or .lht */
-		if ((*suffix == '\0') || (rnd_strcasecmp(suffix, ".fp") == 0) || (rnd_strcasecmp(suffix, ".ele") == 0) || (rnd_strcasecmp(suffix, ".subc.lht") == 0) || (rnd_strcasecmp(suffix, ".lht") == 0)) {
+		if ((*suffix == '\0') || (rnd_strcasecmp(suffix, ".tdx") == 0) || (rnd_strcasecmp(suffix, ".fp") == 0) || (rnd_strcasecmp(suffix, ".ele") == 0) || (rnd_strcasecmp(suffix, ".subc.lht") == 0) || (rnd_strcasecmp(suffix, ".lht") == 0)) {
 			ctx->path = rnd_strdup(subdir);
 			ctx->real_name = rnd_strdup(name);
 			return 1;
