@@ -1221,7 +1221,8 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 				cy += sy;
 			}
 		}
-		arc = pcb_arc_new(ly, cx, cy, width, height, start_angle, delta, thickness, clearance, flg, rnd_true);
+		/* note: do not remove duplicate arcs, because term may need to be set on the result */
+		arc = pcb_arc_new(ly, cx, cy, width, height, start_angle, delta, thickness, clearance, flg, rnd_false);
 		if (st->primitive_term != NULL)
 			pcb_attribute_put(&arc->Attributes, "term", st->primitive_term);
 	}
