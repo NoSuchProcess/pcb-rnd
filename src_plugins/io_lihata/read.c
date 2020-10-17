@@ -2659,6 +2659,7 @@ int io_lihata_parse_buffer(pcb_plug_io_t *ctx, pcb_buffer_t *buff, const char *f
 
 	if ((doc->root->type == LHT_HASH) && (strncmp(doc->root->name, "pcb-rnd-buffer-v", 16) == 0)) {
 		lht_node_t *datand = lht_dom_hash_get(doc->root, "data");
+		rctx.rdver = atoi(doc->root->name+16);
 		if (datand == NULL) {
 			iolht_error(doc->root, "Error loading '%s': buffer has no data\n", filename);
 			res = -1;
