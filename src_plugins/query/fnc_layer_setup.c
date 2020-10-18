@@ -51,6 +51,37 @@ typedef struct {
 	pcb_layergrp_t *substrate[LSL_max];
 } layer_setup_res_t;
 
+static layer_setup_res_t ls_invalid;
+
+typedef struct {
+	pcb_any_obj_t *obj;
+	const layer_setup_t *ls;
+	int above_dir;
+} layer_setup_req_t;
+
+
+typedef layer_setup_req_t htls_key_t;
+typedef layer_setup_res_t htls_value_t;
+#define HT_INVALID_VALUE ls_invalid
+#define HT(x) htls_ ## x
+#include <genht/ht.h>
+#include <genht/ht.c>
+#undef HT_INVALID_VALUE
+#undef HT
+
+static int lsreqkeyeq(layer_setup_req_t a, layer_setup_req_t b)
+{
+	if (a.obj != b.obj) return 0;
+	if (a.ls != b.ls) return 0;
+	if (a.above_dir != b.above_dir) return 0;
+	return 1;
+}
+
+static unsigned lsreqhash(layer_setup_req_t k)
+{
+	return ptrhash(k.obj) ^ ptrhash(k.ls) ^ k.above_dir;
+}
+
 void pcb_qry_uninit_layer_setup(pcb_qry_exec_t *ectx)
 {
 	if (!ectx->layer_setup_inited)
@@ -62,6 +93,7 @@ void pcb_qry_uninit_layer_setup(pcb_qry_exec_t *ectx)
 
 	vtp0_uninit(&ectx->layer_setup_netobjs);
 	ectx->layer_setup_inited = 0;
+	htls_free(ectx->layer_setup_res_cache);
 }
 
 static void pcb_qry_init_layer_setup(pcb_qry_exec_t *ectx)
@@ -69,6 +101,7 @@ static void pcb_qry_init_layer_setup(pcb_qry_exec_t *ectx)
 	htpp_init(&ectx->layer_setup_precomp, ptrhash, ptrkeyeq);
 	ectx->layer_setup_inited = 1;
 	vtp0_init(&ectx->layer_setup_netobjs);
+	ectx->layer_setup_res_cache = htls_alloc(lsreqhash, lsreqkeyeq);
 }
 
 #define LSC_RESET() \
@@ -370,11 +403,29 @@ static rnd_bool layer_setup_exec(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, const
 	pcb_layer_t *ly;
 	pcb_layergrp_t *grp;
 	rnd_layergrp_id_t gid, sgid;
+	layer_setup_req_t req;
+	int need_set = 0;
+	htls_entry_t *he;
 
+	/* look up the result in the cache */
+	req.obj = obj;
+	req.ls = ls;
+	req.above_dir = above_dir;
+	he = htls_getentry(ectx->layer_setup_res_cache, req);
+#ifdef CACHE_DEBUG
+	rnd_trace("cache %s: %p:%p:%d\n", he == NULL ? "miss":"hit ", obj, ls, above_dir);
+#endif
+	if (he != NULL) { /* cache hit */
+		*lsr = he->value;
+		if (!he->value.matched) /* mismatch -> quick return */
+			return 0;
+		goto cache_hit; /* some parts of the result may not have been calculated on the first insertion, check those again */
+	}
+
+	/* not cached, need to apply the condition... */
+	need_set = 1;
 	lsr->matched = 0;
 	lsr->uncovered[LSL_ABOVE] = lsr->uncovered[LSL_BELOW] = -1;
-
-TODO("cache result: (obj::ls::above_dir) -> lsr where it was true or 0 if it was false");
 
 	/* only layer objects may match */
 	if (obj->parent_type != PCB_PARENT_LAYER)
@@ -423,14 +474,20 @@ TODO("cache result: (obj::ls::above_dir) -> lsr where it was true or 0 if it was
 	sgid = pcb_layergrp_step(ectx->pcb, gid, -above_dir, PCB_LYT_SUBSTRATE);
 	lsr->substrate[LSL_BELOW] = (sgid != -1) ? &ectx->pcb->LayerGroups.grp[sgid] : NULL;
 
+	cache_hit:;
+
 	/* calculate the return value; use ->res_* fields from ls_res */
 	/* if condition didn't calculate the result, do it now */
 	if ((ls_res->res_target == LST_UNCOVERED) && ((ls_res->res_loc == LSL_BELOW) || (ls_res->res_loc == LSL_ABOVE))) {
 		if (lsr->uncovered[ls_res->res_loc] < 0) {
 			int dir = (ls_res->res_loc == LSL_ABOVE) ? above_dir : -above_dir;
 			lse_non_covered(ectx, obj, gid, ls->require_net[ls_res->res_loc], dir, ls->net_margin[ls_res->res_loc], &lsr->uncovered[ls_res->res_loc]);
+			need_set = 1;
 		}
 	}
+
+	if (need_set) /* not cached yet, need to remember this result */
+		htls_set(ectx->layer_setup_res_cache, req, *lsr);
 
 	return 1;
 }

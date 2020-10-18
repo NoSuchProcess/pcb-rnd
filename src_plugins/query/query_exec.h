@@ -54,6 +54,7 @@ struct pcb_qry_exec_s {
 	vtp0_t tmplst;        /* may be reused in a function call to save on allocation; always clear it at the end of the fnc */
 	htpp_t layer_setup_precomp;
 	vtp0_t layer_setup_netobjs;
+	void *layer_setup_res_cache;
 	time_t last_prog_cb;
 
 	unsigned obj2netterm_inited:1;
