@@ -551,7 +551,7 @@ static int fnc_layer_setup(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, 
 
 		case LST_SUBSTRATE:
 			if (!lsr.matched) PCB_QRY_RET_INV(res);
-			PCB_QRY_RET_OBJ(res, lsr.substrate[ls_res->res_loc]);
+			PCB_QRY_RET_OBJ(res, (pcb_any_obj_t *)lsr.substrate[ls_res->res_loc]);
 
 		case LST_TYPE:
 		case LST_NET:
