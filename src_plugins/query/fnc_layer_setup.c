@@ -350,7 +350,7 @@ static int lse_non_covered(pcb_qry_exec_t *ectx, pcb_any_obj_t *obj, rnd_layergr
 				lse_netcover_add_obj(ectx, objs, o, net);
 	}
 
-rnd_trace("objects on the right net: %d\n", objs->used);
+/*rnd_trace("objects on the right net: %d\n", objs->used);*/
 
 	if (objs->used == 0) /* no object found */
 		return 0;
@@ -375,7 +375,7 @@ rnd_trace("objects on the right net: %d\n", objs->used);
 			default: heat = 0;
 		}
 		if (heat != 0) {
-rnd_trace(" sub! %p %$mm\n", iceberg, (rnd_coord_t)sqrt(iceberg->contours->area));
+/*rnd_trace(" sub! %p %$mm\n", iceberg, (rnd_coord_t)sqrt(iceberg->contours->area));*/
 			rnd_polyarea_boolean_free(iceberg, heat, &ptmp, RND_PBO_SUB);
 			iceberg = ptmp;
 			if (iceberg == NULL)
@@ -527,7 +527,7 @@ static int fnc_layer_setup(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, 
 	else
 		ls_res = ls;
 
-rnd_trace("layer_setup: %p/'%s' -> %p (ls_res=%p)\n", lss, lss, ls, ls_res);
+/*rnd_trace("layer_setup: %p/'%s' -> %p (ls_res=%p)\n", lss, lss, ls, ls_res);*/
 
 	/* try above=-1, below=+1 (directions matching normal layer stack ordering) */
 	if (layer_setup_exec(ectx, obj, ls, ls_res, -1, &lsr))
