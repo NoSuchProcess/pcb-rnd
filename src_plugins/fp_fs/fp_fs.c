@@ -387,8 +387,12 @@ static int fp_search_cb(void *cookie, const char *subdir, const char *name, pcb_
 		if (*suffix != '\0') { /* footprint names may end in .fp or .ele or .subc.lht or .lht */
 			for(n = 0; n < remove_regex.used; n++) {
 				if (re_sei_exec(remove_regex.array[n], name)) {
-					found = 1;
-					break;
+					char *dst;
+					/* remove by the regex, the remaining part must match the original request */
+					re_sei_subst(remove_regex.array[n], &dst, name, "", 0);
+					found = (strcmp(dst, ctx->target) == 0);
+					if (found)
+						break;
 				}
 			}
 		}
