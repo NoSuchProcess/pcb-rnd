@@ -2627,8 +2627,6 @@ static int kicad_parse_pcb(read_state_t *st)
 	if ((st->dom.root->str == NULL) || (strcmp(st->dom.root->str, "kicad_pcb") != 0))
 		return -1;
 
-	pcb_data_clip_inhibit_inc(st->pcb->Data);
-
 	/* Call the corresponding subtree parser for each child node of the root
 	   node; if any of them fail, parse fails */
 	ret = kicad_foreach_dispatch(st, st->dom.root->children, disp);
@@ -2643,8 +2641,6 @@ static int kicad_parse_pcb(read_state_t *st)
 		if (ly != NULL)
 			ly->comb = PCB_LYC_AUTO;
 	}
-
-	pcb_data_clip_inhibit_dec(st->pcb->Data, rnd_true);
 
 	return ret;
 }
@@ -2670,7 +2666,7 @@ static gsx_parse_res_t kicad_parse_file(FILE *FP, gsxl_dom_t *dom)
 
 int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
 {
-	int readres = 0;
+	int readres = 0, clipi = 0;
 	read_state_t st;
 	gsx_parse_res_t res;
 	FILE *FP;
@@ -2711,8 +2707,11 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 				pcb_layergrp_upgrade_to_pstk(Ptr);
 			}*/
 		}
-		else
+		else {
+			pcb_data_clip_inhibit_inc(st.pcb->Data);
 			readres = kicad_parse_pcb(&st);
+			clipi = 1;
+		}
 	}
 	else
 		readres = -1;
@@ -2739,6 +2738,10 @@ int io_kicad_read_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename
 	/* enable fallback to the default font picked up when creating the based
 	   PCB (loading the default PCB), because we won't get a font from KiCad. */
 	st.pcb->fontkit.valid = rnd_true;
+
+	if (clipi)
+		pcb_data_clip_inhibit_dec(st.pcb->Data, rnd_true);
+
 
 	return readres;
 }
