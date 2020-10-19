@@ -329,6 +329,8 @@ RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_gid(pcb_board_t *pcb, pcb_pstk_
 RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_at(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)
 {
 	layer = pcb_layer_get_real(layer);
+	if (layer == NULL)
+		return NULL;
 	return pcb_pstk_shape_mech_gid(pcb, ps, layer->meta.real.grp);
 }
 
@@ -366,6 +368,8 @@ RND_INLINE pcb_pstk_shape_t *pcb_pstk_shape_mech_or_hole_at(pcb_board_t *pcb, pc
 	pcb_pstk_proto_t *proto;
 
 	layer = pcb_layer_get_real(layer);
+	if (layer == NULL)
+		return NULL;
 
 	if (!pcb_pstk_bb_drills(pcb, ps, pcb_layer_get_group_(layer), &proto))
 		return NULL;
