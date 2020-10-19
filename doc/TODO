@@ -19,7 +19,6 @@
 - BUG: CLI: enter invalid action with (), e.g. foo() -> no error message (works without the ()) [report: Igor2]
 - BUG: shape round rect is generated far away from the cursor after some operations [report: Aron]
 - BUG: library window refresh button: doesn't seem to work when cursor is on a footprint [report: SnakesAndStuff]
-- BUG: gdk: empty board, right click layer, all layers on -> assert [report: Igor2]
 - BUG: shift-tab or ctrl-tab while term IDs and subc refdes are visible on overlay: they are mirrored [report: SnakesAndStuff]
 - BUG: when thermal and some other operations are applied on a locked element, indicate it
 - DOC: regex (genregex), reference it from query() and advanced search docs [report: TwisteR]
