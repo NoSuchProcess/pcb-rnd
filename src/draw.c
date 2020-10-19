@@ -219,6 +219,7 @@ static void draw_virtual_layers(pcb_draw_info_t *info, const legacy_vlayer_t *lv
 
 	if (set_vlayer(info, lvly_drawn->top_fab, lvly_drawn->top_fab_enable, PCB_VLY_FAB)) {
 		xform_setup(info, &tmp, NULL);
+		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
 		pcb_stub_draw_fab(info, pcb_draw_out.fgGC, &hid_exp);
 		rnd_render->end_layer(rnd_render);
 		info->xform = NULL; info->layer = NULL;
