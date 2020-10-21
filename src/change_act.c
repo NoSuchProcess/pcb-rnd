@@ -150,7 +150,7 @@ static const char pcb_acts_ChangeFlag[] =
 	"ChangeFlag(Object|Selected|SelectedObjects, flag, value)\n"
 	"ChangeFlag(SelectedLines|SelectedPins|SelectedVias, flag, value)\n"
 	"ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, flag, value)\n"
-	"ChangeFlag(SelectedElements, flag, value)\n" "flag = thermal | join\n" "value = 0 | 1";
+	"ChangeFlag(SelectedElements, flag, value)\n" "flag = join\n" "value = 0 | 1";
 static const char pcb_acth_ChangeFlag[] = "Sets or clears flags on objects.";
 /* DOC: changeflag.html */
 static fgw_error_t pcb_act_ChangeFlag(fgw_arg_t *res, int argc, fgw_arg_t *argv)
