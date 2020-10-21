@@ -45,6 +45,7 @@
 #include "search.h"
 #include "undo.h"
 #include "event.h"
+#include "thermal.h"
 #include <librnd/core/compat_misc.h>
 #include "obj_rat_draw.h"
 #include "data_it.h"
@@ -677,7 +678,9 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_bool absolute;
 
 		kind = rnd_get_value_ex(style, NULL, &absolute, NULL, NULL, NULL);
-		if (absolute && (kind <= 5))
+		if (absolute && (kind <= 5)) {
+			if (kind != 0)
+				kind |= PCB_THERMAL_ON;
 			switch (rnd_funchash_get(function, NULL)) {
 			case F_Object:
 				rnd_hid_get_coords("Click on object for SetThermal", &gx, &gy, 0);
@@ -699,6 +702,7 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				err = 1;
 				break;
 			}
+		}
 		else
 			err = 1;
 		if (!err) {
