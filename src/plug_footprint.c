@@ -53,6 +53,30 @@ FILE *PCB_FP_FOPEN_IN_DST = (FILE *)&PCB_FP_FOPEN_IN_DST_;
 pcb_plug_fp_t *pcb_plug_fp_chain = NULL;
 pcb_fplibrary_t pcb_library;
 
+static pcb_fplibrary_t *pcb_get_library_memory(pcb_fplibrary_t *parent)
+{
+	pcb_fplibrary_t *res;
+	vtlib_t *vt = ((parent) == NULL ? &pcb_library.data.dir.children : &(parent)->data.dir.children);
+	void *old = vt->array;
+
+	res = vtlib_alloc_append(vt, 1);
+	res->parent = parent;
+
+	if (vt->array != old) { /* if the vector array had to be relocated, update all parent pointers */
+		long n, i;
+TODO("TODO39: replace vtlib with vtp0 so no need to update parents");
+		for(n = 0; n < vt->used; n++) {
+			pcb_fplibrary_t *l = &vt->array[n];
+			if (l->type == PCB_LIB_DIR)
+				for(i = 0; i < l->data.dir.children.used; i++)
+					l->data.dir.children.array[i].parent = l;
+		}
+	}
+
+	return res;
+}
+
+
 int pcb_fp_dupname(const char *name, char **basename, char **params)
 {
 	char *newname, *s;
@@ -252,7 +276,6 @@ pcb_fplibrary_t *pcb_fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int
 		l->name = rnd_strndup(name, name_len);
 	else
 		l->name = rnd_strdup(name);
-	l->parent = parent;
 	l->type = PCB_LIB_DIR;
 	l->data.dir.backend = NULL;
 	vtlib_init(&l->data.dir.children);
@@ -316,7 +339,7 @@ static int fp_sort_cb(const void *a, const void *b)
 void pcb_fp_sort_children(pcb_fplibrary_t *parent)
 {
 	vtlib_t *v;
-	int n;
+	int n, i;
 
 	if (parent->type != PCB_LIB_DIR)
 		return;
@@ -324,8 +347,11 @@ void pcb_fp_sort_children(pcb_fplibrary_t *parent)
 	v = &parent->data.dir.children;
 	qsort(v->array, vtlib_len(v), sizeof(pcb_fplibrary_t), fp_sort_cb);
 
-	for (n = 0; n < vtlib_len(v); n++)
+	for (n = 0; n < vtlib_len(v); n++) {
+		for(i = 0; i < v->used; i++) /* TODO39 */
+			v->array[i].parent = parent;
 		pcb_fp_sort_children(&v->array[n]);
+	}
 }
 
 void fp_free_entry(pcb_fplibrary_t *l)
