@@ -50,7 +50,7 @@ static void set_right(srchedit_ctx_t *ctx, rnd_hid_attribute_t *attr)
 
 	switch(ctx->se.expr->rtype) {
 		case RIGHT_STR:
-			ctx->se.right = rnd_strdup(attr->val.str);
+			ctx->se.right = rnd_strdup_printf("\"%s\"", attr->val.str);
 			break;
 		case RIGHT_INT:
 			ctx->se.right = rnd_strdup_printf("%d", attr->val.lng);
