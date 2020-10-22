@@ -67,7 +67,7 @@ struct expr_wizard_s {
 	const expr_wizard_op_t *right_const;
 };
 
-static const char *right_const_objtype[] = { "POINT", "LINE", "TEXT", "POLYGON", "ARC", "RAT", "NET", "LAYER", NULL };
+static const char *right_const_objtype[] = { "POINT", "LINE", "TEXT", "POLYGON", "ARC", "PADSTACK", "GFX", "SUBC", "RAT", "NET", "LAYER", NULL };
 static const char *right_const_yesno[] = {"YES", "NO", NULL};
 static const char *right_const_10[] = {"1", "0", NULL};
 static const char *right_const_layerpos[] = {"TOP", "BOTTOM", "INTERNAL", NULL};
