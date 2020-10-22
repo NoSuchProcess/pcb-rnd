@@ -613,12 +613,16 @@ static void library_refresh_cb(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	pcb_fplibrary_t *l;
 	char *oname;
 
-	if (r == NULL)
+	if (r == NULL) {
+		rnd_message(RND_MSG_ERROR, "Need to select a subtree for refresh\n");
 		return;
+	}
 
 	l = r->user_data;
-	if ((l == NULL) || (l->parent == NULL))
+	if ((l == NULL) || (l->parent == NULL)) {
+		rnd_message(RND_MSG_ERROR, "Selection can not be refreshed: unknown parent (please select the parent)\n", l);
 		return;
+	}
 
 	while((l->parent != NULL) && (l->parent->parent != NULL)) l = l->parent;
 
