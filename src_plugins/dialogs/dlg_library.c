@@ -182,12 +182,16 @@ TODO("Use rich text for this with explicit wrap marks\n");
 
 static void timed_update_preview_(library_ctx_t *ctx, const char *otext)
 {
-	if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, otext, NULL)) {
-		rnd_tool_select_by_name(&PCB->hidlib, "buffer");
-		if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
-			library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), NULL);
-		rnd_gui->invalidate_all(rnd_gui);
+	if (otext != NULL) {
+		if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, otext, NULL)) {
+			rnd_tool_select_by_name(&PCB->hidlib, "buffer");
+			if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
+				library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), NULL);
+			rnd_gui->invalidate_all(rnd_gui);
+		}
 	}
+	else
+		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 	ctx->timer_active = 0;
 	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 1);
 	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 0);
