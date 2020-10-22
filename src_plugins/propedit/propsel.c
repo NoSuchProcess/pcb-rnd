@@ -1013,10 +1013,10 @@ int pcb_propsel_set_str(pcb_propedit_t *ctx, const char *prop, const char *value
 	const char *start;
 
 	/* sanity checks for invalid props */
-	if (prop[1] != '/')
+	if ((prop[1] != '/') || ((prop[0] != 'a') && (prop[0] != 'p'))) {
+		rnd_message(RND_MSG_ERROR, "Invalid property path: '%s':\n must start with p/ for property or a/ for attribute\n", prop);
 		return 0;
-	if ((prop[0] != 'a') && (prop[0] != 'p'))
-		return 0;
+	}
 
 	memset(&sctx, 0, sizeof(sctx));
 
