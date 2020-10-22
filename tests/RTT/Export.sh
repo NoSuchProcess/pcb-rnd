@@ -9,6 +9,7 @@ global_args="-c rc/library_search_paths=lib -c rc/export_basename=1 -c design/fa
 test_announce=0
 verbose=0
 CONVERT=convert
+COMPARE=compare
 
 if test -z "$pcb_rnd_bin"
 then
@@ -45,9 +46,10 @@ run_pcb_rnd()
 
 need_convert()
 {
-	if test -z "`$CONVERT | grep ImageMagick`"
+	if test -z "`$CONVERT 2>/dev/null | grep ImageMagick`" -o -z "`$COMPARE 2>/dev/null | grep ImageMagick`"
 	then
-		echo "WARNING: ImageMagick convert(1) not found - bitmap compare will be skipped."
+		echo "WARNING: ImageMagick convert(1) or compare(1) not found - bitmap compare will be skipped."
+		CONVERT=""
 	fi
 }
 
@@ -189,12 +191,12 @@ cmp_fmt()
 			if test ! -z "$CONVERT"
 			then
 				bn=`basename $out`
-				res=`compare "$ref" "$out"  -metric AE  diff/$bn 2>&1`
+				res=`$COMPARE "$ref" "$out"  -metric AE  diff/$bn 2>&1`
 				case "$res" in
 					*widths*)
 						otmp=$out.599.png
 						$CONVERT -crop 599x599+0x0 $out  $otmp
-						res=`compare "$ref" "$otmp" -metric AE  diff/$bn 2>&1`
+						res=`$COMPARE "$ref" "$otmp" -metric AE  diff/$bn 2>&1`
 						;;
 				esac
 				test "$res" -lt 8 && rm diff/$bn
@@ -205,7 +207,7 @@ cmp_fmt()
 			if test ! -z "$CONVERT"
 			then
 				bn=`basename $out`
-				res=`compare "$ref" "$out"  -metric AE  diff/$bn 2>&1`
+				res=`$COMPARE "$ref" "$out"  -metric AE  diff/$bn 2>&1`
 				test "$res" -lt 8 && rm diff/$bn
 				test "$res" -lt 8
 			fi
