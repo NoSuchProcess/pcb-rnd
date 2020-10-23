@@ -128,7 +128,7 @@ static void scad_draw_drills(void)
 	fprintf(f, "}\n");
 }
 
-static void scad_draw_finish()
+static void scad_draw_finish(rnd_hid_attr_val_t *options)
 {
 	fprintf(f, "module pcb_board_main() {\n");
 	fprintf(f, "	translate ([0, 0, -0.8])\n");
@@ -146,7 +146,7 @@ static void scad_draw_finish()
 	fprintf(f, "		union() {\n");
 	fprintf(f, "			difference() {\n");
 	fprintf(f, "				pcb_board_main();\n");
-	if (openscad_attribute_list[HA_drill].default_val.lng)
+	if (options[HA_drill].lng)
 		fprintf(f, "				pcb_drill();\n");
 	fprintf(f, "			}\n");
 	fprintf(f, "		}\n");

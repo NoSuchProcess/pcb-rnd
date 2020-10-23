@@ -82,6 +82,8 @@ static const char *scad_group_color;
 static int scad_layer_cnt;
 static vti0_t scad_comp;
 
+static rnd_hid_attr_val_t *openscad_options;
+
 rnd_export_opt_t openscad_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
@@ -157,7 +159,9 @@ void openscad_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options)
 
 	rnd_conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
+	openscad_options = options;
 	rnd_expose_main(&openscad_hid, &ctx, NULL);
+	openscad_options = NULL;
 
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
@@ -329,16 +333,16 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	gds_init(&model_calls);
 	vti0_init(&scad_comp);
 
-	if (openscad_attribute_list[HA_models].default_val.lng)
+	if (options[HA_models].lng)
 		scad_insert_models();
 
 	openscad_hid_export_to_file(f, options);
 	scad_close_layer_group();
 
-	if (openscad_attribute_list[HA_drill].default_val.lng)
+	if (options[HA_drill].lng)
 		scad_draw_drills();
 
-	scad_draw_finish();
+	scad_draw_finish(options);
 
 	pcb_hid_restore_layer_ons(save_ons);
 
@@ -375,7 +379,7 @@ static int openscad_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, con
 		return 0;
 
 	if (flags & PCB_LYT_MASK) {
-		if (!openscad_attribute_list[HA_mask].default_val.lng)
+		if (!openscad_options[HA_mask].lng)
 			return 0;
 		if (flags & PCB_LYT_TOP) {
 			scad_new_layer_group("top_mask", +2, "0,0.7,0,0.5");
@@ -388,7 +392,7 @@ static int openscad_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, con
 	}
 
 	if (flags & PCB_LYT_SILK) {
-		if (!openscad_attribute_list[HA_silk].default_val.lng)
+		if (!openscad_options[HA_silk].lng)
 			return 0;
 		if (flags & PCB_LYT_TOP) {
 			scad_new_layer_group("top_silk", +3, "0,0,0");
@@ -401,8 +405,10 @@ static int openscad_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, con
 	}
 
 	if (flags & PCB_LYT_COPPER) {
-		if (!openscad_attribute_list[HA_copper].default_val.lng)
+		if (!openscad_options[HA_copper].lng) {
+			printf("skip copper\n");
 			return 0;
+		}
 		if (flags & PCB_LYT_TOP) {
 			scad_new_layer_group("top_copper", +1, "1,0.4,0.2");
 			return 1;
