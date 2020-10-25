@@ -189,6 +189,7 @@ static void pcb_wholepoly_chg_attr(pcb_subc_t *subc, const char *key, const char
 static pcb_subc_t *pcb_wholepoly_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t *copy_from)
 {
 	long n;
+	rnd_coord_t cx, cy;
 	pcb_subc_t *subc;
 	pcb_poly_t *p;
 	pcb_layer_t *ly;
@@ -211,7 +212,15 @@ static pcb_subc_t *pcb_wholepoly_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_su
 	layers[0].lyt = pcb_layer_flags_(p->parent.layer);
 	pcb_layer_purpose_(p->parent.layer, &layers[0].purpose);
 
-	subc = pcb_exto_create(dst, "wholepoly", layers, p->Points[0].X, p->Points[0].Y, 0, copy_from);
+	cx = cy = 0;
+	for(n = 0; n < p->PointN; n++) {
+		cx += p->Points[n].X;
+		cy += p->Points[n].Y;
+	}
+	cx /= (double)p->PointN;
+	cy /= (double)p->PointN;
+rnd_printf("Center: %mm;%mm\n", cx, cy);
+	subc = pcb_exto_create(dst, "wholepoly", layers, cx, cy, 0, copy_from);
 
 #if 0
 	if (copy_from == NULL)
