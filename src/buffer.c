@@ -184,6 +184,7 @@ static void pcb_buffer_clear_(pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_bool b
 	}
 	Buffer->from_outside = 0;
 	free(Buffer->source_path); Buffer->source_path = NULL;
+	Buffer->X = Buffer->Y = 0;
 }
 
 void pcb_buffer_clear(pcb_board_t *pcb, pcb_buffer_t *Buffer)
