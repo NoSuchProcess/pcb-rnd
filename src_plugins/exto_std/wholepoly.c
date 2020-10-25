@@ -279,7 +279,7 @@ static void pcb_wholepoly_gui_propedit(pcb_subc_t *subc)
 }
 
 static pcb_extobj_t pcb_wholepoly = {
-	"whole-poly",
+	"wholepoly",
 	pcb_wholepoly_draw_mark,
 	pcb_wholepoly_float_pre,
 	pcb_wholepoly_float_geo,
