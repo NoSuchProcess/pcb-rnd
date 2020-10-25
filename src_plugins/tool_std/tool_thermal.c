@@ -38,6 +38,7 @@
 #include "change.h"
 #include "data.h"
 #include <librnd/core/actions.h>
+#include <librnd/core/error.h>
 #include "obj_pstk.h"
 #include "search.h"
 #include "thermal.h"
@@ -92,17 +93,31 @@ void pcb_tool_thermal_on_obj(pcb_any_obj_t *obj, unsigned long lid)
 void pcb_tool_thermal_notify_mode(rnd_hidlib_t *hl)
 {
 	void *ptr1, *ptr2, *ptr3;
-	int type;
+	int type, locked = 0;
 
-	if (((type = pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
+	if (((type = pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_OBJ_PSTK, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_any_obj_t *) ptr3)) {
-		if (type == PCB_OBJ_PSTK)
+		if (type == PCB_OBJ_PSTK) {
+			if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *)ptr2)) {
+				pcb_tool_thermal_on_obj(ptr2, PCB_CURRLID(pcb));
+				return;
+			}
+			else
+				locked = 1;
+		}
+	}
+	if (((type = pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_OBJ_CLASS_REAL & ~PCB_OBJ_PSTK, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
+			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_any_obj_t *) ptr3)) {
+		if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *)ptr2)) {
 			pcb_tool_thermal_on_obj(ptr2, PCB_CURRLID(pcb));
+			return;
+		}
+		else
+			locked = 1;
 	}
-	else if (((type = pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_OBJ_CLASS_REAL, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
-			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_any_obj_t *) ptr3)) {
-		pcb_tool_thermal_on_obj(ptr2, PCB_CURRLID(pcb));
-	}
+
+	if (locked)
+		rnd_message(RND_MSG_ERROR, "The only available target object is locked %d\n", PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *)ptr2));
 }
 
 /* XPM */
