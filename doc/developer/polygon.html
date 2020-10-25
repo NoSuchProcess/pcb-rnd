@@ -128,12 +128,12 @@ iterators. The same iterator holds all states, so that it points to:
 void print_poly(pcb_polygon_t *polygon)
 {
 	pcb_poly_it_t it;
-	pcb_polyarea_t *pa;
+	rnd_polyarea_t *pa;
 
 	/* first, iterate over all islands of a polygon */
 	for(pa = pcb_poly_island_first(polygon, &it); pa != NULL; pa = pcb_poly_island_next(&it)) {
-		pcb_coord_t x, y;
-		pcb_pline_t *pl;
+		rnd_coord_t x, y;
+		rnd_pline_t *pl;
 		int go;
 
 		printf(" island\n");
@@ -151,7 +151,7 @@ void print_poly(pcb_polygon_t *polygon)
 				printf("  hole:\n");
 				/* iterate over the vectors of the given hole */
 				for(go = pcb_poly_vect_first(&it, &x, &y); go; go = pcb_poly_vect_next(&it, &x, &y)) {
-					pcb_printf("   %mm %mm\n", x, y);
+					rnd_printf("   %mm %mm\n", x, y);
 				}
 			}
 		}
