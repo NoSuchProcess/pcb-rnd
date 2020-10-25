@@ -46,6 +46,7 @@
 #include "dimension.c"
 #include "cord.c"
 #include "bus.c"
+#include "wholepoly.c"
 
 int pplg_check_ver_exto_std(int ver_needed) { return 0; }
 
@@ -55,6 +56,7 @@ void pplg_uninit_exto_std(void)
 	pcb_extobj_unreg(&pcb_dimension);
 	pcb_extobj_unreg(&pcb_cord);
 	pcb_extobj_unreg(&pcb_bus);
+	pcb_extobj_unreg(&pcb_wholepoly);
 }
 
 int pplg_init_exto_std(void)
@@ -65,6 +67,6 @@ int pplg_init_exto_std(void)
 	pcb_extobj_reg(&pcb_dimension);
 	pcb_extobj_reg(&pcb_cord);
 	pcb_extobj_reg(&pcb_bus);
-
+	pcb_extobj_reg(&pcb_wholepoly);
 	return 0;
 }
