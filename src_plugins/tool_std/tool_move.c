@@ -112,6 +112,7 @@ void pcb_tool_move_notify_mode(rnd_hidlib_t *hl)
 			}
 			else {
 				newo = pcb_move_obj_and_rubberband(pcb_crosshair.AttachedObject.Type, pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3, dx, dy);
+				pcb_extobj_float_pre(newo);
 				pcb_extobj_float_geo(newo);
 			}
 
