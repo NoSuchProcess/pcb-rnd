@@ -1280,7 +1280,7 @@ void pcb_label_draw(pcb_draw_info_t *info, rnd_coord_t x, rnd_coord_t y, double 
 
 	PCB_TERM_LABEL_SETUP((const unsigned char *)label);
 
-	mirror = (flip_x ^ flip_y) ? PCB_TXT_MIRROR_Y : 0;
+	mirror = (flip_x ? PCB_TXT_MIRROR_X : 0) | (flip_y ? PCB_TXT_MIRROR_Y : 0);
 	direction = (vert ? 1 : 0);
 
 	if (!conf_core.appearance.smart_labels) {
