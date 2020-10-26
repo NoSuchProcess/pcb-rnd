@@ -138,8 +138,8 @@ static void map_layer(pcb_propedit_t *ctx, pcb_layer_t *layer)
 	if (layer == NULL)
 		return;
 	map_add_prop(ctx, "p/layer/name", String, layer->name);
-	map_add_prop(ctx, "p/layer/comb/negative", int, !!(layer->comb & PCB_LYC_SUB));
-	map_add_prop(ctx, "p/layer/comb/auto", int, !!(layer->comb & PCB_LYC_AUTO));
+	map_add_prop(ctx, "p/layer/comb/negative", bool, !!(layer->comb & PCB_LYC_SUB));
+	map_add_prop(ctx, "p/layer/comb/auto", bool, !!(layer->comb & PCB_LYC_AUTO));
 	if (!layer->is_bound)
 		map_add_prop(ctx, "p/layer/color", color, layer->meta.real.color);
 	map_attr(ctx, &layer->Attributes);
