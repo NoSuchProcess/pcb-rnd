@@ -685,6 +685,7 @@ ha:rnd-menu-v1 {
 				ha:Edit properties        { action=propedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
+				ha:Convert to extended object... = { action=ExtobjConvFrom(Object, @gui) }
 				-
 				ha:Remove line            { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
@@ -697,6 +698,7 @@ ha:rnd-menu-v1 {
 				ha:Edit properties        { action=propedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Set Same Style         { action=SetSame() }
+				ha:Convert to extended object... = { action=ExtobjConvFrom(Object, @gui) }
 				-
 				ha:Remove arc             { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
@@ -708,6 +710,7 @@ ha:rnd-menu-v1 {
 			li:submenu {
 				ha:Edit properties        { action=propedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
+				ha:Convert to extended object... = { action=ExtobjConvFrom(Object, @gui) }
 				-
 				ha:Remove polygon         { li:action={Tool(Save); Tool(remove); Tool(Press); Tool(Restore)} }
 				ha:Copy to buffer         { li:action={Unselect(All); Select(object); PasteBuffer(Clear); PasteBuffer(AddSelected); Unselect(All); Tool(buffer) } }
@@ -721,6 +724,7 @@ ha:rnd-menu-v1 {
 				ha:Edit flags...          { action=FlagEdit() }
 				ha:Edit text...           { li:a={{<key>e;<key>t};};  action=ChangeName(Object) }
 				ha:Set Same Style         { action=SetSame() }
+				ha:Convert to extended object... = { action=ExtobjConvFrom(Object, @gui) }
 				ha:Change font...         { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
 				ha:Toggle tight clearance { action=PropToggle(object, a/tight_clearance, true); }
 				-
