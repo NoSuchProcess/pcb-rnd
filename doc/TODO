@@ -14,7 +14,7 @@
 - BUG: openscad export: load a board from menu, {f e} export; load another board from menu, {f e} export: output is set to the old file name! [report: Igor2]
 + BUG: advanced search: no quote around strings for regex (subc refdes) [report: TwisteR]
 - BUG: bug_files/drc_poly.lht - DRC misses insufficient poly clearance ml=4316 [report: Majenko]
-- BUG: shift-tab or ctrl-tab while term IDs and subc refdes are visible on overlay: they are mirrored [report: SnakesAndStuff]
++ BUG: shift-tab or ctrl-tab while term IDs and subc refdes are visible on overlay: they are mirrored [report: SnakesAndStuff]
 - BUG: stl export: hole (and maybe slot) cut in half by the outline exports invalid triangulation; bug_files/halfhole.lht [report: TwisteR]
 - DOC: regex (genregex), reference it from query() and advanced search docs [report: TwisteR]
 - DOC: query: int() and double()
