@@ -612,6 +612,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 	}
 
 	pcb_crosshair_move_absolute(PCB, RND_COORD_MAX, RND_COORD_MAX); /* make sure the crosshair is not above any object so ch* plugins release their highlights */
+	rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_true); /* pcb_crosshair_move_absolute()'s side effect is leaving the crosshair notify in false state, flush that */
 
 	/* new data isn't added to the undo list */
 	rnd_hid_menu_merge_inhibit_inc();
