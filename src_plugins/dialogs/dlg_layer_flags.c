@@ -80,8 +80,8 @@ fgw_error_t pcb_act_LayerPropGui(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (dlg[wsub].val.lng) comb |= PCB_LYC_SUB;
 		if (dlg[wauto].val.lng) comb |= PCB_LYC_AUTO;
 		if (ly->comb != comb) {
-			ly->comb = comb;
-			pcb_board_set_changed_flag(PCB, rnd_true);
+			if (pcb_layer_recomb(ly, comb, 1) == 0)
+				rnd_gui->invalidate_all(rnd_gui);
 		}
 	}
 	else
