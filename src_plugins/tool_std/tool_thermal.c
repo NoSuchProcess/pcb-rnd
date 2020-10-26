@@ -95,7 +95,7 @@ void pcb_tool_thermal_notify_mode(rnd_hidlib_t *hl)
 	void *ptr1, *ptr2, *ptr3;
 	int type, locked = 0;
 
-	if (((type = pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_OBJ_PSTK, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
+	if (((type = pcb_search_screen_maybe_selector(hl->tool_x, hl->tool_y, PCB_OBJ_PSTK | PCB_OBJ_SUBC_PART, &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID)
 			&& !PCB_FLAG_TEST(PCB_FLAG_HOLE, (pcb_any_obj_t *) ptr3)) {
 		if (type == PCB_OBJ_PSTK) {
 			if (!PCB_FLAG_TEST(PCB_FLAG_LOCK, (pcb_any_obj_t *)ptr2)) {
