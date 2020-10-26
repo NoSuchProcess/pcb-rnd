@@ -651,7 +651,7 @@ rnd_bool pcb_isc_arc_poly(const pcb_find_t *ctx, pcb_arc_t *Arc, pcb_poly_t *Pol
 	rnd_box_t *Box = (rnd_box_t *) Arc;
 
 	/* arcs with clearance never touch polys */
-	if (!ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Arc))
+	if ((Bloat == 0) && !ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Arc))
 		return rnd_false;
 	if (!Polygon->Clipped)
 		return rnd_false;
@@ -698,7 +698,7 @@ rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *
 	rnd_polyarea_t *lp;
 
 	/* lines with clearance never touch polygons */
-	if (!ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Line))
+	if ((Bloat == 0) && !ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Line))
 		return rnd_false;
 	if (!Polygon->Clipped)
 		return rnd_false;
@@ -757,7 +757,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 
 	/* cheat: poly-clear-poly means we did generate the clearance; this
 	   shall happen only if there's exactly one poly that is clearing the other */
-	if (!ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, P1)) {
+	if ((Bloat == 0) && !ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, P1)) {
 		pcp_cnt++;
 		pcp_gap = pcb_obj_clearance_p2(P1, P2) / 2.0;
 	}
