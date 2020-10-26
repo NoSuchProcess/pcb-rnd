@@ -518,6 +518,13 @@ static int layer_recolor(pcb_layer_t *layer, const char *clr)
 	return pcb_layer_recolor_(layer, &c, 1);
 }
 
+static int layer_recomb(pcb_layer_t *layer, int val, pcb_layer_combining_t bit)
+{
+	if (val)
+		return pcb_layer_recomb(layer, layer->comb | bit, 1);
+	return pcb_layer_recomb(layer, layer->comb & ~bit, 1);
+}
+
 static int set_layer(pcb_propset_ctx_t *st, pcb_layer_t *layer)
 {
 	const char *pn = st->name + 8;
@@ -536,6 +543,12 @@ static int set_layer(pcb_propset_ctx_t *st, pcb_layer_t *layer)
 
 		if ((strcmp(pn, "color") == 0) &&
 		    (layer_recolor(layer, st->color.str) == 0)) DONE0;
+
+		if ((strcmp(pn, "comb/negative") == 0) &&
+		    (layer_recomb(layer, st->c, PCB_LYC_SUB) == 0)) DONE0;
+
+		if ((strcmp(pn, "comb/auto") == 0) &&
+		    (layer_recomb(layer, st->c, PCB_LYC_AUTO) == 0)) DONE0;
 	}
 
 	return 0;
