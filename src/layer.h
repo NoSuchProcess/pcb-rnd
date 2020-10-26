@@ -294,6 +294,10 @@ const rnd_color_t *pcb_layer_default_color(int idx, pcb_layer_type_t lyt);
 int pcb_layer_rename(pcb_data_t *data, rnd_layer_id_t layer, const char *lname, rnd_bool undoable);
 int pcb_layer_recolor(pcb_data_t *data, rnd_layer_id_t layer, const char *lcolor, rnd_bool undoable);
 
+/* Change the combination flags of a layer */
+int pcb_layer_recomb(pcb_layer_t *Layer, pcb_layer_combining_t comb, rnd_bool undoable);
+
+
 /* changes the color of a layer; string has to be allocated by the caller (pcb_strdup) */
 int pcb_layer_rename_(pcb_layer_t *Layer, char *Name, rnd_bool undoable);
 

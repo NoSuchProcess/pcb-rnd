@@ -696,6 +696,69 @@ int pcb_layer_recolor(pcb_data_t *data, rnd_layer_id_t layer, const char *color,
 	return pcb_layer_recolor_(&data->Layer[layer], &clr, undoable);
 }
 
+/*** undoable layer comb changes ***/
+typedef struct {
+	pcb_layer_t *layer;
+	pcb_layer_combining_t comb;
+} undo_layer_recomb_t;
+
+
+static int undo_layer_recomb_swap(void *udata)
+{
+	pcb_layer_combining_t old;
+	undo_layer_recomb_t *r = udata;
+
+	old = r->layer->comb;
+	r->layer->comb = r->comb;
+	r->comb = old;
+	if (!r->layer->is_bound) {
+		assert((r->layer->parent_type == PCB_PARENT_DATA) && (r->layer->parent.data->parent_type == PCB_PARENT_BOARD));
+		pcb_layergrp_notify_chg(r->layer->parent.data->parent.board);
+	}
+	return 0;
+}
+
+static void undo_layer_recomb_print(void *udata, char *dst, size_t dst_len)
+{
+	undo_layer_recomb_t *r = udata;
+	rnd_snprintf(dst, dst_len, "recomb layer: '%x' -> '%x'", r->layer->comb, r->comb);
+}
+
+static const uundo_oper_t undo_layer_recomb = {
+	core_layer_cookie,
+	NULL,
+	undo_layer_recomb_swap,
+	undo_layer_recomb_swap,
+	undo_layer_recomb_print
+};
+
+
+int pcb_layer_recomb(pcb_layer_t *Layer, pcb_layer_combining_t comb, rnd_bool undoable)
+{
+	undo_layer_recomb_t rtmp, *r = &rtmp;
+
+	if (Layer->is_bound)
+		return -1;
+
+	if (Layer->comb == comb)
+		return 0;
+
+	if (undoable) {
+		pcb_board_t *pcb = pcb_data_get_top(Layer->parent.data);
+		if (pcb != NULL)
+			r = pcb_undo_alloc(pcb, &undo_layer_recomb, sizeof(undo_layer_recomb_t));
+	}
+
+	r->layer = Layer;
+	r->comb = comb;
+
+	undo_layer_recomb_swap(r);
+	if (undoable)
+		pcb_undo_inc_serial();
+
+	return 0;
+}
+
 #undef APPEND
 
 static int is_last_top_copper_layer(pcb_board_t *pcb, int layer)
