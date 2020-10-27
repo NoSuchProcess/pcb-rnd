@@ -411,7 +411,7 @@ ChangeFlag(Object|Selected|SelectedObjects, flag, value)
 ChangeFlag(SelectedLines|SelectedPins|SelectedVias, flag, value)
 ChangeFlag(SelectedPads|SelectedTexts|SelectedNames, flag, value)
 ChangeFlag(SelectedElements, flag, value)
-flag = thermal | join
+flag = join
 value = 0 | 1
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Sets or clears flags on objects.
@@ -1746,7 +1746,11 @@ Print one line in the log for each currently loaded script. If
 <i>pat</i>
  is specified, filter the list using 
 <i>pat</i>
- as a case sensitive regex on script ID, file name and language (list only scripts that match with any of these fields).  
+ as a case sensitive  
+<a href="http://www.repo.hu/projects/genregex/genregex.7.html">
+extended regex
+</a>
+ on script ID, file name and language (list only scripts that match with any of these fields).  
 </dd></dl>
 
 <h2 id="livescript">LiveScript</h2>
