@@ -74,7 +74,6 @@
 - version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs
 	- ./configure --config should default to /etc
-- BUG: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
 - BUG: in poly lib rewrite: bug_files/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
 - BUG: in poly lib rewrite: bug_files/phatch.lht: maybe {m d t} and PolyHatch(0, c) -> poly offseting bug on sharp corners ml=4159 [report: Majenko]
 - FEATURE: "thermal recipe" so a padstack thermal can be put in a padstack or subc and it is changed with the layer binding [report: jg]
@@ -106,7 +105,8 @@
 
 4. Low prio ===============================================================================
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
-- BUG: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
+- BUG: elliptic: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
+- BUG: elliptic: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
 - FEATURE: improve locking: consider a move-only lock?
 - FEATURE: DRC should warn for thin poly hair
 - FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
