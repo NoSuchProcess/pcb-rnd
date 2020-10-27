@@ -38,6 +38,8 @@
 #include "obj_line.h"
 #include "obj_poly.h"
 #include "obj_poly_draw.h"
+#include "obj_pstk_inlines.h"
+#include "find.h"
 #include "polygon.h"
 #include "search.h"
 #include <librnd/core/hid.h>
@@ -289,6 +291,56 @@ pcb_poly_t *pcb_topoly_conn(pcb_board_t *pcb, pcb_any_obj_t *start, pcb_topoly_t
 	return pcb_topoly_conn_with(pcb, start, how, -1);
 }
 
+typedef struct {
+	pcb_board_t *pcb;
+	pcb_poly_t *poly;
+	pcb_dynf_t df;
+
+	/* temporary, per pline callback fields */
+	pcb_pstk_t *ps;
+	pcb_pstk_shape_t *shape;
+} pstk_on_outline_t;
+
+/* rtree callback on pline segment crossing padstack bbox */
+static rnd_r_dir_t pcb_topoly_check_pstk_on_pline_cb(const rnd_box_t *box, void *cl)
+{
+	pstk_on_outline_t *ctx = cl;
+	pcb_find_t fctx = {0};
+	pcb_line_t line = {0};
+	rnd_vnode_t *vn = rnd_pline_seg2vnode(box);
+
+	line.Point1.X = vn->point[0]; line.Point1.Y = vn->point[1];
+	line.Point2.X = vn->next->point[0]; line.Point2.Y = vn->next->point[1];
+	if (pcb_isc_pstk_line_shp(&fctx, ctx->ps, &line, ctx->shape)) {
+		if (ctx->df != -1)
+			PCB_DFLAG_SET(&ctx->ps->Flags, ctx->df);
+rnd_trace("  HIT\n");
+	}
+
+
+	return RND_R_DIR_NOT_FOUND;
+}
+
+/* rtree callback on generated polygon overlapping padstack */
+static rnd_r_dir_t pcb_topoly_check_pstk_on_outline_cb(const rnd_box_t *box, void *cl)
+{
+	pstk_on_outline_t *ctx = cl;
+	pcb_pstk_t *ps = (pcb_pstk_t *)box;
+	pcb_pstk_shape_t holetmp;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+	pcb_pstk_shape_t *shape = pcb_pstk_shape_mech_or_hole_(ps, proto, &holetmp);
+
+	if (shape == NULL)
+		return RND_R_DIR_NOT_FOUND;
+
+	ctx->ps = ps;
+	ctx->shape = shape;
+	rnd_r_search(ctx->poly->Clipped->contours->tree, &ps->bbox_naked, NULL, pcb_topoly_check_pstk_on_pline_cb, ctx, NULL);
+	ctx->ps = NULL;
+	ctx->shape = NULL;
+
+	return RND_R_DIR_NOT_FOUND;
+}
 
 #define check(x, y, obj) \
 do { \
@@ -337,6 +389,8 @@ pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_
 {
 	pcb_poly_t *poly;
 	pcb_any_obj_t *start = pcb_topoly_find_1st_outline(pcb);
+	pstk_on_outline_t pctx;
+	int need_full;
 
 	if (start == NULL) {
 		poly = pcb_poly_alloc(pcb->Data->Layer);
@@ -347,6 +401,19 @@ pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_
 	}
 	else
 		poly = pcb_topoly_conn_with(pcb, start, how, df);
+
+	pcb_poly_bbox(poly);
+	poly->Clipped = pcb_poly_to_polyarea(poly, &need_full);
+
+	if (need_full)
+		rnd_message(RND_MSG_ERROR, "pcb_topoly_1st_outline_with: internal error: need full poly\nPlease report this bug with an example file!\n");
+
+	/* padstacks crossing polygon boundary need to be subtracted from the poly as
+	   they modify the contour */
+	pctx.pcb = pcb;
+	pctx.poly = poly;
+	pctx.df = df;
+	rnd_r_search(pcb->Data->padstack_tree, &poly->bbox_naked, NULL, pcb_topoly_check_pstk_on_outline_cb, &pctx, NULL);
 
 	return poly;
 }
