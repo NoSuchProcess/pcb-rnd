@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 + CLEANUP: extobj copy/move: two set of bugs: ml4290 and ml4291 [report: Majenko]
-+ CLEANUP: change show/enforce DRC to show/enforce routing style clearance [report: Ade]
 + FEATURE: draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a padstack (not only when placing it) [report: wojciechk8]
 + FEATURE: DRC: net attribute based clearance [report: Nicklas]
 + BUG: file revert {f r}, or file new {f n} -> xor draw stops working with the line tool [report: aron]
@@ -24,6 +23,7 @@
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
 - FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
+- FEATURE: think over style clearance indication: on editing exisitng object it should probably be the clearance of the object [report: Ade]
 - FEATURE: new breadboard
 	- FEATURE: gfx rotated pixmap scale adjustment: missing in lesstif, partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
 	- FEATURE: hidlib: render pixmap: test in gl
