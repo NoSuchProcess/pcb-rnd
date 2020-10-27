@@ -368,6 +368,9 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	pcb_layer_t *toply;
 	vtd0_t contours = {0};
 	vtp0_t cutouts = {0};
+	long contlen;
+	rnd_vnode_t *vn;
+	rnd_pline_t *pl;
 
 	if ((pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &lid, 1) != 1) && (pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &lid, 1) != 1)) {
 		rnd_message(RND_MSG_ERROR, "A top or bottom copper layer is required for stl export\n");
@@ -383,9 +386,10 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	pstk_points = estimate_hole_pts_pstk(PCB, toply, options);
 	cutout_points = estimate_cutout_pts(PCB, &cutouts, df, options);
 
-	mem_req = fp2t_memory_required(brdpoly->PointN + pstk_points + cutout_points);
+	contlen = pa_len(brdpoly->Clipped);
+	mem_req = fp2t_memory_required(contlen + pstk_points + cutout_points);
 	mem = calloc(mem_req, 1);
-	if (!fp2t_init(&tri, mem, brdpoly->PointN + pstk_points)) {
+	if (!fp2t_init(&tri, mem, contlen + pstk_points)) {
 		free(mem);
 		pcb_poly_free(brdpoly);
 		pcb_dynflag_free(df);
@@ -395,15 +399,20 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	/* there are no holes in the brdpoly so this simple approach for determining
 	   the number of contour points works (cutouts are applied separately on
 	   the triangulation lib level) */
-	pn = brdpoly->PointN;
-
-	for(n = pn-1; n >= 0; n--) {
+/*	pn = contlen;*/
+	pl = brdpoly->Clipped->contours;
+	vn = pl->head;
+	n = 0;
+	do {
 		fp2t_point_t *pt = fp2t_push_point(&tri);
-		pt->X = brdpoly->Points[n].X;
-		pt->Y = maxy - brdpoly->Points[n].Y;
+		pt->X = vn->point[0];
+		pt->Y = maxy - vn->point[1];
 		vtd0_append(&contours, pt->X);
 		vtd0_append(&contours, pt->Y);
-	}
+		vn = vn->next;
+		n++;
+	} while(vn != pl->head);
+
 	fp2t_add_edge(&tri);
 	vtd0_append(&contours, HUGE_VAL);
 	vtd0_append(&contours, HUGE_VAL);
