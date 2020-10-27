@@ -195,7 +195,7 @@ rnd_bool pcb_tool_arc_undo_act(rnd_hidlib_t *hl)
 
 void pcb_tool_arc_escape(rnd_hidlib_t *hl)
 {
-	if (pcb_crosshair.AttachedLine.State == PCB_CH_STATE_FIRST)
+	if (pcb_crosshair.AttachedBox.State == PCB_CH_STATE_FIRST)
 		rnd_tool_select_by_name(hl, "arrow");
 	else
 		rnd_tool_select_by_name(hl, "arc");
