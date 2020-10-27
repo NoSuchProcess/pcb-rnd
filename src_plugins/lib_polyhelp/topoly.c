@@ -307,16 +307,18 @@ static rnd_r_dir_t pcb_topoly_check_pstk_on_pline_cb(const rnd_box_t *box, void 
 	pstk_on_outline_t *ctx = cl;
 	pcb_find_t fctx = {0};
 	pcb_line_t line = {0};
-	rnd_vnode_t *vn = rnd_pline_seg2vnode(box);
+	rnd_vnode_t *vn = rnd_pline_seg2vnode((void *)box);
 
 	line.Point1.X = vn->point[0]; line.Point1.Y = vn->point[1];
 	line.Point2.X = vn->next->point[0]; line.Point2.Y = vn->next->point[1];
 	if (pcb_isc_pstk_line_shp(&fctx, ctx->ps, &line, ctx->shape)) {
+		rnd_polyarea_t *mpa;
 		if (ctx->df != -1)
 			PCB_DFLAG_SET(&ctx->ps->Flags, ctx->df);
-rnd_trace("  HIT\n");
+		mpa = pcb_pstk_shape2polyarea(ctx->ps, ctx->shape);
+		if (mpa != NULL)
+			pcb_poly_subtract(mpa, ctx->poly, 1);
 	}
-
 
 	return RND_R_DIR_NOT_FOUND;
 }
