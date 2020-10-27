@@ -269,14 +269,15 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 	return segs;
 }
 
-static void add_holes_pstk(fp2t_t *tri, pcb_board_t *pcb, pcb_layer_t *toply, rnd_coord_t maxy, vtd0_t *contours, rnd_hid_attr_val_t *options)
+static void add_holes_pstk(fp2t_t *tri, pcb_board_t *pcb, pcb_layer_t *toply, rnd_coord_t maxy, vtd0_t *contours, rnd_hid_attr_val_t *options, pcb_dynf_t df)
 {
 	rnd_rtree_it_t it;
 	rnd_box_t *n;
 
 	for(n = rnd_r_first(pcb->Data->padstack_tree, &it); n != NULL; n = rnd_r_next(&it)) {
 		pcb_pstk_t *ps = (pcb_pstk_t *)n;
-		pstk_points(pcb, ps, toply, tri, maxy, contours, options);
+		if (!PCB_DFLAG_TEST(&ps->Flags, df)) /* if a padstack is marked, it is on the contour and it should already be subtracted from the contour poly, skip it */
+			pstk_points(pcb, ps, toply, tri, maxy, contours, options);
 	}
 }
 
@@ -407,7 +408,7 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	vtd0_append(&contours, HUGE_VAL);
 	vtd0_append(&contours, HUGE_VAL);
 
-	add_holes_pstk(&tri, PCB, toply, maxy, &contours, options);
+	add_holes_pstk(&tri, PCB, toply, maxy, &contours, options, df);
 	add_holes_cutout(&tri, PCB, maxy, &cutouts, &contours, options);
 
 	fp2t_triangulate(&tri);
