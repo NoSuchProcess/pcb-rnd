@@ -9,7 +9,6 @@
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 + BUG: changing subc lock state does not indicated on UI (i.e. the "*" is not prepended to the window title) [report: aron]
 + BUG: openscad export: unticking top copper (and probably others) in the export dialog doesn't stop the plugin from exporting everything [report: Bdale]
-+ BUG: advanced search: no quote around strings for regex (subc refdes) [report: TwisteR]
 + BUG: esc while drawing arc or poly immediately quit the tool to arrow; they should cancel current operation but remain in the same mode [report: Ade]
 + DOC: regex (genregex), reference it from query() and advanced search docs [report: TwisteR]
 
