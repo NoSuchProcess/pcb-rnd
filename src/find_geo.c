@@ -1111,6 +1111,43 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *p
 	return rnd_false;
 }
 
+rnd_polyarea_t *pcb_pstk_shape2polyarea(pcb_pstk_t *ps, pcb_pstk_shape_t *shape)
+{
+	pcb_line_t tmp;
+	pcb_pstk_proto_t *proto;
+	pcb_pstk_shape_t sltmp;
+	int tries = 0;
+
+	if (shape == NULL) return NULL;
+
+	retry:;
+	if (tries++ > 16) {
+		rnd_message(RND_MSG_ERROR, "pcb_pstk_shape2polyarea(): PCB_PSSH_HSHADOW recursion too deep\nPlease report this bug!\n");
+		return NULL;
+	}
+	switch(shape->shape) {
+		case PCB_PSSH_POLY:
+			return pcb_pstk_shp_poly2area(ps, shape);
+		case PCB_PSSH_LINE:
+			shape_line_to_pcb_line(ps, shape->data.line, tmp);
+			goto retline;
+		case PCB_PSSH_CIRC:
+			tmp.type = PCB_OBJ_LINE;
+			tmp.Point1.X = tmp.Point2.X = shape->data.circ.x + ps->x;
+			tmp.Point1.Y = tmp.Point2.Y = shape->data.circ.y + ps->y;
+			tmp.Clearance = 0;
+			tmp.Thickness = shape->data.circ.dia;
+			tmp.Flags = pcb_no_flags();
+			retline:;
+			return pcb_poly_from_pcb_line(&tmp, tmp.Thickness);
+		case PCB_PSSH_HSHADOW:
+			proto = pcb_pstk_get_proto(ps);
+			shape = pcb_pstk_shape_mech_or_hole_(ps, proto, &sltmp);
+			goto retry;
+	}
+	return NULL;
+}
+
 RND_INLINE rnd_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly, rnd_bool anylayer)
 {
 	pcb_pstk_shape_t *shape;
