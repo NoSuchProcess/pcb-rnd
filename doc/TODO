@@ -13,7 +13,6 @@
 + BUG: esc while drawing arc or poly immediately quit the tool to arrow; they should cancel current operation but remain in the same mode [report: Ade]
 + BUG: stl export: hole (and maybe slot) cut in half by the outline exports invalid triangulation; bug_files/halfhole.lht [report: TwisteR]
 + DOC: regex (genregex), reference it from query() and advanced search docs [report: TwisteR]
-- DOC: query: int() and double()
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: bom export: load a board from menu, {f e} export; load another board from menu, {f e} export: output is set to the old file name; rnd_hid_parse_command_line() shouldn't mess with the default value but should use the value field (keep default for compatibility?) plus bug_files/export.patch [report: Igor2]
