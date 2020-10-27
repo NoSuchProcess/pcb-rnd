@@ -11,7 +11,6 @@
 + BUG: openscad export: unticking top copper (and probably others) in the export dialog doesn't stop the plugin from exporting everything [report: Bdale]
 + BUG: advanced search: no quote around strings for regex (subc refdes) [report: TwisteR]
 + BUG: esc while drawing arc or poly immediately quit the tool to arrow; they should cancel current operation but remain in the same mode [report: Ade]
-+ BUG: stl export: hole (and maybe slot) cut in half by the outline exports invalid triangulation; bug_files/halfhole.lht [report: TwisteR]
 + DOC: regex (genregex), reference it from query() and advanced search docs [report: TwisteR]
 
 2. For later releases ===============================================================================
