@@ -7,7 +7,6 @@
 + BUG: file revert {f r}, or file new {f n} -> xor draw stops working with the line tool [report: aron]
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 + BUG: changing subc lock state does not indicated on UI (i.e. the "*" is not prepended to the window title) [report: aron]
-+ BUG: openscad export: unticking top copper (and probably others) in the export dialog doesn't stop the plugin from exporting everything [report: Bdale]
 + DOC: regex (genregex), reference it from query() and advanced search docs [report: TwisteR]
 
 2. For later releases ===============================================================================
