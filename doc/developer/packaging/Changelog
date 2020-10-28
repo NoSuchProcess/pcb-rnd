@@ -1,9 +1,26 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=2.2.4
+  ver=2.3.0
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
+
+Packaging changes between 2.3.0 and 2.2.4
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
+
+(Sorry, all changes will need your action in this release)
+
+B. changes that probably DO need action
+
+1. new plugins in already existing package pcb-rnd-core:
+   ch_editpoint ch_onpoint
+   These will add a couple of new files, as listed in packages.html, please
+   make sure they are included in the pcb-rnd-import-net package.
+
+2. Grammar fixed in the description of the pcb-rnd-debug package
+
+3. ./configure options changed for the new plugins
 
 Packaging changes between 2.2.4 and 2.2.3
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
