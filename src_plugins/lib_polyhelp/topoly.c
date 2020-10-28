@@ -417,9 +417,10 @@ pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_
 	pctx.df = df;
 	vtp0_init(&pctx.pstks);
 
-	/* first search (and mark) all offending padstacks */
+	/* map: first search (and mark) all offending padstacks */
 	rnd_r_search(pcb->Data->padstack_tree, &poly->bbox_naked, NULL, pcb_topoly_check_pstk_on_outline_cb, &pctx, NULL);
 
+	/* apply: subtract all padstacks found while mapping */
 	for(n = 0; n < pctx.pstks.used; n++) {
 		pcb_pstk_t *ps = pctx.pstks.array[n];
 		pcb_pstk_shape_t holetmp;
