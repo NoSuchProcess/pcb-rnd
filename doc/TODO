@@ -4,9 +4,7 @@
 + CLEANUP: extobj copy/move: two set of bugs: ml4290 and ml4291 [report: Majenko]
 + FEATURE: draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a padstack (not only when placing it) [report: wojciechk8]
 + FEATURE: DRC: net attribute based clearance [report: Nicklas]
-+ BUG: file revert {f r}, or file new {f n} -> xor draw stops working with the line tool [report: aron]
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
-+ BUG: changing subc lock state does not indicated on UI (i.e. the "*" is not prepended to the window title) [report: aron]
 + DOC: regex (genregex), reference it from query() and advanced search docs [report: TwisteR]
 
 2. For later releases ===============================================================================
