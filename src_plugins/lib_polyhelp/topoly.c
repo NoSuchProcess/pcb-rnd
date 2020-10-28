@@ -313,7 +313,6 @@ static rnd_r_dir_t pcb_topoly_check_pstk_on_pline_cb(const rnd_box_t *box, void 
 	line.Point1.X = vn->point[0]; line.Point1.Y = vn->point[1];
 	line.Point2.X = vn->next->point[0]; line.Point2.Y = vn->next->point[1];
 	if (pcb_isc_pstk_line_shp(&fctx, ctx->ps, &line, ctx->shape)) {
-		rnd_polyarea_t *mpa;
 		if (ctx->df != -1)
 			PCB_DFLAG_SET(&ctx->ps->Flags, ctx->df);
 		vtp0_append(&ctx->pstks, ctx->ps);
