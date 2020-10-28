@@ -295,6 +295,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	pcb_poly_t *poly;
 	pcb_dynf_t df;
+	vtp0_t pstks;  /* a list of (pcb_pstk_t *) of padstacks having mech shape crossing the poly border */
 
 	/* temporary, per pline callback fields */
 	pcb_pstk_t *ps;
@@ -315,9 +316,7 @@ static rnd_r_dir_t pcb_topoly_check_pstk_on_pline_cb(const rnd_box_t *box, void 
 		rnd_polyarea_t *mpa;
 		if (ctx->df != -1)
 			PCB_DFLAG_SET(&ctx->ps->Flags, ctx->df);
-		mpa = pcb_pstk_shape2polyarea(ctx->ps, ctx->shape);
-		if (mpa != NULL)
-			pcb_poly_subtract(mpa, ctx->poly, 1);
+		vtp0_append(&ctx->pstks, ctx->ps);
 	}
 
 	return RND_R_DIR_NOT_FOUND;
@@ -393,6 +392,7 @@ pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_
 	pcb_any_obj_t *start = pcb_topoly_find_1st_outline(pcb);
 	pstk_on_outline_t pctx;
 	int need_full;
+	long n;
 
 	if (start == NULL) {
 		poly = pcb_poly_alloc(pcb->Data->Layer);
@@ -415,8 +415,22 @@ pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_
 	pctx.pcb = pcb;
 	pctx.poly = poly;
 	pctx.df = df;
+	vtp0_init(&pctx.pstks);
+
+	/* first search (and mark) all offending padstacks */
 	rnd_r_search(pcb->Data->padstack_tree, &poly->bbox_naked, NULL, pcb_topoly_check_pstk_on_outline_cb, &pctx, NULL);
 
+	for(n = 0; n < pctx.pstks.used; n++) {
+		pcb_pstk_t *ps = pctx.pstks.array[n];
+		pcb_pstk_shape_t holetmp;
+		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+		pcb_pstk_shape_t *shape = pcb_pstk_shape_mech_or_hole_(ps, proto, &holetmp);
+		rnd_polyarea_t *mpa = pcb_pstk_shape2polyarea(ps, shape);
+		if (mpa != NULL)
+			pcb_poly_subtract(mpa, poly, 1);
+	}
+
+	vtp0_uninit(&pctx.pstks);
 	return poly;
 }
 
