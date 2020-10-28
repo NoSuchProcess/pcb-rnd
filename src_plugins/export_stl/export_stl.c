@@ -363,7 +363,7 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	size_t mem_req;
 	void *mem;
 	fp2t_t tri;
-	long cn_start, cn, n, pn, pstk_points, cutout_points;
+	long cn_start, cn, n, pstk_points, cutout_points;
 	rnd_layer_id_t lid = -1;
 	pcb_layer_t *toply;
 	vtd0_t contours = {0};
