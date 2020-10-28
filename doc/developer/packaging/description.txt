@@ -60,7 +60,7 @@ File formats and compatibility:
     * freepcb netlist + footprint info
     * gEDA/gschem (netlist + footpritn info, running gnetlist)
     * import ltspice .net and .asc (netlist and footprint info)
-    * flat .edf (netlist + footprint info, produced by Mentor Graphics Design Capture)
+    * flat .edf (netlist+footprint, produced by Mentor Graphics Design Capture)
     * pcb-rnd action script (netlist + footprint info)
     * schematics import by running a commandline
     * netlist import by running a commandline
