@@ -656,11 +656,12 @@ static const char pcb_acts_SetThermal[] = "SetThermal(Object|SelectedPins|Select
 static const char pcb_acth_SetThermal[] =
 	"Set the thermal (on the current layer) of padstacks to the given style.\n"
 	"Style = 0 means no thermal.\n"
-	"Style = 1 has diagonal fingers with sharp edges.\n"
-	"Style = 2 has horizontal and vertical fingers with sharp edges.\n"
-	"Style = 3 is a solid connection to the plane.\n"
-	"Style = 4 has diagonal fingers with rounded edges.\n"
-	"Style = 5 has horizontal and vertical fingers with rounded edges.\n";
+	"Style = 1 horizontal/vertical, round.\n"
+	"Style = 2 horizontal/vertical, sharp.\n"
+	"Style = 3 is a solid connection to the polygon.\n"
+	"Style = 4 (invalid).\n"
+	"Style = 5 diagonal, round.\n"
+	"Style = 6 diagonal, sharp.\n";
 /* DOC: setthermal.html */
 static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -678,7 +679,7 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_bool absolute;
 
 		kind = rnd_get_value_ex(style, NULL, &absolute, NULL, NULL, NULL);
-		if (absolute && (kind <= 5)) {
+		if (absolute && (kind <= 6)) {
 			if (kind != 0)
 				kind |= PCB_THERMAL_ON;
 			switch (rnd_funchash_get(function, NULL)) {

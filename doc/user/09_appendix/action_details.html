@@ -3676,11 +3676,12 @@ SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Set the thermal (on the current layer) of padstacks to the given style.
 Style = 0 means no thermal.
-Style = 1 has diagonal fingers with sharp edges.
-Style = 2 has horizontal and vertical fingers with sharp edges.
-Style = 3 is a solid connection to the plane.
-Style = 4 has diagonal fingers with rounded edges.
-Style = 5 has horizontal and vertical fingers with rounded edges.
+Style = 1 horizontal/vertical, round.
+Style = 2 horizontal/vertical, sharp.
+Style = 3 is a solid connection to the polygon.
+Style = 4 (invalid).
+Style = 5 diagonal, round.
+Style = 6 diagonal, sharp.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
@@ -3702,7 +3703,7 @@ This changes how/whether padstacks connect to any rectangle or polygon on the cu
 <th>
 1  
 <td>
- 45 degree fingers with sharp edges,   
+ horizontal & vertical fingers with round edges,   
 <tr>
 
 <th>
@@ -3720,15 +3721,21 @@ This changes how/whether padstacks connect to any rectangle or polygon on the cu
 <th>
 4  
 <td>
- 45 degree fingers with rounded corners,   
+ invalid, do not use   
 <tr>
 
 <th>
 5  
 <td>
- horizontal & vertical fingers with rounded corners. 
+ 45 degree fingers with rounded corners.   
+<tr>
+
+<th>
+6  
+<td>
+ 45 degree fingers with sharp edges,  
 </table>
- 
+  
 <p>
  Padstacks may have thermals whether or not there is a polygon available to connect with. However, they will have no visible effect until a polygon is drawn around the padstack.  
 </dd></dl>
