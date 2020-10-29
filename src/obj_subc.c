@@ -1901,8 +1901,10 @@ TODO("subc: subc-in-subc: can a whole subc be a floater? - add undo!")
 	}
 
 	pcb_subc_op(ctx->chgflag.pcb->Data, sc, &ChgFlagFunctions, ctx, PCB_SUBCOP_UNDO_NORMAL);
-	if ((ctx->chgflag.flag & pcb_subc_flags) == ctx->chgflag.flag)
+	if ((ctx->chgflag.flag & pcb_subc_flags) == ctx->chgflag.flag) {
+		pcb_undo_add_obj_to_flag(sc);
 		PCB_FLAG_CHANGE(ctx->chgflag.how, ctx->chgflag.flag, sc);
+	}
 	return sc;
 }
 
