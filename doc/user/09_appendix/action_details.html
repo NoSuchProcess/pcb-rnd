@@ -3674,14 +3674,15 @@ When invoked over any line, arc, polygon, or via, this changes the current layer
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Set the thermal (on the current layer) of padstacks to the given style.
-Style = 0 means no thermal.
-Style = 1 horizontal/vertical, round.
-Style = 2 horizontal/vertical, sharp.
-Style = 3 is a solid connection to the polygon.
-Style = 4 (invalid).
-Style = 5 diagonal, round.
-Style = 6 diagonal, sharp.
+Set the thermal (on the current layer) of padstacks to the given style. Style is one of:
+0: means no thermal.
+1: horizontal/vertical, round.
+2: horizontal/vertical, sharp.
+3: is a solid connection to the polygon.
+4: (invalid).
+5: diagonal, round.
+6: diagonal, sharp.
+noshape: no copper shape on layer
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
 </table>
 <p>
@@ -3733,7 +3734,13 @@ This changes how/whether padstacks connect to any rectangle or polygon on the cu
 <th>
 6  
 <td>
- 45 degree fingers with sharp edges,  
+ 45 degree fingers with sharp edges,   
+<tr>
+
+<th>
+noshape  
+<td>
+ remove copper shape on layer  
 </table>
   
 <p>

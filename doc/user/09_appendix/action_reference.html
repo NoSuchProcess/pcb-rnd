@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.2.4 (svn r33161) an interactive printed circuit board editor ,  Revision: 33219
+This is pcb-rnd 2.2.4 (svn r33161) an interactive printed circuit board editor ,  Revision: 33220
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -366,7 +366,7 @@ This is pcb-rnd 2.2.4 (svn r33161) an interactive printed circuit board editor ,
 <tr><td>SetOctagon</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#setsame">SetSame</a></td><td>Sets current layer and sizes to match indicated item.</td><td>SetSame()</td><td></td>
 <tr><td>SetSquare</td><td></td><td></td><td>oldactions plugin</td>
-<tr><td><a href="action_details.html#setthermal">SetThermal</a></td><td>Set the thermal (on the current layer) of padstacks to the given style.<br>Style = 0 means no thermal.<br>Style = 1 horizontal/vertical, round.<br>Style = 2 horizontal/vertical, sharp.<br>Style = 3 is a solid connection to the polygon.<br>Style = 4 (invalid).<br>Style = 5 diagonal, round.<br>Style = 6 diagonal, sharp.</td><td>SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)</td><td></td>
+<tr><td><a href="action_details.html#setthermal">SetThermal</a></td><td>Set the thermal (on the current layer) of padstacks to the given style. Style is one of:<br>0: means no thermal.<br>1: horizontal/vertical, round.<br>2: horizontal/vertical, sharp.<br>3: is a solid connection to the polygon.<br>4: (invalid).<br>5: diagonal, round.<br>6: diagonal, sharp.<br>noshape: no copper shape on layer</td><td>SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)</td><td></td>
 <tr><td><a href="action_details.html#setunits">SetUnits</a></td><td>Set the default measurement units.</td><td>SetUnits(mm|mil)</td><td></td>
 <tr><td><a href="action_details.html#setvalue">SetValue</a></td><td>Change various board-wide values and sizes.</td><td>SetValue(Grid|Line|LineSize|Text|TextScale, delta)</td><td></td>
 <tr><td>shape</td><td>Interactive shape generator.</td><td>shape()</td><td>shape plugin</td>

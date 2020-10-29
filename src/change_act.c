@@ -654,21 +654,22 @@ static fgw_error_t pcb_act_ChangeNonetlist(fgw_arg_t *res, int argc, fgw_arg_t *
 
 static const char pcb_acts_SetThermal[] = "SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)";
 static const char pcb_acth_SetThermal[] =
-	"Set the thermal (on the current layer) of padstacks to the given style.\n"
-	"Style = 0 means no thermal.\n"
-	"Style = 1 horizontal/vertical, round.\n"
-	"Style = 2 horizontal/vertical, sharp.\n"
-	"Style = 3 is a solid connection to the polygon.\n"
-	"Style = 4 (invalid).\n"
-	"Style = 5 diagonal, round.\n"
-	"Style = 6 diagonal, sharp.\n";
+	"Set the thermal (on the current layer) of padstacks to the given style. Style is one of:\n"
+	"0: means no thermal.\n"
+	"1: horizontal/vertical, round.\n"
+	"2: horizontal/vertical, sharp.\n"
+	"3: is a solid connection to the polygon.\n"
+	"4: (invalid).\n"
+	"5: diagonal, round.\n"
+	"6: diagonal, sharp.\n"
+	"noshape: no copper shape on layer\n";
 /* DOC: setthermal.html */
 static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function;
 	const char *style;
 	void *ptr1, *ptr2, *ptr3;
-	int type, kind;
+	int type, kind = 0;
 	int err = 0;
 	rnd_coord_t gx, gy;
 
@@ -678,8 +679,11 @@ static fgw_error_t pcb_act_SetThermal(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (function && *function && style && *style) {
 		rnd_bool absolute;
 
-		kind = rnd_get_value_ex(style, NULL, &absolute, NULL, NULL, NULL);
-		if (absolute && (kind <= 6)) {
+		if (rnd_strcasecmp(style, "noshape") == 0)
+			kind = PCB_THERMAL_NOSHAPE | PCB_THERMAL_ON;
+		else
+			kind = rnd_get_value_ex(style, NULL, &absolute, NULL, NULL, NULL);
+		if ((absolute && (kind <= 6)) || (kind & PCB_THERMAL_ON)) {
 			if (kind != 0)
 				kind |= PCB_THERMAL_ON;
 			switch (rnd_funchash_get(function, NULL)) {
