@@ -58,6 +58,7 @@ void pcb_tool_lock_notify_mode(rnd_hidlib_t *hl)
 		pcb_subc_t *subc = (pcb_subc_t *)ptr2;
 		pcb_flag_change(pcb, PCB_CHGFLG_TOGGLE, PCB_FLAG_LOCK, PCB_OBJ_SUBC, ptr1, ptr2, ptr3);
 		pcb_board_set_changed_flag(pcb, rnd_true);
+		pcb_undo_inc_serial();
 
 		DrawSubc(subc);
 		pcb_draw();
@@ -70,6 +71,7 @@ void pcb_tool_lock_notify_mode(rnd_hidlib_t *hl)
 				&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, thing)) {
 			/* this is not un-doable since LOCK isn't */
 			PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, thing);
+			pcb_undo_inc_serial();
 			pcb_draw_obj((pcb_any_obj_t *)ptr2);
 			pcb_draw();
 			pcb_board_set_changed_flag(pcb, rnd_true);
