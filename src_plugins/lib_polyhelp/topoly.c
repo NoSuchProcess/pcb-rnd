@@ -403,6 +403,9 @@ pcb_poly_t *pcb_topoly_1st_outline_with(pcb_board_t *pcb, pcb_topoly_t how, pcb_
 	else
 		poly = pcb_topoly_conn_with(pcb, start, how, df);
 
+	if (poly == NULL)
+		return NULL;
+
 	pcb_poly_bbox(poly);
 	poly->Clipped = pcb_poly_to_polyarea(poly, &need_full);
 
