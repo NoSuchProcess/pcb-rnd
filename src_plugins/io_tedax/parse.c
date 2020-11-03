@@ -67,7 +67,7 @@ int tedax_getline(FILE *f, char *buff, int buff_size, char *argv[], int argv_siz
 				continue;
 			}
 			if ((argc+1 < argv_size) && ((*s == ' ') || (*s == '\t'))) {
-				*s = '\0';
+				*o = *s = '\0';
 				s++;
 				o++;
 				while((*s == ' ') || (*s == '\t'))
