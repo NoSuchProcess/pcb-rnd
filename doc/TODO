@@ -2,10 +2,8 @@
 
 1. For the upcoming release ===============================================================================
 + CLEANUP: extobj copy/move: two set of bugs: ml4290 and ml4291 [report: Majenko]
-+ FEATURE: draw on move: 'Crosshair shows DRC clearance' should show the clearance also when moving a padstack (not only when placing it) [report: wojciechk8]
 + FEATURE: DRC: net attribute based clearance [report: Nicklas]
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
-+ DOC: regex (genregex), reference it from query() and advanced search docs [report: TwisteR]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: bom export: load a board from menu, {f e} export; load another board from menu, {f e} export: output is set to the old file name; rnd_hid_parse_command_line() shouldn't mess with the default value but should use the value field (keep default for compatibility?) plus bug_files/export.patch [report: Igor2]
