@@ -6,16 +6,17 @@ cdt_t cdt;
 
 int main(void)
 {
-	point_t *p, *p1, *p2, *pd[1000];
-	edge_t *e, *ed[500];
+	point_t *p1, *p2;
+	edge_t *ed[500];
 	int i, j, e_num;
-	clock_t t;
 	pointlist_node_t *p_violations = NULL;
 
 	//cdt_init(&cdt, 1000, 1000, 5000, 5000);
 	cdt_init(&cdt, 0, 0, 100000, 100000);
 
 	/*
+	point_t *p, *pd[1000]; 
+	edge_t *e,
 	cdt_insert_point(&cdt, 2500, 3000);
 	cdt_insert_point(&cdt, 2600, 3000);
 	cdt_insert_point(&cdt, 2700, 3000);
@@ -44,6 +45,7 @@ int main(void)
 	*/
 
 	/*
+	clock_t t;
 	srand(time(NULL));
 	t = clock();
 	for (i = 0; i < 1000; i++) {
