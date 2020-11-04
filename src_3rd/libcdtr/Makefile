@@ -6,6 +6,8 @@ OBJS=cdt_test.o cdt.o point.o edge.o triangle.o
 
 cdt_test: $(OBJS)
 
+include Makefile.dep
+
 cdt_test.o: cdt_test.c
 	$(CC) $(CFLAGS) -c cdt_test.c -o $@
 
@@ -20,6 +22,9 @@ edge.o: edge.c
 
 triangle.o: triangle.c
 	$(CC) $(CFLAGS) -c triangle.c -o $@
+
+dep:
+	echo $(OBJS) | ./dep.sh $(CFLAGS) > Makefile.dep
 
 clean:
 	-rm $(OBJS) cdt_test

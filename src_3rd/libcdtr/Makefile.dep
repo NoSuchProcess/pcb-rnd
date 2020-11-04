@@ -1,0 +1,15 @@
+cdt_test.o: cdt_test.c cdt.h typedefs.h point.h ../libcdtr/list/list.h \
+ ../genvector/genvector_impl.h ../genvector/genvector_undef.h edge.h \
+ triangle.h
+cdt.o: cdt.c cdt.h typedefs.h point.h ../libcdtr/list/list.h \
+ ../genvector/genvector_impl.h ../genvector/genvector_undef.h edge.h \
+ triangle.h
+point.o: point.c point.h typedefs.h ../libcdtr/list/list.h \
+ ../genvector/genvector_impl.h ../genvector/genvector_undef.h \
+ ../libcdtr/list/list.c ../genvector/genvector_impl.c
+edge.o: edge.c edge.h typedefs.h ../libcdtr/list/list.h \
+ ../genvector/genvector_impl.h ../genvector/genvector_undef.h \
+ ../libcdtr/list/list.c ../genvector/genvector_impl.c
+triangle.o: triangle.c triangle.h typedefs.h ../libcdtr/list/list.h \
+ ../genvector/genvector_impl.h ../genvector/genvector_undef.h \
+ ../libcdtr/list/list.c ../genvector/genvector_impl.c
