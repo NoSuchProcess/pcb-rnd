@@ -1,12 +1,17 @@
-CFLAGS_DBG=-Wall -O0 -g3 
+#CFLAGS_DBG=-Wall -O0 -g3 
 CFLAGS=$(CFLAGS_DBG) $(CFLAGS_LIBCDTR) -I. -I.. -I../..
 LDFLAGS=-lm $(LDFLAGS_LIBCDTR)
 
 OBJS=cdt_test.o cdt.o point.o edge.o triangle.o
+LIBA=libcdtr.a
 
 cdt_test: $(OBJS)
 
 include Makefile.dep
+
+$(LIBA): $(OBJS)
+	-rm $(LIBA)
+	ar ru $(LIBA) $(OBJS)
 
 cdt_test.o: cdt_test.c
 	$(CC) $(CFLAGS) -c cdt_test.c -o $@
