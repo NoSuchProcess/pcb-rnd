@@ -1,7 +1,20 @@
-CFLAGS=-Wall -O0 -g3 -I. -I.. -I../..
-LDFLAGS=-lm
+CFLAGS_DBG=-Wall -O0 -g3 
+CFLAGS=$(CFLAGS_DBG) $(CFLAGS_LIBCDTR) -I. -I.. -I../..
+LDFLAGS=-lm $(LDFLAGS_LIBCDTR)
 
 cdt_test: cdt_test.o cdt.o point.o edge.o triangle.o
 
-%.o: %.c
-	gcc $(CFLAGS) -c $< -o $@
+cdt_test.o: cdt_test.c
+	$(CC) $(CFLAGS) -c cdt_test.c -o $@
+
+cdt.o: cdt.c
+	$(CC) $(CFLAGS) -c cdt.c -o $@
+
+point.o: point.c
+	$(CC) $(CFLAGS) -c point.c -o $@
+
+edge.o: edge.c
+	$(CC) $(CFLAGS) -c edge.c -o $@
+
+triangle.o: triangle.c
+	$(CC) $(CFLAGS) -c triangle.c -o $@
