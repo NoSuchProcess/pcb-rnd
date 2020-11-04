@@ -2,7 +2,9 @@ CFLAGS_DBG=-Wall -O0 -g3
 CFLAGS=$(CFLAGS_DBG) $(CFLAGS_LIBCDTR) -I. -I.. -I../..
 LDFLAGS=-lm $(LDFLAGS_LIBCDTR)
 
-cdt_test: cdt_test.o cdt.o point.o edge.o triangle.o
+OBJS=cdt_test.o cdt.o point.o edge.o triangle.o
+
+cdt_test: $(OBJS)
 
 cdt_test.o: cdt_test.c
 	$(CC) $(CFLAGS) -c cdt_test.c -o $@
@@ -18,3 +20,6 @@ edge.o: edge.c
 
 triangle.o: triangle.c
 	$(CC) $(CFLAGS) -c triangle.c -o $@
+
+clean:
+	-rm $(OBJS) cdt_test
