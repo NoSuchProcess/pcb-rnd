@@ -32,4 +32,5 @@ dep:
 	echo $(OBJS) | ./dep.sh $(CFLAGS) > Makefile.dep
 
 clean:
-	-rm $(OBJS) cdt_test
+	-touch $(LIBA) $(OBJS) cdt_test
+	-rm $(LIBA) $(OBJS) cdt_test
