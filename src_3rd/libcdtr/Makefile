@@ -2,10 +2,10 @@
 CFLAGS=$(CFLAGS_DBG) $(CFLAGS_LIBCDTR) -I. -I.. -I../..
 LDFLAGS=-lm $(LDFLAGS_LIBCDTR)
 
-OBJS=cdt_test.o cdt.o point.o edge.o triangle.o
+OBJS= cdt.o point.o edge.o triangle.o
 LIBA=libcdtr.a
 
-cdt_test: $(OBJS)
+cdt_test: cdt_test.o $(OBJS)
 
 include Makefile.dep
 
@@ -32,5 +32,5 @@ dep:
 	echo $(OBJS) | ./dep.sh $(CFLAGS) > Makefile.dep
 
 clean:
-	-touch $(LIBA) $(OBJS) cdt_test
-	-rm $(LIBA) $(OBJS) cdt_test
+	-touch $(LIBA) $(OBJS) cdt_test.o cdt_test
+	-rm $(LIBA) $(OBJS) cdt_test.o cdt_test

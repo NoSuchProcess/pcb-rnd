@@ -1,7 +1,12 @@
 #ifndef TYPEDEFS_H
 #define TYPEDEFS_H
 
-typedef int coord_t;
+#ifdef CDT_COORD_T
+	typedef CDT_COORD_T coord_t;
+#else
+	typedef int coord_t;
+#endif
+
 
 typedef struct {
 	coord_t x;
