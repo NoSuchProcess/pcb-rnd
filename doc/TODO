@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 + CLEANUP: extobj copy/move: two set of bugs: ml4290 and ml4291 [report: Majenko]
-+ FEATURE: DRC: net attribute based clearance [report: Nicklas]
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 
 2. For later releases ===============================================================================
