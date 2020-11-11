@@ -9,7 +9,7 @@ Packaging changes between 2.3.0 and 2.2.4
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A. changes that probably don't need action
 
-(Sorry, all changes will need your action in this release)
+1. new config file: $C/fp_fs.conf
 
 B. changes that probably DO need action
 
