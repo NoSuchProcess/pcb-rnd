@@ -669,7 +669,7 @@ pcb_net_term_t *pcb_net_find_by_obj(const pcb_netlist_t *nl, const pcb_any_obj_t
 		return NULL;
 
 	sc = pcb_obj_parent_subc(obj);
-	if (sc == NULL)
+	if ((sc == NULL) || (sc->refdes == NULL))
 		return NULL;
 
 	return pcb_net_find_by_refdes_term(nl, sc->refdes, obj->term);
