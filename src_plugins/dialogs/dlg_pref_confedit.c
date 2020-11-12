@@ -423,7 +423,7 @@ const char pcb_acts_dlg_confval_edit[] = "dlg_confval_edit(path, idx, role, [mod
 const char pcb_acth_dlg_confval_edit[] = "Present a dialog box for editing the value of a conf node at path.";
 fgw_error_t pcb_act_dlg_confval_edit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *path, *srole, *smodal;
+	const char *path, *srole, *smodal = NULL;
 	rnd_bool modal;
 	long idx;
 	rnd_conf_native_t *nat;
