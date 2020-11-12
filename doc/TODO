@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ CLEANUP: extobj copy/move: two set of bugs: ml4290 and ml4291 [report: Majenko]
 
 2. For later releases ===============================================================================
 - CLEANUP/BUG: bom export: load a board from menu, {f e} export; load another board from menu, {f e} export: output is set to the old file name; rnd_hid_parse_command_line() shouldn't mess with the default value but should use the value field (keep default for compatibility?) plus bug_files/export.patch [report: Igor2]
@@ -39,6 +38,7 @@
 		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
 		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
 	- BUG: elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
+- BUG: draw a bus, draw a polygin around the bus, cut bus to buffer, paste bus -> poly is not clipped ml4504 [report: Majenko]
 - BUG: {w d}, config, drc_query, edit definitions, change min drill value -> value on the change button doesn't refresh [report: bdale]
 - BUG: built-in irc client: pick a nick too long and the client will never recognize itself after connect (can't send messages); also test nick collision on connect [report: aron]
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
