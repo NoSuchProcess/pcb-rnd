@@ -1,6 +1,414 @@
-pcb-rnd 2.3.0 (r33240)
+pcb-rnd 2.3.0 (r33240/r32452)
 ~~~~~~~~~~~~~~~~~~~~~~
 pcb-rnd part:
 
+	[act_draw]
+		-Cleanup: remove global PCB dependency
+
+	[act_read]
+		-Cleanup: remove global PCB dependency
+		-Add: idplist(print)
+
+	[asm]
+		-Add: menu for the feature plugin
+
+	[ch_editpoint]
+		-Add: plugin to indicate object editpoints and terminal names on hover
+
+	[ch_onpoint]
+		-Cleanup: don't calculate arc endpoints locally, call the dedicated function
+		-Cleanup: move onpoint object lists from core/crosshair to ch_onpoint
+		-Move: onpoint related code from core to plugin ch_onpoint to make core smaller and cleaner
+		-Fix: don't crash if there's no tool
+		-Add: allow indication only for tools that can edit geometry
+
+	[core]
+		-Cleanup: use vtp0 and pcb_any_obj_t for on-point highlight instead of a locally defined type+obj* struct to reduce code size (pcb_any_obj_t has a type field)
+		-Cleanup: on-point: DrawLineOrArc(): don't need to pass type+obj, pcb_any_obj_t does include the type
+		-Cleanup: on-point: DrawLineOrArc(): no need to do trickery with the layer argument, lines and arcs do remember their parent layers in pcb_any_obj_t
+		-Cleanup: on-point: make DrawLineOrArc() static - needed by onpoint only; rename to remove CamelCase
+		-Cleanup: decouple pcb_board_set_changed_flag() from PCB, adding a pcb_board_t * context pointer first arg
+		-Cleanup: remove global PCB dependency from padstack actions
+		-Cleanup: remove global PCB dependency from conf actions
+		-Cleanup: remove global PCB dependency from font actions
+		-Cleanup: remove global PCB dependency from file actions
+		-Cleanup: pcb_xordraw_movecopy() grew too large, split it up to a per object type function
+		-Cleanup: onpoint indication should be an obj common bit, not a flag - it's temporary data never to be saved
+		-Fix: get low level text scale X,Y change undoable
+		-Fix: make ChangePinName() undoable
+		-Fix: make ChangeNonetlist() undoable
+		-Fix: padstack undoable change hole shall call the proto updater to keep caches and hashes in sync
+		-Fix: arc wireframe draw: never call the hid with negative radius (that resulted in artifacts)
+		-Fix: RouteStyle() action help text did not reflect how the code worked
+		-Fix: route style: text scale is really an int, not a coord
+		-Fix: hole diameter change in padstack op shouldn't use old drc setting to limit minimum size; the padstack editor and the property editor already allows the user to set any size, don't do arbitrary limiting here either
+		-Fix: pcb_text_draw_string_simple() shall set up xform and info to avoid crash
+		-Fix: don't crash on pcb==NULL in text mirroring in buffer
+		-Fix: don't use PCB from some actions, that's not available while new board is created
+		-Fix: move crosshair out to the limit before removing the old board - this should trigger all ch_ plugins to release their old data, to avoid stale pointers
+		-Fix: drc print: don't print measured or expected value if it is FGW_INVALID
+		-Fix: when removing/destroying a polygon, remove it from parent subc term list
+		-Fix: footprint parameter split: find and remove the trailing ')' even if there are spaces after it
+		-Fix: set rendering to positive before drawing the fab layer (might be the first thing drawn on an empty board)
+		-Fix: ChangeFlag doesn't have thermal anymore (thermal is not a flag bit)
+		-Fix: SetThermal() with value non-zero should also turn on thermal
+		-Fix: update library entry parent after sort or array relocation so it doesn't point to invalid/free'd memory
+		-Fix: clear_buffer should reset buffer origin as well so it is not inherited between operations
+		-Fix: new board creation crosshair state mismatch caused sw render HIDs to lose xor draw after creating a new board
+		-Fix: low level label draw: separate x and y text mirroring is possible now, use it (fixes ctrl+tab text mirror bug)
+		-Fix: turn off clearance optimization for line/arc/poly vs. poly intersection check if bloat != 0 (it caused shorts missed)
+		-Fix: make subc flag change undoable (affects the lock tool)
+		-Fix: SetThermal(): wrong description on the meaning of the numeric style values
+		-Fix: SetThermal(): allow value 6 as well
+		-Update: default boards are of lihata board v7, so plain save will not downgrade new boards to v6
+		-Change: use style clearance for 'show drc clearance' instead of bloat
+		-Change: conf field descriptions of the old DRC fields, which are now either obsolete or repurposed to limiting sizes
+		-Add: tool infra: flag to mark tools that can edit object geometry
+		-Add: generic, undoable attribute set function
+		-Add: generalized subc layer allocation based on copying an existing subc layer
+		-Add: respect rnd_render's ->override_render so loghid works
+		-Add: padstack proto update makes a cache in tr[0] about which shapes are connected to the hole or slot
+		-Add: padstack proto update calculates a cached prototype bit that indicates if all copper shapes are connected by the hole/slot
+		-Add: RouteStyle(): undoable on set
+		-Add: RouteStyle(): undoable route style name change (and query)
+		-Add: RouteStyle(): commands for setting and querying text scale and text thickness
+		-Add: RouteStyle(): undoable new and del commands
+		-Add: extend the footprint API with an option for copying tags
+		-Add: plug_io for saving and loading padstacks
+		-Add: crosshair code: build a cache for attached object drawing: publish a clean() function that needs to be called before any crosshair attached object change so a cache can be maintained
+		-Add: if a polygon has the clearpolypoly flag and showing the clearance is enabled, calculate the clearance offset poly and draw it while the poly is being moved or copied
+		-Add: polygon helper: calculate the clearance polygon of a text object, without subtracting it
+		-Add: when a text object is being moved, indicate the true clearance when clearance indication is on
+		-Add: draw the clearance (union on all copper layers) around the padstack when it's being moved
+		-Add: throw an error if no drc rule got executed
+		-Add: crosshair: generate an event for updating screen indications when crosshair changed position
+		-Add: editpoint indication on line, arc, polygon, padstack objects
+		-Add: layer pointer to ID conversion (helper function)
+		-Add: in-place subc replacement: keep thermal flags on terminals (map and apply thermals)
+		-Add: subc in-place replacement: make a map of floaters, attempt to match them up and move/rotate new floaters accordingly
+		-Add: find.c: publish low level pcb_isc_pstk_line_shp(), lib_polyhelp needs it for hole-on-contour
+		-Add: find.c: padstack shape to polyarea converter (helper function)
+		-Add: SetThermal(): support the 'noshape' style
+
+	[dialogs]
+		-Del: preferences: half of the old DRC sizes - use the new DRC definitions
+		-Cleanup: rename DRC sizes to limit sizes in the code to reflect change in the code logic
+		-Fix: flag changes from the flag edit dialog are undoable
+		-Fix: when the padstack editor changes the hole or local clearance in a prototype, make sure the prototype is updated (for the hash and caches)
+		-Fix: padstack proto save file name memory leak
+		-Fix: library dialog, refresh button: print an error message if parent/root can not be found
+		-Fix: don't crash when library window preview is called with NULL footprint name (may be a result of a broken parametric footprint), just clean the buffer so that nothing is shown in the preview
+		-Change: merge limiting sizes and misc sizes, by now they are the same as limiting sizes are no longer DRC-related
+		-Add: padstack lib dialog: load and save buttons for padstack prototypes
+		-Add: default file name for padtsack save is padstack.lht
+		-Add: preferences, sizes&drc: print an error message if there is 0 drc plugins available
+		-Add: convert the manage plugins dialog into a non-modal dialog box that presents an alphabetically sorted list of plugins in a list
+		-Add: manage plugins: button for unloading plugins
+		-Add: plugins dialog: print reference count of each plugin (useful for debugging)
+		-Add: make layer comb flag change undoable
+
+	[doc]
+		-Fix: packager's doc: grammar about diagnosing (in package desc); missing punctuation in package desc
+		-Fix: use both pcb-rnd's own plugins and librnd's svn extern'd plugins when mapping for packager's doc
+		-Fix: plated slots can be represented already
+		-Update: renumberblock description for subcircuits
+		-Update: conf tree for the drc "show/enforce" change
+		-Add: mention imagemagick as soft dependency for running some tests
+		-Add: clarify what ChangeSize() does to subcircuits
+		-Add: action doc for RouteStyle(); document 'del' and 'new'
+		-Add: document the low level ttf import action
+		-Add: lihata format doc: document the new file format for padstack protos: pcb-rnd-subcircuit-v*
+		-Add: developer doc: plugin development howto for local, per plugin menu files
+		-Add: query: document coord(), netlen(), isvoid(), layer_setup(), int(), double() and .net
+		-Add: query: document user functions
+		-Add: refine the nonetlist flag sentence explaining the actual effects
+		-Add: explain how openscad-transformation attribute is not used for subcircuit rotation
+		-Add: INSTALL references the packaging doc - maybe this will help new packagers figure where to look
+		-Add: link regex syntax from the appendix and from the feature doc
+
+	[drc_query]
+		-Fix: invalid drc value is FGW_INVALID, not FGW_VOID
+		-Fix: action that sets drc def should create the conf node and set the default value even tho the def is created in multiple steps when done in actions
+		-Fix: make sure definition default value is set only once, not overwriting exisitng value
+		-Add: refine stock drc rule violation report with expected/measured values
+
+	[export_openscad]
+		-Fix: respect options set from the GUI
+
+	[export_stl]
+		-Fix: do not apply holes/slots that fall on the board contour, that'd result in invalid model
+		-Fix: use clipped contour poly instead of the as-drawn one, so all sort of tweaks (like half-hole cutouts) appear in the output
+
+	[export_test]
+		-Del: plugin removed in favor of the more generic loghid plugin (in librnd): the actual sequence of calls HID heavily depends on the do_export() implementation of the GUI/export hid chosen, so even if export_test worked, it would not have shown the same sequence as any actual export/screen-render
+
+	[extobj]
+		-Cleanup: remove code duplication on subc layer object copy
+		-Cleanup: use the central subc layer allocation helper function instead of a local implementation
+		-Fix: handle buffer copy/cut/move corner case: make sure the subcircuit is not added to the rtree twice
+		-Fix: when (all) floaters are selected, also select the parent subc so it can be copied/moved to the buffer
+
+	[find]
+		-Cleanup: remove direct fctx->mark mark test and sets where it matters: wrap them in inline functions so they can be extended for the multi-component objects
+		-Fix: don't assume hole/slot connection within a padstack if the hole/slot is not plated; special case: if term ID is set on a padstack with disjoint copper shapes, it should be taken as connected; rationale: each shape has the same terminal ID and we generally assume same-terminal-IDs are connected within the part soldered on
+		-Add: make the padstack shape vs. padstack shape intersection (geo code) API public, padstack prototype code caching the shape overlaps with holes will need it
+		-Add: maintain a multimark hash table in find context and allocate it for padstacks when needed (when not all copper shapes are connected)
+
+	[font]
+		-Fix: when unlinking a font (e.g. for fontedit()), re-link the parent of all symbol arcs and polys to avoid invalid ref
+
+	[fp_fs]
+		-Add: configurable prefix based file name ignores on lib mapping
+		-Add: suffix based file name ignore from config (during lib mapping)
+
+	[gsch2pcb-rnd]
+		-Fix: wrong program name in help text
+
+	[import_accel_net]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_calay]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_fpcb_nl]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_gnetlist]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_ipcd356]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_ltspice]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_mentor_sch]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_net_action]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_net_cmd]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_netlist]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_orcad_net]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_pads_net]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_protel_net]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_pxm_pnm]
+		-Add: pick up transparent color from custom "transparent pixel:" comment when present
+
+	[import_sch2]
+		-Add: atomic netlist import: undo undoes all at once (wrapper around any format/method)
+
+	[import_tinycad]
+		-Add: atomic netlist import: undo undoes all at once
+
+	[import_ttf]
+		-Add: Erich's patch on cubic
+		-Add: action, dialog box and menu item for the dialog for interactive glyph import
+		-Add: handle self-intersecting poly contours
+
+	[io_kicad]
+		-Fix: segfault on redundant arc removal vs. term attribute set
+		-Fix: apply poly clipping inhibit around board parse to speed up
+
+	[io_lihata]
+		-Cleanup: read: group all global states in a struct (reduce global vars)
+		-Cleanup: read: do not depend on a global variable for the context, pass the read context struct down in every call that needs it
+		-Fix: do not accept negative arc radius on load, change it to 0 and throw an error
+		-Fix: buffer load shall set read version from the header, else padstacks won't work (as they did not exist in v1)
+		-Update: make v7 the default format to use by extedit
+		-Add: save padstack file: write a new header and the padstack proto subtree with ID 0
+		-Add: parse pcb-rnd-padstack-v* for the padstack proto in it
+
+	[io_pcb]
+		-Add: long, detailed error message about non-undoable layer swaps
+		-Add: io incompatibility warning for non-mod-90-degree text rotation
+
+	[io_tedax]
+		-Fix: clip poly before saving it in a footprint, to avoid a crash
+		-Fix: error message on loading footprint objects on invalid layer
+		-Fix: footprint load: throw an error on invalid objects
+		-Fix: off-by-one bug on footprint polygon minimum number of fields
+		-Fix: footprint terminal ID doesn't need to be an integer, it can be any string
+		-Fix: allow trailing \\ when parsing lines
+		-Fix: when called back from plug_footprint to load a footprint from the lib, use the lib fopen to apply the search path
+		-Fix: \ parsing corner case on last escaped char in a field
+		-Add: atomic netlist import: undo undoes all at once
+
+	[lib_compat_help]
+		-Fix: layer swap, used only by old geda/pcb save on silk not being the last layer, should also update padstack thermals
+
+	[lib_hid_pcbui]
+		-Fix: route style: text scale is really an int, not a coord
+		-Fix: don't assume sizeof(int) == sizeof(long)
+		-Fix: don't use PCB, that's not available while new board is created
+		-Add: make route style field changes undoable (except for obsolete via fields)
+		-Add: make style name change timed so it's less frequent
+		-Add: make route style dialog name changes undoable
+		-Add: make del and new buttons on the route style docked dialog undoable
+		-Add: icon buttons for all layer visible/invisible
+
+	[lib_polyhelp]
+		-Cleanup: use pcb_board_set_changed_flag() instead of directly setting the changed flag
+		-Fix: contour-to-poly: don't crash if board contour is not found, just return NULL
+		-Add: contour to poly conversion: find and mark padstacks crossing the poly contour
+		-Add: subtract intersecting holes and slots from board contour poly
+
+	[libcdtr]
+		-Fix: make local tester compilable
+		-Fix: make local Makefile portable
+		-Fix: make coord type configurable
+		-Add: license banner: LGPL2 with permission from Wojciech via email
+		-Add: make clean
+		-Add: proper object deps in local compilation
+		-Add: rule to compile a .a
+
+	[librnd]
+		-Cleanup: remove per plugin svn extern to librnd, use one, central extern
+		-Del: local copy of map_plugins - use librnd's
+		-Del: local scconfig templates for the build - use librnd's
+		-Del: rnd_r_end() - dummy call to empty function, the iterator doesn't allocate anything
+		-Move: box direction enum and macros to from librnd to local box_dir.h (needed by autoplace and autorouter only)
+
+	[menu]
+		-Fix: buffer content load, {b f l}, should clear the buffer before the load so only the new content is in the buffer by the end of the operation
+		-Change: we don't enforce/show DRC clearance but style clearance
+		-Add: {e g g} for padstack geometry edit
+		-Add: {l v} and {l h} for all layer visible/inivisible
+		-Add: convert-to-extobj in context popup for layer objects
+
+	[openscad]
+		-Move: Alexey's smd diode and tantalum models from work to the standard lib
+		-Add: pcblib footprints reference their openscad models
+
+	[pcblib]
+		-Fix: make sure silkmark never writes arc with negative radius (or even close to zero)
+
+	[propedit]
+		-Fix: make flag changes undoable
+		-Fix: throw an error for invalid prop path (missing p/ or a/ prefix) so the user has a chance to figure
+		-Fix: layer comb property didn't get set
+		-Fix: layer comb bits are not integers but booleans
+
+	[puller]
+		-Fix: don't use the bbox but corners of poly shaped padstacks for tighter pulling
+		-Fix: use the true shape for line padstacks (both square and round cap) for tight pulling
+
+	[qparse]
+		-Fix: wrong fsf address in license banner
+
+	[query]
+		-Fix: type promotion bug between long and double
+		-Fix: violation() returns numeric values properly
+		-Fix: advanced search dialog missing object types: padstack, subc, gfx
+		-Fix: advanced search dialog: gui->text string creation: use quotes
+		-Add: coord() function that attempts to convert a string to coordinates (useful for reading coords from attributes)
+		-Add: (cached) netlen() function that works by netname or by net object (requires simple, 2-terminal networks)
+		-Add: isvoid() function for safe check if a value (e.g. function return value) is invalid/void
+		-Add: user functions
+		-Add: qry_run_() passes back last evaluation result as the final result if the caller needs it
+		-Add: list() works on any variable, not only on @
+		-Add: .net evaluates to the net parent of an object
+		-Add: layer_setup() for checking the layer stack around an object
+		-Add: allow any expression to be suffixed with fields/attributes - relevant for user function returns
+		-Add: .layergroup for layer objects
+		-Add: int()
+		-Add: double()
+
+	[renumber]
+		-Fix: missing action descriptions
+
+	[rubberband_orig]
+		-Change: use style clearance for 'show drc clearance' instead of bloat
+
+	[scconfig]
+		-Change: move librnd extern from src/ and scconfig/ in a common single extern in src_3rd/
+		-Fix: don't assume libs/ldl exists (it doesn't, on windows)
+
+	[script]
+		-Fix: delay permascript loading until the main loop has started - premature loading of scripts will lead to script compilation error since not all actions are registered
+
+	[shape]
+		-Add: menu for the feature plugin
+
+	[tests]
+		-Fix: RTT: handle missing convert(1) or compare(1) by really skipping the corresponding tests
+		-Del: librnd test - it's in the now separate librnd project
+		-Add: menu patch automated testing: typical plugin insertion in sumbenu and at anchor, overwrites
+
+	[tool_std]
+		-Fix: rat lines can be drawn from/to heavy terminal too, not only padstacks
+		-Fix: shift-click in-place footprint replacement from buffer shall keep rotation and side of the original footprint
+		-Fix: thermal tool should work when clicking on subc padstack
+		-Fix: changing the lock state of an object shall mark the board changed
+		-Fix: tool_move calls extobj float_pre and float_geo in pair so the extended object is not messed up
+		-Fix: escape in arc and rectangle tools shouldn't immediately switch to the arrow tool but first fall back to the arc or rectangle initial state
+		-Fix: lock: increase undo serial after locking/unlocking so they don't batch with random other operations
+		-Change: use style clearance for 'show drc clearance' instead of bloat
+		-Add: thermal tool: better fallback mechanism on multiple objects found and indicate if didn't do anything because all candidates were locked
+
+
+
 librnd part:
 
+	[librnd/build]
+		-Del: tests left over from pcb-rnd
+		-Del: remove pcb-rnd leftovers from Makefiles
+		-Move: scconfig lib from scconfig/ to src/ so it is part of the single install subtree for reuse by apps
+		-Move: gen_conf.sh to librnd/scconfig (with installation) so apps can reuse it
+		-Move: scconfig templates from scconfig to src/librnd/scconfig as it's becoming installable for apps to reuse
+		-Cleanup: detach building the plugins from $(PLUDGID) so the temporary in-pcb-rnd build still works
+		-Cleanup: move src_plugins to src/librnd/plugins for easier svn externs and consistency with the installation later
+		-Cleanup: plugin headers should be #included as <librnd/plugins/*.h> for portabilirty
+		-Fix: make sure make dep generates the dependencies with full relative path (requires an extra step of 'sed' to work around gcc's shortcomings)
+		-Fix: broken installation of buildin.hidlib.h
+		-Fix: missing dependency on test-rnd executable to buildin.hidlib.h
+		-Fix: use the same path notation for buildin.hidlib.h dep as for the build rule
+		-Fix: mark all plugins part of $hidlib
+		-Change: install doc and data in /librnd, not in /pcb-rnd
+		-Add: #define LIBRND_ROOT so configure compiles
+		-Add: install minimal libfungw headers and genht headers (apps will need these)
+		-Add: make map_plugins.sh more generic so ringdove apps can reuse it without having to copy it
+		-Add: install map_plugins.sh so apps don't need to copy it
+		-Add: temporary branch in the internal conf generator template for pcb-rnd, as long as it needs to compile librnd locally
+		-Add: set librnd plugin root from the Makefile so plugins are found
+
+	[librnd/core]
+		-Cleanup: dedoxygen comments
+		-Cleanup: code formatting
+		-Del: RND_BOX_ROTATE_CW() - no user
+		-Del: box direction flags and macros - required by pcb-rnd autorouter only
+		-Del: pcb-rnd related docs
+		-Del: rnd_r_end() - useless dummy
+		-Del: remove vcs comment mentioning multiple crosshair shapes from the copyright banner - that piece of code got removed
+		-Fix: RND_ACT_CALL_C() needs to get hidlib as first argument and set up the call properly because action code depend on the hidlib context pointer
+		-Fix: can't pass function pointer in low level C action call because there's no place the temporary func wrapper could be allocated
+		-Fix: indicate error on action not found in parse action also in the case of action with arguments
+		-Fix: str2coord for action arg conversion: do not crash on empty coord
+		-Fix: don't crash if menu file did not parse
+		-Fix: hid uninit sequence: keep hid structs until after pup unload so plugin uninit cals won't address into already free'd memory
+		-Fix: don't crash if rnd_tool_get() is called before tool init
+		-Fix: DAD: coord spin: accept 0.00 as legal value even without unit (special case)
+		-Add: global var indicating if librnd is running the main loop
+		-Add: generate an event when main loop state changes
+		-Add: rnd_printf %mw prints an fgw_arg_t; prints coord with units
+		-Add: MenuDebug() action with a command to save the menu
+		-Add: MenuDebug(force-enable) for menu debugging with the batch HID
+
+	[librnd/hid_gtk2_gdk]
+		-Fix: limit poly draw coords to 32767, gdk seems to misbehave with larger coordinates
+
+	[librnd/loghid]
+		-Fix: mark plugin a hidlib plugin
+		-Fix: preserve override_render bit after setting up the delegation
+		-Add: set HID bit 'override render' to capture rendering calls
