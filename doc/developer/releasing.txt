@@ -4,6 +4,7 @@ release check list
    configure with --debug --all=buildin, then without
    not required anymore: autotest does it now)
 1. check next version number and previous revision in tags/
+    temporary: also bump librnd's version
 2. update the changelog
 3. rewrite the release notes
 4. modify version number in scconfig
