@@ -1,4 +1,4 @@
-pcb-rnd 2.3.0 (r33240/r32452)
+pcb-rnd 2.3.0 (r33250/r32452)
 ~~~~~~~~~~~~~~~~~~~~~~
 pcb-rnd part:
 
@@ -60,6 +60,7 @@ pcb-rnd part:
 		-Fix: make subc flag change undoable (affects the lock tool)
 		-Fix: SetThermal(): wrong description on the meaning of the numeric style values
 		-Fix: SetThermal(): allow value 6 as well
+		-Fix: pcb_net_find_by_obj() shouldn't crash on a terminal whose subc has no refdes attribute
 		-Update: default boards are of lihata board v7, so plain save will not downgrade new boards to v6
 		-Change: use style clearance for 'show drc clearance' instead of bloat
 		-Change: conf field descriptions of the old DRC fields, which are now either obsolete or repurposed to limiting sizes
@@ -98,6 +99,7 @@ pcb-rnd part:
 		-Fix: padstack proto save file name memory leak
 		-Fix: library dialog, refresh button: print an error message if parent/root can not be found
 		-Fix: don't crash when library window preview is called with NULL footprint name (may be a result of a broken parametric footprint), just clean the buffer so that nothing is shown in the preview
+		-Fix: dlg_confval_edit(): uninitialized default value for optional argument 'modal' (may cause crash on drc definition edit)
 		-Change: merge limiting sizes and misc sizes, by now they are the same as limiting sizes are no longer DRC-related
 		-Add: padstack lib dialog: load and save buttons for padstack prototypes
 		-Add: default file name for padtsack save is padstack.lht
@@ -189,6 +191,7 @@ pcb-rnd part:
 		-Add: atomic netlist import: undo undoes all at once
 
 	[import_net_cmd]
+		-Fix: don't crash if there's no board file name available
 		-Add: atomic netlist import: undo undoes all at once
 
 	[import_netlist]
