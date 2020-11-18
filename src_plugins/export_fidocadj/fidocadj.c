@@ -346,7 +346,7 @@ TODO(": figure how to store side")
 
 static int fidocadj_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	rnd_export_register_opts(fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]), fidocadj_cookie, 0);
+	rnd_export_register_opts2(hid, fidocadj_attribute_list, sizeof(fidocadj_attribute_list) / sizeof(fidocadj_attribute_list[0]), fidocadj_cookie, 0);
 	return rnd_hid_parse_command_line(argc, argv);
 }
 

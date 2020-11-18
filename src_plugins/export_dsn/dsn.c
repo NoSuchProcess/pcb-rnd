@@ -624,7 +624,7 @@ int pplg_init_export_dsn(void)
 
 	rnd_hid_register_hid(&dsn_hid);
 
-	rnd_export_register_opts(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
+	rnd_export_register_opts2(&dsn_hid, dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
 	return 0;
 }
 

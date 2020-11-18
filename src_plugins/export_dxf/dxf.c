@@ -344,7 +344,7 @@ static void dxf_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int dxf_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	rnd_export_register_opts(dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]), dxf_cookie, 0);
+	rnd_export_register_opts2(hid, dxf_attribute_list, sizeof(dxf_attribute_list) / sizeof(dxf_attribute_list[0]), dxf_cookie, 0);
 	return rnd_hid_parse_command_line(argc, argv);
 }
 

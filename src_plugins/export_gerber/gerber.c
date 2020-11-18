@@ -420,7 +420,7 @@ static void gerber_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int gerber_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	rnd_export_register_opts(gerber_options, NUM_OPTIONS, gerber_cookie, 0);
+	rnd_export_register_opts2(hid, gerber_options, NUM_OPTIONS, gerber_cookie, 0);
 	return rnd_hid_parse_command_line(argc, argv);
 }
 

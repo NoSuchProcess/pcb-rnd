@@ -496,6 +496,6 @@ int pplg_init_export_ipcd356(void)
 
 	rnd_hid_register_hid(&ipcd356_hid);
 
-	rnd_export_register_opts(ipcd356_options, sizeof(ipcd356_options) / sizeof(ipcd356_options[0]), ipcd356_cookie, 0);
+	rnd_export_register_opts2(&ipcd356_hid, ipcd356_options, sizeof(ipcd356_options) / sizeof(ipcd356_options[0]), ipcd356_cookie, 0);
 	return 0;
 }

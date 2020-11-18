@@ -235,7 +235,7 @@ static int tedax_etest_usage(rnd_hid_t *hid, const char *topic)
 static const char *tedax_etest_cookie = "tEDAx etest";
 static int tedax_etest_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	rnd_export_register_opts(tedax_etest_options, sizeof(tedax_etest_options) / sizeof(tedax_etest_options[0]), tedax_etest_cookie, 0);
+	rnd_export_register_opts2(hid, tedax_etest_options, sizeof(tedax_etest_options) / sizeof(tedax_etest_options[0]), tedax_etest_cookie, 0);
 	return rnd_hid_parse_command_line(argc, argv);
 }
 

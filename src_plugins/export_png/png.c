@@ -791,7 +791,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int png_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	rnd_export_register_opts(png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie, 0);
+	rnd_export_register_opts2(hid, png_attribute_list, sizeof(png_attribute_list) / sizeof(png_attribute_list[0]), png_cookie, 0);
 	return rnd_hid_parse_command_line(argc, argv);
 }
 

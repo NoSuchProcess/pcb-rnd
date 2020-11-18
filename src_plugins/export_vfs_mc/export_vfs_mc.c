@@ -132,7 +132,7 @@ static int export_vfs_mc_usage(rnd_hid_t *hid, const char *topic)
 
 static int export_vfs_mc_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	rnd_export_register_opts(export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]), export_vfs_mc_cookie, 0);
+	rnd_export_register_opts2(hid, export_vfs_mc_options, sizeof(export_vfs_mc_options) / sizeof(export_vfs_mc_options[0]), export_vfs_mc_cookie, 0);
 	return rnd_hid_parse_command_line(argc, argv);
 }
 

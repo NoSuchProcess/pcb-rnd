@@ -372,7 +372,7 @@ static void stat_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 static int stat_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	rnd_export_register_opts(stat_attribute_list, sizeof(stat_attribute_list) / sizeof(stat_attribute_list[0]), stat_cookie, 0);
+	rnd_export_register_opts2(hid, stat_attribute_list, sizeof(stat_attribute_list) / sizeof(stat_attribute_list[0]), stat_cookie, 0);
 	return rnd_hid_parse_command_line(argc, argv);
 }
 

@@ -839,7 +839,7 @@ static int xy_usage(rnd_hid_t *hid, const char *topic)
 
 static int xy_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
-	rnd_export_register_opts(xy_options, sizeof(xy_options) / sizeof(xy_options[0]), xy_cookie, 0);
+	rnd_export_register_opts2(hid, xy_options, sizeof(xy_options) / sizeof(xy_options[0]), xy_cookie, 0);
 	return rnd_hid_parse_command_line(argc, argv);
 }
 
