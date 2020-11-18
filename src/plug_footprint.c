@@ -357,11 +357,9 @@ void fp_free_entry(pcb_fplibrary_t *l)
 			break;
 		case PCB_LIB_INVALID: break; /* suppress compiler warning */
 	}
-	if (l->name != NULL) {
+	if (l->name != NULL)
 		free(l->name);
-		l->name = NULL;
-	}
-	l->type = PCB_LIB_INVALID;
+	free(l);
 }
 
 void pcb_fp_free_children(pcb_fplibrary_t *parent)
