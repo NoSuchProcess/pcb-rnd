@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP/BUG: bom export: load a board from menu, {f e} export; load another board from menu, {f e} export: output is set to the old file name; rnd_hid_parse_command_line() shouldn't mess with the default value but should use the value field (keep default for compatibility?) plus bug_files/export.patch [report: Igor2]
 - CLEANUP: TODO27: undo's removed list shouldn't depend on object IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
 - FEATURE: make grid pixel size configurable [report: thet]
 - FEATURE: tedax netlist parser: load comptag (and nettag) in a second pass [report: Bdale]
