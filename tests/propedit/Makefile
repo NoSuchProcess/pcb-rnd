@@ -12,13 +12,9 @@ LIBRND=$(SRC_3RD)/librnd
 CFLAGS = $(PCB_RND_C89FLAGS) -I$(PED) -I$(LHT) -I$(SRC) -I$(ROOT) -I$(ROOT)/src_3rd
 LDLIBS = -lm
 LIB_OBJS = \
- $(LHT)/genht/htsp.o \
- $(LHT)/genht/hash.o \
- $(LIBRND)/core/compat_misc.o \
- $(LIBRND)/core/misc_util.o \
- $(LIBRND)/core/rnd_printf.o \
- $(LIBRND)/core/unit.o \
- $(ROOT)/src_3rd/genvector/gds_char.o
+	$(SRC)/librnd-hid.a \
+	$(SRC)/librnd-3rd.a \
+	glue.o \
 
 OBJS = tester.o $(PED)/props.o
 
@@ -39,6 +35,9 @@ tester.diff: tester.ref tester.out
 
 tester.out: tester
 	./tester > tester.out
+
+glue.o: glue.c
+	$(CC) -c $(CFLAGS) glue.c -o glue.o
 
 clean:
 	-$(SCCBOX) rm -f tester.out tester $(OBJS)
