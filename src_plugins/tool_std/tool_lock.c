@@ -38,6 +38,7 @@
 #include "change.h"
 #include "data.h"
 #include "draw.h"
+#include "undo.h"
 #include <librnd/core/actions.h>
 #include "search.h"
 #include <librnd/core/tool.h>
