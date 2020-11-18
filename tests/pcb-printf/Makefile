@@ -13,7 +13,7 @@ CFLAGS = $(PCB_RND_C89FLAGS) -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd -I$(TRUNK)/s
 LDLIBS = -lm
 
 GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
-LIBPCB_BASE= $(LIBRND)/core/unit.o $(LIBRND)/core/compat_misc.o
+LIBPCB_BASE= $(LIBRND)/core/unit.o $(LIBRND)/core/misc_util.o $(LIBRND)/core/compat_misc.o
 
 
 test: tester.diff

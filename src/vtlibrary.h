@@ -2,6 +2,7 @@
 #define PCB_VTLIBRARY_H
 #include <stdlib.h>
 #include <string.h>
+#include <genvector/vtp0.h>
 
 typedef enum {
 	PCB_LIB_INVALID,
@@ -20,41 +21,6 @@ typedef enum {
 
 typedef struct pcb_fplibrary_s pcb_fplibrary_t;
 
-/* Elem=library_t; init=none */
-
-/* all public symbols are wrapped in GVT() - see vt_t(7) */
-#define GVT(x) vtlib_ ## x
-
-/* Array elem type - see vt_t(7) */
-#define GVT_ELEM_TYPE pcb_fplibrary_t
-
-/* Type that represents array lengths - see vt_t(7) */
-#define GVT_SIZE_TYPE size_t
-
-/* Below this length, always double allocation size when the array grows */
-#define GVT_DOUBLING_THRS 64
-
-/* Initial array size when the first element is written */
-#define GVT_START_SIZE 8
-
-/* Optional prefix for function definitions (e.g. static inline) */
-#define GVT_FUNC
-
-/* Enable this to set all new bytes ever allocated to this value - see
-   vt_set_new_bytes_to(7) */
-#define GVT_SET_NEW_BYTES_TO 0
-
-
-/* Include the actual header implementation */
-#include <genvector/genvector_impl.h>
-
-/* Memory allocator - see vt_allocation(7) */
-#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
-#define GVT_FREE(vect, ptr)           free(ptr)
-
-/* clean up #defines */
-#include <genvector/genvector_undef.h>
-
 /* An element of a library: either a directory or a footprint */
 struct pcb_fplibrary_s {
 	char *name;            /* visible name */
@@ -63,7 +29,7 @@ struct pcb_fplibrary_s {
 
 	union {
 		struct { /* type == LIB_DIR */
-			vtlib_t children;
+			vtp0_t children; /* of (pcb_fplibrary_t *) */
 			void *backend; /* pcb_plug_fp_t* */
 		} dir;
 		struct { /* type == LIB_FOOTPRINT */

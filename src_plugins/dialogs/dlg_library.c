@@ -259,11 +259,11 @@ static void library_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 static void create_lib_tree_model_recurse(rnd_hid_attribute_t *attr, pcb_fplibrary_t *parent_lib, rnd_hid_row_t *parent_row)
 {
 	char *cell[2];
-	pcb_fplibrary_t *l;
 	int n;
 
 	cell[1] = NULL;
-	for(l = parent_lib->data.dir.children.array, n = 0; n < parent_lib->data.dir.children.used; l++, n++) {
+	for(n = 0; n < parent_lib->data.dir.children.used; n++) {
+		pcb_fplibrary_t *l = parent_lib->data.dir.children.array[n];
 		rnd_hid_row_t *row;
 
 		cell[0] = rnd_strdup(l->name);

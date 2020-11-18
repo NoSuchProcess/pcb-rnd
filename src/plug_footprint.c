@@ -56,22 +56,11 @@ pcb_fplibrary_t pcb_library;
 static pcb_fplibrary_t *pcb_get_library_memory(pcb_fplibrary_t *parent)
 {
 	pcb_fplibrary_t *res;
-	vtlib_t *vt = ((parent) == NULL ? &pcb_library.data.dir.children : &(parent)->data.dir.children);
-	void *old = vt->array;
+	vtp0_t *vt = ((parent) == NULL ? &pcb_library.data.dir.children : &(parent)->data.dir.children);
 
-	res = vtlib_alloc_append(vt, 1);
+	res = calloc(sizeof(pcb_fplibrary_t), 1);
 	res->parent = parent;
-
-	if (vt->array != old) { /* if the vector array had to be relocated, update all parent pointers */
-		long n, i;
-TODO("TODO39: replace vtlib with vtp0 so no need to update parents");
-		for(n = 0; n < vt->used; n++) {
-			pcb_fplibrary_t *l = &vt->array[n];
-			if (l->type == PCB_LIB_DIR)
-				for(i = 0; i < l->data.dir.children.used; i++)
-					l->data.dir.children.array[i].parent = l;
-		}
-	}
+	vtp0_append(vt, res);
 
 	return res;
 }
@@ -239,30 +228,32 @@ pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, 
 
 pcb_fplibrary_t *fp_lib_search_len(pcb_fplibrary_t *dir, const char *name, int name_len)
 {
-	pcb_fplibrary_t *l;
 	int n;
 
 	if (dir->type != PCB_LIB_DIR)
 		return NULL;
 
-	for(n = 0, l = dir->data.dir.children.array; n < dir->data.dir.children.used; n++, l++)
+	for(n = 0; n < dir->data.dir.children.used; n++) {
+		pcb_fplibrary_t *l = dir->data.dir.children.array[n];
 		if (strncmp(l->name, name, name_len) == 0)
 			return l;
+	}
 
 	return NULL;
 }
 
 pcb_fplibrary_t *pcb_fp_lib_search(pcb_fplibrary_t *dir, const char *name)
 {
-	pcb_fplibrary_t *l;
 	int n;
 
 	if (dir->type != PCB_LIB_DIR)
 		return NULL;
 
-	for(n = 0, l = dir->data.dir.children.array; n < dir->data.dir.children.used; n++, l++)
+	for(n = 0; n < dir->data.dir.children.used; n++) {
+	pcb_fplibrary_t *l = dir->data.dir.children.array[n];
 		if (strcmp(l->name, name) == 0)
 			return l;
+	}
 
 	return NULL;
 }
@@ -278,7 +269,7 @@ pcb_fplibrary_t *pcb_fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int
 		l->name = rnd_strdup(name);
 	l->type = PCB_LIB_DIR;
 	l->data.dir.backend = NULL;
-	vtlib_init(&l->data.dir.children);
+	vtp0_init(&l->data.dir.children);
 	return l;
 }
 
@@ -331,27 +322,24 @@ pcb_fplibrary_t *pcb_fp_mkdir_p(const char *path)
 
 static int fp_sort_cb(const void *a, const void *b)
 {
-	const pcb_fplibrary_t *fa = a, *fb = b;
-	int res = strcmp(fa->name, fb->name);
+	const pcb_fplibrary_t **fa = a, **fb = b;
+	int res = strcmp((*fa)->name, (*fb)->name);
 	return res == 0 ? 1 : res;
 }
 
 void pcb_fp_sort_children(pcb_fplibrary_t *parent)
 {
-	vtlib_t *v;
+	vtp0_t *v;
 	int n, i;
 
 	if (parent->type != PCB_LIB_DIR)
 		return;
 
 	v = &parent->data.dir.children;
-	qsort(v->array, vtlib_len(v), sizeof(pcb_fplibrary_t), fp_sort_cb);
+	qsort(v->array, vtp0_len(v), sizeof(pcb_fplibrary_t *), fp_sort_cb);
 
-	for (n = 0; n < vtlib_len(v); n++) {
-		for(i = 0; i < v->used; i++) /* TODO39 */
-			v->array[i].parent = parent;
-		pcb_fp_sort_children(&v->array[n]);
-	}
+	for (n = 0; n < vtp0_len(v); n++)
+		pcb_fp_sort_children(v->array[n]);
 }
 
 void fp_free_entry(pcb_fplibrary_t *l)
@@ -359,7 +347,7 @@ void fp_free_entry(pcb_fplibrary_t *l)
 	switch(l->type) {
 		case PCB_LIB_DIR:
 			pcb_fp_free_children(l);
-			vtlib_uninit(&(l->data.dir.children));
+			vtp0_uninit(&(l->data.dir.children));
 			break;
 		case PCB_LIB_FOOTPRINT:
 			if (l->data.fp.loc_info != NULL)
@@ -379,14 +367,15 @@ void fp_free_entry(pcb_fplibrary_t *l)
 void pcb_fp_free_children(pcb_fplibrary_t *parent)
 {
 	int n;
-	pcb_fplibrary_t *l;
 
 	assert(parent->type == PCB_LIB_DIR);
 
-	for(n = 0, l = parent->data.dir.children.array; n < parent->data.dir.children.used; n++, l++)
+	for(n = 0; n < parent->data.dir.children.used; n++) {
+		pcb_fplibrary_t *l = parent->data.dir.children.array[n];
 		fp_free_entry(l);
+	}
 
-	vtlib_truncate(&(parent->data.dir.children), 0);
+	vtp0_truncate(&(parent->data.dir.children), 0);
 }
 
 
@@ -396,9 +385,10 @@ void pcb_fp_rmdir(pcb_fplibrary_t *dir)
 	int n;
 	fp_free_entry(dir);
 	if (parent != NULL) {
-		for(n = 0, l = parent->data.dir.children.array; n < parent->data.dir.children.used; n++,l++) {
+		for(n = 0; n < parent->data.dir.children.used; n++) {
+			l = parent->data.dir.children.array[n];
 			if (l == dir) {
-				vtlib_remove(&(parent->data.dir.children), n, 1);
+				vtp0_remove(&(parent->data.dir.children), n, 1);
 				break;
 			}
 		}
@@ -408,10 +398,11 @@ void pcb_fp_rmdir(pcb_fplibrary_t *dir)
 /* Debug functions */
 void fp_dump_dir(pcb_fplibrary_t *dir, int level)
 {
-	pcb_fplibrary_t *l;
 	int n, p;
 
-	for(n = 0, l = dir->data.dir.children.array; n < dir->data.dir.children.used; n++, l++) {
+	for(n = 0; n < dir->data.dir.children.used; n++) {
+		pcb_fplibrary_t *l = dir->data.dir.children.array[0];
+
 		for(p = 0; p < level; p++)
 			putchar(' ');
 		if (l->type == PCB_LIB_DIR) {

@@ -83,8 +83,8 @@ static void dump_lib_dir(int level, pcb_fplibrary_t *l)
 
 	ind(level);
 	printf("%s/\n", l->name);
-	for(n = 0; n < vtlib_len(&l->data.dir.children); n++)
-		dump_lib_any(level+1, l->data.dir.children.array+n);
+	for(n = 0; n < vtp0_len(&l->data.dir.children); n++)
+		dump_lib_any(level+1, l->data.dir.children.array[n]);
 }
 
 static void dump_lib_fp(int level, pcb_fplibrary_t *l)
