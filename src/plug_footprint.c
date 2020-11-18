@@ -330,7 +330,7 @@ static int fp_sort_cb(const void *a, const void *b)
 void pcb_fp_sort_children(pcb_fplibrary_t *parent)
 {
 	vtp0_t *v;
-	int n, i;
+	int n;
 
 	if (parent->type != PCB_LIB_DIR)
 		return;
