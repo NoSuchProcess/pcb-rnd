@@ -23,7 +23,7 @@ clean: FORCE
 distclean: FORCE
 	$(MAKE) clean ; true
 #	cd doc && $(MAKE) distclean
-	cd util/gsch2pcb-rnd && $(MAKE) distclean
+	cd util && $(MAKE) distclean
 	cd src && $(MAKE) distclean
 	cd src_3rd/genlist && $(MAKE) clean ; true
 	cd src_3rd/genregex && $(MAKE) clean ; true
