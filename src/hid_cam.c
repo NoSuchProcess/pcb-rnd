@@ -186,9 +186,17 @@ char *pcb_derive_default_filename_(const char *pcbfile, const char *suffix)
 
 void pcb_derive_default_filename(const char *pcbfile, rnd_export_opt_t *filename_attrib, const char *suffix)
 {
-	if (filename_attrib->default_val.str)
+	if (filename_attrib->value != NULL) {
+		/* prefer to modify the current value */
+/*		rnd_hid_attr_val_t *val = filename_attrib->value;*/
+		free(*(char **)filename_attrib->value);
+		*(char **)filename_attrib->value = pcb_derive_default_filename_(pcbfile, suffix);
+	}
+	else {
+		/* fallback for plugins that use the old API: load the default value */
 		free((char *)filename_attrib->default_val.str);
-	filename_attrib->default_val.str = pcb_derive_default_filename_(pcbfile, suffix);
+		filename_attrib->default_val.str = pcb_derive_default_filename_(pcbfile, suffix);
+	}
 }
 
 static void layervis_save_and_reset(pcb_cam_t *cam)
@@ -367,7 +375,7 @@ void pcb_cam_begin_nolayer(pcb_board_t *pcb, pcb_cam_t *dst, rnd_xform_t *dst_xf
 	if (dst_xform != NULL)
 		cam_xform_init(dst_xform);
 
-	if (src != NULL) {
+	if ((src != NULL) && (*src != '\0')) {
 		eq = strchr(src, '=');
 		if (eq != NULL) {
 			char *start;
