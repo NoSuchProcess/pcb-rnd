@@ -322,7 +322,7 @@ pcb_fplibrary_t *pcb_fp_mkdir_p(const char *path)
 
 static int fp_sort_cb(const void *a, const void *b)
 {
-	const pcb_fplibrary_t **fa = a, **fb = b;
+	pcb_fplibrary_t * const *fa = a, * const *fb = b;
 	int res = strcmp((*fa)->name, (*fb)->name);
 	return res == 0 ? 1 : res;
 }
