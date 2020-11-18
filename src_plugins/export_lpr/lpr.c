@@ -33,37 +33,41 @@ PDF output with a virtual PDF printer. Example: @*
 %end-doc
 */
 	{"lprcommand", "Command to use for printing",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "lpr", 0}, 0, 0}
 #define HA_lprcommand 0
 };
 
-#define NUM_OPTIONS (sizeof(lpr_options)/sizeof(lpr_options[0]))
+#define NUM_OPTIONS (sizeof(base_lpr_options)/sizeof(base_lpr_options[0]))
 
 static rnd_export_opt_t *lpr_options = 0;
 static int num_lpr_options = 0;
-static rnd_hid_attr_val_t *lpr_values;
+static rnd_hid_attr_val_t lpr_values[NUM_OPTIONS];
 
 static rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 {
-	char **val = base_lpr_options[HA_lprcommand].value;
+	char **val;
 
-	/*
-	 * We initialize the default value in this manner because the GUI
-	 * HID's may want to free() this string value and replace it with a
-	 * new one based on how a user fills out a print dialog.
-	 */
-	if ((*val == NULL) || (**val == '\0')) {
-		free(*val);
-		*val = rnd_strdup("lpr");
-	}
 
 	if (lpr_options == 0) {
 		rnd_export_opt_t *ps_opts = ps_hid.get_export_options(&ps_hid, &num_lpr_options);
 		lpr_options = calloc(num_lpr_options, sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
-		lpr_values = (rnd_hid_attr_val_t *) calloc(num_lpr_options, sizeof(rnd_hid_attr_val_t));
 	}
+
+	/*
+	 * We initialize the default value in this manner because the GUI
+	 * HID's may want to free() this string value and replace it with a
+	 * new one based on how a user fills out a print dialog.
+	 */
+	val = lpr_options[HA_lprcommand].value;
+	if (val == NULL)
+		val = lpr_options[HA_lprcommand].value = &lpr_values[HA_lprcommand].str;
+	if ((*val == NULL) || (**val == '\0')) {
+		free(*val);
+		*val = rnd_strdup("lpr");
+	}
+
 	if (n)
 		*n = num_lpr_options;
 	return lpr_options;
