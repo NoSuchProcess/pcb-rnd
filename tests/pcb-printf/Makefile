@@ -12,19 +12,21 @@ CFLAGS_OP = -O3
 CFLAGS = $(PCB_RND_C89FLAGS) -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd -I$(TRUNK)/src_3rd/liblihata
 LDLIBS = -lm
 
-GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
-LIBPCB_BASE= $(LIBRND)/core/unit.o $(LIBRND)/core/misc_util.o $(LIBRND)/core/compat_misc.o
+LIBPCB_BASE=$(SRC)/librnd-hid.a $(SRC)/librnd-3rd.a glue.o
+
+include $(LIBRND)/core/librnd.mak
+LDFLAGS = $(LDFLAGS_LIBRND)
 
 
 test: tester.diff
 	@echo "pcb-printf:          *** QC PASS ***"
 	@rm tester.stdout ; true
 
-prcli: prcli.o $(LIBRND)/core/rnd_printf.o $(LIBRND)/core/misc_util.o $(LIBPCB_BASE) $(GDS)
-	$(CC) $(LDFLAGS) -o prcli prcli.o $(LIBRND)/core/rnd_printf.o $(LIBRND)/core/misc_util.o $(LIBPCB_BASE) $(GDS) $(LDLIBS)
+prcli: prcli.o $(LIBRND)/core/rnd_printf.o $(LIBRND)/core/misc_util.o $(LIBPCB_BASE)
+	$(CC) $(LDFLAGS) -o prcli prcli.o $(LIBRND)/core/rnd_printf.o $(LIBRND)/core/misc_util.o $(LIBPCB_BASE) $(LDLIBS)
 
-prclimq: prclimq.o $(LIBRND)/core/rnd_printf.o $(LIBRND)/core/misc_util.o $(LIBPCB_BASE) $(GDS)
-	$(CC) $(LDFLAGS) -o prclimq prclimq.o $(LIBRND)/core/rnd_printf.o $(LIBRND)/core/misc_util.o $(LIBPCB_BASE) $(GDS) $(LDLIBS)
+prclimq: prclimq.o $(LIBRND)/core/rnd_printf.o $(LIBRND)/core/misc_util.o $(LIBPCB_BASE)
+	$(CC) $(LDFLAGS) -o prclimq prclimq.o $(LIBRND)/core/rnd_printf.o $(LIBRND)/core/misc_util.o $(LIBPCB_BASE) $(LDLIBS)
 
 prcli.o: prcli.c
 	$(CC) -c $(CFLAGS) prcli.c -o prcli.o
@@ -32,11 +34,14 @@ prcli.o: prcli.c
 prclimq.o: prclimq.c
 	$(CC) -c $(CFLAGS) prclimq.c -o prclimq.o
 
-tester: tester.o $(LIBRND)/core/rnd_printf.o $(LIBPCB_BASE)  $(GDS)
-	$(CC) $(LDFLAGS) -o tester tester.o $(LIBRND)/core/rnd_printf.o $(LIBPCB_BASE)  $(GDS) $(LDLIBS)
+glue.o: glue.c
+	$(CC) -c $(CFLAGS) glue.c -o glue.o
 
-tester_spd: tester_spd.o $(LIBRND)/core/rnd_printf_spd.o $(LIBPCB_BASE) $(GDS)
-	$(CC) $(LDFLAGS) -o tester_spd tester_spd.o $(LIBRND)/core/rnd_printf_spd.o $(LIBPCB_BASE) $(GDS) $(LDLIBS)
+tester: tester.o $(LIBRND)/core/rnd_printf.o $(LIBPCB_BASE)
+	$(CC) $(LDFLAGS) -o tester tester.o $(LIBRND)/core/rnd_printf.o $(LIBPCB_BASE)  $(LDLIBS)
+
+tester_spd: tester_spd.o $(LIBRND)/core/rnd_printf_spd.o $(LIBPCB_BASE)
+	$(CC) $(LDFLAGS) -o tester_spd tester_spd.o $(LIBRND)/core/rnd_printf_spd.o $(LIBPCB_BASE) $(LDLIBS)
 
 tester.o: tester.c
 	$(CC) -c $(CFLAGS) -o $@ tester.c
