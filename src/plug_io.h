@@ -31,9 +31,9 @@
 #define PCB_PLUG_IO_H
 
 #include "global_typedefs.h"
-#include "vtlibrary.h"
 #include <genvector/vts0.h>
 #include <librnd/core/conf.h>
+#include "plug_footprint.h"
 
 typedef enum { /* I/O type bitmask; each bit is one thing to save or load, not all formats support all things */
 	PCB_IOT_PCB        = 1,
