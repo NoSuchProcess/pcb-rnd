@@ -25,6 +25,7 @@ distclean: FORCE
 #	cd doc && $(MAKE) distclean
 	cd util && $(MAKE) distclean
 	cd src && $(MAKE) distclean
+	cd src_3rd/libfungw && $(MAKE) distclean ; true
 	cd src_3rd/genlist && $(MAKE) clean ; true
 	cd src_3rd/genregex && $(MAKE) clean ; true
 	cd src_3rd/genvector && $(MAKE) clean ; true
