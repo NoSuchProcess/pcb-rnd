@@ -401,8 +401,9 @@ static const char *get_file_suffix(void)
 static rnd_export_opt_t *png_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = get_file_suffix();
+	char **val = png_attribute_list[HA_pngfile].value;
 
-	if ((PCB != NULL)  && (png_attribute_list[HA_pngfile].default_val.str == NULL))
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &png_attribute_list[HA_pngfile], suffix);
 
 	if (n)
@@ -599,7 +600,6 @@ static void png_free_cache(void)
 static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int save_ons[PCB_MAX_LAYER];
-	int i;
 	rnd_box_t tmp, *bbox;
 	int w, h;
 	int xmax, ymax, dpi;
@@ -609,8 +609,6 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	if (!options) {
 		png_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			png_values[i] = png_attribute_list[i].default_val;
 		options = png_values;
 	}
 
@@ -1442,6 +1440,7 @@ int pplg_init_export_png(void)
 	png_hid.fill_rect = png_fill_rect;
 	png_hid.calibrate = png_calibrate;
 	png_hid.set_crosshair = png_set_crosshair;
+	png_hid.argument_array = png_values;
 
 	png_hid.usage = png_usage;
 

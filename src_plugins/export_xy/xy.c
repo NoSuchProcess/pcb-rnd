@@ -101,6 +101,7 @@ static rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
 {
 	static int last_unit_value = -1;
 	rnd_conf_listitem_t *li;
+	char **val = xy_options[HA_xyfile].value;
 	int idx;
 
 	/* load all formats from the config */
@@ -145,7 +146,8 @@ static rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
 			xy_options[HA_unit].default_val.lng = rnd_get_unit_struct("mil")->index;
 		last_unit_value = xy_options[HA_unit].default_val.lng;
 	}
-	if ((PCB != NULL)  && (xy_options[HA_xyfile].default_val.str == NULL))
+
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &xy_options[HA_xyfile], ".xy");
 
 	if (n)
@@ -789,7 +791,6 @@ static const char *get_templ(const char *tid, const char *type)
 
 static void xy_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
-	int i;
 	template_t templ;
 	char **tid;
 	pcb_cam_t cam;
@@ -801,8 +802,6 @@ static void xy_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	if (!options) {
 		xy_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			xy_values[i] = xy_options[i].default_val;
 		options = xy_values;
 	}
 
@@ -882,6 +881,7 @@ int pplg_init_export_xy(void)
 	xy_hid.get_export_options = xy_get_export_options;
 	xy_hid.do_export = xy_do_export;
 	xy_hid.parse_arguments = xy_parse_arguments;
+	xy_hid.argument_array = xy_values;
 
 	xy_hid.usage = xy_usage;
 

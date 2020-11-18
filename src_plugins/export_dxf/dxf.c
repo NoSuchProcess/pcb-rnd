@@ -201,8 +201,8 @@ static rnd_hid_attr_val_t dxf_values[NUM_OPTIONS];
 static rnd_export_opt_t *dxf_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".dxf";
-
-	if ((PCB != NULL)  && (dxf_attribute_list[HA_dxffile].default_val.str == NULL))
+	char **val = dxf_attribute_list[HA_dxffile].value;
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &dxf_attribute_list[HA_dxffile], suffix);
 
 	if (n)
@@ -265,7 +265,6 @@ static void dxf_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];
-	int i;
 	const char *fn;
 	char *errmsg;
 	lht_err_t err;
@@ -273,8 +272,6 @@ static void dxf_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	if (!options) {
 		dxf_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			dxf_values[i] = dxf_attribute_list[i].default_val;
 		options = dxf_values;
 	}
 
@@ -565,6 +562,7 @@ int pplg_init_export_dxf(void)
 	dxf_hid.fill_rect = dxf_fill_rect;
 	dxf_hid.calibrate = dxf_calibrate;
 	dxf_hid.set_crosshair = dxf_set_crosshair;
+	dxf_hid.argument_array = dxf_values;
 
 	dxf_hid.usage = dxf_usage;
 

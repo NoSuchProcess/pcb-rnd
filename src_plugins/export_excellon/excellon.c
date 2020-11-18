@@ -204,7 +204,8 @@ static rnd_hid_attr_val_t excellon_values[NUM_OPTIONS];
 
 static rnd_export_opt_t *excellon_get_export_options(rnd_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (excellon_options[HA_excellonfile].default_val.str == NULL))
+	char **val = excellon_options[HA_excellonfile].value;
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &excellon_options[HA_excellonfile], "");
 
 	if (n)
@@ -223,8 +224,6 @@ static void excellon_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	if (!options) {
 		excellon_get_export_options(hid, NULL);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			excellon_values[i] = excellon_options[i].default_val;
 		options = excellon_values;
 	}
 	pcb_drill_init(&pdrills, options[HA_apeture_per_file].lng ? NULL : &exc_aperture_cnt);
@@ -529,6 +528,7 @@ int pplg_init_export_excellon(void)
 	excellon_hid.calibrate = excellon_calibrate;
 	excellon_hid.set_crosshair = excellon_set_crosshair;
 	excellon_hid.usage = excellon_usage;
+	excellon_hid.argument_array = excellon_values;
 
 	rnd_hid_register_hid(&excellon_hid);
 

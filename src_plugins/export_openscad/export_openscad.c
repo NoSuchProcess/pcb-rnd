@@ -134,8 +134,9 @@ static rnd_hid_attr_val_t openscad_values[NUM_OPTIONS];
 static rnd_export_opt_t *openscad_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".scad";
+	char **val = openscad_attribute_list[HA_openscadfile].value;
 
-	if ((PCB != NULL)  && (openscad_attribute_list[HA_openscadfile].default_val.str == NULL))
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &openscad_attribute_list[HA_openscadfile], suffix);
 
 	if (n)
@@ -299,13 +300,10 @@ static void openscad_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];
-	int i;
 	pcb_cam_t cam;
 
 	if (!options) {
 		openscad_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			openscad_values[i] = openscad_attribute_list[i].default_val;
 		options = openscad_values;
 	}
 
@@ -705,6 +703,7 @@ int pplg_init_export_openscad(void)
 	openscad_hid.fill_rect = openscad_fill_rect;
 	openscad_hid.calibrate = openscad_calibrate;
 	openscad_hid.set_crosshair = openscad_set_crosshair;
+	openscad_hid.argument_array = openscad_values;
 
 	openscad_hid.usage = openscad_usage;
 

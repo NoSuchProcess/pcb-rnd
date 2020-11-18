@@ -202,8 +202,9 @@ static rnd_hid_attr_val_t svg_values[NUM_OPTIONS];
 static rnd_export_opt_t *svg_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".svg";
+	char **val = svg_attribute_list[HA_svgfile].value;
 
-	if ((PCB != NULL)  && (svg_attribute_list[HA_svgfile].default_val.str == NULL))
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &svg_attribute_list[HA_svgfile], suffix);
 
 	if (n)
@@ -330,15 +331,12 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *filename;
 	int save_ons[PCB_MAX_LAYER];
-	int i;
 	rnd_xform_t xform;
 
 	comp_cnt = 0;
 
 	if (!options) {
 		svg_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			svg_values[i] = svg_attribute_list[i].default_val;
 		options = svg_values;
 	}
 
@@ -933,6 +931,7 @@ int pplg_init_export_svg(void)
 	svg_hid.fill_rect = svg_fill_rect;
 	svg_hid.calibrate = svg_calibrate;
 	svg_hid.set_crosshair = svg_set_crosshair;
+	svg_hid.argument_array = svg_values;
 
 	svg_hid.usage = svg_usage;
 

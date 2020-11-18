@@ -326,15 +326,12 @@ static int gcode_export_layer_group(rnd_layergrp_id_t group, const char *purpose
 
 static void gcode_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
-	int i;
 	rnd_layergrp_id_t gid;
 	rnd_xform_t xform;
 	pcb_board_t *pcb = PCB;
 
 	if (!options) {
 		gcode_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			gcode_values[i] = gcode_attribute_list[i].default_val;
 		options = gcode_values;
 	}
 
@@ -418,6 +415,7 @@ int pplg_init_export_gcode(void)
 	gcode_hid.get_export_options = gcode_get_export_options;
 	gcode_hid.do_export = gcode_do_export;
 	gcode_hid.parse_arguments = gcode_parse_arguments;
+	gcode_hid.argument_array = gcode_values;
 
 	gcode_hid.usage = gcode_usage;
 

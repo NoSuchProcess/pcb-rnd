@@ -260,7 +260,8 @@ static rnd_hid_attr_val_t gerber_values[NUM_OPTIONS];
 
 static rnd_export_opt_t *gerber_get_export_options(rnd_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (gerber_options[HA_gerberfile].default_val.str == NULL))
+	char **val = gerber_options[HA_gerberfile].value;
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &gerber_options[HA_gerberfile], "");
 
 	if (n)
@@ -325,8 +326,6 @@ static void gerber_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	if (!options) {
 		gerber_get_export_options(hid, NULL);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			gerber_values[i] = gerber_options[i].default_val;
 		options = gerber_values;
 	}
 
@@ -1110,6 +1109,7 @@ int pplg_init_export_gerber(void)
 	gerber_hid.calibrate = gerber_calibrate;
 	gerber_hid.set_crosshair = gerber_set_crosshair;
 	gerber_hid.usage = gerber_usage;
+	gerber_hid.argument_array = gerber_values;
 
 	rnd_hid_register_hid(&gerber_hid);
 

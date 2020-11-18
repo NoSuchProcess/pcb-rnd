@@ -120,7 +120,9 @@ static rnd_hid_attr_val_t eps_values[NUM_OPTIONS];
 
 static rnd_export_opt_t *eps_get_export_options(rnd_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (eps_attribute_list[HA_psfile].default_val.str == NULL))
+	char **val = eps_attribute_list[HA_psfile].value;
+
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &eps_attribute_list[HA_psfile], ".eps");
 
 	if (n)
@@ -309,14 +311,11 @@ void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xf
 
 static void eps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
-	int i;
 	int save_ons[PCB_MAX_LAYER];
 	rnd_xform_t xform;
 
 	if (!options) {
 		eps_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			eps_values[i] = eps_attribute_list[i].default_val;
 		options = eps_values;
 	}
 
@@ -684,6 +683,7 @@ void hid_eps_init()
 	eps_hid.fill_rect = eps_fill_rect;
 	eps_hid.calibrate = eps_calibrate;
 	eps_hid.set_crosshair = eps_set_crosshair;
+	eps_hid.argument_array = eps_values;
 
 	eps_hid.usage = eps_usage;
 

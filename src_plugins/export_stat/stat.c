@@ -113,8 +113,9 @@ static rnd_hid_attr_val_t stat_values[NUM_OPTIONS];
 static rnd_export_opt_t *stat_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".stat.lht";
+	char **val = stat_attribute_list[HA_statfile].value;
 
-	if ((PCB != NULL)  && (stat_attribute_list[HA_statfile].default_val.str == NULL))
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &stat_attribute_list[HA_statfile], suffix);
 
 	if (n)
@@ -132,7 +133,7 @@ static void stat_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	FILE *f;
 	const char *filename;
-	int i, lid;
+	int lid;
 	rnd_layergrp_id_t lgid;
 	char buff[1024];
 	layer_stat_t ls, *lgs, lgss[PCB_MAX_LAYERGRP];
@@ -146,8 +147,6 @@ static void stat_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	if (!options) {
 		stat_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			stat_values[i] = stat_attribute_list[i].default_val;
 		options = stat_values;
 	}
 
@@ -413,6 +412,7 @@ int pplg_init_export_stat(void)
 	stat_hid.get_export_options = stat_get_export_options;
 	stat_hid.do_export = stat_do_export;
 	stat_hid.parse_arguments = stat_parse_arguments;
+	stat_hid.argument_array = stat_values;
 
 	stat_hid.usage = stat_usage;
 

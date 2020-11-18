@@ -425,7 +425,8 @@ static rnd_hid_attr_val_t ipcd356_values[NUM_OPTIONS];
 
 static rnd_export_opt_t *ipcd356_get_export_options(rnd_hid_t *hid, int *n)
 {
-	if ((PCB != NULL) && (ipcd356_options[HA_ipcd356_filename].default_val.str == NULL))
+	char **val = ipcd356_options[HA_ipcd356_filename].value;
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &ipcd356_options[HA_ipcd356_filename], ".net");
 
 	if (n != NULL)
@@ -441,17 +442,12 @@ static int ipcd356_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 
 static void ipcd356_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
-	int n;
 	const char *fn;
 	FILE *f;
 	pcb_cam_t cam;
 
 	if (!options) {
 		ipcd356_get_export_options(hid, 0);
-
-		for (n = 0; n < NUM_OPTIONS; n++)
-			ipcd356_values[n] = ipcd356_options[n].default_val;
-
 		options = ipcd356_values;
 	}
 
@@ -496,6 +492,7 @@ int pplg_init_export_ipcd356(void)
 	ipcd356_hid.get_export_options = ipcd356_get_export_options;
 	ipcd356_hid.do_export = ipcd356_do_export;
 	ipcd356_hid.parse_arguments = ipcd356_parse_arguments;
+	ipcd356_hid.argument_array = ipcd356_values;
 
 	rnd_hid_register_hid(&ipcd356_hid);
 

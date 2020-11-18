@@ -341,7 +341,9 @@ static struct {
 
 static rnd_export_opt_t *ps_get_export_options(rnd_hid_t *hid, int *n)
 {
-	if ((PCB != NULL) && (ps_attribute_list[HA_psfile].default_val.str == NULL))
+	char **val = ps_attribute_list[HA_psfile].value;
+
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &ps_attribute_list[HA_psfile], ".ps");
 
 	if (n)
@@ -605,15 +607,12 @@ static void ps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	FILE *fh;
 	int save_ons[PCB_MAX_LAYER];
-	int i;
 	rnd_xform_t xform;
 
 	global.ovr_all = 0;
 
 	if (!options) {
 		ps_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			global.ps_values[i] = ps_attribute_list[i].default_val;
 		options = global.ps_values;
 	}
 
@@ -1497,6 +1496,7 @@ int pplg_init_export_ps(void)
 	ps_hid.description = "Postscript export";
 	ps_hid.exporter = 1;
 	ps_hid.mask_invert = 1;
+	ps_hid.argument_array = global.ps_values;
 
 	ps_hid.usage = ps_usage;
 

@@ -84,8 +84,8 @@ static rnd_hid_attr_val_t fidocadj_values[NUM_OPTIONS];
 static rnd_export_opt_t *fidocadj_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".fcd";
-
-	if ((PCB != NULL)  && (fidocadj_attribute_list[HA_fidocadjfile].default_val.str == NULL))
+	char **val = fidocadj_attribute_list[HA_fidocadjfile].value;
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &fidocadj_attribute_list[HA_fidocadjfile], suffix);
 
 	if (n)
@@ -164,14 +164,12 @@ static void fidocadj_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	FILE *f;
 	const char *filename, *libfile;
-	int n, fidoly_next, have_lib;
+	int fidoly_next, have_lib;
 	rnd_layer_id_t lid;
 	htsi_t lib_names; /* hash of names found in the library, if have_lib is 1 */
 
 	if (!options) {
 		fidocadj_get_export_options(hid, 0);
-		for (n = 0; n < NUM_OPTIONS; n++)
-			fidocadj_values[n] = fidocadj_attribute_list[n].default_val;
 		options = fidocadj_values;
 	}
 
@@ -384,6 +382,7 @@ int pplg_init_export_fidocadj(void)
 	fidocadj_hid.get_export_options = fidocadj_get_export_options;
 	fidocadj_hid.do_export = fidocadj_do_export;
 	fidocadj_hid.parse_arguments = fidocadj_parse_arguments;
+	fidocadj_hid.argument_array = fidocadj_values;
 
 	fidocadj_hid.usage = fidocadj_usage;
 

@@ -95,8 +95,9 @@ static rnd_hid_attr_val_t stl_values[NUM_OPTIONS];
 static rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".stl";
+	char **val = stl_attribute_list[HA_stlfile].value;
 
-	if ((PCB != NULL)  && (stl_attribute_list[HA_stlfile].default_val.str == NULL))
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &stl_attribute_list[HA_stlfile], suffix);
 
 	if (n)
@@ -468,15 +469,12 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 static void stl_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *filename;
-	int i;
 	pcb_cam_t cam;
 	FILE *f;
 	rnd_coord_t thick;
 
 	if (!options) {
 		stl_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			stl_values[i] = stl_attribute_list[i].default_val;
 		options = stl_values;
 	}
 
@@ -549,6 +547,7 @@ int pplg_init_export_stl(void)
 	stl_hid.get_export_options = stl_get_export_options;
 	stl_hid.do_export = stl_do_export;
 	stl_hid.parse_arguments = stl_parse_arguments;
+	stl_hid.argument_array = stl_values;
 
 	stl_hid.usage = stl_usage;
 

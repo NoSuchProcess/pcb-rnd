@@ -45,13 +45,16 @@ static rnd_hid_attr_val_t *lpr_values;
 
 static rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 {
+	char **val = base_lpr_options[HA_lprcommand].value;
+
 	/*
 	 * We initialize the default value in this manner because the GUI
 	 * HID's may want to free() this string value and replace it with a
 	 * new one based on how a user fills out a print dialog.
 	 */
-	if (base_lpr_options[HA_lprcommand].default_val.str == NULL) {
-		base_lpr_options[HA_lprcommand].default_val.str = rnd_strdup("lpr");
+	if ((*val == NULL) || (**val == '\0')) {
+		free(*val);
+		*val = rnd_strdup("lpr");
 	}
 
 	if (lpr_options == 0) {
@@ -69,13 +72,10 @@ static rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 static void lpr_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	FILE *f;
-	int i;
 	const char *filename;
 
 	if (!options) {
 		lpr_get_export_options(hid, 0);
-		for (i = 0; i < num_lpr_options; i++)
-			lpr_values[i] = lpr_options[i].default_val;
 		options = lpr_values;
 	}
 
@@ -140,6 +140,7 @@ int pplg_init_export_lpr(void)
 	lpr_hid.do_export = lpr_do_export;
 	lpr_hid.parse_arguments = lpr_parse_arguments;
 	lpr_hid.calibrate = lpr_calibrate;
+	lpr_hid.argument_array = lpr_values;
 
 	lpr_hid.usage = lpr_usage;
 

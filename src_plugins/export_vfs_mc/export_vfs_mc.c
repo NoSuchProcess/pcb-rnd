@@ -105,12 +105,9 @@ static void mc_copyin(const char *path)
 static void export_vfs_mc_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	const char *cmd;
-	int i;
 
 	if (!options) {
 		export_vfs_mc_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			export_vfs_mc_values[i] = export_vfs_mc_options[i].default_val;
 		options = export_vfs_mc_values;
 	}
 
@@ -166,6 +163,7 @@ int pplg_init_export_vfs_mc(void)
 	export_vfs_mc_hid.get_export_options = export_vfs_mc_get_export_options;
 	export_vfs_mc_hid.do_export = export_vfs_mc_do_export;
 	export_vfs_mc_hid.parse_arguments = export_vfs_mc_parse_arguments;
+	export_vfs_mc_hid.argument_array = export_vfs_mc_values;
 
 	export_vfs_mc_hid.usage = export_vfs_mc_usage;
 

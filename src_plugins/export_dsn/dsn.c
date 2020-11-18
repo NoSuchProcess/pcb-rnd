@@ -110,7 +110,8 @@ static const char *dsn_filename;
 
 static rnd_export_opt_t *dsn_get_export_options(rnd_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (dsn_options[HA_dsnfile].default_val.str == NULL))
+	char **val = dsn_options[HA_dsnfile].value;
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &dsn_options[HA_dsnfile], ".dsn");
 	if (n)
 		*n = NUM_OPTIONS;
@@ -573,13 +574,10 @@ static int PrintSPECCTRA(void)
 
 static void dsn_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
-	int i;
 	pcb_cam_t cam;
 
 	if (!options) {
 		dsn_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			dsn_values[i] = dsn_options[i].default_val;
 		options = dsn_values;
 	}
 	dsn_filename = options[HA_dsnfile].str;
@@ -622,6 +620,8 @@ int pplg_init_export_dsn(void)
 	dsn_hid.get_export_options = dsn_get_export_options;
 	dsn_hid.do_export = dsn_do_export;
 	dsn_hid.parse_arguments = dsn_parse_arguments;
+	dsn_hid.argument_array = dsn_values;
+
 	rnd_hid_register_hid(&dsn_hid);
 
 	rnd_export_register_opts(dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);

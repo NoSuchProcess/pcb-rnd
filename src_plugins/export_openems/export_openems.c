@@ -170,8 +170,9 @@ static rnd_export_opt_t *openems_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".m";
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
+	char **val = openems_attribute_list[HA_openemsfile].value;
 
-	if ((PCB != NULL)  && (openems_attribute_list[HA_openemsfile].default_val.str == NULL))
+	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &openems_attribute_list[HA_openemsfile], suffix);
 
 	if (mesh != NULL) {
@@ -668,15 +669,13 @@ static void openems_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	const char *filename;
 	char *runfn = NULL, *end;
 	int save_ons[PCB_MAX_LAYER];
-	int i, len, fmt_matlab;
+	int len, fmt_matlab;
 	FILE *fsim;
 
 	openems_ovr = 0;
 
 	if (!options) {
 		openems_get_export_options(hid, 0);
-		for (i = 0; i < NUM_OPTIONS; i++)
-			openems_values[i] = openems_attribute_list[i].default_val;
 		options = openems_values;
 	}
 
@@ -956,6 +955,7 @@ int pplg_init_export_openems(void)
 	openems_hid.fill_rect = openems_fill_rect;
 	openems_hid.calibrate = openems_calibrate;
 	openems_hid.set_crosshair = openems_set_crosshair;
+	openems_hid.argument_array = openems_values;
 
 	openems_hid.usage = openems_usage;
 
