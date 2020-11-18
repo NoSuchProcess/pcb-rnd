@@ -37,7 +37,6 @@ static const char *action_args[] = {
 
 void conf_core_init()
 {
-	rnd_conf_reg_field_(NULL, 1, 0, "should_never_match", "dummy", 0);
 }
 
 void rnd_hidlib_adjust_attached_objects(rnd_hidlib_t *hl)
