@@ -528,42 +528,38 @@ static void openscad_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	openscad_draw_line(gc, x1, y2, x1, y1);
 }
 
+typedef struct {
+	int first;
+	rnd_coord_t lx, ly;
+	rnd_hid_gc_t gc;
+} openscad_draw_arc_t;
+
+static int openscad_draw_arc_cb(void *uctx, rnd_coord_t x, rnd_coord_t y)
+{
+	openscad_draw_arc_t *ctx = uctx;
+
+	if (!ctx->first)
+		openscad_draw_line(ctx->gc, ctx->lx, ctx->ly, x, y);
+
+	ctx->first = 0;
+	ctx->lx = x; ctx->ly = y;
+	return 0;
+}
+
 static void openscad_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
-	double a, step = delta_angle/10.0, end_angle = start_angle + delta_angle;
-	int first;
-	rnd_coord_t lx, ly, x, y;
+	pcb_arc_t a;
+	openscad_draw_arc_t ctx;
+	rnd_coord_t res = (width+height)/20;
 
-	if (step >= 0) {
-		if (step < 1) step = 1;
-		if (step > 10) step = 10;
-	}
-	else {
-		if (step > -1) step = -1;
-		if (step < -0) step = -10;
-	}
+	a.X = cx; a.Y = cy;
+	a.Width = width; a.Height = height;
+	a.StartAngle = start_angle;
+	a.Delta = delta_angle;
 
-	/* only recent versions support angle for rotate_extrude(), so use line approximation for now */
-	fprintf(f, "			// line-approx arc %f .. %f by %f\n", start_angle, end_angle, step);
-
-	TODO("use the central arc approximation instead");
-	for(first = 1, a = start_angle; step > 0 ? (a < end_angle) : (a > end_angle); a += step) {
-		x = (double)cx + cos((180-a) / RND_RAD_TO_DEG) * (double)width;
-		y = (double)cy + sin((180-a) / RND_RAD_TO_DEG) * (double)height;
-		if (!first) {
-			fprintf(f, "\t");
-			openscad_draw_line(gc, lx, ly, x, y);
-		}
-		lx = x;
-		ly = y;
-		first = 0;
-	}
-	if (!first) {
-		x = (double)cx + cos((180 - end_angle) / RND_RAD_TO_DEG) * (double)width;
-		y = (double)cy + sin((180 - end_angle) / RND_RAD_TO_DEG) * (double)height;
-		fprintf(f, "\t");
-		openscad_draw_line(gc, lx, ly, x, y);
-	}
+	ctx.first = 1;
+	ctx.gc = gc;
+	pcb_arc_approx(&a, -RND_MIN(RND_MM_TO_COORD(2), res), 0, &ctx, openscad_draw_arc_cb);
 }
 
 static void openscad_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
