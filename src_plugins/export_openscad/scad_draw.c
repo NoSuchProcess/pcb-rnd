@@ -26,6 +26,8 @@
 
 #include "../lib_polyhelp/topoly.h"
 #include "plug_io.h"
+#include <librnd/core/hid_inlines.h>
+
 
 #define TRX_(x) (x)
 #define TRY_(y) (PCB->hidlib.size_y - (y))
@@ -101,17 +103,48 @@ static int scad_draw_outline(void)
 static void scad_draw_pstk(const pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+	pcb_pstk_shape_t *mech;
+	int n;
 
 	if (proto == NULL) {
 		pcb_io_incompat_save(ps->parent.data, (pcb_any_obj_t *)ps, "padstack-proto", "failed to retrieve padstack prototype", "internal pcb-rnd error, please file a bugreport");
 		return;
 	}
 
-TODO("padstack: this ignores bbvias")
-TODO("slot: this ignores slots")
+TODO("padstack: these ignore bbvias")
 	if (proto->hdia > 0) {
 		rnd_fprintf(f, "	translate([%mm,%mm,0])\n", TRX_(ps->x), TRY_(ps->y));
 		rnd_fprintf(f, "		cylinder(r=%mm, h=4, center=true, $fn=30);\n", proto->hdia/2);
+	}
+
+
+	mech = pcb_pstk_shape_mech_gid(PCB, ps, pcb_layergrp_get_top_copper());
+	if (mech != NULL) {
+		rnd_hid_gc_s gc = {0};
+
+		effective_layer_thickness = 4;
+		switch(mech->shape) {
+			case PCB_PSSH_POLY:
+				fprintf(f, "	translate([0,0,%f])\n", -effective_layer_thickness/2);
+				fprintf(f, "	pcb_fill_poly([");
+				for(n = 0; n < mech->data.poly.len; n++)
+					rnd_fprintf(f, "%s[%mm,%mm]", (n > 0 ? ", " : ""),
+						TRX_(ps->x + mech->data.poly.x[n]),
+						TRY_(ps->y + mech->data.poly.y[n]));
+				rnd_fprintf(f, "], %f);\n", effective_layer_thickness);
+				break;
+			case PCB_PSSH_LINE:
+				rnd_hid_set_line_cap(&gc, mech->data.line.square ? rnd_cap_square : rnd_cap_round);
+				rnd_hid_set_line_width(&gc, MAX(mech->data.line.thickness, 1));
+				rnd_render->draw_line(&gc, ps->x + mech->data.line.x1, ps->y + mech->data.line.y1, ps->x + mech->data.line.x2, ps->y + mech->data.line.y2);
+				break;
+			case PCB_PSSH_CIRC:
+				rnd_fprintf(f, "	translate([%mm,%mm,0])\n", TRX_(ps->x + mech->data.circ.x), TRY_(ps->y + mech->data.circ.y));
+				rnd_fprintf(f, "		cylinder(r=%mm, h=4, center=true, $fn=30);\n", MAX(mech->data.circ.dia/2, 1));
+				break;
+			case PCB_PSSH_HSHADOW:
+				break;
+		}
 	}
 }
 
