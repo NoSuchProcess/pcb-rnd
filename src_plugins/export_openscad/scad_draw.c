@@ -100,7 +100,7 @@ static int scad_draw_outline(void)
 	return 0;
 }
 
-static void scad_draw_pstk(const pcb_pstk_t *ps)
+static void scad_draw_pstk(pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 	pcb_pstk_shape_t *mech;
