@@ -210,6 +210,8 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 	}
 }
 
+/* Calculate the bounding box of the subc as the bounding box of all terminals
+   ("pads", bot heavy and light) */
 static void calc_pad_bbox_(subst_ctx_t *ctx, rnd_coord_t *pw, rnd_coord_t *ph, rnd_coord_t *pcx, rnd_coord_t *pcy)
 {
 	rnd_box_t box;
@@ -284,6 +286,7 @@ TODO("subc: subc-in-subc")
 	}
 }
 
+/* Calculate the bounding box of the subc as the bounding box of all terminals */
 static void calc_pad_bbox(subst_ctx_t *ctx, int prerot, rnd_coord_t *pw, rnd_coord_t *ph, rnd_coord_t *pcx, rnd_coord_t *pcy)
 {
 	if (prerot) {
@@ -716,7 +719,6 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		ctx.subc = subc;
 		ctx.front = !bott;
 
-TODO("padstack: do not depend on this, just use the normal bbox and rotate that back")
 		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h, &ctx.pad_cx, &ctx.pad_cy);
 		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.prpad_cx, &ctx.prpad_cy);
 		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy);
