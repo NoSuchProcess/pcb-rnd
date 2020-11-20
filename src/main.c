@@ -46,7 +46,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "crosshair.h"
 #include <librnd/core/compat_lrealpath.h>
 #include "polygon.h"
-#include "buildin.h"
+#include <librnd/core/buildin.hidlib.h>
 #include "build_run.h"
 #include <librnd/core/file_loaded.h>
 #include "flag.h"
@@ -76,6 +76,10 @@ static const char *EXPERIMENTAL = NULL;
 #include <librnd/core/compat_misc.h>
 #include "tool_logic.h"
 #include "pixmap_pcb.h"
+
+#define pup_buildins pcb_rnd_buildins
+#include "buildin.c"
+#undef pup_buildins
 
 const char *rnd_menu_file_paths[4];
 const char *rnd_menu_name_fmt = "pcb-menu-%s.lht";
@@ -443,7 +447,7 @@ int main(int argc, char *argv[])
 	rnd_tool_init();
 	pcb_tool_logic_init();
 
-	rnd_hidlib_init2(pup_buildins, NULL);
+	rnd_hidlib_init2(pup_buildins, pcb_rnd_buildins);
 	pcb_actions_init_pcb_only();
 
 	setbuf(stdout, 0);

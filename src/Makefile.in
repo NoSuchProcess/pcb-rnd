@@ -1,4 +1,4 @@
-append /local/pcb/CFLAGS [@-I. -I.. -I../@/local/pcb/librnd_root@ -I../@/local/pcb/librnd_root@/src_3rd -I../src_3rd -I../src -I../src_3rd/liblihata @]
+append /local/pcb/CFLAGS [@-I. -I.. -I../@/local/pcb/librnd_root@ -I../@/local/pcb/librnd_root@/../src_3rd -I../src_3rd -I../src -I../src_3rd/liblihata @]
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
@@ -126,8 +126,9 @@ append /local/pcb/OBJS [@
 	vtpadstack_t.o
 	vtr0.o
 	vtroutestyle.o
-	buildin.o
 	../src_3rd/qparse/qparse.o
+	../src_3rd/libuundo/uundo.o
+	../src_3rd/libuundo/uundo_debug.o
 @]
 
 put /local/pcb/LIBS_3RD [@
@@ -425,11 +426,12 @@ append /local/pcb/HDRS_HIDLIB {$(LIBRND)/config.h $(LIBRND)/core/global_typedefs
 # compatibility layer: remove this when librnd goes separate:
 append /local/pcb/HDRS_HIDLIB { $(LIBRND)/pcb_compat.h $(LIBRND)/core/pcb-printf.h }
 
-gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw_[^ ]*.h } {}
-gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}
-append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
-append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gendlist.h }
-append /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
+#TODO: remove these
+#gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw_[^ ]*.h } {}
+#gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}
+#append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
+#append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gendlist.h }
+#append /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
 
 # dynamic part of install_pcbrnd: hidlib headers
 foreach /local/h in /local/pcb/HDRS_HIDLIB

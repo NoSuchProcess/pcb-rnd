@@ -15,9 +15,9 @@
 
 #define LIBRND_ROOT         "../src_3rd/librnd-local/src/librnd"
 #define LIBRND_PLUGIN_ROOT  "../src_3rd/librnd-local/src/librnd/plugins"
-#include "../src_3rd/puplug/scconfig_hooks.h"
-#include "../src_3rd/libfungw/scconfig_hooks.h"
-#include "../src_3rd/libporty_net/hooks_net.c"
+#include "librnd-local/src_3rd/puplug/scconfig_hooks.h"
+#include "librnd-local/src_3rd/libfungw/scconfig_hooks.h"
+#include "librnd-local/src_3rd/libporty_net/hooks_net.c"
 
 #include "librnd-local/src/librnd/scconfig/plugin_3state.h"
 #include "librnd-local/src/librnd/scconfig/hooks_common.h"
@@ -342,6 +342,8 @@ int hook_generate()
 		put("/local/pcb/buildin_pups", "");
 		put("/local/pcb/buildin_hidlib_pups", "");
 		put("/local/pcb/buildin_hidlib_pups_fullpath", "");
+		put("/local/pcb/SRCS", "");
+		put("/local/dep/SRCS", "");
 	}
 
 	put("/local/pup/sccbox", "../../scconfig/sccbox");
@@ -361,16 +363,8 @@ int hook_generate()
 	if (plug_is_enabled("export_vfs_fuse"))
 		printf("Generating fuse_includes.h (%d)\n", generr |= tmpasm("../src_plugins/export_vfs_fuse", "fuse_includes.h.in", "fuse_includes.h"));
 
-/* remove these: */
+/* remove this: */
 	generr |= pup_hook_generate("../src_3rd/puplug");
-
-	if (!istrue(get("libs/script/fungw/presents")))
-		generr |= fungw_hook_generate("../src_3rd/libfungw");
-
-	printf("Generating src_3rd/libporty_net/os_includes.h (%d)\n", generr |= generate("../src_3rd/libporty_net/os_includes.h.in", "../src_3rd/libporty_net/os_includes.h"));
-	printf("Generating src_3rd/libporty_net/pnet_config.h (%d)\n", generr |= generate("../src_3rd/libporty_net/pnet_config.h.in", "../src_3rd/libporty_net/pnet_config.h"));
-	printf("Generating src_3rd/libporty_net/phost_types.h (%d)\n", generr |= generate("../src_3rd/libporty_net/phost_types.h.in", "../src_3rd/libporty_net/phost_types.h"));
-
 
 	if (!generr) {
 	printf("\n\n");

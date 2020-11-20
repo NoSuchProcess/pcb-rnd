@@ -11,7 +11,7 @@ if /local/pcb/fungw_system
 then
 else
 	append /local/pcb/mod/OBJS [@
-	$(SRC_3RD_DIR)/libfungwbind/fawk/fungw_fawk.o
+	$(SRC_3RD_DIR)/librnd-local/src_3rd/libfungwbind/fawk/fungw_fawk.o
 	@]
 	append /local/pcb/RULES [@
 
