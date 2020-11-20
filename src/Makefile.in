@@ -393,7 +393,6 @@ all:
 	$(MAKE) revcheck
 	$(MAKE) maybe_local_librnd
 	$(MAKE) all_exe
-	$(MAKE) librnd
 
 include $(ROOT)/Makefile.conf
 
@@ -445,31 +444,6 @@ maybe_local_librnd:
 end
 
 print [@
-
-librnd-hid.a: $(DEPS_HIDLIB_ALL)
-	$(AR) rvu librnd-hid.a $(OBJS_HIDLIB_ALL)
-
-librnd-3rd.a: $(OBJS_3RDLIB)
-	$(AR) rvu librnd-3rd.a $(OBJS_3RDLIB)
-
-librnd-poly.a: $(OBJS_POLYLIB)
-	$(AR) rvu librnd-poly.a $(OBJS_POLYLIB)
-
-librnd-hid.so.$(PCB_RND_VER): $(DEPS_HIDLIB_ALL)
-	$(CC) $(LDFLAGS) @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_HID) -o librnd-hid.so.$(PCB_RND_VER) $(OBJS_HIDLIB_ALL)
-
-librnd-3rd.so.$(PCB_RND_VER): $(OBJS_3RDLIB)
-	$(CC) @cc/ldflags@ @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_3RD) -o librnd-3rd.so.$(PCB_RND_VER) $(OBJS_3RDLIB) @/local/pcb/LIBRND_3RD_LDFLAGS@ @?/target/libs/ldl@ -lm
-
-librnd-poly.so.$(PCB_RND_VER): $(OBJS_POLYLIB)
-	$(CC) @cc/ldflags@ @?cc/ldflags_dynlib@ @?cc/so_undefined@ $(SONAME_POLY) -o librnd-poly.so.$(PCB_RND_VER) $(OBJS_POLYLIB) -lm
-
-HIDLIB_CLEAN_FILES=\
-	librnd-hid.so.$(PCB_RND_VER) librnd-hid.a \
-	librnd-3rd.so.$(PCB_RND_VER) librnd-3rd.a \
-	librnd-poly.so.$(PCB_RND_VER) librnd-poly.a
-
-librnd: $(HIDLIB_CLEAN_FILES)
 
 ### pcb-rnd infra ###
 
@@ -564,7 +538,7 @@ FORCE:
 DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
-	$(SCCBOX) rm -f -q  pcb-rnd $(HIDLIB_CLEAN_FILES) $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)
+	$(SCCBOX) rm -f -q  pcb-rnd $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)
 
 distclean: FORCE
 	$(SCCBOX) rm -f -q  $(DISTCLEANFILES)
@@ -583,12 +557,6 @@ install_librnd: librnd
 
 install_librnd_:
 	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/genlist" "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)"
-	$(SCCBOX) $(HOW) "librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)"
-	$(SCCBOX) $(HOW) "librnd-hid.a" "$(HL_LIBDIR)/librnd-hid.a"
-	$(SCCBOX) $(HOW) "librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)"
-	$(SCCBOX) $(HOW) "librnd-3rd.a" "$(HL_LIBDIR)/librnd-3rd.a"
-	$(SCCBOX) $(HOW) "librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)"
-	$(SCCBOX) $(HOW) "librnd-poly.a" "$(HL_LIBDIR)/librnd-poly.a"
 	$(SCCBOX) $(HOW) "$(LIBRND)/core/librnd.mak" "$(HL_SHAREDIR)/librnd.mak"
 	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
 	$(SCCBOX) $(HOW) "../src_3rd/puplug/util/puplug" "$(HL_LIBDIR)/librnd/puplug"
