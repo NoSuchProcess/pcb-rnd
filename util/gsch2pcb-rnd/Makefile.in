@@ -7,7 +7,7 @@ include {../src_3rd/librnd-local/src/librnd/scconfig/template/debug.tmpasm}
 print [@
 ROOT=../..
 PLUGDIR=../../src_plugins
-LIBRND=../../src_3rd/librnd
+LIBRND=../../src_3rd/librnd-local/src/librnd
 
 include $(LIBRND)/core/librnd.mak
 
