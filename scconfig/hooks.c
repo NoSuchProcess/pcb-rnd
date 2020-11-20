@@ -337,6 +337,11 @@ int hook_generate()
 		system("cd ../src_3rd/librnd-local/scconfig && make cquote");
 
 		printf("\n");
+
+		/* reset shared variables used in librnd, reused in pcb-rnd */
+		put("/local/pcb/buildin_pups", "");
+		put("/local/pcb/buildin_hidlib_pups", "");
+		put("/local/pcb/buildin_hidlib_pups_fullpath", "");
 	}
 
 	put("/local/pup/sccbox", "../../scconfig/sccbox");
