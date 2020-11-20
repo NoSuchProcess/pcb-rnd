@@ -1,5 +1,4 @@
 ROOT=../..
-include $(ROOT)/src_3rd/librnd-local/src/librnd/core/librnd.mak
 include $(ROOT)/Makefile.conf
 
 CFLAGS = $(PCB_RND_C89FLAGS) -I../.. -I../../src_3rd -I../../src $(CFLAGS_LIBRND_FUNGW)
@@ -8,13 +7,6 @@ LDLIBS = -lm $(LDFLAGS_LIBRND_FUNGW)
 LIB_HIDLIB=\
 	../../src/librnd-hid.a \
 	../../src/librnd-3rd.a
-
-#LIBGENHT=\
-#	../../src_3rd/genht/hash.o \
-#	../../src_3rd/genht/htsp.o \
-#	../../src_3rd/genht/htsi.o \
-#	../../src_3rd/genht/htpp.o \
-#	../../src_3rd/genht/htpi.o \
 
 LIB_PCBRND_OBJS=\
 	../../src_plugins/diag/diag_conf.o \
