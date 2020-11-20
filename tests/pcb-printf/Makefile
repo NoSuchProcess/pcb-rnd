@@ -7,9 +7,9 @@ include $(ROOT)/Makefile.conf
 
 SRC=$(TRUNK)/src
 SRC_3RD=$(TRUNK)/src_3rd
-LIBRND=$(SRC_3RD)/librnd
+LIBRND=$(SRC_3RD)/librnd-local/src/librnd
 CFLAGS_OP = -O3
-CFLAGS = $(PCB_RND_C89FLAGS) -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd -I$(TRUNK)/src_3rd/liblihata
+CFLAGS = $(PCB_RND_C89FLAGS) -I$(TRUNK) -I$(SRC) -I$(TRUNK)/src_3rd/librnd-local/src -I$(TRUNK)/src_3rd -I$(TRUNK)/src_3rd/liblihata
 LDLIBS = -lm
 
 LIBPCB_BASE=$(SRC)/librnd-hid.a $(SRC)/librnd-3rd.a glue.o
