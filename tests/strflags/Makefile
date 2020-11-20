@@ -2,7 +2,7 @@ include ../../Makefile.conf
 
 TRUNK=../..
 IO=$(TRUNK)/src_plugins/io_pcb
-CFLAGS = $(PCB_RND_C89FLAGS) -O3 -I$(TRUNK) -I$(TRUNK)/src -I$(IO) -I$(TRUNK)/src_3rd/librnd-local/src  -I$(TRUNK)/src_3rd
+CFLAGS = $(PCB_RND_C89FLAGS) -O3 -I$(TRUNK) -I$(TRUNK)/src -I$(IO)  -I$(TRUNK)/src_3rd
 LDLIBS = -lm
 GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
 
