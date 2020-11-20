@@ -7,9 +7,9 @@ PED=$(ROOT)/src_plugins/propedit
 LHT=$(ROOT)/src_3rd
 SRC=$(ROOT)/src
 SRC_3RD=$(ROOT)/src_3rd
-LIBRND=$(SRC_3RD)/librnd
+LIBRND=$(SRC_3RD)/librnd-local/src/librnd
 
-CFLAGS = $(PCB_RND_C89FLAGS) -I$(PED) -I$(LHT) -I$(SRC) -I$(ROOT) -I$(ROOT)/src_3rd
+CFLAGS = $(PCB_RND_C89FLAGS) -I$(PED) -I$(LHT) -I$(SRC) -I$(ROOT) -I$(ROOT)/src_3rd -I$(ROOT)/src_3rd/librnd-local/src
 LDLIBS = -lm
 LIB_OBJS = \
 	$(SRC)/librnd-hid.a \
