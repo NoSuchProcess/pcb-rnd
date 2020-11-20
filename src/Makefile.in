@@ -5,34 +5,6 @@ append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
 put /local/pcb/DEPCFLAGS {}
 put /local/pcb/OBJS_3RDLIB {}
 
-if ?libs/script/fungw/presents
-then
-	append /local/pcb/CFLAGS libs/script/fungw/cflags
-	append /local/pcb/LDFLAGS libs/script/fungw/ldflags
-	append /local/pcb/LIBRND_3RD_LDFLAGS libs/script/fungw/ldflags
-else
-# no system installed fungw means we need to use local genht
-	append /local/pcb/OBJS_3RDLIB [@
-	../src_3rd/genht/hash.o
-	../src_3rd/genht/htsp.o
-	../src_3rd/genht/htss.o
-	../src_3rd/genht/htsi.o
-	../src_3rd/genht/htpi.o
-	../src_3rd/genht/htip.o
-	../src_3rd/genht/htpp.o
-	@]
-# local compilation of fungw objects
-	append /local/pcb/OBJS_3RDLIB [@
-	../src_3rd/libfungw/fungw.o
-	../src_3rd/libfungw/fungw_conv.o
-	../src_3rd/libfungw/fungw_ptr.o
-	../src_3rd/libfungw/fungw_debug.o
-	../src_3rd/libfungw/fungw_call.o
-	../src_3rd/libfungwbind/c/fungw_c.o
-	@]
-	put /local/pcb/LIBRND_3RD_LDFLAGS {}
-end
-
 # These files are to be generated before make dep is run
 put /local/pcb/DEPDEPS { $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c defpcb_internal.c buildin.c buildin.hidlib.c pcb_menu_default.c }
 
@@ -48,31 +20,9 @@ include [@../@/local/pcb/librnd_root@/librnd/scconfig/template/debug.tmpasm@]
 # GUI program based on pcb-rnd HIDs.
 
 append /local/pcb/OBJS_3RDLIB [@
-	../src_3rd/liblihata/parser.o
-	../src_3rd/liblihata/dom.o
-	../src_3rd/liblihata/dom_list.o
-	../src_3rd/liblihata/dom_hash.o
-	../src_3rd/liblihata/dom_table.o
-	../src_3rd/liblihata/lihata.o
-	../src_3rd/liblihata/hash_str.o
-	../src_3rd/liblihata/tree.o
-	../src_3rd/liblihata/tree_list.o
-	../src_3rd/liblihata/tree_hash.o
-	../src_3rd/liblihata/tree_table.o
-	../src_3rd/liblihata/tree_symlink.o
-	../src_3rd/liblihata/tree_path.o
-	../src_3rd/liblhtpers/lhtpers.o
-	../src_3rd/genvector/gds_char.o
-	../src_3rd/genvector/vtp0.o
-	../src_3rd/genvector/vtd0.o
-	../src_3rd/genvector/vts0.o
-	../src_3rd/genvector/vti0.o
-	../src_3rd/genvector/vtl0.o
 	../src_3rd/genregex/regex_sei.o
 	../src_3rd/genregex/regex_se.o
 	../src_3rd/genregex/regex.o
-	../src_3rd/libulzw/libulzw_comp.o
-	../src_3rd/libulzw/libulzw_decomp.o
 @]
 
 put /local/pcb/OBJS_C99 {}
@@ -183,7 +133,6 @@ append /local/pcb/OBJS [@
 @]
 
 put /local/pcb/LIBS_3RD [@
-	../src_3rd/puplug/libpuplug.a
 	../src_3rd/libminuid/libminuid.a
 @]
 
@@ -277,7 +226,7 @@ SRC_3RD_DIR=$(ROOT)/src_3rd
 @?/local/pcb/TOPVARS@
 OBJS=@/local/pcb/OBJS@
 OBJS_C99=@/local/pcb/OBJS_C99@
-OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@ ../src_3rd/libminuid/*.o ../src_3rd/puplug/*.o
+OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@ ../src_3rd/libminuid/*.o
 OBJS_UTIL=@/local/pcb/OBJS_UTIL@
 SRCS=@/local/pcb/SRCS@
 CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
@@ -316,7 +265,7 @@ all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
 pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD) ../src_3rd/librnd-local/src/librnd-hid.a ../src_3rd/librnd-local/src/librnd-poly.a
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS) \
-		../src_3rd/librnd-local/src/librnd-hid.a ../src_3rd/librnd-local/src/librnd-poly.a
+		../src_3rd/librnd-local/src/librnd-hid.a ../src_3rd/librnd-local/src/librnd-poly.a ../src_3rd/librnd-local/src/librnd-3rd.a
 
 @]
 
@@ -478,21 +427,11 @@ append /local/pcb/HDRS_HIDLIB {$(LIBRND)/config.h $(LIBRND)/core/global_typedefs
 # compatibility layer: remove this when librnd goes separate:
 append /local/pcb/HDRS_HIDLIB { $(LIBRND)/pcb_compat.h $(LIBRND)/core/pcb-printf.h }
 
-gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/dom_[^ ]*.h } {}
-gsub /local/pcb/HDRS_3RDLIB {../src_3rd/liblihata/tree_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw_[^ ]*.h } {}
 gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}
-append /local/pcb/HDRS_3RDLIB {../src_3rd/genvector/genvector_impl.h ../src_3rd/genvector/genvector_impl.c ../src_3rd/genvector/genvector_undef.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gendlist.h }
 append /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
-
-if ?libs/script/fungw/presents
-then
-else
-# when there is no fungw installed, we go with local genht and that needs a few extras too
-append /local/pcb/HDRS_3RDLIB {../src_3rd/genht/ht.h }
-end
 
 # dynamic part of install_pcbrnd: hidlib headers
 foreach /local/h in /local/pcb/HDRS_HIDLIB
