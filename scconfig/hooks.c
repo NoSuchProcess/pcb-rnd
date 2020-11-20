@@ -13,16 +13,16 @@
 
 #define version "2.3.0"
 
-#define LIBRND_ROOT         "../src_3rd/librnd"
-#define LIBRND_PLUGIN_ROOT  "../src_3rd/librnd/plugins"
+#define LIBRND_ROOT         "../src_3rd/librnd-local/src/librnd"
+#define LIBRND_PLUGIN_ROOT  "../src_3rd/librnd-local/src/librnd/plugins"
 #include "../src_3rd/puplug/scconfig_hooks.h"
 #include "../src_3rd/libfungw/scconfig_hooks.h"
 #include "../src_3rd/libporty_net/hooks_net.c"
 
-#include "librnd/scconfig/plugin_3state.h"
-#include "librnd/scconfig/hooks_common.h"
-#include "librnd/scconfig/hooks_gui.c"
-#include "librnd/scconfig/rnd_hook_detect.h"
+#include "librnd-local/src/librnd/scconfig/plugin_3state.h"
+#include "librnd-local/src/librnd/scconfig/hooks_common.h"
+#include "librnd-local/src/librnd/scconfig/hooks_gui.c"
+#include "librnd-local/src/librnd/scconfig/rnd_hook_detect.h"
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
 	{"disable-gd",        "libs/gui/gd",                  arg_lib_nodes, "$do not use gd (many exporters need it)"},
@@ -111,8 +111,8 @@ static void calc_dialog_deps(void)
 
 	rnd_calc_dialog_deps(); /* remove after librnd separation */
 
-	buildin = istrue(get("/target/librnd/dialogs/buildin"));
-	plugin = istrue(get("/target/librnd/dialogs/plugin"));
+	buildin = istrue(get("/target/librnd-local/src/librnd/dialogs/buildin"));
+	plugin = istrue(get("/target/librnd-local/src/librnd/dialogs/plugin"));
 
 	if (buildin) {
 		hook_custom_arg("buildin-draw_csect", NULL);
