@@ -3,7 +3,6 @@ test:
 	cd pcbflags && $(MAKE) all && $(MAKE) test
 	cd conf && $(MAKE) all && $(MAKE) test
 	cd strflags && $(MAKE) all && $(MAKE) test
-	cd pcb-printf && $(MAKE) all && $(MAKE) test
 	cd uniq_name && $(MAKE) all && $(MAKE) test
 	cd propedit && $(MAKE) all && $(MAKE) test
 	cd drc_pstk_hbrk && $(MAKE) all && $(MAKE) test
@@ -21,7 +20,6 @@ clean:
 	cd pcbflags && $(MAKE) clean
 	cd conf && $(MAKE) clean
 	cd strflags && $(MAKE) clean
-	cd pcb-printf && $(MAKE) clean
 	cd uniq_name && $(MAKE) clean
 	cd propedit && $(MAKE) clean
 	cd drc_pstk_hbrk && $(MAKE) clean
