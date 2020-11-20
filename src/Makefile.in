@@ -4,10 +4,6 @@ append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
 put /local/pcb/DEPCFLAGS {}
 put /local/pcb/OBJS_3RDLIB {}
-put /local/pcb/OBJS_HIDLIB {}
-put /local/pcb/OBJS_HIDLIB_ONLY {}
-put /local/pcb/OBJS_C99_HIDLIB_PLG {}
-put /local/pcb/OBJS_HIDLIB_PLG {}
 
 if ?libs/script/fungw/presents
 then
@@ -51,68 +47,6 @@ include [@../@/local/pcb/librnd_root@/librnd/scconfig/template/debug.tmpasm@]
 # but nothing else; in short the HID part of pcb-rnd for developing a
 # GUI program based on pcb-rnd HIDs.
 
-# These have constructs that are not c89 strictly speaking but are
-# effectively c89; typical example is casting a function pointer to a
-# data pointer for dlsym().
-put /local/pcb/OBJS_C99_HIDLIB [@
-	$(LIBRND)/core/fptr_cast.o
-@]
-
-append /local/pcb/OBJS_HIDLIB [@
-	$(LIBRND)/core/actions.o
-	$(LIBRND)/core/base64.o
-	$(LIBRND)/core/box.o
-	$(LIBRND)/core/color.o
-	$(LIBRND)/core/conf.o
-	$(LIBRND)/core/conf_act.o
-	$(LIBRND)/core/conf_hid.o
-	$(LIBRND)/core/compat_fs.o
-	$(LIBRND)/core/compat_lrealpath.o
-	$(LIBRND)/core/compat_misc.o
-	$(LIBRND)/core/error.o
-	$(LIBRND)/core/event.o
-	$(LIBRND)/core/file_loaded.o
-	$(LIBRND)/core/funchash.o
-	$(LIBRND)/core/grid.o
-	$(LIBRND)/core/gui_act.o
-	$(LIBRND)/core/heap.o
-	$(LIBRND)/core/hid.o
-	$(LIBRND)/core/hid_attrib.o
-	$(LIBRND)/core/hid_cfg.o
-	$(LIBRND)/core/hid_cfg_action.o
-	$(LIBRND)/core/hid_cfg_input.o
-	$(LIBRND)/core/hid_dlg.o
-	$(LIBRND)/core/hid_dad.o
-	$(LIBRND)/core/hid_dad_tree.o
-	$(LIBRND)/core/hid_dad_spin.o
-	$(LIBRND)/core/hid_dad_unit.o
-	$(LIBRND)/core/hid_init.o
-	$(LIBRND)/core/hid_menu.o
-	$(LIBRND)/core/hid_nogui.o
-	$(LIBRND)/core/hidlib.o
-	$(LIBRND)/core/hidlib_conf.o
-	$(LIBRND)/core/list_conf.o
-	$(LIBRND)/core/main_act.o
-	$(LIBRND)/core/misc_util.o
-	$(LIBRND)/core/paths.o
-	$(LIBRND)/core/rnd_bool.o
-	$(LIBRND)/core/rnd_printf.o
-	$(LIBRND)/core/plugins.o
-	$(LIBRND)/core/pixmap.o
-	$(LIBRND)/core/safe_fs.o
-	$(LIBRND)/core/tool.o
-	$(LIBRND)/core/unit.o
-	$(LIBRND)/core/vtc0.o
-@]
-
-put /local/pcb/OBJS_POLYLIB [@
-	$(LIBRND)/poly/polyarea.o
-	$(LIBRND)/poly/polygon1_gen.o
-	$(LIBRND)/poly/offset.o
-	$(LIBRND)/poly/self_isc.o
-	$(LIBRND)/poly/rtree.o
-@]
-
 append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/liblihata/parser.o
 	../src_3rd/liblihata/dom.o
@@ -141,15 +75,9 @@ append /local/pcb/OBJS_3RDLIB [@
 	../src_3rd/libulzw/libulzw_decomp.o
 @]
 
-# these will be linked only to the hidlib, not to pcb-rnd
-append /local/pcb/OBJS_HIDLIB_ONLY [@
-	buildin.hidlib.o
-@]
-
-put /local/pcb/OBJS_C99 /local/pcb/OBJS_C99_HIDLIB
-put /local/pcb/OBJS /local/pcb/OBJS_HIDLIB
+put /local/pcb/OBJS_C99 {}
+put /local/pcb/OBJS {}
 append /local/pcb/OBJS /local/pcb/OBJS_3RDLIB
-append /local/pcb/OBJS /local/pcb/OBJS_POLYLIB
 append /local/pcb/OBJS [@
 	actions_pcb.o
 	attrib.o
@@ -311,12 +239,6 @@ order /local/pcb/LDFLAGS {-lXm} {before} {-lXt}
 uniq /local/pcb/OBJS
 uniq /local/pcb/OBJS_C99
 uniq /local/pcb/OBJS_3RDLIB
-uniq /local/pcb/OBJS_POLYLIB
-uniq /local/pcb/OBJS_HIDLIB
-uniq /local/pcb/OBJS_HIDLIB_ONLY
-uniq /local/pcb/OBJS_C99_HIDLIB
-uniq /local/pcb/OBJS_HIDLIB_PLG
-uniq /local/pcb/OBJS_C99_HIDLIB_PLG
 uniq /local/pcb/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/CFLAGS_GENERIC
@@ -332,9 +254,6 @@ uniq /local/pcb/all
 put /local/pcb/SRCS /local/pcb/OBJS 
 append /local/pcb/SRCS ?/local/pcb/OBJS_C99
 append /local/pcb/SRCS ?/local/pcb/OBJS_3RDLIB
-append /local/pcb/SRCS ?/local/pcb/OBJS_POLYLIB
-append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB
-append /local/pcb/SRCS ?/local/pcb/OBJS_HIDLIB_ONLY
 gsub /local/pcb/SRCS {.o } {.c }
 
 # Makefile, static
@@ -358,13 +277,7 @@ SRC_3RD_DIR=$(ROOT)/src_3rd
 @?/local/pcb/TOPVARS@
 OBJS=@/local/pcb/OBJS@
 OBJS_C99=@/local/pcb/OBJS_C99@
-OBJS_POLYLIB=@/local/pcb/OBJS_POLYLIB@
 OBJS_3RDLIB=@/local/pcb/OBJS_3RDLIB@ ../src_3rd/libminuid/*.o ../src_3rd/puplug/*.o
-OBJS_HIDLIB=@/local/pcb/OBJS_HIDLIB@
-OBJS_HIDLIB_ONLY=@/local/pcb/OBJS_HIDLIB_ONLY@
-OBJS_C99_HIDLIB=@/local/pcb/OBJS_C99_HIDLIB@
-OBJS_HIDLIB_PLG=@/local/pcb/OBJS_HIDLIB_PLG@
-OBJS_C99_HIDLIB_PLG=@/local/pcb/OBJS_C99_HIDLIB_PLG@
 OBJS_UTIL=@/local/pcb/OBJS_UTIL@
 SRCS=@/local/pcb/SRCS@
 CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
@@ -401,29 +314,11 @@ revcheck:
 
 all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
-pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD)
-	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS)
+pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD) ../src_3rd/librnd-local/src/librnd-hid.a ../src_3rd/librnd-local/src/librnd-poly.a
+	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) $(LDFLAGS) $(LIBS) \
+		../src_3rd/librnd-local/src/librnd-hid.a ../src_3rd/librnd-local/src/librnd-poly.a
 
-### librnd, hidlib ####
-
-OBJS_HIDLIB_ALL = $(OBJS_HIDLIB_PLG) $(OBJS_C99_HIDLIB_PLG) $(OBJS_HIDLIB) $(OBJS_HIDLIB_ONLY) $(OBJS_C99_HIDLIB)
-DEPS_HIDLIB_ALL = $(OBJS_HIDLIB_ALL) $(EXEDEPS) $(LIBS_3RD) $(LIBRND)/core/buildin.hidlib.h
 @]
-
-switch cc/soname
-	case {^$} print [@
-SONAME_HID=
-SONAME_3RD=
-SONAME_POLY=
-@]
-	end;
-	default print [@
-SONAME_HID=@cc/soname@librnd-hid.so.$(PCB_RND_VER_MAJOR)
-SONAME_3RD=@cc/soname@librnd-3rd.so.$(PCB_RND_VER_MAJOR)
-SONAME_POLY=@cc/soname@librnd-poly.so.$(PCB_RND_VER_MAJOR)
-@]
-	end;
-end
 
 if /local/pcb/librnd_is_local
 then
@@ -538,7 +433,7 @@ FORCE:
 DISTCLEANFILES = Makefile.depgen core_lists.h buildin.c buildin.h buildin.hidlib.c $(LIBRND)/core/buildin.hidlib.h $(LIBRND)/core/compat_inc.h $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c defpcb_internal.c pcb_menu_default.c ../src_plugins/.builtin.pups ../src_plugins/.builtin.hidlib.pups $(LIBRND)/core/librnd.mak @/local/pcb/DISTCLEANFILES@
 
 clean: $(CLEANRULES)
-	$(SCCBOX) rm -f -q  pcb-rnd $(OBJS) $(OBJS_C99) $(OBJS_HIDLIB_ONLY) $(CLEANFILES)
+	$(SCCBOX) rm -f -q  pcb-rnd $(OBJS) $(OBJS_C99) $(CLEANFILES)
 
 distclean: FORCE
 	$(SCCBOX) rm -f -q  $(DISTCLEANFILES)
@@ -568,8 +463,7 @@ install_librnd_:
 
 # rndlib: build a list of header files to be installed with the hidlib
 put /local/pcb/HDRS_3RDLIB /local/pcb/OBJS_3RDLIB
-put /local/pcb/HDRS_HIDLIB /local/pcb/OBJS_HIDLIB
-append /local/pcb/HDRS_HIDLIB /local/pcb/OBJS_POLYLIB
+put /local/pcb/HDRS_HIDLIB {}
 uniq /local/pcb/HDRS_3RDLIB
 uniq /local/pcb/HDRS_HIDLIB
 gsub /local/pcb/HDRS_HIDLIB {.o } {.h }
