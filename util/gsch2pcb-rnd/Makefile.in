@@ -1,13 +1,14 @@
 put /local/pcb/CFLAGS cc/cflags
-append /local/pcb/CFLAGS {-I../.. -I../../src_3rd/librnd-local/src -I../../src_3rd -I../../src -I../../src_3rd/liblihata -DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
+append /local/pcb/CFLAGS [@-I../.. -I../../@/local/pcb/librnd_root@ -I../../src_3rd -I../../src -I../../src_3rd/liblihata @]
+append /local/pcb/CFLAGS {-DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS ?/target/libs/ldl
-include {../src_3rd/librnd-local/src/librnd/scconfig/template/debug.tmpasm}
+include [@../@/local/pcb/librnd_root@/librnd/scconfig/template/debug.tmpasm@]
 
 print [@
 ROOT=../..
 PLUGDIR=../../src_plugins
-LIBRND=../../src_3rd/librnd-local/src/librnd
+LIBRND=../../@/local/pcb/librnd_root@/librnd
 
 include $(LIBRND)/core/librnd.mak
 
@@ -86,7 +87,7 @@ $(ROOT)/src/librnd-3rd.a:
 
 # generate explicit rules for .c -> .o
 put /local/comp/OBJS /local/pcb/OBJS
-include {../src_3rd/librnd-local/src/librnd/scconfig/template/compile.tmpasm}
+include [@../@/local/pcb/librnd_root@/librnd/scconfig/template/compile.tmpasm@]
 
 print [@
 

@@ -87,6 +87,8 @@ int hook_postinit()
 	put("/local/pcb/want_byaccic", sfalse);
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 
+	put("/local/pcb/librnd_is_local", strue);
+	put("/local/pcb/librnd_root", "src_3rd/librnd-local/src");
 	return 0;
 }
 
@@ -111,8 +113,8 @@ static void calc_dialog_deps(void)
 
 	rnd_calc_dialog_deps(); /* remove after librnd separation */
 
-	buildin = istrue(get("/target/librnd-local/src/librnd/dialogs/buildin"));
-	plugin = istrue(get("/target/librnd-local/src/librnd/dialogs/plugin"));
+	buildin = istrue(get("/target/librnd/dialogs/buildin"));
+	plugin = istrue(get("/target/librnd/dialogs/plugin"));
 
 	if (buildin) {
 		hook_custom_arg("buildin-draw_csect", NULL);
