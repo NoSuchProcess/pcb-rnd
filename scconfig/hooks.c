@@ -310,9 +310,37 @@ int hook_generate()
 	put("/local/version",  version);
 	put("/local/version_major",  version_major);
 	put("/local/apiver", apiver);
-	put("/local/pup/sccbox", "../../scconfig/sccbox");
 
 	printf("\n");
+	if (istrue(get("/local/pcb/librnd_is_local"))) {
+		FILE *f;
+		put("/local/pup/sccbox", "../../../../scconfig/sccbox");
+
+		printf("Generating local librnd build files:\n");
+		printf("Generating librnd-local Makefile.conf (%d)\n", generr |= tmpasm("../src_3rd/librnd-local", "Makefile.conf.in", "Makefile.conf"));
+		printf("Generating librnd-local src/Makefile (%d)\n", generr |= tmpasm("../src_3rd/librnd-local/src", "Makefile.in", "Makefile"));
+
+		printf("Generating src_3rd/libporty_net/os_includes.h (%d)\n", generr |= generate("../src_3rd/librnd-local/src_3rd/libporty_net/os_includes.h.in", "../src_3rd/librnd-local/src_3rd/libporty_net/os_includes.h"));
+		printf("Generating src_3rd/libporty_net/pnet_config.h (%d)\n", generr |= generate("../src_3rd/librnd-local/src_3rd/libporty_net/pnet_config.h.in", "../src_3rd/librnd-local/src_3rd/libporty_net/pnet_config.h"));
+		printf("Generating src_3rd/libporty_net/phost_types.h (%d)\n", generr |= generate("../src_3rd/librnd-local/src_3rd/libporty_net/phost_types.h.in", "../src_3rd/librnd-local/src_3rd/libporty_net/phost_types.h"));
+
+		printf("Generating librnd config.h (%d)\n", generr |= tmpasm("../src_3rd/librnd-local", "config.h.in", "config.h"));
+
+		generr |= pup_hook_generate("../src_3rd/librnd-local/src_3rd/puplug");
+		if (!istrue(get("libs/script/fungw/presents")))
+			generr |= fungw_hook_generate("../src_3rd/librnd-local/src_3rd/libfungw");
+
+		f = fopen("../src_3rd/librnd-local/scconfig/revtest", "w");
+		fprintf(f, "#!/bin/sh\nexit 0\n\n");
+		fclose(f);
+		
+		system("cd ../src_3rd/librnd-local/scconfig && make cquote");
+
+		printf("\n");
+	}
+
+	put("/local/pup/sccbox", "../../scconfig/sccbox");
+
 
 	printf("Generating Makefile.conf (%d)\n", generr |= tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
@@ -322,19 +350,21 @@ int hook_generate()
 
 	printf("Generating util/gsch2pcb-rnd/Makefile (%d)\n", generr |= tmpasm("../util", "gsch2pcb-rnd/Makefile.in", "gsch2pcb-rnd/Makefile"));
 	printf("Generating util/bxl2txt/Makefile (%d)\n", generr |= tmpasm("../util", "bxl2txt/Makefile.in", "bxl2txt/Makefile"));
-	printf("Generating src_3rd/libporty_net/os_includes.h (%d)\n", generr |= generate("../src_3rd/libporty_net/os_includes.h.in", "../src_3rd/libporty_net/os_includes.h"));
-	printf("Generating src_3rd/libporty_net/pnet_config.h (%d)\n", generr |= generate("../src_3rd/libporty_net/pnet_config.h.in", "../src_3rd/libporty_net/pnet_config.h"));
-	printf("Generating src_3rd/libporty_net/phost_types.h (%d)\n", generr |= generate("../src_3rd/libporty_net/phost_types.h.in", "../src_3rd/libporty_net/phost_types.h"));
 
 	printf("Generating pcb-rnd config.h (%d)\n", generr |= tmpasm("..", "config.h.in", "config.h"));
 
 	if (plug_is_enabled("export_vfs_fuse"))
 		printf("Generating fuse_includes.h (%d)\n", generr |= tmpasm("../src_plugins/export_vfs_fuse", "fuse_includes.h.in", "fuse_includes.h"));
 
+/* remove these: */
 	generr |= pup_hook_generate("../src_3rd/puplug");
 
 	if (!istrue(get("libs/script/fungw/presents")))
 		generr |= fungw_hook_generate("../src_3rd/libfungw");
+
+	printf("Generating src_3rd/libporty_net/os_includes.h (%d)\n", generr |= generate("../src_3rd/libporty_net/os_includes.h.in", "../src_3rd/libporty_net/os_includes.h"));
+	printf("Generating src_3rd/libporty_net/pnet_config.h (%d)\n", generr |= generate("../src_3rd/libporty_net/pnet_config.h.in", "../src_3rd/libporty_net/pnet_config.h"));
+	printf("Generating src_3rd/libporty_net/phost_types.h (%d)\n", generr |= generate("../src_3rd/libporty_net/phost_types.h.in", "../src_3rd/libporty_net/phost_types.h"));
 
 
 	if (!generr) {
