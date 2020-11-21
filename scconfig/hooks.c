@@ -364,9 +364,6 @@ int hook_generate()
 	if (plug_is_enabled("export_vfs_fuse"))
 		printf("Generating fuse_includes.h (%d)\n", generr |= tmpasm("../src_plugins/export_vfs_fuse", "fuse_includes.h.in", "fuse_includes.h"));
 
-/* remove this: */
-	generr |= pup_hook_generate("../src_3rd/puplug");
-
 	if (!generr) {
 	printf("\n\n");
 	printf("=====================\n");

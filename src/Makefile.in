@@ -243,7 +243,7 @@ HOSTCC=@/host/cc/cc@
 CQUOTE=$(ROOT)/scconfig/cquote
 SPHASH_PATH=$(ROOT)/src_3rd/sphash
 SPHASH=$(SPHASH_PATH)/sphash
-PUPLUG=$(ROOT)/src_3rd/puplug/util/puplug
+PUPLUG=$(ROOT)/src_3rd/librnd-local/src_3rd/puplug/util/puplug
 LIBMINUID_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 LIBMINUID_LDFLAGS=@cc/ldflags@
 GENLIST_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
@@ -313,22 +313,6 @@ $(LIBRND)/core/buildin.hidlib.h: $(PLUGDIR)/.builtin.hidlib.pups $(PUPLUG)
 ../src_3rd/libminuid/libminuid.a: ../src_3rd/libminuid/libminuid.c ../src_3rd/libminuid/libminuid.h
 	cd  ../src_3rd/libminuid && $(MAKE) libminuid.a LIBMINUID_CFLAGS="$(LIBMINUID_CFLAGS)" LIBMINUID_LDFLAGS="$(LIBMINUID_LDFLAGS)" CC=$(CC)
 @]
-
-if sys/cross
-then
-print [@
-../src_3rd/puplug/libpuplug.a $(PUPLUG):
-	cd ../src_3rd/puplug && make clean
-	cd ../src_3rd/puplug && make util/puplug CC=$(HOSTCC)
-	cd ../src_3rd/puplug && rm *.o
-	cd ../src_3rd/puplug && make libpuplug.a CC=$(CC)
-@]
-else
-print [@
-../src_3rd/puplug/libpuplug.a $(PUPLUG):
-	cd ../src_3rd/puplug && make libpuplug.a util/puplug
-@]
-end
 
 print [@
 ##### module rules begin #####
