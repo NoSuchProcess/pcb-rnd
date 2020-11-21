@@ -1,5 +1,5 @@
 put /local/pcb/CFLAGS cc/cflags
-append /local/pcb/CFLAGS [@-I../.. -I../../@/local/pcb/librnd_root@ -I../../src_3rd -I../../src -I../../src_3rd/liblihata @]
+append /local/pcb/CFLAGS [@-I../.. -I../../@/local/pcb/librnd_root@ -I../../@/local/pcb/librnd_root@/../src_3rd -I../../src_3rd -I../../src -I../../src_3rd/liblihata @]
 append /local/pcb/CFLAGS {-DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS ?/target/libs/ldl
@@ -21,7 +21,7 @@ LIB_HIDLIB=\
 @]
 
 print [@
-LISTOBJ=../../src_3rd/genlist/genadlist.o ../../src_3rd/genlist/genlistalloc.o
+LISTOBJ=../../src_3rd/librnd-local/src_3rd/genlist/genadlist.o ../../src_3rd/librnd-local/src_3rd/genlist/genlistalloc.o
 QPARSE=../../src_3rd/qparse/qparse.o
 @]
 
@@ -71,7 +71,7 @@ gsch2pcb.o: gsch2pcb.c ../../config.h
 $(HASHOBJ) $(QPARSE) \
 ../../src_3rd/genvector/gds_char.o ../../src_3rd/genvector/vtp0.o \
 ../../src_3rd/genvector/vts0.o ../../src_3rd/genadlist/genlist.o \
-../../src_3rd/genlist/genlistalloc.o:
+../../src_3rd/librnd-local/src_3rd/genlist/genlistalloc.o:
 	cd ../../src && $(MAKE) util_deps
 
 $(ROOT)/src/librnd-hid.a:
