@@ -1,6 +1,10 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- CLEANUP: librnd separation (build)
+	- check plugin build
+	- check fawk scripting in both plugin and buildin
+	- check system installed fungw in both plugin and buildin
 - FEATURE: make grid pixel size configurable [report: thet]
 - FEATURE: tedax netlist parser: load comptag (and nettag) in a second pass [report: Bdale]
 - FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
