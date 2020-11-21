@@ -16,8 +16,8 @@ CFLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@ $(CFLAGS_LIBRND_FUNGW)
 LDFLAGS=-lm @/local/pcb/LDFLAGS@ $(LDFLAGS_LIBRND_FUNGW)
 CC=@cc/cc@
 LIB_HIDLIB=\
-	$(ROOT)/src/librnd-hid.a \
-	$(ROOT)/src/librnd-3rd.a
+	$(ROOT)/src_3rd/librnd-local/src/librnd-hid.a \
+	$(ROOT)/src_3rd/librnd-local/src/librnd-3rd.a
 @]
 
 print [@
@@ -69,16 +69,15 @@ gsch2pcb.o: gsch2pcb.c ../../config.h
 # TODO: this should be the base lib only
 # run the Makefile in src for the common objects:
 $(HASHOBJ) $(QPARSE) \
-../../src_3rd/genvector/gds_char.o ../../src_3rd/genvector/vtp0.o \
-../../src_3rd/genvector/vts0.o ../../src_3rd/genadlist/genlist.o \
+../../src_3rd/librnd-local/src_3rd/genadlist/genlist.o \
 ../../src_3rd/librnd-local/src_3rd/genlist/genlistalloc.o:
 	cd ../../src && $(MAKE) util_deps
 
-$(ROOT)/src/librnd-hid.a:
-	cd $(ROOT)/src && make librnd-hid.a
+$(ROOT)/src_3rd/librnd-local/src/librnd-hid.a:
+	cd $(ROOT)/src_3rd/librnd-local && make librnd-hid.a
 
-$(ROOT)/src/librnd-3rd.a:
-	cd $(ROOT)/src && make librnd-3rd.a
+$(ROOT)/src_3rd/librnd-local/src/librnd-3rd.a:
+	cd $(ROOT)/src_3rd/librnd-local && make librnd-3rd.a
 
 ##### module rules begin #####
 @/local/pcb/RULES@

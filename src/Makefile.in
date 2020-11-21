@@ -294,8 +294,8 @@ $(SPHASH): $(SPHASH_PATH)/sphash.c
 	$(HOSTCC) $(SPHASH_PATH)/sphash.c -o $(SPHASH)
 
 # needed by gsch2pcb-rnd
-../src_3rd/genlist/genadlist.o ../src_3rd/genlist/genlistalloc.o:
-	cd ../src_3rd/genlist && $(MAKE) GENLIST_CFLAGS="$(GENLIST_CFLAGS)" GENLIST_LDFLAGS="$(GENLIST_LDFLAGS)" CC=$(CC)
+../src_3rd/librnd-local/src_3rd/genlist/genadlist.o ../src_3rd/librnd-local/src_3rd/genlist/genlistalloc.o:
+	cd ../src_3rd/librnd-local/src_3rd/genlist && $(MAKE) GENLIST_CFLAGS="$(GENLIST_CFLAGS)" GENLIST_LDFLAGS="$(GENLIST_LDFLAGS)" CC=$(CC)
 
 buildin.c: $(PLUGDIR)/.builtin.pups $(PUPLUG)
 	cd $(PLUGDIR) && $(PUPLUG) buildin.c "-" < $(PLUGDIR)/.builtin.pups > $(ROOT)/src/buildin.c
@@ -373,7 +373,7 @@ defpcb_internal.c: default4.lht
 gen_font:
 	$(ROOT)/util/devhelpers/font2c.sh < default_font > font_internal.c
 
-util_deps: $(OBJS) $(OBJS_UTIL) ../src_3rd/genlist/genadlist.o ../src_3rd/genlist/genlistalloc.o
+util_deps: $(OBJS) $(OBJS_UTIL) ../src_3rd/librnd-local/src_3rd/genlist/genadlist.o ../src_3rd/librnd-local/src_3rd/genlist/genlistalloc.o
 
 FORCE:
 
@@ -430,7 +430,7 @@ append /local/pcb/HDRS_HIDLIB { $(LIBRND)/pcb_compat.h $(LIBRND)/core/pcb-printf
 #gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw_[^ ]*.h } {}
 #gsub /local/pcb/HDRS_3RDLIB {../src_3rd/libfungw/fungw_ptr.h ../src_3rd/libfungw/fungw_debug.h ../src_3rd/libfungw/fungw_call.h } {}
 #append /local/pcb/HDRS_3RDLIB {../src_3rd/genrtree/genrtree_api.h ../src_3rd/genrtree/genrtree_impl.h ../src_3rd/genrtree/genrtree_search.h ../src_3rd/genrtree/genrtree_delete.h ../src_3rd/genrtree/genrtree_debug.h }
-#append /local/pcb/HDRS_3RDLIB {../src_3rd/genlist/gentdlist_impl.h ../src_3rd/genlist/gentdlist_undef.h ../src_3rd/genlist/gendlist.h }
+#append /local/pcb/HDRS_3RDLIB {../src_3rd/librnd-local/src_3rd/genlist/gentdlist_impl.h ../src_3rd/librnd-local/src_3rd/genlist/gentdlist_undef.h ../src_3rd/librnd-local/src_3rd/genlist/gendlist.h }
 #append /local/pcb/HDRS_3RDLIB {../src_3rd/libulzw/libulzw.h }
 
 # dynamic part of install_pcbrnd: hidlib headers
