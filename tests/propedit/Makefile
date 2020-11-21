@@ -11,8 +11,8 @@ SRC_3RD=$(ROOT)/src_3rd
 CFLAGS = $(PCB_RND_C89FLAGS) -I$(PED) -I$(LHT) -I$(SRC) -I$(ROOT) -I$(ROOT)/src_3rd
 LDLIBS = -lm
 LIB_OBJS = \
-	$(SRC)/librnd-hid.a \
-	$(SRC)/librnd-3rd.a \
+	$(SRC_3RD)/librnd-local/src/librnd-hid.a \
+	$(SRC_3RD)/librnd-local/src/librnd-3rd.a \
 	glue.o \
 
 OBJS = tester.o $(PED)/props.o
