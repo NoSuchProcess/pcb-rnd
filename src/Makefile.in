@@ -443,28 +443,17 @@ end
 
 print [@
 
-install_librnd_sy:
-	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER_MAJOR)"
-	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-hid.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-hid.so"
-	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER_MAJOR)"
-	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-3rd.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-3rd.so"
-	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER_MAJOR)"
-	$(SCCBOX) $(HOW) "$(HL_LIBDIR)/librnd-poly.so.$(PCB_RND_VER)" "$(HL_LIBDIR)/librnd-poly.so"
-
 install:
 	$(MAKE) install_pcbrnd HOW="install -f"
 	$(MAKE) install_librnd HOW="install -f"
-	$(MAKE) install_librnd_sy HOW="ln -f --relative"
 
 linstall:
 	$(MAKE) install_pcbrnd HOW="linstall -f"
 	$(MAKE) install_librnd HOW="linstall -f"
-	$(MAKE) install_librnd_sy HOW="ln -f --relative"
 
 uninstall:
 	$(MAKE) install_pcbrnd HOW="uninstall"
-	$(MAKE) install_librnd_sy HOW="uninstall"
-	$(MAKE) install_librnd_ HOW="uninstall"
+	$(MAKE) install_librnd HOW="uninstall"
 
 map_plugins:
 	cd ../src_plugins && PUPLUG=../src_3rd/puplug/util/puplug ../@/local/pcb/librnd_root@/librnd/plugins/map_plugins.sh ../src_plugins ../@/local/pcb/librnd_root@/librnd/plugins
