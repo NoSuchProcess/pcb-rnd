@@ -4,7 +4,7 @@ TRUNK=../..
 IO=$(TRUNK)/src_plugins/io_pcb
 CFLAGS = $(PCB_RND_C89FLAGS) -O3 -I$(TRUNK) -I$(TRUNK)/src -I$(IO)  -I$(TRUNK)/src_3rd
 LDLIBS = -lm
-GDS= $(TRUNK)/src_3rd/genvector/gds_char.o
+LIBRND_LIBS = $(TRUNK)/src_3rd/librnd-local/src/librnd-3rd.a
 
 all: tester
 
@@ -15,8 +15,8 @@ test: tester.diff
 	@echo "strflags:            *** QC PASS ***"
 	@rm tester.stdout
 
-tester: tester.o $(GDS)
-	$(CC) $(LDFLAGS) -o tester tester.o $(GDS) $(LDLIBS)
+tester: tester.o $(LIBRND_LIBS)
+	$(CC) $(LDFLAGS) -o tester tester.o $(LIBRND_LIBS) $(LDLIBS)
 
 tester.o: tester.c
 	$(CC) -c $(CFLAGS) -o $@ tester.c
