@@ -1,5 +1,4 @@
 all: FORCE
-	cd src_3rd/puplug/util && $(MAKE) CC=$(PCB_RND_HOST_CC)
 	cd src && $(MAKE)
 	cd util && $(MAKE)
 	cd pcblib && $(MAKE)
