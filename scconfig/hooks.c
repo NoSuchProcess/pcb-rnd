@@ -333,7 +333,8 @@ int hook_generate()
 		f = fopen("../src_3rd/librnd-local/scconfig/revtest", "w");
 		fprintf(f, "#!/bin/sh\nexit 0\n\n");
 		fclose(f);
-		
+		system("chmod 755 ../src_3rd/librnd-local/scconfig/revtest");
+
 		system("cd ../src_3rd/librnd-local/scconfig && make cquote");
 
 		printf("\n");
