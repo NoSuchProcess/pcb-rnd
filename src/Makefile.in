@@ -380,18 +380,10 @@ install_pcbrnd:
 	$(SCCBOX) $(HOW) "default4.lht" "$(DATADIR)/default4.lht"
 	$(SCCBOX) $(HOW) "default_font" "$(DATADIR)/default_font"@/local/pcb/rules/install_@
 
-install_librnd: librnd
-	$(MAKE) install_librnd_
+install_librnd:
+	cp ../scconfig/sccbox ../src_3rd/librnd-local/scconfig/sccbox
+	cd ../src_3rd/librnd-local/src && make install
 
-install_librnd_:
-	$(SCCBOX) mkdir -p "$(HL_LIBDIR)/librnd" "$(HL_INCDIR)/core" "$(HL_INCDIR)/poly" "$(HL_INCDIR)/scconfig" "$(HL_INCDIR)/src_3rd/liblihata" "$(HL_INCDIR)/src_3rd/liblhtpers" "$(HL_INCDIR)/src_3rd/puplug" "$(HL_INCDIR)/src_3rd/libfungw" "$(HL_INCDIR)/src_3rd/genvector" "$(HL_INCDIR)/src_3rd/genregex" "$(HL_INCDIR)/src_3rd/genrtree"  "$(HL_INCDIR)/src_3rd/genlist" "$(HL_INCDIR)/src_3rd/libulzw"  "$(HL_INCDIR)/src_3rd/genht" "$(HL_INCDIR)/src_3rd/libfungwbind/c" "$(HL_SHAREDIR)"
-	$(SCCBOX) $(HOW) "$(LIBRND)/core/librnd.mak" "$(HL_SHAREDIR)/librnd.mak"
-	$(SCCBOX) $(HOW) "../config.h" "$(HL_INCDIR)/core/config.h"
-	$(SCCBOX) $(HOW) "../src_3rd/puplug/util/puplug" "$(HL_LIBDIR)/librnd/puplug"
-	$(SCCBOX) $(HOW) "../scconfig/gen_conf.sh" "$(HL_LIBDIR)/librnd/gen_conf"
-	$(SCCBOX) $(HOW) "$(LIBRND)/scconfig/hooks_common.h" "$(HL_INCDIR)/scconfig/hooks_common.h"
-	$(SCCBOX) $(HOW) "$(LIBRND)/scconfig/plugin_3state.h" "$(HL_INCDIR)/scconfig/plugin_3state.h"
-	cd ../src_3rd/puplug && $(MAKE) install_hdr_ MKDR="../$(SCCBOX) mkdir -p" INST="../$(SCCBOX) $(HOW)" INCDIR="$(HL_INCDIR)/src_3rd/puplug"
 @]
 
 # rndlib: build a list of header files to be installed with the hidlib
