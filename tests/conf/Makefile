@@ -5,8 +5,8 @@ CFLAGS = $(PCB_RND_C89FLAGS) -I../.. -I../../src_3rd -I../../src $(CFLAGS_LIBRND
 LDLIBS = -lm $(LDFLAGS_LIBRND_FUNGW)
 
 LIB_HIDLIB=\
-	../../src/librnd-hid.a \
-	../../src/librnd-3rd.a
+	../../src_3rd/librnd-local/src/librnd-hid.a \
+	../../src_3rd/librnd-local/src/librnd-3rd.a
 
 LIB_PCBRND_OBJS=\
 	../../src_plugins/diag/diag_conf.o \

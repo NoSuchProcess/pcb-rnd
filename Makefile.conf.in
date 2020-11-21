@@ -14,7 +14,7 @@ end
 
 if /local/pcb/librnd_is_local
 then
-	put /local/pcb/librnd_inc [@-I$(ROOT)/@/local/pcb/librnd_root@@]
+	put /local/pcb/librnd_inc [@-I$(ROOT)/@/local/pcb/librnd_root@ -I$(ROOT)/@/local/pcb/librnd_root@/../src_3rd@]
 else
 	put /local/pcb/librnd_inc {}
 end
