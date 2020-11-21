@@ -433,8 +433,18 @@ int main(int argc, char *argv[])
 	rnd_hidlib_init1(conf_core_init);
 
 	{
+		extern const char *lhtpers_early_end[];
+		extern void vti0_init();
+		void *p;
+		
 #warning TODO: librnd: remove this once librnd is not extern anymore
 		rnd_plugin_add_dir("../src_3rd/librnd-local/src/plugins");
+
+		/* temporary workaround: make sure objects from .a are linked even
+		   if pcb-rnd code didn't need them (some plugins will) */
+		p = lhtpers_early_end;
+		p = vti0_init;
+		(void)p;
 	}
 
 	pcb_event_init_app();
