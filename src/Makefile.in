@@ -384,6 +384,14 @@ install_librnd:
 	cp ../scconfig/sccbox ../src_3rd/librnd-local/scconfig/sccbox
 	cd ../src_3rd/librnd-local/src && make install
 
+linstall_librnd:
+	cp ../scconfig/sccbox ../src_3rd/librnd-local/scconfig/sccbox
+	cd ../src_3rd/librnd-local/src && make linstall
+
+uninstall_librnd:
+	cp ../scconfig/sccbox ../src_3rd/librnd-local/scconfig/sccbox
+	cd ../src_3rd/librnd-local/src && make uninstall
+
 @]
 
 # rndlib: build a list of header files to be installed with the hidlib
@@ -445,15 +453,15 @@ print [@
 
 install:
 	$(MAKE) install_pcbrnd HOW="install -f"
-	$(MAKE) install_librnd HOW="install -f"
+	$(MAKE) install_librnd
 
 linstall:
 	$(MAKE) install_pcbrnd HOW="linstall -f"
-	$(MAKE) install_librnd HOW="linstall -f"
+	$(MAKE) linstall_librnd
 
 uninstall:
 	$(MAKE) install_pcbrnd HOW="uninstall"
-	$(MAKE) install_librnd HOW="uninstall"
+	$(MAKE) uninstall_librnd
 
 map_plugins:
 	cd ../src_plugins && PUPLUG=../src_3rd/puplug/util/puplug ../@/local/pcb/librnd_root@/librnd/plugins/map_plugins.sh ../src_plugins ../@/local/pcb/librnd_root@/librnd/plugins
