@@ -367,7 +367,7 @@ clean: $(CLEANRULES)
 	$(SCCBOX) rm -f -q  pcb-rnd $(OBJS) $(OBJS_C99) $(CLEANFILES)
 
 distclean: FORCE
-	$(SCCBOX) rm -f -q  $(DISTCLEANFILES)
+	$(SCCBOX) rm -f -q  $(DISTCLEANFILES) plugins
 
 install_pcbrnd:
 	$(SCCBOX) mkdir -p "$(BINDIR)" "$(DATADIR)" "$(LIBDIR)" "$(LIBDIR)/plugins" "$(CONFDIR)"
