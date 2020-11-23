@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: librnd separation: update packager's doc and debian and check debian build
-- FEATURE: extend import_gnetlist for lepton [report: Igor2, thet]
++ FEATURE: extend import_gnetlist for lepton [report: thet]
 - FEATURE: make grid pixel size configurable [report: thet]
 - FEATURE: tedax netlist parser: load comptag (and nettag) in a second pass [report: Bdale]
 - FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
