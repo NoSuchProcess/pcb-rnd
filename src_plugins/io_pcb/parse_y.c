@@ -2936,7 +2936,7 @@ yyreduce:
 				else
 					pcb_attribute_put(attr_list, key, val);
 				free(key);
-				free(val);
+				if ((yyvsp[-1].string) != NULL) free(val);
 			}
 #line 2942 "parse_y.c" /* yacc.c:1652  */
     break;

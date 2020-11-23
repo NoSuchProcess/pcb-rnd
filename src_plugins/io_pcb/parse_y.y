@@ -1327,7 +1327,7 @@ attribute
 				else
 					pcb_attribute_put(attr_list, key, val);
 				free(key);
-				free(val);
+				if ($4 != NULL) free(val);
 			}
 		;
 
