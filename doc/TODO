@@ -9,6 +9,7 @@
 	- check make distclean
 	- make sure it all works from the ringdove repo as well
 	- announce: del tests/ and src_3rd/ before svn up
+- FEATURE: extend import_gnetlist for lepton [report: Igor2, thet]
 - FEATURE: make grid pixel size configurable [report: thet]
 - FEATURE: tedax netlist parser: load comptag (and nettag) in a second pass [report: Bdale]
 - FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
