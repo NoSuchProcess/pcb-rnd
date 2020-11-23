@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: librnd separation (build)
-	- check windows cross compilation
 	- update packager's doc and debian and check debian build
 	- check librnd install from pcb-rnd, check if camv-rnd still compiles
 	- make sure it all works from the ringdove repo as well
