@@ -166,8 +166,6 @@ put /local/pcb/mod/UREGLEX {}
 
 put /local/pcb/tmpasm/buildin         {../src_plugins/Buildin.tmpasm}
 put /local/pcb/tmpasm/plugin          {../src_plugins/Plugin.tmpasm}
-put /local/pcb/tmpasm/plugin_local    {../src_plugins/Plugin_local.tmpasm}
-put /local/pcb/tmpasm/plugin_librnd   {../src_plugins/Plugin_librnd.tmpasm}
 put /local/pcb/tmpasm/disable         {../src_plugins/Disable.tmpasm}
 put /local/pcb/tmpasm/common_enabled  {../src_plugins/Common_enabled.tmpasm}
 put /local/pcb/tmpasm/plugin_sphash   [@../@/local/pcb/librnd_root@/librnd/scconfig/template/plugin_sphash.tmpasm@]
