@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: librnd separation (build)
-	- check system installed fungw in both plugin and buildin
 	- check windows cross compilation
 	- update packager's doc and debian and check debian build
 	- check librnd install from pcb-rnd, check if camv-rnd still compiles
