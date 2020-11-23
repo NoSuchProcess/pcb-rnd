@@ -5,7 +5,6 @@
 	- check windows cross compilation
 	- update packager's doc and debian and check debian build
 	- check librnd install from pcb-rnd, check if camv-rnd still compiles
-	- check make distclean
 	- make sure it all works from the ringdove repo as well
 	- announce: del tests/ and src_3rd/ before svn up
 - FEATURE: extend import_gnetlist for lepton [report: Igor2, thet]
