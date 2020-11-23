@@ -1,9 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: librnd separation (build)
-	- update packager's doc and debian and check debian build
-	- announce: del tests/ and src_3rd/ before svn up
+- CLEANUP: librnd separation: update packager's doc and debian and check debian build
 - FEATURE: extend import_gnetlist for lepton [report: Igor2, thet]
 - FEATURE: make grid pixel size configurable [report: thet]
 - FEATURE: tedax netlist parser: load comptag (and nettag) in a second pass [report: Bdale]
