@@ -335,7 +335,7 @@ int hook_generate()
 		fclose(f);
 		system("chmod 755 ../src_3rd/librnd-local/scconfig/revtest");
 
-		system("cd ../src_3rd/librnd-local/scconfig && make cquote");
+		system("cd ../src_3rd/librnd-local/scconfig && make cquote && make sccbox");
 
 		printf("\n");
 
