@@ -389,11 +389,6 @@ const char *pcb_action_args[] = {
 	NULL, NULL, NULL, NULL, NULL /* terminator */
 };
 
-void print_pup_err(pup_err_stack_t *entry, char *string)
-{
-	rnd_message(RND_MSG_ERROR, "puplug: %s\n", string);
-}
-
 #include "funchash_core.h"
 #define action_entry(x) { #x, F_ ## x},
 static rnd_funchash_table_t Functions[] = {
@@ -404,7 +399,7 @@ static rnd_funchash_table_t Functions[] = {
 int main(int argc, char *argv[])
 {
 	int n;
-	char **sp, *exec_prefix, *command_line_pcb = NULL;
+	char *exec_prefix, *command_line_pcb = NULL;
 
 	rnd_main_args_t ga;
 
@@ -483,19 +478,7 @@ int main(int argc, char *argv[])
 
 	pcb_text_init();
 
-	if (rnd_pup.err_stack != NULL) {
-		rnd_message(RND_MSG_ERROR, "Some of the static linked buildins could not be loaded:\n");
-		pup_err_stack_process_str(&rnd_pup, print_pup_err);
-	}
-
-	for(sp = rnd_pup_paths; *sp != NULL; sp++) {
-		rnd_message(RND_MSG_DEBUG, "Loading plugins from '%s'\n", *sp);
-		pup_autoload_dir(&rnd_pup, *sp, (const char **)rnd_pup_paths);
-	}
-	if (rnd_pup.err_stack != NULL) {
-		rnd_message(RND_MSG_ERROR, "Some of the dynamic linked plugins could not be loaded:\n");
-		pup_err_stack_process_str(&rnd_pup, print_pup_err);
-	}
+	rnd_hidlib_init3_auto();
 
 	if (rnd_main_args_setup1(&ga) != 0) {
 		pcb_main_uninit();
