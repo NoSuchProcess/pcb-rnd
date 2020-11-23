@@ -49,7 +49,7 @@
 
 conf_import_gnetlist_t conf_import_gnetlist;
 
-static pcb_plug_import_t import_gnetlist;
+static pcb_plug_import_t import_gnetlist, import_lepton;
 
 
 int gnetlist_support_prio(pcb_plug_import_t *ctx, unsigned int aspects, const char **args, int numargs)
@@ -100,11 +100,23 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 
 
 	cmd = malloc((numfns+9) * sizeof(char *));
-	cmd[0] = (char *)conf_import_gnetlist.plugins.import_gnetlist.gnetlist_program; /* won't be free'd */
+	if (ctx == &import_gnetlist) {
+		cmd[0] = (char *)conf_import_gnetlist.plugins.import_gnetlist.gnetlist_program; /* won't be free'd */
+		cmd[4] = "pcbrndfwd";
+	}
+	else if (ctx == &import_lepton) {
+		cmd[0] = (char *)conf_import_gnetlist.plugins.import_gnetlist.lepton_netlist_program; /* won't be free'd */
+		cmd[4] = "tEDAx";
+	}
+	else {
+		rnd_message(RND_MSG_ERROR, "gnetlist_import(): invalid context\n");
+		return -1;
+	}
+
 	cmd[1] = "-L";
 	cmd[2] = PCBLIBDIR;
 	cmd[3] = "-g";
-	cmd[4] = "pcbrndfwd";
+	/* cmd[4] = "pcbrndfwd"; */
 	cmd[5] = "-o";
 	cmd[6] = tmpfn;
 	cmd[7] = "--";
@@ -148,9 +160,8 @@ int pplg_init_import_gnetlist(void)
 {
 	RND_API_CHK_VER;
 
-	/* register the IO hook */
+	/* register the IO hooks */
 	import_gnetlist.plugin_data = NULL;
-
 	import_gnetlist.fmt_support_prio = gnetlist_support_prio;
 	import_gnetlist.import           = gnetlist_import;
 	import_gnetlist.name             = "gnetlist";
@@ -159,8 +170,19 @@ int pplg_init_import_gnetlist(void)
 	import_gnetlist.single_arg       = 0;
 	import_gnetlist.all_filenames    = 1;
 	import_gnetlist.ext_exec         = 0;
-
 	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
+
+	import_lepton.plugin_data = NULL;
+	import_lepton.fmt_support_prio = gnetlist_support_prio;
+	import_lepton.import           = gnetlist_import;
+	import_lepton.name             = "lepton";
+	import_lepton.desc             = "lepton-eda sch using lepton-netlist";
+	import_lepton.ui_prio          = 51;
+	import_lepton.single_arg       = 0;
+	import_lepton.all_filenames    = 1;
+	import_lepton.ext_exec         = 0;
+
+	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_lepton);
 
 	rnd_conf_reg_file(IMPORT_GNETLIST_CONF_FN, import_gnetlist_conf_internal);
 
