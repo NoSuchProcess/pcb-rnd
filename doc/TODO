@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: librnd separation (build)
-	- check if map_plugins is doing the right thing
 	- check fawk scripting in both plugin and buildin
 	- check system installed fungw in both plugin and buildin
 	- check windows cross compilation

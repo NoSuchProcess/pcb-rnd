@@ -461,9 +461,13 @@ uninstall:
 	$(MAKE) install_pcbrnd HOW="uninstall"
 	$(MAKE) uninstall_librnd
 
+# Note: mv and grep are temporary, while ./configure is shared with librnd
+# but build is not: plugin list in tmpasm shouldn't include hidlib plugins
+# while scconfig's plugin list header needs to contain them
 map_plugins:
-	cd ../src_plugins && PUPLUG=../src_3rd/puplug/util/puplug ../@/local/pcb/librnd_root@/librnd/plugins/map_plugins.sh ../src_plugins ../@/local/pcb/librnd_root@/librnd/plugins
-
+	cd ../src_plugins && PUPLUG=../src_3rd/librnd-local/src_3rd/puplug/util/puplug ../@/local/pcb/librnd_root@/librnd/plugins/map_plugins.sh ../src_plugins ../@/local/pcb/librnd_root@/librnd/plugins
+	mv ../src_plugins/plugins_ALL.tmpasm ../src_plugins/plugins_ALL.tmp
+	grep -v "/librnd-local/" < ../src_plugins/plugins_ALL.tmp > ../src_plugins/plugins_ALL.tmpasm
 @]
 
 # generate explicit rules for .c -> .o
