@@ -109,17 +109,16 @@ typedef struct {
 	vtp0_t vl, ve;
 } lvs_lctx_t;
 
-int lvs_list_langs_line_raw(pup_list_parse_pup_t *ctx, const char *fname, char *s)
+int lvs_list_langs_line_split(pup_list_parse_pup_t *ctx, const char *fname, char *cmd, char *args)
 {
 	lvs_lctx_t *lctx = ctx->user_data;
 	int el;
 	char *s1, *s2, *eng;
 
-	if (strncmp(s, "$desc", 5) != 0)
+	if (strcmp(cmd, "$desc") != 0)
 		return 0;
-	s += 5;
-	while(isspace(*s)) s++;
-	if (((s1 = strstr(s, "binding")) == NULL) || ((s2 = strstr(s, "engine")) == NULL))
+
+	if (((s1 = strstr(args, "binding")) == NULL) || ((s2 = strstr(args, "engine")) == NULL))
 		return 0;
 	if (s1 < s2) *s1 = '\0';
 	else *s2 = '\0';
@@ -127,7 +126,7 @@ int lvs_list_langs_line_raw(pup_list_parse_pup_t *ctx, const char *fname, char *
 	el = strlen(eng);
 	eng[el-4] = '\0';
 	vtp0_append(&lctx->ve, eng);
-	vtp0_append(&lctx->vl, rnd_strdup(s));
+	vtp0_append(&lctx->vl, rnd_strdup(args));
 	return 0;
 }
 
@@ -138,7 +137,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 	lvs_lctx_t lctx;
 
 	ctx.open = lvs_list_langs_open;
-	ctx.line_raw = lvs_list_langs_line_raw;
+	ctx.line_split = lvs_list_langs_line_split;
 	ctx.user_data = &lctx;
 
 	vtp0_init(&lctx.vl);
