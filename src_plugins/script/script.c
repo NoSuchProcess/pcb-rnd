@@ -53,6 +53,8 @@ int pplg_init_fungw_fawk(void);
 int pplg_uninit_fungw_fawk(void);
 #endif
 
+static const char *guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filename);
+
 typedef struct {
 	char *id, *fn, *lang;
 	pup_plugin_t *pup;
@@ -259,8 +261,9 @@ int rnd_script_load(const char *id, const char *fn, const char *lang)
 		return -1;
 	}
 
+	if (lang == NULL)
+		lang = guess_lang(NULL, fn, 1);
 	if (lang == NULL) {
-TODO(": guess")
 		rnd_message(RND_MSG_ERROR, "Can not load script %s from file %s: failed to guess language from file name\n", id, fn);
 		return -1;
 	}
