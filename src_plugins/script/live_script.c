@@ -30,6 +30,7 @@
 #include <genvector/vtp0.h>
 #include <genht/htsp.h>
 #include <genht/hash.h>
+#include <puplug/util.h>
 
 #include <librnd/core/actions.h>
 #include <librnd/core/plugins.h>
@@ -96,70 +97,6 @@ static void lvs_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 }
 
 #ifdef RND_HAVE_SYS_FUNGW
-#include <puplug/os_dep_fs.h>
-
-typedef struct pup_list_parse_pup_s pup_list_parse_pup_t;
-
-struct pup_list_parse_pup_s {
-	int (*open)(pup_list_parse_pup_t *ctx, const char *path);
-	void (*close)(pup_list_parse_pup_t *ctx, const char *path);
-	int (*line_raw)(pup_list_parse_pup_t *ctx, const char *path, char *line);
-	void *user_data;
-};
-
-static void pup_list_parse_pups(pup_list_parse_pup_t *ctx, const char **paths)
-{
-	const char **path;
-
-	for(path = paths; *path != NULL; path++) {
-		char fn[RND_PATH_MAX*2], *fn_end;
-		int dirlen;
-		const char *fname;
-		void *d = pup_open_dir(*path);
-
-		if (d == NULL)
-			continue;
-
-		dirlen = strlen(*path);
-		memcpy(fn, *path, dirlen);
-		fn_end = fn + dirlen;
-		*fn_end = RND_DIR_SEPARATOR_C;
-		fn_end++;
-
-		while((fname = pup_read_dir(d)) != NULL) {
-			FILE *f;
-			int len = strlen(fname);
-			char *s, line[1024];
-			const char *end;
-
-			if (len < 5)
-				continue;
-
-			end = fname + len -4;
-			if (strcmp(end, ".pup") != 0)
-				continue;
-			
-			if ((ctx->open != NULL) && (ctx->open(ctx, fname) != 0))
-				continue;
-
-			strcpy(fn_end, fname);
-
-			f = rnd_fopen(NULL, fn, "r");
-			if (f == NULL)
-				continue;
-			while((s = fgets(line, sizeof(line), f)) != NULL) {
-				while(isspace(*s)) s++;
-
-				if ((ctx->line_raw != NULL) && (ctx->line_raw(ctx, fname, s) != 0))
-					break;
-			}
-			fclose(f);
-			if (ctx->close != NULL)
-				ctx->close(ctx, fname);
-		}
-		rnd_closedir(d);
-	}
-}
 
 static int lvs_list_langs_open(pup_list_parse_pup_t *ctx, const char *path)
 {
