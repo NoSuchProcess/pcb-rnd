@@ -104,7 +104,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 	vtp0_init(&vl);
 	vtp0_init(&ve);
 
-	for(path = pcb_script_pup_paths; *path != NULL; path++) {
+	for(path = rnd_pup_paths; *path != NULL; path++) {
 		char fn[RND_PATH_MAX*2], *fn_end;
 		int dirlen;
 		struct dirent *de;
