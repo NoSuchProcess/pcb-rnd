@@ -270,15 +270,19 @@ int rnd_script_load(const char *id, const char *fn, const char *lang)
 
 	if (strcmp(lang, "c") != 0) {
 #ifdef RND_HAVE_SYS_FUNGW
-		const char *engname = lang;
+		const char *engname = guess_lang(NULL, lang, 0); /* note: this assumes all fungw engine plugins are loaded into memory already */
 		char name[RND_PATH_MAX];
 		int st;
+		fgw_eng_t *eng = NULL;
 
-		TODO("move this to fungw");
-		if (strcmp(engname, "fbas") == 0) engname = "fawk";
-		else if (strcmp(engname, "fpas") == 0) engname = "fawk";
+		if (engname != NULL)
+			eng = htsp_get(&fgw_engines, engname);
+		if (eng == NULL) {
+			rnd_message(RND_MSG_ERROR, "No script engine found for language %s\n", lang);
+			return -1;
+		}
 
-		rnd_snprintf(name, sizeof(name), "fungw_%s", engname);
+		rnd_snprintf(name, sizeof(name), "fungw_%s", eng->name);
 
 		old_id = script_persistency_id;
 		script_persistency_id = id;
