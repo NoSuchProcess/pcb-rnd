@@ -98,35 +98,49 @@ static void lvs_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 #ifdef RND_HAVE_SYS_FUNGW
 
-static int lvs_list_langs_open(pup_list_parse_pup_t *ctx, const char *path, const char *basename)
-{
-	if (strncmp(basename, "fungw_", 6) != 0)
-		return 1;
-	return 0;
-}
 
 typedef struct {
 	vtp0_t vl, ve;
+	char *eng;
 } lvs_lctx_t;
+
+
+static int lvs_list_langs_open(pup_list_parse_pup_t *ctx, const char *path, const char *basename)
+{
+	lvs_lctx_t *lctx = ctx->user_data;
+	if (strncmp(basename, "fungw_", 6) != 0)
+		return 1;
+	lctx->eng = basename+6; /* remove the fungw_ prefix, the low level script runner will insert it */
+	return 0;
+}
 
 int lvs_list_langs_line_split(pup_list_parse_pup_t *ctx, const char *fname, char *cmd, char *args)
 {
 	lvs_lctx_t *lctx = ctx->user_data;
 	int el;
-	char *s1, *s2, *eng;
+	char *lang, *end, *eng;
 
-	if (strcmp(cmd, "$desc") != 0)
+	if (strcmp(cmd, "$script-ext") != 0)
 		return 0;
 
-	if (((s1 = strstr(args, "binding")) == NULL) || ((s2 = strstr(args, "engine")) == NULL))
-		return 0;
-	if (s1 < s2) *s1 = '\0';
-	else *s2 = '\0';
-	eng = rnd_strdup(fname + 6); /* remove the fungw_ prefix, the low level script runner will insert it */
+	lang = rnd_strdup(args);
+	end = strpbrk(lang, " \t");
+	if (end != NULL)
+		*end = '\0';
+
+	/* remove duplicates (assumes lines within a .pup are sorted) */
+	if (lctx->vl.used > 0) {
+		if (strcmp(lctx->vl.array[lctx->vl.used-1], lang) == 0) {
+			free(lang);
+			return 0;
+		}
+	}
+
+	eng = rnd_strdup(lctx->eng);
 	el = strlen(eng);
 	eng[el-4] = '\0';
 	vtp0_append(&lctx->ve, eng);
-	vtp0_append(&lctx->vl, rnd_strdup(args));
+	vtp0_append(&lctx->vl, lang);
 	return 0;
 }
 
