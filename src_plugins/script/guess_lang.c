@@ -27,12 +27,17 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <ctype.h>
+#include <assert.h>
+
+#include <genvector/vtp0.h>
 #include <genht/htss.h>
+#include <genht/htsp.h>
 #include <genht/ht_utils.h>
 #include <puplug/util.h>
 
 static int guess_lang_inited = 0;
-static htss_t guess_lang_ext2lang;
+static htsp_t guess_lang_ext2lang; /* of (vtp0_t *) listing (char *) languages */
 static htss_t guess_lang_lang2eng;
 static char *guess_lang_eng;
 
@@ -47,7 +52,7 @@ static int guess_lang_open(pup_list_parse_pup_t *ctx, const char *path, const ch
 	guess_lang_eng = malloc(len+1);
 	if (len > 4)
 		len -= 4;
-	memcpy(guess_lang_eng, path, len);
+	memcpy(guess_lang_eng, basename, len);
 	guess_lang_eng[len] = '\0';
 
 	return 0;
@@ -56,11 +61,34 @@ static int guess_lang_open(pup_list_parse_pup_t *ctx, const char *path, const ch
 static int guess_lang_line_split(pup_list_parse_pup_t *ctx, const char *fname, char *cmd, char *args)
 {
 	if (strcmp(cmd, "$script-ext") == 0) {
-		char *lang = args, *ext = strpbrk(args, " \t");
+		char *eng, *lang = args, *ext = strpbrk(args, " \t");
+
 		if (ext != NULL) {
 			*ext = 0;
 			ext++;
 			while(isspace(*ext)) ext++;
+		}
+
+		eng = htss_get(&guess_lang_lang2eng, lang);
+		if (eng != NULL) {
+			if (strcmp(eng, guess_lang_eng) != 0) {
+				rnd_message(RND_MSG_ERROR, "Script setup error: language %s is claimed by both '%s' and '%s' fungw bindings (accepted %s)\n", lang, eng, guess_lang_eng, eng);
+				return 0;
+			}
+		}
+		else {
+/*printf("ADD: '%s' -> '%s'\n", lang, guess_lang_eng);*/
+			htss_set(&guess_lang_lang2eng, rnd_strdup(lang), rnd_strdup(guess_lang_eng));
+		}
+
+		if (ext != NULL) { /* append language to the extension's lang vector */
+			vtp0_t *langs = htsp_get(&guess_lang_ext2lang, ext);
+			if (langs == NULL) {
+				langs = calloc(sizeof(vtp0_t), 1);
+				htsp_set(&guess_lang_ext2lang, rnd_strdup(ext), langs);
+			}
+			vtp0_append(langs, rnd_strdup(lang));
+/*printf("APP: '%s' -> '%s'\n", ext, lang);*/
 		}
 	}
 	return 0;
@@ -72,7 +100,7 @@ static void rnd_script_guess_lang_init(void)
 		pup_list_parse_pup_t ctx = {0};
 		const char *paths[2];
 
-		htss_init(&guess_lang_ext2lang, strhash, strkeyeq);
+		htsp_init(&guess_lang_ext2lang, strhash, strkeyeq);
 		htss_init(&guess_lang_lang2eng, strhash, strkeyeq);
 
 		ctx.open = guess_lang_open;
@@ -89,7 +117,17 @@ static void rnd_script_guess_lang_init(void)
 static void rnd_script_guess_lang_uninit(void)
 {
 	if (guess_lang_inited) {
-		genht_uninit_deep(htss, &guess_lang_ext2lang, {
+		int n;
+
+		genht_uninit_deep(htsp, &guess_lang_ext2lang, {
+			vtp0_t *langs = htent->value;
+			for(n = 0; n < langs->used; n++)
+				free(langs->array[n]);
+			vtp0_uninit(langs);
+			free(htent->key);
+			free(langs);
+		});
+		genht_uninit_deep(htss, &guess_lang_lang2eng, {
 			free(htent->key);
 			free(htent->value);
 		});
@@ -99,16 +137,13 @@ static void rnd_script_guess_lang_uninit(void)
 
 const char *rnd_script_guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filename)
 {
-	FILE *f;
-	const char *res;
-
 	rnd_script_guess_lang_init();
 
 	if (!is_filename) {
+		char *eng = htss_get(&guess_lang_lang2eng, fn);
+
 		/* known special cases - these are pcb-rnd CLI conventions */
-		if (strcmp(fn, "awk") == 0) fn = "mawk";
-		if (strcmp(fn, "bas") == 0) fn = "fbas";
-		if (strcmp(fn, "pas") == 0) fn = "fpas";
+TODO("handle this using aliases");
 #ifdef RND_HAVE_SYS_FUNGW
 		if (strcmp(fn, "ruby") == 0) fn = "mruby";
 		if (strcmp(fn, "stt") == 0) fn = "estutter";
@@ -116,17 +151,25 @@ const char *rnd_script_guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filen
 #endif
 
 		/* find by engine name */
-		if (htsp_get(&fgw_engines, fn) != NULL)
+		if (eng != NULL)
 			return fn;
 		return NULL;
 	}
+	else {
+		const char *ext;
+		vtp0_t *langs;
 
-	/* find by file name: test parse */
-	f = rnd_fopen(hl, fn, "r");
-	res = fgw_engine_find(fn, f);
-	if (f != NULL)
-		fclose(f);
+		ext = strrchr(fn, '.');
+		if (ext == NULL)
+			return NULL;
 
-	return res;
+		langs = htsp_get(&guess_lang_ext2lang, ext);
+		if (langs == NULL)
+			return NULL;
+
+		assert(langs->used > 0);
+
+		return langs->array[0];
+	}
 }
 
