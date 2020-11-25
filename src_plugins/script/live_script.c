@@ -133,6 +133,7 @@ int lvs_list_langs_line_split(pup_list_parse_pup_t *ctx, const char *fname, char
 
 static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 {
+	const char *paths[2];
 	pup_list_parse_pup_t ctx = {0};
 	lvs_lctx_t lctx;
 
@@ -143,7 +144,9 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 	vtp0_init(&lctx.vl);
 	vtp0_init(&lctx.ve);
 
-	pup_list_parse_pups(&ctx, (const char **)rnd_pup_paths);
+	paths[0] = FGW_CFG_PUPDIR;
+	paths[1] = NULL;
+	pup_list_parse_pups(&ctx, paths);
 
 	lvs->langs = (char **)lctx.vl.array;
 	lvs->lang_engines = (char **)lctx.ve.array;
