@@ -472,6 +472,21 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			RND_ACT_IRES(1);
 		return 0;
 	}
+	if (rnd_strcasecmp(cmd, "debug-list-langs") == 0) {
+		live_script_t l;
+		int n, len;
+
+		memset(&l, 0, sizeof(l));
+		len = lvs_list_langs(RND_ACT_HIDLIB, &l);
+		for(n = 0; n < len; n++) {
+			printf("'%s' '%s'\n", l.langs[n], l.lang_engines[n]);
+			free(l.langs[n]);
+			free(l.lang_engines[n]);
+		}
+		free(l.langs);
+		free(l.lang_engines);
+		return 0;
+	}
 
 	if (name == NULL) {
 		rnd_message(RND_MSG_ERROR, "script name (second argument) required\n");
