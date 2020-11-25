@@ -33,7 +33,7 @@
 #include "live_script.h"
 
 
-static const char *guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filename)
+const char *rnd_script_guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filename)
 {
 	FILE *f;
 	const char *res;
@@ -222,7 +222,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 			RND_DAD_LABEL(idlang.dlg, "language:");
 			RND_DAD_STRING(idlang.dlg);
 				idlang.wlang = RND_DAD_CURRENT(idlang.dlg);
-				idlang.dlg[idlang.wlang].val.str = rnd_strdup_null(guess_lang(NULL, fn, 1));
+				idlang.dlg[idlang.wlang].val.str = rnd_strdup_null(rnd_script_guess_lang(NULL, fn, 1));
 		RND_DAD_END(idlang.dlg);
 		RND_DAD_BUTTON_CLOSES(idlang.dlg, clbtn);
 	RND_DAD_END(idlang.dlg);
@@ -428,7 +428,7 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	lang = guess_lang(NULL, lang, 0);
+	lang = rnd_script_guess_lang(NULL, lang, 0);
 
 	if (scr == NULL) {
 		RND_ACT_IRES(rnd_cli_enter(lang, lang));
