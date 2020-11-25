@@ -63,7 +63,7 @@ typedef struct {
 	unsigned loaded:1;
 } live_script_t;
 
-static htsp_t pcb_live_scripts;
+static htsp_t rnd_live_scripts;
 
 static void lvs_free_langs(live_script_t *lvs)
 {
@@ -81,10 +81,10 @@ static void lvs_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	live_script_t *lvs = caller_data;
 
-	htsp_popentry(&pcb_live_scripts, lvs->name);
+	htsp_popentry(&rnd_live_scripts, lvs->name);
 
 	if (lvs->loaded)
-		pcb_script_unload(lvs->longname, NULL);
+		rnd_script_unload(lvs->longname, NULL);
 
 	if (rnd_gui != NULL)
 		RND_DAD_FREE(lvs->dlg);
@@ -104,7 +104,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 	vtp0_init(&vl);
 	vtp0_init(&ve);
 
-	for(path = rnd_pup_paths; *path != NULL; path++) {
+	for(path = (const char **)rnd_pup_paths; *path != NULL; path++) {
 		char fn[RND_PATH_MAX*2], *fn_end;
 		int dirlen;
 		struct dirent *de;
@@ -199,7 +199,7 @@ static void lvs_button_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	rnd_actionva(lvs->hidlib, "livescript", arg, lvs->name, NULL);
 }
 
-static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name)
+static live_script_t *rnd_dlg_live_script(rnd_hidlib_t *hidlib, const char *name)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	char *title;
@@ -276,7 +276,7 @@ static live_script_t *pcb_dlg_live_script(rnd_hidlib_t *hidlib, const char *name
 static int live_stop(live_script_t *lvs)
 {
 	if (lvs->loaded) {
-		pcb_script_unload(lvs->longname, NULL);
+		rnd_script_unload(lvs->longname, NULL);
 		lvs->loaded = 0;
 	}
 
@@ -314,7 +314,7 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 	lvs->undo_pre = pcb_undo_serial();
 	numu = pcb_num_undo();
 
-	if (pcb_script_load(lvs->longname, fn, lang) != 0) {
+	if (rnd_script_load(lvs->longname, fn, lang) != 0) {
 		rnd_message(RND_MSG_ERROR, "live_script: can't load/parse the script\n");
 		res = -1;
 	}
@@ -453,15 +453,15 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (rnd_strcasecmp(cmd, "new") == 0) {
 		if (name == NULL) name = "default";
-		lvs = htsp_get(&pcb_live_scripts, name);
+		lvs = htsp_get(&rnd_live_scripts, name);
 		if (lvs != NULL) {
 			rnd_message(RND_MSG_ERROR, "live script '%s' is already open\n", name);
 			RND_ACT_IRES(1);
 			return 0;
 		}
-		lvs = pcb_dlg_live_script(RND_ACT_HIDLIB, name);
+		lvs = rnd_dlg_live_script(RND_ACT_HIDLIB, name);
 		if (lvs != NULL) {
-			htsp_set(&pcb_live_scripts, lvs->name, lvs);
+			htsp_set(&rnd_live_scripts, lvs->name, lvs);
 			RND_ACT_IRES(0);
 		}
 		else
@@ -475,7 +475,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	lvs = htsp_get(&pcb_live_scripts, name);
+	lvs = htsp_get(&rnd_live_scripts, name);
 	if (lvs == NULL) {
 		rnd_message(RND_MSG_ERROR, "script '%s' does not exist\n", name);
 		RND_ACT_IRES(1);
@@ -513,20 +513,20 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-void pcb_live_script_init(void)
+void rnd_live_script_init(void)
 {
-	htsp_init(&pcb_live_scripts, strhash, strkeyeq);
+	htsp_init(&rnd_live_scripts, strhash, strkeyeq);
 	rnd_hid_menu_load(rnd_gui, NULL, lvs_cookie, 110, NULL, 0, script_menu, "plugin: live scripting");
 }
 
-void pcb_live_script_uninit(void)
+void rnd_live_script_uninit(void)
 {
 	htsp_entry_t *e;
-	for(e = htsp_first(&pcb_live_scripts); e != NULL; e = htsp_next(&pcb_live_scripts, e)) {
+	for(e = htsp_first(&rnd_live_scripts); e != NULL; e = htsp_next(&rnd_live_scripts, e)) {
 		live_script_t *lvs = e->value;
 		lvs_close_cb(lvs, RND_HID_ATTR_EV_CODECLOSE);
 	}
-	htsp_uninit(&pcb_live_scripts);
+	htsp_uninit(&rnd_live_scripts);
 	rnd_event_unbind_allcookie(lvs_cookie);
 	rnd_hid_menu_unload(rnd_gui, lvs_cookie);
 }

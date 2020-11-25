@@ -117,7 +117,7 @@ static fgw_eng_t rnd_cscript_fgw_eng = {
 	NULL, NULL
 };
 
-static void pcb_c_script_init(void)
+static void rnd_c_script_init(void)
 {
 	fgw_eng_reg(&rnd_cscript_fgw_eng);
 	fgw_eng_reg(&rnd_cscript_fgw_eng_compat);

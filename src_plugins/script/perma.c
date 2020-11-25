@@ -48,7 +48,7 @@ static int perma_load(const char *dir, const char *id, const char *path_in, cons
 	else
 		path = path_in;
 
-	return pcb_script_load(id, path, lang);
+	return rnd_script_load(id, path, lang);
 }
 
 static void perma_script_load_conf(const char *dir)

@@ -228,7 +228,7 @@ static char *script_gen_cookie(const char *force_id)
 	return rnd_concat("script::fungw::", force_id, NULL);
 }
 
-int pcb_script_unload(const char *id, const char *preunload)
+int rnd_script_unload(const char *id, const char *preunload)
 {
 	char *cookie;
 	htsp_entry_t *e = htsp_getentry(&scripts, id);
@@ -248,7 +248,7 @@ static char *script_fn(const char *fn)
 	return rnd_strdup_printf("%s%c%s", rnd_conf.rc.path.home, RND_DIR_SEPARATOR_C, fn+1);
 }
 
-int pcb_script_load(const char *id, const char *fn, const char *lang)
+int rnd_script_load(const char *id, const char *fn, const char *lang)
 {
 	pup_plugin_t *pup;
 	script_t *s;
@@ -279,7 +279,7 @@ TODO(": guess")
 
 		old_id = script_persistency_id;
 		script_persistency_id = id;
-		pup = pup_load(&script_pup, rnd_pup_paths, name, 0, &st);
+		pup = pup_load(&script_pup, (const char **)rnd_pup_paths, name, 0, &st);
 		script_persistency_id = old_id;
 		if (pup == NULL) {
 			rnd_message(RND_MSG_ERROR, "Can not load script engine %s for language %s\n", name, lang);
@@ -288,7 +288,7 @@ TODO(": guess")
 #endif
 	}
 	else {
-		lang = "pcb_rnd_c";
+		lang = "rnd_cscript";
 		pup = NULL;
 	}
 
@@ -331,7 +331,7 @@ static int script_reload(const char *id)
 	script_unload_entry(e, "reload", cookie);
 	free(cookie);
 
-	ret = pcb_script_load(id, fn, lang);
+	ret = rnd_script_load(id, fn, lang);
 	free(fn);
 	free(lang);
 	return ret;
@@ -400,11 +400,11 @@ int script_oneliner(const char *lang, const char *src)
 	oneliner_boilerplate(f, lang, 0);
 	fclose(f);
 
-	if (pcb_script_load("__oneliner", fn, lang) != 0) {
+	if (rnd_script_load("__oneliner", fn, lang) != 0) {
 		rnd_message(RND_MSG_ERROR, "script oneliner: can't load/parse the script\n");
 		res = -1;
 	}
-	pcb_script_unload("__oneliner", NULL);
+	rnd_script_unload("__oneliner", NULL);
 
 	rnd_tempfile_unlink(fn);
 	return res;
@@ -422,7 +422,7 @@ void pplg_uninit_script(void)
 {
 	htsp_entry_t *e;
 
-	pcb_live_script_uninit();
+	rnd_live_script_uninit();
 	rnd_remove_actions_by_cookie(script_cookie);
 	for(e = htsp_first(&scripts); e; e = htsp_next(&scripts, e)) {
 		script_t *script = e->value;
@@ -450,10 +450,10 @@ int pplg_init_script(void)
 	pplg_init_fungw_fawk();
 #endif
 
-	pcb_c_script_init();
+	rnd_c_script_init();
 	htsp_init(&scripts, strhash, strkeyeq);
 	pup_init(&script_pup);
-	pcb_live_script_init();
+	rnd_live_script_init();
 	if (rnd_hid_in_main_loop)
 		perma_script_init();
 	else
