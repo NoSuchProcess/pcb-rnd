@@ -96,6 +96,7 @@ static void lvs_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 }
 
 #ifdef RND_HAVE_SYS_FUNGW
+#include <puplug/os_dep_fs.h>
 static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 {
 	const char **path;
@@ -107,8 +108,8 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 	for(path = (const char **)rnd_pup_paths; *path != NULL; path++) {
 		char fn[RND_PATH_MAX*2], *fn_end;
 		int dirlen;
-		struct dirent *de;
-		DIR *d = rnd_opendir(hl, *path);
+		const char *fname;
+		void *d = pup_open_dir(*path);
 
 		if (d == NULL)
 			continue;
@@ -119,18 +120,18 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 		*fn_end = RND_DIR_SEPARATOR_C;
 		fn_end++;
 
-		while((de = rnd_readdir(d)) != NULL) {
+		while((fname = pup_read_dir(d)) != NULL) {
 			FILE *f;
-			int el, len = strlen(de->d_name);
+			int el, len = strlen(fname);
 			char *s1, *s2, *eng, *s, *end, line[1024];
 
 			if (len < 5)
 				continue;
-			end = de->d_name + len -4;
-			if ((strcmp(end, ".pup") != 0) || (strncmp(de->d_name, "fungw_", 6) != 0))
+			end = fname + len -4;
+			if ((strcmp(end, ".pup") != 0) || (strncmp(fname, "fungw_", 6) != 0))
 				continue;
 
-			strcpy(fn_end, de->d_name);
+			strcpy(fn_end, fname);
 
 			f = rnd_fopen(hl, fn, "r");
 			if (f == NULL)
@@ -145,7 +146,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 					continue;
 				if (s1 < s2) *s1 = '\0';
 				else *s2 = '\0';
-				eng = rnd_strdup(de->d_name + 6); /* remove the fungw_ prefix, the low level script runner will insert it */
+				eng = rnd_strdup(fname + 6); /* remove the fungw_ prefix, the low level script runner will insert it */
 				el = strlen(eng);
 				eng[el-4] = '\0';
 				vtp0_append(&ve, eng);
