@@ -59,15 +59,17 @@ int fgws_c_load(fgw_obj_t *obj, const char *filename, const char *opts)
 		return -1;
 	}
 
-	init = (init_t)rnd_cast_d2f(pup_dlsym(library, "pcb_rnd_init"));
+	init = (init_t)rnd_cast_d2f(pup_dlsym(library, "rnd_cscript_init"));
+	if (init == NULL)
+		init = (init_t)rnd_cast_d2f(pup_dlsym(library, "pcb_rnd_init"));
 	if (init == NULL) {
-		rnd_message(RND_MSG_ERROR, "Can't find pcb_rnd_init() in %s - not a pcb-rnd c \"script\".\n", filename);
+		rnd_message(RND_MSG_ERROR, "Can't find rnd_cscript_init() in %s - not a pcb-rnd c \"script\".\n", filename);
 		free(library);
 		return -1;
 	}
 
 	if (init(obj, opts) != 0) {
-		rnd_message(RND_MSG_ERROR, "%s pcb_rnd_init() returned error\n", filename);
+		rnd_message(RND_MSG_ERROR, "%s rnd_cscript_init() returned error\n", filename);
 		free(library);
 		return -1;
 	}
@@ -83,7 +85,9 @@ int fgws_c_unload(fgw_obj_t *obj)
 	typedef void (*uninit_t)(fgw_obj_t *obj);
 	uninit_t uninit;
 
-	uninit = (uninit_t)rnd_cast_d2f(pup_dlsym(library, "pcb_rnd_uninit"));
+	uninit = (uninit_t)rnd_cast_d2f(pup_dlsym(library, "rnd_cscript_uninit"));
+	if (uninit == NULL)
+		uninit = (uninit_t)rnd_cast_d2f(pup_dlsym(library, "pcb_rnd_uninit"));
 	if (uninit != NULL)
 		uninit(obj);
 
@@ -95,8 +99,17 @@ int fgws_c_unload(fgw_obj_t *obj)
 	return 0;
 }
 
-static fgw_eng_t pcb_fgw_c_eng = {
+static fgw_eng_t rnd_cscript_fgw_eng_compat = {
 	"pcb_rnd_c",
+	fgws_c_call_script,
+	NULL,
+	fgws_c_load,
+	fgws_c_unload,
+	NULL, NULL
+};
+
+static fgw_eng_t rnd_cscript_fgw_eng = {
+	"rnd_cscript",
 	fgws_c_call_script,
 	NULL,
 	fgws_c_load,
@@ -106,5 +119,6 @@ static fgw_eng_t pcb_fgw_c_eng = {
 
 static void pcb_c_script_init(void)
 {
-	fgw_eng_reg(&pcb_fgw_c_eng);
+	fgw_eng_reg(&rnd_cscript_fgw_eng);
+	fgw_eng_reg(&rnd_cscript_fgw_eng_compat);
 }
