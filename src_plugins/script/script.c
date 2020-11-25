@@ -47,6 +47,7 @@
 #include "globalconst.h"
 
 #include "script.h"
+#include "guess_lang.c"
 
 #ifndef RND_HAVE_SYS_FUNGW
 int pplg_init_fungw_fawk(void);
@@ -444,6 +445,8 @@ void pplg_uninit_script(void)
 #endif
 
 	rnd_event_unbind_allcookie(script_cookie);
+
+	rnd_script_guess_lang_uninit();
 }
 
 int pplg_init_script(void)

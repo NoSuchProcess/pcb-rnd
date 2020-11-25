@@ -32,38 +32,6 @@
 #include <librnd/core/hid_dad_tree.h>
 #include "live_script.h"
 
-
-const char *rnd_script_guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filename)
-{
-	FILE *f;
-	const char *res;
-
-	if (!is_filename) {
-		/* known special cases - these are pcb-rnd CLI conventions */
-		if (strcmp(fn, "awk") == 0) fn = "mawk";
-		if (strcmp(fn, "bas") == 0) fn = "fbas";
-		if (strcmp(fn, "pas") == 0) fn = "fpas";
-#ifdef RND_HAVE_SYS_FUNGW
-		if (strcmp(fn, "ruby") == 0) fn = "mruby";
-		if (strcmp(fn, "stt") == 0) fn = "estutter";
-		if ((strcmp(fn, "js") == 0) || (strcmp(fn, "javascript") == 0)) fn = "duktape";
-#endif
-
-		/* find by engine name */
-		if (htsp_get(&fgw_engines, fn) != NULL)
-			return fn;
-		return NULL;
-	}
-
-	/* find by file name: test parse */
-	f = rnd_fopen(hl, fn, "r");
-	res = fgw_engine_find(fn, f);
-	if (f != NULL)
-		fclose(f);
-
-	return res;
-}
-
 /*** dialog box ***/
 typedef struct {
 	RND_DAD_DECL_NOINIT(dlg)
