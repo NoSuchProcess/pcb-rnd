@@ -27,12 +27,35 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <puplug/util.h>
+
 static int guess_lang_inited = 0;
+
+static int guess_lang_open(pup_list_parse_pup_t *ctx, const char *path)
+{
+	if (strncmp(path, "fungw_", 6) != 0)
+		return 1;
+	return 0;
+}
+
+static int guess_lang_line_split(pup_list_parse_pup_t *ctx, const char *fname, char *cmd, char *args)
+{
+	return 0;
+}
 
 static void rnd_script_guess_lang_init(void)
 {
 	if (guess_lang_inited) {
-	
+		pup_list_parse_pup_t ctx = {0};
+		char *paths[2];
+
+		ctx.open = guess_lang_open;
+		ctx.line_split = guess_lang_line_split;
+
+		paths[0] = FGW_CFG_PUPDIR;
+		paths[1] = NULL;
+		pup_list_parse_pups(&ctx, paths);
+
 		guess_lang_inited = 0;
 	}
 }
@@ -50,7 +73,7 @@ const char *rnd_script_guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filen
 	FILE *f;
 	const char *res;
 
-	guess_lang_init();
+	rnd_script_guess_lang_init();
 
 	if (!is_filename) {
 		/* known special cases - these are pcb-rnd CLI conventions */
