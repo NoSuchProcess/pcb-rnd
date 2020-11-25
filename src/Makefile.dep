@@ -156,9 +156,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_text_draw.h draw.h obj_line_draw.h \
- ../src_plugins/act_draw/keywords_sphash.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_text_draw.h draw.h \
+ obj_line_draw.h ../src_plugins/act_draw/keywords_sphash.h \
  ../src_plugins/act_draw/act_pstk_proto.c obj_pstk_inlines.h data.h \
  crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h idpath.h \
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
@@ -291,7 +290,8 @@
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/lib_netmap/netmap.h netlist.h
 ../src_plugins/ar_extern/ar_extern.o: \
- ../src_plugins/ar_extern/ar_extern.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/ar_extern/ar_extern.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -481,7 +481,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h
 ../src_plugins/autoplace/action.o: ../src_plugins/autoplace/action.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/autoplace/autoplace.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/autoplace/autoplace.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
@@ -524,7 +525,8 @@
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h
 ../src_plugins/autoplace/autoplace.o: \
- ../src_plugins/autoplace/autoplace.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_plugins/autoplace/autoplace.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -573,7 +575,8 @@
  obj_pstk_inlines.h data.h thermal.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h data_it.h
 ../src_plugins/autoroute/action.o: ../src_plugins/autoroute/action.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/autoroute/autoroute.h board.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/autoroute/autoroute.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -617,8 +620,9 @@
  ../src_3rd/librnd-local/src/librnd/core/event.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h
 ../src_plugins/autoroute/autoroute.o: \
- ../src_plugins/autoroute/autoroute.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_plugins/autoroute/autoroute.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -665,9 +669,9 @@
  ../src_3rd/librnd-local/src/librnd/core/heap.h netlist.h \
  ../src_plugins/autoroute/mtspace.h ../src_plugins/autoroute/vector.h \
  polygon.h remove.h operation.h obj_pinvia_therm.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- layer.h obj_line_draw.h draw.h obj_pstk_draw.h obj_pstk_inlines.h data.h \
- thermal.h ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h layer.h obj_line_draw.h draw.h \
+ obj_pstk_draw.h obj_pstk_inlines.h data.h thermal.h \
+ ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/autoroute/mtspace.o: ../src_plugins/autoroute/mtspace.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
@@ -758,7 +762,8 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_tree.h \
  ../src_plugins/cam/cam_conf_fields.h
 ../src_plugins/ch_editpoint/ch_editpoint.o: \
- ../src_plugins/ch_editpoint/ch_editpoint.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/ch_editpoint/ch_editpoint.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -823,7 +828,8 @@
  ../src_plugins/ch_editpoint/menu_internal.c \
  ../src_plugins/ch_editpoint/ch_editpoint_conf_fields.h
 ../src_plugins/ch_onpoint/ch_onpoint.o: \
- ../src_plugins/ch_onpoint/ch_onpoint.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/ch_onpoint/ch_onpoint.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -881,7 +887,8 @@
  event.h ../src_3rd/librnd-local/src/librnd/core/event.h obj_arc.h \
  obj_arc_draw.h draw.h obj_line_draw.h
 ../src_plugins/ddraft/centgeo.o: ../src_plugins/ddraft/centgeo.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/ddraft/centgeo.h obj_line.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/ddraft/centgeo.h obj_line.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h obj_common.h \
  flag.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h attrib.h \
@@ -1194,8 +1201,7 @@
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h draw.h obj_term.h search.h search_r.h netlist.h \
- ../src_plugins/dialogs/dlg_undo.c \
- ../src_3rd/libuundo/uundo.h event.h \
+ ../src_plugins/dialogs/dlg_undo.c ../src_3rd/libuundo/uundo.h event.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h undo.h undo_old.h \
  ../src_plugins/dialogs/dlg_fpmap.c actions_pcb.h plug_footprint.h \
  plug_io.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h \
@@ -1310,7 +1316,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_plugins/dialogs/dlg_export.h
 ../src_plugins/dialogs/dlg_flag_edit.o: \
- ../src_plugins/dialogs/dlg_flag_edit.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/dialogs/dlg_flag_edit.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -1352,12 +1359,12 @@
  obj_text.h font.h ../src_3rd/librnd-local/src/../src_3rd/genht/htip.h \
  obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- search.h funchash_core.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h search.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
  ../src_plugins/dialogs/dlg_flag_edit.h
 ../src_plugins/dialogs/dlg_fontsel.o: \
- ../src_plugins/dialogs/dlg_fontsel.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/dialogs/dlg_fontsel.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -1405,7 +1412,8 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h stub_draw.h \
  draw.h idpath.h search.h ../src_plugins/dialogs/dlg_fontsel.h
 ../src_plugins/dialogs/dlg_infobar.o: \
- ../src_plugins/dialogs/dlg_infobar.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/dialogs/dlg_infobar.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -1462,7 +1470,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h
 ../src_plugins/dialogs/dlg_layer_binding.o: \
- ../src_plugins/dialogs/dlg_layer_binding.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/dialogs/dlg_layer_binding.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -1519,8 +1528,9 @@
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
  obj_subc.h search.h ../src_plugins/dialogs/dlg_layer_binding.h
 ../src_plugins/dialogs/dlg_layer_flags.o: \
- ../src_plugins/dialogs/dlg_layer_flags.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/dialogs/dlg_layer_flags.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -1565,7 +1575,8 @@
  ../src_plugins/dialogs/dlg_layer_binding.h \
  ../src_plugins/dialogs/dlg_layer_flags.h
 ../src_plugins/dialogs/dlg_lib_pstk.o: \
- ../src_plugins/dialogs/dlg_lib_pstk.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/dialogs/dlg_lib_pstk.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -1627,7 +1638,8 @@
  select.h search.h ../src_plugins/dialogs/dlg_padstack.h \
  ../src_plugins/dialogs/dlg_lib_pstk.h
 ../src_plugins/dialogs/dlg_library.o: \
- ../src_plugins/dialogs/dlg_library.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/dialogs/dlg_library.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
@@ -1678,8 +1690,8 @@
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  event.h ../src_3rd/librnd-local/src/librnd/core/event.h obj_subc.h \
  plug_footprint.h data.h ../src_3rd/librnd-local/src/librnd/core/tool.h \
- undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h ../src_3rd/librnd-local/src/librnd/core/hid_dad.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_dad.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
@@ -1696,7 +1708,8 @@
  ../src_plugins/dialogs/dlg_library_param.c \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h
 ../src_plugins/dialogs/dlg_loadsave.o: \
- ../src_plugins/dialogs/dlg_loadsave.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/dialogs/dlg_loadsave.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -1756,7 +1769,8 @@
  ../src_3rd/librnd-local/src/librnd/plugins/lib_hid_common/dialogs_conf.h \
  ../src_plugins/dialogs/dlg_loadsave.h
 ../src_plugins/dialogs/dlg_padstack.o: \
- ../src_plugins/dialogs/dlg_padstack.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/dialogs/dlg_padstack.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -1813,8 +1827,7 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h thermal.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h obj_subc_parent.h \
- search.h operation.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
+ search.h operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  ../src_plugins/dialogs/dlg_lib_pstk.h \
  ../src_plugins/dialogs/dlg_padstack.h
 ../src_plugins/dialogs/dlg_pref.o: ../src_plugins/dialogs/dlg_pref.c \
@@ -1950,7 +1963,8 @@
  ../src_3rd/libuundo/uundo.h undo_old.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h
 ../src_plugins/distalign/distalign.o: \
- ../src_plugins/distalign/distalign.c board.h ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/distalign/distalign.c board.h ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -1992,8 +2006,7 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
- undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h move.h draw.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h move.h draw.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
@@ -2050,9 +2063,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- remove.h operation.h move.h draw.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- flag_str.h find.h layer.h \
+ remove.h operation.h move.h draw.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h flag_str.h find.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
@@ -2067,8 +2079,9 @@
  data.h thermal.h ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
  ../src_plugins/djopt/djopt_conf_fields.h
 ../src_plugins/draw_csect/draw_csect.o: \
- ../src_plugins/draw_csect/draw_csect.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/draw_csect/draw_csect.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -2124,8 +2137,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h event.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- layer_vis.h conf_core.h obj_text_draw.h obj_line_draw.h
+ ../src_3rd/libuundo/uundo.h undo_old.h layer_vis.h conf_core.h \
+ obj_text_draw.h obj_line_draw.h
 ../src_plugins/draw_fab/draw_fab.o: ../src_plugins/draw_fab/draw_fab.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -2190,8 +2203,9 @@
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
  obj_text_draw.h ../src_plugins/draw_fab/draw_fab_conf_fields.h
 ../src_plugins/draw_fontsel/draw_fontsel.o: \
- ../src_plugins/draw_fontsel/draw_fontsel.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/draw_fontsel/draw_fontsel.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -2247,7 +2261,8 @@
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h obj_text.h \
  obj_text_draw.h obj_line_draw.h
 ../src_plugins/drc_query/drc_query.o: \
- ../src_plugins/drc_query/drc_query.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/drc_query/drc_query.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
@@ -2472,9 +2487,9 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h buffer.h change.h \
- draw.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
- polygon.h ../src_3rd/librnd-local/src/librnd/core/compat_misc.h layer.h \
+ draw.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h polygon.h \
+ ../src_3rd/librnd-local/src/librnd/core/compat_misc.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
@@ -2556,7 +2571,8 @@
 ../src_plugins/export_dxf/dxf_templ_lht.o: \
  ../src_plugins/export_dxf/dxf_templ_lht.c
 ../src_plugins/export_dxf/lht_template.o: \
- ../src_plugins/export_dxf/lht_template.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/export_dxf/lht_template.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h \
@@ -2565,7 +2581,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/tree.h \
  ../src_plugins/export_dxf/lht_template.h
 ../src_plugins/export_excellon/aperture.o: \
- ../src_plugins/export_excellon/aperture.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/export_excellon/aperture.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_plugins/export_excellon/aperture.h \
@@ -2573,8 +2590,9 @@
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.c
 ../src_plugins/export_excellon/excellon.o: \
- ../src_plugins/export_excellon/excellon.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/export_excellon/excellon.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -2628,8 +2646,9 @@
  ../src_plugins/export_excellon/aperture.h \
  ../src_plugins/export_excellon/excellon_conf_fields.h
 ../src_plugins/export_fidocadj/fidocadj.o: \
- ../src_plugins/export_fidocadj/fidocadj.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_plugins/export_fidocadj/fidocadj.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -2745,7 +2764,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genrtree/genrtree_api.h \
  ../src_3rd/librnd-local/src/librnd/poly/rtree2_compat.h
 ../src_plugins/export_gerber/gerber.o: \
- ../src_plugins/export_gerber/gerber.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/export_gerber/gerber.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/math_helper.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
@@ -2817,8 +2837,9 @@
  ../src_3rd/librnd-local/src/librnd/plugins/lib_hid_common/xpm.h \
  ../src_plugins/export_gerber/gerber_conf_fields.h
 ../src_plugins/export_ipcd356/ipcd356.o: \
- ../src_plugins/export_ipcd356/ipcd356.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/export_ipcd356/ipcd356.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -2880,8 +2901,8 @@
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h
 ../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h data.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h data.h \
+ globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -2940,8 +2961,9 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h
 ../src_plugins/export_oldconn/oldconn.o: \
- ../src_plugins/export_oldconn/oldconn.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_plugins/export_oldconn/oldconn.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -2997,8 +3019,7 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h plug_io.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h plug_footprint.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h find.h \
- obj_subc_parent.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
+ obj_subc_parent.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
  funchash_core_list.h search.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_init.h \
@@ -3077,7 +3098,8 @@
  ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_plugins/export_openems/openems_xml.c
 ../src_plugins/export_openems/mesh.o: \
- ../src_plugins/export_openems/mesh.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/export_openems/mesh.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_plugins/export_openems/mesh.h layer.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -3325,8 +3347,9 @@
  funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
  funchash_core_list.h
 ../src_plugins/export_ps/ps.o: ../src_plugins/export_ps/ps.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/math_helper.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/math_helper.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -3450,7 +3473,8 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_init.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h hid_cam.h
 ../src_plugins/export_stl/export_stl.o: \
- ../src_plugins/export_stl/export_stl.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/export_stl/export_stl.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtd0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -3641,8 +3665,9 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_nogui.h \
  ../src_plugins/lib_vfs/lib_vfs.h
 ../src_plugins/export_vfs_mc/export_vfs_mc.o: \
- ../src_plugins/export_vfs_mc/export_vfs_mc.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_plugins/export_vfs_mc/export_vfs_mc.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -3827,11 +3852,11 @@
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  buffer.h ../src_3rd/librnd-local/src/librnd/core/paths.h remove.h \
  operation.h ../src_3rd/librnd-local/src/librnd/core/safe_fs.h search.h \
- undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h ../src_plugins/io_lihata/io_lihata.h \
- ../src_plugins/io_lihata/lht_conf.h ../src_plugins/io_lihata/write.h \
- plug_io.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h \
- plug_footprint.h data.h ../src_plugins/io_lihata/read.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ ../src_plugins/io_lihata/io_lihata.h ../src_plugins/io_lihata/lht_conf.h \
+ ../src_plugins/io_lihata/write.h plug_io.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h plug_footprint.h \
+ data.h ../src_plugins/io_lihata/read.h \
  ../src_plugins/extedit/extedit_dad.c
 ../src_plugins/exto_std/exto_std.o: ../src_plugins/exto_std/exto_std.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
@@ -3896,8 +3921,8 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h change.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- conf_core.h ../src_plugins/exto_std/line_of_vias.c \
+ ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h \
+ ../src_plugins/exto_std/line_of_vias.c \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/exto_std/dimension.c search.h \
  ../src_plugins/exto_std/cord.c data_parent.h \
@@ -4020,7 +4045,8 @@
  plug_io.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h \
  plug_footprint.h ../src_3rd/librnd-local/src/librnd/core/safe_fs.h
 ../src_plugins/fp_fs/fp_fs.o: ../src_plugins/fp_fs/fp_fs.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/compat_inc.h board.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/compat_inc.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -4142,8 +4168,9 @@
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h globalconst.h
 ../src_plugins/fp_wget/fp_wget.o: ../src_plugins/fp_wget/fp_wget.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/fp_wget/gedasymbols.h \
- plug_footprint.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/fp_wget/gedasymbols.h plug_footprint.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
  data.h globalconst.h \
@@ -4198,7 +4225,8 @@
  ../src_plugins/fp_wget/conf_internal.c \
  ../src_plugins/fp_wget/fp_wget_conf_fields.h
 ../src_plugins/fp_wget/gedasymbols.o: \
- ../src_plugins/fp_wget/gedasymbols.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/fp_wget/gedasymbols.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -4254,7 +4282,8 @@
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h globalconst.h
 ../src_plugins/fp_wget/wget_common.o: \
- ../src_plugins/fp_wget/wget_common.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/fp_wget/wget_common.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_plugins/fp_wget/wget_common.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h \
@@ -4280,8 +4309,9 @@
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/plugins/lib_wget/lib_wget.h
 ../src_plugins/import_accel_net/accel_net.o: \
- ../src_plugins/import_accel_net/accel_net.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/import_accel_net/accel_net.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -4387,8 +4417,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
@@ -4527,8 +4557,9 @@
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h
 ../src_plugins/import_edif/import_edif.o: \
- ../src_plugins/import_edif/import_edif.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/import_edif/import_edif.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -4585,9 +4616,9 @@
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h plug_footprint.h \
  data.h
 ../src_plugins/import_fpcb_nl/fpcb_nl.o: \
- ../src_plugins/import_fpcb_nl/fpcb_nl.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- ../src_3rd/qparse/qparse.h board.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/import_fpcb_nl/fpcb_nl.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/qparse/qparse.h \
+ board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -4628,8 +4659,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
@@ -4649,7 +4680,8 @@
  ../src_plugins/import_fpcb_nl/menu_internal.c
 ../src_plugins/import_gnetlist/import_gnetlist.o: \
  ../src_plugins/import_gnetlist/import_gnetlist.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -4697,13 +4729,14 @@
  obj_text.h font.h ../src_3rd/librnd-local/src/../src_3rd/genht/htip.h \
  obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h ../src_plugins/import_gnetlist/import_gnetlist_conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_plugins/import_gnetlist/import_gnetlist_conf.h \
  ../src_plugins/import_gnetlist/conf_internal.c \
  ../src_plugins/import_gnetlist/import_gnetlist_conf_fields.h
 ../src_plugins/import_hpgl/hpgl.o: ../src_plugins/import_hpgl/hpgl.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/libuhpgl/libuhpgl.h \
- ../src_3rd/libuhpgl/parse.h ../src_3rd/libuhpgl/libuhpgl.h board.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/libuhpgl/libuhpgl.h ../src_3rd/libuhpgl/parse.h \
+ ../src_3rd/libuhpgl/libuhpgl.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -4764,7 +4797,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
  ../src_plugins/import_hpgl/menu_internal.c
 ../src_plugins/import_ipcd356/ipcd356.o: \
- ../src_plugins/import_ipcd356/ipcd356.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/import_ipcd356/ipcd356.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h board.h \
@@ -4827,9 +4861,9 @@
  ../src_plugins/lib_compat_help/pstk_help.h obj_pstk.h plug_import.h \
  ../src_plugins/import_ipcd356/menu_internal.c
 ../src_plugins/import_ltspice/ltspice.o: \
- ../src_plugins/import_ltspice/ltspice.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- ../src_3rd/qparse/qparse.h board.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/import_ltspice/ltspice.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/qparse/qparse.h \
+ board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -4870,8 +4904,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
@@ -4934,8 +4968,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
@@ -4964,7 +4998,8 @@
  ../src_plugins/import_mentor_sch/mentor_sch_conf_fields.h
 ../src_plugins/import_mentor_sch/netlist_helper.o: \
  ../src_plugins/import_mentor_sch/netlist_helper.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
  ../src_plugins/import_mentor_sch/netlist_helper.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
@@ -5087,8 +5122,7 @@
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- actions_pcb.h plug_import.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h actions_pcb.h plug_import.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
@@ -5113,7 +5147,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h
 ../src_plugins/import_net_cmd/import_net_cmd.o: \
  ../src_plugins/import_net_cmd/import_net_cmd.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -5160,8 +5195,7 @@
  obj_text.h font.h ../src_3rd/librnd-local/src/../src_3rd/genht/htip.h \
  obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h
 ../src_plugins/import_netlist/import_netlist.o: \
  ../src_plugins/import_netlist/import_netlist.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h board.h \
@@ -5218,14 +5252,15 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- plug_import.h conf_core.h data.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- rats_patch.h ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
+ plug_import.h conf_core.h data.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h rats_patch.h \
+ ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/core/paths.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h netlist.h
 ../src_plugins/import_orcad_net/orcad_net.o: \
- ../src_plugins/import_orcad_net/orcad_net.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/import_orcad_net/orcad_net.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -5266,8 +5301,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
@@ -5289,8 +5324,9 @@
  ../src_3rd/librnd-local/src/../src_3rd/gensexpr/gsx_parse.h \
  ../src_plugins/import_orcad_net/menu_internal.c
 ../src_plugins/import_pads_net/pads_net.o: \
- ../src_plugins/import_pads_net/pads_net.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/import_pads_net/pads_net.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -5331,8 +5367,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
@@ -5394,8 +5430,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
@@ -5414,7 +5450,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
  ../src_plugins/import_protel_net/menu_internal.c
 ../src_plugins/import_pxm_gd/import_pxm_gd.o: \
- ../src_plugins/import_pxm_gd/import_pxm_gd.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/import_pxm_gd/import_pxm_gd.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
@@ -5445,7 +5482,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h
 ../src_plugins/import_pxm_pnm/import_pxm_pnm.o: \
  ../src_plugins/import_pxm_pnm/import_pxm_pnm.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -5476,7 +5514,8 @@
  ../src_3rd/librnd-local/src/librnd/core/error.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h
 ../src_plugins/import_sch2/import_sch.o: \
- ../src_plugins/import_sch2/import_sch.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/import_sch2/import_sch.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/error.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -5530,14 +5569,14 @@
  obj_text.h font.h ../src_3rd/librnd-local/src/../src_3rd/genht/htip.h \
  obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h ../src_plugins/import_sch2/import_sch_conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_plugins/import_sch2/import_sch_conf.h \
  ../src_plugins/import_sch2/import_sch_dlg.c \
  ../src_plugins/import_sch2/import_sch_conf_fields.h
 ../src_plugins/import_tinycad/tinycad.o: \
- ../src_plugins/import_tinycad/tinycad.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- ../src_3rd/qparse/qparse.h board.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/import_tinycad/tinycad.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/qparse/qparse.h \
+ board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -5578,8 +5617,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
@@ -5599,7 +5638,8 @@
  ../src_plugins/import_tinycad/menu_internal.c
 ../src_plugins/import_ttf/str_approx.o: \
  ../src_plugins/import_ttf/str_approx.c \
- ../src_plugins/import_ttf/ttf_load.h ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/import_ttf/ttf_load.h ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -5692,7 +5732,8 @@
  ../src_plugins/import_ttf/menu_internal.c
 ../src_plugins/import_ttf/ttf_load.o: \
  ../src_plugins/import_ttf/ttf_load.c \
- ../src_plugins/import_ttf/ttf_load.h ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/import_ttf/ttf_load.h ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -5715,7 +5756,8 @@
  ../src_3rd/librnd-local/src/librnd/core/misc_util.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h
 ../src_plugins/io_autotrax/io_autotrax.o: \
- ../src_plugins/io_autotrax/io_autotrax.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_autotrax/io_autotrax.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
@@ -5774,7 +5816,8 @@
  rats_patch.h board.h conf_core.h buffer.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h
 ../src_plugins/io_autotrax/read.o: ../src_plugins/io_autotrax/read.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/qparse/qparse.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/qparse/qparse.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
@@ -5884,7 +5927,8 @@
  ../src_plugins/io_autotrax/../lib_polyhelp/polyhelp.h obj_poly.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/io_bxl/bxl_decode.o: ../src_plugins/io_bxl/bxl_decode.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/io_bxl/bxl_decode.h
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_bxl/bxl_decode.h
 ../src_plugins/io_bxl/bxl_gram.o: ../src_plugins/io_bxl/bxl_gram.c \
  ../src_plugins/io_bxl/bxl_gram.h ../src_plugins/io_bxl/bxl.h data.h \
  globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
@@ -5931,7 +5975,8 @@
  obj_subc.h obj_poly.h obj_pstk.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h
 ../src_plugins/io_bxl/bxl_lex.o: ../src_plugins/io_bxl/bxl_lex.c \
- ../src_3rd/librnd-local/src/librnd/core/compat_misc.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_plugins/io_bxl/bxl_gram.h ../src_plugins/io_bxl/bxl.h data.h \
  globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -6034,7 +6079,8 @@
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_bxl/read.h
 ../src_plugins/io_bxl/read.o: ../src_plugins/io_bxl/read.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/error.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/error.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h \
@@ -6087,8 +6133,8 @@
  ../src_plugins/io_bxl/bxl.h data.h layer.h obj_subc.h obj_poly.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h
 ../src_plugins/io_dsn/io_dsn.o: ../src_plugins/io_dsn/io_dsn.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/io_dsn/read.h plug_io.h \
- global_typedefs.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_dsn/read.h plug_io.h global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h \
@@ -6143,7 +6189,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h
 ../src_plugins/io_dsn/read.o: ../src_plugins/io_dsn/read.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/../src_3rd/gensexpr/gsxl.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/gensexpr/gsxl.h \
  ../src_3rd/librnd-local/src/../src_3rd/gensexpr/gensexpr_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/gensexpr/gsx_parse.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -6247,8 +6294,8 @@
  ../src_plugins/io_dsn/write.h ../src_plugins/lib_netmap/netmap.h \
  netlist.h
 ../src_plugins/io_eagle/eagle_bin.o: ../src_plugins/io_eagle/eagle_bin.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/io_eagle/eagle_bin.h \
- ../src_plugins/io_eagle/egb_tree.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_eagle/eagle_bin.h ../src_plugins/io_eagle/egb_tree.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htss.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/error.h \
@@ -6431,7 +6478,8 @@
  conf_core.h ../src_3rd/librnd-local/src/librnd/core/safe_fs.h board.h \
  vtroutestyle.h rats_patch.h board.h layer_grp.h
 ../src_plugins/io_eagle/trparse_bin.o: \
- ../src_plugins/io_eagle/trparse_bin.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_eagle/trparse_bin.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/error.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -6458,7 +6506,8 @@
  ../src_plugins/io_eagle/eagle_bin.h ../src_plugins/io_eagle/trparse.h \
  ../src_plugins/io_eagle/trparse_bin.h
 ../src_plugins/io_eagle/trparse_xml.o: \
- ../src_plugins/io_eagle/trparse_xml.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_eagle/trparse_xml.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/error.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -6484,7 +6533,8 @@
 ../src_plugins/io_hyp/hyp_l.o: ../src_plugins/io_hyp/hyp_l.c \
  ../src_plugins/io_hyp/hyp_y.h ../src_plugins/io_hyp/parser.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h board.h ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h vtroutestyle.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h attrib.h \
@@ -6511,7 +6561,8 @@
 ../src_plugins/io_hyp/hyp_y.o: ../src_plugins/io_hyp/hyp_y.c \
  ../src_plugins/io_hyp/parser.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h board.h ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h vtroutestyle.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h attrib.h \
@@ -6605,7 +6656,8 @@
 ../src_plugins/io_hyp/parser.o: ../src_plugins/io_hyp/parser.c \
  ../src_plugins/io_hyp/parser.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h board.h ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h vtroutestyle.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h attrib.h \
@@ -6658,7 +6710,8 @@
  ../src_plugins/lib_compat_help/pstk_help.h obj_pstk.h \
  ../src_plugins/lib_compat_help/subc_help.h obj_subc.h
 ../src_plugins/io_hyp/write.o: ../src_plugins/io_hyp/write.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/io_hyp/write.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_hyp/write.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h plug_io.h \
  global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -6774,8 +6827,9 @@
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_plugins/io_kicad/menu_internal.c
 ../src_plugins/io_kicad/layertab.o: ../src_plugins/io_kicad/layertab.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/io_kicad/layertab.h layer.h \
- globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_kicad/layertab.h layer.h globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -6923,7 +6977,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h
 ../src_plugins/io_kicad/uniq_name.o: ../src_plugins/io_kicad/uniq_name.c \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/io_kicad/uniq_name.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_kicad/uniq_name.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h
@@ -6984,7 +7039,8 @@
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/io_kicad_legacy/io_kicad_legacy.o: \
  ../src_plugins/io_kicad_legacy/io_kicad_legacy.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -7038,7 +7094,8 @@
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_kicad_legacy/write.h data.h
 ../src_plugins/io_kicad_legacy/write.o: \
- ../src_plugins/io_kicad_legacy/write.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_kicad_legacy/write.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
@@ -7092,8 +7149,8 @@
  ../src_plugins/io_kicad_legacy/../io_kicad/uniq_name.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/io_lihata/common.o: ../src_plugins/io_lihata/common.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h data.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h data.h \
+ globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -7136,7 +7193,8 @@
  ../src_plugins/io_lihata/common.h thermal.h operation.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h
 ../src_plugins/io_lihata/io_lihata.o: \
- ../src_plugins/io_lihata/io_lihata.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_lihata/io_lihata.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
@@ -7200,7 +7258,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
- ../src_3rd/libminuid/libminuid.h ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/libminuid/libminuid.h ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h attrib.h \
@@ -7337,7 +7396,8 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/io_lihata/write_style.o: \
- ../src_plugins/io_lihata/write_style.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_lihata/write_style.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_plugins/io_lihata/write_style.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblhtpers/lhtpers.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -7347,7 +7407,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h
 ../src_plugins/io_mentor_cell/io_mentor_cell.o: \
  ../src_plugins/io_mentor_cell/io_mentor_cell.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -7402,8 +7463,8 @@
  ../src_plugins/io_mentor_cell/read.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h
 ../src_plugins/io_mentor_cell/read.o: \
- ../src_plugins/io_mentor_cell/read.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- ../src_3rd/qparse/qparse.h \
+ ../src_plugins/io_mentor_cell/read.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/qparse/qparse.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -7665,9 +7726,9 @@
  ../src_3rd/librnd-local/src/librnd/core/paths.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h
 ../src_plugins/io_pcb/parse_y.o: ../src_plugins/io_pcb/parse_y.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h flag.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h board.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h flag.h \
+ globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -7774,8 +7835,9 @@
  ../src_plugins/lib_compat_help/subc_help.h obj_subc.h layer.h \
  ../src_plugins/lib_compat_help/pstk_help.h
 ../src_plugins/io_tedax/io_tedax.o: ../src_plugins/io_tedax/io_tedax.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/io_tedax/footprint.h data.h \
- globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_tedax/footprint.h data.h globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -7841,7 +7903,8 @@
  ../src_plugins/io_tedax/tetest.h ../src_plugins/io_tedax/tnetlist.h \
  ../src_plugins/io_tedax/menu_internal.c
 ../src_plugins/io_tedax/parse.o: ../src_plugins/io_tedax/parse.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/io_tedax/parse.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/io_tedax/parse.h \
  ../src_3rd/librnd-local/src/librnd/core/error.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -8004,7 +8067,8 @@
 ../src_plugins/io_tedax/tdrc_keys_sphash.o: \
  ../src_plugins/io_tedax/tdrc_keys_sphash.c
 ../src_plugins/io_tedax/tdrc_query.o: \
- ../src_plugins/io_tedax/tdrc_query.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_plugins/io_tedax/tdrc_query.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -8209,8 +8273,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- plug_import.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h plug_import.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h plug_io.h \
@@ -8287,8 +8351,7 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h plug_io.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h plug_footprint.h \
- conf_core.h undo_old.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
+ conf_core.h undo_old.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  ../src_plugins/io_tedax/common_inlines.h
 ../src_plugins/jostle/jostle.o: ../src_plugins/jostle/jostle.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
@@ -8333,10 +8396,9 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- polygon.h ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
- remove.h operation.h \
- ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h polygon.h \
+ ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h remove.h \
+ operation.h ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
@@ -8359,8 +8421,9 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
  ../src_plugins/lib_compat_help/layer_compat.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/lib_compat_help/layer_compat.h layer.h \
- globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_compat_help/layer_compat.h layer.h globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -8417,7 +8480,8 @@
  ../src_plugins/lib_compat_help/elem_rot.c \
  ../src_plugins/lib_compat_help/elem_rot.h conf_core.h data_it.h
 ../src_plugins/lib_compat_help/media.o: \
- ../src_plugins/lib_compat_help/media.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_compat_help/media.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -8442,7 +8506,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h \
  ../src_plugins/lib_formula/bisect.h
 ../src_plugins/lib_formula/impedance.o: \
- ../src_plugins/lib_formula/impedance.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_formula/impedance.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/misc_util.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -8461,7 +8526,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h \
  ../src_plugins/lib_formula/impedance.h
 ../src_plugins/lib_formula/lib_formula.o: \
- ../src_plugins/lib_formula/lib_formula.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_formula/lib_formula.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
@@ -8542,7 +8608,8 @@
  ../src_plugins/lib_hid_pcbui/util.h data.h \
  ../src_plugins/lib_hid_pcbui/act.h
 ../src_plugins/lib_hid_pcbui/layer_menu.o: \
- ../src_plugins/lib_hid_pcbui/layer_menu.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_hid_pcbui/layer_menu.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -8593,7 +8660,8 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
  ../src_plugins/lib_hid_pcbui/layer_menu.h
 ../src_plugins/lib_hid_pcbui/layersel.o: \
- ../src_plugins/lib_hid_pcbui/layersel.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_hid_pcbui/layersel.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -8651,7 +8719,8 @@
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
  ../src_plugins/lib_hid_pcbui/layersel.h
 ../src_plugins/lib_hid_pcbui/lib_hid_pcbui.o: \
- ../src_plugins/lib_hid_pcbui/lib_hid_pcbui.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_hid_pcbui/lib_hid_pcbui.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
@@ -8719,8 +8788,9 @@
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h \
  ../src_plugins/lib_hid_pcbui/title.c
 ../src_plugins/lib_hid_pcbui/routest.o: \
- ../src_plugins/lib_hid_pcbui/routest.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/lib_hid_pcbui/routest.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -8771,7 +8841,8 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_tree.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h
 ../src_plugins/lib_hid_pcbui/status.o: \
- ../src_plugins/lib_hid_pcbui/status.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_hid_pcbui/status.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -8882,7 +8953,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h
 ../src_plugins/lib_netmap/placement.o: \
- ../src_plugins/lib_netmap/placement.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_netmap/placement.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_plugins/lib_netmap/placement.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
@@ -8926,7 +8998,8 @@
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h ht_subc.h
 ../src_plugins/lib_polyhelp/polyhelp.o: \
- ../src_plugins/lib_polyhelp/polyhelp.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_polyhelp/polyhelp.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_plugins/lib_polyhelp/polyhelp.h obj_poly.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h obj_common.h \
  flag.h globalconst.h \
@@ -8951,8 +9024,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h obj_line.h undo_old.h \
- undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h ../src_3rd/librnd-local/src/librnd/core/box.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ ../src_3rd/librnd-local/src/librnd/core/box.h \
  ../src_3rd/librnd-local/src/librnd/core/misc_util.h \
  ../src_3rd/librnd-local/src/librnd/poly/offset.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
@@ -8991,7 +9064,8 @@
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h
 ../src_plugins/lib_polyhelp/topoly.o: \
- ../src_plugins/lib_polyhelp/topoly.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_polyhelp/topoly.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -9041,7 +9115,8 @@
  funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
  funchash_core_list.h
 ../src_plugins/lib_polyhelp/triangulate.o: \
- ../src_plugins/lib_polyhelp/triangulate.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/lib_polyhelp/triangulate.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_plugins/lib_polyhelp/triangulate.h \
  ../src_3rd/fast89-poly2tri/fast89_poly2tri.h
 ../src_plugins/lib_vfs/lib_vfs.o: ../src_plugins/lib_vfs/lib_vfs.c \
@@ -9155,9 +9230,9 @@
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h
 ../src_plugins/millpath/toolpath.o: ../src_plugins/millpath/toolpath.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/qparse/qparse.h \
- ../src_plugins/millpath/toolpath.h layer.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/qparse/qparse.h ../src_plugins/millpath/toolpath.h layer.h \
+ globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -9206,12 +9281,14 @@
 ../src_plugins/mincut/pcb-mincut/graph.o: \
  ../src_plugins/mincut/pcb-mincut/graph.c \
  ../src_plugins/mincut/pcb-mincut/graph.h \
- ../src_plugins/mincut/pcb-mincut/../../../config.h ../src_3rd/librnd-local/src/librnd/config.h
+ ../src_plugins/mincut/pcb-mincut/../../../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h
 ../src_plugins/mincut/pcb-mincut/solve.o: \
  ../src_plugins/mincut/pcb-mincut/solve.c \
  ../src_plugins/mincut/pcb-mincut/solve.h \
  ../src_plugins/mincut/pcb-mincut/graph.h \
- ../src_plugins/mincut/pcb-mincut/../../../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/mincut/pcb-mincut/../../../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h
 ../src_plugins/mincut/rats_mincut.o: ../src_plugins/mincut/rats_mincut.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
@@ -9262,9 +9339,8 @@
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h plug_footprint.h \
- data.h find.h polygon.h search.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ data.h find.h polygon.h search.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -9279,7 +9355,8 @@
  ../src_plugins/mincut/rats_mincut_conf.h \
  ../src_plugins/mincut/rats_mincut_conf_fields.h
 ../src_plugins/oldactions/oldactions.o: \
- ../src_plugins/oldactions/oldactions.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/oldactions/oldactions.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -9323,9 +9400,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  event.h ../src_3rd/librnd-local/src/librnd/core/event.h change.h board.h \
- vtroutestyle.h rats_patch.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ vtroutestyle.h rats_patch.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -9338,7 +9414,8 @@
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
  search.h
 ../src_plugins/order/order.o: ../src_plugins/order/order.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/actions.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
@@ -9405,7 +9482,8 @@
  ../src_plugins/order/order_dlg.c \
  ../src_plugins/order/order_conf_fields.h
 ../src_plugins/order_pcbway/pcbway.o: \
- ../src_plugins/order_pcbway/pcbway.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/order_pcbway/pcbway.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -9464,8 +9542,9 @@
  ../src_plugins/order_pcbway/conf_internal.c \
  ../src_plugins/order_pcbway/order_pcbway_conf_fields.h
 ../src_plugins/polycombine/polycombine.o: \
- ../src_plugins/polycombine/polycombine.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/polycombine/polycombine.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -9517,8 +9596,9 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h obj_poly.h
 ../src_plugins/polystitch/polystitch.o: \
- ../src_plugins/polystitch/polystitch.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/polystitch/polystitch.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -9679,7 +9759,8 @@
  layer_addr.h layer_grp.h search.h crosshair.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h
 ../src_plugins/propedit/props.o: ../src_plugins/propedit/props.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/propedit/props.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/propedit/props.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -9719,8 +9800,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.c \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht_inlines.h
 ../src_plugins/propedit/propsel.o: ../src_plugins/propedit/propsel.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h data.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h data.h \
+ globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -9765,9 +9846,9 @@
  ../src_plugins/propedit/propsel.h change.h board.h vtroutestyle.h \
  rats_patch.h draw.h flag_str.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- rotate.h ../src_3rd/librnd-local/src/librnd/core/rotate.h \
- obj_pstk_inlines.h thermal.h operation.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h rotate.h \
+ ../src_3rd/librnd-local/src/librnd/core/rotate.h obj_pstk_inlines.h \
+ thermal.h operation.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
@@ -9822,8 +9903,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  move.h remove.h operation.h flag_str.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- layer.h ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h layer.h \
+ ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -9895,7 +9976,8 @@
 ../src_plugins/query/fields_sphash.o: \
  ../src_plugins/query/fields_sphash.c
 ../src_plugins/query/fnc.o: ../src_plugins/query/fnc.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht_utils.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
@@ -10045,7 +10127,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h \
  ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw.h
 ../src_plugins/query/query.o: ../src_plugins/query/query.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
@@ -10212,8 +10295,8 @@
  ../src_plugins/query/dlg_search.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h
 ../src_plugins/query/query_exec.o: ../src_plugins/query/query_exec.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h data.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h data.h \
+ globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -10265,7 +10348,8 @@
 ../src_plugins/query/query_l.o: ../src_plugins/query/query_l.c \
  ../src_3rd/librnd-local/src/librnd/core/unit.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
@@ -10302,7 +10386,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
@@ -10388,8 +10473,9 @@
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h netlist.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h
 ../src_plugins/renumber/renumberblock.o: \
- ../src_plugins/renumber/renumberblock.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/renumber/renumberblock.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -10431,8 +10517,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- change.h conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h change.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h
@@ -10538,8 +10624,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  data_it.h data.h ../src_plugins/report/drill.h search.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- find.h draw.h ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h find.h draw.h \
+ ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -10566,8 +10652,9 @@
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h data_parent.h
 ../src_plugins/rubberband_orig/rubberband.o: \
- ../src_plugins/rubberband_orig/rubberband.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/rubberband_orig/rubberband.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -10609,8 +10696,7 @@
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_it.h data.h \
  data_list.h event.h ../src_3rd/librnd-local/src/librnd/core/event.h \
- undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h operation.h rotate.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h operation.h rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h draw.h \
  draw_wireframe.h crosshair.h obj_rat_draw.h obj_line_op.h operation.h \
@@ -10640,6 +10726,7 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/util.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -10684,8 +10771,7 @@
  ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_menu.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- global_typedefs.h globalconst.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h global_typedefs.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_plugins/script/script.h ../src_plugins/script/live_script.h \
  ../src_plugins/script/menu_internal.c
@@ -10737,7 +10823,9 @@
  ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
- ../src_plugins/script/script.h ../src_plugins/script/c_script.c \
+ ../src_plugins/script/script.h ../src_plugins/script/guess_lang.c \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/util.h \
+ ../src_plugins/script/c_script.c \
  ../src_3rd/librnd-local/src/librnd/core/fptr_cast.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib_conf.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -10751,8 +10839,9 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_tree.h \
  ../src_plugins/script/live_script.h
 ../src_plugins/serpentine/serpentine.o: \
- ../src_plugins/serpentine/serpentine.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_plugins/serpentine/serpentine.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -10797,10 +10886,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  data_it.h data.h search.h ../src_3rd/librnd-local/src/librnd/core/tool.h \
- flag_str.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- find.h draw.h draw_wireframe.h \
- ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ flag_str.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h find.h draw.h \
+ draw_wireframe.h ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -10870,8 +10957,8 @@
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h
 ../src_plugins/shape/shape.o: ../src_plugins/shape/shape.c ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/shape/shape.h board.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_3rd/librnd-local/src/librnd/config.h ../src_plugins/shape/shape.h \
+ board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -10937,7 +11024,8 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h
 ../src_plugins/sketch_route/ewire.o: ../src_plugins/sketch_route/ewire.c \
- ../src_plugins/sketch_route/ewire.h ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/sketch_route/ewire.h ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_plugins/sketch_route/sktypedefs.h \
  ../src_plugins/sketch_route/ewire_point.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
@@ -10955,8 +11043,8 @@
  ../src_plugins/sketch_route/pointdata.h \
  ../src_plugins/sketch_route/sktypedefs.h \
  ../src_plugins/sketch_route/spoke.h obj_common.h flag.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h ../src_3rd/librnd-local/src/librnd/config.h \
- attrib.h global_typedefs.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/config.h attrib.h global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h data_parent.h \
  ../src_plugins/sketch_route/ewire.h ../config.h \
@@ -10968,7 +11056,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_plugins/sketch_route/wire.h ../src_3rd/libcdtr/typedefs.h
 ../src_plugins/sketch_route/sketch_route.o: \
- ../src_plugins/sketch_route/sketch_route.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/sketch_route/sketch_route.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
@@ -11070,8 +11159,8 @@
  ../src_plugins/sketch_route/pointdata.h \
  ../src_plugins/sketch_route/sktypedefs.h \
  ../src_plugins/sketch_route/spoke.h obj_common.h flag.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h ../src_3rd/librnd-local/src/librnd/config.h \
- attrib.h global_typedefs.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/config.h attrib.h global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h data_parent.h \
  ../src_plugins/sketch_route/ewire.h ../config.h \
@@ -11129,8 +11218,7 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- netlist.h move.h draw.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h netlist.h move.h draw.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
@@ -11142,7 +11230,8 @@
  obj_subc_parent.h data.h obj_term.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h
 ../src_plugins/teardrops/teardrops.o: \
- ../src_plugins/teardrops/teardrops.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_plugins/teardrops/teardrops.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/math_helper.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
@@ -11244,11 +11333,11 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  draw_wireframe.h search.h ../src_3rd/librnd-local/src/librnd/core/tool.h \
- undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h obj_arc_draw.h draw.h
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h obj_arc_draw.h draw.h
 ../src_plugins/tool_std/tool_arrow.o: \
- ../src_plugins/tool_std/tool_arrow.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_plugins/tool_std/tool_arrow.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -11294,11 +11383,12 @@
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h remove.h operation.h \
  move.h search.h select.h ../src_3rd/librnd-local/src/librnd/core/tool.h \
- undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h extobj.h data.h obj_subc_parent.h draw.h tool_logic.h
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h extobj.h data.h \
+ obj_subc_parent.h draw.h tool_logic.h
 ../src_plugins/tool_std/tool_buffer.o: \
- ../src_plugins/tool_std/tool_buffer.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_plugins/tool_std/tool_buffer.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -11381,8 +11471,9 @@
  tool_logic.h ../src_3rd/librnd-local/src/librnd/core/tool.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h
 ../src_plugins/tool_std/tool_insert.o: \
- ../src_plugins/tool_std/tool_insert.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/tool_std/tool_insert.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -11467,10 +11558,9 @@
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  draw_wireframe.h find.h obj_line.h obj_subc.h search.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- netlist.h tool_logic.h obj_line_draw.h draw.h obj_pstk_draw.h \
- obj_rat_draw.h route_draw.h ../src_plugins/lib_compat_help/pstk_compat.h \
- obj_pstk.h
+ ../src_3rd/libuundo/uundo.h undo_old.h netlist.h tool_logic.h \
+ obj_line_draw.h draw.h obj_pstk_draw.h obj_rat_draw.h route_draw.h \
+ ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/tool_std/tool_lock.o: ../src_plugins/tool_std/tool_lock.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -11563,8 +11653,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- obj_subc_parent.h draw.h obj_gfx.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h
+ obj_subc_parent.h draw.h obj_gfx.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h
 ../src_plugins/tool_std/tool_poly.o: ../src_plugins/tool_std/tool_poly.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
@@ -11609,8 +11699,9 @@
  ../src_3rd/librnd-local/src/librnd/poly/rtree2_compat.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h
 ../src_plugins/tool_std/tool_polyhole.o: \
- ../src_plugins/tool_std/tool_polyhole.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_plugins/tool_std/tool_polyhole.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -11652,8 +11743,9 @@
  ../src_3rd/librnd-local/src/librnd/poly/rtree2_compat.h search.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h
 ../src_plugins/tool_std/tool_rectangle.o: \
- ../src_plugins/tool_std/tool_rectangle.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_plugins/tool_std/tool_rectangle.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -11699,11 +11791,11 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  tool_logic.h ../src_3rd/librnd-local/src/librnd/core/tool.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_poly_draw.h draw.h
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_poly_draw.h draw.h
 ../src_plugins/tool_std/tool_remove.o: \
- ../src_plugins/tool_std/tool_remove.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/tool_std/tool_remove.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -11737,14 +11829,14 @@
  ../src_3rd/librnd-local/src/librnd/core/error.h \
  ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- remove.h operation.h search.h obj_rat.h idpath.h \
- ../src_3rd/librnd-local/src/librnd/core/tool.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h remove.h operation.h search.h \
+ obj_rat.h idpath.h ../src_3rd/librnd-local/src/librnd/core/tool.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h crosshair.h \
  route.h tool_logic.h
 ../src_plugins/tool_std/tool_rotate.o: \
- ../src_plugins/tool_std/tool_rotate.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_plugins/tool_std/tool_rotate.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -11886,11 +11978,11 @@
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_text_draw.h draw.h
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_text_draw.h draw.h
 ../src_plugins/tool_std/tool_thermal.o: \
- ../src_plugins/tool_std/tool_thermal.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_plugins/tool_std/tool_thermal.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -11985,9 +12077,8 @@
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h \
  ../src_plugins/tool_std/tool_thermal.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_pstk_draw.h draw.h ../src_plugins/lib_compat_help/pstk_compat.h \
- obj_pstk.h
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_pstk_draw.h draw.h \
+ ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
 ../src_plugins/vendordrill/vendor.o: ../src_plugins/vendordrill/vendor.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
@@ -12036,8 +12127,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
- undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
+ ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -12108,7 +12199,8 @@
  ../src_3rd/libuundo/uundo.h ../src_3rd/libuundo/uundo_debug.h
 ../src_3rd/qparse/qparse.o: ../src_3rd/qparse/qparse.c \
  ../src_3rd/qparse/qparse.h
-actions_pcb.o: actions_pcb.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+actions_pcb.o: actions_pcb.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw_conv.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
@@ -12153,9 +12245,9 @@ actions_pcb.o: actions_pcb.c ../config.h ../src_3rd/librnd-local/src/librnd/conf
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h layer_addr.h \
- undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h change.h ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h change.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h
 attrib.o: attrib.c ../src_3rd/librnd-local/src/librnd/config.h \
@@ -12168,10 +12260,9 @@ attrib.o: attrib.c ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
- attrib.h global_typedefs.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h
-board.o: board.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ attrib.h global_typedefs.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h
+board.o: board.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -12224,8 +12315,8 @@ board.o: board.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h
  ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_menu.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- draw.h event.h ../src_3rd/librnd-local/src/librnd/core/event.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h draw.h event.h \
+ ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h netlist.h \
  defpcb_internal.c obj_pstk_inlines.h thermal.h operation.h \
@@ -12275,7 +12366,8 @@ brave.o: brave.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h
-buffer.o: buffer.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+buffer.o: buffer.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -12324,12 +12416,12 @@ buffer.o: buffer.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_
  plug_footprint.h rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h remove.h \
- operation.h select.h draw.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
- funchash_core_list.h ../src_3rd/librnd-local/src/librnd/core/pixmap.h \
- obj_arc_op.h obj_line_op.h obj_text_op.h obj_subc_op.h obj_poly_op.h \
- obj_pstk_op.h obj_gfx_op.h obj_rat_op.h \
+ operation.h select.h draw.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h funchash_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
+ ../src_3rd/librnd-local/src/librnd/core/pixmap.h obj_arc_op.h \
+ obj_line_op.h obj_text_op.h obj_subc_op.h obj_poly_op.h obj_pstk_op.h \
+ obj_gfx_op.h obj_rat_op.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
@@ -12339,7 +12431,8 @@ buffer.o: buffer.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_
  ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h
-build_run.o: build_run.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+build_run.o: build_run.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -12393,7 +12486,8 @@ build_run.o: build_run.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h
-change.o: change.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+change.o: change.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -12439,13 +12533,13 @@ change.o: change.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
- select.h operation.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
+ select.h operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  thermal.h ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h obj_pstk_op.h \
  obj_subc_parent.h obj_term.h obj_arc_op.h obj_line_op.h obj_poly_op.h \
  obj_text_op.h obj_subc_op.h obj_gfx_op.h extobj.h
-change_act.o: change_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+change_act.o: change_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -12491,14 +12585,14 @@ change_act.o: change_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config
  funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
  funchash_core_list.h board.h vtroutestyle.h rats_patch.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h change.h draw.h \
- search.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h event.h ../src_3rd/librnd-local/src/librnd/core/event.h \
- thermal.h operation.h \
+ search.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h event.h \
+ ../src_3rd/librnd-local/src/librnd/core/event.h thermal.h operation.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h obj_rat_draw.h \
  data_it.h ../src_3rd/librnd-local/src/librnd/core/grid.h route_style.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib_conf.h obj_subc_parent.h
-conf_act.o: conf_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+conf_act.o: conf_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -12540,7 +12634,8 @@ conf_act.o: conf_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h b
  ../src_3rd/librnd-local/src/librnd/core/hidlib_conf.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
  route_style.h ../src_3rd/librnd-local/src/librnd/core/tool.h
-conf_core.o: conf_core.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+conf_core.o: conf_core.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -12578,7 +12673,8 @@ conf_core.o: conf_core.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h
  ../src_3rd/librnd-local/src/librnd/core/math_helper.h \
  ../src_3rd/librnd-local/src/librnd/core/misc_util.h conf_core_fields.h
 conf_internal.o: conf_internal.c
-crosshair.o: crosshair.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+crosshair.o: crosshair.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -12629,15 +12725,15 @@ crosshair.o: crosshair.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h
  ../src_3rd/librnd-local/src/librnd/core/hid_inlines.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/poly/offset.h find.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- event.h ../src_3rd/librnd-local/src/librnd/core/event.h thermal.h \
- operation.h ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h event.h \
+ ../src_3rd/librnd-local/src/librnd/core/event.h thermal.h operation.h \
+ ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
  ../src_3rd/librnd-local/src/librnd/core/grid.h obj_line_draw.h \
  obj_arc_draw.h obj_text_draw.h obj_pstk_draw.h obj_gfx_draw.h \
  route_draw.h obj_arc_ui.h obj_subc_parent.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h
-data.o: data.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+data.o: data.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -12680,15 +12776,15 @@ data.o: data.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h data_list.h \
  data_it.h list_common.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h layer_it.h \
- operation.h undo_old.h undo.h \
- ../src_3rd/libuundo/uundo.h obj_pstk_draw.h \
- draw.h obj_text_draw.h obj_poly_draw.h obj_arc_draw.h obj_line_draw.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ operation.h undo_old.h undo.h ../src_3rd/libuundo/uundo.h \
+ obj_pstk_draw.h draw.h obj_text_draw.h obj_poly_draw.h obj_arc_draw.h \
+ obj_line_draw.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h
-draw.o: draw.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
- ../src_3rd/librnd-local/src/librnd/core/conf.h \
+draw.o: draw.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -12783,13 +12879,14 @@ drc.o: drc.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h event.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h
-event.o: event.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h event.h \
- ../src_3rd/librnd-local/src/librnd/core/event.h \
+event.o: event.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ event.h ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h
-extobj.o: extobj.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+extobj.o: extobj.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -12831,9 +12928,10 @@ extobj.o: extobj.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  data_it.h data_list.h remove.h operation.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- extobj.h board.h vtroutestyle.h rats_patch.h obj_subc_parent.h draw.h
-extobj_act.o: extobj_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h extobj.h board.h vtroutestyle.h \
+ rats_patch.h obj_subc_parent.h draw.h
+extobj_act.o: extobj_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -12888,7 +12986,8 @@ extobj_act.o: extobj_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  obj_subc_parent.h draw.h
-file_act.o: file_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+file_act.o: file_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -12959,8 +13058,7 @@ find.o: find.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h flag.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_subc_parent.h data.h layer.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_subc_parent.h data.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h attrib.h obj_common.h \
  data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
@@ -12996,12 +13094,14 @@ find.o: find.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  rats_patch.h thermal.h operation.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h search.h \
  find_any_isect.c
-flag.o: flag.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h flag.h globalconst.h \
+flag.o: flag.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ flag.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h operation.h \
  global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h
-flag_str.o: flag_str.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h flag_str.h flag.h \
+flag_str.o: flag_str.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h flag_str.h flag.h \
  globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/core/misc_util.h \
@@ -13059,7 +13159,8 @@ font.o: font.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h event.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/file_loaded.h font_internal.c
-font_act.o: font_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+font_act.o: font_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -13108,7 +13209,8 @@ font_act.o: font_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h b
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  event.h ../src_3rd/librnd-local/src/librnd/core/event.h
-gui_act.o: gui_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+gui_act.o: gui_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -13157,9 +13259,9 @@ gui_act.o: gui_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h boa
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h \
  ../src_3rd/librnd-local/src/librnd/core/grid.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
- funchash_core_list.h change.h draw.h search.h find.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
+ change.h draw.h search.h find.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_init.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
@@ -13171,7 +13273,8 @@ gui_act.o: gui_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h boa
  ../src_3rd/librnd-local/src/librnd/core/event.h layer_ui.h layer_vis.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h operation.h \
  obj_subc_op.h route_style.h tool_logic.h
-hid_cam.o: hid_cam.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+hid_cam.o: hid_cam.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h board.h \
@@ -13221,7 +13324,8 @@ hid_cam.o: hid_cam.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h plug_footprint.h
-hidlib_pcb.o: hidlib_pcb.c board.h ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+hidlib_pcb.o: hidlib_pcb.c board.h ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -13249,8 +13353,9 @@ hidlib_pcb.o: hidlib_pcb.c board.h ../config.h ../src_3rd/librnd-local/src/librn
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h
-ht_subc.o: ht_subc.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h obj_subc_list.h \
- obj_subc.h ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+ht_subc.o: ht_subc.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  ../src_3rd/libminuid/libminuid.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h obj_common.h flag.h \
@@ -13281,7 +13386,8 @@ ht_subc.o: ht_subc.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h obj
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.c \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht_inlines.h
-idpath.o: idpath.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h idpath.h \
+idpath.o: idpath.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h idpath.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
@@ -13323,7 +13429,8 @@ idpath.o: idpath.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h idpat
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h
-insert.o: insert.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+insert.o: insert.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -13368,18 +13475,18 @@ insert.o: insert.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- select.h operation.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
+ select.h operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  obj_line_op.h obj_arc_op.h obj_rat_op.h obj_poly_op.h
-intersect.o: intersect.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h intersect.h \
+intersect.o: intersect.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h intersect.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/box.h \
  ../src_3rd/librnd-local/src/librnd/core/math_helper.h \
  ../src_3rd/librnd-local/src/librnd/core/misc_util.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h
-layer.o: layer.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+layer.o: layer.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -13425,13 +13532,13 @@ layer.o: layer.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- event.h ../src_3rd/librnd-local/src/librnd/core/event.h layer_ui.h \
- layer_vis.h funchash_core.h \
- ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
- obj_pstk_inlines.h thermal.h operation.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h event.h \
+ ../src_3rd/librnd-local/src/librnd/core/event.h layer_ui.h layer_vis.h \
+ funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
+ funchash_core_list.h obj_pstk_inlines.h thermal.h operation.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h list_common.h
-layer_addr.o: layer_addr.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+layer_addr.o: layer_addr.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -13473,7 +13580,8 @@ layer_addr.o: layer_addr.c ../config.h ../src_3rd/librnd-local/src/librnd/config
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h layer_addr.h
-layer_grp.o: layer_grp.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+layer_grp.o: layer_grp.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -13519,9 +13627,9 @@ layer_grp.o: layer_grp.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h event.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core.h \
- funchash_core_list.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h
-layer_ui.o: layer_ui.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ funchash_core_list.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h
+layer_ui.o: layer_ui.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -13550,7 +13658,8 @@ layer_ui.o: layer_ui.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h b
  ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h layer_ui.h
-layer_vis.o: layer_vis.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+layer_vis.o: layer_vis.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -13647,7 +13756,7 @@ main.o: main.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h plug_footprint.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_lrealpath.h \
- ../src_3rd/librnd-local/src/librnd/core/buildin.hidlib.h \
+ ../src_3rd/librnd/core/buildin.hidlib.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
@@ -13666,7 +13775,8 @@ main.o: main.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_init.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h tool_logic.h \
  pixmap_pcb.h buildin.c funchash_core.h funchash_core_list.h
-main_act.o: main_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+main_act.o: main_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -13721,8 +13831,8 @@ main_act.o: main_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h b
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h
-move.o: move.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
- ../src_3rd/librnd-local/src/librnd/core/conf.h \
+move.o: move.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -13766,14 +13876,14 @@ move.o: move.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
- move.h select.h operation.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- event.h ../src_3rd/librnd-local/src/librnd/core/event.h \
+ move.h select.h operation.h undo.h ../src_3rd/libuundo/uundo.h \
+ undo_old.h event.h ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h obj_arc_op.h \
  obj_line_op.h obj_text_op.h obj_subc_op.h obj_poly_op.h obj_pstk_op.h \
  obj_rat_op.h obj_gfx_op.h
-netlist.o: netlist.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+netlist.o: netlist.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
@@ -13823,13 +13933,13 @@ netlist.o: netlist.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_rat_draw.h obj_subc_parent.h search.h remove.h operation.h draw.h \
- netlist.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_rat_draw.h obj_subc_parent.h \
+ search.h remove.h operation.h draw.h netlist.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.c \
  netlist_geo.c obj_pstk_inlines.h thermal.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h
-netlist_act.o: netlist_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+netlist_act.o: netlist_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/genregex/regex_sei.h ../src_3rd/genregex/regex_templ.h \
  ../src_3rd/genregex/regex.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
@@ -13883,7 +13993,8 @@ netlist_act.o: netlist_act.c ../config.h ../src_3rd/librnd-local/src/librnd/conf
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h netlist.h find.h \
  obj_term.h search.h obj_subc_parent.h
-obj_arc.o: obj_arc.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+obj_arc.o: obj_arc.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -13925,8 +14036,8 @@ obj_arc.o: obj_arc.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h boa
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- rotate.h ../src_3rd/librnd-local/src/librnd/core/rotate.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h rotate.h \
+ ../src_3rd/librnd-local/src/librnd/core/rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h move.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -13945,8 +14056,9 @@ obj_arc_list.o: obj_arc_list.c obj_arc_list.h obj_common.h flag.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.c
-obj_arc_ui.o: obj_arc_ui.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h obj_arc_ui.h \
- crosshair.h ../src_3rd/librnd-local/src/librnd/core/hid.h \
+obj_arc_ui.o: obj_arc_ui.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h obj_arc_ui.h crosshair.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h \
@@ -13965,7 +14077,8 @@ obj_arc_ui.o: obj_arc_ui.c ../config.h ../src_3rd/librnd-local/src/librnd/config
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h attrib.h \
  global_typedefs.h data_parent.h obj_poly.h \
  ../src_3rd/librnd-local/src/librnd/poly/polyarea.h route.h obj_arc.h
-obj_common.o: obj_common.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+obj_common.o: obj_common.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -14011,7 +14124,8 @@ obj_common.o: obj_common.c ../config.h ../src_3rd/librnd-local/src/librnd/config
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  vtpadstack.h obj_term.h extobj.h board.h vtroutestyle.h rats_patch.h \
  draw.h
-obj_gfx.o: obj_gfx.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+obj_gfx.o: obj_gfx.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_inlines.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
@@ -14055,9 +14169,9 @@ obj_gfx.o: obj_gfx.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- rotate.h ../src_3rd/librnd-local/src/librnd/core/rotate.h move.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h rotate.h \
+ ../src_3rd/librnd-local/src/librnd/core/rotate.h move.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h draw_wireframe.h \
@@ -14074,9 +14188,9 @@ obj_gfx_list.o: obj_gfx_list.c obj_gfx_list.h obj_common.h flag.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.c
-obj_line.o: obj_line.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- global_typedefs.h \
+obj_line.o: obj_line.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -14128,8 +14242,9 @@ obj_line.o: obj_line.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h u
  obj_subc_parent.h obj_hash.h draw_wireframe.h obj_line_draw.h draw.h \
  obj_rat_draw.h obj_pstk_draw.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h
-obj_line_drcenf.o: obj_line_drcenf.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+obj_line_drcenf.o: obj_line_drcenf.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
@@ -14176,16 +14291,17 @@ obj_line_drcenf.o: obj_line_drcenf.c ../config.h ../src_3rd/librnd-local/src/lib
 obj_line_list.o: obj_line_list.c obj_line_list.h obj_line.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h obj_common.h \
  flag.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h ../src_3rd/librnd-local/src/librnd/config.h \
- attrib.h global_typedefs.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/config.h attrib.h global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h data_parent.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.c
-obj_pinvia_therm.o: obj_pinvia_therm.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+obj_pinvia_therm.o: obj_pinvia_therm.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -14215,7 +14331,8 @@ obj_pinvia_therm.o: obj_pinvia_therm.c ../config.h ../src_3rd/librnd-local/src/l
  ../src_3rd/librnd-local/src/librnd/poly/rtree2_compat.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
  obj_pinvia_therm.h
-obj_poly.o: obj_poly.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+obj_poly.o: obj_poly.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -14282,7 +14399,8 @@ obj_poly_list.o: obj_poly_list.c obj_poly_list.h obj_poly.h ../config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.c
-obj_pstk.o: obj_pstk.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+obj_pstk.o: obj_pstk.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -14333,12 +14451,13 @@ obj_pstk.o: obj_pstk.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h b
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h obj_pstk_op.h \
  obj_subc_parent.h obj_hash.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h search.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- event.h ../src_3rd/librnd-local/src/librnd/core/event.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h event.h \
+ ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_inlines.h \
  ../src_3rd/librnd-local/src/librnd/poly/offset.h obj_pstk_op.c rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/rotate.h
-obj_pstk_act.o: obj_pstk_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h obj_pstk.h \
+obj_pstk_act.o: obj_pstk_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h obj_pstk.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
@@ -14394,15 +14513,16 @@ obj_pstk_list.o: obj_pstk_list.c obj_pstk_list.h obj_pstk.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
  obj_common.h flag.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h ../src_3rd/librnd-local/src/librnd/config.h \
- attrib.h global_typedefs.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/config.h attrib.h global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h data_parent.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.c
-obj_pstk_proto.o: obj_pstk_proto.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+obj_pstk_proto.o: obj_pstk_proto.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -14452,11 +14572,11 @@ obj_pstk_proto.o: obj_pstk_proto.c ../config.h ../src_3rd/librnd-local/src/librn
  data_list.h obj_pstk_op.h operation.h obj_pstk_inlines.h thermal.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/rotate.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_hash.h funchash_core.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_hash.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
  ../src_3rd/librnd-local/src/librnd/poly/offset.h
-obj_rat.o: obj_rat.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+obj_rat.o: obj_rat.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -14503,11 +14623,11 @@ obj_rat.o: obj_rat.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h boa
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_inlines.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- search.h obj_line_draw.h draw.h obj_rat_op.h operation.h obj_rat_draw.h
-obj_rat_list.o: obj_rat_list.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h layer_grp.h \
- layer.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h search.h obj_line_draw.h draw.h \
+ obj_rat_op.h operation.h obj_rat_draw.h
+obj_rat_list.o: obj_rat_list.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h layer_grp.h layer.h \
+ globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -14530,7 +14650,8 @@ obj_rat_list.o: obj_rat_list.c ../config.h ../src_3rd/librnd-local/src/librnd/co
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  obj_gfx_list.h obj_gfx.h obj_rat.h idpath.h obj_rat_list.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.c
-obj_subc.o: obj_subc.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+obj_subc.o: obj_subc.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -14576,16 +14697,17 @@ obj_subc.o: obj_subc.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  obj_pstk_inlines.h thermal.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h obj_pstk_draw.h \
  draw.h obj_line_op.h obj_term.h obj_text_draw.h draw_wireframe.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- move.h ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
- pcb_minuid.h conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h move.h \
+ ../src_3rd/librnd-local/src/librnd/core/compat_misc.h pcb_minuid.h \
+ conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib_conf.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_inlines.h extobj.h
-obj_subc_hash.o: obj_subc_hash.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h data.h \
- globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+obj_subc_hash.o: obj_subc_hash.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h data.h globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -14625,7 +14747,8 @@ obj_subc_hash.o: obj_subc_hash.c ../config.h ../src_3rd/librnd-local/src/librnd/
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h
-obj_subc_list.o: obj_subc_list.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h obj_subc.h \
+obj_subc_list.o: obj_subc_list.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h obj_subc.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  ../src_3rd/libminuid/libminuid.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -14657,7 +14780,8 @@ obj_subc_list.o: obj_subc_list.c ../config.h ../src_3rd/librnd-local/src/librnd/
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.c
-obj_term.o: obj_term.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+obj_term.o: obj_term.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
@@ -14703,8 +14827,8 @@ obj_term.o: obj_term.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h
-obj_text.o: obj_text.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h rotate.h \
- global_typedefs.h \
+obj_text.o: obj_text.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h rotate.h global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/rotate.h \
@@ -14780,7 +14904,8 @@ obj_text_list.o: obj_text_list.c obj_poly_list.h obj_poly.h ../config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.c
-object_act.o: object_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+object_act.o: object_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -14827,8 +14952,8 @@ object_act.o: object_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  board.h vtroutestyle.h rats_patch.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h change.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- event.h ../src_3rd/librnd-local/src/librnd/core/event.h funchash_core.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h event.h \
+ ../src_3rd/librnd-local/src/librnd/core/event.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash_core_list.h search.h \
@@ -14836,7 +14961,8 @@ object_act.o: object_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h layer_vis.h \
  rotate.h ../src_3rd/librnd-local/src/librnd/core/rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h view.h
-operation.o: operation.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h operation.h \
+operation.o: operation.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h operation.h \
  global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h board.h \
@@ -14882,13 +15008,14 @@ operation.o: operation.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- brave.h extobj.h obj_subc_parent.h draw.h
+ ../src_3rd/libuundo/uundo.h undo_old.h brave.h extobj.h \
+ obj_subc_parent.h draw.h
 pcb_menu_default.o: pcb_menu_default.c
 pcb_minuid.o: pcb_minuid.c ../src_3rd/libminuid/libminuid.h \
- ../src_3rd/librnd-local/src/librnd/core/compat_misc.h ../src_3rd/librnd-local/src/librnd/config.h \
- pcb_minuid.h
-pixmap_pcb.o: pixmap_pcb.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
+ ../src_3rd/librnd-local/src/librnd/config.h pcb_minuid.h
+pixmap_pcb.o: pixmap_pcb.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/pixmap.h \
@@ -14898,8 +15025,9 @@ pixmap_pcb.o: pixmap_pcb.c ../config.h ../src_3rd/librnd-local/src/librnd/config
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h obj_common.h flag.h \
  globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  attrib.h global_typedefs.h data_parent.h
-plug_footprint.o: plug_footprint.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- plug_footprint.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
+plug_footprint.o: plug_footprint.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h plug_footprint.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
  data.h globalconst.h \
@@ -14955,7 +15083,8 @@ plug_footprint.o: plug_footprint.c ../config.h ../src_3rd/librnd-local/src/librn
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h event.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h
-plug_footprint_act.o: plug_footprint_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+plug_footprint_act.o: plug_footprint_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -15002,7 +15131,8 @@ plug_footprint_act.o: plug_footprint_act.c ../config.h ../src_3rd/librnd-local/s
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h
-plug_import.o: plug_import.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+plug_import.o: plug_import.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -15034,7 +15164,8 @@ plug_import.o: plug_import.c ../config.h ../src_3rd/librnd-local/src/librnd/conf
  ../src_3rd/librnd-local/src/librnd/core/error.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_fs.h
-plug_io.o: plug_io.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+plug_io.o: plug_io.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -15101,7 +15232,8 @@ plug_io.o: plug_io.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h con
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h \
  ../src_3rd/librnd-local/src/librnd/core/file_loaded.h \
  ../src_3rd/librnd-local/src/librnd/core/tool.h view.h
-polygon.o: polygon.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+polygon.o: polygon.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -15148,11 +15280,11 @@ polygon.o: polygon.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h con
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  remove.h operation.h search.h thermal.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_poly_draw.h obj_text_draw.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_poly_draw.h obj_text_draw.h \
  ../src_3rd/librnd-local/src/librnd/poly/self_isc.h event.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h
-polygon_act.o: polygon_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+polygon_act.o: polygon_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib_conf.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -15198,12 +15330,12 @@ polygon_act.o: polygon_act.c ../config.h ../src_3rd/librnd-local/src/librnd/conf
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
- funchash_core_list.h draw.h search.h \
- ../src_3rd/librnd-local/src/librnd/core/tool.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
+ draw.h search.h ../src_3rd/librnd-local/src/librnd/core/tool.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h
-rats_act.o: rats_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+rats_act.o: rats_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -15248,15 +15380,15 @@ rats_act.o: rats_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h c
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- find.h remove.h operation.h funchash_core.h \
- ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
- ../src_3rd/librnd-local/src/librnd/core/actions.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h find.h remove.h operation.h \
+ funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
+ funchash_core_list.h ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash_core_list.h netlist.h \
  draw.h obj_rat_draw.h
 rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -15305,9 +15437,10 @@ rats_patch.o: rats_patch.c rats_patch.h board.h ../config.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
- search.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h conf_core.h netlist.h
-remove.o: remove.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ search.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h \
+ netlist.h
+remove.o: remove.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -15354,11 +15487,12 @@ remove.o: remove.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  obj_subc_parent.h remove.h operation.h select.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_arc_op.h obj_line_op.h obj_poly_op.h obj_text_op.h obj_rat_op.h \
- obj_subc_op.h obj_pstk_op.h obj_gfx_op.h
-remove_act.o: remove_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h data.h \
- globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_arc_op.h obj_line_op.h \
+ obj_poly_op.h obj_text_op.h obj_rat_op.h obj_subc_op.h obj_pstk_op.h \
+ obj_gfx_op.h
+remove_act.o: remove_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h data.h globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
@@ -15402,7 +15536,8 @@ remove_act.o: remove_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config
  ../src_3rd/librnd-local/src/librnd/core/tool.h remove.h operation.h \
  board.h vtroutestyle.h rats_patch.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h
-rotate.o: rotate.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board.h \
+rotate.o: rotate.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -15446,9 +15581,8 @@ rotate.o: rotate.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h board
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h search.h select.h \
- operation.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- event.h ../src_3rd/librnd-local/src/librnd/core/event.h conf_core.h \
+ operation.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h event.h \
+ ../src_3rd/librnd-local/src/librnd/core/event.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
@@ -15503,10 +15637,10 @@ route.o: route.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  extobj.h obj_subc_parent.h draw.h find.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- obj_line_draw.h obj_arc_draw.h route_draw.h obj_line_op.h operation.h \
- draw_wireframe.h
-route_style.o: route_style.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h obj_line_draw.h obj_arc_draw.h \
+ route_draw.h obj_line_op.h operation.h draw_wireframe.h
+route_style.o: route_style.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
@@ -15540,11 +15674,11 @@ route_style.o: route_style.c ../config.h ../src_3rd/librnd-local/src/librnd/conf
  ../src_3rd/librnd-local/src/librnd/core/math_helper.h obj_gfx_list.h \
  obj_gfx.h layer_grp.h rats_patch.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
- funchash_core_list.h conf_core.h event.h \
- ../src_3rd/librnd-local/src/librnd/core/event.h
-search.o: search.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
+ conf_core.h event.h ../src_3rd/librnd-local/src/librnd/core/event.h
+search.o: search.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -15592,7 +15726,8 @@ search.o: search.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_
  ../src_3rd/librnd-local/src/librnd/core/actions.h find.h search.h \
  select.h operation.h obj_subc_parent.h obj_pstk_inlines.h thermal.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h
-select.o: select.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+select.o: select.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -15639,13 +15774,13 @@ select.o: select.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  data_it.h draw.h search.h select.h operation.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- find.h extobj.h obj_subc_parent.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h find.h extobj.h obj_subc_parent.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h obj_arc_draw.h \
  obj_line_draw.h obj_poly_draw.h obj_text_draw.h obj_rat_draw.h \
  obj_pstk_draw.h obj_gfx_draw.h ../src_3rd/genregex/regex_sei.h \
  ../src_3rd/genregex/regex_templ.h ../src_3rd/genregex/regex.h
-select_act.o: select_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+select_act.o: select_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -15690,15 +15825,16 @@ select_act.o: select_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
- funchash_core_list.h ../src_3rd/librnd-local/src/librnd/core/tool.h \
- select.h operation.h draw.h remove.h move.h tool_logic.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
+ ../src_3rd/librnd-local/src/librnd/core/tool.h select.h operation.h \
+ draw.h remove.h move.h tool_logic.h \
  ../src_3rd/librnd-local/src/librnd/core/grid.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h
-stub_draw.o: stub_draw.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h stub_draw.h \
+stub_draw.o: stub_draw.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h stub_draw.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
@@ -15727,7 +15863,8 @@ stub_draw.o: stub_draw.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h
  obj_text.h font.h ../src_3rd/librnd-local/src/../src_3rd/genht/htip.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  obj_gfx_list.h obj_gfx.h obj_text_draw.h
-thermal.o: thermal.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h thermal.h obj_common.h \
+thermal.o: thermal.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h thermal.h obj_common.h \
  flag.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h attrib.h \
  global_typedefs.h \
@@ -15772,13 +15909,14 @@ thermal.o: thermal.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h the
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h obj_pstk_inlines.h \
  board.h vtroutestyle.h rats_patch.h obj_pinvia_therm.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h
-tool_logic.o: tool_logic.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+tool_logic.o: tool_logic.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib_conf.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -15831,8 +15969,7 @@ tool_logic.o: tool_logic.c ../config.h ../src_3rd/librnd-local/src/librnd/config
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  tool_logic.h
 undo.o: undo.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- ../src_3rd/libuundo/uundo_debug.h \
- ../src_3rd/libuundo/uundo.h board.h \
+ ../src_3rd/libuundo/uundo_debug.h ../src_3rd/libuundo/uundo.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
@@ -15877,12 +16014,13 @@ undo.o: undo.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h insert.h remove.h \
  operation.h rotate.h ../src_3rd/librnd-local/src/librnd/core/rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h search.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h \
- flag_str.h conf_core.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h flag_str.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h obj_poly_draw.h
-undo_act.o: undo_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+undo_act.o: undo_act.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -15930,12 +16068,11 @@ undo_act.o: undo_act.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h c
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
- undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h undo_act.h search.h obj_line_draw.h draw.h \
- ../src_3rd/librnd-local/src/librnd/core/tool.h
-undo_old.o: undo_old.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- ../src_3rd/libuundo/uundo.h board.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h undo_act.h search.h \
+ obj_line_draw.h draw.h ../src_3rd/librnd-local/src/librnd/core/tool.h
+undo_old.o: undo_old.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/libuundo/uundo.h \
+ board.h ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
@@ -15985,8 +16122,8 @@ undo_old.o: undo_old.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h netlist.h \
  obj_poly_draw.h obj_term.h brave.h
-view.o: view.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h idpath.h \
- ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+view.o: view.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ idpath.h ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
@@ -16026,8 +16163,8 @@ vtpadstack.o: vtpadstack.c obj_pstk.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
  obj_common.h flag.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h ../src_3rd/librnd-local/src/librnd/config.h \
- attrib.h global_typedefs.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/config.h attrib.h global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h data_parent.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h obj_arc_list.h obj_arc.h \
@@ -16056,10 +16193,10 @@ vtpadstack_t.o: vtpadstack_t.c \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
- vtpadstack_t.h obj_pstk_shape.h \
- ../src_3rd/librnd-local/src/librnd/core/unit.h polygon.h ../config.h \
- global_typedefs.h flag.h globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtpadstack_t.h \
+ obj_pstk_shape.h ../src_3rd/librnd-local/src/librnd/core/unit.h \
+ polygon.h ../config.h global_typedefs.h flag.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/poly/rtree.h \
  ../src_3rd/librnd-local/src/../src_3rd/genrtree/genrtree_api.h \
@@ -16078,15 +16215,17 @@ vtpadstack_t.o: vtpadstack_t.c \
  ../src_3rd/librnd-local/src/librnd/core/misc_util.h obj_gfx_list.h \
  obj_gfx.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.c
-vtr0.o: vtr0.c vtr0.h ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+vtr0.o: vtr0.c vtr0.h ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.c
 vtroutestyle.o: vtroutestyle.c vtroutestyle.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
- ../src_3rd/librnd-local/src/librnd/config.h ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
- attrib.h global_typedefs.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h attrib.h \
+ global_typedefs.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.c
