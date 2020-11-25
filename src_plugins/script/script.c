@@ -269,7 +269,7 @@ int rnd_script_load(const char *id, const char *fn, const char *lang)
 
 	if (strcmp(lang, "c") != 0) {
 #ifdef RND_HAVE_SYS_FUNGW
-		const char *pupname = htsp_get(&guess_lang_lang2eng, lang);
+		const char *paths[2], *pupname = htsp_get(&guess_lang_lang2eng, lang);
 		int st;
 		fgw_eng_t *eng = NULL;
 
@@ -280,7 +280,9 @@ int rnd_script_load(const char *id, const char *fn, const char *lang)
 
 		old_id = script_persistency_id;
 		script_persistency_id = id;
-		pup = pup_load(&script_pup, (const char **)rnd_pup_paths, pupname, 0, &st);
+		paths[0] = FGW_CFG_PUPDIR;
+		paths[1] = NULL;
+		pup = pup_load(&script_pup, paths, pupname, 0, &st);
 		script_persistency_id = old_id;
 		if (pup == NULL) {
 			rnd_message(RND_MSG_ERROR, "Can not load script engine %s for language %s\n", pupname, lang);
