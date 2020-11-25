@@ -34,7 +34,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/hid_init.h>
 
-static const char *guess_lang(const char *ext);
+static const char *guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filename);
 
 static int perma_load(const char *dir, const char *id, const char *path_in, const char *lang)
 {
@@ -100,12 +100,11 @@ static void perma_script_load_conf(const char *dir)
 			lang = nlang->data.text.value;
 		}
 		else { /* guess from path */
-			const char *tmp = strrchr(path_in, '.');
-			if (tmp == NULL) {
-				rnd_message(RND_MSG_ERROR, "ignoring '%s' in '%s': no lang specified and file name is not suitable for guessing\n", n->name, path);
+			lang = guess_lang(NULL, path_in, 1);
+			if (lang == NULL) {
+				rnd_message(RND_MSG_ERROR, "ignoring '%s' in '%s': no lang specified and failed to guess/recognize the language\n", n->name, path);
 				continue;
 			}
-			lang = guess_lang(tmp+1);
 		}
 
 		if (perma_load(dir, id, path_in, lang) == 0)

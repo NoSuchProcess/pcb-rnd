@@ -33,31 +33,35 @@
 #include "live_script.h"
 
 
-TODO("This should be in fungw")
-static const char *guess_lang(const char *ext)
+static const char *guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filename)
 {
-	const char **s, *tr[] = {
-		"awk",         "mawk",
-		"bas",         "fbas",
-		"pas",         "fpas",
-#ifdef RND_HAVE_SYS_FUNGW
-		"ruby",        "mruby",
-		"py",          "python",
-		"js",          "duktape",
-		"javascript",  "duktape",
-		"stt",         "estutter",
-#endif
-		NULL, NULL
-	};
+	FILE *f;
+	char *res;
 
-	/* translate short name to long name */
-	for(s = tr; *s != NULL; s += 2) {
-		if (strcmp(*s, ext) == 0) {
-			s++;
-			return *s;
-		}
+	if (!is_filename) {
+		/* known special cases - these are pcb-rnd CLI conventions */
+		if (strcmp(fn, "awk") == 0) fn = "mawk";
+		if (strcmp(fn, "bas") == 0) fn = "fbas";
+		if (strcmp(fn, "pas") == 0) fn = "fpas";
+#ifdef RND_HAVE_SYS_FUNGW
+		if (strcmp(fn, "ruby") == 0) fn = "mruby";
+		if (strcmp(fn, "stt") == 0) fn = "estutter";
+		if ((strcmp(fn, "js") == 0) || (strcmp(fn, "javascript") == 0)) fn = "duktape";
+#endif
+
+		/* find by engine name */
+		if (htsp_get(&fgw_engines, fn) != NULL)
+			return fn;
+		return NULL;
 	}
-	return ext;
+
+	/* find by file name: test parse */
+	f = rnd_fopen(hl, fn, "r");
+	res = fgw_engine_find(fn, f);
+	if (f != NULL)
+		fclose(f);
+
+	return res;
 }
 
 /*** dialog box ***/
@@ -218,9 +222,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 			RND_DAD_LABEL(idlang.dlg, "language:");
 			RND_DAD_STRING(idlang.dlg);
 				idlang.wlang = RND_DAD_CURRENT(idlang.dlg);
-				tmp = strrchr(fn, '.');
-				if (tmp != NULL)
-					idlang.dlg[idlang.wlang].val.str = rnd_strdup(guess_lang(tmp+1));
+				idlang.dlg[idlang.wlang].val.str = rnd_strdup_null(guess_lang(NULL, fn, 1));
 		RND_DAD_END(idlang.dlg);
 		RND_DAD_BUTTON_CLOSES(idlang.dlg, clbtn);
 	RND_DAD_END(idlang.dlg);
@@ -426,7 +428,7 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	lang = guess_lang(lang);
+	lang = guess_lang(NULL, lang, 0);
 
 	if (scr == NULL) {
 		RND_ACT_IRES(rnd_cli_enter(lang, lang));
