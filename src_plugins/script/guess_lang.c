@@ -27,27 +27,53 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <genht/htss.h>
+#include <genht/ht_utils.h>
 #include <puplug/util.h>
 
 static int guess_lang_inited = 0;
+static htss_t guess_lang_ext2lang;
+static htss_t guess_lang_lang2eng;
+static char *guess_lang_eng;
 
 static int guess_lang_open(pup_list_parse_pup_t *ctx, const char *path)
 {
+	int len;
+
 	if (strncmp(path, "fungw_", 6) != 0)
 		return 1;
+
+	len = strlen(path);
+	guess_lang_eng = malloc(len+1);
+	if (len > 4)
+		len -= 4;
+	memcpy(guess_lang_eng, path, len);
+	guess_lang_eng[len] = '\0';
+
 	return 0;
 }
 
 static int guess_lang_line_split(pup_list_parse_pup_t *ctx, const char *fname, char *cmd, char *args)
 {
+	if (strcmp(cmd, "$script-ext") == 0) {
+		char *lang = args, *ext = strpbrk(args, " \t");
+		if (ext != NULL) {
+			*ext = 0;
+			ext++;
+			while(isspace(*ext)) ext++;
+		}
+	}
 	return 0;
 }
 
 static void rnd_script_guess_lang_init(void)
 {
-	if (guess_lang_inited) {
+	if (!guess_lang_inited) {
 		pup_list_parse_pup_t ctx = {0};
-		char *paths[2];
+		const char *paths[2];
+
+		htss_init(&guess_lang_ext2lang, strhash, strkeyeq);
+		htss_init(&guess_lang_lang2eng, strhash, strkeyeq);
 
 		ctx.open = guess_lang_open;
 		ctx.line_split = guess_lang_line_split;
@@ -56,15 +82,18 @@ static void rnd_script_guess_lang_init(void)
 		paths[1] = NULL;
 		pup_list_parse_pups(&ctx, paths);
 
-		guess_lang_inited = 0;
+		guess_lang_inited = 1;
 	}
 }
 
 static void rnd_script_guess_lang_uninit(void)
 {
-	if (!guess_lang_inited) {
-	
-		guess_lang_inited = 1;
+	if (guess_lang_inited) {
+		genht_uninit_deep(htss, &guess_lang_ext2lang, {
+			free(htent->key);
+			free(htent->value);
+		});
+		guess_lang_inited = 0;
 	}
 }
 
