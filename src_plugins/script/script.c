@@ -269,26 +269,21 @@ int rnd_script_load(const char *id, const char *fn, const char *lang)
 
 	if (strcmp(lang, "c") != 0) {
 #ifdef RND_HAVE_SYS_FUNGW
-		const char *engname = rnd_script_guess_lang(NULL, lang, 0); /* note: this assumes all fungw engine plugins are loaded into memory already */
-		char name[RND_PATH_MAX];
+		const char *pupname = htsp_get(&guess_lang_lang2eng, lang);
 		int st;
 		fgw_eng_t *eng = NULL;
 
-		if (engname != NULL)
-			eng = htsp_get(&fgw_engines, engname);
-		if (eng == NULL) {
+		if (pupname == NULL) {
 			rnd_message(RND_MSG_ERROR, "No script engine found for language %s\n", lang);
 			return -1;
 		}
 
-		rnd_snprintf(name, sizeof(name), "fungw_%s", eng->name);
-
 		old_id = script_persistency_id;
 		script_persistency_id = id;
-		pup = pup_load(&script_pup, (const char **)rnd_pup_paths, name, 0, &st);
+		pup = pup_load(&script_pup, (const char **)rnd_pup_paths, pupname, 0, &st);
 		script_persistency_id = old_id;
 		if (pup == NULL) {
-			rnd_message(RND_MSG_ERROR, "Can not load script engine %s for language %s\n", name, lang);
+			rnd_message(RND_MSG_ERROR, "Can not load script engine %s for language %s\n", pupname, lang);
 			return -1;
 		}
 #endif
