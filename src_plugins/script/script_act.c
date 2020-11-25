@@ -36,7 +36,7 @@
 static const char *guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filename)
 {
 	FILE *f;
-	char *res;
+	const char *res;
 
 	if (!is_filename) {
 		/* known special cases - these are pcb-rnd CLI conventions */
