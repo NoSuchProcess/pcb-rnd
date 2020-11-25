@@ -36,14 +36,14 @@ static htss_t guess_lang_ext2lang;
 static htss_t guess_lang_lang2eng;
 static char *guess_lang_eng;
 
-static int guess_lang_open(pup_list_parse_pup_t *ctx, const char *path)
+static int guess_lang_open(pup_list_parse_pup_t *ctx, const char *path, const char *basename)
 {
 	int len;
 
-	if (strncmp(path, "fungw_", 6) != 0)
+	if (strncmp(basename, "fungw_", 6) != 0)
 		return 1;
 
-	len = strlen(path);
+	len = strlen(basename);
 	guess_lang_eng = malloc(len+1);
 	if (len > 4)
 		len -= 4;

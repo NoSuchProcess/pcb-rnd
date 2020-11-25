@@ -1,4 +1,4 @@
-33368	configure	scripting support cleanup
+33376	distclean	scripting support cleanup
 33318	distclean	switch over to using librnd as a whole
 33267	configure	remove vtlibrary (footprint lib allocation simplification)
 33056	configure	menu item for feature plugins: asm and shape

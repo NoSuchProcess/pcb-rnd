@@ -98,9 +98,9 @@ static void lvs_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 #ifdef RND_HAVE_SYS_FUNGW
 
-static int lvs_list_langs_open(pup_list_parse_pup_t *ctx, const char *path)
+static int lvs_list_langs_open(pup_list_parse_pup_t *ctx, const char *path, const char *basename)
 {
-	if (strncmp(path, "fungw_", 6) != 0)
+	if (strncmp(basename, "fungw_", 6) != 0)
 		return 1;
 	return 0;
 }
