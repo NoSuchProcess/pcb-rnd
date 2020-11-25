@@ -337,7 +337,11 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 
 static const char *live_default_ext(live_script_t *lvs)
 {
-	TODO("get this info from fungw for the selected language");
+	char *lang = lvs->lang_engines[lvs->dlg[lvs->wlang].val.lng];
+	fgw_eng_t *eng = htsp_get(&fgw_engines, lang);
+
+	if (eng != NULL)
+		return eng->def_ext;
 	return NULL;
 }
 
