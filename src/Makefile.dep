@@ -13756,7 +13756,7 @@ main.o: main.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h plug_footprint.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_lrealpath.h \
- ../src_3rd/librnd/core/buildin.hidlib.h \
+ ../src_3rd/librnd-local/src/librnd/core/buildin.hidlib.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
