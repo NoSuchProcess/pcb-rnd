@@ -97,15 +97,21 @@ static void lvs_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 #ifdef RND_HAVE_SYS_FUNGW
 #include <puplug/os_dep_fs.h>
-static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
+
+typedef struct pup_list_parse_pup_s pup_list_parse_pup_t;
+
+struct pup_list_parse_pup_s {
+	int (*open)(pup_list_parse_pup_t *ctx, const char *path);
+	void (*close)(pup_list_parse_pup_t *ctx, const char *path);
+	int (*line_raw)(pup_list_parse_pup_t *ctx, const char *path, char *line);
+	void *user_data;
+};
+
+static void pup_list_parse_pups(pup_list_parse_pup_t *ctx, const char **paths)
 {
 	const char **path;
-	vtp0_t vl, ve;
 
-	vtp0_init(&vl);
-	vtp0_init(&ve);
-
-	for(path = (const char **)rnd_pup_paths; *path != NULL; path++) {
+	for(path = paths; *path != NULL; path++) {
 		char fn[RND_PATH_MAX*2], *fn_end;
 		int dirlen;
 		const char *fname;
@@ -122,43 +128,90 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 
 		while((fname = pup_read_dir(d)) != NULL) {
 			FILE *f;
-			int el, len = strlen(fname);
-			char *s1, *s2, *eng, *s, *end, line[1024];
+			int len = strlen(fname);
+			char *s, line[1024];
+			const char *end;
 
 			if (len < 5)
 				continue;
+
 			end = fname + len -4;
-			if ((strcmp(end, ".pup") != 0) || (strncmp(fname, "fungw_", 6) != 0))
+			if (strcmp(end, ".pup") != 0)
+				continue;
+			
+			if ((ctx->open != NULL) && (ctx->open(ctx, fname) != 0))
 				continue;
 
 			strcpy(fn_end, fname);
 
-			f = rnd_fopen(hl, fn, "r");
+			f = rnd_fopen(NULL, fn, "r");
 			if (f == NULL)
 				continue;
 			while((s = fgets(line, sizeof(line), f)) != NULL) {
 				while(isspace(*s)) s++;
-				if (strncmp(s, "$desc", 5) != 0)
-					continue;
-				s += 5;
-				while(isspace(*s)) s++;
-				if (((s1 = strstr(s, "binding")) == NULL) || ((s2 = strstr(s, "engine")) == NULL))
-					continue;
-				if (s1 < s2) *s1 = '\0';
-				else *s2 = '\0';
-				eng = rnd_strdup(fname + 6); /* remove the fungw_ prefix, the low level script runner will insert it */
-				el = strlen(eng);
-				eng[el-4] = '\0';
-				vtp0_append(&ve, eng);
-				vtp0_append(&vl, rnd_strdup(s));
+
+				if ((ctx->line_raw != NULL) && (ctx->line_raw(ctx, fname, s) != 0))
+					break;
 			}
 			fclose(f);
+			if (ctx->close != NULL)
+				ctx->close(ctx, fname);
 		}
 		rnd_closedir(d);
 	}
-	lvs->langs = (char **)vl.array;
-	lvs->lang_engines = (char **)ve.array;
-	return vl.used;
+}
+
+static int lvs_list_langs_open(pup_list_parse_pup_t *ctx, const char *path)
+{
+	if (strncmp(path, "fungw_", 6) != 0)
+		return 1;
+	return 0;
+}
+
+typedef struct {
+	vtp0_t vl, ve;
+} lvs_lctx_t;
+
+int lvs_list_langs_line_raw(pup_list_parse_pup_t *ctx, const char *fname, char *s)
+{
+	lvs_lctx_t *lctx = ctx->user_data;
+	int el;
+	char *s1, *s2, *eng;
+
+	if (strncmp(s, "$desc", 5) != 0)
+		return 0;
+	s += 5;
+	while(isspace(*s)) s++;
+	if (((s1 = strstr(s, "binding")) == NULL) || ((s2 = strstr(s, "engine")) == NULL))
+		return 0;
+	if (s1 < s2) *s1 = '\0';
+	else *s2 = '\0';
+	eng = rnd_strdup(fname + 6); /* remove the fungw_ prefix, the low level script runner will insert it */
+	el = strlen(eng);
+	eng[el-4] = '\0';
+	vtp0_append(&lctx->ve, eng);
+	vtp0_append(&lctx->vl, rnd_strdup(s));
+	return 0;
+}
+
+
+static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
+{
+	pup_list_parse_pup_t ctx = {0};
+	lvs_lctx_t lctx;
+
+	ctx.open = lvs_list_langs_open;
+	ctx.line_raw = lvs_list_langs_line_raw;
+	ctx.user_data = &lctx;
+
+	vtp0_init(&lctx.vl);
+	vtp0_init(&lctx.ve);
+
+	pup_list_parse_pups(&ctx, (const char **)rnd_pup_paths);
+
+	lvs->langs = (char **)lctx.vl.array;
+	lvs->lang_engines = (char **)lctx.ve.array;
+	return lctx.vl.used;
 }
 #else
 static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
