@@ -140,6 +140,7 @@ static int lvs_list_langs(rnd_hidlib_t *hl, live_script_t *lvs)
 				if (strncmp(s, "$desc", 5) != 0)
 					continue;
 				s += 5;
+				while(isspace(*s)) s++;
 				if (((s1 = strstr(s, "binding")) == NULL) || ((s2 = strstr(s, "engine")) == NULL))
 					continue;
 				if (s1 < s2) *s1 = '\0';
