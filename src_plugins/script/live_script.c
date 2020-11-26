@@ -118,13 +118,21 @@ int lvs_list_langs_line_split(pup_list_parse_pup_t *ctx, const char *fname, char
 	int el;
 	char *lang, *end, *eng;
 
-	if (strcmp(cmd, "$script-ext") != 0)
+	if (strcmp(cmd, "$script-ext") == 0) { /* first arg is a language */
+		lang = rnd_strdup(args);
+		end = strpbrk(lang, " \t");
+		if (end != NULL)
+			*end = '\0';
+	}
+	else if (strcmp(cmd, "$lang-alias") == 0) { /* second arg is a language */
+		end = strpbrk(args, " \t");
+		if (end == NULL)
+			return 0;
+		while(isspace(*end)) end++;
+		lang = rnd_strdup(end);
+	}
+	else
 		return 0;
-
-	lang = rnd_strdup(args);
-	end = strpbrk(lang, " \t");
-	if (end != NULL)
-		*end = '\0';
 
 	/* remove duplicates (assumes lines within a .pup are sorted) */
 	if (lctx->vl.used > 0) {
