@@ -306,7 +306,7 @@ int rnd_script_load(rnd_hidlib_t *hl, const char *id, const char *fn, const char
 
 	old_id = script_persistency_id;
 	script_persistency_id = id;
-	s->obj = fgw_obj_new(&rnd_fgw, s->id, s->lang, s->fn, NULL);
+	s->obj = fgw_obj_new2(&rnd_fgw, s->id, s->lang, s->fn, NULL, hl);
 	script_persistency_id = old_id;
 
 	if (s->obj == NULL) {
