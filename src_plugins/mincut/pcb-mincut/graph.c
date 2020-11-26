@@ -90,6 +90,7 @@ void gr_print(gr_t *g, FILE *f, const char *prefix)
 	}
 }
 
+#ifdef DEBUG_GR
 int gr_draw(gr_t *g, const char *name, const char *type)
 {
 	char *cmd;
@@ -129,6 +130,7 @@ int gr_draw(gr_t *g, const char *name, const char *type)
 	pclose(f);
 	return 0;
 }
+#endif
 
 int gr_node_edges(gr_t *g, int node)
 {

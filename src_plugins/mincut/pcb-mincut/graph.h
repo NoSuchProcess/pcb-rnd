@@ -90,8 +90,10 @@ void gr_merge_nodes(gr_t *g, int n1, int n2);
 /* print the connection matrix */
 void gr_print(gr_t *g, FILE *f, const char *prefix);
 
+#ifdef DEBUG_GR
 /* draw graph using graphviz/dot */
 int gr_draw(gr_t *g, const char *name, const char *type);
+#endif
 
 /* return total number of edges of a node */
 int gr_node_edges(gr_t *g, int node);
