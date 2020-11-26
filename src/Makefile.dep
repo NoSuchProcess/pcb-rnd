@@ -10770,11 +10770,11 @@
  ../src_3rd/librnd-local/src/librnd/core/compat_fs.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_menu.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h global_typedefs.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
  ../src_plugins/script/script.h ../src_plugins/script/live_script.h \
- ../src_plugins/script/menu_internal.c
+ ../src_plugins/script/menu_internal.c ../src_plugins/script/glue_undo.c \
+ undo.h ../src_3rd/libuundo/uundo.h undo_old.h global_typedefs.h \
+ globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h
 ../src_plugins/script/script.o: ../src_plugins/script/script.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -10824,6 +10824,8 @@
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_plugins/script/script.h ../src_plugins/script/guess_lang.c \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htss.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht_utils.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/util.h \
  ../src_plugins/script/c_script.c \
  ../src_3rd/librnd-local/src/librnd/core/fptr_cast.h \
