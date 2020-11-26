@@ -41,8 +41,6 @@
 #include <librnd/core/compat_fs.h>
 #include <librnd/core/event.h>
 #include <librnd/core/hid_menu.h>
-#include "undo.h"
-#include "globalconst.h"
 
 #include "script.h"
 
@@ -60,7 +58,7 @@ typedef struct {
 	char **langs;
 	char **lang_engines;
 	int wtxt, wrerun, wrun, wstop, wundo, wload, wsave, wreload, wpers, wlang;
-	uundo_serial_t undo_pre, undo_post; /* undo serials pre-run and post-run */
+	long undo_pre, undo_post; /* undo serials pre-run and post-run */
 	unsigned loaded:1;
 } live_script_t;
 
@@ -293,6 +291,8 @@ static int live_stop(live_script_t *lvs)
 	return 0;
 }
 
+#include "glue_undo.c"
+
 static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 {
 	rnd_hid_attribute_t *atxt = &lvs->dlg[lvs->wtxt];
@@ -319,8 +319,8 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 
 	live_stop(lvs);
 
-	lvs->undo_pre = pcb_undo_serial();
-	numu = pcb_num_undo();
+	lvs->undo_pre = get_undo_serial(hl);
+	numu = get_num_undo(hl);
 
 	if (rnd_script_load(hl, lvs->longname, fn, lang) != 0) {
 		rnd_message(RND_MSG_ERROR, "live_script: can't load/parse the script\n");
@@ -333,9 +333,9 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 	if (!lvs->dlg[lvs->wpers].val.lng)
 		live_stop(lvs);
 
-	if ((pcb_num_undo() != numu) && (lvs->undo_pre == pcb_undo_serial()))
-		pcb_undo_inc_serial();
-	lvs->undo_post = pcb_undo_serial();
+	if ((get_num_undo(hl) != numu) && (lvs->undo_pre == get_undo_serial(hl)))
+		inc_undo_serial(hl);
+	lvs->undo_post = get_undo_serial(hl);
 
 	rnd_gui->invalidate_all(rnd_gui); /* if the script drew anything, get it displayed */
 
@@ -353,15 +353,15 @@ static const char *live_default_ext(live_script_t *lvs)
 	return NULL;
 }
 
-static int live_undo(live_script_t *lvs)
+static int live_undo(rnd_hidlib_t *hl, live_script_t *lvs)
 {
 	if (lvs->undo_pre == lvs->undo_post)
 		return 0; /* the script did nothing */
-	if (lvs->undo_post < pcb_undo_serial()) {
+	if (lvs->undo_post < get_undo_serial(hl)) {
 		rnd_message(RND_MSG_WARNING, "Can not undo live script modifications:\nthere was user edit after script executaion.\n");
 		return 1;
 	}
-	pcb_undo_above(lvs->undo_pre);
+	undo_above(hl, lvs->undo_pre);
 	rnd_gui->invalidate_all(rnd_gui);
 	return 0;
 }
@@ -517,7 +517,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_IRES(live_save(NULL, lvs, arg));
 	}
 	else if (rnd_strcasecmp(cmd, "undo") == 0) {
-		RND_ACT_IRES(live_undo(lvs));
+		RND_ACT_IRES(live_undo(RND_ACT_HIDLIB, lvs));
 	}
 	else if (rnd_strcasecmp(cmd, "run") == 0) {
 		live_run(RND_ACT_HIDLIB, lvs);
@@ -527,13 +527,13 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (rnd_strcasecmp(cmd, "rerun") == 0) {
 		live_stop(lvs);
-		live_undo(lvs);
+		live_undo(RND_ACT_HIDLIB, lvs);
 		live_run(RND_ACT_HIDLIB, lvs);
 	}
 	if (rnd_strcasecmp(cmd, "reload-rerun") == 0) {
 		RND_ACT_IRES(live_load(NULL, lvs, lvs->fn));
 		live_stop(lvs);
-		live_undo(lvs);
+		live_undo(RND_ACT_HIDLIB,lvs);
 		live_run(RND_ACT_HIDLIB, lvs);
 	}
 
