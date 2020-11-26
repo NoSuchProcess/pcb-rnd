@@ -8,4 +8,13 @@ loaded. See also <act>Redo</act>.
 Note that undo groups operations by serial number; changes with the
 same serial number will be undone (or redone) as a group.  See
 <act>Atomic</act>.
-
+<p>
+The following arguments are intended for scripting:
+<ul>
+	<li> FreezeSerial: stop increasing the undo serial number
+	<li> UnFreezeSerial: stop increasing the undo serial number
+	<li> IncSerial: increase the undo serial number (operations with the same serial number are batched); a typical sequence for batching operations is: Undo(FreezeSerial); ...; Undo(UnFreezeSerial); Undo(IcSerial)
+	<li> GetSerial: return the current undo serial
+	<li> GetNum: return the number of undo slots currently allocated
+	<li> Above, sernum: perform undo of all operations with serial number higher than sernum
+</ul>
