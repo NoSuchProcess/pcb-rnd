@@ -99,7 +99,7 @@ static void lvs_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 typedef struct {
 	vtp0_t vl, ve;
-	char *eng;
+	const char *eng;
 } lvs_lctx_t;
 
 
