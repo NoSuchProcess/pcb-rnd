@@ -249,7 +249,7 @@ static char *script_fn(const char *fn)
 	return rnd_strdup_printf("%s%c%s", rnd_conf.rc.path.home, RND_DIR_SEPARATOR_C, fn+1);
 }
 
-int rnd_script_load(const char *id, const char *fn, const char *lang)
+int rnd_script_load(rnd_hidlib_t *hl, const char *id, const char *fn, const char *lang)
 {
 	pup_plugin_t *pup;
 	script_t *s;
@@ -261,7 +261,7 @@ int rnd_script_load(const char *id, const char *fn, const char *lang)
 	}
 
 	if (lang == NULL)
-		lang = rnd_script_guess_lang(NULL, fn, 1);
+		lang = rnd_script_guess_lang(hl, fn, 1);
 	if (lang == NULL) {
 		rnd_message(RND_MSG_ERROR, "Can not load script %s from file %s: failed to guess language from file name\n", id, fn);
 		return -1;
@@ -319,7 +319,7 @@ int rnd_script_load(const char *id, const char *fn, const char *lang)
 	return 0;
 }
 
-static int script_reload(const char *id)
+static int script_reload(rnd_hidlib_t *hl, const char *id)
 {
 	int ret;
 	char *fn, *lang, *cookie;
@@ -337,7 +337,7 @@ static int script_reload(const char *id)
 	script_unload_entry(e, "reload", cookie);
 	free(cookie);
 
-	ret = rnd_script_load(id, fn, lang);
+	ret = rnd_script_load(hl, id, fn, lang);
 	free(fn);
 	free(lang);
 	return ret;
@@ -387,7 +387,7 @@ static void oneliner_boilerplate(FILE *f, const char *lang, int pre)
 	}
 }
 
-int script_oneliner(const char *lang, const char *src)
+int script_oneliner(rnd_hidlib_t *hl, const char *lang, const char *src)
 {
 	FILE *f;
 	char *fn;
@@ -406,7 +406,7 @@ int script_oneliner(const char *lang, const char *src)
 	oneliner_boilerplate(f, lang, 0);
 	fclose(f);
 
-	if (rnd_script_load("__oneliner", fn, lang) != 0) {
+	if (rnd_script_load(hl, "__oneliner", fn, lang) != 0) {
 		rnd_message(RND_MSG_ERROR, "script oneliner: can't load/parse the script\n");
 		res = -1;
 	}
@@ -463,7 +463,7 @@ int pplg_init_script(void)
 	pup_init(&script_pup);
 	rnd_live_script_init();
 	if (rnd_hid_in_main_loop)
-		perma_script_init();
+		perma_script_init(NULL); /* warning: no hidlib available */
 	else
 		rnd_event_bind(RND_EVENT_MAINLOOP_CHANGE, script_mainloop_perma_ev, NULL, script_cookie);
 	rnd_event_bind(RND_EVENT_GUI_INIT, script_timer_gui_init_ev, NULL, script_cookie);

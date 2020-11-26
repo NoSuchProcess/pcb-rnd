@@ -322,7 +322,7 @@ static int live_run(rnd_hidlib_t *hl, live_script_t *lvs)
 	lvs->undo_pre = pcb_undo_serial();
 	numu = pcb_num_undo();
 
-	if (rnd_script_load(lvs->longname, fn, lang) != 0) {
+	if (rnd_script_load(hl, lvs->longname, fn, lang) != 0) {
 		rnd_message(RND_MSG_ERROR, "live_script: can't load/parse the script\n");
 		res = -1;
 	}
@@ -520,7 +520,7 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_IRES(live_undo(lvs));
 	}
 	else if (rnd_strcasecmp(cmd, "run") == 0) {
-		live_run(NULL, lvs);
+		live_run(RND_ACT_HIDLIB, lvs);
 	}
 	else if (rnd_strcasecmp(cmd, "stop") == 0) {
 		live_stop(lvs);

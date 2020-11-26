@@ -34,7 +34,7 @@
 #include <librnd/core/hidlib.h>
 #include <librnd/core/hid_init.h>
 
-static int perma_load(const char *dir, const char *id, const char *path_in, const char *lang)
+static int perma_load(rnd_hidlib_t *hl, const char *dir, const char *id, const char *path_in, const char *lang)
 {
 	char spath[RND_PATH_MAX];
 	const char *path;
@@ -46,10 +46,10 @@ static int perma_load(const char *dir, const char *id, const char *path_in, cons
 	else
 		path = path_in;
 
-	return rnd_script_load(id, path, lang);
+	return rnd_script_load(hl, id, path, lang);
 }
 
-static void perma_script_load_conf(const char *dir)
+static void perma_script_load_conf(rnd_hidlib_t *hl, const char *dir)
 {
 	char path[RND_PATH_MAX], *errmsg;
 	lht_doc_t *doc;
@@ -105,7 +105,7 @@ static void perma_script_load_conf(const char *dir)
 			}
 		}
 
-		if (perma_load(dir, id, path_in, lang) == 0)
+		if (perma_load(hl, dir, id, path_in, lang) == 0)
 			succ++;
 		else
 			rnd_message(RND_MSG_ERROR, "failed to load script '%s' in '%s'\n", n->name, path);
@@ -117,14 +117,14 @@ static void perma_script_load_conf(const char *dir)
 	lht_dom_uninit(doc);
 }
 
-static void perma_script_init(void)
+static void perma_script_init(rnd_hidlib_t *hl)
 {
 	static int inited = 0;
 
 	if (inited) return;
 
-	perma_script_load_conf(rnd_conf_userdir_path);
-	perma_script_load_conf(rnd_conf_sysdir_path);
+	perma_script_load_conf(hl, rnd_conf_userdir_path);
+	perma_script_load_conf(hl, rnd_conf_sysdir_path);
 
 	inited = 1;
 }
@@ -132,6 +132,6 @@ static void perma_script_init(void)
 static void script_mainloop_perma_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	if (rnd_hid_in_main_loop)
-		perma_script_init();
+		perma_script_init(hidlib);
 }
 

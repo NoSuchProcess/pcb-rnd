@@ -143,11 +143,12 @@ static void btn_unload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 static void btn_reload_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	script_dlg_t *ctx = caller_data;
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wslist]);
 	if (row == NULL)
 		return;
 
-	script_reload(row->cell[0]);
+	script_reload(hl, row->cell[0]);
 	script_dlg_s2d(ctx);
 }
 
@@ -159,6 +160,7 @@ static void slist_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr
 static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	script_dlg_t *ctx = caller_data;
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	int failed;
 	char *tmp, *fn = rnd_gui->fileselect(rnd_gui, "script to load", "Select a script file to load", NULL, NULL, NULL, "script", RND_HID_FSD_READ, NULL);
 	rnd_hid_dad_buttons_t clbtn[] = {{"Cancel", -1}, {"ok", 0}, {NULL, 0}};
@@ -198,7 +200,7 @@ static void btn_load_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 
 	RND_DAD_AUTORUN("script_load", idlang.dlg, "load script", NULL, failed);
 
-	if ((!failed) && (rnd_script_load(idlang.dlg[idlang.wid].val.str, fn, idlang.dlg[idlang.wlang].val.str) == 0))
+	if ((!failed) && (rnd_script_load(hl, idlang.dlg[idlang.wid].val.str, fn, idlang.dlg[idlang.wlang].val.str) == 0))
 		script_dlg_s2d(ctx);
 
 	RND_DAD_FREE(idlang.dlg);
@@ -284,7 +286,7 @@ static fgw_error_t pcb_act_LoadScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	ID_VALIDATE(id, LoadScript);
 
-	RND_ACT_IRES(rnd_script_load(id, fn, lang));
+	RND_ACT_IRES(rnd_script_load(RND_ACT_HIDLIB, id, fn, lang));
 	script_dlg_update();
 	return 0;
 }
@@ -313,7 +315,7 @@ static fgw_error_t pcb_act_ReloadScript(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 	ID_VALIDATE(id, ReloadScript);
 
-	RND_ACT_IRES(script_reload(id));
+	RND_ACT_IRES(script_reload(RND_ACT_HIDLIB, id));
 	script_dlg_update();
 	return 0;
 }
@@ -408,7 +410,7 @@ static fgw_error_t pcb_act_Oneliner(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	RND_ACT_IRES(script_oneliner(lang, scr));
+	RND_ACT_IRES(script_oneliner(RND_ACT_HIDLIB, lang, scr));
 	return 0;
 }
 
