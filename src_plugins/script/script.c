@@ -274,7 +274,7 @@ int rnd_script_load(rnd_hidlib_t *hl, const char *id, const char *fn, const char
 		fgw_eng_t *eng = NULL;
 
 		rnd_script_guess_lang_init();
-		pupname = htsp_get(&guess_lang_lang2eng, lang);
+		pupname = htss_get(&guess_lang_lang2eng, lang);
 
 		if (pupname == NULL) {
 			rnd_message(RND_MSG_ERROR, "No script engine found for language %s\n", lang);
