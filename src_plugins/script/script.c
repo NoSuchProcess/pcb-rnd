@@ -271,7 +271,6 @@ int rnd_script_load(rnd_hidlib_t *hl, const char *id, const char *fn, const char
 #ifdef RND_HAVE_SYS_FUNGW
 		const char *paths[2], *pupname;
 		int st;
-		fgw_eng_t *eng = NULL;
 
 		rnd_script_guess_lang_init();
 		pupname = htss_get(&guess_lang_lang2eng, lang);
