@@ -44,7 +44,7 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/hid_menu.h>
 #include <librnd/core/event.h>
-#include "globalconst.h"
+#include <librnd/core/globalconst.h>
 
 #include "script.h"
 #include "guess_lang.c"
