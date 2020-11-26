@@ -39,6 +39,7 @@
 static int guess_lang_inited = 0;
 static htsp_t guess_lang_ext2lang; /* of (vtp0_t *) listing (char *) languages */
 static htss_t guess_lang_lang2eng;
+static htss_t guess_lang_alias;
 static char *guess_lang_eng;
 
 static int guess_lang_open(pup_list_parse_pup_t *ctx, const char *path, const char *basename)
@@ -91,6 +92,17 @@ static int guess_lang_line_split(pup_list_parse_pup_t *ctx, const char *fname, c
 /*printf("APP: '%s' -> '%s'\n", ext, lang);*/
 		}
 	}
+	else if (strcmp(cmd, "$lang-alias") == 0) {
+		char *lang = args, *alias = strpbrk(args, " \t");
+
+		if (alias != NULL) {
+			*alias = 0;
+			alias++;
+			while(isspace(*alias)) alias++;
+			if (htss_get(&guess_lang_alias, alias) == NULL)
+				htss_set(&guess_lang_alias, rnd_strdup(alias), rnd_strdup(lang));
+		}
+	}
 	return 0;
 }
 
@@ -102,6 +114,7 @@ static void rnd_script_guess_lang_init(void)
 
 		htsp_init(&guess_lang_ext2lang, strhash, strkeyeq);
 		htss_init(&guess_lang_lang2eng, strhash, strkeyeq);
+		htss_init(&guess_lang_alias, strhash, strkeyeq);
 
 		ctx.open = guess_lang_open;
 		ctx.line_split = guess_lang_line_split;
@@ -131,8 +144,22 @@ static void rnd_script_guess_lang_uninit(void)
 			free(htent->key);
 			free(htent->value);
 		});
+		genht_uninit_deep(htss, &guess_lang_alias, {
+			free(htent->key);
+			free(htent->value);
+		});
 		guess_lang_inited = 0;
 	}
+}
+
+const char *rnd_script_lang2eng(const char **lang)
+{
+	const char *alang = htss_get(&guess_lang_alias, *lang);
+
+	if (alang != NULL)
+		*lang = alang;
+
+	return htss_get(&guess_lang_lang2eng, *lang);
 }
 
 const char *rnd_script_guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filename)
@@ -140,15 +167,7 @@ const char *rnd_script_guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filen
 	rnd_script_guess_lang_init();
 
 	if (!is_filename) {
-		char *eng = htss_get(&guess_lang_lang2eng, fn);
-
-		/* known special cases - these are pcb-rnd CLI conventions */
-TODO("handle this using aliases");
-#ifdef RND_HAVE_SYS_FUNGW
-		if (strcmp(fn, "ruby") == 0) fn = "mruby";
-		if (strcmp(fn, "stt") == 0) fn = "estutter";
-		if ((strcmp(fn, "js") == 0) || (strcmp(fn, "javascript") == 0)) fn = "duktape";
-#endif
+		const char *eng = rnd_script_lang2eng(&fn);
 
 		/* find by engine name */
 		if (eng != NULL)

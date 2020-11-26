@@ -493,6 +493,7 @@ static rnd_action_t script_action_list[] = {
 	{"lua",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"tcl",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"javascript",  pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
+	{"duktape",     pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"js",          pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"stt",         pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
 	{"estutter",    pcb_act_Oneliner, pcb_acth_Oneliner, pcb_acts_Oneliner},
