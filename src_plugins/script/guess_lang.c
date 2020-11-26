@@ -40,6 +40,7 @@ static int guess_lang_inited = 0;
 static htsp_t guess_lang_ext2lang; /* of (vtp0_t *) listing (char *) languages */
 static htss_t guess_lang_lang2eng;
 static htss_t guess_lang_alias;
+static htsp_t guess_lang_engs; /* value is the same as key, value is not free'd */
 static char *guess_lang_eng;
 
 static int guess_lang_open(pup_list_parse_pup_t *ctx, const char *path, const char *basename)
@@ -55,6 +56,8 @@ static int guess_lang_open(pup_list_parse_pup_t *ctx, const char *path, const ch
 		len -= 4;
 	memcpy(guess_lang_eng, basename, len);
 	guess_lang_eng[len] = '\0';
+
+	htsp_set(&guess_lang_engs, guess_lang_eng, guess_lang_eng);
 
 	return 0;
 }
@@ -115,6 +118,7 @@ static void rnd_script_guess_lang_init(void)
 		htsp_init(&guess_lang_ext2lang, strhash, strkeyeq);
 		htss_init(&guess_lang_lang2eng, strhash, strkeyeq);
 		htss_init(&guess_lang_alias, strhash, strkeyeq);
+		htsp_init(&guess_lang_engs, strhash, strkeyeq);
 
 		ctx.open = guess_lang_open;
 		ctx.line_split = guess_lang_line_split;
@@ -148,18 +152,28 @@ static void rnd_script_guess_lang_uninit(void)
 			free(htent->key);
 			free(htent->value);
 		});
+		genht_uninit_deep(htsp, &guess_lang_engs, {
+			free(htent->key);
+		});
 		guess_lang_inited = 0;
 	}
 }
 
 const char *rnd_script_lang2eng(const char **lang)
 {
-	const char *alang = htss_get(&guess_lang_alias, *lang);
+	const char *eng, *alang = htss_get(&guess_lang_alias, *lang);
 
 	if (alang != NULL)
 		*lang = alang;
 
-	return htss_get(&guess_lang_lang2eng, *lang);
+	eng = htss_get(&guess_lang_lang2eng, *lang);
+	if (eng == NULL) {
+		/* last resort: maybe *lang is an eng, prefixewd with fungw_ */
+		char name[RND_PATH_MAX];
+		rnd_snprintf(name, RND_PATH_MAX, "fungw_%s", *lang);
+		eng = htsp_get(&guess_lang_engs, name);
+	}
+	return eng;
 }
 
 const char *rnd_script_guess_lang(rnd_hidlib_t *hl, const char *fn, int is_filename)
