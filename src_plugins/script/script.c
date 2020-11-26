@@ -309,8 +309,8 @@ int rnd_script_load(rnd_hidlib_t *hl, const char *id, const char *fn, const char
 	script_persistency_id = old_id;
 
 	if (s->obj == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to parse/execute %s script from file %s (using %s)\n", id, fn, s->pup->name);
 		script_free(s, NULL, NULL);
-		rnd_message(RND_MSG_ERROR, "Failed to parse/execute %s script from file %s\n", id, fn);
 		return -1;
 	}
 
