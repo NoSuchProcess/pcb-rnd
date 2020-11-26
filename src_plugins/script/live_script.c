@@ -528,13 +528,13 @@ fgw_error_t pcb_act_LiveScript(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else if (rnd_strcasecmp(cmd, "rerun") == 0) {
 		live_stop(lvs);
 		live_undo(lvs);
-		live_run(NULL, lvs);
+		live_run(RND_ACT_HIDLIB, lvs);
 	}
 	if (rnd_strcasecmp(cmd, "reload-rerun") == 0) {
 		RND_ACT_IRES(live_load(NULL, lvs, lvs->fn));
 		live_stop(lvs);
 		live_undo(lvs);
-		live_run(NULL, lvs);
+		live_run(RND_ACT_HIDLIB, lvs);
 	}
 
 	return 0;
