@@ -79,6 +79,7 @@ static const char *EXPERIMENTAL = NULL;
 
 #warning TODO: librnd: remove this once librnd is not extern anymore
 #include <genregex/regex_se.h>
+#include <puplug/util.h>
 
 #define pup_buildins pcb_rnd_buildins
 #include "buildin.c"
@@ -444,6 +445,7 @@ int main(int argc, char *argv[])
 		p0 = lhtpers_early_end;
 		p1 = vti0_init;
 		p1 = re_se_exec;
+		p1 = pup_list_parse_pups;
 		(void)p0;
 		(void)p1;
 	}
