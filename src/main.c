@@ -77,6 +77,9 @@ static const char *EXPERIMENTAL = NULL;
 #include "tool_logic.h"
 #include "pixmap_pcb.h"
 
+#warning TODO: librnd: remove this once librnd is not extern anymore
+#include <genregex/regex_se.h>
+
 #define pup_buildins pcb_rnd_buildins
 #include "buildin.c"
 #undef pup_buildins
@@ -430,16 +433,19 @@ int main(int argc, char *argv[])
 	{
 		extern const char *lhtpers_early_end[];
 		extern void vti0_init();
-		void *p;
+		void *p0;
+		void (*p1)();
 		
 #warning TODO: librnd: remove this once librnd is not extern anymore
 		rnd_plugin_add_dir("../src_3rd/librnd-local/src/plugins");
 
 		/* temporary workaround: make sure objects from .a are linked even
 		   if pcb-rnd code didn't need them (some plugins will) */
-		p = lhtpers_early_end;
-		p = vti0_init;
-		(void)p;
+		p0 = lhtpers_early_end;
+		p1 = vti0_init;
+		p1 = re_se_exec;
+		(void)p0;
+		(void)p1;
 	}
 
 	pcb_event_init_app();

@@ -100,7 +100,6 @@ include {../src_plugins/query/Plug.tmpasm}
 include {../src_plugins/renumber/Plug.tmpasm}
 include {../src_plugins/report/Plug.tmpasm}
 include {../src_plugins/rubberband_orig/Plug.tmpasm}
-include {../src_plugins/script/Plug.tmpasm}
 include {../src_plugins/serpentine/Plug.tmpasm}
 include {../src_plugins/shand_cmd/Plug.tmpasm}
 include {../src_plugins/shape/Plug.tmpasm}

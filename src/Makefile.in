@@ -19,12 +19,6 @@ include [@../@/local/pcb/librnd_root@/librnd/scconfig/template/debug.tmpasm@]
 # but nothing else; in short the HID part of pcb-rnd for developing a
 # GUI program based on pcb-rnd HIDs.
 
-append /local/pcb/OBJS_3RDLIB [@
-	../src_3rd/genregex/regex_sei.o
-	../src_3rd/genregex/regex_se.o
-	../src_3rd/genregex/regex.o
-@]
-
 put /local/pcb/OBJS_C99 {}
 put /local/pcb/OBJS {}
 append /local/pcb/OBJS /local/pcb/OBJS_3RDLIB

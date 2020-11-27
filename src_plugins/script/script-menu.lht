@@ -1,9 +1,0 @@
-ha:rnd-menu-v1 {
-	li:anchored {
-		ha:@scripts {
-			li:submenu {
-				ha:Open live script dialog... = { action = LiveScript(new) }
-			}
-		}
-	}
-}
