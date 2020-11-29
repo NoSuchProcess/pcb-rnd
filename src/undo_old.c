@@ -207,18 +207,14 @@ static UndoListType *GetUndoSlot(int CommandType, long int ID, pcb_objtype_t Kin
 }
 
 
-/* ---------------------------------------------------------------------------
- * redraws the recovered object
- */
+/* redraws the recovered object */
 static void DrawRecoveredObject(pcb_any_obj_t *obj)
 {
 	pcb_draw_obj(obj);
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a 90 deg 'rotate' operation
- * returns rnd_true if anything has been recovered
- */
+/* recovers an object from a 90 deg 'rotate' operation returns rnd_true if
+   anything has been recovered */
 static rnd_bool UndoRotate90(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -237,10 +233,8 @@ static rnd_bool UndoRotate90(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from an arbitrary angle 'rotate' operation
- * returns rnd_true if anything has been recovered
- */
+/* recovers an object from an arbitrary angle 'rotate' operation
+   returns rnd_true if anything has been recovered */
 static rnd_bool UndoRotate(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -256,10 +250,8 @@ static rnd_bool UndoRotate(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a clear/restore poly operation
- * returns rnd_true if anything has been recovered
- */
+/* recovers an object from a clear/restore poly operation
+   returns rnd_true if anything has been recovered */
 static rnd_bool UndoClearPoly(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -277,10 +269,8 @@ static rnd_bool UndoClearPoly(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a 'change name' operation
- * returns rnd_true if anything has been recovered
- */
+/* recovers an object from a 'change name' operation
+   returns rnd_true if anything has been recovered */
 static rnd_bool UndoChangeName(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -295,9 +285,7 @@ static rnd_bool UndoChangeName(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a ChangeAngles change operation
- */
+/* recovers an object from a ChangeAngles change operation */
 static rnd_bool UndoChangeAngles(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -328,9 +316,7 @@ static rnd_bool UndoChangeAngles(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a ChangeRadii change operation
- */
+/* recovers an object from a ChangeRadii change operation */
 static rnd_bool UndoChangeRadii(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -359,9 +345,7 @@ static rnd_bool UndoChangeRadii(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a clearance size change operation
- */
+/* recovers an object from a clearance size change operation */
 static rnd_bool UndoChangeClearSize(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -385,9 +369,7 @@ static rnd_bool UndoChangeClearSize(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a Size change operation
- */
+/* recovers an object from a Size change operation */
 static rnd_bool UndoChangeSize(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3, *ptr1e;
@@ -414,9 +396,7 @@ static rnd_bool UndoChangeSize(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a 2nd Size change operation
- */
+/* recovers an object from a 2nd Size change operation */
 static rnd_bool UndoChange2ndSize(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -437,9 +417,7 @@ static rnd_bool UndoChange2ndSize(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a Size change operation
- */
+/* recovers an object from a Size change operation */
 static rnd_bool UndoChangeRot(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -478,9 +456,7 @@ static rnd_bool UndoChangeRot(UndoListTypePtr Entry)
 	return ret;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a FLAG change operation
- */
+/* recovers an object from a FLAG change operation */
 static rnd_bool UndoFlag(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr1e, *ptr2, *ptr3, *txt_save;
@@ -537,10 +513,8 @@ static rnd_bool UndoFlag(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers a subc from an other-side  operation
- * returns rnd_true if anything has been recovered
- */
+/* recovers a subc from an other-side  operation
+   returns rnd_true if anything has been recovered */
 static rnd_bool UndoOtherSide(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -575,10 +549,8 @@ static void get_subc_parent_data(long subcid, rnd_layer_id_t subclayer, pcb_subc
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a 'copy' or 'create' operation
- * returns rnd_true if anything has been recovered
- */
+/* recovers an object from a 'copy' or 'create' operation
+   returns rnd_true if anything has been recovered */
 static rnd_bool UndoCopyOrCreate(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -607,10 +579,8 @@ static rnd_bool UndoCopyOrCreate(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an object from a 'move' operation
- * returns rnd_true if anything has been recovered
- */
+/* recovers an object from a 'move' operation
+   returns rnd_true if anything has been recovered */
 static rnd_bool UndoMove(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -627,10 +597,8 @@ static rnd_bool UndoMove(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ----------------------------------------------------------------------
- * recovers an object from a 'remove' operation
- * returns rnd_true if anything has been recovered
- */
+/* recovers an object from a 'remove' operation
+   returns rnd_true if anything has been recovered */
 static rnd_bool UndoRemove(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -669,10 +637,8 @@ static rnd_bool UndoRemove(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ----------------------------------------------------------------------
- * recovers an object from a 'move to another layer' operation
- * returns rnd_true if anything has been recovered
- */
+/* recovers an object from a 'move to another layer' operation
+   returns rnd_true if anything has been recovered */
 static rnd_bool UndoMoveToLayer(UndoListTypePtr Entry)
 {
 	void *ptr1, *ptr2, *ptr3;
@@ -696,10 +662,8 @@ static rnd_bool UndoMoveToLayer(UndoListTypePtr Entry)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers a removed polygon point
- * returns rnd_true on success
- */
+/* recovers a removed polygon point
+   returns rnd_true on success */
 static rnd_bool UndoRemovePoint(UndoListTypePtr Entry)
 {
 	pcb_layer_t *layer;
@@ -735,10 +699,8 @@ static rnd_bool UndoRemovePoint(UndoListTypePtr Entry)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an inserted polygon point
- * returns rnd_true on success
- */
+/* recovers an inserted polygon point
+   returns rnd_true on success */
 static rnd_bool UndoInsertPoint(UndoListTypePtr Entry)
 {
 	pcb_layer_t *layer;
@@ -823,20 +785,14 @@ static rnd_bool UndoSwapCopiedObject(UndoListTypePtr Entry)
 	return rnd_true;
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an removed polygon point
- * returns rnd_true on success
- */
+/* recovers an removed polygon point returns rnd_true on success */
 static rnd_bool UndoRemoveContour(UndoListTypePtr Entry)
 {
 	assert(Entry->Kind == PCB_OBJ_POLY);
 	return UndoSwapCopiedObject(Entry);
 }
 
-/* ---------------------------------------------------------------------------
- * recovers an inserted polygon point
- * returns rnd_true on success
- */
+/* recovers an inserted polygon point returns rnd_true on success */
 static rnd_bool UndoInsertContour(UndoListTypePtr Entry)
 {
 	assert(Entry->Kind == PCB_OBJ_POLY);
@@ -950,9 +906,7 @@ static int pcb_undo_old_undo(void *ptr_)
 	return -1;
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of clearpoly objects
- */
+/* adds an object to the list of clearpoly objects */
 void pcb_undo_add_obj_to_clear_poly(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_bool clear)
 {
 	UndoListTypePtr undo;
@@ -964,9 +918,7 @@ void pcb_undo_add_obj_to_clear_poly(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an subc to the list of objects tossed to the other side
- */
+/* adds an subc to the list of objects tossed to the other side */
 void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t yoff)
 {
 	UndoListTypePtr undo;
@@ -977,9 +929,7 @@ void pcb_undo_add_subc_to_otherside(int Type, void *Ptr1, void *Ptr2, void *Ptr3
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of 90-deg rotated objects
- */
+/* adds an object to the list of 90-deg rotated objects */
 void pcb_undo_add_obj_to_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t CenterX, rnd_coord_t CenterY, unsigned int Steps)
 {
 	UndoListTypePtr undo;
@@ -992,9 +942,7 @@ void pcb_undo_add_obj_to_rotate90(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of rotated objects
- */
+/* adds an object to the list of rotated objects */
 void pcb_undo_add_obj_to_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t CenterX, rnd_coord_t CenterY, rnd_angle_t angle)
 {
 	UndoListTypePtr undo;
@@ -1007,10 +955,7 @@ void pcb_undo_add_obj_to_rotate(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rn
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of removed objects and removes it from
- * the current PCB
- */
+/* adds an object to the list of removed objects and removes it from the current PCB */
 void pcb_undo_move_obj_to_remove(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	UndoListTypePtr Entry;
@@ -1070,9 +1015,7 @@ TODO("subc: floater subc-in-subc should remember its subc parent too")
 	pcb_move_obj_to_buffer(PCB, pcb_removelist, PCB->Data, Type, Ptr1, Ptr2, Ptr3);
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of removed polygon/... points
- */
+/* adds an object to the list of removed polygon/... points */
 void pcb_undo_add_obj_to_remove_point(int Type, void *Ptr1, void *Ptr2, rnd_cardinal_t index)
 {
 	UndoListTypePtr undo;
@@ -1109,9 +1052,7 @@ void pcb_undo_add_obj_to_remove_point(int Type, void *Ptr1, void *Ptr2, rnd_card
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of inserted polygon/... points
- */
+/* adds an object to the list of inserted polygon/... points */
 void pcb_undo_add_obj_to_insert_point(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	if (!Locked)
@@ -1134,27 +1075,21 @@ static void CopyObjectToUndoList(int undo_type, int Type, void *Ptr1, void *Ptr2
 	undo->Data.CopyID = copy->ID;
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of removed contours
- * (Actually just takes a copy of the whole polygon to restore)
- */
+/* adds an object to the list of removed contours
+   (Actually just takes a copy of the whole polygon to restore) */
 void pcb_undo_add_obj_to_remove_contour(int Type, pcb_layer_t * Layer, pcb_poly_t * Polygon)
 {
 	CopyObjectToUndoList(PCB_UNDO_REMOVE_CONTOUR, Type, Layer, Polygon, NULL);
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of insert contours
- * (Actually just takes a copy of the whole polygon to restore)
- */
+/* adds an object to the list of insert contours
+   (Actually just takes a copy of the whole polygon to restore) */
 void pcb_undo_add_obj_to_insert_contour(int Type, pcb_layer_t * Layer, pcb_poly_t * Polygon)
 {
 	CopyObjectToUndoList(PCB_UNDO_INSERT_CONTOUR, Type, Layer, Polygon, NULL);
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of moved objects
- */
+/* adds an object to the list of moved objects */
 void pcb_undo_add_obj_to_move(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t DX, rnd_coord_t DY)
 {
 	UndoListTypePtr undo;
@@ -1166,9 +1101,7 @@ void pcb_undo_add_obj_to_move(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of objects with changed names
- */
+/* adds an object to the list of objects with changed names */
 void pcb_undo_add_obj_to_change_name(int Type, void *Ptr1, void *Ptr2, void *Ptr3, char *OldName)
 {
 	UndoListTypePtr undo;
@@ -1179,9 +1112,7 @@ void pcb_undo_add_obj_to_change_name(int Type, void *Ptr1, void *Ptr2, void *Ptr
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of objects moved to another layer
- */
+/* adds an object to the list of objects moved to another layer */
 void pcb_undo_add_obj_to_move_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	UndoListTypePtr undo;
@@ -1193,9 +1124,7 @@ void pcb_undo_add_obj_to_move_to_layer(int Type, void *Ptr1, void *Ptr2, void *P
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of created objects
- */
+/* adds an object to the list of created objects */
 void pcb_undo_add_obj_to_create(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	if (!Locked)
@@ -1209,9 +1138,7 @@ void pcb_undo_add_obj_to_create_noclear(int Type, void *Ptr1, void *Ptr2, void *
 		GetUndoSlot(PCB_UNDO_CREATE, PCB_OBJECT_ID(Ptr3), Type);
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of objects with flags changed
- */
+/* adds an object to the list of objects with flags changed */
 void pcb_undo_add_obj_to_flag(void *obj_)
 {
 	UndoListTypePtr undo;
@@ -1223,9 +1150,7 @@ void pcb_undo_add_obj_to_flag(void *obj_)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of objects with Size changes
- */
+/* adds an object to the list of objects with Size changes */
 void pcb_undo_add_obj_to_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 {
 	UndoListTypePtr undo;
@@ -1247,9 +1172,7 @@ void pcb_undo_add_obj_to_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 }
 
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of objects with Size changes
- */
+/* adds an object to the list of objects with Size changes */
 void pcb_undo_add_obj_to_2nd_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 {
 	UndoListTypePtr undo;
@@ -1264,9 +1187,7 @@ void pcb_undo_add_obj_to_2nd_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of objects with rot changes
- */
+/* adds an object to the list of objects with rot changes */
 void pcb_undo_add_obj_to_rot(int Type, void *ptr1, void *ptr2, void *ptr3)
 {
 	UndoListTypePtr undo;
@@ -1284,9 +1205,7 @@ void pcb_undo_add_obj_to_rot(int Type, void *ptr1, void *ptr2, void *ptr3)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of objects with Size changes
- */
+/* adds an object to the list of objects with Size changes */
 void pcb_undo_add_obj_to_clear_size(int Type, void *ptr1, void *ptr2, void *ptr3)
 {
 	UndoListTypePtr undo;
@@ -1304,10 +1223,8 @@ void pcb_undo_add_obj_to_clear_size(int Type, void *ptr1, void *ptr2, void *ptr3
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of changed angles.  Note that you must
- * call this before changing the angles, passing the new start/delta.
- */
+/* adds an object to the list of changed angles.  Note that you must
+   call this before changing the angles, passing the new start/delta. */
 void pcb_undo_add_obj_to_change_angles(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	UndoListTypePtr undo;
@@ -1320,10 +1237,8 @@ void pcb_undo_add_obj_to_change_angles(int Type, void *Ptr1, void *Ptr2, void *P
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * adds an object to the list of changed radii.  Note that you must
- * call this before changing the radii, passing the new width/height.
- */
+/* adds an object to the list of changed radii.  Note that you must
+   call this before changing the radii, passing the new width/height */
 void pcb_undo_add_obj_to_change_radii(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	UndoListTypePtr undo;
