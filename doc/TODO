@@ -12,6 +12,7 @@
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
 - BUG: {i c p}, window geometry, save to user config 'now' -> not saved [report: thet]
+- BUG: set alternate window layout off, start pressing keys: the kbd= printout on the bottom has no spacing to the via printout [report: thet]
 - BUG: draw a bus, draw a polygin around the bus, cut bus to buffer, paste bus -> poly is not clipped ml4504 [report: Majenko]
 - BUG: {w d}, config, drc_query, edit definitions, change min drill value -> value on the change button doesn't refresh [report: bdale]
 - BUG: built-in irc client: pick a nick too long and the client will never recognize itself after connect (can't send messages); also test nick collision on connect [report: aron]
