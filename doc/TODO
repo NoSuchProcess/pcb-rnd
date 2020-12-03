@@ -6,6 +6,7 @@
 - FEATURE: tedax netlist parser: load comptag (and nettag) in a second pass [report: Bdale]
 - FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
 - FEATURE: think over style clearance indication: on editing exisitng object it should probably be the clearance of the object [report: Ade]
+- FEATURE: Add configuration item for text box update timer duration that waits for user to stop typing before updating. [report: Ade]
 - FEATURE: new breadboard
 	- FEATURE: gfx rotated pixmap scale adjustment: missing in lesstif, partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
 	- FEATURE: hidlib: render pixmap: test in gl
