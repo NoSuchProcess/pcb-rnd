@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=pcb-rnd
+GenericName=PCB layout tool
+Exec=pcb-rnd %F
+Icon=pcb-rnd
+Type=Application
+Terminal=false
+Categories=Office;Engineering;Electronics;Development;
