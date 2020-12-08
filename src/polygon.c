@@ -1098,11 +1098,8 @@ rnd_bool pcb_poly_remove_excess_points(pcb_layer_t *Layer, pcb_poly_t *Polygon)
 	return changed;
 }
 
-/* ---------------------------------------------------------------------------
- * returns the index of the polygon point which is the end
- * point of the segment with the lowest distance to the passed
- * coordinates
- */
+/* returns the index of the polygon point which is the end
+   point of the segment with the lowest distance to the passed coordinates */
 rnd_cardinal_t pcb_poly_get_lowest_distance_point(pcb_poly_t *Polygon, rnd_coord_t X, rnd_coord_t Y)
 {
 	double mindistance = (double) RND_MAX_COORD * RND_MAX_COORD;
@@ -1110,12 +1107,10 @@ rnd_cardinal_t pcb_poly_get_lowest_distance_point(pcb_poly_t *Polygon, rnd_coord
 	rnd_cardinal_t n, result = 0;
 
 	/* we calculate the distance to each segment and choose the
-	 * shortest distance. If the closest approach between the
-	 * given point and the projected line (i.e. the segment extended)
-	 * is not on the segment, then the distance is the distance
-	 * to the segment end point.
-	 */
-
+	   shortest distance. If the closest approach between the
+	   given point and the projected line (i.e. the segment extended)
+	   is not on the segment, then the distance is the distance
+	   to the segment end point.*/
 	for (n = 0; n < Polygon->PointN; n++) {
 		double u, dx, dy;
 		ptr1 = &Polygon->Points[pcb_poly_contour_prev_point(Polygon, n)];
@@ -1145,9 +1140,7 @@ rnd_cardinal_t pcb_poly_get_lowest_distance_point(pcb_poly_t *Polygon, rnd_coord
 	return result;
 }
 
-/* ---------------------------------------------------------------------------
- * go back to the previous point of the polygon (undo)
- */
+/* go back to the previous point of the polygon (undo) */
 void pcb_polygon_go_to_prev_point(void)
 {
 	switch (pcb_crosshair.AttachedPolygon.PointN) {
@@ -1175,9 +1168,7 @@ void pcb_polygon_go_to_prev_point(void)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * go forward to the next point of the polygon (redo)
- */
+/* go forward to the next point of the polygon (redo) */
 void pcb_polygon_go_to_next_point(void)
 {
 	if ((pcb_crosshair.AttachedPolygon.PointN > 0) && (pcb_crosshair.AttachedPolygon.PointN < pcb_crosshair.AttachedPolygon_pts)) {
@@ -1190,9 +1181,7 @@ void pcb_polygon_go_to_next_point(void)
 	}
 }
 
-/* ---------------------------------------------------------------------------
- * close polygon if possible
- */
+/* close polygon if possible */
 void pcb_polygon_close_poly(void)
 {
 	rnd_cardinal_t n = pcb_crosshair.AttachedPolygon.PointN;
@@ -1200,8 +1189,7 @@ void pcb_polygon_close_poly(void)
 	/* check number of points */
 	if (n >= 3) {
 		/* if 45 degree lines are what we want do a quick check
-		 * if closing the polygon makes sense
-		 */
+		   if closing the polygon makes sense */
 		if (!conf_core.editor.all_direction_lines) {
 			rnd_coord_t dx, dy;
 
