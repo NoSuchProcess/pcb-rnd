@@ -573,10 +573,11 @@ rnd_r_dir_t pcb_pstk_draw_callback(const rnd_box_t *b, void *cl)
 		}
 		else
 			pcb_pstk_draw_shape_solid(info, pcb_draw_out.fgGC, ps, shape);
-	}
+		ps->draw_stamp = info->draw_stamp;
 
-	if (ps->ind_editpoint)
-		pcb_draw_delay_label_add((pcb_any_obj_t *)ps);
+		if (ps->ind_editpoint)
+			pcb_draw_delay_label_add((pcb_any_obj_t *)ps);
+	}
 
 	return RND_R_DIR_FOUND_CONTINUE;
 }
@@ -616,6 +617,13 @@ rnd_r_dir_t pcb_pstk_draw_label_callback(const rnd_box_t *b, void *cl)
 {
 	pcb_draw_info_t *info = cl;
 	pcb_pstk_t *ps = (pcb_pstk_t *)b;
+	int is_drawn = (ps->draw_stamp == info->draw_stamp);
+
+	/* do not draw any label if the padstack is not visible, to avoid overlapping
+	   term labels of sides: two SMD pads on the two sides, turn off bottom to
+	   see top only */
+	if (!is_drawn)
+		return RND_R_DIR_FOUND_CONTINUE;
 
 	/* draw the label if enabled, after everything else is drawn */
 	if (ps->term != NULL) {

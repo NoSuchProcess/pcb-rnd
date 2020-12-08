@@ -46,6 +46,7 @@ struct pcb_pstk_s {
 		unsigned long used;
 		unsigned char *shape;        /* indexed by layer ID */
 	} thermals;
+	int draw_stamp;                /* temp: remembers the stamp of the last draw */
 	gdl_elem_t link;               /* a padstack is in a list in pcb_data_t as a global object */
 };
 #endif

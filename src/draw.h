@@ -62,6 +62,8 @@ typedef struct pcb_draw_info_s {
 
 	const pcb_layer_t *layer;
 
+	int draw_stamp;
+
 	union { /* fields used for specific object callbacks */
 		struct {
 			rnd_layergrp_id_t gid;

@@ -1188,6 +1188,7 @@ void pcb_draw_setup_default_xform_info(rnd_hid_t *hid, pcb_draw_info_t *info)
 	}
 }
 
+int pcb_draw_stamp = 0;
 void rnd_expose_main(rnd_hid_t * hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform_t *xform_caller)
 {
 	if (!pcb_draw_inhibit) {
@@ -1200,6 +1201,7 @@ void rnd_expose_main(rnd_hid_t * hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform
 		info.xform_caller = xform_caller;
 		info.xform = info.xform_exporter = NULL;
 		info.layer = NULL;
+		info.draw_stamp = ++pcb_draw_stamp;
 
 		pcb_draw_setup_default_xform_info(hid, &info);
 
