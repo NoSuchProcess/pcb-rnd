@@ -1,3 +1,6 @@
+# pcb-rnd data file magic(5) patterns to be used with file(1)
+# Copy the content of this file in /etc/magic
+
 0	regex/128l	ha:pcb-rnd-board-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd board file (lihata)
 0	regex/128l	li:pcb-rnd-subcircuit-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd subcircuit/footprint file (lihata)
 0	regex/128l	li:pcb-rnd-buffer-v[0-9]+[\ \t\r\n]*[{]	pcb-rnd paste buffer content (lihata)
