@@ -235,7 +235,7 @@ int hook_detect_target()
 			put("/local/pcb/want_parsgen", strue);
 	}
 	else {
-		report("Bison/flex are disabled, among with parser generation.\n");
+		report("Bison/flex are disabled, along with parser generation.\n");
 		put("/local/pcb/want_parsgen", sfalse);
 	}
 
@@ -249,7 +249,7 @@ int hook_detect_target()
 			put("/local/pcb/want_parsgen_byaccic", strue);
 	}
 	else {
-		report("byaccic/ureglex are disabled, among with parser generation.\n");
+		report("byaccic/ureglex are disabled, along with parser generation.\n");
 		put("/local/pcb/want_parsgen_byaccic", sfalse);
 	}
 
