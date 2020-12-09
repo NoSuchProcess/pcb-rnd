@@ -10,6 +10,7 @@ test_announce=0
 verbose=0
 CONVERT=convert
 COMPARE=compare
+SCCBOX=$TRUNK/scconfig/sccbox
 
 if test -z "$pcb_rnd_bin"
 then
@@ -19,6 +20,11 @@ then
 fi
 
 fmt_args=""
+
+scc_mktemp()
+{
+	$SCCBOX mktemp -p "$libdir" "$@"
+}
 
 # portable sed -i implementation with temp files
 sedi()
@@ -265,7 +271,7 @@ run_test()
 	fi
 
 	# run and save stderr in file res2 and stdout in variable res
-	res2=`mktemp`
+	res2=`scc_mktemp`
 	ffn="`pwd`/$fn"
 	res=`run_pcb_rnd -x "$fmt" $global_args $fmt_args "$ffn" 2>$res2`
 
