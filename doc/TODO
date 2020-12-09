@@ -23,7 +23,7 @@
 - BUG: portability: obsd2.9-i386: once no-ldl is resolved, puplug fails to link [report: Igor2]
 - BUG: AIX porting:
 	- something broke in -shared -dynamic detection and librnd .so can not be compiled: need to use -G instead of -shared -> scconfig shall detect that
-	- make test doesn't run because mktemp is missing - consider adding it in sccbox
+	- strange warnings in RTT
 	- revise test programs, they fail to compile with various errors
 
 2. For later releases ===============================================================================
