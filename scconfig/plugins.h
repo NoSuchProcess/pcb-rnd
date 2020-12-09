@@ -30,7 +30,7 @@ plugin_def("autoplace",        "auto place components",           sbuildin, 1, 0
 plugin_def("autoroute",        "the original autorouter",         sbuildin, 1, 0)
 plugin_def("ch_editpoint",     "crosshair: on-point highlight",   sbuildin, 1, 0)
 plugin_def("ch_onpoint",       "crosshair: on-point highlight",   sbuildin, 1, 0)
-plugin_def("diag",             "diagnostic acts. for devs",       sdisable, 1, 0)
+plugin_def("diag",             "diagnostic acts. for devs",       sbuildin, 1, 0)
 plugin_def("dialogs",          "HID-independent GUI dialogs",     sdisable, 1, 0)
 plugin_def("distalign",        "distribute and align objs",       sbuildin, 1, 0)
 plugin_def("djopt",            "djopt board optimization",        sbuildin, 1, 0)
