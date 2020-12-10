@@ -8,7 +8,7 @@ LHT=$(ROOT)/src_3rd
 SRC=$(ROOT)/src
 SRC_3RD=$(ROOT)/src_3rd
 CFLAGS = $(PCB_RND_C89FLAGS) -I$(UNM) -I$(LHT) -I$(SRC) -I$(ROOT)
-LDLIBS = -lm
+LDLIBS = -lm -lgenht
 LIB_OBJS=$(SRC_3RD)/librnd-local/src/librnd-hid.a $(SRC_3RD)/librnd-local/src/librnd-3rd.a
 
 

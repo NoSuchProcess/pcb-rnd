@@ -4,13 +4,14 @@
 int main()
 {
 	unm_t group1;
+	int values[8];
 
 	/* Initialize the group with defaults */
 	unm_init(&group1);
 
-	printf("'%s'\n", unm_name(&group1, "foo", (void *)0x01));
-	printf("'%s'\n", unm_name(&group1, "bar", (void *)0x42));
-	printf("'%s'\n", unm_name(&group1, "bar", (void *)0x66));
+	printf("'%s'\n", unm_name(&group1, "foo", &values[1]));
+	printf("'%s'\n", unm_name(&group1, "bar", &values[2]));
+	printf("'%s'\n", unm_name(&group1, "bar", &values[3]));
 	printf("'%s'\n", unm_name(&group1, "baz", NULL));
 
 	/* test forced collision */
@@ -54,7 +55,7 @@ int main()
 			if (e->value == NULL)
 				printf("(nil)'\n");
 			else
-				printf("%p'\n", e->value);
+				printf("#%d'\n", ((int *)e->value) - values);
 		}
 	}
 
