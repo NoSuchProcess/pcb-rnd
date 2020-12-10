@@ -13,7 +13,10 @@ do_test()
 		refs=`ls ref.*.svg 2>/dev/null`
 		if test -z "$refs"
 		then
-			tar -zxf ref.tar.gz
+			cp ref.tar.gz unpack.tar.gz
+			gzip -d unpack.tar.gz
+			tar -xf unpack.tar
+			rm unpack.tar
 		fi
 		for r in ref.*.svg
 		do
