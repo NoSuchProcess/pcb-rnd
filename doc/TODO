@@ -24,7 +24,7 @@
 - BUG: AIX porting:
 	- something broke in -shared -dynamic detection and librnd .so can not be compiled: need to use -G instead of -shared -> scconfig shall detect that
 	- revise test programs:
-		- RTT: strange warnings
+		- RTT: strange warnings -> grep \| does not work on non-GNU grep
 		- menu: whitespace mismatch in insert.out
 		- cam: tar can't uncompress gzip
 
