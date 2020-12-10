@@ -247,13 +247,30 @@ cmp_fmt()
 # Remove known, expected error messages
 stderr_filter()
 {
-	local common="Couldn't find default.pcb\|No preferred unit format info available for\|has no font information, using default font\|Log produced after failed export\|Exporting empty board\|[*][*][*] Exporting:\|^.pcb-rnd:stderr.[ \t]*$\|Warning: footprint library list"
+	local pats="Couldn't find default.pcb|No preferred unit format info available for|has no font information, using default font|Log produced after failed export|Exporting empty board|[*][*][*] Exporting:|^.pcb-rnd:stderr.[ \t]*$|Warning: footprint library list"
+
+	# format specific extras
 	case "$fmt" in
-		gerber) grep -v "Can't export polygon as G85 slot\|please use lines for slotting\|$common" ;;
-		excellon) grep -v "Excellon: can not export [a-z]* (some features may be missing from the export)\|$common" ;;
-		svg) grep -v "Can't draw elliptical arc on svg\|$common";;
-		*) grep -v "$common";;
+		gerber) pats="Can't export polygon as G85 slot|please use lines for slotting|$pats" ;;
+		excellon) pats="Excellon: can not export [a-z]* (some features may be missing from the export)|$pats" ;;
+		svg) pats="Can't draw elliptical arc on svg|$pats";;
 	esac
+
+	# have to use awk for this since grep "|" is not portable
+	awk -v pats="$pats" '
+
+		# load patterns
+		BEGIN {
+			v = split(pats, A, "[|]")
+		}
+
+		# filter
+		{
+			for(n = 1; n <= v; n++)
+				if ($0 ~ A[n])
+					next
+		}
+	'
 }
 
 run_test()
