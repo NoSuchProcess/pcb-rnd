@@ -21,9 +21,7 @@
 - BUG: putenv(): do not free the buffer, putenv doesn't strdup! [report: Igor2]
 - BUG: portability: obsd2.9-i386: if there's no -ldl, go without dynamic plugins instead of failing [report: Igor2]
 - BUG: portability: obsd2.9-i386: once no-ldl is resolved, puplug fails to link [report: Igor2]
-- BUG: AIX porting:
-	- something broke in -shared -dynamic detection and librnd .so can not be compiled: need to use -G instead of -shared -> scconfig shall detect that
-	- revise test programs:
+- BUG: AIX porting: revise test programs:
 		- menu: whitespace mismatch in insert.out
 		- cam: tar can't uncompress gzip
 
