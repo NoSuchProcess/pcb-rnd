@@ -1,3 +1,10 @@
+NOTE: This file is the generic description. For per host system type details,
+      please look in doc/INSTALL.*
+
+NOTE: If you are packaging pcb-rnd for an OS distribution, please read
+      doc/developer/packaging.txt carefully and please try to follow the
+      conventions documented in doc/developer/packaging/
+
 1. Configure
 
 Run ./configure.
