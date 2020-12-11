@@ -236,6 +236,7 @@ CQUOTE=$(ROOT)/scconfig/cquote
 SPHASH_PATH=$(ROOT)/src_3rd/librnd-local/src_3rd/sphash
 SPHASH=$(SPHASH_PATH)/sphash
 PUPLUG=$(ROOT)/src_3rd/librnd-local/src_3rd/puplug/util/puplug
+GENCONF=$(ROOT)/src_3rd/librnd-local/src/librnd/scconfig/gen_conf.sh
 LIBMINUID_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 LIBMINUID_LDFLAGS=@cc/ldflags@
 GENLIST_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
@@ -332,13 +333,13 @@ EXTRA_DIST= \
 all-local: pcbtest.sh
 
 conf_core_fields.h: conf_core.h $(ROOT)/doc/conf/tree/rc.html
-	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh  < conf_core.h > conf_core_fields.h
+	AWK=@/host/fstools/awk@ $(GENCONF)  < conf_core.h > conf_core_fields.h
 
 $(LIBRND)/core/hidlib_conf_fields.h: $(LIBRND)/core/hidlib_conf.h $(ROOT)/doc/conf/tree/rc.html
-	AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh < $(LIBRND)/core/hidlib_conf.h > $(LIBRND)/core/hidlib_conf_fields.h
+	AWK=@/host/fstools/awk@ $(GENCONF) < $(LIBRND)/core/hidlib_conf.h > $(LIBRND)/core/hidlib_conf_fields.h
 
 $(ROOT)/doc/conf/tree/rc.html: $(LIBRND)/core/hidlib_conf.h conf_core.h
-	cat conf_core.h $(LIBRND)/core/hidlib_conf.h | AWK=@/host/fstools/awk@ $(ROOT)/scconfig/gen_conf.sh $(ROOT)/doc/conf/tree > /dev/null
+	cat conf_core.h $(LIBRND)/core/hidlib_conf.h | AWK=@/host/fstools/awk@ $(GENCONF) $(ROOT)/doc/conf/tree > /dev/null
 
 conf_internal.c: pcb-conf.lht $(CQUOTE)
 	$(CQUOTE) -n pcb_conf_internal < pcb-conf.lht > conf_internal.c

@@ -24,8 +24,8 @@ OBJS = conftest.o help.o
 
 all: conftest
 
-conftest: $(OBJS) $(LIB_HIDLIB) $(LIB_PCBRND_OBJS) $(LIBGENHT)
-	$(CC) $(LDFLAGS) $(OBJS) $(LIB_PCBRND_OBJS) $(LIB_HIDLIB)  $(LIBGENHT) $(LDLIBS) -o conftest
+conftest: $(OBJS) $(LIB_HIDLIB) $(LIB_PCBRND_OBJS)
+	$(CC) $(LDFLAGS) $(OBJS) $(LIB_PCBRND_OBJS) $(LIB_HIDLIB) $(LDLIBS) -o conftest
 
 conftest.o: conftest.c $(DEPH)
 	$(CC) $(CFLAGS) -c conftest.c -o conftest.o

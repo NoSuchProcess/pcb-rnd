@@ -9,6 +9,7 @@ print [@
 ROOT=../..
 PLUGDIR=../../src_plugins
 LIBRND=../../@/local/pcb/librnd_root@/librnd
+GENCONF=$(LIBRND)/scconfig/gen_conf.sh
 
 include $(LIBRND)/core/librnd.mak
 
@@ -93,7 +94,7 @@ print [@
 gsch2pcb.o: gsch2pcb_rnd_conf_fields.h
 
 gsch2pcb_rnd_conf_fields.h: gsch2pcb_rnd_conf.h
-	AWK=@/host/fstools/awk@ ../../scconfig/gen_conf.sh < gsch2pcb_rnd_conf.h > gsch2pcb_rnd_conf_fields.h
+	AWK=@/host/fstools/awk@ $(GENCONF) < gsch2pcb_rnd_conf.h > gsch2pcb_rnd_conf_fields.h
 
 install_all:
 	$(SCCBOX) mkdir -p "$(BINDIR)" "$(LIBDIR)"
