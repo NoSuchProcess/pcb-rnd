@@ -8,17 +8,9 @@ Requirements:
   - x11 and motif (for the GUI)
   - an awk implementation that supports gsub(), e.g. nawk
 
-1. If your C compiler does not support #warning, run a script to patch
-   the source:
+1. ./configure
 
-     # cwd is the root of the distribution
-     util/workarounds/unwarn_all.sh
-
-   This will take a while and will modify a lot of .c files.
-
-2. ./configure
-
-3. make
+2. make
 
 Considerations listed in ../INSTALL apply.
 
@@ -32,9 +24,9 @@ pcb-rnd  ./configure       compile, -O0     compile -O3   system
 2.3.1     0:20              1:47             7:52         AIX 7, Power7
 
 
-4. per UNIX system notes
+3. per UNIX system notes
 
-4.1. AIX
+3.1. AIX
 
 It is possible to compile pcb-rnd using gtk2.0 but due to a non-standard
 AIX libc header, this needs extra CFLAGS for configure:
