@@ -72,11 +72,9 @@ char *pcb_route_string_make(vtroutestyle_t *styles)
 	return str.array; /* this is the only allocation made, return this and don't uninit */
 }
 
-/* ----------------------------------------------------------------------
- * parses the routes definition string which is a colon separated list of
- * comma separated Name, Dimension, Dimension, Dimension, Dimension
- * e.g. Signal,20,40,20,10:Power,40,60,28,10:...
- */
+/* parses the routes definition string which is a colon separated list of
+   comma separated Name, Dimension, Dimension, Dimension, Dimension
+   e.g. Signal,20,40,20,10:Power,40,60,28,10:... */
 int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const char *default_unit)
 {
 	char *s = *str;
@@ -118,7 +116,7 @@ int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const cha
 		goto error;
 	routeStyle->Hole = pcb_get_num(&s, default_unit);
 	/* for backwards-compatibility, we use a 10-mil default
-	 * for styles which omit the clearance specification. */
+	   for styles which omit the clearance specification. */
 	if (*s != ',')
 		routeStyle->Clearance = RND_MIL_TO_COORD(10);
 	else {
