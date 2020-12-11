@@ -9,13 +9,11 @@ NOTE: If you are packaging pcb-rnd for an OS distribution, please read
 
 Run ./configure.
 
-Run make.
-
-Run make install.
-
 For compile-time options run ./configure --help.
 
 Dependencies: almost none. For GUI, install the (-dev or -devel) libs
+of lesstif or motif and/or gtk2.
+
 Read the summary table and the warnings at the end of ./configure output
 and decide if you need the features missing. If there was no error, only
 warnings, pcb-rnd cab be compiled, even if some dependencies were missing.
@@ -30,7 +28,7 @@ For users:
  - optional: gdlib if you want to export/import to/from png, jpg or gif
  - optional: imagemagick for running the pixmap export tests
 
-For developers:
+For developers, only in case grammar files are to be modified:
  - flex
  - bison
 
@@ -56,7 +54,7 @@ cd src && ./pcb-rnd
 (Note: it is important to cd to src to run pcb-rnd from source; src/pcb-rnd
 won't work unless pcb-rnd is installed).
 
-If this doesn't work, please refer to doc/UNIX.txt or doc/mac.txt
+If this doesn't work, please refer to doc/INSTALL*.
 
 
 4. Installation
@@ -74,6 +72,8 @@ files appeared (useful for developers):
 
 
 5. Packaging
+
+Major distros already have pcb-rnd packages.
 
 If you are planning to package pcb-rnd, please read
 doc/developer/packaging.txt and if it is binary packaging, please consider
