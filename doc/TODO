@@ -21,8 +21,6 @@
 - BUG: putenv(): do not free the buffer, putenv doesn't strdup! [report: Igor2]
 - BUG: portability: obsd2.9-i386: if there's no -ldl, go without dynamic plugins instead of failing [report: Igor2]
 - BUG: portability: obsd2.9-i386: once no-ldl is resolved, puplug fails to link [report: Igor2]
-- BUG: AIX porting: revise test programs:
-		- menu: whitespace mismatch in insert.out
 - BUG: cam test: do not depend on pcb-rnd installed, run from source; then test on AIX and then add cam to the central tests
 
 2. For later releases ===============================================================================
