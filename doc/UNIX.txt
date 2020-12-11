@@ -29,3 +29,17 @@ Expected compilation times [minute:second]:
 ./configure       compile, -O0     compile -O3   system
 -------------------------------------------------------------------------------
 1:55              7:40             14:27         IRIX 5.3, IP22 @ 100 MHz
+
+
+4. per UNIX system notes
+
+4.1. AIX
+
+It is possible to compile pcb-rnd using gtk2.0 but due to a non-standard
+AIX libc header, this needs extra CFLAGS for configure:
+
+ ./configure CFLAGS=-D_LINUX_SOURCE_COMPAT
+
+Without that, gtk is not detected becaus eof name clash between gtk and
+AIX libc on func_data.
+
