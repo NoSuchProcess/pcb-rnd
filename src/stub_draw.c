@@ -72,7 +72,11 @@ void (*pcb_stub_draw_fab)(pcb_draw_info_t *info, rnd_hid_gc_t gc, const rnd_hid_
 
 static void dummy_draw_csect(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
-	dummy_draw_text(NULL, gc, "Can't render the fab layer: the draw_csect plugin is not compiled and/or not loaded");
+	static rnd_xform_t xform = {0};
+	static pcb_draw_info_t info = {0};
+
+	info.xform = &xform;
+	dummy_draw_text(&info, gc, "Can't render the fab layer: the draw_csect plugin is not compiled and/or not loaded");
 }
 
 
@@ -83,7 +87,12 @@ rnd_bool (*pcb_stub_draw_csect_mouse_ev)(rnd_hid_mouse_ev_t kind, rnd_coord_t x,
 /****** font selector GUI ******/
 static void dummy_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt)
 {
-	dummy_draw_text(NULL, gc, "Can't render the font selector: the draw_fontsel plugin is not compiled and/or not loaded");
+	static rnd_xform_t xform = {0};
+	static pcb_draw_info_t info = {0};
+
+	info.xform = &xform;
+
+	dummy_draw_text(&info, gc, "Can't render the font selector: the draw_fontsel plugin is not compiled and/or not loaded");
 }
 
 static rnd_bool dummy_mouse_fontsel(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt)
