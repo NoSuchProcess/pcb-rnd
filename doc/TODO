@@ -19,11 +19,9 @@
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 - BUG: query(select, @.type == RAT) fails [report: thet]
 - BUG: putenv(): do not free the buffer, putenv doesn't strdup! [report: Igor2]
-- BUG: portability: obsd2.9-i386: if there's no -ldl, go without dynamic plugins instead of failing [report: Igor2]
+- BUG: portability: obsd2.9-i386, minix315: if there's no -ldl, go without dynamic plugins instead of failing [report: Igor2]
 - BUG: portability: obsd2.9-i386: once no-ldl is resolved, puplug fails to link [report: Igor2]
 - BUG: cam test: do not depend on pcb-rnd installed, run from source; then test on AIX and then add cam to the central tests
-- BUG: openbsd 5.0 porting:
-	- gen_conf.sh calls on plugins shall not regenerate docs
 
 2. For later releases ===============================================================================
 - CLEANUP: TODO27: undo's removed list shouldn't depend on object IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
