@@ -1,4 +1,4 @@
-33459	configure	local dialogs plugin configuration
+33460	configure	local dialogs plugin configuration
 33403	distclean	move script plugin to librnd
 33376	distclean	scripting support cleanup
 33318	distclean	switch over to using librnd as a whole
