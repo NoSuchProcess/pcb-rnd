@@ -128,7 +128,7 @@ int pplg_init_dialogs(void)
 	RND_API_CHK_VER;
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
-	rnd_conf_reg_field(dialogs_conf, field,isarray,type_name,cpath,cname,desc,flags);
+	rnd_conf_reg_field(adialogs_conf, field,isarray,type_name,cpath,cname,desc,flags);
 #include "adialogs_conf_fields.h"
 
 	rnd_conf_reg_file(ADIALOGS_CONF_FN, adialogs_conf_internal);
