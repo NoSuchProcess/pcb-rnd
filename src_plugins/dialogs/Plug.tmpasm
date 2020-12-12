@@ -16,6 +16,10 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dlg_view.o
 @]
 
+put /local/pcb/mod/CONFFILE {adialogs.conf}
+put /local/pcb/mod/CONF {$(LIBRND_PLUGDIR)/lib_hid_common/adialogs_conf.h}
+put /local/pcb/mod/CONFVAR {adialogs_conf_internal}
+
 switch /local/pcb/dialogs/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
 	case {plugin}    include /local/pcb/tmpasm/plugin; end;
