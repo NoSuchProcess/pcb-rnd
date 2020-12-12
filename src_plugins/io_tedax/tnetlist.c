@@ -66,11 +66,13 @@ static void *htsp_get2(htsp_t *ht, const char *key, size_t size)
 
 int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 {
+	pcb_board_t *pcb = PCB; /* should get it in arg probalby */
 	char line[520];
 	char *argv[16];
 	int argc;
 	htsp_t fps, pinnames;
 	htsp_entry_t *e;
+	long last_line, first_tag = -1;
 
 	if (tedax_seek_hdr(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
@@ -108,9 +110,15 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 			}
 			htsp_set(&pinnames, rnd_strdup(id), rnd_strdup(argv[3]));
 		}
+		else if ((argc == 4) && ((strcmp(argv[0], "nettag") == 0) || (strcmp(argv[0], "comptag") == 0))) {
+			if (first_tag < 0)
+				first_tag = last_line;
+		}
 		else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "netlist") == 0))
 			break;
+		last_line = ftell(fn);
 	}
+
 
 	rnd_actionva(&PCB->hidlib, "Netlist", "Sort", NULL);
 	rnd_actionva(&PCB->hidlib, "Netlist", "Thaw", NULL);
@@ -148,6 +156,31 @@ int tedax_net_fload(FILE *fn, int import_fp, const char *blk_id, int silent)
 
 	htsp_uninit(&fps);
 	htsp_uninit(&pinnames);
+
+	/* second pass: process tags, now that everything is created */
+	if (first_tag >= 0) {
+		fseek(fn, first_tag, SEEK_SET);
+		while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
+			if (argc == 4) {
+				if (strcmp(argv[0], "nettag") == 0) {
+					pcb_net_t *net = pcb_net_get(pcb, &pcb->netlist[PCB_NETLIST_INPUT], argv[1], 0);
+					if (net == NULL)
+						rnd_message(RND_MSG_ERROR, "tedax: not importing nettag for non-existing net '%s'\n", argv[1]);
+					else
+						pcb_attribute_set(pcb, &net->Attributes, argv[2], argv[3], 1);
+				}
+				else if (strcmp(argv[0], "comptag") == 0) {
+					pcb_subc_t *subc = pcb_subc_by_refdes(pcb->Data, argv[1]);
+					if (subc == NULL)
+						rnd_message(RND_MSG_ERROR, "tedax: not importing comptag for non-existing refdes '%s'\n", argv[1]);
+					else
+						pcb_attribute_set(pcb, &subc->Attributes, argv[2], argv[3], 1);
+				}
+			}
+			else if ((argc == 2) && (strcmp(argv[0], "end") == 0) && (strcmp(argv[1], "netlist") == 0))
+				break;
+		}
+	}
 
 	return 0;
 }
