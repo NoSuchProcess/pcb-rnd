@@ -1221,7 +1221,10 @@
  ../src_plugins/dialogs/dlg_pref_win.h \
  ../src_plugins/dialogs/dlg_pref_key.h \
  ../src_plugins/dialogs/dlg_pref_menu.h \
- ../src_plugins/dialogs/dlg_pref_conf.h
+ ../src_plugins/dialogs/dlg_pref_conf.h \
+ ../src_plugins/dialogs/adialogs_conf.h \
+ ../src_plugins/dialogs/conf_internal.c \
+ ../src_plugins/dialogs/adialogs_conf_fields.h
 ../src_plugins/dialogs/dlg_about.o: ../src_plugins/dialogs/dlg_about.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
@@ -1647,8 +1650,9 @@
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_sei.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_sei.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -2318,10 +2322,11 @@
  ../src_plugins/drc_query/conf_internal.c ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h flag_str.h ../src_plugins/query/query_exec.h \
- ../src_plugins/query/query.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h layer.h flag_str.h \
+ ../src_plugins/query/query_exec.h ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpi.h \
  ../src_plugins/drc_query/drc_query_stat.c \
  ../src_plugins/drc_query/drc_lht.c ../src_plugins/drc_query/dlg.c \
@@ -4096,9 +4101,10 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_sei.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h plug_footprint.h data.h \
- ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_sei.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h plug_footprint.h \
+ data.h ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h plug_io.h \
@@ -4992,8 +4998,9 @@
  ../src_3rd/librnd-local/src/librnd/core/paths.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h \
  ../src_plugins/import_mentor_sch/netlist_helper.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
  ../src_plugins/import_mentor_sch/menu_internal.c \
  ../src_plugins/import_mentor_sch/mentor_sch_conf_fields.h
 ../src_plugins/import_mentor_sch/netlist_helper.o: \
@@ -5003,8 +5010,9 @@
  ../src_plugins/import_mentor_sch/netlist_helper.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
@@ -9960,9 +9968,10 @@
  ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h flag.h globalconst.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h flag.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h attrib.h \
  global_typedefs.h data_parent.h layer.h obj_common.h obj_arc_list.h \
  obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
@@ -10029,9 +10038,11 @@
  ../src_plugins/query/query_exec.h ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h layer.h \
- flag_str.h ../src_3rd/librnd-local/src/../src_3rd/genht/htpi.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h layer.h flag_str.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htpi.h \
  ../src_plugins/query/net_len.h ../src_plugins/query/query_access.h \
  ../src_plugins/query/fnc_glue.c ../src_plugins/query/fnc_list.c \
  ../src_plugins/query/fnc_geo.c obj_poly.h data_it.h data.h \
@@ -10074,9 +10085,11 @@
  ../src_plugins/query/query_exec.h ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h layer.h \
- flag_str.h ../src_3rd/librnd-local/src/../src_3rd/genht/htpi.h
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h layer.h flag_str.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htpi.h
 ../src_plugins/query/net_len.o: ../src_plugins/query/net_len.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h \
@@ -10110,9 +10123,10 @@
  ../src_plugins/query/query_exec.h ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h flag_str.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h layer.h flag_str.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpi.h \
  ../src_plugins/query/net_len.h obj_arc.h obj_line.h obj_pstk.h \
  obj_pstk_shape.h polygon.h \
@@ -10185,9 +10199,11 @@
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h flag_str.h ../src_plugins/query/query_l.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h layer.h flag_str.h \
+ ../src_plugins/query/query_l.h \
  ../src_3rd/librnd-local/src/librnd/core/fptr_cast.h
 ../src_plugins/query/query_access.o: ../src_plugins/query/query_access.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
@@ -10236,9 +10252,11 @@
  ../src_plugins/query/query_access.h ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h flag_str.h ../src_plugins/query/query_exec.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h layer.h flag_str.h \
+ ../src_plugins/query/query_exec.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpi.h netlist.h \
  obj_pstk_inlines.h data.h thermal.h operation.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h obj_subc_parent.h \
@@ -10277,11 +10295,12 @@
  ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h flag.h attrib.h global_typedefs.h data_parent.h layer.h \
- obj_common.h obj_arc_list.h obj_arc.h \
- ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h flag.h attrib.h \
+ global_typedefs.h data_parent.h layer.h obj_common.h obj_arc_list.h \
+ obj_arc.h ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  ../src_3rd/librnd-local/src/librnd/poly/polyarea.h obj_text_list.h \
  obj_text.h font.h ../src_3rd/librnd-local/src/../src_3rd/genht/htip.h \
@@ -10339,9 +10358,11 @@
  ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h flag_str.h ../src_plugins/query/query_exec.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h layer.h flag_str.h \
+ ../src_plugins/query/query_exec.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpi.h \
  ../src_plugins/query/query_access.h ../src_plugins/query/net_len.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h
@@ -10357,9 +10378,10 @@
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h flag.h globalconst.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h flag.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h attrib.h \
  global_typedefs.h data_parent.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h obj_common.h \
@@ -10394,9 +10416,10 @@
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h flag.h globalconst.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h flag.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h attrib.h \
  global_typedefs.h data_parent.h layer.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h obj_common.h \
@@ -10595,11 +10618,12 @@
  ../src_plugins/query/query.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsi.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h ../src_plugins/query/fields_sphash.h \
- obj_common.h flag.h attrib.h global_typedefs.h data_parent.h layer.h \
- obj_common.h obj_arc_list.h obj_arc.h \
- ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h flag.h attrib.h \
+ global_typedefs.h data_parent.h layer.h obj_common.h obj_arc_list.h \
+ obj_arc.h ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  ../src_3rd/librnd-local/src/librnd/poly/polyarea.h obj_text_list.h \
  obj_text.h font.h ../src_3rd/librnd-local/src/../src_3rd/genht/htip.h \
@@ -10642,7 +10666,7 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h netlist.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_sei.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_sei.h \
  ../src_plugins/report/report_conf_fields.h
 ../src_plugins/rubberband_orig/fgeometry.o: \
  ../src_plugins/rubberband_orig/fgeometry.c \
@@ -10718,128 +10742,6 @@
  polygon.h ../src_plugins/rubberband_orig/rubberband_conf.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.c \
  ../src_plugins/rubberband_orig/rubberband_conf_fields.h
-../src_3rd/librnd-local/src/librnd/plugins/script/live_script.o: ../src_3rd/librnd-local/src/librnd/plugins/script/live_script.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
- ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/util.h \
- ../src_3rd/librnd-local/src/librnd/core/actions.h \
- ../src_3rd/librnd-local/src/librnd/core/hid.h \
- ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
- ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
- ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h \
- ../src_3rd/librnd-local/src/librnd/core/error.h \
- ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
- ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
- ../src_3rd/librnd-local/src/librnd/core/box.h \
- ../src_3rd/librnd-local/src/librnd/core/math_helper.h \
- ../src_3rd/librnd-local/src/librnd/core/misc_util.h \
- ../src_3rd/librnd-local/src/librnd/core/unit.h \
- ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h \
- ../src_3rd/librnd-local/src/librnd/core/plugins.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/config.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_dad.h \
- ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h \
- ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
- ../src_3rd/librnd-local/src/librnd/core/color.h \
- ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
- ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h \
- ../src_3rd/librnd-local/src/librnd/core/safe_fs.h \
- ../src_3rd/librnd-local/src/librnd/core/conf.h \
- ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
- ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
- ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
- ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
- ../src_3rd/librnd-local/src/librnd/core/safe_fs_dir.h \
- ../src_3rd/librnd-local/src/librnd/core/compat_inc.h \
- ../src_3rd/librnd-local/src/librnd/core/compat_fs.h \
- ../src_3rd/librnd-local/src/librnd/core/event.h \
- ../src_3rd/librnd-local/src/librnd/core/hidlib.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
- ../src_3rd/librnd-local/src/librnd/plugins/script/script.h ../src_3rd/librnd-local/src/librnd/plugins/script/live_script.h \
- ../src_3rd/librnd-local/src/librnd/plugins/script/menu_internal.c ../src_3rd/librnd-local/src/librnd/plugins/script/glue_undo.c \
- undo.h ../src_3rd/libuundo/uundo.h undo_old.h global_typedefs.h \
- globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h
-../src_3rd/librnd-local/src/librnd/plugins/script/script.o: ../src_3rd/librnd-local/src/librnd/plugins/script/script.c \
- ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/config.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_se.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h \
- ../src_3rd/librnd-local/src/librnd/core/actions.h \
- ../src_3rd/librnd-local/src/librnd/core/hid.h \
- ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
- ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
- ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h \
- ../src_3rd/librnd-local/src/librnd/core/error.h \
- ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
- ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
- ../src_3rd/librnd-local/src/librnd/core/box.h \
- ../src_3rd/librnd-local/src/librnd/core/math_helper.h \
- ../src_3rd/librnd-local/src/librnd/core/misc_util.h \
- ../src_3rd/librnd-local/src/librnd/core/unit.h \
- ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h \
- ../src_3rd/librnd-local/src/librnd/core/plugins.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
- ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
- ../src_3rd/librnd-local/src/librnd/core/compat_fs.h \
- ../src_3rd/librnd-local/src/librnd/core/safe_fs.h \
- ../src_3rd/librnd-local/src/librnd/core/conf.h \
- ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
- ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
- ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
- ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
- ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
- ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
- ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
- ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
- ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.h \
- ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
- ../src_3rd/librnd-local/src/librnd/core/event.h \
- ../src_3rd/librnd-local/src/librnd/core/hidlib.h globalconst.h \
- ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
- ../src_3rd/librnd-local/src/librnd/plugins/script/script.h ../src_3rd/librnd-local/src/librnd/plugins/script/guess_lang.c \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htss.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/ht_utils.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/util.h \
- ../src_3rd/librnd-local/src/librnd/plugins/script/c_script.c \
- ../src_3rd/librnd-local/src/librnd/core/fptr_cast.h \
- ../src_3rd/librnd-local/src/librnd/core/hidlib_conf.h \
- ../src_3rd/librnd-local/src/librnd/core/color.h \
- ../src_3rd/librnd-local/src/librnd/plugins/script/timer.c ../src_3rd/librnd-local/src/librnd/plugins/script/perma.c \
- ../src_3rd/librnd-local/src/librnd/core/hid_init.h \
- ../src_3rd/librnd-local/src/librnd/plugins/script/script_act.c \
- ../src_3rd/librnd-local/src/librnd/core/hid_dad.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h \
- ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_dad_tree.h \
- ../src_3rd/librnd-local/src/librnd/plugins/script/live_script.h
 ../src_plugins/serpentine/serpentine.o: \
  ../src_plugins/serpentine/serpentine.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
@@ -12104,10 +12006,11 @@
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_sei.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h change.h board.h vtroutestyle.h attrib.h \
- global_typedefs.h layer.h obj_common.h flag.h data_parent.h \
- obj_arc_list.h obj_arc.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_sei.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h change.h board.h \
+ vtroutestyle.h attrib.h global_typedefs.h layer.h obj_common.h flag.h \
+ data_parent.h obj_arc_list.h obj_arc.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
  ../src_3rd/librnd-local/src/librnd/poly/polyarea.h obj_text_list.h \
@@ -12176,25 +12079,9 @@
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
  ../src_3rd/libcdtr/list/list.c \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.c
-../src_3rd/librnd-local/src_3rd/libfungwbind/fawk/fungw_fawk.o: \
- ../src_3rd/librnd-local/src_3rd/libfungwbind/fawk/fungw_fawk.c \
- ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h \
- ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw_conv.h \
- ../src_3rd/librnd-local/src_3rd/libfungwbind/fawk/libfawk_sc/libfawk_sc_all.c
 ../src_3rd/libuhpgl/parse.o: ../src_3rd/libuhpgl/parse.c \
  ../src_3rd/libuhpgl/uhpgl_math.h ../src_3rd/libuhpgl/libuhpgl.h \
  ../src_3rd/libuhpgl/parse.h ../src_3rd/libuhpgl/arc_iterate.h
-../src_3rd/librnd-local/src_3rd/genregex/regex.o: ../src_3rd/librnd-local/src_3rd/genregex/regex.c \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h
-../src_3rd/librnd-local/src_3rd/genregex/regex_se.o: ../src_3rd/librnd-local/src_3rd/genregex/regex_se.c \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.c ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h
-../src_3rd/librnd-local/src_3rd/genregex/regex_sei.o: ../src_3rd/librnd-local/src_3rd/genregex/regex_sei.c \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.c ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h
 ../src_3rd/libuundo/uundo.o: ../src_3rd/libuundo/uundo.c \
  ../src_3rd/libuundo/uundo.h
 ../src_3rd/libuundo/uundo_debug.o: ../src_3rd/libuundo/uundo_debug.c \
@@ -13776,7 +13663,12 @@ main.o: main.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h actions_pcb.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_init.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h tool_logic.h \
- pixmap_pcb.h buildin.c funchash_core.h funchash_core_list.h
+ pixmap_pcb.h ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_se.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/util.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/vtl0.h buildin.c \
+ funchash_core.h funchash_core_list.h
 main_act.o: main_act.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h board.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -13889,8 +13781,9 @@ netlist.o: netlist.c ../config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_sei.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h board.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_sei.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h board.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h vtroutestyle.h \
  ../src_3rd/librnd-local/src/librnd/core/unit.h attrib.h \
@@ -13942,8 +13835,9 @@ netlist.o: netlist.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h
 netlist_act.o: netlist_act.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_sei.h ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex.h funchash_core.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_sei.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
  data.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
@@ -15779,8 +15673,10 @@ select.o: select.c ../config.h \
  ../src_3rd/libuundo/uundo.h undo_old.h find.h extobj.h obj_subc_parent.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h obj_arc_draw.h \
  obj_line_draw.h obj_poly_draw.h obj_text_draw.h obj_rat_draw.h \
- obj_pstk_draw.h obj_gfx_draw.h ../src_3rd/librnd-local/src_3rd/genregex/regex_sei.h \
- ../src_3rd/librnd-local/src_3rd/genregex/regex_templ.h ../src_3rd/librnd-local/src_3rd/genregex/regex.h
+ obj_pstk_draw.h obj_gfx_draw.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_sei.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex_templ.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genregex/regex.h
 select_act.o: select_act.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
