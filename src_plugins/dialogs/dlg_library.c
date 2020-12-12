@@ -51,6 +51,8 @@
 
 #include "dlg_library.h"
 
+#include "adialogs_conf.h"
+
 static const char *library_cookie = "dlg_library";
 
 #define MAX_PARAMS 128
@@ -216,7 +218,7 @@ static void timed_update_preview(library_ctx_t *ctx, int active)
 	if (active) {
 		rnd_hidval_t user_data;
 		user_data.ptr = ctx;
-		ctx->timer = rnd_gui->add_timer(rnd_gui, timed_update_preview_cb, 500, user_data);
+		ctx->timer = rnd_gui->add_timer(rnd_gui, timed_update_preview_cb, adialogs_conf.plugins.dialogs.library.preview_refresh_timeout, user_data);
 		ctx->timer_active = 1;
 		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wpend, 0);
 		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wnopend, 1);

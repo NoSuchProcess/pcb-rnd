@@ -15,4 +15,6 @@ typedef struct {
 	} plugins;
 } conf_adialogs_t;
 
+extern conf_adialogs_t adialogs_conf;
+
 #endif
