@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: librnd separation: update packager's doc and debian and check debian build
-- FEATURE: make grid pixel size configurable [report: thet]
++ FEATURE: make grid pixel size configurable [report: thet]
 - FEATURE: tedax netlist parser: load comptag (and nettag) in a second pass [report: Bdale]
 - FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
 - FEATURE: think over style clearance indication: on editing exisitng object it should probably be the clearance of the object [report: Ade]
