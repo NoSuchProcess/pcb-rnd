@@ -32,8 +32,10 @@
 #include "board.h"
 #include "event.h"
 #include <librnd/core/hid_menu.h>
-#include "menu_internal.c"
 #include "show_netnames_conf.h"
+
+#include "menu_internal.c"
+#include "conf_internal.c"
 
 const char *pcb_show_netnames_cookie = "show_netnames plugin";
 #define SHOW_NETNAMES_CONF_FN "show_netnames.conf"
