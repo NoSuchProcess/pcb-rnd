@@ -214,9 +214,10 @@ do { \
  * if len is non-NULL:
  *  returns a list of object IDs matched the search and loads len with the
  *  length of the list. Returns NULL on no match.
+ * Always limit layer search to layer types matching lyt (and never limit globals)
  */
 TODO("cleanup: should be rewritten with generic ops and rtree")
-static long int *ListBlock_(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool Flag, int *len, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
+static long int *ListBlock_(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool Flag, pcb_layer_type_t lyt, int *len, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
 {
 	int changed = 0;
 	int used = 0, alloced = 0;
@@ -274,6 +275,9 @@ do { \
 	LAYER_LOOP(pcb->Data, pcb_max_layer(PCB));
 	{
 		unsigned int lflg = pcb_layer_flags(pcb, n);
+
+		if ((lflg &lyt) == 0)
+			continue;
 
 		if ((lflg & PCB_LYT_SILK) && (PCB_LAYERFLG_ON_VISIBLE_SIDE(lflg))) {
 			if (!(pcb_silk_on(pcb) || !Flag))
@@ -476,13 +480,20 @@ rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool flag, rnd_b
  */
 long int *pcb_list_block(pcb_board_t *pcb, rnd_box_t *Box, int *len)
 {
-	return ListBlock_(pcb, Box, 1, len, NULL, NULL);
+	return ListBlock_(pcb, Box, 1, PCB_LYT_ANYWHERE|PCB_LYT_ANYTHING, len, NULL, NULL);
 }
 
 int pcb_list_block_cb(pcb_board_t *pcb, rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
 {
 	int len = 0;
-	ListBlock_(pcb, Box, -1, &len, cb, ctx);
+	ListBlock_(pcb, Box, -1, PCB_LYT_ANYWHERE|PCB_LYT_ANYTHING, &len, cb, ctx);
+	return len;
+}
+
+int pcb_list_lyt_block_cb(pcb_board_t *pcb, pcb_layer_type_t lyt, rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
+{
+	int len = 0;
+	ListBlock_(pcb, Box, -1, lyt, &len, cb, ctx);
 	return len;
 }
 
