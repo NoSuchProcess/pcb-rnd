@@ -16,7 +16,11 @@ A. changes that probably don't need action
 B. changes that probably DO need action
 
 1. librnd split: some plugins changed file installation paths from $P and $C 
-   to $LP and $LC - these are the plugins installed from librnd
+   to $LP and $LC - these are the plugins installed from librnd. At the moment:
+    - $P is normally /usr/lib/pcb-rnd (no change since last rev)
+    - $C is normally /etc/pcb-rnd (no change since last rev)
+    - $LP is normally /usr/lib/librnd (NEW!)
+    - $LC is the same as $C (but this will change in the future)
 
 2. please update your ./configure line for the new plugins
 
