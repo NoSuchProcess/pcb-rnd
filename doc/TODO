@@ -36,6 +36,13 @@
 	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
 	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
 	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
+- CLEANUP/FEATURE: lihata v8
+	- load/save text clearance (and make sure the GUI can set it), then remove the 0.5mm hardwired value from polygon.c
+	- deprecate saving rats [report: Igor2]
+	- make saving selected, found and warn flags optional to reduce VCS noise [report: Igor2]
+	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
+	- remove via geometry from route style
+	- manual layer binding (to LID)
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: (TT) route style upgrade to prototypes - requires lihata v8:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
@@ -76,7 +83,7 @@
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 
 3. Long term ===============================================================================
-- version 3.0.0:
+- FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both
 - BUG: in poly lib rewrite: bug_files/polyclpoly.lht: excess clearing into the corner of the outer poly; move the line a bit and it tends to disappear ml=3493 [report: gpaubert]
@@ -100,13 +107,6 @@
 	- CLEANUP: replace ignore_refdes, ignore_value and ignore_descr with genvector
 	- FEATURE: vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 	- FEATURE: add round down
-- FEATURE: lihata v8
-	- load/save text clearance (and make sure the GUI can set it), then remove the 0.5mm hardwired value from polygon.c
-	- deprecate saving rats [report: Igor2]
-	- make saving selected, found and warn flags optional to reduce VCS noise [report: Igor2]
-	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
-	- remove via geometry from route style
-	- manual layer binding (to LID)
 
 4. Low prio ===============================================================================
 - BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
@@ -114,4 +114,4 @@
 - BUG: elliptic: RTT/arc_sizes.lht - unable to move arcs which have different width and height [report: Ade] - rewrite pcb_is_point_on_arc() elliptical case at the bottom
 - FEATURE: DRC should warn for thin poly hair
 - FEATURE: io_pcb: new, optional "layer tag" field in mainline's file format
-- FEATURE: scconfig: menuconfig and a config file for scconfig: requires a more declarative dependency handling system
+- FEATURE: scconfig: menuconfig and a config file for scconfig: requires a more declarative dependency handling system -> being done in scconfig2
