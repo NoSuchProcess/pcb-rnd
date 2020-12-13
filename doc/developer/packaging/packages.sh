@@ -42,18 +42,26 @@ meta_deps="core io-standard io-alien hid-gtk2-gl hid-gtk2-gdk export export-sim 
 '
 
 (
-for n in $proot/*/*.pup $rnd_proot/*/*.pup
+for n in $proot/*/*.pup
 do
 	pkg=`basename $n`
 	sed "s/^/$pkg /" < $n
-done 
-
-for n in $proot/*/*.tmpasm $rnd_proot/*/*.tmpasm
+done
+for n in $rnd_proot/*/*.pup
+do
+	pkg=`basename $n`
+	sed "s/^/!$pkg /" < $n
+done
+for n in $proot/*/*.tmpasm
 do
 	sed "s@^@$n @" < $n
 done
+for n in $rnd_proot/*/*.tmpasm
+do
+	sed "s@^@!$n @" < $n
+done
 cat extra.digest
-) | awk -v "meta_deps=$meta_deps" '
+) | awk -v "meta_deps=$meta_deps"  '
 	BEGIN {
 		gsub(" ", " pcb-rnd-", meta_deps)
 		sub("^", "pcb-rnd-", meta_deps)
@@ -66,6 +74,15 @@ cat extra.digest
 			}
 			LONG[pkg] = LONG[pkg] $0 " "
 		}
+	}
+
+	{
+		if ($1 ~ "^[!]") {
+			in_librnd = 1
+			sub("^[!]", "", $1)
+		}
+		else
+			in_librnd = 0
 	}
 
 	($1 ~ "@files") {
@@ -122,7 +139,12 @@ cat extra.digest
 		}
 		else {
 			CFG_PLUGIN[cfg]++
-			IFILES[val] = IFILES[val] " $P/" cfg ".pup $P/" cfg ".so"
+print in_librnd, $1 > "L1"
+			if (in_librnd)
+				dir = "$LP"
+			else
+				dir="$P"
+			IFILES[val] = IFILES[val] " " dir "/" cfg ".pup " dir "/" cfg ".so"
 		}
 	}
 
@@ -132,10 +154,14 @@ cat extra.digest
 		fn=$4
 		sub("[{][ \t]*", "", fn)
 		sub("[ \t]*[}]", "", fn)
-		if (CONFFILE[PLUGIN[pkg]] == "")
-			CONFFILE[PLUGIN[pkg]] = "$C/" fn
+		if (in_librnd)
+			dir = "$LC"
 		else
-			CONFFILE[PLUGIN[pkg]] = CONFFILE[PLUGIN[pkg]] " $C/" fn
+			dir="$C"
+		if (CONFFILE[PLUGIN[pkg]] == "")
+			CONFFILE[PLUGIN[pkg]] = dir "/" fn
+		else
+			CONFFILE[PLUGIN[pkg]] = CONFFILE[PLUGIN[pkg]] " " dir "/" fn
 	}
 
 	function add_dep(pkg, depson,    ds)
@@ -209,8 +235,10 @@ cat extra.digest
 		}
 		print "</table>"
 		print "<p>File prefixes:<ul>"
-		print "	<li> $P: plugin install dir (e.g. /usr/lib/pcb-rnd/)"
-		print "	<li> $C: conf dir (e.g. /usr/share/pcb-rnd/)"
+		print "	<li> $P: pcb-rnd plugin install dir (e.g. /usr/lib/pcb-rnd/)"
+		print "	<li> $C: pcb-rnd conf dir (e.g. /usr/share/pcb-rnd/)"
+		print "	<li> $LP: librnd plugin install dir (e.g. /usr/lib/librnd/)"
+		print "	<li> $LC: librnd conf dir (e.g. /usr/share/librnd/)"
 		print "	<li> $PREFIX: installation prefix (e.g. /usr)"
 		print "</ul>"
 

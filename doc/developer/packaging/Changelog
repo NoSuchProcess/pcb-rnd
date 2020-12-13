@@ -15,9 +15,12 @@ A. changes that probably don't need action
 
 B. changes that probably DO need action
 
-1. please update your ./configure line for the new plugins
+1. librnd split: some plugins changed file installation paths from $P and $C 
+   to $LP and $LC - these are the plugins installed from librnd
 
-2. package-package dependency: pcb-rnd-auto started to depend on
+2. please update your ./configure line for the new plugins
+
+3. package-package dependency: pcb-rnd-auto started to depend on
    pcb-rnd-io-standard because of external autorouting started to depend
    on tEDAx
 
