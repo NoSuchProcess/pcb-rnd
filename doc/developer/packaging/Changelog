@@ -11,6 +11,8 @@ A. changes that probably don't need action
 
 1. new plugin ar_extern in package pcb-rnd-auto
 
+2. new user config file $C/adialogs.conf
+
 B. changes that probably DO need action
 
 1. please update your ./configure line for the new plugins
