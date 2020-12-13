@@ -3,5 +3,6 @@ $short display network names over tracks
 $long display network names as overlay when zoomed in enough
 $state works
 $package (core)
+dep query
 default buildin
 autoload 1

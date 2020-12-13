@@ -28,12 +28,16 @@
 
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
+#include <librnd/core/hid_menu.h>
 
 #include "board.h"
+#include "draw.h"
 #include "event.h"
-#include <librnd/core/hid_menu.h>
-#include "show_netnames_conf.h"
+#include "netlist.h"
+#include "select.h"
+#include "../src_plugins/query/net_int.h"
 
+#include "show_netnames_conf.h"
 #include "menu_internal.c"
 #include "conf_internal.c"
 
@@ -41,9 +45,12 @@ const char *pcb_show_netnames_cookie = "show_netnames plugin";
 #define SHOW_NETNAMES_CONF_FN "show_netnames.conf"
 conf_show_netnames_t conf_show_netnames;
 
+static pcb_qry_exec_t shn_qctx;
+
 static void show_netnames_invalidate(void)
 {
 	rnd_trace("show_netnames: invalidate\n");
+	pcb_qry_uninit(&shn_qctx);
 }
 
 static void show_netnames_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
@@ -52,11 +59,55 @@ static void show_netnames_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int arg
 		show_netnames_invalidate();
 }
 
+static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
+{
+	pcb_any_obj_t *term;
+	char tmp[128];
+	const char *netname;
+
+	term = pcb_qry_parent_net_term(&shn_qctx, obj);
+	if ((term != NULL) && (term->type == PCB_OBJ_NET_TERM)) {
+		pcb_net_t *net = term->parent.net;
+		if ((net == NULL) || (net->type != PCB_OBJ_NET)) {
+			sprintf(tmp, "<nonet #%ld>", term->ID);
+			netname = tmp;
+		}
+		else
+			netname = net->name;
+	}
+	else
+		netname = "<nonet>";
+
+	rnd_trace(" #%ld=%s", obj->ID, netname);
+}
+
 static void show_netnames_render(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
+	pcb_board_t *pcb;
+	pcb_draw_info_t *info;
+	rnd_box_t bx;
+
 	if (!conf_show_netnames.plugins.show_netnames.enable)
 		return;
-	rnd_trace("show_netnames: render\n");
+
+	if (argv[2].type != RND_EVARG_PTR)
+		return;
+
+	pcb = (pcb_board_t *)hidlib;
+	info = argv[2].d.p;
+
+	rnd_trace("show_netnames: render:");
+
+	if (shn_qctx.pcb != pcb) {
+		show_netnames_invalidate();
+		shn_qctx.pcb = pcb;
+	}
+
+	/* search negative box so anything touched is included */
+	bx.X1 = info->drawn_area->X2; bx.Y1 = info->drawn_area->Y2;
+	bx.X2 = info->drawn_area->X1; bx.Y2 = info->drawn_area->Y1;
+	pcb_list_lyt_block_cb(pcb, PCB_LYT_COPPER, &bx, shn_render_cb, NULL);
+	rnd_trace("\n");
 }
 
 int pplg_check_ver_show_netnames(int ver_needed) { return 0; }
