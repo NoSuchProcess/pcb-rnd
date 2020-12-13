@@ -43,11 +43,15 @@ conf_show_netnames_t conf_show_netnames;
 
 static void show_netnames_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
+	if (!conf_show_netnames.plugins.show_netnames.enable)
+		return;
 	rnd_trace("show_netnames: invalidate\n");
 }
 
 static void show_netnames_render(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
+	if (!conf_show_netnames.plugins.show_netnames.enable)
+		return;
 	rnd_trace("show_netnames: render\n");
 }
 
