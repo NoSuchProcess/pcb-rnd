@@ -10976,12 +10976,13 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
- ../src_plugins/show_netnames/menu_internal.c \
  ../src_plugins/show_netnames/show_netnames_conf.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
+ ../src_plugins/show_netnames/menu_internal.c \
+ ../src_plugins/show_netnames/conf_internal.c \
  ../src_plugins/show_netnames/show_netnames_conf_fields.h
 ../src_plugins/sketch_route/ewire.o: ../src_plugins/sketch_route/ewire.c \
  ../src_plugins/sketch_route/ewire.h ../config.h \
