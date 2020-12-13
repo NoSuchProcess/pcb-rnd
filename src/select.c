@@ -296,7 +296,7 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) != Flag) {
 				append(PCB_OBJ_LINE, layer, line);
-				if (layer->meta.real.vis)
+				if ((len != NULL) && layer->meta.real.vis)
 					pcb_line_invalidate_draw(layer, line);
 			}
 		}
@@ -307,7 +307,7 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc) != Flag) {
 				append(PCB_OBJ_ARC, layer, arc);
-				if (layer->meta.real.vis)
+				if ((len != NULL) && layer->meta.real.vis)
 					pcb_arc_invalidate_draw(layer, arc);
 			}
 		}
@@ -319,7 +319,7 @@ do { \
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, text)
 						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) != Flag) {
 					append(PCB_OBJ_TEXT, layer, text);
-					if (pcb_text_is_visible(PCB, layer, text))
+					if ((len != NULL) && pcb_text_is_visible(PCB, layer, text))
 						pcb_text_invalidate_draw(layer, text);
 				}
 			}
@@ -331,7 +331,7 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon) != Flag) {
 				append(PCB_OBJ_POLY, layer, polygon);
-				if (layer->meta.real.vis)
+				if ((len != NULL) && layer->meta.real.vis)
 					pcb_poly_invalidate_draw(layer, polygon);
 			}
 		}
@@ -342,7 +342,7 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, gfx)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, gfx) != Flag) {
 				append(PCB_OBJ_GFX, layer, gfx);
-				if (layer->meta.real.vis)
+				if ((len != NULL) && layer->meta.real.vis)
 					pcb_gfx_invalidate_draw(layer, gfx);
 			}
 		}
@@ -368,8 +368,10 @@ do { \
 					list[used] = subc->ID;
 					used++;
 				}
-				changed = 1;
-				DrawSubc(subc);
+				if (len != NULL) {
+					changed = 1;
+					DrawSubc(subc);
+				}
 			}
 		}
 		PCB_END_LOOP;
@@ -383,14 +385,14 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack) != Flag) {
 				append(PCB_OBJ_PSTK, padstack, padstack);
-				if (pcb->pstk_on)
+				if ((len != NULL) && pcb->pstk_on)
 					pcb_pstk_invalidate_draw(padstack);
 			}
 		}
 		PCB_END_LOOP;
 	}
 
-	if (changed) {
+	if ((len != NULL) && changed) {
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
@@ -493,7 +495,7 @@ int pcb_list_block_cb(pcb_board_t *pcb, rnd_box_t *Box, void *(cb)(void *ctx, pc
 int pcb_list_lyt_block_cb(pcb_board_t *pcb, pcb_layer_type_t lyt, rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
 {
 	int len = 0;
-	ListBlock_(pcb, Box, -1, lyt, &len, cb, ctx);
+	ListBlock_(pcb, Box, -1, lyt, ((cb == NULL) ? len : NULL), cb, ctx);
 	return len;
 }
 
