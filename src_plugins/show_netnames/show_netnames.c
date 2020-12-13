@@ -69,7 +69,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 	pcb_draw_info_t *info = ctx;
 	rnd_coord_t x, y, dx, dy;
 	pcb_font_t *font;
-	double rot, vx, vy, nx, ny, len;
+	double rot, vx, vy, nx, ny, len, lscale;
 
 	if (obj->type != PCB_OBJ_LINE)
 		return;
@@ -91,7 +91,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 
 	pcb_obj_center(obj, &x, &y);
 	font = pcb_font(PCB, 0, 0);
-
+	lscale = (double)conf_show_netnames.plugins.show_netnames.zoom_level / 100000.0;
 	switch(obj->type) {
 		case PCB_OBJ_LINE:
 			{
@@ -100,7 +100,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 				rot = atan2(l->Point2.Y - l->Point1.Y, l->Point2.X - l->Point1.X) * -RND_RAD_TO_DEG;
 
 				/* offset the text for approx. center alignment */
-				dx = 0; dy = -font->MaxHeight/2*0.3;
+				dx = 0; dy = -font->MaxHeight/2*lscale;
 				vx = l->Point2.X - l->Point1.X; vy = l->Point2.Y - l->Point1.Y;
 				len = vx*vx + vy*vy;
 				if (len != 0) {
@@ -115,11 +115,11 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 					}
 				}
 
-				pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, 0.3, 0.3, rot, 0, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
+				pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, lscale, lscale, rot, 0, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
 			}
 			break;
 		default:
-			pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, 0.3, 0.3, 0.0, 0, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
+			pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, lscale, lscale, 0.0, 0, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
 	}
 }
 
