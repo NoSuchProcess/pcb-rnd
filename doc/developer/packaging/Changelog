@@ -1,11 +1,26 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=2.3.0
+  ver=2.3.1
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
-Packaging changes between 2.3.0 and 2.2.4
+Packaging changes between 2.3.0 and 2.3.1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A. changes that probably don't need action
+
+1. new plugin ar_extern in package pcb-rnd-auto
+
+B. changes that probably DO need action
+
+1. please update your ./configure line for the new plugins
+
+2. package-package dependency: pcb-rnd-auto started to depend on
+   pcb-rnd-io-standard because of external autorouting started to depend
+   on tEDAx
+
+
+Packaging changes between 2.2.4 and 2.3.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A. changes that probably don't need action
 

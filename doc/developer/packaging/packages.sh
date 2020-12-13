@@ -1,7 +1,7 @@
 #!/bin/sh
 ROOT=../../..
 proot=$ROOT/src_plugins
-rnd_proot=$ROOT/src_3rd/librnd/plugins
+rnd_proot=$ROOT/src_3rd/librnd-local/src/librnd/plugins
 
 ### generate description.txt (file formats) ###
 
