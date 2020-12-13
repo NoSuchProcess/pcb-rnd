@@ -99,6 +99,9 @@ void pcb_qry_uninit(pcb_qry_exec_t *ctx)
 
 	vtp0_uninit(&ctx->tmplst);
 	pcb_qry_uninit_layer_setup(ctx);
+
+	ctx->obj2netterm_inited = ctx->obj2lenseg_inited = \
+	ctx->layer_setup_inited = ctx->warned_missing_thickness = 0;
 }
 
 static void val_free_fields(pcb_qry_val_t *val)
