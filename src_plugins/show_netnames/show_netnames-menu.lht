@@ -1,8 +1,10 @@
-ha:rnd-menu-v1 {
-	li:anchored {
-		ha:@feature_plugins {
+ha:rnd-menu-patch-v1 {
+	prio=200
+	li:patch {
+		ha:append_menu {
+			path = /main_menu/View
 			li:submenu {
-				ha:Show netnames when zoomed in = { action=show_netnames() }
+				ha:Show netnames when zoomed in = { checked=plugins/show_netnames/enable; action=conf(toggle, plugins/show_netnames/enable, design)}
 			}
 		}
 	}
