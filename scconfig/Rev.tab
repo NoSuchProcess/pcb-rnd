@@ -1,3 +1,4 @@
+33485	configure	new plugin: show_netnames
 33460	configure	local dialogs plugin configuration
 33403	distclean	move script plugin to librnd
 33376	distclean	scripting support cleanup

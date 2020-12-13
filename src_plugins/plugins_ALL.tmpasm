@@ -103,6 +103,7 @@ include {../src_plugins/rubberband_orig/Plug.tmpasm}
 include {../src_plugins/serpentine/Plug.tmpasm}
 include {../src_plugins/shand_cmd/Plug.tmpasm}
 include {../src_plugins/shape/Plug.tmpasm}
+include {../src_plugins/show_netnames/Plug.tmpasm}
 include {../src_plugins/sketch_route/Plug.tmpasm}
 include {../src_plugins/smartdisperse/Plug.tmpasm}
 include {../src_plugins/teardrops/Plug.tmpasm}

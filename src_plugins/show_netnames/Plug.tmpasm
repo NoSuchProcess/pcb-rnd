@@ -1,0 +1,12 @@
+put /local/pcb/mod {show_netnames}
+put /local/pcb/mod/MENUFILE {show_netnames-menu.lht}
+put /local/pcb/mod/MENUVAR {show_netnames_menu}
+append /local/pcb/mod/OBJS [@
+ $(PLUGDIR)/show_netnames/show_netnames.o
+@]
+
+switch /local/pcb/show_netnames/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end
