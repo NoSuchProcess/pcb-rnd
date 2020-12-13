@@ -36,6 +36,7 @@ static const char *pcb_evnames[] = {
 	"pcbev_layervis_changed",
 	"pcbev_library_changed",
 	"pcbev_font_changed",
+	"pcbev_board_edited",
 	"pcbev_undo_post",
 	"pcbev_rubber_reset",
 	"pcbev_rubber_move",

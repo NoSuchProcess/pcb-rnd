@@ -28,9 +28,9 @@
 
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
-#include <librnd/core/event.h>
 
 #include "board.h"
+#include "event.h"
 #include <librnd/core/hid_menu.h>
 #include "menu_internal.c"
 
@@ -38,7 +38,7 @@ const char *pcb_show_netnames_cookie = "show_netnames plugin";
 
 static void show_netnames_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	rnd_trace("show_netnames!");
+	rnd_trace("show_netnames!\n");
 }
 
 int pplg_check_ver_show_netnames(int ver_needed) { return 0; }
@@ -54,7 +54,7 @@ int pplg_init_show_netnames(void)
 {
 	RND_API_CHK_VER;
 
-	rnd_event_bind(RND_EVENT_BOARD_META_CHANGED, show_netnames_brd_chg, NULL, pcb_show_netnames_cookie);
+	rnd_event_bind(PCB_EVENT_BOARD_EDITED, show_netnames_brd_chg, NULL, pcb_show_netnames_cookie);
 	rnd_event_bind(RND_EVENT_BOARD_CHANGED, show_netnames_brd_chg, NULL, pcb_show_netnames_cookie);
 
 	rnd_hid_menu_load(rnd_gui, NULL, pcb_show_netnames_cookie, 150, NULL, 0, show_netnames_menu, "plugin: show_netnames");

@@ -39,6 +39,7 @@ enum {
 	PCB_EVENT_LAYERVIS_CHANGED,           /* called after the visibility of layers has changed */
 	PCB_EVENT_LIBRARY_CHANGED,            /* called after a change in the footprint lib (used to be the LibraryChanged action) */
 	PCB_EVENT_FONT_CHANGED,               /* called when a font has changed; argument is the font ID */
+	PCB_EVENT_BOARD_EDITED,               /* called after any edit on the board */
 
 	PCB_EVENT_UNDO_POST,                  /* called after an undo/redo operation; argument is an integer pcb_undo_ev_t */
 

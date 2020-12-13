@@ -379,6 +379,9 @@ void pcb_board_set_changed_flag(pcb_board_t *pcb, rnd_bool New)
 
 	if (old != New)
 		rnd_event(&pcb->hidlib, RND_EVENT_BOARD_META_CHANGED, NULL);
+
+	if (New)
+		rnd_event(&pcb->hidlib, PCB_EVENT_BOARD_EDITED, NULL);
 }
 
 
