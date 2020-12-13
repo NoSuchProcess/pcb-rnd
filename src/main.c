@@ -77,7 +77,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "tool_logic.h"
 #include "pixmap_pcb.h"
 
-#warning TODO: librnd: remove this once librnd is not extern anymore
+TODO("librnd: remove this once librnd is not extern anymore")
 #include <genregex/regex_se.h>
 #include <puplug/util.h>
 #include <genvector/vtl0.h>
@@ -440,7 +440,7 @@ int main(int argc, char *argv[])
 		int (*p2)();
 		size_t (*p3)();
 		
-#warning TODO: librnd: remove this once librnd is not extern anymore
+TODO("librnd: remove this once librnd is not extern anymore");
 		rnd_plugin_add_dir("../src_3rd/librnd-local/src/plugins");
 
 		/* temporary workaround: make sure objects from .a are linked even
