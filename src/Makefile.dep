@@ -1709,6 +1709,7 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_plugins/dialogs/dlg_library.h \
+ ../src_plugins/dialogs/adialogs_conf.h \
  ../src_plugins/dialogs/dlg_library_param.c \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h
 ../src_plugins/dialogs/dlg_loadsave.o: \
@@ -10927,6 +10928,55 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_dad.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h
+../src_plugins/show_netnames/show_netnames.o: \
+ ../src_plugins/show_netnames/show_netnames.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
+ ../src_3rd/librnd-local/src/librnd/core/actions.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
+ ../src_3rd/librnd-local/src/librnd/core/error.h \
+ ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
+ ../src_3rd/librnd-local/src/librnd/core/box.h \
+ ../src_3rd/librnd-local/src/librnd/core/math_helper.h \
+ ../src_3rd/librnd-local/src/librnd/core/misc_util.h \
+ ../src_3rd/librnd-local/src/librnd/core/unit.h \
+ ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h \
+ ../src_3rd/librnd-local/src/librnd/core/event.h \
+ ../src_3rd/librnd-local/src/librnd/core/hidlib.h board.h vtroutestyle.h \
+ attrib.h global_typedefs.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
+ layer.h globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/color.h obj_common.h flag.h \
+ data_parent.h obj_arc_list.h obj_arc.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ ../src_3rd/librnd-local/src/librnd/poly/polyarea.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/librnd-local/src/../src_3rd/genht/htip.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
+ obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
+ ../src_plugins/show_netnames/menu_internal.c
 ../src_plugins/sketch_route/ewire.o: ../src_plugins/sketch_route/ewire.c \
  ../src_plugins/sketch_route/ewire.h ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h \
