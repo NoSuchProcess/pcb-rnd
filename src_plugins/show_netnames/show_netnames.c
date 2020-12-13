@@ -31,10 +31,12 @@
 #include <librnd/core/hid_menu.h>
 
 #include "board.h"
+#include "conf_core.h"
 #include "draw.h"
 #include "event.h"
 #include "netlist.h"
 #include "select.h"
+#include "obj_text_draw.h"
 #include "../src_plugins/query/net_int.h"
 
 #include "show_netnames_conf.h"
@@ -64,6 +66,13 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 	pcb_any_obj_t *term;
 	char tmp[128];
 	const char *netname;
+	pcb_draw_info_t *info = ctx;
+	rnd_coord_t x, y, dx, dy;
+	pcb_font_t *font;
+	double rot, vx, vy, nx, ny, len;
+
+	if (obj->type != PCB_OBJ_LINE)
+		return;
 
 	term = pcb_qry_parent_net_term(&shn_qctx, obj);
 	if ((term != NULL) && (term->type == PCB_OBJ_NET_TERM)) {
@@ -79,6 +88,39 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 		netname = "<nonet>";
 
 	rnd_trace(" #%ld=%s", obj->ID, netname);
+
+	pcb_obj_center(obj, &x, &y);
+	font = pcb_font(PCB, 0, 0);
+
+	switch(obj->type) {
+		case PCB_OBJ_LINE:
+			{
+				pcb_line_t *l = obj;
+
+				rot = atan2(l->Point2.Y - l->Point1.Y, l->Point2.X - l->Point1.X) * -RND_RAD_TO_DEG;
+
+				/* offset the text for approx. center alignment */
+				dx = 0; dy = -font->MaxHeight/2*0.3;
+				vx = l->Point2.X - l->Point1.X; vy = l->Point2.Y - l->Point1.Y;
+				len = vx*vx + vy*vy;
+				if (len != 0) {
+					len = sqrt(len);
+					if (l != 0) {
+						vx /= len;
+						vy /= len;
+						nx = -vy;
+						ny = vx;
+						x += nx * dy + vx * dx;
+						y += ny * dy + vy * dx;
+					}
+				}
+
+				pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, 0.3, 0.3, rot, 0, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
+			}
+			break;
+		default:
+			pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, 0.3, 0.3, 0.0, 0, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
+	}
 }
 
 static void show_netnames_render(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
@@ -106,7 +148,7 @@ static void show_netnames_render(rnd_hidlib_t *hidlib, void *user_data, int argc
 	/* search negative box so anything touched is included */
 	bx.X1 = info->drawn_area->X2; bx.Y1 = info->drawn_area->Y2;
 	bx.X2 = info->drawn_area->X1; bx.Y2 = info->drawn_area->Y1;
-	pcb_list_lyt_block_cb(pcb, PCB_LYT_COPPER, &bx, shn_render_cb, NULL);
+	pcb_list_lyt_block_cb(pcb, PCB_LYT_COPPER, &bx, shn_render_cb, info);
 	rnd_trace("\n");
 }
 
