@@ -289,7 +289,7 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 		pcb_draw_pstk_marks(info);
 	}
 
-	rnd_event(&PCB->hidlib, RND_EVENT_GUI_DRAW_OVERLAY_XOR, "p", &pcb_draw_out.fgGC, NULL);
+	rnd_event(&PCB->hidlib, RND_EVENT_GUI_DRAW_OVERLAY_XOR, "pp", &pcb_draw_out.fgGC, info, NULL);
 
 	rnd_hid_set_draw_xor(pcb_draw_out.fgGC, 0);
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
