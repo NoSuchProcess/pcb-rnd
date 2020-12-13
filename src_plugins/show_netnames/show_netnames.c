@@ -41,11 +41,15 @@ const char *pcb_show_netnames_cookie = "show_netnames plugin";
 #define SHOW_NETNAMES_CONF_FN "show_netnames.conf"
 conf_show_netnames_t conf_show_netnames;
 
+static void show_netnames_invalidate(void)
+{
+	rnd_trace("show_netnames: invalidate\n");
+}
+
 static void show_netnames_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
-	if (!conf_show_netnames.plugins.show_netnames.enable)
-		return;
-	rnd_trace("show_netnames: invalidate\n");
+	if (conf_show_netnames.plugins.show_netnames.enable)
+		show_netnames_invalidate();
 }
 
 static void show_netnames_render(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
@@ -59,6 +63,8 @@ int pplg_check_ver_show_netnames(int ver_needed) { return 0; }
 
 void pplg_uninit_show_netnames(void)
 {
+	show_netnames_invalidate();
+
 	rnd_conf_unreg_file(SHOW_NETNAMES_CONF_FN, show_netnames_conf_internal);
 	rnd_hid_menu_unload(rnd_gui, pcb_show_netnames_cookie);
 	rnd_event_unbind_allcookie(pcb_show_netnames_cookie);
