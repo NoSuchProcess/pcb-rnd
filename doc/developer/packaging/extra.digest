@@ -11,6 +11,6 @@
 @appendfiles pcb-rnd-import-net $PREFIX/bin/gsch2pcb-rnd $PREFIX/lib/pcb-rnd/*.scm $PREFIX/share/man/man1/gsch2pcb-rnd.1
 @appendfiles librnd-dev $PREFIX/share/librnd/librnd.mak $PREFIX/lib/librnd
 @appendfiles librnd-dev $PREFIX/lib/*.so
-@appendfiles librnd-dev $PREFIX/lib/librnd/gen_conf $PREFIX/lib/librnd/puplug
+@appendfiles librnd-dev $PREFIX/lib/librnd/scconfig/gen_conf.sh $PREFIX/lib/librnd/puplug
 @appenddeps librnd-dev librnd2
 @appenddeps pcb-rnd-cloud wget
