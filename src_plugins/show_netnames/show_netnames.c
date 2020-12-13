@@ -51,7 +51,6 @@ static pcb_qry_exec_t shn_qctx;
 
 static void show_netnames_invalidate(void)
 {
-	rnd_trace("show_netnames: invalidate\n");
 	pcb_qry_uninit(&shn_qctx);
 }
 
@@ -86,8 +85,6 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 	}
 	else
 		netname = "<nonet>";
-
-	rnd_trace(" #%ld=%s", obj->ID, netname);
 
 	pcb_obj_center(obj, &x, &y);
 	font = pcb_font(PCB, 0, 0);
@@ -138,8 +135,6 @@ static void show_netnames_render(rnd_hidlib_t *hidlib, void *user_data, int argc
 	pcb = (pcb_board_t *)hidlib;
 	info = argv[2].d.p;
 
-	rnd_trace("show_netnames: render:");
-
 	if (shn_qctx.pcb != pcb) {
 		show_netnames_invalidate();
 		shn_qctx.pcb = pcb;
@@ -149,7 +144,6 @@ static void show_netnames_render(rnd_hidlib_t *hidlib, void *user_data, int argc
 	bx.X1 = info->drawn_area->X2; bx.Y1 = info->drawn_area->Y2;
 	bx.X2 = info->drawn_area->X1; bx.Y2 = info->drawn_area->Y1;
 	pcb_list_lyt_block_cb(pcb, PCB_LYT_COPPER, &bx, shn_render_cb, info);
-	rnd_trace("\n");
 }
 
 int pplg_check_ver_show_netnames(int ver_needed) { return 0; }
