@@ -129,7 +129,7 @@ static void show_netnames_render(rnd_hidlib_t *hidlib, void *user_data, int argc
 	pcb_draw_info_t *info;
 	rnd_box_t bx;
 
-	if (!conf_show_netnames.plugins.show_netnames.enable)
+	if (!conf_show_netnames.plugins.show_netnames.enable || (rnd_gui == NULL) || (rnd_gui->coord_per_pix > conf_show_netnames.plugins.show_netnames.zoom_level))
 		return;
 
 	if (argv[2].type != RND_EVARG_PTR)
