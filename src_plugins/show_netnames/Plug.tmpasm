@@ -1,4 +1,7 @@
 put /local/pcb/mod {show_netnames}
+put /local/pcb/mod/CONF {$(PLUGDIR)/show_netnames/show_netnames_conf.h}
+put /local/pcb/mod/CONFFILE {show_netnames.conf}
+put /local/pcb/mod/CONFVAR {show_netnames_conf_internal}
 put /local/pcb/mod/MENUFILE {show_netnames-menu.lht}
 put /local/pcb/mod/MENUVAR {show_netnames_menu}
 append /local/pcb/mod/OBJS [@

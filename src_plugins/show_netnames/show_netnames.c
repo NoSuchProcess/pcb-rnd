@@ -33,8 +33,11 @@
 #include "event.h"
 #include <librnd/core/hid_menu.h>
 #include "menu_internal.c"
+#include "show_netnames_conf.h"
 
 const char *pcb_show_netnames_cookie = "show_netnames plugin";
+#define SHOW_NETNAMES_CONF_FN "show_netnames.conf"
+conf_show_netnames_t conf_show_netnames;
 
 static void show_netnames_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
@@ -50,14 +53,22 @@ int pplg_check_ver_show_netnames(int ver_needed) { return 0; }
 
 void pplg_uninit_show_netnames(void)
 {
+	rnd_conf_unreg_file(SHOW_NETNAMES_CONF_FN, show_netnames_conf_internal);
 	rnd_hid_menu_unload(rnd_gui, pcb_show_netnames_cookie);
 	rnd_event_unbind_allcookie(pcb_show_netnames_cookie);
 	rnd_remove_actions_by_cookie(pcb_show_netnames_cookie);
+	rnd_conf_unreg_fields("plugins/show_netnames/");
 }
 
 int pplg_init_show_netnames(void)
 {
 	RND_API_CHK_VER;
+
+	rnd_conf_reg_file(SHOW_NETNAMES_CONF_FN, show_netnames_conf_internal);
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	rnd_conf_reg_field(conf_show_netnames, field,isarray,type_name,cpath,cname,desc,flags);
+#include "show_netnames_conf_fields.h"
 
 	rnd_event_bind(PCB_EVENT_BOARD_EDITED, show_netnames_brd_chg, NULL, pcb_show_netnames_cookie);
 	rnd_event_bind(RND_EVENT_BOARD_CHANGED, show_netnames_brd_chg, NULL, pcb_show_netnames_cookie);
