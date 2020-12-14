@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: librnd separation: test-run debian packages
 + FEATURE: tedax netlist parser: load comptag (and nettag) in a second pass [report: Bdale]
 - FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
 - FEATURE: think over style clearance indication: on editing exisitng object it should probably be the clearance of the object [report: Ade]
