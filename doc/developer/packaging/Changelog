@@ -28,7 +28,10 @@ B. changes that probably DO need action
    pcb-rnd-io-standard because of external autorouting started to depend
    on tEDAx
 
-4. please verify: librnd has an installed script called
+4. there was a potential bug in librnd-dev file listing; please make sure
+   the librnd-dev package does NOT have usr/lib/librnd/plugins/ in it
+
+5. please verify: librnd has an installed script called
    $LP/scconfig/gen_conf.sh but does not have any other gen_conf
    script
 

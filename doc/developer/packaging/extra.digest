@@ -9,8 +9,8 @@
 @appendfiles pcb-rnd-io-alien $PREFIX/bin/txt2bxl $PREFIX/bin/bxl2txt
 @appendfiles pcb-rnd-export $PREFIX/bin/pcb-rnd-svg $PREFIX/share/man/man1/pcb-rnd-svg.1
 @appendfiles pcb-rnd-import-net $PREFIX/bin/gsch2pcb-rnd $PREFIX/lib/pcb-rnd/*.scm $PREFIX/share/man/man1/gsch2pcb-rnd.1
-@appendfiles librnd-dev $PREFIX/share/librnd/librnd.mak $PREFIX/lib/librnd
+@appendfiles librnd-dev $PREFIX/share/librnd/librnd.mak $PREFIX/lib/librnd/scconfig
 @appendfiles librnd-dev $PREFIX/lib/*.so
-@appendfiles librnd-dev $PREFIX/lib/librnd/scconfig/gen_conf.sh $PREFIX/lib/librnd/puplug
+@appendfiles librnd-dev $PREFIX/lib/librnd/scconfig/gen_conf.sh $PREFIX/lib/librnd/puplug $PREFIX/lib/librnd/sphash
 @appenddeps librnd-dev librnd2
 @appenddeps pcb-rnd-cloud wget
