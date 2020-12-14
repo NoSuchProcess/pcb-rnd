@@ -19,8 +19,7 @@
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 - BUG: query(select, @.type == RAT) fails [report: thet]
 - BUG: putenv(): do not free the buffer, putenv doesn't strdup! [report: Igor2]
-- BUG: portability: obsd2.9-i386, minix315: if there's no -ldl, go without dynamic plugins instead of failing [report: Igor2]
-- BUG: portability: obsd2.9-i386: once no-ldl is resolved, puplug fails to link [report: Igor2]
+- BUG: portability: obsd2.9-i386: need ranlib on all .a files [report: Igor2]
 - BUG: cam test: do not depend on pcb-rnd installed, run from source; then test on AIX and then add cam to the central tests
 
 2. For later releases ===============================================================================
