@@ -5,7 +5,6 @@
 - FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
 - FEATURE: think over style clearance indication: on editing exisitng object it should probably be the clearance of the object [report: Ade]
 + FEATURE: Add configuration item for text box update timer duration that waits for user to stop typing before updating. [report: Ade]
-- FEATURE: improve locking: consider a move-only lock? better idea: view list locked objects and make it easier to unlock or propedit them
 + FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough ; alternative: net name caching and display when zoomed in; event to invalidate the cache could be generated on pcb-changed calls! [report: Majenko]
 - FEATURE: new breadboard
 	- FEATURE: gfx rotated pixmap scale adjustment: missing in lesstif, partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
