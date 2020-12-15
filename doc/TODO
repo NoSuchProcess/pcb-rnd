@@ -16,7 +16,6 @@
 - BUG: {w d}, config, drc_query, edit definitions, change min drill value -> value on the change button doesn't refresh [report: bdale]
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 - BUG: query(select, @.type == RAT) fails [report: thet]
-- BUG: putenv(): do not free the buffer, putenv doesn't strdup! [report: Igor2]
 - BUG: portability: obsd2.9-i386: need ranlib on all .a files [report: Igor2]
 - BUG: cam test: do not depend on pcb-rnd installed, run from source; then test on AIX and then add cam to the central tests
 
