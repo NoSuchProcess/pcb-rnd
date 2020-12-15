@@ -409,6 +409,7 @@ ha:rnd-menu-v1 {
 				ha:Invert selection                = { a={<key>s; <key>i; }; action=Select(Invert) }
 				-
 				ha:Advanced search and select      = { a={<key>s; <key>s;} action=SearchDialog() }
+				ha:List locked objects             = { a={<key>s; <key>k;} action={query(view, "@.p.flag.lock == 1 && isvoid(@.subc)")} }
 				-
 				ha:Move selected subcircuits to other side= { a={<key>s; <key>f;} action=Flip(SelectedElements) }
 				ha:Move selected objects to current layer = { a={<key>s; <key>l;} action=MoveToCurrentLayer(Selected) }
