@@ -225,7 +225,7 @@ static rnd_r_dir_t drcArc_callback(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
-double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *end, rnd_point_t *mid_out, rnd_bool way, rnd_bool optimize)
+double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *end, rnd_point_t *mid_out, rnd_bool way, rnd_bool optimize, rnd_coord_t tot_thick)
 {
 	double f, s, f2, s2, len, best;
 	rnd_coord_t dx, dy, temp, last, length;
@@ -243,7 +243,7 @@ double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *en
 	line1.Flags = line2.Flags = pcb_no_flags();
 	line1.parent_type = line2.parent_type = PCB_PARENT_LAYER;
 	line1.parent.layer = line2.parent.layer = PCB_CURRLAYER(PCB);
-	line1.Thickness = conf_core.design.line_thickness + 2 * (conf_core.design.clearance + 1);
+	line1.Thickness = tot_thick;
 	line2.Thickness = line1.Thickness;
 	line1.Clearance = line2.Clearance = 0;
 	line1.Point1.X = start->X;
@@ -458,7 +458,7 @@ static void drc_line(rnd_point_t *end)
 	end->Y = last_good.Y;
 }
 
-void pcb_line_enforce_drc(pcb_board_t *pcb)
+void pcb_line_enforce_drc(pcb_board_t *pcb, rnd_coord_t tot_thick)
 {
 	rnd_point_t r45, rs, start;
 	rnd_bool shift;
@@ -480,9 +480,9 @@ void pcb_line_enforce_drc(pcb_board_t *pcb)
 
 	if (conf_core.editor.line_refraction != 0) {
 		/* first try starting straight */
-		r1 = pcb_drc_lines(pcb, &start, &rs, NULL, rnd_false, rnd_true);
+		r1 = pcb_drc_lines(pcb, &start, &rs, NULL, rnd_false, rnd_true, tot_thick);
 		/* then try starting at 45 */
-		r2 = pcb_drc_lines(pcb, &start, &r45, NULL, rnd_true, rnd_true);
+		r2 = pcb_drc_lines(pcb, &start, &r45, NULL, rnd_true, rnd_true, tot_thick);
 	}
 	else {
 		drc_line(&rs);

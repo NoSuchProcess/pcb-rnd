@@ -143,6 +143,7 @@ void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t 
 
 	if (conf_core.editor.auto_drc && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT) && (rnd_conf.editor.mode == pcb_crosshair.tool_move) && (pcb_brave & PCB_BRAVE_ENFORCE_CLR_MOVE)) {
 		pcb_find_t fctx;
+		pcb_line_t *line;
 
 		/* clearance enforce on move: need to do a find on the given object to avoid self-intersect blocks on the same network */
 		memset(&fctx, 0, sizeof(fctx));
@@ -154,6 +155,13 @@ void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t 
 		/* set up the startpoint for the drc line enforcer */
 		pcb_crosshair.AttachedLine.Point1.X = PlaceX;
 		pcb_crosshair.AttachedLine.Point1.Y = PlaceY;
+
+		/* set line total thickness for enforcing the endpoint move gap */
+		line = pcb_crosshair.AttachedObject.Ptr2;
+		if ((line != NULL) && (line->type == PCB_OBJ_LINE))
+			pcb_crosshair.AttachedLine.tot_thick = line->Thickness + line->Clearance+1;
+		else
+			pcb_crosshair.AttachedLine.tot_thick = conf_core.design.line_thickness + 2 * (conf_core.design.clearance + 1);
 	}
 
 	rnd_event(hl, PCB_EVENT_RUBBER_RESET, NULL);

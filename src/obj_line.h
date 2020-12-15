@@ -42,6 +42,7 @@ struct pcb_line_s {            /* holds information about one line */
 /* crosshair: */
 typedef struct {              /* current marked line */
 	rnd_point_t Point1, Point2; /* start- and end-position */
+	rnd_coord_t tot_thick;      /* total thickness, with clearance included */
 	long int State;
 	rnd_bool draw;
 } pcb_attached_line_t;
@@ -97,7 +98,7 @@ void pcb_line_adjust_attached_2lines(rnd_bool);
 /* makes the attached line fit into a 45 degree direction */
 void pcb_line_45(pcb_attached_line_t *);
 
-void pcb_line_enforce_drc(pcb_board_t *pcb);
+void pcb_line_enforce_drc(pcb_board_t *pcb, rnd_coord_t thick);
 
 /* Calculate a pair of refractioned (ortho-45) lines between 'start' and 'end'.
    If 'mid_out' is not NULL, load it with the coords of the middle point.
@@ -114,7 +115,7 @@ void pcb_line_enforce_drc(pcb_board_t *pcb);
    the fields of 'end' needed to find the closest point to the original target
    that still won't hit any object. Returns the straigh-line distance between
    start and the new end. */
-double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *end, rnd_point_t *mid_out, rnd_bool way, rnd_bool optimize);
+double pcb_drc_lines(pcb_board_t *pcb, const rnd_point_t *start, rnd_point_t *end, rnd_point_t *mid_out, rnd_bool way, rnd_bool optimize, rnd_coord_t tot_thick);
 
 /*** decide if two liens are overlapping in a way they can be simplified ***/
 typedef enum {
