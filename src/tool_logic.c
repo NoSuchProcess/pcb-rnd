@@ -38,6 +38,8 @@
 #include "crosshair.h"
 #include "data.h"
 #include "draw.h"
+#include "find.h"
+#include "brave.h"
 
 #include "tool_logic.h"
 
@@ -137,6 +139,18 @@ static void get_grid_lock_coordinates(int type, void *ptr1, void *ptr2, void *pt
 void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t PlaceY, rnd_bool do_rubberband)
 {
 	rnd_coord_t mx = 0, my = 0;
+	pcb_board_t *pcb = (pcb_board_t *)hl;
+
+	if (conf_core.editor.auto_drc && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT) && (rnd_conf.editor.mode == pcb_crosshair.tool_move) && (pcb_brave & PCB_BRAVE_ENFORCE_CLR_MOVE)) {
+		pcb_find_t fctx;
+
+		/* clearance enforce on move: need to do a find on the given object to avoid self-intersect blocks on the same network */
+		memset(&fctx, 0, sizeof(fctx));
+		fctx.flag_set = PCB_FLAG_FOUND;
+		fctx.flag_chg_undoable = 1;
+		pcb_find_from_xy(&fctx, pcb->Data, PlaceX, PlaceY);
+		pcb_find_free(&fctx);
+	}
 
 	rnd_event(hl, PCB_EVENT_RUBBER_RESET, NULL);
 	if (!conf_core.editor.snap_pin) {
