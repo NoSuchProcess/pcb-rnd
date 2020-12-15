@@ -150,6 +150,10 @@ void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t 
 		fctx.flag_chg_undoable = 1;
 		pcb_find_from_xy(&fctx, pcb->Data, PlaceX, PlaceY);
 		pcb_find_free(&fctx);
+
+		/* set up the startpoint for the drc line enforcer */
+		pcb_crosshair.AttachedLine.Point1.X = PlaceX;
+		pcb_crosshair.AttachedLine.Point1.Y = PlaceY;
 	}
 
 	rnd_event(hl, PCB_EVENT_RUBBER_RESET, NULL);
