@@ -338,7 +338,7 @@ ha:rnd-menu-v1 {
 						ha:Orthogonal moves                 = { a={<key>m; <key>c; <key>o}; checked=editor/orthogonal_moves; action=conf(toggle, editor/orthogonal_moves, design) }
 						ha:Crosshair snaps to padstacks     = { a={<key>m; <key>c; <key>p}; checked=editor/snap_pin; action=conf(toggle, editor/snap_pin, design) }
 						ha:Crosshair snaps to off-grid points on lines = { a={<key>m; <key>c; <key>s};checked=editor/snap_offgrid_line; action=conf(toggle, editor/snap_offgrid_line, design) }
-						ha:Crosshair shows style clearance  = { a={<key>m; <key>c; <key>c}; checked=editor/show_drc; action=conf(toggle, editor/show_drc, design) }
+						ha:Crosshair shows style/object clearance  = { a={<key>m; <key>c; <key>c}; checked=editor/show_drc; action=conf(toggle, editor/show_drc, design) }
 					}
 				}
 				ha:Drawing {

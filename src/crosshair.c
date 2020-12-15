@@ -383,7 +383,7 @@ RND_INLINE void xordraw_movecopy_line(rnd_bool modifier, int *event_sent, rnd_co
 		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
 		pcb_draw_wireframe_line(pcb_crosshair.GC,
 			line.Point1.X, line.Point1.Y, line.Point2.X, line.Point2.Y,
-			line.Thickness + 2 * (conf_core.design.clearance + 1), 0);
+			line.Thickness + 2 * (line.Clearance/2 + 1), 0);
 		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 	}
 }
@@ -403,7 +403,7 @@ RND_INLINE void xordraw_movecopy_arc(rnd_bool modifier, int *event_sent, rnd_coo
 	/* Draw the DRC outline if it is enabled */
 	if (conf_core.editor.show_drc) {
 		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
-		arc.Thickness += 2 * (conf_core.design.clearance + 1);
+		arc.Thickness += 2 * (arc.Clearance/2 + 1);
 		pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
 		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 	}
@@ -436,7 +436,7 @@ RND_INLINE void xordraw_movecopy_poly(rnd_bool modifier, int *event_sent, rnd_co
 			if (pl->Flags.orient)
 				rnd_poly_contour_inv(pl);
 
-			xordraw_cache.pline = rnd_pline_dup_offset(pl, -conf_core.design.clearance);
+			xordraw_cache.pline = rnd_pline_dup_offset(pl, -(polygon->Clearance/2+1));
 			rnd_poly_contour_del(&pl);
 		}
 		
@@ -490,7 +490,7 @@ RND_INLINE void xordraw_movecopy_line_point(rnd_bool modifier, int *event_sent, 
 		/* Draw the DRC outline if it is enabled */
 		if (conf_core.editor.show_drc) {
 			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
-			pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, point2.Y,line->Thickness + 2 * (conf_core.design.clearance + 1), 0);
+			pcb_draw_wireframe_line(pcb_crosshair.GC,point1->X, point1->Y, point2.X, point2.Y,line->Thickness + line->Clearance, 0);
 			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 		}
 	}
@@ -536,7 +536,7 @@ RND_INLINE void xordraw_movecopy_arc_point(rnd_bool modifier, int *event_sent, r
 	/* Draw the DRC outline if it is enabled */
 	if (conf_core.editor.show_drc) {
 		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
-		arc.Thickness += 2 * (conf_core.design.clearance + 1);
+		arc.Thickness += arc.Clearance;
 		pcb_draw_wireframe_arc(pcb_crosshair.GC, &arc, arc.Thickness);
 		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 	}

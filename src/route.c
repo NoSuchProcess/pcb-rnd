@@ -757,7 +757,7 @@ void pcb_route_draw(pcb_route_t *p_route, rnd_hid_gc_t GC)
  *---------------------------------------------------------*/
 void pcb_route_draw_drc(pcb_route_t *p_route, rnd_hid_gc_t GC)
 {
-	rnd_coord_t thickness = p_route->thickness + 2 * conf_core.design.clearance;
+	rnd_coord_t thickness = p_route->thickness + p_route->clearance;
 	int i;
 
 	rnd_render->set_color(GC, &conf_core.appearance.color.drc);
