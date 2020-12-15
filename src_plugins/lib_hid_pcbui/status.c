@@ -91,10 +91,11 @@ static void build_st_line1(void)
 static void build_st_line2(void)
 {
 	rnd_append_printf(&status.buf,
-		"via=%mS (%mS)  "
+		"%svia=%mS (%mS)  "
 		"clr=%mS  "
 		"text=%d%% %$mS "
 		"buff=#%d",
+		conf_core.appearance.compact ? "" : " ", /* "line" separator for single-line print */
 		conf_core.design.via_thickness, conf_core.design.via_drilling_hole,
 		conf_core.design.clearance,
 		conf_core.design.text_scale,
