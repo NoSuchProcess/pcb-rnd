@@ -1047,7 +1047,7 @@ void pcb_crosshair_grid_fit(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y)
 
 	enfmode  = (rnd_conf.editor.mode == pcb_crosshair.tool_line) && pcb_crosshair.AttachedLine.State != PCB_CH_STATE_FIRST;
 	if (pcb_brave & PCB_BRAVE_ENFORCE_CLR_MOVE)
-		enfmode |= (rnd_conf.editor.mode == pcb_crosshair.tool_move);
+		enfmode |= (rnd_conf.editor.mode == pcb_crosshair.tool_move) && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT);
 	if (enfmode && conf_core.editor.auto_drc)
 		pcb_line_enforce_drc(pcb);
 
