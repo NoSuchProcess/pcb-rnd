@@ -1117,6 +1117,8 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	rnd_coord_t x, y;
 	int dir = 0, scale;
 	eagle_layerid_t layer;
+	eagle_layer_t *ely;
+	pcb_layer_type_t lyt;
 	const char *pattern;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n))
@@ -1141,7 +1143,14 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 	y += size; /* different text object origin in eagle */
 	scale = (int)(((double)size/(double)EAGLE_TEXT_SIZE_100) * 100.0);
 
-	pcb_subc_add_dyntex((pcb_subc_t *)obj, x, y, dir, scale, (layer == 27), pattern);
+	/* figure if target layer is on top or bottom */
+	ely = htip_get(&st->layers, layer);
+	if (ely != NULL)
+		lyt = pcb_layer_flags(st->pcb, ely->lid);
+	else
+		lyt = 0; /* unknown - at least not bottom */
+
+	pcb_subc_add_dyntex((pcb_subc_t *)obj, x, y, dir, scale, (lyt & PCB_LYT_BOTTOM), pattern);
 
 	return 0;
 }
