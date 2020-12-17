@@ -1,12 +1,22 @@
 #!/bin/sh
+ROOT=../..
 #DBG=cdb
 
 TESTS="grp_name type offs"
+PWD=`pwd`
+
+run_pcb_rnd()
+{
+	(cd $ROOT/src && $DBG ./pcb-rnd "$@") 2>&1 | awk '
+		/^[*][*][*] Exporting:/ { next }
+		{ print $0 }
+	'
+}
 
 do_test()
 {
-	local testcase="$1" refs r o
-	$DBG pcb-rnd -C $testcase/cam.conf -x cam test --outfile $testcase/out layers.lht
+	local testcase="$PWD/$1" refs r o
+	run_pcb_rnd -C $testcase/cam.conf -x cam test --outfile $testcase/out $PWD/layers.lht
 
 	(
 		cd $testcase
