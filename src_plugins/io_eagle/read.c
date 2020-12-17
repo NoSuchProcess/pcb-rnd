@@ -1551,7 +1551,10 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 					}
 					else {
 						double sina, cosa;
-						ang = -ang;
+						if (back)
+							ang = 180 - ang;
+						else
+							ang = -ang;
 						sina = sin(ang / RND_RAD_TO_DEG);
 						cosa = cos(ang / RND_RAD_TO_DEG);
 						pcb_subc_rotate(new_subc, x, y, cosa, sina, ang);
