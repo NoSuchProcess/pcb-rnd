@@ -951,6 +951,11 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 		Text->rot += ctx->rotate.angle;
 	pcb_text_bbox(NULL, Text);
 
+	if (Text->rot < 0)
+		Text->rot = fmod(360 - Text->rot, 360);
+	if (Text->rot > 360)
+		Text->rot = fmod(Text->rot - 360, 360);
+
 	if (Layer->text_tree != NULL)
 		rnd_r_insert_entry(Layer->text_tree, (rnd_box_t *) Text);
 	pcb_poly_clear_from_poly(PCB->Data, PCB_OBJ_TEXT, Layer, Text);
