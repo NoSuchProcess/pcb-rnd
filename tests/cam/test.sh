@@ -9,6 +9,8 @@ run_pcb_rnd()
 {
 	(cd $ROOT/src && $DBG ./pcb-rnd "$@") 2>&1 | awk '
 		/^[*][*][*] Exporting:/ { next }
+		/Warning: footprint library list error on/ { next }
+		/^[ \t]*$/ { next }
 		{ print $0 }
 	'
 }
