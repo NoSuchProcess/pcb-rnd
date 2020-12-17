@@ -1536,6 +1536,8 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 			pcb_subc_bbox(new_subc);
 			pcb_subc_rebind(st->pcb, new_subc);
 
+			pcb_subc_create_aux(new_subc, x, y, 0, 0);
+
 			if (rot != NULL) {
 				char *end;
 				ang = strtod(rot+1, &end);
@@ -1551,10 +1553,9 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 					}
 					else {
 						double sina, cosa;
+						ang = -ang;
 						if (back)
-							ang = 180 - ang;
-						else
-							ang = -ang;
+							ang -= 180;
 						sina = sin(ang / RND_RAD_TO_DEG);
 						cosa = cos(ang / RND_RAD_TO_DEG);
 						pcb_subc_rotate(new_subc, x, y, cosa, sina, ang);
@@ -1568,8 +1569,6 @@ static int eagle_read_elements(read_state_t *st, trnode_t *subtree, void *obj, i
 
 			if (back)
 				pcb_subc_change_side(new_subc, 2 * y - st->pcb->hidlib.size_y);
-
-			pcb_subc_create_aux(new_subc, x, y, ang, back);
 
 			size_bump(st, new_subc->BoundingBox.X2, new_subc->BoundingBox.Y2);
 		}
