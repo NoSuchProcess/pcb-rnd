@@ -93,20 +93,20 @@ const kicad_layertab_t kicad_layertab[] = {
 	{00, "Margin",    0,  2,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC, 0},
 	{14, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC, 0},
 
-	{15, "B.CrtYd",   0,  3,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM, 1},
-	{00, "B.CrtYd",   0,  2,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM, 0},
-	{15, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM, 0},
+	{15, "B.CrtYd",   0,  3,     LYACT_NEW_MISC,    0,   "ko.courtyard", PCB_LYT_DOC | PCB_LYT_BOTTOM, 1},
+	{00, "B.CrtYd",   0,  2,     LYACT_NEW_MISC,    0,   "ko.courtyard", PCB_LYT_DOC | PCB_LYT_BOTTOM, 0},
+	{15, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,           PCB_LYT_DOC | PCB_LYT_BOTTOM, 0},
 
-	{16, "F.CrtYd",   0,  3,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP, 1},
-	{00, "F.CrtYd",   0,  2,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP, 0},
-	{16, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP, 0},
+	{16, "F.CrtYd",   0,  3,     LYACT_NEW_MISC,    0,   "ko.courtyard", PCB_LYT_DOC | PCB_LYT_TOP, 1},
+	{00, "F.CrtYd",   0,  2,     LYACT_NEW_MISC,    0,   "ko.courtyard", PCB_LYT_DOC | PCB_LYT_TOP, 0},
+	{16, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,           PCB_LYT_DOC | PCB_LYT_TOP, 0},
 
-	{17, "B.Fab",     0,  3,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM, 1},
-	{00, "B.Fab",     0,  2,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM, 0},
+	{17, "B.Fab",     0,  3,     LYACT_NEW_MISC,    0,   "fab",    PCB_LYT_DOC | PCB_LYT_BOTTOM, 1},
+	{00, "B.Fab",     0,  2,     LYACT_NEW_MISC,    0,   "fab",    PCB_LYT_DOC | PCB_LYT_BOTTOM, 0},
 	{17, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_BOTTOM, 0},
 
-	{18, "F.Fab",     0,  3,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP, 1},
-	{00, "F.Fab",     0,  2,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP, 0},
+	{18, "F.Fab",     0,  3,     LYACT_NEW_MISC,    0,   "fab",    PCB_LYT_DOC | PCB_LYT_TOP, 1},
+	{00, "F.Fab",     0,  2,     LYACT_NEW_MISC,    0,   "fab",    PCB_LYT_DOC | PCB_LYT_TOP, 0},
 	{18, NULL,        0,  1,     LYACT_NEW_MISC,    0,   NULL,     PCB_LYT_DOC | PCB_LYT_TOP, 0},
 
 	{0, NULL, 0, 0, 0, 0, NULL, 0, 0} /* terminator: score = 0 */
