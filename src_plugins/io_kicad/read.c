@@ -235,6 +235,10 @@ static int kicad_create_copper_layer_(read_state_t *st, rnd_layergrp_id_t gid, c
 {
 	rnd_layer_id_t id;
 	id = pcb_layer_create(st->pcb, gid, lname, 0);
+	if (id < 0) {
+		rnd_message(RND_MSG_ERROR, "failed to create copper layer %s\n", lname);
+		return -1;
+	}
 	htsi_set(&st->layer_k2i, rnd_strdup(lname), id);
 	if (ltype != NULL) {
 		pcb_layer_t *ly = pcb_get_layer(st->pcb->Data, id);
