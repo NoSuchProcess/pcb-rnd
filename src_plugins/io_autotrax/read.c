@@ -209,8 +209,6 @@ static int rdax_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	ltrim(t);
 	rtrim(t); /*need to remove trailing '\r' to avoid rendering oddities */
 
-	/* # TODO - ABOUT HERE, CAN DO ROTATION/DIRECTION CONVERSION */
-
 	ly = autotrax_get_layer(st, subc, autotrax_layer, "text");
 	if (ly == NULL)
 		return 0;
@@ -223,14 +221,6 @@ static int rdax_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	if (pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, 90.0*direction, scaling, 0, t, Flags) != 0)
 		return 1;
 	return -1;
-
-TODO("do not use strlen() for this, decide where to move this code")
-/*
-		if (strlen(t) == 0) {
-			rnd_message(RND_MSG_ERROR, "Empty free string not placed on layout, %s:%d\n", st->Filename, st->lineno);
-			return 0;
-		}
-*/
 }
 
 /* autotrax_pcb free_track/component_track */
