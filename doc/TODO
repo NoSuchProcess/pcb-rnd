@@ -67,7 +67,7 @@
 		- bin: padstack clearances for element pins will rely on connectivity to other polygons layer by layer defined in the netlist 
 		- bin: need to add support for non top silk (tPlace), tDocu and top copper text in read.c
 	- revise all I/O plugins for:
-		- upgrade autotrax with standard text for rotation, scale_x, scale_y anbd mirror_x (need test cases)
+		- standard text for rotation, scale_x, scale_y anbd mirror_x
 		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
