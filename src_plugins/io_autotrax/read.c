@@ -781,8 +781,6 @@ static int autotrax_create_layers(read_state_t *st)
 	if (pcb_layer_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &id, 1) == 1) {
 		rnd_layergrp_id_t gid;
 		pcb_layergrp_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
-		st->protel_to_stackup[11] = pcb_layer_create(st->pcb, gid, "Board", 0); /* != outline, cutouts */
-		pcb_layergrp_list(st->pcb, PCB_LYT_SILK | PCB_LYT_TOP, &gid, 1);
 		st->protel_to_stackup[13] = pcb_layer_create(st->pcb, gid, "Multi", 0);
 	}
 	else {
@@ -808,10 +806,16 @@ static int autotrax_create_layers(read_state_t *st)
 	st->protel_to_stackup[10] = pcb_layer_create(st->pcb, g - st->pcb->LayerGroups.grp, "Power", 0);
 
 	g = pcb_get_grp_new_intern(st->pcb, -1);
-	g->name = rnd_strdup("outline"); /* equivalent to keepout = layer 12 in autotrax */
-	g->ltype = PCB_LYT_BOUNDARY; /* and includes cutouts */
+	g->name = rnd_strdup("board"); /* 11 (board) is the contour */
+	g->ltype = PCB_LYT_BOUNDARY;
 	pcb_layergrp_set_purpose__(g, rnd_strdup("uroute"), 0);
-	st->protel_to_stackup[12] = autotrax_reg_layer(st, "outline", PCB_LYT_BOUNDARY);
+	st->protel_to_stackup[11] = autotrax_reg_layer(st, "outline", PCB_LYT_BOUNDARY);
+
+	g = pcb_get_grp_new_intern(st->pcb, -1);
+	g->name = rnd_strdup("keepout"); /* 12 (keepout) is where cutouts are specified */
+	g->ltype = PCB_LYT_BOUNDARY;
+	pcb_layergrp_set_purpose__(g, rnd_strdup("uroute"), 0);
+	st->protel_to_stackup[12] = autotrax_reg_layer(st, "keepout", PCB_LYT_BOUNDARY);
 
 	pcb_layergrp_inhibit_dec();
 
