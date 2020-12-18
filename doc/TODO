@@ -67,7 +67,6 @@
 		- bin: padstack clearances for element pins will rely on connectivity to other polygons layer by layer defined in the netlist 
 		- bin: need to add support for non top silk (tPlace), tDocu and top copper text in read.c
 	- revise all I/O plugins for:
-		- padstacks
 		- new outline/mech layers and slots
 		- new doc layers
 		- polygon side clearance (e.g. CUCP#38 provided by Karl)
