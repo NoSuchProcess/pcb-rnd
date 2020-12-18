@@ -532,11 +532,11 @@ static int rdax_pad(read_state_t *st, FILE *FP, pcb_subc_t *subc, int component)
 
 	if (!valid) {
 		rnd_message(RND_MSG_ERROR, "Insufficient pad attribute fields, %s:%d\n", st->Filename, st->lineno);
+		fgetline(line, sizeof(line), FP, st->lineno); /* read the whole construct before exit */
 		return -1;
 	}
 
 /* now find name as string on next line and copy it */
-TODO("can not exit above if we need to read this line")
 	if (fgetline(line, sizeof(line), FP, st->lineno) == NULL) {
 		rnd_message(RND_MSG_ERROR, "Error parsing pad text field line, %s:%d\n", st->Filename, st->lineno);
 		return -1;
