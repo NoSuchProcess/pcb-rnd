@@ -219,7 +219,7 @@ static int rdax_text(read_state_t *st, FILE *FP, pcb_subc_t *subc)
 	if (lyt & PCB_LYT_BOTTOM) Flags = pcb_flag_make(PCB_FLAG_ONSOLDER);
 	else Flags = pcb_flag_make(0);
 
-TODO("textrot: is there a real rotation angle available?")
+	/* Text rotation is limited to 90*direction by the file format */
 	if (pcb_text_new(ly, pcb_font(st->pcb, 0, 1), X, Y, 90.0*direction, scaling, 0, t, Flags) != 0)
 		return 1;
 	return -1;
