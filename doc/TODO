@@ -67,9 +67,9 @@
 		- bin: padstack clearances for element pins will rely on connectivity to other polygons layer by layer defined in the netlist 
 		- bin: need to add support for non top silk (tPlace), tDocu and top copper text in read.c
 	- revise all I/O plugins for:
-		- new outline/mech layers and slots
-		- new doc layers
-		- polygon side clearance (e.g. CUCP#38 provided by Karl)
+		- new outline/mech layers and slots; need to check in: eagle, eagle_bin
+		- new doc layers; need to check in: eagle, eagle_bin, kicad
+		- polygon side clearance (e.g. CUCP#38 provided by Karl); need to check: eagle, eagle_bin
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 
 3. Long term ===============================================================================
