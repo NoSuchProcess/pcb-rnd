@@ -6436,7 +6436,8 @@
  ../src_plugins/io_eagle/trparse_bin.h obj_subc.h obj_poly_op.h \
  operation.h ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
  ../src_plugins/lib_compat_help/subc_help.h layer.h \
- ../src_plugins/lib_compat_help/pstk_help.h ../src_plugins/shape/shape.h
+ ../src_plugins/lib_compat_help/pstk_help.h ../src_plugins/shape/shape.h \
+ ../src_plugins/io_eagle/layertab.c
 ../src_plugins/io_eagle/read_dru.o: ../src_plugins/io_eagle/read_dru.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
