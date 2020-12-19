@@ -369,13 +369,10 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 	return 0;
 }
 
+#include "layertab.c"
+
 static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_loc_t loc, void *obj)
 {
-	/* tDocu & bDocu are used for info used when designing, but not necessarily for
-	   exporting to Gerber i.e. package outlines that cross pads, or instructions.
-	   These layers within the silk groups will be needed when subc replaces elements
-	   since most Eagle packages use tDocu, bDocu for some of their artwork */
-
 	eagle_layer_t *ly = htip_get(&st->layers, id);
 	rnd_layer_id_t lid;
 	pcb_subc_t *subc = obj;
@@ -384,24 +381,18 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 
 	/* if more than 51 or 52 are considered useful, we could relax the test here: */
 	if ((ly == NULL) || (ly->lid < 0)) {
-		TODO("move this out to a separate function")
-		if (id == 51 || id == 52) {
-				/* create docu on the first reference */
-			pcb_layer_type_t typ;
-			rnd_layergrp_id_t gid;
-			switch (id) {
-				case 51: /* = tDocu */
-					typ        = PCB_LYT_SILK | PCB_LYT_TOP;
-					ly->name   = "tDocu";
-					ly->color  = 14;
-					break;
-				default: /* i.e. 52 = bDocu: */
-					typ        = PCB_LYT_SILK | PCB_LYT_BOTTOM;
-					ly->name   = "bDocu";
-					ly->color  = 7;
-					break;
-			}
+		const eagle_layertab_t *t;
 
+		for(t = eagle_layertab; t->id != 0; t++)
+			if (t->id == id)
+				break;
+
+		if (t->id == id) {
+				/* create docu on the first reference */
+			pcb_layer_type_t typ = t->lyt;
+			rnd_layergrp_id_t gid;
+			ly->name    = t->name;
+			ly->color   = t->color;
 			ly->fill    = 1;
 			ly->visible = 0;
 			ly->active  = 1;
