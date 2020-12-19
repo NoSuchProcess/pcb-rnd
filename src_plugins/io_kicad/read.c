@@ -1972,7 +1972,8 @@ static int kicad_parse_any_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 static int kicad_parse_gr_poly(read_state_t *st, gsxl_node_t *subtree)
 {
 	rnd_coord_t sx = 0, sy = 0;
-	pcb_subc_get_origin(st->primitive_subc, &sx, &sy);
+	if (st->primitive_subc != NULL)
+		pcb_subc_get_origin(st->primitive_subc, &sx, &sy);
 	return kicad_parse_any_poly(st, subtree, st->primitive_subc, sx, sy);
 }
 
@@ -2271,7 +2272,8 @@ static int kicad_parse_any_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 		return -1;
 
 	pcb_add_poly_on_layer(ly, poly);
-	pcb_poly_init_clip(subc->data, ly, poly);
+	if (subc != NULL)
+		pcb_poly_init_clip(subc->data, ly, poly);
 
 	if (st->primitive_term != NULL)
 		pcb_attribute_put(&poly->Attributes, "term", st->primitive_term);
@@ -2620,6 +2622,7 @@ static int kicad_parse_pcb(read_state_t *st)
 		{"gr_arc", kicad_parse_gr_arc},
 		{"gr_circle", kicad_parse_gr_arc},
 		{"gr_text", kicad_parse_gr_text},
+		{"gr_poly", kicad_parse_gr_poly},
 		{"target", kicad_parse_target},
 		{"via", kicad_parse_via},
 		{"segment", kicad_parse_segment},
