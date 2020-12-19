@@ -35,12 +35,54 @@ typedef struct {
 } eagle_layertab_t;
 
 static const eagle_layertab_t eagle_layertab[] = {
+	/* non-standard doc layers */
+	{17,  PCB_LYT_DOC,                    "eagle:pads",     "Pads", -1},
+	{18,  PCB_LYT_DOC,                    "eagle:vias",     "Vias", -1},
+	{19,  PCB_LYT_DOC,                    "eagle:unrouted", "Unrouted", -1},
+	{23,  PCB_LYT_DOC | PCB_LYT_TOP,      "eagle:torigins", "tOrigins", -1},
+	{24,  PCB_LYT_DOC | PCB_LYT_BOTTOM,   "eagle:borigins", "bOrigins", -1},
 
+	/* we have refdes and values on silk normally */
+	{25,  PCB_LYT_DOC | PCB_LYT_TOP,      NULL,    "tNames", -1},
+	{26,  PCB_LYT_DOC | PCB_LYT_BOTTOM,   NULL,    "bNames", -1},
+	{27,  PCB_LYT_DOC | PCB_LYT_TOP,      NULL,    "tValues", -1},
+	{28,  PCB_LYT_DOC | PCB_LYT_BOTTOM,   NULL,    "bValues", -1},
+
+	/* standard mask & paste */
 	{29,  PCB_LYT_MASK | PCB_LYT_TOP,     NULL,    "tStop", -1},
 	{30,  PCB_LYT_MASK | PCB_LYT_BOTTOM,  NULL,    "bStop", -1},
 	{31,  PCB_LYT_PASTE | PCB_LYT_TOP,    NULL,    "tCream", -1},
 	{32,  PCB_LYT_PASTE | PCB_LYT_BOTTOM, NULL,    "bCream", -1},
 
+	/* uncommon fab layers */
+	{33,  PCB_LYT_MECH | PCB_LYT_TOP,     "finish.eagle", "tFinish", -1},
+	{34,  PCB_LYT_MECH | PCB_LYT_BOTTOM,  "finish.eagle", "bFinish", -1},
+	{35,  PCB_LYT_MECH | PCB_LYT_TOP,     "adhesive",     "tGlue", -1},
+	{36,  PCB_LYT_MECH | PCB_LYT_BOTTOM,  "adhesive",     "bGlue", -1},
+	{37,  PCB_LYT_DOC | PCB_LYT_TOP,      "eagle:ttest",  "tTest", -1},
+	{38,  PCB_LYT_DOC | PCB_LYT_BOTTOM,   "eagle:btest",  "bTest", -1},
+
+	/* various keepouts */
+	{39,  PCB_LYT_DOC | PCB_LYT_TOP,      "ko.courtyard",     "tKeepout", -1},
+	{40,  PCB_LYT_DOC | PCB_LYT_BOTTOM,   "ko.courtyard",     "bKeepout", -1},
+	{41,  PCB_LYT_DOC | PCB_LYT_TOP,      "ko@top-copper",    "tRestrict", -1},
+	{42,  PCB_LYT_DOC | PCB_LYT_BOTTOM,   "ko@bottom-copper", "bRestrict", -1},
+	{43,  PCB_LYT_DOC,                    "ko.via",           "vRestrict", -1},
+
+	/* non-standard doc layers */
+	{44,  PCB_LYT_DOC,                    "eagle:drills",     "Drills", -1},
+	{45,  PCB_LYT_DOC,                    "eagle:holes",      "Holes", -1},
+
+	/* unplated internal cutouts */
+	{46,  PCB_LYT_BOUNDARY,               "uroute",           "Milling", -1},
+
+	/* non-standard doc layers */
+	{47,  PCB_LYT_DOC,                    "eagle:measures",   "Measures", -1},
+	{48,  PCB_LYT_DOC,                    "eagle:document",   "Document", -1},
+	{49,  PCB_LYT_DOC,                    "eagle:referencelc","ReferenceLC", -1},
+	{50,  PCB_LYT_DOC,                    "eagle:referencels","ReferenceLS", -1},
+
+	/* these should be assy probably: */
 	/* tDocu & bDocu are used for info used when designing, but not necessarily for
 	   exporting to Gerber i.e. package outlines that cross pads, or instructions.
 	   These layers within the silk groups will be needed when subc replaces elements
