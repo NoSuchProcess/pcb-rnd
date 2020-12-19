@@ -36,6 +36,11 @@ typedef struct {
 
 static const eagle_layertab_t eagle_layertab[] = {
 
+	{29,  PCB_LYT_MASK | PCB_LYT_TOP,     NULL,    "tStop", -1},
+	{30,  PCB_LYT_MASK | PCB_LYT_BOTTOM,  NULL,    "bStop", -1},
+	{31,  PCB_LYT_PASTE | PCB_LYT_TOP,    NULL,    "tCream", -1},
+	{32,  PCB_LYT_PASTE | PCB_LYT_BOTTOM, NULL,    "bCream", -1},
+
 	/* tDocu & bDocu are used for info used when designing, but not necessarily for
 	   exporting to Gerber i.e. package outlines that cross pads, or instructions.
 	   These layers within the silk groups will be needed when subc replaces elements
