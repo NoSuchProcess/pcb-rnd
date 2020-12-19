@@ -396,7 +396,14 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 			ly->fill    = 1;
 			ly->visible = 0;
 			ly->active  = 1;
-			pcb_layergrp_list(st->pcb, typ, &gid, 1);
+			if (pcb_layergrp_listp(st->pcb, typ, &gid, 1, -1, t->purp) != 1) {
+				pcb_layergrp_t *grp = pcb_get_grp_new_misc(st->pcb);
+				grp->name = rnd_strdup(ly->name);
+				grp->ltype = typ;
+				if (t->purp != NULL)
+					pcb_layergrp_set_purpose(grp, t->purp, 0);
+				gid = grp - st->pcb->LayerGroups.grp;
+			}
 			ly->lid = pcb_layer_create(st->pcb, gid, ly->name, 0);
 		}
 		else
