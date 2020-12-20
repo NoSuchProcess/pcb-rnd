@@ -82,13 +82,9 @@ static const eagle_layertab_t eagle_layertab[] = {
 	{49,  PCB_LYT_DOC,                    "eagle:referencelc","ReferenceLC", -1},
 	{50,  PCB_LYT_DOC,                    "eagle:referencels","ReferenceLS", -1},
 
-	/* these should be assy probably: */
-	/* tDocu & bDocu are used for info used when designing, but not necessarily for
-	   exporting to Gerber i.e. package outlines that cross pads, or instructions.
-	   These layers within the silk groups will be needed when subc replaces elements
-	   since most Eagle packages use tDocu, bDocu for some of their artwork */
-	{51,  PCB_LYT_SILK | PCB_LYT_TOP,     NULL,    "tDocu",   14},
-	{52,  PCB_LYT_SILK | PCB_LYT_BOTTOM,  NULL,    "bDocu",   7},
+	/* user doc not ending up at the fab */
+	{51,  PCB_LYT_DOC | PCB_LYT_TOP,      "assy",             "tDocu",   14},
+	{52,  PCB_LYT_DOC | PCB_LYT_BOTTOM,   "assy",             "bDocu",   7},
 
 	{0}
 };
