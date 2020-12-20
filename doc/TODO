@@ -6,7 +6,7 @@
 + FEATURE: think over style clearance indication: on editing exisitng object it should probably be the clearance of the object [report: Ade]
 + FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough ; alternative: net name caching and display when zoomed in; event to invalidate the cache could be generated on pcb-changed calls! [report: Majenko]
 - FEATURE: new breadboard
-	- FEATURE: gfx rotated pixmap scale adjustment: missing in lesstif, partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
+	- FEATURE: gfx rotated pixmap scale adjustment: partly done (buggy on corner resize) in gtk ghid_draw_pixmap()
 	- FEATURE: hidlib: render pixmap: test in gl
 	- DOC: pool node on how to use pixmap for breadboading
 - BUG: {i c p}, window geometry, save to user config 'now' -> not saved [report: thet]
