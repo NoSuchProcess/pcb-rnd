@@ -105,6 +105,7 @@ typedef struct {
 	const char *primitive_term; /* for gr_ objects: if not NULL, set the term attribute */
 	pcb_layer_t *primitive_ly;  /* for gr_ objects: if not NULL, use this layer and expect no layer specified in the file */
 	pcb_subc_t *primitive_subc; /* for gr_ objects: if not NULL, object is being added under this subc (apply offs) */
+	rnd_coord_t primitive_dx, primitive_dy; /*  for gr_ objects: if not 0, add these offsets to the placement (useful for pad primitive placement) */
 
 	rnd_coord_t width[DIM_max];
 	rnd_coord_t height[DIM_max];
@@ -919,6 +920,8 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 			rotdeg -= 360;
 	}
 
+	X += st->primitive_dx; Y += st->primitive_dy;
+
 	pcb_text_new_by_bbox(ly, pcb_font(PCB_FOR_FP, 0, 1), X, Y, bbw, bbh,
 		xanch, yanch, sx/sy, mirrored ? PCB_TXT_MIRROR_X : 0, rotdeg, thickness,
 		text, flg);
@@ -1112,6 +1115,8 @@ static int kicad_parse_any_line(read_state_t *st, gsxl_node_t *subtree, pcb_subc
 			y2 += sy;
 		}
 	}
+	x1 += st->primitive_dx; y1 += st->primitive_dy;
+	x2 += st->primitive_dx; y2 += st->primitive_dy;
 	line = pcb_line_new(ly, x1, y1, x2, y2, thickness, clearance, flg);
 	if (st->primitive_term != NULL)
 		pcb_attribute_put(&line->Attributes, "term", st->primitive_term);
@@ -1225,6 +1230,8 @@ static int kicad_parse_any_arc(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 				cy += sy;
 			}
 		}
+		cx += st->primitive_dx; cy += st->primitive_dy;
+
 		/* note: do not remove duplicate arcs, because term may need to be set on the result */
 		arc = pcb_arc_new(ly, cx, cy, width, height, start_angle, delta, thickness, clearance, flg, rnd_false);
 		if (st->primitive_term != NULL)
@@ -1974,7 +1981,7 @@ static int kicad_parse_gr_poly(read_state_t *st, gsxl_node_t *subtree)
 	rnd_coord_t sx = 0, sy = 0;
 	if (st->primitive_subc != NULL)
 		pcb_subc_get_origin(st->primitive_subc, &sx, &sy);
-	return kicad_parse_any_poly(st, subtree, st->primitive_subc, sx, sy);
+	return kicad_parse_any_poly(st, subtree, st->primitive_subc, sx + st->primitive_dx, sy + st->primitive_dy);
 }
 
 
@@ -2160,7 +2167,17 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 			definite_clearance = 1;
 		}
 		else if (strcmp("primitives", m->str) == 0) {
-			if (kicad_parse_primitives(st, m->children, subc, pin_name, &layers) != 0)
+			rnd_coord_t odx, ody;
+			int res;
+rnd_trace("**** prim dx;dy: %mm;%mm\n", x, y);
+			odx = st->primitive_dx;
+			ody = st->primitive_dy;
+			st->primitive_dx += x;
+			st->primitive_dy += y;
+			res = kicad_parse_primitives(st, m->children, subc, pin_name, &layers);
+			st->primitive_dx = odx;
+			st->primitive_dy = ody;
+			if (res != 0)
 				return -1;
 		}
 		else if (strcmp("roundrect_rratio", m->str) == 0) {
