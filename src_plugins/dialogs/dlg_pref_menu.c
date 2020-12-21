@@ -31,8 +31,6 @@
 #include <librnd/core/safe_fs.h>
 
 extern conf_dialogs_t dialogs_conf;
-extern void pcb_wplc_save_to_role(rnd_conf_role_t role);
-extern int pcb_wplc_save_to_file(const char *fn);
 
 #define GET_ROW(ctx) \
 	rnd_hid_attribute_t *lattr= &((pref_ctx_t *)ctx)->dlg[((pref_ctx_t *)ctx)->menu.wlist]; \
