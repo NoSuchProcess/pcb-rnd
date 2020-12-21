@@ -60,6 +60,8 @@ static void drc_rlist_pcb2dlg(void);
 
 #include "drc_query_stat.c"
 
+static rnd_conf_hid_id_t cfgid;
+
 static const char *drc_query_cookie = "drc_query";
 
 extern conf_drc_query_t conf_drc_query;
@@ -290,6 +292,12 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_e
 	drc_rlist_pcb2dlg(); /* for the run time */
 }
 
+static void drc_query_refresh_def(void);
+static void drc_query_defchg(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
+{
+	drc_query_refresh_def();
+}
+
 static vtp0_t free_drc_conf_nodes;
 static rnd_conf_native_t *nat_defs = NULL;
 static rnd_conf_native_t *nat_rules = NULL;
@@ -398,6 +406,14 @@ static void drc_query_newconf(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
 				pcb_conf_legacy(path, slegacy);
 			else if (sdefault != NULL)
 				rnd_conf_set(RND_CFR_INTERNAL, path, -1, sdefault, RND_POL_OVERWRITE);
+
+			/* create the chnage binding so the gui can be updated */
+			{
+				static rnd_conf_hid_callbacks_t cbs2;
+				cbs2.val_change_post = drc_query_defchg;
+				rnd_conf_hid_set_cb(rnd_conf_get_field(path), cfgid, &cbs2);
+			}
+
 			if (!pathfree)
 				path = NULL; /* hash key shall not be free'd */
 		}
@@ -872,6 +888,9 @@ static rnd_conf_hid_callbacks_t cbs;
 
 int pplg_init_drc_query(void)
 {
+	static rnd_conf_hid_callbacks_t cbs2;
+	static rnd_conf_hid_id_t cfgid;
+
 	RND_API_CHK_VER;
 
 	pcb_drcq_stat_init();
@@ -880,12 +899,15 @@ int pplg_init_drc_query(void)
 
 	vtp0_init(&free_drc_conf_nodes);
 	cbs.new_hlist_item_post = drc_query_newconf;
-	rnd_conf_hid_reg(drc_query_cookie, &cbs);
+	cfgid = rnd_conf_hid_reg(drc_query_cookie, &cbs);
 
 	rnd_conf_reg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_drc_query, field,isarray,type_name,cpath,cname,desc,flags);
 #include "drc_query_conf_fields.h"
+
+	cbs2.val_change_post = drc_query_defchg;
+	rnd_conf_hid_set_cb(rnd_conf_get_field("plugins/drc_query/definitions"), cfgid, &cbs2);
 
 	RND_REGISTER_ACTIONS(drc_query_action_list, drc_query_cookie)
 	pcb_drc_impl_reg(&drc_query_impl);
