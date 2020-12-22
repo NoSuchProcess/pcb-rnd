@@ -71,7 +71,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 	double rot, vx, vy, nx, ny, len, lscale;
 
 	if (obj->type != PCB_OBJ_LINE)
-		return;
+		return NULL;
 
 	term = pcb_qry_parent_net_term(&shn_qctx, obj);
 	if ((term != NULL) && (term->type == PCB_OBJ_NET_TERM)) {
@@ -118,6 +118,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 		default:
 			pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, lscale, lscale, 0.0, 0, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
 	}
+	return NULL;
 }
 
 static void show_netnames_render(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
