@@ -102,10 +102,7 @@ rnd_bool pcb_remove_selected(pcb_op_mode_t mode)
 	return rnd_false;
 }
 
-/* ---------------------------------------------------------------------------
- * remove object as referred by pointers and type,
- * allocated memory is passed to the 'remove undo' list
- */
+/* remove object allocated memory is passed to the 'remove undo' list */
 void *pcb_remove_object(int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_opctx_t ctx;
