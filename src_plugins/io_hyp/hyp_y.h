@@ -54,7 +54,7 @@ extern int hyydebug;
 /* "%code requires" blocks.  */
 #line 21 "hyp_y.y" /* yacc.c:1921  */
 
-#include "parser.h"
+#include "../src_plugins/io_hyp/parser.h"
 
 #line 60 "hyp_y.h" /* yacc.c:1921  */
 

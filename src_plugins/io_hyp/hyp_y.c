@@ -117,7 +117,7 @@ extern int hyydebug;
 /* "%code requires" blocks.  */
 #line 21 "hyp_y.y" /* yacc.c:352  */
 
-#include "parser.h"
+#include "../src_plugins/io_hyp/parser.h"
 
 #line 123 "hyp_y.c" /* yacc.c:352  */
 
@@ -264,7 +264,7 @@ int hyyparse (void);
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#include "hyp_l.h"
+#include "../src_plugins/io_hyp/hyp_l.h"
 
 void hyyerror(const char *);
 

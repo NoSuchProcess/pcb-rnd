@@ -2207,7 +2207,7 @@ char *yytext;
 
 char *rnd_strdup(const char *s); /* from #include <librnd/core/compat_misc.h> */
 
-#include "hyp_y.h"
+#include "../src_plugins/io_hyp/hyp_y.h"
 
 /* copy a string between quotes */
 char *strunquote(const char *);

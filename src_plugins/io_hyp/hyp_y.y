@@ -19,7 +19,7 @@
  */
 
 %code requires {
-#include "parser.h"
+#include "../src_plugins/io_hyp/parser.h"
 }
 
 %error-verbose
@@ -39,7 +39,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#include "hyp_l.h"
+#include "../src_plugins/io_hyp/hyp_l.h"
 
 void hyyerror(const char *);
 
