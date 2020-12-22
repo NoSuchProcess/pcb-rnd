@@ -495,7 +495,7 @@ int pcb_list_block_cb(pcb_board_t *pcb, rnd_box_t *Box, void *(cb)(void *ctx, pc
 int pcb_list_lyt_block_cb(pcb_board_t *pcb, pcb_layer_type_t lyt, rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
 {
 	int len = 0;
-	ListBlock_(pcb, Box, -1, lyt, ((cb == NULL) ? len : NULL), cb, ctx);
+	ListBlock_(pcb, Box, -1, lyt, ((cb == NULL) ? &len : NULL), cb, ctx);
 	return len;
 }
 
