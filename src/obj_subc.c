@@ -898,6 +898,16 @@ void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *s
 	pcb_arc_t *arc, *narc;
 	pcb_gfx_t *gfx, *ngfx;
 	gdl_iterator_t it;
+	pcb_board_t *pcb = NULL;
+
+	assert(dst_sc->parent_type == PCB_PARENT_DATA);
+	if (dst_sc->parent.data->parent_type != PCB_PARENT_INVALID) {
+		assert(dst_sc->parent.data->parent_type == PCB_PARENT_BOARD);
+		pcb = dst_sc->parent.data->parent.board;
+	}
+
+	if (pcb != NULL)
+		pcb_data_clip_inhibit_inc(pcb->Data);
 
 	linelist_foreach(&sl->Line, &it, line) {
 		nline = pcb_line_dup_at(dl, line, dx, dy);
@@ -908,6 +918,8 @@ void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *s
 				pcb_box_bump_box_noflt(&dst_sc->BoundingBox, &nline->BoundingBox);
 				pcb_box_bump_box_noflt(&dst_sc->bbox_naked, &nline->bbox_naked);
 			}
+			if (pcb != NULL)
+				pcb_poly_clear_from_poly(pcb->Data, PCB_OBJ_LINE, dl, nline);
 		}
 	}
 
@@ -920,6 +932,8 @@ void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *s
 				pcb_box_bump_box_noflt(&dst_sc->BoundingBox, &narc->BoundingBox);
 				pcb_box_bump_box_noflt(&dst_sc->bbox_naked, &narc->bbox_naked);
 			}
+			if (pcb != NULL)
+				pcb_poly_clear_from_poly(pcb->Data, PCB_OBJ_ARC, dl, narc);
 		}
 	}
 
@@ -932,6 +946,8 @@ void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *s
 				pcb_box_bump_box_noflt(&dst_sc->BoundingBox, &ngfx->BoundingBox);
 				pcb_box_bump_box_noflt(&dst_sc->bbox_naked, &ngfx->bbox_naked);
 			}
+			if (pcb != NULL)
+				pcb_poly_clear_from_poly(pcb->Data, PCB_OBJ_GFX, dl, ngfx);
 		}
 	}
 
@@ -944,8 +960,14 @@ void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *s
 				pcb_box_bump_box_noflt(&dst_sc->BoundingBox, &ntext->BoundingBox);
 				pcb_box_bump_box_noflt(&dst_sc->bbox_naked, &ntext->bbox_naked);
 			}
+			if (pcb != NULL)
+				pcb_poly_clear_from_poly(pcb->Data, PCB_OBJ_TEXT, dl, ntext);
 		}
 	}
+
+
+	if (pcb != NULL)
+		pcb_data_clip_inhibit_dec(pcb->Data, 0);
 }
 
 pcb_subc_t *pcb_subc_dup_at(pcb_board_t *pcb, pcb_data_t *dst, const pcb_subc_t *src, rnd_coord_t dx, rnd_coord_t dy, rnd_bool keep_ids, rnd_bool undoable)
