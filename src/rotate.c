@@ -86,9 +86,7 @@ pcb_opfunc_t RotateFunctions = {
 	0 /* extobj_inhibit_regen */
 };
 
-/* ---------------------------------------------------------------------------
- * rotates a point in 90 degree steps
- */
+/* rotates a point in 90 degree steps */
 void pcb_point_rotate90(rnd_point_t *Point, rnd_coord_t X, rnd_coord_t Y, unsigned Number)
 {
 	RND_COORD_ROTATE90(Point->X, Point->Y, X, Y, Number);
