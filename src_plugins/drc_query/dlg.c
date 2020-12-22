@@ -826,12 +826,14 @@ static void dlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row
 static void drc_query_refresh_def(void)
 {
 	drc_rlist_ctx_t *ctx = &drc_rlist_ctx;
+	rnd_hid_attribute_t *attr;
+	rnd_hid_row_t *row;
 
 	if (!ctx->active)
 		return;
 
-	rnd_hid_attribute_t *attr = &(ctx->dlg[ctx->wdlist]);
-	rnd_hid_row_t *row = rnd_dad_tree_get_selected(attr);
+	attr = &(ctx->dlg[ctx->wdlist]);
+	row = rnd_dad_tree_get_selected(attr);
 	dlist_select(attr, ctx->dlg_hid_ctx, row);
 }
 
