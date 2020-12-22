@@ -203,8 +203,7 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 	ctx.buffer.removing = 0;
 
 	/* switch crosshair off because adding objects to the pastebuffer
-	 * may change the 'valid' area for the cursor
-	 */
+	   may change the 'valid' area for the cursor */
 	if (!LeaveSelected)
 		ctx.buffer.extraflg = PCB_FLAG_SELECTED;
 	else
