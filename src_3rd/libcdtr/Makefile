@@ -10,8 +10,11 @@ cdt_test: cdt_test.o $(OBJS)
 include Makefile.dep
 
 $(LIBA): $(OBJS)
-	-rm $(LIBA)
-	ar ru $(LIBA) $(OBJS)
+	@touch $(LIBA)
+	@rm $(LIBA)
+	@ar ru $(LIBA) $(OBJS)
+	-ar s $(LIBA)
+	-ranlib $(LIBA)
 
 cdt_test.o: cdt_test.c
 	$(CC) $(CFLAGS) -c cdt_test.c -o $@
