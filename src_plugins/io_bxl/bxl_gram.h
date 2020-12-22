@@ -43,8 +43,8 @@ typedef short pcb_bxl_int_t;
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 #include <stdio.h>
-#include "bxl_gram.h"
-#include "bxl.h"
+#include "../src_plugins/io_bxl/bxl_gram.h"
+#include "../src_plugins/io_bxl/bxl.h"
 
 TODO("Can remove this once the coord unit is converted with getvalue")
 #include <librnd/core/unit.h>
@@ -53,7 +53,7 @@ TODO("Can remove this once the coord unit is converted with getvalue")
 #define YCRD(c) pcb_bxl_coord_y(c)
 
 #line 8 "bxl_gram.y"
-typedef union
+typedef union pcb_bxl_tokunion_u
 {
 	double d;
 	int i;
@@ -61,7 +61,7 @@ typedef union
 	rnd_coord_t c;
 } pcb_bxl_tokunion_t;
 #line 3 "bxl_gram.y"
-typedef struct
+typedef struct pcb_bxl_tokstruct_s
 {
 	pcb_bxl_tokunion_t un;
 	long line, first_col, last_col;

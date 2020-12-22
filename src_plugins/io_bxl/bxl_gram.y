@@ -44,8 +44,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 #include <stdio.h>
-#include "bxl_gram.h"
-#include "bxl.h"
+#include "../src_plugins/io_bxl/bxl_gram.h"
+#include "../src_plugins/io_bxl/bxl.h"
 
 TODO("Can remove this once the coord unit is converted with getvalue")
 #include <librnd/core/unit.h>

@@ -485,7 +485,7 @@ typedef struct pcb_bxl_ureglex_s {
 	 */
 	#include <stdlib.h>
 	#include <librnd/core/compat_misc.h>
-	#include "bxl_gram.h"
+	#include "../src_plugins/io_bxl/bxl_gram.h"
 	#define lval  ((pcb_bxl_STYPE *)(user_ctx))
 /* TOP CODE END } */
 
