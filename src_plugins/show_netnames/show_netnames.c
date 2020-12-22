@@ -92,7 +92,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 	switch(obj->type) {
 		case PCB_OBJ_LINE:
 			{
-				pcb_line_t *l = obj;
+				pcb_line_t *l = (pcb_line_t *)obj;
 
 				rot = atan2(l->Point2.Y - l->Point1.Y, l->Point2.X - l->Point1.X) * -RND_RAD_TO_DEG;
 
