@@ -293,7 +293,7 @@ static void pcb_drc_query(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_e
 }
 
 static void drc_query_refresh_def(void);
-static void drc_query_defchg(rnd_conf_native_t *cfg, rnd_conf_listitem_t *i)
+static void drc_query_defchg(rnd_conf_native_t *cfg, int v)
 {
 	drc_query_refresh_def();
 }
