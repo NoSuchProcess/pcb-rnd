@@ -10,6 +10,7 @@
 + BUG: {w d}, config, drc_query, edit definitions, change min drill value -> value on the change button doesn't refresh [report: bdale]
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 - BUG: portability: obsd2.9-i386: .so needs -shared -dynamic [report: Igor2]
+	- libfawk bug: don't use getchar as field name
 
 2. For later releases ===============================================================================
 - CLEANUP: librnd sep:
@@ -65,7 +66,7 @@
 		- bin: eagle binary format v3 and libraries do not have a DRC block specifying restring or minimum feature widths. Binary loader should add a DRC block in these cases to the tree with the minimum settings needed for padstacks and features to load sensibly. [erich].
 		- bin: padstack clearances for element pins will rely on connectivity to other polygons layer by layer defined in the netlist 
 	- revise all I/O plugins for:
-		- polygon side clearance (e.g. CUCP#38 provided by Karl); need to check: eagle, eagle_bin
+		- polygon side clearance (e.g. CUCP#38 provided by Karl)
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 
 3. Long term ===============================================================================
