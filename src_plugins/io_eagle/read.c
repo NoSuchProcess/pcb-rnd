@@ -1211,6 +1211,8 @@ TODO("bin: can remove the following if dealt with in post processor for binary t
 		}
 	}
 
+	/* the isolate field, when present, is poly-side clearance value;
+	   load only when centrally enabled, else warn so the user knows how to enable */
 	if (isolate != 0) {
 		if (!conf_core.import.alien_format.poly_side_clearance) {
 			if (!st->warned_poly_side_clr) {
