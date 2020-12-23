@@ -9,7 +9,6 @@
 + BUG: draw a bus, draw a polygon around the bus, cut bus to buffer, paste bus -> poly is not clipped ml4504 [report: Majenko]
 + BUG: {w d}, config, drc_query, edit definitions, change min drill value -> value on the change button doesn't refresh [report: bdale]
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
-- BUG: portability: obsd2.9-i386: .so needs -shared -dynamic [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP: librnd sep:
