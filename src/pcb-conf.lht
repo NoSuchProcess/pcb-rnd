@@ -224,6 +224,9 @@ li:pcb-rnd-conf-v1 {
 			ha:footprint_removal {
 				method = remove
 			}
+			ha:alien_format {
+				poly_side_clearance = false
+			}
 		}
 
 		ha:plugins {

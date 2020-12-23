@@ -100,6 +100,10 @@ typedef struct {
 		struct {
 			RND_CFT_STRING method;             /* method/strategy of removal; one of: select, remove, list */
 		} footprint_removal;
+
+		struct {
+			RND_CFT_BOOLEAN poly_side_clearance; /* whether to load polygon-side clearances (when set in the file); when false, ignore them */
+		} alien_format;
 	} import;
 
 	const struct {                       /* rc */
