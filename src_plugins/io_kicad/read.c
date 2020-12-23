@@ -119,6 +119,9 @@ typedef struct {
 	zone_connect_t *zc_head;
 	htpp_t poly2net;
 	unsigned poly2net_inited:1;
+
+	/* warnings */
+	unsigned warned_poly_side_clr:1; /* whether polygon-side clearance is already warned about */
 } read_state_t;
 
 typedef struct {
@@ -2507,7 +2510,8 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 	pcb_poly_t *polygon = NULL;
 	pcb_flag_t flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
 	pcb_layer_t *ly = NULL;
-	char *net_name = NULL;
+	char *net_name = NULL, *pclr = NULL;
+	rnd_coord_t pclrc;
 
 	for(n = subtree; n != NULL; n = n->next) {
 		if (n->str == NULL)
@@ -2535,6 +2539,8 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 			SEEN_NO_DUP(tally, 6);
 			if (n->children != NULL && n->children->str != NULL && (strcmp("clearance", n->children->str) == 0) && (n->children->children->str != NULL)) {
 				SEEN_NO_DUP(tally, 7); /* same as ^= 1 was */
+				pclr = n->children->children->str;
+				PARSE_COORD(pclrc, n->children, n->children->children, "zone connect_pads clearance");
 			}
 			else if (n->children != NULL && n->children->str != NULL && n->children->next->str != NULL) {
 				SEEN_NO_DUP(tally, 8); /* same as ^= 1 was */
@@ -2608,6 +2614,18 @@ static int kicad_parse_zone(read_state_t *st, gsxl_node_t *subtree)
 		return kicad_error(subtree, "can not create zone because required fields are missing");
 
 	if (polygon != NULL) {
+		/* connect_pads/clearence field, when present, is poly-side clearance value;
+		   load only when centrally enabled, else warn so the user knows how to enable */
+		if (pclr != NULL) {
+			if (!conf_core.import.alien_format.poly_side_clearance) {
+				if (!st->warned_poly_side_clr) {
+					rnd_message(RND_MSG_ERROR, "This kicad board has polygon side clearances that are IGNORED.\nTo enable loading them, change config node\nimport.alien_format.poly_side_clearance to true\n");
+					st->warned_poly_side_clr = 1;
+				}
+			}
+			else
+				polygon->enforce_clearance = pclrc;
+		}
 		pcb_add_poly_on_layer(ly, polygon);
 		pcb_poly_init_clip(st->pcb->Data, ly, polygon);
 
