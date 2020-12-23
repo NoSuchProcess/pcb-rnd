@@ -2146,7 +2146,7 @@ TODO("TODO netlist labels - eagle bin often has invalid net labels, i.e.'-', '+'
 /* take any sub level signal /signals/signal1/signal2 and move it up a level to /signals/signal2 */
 static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 {
-	egb_node_t *n, *p, *prev2, *next, *next2;
+	egb_node_t *n, *p, *prev2, *next2;
 
 	egb_node_t *signal;
 
@@ -2155,8 +2155,7 @@ static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 
 	signal = egb_ctx->signals->first_child;
 
-	for(n = signal; n != NULL; n = next) {
-		next = n->next;
+	for(n = signal; n != NULL; n = n->next) {
 		if (n->id == PCB_EGKW_SECT_SIGNAL) {
 			for(p = n->first_child, prev2 = NULL; p != NULL; p = next2) {
 				next2 = p->next;
