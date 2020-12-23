@@ -98,6 +98,7 @@ typedef struct read_state_s {
 
 	const char *default_unit; /* assumed unit for unitless coord values */
 	unsigned elem_by_name:1; /* whether elements are addressed by name (or by index in the lib) */
+	unsigned warned_poly_side_clr:1; /* whether polygon-side clearance is already warned about */
 } read_state_t;
 
 typedef struct {
@@ -1174,6 +1175,7 @@ static int eagle_read_poly(read_state_t *st, trnode_t *subtree, void *obj, int t
 	pcb_layer_t *ly;
 	eagle_layerid_t ln = eagle_get_attrl(st, subtree, "layer", -1);
 	const char *pour = GET_PROP(subtree, "pour");
+	const char *isolate = GET_PROP(subtree, "isolate");
 	pcb_poly_t *poly;
 	trnode_t *n;
 	int is_cutout;
@@ -1207,6 +1209,17 @@ TODO("bin: can remove the following if dealt with in post processor for binary t
 			eagle_read_poly_corner(st, n, poly, "linetype_0_x1", "linetype_0_y1", loc);
 			eagle_read_poly_corner(st, n, poly, "linetype_0_x2", "linetype_0_y2", loc);
 		}
+	}
+
+	if (isolate != 0) {
+		if (!conf_core.import.alien_format.poly_side_clearance) {
+			if (!st->warned_poly_side_clr) {
+				rnd_message(RND_MSG_ERROR, "This eagle board has polygon side clearances that are IGNORED.\nTo enable loading them, change config node\nimport.alien_format.poly_side_clearance to true\n");
+				st->warned_poly_side_clr = 1;
+			}
+		}
+		else
+			poly->enforce_clearance = eagle_get_attrc(st, subtree, "isolate", 0);
 	}
 
 	pcb_add_poly_on_layer(ly, poly);
