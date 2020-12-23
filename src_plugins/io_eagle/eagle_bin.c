@@ -2141,33 +2141,39 @@ TODO("What this code is supposed to do? element2 doesn't have x;y, when this is 
 	return 0;
 }
 
-TODO("TODO netlist - this code flattens the signals so the XML parser finds everything, but connectivity info for nested nets is not preserved in the process #")
+
+static int postproc_signal_nested(void *ctx, egb_ctx_t *egb_ctx, egb_node_t *parent, egb_node_t *top)
+{
+	egb_node_t *p, *prev2, *next2;
+
+	for(p = parent->first_child, prev2 = NULL; p != NULL; p = next2) {
+		next2 = p->next;
+		if (p->id == PCB_EGKW_SECT_SIGNAL) {
+			egb_node_unlink(parent, prev2, p);
+			egb_node_append(top, p);
+		}
+		else
+			prev2 = p;
+	}
+}
+
 TODO("TODO netlist labels - eagle bin often has invalid net labels, i.e.'-', '+' so may need to filter#")
-/* take any sub level signal /signals/signal1/signal2 and move it up a level to /signals/signal2 */
+/* take any sub level signal /signals/signal1/signal2 and move it up a level
+   to /signals/signal2, recursively. This flattens the signals so the XML
+   parser finds everything, but connectivity info for nested nets is not
+   preserved in the process (but converting the binary to xml with eagle seems
+   to do the same flattening) */
 static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 {
-	egb_node_t *n, *p, *prev2, *next2;
-
-	egb_node_t *signal;
+	egb_node_t *n, *next;
 
 	if (egb_ctx->signals == NULL)
 		return  0; /* probably a library */
 
-	signal = egb_ctx->signals->first_child;
+	for(n = egb_ctx->signals->first_child; n != NULL; n = n->next)
+		if (n->id == PCB_EGKW_SECT_SIGNAL)
+			postproc_signal_nested(ctx, egb_ctx, n, egb_ctx->signals);
 
-	for(n = signal; n != NULL; n = n->next) {
-		if (n->id == PCB_EGKW_SECT_SIGNAL) {
-			for(p = n->first_child, prev2 = NULL; p != NULL; p = next2) {
-				next2 = p->next;
-				if (p->id == PCB_EGKW_SECT_SIGNAL) {
-					egb_node_unlink(n, prev2, p);
-					egb_node_append(egb_ctx->signals, p);
-				}
-				else
-					prev2 = p;
-			}
-		}
-	}
 	return 0;
 }
 
