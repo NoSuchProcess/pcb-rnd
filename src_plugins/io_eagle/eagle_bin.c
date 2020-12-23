@@ -2170,6 +2170,9 @@ static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 	if (egb_ctx->signals == NULL)
 		return  0; /* probably a library */
 
+	/* signals/signal1/signal2 nodes are appended as singals/singal2, but
+	   then this loop also visits them again, so if there was a 3rd level of /singal3,
+	   that is then also removed and appended to signals/ directly */
 	for(n = egb_ctx->signals->first_child; n != NULL; n = n->next)
 		if (n->id == PCB_EGKW_SECT_SIGNAL)
 			postproc_signal_nested(ctx, egb_ctx, n, egb_ctx->signals);
