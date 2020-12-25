@@ -9,7 +9,7 @@
 struct triangle_s {
 	point_t *p[3];
 	edge_t *e[3];
-  triangle_t *adj_t[3];
+	triangle_t *adj_t[3];
 };
 
 typedef triangle_t* triangle_ptr_t;
