@@ -69,7 +69,5 @@ regex [ \t\r]+
 code
 	ULX_IGNORE;
 
-/*rulestring 3D_DXF            lval->un.s = rnd_strdup(ULX_BUF); return T_ID;*/
-
 rulestring UNIT              return T_UNIT
 rulestring PCB               return T_PCB
