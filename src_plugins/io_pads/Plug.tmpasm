@@ -1,0 +1,14 @@
+put /local/pcb/mod {io_pads}
+put /local/pcb/mod/OBJS [@
+	$(PLUGDIR)/io_pads/io_pads.o
+	$(PLUGDIR)/io_pads/read.o
+@]
+
+put /local/pcb/mod/BYACCIC  {$(PLUGDIR)/io_pads/pads_gram}
+put /local/pcb/mod/UREGLEX  {$(PLUGDIR)/io_pads/pads_lex}
+
+switch /local/pcb/io_pads/controls
+	case {buildin}   include /local/pcb/tmpasm/buildin; end;
+	case {plugin}    include /local/pcb/tmpasm/plugin; end;
+	case {disable}   include /local/pcb/tmpasm/disable; end;
+end

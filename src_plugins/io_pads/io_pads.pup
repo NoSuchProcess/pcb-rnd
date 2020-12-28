@@ -1,0 +1,9 @@
+$class io
+$short PADS board
+$long load boards in the PADS ASCII format
+$state WIP
+$fmt-native no
+$fmt-feature-r PADS board
+#$package io-alien
+default disable
+autoload 1
