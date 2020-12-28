@@ -35,6 +35,9 @@ B. changes that probably DO need action
    $LP/scconfig/gen_conf.sh but does not have any other gen_conf
    script
 
+6. please make sure package versions are enforced to match: if the user
+   upgrades pcb-rnd-core, there should not be any plugin package left with
+   the old version else that plugin won't load.
 
 Packaging changes between 2.2.4 and 2.3.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
