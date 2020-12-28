@@ -5,5 +5,5 @@ $state WIP
 $fmt-native no
 $fmt-feature-r PADS board
 #$package io-alien
-default disable
+default disable-all
 autoload 1
