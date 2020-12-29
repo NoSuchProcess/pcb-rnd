@@ -103,7 +103,7 @@ switch /local/pcb/mod/UREGLEX
 				append /local/pcb/RULES [@
 # lex for @/local/pcb/mod@
 @/local/n@.c @/local/n@.h: @/local/n@.ul
-	cd @/local/dn@ && ureglex -c @/local/bn@.c -h @/local/bn@.h -l @/local/bn@.ul
+	cd @/local/dn@ && ureglex -C -c @/local/bn@.c -h @/local/bn@.h -l @/local/bn@.ul
 @]
 			else
 				append /local/pcb/RULES [@

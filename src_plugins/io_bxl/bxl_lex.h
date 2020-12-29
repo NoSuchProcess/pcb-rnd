@@ -49,6 +49,8 @@ extern const unsigned char ureglex_nfa_str[];
 #define ULX_TAGP(n) (ctx->state[ruleid].bopat[(n)])
 #define ULX_TAGL(n) (ctx->state[ruleid].eopat[(n)] - ctx->state[ruleid].bopat[(n)])
 #define ULX_IGNORE goto ureglex_ignore;
+void ureglex_exec_init(ureglex_t *r, const char *lp, int buff_used);
+int ureglex_exec(ureglex_t *r);
 #endif
 /* exec.h END } */
 
@@ -73,5 +75,5 @@ int pcb_bxl_lex_char(pcb_bxl_ureglex_t *ctx, void *user_ctx, int chr);
 #ifndef URELGLEX_EXEC_pcb_bxl_H
 #define URELGLEX_EXEC_pcb_bxl_H
 extern ureglex_precomp_t pcb_bxl_rules[];
-#define URELGLEX_EXEC_pcb_bxl_HAS_COMMON 1
+#define URELGLEX_EXEC_pcb_bxl_HAS_COMMON 0
 #endif
