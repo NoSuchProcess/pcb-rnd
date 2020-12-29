@@ -183,6 +183,30 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 	return res;
 }
 
+static int pads_read_long(pads_read_ctx_t *rctx, long *dst)
+{
+	char tmp[64], *end;
+	int res = pads_read_word(rctx, tmp, sizeof(tmp), 0);
+	if (res <= 0)
+		return res;
+	*dst = strtol(tmp, &end, 10);
+	if (*end != '\0') {
+		PADS_ERROR((RND_MSG_ERROR, "invalid integer: '%s'\n", tmp));
+		return -1;
+	}
+	return 1;
+}
+
+static int pads_read_coord(pads_read_ctx_t *rctx, rnd_coord_t *dst)
+{
+	long l;
+	int res = pads_read_long(rctx, &l);
+	if (res <= 0)
+		return res;
+	*dst = rnd_round((double)l * rctx->coord_scale);
+	return 1;
+}
+
 
 static int pads_parse_ignore_sect(pads_read_ctx_t *rctx)
 {
@@ -241,13 +265,21 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 {
 	pads_eatup_till_nl(rctx);
 	while(!feof(rctx->f)) {
-		char word[256];
+		char word[256], type[32];
 		int res = pads_read_word(rctx, word, sizeof(word), 0);
 		if (res <= 0)
 			return res;
 		if (*word == '\0') { /* ignore empty lines between statements */ }
-		else {
-			PADS_ERROR((RND_MSG_ERROR, "unknown lines statement: '%s'\n", word));
+		else { /* name type xo yo numpieces [numtext] [sigstr] */
+			rnd_coord_t xo, yo;
+			long num_pcs;
+
+			if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
+			if ((res = pads_read_coord(rctx, &xo)) <= 0) return res;
+			if ((res = pads_read_coord(rctx, &yo)) <= 0) return res;
+			if ((res = pads_read_long(rctx, &num_pcs)) <= 0) return res;
+
+			rnd_trace("line name=%s ty=%s %mm;%mm %d\n", word, type, xo, yo, num_pcs);
 		}
 		pads_eatup_till_nl(rctx);
 	}
