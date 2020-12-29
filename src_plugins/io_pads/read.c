@@ -191,6 +191,7 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		res = 0;
 		if (*word == '\0') { /* ignore empty lines between blocks */ }
 		else if (strcmp(word, "*PCB*") == 0) res |= pads_parse_pcb(rctx);
+		else if (strcmp(word, "*REUSE*") == 0) { TODO("What to do with this?"); }
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
 			return -1;
