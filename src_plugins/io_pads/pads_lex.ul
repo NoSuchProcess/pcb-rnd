@@ -69,9 +69,20 @@ regex [ \t\r]+
 code
 	ULX_IGNORE;
 
+rule remark
+regex [*]REMARK[^\n]*[\n]
+code
+	ULX_IGNORE;
+
 rulestring *PCB*             return T_HDR_PCB;
 rulestring UNITS             return T_UNITS;
 rulestring USERGRID          return T_USERGRID;
 rulestring LINEWIDTH         return T_LINEWIDTH;
 rulestring TEXTSIZE          return T_TEXTSIZE;
 rulestring PLANEFLAGS        return T_PLANEFLAGS;
+
+rulestring *REUSE*           return T_HDR_REUSE;
+
+rulestring *TEXT*            return T_HDR_TEXT;
+
+rulestring *LINES*           return T_HDR_LINES;

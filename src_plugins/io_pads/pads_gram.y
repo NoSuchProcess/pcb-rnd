@@ -58,6 +58,9 @@ TODO("Can remove this once the coord unit is converted with getvalue")
 /* Generic */
 %token T_ID T_INTEGER T_REAL_ONLY T_QSTR
 %token T_HDR_PCB T_UNITS T_USERGRID T_LINEWIDTH T_TEXTSIZE T_PLANEFLAGS
+%token T_HDR_REUSE
+%token T_HDR_TEXT
+%token T_HDR_LINES
 
 %type <s> T_QSTR
 %type <s> T_ID
@@ -80,9 +83,13 @@ file:
 
 header_block:
 	header_block_pcb
+	header_block_reuse
+	header_block_text
+	header_block_lines
 	;
 
 
+/*** *PCB*  ***/
 header_block_pcb:
 	T_HDR_PCB junk_nl block_pcb
 	;
@@ -102,6 +109,23 @@ block_pcb_:
 		junk_nl                                   { printf("PLANEFLAGS remove-isolated=%d\n", $4); }
 	| T_ID  junk_nl                             { /*printf("unknown: %s\n", $1);*/ free($1); }
 	;
+
+
+/*** *REUSE*  ***/
+header_block_reuse:
+	T_HDR_REUSE junk_nl
+	;
+
+/*** *TEXT*  ***/
+header_block_text:
+	T_HDR_TEXT junk_nl
+	;
+
+/*** *LINES*  ***/
+header_block_lines:
+	T_HDR_LINES junk_nl
+	;
+
 
 /*** common and misc ***/
 
