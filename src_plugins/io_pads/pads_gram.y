@@ -64,6 +64,8 @@ TODO("Can remove this once the coord unit is converted with getvalue")
 
 %type <s> T_QSTR
 %type <s> T_ID
+%type <s> maybe_id
+%type <s> string_nl
 %type <i> T_INTEGER
 %type <d> T_REAL_ONLY
 %type <d> real
@@ -123,7 +125,39 @@ header_block_text:
 
 /*** *LINES*  ***/
 header_block_lines:
-	T_HDR_LINES junk_nl
+	T_HDR_LINES junk_nl block_line
+	;
+
+block_line:
+	  /* empty */
+	| block_line_ block_line
+	;
+
+block_line_:
+	T_ID T_ID coord coord T_INTEGER T_INTEGER maybe_int maybe_id nl /* name type x y pieces flags [numtext] [sigstr] */
+		block_line_body
+	;
+
+block_line_body:
+	  /* empty */
+	| block_line_piece block_line_body
+	| block_line_text  block_line_body
+	;
+
+block_line_piece:
+	T_ID T_INTEGER T_INTEGER T_INTEGER string_nl /* piece_type num_corners line_width line_style layer restrictions */
+	piece_body
+	;
+
+piece_body:
+	  /* empty */
+	| coord coord piece_body    /* segment corner: x;y */
+		{ printf("piece: x y\n"); }
+
+piece_line_text: coord coord T_REAL T_INTEGER coord coord T_ID T_ID T_ID junk_nl /* text: x y ori layer hight width mirror hjust vjust [ndim] [.REUSE. item] */
+		T_ID junk_nl /* font */
+		string_nl
+		{ printf("piece: text\n"); }
 	;
 
 
@@ -131,6 +165,17 @@ header_block_lines:
 
 junk_nl:
 	{ while(fgetc(ctx->f) != '\n') ; ungetc('\n', ctx->f); } nl
+	;
+
+string_nl:
+	{
+		char line[8192];
+		*line = '\0';
+		fgets(line, sizeof(line), ctx->f);
+		$$ = rnd_strdup(line);
+		ungetc('\n', ctx->f);
+	}
+	nl
 	;
 
 yn:
@@ -165,12 +210,12 @@ maybe_nl:
 	| nl
 	;
 
-real:
-	  T_INTEGER            { $$ = $1; }
-	| T_REAL_ONLY          { $$ = $1; }
+maybe_id:
+	  /* empty */ { $$ = NULL; }
+	| T_ID        { $$ = $1; }
 	;
 
 coord:
-	real    { $$ = RND_MIL_TO_COORD($1); }
+	T_INTEGER    { $$ = rnd_round($1 * ctx->coord_scale); }
 	;
 
