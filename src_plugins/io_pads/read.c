@@ -184,6 +184,19 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 }
 
 
+static int pads_parse_ignore_sect(pads_read_ctx_t *rctx)
+{
+	pads_eatup_till_nl(rctx);
+	while(!feof(rctx->f)) {
+		char word[256];
+		int res = pads_read_word(rctx, word, sizeof(word), 0);
+		if (res <= 0)
+			return res;
+		pads_eatup_till_nl(rctx);
+	}
+	return 0;
+}
+
 static int pads_parse_pcb(pads_read_ctx_t *rctx)
 {
 	pads_eatup_till_nl(rctx);
@@ -207,6 +220,40 @@ static int pads_parse_pcb(pads_read_ctx_t *rctx)
 	return 0;
 }
 
+static int pads_parse_text(pads_read_ctx_t *rctx)
+{
+	pads_eatup_till_nl(rctx);
+	while(!feof(rctx->f)) {
+		char word[256];
+		int res = pads_read_word(rctx, word, sizeof(word), 0);
+		if (res <= 0)
+			return res;
+		if (*word == '\0') { /* ignore empty lines between statements */ }
+		else {
+			PADS_ERROR((RND_MSG_ERROR, "unknown text statement: '%s'\n", word));
+		}
+		pads_eatup_till_nl(rctx);
+	}
+	return 0;
+}
+
+static int pads_parse_lines(pads_read_ctx_t *rctx)
+{
+	pads_eatup_till_nl(rctx);
+	while(!feof(rctx->f)) {
+		char word[256];
+		int res = pads_read_word(rctx, word, sizeof(word), 0);
+		if (res <= 0)
+			return res;
+		if (*word == '\0') { /* ignore empty lines between statements */ }
+		else {
+			PADS_ERROR((RND_MSG_ERROR, "unknown lines statement: '%s'\n", word));
+		}
+		pads_eatup_till_nl(rctx);
+	}
+	return 0;
+}
+
 static int pads_parse_block(pads_read_ctx_t *rctx)
 {
 	while(!feof(rctx->f)) {
@@ -219,7 +266,9 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		res = 0;
 		if (*word == '\0') { /* ignore empty lines between blocks */ }
 		else if (strcmp(word, "*PCB*") == 0) res |= pads_parse_pcb(rctx);
-		else if (strcmp(word, "*REUSE*") == 0) { TODO("What to do with this?"); }
+		else if (strcmp(word, "*REUSE*") == 0) { TODO("What to do with this?"); pads_parse_ignore_sect(rctx); }
+		else if (strcmp(word, "*TEXT*") == 0) res |= pads_parse_text(rctx);
+		else if (strcmp(word, "*LINES*") == 0) res |= pads_parse_lines(rctx);
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
 			return -1;
