@@ -43,7 +43,11 @@ typedef struct pads_read_ctx_s {
 	pcb_board_t *pcb;
 	FILE *f;
 	double coord_scale; /* multiply input integer coord values to get pcb-rnd nanometer */
-	unsigned in_error:1;
+
+	/* location */
+	const char *fn;
+	long line, col, start_line, start_col;
+
 } pads_read_ctx_t;
 
 
@@ -75,9 +79,129 @@ static int pads_parse_header(pads_read_ctx_t *rctx)
 	return 0;
 }
 
+#define PADS_ERROR(args) \
+do { \
+	rnd_message(RND_MSG_ERROR, "io_pads read: syntax error at %s:%ld.%ld: ", rctx->fn, rctx->line, rctx->col); \
+	rnd_message args; \
+} while(0)
+
+static void pads_update_loc(pads_read_ctx_t *rctx, int c)
+{
+	if (c == '\n') {
+		rctx->line++;
+		rctx->col = 1;
+	}
+	else
+		rctx->col++;
+}
+
+static void pads_start_loc(pads_read_ctx_t *rctx)
+{
+	rctx->start_line = rctx->line;
+	rctx->start_col = rctx->col;
+}
+
+/* whether c is horizontal space (of \r, because that should be just ignored) */
+static int ishspace(int c) { return ((c == ' ') || (c == '\t') || (c == '\r')); }
+
+static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int allow_asterisk)
+{
+	char *s = word;
+	int c, res = 1;
+
+	pads_start_loc(rctx);
+
+	if (!allow_asterisk) {
+		c = fgetc(rctx->f);
+		ungetc(c, rctx->f);
+		if (c == '*')
+			return 0;
+	}
+
+	/* strip leading space */
+	while(ishspace(c = fgetc(rctx->f))) pads_update_loc(rctx, c);
+
+	if (c == EOF)
+		return 0;
+
+	while((c != EOF) && !isspace(c)) {
+		*s = c;
+		s++;
+		maxlen--;
+		if (maxlen == 1) {
+			rnd_message(RND_MSG_ERROR, "word too long\n");
+			*s = '\0';
+			res = -3;
+			break;
+		}
+		c = fgetc(rctx->f);
+		if (isspace(c)) {
+			if (c == '\n')
+				ungetc(c, rctx->f); /* need explicit \n */
+		}
+		else
+			pads_update_loc(rctx, c);
+	}
+	*s = '\0';
+	return res;
+}
+
+/* eat up everything until the newline (including the newline) */
+static void pads_eatup_till_nl(pads_read_ctx_t *rctx)
+{
+	int c;
+	while((c = fgetc(rctx->f)) != '\n') pads_update_loc(rctx, c);
+}
+
+
+static int pads_parse_pcb(pads_read_ctx_t *rctx)
+{
+	pads_eatup_till_nl(rctx);
+	while(!feof(rctx->f)) {
+		char word[256];
+		int res = pads_read_word(rctx, word, sizeof(word), 0);
+		if (res <= 0)
+			return res;
+		if (*word == '\0') { /* ignore empty lines between statements */ }
+		else if (strcmp(word, "UNITS") == 0) {
+			printf("pcb units!\n");
+		}
+		else if (strcmp(word, "USERGRID") == 0) {
+			printf("pcb user grid!\n");
+		}
+		else {
+/*			printf("ignore: '%s'!\n", word);*/
+		}
+		pads_eatup_till_nl(rctx);
+	}
+	return 0;
+}
+
+static int pads_parse_block(pads_read_ctx_t *rctx)
+{
+	while(!feof(rctx->f)) {
+		char word[256];
+		int res = pads_read_word(rctx, word, sizeof(word), 1);
+/*printf("WORD='%s'/%d\n", word, res);*/
+		if (res <= 0)
+			return res;
+
+		res = 0;
+		if (*word == '\0') { /* ignore empty lines between blocks */ }
+		else if (strcmp(word, "*PCB*") == 0) res |= pads_parse_pcb(rctx);
+		else {
+			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
+			return -1;
+		}
+		/* exit the loop on error */
+		if (res != 0)
+			return res;
+	}
+	return 0;
+}
+
 int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
 {
-	char tmp[256];
 	rnd_hidlib_t *hl = &PCB->hidlib;
 	FILE *f;
 	int ret = 0;
@@ -87,7 +211,10 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 	if (f == NULL)
 		return -1;
 
+	rctx.col = rctx.start_col = 1;
+	rctx.line = rctx.start_line = 2; /* compensate for the header we read with fgets() */
 	rctx.pcb = pcb;
+	rctx.fn = filename;
 	rctx.f = f;
 
 	/* read the header */
@@ -96,6 +223,8 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 		return -1;
 	}
 
+	ret = pads_parse_block(&rctx);
+	fclose(f);
 	return ret;
 }
 
