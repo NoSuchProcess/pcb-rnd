@@ -104,19 +104,38 @@ static void pads_start_loc(pads_read_ctx_t *rctx)
 /* whether c is horizontal space (of \r, because that should be just ignored) */
 static int ishspace(int c) { return ((c == ' ') || (c == '\t') || (c == '\r')); }
 
+/* eat up everything until the newline (including the newline) */
+static void pads_eatup_till_nl(pads_read_ctx_t *rctx)
+{
+	int c;
+	while((c = fgetc(rctx->f)) != '\n') pads_update_loc(rctx, c);
+	pads_update_loc(rctx, c);
+}
+
 static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int allow_asterisk)
 {
-	char *s = word;
-	int c, res = 1;
+	char *s;
+	int c, res;
+	static char asterisk_saved[512];
+	static int asterisk_saved_len = 0;
 
-	pads_start_loc(rctx);
-
-	if (!allow_asterisk) {
-		c = fgetc(rctx->f);
-		ungetc(c, rctx->f);
-		if (c == '*')
+	if (asterisk_saved_len > 0) {
+		if (!allow_asterisk)
 			return 0;
+		if (asterisk_saved_len > maxlen) {
+			PADS_ERROR((RND_MSG_ERROR, "saved asterisk word too long\n"));
+			return -3;
+		}
+		memcpy(word, asterisk_saved, asterisk_saved_len);
+		asterisk_saved_len = 0;
+		*asterisk_saved = '\0';
+		return 1;
 	}
+
+	retry:;
+	s = word;
+	res = 1;
+	pads_start_loc(rctx);
 
 	/* strip leading space */
 	while(ishspace(c = fgetc(rctx->f))) pads_update_loc(rctx, c);
@@ -130,7 +149,7 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 		s++;
 		maxlen--;
 		if (maxlen == 1) {
-			rnd_message(RND_MSG_ERROR, "word too long\n");
+			PADS_ERROR((RND_MSG_ERROR, "word too long\n"));
 			*s = '\0';
 			res = -3;
 			break;
@@ -144,15 +163,24 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 			pads_update_loc(rctx, c);
 	}
 	*s = '\0';
-	return res;
-}
+	s++;
 
-/* eat up everything until the newline (including the newline) */
-static void pads_eatup_till_nl(pads_read_ctx_t *rctx)
-{
-	int c;
-	while((c = fgetc(rctx->f)) != '\n') pads_update_loc(rctx, c);
-	pads_update_loc(rctx, c);
+	if ((rctx->start_col == 1) && (strcmp(word, "*REMARK*") == 0)) {
+		pads_eatup_till_nl(rctx);
+		goto retry;
+	}
+	if (!allow_asterisk && (*word == '*')) {
+		int len = s - word;
+		if (len > sizeof(asterisk_saved)) {
+			PADS_ERROR((RND_MSG_ERROR, "asterisk word too long\n"));
+			return -3;
+		}
+		memcpy(asterisk_saved, word, len);
+		asterisk_saved_len = len;
+		return 0;
+	}
+
+	return res;
 }
 
 
