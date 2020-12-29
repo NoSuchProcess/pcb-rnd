@@ -57,6 +57,7 @@ TODO("Can remove this once the coord unit is converted with getvalue")
 
 /* Generic */
 %token T_ID T_INTEGER T_REAL_ONLY T_QSTR
+%token T_UNIT T_PCB
 
 %type <s> T_QSTR
 %type <s> T_ID

@@ -1,6 +1,8 @@
 put /local/pcb/mod {io_pads}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_pads/io_pads.o
+	$(PLUGDIR)/io_pads/pads_gram.o
+	$(PLUGDIR)/io_pads/pads_lex.o
 	$(PLUGDIR)/io_pads/read.o
 @]
 

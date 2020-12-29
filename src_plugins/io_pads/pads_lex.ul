@@ -69,5 +69,5 @@ regex [ \t\r]+
 code
 	ULX_IGNORE;
 
-rulestring UNIT              return T_UNIT
-rulestring PCB               return T_PCB
+rulestring UNIT              return T_UNIT;
+rulestring PCB               return T_PCB;

@@ -47,9 +47,51 @@ int io_pads_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filen
 	return 0;
 }
 
-int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *Ptr, const char *Filename, rnd_conf_role_t settings_dest)
+void pcb_pads_error(pcb_pads_ctx_t *ctx, pcb_pads_STYPE tok, const char *s) { }
+
+int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
 {
-	return -1;
+	rnd_hidlib_t *hl = &PCB->hidlib;
+	FILE *f;
+	int chr, ret = 0;
+	pcb_pads_ureglex_t lctx;
+	pcb_pads_yyctx_t yyctx;
+	pcb_pads_ctx_t pctx = {0};
+	pcb_pads_STYPE lval;
+
+
+	f = rnd_fopen(hl, filename, "r");
+	if (f == NULL)
+		return -1;
+
+	pctx.pcb = pcb;
+
+	/* read all bytes of the binary file */
+	while((ret == 0) && ((chr = fgetc(f)) != EOF)) {
+		int yres, tok = pcb_pads_lex_char(&lctx, &lval, chr);
+		if (tok == UREGLEX_MORE)
+			continue;
+
+		/* feed the grammar */
+		lval.line = lctx.loc_line[0];
+		lval.first_col = lctx.loc_col[0];
+		yres = pcb_pads_parse(&yyctx, &pctx, tok, &lval);
+
+		if ((pctx.in_error) && ((tok == T_ID) || (tok == T_QSTR)))
+			free(lval.un.s);
+
+		if (yres != 0) {
+			fprintf(stderr, "PADS syntax error at %ld:%ld\n", lval.line, lval.first_col);
+			ret = -1;
+		}
+		pcb_pads_lex_reset(&lctx); /* prepare for the next token */
+	}
+
+	if (ret != 0) {
+TODO("clean up");
+	}
+
+	return ret;
 }
 
 
