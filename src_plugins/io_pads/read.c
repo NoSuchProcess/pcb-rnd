@@ -44,13 +44,17 @@
 
 int io_pads_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
-	return 0;
+	char tmp[256];
+	if (fgets(tmp, sizeof(tmp), f) == NULL)
+		return 0;
+	return (strncmp(tmp, "!PADS-POWERPCB", 14) == 0);
 }
 
 void pcb_pads_error(pcb_pads_ctx_t *ctx, pcb_pads_STYPE tok, const char *s) { }
 
 int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
 {
+	char *s, tmp[256];
 	rnd_hidlib_t *hl = &PCB->hidlib;
 	FILE *f;
 	int chr, ret = 0;
@@ -65,6 +69,35 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 		return -1;
 
 	pctx.pcb = pcb;
+
+	/* read the header */
+	if (fgets(tmp, sizeof(tmp), f) == NULL)
+		return 0;
+	s = tmp+15;
+	s = strchr(s, '-');
+	if (s == NULL) {
+		rnd_message(RND_MSG_ERROR, "io_pads: invalid header (dash)\n");
+		fclose(f);
+		return -1;
+	}
+	s++;
+	if (strncmp(s, "BASIC", 5) == 0)
+		pctx.coord_scale = 2.0/3.0;
+	else if (strncmp(s, "MILS", 4) == 0)
+		pctx.coord_scale = RND_MIL_TO_COORD(1);
+	else if (strncmp(s, "METRIC", 6) == 0)
+		pctx.coord_scale = RND_MM_TO_COORD(1.0/10000.0);
+	else if (strncmp(s, "INCHES", 6) == 0)
+		pctx.coord_scale = RND_INCH_TO_COORD(1.0/100000.0);
+	else {
+		rnd_message(RND_MSG_ERROR, "io_pads: invalid header (unknown unit '%s')\n", s);
+		fclose(f);
+		return -1;
+	}
+
+	pcb_pads_lex_init(&lctx, pcb_pads_rules);
+	pcb_pads_parse_init(&yyctx);
+	lctx.loc_line[0] = lctx.loc_line[1] = 2; /* compensate for the manually read header */
 
 	/* read all bytes of the binary file */
 	while((ret == 0) && ((chr = fgetc(f)) != EOF)) {
