@@ -121,6 +121,7 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 	/* strip leading space */
 	while(ishspace(c = fgetc(rctx->f))) pads_update_loc(rctx, c);
 
+	pads_update_loc(rctx, c);
 	if (c == EOF)
 		return 0;
 
@@ -151,6 +152,7 @@ static void pads_eatup_till_nl(pads_read_ctx_t *rctx)
 {
 	int c;
 	while((c = fgetc(rctx->f)) != '\n') pads_update_loc(rctx, c);
+	pads_update_loc(rctx, c);
 }
 
 
