@@ -57,7 +57,7 @@ TODO("Can remove this once the coord unit is converted with getvalue")
 
 /* Generic */
 %token T_ID T_INTEGER T_REAL_ONLY T_QSTR
-%token T_UNIT T_PCB
+%token T_HDR_PCB T_UNITS T_USERGRID T_LINEWIDTH T_TEXTSIZE T_PLANEFLAGS
 
 %type <s> T_QSTR
 %type <s> T_ID
@@ -65,27 +65,71 @@ TODO("Can remove this once the coord unit is converted with getvalue")
 %type <d> T_REAL_ONLY
 %type <d> real
 %type <c> coord
+%type <i> yn
 
 %%
 
 full_file:
-	header
 	file
 	;
 
 file:
 	/* empty */
-	|statement nl file
+	| header_block nl file
 	;
 
-header:
-	'!' T_ID '!' junk nl
+header_block:
+	header_block_pcb
+	;
 
-statement:
-	T_UNITS
+
+header_block_pcb:
+	T_HDR_PCB junk_nl block_pcb
+	;
+
+block_pcb:
+	  /* empty */
+	| block_pcb_ block_pcb
+	;
+
+block_pcb_:
+	  T_UNITS T_INTEGER  junk_nl                { printf("UNIT!\n"); }
+	| T_USERGRID T_INTEGER T_INTEGER  junk_nl   { printf("UGRID\n"); }
+	| T_LINEWIDTH T_INTEGER junk_nl             { printf("LINEWIDTH\n"); }
+	| T_TEXTSIZE T_INTEGER T_INTEGER  junk_nl   { printf("TEXTSIZE\n"); }
+	| T_PLANEFLAGS T_ID T_ID
+		yn yn yn yn yn yn yn yn yn yn yn yn yn yn yn yn yn yn
+		junk_nl                                   { printf("PLANEFLAGS remove-isolated=%d\n", $4); }
+	| T_ID  junk_nl                             { /*printf("unknown: %s\n", $1);*/ free($1); }
 	;
 
 /*** common and misc ***/
+
+junk_nl:
+	{ while(fgetc(ctx->f) != '\n') ; ungetc('\n', ctx->f); } nl
+	;
+
+yn:
+	T_ID
+		{
+			char cmd = $1[0];
+			$$ = -1;
+			if ((cmd == '\0') || ($1[1] != '\0')) {
+				pcb_pads_error(ctx, yyctx->lval, "expected Y or N (string too long)\n");
+				free($1);
+				goto yyerrlab;
+			}
+			else {
+				free($1);
+				if (cmd == 'Y') $$ = 1;
+				else if (cmd == 'N') $$ = 0;
+				else {
+					pcb_pads_error(ctx, yyctx->lval, "expected Y or N (wrong char)\n");
+					goto yyerrlab;
+				}
+			}
+		}
+		;
 
 nl:
 	  '\n'

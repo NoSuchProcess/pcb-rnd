@@ -50,7 +50,10 @@ int io_pads_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filen
 	return (strncmp(tmp, "!PADS-POWERPCB", 14) == 0);
 }
 
-void pcb_pads_error(pcb_pads_ctx_t *ctx, pcb_pads_STYPE tok, const char *s) { }
+void pcb_pads_error(pcb_pads_ctx_t *ctx, pcb_pads_STYPE tok, const char *s)
+{
+	rnd_message(RND_MSG_ERROR, "io_pads: %s\n", s);
+}
 
 int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
 {
@@ -69,6 +72,7 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 		return -1;
 
 	pctx.pcb = pcb;
+	pctx.f = f;
 
 	/* read the header */
 	if (fgets(tmp, sizeof(tmp), f) == NULL)
@@ -102,6 +106,8 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 	/* read all bytes of the binary file */
 	while((ret == 0) && ((chr = fgetc(f)) != EOF)) {
 		int yres, tok = pcb_pads_lex_char(&lctx, &lval, chr);
+
+		/*printf("(%c %d) -> %d\n", chr, chr, tok);*/
 		if (tok == UREGLEX_MORE)
 			continue;
 

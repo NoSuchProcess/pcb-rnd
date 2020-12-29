@@ -60,7 +60,7 @@ code
 	return T_QSTR;
 
 rule chars
-regex [!=*\n]
+regex [!=\n]
 code
 	return *ULX_BUF;
 
@@ -69,5 +69,9 @@ regex [ \t\r]+
 code
 	ULX_IGNORE;
 
-rulestring UNIT              return T_UNIT;
-rulestring PCB               return T_PCB;
+rulestring *PCB*             return T_HDR_PCB;
+rulestring UNITS             return T_UNITS;
+rulestring USERGRID          return T_USERGRID;
+rulestring LINEWIDTH         return T_LINEWIDTH;
+rulestring TEXTSIZE          return T_TEXTSIZE;
+rulestring PLANEFLAGS        return T_PLANEFLAGS;
