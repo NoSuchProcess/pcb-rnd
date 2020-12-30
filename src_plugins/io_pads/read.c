@@ -54,17 +54,21 @@ typedef struct pads_read_ctx_s {
 
 static int pads_parse_header(pads_read_ctx_t *rctx)
 {
-	char *s, tmp[256];
+	char *s, *end, tmp[256];
 
-	if (fgets(tmp, sizeof(tmp), rctx->f) == NULL)
-		return 0;
-	s = tmp+15;
-	s = strchr(s, '-');
-	if (s == NULL) {
-		rnd_message(RND_MSG_ERROR, "io_pads: invalid header (dash)\n");
+	if (fgets(tmp, sizeof(tmp), rctx->f) == NULL) {
+		rnd_message(RND_MSG_ERROR, "io_pads: missing header\n");
 		return -1;
 	}
-	s++;
+	s = tmp+15;
+	if ((*s == 'V') || (*s == 'v'))
+		s++;
+	rctx->ver = strtod(s, &end);
+	if (*end != '-') {
+		rnd_message(RND_MSG_ERROR, "io_pads: invalid header (version: invalid numeric)\n");
+		return -1;
+	}
+	s = end+1;
 	if (strncmp(s, "BASIC", 5) == 0)
 		rctx->coord_scale = 2.0/3.0;
 	else if (strncmp(s, "MILS", 4) == 0)
