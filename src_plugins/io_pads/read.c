@@ -43,6 +43,7 @@ typedef struct pads_read_ctx_s {
 	pcb_board_t *pcb;
 	FILE *f;
 	double coord_scale; /* multiply input integer coord values to get pcb-rnd nanometer */
+	double ver;
 
 	/* location */
 	const char *fn;
@@ -263,18 +264,40 @@ static int pads_parse_text(pads_read_ctx_t *rctx)
 	return 0;
 }
 
+static int pads_parse_piece(pads_read_ctx_t *rctx)
+{
+	char ptype[32], rest[32];
+	long num_crds, layer, lstyle;
+	rnd_coord_t width;
+	int res;
+
+	if ((res = pads_read_word(rctx, ptype, sizeof(ptype), 0)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_crds)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &width)) <= 0) return res;
+	if (rctx->ver > 9.4) {
+		if ((res = pads_read_long(rctx, &lstyle)) <= 0) return res;
+		if ((res = pads_read_long(rctx, &layer)) <= 0) return res;
+		if ((res = pads_read_word(rctx, rest, sizeof(rest), 0)) <= 0) return res;
+	}
+	else {
+		if ((res = pads_read_long(rctx, &layer)) <= 0) return res;
+		if ((res = pads_read_word(rctx, rest, sizeof(rest), 0)) <= 0) return res;
+	}
+	pads_eatup_till_nl(rctx);
+}
+
 static int pads_parse_lines(pads_read_ctx_t *rctx)
 {
 	pads_eatup_till_nl(rctx);
 	while(!feof(rctx->f)) {
 		char word[256], type[32];
-		int res = pads_read_word(rctx, word, sizeof(word), 0);
+		int c, res = pads_read_word(rctx, word, sizeof(word), 0);
 		if (res <= 0)
 			return res;
 		if (*word == '\0') { /* ignore empty lines between statements */ }
 		else { /* name type xo yo numpieces [numtext] [sigstr] */
 			rnd_coord_t xo, yo;
-			long num_pcs;
+			long n, num_pcs;
 
 			if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
 			if ((res = pads_read_coord(rctx, &xo)) <= 0) return res;
@@ -283,6 +306,15 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 
 			rnd_trace("line name=%s ty=%s %mm;%mm %d\n", word, type, xo, yo, num_pcs);
 			pads_eatup_till_nl(rctx);
+			c = fgetc(rctx->f);
+			ungetc(c, rctx->f);
+			if (c == '.') { /* .reuse. */
+				if ((res = pads_read_word(rctx, word, sizeof(word), 0)) <= 0) return res;
+				rnd_trace("line reuse: '%s'\n", word);
+				pads_eatup_till_nl(rctx);
+			}
+			for(n = 0; n < num_pcs; n++)
+				if ((res = pads_parse_piece(rctx)) <= 0) return res;
 		}
 	}
 	return 0;
