@@ -232,6 +232,16 @@ static int pads_read_coord(pads_read_ctx_t *rctx, rnd_coord_t *dst)
 	return 1;
 }
 
+static int pads_read_degp10(pads_read_ctx_t *rctx, double *dst)
+{
+	long l;
+	int res = pads_read_long(rctx, &l);
+	if (res <= 0)
+		return res;
+	*dst = (double)l / 10.0;
+	return 1;
+}
+
 
 static int pads_parse_ignore_sect(pads_read_ctx_t *rctx)
 {
@@ -288,10 +298,45 @@ static int pads_parse_text(pads_read_ctx_t *rctx)
 	return 0;
 }
 
+static int pads_parse_piece_crd(pads_read_ctx_t *rctx)
+{
+	int res;
+	rnd_coord_t x, y;
+
+	if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
+
+	if (pads_has_field(rctx)) {
+		double starta, enda, r;
+		rnd_coord_t bbx1, bby1, bbx2, bby2, cx, cy;
+
+		if ((res = pads_read_degp10(rctx, &starta)) <= 0) return res;
+		if ((res = pads_read_degp10(rctx, &enda)) <= 0) return res;
+		if ((res = pads_read_coord(rctx, &bbx1)) <= 0) return res;
+		if ((res = pads_read_coord(rctx, &bby1)) <= 0) return res;
+		if ((res = pads_read_coord(rctx, &bbx2)) <= 0) return res;
+		if ((res = pads_read_coord(rctx, &bby2)) <= 0) return res;
+
+		r = (double)(bbx2 - bbx1) / 2.0;
+		cx = rnd_round((double)(bbx1 + bbx2) / 2.0);
+		cy = rnd_round((double)(bby1 + bby2) / 2.0);
+		rnd_trace("  crd arc %mm;%mm %f..%f r=%mm center=%mm;%mm\n", x, y, starta, enda, (rnd_coord_t)r, cx, cy);
+	}
+	else {
+		rnd_trace("  crd line %mm;%mm\n", x, y);
+	}
+
+	pads_eatup_till_nl(rctx);
+
+
+	return 1;
+}
+
+
 static int pads_parse_piece(pads_read_ctx_t *rctx)
 {
 	char ptype[32], rest[32];
-	long num_crds, layer, lstyle;
+	long n, num_crds, layer, lstyle;
 	rnd_coord_t width;
 	int res;
 
@@ -310,6 +355,11 @@ static int pads_parse_piece(pads_read_ctx_t *rctx)
 			if ((res = pads_read_word(rctx, rest, sizeof(rest), 0)) <= 0) return res;
 	}
 	pads_eatup_till_nl(rctx);
+
+	rnd_trace(" piece %s\n", ptype);
+	for(n = 0; n < num_crds; n++)
+		if ((res = pads_parse_piece_crd(rctx)) <= 0) return res;
+
 	return 1;
 }
 
