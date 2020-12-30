@@ -122,7 +122,7 @@ static int pads_eatup_ws(pads_read_ctx_t *rctx)
 	int c;
 
 	while(ishspace(c = fgetc(rctx->f))) pads_update_loc(rctx, c);
-	pads_update_loc(rctx, c);
+	ungetc(c, rctx->f);
 	if (c == EOF)
 		return 0;
 	return 1;
@@ -167,6 +167,8 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 	if (pads_eatup_ws(rctx) == 0)
 		return 0;
 
+	c = fgetc(rctx->f);
+	pads_update_loc(rctx, c);
 	while((c != EOF) && !isspace(c)) {
 		*s = c;
 		s++;
