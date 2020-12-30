@@ -390,13 +390,16 @@ static int pads_parse_piece(pads_read_ctx_t *rctx)
 	return 1;
 }
 
-static int pads_parse_text(pads_read_ctx_t *rctx)
+static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label)
 {
-	char hjust[16], vjust[16], font[128], str[1024];
+	char name[16], hjust[16], vjust[16], font[128], str[1024];
 	rnd_coord_t x, y, w, h;
 	double rot;
 	long level;
 	int res, mirr = 0;
+
+	if (is_label)
+		if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 
 	if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
@@ -427,9 +430,23 @@ static int pads_parse_text(pads_read_ctx_t *rctx)
 	if ((res = pads_read_word(rctx, str, sizeof(str), 0)) <= 0) return res;
 	pads_eatup_till_nl(rctx);
 
-	rnd_trace(" text: [%s] at %mm;%mm rot=%f size=%mm;%mm: '%s'\n",
+	rnd_trace(" text: [%s] at %mm;%mm rot=%f size=%mm;%mm: '%s'",
 		font, x, y, rot, w, h, str);
+	if (is_label)
+		rnd_trace(" (%s)\n", name);
+	else
+		rnd_trace("\n");
 	return 1;
+}
+
+static int pads_parse_text(pads_read_ctx_t *rctx)
+{
+	return pads_parse_text_(rctx, 0);
+}
+
+static int pads_parse_label(pads_read_ctx_t *rctx)
+{
+	return pads_parse_text_(rctx, 1);
 }
 
 static int pads_parse_lines(pads_read_ctx_t *rctx)
@@ -511,7 +528,7 @@ static int pads_parse_texts(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_text);
 }
 
-static int pads_parse_via(pads_read_ctx_t *rctx)
+static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 {
 	char name[256], shape[8];
 	rnd_coord_t drill, size, inner;
@@ -544,7 +561,69 @@ static int pads_parse_via(pads_read_ctx_t *rctx)
 
 static int pads_parse_vias(pads_read_ctx_t *rctx)
 {
-	return pads_parse_list_sect(rctx, pads_parse_via);
+	return pads_parse_list_sect(rctx, pads_parse_pstk_proto);
+}
+
+static int pads_parse_term(pads_read_ctx_t *rctx)
+{
+	char name[10];
+	int c, res;
+	rnd_coord_t x, y, nmx, nmy;
+
+	c = fgetc(rctx->f);
+	if (c != 'T') {
+		PADS_ERROR((RND_MSG_ERROR, "Terminal definition line doesn't start with T\n"));
+		return -1;
+	}
+	if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &nmx)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &nmy)) <= 0) return res;
+	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
+
+	rnd_trace("  terminal: %ld at %mm;%mm\n", name, x, y);
+	return 1;
+}
+
+static int pads_parse_partdecal(pads_read_ctx_t *rctx)
+{
+	char name[256], unit[8];
+	rnd_coord_t xo, yo;
+	long n, num_pieces, num_terms, num_stacks, num_texts = 0, num_labels = 0;
+	int res;
+
+	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
+	if ((res = pads_read_word(rctx, unit, sizeof(unit), 0)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &xo)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &yo)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_pieces)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_terms)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_stacks)) <= 0) return res;
+
+	if (pads_has_field(rctx))
+		if ((res = pads_read_long(rctx, &num_texts)) <= 0) return res;
+	if (pads_has_field(rctx))
+		if ((res = pads_read_long(rctx, &num_labels)) <= 0) return res;
+
+	rnd_trace("part '%s', original %mm;%mm\n", name, xo, yo);
+TODO("set unit and origin");
+	for(n = 0; n < num_pieces; n++)
+		if ((res = pads_parse_piece(rctx)) <= 0) return res;
+	for(n = 0; n < num_texts; n++)
+		if ((res = pads_parse_text(rctx)) <= 0) return res;
+	for(n = 0; n < num_labels; n++)
+		if ((res = pads_parse_label(rctx)) <= 0) return res;
+	for(n = 0; n < num_terms; n++)
+		if ((res = pads_parse_term(rctx)) <= 0) return res;
+	for(n = 0; n < num_stacks; n++)
+		if ((res = pads_parse_pstk_proto(rctx)) <= 0) return res;
+
+	return 1;
+}
+
+static int pads_parse_partdecals(pads_read_ctx_t *rctx)
+{
+	return pads_parse_list_sect(rctx, pads_parse_pstk_proto);
 }
 
 static int pads_parse_block(pads_read_ctx_t *rctx)
@@ -562,6 +641,7 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		else if (strcmp(word, "*TEXT*") == 0) res = pads_parse_texts(rctx);
 		else if (strcmp(word, "*LINES*") == 0) res = pads_parse_lines(rctx);
 		else if (strcmp(word, "*VIA*") == 0) res = pads_parse_vias(rctx);
+		else if (strcmp(word, "*PARTDECAL*") == 0) res = pads_parse_partdecals(rctx);
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
 			return -1;
