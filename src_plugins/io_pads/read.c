@@ -473,13 +473,12 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 	return 1;
 }
 
-static int pads_parse_texts(pads_read_ctx_t *rctx)
+static int pads_parse_list_sect(pads_read_ctx_t *rctx, int (*parse_item)(pads_read_ctx_t *))
 {
 	pads_eatup_till_nl(rctx);
 	while(!feof(rctx->f)) {
 		char c;
 		int res;
-
 
 		pads_eatup_ws(rctx);
 
@@ -492,18 +491,60 @@ static int pads_parse_texts(pads_read_ctx_t *rctx)
 		ungetc(c, rctx->f);
 		if (c == '*') { /* may be the next section, or just a remark */
 			char tmp[256];
-			if (pads_read_word(rctx, tmp, sizeof(tmp), 0) == 0)
+			if (pads_read_word(rctx, tmp, sizeof(tmp), 0) == 0) /* next section */
 				break;
-			if (*pads_saved_word == '\0')
-				continue; /* remark */
-			rnd_trace("saved word='%s' %d\n", pads_saved_word, pads_saved_word_len);
+			if (*pads_saved_word == '\0')  /* remark */
+				continue;
+			/* no 3rd possibility */
+			PADS_ERROR((RND_MSG_ERROR, "Can't get here in pads_parse_list_sect\n"));
 		}
 
-		res = pads_parse_text(rctx);
+		res = parse_item(rctx);
 		if (res <= 0)
 			return res;
 	}
 	return 1;
+}
+
+static int pads_parse_texts(pads_read_ctx_t *rctx)
+{
+	return pads_parse_list_sect(rctx, pads_parse_text);
+}
+
+static int pads_parse_via(pads_read_ctx_t *rctx)
+{
+	char name[256], shape[8];
+	rnd_coord_t drill, size, inner;
+	long n, num_lines, level, start = 0, end = 0;
+	int res;
+
+	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &drill)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_lines)) <= 0) return res;
+	if (pads_has_field(rctx))
+		if ((res = pads_read_long(rctx, &start)) <= 0) return res;
+	if (pads_has_field(rctx))
+		if ((res = pads_read_long(rctx, &end)) <= 0) return res;
+
+	pads_eatup_till_nl(rctx);
+
+	rnd_trace(" via: %s drill=%mm [%ld..%ld]\n", name, drill, start, end);
+	for(n = 0; n < num_lines; n++) {
+		if ((res = pads_read_long(rctx, &level)) <= 0) return res;
+		if ((res = pads_read_coord(rctx, &size)) <= 0) return res;
+		if ((res = pads_read_word(rctx, shape, sizeof(shape), 0)) <= 0) return res;
+		if (pads_has_field(rctx))
+			if ((res = pads_read_coord(rctx, &inner)) <= 0) return res;
+		else
+			inner = 0;
+		pads_eatup_till_nl(rctx);
+		rnd_trace("  lev=%ld size=%mm/%mm shape=%s\n", level, size, inner, shape);
+	}
+}
+
+static int pads_parse_vias(pads_read_ctx_t *rctx)
+{
+	return pads_parse_list_sect(rctx, pads_parse_via);
 }
 
 static int pads_parse_block(pads_read_ctx_t *rctx)
@@ -520,6 +561,7 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		else if (strcmp(word, "*REUSE*") == 0) { TODO("What to do with this?"); res = pads_parse_ignore_sect(rctx); }
 		else if (strcmp(word, "*TEXT*") == 0) res = pads_parse_texts(rctx);
 		else if (strcmp(word, "*LINES*") == 0) res = pads_parse_lines(rctx);
+		else if (strcmp(word, "*VIA*") == 0) res = pads_parse_vias(rctx);
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
 			return -1;
