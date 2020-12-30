@@ -39,6 +39,13 @@
 
 #include "read.h"
 
+/* Parser return value convention:
+	1      = succesfully read a block or *section* or line
+	0      = eof
+	-1..-3 = error
+	-4     = bumped into the next *section*
+*/
+
 typedef struct pads_read_ctx_s {
 	pcb_board_t *pcb;
 	FILE *f;
@@ -161,7 +168,7 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 
 	if (asterisk_saved_len > 0) {
 		if (!allow_asterisk)
-			return 0;
+			return -4;
 		if (asterisk_saved_len > maxlen) {
 			PADS_ERROR((RND_MSG_ERROR, "saved asterisk word too long\n"));
 			return -3;
@@ -216,7 +223,7 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 		}
 		memcpy(asterisk_saved, word, len);
 		asterisk_saved_len = len;
-		return 0;
+		return -4;
 	}
 
 	if ((res == 1) && (word == pads_saved_word)) {
@@ -250,7 +257,6 @@ static int pads_read_long(pads_read_ctx_t *rctx, long *dst)
 	int res = pads_read_word(rctx, tmp, sizeof(tmp), 0);
 	if (res <= 0)
 		return res;
-printf("LONG: '%s'\n", tmp);
 	*dst = strtol(tmp, &end, 10);
 	if (*end != '\0') {
 		PADS_ERROR((RND_MSG_ERROR, "invalid integer: '%s'\n", tmp));
@@ -290,7 +296,7 @@ static int pads_parse_ignore_sect(pads_read_ctx_t *rctx)
 			return res;
 		pads_eatup_till_nl(rctx);
 	}
-	return 0;
+	return 1;
 }
 
 static int pads_parse_pcb(pads_read_ctx_t *rctx)
@@ -315,7 +321,7 @@ static int pads_parse_pcb(pads_read_ctx_t *rctx)
 			pads_eatup_till_nl(rctx);
 		}
 	}
-	return 0;
+	return 1;
 }
 
 
@@ -464,7 +470,7 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 				if ((res = pads_parse_text(rctx)) <= 0) return res;
 		}
 	}
-	return 0;
+	return 1;
 }
 
 static int pads_parse_texts(pads_read_ctx_t *rctx)
@@ -509,21 +515,23 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		if (res <= 0)
 			return res;
 
-		res = 0;
-		if (*word == '\0') { /* ignore empty lines between blocks */ }
-		else if (strcmp(word, "*PCB*") == 0) res |= pads_parse_pcb(rctx);
-		else if (strcmp(word, "*REUSE*") == 0) { TODO("What to do with this?"); pads_parse_ignore_sect(rctx); }
-		else if (strcmp(word, "*TEXT*") == 0) res |= pads_parse_texts(rctx);
-		else if (strcmp(word, "*LINES*") == 0) res |= pads_parse_lines(rctx);
+		if (*word == '\0') res = 1; /* ignore empty lines between blocks */
+		else if (strcmp(word, "*PCB*") == 0) res = pads_parse_pcb(rctx);
+		else if (strcmp(word, "*REUSE*") == 0) { TODO("What to do with this?"); res = pads_parse_ignore_sect(rctx); }
+		else if (strcmp(word, "*TEXT*") == 0) res = pads_parse_texts(rctx);
+		else if (strcmp(word, "*LINES*") == 0) res = pads_parse_lines(rctx);
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
 			return -1;
 		}
+
+		if (res == -4) continue; /* bumped into the next section, just go on reading */
+
 		/* exit the loop on error */
-		if (res != 0)
+		if (res <= 0)
 			return res;
 	}
-	return 0;
+	return 1;
 }
 
 int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
@@ -549,7 +557,7 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 		return -1;
 	}
 
-	ret = pads_parse_block(&rctx);
+	ret = !pads_parse_block(&rctx);
 	fclose(f);
 	return ret;
 }
