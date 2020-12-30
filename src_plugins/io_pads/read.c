@@ -232,14 +232,16 @@ static int pads_parse_pcb(pads_read_ctx_t *rctx)
 		if (*word == '\0') { /* ignore empty lines between statements */ }
 		else if (strcmp(word, "UNITS") == 0) {
 			printf("pcb units!\n");
+			pads_eatup_till_nl(rctx);
 		}
 		else if (strcmp(word, "USERGRID") == 0) {
 			printf("pcb user grid!\n");
+			pads_eatup_till_nl(rctx);
 		}
 		else {
 /*			printf("ignore: '%s'!\n", word);*/
+			pads_eatup_till_nl(rctx);
 		}
-		pads_eatup_till_nl(rctx);
 	}
 	return 0;
 }
@@ -255,8 +257,8 @@ static int pads_parse_text(pads_read_ctx_t *rctx)
 		if (*word == '\0') { /* ignore empty lines between statements */ }
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown text statement: '%s'\n", word));
+			pads_eatup_till_nl(rctx);
 		}
-		pads_eatup_till_nl(rctx);
 	}
 	return 0;
 }
@@ -280,8 +282,8 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 			if ((res = pads_read_long(rctx, &num_pcs)) <= 0) return res;
 
 			rnd_trace("line name=%s ty=%s %mm;%mm %d\n", word, type, xo, yo, num_pcs);
+			pads_eatup_till_nl(rctx);
 		}
-		pads_eatup_till_nl(rctx);
 	}
 	return 0;
 }
