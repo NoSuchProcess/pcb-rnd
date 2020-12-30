@@ -208,6 +208,20 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 	return res;
 }
 
+static int pads_read_double(pads_read_ctx_t *rctx, double *dst)
+{
+	char tmp[64], *end;
+	int res = pads_read_word(rctx, tmp, sizeof(tmp), 0);
+	if (res <= 0)
+		return res;
+	*dst = strtod(tmp, &end);
+	if (*end != '\0') {
+		PADS_ERROR((RND_MSG_ERROR, "invalid numeric: '%s'\n", tmp));
+		return -1;
+	}
+	return 1;
+}
+
 static int pads_read_long(pads_read_ctx_t *rctx, long *dst)
 {
 	char tmp[64], *end;
@@ -281,7 +295,7 @@ static int pads_parse_pcb(pads_read_ctx_t *rctx)
 	return 0;
 }
 
-static int pads_parse_text(pads_read_ctx_t *rctx)
+static int pads_parse_texts(pads_read_ctx_t *rctx)
 {
 	pads_eatup_till_nl(rctx);
 	while(!feof(rctx->f)) {
@@ -363,6 +377,47 @@ static int pads_parse_piece(pads_read_ctx_t *rctx)
 	return 1;
 }
 
+static int pads_parse_text(pads_read_ctx_t *rctx)
+{
+	char hjust[16], vjust[16], font[128], str[1024];
+	rnd_coord_t x, y, w, h;
+	double rot;
+	long level;
+	int res, mirr = 0;
+
+	if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
+	if ((res = pads_read_double(rctx, &rot)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &level)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &h)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &w)) <= 0) return res;
+
+	/* next field is either mirror (M or N) or hjust */
+	if ((res = pads_read_word(rctx, hjust, sizeof(hjust), 0)) <= 0) return res;
+	if (*hjust == 'N') {
+		mirr = 0;
+		if ((res = pads_read_word(rctx, hjust, sizeof(hjust), 0)) <= 0) return res;
+	}
+	else if (*hjust == 'M') {
+		mirr = 1;
+		if ((res = pads_read_word(rctx, hjust, sizeof(hjust), 0)) <= 0) return res;
+	}
+
+	if ((res = pads_read_word(rctx, vjust, sizeof(vjust), 0)) <= 0) return res;
+
+	/* fields ignored: ndim and .REUSE.*/
+	pads_eatup_till_nl(rctx);
+
+	if ((res = pads_read_word(rctx, font, sizeof(font), 0)) <= 0) return res;
+	pads_eatup_till_nl(rctx);
+
+	if ((res = pads_read_word(rctx, str, sizeof(str), 0)) <= 0) return res;
+	pads_eatup_till_nl(rctx);
+
+	rnd_trace(" text: [%s] at %mm;%mm rot=%f size=%mm;%mm: '%s'\n",
+		font, x, y, rot, w, h, str);
+}
+
 static int pads_parse_lines(pads_read_ctx_t *rctx)
 {
 	pads_eatup_till_nl(rctx);
@@ -374,14 +429,19 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 		if (*word == '\0') { /* ignore empty lines between statements */ }
 		else { /* name type xo yo numpieces [numtext] [sigstr] */
 			rnd_coord_t xo, yo;
-			long n, num_pcs;
+			long n, num_pcs, flags, num_texts;
 
 			if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
 			if ((res = pads_read_coord(rctx, &xo)) <= 0) return res;
 			if ((res = pads_read_coord(rctx, &yo)) <= 0) return res;
 			if ((res = pads_read_long(rctx, &num_pcs)) <= 0) return res;
+			if ((res = pads_read_long(rctx, &flags)) <= 0) return res;
 
-			rnd_trace("line name=%s ty=%s %mm;%mm %d\n", word, type, xo, yo, num_pcs);
+			if (pads_has_field(rctx))
+				if ((res = pads_read_long(rctx, &num_texts)) <= 0) return res;
+			/* last optional field is netname - ignore that */
+
+			rnd_trace("line name=%s ty=%s %mm;%mm pcs=%d texts=%d\n", word, type, xo, yo, num_pcs, num_texts);
 			pads_eatup_till_nl(rctx);
 			c = fgetc(rctx->f);
 			ungetc(c, rctx->f);
@@ -392,6 +452,8 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 			}
 			for(n = 0; n < num_pcs; n++)
 				if ((res = pads_parse_piece(rctx)) <= 0) return res;
+			for(n = 0; n < num_texts; n++)
+				if ((res = pads_parse_text(rctx)) <= 0) return res;
 		}
 	}
 	return 0;
@@ -410,7 +472,7 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		if (*word == '\0') { /* ignore empty lines between blocks */ }
 		else if (strcmp(word, "*PCB*") == 0) res |= pads_parse_pcb(rctx);
 		else if (strcmp(word, "*REUSE*") == 0) { TODO("What to do with this?"); pads_parse_ignore_sect(rctx); }
-		else if (strcmp(word, "*TEXT*") == 0) res |= pads_parse_text(rctx);
+		else if (strcmp(word, "*TEXT*") == 0) res |= pads_parse_texts(rctx);
 		else if (strcmp(word, "*LINES*") == 0) res |= pads_parse_lines(rctx);
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
