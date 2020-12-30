@@ -113,6 +113,27 @@ static void pads_eatup_till_nl(pads_read_ctx_t *rctx)
 	pads_update_loc(rctx, c);
 }
 
+static int pads_eatup_ws(pads_read_ctx_t *rctx)
+{
+	int c;
+
+	while(ishspace(c = fgetc(rctx->f))) pads_update_loc(rctx, c);
+	pads_update_loc(rctx, c);
+	if (c == EOF)
+		return 0;
+	return 1;
+}
+
+static int pads_has_field(pads_read_ctx_t *rctx)
+{
+	int c;
+	if (pads_eatup_ws(rctx) == 0)
+		return 0;
+	c = fgetc(rctx->f);
+	ungetc(c, rctx->f);
+	return (c =! '\n');
+}
+
 static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int allow_asterisk)
 {
 	char *s;
@@ -139,10 +160,7 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 	pads_start_loc(rctx);
 
 	/* strip leading space */
-	while(ishspace(c = fgetc(rctx->f))) pads_update_loc(rctx, c);
-
-	pads_update_loc(rctx, c);
-	if (c == EOF)
+	if (pads_eatup_ws(rctx) == 0)
 		return 0;
 
 	while((c != EOF) && !isspace(c)) {
@@ -277,13 +295,16 @@ static int pads_parse_piece(pads_read_ctx_t *rctx)
 	if (rctx->ver > 9.4) {
 		if ((res = pads_read_long(rctx, &lstyle)) <= 0) return res;
 		if ((res = pads_read_long(rctx, &layer)) <= 0) return res;
-		if ((res = pads_read_word(rctx, rest, sizeof(rest), 0)) <= 0) return res;
+		if (pads_has_field(rctx))
+			if ((res = pads_read_word(rctx, rest, sizeof(rest), 0)) <= 0) return res;
 	}
 	else {
 		if ((res = pads_read_long(rctx, &layer)) <= 0) return res;
-		if ((res = pads_read_word(rctx, rest, sizeof(rest), 0)) <= 0) return res;
+		if (pads_has_field(rctx))
+			if ((res = pads_read_word(rctx, rest, sizeof(rest), 0)) <= 0) return res;
 	}
 	pads_eatup_till_nl(rctx);
+	return 1;
 }
 
 static int pads_parse_lines(pads_read_ctx_t *rctx)
