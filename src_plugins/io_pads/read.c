@@ -138,12 +138,26 @@ static int pads_has_field(pads_read_ctx_t *rctx)
 	return (c != '\n');
 }
 
+static char pads_saved_word[512];
+static int pads_saved_word_len;
+
 static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int allow_asterisk)
 {
 	char *s;
 	int c, res;
 	static char asterisk_saved[512];
 	static int asterisk_saved_len = 0;
+
+	if (pads_saved_word_len > 0) {
+		if (pads_saved_word_len > maxlen) {
+			PADS_ERROR((RND_MSG_ERROR, "saved word too long\n"));
+			return -3;
+		}
+		memcpy(word, pads_saved_word, pads_saved_word_len);
+		pads_saved_word_len = 0;
+		*pads_saved_word = '\0';
+		return 1;
+	}
 
 	if (asterisk_saved_len > 0) {
 		if (!allow_asterisk)
@@ -205,6 +219,14 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 		return 0;
 	}
 
+	if ((res == 1) && (word == pads_saved_word)) {
+		if (pads_saved_word_len > 0) {
+			PADS_ERROR((RND_MSG_ERROR, "can not save multiple words\n"));
+			return -3;
+		}
+		pads_saved_word_len = s - word;
+	}
+
 	return res;
 }
 
@@ -228,6 +250,7 @@ static int pads_read_long(pads_read_ctx_t *rctx, long *dst)
 	int res = pads_read_word(rctx, tmp, sizeof(tmp), 0);
 	if (res <= 0)
 		return res;
+printf("LONG: '%s'\n", tmp);
 	*dst = strtol(tmp, &end, 10);
 	if (*end != '\0') {
 		PADS_ERROR((RND_MSG_ERROR, "invalid integer: '%s'\n", tmp));
@@ -295,22 +318,6 @@ static int pads_parse_pcb(pads_read_ctx_t *rctx)
 	return 0;
 }
 
-static int pads_parse_texts(pads_read_ctx_t *rctx)
-{
-	pads_eatup_till_nl(rctx);
-	while(!feof(rctx->f)) {
-		char word[256];
-		int res = pads_read_word(rctx, word, sizeof(word), 0);
-		if (res <= 0)
-			return res;
-		if (*word == '\0') { /* ignore empty lines between statements */ }
-		else {
-			PADS_ERROR((RND_MSG_ERROR, "unknown text statement: '%s'\n", word));
-			pads_eatup_till_nl(rctx);
-		}
-	}
-	return 0;
-}
 
 static int pads_parse_piece_crd(pads_read_ctx_t *rctx)
 {
@@ -416,6 +423,7 @@ static int pads_parse_text(pads_read_ctx_t *rctx)
 
 	rnd_trace(" text: [%s] at %mm;%mm rot=%f size=%mm;%mm: '%s'\n",
 		font, x, y, rot, w, h, str);
+	return 1;
 }
 
 static int pads_parse_lines(pads_read_ctx_t *rctx)
@@ -457,6 +465,39 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 		}
 	}
 	return 0;
+}
+
+static int pads_parse_texts(pads_read_ctx_t *rctx)
+{
+	pads_eatup_till_nl(rctx);
+	while(!feof(rctx->f)) {
+		char c;
+		int res;
+
+
+		pads_eatup_ws(rctx);
+
+		c = fgetc(rctx->f);
+		if (c == '\n') {
+			pads_update_loc(rctx, c);
+			continue;
+		}
+
+		ungetc(c, rctx->f);
+		if (c == '*') { /* may be the next section, or just a remark */
+			char tmp[256];
+			if (pads_read_word(rctx, tmp, sizeof(tmp), 0) == 0)
+				break;
+			if (*pads_saved_word == '\0')
+				continue; /* remark */
+			rnd_trace("saved word='%s' %d\n", pads_saved_word, pads_saved_word_len);
+		}
+
+		res = pads_parse_text(rctx);
+		if (res <= 0)
+			return res;
+	}
+	return 1;
 }
 
 static int pads_parse_block(pads_read_ctx_t *rctx)
