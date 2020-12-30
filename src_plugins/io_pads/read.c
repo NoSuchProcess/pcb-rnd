@@ -135,7 +135,7 @@ static int pads_has_field(pads_read_ctx_t *rctx)
 		return 0;
 	c = fgetc(rctx->f);
 	ungetc(c, rctx->f);
-	return (c =! '\n');
+	return (c != '\n');
 }
 
 static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int allow_asterisk)
