@@ -767,8 +767,9 @@ static int pads_parse_parttype(pads_read_ctx_t *rctx)
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, decals, sizeof(decals), 0)) <= 0) return res;
-	if (rctx->ver == 2005.0)
+	if (rctx->ver == 2005.0) {
 		if ((res = pads_read_word(rctx, unit, sizeof(unit), 0)) <= 0) return res;
+	}
 	else
 		*unit = '\0';
 
@@ -833,6 +834,48 @@ static int pads_parse_parts(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_part);
 }
 
+static int pads_parse_net(pads_read_ctx_t *rctx)
+{
+	char term1[128], term2[128];
+	int c, res;
+
+	if ((res = pads_read_word(rctx, term1, sizeof(term1), 0)) <= 0) return res;
+	if ((res = pads_read_word(rctx, term2, sizeof(term2), 0)) <= 0) return res;
+	pads_eatup_till_nl(rctx);
+
+
+	pads_eatup_ws(rctx);
+	c = fgetc(rctx->f);
+	ungetc(c, rctx->f);
+	if (isdigit(c) || (c == '-')) { /* two lines of route candidate - safe to ignore */
+		rnd_coord_t x, y;
+
+		if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
+		if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
+		pads_eatup_till_nl(rctx);
+
+
+		if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
+		if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
+		pads_eatup_till_nl(rctx);
+	}
+
+	rnd_trace(" '%s' -> '%s'\n", term1, term2);
+
+	return 1;
+}
+
+static int pads_parse_signal(pads_read_ctx_t *rctx)
+{
+	char netname[128];
+	int res;
+
+	if ((res = pads_read_word(rctx, netname, sizeof(netname), 0)) <= 0) return res;
+
+	rnd_trace("signal: netname=%s\n", netname);
+	return pads_parse_list_sect(rctx, pads_parse_net);
+}
+
 static int pads_parse_block(pads_read_ctx_t *rctx)
 {
 	while(!feof(rctx->f)) {
@@ -852,7 +895,9 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		else if (strcmp(word, "*PARTTYPE*") == 0) res = pads_parse_parttypes(rctx);
 		else if (strcmp(word, "*PARTT") == 0) res = pads_parse_parttypes(rctx);
 		else if (strcmp(word, "*PART*") == 0) res = pads_parse_parts(rctx);
+		else if (strcmp(word, "*SIGNAL*") == 0) res = pads_parse_signal(rctx);
 		else if (strcmp(word, "*CLUSTER*") == 0) res = pads_parse_ignore_sect(rctx);
+		else if (strcmp(word, "*ROUTE*") == 0) res = pads_parse_ignore_sect(rctx);
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
 			return -1;
