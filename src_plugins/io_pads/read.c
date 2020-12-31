@@ -670,6 +670,36 @@ static int pads_parse_partdecals(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_partdecal);
 }
 
+
+static int pads_parse_parttype(pads_read_ctx_t *rctx)
+{
+	char name[256], type[8], pin[256];
+	long n, swaptype, num_pins;
+	int res;
+
+	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
+	pads_eatup_till_nl(rctx);
+
+	if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &swaptype)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_pins)) <= 0) return res;
+
+	rnd_trace("parttype: '%s' %d\n", name, num_pins);
+	for(n = 0; n < num_pins; n++) {
+		*pin = '\0';
+		while(*pin == '\0') { /* this will ignore newlines */
+			res = pads_read_word(rctx, pin, sizeof(pin), 0);
+/*			rnd_trace(" '%s' %d\n", pin, res);*/
+		}
+	}
+	return 1;
+}
+
+static int pads_parse_parttypes(pads_read_ctx_t *rctx)
+{
+	return pads_parse_list_sect(rctx, pads_parse_parttype);
+}
+
 static int pads_parse_block(pads_read_ctx_t *rctx)
 {
 	while(!feof(rctx->f)) {
@@ -686,6 +716,7 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		else if (strcmp(word, "*LINES*") == 0) res = pads_parse_lines(rctx);
 		else if (strcmp(word, "*VIA*") == 0) res = pads_parse_vias(rctx);
 		else if (strcmp(word, "*PARTDECAL*") == 0) res = pads_parse_partdecals(rctx);
+		else if (strcmp(word, "*PARTTYPE*") == 0) res = pads_parse_parttypes(rctx);
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
 			return -1;
