@@ -671,27 +671,92 @@ static int pads_parse_partdecals(pads_read_ctx_t *rctx)
 }
 
 
-static int pads_parse_parttype(pads_read_ctx_t *rctx)
+static int pads_parse_gate(pads_read_ctx_t *rctx)
 {
-	char name[256], type[8], pin[256];
+	char type[3], pin[256];
 	long n, swaptype, num_pins;
 	int res;
 
-	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
-	pads_eatup_till_nl(rctx);
-
 	if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
+	if (strcmp(type, "G") != 0) {
+		PADS_ERROR((RND_MSG_ERROR, "Gate needs to start with a G\n"));
+		return -1;
+	}
 	if ((res = pads_read_long(rctx, &swaptype)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_pins)) <= 0) return res;
 
-	rnd_trace("parttype: '%s' %d\n", name, num_pins);
 	for(n = 0; n < num_pins; n++) {
 		*pin = '\0';
 		while(*pin == '\0') { /* this will ignore newlines */
 			res = pads_read_word(rctx, pin, sizeof(pin), 0);
-/*			rnd_trace(" '%s' %d\n", pin, res);*/
+			rnd_trace(" gate '%s' %d\n", pin, res);
 		}
 	}
+
+	pads_eatup_till_nl(rctx); /* ignore rest of the fields */
+	return 1;
+}
+
+static int pads_parse_sigpin(pads_read_ctx_t *rctx)
+{
+	char sigpin[8], pin[256];
+	long n, swaptype, num_pins;
+	int res;
+
+	if ((res = pads_read_word(rctx, sigpin, sizeof(sigpin), 0)) <= 0) return res;
+	if (strcmp(sigpin, "SIGPIN") != 0) {
+		PADS_ERROR((RND_MSG_ERROR, "sigpin needs to start with a SIGPIN\n"));
+		return -1;
+	}
+
+	rnd_trace(" sigpin\n", pin, res);
+
+	pads_eatup_till_nl(rctx); /* ignore rest of the fields */
+
+	return 1;
+}
+
+static int pads_parse_pinnames(pads_read_ctx_t *rctx, long num_pins)
+{
+	long n;
+	char pin[64];
+	int res;
+
+	for(n = 0; n < num_pins; n++) {
+		*pin = '\0';
+		while(*pin == '\0') { /* this will ignore newlines */
+			res = pads_read_word(rctx, pin, sizeof(pin), 0);
+			rnd_trace(" pinname '%s' %d\n", pin, res);
+		}
+	}
+	pads_eatup_till_nl(rctx); /* ignore rest of the fields */
+	return 1;
+}
+
+static int pads_parse_parttype(pads_read_ctx_t *rctx)
+{
+	char name[64], decals[16*64], ptype[8];
+	long n, num_gates, num_signals, num_alpins, flags;
+	int res;
+
+	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
+	if ((res = pads_read_word(rctx, decals, sizeof(decals), 0)) <= 0) return res;
+	if ((res = pads_read_word(rctx, ptype, sizeof(ptype), 0)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_gates)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_signals)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_alpins)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &flags)) <= 0) return res;
+	/* ECO is ignored */
+	pads_eatup_till_nl(rctx);
+
+	rnd_trace("parttype: '%s' gates=%ld signals=%ld alpins=%ld\n", name, num_gates, num_signals, num_alpins);
+	for(n = 0; n < num_gates; n++)
+		if ((res = pads_parse_gate(rctx)) <= 0) return res;
+	for(n = 0; n < num_signals; n++)
+		if ((res = pads_parse_sigpin(rctx)) <= 0) return res;
+	if (num_alpins > 0)
+		pads_parse_pinnames(rctx, num_alpins);
+
 	return 1;
 }
 
