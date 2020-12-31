@@ -467,7 +467,7 @@ static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label)
 	/* fields ignored: ndim and .REUSE.*/
 	pads_eatup_till_nl(rctx);
 
-	if (rctx->ver >= 5.0) { /* 4.0 doesn't have font */
+	if (rctx->ver >= 6.0) { /* 4.0 and 5.0 don't have font */
 		if ((res = pads_read_word(rctx, font, sizeof(font), 0)) <= 0) return res;
 		pads_eatup_till_nl(rctx);
 	}
@@ -515,7 +515,7 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 		if (floor(rctx->ver) == 2005) {
 			if ((res = pads_read_word(rctx, wtf, sizeof(wtf), 0)) <= 0) return res;
 		}
-		else if (rctx->ver >= 5.0) /* 4.0 doesn't have flags */
+		else if (rctx->ver >= 6.0) /* 4.0 and 5.0 don't have flags */
 			if ((res = pads_read_long(rctx, &flags)) <= 0) return res;
 	}
 
@@ -781,7 +781,7 @@ static int pads_parse_parttype(pads_read_ctx_t *rctx)
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, decals, sizeof(decals), 0)) <= 0) return res;
-	if ((floor(rctx->ver) == 2005) || (rctx->ver < 5.0)) {
+	if ((floor(rctx->ver) == 2005) || (rctx->ver < 6.0)) { /* 4.0 and 5.0 both have unit */
 		if ((res = pads_read_word(rctx, unit, sizeof(unit), 0)) <= 0) return res;
 	}
 	else
