@@ -558,7 +558,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 
 	pads_eatup_till_nl(rctx);
 
-	rnd_trace(" via: %s drill=%mm [%ld..%ld]\n", name, drill, start, end);
+	rnd_trace(" pstk_proto: %s drill=%mm [%ld..%ld]\n", name, drill, start, end);
 	for(n = 0; n < num_lines; n++) {
 		double rot = 0, slotrot = 0, spokerot = 0;
 		char plated[8];
