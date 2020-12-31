@@ -898,6 +898,9 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		else if (strcmp(word, "*SIGNAL*") == 0) res = pads_parse_signal(rctx);
 		else if (strcmp(word, "*CLUSTER*") == 0) res = pads_parse_ignore_sect(rctx);
 		else if (strcmp(word, "*ROUTE*") == 0) res = pads_parse_ignore_sect(rctx);
+		else if (strcmp(word, "*TESTPOINT*") == 0) res = pads_parse_ignore_sect(rctx);
+		else if (strcmp(word, "*MISC*") == 0) res = pads_parse_ignore_sect(rctx);
+		else if (strcmp(word, "*END*") == 0) return 1;
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
 			return -1;
@@ -909,7 +912,7 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		if (res <= 0)
 			return res;
 	}
-	return 1;
+	return -1;
 }
 
 int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
@@ -935,7 +938,7 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 		return -1;
 	}
 
-	ret = !pads_parse_block(&rctx);
+	ret = pads_parse_block(&rctx) == 1;
 	fclose(f);
 	return ret;
 }
