@@ -412,7 +412,7 @@ static int pads_parse_piece(pads_read_ctx_t *rctx)
 	if ((res = pads_read_word(rctx, ptype, sizeof(ptype), 0)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_crds)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &width)) <= 0) return res;
-	if ((rctx->ver > 9.4) && (floor(rctx->ver) != 2005)) {
+	if ((rctx->ver > 9.4) && (floor(rctx->ver) > 2007)) {
 		if ((res = pads_read_long(rctx, &lstyle)) <= 0) return res;
 		if ((res = pads_read_long(rctx, &layer)) <= 0) return res;
 		if (pads_has_field(rctx))
