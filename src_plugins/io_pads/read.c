@@ -796,6 +796,7 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		else if (strcmp(word, "*VIA*") == 0) res = pads_parse_vias(rctx);
 		else if (strcmp(word, "*PARTDECAL*") == 0) res = pads_parse_partdecals(rctx);
 		else if (strcmp(word, "*PARTTYPE*") == 0) res = pads_parse_parttypes(rctx);
+		else if (strcmp(word, "*CLUSTER*") == 0) res = pads_parse_ignore_sect(rctx);
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
 			return -1;
