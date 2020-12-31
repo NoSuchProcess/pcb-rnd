@@ -517,12 +517,22 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 			if ((res = pads_read_long(rctx, &flags)) <= 0) return res;
 	}
 
-	if (pads_has_field(rctx))
-		if ((res = pads_read_long(rctx, &num_texts)) <= 0) return res;
+	if (pads_has_field(rctx)) {
+		char tmp[128], *end;
+		long l;
+
+		if ((res = pads_read_word(rctx, tmp, sizeof(tmp), 0)) <= 0) return res;
+
+		l = strtol(tmp, &end, 10);
+		if (*end == '\0')
+			num_texts = l;
+		/* else it's the net name - ignore */
+	}
+
 	/* last optional field is netname - ignore that */
+	pads_eatup_till_nl(rctx);
 
 	rnd_trace("line name=%s ty=%s %mm;%mm pcs=%d texts=%d\n", name, type, xo, yo, num_pcs, num_texts);
-	pads_eatup_till_nl(rctx);
 
 	c = fgetc(rctx->f);
 	ungetc(c, rctx->f);
