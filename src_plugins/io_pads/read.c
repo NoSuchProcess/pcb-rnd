@@ -487,51 +487,52 @@ static int pads_parse_label(pads_read_ctx_t *rctx)
 	return pads_parse_text_(rctx, 1);
 }
 
-static int pads_parse_lines(pads_read_ctx_t *rctx)
-{
-	pads_eatup_till_nl(rctx);
-	while(!feof(rctx->f)) {
-		char word[256], type[32];
-		int c, res = pads_read_word(rctx, word, sizeof(word), 0);
-		if (res <= 0)
-			return res;
-		if (*word == '\0') { /* ignore empty lines between statements */ }
-		else { /* name type xo yo numpieces [numtext] [sigstr] */
-			rnd_coord_t xo, yo;
-			long n, num_pcs, flags, num_texts;
-
-			if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
-			if ((res = pads_read_coord(rctx, &xo)) <= 0) return res;
-			if ((res = pads_read_coord(rctx, &yo)) <= 0) return res;
-			if ((res = pads_read_long(rctx, &num_pcs)) <= 0) return res;
-			if ((res = pads_read_long(rctx, &flags)) <= 0) return res;
-
-			if (pads_has_field(rctx))
-				if ((res = pads_read_long(rctx, &num_texts)) <= 0) return res;
-			/* last optional field is netname - ignore that */
-
-			rnd_trace("line name=%s ty=%s %mm;%mm pcs=%d texts=%d\n", word, type, xo, yo, num_pcs, num_texts);
-			pads_eatup_till_nl(rctx);
-			c = fgetc(rctx->f);
-			ungetc(c, rctx->f);
-			if (c == '.') { /* .reuse. */
-				if ((res = pads_read_word(rctx, word, sizeof(word), 0)) <= 0) return res;
-				rnd_trace("line reuse: '%s'\n", word);
-				pads_eatup_till_nl(rctx);
-			}
-			for(n = 0; n < num_pcs; n++)
-				if ((res = pads_parse_piece(rctx)) <= 0) return res;
-			for(n = 0; n < num_texts; n++)
-				if ((res = pads_parse_text(rctx)) <= 0) return res;
-		}
-	}
-	return 1;
-}
-
-
 static int pads_parse_texts(pads_read_ctx_t *rctx)
 {
 	return pads_parse_list_sect(rctx, pads_parse_text);
+}
+
+static int pads_parse_line(pads_read_ctx_t *rctx)
+{
+	char name[256], type[32];
+	rnd_coord_t xo, yo;
+	long n, c, num_pcs, flags, num_texts;
+	int res;
+
+	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
+	if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &xo)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &yo)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_pcs)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &flags)) <= 0) return res;
+
+	if (pads_has_field(rctx))
+		if ((res = pads_read_long(rctx, &num_texts)) <= 0) return res;
+	/* last optional field is netname - ignore that */
+
+	rnd_trace("line name=%s ty=%s %mm;%mm pcs=%d texts=%d\n", name, type, xo, yo, num_pcs, num_texts);
+	pads_eatup_till_nl(rctx);
+
+	c = fgetc(rctx->f);
+	ungetc(c, rctx->f);
+	if (c == '.') { /* .reuse. */
+		char word[256];
+		if ((res = pads_read_word(rctx, word, sizeof(word), 0)) <= 0) return res;
+		rnd_trace("line reuse: '%s'\n", word);
+		pads_eatup_till_nl(rctx);
+	}
+
+	for(n = 0; n < num_pcs; n++)
+		if ((res = pads_parse_piece(rctx)) <= 0) return res;
+	for(n = 0; n < num_texts; n++)
+		if ((res = pads_parse_text(rctx)) <= 0) return res;
+
+	return 1;
+}
+
+static int pads_parse_lines(pads_read_ctx_t *rctx)
+{
+	return pads_parse_list_sect(rctx, pads_parse_line);
 }
 
 static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
@@ -603,6 +604,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 		pads_eatup_till_nl(rctx);
 		rnd_trace("  lev=%ld size=%mm/%mm shape=%s\n", level, size, inner, shape);
 	}
+	return 1;
 }
 
 static int pads_parse_vias(pads_read_ctx_t *rctx)
