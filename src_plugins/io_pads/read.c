@@ -531,7 +531,7 @@ static int pads_parse_texts(pads_read_ctx_t *rctx)
 static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 {
 	char name[256], shape[8];
-	rnd_coord_t drill, size, inner;
+	rnd_coord_t drill, size;
 	long n, num_lines, level, start = 0, end = 0;
 	int res;
 
@@ -547,13 +547,53 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 
 	rnd_trace(" via: %s drill=%mm [%ld..%ld]\n", name, drill, start, end);
 	for(n = 0; n < num_lines; n++) {
+		double rot = 0, slotrot = 0, spokerot = 0;
+		char plated[8];
+		int is_thermal;
+		long spoke_num = 0;
+		rnd_coord_t finlen = 0, finoffs = 0, inner = 0, corner = 0, drill = 0, slotlen = 0, slotoffs = 0, spoke_outsize = 0, spoke_width = 0;
+
 		if ((res = pads_read_long(rctx, &level)) <= 0) return res;
 		if ((res = pads_read_coord(rctx, &size)) <= 0) return res;
 		if ((res = pads_read_word(rctx, shape, sizeof(shape), 0)) <= 0) return res;
-		if (pads_has_field(rctx))
+
+		if (shape[0] == 'A') /* only annular pad has inner dia */
 			if ((res = pads_read_coord(rctx, &inner)) <= 0) return res;
-		else
-			inner = 0;
+
+		if (shape[1] != 'T') { /* normal pad (T is for thermal) */
+			is_thermal = 0;
+			if (shape[1] == 'F') { /* finger-type pads have rotation */
+				if ((res = pads_read_double(rctx, &rot)) <= 0) return res;
+				if ((res = pads_read_coord(rctx, &finlen)) <= 0) return res;
+				if ((res = pads_read_coord(rctx, &finoffs)) <= 0) return res;
+				if (shape[0] == 'R') /* RF=rectangular finger */
+					if ((res = pads_read_coord(rctx, &corner)) <= 0) return res;
+			}
+			else if (shape[0] == 'S') /* S=square */
+				if ((res = pads_read_coord(rctx, &corner)) <= 0) return res;
+
+			/* optional drill */
+			if (pads_has_field(rctx))
+				if ((res = pads_read_coord(rctx, &drill)) <= 0) return res;
+			plated[0] = '\0';
+			if (pads_has_field(rctx))
+				if ((res = pads_read_word(rctx, plated, sizeof(plated), 0)) <= 0) return res;
+
+			/* optional slot */
+			if (pads_has_field(rctx)) {
+				if ((res = pads_read_double(rctx, &slotrot)) <= 0) return res;
+				if ((res = pads_read_coord(rctx, &slotlen)) <= 0) return res;
+				if ((res = pads_read_coord(rctx, &slotoffs)) <= 0) return res;
+			}
+		}
+		else { /* thermal */
+			is_thermal = 1;
+			if ((res = pads_read_double(rctx, &spokerot)) <= 0) return res;
+			if ((res = pads_read_coord(rctx, &spoke_outsize)) <= 0) return res;
+			if ((res = pads_read_coord(rctx, &spoke_width)) <= 0) return res;
+			if ((res = pads_read_long(rctx, &spoke_num)) <= 0) return res;
+		}
+
 		pads_eatup_till_nl(rctx);
 		rnd_trace("  lev=%ld size=%mm/%mm shape=%s\n", level, size, inner, shape);
 	}
