@@ -758,12 +758,17 @@ static int pads_parse_pinnames(pads_read_ctx_t *rctx, long num_pins)
 
 static int pads_parse_parttype(pads_read_ctx_t *rctx)
 {
-	char name[64], decals[16*64], ptype[8];
+	char name[64], decals[16*64], unit[4], ptype[8];
 	long n, num_gates, num_signals, num_alpins, flags;
 	int res;
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, decals, sizeof(decals), 0)) <= 0) return res;
+	if (rctx->ver == 2005.0)
+		if ((res = pads_read_word(rctx, unit, sizeof(unit), 0)) <= 0) return res;
+	else
+		*unit = '\0';
+
 	if ((res = pads_read_word(rctx, ptype, sizeof(ptype), 0)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_gates)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_signals)) <= 0) return res;
