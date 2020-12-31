@@ -31,6 +31,7 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include <math.h>
 
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
@@ -411,7 +412,7 @@ static int pads_parse_piece(pads_read_ctx_t *rctx)
 	if ((res = pads_read_word(rctx, ptype, sizeof(ptype), 0)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_crds)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &width)) <= 0) return res;
-	if ((rctx->ver > 9.4) && (rctx->ver != 2005.0)) {
+	if ((rctx->ver > 9.4) && (floor(rctx->ver) != 2005)) {
 		if ((res = pads_read_long(rctx, &lstyle)) <= 0) return res;
 		if ((res = pads_read_long(rctx, &layer)) <= 0) return res;
 		if (pads_has_field(rctx))
@@ -422,6 +423,7 @@ static int pads_parse_piece(pads_read_ctx_t *rctx)
 		if (pads_has_field(rctx))
 			if ((res = pads_read_word(rctx, rest, sizeof(rest), 0)) <= 0) return res;
 	}
+
 	pads_eatup_till_nl(rctx);
 
 	rnd_trace(" piece %s num_crds=%ld\n", ptype, num_crds);
@@ -508,7 +510,7 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 	if ((res = pads_read_coord(rctx, &yo)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_pcs)) <= 0) return res;
 	if (pads_has_field(rctx)) {
-		if (rctx->ver == 2005.0) {
+		if (floor(rctx->ver) == 2005) {
 			if ((res = pads_read_word(rctx, wtf, sizeof(wtf), 0)) <= 0) return res;
 		}
 		else
@@ -767,7 +769,7 @@ static int pads_parse_parttype(pads_read_ctx_t *rctx)
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, decals, sizeof(decals), 0)) <= 0) return res;
-	if (rctx->ver == 2005.0) {
+	if (floor(rctx->ver) == 2005) {
 		if ((res = pads_read_word(rctx, unit, sizeof(unit), 0)) <= 0) return res;
 	}
 	else
