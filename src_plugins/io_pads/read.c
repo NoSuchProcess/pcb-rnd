@@ -562,7 +562,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 	for(n = 0; n < num_lines; n++) {
 		double rot = 0, slotrot = 0, spokerot = 0;
 		char plated[8];
-		int is_thermal;
+		int c, is_thermal;
 		long spoke_num = 0;
 		rnd_coord_t finlen = 0, finoffs = 0, inner = 0, corner = 0, drill = 0, slotlen = 0, slotoffs = 0, spoke_outsize = 0, spoke_width = 0;
 
@@ -585,8 +585,13 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 			else if (shape[0] == 'S') /* S=square */
 				if ((res = pads_read_coord(rctx, &corner)) <= 0) return res;
 
+			/* next word is either drill diameter or P/N for plated-or-not */
+			pads_eatup_ws(rctx);
+			c = fgetc(rctx->f);
+			ungetc(c, rctx->f);
+
 			/* optional drill */
-			if (pads_has_field(rctx))
+			if (pads_has_field(rctx) && (!isalpha(c)))
 				if ((res = pads_read_coord(rctx, &drill)) <= 0) return res;
 			plated[0] = '\0';
 			if (pads_has_field(rctx))
