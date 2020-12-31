@@ -623,7 +623,7 @@ TODO("set unit and origin");
 
 static int pads_parse_partdecals(pads_read_ctx_t *rctx)
 {
-	return pads_parse_list_sect(rctx, pads_parse_pstk_proto);
+	return pads_parse_list_sect(rctx, pads_parse_partdecal);
 }
 
 static int pads_parse_block(pads_read_ctx_t *rctx)
