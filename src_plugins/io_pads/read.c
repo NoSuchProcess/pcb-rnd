@@ -845,21 +845,15 @@ static int pads_parse_net(pads_read_ctx_t *rctx)
 	if ((res = pads_read_word(rctx, term2, sizeof(term2), 0)) <= 0) return res;
 	pads_eatup_till_nl(rctx);
 
+	for(;;) {
+		pads_eatup_ws(rctx);
+		c = fgetc(rctx->f);
+		ungetc(c, rctx->f);
 
-	pads_eatup_ws(rctx);
-	c = fgetc(rctx->f);
-	ungetc(c, rctx->f);
-	if (isdigit(c) || (c == '-')) { /* two lines of route candidate - safe to ignore */
-		rnd_coord_t x, y;
+		if (!isdigit(c) && (c != '-'))
+			break;
 
-		if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
-		if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
-		pads_eatup_till_nl(rctx);
-
-
-		if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
-		if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
-		pads_eatup_till_nl(rctx);
+		if ((res = pads_parse_piece(rctx)) <= 0) return res;
 	}
 
 	rnd_trace(" '%s' -> '%s'\n", term1, term2);
