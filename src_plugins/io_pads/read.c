@@ -472,7 +472,7 @@ static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label)
 		pads_eatup_till_nl(rctx);
 	}
 
-	if ((res = pads_read_word(rctx, str, sizeof(str), 0)) <= 0) return res;
+	if ((res = pads_read_word(rctx, str, sizeof(str), 1)) <= 0) return res;
 	pads_eatup_till_nl(rctx);
 
 	rnd_trace(" text: [%s] at %mm;%mm rot=%f size=%mm;%mm mirr=%d: '%s'",
