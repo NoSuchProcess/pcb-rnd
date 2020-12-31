@@ -496,7 +496,7 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 {
 	char name[256], type[32], wtf[64];
 	rnd_coord_t xo, yo;
-	long n, c, num_pcs, flags = 0, num_texts;
+	long n, c, num_pcs, flags = 0, num_texts = 0;
 	int res;
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
