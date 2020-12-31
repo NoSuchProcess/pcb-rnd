@@ -579,7 +579,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 				if ((res = pads_read_double(rctx, &rot)) <= 0) return res;
 				if ((res = pads_read_coord(rctx, &finlen)) <= 0) return res;
 				if ((res = pads_read_coord(rctx, &finoffs)) <= 0) return res;
-				if (shape[0] == 'R') /* RF=rectangular finger */
+				if (pads_has_field(rctx) && (shape[0] == 'R')) /* RF=rectangular finger */
 					if ((res = pads_read_coord(rctx, &corner)) <= 0) return res;
 			}
 			else if (shape[0] == 'S') /* S=square */
