@@ -836,6 +836,39 @@ static int pads_parse_parts(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_part);
 }
 
+static int pads_parse_signal_crd(pads_read_ctx_t *rctx)
+{
+	char vianame[64];
+	long level, flags;
+	rnd_coord_t x, y, width;
+	int res, arcdir = 0, thermal = 0;
+
+	if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &level)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &width)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &flags)) <= 0) return res;
+
+	*vianame = '\0';
+	if (pads_has_field(rctx)) {
+		if ((res = pads_read_word(rctx, vianame, sizeof(vianame), 0)) <= 0) return res;
+
+		if (strcmp(vianame, "CW") == 0)       { arcdir = -1; *vianame = '\0'; }
+		else if (strcmp(vianame, "CCW") == 0) { arcdir = +1; *vianame = '\0'; }
+		else arcdir = 0;
+
+		if (strcmp(vianame, "THERMAL") == 0) { thermal = 1; *vianame = '\0'; }
+
+		/* the rest of the line is jumper wire and teardrop - ignore those */
+	}
+	pads_eatup_till_nl(rctx);
+
+	rnd_trace("  %mm;%mm level=%ld w=%mm flags=%ld vianame=%s arcdir=%d thermal=%d\n",
+		x, y, level, width, flags, vianame, arcdir, thermal);
+	return 1;
+}
+
+
 static int pads_parse_net(pads_read_ctx_t *rctx)
 {
 	char term1[128], term2[128];
@@ -845,6 +878,8 @@ static int pads_parse_net(pads_read_ctx_t *rctx)
 	if ((res = pads_read_word(rctx, term2, sizeof(term2), 0)) <= 0) return res;
 	pads_eatup_till_nl(rctx);
 
+	rnd_trace(" '%s' -> '%s'\n", term1, term2);
+
 	for(;;) {
 		pads_eatup_ws(rctx);
 		c = fgetc(rctx->f);
@@ -853,10 +888,8 @@ static int pads_parse_net(pads_read_ctx_t *rctx)
 		if (!isdigit(c) && (c != '-'))
 			break;
 
-		if ((res = pads_parse_piece(rctx)) <= 0) return res;
+		if ((res = pads_parse_signal_crd(rctx)) <= 0) return res;
 	}
-
-	rnd_trace(" '%s' -> '%s'\n", term1, term2);
 
 	return 1;
 }
