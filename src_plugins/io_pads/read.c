@@ -915,6 +915,77 @@ static int pads_parse_signal(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_net);
 }
 
+static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx)
+{
+	rnd_coord_t x, y;
+	double start, end;
+	int isarc = 0, res;
+
+	if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
+
+	if (pads_has_field(rctx)) {
+		isarc = 1;
+		if ((res = pads_read_double(rctx, &start)) <= 0) return res;
+		if ((res = pads_read_double(rctx, &end)) <= 0) return res;
+	}
+	pads_eatup_till_nl(rctx);
+
+	if (isarc)
+		rnd_trace("  arc %mm;%mm %f..%f\n", x, y, start, end);
+	else
+		rnd_trace("  line %mm;%mm\n", x, y);
+
+	return 1;
+}
+
+static int pads_parse_pour_piece(pads_read_ctx_t *rctx)
+{
+	char type[64];
+	long n, num_corners, num_arcs;
+	int res;
+
+	if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_corners)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_arcs)) <= 0) return res;
+	pads_eatup_till_nl(rctx); /* ignore rest of the arguments */
+
+	rnd_trace(" %s:\n", type);
+	for(n = 0; n < num_corners + num_arcs; n++)
+		if ((res = pads_parse_pour_piece_crd(rctx)) <= 0) return res;
+
+	return 1;
+}
+
+
+static int pads_parse_pour(pads_read_ctx_t *rctx)
+{
+	char name[64], type[64];
+	long n, num_pieces;
+	rnd_coord_t xo, yo;
+	double rot;
+	int res;
+
+	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
+	if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &xo)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &yo)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &num_pieces)) <= 0) return res;
+	pads_eatup_till_nl(rctx); /* ignore rest of the arguments */
+
+	rnd_trace("pour '%s' type='%s' at %mm;%mm\n", name, type, xo, yo);
+	for(n = 0; n < num_pieces; n++)
+		if ((res = pads_parse_pour_piece(rctx)) <= 0) return res;
+
+	return 1;
+}
+
+static int pads_parse_pours(pads_read_ctx_t *rctx)
+{
+	return pads_parse_list_sect(rctx, pads_parse_pour);
+}
+
+
 static int pads_parse_block(pads_read_ctx_t *rctx)
 {
 	while(!feof(rctx->f)) {
@@ -935,6 +1006,7 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		else if (strcmp(word, "*PARTT") == 0) res = pads_parse_parttypes(rctx);
 		else if (strcmp(word, "*PART*") == 0) res = pads_parse_parts(rctx);
 		else if (strcmp(word, "*SIGNAL*") == 0) res = pads_parse_signal(rctx);
+		else if (strcmp(word, "*POUR*") == 0) res = pads_parse_pours(rctx);
 		else if (strcmp(word, "*CLUSTER*") == 0) res = pads_parse_ignore_sect(rctx);
 		else if (strcmp(word, "*ROUTE*") == 0) res = pads_parse_ignore_sect(rctx);
 		else if (strcmp(word, "*TESTPOINT*") == 0) res = pads_parse_ignore_sect(rctx);
