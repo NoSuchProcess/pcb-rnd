@@ -320,11 +320,14 @@ static int pads_parse_list_sect(pads_read_ctx_t *rctx, int (*parse_item)(pads_re
 		ungetc(c, rctx->f);
 		if (c == '*') { /* may be the next section, or just a remark */
 			char tmp[256];
+			tmp[0] = '\0';
 			if (pads_read_word(rctx, tmp, sizeof(tmp), 0) == 0) /* next section */
 				break;
+			if (tmp[0] == '*')
+				return -4; /* next section */
 			if (*pads_saved_word == '\0')  /* remark */
 				continue;
-			/* no 3rd possibility */
+			/* no other possibility */
 			PADS_ERROR((RND_MSG_ERROR, "Can't get here in pads_parse_list_sect\n"));
 		}
 
@@ -793,6 +796,43 @@ static int pads_parse_parttypes(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_parttype);
 }
 
+static int pads_parse_part(pads_read_ctx_t *rctx)
+{
+	char refdes[64], ptype[64], glue[4], mirr[4];
+	long n, altdeclnum, clustid = -1, clsattr = 0, brotherid = -1, num_labels;
+	rnd_coord_t xo, yo;
+	double rot;
+	int res;
+
+	if ((res = pads_read_word(rctx, refdes, sizeof(refdes), 0)) <= 0) return res;
+	if ((res = pads_read_word(rctx, ptype, sizeof(ptype), 0)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &xo)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &yo)) <= 0) return res;
+	if ((res = pads_read_double(rctx, &rot)) <= 0) return res;
+	if ((res = pads_read_word(rctx, glue, sizeof(glue), 0)) <= 0) return res;
+	if ((res = pads_read_word(rctx, mirr, sizeof(mirr), 0)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &altdeclnum)) <= 0) return res;
+
+	if (pads_has_field(rctx)) {
+		if ((res = pads_read_long(rctx, &clustid)) <= 0) return res;
+		if ((res = pads_read_long(rctx, &clsattr)) <= 0) return res;
+		if ((res = pads_read_long(rctx, &brotherid)) <= 0) return res;
+		if ((res = pads_read_long(rctx, &num_labels)) <= 0) return res;
+	}
+
+	pads_eatup_till_nl(rctx);
+
+	rnd_trace("part: '%s' of '%s' num_labels=%ld\n", refdes, ptype, num_labels);
+	for(n = 0; n < num_labels; n++)
+		if ((res = pads_parse_label(rctx)) <= 0) return res;
+	return 1;
+}
+
+static int pads_parse_parts(pads_read_ctx_t *rctx)
+{
+	return pads_parse_list_sect(rctx, pads_parse_part);
+}
+
 static int pads_parse_block(pads_read_ctx_t *rctx)
 {
 	while(!feof(rctx->f)) {
@@ -811,6 +851,7 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		else if (strcmp(word, "*PARTDECAL*") == 0) res = pads_parse_partdecals(rctx);
 		else if (strcmp(word, "*PARTTYPE*") == 0) res = pads_parse_parttypes(rctx);
 		else if (strcmp(word, "*PARTT") == 0) res = pads_parse_parttypes(rctx);
+		else if (strcmp(word, "*PART*") == 0) res = pads_parse_parts(rctx);
 		else if (strcmp(word, "*CLUSTER*") == 0) res = pads_parse_ignore_sect(rctx);
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
