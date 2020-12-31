@@ -781,7 +781,7 @@ static int pads_parse_parttype(pads_read_ctx_t *rctx)
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, decals, sizeof(decals), 0)) <= 0) return res;
-	if (floor(rctx->ver) == 2005) {
+	if ((floor(rctx->ver) == 2005) || (rctx->ver < 5.0)) {
 		if ((res = pads_read_word(rctx, unit, sizeof(unit), 0)) <= 0) return res;
 	}
 	else
