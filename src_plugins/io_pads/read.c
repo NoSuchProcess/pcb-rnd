@@ -467,8 +467,10 @@ static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label)
 	/* fields ignored: ndim and .REUSE.*/
 	pads_eatup_till_nl(rctx);
 
-	if ((res = pads_read_word(rctx, font, sizeof(font), 0)) <= 0) return res;
-	pads_eatup_till_nl(rctx);
+	if (rctx->ver >= 5.0) { /* 4.0 doesn't have font */
+		if ((res = pads_read_word(rctx, font, sizeof(font), 0)) <= 0) return res;
+		pads_eatup_till_nl(rctx);
+	}
 
 	if ((res = pads_read_word(rctx, str, sizeof(str), 0)) <= 0) return res;
 	pads_eatup_till_nl(rctx);
