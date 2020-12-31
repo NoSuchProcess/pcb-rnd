@@ -113,6 +113,8 @@ static void pads_start_loc(pads_read_ctx_t *rctx)
 	rctx->start_col = rctx->col;
 }
 
+/*** low level: words and types ***/
+
 /* whether c is horizontal space (of \r, because that should be just ignored) */
 static int ishspace(int c) { return ((c == ' ') || (c == '\t') || (c == '\r')); }
 
@@ -285,6 +287,7 @@ static int pads_read_degp10(pads_read_ctx_t *rctx, double *dst)
 	return 1;
 }
 
+/*** high level: generic section ***/
 
 static int pads_parse_ignore_sect(pads_read_ctx_t *rctx)
 {
@@ -298,6 +301,41 @@ static int pads_parse_ignore_sect(pads_read_ctx_t *rctx)
 	}
 	return 1;
 }
+
+static int pads_parse_list_sect(pads_read_ctx_t *rctx, int (*parse_item)(pads_read_ctx_t *))
+{
+	pads_eatup_till_nl(rctx);
+	while(!feof(rctx->f)) {
+		char c;
+		int res;
+
+		pads_eatup_ws(rctx);
+
+		c = fgetc(rctx->f);
+		if (c == '\n') {
+			pads_update_loc(rctx, c);
+			continue;
+		}
+
+		ungetc(c, rctx->f);
+		if (c == '*') { /* may be the next section, or just a remark */
+			char tmp[256];
+			if (pads_read_word(rctx, tmp, sizeof(tmp), 0) == 0) /* next section */
+				break;
+			if (*pads_saved_word == '\0')  /* remark */
+				continue;
+			/* no 3rd possibility */
+			PADS_ERROR((RND_MSG_ERROR, "Can't get here in pads_parse_list_sect\n"));
+		}
+
+		res = parse_item(rctx);
+		if (res <= 0)
+			return res;
+	}
+	return 1;
+}
+
+/*** high level: specific section ***/
 
 static int pads_parse_pcb(pads_read_ctx_t *rctx)
 {
@@ -490,38 +528,6 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 	return 1;
 }
 
-static int pads_parse_list_sect(pads_read_ctx_t *rctx, int (*parse_item)(pads_read_ctx_t *))
-{
-	pads_eatup_till_nl(rctx);
-	while(!feof(rctx->f)) {
-		char c;
-		int res;
-
-		pads_eatup_ws(rctx);
-
-		c = fgetc(rctx->f);
-		if (c == '\n') {
-			pads_update_loc(rctx, c);
-			continue;
-		}
-
-		ungetc(c, rctx->f);
-		if (c == '*') { /* may be the next section, or just a remark */
-			char tmp[256];
-			if (pads_read_word(rctx, tmp, sizeof(tmp), 0) == 0) /* next section */
-				break;
-			if (*pads_saved_word == '\0')  /* remark */
-				continue;
-			/* no 3rd possibility */
-			PADS_ERROR((RND_MSG_ERROR, "Can't get here in pads_parse_list_sect\n"));
-		}
-
-		res = parse_item(rctx);
-		if (res <= 0)
-			return res;
-	}
-	return 1;
-}
 
 static int pads_parse_texts(pads_read_ctx_t *rctx)
 {
