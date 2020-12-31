@@ -605,6 +605,8 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 	if (pads_has_field(rctx))
 		if ((res = pads_read_long(rctx, &num_labels)) <= 0) return res;
 
+	pads_eatup_till_nl(rctx);
+
 	rnd_trace("part '%s', original %mm;%mm\n", name, xo, yo);
 TODO("set unit and origin");
 	for(n = 0; n < num_pieces; n++)
