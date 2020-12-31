@@ -582,8 +582,9 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 				if (pads_has_field(rctx) && (shape[0] == 'R')) /* RF=rectangular finger */
 					if ((res = pads_read_coord(rctx, &corner)) <= 0) return res;
 			}
-			else if (shape[0] == 'S') /* S=square */
+			else if (pads_has_field(rctx) && shape[0] == 'S') { /* S=square */
 				if ((res = pads_read_coord(rctx, &corner)) <= 0) return res;
+			}
 
 			/* next word is either drill diameter or P/N for plated-or-not */
 			pads_eatup_ws(rctx);
