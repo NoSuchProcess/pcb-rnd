@@ -515,7 +515,7 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 		if (floor(rctx->ver) == 2005) {
 			if ((res = pads_read_word(rctx, wtf, sizeof(wtf), 0)) <= 0) return res;
 		}
-		else
+		else if (rctx->ver >= 5.0) /* 4.0 doesn't have flags */
 			if ((res = pads_read_long(rctx, &flags)) <= 0) return res;
 	}
 
