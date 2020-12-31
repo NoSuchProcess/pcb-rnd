@@ -633,7 +633,10 @@ static int pads_parse_term(pads_read_ctx_t *rctx)
 	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &nmx)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &nmy)) <= 0) return res;
-	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
+	if (pads_has_field(rctx))
+		if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
+	else
+		*name = '\0';
 
 	pads_eatup_till_nl(rctx);
 
@@ -663,7 +666,8 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 
 	pads_eatup_till_nl(rctx);
 
-	rnd_trace("part '%s', original %mm;%mm\n", name, xo, yo);
+	rnd_trace("part '%s', original %mm;%mm pcs=%ld texts=%ld labels=%ld terms=%ld stacks=%ld\n",
+		name, xo, yo, num_pieces, num_texts, num_labels, num_terms, num_stacks);
 TODO("set unit and origin");
 	for(n = 0; n < num_pieces; n++)
 		if ((res = pads_parse_piece(rctx)) <= 0) return res;
