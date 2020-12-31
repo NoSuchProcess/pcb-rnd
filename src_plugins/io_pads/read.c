@@ -468,8 +468,8 @@ static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label)
 	if ((res = pads_read_word(rctx, str, sizeof(str), 0)) <= 0) return res;
 	pads_eatup_till_nl(rctx);
 
-	rnd_trace(" text: [%s] at %mm;%mm rot=%f size=%mm;%mm: '%s'",
-		font, x, y, rot, w, h, str);
+	rnd_trace(" text: [%s] at %mm;%mm rot=%f size=%mm;%mm mirr=%d: '%s'",
+		font, x, y, rot, w, h, mirr, str);
 	if (is_label)
 		rnd_trace(" (%s)\n", name);
 	else
@@ -608,7 +608,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 		}
 
 		pads_eatup_till_nl(rctx);
-		rnd_trace("  lev=%ld size=%mm/%mm shape=%s\n", level, size, inner, shape);
+		rnd_trace("  lev=%ld size=%mm/%mm shape=%s is_thermal=%d\n", level, size, inner, shape, is_thermal);
 	}
 	return 1;
 }
@@ -714,7 +714,6 @@ static int pads_parse_gate(pads_read_ctx_t *rctx)
 static int pads_parse_sigpin(pads_read_ctx_t *rctx)
 {
 	char sigpin[8], pin[256];
-	long n, swaptype, num_pins;
 	int res;
 
 	if ((res = pads_read_word(rctx, sigpin, sizeof(sigpin), 0)) <= 0) return res;
