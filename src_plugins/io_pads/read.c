@@ -270,11 +270,11 @@ static int pads_read_long(pads_read_ctx_t *rctx, long *dst)
 
 static int pads_read_coord(pads_read_ctx_t *rctx, rnd_coord_t *dst)
 {
-	long l;
-	int res = pads_read_long(rctx, &l);
+	double d;
+	int res = pads_read_double(rctx, &d);
 	if (res <= 0)
 		return res;
-	*dst = rnd_round((double)l * rctx->coord_scale);
+	*dst = rnd_round(d * rctx->coord_scale);
 	return 1;
 }
 
