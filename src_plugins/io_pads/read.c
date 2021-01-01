@@ -329,7 +329,18 @@ static int pads_parse_ignore_sect(pads_read_ctx_t *rctx)
 	pads_eatup_till_nl(rctx);
 	while(!feof(rctx->f)) {
 		char word[256];
-		int res = pads_read_word(rctx, word, sizeof(word), 0);
+		int c, res;
+
+		/* ignore empty lines */
+		pads_eatup_ws(rctx);
+		c = fgetc(rctx->f);
+		if (c == '\n') {
+			pads_update_loc(rctx, c);
+			continue;
+		}
+		ungetc(c, rctx->f);
+
+		res = pads_read_word(rctx, word, sizeof(word), 0);
 		if (res <= 0)
 			return res;
 		pads_eatup_till_nl(rctx);
@@ -1024,7 +1035,7 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 	while(!feof(rctx->f)) {
 		char word[256];
 		int res = pads_read_word(rctx, word, sizeof(word), 1);
-/*printf("WORD='%s'/%d\n", word, res);*/
+/*rnd_trace("WORD='%s'/%d\n", word, res);*/
 		if (res <= 0)
 			return res;
 
@@ -1082,7 +1093,7 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 		return -1;
 	}
 
-	ret = pads_parse_block(&rctx) == 1;
+	ret = (pads_parse_block(&rctx) == 1) ? 0 : -1;
 	fclose(f);
 	return ret;
 }
