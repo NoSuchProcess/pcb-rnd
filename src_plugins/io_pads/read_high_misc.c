@@ -54,6 +54,112 @@ static int pads_parse_misc_ignore_block(pads_read_ctx_t *rctx)
 	return 1;
 }
 
+/* read everything till the closing of this block; recurse if more blocks are
+   open */
+static int pads_parse_misc_generic(pads_read_ctx_t *rctx, int (*parse_child)(pads_read_ctx_t *rctx))
+{
+	char open[64];
+
+	fgets(open, sizeof(open), rctx->f);
+	if (*open != '{') {
+		PADS_ERROR((RND_MSG_ERROR, "Expected block open brace\n"));
+		return -1;
+	}
+
+	for(;;) {
+		int c, res;
+
+		pads_eatup_ws(rctx);
+		c = fgetc(rctx->f);
+		if (c == EOF)
+			return 0;
+		ungetc(c, rctx->f);
+		if (c == '{') {
+			PADS_ERROR((RND_MSG_ERROR, "Unexpected block open brace\n"));
+			return -1;
+		}
+		if (c == '}') {
+			pads_eatup_till_nl(rctx);
+			return 1;
+		}
+		res = parse_child(rctx);
+		if (res <= 0)
+			return res;
+	}
+	return 1;
+}
+
+static int pads_parse_misc_open(pads_read_ctx_t *rctx)
+{
+	char open[4];
+	int res;
+
+	if ((res = pads_read_word(rctx, open, sizeof(open), 0)) <= 0) return res;
+	rnd_trace("open='%s'\n", open);
+	if (strcmp(open, "{") != 0) {
+		PADS_ERROR((RND_MSG_ERROR, "Expected block open brace\n"));
+		return -1;
+	}
+	return 1;
+}
+
+static int pads_parse_misc_layer(pads_read_ctx_t *rctx)
+{
+	char key[32], val[1024];
+	int res;
+
+	if ((res = pads_read_word(rctx, key, sizeof(key), 0)) <= 0) return res;
+	if ((res = pads_read_word(rctx, val, sizeof(val), 0)) <= 0) return res;
+	pads_eatup_till_nl(rctx);
+
+	if (strcmp(key, "LAYER_NAME") == 0) {
+		rnd_trace("  name='%s'\n", val);
+	}
+	else if (strcmp(key, "LAYER_TYPE") == 0) {
+		rnd_trace("  type='%s'\n", val);
+	}
+	else if (strcmp(key, "COLORS") == 0) {
+		rnd_trace("COLORS!!! %ld\n", ftell(rctx->f));
+		if ((res = pads_parse_misc_open(rctx)) <= 0) return res;
+		return pads_parse_misc_ignore_block(rctx);
+	}
+
+	return 1;
+}
+
+static int pads_parse_misc_layer_hdr(pads_read_ctx_t *rctx)
+{
+	char key[32];
+	long id;
+	int res;
+
+	if ((res = pads_read_word(rctx, key, sizeof(key), 0)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &id)) <= 0) return res;
+	pads_eatup_till_nl(rctx);
+
+	if (strcmp(key, "LAYER") != 0) {
+		PADS_ERROR((RND_MSG_ERROR, "Expected LAYER block, got '%s' instead\n", key));
+		return -1;
+	}
+
+	rnd_trace(" layer %ld key='%s'\n", id, key);
+	return pads_parse_misc_generic(rctx, pads_parse_misc_layer);
+}
+
+
+static int pads_parse_misc_layers(pads_read_ctx_t *rctx)
+{
+	char unit[64];
+	int res;
+
+	if ((res = pads_read_word(rctx, unit, sizeof(unit), 0)) <= 0) return res;
+	pads_eatup_till_nl(rctx);
+
+	rnd_trace("layers: '%s'\n", unit);
+	return pads_parse_misc_generic(rctx, pads_parse_misc_layer_hdr);
+}
+
+
 static int pads_parse_misc(pads_read_ctx_t *rctx)
 {
 	pads_eatup_till_nl(rctx);
@@ -86,9 +192,13 @@ static int pads_parse_misc(pads_read_ctx_t *rctx)
 		/*read key; if it is a new *SECTION* then res will be -4 */
 		if ((res = pads_read_word(rctx, key, sizeof(key), 0)) <= 0)
 			return res;
-		if (*key != '\0')
+		if (strcmp(key, "LAYER") == 0) res = pads_parse_misc_layers(rctx);
+		else if (*key != '\0') {
 			pads_eatup_till_nl(rctx);
-		rnd_trace("# MISC: '%s'\n", key);
+			res = 1;
+		}
+		if (res <= 0)
+			return res;
 	}
 	return 1;
 }
