@@ -191,6 +191,8 @@ static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label)
 	long level;
 	int res, mirr = 0;
 
+	*font = *str = '\0';
+
 	if (is_label)
 		if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 
