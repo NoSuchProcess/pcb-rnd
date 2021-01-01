@@ -285,6 +285,23 @@ static int pads_maybe_read_long(pads_read_ctx_t *rctx, char *word, int wordlen, 
 	return 1;
 }
 
+/* Read next word, convert to double only if it's a valid numeric, else ignore;
+   returns 1 on string, 2 on long */
+static int pads_maybe_read_double(pads_read_ctx_t *rctx, char *word, int wordlen, double *dst)
+{
+	double d;
+	char *end;
+	int res = pads_read_word(rctx, word, wordlen, 0);
+	if (res <= 0)
+		return res;
+	d = strtod(word, &end);
+	if (*end == '\0') {
+		*dst = d;
+		return 2;
+	}
+	return 1;
+}
+
 static int pads_read_coord(pads_read_ctx_t *rctx, rnd_coord_t *dst)
 {
 	double d;
@@ -904,12 +921,14 @@ static int pads_parse_net(pads_read_ctx_t *rctx)
 	rnd_trace(" '%s' -> '%s'\n", term1, term2);
 
 	for(;;) {
+		double tmp;
+
 		pads_eatup_ws(rctx);
 		c = fgetc(rctx->f);
 		ungetc(c, rctx->f);
 
-		if (!isdigit(c) && (c != '-'))
-			break;
+		if (pads_maybe_read_double(rctx, pads_saved_word, sizeof(pads_saved_word), &tmp) == 1)
+			break; /* when next word is a string; also save the next word so it is returned in the next read */
 
 		if ((res = pads_parse_signal_crd(rctx)) <= 0) return res;
 	}
