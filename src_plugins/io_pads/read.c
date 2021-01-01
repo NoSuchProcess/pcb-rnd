@@ -189,8 +189,10 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 		return -1;
 	}
 
-	pcb_dlcr_uninit(&rctx.dlcr);
+	
 	ret = (pads_parse_block(&rctx) == 1) ? 0 : -1;
+	pcb_dlcr_create(pcb, &rctx.dlcr);
+	pcb_dlcr_uninit(&rctx.dlcr);
 	fclose(f);
 	return ret;
 }

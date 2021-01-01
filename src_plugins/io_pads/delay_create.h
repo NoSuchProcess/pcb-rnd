@@ -1,6 +1,8 @@
 #include <genht/htsp.h>
 #include <genlist/gendlist.h>
 #include <genvector/vtp0.h>
+#include "board.h"
+
 #include "layer.h"
 #include "obj_common.h"
 
@@ -35,4 +37,5 @@ void pcb_dlcr_uninit(pcb_dlcr_t *dlcr);
 void pcb_dlcr_layer_reg(pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *layer);
 void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer);
 
+void pcb_dlcr_create(pcb_board_t *pcb, pcb_dlcr_t *dlcr);
 
