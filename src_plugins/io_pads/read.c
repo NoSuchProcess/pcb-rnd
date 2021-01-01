@@ -513,7 +513,14 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 	if ((res = pads_read_long(rctx, &num_pcs)) <= 0) return res;
 	if (pads_has_field(rctx)) {
 		if (floor(rctx->ver) == 2005) {
+			long l;
+			char *end;
+
 			if ((res = pads_read_word(rctx, wtf, sizeof(wtf), 0)) <= 0) return res;
+			/* _maybe_ num texts, but don't bet on it, could be netname as well */
+			l = strtol(wtf, &end, 10);
+			if (*end == '\0')
+				num_texts = l;
 		}
 		else if (rctx->ver >= 6.0) /* 4.0 and 5.0 don't have flags */
 			if ((res = pads_read_long(rctx, &flags)) <= 0) return res;
