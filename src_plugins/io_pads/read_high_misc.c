@@ -109,7 +109,7 @@ static int pads_parse_misc_layer(pads_read_ctx_t *rctx)
 	int res;
 
 	if ((res = pads_read_word(rctx, key, sizeof(key), 0)) <= 0) return res;
-	if ((res = pads_read_word(rctx, val, sizeof(val), 0)) <= 0) return res;
+	if ((res = pads_read_word_all(rctx, val, sizeof(val), 0)) <= 0) return res;
 	pads_eatup_till_nl(rctx);
 
 	if (strcmp(key, "LAYER_NAME") == 0) {
@@ -125,7 +125,6 @@ static int pads_parse_misc_layer(pads_read_ctx_t *rctx)
 		rnd_trace("  %s='%s'\n", key, val);
 	}
 	else if (strcmp(key, "COLORS") == 0) {
-		rnd_trace("COLORS!!! %ld\n", ftell(rctx->f));
 		if ((res = pads_parse_misc_open(rctx)) <= 0) return res;
 		return pads_parse_misc_ignore_block(rctx);
 	}

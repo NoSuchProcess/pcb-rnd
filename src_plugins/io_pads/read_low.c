@@ -64,7 +64,7 @@ static int pads_has_field(pads_read_ctx_t *rctx)
 static char pads_saved_word[512];
 static int pads_saved_word_len;
 
-static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int allow_asterisk)
+static int pads_read_word_(pads_read_ctx_t *rctx, char *word, int maxlen, int allow_asterisk, int stop_at_space)
 {
 	char *s;
 	int c, res;
@@ -106,9 +106,15 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 
 	c = fgetc(rctx->f);
 	pads_update_loc(rctx, c);
-	while((c != EOF) && !isspace(c)) {
-		*s = c;
-		s++;
+	while((c != EOF)) {
+		if (isspace(c)) {
+			if ((stop_at_space) || (c == '\n'))
+				break;
+		}
+		if (c != '\r') {
+			*s = c;
+			s++;
+		}
 		maxlen--;
 		if (maxlen == 1) {
 			PADS_ERROR((RND_MSG_ERROR, "word too long\n"));
@@ -152,6 +158,17 @@ static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int all
 
 	return res;
 }
+
+static int pads_read_word(pads_read_ctx_t *rctx, char *word, int maxlen, int allow_asterisk)
+{
+	return pads_read_word_(rctx, word, maxlen, allow_asterisk, 1);
+}
+
+static int pads_read_word_all(pads_read_ctx_t *rctx, char *word, int maxlen, int allow_asterisk)
+{
+	return pads_read_word_(rctx, word, maxlen, allow_asterisk, 0);
+}
+
 
 static int pads_read_double(pads_read_ctx_t *rctx, double *dst)
 {
