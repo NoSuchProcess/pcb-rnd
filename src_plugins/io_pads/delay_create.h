@@ -24,3 +24,7 @@ typedef struct {
 	htsp_t layers;       /* key=->name, val=pcb_dlcr_layer_t */
 	gdl_list_t drawing;  /* of pcb_dlcr_draw_t; */
 } pcb_dlcr_t;
+
+void pcb_dlcr_init(pcb_dlcr_t *dlcr);
+void pcb_dlcr_uninit(pcb_dlcr_t *dlcr);
+pcb_dlcr_layer_t *pcb_dlcr_layer_get(pcb_dlcr_t *dlcr, const char *name, int alloc);

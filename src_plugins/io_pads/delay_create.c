@@ -28,4 +28,30 @@
  */
 
 #include "config.h"
+
+#include <genht/hash.h>
+
 #include "delay_create.h"
+
+void pcb_dlcr_init(pcb_dlcr_t *dlcr)
+{
+	memset(dlcr, 0, sizeof(dlcr));
+	htsp_init(&dlcr->layers, strhash, strkeyeq);
+}
+
+void pcb_dlcr_uninit(pcb_dlcr_t *dlcr)
+{
+	TODO("free everything");
+}
+
+pcb_dlcr_layer_t *pcb_dlcr_layer_get(pcb_dlcr_t *dlcr, const char *name, int alloc)
+{
+	pcb_dlcr_layer_t *l = htsp_get(&dlcr->layers, name);
+	if ((l != NULL) || !alloc)
+		return l;
+
+	l = calloc(sizeof(pcb_dlcr_layer_t), 1);
+	l->name = rnd_strdup(name);
+	htsp_set(&dlcr->layers, l->name, l);
+	return l;
+}

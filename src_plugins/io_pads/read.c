@@ -38,6 +38,7 @@
 #include <librnd/core/compat_misc.h>
 #include "board.h"
 
+#include "delay_create.h"
 #include "read.h"
 
 /* Parser return value convention:
@@ -52,6 +53,7 @@ typedef struct pads_read_ctx_s {
 	FILE *f;
 	double coord_scale; /* multiply input integer coord values to get pcb-rnd nanometer */
 	double ver;
+	pcb_dlcr_t dlcr;
 
 	/* location */
 	const char *fn;
@@ -177,13 +179,16 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 	rctx.pcb = pcb;
 	rctx.fn = filename;
 	rctx.f = f;
+	pcb_dlcr_init(&rctx.dlcr);
 
 	/* read the header */
 	if (pads_parse_header(&rctx) != 0) {
 		fclose(f);
+		pcb_dlcr_uninit(&rctx.dlcr);
 		return -1;
 	}
 
+	pcb_dlcr_uninit(&rctx.dlcr);
 	ret = (pads_parse_block(&rctx) == 1) ? 0 : -1;
 	fclose(f);
 	return ret;
