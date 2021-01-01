@@ -118,6 +118,12 @@ static int pads_parse_misc_layer(pads_read_ctx_t *rctx)
 	else if (strcmp(key, "LAYER_TYPE") == 0) {
 		rnd_trace("  type='%s'\n", val);
 	}
+	else if (strcmp(key, "COMPONENT") == 0) {
+		rnd_trace("  component='%s'\n", val);
+	}
+	else if (strncmp(key, "ASSOCIATED_", 11) == 0) {
+		rnd_trace("  %s='%s'\n", key, val);
+	}
 	else if (strcmp(key, "COLORS") == 0) {
 		rnd_trace("COLORS!!! %ld\n", ftell(rctx->f));
 		if ((res = pads_parse_misc_open(rctx)) <= 0) return res;
