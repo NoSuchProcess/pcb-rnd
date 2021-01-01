@@ -4,8 +4,8 @@
  *  pcb-rnd, interactive printed circuit board design
  *
  *  PADS IO plugin - read: decode, parse, interpret
- *  pcb-rnd Copyright (C) 2020 Tibor 'Igor2' Palinkas
- *  (Supported by NLnet NGI0 PET Fund in 2020)
+ *  pcb-rnd Copyright (C) 2020,2021 Tibor 'Igor2' Palinkas
+ *  (Supported by NLnet NGI0 PET Fund in 2020 and 2021)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
