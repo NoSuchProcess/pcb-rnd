@@ -12,7 +12,7 @@ typedef struct {
 	pcb_layer_type_t lyt;
 	const char *purpose;
 	int can_have_components;
-	void *user_ctx;
+	void *user_data;
 	union {
 		char start;
 		void *bulkp[32];

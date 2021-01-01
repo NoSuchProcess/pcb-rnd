@@ -107,6 +107,7 @@ static int pads_parse_misc_layer(pads_read_ctx_t *rctx)
 {
 	char key[32], val[1024];
 	int res;
+	pads_layer_t *pl = rctx->layer->user_data;
 
 	if ((res = pads_read_word(rctx, key, sizeof(key), 0)) <= 0) return res;
 	if ((res = pads_read_word_all(rctx, val, sizeof(val), 0)) <= 0) return res;
@@ -134,8 +135,21 @@ static int pads_parse_misc_layer(pads_read_ctx_t *rctx)
 		if (*val == 'Y')
 			rctx->layer->can_have_components = 1;
 	}
-	else if (strncmp(key, "ASSOCIATED_", 11) == 0) {
-		rnd_trace("  %s='%s'\n", key, val);
+	else if (strcmp(key, "ASSOCIATED_SILK_SCREEN") == 0) {
+		rnd_trace("  ASSOCIATED_SILK_SCREEN='%s'\n", key, val);
+		pl->assoc_silk = rnd_strdup(val);
+	}
+	else if (strcmp(key, "ASSOCIATED_PASTE_MASK") == 0) {
+		rnd_trace("  ASSOCIATED_PASTE_MASK='%s'\n", key, val);
+		pl->assoc_paste = rnd_strdup(val);
+	}
+	else if (strcmp(key, "ASSOCIATED_SOLDER_MASK") == 0) {
+		rnd_trace("  ASSOCIATED_SOLDER_MASK='%s'\n", key, val);
+		pl->assoc_mask = rnd_strdup(val);
+	}
+	else if (strcmp(key, "ASSOCIATED_ASSEMBLY") == 0) {
+		rnd_trace("  ASSOCIATED_ASSEMBLY='%s'\n", key, val);
+		pl->assoc_assy = rnd_strdup(val);
 	}
 	else if (strcmp(key, "COLORS") == 0) {
 		if ((res = pads_parse_misc_open(rctx)) <= 0) return res;
@@ -163,6 +177,7 @@ static int pads_parse_misc_layer_hdr(pads_read_ctx_t *rctx)
 	rnd_trace(" layer %ld key='%s'\n", id, key);
 	rctx->layer = calloc(sizeof(pcb_dlcr_layer_t), 1);
 	rctx->layer->id = id;
+	rctx->layer->user_data = &rctx->layer->local_user_data;
 	res = pads_parse_misc_generic(rctx, pads_parse_misc_layer);
 	if (rctx->layer->lyt != 0)
 		pcb_dlcr_layer_reg(&rctx->dlcr, rctx->layer);

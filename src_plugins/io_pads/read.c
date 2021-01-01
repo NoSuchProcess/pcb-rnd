@@ -62,6 +62,10 @@ typedef struct pads_read_ctx_s {
 
 } pads_read_ctx_t;
 
+typedef struct {
+	char *assoc_silk, *assoc_mask, *assoc_paste, *assoc_assy;
+} pads_layer_t;
+
 #define PADS_ERROR(args) \
 do { \
 	rnd_message(RND_MSG_ERROR, "io_pads read: syntax error at %s:%ld.%ld: ", rctx->fn, rctx->line, rctx->col); \
