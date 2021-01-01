@@ -7641,7 +7641,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/io_pads/read_low.c ../src_plugins/io_pads/read_high.c
+ ../src_plugins/io_pads/read_low.c ../src_plugins/io_pads/read_high.c \
+ ../src_plugins/io_pads/read_high_misc.c
 ../src_plugins/io_pcb/attribs.o: ../src_plugins/io_pcb/attribs.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
