@@ -84,6 +84,7 @@ static void pads_start_loc(pads_read_ctx_t *rctx)
 
 #include "read_low.c"
 #include "read_high.c"
+#include "read_high_misc.c"
 
 static int pads_parse_header(pads_read_ctx_t *rctx)
 {
@@ -138,10 +139,10 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 		else if (strcmp(word, "*PART*") == 0) res = pads_parse_parts(rctx);
 		else if (strcmp(word, "*SIGNAL*") == 0) res = pads_parse_signal(rctx);
 		else if (strcmp(word, "*POUR*") == 0) res = pads_parse_pours(rctx);
+		else if (strcmp(word, "*MISC*") == 0) res = pads_parse_misc(rctx);
 		else if (strcmp(word, "*CLUSTER*") == 0) res = pads_parse_ignore_sect(rctx);
 		else if (strcmp(word, "*ROUTE*") == 0) res = pads_parse_ignore_sect(rctx);
 		else if (strcmp(word, "*TESTPOINT*") == 0) res = pads_parse_ignore_sect(rctx);
-		else if (strcmp(word, "*MISC*") == 0) res = pads_parse_ignore_sect(rctx);
 		else if (strcmp(word, "*END*") == 0) return 1;
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "unknown block: '%s'\n", word));
