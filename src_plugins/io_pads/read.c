@@ -268,6 +268,23 @@ static int pads_read_long(pads_read_ctx_t *rctx, long *dst)
 	return 1;
 }
 
+/* Read next word, convert to long only if it's a valid integer, else ignore;
+   returns 1 on string, 2 on long */
+static int pads_maybe_read_long(pads_read_ctx_t *rctx, char *word, int wordlen, long *dst)
+{
+	long l;
+	char *end;
+	int res = pads_read_word(rctx, word, wordlen, 0);
+	if (res <= 0)
+		return res;
+	l = strtol(word, &end, 10);
+	if (*end == '\0') {
+		*dst = l;
+		return 2;
+	}
+	return 1;
+}
+
 static int pads_read_coord(pads_read_ctx_t *rctx, rnd_coord_t *dst)
 {
 	double d;
@@ -513,29 +530,16 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 	if ((res = pads_read_long(rctx, &num_pcs)) <= 0) return res;
 	if (pads_has_field(rctx)) {
 		if (floor(rctx->ver) == 2005) {
-			long l;
-			char *end;
-
-			if ((res = pads_read_word(rctx, wtf, sizeof(wtf), 0)) <= 0) return res;
 			/* _maybe_ num texts, but don't bet on it, could be netname as well */
-			l = strtol(wtf, &end, 10);
-			if (*end == '\0')
-				num_texts = l;
+			if ((res = pads_maybe_read_long(rctx, wtf, sizeof(wtf), &num_texts)) <= 0) return res;
 		}
 		else if (rctx->ver >= 6.0) /* 4.0 and 5.0 don't have flags */
 			if ((res = pads_read_long(rctx, &flags)) <= 0) return res;
 	}
 
 	if (pads_has_field(rctx)) {
-		char tmp[128], *end;
-		long l;
-
-		if ((res = pads_read_word(rctx, tmp, sizeof(tmp), 0)) <= 0) return res;
-
-		l = strtol(tmp, &end, 10);
-		if (*end == '\0')
-			num_texts = l;
-		/* else it's the net name - ignore */
+		/* _maybe_ num texts, but don't bet on it, could be netname as well */
+		if ((res = pads_maybe_read_long(rctx, wtf, sizeof(wtf), &num_texts)) <= 0) return res;
 	}
 
 	/* last optional field is netname - ignore that */
