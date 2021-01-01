@@ -62,7 +62,6 @@ void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer)
 
 static void pcb_dlcr_create_layers(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
-	int made_copper = 0;
 	long n;
 
 	/* create copper layers, assuming they are in order */
@@ -71,10 +70,6 @@ static void pcb_dlcr_create_layers(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 		pcb_layergrp_t *g;
 
 		if ((l != NULL) && (l->lyt & PCB_LYT_COPPER)) {
-			if (!made_copper)
-				l->lyt |= PCB_LYT_TOP;
-			else
-				l->lyt |= PCB_LYT_INTERN;
 			g = pcb_get_grp_new_raw(pcb, 0);
 			g->ltype = l->lyt;
 			g->name = l->name; l->name = NULL;

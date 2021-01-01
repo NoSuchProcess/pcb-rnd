@@ -125,6 +125,26 @@ static int pads_parse_header(pads_read_ctx_t *rctx)
 	return 0;
 }
 
+static void pads_assign_layers(pads_read_ctx_t *rctx)
+{
+	int seen_copper = 0;
+	long n;
+
+	/* create copper layers, assuming they are in order */
+	for(n = 0; n < rctx->dlcr.id2layer.used; n++) {
+		pcb_dlcr_layer_t *l = rctx->dlcr.id2layer.array[n];
+
+		if ((l != NULL) && (l->lyt & PCB_LYT_COPPER)) {
+			if (!seen_copper)
+				l->lyt |= PCB_LYT_TOP;
+			else
+				l->lyt |= PCB_LYT_INTERN;
+			seen_copper = 1;
+		}
+	}
+}
+
+
 static int pads_parse_block(pads_read_ctx_t *rctx)
 {
 	while(!feof(rctx->f)) {
@@ -195,6 +215,8 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 
 	
 	ret = (pads_parse_block(&rctx) == 1) ? 0 : -1;
+
+	pads_assign_layers(&rctx);
 	pcb_dlcr_create(pcb, &rctx.dlcr);
 	pcb_dlcr_uninit(&rctx.dlcr);
 	fclose(f);
