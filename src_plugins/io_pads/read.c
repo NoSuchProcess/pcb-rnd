@@ -54,6 +54,7 @@ typedef struct pads_read_ctx_s {
 	double coord_scale; /* multiply input integer coord values to get pcb-rnd nanometer */
 	double ver;
 	pcb_dlcr_t dlcr;
+	pcb_dlcr_layer_t *layer;
 
 	/* location */
 	const char *fn;

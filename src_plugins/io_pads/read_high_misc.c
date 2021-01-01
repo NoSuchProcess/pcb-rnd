@@ -114,12 +114,25 @@ static int pads_parse_misc_layer(pads_read_ctx_t *rctx)
 
 	if (strcmp(key, "LAYER_NAME") == 0) {
 		rnd_trace("  name='%s'\n", val);
+		rctx->layer->name = rnd_strdup(val);
 	}
 	else if (strcmp(key, "LAYER_TYPE") == 0) {
 		rnd_trace("  type='%s'\n", val);
+		if (strcmp(val, "UNASSIGNED") == 0)         { rctx->layer->lyt = 0; }
+		else if (strcmp(val, "ROUTING") == 0)       { rctx->layer->lyt |= PCB_LYT_COPPER; }
+		else if (strcmp(val, "SOLDER_MASK") == 0)   { rctx->layer->lyt |= PCB_LYT_MASK; }
+		else if (strcmp(val, "PASTE_MASK") == 0)    { rctx->layer->lyt |= PCB_LYT_PASTE; }
+		else if (strcmp(val, "SILK_SCREEN") == 0)   { rctx->layer->lyt |= PCB_LYT_SILK; }
+		else if (strcmp(val, "DRILL") == 0)         { rctx->layer->lyt |= PCB_LYT_MECH; rctx->layer->purpose = "proute"; }
+		else if (strcmp(val, "ASSEMBLY") == 0)      { rctx->layer->lyt |= PCB_LYT_DOC; rctx->layer->purpose = "assy"; }
+		else {
+			PADS_ERROR((RND_MSG_ERROR, "Ignoring unknown layer type: %s\n", val));
+		}
 	}
 	else if (strcmp(key, "COMPONENT") == 0) {
 		rnd_trace("  component='%s'\n", val);
+		if (*val == 'Y')
+			rctx->layer->can_have_components = 1;
 	}
 	else if (strncmp(key, "ASSOCIATED_", 11) == 0) {
 		rnd_trace("  %s='%s'\n", key, val);
@@ -148,7 +161,15 @@ static int pads_parse_misc_layer_hdr(pads_read_ctx_t *rctx)
 	}
 
 	rnd_trace(" layer %ld key='%s'\n", id, key);
-	return pads_parse_misc_generic(rctx, pads_parse_misc_layer);
+	rctx->layer = calloc(sizeof(pcb_dlcr_layer_t), 1);
+	rctx->layer->id = id;
+	res = pads_parse_misc_generic(rctx, pads_parse_misc_layer);
+	if (rctx->layer->lyt != 0)
+		pcb_dlcr_layer_reg(&rctx->dlcr, rctx->layer);
+	else
+		pcb_dlcr_layer_free(rctx->layer);
+	rctx->layer = NULL;
+	return res;
 }
 
 

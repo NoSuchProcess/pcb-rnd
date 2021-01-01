@@ -35,8 +35,8 @@
 
 void pcb_dlcr_init(pcb_dlcr_t *dlcr)
 {
-	memset(dlcr, 0, sizeof(dlcr));
-	htsp_init(&dlcr->layers, strhash, strkeyeq);
+	memset(dlcr, 0, sizeof(pcb_dlcr_t));
+	htsp_init(&dlcr->name2layer, strhash, strkeyeq);
 }
 
 void pcb_dlcr_uninit(pcb_dlcr_t *dlcr)
@@ -44,14 +44,19 @@ void pcb_dlcr_uninit(pcb_dlcr_t *dlcr)
 	TODO("free everything");
 }
 
-pcb_dlcr_layer_t *pcb_dlcr_layer_get(pcb_dlcr_t *dlcr, const char *name, int alloc)
+void pcb_dlcr_layer_reg(pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *layer)
 {
-	pcb_dlcr_layer_t *l = htsp_get(&dlcr->layers, name);
-	if ((l != NULL) || !alloc)
-		return l;
+	pcb_dlcr_layer_t **p;
 
-	l = calloc(sizeof(pcb_dlcr_layer_t), 1);
-	l->name = rnd_strdup(name);
-	htsp_set(&dlcr->layers, l->name, l);
-	return l;
+	htsp_set(&dlcr->name2layer, layer->name, layer);
+	p = (pcb_dlcr_layer_t **)vtp0_get(&dlcr->id2layer, layer->id, 1);
+	*p = layer;
 }
+
+
+void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer)
+{
+	free(layer->name);
+	free(layer);
+}
+
