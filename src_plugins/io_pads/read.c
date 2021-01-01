@@ -127,6 +127,7 @@ static int pads_parse_header(pads_read_ctx_t *rctx)
 
 static void pads_assign_layers(pads_read_ctx_t *rctx)
 {
+	pcb_dlcr_layer_t *lastcop = NULL;
 	int seen_copper = 0;
 	long n;
 
@@ -139,8 +140,13 @@ static void pads_assign_layers(pads_read_ctx_t *rctx)
 				l->lyt |= PCB_LYT_TOP;
 			else
 				l->lyt |= PCB_LYT_INTERN;
+			lastcop = l;
 			seen_copper = 1;
 		}
+	}
+	if (lastcop != NULL) {
+		lastcop->lyt &= ~PCB_LYT_INTERN;
+		lastcop->lyt |= PCB_LYT_BOTTOM;
 	}
 }
 
