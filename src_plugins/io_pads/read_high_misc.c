@@ -121,6 +121,7 @@ static int pads_parse_misc_layer(pads_read_ctx_t *rctx)
 		rnd_trace("  type='%s'\n", val);
 		if (strcmp(val, "UNASSIGNED") == 0)         { rctx->layer->lyt = 0; }
 		else if (strcmp(val, "ROUTING") == 0)       { rctx->layer->lyt |= PCB_LYT_COPPER; }
+		else if (strcmp(val, "COMPONENT") == 0)     { rctx->layer->lyt |= PCB_LYT_COPPER; }
 		else if (strcmp(val, "SOLDER_MASK") == 0)   { rctx->layer->lyt |= PCB_LYT_MASK; }
 		else if (strcmp(val, "PASTE_MASK") == 0)    { rctx->layer->lyt |= PCB_LYT_PASTE; }
 		else if (strcmp(val, "SILK_SCREEN") == 0)   { rctx->layer->lyt |= PCB_LYT_SILK; }
