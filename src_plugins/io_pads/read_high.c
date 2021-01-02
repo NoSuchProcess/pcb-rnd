@@ -195,9 +195,9 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 	return 1;
 }
 
-static int pads_parse_piece_circle(pads_read_ctx_t *rctx, pads_line_piece_t *lpc)
+static int pads_parse_piece_circle(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, int poly)
 {
-	rnd_coord_t x1, y1, x2, y2;
+	rnd_coord_t x1, y1, x2, y2, cx, cy, r;
 	pcb_dlcr_draw_t *arc;
 	int res;
 
@@ -208,9 +208,19 @@ static int pads_parse_piece_circle(pads_read_ctx_t *rctx, pads_line_piece_t *lpc
 	if ((res = pads_read_coord(rctx, &y2)) <= 0) return res;
 	pads_eatup_till_nl(rctx);
 
-	arc = pcb_dlcr_arc_new(&rctx->dlcr, (x1+x2)/2 + lpc->xo, (y1+y2)/2+lpc->yo, rnd_distance(x1, y1, x2, y2)/2, 0, 360, lpc->width, 0);
-	arc->val.obj.layer_id = lpc->level;
-	arc->loc_line = rctx->line;
+	cx = rnd_round((x1+x2)/2.0 + lpc->xo);
+	cy = rnd_round((y1+y2)/2.0 + lpc->yo);
+	r = rnd_round(rnd_distance(x1, y1, x2, y2)/2.0);
+
+	TODO("draw polygon circle");
+/*	if (poly) {
+	
+	}
+	else*/ {
+		arc = pcb_dlcr_arc_new(&rctx->dlcr, cx, cy, r, 0, 360, lpc->width, 0);
+		arc->val.obj.layer_id = lpc->level;
+		arc->loc_line = rctx->line;
+	}
 	return 1;
 }
 
@@ -247,8 +257,11 @@ static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_c
 	lpc.xo = xo;
 	lpc.yo = yo;
 
-	if (strcmp(ptype, "CIRCLE") == 0) {
-		if ((res = pads_parse_piece_circle(rctx, &lpc)) <= 0) return res;
+	if ((strcmp(ptype, "CIRCLE") == 0) || (strcmp(ptype, "BRDCIR") == 0)) {
+		if ((res = pads_parse_piece_circle(rctx, &lpc, 0)) <= 0) return res;
+	}
+	else if ((strcmp(ptype, "COPCCO") == 0) || (strcmp(ptype, "COPCIR") == 0) || (strcmp(ptype, "CURCUR") == 0)) {
+		if ((res = pads_parse_piece_circle(rctx, &lpc, 1)) <= 0) return res;
 	}
 	else {
 		for(n = 0; n < num_crds; n++)
