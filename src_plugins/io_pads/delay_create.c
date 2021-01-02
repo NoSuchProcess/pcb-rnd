@@ -280,4 +280,6 @@ void pcb_dlcr_create(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
 	pcb_dlcr_create_layers(pcb, dlcr);
 	pcb_dlcr_create_drawings(pcb, dlcr);
+	pcb->hidlib.size_x = dlcr->board_bbox.X2;
+	pcb->hidlib.size_y = dlcr->board_bbox.Y2;
 }
