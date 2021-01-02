@@ -30,6 +30,7 @@
 #include "config.h"
 
 #include <genht/hash.h>
+#include <librnd/core/error.h>
 
 #include "delay_create.h"
 
@@ -106,11 +107,90 @@ static void pcb_dlcr_create_layers(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 		if ((l != NULL) && ((l->lyt & PCB_LYT_DOC) || (l->lyt & PCB_LYT_MECH)))
 			pcb_dlcr_create_layer(pcb, dlcr, l);
 	}
-
 }
 
+static pcb_dlcr_draw_t *dlcr_new(pcb_dlcr_t *dlcr, pcb_dlcr_type_t type)
+{
+	pcb_dlcr_draw_t *obj = calloc(sizeof(pcb_dlcr_draw_t), 1);
+	obj->type = type;
+	switch(type) {
+		case DLCR_OBJ: obj->val.obj.layer_id = PCB_DLCR_INVALID_LAYER_ID; break;
+		default:;
+	}
+	gdl_append(&dlcr->drawing, obj, link);
+	return obj;
+}
+
+pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t width, rnd_coord_t clearance)
+{
+	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_OBJ);
+	pcb_line_t *l = (pcb_line_t *)&obj->val.obj.obj;
+
+	l->type = PCB_OBJ_LINE;
+	l->Thickness = width;
+	l->Clearance = clearance;
+	l->Point1.X = x1;
+	l->Point1.Y = y1;
+	l->Point2.X = x2;
+	l->Point2.Y = y2;
+	return obj;
+}
+
+static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
+{
+	pcb_line_t *l = (pcb_line_t *)&obj->val.obj.obj;
+	pcb_dlcr_layer_t *dl;
+	pcb_layer_t *ly = NULL;
+	int specd = 0;
+
+	if (obj->val.obj.layer_id != PCB_DLCR_INVALID_LAYER_ID) {
+		pcb_dlcr_layer_t **dlp = (pcb_dlcr_layer_t **)vtp0_get(&dlcr->id2layer, obj->val.obj.layer_id, 0);
+		specd = 1;
+		if ((dlp == NULL) || (*dlp == NULL))
+			rnd_message(RND_MSG_ERROR, "delay create: invalid layer id %ld\n", obj->val.obj.layer_id);
+		else
+			ly = (*dlp)->ly;
+	}
+	if ((ly == NULL) && (obj->val.obj.layer_name != NULL)) {
+		specd = 1;
+		dl = htsp_get(&dlcr->name2layer, obj->val.obj.layer_name);
+		if (dl != NULL)
+			ly = dl->ly;
+		if (ly == NULL)
+			rnd_message(RND_MSG_ERROR, "delay create: invalid layer name '%s'\n", obj->val.obj.layer_name);
+	}
+
+	if (ly == NULL) {
+		if (!specd)
+			rnd_message(RND_MSG_ERROR, "delay create: layer not specified\n");
+		return;
+	}
+
+	switch(obj->val.obj.obj.type) {
+		case PCB_OBJ_LINE:
+			pcb_line_new(ly, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, l->Thickness, l->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			break;
+		default:
+			break;
+	}
+
+	free(obj->val.obj.layer_name);
+	free(obj);
+}
+
+static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
+{
+	pcb_dlcr_draw_t *obj;
+	while((obj = gdl_first(&dlcr->drawing)) != NULL) {
+		gdl_remove(&dlcr->drawing, obj, link);
+		switch(obj->type) {
+			case DLCR_OBJ: pcb_dlcr_draw_free_obj(pcb, dlcr, obj); break;
+		}
+	}
+}
 
 void pcb_dlcr_create(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
 	pcb_dlcr_create_layers(pcb, dlcr);
+	pcb_dlcr_create_drawings(pcb, dlcr);
 }

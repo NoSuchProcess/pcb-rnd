@@ -116,14 +116,30 @@ static int pads_parse_pcb(pads_read_ctx_t *rctx)
 	return 1;
 }
 
+/* virtual layer ID for the non-existent board outline layer */
+#define PADS_LID_BOARD 257
 
-static int pads_parse_piece_crd(pads_read_ctx_t *rctx)
+typedef enum { PLTY_LINES, PLTY_BOARD, PLTY_COPPER, PLTY_COPCUT, PLTY_KEEPOUT } pads_line_type_t;
+
+typedef struct {
+	rnd_coord_t x, y;
+	rnd_coord_t width;
+	pads_line_type_t ltype;
+	long level;
+} pads_line_piece_t;
+
+static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, long idx)
 {
 	int res;
 	rnd_coord_t x, y;
 
 	if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
+
+	if ((idx != 0) && ((lpc->x != x) || (lpc->y != y)))  {
+		pcb_dlcr_draw_t *line = pcb_dlcr_line_new(&rctx->dlcr, lpc->x, lpc->y, x, y, lpc->width, 0);
+		line->val.obj.layer_id = lpc->level;
+	}
 
 	if (pads_has_field(rctx)) {
 		double starta, enda, r;
@@ -142,22 +158,25 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx)
 		rnd_trace("  crd arc %mm;%mm %f..%f r=%mm center=%mm;%mm\n", x, y, starta, enda, (rnd_coord_t)r, cx, cy);
 	}
 	else {
-		rnd_trace("  crd line %mm;%mm\n", x, y);
+		rnd_trace("  crd move %mm;%mm\n", x, y);
 	}
 
-	pads_eatup_till_nl(rctx);
+	lpc->x = x;
+	lpc->y = y;
 
+	pads_eatup_till_nl(rctx);
 
 	return 1;
 }
 
 
-static int pads_parse_piece(pads_read_ctx_t *rctx)
+static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype)
 {
 	char ptype[32], rest[32];
-	long n, num_crds, layer, lstyle;
+	long n, num_crds, layer = -100, lstyle;
 	rnd_coord_t width;
 	int res;
+	pads_line_piece_t lpc = {0};
 
 	if ((res = pads_read_word(rctx, ptype, sizeof(ptype), 0)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_crds)) <= 0) return res;
@@ -176,9 +195,12 @@ static int pads_parse_piece(pads_read_ctx_t *rctx)
 
 	pads_eatup_till_nl(rctx);
 
-	rnd_trace(" piece %s num_crds=%ld\n", ptype, num_crds);
+	rnd_trace(" piece %s num_crds=%ld level=%ld\n", ptype, num_crds, layer);
+	lpc.width = width;
+	lpc.ltype = ltype;
+	lpc.level = ltype == PLTY_BOARD ? PADS_LID_BOARD : layer;
 	for(n = 0; n < num_crds; n++)
-		if ((res = pads_parse_piece_crd(rctx)) <= 0) return res;
+		if ((res = pads_parse_piece_crd(rctx, &lpc, n)) <= 0) return res;
 
 	return 1;
 }
@@ -254,6 +276,7 @@ static int pads_parse_texts(pads_read_ctx_t *rctx)
 static int pads_parse_line(pads_read_ctx_t *rctx)
 {
 	char name[256], type[32], wtf[64];
+	pads_line_type_t ltype;
 	rnd_coord_t xo, yo;
 	long n, c, num_pcs, flags = 0, num_texts = 0;
 	int res;
@@ -291,8 +314,18 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 		pads_eatup_till_nl(rctx);
 	}
 
+	if (strcmp(type, "LINES") == 0)        ltype = PLTY_LINES;
+	else if (strcmp(type, "BOARD") == 0)   ltype = PLTY_BOARD;
+	else if (strcmp(type, "COPPER") == 0)  ltype = PLTY_COPPER;
+	else if (strcmp(type, "COPCUT") == 0)  ltype = PLTY_COPCUT;
+	else if (strcmp(type, "KEEPOUT") == 0) ltype = PLTY_KEEPOUT;
+	else {
+		PADS_ERROR((RND_MSG_ERROR, "Unknown *LINE* type: '%s'\n", type));
+		return -1;
+	}
+
 	for(n = 0; n < num_pcs; n++)
-		if ((res = pads_parse_piece(rctx)) <= 0) return res;
+		if ((res = pads_parse_piece(rctx, ltype)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
 		if ((res = pads_parse_text(rctx)) <= 0) return res;
 
@@ -440,7 +473,7 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 		name, xo, yo, num_pieces, num_texts, num_labels, num_terms, num_stacks);
 TODO("set unit and origin");
 	for(n = 0; n < num_pieces; n++)
-		if ((res = pads_parse_piece(rctx)) <= 0) return res;
+		if ((res = pads_parse_piece(rctx, PLTY_LINES)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
 		if ((res = pads_parse_text(rctx)) <= 0) return res;
 	for(n = 0; n < num_labels; n++)
