@@ -125,13 +125,28 @@ static int pads_parse_header(pads_read_ctx_t *rctx)
 	return 0;
 }
 
+static void pads_assign_layer_assoc(pads_read_ctx_t *rctx, pcb_dlcr_layer_t *src, const char *assoc_name, pcb_layer_type_t loc)
+{
+	pcb_dlcr_layer_t *l = htsp_get(&rctx->dlcr.name2layer, assoc_name);
+	if (l == NULL) {
+		rnd_message(RND_MSG_ERROR, "io_pads: non-existent associated layer '%s' in layer %d (%s)\n", assoc_name, src->id, src->name);
+		return;
+	}
+	if ((l->lyt & PCB_LYT_ANYWHERE) != 0) {
+		rnd_message(RND_MSG_ERROR, "io_pads: doubly associated layer '%s' in layer %d (%s)\n", assoc_name, src->id, src->name);
+		return;
+	}
+	l->lyt |= loc;
+/*	rnd_trace("assoc layer '%s' %lx!\n", l->name, l->lyt);*/
+}
+
 static void pads_assign_layers(pads_read_ctx_t *rctx)
 {
 	pcb_dlcr_layer_t *lastcop = NULL;
 	int seen_copper = 0;
 	long n;
 
-	/* create copper layers, assuming they are in order */
+	/* assign location to copper layers, assuming they are in order */
 	for(n = 0; n < rctx->dlcr.id2layer.used; n++) {
 		pcb_dlcr_layer_t *l = rctx->dlcr.id2layer.array[n];
 
@@ -147,6 +162,32 @@ static void pads_assign_layers(pads_read_ctx_t *rctx)
 	if (lastcop != NULL) {
 		lastcop->lyt &= ~PCB_LYT_INTERN;
 		lastcop->lyt |= PCB_LYT_BOTTOM;
+	}
+
+	/* assign location to associated top/bottom layers */
+	for(n = 0; n < rctx->dlcr.id2layer.used; n++) {
+		pads_layer_t *pl;
+		pcb_dlcr_layer_t *l = rctx->dlcr.id2layer.array[n];
+
+		if (l == NULL) continue;
+
+		pl = l->user_data;
+
+		/* locate associated top and bottom layers */
+		if (l->lyt & PCB_LYT_COPPER) {
+			pcb_layer_type_t loc = l->lyt & PCB_LYT_ANYWHERE;
+			if ((loc == PCB_LYT_TOP) || (loc == PCB_LYT_BOTTOM)) {
+				pads_assign_layer_assoc(rctx, l, pl->assoc_silk, loc);
+				pads_assign_layer_assoc(rctx, l, pl->assoc_paste, loc);
+				pads_assign_layer_assoc(rctx, l, pl->assoc_mask, loc);
+				pads_assign_layer_assoc(rctx, l, pl->assoc_assy, loc);
+			}
+		}
+
+		free(pl->assoc_silk); pl->assoc_silk = NULL;
+		free(pl->assoc_paste); pl->assoc_paste = NULL;
+		free(pl->assoc_mask); pl->assoc_mask = NULL;
+		free(pl->assoc_assy); pl->assoc_assy = NULL;
 	}
 }
 
