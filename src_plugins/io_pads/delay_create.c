@@ -31,6 +31,7 @@
 
 #include <genht/hash.h>
 #include <librnd/core/error.h>
+#include <librnd/core/compat_misc.h>
 
 #include "obj_subc.h"
 
@@ -166,8 +167,18 @@ static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dl
 	if (obj->val.obj.layer_id != PCB_DLCR_INVALID_LAYER_ID) {
 		pcb_dlcr_layer_t **dlp = (pcb_dlcr_layer_t **)vtp0_get(&dlcr->id2layer, obj->val.obj.layer_id, 0);
 		*specd = 1;
-		if ((dlp == NULL) || (*dlp == NULL))
-			rnd_message(RND_MSG_ERROR, "delay create: invalid layer id %ld (loc: %ld)\n", obj->val.obj.layer_id, obj->loc_line);
+		if ((dlp == NULL) || (*dlp == NULL)) {
+			pcb_dlcr_layer_t *dl;
+			rnd_message(RND_MSG_ERROR, "delay create: invalid layer id %ld (loc: %ld); creating a dummy doc layer\n", obj->val.obj.layer_id, obj->loc_line);
+			dl = calloc(sizeof(pcb_dlcr_layer_t), 1);
+			dl->id = obj->val.obj.layer_id;
+			dl->user_data = &dl->local_user_data;
+			dl->name = rnd_strdup("UNASSIGNED");
+			dl->lyt = PCB_LYT_DOC;
+			dl->purpose = "unassigned";
+			pcb_dlcr_layer_reg(dlcr, dl);
+			pcb_dlcr_create_layer(pcb, dlcr, dl);
+		}
 		else
 			ly = (*dlp)->ly;
 	}
