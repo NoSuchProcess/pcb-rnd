@@ -195,6 +195,25 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 	return 1;
 }
 
+static int pads_parse_piece_circle(pads_read_ctx_t *rctx, pads_line_piece_t *lpc)
+{
+	rnd_coord_t x1, y1, x2, y2;
+	pcb_dlcr_draw_t *arc;
+	int res;
+
+	if ((res = pads_read_coord(rctx, &x1)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &y1)) <= 0) return res;
+	pads_eatup_till_nl(rctx);
+	if ((res = pads_read_coord(rctx, &x2)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &y2)) <= 0) return res;
+	pads_eatup_till_nl(rctx);
+
+	arc = pcb_dlcr_arc_new(&rctx->dlcr, (x1+x2)/2 + lpc->xo, (y1+y2)/2+lpc->yo, rnd_distance(x1, y1, x2, y2)/2, 0, 360, lpc->width, 0);
+	arc->val.obj.layer_id = lpc->level;
+	arc->loc_line = rctx->line;
+	return 1;
+}
+
 
 static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_coord_t xo, rnd_coord_t yo)
 {
@@ -227,8 +246,14 @@ static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_c
 	lpc.level = ltype == PLTY_BOARD ? PADS_LID_BOARD : layer;
 	lpc.xo = xo;
 	lpc.yo = yo;
-	for(n = 0; n < num_crds; n++)
-		if ((res = pads_parse_piece_crd(rctx, &lpc, n)) <= 0) return res;
+
+	if (strcmp(ptype, "CIRCLE") == 0) {
+		if ((res = pads_parse_piece_circle(rctx, &lpc)) <= 0) return res;
+	}
+	else {
+		for(n = 0; n < num_crds; n++)
+			if ((res = pads_parse_piece_crd(rctx, &lpc, n)) <= 0) return res;
+	}
 
 	return 1;
 }
