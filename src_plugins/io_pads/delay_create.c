@@ -108,7 +108,7 @@ static void pcb_dlcr_create_layers(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 	/* create doc/mech layers */
 	for(n = 0; n < dlcr->id2layer.used; n++) {
 		pcb_dlcr_layer_t *l = dlcr->id2layer.array[n];
-		if ((l != NULL) && ((l->lyt & PCB_LYT_DOC) || (l->lyt & PCB_LYT_MECH)))
+		if ((l != NULL) && ((l->lyt & PCB_LYT_DOC) || (l->lyt & PCB_LYT_MECH) || (l->lyt & PCB_LYT_BOUNDARY)))
 			pcb_dlcr_create_layer(pcb, dlcr, l);
 	}
 }

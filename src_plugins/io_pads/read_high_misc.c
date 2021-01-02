@@ -176,9 +176,8 @@ static int pads_parse_misc_layer_hdr(pads_read_ctx_t *rctx)
 	}
 
 	rnd_trace(" layer %ld key='%s'\n", id, key);
-	rctx->layer = calloc(sizeof(pcb_dlcr_layer_t), 1);
-	rctx->layer->id = id;
-	rctx->layer->user_data = &rctx->layer->local_user_data;
+	rctx->layer = pads_layer_alloc(id);
+
 	res = pads_parse_misc_generic(rctx, pads_parse_misc_layer);
 	if (rctx->layer->lyt != 0)
 		pcb_dlcr_layer_reg(&rctx->dlcr, rctx->layer);

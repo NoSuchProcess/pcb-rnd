@@ -48,6 +48,9 @@
 	-4     = bumped into the next *section*
 */
 
+/* virtual layer ID for the non-existent board outline layer */
+#define PADS_LID_BOARD 257
+
 typedef struct pads_read_ctx_s {
 	pcb_board_t *pcb;
 	FILE *f;
@@ -86,6 +89,14 @@ static void pads_start_loc(pads_read_ctx_t *rctx)
 {
 	rctx->start_line = rctx->line;
 	rctx->start_col = rctx->col;
+}
+
+pcb_dlcr_layer_t *pads_layer_alloc(long lid)
+{
+	pcb_dlcr_layer_t *layer = calloc(sizeof(pcb_dlcr_layer_t), 1);
+	layer->id = lid;
+	layer->user_data = &layer->local_user_data;
+	return layer;
 }
 
 
@@ -193,6 +204,23 @@ static void pads_assign_layers(pads_read_ctx_t *rctx)
 		free(pl->assoc_paste); pl->assoc_paste = NULL;
 		free(pl->assoc_mask); pl->assoc_mask = NULL;
 		free(pl->assoc_assy); pl->assoc_assy = NULL;
+	}
+
+	/* register special, hardwired/implicit layers */
+	{
+		pcb_dlcr_layer_t *ly;
+	
+		ly = pads_layer_alloc(PADS_LID_BOARD);
+		ly->name = rnd_strdup("outline");
+		ly->lyt = PCB_LYT_BOUNDARY;
+		ly->purpose = "uroute";
+		pcb_dlcr_layer_reg(&rctx->dlcr, ly);
+
+		ly = pads_layer_alloc(0);
+		ly->name = rnd_strdup("all-layer");
+		ly->lyt = PCB_LYT_DOC;
+		ly->purpose = "unimplemented";
+		pcb_dlcr_layer_reg(&rctx->dlcr, ly);
 	}
 }
 

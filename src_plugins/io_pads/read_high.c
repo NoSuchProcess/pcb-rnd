@@ -116,9 +116,6 @@ static int pads_parse_pcb(pads_read_ctx_t *rctx)
 	return 1;
 }
 
-/* virtual layer ID for the non-existent board outline layer */
-#define PADS_LID_BOARD 257
-
 typedef enum { PLTY_LINES, PLTY_BOARD, PLTY_COPPER, PLTY_COPCUT, PLTY_KEEPOUT } pads_line_type_t;
 
 typedef struct {
