@@ -43,11 +43,11 @@ static int pads_parse_misc_ignore_block(pads_read_ctx_t *rctx)
 		if (c == EOF)
 			return 0;
 		ungetc(c, rctx->f);
-		pads_eatup_till_nl(rctx);
 		if (c == '{') {
 			if ((res = pads_parse_misc_ignore_block(rctx)) <= 0) return res;
 			continue;
 		}
+		pads_eatup_till_nl(rctx);
 		if (c == '}')
 			return 1;
 	}
@@ -224,8 +224,7 @@ static int pads_parse_misc(pads_read_ctx_t *rctx)
 
 		ungetc(c, rctx->f);
 		if (c == '{') {
-			rnd_trace("misc ignore block!\n");
-			pads_eatup_till_nl(rctx);
+			rnd_trace("misc ignore block from %ld (%ld)!\n", rctx->line, ftell(rctx->f));
 			if ((res = pads_parse_misc_ignore_block(rctx)) <= 0) return res;
 			continue;
 		}
