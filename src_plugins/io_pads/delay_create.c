@@ -62,10 +62,12 @@ void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer)
 
 static void pcb_dlcr_create_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *l)
 {
+	rnd_layer_id_t lid;
 	pcb_layergrp_t *g = pcb_get_grp_new_raw(pcb, 0);
 	g->ltype = l->lyt;
 	g->name = l->name; l->name = NULL;
-	pcb_layer_create(pcb, g - pcb->LayerGroups.grp, g->name, 0);
+	lid = pcb_layer_create(pcb, g - pcb->LayerGroups.grp, g->name, 0);
+	l->ly = pcb_get_layer(pcb->Data, lid);
 }
 
 static void pcb_dlcr_create_lyt_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_layer_type_t lyt)

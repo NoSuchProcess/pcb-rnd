@@ -12,6 +12,9 @@ typedef struct {
 	pcb_layer_type_t lyt;
 	const char *purpose;
 	int can_have_components;
+
+	pcb_layer_t *ly; /* the final assignment */
+
 	void *user_data;
 	union {
 		char start;
