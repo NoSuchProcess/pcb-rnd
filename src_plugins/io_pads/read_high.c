@@ -143,6 +143,7 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 	if ((idx != 0) && ((lpc->x != x) || (lpc->y != y)))  {
 		pcb_dlcr_draw_t *line = pcb_dlcr_line_new(&rctx->dlcr, lpc->x, lpc->y, x, y, lpc->width, 0);
 		line->val.obj.layer_id = lpc->level;
+		line->loc_line = rctx->line;
 	}
 
 	if (pads_has_field(rctx)) {

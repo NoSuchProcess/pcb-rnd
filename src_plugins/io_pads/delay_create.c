@@ -34,6 +34,8 @@
 
 #include "delay_create.h"
 
+#define DEBUG_LOC_ATTR 1
+
 void pcb_dlcr_init(pcb_dlcr_t *dlcr)
 {
 	memset(dlcr, 0, sizeof(pcb_dlcr_t));
@@ -138,6 +140,7 @@ pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t
 
 static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
+	pcb_any_obj_t *a;
 	pcb_line_t *l = (pcb_line_t *)&obj->val.obj.obj;
 	pcb_dlcr_layer_t *dl;
 	pcb_layer_t *ly = NULL;
@@ -168,11 +171,20 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_
 
 	switch(obj->val.obj.obj.type) {
 		case PCB_OBJ_LINE:
-			pcb_line_new(ly, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, l->Thickness, l->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			a = (pcb_any_obj_t *)pcb_line_new(ly, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, l->Thickness, l->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 			break;
 		default:
 			break;
 	}
+
+#ifdef DEBUG_LOC_ATTR
+	{
+		char tmp[32];
+		sprintf(tmp, "%ld", obj->loc_line);
+		pcb_attribute_set(pcb, &a->Attributes, "io_pads_loc_line", tmp, 0);
+	}
+#endif
+	(void)a;
 
 	free(obj->val.obj.layer_name);
 	free(obj);

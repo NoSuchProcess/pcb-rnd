@@ -44,6 +44,7 @@ typedef struct {
 			char *layer_name;
 		} obj;
 	} val;
+	long loc_line; /* for debug */
 	gdl_elem_t link;
 } pcb_dlcr_draw_t;
 
