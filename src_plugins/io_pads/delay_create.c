@@ -150,7 +150,7 @@ static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dl
 		pcb_dlcr_layer_t **dlp = (pcb_dlcr_layer_t **)vtp0_get(&dlcr->id2layer, obj->val.obj.layer_id, 0);
 		*specd = 1;
 		if ((dlp == NULL) || (*dlp == NULL))
-			rnd_message(RND_MSG_ERROR, "delay create: invalid layer id %ld\n", obj->val.obj.layer_id);
+			rnd_message(RND_MSG_ERROR, "delay create: invalid layer id %ld (loc: %ld)\n", obj->val.obj.layer_id, obj->loc_line);
 		else
 			ly = (*dlp)->ly;
 	}
@@ -160,7 +160,7 @@ static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dl
 		if (dl != NULL)
 			ly = dl->ly;
 		if (ly == NULL)
-			rnd_message(RND_MSG_ERROR, "delay create: invalid layer name '%s'\n", obj->val.obj.layer_name);
+			rnd_message(RND_MSG_ERROR, "delay create: invalid layer name '%s' (loc: %ld)\n", obj->val.obj.layer_name, obj->loc_line);
 	}
 
 	return ly;
@@ -182,7 +182,7 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 
 	if (ly == NULL) {
 		if (!specd)
-			rnd_message(RND_MSG_ERROR, "delay create: layer not specified\n");
+			rnd_message(RND_MSG_ERROR, "delay create: layer not specified (loc: %ld)\n", obj->loc_line);
 		return;
 	}
 
