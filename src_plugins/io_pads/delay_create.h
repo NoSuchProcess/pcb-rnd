@@ -13,7 +13,6 @@ typedef struct {
 	const char *purpose;
 	int can_have_components;
 
-	rnd_box_t board_bbox;
 
 	pcb_layer_t *ly; /* the final assignment */
 
@@ -58,6 +57,11 @@ typedef struct {
 	htsp_t name2layer;   /* key=->id, val=pcb_dlcr_layer_t */
 	vtp0_t id2layer;
 	gdl_list_t drawing;  /* of pcb_dlcr_draw_t; */
+	rnd_box_t board_bbox;
+	int in_subc;         /* 0 when drawing on the board, non-0 in between DLCR_SUBC_BEGIN and DLCR_SUBC_END */
+
+	/* config */
+	unsigned flip_y:1;   /* if 1, mirror y coordinates over the X axis */
 } pcb_dlcr_t;
 
 void pcb_dlcr_init(pcb_dlcr_t *dlcr);
@@ -66,9 +70,12 @@ void pcb_dlcr_uninit(pcb_dlcr_t *dlcr);
 void pcb_dlcr_layer_reg(pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *layer);
 void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer);
 
-pcb_dlcr_draw_t *dlcr_new(pcb_dlcr_t *dlcr, pcb_dlcr_type_t type);
 pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t width, rnd_coord_t clearance);
 pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, double start_deg, double delta_deg, rnd_coord_t width, rnd_coord_t clearance);
+
+void pcb_dlcr_subc_begin(pcb_dlcr_t *dlcr);
+void pcb_dlcr_subc_end(pcb_dlcr_t *dlcr);
+
 
 /* Create all objects; call this only after layers are finalized */
 void pcb_dlcr_create(pcb_board_t *pcb, pcb_dlcr_t *dlcr);

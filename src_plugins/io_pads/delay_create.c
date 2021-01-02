@@ -39,6 +39,10 @@
 
 #define DEBUG_LOC_ATTR 1
 
+#define CRDX(x) (x)
+#define CRDY(y) (dlcr->flip_y ? ((subc == NULL) ? (dlcr->board_bbox.Y2 - (y)) : (subc->bbox_naked.Y2 - (y))) : (y))
+
+
 void pcb_dlcr_init(pcb_dlcr_t *dlcr)
 {
 	memset(dlcr, 0, sizeof(pcb_dlcr_t));
@@ -114,7 +118,7 @@ static void pcb_dlcr_create_layers(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 	}
 }
 
-pcb_dlcr_draw_t *dlcr_new(pcb_dlcr_t *dlcr, pcb_dlcr_type_t type)
+static pcb_dlcr_draw_t *dlcr_new(pcb_dlcr_t *dlcr, pcb_dlcr_type_t type)
 {
 	pcb_dlcr_draw_t *obj = calloc(sizeof(pcb_dlcr_draw_t), 1);
 	obj->type = type;
@@ -138,6 +142,9 @@ pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t
 	l->Point1.Y = y1;
 	l->Point2.X = x2;
 	l->Point2.Y = y2;
+	pcb_line_bbox(l);
+	if (!dlcr->in_subc)
+		rnd_box_bump_box(&dlcr->board_bbox, &l->bbox_naked);
 	return obj;
 }
 
@@ -154,7 +161,23 @@ pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t 
 	a->Y = cy;
 	a->StartAngle = start_deg;
 	a->Delta = delta_deg;
+	pcb_arc_bbox(a);
+	if (!dlcr->in_subc)
+		rnd_box_bump_box(&dlcr->board_bbox, &a->bbox_naked);
 	return obj;
+}
+
+void pcb_dlcr_subc_begin(pcb_dlcr_t *dlcr)
+{
+	dlcr_new(dlcr, DLCR_SUBC_BEGIN);
+	dlcr->in_subc++;
+}
+
+void pcb_dlcr_subc_end(pcb_dlcr_t *dlcr)
+{
+	dlcr_new(dlcr, DLCR_SUBC_END);
+	assert(dlcr->in_subc > 0);
+	dlcr->in_subc--;
 }
 
 
@@ -217,10 +240,10 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 
 	switch(obj->val.obj.obj.any.type) {
 		case PCB_OBJ_LINE:
-			r = (pcb_any_obj_t *)pcb_line_new(ly, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, l->Thickness, l->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			r = (pcb_any_obj_t *)pcb_line_new(ly, CRDX(l->Point1.X), CRDY(l->Point1.Y), CRDX(l->Point2.X), CRDY(l->Point2.Y), l->Thickness, l->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 			break;
 		case PCB_OBJ_ARC:
-			r = (pcb_any_obj_t *)pcb_arc_new(ly, a->X, a->Y, a->Width, a->Height, a->StartAngle, a->Delta, a->Thickness, a->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
+			r = (pcb_any_obj_t *)pcb_arc_new(ly, CRDX(a->X), CRDY(a->Y), a->Width, a->Height, a->StartAngle, a->Delta, a->Thickness, a->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
 			break;
 		default:
 			break;

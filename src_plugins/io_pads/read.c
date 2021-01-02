@@ -284,7 +284,9 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 	rctx.pcb = pcb;
 	rctx.fn = filename;
 	rctx.f = f;
+
 	pcb_dlcr_init(&rctx.dlcr);
+	rctx.dlcr.flip_y = 1;
 
 	/* read the header */
 	if (pads_parse_header(&rctx) != 0) {
