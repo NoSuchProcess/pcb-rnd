@@ -144,22 +144,25 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 	}
 
 	if (pads_has_field(rctx)) {
-		double starta, enda, r;
+		double starta, deltaa, r;
 		rnd_coord_t bbx1, bby1, bbx2, bby2, cx, cy;
 
 		if ((res = pads_read_degp10(rctx, &starta)) <= 0) return res;
-		if ((res = pads_read_degp10(rctx, &enda)) <= 0) return res;
+		if ((res = pads_read_degp10(rctx, &deltaa)) <= 0) return res;
 		if ((res = pads_read_coord(rctx, &bbx1)) <= 0) return res;
 		if ((res = pads_read_coord(rctx, &bby1)) <= 0) return res;
 		if ((res = pads_read_coord(rctx, &bbx2)) <= 0) return res;
 		if ((res = pads_read_coord(rctx, &bby2)) <= 0) return res;
 
+		bbx1 += lpc->xo; bby1 += lpc->yo;
+		bbx2 += lpc->xo; bby2 += lpc->yo;
+
 		r = (double)(bbx2 - bbx1) / 2.0;
 		cx = rnd_round((double)(bbx1 + bbx2) / 2.0);
 		cy = rnd_round((double)(bby1 + bby2) / 2.0);
-		rnd_trace("  crd arc %mm;%mm %f..%f r=%mm center=%mm;%mm\n", x, y, starta, enda, (rnd_coord_t)r, cx, cy);
+		rnd_trace("  crd arc %mm;%mm %f..%f r=%mm center=%mm;%mm\n", x, y, starta, deltaa, (rnd_coord_t)r, cx, cy);
 		{
-			pcb_dlcr_draw_t *arc = pcb_dlcr_arc_new(&rctx->dlcr, cx, cy, r, starta, enda-starta, lpc->width, 0);
+			pcb_dlcr_draw_t *arc = pcb_dlcr_arc_new(&rctx->dlcr, cx, cy, r, starta, deltaa, lpc->width, 0);
 			arc->val.obj.layer_id = lpc->level;
 			arc->loc_line = rctx->line;
 			pcb_arc_get_end(&arc->val.obj.obj.arc, 1, &x, &y);
