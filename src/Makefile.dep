@@ -7628,6 +7628,7 @@
  ../src_3rd/librnd-local/src/librnd/core/misc_util.h obj_gfx_list.h \
  obj_gfx.h layer_grp.h rats_patch.h board.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h \
+ ../src_plugins/io_pads/delay_create.h layer.h obj_common.h \
  ../src_plugins/io_pads/read.h plug_io.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h plug_footprint.h \
  data.h crosshair.h ../src_3rd/librnd-local/src/librnd/core/hid.h route.h \
