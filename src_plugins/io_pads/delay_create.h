@@ -44,6 +44,7 @@ typedef struct {
 				pcb_any_obj_t any;
 				pcb_line_t line;
 				pcb_arc_t arc;
+				pcb_text_t text;
 			} obj;
 			long layer_id;
 			char *layer_name;
@@ -72,6 +73,7 @@ void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer);
 
 pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t width, rnd_coord_t clearance);
 pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, double start_deg, double delta_deg, rnd_coord_t width, rnd_coord_t clearance);
+pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int scale, rnd_coord_t thickness, const char *str);
 
 void pcb_dlcr_subc_begin(pcb_dlcr_t *dlcr);
 void pcb_dlcr_subc_end(pcb_dlcr_t *dlcr);

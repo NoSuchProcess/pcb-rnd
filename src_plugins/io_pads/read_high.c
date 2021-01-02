@@ -257,6 +257,7 @@ static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_c
 	lpc.xo = xo;
 	lpc.yo = yo;
 
+TODO("KEEPOUT objects are not handled");
 	if ((strcmp(ptype, "CIRCLE") == 0) || (strcmp(ptype, "BRDCIR") == 0)) {
 		if ((res = pads_parse_piece_circle(rctx, &lpc, 0)) <= 0) return res;
 	}
@@ -271,11 +272,12 @@ static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_c
 	return 1;
 }
 
-static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label)
+static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label, rnd_coord_t xo, rnd_coord_t yo)
 {
+	pcb_dlcr_draw_t *text;
 	char name[16], hjust[16], vjust[16], font[128], str[1024];
 	rnd_coord_t x, y, w, h;
-	double rot;
+	double rot, scale;
 	long level;
 	int res, mirr = 0;
 
@@ -313,7 +315,6 @@ static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label)
 	}
 
 	if ((res = pads_read_word(rctx, str, sizeof(str), 1)) <= 0) return res;
-	pads_eatup_till_nl(rctx);
 
 	rnd_trace(" text: [%s] at %mm;%mm rot=%f size=%mm;%mm mirr=%d: '%s'",
 		font, x, y, rot, w, h, mirr, str);
@@ -321,22 +322,38 @@ static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label)
 		rnd_trace(" (%s)\n", name);
 	else
 		rnd_trace("\n");
+
+	TODO("This should rather use font height");
+	scale = (double)w/RND_MM_TO_COORD(1.0) * 100.0 * 4;
+
+	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo, rot, scale, 0, str);
+	text->val.obj.layer_id = level;
+	text->loc_line = rctx->line;
+
+	pads_eatup_till_nl(rctx);
+
 	return 1;
 }
 
-static int pads_parse_text(pads_read_ctx_t *rctx)
+static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo)
 {
-	return pads_parse_text_(rctx, 0);
+	return pads_parse_text_(rctx, 0, xo, yo);
 }
 
-static int pads_parse_label(pads_read_ctx_t *rctx)
+static int pads_parse_text0(pads_read_ctx_t *rctx)
 {
-	return pads_parse_text_(rctx, 1);
+	return pads_parse_text_(rctx, 0, 0, 0);
+}
+
+
+static int pads_parse_label(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo)
+{
+	return pads_parse_text_(rctx, 1, xo, yo);
 }
 
 static int pads_parse_texts(pads_read_ctx_t *rctx)
 {
-	return pads_parse_list_sect(rctx, pads_parse_text);
+	return pads_parse_list_sect(rctx, pads_parse_text0);
 }
 
 static int pads_parse_line(pads_read_ctx_t *rctx)
@@ -393,7 +410,7 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 	for(n = 0; n < num_pcs; n++)
 		if ((res = pads_parse_piece(rctx, ltype, xo, yo)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
-		if ((res = pads_parse_text(rctx)) <= 0) return res;
+		if ((res = pads_parse_text(rctx, xo, yo)) <= 0) return res;
 
 	return 1;
 }
@@ -543,9 +560,9 @@ TODO("set unit and origin");
 	for(n = 0; n < num_pieces; n++)
 		if ((res = pads_parse_piece(rctx, PLTY_LINES, xo, yo)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
-		if ((res = pads_parse_text(rctx)) <= 0) return res;
+		if ((res = pads_parse_text(rctx, xo, yo)) <= 0) return res;
 	for(n = 0; n < num_labels; n++)
-		if ((res = pads_parse_label(rctx)) <= 0) return res;
+		if ((res = pads_parse_label(rctx, xo, yo)) <= 0) return res;
 	for(n = 0; n < num_terms; n++)
 		if ((res = pads_parse_term(rctx)) <= 0) return res;
 	for(n = 0; n < num_stacks; n++)
@@ -687,7 +704,7 @@ static int pads_parse_part(pads_read_ctx_t *rctx)
 
 	rnd_trace("part: '%s' of '%s' num_labels=%ld\n", refdes, ptype, num_labels);
 	for(n = 0; n < num_labels; n++)
-		if ((res = pads_parse_label(rctx)) <= 0) return res;
+		if ((res = pads_parse_label(rctx, xo, yo)) <= 0) return res;
 	return 1;
 }
 

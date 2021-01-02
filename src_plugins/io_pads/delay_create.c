@@ -34,6 +34,9 @@
 #include <librnd/core/compat_misc.h>
 
 #include "obj_subc.h"
+#include "obj_text.h"
+#include "obj_line.h"
+#include "obj_arc.h"
 
 #include "delay_create.h"
 
@@ -167,6 +170,24 @@ pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t 
 	return obj;
 }
 
+pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int scale, rnd_coord_t thickness, const char *str)
+{
+	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_OBJ);
+	pcb_text_t *t = &obj->val.obj.obj.text;
+
+	t->type = PCB_OBJ_TEXT;
+	t->thickness = thickness;
+	t->X = x;
+	t->Y = y;
+	t->rot = rot;
+	t->Scale = scale;
+	t->TextString = rnd_strdup(str);
+	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
+	if (!dlcr->in_subc)
+		rnd_box_bump_box(&dlcr->board_bbox, &t->bbox_naked);
+	return obj;
+}
+
 void pcb_dlcr_subc_begin(pcb_dlcr_t *dlcr)
 {
 	dlcr_new(dlcr, DLCR_SUBC_BEGIN);
@@ -222,6 +243,7 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 	pcb_any_obj_t *r;
 	pcb_line_t *l = &obj->val.obj.obj.line;
 	pcb_arc_t *a = &obj->val.obj.obj.arc;
+	pcb_text_t *t = &obj->val.obj.obj.text;
 	pcb_layer_t *ly;
 	int specd;
 
@@ -244,6 +266,10 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 			break;
 		case PCB_OBJ_ARC:
 			r = (pcb_any_obj_t *)pcb_arc_new(ly, CRDX(a->X), CRDY(a->Y), a->Width, a->Height, a->StartAngle, a->Delta, a->Thickness, a->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
+			break;
+		case PCB_OBJ_TEXT:
+			r = (pcb_any_obj_t *)pcb_text_new(ly, pcb_font(pcb, 0, 1), CRDX(t->X), CRDY(t->Y), t->rot, t->Scale, t->thickness, t->TextString, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			free(t->TextString);
 			break;
 		default:
 			break;
