@@ -32,6 +32,8 @@
 #include <genht/hash.h>
 #include <librnd/core/error.h>
 
+#include "obj_subc.h"
+
 #include "delay_create.h"
 
 #define DEBUG_LOC_ATTR 1
@@ -111,7 +113,7 @@ static void pcb_dlcr_create_layers(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 	}
 }
 
-static pcb_dlcr_draw_t *dlcr_new(pcb_dlcr_t *dlcr, pcb_dlcr_type_t type)
+pcb_dlcr_draw_t *dlcr_new(pcb_dlcr_t *dlcr, pcb_dlcr_type_t type)
 {
 	pcb_dlcr_draw_t *obj = calloc(sizeof(pcb_dlcr_draw_t), 1);
 	obj->type = type;
@@ -138,13 +140,18 @@ pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t
 	return obj;
 }
 
-static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
+static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
 	pcb_any_obj_t *a;
 	pcb_line_t *l = (pcb_line_t *)&obj->val.obj.obj;
 	pcb_dlcr_layer_t *dl;
 	pcb_layer_t *ly = NULL;
 	int specd = 0;
+
+	if (subc != NULL) {
+		TODO("create objects on a subc layer");
+		return;
+	}
 
 	if (obj->val.obj.layer_id != PCB_DLCR_INVALID_LAYER_ID) {
 		pcb_dlcr_layer_t **dlp = (pcb_dlcr_layer_t **)vtp0_get(&dlcr->id2layer, obj->val.obj.layer_id, 0);
@@ -193,10 +200,13 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_
 static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
 	pcb_dlcr_draw_t *obj;
+	pcb_subc_t *subc = NULL, subc_tmp;
 	while((obj = gdl_first(&dlcr->drawing)) != NULL) {
 		gdl_remove(&dlcr->drawing, obj, link);
 		switch(obj->type) {
-			case DLCR_OBJ: pcb_dlcr_draw_free_obj(pcb, dlcr, obj); break;
+			case DLCR_OBJ: pcb_dlcr_draw_free_obj(pcb, subc, dlcr, obj); break;
+			case DLCR_SUBC_BEGIN: subc = &subc_tmp; break;
+			case DLCR_SUBC_END: subc = NULL; break;
 		}
 	}
 }

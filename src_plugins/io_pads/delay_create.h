@@ -29,7 +29,9 @@ typedef struct {
 #define PCB_DLCR_INVALID_LAYER_ID -32768
 
 typedef enum {
-	DLCR_OBJ
+	DLCR_OBJ,
+	DLCR_SUBC_BEGIN,
+	DLCR_SUBC_END
 /*	DLCR_SEQPOLY_BEGIN,
 	DLCR_SEQPOLY_END*/
 } pcb_dlcr_type_t;
@@ -60,6 +62,7 @@ void pcb_dlcr_uninit(pcb_dlcr_t *dlcr);
 void pcb_dlcr_layer_reg(pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *layer);
 void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer);
 
+pcb_dlcr_draw_t *dlcr_new(pcb_dlcr_t *dlcr, pcb_dlcr_type_t type);
 pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t width, rnd_coord_t clearance);
 
 /* Create all objects; call this only after layers are finalized */
