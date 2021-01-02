@@ -140,35 +140,45 @@ pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t
 	return obj;
 }
 
-static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
+/* Look up a board layer using object's layer id or layer name */
+static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj, int *specd)
 {
-	pcb_any_obj_t *a;
-	pcb_line_t *l = (pcb_line_t *)&obj->val.obj.obj;
-	pcb_dlcr_layer_t *dl;
 	pcb_layer_t *ly = NULL;
-	int specd = 0;
 
-	if (subc != NULL) {
-		TODO("create objects on a subc layer");
-		return;
-	}
-
+	*specd = 0;
 	if (obj->val.obj.layer_id != PCB_DLCR_INVALID_LAYER_ID) {
 		pcb_dlcr_layer_t **dlp = (pcb_dlcr_layer_t **)vtp0_get(&dlcr->id2layer, obj->val.obj.layer_id, 0);
-		specd = 1;
+		*specd = 1;
 		if ((dlp == NULL) || (*dlp == NULL))
 			rnd_message(RND_MSG_ERROR, "delay create: invalid layer id %ld\n", obj->val.obj.layer_id);
 		else
 			ly = (*dlp)->ly;
 	}
 	if ((ly == NULL) && (obj->val.obj.layer_name != NULL)) {
-		specd = 1;
-		dl = htsp_get(&dlcr->name2layer, obj->val.obj.layer_name);
+		pcb_dlcr_layer_t *dl = htsp_get(&dlcr->name2layer, obj->val.obj.layer_name);
+		*specd = 1;
 		if (dl != NULL)
 			ly = dl->ly;
 		if (ly == NULL)
 			rnd_message(RND_MSG_ERROR, "delay create: invalid layer name '%s'\n", obj->val.obj.layer_name);
 	}
+
+	return ly;
+}
+
+static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
+{
+	pcb_any_obj_t *a;
+	pcb_line_t *l = (pcb_line_t *)&obj->val.obj.obj;
+	pcb_layer_t *ly;
+	int specd;
+
+	if (subc != NULL) {
+		TODO("create objects on a subc layer");
+		return;
+	}
+	else
+		ly = pcb_dlcr_lookup_board_layer(pcb, dlcr, obj, &specd);
 
 	if (ly == NULL) {
 		if (!specd)
