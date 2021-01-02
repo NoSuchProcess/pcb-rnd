@@ -158,6 +158,13 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 		cx = rnd_round((double)(bbx1 + bbx2) / 2.0);
 		cy = rnd_round((double)(bby1 + bby2) / 2.0);
 		rnd_trace("  crd arc %mm;%mm %f..%f r=%mm center=%mm;%mm\n", x, y, starta, enda, (rnd_coord_t)r, cx, cy);
+		{
+			pcb_dlcr_draw_t *arc = pcb_dlcr_arc_new(&rctx->dlcr, cx, cy, r, starta, enda-starta, lpc->width, 0);
+			arc->val.obj.layer_id = lpc->level;
+			arc->loc_line = rctx->line;
+			pcb_arc_get_end(&arc->val.obj.obj.arc, 1, &x, &y);
+			rnd_trace("      end %mm;%mm\n", x, y);
+		}
 	}
 	else {
 		rnd_trace("  crd move %mm;%mm\n", x, y);

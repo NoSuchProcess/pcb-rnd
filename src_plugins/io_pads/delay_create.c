@@ -128,7 +128,7 @@ pcb_dlcr_draw_t *dlcr_new(pcb_dlcr_t *dlcr, pcb_dlcr_type_t type)
 pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t width, rnd_coord_t clearance)
 {
 	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_OBJ);
-	pcb_line_t *l = (pcb_line_t *)&obj->val.obj.obj;
+	pcb_line_t *l = &obj->val.obj.obj.line;
 
 	l->type = PCB_OBJ_LINE;
 	l->Thickness = width;
@@ -139,6 +139,23 @@ pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t
 	l->Point2.Y = y2;
 	return obj;
 }
+
+pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, double start_deg, double delta_deg, rnd_coord_t width, rnd_coord_t clearance)
+{
+	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_OBJ);
+	pcb_arc_t *a = &obj->val.obj.obj.arc;
+
+	a->type = PCB_OBJ_ARC;
+	a->Thickness = width;
+	a->Clearance = clearance;
+	a->Width = a->Height = r;
+	a->X = cx;
+	a->Y = cy;
+	a->StartAngle = start_deg;
+	a->Delta = delta_deg;
+	return obj;
+}
+
 
 /* Look up a board layer using object's layer id or layer name */
 static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj, int *specd)
@@ -168,8 +185,9 @@ static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dl
 
 static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
-	pcb_any_obj_t *a;
-	pcb_line_t *l = (pcb_line_t *)&obj->val.obj.obj;
+	pcb_any_obj_t *r;
+	pcb_line_t *l = &obj->val.obj.obj.line;
+	pcb_arc_t *a = &obj->val.obj.obj.arc;
 	pcb_layer_t *ly;
 	int specd;
 
@@ -186,9 +204,12 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 		return;
 	}
 
-	switch(obj->val.obj.obj.type) {
+	switch(obj->val.obj.obj.any.type) {
 		case PCB_OBJ_LINE:
-			a = (pcb_any_obj_t *)pcb_line_new(ly, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, l->Thickness, l->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			r = (pcb_any_obj_t *)pcb_line_new(ly, l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y, l->Thickness, l->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			break;
+		case PCB_OBJ_ARC:
+			r = (pcb_any_obj_t *)pcb_arc_new(ly, a->X, a->Y, a->Width, a->Height, a->StartAngle, a->Delta, a->Thickness, a->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
 			break;
 		default:
 			break;
@@ -198,10 +219,10 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 	{
 		char tmp[32];
 		sprintf(tmp, "%ld", obj->loc_line);
-		pcb_attribute_set(pcb, &a->Attributes, "io_pads_loc_line", tmp, 0);
+		pcb_attribute_set(pcb, &r->Attributes, "io_pads_loc_line", tmp, 0);
 	}
 #endif
-	(void)a;
+	(void)r;
 
 	free(obj->val.obj.layer_name);
 	free(obj);
