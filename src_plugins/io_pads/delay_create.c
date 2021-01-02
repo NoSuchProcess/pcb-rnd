@@ -60,22 +60,51 @@ void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer)
 	free(layer);
 }
 
+static void pcb_dlcr_create_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *l)
+{
+	pcb_layergrp_t *g = pcb_get_grp_new_raw(pcb, 0);
+	g->ltype = l->lyt;
+	g->name = l->name; l->name = NULL;
+	pcb_layer_create(pcb, g - pcb->LayerGroups.grp, g->name, 0);
+}
+
+static void pcb_dlcr_create_lyt_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_layer_type_t lyt)
+{
+	rnd_layergrp_id_t n;
+	for(n = 0; n < dlcr->id2layer.used; n++) {
+		pcb_dlcr_layer_t *l = dlcr->id2layer.array[n];
+		if ((l != NULL) && (l->lyt == lyt))
+			pcb_dlcr_create_layer(pcb, dlcr, l);
+	}
+}
+
+
 static void pcb_dlcr_create_layers(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
-	long n;
+	rnd_layergrp_id_t n;
+
+	pcb_dlcr_create_lyt_layer(pcb, dlcr, PCB_LYT_TOP | PCB_LYT_PASTE);
+	pcb_dlcr_create_lyt_layer(pcb, dlcr, PCB_LYT_TOP | PCB_LYT_SILK);
+	pcb_dlcr_create_lyt_layer(pcb, dlcr, PCB_LYT_TOP | PCB_LYT_MASK);
 
 	/* create copper layers, assuming they are in order */
 	for(n = 0; n < dlcr->id2layer.used; n++) {
 		pcb_dlcr_layer_t *l = dlcr->id2layer.array[n];
-		pcb_layergrp_t *g;
-
-		if ((l != NULL) && (l->lyt & PCB_LYT_COPPER)) {
-			g = pcb_get_grp_new_raw(pcb, 0);
-			g->ltype = l->lyt;
-			g->name = l->name; l->name = NULL;
-			pcb_layer_create(pcb, g - pcb->LayerGroups.grp, g->name, 0);
-		}
+		if ((l != NULL) && (l->lyt & PCB_LYT_COPPER))
+			pcb_dlcr_create_layer(pcb, dlcr, l);
 	}
+
+	pcb_dlcr_create_lyt_layer(pcb, dlcr, PCB_LYT_BOTTOM | PCB_LYT_MASK);
+	pcb_dlcr_create_lyt_layer(pcb, dlcr, PCB_LYT_BOTTOM | PCB_LYT_SILK);
+	pcb_dlcr_create_lyt_layer(pcb, dlcr, PCB_LYT_BOTTOM | PCB_LYT_PASTE);
+
+	/* create doc/mech layers */
+	for(n = 0; n < dlcr->id2layer.used; n++) {
+		pcb_dlcr_layer_t *l = dlcr->id2layer.array[n];
+		if ((l != NULL) && ((l->lyt & PCB_LYT_DOC) || (l->lyt & PCB_LYT_MECH)))
+			pcb_dlcr_create_layer(pcb, dlcr, l);
+	}
+
 }
 
 
