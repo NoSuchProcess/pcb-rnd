@@ -129,7 +129,7 @@ typedef struct {
 static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, long idx)
 {
 	int res;
-	rnd_coord_t x, y;
+	rnd_coord_t x, y, xe, ye;
 
 	if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
@@ -166,8 +166,21 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 			pcb_dlcr_draw_t *arc = pcb_dlcr_arc_new(&rctx->dlcr, cx, cy, r, starta, deltaa, lpc->width, 0);
 			arc->val.obj.layer_id = lpc->level;
 			arc->loc_line = rctx->line;
-			pcb_arc_get_end(&arc->val.obj.obj.arc, 1, &x, &y);
-			rnd_trace("      end %mm;%mm\n", x, y);
+
+			/* need to determine the endpoint because of the incremental drawing;
+			   for this, temporarily swap the angles (because of the y flip), check
+			   which endpoint differs from the one we started from and use that, 
+			   then restore the original angles */
+			arc->val.obj.obj.arc.StartAngle = RND_SWAP_ANGLE(arc->val.obj.obj.arc.StartAngle);
+			arc->val.obj.obj.arc.Delta = RND_SWAP_ANGLE(arc->val.obj.obj.arc.Delta);
+			pcb_arc_get_end(&arc->val.obj.obj.arc, 0, &xe, &ye);
+			if ((xe == x) && (ye == y))
+				pcb_arc_get_end(&arc->val.obj.obj.arc, 1, &xe, &ye);
+			x = xe;
+			y = ye;
+			arc->val.obj.obj.arc.StartAngle = starta;
+			arc->val.obj.obj.arc.Delta = deltaa;
+			rnd_trace("      end! %mm;%mm\n", x, y);
 		}
 	}
 	else {
