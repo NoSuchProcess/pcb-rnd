@@ -260,7 +260,7 @@ static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_c
 	if ((strcmp(ptype, "CIRCLE") == 0) || (strcmp(ptype, "BRDCIR") == 0)) {
 		if ((res = pads_parse_piece_circle(rctx, &lpc, 0)) <= 0) return res;
 	}
-	else if ((strcmp(ptype, "COPCCO") == 0) || (strcmp(ptype, "COPCIR") == 0) || (strcmp(ptype, "CURCUR") == 0)) {
+	else if ((strcmp(ptype, "COPCCO") == 0) || (strcmp(ptype, "COPCIR") == 0) || (strcmp(ptype, "CIRCUR") == 0)) {
 		if ((res = pads_parse_piece_circle(rctx, &lpc, 1)) <= 0) return res;
 	}
 	else {
