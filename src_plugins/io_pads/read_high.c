@@ -156,6 +156,7 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 
 		bbx1 += lpc->xo; bby1 += lpc->yo;
 		bbx2 += lpc->xo; bby2 += lpc->yo;
+		starta -= 180.0;
 
 		r = (double)(bbx2 - bbx1) / 2.0;
 		cx = rnd_round((double)(bbx1 + bbx2) / 2.0);
