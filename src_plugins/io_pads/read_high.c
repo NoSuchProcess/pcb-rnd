@@ -126,6 +126,7 @@ typedef struct {
 	rnd_coord_t width;
 	pads_line_type_t ltype;
 	long level;
+	rnd_coord_t xo, yo;
 } pads_line_piece_t;
 
 static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, long idx)
@@ -135,6 +136,9 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 
 	if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
+
+	x += lpc->xo;
+	y += lpc->yo;
 
 	if ((idx != 0) && ((lpc->x != x) || (lpc->y != y)))  {
 		pcb_dlcr_draw_t *line = pcb_dlcr_line_new(&rctx->dlcr, lpc->x, lpc->y, x, y, lpc->width, 0);
@@ -170,7 +174,7 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 }
 
 
-static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype)
+static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_coord_t xo, rnd_coord_t yo)
 {
 	char ptype[32], rest[32];
 	long n, num_crds, layer = -100, lstyle;
@@ -199,6 +203,8 @@ static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype)
 	lpc.width = width;
 	lpc.ltype = ltype;
 	lpc.level = ltype == PLTY_BOARD ? PADS_LID_BOARD : layer;
+	lpc.xo = xo;
+	lpc.yo = yo;
 	for(n = 0; n < num_crds; n++)
 		if ((res = pads_parse_piece_crd(rctx, &lpc, n)) <= 0) return res;
 
@@ -325,7 +331,7 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 	}
 
 	for(n = 0; n < num_pcs; n++)
-		if ((res = pads_parse_piece(rctx, ltype)) <= 0) return res;
+		if ((res = pads_parse_piece(rctx, ltype, xo, yo)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
 		if ((res = pads_parse_text(rctx)) <= 0) return res;
 
@@ -473,7 +479,7 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 		name, xo, yo, num_pieces, num_texts, num_labels, num_terms, num_stacks);
 TODO("set unit and origin");
 	for(n = 0; n < num_pieces; n++)
-		if ((res = pads_parse_piece(rctx, PLTY_LINES)) <= 0) return res;
+		if ((res = pads_parse_piece(rctx, PLTY_LINES, xo, yo)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
 		if ((res = pads_parse_text(rctx)) <= 0) return res;
 	for(n = 0; n < num_labels; n++)
