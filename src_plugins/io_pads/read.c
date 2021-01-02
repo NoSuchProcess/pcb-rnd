@@ -127,7 +127,12 @@ static int pads_parse_header(pads_read_ctx_t *rctx)
 
 static void pads_assign_layer_assoc(pads_read_ctx_t *rctx, pcb_dlcr_layer_t *src, const char *assoc_name, pcb_layer_type_t loc)
 {
-	pcb_dlcr_layer_t *l = htsp_get(&rctx->dlcr.name2layer, assoc_name);
+	pcb_dlcr_layer_t *l;
+
+	if (assoc_name == NULL)
+		return;
+
+	l = htsp_get(&rctx->dlcr.name2layer, assoc_name);
 	if (l == NULL) {
 		rnd_message(RND_MSG_ERROR, "io_pads: non-existent associated layer '%s' in layer %d (%s)\n", assoc_name, src->id, src->name);
 		return;
