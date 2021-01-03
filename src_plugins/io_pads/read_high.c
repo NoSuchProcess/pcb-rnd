@@ -324,9 +324,10 @@ static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label, rnd_coord_t xo,
 		rnd_trace("\n");
 
 	TODO("This should rather use font height");
-	scale = (double)w/RND_MM_TO_COORD(1.0) * 100.0 * 4;
+	scale = (double)w/RND_MM_TO_COORD(1.0) * 100.0 * 8;
 
-	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo, rot, scale, 0, str);
+	TODO("do not ignore text alignment");
+	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo+w*9, rot, scale, 0, str);
 	text->val.obj.layer_id = level;
 	text->loc_line = rctx->line;
 
