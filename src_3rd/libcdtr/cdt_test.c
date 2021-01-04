@@ -4,7 +4,9 @@
 #include "cdt.h"
 
 #define MAXP 64
+#define MAXE 64
 point_t *P[MAXP];
+edge_t *E[MAXE];
 cdt_t cdt;
 
 
@@ -62,6 +64,7 @@ static void cmd_free(char *args)
 {
 	cdt_free(&cdt);
 	memset(P, 0, sizeof(P));
+	memset(E, 0, sizeof(E));
 }
 
 static void cmd_del_point(char *args)
@@ -119,22 +122,59 @@ static void cmd_ins_point(char *args)
 
 static void cmd_ins_cedge(char *args)
 {
-	int id1, id2;
-	if (sscanf(args, "p%d p%d", &id1, &id2) != 2) {
-		fprintf(stderr, "syntax error: ins_cedge requires 2 arguments, p1 and p2\n");
+	edge_t *e;
+	int eid = -1, pid1, pid2, bad;
+
+	if (*args == 'e') {
+		args++;
+		bad = (sscanf(args, "%d p%d p%d", &eid, &pid1, &pid2) != 3);
+	}
+	else
+		bad = (sscanf(args, "p%d p%d", &pid1, &pid2) != 2);
+
+	if (bad) {
+		fprintf(stderr, "syntax error: ins_cedge requires 2 or 3 arguments: optional edge_id, p1 and p2\n");
 		return;
 	}
 
-	if ((id1 < 0) || (id1 >= MAXP)) {
-		fprintf(stderr, "syntax error: ins_cedge id1 out of range\n");
+	if (eid >= MAXE) {
+		fprintf(stderr, "syntax error: ins_cedge edge id out of range\n");
 		return;
 	}
-	if ((id2 < 0) || (id2 >= MAXP)) {
-		fprintf(stderr, "syntax error: ins_cedge id2 out of range\n");
+	if ((pid1 < 0) || (pid1 >= MAXP)) {
+		fprintf(stderr, "syntax error: ins_cedge pid1 out of range\n");
+		return;
+	}
+	if ((pid2 < 0) || (pid2 >= MAXP)) {
+		fprintf(stderr, "syntax error: ins_cedge pid2 out of range\n");
 		return;
 	}
 
-	cdt_insert_constrained_edge(&cdt, P[id1], P[id2]);
+	e = cdt_insert_constrained_edge(&cdt, P[pid1], P[pid2]);
+	if (eid >= 0)
+		E[eid] = e;
+}
+
+static void cmd_del_cedge(char *args)
+{
+	int eid = -1;
+
+	if (*args != 'e') {
+		fprintf(stderr, "syntax error: del_cedge needs an edge id (with the e prefix)\n");
+		return;
+	}
+	args++;
+	if (sscanf(args, "%d", &eid) != 1) {
+		fprintf(stderr, "syntax error: del_cedge an arguments\n");
+		return;
+	}
+	if ((eid < 0) || (eid >= MAXP)) {
+		fprintf(stderr, "syntax error: del_cedge id out of range\n");
+		return;
+	}
+
+	cdt_delete_constrained_edge(&cdt, E[eid]);
+	E[eid] = NULL;
 }
 
 static void cmd_dump_anim(char *args)
@@ -182,6 +222,7 @@ int main(void)
 		else if (strcmp(cmd, "ins_point") == 0) cmd_ins_point(args);
 		else if (strcmp(cmd, "del_point") == 0) cmd_del_point(args);
 		else if (strcmp(cmd, "ins_cedge") == 0) cmd_ins_cedge(args);
+		else if (strcmp(cmd, "del_cedge") == 0) cmd_del_cedge(args);
 		else if (strcmp(cmd, "dump_anim") == 0) cmd_dump_anim(args);
 		else fprintf(stderr, "syntax error: unknown command '%s'\n", cmd);
 	}
