@@ -109,6 +109,23 @@ static void cmd_ins_cedge(char *args)
 	cdt_insert_constrained_edge(&cdt, P[id1], P[id2]);
 }
 
+static void cmd_dump_anim(char *args)
+{
+	FILE *f;
+	char *end = strpbrk(args, " \t\r\n");
+
+	if (end != NULL)
+		*end = '\0';
+
+	f = fopen(args, "w");
+	if (f == NULL) {
+		fprintf(stderr, "dump_anim: failed to open '%s' for write\n", args);
+		return;
+	}
+
+	cdt_fdump_animator(f, &cdt, 0, NULL, NULL);
+	fclose(f);
+}
 
 int main(void)
 {
@@ -135,6 +152,7 @@ int main(void)
 		else if (strcmp(cmd, "init") == 0) cmd_init(args);
 		else if (strcmp(cmd, "ins_point") == 0) cmd_ins_point(args);
 		else if (strcmp(cmd, "ins_cedge") == 0) cmd_ins_cedge(args);
+		else if (strcmp(cmd, "dump_anim") == 0) cmd_dump_anim(args);
 		else fprintf(stderr, "syntax error: unknown command '%s'\n", cmd);
 	}
 	return 0;

@@ -22,3 +22,5 @@ ins_cedge p1 p3
 
 # insert a point in the center
 ins_point 455 455
+
+dump_anim split_cedge.anim
