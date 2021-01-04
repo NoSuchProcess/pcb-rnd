@@ -89,6 +89,26 @@ static void cmd_ins_point(char *args)
 		P[id] = p;
 }
 
+static void cmd_ins_cedge(char *args)
+{
+	int id1, id2;
+	if (sscanf(args, "p%d p%d", &id1, &id2) != 2) {
+		fprintf(stderr, "syntax error: ins_cedge requires 2 arguments, p1 and p2\n");
+		return;
+	}
+
+	if ((id1 < 0) || (id1 >= MAXP)) {
+		fprintf(stderr, "syntax error: ins_cedge id1 out of range\n");
+		return;
+	}
+	if ((id2 < 0) || (id2 >= MAXP)) {
+		fprintf(stderr, "syntax error: ins_cedge id2 out of range\n");
+		return;
+	}
+
+	cdt_insert_constrained_edge(&cdt, P[id1], P[id2]);
+}
+
 
 int main(void)
 {
@@ -114,6 +134,7 @@ int main(void)
 		else if (strcmp(cmd, "echo") == 0) printf("%s\n", args);
 		else if (strcmp(cmd, "init") == 0) cmd_init(args);
 		else if (strcmp(cmd, "ins_point") == 0) cmd_ins_point(args);
+		else if (strcmp(cmd, "ins_cedge") == 0) cmd_ins_cedge(args);
 		else fprintf(stderr, "syntax error: unknown command '%s'\n", cmd);
 	}
 	return 0;
