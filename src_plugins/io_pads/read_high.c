@@ -423,6 +423,8 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 
 static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 {
+	pcb_pstk_proto_t *proto;
+	pcb_pstk_tshape_t *ts;
 	char name[256], shape[8];
 	rnd_coord_t drill, size;
 	long n, num_lines, level, start = 0, end = 0;
@@ -438,13 +440,19 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 
 	pads_eatup_till_nl(rctx);
 
-	rnd_trace(" pstk_proto: %s drill=%mm [%ld..%ld]\n", name, drill, start, end);
+	proto = pcb_dlcr_pstk_proto_new(&rctx->dlcr);
+	ts = pcb_vtpadstack_tshape_get(&proto->tr, 0, 1);
+	ts->shape = calloc(sizeof(pcb_pstk_shape_t), num_lines);
+
+	rnd_trace(" pstk_proto: %s drill=%mm [%ld..%ld] pr=%p ts=%p\n", name, drill, start, end, proto, ts);
+
 	for(n = 0; n < num_lines; n++) {
 		double rot = 0, slotrot = 0, spokerot = 0;
 		char plated[8];
 		int c, is_thermal;
 		long spoke_num = 0;
 		rnd_coord_t finlen = 0, finoffs = 0, inner = 0, corner = 0, drill = 0, slotlen = 0, slotoffs = 0, spoke_outsize = 0, spoke_width = 0;
+		pcb_pstk_shape_t *shp = ts->shape + n;
 
 		if ((res = pads_read_long(rctx, &level)) <= 0) return res;
 		if ((res = pads_read_coord(rctx, &size)) <= 0) return res;
@@ -495,6 +503,13 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 
 		pads_eatup_till_nl(rctx);
 		rnd_trace("  lev=%ld size=%mm/%mm shape=%s is_thermal=%d\n", level, size, inner, shape, is_thermal);
+
+		/* create the shape in shp */
+		if ((shape[0] == 'R') && (shape[1] == '\0')) {
+			shp->shape = PCB_PSSH_CIRC;
+			shp->data.circ.x = shp->data.circ.y = 0;
+			shp->data.circ.dia = size;
+		}
 	}
 	return 1;
 }
