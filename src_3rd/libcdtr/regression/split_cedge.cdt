@@ -1,0 +1,24 @@
+# Insert a point in the middle of a diagonal constrained edge, trying to split
+# that edge in two.
+#
+# p1--------p2
+# | \       |
+# |   \     |
+# |     \   |
+# |       \ |
+# p4--------p3
+#
+
+
+# create the initial square
+init 0 0 1000 1000
+ins_point p1 10 10
+ins_point p2 900 10
+ins_point p3 900 900
+ins_point p4 10 900
+
+# insert the diagonal constrained edge
+ins_cedge p1 p3
+
+# insert a point in the center
+ins_point 455 455
