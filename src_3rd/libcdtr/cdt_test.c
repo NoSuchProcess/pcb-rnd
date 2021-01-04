@@ -3,7 +3,10 @@
 #include <time.h>
 #include "cdt.h"
 
+#define MAXP 64
+point_t *P[MAXP];
 cdt_t cdt;
+
 
 static void autotest(void)
 {
@@ -45,6 +48,48 @@ static void autotest(void)
 	cdt_free(&cdt);
 }
 
+static void cmd_init(char *args)
+{
+	long x1, y1, x2, y2;
+	if (sscanf(args, "%ld %ld %ld %ld", &x1, &y1, &x2, &y2) != 4) {
+		fprintf(stderr, "syntax error: init requires 4 arguments\n");
+		return;
+	}
+	cdt_init(&cdt, x1, y1, x2, y2);
+}
+
+static void cmd_ins_point(char *args)
+{
+	point_t *p;
+	long x, y;
+	int bad, id = -1;
+
+	if (*args == 'p') {
+		args++;
+		bad = (sscanf(args, "%d %ld %ld", &id, &x, &y) != 3);
+	}
+	else
+		bad = (sscanf(args, "%ld %ld", &x, &y) != 2);
+
+	if (bad) {
+		fprintf(stderr, "syntax error: ins_point requires 2 or 3 arguments\n");
+		return;
+	}
+	if (id >= MAXP) {
+		fprintf(stderr, "syntax error: ins_point id out of range\n");
+		return;
+	}
+
+	p = cdt_insert_point(&cdt, x, y);
+	if (p == NULL) {
+		fprintf(stderr, "ins_point: failed to create\n");
+		return;
+	}
+	if (id >= 0)
+		P[id] = p;
+}
+
+
 int main(void)
 {
 	char line[1024], *cmd, *args;
@@ -67,6 +112,8 @@ int main(void)
 		else if (strcmp(cmd, "quit") == 0) break;
 		else if (strcmp(cmd, "auto") == 0) autotest();
 		else if (strcmp(cmd, "echo") == 0) printf("%s\n", args);
+		else if (strcmp(cmd, "init") == 0) cmd_init(args);
+		else if (strcmp(cmd, "ins_point") == 0) cmd_ins_point(args);
 		else fprintf(stderr, "syntax error: unknown command '%s'\n", cmd);
 	}
 	return 0;
