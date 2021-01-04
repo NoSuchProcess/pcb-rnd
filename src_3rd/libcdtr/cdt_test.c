@@ -1,183 +1,18 @@
 #include <stdio.h>
+#include <ctype.h>
 #include <time.h>
 #include "cdt.h"
 
 cdt_t cdt;
 
-int main(void)
+static void autotest(void)
 {
 	point_t *p1, *p2;
 	edge_t *ed[500];
 	int i, j, e_num;
 	pointlist_node_t *p_violations = NULL;
 
-	//cdt_init(&cdt, 1000, 1000, 5000, 5000);
 	cdt_init(&cdt, 0, 0, 100000, 100000);
-
-	/*
-	point_t *p, *pd[1000]; 
-	edge_t *e,
-	cdt_insert_point(&cdt, 2500, 3000);
-	cdt_insert_point(&cdt, 2600, 3000);
-	cdt_insert_point(&cdt, 2700, 3000);
-	cdt_insert_point(&cdt, 2800, 3000);
-	cdt_insert_point(&cdt, 2900, 3000);
-	cdt_insert_point(&cdt, 3000, 3000);
-	cdt_insert_point(&cdt, 3100, 3000);
-	cdt_insert_point(&cdt, 3200, 3000);
-	cdt_insert_point(&cdt, 3300, 3000);
-	cdt_insert_point(&cdt, 2800, 4800);
-	*/
-
-	/*
-	cdt_insert_point(&cdt, 2700, 2700);
-	cdt_insert_point(&cdt, 2400, 2400);
-	cdt_insert_point(&cdt, 2400, 3000);
-
-	cdt_insert_point(&cdt, 3400, 2700);
-	cdt_insert_point(&cdt, 3700, 2400);
-	cdt_insert_point(&cdt, 3700, 3000);
-
-	cdt_insert_point(&cdt, 2900, 2700);
-	cdt_insert_point(&cdt, 3000, 2700);
-	cdt_insert_point(&cdt, 3100, 2700);
-	cdt_insert_point(&cdt, 3200, 2700);
-	*/
-
-	/*
-	clock_t t;
-	srand(time(NULL));
-	t = clock();
-	for (i = 0; i < 1000; i++) {
-		cdt_insert_point(&cdt, rand()%99999 + 1, rand()%99999 + 1);
-	}
-	t = clock() - t;
-	fprintf(stderr, "Triangulation time: %f\n", ((float)t)/CLOCKS_PER_SEC);
-	*/
-
-	/* octagon */
-	/*
-	cdt_insert_point(&cdt, 4000, 3000);
-	cdt_insert_point(&cdt, 3700, 3700);
-	cdt_insert_point(&cdt, 3000, 4000);
-	cdt_insert_point(&cdt, 2300, 3700);
-	cdt_insert_point(&cdt, 2000, 3000);
-	cdt_insert_point(&cdt, 2300, 2300);
-	cdt_insert_point(&cdt, 3000, 2000);
-	cdt_insert_point(&cdt, 3700, 2300);
-
-	p = cdt_insert_point(&cdt, 3000, 3000);
-	cdt_delete_point(&cdt, p);
-	*/
-
-	/* concave poly */
-	/*
-	cdt_insert_point(&cdt, 2000, 4000);
-	cdt_insert_point(&cdt, 3000, 3500);
-	cdt_insert_point(&cdt, 4000, 4000);
-	cdt_insert_point(&cdt, 4000, 2000);
-	cdt_insert_point(&cdt, 2000, 2000);
-
-	p = cdt_insert_point(&cdt, 3000, 3000);
-	cdt_delete_point(&cdt, p);
-	*/
-
-	/* constrained edge */
-	/*
-	p1 = cdt_insert_point(&cdt, 1500, 3000);
-	cdt_insert_point(&cdt, 2000, 3500);
-	cdt_insert_point(&cdt, 2500, 2500);
-	cdt_insert_point(&cdt, 3000, 3500);
-	cdt_insert_point(&cdt, 3500, 2500);
-	cdt_insert_point(&cdt, 4000, 3500);
-	p2 = cdt_insert_point(&cdt, 4500, 3000);
-
-	e = cdt_insert_constrained_edge(&cdt, p1, p2);
-	cdt_delete_constrained_edge(&cdt, e);
-	*/
-
-	/* constrained edge 2 */
-	/*
-	p1 = cdt_insert_point(&cdt, 1500, 3800);
-	cdt_insert_point(&cdt, 2700, 3000);
-	cdt_insert_point(&cdt, 2800, 3000);
-	cdt_insert_point(&cdt, 2900, 3000);
-	cdt_insert_point(&cdt, 3000, 3000);
-	cdt_insert_point(&cdt, 3100, 3000);
-	cdt_insert_point(&cdt, 3200, 3000);
-	cdt_insert_point(&cdt, 3300, 3000);
-	p2 = cdt_insert_point(&cdt, 4500, 3800);
-	cdt_insert_point(&cdt, 3000, 4800);
-
-	e = cdt_insert_constrained_edge(&cdt, p1, p2);
-	*/
-
-	/*
-	srand(time(NULL));
-	for (i = 0; i < 1000; i++) {
-		cdt_insert_point(&cdt, rand()%99999 + 1, rand()%99999 + 1);
-		pd[i] = cdt_insert_point(&cdt, rand()%99999 + 1, rand()%99999 + 1);
-	}
-	for (i = 0; i < 1000; i++) {
-		cdt_delete_point(&cdt, pd[i]);
-	}
-	*/
-
-	/* tricky case for triangulate_polygon */
-	/*
-	p = cdt_insert_point(&cdt, 98347, 51060);
-	cdt_insert_point(&cdt, 92086, 47852);
-	cdt_insert_point(&cdt, 95806, 44000);
-	cdt_insert_point(&cdt, 95030, 41242);
-	cdt_insert_point(&cdt, 94644, 55629);
-	cdt_insert_point(&cdt, 94000, 45300);
-
-	cdt_delete_point(&cdt, p);
-	*/
-
-	/* delete constrained edge */
-	/*
-	p1 = cdt_insert_point(&cdt, 1500, 3000);
-	cdt_insert_point(&cdt, 2000, 3500);
-	cdt_insert_point(&cdt, 1900, 2500);
-	cdt_insert_point(&cdt, 2400, 2500);
-
-	cdt_insert_point(&cdt, 2800, 3500);
-	cdt_insert_point(&cdt, 3000, 3500);
-	cdt_insert_point(&cdt, 3200, 3500);
-
-	cdt_insert_point(&cdt, 3600, 2500);
-	cdt_insert_point(&cdt, 4100, 2500);
-	cdt_insert_point(&cdt, 4000, 3500);
-	p2 = cdt_insert_point(&cdt, 4500, 3000);
-
-	e = cdt_insert_constrained_edge(&cdt, p1, p2);
-	cdt_delete_constrained_edge(&cdt, e);
-	*/
-
-	/* delete 2 constrained edges */
-	/*
-	p1 = cdt_insert_point(&cdt, 2400, 1500);
-	cdt_insert_point(&cdt, 2200, 3500);
-	cdt_insert_point(&cdt, 2200, 2000);
-	p2 = cdt_insert_point(&cdt, 2400, 4000);
-	ed[0] = cdt_insert_constrained_edge(&cdt, p1, p2);
-
-	p1 = cdt_insert_point(&cdt, 2500, 3000);
-	cdt_insert_point(&cdt, 3000, 2800);
-	cdt_insert_point(&cdt, 3500, 2800);
-	cdt_insert_point(&cdt, 2800, 3200);
-	cdt_insert_point(&cdt, 3500, 3200);
-	p2 = cdt_insert_point(&cdt, 4500, 3000);
-	ed[1] = cdt_insert_constrained_edge(&cdt, p1, p2);
-
-	p2 = cdt_insert_point(&cdt, 3500, 3500);
-	ed[2] = cdt_insert_constrained_edge(&cdt, p1, p2);
-
-	cdt_delete_constrained_edge(&cdt, ed[0]);
-	cdt_delete_constrained_edge(&cdt, ed[1]);
-	cdt_delete_constrained_edge(&cdt, ed[2]);
-	*/
 
 	srand(time(NULL));
 	e_num = 0;
@@ -209,3 +44,31 @@ int main(void)
 	pointlist_free(p_violations);
 	cdt_free(&cdt);
 }
+
+int main(void)
+{
+	char line[1024], *cmd, *args;
+	while((cmd = fgets(line, sizeof(line), stdin)) != NULL) {
+		while(isspace(*cmd)) cmd++;
+
+		if (*cmd != '\0') {
+			args = strpbrk(cmd, " \t\r\n");
+			if (args == NULL) {
+				fprintf(stderr, "premature EOF\n");
+				return 1;
+			}
+			*args = '\0';
+			args++;
+			while(isspace(*args)) args++;
+		}
+
+		if ((*cmd == '\0') || (*cmd == '#')) { /* ignore empty lines and comments */ }
+		else if (strcmp(cmd, "exit") == 0) break;
+		else if (strcmp(cmd, "quit") == 0) break;
+		else if (strcmp(cmd, "auto") == 0) autotest();
+		else if (strcmp(cmd, "echo") == 0) printf("%s\n", args);
+		else fprintf(stderr, "syntax error: unknown command '%s'\n", cmd);
+	}
+	return 0;
+}
+
