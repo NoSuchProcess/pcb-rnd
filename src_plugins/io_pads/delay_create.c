@@ -146,7 +146,9 @@ pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t
 	l->Point2.X = x2;
 	l->Point2.Y = y2;
 	pcb_line_bbox(l);
-	if (!dlcr->in_subc)
+	if (dlcr->subc_begin != NULL)
+		rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.bbox, &l->bbox_naked);
+	else
 		rnd_box_bump_box(&dlcr->board_bbox, &l->bbox_naked);
 	return obj;
 }
@@ -165,7 +167,9 @@ pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t 
 	a->StartAngle = start_deg;
 	a->Delta = delta_deg;
 	pcb_arc_bbox(a);
-	if (!dlcr->in_subc)
+	if (dlcr->subc_begin != NULL)
+		rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.bbox, &a->bbox_naked);
+	else
 		rnd_box_bump_box(&dlcr->board_bbox, &a->bbox_naked);
 	return obj;
 }
@@ -183,24 +187,25 @@ pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t 
 	t->Scale = scale;
 	t->TextString = rnd_strdup(str);
 	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
-	if (!dlcr->in_subc)
+	if (dlcr->subc_begin != NULL)
+		rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.bbox, &t->bbox_naked);
+	else
 		rnd_box_bump_box(&dlcr->board_bbox, &t->bbox_naked);
 	return obj;
 }
 
 void pcb_dlcr_subc_begin(pcb_dlcr_t *dlcr)
 {
-	dlcr_new(dlcr, DLCR_SUBC_BEGIN);
-	dlcr->in_subc++;
+	assert(dlcr->subc_begin == NULL);
+	dlcr->subc_begin = dlcr_new(dlcr, DLCR_SUBC_BEGIN);
 }
 
 void pcb_dlcr_subc_end(pcb_dlcr_t *dlcr)
 {
+	assert(dlcr->subc_begin != NULL);
 	dlcr_new(dlcr, DLCR_SUBC_END);
-	assert(dlcr->in_subc > 0);
-	dlcr->in_subc--;
+	dlcr->subc_begin = NULL;
 }
-
 
 /* Look up a board layer using object's layer id or layer name */
 static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj, int *specd)

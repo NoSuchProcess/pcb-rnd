@@ -3,6 +3,7 @@
 #include <genvector/vtp0.h>
 #include "board.h"
 
+#include "data.h"
 #include "layer.h"
 #include "obj_common.h"
 
@@ -49,6 +50,10 @@ typedef struct {
 			long layer_id;
 			char *layer_name;
 		} obj;
+		struct {
+			pcb_data_t pstks;
+			rnd_box_t bbox;
+		} subc_begin; /* in DLCR_SUBC_BEGIN */
 	} val;
 	long loc_line; /* for debug */
 	gdl_elem_t link;
@@ -59,7 +64,8 @@ typedef struct {
 	vtp0_t id2layer;
 	gdl_list_t drawing;  /* of pcb_dlcr_draw_t; */
 	rnd_box_t board_bbox;
-	int in_subc;         /* 0 when drawing on the board, non-0 in between DLCR_SUBC_BEGIN and DLCR_SUBC_END */
+	pcb_dlcr_draw_t *subc_begin;    /* NULL when drawing on the board, pointing to the SUBC_BEGIN node in between DLCR_SUBC_BEGIN and DLCR_SUBC_END */
+	pcb_data_t pstks;
 
 	/* config */
 	unsigned flip_y:1;   /* if 1, mirror y coordinates over the X axis */
