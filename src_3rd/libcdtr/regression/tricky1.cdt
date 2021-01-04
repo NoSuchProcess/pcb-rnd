@@ -1,5 +1,5 @@
 # original example ported from cdt_test.c: tricky case #1
-init 0 0 10000 10000
+init 0 0 100000 100000
 
 
 ins_point p1 98347 51060
