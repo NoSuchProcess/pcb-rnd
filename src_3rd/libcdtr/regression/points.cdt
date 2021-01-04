@@ -1,0 +1,16 @@
+# original example ported from cdt_test.c
+init 0 0 10000 10000
+
+ins_point 2500 3000
+ins_point 2600 3000
+ins_point 2700 3000
+ins_point 2800 3000
+ins_point 2900 3000
+ins_point 3000 3000
+ins_point 3100 3000
+ins_point 3200 3000
+ins_point 3300 3000
+ins_point 2800 4800
+
+dump_anim points.anim
+free

@@ -1,0 +1,16 @@
+# original example ported from cdt_test.c: tricky case #1
+init 0 0 10000 10000
+
+
+ins_point p1 98347 51060
+ins_point 92086 47852
+ins_point 95806 44000
+ins_point 95030 41242
+ins_point 94644 55629
+ins_point 94000 45300
+dump_anim tricky1_1.anim
+
+del_point p1
+dump_anim tricky1_2.anim
+
+free

@@ -1,0 +1,19 @@
+# original example ported from cdt_test.c: octagon
+init 0 0 10000 10000
+
+ins_point 4000 3000
+ins_point 3700 3700
+ins_point 3000 4000
+ins_point 2300 3700
+ins_point 2000 3000
+ins_point 2300 2300
+ins_point 3000 2000
+ins_point 3700 2300
+dump_anim octa1.anim
+
+ins_point p1 3000 3000
+dump_anim octa2.anim
+del_point p1
+
+dump_anim octa3.anim
+free

@@ -1,0 +1,18 @@
+# original example ported from cdt_test.c: concave polygon
+init 0 0 10000 10000
+
+ins_point 2000 4000
+ins_point 3000 3500
+ins_point 4000 4000
+ins_point 4000 2000
+ins_point 2000 2000
+
+dump_anim concave1.anim
+
+ins_point p1 3000 3000
+dump_anim concave2.anim
+
+del_point p1
+dump_anim concave3.anim
+
+free
