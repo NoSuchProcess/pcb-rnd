@@ -24,3 +24,4 @@ ins_cedge p1 p3
 ins_point 455 455
 
 dump_anim split_cedge.anim
+free
