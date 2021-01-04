@@ -795,54 +795,60 @@ static void circumcircle(const triangle_t *t, pos_t *p, int *r)
 	*r = sqrt((d2*d2)/(d1*d1) + (d3*d3)/(d1*d1) + 4*d4/d1)/2;
 }
 
-void cdt_dump_animator(cdt_t *cdt, int show_circles, pointlist_node_t *point_violations, trianglelist_node_t *triangle_violations)
+void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t *point_violations, trianglelist_node_t *triangle_violations)
 {
 	int last_c = 0;
 	int triangle_num = 0;
-	printf("frame\n");
-	printf("scale 0.9\n");
-	printf("viewport %f %f - %f %f\n", (double)cdt->bbox_tl.x - 1.0, (double)cdt->bbox_tl.y - 1.0, (double)cdt->bbox_br.x + 1.0, (double)cdt->bbox_br.y  + 1.0);
+	fprintf(f, "frame\n");
+	fprintf(f, "scale 0.9\n");
+	fprintf(f, "viewport %f %f - %f %f\n", (double)cdt->bbox_tl.x - 1.0, (double)cdt->bbox_tl.y - 1.0, (double)cdt->bbox_br.x + 1.0, (double)cdt->bbox_br.y  + 1.0);
 
 	VTEDGE_FOREACH(edge, &cdt->edges)
 		if(last_c != edge->is_constrained) {
-			printf("color %s\n", edge->is_constrained ? "red" : "black");
-			printf("thick %s\n", edge->is_constrained ? "2" : "1");
+			fprintf(f, "color %s\n", edge->is_constrained ? "red" : "black");
+			fprintf(f, "thick %s\n", edge->is_constrained ? "2" : "1");
 			last_c = edge->is_constrained;
 		}
-		printf("line %d %d %d %d\n", edge->endp[0]->pos.x, edge->endp[0]->pos.y, edge->endp[1]->pos.x, edge->endp[1]->pos.y);
+		fprintf(f, "line %d %d %d %d\n", edge->endp[0]->pos.x, edge->endp[0]->pos.y, edge->endp[1]->pos.x, edge->endp[1]->pos.y);
 	VTEDGE_FOREACH_END();
 
-	printf("color green\n");
+	fprintf(f, "color green\n");
 	VTTRIANGLE_FOREACH(triangle, &cdt->triangles)
 		pos_t pos;
 		int r;
 		if (show_circles) {
 			circumcircle(triangle, &pos, &r);
-			printf("circle %d %d %d 50\n", pos.x, pos.y, r);
+			fprintf(f, "circle %d %d %d 50\n", pos.x, pos.y, r);
 		}
 		triangle_num++;
 	VTTRIANGLE_FOREACH_END();
 
-	printf("color red\n");
+	fprintf(f, "color red\n");
 	if (point_violations) {
 		POINTLIST_FOREACH(p, point_violations)
-			printf("circle %d %d 50 10\n", p->pos.x, p->pos.y);
+			fprintf(f, "circle %d %d 50 10\n", p->pos.x, p->pos.y);
 		POINTLIST_FOREACH_END();
 	}
 
-	printf("color darkred\n");
+	fprintf(f, "color darkred\n");
 	if (triangle_violations) {
 		TRIANGLELIST_FOREACH(t, triangle_violations)
 			pos_t pos;
 			int r;
 			circumcircle(t, &pos, &r);
-			printf("circle %d %d %d 50\n", pos.x, pos.y, r);
+			fprintf(f, "circle %d %d %d 50\n", pos.x, pos.y, r);
 		TRIANGLELIST_FOREACH_END();
 	}
 
-	printf("flush\n");
-	fprintf(stderr, "triangle num: %d\n", triangle_num);
+	fprintf(f, "flush\n");
+	fprintf(f, "! triangle num: %d\n", triangle_num);
 }
+
+void cdt_dump_animator(cdt_t *cdt, int show_circles, pointlist_node_t *point_violations, trianglelist_node_t *triangle_violations)
+{
+	cdt_fdump_animator(stdout, cdt, show_circles, point_violations, triangle_violations);
+}
+
 
 int cdt_check_delaunay(cdt_t *cdt, pointlist_node_t **point_violations, trianglelist_node_t **triangle_violations)
 {
