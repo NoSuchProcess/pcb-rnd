@@ -60,8 +60,8 @@ typedef struct {
 } pcb_dlcr_draw_t;
 
 typedef struct {
-	htsp_t name2layer;   /* key=->id, val=pcb_dlcr_layer_t */
-	vtp0_t id2layer;
+	htsp_t name2layer;
+	vtp0_t id2layer;     /* key=->id, val=pcb_dlcr_layer_t */
 	gdl_list_t drawing;  /* of pcb_dlcr_draw_t; */
 	rnd_box_t board_bbox;
 	pcb_dlcr_draw_t *subc_begin;    /* NULL when drawing on the board, pointing to the SUBC_BEGIN node in between DLCR_SUBC_BEGIN and DLCR_SUBC_END */
