@@ -61,6 +61,29 @@ static void cmd_init(char *args)
 static void cmd_free(char *args)
 {
 	cdt_free(&cdt);
+	memset(P, 0, sizeof(P));
+}
+
+static void cmd_del_point(char *args)
+{
+	int id = -1;
+
+	if (*args != 'p') {
+		fprintf(stderr, "syntax error: del_point needs a point id (with the p prefix)\n");
+		return;
+	}
+	args++;
+	if (sscanf(args, "%d", &id) != 1) {
+		fprintf(stderr, "syntax error: del_point an arguments\n");
+		return;
+	}
+	if ((id < 0) || (id >= MAXP)) {
+		fprintf(stderr, "syntax error: del_point id out of range\n");
+		return;
+	}
+
+	cdt_delete_point(&cdt, P[id]);
+	P[id] = NULL;
 }
 
 static void cmd_ins_point(char *args)
@@ -157,6 +180,7 @@ int main(void)
 		else if (strcmp(cmd, "init") == 0) cmd_init(args);
 		else if (strcmp(cmd, "free") == 0) cmd_free(args);
 		else if (strcmp(cmd, "ins_point") == 0) cmd_ins_point(args);
+		else if (strcmp(cmd, "del_point") == 0) cmd_del_point(args);
 		else if (strcmp(cmd, "ins_cedge") == 0) cmd_ins_cedge(args);
 		else if (strcmp(cmd, "dump_anim") == 0) cmd_dump_anim(args);
 		else fprintf(stderr, "syntax error: unknown command '%s'\n", cmd);
