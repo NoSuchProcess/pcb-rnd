@@ -1,0 +1,25 @@
+# Test case from "An On-Line Algorithm for Constrained Delaunay Triangulation"
+# (checks polygon optimization after inserting a constrained edge)
+
+init 0 0 2500 2000
+#ins_point 181 922
+#ins_point 50 691
+#ins_point 98 371
+ins_point p1 355 669
+ins_point 400 306
+ins_point 667 977
+ins_point 1192 96
+ins_point 1158 1147
+ins_point 1385 340
+ins_point 1704 890
+ins_point p2 1759 669
+dump_anim polygon_1.anim
+
+ins_cedge e1 p1 p2
+dump_anim polygon_2.anim
+
+# split the constrained edge
+ins_point 800 669
+dump_anim polygon_3.anim
+
+#del_cedge e1
