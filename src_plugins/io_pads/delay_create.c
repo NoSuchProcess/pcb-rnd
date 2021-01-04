@@ -299,6 +299,18 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 	free(obj);
 }
 
+static void pcb_dlcr_create_pstk_protos(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_data_t *dst, const pcb_data_t *src)
+{
+	rnd_cardinal_t n, m;
+	for(n = 0; n < src->ps_protos.used; n++) {
+		m = pcb_pstk_proto_insert_forcedup(dst, &src->ps_protos.array[n], 0, 0);
+		if (n != m) {
+			rnd_message(RND_MSG_ERROR, "pcb_dlcr_create_pstk_protos: failed to create padstack prototype\n");
+			break;
+		}
+	}
+}
+
 static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
 	pcb_dlcr_draw_t *obj;
@@ -316,6 +328,7 @@ static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 void pcb_dlcr_create(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
 	pcb_dlcr_create_layers(pcb, dlcr);
+	pcb_dlcr_create_pstk_protos(pcb, dlcr, pcb->Data, &dlcr->pstks);
 	pcb_dlcr_create_drawings(pcb, dlcr);
 	pcb->hidlib.size_x = dlcr->board_bbox.X2;
 	pcb->hidlib.size_y = dlcr->board_bbox.Y2;
