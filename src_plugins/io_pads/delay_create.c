@@ -299,11 +299,48 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 	free(obj);
 }
 
+TODO("this is pads-specific, figure how to handle this; see also: TODO#71");
+static void proto_layer_lookup(pcb_dlcr_t *dlcr, pcb_pstk_shape_t *shp)
+{
+	int level = shp->layer_mask;
+	switch(level) { /* set layer type */
+		case -2: shp->layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; break;
+		case -1: shp->layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; break;
+		case  0: shp->layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; break;
+		default:
+			{
+				pcb_dlcr_layer_t *ly, **lyp = vtp0_get(&dlcr->id2layer, level, 0);
+				if ((lyp != NULL) && (*lyp != NULL)) {
+					ly = *lyp;
+					if (!(ly->lyt & PCB_LYT_COPPER)) {
+						shp->layer_mask = ly->lyt;
+						if (ly->lyt & PCB_LYT_MASK)
+							shp->comb = PCB_LYC_SUB;
+					}
+					else {
+						rnd_message(RND_MSG_ERROR, "Padstack prototype can not have a different shape on copper layer %d\n", level);
+					}
+				}
+				else {
+					rnd_message(RND_MSG_ERROR, "Padstack prototype references non-existing layer %d\n", level);
+				}
+			}
+		break;
+	}
+}
+
 static void pcb_dlcr_create_pstk_protos(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_data_t *dst, const pcb_data_t *src)
 {
 	rnd_cardinal_t n, m;
 	for(n = 0; n < src->ps_protos.used; n++) {
-		m = pcb_pstk_proto_insert_forcedup(dst, &src->ps_protos.array[n], 0, 0);
+		pcb_pstk_proto_t *proto = &src->ps_protos.array[n];
+		pcb_pstk_tshape_t *ts = pcb_vtpadstack_tshape_get(&proto->tr, 0, 0);
+		int i;
+		for(i = 0; i < ts->len; i++) {
+			pcb_pstk_shape_t *shp = ts->shape + i;
+			proto_layer_lookup(dlcr, shp);
+		}
+		m = pcb_pstk_proto_insert_forcedup(dst, proto, 0, 0);
 		if (n != m) {
 			rnd_message(RND_MSG_ERROR, "pcb_dlcr_create_pstk_protos: failed to create padstack prototype\n");
 			break;

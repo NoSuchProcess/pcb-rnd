@@ -443,6 +443,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 	proto = pcb_dlcr_pstk_proto_new(&rctx->dlcr);
 	ts = pcb_vtpadstack_tshape_get(&proto->tr, 0, 1);
 	ts->shape = calloc(sizeof(pcb_pstk_shape_t), num_lines);
+	ts->len = num_lines;
 
 	rnd_trace(" pstk_proto: %s drill=%mm [%ld..%ld] pr=%p ts=%p\n", name, drill, start, end, proto, ts);
 
@@ -510,6 +511,9 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 			shp->data.circ.x = shp->data.circ.y = 0;
 			shp->data.circ.dia = size;
 		}
+
+TODO("pads-specific code in delay draw!!; see also: TODO#71");
+		shp->layer_mask = level; /* ugly hack: save the layer id for now */
 	}
 	return 1;
 }
