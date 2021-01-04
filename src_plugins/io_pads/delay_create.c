@@ -194,6 +194,12 @@ pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t 
 	return obj;
 }
 
+pcb_pstk_proto_t *pcb_dlcr_pstk_proto_new(pcb_dlcr_t *dlcr)
+{
+	pcb_data_t *data = (dlcr->subc_begin != NULL) ? &dlcr->subc_begin->val.subc_begin.pstks : &dlcr->pstks;
+	return pcb_vtpadstack_proto_alloc_append(&data->ps_protos, 1);
+}
+
 void pcb_dlcr_subc_begin(pcb_dlcr_t *dlcr)
 {
 	assert(dlcr->subc_begin == NULL);
