@@ -464,7 +464,8 @@ static void insert_point_(cdt_t *cdt, point_t *new_p)
 	triangle_t *enclosing_triangle = NULL;
 	retriangulation_region_t region = {NULL, NULL};
 	pointlist_node_t *points_to_attach, *prev_point_node;
-	int i;
+	point_t *split_edge_endp[2] = {NULL, NULL};
+	int i, j;
 
 	/* find enclosing triangle */
 	VTTRIANGLE_FOREACH(t, &cdt->triangles)
@@ -474,6 +475,21 @@ static void insert_point_(cdt_t *cdt, point_t *new_p)
 		}
 	VTTRIANGLE_FOREACH_END();
 	assert(enclosing_triangle != NULL);
+
+	/* check if the new point is on a constrained edge and unconstrain it
+	 * (it will be removed, and then created as 2 segments connecting the new point)
+	 */
+	for (i = 0; i < 3; i++) {
+		if (enclosing_triangle->adj_t[i] != NULL && is_point_in_triangle(new_p, enclosing_triangle->adj_t[i])) {
+			edge_t *crossing_edge = enclosing_triangle->e[i];
+			if (crossing_edge->is_constrained) {
+				for (j = 0; j < 2; j++)
+					split_edge_endp[j] = enclosing_triangle->e[i]->endp[j];
+				crossing_edge->is_constrained = 0;
+			}
+			break;
+		}
+	}
 
 	/* remove invalid edges and attach enclosing points */
 	for (i = 0; i < 3; i++) {
@@ -501,6 +517,12 @@ static void insert_point_(cdt_t *cdt, point_t *new_p)
 	POINTLIST_FOREACH_END();
 	new_triangle(cdt, prev_point_node->item, points_to_attach->item, new_p);
 	pointlist_free(points_to_attach);
+
+	/* recreate, now splitted, constrained edge */
+	if (split_edge_endp[0] != NULL) {
+		cdt_insert_constrained_edge(cdt, split_edge_endp[0], new_p);
+		cdt_insert_constrained_edge(cdt, new_p, split_edge_endp[1]);
+	}
 }
 
 point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
