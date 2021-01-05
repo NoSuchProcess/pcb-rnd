@@ -487,9 +487,9 @@ static int insert_point_(cdt_t *cdt, point_t *new_p)
 			if (crossing_edge->is_constrained) {
 				for (j = 0; j < 2; j++)
 					split_edge_endp[j] = enclosing_triangle->e[i]->endp[j];
-				split_edge_user_data = crossing_edge->data;
 				if (cdt->ev_split_constrained_edge_pre != NULL)
 					cdt->ev_split_constrained_edge_pre(cdt, crossing_edge, new_p);
+				split_edge_user_data = crossing_edge->data;
 				crossing_edge->is_constrained = 0;
 			}
 			break;
