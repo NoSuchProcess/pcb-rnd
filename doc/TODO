@@ -10,6 +10,7 @@
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 - BUG: load bxl directly from the command line -> crash in layer menu [report: Igor2]
 - BUG: opengl render: when editpoint crosses are drawn, the color of other labels change  [report: Igor2]
+- BUG: propedit dialog, add a new attribute, edit the value on the right side, press enter after typing -> it won't apply; works with coords [report: Gene]
 
 2. For later releases ===============================================================================
 - CLEANUP: librnd sep:
@@ -34,6 +35,7 @@
 - CLEANUP/FEATURE: new breadboard
 	- FEATURE: gfx rotated pixmap scale -> uneven x/y scale can not be done while rendering; change the API so the x/y aspect change is done in software during the rotation (pcb_pixmap_alloc_insert_transformed) and only an even x/y scale is done during rendering (ghid_draw_pixmap)
 	- DOC: pool node on how to use pixmap for breadboading
+- FEATUER: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: (TT) route style upgrade to prototypes - requires lihata v8:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
