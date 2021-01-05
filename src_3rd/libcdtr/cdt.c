@@ -465,6 +465,7 @@ static int insert_point_(cdt_t *cdt, point_t *new_p)
 	retriangulation_region_t region = {NULL, NULL};
 	pointlist_node_t *points_to_attach, *prev_point_node;
 	point_t *split_edge_endp[2] = {NULL, NULL};
+	void *split_edge_user_data;
 	int i, j;
 
 	/* find enclosing triangle */
@@ -486,6 +487,9 @@ static int insert_point_(cdt_t *cdt, point_t *new_p)
 			if (crossing_edge->is_constrained) {
 				for (j = 0; j < 2; j++)
 					split_edge_endp[j] = enclosing_triangle->e[i]->endp[j];
+				split_edge_user_data = crossing_edge->data;
+				if (cdt->ev_split_constrained_edge_pre != NULL)
+					cdt->ev_split_constrained_edge_pre(cdt, crossing_edge, new_p);
 				crossing_edge->is_constrained = 0;
 			}
 			break;
@@ -521,8 +525,11 @@ static int insert_point_(cdt_t *cdt, point_t *new_p)
 
 	/* recreate, now splitted, constrained edge */
 	if (split_edge_endp[0] != NULL) {
-		cdt_insert_constrained_edge(cdt, split_edge_endp[0], new_p);
-		cdt_insert_constrained_edge(cdt, new_p, split_edge_endp[1]);
+		edge_t *e1 = cdt_insert_constrained_edge(cdt, split_edge_endp[0], new_p);
+		edge_t *e2 = cdt_insert_constrained_edge(cdt, new_p, split_edge_endp[1]);
+		e1->data = e2->data = split_edge_user_data;
+		if (cdt->ev_split_constrained_edge_post != NULL)
+			cdt->ev_split_constrained_edge_post(cdt, e1, e2, new_p);
 	}
 	return 0;
 }

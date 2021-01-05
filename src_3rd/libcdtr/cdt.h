@@ -33,15 +33,20 @@
 #include "edge.h"
 #include "triangle.h"
 
+typedef struct cdt_s cdt_t;
 
-typedef struct {
+struct cdt_s {
 	vtpoint_t points;
 	vtedge_t edges;
 	vttriangle_t triangles;
 
+	/* optional event callbacks (may be NULL to ignore) */
+	void (*ev_split_constrained_edge_pre)(cdt_t *cdt, edge_t *cedge, point_t *pt); /* called before removing a constrained edge that gets split at pt */
+	void (*ev_split_constrained_edge_post)(cdt_t *cdt, edge_t *ne1, edge_t *ne2, point_t *pt); /* called after creating the two new constrained edges around pt */
+
 	pos_t bbox_tl;
 	pos_t bbox_br;
-} cdt_t;
+};
 
 
 void cdt_init(cdt_t *cdt, coord_t bbox_x1, coord_t bbox_y1, coord_t bbox_x2, coord_t bbox_y2);

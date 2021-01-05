@@ -9,6 +9,8 @@
 # p4--------p3
 #
 
+# there should be one split printed, pre and post
+print_events yes
 
 # create the initial square
 init 0 0 1000 1000

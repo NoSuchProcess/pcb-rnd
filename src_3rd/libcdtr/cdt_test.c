@@ -50,6 +50,20 @@ static void autotest(void)
 	cdt_free(&cdt);
 }
 
+static int print_events = 0;
+
+static void ev_split_constrained_edge_pre(cdt_t *cdt, edge_t *cedge, point_t *pt)
+{
+	if (print_events)
+		printf("split_constrained_edge_pre at %d;%d\n", pt->pos.x, pt->pos.y);
+}
+
+static void ev_split_constrained_edge_post(cdt_t *cdt, edge_t *ne1, edge_t *ne2, point_t *pt)
+{
+	if (print_events)
+		printf("split_constrained_edge_post at %d;%d\n", pt->pos.x, pt->pos.y);
+}
+
 static void cmd_init(char *args)
 {
 	long x1, y1, x2, y2;
@@ -58,6 +72,8 @@ static void cmd_init(char *args)
 		return;
 	}
 	cdt_init(&cdt, x1, y1, x2, y2);
+	cdt.ev_split_constrained_edge_pre = ev_split_constrained_edge_pre;
+	cdt.ev_split_constrained_edge_post = ev_split_constrained_edge_post;
 }
 
 static void cmd_free(char *args)
@@ -195,6 +211,17 @@ static void cmd_dump_anim(char *args)
 	fclose(f);
 }
 
+static void cmd_print_events(char *args)
+{
+	switch(*args) {
+		case '1': case 'y': case 'Y': case 't': case 'T': print_events = 1; break;
+		case '0': case 'n': case 'N': case 'f': case 'F': print_events = 0; break;
+		default:
+			fprintf(stderr, "print_events: invalid boolean value '%s'\n", args);
+			return;
+	}
+}
+
 int main(void)
 {
 	char line[1024], *cmd, *args;
@@ -224,6 +251,7 @@ int main(void)
 		else if (strcmp(cmd, "ins_cedge") == 0) cmd_ins_cedge(args);
 		else if (strcmp(cmd, "del_cedge") == 0) cmd_del_cedge(args);
 		else if (strcmp(cmd, "dump_anim") == 0) cmd_dump_anim(args);
+		else if (strcmp(cmd, "print_events") == 0) cmd_print_events(args);
 		else fprintf(stderr, "syntax error: unknown command '%s'\n", cmd);
 	}
 	return 0;
