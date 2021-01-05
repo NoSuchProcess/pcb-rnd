@@ -1,0 +1,8 @@
+# 2 out of 3 points out of range (should print two errors)
+init 0 0 1000 1000
+
+ins_point 100 100
+ins_point 2600 3200
+ins_point 2700 3000
+
+free
