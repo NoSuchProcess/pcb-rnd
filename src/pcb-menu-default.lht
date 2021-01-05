@@ -433,6 +433,8 @@ ha:rnd-menu-v1 {
 						ha:Hole +10 mil      = { action=ChangeDrillSize(SelectedPadstacks,+10,mil) }
 						-
 						ha:Toggle join       = { action=ChangeJoin(SelectedObjects) }
+						-
+						ha:Edit properties   = { a={<key>s; <key>p}; action=propedit(selection) }
 					}
 				}
 			}
