@@ -459,7 +459,7 @@ skip:
 	new_triangle(cdt, p[0], p[1], p[2]);
 }
 
-static void insert_point_(cdt_t *cdt, point_t *new_p)
+static int insert_point_(cdt_t *cdt, point_t *new_p)
 {
 	triangle_t *enclosing_triangle = NULL;
 	retriangulation_region_t region = {NULL, NULL};
@@ -474,7 +474,8 @@ static void insert_point_(cdt_t *cdt, point_t *new_p)
 			break;
 		}
 	VTTRIANGLE_FOREACH_END();
-	assert(enclosing_triangle != NULL);
+	if (enclosing_triangle == NULL)
+		return -1;
 
 	/* check if the new point is on a constrained edge and unconstrain it
 	 * (it will be removed, and then created as 2 segments connecting the new point)
@@ -523,6 +524,7 @@ static void insert_point_(cdt_t *cdt, point_t *new_p)
 		cdt_insert_constrained_edge(cdt, split_edge_endp[0], new_p);
 		cdt_insert_constrained_edge(cdt, new_p, split_edge_endp[1]);
 	}
+	return 0;
 }
 
 point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
@@ -538,7 +540,10 @@ point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 	VTPOINT_FOREACH_END();
 
 	new_p = new_point(cdt, pos);
-	insert_point_(cdt, new_p);
+	if (insert_point_(cdt, new_p) != 0) {
+		cdt->points.used--; /* new_point() allocated one slot at the end */
+		return NULL;
+	}
 
 	return new_p;
 }
