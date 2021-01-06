@@ -1,11 +1,11 @@
-# Insert a point in the middle of a diagonal constrained edge, trying to split
+# Insert a point in the middle of a boundary constrained edge, trying to split
 # that edge in two.
 #
 # p1--------p2
-# | \       |
-# |   \     |
-# |     \   |
-# |       \ |
+# |         |
+# |         |
+# |         |
+# |         |
 # p4--------p3
 #
 
@@ -14,14 +14,9 @@ print_events yes
 
 # create the initial square
 init 0 0 1000 1000
-#ins_point p1 10 10
-#ins_point p2 900 10
-#ins_point p3 900 900
-#ins_point p4 10 900
-
 dump_anim split_cedge2_1.anim
 
-# insert a point in the center of a boundary constrained edge
+# insert a point in the center of a boundary constrained edge between p1 and p4
 ins_point 0 500
 
 dump_anim split_cedge2_2.anim
