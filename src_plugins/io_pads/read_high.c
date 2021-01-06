@@ -766,7 +766,7 @@ typedef struct {
 static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, long idx)
 {
 	char vianame[64];
-	long level, flags, loc_line;
+	long real_level, level, flags, loc_line;
 	rnd_coord_t x, y, width;
 	int res, arcdir = 0, thermal = 0;
 
@@ -814,6 +814,14 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 		}
 	}
 
+	real_level = level;
+	if (*vianame != '\0') {
+		/* in this case level is the via's target level and our trace segment is
+		   really on the same level as the previous */
+		level = spc->lastlev;
+		TODO("place the via here");
+	}
+
 	TODO("process flags\n");
 	TODO("do not ignore the miter flag: 0x0e000\n");
 
@@ -851,7 +859,7 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 	}
 
 	spc->x = x; spc->y = y;
-	spc->lastlev = level;
+	spc->lastlev = real_level;
 	return 1;
 }
 
