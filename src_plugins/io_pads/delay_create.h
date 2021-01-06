@@ -49,6 +49,7 @@ typedef struct {
 				pcb_pstk_t pstk;
 			} obj;
 			long layer_id;
+			pcb_layer_type_t lyt;
 			char *layer_name;
 		} obj;
 		struct {

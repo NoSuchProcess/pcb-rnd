@@ -62,6 +62,9 @@ void pcb_dlcr_layer_reg(pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *layer)
 {
 	pcb_dlcr_layer_t **p;
 
+	if (layer->id < 0)
+		layer->id = dlcr->id2layer.used;
+
 	htsp_set(&dlcr->name2layer, layer->name, layer);
 	p = (pcb_dlcr_layer_t **)vtp0_get(&dlcr->id2layer, layer->id, 1);
 	*p = layer;
@@ -283,6 +286,20 @@ static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dl
 		}
 		else
 			ly = (*dlp)->ly;
+	}
+	else if (obj->val.obj.lyt != 0) {
+		long n;
+		for(n = 0; n < dlcr->id2layer.used; n++) {
+			pcb_dlcr_layer_t *dl = dlcr->id2layer.array[n];
+			if (dl->lyt == obj->val.obj.lyt) {
+				ly = dl->ly;
+				break;
+			}
+		}
+		if (ly == NULL) {
+			rnd_message(RND_MSG_ERROR, "delay create: invalid layer type '%x' (loc: %ld)\n", obj->val.obj.lyt, obj->loc_line);
+			return NULL;
+		}
 	}
 	if ((ly == NULL) && (obj->val.obj.layer_name != NULL)) {
 		pcb_dlcr_layer_t *dl = htsp_get(&dlcr->name2layer, obj->val.obj.layer_name);
