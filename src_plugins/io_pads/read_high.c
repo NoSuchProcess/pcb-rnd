@@ -333,7 +333,7 @@ TODO("w is really thickness");
 	text->loc_line = rctx->line;
 
 	if (is_label) {
-		text->val.obj.layer_id = -1;
+		text->val.obj.layer_id = PCB_DLCR_INVALID_LAYER_ID;
 		switch(level) {
 			case 1: text->val.obj.lyt = PCB_LYT_TOP | PCB_LYT_SILK; break;
 			case 2: text->val.obj.lyt = PCB_LYT_BOTTOM | PCB_LYT_SILK; break; TODO("need to check what happens on the bottom side, is it really LID 2?");
