@@ -293,6 +293,8 @@ static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label, rnd_coord_t xo,
 	if ((res = pads_read_coord(rctx, &h)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &w)) <= 0) return res;
 
+TODO("w is really thickness");
+
 	/* next field is either mirror (M or N) or hjust */
 	if ((res = pads_read_word(rctx, hjust, sizeof(hjust), 0)) <= 0) return res;
 	if (*hjust == 'N') {
