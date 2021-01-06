@@ -759,12 +759,14 @@ typedef struct {
 	rnd_coord_t x, y; /* last x;y */
 	rnd_coord_t x0, y0, cx, cy; /* last arc start coords and center, when arcdir != 0 */
 	int arcdir;
+	int omit; /* omit next line segment because the current segment is virtual */
+	int lastlev;
 } pads_sig_piece_t;
 
 static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, long idx)
 {
 	char vianame[64];
-	long level, flags;
+	long level, flags, loc_line;
 	rnd_coord_t x, y, width;
 	int res, arcdir = 0, thermal = 0;
 
@@ -773,6 +775,8 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 	if ((res = pads_read_long(rctx, &level)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &width)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &flags)) <= 0) return res;
+
+	loc_line = rctx->line;
 
 	*vianame = '\0';
 	if (pads_has_field(rctx)) {
@@ -801,6 +805,7 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 			spc->arcdir = arcdir;
 			spc->x0 = spc->x; spc->y0 = spc->y;
 			spc->cx = x; spc->cy = y;
+			spc->omit = 0;
 			return 0;
 		}
 		else {
@@ -812,23 +817,41 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 	TODO("process flags\n");
 	TODO("do not ignore the miter flag: 0x0e000\n");
 
+	if (level == 65)
+		level = spc->lastlev;
+
 	if (spc->arcdir != 0) {
-		pcb_dlcr_draw_t *arc;
-		rnd_coord_t r = rnd_distance(spc->cx, spc->cy, spc->x0, spc->y0);
-		double starta, deltaa;
-		get_arc_angles(r, spc->cx, spc->cy, spc->x0, spc->y0, x, y, spc->arcdir, &starta, &deltaa);
-		arc = pcb_dlcr_arc_new(&rctx->dlcr, spc->cx, spc->cy, r, starta, deltaa, width, 0);
-		arc->val.obj.layer_id = level;
-		arc->loc_line = rctx->line;
-		spc->arcdir = 0;
+		if (level != 0) {
+			if (!spc->omit) {
+				pcb_dlcr_draw_t *arc;
+				rnd_coord_t r = rnd_distance(spc->cx, spc->cy, spc->x0, spc->y0);
+				double starta, deltaa;
+				get_arc_angles(r, spc->cx, spc->cy, spc->x0, spc->y0, x, y, spc->arcdir, &starta, &deltaa);
+				arc = pcb_dlcr_arc_new(&rctx->dlcr, spc->cx, spc->cy, r, starta, deltaa, width, 0);
+				arc->val.obj.layer_id = level;
+				arc->loc_line = loc_line;
+				spc->arcdir = 0;
+			}
+			spc->omit = 0;
+		}
+		else
+			spc->omit = 1;
 	}
-	else if (idx > 0) {
-		pcb_dlcr_draw_t *line = pcb_dlcr_line_new(&rctx->dlcr, spc->x, spc->y, x, y, width, 0);
-		line->val.obj.layer_id = level;
-		line->loc_line = rctx->line;
+	else {
+		if (level != 0) {
+			if ((idx > 0) && (!spc->omit)) {
+				pcb_dlcr_draw_t *line = pcb_dlcr_line_new(&rctx->dlcr, spc->x, spc->y, x, y, width, 0);
+				line->val.obj.layer_id = level;
+				line->loc_line = loc_line;
+			}
+			spc->omit = 0;
+		}
+		else
+			spc->omit = 1;
 	}
 
 	spc->x = x; spc->y = y;
+	spc->lastlev = level;
 	return 1;
 }
 
