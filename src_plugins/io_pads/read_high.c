@@ -733,7 +733,35 @@ static int pads_parse_parts(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_part);
 }
 
-static int pads_parse_signal_crd(pads_read_ctx_t *rctx)
+static void get_arc_angles(rnd_coord_t r, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t x0, rnd_coord_t y0, rnd_coord_t x1, rnd_coord_t y1, int arcdir, double *starta, double *deltaa)
+{
+	double s, e, d;
+
+	if (((x0 == cx) && (y0 == cy)) || ((x1 == cx) && (y1 == cy))) {
+		*starta = *deltaa = 0;
+		return;
+	}
+
+	s = atan2(y0 - cy, x0 - cx);
+	e = atan2(y1 - cy, x1 - cx);
+	d = e - s;
+
+	if ((d < 0) && (arcdir > 1))
+		d = 360+d;
+	else if ((d > 0) && (arcdir < 1))
+		d = 360-d;
+
+	*starta = s;
+	*deltaa = d;
+}
+
+typedef struct {
+	rnd_coord_t x, y; /* last x;y */
+	rnd_coord_t x0, y0, cx, cy; /* last arc start coords and center, when arcdir != 0 */
+	int arcdir;
+} pads_sig_piece_t;
+
+static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, long idx)
 {
 	char vianame[64];
 	long level, flags;
@@ -762,14 +790,54 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx)
 
 	rnd_trace("  %mm;%mm level=%ld w=%mm flags=%ld vianame=%s arcdir=%d thermal=%d\n",
 		x, y, level, width, flags, vianame, arcdir, thermal);
+
+	if ((idx == 0) && (arcdir != 0)) {
+		PADS_ERROR((RND_MSG_ERROR, "*SIGNAL* can not start with an arc\n"));
+		return -1;
+	}
+
+	if (flags & 0x01000) {
+		if (arcdir != 0) {
+			spc->arcdir = arcdir;
+			spc->x0 = spc->x; spc->y0 = spc->y;
+			spc->cx = x; spc->cy = y;
+			return 0;
+		}
+		else {
+			PADS_ERROR((RND_MSG_ERROR, "*SIGNAL* arc arguments without the arc flag\n"));
+			return -1;
+		}
+	}
+
+	TODO("process flags\n");
+	TODO("do not ignore the miter flag: 0x0e000\n");
+
+	if (spc->arcdir != 0) {
+		pcb_dlcr_draw_t *arc;
+		rnd_coord_t r = rnd_distance(spc->cx, spc->cy, spc->x0, spc->y0);
+		double starta, deltaa;
+		get_arc_angles(r, spc->cx, spc->cy, spc->x0, spc->y0, x, y, spc->arcdir, &starta, &deltaa);
+		arc = pcb_dlcr_arc_new(&rctx->dlcr, spc->cx, spc->cy, r, starta, deltaa, width, 0);
+		arc->val.obj.layer_id = level;
+		arc->loc_line = rctx->line;
+		spc->arcdir = 0;
+	}
+	else if (idx > 0) {
+		pcb_dlcr_draw_t *line = pcb_dlcr_line_new(&rctx->dlcr, spc->x, spc->y, x, y, width, 0);
+		line->val.obj.layer_id = level;
+		line->loc_line = rctx->line;
+	}
+
+	spc->x = x; spc->y = y;
 	return 1;
 }
-
 
 static int pads_parse_net(pads_read_ctx_t *rctx)
 {
 	char term1[128], term2[128];
+	long idx;
 	int c, res;
+	pads_sig_piece_t spc = {0};
 
 	if ((res = pads_read_word(rctx, term1, sizeof(term1), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, term2, sizeof(term2), 0)) <= 0) return res;
@@ -777,7 +845,7 @@ static int pads_parse_net(pads_read_ctx_t *rctx)
 
 	rnd_trace(" '%s' -> '%s'\n", term1, term2);
 
-	for(;;) {
+	for(idx = 0; ;idx++) {
 		double tmp;
 
 		pads_eatup_ws(rctx);
@@ -787,7 +855,7 @@ static int pads_parse_net(pads_read_ctx_t *rctx)
 		if (pads_maybe_read_double(rctx, pads_saved_word, sizeof(pads_saved_word), &tmp) == 1)
 			break; /* when next word is a string; also save the next word so it is returned in the next read */
 
-		if ((res = pads_parse_signal_crd(rctx)) <= 0) return res;
+		if ((res = pads_parse_signal_crd(rctx, &spc, idx)) <= 0) return res;
 	}
 
 	return 1;
