@@ -37,6 +37,7 @@
 #include "obj_text.h"
 #include "obj_line.h"
 #include "obj_arc.h"
+#include "obj_pstk.h"
 
 #include "delay_create.h"
 
@@ -194,6 +195,52 @@ pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t 
 	return obj;
 }
 
+pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, long id, const char *name)
+{
+	pcb_dlcr_draw_t *obj;
+	pcb_pstk_t *p;
+	rnd_cardinal_t i, pid = -1;
+	pcb_data_t *data = (dlcr->subc_begin != NULL) ? &dlcr->subc_begin->val.subc_begin.pstks : &dlcr->pstks;
+
+	if (id >= 0) {
+		if (id < data->ps_protos.used)
+			pid = id;
+	}
+	else if (name != NULL) {
+		for(i = 0; i < data->ps_protos.used; i++) {
+			const char *pname = data->ps_protos.array[i].name;
+			if ((pname != NULL) && (strcmp(pname, name) == 0)) {
+				pid = i;
+				break;
+			}
+		}
+	}
+
+	if (pid == -1) {
+		rnd_message(RND_MSG_ERROR, "pcb_dlcr_via_new(): padstack prototype not found: '%s'/%ld\n", name, id);
+		return NULL; /* found by neither id nor name */
+	}
+
+	obj = dlcr_new(dlcr, DLCR_OBJ);
+	p = &obj->val.obj.obj.pstk;
+	p->type = PCB_OBJ_PSTK;
+	p->x = x;
+	p->y = y;
+	p->proto = pid;
+	p->Clearance = clearance;
+
+TODO("why does this fail?");
+#if 0
+	pcb_pstk_bbox(p);
+	if (dlcr->subc_begin != NULL)
+		rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.bbox, &p->bbox_naked);
+	else
+		rnd_box_bump_box(&dlcr->board_bbox, &p->bbox_naked);
+#endif
+	return obj;
+}
+
+
 pcb_pstk_proto_t *pcb_dlcr_pstk_proto_new(pcb_dlcr_t *dlcr)
 {
 	pcb_data_t *data = (dlcr->subc_begin != NULL) ? &dlcr->subc_begin->val.subc_begin.pstks : &dlcr->pstks;
@@ -251,24 +298,29 @@ static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dl
 
 static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
+	pcb_data_t *data = (subc != NULL) ? subc->data : pcb->Data;
 	pcb_any_obj_t *r;
 	pcb_line_t *l = &obj->val.obj.obj.line;
 	pcb_arc_t *a = &obj->val.obj.obj.arc;
 	pcb_text_t *t = &obj->val.obj.obj.text;
+	pcb_pstk_t *p = &obj->val.obj.obj.pstk;
 	pcb_layer_t *ly;
 	int specd;
 
-	if (subc != NULL) {
-		TODO("create objects on a subc layer");
-		return;
-	}
-	else
-		ly = pcb_dlcr_lookup_board_layer(pcb, dlcr, obj, &specd);
+	/* retrieve target layer for layer objects */
+	if (obj->val.obj.obj.any.type != PCB_OBJ_PSTK) {
+		if (subc != NULL) {
+			TODO("create objects on a subc layer");
+			return;
+		}
+		else
+			ly = pcb_dlcr_lookup_board_layer(pcb, dlcr, obj, &specd);
 
-	if (ly == NULL) {
-		if (!specd)
-			rnd_message(RND_MSG_ERROR, "delay create: layer not specified (loc: %ld)\n", obj->loc_line);
-		return;
+		if (ly == NULL) {
+			if (!specd)
+				rnd_message(RND_MSG_ERROR, "delay create: layer not specified (loc: %ld)\n", obj->loc_line);
+			return;
+		}
 	}
 
 	switch(obj->val.obj.obj.any.type) {
@@ -281,6 +333,9 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 		case PCB_OBJ_TEXT:
 			r = (pcb_any_obj_t *)pcb_text_new(ly, pcb_font(pcb, 0, 1), CRDX(t->X), CRDY(t->Y), t->rot, t->Scale, t->thickness, t->TextString, pcb_flag_make(PCB_FLAG_CLEARLINE));
 			free(t->TextString);
+			break;
+		case PCB_OBJ_PSTK:
+			r = (pcb_any_obj_t *)pcb_pstk_new(data, 0, p->proto, CRDX(p->x), CRDY(p->y), p->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 			break;
 		default:
 			break;

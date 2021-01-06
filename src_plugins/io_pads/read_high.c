@@ -441,6 +441,8 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 	pads_eatup_till_nl(rctx);
 
 	proto = pcb_dlcr_pstk_proto_new(&rctx->dlcr);
+	pcb_pstk_proto_change_name(proto, name, 0);
+
 	ts = pcb_vtpadstack_tshape_get(&proto->tr, 0, 1);
 	ts->shape = calloc(sizeof(pcb_pstk_shape_t), num_lines);
 	ts->len = num_lines;
@@ -765,7 +767,7 @@ typedef struct {
 
 static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, long idx)
 {
-	char vianame[64];
+	char vianame[64], teardrop[16];
 	long real_level, level, flags, loc_line;
 	rnd_coord_t x, y, width;
 	int res, arcdir = 0, thermal = 0;
@@ -782,14 +784,28 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 	if (pads_has_field(rctx)) {
 		if ((res = pads_read_word(rctx, vianame, sizeof(vianame), 0)) <= 0) return res;
 
+		if (strcmp(vianame, "TEARDROP") == 0) {
+			*vianame = '\0';
+			goto teardrop;
+		}
+
 		if (strcmp(vianame, "CW") == 0)       { arcdir = -1; *vianame = '\0'; }
 		else if (strcmp(vianame, "CCW") == 0) { arcdir = +1; *vianame = '\0'; }
 		else arcdir = 0;
 
 		if (strcmp(vianame, "THERMAL") == 0) { thermal = 1; *vianame = '\0'; }
-
 		/* the rest of the line is jumper wire and teardrop - ignore those */
 	}
+
+	if (pads_has_field(rctx)) {
+		if ((res = pads_read_word(rctx, teardrop, sizeof(teardrop), 0)) <= 0) return res;
+		if (strcmp(teardrop, "TEARDROP") == 0) {
+			teardrop:;
+			/* for now, ignore teardrop fields */
+		}
+	}
+
+
 	pads_eatup_till_nl(rctx);
 
 	rnd_trace("  %mm;%mm level=%ld w=%mm flags=%ld vianame=%s arcdir=%d thermal=%d\n",
@@ -816,10 +832,13 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 
 	real_level = level;
 	if (*vianame != '\0') {
+		pcb_dlcr_draw_t *via;
 		/* in this case level is the via's target level and our trace segment is
 		   really on the same level as the previous */
 		level = spc->lastlev;
-		TODO("place the via here");
+		via = pcb_dlcr_via_new(&rctx->dlcr, x, y, 0, -1, vianame);
+		if (via != NULL)
+			via->loc_line = loc_line;
 	}
 
 	TODO("process flags\n");
@@ -836,8 +855,10 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 				double starta, deltaa;
 				get_arc_angles(r, spc->cx, spc->cy, spc->x0, spc->y0, x, y, spc->arcdir, &starta, &deltaa);
 				arc = pcb_dlcr_arc_new(&rctx->dlcr, spc->cx, spc->cy, r, starta, deltaa, width, 0);
-				arc->val.obj.layer_id = level;
-				arc->loc_line = loc_line;
+				if (arc != NULL) {
+					arc->val.obj.layer_id = level;
+					arc->loc_line = loc_line;
+				}
 				spc->arcdir = 0;
 			}
 			spc->omit = 0;
@@ -849,8 +870,10 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 		if (level != 0) {
 			if ((idx > 0) && (!spc->omit)) {
 				pcb_dlcr_draw_t *line = pcb_dlcr_line_new(&rctx->dlcr, spc->x, spc->y, x, y, width, 0);
-				line->val.obj.layer_id = level;
-				line->loc_line = loc_line;
+				if (line != NULL) {
+					line->val.obj.layer_id = level;
+					line->loc_line = loc_line;
+				}
 			}
 			spc->omit = 0;
 		}
