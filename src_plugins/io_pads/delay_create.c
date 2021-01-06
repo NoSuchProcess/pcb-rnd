@@ -282,6 +282,7 @@ static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dl
 			dl->lyt = PCB_LYT_DOC;
 			dl->purpose = "unassigned";
 			pcb_dlcr_layer_reg(dlcr, dl);
+rnd_trace("Layer create: unassigned for %ld\n", obj->val.obj.layer_id);
 			pcb_dlcr_create_layer(pcb, dlcr, dl);
 		}
 		else
@@ -291,7 +292,7 @@ static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dl
 		long n;
 		for(n = 0; n < dlcr->id2layer.used; n++) {
 			pcb_dlcr_layer_t *dl = dlcr->id2layer.array[n];
-			if (dl->lyt == obj->val.obj.lyt) {
+			if ((dl != NULL) && (dl->lyt == obj->val.obj.lyt)) {
 				ly = dl->ly;
 				break;
 			}
