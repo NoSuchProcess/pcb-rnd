@@ -458,6 +458,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 
 	proto = pcb_dlcr_pstk_proto_new(&rctx->dlcr);
 	pcb_pstk_proto_change_name(proto, name, 0);
+	proto->hdia = drill;
 
 	ts = pcb_vtpadstack_tshape_get(&proto->tr, 0, 1);
 	ts->shape = calloc(sizeof(pcb_pstk_shape_t), num_lines);
@@ -519,6 +520,9 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 			if ((res = pads_read_coord(rctx, &spoke_width)) <= 0) return res;
 			if ((res = pads_read_long(rctx, &spoke_num)) <= 0) return res;
 		}
+
+		if ((plated[0] == 'P') || (plated[0] == '\0'))
+			proto->hplated = 1;
 
 		pads_eatup_till_nl(rctx);
 		rnd_trace("  lev=%ld size=%mm/%mm shape=%s is_thermal=%d\n", level, size, inner, shape, is_thermal);
