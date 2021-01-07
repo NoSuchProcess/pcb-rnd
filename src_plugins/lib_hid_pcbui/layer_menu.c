@@ -217,6 +217,10 @@ void pcb_layer_menu_batch_timer_ev(rnd_hidlib_t *hidlib, void *user_data, int ar
 {
 	int keys_done = 0;
 
+	if (pcb_layergrp_is_inhibited())
+		return;
+
+
 	if (need_layer_menu_update) {
 /*rnd_trace("layer menu update.\n");*/
 		rnd_hid_menu_unload(rnd_gui, menu_cookie);
