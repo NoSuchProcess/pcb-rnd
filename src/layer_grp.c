@@ -69,6 +69,11 @@ void pcb_layergrp_inhibit_dec(void)
 	inhibit_notify--;
 }
 
+int pcb_layergrp_is_inhibited(void)
+{
+	return inhibit_notify > 0;
+}
+
 void pcb_layergrp_notify(pcb_board_t *pcb)
 {
 	NOTIFY(pcb);
