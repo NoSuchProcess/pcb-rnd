@@ -338,6 +338,7 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 			return;
 		case PCB_PROPT_STRING:
 			sctx.s = ctx->dlg[ctx->wedit[p->type]].val.str;
+			force_update = 1;
 			break;
 		case PCB_PROPT_COORD:
 			sctx.c = ctx->dlg[ctx->wedit[p->type]].val.crd;
