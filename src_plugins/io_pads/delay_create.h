@@ -6,6 +6,7 @@
 #include "data.h"
 #include "layer.h"
 #include "obj_common.h"
+#include "obj_subc.h"
 
 typedef struct {
 	char *name;
@@ -53,8 +54,7 @@ typedef struct {
 			char *layer_name;
 		} obj;
 		struct {
-			pcb_data_t pstks;
-			rnd_box_t bbox;
+			pcb_subc_t *subc;
 		} subc_begin; /* in DLCR_SUBC_BEGIN */
 	} val;
 	long loc_line; /* for debug */
@@ -87,6 +87,8 @@ void pcb_dlcr_uninit(pcb_dlcr_t *dlcr);
 void pcb_dlcr_layer_reg(pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *layer);
 void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer);
 
+pcb_subc_t *pcb_dlcr_subc_new(pcb_dlcr_t *dlcr, const char *name);
+
 pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t width, rnd_coord_t clearance);
 pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, double start_deg, double delta_deg, rnd_coord_t width, rnd_coord_t clearance);
 pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int scale, rnd_coord_t thickness, const char *str);
@@ -94,7 +96,7 @@ pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y
 
 pcb_pstk_proto_t *pcb_dlcr_pstk_proto_new(pcb_dlcr_t *dlcr);
 
-void pcb_dlcr_subc_begin(pcb_dlcr_t *dlcr);
+void pcb_dlcr_subc_begin(pcb_dlcr_t *dlcr, pcb_subc_t *subc);
 void pcb_dlcr_subc_end(pcb_dlcr_t *dlcr);
 
 

@@ -126,6 +126,20 @@ static void pcb_dlcr_create_layers(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 	}
 }
 
+pcb_subc_t *pcb_dlcr_subc_new(pcb_dlcr_t *dlcr, const char *name)
+{
+	pcb_subc_t *subc = htsp_get(&dlcr->name2subc, name);
+	if (subc != NULL) {
+		rnd_message(RND_MSG_ERROR, "pcb_dlcr_subc_new(): '%s' is already in use\n", name);
+		return NULL;
+	}
+
+	subc = pcb_subc_new();
+	htsp_set(&dlcr->name2subc, rnd_strdup(name), subc);
+	return subc;
+}
+
+
 static pcb_dlcr_draw_t *dlcr_new(pcb_dlcr_t *dlcr, pcb_dlcr_type_t type)
 {
 	pcb_dlcr_draw_t *obj = calloc(sizeof(pcb_dlcr_draw_t), 1);
@@ -152,7 +166,7 @@ pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t
 	l->Point2.Y = y2;
 	pcb_line_bbox(l);
 	if (dlcr->subc_begin != NULL)
-		rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.bbox, &l->bbox_naked);
+		rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.subc->bbox_naked, &l->bbox_naked);
 	else
 		rnd_box_bump_box(&dlcr->board_bbox, &l->bbox_naked);
 	return obj;
@@ -172,8 +186,10 @@ pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t 
 	a->StartAngle = start_deg;
 	a->Delta = delta_deg;
 	pcb_arc_bbox(a);
-	if (dlcr->subc_begin != NULL)
-		rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.bbox, &a->bbox_naked);
+	if (dlcr->subc_begin != NULL) {
+rnd_trace("bbox subc: %p\n", dlcr->subc_begin->val.subc_begin.subc);
+		rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.subc->bbox_naked, &a->bbox_naked);
+	}
 	else
 		rnd_box_bump_box(&dlcr->board_bbox, &a->bbox_naked);
 	return obj;
@@ -193,7 +209,7 @@ pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t 
 	t->TextString = rnd_strdup(str);
 	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
 	if (dlcr->subc_begin != NULL)
-		rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.bbox, &t->bbox_naked);
+		rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.subc->bbox_naked, &t->bbox_naked);
 	else
 		rnd_box_bump_box(&dlcr->board_bbox, &t->bbox_naked);
 	return obj;
@@ -204,7 +220,7 @@ pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y
 	pcb_dlcr_draw_t *obj;
 	pcb_pstk_t *p;
 	rnd_cardinal_t i, pid = -1;
-	pcb_data_t *data = (dlcr->subc_begin != NULL) ? &dlcr->subc_begin->val.subc_begin.pstks : &dlcr->pstks;
+	pcb_data_t *data = (dlcr->subc_begin != NULL) ? &dlcr->subc_begin->val.subc_begin.subc->data : &dlcr->pstks;
 
 	if (id >= 0) {
 		if (id < data->ps_protos.used)
@@ -247,14 +263,16 @@ TODO("why does this fail?");
 
 pcb_pstk_proto_t *pcb_dlcr_pstk_proto_new(pcb_dlcr_t *dlcr)
 {
-	pcb_data_t *data = (dlcr->subc_begin != NULL) ? &dlcr->subc_begin->val.subc_begin.pstks : &dlcr->pstks;
+	pcb_data_t *data = (dlcr->subc_begin != NULL) ? &dlcr->subc_begin->val.subc_begin.subc->data : &dlcr->pstks;
 	return pcb_vtpadstack_proto_alloc_append(&data->ps_protos, 1);
 }
 
-void pcb_dlcr_subc_begin(pcb_dlcr_t *dlcr)
+void pcb_dlcr_subc_begin(pcb_dlcr_t *dlcr, pcb_subc_t *subc)
 {
 	assert(dlcr->subc_begin == NULL);
 	dlcr->subc_begin = dlcr_new(dlcr, DLCR_SUBC_BEGIN);
+	dlcr->subc_begin->val.subc_begin.subc = subc;
+rnd_trace("subc begin: %p\n", subc);
 }
 
 void pcb_dlcr_subc_end(pcb_dlcr_t *dlcr)
@@ -425,12 +443,12 @@ static void pcb_dlcr_create_pstk_protos(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_
 static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
 	pcb_dlcr_draw_t *obj;
-	pcb_subc_t *subc = NULL, subc_tmp;
+	pcb_subc_t *subc = NULL;
 	while((obj = gdl_first(&dlcr->drawing)) != NULL) {
 		gdl_remove(&dlcr->drawing, obj, link);
 		switch(obj->type) {
 			case DLCR_OBJ: pcb_dlcr_draw_free_obj(pcb, subc, dlcr, obj); break;
-			case DLCR_SUBC_BEGIN: subc = &subc_tmp; break;
+			case DLCR_SUBC_BEGIN: subc = obj->val.subc_begin.subc; break;
 			case DLCR_SUBC_END: subc = NULL; break;
 		}
 	}
