@@ -62,12 +62,20 @@ typedef struct {
 } pcb_dlcr_draw_t;
 
 typedef struct {
+	/* layers */
 	htsp_t name2layer;
-	vtp0_t id2layer;     /* key=->id, val=pcb_dlcr_layer_t */
+	vtp0_t id2layer;     /* key=->id, val=(pcb_dlcr_layer_t *) */
+
+	/* local footprint lib, if any */
+	htsp_t name2subc;    /* val=(pcb_subc_t *) */
+
+	/* board global */
 	gdl_list_t drawing;  /* of pcb_dlcr_draw_t; */
 	rnd_box_t board_bbox;
+	pcb_data_t pstks;    /* wrapper for padstack prototypes, otherwise empty */
+
+	/* current context/state */
 	pcb_dlcr_draw_t *subc_begin;    /* NULL when drawing on the board, pointing to the SUBC_BEGIN node in between DLCR_SUBC_BEGIN and DLCR_SUBC_END */
-	pcb_data_t pstks;
 
 	/* config */
 	unsigned flip_y:1;   /* if 1, mirror y coordinates over the X axis */

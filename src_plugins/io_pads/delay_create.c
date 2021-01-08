@@ -51,6 +51,7 @@ void pcb_dlcr_init(pcb_dlcr_t *dlcr)
 {
 	memset(dlcr, 0, sizeof(pcb_dlcr_t));
 	htsp_init(&dlcr->name2layer, strhash, strkeyeq);
+	htsp_init(&dlcr->name2subc, strhash, strkeyeq);
 }
 
 void pcb_dlcr_uninit(pcb_dlcr_t *dlcr)
