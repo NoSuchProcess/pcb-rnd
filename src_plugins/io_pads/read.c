@@ -33,6 +33,9 @@
 #include <assert.h>
 #include <math.h>
 
+#include <genht/htsp.h>
+#include <genht/hash.h>
+#include <genht/ht_utils.h>
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
@@ -51,6 +54,12 @@
 /* virtual layer ID for the non-existent board outline layer */
 #define PADS_LID_BOARD 257
 
+
+typedef struct pads_read_decal_s {
+	TODO("do we need swaps?")
+	char decal_name[1]; /* really as long as it needs to be */
+} pads_read_part_t;
+
 typedef struct pads_read_ctx_s {
 	pcb_board_t *pcb;
 	FILE *f;
@@ -58,6 +67,7 @@ typedef struct pads_read_ctx_s {
 	double ver;
 	pcb_dlcr_t dlcr;
 	pcb_dlcr_layer_t *layer;
+	htsp_t parts;       /* translate part to partdecal and swaps; key=partname value=(pads_read_part_t *) */
 
 	/* location */
 	const char *fn;
@@ -287,6 +297,7 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 
 	pcb_dlcr_init(&rctx.dlcr);
 	rctx.dlcr.flip_y = 1;
+	htsp_init(&rctx.parts, strhash, strkeyeq);
 
 	/* read the header */
 	if (pads_parse_header(&rctx) != 0) {
@@ -301,6 +312,13 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 	pads_assign_layers(&rctx);
 	pcb_dlcr_create(pcb, &rctx.dlcr);
 	pcb_dlcr_uninit(&rctx.dlcr);
+
+	genht_uninit_deep(htsp, &rctx.parts, {
+		free(htent->key);
+		free(htent->value);
+	});
+
+
 	fclose(f);
 	return ret;
 }
