@@ -108,7 +108,7 @@ pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y
    the end */
 pcb_dlcr_draw_t *pcb_dlcr_subc_new_from_lib(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int on_bottom, const char *names, long names_len);
 
-pcb_pstk_proto_t *pcb_dlcr_pstk_proto_new(pcb_dlcr_t *dlcr);
+pcb_pstk_proto_t *pcb_dlcr_pstk_proto_new(pcb_dlcr_t *dlcr, long int *pid_out);
 
 void pcb_dlcr_subc_begin(pcb_dlcr_t *dlcr, pcb_subc_t *subc);
 void pcb_dlcr_subc_end(pcb_dlcr_t *dlcr);

@@ -437,17 +437,57 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_line);
 }
 
-static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
+typedef struct pads_term_s pads_term_t;
+
+struct pads_term_s {
+	rnd_coord_t x, y;
+	long loc_line;
+	pads_term_t *next;
+};
+
+static void pads_create_pins(pads_read_ctx_t *rctx, pads_term_t *first, long pinidx, long pid)
+{
+	pads_term_t *t, *tnext;
+rnd_trace("  pin create: %ld\n", pinidx);
+	for(t = first; t != NULL; t = tnext) {
+		pcb_dlcr_draw_t *pin = pcb_dlcr_via_new(&rctx->dlcr, t->x, t->y, 0, pid, NULL);
+		if (pin != NULL)
+			pin->loc_line = t->loc_line;
+rnd_trace("    %mm;%mm (%p) %p pid=%ld\n", t->x, t->y, t, pin, pid);
+		tnext = t->next;
+		free(t);
+	}
+
+}
+
+static void free_terms(pads_read_ctx_t *rctx, vtp0_t *terms, long defpid)
+{
+	long n;
+	for(n = 0; n < terms->used; n++)
+		pads_create_pins(rctx, terms->array[n], -1, defpid); /* create pins using proto 0 */
+	vtp0_uninit(terms);
+}
+
+static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *defpid)
 {
 	pcb_pstk_proto_t *proto;
 	pcb_pstk_tshape_t *ts;
-	char name[256], shape[8];
-	rnd_coord_t drill, size;
-	long n, num_lines, level, start = 0, end = 0;
+	char name[256], shape[8], pinno[10];
+	rnd_coord_t drill = 0, size;
+	long n, num_lines, level, start = 0, end = 0, pid;
 	int res;
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
-	if ((res = pads_read_coord(rctx, &drill)) <= 0) return res;
+	if (terms != NULL) {
+		if (strcmp(name, "PAD") != 0) {
+			PADS_ERROR((RND_MSG_ERROR, "In *PARTDECAL* context a padstack definition needs to start with PAD, not '%s'\n", name));
+			return -1;
+		}
+		if ((res = pads_read_word(rctx, pinno, sizeof(pinno), 0)) <= 0) return res;
+	}
+	else {
+		if ((res = pads_read_coord(rctx, &drill)) <= 0) return res;
+	}
 	if ((res = pads_read_long(rctx, &num_lines)) <= 0) return res;
 	if (pads_has_field(rctx))
 		if ((res = pads_read_long(rctx, &start)) <= 0) return res;
@@ -456,7 +496,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 
 	pads_eatup_till_nl(rctx);
 
-	proto = pcb_dlcr_pstk_proto_new(&rctx->dlcr);
+	proto = pcb_dlcr_pstk_proto_new(&rctx->dlcr, &pid);
 	pcb_pstk_proto_change_name(proto, name, 0);
 	proto->hdia = drill;
 
@@ -537,18 +577,48 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx)
 TODO("pads-specific code in delay draw!!; see also: TODO#71");
 		shp->layer_mask = level; /* ugly hack: save the layer id for now */
 	}
+
+	if (terms != NULL) {
+		pads_term_t *t = NULL, **tp;
+		char *end;
+		int pinidx = strtol(pinno, &end, 10);
+
+		if (*end != '\0') {
+			PADS_ERROR((RND_MSG_ERROR, "*PARTDECAL* invalid pin number '%s' (needs to be an integer)\n", pinno));
+			return -1;
+		}
+
+		if (pinidx == 0)
+			*defpid = pid;
+
+		tp = (pads_term_t **)vtp0_get(terms, pinidx, 0);
+		if (tp != NULL) {
+			t = *tp;
+			*tp = NULL;
+		}
+		if (t == NULL)
+			PADS_ERROR((RND_MSG_ERROR, "*PARTDECAL* padstack proto referencing non-existing pin number or duplicate pin number reference: '%s'\n", pinno));
+		pads_create_pins(rctx, t, pinidx, pid);
+	}
 	return 1;
+}
+
+static int pads_parse_via_pstk_proto(pads_read_ctx_t *rctx)
+{
+	return pads_parse_pstk_proto(rctx, NULL, NULL);
 }
 
 static int pads_parse_vias(pads_read_ctx_t *rctx)
 {
-	return pads_parse_list_sect(rctx, pads_parse_pstk_proto);
+	return pads_parse_list_sect(rctx, pads_parse_via_pstk_proto);
 }
 
-static int pads_parse_term(pads_read_ctx_t *rctx)
+static int pads_parse_term(pads_read_ctx_t *rctx, long idx, vtp0_t *terms)
 {
+	pads_term_t *t, **tp;
 	char name[10];
 	int c, res;
+	long loc_line = rctx->line;
 	rnd_coord_t x, y, nmx, nmy;
 
 	c = fgetc(rctx->f);
@@ -568,7 +638,16 @@ static int pads_parse_term(pads_read_ctx_t *rctx)
 
 	pads_eatup_till_nl(rctx);
 
-	rnd_trace("  terminal: %s at %mm;%mm\n", name, x, y);
+	rnd_trace("  terminal: %s at %mm;%mm IDX=%ld\n", name, x, y, idx+1);
+	tp = (pads_term_t **)vtp0_get(terms, idx+1, 0);
+	t = calloc(sizeof(pads_term_t), 1);
+	t->x = x;
+	t->y = y;
+	t->loc_line = loc_line;
+	if (tp != NULL)
+		t->next = *tp;
+	vtp0_set(terms, idx+1, t);
+	
 	return 1;
 }
 
@@ -576,9 +655,10 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 {
 	char name[256], unit[8];
 	rnd_coord_t xo, yo;
-	long n, num_pieces, num_terms, num_stacks, num_texts = 0, num_labels = 0;
+	long n, num_pieces, num_terms, num_stacks, num_texts = 0, num_labels = 0, defpid = -1;
 	int res;
 	pcb_subc_t *subc;
+	vtp0_t terms = {0};
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, unit, sizeof(unit), 0)) <= 0) return res;
@@ -601,6 +681,7 @@ TODO("set unit and origin");
 
 	subc = pcb_dlcr_subc_new_in_lib(&rctx->dlcr, name);
 	pcb_dlcr_subc_begin(&rctx->dlcr, subc);
+
 	for(n = 0; n < num_pieces; n++)
 		if ((res = pads_parse_piece(rctx, PLTY_LINES, xo, yo)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
@@ -608,10 +689,13 @@ TODO("set unit and origin");
 	for(n = 0; n < num_labels; n++)
 		if ((res = pads_parse_label(rctx, xo, yo)) <= 0) return res;
 	for(n = 0; n < num_terms; n++)
-		if ((res = pads_parse_term(rctx)) <= 0) return res;
+		if ((res = pads_parse_term(rctx, n, &terms)) <= 0) { free_terms(rctx, &terms, defpid); return res; }
 	for(n = 0; n < num_stacks; n++)
-		if ((res = pads_parse_pstk_proto(rctx)) <= 0) return res;
+		if ((res = pads_parse_pstk_proto(rctx, &terms, &defpid)) <= 0) { free_terms(rctx, &terms, defpid); return res; }
 	pcb_dlcr_subc_end(&rctx->dlcr);
+
+	free_terms(rctx, &terms, defpid);
+
 	return 1;
 }
 
@@ -787,7 +871,7 @@ static int pads_parse_part(pads_read_ctx_t *rctx)
 	}
 
 	if (part != NULL) {
-		pcb_dlcr_draw_t *po = pcb_dlcr_subc_new_from_lib(&rctx->dlcr, xo, yo, rot, mirr, decalname, dln);
+		pcb_dlcr_draw_t *po = pcb_dlcr_subc_new_from_lib(&rctx->dlcr, xo, yo, rot, (*mirr == 'M'), decalname, dln);
 		po->loc_line = rctx->line;
 	}
 	else {

@@ -276,9 +276,11 @@ pcb_dlcr_draw_t *pcb_dlcr_subc_new_from_lib(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd
 	return obj;
 }
 
-pcb_pstk_proto_t *pcb_dlcr_pstk_proto_new(pcb_dlcr_t *dlcr)
+pcb_pstk_proto_t *pcb_dlcr_pstk_proto_new(pcb_dlcr_t *dlcr, long int *pid_out)
 {
 	pcb_data_t *data = (dlcr->subc_begin != NULL) ? dlcr->subc_begin->val.subc_begin.subc->data : &dlcr->pstks;
+	if (pid_out != NULL)
+		*pid_out = data->ps_protos.used;
 	return pcb_vtpadstack_proto_alloc_append(&data->ps_protos, 1);
 }
 
