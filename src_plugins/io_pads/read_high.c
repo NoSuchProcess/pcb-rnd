@@ -685,7 +685,7 @@ static int pads_parse_pinnames(pads_read_ctx_t *rctx, long num_pins)
 static int pads_parse_parttype(pads_read_ctx_t *rctx)
 {
 	pads_read_part_t *part;
-	char partname[64], decals[16*64], unit[4], ptype[8];
+	char partname[64], decals[16*64], unit[4], ptype[8], *s;
 	long n, num_gates, num_signals, num_alpins, flags;
 	int res, dnl;
 
@@ -714,9 +714,15 @@ static int pads_parse_parttype(pads_read_ctx_t *rctx)
 	}
 
 	dnl = strlen(decals)+1;
-	part = calloc(sizeof(pads_read_part_t) + dnl, 1);
-	memcpy(part->decal_name, decals, dnl);
+	part = calloc(sizeof(pads_read_part_t) + dnl + 2, 1);
+	memcpy(part->decal_names, decals, dnl);
 	htsp_set(&rctx->parts, rnd_strdup(partname), part);
+
+	/* the decal name list should consist of null-terminated string with an extra
+	   empty string at the end (implied by calloc() size extra above) */
+	for(s = part->decal_names; *s != '\0'; s++)
+		if (*s == ':')
+			*s = '\0';
 
 	for(n = 0; n < num_gates; n++)
 		if ((res = pads_parse_gate(rctx)) <= 0) return res;
