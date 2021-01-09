@@ -278,7 +278,7 @@ pcb_dlcr_draw_t *pcb_dlcr_subc_new_from_lib(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd
 
 pcb_pstk_proto_t *pcb_dlcr_pstk_proto_new(pcb_dlcr_t *dlcr)
 {
-	pcb_data_t *data = (dlcr->subc_begin != NULL) ? &dlcr->subc_begin->val.subc_begin.subc->data : &dlcr->pstks;
+	pcb_data_t *data = (dlcr->subc_begin != NULL) ? dlcr->subc_begin->val.subc_begin.subc->data : &dlcr->pstks;
 	return pcb_vtpadstack_proto_alloc_append(&data->ps_protos, 1);
 }
 
@@ -408,7 +408,8 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 
 static void pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
-	pcb_subc_t *subc;
+	rnd_coord_t dx, dy, ox = 0, oy = 0;
+	pcb_subc_t *subc, *nsc;
 	char *name;
 
 	rnd_trace("*** new from lib:\n");
@@ -425,7 +426,16 @@ static void pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_
 		return;
 	}
 
-	rnd_trace("  using name '%s' %p\n", name, subc);
+
+	pcb_subc_get_origin(subc, &ox, &oy);
+	dx = obj->val.subc_from_lib.x - ox;
+	dy = obj->val.subc_from_lib.x - oy;
+	nsc = pcb_subc_dup_at(pcb, pcb->Data, subc, dx, dy, 0, 0);
+
+	rnd_trace("  using name '%s' %p -> %p\n", name, subc, nsc);
+
+	if (nsc == NULL)
+		rnd_message(RND_MSG_ERROR, "pcb_dlcr_draw_subc_from_lib(): failed to dup subc '%s' from lib\n", name);
 }
 
 TODO("this is pads-specific, figure how to handle this; see also: TODO#71");
