@@ -743,11 +743,11 @@ static int pads_parse_parttypes(pads_read_ctx_t *rctx)
 static int pads_parse_part(pads_read_ctx_t *rctx)
 {
 	pads_read_part_t *part;
-	char refdes[64], partname[64], glue[4], mirr[4];
+	char refdes[64], partname[64], glue[4], mirr[4], *decalname;
 	long n, altdeclnum, clustid = -1, clsattr = 0, brotherid = -1, num_labels;
 	rnd_coord_t xo, yo;
 	double rot;
-	int res;
+	int res, dln;
 
 	if ((res = pads_read_word(rctx, refdes, sizeof(refdes), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, partname, sizeof(partname), 0)) <= 0) return res;
@@ -769,9 +769,25 @@ static int pads_parse_part(pads_read_ctx_t *rctx)
 
 	rnd_trace("part: '%s' of '%s' num_labels=%ld\n", refdes, partname, num_labels);
 
-	part = htsp_get(&rctx->parts, partname);
+	/* if there's a @ in the partname, it's really a partname@decalname where
+	   decalname is a locally modified version of the original decal; we need
+	   to use the decalname directly - but probably still use the part for pin
+	   swaps? */
+	decalname = strchr(partname, '@');
+	if (decalname == NULL) {
+		part = htsp_get(&rctx->parts, partname);
+		decalname = part->decal_names;
+		dln = part->decal_names_len;
+	}
+	else {
+		*decalname = '\0';
+		decalname++;
+		part = htsp_get(&rctx->parts, partname); /* do the lookup so that part is valid, for a later pin swap implementation */
+		dln = strlen(decalname);
+	}
+
 	if (part != NULL) {
-		pcb_dlcr_draw_t *po = pcb_dlcr_subc_new_from_lib(&rctx->dlcr, xo, yo, rot, mirr, part->decal_names, part->decal_names_len);
+		pcb_dlcr_draw_t *po = pcb_dlcr_subc_new_from_lib(&rctx->dlcr, xo, yo, rot, mirr, decalname, dln);
 		po->loc_line = rctx->line;
 	}
 	else {
