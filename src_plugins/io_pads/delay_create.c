@@ -139,7 +139,6 @@ pcb_subc_t *pcb_dlcr_subc_new_in_lib(pcb_dlcr_t *dlcr, const char *name)
 	return subc;
 }
 
-
 static pcb_dlcr_draw_t *dlcr_new(pcb_dlcr_t *dlcr, pcb_dlcr_type_t type)
 {
 	pcb_dlcr_draw_t *obj = calloc(sizeof(pcb_dlcr_draw_t), 1);
@@ -260,6 +259,22 @@ TODO("why does this fail?");
 	return obj;
 }
 
+pcb_dlcr_draw_t *pcb_dlcr_subc_new_from_lib(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int on_bottom, const char *names, long names_len)
+{
+	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_SUBC_FROM_LIB);
+
+	obj->val.subc_from_lib.x = x;
+	obj->val.subc_from_lib.y = y;
+	obj->val.subc_from_lib.rot = rot;
+	obj->val.subc_from_lib.on_bottom = on_bottom;
+	obj->val.subc_from_lib.names = malloc(names_len+1);
+	memcpy(obj->val.subc_from_lib.names, names, names_len);
+	obj->val.subc_from_lib.names[names_len] = '\0'; /* add an extra \0, just in case; this makes the call easier with a single name which can be passed as a simple \0 terminated string */
+
+	/* can not update the bbox as we may not yet have the subc in lib */
+
+	return obj;
+}
 
 pcb_pstk_proto_t *pcb_dlcr_pstk_proto_new(pcb_dlcr_t *dlcr)
 {
@@ -391,6 +406,28 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 	free(obj);
 }
 
+static void pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
+{
+	pcb_subc_t *subc;
+	char *name;
+
+	rnd_trace("*** new from lib:\n");
+	for(name = obj->val.subc_from_lib.names; *name != '\0'; name = name + strlen(name) + 1) {
+		subc = htsp_get(&dlcr->name2subc, name);
+		if (subc != NULL)
+			break;
+	}
+
+	if (subc == NULL) {
+		rnd_message(RND_MSG_ERROR, "delay create: invalid subc-from-lib: not found by name (loc: %ld); tried:\n", obj->loc_line);
+		for(name = obj->val.subc_from_lib.names; *name != '\0'; name = name + strlen(name) + 1)
+			rnd_message(RND_MSG_ERROR, " '%s'\n", name);
+		return;
+	}
+
+	rnd_trace("  using name '%s' %p\n", name, subc);
+}
+
 TODO("this is pads-specific, figure how to handle this; see also: TODO#71");
 static void proto_layer_lookup(pcb_dlcr_t *dlcr, pcb_pstk_shape_t *shp)
 {
@@ -450,6 +487,7 @@ static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 			case DLCR_OBJ: pcb_dlcr_draw_free_obj(pcb, subc, dlcr, obj); break;
 			case DLCR_SUBC_BEGIN: subc = obj->val.subc_begin.subc; break;
 			case DLCR_SUBC_END: subc = NULL; break;
+			case DLCR_SUBC_FROM_LIB: pcb_dlcr_draw_subc_from_lib(pcb, dlcr, obj); break;
 		}
 	}
 }

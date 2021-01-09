@@ -32,7 +32,8 @@ typedef struct {
 typedef enum {
 	DLCR_OBJ,
 	DLCR_SUBC_BEGIN,
-	DLCR_SUBC_END
+	DLCR_SUBC_END,
+	DLCR_SUBC_FROM_LIB    /* place a subc from local lib by a list of names */
 /*	DLCR_SEQPOLY_BEGIN,
 	DLCR_SEQPOLY_END*/
 } pcb_dlcr_type_t;
@@ -56,6 +57,13 @@ typedef struct {
 		struct {
 			pcb_subc_t *subc;
 		} subc_begin; /* in DLCR_SUBC_BEGIN */
+		struct {
+			rnd_coord_t x;
+			rnd_coord_t y;
+			double rot;
+			int on_bottom;
+			char *names; /* \0 separated list with an empty string at the end (double \0) */
+		} subc_from_lib;
 	} val;
 	long loc_line; /* for debug */
 	gdl_elem_t link;
@@ -87,12 +95,18 @@ void pcb_dlcr_uninit(pcb_dlcr_t *dlcr);
 void pcb_dlcr_layer_reg(pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *layer);
 void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer);
 
+/* allocate a new named subcircuit within the local dlcr lib */
 pcb_subc_t *pcb_dlcr_subc_new_in_lib(pcb_dlcr_t *dlcr, const char *name);
 
 pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t width, rnd_coord_t clearance);
 pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, double start_deg, double delta_deg, rnd_coord_t width, rnd_coord_t clearance);
 pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int scale, rnd_coord_t thickness, const char *str);
 pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, long id, const char *name);
+
+/* delayed place a subcricuit from the local dlcr lib by name; names is either
+   a single string or a \0 separated list of strings with an empty string at
+   the end */
+pcb_dlcr_draw_t *pcb_dlcr_subc_new_from_lib(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int on_bottom, const char *names, long names_len);
 
 pcb_pstk_proto_t *pcb_dlcr_pstk_proto_new(pcb_dlcr_t *dlcr);
 

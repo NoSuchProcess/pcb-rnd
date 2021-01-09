@@ -57,6 +57,7 @@
 
 typedef struct pads_read_decal_s {
 	TODO("do we need swaps?")
+	int decal_names_len; /* in bytes, double \0 at the end included */
 	char decal_names[1]; /* really as long as it needs to be */
 } pads_read_part_t;
 

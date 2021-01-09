@@ -709,13 +709,14 @@ static int pads_parse_parttype(pads_read_ctx_t *rctx)
 
 	part = htsp_get(&rctx->parts, partname);
 	if (part != NULL) {
-		PADS_ERROR((RND_MSG_ERROR, "*PART* called '%s' is defined multiple times\n", partname));
+		PADS_ERROR((RND_MSG_ERROR, "*PARTTYPE* called '%s' is defined multiple times\n", partname));
 		return -1;
 	}
 
 	dnl = strlen(decals)+1;
 	part = calloc(sizeof(pads_read_part_t) + dnl + 2, 1);
 	memcpy(part->decal_names, decals, dnl);
+	part->decal_names_len = dnl+1;
 	htsp_set(&rctx->parts, rnd_strdup(partname), part);
 
 	/* the decal name list should consist of null-terminated string with an extra
@@ -741,6 +742,7 @@ static int pads_parse_parttypes(pads_read_ctx_t *rctx)
 
 static int pads_parse_part(pads_read_ctx_t *rctx)
 {
+	pads_read_part_t *part;
 	char refdes[64], partname[64], glue[4], mirr[4];
 	long n, altdeclnum, clustid = -1, clsattr = 0, brotherid = -1, num_labels;
 	rnd_coord_t xo, yo;
@@ -766,6 +768,18 @@ static int pads_parse_part(pads_read_ctx_t *rctx)
 	pads_eatup_till_nl(rctx);
 
 	rnd_trace("part: '%s' of '%s' num_labels=%ld\n", refdes, partname, num_labels);
+
+	part = htsp_get(&rctx->parts, partname);
+	if (part != NULL) {
+		pcb_dlcr_draw_t *po = pcb_dlcr_subc_new_from_lib(&rctx->dlcr, xo, yo, rot, mirr, part->decal_names, part->decal_names_len);
+		po->loc_line = rctx->line;
+	}
+	else {
+		PADS_ERROR((RND_MSG_ERROR, "*PART* on undefined parttype '%s'\n", partname));
+		return -1;
+	}
+
+TODO("add refdes and labels");
 
 	for(n = 0; n < num_labels; n++)
 		if ((res = pads_parse_label(rctx, xo, yo)) <= 0) return res;
