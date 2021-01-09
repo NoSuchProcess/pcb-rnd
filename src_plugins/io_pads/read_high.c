@@ -684,11 +684,12 @@ static int pads_parse_pinnames(pads_read_ctx_t *rctx, long num_pins)
 
 static int pads_parse_parttype(pads_read_ctx_t *rctx)
 {
-	char name[64], decals[16*64], unit[4], ptype[8];
+	pads_read_part_t *part;
+	char partname[64], decals[16*64], unit[4], ptype[8];
 	long n, num_gates, num_signals, num_alpins, flags;
-	int res;
+	int res, dnl;
 
-	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
+	if ((res = pads_read_word(rctx, partname, sizeof(partname), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, decals, sizeof(decals), 0)) <= 0) return res;
 	if ((floor(rctx->ver) == 2005) || (rctx->ver < 6.0)) { /* 4.0 and 5.0 both have unit */
 		if ((res = pads_read_word(rctx, unit, sizeof(unit), 0)) <= 0) return res;
@@ -704,7 +705,19 @@ static int pads_parse_parttype(pads_read_ctx_t *rctx)
 	/* ECO is ignored */
 	pads_eatup_till_nl(rctx);
 
-	rnd_trace("parttype: '%s' gates=%ld signals=%ld alpins=%ld\n", name, num_gates, num_signals, num_alpins);
+	rnd_trace("parttype: '%s' -> '%s' gates=%ld signals=%ld alpins=%ld\n", partname, decals, num_gates, num_signals, num_alpins);
+
+	part = htsp_get(&rctx->parts, partname);
+	if (part != NULL) {
+		PADS_ERROR((RND_MSG_ERROR, "*PART* called '%s' is defined multiple times\n", partname));
+		return -1;
+	}
+
+	dnl = strlen(decals)+1;
+	part = calloc(sizeof(pads_read_part_t) + dnl, 1);
+	memcpy(part->decal_name, decals, dnl);
+	htsp_set(&rctx->parts, rnd_strdup(partname), part);
+
 	for(n = 0; n < num_gates; n++)
 		if ((res = pads_parse_gate(rctx)) <= 0) return res;
 	for(n = 0; n < num_signals; n++)
@@ -722,15 +735,14 @@ static int pads_parse_parttypes(pads_read_ctx_t *rctx)
 
 static int pads_parse_part(pads_read_ctx_t *rctx)
 {
-	pads_read_part_t *part;
-	char partname[64], decalname[64], glue[4], mirr[4];
+	char refdes[64], partname[64], glue[4], mirr[4];
 	long n, altdeclnum, clustid = -1, clsattr = 0, brotherid = -1, num_labels;
 	rnd_coord_t xo, yo;
 	double rot;
-	int dnl, res;
+	int res;
 
+	if ((res = pads_read_word(rctx, refdes, sizeof(refdes), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, partname, sizeof(partname), 0)) <= 0) return res;
-	if ((res = pads_read_word(rctx, decalname, sizeof(decalname), 0)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &xo)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &yo)) <= 0) return res;
 	if ((res = pads_read_double(rctx, &rot)) <= 0) return res;
@@ -747,17 +759,7 @@ static int pads_parse_part(pads_read_ctx_t *rctx)
 
 	pads_eatup_till_nl(rctx);
 
-	rnd_trace("part: '%s' of '%s' num_labels=%ld\n", partname, decalname, num_labels);
-	part = htsp_get(&rctx->parts, partname);
-	if (part != NULL) {
-		PADS_ERROR((RND_MSG_ERROR, "*PART* called '%s' is defined multiple times\n", partname));
-		return -1;
-	}
-
-	dnl = strlen(decalname)+1;
-	part = calloc(sizeof(pads_read_part_t) + dnl, 1);
-	memcpy(part->decal_name, decalname, dnl);
-	htsp_set(&rctx->parts, rnd_strdup(partname), part);
+	rnd_trace("part: '%s' of '%s' num_labels=%ld\n", refdes, partname, num_labels);
 
 	for(n = 0; n < num_labels; n++)
 		if ((res = pads_parse_label(rctx, xo, yo)) <= 0) return res;
