@@ -599,7 +599,7 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 		name, xo, yo, num_pieces, num_texts, num_labels, num_terms, num_stacks);
 TODO("set unit and origin");
 
-	subc = pcb_dlcr_subc_new(&rctx->dlcr, name);
+	subc = pcb_dlcr_subc_new_in_lib(&rctx->dlcr, name);
 	pcb_dlcr_subc_begin(&rctx->dlcr, subc);
 	for(n = 0; n < num_pieces; n++)
 		if ((res = pads_parse_piece(rctx, PLTY_LINES, xo, yo)) <= 0) return res;

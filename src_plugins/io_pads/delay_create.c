@@ -126,7 +126,7 @@ static void pcb_dlcr_create_layers(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 	}
 }
 
-pcb_subc_t *pcb_dlcr_subc_new(pcb_dlcr_t *dlcr, const char *name)
+pcb_subc_t *pcb_dlcr_subc_new_in_lib(pcb_dlcr_t *dlcr, const char *name)
 {
 	pcb_subc_t *subc = htsp_get(&dlcr->name2subc, name);
 	if (subc != NULL) {

@@ -87,7 +87,7 @@ void pcb_dlcr_uninit(pcb_dlcr_t *dlcr);
 void pcb_dlcr_layer_reg(pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *layer);
 void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer);
 
-pcb_subc_t *pcb_dlcr_subc_new(pcb_dlcr_t *dlcr, const char *name);
+pcb_subc_t *pcb_dlcr_subc_new_in_lib(pcb_dlcr_t *dlcr, const char *name);
 
 pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t width, rnd_coord_t clearance);
 pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, double start_deg, double delta_deg, rnd_coord_t width, rnd_coord_t clearance);
