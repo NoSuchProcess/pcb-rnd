@@ -448,7 +448,7 @@ struct pads_term_s {
 static void pads_create_pins(pads_read_ctx_t *rctx, pads_term_t *first, long pinidx, long pid)
 {
 	pads_term_t *t, *tnext;
-rnd_trace("  pin create: %ld\n", pinidx);
+rnd_trace("  pin create: %ld pid=%ld first=%p\n", pinidx, pid, first);
 	for(t = first; t != NULL; t = tnext) {
 		pcb_dlcr_draw_t *pin = pcb_dlcr_via_new(&rctx->dlcr, t->x, t->y, 0, pid, NULL);
 		if (pin != NULL)
@@ -692,9 +692,10 @@ TODO("set unit and origin");
 		if ((res = pads_parse_term(rctx, n, &terms)) <= 0) { free_terms(rctx, &terms, defpid); return res; }
 	for(n = 0; n < num_stacks; n++)
 		if ((res = pads_parse_pstk_proto(rctx, &terms, &defpid)) <= 0) { free_terms(rctx, &terms, defpid); return res; }
-	pcb_dlcr_subc_end(&rctx->dlcr);
 
 	free_terms(rctx, &terms, defpid);
+
+	pcb_dlcr_subc_end(&rctx->dlcr);
 
 	return 1;
 }
