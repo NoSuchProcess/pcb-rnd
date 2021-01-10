@@ -234,6 +234,7 @@ static void cmd_print(char *args)
 {
 	long tid;
 
+	printf("--- dump %s", args);
 	for(tid = 0; tid < cdt.triangles.used; tid++) {
 		triangle_t *t = cdt.triangles.array[tid];
 		int n;
