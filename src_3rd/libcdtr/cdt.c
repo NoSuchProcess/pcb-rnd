@@ -483,8 +483,9 @@ static int insert_point_(cdt_t *cdt, point_t *new_p)
 	 * (it will be removed, and then created as 2 segments connecting the new point)
 	 */
 	for (i = 0; i < 3; i++) {
-		crossing_edge = enclosing_triangle->e[i];
-		if (ORIENT_COLLINEAR(crossing_edge->endp[0], crossing_edge->endp[1], new_p)) {
+		edge_t *e = enclosing_triangle->e[i];
+		if (ORIENT_COLLINEAR(e->endp[0], e->endp[1], new_p)) {
+			crossing_edge = e;
 			if (crossing_edge->is_constrained) {
 				for (j = 0; j < 2; j++)
 					split_edge_endp[j] = enclosing_triangle->e[i]->endp[j];
