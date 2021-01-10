@@ -431,7 +431,7 @@ static void pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_
 
 	pcb_subc_get_origin(subc, &ox, &oy);
 	dx = obj->val.subc_from_lib.x - ox;
-	dy = obj->val.subc_from_lib.x - oy;
+	dy = obj->val.subc_from_lib.y - oy;
 	nsc = pcb_subc_dup_at(pcb, pcb->Data, subc, dx, dy, 0, 0);
 
 	rnd_trace("  using name '%s' %p -> %p\n", name, subc, nsc);
