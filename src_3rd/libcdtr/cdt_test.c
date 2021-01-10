@@ -291,7 +291,7 @@ int main(void)
 		else if (strcmp(cmd, "exit") == 0) break;
 		else if (strcmp(cmd, "quit") == 0) break;
 		else if (strcmp(cmd, "auto") == 0) autotest();
-		else if (strcmp(cmd, "echo") == 0) printf("%s\n", args);
+		else if (strcmp(cmd, "echo") == 0) printf("%s", args); /* newline is in args already */
 		else if (strcmp(cmd, "init") == 0) cmd_init(args);
 		else if (strcmp(cmd, "free") == 0) cmd_free(args);
 		else if (strcmp(cmd, "ins_point") == 0) cmd_ins_point(args);
