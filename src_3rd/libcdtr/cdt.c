@@ -464,6 +464,7 @@ static int insert_point_(cdt_t *cdt, point_t *new_p)
 	triangle_t *enclosing_triangle = NULL;
 	retriangulation_region_t region = {NULL, NULL};
 	pointlist_node_t *points_to_attach, *prev_point_node;
+	edge_t *crossing_edge = NULL;
 	point_t *split_edge_endp[2] = {NULL, NULL};
 	void *split_edge_user_data;
 	int i, j;
@@ -482,7 +483,7 @@ static int insert_point_(cdt_t *cdt, point_t *new_p)
 	 * (it will be removed, and then created as 2 segments connecting the new point)
 	 */
 	for (i = 0; i < 3; i++) {
-		edge_t *crossing_edge = enclosing_triangle->e[i];
+		crossing_edge = enclosing_triangle->e[i];
 		if (ORIENT_COLLINEAR(crossing_edge->endp[0], crossing_edge->endp[1], new_p)) {
 			if (crossing_edge->is_constrained) {
 				for (j = 0; j < 2; j++)
@@ -509,7 +510,6 @@ static int insert_point_(cdt_t *cdt, point_t *new_p)
 	EDGELIST_FOREACH(e, region.edges_to_remove)
 		remove_edge(cdt, e);
 	EDGELIST_FOREACH_END();
-	edgelist_free(region.edges_to_remove);
 
 	points_to_attach = order_edges_adjacently(region.border_edges);
 	prev_point_node = points_to_attach;
@@ -524,6 +524,11 @@ static int insert_point_(cdt_t *cdt, point_t *new_p)
 	if (!ORIENT_COLLINEAR(prev_point_node->item, points_to_attach->item, new_p))
 		new_triangle(cdt, prev_point_node->item, points_to_attach->item, new_p);
 	pointlist_free(points_to_attach);
+
+	/* delete the crossing edge if it wasn't before (point on a boundary edge case) */
+	if (crossing_edge != NULL && edgelist_find(region.edges_to_remove, &crossing_edge) == NULL)
+		remove_edge(cdt, crossing_edge);
+	edgelist_free(region.edges_to_remove);
 
 	/* recreate, now splitted, constrained edge */
 	if (split_edge_endp[0] != NULL) {
