@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <time.h>
+#include <assert.h>
 #include "cdt.h"
 
 #define MAXP 64
@@ -211,6 +212,53 @@ static void cmd_dump_anim(char *args)
 	fclose(f);
 }
 
+static long triangle_id(triangle_t *t)
+{
+	long tid;
+	for(tid = 0; tid < cdt.triangles.used; tid++)
+		if (t == cdt.triangles.array[tid])
+			return tid;
+	return -1;
+}
+
+static long edge_id(edge_t *t)
+{
+	long eid;
+	for(eid = 0; eid < cdt.edges.used; eid++)
+		if (t == cdt.edges.array[eid])
+			return eid;
+	return -1;
+}
+
+static void cmd_print(char *args)
+{
+	long tid;
+
+	for(tid = 0; tid < cdt.triangles.used; tid++) {
+		triangle_t *t = cdt.triangles.array[tid];
+		int n;
+
+		printf(" triangle T%ld: %d;%d %d;%d %d;%d\n", tid, t->p[0]->pos.x, t->p[0]->pos.y, t->p[1]->pos.x, t->p[1]->pos.y, t->p[2]->pos.x, t->p[2]->pos.y);
+
+		printf("  adj triangles:");
+		for(n = 0; n < 3; n++) {
+			long atid = triangle_id(t->adj_t[n]);
+			if (atid >= 0)
+				printf(" T%ld", atid);
+		}
+		printf("\n");
+
+		printf("  edges:");
+		for(n = 0; n < 3; n++) {
+			long eid = edge_id(t->e[n]);
+			assert(eid >= 0);
+			printf(" E%ld", eid);
+		}
+		printf("\n");
+	}
+}
+
+
 static void cmd_print_events(char *args)
 {
 	switch(*args) {
@@ -251,6 +299,7 @@ int main(void)
 		else if (strcmp(cmd, "ins_cedge") == 0) cmd_ins_cedge(args);
 		else if (strcmp(cmd, "del_cedge") == 0) cmd_del_cedge(args);
 		else if (strcmp(cmd, "dump_anim") == 0) cmd_dump_anim(args);
+		else if (strcmp(cmd, "print") == 0) cmd_print(args);
 		else if (strcmp(cmd, "print_events") == 0) cmd_print_events(args);
 		else fprintf(stderr, "syntax error: unknown command '%s'\n", cmd);
 	}
