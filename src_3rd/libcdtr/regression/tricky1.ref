@@ -1,0 +1,80 @@
+--- dump 1
+ triangle T0: 98347;51060 100000;0 100000;100000
+  adj triangles: T2 T7
+  edges: E4 E2 E5
+ triangle T1: 0;100000 0;0 92086;47852
+  adj triangles: T5 T9
+  edges: E0 E6 E8
+ triangle T2: 95806;44000 100000;0 98347;51060
+  adj triangles: T4 T0 T11
+  edges: E9 E4 E10
+ triangle T3: 0;0 100000;0 95030;41242
+  adj triangles: T4 T5
+  edges: E1 E12 E11
+ triangle T4: 95030;41242 100000;0 95806;44000
+  adj triangles: T3 T2 T10
+  edges: E12 E9 E13
+ triangle T5: 0;0 95030;41242 92086;47852
+  adj triangles: T3 T13 T1
+  edges: E11 E14 E6
+ triangle T6: 92086;47852 98347;51060 94644;55629
+  adj triangles: T12 T7 T9
+  edges: E7 E16 E15
+ triangle T7: 94644;55629 98347;51060 100000;100000
+  adj triangles: T6 T0 T8
+  edges: E16 E5 E17
+ triangle T8: 0;100000 94644;55629 100000;100000
+  adj triangles: T9 T7
+  edges: E18 E17 E3
+ triangle T9: 0;100000 92086;47852 94644;55629
+  adj triangles: T1 T6 T8
+  edges: E8 E15 E18
+ triangle T10: 94000;45300 95030;41242 95806;44000
+  adj triangles: T13 T4 T11
+  edges: E19 E13 E20
+ triangle T11: 94000;45300 95806;44000 98347;51060
+  adj triangles: T10 T2 T12
+  edges: E20 E10 E21
+ triangle T12: 92086;47852 94000;45300 98347;51060
+  adj triangles: T13 T11 T6
+  edges: E22 E21 E7
+ triangle T13: 92086;47852 95030;41242 94000;45300
+  adj triangles: T5 T10 T12
+  edges: E14 E19 E22
+--- dump 2
+ triangle T0: 0;100000 0;0 92086;47852
+  adj triangles: T3 T5
+  edges: E0 E4 E5
+ triangle T1: 0;0 100000;0 95030;41242
+  adj triangles: T2 T3
+  edges: E1 E8 E7
+ triangle T2: 95030;41242 100000;0 95806;44000
+  adj triangles: T1 T9 T6
+  edges: E8 E6 E9
+ triangle T3: 0;0 95030;41242 92086;47852
+  adj triangles: T1 T7 T0
+  edges: E7 E10 E4
+ triangle T4: 0;100000 94644;55629 100000;100000
+  adj triangles: T5 T11
+  edges: E13 E12 E3
+ triangle T5: 0;100000 92086;47852 94644;55629
+  adj triangles: T0 T8 T4
+  edges: E5 E11 E13
+ triangle T6: 94000;45300 95030;41242 95806;44000
+  adj triangles: T7 T2 T10
+  edges: E14 E9 E15
+ triangle T7: 92086;47852 95030;41242 94000;45300
+  adj triangles: T3 T6 T8
+  edges: E10 E14 E16
+ triangle T8: 92086;47852 94000;45300 94644;55629
+  adj triangles: T7 T10 T5
+  edges: E16 E17 E11
+ triangle T9: 95806;44000 100000;0 100000;100000
+  adj triangles: T2 T11
+  edges: E6 E2 E18
+ triangle T10: 94000;45300 95806;44000 94644;55629
+  adj triangles: T6 T11 T8
+  edges: E15 E19 E17
+ triangle T11: 94644;55629 95806;44000 100000;100000
+  adj triangles: T10 T9 T4
+  edges: E19 E18 E12

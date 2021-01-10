@@ -9,8 +9,10 @@ ins_point 95030 41242
 ins_point 94644 55629
 ins_point 94000 45300
 dump_anim tricky1_1.anim
+print 1
 
 del_point p1
 dump_anim tricky1_2.anim
+print 2
 
 free

@@ -31,6 +31,9 @@ edge.o: edge.c
 triangle.o: triangle.c
 	$(CC) $(CFLAGS) -c triangle.c -o $@
 
+test:
+	cd regression && ./Test.sh
+
 dep:
 	echo $(OBJS) | ./dep.sh $(CFLAGS) > Makefile.dep
 

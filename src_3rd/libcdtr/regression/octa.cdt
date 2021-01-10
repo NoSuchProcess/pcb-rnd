@@ -10,10 +10,14 @@ ins_point 2300 2300
 ins_point 3000 2000
 ins_point 3700 2300
 dump_anim octa1.anim
+print 1
 
 ins_point p1 3000 3000
 dump_anim octa2.anim
-del_point p1
+print 2
 
+del_point p1
 dump_anim octa3.anim
+print 3
+
 free

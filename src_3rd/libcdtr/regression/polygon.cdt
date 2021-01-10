@@ -14,12 +14,15 @@ ins_point 1385 340
 ins_point 1704 890
 ins_point p2 1759 669
 dump_anim polygon_1.anim
+print 1
 
 ins_cedge e1 p1 p2
 dump_anim polygon_2.anim
+print 2
 
 # split the constrained edge
 ins_point 800 669
 dump_anim polygon_3.anim
+print 3
 
 #del_cedge e1

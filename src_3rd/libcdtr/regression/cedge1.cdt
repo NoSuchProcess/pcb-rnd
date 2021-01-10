@@ -9,10 +9,14 @@ ins_point 3500 2500
 ins_point 4000 3500
 ins_point p2 4500 3000
 dump_anim cedge1_1.anim
+print 1
 
 ins_cedge e1 p1 p2
 dump_anim cedge1_2.anim
+print 2
 
 del_cedge e1
 dump_anim cedge1_3.anim
+print 3
+
 free

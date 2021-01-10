@@ -13,4 +13,6 @@ ins_point 3300 3000
 ins_point 2800 4800
 
 dump_anim points.anim
+print 1
+
 free

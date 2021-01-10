@@ -1,0 +1,39 @@
+split_constrained_edge_pre at 455;455
+split_constrained_edge_post at 455;455
+--- dump 1
+ triangle T0: 0;0 900;10 10;10
+  adj triangles: T1 T8 T5
+  edges: E6 E5 E4
+ triangle T1: 0;0 1000;0 900;10
+  adj triangles: T2 T0
+  edges: E1 E7 E6
+ triangle T2: 900;900 900;10 1000;0
+  adj triangles: T9 T1 T3
+  edges: E8 E7 E9
+ triangle T3: 900;900 1000;0 1000;1000
+  adj triangles: T2 T4
+  edges: E9 E2 E10
+ triangle T4: 0;1000 900;900 1000;1000
+  adj triangles: T6 T3
+  edges: E11 E10 E3
+ triangle T5: 0;0 10;10 10;900
+  adj triangles: T0 T11 T7
+  edges: E4 E13 E12
+ triangle T6: 0;1000 10;900 900;900
+  adj triangles: T7 T10 T4
+  edges: E15 E14 E11
+ triangle T7: 0;1000 0;0 10;900
+  adj triangles: T5 T6
+  edges: E0 E12 E15
+ triangle T8: 10;10 900;10 455;455
+  adj triangles: T0 T9 T11
+  edges: E5 E17 E16
+ triangle T9: 455;455 900;10 900;900
+  adj triangles: T8 T2 T10
+  edges: E17 E8 E18
+ triangle T10: 10;900 455;455 900;900
+  adj triangles: T11 T9 T6
+  edges: E19 E18 E14
+ triangle T11: 10;900 10;10 455;455
+  adj triangles: T5 T8 T10
+  edges: E13 E16 E19

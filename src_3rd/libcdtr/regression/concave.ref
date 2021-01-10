@@ -1,0 +1,117 @@
+--- dump 1
+ triangle T0: 0;10000 0;0 2000;4000
+  adj triangles: T10 T4
+  edges: E0 E4 E5
+ triangle T1: 2000;4000 3000;3500 4000;4000
+  adj triangles: T9 T6 T4
+  edges: E6 E8 E7
+ triangle T2: 4000;4000 10000;0 10000;10000
+  adj triangles: T5 T3
+  edges: E9 E2 E10
+ triangle T3: 0;10000 4000;4000 10000;10000
+  adj triangles: T4 T2
+  edges: E11 E10 E3
+ triangle T4: 0;10000 2000;4000 4000;4000
+  adj triangles: T0 T1 T3
+  edges: E5 E7 E11
+ triangle T5: 4000;4000 4000;2000 10000;0
+  adj triangles: T6 T7 T2
+  edges: E13 E12 E9
+ triangle T6: 3000;3500 4000;2000 4000;4000
+  adj triangles: T8 T5 T1
+  edges: E14 E13 E8
+ triangle T7: 0;0 10000;0 4000;2000
+  adj triangles: T5 T11
+  edges: E1 E12 E15
+ triangle T8: 2000;2000 4000;2000 3000;3500
+  adj triangles: T11 T6 T9
+  edges: E16 E14 E17
+ triangle T9: 2000;4000 2000;2000 3000;3500
+  adj triangles: T10 T8 T1
+  edges: E18 E17 E6
+ triangle T10: 0;0 2000;2000 2000;4000
+  adj triangles: T11 T9 T0
+  edges: E19 E18 E4
+ triangle T11: 0;0 4000;2000 2000;2000
+  adj triangles: T7 T8 T10
+  edges: E15 E16 E19
+--- dump 2
+ triangle T0: 0;10000 0;0 2000;4000
+  adj triangles: T7 T4
+  edges: E0 E4 E5
+ triangle T1: 2000;4000 3000;3500 4000;4000
+  adj triangles: T12 T11 T4
+  edges: E6 E8 E7
+ triangle T2: 4000;4000 10000;0 10000;10000
+  adj triangles: T5 T3
+  edges: E9 E2 E10
+ triangle T3: 0;10000 4000;4000 10000;10000
+  adj triangles: T4 T2
+  edges: E11 E10 E3
+ triangle T4: 0;10000 2000;4000 4000;4000
+  adj triangles: T0 T1 T3
+  edges: E5 E7 E11
+ triangle T5: 4000;4000 4000;2000 10000;0
+  adj triangles: T10 T6 T2
+  edges: E13 E12 E9
+ triangle T6: 0;0 10000;0 4000;2000
+  adj triangles: T5 T8
+  edges: E1 E12 E14
+ triangle T7: 0;0 2000;2000 2000;4000
+  adj triangles: T8 T13 T0
+  edges: E17 E16 E4
+ triangle T8: 0;0 4000;2000 2000;2000
+  adj triangles: T6 T9 T7
+  edges: E14 E15 E17
+ triangle T9: 2000;2000 4000;2000 3000;3000
+  adj triangles: T8 T10 T13
+  edges: E15 E19 E18
+ triangle T10: 3000;3000 4000;2000 4000;4000
+  adj triangles: T9 T5 T11
+  edges: E19 E13 E20
+ triangle T11: 3000;3500 3000;3000 4000;4000
+  adj triangles: T12 T10 T1
+  edges: E21 E20 E8
+ triangle T12: 2000;4000 3000;3000 3000;3500
+  adj triangles: T13 T11 T1
+  edges: E22 E21 E6
+ triangle T13: 2000;4000 2000;2000 3000;3000
+  adj triangles: T7 T9 T12
+  edges: E16 E18 E22
+--- dump 3
+ triangle T0: 0;10000 0;0 2000;4000
+  adj triangles: T7 T4
+  edges: E0 E4 E5
+ triangle T1: 2000;4000 3000;3500 4000;4000
+  adj triangles: T10 T9 T4
+  edges: E6 E8 E7
+ triangle T2: 4000;4000 10000;0 10000;10000
+  adj triangles: T5 T3
+  edges: E9 E2 E10
+ triangle T3: 0;10000 4000;4000 10000;10000
+  adj triangles: T4 T2
+  edges: E11 E10 E3
+ triangle T4: 0;10000 2000;4000 4000;4000
+  adj triangles: T0 T1 T3
+  edges: E5 E7 E11
+ triangle T5: 4000;4000 4000;2000 10000;0
+  adj triangles: T9 T6 T2
+  edges: E13 E12 E9
+ triangle T6: 0;0 10000;0 4000;2000
+  adj triangles: T5 T8
+  edges: E1 E12 E14
+ triangle T7: 0;0 2000;2000 2000;4000
+  adj triangles: T8 T10 T0
+  edges: E17 E16 E4
+ triangle T8: 0;0 4000;2000 2000;2000
+  adj triangles: T6 T11 T7
+  edges: E14 E15 E17
+ triangle T9: 3000;3500 4000;2000 4000;4000
+  adj triangles: T11 T5 T1
+  edges: E18 E13 E8
+ triangle T10: 2000;4000 2000;2000 3000;3500
+  adj triangles: T7 T11 T1
+  edges: E16 E19 E6
+ triangle T11: 2000;2000 4000;2000 3000;3500
+  adj triangles: T8 T9 T10
+  edges: E15 E18 E19
