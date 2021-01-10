@@ -482,8 +482,8 @@ static int insert_point_(cdt_t *cdt, point_t *new_p)
 	 * (it will be removed, and then created as 2 segments connecting the new point)
 	 */
 	for (i = 0; i < 3; i++) {
-		if (enclosing_triangle->adj_t[i] != NULL && is_point_in_triangle(new_p, enclosing_triangle->adj_t[i])) {
-			edge_t *crossing_edge = enclosing_triangle->e[i];
+		edge_t *crossing_edge = enclosing_triangle->e[i];
+		if (ORIENT_COLLINEAR(crossing_edge->endp[0], crossing_edge->endp[1], new_p)) {
 			if (crossing_edge->is_constrained) {
 				for (j = 0; j < 2; j++)
 					split_edge_endp[j] = enclosing_triangle->e[i]->endp[j];
@@ -517,10 +517,12 @@ static int insert_point_(cdt_t *cdt, point_t *new_p)
 	POINTLIST_FOREACH(p, points_to_attach->next)
 		point_t *prev_p = prev_point_node->item;
 		new_edge(cdt, p, new_p, 0);
-		new_triangle(cdt, prev_p, p, new_p);
+		if (!ORIENT_COLLINEAR(prev_p, p, new_p))
+			new_triangle(cdt, prev_p, p, new_p);
 		prev_point_node = _node_;
 	POINTLIST_FOREACH_END();
-	new_triangle(cdt, prev_point_node->item, points_to_attach->item, new_p);
+	if (!ORIENT_COLLINEAR(prev_point_node->item, points_to_attach->item, new_p))
+		new_triangle(cdt, prev_point_node->item, points_to_attach->item, new_p);
 	pointlist_free(points_to_attach);
 
 	/* recreate, now splitted, constrained edge */
