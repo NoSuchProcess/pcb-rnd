@@ -10,10 +10,10 @@ split_constrained_edge_post at 0;500
 --- dump 2
  triangle T0: 0;500 0;0 1000;0
   adj triangles: T1
-  edges: E4 E1 E5
+  edges: E3 E0 E4
  triangle T1: 0;500 1000;0 1000;1000
   adj triangles: T0 T2
-  edges: E5 E2 E6
+  edges: E4 E1 E5
  triangle T2: 0;1000 0;500 1000;1000
   adj triangles: T1
-  edges: E7 E6 E3
+  edges: E6 E5 E2
