@@ -219,7 +219,7 @@ pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y
 	pcb_dlcr_draw_t *obj;
 	pcb_pstk_t *p;
 	rnd_cardinal_t i, pid = -1;
-	pcb_data_t *data = (dlcr->subc_begin != NULL) ? &dlcr->subc_begin->val.subc_begin.subc->data : &dlcr->pstks;
+	pcb_data_t *data = (dlcr->subc_begin != NULL) ? dlcr->subc_begin->val.subc_begin.subc->data : &dlcr->pstks;
 
 	if (id >= 0) {
 		if (id < data->ps_protos.used)
