@@ -1,0 +1,7 @@
+- finish API renaming:
+	- types
+	- macros
+- write doc
+	- limitation:
+		- implied boundary constrained edges (BCE)
+		- BCE can not be removed
