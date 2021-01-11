@@ -255,7 +255,7 @@ static void init_bbox(cdt_t *cdt, coord_t bbox_x1, coord_t bbox_y1, coord_t bbox
 	new_triangle(cdt, p_tl, p_bl, p_tr);
 }
 
-void cdt_init(cdt_t *cdt, coord_t bbox_x1, coord_t bbox_y1, coord_t bbox_x2, coord_t bbox_y2)
+void cdt_init_(cdt_t *cdt)
 {
 	cdt->points.elem_constructor = vtpoint_constructor;
 	cdt->points.elem_destructor = vtpoint_destructor;
@@ -269,9 +269,14 @@ void cdt_init(cdt_t *cdt, coord_t bbox_x1, coord_t bbox_y1, coord_t bbox_x2, coo
 	cdt->triangles.elem_destructor = vttriangle_destructor;
 	cdt->triangles.elem_copy = NULL;
 	vttriangle_init(&cdt->triangles);
+}
 
+void cdt_init(cdt_t *cdt, coord_t bbox_x1, coord_t bbox_y1, coord_t bbox_x2, coord_t bbox_y2)
+{
+	cdt_init_(cdt);
 	init_bbox(cdt, bbox_x1, bbox_y1, bbox_x2, bbox_y2);
 }
+
 
 void cdt_free(cdt_t *cdt)
 {

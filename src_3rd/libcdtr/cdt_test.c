@@ -65,6 +65,12 @@ static void ev_split_constrained_edge_post(cdt_t *cdt, edge_t *ne1, edge_t *ne2,
 		printf("split_constrained_edge_post at %d;%d\n", pt->pos.x, pt->pos.y);
 }
 
+static void init_evs(void)
+{
+	cdt.ev_split_constrained_edge_pre = ev_split_constrained_edge_pre;
+	cdt.ev_split_constrained_edge_post = ev_split_constrained_edge_post;
+}
+
 static void cmd_init(char *args)
 {
 	long x1, y1, x2, y2;
@@ -73,8 +79,13 @@ static void cmd_init(char *args)
 		return;
 	}
 	cdt_init(&cdt, x1, y1, x2, y2);
-	cdt.ev_split_constrained_edge_pre = ev_split_constrained_edge_pre;
-	cdt.ev_split_constrained_edge_post = ev_split_constrained_edge_post;
+	init_evs();
+}
+
+static void cmd_raw_init(char *args)
+{
+	cdt_init_(&cdt);
+	init_evs();
 }
 
 static void cmd_free(char *args)
@@ -329,6 +340,7 @@ int main(void)
 		else if (strcmp(cmd, "auto") == 0) autotest();
 		else if (strcmp(cmd, "echo") == 0) printf("%s", args); /* newline is in args already */
 		else if (strcmp(cmd, "init") == 0) cmd_init(args);
+		else if (strcmp(cmd, "raw_init") == 0) cmd_raw_init(args);
 		else if (strcmp(cmd, "free") == 0) cmd_free(args);
 		else if (strcmp(cmd, "ins_point") == 0) cmd_ins_point(args, 0);
 		else if (strcmp(cmd, "raw_point") == 0) cmd_ins_point(args, 1);

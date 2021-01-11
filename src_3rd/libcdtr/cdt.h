@@ -89,7 +89,9 @@ static inline double orientation(point_t *p1, point_t *p2, point_t *p3)
 
 /* Raw, low level object creation without side effects; use it only to
    reconstruct a case */
+void cdt_init_(cdt_t *cdt); /* does not create the bbox in constrained edges */
 edge_t *cdt_new_edge_(cdt_t *cdt, point_t *p1, point_t *p2, int constrain);
 triangle_t *cdt_new_triangle_(cdt_t *cdt, point_t *p1, point_t *p2, point_t *p3);
+
 
 #endif
