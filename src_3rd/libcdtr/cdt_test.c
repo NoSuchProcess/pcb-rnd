@@ -218,15 +218,9 @@ static void cmd_raw_edge(char *args)
 static void cmd_raw_triangle(char *args)
 {
 	long pi1, pi2, pi3;
-	int constrain;
 
 	if (sscanf(args, "P%ld P%ld P%ld", &pi1, &pi2, &pi3) != 3) {
 		fprintf(stderr, "syntax error: raw_trinagle needs 3 arguments: P1, P2 and P3 (with raw point indices)\n");
-		return;
-	}
-
-	if (cdt_new_edge_(&cdt, cdt.points.array[pi1], cdt.points.array[pi2], constrain) == NULL) {
-		fprintf(stderr, "raw_edge failed\n");
 		return;
 	}
 
