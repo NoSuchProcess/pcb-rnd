@@ -44,7 +44,9 @@
 #define DEBUG_LOC_ATTR 1
 
 #define CRDX(x) (x)
+#define CRDX_BRD(x) (x)
 #define CRDY(y) (dlcr->flip_y ? ((subc == NULL) ? (dlcr->board_bbox.Y2 - (y)) : (subc->bbox_naked.Y2 - (y))) : (y))
+#define CRDY_BRD(y) (dlcr->flip_y ? ((dlcr->board_bbox.Y2 - (y))) : (y))
 
 
 void pcb_dlcr_init(pcb_dlcr_t *dlcr)
@@ -435,8 +437,8 @@ static void pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_
 
 
 	pcb_subc_get_origin(subc, &ox, &oy);
-	dx = obj->val.subc_from_lib.x - ox;
-	dy = obj->val.subc_from_lib.y - oy;
+	dx = CRDX_BRD(obj->val.subc_from_lib.x - ox);
+	dy = CRDY_BRD(obj->val.subc_from_lib.y - oy);
 	nsc = pcb_subc_dup_at(pcb, pcb->Data, subc, dx, dy, 0, 0);
 	pcb_dlcr_fixup_pstk_proto_lyt(pcb, dlcr, nsc->data);
 
