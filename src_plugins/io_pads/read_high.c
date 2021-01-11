@@ -573,10 +573,17 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 			shp->data.circ.x = shp->data.circ.y = 0;
 			shp->data.circ.dia = size;
 		}
+		else { /* final fallback so that we have a prototype to draw */
+			shp->shape = PCB_PSSH_CIRC;
+			shp->data.circ.x = shp->data.circ.y = 0;
+			shp->data.circ.dia = RND_MM_TO_COORD(0.5);
+			PADS_ERROR((RND_MSG_ERROR, "failed to understand padstack shape '%s'; created dummy small circle\n", shape));
+		}
 
 TODO("pads-specific code in delay draw!!; see also: TODO#71");
 		shp->layer_mask = level; /* ugly hack: save the layer id for now */
 	}
+	pcb_pstk_proto_update(proto);
 
 	if (terms != NULL) {
 		pads_term_t *t = NULL, **tp;
