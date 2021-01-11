@@ -1,5 +1,6 @@
 #CFLAGS_DBG=-Wall -O0 -g3 
-CFLAGS=$(CFLAGS_DBG) $(CFLAGS_LIBCDTR) -I. -I.. -I../..
+#CFLAGS_COORDT=-DCDT_COORD_T=double
+CFLAGS=$(CFLAGS_DBG) $(CFLAGS_COORDT) $(CFLAGS_LIBCDTR) -I. -I.. -I../..
 LDFLAGS=-lm $(LDFLAGS_LIBCDTR)
 
 OBJS= cdt.o point.o edge.o triangle.o
