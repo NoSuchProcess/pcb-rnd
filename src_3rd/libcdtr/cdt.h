@@ -86,4 +86,10 @@ static inline double orientation(point_t *p1, point_t *p2, point_t *p3)
 	(((double)((p)->pos.x - (q)->pos.x) * (double)((p)->pos.x - (q)->pos.x)) \
 	 + ((double)((p)->pos.y - (q)->pos.y) * (double)((p)->pos.y - (q)->pos.y)))
 
+
+/* Raw, low level object creation without side effects; use it only to
+   reconstruct a case */
+edge_t *cdt_new_edge_(cdt_t *cdt, point_t *p1, point_t *p2, int constrain);
+triangle_t *cdt_new_triangle_(cdt_t *cdt, point_t *p1, point_t *p2, point_t *p3);
+
 #endif

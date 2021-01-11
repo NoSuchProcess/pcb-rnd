@@ -62,6 +62,11 @@ static edge_t *new_edge(cdt_t *cdt, point_t *p1, point_t *p2, int constrain)
 	return e;
 }
 
+edge_t *cdt_new_edge_(cdt_t *cdt, point_t *p1, point_t *p2, int constrain)
+{
+	return new_edge(cdt, p1, p2, constrain);
+}
+
 edge_t *get_edge_from_points(point_t *p1, point_t *p2)
 {
 	EDGELIST_FOREACH(e1, p1->adj_edges)
@@ -142,6 +147,12 @@ static triangle_t *new_triangle(cdt_t *cdt, point_t *p1, point_t *p2, point_t *p
 
 	return t;
 }
+
+triangle_t *cdt_new_triangle_(cdt_t *cdt, point_t *p1, point_t *p2, point_t *p3)
+{
+	return new_triangle(cdt, p1, p2, p3);
+}
+
 
 static void remove_triangle(cdt_t *cdt, triangle_t *t)
 {
