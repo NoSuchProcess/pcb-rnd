@@ -117,6 +117,18 @@ static void cmd_del_point(char *args)
 	P[id] = NULL;
 }
 
+static double coord_scale = 1;
+
+static void cmd_scale(char *args)
+{
+	double tmp;
+	if (sscanf(args, "%lf", &tmp) != 1) {
+		fprintf(stderr, "syntax error: scale requires a numeric argument\n");
+		return;
+	}
+	coord_scale = tmp;
+}
+
 static void cmd_ins_point(char *args, int raw)
 {
 	point_t *p;
@@ -138,6 +150,9 @@ static void cmd_ins_point(char *args, int raw)
 		fprintf(stderr, "syntax error: ins_point id out of range\n");
 		return;
 	}
+
+	x *= coord_scale;
+	y *= coord_scale;
 
 	if (raw) {
 		point_t *p = *vtpoint_alloc_append(&cdt.points, 1);
@@ -366,6 +381,7 @@ static int parse(FILE *f)
 		else if (strcmp(cmd, "auto") == 0) autotest();
 		else if (strcmp(cmd, "echo") == 0) printf("%s", args); /* newline is in args already */
 		else if (strcmp(cmd, "include") == 0) cmd_include(args);
+		else if (strcmp(cmd, "scale") == 0) cmd_scale(args);
 		else if (strcmp(cmd, "init") == 0) cmd_init(args);
 		else if (strcmp(cmd, "raw_init") == 0) cmd_raw_init(args);
 		else if (strcmp(cmd, "free") == 0) cmd_free(args);
