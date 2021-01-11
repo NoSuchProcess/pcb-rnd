@@ -867,7 +867,7 @@ void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t 
 			fprintf(f, "thick %s\n", edge->is_constrained ? "2" : "1");
 			last_c = edge->is_constrained;
 		}
-		fprintf(f, "line %d %d %d %d\n", edge->endp[0]->pos.x, edge->endp[0]->pos.y, edge->endp[1]->pos.x, edge->endp[1]->pos.y);
+		fprintf(f, "line %f %f %f %f\n", (double)edge->endp[0]->pos.x, (double)edge->endp[0]->pos.y, (double)edge->endp[1]->pos.x, (double)edge->endp[1]->pos.y);
 	VTEDGE_FOREACH_END();
 
 	fprintf(f, "color green\n");
@@ -876,7 +876,7 @@ void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t 
 		int r;
 		if (show_circles) {
 			circumcircle(triangle, &pos, &r);
-			fprintf(f, "circle %d %d %d 50\n", pos.x, pos.y, r);
+			fprintf(f, "circle %f %f %f 50\n", (double)pos.x, (double)pos.y, (double)r);
 		}
 		triangle_num++;
 	VTTRIANGLE_FOREACH_END();
@@ -884,7 +884,7 @@ void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t 
 	fprintf(f, "color red\n");
 	if (point_violations) {
 		POINTLIST_FOREACH(p, point_violations)
-			fprintf(f, "circle %d %d 50 10\n", p->pos.x, p->pos.y);
+			fprintf(f, "circle %f %f 50 10\n", (double)p->pos.x, (double)p->pos.y);
 		POINTLIST_FOREACH_END();
 	}
 
@@ -894,7 +894,7 @@ void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t 
 			pos_t pos;
 			int r;
 			circumcircle(t, &pos, &r);
-			fprintf(f, "circle %d %d %d 50\n", pos.x, pos.y, r);
+			fprintf(f, "circle %f %f %f 50\n", (double)pos.x, (double)pos.y, (double)r);
 		TRIANGLELIST_FOREACH_END();
 	}
 
