@@ -106,7 +106,7 @@ static void cmd_del_point(char *args)
 	P[id] = NULL;
 }
 
-static void cmd_ins_point(char *args)
+static void cmd_ins_point(char *args, int raw)
 {
 	point_t *p;
 	long x, y;
@@ -128,10 +128,17 @@ static void cmd_ins_point(char *args)
 		return;
 	}
 
-	p = cdt_insert_point(&cdt, x, y);
-	if (p == NULL) {
-		fprintf(stderr, "ins_point: failed to create\n");
-		return;
+	if (raw) {
+		point_t *p = *vtpoint_alloc_append(&cdt.points, 1);
+		p->pos.x = x;
+		p->pos.y = y;
+	}
+	else {
+		p = cdt_insert_point(&cdt, x, y);
+		if (p == NULL) {
+			fprintf(stderr, "ins_point: failed to create\n");
+			return;
+		}
 	}
 	if (id >= 0)
 		P[id] = p;
@@ -193,6 +200,40 @@ static void cmd_del_cedge(char *args)
 	cdt_delete_constrained_edge(&cdt, E[eid]);
 	E[eid] = NULL;
 }
+
+static void cmd_raw_edge(char *args)
+{
+	long pi1, pi2;
+	int constrain;
+
+	if (sscanf(args, "P%ld P%ld %d", &pi1, &pi2, &constrain) != 3) {
+		fprintf(stderr, "syntax error: raw_edge needs 3 arguments: P1 and P2 (with raw point indices) and constrain (1 or 0)\n");
+		return;
+	}
+
+	if (cdt_new_edge_(&cdt, cdt.points.array[pi1], cdt.points.array[pi2], constrain) == NULL)
+		fprintf(stderr, "raw_edge failed\n");
+}
+
+static void cmd_raw_triangle(char *args)
+{
+	long pi1, pi2, pi3;
+	int constrain;
+
+	if (sscanf(args, "P%ld P%ld P%ld", &pi1, &pi2, &pi3) != 3) {
+		fprintf(stderr, "syntax error: raw_trinagle needs 3 arguments: P1, P2 and P3 (with raw point indices)\n");
+		return;
+	}
+
+	if (cdt_new_edge_(&cdt, cdt.points.array[pi1], cdt.points.array[pi2], constrain) == NULL) {
+		fprintf(stderr, "raw_edge failed\n");
+		return;
+	}
+
+	if (cdt_new_triangle_(&cdt, cdt.points.array[pi1], cdt.points.array[pi2], cdt.points.array[pi3]) == 0)
+		fprintf(stderr, "raw_triangle failed\n");
+}
+
 
 static void cmd_dump_anim(char *args)
 {
@@ -295,10 +336,13 @@ int main(void)
 		else if (strcmp(cmd, "echo") == 0) printf("%s", args); /* newline is in args already */
 		else if (strcmp(cmd, "init") == 0) cmd_init(args);
 		else if (strcmp(cmd, "free") == 0) cmd_free(args);
-		else if (strcmp(cmd, "ins_point") == 0) cmd_ins_point(args);
+		else if (strcmp(cmd, "ins_point") == 0) cmd_ins_point(args, 0);
+		else if (strcmp(cmd, "raw_point") == 0) cmd_ins_point(args, 1);
 		else if (strcmp(cmd, "del_point") == 0) cmd_del_point(args);
 		else if (strcmp(cmd, "ins_cedge") == 0) cmd_ins_cedge(args);
 		else if (strcmp(cmd, "del_cedge") == 0) cmd_del_cedge(args);
+		else if (strcmp(cmd, "raw_edge") == 0) cmd_raw_edge(args);
+		else if (strcmp(cmd, "raw_triangle") == 0) cmd_raw_triangle(args);
 		else if (strcmp(cmd, "dump_anim") == 0) cmd_dump_anim(args);
 		else if (strcmp(cmd, "print") == 0) cmd_print(args);
 		else if (strcmp(cmd, "print_events") == 0) cmd_print_events(args);
