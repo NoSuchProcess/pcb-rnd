@@ -411,6 +411,8 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 	free(obj);
 }
 
+static void pcb_dlcr_fixup_pstk_proto_lyt(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_data_t *dst);
+
 static void pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
 	rnd_coord_t dx, dy, ox = 0, oy = 0;
@@ -436,6 +438,7 @@ static void pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_
 	dx = obj->val.subc_from_lib.x - ox;
 	dy = obj->val.subc_from_lib.y - oy;
 	nsc = pcb_subc_dup_at(pcb, pcb->Data, subc, dx, dy, 0, 0);
+	pcb_dlcr_fixup_pstk_proto_lyt(pcb, dlcr, nsc->data);
 
 	rnd_trace("  using name '%s' %p -> %p\n", name, subc, nsc);
 
@@ -491,6 +494,21 @@ static void pcb_dlcr_create_pstk_protos(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_
 		}
 	}
 }
+
+static void pcb_dlcr_fixup_pstk_proto_lyt(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_data_t *dst)
+{
+	rnd_cardinal_t n, m;
+	for(n = 0; n < dst->ps_protos.used; n++) {
+		pcb_pstk_proto_t *proto = &dst->ps_protos.array[n];
+		pcb_pstk_tshape_t *ts = pcb_vtpadstack_tshape_get(&proto->tr, 0, 0);
+		int i;
+		for(i = 0; i < ts->len; i++) {
+			pcb_pstk_shape_t *shp = ts->shape + i;
+			proto_layer_lookup(dlcr, shp);
+		}
+	}
+}
+
 
 static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
