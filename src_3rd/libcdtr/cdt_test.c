@@ -143,6 +143,10 @@ static void cmd_ins_point(char *args, int raw)
 		point_t *p = *vtpoint_alloc_append(&cdt.points, 1);
 		p->pos.x = x;
 		p->pos.y = y;
+		if (x < cdt.bbox_tl.x) cdt.bbox_tl.x = x;
+		if (x > cdt.bbox_br.x) cdt.bbox_br.x = x;
+		if (y < cdt.bbox_tl.y) cdt.bbox_tl.y = y;
+		if (y > cdt.bbox_br.y) cdt.bbox_br.y = y;
 	}
 	else {
 		p = cdt_insert_point(&cdt, x, y);
