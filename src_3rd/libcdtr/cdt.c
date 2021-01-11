@@ -907,6 +907,38 @@ void cdt_dump_animator(cdt_t *cdt, int show_circles, pointlist_node_t *point_vio
 	cdt_fdump_animator(stdout, cdt, show_circles, point_violations, triangle_violations);
 }
 
+static long point_id(cdt_t *cdt, point_t *p)
+{
+	long pid;
+	for(pid = 0; pid < cdt->points.used; pid++)
+		if (p == cdt->points.array[pid])
+			return pid;
+	return -1;
+}
+
+
+void cdt_fdump(FILE *f, cdt_t *cdt)
+{
+	long n;
+
+	fprintf(f, "raw_init\n");
+
+	for(n = 0; n < cdt->points.used; n++) {
+		point_t *p = cdt->points.array[n];
+		fprintf(f, "raw_point %f %f\n", (double)p->pos.x, (double)p->pos.y);
+	}
+
+	for(n = 0; n < cdt->edges.used; n++) {
+		edge_t *e = cdt->edges.array[n];
+		fprintf(f, "raw_edge P%ld P%ld %d\n", point_id(cdt, e->endp[0]), point_id(cdt, e->endp[1]), e->is_constrained);
+	}
+
+	for(n = 0; n < cdt->triangles.used; n++) {
+		triangle_t *t = cdt->triangles.array[n];
+		fprintf(f, "raw_triangle P%ld P%ld P%ld\n", point_id(cdt, t->p[0]), point_id(cdt, t->p[1]), point_id(cdt, t->p[2]));
+	}
+}
+
 
 int cdt_check_delaunay(cdt_t *cdt, pointlist_node_t **point_violations, trianglelist_node_t **triangle_violations)
 {

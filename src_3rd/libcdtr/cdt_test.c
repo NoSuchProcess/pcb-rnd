@@ -240,7 +240,7 @@ static void cmd_raw_triangle(char *args)
 }
 
 
-static void cmd_dump_anim(char *args)
+static void cmd_dump(char *args, int anim)
 {
 	FILE *f;
 	char *end = strpbrk(args, " \t\r\n");
@@ -254,7 +254,11 @@ static void cmd_dump_anim(char *args)
 		return;
 	}
 
-	cdt_fdump_animator(f, &cdt, 0, NULL, NULL);
+	if (anim)
+		cdt_fdump_animator(f, &cdt, 0, NULL, NULL);
+	else
+		cdt_fdump(f, &cdt);
+
 	fclose(f);
 }
 
@@ -349,7 +353,8 @@ int main(void)
 		else if (strcmp(cmd, "del_cedge") == 0) cmd_del_cedge(args);
 		else if (strcmp(cmd, "raw_edge") == 0) cmd_raw_edge(args);
 		else if (strcmp(cmd, "raw_triangle") == 0) cmd_raw_triangle(args);
-		else if (strcmp(cmd, "dump_anim") == 0) cmd_dump_anim(args);
+		else if (strcmp(cmd, "dump") == 0) cmd_dump(args, 0);
+		else if (strcmp(cmd, "dump_anim") == 0) cmd_dump(args, 1);
 		else if (strcmp(cmd, "print") == 0) cmd_print(args);
 		else if (strcmp(cmd, "print_events") == 0) cmd_print_events(args);
 		else fprintf(stderr, "syntax error: unknown command '%s'\n", cmd);
