@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 + FEATURE: tedax netlist parser: load comptag (and nettag) in a second pass [report: Bdale]
 + FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
-+ FEATURE: think over style clearance indication: on editing exisitng object it should probably be the clearance of the object [report: Ade]
 + FEATURE: a {c f}-like feature that doesn't flag the network but prints the net name on objects large enough ; alternative: net name caching and display when zoomed in; event to invalidate the cache could be generated on pcb-changed calls! [report: Majenko]
 + BUG: draw a bus, draw a polygon around the bus, cut bus to buffer, paste bus -> poly is not clipped ml4504 [report: Majenko]
 + BUG: {w d}, config, drc_query, edit definitions, change min drill value -> value on the change button doesn't refresh [report: bdale]
