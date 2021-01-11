@@ -925,7 +925,7 @@ void cdt_fdump(FILE *f, cdt_t *cdt)
 
 	for(n = 0; n < cdt->points.used; n++) {
 		point_t *p = cdt->points.array[n];
-		fprintf(f, "raw_point %f %f\n", (double)p->pos.x, (double)p->pos.y);
+		fprintf(f, "raw_point %.16f %.16f\n", (double)p->pos.x, (double)p->pos.y);
 	}
 
 	for(n = 0; n < cdt->edges.used; n++) {
