@@ -325,10 +325,28 @@ static void cmd_print_events(char *args)
 	}
 }
 
-int main(void)
+static int parse(FILE *f);
+
+static void cmd_include(char *args)
+{
+	FILE *f;
+	char *end = strpbrk(args, "\r\n");
+	if (end != NULL)
+		*end = '\0';
+	f = fopen(args, "r");
+	if (f == NULL) {
+		fprintf(stderr, "include: can't open '%s' for read\n", args);
+		return;
+	}
+	parse(f);
+	fclose(f);
+}
+
+
+static int parse(FILE *f)
 {
 	char line[1024], *cmd, *args;
-	while((cmd = fgets(line, sizeof(line), stdin)) != NULL) {
+	while((cmd = fgets(line, sizeof(line), f)) != NULL) {
 		while(isspace(*cmd)) cmd++;
 
 		if (*cmd != '\0') {
@@ -347,6 +365,7 @@ int main(void)
 		else if (strcmp(cmd, "quit") == 0) break;
 		else if (strcmp(cmd, "auto") == 0) autotest();
 		else if (strcmp(cmd, "echo") == 0) printf("%s", args); /* newline is in args already */
+		else if (strcmp(cmd, "include") == 0) cmd_include(args);
 		else if (strcmp(cmd, "init") == 0) cmd_init(args);
 		else if (strcmp(cmd, "raw_init") == 0) cmd_raw_init(args);
 		else if (strcmp(cmd, "free") == 0) cmd_free(args);
@@ -366,3 +385,8 @@ int main(void)
 	return 0;
 }
 
+
+int main(void)
+{
+	return parse(stdin);
+}
