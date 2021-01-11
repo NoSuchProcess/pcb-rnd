@@ -120,15 +120,15 @@ static void cmd_del_point(char *args)
 static void cmd_ins_point(char *args, int raw)
 {
 	point_t *p;
-	long x, y;
+	double x, y;
 	int bad, id = -1;
 
 	if (*args == 'p') {
 		args++;
-		bad = (sscanf(args, "%d %ld %ld", &id, &x, &y) != 3);
+		bad = (sscanf(args, "%d %lf %lf", &id, &x, &y) != 3);
 	}
 	else
-		bad = (sscanf(args, "%ld %ld", &x, &y) != 2);
+		bad = (sscanf(args, "%lf %lf", &x, &y) != 2);
 
 	if (bad) {
 		fprintf(stderr, "syntax error: ins_point requires 2 or 3 arguments\n");
