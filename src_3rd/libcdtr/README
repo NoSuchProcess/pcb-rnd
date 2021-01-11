@@ -1,0 +1,15 @@
+libcdtr is a minilib for Constrained Delaunay TRiangulation using
+incremental algorithm, as described in: Yizhi Lu and Wayne Wei-Ming Dai,
+"A numerical stable algorithm for constructing constrained Delaunay
+triangulation and application to multichip module layout," China.,
+1991 International Conference on Circuits and Systems, Shenzhen, 1991,
+pp. 644-647 vol.2.
+
+The API is documented in cdt.h. An example is function autotest() in
+cdt_test.c.
+
+Limitations:
+ - there is a rectangular bounding box initialized with non-removable
+   constrained edges on cdt_init(). These boundary constrained edges
+   can be split by inserting points.
+
