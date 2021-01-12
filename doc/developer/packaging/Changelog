@@ -48,9 +48,9 @@ A. changes that probably don't need action
 B. changes that probably DO need action
 
 1. new plugins in already existing package pcb-rnd-core:
-   ch_editpoint ch_onpoint
+   ch_editpoint ch_onpoint show_netnames
    These will add a couple of new files, as listed in packages.html, please
-   make sure they are included in the pcb-rnd-core package.
+   make sure they are included in the pcb-rnd-core package. 
 
 2. Grammar fixed in the description of the pcb-rnd-debug package
 
