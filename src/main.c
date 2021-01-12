@@ -435,22 +435,29 @@ int main(int argc, char *argv[])
 	{
 		extern const char *lhtpers_early_end[];
 		extern void vti0_init();
-		void *p0;
-		void (*p1)();
-		int (*p2)();
-		size_t (*p3)();
+		extern volatile const unsigned char ureglex_nfa_str[];
+		extern int ureglex_strtree_exec();
+		volatile void *p0;
+		volatile void (*p1)();
+		volatile int (*p2)();
+		volatile size_t (*p3)();
+		unsigned char c;
+		volatile void *dummy;
 		
 TODO("librnd: remove this once librnd is not extern anymore");
 		rnd_plugin_add_dir("../src_3rd/librnd-local/src/plugins");
 
 		/* temporary workaround: make sure objects from .a are linked even
 		   if pcb-rnd code didn't need them (some plugins will) */
-		p0 = lhtpers_early_end;
-		p1 = vti0_init;
-		p2 = re_se_exec;
-		p1 = pup_list_parse_pups;
-		p3 = vtl0_len;
-		(void)p0; (void)p1; (void)p2; (void)p3;
+		p0 = lhtpers_early_end; dummy = rnd_cast_f2d(p0);
+		p1 = vti0_init; dummy = rnd_cast_f2d(p1);
+		p2 = re_se_exec; dummy = rnd_cast_f2d(p2);
+		p2 = ureglex_strtree_exec; dummy = rnd_cast_f2d(p2);
+		p1 = pup_list_parse_pups; dummy = rnd_cast_f2d(p1);
+		p3 = vtl0_len; dummy = rnd_cast_f2d(p3);
+		c = ureglex_nfa_str[0];
+		
+		(void)c; (void)dummy;
 	}
 
 	pcb_event_init_app();
