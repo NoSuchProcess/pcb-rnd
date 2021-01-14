@@ -1,4 +1,4 @@
-pcb-rnd 2.3.1 (r33814/r?????)
+pcb-rnd 2.3.1 (r33814/r32522)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 pcb-rnd part:
 
@@ -274,6 +274,124 @@ pcb-rnd part:
 		-Change: replace grep -v "|" with awk, because old grep implementations don't support the | operator
 
 librnd part:
+
+	[build]
+		-Fix: scconfig template include path for compiling dynamic link plugins
+		-Fix: don't uninstall core/config.h twice
+		-Fix: make clean should remove locally installed pup files
+		-Fix: make clean and distclean shall remove generated files
+		-Fix: make distclean should remove src/plugins/
+		-Fix: make clean should recurse to genht because of version.h
+		-Fix: make -ldl optional, some systems (e.g. windows) don't have it
+		-Fix: set the default value of disable_so to false so the variable always exists
+		-Fix: hidlib plugins with internal menu file need a different path reference for building the file
+		-Fix: gen_conf.sh shouldn't try to keep all html files open for the whole time of generating them - some systems will have a lower limit on open fds
+		-Fix: wrong order of args in svn:externals
+		-Fix: wrong include path for the main config.h with installation paths
+		-Fix: don't install non-existing (pcb-rnd) utils
+		-Fix: make libporty_net optional as some old systems won't have FIONBIO
+		-Fix: run ranlib on the static .a files
+		-Fix: use the same ldflags for all 3 .so files
+		-Cleanup: remove libuundo from src_3rd: not used directly in librnd
+		-Cleanup: rename and fix up path of installation prefix and lib/share dirs (decoupling them from pcb-rnd)
+		-Change: plugin search path should always include librnd install dir - any ringdove app will load HIDs from there
+		-Change: better handling of missing dynamic linking; explicit disbale also disable puplug -ldl detection
+		-Change: compile ureglex plugins with shared common exec
+		-Add: compile and install sphash - the build infra provided by librnd depends on it
+		-Add: --disable-so ./configure option - especially for windows, where .dll is not comparable to .so, and the cross-compilatio uses static linking with librnd anyway
+		-Add: hidlib install plugins
+		-Add: require fungw pup installation path to present (required for proper script plugin loading in case of system installed fungw)
+		-Add: print TODO messages only in debug compilation
+		-Tune: skip a level of unnecessary indirection when compiling host puplug
+
+	[core]
+		-Fix: hid uninit sequence: keep hid structs until after pup unload so plugin uninit cals won't address into already free'd memory
+		-Fix: do not attempt to load plugins from installation libdir if installation path is not available compile time (e.g. on windows)
+		-Fix: do not register empty path in puplug plugin search path
+		-Fix: rnd_printf() on %mw shouldn't read an extra coord before fgw_arg
+		-Fix: do not include non-standard <memory.h>
+		-Fix: rnd_setenv() implementation in case of only putenv is available caches all the sets and makes sure each variable is stored in memory only once
+		-Del: do not auto-load all fungw scripting engine plugins - the script plugin will pick the ones needed
+		-Cleanup: remove useless comment
+		-Add: HID API: option to initialize export option values and load those with the command line args, instead of overwriting the default value
+		-Add: HID API: extended export plugin options registration that remembers the hid so that the command line arg parser uses the right backup memory per HID
+		-Add: init stage 3: automatically load all plugins from all plugin directories available (optional)
+		-Add: add fungw pupdir to the pup search path so scripting plugins can be loaded
+
+	[DAD]
+		-Fix: spinboxes respect min/max values set by the DAD macros
+
+	[doc]
+		-Cleanup: remove pcb-rnd leftover from doc installation
+
+	[HID]
+		-Add: editor/cross_grid setting to draw 3x3 pixel crosses instead if single pixels for the grid (accessibility)
+		-Add: cross_grid option in gl local grid
+
+	[hid_gtk2_gl]
+		-Fix: skip color setting only if xor mode also matches - fixes subc bbox blinks on editopoint highlight
+
+	[lib_gtk_common]
+		-Fix: zoom-win call updates gtk scales so the view doesn't jump away e.g. in the first zoom after a zoom extent
+
+	[lib_hid_common]
+		-Add: action API for toolbar init so lib_hid_common doesn't need to be static linked
+		-Add: rnd_zoom() action to expose the internal zoom mechanism - so that ringdove apps don't need to link lib_hid_common directly
+		-Add: publish window placement save utility functions that are used by pcb-rnd preferences window
+
+	[libporty_net]
+		-Fix: try a differen AIX <string.h> workaround to avoid warnings on Linux
+		-Cleanup: comment out #warnings, they are not portable
+		-Workaround: AIX select problem
+
+	[libuirc]
+		-Fix: pick up actual nickname from the server from the 001 message (this may be different from the nick we wanted to set, due to nick name length constraints)
+
+	[poly]
+		-Change: increase rtree stack max size for real complex polygons
+
+	[script]
+		-Change: move the plugin to librnd so other ringdove apps have the same scripting (moved at pcb-rnd r33401)
+		-Fix: remove local engine name guessing, search fungw engines to figure
+		-Fix: language listing: strip whitespace from language name
+		-Fix: script load logic depends on the ext/lang/eng cache instead of all plugins already loaded
+		-Fix: load fungw language binding plugin from the dir fungw got installed to
+		-Fix: live scripting language listing works from only fungw pup install dir
+		-Fix: live scripting: get language list from the $script-ext field of the pup files, not from the $desc (as the desription is not intended to be parsed)
+		-Fix: pass proper hidlib context to live_run() so that script reload from the GUI doesn't crash
+		-Fix: use librnd's globalconst instead of pcb-rnd's so the plugin can be moved to librnd later
+		-Del: pcb_script_pup_paths - librnd places fungw pup install dir on search path
+		-Del: remove local pup map/parse function from live_script, use puplug's
+		-Cleanup: c "scripting" API decoupled from pcb symbolism (while keeping backward compatibility for now)
+		-Cleanup: namespace: switch from pcb_ to rnd_ where possible, to prepare the transition from pcb-rnd to librnd
+		-Cleanup: const correctness
+		-Cleanup: publish guess_lang(), it's used from multiple parts of the code
+		-Cleanup: use the right vector type for the engine cache
+		-Cleanup: remove unused var
+		-Update: fungw API change on pup_list_parse_pups() callbacks
+		-Split: undo calls (used in live script) to a separate glue .c so it will be easier to replace them with action calls plus it will show what actions the host app needs to deliver
+		-Change: use pup's readdir calls in the language map code as it would be moved to puplug
+		-Add: when language is unspecified for a script, use fungw engine based guessing
+		-Add: determine default script file name extension by calling the fungw engine for the currently selected language
+		-Add: debug action for printing the language list
+		-Add: guess_lang: parse pup files for the $script-ext lines and prepare for building hashes of those
+		-Add: guess_lang uses the extension/language/engine cache built from the pup files
+		-Add: pass on hidlib to script to more calls, especially script loading calls, in preparation of setting "script user call context" during script initialization
+		-Add: set up "script user call context" during script load/initialization so the action calls made by the script have the right context
+		-Add: use the action API for arranging undo with the host app instead of hardwiring pcb-rnd undo calls
+		-Add: more details on script parse failure (which fungw plugin reported the problem)
+		-Add: corner case: if a lang name is really a fungw engine name (without the fungw_ prefix), accept that too (for cli)
+		-Add: live scripting: list language aliases too, so bash is found for cli
+
+	[tests]
+		-Fix: librnd make clean removes all empty dirs and temp fiels generated
+		-Cleanup: rename pcb-printf/ to rnd_printf/ because that's the name of the call and the API we are testing
+		-Update: pcb-printf test should link the whole lib instead of cherry picking objects
+
+	[ureglex]
+		-Import: exec part of r267
+		-Add: README with the original url and mention of public domain
+
 
 pcb-rnd 2.3.0 (r33250/r32452)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
