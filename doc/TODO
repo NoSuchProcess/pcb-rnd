@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ FEATURE: tedax netlist parser: load comptag (and nettag) in a second pass [report: Bdale]
 + FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
 - BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 + BUG: propedit dialog, add a new attribute, edit the value on the right side, press enter after typing -> it won't apply; works with coords [report: Gene]
