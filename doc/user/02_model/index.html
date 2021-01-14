@@ -430,6 +430,14 @@ Looking at the current state of these objects and the location flag of the
 aux layer, the code can work out the net result of all transformations the
 subc suffered since creation.
 
+<h5> 2.4.5.4 Subcircuit uid </h5>
+<p>
+Each subcircuit has a globally unique ID generated (using libminuid) when the
+subcircuit is first created from scratch. The uid field is retrained through
+copies as it is used to identify the original source of a footprint even
+if the footprint had minor modifications. The user shall change the uid if
+a substantial modification is made to a footprint.
+
 <h4 id="padstack"> 2.4.6. Pad stacks </h4>
 <p>
 A pad stack is a generic pin/pad/via object that may contain any combination
