@@ -1,5 +1,282 @@
+pcb-rnd 2.3.1 (r33814/r?????)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pcb-rnd part:
+
+	[core]
+		-Fix: CAM API: derive export file name: if option value is available, overwrite that instead of the default value
+		-Fix: padstack term ID draw: remember whether a padstack shape is drawn in the current rendering effort using stamps and draw the terminal label only if the padstack was visible; this fixes 'label visible on inivisible padstack', i.e. turning off all layers a padstack spans will make the label disappear too
+		-Fix: stub csect/fontsel error message draw shall not pass info==NULL to the rendering code, that wouldd lead to a crash
+		-Fix: when manipulating existing objects using DRC show, use the object's clearance, not style clearance
+		-Fix: enforce clearance on line endpoint move: set up start point for the drc enforcer
+		-Fix: when enforcing clearance on line endpoint move, use the line object's thickness+clearance value, not the style's (for consistency)
+		-Fix: textop rotation: normalize the resulting text rot field
+		-Fix: when subc is copied from buffer to board, layer objects should do (batched) poly clipping (also fixes "ext obj doesn't clip when placed from buffer" bug)
+		-Cleanup: code formatting (fix up old style comments in undo_old)
+		-Add: more Undo() action commands, required for the live scripting undo API
+		-Add: xor draw label event passes on draw info as an event arg so the event handlers know which region is drawn
+		-Add: screen search list block variant that limits layer type
+		-Add: brave setting for the upcoming clearance enforce upgrade
+		-Add: brave-enabled clearance enforce on line/line-point move
+		-Add: line endpoint move clr enforce: do a 'find' before grabbing the line endpoint, so that the enforcer will ignore the same-net objects
+		-Add: central config node for controlling alien formats to load polygon-side clearance
+		-Add: layer group change inhibit call so timed updaters can be blocked
+
+	[data]
+		-Del: get rid of old geda/pcb icons and old .desktop
+		-Del: x-*desptkop: mime type registration is done centrally for files that are shared between applications
+		-Import: Debian's .desktop
+		-Add: magic(5) for file(1) containing a pattern for common pcb-rnd data files
+		-Add: comment explaining how to use file(1) patterns
+
+	[diag]
+		-Change: make the plugin buildin by default because the conf test depends on it
+
+	[dialogs]
+		-Fix: window geometry save calls: obsolete, non-reentrant API calls to librnd (broke the save 'now' buttons)
+		-Add: make library dialog refresh rate configurable
+
+	[doc]
+		-Cleanup: rename per system installation details to have INSTALL prefix and reference them from the central INSTALL file
+		-Update: revise INSTALL, tune details
+		-Update: key tree for {s k}
+		-Del: developer/hid_remote: should be documented in librnd
+		-Del: the #warning removal script from UNIX installation - we do not use #warnings anymore
+		-Add: pin svn externs to rev of the release
+		-Add: document the new Undo() action commands (intended for scripting)
+		-Add: pcb-rnd runs on AIX, plus provision for systems not older than 25 years; notes on AIX+gtk2 compilation
+		-Add: mention new config file in packager's changelog
+		-Add: conf tree: cross_grid setting
+		-Add: plugin package version match requirement mentioned in packager's changelog
+
+	[drc_query]
+		-Fix: don't mix code with declarations (c89)
+		-Fix: wrong conf change callback prototype
+		-Add: conf change infra to update the definitions GUI when a def value changes
+
+	[export_bom]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_dsn]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_dxf]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_excellon]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_fidocadj]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_gcode]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_gerber]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_ipcd356]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_lpr]
+		-Fix: set 'lpr' as default print command
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_openems]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_openscad]
+		-Cleanup: use the central arc approximation instead of the local implementation
+		-Cleanup: const correcntess (padstack mech cache might get updated, can't be const)
+		-Update: use the new export HID API to avoid overwriting option default values
+		-Add: export padstack mech shapes (slots)
+
+	[export_png]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_ps]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_stat]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_stl]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_svg]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_vfs_mc]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[export_xy]
+		-Update: use the new export HID API to avoid overwriting option default values
+
+	[footprint]
+		-Cleanup: remove vtlib, use vtp0 and floating allocations instead so that parents don't need to be updated on array growth
+		-Cleanup: const correctness in sort comparison
+		-Fix: properly free footprint lib entry allocations
+
+	[import_gnetlist]
+		-Fix: assume action script only with gnetlist, use tedax with other backends
+		-Add: support for lepton-netlist
+
+	[io_autotrax]
+		-Fix: sort out board and keepout layer groups on load
+		-Fix: don't exit padstack load leaving broken parse state
+		-Cleanup: dead code in text import: no need to check for empty strings
+		-Add: comment about file format limitation on text rotation
+
+	[io_bxl]
+		-Fix: lex invalid pcb_strdup() references
+		-Fix: old gcc #include code gets confused by the #line macros - don't rely on ./ include in grammar/lexical code
+
+	[io_eagle]
+		-Fix: remove hardwired layer ID for subcircuit text placement (fixes: value text ending up on the wrong side)
+		-Fix: subc non-90-degree rotation on the back side
+		-Fix: text rotation in subc backside non-90-degree cases
+		-Fix: tDocu and bDocu layers are really assembly layers, not silks
+		-Fix: bin: signal flattening postproc should pass through the newly added nodes to make it "recursive"
+		-Cleanup: bin: split the signal postproc call to make the code more readable
+		-Add: data based layer creation for non-copper layers
+		-Add: paste and mask layers in the layer tab
+		-Add: match layertab entry purpose to existing layer group purpose and create missing groups
+		-Add: layer tab for all known non-copper eagle layers
+		-Add: load polygon-side clearance when centrally enabled
+		-Add: comment on how the poly-side clearance load works
+		-Add: bin: explain how "recursive" flattening of singals/signal* is achieved without actual recursion
+
+	[io_hyp]
+		-Fix: old gcc #include code gets confused by the #line macros - don't rely on ./ include in grammar/lexical code
+
+	[io_kicad]
+		-Fix: don't crash when loading board with too many layers
+		-Fix: custom shaped pad primitives shall be offset by the "at" subtree of "custom"
+		-Add: fill in layer group purposes in the layer tab
+		-Add: kicad5 seems to have gr_poly in global scope
+		-Add: load polyon side clearance (zone/connect_pads/clearance) when centrally enabled
+
+	[io_pcb]
+		-Fix: don't crash on missing attribute value
+
+	[io_tedax]
+		-Add: netlist import: load nettag and comptag lines
+
+	[lib_hid_pcbui]
+		-Fix: when the status line is a single line, insert a space as separator between the two segments
+		-Fix: don't try to update the layer menu during layer group update inhibit
+
+	[libcdtr]
+		-Fix: allow inserting points on constrained edges by splitting them
+		-Fix: don't use assert on point coord out of range, rather return NULL
+		-Fix: constrained edge split: save old user poitner after the _pre event callback, which may choose to change this field
+		-Fix: inserting a point on a boundary edge
+		-Fix: animator dump shouldn't assume coords are integers
+		-Add: rewrite the tester to be command line based; remove hardwired C code tests except for the random test which is invoked using the 'auto' command
+		-Add: regression tests
+		-Add: animator dump call into a FILE * (instead of stdout)
+		-Add: event infra, "split constrained edge" event
+		-Add: example script with 2 out of 3 points out of range
+		-Add: lib function and tester command for dumping a cdt in cdt_test script format
+		-Add: an option for compiling the lib and tester with double coords
+		-Add: minimal stadnard doc: README, AUTHOR, COPYING
+
+	[librnd] (on pcb-rnd side)
+		-Fix: util should depend on the librnd-local extern instead of the old extern path
+		-Fix: wrong include path for the new librnd-local extern in bxl2txt
+		-Fix: scconfig hook: reset pup lists between librnd and pcb-rnd generation to avoid librnd plugins leaking into pcb-rnd
+		-Fix: genlist and genvector object deps for gsch2pcb-rnd: use librnd-3rd or link them from under librnd-local for now
+		-Fix: tests build against local librnd
+		-Fix: central configure should make dummy revtest in librnd executable
+		-Fix: link order while linking pcb-rnd executable: librnd needs to come before gtk and other dependencies of librnd
+		-Fix: don't attempt to compile puplug for the host, let librnd do that
+		-Fix: dynamic link plugin template: path to librnd's local templates changed
+		-Fix: static link order: librnd-hid needs to come after librnd-poly because poly depends on core
+		-Fix: no need to manually create librnd .so symlinks on install, librnd's make install takes care of that
+		-Fix: separate install, linstall and uninstall rules for the local librnd because $(HOW) can not be passed
+		-Fix: dummy usage of some static linked librnd functions and variables that are then accessed from plugins, to ensure they are linked in from the .a files
+		-Cleanup: scconfig variable for path to librnd so the local checkout doesn't need to be hardwired in Makefiles
+		-Cleanup: remove redundant svn externs on 3rd lib, depend more on librnd
+		-Cleanup: remove local puplug and sphash externs, use the ones offered by librnd
+		-Cleanup: don't copy files manually, call librnd to install itself
+		-Cleanup: remove local plugin build hack that used to build hidlib plugins before we switched to call librnd's native build
+		-Cleanup: remove pcb-rnd-local gen_conf.sh, always use the one in librnd
+		-Del: stop compiling and installing librnd (static lib, dynamic lib) from pcb-rnd src/
+		-Del: lihata externs from src_3rd: these libs are available through librnd
+		-Del: stage 3 init (plugin dir loading) moved to librnd because all ringdove apps will need the same
+		-Change: switch over from partial extern of librnd to full extern so that a librnd local build can be done later
+		-Change: switch over scconfig to use the extern from librnd-local extern for now, so redundant scconfig externs can be avoided during the transition
+		-Change: instead of locally compiling librnd objects, link against the static libs compiled by librnd
+		-Change: use librnd's 3rd lib instead of locally compiling those libs from src_3rd
+		-Update: gsch2pcb-rnd for the new externs
+		-Update: central make clean and distclean for the src_3rd changes
+		-Update: map_plugins for the temporary librnd-local build
+		-Workaround: temporary workaround for getting object files that core doesn't need but plugins need linked from librnd*.a
+		-Add: temporary scconfig generation extras: generate librnd-local config files and Makefiles so librnd can be compiled stand-alone
+		-Add: go and compile librnd before anything else when local librnd extern is used
+		-Add: temporarily load librnd plugins from the local extern source tree as well
+		-Add: compile sccbox for the local librnd as well for the transition
+		-Add: static link librnd symbol workaround for the script plugin that got moved to librnd
+
+	[menu]
+		-Add: menu item for listing locked objects (so that they can be manipulated without the lock tool)
+		-Add: edit properties for selection in the Select menu
+
+	[mincut]
+		-Fix: don't compile the code that runs popen() to draw the graph if graph debugging is not enabled
+
+	[propedit]
+		-Fix: pressing enter on a string value should force an update after setting the value
+
+	[query]
+		-Fix: context uninit resets inited flags to 0
+		-Fix: advanced search dialog: remove non-drawing object from object type list (such as RAT and LAYER) as query() won't search those
+
+	[rubberband_orig]
+		-Update: Use the line clearance instead of route style clearance when drawing line clearance outline.
+		-Cleanup: remove useless comment
+
+	[scconfig]
+		-Fix: make distclean should run recursively on util/, not only on util/gsch2pcb-rnd (to remove leftovers from bxl2txt)
+		-Fix: make distclean recurses to fungw
+		-Fix: make distclean should remove src/plugins
+		-Fix: make clean should remove locally installed pup files
+		-Change: switch over to ureglex common part linked only once, from librnd
+
+	[script]
+		-Del: move the plugin to librnd so other ringdove apps have the same scripting
+
+	[show_netnames]
+		-Add: new plugin for displaying netnames on traces when zoom level is high enough
+
+	[tests]
+		-Fix: use sccbox mktemp instead of system's mktemp which may not exist
+		-Fix: pcb-printf test links against the whole librnd instead of cherry picking objects (that'd depend on librnd internals)
+		-Fix: propedit test links against the whole librnd instead of cherry pickign objects (that'd depend on librnd internals)
+		-Fix: pcb-printf test doesn't need to register conf items
+		-Fix: use scconfig detected -I to librnd instead of hardwiring the local extern
+		-Fix: uniq_name links to librnd static libs instead of cherry picking objs (which won't be available when librnd is installed)
+		-Fix: uniq_name: don't use invalid pointer and don't print with %p (format not guaranteed); use array offset and #%d instead for maximum portability
+		-Fix: cam: do not depend on tar -zxf being able to unpack tar.gz, that's a GNU extension on tar
+		-Fix: cam: do not depend on installed pcb-rnd
+		-Fix: suppress missing standard lib warning and empty lines in cam test
+		-Fix: cam: layer group export test: can't export @inivisible any more, it's an on-screen-only virtual layer
+		-Del: remote/ - this should be tested in librnd
+		-Del: base64 - it's part of librnd, will be tested there
+		-Del: orig/ - we have better tests in RTT by now
+		-Del: pcb-printf: it's really rnd_printf and is tested in librnd, where it is implemented
+		-Cleanup: use space indentation instead of tab indentation in menu/insert for consistency
+		-Cleanup: remove any effective dependency on librnd-local from conf test
+		-Workaround: AIX diff -u is not unified format really: inserts an extra space - use diff -w in the final checking to work around that
+		-Update: pcb-printf for local librnd (for the transition)
+		-Update: switch over more tests for the local full librnd extern
+		-Update: conf test for local librnd (for the transition)
+		-Add: enable the cam test
+		-Change: replace grep -v "|" with awk, because old grep implementations don't support the | operator
+
+librnd part:
+
 pcb-rnd 2.3.0 (r33250/r32452)
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 pcb-rnd part:
 
 	[act_draw]

@@ -1,32 +1,18 @@
-pcb-rnd 2.3.0
+pcb-rnd 2.3.1
 ~~~~~~~~~~~~~
 
 The main objective of this release is to go further in librnd separation:
-by now, librnd is a single directory, imported from an external repository.
-Furthermore this is also a feature release.
+the build system is prepared for the split, redundancies between pcb-rnd and
+librnd are mostly removed. Other than this, 2.3.1 is mainly a bugfix release
+with only a few new features.
 
 Feature highlight:
 
-1. Padstack prototypes can be saved to file and loaded from file, using the
-   board's or subcircuit's padstacks dialog. File format is the native
-   lihata format.
+1. Improved lock handling new hotkey {s k} for listing locked object.
 
-2. Font support: with an optional plugin, ttf glyphs can be imported and
-   converted to native font symbols, using actions or a dialog box.
+2. New feature plugin for printing net name on traces when zoom level is
+   high enough and the feature is enabled.
 
-3. ch_editpoint: optional (default enabled) highlight feature of object
-   editpoints (e.g. line endpoints) on mouse hover.
+3. Many bugfixes in IO code for eagle and kicad for a more lossless
+   load of alien board and footprint files.
 
-4. Undo: made many actions undoable: text scale, ChangePinName(),
-   ChangeNonetlist(), padstack hole changes, subc flags (including lock),
-   attributes, RouteStyle(), creating and removing route styles, changing
-   layer combining flags
-
-5. New "manage plugins" dialog box with more details and more control over
-   the plugins, including unloading plugins on the fly
-
-6. Query: user functions and more builtin accessor/utility functions; most
-   notably: a built-in function that can do advanced layer stackup queries
-   and checks around an object.
-
-7. Layer selector widget: all layer visible/invisible buttons and hotkeys
