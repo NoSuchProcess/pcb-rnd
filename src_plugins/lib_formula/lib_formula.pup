@@ -1,5 +1,5 @@
 $class lib
-$short mathematical forumlas
+$short mathematical formulas
 $long simple formulas, for efficient rule-of-thumb calculations
 $state works
 $package core
