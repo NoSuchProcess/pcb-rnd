@@ -2,10 +2,10 @@
 
 1. For the upcoming release ===============================================================================
 + FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
-- BUG: edakrill: loading micro-usb-U-F-M5DD-Y-1 from wget@edakrill fails because the .fp version is loaded while the conversion failed [report: aron]
 + BUG: propedit dialog, add a new attribute, edit the value on the right side, press enter after typing -> it won't apply; works with coords [report: Gene]
 
 2. For later releases ===============================================================================
++ COMMIT: edakrill: commit in trunk.static for the edakrill fixes and static compilation [report: Igor2]
 - ADMIN: generate new keys, schedule next release before expiry (21 april)
 - CLEANUP: librnd sep:
 	- make user conf file reading automatic, without having to register file names - allows librnd to have its own config dir /etc/librnd; double check the effect of plugin unload on the conf system! [report: Igor2]
