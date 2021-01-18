@@ -3,3 +3,4 @@
 	- macros
 - write doc
 	- API comments
+	- mention that adding a point on top of an existing one will return the existing one
