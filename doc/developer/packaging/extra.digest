@@ -12,5 +12,6 @@
 @appendfiles librnd-dev $PREFIX/share/librnd/librnd.mak $PREFIX/lib/librnd/scconfig
 @appendfiles librnd-dev $PREFIX/lib/*.so
 @appendfiles librnd-dev $PREFIX/lib/librnd/scconfig/gen_conf.sh $PREFIX/lib/librnd/puplug $PREFIX/lib/librnd/sphash
+@appendfiles librnd-dev $PREFIX/lib/librnd/plugins/map_plugins.sh
 @appenddeps librnd-dev librnd2
 @appenddeps pcb-rnd-cloud wget
