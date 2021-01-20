@@ -257,7 +257,8 @@ all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
 pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD) ../src_3rd/librnd-local/src/librnd-hid.so ../src_3rd/librnd-local/src/librnd-poly.so ../src_3rd/librnd-local/src/librnd-3rd.so
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) \
-		$(LDFLAGS) $(LIBS) -L../src_3rd/librnd-local/src/ -lrnd-hid -lrnd-poly -lrnd-3rd
+		-L../src_3rd/librnd-local/src/ -lrnd-hid -lrnd-poly -lrnd-3rd \
+		$(LDFLAGS) $(LIBS)
 
 # TODO: remove these once librnd separation is complete
 ../src_3rd/librnd-local/src/librnd-hid.so:

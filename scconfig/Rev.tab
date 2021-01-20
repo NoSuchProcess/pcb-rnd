@@ -1,3 +1,4 @@
+33845	configure	librnd separation: link librnd with -l
 33689	configure	new plugin: io_pads
 33489	configure	new plugin: show_netnames
 33460	configure	local dialogs plugin configuration
