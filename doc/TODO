@@ -1,22 +1,14 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-
-2. For later releases ===============================================================================
 + COMMIT: edakrill: commit in trunk.static for the edakrill fixes and static compilation [report: Igor2]
 - ADMIN: generate new keys, schedule next release before expiry (21 april)
 - CLEANUP: librnd sep:
 	- make user conf file reading automatic, without having to register file names - allows librnd to have its own config dir /etc/librnd; double check the effect of plugin unload on the conf system! [report: Igor2]
 	- make pcb-rnd -l use librnd; resolve how this would work with running from src/ without installation [report: Igor2]
-- CLEANUP: TODO27: undo's removed list shouldn't depend on object IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
-- CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
-	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
-- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
-	- BUG: propedit adding/deleting attributes inconsistency; search depth problem (see TODO#28)  bug_files/subcsel.bug [report: Ade]
-- CLEANUP: layer order from data
-	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
-	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
-	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
+- FEATUER: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
+
+2. For later releases ===============================================================================
 - CLEANUP/FEATURE: lihata v8
 	- load/save text clearance (and make sure the GUI can set it), then remove the 0.5mm hardwired value from polygon.c
 	- deprecate saving rats [report: Igor2]
@@ -27,7 +19,15 @@
 - CLEANUP/FEATURE: new breadboard
 	- FEATURE: gfx rotated pixmap scale -> uneven x/y scale can not be done while rendering; change the API so the x/y aspect change is done in software during the rotation (pcb_pixmap_alloc_insert_transformed) and only an even x/y scale is done during rendering (ghid_draw_pixmap)
 	- DOC: pool node on how to use pixmap for breadboading
-- FEATUER: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
+- CLEANUP: TODO27: undo's removed list shouldn't depend on object IDs but probably remove list index because IDs are not unique if we want our operations to retrain IDs. Repro: shift-click subc replace twice, then undo; or drag&drop move selected object and undo [report: Igor2]
+- CLEANUP/BUG: undo operation while drawing a multiple segment line doesn't change segment attached to the crosshair [report:wojciechk8]
+	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
+- CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
+	- BUG: propedit adding/deleting attributes inconsistency; search depth problem (see TODO#28)  bug_files/subcsel.bug [report: Ade]
+- CLEANUP: layer order from data
+	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
+	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
+	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: (TT) route style upgrade to prototypes - requires lihata v8:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
