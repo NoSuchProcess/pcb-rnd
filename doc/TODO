@@ -1,8 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ FEATURE: auto enforce style clearance should be applied not only on drawing new lines but moving existing line endpoints as well [report: TwisteR]
-+ BUG: propedit dialog, add a new attribute, edit the value on the right side, press enter after typing -> it won't apply; works with coords [report: Gene]
 
 2. For later releases ===============================================================================
 + COMMIT: edakrill: commit in trunk.static for the edakrill fixes and static compilation [report: Igor2]
