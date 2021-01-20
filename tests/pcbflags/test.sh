@@ -1,6 +1,10 @@
 #!/bin/sh
-src_dir=../../src
+ROOT=../..
+src_dir=$ROOT/src
 pwd=`pwd`
+
+#TODO: remove this once librnd separation id finished
+export LD_LIBRARY_PATH=$pwd/$ROOT/src_3rd/librnd-local/src
 
 # $1 must be a .pcb file name
 run_pcb()

@@ -1,15 +1,25 @@
 #!/bin/sh
 
+ROOT=../..
+PWD=`pwd`
+
 # Run pcb-rnd on each test case and check if drc found errors where it should
 # and does not find anything where it shouldn't. Run with -v to print each case.
 
 verbose=0
 
+#TODO: remove this once librnd separation id finished
+export LD_LIBRARY_PATH=$PWD/$ROOT/src_3rd/librnd-local/src
+
 do_test()
 {
+local fn=$PWD/$1
+(
+cd $ROOT/src
 echo '
 drc()
-' | pcb-rnd --gui batch "$1" 2>/dev/null | grep -i broken
+' | ./pcb-rnd --gui batch "$1" 2>/dev/null | grep -i broken
+)
 }
 
 should_break()

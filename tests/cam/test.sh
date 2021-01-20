@@ -5,6 +5,9 @@ ROOT=../..
 TESTS="grp_name type offs"
 PWD=`pwd`
 
+#TODO: remove this once librnd separation id finished
+export LD_LIBRARY_PATH=$PWD/$ROOT/src_3rd/librnd-local/src
+
 run_pcb_rnd()
 {
 	(cd $ROOT/src && $DBG ./pcb-rnd "$@") 2>&1 | awk '

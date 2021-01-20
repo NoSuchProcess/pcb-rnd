@@ -12,6 +12,9 @@ CONVERT=convert
 COMPARE=compare
 SCCBOX=$TRUNK/scconfig/sccbox
 
+#TODO: remove this once librnd separation id finished
+export LD_LIBRARY_PATH=`pwd`/$TRUNK/src_3rd/librnd-local/src
+
 if test -z "$pcb_rnd_bin"
 then
 # running from source
