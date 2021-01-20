@@ -39,6 +39,22 @@
 
 	<tr>
 		<th align=right valign=top bgcolor="#ccccff" width="20%">
+			2021-01-20
+			<br>
+			Source execution change
+		<td bgcolor="#ddddff">
+			From after 2.3.1, until 3.0.0 the script pcb-rnd-src needs to be sourced
+			before executing pcb-rnd from source, if there is no system-wide librnd
+			installation available. The whole process of running pcb-rnd without
+			installation should be:
+			<ul>
+				<li> cd src
+				<li> . ./pcb-rnd-src
+				<li> ./pcb-rnd
+			</ul>
+
+	<tr>
+		<th align=right valign=top bgcolor="#ccccff" width="20%">
 			2020-11-18
 			<br>
 			release: 2.3.0
