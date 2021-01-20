@@ -47,6 +47,8 @@ pcb-rnd part:
 		-Add: mention new config file in packager's changelog
 		-Add: conf tree: cross_grid setting
 		-Add: plugin package version match requirement mentioned in packager's changelog
+		-Add: data model doc: short description on the subcircuit uid
+		-Add: conf subtree doc for import alien format
 
 	[drc_query]
 		-Fix: don't mix code with declarations (c89)
