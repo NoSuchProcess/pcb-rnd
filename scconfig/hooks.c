@@ -62,6 +62,10 @@ int hook_custom_arg(const char *key, const char *value)
 		put("/local/pcb/dot_pcb_rnd", value);
 		return 1;
 	}
+	if (strcmp(key, "static") == 0) {
+		put("/local/pcb/want_static", strue);
+		return 1;
+	}
 	if (arg_auto_set(key, value, disable_libs) == 0) {
 		fprintf(stderr, "Error: unknown argument %s\n", key);
 		exit(1);
@@ -85,6 +89,7 @@ int hook_postinit()
 
 	put("/local/pcb/want_bison", sfalse);
 	put("/local/pcb/want_byaccic", sfalse);
+	put("/local/pcb/want_static", sfalse);
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 
 	put("/local/pcb/librnd_is_local", strue);
