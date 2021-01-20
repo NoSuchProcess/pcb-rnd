@@ -3,9 +3,7 @@
 1. For the upcoming release ===============================================================================
 + COMMIT: edakrill: commit in trunk.static for the edakrill fixes and static compilation [report: Igor2]
 - ADMIN: generate new keys, schedule next release before expiry (21 april)
-- CLEANUP: librnd sep:
-	- make user conf file reading automatic, without having to register file names - allows librnd to have its own config dir /etc/librnd; double check the effect of plugin unload on the conf system! [report: Igor2]
-	- make pcb-rnd -l use librnd; resolve how this would work with running from src/ without installation [report: Igor2]
+- CLEANUP: librnd sep: make user conf file reading automatic, without having to register file names - allows librnd to have its own config dir /etc/librnd; double check the effect of plugin unload on the conf system! [report: Igor2]
 - FEATUER: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
 
 2. For later releases ===============================================================================
