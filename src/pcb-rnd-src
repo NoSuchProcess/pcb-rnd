@@ -1,0 +1,18 @@
+# when running pcb-rnd version 2.3.2 .. 3.0.0 from source, without system-wide
+# librnd installation, this script must be sourced in the shell that will run
+# pcb-rnd. E.g.:
+#
+#  cd src/
+#  . ./pcb-rnd-src
+#  ./pcb-rnd
+#
+# Note: this script needs to be sourced only once in a shell, as long as the
+# shell is running it will remember the setting so pcb-rnd-src does not need
+# to be invoked before each new ./pcb-rnd execution from the same shell.
+
+if test -z "$LD_LIBRARY_PATH"
+then
+	export LD_LIBRARY_PATH=`pwd`/../src_3rd/librnd-local/src
+else
+	export LD_LIBRARY_PATH=`pwd`/../src_3rd/librnd-local/src:$LD_LIBRARY_PATH
+fi
