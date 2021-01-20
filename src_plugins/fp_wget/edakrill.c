@@ -220,9 +220,9 @@ int fp_edakrill_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 			}
 		}
 		if (*line == 'm') {
-			end = strstr(line, ".cnv.fp ");
+			end = strstr(line, ".cnv.lht7 ");
 			if (end != NULL) {
-				end += 7;
+				end += 9;
 				*end = '\0';
 				end++;
 				krill.fname = rnd_strdup(line+2);
@@ -268,9 +268,9 @@ static int search_edakrill(char *out, int out_len, FILE *f, const char *fn)
 				if (*line == 'm') {
 					line += 2;
 
-					end = strstr(line, ".cnv.fp "); /* accept only converted pcb footprints for now */
+					end = strstr(line, ".cnv.lht7 "); /* accept only converted pcb footprints for now */
 					if (end != NULL) {
-						end += 7;
+						end += 9;
 						*end = '\0';
 						end++;
 						strcpy(out, line);
