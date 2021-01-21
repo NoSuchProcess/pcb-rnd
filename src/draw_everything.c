@@ -27,24 +27,6 @@
  *
  */
 
-
-static void draw_everything_holes(pcb_draw_info_t *info, rnd_layergrp_id_t gid)
-{
-	int plated, unplated;
-	pcb_board_count_holes(PCB, &plated, &unplated, info->drawn_area);
-
-	if (plated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_PLATED_DRILL, 0, &info->xform_exporter)) {
-		pcb_draw_pstk_holes(info, gid, PCB_PHOLE_PLATED);
-		rnd_render->end_layer(rnd_render);
-	}
-
-	if (unplated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_UNPLATED_DRILL, 0, &info->xform_exporter)) {
-		pcb_draw_pstk_holes(info, gid, PCB_PHOLE_UNPLATED);
-		rnd_render->end_layer(rnd_render);
-	}
-}
-
-
 typedef struct {
 	/* silk color tune */
 	pcb_layergrp_t *backsilk_grp;
@@ -232,9 +214,23 @@ static void drw_mask(pcb_draw_info_t *info, draw_everything_t *de)
 
 static void drw_hole(pcb_draw_info_t *info, draw_everything_t *de)
 {
+	int plated, unplated;
+
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area); 
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-	draw_everything_holes(info, de->side_copper_grp);
+
+	pcb_board_count_holes(PCB, &plated, &unplated, info->drawn_area);
+
+	if (plated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_PLATED_DRILL, 0, &info->xform_exporter)) {
+		pcb_draw_pstk_holes(info, de->side_copper_grp, PCB_PHOLE_PLATED);
+		rnd_render->end_layer(rnd_render);
+	}
+
+	if (unplated && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_UNPLATED_DRILL, 0, &info->xform_exporter)) {
+		pcb_draw_pstk_holes(info, de->side_copper_grp, PCB_PHOLE_UNPLATED);
+		rnd_render->end_layer(rnd_render);
+	}
+
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
