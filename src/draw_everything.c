@@ -42,6 +42,49 @@ typedef struct {
 	char do_group_inited;
 } draw_everything_t;
 
+
+
+typedef struct {
+	void (*cmd)(pcb_draw_info_t *info, draw_everything_t *de);
+	fgw_arg_t argv[4];
+	int argc;
+} draw_call_t;
+
+typedef enum {
+	DI_IF,
+	DI_AND,
+	DI_NOT,
+	DI_THEN,
+	DI_STOP,
+	DI_CALL,
+
+	/* fake expressions */
+	DI_GUI,
+	DI_EXPORT,
+	DI_CHECK_PLANES
+} draw_inst_t;
+
+typedef struct {
+	draw_inst_t inst;
+	draw_call_t call;
+} draw_stmt_t;
+
+
+#define GVT(x) vtdrw_ ## x
+#define GVT_ELEM_TYPE vtdrw_t
+#define GVT_SIZE_TYPE size_t
+#define GVT_DOUBLING_THRS 256
+#define GVT_START_SIZE 64
+#define GVT_FUNC RND_INLINE
+#define GVT_SET_NEW_BYTES_TO 0
+
+#include <genvector/genvector_impl.h>
+
+#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+#define GVT_FREE(vect, ptr)           free(ptr)
+
+#include <genvector/genvector_impl.c>
+
 /* temporarily change the color of the other-side silk */
 static void drw_silk_tune_color(pcb_draw_info_t *info, draw_everything_t *de)
 {
@@ -327,3 +370,4 @@ static void draw_everything(pcb_draw_info_t *info)
 	finish:;
 	drw_silk_restore_color(info, &de);
 }
+
