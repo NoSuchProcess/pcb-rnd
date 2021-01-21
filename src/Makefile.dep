@@ -7533,6 +7533,53 @@
  ../src_plugins/io_mentor_cell/font_geo.c \
  ../src_plugins/io_mentor_cell/read_net.c \
  ../src_plugins/io_mentor_cell/read_pstk.c
+../src_plugins/io_pads/delay_create.o: \
+ ../src_plugins/io_pads/delay_create.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
+ ../src_3rd/librnd-local/src/librnd/core/error.h \
+ ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
+ ../src_3rd/librnd-local/src/librnd/core/compat_misc.h obj_subc.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+ ../src_3rd/libminuid/libminuid.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h obj_common.h flag.h \
+ globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ attrib.h global_typedefs.h data_parent.h layer.h \
+ ../src_3rd/librnd-local/src/librnd/core/color.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
+ obj_arc_list.h obj_arc.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ ../src_3rd/librnd-local/src/librnd/poly/polyarea.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/librnd-local/src/../src_3rd/genht/htip.h \
+ ../src_3rd/librnd-local/src/librnd/core/box.h \
+ ../src_3rd/librnd-local/src/librnd/core/math_helper.h \
+ ../src_3rd/librnd-local/src/librnd/core/misc_util.h \
+ ../src_3rd/librnd-local/src/librnd/core/unit.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
+ obj_gfx_list.h obj_gfx.h \
+ ../src_3rd/librnd-local/src/librnd/poly/rtree2_compat.h \
+ ../src_3rd/librnd-local/src/librnd/poly/rtree.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genrtree/genrtree_api.h \
+ obj_text.h obj_line.h obj_arc.h obj_pstk.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h obj_pstk_shape.h \
+ polygon.h vtpadstack_t.h ../src_plugins/io_pads/delay_create.h board.h \
+ vtroutestyle.h layer_grp.h rats_patch.h board.h \
+ ../src_3rd/librnd-local/src/librnd/core/hidlib.h data.h crosshair.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h route.h \
+ buffer.h ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h obj_rat_list.h \
+ obj_rat.h idpath.h obj_subc_list.h obj_subc.h ht_subc.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h obj_pstk_list.h \
+ obj_pstk.h vtpadstack.h layer.h obj_common.h
 ../src_plugins/io_pads/io_pads.o: ../src_plugins/io_pads/io_pads.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
@@ -7593,6 +7640,10 @@
  ../src_plugins/io_pads/read.h
 ../src_plugins/io_pads/read.o: ../src_plugins/io_pads/read.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht_utils.h \
  ../src_3rd/librnd-local/src/librnd/core/error.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
@@ -7607,8 +7658,6 @@
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
@@ -7628,21 +7677,21 @@
  ../src_3rd/librnd-local/src/librnd/core/misc_util.h obj_gfx_list.h \
  obj_gfx.h layer_grp.h rats_patch.h board.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h \
- ../src_plugins/io_pads/delay_create.h layer.h obj_common.h \
- ../src_plugins/io_pads/read.h plug_io.h \
- ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h plug_footprint.h \
- data.h crosshair.h ../src_3rd/librnd-local/src/librnd/core/hid.h route.h \
- buffer.h ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw.h \
+ ../src_plugins/io_pads/delay_create.h data.h crosshair.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid.h route.h buffer.h \
+ ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h obj_rat_list.h \
  obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h \
  ../src_3rd/librnd-local/src/librnd/poly/rtree2_compat.h \
  ../src_3rd/librnd-local/src/librnd/poly/rtree.h \
  ../src_3rd/librnd-local/src/../src_3rd/genrtree/genrtree_api.h ht_subc.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/io_pads/read_low.c ../src_plugins/io_pads/read_high.c \
+ layer.h obj_common.h obj_subc.h ../src_plugins/io_pads/read.h plug_io.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h plug_footprint.h \
+ data.h ../src_plugins/io_pads/read_low.c \
+ ../src_plugins/io_pads/read_high.c \
  ../src_plugins/io_pads/read_high_misc.c
 ../src_plugins/io_pcb/attribs.o: ../src_plugins/io_pcb/attribs.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
@@ -12908,7 +12957,8 @@ draw.o: draw.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
  funchash_core_list.h obj_pstk_draw.h obj_line_draw.h obj_arc_draw.h \
  obj_rat_draw.h obj_poly_draw.h obj_text_draw.h obj_subc_parent.h \
- obj_gfx_draw.h draw_label_smart.c draw_composite.c draw_ly_spec.c
+ obj_gfx_draw.h draw_everything.c draw_label_smart.c draw_composite.c \
+ draw_ly_spec.c
 drc.o: drc.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
