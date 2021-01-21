@@ -389,8 +389,8 @@ typedef struct {
 
 #define HASH(s) ((s[0] << 16) | (s[1] << 8) | (s[2] << 8))
 
-static const drw_kw_t drw_kw[] = {
-	{"if", HASH("if"), DI_IF, NULL },
+static drw_kw_t drw_kw[] = {
+	{"if", 0, DI_IF, NULL },
 	{NULL, 0, 0, NULL }
 };
 
@@ -399,6 +399,13 @@ static void draw_compile(const char *src)
 {
 	const char *start, *next;
 	int hash = 0, line = 1, nst = 0, cmd_idx = -1;
+
+	/* calculate hash values for keywords on first execution */
+	if (drw_kw[0].hash == 0) {
+		drw_kw_t *k;
+		for(k = drw_kw; k->full != NULL; k++)
+			k->hash = HASH(k->full);
+	}
 
 	for(start = src; !isspace(*start); start++) ;
 	for(;;start = next) {
