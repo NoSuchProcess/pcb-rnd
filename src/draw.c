@@ -353,11 +353,11 @@ typedef struct {
 	char do_group_inited;
 } draw_everything_t;
 
+/* temporarily change the color of the other-side silk */
 static void drw_silk_tune_color(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	rnd_layergrp_id_t backsilk_gid;
 
-	/* temporarily change the color of the other-side silk */
 	backsilk_gid = ((!info->xform->show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
 	de->backsilk_grp = pcb_get_layergrp(PCB, backsilk_gid);
 	if (de->backsilk_grp != NULL) {
@@ -482,16 +482,13 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	xform_setup(info, &tmp, NULL);
 	rnd_render->render_burst(rnd_render, RND_HID_BURST_START, info->drawn_area);
-
-	drw_silk_tune_color(info, &de);
-	drw_copper_order_UI(info, &de);
-
-
 	de.solder = de.component = -1;
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &de.solder, 1);
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &de.component, 1);
 	de.side_copper_grp = info->xform->show_solder_side ? de.solder : de.component;
 
+	drw_silk_tune_color(info, &de);
+	drw_copper_order_UI(info, &de);
 
 	/* first draw all 'invisible' (other-side) layers */
 	if ((info->xform_exporter != NULL) && !info->xform_exporter->check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0, &info->xform_exporter)) {
