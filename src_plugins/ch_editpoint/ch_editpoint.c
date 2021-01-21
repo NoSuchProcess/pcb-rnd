@@ -55,8 +55,6 @@
 #include "../src_plugins/ch_editpoint/menu_internal.c"
 
 conf_ch_editpoint_t conf_ch_editpoint;
-#define CH_EDITPOINT_CONF_FN "ch_editpoint.conf"
-
 
 static const char pcb_ch_editpoint_cookie[] = "ch_editpoint plugin";
 
@@ -169,7 +167,7 @@ void pplg_uninit_ch_editpoint(void)
 	vtp0_uninit(editpoint_objs);
 	vtp0_uninit(old_editpoint_objs);
 
-	rnd_conf_unreg_file(CH_EDITPOINT_CONF_FN, ch_editpoint_conf_internal);
+	rnd_conf_unreg_intern(ch_editpoint_conf_internal);
 	rnd_hid_menu_unload(rnd_gui, pcb_ch_editpoint_cookie);
 	rnd_conf_unreg_fields("plugins/ch_editpoint/");
 }
@@ -178,7 +176,7 @@ int pplg_init_ch_editpoint(void)
 {
 	RND_API_CHK_VER;
 
-	rnd_conf_reg_file(CH_EDITPOINT_CONF_FN, ch_editpoint_conf_internal);
+	rnd_conf_reg_intern(ch_editpoint_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_ch_editpoint, field,isarray,type_name,cpath,cname,desc,flags);
 #include "ch_editpoint_conf_fields.h"

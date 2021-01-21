@@ -44,7 +44,6 @@
 #include "conf_internal.c"
 
 const char *pcb_show_netnames_cookie = "show_netnames plugin";
-#define SHOW_NETNAMES_CONF_FN "show_netnames.conf"
 conf_show_netnames_t conf_show_netnames;
 
 static pcb_qry_exec_t shn_qctx;
@@ -153,7 +152,7 @@ void pplg_uninit_show_netnames(void)
 {
 	show_netnames_invalidate();
 
-	rnd_conf_unreg_file(SHOW_NETNAMES_CONF_FN, show_netnames_conf_internal);
+	rnd_conf_unreg_intern(show_netnames_conf_internal);
 	rnd_hid_menu_unload(rnd_gui, pcb_show_netnames_cookie);
 	rnd_event_unbind_allcookie(pcb_show_netnames_cookie);
 	rnd_remove_actions_by_cookie(pcb_show_netnames_cookie);
@@ -164,7 +163,7 @@ int pplg_init_show_netnames(void)
 {
 	RND_API_CHK_VER;
 
-	rnd_conf_reg_file(SHOW_NETNAMES_CONF_FN, show_netnames_conf_internal);
+	rnd_conf_reg_intern(show_netnames_conf_internal);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_show_netnames, field,isarray,type_name,cpath,cname,desc,flags);

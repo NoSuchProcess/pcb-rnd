@@ -47,7 +47,6 @@
 static const char *cam_cookie = "cam exporter";
 
 conf_cam_t conf_cam;
-#define CAM_CONF_FN "cam.conf"
 
 #include "cam_compile.c"
 
@@ -284,7 +283,7 @@ int pplg_check_ver_cam(int ver_needed) { return 0; }
 
 void pplg_uninit_cam(void)
 {
-	rnd_conf_unreg_file(CAM_CONF_FN, cam_conf_internal);
+	rnd_conf_unreg_intern(cam_conf_internal);
 	rnd_conf_unreg_fields("plugins/cam/");
 	rnd_remove_actions_by_cookie(cam_cookie);
 	rnd_export_remove_opts_by_cookie(cam_cookie);
@@ -294,7 +293,7 @@ void pplg_uninit_cam(void)
 int pplg_init_cam(void)
 {
 	RND_API_CHK_VER;
-	rnd_conf_reg_file(CAM_CONF_FN, cam_conf_internal);
+	rnd_conf_reg_intern(cam_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_cam, field,isarray,type_name,cpath,cname,desc,flags);
 #include "cam_conf_fields.h"

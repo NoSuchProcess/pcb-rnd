@@ -65,7 +65,6 @@ static rnd_conf_hid_id_t cfgid;
 static const char *drc_query_cookie = "drc_query";
 
 extern conf_drc_query_t conf_drc_query;
-#define DRC_QUERY_CONF_FN "drc_query.conf"
 
 #define DRC_CONF_PATH_PLUGIN "plugins/drc_query/"
 #define DRC_CONF_PATH_DISABLE "design/drc_disable/"
@@ -872,7 +871,7 @@ void pplg_uninit_drc_query(void)
 
 	pcb_drc_impl_unreg(&drc_query_impl);
 	rnd_event_unbind_allcookie(drc_query_cookie);
-	rnd_conf_unreg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
+	rnd_conf_unreg_intern(drc_query_conf_internal);
 	rnd_conf_unreg_fields(DRC_CONF_PATH_PLUGIN);
 	rnd_conf_hid_unreg(drc_query_cookie);
 
@@ -901,7 +900,7 @@ int pplg_init_drc_query(void)
 	cbs.new_hlist_item_post = drc_query_newconf;
 	cfgid = rnd_conf_hid_reg(drc_query_cookie, &cbs);
 
-	rnd_conf_reg_file(DRC_QUERY_CONF_FN, drc_query_conf_internal);
+	rnd_conf_reg_intern(drc_query_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_drc_query, field,isarray,type_name,cpath,cname,desc,flags);
 #include "drc_query_conf_fields.h"

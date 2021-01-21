@@ -67,7 +67,6 @@ extern conf_dialogs_t dialogs_conf;
 #include "conf_internal.c"
 
 conf_adialogs_t adialogs_conf;
-#define ADIALOGS_CONF_FN "adialogs.conf"
 
 extern const char pcb_acts_dlg_confval_edit[];
 extern const char pcb_acth_dlg_confval_edit[];
@@ -119,7 +118,7 @@ void pplg_uninit_dialogs(void)
 	pcb_view_dlg_uninit();
 	pcb_dlg_fontsel_uninit();
 
-	rnd_conf_unreg_file(ADIALOGS_CONF_FN, adialogs_conf_internal);
+	rnd_conf_unreg_intern(adialogs_conf_internal);
 	rnd_conf_unreg_fields("plugins/dialogs/");
 }
 
@@ -131,7 +130,7 @@ int pplg_init_dialogs(void)
 	rnd_conf_reg_field(adialogs_conf, field,isarray,type_name,cpath,cname,desc,flags);
 #include "adialogs_conf_fields.h"
 
-	rnd_conf_reg_file(ADIALOGS_CONF_FN, adialogs_conf_internal);
+	rnd_conf_reg_intern(adialogs_conf_internal);
 
 	RND_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
 	pcb_dlg_pref_init();

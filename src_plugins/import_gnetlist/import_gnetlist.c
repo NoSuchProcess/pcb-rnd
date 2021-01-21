@@ -45,8 +45,6 @@
 #include "import_gnetlist_conf.h"
 #include "../src_plugins/import_gnetlist/conf_internal.c"
 
-#define IMPORT_GNETLIST_CONF_FN "import_gnetlist.conf"
-
 conf_import_gnetlist_t conf_import_gnetlist;
 
 static pcb_plug_import_t import_gnetlist, import_lepton;
@@ -157,7 +155,7 @@ void pplg_uninit_import_gnetlist(void)
 {
 	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_gnetlist);
 	RND_HOOK_UNREGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_lepton);
-	rnd_conf_unreg_file(IMPORT_GNETLIST_CONF_FN, import_gnetlist_conf_internal);
+	rnd_conf_unreg_intern(import_gnetlist_conf_internal);
 	rnd_conf_unreg_fields("plugins/import_gnetlist/");
 }
 
@@ -189,7 +187,7 @@ int pplg_init_import_gnetlist(void)
 
 	RND_HOOK_REGISTER(pcb_plug_import_t, pcb_plug_import_chain, &import_lepton);
 
-	rnd_conf_reg_file(IMPORT_GNETLIST_CONF_FN, import_gnetlist_conf_internal);
+	rnd_conf_reg_intern(import_gnetlist_conf_internal);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_import_gnetlist, field,isarray,type_name,cpath,cname,desc,flags);

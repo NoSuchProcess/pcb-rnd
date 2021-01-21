@@ -48,7 +48,6 @@
 static const char *order_cookie = "order plugin";
 
 conf_order_t conf_order;
-#define ORDER_CONF_FN "order.conf"
 
 vtp0_t pcb_order_imps;
 
@@ -179,7 +178,7 @@ int pplg_check_ver_order(int ver_needed) { return 0; }
 void pplg_uninit_order(void)
 {
 	rnd_remove_actions_by_cookie(order_cookie);
-	rnd_conf_unreg_file(ORDER_CONF_FN, order_conf_internal);
+	rnd_conf_unreg_intern(order_conf_internal);
 	rnd_conf_unreg_fields("plugins/order/");
 	rnd_hid_menu_unload(rnd_gui, order_cookie);
 }
@@ -188,7 +187,7 @@ int pplg_init_order(void)
 {
 	RND_API_CHK_VER;
 
-	rnd_conf_reg_file(ORDER_CONF_FN, order_conf_internal);
+	rnd_conf_reg_intern(order_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_order, field,isarray,type_name,cpath,cname,desc,flags);
 #include "order_conf_fields.h"

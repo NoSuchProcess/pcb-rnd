@@ -50,8 +50,6 @@
 #include "menu_internal.c"
 
 conf_asm_t conf_asm;
-#define ASM_CONF_FN "asm.conf"
-
 
 static const char *asm_cookie = "asm plugin";
 
@@ -637,14 +635,14 @@ void pplg_uninit_asm(void)
 {
 	rnd_hid_menu_unload(rnd_gui, asm_cookie);
 	rnd_remove_actions_by_cookie(asm_cookie);
-	rnd_conf_unreg_file(ASM_CONF_FN, asm_conf_internal);
+	rnd_conf_unreg_intern(asm_conf_internal);
 	rnd_conf_unreg_fields("plugins/asm1/");
 }
 
 int pplg_init_asm(void)
 {
 	RND_API_CHK_VER;
-	rnd_conf_reg_file(ASM_CONF_FN, asm_conf_internal);
+	rnd_conf_reg_intern(asm_conf_internal);
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
 	rnd_conf_reg_field(conf_asm, field,isarray,type_name,cpath,cname,desc,flags);
 #include "asm_conf_fields.h"
