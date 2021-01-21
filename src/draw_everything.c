@@ -407,17 +407,19 @@ static void draw_compile(const char *src)
 			k->hash = HASH(k->full);
 	}
 
-	for(start = src; !isspace(*start); start++) ;
+	/* parse word by word */
 	for(;;start = next) {
 		draw_stmt_t *stmt;
 		const drw_kw_t *k;
 		int h, len;
 
+		/* skip leading whitespace */
 		while((*start == ' ') || (*start == '\t')) start++;
 
 		if (*start == '\0')
 			break;
 
+		/* newline is a special case as it is an instruction */
 		if ((*start == '\n') || (*start == '\r')) {
 			cmd_idx = -1;
 			if ((drw_script.used > 0) && (drw_script.array[drw_script.used - 1].inst != DI_NL)) {
@@ -430,15 +432,18 @@ static void draw_compile(const char *src)
 			continue;
 		}
 
+		/* seek end of the current word in 'next' */
 		next = start;
 		while(!isspace(*next) && (*next != '\0')) next++;
 
+		/* keywords are at least 2 chars long, required for the hash */
 		len = next - start;
 		if (len < 2) {
 			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword too short\n", line);
 			continue;
 		}
 
+		/* look up the keyword speeding up the process with a hash comparison that skips the strncmp() most of the time */
 		h = HASH(start);
 		for(k = drw_kw; k->full != NULL; k++)
 			if ((k->hash == h) && (strncmp(k->full, start, len) == 0))
