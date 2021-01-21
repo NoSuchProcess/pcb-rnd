@@ -531,14 +531,33 @@ static void drw_hole(pcb_draw_info_t *info, draw_everything_t *de)
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 }
 
+static void drw_paste(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	rnd_layergrp_id_t gid;
+	rnd_bool paste_empty;
+
+	gid = pcb_layergrp_get_top_paste();
+	if (gid >= 0)
+		paste_empty = pcb_layergrp_is_empty(PCB, gid);
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_exporter))) {
+		pcb_draw_paste(info, PCB_COMPONENT_SIDE);
+		rnd_render->end_layer(rnd_render);
+	}
+
+	gid = pcb_layergrp_get_bottom_paste();
+	if (gid >= 0)
+		paste_empty = pcb_layergrp_is_empty(PCB, gid);
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_exporter))) {
+		pcb_draw_paste(info, PCB_SOLDER_SIDE);
+		rnd_render->end_layer(rnd_render);
+	}
+}
+
 static void draw_everything(pcb_draw_info_t *info)
 {
 	draw_everything_t de;
-	rnd_layergrp_id_t gid;
-	rnd_bool paste_empty;
 	rnd_xform_t tmp;
 	pcb_layer_type_t vside = PCB_LYT_VISIBLE_SIDE();
-
 
 	de.backsilk_grp = NULL;
 	de.lvly_inited = 0;
@@ -573,22 +592,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	/* holes_after: draw holes after copper, silk and mask, to make sure it punches through everything. */
 	drw_hole(info, &de);
 
-	/* draw paste */
-	gid = pcb_layergrp_get_top_paste();
-	if (gid >= 0)
-		paste_empty = pcb_layergrp_is_empty(PCB, gid);
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_exporter))) {
-		pcb_draw_paste(info, PCB_COMPONENT_SIDE);
-		rnd_render->end_layer(rnd_render);
-	}
-
-	gid = pcb_layergrp_get_bottom_paste();
-	if (gid >= 0)
-		paste_empty = pcb_layergrp_is_empty(PCB, gid);
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, paste_empty, &info->xform_exporter))) {
-		pcb_draw_paste(info, PCB_SOLDER_SIDE);
-		rnd_render->end_layer(rnd_render);
-	}
+	drw_paste(info, &de);
 
 	pcb_draw_boundary_mech(info);
 
