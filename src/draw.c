@@ -492,13 +492,44 @@ static void drw_invis2(pcb_draw_info_t *info, draw_everything_t *de)
 	pcb_draw_silk_doc(info, ivside, PCB_LYT_DOC, 1, 0);
 }
 
+static void drw_pstk(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+	if (rnd_render->gui) {
+		rnd_xform_t tmp;
+		xform_setup(info, &tmp, NULL);
+		pcb_draw_ppv(info, info->xform->show_solder_side ? de->solder : de->component);
+		info->xform = NULL; info->layer = NULL;
+	}
+	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+}
+
+
+/* Draw the solder mask if turned on */
+static void drw_mask(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	rnd_layergrp_id_t gid;
+	gid = pcb_layergrp_get_top_mask();
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_exporter))) {
+		pcb_draw_mask(info, PCB_COMPONENT_SIDE);
+		rnd_render->end_layer(rnd_render);
+	}
+
+	gid = pcb_layergrp_get_bottom_mask();
+	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_exporter))) {
+		pcb_draw_mask(info, PCB_SOLDER_SIDE);
+		rnd_render->end_layer(rnd_render);
+	}
+}
+
 static void draw_everything(pcb_draw_info_t *info)
 {
 	draw_everything_t de;
-
-	rnd_layergrp_id_t  gid;
+	rnd_layergrp_id_t gid;
 	rnd_bool paste_empty;
 	rnd_xform_t tmp;
+	pcb_layer_type_t vside = PCB_LYT_VISIBLE_SIDE();
 
 
 	de.backsilk_grp = NULL;
@@ -521,40 +552,15 @@ static void draw_everything(pcb_draw_info_t *info)
 	if (conf_core.editor.check_planes && rnd_render->gui)
 		goto finish;
 
-	/* Draw padstacks below silk */
-	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-	if (rnd_render->gui) {
-		rnd_xform_t tmp;
-		xform_setup(info, &tmp, NULL);
-		pcb_draw_ppv(info, info->xform->show_solder_side ? de.solder : de.component);
-		info->xform = NULL; info->layer = NULL;
-	}
-	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
-
-	/* Draw the solder mask if turned on */
-	gid = pcb_layergrp_get_top_mask();
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_exporter))) {
-		pcb_draw_mask(info, PCB_COMPONENT_SIDE);
-		rnd_render->end_layer(rnd_render);
-	}
-
-	gid = pcb_layergrp_get_bottom_mask();
-	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_exporter))) {
-		pcb_draw_mask(info, PCB_SOLDER_SIDE);
-		rnd_render->end_layer(rnd_render);
-	}
+	drw_pstk(info, &de);
+	drw_mask(info, &de);
 
 	/* Draw doc and silks */
-	{
-		pcb_layer_type_t vside = PCB_LYT_VISIBLE_SIDE();
-
-		pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_SILK, 1, 0);
-		pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_DOC, 1, 0);
-		pcb_draw_silk_doc(info, 0, PCB_LYT_DOC, 1, 0);
-		pcb_draw_silk_doc(info, vside, PCB_LYT_SILK, 1, 0);
-		pcb_draw_silk_doc(info, vside, PCB_LYT_DOC, 1, 0);
-	}
+	pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_SILK, 1, 0);
+	pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_DOC, 1, 0);
+	pcb_draw_silk_doc(info, 0, PCB_LYT_DOC, 1, 0);
+	pcb_draw_silk_doc(info, vside, PCB_LYT_SILK, 1, 0);
+	pcb_draw_silk_doc(info, vside, PCB_LYT_DOC, 1, 0);
 
 	{ /* holes_after: draw holes after copper, silk and mask, to make sure it punches through everything. */
 		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area); 
