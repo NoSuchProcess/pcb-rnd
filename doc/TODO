@@ -3,6 +3,10 @@
 1. For the upcoming release ===============================================================================
 - ADMIN: generate new keys, schedule next release before expiry (21 april)
 - FEATURE: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
+- CLEANUP: layer order from data
+	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
+	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
+	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: lihata v8
@@ -20,10 +24,6 @@
 	- tool_line.c depends on pcb_undo()'s return value; can be fixed only when the old undo system is removed
 - CLEANUP: think over how to handle subc selection: selecting all parts automatically is bad for propedit; bug_files/subcsel.bug [report: Wojciech]
 	- BUG: propedit adding/deleting attributes inconsistency; search depth problem (see TODO#28)  bug_files/subcsel.bug [report: Ade]
-- CLEANUP: layer order from data
-	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
-	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
-	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: (TT) route style upgrade to prototypes - requires lihata v8:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
