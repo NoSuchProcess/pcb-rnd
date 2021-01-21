@@ -553,6 +553,26 @@ static void drw_paste(pcb_draw_info_t *info, draw_everything_t *de)
 	}
 }
 
+static void drw_virtual(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	draw_virtual_layers(info, &de->lvly);
+	if ((rnd_render->gui) || (!info->xform_caller->omit_overlay)) {
+		rnd_xform_t tmp;
+		xform_setup(info, &tmp, NULL);
+		draw_rats(info, info->drawn_area);
+		draw_pins_and_pads(info, de->component, de->solder);
+	}
+}
+
+static void drw_marks(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	if (rnd_render->gui) {
+		rnd_xform_t tmp;
+		xform_setup(info, &tmp, NULL);
+		draw_xor_marks(info);
+	}
+}
+
 static void draw_everything(pcb_draw_info_t *info)
 {
 	draw_everything_t de;
@@ -596,21 +616,10 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	pcb_draw_boundary_mech(info);
 
-	/* draw virtual and UI layers */
-	draw_virtual_layers(info, &de.lvly);
-	if ((rnd_render->gui) || (!info->xform_caller->omit_overlay)) {
-		rnd_xform_t tmp;
-		xform_setup(info, &tmp, NULL);
-		draw_rats(info, info->drawn_area);
-		draw_pins_and_pads(info, de.component, de.solder);
-	}
+	drw_virtual(info, &de);
 	draw_ui_layers(info);
 
-	if (rnd_render->gui) {
-		rnd_xform_t tmp;
-		xform_setup(info, &tmp, NULL);
-		draw_xor_marks(info);
-	}
+	drw_marks(info, &de);
 
 	finish:;
 	drw_silk_restore_color(info, &de);
