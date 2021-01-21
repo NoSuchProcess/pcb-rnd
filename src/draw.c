@@ -354,6 +354,8 @@ static void draw_everything(pcb_draw_info_t *info)
 	rnd_xform_t tmp;
 
 	xform_setup(info, &tmp, NULL);
+
+	/* temporarily change the color of the other-side silk */
 	backsilk_gid = ((!info->xform->show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
 	backsilk_grp = pcb_get_layergrp(PCB, backsilk_gid);
 	if (backsilk_grp != NULL) {
@@ -369,6 +371,8 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	rnd_render->render_burst(rnd_render, RND_HID_BURST_START, info->drawn_area);
 
+	/* copper groups will be drawn in the order they were last selected
+	   in the GUI; build an array of their order */
 	memset(do_group, 0, sizeof(do_group));
 	lvly.top_fab = -1;
 	lvly.top_assy = lvly.bot_assy = -1;
@@ -412,9 +416,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	side_copper_grp = info->xform->show_solder_side ? solder : component;
 
 
-	/*
-	 * first draw all 'invisible' stuff
-	 */
+	/* first draw all 'invisible' (other-side) layers */
 	if ((info->xform_exporter != NULL) && !info->xform_exporter->check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0, &info->xform_exporter)) {
 		pcb_layer_type_t side = PCB_LYT_INVISIBLE_SIDE();
 
@@ -504,6 +506,7 @@ static void draw_everything(pcb_draw_info_t *info)
 		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 	}
 
+	/* draw paste */
 	gid = pcb_layergrp_get_top_paste();
 	if (gid >= 0)
 		paste_empty = pcb_layergrp_is_empty(PCB, gid);
@@ -522,6 +525,7 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	pcb_draw_boundary_mech(info);
 
+	/* draw virtual and UI layers */
 	draw_virtual_layers(info, &lvly);
 	if ((rnd_render->gui) || (!info->xform_caller->omit_overlay)) {
 		rnd_xform_t tmp;
@@ -538,6 +542,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	}
 
 	finish:;
+	/* set back the color of the other-side silk */
 	if (backsilk_grp != NULL) {
 		rnd_cardinal_t n;
 		for(n = 0; n < backsilk_grp->len; n++) {
