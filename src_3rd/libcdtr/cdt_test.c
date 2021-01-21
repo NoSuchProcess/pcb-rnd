@@ -73,8 +73,8 @@ static void init_evs(void)
 
 static void cmd_init(char *args)
 {
-	long x1, y1, x2, y2;
-	if (sscanf(args, "%ld %ld %ld %ld", &x1, &y1, &x2, &y2) != 4) {
+	double x1, y1, x2, y2;
+	if (sscanf(args, "%lf %lf %lf %lf", &x1, &y1, &x2, &y2) != 4) {
 		fprintf(stderr, "syntax error: init requires 4 arguments\n");
 		return;
 	}
