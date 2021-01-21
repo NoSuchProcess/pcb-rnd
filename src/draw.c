@@ -338,11 +338,46 @@ static int has_auto(pcb_layergrp_t *grp)
 	return 0;
 }
 
-static void draw_everything(pcb_draw_info_t *info)
-{
-	rnd_layergrp_id_t backsilk_gid;
+typedef struct {
 	pcb_layergrp_t *backsilk_grp;
 	rnd_color_t old_silk_color[PCB_MAX_LAYERGRP];
+} draw_everything_t;
+
+static void drw_silk_tune_color(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	rnd_layergrp_id_t backsilk_gid;
+
+	/* temporarily change the color of the other-side silk */
+	backsilk_gid = ((!info->xform->show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
+	de->backsilk_grp = pcb_get_layergrp(PCB, backsilk_gid);
+	if (de->backsilk_grp != NULL) {
+		rnd_cardinal_t n;
+		for(n = 0; n < de->backsilk_grp->len; n++) {
+			pcb_layer_t *ly = pcb_get_layer(PCB->Data, de->backsilk_grp->lid[n]);
+			if (ly != NULL) {
+				de->old_silk_color[n] = ly->meta.real.color;
+				ly->meta.real.color = conf_core.appearance.color.invisible_objects;
+			}
+		}
+	}
+}
+
+/* set back the color of the other-side silk */
+static void drw_silk_restore_color(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	if (de->backsilk_grp != NULL) {
+		rnd_cardinal_t n;
+		for(n = 0; n < de->backsilk_grp->len; n++) {
+			pcb_layer_t *ly = pcb_get_layer(PCB->Data, de->backsilk_grp->lid[n]);
+			if (ly != NULL)
+				ly->meta.real.color = de->old_silk_color[n];
+		}
+	}
+}
+
+static void draw_everything(pcb_draw_info_t *info)
+{
+	draw_everything_t de;
 	int i, ngroups;
 	rnd_layergrp_id_t component, solder, gid, side_copper_grp;
 	/* This is the list of layer groups we will draw.  */
@@ -353,21 +388,11 @@ static void draw_everything(pcb_draw_info_t *info)
 	legacy_vlayer_t lvly;
 	rnd_xform_t tmp;
 
+
+	de.backsilk_grp = NULL;
 	xform_setup(info, &tmp, NULL);
 
-	/* temporarily change the color of the other-side silk */
-	backsilk_gid = ((!info->xform->show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
-	backsilk_grp = pcb_get_layergrp(PCB, backsilk_gid);
-	if (backsilk_grp != NULL) {
-		rnd_cardinal_t n;
-		for(n = 0; n < backsilk_grp->len; n++) {
-			pcb_layer_t *ly = pcb_get_layer(PCB->Data, backsilk_grp->lid[n]);
-			if (ly != NULL) {
-				old_silk_color[n] = ly->meta.real.color;
-				ly->meta.real.color = conf_core.appearance.color.invisible_objects;
-			}
-		}
-	}
+	drw_silk_tune_color(info, &de);
 
 	rnd_render->render_burst(rnd_render, RND_HID_BURST_START, info->drawn_area);
 
@@ -542,15 +567,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	}
 
 	finish:;
-	/* set back the color of the other-side silk */
-	if (backsilk_grp != NULL) {
-		rnd_cardinal_t n;
-		for(n = 0; n < backsilk_grp->len; n++) {
-			pcb_layer_t *ly = pcb_get_layer(PCB->Data, backsilk_grp->lid[n]);
-			if (ly != NULL)
-				ly->meta.real.color = old_silk_color[n];
-		}
-	}
+	drw_silk_restore_color(info, &de);
 }
 
 static void pcb_draw_pstks(pcb_draw_info_t *info, rnd_layergrp_id_t group, int is_current, pcb_layer_combining_t comb)
