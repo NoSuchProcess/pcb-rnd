@@ -23,29 +23,24 @@ Insert the following lines in the main plugin c source:
 #include "../src_plugins/<i>pluginname</i>/conf_internal.c"
 </pre>
 
-<h2> Register the custom conf file </h2>
+<h2> Register the custom intern conf</h2>
 <p>
-Define the file name (will be used twice) somewhere around the top of
-the main source file, then in plugin init callback issue a conf_reg_file():
+Call librnd to register and unregister the intern:
 <pre>
-#define <i>PLUGINNAME</i>_CONF_FN "<i>pluginname</i>.conf"
-
 int pplg_init_<i>pluginname</i>(void)
 {
 	PCB_API_CHK_VER;
-	conf_reg_file(<i>PLUGINNAME</i>_CONF_FN, <i>pluginname</i>_conf_internal);
+	conf_reg_intern(<i>pluginname</i>_conf_internal);
 	...
 </pre>
 <p>
-The conf_reg_file() call should be before the conf fields initialization.
+The conf_reg_intern() call should be before the conf fields initialization.
 
-
-
-<h2> Unregister the custom conf file </h2>
+<h2> Unregister the custom conf intern </h2>
 <p>
 In the uninit callback of the plugin, insert the following line:
 <pre>
-	conf_unreg_file(<i>PLUGINNAME</i>_CONF_FN, <i>pluginname</i>_conf_internal);
+	conf_unreg_intern(<i>pluginname</i>_conf_internal);
 </pre>
 
 <h2> make dep </h2>
