@@ -339,8 +339,18 @@ static int has_auto(pcb_layergrp_t *grp)
 }
 
 typedef struct {
+	/* silk color tune */
 	pcb_layergrp_t *backsilk_grp;
 	rnd_color_t old_silk_color[PCB_MAX_LAYERGRP];
+
+	/* copper ordering and virtual layers */
+	legacy_vlayer_t lvly;
+	char do_group[PCB_MAX_LAYERGRP]; /* This is the list of layer groups we will draw.  */
+	rnd_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP]; /* This is the reverse of the order in which we draw them.  */
+	int ngroups;
+	rnd_layergrp_id_t component, solder, side_copper_grp;
+	char lvly_inited;
+	char do_group_inited;
 } draw_everything_t;
 
 static void drw_silk_tune_color(pcb_draw_info_t *info, draw_everything_t *de)
@@ -375,33 +385,18 @@ static void drw_silk_restore_color(pcb_draw_info_t *info, draw_everything_t *de)
 	}
 }
 
-static void draw_everything(pcb_draw_info_t *info)
+/* copper groups will be drawn in the order they were last selected
+   in the GUI; build an array of their order */
+static void drw_copper_order_UI(pcb_draw_info_t *info, draw_everything_t *de)
 {
-	draw_everything_t de;
-	int i, ngroups;
-	rnd_layergrp_id_t component, solder, gid, side_copper_grp;
-	/* This is the list of layer groups we will draw.  */
-	char do_group[PCB_MAX_LAYERGRP];
-	/* This is the reverse of the order in which we draw them.  */
-	rnd_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP];
-	rnd_bool paste_empty;
-	legacy_vlayer_t lvly;
-	rnd_xform_t tmp;
+	int i;
 
+	memset(de->do_group, 0, sizeof(de->do_group));
 
-	de.backsilk_grp = NULL;
-	xform_setup(info, &tmp, NULL);
+	de->lvly.top_fab = -1;
+	de->lvly.top_assy = de->lvly.bot_assy = -1;
 
-	drw_silk_tune_color(info, &de);
-
-	rnd_render->render_burst(rnd_render, RND_HID_BURST_START, info->drawn_area);
-
-	/* copper groups will be drawn in the order they were last selected
-	   in the GUI; build an array of their order */
-	memset(do_group, 0, sizeof(do_group));
-	lvly.top_fab = -1;
-	lvly.top_assy = lvly.bot_assy = -1;
-	for (ngroups = 0, i = 0; i < pcb_max_layer(PCB); i++) {
+	for (de->ngroups = 0, i = 0; i < pcb_max_layer(PCB); i++) {
 		pcb_layer_t *l = PCB_STACKLAYER(PCB, i);
 		rnd_layergrp_id_t group = pcb_layer_get_group(PCB, pcb_layer_stack[i]);
 		pcb_layergrp_t *grp = pcb_get_layergrp(PCB, group);
@@ -411,34 +406,91 @@ static void draw_everything(pcb_draw_info_t *info)
 			gflg = grp->ltype;
 
 		if ((gflg & PCB_LYT_DOC) && (grp->purpi == F_fab)) {
-			lvly.top_fab = group;
-			lvly.top_fab_enable = has_auto(grp);
+			de->lvly.top_fab = group;
+			de->lvly.top_fab_enable = has_auto(grp);
 		}
 
 		if ((gflg & PCB_LYT_DOC) && (grp->purpi == F_assy)) {
 			if (gflg & PCB_LYT_TOP) {
-				lvly.top_assy = group;
-				lvly.top_assy_enable = has_auto(grp);
+				de->lvly.top_assy = group;
+				de->lvly.top_assy_enable = has_auto(grp);
 			}
 			else if (gflg & PCB_LYT_BOTTOM) {
-				lvly.bot_assy = group;
-				lvly.bot_assy_enable = has_auto(grp);
+				de->lvly.bot_assy = group;
+				de->lvly.bot_assy_enable = has_auto(grp);
 			}
 		}
 
 		if ((gflg & PCB_LYT_SILK) || (gflg & PCB_LYT_DOC) || (gflg & PCB_LYT_MASK) || (gflg & PCB_LYT_PASTE) || (gflg & PCB_LYT_BOUNDARY) || (gflg & PCB_LYT_MECH)) /* do not draw silk, mask, paste and boundary here, they'll be drawn separately */
 			continue;
 
-		if (l->meta.real.vis && !do_group[group]) {
-			do_group[group] = 1;
-			drawn_groups[ngroups++] = group;
+		if (l->meta.real.vis && !de->do_group[group]) {
+			de->do_group[group] = 1;
+			de->drawn_groups[de->ngroups++] = group;
 		}
 	}
+	de->lvly_inited = 1;
+	de->do_group_inited = 1;
+}
 
-	solder = component = -1;
-	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &solder, 1);
-	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &component, 1);
-	side_copper_grp = info->xform->show_solder_side ? solder : component;
+/* draw all layers in layerstack order */
+static void drw_copper(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	int i;
+
+	if (!de->do_group_inited) {
+		rnd_message(RND_MSG_ERROR, "draw script: drw_copper called without prior copper ordering\nCan not draw copper layers. Fix the script.\n");
+		return;
+	}
+
+	for (i = de->ngroups - 1; i >= 0; i--) {
+		rnd_layergrp_id_t group = de->drawn_groups[i];
+
+		if (pcb_layer_gui_set_glayer(PCB, group, 0, &info->xform_exporter)) {
+			int is_current = 0;
+			rnd_layergrp_id_t cgrp = PCB_CURRLAYER(PCB)->meta.real.grp;
+
+			if ((cgrp == de->solder) || (cgrp == de->component)) {
+				/* current group is top or bottom: visibility depends on side we are looking at */
+				if (group == de->side_copper_grp)
+					is_current = 1;
+			}
+			else {
+				/* internal layer displayed on top: current group is solid, others are "invisible" */
+				if (group == cgrp)
+					is_current = 1;
+			}
+
+			pcb_draw_layer_grp(info, group, is_current);
+			rnd_render->end_layer(rnd_render);
+		}
+	}
+}
+
+static void draw_everything(pcb_draw_info_t *info)
+{
+	draw_everything_t de;
+
+	rnd_layergrp_id_t  gid;
+	rnd_bool paste_empty;
+	rnd_xform_t tmp;
+
+
+	de.backsilk_grp = NULL;
+	de.lvly_inited = 0;
+	de.do_group_inited = 0;
+
+	xform_setup(info, &tmp, NULL);
+	rnd_render->render_burst(rnd_render, RND_HID_BURST_START, info->drawn_area);
+
+	drw_silk_tune_color(info, &de);
+	drw_copper_order_UI(info, &de);
+
+
+	de.solder = de.component = -1;
+	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &de.solder, 1);
+	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &de.component, 1);
+	de.side_copper_grp = info->xform->show_solder_side ? de.solder : de.component;
 
 
 	/* first draw all 'invisible' (other-side) layers */
@@ -462,29 +514,7 @@ static void draw_everything(pcb_draw_info_t *info)
 		pcb_draw_silk_doc(info, ivside, PCB_LYT_DOC, 1, 0);
 	}
 
-	/* draw all layers in layerstack order */
-	for (i = ngroups - 1; i >= 0; i--) {
-		rnd_layergrp_id_t group = drawn_groups[i];
-
-		if (pcb_layer_gui_set_glayer(PCB, group, 0, &info->xform_exporter)) {
-			int is_current = 0;
-			rnd_layergrp_id_t cgrp = PCB_CURRLAYER(PCB)->meta.real.grp;
-
-			if ((cgrp == solder) || (cgrp == component)) {
-				/* current group is top or bottom: visibility depends on side we are looking at */
-				if (group == side_copper_grp)
-					is_current = 1;
-			}
-			else {
-				/* internal layer displayed on top: current group is solid, others are "invisible" */
-				if (group == cgrp)
-					is_current = 1;
-			}
-
-			pcb_draw_layer_grp(info, group, is_current);
-			rnd_render->end_layer(rnd_render);
-		}
-	}
+	drw_copper(info, &de);
 
 	if (conf_core.editor.check_planes && rnd_render->gui)
 		goto finish;
@@ -495,7 +525,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	if (rnd_render->gui) {
 		rnd_xform_t tmp;
 		xform_setup(info, &tmp, NULL);
-		pcb_draw_ppv(info, info->xform->show_solder_side ? solder : component);
+		pcb_draw_ppv(info, info->xform->show_solder_side ? de.solder : de.component);
 		info->xform = NULL; info->layer = NULL;
 	}
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
@@ -527,7 +557,7 @@ static void draw_everything(pcb_draw_info_t *info)
 	{ /* holes_after: draw holes after copper, silk and mask, to make sure it punches through everything. */
 		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area); 
 		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-		draw_everything_holes(info, side_copper_grp);
+		draw_everything_holes(info, de.side_copper_grp);
 		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
 	}
 
@@ -551,12 +581,12 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_draw_boundary_mech(info);
 
 	/* draw virtual and UI layers */
-	draw_virtual_layers(info, &lvly);
+	draw_virtual_layers(info, &de.lvly);
 	if ((rnd_render->gui) || (!info->xform_caller->omit_overlay)) {
 		rnd_xform_t tmp;
 		xform_setup(info, &tmp, NULL);
 		draw_rats(info, info->drawn_area);
-		draw_pins_and_pads(info, component, solder);
+		draw_pins_and_pads(info, de.component, de.solder);
 	}
 	draw_ui_layers(info);
 
