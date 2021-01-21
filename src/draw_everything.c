@@ -46,7 +46,6 @@ typedef struct {
 
 typedef struct {
 	void (*cmd)(pcb_draw_info_t *info, draw_everything_t *de);
-	fgw_arg_t argv[4];
 	int argc;
 } draw_call_t;
 
@@ -57,6 +56,7 @@ typedef enum {
 	DI_THEN,
 	DI_STOP,
 	DI_CALL,
+	DI_NL,
 
 	/* fake expressions */
 	DI_GUI,
@@ -70,8 +70,9 @@ typedef struct {
 } draw_stmt_t;
 
 
+
 #define GVT(x) vtdrw_ ## x
-#define GVT_ELEM_TYPE vtdrw_t
+#define GVT_ELEM_TYPE draw_stmt_t
 #define GVT_SIZE_TYPE size_t
 #define GVT_DOUBLING_THRS 256
 #define GVT_START_SIZE 64
@@ -84,6 +85,10 @@ typedef struct {
 #define GVT_FREE(vect, ptr)           free(ptr)
 
 #include <genvector/genvector_impl.c>
+
+static vtdrw_t drw_script = {0};
+
+/*** Calls ***/
 
 /* temporarily change the color of the other-side silk */
 static void drw_silk_tune_color(pcb_draw_info_t *info, draw_everything_t *de)
@@ -319,6 +324,7 @@ static void drw_marks(pcb_draw_info_t *info, draw_everything_t *de)
 	}
 }
 
+/*** Execute ***/
 static void draw_everything(pcb_draw_info_t *info)
 {
 	draw_everything_t de;
@@ -371,3 +377,83 @@ static void draw_everything(pcb_draw_info_t *info)
 	drw_silk_restore_color(info, &de);
 }
 
+
+/*** Compile ***/
+typedef struct {
+	const char *full;
+	int hash;
+
+	draw_inst_t inst;
+	void (*cmd)(pcb_draw_info_t *info, draw_everything_t *de);
+} drw_kw_t;
+
+#define HASH(s) ((s[0] << 16) | (s[1] << 8) | (s[2] << 8))
+
+static const drw_kw_t drw_kw[] = {
+	{"if", HASH("if"), DI_IF, NULL },
+	{NULL, 0, 0, NULL }
+};
+
+
+static void draw_compile(const char *src)
+{
+	const char *start, *next;
+	int hash = 0, line = 1, nst = 0, cmd_idx = -1;
+
+	for(start = src; !isspace(*start); start++) ;
+	for(;;start = next) {
+		draw_stmt_t *stmt;
+		const drw_kw_t *k;
+		int h, len;
+
+		while((*start == ' ') || (*start == '\t')) start++;
+
+		if (*start == '\0')
+			break;
+
+		if ((*start == '\n') || (*start == '\r')) {
+			cmd_idx = -1;
+			if ((drw_script.used > 0) && (drw_script.array[drw_script.used - 1].inst != DI_NL)) {
+				stmt = vtdrw_alloc_append(&drw_script, 1);
+				stmt->inst = DI_NL;
+				nst++;
+			}
+			if (*start == '\n')
+				line++;
+			continue;
+		}
+
+		next = start;
+		while(!isspace(*next) && (*next != '\0')) next++;
+
+		len = next - start;
+		if (len < 2) {
+			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword too short\n", line);
+			continue;
+		}
+
+		h = HASH(start);
+		for(k = drw_kw; k->full != NULL; k++)
+			if ((k->hash == h) && (strncmp(k->full, start, len) == 0))
+				break;
+
+		if (k->full == NULL) {
+			rnd_message(RND_MSG_ERROR, "render_script: keyword not found in line %d\n", line);
+			continue;
+		}
+
+		stmt = vtdrw_alloc_append(&drw_script, 1);
+		stmt->inst = k->inst;
+		stmt->call.cmd = k->cmd;
+
+		/* remember last command or update last command's argc */
+		if (cmd_idx == -1) {
+			cmd_idx = drw_script.used - 1;
+			drw_script.array[cmd_idx].call.argc = 0;
+		}
+		else
+			drw_script.array[cmd_idx].call.argc++;
+	}
+
+	rnd_message(RND_MSG_INFO, "render_script: compiled %ld instructions in %d statements\n", drw_script.used, nst);
+}
