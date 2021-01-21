@@ -154,6 +154,23 @@ li:pcb-rnd-conf-v1 {
 			smart_labels = 0
 			label_thickness = 1nm
 
+			render_script = {
+				silk_color_tune
+				copper_order_UI
+				drw_invis1
+				drw_invis2
+				if GUI and check_planes stop
+				drw_pstk
+				drw_mask
+				drw_layers intern silk
+				drw_layers intern doc
+				drw_layers global doc
+				drw_layers this_side silk
+				drw_layers this_side doc
+				drw_hole
+				drw_paste
+			}
+
 			ha:loglevels {
 				debug_tag      = {}
 				debug_popup    = false
