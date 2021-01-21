@@ -467,6 +467,31 @@ static void drw_copper(pcb_draw_info_t *info, draw_everything_t *de)
 	}
 }
 
+/* draw all 'invisible' (other-side) layers */
+static void drw_invis1(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	if ((info->xform_exporter != NULL) && !info->xform_exporter->check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0, &info->xform_exporter)) {
+		pcb_layer_type_t side = PCB_LYT_INVISIBLE_SIDE();
+
+		pcb_draw_silk_doc(info, side, PCB_LYT_DOC, 0, 1);
+		pcb_draw_silk_doc(info, side, PCB_LYT_SILK, 0, 1);
+
+		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+		rnd_render->end_layer(rnd_render);
+	}
+}
+
+	/* Draw far side doc and silks */
+static void drw_invis2(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	pcb_layer_type_t ivside = PCB_LYT_INVISIBLE_SIDE();
+
+	pcb_draw_silk_doc(info, ivside, PCB_LYT_SILK, 1, 0);
+	pcb_draw_silk_doc(info, ivside, PCB_LYT_DOC, 1, 0);
+}
+
 static void draw_everything(pcb_draw_info_t *info)
 {
 	draw_everything_t de;
@@ -489,28 +514,8 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	drw_silk_tune_color(info, &de);
 	drw_copper_order_UI(info, &de);
-
-	/* first draw all 'invisible' (other-side) layers */
-	if ((info->xform_exporter != NULL) && !info->xform_exporter->check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0, &info->xform_exporter)) {
-		pcb_layer_type_t side = PCB_LYT_INVISIBLE_SIDE();
-
-		pcb_draw_silk_doc(info, side, PCB_LYT_DOC, 0, 1);
-		pcb_draw_silk_doc(info, side, PCB_LYT_SILK, 0, 1);
-
-		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
-		rnd_render->end_layer(rnd_render);
-	}
-
-	/* Draw far side doc and silks */
-	{
-		pcb_layer_type_t ivside = PCB_LYT_INVISIBLE_SIDE();
-
-		pcb_draw_silk_doc(info, ivside, PCB_LYT_SILK, 1, 0);
-		pcb_draw_silk_doc(info, ivside, PCB_LYT_DOC, 1, 0);
-	}
-
+	drw_invis1(info, &de);
+	drw_invis2(info, &de);
 	drw_copper(info, &de);
 
 	if (conf_core.editor.check_planes && rnd_render->gui)
