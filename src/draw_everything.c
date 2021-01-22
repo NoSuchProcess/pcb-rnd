@@ -443,6 +443,7 @@ static void draw_compile(const char *src)
 {
 	const char *start, *next;
 	int hash = 0, line = 1, nst = 0, cmd_idx = -1;
+	char kw0[KW_MAXLEN+2];
 
 	/* calculate hash values for keywords on first execution */
 	if (drw_kw[0].hash == 0) {
@@ -488,11 +489,14 @@ printf("draw compile: %s\n", src);
 		/* keywords are at least 2 chars long, required for the hash */
 		len = next - start;
 		if (len < 2) {
-			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword too short\n", line);
+			strncpy(kw0, start, len); kw0[len] = '\0';
+			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword '%s' too short\n", kw0, line);
 			continue;
 		}
 		if (len > KW_MAXLEN) {
-			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword too long\n", line);
+			memcpy(kw0, start, KW_MAXLEN);
+			kw0[KW_MAXLEN] = '\0';
+			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword %s... too long\n", kw0, line);
 			continue;
 		}
 
@@ -520,11 +524,10 @@ printf("draw compile: %s\n", src);
 
 		/* not a known keyword or number, could be a layer type */
 		if (bad) {
-			char name[KW_MAXLEN+2];
 			pcb_layer_type_t lyt;
 
-			strncpy(name, start, len);
-			lyt = pcb_layer_type_str2bit(name);
+			strncpy(kw0, start, len); kw0[len] = '\0';
+			lyt = pcb_layer_type_str2bit(kw0);
 			if (lyt > 0) {
 				k = &karg;
 				karg.inst = DI_ARG;
@@ -534,7 +537,8 @@ printf("draw compile: %s\n", src);
 		}
 
 		if (bad) {
-			rnd_message(RND_MSG_ERROR, "render_script: keyword not found in line %d\n", line);
+			strncpy(kw0, start, len); kw0[len] = '\0';
+			rnd_message(RND_MSG_ERROR, "render_script: keyword '%s' not found in line %d\n", kw0, line);
 			continue;
 		}
 
