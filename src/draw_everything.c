@@ -655,6 +655,11 @@ static void draw_compile(const char *src)
 			continue;
 		}
 
+		if ((cmd_idx >= 0) && (drw_script.array[cmd_idx].call.argc >= DRW_MAX_ARG)) {
+			rnd_message(RND_MSG_ERROR, "render_script: too many arguments in line %d; ignored after %d arguments\n", line, DRW_MAX_ARG);
+			continue;
+		}
+
 		stmt = vtdrw_alloc_append(&drw_script, 1);
 		stmt->inst = k->inst;
 		stmt->call.cmd = k->cmd;
@@ -667,7 +672,6 @@ static void draw_compile(const char *src)
 		}
 		else
 			drw_script.array[cmd_idx].call.argc++;
-TODO("check max argc");
 	}
 
 	rnd_message(RND_MSG_INFO, "render_script: compiled %ld instructions in %d statements\n", drw_script.used, nst);
