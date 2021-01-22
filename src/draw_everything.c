@@ -357,7 +357,7 @@ static int drw_layers(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	pcb_layer_type_t loc, typ = de->argv[1];
 	int setgrp = 1, invis = 0;
-	TODO("error handling, return value");
+
 	if (de->argc < 2)
 		return -1;
 
@@ -551,7 +551,7 @@ static drw_kw_t drw_kw[] = {
 static void draw_compile(const char *src)
 {
 	const char *start, *next;
-	int hash = 0, line = 1, nst = 0, cmd_idx = -1;
+	int line = 1, nst = 0, cmd_idx = -1;
 	char kw0[KW_MAXLEN+2];
 
 	/* calculate hash values for keywords on first execution */
