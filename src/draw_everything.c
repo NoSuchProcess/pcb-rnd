@@ -491,7 +491,7 @@ typedef struct {
 } drw_kw_t;
 
 #define HASH(s) ((s[0] << 8) | (s[1]))
-#define KW_MAXLEN 16
+#define KW_MAXLEN 24
 
 static drw_kw_t drw_kw[] = {
 	{"if",              0, DI_IF, NULL, 0},
@@ -515,6 +515,8 @@ static drw_kw_t drw_kw[] = {
 	{"drw_virtual",     0, DI_CALL, drw_virtual, 0},
 	{"drw_ui_layers",   0, DI_CALL, drw_ui_layers, 0},
 	{"drw_marks",       0, DI_CALL, drw_marks, 0},
+	{"drw_boundary_mech",0,DI_CALL, drw_boundary_mech, 0},
+
 
 	{"global",          0, DI_ARG,  NULL, 0},
 	{"this_side",       0, DI_ARG,  NULL, DA_THIS_SIDE},
@@ -578,13 +580,13 @@ static void draw_compile(const char *src)
 		len = next - start;
 		if (len < 2) {
 			strncpy(kw0, start, len); kw0[len] = '\0';
-			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword '%s' too short\n", kw0, line);
+			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword '%s' too short\n", line, kw0);
 			continue;
 		}
 		if (len > KW_MAXLEN) {
 			memcpy(kw0, start, KW_MAXLEN);
 			kw0[KW_MAXLEN] = '\0';
-			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword %s... too long\n", kw0, line);
+			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword %s... too long\n", line, kw0);
 			continue;
 		}
 
