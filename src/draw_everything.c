@@ -476,7 +476,7 @@ typedef struct {
 	long arg;
 } drw_kw_t;
 
-#define HASH(s) ((s[0] << 16) | (s[1] << 8) | (s[2] << 8))
+#define HASH(s) ((s[0] << 8) | (s[1]))
 #define KW_MAXLEN 16
 
 static drw_kw_t drw_kw[] = {
