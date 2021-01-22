@@ -95,7 +95,8 @@ static vtdrw_t drw_script = {0};
 
 static void draw_compile(const char *src);
 
-static char *draw_everything_recompile = NULL;
+static const char *draw_everything_recompile = NULL; /* set to the new script (pointing into a conf val) to get it compiled on next render */
+static int draw_everything_error = 0; /* set to 1 on execution error so subsequent renders don't attempt to execute a failing script */
 
 
 /*** Calls ***/
@@ -339,16 +340,66 @@ static void drw_ui_layers(pcb_draw_info_t *info, draw_everything_t *de)
 }
 
 /*** Execute ***/
-static void draw_everything(pcb_draw_info_t *info)
-{
-	draw_everything_t de;
-	rnd_xform_t tmp;
 
+/* Fallback: the original C implementation, just in case the script fails */
+RND_INLINE void draw_everything_hardwired(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	drw_silk_tune_color(info, de);
+	drw_copper_order_UI(info, de);
+	drw_invis(info, de);
+
+	/* Draw far side doc and silks */
+	pcb_draw_silk_doc(info, de->ivside, PCB_LYT_SILK, 1, 0);
+	pcb_draw_silk_doc(info, de->ivside, PCB_LYT_DOC, 1, 0);
+
+	drw_copper(info, de);
+
+	if (conf_core.editor.check_planes && rnd_render->gui)
+		return;
+
+	drw_pstk(info, de);
+	drw_mask(info, de);
+
+	/* Draw doc and silks */
+	pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_SILK, 1, 0);
+	pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_DOC, 1, 0);
+	pcb_draw_silk_doc(info, 0, PCB_LYT_DOC, 1, 0);
+	pcb_draw_silk_doc(info, de->vside, PCB_LYT_SILK, 1, 0);
+	pcb_draw_silk_doc(info, de->vside, PCB_LYT_DOC, 1, 0);
+
+	/* holes_after: draw holes after copper, silk and mask, to make sure it punches through everything. */
+	drw_hole(info, de);
+
+	drw_paste(info, de);
+
+	drw_boundary_mech(info, de);
+
+	drw_virtual(info, de);
+	drw_ui_layers(info, de);
+
+	drw_marks(info, de);
+}
+
+
+RND_INLINE int draw_everything_scripted(pcb_draw_info_t *info, draw_everything_t *de)
+{
 	/* compile on first render */
 	if (draw_everything_recompile != NULL) {
 		draw_compile(draw_everything_recompile);
 		draw_everything_recompile = NULL;
+		draw_everything_error = 0;
 	}
+
+	if (draw_everything_error || (drw_script.used == 0))
+		return -1;
+
+	return -1; /* because script execution is not yet implemented */
+}
+
+static void draw_everything(pcb_draw_info_t *info)
+{
+	draw_everything_t de;
+	rnd_xform_t tmp;
 
 	de.backsilk_grp = NULL;
 	de.lvly_inited = 0;
@@ -363,42 +414,9 @@ static void draw_everything(pcb_draw_info_t *info)
 	de.ivside = PCB_LYT_INVISIBLE_SIDE();
 	de.vside = PCB_LYT_VISIBLE_SIDE();
 
-	drw_silk_tune_color(info, &de);
-	drw_copper_order_UI(info, &de);
-	drw_invis(info, &de);
+	if (draw_everything_scripted(info, &de) < 0)
+		draw_everything_hardwired(info, &de);
 
-	/* Draw far side doc and silks */
-	pcb_draw_silk_doc(info, de.ivside, PCB_LYT_SILK, 1, 0);
-	pcb_draw_silk_doc(info, de.ivside, PCB_LYT_DOC, 1, 0);
-
-	drw_copper(info, &de);
-
-	if (conf_core.editor.check_planes && rnd_render->gui)
-		goto finish;
-
-	drw_pstk(info, &de);
-	drw_mask(info, &de);
-
-	/* Draw doc and silks */
-	pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_SILK, 1, 0);
-	pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_DOC, 1, 0);
-	pcb_draw_silk_doc(info, 0, PCB_LYT_DOC, 1, 0);
-	pcb_draw_silk_doc(info, de.vside, PCB_LYT_SILK, 1, 0);
-	pcb_draw_silk_doc(info, de.vside, PCB_LYT_DOC, 1, 0);
-
-	/* holes_after: draw holes after copper, silk and mask, to make sure it punches through everything. */
-	drw_hole(info, &de);
-
-	drw_paste(info, &de);
-
-	drw_boundary_mech(info, &de);
-
-	drw_virtual(info, &de);
-	drw_ui_layers(info, &de);
-
-	drw_marks(info, &de);
-
-	finish:;
 	drw_silk_restore_color(info, &de);
 }
 
@@ -458,7 +476,7 @@ static void draw_compile(const char *src)
 
 	/* clear the script */
 	drw_script.used = 0;
-printf("draw compile: %s\n", src);
+
 	/* parse word by word */
 	for(start = src; start != NULL; start = next) {
 		draw_stmt_t *stmt;
