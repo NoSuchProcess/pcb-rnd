@@ -512,6 +512,9 @@ static drw_kw_t drw_kw[] = {
 	{"drw_layers",      0, DI_CALL, drw_layers, 0},
 	{"drw_hole",        0, DI_CALL, drw_hole, 0},
 	{"drw_paste",       0, DI_CALL, drw_paste, 0},
+	{"drw_virtual",     0, DI_CALL, drw_virtual, 0},
+	{"drw_ui_layers",   0, DI_CALL, drw_ui_layers, 0},
+	{"drw_marks",       0, DI_CALL, drw_marks, 0},
 
 	{"global",          0, DI_ARG,  NULL, 0},
 	{"this_side",       0, DI_ARG,  NULL, DA_THIS_SIDE},
