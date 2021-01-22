@@ -58,7 +58,7 @@ typedef struct {
 
 
 typedef struct {
-	void (*cmd)(pcb_draw_info_t *info, draw_everything_t *de);
+	int (*cmd)(pcb_draw_info_t *info, draw_everything_t *de);
 	int argc;
 } draw_call_t;
 
@@ -111,7 +111,7 @@ static int draw_everything_error = 0; /* set to 1 on execution error so subseque
 /*** Calls ***/
 
 /* temporarily change the color of the other-side silk */
-static void drw_silk_tune_color(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_silk_tune_color(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	if (de->backsilk_grp != NULL) {
 		rnd_cardinal_t n;
@@ -123,10 +123,11 @@ static void drw_silk_tune_color(pcb_draw_info_t *info, draw_everything_t *de)
 			}
 		}
 	}
+	return 0;
 }
 
 /* set back the color of the other-side silk */
-static void drw_silk_restore_color(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_silk_restore_color(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	if (de->backsilk_grp != NULL) {
 		rnd_cardinal_t n;
@@ -136,11 +137,12 @@ static void drw_silk_restore_color(pcb_draw_info_t *info, draw_everything_t *de)
 				ly->meta.real.color = de->old_silk_color[n];
 		}
 	}
+	return 0;
 }
 
 /* copper groups will be drawn in the order they were last selected
    in the GUI; build an array of their order */
-static void drw_copper_order_UI(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_copper_order_UI(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	int i;
 
@@ -184,16 +186,17 @@ static void drw_copper_order_UI(pcb_draw_info_t *info, draw_everything_t *de)
 	}
 	de->lvly_inited = 1;
 	de->do_group_inited = 1;
+	return 0;
 }
 
 /* draw all layers in layerstack order */
-static void drw_copper(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_copper(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	int i;
 
 	if (!de->do_group_inited) {
 		rnd_message(RND_MSG_ERROR, "draw script: drw_copper called without prior copper ordering\nCan not draw copper layers. Fix the script.\n");
-		return;
+		return -1;
 	}
 
 	for (i = de->ngroups - 1; i >= 0; i--) {
@@ -218,10 +221,11 @@ static void drw_copper(pcb_draw_info_t *info, draw_everything_t *de)
 			rnd_render->end_layer(rnd_render);
 		}
 	}
+	return 0;
 }
 
 /* draw all 'invisible' (other-side) layers */
-static void drw_invis(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_invis(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	if ((info->xform_exporter != NULL) && !info->xform_exporter->check_planes && pcb_layer_gui_set_vlayer(PCB, PCB_VLY_INVISIBLE, 0, &info->xform_exporter)) {
 		pcb_draw_silk_doc(info, de->ivside, PCB_LYT_DOC, 0, 1);
@@ -235,9 +239,10 @@ static void drw_invis(pcb_draw_info_t *info, draw_everything_t *de)
 			rnd_render->end_layer(rnd_render);
 		}
 	}
+	return 0;
 }
 
-static void drw_pstk(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_pstk(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
@@ -248,13 +253,15 @@ static void drw_pstk(pcb_draw_info_t *info, draw_everything_t *de)
 		info->xform = NULL; info->layer = NULL;
 	}
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+	return 0;
 }
 
 
 /* Draw the solder mask if turned on */
-static void drw_mask(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_mask(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	rnd_layergrp_id_t gid;
+
 	gid = pcb_layergrp_get_top_mask();
 	if ((gid >= 0) && (pcb_layer_gui_set_glayer(PCB, gid, 0, &info->xform_exporter))) {
 		pcb_draw_mask(info, PCB_COMPONENT_SIDE);
@@ -266,9 +273,11 @@ static void drw_mask(pcb_draw_info_t *info, draw_everything_t *de)
 		pcb_draw_mask(info, PCB_SOLDER_SIDE);
 		rnd_render->end_layer(rnd_render);
 	}
+
+	return 0;
 }
 
-static void drw_hole(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_hole(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	int plated, unplated;
 
@@ -288,9 +297,10 @@ static void drw_hole(pcb_draw_info_t *info, draw_everything_t *de)
 	}
 
 	rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+	return 0;
 }
 
-static void drw_paste(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_paste(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	rnd_layergrp_id_t gid;
 	rnd_bool paste_empty;
@@ -310,14 +320,17 @@ static void drw_paste(pcb_draw_info_t *info, draw_everything_t *de)
 		pcb_draw_paste(info, PCB_SOLDER_SIDE);
 		rnd_render->end_layer(rnd_render);
 	}
+
+	return 0;
 }
 
-static void drw_boundary_mech(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_boundary_mech(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	pcb_draw_boundary_mech(info);
+	return 0;
 }
 
-static void drw_virtual(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_virtual(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	draw_virtual_layers(info, &de->lvly);
 	if ((rnd_render->gui) || (!info->xform_caller->omit_overlay)) {
@@ -326,24 +339,27 @@ static void drw_virtual(pcb_draw_info_t *info, draw_everything_t *de)
 		draw_rats(info, info->drawn_area);
 		draw_pins_and_pads(info, de->component, de->solder);
 	}
+
+	return 0;
 }
 
-static void drw_marks(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_marks(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	if (rnd_render->gui) {
 		rnd_xform_t tmp;
 		xform_setup(info, &tmp, NULL);
 		draw_xor_marks(info);
 	}
+	return 0;
 }
 
-static void drw_layers(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_layers(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	pcb_layer_type_t loc, typ = de->argv[1];
 	int setgrp = 1, invis = 0;
 	TODO("error handling, return value");
 	if (de->argc < 2)
-		return;
+		return -1;
 
 	if ((de->argc > 2) && de->argv[2])
 		invis = 1;
@@ -353,11 +369,13 @@ static void drw_layers(pcb_draw_info_t *info, draw_everything_t *de)
 	else loc = de->argv[0];
 
 	pcb_draw_silk_doc(info, loc, typ, setgrp, invis);
+	return 0;
 }
 
-static void drw_ui_layers(pcb_draw_info_t *info, draw_everything_t *de)
+static int drw_ui_layers(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	draw_ui_layers(info);
+	return 0;
 }
 
 /*** Execute ***/
@@ -428,8 +446,10 @@ RND_INLINE int draw_everything_scripted(pcb_draw_info_t *info, draw_everything_t
 			case DI_CALL: call = s; de->argc = 0; break;
 			case DI_ARG:  de->argv[de->argc++] = s->arg; break;
 			case DI_NL:
-				if ((call != NULL) && !false_if)
-					call->call.cmd(info, de);
+				if ((call != NULL) && !false_if) {
+					if (call->call.cmd(info, de) != 0)
+						return -1;
+				}
 				call = NULL;
 				in_if = 0; /* just in case 'then' is missing */
 				false_if = 0;
@@ -489,7 +509,7 @@ typedef struct {
 	int hash;
 
 	draw_inst_t inst;
-	void (*cmd)(pcb_draw_info_t *info, draw_everything_t *de);
+	int (*cmd)(pcb_draw_info_t *info, draw_everything_t *de);
 	long arg;
 } drw_kw_t;
 
