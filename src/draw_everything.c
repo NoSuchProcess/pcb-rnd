@@ -440,6 +440,9 @@ static void draw_compile(const char *src)
 			k->hash = HASH(k->full);
 	}
 
+	/* clear the script */
+	drw_script.used = 0;
+
 	/* parse word by word */
 	for(;;start = next) {
 		draw_stmt_t *stmt;
