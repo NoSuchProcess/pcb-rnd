@@ -305,6 +305,11 @@ static void drw_paste(pcb_draw_info_t *info, draw_everything_t *de)
 	}
 }
 
+static void drw_boundary_mech(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	pcb_draw_boundary_mech(info);
+}
+
 static void drw_virtual(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	draw_virtual_layers(info, &de->lvly);
@@ -328,6 +333,11 @@ static void drw_marks(pcb_draw_info_t *info, draw_everything_t *de)
 static void drw_layers(pcb_draw_info_t *info, draw_everything_t *de)
 {
 	TODO("call pcb_draw_silk_doc");
+}
+
+static void drw_ui_layers(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	draw_ui_layers(info);
 }
 
 /*** Execute ***/
@@ -373,10 +383,10 @@ static void draw_everything(pcb_draw_info_t *info)
 
 	drw_paste(info, &de);
 
-	pcb_draw_boundary_mech(info);
+	drw_boundary_mech(info, &de);
 
 	drw_virtual(info, &de);
-	draw_ui_layers(info);
+	drw_ui_layers(info, &de);
 
 	drw_marks(info, &de);
 
