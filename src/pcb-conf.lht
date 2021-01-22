@@ -164,6 +164,8 @@ li:pcb-rnd-conf-v1 {
 				# draw "invisible" (far side)
 				drw_invis
 
+				drw_copper
+
 				# apply check-planes in GUI rendering: stop so nothing else is drawn
 				if GUI and check_planes then stop
 

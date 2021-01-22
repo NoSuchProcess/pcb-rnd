@@ -36,6 +36,7 @@ typedef struct {
 
 	pcb_layer_type_t vside, ivside;
 	rnd_layergrp_id_t component, solder, side_copper_grp;
+	rnd_layergrp_id_t backsilk_gid;
 
 
 	/* copper ordering and virtual layers */
@@ -70,7 +71,6 @@ typedef enum {
 
 	/* fake expressions */
 	DI_GUI,
-	DI_EXPORT,
 	DI_CHECK_PLANES
 } draw_inst_t;
 
@@ -110,10 +110,6 @@ static int draw_everything_error = 0; /* set to 1 on execution error so subseque
 /* temporarily change the color of the other-side silk */
 static void drw_silk_tune_color(pcb_draw_info_t *info, draw_everything_t *de)
 {
-	rnd_layergrp_id_t backsilk_gid;
-
-	backsilk_gid = ((!info->xform->show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
-	de->backsilk_grp = pcb_get_layergrp(PCB, backsilk_gid);
 	if (de->backsilk_grp != NULL) {
 		rnd_cardinal_t n;
 		for(n = 0; n < de->backsilk_grp->len; n++) {
@@ -386,9 +382,13 @@ RND_INLINE void draw_everything_hardwired(pcb_draw_info_t *info, draw_everything
 	drw_marks(info, de);
 }
 
+#define IF_NOT(cond) (not ? (cond) : !(cond))
 
 RND_INLINE int draw_everything_scripted(pcb_draw_info_t *info, draw_everything_t *de)
 {
+	draw_stmt_t *s, *end, *call;
+	int in_if, false_if = 0, not = 0;
+
 	/* compile on first render */
 	if (draw_everything_recompile != NULL) {
 		draw_compile(draw_everything_recompile);
@@ -399,13 +399,44 @@ RND_INLINE int draw_everything_scripted(pcb_draw_info_t *info, draw_everything_t
 	if (draw_everything_error || (drw_script.used == 0))
 		return -1;
 
-	return -1; /* because script execution is not yet implemented */
+return -1;
+
+	/* bytecode execution */
+	end = drw_script.array + drw_script.used;
+	for(s = drw_script.array; s < end; s++) {
+		switch(s->inst) {
+			case DI_STOP: if (!false_if) return 0; break;
+
+			/* call with arg processing */
+			case DI_CALL: call = s; de->argc = 0; break;
+			case DI_ARG:  de->argv[de->argc++] = s->arg; break;
+			case DI_NL:
+				if ((call != NULL) && !false_if)
+					call->call.cmd(info, de);
+				call = NULL;
+				in_if = 0; /* just in case 'then' is missing */
+				false_if = 0;
+				break;
+
+			/* if with fake expression processing */
+			case DI_IF:           in_if = 1; false_if = 0; break;
+			case DI_AND:          if (!in_if) return -1; break;
+			case DI_NOT:          if (!in_if) return -1; not = 1; break;
+			case DI_THEN:         if (!in_if) return -1; in_if = 0; break;
+			case DI_GUI:          if (IF_NOT(rnd_render->gui)) false_if = 1; not = 0; break;
+			case DI_CHECK_PLANES: if (IF_NOT((info->xform_exporter != NULL) && (info->xform_exporter->check_planes))) false_if = 1; not = 0; break;
+		}
+	}
+
+	return 0;
 }
 
 static void draw_everything(pcb_draw_info_t *info)
 {
 	draw_everything_t de;
 	rnd_xform_t tmp;
+
+	setup_again:;
 
 	de.backsilk_grp = NULL;
 	de.lvly_inited = 0;
@@ -419,9 +450,17 @@ static void draw_everything(pcb_draw_info_t *info)
 	de.side_copper_grp = info->xform->show_solder_side ? de.solder : de.component;
 	de.ivside = PCB_LYT_INVISIBLE_SIDE();
 	de.vside = PCB_LYT_VISIBLE_SIDE();
+	de.backsilk_gid = ((!info->xform->show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
+	de.backsilk_grp = pcb_get_layergrp(PCB, de.backsilk_gid);
 
-	if (draw_everything_scripted(info, &de) < 0)
+	if (draw_everything_scripted(info, &de) < 0) {
+		if (!draw_everything_error) {
+			rnd_message(RND_MSG_ERROR, "render_script: runtime error; falling back to hardwired C rendering\n");
+			draw_everything_error = 1; /* let the error happen only once per compilation */
+			goto setup_again; /* a broken rendering may have left invalid states behind */
+		}
 		draw_everything_hardwired(info, &de);
+	}
 
 	drw_silk_restore_color(info, &de);
 }
@@ -445,14 +484,14 @@ static drw_kw_t drw_kw[] = {
 	{"and",             0, DI_AND, NULL, 0},
 	{"not",             0, DI_NOT, NULL, 0},
 	{"then",            0, DI_THEN, NULL, 0},
-	{"stop",            0, DI_THEN, NULL, 0},
+	{"stop",            0, DI_STOP, NULL, 0},
 
 	{"GUI",             0, DI_GUI, NULL, 0},
-	{"export",          0, DI_EXPORT, NULL, 0},
 	{"check_planes",    0, DI_CHECK_PLANES, NULL, 0},
 
 	{"silk_tune_color", 0, DI_CALL, drw_silk_tune_color, 0},
 	{"copper_order_UI", 0, DI_CALL, drw_copper_order_UI, 0},
+	{"drw_copper",      0, DI_CALL, drw_copper, 0},
 	{"drw_invis",       0, DI_CALL, drw_invis, 0},
 	{"drw_pstk",        0, DI_CALL, drw_pstk, 0},
 	{"drw_mask",        0, DI_CALL, drw_mask, 0},
@@ -586,6 +625,7 @@ static void draw_compile(const char *src)
 		}
 		else
 			drw_script.array[cmd_idx].call.argc++;
+TODO("check max argc");
 	}
 
 	rnd_message(RND_MSG_INFO, "render_script: compiled %ld instructions in %d statements\n", drw_script.used, nst);
