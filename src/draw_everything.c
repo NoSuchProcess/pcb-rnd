@@ -32,12 +32,15 @@ typedef struct {
 	pcb_layergrp_t *backsilk_grp;
 	rnd_color_t old_silk_color[PCB_MAX_LAYERGRP];
 
+	pcb_layer_type_t vside, ivside;
+	rnd_layergrp_id_t component, solder, side_copper_grp;
+
+
 	/* copper ordering and virtual layers */
 	legacy_vlayer_t lvly;
 	char do_group[PCB_MAX_LAYERGRP]; /* This is the list of layer groups we will draw.  */
 	rnd_layergrp_id_t drawn_groups[PCB_MAX_LAYERGRP]; /* This is the reverse of the order in which we draw them.  */
 	int ngroups;
-	rnd_layergrp_id_t component, solder, side_copper_grp;
 	char lvly_inited;
 	char do_group_inited;
 } draw_everything_t;
@@ -223,10 +226,8 @@ static void drw_invis1(pcb_draw_info_t *info, draw_everything_t *de)
 	/* Draw far side doc and silks */
 static void drw_invis2(pcb_draw_info_t *info, draw_everything_t *de)
 {
-	pcb_layer_type_t ivside = PCB_LYT_INVISIBLE_SIDE();
-
-	pcb_draw_silk_doc(info, ivside, PCB_LYT_SILK, 1, 0);
-	pcb_draw_silk_doc(info, ivside, PCB_LYT_DOC, 1, 0);
+	pcb_draw_silk_doc(info, de->ivside, PCB_LYT_SILK, 1, 0);
+	pcb_draw_silk_doc(info, de->ivside, PCB_LYT_DOC, 1, 0);
 }
 
 static void drw_pstk(pcb_draw_info_t *info, draw_everything_t *de)
@@ -334,7 +335,6 @@ static void draw_everything(pcb_draw_info_t *info)
 {
 	draw_everything_t de;
 	rnd_xform_t tmp;
-	pcb_layer_type_t vside = PCB_LYT_VISIBLE_SIDE();
 
 	de.backsilk_grp = NULL;
 	de.lvly_inited = 0;
@@ -346,6 +346,8 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_layergrp_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, &de.solder, 1);
 	pcb_layergrp_list(PCB, PCB_LYT_TOP | PCB_LYT_COPPER, &de.component, 1);
 	de.side_copper_grp = info->xform->show_solder_side ? de.solder : de.component;
+	de.ivside = PCB_LYT_INVISIBLE_SIDE();
+	de.vside = PCB_LYT_VISIBLE_SIDE();
 
 	drw_silk_tune_color(info, &de);
 	drw_copper_order_UI(info, &de);
@@ -363,8 +365,8 @@ static void draw_everything(pcb_draw_info_t *info)
 	pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_SILK, 1, 0);
 	pcb_draw_silk_doc(info, PCB_LYT_INTERN, PCB_LYT_DOC, 1, 0);
 	pcb_draw_silk_doc(info, 0, PCB_LYT_DOC, 1, 0);
-	pcb_draw_silk_doc(info, vside, PCB_LYT_SILK, 1, 0);
-	pcb_draw_silk_doc(info, vside, PCB_LYT_DOC, 1, 0);
+	pcb_draw_silk_doc(info, de.vside, PCB_LYT_SILK, 1, 0);
+	pcb_draw_silk_doc(info, de.vside, PCB_LYT_DOC, 1, 0);
 
 	/* holes_after: draw holes after copper, silk and mask, to make sure it punches through everything. */
 	drw_hole(info, &de);
