@@ -27,6 +27,8 @@
  *
  */
 
+#define DRW_MAX_ARG 8
+
 typedef struct {
 	/* silk color tune */
 	pcb_layergrp_t *backsilk_grp;
@@ -43,6 +45,10 @@ typedef struct {
 	int ngroups;
 	char lvly_inited;
 	char do_group_inited;
+
+	/* when scripted: per call args */
+	int argc;
+	long argv[DRW_MAX_ARG];
 } draw_everything_t;
 
 
@@ -490,6 +496,10 @@ static void draw_compile(const char *src)
 		if (*start == '\0')
 			break;
 
+		/* ignore comments up to the next newline */
+		if (*start == '#')
+			for(start++; (*start != '\n') && (*start != '\r') && (*start != '\0'); start++) ;
+
 		/* newline is a special case as it is an instruction */
 		if ((*start == '\n') || (*start == '\r')) {
 			cmd_idx = -1;
@@ -583,3 +593,4 @@ static void draw_compile(const char *src)
 
 #undef KW_MAXLEN
 #undef HASH
+#undef DRW_MAX_ARG
