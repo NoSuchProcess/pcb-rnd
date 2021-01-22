@@ -324,6 +324,11 @@ static void drw_marks(pcb_draw_info_t *info, draw_everything_t *de)
 	}
 }
 
+static void drw_layers(pcb_draw_info_t *info, draw_everything_t *de)
+{
+	TODO("call pcb_draw_silk_doc");
+}
+
 /*** Execute ***/
 static void draw_everything(pcb_draw_info_t *info)
 {
@@ -390,10 +395,28 @@ typedef struct {
 #define HASH(s) ((s[0] << 16) | (s[1] << 8) | (s[2] << 8))
 
 static drw_kw_t drw_kw[] = {
-	{"if", 0, DI_IF, NULL },
+	{"if",              0, DI_IF, NULL},
+	{"and",             0, DI_AND, NULL},
+	{"not",             0, DI_NOT, NULL},
+	{"then",            0, DI_THEN, NULL},
+	{"stop",            0, DI_THEN, NULL},
+
+	{"GUI",             0, DI_GUI, NULL},
+	{"export",          0, DI_EXPORT, NULL},
+	{"check_planes",    0, DI_CHECK_PLANES, NULL},
+
+	{"silk_tun_color", 0, DI_CALL, drw_silk_tune_color},
+	{"copper_order_UI", 0, DI_CALL, drw_copper_order_UI},
+	{"drw_invis1",      0, DI_CALL, drw_invis1},
+	{"drw_invis2",      0, DI_CALL, drw_invis2},
+	{"drw_pstk",        0, DI_CALL, drw_pstk},
+	{"drw_mask",        0, DI_CALL, drw_mask},
+	{"drw_layers",      0, DI_CALL, drw_layers},
+	{"drw_hole",        0, DI_CALL, drw_hole},
+	{"drw_paste",       0, DI_CALL, drw_paste},
+
 	{NULL, 0, 0, NULL }
 };
-
 
 static void draw_compile(const char *src)
 {
