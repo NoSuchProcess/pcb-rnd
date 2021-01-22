@@ -296,6 +296,8 @@ extern void pcb_rats_patch_init2(void);
 extern void pcb_remove_act_init2(void);
 extern void pcb_select_act_init2(void);
 extern void pcb_undo_act_init2(void);
+extern void pcb_draw_init(void);
+extern void pcb_draw_uninit(void);
 
 void pcb_main_init_actions(void)
 {
@@ -329,6 +331,7 @@ void pcb_main_uninit(void)
 		rnd_log_last->seen = 1; /* ignore anything unseen before the uninit */
 
 	conf_core_uninit_pre();
+	pcb_draw_uninit();
 	pcb_brave_uninit();
 	pcb_polygon_uninit();
 
@@ -441,6 +444,7 @@ TODO("librnd: remove this once librnd is not extern anymore");
 	free(exec_prefix);
 
 	pcb_layer_vis_init();
+	pcb_draw_init();
 	pcb_brave_init();
 	pcb_pixmap_init();
 

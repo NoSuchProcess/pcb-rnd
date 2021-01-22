@@ -41,6 +41,7 @@
 #include "stub_draw.h"
 #include "layer_ui.h"
 #include <librnd/core/hid_inlines.h>
+#include <librnd/core/conf_hid.h>
 #include "funchash_core.h"
 
 #include "obj_pstk_draw.h"
@@ -1128,3 +1129,30 @@ void pcb_term_label_invalidate(rnd_coord_t x, rnd_coord_t y, double scale, rnd_b
 	pcb_label_invalidate(x, y, scale, vert, centered, label);
 }
 
+static const char draw_cookie[] = "core/draw";
+
+static void draw_chg_render_script(rnd_conf_native_t *cfg, int arr_idx)
+{
+	draw_everything_recompile = conf_core.appearance.render_script;
+}
+
+void pcb_draw_init(void)
+{
+	static rnd_conf_hid_callbacks_t cbs_mode;
+	static rnd_conf_hid_id_t draw_conf_id;
+	rnd_conf_native_t *n_rscr = rnd_conf_get_field("appearance/render_script");
+	draw_conf_id = rnd_conf_hid_reg(draw_cookie, NULL);
+
+	if (n_rscr != NULL) {
+		memset(&cbs_mode, 0, sizeof(rnd_conf_hid_callbacks_t));
+		cbs_mode.val_change_post = draw_chg_render_script;
+		rnd_conf_hid_set_cb(n_rscr, draw_conf_id, &cbs_mode);
+	}
+
+}
+
+void pcb_draw_uninit(void)
+{
+	rnd_event_unbind_allcookie(draw_cookie);
+	rnd_conf_hid_unreg(draw_cookie);
+}

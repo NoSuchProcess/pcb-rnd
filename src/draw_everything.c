@@ -93,6 +93,11 @@ typedef struct {
 
 static vtdrw_t drw_script = {0};
 
+static void draw_compile(const char *src);
+
+static char *draw_everything_recompile = NULL;
+
+
 /*** Calls ***/
 
 /* temporarily change the color of the other-side silk */
@@ -339,6 +344,12 @@ static void draw_everything(pcb_draw_info_t *info)
 	draw_everything_t de;
 	rnd_xform_t tmp;
 
+	/* compile on first render */
+	if (draw_everything_recompile != NULL) {
+		draw_compile(draw_everything_recompile);
+		draw_everything_recompile = NULL;
+	}
+
 	de.backsilk_grp = NULL;
 	de.lvly_inited = 0;
 	de.do_group_inited = 0;
@@ -442,9 +453,9 @@ static void draw_compile(const char *src)
 
 	/* clear the script */
 	drw_script.used = 0;
-
+printf("draw compile: %s\n", src);
 	/* parse word by word */
-	for(;;start = next) {
+	for(start = src; start != NULL; start = next) {
 		draw_stmt_t *stmt;
 		const drw_kw_t *k;
 		drw_kw_t karg;
@@ -466,6 +477,7 @@ static void draw_compile(const char *src)
 			}
 			if (*start == '\n')
 				line++;
+			next = start + 1;
 			continue;
 		}
 
