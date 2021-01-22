@@ -227,10 +227,13 @@ static void drw_invis(pcb_draw_info_t *info, draw_everything_t *de)
 		pcb_draw_silk_doc(info, de->ivside, PCB_LYT_DOC, 0, 1);
 		pcb_draw_silk_doc(info, de->ivside, PCB_LYT_SILK, 0, 1);
 
-		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
-		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
-		rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
-		rnd_render->end_layer(rnd_render);
+		TODO("remove this if nobody reports a bug...");
+		if (0) {
+			rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_RESET, pcb_draw_out.direct, info->drawn_area);
+			rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_POSITIVE, pcb_draw_out.direct, info->drawn_area);
+			rnd_render->set_drawing_mode(rnd_render, RND_HID_COMP_FLUSH, pcb_draw_out.direct, info->drawn_area);
+			rnd_render->end_layer(rnd_render);
+		}
 	}
 }
 
