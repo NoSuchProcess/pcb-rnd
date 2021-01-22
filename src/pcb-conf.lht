@@ -155,10 +155,9 @@ li:pcb-rnd-conf-v1 {
 			label_thickness = 1nm
 
 			render_script = {
-				silk_color_tune
+				silk_tune_color
 				copper_order_UI
-				drw_invis1
-				drw_invis2
+				drw_invis
 				if GUI and check_planes stop
 				drw_pstk
 				drw_mask

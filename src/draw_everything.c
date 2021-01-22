@@ -427,7 +427,7 @@ static drw_kw_t drw_kw[] = {
 	{"export",          0, DI_EXPORT, NULL, 0},
 	{"check_planes",    0, DI_CHECK_PLANES, NULL, 0},
 
-	{"silk_tun_color",  0, DI_CALL, drw_silk_tune_color, 0},
+	{"silk_tune_color", 0, DI_CALL, drw_silk_tune_color, 0},
 	{"copper_order_UI", 0, DI_CALL, drw_copper_order_UI, 0},
 	{"drw_invis",       0, DI_CALL, drw_invis, 0},
 	{"drw_pstk",        0, DI_CALL, drw_pstk, 0},
