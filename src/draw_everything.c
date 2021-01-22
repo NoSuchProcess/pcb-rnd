@@ -436,6 +436,10 @@ static drw_kw_t drw_kw[] = {
 	{"drw_hole",        0, DI_CALL, drw_hole, 0},
 	{"drw_paste",       0, DI_CALL, drw_paste, 0},
 
+	{"global",          0, DI_ARG,  NULL, 0},
+	{"this_side",       0, DI_ARG,  NULL, 0},
+	{"far_side",        0, DI_ARG,  NULL, 1},
+
 	{NULL, 0, 0, NULL }
 };
 
