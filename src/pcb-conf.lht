@@ -155,10 +155,18 @@ li:pcb-rnd-conf-v1 {
 			label_thickness = 1nm
 
 			render_script = {
+				# far-side silk color changed to the far-side color
 				silk_tune_color
+				
+				# set copper rendering order: currently/recently used copper layers on top
 				copper_order_UI
+
+				# draw "invisible" (far side)
 				drw_invis
-				if GUI and check_planes stop
+
+				# apply check-planes in GUI rendering: stop so nothing else is drawn
+				if GUI and check_planes then stop
+
 				drw_pstk
 				drw_mask
 				drw_layers intern silk
