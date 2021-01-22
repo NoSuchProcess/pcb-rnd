@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> pcb-rnd user manual </title>
+	<meta http-equiv="Content-Type" content="text/html;charset=us-ascii">
+	<link rel="stylesheet" type="text/css" href="../../default.css">
+</head>
+<body>
+<h2 autotoc="yes"> Render script </h2>
+<p>
+The core renders the board for the GUI and for graphical export plugins
+(such as gerber, png, ps, etc.). In composite renders, when all layers
+are combined to create a single image (e.g., GUI rendering, png export,
+eps export), the order of layers matters: layers rendered later appear
+being above layers rendered earlier. Furthermore some layers, like screen-only
+marks, are not rendered in export targets.
+<p>
+With pcb-rnd versions newer than 2.3.1, rendering is controlled by the
+render script which is stored in the config tree as appearance/render_script.
+The render script is written in a Domain Specific Language designed 
+exclusively for this task so that it can be quick enough not to slow down
+on-screen rendering.
+<p>
+The render script language consists of statements and comments. A comment
+is anything from a hashmark (#) character to the end of the line. A statement
+is a single line in one of two forms:
+<pre>
+command [arg1 arg2 ... argN]
+if cond1 [and cond2 ... and cond3] then command
+</pre>
+<p>
+Commands can have zero or more arguments. Each argument is a single word.
+Each 'if' applies only to one command, that is in the same line as
+the 'if. Only the 'and' relation can be used between conditions of an 'if'.
+All keywords are case sensitive. Below is the list of commands.
+<p>
+<table border=1 cellspacing=0>
+<tr><th>command            <th>args           <th> description
+<tr><td>stop               <th>&nbsp;         <td> stop executing the script (render finished early; useful with 'if')
+<tr><td>silk_tune_color    <th>&nbsp;         <td> change the color of far_side silk layers to the configured "invisible" color (useful in screen rendering)
+<tr><td>copper_order_UI    <th>&nbsp;         <td> set up copper rendering order to match UI history: drw_copper will render current group on top, and then goes in order of how recently a group was selected
+<tr><td>drw_copper         <th>&nbsp;         <td> render copper layers in the selected order
+<tr><td>drw_invis          <th>&nbsp;         <td> render the invisible layer (if the GUI or export plugin accepts it; invisible layers include the far_side silk and doc layers)
+<tr><td>drw_pstk           <th>&nbsp;         <td> render padstacks (without holes)
+<tr><td>drw_mask           <th>&nbsp;         <td> render the mask layers
+<tr><td>drw_layers         <th>loc&nbsp;type  <td> render all layer groups that match loc:type, in order they appear in the layer stackup. Loc is one of top, bottom, intern, global, this_side, far_side. 
+<tr><td>drw_hole           <th>&nbsp;         <td> render holes
+<tr><td>drw_paste          <th>&nbsp;         <td> render paste layers
+<tr><td>drw_virtual        <th>&nbsp;         <td> render virtual layers: auto generated assy and fab layers and cross-section
+<tr><td>drw_ui_layers      <th>&nbsp;         <td> render UI layers
+<tr><td>drw_marks          <th>&nbsp;         <td> render marks (subcircuit frames and IDs, terminal IDs, etc.)
+<tr><td>drw_boundary_mech  <th>&nbsp;         <td> render boundary and mech layers
+</table>
+<p>
+Conditions for an 'if' are:
+<p>
+<table border=1 cellspacing=0>
+<tr><th>condition          <th> description
+<tr><td>GUI                <th> true for on-screen (GUI) rendering, false for export
+<tr><td>check_planes       <tg> true if the editor/check_planes conf node is true
+</table>
+
+</body>
+</html>
