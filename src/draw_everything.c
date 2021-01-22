@@ -29,6 +29,9 @@
 
 #define DRW_MAX_ARG 8
 
+#define DA_FAR_SIDE 0x81
+#define DA_THIS_SIDE 0x82
+
 typedef struct {
 	/* silk color tune */
 	pcb_layergrp_t *backsilk_grp;
@@ -333,7 +336,20 @@ static void drw_marks(pcb_draw_info_t *info, draw_everything_t *de)
 
 static void drw_layers(pcb_draw_info_t *info, draw_everything_t *de)
 {
-	TODO("call pcb_draw_silk_doc");
+	pcb_layer_type_t loc, typ = de->argv[1];
+	int setgrp = 1, invis = 0;
+	TODO("error handling, return value");
+	if (de->argc < 2)
+		return;
+
+	if ((de->argc > 2) && de->argv[2])
+		invis = 1;
+
+	if (de->argv[0] == DA_FAR_SIDE) loc = de->ivside;
+	else if (de->argv[0] == DA_THIS_SIDE) loc = de->vside;
+	else loc = de->argv[0];
+
+	pcb_draw_silk_doc(info, loc, typ, setgrp, invis);
 }
 
 static void drw_ui_layers(pcb_draw_info_t *info, draw_everything_t *de)
@@ -398,8 +414,6 @@ RND_INLINE int draw_everything_scripted(pcb_draw_info_t *info, draw_everything_t
 
 	if (draw_everything_error || (drw_script.used == 0))
 		return -1;
-
-return -1;
 
 	/* bytecode execution */
 	end = drw_script.array + drw_script.used;
@@ -500,8 +514,8 @@ static drw_kw_t drw_kw[] = {
 	{"drw_paste",       0, DI_CALL, drw_paste, 0},
 
 	{"global",          0, DI_ARG,  NULL, 0},
-	{"this_side",       0, DI_ARG,  NULL, 0},
-	{"far_side",        0, DI_ARG,  NULL, 1},
+	{"this_side",       0, DI_ARG,  NULL, DA_THIS_SIDE},
+	{"far_side",        0, DI_ARG,  NULL, DA_FAR_SIDE},
 
 	{NULL, 0, 0, NULL }
 };
@@ -574,7 +588,7 @@ static void draw_compile(const char *src)
 		/* look up the keyword speeding up the process with a hash comparison that skips the strncmp() most of the time */
 		h = HASH(start);
 		for(k = drw_kw; k->full != NULL; k++)
-			if ((k->hash == h) && (strncmp(k->full, start, len) == 0))
+			if ((k->hash == h) && (strncmp(k->full, start, len) == 0) && (k->full[len] == '\0'))
 				break;
 
 		bad = (k->full == NULL);
@@ -634,3 +648,5 @@ TODO("check max argc");
 #undef KW_MAXLEN
 #undef HASH
 #undef DRW_MAX_ARG
+#undef DA_FAR_SIDE
+#undef DA_THIS_SIDE

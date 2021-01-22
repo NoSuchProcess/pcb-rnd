@@ -163,6 +163,8 @@ li:pcb-rnd-conf-v1 {
 
 				# draw "invisible" (far side)
 				drw_invis
+				drw_layers far_side silk
+				drw_layers far_side doc
 
 				drw_copper
 
