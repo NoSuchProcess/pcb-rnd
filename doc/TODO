@@ -3,11 +3,10 @@
 1. For the upcoming release ===============================================================================
 - ADMIN: generate new keys, schedule next release before expiry (21 april)
 - FEATURE: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
+- BUG: fawk script oneliner fails in batch (./a) [report: Igor2]
 - BUG: open the command line with {:}, then right click over empty board, ignore the context menu, right click again -> gtk GUI gray control [report: Majenko]
 - CLEANUP: layer order from data
-	- central code for building a list of layer groups ordered by draw from front to back (omit disabled/invisible layers)
-	- rewrite both the draw_everything() and pcb_search_obj_by_location_() layer loop to use this list
-	- FEATURE: holes should be drawn below silk and mask - this could be a config setting
+	- build a list of layers rendered, in the order of rendering; maybe reuse the layer stack code; get pcb_search_obj_by_location_() to use this list
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: lihata v8
