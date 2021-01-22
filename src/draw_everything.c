@@ -59,6 +59,7 @@ typedef enum {
 	DI_THEN,
 	DI_STOP,
 	DI_CALL,
+	DI_ARG,
 	DI_NL,
 
 	/* fake expressions */
@@ -70,6 +71,7 @@ typedef enum {
 typedef struct {
 	draw_inst_t inst;
 	draw_call_t call;
+	long arg;
 } draw_stmt_t;
 
 
@@ -402,30 +404,32 @@ typedef struct {
 
 	draw_inst_t inst;
 	void (*cmd)(pcb_draw_info_t *info, draw_everything_t *de);
+	long arg;
 } drw_kw_t;
 
 #define HASH(s) ((s[0] << 16) | (s[1] << 8) | (s[2] << 8))
+#define KW_MAXLEN 16
 
 static drw_kw_t drw_kw[] = {
-	{"if",              0, DI_IF, NULL},
-	{"and",             0, DI_AND, NULL},
-	{"not",             0, DI_NOT, NULL},
-	{"then",            0, DI_THEN, NULL},
-	{"stop",            0, DI_THEN, NULL},
+	{"if",              0, DI_IF, NULL, 0},
+	{"and",             0, DI_AND, NULL, 0},
+	{"not",             0, DI_NOT, NULL, 0},
+	{"then",            0, DI_THEN, NULL, 0},
+	{"stop",            0, DI_THEN, NULL, 0},
 
-	{"GUI",             0, DI_GUI, NULL},
-	{"export",          0, DI_EXPORT, NULL},
-	{"check_planes",    0, DI_CHECK_PLANES, NULL},
+	{"GUI",             0, DI_GUI, NULL, 0},
+	{"export",          0, DI_EXPORT, NULL, 0},
+	{"check_planes",    0, DI_CHECK_PLANES, NULL, 0},
 
-	{"silk_tun_color", 0, DI_CALL, drw_silk_tune_color},
-	{"copper_order_UI", 0, DI_CALL, drw_copper_order_UI},
-	{"drw_invis1",      0, DI_CALL, drw_invis1},
-	{"drw_invis2",      0, DI_CALL, drw_invis2},
-	{"drw_pstk",        0, DI_CALL, drw_pstk},
-	{"drw_mask",        0, DI_CALL, drw_mask},
-	{"drw_layers",      0, DI_CALL, drw_layers},
-	{"drw_hole",        0, DI_CALL, drw_hole},
-	{"drw_paste",       0, DI_CALL, drw_paste},
+	{"silk_tun_color", 0, DI_CALL, drw_silk_tune_color, 0},
+	{"copper_order_UI", 0, DI_CALL, drw_copper_order_UI, 0},
+	{"drw_invis1",      0, DI_CALL, drw_invis1, 0},
+	{"drw_invis2",      0, DI_CALL, drw_invis2, 0},
+	{"drw_pstk",        0, DI_CALL, drw_pstk, 0},
+	{"drw_mask",        0, DI_CALL, drw_mask, 0},
+	{"drw_layers",      0, DI_CALL, drw_layers, 0},
+	{"drw_hole",        0, DI_CALL, drw_hole, 0},
+	{"drw_paste",       0, DI_CALL, drw_paste, 0},
 
 	{NULL, 0, 0, NULL }
 };
@@ -446,7 +450,8 @@ static void draw_compile(const char *src)
 	for(;;start = next) {
 		draw_stmt_t *stmt;
 		const drw_kw_t *k;
-		int h, len;
+		drw_kw_t karg;
+		int h, len, bad;
 
 		/* skip leading whitespace */
 		while((*start == ' ') || (*start == '\t')) start++;
@@ -477,6 +482,10 @@ static void draw_compile(const char *src)
 			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword too short\n", line);
 			continue;
 		}
+		if (len > KW_MAXLEN) {
+			rnd_message(RND_MSG_ERROR, "render_script: syntax error in line %d: keyword too long\n", line);
+			continue;
+		}
 
 		/* look up the keyword speeding up the process with a hash comparison that skips the strncmp() most of the time */
 		h = HASH(start);
@@ -484,7 +493,38 @@ static void draw_compile(const char *src)
 			if ((k->hash == h) && (strncmp(k->full, start, len) == 0))
 				break;
 
-		if (k->full == NULL) {
+		bad = (k->full == NULL);
+
+		/* not a known keyword, could be a number */
+		if (bad) {
+			if ((start[0] == '+') || (start[0] == '-') || isdigit(start[0])) {
+				char *end;
+				long l = strtol(start, &end, 10);
+				if (isspace(*end) || (*end == '\0')) {
+					k = &karg;
+					karg.inst = DI_ARG;
+					karg.arg = l;
+					bad = 0;
+				}
+			}
+		}
+
+		/* not a known keyword or number, could be a layer type */
+		if (bad) {
+			char name[KW_MAXLEN+2];
+			pcb_layer_type_t lyt;
+
+			strncpy(name, start, len);
+			lyt = pcb_layer_type_str2bit(name);
+			if (lyt > 0) {
+				k = &karg;
+				karg.inst = DI_ARG;
+				karg.arg = lyt;
+				bad = 0;
+			}
+		}
+
+		if (bad) {
 			rnd_message(RND_MSG_ERROR, "render_script: keyword not found in line %d\n", line);
 			continue;
 		}
@@ -492,6 +532,7 @@ static void draw_compile(const char *src)
 		stmt = vtdrw_alloc_append(&drw_script, 1);
 		stmt->inst = k->inst;
 		stmt->call.cmd = k->cmd;
+		stmt->arg = k->arg;
 
 		/* remember last command or update last command's argc */
 		if (cmd_idx == -1) {
@@ -504,3 +545,6 @@ static void draw_compile(const char *src)
 
 	rnd_message(RND_MSG_INFO, "render_script: compiled %ld instructions in %d statements\n", drw_script.used, nst);
 }
+
+#undef KW_MAXLEN
+#undef HASH
