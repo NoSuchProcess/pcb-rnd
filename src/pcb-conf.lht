@@ -163,8 +163,10 @@ li:pcb-rnd-conf-v1 {
 
 				# draw "invisible" (far side)
 				drw_invis
-				drw_layers far_side silk
-				drw_layers far_side doc
+
+				# export will need far-side doc and silk independently of invis
+				if not GUI then drw_layers far_side silk
+				if not GUI then drw_layers far_side doc
 
 				drw_copper
 
