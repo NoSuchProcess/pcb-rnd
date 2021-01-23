@@ -2142,7 +2142,7 @@ TODO("What this code is supposed to do? element2 doesn't have x;y, when this is 
 }
 
 
-static int postproc_signal_nested(void *ctx, egb_ctx_t *egb_ctx, egb_node_t *parent, egb_node_t *top)
+static void postproc_signal_nested(void *ctx, egb_ctx_t *egb_ctx, egb_node_t *parent, egb_node_t *top)
 {
 	egb_node_t *p, *prev2, *next2;
 
