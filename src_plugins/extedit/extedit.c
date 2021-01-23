@@ -155,7 +155,7 @@ static void invoke(extedit_method_t *mth, const char *fn, const char *fn_cfg)
 			fread(tmp, 1, sizeof(tmp), fc);
 		}
 	}
-	pclose(fc);
+	rnd_pclose(fc);
 
 	if (rnd_gui != NULL)
 		rnd_hid_progress(0, 0, NULL);

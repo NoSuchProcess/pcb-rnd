@@ -386,7 +386,7 @@ fgw_error_t pcb_act_cpcb(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	f = rnd_popen(&PCB->hidlib, cmdline, "r");
 	if (f != NULL) {
 		cpcb_load(PCB, f, &stk, NULL);
-		pclose(f);
+		rnd_pclose(f);
 		RND_ACT_IRES(0);
 	}
 	else {
