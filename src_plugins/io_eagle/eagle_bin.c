@@ -2165,7 +2165,7 @@ TODO("TODO netlist labels - eagle bin often has invalid net labels, i.e.'-', '+'
    to do the same flattening) */
 static int postproc_signal(void *ctx, egb_ctx_t *egb_ctx)
 {
-	egb_node_t *n, *next;
+	egb_node_t *n;
 
 	if (egb_ctx->signals == NULL)
 		return  0; /* probably a library */
