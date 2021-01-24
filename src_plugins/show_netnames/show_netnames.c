@@ -180,7 +180,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 				rot = atan2(l->Point2.Y - l->Point1.Y, l->Point2.X - l->Point1.X) * -RND_RAD_TO_DEG;
 
 				/* offset the text for approx. center alignment */
-				dx = 0; dy = -font->MaxHeight/2*lscale;
+				dx = -shn->w * lscale / 2; dy = -shn->h * lscale / 2;
 				vx = l->Point2.X - l->Point1.X; vy = l->Point2.Y - l->Point1.Y;
 				len = vx*vx + vy*vy;
 				if (len != 0) {
