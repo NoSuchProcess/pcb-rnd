@@ -29,6 +29,8 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_menu.h>
+#include <genht/htpp.h>
+#include <genht/hash.h>
 
 #include "board.h"
 #include "conf_core.h"
@@ -47,6 +49,54 @@ const char *pcb_show_netnames_cookie = "show_netnames plugin";
 conf_show_netnames_t conf_show_netnames;
 
 static pcb_qry_exec_t shn_qctx;
+
+typedef struct {
+	rnd_coord_t w, h; /* bbox width and height when netname drawn with 100% font scale */
+	unsigned show:1;  /* 1 if label should be printed */
+} shn_net_t;
+
+static shn_net_t shn_invalid = {0};
+
+#define HT_HAS_CONST_KEY
+#define HT_INVALID_VALUE shn_invalid
+typedef void *htshn_key_t;
+typedef const void *htshn_const_key_t;
+typedef shn_net_t htshn_value_t;
+#define HT(x) htshn_ ## x
+#include <genht/ht.h>
+#include <genht/ht.c>
+#undef HT
+#undef HT_INVALID_VALIUE
+
+
+static htshn_t shn_cache;
+static int shn_cache_inited;
+static int shn_cache_uptodate;
+
+static void shn_cache_update(pcb_board_t *pcb)
+{
+	pcb_net_t *net;
+	pcb_net_it_t it;
+	pcb_text_t t = {0};
+
+	if (shn_cache_inited)
+		htshn_clear(&shn_cache);
+	else
+		htshn_init(&shn_cache, ptrhash, ptrkeyeq);
+
+	t.Scale = 100;
+	for(net = pcb_net_first(&it, &pcb->netlist[PCB_NETLIST_EDITED]); net != NULL; net = pcb_net_next(&it)) {
+		shn_net_t shn;
+		t.TextString = net->name;
+		pcb_text_bbox(pcb_font(pcb, 0, 1), &t);
+
+		shn.w = t.bbox_naked.X2 - t.bbox_naked.X1;
+		shn.h = t.bbox_naked.Y2 - t.bbox_naked.Y1;
+		shn.show = 1;
+		htshn_set(&shn_cache, net, shn);
+	}
+	shn_cache_uptodate = 1;
+}
 
 static void show_netnames_invalidate(void)
 {
@@ -68,22 +118,35 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 	rnd_coord_t x, y, dx, dy;
 	pcb_font_t *font;
 	double rot, vx, vy, nx, ny, len, lscale;
+	shn_net_t *shn = NULL;
+	htshn_entry_t *e;
+	pcb_net_t *net = NULL;
 
 	if (obj->type != PCB_OBJ_LINE)
 		return NULL;
 
+	if (!shn_cache_uptodate)
+		shn_cache_update(PCB);
+
 	term = pcb_qry_parent_net_term(&shn_qctx, obj);
-	if ((term != NULL) && (term->type == PCB_OBJ_NET_TERM)) {
-		pcb_net_t *net = term->parent.net;
-		if ((net == NULL) || (net->type != PCB_OBJ_NET)) {
+	if ((term != NULL) && (term->type == PCB_OBJ_NET_TERM))
+		net = term->parent.net;
+
+	if ((net == NULL) || (net->type != PCB_OBJ_NET)) {
+		if (term != NULL) {
 			sprintf(tmp, "<nonet #%ld>", term->ID);
 			netname = tmp;
 		}
 		else
-			netname = net->name;
+			netname = "<nonet>";
 	}
-	else
-		netname = "<nonet>";
+	else {
+		e = htshn_getentry(&shn_cache, net);
+		if (e != NULL)
+			shn = &e->value;
+		netname = net->name;
+	}
+
 
 	pcb_obj_center(obj, &x, &y);
 	font = pcb_font(PCB, 0, 0);
@@ -157,6 +220,9 @@ void pplg_uninit_show_netnames(void)
 	rnd_event_unbind_allcookie(pcb_show_netnames_cookie);
 	rnd_remove_actions_by_cookie(pcb_show_netnames_cookie);
 	rnd_conf_unreg_fields("plugins/show_netnames/");
+
+	if (shn_cache_inited)
+		htshn_uninit(&shn_cache);
 }
 
 int pplg_init_show_netnames(void)
