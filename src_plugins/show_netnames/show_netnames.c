@@ -235,7 +235,13 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 			}
 			break;
 		default:
-			pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, lscale, lscale, 0.0, 0, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
+			{
+				double scx, scy;
+				scx = (double)(obj->bbox_naked.X2 - obj->bbox_naked.X1) / (double)shn->w * 0.8;
+				scy = (double)(obj->bbox_naked.Y2 - obj->bbox_naked.Y1) / (double)shn->h * 0.8;
+				lscale = RND_MIN(scx, scy);
+				pcb_text_draw_string(info, font, (const unsigned char *)netname, x, y, lscale, lscale, 0.0, 0, conf_core.appearance.label_thickness, 0, 0, 0, 0, PCB_TXT_TINY_HIDE);
+			}
 	}
 	return NULL;
 }
