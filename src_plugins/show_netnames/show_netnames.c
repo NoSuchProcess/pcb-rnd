@@ -94,6 +94,7 @@ static void shn_cache_update(pcb_board_t *pcb)
 	t.Scale = 100;
 	for(net = pcb_net_first(&it, &pcb->netlist[PCB_NETLIST_EDITED]); net != NULL; net = pcb_net_next(&it)) {
 		shn_net_t shn;
+		char *atv;
 
 		t.TextString = net->name;
 		pcb_text_bbox(pcb_font(pcb, 0, 1), &t);
@@ -102,10 +103,18 @@ static void shn_cache_update(pcb_board_t *pcb)
 		shn.h = t.BoundingBox.Y2 - t.BoundingBox.Y1;
 		shn.show = 1;
 
-		for(n = 0; n < omit_netnames.used; n++) {
-			if (re_se_exec(omit_netnames.array[n], net->name)) {
+		atv = pcb_attribute_get(&net->Attributes, "pcb-rnd::show_netname");
+		if (atv != NULL) {
+			if ((strcmp(atv, "false") == 0) || (strcmp(atv, "off") == 0) || (strcmp(atv, "no") == 0))
 				shn.show = 0;
-				break;
+		}
+
+		if (shn.show) {
+			for(n = 0; n < omit_netnames.used; n++) {
+				if (re_se_exec(omit_netnames.array[n], net->name)) {
+					shn.show = 0;
+					break;
+				}
 			}
 		}
 
