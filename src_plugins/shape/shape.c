@@ -141,12 +141,23 @@ static void elarc90(pcb_poly_t *p, rnd_coord_t ccx, rnd_coord_t ccy, rnd_coord_t
 #define CORNER(outx, outy, rect_signx, rect_signy, rsignx, rsigny) \
 	outx = rnd_round((double)cx + rect_signx * (double)w/2 + rsignx*rx); \
 	outy = rnd_round((double)cy + rect_signy * (double)h/2 + rsigny*ry);
+#define is_sq(idx) (corner[idx] == PCB_CORN_SQUARE)
 pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres)
 {
 	pcb_poly_t *p;
-	rnd_coord_t maxr = (w < h ? w : h) / 2, x, y, ex, ey, acx, acy, ccx, ccy;
+	rnd_coord_t maxr, maxrh, maxrw, x, y, ex, ey, acx, acy, ccx, ccy;
 	int segs, need_rot, flags = PCB_FLAG_CLEARPOLY;
+	int hsq, wsq;
 	double cosra, sinra;
+
+
+	/* calculate the minimum number of square corners in horizontal or vertical dir */
+	wsq = RND_MIN(is_sq(0) + is_sq(1), is_sq(2) + is_sq(3));
+	hsq = RND_MIN(is_sq(0) + is_sq(3), is_sq(1) + is_sq(2));
+
+	maxrw = (wsq == 0) ? w/2 : w;
+	maxrh = (hsq == 0) ? h/2 : h;
+	maxr = RND_MIN(maxrh, maxrw);
 
 	if ((w <= 10) || (h <= 10))
 		return NULL;
@@ -204,6 +215,7 @@ pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t
 
 	return p;
 }
+#undef is_sq
 #undef CORNER
 
 void pcb_shape_roundrect(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t height, double roundness)
