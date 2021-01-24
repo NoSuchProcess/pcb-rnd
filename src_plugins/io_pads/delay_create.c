@@ -197,7 +197,7 @@ rnd_trace("bbox subc: %p\n", dlcr->subc_begin->val.subc_begin.subc);
 	return obj;
 }
 
-pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int scale, rnd_coord_t thickness, const char *str)
+pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int scale, rnd_coord_t thickness, const char *str, long flags)
 {
 	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_OBJ);
 	pcb_text_t *t = &obj->val.obj.obj.text;
@@ -209,9 +209,13 @@ pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t 
 	t->rot = rot;
 	t->Scale = scale;
 	t->TextString = rnd_strdup(str);
+	if (flags != 0)
+		PCB_FLAG_SET(flags, t);
 	pcb_text_bbox(pcb_font(PCB, 0, 1), t);
-	if (dlcr->subc_begin != NULL)
-		rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.subc->bbox_naked, &t->bbox_naked);
+	if (dlcr->subc_begin != NULL) {
+		if (!(flags & PCB_FLAG_FLOATER))
+			rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.subc->bbox_naked, &t->bbox_naked);
+	}
 	else
 		rnd_box_bump_box(&dlcr->board_bbox, &t->bbox_naked);
 	return obj;
@@ -391,7 +395,7 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 			r = (pcb_any_obj_t *)pcb_arc_new(ly, CRDX(a->X), CRDY(a->Y), a->Width, a->Height, a->StartAngle, a->Delta, a->Thickness, a->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
 			break;
 		case PCB_OBJ_TEXT:
-			r = (pcb_any_obj_t *)pcb_text_new(ly, pcb_font(pcb, 0, 1), CRDX(t->X), CRDY(t->Y), t->rot, t->Scale, t->thickness, t->TextString, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			r = (pcb_any_obj_t *)pcb_text_new(ly, pcb_font(pcb, 0, 1), CRDX(t->X), CRDY(t->Y), t->rot, t->Scale, t->thickness, t->TextString, pcb_flag_make(PCB_FLAG_CLEARLINE | t->Flags.f));
 			free(t->TextString);
 			break;
 		case PCB_OBJ_PSTK:

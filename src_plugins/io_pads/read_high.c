@@ -329,7 +329,7 @@ TODO("w is really thickness");
 	scale = (double)w/RND_MM_TO_COORD(1.0) * 100.0 * 8;
 
 	TODO("do not ignore text alignment");
-	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo+w*9, rot, scale, 0, str);
+	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo+w*9, rot, scale, 0, str, (is_label ? PCB_FLAG_FLOATER : 0));
 	text->loc_line = rctx->line;
 
 	if (is_label) {
