@@ -177,7 +177,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 
 	if ((net == NULL) || (net->type != PCB_OBJ_NET)) {
 		if (conf_show_netnames.plugins.show_netnames.omit_nonets)
-			return;
+			return NULL;
 		shn = &shn_nonet;
 		if (term != NULL) {
 			sprintf(tmp, "<nonet #%ld>", term->ID);
@@ -194,7 +194,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 	}
 
 	if ((shn == NULL) || !shn->show)
-		return;
+		return NULL;
 
 	pcb_obj_center(obj, &x, &y);
 	font = pcb_font(PCB, 0, 0);
