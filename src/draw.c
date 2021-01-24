@@ -274,6 +274,10 @@ static void draw_xor_marks(pcb_draw_info_t *info)
 		pcb_draw_pstk_marks(info);
 	}
 
+	rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
+	rnd_hid_set_line_width(pcb_draw_out.fgGC, 0);
+	rnd_render->set_color(pcb_draw_out.fgGC, &conf_core.appearance.color.pin_name);
+
 	rnd_event(&PCB->hidlib, RND_EVENT_GUI_DRAW_OVERLAY_XOR, "pp", &pcb_draw_out.fgGC, info, NULL);
 
 	rnd_hid_set_draw_xor(pcb_draw_out.fgGC, 0);
