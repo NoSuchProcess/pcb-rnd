@@ -91,16 +91,16 @@ static void shn_cache_update(pcb_board_t *pcb)
 		t.TextString = net->name;
 		pcb_text_bbox(pcb_font(pcb, 0, 1), &t);
 
-		shn.w = t.bbox_naked.X2 - t.bbox_naked.X1;
-		shn.h = t.bbox_naked.Y2 - t.bbox_naked.Y1;
+		shn.w = t.BoundingBox.X2 - t.BoundingBox.X1;
+		shn.h = t.BoundingBox.Y2 - t.BoundingBox.Y1;
 		shn.show = 1;
 		htshn_set(&shn_cache, net, shn);
 	}
 
 	t.TextString = "<nonet #00000000>";
-		pcb_text_bbox(pcb_font(pcb, 0, 1), &t);
-	shn_nonet.w = t.bbox_naked.X2 - t.bbox_naked.X1;
-	shn_nonet.h = t.bbox_naked.Y2 - t.bbox_naked.Y1;
+	pcb_text_bbox(pcb_font(pcb, 0, 1), &t);
+	shn_nonet.w = t.BoundingBox.X2 - t.BoundingBox.X1;
+	shn_nonet.h = t.BoundingBox.Y2 - t.BoundingBox.Y1;
 	shn_nonet.show = 1;
 
 
