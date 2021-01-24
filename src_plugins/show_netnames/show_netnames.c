@@ -148,6 +148,8 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 		net = term->parent.net;
 
 	if ((net == NULL) || (net->type != PCB_OBJ_NET)) {
+		if (conf_show_netnames.plugins.show_netnames.omit_nonets)
+			return;
 		shn = &shn_nonet;
 		if (term != NULL) {
 			sprintf(tmp, "<nonet #%ld>", term->ID);

@@ -8,6 +8,7 @@ typedef struct {
 		const struct {
 			RND_CFT_BOOLEAN enable;         /* Enable displaying netnames */
 			RND_CFT_COORD zoom_level;       /* Display netnames only if current zoom coords_per_pixel is smaller than this value */
+			RND_CFT_BOOLEAN omit_nonets;    /* do not print 'nonet' labels on the objects not belonging to any network */
 		} show_netnames;
 	} plugins;
 } conf_show_netnames_t;
