@@ -137,6 +137,7 @@ pcb_subc_t *pcb_dlcr_subc_new_in_lib(pcb_dlcr_t *dlcr, const char *name)
 	}
 
 	subc = pcb_subc_new();
+	pcb_subc_create_aux(subc, 0, 0, 0, 0);
 	htsp_set(&dlcr->name2subc, rnd_strdup(name), subc);
 	return subc;
 }
@@ -442,7 +443,7 @@ static void pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_
 	nsc = pcb_subc_dup_at(pcb, pcb->Data, subc, dx, dy, 0, 0);
 	pcb_dlcr_fixup_pstk_proto_lyt(pcb, dlcr, nsc->data);
 
-	rnd_trace("  using name '%s' %p -> %p\n", name, subc, nsc);
+	rnd_trace("  using name '%s' %p -> %p %mm;%mm\n", name, subc, nsc, dx, dy);
 
 	if (nsc == NULL)
 		rnd_message(RND_MSG_ERROR, "pcb_dlcr_draw_subc_from_lib(): failed to dup subc '%s' from lib\n", name);
