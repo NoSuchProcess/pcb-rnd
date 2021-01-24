@@ -142,7 +142,7 @@ static void elarc90(pcb_poly_t *p, rnd_coord_t ccx, rnd_coord_t ccy, rnd_coord_t
 	outx = rnd_round((double)cx + rect_signx * (double)w/2 + rsignx*rx); \
 	outy = rnd_round((double)cy + rect_signy * (double)h/2 + rsigny*ry);
 #define is_sq(idx) (corner[idx] == PCB_CORN_SQUARE)
-pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres)
+pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres, const char **err)
 {
 	pcb_poly_t *p;
 	rnd_coord_t maxr, maxrh, maxrw, x, y, ex, ey, acx, acy, ccx, ccy;
@@ -159,11 +159,15 @@ pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t
 	maxrh = (hsq == 0) ? h/2 : h;
 	maxr = RND_MIN(maxrh, maxrw);
 
-	if ((w <= 10) || (h <= 10))
+	if ((w <= 10) || (h <= 10)) {
+		*err = "side too small";
 		return NULL;
+	}
 
-	if ((rx > maxr) || (ry > maxr))
+	if ((rx > maxr) || (ry > maxr)) {
+		*err = "rounding radius too large";
 		return NULL;
+	}
 
 	if (rot_deg != 0.0) {
 		cosra = cos(rot_deg / RND_RAD_TO_DEG);
@@ -180,8 +184,10 @@ pcb_poly_t *pcb_genpoly_roundrect(pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t
 	segs = rnd_round((double)segs * roundres);
 
 	p = pcb_poly_new(layer, 2 * conf_core.design.clearance, pcb_flag_make(flags));
-	if (p == NULL)
+	if (p == NULL) {
+		*err = "poly gen error";
 		return NULL;
+	}
 
 	/* top right */
 	CORNER(  x,   y, +1, -1,  0, +1); /* start */
@@ -227,7 +233,7 @@ void pcb_shape_roundrect(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t
 	int inited = 0, n;
 	rnd_coord_t rr, minor = MIN(width, height);
 	pcb_shape_corner_t corner[4] = { PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND};
-
+	const char *err;
 
 	if (!inited) {
 		pcb_data_init(&data);
@@ -242,7 +248,7 @@ void pcb_shape_roundrect(pcb_pstk_shape_t *shape, rnd_coord_t width, rnd_coord_t
 		layer = &data.Layer[0];
 
 	rr = rnd_round(minor * roundness);
-	p = pcb_genpoly_roundrect(layer, width, height, rr, rr, 0, 0, 0, corner, 4.0);
+	p = pcb_genpoly_roundrect(layer, width, height, rr, rr, 0, 0, 0, corner, 4.0, &err);
 	pcb_pstk_shape_alloc_poly(dst, p->PointN);
 	shape->shape = PCB_PSSH_POLY;
 
@@ -285,14 +291,14 @@ static pcb_poly_t *regpoly_place(pcb_data_t *data, pcb_layer_t *layer, int corne
 	return any_poly_place(data, layer, p);
 }
 
-static pcb_poly_t *roundrect_place(pcb_data_t *data, pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres)
+static pcb_poly_t *roundrect_place(pcb_data_t *data, pcb_layer_t *layer, rnd_coord_t w, rnd_coord_t h, rnd_coord_t rx, rnd_coord_t ry, double rot_deg, rnd_coord_t cx, rnd_coord_t cy, pcb_shape_corner_t corner[4], double roundres, const char **err)
 {
 	pcb_poly_t *p;
 
 	if (layer == pcb_shape_current_layer)
 		layer = PCB_CURRLAYER(PCB);
 
-	p = pcb_genpoly_roundrect(layer, w, h, rx, ry, rot_deg, cx, cy, corner, roundres);
+	p = pcb_genpoly_roundrect(layer, w, h, rx, ry, rot_deg, cx, cy, corner, roundres, err);
 	return any_poly_place(data, layer, p);
 }
 
@@ -471,6 +477,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double rot = 0.0, roundres = 1.0;
 	char *end;
 	pcb_shape_corner_t corner[4] = { PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND};
+	char *err;
 
 	if (argc < 2) {
 		rnd_message(RND_MSG_ERROR, "roundrect() needs at least one parameters\n");
@@ -567,7 +574,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if ((data == PCB->Data) && (!have_coords))
 		rnd_hid_get_coords("Click on the center of the polygon", &x, &y, 0);
 
-	if (roundrect_place(data, PCB_CURRLAYER(PCB), w, h, rx, ry, rot, x, y, corner, roundres) == NULL)
+	if (roundrect_place(data, PCB_CURRLAYER(PCB), w, h, rx, ry, rot, x, y, corner, roundres, &err) == NULL)
 		rnd_message(RND_MSG_ERROR, "roundrect(): failed to create the polygon\n");
 
 	RND_ACT_IRES(0);

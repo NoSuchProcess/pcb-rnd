@@ -68,6 +68,7 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	ctx_t *shp = caller_data;
 	pcb_shape_corner_t corner[4];
 	int n;
+	const char *err;
 
 	/* elliptical logics */
 	if (!shp->dlg[shp->rell].val.lng) {
@@ -95,7 +96,11 @@ static void shp_chg_roundrect(void *hid_ctx, void *caller_data, rnd_hid_attribut
 		shp->dlg[shp->rx].val.crd, shp->dlg[shp->ry].val.crd,
 		shp->dlg[shp->rrot].val.dbl,
 		shp->dlg[shp->rcx].val.crd, shp->dlg[shp->rcy].val.crd,
-		corner, shp->dlg[shp->rres].val.dbl);
+		corner, shp->dlg[shp->rres].val.dbl, &err);
+
+
+	if (shp->obj == NULL)
+		rnd_message(RND_MSG_ERROR, "shape: failed to generate round rect: %s\n", err);
 }
 
 static void shp_chg_circle(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
