@@ -183,8 +183,14 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 				dx = -shn->w * lscale / 2; dy = -shn->h * lscale / 2;
 				vx = l->Point2.X - l->Point1.X; vy = l->Point2.Y - l->Point1.Y;
 				len = vx*vx + vy*vy;
+
 				if (len != 0) {
 					len = sqrt(len);
+
+				/* Don't print if label is longer than line's 80% */
+				if (shn->w * lscale > len * 0.8)
+					return;
+
 					if (l != 0) {
 						vx /= len;
 						vy /= len;
