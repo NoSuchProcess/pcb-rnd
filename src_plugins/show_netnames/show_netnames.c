@@ -252,6 +252,7 @@ int pplg_init_show_netnames(void)
 	rnd_event_bind(RND_EVENT_BOARD_CHANGED, show_netnames_brd_chg, NULL, pcb_show_netnames_cookie);
 	rnd_event_bind(RND_EVENT_GUI_DRAW_OVERLAY_XOR, show_netnames_render, NULL, pcb_show_netnames_cookie);
 	rnd_event_bind(PCB_EVENT_NETLIST_CHANGED, show_netnames_inv_cache, NULL, pcb_show_netnames_cookie);
+	rnd_event_bind(PCB_EVENT_FONT_CHANGED, show_netnames_inv_cache, NULL, pcb_show_netnames_cookie);
 
 	rnd_hid_menu_load(rnd_gui, NULL, pcb_show_netnames_cookie, 150, NULL, 0, show_netnames_menu, "plugin: show_netnames");
 	return 0;
