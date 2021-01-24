@@ -72,6 +72,7 @@ typedef shn_net_t htshn_value_t;
 static htshn_t shn_cache;
 static int shn_cache_inited;
 static int shn_cache_uptodate;
+static shn_net_t shn_nonet;
 
 static void shn_cache_update(pcb_board_t *pcb)
 {
@@ -95,6 +96,14 @@ static void shn_cache_update(pcb_board_t *pcb)
 		shn.show = 1;
 		htshn_set(&shn_cache, net, shn);
 	}
+
+	t.TextString = "<nonet #00000000>";
+		pcb_text_bbox(pcb_font(pcb, 0, 1), &t);
+	shn_nonet.w = t.bbox_naked.X2 - t.bbox_naked.X1;
+	shn_nonet.h = t.bbox_naked.Y2 - t.bbox_naked.Y1;
+	shn_nonet.show = 1;
+
+
 	shn_cache_uptodate = 1;
 }
 
@@ -139,6 +148,7 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 		net = term->parent.net;
 
 	if ((net == NULL) || (net->type != PCB_OBJ_NET)) {
+		shn = &shn_nonet;
 		if (term != NULL) {
 			sprintf(tmp, "<nonet #%ld>", term->ID);
 			netname = tmp;
@@ -153,6 +163,8 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 		netname = net->name;
 	}
 
+	if (shn == NULL)
+		return;
 
 	pcb_obj_center(obj, &x, &y);
 	font = pcb_font(PCB, 0, 0);
@@ -162,12 +174,8 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 			{
 				pcb_line_t *l = (pcb_line_t *)obj;
 
-				if (shn != NULL) {
-					/* text height is 80% of trace thickness */
-					lscale = (double)l->Thickness / (double)shn->h * 0.8;
-				}
-				else
-					lscale = (double)conf_show_netnames.plugins.show_netnames.zoom_level / 100000.0;
+				/* text height is 80% of trace thickness */
+				lscale = (double)l->Thickness / (double)shn->h * 0.8;
 
 				rot = atan2(l->Point2.Y - l->Point1.Y, l->Point2.X - l->Point1.X) * -RND_RAD_TO_DEG;
 
