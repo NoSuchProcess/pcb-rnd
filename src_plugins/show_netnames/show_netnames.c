@@ -217,9 +217,9 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 				if (len != 0) {
 					len = sqrt(len);
 
-				/* Don't print if label is longer than line's 80% */
-				if (shn->w * lscale > len * 0.8)
-					return NULL;
+					/* Don't print if label is longer than line's 80% */
+					if (shn->w * lscale > len * 0.8)
+						return NULL;
 
 					if (l != 0) {
 						vx /= len;
