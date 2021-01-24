@@ -156,11 +156,18 @@ static void *shn_render_cb(void *ctx, pcb_any_obj_t *obj)
 
 	pcb_obj_center(obj, &x, &y);
 	font = pcb_font(PCB, 0, 0);
-	lscale = (double)conf_show_netnames.plugins.show_netnames.zoom_level / 100000.0;
+
 	switch(obj->type) {
 		case PCB_OBJ_LINE:
 			{
 				pcb_line_t *l = (pcb_line_t *)obj;
+
+				if (shn != NULL) {
+					/* text height is 80% of trace thickness */
+					lscale = (double)l->Thickness / (double)shn->h * 0.8;
+				}
+				else
+					lscale = (double)conf_show_netnames.plugins.show_netnames.zoom_level / 100000.0;
 
 				rot = atan2(l->Point2.Y - l->Point1.Y, l->Point2.X - l->Point1.X) * -RND_RAD_TO_DEG;
 
