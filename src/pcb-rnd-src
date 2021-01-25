@@ -16,3 +16,11 @@ then
 else
 	export LD_LIBRARY_PATH=`pwd`/../src_3rd/librnd-local/src:$LD_LIBRARY_PATH
 fi
+
+# this variant is for OSX
+if test -z "$DYLD_LIBRARY_PATH"
+then
+	export DYLD_LIBRARY_PATH=`pwd`/../src_3rd/librnd-local/src
+else
+	export DYLD_LIBRARY_PATH=`pwd`/../src_3rd/librnd-local/src:$DYLD_LIBRARY_PATH
+fi
