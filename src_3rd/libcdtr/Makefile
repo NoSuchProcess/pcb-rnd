@@ -3,7 +3,7 @@
 CFLAGS=$(CFLAGS_DBG) $(CFLAGS_COORDT) $(CFLAGS_LIBCDTR) -I. -I.. -I../..
 LDFLAGS=-lm $(LDFLAGS_LIBCDTR)
 
-OBJS= cdt.o point.o edge.o triangle.o
+OBJS= cdt.o point.o edge.o triangle.o debug.o
 LIBA=libcdtr.a
 
 cdt_test: cdt_test.o $(OBJS)

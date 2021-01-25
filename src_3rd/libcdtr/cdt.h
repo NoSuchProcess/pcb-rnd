@@ -57,14 +57,6 @@ void cdt_delete_point(cdt_t *cdt, point_t *p);	/* any edge adjecent to this poin
 edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2);
 void cdt_delete_constrained_edge(cdt_t *cdt, edge_t *edge);
 
-int cdt_check_delaunay(cdt_t *cdt, pointlist_node_t **point_violations, trianglelist_node_t **triangle_violations);
-void cdt_dump_animator(cdt_t *cdt, int show_circles, pointlist_node_t *point_violations, trianglelist_node_t *triangle_violations);
-void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t *point_violations, trianglelist_node_t *triangle_violations);
-void cdt_fdump_adj_triangles_anim(FILE *f, cdt_t *cdt, triangle_t *t);
-
-/* Dump a cdt script in the format that's suitable for the tester to include */
-void cdt_fdump(FILE *f, cdt_t *cdt);
-
 
 edge_t *get_edge_from_points(point_t *p1, point_t *p2);
 
@@ -89,6 +81,8 @@ static inline double orientation(point_t *p1, point_t *p2, point_t *p3)
 #define DIST2(p, q) \
 	(((double)((p)->pos.x - (q)->pos.x) * (double)((p)->pos.x - (q)->pos.x)) \
 	 + ((double)((p)->pos.y - (q)->pos.y) * (double)((p)->pos.y - (q)->pos.y)))
+
+int cdt_is_point_in_circumcircle(point_t *p, triangle_t *t);
 
 
 /* Raw, low level object creation without side effects; use it only to

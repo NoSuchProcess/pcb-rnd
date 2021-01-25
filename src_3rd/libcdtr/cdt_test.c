@@ -3,6 +3,7 @@
 #include <time.h>
 #include <assert.h>
 #include "cdt.h"
+#include "debug.h"
 
 #define MAXP 64
 #define MAXE 64
