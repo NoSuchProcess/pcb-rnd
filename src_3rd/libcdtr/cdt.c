@@ -967,6 +967,42 @@ void cdt_fdump(FILE *f, cdt_t *cdt)
 	}
 }
 
+static void fdump_triangle_anim(FILE *f, cdt_t *cdt, triangle_t *t, int first)
+{
+	static int last_c;
+	int i;
+	pos_t c;
+
+	c = triangle_center_pos(t);
+	fprintf(f, "text %f %f \"%ld\"\n", c.x, c.y, triangle_id(cdt, t));
+	for (i = 0; i < 3; i++) {
+		edge_t *edge = t->e[i];
+		if(last_c != edge->is_constrained) {
+			fprintf(f, "color %s\n", edge->is_constrained ? "red" : "black");
+			fprintf(f, "thick %s\n", edge->is_constrained ? "2" : "1");
+			last_c = edge->is_constrained;
+		}
+		fprintf(f, "line %f %f %f %f\n", (double)edge->endp[0]->pos.x, (double)edge->endp[0]->pos.y, (double)edge->endp[1]->pos.x, (double)edge->endp[1]->pos.y);
+	}
+}
+
+void cdt_fdump_adj_triangles_anim(FILE *f, cdt_t *cdt, triangle_t *t)
+{
+	int i;
+	fprintf(f, "frame\n");
+	fprintf(f, "scale 0.9\n");
+	fprintf(f, "viewport %f %f - %f %f\n", (double)cdt->bbox_tl.x - 1.0, (double)cdt->bbox_tl.y - 1.0, (double)cdt->bbox_br.x + 1.0, (double)cdt->bbox_br.y  + 1.0);
+	fprintf(f, "title \"%ld\"\n", triangle_id(cdt, t));
+
+	fdump_triangle_anim(f, cdt, t, 1);
+	for (i = 0; i < 3; i++) {
+		if (t->adj_t[i] != NULL)
+			fdump_triangle_anim(f, cdt, t->adj_t[i], 0);
+	}
+
+	fprintf(f, "flush\n");
+}
+
 
 int cdt_check_delaunay(cdt_t *cdt, pointlist_node_t **point_violations, trianglelist_node_t **triangle_violations)
 {

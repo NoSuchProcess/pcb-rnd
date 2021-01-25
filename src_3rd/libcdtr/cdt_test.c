@@ -328,6 +328,36 @@ static void cmd_print(char *args)
 	}
 }
 
+static void cmd_dump_triangles(char *args, int anim)
+{
+	FILE *f;
+	char *end = strpbrk(args, " \t\r\n");
+	long tid;
+	char fn[1024];
+
+	if (end != NULL)
+		*end = '\0';
+
+	for (tid = 0; tid < cdt.triangles.used; tid++) {
+		sprintf(fn, "%s_%03ld", args, tid);
+
+		f = fopen(fn, "w");
+		if (f == NULL) {
+			fprintf(stderr, "dump_triangles: failed to open '%s' for write\n", args);
+			return;
+		}
+
+		if (anim) {
+			cdt_fdump_adj_triangles_anim(f, &cdt, cdt.triangles.array[tid]);
+		}
+/*
+		else
+			cdt_fdump(f, &cdt);
+*/
+		fclose(f);
+	}
+}
+
 
 static void cmd_print_events(char *args)
 {
@@ -394,6 +424,7 @@ static int parse(FILE *f)
 		else if (strcmp(cmd, "raw_triangle") == 0) cmd_raw_triangle(args);
 		else if (strcmp(cmd, "dump") == 0) cmd_dump(args, 0);
 		else if (strcmp(cmd, "dump_anim") == 0) cmd_dump(args, 1);
+		else if (strcmp(cmd, "dump_triangles_anim") == 0) cmd_dump_triangles(args, 1);
 		else if (strcmp(cmd, "print") == 0) cmd_print(args);
 		else if (strcmp(cmd, "print_events") == 0) cmd_print_events(args);
 		else fprintf(stderr, "syntax error: unknown command '%s'\n", cmd);
