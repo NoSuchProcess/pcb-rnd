@@ -65,7 +65,7 @@ static void autotest(void)
 		}
 	}
 	for (i = 0; i < e_num; i++) {
-		fprintf(stderr, "deleting edge (%d, %d) - (%d, %d)\n", ed[i]->endp[0]->pos.x, ed[i]->endp[0]->pos.y, ed[i]->endp[1]->pos.x, ed[i]->endp[1]->pos.y);
+		fprintf(stderr, "deleting edge (%f, %f) - (%f, %f)\n", (double)ed[i]->endp[0]->pos.x, (double)ed[i]->endp[0]->pos.y, (double)ed[i]->endp[1]->pos.x, (double)ed[i]->endp[1]->pos.y);
 		cdt_delete_constrained_edge(&cdt, ed[i]);
 	}
 
@@ -84,13 +84,13 @@ static int print_events = 0;
 static void ev_split_constrained_edge_pre(cdt_t *cdt, edge_t *cedge, point_t *pt)
 {
 	if (print_events)
-		printf("split_constrained_edge_pre at %d;%d\n", pt->pos.x, pt->pos.y);
+		printf("split_constrained_edge_pre at %f;%f\n", (double)pt->pos.x, (double)pt->pos.y);
 }
 
 static void ev_split_constrained_edge_post(cdt_t *cdt, edge_t *ne1, edge_t *ne2, point_t *pt)
 {
 	if (print_events)
-		printf("split_constrained_edge_post at %d;%d\n", pt->pos.x, pt->pos.y);
+		printf("split_constrained_edge_post at %f;%f\n", (double)pt->pos.x, (double)pt->pos.y);
 }
 
 static void init_evs(void)
@@ -336,7 +336,7 @@ static void cmd_print(char *args)
 		triangle_t *t = cdt.triangles.array[tid];
 		int n;
 
-		printf(" triangle T%ld: %d;%d %d;%d %d;%d\n", tid, t->p[0]->pos.x, t->p[0]->pos.y, t->p[1]->pos.x, t->p[1]->pos.y, t->p[2]->pos.x, t->p[2]->pos.y);
+		printf(" triangle T%ld: %f;%f %f;%f %f;%f\n", tid, (double)t->p[0]->pos.x, (double)t->p[0]->pos.y, (double)t->p[1]->pos.x, (double)t->p[1]->pos.y, (double)t->p[2]->pos.x, (double)t->p[2]->pos.y);
 
 		printf("  adj triangles:");
 		for(n = 0; n < 3; n++) {
