@@ -853,6 +853,28 @@ static void circumcircle(const triangle_t *t, pos_t *p, int *r)
 	*r = sqrt((d2*d2)/(d1*d1) + (d3*d3)/(d1*d1) + 4*d4/d1)/2;
 }
 
+static long triangle_id(cdt_t *cdt, triangle_t *t)
+{
+	long tid;
+	for(tid = 0; tid < cdt->triangles.used; tid++)
+		if (t == cdt->triangles.array[tid])
+			return tid;
+	return -1;
+}
+
+static pos_t triangle_center_pos(triangle_t *t)
+{
+	pos_t c = {0, 0};
+	int i;
+	for (i = 0; i < 3; i++) {
+		c.x += t->p[i]->pos.x;
+		c.y += t->p[i]->pos.y;
+	}
+	c.x *= (1.0/3.0);
+	c.y *= (1.0/3.0);
+	return c;
+}
+
 void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t *point_violations, trianglelist_node_t *triangle_violations)
 {
 	int last_c = 0;
@@ -878,6 +900,12 @@ void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t 
 			circumcircle(triangle, &pos, &r);
 			fprintf(f, "circle %f %f %f 50\n", (double)pos.x, (double)pos.y, (double)r);
 		}
+	VTTRIANGLE_FOREACH_END();
+
+	fprintf(f, "color black\n");
+	VTTRIANGLE_FOREACH(triangle, &cdt->triangles)
+		pos_t c = triangle_center_pos(triangle);
+		fprintf(f, "text %f %f \"%ld\"\n", c.x, c.y, triangle_id(cdt, triangle));
 		triangle_num++;
 	VTTRIANGLE_FOREACH_END();
 
