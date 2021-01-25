@@ -6,6 +6,7 @@
 - BUG: fawk script oneliner fails in batch (./a) [report: Igor2]
 - BUG: open the command line with {:}, then right click over empty board, ignore the context menu, right click again -> gtk GUI gray control [report: Majenko]
 - BUG: font selector {w f} prints black font on black background if the background color is black [report: Majenko]
+- BUG: floating point related test failure on s390x [report: Bdale]
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
 
 2. For later releases ===============================================================================
