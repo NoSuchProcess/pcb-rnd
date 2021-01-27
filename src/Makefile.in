@@ -186,7 +186,6 @@ uniq /local/pcb/OBJS_3RDLIB
 uniq /local/pcb/OBJS_UTIL
 uniq /local/pcb/CFLAGS
 uniq /local/pcb/CFLAGS_GENERIC
-uniq /local/pcb/LDFLAGS
 uniq /local/pcb/LIBS
 uniq /local/pcb/LIBS_PRE
 uniq /local/pcb/LIBS_3RD
@@ -199,6 +198,14 @@ put /local/pcb/SRCS /local/pcb/OBJS
 append /local/pcb/SRCS ?/local/pcb/OBJS_C99
 append /local/pcb/SRCS ?/local/pcb/OBJS_3RDLIB
 gsub /local/pcb/SRCS {.o } {.c }
+
+# apple requires multiple "-framework something" instead of -lsomething
+# we need to keep all -frameworks but uniq would keep only the first if it
+# is a word on its own
+gsub /local/pcb/LDFLAGS {-framework } {-framework-}
+uniq /local/pcb/LDFLAGS
+gsub /local/pcb/LDFLAGS {-framework-} {-framework }
+
 
 # Makefile, static
 print [@
