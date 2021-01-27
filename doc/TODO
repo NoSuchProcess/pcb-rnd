@@ -60,6 +60,7 @@
 		- bin: padstack clearances for element pins will rely on connectivity to other polygons layer by layer defined in the netlist; test case: alien_fmt_test/io_eagle_bin/net_poly_conn
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
 - BUG: kicad_io error with solder_paste_margin_ratio trimmed .kicad_pcb file and gerbers in bug_files/kicad_solder_paste_margin_ratio [report: Miloh]
+- BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 
 3. Long term ===============================================================================
 - FEATURE: version 3.0.0:
