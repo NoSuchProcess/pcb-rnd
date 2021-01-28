@@ -7,6 +7,8 @@
 - BUG: open the command line with {:}, then right click over empty board, ignore the context menu, right click again -> gtk GUI gray control [report: Majenko]
 - BUG: font selector {w f} prints black font on black background if the background color is black [report: Majenko]
 - BUG: floating point related test failure on s390x [report: Bdale]
+- BUG: kicad_io error with solder_paste_margin_ratio trimmed .kicad_pcb file and gerbers in bug_files/kicad_solder_paste_margin_ratio [report: Miloh]
+- BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
 
 2. For later releases ===============================================================================
@@ -59,8 +61,6 @@
 		- bin: eagle binary format v3 and libraries do not have a DRC block specifying restring or minimum feature widths. Binary loader should add a DRC block in these cases to the tree with the minimum settings needed for padstacks and features to load sensibly. [erich].
 		- bin: padstack clearances for element pins will rely on connectivity to other polygons layer by layer defined in the netlist; test case: alien_fmt_test/io_eagle_bin/net_poly_conn
 - BUG: Rubberband move line endpoints ignores connected arc endpoints. [Fixing:Ade]
-- BUG: kicad_io error with solder_paste_margin_ratio trimmed .kicad_pcb file and gerbers in bug_files/kicad_solder_paste_margin_ratio [report: Miloh]
-- BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 
 3. Long term ===============================================================================
 - FEATURE: version 3.0.0:
