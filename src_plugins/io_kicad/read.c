@@ -2162,7 +2162,7 @@ static int kicad_parse_pad(read_state_t *st, gsxl_node_t *n, pcb_subc_t *subc, u
 		}
 		else if ((strcmp("solder_paste_ratio", m->str) == 0) || (strcmp("solder_paste_margin_ratio", m->str) == 0)) {
 			SEEN_NO_DUP(feature_tally, 6);
-			PARSE_DOUBLE(paste_ratio, m, m->children, "module pad solder mask ratio");
+			PARSE_DOUBLE(paste_ratio, m, m->children, "module pad solder paste ratio");
 		}
 		else if (strcmp("clearance", m->str) == 0) {
 			SEEN_NO_DUP(feature_tally, 7);
