@@ -2393,7 +2393,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			st->subc_rot = mod_rot;
 
 			/* if we have been provided with a Module Name and location, create a new subc with default "" and "" for refdes and value fields */
-			if (mod_name != NULL && module_defined == 0) {
+			if ((mod_name != NULL) && (module_defined == 0)) {
 				module_defined = 1; /* but might be empty, wait and see */
 				if (subc == NULL) {
 					subc = pcb_subc_new();
