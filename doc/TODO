@@ -7,7 +7,7 @@
 - BUG: open the command line with {:}, then right click over empty board, ignore the context menu, right click again -> gtk GUI gray control [report: Majenko]
 - BUG: font selector {w f} prints black font on black background if the background color is black [report: Majenko]
 - BUG: floating point related test failure on s390x [report: Bdale]
-- BUG: kicad_io error with solder_paste_margin_ratio trimmed .kicad_pcb file and gerbers in bug_files/kicad_solder_paste_margin_ratio [report: Miloh]
++ BUG: kicad_io error with solder_paste_margin_ratio trimmed .kicad_pcb file and gerbers in bug_files/kicad_solder_paste_margin_ratio [report: Miloh]
 - BUG: kicad_io doesn't place subc without an (at); bug_files/kicad_subc_no_at [report: Miloh]
 - BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
