@@ -34,6 +34,13 @@
 
 #define LEFTPOINT(p1, p2) ((p1)->pos.x < (p2)->pos.x || ((p1)->pos.x == (p2)->pos.x && (p1)->pos.y > (p2)->pos.y))
 
+/* If cdt_precision is defined, round any new point coordinate using it to
+   avoid "points too close" floating point errors */
+#ifdef cdt_precision
+#	define CROUND(c) (round((c) * (cdt_precision))/(cdt_precision))
+#else
+#	define CROUND(c) (c)
+#endif
 
 static point_t *new_point(cdt_t *cdt, pos_t pos)
 {
@@ -229,6 +236,11 @@ static void init_bbox(cdt_t *cdt, coord_t bbox_x1, coord_t bbox_y1, coord_t bbox
 {
 	pos_t bbox;
 	point_t *p_tl, *p_tr, *p_bl, *p_br;
+
+	bbox_x1 = CROUND(bbox_x1);
+	bbox_y1 = CROUND(bbox_y1);
+	bbox_x2 = CROUND(bbox_x2);
+	bbox_y2 = CROUND(bbox_y2);
 
 	bbox.x = bbox_x1;
 	bbox.y = bbox_y1;
@@ -522,8 +534,8 @@ point_t *cdt_insert_point(cdt_t *cdt, coord_t x, coord_t y)
 	pos_t pos;
 	point_t *new_p;
 
-	pos.x = x;
-	pos.y = y;
+	pos.x = CROUND(x);
+	pos.y = CROUND(y);
 	VTPOINT_FOREACH(p, &cdt->points)
 		if (p->pos.x == pos.x && p->pos.y == pos.y)	/* point in the same pos already exists */
 			return p;
