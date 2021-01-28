@@ -1752,7 +1752,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	unsigned long required;
 
 	if (subc == NULL)
-		return kicad_error(subtree, "error - unable to create incomplete module definition.");
+		return kicad_error(subtree, "error - can't create pad in non-existing subc.");
 
 	X += moduleX;
 	Y += moduleY;
@@ -1768,7 +1768,7 @@ static int kicad_make_pad(read_state_t *st, gsxl_node_t *subtree, pcb_subc_t *su
 	else {
 		required = BV(0) | BV(1) | BV(2) | BV(5);
 		if ((*featureTally & required) != required)
-			return kicad_error(subtree, "error parsing incomplete module definition.");
+			return kicad_error(subtree, "error parsing incomplete module pin/pad definition.");
 		ps = kicad_make_pad_smd(st, subtree, subc, X, Y, padXsize, padYsize, clearance, mask, paste, paste_ratio, pad_shape, smd_side, layers, shape_arg, shape_arg2);
 	}
 
@@ -2475,7 +2475,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 	}
 
 	if (subc == NULL)
-		return kicad_error(subtree, "unable to create incomplete subc.");
+		return kicad_error(subtree, "failed to create subc.");
 
 	if ((mod_name != NULL) && (*mod_name != '\0') && (pcb_attribute_get(&subc->Attributes, "footprint") == NULL))
 		pcb_attribute_put(&subc->Attributes, "footprint", mod_name);
