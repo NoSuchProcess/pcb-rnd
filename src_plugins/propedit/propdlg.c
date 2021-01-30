@@ -48,6 +48,7 @@ typedef struct{
 	pcb_propedit_t pe;
 	int wtree, wfilter, wtype, wvals, wscope;
 	int wabs[PCB_PROPT_max], wedit[PCB_PROPT_max];
+	unsigned lock:1; /* do not refresh while editing */
 	gdl_elem_t link;
 } propdlg_t;
 
@@ -375,9 +376,11 @@ static void prop_data_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	}
 
 	if (force_update || ctx->dlg[ctx->wabs[p->type]].val.lng) {
+		ctx->lock = 1;
 		pcb_propsel_set(&ctx->pe, r->user_data, &sctx);
 		prop_refresh(ctx);
 		rnd_gui->invalidate_all(rnd_gui);
+		ctx->lock = 0;
 	}
 }
 
@@ -420,9 +423,11 @@ static void prop_add_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 
 	if ((failed == 0) && (*key != '\0')) {
 		char *path = rnd_strdup_printf("a/%s", key);
+		ctx->lock = 1;
 		pcb_propsel_set_str(&ctx->pe, path, dlg[wval].val.str);
 		free(path);
 		prop_refresh(ctx);
+		ctx->lock = 0;
 	}
 	RND_DAD_FREE(dlg);
 }
@@ -439,11 +444,15 @@ static void prop_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 		rnd_message(RND_MSG_ERROR, "Only atributes (a/ subtree) can be deleted.\n");
 		return;
 	}
+
+	ctx->lock = 1;
 	if (pcb_propsel_del(&ctx->pe, r->path) < 1) {
+		ctx->lock = 0;
 		rnd_message(RND_MSG_ERROR, "Failed to remove the attribute from any object.\n");
 		return;
 	}
 	prop_refresh(ctx);
+	ctx->lock = 0;
 }
 
 static void prop_preset_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -722,7 +731,7 @@ static void propedit_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rn
 {
 	propdlg_t *pd;
 	for(pd = gdl_first(&propdlgs); pd != NULL; pd = gdl_next(&propdlgs, pd))
-		if (pd->pe.selection || (pd->pe.objs.lst.length != 0))
+		if ((pd->pe.selection || (pd->pe.objs.lst.length != 0)) && !pd->lock)
 			prop_refresh(pd);
 }
 
