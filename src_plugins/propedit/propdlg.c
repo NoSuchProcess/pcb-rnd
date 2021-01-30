@@ -36,9 +36,12 @@
 #include <librnd/core/hid_dad_tree.h>
 #include <librnd/core/conf_hid.h>
 #include "netlist.h"
+#include "event.h"
 
 #include "props.h"
 #include "propsel.h"
+
+extern char pcb_propedit_cookie[];
 
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
@@ -715,6 +718,19 @@ static void propdlg_unit_change(rnd_conf_native_t *cfg, int arr_idx)
 	}
 }
 
+static void propedit_dlg_refresh(propdlg_t *pd)
+{
+	rnd_trace("propedit dialog refresh!\n");
+}
+
+static void propedit_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	propdlg_t *pd;
+	for(pd = gdl_first(&propdlgs); pd != NULL; pd = gdl_next(&propdlgs, pd))
+		if (pd->pe.selection || (pd->pe.objs.lst.length != 0))
+			propedit_dlg_refresh(pd);
+}
+
 static rnd_conf_hid_id_t propdlg_conf_id;
 static const char *propdlg_cookie = "propdlg";
 void pcb_propdlg_init(void)
@@ -727,6 +743,8 @@ void pcb_propdlg_init(void)
 		cbs.val_change_post = propdlg_unit_change;
 		rnd_conf_hid_set_cb(n, propdlg_conf_id, &cbs);
 	}
+
+	rnd_event_bind(PCB_EVENT_BOARD_EDITED, propedit_brd_chg, NULL, pcb_propedit_cookie);
 }
 
 void pcb_propdlg_uninit(void)

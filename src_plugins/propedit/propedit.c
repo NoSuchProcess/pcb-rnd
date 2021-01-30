@@ -32,6 +32,7 @@
 #include "props.h"
 #include "propsel.h"
 #include "propdlg.h"
+#include "event.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/error.h>
@@ -365,7 +366,7 @@ fgw_error_t pcb_act_propprint(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static const char *propedit_cookie = "propedit";
+const char *pcb_propedit_cookie = "propedit";
 
 rnd_action_t propedit_action_list[] = {
 	{"propedit", pcb_act_propedit, pcb_acth_propedit, pcb_acts_propedit},
@@ -380,7 +381,8 @@ int pplg_check_ver_propedit(int ver_needed) { return 0; }
 void pplg_uninit_propedit(void)
 {
 	pcb_propdlg_uninit();
-	rnd_remove_actions_by_cookie(propedit_cookie);
+	rnd_remove_actions_by_cookie(pcb_propedit_cookie);
+	rnd_event_unbind_allcookie(pcb_propedit_cookie);
 }
 
 int pplg_init_propedit(void)
@@ -397,7 +399,7 @@ int pplg_init_propedit(void)
 		return -1;
 	}
 
-	RND_REGISTER_ACTIONS(propedit_action_list, propedit_cookie)
+	RND_REGISTER_ACTIONS(propedit_action_list, pcb_propedit_cookie)
 	pcb_propdlg_init();
 	return 0;
 }
