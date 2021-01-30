@@ -1,0 +1,9 @@
+$class export
+$short export drawing in C code
+$long C code usable in pcb-rnd preview draw
+$fmt-native no
+$fmt-feature-w C drawing code
+$state works
+$package export
+default buildin
+autoload 1
