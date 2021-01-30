@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - ADMIN: generate new keys, schedule next release before expiry (21 april)
-- FEATURE: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
++ FEATURE: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
 - BUG: fawk script oneliner fails in batch (./a) [report: Igor2]
 - BUG: open the command line with {:}, then right click over empty board, ignore the context menu, right click again -> gtk GUI gray control [report: Majenko]
 - BUG: font selector {w f} prints black font on black background if the background color is black [report: Majenko]
