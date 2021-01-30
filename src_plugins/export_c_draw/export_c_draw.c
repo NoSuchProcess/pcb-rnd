@@ -62,6 +62,7 @@ const char *c_draw_cookie = "c_draw HID";
 static pcb_cam_t c_draw_cam;
 
 typedef struct rnd_hid_gc_s {
+	rnd_core_gc_t core_gc;
 	rnd_color_t color, last_color;
 	rnd_cap_style_t style, last_style;
 	rnd_coord_t capw, last_capw;
