@@ -718,17 +718,12 @@ static void propdlg_unit_change(rnd_conf_native_t *cfg, int arr_idx)
 	}
 }
 
-static void propedit_dlg_refresh(propdlg_t *pd)
-{
-	rnd_trace("propedit dialog refresh!\n");
-}
-
 static void propedit_brd_chg(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
 {
 	propdlg_t *pd;
 	for(pd = gdl_first(&propdlgs); pd != NULL; pd = gdl_next(&propdlgs, pd))
 		if (pd->pe.selection || (pd->pe.objs.lst.length != 0))
-			propedit_dlg_refresh(pd);
+			prop_refresh(pd);
 }
 
 static rnd_conf_hid_id_t propdlg_conf_id;
