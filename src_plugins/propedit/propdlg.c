@@ -227,6 +227,11 @@ static void help_trace_clearance(rnd_hid_attribute_t *attrib, rnd_hid_preview_t 
 #	include "help/clearance.c"
 }
 
+static void help_text_scale(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+{
+#	include "help/text_scale.c"
+}
+
 static void prop_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	if (help_expose != NULL)
@@ -339,6 +344,7 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 		/* update the help preview */
 		if (strcmp(row->cell[0], "thickness") == 0)  help_expose = help_trace_thickness;
 		if (strcmp(row->cell[0], "clearance") == 0)  help_expose = help_trace_clearance;
+		if (strcmp(row->cell[0], "scale") == 0)      help_expose = help_text_scale;
 	}
 
 	if (last_help != help_expose) {
