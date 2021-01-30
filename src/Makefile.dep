@@ -2452,6 +2452,67 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_nogui.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h hid_cam.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_init.h
+../src_plugins/export_c_draw/export_c_draw.o: \
+ ../src_plugins/export_c_draw/export_c_draw.c ../config.h \
+ ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
+ ../src_3rd/librnd-local/src/librnd/core/unit.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
+ ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/color.h \
+ ../src_3rd/librnd-local/src/librnd/core/math_helper.h board.h \
+ vtroutestyle.h attrib.h global_typedefs.h layer.h obj_common.h flag.h \
+ data_parent.h obj_arc_list.h obj_arc.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ ../src_3rd/librnd-local/src/librnd/poly/polyarea.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/librnd-local/src/../src_3rd/genht/htip.h \
+ ../src_3rd/librnd-local/src/librnd/core/box.h \
+ ../src_3rd/librnd-local/src/librnd/core/misc_util.h obj_gfx_list.h \
+ obj_gfx.h layer_grp.h rats_patch.h board.h \
+ ../src_3rd/librnd-local/src/librnd/core/hidlib.h data.h crosshair.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid.h \
+ ../src_3rd/librnd-local/src/librnd/core/error.h route.h buffer.h \
+ ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h obj_rat_list.h \
+ obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h \
+ ../src_3rd/librnd-local/src/librnd/poly/rtree2_compat.h \
+ ../src_3rd/librnd-local/src/librnd/poly/rtree.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genrtree/genrtree_api.h ht_subc.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
+ obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
+ layer.h layer_vis.h \
+ ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
+ ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
+ ../src_3rd/librnd-local/src/librnd/core/safe_fs.h funchash_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_nogui.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_init.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h hid_cam.h
 ../src_plugins/export_dsn/dsn.o: ../src_plugins/export_dsn/dsn.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
@@ -9871,11 +9932,22 @@
  ../src_3rd/librnd-local/src/librnd/core/conf_hid.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
- ../src_3rd/librnd-local/src/librnd/core/list_conf.h netlist.h \
+ ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_inlines.h netlist.h event.h \
+ ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_plugins/propedit/props.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtl0.h idpath.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
- ../src_plugins/propedit/propsel.h
+ ../src_plugins/propedit/propsel.h \
+ ../src_plugins/propedit/help/thickness.c \
+ ../src_plugins/propedit/help/clearance.c \
+ ../src_plugins/propedit/help/text_scale.c \
+ ../src_plugins/propedit/help/text_scale_x.c \
+ ../src_plugins/propedit/help/text_scale_y.c \
+ ../src_plugins/propedit/help/text_thickness.c \
+ ../src_plugins/propedit/help/text_rot.c \
+ ../src_plugins/propedit/help/arc_angles.c \
+ ../src_plugins/propedit/help/arc_r.c
 ../src_plugins/propedit/propedit.o: ../src_plugins/propedit/propedit.c \
  board.h ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -9929,7 +10001,8 @@
  ../src_plugins/propedit/props.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtl0.h idpath.h \
  ../src_plugins/propedit/propsel.h ../src_plugins/propedit/propdlg.h \
- ../src_3rd/librnd-local/src/librnd/core/actions.h \
+ ../src_3rd/librnd-local/src/librnd/core/actions.h event.h \
+ ../src_3rd/librnd-local/src/librnd/core/event.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h layer.h \
  layer_addr.h layer_grp.h search.h crosshair.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h
@@ -11126,7 +11199,8 @@
  ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
- board.h vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h board.h \
+ vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h \
@@ -11158,6 +11232,9 @@
  ../src_plugins/show_netnames/show_netnames_conf.h \
  ../src_plugins/show_netnames/menu_internal.c \
  ../src_plugins/show_netnames/conf_internal.c \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht.c \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht_inlines.h \
  ../src_plugins/show_netnames/show_netnames_conf_fields.h
 ../src_plugins/sketch_route/ewire.o: ../src_plugins/sketch_route/ewire.c \
  ../src_plugins/sketch_route/ewire.h ../config.h \
@@ -12954,11 +13031,13 @@ draw.o: draw.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/rotate.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h stub_draw.h \
  layer_ui.h ../src_3rd/librnd-local/src/librnd/core/hid_inlines.h \
- funchash_core.h ../src_3rd/librnd-local/src/librnd/core/funchash.h \
- funchash_core_list.h obj_pstk_draw.h obj_line_draw.h obj_arc_draw.h \
- obj_rat_draw.h obj_poly_draw.h obj_text_draw.h obj_subc_parent.h \
- obj_gfx_draw.h draw_everything.c draw_label_smart.c draw_composite.c \
- draw_ly_spec.c
+ ../src_3rd/librnd-local/src/librnd/core/conf_hid.h funchash_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
+ obj_pstk_draw.h obj_line_draw.h obj_arc_draw.h obj_rat_draw.h \
+ obj_poly_draw.h obj_text_draw.h obj_subc_parent.h obj_gfx_draw.h \
+ draw_everything.c \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.c \
+ draw_label_smart.c draw_composite.c draw_ly_spec.c
 drc.o: drc.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid.h \
