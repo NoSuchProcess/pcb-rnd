@@ -232,6 +232,26 @@ static void help_text_scale(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv,
 #	include "help/text_scale.c"
 }
 
+static void help_text_scale_x(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+{
+#	include "help/text_scale_x.c"
+}
+
+static void help_text_scale_y(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+{
+#	include "help/text_scale_y.c"
+}
+
+static void help_text_thickness(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+{
+#	include "help/text_thickness.c"
+}
+
+static void help_text_rotation(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+{
+#	include "help/text_rot.c"
+}
+
 static void prop_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	if (help_expose != NULL)
@@ -345,6 +365,10 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 		if (strcmp(row->path, "p/trace/thickness") == 0)  help_expose = help_trace_thickness;
 		if (strcmp(row->path, "p/trace/clearance") == 0)  help_expose = help_trace_clearance;
 		if (strcmp(row->path, "p/text/scale") == 0)       help_expose = help_text_scale;
+		if (strcmp(row->path, "p/text/scale_x") == 0)     help_expose = help_text_scale_x;
+		if (strcmp(row->path, "p/text/scale_y") == 0)     help_expose = help_text_scale_y;
+		if (strcmp(row->path, "p/text/rotation") == 0)    help_expose = help_text_rotation;
+		if (strcmp(row->path, "p/text/thickness") == 0)   help_expose = help_text_thickness;
 	}
 
 	if (last_help != help_expose) {
