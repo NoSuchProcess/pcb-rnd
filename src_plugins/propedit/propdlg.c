@@ -41,7 +41,7 @@
 #include "props.h"
 #include "propsel.h"
 
-extern char pcb_propedit_cookie[];
+extern const char *pcb_propedit_cookie;
 
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
