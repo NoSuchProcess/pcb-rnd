@@ -290,12 +290,14 @@ static void c_draw_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 
 static void c_draw_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	;
+	use_gc(gc);
+	rnd_fprintf(f, "	rnd_render->draw_rect(gc, RND_MM_TO_COORD(%mm), RND_MM_TO_COORD(%mm), RND_MM_TO_COORD(%mm), RND_MM_TO_COORD(%mm));\n", x1, y1, x2, y2);
 }
 
 static void c_draw_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	;
+	use_gc(gc);
+	rnd_fprintf(f, "	rnd_render->fill_rect(gc, RND_MM_TO_COORD(%mm), RND_MM_TO_COORD(%mm), RND_MM_TO_COORD(%mm), RND_MM_TO_COORD(%mm));\n", x1, y1, x2, y2);
 }
 
 static void c_draw_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
@@ -318,14 +320,50 @@ static void c_draw_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, 
 		cx, cy, radius);
 }
 
+static void poly_print_coords(long n_coords, rnd_coord_t *c)
+{
+	long n;
+	for(n = 0; n < n_coords; c++) {
+		if ((n % 3) == 0)
+			fprintf(f, "\n			");
+		rnd_fprintf(f, "RND_MM_TO_COORD(%mm)", *c);
+		n++;
+		if (n == n_coords)
+			fprintf(f, "\n		};\n");
+		else
+			fprintf(f, ", ");
+	}
+}
+
+static void poly_pre(int n_coords, rnd_coord_t *x, rnd_coord_t *y)
+{
+	fprintf(f, "	{ /* polygon of %d points */\n", n_coords);
+	fprintf(f, "		rnd_coord_t x[] = {");
+	poly_print_coords(n_coords, x);
+	fprintf(f, "		rnd_coord_t y[] = {");
+	poly_print_coords(n_coords, y);
+}
+
+static void poly_post(void)
+{
+	fprintf(f, "	}\n");
+}
+
 static void c_draw_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
-;
+	use_gc(gc);
+	poly_pre(n_coords, x, y);
+	rnd_fprintf(f, "		rnd_render->fill_polygon_offs(gc, %d, x, y, RND_MM_TO_COORD(%mm), RND_MM_TO_COORD(%mm));\n",
+		n_coords, dx, dy);
+	poly_post();
 }
 
 static void c_draw_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
-;
+	use_gc(gc);
+	poly_pre(n_coords, x, y);
+	fprintf(f, "		rnd_render->fill_polygon(gc, %d, x, y);\n", n_coords);
+	poly_post();
 }
 
 
