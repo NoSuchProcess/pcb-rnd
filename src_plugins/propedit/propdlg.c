@@ -342,9 +342,9 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 		p = pcb_props_get(&ctx->pe, row->user_data);
 
 		/* update the help preview */
-		if (strcmp(row->cell[0], "thickness") == 0)  help_expose = help_trace_thickness;
-		if (strcmp(row->cell[0], "clearance") == 0)  help_expose = help_trace_clearance;
-		if (strcmp(row->cell[0], "scale") == 0)      help_expose = help_text_scale;
+		if (strcmp(row->path, "p/trace/thickness") == 0)  help_expose = help_trace_thickness;
+		if (strcmp(row->path, "p/trace/clearance") == 0)  help_expose = help_trace_clearance;
+		if (strcmp(row->path, "p/text/scale") == 0)       help_expose = help_text_scale;
 	}
 
 	if (last_help != help_expose) {
