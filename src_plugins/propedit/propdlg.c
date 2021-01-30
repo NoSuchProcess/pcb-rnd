@@ -35,6 +35,7 @@
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_tree.h>
 #include <librnd/core/conf_hid.h>
+#include <librnd/core/hid_inlines.h>
 #include "netlist.h"
 #include "event.h"
 
@@ -46,7 +47,7 @@ extern const char *pcb_propedit_cookie;
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	pcb_propedit_t pe;
-	int wtree, wfilter, wtype, wvals, wscope;
+	int wtree, wfilter, wtype, wvals, wscope, wprev;
 	int wabs[PCB_PROPT_max], wedit[PCB_PROPT_max];
 	unsigned lock:1; /* do not refresh while editing */
 	gdl_elem_t link;
@@ -214,9 +215,22 @@ static void prop_pcb2dlg(propdlg_t *ctx)
 	}
 }
 
+static void (*help_expose)(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e) = NULL;
+
+static void help_trace_thickness(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+{
+#	include "help/thickness.c"
+}
+
+static void help_trace_clearance(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+{
+#	include "help/clearance.c"
+}
+
 static void prop_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
-	
+	if (help_expose != NULL)
+		help_expose(attrib, prv, gc, e);
 }
 
 
@@ -314,9 +328,25 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 	rnd_hid_tree_t *tree = attrib->wdata;
 	propdlg_t *ctx = tree->user_ctx;
 	pcb_props_t *p = NULL;
+	void (*last_help)(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e) = NULL;
 
-	if (row != NULL)
+	last_help = help_expose;
+	help_expose = NULL;
+
+	if (row != NULL) {
 		p = pcb_props_get(&ctx->pe, row->user_data);
+
+		/* update the help preview */
+		if (strcmp(row->cell[0], "thickness") == 0)  help_expose = help_trace_thickness;
+		if (strcmp(row->cell[0], "clearance") == 0)  help_expose = help_trace_clearance;
+	}
+
+	if (last_help != help_expose) {
+		rnd_hid_attr_val_t hv;
+
+		hv.str = NULL;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+	}
 
 	prop_vals_update(ctx, p);
 }
@@ -660,7 +690,8 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 			RND_DAD_BEGIN_VBOX(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 				RND_DAD_BEGIN_VBOX(ctx->dlg);
-					RND_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, NULL, &prvbb, 100, 100, ctx);
+					RND_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, NULL, &prvbb, 150, 150, ctx);
+						ctx->wprev = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_END(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "<scope>");
 					ctx->wscope = RND_DAD_CURRENT(ctx->dlg);
