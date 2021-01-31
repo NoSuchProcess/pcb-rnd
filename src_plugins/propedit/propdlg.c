@@ -379,6 +379,7 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 		/* update the help preview */
 		if (strcmp(row->path, "p/trace/thickness") == 0)               help_expose = help_trace_thickness;
 		else if (strcmp(row->path, "p/trace/clearance") == 0)          help_expose = help_trace_clearance;
+		else if (strcmp(row->path, "p/padstack/clearance") == 0)       help_expose = help_trace_clearance;
 		else if (strcmp(row->path, "p/text/scale") == 0)               help_expose = help_text_scale;
 		else if (strcmp(row->path, "p/text/scale_x") == 0)             help_expose = help_text_scale_x;
 		else if (strcmp(row->path, "p/text/scale_y") == 0)             help_expose = help_text_scale_y;
@@ -396,7 +397,13 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 		else if (strcmp(row->path, "p/flags/floater") == 0)            helptxt = "When set, object\ncan be moved freely\neven if it is part\nof a subcircuit";
 		else if (strcmp(row->path, "p/flags/onsolder") == 0)           helptxt = "Object is \"on the\nother side\";\nin practice: mirror";
 		else if (strcmp(row->path, "p/trace/enforce_clearance") == 0)  helptxt = "Clearances within this\npolygon will be at least\nthis large even if\nthe clearing object would\nuse a smaller clearance\n(Only for clearing\nobjects)";
-
+		else if (strcmp(row->path, "p/padstack/hbottom") == 0)         helptxt = "In case of blind/burried\nvia, the address of the bottom\ncopper layer the hole\nis spanning to";
+		else if (strcmp(row->path, "p/padstack/htop") == 0)            helptxt = "In case of blind/burried\nvia, the address of the top\ncopper layer the hole\nis spanning to";
+		else if (strcmp(row->path, "p/padstack/hole") == 0)            helptxt = "Hole diameter.\nIf 0, no hole.";
+		else if (strcmp(row->path, "p/padstack/plated") == 0)          helptxt = "When set, the hole\nor slot of the padstack\nis copper plated.";
+		else if (strcmp(row->path, "p/padstack/proto") == 0)           helptxt = "Padstack prototype ID\nto use. Determines padstack\ngeometry per layer.";
+		else if (strcmp(row->path, "p/padstack/smirror") == 0)         helptxt = "Swap layers of the\npadstack prototype so\nit is rendered upside down\n(layerstack mirror)";
+		else if (strcmp(row->path, "p/padstack/xmirror") == 0)         helptxt = "Mirror geometry over\nthe X axis.";
 	}
 
 	if (last_help != help_expose) {
