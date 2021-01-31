@@ -47,7 +47,7 @@ extern const char *pcb_propedit_cookie;
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	pcb_propedit_t pe;
-	int wtree, wfilter, wtype, wvals, wscope, wprev;
+	int wtree, wfilter, wtype, wvals, wscope, wprev, whelptxt;
 	int wabs[PCB_PROPT_max], wedit[PCB_PROPT_max];
 	unsigned lock:1; /* do not refresh while editing */
 	gdl_elem_t link;
@@ -262,6 +262,10 @@ static void help_arc_r(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_
 #	include "help/arc_r.c"
 }
 
+static void prop_nil_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
+{
+}
+
 static void prop_prv_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e)
 {
 	if (help_expose != NULL)
@@ -364,6 +368,7 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 	propdlg_t *ctx = tree->user_ctx;
 	pcb_props_t *p = NULL;
 	void (*last_help)(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e) = NULL;
+	const char *helptxt = NULL;
 
 	last_help = help_expose;
 	help_expose = NULL;
@@ -383,13 +388,35 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 		if (strcmp(row->path, "p/arc/angle/delta") == 0)  help_expose = help_arc_angles;
 		if (strcmp(row->path, "p/arc/height") == 0)       help_expose = help_arc_r;
 		if (strcmp(row->path, "p/arc/width") == 0)        help_expose = help_arc_r;
+
+		if (strcmp(row->path, "p/flags/clearline") == 0)  helptxt = "When set, object tries\nto clear into\npolygons (the\npolygon needs to\nhave the clearpoly\nflag set)";
+		if (strcmp(row->path, "p/flags/clearpoly") == 0)  helptxt = "When set, objects can\nclear into the\npolygon (the object\nneeds to have the\nclearline flag set)";
+		if (strcmp(row->path, "p/flags/clearpolypoly") == 0)  helptxt = "When set, polygons can\nclear into the\npolygon (the polygon\nneeds to have the\nclearline flag set\nand clearpolypoly flag\nunset)";
+		if (strcmp(row->path, "p/flags/dyntext") == 0)    helptxt = "When set, %var%\ntemplates in text object\nstrings are substituted";
+		if (strcmp(row->path, "p/flags/floater") == 0)    helptxt = "When set, object\ncan be moved freely\neven if it is part\nof a subcircuit";
+		if (strcmp(row->path, "p/flags/onsolder") == 0)   helptxt = "Object is \"on the\nother side\";\nin practice: mirror";
+		if (strcmp(row->path, "p/trace/enforce_clearance") == 0) helptxt = "Clearances within this\npolygon will be at least\nthis large even if\nthe clearing object would\nuse a smaller clearance\n(Only for clearing\nobjects)";
+
 	}
 
 	if (last_help != help_expose) {
 		rnd_hid_attr_val_t hv;
-
 		hv.str = NULL;
 		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+	}
+
+	if (helptxt != NULL) {
+		rnd_hid_attr_val_t hv;
+
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wprev, 1);
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->whelptxt, 0);
+
+		hv.str = helptxt;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->whelptxt, &hv);
+	}
+	else {
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->whelptxt, 1);
+		rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wprev, 0);
 	}
 
 	prop_vals_update(ctx, p);
@@ -733,9 +760,12 @@ static void pcb_dlg_propdlg(propdlg_t *ctx)
 			/* right: preview and per type edit */
 			RND_DAD_BEGIN_VBOX(ctx->dlg);
 				RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-				RND_DAD_BEGIN_VBOX(ctx->dlg);
+				RND_DAD_BEGIN_HBOX(ctx->dlg);
 					RND_DAD_PREVIEW(ctx->dlg, prop_prv_expose_cb, prop_prv_mouse_cb, NULL, NULL, &prvbb, 150, 150, ctx);
 						ctx->wprev = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_LABEL(ctx->dlg, "help");
+						ctx->whelptxt = RND_DAD_CURRENT(ctx->dlg);
+					RND_DAD_PREVIEW(ctx->dlg, prop_nil_expose_cb, NULL, NULL, NULL, &prvbb, 1, 150, ctx); /* placeholder */
 				RND_DAD_END(ctx->dlg);
 				RND_DAD_LABEL(ctx->dlg, "<scope>");
 					ctx->wscope = RND_DAD_CURRENT(ctx->dlg);
