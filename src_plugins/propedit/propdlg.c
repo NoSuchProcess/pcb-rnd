@@ -377,25 +377,25 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 		p = pcb_props_get(&ctx->pe, row->user_data);
 
 		/* update the help preview */
-		if (strcmp(row->path, "p/trace/thickness") == 0)  help_expose = help_trace_thickness;
-		if (strcmp(row->path, "p/trace/clearance") == 0)  help_expose = help_trace_clearance;
-		if (strcmp(row->path, "p/text/scale") == 0)       help_expose = help_text_scale;
-		if (strcmp(row->path, "p/text/scale_x") == 0)     help_expose = help_text_scale_x;
-		if (strcmp(row->path, "p/text/scale_y") == 0)     help_expose = help_text_scale_y;
-		if (strcmp(row->path, "p/text/rotation") == 0)    help_expose = help_text_rotation;
-		if (strcmp(row->path, "p/text/thickness") == 0)   help_expose = help_text_thickness;
-		if (strcmp(row->path, "p/arc/angle/start") == 0)  help_expose = help_arc_angles;
-		if (strcmp(row->path, "p/arc/angle/delta") == 0)  help_expose = help_arc_angles;
-		if (strcmp(row->path, "p/arc/height") == 0)       help_expose = help_arc_r;
-		if (strcmp(row->path, "p/arc/width") == 0)        help_expose = help_arc_r;
+		if (strcmp(row->path, "p/trace/thickness") == 0)               help_expose = help_trace_thickness;
+		else if (strcmp(row->path, "p/trace/clearance") == 0)          help_expose = help_trace_clearance;
+		else if (strcmp(row->path, "p/text/scale") == 0)               help_expose = help_text_scale;
+		else if (strcmp(row->path, "p/text/scale_x") == 0)             help_expose = help_text_scale_x;
+		else if (strcmp(row->path, "p/text/scale_y") == 0)             help_expose = help_text_scale_y;
+		else if (strcmp(row->path, "p/text/rotation") == 0)            help_expose = help_text_rotation;
+		else if (strcmp(row->path, "p/text/thickness") == 0)           help_expose = help_text_thickness;
+		else if (strcmp(row->path, "p/arc/angle/start") == 0)          help_expose = help_arc_angles;
+		else if (strcmp(row->path, "p/arc/angle/delta") == 0)          help_expose = help_arc_angles;
+		else if (strcmp(row->path, "p/arc/height") == 0)               help_expose = help_arc_r;
+		else if (strcmp(row->path, "p/arc/width") == 0)                help_expose = help_arc_r;
 
-		if (strcmp(row->path, "p/flags/clearline") == 0)  helptxt = "When set, object tries\nto clear into\npolygons (the\npolygon needs to\nhave the clearpoly\nflag set)";
-		if (strcmp(row->path, "p/flags/clearpoly") == 0)  helptxt = "When set, objects can\nclear into the\npolygon (the object\nneeds to have the\nclearline flag set)";
-		if (strcmp(row->path, "p/flags/clearpolypoly") == 0)  helptxt = "When set, polygons can\nclear into the\npolygon (the polygon\nneeds to have the\nclearline flag set\nand clearpolypoly flag\nunset)";
-		if (strcmp(row->path, "p/flags/dyntext") == 0)    helptxt = "When set, %var%\ntemplates in text object\nstrings are substituted";
-		if (strcmp(row->path, "p/flags/floater") == 0)    helptxt = "When set, object\ncan be moved freely\neven if it is part\nof a subcircuit";
-		if (strcmp(row->path, "p/flags/onsolder") == 0)   helptxt = "Object is \"on the\nother side\";\nin practice: mirror";
-		if (strcmp(row->path, "p/trace/enforce_clearance") == 0) helptxt = "Clearances within this\npolygon will be at least\nthis large even if\nthe clearing object would\nuse a smaller clearance\n(Only for clearing\nobjects)";
+		else if (strcmp(row->path, "p/flags/clearline") == 0)          helptxt = "When set, object tries\nto clear into\npolygons (the\npolygon needs to\nhave the clearpoly\nflag set)";
+		else if (strcmp(row->path, "p/flags/clearpoly") == 0)          helptxt = "When set, objects can\nclear into the\npolygon (the object\nneeds to have the\nclearline flag set)";
+		else if (strcmp(row->path, "p/flags/clearpolypoly") == 0)      helptxt = "When set, polygons can\nclear into the\npolygon (the polygon\nneeds to have the\nclearline flag set\nand clearpolypoly flag\nunset)";
+		else if (strcmp(row->path, "p/flags/dyntext") == 0)            helptxt = "When set, %var%\ntemplates in text object\nstrings are substituted";
+		else if (strcmp(row->path, "p/flags/floater") == 0)            helptxt = "When set, object\ncan be moved freely\neven if it is part\nof a subcircuit";
+		else if (strcmp(row->path, "p/flags/onsolder") == 0)           helptxt = "Object is \"on the\nother side\";\nin practice: mirror";
+		else if (strcmp(row->path, "p/trace/enforce_clearance") == 0)  helptxt = "Clearances within this\npolygon will be at least\nthis large even if\nthe clearing object would\nuse a smaller clearance\n(Only for clearing\nobjects)";
 
 	}
 
