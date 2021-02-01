@@ -5,5 +5,5 @@ $fmt-native no
 $fmt-feature-w C drawing code
 $state works
 $package export
-default buildin
+default disable-all
 autoload 1
