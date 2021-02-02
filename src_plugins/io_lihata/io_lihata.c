@@ -112,154 +112,45 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v7.save_as_subd_init = io_lihata_save_as_subd_init;
 	plug_io_lihata_v7.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
 	plug_io_lihata_v7.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
-
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v7);
 
-	plug_io_lihata_v6.plugin_data = NULL;
-	plug_io_lihata_v6.fmt_support_prio = io_lihata_fmt;
-	plug_io_lihata_v6.test_parse = io_lihata_test_parse;
-	plug_io_lihata_v6.parse_pcb = io_lihata_parse_pcb;
-	plug_io_lihata_v6.parse_footprint = io_lihata_parse_subc;
-	plug_io_lihata_v6.parse_font = io_lihata_parse_font;
-	plug_io_lihata_v6.parse_buffer = io_lihata_parse_buffer;
-	plug_io_lihata_v6.write_font = io_lihata_write_font;
-	plug_io_lihata_v6.write_buffer = io_lihata_write_buffer;
-	plug_io_lihata_v6.write_subcs_head = io_lihata_write_subcs_head;
-	plug_io_lihata_v6.write_subcs_subc = io_lihata_write_subcs_subc;
-	plug_io_lihata_v6.write_subcs_tail = io_lihata_write_subcs_tail;
+	plug_io_lihata_v6 = plug_io_lihata_v7;
 	plug_io_lihata_v6.write_pcb = io_lihata_write_pcb_v6;
-	plug_io_lihata_v6.default_fmt = "lihata";
 	plug_io_lihata_v6.description = "lihata board v6";
 	plug_io_lihata_v6.save_preference_prio = 100;
-	plug_io_lihata_v6.default_extension = ".lht";
-	plug_io_lihata_v6.fp_extension = ".lht";
-	plug_io_lihata_v6.mime_type = "application/x-pcbrnd-board";
-	plug_io_lihata_v6.save_as_subd_init = io_lihata_save_as_subd_init;
-	plug_io_lihata_v6.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
-	plug_io_lihata_v6.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
-
-
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v6);
 
 
-	plug_io_lihata_v5.plugin_data = NULL;
-	plug_io_lihata_v5.fmt_support_prio = io_lihata_fmt;
-	plug_io_lihata_v5.test_parse = io_lihata_test_parse;
-	plug_io_lihata_v5.parse_pcb = io_lihata_parse_pcb;
-	plug_io_lihata_v5.parse_footprint = io_lihata_parse_subc;
-	plug_io_lihata_v5.parse_font = io_lihata_parse_font;
-	plug_io_lihata_v5.parse_buffer = NULL;
-	plug_io_lihata_v5.write_font = io_lihata_write_font;
-	plug_io_lihata_v5.write_buffer = NULL;
-	plug_io_lihata_v5.write_subcs_head = io_lihata_write_subcs_head;
-	plug_io_lihata_v5.write_subcs_subc = io_lihata_write_subcs_subc;
-	plug_io_lihata_v5.write_subcs_tail = io_lihata_write_subcs_tail;
+	plug_io_lihata_v5 = plug_io_lihata_v7;
 	plug_io_lihata_v5.write_pcb = io_lihata_write_pcb_v5;
-	plug_io_lihata_v5.default_fmt = "lihata";
 	plug_io_lihata_v5.description = "lihata board v5";
 	plug_io_lihata_v5.save_preference_prio = 100;
-	plug_io_lihata_v5.default_extension = ".lht";
-	plug_io_lihata_v5.fp_extension = ".lht";
-	plug_io_lihata_v5.mime_type = "application/x-pcbrnd-board";
-	plug_io_lihata_v5.save_as_subd_init = io_lihata_save_as_subd_init;
-	plug_io_lihata_v5.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
-	plug_io_lihata_v5.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
-
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v5);
 
-	plug_io_lihata_v4.plugin_data = NULL;
-	plug_io_lihata_v4.fmt_support_prio = io_lihata_fmt;
-	plug_io_lihata_v4.test_parse = io_lihata_test_parse;
-	plug_io_lihata_v4.parse_pcb = io_lihata_parse_pcb;
-	plug_io_lihata_v4.parse_footprint = io_lihata_parse_subc;
-	plug_io_lihata_v4.parse_font = io_lihata_parse_font;
-	plug_io_lihata_v4.parse_buffer = NULL;
-	plug_io_lihata_v4.write_font = io_lihata_write_font;
-	plug_io_lihata_v4.write_buffer = NULL;
-	plug_io_lihata_v4.write_subcs_head = io_lihata_write_subcs_head;
-	plug_io_lihata_v4.write_subcs_subc = io_lihata_write_subcs_subc;
-	plug_io_lihata_v4.write_subcs_tail = io_lihata_write_subcs_tail;
+	plug_io_lihata_v4 = plug_io_lihata_v7;
 	plug_io_lihata_v4.write_pcb = io_lihata_write_pcb_v4;
-	plug_io_lihata_v4.default_fmt = "lihata";
 	plug_io_lihata_v4.description = "lihata board v4";
 	plug_io_lihata_v4.save_preference_prio = 100;
-	plug_io_lihata_v4.default_extension = ".lht";
-	plug_io_lihata_v4.fp_extension = ".lht";
-	plug_io_lihata_v4.mime_type = "application/x-pcbrnd-board";
-	plug_io_lihata_v4.save_as_subd_init = io_lihata_save_as_subd_init;
-	plug_io_lihata_v4.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
-	plug_io_lihata_v4.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
-
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v4);
 
-	plug_io_lihata_v3.plugin_data = NULL;
-	plug_io_lihata_v3.fmt_support_prio = io_lihata_fmt;
-	plug_io_lihata_v3.test_parse = io_lihata_test_parse;
-	plug_io_lihata_v3.parse_pcb = io_lihata_parse_pcb;
-	plug_io_lihata_v3.parse_footprint = io_lihata_parse_subc;
-	plug_io_lihata_v3.parse_font = io_lihata_parse_font;
-	plug_io_lihata_v3.parse_buffer = NULL;
-	plug_io_lihata_v3.write_font = io_lihata_write_font;
-	plug_io_lihata_v3.write_buffer = NULL;
-	plug_io_lihata_v3.write_subcs_head = io_lihata_write_subcs_head;
-	plug_io_lihata_v3.write_subcs_subc = io_lihata_write_subcs_subc;
-	plug_io_lihata_v3.write_subcs_tail = io_lihata_write_subcs_tail;
+	plug_io_lihata_v3 = plug_io_lihata_v7;
 	plug_io_lihata_v3.write_pcb = io_lihata_write_pcb_v3;
-	plug_io_lihata_v3.default_fmt = "lihata";
 	plug_io_lihata_v3.description = "lihata board v3";
 	plug_io_lihata_v3.save_preference_prio = 100;
-	plug_io_lihata_v3.default_extension = ".lht";
-	plug_io_lihata_v3.fp_extension = ".lht";
-	plug_io_lihata_v3.mime_type = "application/x-pcbrnd-board";
-	plug_io_lihata_v3.save_as_subd_init = io_lihata_save_as_subd_init;
-	plug_io_lihata_v3.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
-	plug_io_lihata_v3.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
-
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v3);
 
-	plug_io_lihata_v2.plugin_data = NULL;
-	plug_io_lihata_v2.fmt_support_prio = io_lihata_fmt;
-	plug_io_lihata_v2.test_parse = io_lihata_test_parse;
-	plug_io_lihata_v2.parse_pcb = io_lihata_parse_pcb;
-	plug_io_lihata_v2.parse_footprint = NULL;
-	plug_io_lihata_v2.parse_font = io_lihata_parse_font;
-	plug_io_lihata_v2.parse_buffer = NULL;
-	plug_io_lihata_v2.write_font = io_lihata_write_font;
-	plug_io_lihata_v2.write_buffer = NULL;
+	plug_io_lihata_v2 = plug_io_lihata_v7;
 	plug_io_lihata_v2.write_pcb = io_lihata_write_pcb_v2;
-	plug_io_lihata_v2.default_fmt = "lihata";
 	plug_io_lihata_v2.description = "lihata board v2";
 	plug_io_lihata_v2.save_preference_prio = 100;
-	plug_io_lihata_v2.default_extension = ".lht";
-	plug_io_lihata_v2.fp_extension = ".lht";
-	plug_io_lihata_v2.mime_type = "application/x-pcbrnd-board";
-	plug_io_lihata_v2.save_as_subd_init = io_lihata_save_as_subd_init;
-	plug_io_lihata_v2.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
-	plug_io_lihata_v2.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
-
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v2);
 
-	plug_io_lihata_v1.plugin_data = NULL;
-	plug_io_lihata_v1.fmt_support_prio = io_lihata_fmt;
-	plug_io_lihata_v1.test_parse = io_lihata_test_parse;
-	plug_io_lihata_v1.parse_pcb = io_lihata_parse_pcb;
-	plug_io_lihata_v1.parse_footprint = NULL;
-	plug_io_lihata_v1.map_footprint = io_lihata_map_footprint; /* it is enough to have this for one version so the check is done only once */
-	plug_io_lihata_v1.parse_font = io_lihata_parse_font;
-	plug_io_lihata_v1.parse_font = NULL;
-	plug_io_lihata_v1.write_font = io_lihata_write_font;
-	plug_io_lihata_v1.write_buffer = NULL;
+	plug_io_lihata_v1 = plug_io_lihata_v7;
 	plug_io_lihata_v1.write_pcb = io_lihata_write_pcb_v1;
-	plug_io_lihata_v1.default_fmt = "lihata";
+	plug_io_lihata_v1.map_footprint = io_lihata_map_footprint; /* it is enough to have this for one version so the check is done only once */
+	plug_io_lihata_v1.write_pcb = io_lihata_write_pcb_v1;
 	plug_io_lihata_v1.description = "lihata board v1";
 	plug_io_lihata_v1.save_preference_prio = 100;
-	plug_io_lihata_v1.default_extension = ".lht";
-	plug_io_lihata_v1.fp_extension = ".lht";
-	plug_io_lihata_v1.mime_type = "application/x-pcbrnd-board";
-	plug_io_lihata_v1.save_as_subd_init = io_lihata_save_as_subd_init;
-	plug_io_lihata_v1.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
-	plug_io_lihata_v1.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
-
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v1);
 
 #define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
