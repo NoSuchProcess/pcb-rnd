@@ -53,7 +53,7 @@ typedef struct {
 static desc_t desc[] = {
 	{PCB_BRAVE_NOXOR, "noxor", "avoid xor drawing", "use alternative rendering instead of xor draw", 0},
 	{PCB_BRAVE_NOCLIPBATCH, "noclipbatch", "do not batch poly clipping", "skip optimization of batching polygon clipping in some expensive user operations", 0},
-	{PCB_BRAVE_ENFORCE_CLR_MOVE, "enforceclrmove", "enforce object clearance on line point or line move", 0},
+	{PCB_BRAVE_NO_ENFORCE_CLR_MOVE, "enforceclrmove", "do not enforce object clearance on line point or line move", 0},
 	{0, NULL, NULL, NULL}
 };
 

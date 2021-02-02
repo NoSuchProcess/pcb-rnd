@@ -141,7 +141,7 @@ void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t 
 	rnd_coord_t mx = 0, my = 0;
 	pcb_board_t *pcb = (pcb_board_t *)hl;
 
-	if (conf_core.editor.auto_drc && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT) && (rnd_conf.editor.mode == pcb_crosshair.tool_move) && (pcb_brave & PCB_BRAVE_ENFORCE_CLR_MOVE)) {
+	if (conf_core.editor.auto_drc && (pcb_crosshair.AttachedObject.Type == PCB_OBJ_LINE_POINT) && (rnd_conf.editor.mode == pcb_crosshair.tool_move) && !(pcb_brave & PCB_BRAVE_NO_ENFORCE_CLR_MOVE)) {
 		pcb_find_t fctx;
 		pcb_line_t *line;
 
