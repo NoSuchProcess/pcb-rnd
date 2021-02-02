@@ -65,6 +65,8 @@
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/elem_rot.h"
 
+#include "brave.h"
+
 typedef struct {
 	vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
 	int rdver;
@@ -2482,6 +2484,13 @@ static int parse_board(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *nd)
 		case 5: loader = &plug_io_lihata_v5; break;
 		case 6: loader = &plug_io_lihata_v6; break;
 		case 7: loader = &plug_io_lihata_v7; break;
+		case 8:
+			if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
+				loader = &plug_io_lihata_v8;
+				break;
+			}
+			rnd_message(RND_MSG_ERROR, "can not load lihata v8: brave mode not enabled\n");
+			/* fall through */
 		default:
 			return iolht_error(nd, "Lihata board version %d not supported;\n"
 				"must be 1, 2, 3, 4, 5, 6 or 7.\n", rctx->rdver);

@@ -64,6 +64,8 @@
 
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
+#include "brave.h"
+
 /*#define CFMT "%[9]"*/
 #define CFMT "%.08$$mH"
 /*#define CFMT "%$$mn"*/
@@ -1880,6 +1882,14 @@ int io_lihata_write_pcb_v6(pcb_plug_io_t *ctx, FILE * FP, const char *old_filena
 int io_lihata_write_pcb_v7(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 7);
+}
+
+int io_lihata_write_pcb_v8(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
+{
+	if (pcb_brave & PCB_BRAVE_LIHATA_V8)
+		return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 8);
+	rnd_message(RND_MSG_ERROR, "Can not write lihata v8: brave mode not enabled\n");
+	return -1;
 }
 
 int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename)

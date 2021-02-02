@@ -33,7 +33,7 @@
 
 pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3,
               plug_io_lihata_v4, plug_io_lihata_v5, plug_io_lihata_v6,
-              plug_io_lihata_v7;
+              plug_io_lihata_v7, plug_io_lihata_v8;
 conf_io_lihata_t conf_io_lihata;
 
 pcb_plug_io_t *plug_io_lihata_default = &plug_io_lihata_v7;
@@ -113,6 +113,14 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v7.save_as_subd_uninit = io_lihata_save_as_subd_uninit;
 	plug_io_lihata_v7.save_as_fmt_changed = io_lihata_save_as_fmt_changed;
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v7);
+
+
+	plug_io_lihata_v8 = plug_io_lihata_v7;
+	plug_io_lihata_v8.write_pcb = io_lihata_write_pcb_v8;
+	plug_io_lihata_v8.description = "lihata board v8";
+	plug_io_lihata_v8.save_preference_prio = 1;
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v8);
+
 
 	plug_io_lihata_v6 = plug_io_lihata_v7;
 	plug_io_lihata_v6.write_pcb = io_lihata_write_pcb_v6;
