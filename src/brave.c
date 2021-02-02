@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2021 Tibor 'Igor2' Palinkas
  *
  *  This module, diag, was written and is Copyright (C) 2016 by Tibor Palinkas
  *  this module is also subject to the GNU GPL as described below
