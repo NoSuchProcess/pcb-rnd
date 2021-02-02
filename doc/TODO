@@ -10,15 +10,16 @@
 - BUG: kicad_io doesn't place subc without an (at); bug_files/kicad_subc_no_at [report: Miloh]
 - BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
-
-2. For later releases ===============================================================================
 - CLEANUP/FEATURE: lihata v8
 	- load/save text clearance (and make sure the GUI can set it), then remove the 0.5mm hardwired value from polygon.c
 	- deprecate saving rats [report: Igor2]
 	- make saving selected, found and warn flags optional to reduce VCS noise [report: Igor2]
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
-	- remove via geometry from route style
 	- manual layer binding (to LID)
+
+2. For later releases ===============================================================================
+- CLEANUP/FEATURE: lihata v8
+	- remove via geometry from route style
 - CLEANUP/FEATURE: new breadboard
 	- FEATURE: gfx rotated pixmap scale -> uneven x/y scale can not be done while rendering; change the API so the x/y aspect change is done in software during the rotation (pcb_pixmap_alloc_insert_transformed) and only an even x/y scale is done during rendering (ghid_draw_pixmap)
 	- DOC: pool node on how to use pixmap for breadboading
