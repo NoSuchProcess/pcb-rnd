@@ -14893,7 +14893,7 @@ obj_subc.o: obj_subc.c ../config.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h \
- ../src_3rd/librnd-local/src/librnd/core/error.h route.h brave.h data.h \
+ ../src_3rd/librnd-local/src/librnd/core/error.h route.h data.h \
  obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h \
  ../src_3rd/librnd-local/src/librnd/poly/rtree2_compat.h \
@@ -15216,8 +15216,7 @@ operation.o: operation.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h undo.h \
- ../src_3rd/libuundo/uundo.h undo_old.h brave.h extobj.h \
- obj_subc_parent.h draw.h
+ ../src_3rd/libuundo/uundo.h undo_old.h extobj.h obj_subc_parent.h draw.h
 pcb_menu_default.o: pcb_menu_default.c
 pcb_minuid.o: pcb_minuid.c ../src_3rd/libminuid/libminuid.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
@@ -16331,7 +16330,7 @@ undo_old.o: undo_old.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
  ../src_3rd/librnd-local/src/librnd/core/list_conf.h netlist.h \
- obj_poly_draw.h obj_term.h brave.h
+ obj_poly_draw.h obj_term.h
 view.o: view.c ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  idpath.h ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
