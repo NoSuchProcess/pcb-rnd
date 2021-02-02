@@ -477,7 +477,7 @@ fgw_error_t pcb_act_roundrect(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	double rot = 0.0, roundres = 1.0;
 	char *end;
 	pcb_shape_corner_t corner[4] = { PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND, PCB_CORN_ROUND};
-	char *err;
+	const char *err;
 
 	if (argc < 2) {
 		rnd_message(RND_MSG_ERROR, "roundrect() needs at least one parameters\n");
