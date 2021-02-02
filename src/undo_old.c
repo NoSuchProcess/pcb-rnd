@@ -71,8 +71,6 @@
 #include "obj_subc_parent.h"
 #include "obj_term.h"
 
-#include "brave.h"
-
 #define Locked pcb_undoing()
 
 /*** undo_old_str ***/

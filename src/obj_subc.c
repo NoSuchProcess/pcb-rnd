@@ -34,7 +34,6 @@
 #include "buffer.h"
 #include "board.h"
 #include "crosshair.h"
-#include "brave.h"
 #include "data.h"
 #include "data_it.h"
 #include <librnd/core/error.h>
