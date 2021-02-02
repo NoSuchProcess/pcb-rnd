@@ -135,7 +135,7 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 	int on_locked_too = (mode & PCB_OP_ON_LOCKED);
 	int no_subc_part = (mode & PCB_OP_NO_SUBC_PART);
 
-	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH) && (data != NULL))
+	if (data != NULL)
 		pcb_data_clip_inhibit_inc(data);
 
 
@@ -392,7 +392,7 @@ static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_
 	if (Reset && changed)
 		pcb_undo_inc_serial();
 
-	if (!(pcb_brave & PCB_BRAVE_NOCLIPBATCH) && (data != NULL))
+	if (data != NULL)
 		pcb_data_clip_inhibit_dec(data, 0);
 
 	return changed;
