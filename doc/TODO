@@ -11,8 +11,6 @@
 - BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
 - CLEANUP/FEATURE: lihata v8
-	- deprecate saving rats [report: Igor2]
-	- make saving selected, found and warn flags optional to reduce VCS noise [report: Igor2]
 	- remove netlist net ->style, should be a plain attribute (but keep the dedicated field in old versions)
 	- manual layer binding (to LID)
 
