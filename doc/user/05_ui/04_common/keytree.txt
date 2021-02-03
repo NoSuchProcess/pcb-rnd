@@ -259,6 +259,7 @@ s;f;	pcb-menu-default.lht	Flip(SelectedElements) 	Move selected subcircuits to o
 s;i;	pcb-menu-default.lht	Select(Invert) 	Invert selection
 s;k;	pcb-menu-default.lht	query(view, "@.p.flag.lock == 1 && isvoid(@.subc)")	List locked objects
 s;l;	pcb-menu-default.lht	MoveToCurrentLayer(Selected) 	Move selected objects to current layer
+s;p	pcb-menu-default.lht	propedit(selection) 	Edit properties
 s;r;	pcb-menu-default.lht	RemoveSelected() 	Remove selected objects
 s;s;	pcb-menu-default.lht	SearchDialog() 	Advanced search and select
 s;u;a;	pcb-menu-default.lht	Unselect(All) 	Unselect all objects
