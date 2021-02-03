@@ -38,6 +38,7 @@ ha:vendor_drill_map {
 		refdes = {^X.*}                   # Skip anything starting with X.
 		value  = {^JOHNSTECH_.*}          # Skip all Johnstech footprints based on the value of a part.
 		descr  = {^AMP_MICTOR_767054_1$}  # Skip based on the footprint attribute ("description" in old terminology)
+		a.foo  = {bar}                    # The a. prefix skips using arbitrary attribute (foo in this case)
 	}
 
 	# If specified, this section will change the current DRC

@@ -572,6 +572,9 @@ static void process_skips(lht_node_t *res)
 			else if (RND_NSTRCMP(n->name, "descr") == 0) {
 				attr = "footprint";
 			}
+			else if ((n->name[0] == 'a') && (n->name[1] == '.')) {
+				attr = n->name+2;
+			}
 			else {
 				rnd_hid_cfg_error(n, "invalid skip name; must be one of refdes, value, descr");
 				continue;
