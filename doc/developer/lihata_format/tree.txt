@@ -51,7 +51,7 @@ ha:pcb-rnd-board-v*            \t\t\tThe full, self-contained description of a p
   ha:FONT-ID                   the full description of a font; the node name is the integer font id or "geda_pcb" for font 0 (for historical reasons); the name is used only to make each node unique, the ID is also a field below ->
  ha:styles                     routing styles hash: collection of all available routing syles
  ha:netlists                   all available netlists
-  li:netlist                   the input netlist (as seen in the last netlist import, a.k.a. forward annotation)
+  li:input                     the input netlist (as seen in the last netlist import, a.k.a. forward annotation)
    ha:NETNAME                  a network
     style           string <=7 routing style hint; same as the style attribute; from v8 only the style attribute exists
     li:conn                    list of terminals connected to the network

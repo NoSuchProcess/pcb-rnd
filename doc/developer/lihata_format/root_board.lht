@@ -115,7 +115,7 @@ ha:lht_tree_doc { ha:roots {
 				type=ha
 				desc { all available netlists }
 				li:children {
-					ha:netlist {
+					ha:input {
 						type=li
 						desc { the input netlist (as seen in the last netlist import, a.k.a. forward annotation) }
 						li:children {
