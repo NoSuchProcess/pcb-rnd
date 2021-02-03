@@ -12,7 +12,7 @@
 <!-- /lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v* -->
 <g id="node1" class="node">
 <title>/lht_tree_doc/roots/pcb&#45;rnd&#45;board&#45;v*</title>
-<g id="a_node1"><a xlink:href="tree.html#/lht_tree_doc/roots/pcb-rnd-board-v*" xlink:title=" &#160;&#160;&#160;The full, self&#45;contained description of a printed circuit board. &#160;&#160;&#160;This is the root of a board .lht file. The * after the v in the name &#160;&#160;&#160;is an integer which is the format version. &#160;&#160;">
+<g id="a_node1"><a xlink:href="tree.html#/lht_tree_doc/roots/pcb-rnd-board-v*" xlink:title=" tttThe full, self&#45;contained description of a printed circuit board. tttThis is the root of a board .lht file. The * after the v in the name tttis an integer which is the format version. tt">
 <ellipse fill="none" stroke="#000000" cx="2067.0624" cy="-1511.5023" rx="90.5193" ry="27.6545"/>
 <text text-anchor="middle" x="2067.0624" y="-1515.8023" font-family="Times,serif" font-size="14.00" fill="#000000">ha:pcb&#45;rnd&#45;board&#45;v*</text>
 </a>
