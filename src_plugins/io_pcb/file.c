@@ -646,6 +646,8 @@ static void WriteLayerData(FILE * FP, rnd_cardinal_t Number, pcb_layer_t *layer)
 				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-mirror-x", "file format does not support different mirroring text in the x direction", "do not mirror, or mirror in the y direction (with the ONSOLDER flag)");
 			if (!pcb_text_old_direction(&dir, text->rot))
 				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text rotation", "text rotation angle rounded", "the gEDA/PCB file format does not support text rotation other than multiple of 90 degree");
+			if (text->clearance != 0)
+				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-clearance", "file format does not support custom text clearance value", "do not use text clearance or save in lihata >=v8");
 			rnd_fprintf(FP, "\tText[%[0] %[0] %d %d ", text->X, text->Y, dir, scale);
 			pcb_print_quoted_string(FP, (char *) RND_EMPTY(text->TextString));
 			fprintf(FP, " %s]\n", F2S(text, PCB_OBJ_TEXT));
