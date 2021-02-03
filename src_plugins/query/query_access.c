@@ -753,6 +753,7 @@ static int field_text(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 		case query_fields_rotation:
 		case query_fields_rot:      PCB_QRY_RET_DBL(res, t->rot);
 		case query_fields_thickness:PCB_QRY_RET_COORD(res, t->thickness);
+		case query_fields_clearance:PCB_QRY_RET_COORD(res, t->clearance);
 		case query_fields_string:   PCB_QRY_RET_STR(res, t->TextString);
 		case query_fields_area:     PCB_QRY_RET_DBL(res, (double)(t->BoundingBox.Y2 - t->BoundingBox.Y1) * (double)(t->BoundingBox.X2 - t->BoundingBox.X1));
 		default:;

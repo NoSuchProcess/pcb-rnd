@@ -132,6 +132,7 @@ static const expr_wizard_t expr_tab[] = {
 	{"@.string",          "string",           &op_tab[OPS_STR], RIGHT_STR, NULL},
 	{"@.rotation",        "rotation",         &op_tab[OPS_ANY], RIGHT_DOUBLE, NULL},
 	{"@.thickness",       "thickness",        &op_tab[OPS_ANY], RIGHT_COORD, NULL},
+	{"@.clearance",       "clearance",        &op_tab[OPS_ANY], RIGHT_COORD, NULL},
 
 	{NULL,                "polygon",          NULL,             0, NULL},
 	{"@.points",          "points",           &op_tab[OPS_ANY], RIGHT_INT, NULL},
