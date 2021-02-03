@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2004, 2007 Dan McMahill
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -208,6 +208,9 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (sval != NULL) {
 		if (RND_NSTRCMP(sval, "up") == 0) {
 			rounding_method = ROUND_UP;
+		}
+		else if (RND_NSTRCMP(sval, "down") == 0) {
+			rounding_method = ROUND_DOWN;
 		}
 		else if (RND_NSTRCMP(sval, "nearest") == 0) {
 			rounding_method = ROUND_NEAREST;
@@ -443,6 +446,14 @@ rnd_coord_t vendorDrillMap(rnd_coord_t in)
 		case ROUND_UP:
 			cached_map = vendor_drills[i];
 			return vendor_drills[i];
+
+		case ROUND_DOWN:
+			if (in == vendor_drills[max]) {
+				cached_map = vendor_drills[max];
+				return vendor_drills[max];
+			}
+			cached_map = vendor_drills[min];
+			return vendor_drills[min];
 	}
 }
 
