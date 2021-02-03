@@ -231,6 +231,12 @@ static lht_node_t *build_flags(pcb_flag_t *f, int object_type, int intconn)
 
 	fh.Flags = *f;
 
+	if (conf_io_lihata.plugins.io_lihata.denoise) {
+		PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, &fh);
+		PCB_FLAG_CLEAR(PCB_FLAG_WARN, &fh);
+		PCB_FLAG_CLEAR(PCB_FLAG_FOUND, &fh);
+	}
+
 	hsh = lht_dom_node_alloc(LHT_HASH, "flags");
 
 	/* create normal flag nodes */
@@ -2062,7 +2068,7 @@ int io_lihata_write_padstack(pcb_plug_io_t *ctx, FILE *f, pcb_pstk_proto_t *prot
 }
 
 typedef struct {
-	int womit_font, womit_config, womit_styles;
+	int womit_font, womit_config, womit_styles, wdenoise;
 	int ver;
 } io_lihata_save_t;
 
@@ -2092,6 +2098,13 @@ void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, rnd_hid_dad_subdialo
 				RND_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.omit_styles);
 				save->womit_styles = RND_DAD_CURRENT(sub->dlg);
 		RND_DAD_END(sub->dlg);
+		RND_DAD_BEGIN_HBOX(sub->dlg);
+			RND_DAD_LABEL(sub->dlg, "Denoise");
+				RND_DAD_HELP(sub->dlg, "Do not save volatile data:\nrats\nselect/warn/found flags\n");
+			RND_DAD_BOOL(sub->dlg);
+				RND_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.denoise);
+				save->wdenoise = RND_DAD_CURRENT(sub->dlg);
+		RND_DAD_END(sub->dlg);
 	}
 	return save;
 }
@@ -2104,6 +2117,7 @@ void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, rnd_
 		int omit_font = !!sub->dlg[save->womit_font].val.lng;
 		int omit_config = !!sub->dlg[save->womit_config].val.lng;
 		int omit_styles = !!sub->dlg[save->womit_styles].val.lng;
+		int denoise = !!sub->dlg[save->wdenoise].val.lng;
 
 		if (omit_font != !!conf_io_lihata.plugins.io_lihata.omit_font)
 			rnd_conf_setf(RND_CFR_CLI, "plugins/io_lihata/omit_font", 0, "%d", omit_font);
@@ -2113,6 +2127,9 @@ void io_lihata_save_as_subd_uninit(const pcb_plug_io_t *ctx, void *plg_ctx, rnd_
 
 		if (omit_styles != !!conf_io_lihata.plugins.io_lihata.omit_styles)
 			rnd_conf_setf(RND_CFR_CLI, "plugins/io_lihata/omit_styles", 0, "%d", omit_styles);
+
+		if (denoise != !!conf_io_lihata.plugins.io_lihata.denoise)
+			rnd_conf_setf(RND_CFR_CLI, "plugins/io_lihata/denoise", 0, "%d", denoise);
 	}
 
 	free(save);

@@ -10,6 +10,7 @@ typedef struct {
 			RND_CFT_BOOLEAN omit_font;       /* [dangerous] do not save the font subtree in board files */
 			RND_CFT_BOOLEAN omit_config;     /* [dangerous] do not save the config subtree in board files */
 			RND_CFT_BOOLEAN omit_styles;     /* do not save the routing styles subtree in board files */
+			RND_CFT_BOOLEAN denoise;         /* do not save rats, select/found/warn flags to reduce VCS diff noise */
 		} io_lihata;
 	} plugins;
 } conf_io_lihata_t;
