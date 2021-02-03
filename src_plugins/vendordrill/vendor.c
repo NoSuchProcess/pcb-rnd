@@ -569,9 +569,7 @@ TODO(": these 3 loops should be wrapped in a single loop that iterates over attr
 		for (i = 0; i < n_descr; i++) {
 			if ((RND_NSTRCMP(RND_UNKNOWN(fp), ignore_descr[i]) == 0)
 					|| rematch(ignore_descr[i], RND_UNKNOWN(fp))) {
-				rnd_message(RND_MSG_INFO,
-								"Vendor mapping skipped because descr = %s matches %s\n",
-								RND_UNKNOWN(fp), ignore_descr[i]);
+				rnd_message(RND_MSG_INFO, "Vendor mapping skipped because descr = %s matches %s\n", RND_UNKNOWN(fp), ignore_descr[i]);
 				noskip = 0;
 			}
 		}
