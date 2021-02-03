@@ -431,23 +431,19 @@ rnd_coord_t vendorDrillMap(rnd_coord_t in)
 	i = max;
 
 	/* now round per the rounding mode */
-	if (rounding_method == ROUND_CLOSEST) {
-		/* find the closest drill size */
-		if ((in - vendor_drills[i - 1]) > (vendor_drills[i] - in)) {
-			cached_map = vendor_drills[i];
-			return vendor_drills[i];
-		}
-		else {
+	switch(rounding_method) {
+		case ROUND_CLOSEST:
+			if ((in - vendor_drills[i - 1]) > (vendor_drills[i] - in)) {
+				cached_map = vendor_drills[i];
+				return vendor_drills[i];
+			}
 			cached_map = vendor_drills[i - 1];
 			return vendor_drills[i - 1];
-		}
-	}
-	else {
-		/* always round up */
-		cached_map = vendor_drills[i];
-		return vendor_drills[i];
-	}
 
+		case ROUND_UP:
+			cached_map = vendor_drills[i];
+			return vendor_drills[i];
+	}
 }
 
 /* add a drill size to the vendor drill list */
