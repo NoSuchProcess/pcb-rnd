@@ -225,6 +225,7 @@ static void map_text(pcb_propedit_t *ctx, pcb_text_t *text)
 	map_add_prop(ctx, "p/text/rotation",  rnd_angle_t, text->rot);
 	map_add_prop(ctx, "p/text/thickness", rnd_coord_t, text->thickness);
 	map_add_prop(ctx, "p/text/string", String, text->TextString);
+	map_add_prop(ctx, "p/text/clearance", rnd_coord_t, text->clearance);
 	map_common(ctx, (pcb_any_obj_t *)text);
 	map_attr(ctx, &text->Attributes);
 	if (ctx->geo) {
@@ -767,6 +768,9 @@ static void set_text(pcb_propset_ctx_t *st, pcb_text_t *text)
 			pcb_text_set_font(text, st->c);
 			DONE;
 		}
+
+		if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
+		    pcb_chg_obj_clear_size(PCB_OBJ_TEXT, text->parent.layer, text, NULL, st->c, st->c_absolute)) DONE;
 
 		if ((strcmp(pn, "string") == 0) &&
 		    (old = pcb_chg_obj_name(PCB_OBJ_TEXT, text->parent.layer, text, NULL, rnd_strdup(st->s)))) {

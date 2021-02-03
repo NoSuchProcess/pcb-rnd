@@ -404,6 +404,8 @@ static void prop_select_node_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_
 		else if (strcmp(row->path, "p/padstack/proto") == 0)           helptxt = "Padstack prototype ID\nto use. Determines padstack\ngeometry per layer.";
 		else if (strcmp(row->path, "p/padstack/smirror") == 0)         helptxt = "Swap layers of the\npadstack prototype so\nit is rendered upside down\n(layerstack mirror)";
 		else if (strcmp(row->path, "p/padstack/xmirror") == 0)         helptxt = "Mirror geometry over\nthe X axis.";
+
+		else if (strcmp(row->path, "p/text/clearance") == 0)           helptxt = "Text clearance\nis experimental.\n\nDO NOT USE!";
 	}
 
 	if (last_help != help_expose) {
