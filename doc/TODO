@@ -76,10 +76,7 @@
 		- if worked: allow padstack xor draw to draw all shapes on all layers
 - CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic - use libualloc stack with reasonable page size and local var first page
 - CLEANUP: reduce: get rid of autorouter/vector.[ch]
-- vendor drill plugin:
-	- CLEANUP: search for /units, replace it with pcb-printf something
-	- CLEANUP: replace ignore_refdes, ignore_value and ignore_descr with genvector
-	- FEATURE: vendor: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
+- FEATURE: vendor drill plugin: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 
 4. Low prio ===============================================================================
 - BUG: elliptic: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
