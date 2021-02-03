@@ -81,9 +81,6 @@ static int n_value = 0;
 static char **ignore_descr = NULL;
 static int n_descr = 0;
 
-/* vendor name */
-static char *vendor_name = NULL;
-
 /* resource file to PCB units scale factor */
 static double sf;
 
@@ -179,9 +176,6 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_IRES(1);
 		return 0;
 	}
-
-	/* figure out the vendor name, if specified */
-	vendor_name = (char *) RND_UNKNOWN(rnd_hid_cfg_text_value(doc, "vendor"));
 
 	/* figure out the units, if specified */
 	sval = rnd_hid_cfg_text_value(doc, "/units");
