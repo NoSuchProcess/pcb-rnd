@@ -7,7 +7,7 @@ ha:vendor_drill_map {
 	units = mil
 
 	# When mapping drill sizes, select the nearest size
-	# or always round up.  Allowed values:  up/nearest
+	# or always round up.  Allowed values:  up/down/nearest
 	round = up
 
 	# drill table
