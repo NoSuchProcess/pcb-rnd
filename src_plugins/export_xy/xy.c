@@ -813,7 +813,7 @@ static void xy_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &xy_filename);
 
-	if (options[HA_unit].lng == -1)
+	if ((options[HA_unit].lng < 0) || (options[HA_unit].lng >= rnd_get_n_units(1)))
 		xy_unit = rnd_get_unit_struct("mil");
 	else
 		xy_unit = &rnd_units[options[HA_unit].lng];
