@@ -1030,7 +1030,7 @@ static int parse_polygon(lht_read_t *rctx, pcb_layer_t *ly, lht_node_t *obj)
 static int parse_pcb_text(lht_read_t *rctx, pcb_layer_t *ly, lht_node_t *obj)
 {
 	pcb_text_t *text;
-	lht_node_t *role, *nthickness, *nrot, *ndir;
+	lht_node_t *role, *nthickness, *nclearance, *nrot, *ndir;
 	int tmp, err = 0, dir;
 	unsigned char intconn = 0;
 	long int id;
@@ -1068,6 +1068,7 @@ static int parse_pcb_text(lht_read_t *rctx, pcb_layer_t *ly, lht_node_t *obj)
 	err |= parse_text(&text->TextString, hash_get(obj, "string", 0));
 
 	nthickness = lht_dom_hash_get(obj, "thickness");
+	nclearance = lht_dom_hash_get(obj, "clearance");
 	nrot = lht_dom_hash_get(obj, "rot");
 	ndir = lht_dom_hash_get(obj, "direction");
 
@@ -1079,6 +1080,14 @@ static int parse_pcb_text(lht_read_t *rctx, pcb_layer_t *ly, lht_node_t *obj)
 	}
 	else
 		text->thickness = 0;
+
+	if (nclearance != NULL) {
+		if (rctx->rdver < 8)
+			iolht_warn(rctx, nthickness, -1, "Text clearance should not be present in a file with version lower than v8\n");
+		err |= parse_coord(&text->clearance, nclearance);
+	}
+	else
+		text->clearance = 0;
 
 	if ((ndir != NULL) && (rctx->rdver >= 6))
 		iolht_warn(rctx, nthickness, -1, "Text direction should not be present in a file with version higher than v5 - use text rot instead\n");

@@ -753,6 +753,15 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 	lht_dom_hash_put(obj, build_textf("x", CFMT, text->X));
 	lht_dom_hash_put(obj, build_textf("y", CFMT, text->Y));
 
+	if (wrver >= 8) {
+		if (text->clearance != 0)
+			lht_dom_hash_put(obj, build_textf("clearance", CFMT, text->clearance));
+		else
+			lht_dom_hash_put(obj, dummy_text_node("clearance"));
+	}
+	else if (text->clearance != 0)
+		pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-clearance", "file format does not support custom text clearance value", "do not use text clearance or save in lihata >=v8");
+
 	if (wrver >= 7) {
 		if (text->Scale != 0)
 			lht_dom_hash_put(obj, build_textf("scale", "%d", text->Scale));
