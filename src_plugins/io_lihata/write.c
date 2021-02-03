@@ -1563,8 +1563,11 @@ static lht_node_t *build_netlist(pcb_netlist_t *netlist, const char *name, int *
 
 			pl = lht_dom_node_alloc(LHT_LIST, "conn");
 			lht_dom_hash_put(nnet, pl);
-			if ((style != NULL) && (*style == '\0')) style = NULL;
-			lht_dom_hash_put(nnet, build_text("style", style));
+
+			if (wrver < 8) { /* there is no dedicated field for this since v8: the code relies on the attribute */
+				if ((style != NULL) && (*style == '\0')) style = NULL;
+				lht_dom_hash_put(nnet, build_text("style", style));
+			}
 
 			/* grow the connection list */
 			for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
