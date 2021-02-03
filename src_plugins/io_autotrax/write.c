@@ -448,9 +448,9 @@ TODO("why do we hardwire this here?")
 		textlist_foreach(&layer->Text, &it, text) {
 			int direction;
 			
-			if (pcb_text_old_direction(&direction, text->rot) != 0) {
-TODO("indicate save incompatibility")
-			}
+			if (pcb_text_old_direction(&direction, text->rot) != 0)
+				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-rotation", "text rotation not divisible by 90 degrees can not be saved precisely", "rotate text only in 90 degree steps for this format");
+
 			if (text->clearance != 0)
 				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-clearance", "file format does not support custom text clearance value", "do not use text clearance or save in lihata >=v8");
 
