@@ -92,7 +92,7 @@ static void rdialog_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	free(ctx);
 }
 
-static void rdialog(const char *name, const char *content)
+static void rdialog_gui(const char *name, const char *content)
 {
 	rdialog_ctx_t *ctx = calloc(sizeof(rdialog_ctx_t), 1);
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -105,6 +105,21 @@ static void rdialog(const char *name, const char *content)
 	RND_DAD_NEW("report", ctx->dlg, name, ctx, rnd_false, rdialog_close_cb);
 }
 
+
+static void rdialog_cli(const char *name, const char *content)
+{
+	printf("*** report '%s' begin ***\n", name);
+	printf("%s\n", content);
+	printf("*** report '%s' end ***\n", name);
+}
+
+static void rdialog(const char *name, const char *content)
+{
+	if (RND_HAVE_GUI_ATTR_DLG)
+		rdialog_gui(name, content);
+	else
+		rdialog_cli(name, content);
+}
 
 static int report_drills(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
