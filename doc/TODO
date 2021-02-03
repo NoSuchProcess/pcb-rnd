@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 - ADMIN: generate new keys, schedule next release before expiry (21 april)
 + FEATURE: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
+- FEATURE: vendor drill plugin: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 - BUG: open the command line with {:}, then right click over empty board, ignore the context menu, right click again -> gtk GUI gray control [report: Majenko]
 + BUG: font selector {w f} prints black font on black background if the background color is black [report: Majenko]
 - BUG: floating point related test failure on s390x [report: Bdale]
@@ -76,7 +77,6 @@
 		- if worked: allow padstack xor draw to draw all shapes on all layers
 - CLEANUP: layer group rewrite: remove PCB_MAX_LAYERGRP and PCB_MAX_LAYER and make them dynamic - use libualloc stack with reasonable page size and local var first page
 - CLEANUP: reduce: get rid of autorouter/vector.[ch]
-- FEATURE: vendor drill plugin: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 
 4. Low prio ===============================================================================
 - BUG: elliptic: gtk2_gl: RTT/arc_sizes.lht - elliptical arc corner case render bug [report: Wed]
