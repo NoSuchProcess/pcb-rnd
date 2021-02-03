@@ -149,10 +149,11 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (!fname || !*fname) {
 		fname = rnd_gui->fileselect(rnd_gui, "Load Vendor Resource File...",
-														"Picks a vendor resource file to load.\n"
-															"This file can contain drc settings for a\n"
-															"particular vendor as well as a list of\n"
-															"predefined drills which are allowed.", default_file, ".res", NULL, "vendor", RND_HID_FSD_READ, NULL);
+			"Picks a vendor resource file to load.\n"
+			"This file can contain drc settings for a\n"
+			"particular vendor as well as a list of\n"
+			"predefined drills which are allowed.", default_file, ".res",
+			NULL, "vendor", RND_HID_FSD_READ, NULL);
 		if (fname == NULL) {
 			RND_ACT_IRES(1);
 			return 0;
@@ -359,13 +360,13 @@ static void apply_vendor_map(void)
 				changed++;
 				PCB->RouteStyle.array[i].Hole = vendorDrillMap(PCB->RouteStyle.array[i].Hole);
 				rnd_message(RND_MSG_INFO,
-								"Adjusted %s routing style hole size to be %ml mils\n",
-								PCB->RouteStyle.array[i].name, PCB->RouteStyle.array[i].Hole);
+					"Adjusted %s routing style hole size to be %ml mils\n",
+					PCB->RouteStyle.array[i].name, PCB->RouteStyle.array[i].Hole);
 				if (PCB->RouteStyle.array[i].Diameter < PCB->RouteStyle.array[i].Hole + PCB_MIN_PINORVIACOPPER) {
 					PCB->RouteStyle.array[i].Diameter = PCB->RouteStyle.array[i].Hole + PCB_MIN_PINORVIACOPPER;
 					rnd_message(RND_MSG_INFO,
-									"Increased %s routing style via diameter to %ml mils\n",
-									PCB->RouteStyle.array[i].name, PCB->RouteStyle.array[i].Diameter);
+						"Increased %s routing style via diameter to %ml mils\n",
+						PCB->RouteStyle.array[i].name, PCB->RouteStyle.array[i].Diameter);
 				}
 			}
 		}
