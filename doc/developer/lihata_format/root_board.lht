@@ -123,6 +123,7 @@ ha:lht_tree_doc { ha:roots {
 								type=ha
 								desc { a network }
 								li:children {
+									ha:style       { valtype=string; ver={<=7} desc={routing style hint; same as the style attribute; from v8 only the style attribute exists}}
 									ha:conn {
 										type=li
 										desc { list of terminals connected to the network }

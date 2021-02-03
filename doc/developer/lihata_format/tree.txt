@@ -53,6 +53,7 @@ ha:pcb-rnd-board-v*            \t\t\tThe full, self-contained description of a p
  ha:netlists                   all available netlists
   li:netlist                   the input netlist (as seen in the last netlist import, a.k.a. forward annotation)
    ha:NETNAME                  a network
+    style           string <=7 routing style hint; same as the style attribute; from v8 only the style attribute exists
     li:conn                    list of terminals connected to the network
      diameter       string     refdes-terminal
     ha:attributes          >=5 a hash of attribute key=value pairs
