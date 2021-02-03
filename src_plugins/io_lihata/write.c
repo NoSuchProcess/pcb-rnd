@@ -2111,7 +2111,7 @@ void *io_lihata_save_as_subd_init(const pcb_plug_io_t *ctx, rnd_hid_dad_subdialo
 				RND_DAD_END(sub->dlg);
 				RND_DAD_BEGIN_HBOX(sub->dlg);
 					RND_DAD_LABEL(sub->dlg, "Denoise");
-						RND_DAD_HELP(sub->dlg, "Do not save volatile data:\nrats\nselect/warn/found flags\n");
+						RND_DAD_HELP(sub->dlg, "Do not save volatile data:\n - rats\n - select/warn/found flags");
 					RND_DAD_BOOL(sub->dlg);
 						RND_DAD_DEFAULT_NUM(sub->dlg, !!conf_io_lihata.plugins.io_lihata.denoise);
 						save->wdenoise = RND_DAD_CURRENT(sub->dlg);
