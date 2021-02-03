@@ -371,10 +371,8 @@ static void apply_vendor_map(void)
 			}
 		}
 
-		/*
-		 * if we've changed anything, indicate that we need to save the
-		 * file, redraw things, and make sure we can undo.
-		 */
+		/* if we've changed anything, indicate that we need to save the
+		   file, redraw things, and make sure we can undo. */
 		if (changed) {
 			pcb_board_set_changed_flag(PCB, rnd_true);
 			rnd_hid_redraw(PCB);
@@ -470,11 +468,9 @@ static void add_to_drills(char *sval)
 	tmpd = atof(sval);
 	val = floor(sf * tmpd + 0.5);
 
-	/*
-	 * We keep the array of vendor drills sorted to make it easier to
-	 * do the rounding later.  The algorithm used here is not so efficient,
-	 * but we're not dealing with much in the way of data.
-	 */
+	/* We keep the array of vendor drills sorted to make it easier to
+	   do the rounding later.  The algorithm used here is not so efficient,
+	   but we're not dealing with much in the way of data. */
 
 	/* figure out where to insert the value to keep the array sorted.  */
 	k = 0;
