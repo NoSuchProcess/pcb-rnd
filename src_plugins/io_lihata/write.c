@@ -1388,8 +1388,10 @@ static lht_node_t *build_data(pcb_data_t *data)
 	for(sc = pcb_subclist_first(&data->subc); sc != NULL; sc = pcb_subclist_next(sc))
 		lht_dom_list_append_safe(grp, build_subc(sc));
 
-	ratlist_foreach(&data->Rat, &it, line)
-		lht_dom_list_append(grp, build_rat(line));
+	if (!conf_io_lihata.plugins.io_lihata.denoise) {
+		ratlist_foreach(&data->Rat, &it, line)
+			lht_dom_list_append(grp, build_rat(line));
+	}
 
 	return ndt;
 }
