@@ -404,7 +404,7 @@ static int SubtractArc(pcb_arc_t * arc, pcb_poly_t * p)
 
 typedef struct {
 	pcb_poly_t *poly;
-	rnd_coord_t clearance;
+	rnd_coord_t thickness, clearance, min_thick;
 	unsigned sub:1;
 	rnd_polyarea_t *pa; /* in case of sub==0 the result is accumulated here */
 } poly_poly_text_t;
@@ -417,10 +417,17 @@ static void poly_sub_text_cb(void *ctx_, pcb_any_obj_t *obj)
 	pcb_arc_t *arc = (pcb_arc_t *)obj;
 	rnd_polyarea_t *np = NULL;
 	rnd_bool need_full;
+	rnd_coord_t th;
 
 	switch(obj->type) {
-		case PCB_OBJ_LINE: np = pcb_poly_from_pcb_line(line, line->Thickness + RND_MAX(ctx->clearance, ctx->poly->enforce_clearance)); break;
-		case PCB_OBJ_ARC: np = pcb_poly_from_pcb_arc(arc, arc->Thickness + RND_MAX(ctx->clearance, ctx->poly->enforce_clearance)); break;
+		case PCB_OBJ_LINE:
+			th = (ctx->thickness == 0) ? RND_MAX(ctx->min_thick, line->Thickness) : ctx->thickness;
+			np = pcb_poly_from_pcb_line(line, th + 2*RND_MAX(ctx->clearance, ctx->poly->enforce_clearance));
+			break;
+		case PCB_OBJ_ARC:
+			th = (ctx->thickness == 0) ? RND_MAX(ctx->min_thick, arc->Thickness) : ctx->thickness;
+			np = pcb_poly_from_pcb_arc(arc, th + 2*RND_MAX(ctx->clearance, ctx->poly->enforce_clearance));
+			break;
 		case PCB_OBJ_POLY:
 			poly->Clipped = pcb_poly_to_polyarea(poly, &need_full);
 			np = pcb_poly_clearance_construct(poly, &ctx->clearance, ctx->poly);
@@ -469,8 +476,10 @@ static int SubtractText(pcb_text_t * text, pcb_poly_t * p)
 
 	/* new method: detailed clearance */
 	sctx.poly = p;
-	sctx.clearance = text->clearance + RND_MM_TO_COORD(0.5);
+	sctx.clearance = text->clearance == 0 ? RND_MM_TO_COORD(0.175) : text->clearance;
 	sctx.sub = 1;
+	sctx.thickness = text->thickness;
+	sctx.min_thick = pcb_text_min_thickness(pcb_layer_get_real(text->parent.layer));
 	tsub_info.xform = &tsub_xform;
 	pcb_text_decompose_text(&tsub_info, text, poly_sub_text_cb, &sctx);
 	return 1;
@@ -495,8 +504,10 @@ rnd_polyarea_t *pcb_poly_construct_text_clearance(pcb_text_t *text)
 	/* new method: detailed clearance */
 	sctx.poly = &dummy;
 	sctx.pa = NULL;
-	sctx.clearance = text->clearance + RND_MM_TO_COORD(0.5);
+	sctx.clearance = text->clearance == 0 ? RND_MM_TO_COORD(0.175) : text->clearance;
 	sctx.sub = 0;
+	sctx.thickness = text->thickness;
+	sctx.min_thick = pcb_text_min_thickness(pcb_layer_get_real(text->parent.layer));
 	tsub_info.xform = &tsub_xform;
 	pcb_text_decompose_text(&tsub_info, text, poly_sub_text_cb, &sctx);
 	return sctx.pa;
