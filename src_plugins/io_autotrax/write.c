@@ -451,6 +451,8 @@ TODO("why do we hardwire this here?")
 			if (pcb_text_old_direction(&direction, text->rot) != 0) {
 TODO("indicate save incompatibility")
 			}
+			if (text->clearance != 0)
+				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-clearance", "file format does not support custom text clearance value", "do not use text clearance or save in lihata >=v8");
 
 			if (pcb_text_old_scale(text, &scale) != 0)
 				pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
