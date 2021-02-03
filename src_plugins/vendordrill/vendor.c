@@ -499,8 +499,7 @@ rnd_coord_t vendorDrillMap(rnd_coord_t in)
 			return vendor_drills[i - 1];
 
 		case ROUND_UP:
-			cached_map = vendor_drills[i];
-			return vendor_drills[i];
+			goto round_up;
 
 		case ROUND_DOWN:
 			if (in == vendor_drills[max]) {
@@ -510,6 +509,11 @@ rnd_coord_t vendorDrillMap(rnd_coord_t in)
 			cached_map = vendor_drills[min];
 			return vendor_drills[min];
 	}
+
+	/* default, for invalid internal state */
+	round_up:;
+		cached_map = vendor_drills[i];
+		return vendor_drills[i];
 }
 
 /* add a drill size to the vendor drill list */
