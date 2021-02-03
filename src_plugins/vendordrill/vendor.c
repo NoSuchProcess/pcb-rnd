@@ -89,9 +89,13 @@ static double sf;
 
 
 /* type of drill mapping */
-#define CLOSEST 1
-#define ROUND_UP 0
-static int rounding_method = ROUND_UP;
+typedef enum {
+	ROUND_UP = 0,
+	ROUND_CLOSEST,
+	ROUND_DOWN
+} vendor_round_t;
+
+static vendor_round_t rounding_method = ROUND_UP;
 
 #define FREE(x) if((x) != NULL) { free (x) ; (x) = NULL; }
 
@@ -206,7 +210,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rounding_method = ROUND_UP;
 		}
 		else if (RND_NSTRCMP(sval, "nearest") == 0) {
-			rounding_method = CLOSEST;
+			rounding_method = ROUND_CLOSEST;
 		}
 		else {
 			rnd_message(RND_MSG_ERROR, "\"%s\" is not a valid rounding type.  Defaulting to up\n", sval);
@@ -427,7 +431,7 @@ rnd_coord_t vendorDrillMap(rnd_coord_t in)
 	i = max;
 
 	/* now round per the rounding mode */
-	if (rounding_method == CLOSEST) {
+	if (rounding_method == ROUND_CLOSEST) {
 		/* find the closest drill size */
 		if ((in - vendor_drills[i - 1]) > (vendor_drills[i] - in)) {
 			cached_map = vendor_drills[i];
