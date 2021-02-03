@@ -208,6 +208,8 @@ int tedax_board_fsave(pcb_board_t *pcb, FILE *f)
 							pcb_io_incompat_save(subc->data, (pcb_any_obj_t *)text, "text-scale", "file format does not support different x and y direction text scale - using average scale", "Use the scale field, set scale_x and scale_y to 0");
 						if (text->mirror_x)
 							pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-mirror-x", "file format does not support different mirroring text in the x direction", "do not mirror, or mirror in the y direction (with the ONSOLDER flag)");
+						if (text->clearance != 0)
+							pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-clearance", "file format does not support custom text clearance value", "do not use text clearance or save in lihata >=v8");
 						rnd_fprintf(f, " place_text %s %s %.06mm %.06mm %.06mm %.06mm %d %f ",
 							refdes, *lyname, text->bbox_naked.X1, text->bbox_naked.Y1, text->bbox_naked.X2, text->bbox_naked.Y2,
 							scale, text->rot);
