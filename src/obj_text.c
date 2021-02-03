@@ -1586,10 +1586,23 @@ void pcb_text_draw_(pcb_draw_info_t *info, pcb_text_t *text, rnd_coord_t min_lin
 	}
 }
 
+rnd_coord_t pcb_text_min_thickness(pcb_layer_t *layer)
+{
+	unsigned int flg = 0;
+
+	if ((!layer->is_bound) && (layer->meta.real.grp >= 0))
+		flg = pcb_layergrp_flags(PCB, layer->meta.real.grp);
+
+	if (flg & PCB_LYT_SILK)
+		return conf_core.design.min_slk;
+	else
+		return conf_core.design.min_wid;
+
+}
+
 static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_term_gfx)
 {
 	int min_silk_line;
-	unsigned int flg = 0;
 	const pcb_layer_t *layer = info->layer != NULL ? info->layer : pcb_layer_get_real(text->parent.layer);
 
 	pcb_obj_noexport(info, text, return);
@@ -1617,13 +1630,7 @@ static void pcb_text_draw(pcb_draw_info_t *info, pcb_text_t *text, int allow_ter
 	else
 		rnd_render->set_color(pcb_draw_out.fgGC, &layer->meta.real.color);
 
-	if ((!layer->is_bound) && (layer->meta.real.grp >= 0))
-		flg = pcb_layergrp_flags(PCB, layer->meta.real.grp);
-
-	if (flg & PCB_LYT_SILK)
-		min_silk_line = conf_core.design.min_slk;
-	else
-		min_silk_line = conf_core.design.min_wid;
+	min_silk_line = pcb_text_min_thickness(layer);
 
 	pcb_text_draw_(info, text, min_silk_line, allow_term_gfx, PCB_TXT_TINY_CHEAP);
 }
