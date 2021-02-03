@@ -35,6 +35,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <genht/hash.h>
+#include <genvector/vtp0.h>
 #include <genregex/regex_sei.h>
 
 #include "change.h"
@@ -61,10 +63,78 @@ conf_vendor_t conf_vendor;
 static void add_to_drills(char *);
 static void apply_vendor_map(void);
 static void process_skips(lht_node_t *);
-static rnd_bool rematch(const char *, const char *);
 static void vendor_free_all(void);
 rnd_coord_t vendorDrillMap(rnd_coord_t in);
 
+
+/*** skip ***/
+static vtp0_t skip_invalid;
+#define HT_INVALID_VALUE skip_invalid
+#define HT_HAS_CONST_KEY
+typedef char *htsv_key_t;
+typedef const char *htsv_const_key_t;
+typedef vtp0_t htsv_value_t;
+#define HT(x) htsv_ ## x
+#include <genht/ht.h>
+#include <genht/ht.c>
+#undef HT
+
+static int skips_inited = 0;
+static htsv_t skips; /* key=attribute-name, value = vtp0_t pairs of (precompiled regex list):(string) */
+
+/* compile regex_str and remember it for skipping an attrib */
+static void skip_add(const char *attrib, const char *regex_str)
+{
+	vtp0_t *slot;
+	re_sei_t *regex;
+	htsv_entry_t *e;
+
+	if (!skips_inited) {
+		htsv_init(&skips, strhash, strkeyeq);
+		skips_inited = 1;
+	}
+
+	e = htsv_getentry(&skips, attrib);
+	if (e == NULL) {
+		htsv_set(&skips, rnd_strdup(attrib), skip_invalid);
+		e = htsv_getentry(&skips, attrib);
+	}
+	slot = &e->value;
+
+	/* compile the regular expression */
+	regex = re_sei_comp(regex_str);
+	if (re_sei_errno(regex) != 0) {
+		rnd_message(RND_MSG_ERROR, "regexp error: %s\n", re_error_str(re_sei_errno(regex)));
+		re_sei_free(regex);
+		return;
+	}
+	vtp0_append(slot, regex);
+	vtp0_append(slot, rnd_strdup(regex_str));
+}
+
+static void skip_uninit(void)
+{
+	htsv_entry_t *e;
+
+	for(e = htsv_first(&skips); e != NULL; e = htsv_next(&skips, e)) {
+		long n;
+		vtp0_t *slot = &e->value;
+
+		for(n = 0; n < slot->used; n+=2) {
+			void *rx  = slot->array[n];
+			char *str = slot->array[n+1];
+			re_sei_free(rx);
+			free(str);
+			
+		}
+		vtp0_uninit(slot);
+		free(e->key);
+	}
+	htsv_uninit(&skips);
+	skips_inited = 0;
+}
+
+/***/
 
 /* list of vendor drills and a count of them */
 static rnd_coord_t *vendor_drills = NULL;
@@ -72,14 +142,6 @@ static int n_vendor_drills = 0;
 
 static int cached_drill = -1;
 static int cached_map = -1;
-
-/* lists of elements to ignore */
-static char **ignore_refdes = NULL;
-static int n_refdes = 0;
-static char **ignore_value = NULL;
-static int n_value = 0;
-static char **ignore_descr = NULL;
-static int n_descr = 0;
 
 /* resource file to PCB units scale factor */
 static double sf;
@@ -273,7 +335,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	rnd_message(RND_MSG_INFO, "Loaded %d vendor drills from %s\n", n_vendor_drills, fname);
-	rnd_message(RND_MSG_INFO, "Loaded %d RefDes skips, %d Value skips, %d Descr skips\n", n_refdes, n_value, n_descr);
+	rnd_message(RND_MSG_INFO, "Loaded skips for %d different attributes\n", skips.used);
 
 	rnd_conf_set(RND_CFR_DESIGN, "plugins/vendor/enable", -1, "0", RND_POL_OVERWRITE);
 
@@ -493,10 +555,8 @@ static void add_to_drills(char *sval)
 /* deal with the "skip" subresource */
 static void process_skips(lht_node_t *res)
 {
-	char *sval;
-	int *cnt;
-	char ***lst = NULL;
 	lht_node_t *n;
+	const char *attr;
 
 	if (res == NULL)
 		return;
@@ -506,30 +566,17 @@ static void process_skips(lht_node_t *res)
 
 	for(n = res->data.list.first; n != NULL; n = n->next) {
 		if (n->type == LHT_TEXT) {
-			if (RND_NSTRCMP(n->name, "refdes") == 0) {
-				cnt = &n_refdes;
-				lst = &ignore_refdes;
-			}
-			else if (RND_NSTRCMP(n->name, "value") == 0) {
-				cnt = &n_value;
-				lst = &ignore_value;
+			if ((RND_NSTRCMP(n->name, "refdes") == 0) || (RND_NSTRCMP(n->name, "value") == 0)) {
+				attr = n->name;
 			}
 			else if (RND_NSTRCMP(n->name, "descr") == 0) {
-				cnt = &n_descr;
-				lst = &ignore_descr;
+				attr = "footprint";
 			}
 			else {
 				rnd_hid_cfg_error(n, "invalid skip name; must be one of refdes, value, descr");
 				continue;
 			}
-			/* add the entry to the appropriate list */
-			sval = n->data.text.value;
-			(*cnt)++;
-			if ((*lst = (char **) realloc(*lst, (*cnt) * sizeof(char *))) == NULL) {
-				fprintf(stderr, "realloc() failed\n");
-				exit(-1);
-			}
-			(*lst)[*cnt - 1] = rnd_strdup(sval);
+			skip_add(attr, n->data.text.value);
 		}
 		else
 			rnd_hid_cfg_error(n, "invalid skip type; must be text");
@@ -538,71 +585,39 @@ static void process_skips(lht_node_t *res)
 
 static rnd_bool vendorIsSubcMappable(pcb_subc_t *subc)
 {
-	int i;
-	int noskip;
+	int noskip = 1;
+	htsv_entry_t *e;
 
 	if (!conf_vendor.plugins.vendor.enable)
 		return rnd_false;
 
-TODO(": these 3 loops should be wrapped in a single loop that iterates over attribute keys")
-	noskip = 1;
-	for (i = 0; i < n_refdes; i++) {
-		if ((RND_NSTRCMP(RND_UNKNOWN(subc->refdes), ignore_refdes[i]) == 0)
-				|| rematch(ignore_refdes[i], RND_UNKNOWN(subc->refdes))) {
-			rnd_message(RND_MSG_INFO, "Vendor mapping skipped because refdes = %s matches %s\n", RND_UNKNOWN(subc->refdes), ignore_refdes[i]);
-			noskip = 0;
-		}
-	}
-	if (noskip) {
-		const char *vl = pcb_attribute_get(&subc->Attributes, "value");
-		for (i = 0; i < n_value; i++) {
-			if ((RND_NSTRCMP(RND_UNKNOWN(vl), ignore_value[i]) == 0)
-					|| rematch(ignore_value[i], RND_UNKNOWN(vl))) {
-				rnd_message(RND_MSG_INFO, "Vendor mapping skipped because value = %s matches %s\n", RND_UNKNOWN(vl), ignore_value[i]);
-				noskip = 0;
-			}
-		}
-	}
-
-	if (noskip) {
-		const char *fp = pcb_attribute_get(&subc->Attributes, "footprint");
-		for (i = 0; i < n_descr; i++) {
-			if ((RND_NSTRCMP(RND_UNKNOWN(fp), ignore_descr[i]) == 0)
-					|| rematch(ignore_descr[i], RND_UNKNOWN(fp))) {
-				rnd_message(RND_MSG_INFO, "Vendor mapping skipped because descr = %s matches %s\n", RND_UNKNOWN(fp), ignore_descr[i]);
-				noskip = 0;
-			}
-		}
-	}
-
-	if (noskip && PCB_FLAG_TEST(PCB_FLAG_LOCK, subc)) {
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, subc)) {
 		rnd_message(RND_MSG_INFO, "Vendor mapping skipped because element %s is locked\n", RND_UNKNOWN(subc->refdes));
 		noskip = 0;
+		goto done;
 	}
+
+	for(e = htsv_first(&skips); e != NULL; e = htsv_next(&skips, e)) {
+		long n;
+		vtp0_t *slot = &e->value;
+		const char *attr = e->key;
+		const char *vl = RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, attr));
+
+		for(n = 0; n < slot->used; n+=2) {
+			void *rx  = slot->array[n];
+			char *str = slot->array[n+1];
+
+			if (re_sei_exec(rx, vl) != 0) {
+				rnd_message(RND_MSG_INFO, "Vendor mapping skipped because %s = %s matches %s\n", attr, vl, str);
+				noskip = 0;
+				goto done;
+			}
+		}
+	}
+
+	done:;
 
 	if (noskip)
-		return rnd_true;
-	else
-		return rnd_false;
-}
-
-static rnd_bool rematch(const char *re, const char *s)
-{
-	int result;
-	re_sei_t *regex;
-
-	/* compile the regular expression */
-	regex = re_sei_comp(re);
-	if (re_sei_errno(regex) != 0) {
-		rnd_message(RND_MSG_ERROR, "regexp error: %s\n", re_error_str(re_sei_errno(regex)));
-		re_sei_free(regex);
-		return rnd_false;
-	}
-
-	result = re_sei_exec(regex, s);
-	re_sei_free(regex);
-
-	if (result != 0)
 		return rnd_true;
 	else
 		return rnd_false;
@@ -616,24 +631,9 @@ rnd_action_t vendor_action_list[] = {
 	{"LoadVendorFrom", pcb_act_LoadVendorFrom, pcb_acth_LoadVendorFrom, pcb_acts_LoadVendorFrom}
 };
 
-static char **vendor_free_vect(char **lst, int *len)
-{
-	if (lst != NULL) {
-		int n;
-		for(n = 0; n < *len; n++)
-			if (lst[n] != NULL)
-				free(lst[n]);
-		free(lst);
-	}
-	*len = 0;
-	return NULL;
-}
-
 static void vendor_free_all(void)
 {
-	ignore_refdes = vendor_free_vect(ignore_refdes, &n_refdes);
-	ignore_value = vendor_free_vect(ignore_value, &n_value);
-	ignore_descr = vendor_free_vect(ignore_descr, &n_descr);
+	skip_uninit();
 	if (vendor_drills != NULL) {
 		free(vendor_drills);
 		vendor_drills = NULL;
