@@ -660,6 +660,37 @@ void *pcb_textop_change_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *T
 	return NULL;
 }
 
+/* changes the clearance size of a text */
+void *pcb_textop_change_clear_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *text)
+{
+	pcb_layer_t *layer = text->parent.layer;
+	pcb_board_t *pcb = pcb_data_get_top(layer->parent.data);
+	rnd_coord_t value = (ctx->chgsize.is_absolute) ? ctx->chgsize.value : text->clearance + ctx->chgsize.value;
+
+	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, text) || !PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, text))
+		return NULL;
+	if (value < 0)
+		value = 0;
+	value = MIN(PCB_MAX_THICKNESS, value);
+	if (!ctx->chgsize.is_absolute && ctx->chgsize.value < 0)
+		value = 0;
+	if (value != text->clearance) {
+		pcb_undo_add_obj_to_clear_size(PCB_OBJ_TEXT, Layer, text, text);
+		pcb_poly_restore_to_poly(ctx->chgsize.pcb->Data, PCB_OBJ_TEXT, Layer, text);
+		pcb_text_invalidate_erase(Layer, text);
+		rnd_r_delete_entry(Layer->text_tree, (rnd_box_t *)text);
+		text->clearance = value;
+		if (pcb != NULL)
+			pcb_text_bbox(pcb_font(pcb, text->fid, 1), text);
+		rnd_r_insert_entry(Layer->text_tree, (rnd_box_t *)text);
+		pcb_poly_clear_from_poly(ctx->chgsize.pcb->Data, PCB_OBJ_TEXT, Layer, text);
+		pcb_text_invalidate_draw(Layer, text);
+		return text;
+	}
+	return NULL;
+}
+
+
 /* changes the thickness of a text object */
 void *pcb_textop_change_2nd_size(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 {

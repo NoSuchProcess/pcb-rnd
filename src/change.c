@@ -145,7 +145,7 @@ pcb_opfunc_t ChangeClearSizeFunctions = {
 	NULL, /* common_pre */
 	NULL, /* common_post */
 	pcb_lineop_change_clear_size,
-	NULL,
+	pcb_textop_change_clear_size,
 	pcb_polyop_change_clear_size,
 	NULL,
 	NULL,
