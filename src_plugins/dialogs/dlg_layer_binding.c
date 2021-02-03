@@ -281,6 +281,11 @@ static void lb_attr_layer_chg(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	else
 		dstly = &ctx->data->Layer[didx];
 
+	if (tmply.name != NULL) {
+		free((char *)dstly->name);
+		dstly->name = rnd_strdup(tmply.name);
+	}
+
 	dstly->meta.bound.type = tmply.meta.bound.type;
 	dstly->meta.bound.stack_offs = tmply.meta.bound.stack_offs;
 	free(dstly->meta.bound.purpose);
