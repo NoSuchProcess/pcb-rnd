@@ -91,7 +91,7 @@ static double sf;
 /* type of drill mapping */
 typedef enum {
 	ROUND_UP = 0,
-	ROUND_CLOSEST,
+	ROUND_NEAREST,
 	ROUND_DOWN
 } vendor_round_t;
 
@@ -210,7 +210,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			rounding_method = ROUND_UP;
 		}
 		else if (RND_NSTRCMP(sval, "nearest") == 0) {
-			rounding_method = ROUND_CLOSEST;
+			rounding_method = ROUND_NEAREST;
 		}
 		else {
 			rnd_message(RND_MSG_ERROR, "\"%s\" is not a valid rounding type.  Defaulting to up\n", sval);
@@ -388,7 +388,7 @@ static void apply_vendor_map(void)
 	rnd_conf_force_set_bool(conf_vendor.plugins.vendor.enable, state);
 }
 
-/* for a given drill size, find the closest vendor drill size */
+/* for a given drill size, find the nearest vendor drill size */
 rnd_coord_t vendorDrillMap(rnd_coord_t in)
 {
 	int i, min, max;
@@ -418,7 +418,7 @@ rnd_coord_t vendorDrillMap(rnd_coord_t in)
 		return vendor_drills[n_vendor_drills - 1];
 	}
 
-	/* figure out which 2 drills are closest in size */
+	/* figure out which 2 drills are nearest in size */
 	min = 0;
 	max = n_vendor_drills - 1;
 	while (max - min > 1) {
@@ -432,7 +432,7 @@ rnd_coord_t vendorDrillMap(rnd_coord_t in)
 
 	/* now round per the rounding mode */
 	switch(rounding_method) {
-		case ROUND_CLOSEST:
+		case ROUND_NEAREST:
 			if ((in - vendor_drills[i - 1]) > (vendor_drills[i] - in)) {
 				cached_map = vendor_drills[i];
 				return vendor_drills[i];
