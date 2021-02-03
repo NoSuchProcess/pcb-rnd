@@ -417,7 +417,7 @@ static void poly_sub_text_cb(void *ctx_, pcb_any_obj_t *obj)
 	pcb_arc_t *arc = (pcb_arc_t *)obj;
 	rnd_polyarea_t *np = NULL;
 	rnd_bool need_full;
-	rnd_coord_t th;
+	rnd_coord_t th, clr;
 
 	switch(obj->type) {
 		case PCB_OBJ_LINE:
@@ -430,7 +430,8 @@ static void poly_sub_text_cb(void *ctx_, pcb_any_obj_t *obj)
 			break;
 		case PCB_OBJ_POLY:
 			poly->Clipped = pcb_poly_to_polyarea(poly, &need_full);
-			np = pcb_poly_clearance_construct(poly, &ctx->clearance, ctx->poly);
+			clr = RND_MAX(ctx->clearance, ctx->poly->enforce_clearance);
+			np = pcb_poly_clearance_construct(poly, &clr, ctx->poly);
 			rnd_polyarea_free(&poly->Clipped);
 			break;
 		default:;
