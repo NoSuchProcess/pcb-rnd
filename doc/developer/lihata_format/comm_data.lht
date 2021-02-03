@@ -174,6 +174,7 @@ ha:lht_tree_doc { ha:comm {
 											ha:direction = { valtype=integer; ver={<=5} desc={rotation in 90 degree steps (0 is horizontal); between -3 and +3, inclusive. Starting from v6, the rot field shall be used instead of direction}}
 											ha:rot       = { valtype=angle;   ver={>=6} desc={rotation angle in degrees, [0..360), CCW}}
 											ha:thickness = { valtype=coord;   ver={>=6} desc={if zero, use the default width algorithm; if non-zero use this value as rotation angle in degrees}}
+											ha:clearance = { valtype=coord;   ver={>=8} desc={if non-zero and the object has tight_clearance attribute that is true, use this value for the clearance around the text object in polygons}}
 											sy:attr@dup   = {/lht_tree_doc/comm/attributes}
 											sy:flags@dup  = {/lht_tree_doc/comm/flags_text}
 										}
