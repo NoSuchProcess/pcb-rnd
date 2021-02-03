@@ -151,9 +151,6 @@ struct pcb_layer_s {              /* holds information about one layer */
 			/* for comb, use the ->comb from the common part */
 			int stack_offs;                /* offset in the stack for PCB_LYT_INNER: positive is counted from primary side, negative from the opposite side */
 			char *purpose;                 /* what the target doc/mech layer is used for */
-
-			unsigned user_specified:1;     /* 1 if the user forced the binding */
-			rnd_layer_id_t user_lid;
 		} bound;
 	} meta;
 

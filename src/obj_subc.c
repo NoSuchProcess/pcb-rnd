@@ -169,8 +169,6 @@ pcb_layer_t *pcb_subc_layer_create(pcb_subc_t *sc, const char *name, pcb_layer_t
 	pcb_layer_t *dst = &sc->data->Layer[sc->data->LayerN++];
 
 	dst->is_bound = 1;
-	dst->meta.bound.user_specified = 0;
-	dst->meta.bound.user_lid = -1;
 	dst->meta.bound.type = type;
 	dst->comb = comb;
 	dst->meta.bound.stack_offs = stack_offs;
