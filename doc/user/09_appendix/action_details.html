@@ -2047,9 +2047,9 @@ character description
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-LoadVendorFrom(filename)
+LoadVendorFrom(filename, [yes|no])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Loads the specified vendor lihata file.
+Loads the specified vendor lihata file. If second argument is "yes" or "pure", load in pure mode without side effects: do not reset or apply, only incrementally load.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
 vendor drill mapping
 </table>
@@ -2064,7 +2064,13 @@ Arguments:
 <th>
 filename  
 <td>
- Name of the vendor lihata file.  If not specified, the user will       be prompted to enter one. 
+ Name of the vendor lihata file.  If not specified, the user will       be prompted to enter one.  
+<tr>
+
+<th>
+pure (yes or no)  
+<td>
+ If "yes" or "pure", load in pure mode without side effects: do not reset or apply, only incrementally load. 
 </table>
  
 </dd></dl>
