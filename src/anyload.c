@@ -123,6 +123,10 @@ int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 		rnd_message(RND_MSG_WARNING, "anyload: pcb-rnd-anyload-v* without li:roots node - nothing loaded\n(this is probably not what you wanted)\n");
 		return 0;
 	}
+	if (lst->type != LHT_LIST) {
+		rnd_message(RND_MSG_WARNING, "anyload: pcb-rnd-anyload-v*/roots must be a list\n");
+		return 0;
+	}
 
 	for(n = lst->data.list.first; n != NULL; n = n->next) {
 		int r = pcb_anyload_parse_subtree(hidlib, n, inst_role);
