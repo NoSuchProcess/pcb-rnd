@@ -53,8 +53,9 @@ may not want to change the drill size can be identified to be left alone
 	     <strong>drc</strong> and <strong>skips</strong>. <strong>Skips</strong>
 	     defines subcircuits to be <em> skipped </em>, hence the name. Skips'
 	     <a href="http://www.repo.hu/projects/genregex/genregex.7.html">extended regex</a>
-	     patterns may only be defined for "refdes", "value" and
-	     "descr" attributes.
+	     patterns may only be defined for "refdes", "value",
+	     "descr" or arbitrary attributes in form of <i>a.attrname</i>. Note:
+	     "descr" translates to <i>a.footprint</i>.
 
 	<li> The file name can be any existing, readable filename. The file name
 	     may be entered in two ways - explicitly or using the standard file load
