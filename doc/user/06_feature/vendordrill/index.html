@@ -74,6 +74,13 @@ may not want to change the drill size can be identified to be left alone
 		</ul>
 	</ul>
 
+<p>
+If the optional second argument is <i>pure</i>, LoadVendorFrom() will not
+reset existing internal vendor data before the load and will not auto-apply
+them after load. This makes it possible to load multiple vendor drill files
+incrementally, effectively merging them in memory. The ApplyVendor() action
+needs to be called manually after the last file loaded with <i>pure</i>.
+
 <h3 id="example-minimal-vendor-file" autotoc="yes"> Example Minimal Vendor File </h3>
 <pre><code>    ha:vendor_drill_map {
   vendor = oshpark  # Optional and can be omitted
