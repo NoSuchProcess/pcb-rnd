@@ -39,7 +39,7 @@
 #include <genvector/vtp0.h>
 #include <genregex/regex_sei.h>
 
-#include "librnd/core/anyload.h"
+#include <librnd/core/anyload.h>
 #include "change.h"
 #include "board.h"
 #include "data.h"
