@@ -151,9 +151,15 @@ int pcb_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *typ
 			if (al->al->load_file != NULL)
 				return al->al->load_file(al->al, pcb, fpath, type, inst_role);
 			if (al->al->load_subtree != NULL) {
-TODO("load the lihata doc");
-				abort();
-/*				return al->al->load_subtree(al->al, pcb, subtree, inst_role);*/
+				int res;
+				lht_doc_t *doc = load_lht(hidlib, fpath);
+				if (doc == NULL) {
+					rnd_message(RND_MSG_ERROR, "anyload: '%s' (really '%s') with type '%s' should be a lihata document but fails to parse\n", path, fpath, type);
+					return -1;
+				}
+				res = al->al->load_subtree(al->al, pcb, doc->root, inst_role);
+				lht_dom_uninit(doc);
+				return res;
 			}
 		}
 	}
