@@ -107,10 +107,16 @@ int pcb_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree, rnd_con
 	return -1;
 }
 
+int pcb_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, rnd_conf_role_t inst_role)
+{
+	rnd_trace("ext file: '%s' '%s'\n", path, type);
+	return -1;
+}
+
 /* parse an anyload file, load/install all roots; retruns non-zero on any error */
 int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role)
 {
-	lht_node_t *lst, *n;
+	lht_node_t *rsc, *n;
 	int res = 0;
 
 	if (root->type != LHT_HASH) {
@@ -118,21 +124,47 @@ int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 		return -1;
 	}
 
-	lst = lht_dom_hash_get(root, "roots");
-	if (lst == NULL) {
-		rnd_message(RND_MSG_WARNING, "anyload: pcb-rnd-anyload-v* without li:roots node - nothing loaded\n(this is probably not what you wanted)\n");
-		return 0;
+	rsc = lht_dom_hash_get(root, "resources");
+	if (rsc == NULL) {
+		rnd_message(RND_MSG_WARNING, "anyload: pcb-rnd-anyload-v* without li:resources node - nothing loaded\n(this is probably not what you wanted)\n");
+		return -1;
 	}
-	if (lst->type != LHT_LIST) {
-		rnd_message(RND_MSG_WARNING, "anyload: pcb-rnd-anyload-v*/roots must be a list\n");
-		return 0;
+	if (rsc->type != LHT_LIST) {
+		rnd_message(RND_MSG_WARNING, "anyload: pcb-rnd-anyload-v*/resources must be a list\n");
+		return -1;
 	}
 
-	for(n = lst->data.list.first; n != NULL; n = n->next) {
-		int r = pcb_anyload_parse_subtree(hidlib, n, inst_role);
+	for(n = rsc->data.list.first; n != NULL; n = n->next) {
+		int r;
+		if ((n->type == LHT_HASH) && (strcmp(n->name, "file") == 0)) {
+			lht_node_t *npath, *ntype;
+			const char *path, *type;
+
+			npath = lht_dom_hash_get(n, "path");
+			ntype = lht_dom_hash_get(n, "type");
+			if (npath != NULL) {
+				if (npath->type != LHT_TEXT) {
+					rnd_message(RND_MSG_WARNING, "anyload: file path needs to be a text node\n");
+					return -1;
+				}
+				path = npath->data.text.value;
+			}
+			if (ntype != NULL) {
+				if (ntype->type != LHT_TEXT) {
+					rnd_message(RND_MSG_WARNING, "anyload: file type needs to be a text node\n");
+					return -1;
+				}
+				type = ntype->data.text.value;
+			}
+			r = pcb_anyload_ext_file(hidlib, path, type, inst_role);
+		}
+		else
+		 r = pcb_anyload_parse_subtree(hidlib, n, inst_role);
+
 		if (r != 0)
 			res = r;
 	}
+
 	return res;
 }
 
