@@ -193,14 +193,15 @@ fgw_error_t pcb_act_UnloadVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 }
 
 
-static const char pcb_acts_LoadVendorFrom[] = "LoadVendorFrom(filename)";
-static const char pcb_acth_LoadVendorFrom[] = "Loads the specified vendor lihata file.";
+static const char pcb_acts_LoadVendorFrom[] = "LoadVendorFrom(filename, [yes|no])";
+static const char pcb_acth_LoadVendorFrom[] = "Loads the specified vendor lihata file. If second argument is \"yes\" or \"pure\", load in pure mode without side effects: do not reset or apply, only incrementally load.";
 /* DOC: loadvendorfrom.html */
 fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	const char *fname = NULL;
+	const char *fname = NULL, *spure = NULL;
 	static char *default_file = NULL;
 	const char *sval;
+	int pure = 0;
 	lht_doc_t *doc;
 	lht_node_t *drlres;
 	rnd_bool free_fname = rnd_false;
@@ -208,6 +209,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	cached_drill = -1;
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, LoadVendorFrom, fname = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, LoadVendorFrom, spure = argv[2].val.str);
 
 	if (!fname || !*fname) {
 		fname = rnd_gui->fileselect(rnd_gui, "Load Vendor Resource File...",
@@ -230,7 +232,15 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			default_file = rnd_strdup(fname);
 	}
 
-	vendor_free_all();
+	if (spure != NULL) {
+		if (strcmp(spure, "pure") == 0)
+			pure = 1;
+		else
+			pure = rnd_istrue(spure);
+	}
+
+	if (!pure)
+		vendor_free_all();
 
 	/* load the resource file */
 	doc = rnd_hid_cfg_load_lht(&PCB->hidlib, fname);
@@ -243,7 +253,8 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* figure out the units, if specified */
 	sval = rnd_hid_cfg_text_value(doc, "/units");
 	if (sval == NULL) {
-		sf = RND_MIL_TO_COORD(1);
+		if (!pure)
+			sf = RND_MIL_TO_COORD(1);
 	}
 	else if ((RND_NSTRCMP(sval, "mil") == 0) || (RND_NSTRCMP(sval, "mils") == 0)) {
 		sf = RND_MIL_TO_COORD(1);
@@ -259,8 +270,8 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		sf = RND_INCH_TO_COORD(1);
 	}
 
-	/* default to ROUND_UP */
-	rounding_method = ROUND_UP;
+	if (!pure)
+		rounding_method = ROUND_UP; /* default to ROUND_UP */
 	sval = rnd_hid_cfg_text_value(doc, "/round");
 	if (sval != NULL) {
 		if (RND_NSTRCMP(sval, "up") == 0) {
@@ -272,7 +283,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		else if (RND_NSTRCMP(sval, "nearest") == 0) {
 			rounding_method = ROUND_NEAREST;
 		}
-		else {
+		else if (!pure) {
 			rnd_message(RND_MSG_ERROR, "\"%s\" is not a valid rounding type.  Defaulting to up\n", sval);
 			rounding_method = ROUND_UP;
 		}
@@ -339,7 +350,9 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	rnd_conf_set(RND_CFR_DESIGN, "plugins/vendor/enable", -1, "0", RND_POL_OVERWRITE);
 
-	apply_vendor_map();
+	if (!pure)
+		apply_vendor_map();
+
 	if (free_fname)
 		free((char*)fname);
 	lht_dom_uninit(doc);
