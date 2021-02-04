@@ -39,6 +39,7 @@
 #include <genvector/vtp0.h>
 #include <genregex/regex_sei.h>
 
+#include "anyload.h"
 #include "change.h"
 #include "board.h"
 #include "data.h"
@@ -685,10 +686,18 @@ static void vendor_new_pstk(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd
 	apply_vendor_pstk1(ps, &dummy);
 }
 
+static int vendor_anyload_subtree(const pcb_anyload_t *al, pcb_board_t *pcb, lht_node_t *root, rnd_conf_role_t install)
+{
+	rnd_trace("anyload: vendor");
+}
+
+static pcb_anyload_t vendor_anyload = {0};
+
 int pplg_check_ver_vendordrill(int ver_needed) { return 0; }
 
 void pplg_uninit_vendordrill(void)
 {
+	pcb_anyload_unreg_by_cookie(vendor_cookie);
 	rnd_event_unbind_allcookie(vendor_cookie);
 	rnd_remove_actions_by_cookie(vendor_cookie);
 	vendor_free_all();
@@ -706,5 +715,10 @@ int pplg_init_vendordrill(void)
 	rnd_event_bind(PCB_EVENT_NEW_PSTK, vendor_new_pstk, NULL, vendor_cookie);
 	RND_REGISTER_ACTIONS(vendor_action_list, vendor_cookie)
 	rnd_hid_menu_load(rnd_gui, NULL, vendor_cookie, 110, NULL, 0, vendor_menu, "plugin: vendor drill mapping");
+
+	vendor_anyload.load_subtree = vendor_anyload_subtree;
+	vendor_anyload.cookie = vendor_cookie;
+	pcb_anyload_reg("^vendor_drill_map$", &vendor_anyload);
+
 	return 0;
 }
