@@ -27,8 +27,12 @@
 #include "config.h"
 
 #include <genlist/gendlist.h>
-#include <librnd/core/error.h>
 #include <genregex/regex_se.h>
+
+#include <librnd/core/actions.h>
+#include <librnd/core/compat_misc.h>
+#include <librnd/core/error.h>
+#include <librnd/core/safe_fs.h>
 
 #include "anyload.h"
 
@@ -40,6 +44,7 @@ typedef struct {
 } pcb_aload_t;
 
 static gdl_list_t anyloads;
+
 
 int pcb_anyload_reg(const char *root_regex, const pcb_anyload_t *al_in)
 {
@@ -88,8 +93,137 @@ void pcb_anyload_uninit(void)
 	}
 }
 
+/* call a loader to load/install a subtree; retruns non-zero on error */
+int pcb_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree, rnd_conf_role_t inst_role)
+{
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
+	pcb_aload_t *al;
+
+	for(al = gdl_first(&anyloads); al != NULL; al = al->link.next)
+		if (re_se_exec(al->rx, subtree->name))
+			return al->al->load_subtree(al->al, pcb, subtree, inst_role);
+
+	rnd_message(RND_MSG_ERROR, "anyload: root node '%s' is not recognized by any loader\n", subtree->name);
+	return -1;
+}
+
+/* parse an anyload file, load/install all roots; retruns non-zero on any error */
+int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role)
+{
+	lht_node_t *lst, *n;
+	int res = 0;
+
+	if (root->type != LHT_HASH) {
+		rnd_message(RND_MSG_ERROR, "anyload: pcb-rnd-anyload-v* root node must be a hash\n");
+		return -1;
+	}
+
+	lst = lht_dom_hash_get(root, "roots");
+	if (lst == NULL) {
+		rnd_message(RND_MSG_WARNING, "anyload: pcb-rnd-anyload-v* without li:roots node - nothing loaded\n(this is probably not what you wanted)\n");
+		return 0;
+	}
+
+	for(n = lst->data.list.first; n != NULL; n = n->next) {
+		int r = pcb_anyload_parse_subtree(hidlib, n, inst_role);
+		if (r != 0)
+			res = r;
+	}
+	return res;
+}
+
+/* parse the root of a random file, which will either be an anyload pack or
+   a single root one of our backends can handle; retruns non-zero on error */
+int pcb_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role)
+{
+	if (strcmp(root->name, "pcb-rnd-anyload-v1") == 0)
+		return pcb_anyload_parse_anyload_v1(hidlib, root, inst_role);
+	return pcb_anyload_parse_subtree(hidlib, root, inst_role);
+}
+
+int pcb_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_role)
+{
+	char *path_free = NULL, *cwd_free = NULL;
+	const char *cwd;
+	int res = -1, req_anyload = 0;
+	FILE *f;
+	lht_doc_t *doc;
+	char *errmsg;
+
+	if (rnd_is_dir(hidlib, path)) {
+		cwd = path;
+		path = path_free = rnd_concat(cwd, RND_DIR_SEPARATOR_S, "anyload.lht");
+		req_anyload = 1;
+	}
+	else {
+		const char *s, *sep = NULL;
+
+		for(s = path; *s != '\0'; s++)
+			if ((*s == RND_DIR_SEPARATOR_C) || (*s == '/'))
+				sep = s;
+
+		if (sep != NULL)
+			cwd = cwd_free = rnd_strndup(path, s-path);
+		else
+			cwd = ".";
+	}
+
+	f = rnd_fopen(hidlib, path, "r");
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "anyload: can't open %s for read\n", path);
+		goto error;
+	}
+
+	doc = lht_dom_load_stream(f, path, &errmsg);
+	fclose(f);
+	if (doc == NULL) {
+		rnd_message(RND_MSG_ERROR, "anyload: can't load %s: %s\n", path, errmsg);
+		goto error;
+	}
+
+	if (req_anyload)
+		res = pcb_anyload_parse_anyload_v1(hidlib, doc->root, inst_role);
+	else
+		res = pcb_anyload_parse_root(hidlib, doc->root, inst_role);
+
+	error:;
+	free(path_free);
+	free(cwd_free);
+	return res;
+}
+
+static const char pcb_acts_AnyLoad[] = "AnyLoad(path, [role])";
+static const char pcb_acth_AnyLoad[] =
+	"Load \"anything\" from path; if role is specified, try to install or store\n"
+	"the loaded objects persistently somewhere that is equivalent to the specified config role.";
+fgw_error_t pcb_act_AnyLoad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *path = NULL, *srole = NULL;
+	rnd_conf_role_t role = RND_CFR_invalid;
+
+	RND_ACT_CONVARG(1, FGW_STR, AnyLoad, path = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, AnyLoad, srole = argv[2].val.str);
+
+	if (srole != NULL) {
+		role = rnd_conf_role_parse(srole);
+		if (role == RND_CFR_invalid) {
+			rnd_message(RND_MSG_ERROR, "AnyLoad: invalid role '%s'\n", srole);
+			return FGW_ERR_ARG_CONV;
+		}
+	}
+
+	RND_ACT_IRES(pcb_anyload(RND_ACT_HIDLIB, path, role));
+	return 0;
+}
+
+
+static rnd_action_t anyload_action_list[] = {
+	{"AnyLoad", pcb_act_AnyLoad, pcb_acth_AnyLoad, pcb_acts_AnyLoad},
+};
+
+
 void pcb_anyload_init2(void)
 {
-
+	RND_REGISTER_ACTIONS(anyload_action_list, NULL);
 }
 

@@ -32,12 +32,18 @@
 typedef struct pcb_anyload_s pcb_anyload_t;
 
 struct pcb_anyload_s {
-	int (*load_subtree)(pcb_anyload_t *al, pcb_board_t *pcb, lht_node_t *root, rnd_conf_role_t install);
-	int (*load_file)(pcb_anyload_t *al, pcb_board_t *pcb, const char *filename, const char *type, rnd_conf_role_t install);
+	int (*load_subtree)(const pcb_anyload_t *al, pcb_board_t *pcb, lht_node_t *root, rnd_conf_role_t install);
+	int (*load_file)(const pcb_anyload_t *al, pcb_board_t *pcb, const char *filename, const char *type, rnd_conf_role_t install);
 	const char *cookie;
 };
 
 
 int pcb_anyload_reg(const char *root_regex, const pcb_anyload_t *al);
 void pcb_anyload_unreg_by_cookie(const char *cookie);
+
+/* Load a file or pack: path may be a lihata file (either anything we can load
+   or a pcb-rnd-anyload-v*) or a directory that has an anyload.lht in it.
+   If inst_role is not invalid, also try to install it.
+   Return 0 on success. */
+int pcb_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_role);
 
