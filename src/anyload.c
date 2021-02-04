@@ -110,12 +110,34 @@ int pcb_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree, rnd_con
 
 int pcb_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, rnd_conf_role_t inst_role, const char *real_cwd, int real_cwd_len)
 {
+	pcb_aload_t *al;
+	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	char *fpath = rnd_lrealpath(path);
+
 	if ((memcmp(fpath, real_cwd, real_cwd_len) != 0) || (fpath[real_cwd_len] != '/')) {
 		rnd_message(RND_MSG_WARNING, "anyload: external file '%s' (really '%s') not within directory tree '%s' (or the file does not exist)\n", path, fpath, real_cwd);
 		return -1;
 	}
-	rnd_trace("ext file: '%s' '%s' PATHS: '%s' in '%s'\n", path, type, fpath, real_cwd);
+
+/*	rnd_trace("ext file: '%s' '%s' PATHS: '%s' in '%s'\n", path, type, fpath, real_cwd);*/
+
+	if (type == NULL) /* must be a lihata file */
+		return pcb_anyload(hidlib, fpath, inst_role);
+
+	/* we have an explicit type, look for a plugin to handle that */
+	for(al = gdl_first(&anyloads); al != NULL; al = al->link.next) {
+		if (re_se_exec(al->rx, type)) {
+			if (al->al->load_file != NULL)
+				return al->al->load_file(al->al, pcb, fpath, type, inst_role);
+			if (al->al->load_subtree != NULL) {
+TODO("load the lihata doc");
+				abort();
+/*				return al->al->load_subtree(al->al, pcb, subtree, inst_role);*/
+			}
+		}
+	}
+
+	rnd_message(RND_MSG_ERROR, "anyload: type '%s' is not recognized by any loader\n", type);
 	return -1;
 }
 
@@ -145,7 +167,7 @@ int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 		int r;
 		if ((n->type == LHT_HASH) && (strcmp(n->name, "file") == 0)) {
 			lht_node_t *npath, *ntype;
-			const char *path, *type;
+			const char *path = NULL, *type = NULL;
 
 			npath = lht_dom_hash_get(n, "path");
 			ntype = lht_dom_hash_get(n, "type");
@@ -173,6 +195,11 @@ int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 					goto error;
 				}
 				real_cwd_len = strlen(real_cwd);
+			}
+			if (path == NULL) {
+					rnd_message(RND_MSG_WARNING, "anyload: file without path\n");
+					res = -1;
+					goto error;
 			}
 			r = pcb_anyload_ext_file(hidlib, path, type, inst_role, real_cwd, real_cwd_len);
 		}
