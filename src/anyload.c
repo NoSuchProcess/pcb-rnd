@@ -31,6 +31,7 @@
 
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/compat_lrealpath.h>
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
 
@@ -107,17 +108,23 @@ int pcb_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree, rnd_con
 	return -1;
 }
 
-int pcb_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, rnd_conf_role_t inst_role)
+int pcb_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, rnd_conf_role_t inst_role, const char *real_cwd, int real_cwd_len)
 {
-	rnd_trace("ext file: '%s' '%s'\n", path, type);
+	char *fpath = rnd_lrealpath(path);
+	if ((memcmp(fpath, real_cwd, real_cwd_len) != 0) || (fpath[real_cwd_len] != '/')) {
+		rnd_message(RND_MSG_WARNING, "anyload: external file '%s' (really '%s') not within directory tree '%s' (or the file does not exist)\n", path, fpath, real_cwd);
+		return -1;
+	}
+	rnd_trace("ext file: '%s' '%s' PATHS: '%s' in '%s'\n", path, type, fpath, real_cwd);
 	return -1;
 }
 
 /* parse an anyload file, load/install all roots; retruns non-zero on any error */
-int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role)
+int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role, const char *cwd)
 {
 	lht_node_t *rsc, *n;
-	int res = 0;
+	int res = 0, real_cwd_len = 0;
+	char *real_cwd = NULL;
 
 	if (root->type != LHT_HASH) {
 		rnd_message(RND_MSG_ERROR, "anyload: pcb-rnd-anyload-v* root node must be a hash\n");
@@ -145,18 +152,29 @@ int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 			if (npath != NULL) {
 				if (npath->type != LHT_TEXT) {
 					rnd_message(RND_MSG_WARNING, "anyload: file path needs to be a text node\n");
-					return -1;
+					res = -1;
+					goto error;
 				}
 				path = npath->data.text.value;
 			}
 			if (ntype != NULL) {
 				if (ntype->type != LHT_TEXT) {
 					rnd_message(RND_MSG_WARNING, "anyload: file type needs to be a text node\n");
-					return -1;
+					res = -1;
+					goto error;
 				}
 				type = ntype->data.text.value;
 			}
-			r = pcb_anyload_ext_file(hidlib, path, type, inst_role);
+			if (real_cwd == NULL) {
+				real_cwd = rnd_lrealpath(cwd);
+				if (real_cwd == NULL) {
+					rnd_message(RND_MSG_WARNING, "anyload: realpath: no such path '%s'\n", cwd);
+					res = -1;
+					goto error;
+				}
+				real_cwd_len = strlen(real_cwd);
+			}
+			r = pcb_anyload_ext_file(hidlib, path, type, inst_role, real_cwd, real_cwd_len);
 		}
 		else
 		 r = pcb_anyload_parse_subtree(hidlib, n, inst_role);
@@ -165,15 +183,17 @@ int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 			res = r;
 	}
 
+	error:;
+	free(real_cwd);
 	return res;
 }
 
 /* parse the root of a random file, which will either be an anyload pack or
    a single root one of our backends can handle; retruns non-zero on error */
-int pcb_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role)
+int pcb_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role, const char *cwd)
 {
 	if (strcmp(root->name, "pcb-rnd-anyload-v1") == 0)
-		return pcb_anyload_parse_anyload_v1(hidlib, root, inst_role);
+		return pcb_anyload_parse_anyload_v1(hidlib, root, inst_role, cwd);
 	return pcb_anyload_parse_subtree(hidlib, root, inst_role);
 }
 
@@ -218,9 +238,9 @@ int pcb_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_rol
 	}
 
 	if (req_anyload)
-		res = pcb_anyload_parse_anyload_v1(hidlib, doc->root, inst_role);
+		res = pcb_anyload_parse_anyload_v1(hidlib, doc->root, inst_role, cwd);
 	else
-		res = pcb_anyload_parse_root(hidlib, doc->root, inst_role);
+		res = pcb_anyload_parse_root(hidlib, doc->root, inst_role, cwd);
 
 	error:;
 	free(path_free);
