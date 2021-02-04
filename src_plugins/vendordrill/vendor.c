@@ -62,7 +62,7 @@ conf_vendor_t conf_vendor;
 
 static void add_to_drills(char *);
 static void apply_vendor_map(void);
-static void process_skips(lht_node_t *);
+static long process_skips(lht_node_t *);
 static void vendor_free_all(void);
 rnd_coord_t vendorDrillMap(rnd_coord_t in);
 
@@ -205,6 +205,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	lht_doc_t *doc;
 	lht_node_t *drlres;
 	rnd_bool free_fname = rnd_false;
+	long num_skips;
 
 	cached_drill = -1;
 
@@ -289,7 +290,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	process_skips(lht_tree_path(doc, "/", "/skips", 1, NULL));
+	num_skips = process_skips(lht_tree_path(doc, "/", "/skips", 1, NULL));
 
 	/* extract the drillmap resource */
 	drlres = lht_tree_path(doc, "/", "/drillmap", 1, NULL);
@@ -346,7 +347,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	rnd_message(RND_MSG_INFO, "Loaded %d vendor drills from %s\n", n_vendor_drills, fname);
-	rnd_message(RND_MSG_INFO, "Loaded skips for %d different attributes\n", skips.used);
+	rnd_message(RND_MSG_INFO, "Loaded %ld skips for %d different attributes\n", num_skips, skips.used);
 
 	rnd_conf_set(RND_CFR_DESIGN, "plugins/vendor/enable", -1, "0", RND_POL_OVERWRITE);
 
@@ -569,14 +570,15 @@ static void add_to_drills(char *sval)
 	}
 }
 
-/* deal with the "skip" subresource */
-static void process_skips(lht_node_t *res)
+/* deal with the "skip" subtree; returns number of skips loaded */
+static long process_skips(lht_node_t *res)
 {
 	lht_node_t *n;
 	const char *attr;
+	long cnt = 0;
 
 	if (res == NULL)
-		return;
+		return 0;
 
 	if (res->type != LHT_LIST)
 		rnd_hid_cfg_error(res, "skips must be a list.\n");
@@ -597,10 +599,12 @@ static void process_skips(lht_node_t *res)
 				continue;
 			}
 			skip_add(attr, n->data.text.value);
+			cnt++;
 		}
 		else
 			rnd_hid_cfg_error(n, "invalid skip type; must be text");
 	}
+	return cnt;
 }
 
 static rnd_bool vendorIsSubcMappable(pcb_subc_t *subc)
