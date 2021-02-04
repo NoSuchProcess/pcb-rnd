@@ -12,6 +12,11 @@
 - BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
 - DOC: lihata v8 changelog
+- FEATURE: anyload:
+	- make scripts installable
+	- config files
+	- drc scripts
+	- menu patches
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: lihata v8
