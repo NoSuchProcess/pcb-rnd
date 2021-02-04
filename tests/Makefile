@@ -11,6 +11,7 @@ test:
 	cd query && $(MAKE) test
 	cd menu && $(MAKE) test
 	cd cam && $(MAKE) test
+	cd vendordrill && $(MAKE) test
 	@echo " "
 	@echo "+-------------------------------------------------+"
 	@echo "+  All tests passed, pcb-rnd is safe to install.  +"
@@ -29,4 +30,5 @@ clean:
 	cd query && $(MAKE) clean
 	cd menu && $(MAKE) clean
 	cd cam && $(MAKE) clean
+	cd vendordrill && $(MAKE) clean
 
