@@ -11,7 +11,7 @@ Drill Diam. (mm)	# of Pins	# of Vias	# of Elements	# Unplated
     3.5000			0		1		0				0
 
 *** report 'Drill Report' end ***
-I: Loaded 2 vendor drills from /home/igor2/C/pcb-rnd/trunk/tests/vendordrill/skip_refdes.lht
+I: Loaded 2 vendor drills from skip_refdes.lht
 I: Loaded 1 skips for 1 different attributes
 I: Vendor mapping skipped because refdes = U1 matches ^U[1-3]$
 I: Vendor mapping skipped because refdes = U2 matches ^U[1-3]$

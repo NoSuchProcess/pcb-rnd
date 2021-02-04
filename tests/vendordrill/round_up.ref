@@ -11,7 +11,7 @@ Drill Diam. (mm)	# of Pins	# of Vias	# of Elements	# Unplated
     3.5000			0		1		0				0
 
 *** report 'Drill Report' end ***
-I: Loaded 3 vendor drills from /home/igor2/C/pcb-rnd/trunk/tests/vendordrill/round_up.lht
+I: Loaded 3 vendor drills from round_up.lht
 I: Loaded 0 skips for 0 different attributes
 I: Updated 6 drill sizes out of 6 total
 I: Adjusted active via hole size to be 82.68 mils
