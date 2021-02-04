@@ -335,7 +335,6 @@ void pcb_main_uninit(void)
 
 	conf_core_uninit_pre();
 
-	pcb_anyload_uninit();
 	pcb_draw_uninit();
 	pcb_brave_uninit();
 	pcb_polygon_uninit();
@@ -366,6 +365,7 @@ void pcb_main_uninit(void)
 
 	rnd_hidlib_uninit(); /* plugin unload */
 
+	pcb_anyload_uninit();
 	rnd_funchash_uninit();
 	rnd_file_loaded_uninit();
 	pcb_uilayer_uninit();
