@@ -94,6 +94,27 @@ void pcb_anyload_uninit(void)
 	}
 }
 
+static lht_doc_t *load_lht(rnd_hidlib_t *hidlib, const char *path)
+{
+	lht_doc_t *doc;
+	FILE *f = rnd_fopen(hidlib, path, "r");
+	char *errmsg;
+
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "anyload: can't open %s for read\n", path);
+		return NULL;
+	}
+
+	doc = lht_dom_load_stream(f, path, &errmsg);
+	fclose(f);
+	if (doc == NULL) {
+		rnd_message(RND_MSG_ERROR, "anyload: can't load %s: %s\n", path, errmsg);
+		return NULL;
+	}
+	return doc;
+}
+
+
 /* call a loader to load/install a subtree; retruns non-zero on error */
 int pcb_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree, rnd_conf_role_t inst_role)
 {
@@ -224,14 +245,13 @@ int pcb_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role
 	return pcb_anyload_parse_subtree(hidlib, root, inst_role);
 }
 
+
 int pcb_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_role)
 {
 	char *path_free = NULL, *cwd_free = NULL;
 	const char *cwd;
 	int res = -1, req_anyload = 0;
-	FILE *f;
 	lht_doc_t *doc;
-	char *errmsg;
 
 	if (rnd_is_dir(hidlib, path)) {
 		cwd = path;
@@ -251,25 +271,15 @@ int pcb_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_rol
 			cwd = ".";
 	}
 
-	f = rnd_fopen(hidlib, path, "r");
-	if (f == NULL) {
-		rnd_message(RND_MSG_ERROR, "anyload: can't open %s for read\n", path);
-		goto error;
+	doc = load_lht(hidlib, path);
+	if (doc != NULL) {
+		if (req_anyload)
+			res = pcb_anyload_parse_anyload_v1(hidlib, doc->root, inst_role, cwd);
+		else
+			res = pcb_anyload_parse_root(hidlib, doc->root, inst_role, cwd);
+		lht_dom_uninit(doc);
 	}
 
-	doc = lht_dom_load_stream(f, path, &errmsg);
-	fclose(f);
-	if (doc == NULL) {
-		rnd_message(RND_MSG_ERROR, "anyload: can't load %s: %s\n", path, errmsg);
-		goto error;
-	}
-
-	if (req_anyload)
-		res = pcb_anyload_parse_anyload_v1(hidlib, doc->root, inst_role, cwd);
-	else
-		res = pcb_anyload_parse_root(hidlib, doc->root, inst_role, cwd);
-
-	error:;
 	free(path_free);
 	free(cwd_free);
 	return res;
