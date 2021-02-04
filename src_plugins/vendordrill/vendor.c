@@ -193,6 +193,146 @@ fgw_error_t pcb_act_UnloadVendor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+const char *lht_get_htext(lht_node_t *h, const char *name)
+{
+	lht_node_t *n = lht_dom_hash_get(h, name);
+
+	if ((n == NULL) || (n->type != LHT_TEXT))
+		return NULL;
+
+	return n->data.text.value;
+}
+
+static int vendor_load_root(const char *fname, lht_node_t *root, rnd_bool pure)
+{
+	long num_skips;
+	lht_node_t *drc, *drlres;
+	const char *sval;
+	int warn_drc = 0;
+
+	if (root->type != LHT_HASH) {
+		rnd_hid_cfg_error(root, "vendor drill root node must be a hash\n");
+		return -1;
+	}
+
+	if (!pure)
+		vendor_free_all();
+
+	/* figure out the units, if specified */
+	sval = lht_get_htext(root, "units");
+	if (sval == NULL) {
+		if (!pure)
+			sf = RND_MIL_TO_COORD(1);
+	}
+	else if ((RND_NSTRCMP(sval, "mil") == 0) || (RND_NSTRCMP(sval, "mils") == 0)) {
+		sf = RND_MIL_TO_COORD(1);
+	}
+	else if ((RND_NSTRCMP(sval, "inch") == 0) || (RND_NSTRCMP(sval, "inches") == 0)) {
+		sf = RND_INCH_TO_COORD(1);
+	}
+	else if (RND_NSTRCMP(sval, "mm") == 0) {
+		sf = RND_MM_TO_COORD(1);
+	}
+	else {
+		rnd_message(RND_MSG_ERROR, "\"%s\" is not a supported units.  Defaulting to inch\n", sval);
+		sf = RND_INCH_TO_COORD(1);
+	}
+
+	if (!pure)
+		rounding_method = ROUND_UP; /* default to ROUND_UP */
+
+	sval = lht_get_htext(root, "round");
+	if (sval != NULL) {
+		if (RND_NSTRCMP(sval, "up") == 0) {
+			rounding_method = ROUND_UP;
+		}
+		else if (RND_NSTRCMP(sval, "down") == 0) {
+			rounding_method = ROUND_DOWN;
+		}
+		else if (RND_NSTRCMP(sval, "nearest") == 0) {
+			rounding_method = ROUND_NEAREST;
+		}
+		else if (!pure) {
+			rnd_message(RND_MSG_ERROR, "\"%s\" is not a valid rounding type.  Defaulting to up\n", sval);
+			rounding_method = ROUND_UP;
+		}
+	}
+
+	num_skips = process_skips(lht_dom_hash_get(root, "skips"));
+
+	/* extract the drillmap resource */
+	drlres = lht_dom_hash_get(root, "drillmap");
+	if (drlres != NULL) {
+		if (drlres->type == LHT_LIST) {
+			lht_node_t *n;
+			for(n = drlres->data.list.first; n != NULL; n = n->next) {
+				if (n->type != LHT_TEXT)
+					rnd_hid_cfg_error(n, "Broken drillmap: /drillmap should contain text children only\n");
+				else
+					add_to_drills(n->data.text.value);
+			}
+		}
+		else
+			rnd_message(RND_MSG_ERROR, "Broken drillmap: /drillmap should be a list\n");
+	}
+	else
+		rnd_message(RND_MSG_ERROR, "No drillmap resource found\n");
+
+	drc = lht_dom_hash_get(root, "drc");
+	if ((drc != NULL) && (drc->type == LHT_HASH)) {
+		sval = lht_get_htext(drc, "copper_space");
+		if (sval != NULL) {
+			load_meta_coord("design/bloat", floor(sf * atof(sval) + 0.5));
+			rnd_message(RND_MSG_INFO, "Set DRC minimum copper spacing to %ml mils\n", conf_core.design.bloat);
+			warn_drc = 1;
+		}
+
+		sval = lht_get_htext(drc, "copper_overlap");
+		if (sval != NULL) {
+			load_meta_coord("design/shrink", floor(sf * atof(sval) + 0.5));
+			rnd_message(RND_MSG_ERROR, "drc/copper_overlap is not supported anymore, please use the new DRC instead\n");
+		}
+
+		sval = lht_get_htext(drc, "copper_width");
+		if (sval != NULL) {
+			load_meta_coord("design/min_wid", floor(sf * atof(sval) + 0.5));
+			rnd_message(RND_MSG_INFO, "Set DRC minimum copper spacing to %ml mils\n", conf_core.design.min_wid);
+			warn_drc = 1;
+		}
+
+		sval = lht_get_htext(drc, "silk_width");
+		if (sval != NULL) {
+			load_meta_coord("design/min_slk", floor(sf * atof(sval) + 0.5));
+			rnd_message(RND_MSG_INFO, "Set DRC minimum silk width to %ml mils\n", conf_core.design.min_slk);
+			warn_drc = 1;
+		}
+
+		sval = lht_get_htext(drc, "min_drill");
+		if (sval != NULL) {
+			load_meta_coord("design/min_drill", floor(sf * atof(sval) + 0.5));
+			rnd_message(RND_MSG_ERROR, "drc/min_drill is not supported anymore, please use the new DRC instead\n");
+		}
+
+		sval = lht_get_htext(drc, "min_ring");
+		if (sval != NULL) {
+			load_meta_coord("design/min_ring", floor(sf * atof(sval) + 0.5));
+			rnd_message(RND_MSG_ERROR, "drc/min_ring is not supported anymore, please use the new DRC instead\n");
+		}
+	}
+
+	rnd_message(RND_MSG_INFO, "Loaded %d vendor drills from %s\n", n_vendor_drills, fname);
+	rnd_message(RND_MSG_INFO, "Loaded %ld skips for %d different attributes\n", num_skips, skips.used);
+
+	if (warn_drc)
+		rnd_message(RND_MSG_WARNING, "Vendordrill: %s contains a drc subtree. Please use the new DRC instead. This feature is going to be removed.\n", fname);
+
+	rnd_conf_set(RND_CFR_DESIGN, "plugins/vendor/enable", -1, "0", RND_POL_OVERWRITE);
+
+	if (!pure)
+		apply_vendor_map();
+
+	return 0;
+}
 
 static const char pcb_acts_LoadVendorFrom[] = "LoadVendorFrom(filename, [yes|no])";
 static const char pcb_acth_LoadVendorFrom[] = "Loads the specified vendor lihata file. If second argument is \"yes\" or \"pure\", load in pure mode without side effects: do not reset or apply, only incrementally load.";
@@ -201,12 +341,10 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL, *spure = NULL;
 	static char *default_file = NULL;
-	const char *sval;
-	int pure = 0, warn_drc = 0;
+	int pure = 0;
 	lht_doc_t *doc;
-	lht_node_t *drlres;
 	rnd_bool free_fname = rnd_false;
-	long num_skips;
+	int r;
 
 	cached_drill = -1;
 
@@ -241,9 +379,6 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pure = rnd_istrue(spure);
 	}
 
-	if (!pure)
-		vendor_free_all();
-
 	/* load the resource file */
 	doc = rnd_hid_cfg_load_lht(&PCB->hidlib, fname);
 	if (doc == NULL) {
@@ -252,119 +387,12 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
-	/* figure out the units, if specified */
-	sval = rnd_hid_cfg_text_value(doc, "/units");
-	if (sval == NULL) {
-		if (!pure)
-			sf = RND_MIL_TO_COORD(1);
-	}
-	else if ((RND_NSTRCMP(sval, "mil") == 0) || (RND_NSTRCMP(sval, "mils") == 0)) {
-		sf = RND_MIL_TO_COORD(1);
-	}
-	else if ((RND_NSTRCMP(sval, "inch") == 0) || (RND_NSTRCMP(sval, "inches") == 0)) {
-		sf = RND_INCH_TO_COORD(1);
-	}
-	else if (RND_NSTRCMP(sval, "mm") == 0) {
-		sf = RND_MM_TO_COORD(1);
-	}
-	else {
-		rnd_message(RND_MSG_ERROR, "\"%s\" is not a supported units.  Defaulting to inch\n", sval);
-		sf = RND_INCH_TO_COORD(1);
-	}
-
-	if (!pure)
-		rounding_method = ROUND_UP; /* default to ROUND_UP */
-	sval = rnd_hid_cfg_text_value(doc, "/round");
-	if (sval != NULL) {
-		if (RND_NSTRCMP(sval, "up") == 0) {
-			rounding_method = ROUND_UP;
-		}
-		else if (RND_NSTRCMP(sval, "down") == 0) {
-			rounding_method = ROUND_DOWN;
-		}
-		else if (RND_NSTRCMP(sval, "nearest") == 0) {
-			rounding_method = ROUND_NEAREST;
-		}
-		else if (!pure) {
-			rnd_message(RND_MSG_ERROR, "\"%s\" is not a valid rounding type.  Defaulting to up\n", sval);
-			rounding_method = ROUND_UP;
-		}
-	}
-
-	num_skips = process_skips(lht_tree_path(doc, "/", "/skips", 1, NULL));
-
-	/* extract the drillmap resource */
-	drlres = lht_tree_path(doc, "/", "/drillmap", 1, NULL);
-	if (drlres != NULL) {
-		if (drlres->type == LHT_LIST) {
-			lht_node_t *n;
-			for(n = drlres->data.list.first; n != NULL; n = n->next) {
-				if (n->type != LHT_TEXT)
-					rnd_hid_cfg_error(n, "Broken drillmap: /drillmap should contain text children only\n");
-				else
-					add_to_drills(n->data.text.value);
-			}
-		}
-		else
-			rnd_message(RND_MSG_ERROR, "Broken drillmap: /drillmap should be a list\n");
-	}
-	else
-		rnd_message(RND_MSG_ERROR, "No drillmap resource found\n");
-
-	sval = rnd_hid_cfg_text_value(doc, "/drc/copper_space");
-	if (sval != NULL) {
-		load_meta_coord("design/bloat", floor(sf * atof(sval) + 0.5));
-		rnd_message(RND_MSG_INFO, "Set DRC minimum copper spacing to %ml mils\n", conf_core.design.bloat);
-		warn_drc = 1;
-	}
-
-	sval = rnd_hid_cfg_text_value(doc, "/drc/copper_overlap");
-	if (sval != NULL) {
-		load_meta_coord("design/shrink", floor(sf * atof(sval) + 0.5));
-		rnd_message(RND_MSG_ERROR, "drc/copper_overlap is not supported anymore, please use the new DRC instead\n");
-	}
-
-	sval = rnd_hid_cfg_text_value(doc, "/drc/copper_width");
-	if (sval != NULL) {
-		load_meta_coord("design/min_wid", floor(sf * atof(sval) + 0.5));
-		rnd_message(RND_MSG_INFO, "Set DRC minimum copper spacing to %ml mils\n", conf_core.design.min_wid);
-		warn_drc = 1;
-	}
-
-	sval = rnd_hid_cfg_text_value(doc, "/drc/silk_width");
-	if (sval != NULL) {
-		load_meta_coord("design/min_slk", floor(sf * atof(sval) + 0.5));
-		rnd_message(RND_MSG_INFO, "Set DRC minimum silk width to %ml mils\n", conf_core.design.min_slk);
-		warn_drc = 1;
-	}
-
-	sval = rnd_hid_cfg_text_value(doc, "/drc/min_drill");
-	if (sval != NULL) {
-		load_meta_coord("design/min_drill", floor(sf * atof(sval) + 0.5));
-		rnd_message(RND_MSG_ERROR, "drc/min_drill is not supported anymore, please use the new DRC instead\n");
-	}
-
-	sval = rnd_hid_cfg_text_value(doc, "/drc/min_ring");
-	if (sval != NULL) {
-		load_meta_coord("design/min_ring", floor(sf * atof(sval) + 0.5));
-		rnd_message(RND_MSG_ERROR, "drc/min_ring is not supported anymore, please use the new DRC instead\n");
-	}
-
-	rnd_message(RND_MSG_INFO, "Loaded %d vendor drills from %s\n", n_vendor_drills, fname);
-	rnd_message(RND_MSG_INFO, "Loaded %ld skips for %d different attributes\n", num_skips, skips.used);
-
-	if (warn_drc)
-		rnd_message(RND_MSG_WARNING, "Vendordrill: %s contains a drc subtree. Please use the new DRC instead. This feature is going to be removed.\n", fname);
-
-	rnd_conf_set(RND_CFR_DESIGN, "plugins/vendor/enable", -1, "0", RND_POL_OVERWRITE);
-
-	if (!pure)
-		apply_vendor_map();
+	r = vendor_load_root(fname, doc->root, pure);
 
 	if (free_fname)
 		free((char*)fname);
 	lht_dom_uninit(doc);
-	RND_ACT_IRES(0);
+	RND_ACT_IRES(r);
 	return 0;
 }
 
