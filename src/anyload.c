@@ -38,7 +38,7 @@
 #include "anyload.h"
 
 typedef struct {
-	const pcb_anyload_t *al;
+	const rnd_anyload_t *al;
 	re_se_t *rx;
 	const char *rx_str;
 	gdl_elem_t link;
@@ -47,14 +47,14 @@ typedef struct {
 static gdl_list_t anyloads;
 
 
-int pcb_anyload_reg(const char *root_regex, const pcb_anyload_t *al_in)
+int rnd_anyload_reg(const char *root_regex, const rnd_anyload_t *al_in)
 {
 	re_se_t *rx;
 	pcb_aload_t *al;
 
 	rx = re_se_comp(root_regex);
 	if (rx == NULL) {
-		rnd_message(RND_MSG_ERROR, "pcb_anyload_reg: failed to compile regex '%s' for '%s'\n", root_regex, al_in->cookie);
+		rnd_message(RND_MSG_ERROR, "rnd_anyload_reg: failed to compile regex '%s' for '%s'\n", root_regex, al_in->cookie);
 		return -1;
 	}
 
@@ -68,29 +68,29 @@ int pcb_anyload_reg(const char *root_regex, const pcb_anyload_t *al_in)
 	return 0;
 }
 
-static void pcb_anyload_free(pcb_aload_t *al)
+static void rnd_anyload_free(pcb_aload_t *al)
 {
 	gdl_remove(&anyloads, al, link);
 	re_se_free(al->rx);
 	free(al);
 }
 
-void pcb_anyload_unreg_by_cookie(const char *cookie)
+void rnd_anyload_unreg_by_cookie(const char *cookie)
 {
 	pcb_aload_t *al, *next;
 	for(al = gdl_first(&anyloads); al != NULL; al = next) {
 		next = al->link.next;
 		if (al->al->cookie == cookie)
-			pcb_anyload_free(al);
+			rnd_anyload_free(al);
 	}
 }
 
-void pcb_anyload_uninit(void)
+void rnd_anyload_uninit(void)
 {
 	pcb_aload_t *al;
 	while((al = gdl_first(&anyloads)) != NULL) {
-		rnd_message(RND_MSG_ERROR, "pcb_anyload: '%s' left anyloader regs in\n", al->al->cookie);
-		pcb_anyload_free(al);
+		rnd_message(RND_MSG_ERROR, "rnd_anyload: '%s' left anyloader regs in\n", al->al->cookie);
+		rnd_anyload_free(al);
 	}
 }
 
@@ -116,7 +116,7 @@ static lht_doc_t *load_lht(rnd_hidlib_t *hidlib, const char *path)
 
 
 /* call a loader to load/install a subtree; retruns non-zero on error */
-int pcb_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree, rnd_conf_role_t inst_role)
+int rnd_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree, rnd_conf_role_t inst_role)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
 	pcb_aload_t *al;
@@ -129,7 +129,7 @@ int pcb_anyload_parse_subtree(rnd_hidlib_t *hidlib, lht_node_t *subtree, rnd_con
 	return -1;
 }
 
-int pcb_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, rnd_conf_role_t inst_role, const char *real_cwd, int real_cwd_len)
+int rnd_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *type, rnd_conf_role_t inst_role, const char *real_cwd, int real_cwd_len)
 {
 	pcb_aload_t *al;
 	pcb_board_t *pcb = (pcb_board_t *)hidlib;
@@ -143,7 +143,7 @@ int pcb_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *typ
 /*	rnd_trace("ext file: '%s' '%s' PATHS: '%s' in '%s'\n", path, type, fpath, real_cwd);*/
 
 	if (type == NULL) /* must be a lihata file */
-		return pcb_anyload(hidlib, fpath, inst_role);
+		return rnd_anyload(hidlib, fpath, inst_role);
 
 	/* we have an explicit type, look for a plugin to handle that */
 	for(al = gdl_first(&anyloads); al != NULL; al = al->link.next) {
@@ -169,7 +169,7 @@ int pcb_anyload_ext_file(rnd_hidlib_t *hidlib, const char *path, const char *typ
 }
 
 /* parse an anyload file, load/install all roots; retruns non-zero on any error */
-int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role, const char *cwd)
+int rnd_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role, const char *cwd)
 {
 	lht_node_t *rsc, *n;
 	int res = 0, real_cwd_len = 0;
@@ -228,10 +228,10 @@ int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 					res = -1;
 					goto error;
 			}
-			r = pcb_anyload_ext_file(hidlib, path, type, inst_role, real_cwd, real_cwd_len);
+			r = rnd_anyload_ext_file(hidlib, path, type, inst_role, real_cwd, real_cwd_len);
 		}
 		else
-		 r = pcb_anyload_parse_subtree(hidlib, n, inst_role);
+		 r = rnd_anyload_parse_subtree(hidlib, n, inst_role);
 
 		if (r != 0)
 			res = r;
@@ -244,15 +244,15 @@ int pcb_anyload_parse_anyload_v1(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_con
 
 /* parse the root of a random file, which will either be an anyload pack or
    a single root one of our backends can handle; retruns non-zero on error */
-int pcb_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role, const char *cwd)
+int rnd_anyload_parse_root(rnd_hidlib_t *hidlib, lht_node_t *root, rnd_conf_role_t inst_role, const char *cwd)
 {
 	if (strcmp(root->name, "pcb-rnd-anyload-v1") == 0)
-		return pcb_anyload_parse_anyload_v1(hidlib, root, inst_role, cwd);
-	return pcb_anyload_parse_subtree(hidlib, root, inst_role);
+		return rnd_anyload_parse_anyload_v1(hidlib, root, inst_role, cwd);
+	return rnd_anyload_parse_subtree(hidlib, root, inst_role);
 }
 
 
-int pcb_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_role)
+int rnd_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_role)
 {
 	char *path_free = NULL, *cwd_free = NULL;
 	const char *cwd;
@@ -280,9 +280,9 @@ int pcb_anyload(rnd_hidlib_t *hidlib, const char *path, rnd_conf_role_t inst_rol
 	doc = load_lht(hidlib, path);
 	if (doc != NULL) {
 		if (req_anyload)
-			res = pcb_anyload_parse_anyload_v1(hidlib, doc->root, inst_role, cwd);
+			res = rnd_anyload_parse_anyload_v1(hidlib, doc->root, inst_role, cwd);
 		else
-			res = pcb_anyload_parse_root(hidlib, doc->root, inst_role, cwd);
+			res = rnd_anyload_parse_root(hidlib, doc->root, inst_role, cwd);
 		lht_dom_uninit(doc);
 	}
 
@@ -311,7 +311,7 @@ fgw_error_t pcb_act_AnyLoad(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	RND_ACT_IRES(pcb_anyload(RND_ACT_HIDLIB, path, role));
+	RND_ACT_IRES(rnd_anyload(RND_ACT_HIDLIB, path, role));
 	return 0;
 }
 
@@ -321,7 +321,7 @@ static rnd_action_t anyload_action_list[] = {
 };
 
 
-void pcb_anyload_init2(void)
+void rnd_anyload_init2(void)
 {
 	RND_REGISTER_ACTIONS(anyload_action_list, NULL);
 }

@@ -718,7 +718,7 @@ static void vendor_new_pstk(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd
 	apply_vendor_pstk1(ps, &dummy);
 }
 
-static int vendor_anyload_subtree(const pcb_anyload_t *al, pcb_board_t *pcb, lht_node_t *root, rnd_conf_role_t install)
+static int vendor_anyload_subtree(const rnd_anyload_t *al, pcb_board_t *pcb, lht_node_t *root, rnd_conf_role_t install)
 {
 	int res = vendor_load_root(root->file_name, root, 0);
 	if (res == 0) {
@@ -728,13 +728,13 @@ static int vendor_anyload_subtree(const pcb_anyload_t *al, pcb_board_t *pcb, lht
 	return res;
 }
 
-static pcb_anyload_t vendor_anyload = {0};
+static rnd_anyload_t vendor_anyload = {0};
 
 int pplg_check_ver_vendordrill(int ver_needed) { return 0; }
 
 void pplg_uninit_vendordrill(void)
 {
-	pcb_anyload_unreg_by_cookie(vendor_cookie);
+	rnd_anyload_unreg_by_cookie(vendor_cookie);
 	rnd_event_unbind_allcookie(vendor_cookie);
 	rnd_remove_actions_by_cookie(vendor_cookie);
 	vendor_free_all();
@@ -755,7 +755,7 @@ int pplg_init_vendordrill(void)
 
 	vendor_anyload.load_subtree = vendor_anyload_subtree;
 	vendor_anyload.cookie = vendor_cookie;
-	pcb_anyload_reg("^vendor_drill_map$", &vendor_anyload);
+	rnd_anyload_reg("^vendor_drill_map$", &vendor_anyload);
 
 	return 0;
 }

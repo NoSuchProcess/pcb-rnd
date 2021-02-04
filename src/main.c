@@ -298,8 +298,8 @@ extern void pcb_select_act_init2(void);
 extern void pcb_undo_act_init2(void);
 extern void pcb_draw_init(void);
 extern void pcb_draw_uninit(void);
-extern void pcb_anyload_uninit(void);
-extern void pcb_anyload_init2(void);
+extern void rnd_anyload_uninit(void);
+extern void rnd_anyload_init2(void);
 
 void pcb_main_init_actions(void)
 {
@@ -323,7 +323,7 @@ void pcb_main_init_actions(void)
 	pcb_remove_act_init2();
 	pcb_select_act_init2();
 	pcb_undo_act_init2();
-	pcb_anyload_init2();
+	rnd_anyload_init2();
 }
 
 extern void pcb_poly_uninit(void);
@@ -365,7 +365,7 @@ void pcb_main_uninit(void)
 
 	rnd_hidlib_uninit(); /* plugin unload */
 
-	pcb_anyload_uninit();
+	rnd_anyload_uninit();
 	rnd_funchash_uninit();
 	rnd_file_loaded_uninit();
 	pcb_uilayer_uninit();
