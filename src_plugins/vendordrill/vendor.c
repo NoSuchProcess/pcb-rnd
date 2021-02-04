@@ -39,7 +39,7 @@
 #include <genvector/vtp0.h>
 #include <genregex/regex_sei.h>
 
-#include "anyload.h"
+#include "librnd/core/anyload.h"
 #include "change.h"
 #include "board.h"
 #include "data.h"
@@ -718,7 +718,7 @@ static void vendor_new_pstk(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd
 	apply_vendor_pstk1(ps, &dummy);
 }
 
-static int vendor_anyload_subtree(const rnd_anyload_t *al, pcb_board_t *pcb, lht_node_t *root, rnd_conf_role_t install)
+static int vendor_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root, rnd_conf_role_t install)
 {
 	int res = vendor_load_root(root->file_name, root, 0);
 	if (res == 0) {

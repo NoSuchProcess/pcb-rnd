@@ -28,7 +28,6 @@ put /local/pcb/OBJS {}
 append /local/pcb/OBJS /local/pcb/OBJS_3RDLIB
 append /local/pcb/OBJS [@
 	actions_pcb.o
-	anyload.o
 	attrib.o
 	board.o
 	brave.o
