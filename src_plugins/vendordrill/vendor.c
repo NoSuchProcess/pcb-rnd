@@ -716,7 +716,12 @@ static void vendor_new_pstk(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd
 
 static int vendor_anyload_subtree(const pcb_anyload_t *al, pcb_board_t *pcb, lht_node_t *root, rnd_conf_role_t install)
 {
-	rnd_trace("anyload: vendor");
+	int res = vendor_load_root(root->file_name, root, 0);
+	if (res == 0) {
+		if (install != RND_CFR_invalid)
+			rnd_message(RND_MSG_ERROR, "Can not install/persist vendor drill section; vendor drill loaded as volatile\n");
+	}
+	return res;
 }
 
 static pcb_anyload_t vendor_anyload = {0};
