@@ -3,7 +3,7 @@
 1. For the upcoming release ===============================================================================
 - ADMIN: generate new keys, schedule next release before expiry (21 april)
 + FEATURE: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
-- FEATURE: vendor drill plugin: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
++ FEATURE: vendor drill plugin: be able to load multiple vendor files (project spec for skips, central for vendor) [report: celem]
 - BUG: open the command line with {:}, then right click over empty board, ignore the context menu, right click again -> gtk GUI gray control [report: Majenko]
 + BUG: font selector {w f} prints black font on black background if the background color is black [report: Majenko]
 - BUG: floating point related test failure on s390x [report: Bdale]
