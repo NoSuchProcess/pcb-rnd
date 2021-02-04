@@ -30,7 +30,8 @@ message(*** POST ***)
 Report(DrillReport)
 ') | (
 	cd $SRC
-	pcb-rnd $GLOBARGS --gui batch $brd
+	export LD_LIBRARY_PATH=../src_3rd/librnd-local/src
+	./pcb-rnd $GLOBARGS --gui batch $brd
 )
 }
 
