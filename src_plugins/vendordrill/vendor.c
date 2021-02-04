@@ -208,7 +208,7 @@ static int vendor_load_root(const char *fname, lht_node_t *root, rnd_bool pure)
 	long num_skips;
 	lht_node_t *drc, *drlres;
 	const char *sval;
-	int warn_drc = 0;
+	int warn_drc = 0, res = 0;
 
 	if (root->type != LHT_HASH) {
 		rnd_hid_cfg_error(root, "vendor drill root node must be a hash\n");
@@ -259,6 +259,8 @@ static int vendor_load_root(const char *fname, lht_node_t *root, rnd_bool pure)
 	}
 
 	num_skips = process_skips(lht_dom_hash_get(root, "skips"));
+	if (num_skips < 0)
+		res = -1;
 
 	/* extract the drillmap resource */
 	drlres = lht_dom_hash_get(root, "drillmap");
@@ -331,7 +333,7 @@ static int vendor_load_root(const char *fname, lht_node_t *root, rnd_bool pure)
 	if (!pure)
 		apply_vendor_map();
 
-	return 0;
+	return res;
 }
 
 static const char pcb_acts_LoadVendorFrom[] = "LoadVendorFrom(filename, [yes|no])";
@@ -615,8 +617,10 @@ static long process_skips(lht_node_t *res)
 	if (res == NULL)
 		return 0;
 
-	if (res->type != LHT_LIST)
+	if (res->type != LHT_LIST) {
 		rnd_hid_cfg_error(res, "skips must be a list.\n");
+		return -1;
+	}
 
 	for(n = res->data.list.first; n != NULL; n = n->next) {
 		if (n->type == LHT_TEXT) {
