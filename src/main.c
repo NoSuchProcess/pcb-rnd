@@ -298,6 +298,8 @@ extern void pcb_select_act_init2(void);
 extern void pcb_undo_act_init2(void);
 extern void pcb_draw_init(void);
 extern void pcb_draw_uninit(void);
+extern void pcb_anyload_uninit(void);
+extern void pcb_anyload_init2(void);
 
 void pcb_main_init_actions(void)
 {
@@ -321,6 +323,7 @@ void pcb_main_init_actions(void)
 	pcb_remove_act_init2();
 	pcb_select_act_init2();
 	pcb_undo_act_init2();
+	pcb_anyload_init2();
 }
 
 extern void pcb_poly_uninit(void);
@@ -331,6 +334,8 @@ void pcb_main_uninit(void)
 		rnd_log_last->seen = 1; /* ignore anything unseen before the uninit */
 
 	conf_core_uninit_pre();
+
+	pcb_anyload_uninit();
 	pcb_draw_uninit();
 	pcb_brave_uninit();
 	pcb_polygon_uninit();
