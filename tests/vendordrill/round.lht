@@ -1,0 +1,14 @@
+ha:vendor_drill_map {
+	units = mm
+
+#	round = nearest
+#	round = up
+#	round = down
+
+	li:drillmap = {
+		0.3
+		2.1
+		4.3
+	}
+
+}
