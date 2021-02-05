@@ -106,6 +106,9 @@ li:pcb-rnd-conf-v1 {
 				{./default4.lht}
 				{$(rc.path.share)/default4.lht}
 			}
+			li:anyload_persist = {
+				{$(rc.path.home)/.pcb-rnd/anyload}
+			}
 
 #			script_filename = {}
 #			action_string = {}
