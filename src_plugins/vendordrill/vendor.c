@@ -718,14 +718,9 @@ static void vendor_new_pstk(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd
 	apply_vendor_pstk1(ps, &dummy);
 }
 
-static int vendor_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root, rnd_conf_role_t install)
+static int vendor_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root)
 {
-	int res = vendor_load_root(root->file_name, root, 0);
-	if (res == 0) {
-		if (install != RND_CFR_invalid)
-			rnd_message(RND_MSG_ERROR, "Can not install/persist vendor drill section; vendor drill loaded as volatile\n");
-	}
-	return res;
+	return vendor_load_root(root->file_name, root, 0);
 }
 
 static rnd_anyload_t vendor_anyload = {0};
