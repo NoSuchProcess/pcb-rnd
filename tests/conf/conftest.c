@@ -18,6 +18,7 @@ rnd_hid_t *rnd_gui = NULL;
 const char *rnd_hidlib_default_embedded_menu = "";
 const char *rnd_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
 const char *rnd_menu_name_fmt = "pcb-menu-%s.lht";
+const char *rnd_app_package = "pcb-rnd";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
 const char *rnd_conf_userdir_path = CONF_USER_DIR;
