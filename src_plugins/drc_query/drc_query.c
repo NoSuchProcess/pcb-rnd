@@ -869,6 +869,14 @@ static int drc_query_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, 
 	return drc_query_lht_load_subtree(hl, root);
 }
 
+static int drc_query_anyload_file(const rnd_anyload_t *al, rnd_hidlib_t *hl, const char *filename, const char *type, lht_node_t *nd)
+{
+	if (strncmp(type, "pcb-rnd-drc-query", 17) == 0)
+		return drc_query_lht_load_rules(hl, filename);
+	return rnd_actionva(hl, "loadtedaxfrom", "drc_query", filename, "", "0", NULL);
+}
+
+
 static rnd_anyload_t drc_query_anyload = {0};
 
 int pplg_check_ver_drc_query(int ver_needed) { return 0; }
@@ -921,8 +929,10 @@ int pplg_init_drc_query(void)
 	pcb_drc_impl_reg(&drc_query_impl);
 
 	drc_query_anyload.load_subtree = drc_query_anyload_subtree;
+	drc_query_anyload.load_file = drc_query_anyload_file;
 	drc_query_anyload.cookie = drc_query_cookie;
 	rnd_anyload_reg("^pcb-rnd-drc-query-v[0-9]*$", &drc_query_anyload);
+	rnd_anyload_reg("^drc_query_rule$", &drc_query_anyload); /* tEDAx ext file */
 
 	return 0;
 }
