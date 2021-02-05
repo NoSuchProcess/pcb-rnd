@@ -123,7 +123,7 @@ void pcb_text_dyn_bbox_update(pcb_data_t *data);
 rnd_bool pcb_text_old_direction(int *dir_out, double rot);
 
 /* Return the minimum width the text object needs to have on a specific layer */
-rnd_coord_t pcb_text_min_thickness(pcb_layer_t *layer);
+rnd_coord_t pcb_text_min_thickness(const pcb_layer_t *layer);
 
 /* hash and eq */
 int pcb_text_eq(const pcb_host_trans_t *tr1, const pcb_text_t *t1, const pcb_host_trans_t *tr2, const pcb_text_t *t2);

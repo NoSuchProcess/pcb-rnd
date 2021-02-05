@@ -1590,7 +1590,7 @@ void pcb_text_draw_(pcb_draw_info_t *info, pcb_text_t *text, rnd_coord_t min_lin
 	}
 }
 
-rnd_coord_t pcb_text_min_thickness(pcb_layer_t *layer)
+rnd_coord_t pcb_text_min_thickness(const pcb_layer_t *layer)
 {
 	unsigned int flg = 0;
 
