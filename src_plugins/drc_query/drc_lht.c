@@ -108,36 +108,25 @@ static int reloc_children(lht_node_t *dst, lht_node_t *src)
 	return res;
 }
 
-static int drc_query_lht_load_rules(rnd_hidlib_t *hl, const char *fn)
+static int drc_query_lht_load_subtree(rnd_hidlib_t *hl, lht_node_t *root)
 {
-	FILE *f;
-	lht_doc_t *doc;
 	lht_node_t *ndefs, *nrules, *nd, *dst;
 	int res = 0;
 
-	f = rnd_fopen(hl, fn, "r");
-	if (f == NULL)
+	if ((root->type != LHT_LIST) || (strcmp(root->name, "pcb-rnd-drc-query-v1")))
 		return -1;
 
-	doc = lht_dom_load_stream(f, fn, NULL);
-	fclose(f);
-	if (doc == NULL)
-		return -1;
-
-	if ((doc->root->type != LHT_LIST) || (strcmp(doc->root->name, "pcb-rnd-drc-query-v1")))
-		goto error;
-
-	ndefs = doc->root->data.list.first;
+	ndefs = root->data.list.first;
 	if (ndefs == NULL)
-		goto error;
+		return -1;
 	nrules = ndefs->next;
 	if (nrules == NULL)
-		goto error;
+		return -1;
 
 	if ((ndefs->type != LHT_LIST) || (strcmp(ndefs->name, "definitions")))
-		goto error;
+		return -1;
 	if ((nrules->type != LHT_LIST) || (strcmp(nrules->name, "rules")))
-		goto error;
+		return -1;
 
 	for(nd = ndefs->data.list.first; nd != NULL; nd = nd->next) {
 		if (pcb_drc_query_def_by_name(nd->name, &dst, 1) == 0) {
@@ -159,8 +148,25 @@ static int drc_query_lht_load_rules(rnd_hidlib_t *hl, const char *fn)
 
 	return res;
 
-	error:;
+}
+
+static int drc_query_lht_load_rules(rnd_hidlib_t *hl, const char *fn)
+{
+	FILE *f;
+	lht_doc_t *doc;
+	int res;
+
+	f = rnd_fopen(hl, fn, "r");
+	if (f == NULL)
+		return -1;
+
+	doc = lht_dom_load_stream(f, fn, NULL);
+	fclose(f);
+	if (doc == NULL)
+		return -1;
+
+	res = drc_query_lht_load_subtree(hl, doc->root);
 	lht_dom_uninit(doc);
-	return -1;
+	return res;
 }
 
