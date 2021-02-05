@@ -122,6 +122,8 @@ static char *main_path_init(char *argv0)
 
 	if (haspath) {
 		bindir = rnd_lrealpath(argv0);
+		if (bindir == NULL)
+			bindir = rnd_strdup(argv0);
 		found_bindir = 1;
 	}
 	else {
@@ -150,6 +152,8 @@ static char *main_path_init(char *argv0)
 					printf("Found it:  \"%s\"\n", tmps);
 #endif
 					bindir = rnd_lrealpath(tmps);
+					if (bindir == NULL)
+						bindir = rnd_strdup(tmps);
 					found_bindir = 1;
 					free(tmps);
 					break;
