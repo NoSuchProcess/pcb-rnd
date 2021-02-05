@@ -1,8 +1,11 @@
 ROOT=../..
 include $(ROOT)/Makefile.conf
 
-CFLAGS = $(PCB_RND_C89FLAGS) -I../.. -I../../src_3rd -I../../src $(CFLAGS_LIBRND_FUNGW)
-LDLIBS = -lm $(LDFLAGS_LIBRND_FUNGW)
+LIBRND_ROOT=$(ROOT)/src_3rd/librnd-local
+include $(LIBRND_ROOT)/src/librnd/core/librnd.mak
+
+CFLAGS = $(PCB_RND_C89FLAGS) -I../.. -I../../src_3rd -I../../src $(CFLAGS_LIBRND_FUNGW) $(CFLAGS_LIBRND)
+LDLIBS = -lm $(LDFLAGS_LIBRND_FUNGW) $(LDFLAGS_LIBRND)
 
 LIB_HIDLIB=\
 	../../src_3rd/librnd-local/src/librnd-hid.a \

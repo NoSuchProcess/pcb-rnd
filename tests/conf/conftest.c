@@ -14,7 +14,6 @@ int lineno = 0;
 int global_notify = 0;
 rnd_conf_hid_id_t hid_id;
 const char *hid_cookie = "conftest cookie";
-rnd_hid_t *rnd_gui = NULL;
 const char *rnd_hidlib_default_embedded_menu = "";
 const char *rnd_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
 const char *rnd_menu_name_fmt = "pcb-menu-%s.lht";
@@ -26,10 +25,6 @@ const char *rnd_pcphl_conf_user_path = CONF_USER_DIR "/pcb-conf.lht";
 const char *rnd_conf_sysdir_path = PCBSHAREDIR;
 const char *rnd_conf_sys_path = PCBSHAREDIR "/pcb-conf.lht";
 
-void pcbhl_conf_postproc(void)
-{
-}
-
 const char *pcb_board_get_filename(void)
 {
 	return "dummy_brd.lht";
@@ -40,14 +35,8 @@ const char *pcb_board_get_name(void)
 	return "dummy_brd";
 }
 
-int rnd_file_loaded_set_at(const char *catname, const char *name, const char *path, const char *desc)
+void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
 {
-	return 0;
-}
-
-int rnd_file_loaded_del_at(const char *catname, const char *name)
-{
-	return 0;
 }
 
 
@@ -351,6 +340,7 @@ int main()
 
 	hid_id = rnd_conf_hid_reg(hid_cookie, &global_cbs);
 
+	rnd_file_loaded_init();
 	rnd_conf_init();
 	conf_core_init();
 	rnd_hidlib_conf_init();
