@@ -12,7 +12,6 @@
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
 - FEATURE: anyload:
 	- config files
-	- drc scripts
 	- menu patches
 
 2. For later releases ===============================================================================
