@@ -35,6 +35,7 @@
 #include <liblihata/dom.h>
 #include <liblihata/tree.h>
 #include <librnd/core/actions.h>
+#include <librnd/core/anyload.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/error.h>
 #include <librnd/core/conf.h>
@@ -863,12 +864,20 @@ static rnd_action_t drc_query_action_list[] = {
 	{"DrcQueryImport", pcb_act_DrcQueryImport, pcb_acth_DrcQueryImport, pcb_acts_DrcQueryImport}
 };
 
+static int drc_query_anyload_subtree(const rnd_anyload_t *al, rnd_hidlib_t *hl, lht_node_t *root)
+{
+	return drc_query_lht_load_subtree(hl, root);
+}
+
+static rnd_anyload_t drc_query_anyload = {0};
+
 int pplg_check_ver_drc_query(int ver_needed) { return 0; }
 
 void pplg_uninit_drc_query(void)
 {
 	long n;
 
+	rnd_anyload_unreg_by_cookie(drc_query_cookie);
 	pcb_drc_impl_unreg(&drc_query_impl);
 	rnd_event_unbind_allcookie(drc_query_cookie);
 	rnd_conf_unreg_intern(drc_query_conf_internal);
@@ -910,6 +919,10 @@ int pplg_init_drc_query(void)
 
 	RND_REGISTER_ACTIONS(drc_query_action_list, drc_query_cookie)
 	pcb_drc_impl_reg(&drc_query_impl);
+
+	drc_query_anyload.load_subtree = drc_query_anyload_subtree;
+	drc_query_anyload.cookie = drc_query_cookie;
+	rnd_anyload_reg("^pcb-rnd-drc-query-v[0-9]*$", &drc_query_anyload);
 
 	return 0;
 }
