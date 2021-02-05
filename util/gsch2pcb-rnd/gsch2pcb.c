@@ -61,6 +61,8 @@ const char *rnd_pcphl_conf_user_path;
 const char *rnd_conf_sysdir_path;
 const char *rnd_conf_sys_path;
 
+const char *rnd_app_package = "gsch2pcb-rnd";
+
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
 
