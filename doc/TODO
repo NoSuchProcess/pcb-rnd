@@ -11,6 +11,7 @@
 - BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
 - DOC: anyload
+- FEATURE: anyload edakrill: upgrade and test: drc krills, user script krills
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: lihata v8
