@@ -2287,13 +2287,7 @@
  ../src_3rd/librnd-local/src/librnd/core/unit.h \
  ../src_3rd/librnd-local/src/../src_3rd/libfungw/fungw.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h \
- ../src_3rd/librnd-local/src/librnd/core/plugins.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/config.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
+ ../src_3rd/librnd-local/src/librnd/core/anyload.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
  ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
@@ -2305,6 +2299,13 @@
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+ ../src_3rd/librnd-local/src/librnd/core/plugins.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
+ ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
  ../src_3rd/librnd-local/src/librnd/core/conf_hid.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_3rd/librnd-local/src/librnd/core/safe_fs.h board.h vtroutestyle.h \
