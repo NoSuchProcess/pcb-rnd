@@ -10,8 +10,7 @@
 - BUG: kicad_io doesn't place subc without an (at); bug_files/kicad_subc_no_at [report: Miloh]
 - BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
-- FEATURE: anyload:
-	- config files
+- DOC: anyload
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: lihata v8
