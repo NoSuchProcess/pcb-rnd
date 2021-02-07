@@ -1460,6 +1460,7 @@ int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
 	rnd_box_t sb = ((pcb_any_obj_t *) ptr2)->BoundingBox;
 	int r = 0, seen;
 	struct plow_info info;
+	pcb_board_t *pcb;
 
 	if (Data->clip_inhibit > 0)
 		call_back = poly_plows_inhibited_cb;
@@ -1506,9 +1507,9 @@ int pcb_poly_plows(pcb_data_t *Data, int type, void *ptr1, void *ptr2,
 		/* text has no clearance property */
 		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, (pcb_line_t *) ptr2))
 			return 0;
-		/* non-copper (e.g. silk, outline) doesn't plow */
-TODO(": use pcb_layer_flags_ here - but what PCB?")
-		if (!(pcb_layer_flags(PCB, pcb_layer_id(Data, (pcb_layer_t *) ptr1) & PCB_LYT_COPPER)))
+		/* non-copper (e.g. silk, outline) doesn't plow; also do not plow if there's no backing pcb (can't decide layer flags without a real layer stackup) */
+		pcb = pcb_data_get_top(Data);
+		if ((pcb == NULL) || !(pcb_layer_flags(pcb, pcb_layer_id(Data, (pcb_layer_t *) ptr1) & PCB_LYT_COPPER)))
 			return 0;
 		doit:;
 		PCB_COPPER_GROUP_LOOP(Data, pcb_layer_get_group(PCB, pcb_layer_id(Data, ((pcb_layer_t *) ptr1))));
