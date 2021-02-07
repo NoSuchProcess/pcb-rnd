@@ -206,9 +206,9 @@ const char *lht_get_htext(lht_node_t *h, const char *name)
 static int vendor_load_root(const char *fname, lht_node_t *root, rnd_bool pure)
 {
 	long num_skips;
-	lht_node_t *drc, *drlres;
+	lht_node_t *drlres;
 	const char *sval;
-	int warn_drc = 0, res = 0;
+	int res = 0;
 
 	if (root->type != LHT_HASH) {
 		rnd_hid_cfg_error(root, "vendor drill root node must be a hash\n");
@@ -280,53 +280,13 @@ static int vendor_load_root(const char *fname, lht_node_t *root, rnd_bool pure)
 	else
 		rnd_message(RND_MSG_ERROR, "No drillmap resource found\n");
 
-	drc = lht_dom_hash_get(root, "drc");
-	if ((drc != NULL) && (drc->type == LHT_HASH)) {
-		sval = lht_get_htext(drc, "copper_space");
-		if (sval != NULL) {
-			load_meta_coord("design/bloat", floor(sf * atof(sval) + 0.5));
-			rnd_message(RND_MSG_INFO, "Set DRC minimum copper spacing to %ml mils\n", conf_core.design.bloat);
-			warn_drc = 1;
-		}
-
-		sval = lht_get_htext(drc, "copper_overlap");
-		if (sval != NULL) {
-			load_meta_coord("design/shrink", floor(sf * atof(sval) + 0.5));
-			rnd_message(RND_MSG_ERROR, "drc/copper_overlap is not supported anymore, please use the new DRC instead\n");
-		}
-
-		sval = lht_get_htext(drc, "copper_width");
-		if (sval != NULL) {
-			load_meta_coord("design/min_wid", floor(sf * atof(sval) + 0.5));
-			rnd_message(RND_MSG_INFO, "Set DRC minimum copper spacing to %ml mils\n", conf_core.design.min_wid);
-			warn_drc = 1;
-		}
-
-		sval = lht_get_htext(drc, "silk_width");
-		if (sval != NULL) {
-			load_meta_coord("design/min_slk", floor(sf * atof(sval) + 0.5));
-			rnd_message(RND_MSG_INFO, "Set DRC minimum silk width to %ml mils\n", conf_core.design.min_slk);
-			warn_drc = 1;
-		}
-
-		sval = lht_get_htext(drc, "min_drill");
-		if (sval != NULL) {
-			load_meta_coord("design/min_drill", floor(sf * atof(sval) + 0.5));
-			rnd_message(RND_MSG_ERROR, "drc/min_drill is not supported anymore, please use the new DRC instead\n");
-		}
-
-		sval = lht_get_htext(drc, "min_ring");
-		if (sval != NULL) {
-			load_meta_coord("design/min_ring", floor(sf * atof(sval) + 0.5));
-			rnd_message(RND_MSG_ERROR, "drc/min_ring is not supported anymore, please use the new DRC instead\n");
-		}
+	if (lht_dom_hash_get(root, "drc") != NULL) {
+		rnd_message(RND_MSG_ERROR, "Vendordrill: %s contains a drc subtree. The vendor drill plugin does not support DRC settings anymore\n", fname);
+		rnd_message(RND_MSG_ERROR, "Vendordrill: please refer to http://www.repo.hu/projects/pcb-rnd/help/err0003.html\n");
 	}
 
 	rnd_message(RND_MSG_INFO, "Loaded %d vendor drills from %s\n", n_vendor_drills, fname);
 	rnd_message(RND_MSG_INFO, "Loaded %ld skips for %d different attributes\n", num_skips, skips.used);
-
-	if (warn_drc)
-		rnd_message(RND_MSG_WARNING, "Vendordrill: %s contains a drc subtree. Please use the new DRC instead. This feature is going to be removed.\n", fname);
 
 	rnd_conf_set(RND_CFR_DESIGN, "plugins/vendor/enable", -1, "0", RND_POL_OVERWRITE);
 
@@ -356,8 +316,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (!fname || !*fname) {
 		fname = rnd_gui->fileselect(rnd_gui, "Load Vendor Resource File...",
 			"Picks a vendor resource file to load.\n"
-			"This file can contain drc settings for a\n"
-			"particular vendor as well as a list of\n"
+			"This file contains a list of\n"
 			"predefined drills which are allowed.", default_file, ".res",
 			NULL, "vendor", RND_HID_FSD_READ, NULL);
 		if (fname == NULL) {
