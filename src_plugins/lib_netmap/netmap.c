@@ -118,7 +118,9 @@ int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
 	PCB_PADSTACK_LOOP(subc->data) {
 		list_pstk_cb(ctx, pcb, padstack);
 	} PCB_END_LOOP;
-TODO("subc: heavy terminals - test on io_hyp")
+
+	/* Heavy terminals don't need to be checked since floating copper find will
+	   find the net segs connected to them */
 	return 0;
 }
 
