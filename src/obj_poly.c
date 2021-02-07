@@ -1438,14 +1438,17 @@ void pcb_poly_draw_(pcb_draw_info_t *info, pcb_poly_t *polygon, int allow_term_g
 			rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
 			for(n = head, i = 0; (n != head) || (i == 0); n = n->next, i++) {
 				rnd_coord_t x, y, r;
-				x = (n->prev->point[0] + n->point[0] + n->next->point[0]) / 3;
-				y = (n->prev->point[1] + n->point[1] + n->next->point[1]) / 3;
+				rnd_vector_t v;
 
-TODO("subc: check if x;y is within the poly, but use a cheaper method than the official")
-				r = PCB_DRAW_TERM_GFX_WIDTH;
-				rnd_hid_set_line_width(pcb_draw_out.fgGC, r);
-				rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
-				rnd_render->draw_line(pcb_draw_out.fgGC, x, y, x, y);
+				v[0] = x = (n->prev->point[0] + n->point[0] + n->next->point[0]) / 3;
+				v[1] = y = (n->prev->point[1] + n->point[1] + n->next->point[1]) / 3;
+
+				if (rnd_poly_contour_inside(polygon->Clipped->contours, v)) {
+					r = PCB_DRAW_TERM_GFX_WIDTH;
+					rnd_hid_set_line_width(pcb_draw_out.fgGC, r);
+					rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_square);
+					rnd_render->draw_line(pcb_draw_out.fgGC, x, y, x, y);
+				}
 			}
 		}
 		else
