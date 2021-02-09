@@ -159,14 +159,6 @@ static vendor_round_t rounding_method = ROUND_UP;
 
 #define FREE(x) if((x) != NULL) { free (x) ; (x) = NULL; }
 
-/* load a board metadata into conf_core */
-static void load_meta_coord(const char *path, rnd_coord_t crd)
-{
-	char tmp[128];
-	rnd_sprintf(tmp, "%$mm", crd);
-	rnd_conf_set(RND_CFR_DESIGN, path, -1, tmp, RND_POL_OVERWRITE);
-}
-
 static rnd_bool vendorIsSubcMappable(pcb_subc_t *subc);
 
 
