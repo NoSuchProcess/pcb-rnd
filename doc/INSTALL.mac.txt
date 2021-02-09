@@ -24,7 +24,8 @@ Considerations listed in ../INSTALL apply.
 
 pcb-rnd is reported to work at least on the following versions:
 
-macOS               xquartz
-----------------------------
+macOS               xquartz    pcb-rnd   comments
+---------------------------------------------------------------------------
+10.11.6 El Capitan  2.7.11     2.3.1     you have to disable JIT in libpcre
 10.14.3 majove      2.7.11
 
