@@ -7,9 +7,6 @@
 #include <genht/htpp.h>
 #include <genht/hash.h>
 
-TODO("win32: remove this once the w32_ dir workaround is removed")
-#include <librnd/core/hid_init.h>
-
 conf_core_t conf_core;
 
 static  const char conf_core_cookie[] = "conf_core";
