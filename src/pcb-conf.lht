@@ -238,6 +238,7 @@ li:pcb-rnd-conf-v1 {
 				warn = {#ff8000}
 				mask = {#ff0000}
 				paste = {#cd00cd}
+				black_group = {#000000}
 			}
 			ha:padstack {
 				cross_thick = 1

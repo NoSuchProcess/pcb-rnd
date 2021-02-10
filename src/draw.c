@@ -514,7 +514,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 		if (!restore_color) {
 			orig_color = Layer->meta.real.color;
 			restore_color = 1;
-			Layer->meta.real.color = *rnd_color_black;
+			Layer->meta.real.color = conf_core.appearance.color.black_group;
 		}
 	}
 

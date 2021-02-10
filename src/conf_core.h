@@ -222,6 +222,7 @@ typedef struct {
 			RND_CFT_COLOR mask;                  /* default mask layer color (when a new mask layer is created) */
 			RND_CFT_COLOR paste;                 /* default paste layer color (when a new paste layer is created) */
 			RND_CFT_COLOR element;               /* default silk layer color (when a new silk layer is created) */
+			RND_CFT_COLOR black_group;           /* 'black' color used by the 'black current group' feature (set it to white if you use dark background) */
 		} color;
 		struct {
 			RND_CFT_INTEGER cross_thick;      /* cross thickness in pixels - 0 means disable crosses */

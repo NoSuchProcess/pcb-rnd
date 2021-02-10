@@ -353,7 +353,7 @@ static void set_ps_color(pcb_pstk_t *ps, int is_current, pcb_layer_type_t lyt, c
 		color = &conf_core.appearance.color.invisible_objects;
 	}
 	else if (xform->black_current_group && is_current) {
-		color = rnd_color_black;
+		color = &conf_core.appearance.color.black_group;
 	}
 	else if (ps->term == NULL) {
 		/* normal via, not a terminal */
