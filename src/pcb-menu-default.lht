@@ -842,6 +842,12 @@ ha:rnd-menu-v1 {
 						ha:Visibility...                = { action=LayerHotkey("&current", vis) }
 					}
 				}
+				ha:transformations {
+					li:submenu {
+						ha:Toggle wireframe             = { action={LayerXform(&current, toggle, wireframe)} }
+						ha:Toggle thindraw              = { action={LayerXform(&current, toggle, thindraw)} }
+					}
+				}
 				-
 				ha:Move up (within group)           = { action=MoveLayer(c, step-) }
 				ha:Move down (within group)         = { action=MoveLayer(c, step+) }
