@@ -291,7 +291,7 @@ static void lys_update_vis(ls_layer_t *lys, rnd_bool_t vis)
 	rnd_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off_closed, !!vis);
 
 	if (ly != NULL)
-		is_spec = (ly->meta.real.xform.thin_draw || ly->meta.real.xform.wireframe);
+		is_spec = (ly->meta.real.gui_xform.thin_draw || ly->meta.real.gui_xform.wireframe);
 
 	rnd_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wspec, !is_spec);
 }

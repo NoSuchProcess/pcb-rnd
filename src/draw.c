@@ -465,10 +465,24 @@ static void pcb_draw_annotations(pcb_draw_info_t *info)
 static void xform_setup(pcb_draw_info_t *info, rnd_xform_t *dst, const pcb_layer_t *Layer)
 {
 	info->layer = Layer;
+	int copied = 0;
+
+	/* layer-specific transformations */
 	if ((Layer != NULL) && (!pcb_xform_is_nop(&Layer->meta.real.xform))) {
 		pcb_xform_copy(dst, &Layer->meta.real.xform);
 		info->xform = dst;
+		copied = 1;
 	}
+
+	/* ... plus only in GUI mode: per layer GUI modifications */
+	if ((Layer != NULL) && (rnd_render == rnd_gui) && (!pcb_xform_is_nop(&Layer->meta.real.gui_xform))) {
+		if (copied)
+			pcb_xform_add(dst, &Layer->meta.real.gui_xform);
+		else
+			pcb_xform_copy(dst, &Layer->meta.real.gui_xform);
+		info->xform = dst;
+	}
+
 	if (info->xform_caller != NULL) {
 		if (info->xform == NULL) {
 			info->xform = dst;

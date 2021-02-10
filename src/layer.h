@@ -142,6 +142,7 @@ struct pcb_layer_s {              /* holds information about one layer */
 			int no_drc;                    /* whether to ignore the layer when checking the design rules */
 			const char *cookie;            /* for UI layers: registration cookie; NULL for unused UI layers */
 			rnd_xform_t xform;             /* layer specified rendering transformation */
+			rnd_xform_t gui_xform;         /* GUI-render only layer specified rendering transformation */
 		} real;
 		struct { /* A subcircuit layer binding; list data are local but everything else is coming from board layers */
 			pcb_layer_t *real;             /* NULL if unbound */
