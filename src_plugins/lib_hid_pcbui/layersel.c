@@ -168,7 +168,7 @@ typedef struct {
 typedef struct layersel_ctx_s layersel_ctx_t;
 
 typedef struct {
-	int wvis_on_open, wvis_off_open, wvis_on_closed, wvis_off_closed, wlab;
+	int wvis_on_open, wvis_off_open, wvis_on_closed, wvis_off_closed, wlab, wspec;
 	int wunsel_closed, wsel_closed;
 	gen_xpm_t on_open, off_open, on_closed, off_closed;
 	layersel_ctx_t *ls;
@@ -282,10 +282,18 @@ static void locked_layervis_ev(layersel_ctx_t *ls)
 
 static void lys_update_vis(ls_layer_t *lys, rnd_bool_t vis)
 {
+	pcb_layer_t *ly = lys->ly;
+	int is_spec = 0;
+
 	rnd_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on_open, !vis);
 	rnd_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_on_closed, !vis);
 	rnd_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off_open, !!vis);
 	rnd_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wvis_off_closed, !!vis);
+
+	if (ly != NULL)
+		is_spec = (ly->meta.real.xform.thin_draw || ly->meta.real.xform.wireframe);
+
+	rnd_gui->attr_dlg_widget_hide(lys->ls->sub.dlg_hid_ctx, lys->wspec, !is_spec);
 }
 
 static void layer_select(ls_layer_t *lys)
@@ -593,6 +601,9 @@ static void layersel_create_layer_open(layersel_ctx_t *ls, ls_layer_t *lys, cons
 			lys->wvis_off_open = RND_DAD_CURRENT(ls->sub.dlg);
 			RND_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
 			RND_DAD_CHANGE_CB(ls->sub.dlg, layer_vis_cb);
+		RND_DAD_LABEL(ls->sub.dlg, "#");
+			lys->wspec = RND_DAD_CURRENT(ls->sub.dlg);
+			RND_DAD_HELP(ls->sub.dlg, "Layer has special render settings");
 		RND_DAD_LABEL(ls->sub.dlg, name);
 			lys->wlab = RND_DAD_CURRENT(ls->sub.dlg);
 			RND_DAD_SET_ATTR_FIELD(ls->sub.dlg, user_data, lys);
