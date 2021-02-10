@@ -1585,6 +1585,7 @@ do { \
 		case F_Toggle:  ly->meta.real.xform.field = !ly->meta.real.xform.field; break; \
 		default: return FGW_ERR_ARG_CONV; \
 	} \
+	rnd_event(RND_ACT_HIDLIB, PCB_EVENT_LAYERVIS_CHANGED, NULL); \
 } while(0)
 
 static const char pcb_acts_LayerXform[] = "LayerXform(layerid, toggle|set|clear, xformfield, [value])";
