@@ -1580,9 +1580,9 @@ static fgw_error_t pcb_act_LayerVisReset(fgw_arg_t *res, int argc, fgw_arg_t *ar
 #define XFORM_BOOL(ly, how, field) \
 do { \
 	switch(how) { \
-		case F_Set:     ly->meta.real.xform.field = 1; \
-		case F_Clear:   ly->meta.real.xform.field = 0; \
-		case F_Toggle:  ly->meta.real.xform.field = !ly->meta.real.xform.field; \
+		case F_Set:     ly->meta.real.xform.field = 1; break; \
+		case F_Clear:   ly->meta.real.xform.field = 0; break; \
+		case F_Toggle:  ly->meta.real.xform.field = !ly->meta.real.xform.field; break; \
 		default: return FGW_ERR_ARG_CONV; \
 	} \
 } while(0)
