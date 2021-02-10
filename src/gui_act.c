@@ -5,7 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1997, 1998, 1999, 2000, 2001 Harry Eaton
- *  Copyright (C) 2019, 2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019, 2020, 2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@
 #include <librnd/core/error.h>
 #include "undo.h"
 #include "funchash_core.h"
+#include <librnd/core/funchash_core.h>
 #include "change.h"
 
 #include "draw.h"
@@ -1576,6 +1577,37 @@ static fgw_error_t pcb_act_LayerVisReset(fgw_arg_t *res, int argc, fgw_arg_t *ar
 	return 0;
 }
 
+#define XFORM_BOOL(ly, how, field) \
+do { \
+	switch(how) { \
+		case F_Set:     ly->meta.real.xform.field = 1; \
+		case F_Clear:   ly->meta.real.xform.field = 0; \
+		case F_Toggle:  ly->meta.real.xform.field = !ly->meta.real.xform.field; \
+		default: return FGW_ERR_ARG_CONV; \
+	} \
+} while(0)
+
+static const char pcb_acts_LayerXform[] = "LayerXform(layerid, toggle|set|clear, xformfield, [value])";
+static const char pcb_acth_LayerXform[] = "Reset layer visibility to safe defaults.";
+static fgw_error_t pcb_act_LayerXform(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_layer_t *ly;
+	int how, what;
+
+	RND_ACT_CONVARG(1, FGW_LAYER, LayerXform, ly = fgw_layer(&argv[1]));
+	RND_ACT_CONVARG(2, FGW_KEYWORD, LayerXform, how = fgw_keyword(&argv[2]));
+	RND_ACT_CONVARG(3, FGW_KEYWORD, LayerXform, what = fgw_keyword(&argv[3]));
+
+	switch(what) {
+		case F_WireFrame: XFORM_BOOL(ly, how, wireframe); break;
+		case F_ThinDraw: XFORM_BOOL(ly, how, thin_draw); break;
+		default: return FGW_ERR_ARG_CONV;
+	}
+
+	RND_ACT_IRES(0);
+	return 0;
+}
+
 static rnd_action_t gui_action_list[] = {
 	{"Display", pcb_act_Display, pcb_acth_Display, pcb_acts_Display},
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
@@ -1595,7 +1627,8 @@ static rnd_action_t gui_action_list[] = {
 	{"ChkRst", pcb_act_ChkRst, pcb_acth_chkrst, pcb_acts_chkrst},
 	{"BoardFlip", pcb_act_boardflip, pcb_acth_boardflip, pcb_acts_boardflip},
 	{"ClipInhibit", pcb_act_ClipInhibit, pcb_acth_ClipInhibit, pcb_acts_ClipInhibit},
-	{"LayerVisReset", pcb_act_LayerVisReset, pcb_acth_LayerVisReset, pcb_acts_LayerVisReset}
+	{"LayerVisReset", pcb_act_LayerVisReset, pcb_acth_LayerVisReset, pcb_acts_LayerVisReset},
+	{"LayerXform", pcb_act_LayerXform, pcb_acth_LayerXform, pcb_acts_LayerXform}
 };
 
 void pcb_gui_act_init2(void)
