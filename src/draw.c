@@ -475,7 +475,7 @@ static void xform_setup(pcb_draw_info_t *info, rnd_xform_t *dst, const pcb_layer
 	}
 
 	/* ... plus only in GUI mode: per layer GUI modifications */
-	if ((Layer != NULL) && (rnd_render == rnd_gui) && (!pcb_xform_is_nop(&Layer->meta.real.gui_xform))) {
+	if ((Layer != NULL) && ((rnd_render == rnd_gui) || dst->add_gui_xform) && (!pcb_xform_is_nop(&Layer->meta.real.gui_xform))) {
 		if (copied)
 			pcb_xform_add(dst, &Layer->meta.real.gui_xform);
 		else

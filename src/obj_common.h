@@ -107,6 +107,7 @@ struct rnd_xform_s {   /* generic object transformation; all-zero means no trans
 	unsigned check_planes:1;     /* when 1, draw polygons only */
 	unsigned flag_color:1;       /* when zero, ignore colors that would be derived from object flags (i.e. selection, warn, found) */
 	unsigned hide_floaters:1;    /* when 1 omit drawing floaters (typically refdes text on silk) */
+	unsigned add_gui_xform:1;    /* when 1, draw.c applies per layer GUI transformations even when exporting */
 	unsigned show_solder_side:1;    /* GUI */
 	unsigned invis_other_groups:1;  /* GUI */
 	unsigned black_current_group:1; /* GUI */
@@ -130,6 +131,7 @@ struct rnd_xform_s {   /* generic object transformation; all-zero means no trans
 		__dst__->check_planes |= __src__->check_planes; \
 		__dst__->flag_color |= __src__->flag_color; \
 		__dst__->hide_floaters |= __src__->hide_floaters; \
+		__dst__->add_gui_xform |= __src__->add_gui_xform; \
 		__dst__->show_solder_side |= __src__->show_solder_side; \
 		__dst__->invis_other_groups |= __src__->invis_other_groups; \
 		__dst__->black_current_group |= __src__->black_current_group; \
@@ -145,6 +147,7 @@ struct rnd_xform_s {   /* generic object transformation; all-zero means no trans
 	((src)->check_planes == 0) && \
 	((src)->flag_color == 0) && \
 	((src)->hide_floaters == 0) && \
+	((src)->add_gui_xform == 0) && \
 	((src)->show_solder_side == 0) && \
 	((src)->invis_other_groups == 0) && \
 	((src)->black_current_group == 0) \
