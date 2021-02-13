@@ -1,5 +1,29 @@
 #!/bin/sh
 
+pcb_rnd()
+{
+	if test -z "$PCB_RND_TRUNK"
+	then
+		pcb-rnd $PCB_RND_EXTRA_ARGS "$@"
+	else
+		if test -z "$LD_LIBRARY_PATH"
+		then
+			export LD_LIBRARY_PATH=$PCB_RND_TRUNK/src_3rd/librnd-local/src
+		else
+			export LD_LIBRARY_PATH=$PCB_RND_TRUNK/src_3rd/librnd-local/src:$LD_LIBRARY_PATH
+		fi
+
+		# this variant is for OSX
+		if test -z "$DYLD_LIBRARY_PATH"
+		then
+			export DYLD_LIBRARY_PATH=$PCB_RND_TRUNK/src_3rd/librnd-local/src
+		else
+			export DYLD_LIBRARY_PATH=$PCB_RND_TRUNK/src_3rd/librnd-local/src:$DYLD_LIBRARY_PATH
+		fi
+		$PCB_RND_TRUNK/src/pcb-rnd $PCB_RND_EXTRA_ARGS "$@"
+	fi
+}
+
 # sort objects within groups of a pcb-rnd generated svg so diff will return
 # zero difference if only order of objects differ
 # file is loaded on stdin, written to stdout
@@ -47,8 +71,8 @@ brd_diff()
 {
 	local s1=`mktemp` s2=`mktemp` res
 
-	pcb-rnd -x svg --outfile "$s1" "$1"
-	pcb-rnd -x svg --outfile "$s2" "$2"
+	pcb_rnd -x svg --outfile "$s1" "$1"
+	pcb_rnd -x svg --outfile "$s2" "$2"
 	if test $? -ne 0
 	then
 		echo "Failed to render board." >&2
@@ -58,7 +82,6 @@ brd_diff()
 
 	svg_diff $s1 $s2
 	res=$?
-
 	rm $s1 $s2
 	return $res
 }
@@ -105,7 +128,7 @@ brd_vis_comp()
 {
 	local s1=`mktemp` s2=`mktemp`
 
-	pcb-rnd -x svg --outfile "$s1" "$1" && pcb-rnd -x svg --outfile "$s2" "$2"
+	pcb_rnd -x svg --outfile "$s1" "$1" && pcb_rnd -x svg --outfile "$s2" "$2"
 	if test $? -ne 0
 	then
 		rm $s1 $s2
@@ -123,7 +146,7 @@ pcb_rnd_test()
 	local fn d res=0
 	for fn in "$@"
 	do
-		pcb-rnd -x svg --outfile "$fn.svg" "$fn"
+		pcb_rnd -x svg --outfile "$fn.svg" "$fn"
 		if test -f "$fn.ref.gz" -a ! -f "$fn.ref"
 		then
 			gzip -d -k "$fn.ref.gz"
@@ -155,14 +178,10 @@ pcb_rnd_test()
 	return $res
 }
 
-pcb_rnd_test_all()
+pcb_rnd_test_all_read()
 {
-	local d res r
-
-	for d in "$@"
-	do
-		find "$d" -name '*.ref' -o -name '*.ref.gz'
-	done | sort | uniq | while read fn
+	local res=0 fn r
+	while read fn
 	do
 		r=${fn%%.gz}
 		pcb_rnd_test ${r%%.ref}
@@ -174,12 +193,22 @@ pcb_rnd_test_all()
 	return $res
 }
 
+pcb_rnd_test_all()
+{
+	local d res=0
+
+	for d in "$@"
+	do
+		find "$d" -name '*.ref' -o -name '*.ref.gz'
+	done | sort | uniq | pcb_rnd_test_all_read
+}
+
 gen_ref()
 {
 	local fn
 	for fn in "$@"
 	do
-		pcb-rnd -x svg --outfile $fn.ref $fn
+		pcb_rnd -x svg --outfile $fn.ref $fn
 		gzip -9 $fn.ref
 	done
 }
@@ -233,3 +262,4 @@ case "$cmd" in
 	help) help "$@";;
 	*) echo "Unknown command $cmd; try --help" >&2; exit 1 ;;
 esac
+
