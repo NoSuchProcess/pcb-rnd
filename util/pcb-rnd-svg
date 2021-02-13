@@ -166,7 +166,7 @@ pcb_rnd_test_all()
 	do
 		r=${fn%%.gz}
 		pcb_rnd_test ${r%%.ref}
-		if test ! $? -ne 0
+		if test $? -ne 0
 		then
 			res=1
 		fi
