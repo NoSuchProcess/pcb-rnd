@@ -674,7 +674,7 @@ static void draw_compile(const char *src)
 			drw_script.array[cmd_idx].call.argc++;
 	}
 
-	rnd_message(RND_MSG_INFO, "render_script: compiled %ld instructions in %d statements\n", drw_script.used, nst);
+	rnd_message(RND_MSG_DEBUG, "render_script: compiled %ld instructions in %d statements\n", drw_script.used, nst);
 }
 
 #undef KW_MAXLEN
