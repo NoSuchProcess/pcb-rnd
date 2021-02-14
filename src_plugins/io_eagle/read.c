@@ -582,8 +582,9 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 
 	/* bounding box and anchor calculation */
 	size = eagle_get_attrc(st, subtree, "size", -1);
-	bbw = (double)size * 0.905 * (double)eagle_strlen2(text_val) / 2.0;
-	bbh = (double)size * 1.45;
+	bbw = rnd_round((double)size * 0.905 * (double)eagle_strlen2(text_val) / 2.0);
+	bbh = rnd_round((double)size * 1.45);
+
 	align = eagle_get_attrs(st, subtree, "align", NULL);
 	if (align != 0) {
 		if (rnd_strncasecmp(align, "bottom", 6) == 0) { align+=6; ay = ABOTTOM; }
@@ -634,13 +635,13 @@ TODO("need to convert multiline text (\n) into multiple text objects; example: w
 	switch(ax) {
 		case ALEFT: anchx = 0; break;
 		case ARIGHT: anchx = bbw; break;
-		default: anchx = bbw/2;
+		default: anchx = rnd_round((double)bbw/2.0);
 	}
-	basel = 4*bbh/5;
+	basel = rnd_round(4*bbh/5);
 	switch(ay) {
 		case ATOP: anchy = 0; break;
 		case ABOTTOM: anchy = -basel; break;
-		default: anchy = -basel/2;
+		default: anchy = rnd_round((double)-basel/2.0);
 	}
 
 	pcb_text_new_by_bbox(ly, pcb_font(st->pcb, 0, 1), X, Y, bbw, bbh, anchx, anchy, 1, mirror, rotdeg, 0, text_val, text_flags);
