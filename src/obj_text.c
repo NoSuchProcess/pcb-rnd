@@ -222,8 +222,8 @@ pcb_text_t *pcb_text_new_scaled(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coo
 
 pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, pcb_text_mirror_t mirror, double rot, rnd_coord_t thickness, const char *TextString, pcb_flag_t Flags)
 {
-	rnd_coord_t obw, obh, nbw, nbh, nanchx, nanchy;
-	double gsc, gscx, gscy, cs, sn, mx = 1, my = 1;
+	rnd_coord_t obw, obh, nbw, nbh;
+	double gsc, gscx, gscy, cs, sn, mx = 1, my = 1, nanchx, nanchy;
 	pcb_text_t *t;
 	
 	t = pcb_text_new_(Layer, PCBFont, 0, 0, 0, mirror, 100, 1, 1, thickness, TextString, Flags);
@@ -269,8 +269,8 @@ pcb_text_t *pcb_text_new_by_bbox(pcb_layer_t *Layer, pcb_font_t *PCBFont, rnd_co
 	cs = cos(rot*mx*my / RND_RAD_TO_DEG);
 	sn = sin(rot*mx*my / RND_RAD_TO_DEG);
 
-	t->X = X - (nanchx * cs * mx + nanchy * sn * my);
-	t->Y = Y - (nanchy * cs * my - nanchx * sn * mx);
+	t->X = rnd_round((double)X - (nanchx * cs * mx + nanchy * sn * my));
+	t->Y = rnd_round((double)Y - (nanchy * cs * my - nanchx * sn * mx));
 	t->rot = rot;
 
 	/*rnd_trace(" final: %ml %ml (%f %f -> %f) got:%f wanted:%f anch: %ml %ml -> %ml %ml\n", t->bbox_naked.X2 - t->bbox_naked.X1, t->bbox_naked.Y2 - t->bbox_naked.Y1, gscx, gscy, gsc, t->scale_x/t->scale_y, scxy, anchx, anchy, nanchx, nanchy);*/
