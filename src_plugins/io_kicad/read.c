@@ -903,15 +903,15 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 		return kicad_error(subtree, "failed to create text due to missing fields");
 
 	/* calculate input bounding box */
-	bbw = RND_MM_TO_COORD(2.0 * (sx+RND_COORD_TO_MM(thickness)) / 3.0 * strlen(text));
-	bbh = RND_MM_TO_COORD(1.25 * (sy+RND_COORD_TO_MM(thickness)));
+	bbw = rnd_round(RND_MM_TO_COORD(2.0 * (sx+RND_COORD_TO_MM(thickness)) / 3.0 * strlen(text)));
+	bbh = rnd_round(RND_MM_TO_COORD(1.25 * (sy+RND_COORD_TO_MM(thickness))));
 
 	switch(align) {
 		case -1: xanch = 0; break;
-		case 0:  xanch = bbw/2; break;
+		case 0:  xanch = rnd_round((double)bbw/2); break;
 		case +1: xanch = bbw; break;
 	}
-	yanch = RND_MM_TO_COORD(0.66*sy+RND_COORD_TO_MM(thickness));
+	yanch = rnd_round(RND_MM_TO_COORD(0.66*sy+RND_COORD_TO_MM(thickness)));
 
 	rotdeg -= mod_rot;
 	if (mirrored)
