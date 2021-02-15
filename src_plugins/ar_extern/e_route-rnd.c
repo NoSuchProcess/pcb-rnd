@@ -67,6 +67,7 @@ static int rtrnd_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *me
 	}
 	free(cmd);
 
+	/* read and apply the result of the routing */
 	r = rnd_actionva(hl, "LoadTedaxFrom", "route_res", route_res, NULL);
 	if (r != 0) {
 		rnd_message(RND_MSG_ERROR, "route-rnd: failed to import the route result from tEDAx\n");
