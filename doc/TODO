@@ -13,6 +13,7 @@
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
 
 2. For later releases ===============================================================================
+- CLEANUP: s390x test fail: remove rnd_export_opt_s->value and always use backup[] in rnd_hid_parse_command_line(); problem: HATT_INTEGER is (long *) in case of hidval backing but may be (int *) for raw backing; for enum types we don't even know!
 - CLEANUP/FEATURE: lihata v8
 	- remove via geometry from route style
 - CLEANUP/FEATURE: new breadboard
