@@ -10,6 +10,7 @@
 - BUG: kicad_io doesn't place subc without an (at); bug_files/kicad_subc_no_at [report: Miloh]
 - BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 - BUG: fungw: system installed fungw: can not load imp_setup due to fawk multi-registration [report: Ade]
+- BUG: parametric footprints that set $default with newlines will fail on original-awk (used on OSX) - figure if we want to support that implementation [report: rom]
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
 
 2. For later releases ===============================================================================
