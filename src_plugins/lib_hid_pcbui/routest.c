@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018,2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2019,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -82,9 +82,13 @@ static void rst_install_menu(void)
 	rnd_hid_menu_unload(rnd_gui, props.cookie);
 	/* have to go reverse to keep order because this will insert items */
 	for(idx = vtroutestyle_len(&PCB->RouteStyle)-1; idx >= 0; idx--) {
+		char *sep;
 		sprintf(act, "RouteStyle(%d)", idx+1); /* for historical reasons this action counts from 1 */
 		sprintf(chk, "ChkRst(%d)", idx);
 		strcpy(end, PCB->RouteStyle.array[idx].name);
+		for(sep = end; *sep !='\0'; sep++) /* do not allow '/' in layer name, that would kill the menu system */
+			if (*sep == '/')
+				*sep = '|';
 		rnd_hid_menu_create(path, &props);
 	}
 	rnd_hid_menu_merge_inhibit_dec();

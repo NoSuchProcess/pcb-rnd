@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017, 2018, 2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017, 2018, 2020, 2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,7 +48,8 @@ static void layer_install_menu1(const char *anch, int view)
 	int plen = strlen(anch);
 	rnd_menu_prop_t props;
 	char act[256], chk[256];
-	int idx, max_ml, sect;
+	char *sep;
+	int idx, max_ml, sect, sepo;
 	rnd_layergrp_id_t gid;
 	const pcb_menu_layers_t *ml;
 	gds_t path = {0};
@@ -76,7 +77,11 @@ static void layer_install_menu1(const char *anch, int view)
 
 			gds_truncate(&path, plen);
 			gds_append_str(&path, "  ");
+			sepo = path.used;
 			gds_append_str(&path, ly->name);
+			for(sep = path.array + sepo - 1; *sep != '\0'; sep++) /* do not allow '/' in layer name, that would kill the menu system */
+				if (*sep == '/')
+					*sep = '|';
 			rnd_hid_menu_create(path.array, &props);
 		}
 
@@ -104,7 +109,11 @@ static void layer_install_menu1(const char *anch, int view)
 		}
 		gds_truncate(&path, plen);
 		gds_append_str(&path, "  ");
+		sepo = path.used;
 		gds_append_str(&path, ml->name);
+		for(sep = path.array + sepo - 1; *sep !='\0'; sep++) /* do not allow '/' in layer name, that would kill the menu system */
+			if (*sep == '/')
+				*sep = '|';
 		rnd_hid_menu_create(path.array, &props);
 	}
 
@@ -153,7 +162,11 @@ static void layer_install_menu1(const char *anch, int view)
 				}
 				gds_truncate(&path, plen);
 				gds_append_str(&path, "  ");
+				sepo = path.used;
 				gds_append_str(&path, l->name);
+				for(sep = path.array + sepo - 1; *sep != '\0'; sep++) /* do not allow '/' in layer name, that would kill the menu system */
+					if (*sep == '/')
+						*sep = '|';
 				rnd_hid_menu_create(path.array, &props);
 			}
 
@@ -162,8 +175,12 @@ static void layer_install_menu1(const char *anch, int view)
 			props.checked = NULL;
 			gds_truncate(&path, plen);
 			gds_append(&path, '[');
+			sepo = path.used;
 			gds_append_str(&path, g->name);
 			gds_append(&path, ']');
+			for(sep = path.array + sepo - 1; *sep != '\0'; sep++) /* do not allow '/' in layer name, that would kill the menu system */
+				if (*sep == '/')
+					*sep = '|';
 			rnd_hid_menu_create(path.array, &props);
 		}
 	}
@@ -173,12 +190,18 @@ static void layer_install_menu1(const char *anch, int view)
 
 static void custom_layer_attr_key(pcb_layer_t *l, rnd_layer_id_t lid, const char *attrname, const char *menu_prefix, const char *action_prefix, rnd_menu_prop_t *keyprops, gds_t *path, int plen)
 {
-	char *key = pcb_attribute_get(&l->Attributes, attrname);
+	char *sep, *key = pcb_attribute_get(&l->Attributes, attrname);
+	int sepo;
+
 	if (key != NULL) {
 		keyprops->accel = key;
 		gds_truncate(path, plen);
+		sepo = path->used;
 		rnd_append_printf(path, "%s %ld:%s", menu_prefix, lid+1, l->name);
 		sprintf((char *)keyprops->action, "%s(%ld)", action_prefix, lid+1);
+		for(sep = path->array + sepo - 1; *sep != '\0'; sep++) /* do not allow '/' in layer name, that would kill the menu system */
+			if (*sep == '/')
+				*sep = '|';
 		rnd_hid_menu_create(path->array, keyprops);
 	}
 }
