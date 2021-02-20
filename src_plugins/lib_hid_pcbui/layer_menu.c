@@ -196,7 +196,7 @@ static void custom_layer_attr_key(pcb_layer_t *l, rnd_layer_id_t lid, const char
 	if (key != NULL) {
 		keyprops->accel = key;
 		gds_truncate(path, plen);
-		sepo = path->used;
+		sepo = path->used+1;
 		rnd_append_printf(path, "%s %ld:%s", menu_prefix, lid+1, l->name);
 		sprintf((char *)keyprops->action, "%s(%ld)", action_prefix, lid+1);
 		for(sep = path->array + sepo - 1; *sep != '\0'; sep++) /* do not allow '/' in layer name, that would kill the menu system */
