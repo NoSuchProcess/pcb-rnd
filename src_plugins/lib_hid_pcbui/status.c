@@ -456,7 +456,7 @@ const char pcb_acth_DescribeLocation[] = "Return a string constant (valud until 
 fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_coord_t x, y;
-	void *ptr1, *ptr2, *ptr3, *rptr1, *rptr2, *rptr3;
+	void *ptr1, *ptr2 = NULL, *ptr3, *rptr1, *rptr2, *rptr3;
 	pcb_any_obj_t *obj;
 	int type, rattype;
 	pcb_subc_t *subc;
@@ -486,7 +486,7 @@ fgw_error_t pcb_act_DescribeLocation(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		goto maybe_rat;
 
 	obj = ptr2;
-	if (obj->term == NULL)
+	if ((obj == NULL) || (obj->term == NULL))
 		goto maybe_rat;
 
 	subc = pcb_obj_parent_subc(ptr2);
