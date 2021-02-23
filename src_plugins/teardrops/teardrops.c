@@ -32,6 +32,10 @@
 #define MIN_LINE_LENGTH2 ((double)MIN_LINE_LENGTH*(double)MIN_LINE_LENGTH)
 #define MAX_DISTANCE2 ((double)MAX_DISTANCE*(double)MAX_DISTANCE)
 
+int teardrop_trace = 0;
+#define trprintf \
+	if (teardrop_trace) rnd_trace
+
 static pcb_pstk_t *pstk;
 static int layer;
 static rnd_coord_t px, py;
@@ -52,16 +56,16 @@ static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 	int delta, aoffset, count;
 	pcb_arc_t *arc;
 
-	fprintf(stderr, "...Line ((%.6f, %.6f), (%.6f, %.6f)): ",
+	trprintf("...Line ((%.6f, %.6f), (%.6f, %.6f)): ",
 					RND_COORD_TO_MM(l->Point1.X), RND_COORD_TO_MM(l->Point1.Y), RND_COORD_TO_MM(l->Point2.X), RND_COORD_TO_MM(l->Point2.Y));
 
 	/* if our line is to short ignore it */
 	if (rnd_distance2(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y) < MIN_LINE_LENGTH2) {
-		fprintf(stderr, "not within max line length\n");
+		trprintf("not within max line length\n");
 		return 1;
 	}
 
-	fprintf(stderr, "......Point (%.6f, %.6f): ", RND_COORD_TO_MM(px), RND_COORD_TO_MM(py));
+	trprintf("......Point (%.6f, %.6f): ", RND_COORD_TO_MM(px), RND_COORD_TO_MM(py));
 
 	if (rnd_distance2(l->Point1.X, l->Point1.Y, px, py) < MAX_DISTANCE2) {
 		x1 = l->Point1.X;
@@ -76,7 +80,7 @@ static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 		y2 = l->Point1.Y;
 	}
 	else {
-		fprintf(stderr, "not within max distance\n");
+		trprintf("not within max distance\n");
 		return 1;
 	}
 
@@ -85,7 +89,7 @@ static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 	t = l->Thickness / 2.0;
 
 	if (t > r) {
-		fprintf(stderr, "t > r: t = %3.6f, r = %3.6f\n", RND_COORD_TO_MM(t), RND_COORD_TO_MM(r));
+		trprintf("t > r: t = %3.6f, r = %3.6f\n", RND_COORD_TO_MM(t), RND_COORD_TO_MM(r));
 		return 1;
 	}
 
@@ -103,8 +107,7 @@ static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 		delta = 45;
 
 		if (radius < r || radius < t) {
-			fprintf(stderr,
-							"(radius < r || radius < t): radius = %3.6f, r = %3.6f, t = %3.6f\n",
+			trprintf("(radius < r || radius < t): radius = %3.6f, r = %3.6f, t = %3.6f\n",
 							RND_COORD_TO_MM(radius), RND_COORD_TO_MM(r), RND_COORD_TO_MM(t));
 			return 1;
 		}
@@ -142,9 +145,9 @@ static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 	count = 0;
 	do {
 		if (++count > 5) {
-			fprintf(stderr, "......a %d,%d v %d,%d adist %g radius %g vr %g\n",
+			trprintf("......a %d,%d v %d,%d adist %g radius %g vr %g\n",
 							(int) ax, (int) ay, (int) vx, (int) vy, adist, radius, vr);
-			printf("a %d,%d v %d,%d adist %g radius %g vr %g\n", (int) ax, (int) ay, (int) vx, (int) vy, adist, radius, vr);
+			trprintf("a %d,%d v %d,%d adist %g radius %g vr %g\n", (int) ax, (int) ay, (int) vx, (int) vy, adist, radius, vr);
 			return 1;
 		}
 
@@ -170,7 +173,7 @@ static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 		new_arcs++;
 	} while (vr > radius - t);
 
-	fprintf(stderr, "done arc'ing\n");
+	trprintf("done arc'ing\n");
 	return 1;
 }
 
