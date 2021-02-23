@@ -45,7 +45,7 @@
 
 #define CRDX(x) (x)
 #define CRDX_BRD(x) (x)
-#define CRDY(y) (dlcr->flip_y ? ((subc == NULL) ? (dlcr->board_bbox.Y2 - (y)) : (subc->bbox_naked.Y2 - (y))) : (y))
+#define CRDY(y) (dlcr->flip_y ? ((subc == NULL) ? (dlcr->board_bbox.Y2 - (y)) : (-(y))) : (y))
 #define CRDY_BRD(y) (dlcr->flip_y ? ((dlcr->board_bbox.Y2 - (y))) : (y))
 
 
