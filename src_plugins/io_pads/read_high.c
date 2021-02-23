@@ -661,7 +661,7 @@ static int pads_parse_term(pads_read_ctx_t *rctx, long idx, vtp0_t *terms)
 static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 {
 	char name[256], unit[8];
-	rnd_coord_t xo, yo;
+	rnd_coord_t xo = 0, yo = 0, dummy;
 	long n, num_pieces, num_terms, num_stacks, num_texts = 0, num_labels = 0, defpid = -1;
 	int res;
 	pcb_subc_t *subc;
@@ -669,8 +669,8 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, unit, sizeof(unit), 0)) <= 0) return res;
-	if ((res = pads_read_coord(rctx, &xo)) <= 0) return res;
-	if ((res = pads_read_coord(rctx, &yo)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &dummy)) <= 0) return res; /* these are for the footprint editor, ignore them for the board */
+	if ((res = pads_read_coord(rctx, &dummy)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_pieces)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_terms)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_stacks)) <= 0) return res;
