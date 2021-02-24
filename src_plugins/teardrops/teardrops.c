@@ -252,20 +252,20 @@ static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 	return 1;
 }
 
-static long check_pstk(pcb_pstk_t *ps)
+static long check_pstk(pcb_board_t *pcb, pcb_pstk_t *ps)
 {
 	teardrop_t t;
 	rnd_layer_id_t lid;
 
-	t.pcb = PCB;
+	t.pcb = pcb;
 	t.new_arcs = 0;
 	t.pstk = ps;
 
-	for(lid = 0; lid < pcb_max_layer(t.pcb); lid++) {
-		pcb_layer_t *l = &(t.pcb->Data->Layer[lid]);
+	for(lid = 0; lid < pcb_max_layer(pcb); lid++) {
+		pcb_layer_t *l = &(pcb->Data->Layer[lid]);
 		rnd_box_t spot;
 
-		if (!(pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER))
+		if (!(pcb_layer_flags(pcb, lid) & PCB_LYT_COPPER))
 			continue;
 
 		if (teardrops_init_pstk(&t, ps, l) != 0)
@@ -286,9 +286,10 @@ static fgw_error_t pcb_act_teardrops(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_box_t *b;
 	rnd_rtree_it_t it;
 	long new_arcs = 0;
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 
-	for(b = rnd_r_first(PCB->Data->padstack_tree, &it); b != NULL; b = rnd_r_next(&it))
-		new_arcs += check_pstk((pcb_pstk_t *)b);
+	for(b = rnd_r_first(pcb->Data->padstack_tree, &it); b != NULL; b = rnd_r_next(&it))
+		new_arcs += check_pstk(pcb, (pcb_pstk_t *)b);
 
 	rnd_gui->invalidate_all(rnd_gui);
 
