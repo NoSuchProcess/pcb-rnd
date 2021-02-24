@@ -41,6 +41,7 @@ int teardrop_trace = 0;
 typedef struct {
 	pcb_board_t *pcb;
 	pcb_pstk_t *pstk; /* for the search only, not really used in the arc calculations */
+	pcb_line_t *line; /* for the search only, not really used in the arc calculations */
 	rnd_layer_id_t layer;
 	rnd_coord_t px, py;
 	rnd_coord_t thickness;
@@ -289,6 +290,8 @@ static fgw_error_t pcb_act_teardrops(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+#include "exto_trdp.c"
+
 static rnd_action_t teardrops_action_list[] = {
 	{"Teardrops", pcb_act_teardrops, NULL, NULL}
 };
@@ -300,11 +303,13 @@ int pplg_check_ver_teardrops(int ver_needed) { return 0; }
 void pplg_uninit_teardrops(void)
 {
 	rnd_remove_actions_by_cookie(teardrops_cookie);
+	pcb_extobj_unreg(&pcb_trdp);
 }
 
 int pplg_init_teardrops(void)
 {
 	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(teardrops_action_list, teardrops_cookie);
+	pcb_extobj_reg(&pcb_trdp);
 	return 0;
 }
