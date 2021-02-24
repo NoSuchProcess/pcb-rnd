@@ -94,6 +94,8 @@ static long trdp_gen_line_pt(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t *lin
 	t.pcb = pcb;
 	t.new_arcs = 0;
 	t.line = line;
+	t.flags = line->Flags;
+	t.flags.f &= ~PCB_FLAG_FLOATER;
 
 	spot.X1 = x - 10;
 	spot.Y1 = y - 10;

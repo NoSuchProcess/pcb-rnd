@@ -46,6 +46,7 @@ typedef struct {
 	rnd_coord_t px, py;
 	rnd_coord_t thickness;
 	long new_arcs;
+	pcb_flag_t flags;
 } teardrop_t;
 
 #define RCRD(c) ((rnd_coord_t)(rnd_round(c)))
@@ -157,7 +158,7 @@ static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 		ay = ly + dx * adist;
 
 		arc = pcb_arc_new(lay, RCRD(ax), RCRD(ay), RCRD(radius),
-															RCRD(radius), theta + 90 + aoffset, delta - aoffset, l->Thickness, l->Clearance, l->Flags, rnd_true);
+															RCRD(radius), theta + 90 + aoffset, delta - aoffset, l->Thickness, l->Clearance, tr->flags, rnd_true);
 		if (arc)
 			pcb_undo_add_obj_to_create(PCB_OBJ_ARC, lay, arc, arc);
 
@@ -165,7 +166,7 @@ static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 		ay = ly - dx * (x + t);
 
 		arc = pcb_arc_new(lay, RCRD(ax), RCRD(ay), RCRD(radius),
-															RCRD(radius), theta - 90 - aoffset, -delta + aoffset, l->Thickness, l->Clearance, l->Flags, rnd_true);
+															RCRD(radius), theta - 90 - aoffset, -delta + aoffset, l->Thickness, l->Clearance, tr->flags, rnd_true);
 		if (arc)
 			pcb_undo_add_obj_to_create(PCB_OBJ_ARC, lay, arc, arc);
 
@@ -242,7 +243,12 @@ static int teardrops_init_pstk(teardrop_t *tr, pcb_pstk_t *ps, pcb_layer_t *l)
 
 static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 {
-	teardrop_line(cl, (pcb_line_t *)box);
+	teardrop_t *tr = cl;
+	pcb_line_t *line = (pcb_line_t *)box;
+
+	tr->flags = line->Flags;
+
+	teardrop_line(tr, line);
 	return 1;
 }
 
