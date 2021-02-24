@@ -585,7 +585,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 			shp->data.poly.x[3] = -r2; shp->data.poly.y[3] = +r2;
 		}
 		else { /* final fallback so that we have a prototype to draw */
-TODO("Handle: A, O, OF, RF\n");
+TODO("Handle: A, O, OF, RF CUCP#69\n");
 			shp->shape = PCB_PSSH_CIRC;
 			shp->data.circ.x = shp->data.circ.y = 0;
 			shp->data.circ.dia = RND_MM_TO_COORD(0.5);
