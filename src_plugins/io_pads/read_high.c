@@ -933,6 +933,29 @@ static void get_arc_angles(rnd_coord_t r, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	*deltaa = d;
 }
 
+static void add_teardrop(pads_read_ctx_t *rctx, pcb_any_obj_t *obj, void *call_ctx)
+{
+	if ((rctx->teardrop_eo == NULL) && !rctx->teardrop_warned) {
+		pcb_extobj_t **eo = NULL;
+		int idx = pcb_extobj_lookup_idx("teardrop");
+
+		if (idx != 0)
+			eo = (pcb_extobj_t **)vtp0_get(&pcb_extobj_i2o, idx, 0);
+
+		if ((eo == NULL) || (*eo == NULL)) {
+			/* extobj backend got deregistered meanwhile */
+			PADS_ERROR((RND_MSG_ERROR, "*SIGNAL* line teardrop: teardrop extended object not found\nSkipping teardrops, please enable that plugin if you need them.\n"));
+			rctx->teardrop_warned = 1;
+		}
+		rctx->teardrop_eo = *eo;
+	}
+	if (rctx->teardrop_eo != NULL) {
+		pcb_subc_t *eo = pcb_extobj_conv_obj(rctx->pcb, rctx->teardrop_eo, rctx->pcb->Data, obj, rnd_true);
+		if (eo == NULL)
+			PADS_ERROR((RND_MSG_ERROR, "*SIGNAL* line teardrop: failed to create teardrop\n"));
+	}
+}
+
 typedef struct {
 	rnd_coord_t x, y; /* last x;y */
 	rnd_coord_t x0, y0, cx, cy; /* last arc start coords and center, when arcdir != 0 */
@@ -946,7 +969,7 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 	char vianame[64], teardrop[16];
 	long real_level, level, flags, loc_line;
 	rnd_coord_t x, y, width;
-	int res, arcdir = 0, thermal = 0;
+	int res, arcdir = 0, thermal = 0, want_teardrop = 0;
 
 	if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
@@ -978,6 +1001,7 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 		if (strcmp(teardrop, "TEARDROP") == 0) {
 			teardrop:;
 			/* for now, ignore teardrop fields */
+			want_teardrop = 1;
 		}
 	}
 
@@ -1050,6 +1074,8 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 					line->val.obj.layer_id = level;
 					line->loc_line = loc_line;
 				}
+				if (want_teardrop)
+					pcb_dlcr_call_prev(&rctx->dlcr, add_teardrop, rctx, NULL);
 			}
 			spc->omit = 0;
 		}
