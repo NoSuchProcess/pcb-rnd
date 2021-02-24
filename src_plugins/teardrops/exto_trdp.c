@@ -134,8 +134,10 @@ TODO("enable this if we have data");
 	jx = (edit_line->Point1.X + edit_line->Point2.X) / 2;
 	jy = (edit_line->Point1.Y + edit_line->Point2.Y) / 2;
 
-	trdp_gen_line_pt(pcb, subc, edit_line, 0, &jx, &jy);
-	trdp_gen_line_pt(pcb, subc, edit_line, 1, &jx, &jy);
+	if (pcb != NULL) {
+		trdp_gen_line_pt(pcb, subc, edit_line, 0, &jx, &jy);
+		trdp_gen_line_pt(pcb, subc, edit_line, 1, &jx, &jy);
+	}
 
 	pcb_subc_move_origin_to(subc, jx, jy - PCB_SUBC_AUX_UNIT/2, 0);
 
