@@ -573,7 +573,17 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 			shp->data.circ.x = shp->data.circ.y = 0;
 			shp->data.circ.dia = size;
 		}
+		else if ((shape[0] == 'S') && (shape[1] == '\0')) {
+			rnd_coord_t r2 = rnd_round(size / 2.0);
+			shp->shape = PCB_PSSH_POLY;
+			pcb_pstk_shape_alloc_poly(&shp->data.poly, 4);
+			shp->data.poly.x[0] = -r2; shp->data.poly.y[0] = -r2;
+			shp->data.poly.x[1] = +r2; shp->data.poly.y[1] = -r2;
+			shp->data.poly.x[2] = +r2; shp->data.poly.y[2] = +r2;
+			shp->data.poly.x[3] = -r2; shp->data.poly.y[3] = +r2;
+		}
 		else { /* final fallback so that we have a prototype to draw */
+TODO("Handle: A, O, OF, RF\n");
 			shp->shape = PCB_PSSH_CIRC;
 			shp->data.circ.x = shp->data.circ.y = 0;
 			shp->data.circ.dia = RND_MM_TO_COORD(0.5);
