@@ -304,6 +304,11 @@ rnd_trace("let's do it!\n");
 
 static void pcb_dimension_float_geo(pcb_subc_t *subc, pcb_any_obj_t *floater)
 {
+	if (floater == NULL) {
+		rnd_trace("dim: float geo %ld", subc->ID);
+		return;
+	}
+
 	rnd_trace("dim: float geo %ld %ld role=%s\n", subc->ID, floater->ID, floater->extobj_role);
 
 	if (floater->extobj_role == NULL)
