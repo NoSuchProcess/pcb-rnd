@@ -43,10 +43,9 @@ static rnd_coord_t thickness;
 
 static int new_arcs = 0;
 
-static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
+static int teardrop_line(pcb_line_t *l)
 {
 	pcb_layer_t *lay = &PCB->Data->Layer[layer];
-	pcb_line_t *l = (pcb_line_t *) box;
 	int x1, x2, y1, y2;
 	double a, b, c, x, r, t;
 	double dx, dy, len;
@@ -174,6 +173,12 @@ static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 	} while (vr > radius - t);
 
 	trprintf("done arc'ing\n");
+	return 0;
+}
+
+static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
+{
+	teardrop_line((pcb_line_t *)box);
 	return 1;
 }
 
