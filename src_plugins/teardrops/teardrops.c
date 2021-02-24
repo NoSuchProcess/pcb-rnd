@@ -60,8 +60,7 @@ static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 	int delta, aoffset, count;
 	pcb_arc_t *arc;
 
-	trprintf("...Line ((%.6f, %.6f), (%.6f, %.6f)): ",
-					RND_COORD_TO_MM(l->Point1.X), RND_COORD_TO_MM(l->Point1.Y), RND_COORD_TO_MM(l->Point2.X), RND_COORD_TO_MM(l->Point2.Y));
+	trprintf("...Line ((%mm, %mm), (%mm, %mm)): ", l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y);
 
 	/* if our line is to short ignore it */
 	if (rnd_distance2(l->Point1.X, l->Point1.Y, l->Point2.X, l->Point2.Y) < MIN_LINE_LENGTH2) {
@@ -69,7 +68,7 @@ static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 		return 1;
 	}
 
-	trprintf("......Point (%.6f, %.6f): ", RND_COORD_TO_MM(tr->px), RND_COORD_TO_MM(tr->py));
+	trprintf("......Point (%mm, %mm): ", tr->px, tr->py);
 
 	if (rnd_distance2(l->Point1.X, l->Point1.Y, tr->px, tr->py) < MAX_DISTANCE2) {
 		x1 = l->Point1.X;
@@ -93,7 +92,7 @@ static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 	t = l->Thickness / 2.0;
 
 	if (t > r) {
-		trprintf("t > r: t = %3.6f, r = %3.6f\n", RND_COORD_TO_MM(t), RND_COORD_TO_MM(r));
+		trprintf("t > r: t = %mm, r = %mm\n", t, r);
 		return 1;
 	}
 
@@ -111,8 +110,7 @@ static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 		delta = 45;
 
 		if (radius < r || radius < t) {
-			trprintf("(radius < r || radius < t): radius = %3.6f, r = %3.6f, t = %3.6f\n",
-							RND_COORD_TO_MM(radius), RND_COORD_TO_MM(r), RND_COORD_TO_MM(t));
+			trprintf("(radius < r || radius < t): radius = %mm, r = %mm, t = %mm\n", radius, r, t);
 			return 1;
 		}
 	}
@@ -149,9 +147,7 @@ static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 	count = 0;
 	do {
 		if (++count > 5) {
-			trprintf("......a %d,%d v %d,%d adist %g radius %g vr %g\n",
-							(int) ax, (int) ay, (int) vx, (int) vy, adist, radius, vr);
-			trprintf("a %d,%d v %d,%d adist %g radius %g vr %g\n", (int) ax, (int) ay, (int) vx, (int) vy, adist, radius, vr);
+			trprintf("......a %mm,%mm v %mm,%mm adist %g radius %g vr %mm\n", RCRD(ax), RCRD(ay), RCRD(vx), RCRD(vy), RCRD(adist), RCRD(radius), RCRD(vr));
 			return 1;
 		}
 
