@@ -42,7 +42,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	pcb_pstk_t *pstk; /* for the search only, not really used in the arc calculations */
 	pcb_line_t *line; /* for the search only, not really used in the arc calculations */
-	rnd_layer_id_t layer;
+	pcb_layer_t *layer;
 	rnd_coord_t px, py;
 	rnd_coord_t thickness;
 	long new_arcs;
@@ -52,7 +52,7 @@ typedef struct {
 
 static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 {
-	pcb_layer_t *lay = &PCB->Data->Layer[tr->layer];
+	pcb_layer_t *lay = tr->layer;
 	int x1, x2, y1, y2;
 	double a, b, c, x, r, t;
 	double dx, dy, len;
@@ -189,6 +189,8 @@ static int teardrops_init_pstk(teardrop_t *tr, pcb_pstk_t *ps, pcb_layer_t *l)
 	if (shp == NULL)
 		return -1;
 
+	tr->layer = l;
+
 	retry:;
 	switch(shp->shape) {
 		case PCB_PSSH_POLY:
@@ -247,16 +249,17 @@ static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 static long check_pstk(pcb_pstk_t *ps)
 {
 	teardrop_t t;
+	rnd_layer_id_t lid;
 
 	t.pcb = PCB;
 	t.new_arcs = 0;
 	t.pstk = ps;
 
-	for(t.layer = 0; t.layer < pcb_max_layer(PCB); t.layer++) {
-		pcb_layer_t *l = &(PCB->Data->Layer[t.layer]);
+	for(lid = 0; lid < pcb_max_layer(t.pcb); lid++) {
+		pcb_layer_t *l = &(t.pcb->Data->Layer[lid]);
 		rnd_box_t spot;
 
-		if (!(pcb_layer_flags(PCB, t.layer) & PCB_LYT_COPPER))
+		if (!(pcb_layer_flags(PCB, lid) & PCB_LYT_COPPER))
 			continue;
 
 		if (teardrops_init_pstk(&t, ps, l) != 0)

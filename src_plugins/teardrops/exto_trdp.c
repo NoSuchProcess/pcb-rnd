@@ -80,7 +80,6 @@ static long trdp_gen_line_pt(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t *lin
 {
 	teardrop_t t;
 	rnd_coord_t x, y;
-	pcb_layer_t *l = pcb_layer_get_real(line->parent.layer);
 	rnd_box_t spot;
 
 	if (second) {
@@ -95,8 +94,6 @@ static long trdp_gen_line_pt(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t *lin
 	t.pcb = pcb;
 	t.new_arcs = 0;
 	t.line = line;
-TODO("need to create arcs within the exto subc");
-	t.layer = 0;
 
 	spot.X1 = x - 10;
 	spot.Y1 = y - 10;
