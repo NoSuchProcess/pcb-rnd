@@ -36,16 +36,17 @@ int teardrop_trace = 0;
 #define trprintf \
 	if (teardrop_trace) rnd_trace
 
-static pcb_pstk_t *pstk;
-static int layer;
-static rnd_coord_t px, py;
-static rnd_coord_t thickness;
+typedef struct {
+	pcb_pstk_t *pstk; /* for the search only, not really used in the arc calculations */
+	rnd_layer_id_t layer;
+	rnd_coord_t px, py;
+	rnd_coord_t thickness;
+	long new_arcs;
+} teardrop_t;
 
-static int new_arcs = 0;
-
-static int teardrop_line(pcb_line_t *l)
+static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 {
-	pcb_layer_t *lay = &PCB->Data->Layer[layer];
+	pcb_layer_t *lay = &PCB->Data->Layer[tr->layer];
 	int x1, x2, y1, y2;
 	double a, b, c, x, r, t;
 	double dx, dy, len;
@@ -64,15 +65,15 @@ static int teardrop_line(pcb_line_t *l)
 		return 1;
 	}
 
-	trprintf("......Point (%.6f, %.6f): ", RND_COORD_TO_MM(px), RND_COORD_TO_MM(py));
+	trprintf("......Point (%.6f, %.6f): ", RND_COORD_TO_MM(tr->px), RND_COORD_TO_MM(tr->py));
 
-	if (rnd_distance2(l->Point1.X, l->Point1.Y, px, py) < MAX_DISTANCE2) {
+	if (rnd_distance2(l->Point1.X, l->Point1.Y, tr->px, tr->py) < MAX_DISTANCE2) {
 		x1 = l->Point1.X;
 		y1 = l->Point1.Y;
 		x2 = l->Point2.X;
 		y2 = l->Point2.Y;
 	}
-	else if (rnd_distance(l->Point2.X, l->Point2.Y, px, py) < MAX_DISTANCE2) {
+	else if (rnd_distance(l->Point2.X, l->Point2.Y, tr->px, tr->py) < MAX_DISTANCE2) {
 		x1 = l->Point2.X;
 		y1 = l->Point2.Y;
 		x2 = l->Point1.X;
@@ -84,7 +85,7 @@ static int teardrop_line(pcb_line_t *l)
 	}
 
 	/* r = pin->Thickness / 2.0; */
-	r = thickness / 2.0;
+	r = tr->thickness / 2.0;
 	t = l->Thickness / 2.0;
 
 	if (t > r) {
@@ -127,15 +128,15 @@ static int teardrop_line(pcb_line_t *l)
 	dy = ((double) y2 - y1) / len;
 	theta = atan2(y2 - y1, x1 - x2) * 180.0 / M_PI;
 
-	lx = px + dx * ldist;
-	ly = py + dy * ldist;
+	lx = tr->px + dx * ldist;
+	ly = tr->py + dy * ldist;
 
 	/* We need one up front to determine how many segments it will take to fill.  */
 	ax = lx - dy * adist;
 	ay = ly + dx * adist;
 	vl = sqrt(r * r - t * t);
-	vx = px + dx * vl;
-	vy = py + dy * vl;
+	vx = tr->px + dx * vl;
+	vy = tr->py + dy * vl;
 	vx -= dy * t;
 	vy += dx * t;
 	vr = sqrt((ax - vx) * (ax - vx) + (ay - vy) * (ay - vy));
@@ -169,7 +170,7 @@ static int teardrop_line(pcb_line_t *l)
 		radius += t * 1.9;
 		aoffset = acos((double) adist / radius) * 180.0 / M_PI;
 
-		new_arcs++;
+		tr->new_arcs++;
 	} while (vr > radius - t);
 
 	trprintf("done arc'ing\n");
@@ -178,22 +179,25 @@ static int teardrop_line(pcb_line_t *l)
 
 static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 {
-	teardrop_line((pcb_line_t *)box);
+	teardrop_line(cl, (pcb_line_t *)box);
 	return 1;
 }
 
-static void check_pstk(pcb_pstk_t *ps)
+static long check_pstk(pcb_pstk_t *ps)
 {
-	pstk = ps;
+	teardrop_t t;
 
-	for (layer = 0; layer < pcb_max_layer(PCB); layer++) {
-		pcb_layer_t *l = &(PCB->Data->Layer[layer]);
+	t.new_arcs = 0;
+	t.pstk = ps;
+
+	for(t.layer = 0; t.layer < pcb_max_layer(PCB); t.layer++) {
+		pcb_layer_t *l = &(PCB->Data->Layer[t.layer]);
 		pcb_pstk_shape_t *shp, tmpshp;
 		rnd_box_t spot;
 		int n;
 		double mindist;
 
-		if (!(pcb_layer_flags(PCB, layer) & PCB_LYT_COPPER))
+		if (!(pcb_layer_flags(PCB, t.layer) & PCB_LYT_COPPER))
 			continue;
 
 		shp = pcb_pstk_shape_at(PCB, ps, l);
@@ -208,36 +212,36 @@ static void check_pstk(pcb_pstk_t *ps)
 				   that cross the incoming line's sides and do the teardrops there;
 				   but there are corner cases lurking: what if the next edges out
 				   from the 1..2 edges are curving back? */
-				px = py = 0;
+				t.px = t.py = 0;
 				for(n = 0; n < shp->data.poly.len; n++) {
-					px += shp->data.poly.x[n];
-					py += shp->data.poly.y[n];
+					t.px += shp->data.poly.x[n];
+					t.py += shp->data.poly.y[n];
 				}
-				px /= shp->data.poly.len;
-				py /= shp->data.poly.len;
+				t.px /= shp->data.poly.len;
+				t.py /= shp->data.poly.len;
 
 				mindist = RND_MM_TO_COORD(8);
 				mindist *= mindist;
 				for(n = 0; n < shp->data.poly.len; n++) {
-					double dist = rnd_distance2(px, py, shp->data.poly.x[n], shp->data.poly.y[n]);
+					double dist = rnd_distance2(t.px, t.py, shp->data.poly.x[n], shp->data.poly.y[n]);
 					if (dist < mindist)
 						mindist = dist;
 				}
-				thickness = sqrt(mindist)*1.4;
-				px += ps->x;
-				py += ps->y;
+				t.thickness = sqrt(mindist)*1.4;
+				t.px += ps->x;
+				t.py += ps->y;
 				break;
 
 			case PCB_PSSH_LINE:
-				thickness = shp->data.line.thickness;
-				px = ps->x + (shp->data.line.x1 + shp->data.line.x2)/2;
-				py = ps->y + (shp->data.line.y1 + shp->data.line.y2)/2;
+				t.thickness = shp->data.line.thickness;
+				t.px = ps->x + (shp->data.line.x1 + shp->data.line.x2)/2;
+				t.py = ps->y + (shp->data.line.y1 + shp->data.line.y2)/2;
 				break;
 
 			case PCB_PSSH_CIRC:
-				thickness = shp->data.circ.dia;
-				px = ps->x + shp->data.circ.x;
-				py = ps->y + shp->data.circ.y;
+				t.thickness = shp->data.circ.dia;
+				t.px = ps->x + shp->data.circ.x;
+				t.py = ps->y + shp->data.circ.y;
 				break;
 
 			case PCB_PSSH_HSHADOW:
@@ -247,23 +251,24 @@ static void check_pstk(pcb_pstk_t *ps)
 				continue;
 		}
 
-		spot.X1 = px - 10;
-		spot.Y1 = py - 10;
-		spot.X2 = px + 10;
-		spot.Y2 = py + 10;
+		spot.X1 = t.px - 10;
+		spot.Y1 = t.py - 10;
+		spot.X2 = t.px + 10;
+		spot.Y2 = t.py + 10;
 
-		rnd_r_search(l->line_tree, &spot, NULL, check_line_callback, l, NULL);
+		rnd_r_search(l->line_tree, &spot, NULL, check_line_callback, &t, NULL);
 	}
+	return t.new_arcs;
 }
 
 static fgw_error_t pcb_act_teardrops(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_box_t *b;
 	rnd_rtree_it_t it;
-	new_arcs = 0;
+	long new_arcs = 0;
 
 	for(b = rnd_r_first(PCB->Data->padstack_tree, &it); b != NULL; b = rnd_r_next(&it))
-		check_pstk((pcb_pstk_t *)b);
+		new_arcs += check_pstk((pcb_pstk_t *)b);
 
 	rnd_gui->invalidate_all(rnd_gui);
 
