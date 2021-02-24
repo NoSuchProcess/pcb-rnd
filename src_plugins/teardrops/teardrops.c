@@ -44,6 +44,8 @@ typedef struct {
 	long new_arcs;
 } teardrop_t;
 
+#define RCRD(c) ((rnd_coord_t)(rnd_round(c)))
+
 static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 {
 	pcb_layer_t *lay = &PCB->Data->Layer[tr->layer];
@@ -154,16 +156,16 @@ static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 		ax = lx - dy * adist;
 		ay = ly + dx * adist;
 
-		arc = pcb_arc_new(lay, (int) ax, (int) ay, (int) radius,
-															(int) radius, (int) theta + 90 + aoffset, delta - aoffset, l->Thickness, l->Clearance, l->Flags, rnd_true);
+		arc = pcb_arc_new(lay, RCRD(ax), RCRD(ay), RCRD(radius),
+															RCRD(radius), theta + 90 + aoffset, delta - aoffset, l->Thickness, l->Clearance, l->Flags, rnd_true);
 		if (arc)
 			pcb_undo_add_obj_to_create(PCB_OBJ_ARC, lay, arc, arc);
 
 		ax = lx + dy * (x + t);
 		ay = ly - dx * (x + t);
 
-		arc = pcb_arc_new(lay, (int) ax, (int) ay, (int) radius,
-															(int) radius, (int) theta - 90 - aoffset, -delta + aoffset, l->Thickness, l->Clearance, l->Flags, rnd_true);
+		arc = pcb_arc_new(lay, RCRD(ax), RCRD(ay), RCRD(radius),
+															RCRD(radius), theta - 90 - aoffset, -delta + aoffset, l->Thickness, l->Clearance, l->Flags, rnd_true);
 		if (arc)
 			pcb_undo_add_obj_to_create(PCB_OBJ_ARC, lay, arc, arc);
 
