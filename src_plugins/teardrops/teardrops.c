@@ -39,6 +39,7 @@ int teardrop_trace = 0;
 	if (teardrop_trace) rnd_trace
 
 typedef struct {
+	pcb_board_t *pcb;
 	pcb_pstk_t *pstk; /* for the search only, not really used in the arc calculations */
 	rnd_layer_id_t layer;
 	rnd_coord_t px, py;
@@ -177,6 +178,65 @@ static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 	return 0;
 }
 
+static int teardrops_init_pstk(teardrop_t *tr, pcb_pstk_t *ps, pcb_layer_t *l)
+{
+		pcb_pstk_shape_t *shp, tmpshp;
+		int n;
+		double mindist;
+
+		shp = pcb_pstk_shape_at(tr->pcb, ps, l);
+		if (shp == NULL)
+			return -1;
+
+		retry:;
+		switch(shp->shape) {
+			case PCB_PSSH_POLY:
+				/* Simplistic approach on polygons; works only on the simplest cases
+				   How this could be handled better: list the 1 or 2 polygon edges
+				   that cross the incoming line's sides and do the teardrops there;
+				   but there are corner cases lurking: what if the next edges out
+				   from the 1..2 edges are curving back? */
+				tr->px = tr->py = 0;
+				for(n = 0; n < shp->data.poly.len; n++) {
+					tr->px += shp->data.poly.x[n];
+					tr->py += shp->data.poly.y[n];
+				}
+				tr->px /= shp->data.poly.len;
+				tr->py /= shp->data.poly.len;
+
+				mindist = RND_MM_TO_COORD(8);
+				mindist *= mindist;
+				for(n = 0; n < shp->data.poly.len; n++) {
+					double dist = rnd_distance2(tr->px, tr->py, shp->data.poly.x[n], shp->data.poly.y[n]);
+					if (dist < mindist)
+						mindist = dist;
+				}
+				tr->thickness = sqrt(mindist)*1.4;
+				tr->px += ps->x;
+				tr->py += ps->y;
+				break;
+
+			case PCB_PSSH_LINE:
+				tr->thickness = shp->data.line.thickness;
+				tr->px = ps->x + (shp->data.line.x1 + shp->data.line.x2)/2;
+				tr->py = ps->y + (shp->data.line.y1 + shp->data.line.y2)/2;
+				break;
+
+			case PCB_PSSH_CIRC:
+				tr->thickness = shp->data.circ.dia;
+				tr->px = ps->x + shp->data.circ.x;
+				tr->py = ps->y + shp->data.circ.y;
+				break;
+
+			case PCB_PSSH_HSHADOW:
+				shp = pcb_pstk_hshadow_shape(ps, shp, &tmpshp);
+				if (shp != NULL)
+					goto retry;
+				return -1;
+		}
+	return 0;
+}
+
 static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 {
 	teardrop_line(cl, (pcb_line_t *)box);
@@ -187,69 +247,19 @@ static long check_pstk(pcb_pstk_t *ps)
 {
 	teardrop_t t;
 
+	t.pcb = PCB;
 	t.new_arcs = 0;
 	t.pstk = ps;
 
 	for(t.layer = 0; t.layer < pcb_max_layer(PCB); t.layer++) {
 		pcb_layer_t *l = &(PCB->Data->Layer[t.layer]);
-		pcb_pstk_shape_t *shp, tmpshp;
 		rnd_box_t spot;
-		int n;
-		double mindist;
 
 		if (!(pcb_layer_flags(PCB, t.layer) & PCB_LYT_COPPER))
 			continue;
 
-		shp = pcb_pstk_shape_at(PCB, ps, l);
-		if (shp == NULL)
+		if (teardrops_init_pstk(&t, ps, l) != 0)
 			continue;
-
-		retry:;
-		switch(shp->shape) {
-			case PCB_PSSH_POLY:
-				/* Simplistic approach on polygons; works only on the simplest cases
-				   How this could be handled better: list the 1 or 2 polygon edges
-				   that cross the incoming line's sides and do the teardrops there;
-				   but there are corner cases lurking: what if the next edges out
-				   from the 1..2 edges are curving back? */
-				t.px = t.py = 0;
-				for(n = 0; n < shp->data.poly.len; n++) {
-					t.px += shp->data.poly.x[n];
-					t.py += shp->data.poly.y[n];
-				}
-				t.px /= shp->data.poly.len;
-				t.py /= shp->data.poly.len;
-
-				mindist = RND_MM_TO_COORD(8);
-				mindist *= mindist;
-				for(n = 0; n < shp->data.poly.len; n++) {
-					double dist = rnd_distance2(t.px, t.py, shp->data.poly.x[n], shp->data.poly.y[n]);
-					if (dist < mindist)
-						mindist = dist;
-				}
-				t.thickness = sqrt(mindist)*1.4;
-				t.px += ps->x;
-				t.py += ps->y;
-				break;
-
-			case PCB_PSSH_LINE:
-				t.thickness = shp->data.line.thickness;
-				t.px = ps->x + (shp->data.line.x1 + shp->data.line.x2)/2;
-				t.py = ps->y + (shp->data.line.y1 + shp->data.line.y2)/2;
-				break;
-
-			case PCB_PSSH_CIRC:
-				t.thickness = shp->data.circ.dia;
-				t.px = ps->x + shp->data.circ.x;
-				t.py = ps->y + shp->data.circ.y;
-				break;
-
-			case PCB_PSSH_HSHADOW:
-				shp = pcb_pstk_hshadow_shape(ps, shp, &tmpshp);
-				if (shp != NULL)
-					goto retry;
-				continue;
-		}
 
 		spot.X1 = t.px - 10;
 		spot.Y1 = t.py - 10;
