@@ -70,7 +70,7 @@ static rnd_r_dir_t trdp_pstk_cb(const rnd_box_t *box, void *cl)
 	pcb_pstk_t *ps = (pcb_pstk_t *)box;
 
 	if (teardrops_init_pstk(tr, ps, tr->line->parent.layer) == 0)
-		teardrop_line(cl, tr->line);
+		teardrop_line(tr, tr->line);
 
 	return 1;
 }
