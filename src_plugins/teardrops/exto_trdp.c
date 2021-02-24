@@ -137,14 +137,29 @@ TODO("enable this if we have data");
 	trdp_gen_line_pt(pcb, subc, edit_line, 0, &jx, &jy);
 	trdp_gen_line_pt(pcb, subc, edit_line, 1, &jx, &jy);
 
-	pcb_subc_move_origin_to(subc, jx, jy, 0); 
+	pcb_subc_move_origin_to(subc, jx, jy - PCB_SUBC_AUX_UNIT/2, 0);
 
 	return pcb_exto_regen_end(subc);
 }
 
 static void pcb_trdp_draw_mark(pcb_draw_info_t *info, pcb_subc_t *subc)
 {
+	rnd_coord_t ox, oy, r = PCB_SUBC_AUX_UNIT/2;
+	pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
+	pcb_line_t *line;
+	int selected;
+
 	pcb_exto_draw_mark(info, subc);
+
+	line = linelist_first(&ly->Line);
+	selected = PCB_FLAG_TEST(PCB_FLAG_SELECTED, line);
+
+	if (pcb_subc_get_origin(subc, &ox, &oy) == 0) {
+		rnd_render->set_color(pcb_draw_out.fgGC, selected ? &conf_core.appearance.color.selected : &conf_core.appearance.color.extobj);
+		rnd_hid_set_line_width(pcb_draw_out.fgGC, -2);
+		rnd_render->draw_arc(pcb_draw_out.fgGC, ox+r*0.4, oy, r, r, 90, 45);
+		rnd_render->draw_arc(pcb_draw_out.fgGC, ox+r*0.4, oy+2*r, r, r, 270, -45);
+	}
 }
 
 
