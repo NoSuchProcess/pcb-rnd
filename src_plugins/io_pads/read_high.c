@@ -540,8 +540,10 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 			ungetc(c, rctx->f);
 
 			/* optional drill */
-			if (pads_has_field(rctx) && (!isalpha(c)))
+			if (pads_has_field(rctx) && (!isalpha(c))) {
 				if ((res = pads_read_coord(rctx, &drill)) <= 0) return res;
+				proto->hdia = drill;
+			}
 			plated[0] = '\0';
 			if (pads_has_field(rctx))
 				if ((res = pads_read_word(rctx, plated, sizeof(plated), 0)) <= 0) return res;
