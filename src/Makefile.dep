@@ -11497,7 +11497,20 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h \
  ../src_3rd/librnd-local/src/librnd/core/actions.h obj_pstk_inlines.h \
  data.h thermal.h operation.h \
- ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h
+ ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
+ ../src_plugins/teardrops/exto_trdp.c draw.h extobj.h obj_subc_parent.h \
+ draw.h extobj_helper.h conf_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
+ ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_inlines.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_dad.h \
+ ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
+ ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h change.h undo.h
 ../src_plugins/tool_std/tool_arc.o: ../src_plugins/tool_std/tool_arc.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
@@ -12863,17 +12876,7 @@ conf_core.o: conf_core.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/core/conf_hid.h \
  ../src_3rd/librnd-local/src/librnd/core/error.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htpp.h \
- ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h \
- ../src_3rd/librnd-local/src/librnd/core/hid_init.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/os_dep.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/config.h \
- ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
- ../src_3rd/librnd-local/src/librnd/core/hid.h \
- ../src_3rd/librnd-local/src/librnd/core/box.h \
- ../src_3rd/librnd-local/src/librnd/core/math_helper.h \
- ../src_3rd/librnd-local/src/librnd/core/misc_util.h conf_core_fields.h
+ ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h conf_core_fields.h
 conf_internal.o: conf_internal.c
 crosshair.o: crosshair.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
@@ -13466,8 +13469,9 @@ gui_act.o: gui_act.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/core/grid.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
- change.h draw.h search.h find.h \
- ../src_3rd/librnd-local/src/librnd/core/actions.h \
+ ../src_3rd/librnd-local/src/librnd/core/funchash_core.h \
+ ../src_3rd/librnd-local/src/librnd/core/funchash_core_list.h change.h \
+ draw.h search.h find.h ../src_3rd/librnd-local/src/librnd/core/actions.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_init.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/puplug.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
