@@ -180,60 +180,60 @@ static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 
 static int teardrops_init_pstk(teardrop_t *tr, pcb_pstk_t *ps, pcb_layer_t *l)
 {
-		pcb_pstk_shape_t *shp, tmpshp;
-		int n;
-		double mindist;
+	pcb_pstk_shape_t *shp, tmpshp;
+	int n;
+	double mindist;
 
-		shp = pcb_pstk_shape_at(tr->pcb, ps, l);
-		if (shp == NULL)
+	shp = pcb_pstk_shape_at(tr->pcb, ps, l);
+	if (shp == NULL)
+		return -1;
+
+	retry:;
+	switch(shp->shape) {
+		case PCB_PSSH_POLY:
+			/* Simplistic approach on polygons; works only on the simplest cases
+			   How this could be handled better: list the 1 or 2 polygon edges
+			   that cross the incoming line's sides and do the teardrops there;
+			   but there are corner cases lurking: what if the next edges out
+			   from the 1..2 edges are curving back? */
+			tr->px = tr->py = 0;
+			for(n = 0; n < shp->data.poly.len; n++) {
+				tr->px += shp->data.poly.x[n];
+				tr->py += shp->data.poly.y[n];
+			}
+			tr->px /= shp->data.poly.len;
+			tr->py /= shp->data.poly.len;
+
+			mindist = RND_MM_TO_COORD(8);
+			mindist *= mindist;
+			for(n = 0; n < shp->data.poly.len; n++) {
+				double dist = rnd_distance2(tr->px, tr->py, shp->data.poly.x[n], shp->data.poly.y[n]);
+				if (dist < mindist)
+					mindist = dist;
+			}
+			tr->thickness = sqrt(mindist)*1.4;
+			tr->px += ps->x;
+			tr->py += ps->y;
+			break;
+
+		case PCB_PSSH_LINE:
+			tr->thickness = shp->data.line.thickness;
+			tr->px = ps->x + (shp->data.line.x1 + shp->data.line.x2)/2;
+			tr->py = ps->y + (shp->data.line.y1 + shp->data.line.y2)/2;
+			break;
+
+		case PCB_PSSH_CIRC:
+			tr->thickness = shp->data.circ.dia;
+			tr->px = ps->x + shp->data.circ.x;
+			tr->py = ps->y + shp->data.circ.y;
+			break;
+
+		case PCB_PSSH_HSHADOW:
+			shp = pcb_pstk_hshadow_shape(ps, shp, &tmpshp);
+			if (shp != NULL)
+				goto retry;
 			return -1;
-
-		retry:;
-		switch(shp->shape) {
-			case PCB_PSSH_POLY:
-				/* Simplistic approach on polygons; works only on the simplest cases
-				   How this could be handled better: list the 1 or 2 polygon edges
-				   that cross the incoming line's sides and do the teardrops there;
-				   but there are corner cases lurking: what if the next edges out
-				   from the 1..2 edges are curving back? */
-				tr->px = tr->py = 0;
-				for(n = 0; n < shp->data.poly.len; n++) {
-					tr->px += shp->data.poly.x[n];
-					tr->py += shp->data.poly.y[n];
-				}
-				tr->px /= shp->data.poly.len;
-				tr->py /= shp->data.poly.len;
-
-				mindist = RND_MM_TO_COORD(8);
-				mindist *= mindist;
-				for(n = 0; n < shp->data.poly.len; n++) {
-					double dist = rnd_distance2(tr->px, tr->py, shp->data.poly.x[n], shp->data.poly.y[n]);
-					if (dist < mindist)
-						mindist = dist;
-				}
-				tr->thickness = sqrt(mindist)*1.4;
-				tr->px += ps->x;
-				tr->py += ps->y;
-				break;
-
-			case PCB_PSSH_LINE:
-				tr->thickness = shp->data.line.thickness;
-				tr->px = ps->x + (shp->data.line.x1 + shp->data.line.x2)/2;
-				tr->py = ps->y + (shp->data.line.y1 + shp->data.line.y2)/2;
-				break;
-
-			case PCB_PSSH_CIRC:
-				tr->thickness = shp->data.circ.dia;
-				tr->px = ps->x + shp->data.circ.x;
-				tr->py = ps->y + shp->data.circ.y;
-				break;
-
-			case PCB_PSSH_HSHADOW:
-				shp = pcb_pstk_hshadow_shape(ps, shp, &tmpshp);
-				if (shp != NULL)
-					goto retry;
-				return -1;
-		}
+	}
 	return 0;
 }
 
