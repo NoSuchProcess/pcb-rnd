@@ -886,8 +886,10 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 		}
 		nsubc = pcb_subcop_copy(&ctx, subc);
 		if (nsubc != NULL) {
-			if (update_exto)
-				pcb_extobj_float_geo((pcb_any_obj_t *)nsubc);
+			if (update_exto) {
+				pcb_extobj_float_geo((pcb_any_obj_t *)nsubc); /* floater child subc in a subc-in-subc setup */
+				pcb_extobj_subc_geo(nsubc); /* parent extobj subc - get all floaters updated */
+			}
 			changed = 1;
 		}
 	}
