@@ -2,12 +2,14 @@
  * Teardrops plug-in for PCB.
  *
  * Copyright (C) 2006 DJ Delorie <dj@delorie.com>
- *
+ * Copyright (C) 2016, 2018, 2021 Tibor 'Igor2' Palinkas
+
  * Licensed under the terms of the GNU General Public
  * License, version 2 or later.
  *
  * Ported to pcb-rnd by Tibor 'Igor2' Palinkas in 2016.
  * Updated to new data model by Tibor 'Igor2' Palinkas in 2018.
+ * Upgraded for extended objets by Tibor 'Igor2' Palinkas in 2021.
  *
  * Original source: http://www.delorie.com/pcb/teardrops/
 */
