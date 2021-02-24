@@ -72,11 +72,11 @@ static rnd_r_dir_t trdp_pstk_cb(const rnd_box_t *box, void *cl)
 	if (teardrops_init_pstk(tr, ps, tr->line->parent.layer) == 0)
 		teardrop_line(tr, tr->line);
 
-	return 1;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 /* create new teardrops on a line endpoint */
-static long trdp_gen_line_pt(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t *line, int second)
+static void trdp_gen_line_pt(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t *line, int second, rnd_coord_t *jx, rnd_coord_t *jy)
 {
 	teardrop_t t;
 	rnd_coord_t x, y;
@@ -103,7 +103,11 @@ static long trdp_gen_line_pt(pcb_board_t *pcb, pcb_subc_t *subc, pcb_line_t *lin
 	spot.Y2 = y + 10;
 
 	rnd_r_search(pcb->Data->padstack_tree, &spot, NULL, trdp_pstk_cb, &t, NULL);
-	return t.new_arcs;
+
+	if (t.new_arcs > 0) {
+		*jx = t.jx;
+		*jy = t.jy;
+	}
 }
 
 static int trdp_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
@@ -111,6 +115,7 @@ static int trdp_gen(pcb_subc_t *subc, pcb_any_obj_t *edit_obj)
 	pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
 	pcb_line_t *edit_line;
 	pcb_board_t *pcb = pcb_data_get_top(subc->data);
+	rnd_coord_t jx, jy;
 
 	if (subc->extobj_data == NULL)
 		trdp_unpack(subc);
@@ -125,19 +130,14 @@ TODO("enable this if we have data");
 
 
 	edit_line = linelist_first(&ly->Line);
-	trdp_gen_line_pt(pcb, subc, edit_line, 0);
-	trdp_gen_line_pt(pcb, subc, edit_line, 1);
 
-TODO("move origin to focal point");
-#if 0
-	{
-		pcb_layer_t *ly = &subc->data->Layer[LID_EDIT];
-		line_geo_def;
-		line = linelist_first(&ly->Line);
-		line_geo_calc(line);
-		pcb_subc_move_origin_to(subc, line->Point1.X - dy * PCB_SUBC_AUX_UNIT, line->Point1.Y + dx * PCB_SUBC_AUX_UNIT, 0);
-	}
-#endif
+	jx = (edit_line->Point1.X + edit_line->Point2.X) / 2;
+	jy = (edit_line->Point1.Y + edit_line->Point2.Y) / 2;
+
+	trdp_gen_line_pt(pcb, subc, edit_line, 0, &jx, &jy);
+	trdp_gen_line_pt(pcb, subc, edit_line, 1, &jx, &jy);
+
+	pcb_subc_move_origin_to(subc, jx, jy, 0); 
 
 	return pcb_exto_regen_end(subc);
 }

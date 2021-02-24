@@ -47,6 +47,7 @@ typedef struct {
 	rnd_coord_t thickness;
 	long new_arcs;
 	pcb_flag_t flags;
+	rnd_coord_t jx, jy; /* output: junction point x;y where all the arcs come together on the line */
 } teardrop_t;
 
 #define RCRD(c) ((rnd_coord_t)(rnd_round(c)))
@@ -135,6 +136,9 @@ static int teardrop_line(teardrop_t *tr, pcb_line_t *l)
 
 	lx = tr->px + dx * ldist;
 	ly = tr->py + dy * ldist;
+
+	tr->jx = RCRD(lx);
+	tr->jy = RCRD(ly);
 
 	/* We need one up front to determine how many segments it will take to fill.  */
 	ax = lx - dy * adist;
@@ -249,7 +253,7 @@ static rnd_r_dir_t check_line_callback(const rnd_box_t * box, void *cl)
 	tr->flags = line->Flags;
 
 	teardrop_line(tr, line);
-	return 1;
+	return RND_R_DIR_FOUND_CONTINUE;
 }
 
 static long check_pstk(pcb_board_t *pcb, pcb_pstk_t *ps)
