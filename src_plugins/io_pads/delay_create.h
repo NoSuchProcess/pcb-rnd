@@ -31,6 +31,7 @@ typedef struct {
 
 typedef enum {
 	DLCR_OBJ,
+	DLCR_CALL,            /* call user function on previous or next object */
 	DLCR_SUBC_BEGIN,
 	DLCR_SUBC_END,
 	DLCR_SUBC_FROM_LIB    /* place a subc from local lib by a list of names */
@@ -64,6 +65,11 @@ typedef struct {
 			int on_bottom;
 			char *names; /* \0 separated list with an empty string at the end (double \0) */
 		} subc_from_lib;
+		struct {
+			void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx);
+			void *rctx, *callctx;
+			int on_next; /* or on prev if 0 */
+		} call;
 	} val;
 	long loc_line; /* for debug */
 	gdl_elem_t link;
@@ -84,6 +90,7 @@ typedef struct {
 
 	/* current context/state */
 	pcb_dlcr_draw_t *subc_begin;    /* NULL when drawing on the board, pointing to the SUBC_BEGIN node in between DLCR_SUBC_BEGIN and DLCR_SUBC_END */
+	pcb_any_obj_t *prev_obj;        /* for CALL */
 
 	/* config */
 	unsigned flip_y:1;   /* if 1, mirror y coordinates over the X axis */
@@ -102,6 +109,8 @@ pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t
 pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, double start_deg, double delta_deg, rnd_coord_t width, rnd_coord_t clearance);
 pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int scale, rnd_coord_t thickness, const char *str, long flags);
 pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, long id, const char *name);
+
+pcb_dlcr_draw_t *pcb_dlcr_call_prev(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx), void *rctx, void *callctx);
 
 /* delayed place a subcricuit from the local dlcr lib by name; names is either
    a single string or a \0 separated list of strings with an empty string at

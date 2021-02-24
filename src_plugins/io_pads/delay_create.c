@@ -266,6 +266,19 @@ TODO("why does this fail?");
 	return obj;
 }
 
+pcb_dlcr_draw_t *pcb_dlcr_call_prev(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx), void *rctx, void *callctx)
+{
+	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_CALL);
+
+	obj->val.call.on_next = 0;
+	obj->val.call.cb = cb;
+	obj->val.call.rctx = rctx;
+	obj->val.call.callctx = callctx;
+
+	return obj;
+}
+
+
 pcb_dlcr_draw_t *pcb_dlcr_subc_new_from_lib(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int on_bottom, const char *names, long names_len)
 {
 	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_SUBC_FROM_LIB);
@@ -360,7 +373,7 @@ rnd_trace("Layer create: unassigned for %ld\n", obj->val.obj.layer_id);
 	return ly;
 }
 
-static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
+static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
 	pcb_data_t *data = (subc != NULL) ? subc->data : pcb->Data;
 	pcb_any_obj_t *r;
@@ -412,10 +425,10 @@ static void pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_
 		pcb_attribute_set(pcb, &r->Attributes, "io_pads_loc_line", tmp, 0);
 	}
 #endif
-	(void)r;
 
 	free(obj->val.obj.layer_name);
 	free(obj);
+	return r;
 }
 
 static void pcb_dlcr_fixup_pstk_proto_lyt(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_data_t *dst);
@@ -516,18 +529,38 @@ static void pcb_dlcr_fixup_pstk_proto_lyt(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pc
 	}
 }
 
+static void pcb_dlcr_call(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *inst)
+{
+	pcb_any_obj_t *obj;
+	if (inst->val.call.on_next) {
+		abort();
+	}
+	else
+		obj = dlcr->prev_obj;
+
+	if (obj == NULL) {
+		rnd_message(RND_MSG_ERROR, "pcb_dlcr_call: %s object doesn't exist\n", (inst->val.call.on_next ? "next" : "previous"));
+		return;
+	}
+
+	inst->val.call.cb(inst->val.call.rctx, obj, inst->val.call.callctx);
+}
 
 static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
 	pcb_dlcr_draw_t *obj;
 	pcb_subc_t *subc = NULL;
+
+	dlcr->prev_obj = NULL;
+
 	while((obj = gdl_first(&dlcr->drawing)) != NULL) {
 		gdl_remove(&dlcr->drawing, obj, link);
 		switch(obj->type) {
-			case DLCR_OBJ: pcb_dlcr_draw_free_obj(pcb, subc, dlcr, obj); break;
+			case DLCR_OBJ: dlcr->prev_obj = pcb_dlcr_draw_free_obj(pcb, subc, dlcr, obj); break;
 			case DLCR_SUBC_BEGIN: subc = obj->val.subc_begin.subc; break;
 			case DLCR_SUBC_END: subc = NULL; break;
 			case DLCR_SUBC_FROM_LIB: pcb_dlcr_draw_subc_from_lib(pcb, dlcr, obj); break;
+			case DLCR_CALL: pcb_dlcr_call(pcb, subc, dlcr, obj); break;
 		}
 	}
 }
