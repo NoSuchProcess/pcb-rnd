@@ -613,7 +613,7 @@ TODO("pads-specific code in delay draw!!; see also: TODO#71");
 			t = *tp;
 			*tp = NULL;
 		}
-		if (t == NULL)
+		if ((t == NULL) && (pinno[0] != '0') && (pinno[1] != '\0'))
 			PADS_ERROR((RND_MSG_ERROR, "*PARTDECAL* padstack proto referencing non-existing pin number or duplicate pin number reference: '%s'\n", pinno));
 		pads_create_pins(rctx, t, pinidx, pid);
 	}
