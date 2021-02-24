@@ -580,7 +580,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 		/* Place components onto center of board. */
 		pcb_crosshair.Y = py; /* flipping side depends on the crosshair unfortunately */
-		if (pcb_buffer_copy_to_layout(pcb, px, py, rnd_false))
+		if (pcb_buffer_copy_to_layout(pcb, px, py, rnd_false, rnd_false))
 			pcb_board_set_changed_flag(pcb, rnd_true);
 	}
 	else if (sc && subc_differs(sc, footprint)) {
@@ -641,7 +641,7 @@ static fgw_error_t pcb_act_ElementList(fgw_arg_t *res, int argc, fgw_arg_t *argv
 		if (paste_ok) {
 			if (sc != NULL)
 				pcb_subc_remove(sc);
-			if (pcb_buffer_copy_to_layout(pcb, orig_cx, orig_cy, rnd_false))
+			if (pcb_buffer_copy_to_layout(pcb, orig_cx, orig_cy, rnd_false, rnd_false))
 				pcb_board_set_changed_flag(pcb,rnd_true);
 		}
 	}

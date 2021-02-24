@@ -783,7 +783,7 @@ void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 	return (pcb_object_operation(&AddBufferFunctions, &ctx, Type, Ptr1, Ptr2, Ptr3));
 }
 
-rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, rnd_bool keep_id)
+rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, rnd_bool keep_id, rnd_bool update_exto)
 {
 	rnd_cardinal_t i;
 	rnd_bool changed = rnd_false;
@@ -827,7 +827,7 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 			{
 				pcb_line_t *nline = pcb_lineop_copy(&ctx, destlayer, line);
 				if (nline != NULL) {
-					if (keep_id)
+					if (update_exto)
 						pcb_extobj_float_geo((pcb_any_obj_t *)nline);
 					changed = 1;
 				}
@@ -837,7 +837,7 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 			{
 				pcb_arc_t *narc = pcb_arcop_copy(&ctx, destlayer, arc);
 				if (narc != NULL) {
-					if (keep_id)
+					if (update_exto)
 						pcb_extobj_float_geo((pcb_any_obj_t *)narc);
 					changed = 1;
 				}
@@ -847,7 +847,7 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 			{
 				pcb_text_t *ntext = pcb_textop_copy(&ctx, destlayer, text);
 				if (ntext != NULL) {
-					if (keep_id)
+					if (update_exto)
 						pcb_extobj_float_geo((pcb_any_obj_t *)ntext);
 					changed = 1;
 				}
@@ -857,7 +857,7 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 			{
 				pcb_poly_t *npoly = pcb_polyop_copy(&ctx, destlayer, polygon);
 				if (npoly != NULL) {
-					if (keep_id)
+					if (update_exto)
 						pcb_extobj_float_geo((pcb_any_obj_t *)npoly);
 					changed = 1;
 				}
@@ -867,7 +867,7 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 			{
 				pcb_gfx_t *ngfx = pcb_gfxop_copy(&ctx, destlayer, gfx);
 				if (ngfx != NULL) {
-					if (keep_id)
+					if (update_exto)
 						pcb_extobj_float_geo((pcb_any_obj_t *)ngfx);
 					changed = 1;
 				}
@@ -886,7 +886,7 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 		}
 		nsubc = pcb_subcop_copy(&ctx, subc);
 		if (nsubc != NULL) {
-			if (keep_id)
+			if (update_exto)
 				pcb_extobj_float_geo((pcb_any_obj_t *)nsubc);
 			changed = 1;
 		}
@@ -914,7 +914,7 @@ rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t 
 			pcb_pstk_t *nps;
 			nps = pcb_pstkop_copy(&ctx, padstack);
 			if (nps != NULL) {
-				if (keep_id)
+				if (update_exto)
 					pcb_extobj_float_geo((pcb_any_obj_t *)nps);
 				changed = 1;
 			}
@@ -1169,7 +1169,7 @@ static fgw_error_t pcb_act_PasteBuffer(fgw_arg_t *res, int argc, fgw_arg_t *argv
 
 				oldx = x;
 				oldy = y;
-				if (pcb_buffer_copy_to_layout(PCB, x, y, rnd_false))
+				if (pcb_buffer_copy_to_layout(PCB, x, y, rnd_false, rnd_true))
 					pcb_board_set_changed_flag(PCB, rnd_true);
 			}
 			break;

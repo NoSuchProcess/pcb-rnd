@@ -94,7 +94,7 @@ fgw_error_t pcb_act_LoadFootprint(fgw_arg_t *res, int oargc, fgw_arg_t *oargv);
    If keep_id is true, do not change object IDs - this should be used only
    in one specific case, when selected objects are moved using the buffer
    (which means exactly 1 copy is made and the original version is removed). */
-rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, rnd_bool keep_id);
+rnd_bool pcb_buffer_copy_to_layout(pcb_board_t *pcb, rnd_coord_t X, rnd_coord_t Y, rnd_bool keep_id, rnd_bool update_exto);
 
 /* change the side of all objects in the buffer */
 void pcb_buffer_flip_side(pcb_board_t *pcb, pcb_buffer_t *Buffer);

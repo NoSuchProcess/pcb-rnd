@@ -169,7 +169,7 @@ static fgw_error_t pcb_act_Select(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				pcb_remove_selected(0);
 				pcb_subc_convert_from_buffer(PCB_PASTEBUFFER);
 				pcb_undo_restore_serial();
-				pcb_buffer_copy_to_layout(PCB, x, y, rnd_false);
+				pcb_buffer_copy_to_layout(PCB, x, y, rnd_false, rnd_false);
 				pcb_buffer_set_number(pcb_crosshair_note.Buffer);
 			}
 			break;
