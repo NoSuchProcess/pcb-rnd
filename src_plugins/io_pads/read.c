@@ -232,6 +232,12 @@ static void pads_assign_layers(pads_read_ctx_t *rctx)
 		ly->purpose = "uroute";
 		pcb_dlcr_layer_reg(&rctx->dlcr, ly);
 
+		ly = pads_layer_alloc(1024);
+		ly->name = rnd_strdup("unassigned");
+		ly->lyt = PCB_LYT_DOC;
+		pcb_dlcr_layer_reg(&rctx->dlcr, ly);
+
+
 		ly = pads_layer_alloc(0);
 		ly->name = rnd_strdup("all-layer");
 		ly->lyt = PCB_LYT_DOC;
