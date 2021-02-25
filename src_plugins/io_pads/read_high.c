@@ -933,8 +933,10 @@ static void get_arc_angles(rnd_coord_t r, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	*deltaa = d;
 }
 
-static void add_teardrop(pads_read_ctx_t *rctx, pcb_any_obj_t *obj, void *call_ctx)
+static void add_teardrop(void *rctx_, pcb_any_obj_t *obj, void *call_ctx)
 {
+	pads_read_ctx_t *rctx = rctx_;
+
 	if ((rctx->teardrop_eo == NULL) && !rctx->teardrop_warned) {
 		pcb_extobj_t **eo = NULL;
 		int idx = pcb_extobj_lookup_idx("teardrop");
