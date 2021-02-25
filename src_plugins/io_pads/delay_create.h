@@ -77,6 +77,7 @@ typedef struct {
 	} val;
 	long loc_line; /* for debug */
 	gdl_elem_t link;
+	unsigned in_last_subc:1; /* create object within the last created subc instead of on the board */
 } pcb_dlcr_draw_t;
 
 typedef struct {
@@ -96,6 +97,7 @@ typedef struct {
 	pcb_dlcr_draw_t *subc_begin;    /* NULL when drawing on the board, pointing to the SUBC_BEGIN node in between DLCR_SUBC_BEGIN and DLCR_SUBC_END */
 	pcb_any_obj_t *prev_obj;        /* for CALL prev */
 	pcb_dlcr_draw_t *call_next;     /* for CALL next */
+	pcb_subc_t *last_subc_placed;   /* for adding objects in the last subc instead of board */
 
 	/* config */
 	unsigned flip_y:1;   /* if 1, mirror y coordinates over the X axis */

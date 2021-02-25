@@ -393,9 +393,16 @@ rnd_trace("Layer create: unassigned for %ld\n", obj->val.obj.layer_id);
 	return ly;
 }
 
+/* Look up a subc layer using object's layer id or layer name */
+static pcb_layer_t *pcb_dlcr_lookup_subc_layer(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj, int *specd)
+{
+	return &subc->data->Layer[0];
+}
+
+
 static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
-	pcb_data_t *data = (subc != NULL) ? subc->data : pcb->Data;
+	pcb_data_t *data; 
 	pcb_any_obj_t *r;
 	pcb_line_t *l = &obj->val.obj.obj.line;
 	pcb_arc_t *a = &obj->val.obj.obj.arc;
@@ -404,18 +411,25 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 	pcb_layer_t *ly;
 	int specd;
 
-	/* retrieve target layer for layer objects */
-	if (obj->val.obj.obj.any.type != PCB_OBJ_PSTK) {
-		if (subc != NULL) {
-			TODO("create objects on a subc layer");
+	if (obj->in_last_subc) {
+		subc = dlcr->last_subc_placed;
+		if (subc == NULL) {
+				rnd_message(RND_MSG_ERROR, "delay create: 'last_subc_placed' is not available\n");
 			return NULL;
 		}
+	}
+	data = (subc != NULL) ? subc->data : pcb->Data;
+
+	/* retrieve target layer for layer objects */
+	if (obj->val.obj.obj.any.type != PCB_OBJ_PSTK) {
+		if (subc != NULL)
+			ly = pcb_dlcr_lookup_subc_layer(pcb, subc, dlcr, obj, &specd);
 		else
 			ly = pcb_dlcr_lookup_board_layer(pcb, dlcr, obj, &specd);
 
 		if (ly == NULL) {
 			if (!specd)
-				rnd_message(RND_MSG_ERROR, "delay create: layer not specified (loc: %ld)\n", obj->loc_line);
+				rnd_message(RND_MSG_ERROR, "delay create: layer not specified (loc: %ld) %s\n", obj->loc_line, (subc == NULL) ? "on board" : "in subc");
 			return NULL;
 		}
 	}
@@ -602,7 +616,7 @@ static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 			case DLCR_OBJ: new_obj = dlcr->prev_obj = pcb_dlcr_draw_free_obj(pcb, subc, dlcr, obj); break;
 			case DLCR_SUBC_BEGIN: subc = obj->val.subc_begin.subc; break;
 			case DLCR_SUBC_END: subc = NULL; break;
-			case DLCR_SUBC_FROM_LIB: new_obj = dlcr->prev_obj = pcb_dlcr_draw_subc_from_lib(pcb, dlcr, obj); break;
+			case DLCR_SUBC_FROM_LIB: new_obj = dlcr->prev_obj = dlcr->last_subc_placed = pcb_dlcr_draw_subc_from_lib(pcb, dlcr, obj); break;
 			case DLCR_CALL: pcb_dlcr_call(pcb, subc, dlcr, obj, NULL); break;
 			case DLCR_ATTR: pcb_dlcr_attr(pcb, subc, dlcr, obj); break;
 		}
