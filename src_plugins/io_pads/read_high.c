@@ -272,7 +272,7 @@ TODO("KEEPOUT objects are not handled");
 	return 1;
 }
 
-static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label, rnd_coord_t xo, rnd_coord_t yo)
+static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label, rnd_coord_t xo, rnd_coord_t yo, rnd_bool in_subc)
 {
 	pcb_dlcr_draw_t *text;
 	char name[16], hjust[16], vjust[16], font[128], str[1024];
@@ -352,20 +352,20 @@ TODO("w is really thickness");
 	return 1;
 }
 
-static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo)
+static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo, rnd_bool in_subc)
 {
-	return pads_parse_text_(rctx, 0, xo, yo);
+	return pads_parse_text_(rctx, 0, xo, yo, in_subc);
 }
 
 static int pads_parse_text0(pads_read_ctx_t *rctx)
 {
-	return pads_parse_text_(rctx, 0, 0, 0);
+	return pads_parse_text_(rctx, 0, 0, 0, 0);
 }
 
 
-static int pads_parse_label(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo)
+static int pads_parse_label(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo, rnd_bool in_subc)
 {
-	return pads_parse_text_(rctx, 1, xo, yo);
+	return pads_parse_text_(rctx, 1, xo, yo, in_subc);
 }
 
 static int pads_parse_texts(pads_read_ctx_t *rctx)
@@ -427,7 +427,7 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 	for(n = 0; n < num_pcs; n++)
 		if ((res = pads_parse_piece(rctx, ltype, xo, yo)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
-		if ((res = pads_parse_text(rctx, xo, yo)) <= 0) return res;
+		if ((res = pads_parse_text(rctx, xo, yo, 0)) <= 0) return res;
 
 	return 1;
 }
@@ -704,9 +704,9 @@ TODO("set unit and origin");
 	for(n = 0; n < num_pieces; n++)
 		if ((res = pads_parse_piece(rctx, PLTY_LINES, xo, yo)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
-		if ((res = pads_parse_text(rctx, xo, yo)) <= 0) return res;
+		if ((res = pads_parse_text(rctx, xo, yo, 1)) <= 0) return res;
 	for(n = 0; n < num_labels; n++)
-		if ((res = pads_parse_label(rctx, xo, yo)) <= 0) return res;
+		if ((res = pads_parse_label(rctx, xo, yo, 1)) <= 0) return res;
 	for(n = 0; n < num_terms; n++)
 		if ((res = pads_parse_term(rctx, n, &terms)) <= 0) { free_terms(rctx, &terms, defpid); return res; }
 	for(n = 0; n < num_stacks; n++)
@@ -902,7 +902,7 @@ static int pads_parse_part(pads_read_ctx_t *rctx)
 TODO("add refdes and labels");
 
 	for(n = 0; n < num_labels; n++)
-		if ((res = pads_parse_label(rctx, xo, yo)) <= 0) return res;
+		if ((res = pads_parse_label(rctx, xo, yo, 0)) <= 0) return res;
 	return 1;
 }
 
