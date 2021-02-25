@@ -585,7 +585,7 @@ static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 
 	/* call-next can be executed after object creation of new_obj */
 	if ((dlcr->call_next != NULL) && (new_obj != NULL)) {
-		pcb_dlcr_call(pcb, subc, dlcr, obj, new_obj);
+		pcb_dlcr_call(pcb, subc, dlcr, dlcr->call_next, new_obj);
 		dlcr->call_next = NULL;
 	}
 }
