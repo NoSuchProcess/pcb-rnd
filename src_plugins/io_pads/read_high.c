@@ -1085,11 +1085,8 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 					line->val.obj.layer_id = level;
 					line->loc_line = loc_line;
 				}
-				if (teardrop_dir < 0)
-					pcb_dlcr_call_prev(&rctx->dlcr, add_teardrop, rctx, NULL);
-				else if (teardrop_dir > 0) {
-TODO("implement teardrop-on-next");
-				}
+				if (teardrop_dir != 0)
+					pcb_dlcr_call_on(&rctx->dlcr, add_teardrop, rctx, NULL, (teardrop_dir > 0));
 			}
 			spc->omit = 0;
 		}
