@@ -278,7 +278,7 @@ static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label, rnd_coord_t xo,
 	char name[16], hjust[16], vjust[16], font[128], str[1024];
 	rnd_coord_t x, y, w, h;
 	double rot, scale;
-	long level;
+	long level, flg = 0;
 	int res, mirr = 0;
 
 	*font = *str = '\0';
@@ -328,8 +328,17 @@ TODO("w is really thickness");
 	TODO("This should rather use font height");
 	scale = (double)w/RND_MM_TO_COORD(1.0) * 100.0 * 8;
 
+	if (is_label) {
+		if (strcmp(str, "Part Type") == 0)
+			goto skip;
+		if (strcmp(str, "Ref.Des.") == 0) {
+			strcpy(str, "%a.parent.refdes%");
+			flg |= PCB_FLAG_DYNTEXT;
+		}
+	}
+
 	TODO("do not ignore text alignment");
-	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo+w*9, rot, scale, 0, str, (is_label ? PCB_FLAG_FLOATER : 0));
+	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo+w*9, rot, scale, 0, str, (is_label ? PCB_FLAG_FLOATER : 0) | flg);
 	text->loc_line = rctx->line;
 
 	if (is_label) {
@@ -347,6 +356,7 @@ TODO("w is really thickness");
 	else
 		text->val.obj.layer_id = level;
 
+	skip:;
 	pads_eatup_till_nl(rctx);
 
 	return 1;
