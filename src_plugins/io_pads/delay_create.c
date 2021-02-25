@@ -459,7 +459,7 @@ static pcb_subc_t *pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlc
 		rnd_message(RND_MSG_ERROR, "delay create: invalid subc-from-lib: not found by name (loc: %ld); tried:\n", obj->loc_line);
 		for(name = obj->val.subc_from_lib.names; *name != '\0'; name = name + strlen(name) + 1)
 			rnd_message(RND_MSG_ERROR, " '%s'\n", name);
-		return;
+		return NULL;
 	}
 
 
