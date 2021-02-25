@@ -396,7 +396,46 @@ rnd_trace("Layer create: unassigned for %ld\n", obj->val.obj.layer_id);
 /* Look up a subc layer using object's layer id or layer name */
 static pcb_layer_t *pcb_dlcr_lookup_subc_layer(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj, int *specd)
 {
-	return &subc->data->Layer[0];
+	pcb_layer_t *ly = NULL;
+
+	*specd = 0;
+	if (obj->val.obj.layer_id != PCB_DLCR_INVALID_LAYER_ID) {
+		pcb_dlcr_layer_t **dlp = (pcb_dlcr_layer_t **)vtp0_get(&dlcr->id2layer, obj->val.obj.layer_id, 0);
+		*specd = 1;
+		if ((dlp == NULL) || (*dlp == NULL)) {
+			ly = pcb_subc_get_layer(subc, PCB_LYT_DOC, 0, 1, "UNASSIGNED", 1);
+		}
+		else {
+			ly = (*dlp)->ly;
+			ly = pcb_subc_get_layer(subc, pcb_layer_flags_(ly), ly->comb, 1, ly->name, 0);
+		}
+	}
+	else if (obj->val.obj.lyt != 0) {
+		long n;
+		for(n = 0; n < dlcr->id2layer.used; n++) {
+			pcb_dlcr_layer_t *dl = dlcr->id2layer.array[n];
+			if ((dl != NULL) && (dl->lyt == obj->val.obj.lyt)) {
+				ly = dl->ly;
+				break;
+			}
+		}
+		if (ly != NULL)
+			ly = pcb_subc_get_layer(subc, pcb_layer_flags_(ly), ly->comb, 1, ly->name, 0);
+		else
+			ly = pcb_subc_get_layer(subc, obj->val.obj.lyt, 0, 1, "unknown", 0);
+	}
+	if ((ly == NULL) && (obj->val.obj.layer_name != NULL)) {
+		pcb_dlcr_layer_t *dl = htsp_get(&dlcr->name2layer, obj->val.obj.layer_name);
+		*specd = 1;
+		if (dl != NULL)
+			ly = dl->ly;
+		if (ly != NULL)
+			ly = pcb_subc_get_layer(subc, pcb_layer_flags_(ly), ly->comb, 1, ly->name, 0);
+		else
+			rnd_message(RND_MSG_ERROR, "delay create: invalid layer name '%s' (loc: %ld)\n", obj->val.obj.layer_name, obj->loc_line);
+	}
+
+	return ly;
 }
 
 
