@@ -946,6 +946,17 @@ static void get_arc_angles(rnd_coord_t r, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 static void add_teardrop(void *rctx_, pcb_any_obj_t *obj, void *call_ctx)
 {
 	pads_read_ctx_t *rctx = rctx_;
+	pcb_layer_t *ly;
+	pcb_data_t *dt;
+
+	if (obj->parent_type != PCB_PARENT_LAYER)
+		return;
+
+	ly = obj->parent.layer;
+	assert(ly->parent_type == PCB_PARENT_DATA);
+	dt = ly->parent.data;
+	if (dt->parent_type != PCB_PARENT_BOARD)
+		return;
 
 	if ((rctx->teardrop_eo == NULL) && !rctx->teardrop_warned) {
 		pcb_extobj_t **eo = NULL;
