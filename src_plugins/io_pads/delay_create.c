@@ -487,7 +487,7 @@ static void proto_layer_lookup(pcb_dlcr_t *dlcr, pcb_pstk_shape_t *shp)
 		case  0: shp->layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; break;
 		default:
 			{
-				pcb_dlcr_layer_t *ly, **lyp = vtp0_get(&dlcr->id2layer, level, 0);
+				pcb_dlcr_layer_t *ly, **lyp = (pcb_dlcr_layer_t **)vtp0_get(&dlcr->id2layer, level, 0);
 				if ((lyp != NULL) && (*lyp != NULL)) {
 					ly = *lyp;
 					if (!(ly->lyt & PCB_LYT_COPPER)) {
