@@ -288,6 +288,17 @@ pcb_dlcr_draw_t *pcb_dlcr_call_next(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb
 	return pcb_dlcr_call_on(dlcr, cb, rctx, callctx, 1);
 }
 
+pcb_dlcr_draw_t *pcb_dlcr_attrib_set_prev(pcb_dlcr_t *dlcr, const char *key, const char *val)
+{
+	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_ATTR);
+
+	obj->val.attr.key = rnd_strdup(key);
+	obj->val.attr.val = rnd_strdup(val);
+
+	return obj;
+}
+
+
 pcb_dlcr_draw_t *pcb_dlcr_subc_new_from_lib(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int on_bottom, const char *names, long names_len)
 {
 	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_SUBC_FROM_LIB);
@@ -474,7 +485,7 @@ static pcb_subc_t *pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlc
 	if (nsc == NULL)
 		rnd_message(RND_MSG_ERROR, "pcb_dlcr_draw_subc_from_lib(): failed to dup subc '%s' from lib\n", name);
 
-	return subc;
+	return nsc;
 }
 
 TODO("this is pads-specific, figure how to handle this; see also: TODO#71");
@@ -562,6 +573,19 @@ static void pcb_dlcr_call(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, 
 	}
 
 	inst->val.call.cb(inst->val.call.rctx, obj, inst->val.call.callctx);
+	free(inst);
+}
+
+static void pcb_dlcr_attr(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *inst)
+{
+	if (dlcr->prev_obj == NULL) {
+		rnd_message(RND_MSG_ERROR, "pcb_dlcr_attr: previous object doesn't exist\n");
+		return;
+	}
+	pcb_attrib_put(dlcr->prev_obj, inst->val.attr.key, inst->val.attr.val);
+	free(inst->val.attr.key);
+	free(inst->val.attr.val);
+	free(inst);
 }
 
 static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
@@ -578,8 +602,9 @@ static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 			case DLCR_OBJ: new_obj = dlcr->prev_obj = pcb_dlcr_draw_free_obj(pcb, subc, dlcr, obj); break;
 			case DLCR_SUBC_BEGIN: subc = obj->val.subc_begin.subc; break;
 			case DLCR_SUBC_END: subc = NULL; break;
-			case DLCR_SUBC_FROM_LIB: new_obj = pcb_dlcr_draw_subc_from_lib(pcb, dlcr, obj); break;
+			case DLCR_SUBC_FROM_LIB: new_obj = dlcr->prev_obj = pcb_dlcr_draw_subc_from_lib(pcb, dlcr, obj); break;
 			case DLCR_CALL: pcb_dlcr_call(pcb, subc, dlcr, obj, NULL); break;
+			case DLCR_ATTR: pcb_dlcr_attr(pcb, subc, dlcr, obj); break;
 		}
 	}
 

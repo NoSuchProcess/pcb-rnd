@@ -32,6 +32,7 @@ typedef struct {
 typedef enum {
 	DLCR_OBJ,
 	DLCR_CALL,            /* call user function on previous or next object */
+	DLCR_ATTR,            /* set attribute on previous object */
 	DLCR_SUBC_BEGIN,
 	DLCR_SUBC_END,
 	DLCR_SUBC_FROM_LIB    /* place a subc from local lib by a list of names */
@@ -70,6 +71,9 @@ typedef struct {
 			void *rctx, *callctx;
 			int on_next; /* or on prev if 0 */
 		} call;
+		struct {
+			char *key, *val;
+		} attr;
 	} val;
 	long loc_line; /* for debug */
 	gdl_elem_t link;
@@ -116,6 +120,10 @@ pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y
 pcb_dlcr_draw_t *pcb_dlcr_call_on(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx), void *rctx, void *callctx, int on_next);
 pcb_dlcr_draw_t *pcb_dlcr_call_prev(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx), void *rctx, void *callctx);
 pcb_dlcr_draw_t *pcb_dlcr_call_next(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx), void *rctx, void *callctx);
+
+/* Set an attribute on the previous (last created) object */
+pcb_dlcr_draw_t *pcb_dlcr_attrib_set_prev(pcb_dlcr_t *dlcr, const char *key, const char *val);
+
 
 /* delayed place a subcricuit from the local dlcr lib by name; names is either
    a single string or a \0 separated list of strings with an empty string at
