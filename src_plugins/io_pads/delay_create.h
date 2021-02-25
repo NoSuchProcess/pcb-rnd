@@ -90,7 +90,8 @@ typedef struct {
 
 	/* current context/state */
 	pcb_dlcr_draw_t *subc_begin;    /* NULL when drawing on the board, pointing to the SUBC_BEGIN node in between DLCR_SUBC_BEGIN and DLCR_SUBC_END */
-	pcb_any_obj_t *prev_obj;        /* for CALL */
+	pcb_any_obj_t *prev_obj;        /* for CALL prev */
+	pcb_dlcr_draw_t *call_next;     /* for CALL next */
 
 	/* config */
 	unsigned flip_y:1;   /* if 1, mirror y coordinates over the X axis */

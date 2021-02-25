@@ -442,7 +442,7 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 
 static void pcb_dlcr_fixup_pstk_proto_lyt(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_data_t *dst);
 
-static void pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
+static pcb_subc_t *pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
 	rnd_coord_t dx, dy, ox = 0, oy = 0;
 	pcb_subc_t *subc, *nsc;
@@ -473,6 +473,8 @@ static void pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_
 
 	if (nsc == NULL)
 		rnd_message(RND_MSG_ERROR, "pcb_dlcr_draw_subc_from_lib(): failed to dup subc '%s' from lib\n", name);
+
+	return subc;
 }
 
 TODO("this is pads-specific, figure how to handle this; see also: TODO#71");
@@ -538,11 +540,18 @@ static void pcb_dlcr_fixup_pstk_proto_lyt(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pc
 	}
 }
 
-static void pcb_dlcr_call(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *inst)
+static void pcb_dlcr_call(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *inst, pcb_any_obj_t *next_obj)
 {
 	pcb_any_obj_t *obj;
 	if (inst->val.call.on_next) {
-		abort();
+		if (next_obj == NULL) { /* called to initialize; the actual call can be done only when the next object is really created */
+			if (dlcr->call_next != NULL)
+				rnd_message(RND_MSG_ERROR, "pcb_dlcr_call: multiple call-next on a single object is not supported\n");
+			dlcr->call_next = inst;
+			return;
+		}
+		/* called to execute the call */
+		obj = next_obj;
 	}
 	else
 		obj = dlcr->prev_obj;
@@ -559,18 +568,25 @@ static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
 	pcb_dlcr_draw_t *obj;
 	pcb_subc_t *subc = NULL;
+	void *new_obj = NULL;
 
 	dlcr->prev_obj = NULL;
 
 	while((obj = gdl_first(&dlcr->drawing)) != NULL) {
 		gdl_remove(&dlcr->drawing, obj, link);
 		switch(obj->type) {
-			case DLCR_OBJ: dlcr->prev_obj = pcb_dlcr_draw_free_obj(pcb, subc, dlcr, obj); break;
+			case DLCR_OBJ: new_obj = dlcr->prev_obj = pcb_dlcr_draw_free_obj(pcb, subc, dlcr, obj); break;
 			case DLCR_SUBC_BEGIN: subc = obj->val.subc_begin.subc; break;
 			case DLCR_SUBC_END: subc = NULL; break;
-			case DLCR_SUBC_FROM_LIB: pcb_dlcr_draw_subc_from_lib(pcb, dlcr, obj); break;
-			case DLCR_CALL: pcb_dlcr_call(pcb, subc, dlcr, obj); break;
+			case DLCR_SUBC_FROM_LIB: new_obj = pcb_dlcr_draw_subc_from_lib(pcb, dlcr, obj); break;
+			case DLCR_CALL: pcb_dlcr_call(pcb, subc, dlcr, obj, NULL); break;
 		}
+	}
+
+	/* call-next can be executed after object creation of new_obj */
+	if ((dlcr->call_next != NULL) && (new_obj != NULL)) {
+		pcb_dlcr_call(pcb, subc, dlcr, obj, new_obj);
+		dlcr->call_next = NULL;
 	}
 }
 
