@@ -528,7 +528,7 @@ static void pcb_dlcr_create_pstk_protos(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_
 
 static void pcb_dlcr_fixup_pstk_proto_lyt(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_data_t *dst)
 {
-	rnd_cardinal_t n, m;
+	rnd_cardinal_t n;
 	for(n = 0; n < dst->ps_protos.used; n++) {
 		pcb_pstk_proto_t *proto = &dst->ps_protos.array[n];
 		pcb_pstk_tshape_t *ts = pcb_vtpadstack_tshape_get(&proto->tr, 0, 0);
