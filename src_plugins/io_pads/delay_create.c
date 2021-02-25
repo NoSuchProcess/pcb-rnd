@@ -266,11 +266,11 @@ TODO("why does this fail?");
 	return obj;
 }
 
-pcb_dlcr_draw_t *pcb_dlcr_call_prev(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx), void *rctx, void *callctx)
+pcb_dlcr_draw_t *pcb_dlcr_call_on(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx), void *rctx, void *callctx, int on_next)
 {
 	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_CALL);
 
-	obj->val.call.on_next = 0;
+	obj->val.call.on_next = on_next;
 	obj->val.call.cb = cb;
 	obj->val.call.rctx = rctx;
 	obj->val.call.callctx = callctx;
@@ -278,6 +278,15 @@ pcb_dlcr_draw_t *pcb_dlcr_call_prev(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb
 	return obj;
 }
 
+pcb_dlcr_draw_t *pcb_dlcr_call_prev(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx), void *rctx, void *callctx)
+{
+	return pcb_dlcr_call_on(dlcr, cb, rctx, callctx, 0);
+}
+
+pcb_dlcr_draw_t *pcb_dlcr_call_next(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx), void *rctx, void *callctx)
+{
+	return pcb_dlcr_call_on(dlcr, cb, rctx, callctx, 1);
+}
 
 pcb_dlcr_draw_t *pcb_dlcr_subc_new_from_lib(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int on_bottom, const char *names, long names_len)
 {
