@@ -335,7 +335,10 @@ static int pcb_text_render_str_cb(void *ctx, gds_t *s, const char **input)
 		const pcb_attribute_list_t *attr = &text->Attributes;
 		path = key+2;
 		if ((path[0] == 'p') && (memcmp(path, "parent.", 7) == 0)) {
-			pcb_data_t *par = text->parent.layer->parent.data;
+			pcb_data_t *par = NULL;
+
+			if (text->parent.layer != NULL)
+				par = text->parent.layer->parent.data;
 
 			if (par == NULL)
 				attr = NULL;
