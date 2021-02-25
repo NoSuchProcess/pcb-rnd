@@ -966,10 +966,11 @@ typedef struct {
 
 static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, long idx)
 {
-	char vianame[64], teardrop[16];
+	char vianame[64], teardrop[16], tdir[4];
 	long real_level, level, flags, loc_line;
 	rnd_coord_t x, y, width;
-	int res, arcdir = 0, thermal = 0, want_teardrop = 0;
+	int res, arcdir = 0, thermal = 0;
+	int teardrop_dir = 0; /* -1 is previous, +1 is next */
 
 	if ((res = pads_read_coord(rctx, &x)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &y)) <= 0) return res;
@@ -1000,8 +1001,18 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 		if ((res = pads_read_word(rctx, teardrop, sizeof(teardrop), 0)) <= 0) return res;
 		if (strcmp(teardrop, "TEARDROP") == 0) {
 			teardrop:;
+			if ((res = pads_read_word(rctx, tdir, sizeof(tdir), 0)) <= 0) return res;
+			if (tdir[1] != '\0') {
+				PADS_ERROR((RND_MSG_ERROR, "*SIGNAL* line teardrop: empty P/N field\n"));
+				return -1;
+			}
+			if (tdir[0] == 'P') teardrop_dir = -1;
+			else if (tdir[0] == 'N') teardrop_dir = +1;
+			else {
+				PADS_ERROR((RND_MSG_ERROR, "*SIGNAL* line teardrop: need a P or N after the teardrop keyword\n"));
+				return -1;
+			}
 			/* for now, ignore teardrop fields */
-			want_teardrop = 1;
 		}
 	}
 
@@ -1074,8 +1085,9 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 					line->val.obj.layer_id = level;
 					line->loc_line = loc_line;
 				}
-				if (want_teardrop) {
+				if (teardrop_dir < 0)
 					pcb_dlcr_call_prev(&rctx->dlcr, add_teardrop, rctx, NULL);
+				else if (teardrop_dir > 0) {
 TODO("implement teardrop-on-next");
 				}
 			}
