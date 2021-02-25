@@ -903,13 +903,13 @@ static int pads_parse_part(pads_read_ctx_t *rctx)
 	if (part != NULL) {
 		pcb_dlcr_draw_t *po = pcb_dlcr_subc_new_from_lib(&rctx->dlcr, xo, yo, rot, (*mirr == 'M'), decalname, dln);
 		po->loc_line = rctx->line;
+		pcb_dlcr_attrib_set_prev(&rctx->dlcr, "refdes", refdes);
 	}
 	else {
 		PADS_ERROR((RND_MSG_ERROR, "*PART* on undefined parttype '%s'\n", partname));
 		return -1;
 	}
 
-TODO("add refdes and labels");
 
 	for(n = 0; n < num_labels; n++)
 		if ((res = pads_parse_label(rctx, xo, yo, 0)) <= 0) return res;
