@@ -272,6 +272,7 @@ TODO("KEEPOUT objects are not handled");
 	return 1;
 }
 
+/* in_subc means create text in the last subc placed */
 static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label, rnd_coord_t xo, rnd_coord_t yo, rnd_bool in_subc)
 {
 	pcb_dlcr_draw_t *text;
@@ -340,6 +341,8 @@ TODO("w is really thickness");
 	TODO("do not ignore text alignment");
 	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo+w*9, rot, scale, 0, str, (is_label ? PCB_FLAG_FLOATER : 0) | flg);
 	text->loc_line = rctx->line;
+	if (in_subc)
+		text->in_last_subc = 1;
 
 	if (is_label) {
 		text->val.obj.layer_id = PCB_DLCR_INVALID_LAYER_ID;
@@ -714,9 +717,9 @@ TODO("set unit and origin");
 	for(n = 0; n < num_pieces; n++)
 		if ((res = pads_parse_piece(rctx, PLTY_LINES, xo, yo)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
-		if ((res = pads_parse_text(rctx, xo, yo, 1)) <= 0) return res;
+		if ((res = pads_parse_text(rctx, xo, yo, 0)) <= 0) return res;
 	for(n = 0; n < num_labels; n++)
-		if ((res = pads_parse_label(rctx, xo, yo, 1)) <= 0) return res;
+		if ((res = pads_parse_label(rctx, xo, yo, 0)) <= 0) return res;
 	for(n = 0; n < num_terms; n++)
 		if ((res = pads_parse_term(rctx, n, &terms)) <= 0) { free_terms(rctx, &terms, defpid); return res; }
 	for(n = 0; n < num_stacks; n++)
@@ -912,7 +915,7 @@ static int pads_parse_part(pads_read_ctx_t *rctx)
 
 
 	for(n = 0; n < num_labels; n++)
-		if ((res = pads_parse_label(rctx, xo, yo, 0)) <= 0) return res;
+		if ((res = pads_parse_label(rctx, xo, yo, 1)) <= 0) return res;
 	return 1;
 }
 
