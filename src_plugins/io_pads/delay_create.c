@@ -397,7 +397,7 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 	if (obj->val.obj.obj.any.type != PCB_OBJ_PSTK) {
 		if (subc != NULL) {
 			TODO("create objects on a subc layer");
-			return;
+			return NULL;
 		}
 		else
 			ly = pcb_dlcr_lookup_board_layer(pcb, dlcr, obj, &specd);
@@ -405,7 +405,7 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 		if (ly == NULL) {
 			if (!specd)
 				rnd_message(RND_MSG_ERROR, "delay create: layer not specified (loc: %ld)\n", obj->loc_line);
-			return;
+			return NULL;
 		}
 	}
 
