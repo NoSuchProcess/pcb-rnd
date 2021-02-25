@@ -316,7 +316,7 @@ TODO("w is really thickness");
 		pads_eatup_till_nl(rctx);
 	}
 
-	if ((res = pads_read_word(rctx, str, sizeof(str), 1)) <= 0) return res;
+	if ((res = pads_read_word_all(rctx, str, sizeof(str), 1)) <= 0) return res;
 
 	rnd_trace(" text: [%s] at %mm;%mm rot=%f size=%mm;%mm mirr=%d: '%s'",
 		font, x, y, rot, w, h, mirr, str);
