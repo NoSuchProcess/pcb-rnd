@@ -92,7 +92,7 @@ fgw_error_t pcb_act_Atomic(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 /* --------------------------------------------------------------------------- */
 
-static const char pcb_acts_Undo[] = "undo()\n" "undo(ClearList|FreezeSerial|UnfreezeSerial|IncSerial|GetSerial|Above)";
+static const char pcb_acts_Undo[] = "undo()\n" "undo(ClearList|FreezeSerial|UnfreezeSerial|FreezeAdd|UnfreezeAdd|IncSerial|GetSerial|Above)";
 
 static const char pcb_acth_Undo[] = "Undo recent changes.";
 
@@ -116,6 +116,10 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			pcb_undo_freeze_serial();
 		else if (rnd_strcasecmp(function, "UnFreezeSerial") == 0)
 			pcb_undo_unfreeze_serial();
+		else if (rnd_strcasecmp(function, "FreezeAdd") == 0)
+			pcb_undo_freeze_add();
+		else if (rnd_strcasecmp(function, "UnFreezeAdd") == 0)
+			pcb_undo_unfreeze_add();
 		else if (rnd_strcasecmp(function, "IncSerial") == 0)
 			pcb_undo_inc_serial();
 		else if (rnd_strcasecmp(function, "GetSerial") == 0) {
