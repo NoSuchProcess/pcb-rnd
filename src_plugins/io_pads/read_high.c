@@ -272,8 +272,12 @@ TODO("KEEPOUT objects are not handled");
 	return 1;
 }
 
-/* in_subc means create text in the last subc placed */
-static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label, rnd_coord_t xo, rnd_coord_t yo, rnd_bool in_subc)
+typedef enum { /* bitfield */
+	TEXT_IS_LABEL = 1,     /* subcircuit label which may be a dyntext */
+	TEXT_IN_LAST_SUBC = 2  /* in_subc means create text in the last subc placed */
+} pads_text_flags_t;
+
+static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo, pads_text_flags_t how)
 {
 	pcb_dlcr_draw_t *text;
 	char name[16], hjust[16], vjust[16], font[128], str[1024];
@@ -281,6 +285,8 @@ static int pads_parse_text_(pads_read_ctx_t *rctx, int is_label, rnd_coord_t xo,
 	double rot, scale;
 	long level, flg = 0;
 	int res, mirr = 0;
+	rnd_bool is_label = !!(how & TEXT_IS_LABEL);
+	rnd_bool in_subc  = !!(how & TEXT_IN_LAST_SUBC);
 
 	*font = *str = '\0';
 
@@ -365,20 +371,9 @@ TODO("w is really thickness");
 	return 1;
 }
 
-static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo, rnd_bool in_subc)
-{
-	return pads_parse_text_(rctx, 0, xo, yo, in_subc);
-}
-
 static int pads_parse_text0(pads_read_ctx_t *rctx)
 {
-	return pads_parse_text_(rctx, 0, 0, 0, 0);
-}
-
-
-static int pads_parse_label(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo, rnd_bool in_subc)
-{
-	return pads_parse_text_(rctx, 1, xo, yo, in_subc);
+	return pads_parse_text(rctx, 0, 0, 0);
 }
 
 static int pads_parse_texts(pads_read_ctx_t *rctx)
@@ -719,7 +714,7 @@ TODO("set unit and origin");
 	for(n = 0; n < num_texts; n++)
 		if ((res = pads_parse_text(rctx, xo, yo, 0)) <= 0) return res;
 	for(n = 0; n < num_labels; n++)
-		if ((res = pads_parse_label(rctx, xo, yo, 0)) <= 0) return res;
+		if ((res = pads_parse_text(rctx, xo, yo, TEXT_IS_LABEL)) <= 0) return res;
 	for(n = 0; n < num_terms; n++)
 		if ((res = pads_parse_term(rctx, n, &terms)) <= 0) { free_terms(rctx, &terms, defpid); return res; }
 	for(n = 0; n < num_stacks; n++)
@@ -915,7 +910,7 @@ static int pads_parse_part(pads_read_ctx_t *rctx)
 
 
 	for(n = 0; n < num_labels; n++)
-		if ((res = pads_parse_label(rctx, xo, yo, 1)) <= 0) return res;
+		if ((res = pads_parse_text(rctx, xo, yo, TEXT_IS_LABEL | TEXT_IN_LAST_SUBC)) <= 0) return res;
 	return 1;
 }
 
