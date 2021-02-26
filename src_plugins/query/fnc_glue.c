@@ -304,3 +304,25 @@ static int fnc_netlen(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_q
 
 	PCB_QRY_RET_COORD(res, nl->len);
 }
+
+static int fnc_obj_by_idpath(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	pcb_board_t *pcb = ectx->pcb;
+	pcb_idpath_t *path;
+	pcb_any_obj_t *obj;
+
+	if ((argc != 1) || (argv[0].type != PCBQ_VT_STRING))
+		return -1;
+
+	path = pcb_str2idpath(pcb, argv[0].data.str); /* slash separated list of ids */
+	if (path == NULL)
+		PCB_QRY_RET_INV(res);
+
+	obj = pcb_idpath2obj_in(pcb->Data, path);
+	pcb_idpath_destroy(path);
+
+	if (obj == NULL)
+		PCB_QRY_RET_INV(res);
+
+	PCB_QRY_RET_OBJ(res, obj);
+}
