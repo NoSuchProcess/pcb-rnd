@@ -1061,7 +1061,7 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 			spc->x0 = spc->x; spc->y0 = spc->y;
 			spc->cx = x; spc->cy = y;
 			spc->omit = 0;
-			return 0;
+			return 1;
 		}
 		else {
 			PADS_ERROR((RND_MSG_ERROR, "*SIGNAL* arc arguments without the arc flag\n"));
