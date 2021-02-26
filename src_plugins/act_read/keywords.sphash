@@ -5,6 +5,7 @@ dup
 field
 free
 get
+height
 layerid
 length
 pop
@@ -12,6 +13,9 @@ push
 prepend
 print
 remove
+size_x
+size_y
+width
 
 init_invis
 ltype

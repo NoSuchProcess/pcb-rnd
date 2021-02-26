@@ -87,6 +87,37 @@ static fgw_error_t pcb_act_GetMark(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_ReadBoard[] ="ReadBoard(width|size_x|height|size_y)\n";
+static const char pcb_acth_ReadBoard[] = "Length returns the number of groups on the current PCB. Field returns one of the fields of the group named in groupid. Layerid returns the integer layer ID (as interpreted within data) for the idxth layer of the group.";
+static fgw_error_t pcb_act_ReadBoard(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	pcb_board_t *pcb = PCB_ACT_BOARD;
+	int cmd, fld;
+	char *cmds, *flds, *target;
+	rnd_layergrp_id_t gid;
+	pcb_layergrp_t *grp;
+	pcb_layer_type_t lyt;
+	long idx;
+
+	RND_ACT_CONVARG(1, FGW_STR, ReadBoard, cmds = argv[1].val.str);
+	cmd = act_read_keywords_sphash(cmds);
+	switch(cmd) {
+		case act_read_keywords_width:
+		case act_read_keywords_size_x:
+			res->type = FGW_COORD; fgw_coord(res) = pcb->hidlib.size_x;
+			return 0;
+		case act_read_keywords_height:
+		case act_read_keywords_size_y:
+			res->type = FGW_COORD; fgw_coord(res) = pcb->hidlib.size_y;
+			return 0;
+		default:
+			return FGW_ERR_ARG_CONV;
+	}
+
+	return FGW_ERR_ARG_CONV;
+}
+
+
 static int flg_error(const char *msg)
 {
 	rnd_message(RND_MSG_ERROR, "act_read flag conversion error: %s\n", msg);
@@ -110,6 +141,8 @@ rnd_action_t act_read_action_list[] = {
 	{"GetMark", pcb_act_GetMark, pcb_acth_GetMark, pcb_acts_GetMark},
 
 	{"ReadGroup", pcb_act_ReadGroup, pcb_acth_ReadGroup, pcb_acts_ReadGroup},
+
+	{"ReadBoard", pcb_act_ReadBoard, pcb_acth_ReadBoard, pcb_acts_ReadBoard},
 
 	{"IsPointOnArc", pcb_act_IsPointOnArc, pcb_acth_IsPointOnArc, pcb_acts_IsPointOnArc},
 	{"IsPointOnLine", pcb_act_IsPointOnLine, pcb_acth_IsPointOnLine, pcb_acts_IsPointOnLine},
