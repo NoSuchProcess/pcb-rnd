@@ -1093,7 +1093,7 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 				rnd_coord_t r = rnd_distance(spc->cx, spc->cy, spc->x0, spc->y0);
 				double starta, deltaa;
 				get_arc_angles(r, spc->cx, spc->cy, spc->x0, spc->y0, x, y, spc->arcdir, &starta, &deltaa);
-				arc = pcb_dlcr_arc_new(&rctx->dlcr, spc->cx, spc->cy, r, starta, deltaa, width, 0);
+				arc = pcb_dlcr_arc_new(&rctx->dlcr, spc->cx, spc->cy, r, starta * RND_RAD_TO_DEG, deltaa * RND_RAD_TO_DEG, width, 0);
 				if (arc != NULL) {
 					arc->val.obj.layer_id = level;
 					arc->loc_line = loc_line;
