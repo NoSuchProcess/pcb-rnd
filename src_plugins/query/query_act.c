@@ -49,6 +49,7 @@
 static const char pcb_acts_query[] =
 	"query(dump, expr) - dry run: compile and dump an expression\n"
 	"query(eval|evalidp, expr) - compile and evaluate an expression and print a list of results on stdout\n"
+	"query(count, expr) - compile and evaluate an expression and return the number of matched objects (-1 on error)\n"
 	"query(select|unselect|view, expr) - select or unselect or build a view of objects matching an expression\n"
 	"query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression\n"
 	"query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist\n"
@@ -59,6 +60,16 @@ typedef struct {
 	int trues, falses;
 	unsigned print_idpath:1;
 } eval_stat_t;
+
+static void count_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
+{
+	eval_stat_t *st = (eval_stat_t *)user_ctx;
+	int t;
+
+	t = pcb_qry_is_true(res);
+	if (t)
+		st->trues++;
+}
 
 static void eval_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 {
@@ -319,6 +330,25 @@ static fgw_error_t pcb_act_query(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		RND_ACT_IRES(0);
 		return 0;
 	}
+
+	if ((strcmp(cmd, "count") == 0)) {
+		int errs;
+		eval_stat_t st;
+
+		RND_ACT_MAY_CONVARG(2, FGW_STR, query, arg = argv[2].val.str);
+		RND_ACT_MAY_CONVARG(3, FGW_STR, query, scope = argv[3].val.str);
+
+		memset(&st, 0, sizeof(st));
+		st.print_idpath = (cmd[4] != '\0');
+		errs = pcb_qry_run_script(NULL, PCB_ACT_BOARD, arg, scope, count_cb, &st);
+
+		if (errs == 0)
+			RND_ACT_IRES(st.trues);
+		else
+			RND_ACT_IRES(-1);
+		return 0;
+	}
+
 
 	if ((strcmp(cmd, "select") == 0) || (strncmp(cmd, "setflag:", 8) == 0)) {
 		sel.how = PCB_CHGFLG_SET;
