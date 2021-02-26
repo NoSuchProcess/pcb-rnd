@@ -275,7 +275,8 @@ TODO("KEEPOUT objects are not handled");
 typedef enum { /* bitfield */
 	TEXT_IS_LABEL = 1,     /* subcircuit label which may be a dyntext */
 	TEXT_IN_LAST_SUBC = 2, /* in_subc means create text in the last subc placed */
-	TEXT_SKIP_REFDES = 4
+	TEXT_SKIP_REFDES = 4,
+	TEXT_SUBC_RELATIVE = 8
 } pads_text_flags_t;
 
 static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo, pads_text_flags_t how)
@@ -350,8 +351,11 @@ TODO("w is really thickness");
 	TODO("do not ignore text alignment");
 	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo+w*9, rot, scale, 0, str, (is_label ? PCB_FLAG_FLOATER : 0) | flg);
 	text->loc_line = rctx->line;
-	if (in_subc)
+	if (in_subc) {
 		text->in_last_subc = 1;
+		if (how & TEXT_SUBC_RELATIVE)
+			text->subc_relative = 1;
+	}
 
 	if (is_label) {
 		text->val.obj.layer_id = PCB_DLCR_INVALID_LAYER_ID;
@@ -913,7 +917,7 @@ static int pads_parse_part(pads_read_ctx_t *rctx)
 
 
 	for(n = 0; n < num_labels; n++)
-		if ((res = pads_parse_text(rctx, xo, yo, TEXT_IS_LABEL | TEXT_IN_LAST_SUBC)) <= 0) return res;
+		if ((res = pads_parse_text(rctx, 0, 0, TEXT_IS_LABEL | TEXT_IN_LAST_SUBC | TEXT_SUBC_RELATIVE)) <= 0) return res;
 	return 1;
 }
 

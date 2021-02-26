@@ -78,6 +78,7 @@ typedef struct {
 	long loc_line; /* for debug */
 	gdl_elem_t link;
 	unsigned in_last_subc:1; /* create object within the last created subc instead of on the board */
+	unsigned subc_relative:1;/* coords are relative to the parent subc */
 } pcb_dlcr_draw_t;
 
 typedef struct {

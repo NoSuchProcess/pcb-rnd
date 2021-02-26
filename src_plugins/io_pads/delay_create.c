@@ -449,6 +449,7 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 	pcb_pstk_t *p = &obj->val.obj.obj.pstk;
 	pcb_layer_t *ly;
 	int specd;
+	rnd_coord_t ox = 0, oy = 0;
 
 	if (obj->in_last_subc) {
 		subc = dlcr->last_subc_placed;
@@ -458,6 +459,11 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 		}
 	}
 	data = (subc != NULL) ? subc->data : pcb->Data;
+
+	if (obj->subc_relative && (subc != NULL)) {
+		pcb_subc_get_origin(subc, &ox, &oy);
+		rnd_trace("TEXT subc offs: %mm %mm\n", ox, oy);
+	}
 
 	/* retrieve target layer for layer objects */
 	if (obj->val.obj.obj.any.type != PCB_OBJ_PSTK) {
@@ -481,7 +487,7 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 			r = (pcb_any_obj_t *)pcb_arc_new(ly, CRDX(a->X), CRDY(a->Y), a->Width, a->Height, a->StartAngle, a->Delta, a->Thickness, a->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
 			break;
 		case PCB_OBJ_TEXT:
-			r = (pcb_any_obj_t *)pcb_text_new(ly, pcb_font(pcb, 0, 1), CRDX(t->X), CRDY(t->Y), t->rot, t->Scale, t->thickness, t->TextString, pcb_flag_make(PCB_FLAG_CLEARLINE | t->Flags.f));
+			r = (pcb_any_obj_t *)pcb_text_new(ly, pcb_font(pcb, 0, 1), ox+CRDX(t->X), oy+CRDY(t->Y), t->rot, t->Scale, t->thickness, t->TextString, pcb_flag_make(PCB_FLAG_CLEARLINE | t->Flags.f));
 			free(t->TextString);
 			break;
 		case PCB_OBJ_PSTK:
