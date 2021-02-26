@@ -13,7 +13,7 @@ The following arguments are intended for scripting:
 <ul>
 	<li> FreezeSerial: stop increasing the undo serial number
 	<li> UnFreezeSerial: stop increasing the undo serial number
-	<li> FreezeAdd: stop adding operations to the undo list
+	<li> FreezeAdd: start adding operations to the undo list again
 	<li> UnFreezeAdd: start adding operations to the undo list again
 	<li> IncSerial: increase the undo serial number (operations with the same serial number are batched); a typical sequence for batching operations is: Undo(FreezeSerial); ...; Undo(UnFreezeSerial); Undo(IcSerial)
 	<li> GetSerial: return the current undo serial
