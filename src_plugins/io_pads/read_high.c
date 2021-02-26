@@ -274,7 +274,8 @@ TODO("KEEPOUT objects are not handled");
 
 typedef enum { /* bitfield */
 	TEXT_IS_LABEL = 1,     /* subcircuit label which may be a dyntext */
-	TEXT_IN_LAST_SUBC = 2  /* in_subc means create text in the last subc placed */
+	TEXT_IN_LAST_SUBC = 2, /* in_subc means create text in the last subc placed */
+	TEXT_SKIP_REFDES = 4
 } pads_text_flags_t;
 
 static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo, pads_text_flags_t how)
@@ -339,6 +340,8 @@ TODO("w is really thickness");
 		if (strcmp(str, "Part Type") == 0)
 			goto skip;
 		if (strcmp(str, "Ref.Des.") == 0) {
+			if (how & TEXT_SKIP_REFDES)
+				goto skip;
 			strcpy(str, "%a.parent.refdes%");
 			flg |= PCB_FLAG_DYNTEXT;
 		}
@@ -714,7 +717,7 @@ TODO("set unit and origin");
 	for(n = 0; n < num_texts; n++)
 		if ((res = pads_parse_text(rctx, xo, yo, 0)) <= 0) return res;
 	for(n = 0; n < num_labels; n++)
-		if ((res = pads_parse_text(rctx, xo, yo, TEXT_IS_LABEL)) <= 0) return res;
+		if ((res = pads_parse_text(rctx, xo, yo, TEXT_IS_LABEL | TEXT_SKIP_REFDES)) <= 0) return res;
 	for(n = 0; n < num_terms; n++)
 		if ((res = pads_parse_term(rctx, n, &terms)) <= 0) { free_terms(rctx, &terms, defpid); return res; }
 	for(n = 0; n < num_stacks; n++)
