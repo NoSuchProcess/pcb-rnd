@@ -167,6 +167,7 @@ void pcb_qry_basic_fnc_init(void)
 	pcb_qry_fnc_reg("pstkring", fnc_pstkring);
 	pcb_qry_fnc_reg("netlen", fnc_netlen);
 	pcb_qry_fnc_reg("obj_by_idpath", fnc_obj_by_idpath);
+	pcb_qry_fnc_reg("poly_is_valid", fnc_poly_is_valid);
 
 	pcb_qry_fnc_reg("thermal_on", fnc_thermal_on);
 

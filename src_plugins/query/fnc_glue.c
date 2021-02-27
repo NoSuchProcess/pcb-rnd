@@ -326,3 +326,19 @@ static int fnc_obj_by_idpath(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv
 
 	PCB_QRY_RET_OBJ(res, obj);
 }
+
+static int fnc_poly_is_valid(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	pcb_board_t *pcb = ectx->pcb;
+	pcb_idpath_t *path;
+	pcb_any_obj_t *obj;
+
+	if ((argc != 1) || (argv[0].type != PCBQ_VT_OBJ))
+		return -1;
+
+	obj = argv[0].data.obj;
+	if (obj->type != PCB_OBJ_POLY)
+		return -1;
+
+	PCB_QRY_RET_INT(res, !!pcb_poly_is_valid((pcb_poly_t *)obj));
+}
