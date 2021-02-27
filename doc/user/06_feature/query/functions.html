@@ -253,6 +253,18 @@ Functions listed below can be called from a query expression.
 	<p>
 	Return value: the addressed object or void.
 
+	<h4 autotoc="yes"> poly_is_valid(obj) </h4>
+	<p>
+	Returns true if obj is a polygon and has a valid contour. Returns false
+	if obj is a polygon with an invalid contour (e.g. self-intersecting).
+	<p>
+	Arguments:
+	<ul>
+		<li> obj is an object (preferrably a polygon)
+	</ul>
+	<p>
+	Return value: 0 or 1 indicating the validity of the polygon.
+
 <h3 autotoc="yes"> Advanced layer access </h3>
 
 	<h4 autotoc="yes"> layer_setup(obj, directive [, res]) </h4>
