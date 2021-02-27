@@ -105,7 +105,7 @@ static fgw_error_t pcb_act_LineNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (line != NULL) {
 		RET_IDPATH(line);
-		if (!noundo)
+		if (!noundo && !pcb_is_uilayer(layer))
 			pcb_undo_add_obj_to_create(PCB_OBJ_LINE, layer, line, line);
 	}
 	return 0;
@@ -146,7 +146,7 @@ static fgw_error_t pcb_act_ArcNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (arc != NULL) {
 		RET_IDPATH(arc);
-		if (!noundo)
+		if (!noundo && !pcb_is_uilayer(layer))
 			pcb_undo_add_obj_to_create(PCB_OBJ_ARC, layer, arc, arc);
 	}
 	return 0;
@@ -193,7 +193,7 @@ static fgw_error_t pcb_act_TextNew(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	if (text != NULL) {
 		RET_IDPATH(text);
-		if (!noundo)
+		if (!noundo && !pcb_is_uilayer(layer))
 			pcb_undo_add_obj_to_create(PCB_OBJ_TEXT, layer, text, text);
 	}
 	return 0;
@@ -261,7 +261,7 @@ static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_ar
 
 	if (poly != NULL) {
 		RET_IDPATH(poly);
-		if (!noundo)
+		if (!noundo && !pcb_is_uilayer(layer))
 			pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, poly, poly);
 	}
 	return 0;
@@ -395,7 +395,7 @@ static fgw_error_t pcb_act_PolyNewFromPoints(fgw_arg_t *res, int argc, fgw_arg_t
 			pcb_poly_init_clip(data, layer, poly);
 			pcb_add_poly_on_layer(layer, poly);
 			RET_IDPATH(poly);
-			if (!noundo)
+			if (!noundo && !pcb_is_uilayer(layer))
 				pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, poly, poly);
 		}
 	}
@@ -485,7 +485,7 @@ static fgw_error_t pcb_act_PolyNewEnd(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_add_poly_on_layer(layer, poly);
 
 	RET_IDPATH(poly);
-	if (!noundo)
+	if (!noundo && !pcb_is_uilayer(layer))
 		pcb_undo_add_obj_to_create(PCB_OBJ_POLY, layer, poly, poly);
 	fgw_ptr_unreg(&rnd_fgw, &argv[1], PTR_DOMAIN_POLY);
 	return 0;
