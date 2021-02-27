@@ -296,6 +296,8 @@ static rnd_layer_id_t layer_str2id_data(pcb_board_t *pcb, pcb_data_t *data, cons
 		id = strtol(str+1, &end, 10);
 		if ((*end == '\0') && (id >= 0) && (id < data->LayerN))
 			return id;
+		if (pcb_uilayer_get(id) != NULL)
+			return id;
 	}
 	if (*str == '@') {
 		for(id = 0; id < data->LayerN; id++) {

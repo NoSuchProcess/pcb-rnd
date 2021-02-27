@@ -39,6 +39,7 @@
 #include "board.h"
 #include "data.h"
 #include "layer.h"
+#include "layer_ui.h"
 #include <librnd/core/rnd_printf.h>
 
 static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *numlevels)
@@ -65,6 +66,18 @@ static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *num
 		case PCB_PARENT_LAYER:
 			assert(obj->parent.layer->parent_type = PCB_PARENT_DATA);
 			data = obj->parent.layer->parent.data;
+			if (data == NULL) { /* ui layer */
+				long uilid = pcb_uilayer_get_id(obj->parent.layer);
+				if (uilid <= 0) {
+					if (idp != NULL)
+						idp->uilayer_addr = 0;
+					return -1;
+				}
+				if (idp != NULL)
+					idp->uilayer_addr = uilid;
+
+				return 0;
+			}
 			goto recurse;
 
 		case PCB_PARENT_DATA:
@@ -133,11 +146,18 @@ pcb_idpath_t *pcb_str2idpath(pcb_board_t *pcb, const char *str)
 	const char *s, *ps;
 	char *next;
 	int data_addr, n, len = 1;
+	long uilid = 0;
 	pcb_idpath_t *idp;
 
 	for(ps = str; *ps == '/'; ps++) ;
 
-	data_addr = pcb_data_addr_by_name(pcb, &ps);
+	if (strncmp(ps, "ui#", 3) == 0) {
+		ps += 3;
+		uilid = strtol(ps, &next, 10);
+		ps = next;
+	}
+	else
+		data_addr = pcb_data_addr_by_name(pcb, &ps);
 
 	for(s = ps; *s != '\0'; s++) {
 		if ((s[0] == '/') && (s[1] != '/') && (s[1] != '\0'))
@@ -150,6 +170,7 @@ pcb_idpath_t *pcb_str2idpath(pcb_board_t *pcb, const char *str)
 
 	idp = pcb_idpath_alloc(len);
 	idp->data_addr = data_addr;
+	idp->uilayer_addr = uilid;
 
 	for(s = ps, n = 0; *s != '\0'; s++,n++) {
 		while(*s == '/') s++;
@@ -172,7 +193,10 @@ void pcb_append_idpath(gds_t *dst, const pcb_idpath_t *idp, rnd_bool relative)
 		size_t end = dst->used;
 		gds_enlarge(dst, dst->used + 32);
 		dst->used = end;
-		pcb_data_name_by_addr(idp->data_addr, dst->array+end);
+		if (idp->uilayer_addr != 0)
+			sprintf(dst->array+end, "ui#%ld", idp->uilayer_addr);
+		else
+			pcb_data_name_by_addr(idp->data_addr, dst->array+end);
 		dst->used += strlen(dst->array+end);
 	}
 
@@ -221,7 +245,10 @@ pcb_any_obj_t *pcb_idpath2obj_in(pcb_data_t *data, const pcb_idpath_t *path)
 pcb_any_obj_t *pcb_idpath2obj(pcb_board_t *pcb, const pcb_idpath_t *path)
 {
 	pcb_data_t *data;
-	if (path->data_addr == 1) {
+	if (path->uilayer_addr > 0) {
+		data = pcb->Data;
+	}
+	else if (path->data_addr == 1) {
 		if (pcb == NULL)
 			return NULL;
 		data = pcb->Data;
