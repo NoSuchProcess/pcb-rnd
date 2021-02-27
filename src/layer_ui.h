@@ -47,4 +47,9 @@ void pcb_uilayer_uninit(void);
 pcb_layer_t *pcb_uilayer_get(long ui_ly_id);
 long pcb_uilayer_get_id(const pcb_layer_t *ly);
 
+RND_INLINE int pcb_is_uilayer(pcb_layer_t *layer)
+{
+	return (layer->parent_type == PCB_PARENT_UI) || (layer->parent.data == NULL);
+}
+
 #endif
