@@ -35,13 +35,17 @@
 #include <librnd/core/global_typedefs.h>
 
 #include "genvector/vtp0.h"
+#include "genht/htip.h"
 
 /* list of all UI layers - each item is a persistent pointer to a layer struct */
 extern vtp0_t pcb_uilayers;
+extern pcb_data_t *pcb_uilayer_dummy_data;
+
 
 pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const rnd_color_t *color);
 void pcb_uilayer_free(pcb_layer_t *l);
 void pcb_uilayer_free_all_cookie(const char *cookie);
+void pcb_uilayer_init(void);
 void pcb_uilayer_uninit(void);
 
 pcb_layer_t *pcb_uilayer_get(long ui_ly_id);

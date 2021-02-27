@@ -31,14 +31,17 @@
 /* Virtual layers for UI and debug */
 #include "config.h"
 #include "board.h"
+#include "data.h"
 #include "layer.h"
 #include "event.h"
 #include <librnd/core/compat_misc.h>
 #include "genvector/vtp0.h"
+#include "genht/hash.h"
 #include "layer_ui.h"
 
 vtp0_t pcb_uilayers;
-
+pcb_data_t *pcb_uilayer_dummy_data;
+static pcb_data_t pcb_uilayer_dummy_data_;
 
 pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const rnd_color_t *color)
 {
@@ -103,9 +106,16 @@ void pcb_uilayer_free_all_cookie(const char *cookie)
 	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 }
 
+void pcb_uilayer_init(void)
+{
+	pcb_uilayer_dummy_data = &pcb_uilayer_dummy_data_;
+	htip_init(&pcb_uilayer_dummy_data->id2obj, longhash, longkeyeq);
+}
+
 void pcb_uilayer_uninit(void)
 {
 	vtp0_uninit(&pcb_uilayers);
+	htip_uninit(&pcb_uilayer_dummy_data->id2obj);
 }
 
 pcb_layer_t *pcb_uilayer_get(long ui_ly_id)

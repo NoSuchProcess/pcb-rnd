@@ -51,6 +51,8 @@
 
 #include "obj_arc_draw.h"
 
+TODO("ui_layer parent fix: remove this");
+#include "layer_ui.h"
 
 static int pcb_arc_end_addr = 1;
 int *pcb_arc_start_ptr = NULL, *pcb_arc_end_ptr = &pcb_arc_end_addr;
@@ -60,10 +62,9 @@ void pcb_arc_reg(pcb_layer_t *layer, pcb_arc_t *arc)
 	arclist_append(&layer->Arc, arc);
 	PCB_SET_PARENT(arc, layer, layer);
 
-	if (layer->parent_type == PCB_PARENT_UI)
-		return;
-
-	if (layer->parent_type == PCB_PARENT_DATA)
+	if (pcb_is_uilayer(layer))
+		pcb_obj_id_reg(pcb_uilayer_dummy_data, arc);
+	else if (layer->parent_type == PCB_PARENT_DATA)
 		pcb_obj_id_reg(layer->parent.data, arc);
 }
 
@@ -72,7 +73,10 @@ void pcb_arc_unreg(pcb_arc_t *arc)
 	pcb_layer_t *layer = arc->parent.layer;
 	assert(arc->parent_type == PCB_PARENT_LAYER);
 	arclist_remove(arc);
-	if (layer->parent_type != PCB_PARENT_UI) {
+	if (pcb_is_uilayer(layer)) {
+		pcb_obj_id_del(pcb_uilayer_dummy_data, arc);
+	}
+	else {
 		assert(layer->parent_type == PCB_PARENT_DATA);
 		pcb_obj_id_del(layer->parent.data, arc);
 	}

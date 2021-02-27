@@ -55,6 +55,9 @@
 #include "obj_text_draw.h"
 #include "conf_core.h"
 
+TODO("ui_layer parent fix: remove this");
+#include "layer_ui.h"
+
 /*** allocation ***/
 
 void pcb_text_reg(pcb_layer_t *layer, pcb_text_t *text)
@@ -62,10 +65,9 @@ void pcb_text_reg(pcb_layer_t *layer, pcb_text_t *text)
 	textlist_append(&layer->Text, text);
 	PCB_SET_PARENT(text, layer, layer);
 
-	if (layer->parent_type == PCB_PARENT_UI)
-		return;
-
-	if (layer->parent_type == PCB_PARENT_DATA)
+	if (pcb_is_uilayer(layer))
+		pcb_obj_id_reg(pcb_uilayer_dummy_data, text);
+	else if (layer->parent_type == PCB_PARENT_DATA)
 		pcb_obj_id_reg(layer->parent.data, text);
 }
 
@@ -74,7 +76,9 @@ void pcb_text_unreg(pcb_text_t *text)
 	pcb_layer_t *layer = text->parent.layer;
 	assert(text->parent_type == PCB_PARENT_LAYER);
 	textlist_remove(text);
-	if (layer->parent_type != PCB_PARENT_UI) {
+	if (pcb_is_uilayer(layer)) {
+		pcb_obj_id_del(pcb_uilayer_dummy_data, text);
+	} else {
 		assert(layer->parent_type == PCB_PARENT_DATA);
 		pcb_obj_id_del(layer->parent.data, text);
 	}

@@ -59,6 +59,9 @@
 
 #include "obj_poly_draw_helper.c"
 
+TODO("ui_layer parent fix: remove this");
+#include "layer_ui.h"
+
 /*** allocation ***/
 
 void pcb_poly_reg(pcb_layer_t *layer, pcb_poly_t *poly)
@@ -66,10 +69,9 @@ void pcb_poly_reg(pcb_layer_t *layer, pcb_poly_t *poly)
 	polylist_append(&layer->Polygon, poly);
 	PCB_SET_PARENT(poly, layer, layer);
 
-	if (layer->parent_type == PCB_PARENT_UI)
-		return;
-
-	if (layer->parent_type == PCB_PARENT_DATA)
+	if (pcb_is_uilayer(layer))
+		pcb_obj_id_reg(pcb_uilayer_dummy_data, poly);
+	else if (layer->parent_type == PCB_PARENT_DATA)
 		pcb_obj_id_reg(layer->parent.data, poly);
 }
 
@@ -80,7 +82,10 @@ void pcb_poly_unreg(pcb_poly_t *poly)
 	pcb_term_del_auto((pcb_any_obj_t *)poly);
 	assert(poly->parent_type == PCB_PARENT_LAYER);
 	polylist_remove(poly);
-	if (layer->parent_type != PCB_PARENT_UI) {
+	if (pcb_is_uilayer(layer)) {
+		pcb_obj_id_del(pcb_uilayer_dummy_data, poly);
+	}
+	else {
 		assert(layer->parent_type == PCB_PARENT_DATA);
 		pcb_obj_id_del(layer->parent.data, poly);
 	}

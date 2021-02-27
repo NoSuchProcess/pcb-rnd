@@ -59,6 +59,8 @@
 TODO("padstack: remove this when via is removed and the padstack is created from style directly")
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
+TODO("ui_layer parent fix: remove this");
+#include "layer_ui.h"
 
 /**** allocation ****/
 
@@ -67,8 +69,11 @@ void pcb_line_reg(pcb_layer_t *layer, pcb_line_t *line)
 	linelist_append(&layer->Line, line);
 	PCB_SET_PARENT(line, layer, layer);
 
-	if (layer->parent_type == PCB_PARENT_UI)
-		return;
+	if (pcb_is_uilayer(layer)) {
+		pcb_obj_id_reg(pcb_uilayer_dummy_data, line);
+		pcb_obj_id_reg(pcb_uilayer_dummy_data, &line->Point1);
+		pcb_obj_id_reg(pcb_uilayer_dummy_data, &line->Point2);
+	}
 
 	if (layer->parent_type == PCB_PARENT_DATA) {
 		pcb_obj_id_reg(layer->parent.data, line);
@@ -82,7 +87,12 @@ void pcb_line_unreg(pcb_line_t *line)
 	pcb_layer_t *layer = line->parent.layer;
 	assert(line->parent_type == PCB_PARENT_LAYER);
 	linelist_remove(line);
-	if (layer->parent_type != PCB_PARENT_UI) {
+	if (pcb_is_uilayer(layer)) {
+		pcb_obj_id_del(pcb_uilayer_dummy_data, line);
+		pcb_obj_id_del(pcb_uilayer_dummy_data, &line->Point1);
+		pcb_obj_id_del(pcb_uilayer_dummy_data, &line->Point2);
+	}
+	else {
 		assert(layer->parent_type == PCB_PARENT_DATA);
 		pcb_obj_id_del(layer->parent.data, line);
 		pcb_obj_id_del(layer->parent.data, &line->Point1);

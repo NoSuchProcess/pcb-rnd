@@ -54,16 +54,17 @@
 #include "draw.h"
 #include "obj_gfx_draw.h"
 
+TODO("ui_layer parent fix: remove this");
+#include "layer_ui.h"
 
 void pcb_gfx_reg(pcb_layer_t *layer, pcb_gfx_t *gfx)
 {
 	gfxlist_append(&layer->Gfx, gfx);
 	PCB_SET_PARENT(gfx, layer, layer);
 
-	if (layer->parent_type == PCB_PARENT_UI)
-		return;
-
-	if (layer->parent_type == PCB_PARENT_DATA)
+	if (pcb_is_uilayer(layer))
+		pcb_obj_id_reg(pcb_uilayer_dummy_data, gfx);
+	else if (layer->parent_type == PCB_PARENT_DATA)
 		pcb_obj_id_reg(layer->parent.data, gfx);
 }
 
@@ -72,7 +73,10 @@ void pcb_gfx_unreg(pcb_gfx_t *gfx)
 	pcb_layer_t *layer = gfx->parent.layer;
 	assert(gfx->parent_type == PCB_PARENT_LAYER);
 	gfxlist_remove(gfx);
-	if (layer->parent_type != PCB_PARENT_UI) {
+	if (pcb_is_uilayer(layer)) {
+		pcb_obj_id_del(pcb_uilayer_dummy_data, gfx);
+	}
+	else {
 		assert(layer->parent_type == PCB_PARENT_DATA);
 		pcb_obj_id_del(layer->parent.data, gfx);
 	}

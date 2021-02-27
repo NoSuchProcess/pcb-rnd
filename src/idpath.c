@@ -246,7 +246,7 @@ pcb_any_obj_t *pcb_idpath2obj(pcb_board_t *pcb, const pcb_idpath_t *path)
 {
 	pcb_data_t *data;
 	if (path->uilayer_addr > 0) {
-		data = pcb->Data;
+		data = pcb_uilayer_dummy_data;
 	}
 	else if (path->data_addr == 1) {
 		if (pcb == NULL)

@@ -448,6 +448,7 @@ TODO("librnd: remove this once librnd is not extern anymore");
 	rnd_conf_set(RND_CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, RND_POL_OVERWRITE);
 	free(exec_prefix);
 
+	pcb_uilayer_init();
 	pcb_layer_vis_init();
 	pcb_draw_init();
 	pcb_brave_init();

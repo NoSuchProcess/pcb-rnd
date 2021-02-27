@@ -38,6 +38,7 @@
 #include <librnd/core/tool.h>
 #include "remove.h"
 #include "board.h"
+#include "layer_ui.h"
 #include "funchash_core.h"
 
 #define PCB (do_not_use_PCB)
@@ -72,7 +73,10 @@ static fgw_error_t pcb_act_Delete(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				RND_ACT_IRES(-1);
 				return 0;
 			}
-			pcb_remove_object(obj->type, obj->parent.any, obj, obj);
+			if ((obj->parent_type == PCB_PARENT_LAYER) && (pcb_is_uilayer(obj->parent.layer)))
+				pcb_destroy_object(NULL, obj->type, obj->parent.any, obj, obj); /* no undo */
+			else
+				pcb_remove_object(obj->type, obj->parent.any, obj, obj);
 		}
 		else { /* interactive remove */
 			rnd_hidlib_t *hidlib = RND_ACT_HIDLIB;
