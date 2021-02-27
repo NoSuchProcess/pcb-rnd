@@ -42,6 +42,7 @@
 #include "obj_line.h"
 #include "obj_text_draw.h"
 #include "obj_line_draw.h"
+#include "layer_ui.h"
 
 #include "keywords_sphash.h"
 
@@ -265,6 +266,68 @@ static fgw_error_t pcb_act_PolyNewFromRectangle(fgw_arg_t *res, int argc, fgw_ar
 	}
 	return 0;
 }
+
+static const char pcb_acts_UILayer[] =
+	"UILayer(new, name, color)\n"
+	"UILayer(free, layer)";
+static const char pcb_acth_UILayer[] = "Create or free UI layers. 'New' returns a layer ID that cna be used for addressing.";
+static fgw_error_t pcb_act_UILayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	const char *cmds;
+	int cmdi;
+	static const char uilayer_cookie[] = "act_draw/UILayer()";
+
+	RND_ACT_CONVARG(1, FGW_STR, UILayer, cmds = argv[1].val.str);
+	cmdi = act_draw_keywords_sphash(cmds);
+	switch(cmdi) {
+		case act_draw_keywords_new:
+		{
+			const char *name, *color;
+			pcb_layer_t *layer;
+			rnd_color_t clr;
+
+			RND_ACT_CONVARG(2, FGW_STR, UILayer, name = argv[2].val.str);
+			RND_ACT_CONVARG(3, FGW_STR, UILayer, color = argv[3].val.str);
+			if (rnd_color_load_str(&clr, color) != 0)
+				return FGW_ERR_ARG_CONV;
+
+			layer = pcb_uilayer_alloc(uilayer_cookie, name, &clr);
+			if (layer == NULL)
+				return FGW_ERR_ARG_CONV;
+
+			res->type = FGW_STR | FGW_DYN;
+			res->val.str = rnd_strdup_printf("#%ld", pcb_uilayer_get_id(layer));
+			return 0;
+		}
+
+		case act_draw_keywords_free:
+		{
+			const char *slid;
+			char *end;
+			pcb_layer_t *layer;
+			long lid;
+
+			RND_ACT_CONVARG(2, FGW_STR, UILayer, slid = argv[2].val.str);
+			lid = strtol(slid+1, &end, 10);
+			if ((*slid != '#') || (*end != '\0'))
+				return FGW_ERR_ARG_CONV;
+			layer = pcb_uilayer_get(lid);
+			if (layer != NULL) {
+				pcb_uilayer_free(layer);
+				RND_ACT_IRES(0);
+			}
+			else
+				RND_ACT_IRES(-1);
+			return 0;
+		}
+
+		default:
+			return FGW_ERR_ARG_CONV;
+	}
+
+	return 0;
+}
+
 
 static long poly_append_ptlist(pcb_poly_t *poly, const char *ptlist)
 {
@@ -610,6 +673,7 @@ rnd_action_t act_draw_action_list[] = {
 	{"PstkProtoTmp", pcb_act_PstkProtoTmp, pcb_acth_PstkProtoTmp, pcb_acts_PstkProtoTmp},
 	{"PstkProtoEdit", pcb_act_PstkProtoEdit, pcb_acth_PstkProtoEdit, pcb_acts_PstkProtoEdit},
 	{"LayerObjDup", pcb_act_LayerObjDup, pcb_acth_LayerObjDup, pcb_acts_LayerObjDup},
+	{"UILayer", pcb_act_UILayer, pcb_acth_UILayer, pcb_acts_UILayer},
 	{"DrawText", pcb_act_DrawText, pcb_acth_DrawText, pcb_acts_DrawText},
 	{"DrawLine", pcb_act_DrawLine, pcb_acth_DrawLine, pcb_acts_DrawLine},
 	{"DrawPoly", pcb_act_DrawPoly, pcb_acth_DrawPoly, pcb_acts_DrawPoly},
