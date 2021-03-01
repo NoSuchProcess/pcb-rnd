@@ -62,6 +62,15 @@ fingerprint()
 	openssl crl -fingerprint -noout -in $crl
 }
 
+print_file()
+{
+	case "$1" in
+		*.crt) openssl x509 -in "$1" -text ;;
+		crl*.pem) openssl crl -in crl_repo.hu.pem -text ;;
+		*) echo "Don't know how to print that file" ;;
+	esac
+}
+
 help()
 {
 echo 'verify.sh - pcb-rnd download signature verify script
@@ -96,6 +105,7 @@ do
 		--fp)  fingerprint ;;
 		--ca) shift 1; ca="$1";;
 		--crl) shift 1; crl="$1";;
+		--print) shift 1; print_file "$1" ;;
 		*)
 			verify "$1"
 			if test $? = 0
