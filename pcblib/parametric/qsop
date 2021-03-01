@@ -18,17 +18,16 @@
 #@@over@default:ext_bloat 23 mil
 #@@over@default:pad_thickness 16 mil
 
+defaults=""
+defaults="$defaults?pad_spacing=25mil,"
+defaults="$defaults?row_spacing=213mil,"
+defaults="$defaults?int_bloat=22mil,"
+defaults="$defaults?ext_bloat=23mil,"
+defaults="$defaults?rarc=25,"
+defaults="$defaults?silk_ext_x=18,"
+defaults="$defaults?silk_ext_y=22,"
+defaults="$defaults?pad_thickness=16mil"
 
-defaults='
-?pad_spacing=25mil,
-?row_spacing=213mil,
-?int_bloat=22mil,
-?ext_bloat=23mil,
-?rarc=25,
-?silk_ext_x=18,
-?silk_ext_y=22,
-?pad_thickness=16mil
-'
 
 awk -f `dirname $0`/common_subc.awk -f `dirname $0`/so.awk -v "args=$defaults,$*" -v gen=`basename $0` -v "genfull=$0"
 
