@@ -2308,24 +2308,23 @@ static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 
 static void kicad_parse_module_mksubc(read_state_t *st, pcb_subc_t **subc, const char *mod_name, int *module_defined, rnd_coord_t mod_x, rnd_coord_t mod_y, double mod_rot, int on_bottom)
 {
-			/* if we have been provided with a Module Name and location, create a new subc with default "" and "" for refdes and value fields */
-			if ((mod_name != NULL) && (*module_defined == 0)) {
-				*module_defined = 1; /* but might be empty, wait and see */
-				if (*subc == NULL) {
-					*subc = pcb_subc_new();
-					/* modules are specified in rot=0; build time like that and rotate
-					   the whole subc at the end. Text is special case because kicad
-					   has no 'floater' - rotation is encoded both in text and subc
-					   and it has to be subtracted from text later on */
-					pcb_subc_create_aux(*subc, mod_x, mod_y, 0.0, on_bottom);
-					pcb_attribute_put(&(*subc)->Attributes, "refdes", "K1");
-				}
-				if (st->pcb != NULL) {
-					pcb_subc_reg(st->pcb->Data, *subc);
-					pcb_subc_bind_globals(st->pcb, *subc);
-				}
-			}
-
+	/* if we have been provided with a Module Name and location, create a new subc with default "" and "" for refdes and value fields */
+	if ((mod_name != NULL) && (*module_defined == 0)) {
+		*module_defined = 1; /* but might be empty, wait and see */
+		if (*subc == NULL) {
+			*subc = pcb_subc_new();
+			/* modules are specified in rot=0; build time like that and rotate
+			   the whole subc at the end. Text is special case because kicad
+			   has no 'floater' - rotation is encoded both in text and subc
+			   and it has to be subtracted from text later on */
+			pcb_subc_create_aux(*subc, mod_x, mod_y, 0.0, on_bottom);
+			pcb_attribute_put(&(*subc)->Attributes, "refdes", "K1");
+		}
+		if (st->pcb != NULL) {
+			pcb_subc_reg(st->pcb->Data, *subc);
+			pcb_subc_bind_globals(st->pcb, *subc);
+		}
+	}
 }
 
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
