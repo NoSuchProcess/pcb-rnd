@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.3.0 (svn r33374) an interactive printed circuit board editor ,  Revision: 33389
+This is pcb-rnd 2.3.1 (svn r34157) an interactive printed circuit board editor ,  Revision: 34223
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -24,6 +24,7 @@ This is pcb-rnd 2.3.0 (svn r33374) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#adjuststyle">AdjustStyle</a></td><td>Open the dialog box for editing the route styles.</td><td>AdjustStyle([routestyle_idx])</td><td>lib_hid_pcbui/route_style</td>
 <tr><td><a href="action_details.html#align">align</a></td><td>Align objects</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td>aligntext</td><td>Align objects</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
+<tr><td><a href="action_details.html#anyload">AnyLoad</a></td><td>Load "anything" from path (or offer a file selectio dialog if no path specified)</td><td>AnyLoad([path])</td><td></td>
 <tr><td><a href="action_details.html#applyvendor">ApplyVendor</a></td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
 <tr><td>asm</td><td>Interactive assembly assistant</td><td>asm()</td><td>asm plugin</td>
@@ -113,6 +114,7 @@ This is pcb-rnd 2.3.0 (svn r33374) an interactive printed circuit board editor ,
 <tr><td>DrcQueryImport</td><td>Import a rule and related definitions from a file.</td><td>DrcQueryImport([filename])</td><td>drc_query</td>
 <tr><td>DrcQueryListRules</td><td>List all drc rules implemented in drc_query</td><td>DrcQueryListRules()</td><td>drc_query</td>
 <tr><td>DrcQueryRuleMod</td><td>Automated DRC rule editing (for scripting and import)</td><td>DrcQueryRuleMod(clear, source)<br>DrcQueryRuleMod(create, rule_name)<br>DrcQueryRuleMod(get, rule_name, field_name)<br>DrcQueryRuleMod(set, rule_name, field_name, value)</td><td>drc_query</td>
+<tr><td>duktape</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>DumpActions</td><td>Dump all actions available.</td><td>DumpActions()</td><td></td>
 <tr><td>dumpconf</td><td>Perform various operations on the configuration tree.</td><td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td><td>diag plugin</td>
 <tr><td>DumpCsect</td><td>Print the cross-section of the board (layer stack)</td><td>DumpCsect()</td><td>draw_csect</td>
@@ -170,7 +172,7 @@ This is pcb-rnd 2.3.0 (svn r33374) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#getxy">GetXY</a></td><td>Get a coordinate. If x or y specified, the return value of the action is the x or y coordinate.</td><td>GetXY([message, [x|y]])</td><td></td>
 <tr><td><a href="action_details.html#gfxmod">GfxMod</a></td><td>Modify a gfx object: set transparent pixel on the pixmap or resize by measurement</td><td>GfxMod(transparent, [idpath, [#rrggbb]])<br>GfxMod(transparent, [idpath, [x, y]])<br>GfxMod(resize, [idpath, [pdx, pdy1, len]])</td><td></td>
 <tr><td>GlobalPuller</td><td>Pull all traces tight. With no argument it runs on the current layer.</td><td>pcb_act_GlobalPuller([Found|Selected])</td><td>puller plugin</td>
-<tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)</td><td></td>
+<tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)<br>grid(get)</td><td></td>
 <tr><td>GroupPropGui</td><td>Change group flags and properties</td><td>GroupPropGui(groupid)</td><td>dialogs plugin</td>
 <tr><td>gui_FallbackColorPick</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
 <tr><td>gui_fpmap_choose</td><td>Internal call action for a dialog to select a footprint from a map.</td><td>gui_fpmap_choose(map)</td><td>dialogs plugin</td>
@@ -206,6 +208,7 @@ This is pcb-rnd 2.3.0 (svn r33374) an interactive printed circuit board editor ,
 <tr><td>LayerObjDup</td><td>Duplicate srcobj on a layer. Srcobj is specified by an idpath. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>LayerObjDup([noundo,] data, layer, srcobj)</td><td>act_draw</td>
 <tr><td>LayerPropGui</td><td>Change layer flags and properties</td><td>LayerPropGui(layerid)</td><td>dialogs plugin</td>
 <tr><td>LayerVisReset</td><td>Reset layer visibility to safe defaults.</td><td>LayerVisReset()</td><td></td>
+<tr><td>LayerXform</td><td>Reset layer visibility to safe defaults.</td><td>LayerXform(layerid, toggle|set|clear, xformfield, [value])</td><td></td>
 <tr><td><a href="action_details.html#le">le</a></td><td>Loads an element (subcircuit, footprint) into the current buffer.</td><td>le [name]</td><td>shand_cmd plugin</td>
 <tr><td>LibraryChanged</td><td>Tells the GUI that the libraries have changed.</td><td>LibraryChanged()</td><td>oldactions plugin</td>
 <tr><td>LibraryDialog</td><td>Open the library dialog.</td><td>libraryDialog()</td><td>dialogs plugin</td>
@@ -237,7 +240,7 @@ This is pcb-rnd 2.3.0 (svn r33374) an interactive printed circuit board editor ,
 <tr><td>LoadTinycadFrom</td><td>Loads the specified tinycad .net file - the netlist must be tinycad netlist output.</td><td>LoadTinycadFrom(filename)</td><td>tinycad importer</td>
 <tr><td>LoadTtf</td><td>Presents a GUI dialog for interactively loading glyphs from from a ttf file</td><td>LoadTtf()</td><td>ttf importer</td>
 <tr><td><a href="action_details.html#loadttfglyphs">LoadTtfGlyphs</a></td><td>Loads glyphs from an outline ttf in the specified source range, optionally remapping them to dstchars range in the pcb-rnd font</td><td>LoadTtfGlyphs(filename, srcglyps, [dstchars], [outline|polygon], [scale], [offset])</td><td>ttf importer</td>
-<tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file.</td><td>LoadVendorFrom(filename)</td><td>vendor drill mapping</td>
+<tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file. If second argument is "yes" or "pure", load in pure mode without side effects: do not reset or apply, only incrementally load.</td><td>LoadVendorFrom(filename, [yes|no])</td><td>vendor drill mapping</td>
 <tr><td>Log</td><td>Manages the central, in-memory log.</td><td>Log(clear, [fromID, [toID])<br>Log(export, [filename, [text|lihata])</td><td></td>
 <tr><td>LogDialog</td><td>Open the log dialog.</td><td>LogDialog()</td><td>lib_hid_common plugin</td>
 <tr><td>lua</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
@@ -289,8 +292,10 @@ This is pcb-rnd 2.3.0 (svn r33374) an interactive printed circuit board editor ,
 <tr><td>pcb_atan2</td><td></td><td></td><td>script plugin</td>
 <tr><td>pcb_atan</td><td></td><td></td><td>script plugin</td>
 <tr><td>pcb_cos</td><td></td><td></td><td>script plugin</td>
+<tr><td>pcb_rand</td><td></td><td></td><td>script plugin</td>
 <tr><td>pcb_sin</td><td></td><td></td><td>script plugin</td>
 <tr><td>pcb_sqrt</td><td></td><td></td><td>script plugin</td>
+<tr><td>pcb_srand</td><td></td><td></td><td>script plugin</td>
 <tr><td>pcb_tan</td><td></td><td></td><td>script plugin</td>
 <tr><td>perl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>perp</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
@@ -333,11 +338,12 @@ This is pcb-rnd 2.3.0 (svn r33374) an interactive printed circuit board editor ,
 <tr><td>python</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>q!</td><td>Quits the application without confirming.</td><td>q!</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#q">q</a></td><td>Quits the application after confirming.</td><td>q</td><td>shand_cmd plugin</td>
-<tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression<br>query(eval|evalidp, expr) - compile and evaluate an expression and print a list of results on stdout<br>query(select|unselect|view, expr) - select or unselect or build a view of objects matching an expression<br>query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression<br>query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist</td><td>query plugin</td>
+<tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression<br>query(eval|evalidp, expr) - compile and evaluate an expression and print a list of results on stdout<br>query(count, expr) - compile and evaluate an expression and return the number of matched objects (-1 on error)<br>query(select|unselect|view, expr) - select or unselect or build a view of objects matching an expression<br>query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression<br>query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist</td><td>query plugin</td>
 <tr><td>QueryCalcNetLen</td><td>Calculates the network length by netname; returns an error message string or a positive coord with the length</td><td>QueryCalcNetLen(netname)</td><td>query plugin</td>
 <tr><td>QueryCompileField</td><td>With "compile": precompiles textual field name to field ID; with "free": frees the memory allocated for a previously precompiled fieldID.</td><td>QueryCompileField(compile, fieldname)<br>QueryCompileField(free, fieldID)</td><td>query plugin</td>
 <tr><td>QueryObj</td><td>Return the value of a field of an object, addressed by the object's idpath and the field's name or precompiled ID. Returns NIL on error.</td><td>QueryObj(idpath, [.fieldname|fieldID])</td><td>query plugin</td>
 <tr><td><a href="action_details.html#quit">Quit</a></td><td>Quits the application after confirming.</td><td>Quit()</td><td></td>
+<tr><td>ReadBoard</td><td>Length returns the number of groups on the current PCB. Field returns one of the fields of the group named in groupid. Layerid returns the integer layer ID (as interpreted within data) for the idxth layer of the group.</td><td>ReadBoard(width|size_x|height|size_y)</td><td>act_read</td>
 <tr><td>ReadGroup</td><td>Length returns the number of groups on the current PCB. Field returns one of the fields of the group named in groupid. Layerid returns the integer layer ID (as interpreted within data) for the idxth layer of the group.</td><td>ReadGroup(length)<br>ReadGroup(field, group, [init_invis|ltype|ltypestr|ltypehas|name|open|purpose|vis|length])<br>ReadGroup(layerid, group, idx)</td><td>act_read</td>
 <tr><td><a href="action_details.html#redo">Redo</a></td><td>Redo recent "undo" operations.</td><td>redo()</td><td></td>
 <tr><td>Redraw</td><td>Redraw the entire screen</td><td>Redraw()</td><td></td>
@@ -403,7 +409,8 @@ This is pcb-rnd 2.3.0 (svn r33374) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#tool">Tool</a></td><td>Change or use the tool mode.</td><td>Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Tool(Press|Release|Cancel|Stroke)<br>Tool(Save|Restore)</td><td></td>
 <tr><td>ToPoly</td><td>convert a closed loop of lines and arcs into a polygon</td><td>ToPoly()<br>ToPoly(outline)</td><td>lib_polyhelp</td>
 <tr><td>trim</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
-<tr><td><a href="action_details.html#undo">Undo</a></td><td>Undo recent changes.</td><td>undo()<br>undo(ClearList|FreezeSerial|UnfreezeSerial|IncSerial|GetSerial|Above)</td><td></td>
+<tr><td>UILayer</td><td>Create or free UI layers. 'New' returns a layer ID that cna be used for addressing.</td><td>UILayer(new, name, color)<br>UILayer(free, layer)</td><td>act_draw</td>
+<tr><td><a href="action_details.html#undo">Undo</a></td><td>Undo recent changes.</td><td>undo()<br>undo(ClearList|FreezeSerial|UnfreezeSerial|FreezeAdd|UnfreezeAdd|IncSerial|GetSerial|Above)</td><td></td>
 <tr><td>UndoDialog</td><td>Open the undo dialog.</td><td>UndoDialog()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#unloadscript">UnloadScript</a></td><td>Unload a fungw script</td><td>UnloadScript(id)</td><td>script plugin</td>
 <tr><td>UnloadVendor</td><td>Unloads the current vendor drill mapping table.</td><td>UnloadVendor()</td><td>vendor drill mapping</td>
