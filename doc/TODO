@@ -3,7 +3,7 @@
 1. For the upcoming release ===============================================================================
 - ADMIN: generate new keys, schedule next release before expiry (21 april)
 + FEATURE: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
-- BUG: open the command line with {:}, then right click over empty board, ignore the context menu, right click again -> gtk GUI gray control [report: Majenko]
++ BUG: open the command line with {:}, then right click over empty board, ignore the context menu, right click again -> gtk GUI gray control [report: Majenko]
 + BUG: press middle/scroll mouse button, click right button while keep middle pressed, release everything and close the popup -> we are stuck in panning mode [report: rom]
 + BUG: font selector {w f} prints black font on black background if the background color is black [report: Majenko]
 + BUG: kicad_io error with solder_paste_margin_ratio trimmed .kicad_pcb file and gerbers in bug_files/kicad_solder_paste_margin_ratio [report: Miloh]
