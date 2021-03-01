@@ -2306,6 +2306,27 @@ static int kicad_parse_fp_poly(read_state_t *st, gsxl_node_t *subtree, pcb_subc_
 	return kicad_parse_any_poly(st, subtree, subc, modx, mody);
 }
 
+static void kicad_parse_module_mksubc(read_state_t *st, pcb_subc_t **subc, const char *mod_name, int *module_defined, rnd_coord_t mod_x, rnd_coord_t mod_y, double mod_rot, int on_bottom)
+{
+			/* if we have been provided with a Module Name and location, create a new subc with default "" and "" for refdes and value fields */
+			if ((mod_name != NULL) && (*module_defined == 0)) {
+				*module_defined = 1; /* but might be empty, wait and see */
+				if (*subc == NULL) {
+					*subc = pcb_subc_new();
+					/* modules are specified in rot=0; build time like that and rotate
+					   the whole subc at the end. Text is special case because kicad
+					   has no 'floater' - rotation is encoded both in text and subc
+					   and it has to be subtracted from text later on */
+					pcb_subc_create_aux(*subc, mod_x, mod_y, 0.0, on_bottom);
+					pcb_attribute_put(&(*subc)->Attributes, "refdes", "K1");
+				}
+				if (st->pcb != NULL) {
+					pcb_subc_reg(st->pcb->Data, *subc);
+					pcb_subc_bind_globals(st->pcb, *subc);
+				}
+			}
+
+}
 
 static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 {
@@ -2340,6 +2361,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 		TODO("The module is locked, which is being ignored.\n");
 	}
 
+	st->subc_rot = 0;
 	SEEN_NO_DUP(tally, 0);
 	for(n = p, i = 0; n != NULL; n = n->next, i++) {
 		if (n->str == NULL)
@@ -2391,24 +2413,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			PARSE_COORD(mod_y, n, n->children->next, "module Y");
 			PARSE_DOUBLE(mod_rot, NULL, n->children->next->next, "module rotation");
 			st->subc_rot = mod_rot;
-
-			/* if we have been provided with a Module Name and location, create a new subc with default "" and "" for refdes and value fields */
-			if ((mod_name != NULL) && (module_defined == 0)) {
-				module_defined = 1; /* but might be empty, wait and see */
-				if (subc == NULL) {
-					subc = pcb_subc_new();
-					/* modules are specified in rot=0; build time like that and rotate
-					   the whole subc at the end. Text is special case because kicad
-					   has no 'floater' - rotation is encoded both in text and subc
-					   and it has to be subtracted from text later on */
-					pcb_subc_create_aux(subc, mod_x, mod_y, 0.0, on_bottom);
-					pcb_attribute_put(&subc->Attributes, "refdes", "K1");
-				}
-				if (st->pcb != NULL) {
-					pcb_subc_reg(st->pcb->Data, subc);
-					pcb_subc_bind_globals(st->pcb, subc);
-				}
-			}
+			kicad_parse_module_mksubc(st, &subc, mod_name, &module_defined, mod_x, mod_y, mod_rot, on_bottom);
 		}
 		else if (strcmp("clearance", n->str) == 0) {
 			PARSE_COORD(mod_clr, n, n->children, "module pad clearance");
@@ -2422,6 +2427,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			TODO("save this as attribute");
 		}
 		else if (strcmp("fp_text", n->str) == 0) {
+			kicad_parse_module_mksubc(st, &subc, mod_name, &module_defined, mod_x, mod_y, mod_rot, on_bottom);
 			kicad_parse_fp_text(st, n, subc, &tally, &found_refdes, mod_rot, on_bottom);
 		}
 		else if (strcmp("descr", n->str) == 0) {
@@ -2452,18 +2458,22 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 			ignore_value_nodup(n, tally, 16, "unexpected empty/NULL module model node");
 		}
 		else if (strcmp("pad", n->str) == 0) {
+			kicad_parse_module_mksubc(st, &subc, mod_name, &module_defined, mod_x, mod_y, mod_rot, on_bottom);
 			if (kicad_parse_pad(st, n, subc, &tally, mod_x, mod_y, mod_rot, mod_clr, mod_mask, mod_paste, mod_paste_ratio, mod_zone_connect, &module_empty) != 0)
 				return -1;
 		}
 		else if (strcmp("fp_line", n->str) == 0) {
+			kicad_parse_module_mksubc(st, &subc, mod_name, &module_defined, mod_x, mod_y, mod_rot, on_bottom);
 			if (kicad_parse_any_line(st, n->children, subc, 0, 0) != 0)
 				return -1;
 		}
 		else if (strcmp("fp_poly", n->str) == 0) {
+			kicad_parse_module_mksubc(st, &subc, mod_name, &module_defined, mod_x, mod_y, mod_rot, on_bottom);
 			if (kicad_parse_fp_poly(st, n->children, subc, mod_x, mod_y) != 0)
 				return -1;
 		}
 		else if ((strcmp("fp_arc", n->str) == 0) || (strcmp("fp_circle", n->str) == 0)) {
+			kicad_parse_module_mksubc(st, &subc, mod_name, &module_defined, mod_x, mod_y, mod_rot, on_bottom);
 			if (kicad_parse_any_arc(st, n->children, subc) != 0)
 				return -1;
 		}
@@ -2479,6 +2489,7 @@ static int kicad_parse_module(read_state_t *st, gsxl_node_t *subtree)
 
 	if ((mod_name != NULL) && (*mod_name != '\0') && (pcb_attribute_get(&subc->Attributes, "footprint") == NULL))
 		pcb_attribute_put(&subc->Attributes, "footprint", mod_name);
+
 
 	pcb_subc_bbox(subc);
 	if (st->pcb != NULL) {
