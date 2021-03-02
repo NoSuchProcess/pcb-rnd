@@ -998,6 +998,7 @@ relementdef
 		: pin_1.7_format
 		| pin_hi_format
 		| pad_1.7_format
+		| pad_4.3_format
 		| pad_hi_format
 			/* x1, y1, x2, y2, thickness */
 		| T_ELEMENTLINE '[' measure measure measure measure measure ']'
@@ -1123,6 +1124,30 @@ pad_1.7_format
 					$10, $11, pcb_flag_old($12));
 				free ($10);
 				free ($11);
+			}
+		;
+
+pad_4.3_format
+			/* cx, cy, sx, sy, clearance, mask, name , pad number, flags */
+		: T_PAD '[' measure measure measure measure measure measure STRING STRING flags ']'
+			{
+				rnd_coord_t cx = OU($3), cy = OU($4), sx = OU($5), sy = OU($6);
+				rnd_coord_t x1, y1, x2, y2;
+				double ox, oy, thick;
+
+				thick = (sx > sy) ? sx : sy;
+				ox = (sx > sy) ? ((sx - sy) / 2.0) : 0;
+				oy = (sx > sy) ? 0 : ((sx - sy) / 2.0);
+
+				x1 = rnd_round(cx - ox); y1 = rnd_round(cy - oy);
+				x2 = rnd_round(cx + ox); y2 = rnd_round(cy + oy);
+
+				io_pcb_element_pad_new(yysubc,
+					x1 + yysubc_ox, y1 + yysubc_oy,
+					x2 + yysubc_ox, y2 + yysubc_oy,
+					OU ($6), OU ($7), OU ($8),
+					$9, $10, $11);
+				free ($10);
 			}
 		;
 
