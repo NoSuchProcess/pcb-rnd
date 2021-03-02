@@ -617,6 +617,11 @@ layer
 				LayerFlag[$3-1] = rnd_true;
 				if (yyData->LayerN < $3)
 				  yyData->LayerN = $3;
+				/* In theory we could process $5 (layer type) here but this field is
+				   broken (at least up to 4.3.0): it's always copper or silk; outline
+				   is copper, there's no way in the GUI to create paste or mask. So
+				   this field is only noise, it is safer to ignore it than to confuse
+				   outline to copper. */
 				if ($5 != NULL)
 					free($5);
 			}
