@@ -31,6 +31,7 @@
 #include "funchash_core.h"
 #include <librnd/core/hid_dad.h>
 #include "search.h"
+#include "undo.h"
 #include <librnd/core/tool.h>
 
 #include "extobj.h"
@@ -77,7 +78,7 @@ fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_extobj_t *eo;
 	const char *eoname = NULL;
 	int op;
-	pcb_subc_t *sc;
+	pcb_subc_t *sc = NULL;
 	pcb_any_obj_t *obj;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, ExtobjConvFrom, op = fgw_keyword(&argv[1]));
@@ -146,6 +147,7 @@ fgw_error_t pcb_act_ExtobjConvFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		return 0;
 	}
 
+	pcb_undo_inc_serial();
 	RND_ACT_IRES(0);
 	return 0;
 }
