@@ -4,6 +4,6 @@ $long C code usable in pcb-rnd preview draw
 $fmt-native no
 $fmt-feature-w C drawing code
 $state works
-$package export
+#$package export - do not include this in the packaging
 default disable-all
 autoload 1
