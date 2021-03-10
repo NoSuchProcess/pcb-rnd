@@ -16,3 +16,4 @@
 @appendfiles librnd-dev $PREFIX/lib/librnd/scconfig
 @appenddeps librnd-dev librnd2
 @appenddeps pcb-rnd-cloud wget
+@appenddeps pcb-rnd-core librnd2
