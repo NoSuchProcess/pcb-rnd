@@ -11,6 +11,7 @@
 - TEST: clean system install with -lrnd, debian packaging (tune the deps!)
 
 2. For later releases ===============================================================================
+- CLEANUP: move djopt menus into the plugin so when djopt is not installed there's no warning from the menu file [report: Igor2]
 - CLEANUP: ui layers: data parent cleanup: bug_files/uilayer.patch: ui layers should have a data parent in pcb_board_t and no global variables in layer_ui.[ch] (ui layers are board-specific) [report: Igor2]
 - CLEANUP: s390x test fail: remove rnd_export_opt_s->value and always use backup[] in rnd_hid_parse_command_line(); problem: HATT_INTEGER is (long *) in case of hidval backing but may be (int *) for raw backing; for enum types we don't even know! [report: Bdale]
 - CLEANUP/FEATURE: lihata v8
