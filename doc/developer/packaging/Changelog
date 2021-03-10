@@ -19,6 +19,10 @@ B. changes that probably DO need action
    same as pcb-rnd versions, so please make sure pcb-rnd-core depends on
    exactly the same version of librnd.
 
+2. change in files installed:
+   librnd-dev has a bunch of files in a new dir $PREFIX/lib/librnd/scconfig
+   librnd-dev has a new file $PREFIX/lib/plugins/map_plugins.sh
+
 
 Packaging changes between 2.3.0 and 2.3.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
