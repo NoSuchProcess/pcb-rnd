@@ -1,9 +1,24 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=2.3.1
+  ver=2.3.2
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
+
+
+Packaging changes between 2.3.1 and 2.3.2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A. changes that probably don't need action
+
+(none)
+
+B. changes that probably DO need action
+
+1. pcb-rnd-core now depends on librnd; as for now, librnd versions are the
+   same as pcb-rnd versions, so please make sure pcb-rnd-core depends on
+   exactly the same version of librnd.
+
 
 Packaging changes between 2.3.0 and 2.3.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
