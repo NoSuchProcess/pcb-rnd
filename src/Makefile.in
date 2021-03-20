@@ -9,6 +9,12 @@ if /local/pcb/want_static then
 	append /local/pcb/LDFLAGS { -static}
 end
 
+if /local/pcb/want_static_librnd then
+	put /local/pcb/SO {.a}
+else
+	put /local/pcb/SO {.so}
+end
+
 # These files are to be generated before make dep is run
 put /local/pcb/DEPDEPS { $(LIBRND)/core/hidlib_conf_fields.h conf_core_fields.h conf_internal.c defpcb_internal.c buildin.c buildin.hidlib.c pcb_menu_default.c }
 
@@ -252,6 +258,7 @@ LIBMINUID_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 LIBMINUID_LDFLAGS=@cc/ldflags@
 GENLIST_CFLAGS=@/local/pcb/CFLAGS_GENERIC@
 GENLIST_LDFLAGS=@cc/ldflags@
+SO=@/local/pcb/SO@
 LIBRND=../@/local/pcb/librnd_root@/librnd
 
 all:
@@ -266,20 +273,20 @@ revcheck:
 
 all_exe: pcb-rnd$(EXE) @/local/pcb/all@
 
-pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD) ../src_3rd/librnd-local/src/librnd-hid.so ../src_3rd/librnd-local/src/librnd-poly.so ../src_3rd/librnd-local/src/librnd-3rd.so
+pcb-rnd$(EXE): $(OBJS) $(OBJS_C99) $(EXEDEPS) $(LIBS_3RD) ../src_3rd/librnd-local/src/librnd-hid$(SO) ../src_3rd/librnd-local/src/librnd-poly$(SO) ../src_3rd/librnd-local/src/librnd-3rd$(SO)
 	$(CC) $(OBJS) $(OBJS_C99) -o pcb-rnd$(EXE) $(LIBS_PRE) \
 		-L../src_3rd/librnd-local/src/ -lrnd-hid -lrnd-poly -lrnd-3rd \
 		$(LDFLAGS) $(LIBS)
 
 # TODO: remove these once librnd separation is complete
-../src_3rd/librnd-local/src/librnd-hid.so:
-	cd ../src_3rd/librnd-local/src && $(MAKE) librnd-hid.so
+../src_3rd/librnd-local/src/librnd-hid$(SO):
+	cd ../src_3rd/librnd-local/src && $(MAKE) librnd-hid$(SO)
 
-../src_3rd/librnd-local/src/librnd-poly.so:
-	cd ../src_3rd/librnd-local/src && $(MAKE) librnd-poly.so
+../src_3rd/librnd-local/src/librnd-poly$(SO):
+	cd ../src_3rd/librnd-local/src && $(MAKE) librnd-poly$(SO)
 
-../src_3rd/librnd-local/src/librnd-3rd.so:
-	cd ../src_3rd/librnd-local/src && $(MAKE) librnd-3rd.so
+../src_3rd/librnd-local/src/librnd-3rd$(SO):
+	cd ../src_3rd/librnd-local/src && $(MAKE) librnd-3rd$(SO)
 
 @]
 
