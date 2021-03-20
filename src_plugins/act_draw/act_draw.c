@@ -660,6 +660,15 @@ static fgw_error_t pcb_act_DrawColor(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_InvalidateAll[] = "InvalidateAll()";
+static const char pcb_acth_InvalidateAll[] = "Redraw the drawing area";
+static fgw_error_t pcb_act_InvalidateAll(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	rnd_gui->invalidate_all(rnd_gui);
+	RND_ACT_IRES(0);
+	return 0;
+}
+
 rnd_action_t act_draw_action_list[] = {
 	{"LineNew", pcb_act_LineNew, pcb_acth_LineNew, pcb_acts_LineNew},
 	{"ArcNew", pcb_act_ArcNew, pcb_acth_ArcNew, pcb_acts_ArcNew},
@@ -678,7 +687,8 @@ rnd_action_t act_draw_action_list[] = {
 	{"DrawLine", pcb_act_DrawLine, pcb_acth_DrawLine, pcb_acts_DrawLine},
 	{"DrawPoly", pcb_act_DrawPoly, pcb_acth_DrawPoly, pcb_acts_DrawPoly},
 	{"DrawColor", pcb_act_DrawColor, pcb_acth_DrawColor, pcb_acts_DrawColor},
-	{"PolyBool", pcb_act_PolyBool, pcb_acth_PolyBool, pcb_acts_PolyBool}
+	{"PolyBool", pcb_act_PolyBool, pcb_acth_PolyBool, pcb_acts_PolyBool},
+	{"InvalidateAll", pcb_act_InvalidateAll, pcb_acth_InvalidateAll, pcb_acts_InvalidateAll}
 };
 
 static const char *act_draw_cookie = "act_draw";
