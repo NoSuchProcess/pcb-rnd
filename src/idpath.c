@@ -155,6 +155,8 @@ pcb_idpath_t *pcb_str2idpath(pcb_board_t *pcb, const char *str)
 		ps += 3;
 		uilid = strtol(ps, &next, 10);
 		ps = next;
+		if (*ps == '/') /* the ui#xxx/ prefix shouldn't increase level because it is a header/root field, ps should point beyond the separator */
+			ps++;
 	}
 	else
 		data_addr = pcb_data_addr_by_name(pcb, &ps);
