@@ -7,6 +7,9 @@
 #include <genht/htpp.h>
 #include <genht/hash.h>
 
+/* Required for win32 path hack: */
+#include <librnd/core/hid_init.h>
+
 conf_core_t conf_core;
 
 static  const char conf_core_cookie[] = "conf_core";
