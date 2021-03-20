@@ -75,8 +75,7 @@ void pcb_line_reg(pcb_layer_t *layer, pcb_line_t *line)
 		pcb_obj_id_reg(pcb_uilayer_dummy_data, &line->Point1);
 		pcb_obj_id_reg(pcb_uilayer_dummy_data, &line->Point2);*/
 	}
-
-	if (layer->parent_type == PCB_PARENT_DATA) {
+	else if (layer->parent_type == PCB_PARENT_DATA) {
 		pcb_obj_id_reg(layer->parent.data, line);
 /* can not register points because they do not have the common object header
 		pcb_obj_id_reg(layer->parent.data, &line->Point1);
