@@ -6,6 +6,8 @@
 + BUG: open the command line with {:}, then right click over empty board, ignore the context menu, right click again -> gtk GUI gray control [report: Majenko]
 + BUG: font selector {w f} prints black font on black background if the background color is black [report: Majenko]
 + BUG: asc import, integrity check: subcircuit id -1 bugs [report: romano]
+- BUG: game_snake: reload in live script won't unregister the key binding (but it unregisters the menu) [report: Igor2]
+- FEATURE: edakrill: preview screenshot from krill file (useful for scripts) [report: Igor2]
 - BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 
 2. For later releases ===============================================================================
