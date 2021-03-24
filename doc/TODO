@@ -1,7 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- ADMIN: install new keys, generate a new crl before 21 april
+- ADMIN: install new keys, generate a new crl before the next release so it is in the pack (before 21 april)
 + FEATURE: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
 + BUG: open the command line with {:}, then right click over empty board, ignore the context menu, right click again -> gtk GUI gray control [report: Majenko]
 + BUG: font selector {w f} prints black font on black background if the background color is black [report: Majenko]
