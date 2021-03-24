@@ -66,6 +66,17 @@ a normal windows application:
       please try it on Linux.
 </ul>
 
+<p>These limitations are specific some special cases and oddities in windows:
+<ul>
+	<li> Maximized a window seems to be a special case: pcb-rnd will not get
+	     the window change size event and will not be able to save window geometry.
+	     Effect: if you configure your window geometry to be saved and loaded on
+	     start, then maximize your top window, quit, restart, pcb-rnd will not
+	     start with maximized window, as it never got the geometry for that
+	     from windows. Workaround: resize the window manually to big.
+</ul>
+
+
 <h2>3. Cross compilation from Linux to win32</h2>
 
 <b>(developers may need this, if you are an user, it is safe to skip.)</b>
