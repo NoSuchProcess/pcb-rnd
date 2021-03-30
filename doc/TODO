@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 - ADMIN: install new keys, generate a new crl before the next release so it is in the pack (before 21 april)
 + FEATURE: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
-+ BUG: use the preferences dialog tree tab to add \n in editor/subc_id in user role; the saved config file will have only one \ [report: Romano]
 - FEATURE: edakrill: preview screenshot from krill file (useful for scripts) [report: Igor2]
 - BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 
