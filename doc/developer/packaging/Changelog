@@ -19,6 +19,8 @@ B. changes that probably DO need action
    same as pcb-rnd versions, so please make sure pcb-rnd-core depends on
    exactly the same version of librnd2.
 
+   This means pcb-rnd executable is now dynamically linked to librnd.
+
 2. change in files installed:
    librnd-dev has a bunch of files in a new dir $PREFIX/lib/librnd/scconfig
    librnd-dev has a new file $PREFIX/lib/plugins/map_plugins.sh
