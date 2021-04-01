@@ -1,12 +1,12 @@
 0. old, still waiting for ack
++ FEATURE: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
 
 1. For the upcoming release ===============================================================================
-- ADMIN: install new keys, generate a new crl before the next release so it is in the pack (before 21 april)
-+ FEATURE: property editor on selection should refresh the tree (but try to keep the row and user entered value) when selection changes [report: Gene]
 - FEATURE: edakrill: preview screenshot from krill file (useful for scripts) [report: Igor2]
 - BUG: kicad_io error on unknown text justification: bottom see bug_files/kicad_io_unknown_text_justification [report: Miloh]
 
 2. For later releases ===============================================================================
+- ADMIN: install new keys, generate a new crl before the next release so it is in the pack (before 21 april)
 - CLEANUP: move djopt menus into the plugin so when djopt is not installed there's no warning from the menu file [report: Igor2]
 - CLEANUP: ui layers: data parent cleanup: bug_files/uilayer.patch: ui layers should have a data parent in pcb_board_t and no global variables in layer_ui.[ch] (ui layers are board-specific) [report: Igor2]
 - CLEANUP: s390x test fail: remove rnd_export_opt_s->value and always use backup[] in rnd_hid_parse_command_line(); problem: HATT_INTEGER is (long *) in case of hidval backing but may be (int *) for raw backing; for enum types we don't even know! [report: Bdale]
