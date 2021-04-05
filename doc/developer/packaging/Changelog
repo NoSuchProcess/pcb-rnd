@@ -11,7 +11,9 @@ Packaging changes between 2.3.1 and 2.3.2
 
 A. changes that probably don't need action
 
-(none)
+1. please make sure the show_netnames plugin is packaged in pcb-rnd-core
+   (the notice about that plugin int his changelog may have ended up for
+   the wrong release earlier)
 
 B. changes that probably DO need action
 
