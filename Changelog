@@ -271,6 +271,67 @@ pcb-rnd part:
 
 librnd part:
 
+	[anyload]
+		-Add: basic reg/unreg infra, action, loader, 
+		-Add: before loading external files, make sure path is under the directory tree the anyload file is in - use "realpath" to figure symlinks and .. references
+		-Add: support for menu patches
+		-Add: support for conf subtrees
+		-Add: anyload() without arguments should pop up a file selection dialog
+
+	[build]
+		-Fix: enable the mkdtemp forward decl workaround for non-debug builds - on OSX feature macros disable the mkdtemp prototype
+		-Fix: missing ptrdiff and other type detections required for libporty_net on some systems
+		-Fix: detect ioctl and fionbio for libporty_net
+		-Fix: cross compilation: build puplug objects in separate files for host and target instead of running make clean and risking a race condition
+		-Fix: don't append NULL to CFLAGS when there's no -pedantic available
+		-Workaround: apple uses multiple -framework words in the LDFLAGS - we need to patch the list before running uniq so they are all kept
+		-Add: Makefile rules for symlinking local .so and .so.2 libs in the source dir, for pcb-rnd's temporary from-source execution
+		-Add: option for static linking librnd (windows needs this because of broken dynamic link: dlls can't reference host app symbols without some extra magic)
+
+	[conf]
+		-Change: load any .conf file from pcb-rnd conf dir, for plugin confs, instead of hardwired conf file names from plugins
+
+	[core]
+		-Fix: local realpath implementation shall return NULL when path not found (security...)
+		-Fix: don't crash if a deregistered menu left NULL action in the key tree
+		-Add: grid(get) - returns current grid size (for scripting)
+		-Add: CreateMenu: an optional argument for setting the accel (key binding) on the new menu
+
+	[gtk]
+		-Cleanup: disable more theme setting code that fell out of usage
+		-Fix: do not lose the "mouse entered drawing area" event after closing a popup when the command line is open; fixes the "command line -> popup -> scroll -> scroll-lockup" bug
+
+	[hid]
+		-Cleanup: const correctness: passing on a pixmap for HID draw can not be const, because the HID will want to load ->user_data for caching
+
+	[hid_gtk2_gdk]
+		-Fix: negative gc width always means size in pixels
+		-Fix: don't crash on invalidate request before the GUI is fully initialized, just ignore it
+		-Fix: gdk render optimization bug on zero-length lines
+
+	[lib_gtk_common]
+		-Fix: do not query xy on pan stop (middle button release): results in gray GUI lockup
+		-Fix: inactivate pan mode when opening context popup (works around a gtk misfeature: the popup takes focus and mouse button release is not delivered)
+
+	[menu]
+		-Fix: menu patch: removing a whole menu tree should first remove submenus, by the actual submenu nodes not by other lihata nodes
+
+	[poly]
+		-Fix: pline embrace circle: accurate hline-line intersection calculation so the code doesn't get confused on near misses
+
+	[script]
+		-Workaround: manually register the languages provided by the fawk binding so they are found even if there is no system installed fungw
+		-Fix: printing uninitialized string in error message when script fails to load
+		-Fix: guess lang for the builtin case needs .pup ending because the rest of the code will want to remove it
+		-Fix: remember hidlib context for timers so it is possible to execute actions from timers
+		-Fix: live script stop should call script preunload() to give the script a chance to clean up
+		-Fix: when live script dialog is closed, call script's preunload when unloading
+		-Add: live scripting hotkey: {p s l} (for plugin, scripts, live)
+		-Add: math helper actions: pcb_rand() and pcb_srand()
+
+	[win32]
+		-Fix: use rnd_system() instead of system() for the gtk startup hack on windows
+
 
 
 pcb-rnd 2.3.1 (r33837/r32524)
