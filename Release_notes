@@ -1,18 +1,30 @@
-pcb-rnd 2.3.1
+pcb-rnd 2.3.2
 ~~~~~~~~~~~~~
 
-The main objective of this release is to go further in librnd separation:
-the build system is prepared for the split, redundancies between pcb-rnd and
-librnd are mostly removed. Other than this, 2.3.1 is mainly a bugfix release
-with only a few new features.
+This is mainly a bugfix release with secondary objective of going further
+in librnd separation: librnd is now linked with -l. NOTE: this changes how
+pcb-rnd is executed from the source tree, see file INSTALL, step 3. Because
+of the longer development cycle, there are still a few new features.
 
 Feature highlight:
 
-1. Improved lock handling new hotkey {s k} for listing locked object.
+1. Optional feature: show (render) netnames on traces when zoomed in.
+   View menu, show netnames when zoomed in. Config node:
+   plugins/show_netnames/enable
 
-2. New feature plugin for printing net name on traces when zoom level is
-   high enough and the feature is enabled.
+2. Anyload files to ease sharing and importing user scripts, menu patches,
+   drc rules, vendor drill, custom configuration and other pcb-rnd addons.
 
-3. Many bugfixes in IO code for eagle and kicad for a more lossless
-   load of alien board and footprint files.
+3. Lihata board save as: denoise option that omits select/warn/found flags
+   and rat line objects from the save to reduce VCS noise.
 
+4. Per layer transformations option: per layer wireframe render option on
+   the GUI (right click context menu in the layer selector).
+
+5. The propedit dialog has in-line help abotu which property means what
+   (top right region of the dialog box).
+
+6. Rewritten rendering code to get layer order from a configurable, domain
+   specific render script instead of hardwired C.
+
+7. Teardrop extended object.
