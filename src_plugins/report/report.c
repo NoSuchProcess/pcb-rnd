@@ -516,9 +516,9 @@ static double xy_to_net_length(pcb_board_t *pcb, rnd_coord_t x, rnd_coord_t y, i
 	}
 
 	if (nl->has_nontrace)
-		rnd_append_printf(err, "\n%Partial result: polygons/texts blocked the search");
+		rnd_append_printf(err, "\nPartial result: polygons/texts blocked the search");
 	else if (nl->has_junction)
-		rnd_append_printf(err, "\n%Partial result: a junction blocked the search");
+		rnd_append_printf(err, "\nPartial result: a junction blocked the search");
 
 	pcb_qry_uninit(&ec);
 
