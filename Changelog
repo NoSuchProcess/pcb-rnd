@@ -1,3 +1,278 @@
+pcb-rnd 2.3.1 (r34276/r?????)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+pcb-rnd part:
+
+	[act_draw]
+		-Add: UILayer() to create and remove UI layers from scripts
+		-Add: InvalidateAll() action for scripting
+
+	[act_read]
+		-Add: ReadBoard() action to retrieve board size in scripts
+
+	[ar_cpcb]
+		-Cleanup: use the safe_fs variant of pclose() to avoid implicit declaration
+
+	[ar_extern]
+		-Add: missing comment on describing the process of export-run-import
+
+	[brave]
+		-Change: invert PCB_BRAVE_ENFORCE_CLR_MOVE as it seems safe
+		-Del: PCB_BRAVE_NOCLIPBATCH: clip batch is default on for almost a year now with no bugreport on it, so it's time to make it permanent
+		-Cleanup: remove unused brave.h includes
+		-Add: brave mode for developing lihata v8
+
+	[build]
+		-Fix: pcb-rnd-src: OSX has a different env var for LD_LIBRARY_PATH
+		-Fix: use static librnd linking on windows cross compilation, because of dll-can't-ref-host-app-symbol problem
+		-Workaround: apple -framework workaround, same as librnd r32534
+
+	[cam]
+		-Fix: export unplated, plated slot layer to gerber mech layer for seeed CAM, tested with seeed viewer
+
+	[core]
+		-Del: struct fields for explicit, layer ID based binding: layer IDs are not stable, the dialog uses reverse engineering for figuring the binding from a specific layer anyway
+		-Cleanup: const correctness in obj_text
+		-Cleanup: poly text plow doesn't depend on global PCB but resolves pcb from Data
+		-Cleanup: remove conf_core workaround leftover once used in win32 config dirs
+		-Fix: set color, thickness and cap before calling RND_EVENT_GUI_DRAW_OVERLAY_XOR
+		-Fix: wrong calculation of tight_clearance text line width + clearance on lines and arcs
+		-Fix: poly clearance value around tight_clearance text with polyon glyphs ignored poly-side clearance enforce
+		-Fix: poly heavy terminal: in concave case place marks only within the polygon area
+		-Fix: text placement by bbox: proper rounding of base X and Y coords
+		-Fix: text string fetch doesn't crash if text object has no parent
+		-Fix: ui layers: set up a dummy pcb_data_t for being the parent of all UI layers temporarily so the object id based search works
+		-Fix: do not register line endpoints in the id2obj hash: line endpoints are not compatible with pcb_any_obj_t
+		-Fix: when registering a line on an UI layer, make sure it is not attempted to register in the board id hash
+		-Fix: conf_core needs to include hidlib init for the windows compilation (windows specific path hack)
+		-Split: text minimum thickness on a specific layer to a separate, public function so that the poly clearance code can use it too
+		-Add: text change-clear-size (standard change operation)
+		-Add: when copying/dupping text objects, also copy the clearance field
+		-Add: configure default anyload persistent dir to be ~/.pcb-rnd/anyload/
+		-Add: config node for setting the 'black color' for the 'black current group' feature
+		-Add: LayerXform action for changing per layer transformations
+		-Add: introduce a separate gui-only layer transformation so it won't interfere with export
+		-Add: new undo action commands: Undo(FreezeAdd) and Undo(UnfreezeAdd)
+		-Add: helper function to decide if a layer is an UI layer
+		-Add: idpath support for ui layers
+
+	[dialogs]
+		-Fix: layer binding dialog: when binding is changed using the right side layer selector, rename the left side layer; thsi is required so that if there are multiple layers in the target group, the right layer is picked (assuming unique layer names)
+
+	[doc]
+		-Fix: missing style node from the pre-v8 input netlist
+		-Fix: lihata format doc: the input netlist had the wrong node name
+		-Update: plugin developer doc: plugin conf registration simplified
+		-Update: vendordrill user manual: remove unusable fields of the drc subtree and mention the deprecation
+		-Add: explain how to use pcb-rnd-src for setting up LD_LIBRARY_PATH
+		-Add: render script syntax
+		-Add: lihata format doc: v8 text clearance
+		-Add: text clearance field in the data model manual
+		-Add: vendordrill user manual: document the extended skip features
+		-Add: vendordrill user manual: document "pure" loading
+		-Add: appendix action doc: vendordrill pure loading
+		-Add: vendordrill user manual: include 'down' rounding
+		-Add: document lihata v8 changes so far
+		-Add: vendor drill transition help
+		-Add: OSX compilation results and pcre comment from rom
+		-Add: query: document the obj_by_idpath function
+		-Add: query: document the poly_is_valid() function
+		-Add: win32 limitation on window maximization
+
+	[draw]
+		-Change: switch over to scriptable rendering
+		-Change: default script: draw invisible only in GUI mode and far-side doc/silk in export mode
+		-Split: other-side silk setup from draw-everything (to make scripting possible)
+		-Split: copper layer from draw-everything (to make scripting possible)
+		-Split: other-side silk draw from draw-everything (to make scripting possible)
+		-Split: other-side padstack and mask draw from draw-everything (to make scripting possible)
+		-Split: draw holes from draw-everything (to make scripting possible)
+		-Split: draw paste from draw-everything (to make scripting possible)
+		-Split: draw xor marks from draw-everything (to make scripting possible)
+		-Split: draw-everything functions into a separate .c file as they are getting big (and will get even bigger with scripting)
+		-Split: draw_everythin() into a generic init/uninit section and the logic that tries script rendering first and falls back to the original hardwired C code when that fails
+		-Cleanup: code simplification: merge draw_everything_holes() in its parent
+		-Cleanup: unify visible/invisible side flag handling
+		-Cleanup: unify render script function naming and calling conventions
+		-Cleanup: simplify drawing the 'invisible'/'far side' doc/silk layers for the render script
+		-Cleanup: disable code for excess GUI flushes after drawing the "invisible" (far side) objects in GUI mode
+
+	[draw_fontsel]
+		-Fix: use "element" color (default silk) for black and mark color for red: users who change their background color will likely to change these too to keep them visible
+
+	[drc_query]
+		-Split: lihata rule loader from lht parser so a subtree from any lihata document can be loaded
+		-Add: anyload hook for embedded lihata drc rules
+		-Add: anyload support for external files (both lihata and tEDAx drc rules)
+		-Add: check for invalid (self-intersecting) polygons
+
+	[export_c_draw]
+		-Add: plugin infra and minimal implementation with gc, lines and arcs
+
+	[export_png]
+		-Add: as_shown preserves GUI xform flags
+
+	[export_ps]
+		-Add: as_shown preserves GUI xform flags
+
+	[export_svg]
+		-Add: as_shown preserves GUI xform flags
+
+	[export_xy]
+		-Fix: proper unit array boundary check
+
+	[extedit]
+		-Cleanup: use the safe_fs variant of pclose() to avoid implicit delaration
+
+	[extobj]
+		-Fix: buffer to board copy: separate keep_ids from udpate extobj parameter; keep_ids is temporarily disabled but we still need to execute extobj updates
+		-Fix: buffer to board copy: update all floaters to get it recalculated (for the current board state after placement)
+		-Fix: dimension: don't crash on all-floater update
+		-Fix: increase undo serial after conversion so each conversion can be undone separately
+
+	[fp_wget]
+		-Fix: fp_wget shall work from the converted lihata version instead of the converted fp version because the fp format is too limited
+
+	[io_autotrax]
+		-Add: io incompatibility error on saving text with clearance != 0
+		-Add: io incompatibility warning for text rotated not in 90 degree steps
+
+	[io_eagle]
+		-Cleanup: wrong return type and unused vars
+		-Fix: proper rounding of coords and sizes for bbox based text placement
+
+	[io_kicad]
+		-Fix: alternate name for solder_paste_ratio seems to be solder_paste_margin_ratio
+		-Fix: typo in location name
+		-Fix: rounding errors in text-by-bbox import
+		-Fix: change the order of operations when creating a subc for a module being loaded: there's no guarantee there would be an (at) still the subc shall be created
+		-Cleanup: make subc and pad creation errors easier to distinguish
+		-Add: io compatibility error on saving text with clearance != 0
+
+	[io_kicad_legacy]
+		-Add: io compatibility error on saving text with clearance != 0
+
+	[io_lihata]
+		-Cleanup: simplify per version io registration code by removing dups
+		-Add: denoise config/save-as option to omit saving volatile flags (select/warn/found)
+		-Add: denoise: do not save rats in denoise mode
+		-Add: v8: brave-mode-enabled experimental lihata board v8
+		-Add: v8: do not save dedicated style field in netlist, it is enough to have the style attribute
+		-Add: v8: introduce subcircuit v8 because of text clearance
+		-Change: rearrange save-as dialog options so they took less screen space
+
+	[io_pcb]
+		-Add: io compatibility error on saving text with clearance != 0
+		-Add: read support for 4.3.0 pad center description in footprints
+		-Add: comment on why the optional extra layer type should be ignored on read: geda/pcb code is totally broken and writes the _wrong_ layer type so it would even ruin outline layers while at the moment (4.3.0) it won't really let the user have editable mask or paste layer
+
+	[io_tedax]
+		-Add: io compatibility error on saving text with clearance != 0
+
+	[lib_hid_pcbui]
+		-Fix: do not create menu names for outing styles and layers with '/' in them, that interferes with menu path addressing and breaks the menu system on merge
+		-Fix: pcb_act_DescribeLocation(): do not depend on uninitialized ptr2 for rats
+		-Add: layer selector: mark layers that have non-zero xform flags
+
+	[libcdtr]
+		-Fix: tester: load bbox parameters as floating point numbers for portability
+		-Fix: tester should print coords as doubles always, that's the only portable way for different coord units
+		-Fix: compile time option to round point coords to avoid the "points too close" bug and floating point number instability
+		-Split: debug functions to a separate debug.[ch]
+		-Add: optional trace and replay functionality for debugging how a specific run of triangulation is going wrong
+		-Add: dump triangles with their IDs printed in the center (by Wojciecj)
+		-Add: dump_triangles_anim command in the tester and adjacent triangle dump in the lib (by Wojciech)
+
+	[librnd]
+		-Change: link librnd using the .so files, with -l, instead of static linking (next step of librnd separation)
+		-Fix: order of -l's does matter; link librnd first as in a semi-static setup libs like -lgtk need to come after librnd
+		-Cleanup: remove workaround that was needed when librnd was static linked
+		-Add: pcb-rnd-src helper script to set up LD_LIBRARY_PATH for source local execution
+		-Update: use the new conf API option for simpler plugin intern config registration
+
+	[menu]
+		-Add: import anyload menu
+		-Add: layer context popup: menu items for toggling wireframe and thindraw xforms
+
+	[pcblib]
+		-Fix: parametric footprint default param list for msop, qsop, ssop and tssop: don't use newlines, that's incompatible with original-awk (OSX)
+
+	[propedit]
+		-Add: event binding and internal hook that triggers for propedit dialogs showing objects when the board got edited
+		-Add: refresh the propedit dialog from the board edited hook
+		-Add: make p/text/clearance available
+		-Add: help preview: thickness and clearance
+		-Add: help preview: p/text/scale
+		-Add: help preview: text rot, scale_x, scale_y, thickness
+		-Add: help preview: arc angles and radius
+		-Add: help preview: textual help for flags
+		-Add: help preview: padstack fields
+		-Add: help preview: p/text/clearance
+
+	[query]
+		-Add: support for text clearance
+		-Add: query(count) for scripting
+		-Add: user function to convert an object ID to an object
+		-Add: poly_is_valid() function that checks and returns if a polygon is valid, without asserting
+
+	[report]
+		-Fix: reports shouldn't try to open a dialog box in batch mode, just print to stdout
+		-Fix: typo in report name may cause rnd_printf to resolve argument not passed (%P)
+
+	[scconfig]
+		-Add: half-working -static for ./configure - some libs still need to be added manually
+
+	[shape]
+		-Fix: round rect poly: maximum rounding radius depends on number of square corners so rounding can go beyond half of a side
+		-Add: the GUI shape generator prints an error message in the log about how exactly the round rect generation failed
+		-Cleanup: const correctness on error report
+
+	[show_netnames]
+		-Add: netname label cache; invalidate the cache on netlist or board change
+		-Add: invalidate the label cache on font change
+		-Add: scale text to 80% of line thickness, using the cached text bbox
+		-Add: config option for omitting <nonet> labels
+		-Add: omit labels by netname regex list
+		-Add: if pcb-rnd::show_netname attribute on a net is "off", "no" or "false", do not display that netname
+
+	[teardrops]
+		-Split: arc calculations for line-padstack from the r-search callback
+		-Split: padstack shape size capture from the search code
+		-Cleanup: make the code reentrant
+		-Cleanup: don't use global PCB directly
+		-Cleanup: use %mm trace prints for coords instead of unitless %f
+		-Fix: don't convert doubles to int for drawing the arc - do proper rounding and convert to rnd_coord_t (so it works in 64 bit coords setup)
+		-Add: teardrop extended object with a curved < mark on the exto 'E' mark
+
+	[tests]
+		-Add: automated tests for vendordrill skips
+		-Add: vendordrill tests for all different rounding methods and pure loading
+		-Fix: vendordrill tests: remove installation-specific full paths from the output
+
+	[util]
+		-Fix: pcb-rnd-svg: wrong return value on test-all
+		-Fix: pcb-rnd-svg: be able to run pcb-rnd from source
+		-Add: gsch2pcb-rnd needs to define rnd_app_package for anyload to compile
+		-Add: sign: ./verify --print prints the crl or ca in human readable form
+
+	[vendordrill]
+		-Del: processing of the drc subtree (rather print an error with an URL to details on the anyload transition)
+		-Del: do not load vendor name - it is not used for anything
+		-Fix: use <> #include for librnd
+		-Cleanup: use enum instead of macros for rounding rule names
+		-Cleanup: use switch instead of long if()s for sorting out rounding rules
+		-Cleanup: code terminology: use "nearest" instead of "closest" to match argument name
+		-Cleanup: rewrite the slow, inflexible, local-vector-implementation skip list as a faster vector-in-hash implementation using genht and genvector
+		-Add: round down optionx
+		-Add: syntax to allow skipping by aritrary attribute
+		-Add: "pure" mode in loading to allow multiple files to be loaded incrementally
+		-Add: errors and warnings for the obsolete drc subtree
+		-Add: parse the subtree for anyload
+
+librnd part:
+
+
+
 pcb-rnd 2.3.1 (r33837/r32524)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 pcb-rnd part:
