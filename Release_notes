@@ -10,7 +10,7 @@ Feature highlight:
 
 1. Optional feature: show (render) netnames on traces when zoomed in.
    View menu, show netnames when zoomed in. Config node:
-   plugins/show_netnames/enable
+   plugins/show_netnames/enable.
 
 2. Anyload files to ease sharing and importing user scripts, menu patches,
    drc rules, vendor drill, custom configuration and other pcb-rnd addons.
