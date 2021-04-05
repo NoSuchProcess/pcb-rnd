@@ -21,7 +21,7 @@ Feature highlight:
 4. Per layer transformations option: per layer wireframe render option on
    the GUI (right click context menu in the layer selector).
 
-5. The propedit dialog has in-line help abotu which property means what
+5. The propedit dialog has in-line help about which property means what
    (top right region of the dialog box).
 
 6. Rewritten rendering code to get layer order from a configurable, domain
