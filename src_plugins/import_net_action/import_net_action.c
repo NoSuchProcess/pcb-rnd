@@ -117,7 +117,7 @@ int pplg_init_import_net_action(void)
 	import_net_action.fmt_support_prio = net_action_support_prio;
 	import_net_action.import           = net_action_import;
 	import_net_action.name             = "action";
-	import_net_action.desc             = "schamtics from pcb-rnd action script";
+	import_net_action.desc             = "schematics from pcb-rnd action script";
 	import_net_action.ui_prio          = 95;
 	import_net_action.single_arg       = 1;
 	import_net_action.all_filenames    = 1;

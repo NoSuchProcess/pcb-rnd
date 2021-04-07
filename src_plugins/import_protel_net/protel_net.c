@@ -268,7 +268,7 @@ int pplg_init_import_protel_net(void)
 	import_protel_net.fmt_support_prio = protel_net_support_prio;
 	import_protel_net.import           = protel_net_import;
 	import_protel_net.name             = "protel_net";
-	import_protel_net.desc             = "schamtics from protel netlist 2.0";
+	import_protel_net.desc             = "schematics from protel netlist 2.0";
 	import_protel_net.ui_prio          = 50;
 	import_protel_net.single_arg       = 1;
 	import_protel_net.all_filenames    = 1;

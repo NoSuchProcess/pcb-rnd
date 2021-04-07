@@ -249,7 +249,7 @@ int pplg_init_import_pads_net(void)
 	import_pads_net.fmt_support_prio = pads_net_support_prio;
 	import_pads_net.import           = pads_net_import;
 	import_pads_net.name             = "pads_net";
-	import_pads_net.desc             = "schamtics from pads ascii netlist";
+	import_pads_net.desc             = "schematics from pads ascii netlist";
 	import_pads_net.ui_prio          = 50;
 	import_pads_net.single_arg       = 1;
 	import_pads_net.all_filenames    = 1;

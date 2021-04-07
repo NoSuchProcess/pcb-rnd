@@ -272,7 +272,7 @@ int pplg_init_import_tinycad(void)
 	import_tinycad.fmt_support_prio = tinycad_support_prio;
 	import_tinycad.import           = tinycad_import;
 	import_tinycad.name             = "tinycad";
-	import_tinycad.desc             = "schamtics from tinycad";
+	import_tinycad.desc             = "schematics from tinycad";
 	import_tinycad.ui_prio          = 50;
 	import_tinycad.single_arg       = 1;
 	import_tinycad.all_filenames    = 1;
