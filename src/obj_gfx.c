@@ -54,7 +54,7 @@
 #include "draw.h"
 #include "obj_gfx_draw.h"
 
-TODO("ui_layer parent fix: remove this");
+TODO("ui_layer parent fix: remove this")
 #include "layer_ui.h"
 
 void pcb_gfx_reg(pcb_layer_t *layer, pcb_gfx_t *gfx)
