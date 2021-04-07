@@ -95,9 +95,9 @@ static rnd_hid_attr_val_t stl_values[NUM_OPTIONS];
 static const rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".stl";
-	char **val = &stl_values[HA_stlfile].str;
+	const char *val = stl_values[HA_stlfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
+	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &stl_values[HA_stlfile], suffix);
 
 	if (n)

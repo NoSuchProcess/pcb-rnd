@@ -63,8 +63,8 @@ typedef struct pcb_bom_list_s {
 
 static const rnd_export_opt_t *bom_get_export_options(rnd_hid_t *hid, int *n)
 {
-	char **val = &bom_values[HA_bomfile].str;
-	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
+	const char *val = bom_values[HA_bomfile].str;
+	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &bom_values[HA_bomfile], ".bom");
 
 	if (n)

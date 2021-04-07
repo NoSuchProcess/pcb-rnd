@@ -201,8 +201,8 @@ static rnd_hid_attr_val_t dxf_values[NUM_OPTIONS];
 static const rnd_export_opt_t *dxf_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".dxf";
-	char **val = &dxf_values[HA_dxffile].str;
-	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
+	const char **val = dxf_values[HA_dxffile].str;
+	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &dxf_values[HA_dxffile], suffix);
 
 	if (n)

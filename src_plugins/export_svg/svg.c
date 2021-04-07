@@ -202,9 +202,9 @@ static rnd_hid_attr_val_t svg_values[NUM_OPTIONS];
 static const rnd_export_opt_t *svg_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".svg";
-	char **val = &svg_values[HA_svgfile].str;
+	const char *val = svg_values[HA_svgfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
+	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &svg_values[HA_svgfile], suffix);
 
 	if (n)
