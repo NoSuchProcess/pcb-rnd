@@ -59,7 +59,7 @@
 
 #include "obj_poly_draw_helper.c"
 
-TODO("ui_layer parent fix: remove this");
+TODO("ui_layer parent fix: remove this")
 #include "layer_ui.h"
 
 /*** allocation ***/

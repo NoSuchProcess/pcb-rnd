@@ -59,7 +59,7 @@
 TODO("padstack: remove this when via is removed and the padstack is created from style directly")
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
-TODO("ui_layer parent fix: remove this");
+TODO("ui_layer parent fix: remove this")
 #include "layer_ui.h"
 
 /**** allocation ****/
