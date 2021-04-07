@@ -51,7 +51,7 @@
 
 #include "obj_arc_draw.h"
 
-TODO("ui_layer parent fix: remove this");
+TODO("ui_layer parent fix: remove this")
 #include "layer_ui.h"
 
 static int pcb_arc_end_addr = 1;
