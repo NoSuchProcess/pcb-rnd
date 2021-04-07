@@ -60,9 +60,7 @@ static rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 	 * HID's may want to free() this string value and replace it with a
 	 * new one based on how a user fills out a print dialog.
 	 */
-	val = lpr_options[HA_lprcommand].value;
-	if (val == NULL)
-		val = lpr_options[HA_lprcommand].value = &lpr_values[HA_lprcommand].str;
+	val = &lpr_values[HA_lprcommand].str;
 	if ((*val == NULL) || (**val == '\0')) {
 		free(*val);
 		*val = rnd_strdup("lpr");

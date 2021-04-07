@@ -381,7 +381,7 @@ static const char *get_file_suffix(void)
 	const char *result = NULL;
 	const char *fmt;
 
-	fmt = filetypes[png_attribute_list[HA_filetype].default_val.lng];
+	fmt = filetypes[png_values[HA_filetype].lng];
 
 	if (fmt == NULL) { /* Do nothing */ }
 	else if (strcmp(fmt, FMT_gif) == 0)
@@ -401,10 +401,10 @@ static const char *get_file_suffix(void)
 static rnd_export_opt_t *png_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = get_file_suffix();
-	char **val = png_attribute_list[HA_pngfile].value;
+	char *val = &png_values[HA_pngfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &png_attribute_list[HA_pngfile], suffix);
+	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(PCB->hidlib.filename, &png_values[HA_pngfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

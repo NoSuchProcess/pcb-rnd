@@ -89,10 +89,10 @@ static rnd_hid_attr_val_t c_draw_values[NUM_OPTIONS];
 static rnd_export_opt_t *c_draw_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".c";
-	char **val = c_draw_attribute_list[HA_c_drawfile].value;
+	char **val = &c_draw_values[HA_c_drawfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &c_draw_attribute_list[HA_c_drawfile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.filename, &c_draw_values[HA_c_drawfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

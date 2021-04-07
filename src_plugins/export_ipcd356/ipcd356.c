@@ -425,9 +425,9 @@ static rnd_hid_attr_val_t ipcd356_values[NUM_OPTIONS];
 
 static rnd_export_opt_t *ipcd356_get_export_options(rnd_hid_t *hid, int *n)
 {
-	char **val = ipcd356_options[HA_ipcd356_filename].value;
+	char **val = &ipcd356_values[HA_ipcd356_filename].str;
 	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &ipcd356_options[HA_ipcd356_filename], ".net");
+		pcb_derive_default_filename(PCB->hidlib.filename, &ipcd356_values[HA_ipcd356_filename], ".net");
 
 	if (n != NULL)
 		*n = NUM_OPTIONS;

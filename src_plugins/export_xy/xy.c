@@ -101,7 +101,7 @@ static rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
 {
 	static int last_unit_value = -1;
 	rnd_conf_listitem_t *li;
-	char **val = xy_options[HA_xyfile].value;
+	char **val = &xy_values[HA_xyfile].str;
 	int idx;
 
 	/* load all formats from the config */
@@ -148,7 +148,7 @@ static rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
 	}
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &xy_options[HA_xyfile], ".xy");
+		pcb_derive_default_filename(PCB->hidlib.filename, &xy_values[HA_xyfile], ".xy");
 
 	if (n)
 		*n = NUM_OPTIONS;

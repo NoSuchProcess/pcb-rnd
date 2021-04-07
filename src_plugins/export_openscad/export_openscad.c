@@ -134,10 +134,10 @@ static rnd_hid_attr_val_t openscad_values[NUM_OPTIONS];
 static rnd_export_opt_t *openscad_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".scad";
-	char **val = openscad_attribute_list[HA_openscadfile].value;
+	char **val = &openscad_values[HA_openscadfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &openscad_attribute_list[HA_openscadfile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.filename, &openscad_values[HA_openscadfile], suffix);
 
 	if (n)
 		*n = NUM_OPTIONS;

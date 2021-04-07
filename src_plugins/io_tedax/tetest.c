@@ -189,8 +189,9 @@ static const char *tedax_etest_filename;
 
 static rnd_export_opt_t *tedax_etest_get_export_options(rnd_hid_t *hid, int *n)
 {
-	if ((PCB != NULL)  && (tedax_etest_options[HA_outfile].default_val.str == NULL))
-		pcb_derive_default_filename(PCB->hidlib.filename, &tedax_etest_options[HA_outfile], ".etest.tdx");
+	char *val = tedax_etest_values[HA_outfile].str;
+	if ((PCB != NULL) && (val == NULL))
+		pcb_derive_default_filename(PCB->hidlib.filename, &tedax_etest_values[HA_outfile], ".etest.tdx");
 
 	if (n)
 		*n = NUM_OPTIONS;
@@ -263,6 +264,7 @@ void tedax_etest_init(void)
 	exp_tedax_etest.parse_arguments = tedax_etest_parse_arguments;
 
 	exp_tedax_etest.usage = tedax_etest_usage;
+	exp_tedax_etest.argument_array = tedax_etest_values;
 
 	rnd_hid_register_hid(&exp_tedax_etest);
 }

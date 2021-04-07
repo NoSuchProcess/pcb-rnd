@@ -341,10 +341,10 @@ static struct {
 
 static rnd_export_opt_t *ps_get_export_options(rnd_hid_t *hid, int *n)
 {
-	char **val = ps_attribute_list[HA_psfile].value;
+	char **val = &global.ps_values[HA_psfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &ps_attribute_list[HA_psfile], ".ps");
+		pcb_derive_default_filename(PCB->hidlib.filename, &global.ps_values[HA_psfile], ".ps");
 
 	if (n)
 		*n = NUM_OPTIONS;

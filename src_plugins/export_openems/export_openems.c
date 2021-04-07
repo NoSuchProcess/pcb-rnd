@@ -170,10 +170,10 @@ static rnd_export_opt_t *openems_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".m";
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
-	char **val = openems_attribute_list[HA_openemsfile].value;
+	char **val = &openems_values[HA_openemsfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &openems_attribute_list[HA_openemsfile], suffix);
+		pcb_derive_default_filename(PCB->hidlib.filename, &openems_values[HA_openemsfile], suffix);
 
 	if (mesh != NULL) {
 		openems_attribute_list[HA_def_substrate_thick].default_val.crd = mesh->def_subs_thick;
