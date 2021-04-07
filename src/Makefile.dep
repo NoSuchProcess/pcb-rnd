@@ -10106,6 +10106,7 @@
  ../src_3rd/librnd-local/src/librnd/core/hidlib_conf.h netlist.h \
  obj_line_op.h obj_arc_op.h obj_text_op.h obj_pstk_op.h obj_subc_op.h
 ../src_plugins/puller/puller.o: ../src_plugins/puller/puller.c \
+ ../src_plugins/puller/menu_internal.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \

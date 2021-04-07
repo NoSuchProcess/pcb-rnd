@@ -526,14 +526,6 @@ ha:rnd-menu-v1 {
 				}
 				ha:Optimize routed tracks {
 					li:submenu {
-						ha:Puller               = { a={<key>a;<key>o;<key>p;}; action=Puller() }
-						ha:Global Puller {
-							li:submenu {
-								ha:Selected  = { action=GlobalPuller(selected) }
-								ha:Found     = { action=GlobalPuller(found) }
-								ha:All       = { action=GlobalPuller() }
-							}
-						}
 					}
 				}
 				-

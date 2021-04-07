@@ -79,6 +79,9 @@
 #include "search.h"
 #include "find.h"
 
+#include <librnd/core/hid_menu.h>
+#include "menu_internal.c"
+
 #define abort1() fprintf(stderr, "abort at line %d\n", __LINE__), abort()
 
 #define TRACE0 0
@@ -2210,11 +2213,13 @@ int pplg_check_ver_puller(int ver_needed) { return 0; }
 void pplg_uninit_puller(void)
 {
 	rnd_remove_actions_by_cookie(puller_cookie);
+	rnd_hid_menu_unload(rnd_gui, puller_cookie);
 }
 
 int pplg_init_puller(void)
 {
 	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(puller_action_list, puller_cookie)
+	rnd_hid_menu_load(rnd_gui, NULL, puller_cookie, 175, NULL, 0, puller_menu, "plugin: puller");
 	return 0;
 }

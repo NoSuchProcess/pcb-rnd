@@ -13,7 +13,7 @@ ha:rnd-menu-v1 {
 					ha:Simple optimization  = { a={<key>a;<key>o;<key>s;}; action=djopt(simple) }
 					ha:Miter                = { a={<key>a;<key>o;<key>m;}; action=djopt(miter) }
 					ha:Only autorouted nets = { checked=plugins/djopt/auto_only; action=conf(toggle, plugins/djopt/auto_only, design) }
-					-
+					sep_djopt = -
 				}
 			}
 		}

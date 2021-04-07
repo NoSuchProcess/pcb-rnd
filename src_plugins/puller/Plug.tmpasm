@@ -1,4 +1,6 @@
 put /local/pcb/mod {puller}
+put /local/pcb/mod/MENUFILE {puller-menu.lht}
+put /local/pcb/mod/MENUVAR {puller_menu}
 append /local/pcb/mod/OBJS_C99 [@ $(PLUGDIR)/puller/puller.o @]
 
 switch /local/pcb/puller/controls
