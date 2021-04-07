@@ -48,7 +48,7 @@ typedef struct{
 	int **exp_attr;           /* widget IDs of the attributes holding the actual data; outer array is indexed by exporter, inner array is by exporter option index from 0*/
 	int *button;              /* widget ID of the export button for a specific exporter */
 	int *numo;                /* number of exporter options */
-	rnd_export_opt_t **ea;    /* original export option arrays */
+	rnd_hid_attr_val_t **aa;  /* original export argument arrays */
 } export_ctx_t;
 
 export_ctx_t export_ctx;
@@ -114,10 +114,10 @@ static void copy_attrs_back(export_ctx_t *ctx)
 	for(n = 0; n < ctx->len; n++) {
 		int *exp_attr = export_ctx.exp_attr[n];
 		int numo = export_ctx.numo[n];
-		rnd_export_opt_t *opts = export_ctx.ea[n];
+		rnd_hid_attr_val_t *args = export_ctx.aa[n];
 
 		for(i = 0; i < numo; i++)
-			memcpy(&opts[i].default_val, &ctx->dlg[exp_attr[i]].val, sizeof(rnd_hid_attr_val_t));
+			memcpy(&args[i], &ctx->dlg[exp_attr[i]].val, sizeof(rnd_hid_attr_val_t));
 	}
 }
 
@@ -136,7 +136,7 @@ static void export_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	free(ctx->exp_attr);
 	free(ctx->button);
 	free(ctx->numo);
-	free(ctx->ea);
+	free(ctx->aa);
 	memset(ctx, 0, sizeof(export_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
@@ -151,7 +151,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 
 	hids = rnd_hid_enumerate();
 	for(n = 0, export_ctx.len = 0; hids[n] != NULL; n++) {
-		if (((exporters && hids[n]->exporter) || (printers && hids[n]->printer)) && (!hids[n]->hide_from_gui))
+		if (((exporters && hids[n]->exporter) || (printers && hids[n]->printer)) && (!hids[n]->hide_from_gui) && (hids[n]->argument_array != NULL))
 			export_ctx.len++;
 	}
 
@@ -165,10 +165,15 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 	export_ctx.exp_attr = malloc(sizeof(int *) * (export_ctx.len));
 	export_ctx.button = malloc(sizeof(int) * (export_ctx.len));
 	export_ctx.numo = malloc(sizeof(int) * (export_ctx.len));
-	export_ctx.ea = malloc(sizeof(rnd_hid_attribute_t *) * (export_ctx.len));
+	export_ctx.aa = malloc(sizeof(rnd_hid_attr_val_t *) * (export_ctx.len));
 
 	for(i = n = 0; hids[n] != NULL; n++) {
 		if (((exporters && hids[n]->exporter) || (printers && hids[n]->printer)) && (!hids[n]->hide_from_gui)) {
+			if (hids[n]->argument_array == NULL) {
+				rnd_message(RND_MSG_ERROR, "%s can't export from GUI because of empty argument_array\n(please report this bug!)\n", hids[n]->name);
+				continue;
+			}
+
 			export_ctx.tab_name[i] = hids[n]->name;
 			export_ctx.hid[i] = hids[n];
 			i++;
@@ -185,8 +190,10 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 			for(n = 0; n < export_ctx.len; n++) {
 				int numo;
 				rnd_export_opt_t *opts = export_ctx.hid[n]->get_export_options(export_ctx.hid[n], &numo);
+				rnd_hid_attr_val_t *args = export_ctx.hid[n]->argument_array;
 				export_ctx.numo[n] = numo;
-				export_ctx.ea[n] = opts;
+				export_ctx.aa[n] = args;
+
 				if (numo < 1) {
 					RND_DAD_LABEL(export_ctx.dlg, "Exporter unavailable for direct export");
 					continue;
@@ -202,21 +209,21 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 								case RND_HATT_COORD:
 									RND_DAD_COORD(export_ctx.dlg);
 									RND_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
-									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.crd);
+									RND_DAD_DEFAULT_NUM(export_ctx.dlg, args[i].crd);
 									break;
 								case RND_HATT_INTEGER:
 									RND_DAD_INTEGER(export_ctx.dlg);
 									RND_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
-									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.lng);
+									RND_DAD_DEFAULT_NUM(export_ctx.dlg, args[i].lng);
 									break;
 								case RND_HATT_REAL:
 									RND_DAD_REAL(export_ctx.dlg);
 									RND_DAD_MINMAX(export_ctx.dlg, opts[i].min_val, opts[i].max_val);
-									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.dbl);
+									RND_DAD_DEFAULT_NUM(export_ctx.dlg, args[i].dbl);
 									break;
 								case RND_HATT_UNIT:
 									RND_DAD_UNIT(export_ctx.dlg, RND_UNIT_METRIC | RND_UNIT_IMPERIAL);
-									RND_DAD_DEFAULT_NUM(export_ctx.dlg, opts[i].default_val.lng);
+									RND_DAD_DEFAULT_NUM(export_ctx.dlg, args[i].lng);
 									break;
 								default:
 									if (RND_HATT_IS_COMPOSITE(opts[i].type)) {
@@ -225,7 +232,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 											fnc(RND_HIDEOF_DAD, &export_ctx, &opts[i]);
 									}
 									else
-										RND_DAD_DUP_EXPOPT(export_ctx.dlg, &(opts[i]));
+										RND_DAD_DUP_EXPOPT_VAL(export_ctx.dlg, &(opts[i]), args[i]);
 							}
 							exp_attr[i] = RND_DAD_CURRENT(export_ctx.dlg);
 							if (opts[i].name != NULL)
