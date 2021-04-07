@@ -526,14 +526,6 @@ ha:rnd-menu-v1 {
 				}
 				ha:Optimize routed tracks {
 					li:submenu {
-						ha:Auto-Optimize        = { a={<key>a;<key>o;<key>a;}; action=djopt(auto) }
-						ha:Debumpify            = { a={<key>a;<key>o;<key>d;}; action=djopt(debumpify) }
-						ha:Unjaggy              = { a={<key>a;<key>o;<key>u;}; action=djopt(unjaggy) }
-						ha:Vianudge             = { a={<key>a;<key>o;<key>n;}; action=djopt(vianudge) }
-						ha:Viatrim              = { a={<key>a;<key>o;<key>t;}; action=djopt(viatrim) }
-						ha:Ortho pull           = { a={<key>a;<key>o;<key>o;}; action=djopt(orthopull) }
-						ha:Simple optimization  = { a={<key>a;<key>o;<key>s;}; action=djopt(simple) }
-						ha:Miter                = { a={<key>a;<key>o;<key>m;}; action=djopt(miter) }
 						ha:Puller               = { a={<key>a;<key>o;<key>p;}; action=Puller() }
 						ha:Global Puller {
 							li:submenu {
@@ -542,8 +534,6 @@ ha:rnd-menu-v1 {
 								ha:All       = { action=GlobalPuller() }
 							}
 						}
-						-
-						ha:Only autorouted nets = { checked=plugins/djopt/auto_only; action=conf(toggle, plugins/djopt/auto_only, design) }
 					}
 				}
 				-

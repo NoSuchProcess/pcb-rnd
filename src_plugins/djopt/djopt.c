@@ -57,9 +57,13 @@
 #include <librnd/core/event.h>
 #include "obj_pstk_inlines.h"
 
+#include <librnd/core/hid_menu.h>
+#include "menu_internal.c"
+
 conf_djopt_t conf_djopt;
 
 static const char *djopt_cookie = "djopt";
+
 
 #define dprintf if(0)rnd_printf
 
@@ -2569,6 +2573,7 @@ int pplg_check_ver_djopt(int ver_needed) { return 0; }
 void pplg_uninit_djopt(void)
 {
 	rnd_remove_actions_by_cookie(djopt_cookie);
+	rnd_hid_menu_unload(rnd_gui, djopt_cookie);
 	rnd_conf_unreg_fields("plugins/djopt/");
 }
 
@@ -2581,5 +2586,8 @@ int pplg_init_djopt(void)
 #include "djopt_conf_fields.h"
 
 	RND_REGISTER_ACTIONS(djopt_action_list, djopt_cookie)
+
+	rnd_hid_menu_load(rnd_gui, NULL, djopt_cookie, 175, NULL, 0, djopt_menu, "plugin: djopt");
+
 	return 0;
 }

@@ -1,3 +1,4 @@
+34290	configure	move djopt menu from central menufile to plugin menu
 34078	configure	new infrastructure: anyload
 33963	configure	new plugin: low level pcb-rnd C code draw
 33845	configure	librnd separation: link librnd with -l
