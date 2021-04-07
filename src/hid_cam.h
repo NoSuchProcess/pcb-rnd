@@ -88,8 +88,8 @@ char *pcb_layer_to_file_name(gds_t *dest, rnd_layer_id_t lid, unsigned int flags
 char *pcb_layer_to_file_name_append(gds_t *dest, rnd_layer_id_t lid, unsigned int flags, const char *purpose, int purpi, pcb_file_name_style_t style);
 
 /* Returns a filename base that can be used to output the layer; if flags is 0,
-   look it up. Copies result in dest (which should be at least PCB_DERIVE_FN_SUFF_LEN bytes wide). */
-void pcb_derive_default_filename(const char *pcbfile, rnd_export_opt_t *filename_attrib, const char *suffix);
+   look it up. Copies result in dest (always a dynamically alloceted string). */
+void pcb_derive_default_filename(const char *pcbfile, rnd_hid_attr_val_t *dest, const char *suffix);
 
 /* Same as pcb_derive_default_filename() but returns an allocated string
    directly, instead  of manipulating an attribute */
