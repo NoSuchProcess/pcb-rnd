@@ -8,23 +8,20 @@ of the longer development cycle, there are still a few new features.
 
 Feature highlight:
 
-1. Optional feature: show (render) netnames on traces when zoomed in.
-   View menu, show netnames when zoomed in. Config node:
-   plugins/show_netnames/enable.
-
-2. Anyload files to ease sharing and importing user scripts, menu patches,
+1. Anyload files to ease sharing and importing user scripts, menu patches,
    drc rules, vendor drill, custom configuration and other pcb-rnd addons.
+   http://repo.hu/cgi-bin/pool.cgi?project=pcb-rnd&cmd=show&node=anyload
 
-3. Lihata board save as: denoise option that omits select/warn/found flags
+2. Lihata board save as: denoise option that omits select/warn/found flags
    and rat line objects from the save to reduce VCS noise.
 
-4. Per layer transformations option: per layer wireframe render option on
+3. Per layer transformations option: per layer wireframe render option on
    the GUI (right click context menu in the layer selector).
 
-5. The propedit dialog has in-line help about which property means what
+4. The propedit dialog has in-line help about which property means what
    (top right region of the dialog box).
 
-6. Rewritten rendering code to get layer order from a configurable, domain
+5. Rewritten rendering code to get layer order from a configurable, domain
    specific render script instead of hardwired C.
 
-7. Teardrop extended object.
+6. Teardrop extended object.
