@@ -199,7 +199,7 @@ do { \
 
 static rnd_hid_attr_val_t svg_values[NUM_OPTIONS];
 
-static rnd_export_opt_t *svg_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *svg_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".svg";
 	char **val = &svg_values[HA_svgfile].str;

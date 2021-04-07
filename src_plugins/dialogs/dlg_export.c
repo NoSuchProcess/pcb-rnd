@@ -189,7 +189,7 @@ static void pcb_dlg_export(const char *title, int exporters, int printers)
 			export_ctx.tabs = RND_DAD_CURRENT(export_ctx.dlg);
 			for(n = 0; n < export_ctx.len; n++) {
 				int numo;
-				rnd_export_opt_t *opts = export_ctx.hid[n]->get_export_options(export_ctx.hid[n], &numo);
+				const rnd_export_opt_t *opts = export_ctx.hid[n]->get_export_options(export_ctx.hid[n], &numo);
 				rnd_hid_attr_val_t *args = export_ctx.hid[n]->argument_array;
 				export_ctx.numo[n] = numo;
 				export_ctx.aa[n] = args;

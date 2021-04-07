@@ -102,7 +102,7 @@ static const rnd_export_opt_t gcode_attribute_list[] = {
 
 static rnd_hid_attr_val_t gcode_values[NUM_OPTIONS];
 
-static rnd_export_opt_t *gcode_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *gcode_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if (n)
 		*n = NUM_OPTIONS;

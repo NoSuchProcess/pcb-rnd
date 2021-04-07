@@ -110,7 +110,7 @@ static const rnd_export_opt_t stat_attribute_list[] = {
 
 static rnd_hid_attr_val_t stat_values[NUM_OPTIONS];
 
-static rnd_export_opt_t *stat_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *stat_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".stat.lht";
 	char **val = &stat_values[HA_statfile].str;
@@ -388,10 +388,10 @@ int pplg_check_ver_export_stat(int ver_needed) { return 0; }
 
 void pplg_uninit_export_stat(void)
 {
-	free((char *)stat_attribute_list[HA_first_ver].default_val.str);
-	free((char *)stat_attribute_list[HA_license].default_val.str);
-	stat_attribute_list[HA_first_ver].default_val.str = NULL;
-	stat_attribute_list[HA_license].default_val.str = NULL;
+	free((char *)stat_values[HA_first_ver].str);
+	free((char *)stat_values[HA_license].str);
+	stat_values[HA_first_ver].str = NULL;
+	stat_values[HA_license].str = NULL;
 	rnd_export_remove_opts_by_cookie(stat_cookie);
 	rnd_hid_remove_hid(&stat_hid);
 }

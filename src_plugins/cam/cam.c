@@ -204,7 +204,7 @@ static rnd_action_t cam_action_list[] = {
 	{"cam", pcb_act_cam, pcb_acth_cam, pcb_acts_cam}
 };
 
-static rnd_export_opt_t *export_cam_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *export_cam_get_export_options(rnd_hid_t *hid, int *n)
 {
 	return 0;
 }

@@ -187,7 +187,7 @@ static rnd_hid_attr_val_t tedax_etest_values[NUM_OPTIONS];
 
 static const char *tedax_etest_filename;
 
-static rnd_export_opt_t *tedax_etest_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *tedax_etest_get_export_options(rnd_hid_t *hid, int *n)
 {
 	char *val = tedax_etest_values[HA_outfile].str;
 	if ((PCB != NULL) && (val == NULL))

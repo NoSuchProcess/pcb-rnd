@@ -108,7 +108,7 @@ static rnd_hid_attr_val_t dsn_values[NUM_OPTIONS];
 
 static const char *dsn_filename;
 
-static rnd_export_opt_t *dsn_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *dsn_get_export_options(rnd_hid_t *hid, int *n)
 {
 	char **val = &dsn_values[HA_dsnfile].str;
 	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))

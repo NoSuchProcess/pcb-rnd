@@ -258,7 +258,7 @@ Print file names and aperture counts on stdout.
 
 static rnd_hid_attr_val_t gerber_values[NUM_OPTIONS];
 
-static rnd_export_opt_t *gerber_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *gerber_get_export_options(rnd_hid_t *hid, int *n)
 {
 	char **val = &gerber_values[HA_gerberfile].str;
 	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))

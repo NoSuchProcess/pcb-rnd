@@ -166,27 +166,27 @@ static const rnd_export_opt_t openems_attribute_list[] = {
 
 static rnd_hid_attr_val_t openems_values[NUM_OPTIONS];
 
-static rnd_export_opt_t *openems_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *openems_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".m";
 	pcb_mesh_t *mesh = pcb_mesh_get(MESH_NAME);
-	char **val = &openems_values[HA_openemsfile].str;
+	const char *val = openems_values[HA_openemsfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
+	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &openems_values[HA_openemsfile], suffix);
 
 	if (mesh != NULL) {
-		openems_attribute_list[HA_def_substrate_thick].default_val.crd = mesh->def_subs_thick;
-		openems_attribute_list[HA_def_copper_thick].default_val.crd = mesh->def_copper_thick;
+		openems_values[HA_def_substrate_thick].crd = mesh->def_subs_thick;
+		openems_values[HA_def_copper_thick].crd = mesh->def_copper_thick;
 	}
 
 TODO(": when export dialogs change into DAD, this hack to convert the strings to allocated ones will not be needed anymore")
-	openems_attribute_list[HA_def_copper_cond].default_val.str = rnd_strdup(openems_attribute_list[HA_def_copper_cond].default_val.str);
-	openems_attribute_list[HA_def_subst_epsilon].default_val.str = rnd_strdup(openems_attribute_list[HA_def_subst_epsilon].default_val.str);
-	openems_attribute_list[HA_def_subst_mue].default_val.str = rnd_strdup(openems_attribute_list[HA_def_subst_mue].default_val.str);
-	openems_attribute_list[HA_def_subst_kappa].default_val.str = rnd_strdup(openems_attribute_list[HA_def_subst_kappa].default_val.str);
-	openems_attribute_list[HA_def_subst_sigma].default_val.str = rnd_strdup(openems_attribute_list[HA_def_subst_sigma].default_val.str);
-	openems_attribute_list[HA_void_name].default_val.str = rnd_strdup(openems_attribute_list[HA_void_name].default_val.str);
+	openems_values[HA_def_copper_cond].str = rnd_strdup(openems_attribute_list[HA_def_copper_cond].default_val.str);
+	openems_values[HA_def_subst_epsilon].str = rnd_strdup(openems_attribute_list[HA_def_subst_epsilon].default_val.str);
+	openems_values[HA_def_subst_mue].str = rnd_strdup(openems_attribute_list[HA_def_subst_mue].default_val.str);
+	openems_values[HA_def_subst_kappa].str = rnd_strdup(openems_attribute_list[HA_def_subst_kappa].default_val.str);
+	openems_values[HA_def_subst_sigma].str = rnd_strdup(openems_attribute_list[HA_def_subst_sigma].default_val.str);
+	openems_values[HA_void_name].str = rnd_strdup(openems_attribute_list[HA_void_name].default_val.str);
 
 	if (n)
 		*n = NUM_OPTIONS;

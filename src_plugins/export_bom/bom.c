@@ -61,7 +61,7 @@ typedef struct pcb_bom_list_s {
 	struct pcb_bom_list_s *next;
 } pcb_bom_list_t;
 
-static rnd_export_opt_t *bom_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *bom_get_export_options(rnd_hid_t *hid, int *n)
 {
 	char **val = &bom_values[HA_bomfile].str;
 	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))

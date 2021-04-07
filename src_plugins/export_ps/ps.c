@@ -339,11 +339,11 @@ static struct {
 	long drawn_objs;
 } global;
 
-static rnd_export_opt_t *ps_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *ps_get_export_options(rnd_hid_t *hid, int *n)
 {
-	char **val = &global.ps_values[HA_psfile].str;
+	const char *val = global.ps_values[HA_psfile].str;
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
+	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &global.ps_values[HA_psfile], ".ps");
 
 	if (n)
@@ -1348,7 +1348,7 @@ void ps_calibrate_1(rnd_hid_t *hid, double xval, double yval, int use_command)
 			if (guess(xval, 15, &global.calibration_x))
 				if (guess(xval, 7.5, &global.calibration_x)) {
 					if (xval < 2)
-						ps_attribute_list[HA_xcalib].default_val.dbl = global.calibration_x = xval;
+						global.ps_values[HA_xcalib].dbl = global.calibration_x = xval;
 					else
 						rnd_message(RND_MSG_ERROR, "X value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 15.0, 7.5\n", xval);
 				}
@@ -1356,7 +1356,7 @@ void ps_calibrate_1(rnd_hid_t *hid, double xval, double yval, int use_command)
 			if (guess(yval, 20, &global.calibration_y))
 				if (guess(yval, 10, &global.calibration_y)) {
 					if (yval < 2)
-						ps_attribute_list[HA_ycalib].default_val.dbl = global.calibration_y = yval;
+						global.ps_values[HA_ycalib].dbl = global.calibration_y = yval;
 					else
 						rnd_message(RND_MSG_ERROR, "Y value of %g is too far off.\n" "Expecting it near: 1.0, 4.0, 20.0, 10.0\n", yval);
 				}

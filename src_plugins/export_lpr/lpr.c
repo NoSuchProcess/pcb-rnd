@@ -43,7 +43,7 @@ static rnd_export_opt_t *lpr_options = 0;
 static int num_lpr_options = 0;
 static rnd_hid_attr_val_t lpr_values[NUM_OPTIONS];
 
-static rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 {
 	char **val;
 

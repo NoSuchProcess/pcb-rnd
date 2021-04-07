@@ -398,7 +398,7 @@ static const char *get_file_suffix(void)
 	return result;
 }
 
-static rnd_export_opt_t *png_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *png_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = get_file_suffix();
 	char *val = &png_values[HA_pngfile].str;

@@ -131,7 +131,7 @@ Name of the file to be exported to. Can contain a path.
 
 static rnd_hid_attr_val_t openscad_values[NUM_OPTIONS];
 
-static rnd_export_opt_t *openscad_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *openscad_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".scad";
 	char **val = &openscad_values[HA_openscadfile].str;

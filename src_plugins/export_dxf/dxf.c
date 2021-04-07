@@ -198,7 +198,7 @@ Draw drill contour with thin line
 
 static rnd_hid_attr_val_t dxf_values[NUM_OPTIONS];
 
-static rnd_export_opt_t *dxf_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *dxf_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *suffix = ".dxf";
 	char **val = &dxf_values[HA_dxffile].str;

@@ -38,7 +38,7 @@ static const rnd_export_opt_t export_vfs_mc_options[] = {
 
 static rnd_hid_attr_val_t export_vfs_mc_values[NUM_OPTIONS];
 
-static rnd_export_opt_t *export_vfs_mc_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *export_vfs_mc_get_export_options(rnd_hid_t *hid, int *n)
 {
 	if (n)
 		*n = NUM_OPTIONS;

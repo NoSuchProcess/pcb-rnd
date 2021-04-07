@@ -423,7 +423,7 @@ Name of the IPC-D-356 Netlist output file.
 
 static rnd_hid_attr_val_t ipcd356_values[NUM_OPTIONS];
 
-static rnd_export_opt_t *ipcd356_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *ipcd356_get_export_options(rnd_hid_t *hid, int *n)
 {
 	char **val = &ipcd356_values[HA_ipcd356_filename].str;
 	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))

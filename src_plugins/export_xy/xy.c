@@ -47,7 +47,8 @@ const char *xy_cookie = "XY HID";
 #define MAX_TEMP_NAME_LEN 128
 
 
-static const rnd_export_opt_t xy_options[] = {
+/* This one can not be const because format enumeration is loaded run-time */
+static rnd_export_opt_t xy_options[] = {
 /* %start-doc options "8 XY Creation"
 @ftable @code
 @item --xyfile <string>
@@ -97,11 +98,11 @@ static void free_fmts(void)
 	}
 }
 
-static rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
 {
 	static int last_unit_value = -1;
 	rnd_conf_listitem_t *li;
-	char **val = &xy_values[HA_xyfile].str;
+	const char *val = xy_values[HA_xyfile].str;
 	int idx;
 
 	/* load all formats from the config */
@@ -139,15 +140,15 @@ static rnd_export_opt_t *xy_get_export_options(rnd_hid_t *hid, int *n)
 	xy_options[HA_format].enumerations = (const char **)fmt_names.array;
 
 	/* set default unit and filename */
-	if (xy_options[HA_unit].default_val.lng == last_unit_value) {
+	if (xy_values[HA_unit].lng == last_unit_value) {
 		if (rnd_conf.editor.grid_unit)
-			xy_options[HA_unit].default_val.lng = rnd_conf.editor.grid_unit->index;
+			xy_values[HA_unit].lng = rnd_conf.editor.grid_unit->index;
 		else
-			xy_options[HA_unit].default_val.lng = rnd_get_unit_struct("mil")->index;
-		last_unit_value = xy_options[HA_unit].default_val.lng;
+			xy_values[HA_unit].lng = rnd_get_unit_struct("mil")->index;
+		last_unit_value = xy_values[HA_unit].lng;
 	}
 
-	if ((PCB != NULL) && ((val == NULL) || (*val == NULL) || (**val == '\0')))
+	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &xy_values[HA_xyfile], ".xy");
 
 	if (n)
