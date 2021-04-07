@@ -45,11 +45,11 @@ static rnd_hid_attr_val_t lpr_values[NUM_OPTIONS];
 
 static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 {
-	char **val;
+	char *val;
 
 
 	if (lpr_options == 0) {
-		rnd_export_opt_t *ps_opts = ps_hid.get_export_options(&ps_hid, &num_lpr_options);
+		const rnd_export_opt_t *ps_opts = ps_hid.get_export_options(&ps_hid, &num_lpr_options);
 		lpr_options = calloc(num_lpr_options, sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
@@ -60,8 +60,8 @@ static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 	 * HID's may want to free() this string value and replace it with a
 	 * new one based on how a user fills out a print dialog.
 	 */
-	val = &lpr_values[HA_lprcommand].str;
-	if ((*val == NULL) || (**val == '\0')) {
+	val = lpr_values[HA_lprcommand].str;
+	if ((val == NULL) || (*val == '\0')) {
 		free(*val);
 		*val = rnd_strdup("lpr");
 	}

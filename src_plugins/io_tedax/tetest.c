@@ -189,7 +189,7 @@ static const char *tedax_etest_filename;
 
 static const rnd_export_opt_t *tedax_etest_get_export_options(rnd_hid_t *hid, int *n)
 {
-	char *val = tedax_etest_values[HA_outfile].str;
+	const char *val = tedax_etest_values[HA_outfile].str;
 	if ((PCB != NULL) && (val == NULL))
 		pcb_derive_default_filename(PCB->hidlib.filename, &tedax_etest_values[HA_outfile], ".etest.tdx");
 

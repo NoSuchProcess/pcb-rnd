@@ -110,7 +110,7 @@ static const char *dsn_filename;
 
 static const rnd_export_opt_t *dsn_get_export_options(rnd_hid_t *hid, int *n)
 {
-	const char **val = dsn_values[HA_dsnfile].str;
+	const char *val = dsn_values[HA_dsnfile].str;
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
 		pcb_derive_default_filename(PCB->hidlib.filename, &dsn_values[HA_dsnfile], ".dsn");
 	if (n)
