@@ -464,8 +464,8 @@ static void pcb_draw_annotations(pcb_draw_info_t *info)
 
 static void xform_setup(pcb_draw_info_t *info, rnd_xform_t *dst, const pcb_layer_t *Layer)
 {
-	info->layer = Layer;
 	int copied = 0;
+	info->layer = Layer;
 
 	/* layer-specific transformations */
 	if ((Layer != NULL) && (!pcb_xform_is_nop(&Layer->meta.real.xform))) {
