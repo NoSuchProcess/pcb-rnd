@@ -47,7 +47,7 @@ typedef struct rnd_hid_gc_s {
 
 static pcb_cam_t ps_cam;
 
-rnd_export_opt_t ps_attribute_list[] = {
+static const rnd_export_opt_t ps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "91 Postscript Export"

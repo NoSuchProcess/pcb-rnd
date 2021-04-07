@@ -108,7 +108,7 @@ static struct rnd_hid_gc_s thin = {
 #include "dxf_draw.c"
 
 
-rnd_export_opt_t dxf_attribute_list[] = {
+static const rnd_export_opt_t dxf_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 DXF Options"

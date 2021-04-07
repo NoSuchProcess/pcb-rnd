@@ -103,7 +103,7 @@ static int openems_ovr;
 
 #define THMAX RND_MM_TO_COORD(100)
 
-rnd_export_opt_t openems_attribute_list[] = {
+static const rnd_export_opt_t openems_attribute_list[] = {
 	{"outfile", "Graphics output file",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_openemsfile 0

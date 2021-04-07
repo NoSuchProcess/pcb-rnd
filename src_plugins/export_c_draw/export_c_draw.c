@@ -70,7 +70,7 @@ typedef struct rnd_hid_gc_s {
 
 static FILE *f = NULL;
 
-rnd_export_opt_t c_draw_attribute_list[] = {
+static const rnd_export_opt_t c_draw_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 	{"outfile", "Graphics output file",

@@ -29,7 +29,7 @@
 
 const char *bom_cookie = "bom HID";
 
-static rnd_export_opt_t bom_options[] = {
+static const rnd_export_opt_t bom_options[] = {
 /* %start-doc options "8 BOM Creation"
 @ftable @code
 @item --bomfile <string>

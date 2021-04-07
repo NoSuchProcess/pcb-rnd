@@ -20,7 +20,7 @@
 
 const char *lpr_cookie = "lpr HID";
 
-static rnd_export_opt_t base_lpr_options[] = {
+static const rnd_export_opt_t base_lpr_options[] = {
 
 /* %start-doc options "98 lpr Printing Options"
 @ftable @code

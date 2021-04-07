@@ -165,7 +165,7 @@ static const char *filetypes[] = {
 
 #include "png_photo1.c"
 
-rnd_export_opt_t png_attribute_list[] = {
+static const rnd_export_opt_t png_attribute_list[] = {
 /* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 PNG Options"

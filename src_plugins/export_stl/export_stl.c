@@ -50,7 +50,7 @@
 static rnd_hid_t stl_hid;
 const char *stl_cookie = "export_stl HID";
 
-rnd_export_opt_t stl_attribute_list[] = {
+static const rnd_export_opt_t stl_attribute_list[] = {
 	{"outfile", "STL output file",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_stlfile 0

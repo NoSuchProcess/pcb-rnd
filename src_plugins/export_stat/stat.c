@@ -68,7 +68,7 @@ static rnd_hid_t stat_hid;
 
 const char *stat_cookie = "stat HID";
 
-rnd_export_opt_t stat_attribute_list[] = {
+static const rnd_export_opt_t stat_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 	{"outfile", "Output file name",

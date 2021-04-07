@@ -78,7 +78,7 @@ static rnd_coord_t viadrill = 25;
 
 static rnd_hid_t dsn_hid;
 
-static rnd_export_opt_t dsn_options[] = {
+static const rnd_export_opt_t dsn_options[] = {
 	{"dsnfile", "SPECCTRA output file",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_dsnfile 0

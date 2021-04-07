@@ -164,7 +164,7 @@ typedef struct rnd_hid_gc_s {
 
 static long exc_drawn_objs;
 
-static rnd_export_opt_t excellon_options[] = {
+static const rnd_export_opt_t excellon_options[] = {
 
 /* %start-doc options "90 excellon Export"
 @ftable @code

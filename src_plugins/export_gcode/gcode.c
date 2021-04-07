@@ -59,7 +59,7 @@ static gcode_t gctx;
 static const char def_layer_script[] = "setup_negative; trace_contour; fix_overcuts";
 static const char def_mech_script[]  = "setup_positive; trace_contour; fix_overcuts";
 
-rnd_export_opt_t gcode_attribute_list[] = {
+static const rnd_export_opt_t gcode_attribute_list[] = {
 	{"outfile", "file name prefix for non-cam",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
 #define HA_outfile 0

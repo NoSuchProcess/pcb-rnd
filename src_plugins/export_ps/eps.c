@@ -48,7 +48,7 @@ static int fast_erase = -1;
 static rnd_composite_op_t drawing_mode;
 static long eps_drawn_objs;
 
-static rnd_export_opt_t eps_attribute_list[] = {
+static const rnd_export_opt_t eps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "92 Encapsulated Postscript Export"

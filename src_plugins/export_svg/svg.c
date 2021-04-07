@@ -125,7 +125,7 @@ static struct {
 	/* INNER */  { "#222222", "#111111", "#000000", RND_MM_TO_COORD(0) }
 };
 
-rnd_export_opt_t svg_attribute_list[] = {
+static const rnd_export_opt_t svg_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 SVG Options"

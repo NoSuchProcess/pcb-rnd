@@ -197,7 +197,7 @@ static const char *coord_format_names[NUM_COORD_FORMATS+1] = {
 
 static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt);
 
-static rnd_export_opt_t gerber_options[] = {
+static const rnd_export_opt_t gerber_options[] = {
 	{"", "WARNING",
 	 RND_HATT_BEGIN_VBOX, 0, 0, {0, 0, 0, 0, {0}, gerber_warning}, 0, 0},
 #define HA_warning 0

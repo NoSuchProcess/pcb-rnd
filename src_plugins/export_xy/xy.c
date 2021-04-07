@@ -47,7 +47,7 @@ const char *xy_cookie = "XY HID";
 #define MAX_TEMP_NAME_LEN 128
 
 
-static rnd_export_opt_t xy_options[] = {
+static const rnd_export_opt_t xy_options[] = {
 /* %start-doc options "8 XY Creation"
 @ftable @code
 @item --xyfile <string>

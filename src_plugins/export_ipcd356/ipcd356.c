@@ -398,7 +398,7 @@ TODO("subc: subc-in-subc")
 
 /*** export hid administration and API/glu ***/
 
-static rnd_export_opt_t ipcd356_options[] = {
+static const rnd_export_opt_t ipcd356_options[] = {
 /* %start-doc options "8 IPC-D-356 Netlist Export"
 @ftable @code
 @item --netlist-file <string>

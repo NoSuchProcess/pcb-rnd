@@ -84,7 +84,7 @@ static vti0_t scad_comp;
 
 static rnd_hid_attr_val_t *openscad_options;
 
-rnd_export_opt_t openscad_attribute_list[] = {
+static const rnd_export_opt_t openscad_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 /* %start-doc options "93 DXF Options"
