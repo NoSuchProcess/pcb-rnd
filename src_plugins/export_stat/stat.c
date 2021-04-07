@@ -416,10 +416,12 @@ int pplg_init_export_stat(void)
 
 	stat_hid.usage = stat_usage;
 
-	stat_attribute_list[HA_first_ver].default_val.str = rnd_strdup(PCB_VERSION);
-	stat_attribute_list[HA_license].default_val.str = rnd_strdup("proprietary/private");
 
 	rnd_hid_register_hid(&stat_hid);
+	rnd_hid_load_defaults(&stat_hid, stat_attribute_list, NUM_OPTIONS);
+
+	stat_values[HA_first_ver].str = rnd_strdup(PCB_VERSION);
+	stat_values[HA_license].str = rnd_strdup("proprietary/private");
 
 	return 0;
 }

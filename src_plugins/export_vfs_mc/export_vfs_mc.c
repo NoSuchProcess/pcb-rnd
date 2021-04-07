@@ -168,5 +168,7 @@ int pplg_init_export_vfs_mc(void)
 	export_vfs_mc_hid.usage = export_vfs_mc_usage;
 
 	rnd_hid_register_hid(&export_vfs_mc_hid);
+	rnd_hid_load_defaults(&export_vfs_mc_hid, export_vfs_mc_options, NUM_OPTIONS);
+
 	return 0;
 }

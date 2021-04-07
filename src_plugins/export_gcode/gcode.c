@@ -420,6 +420,7 @@ int pplg_init_export_gcode(void)
 	gcode_hid.usage = gcode_usage;
 
 	rnd_hid_register_hid(&gcode_hid);
+	rnd_hid_load_defaults(&gcode_hid, gcode_attribute_list, NUM_OPTIONS);
 
 
 	return 0;

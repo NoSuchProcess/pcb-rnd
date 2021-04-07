@@ -147,6 +147,7 @@ int pplg_init_export_lpr(void)
 	lpr_hid.usage = lpr_usage;
 
 	rnd_hid_register_hid(&lpr_hid);
+	rnd_hid_load_defaults(&lpr_hid, base_lpr_options, NUM_OPTIONS);
 
 	return 0;
 }

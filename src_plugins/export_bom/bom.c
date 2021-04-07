@@ -287,5 +287,7 @@ int pplg_init_export_bom(void)
 	bom_hid.usage = bom_usage;
 
 	rnd_hid_register_hid(&bom_hid);
+	rnd_hid_load_defaults(&bom_hid, bom_options, NUM_OPTIONS);
+
 	return 0;
 }

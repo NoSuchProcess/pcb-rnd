@@ -531,6 +531,7 @@ int pplg_init_export_excellon(void)
 	excellon_hid.argument_array = excellon_values;
 
 	rnd_hid_register_hid(&excellon_hid);
+	rnd_hid_load_defaults(&excellon_hid, excellon_options, NUM_OPTIONS);
 
 	rnd_event_bind(RND_EVENT_EXPORT_SESSION_BEGIN, exc_session_begin, NULL, excellon_cookie);
 	return 0;

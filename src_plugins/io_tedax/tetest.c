@@ -267,4 +267,6 @@ void tedax_etest_init(void)
 	exp_tedax_etest.argument_array = tedax_etest_values;
 
 	rnd_hid_register_hid(&exp_tedax_etest);
+	rnd_hid_load_defaults(&exp_tedax_etest, tedax_etest_options, NUM_OPTIONS);
+
 }

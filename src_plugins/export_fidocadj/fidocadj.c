@@ -387,6 +387,7 @@ int pplg_init_export_fidocadj(void)
 	fidocadj_hid.usage = fidocadj_usage;
 
 	rnd_hid_register_hid(&fidocadj_hid);
+	rnd_hid_load_defaults(&fidocadj_hid, fidocadj_attribute_list, NUM_OPTIONS);
 
 	return 0;
 }

@@ -964,6 +964,7 @@ int pplg_init_export_openems(void)
 	RND_REGISTER_ACTIONS(openems_action_list, openems_cookie);
 
 	pcb_openems_excitation_init();
+	rnd_hid_load_defaults(&openems_hid, openems_attribute_list, NUM_OPTIONS);
 
 	return 0;
 }

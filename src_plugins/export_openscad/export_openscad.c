@@ -704,6 +704,7 @@ int pplg_init_export_openscad(void)
 	openscad_hid.usage = openscad_usage;
 
 	rnd_hid_register_hid(&openscad_hid);
+	rnd_hid_load_defaults(&openscad_hid, openscad_attribute_list, NUM_OPTIONS);
 
 	RND_REGISTER_ACTIONS(scad_action_list, openscad_cookie)
 

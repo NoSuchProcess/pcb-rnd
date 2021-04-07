@@ -317,5 +317,6 @@ int pplg_init_cam(void)
 	export_cam_hid.usage = export_cam_usage;
 
 	rnd_hid_register_hid(&export_cam_hid);
+
 	return 0;
 }

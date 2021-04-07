@@ -567,6 +567,7 @@ int pplg_init_export_dxf(void)
 	dxf_hid.usage = dxf_usage;
 
 	rnd_hid_register_hid(&dxf_hid);
+	rnd_hid_load_defaults(&dxf_hid, dxf_attribute_list, NUM_OPTIONS);
 
 	return 0;
 }

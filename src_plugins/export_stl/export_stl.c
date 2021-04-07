@@ -552,6 +552,7 @@ int pplg_init_export_stl(void)
 	stl_hid.usage = stl_usage;
 
 	rnd_hid_register_hid(&stl_hid);
+	rnd_hid_load_defaults(&stl_hid, stl_attribute_list, NUM_OPTIONS);
 
 	return 0;
 }

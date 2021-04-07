@@ -1447,6 +1447,8 @@ int pplg_init_export_png(void)
 
 #ifdef HAVE_SOME_FORMAT
 	rnd_hid_register_hid(&png_hid);
+	rnd_hid_load_defaults(&png_hid, png_attribute_list, NUM_OPTIONS);
 #endif
+
 	return 0;
 }

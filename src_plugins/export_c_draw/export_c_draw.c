@@ -431,6 +431,7 @@ int pplg_init_export_c_draw(void)
 	c_draw_hid.usage = c_draw_usage;
 
 	rnd_hid_register_hid(&c_draw_hid);
+	rnd_hid_load_defaults(&c_draw_hid, c_draw_attribute_list, NUM_OPTIONS);
 
 	return 0;
 }

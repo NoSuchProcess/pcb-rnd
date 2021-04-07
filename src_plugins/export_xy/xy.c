@@ -888,6 +888,7 @@ int pplg_init_export_xy(void)
 	xy_hid.usage = xy_usage;
 
 	rnd_hid_register_hid(&xy_hid);
+	rnd_hid_load_defaults(&xy_hid, xy_options, NUM_OPTIONS);
 
 	vts0_init(&fmt_names);
 	vts0_init(&fmt_ids);

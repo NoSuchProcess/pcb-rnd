@@ -623,6 +623,7 @@ int pplg_init_export_dsn(void)
 	dsn_hid.argument_array = dsn_values;
 
 	rnd_hid_register_hid(&dsn_hid);
+	rnd_hid_load_defaults(&dsn_hid, dsn_options, NUM_OPTIONS);
 
 	rnd_export_register_opts2(&dsn_hid, dsn_options, sizeof(dsn_options) / sizeof(dsn_options[0]), dsn_cookie, 0);
 	return 0;

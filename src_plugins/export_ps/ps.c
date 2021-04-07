@@ -1501,6 +1501,7 @@ int pplg_init_export_ps(void)
 	ps_hid.usage = ps_usage;
 
 	rnd_hid_register_hid(&ps_hid);
+	rnd_hid_load_defaults(&ps_hid, ps_attribute_list, NUM_OPTIONS);
 
 	hid_eps_init();
 	return 0;

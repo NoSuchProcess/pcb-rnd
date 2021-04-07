@@ -689,4 +689,5 @@ void hid_eps_init()
 	eps_hid.usage = eps_usage;
 
 	rnd_hid_register_hid(&eps_hid);
+	rnd_hid_load_defaults(&eps_hid, eps_attribute_list, NUM_OPTIONS);
 }

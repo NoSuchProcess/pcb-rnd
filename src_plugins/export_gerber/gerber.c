@@ -1112,6 +1112,7 @@ int pplg_init_export_gerber(void)
 	gerber_hid.argument_array = gerber_values;
 
 	rnd_hid_register_hid(&gerber_hid);
+	rnd_hid_load_defaults(&gerber_hid, gerber_options, NUM_OPTIONS);
 
 	rnd_event_bind(RND_EVENT_EXPORT_SESSION_BEGIN, gerber_session_begin, NULL, gerber_cookie);
 
