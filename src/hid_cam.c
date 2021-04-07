@@ -186,7 +186,7 @@ char *pcb_derive_default_filename_(const char *pcbfile, const char *suffix)
 
 void pcb_derive_default_filename(const char *pcbfile, rnd_hid_attr_val_t *filename_attrib, const char *suffix)
 {
-	free(filename_attrib->str);
+	free((char *)filename_attrib->str);
 	filename_attrib->str = pcb_derive_default_filename_(pcbfile, suffix);
 }
 
