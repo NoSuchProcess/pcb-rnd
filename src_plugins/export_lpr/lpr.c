@@ -45,7 +45,7 @@ static rnd_hid_attr_val_t lpr_values[NUM_OPTIONS];
 
 static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 {
-	char *val;
+	const char *val;
 
 
 	if (lpr_options == 0) {
@@ -62,8 +62,8 @@ static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 	 */
 	val = lpr_values[HA_lprcommand].str;
 	if ((val == NULL) || (*val == '\0')) {
-		free(*val);
-		*val = rnd_strdup("lpr");
+		free((char *)lpr_values[HA_lprcommand].str);
+		lpr_values[HA_lprcommand].str = rnd_strdup("lpr");
 	}
 
 	if (n)
