@@ -30,6 +30,7 @@
 
 #include "board.h"
 #include "data.h"
+#include "layer_ui.h"
 #include <librnd/core/error.h>
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/misc_util.h>
