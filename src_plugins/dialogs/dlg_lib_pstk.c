@@ -34,6 +34,7 @@
 #include <librnd/core/hid_inlines.h>
 #include <librnd/core/hid_dad.h>
 #include <librnd/core/hid_dad_tree.h>
+#include <librnd/core/compat_fs.h>
 #include <librnd/core/safe_fs.h>
 #include "obj_pstk.h"
 #include "obj_pstk_inlines.h"
@@ -462,6 +463,143 @@ static void pstklib_load(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
 }
 
+static void pstklib_ccopy(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
+	pcb_pstk_proto_t *proto;
+	FILE *f;
+	char *tmp_fn;
+	int res;
+
+
+	if (data == NULL)
+		return;
+
+	if (row == NULL) {
+		rnd_message(RND_MSG_ERROR, "First select a prototype to copy\n");
+		return;
+	}
+
+	proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
+	if (proto == NULL)
+		return;
+
+	tmp_fn = rnd_tempfile_name_new("pstk_copy");
+	if (tmp_fn == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to create temporary file\n");
+		return;
+	}
+	f = rnd_fopen(&ctx->pcb->hidlib, tmp_fn, "w");
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to open temporary file %s (write)\n", tmp_fn);
+		rnd_tempfile_unlink(tmp_fn);
+		return;
+	}
+
+	res = pcb_write_padstack(f, proto, "lihata");
+	fclose(f);
+	if (res == 0) {
+		long size = rnd_file_size(&ctx->pcb->hidlib, tmp_fn);
+		void *buf;
+		if ((size > 0) && ((buf = malloc(size)) != NULL)) {
+			f = rnd_fopen(&ctx->pcb->hidlib, tmp_fn, "r");
+			if (f != NULL) {
+				if (fread(buf, size, 1, f) == 1) {
+					if (rnd_gui->clip_set(rnd_gui, RND_HID_CLIPFMT_TEXT, buf, size) != 0)
+						rnd_message(RND_MSG_ERROR, "Failed to write the clipboard\n");
+				}
+				else
+					rnd_message(RND_MSG_ERROR, "Failed to read padstack proto from temp file %s\n", tmp_fn);
+			}
+			else
+				rnd_message(RND_MSG_ERROR, "Failed to open temporary file %s (read)\n", tmp_fn);
+			free(buf);
+			fclose(f);
+		}
+		else
+			rnd_message(RND_MSG_ERROR, "Failed to render the padstack prototype or to allocate memory\n");
+	}
+	else
+		rnd_message(RND_MSG_ERROR, "Failed to write padstack proto into temporary file %s\n", tmp_fn);
+	rnd_tempfile_unlink(tmp_fn);
+}
+
+static void pstklib_cpaste(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	pstk_lib_ctx_t *ctx = caller_data;
+	pcb_data_t *data = get_data(ctx, ctx->subc_id, NULL);
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&ctx->dlg[ctx->wlist]);
+	pcb_pstk_proto_t *proto;
+	char *tmp_fn;
+	void *buf;
+	FILE *f;
+	rnd_hid_attr_val_t hv;
+	size_t size;
+	int res, res2;
+	rnd_hid_clipfmt_t fmt;
+
+	if (data == NULL)
+		return;
+
+	if (row == NULL) {
+		rnd_message(RND_MSG_ERROR, "First select a prototype to paste into\n");
+		return;
+	}
+
+	proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
+	if (proto == NULL)
+		return;
+
+	tmp_fn = rnd_tempfile_name_new("pstk_paste");
+	if (tmp_fn == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to create temporary file\n");
+		return;
+	}
+	f = rnd_fopen(&ctx->pcb->hidlib, tmp_fn, "w");
+	if (f == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to open temporary file %s (write)\n", tmp_fn);
+		rnd_tempfile_unlink(tmp_fn);
+		return;
+	}
+
+	res = rnd_gui->clip_get(rnd_gui, &fmt, &buf, &size);
+	if (res == 0) {
+		res2 = fwrite(buf, size, 1, f);
+		rnd_gui->clip_free(rnd_gui, fmt, buf, size);
+	}
+	fclose(f);
+
+	if (res != 0) {
+		rnd_message(RND_MSG_ERROR, "Failed to get data from the clipboard\n");
+		rnd_tempfile_unlink(tmp_fn);
+		return;
+	}
+	if (res2 != 1) {
+		rnd_message(RND_MSG_ERROR, "Failed to write data in temporary file %s\n", tmp_fn);
+		rnd_tempfile_unlink(tmp_fn);
+		return;
+	}
+	if (fmt != RND_HID_CLIPFMT_TEXT) {
+		rnd_message(RND_MSG_ERROR, "Invalid clipboard format\n");
+		rnd_tempfile_unlink(tmp_fn);
+		return;
+	}
+
+	if (pcb_load_padstack(&ctx->pcb->hidlib, proto, tmp_fn, NULL) != 0)
+		rnd_message(RND_MSG_ERROR, "Padstack failed to import from the clipboard.\n");
+
+	proto->parent = data;
+
+	rnd_tempfile_unlink(tmp_fn);
+
+	/* redraw */
+	hv.str = NULL;
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+}
+
+
 static void pstklib_proto_switch(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_btn)
 {
 	pstk_lib_ctx_t *ctx = caller_data;
@@ -652,6 +790,12 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 					RND_DAD_BUTTON(ctx->dlg, "Save...");
 						RND_DAD_HELP(ctx->dlg, "Save the selected padstack to a file");
 						RND_DAD_CHANGE_CB(ctx->dlg, pstklib_save);
+					RND_DAD_BUTTON(ctx->dlg, "Paste");
+						RND_DAD_HELP(ctx->dlg, "Replace the selected padstack prototype with the one from the system clipboard");
+						RND_DAD_CHANGE_CB(ctx->dlg, pstklib_cpaste);
+					RND_DAD_BUTTON(ctx->dlg, "Copy");
+						RND_DAD_HELP(ctx->dlg, "Copy selected padstack prototype to the clipboard");
+						RND_DAD_CHANGE_CB(ctx->dlg, pstklib_ccopy);
 				RND_DAD_END(ctx->dlg);
 			RND_DAD_END(ctx->dlg);
 
