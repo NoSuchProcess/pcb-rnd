@@ -281,7 +281,7 @@ Diameter of the small hole when drill-helper is on
 %end-doc
 */
 	{"drill-helper-size", "Diameter of the small hole when drill-helper is on",
-	 RND_HATT_COORD, 0, RND_MM_TO_COORD(10), {0, 0, 0, PCB_MIN_PINORVIAHOLE}, 0},
+	 RND_HATT_COORD, 0, RND_MM_TO_COORD(10), {0, 0, 0, RND_MIL_TO_COORD(4)}, 0},
 #define HA_drillhelpersize 19
 
 
