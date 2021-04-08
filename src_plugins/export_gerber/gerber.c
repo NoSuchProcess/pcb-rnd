@@ -195,7 +195,7 @@ static const char *coord_format_names[NUM_COORD_FORMATS+1] = {
 	NULL
 };
 
-static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt);
+static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx, const rnd_export_opt_t *opt, rnd_hid_attr_val_t *val);
 
 static const rnd_export_opt_t gerber_options[] = {
 	{"", "WARNING",
@@ -1014,7 +1014,7 @@ static void gerber_go_to_cam_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 }
 
 
-static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx, rnd_export_opt_t *opt)
+static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx, const rnd_export_opt_t *opt, rnd_hid_attr_val_t *val)
 {
 	const char warn_txt[] =
 		"WARNING: direct gerber export is most probably NOT what\n"
