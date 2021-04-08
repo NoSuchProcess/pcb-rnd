@@ -413,6 +413,9 @@ static int eps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 	fprintf(f, "%% Layer %s group %ld drill %d mask %d\n", name, group, is_drill, is_mask);
 	gds_uninit(&tmp_ln);
 
+	if (eps_cam.active) /* CAM has decided already */
+		return 1;
+
 	if (as_shown) {
 		if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 			return pcb_silk_on(PCB);
