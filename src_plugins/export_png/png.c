@@ -569,6 +569,9 @@ void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xfo
 		}
 	}
 
+	if (!png_cam.active || as_shown)
+		xform->enable_silk_invis_clr = 1;
+
 	if (as_shown) {
 		/* disable (exporter default) hiding overlay in as_shown */
 		xform->omit_overlay = 0;
@@ -831,6 +834,9 @@ static int png_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 	if (photo_mode)
 		return png_set_layer_group_photo(group, purpose, purpi, layer, flags, is_empty, xform);
 
+	if (png_cam.active) /* CAM decided already */
+		return 1;
+
 	if (as_shown) {
 		if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) {
 			if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
@@ -841,7 +847,7 @@ static int png_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 		if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_MASK)
 			return PCB->LayerGroups.grp[group].vis && PCB_LAYERFLG_ON_VISIBLE_SIDE(flags);
 	}
-	else if (!png_cam.active) {
+	else {
 		if (is_mask)
 			return 0;
 
