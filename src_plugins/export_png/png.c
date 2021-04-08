@@ -841,7 +841,7 @@ static int png_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 		if ((flags & PCB_LYT_ANYTHING) == PCB_LYT_MASK)
 			return PCB->LayerGroups.grp[group].vis && PCB_LAYERFLG_ON_VISIBLE_SIDE(flags);
 	}
-	else {
+	else if (!png_cam.active) {
 		if (is_mask)
 			return 0;
 
