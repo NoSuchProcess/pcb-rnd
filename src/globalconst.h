@@ -40,7 +40,6 @@
 #define PCB_MAX_ARCRADIUS    RND_MAX_COORD
 #define PCB_MIN_TEXTSCALE    1 /* scaling of text objects in percent (must be an integer greater than 0) */
 #define PCB_MAX_TEXTSCALE    10000
-#define PCB_MIN_PINORVIACOPPER RND_MIL_TO_COORD(4)	/* min difference outer-inner diameter */
 #define PCB_MAX_FONTPOSITION 255 /* upper limit of characters in my font */
 
 #define PCB_MAX_BUFFER       5 /* number of pastebuffers additional changes in menu.c are also required to select more buffers */

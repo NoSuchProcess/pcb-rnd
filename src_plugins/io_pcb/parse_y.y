@@ -59,6 +59,9 @@
 /* default inner/outer ratio for pins/vias in percent */
 #define PCB_DEFAULT_DRILLINGHOLE 40
 
+/* min difference outer-inner diameter */
+#define PCB_MIN_PINORVIACOPPER RND_MIL_TO_COORD(4)
+
 static	pcb_layer_t *Layer;
 static	pcb_poly_t *Polygon;
 static	pcb_symbol_t *Symbol;
