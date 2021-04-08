@@ -92,12 +92,8 @@ static const char pcb_acth_ReadBoard[] = "Length returns the number of groups on
 static fgw_error_t pcb_act_ReadBoard(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	int cmd, fld;
-	char *cmds, *flds, *target;
-	rnd_layergrp_id_t gid;
-	pcb_layergrp_t *grp;
-	pcb_layer_type_t lyt;
-	long idx;
+	int cmd;
+	const char *cmds;
 
 	RND_ACT_CONVARG(1, FGW_STR, ReadBoard, cmds = argv[1].val.str);
 	cmd = act_read_keywords_sphash(cmds);
