@@ -111,6 +111,7 @@ struct rnd_xform_s {   /* generic object transformation; all-zero means no trans
 	unsigned show_solder_side:1;    /* GUI */
 	unsigned invis_other_groups:1;  /* GUI */
 	unsigned black_current_group:1; /* GUI */
+	unsigned enable_silk_invis_clr:1;  /* when 1, enable drawing other-side silk with the 'inivisible color' */
 	/* WARNING: After adding new fields, make sure to update pcb_xform_add() and pcb_xform_is_nop() below */
 };
 
@@ -135,6 +136,7 @@ struct rnd_xform_s {   /* generic object transformation; all-zero means no trans
 		__dst__->show_solder_side |= __src__->show_solder_side; \
 		__dst__->invis_other_groups |= __src__->invis_other_groups; \
 		__dst__->black_current_group |= __src__->black_current_group; \
+		__dst__->enable_silk_invis_clr |= __src__->enable_silk_invis_clr; \
 	} while(0)
 #define pcb_xform_is_nop(src) (\
 	((src)->bloat == 0) && \
@@ -150,7 +152,8 @@ struct rnd_xform_s {   /* generic object transformation; all-zero means no trans
 	((src)->add_gui_xform == 0) && \
 	((src)->show_solder_side == 0) && \
 	((src)->invis_other_groups == 0) && \
-	((src)->black_current_group == 0) \
+	((src)->black_current_group == 0) && \
+	((src)->enable_silk_invis_clr == 0) \
 	)
 
 /* Returns true if overlay drawing should be omitted */

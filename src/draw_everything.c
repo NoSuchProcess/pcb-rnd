@@ -53,6 +53,8 @@ typedef struct {
 	/* when scripted: per call args */
 	int argc;
 	long argv[DRW_MAX_ARG];
+
+	unsigned enable_silk_invis_clr:1;
 } draw_everything_t;
 
 
@@ -113,7 +115,7 @@ static int draw_everything_error = 0; /* set to 1 on execution error so subseque
 /* temporarily change the color of the other-side silk */
 static int drw_silk_tune_color(pcb_draw_info_t *info, draw_everything_t *de)
 {
-	if (de->backsilk_grp != NULL) {
+	if (de->enable_silk_invis_clr && (de->backsilk_grp != NULL)) {
 		rnd_cardinal_t n;
 		for(n = 0; n < de->backsilk_grp->len; n++) {
 			pcb_layer_t *ly = pcb_get_layer(PCB->Data, de->backsilk_grp->lid[n]);
@@ -129,7 +131,7 @@ static int drw_silk_tune_color(pcb_draw_info_t *info, draw_everything_t *de)
 /* set back the color of the other-side silk */
 static int drw_silk_restore_color(pcb_draw_info_t *info, draw_everything_t *de)
 {
-	if (de->backsilk_grp != NULL) {
+	if (de->enable_silk_invis_clr && (de->backsilk_grp != NULL)) {
 		rnd_cardinal_t n;
 		for(n = 0; n < de->backsilk_grp->len; n++) {
 			pcb_layer_t *ly = pcb_get_layer(PCB->Data, de->backsilk_grp->lid[n]);
@@ -489,6 +491,12 @@ static void draw_everything(pcb_draw_info_t *info)
 	de.vside = PCB_LYT_VISIBLE_SIDE();
 	de.backsilk_gid = ((!info->xform->show_solder_side) ? pcb_layergrp_get_bottom_silk() : pcb_layergrp_get_top_silk());
 	de.backsilk_grp = pcb_get_layergrp(PCB, de.backsilk_gid);
+
+	de.enable_silk_invis_clr = info->xform->enable_silk_invis_clr;
+
+	/* ugly special case for compatibility: far-side silk is rendered grey on GUI... */
+	if ((rnd_render == rnd_gui) && rnd_render->gui)
+		de.enable_silk_invis_clr = 1;
 
 	if (draw_everything_scripted(info, &de) < 0) {
 		if (!draw_everything_error) {
