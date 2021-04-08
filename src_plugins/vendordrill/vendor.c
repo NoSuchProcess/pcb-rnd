@@ -426,8 +426,8 @@ static void apply_vendor_map(void)
 				rnd_message(RND_MSG_INFO,
 					"Adjusted %s routing style hole size to be %ml mils\n",
 					PCB->RouteStyle.array[i].name, PCB->RouteStyle.array[i].Hole);
-				if (PCB->RouteStyle.array[i].Diameter < PCB->RouteStyle.array[i].Hole + PCB_MIN_PINORVIACOPPER) {
-					PCB->RouteStyle.array[i].Diameter = PCB->RouteStyle.array[i].Hole + PCB_MIN_PINORVIACOPPER;
+				if (PCB->RouteStyle.array[i].Diameter < PCB->RouteStyle.array[i].Hole + conf_core.design.min_wid) {
+					PCB->RouteStyle.array[i].Diameter = PCB->RouteStyle.array[i].Hole + conf_core.design.min_wid;
 					rnd_message(RND_MSG_INFO,
 						"Increased %s routing style via diameter to %ml mils\n",
 						PCB->RouteStyle.array[i].name, PCB->RouteStyle.array[i].Diameter);
