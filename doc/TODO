@@ -10,8 +10,6 @@
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
 	- replace the route style dialog box's via part
-	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
-	- load/import from buffer and file
 	- CLEANUP: remove pcb_board_set_via_size and board property for via geometry
 	- add text font, update the pool node text_edit [report: Igor2]
 
