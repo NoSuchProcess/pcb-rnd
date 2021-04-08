@@ -12,7 +12,7 @@
 	- replace the route style dialog box's via part
 	- proto copy to buffer - a buffer with a single padstack should also serve as a prototype copy vehicle? or just import by a list from the buffer
 	- load/import from buffer and file
-	- CLEANUP: remove PCB_MIN_PINORVIA* PCB_DEFAULT_DRILLINGHOLE macros - nothing should use them anymore
+	- CLEANUP: remove pcb_board_set_via_size and board property for via geometry
 	- add text font, update the pool node text_edit [report: Igor2]
 
 2. For later releases ===============================================================================
