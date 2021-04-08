@@ -299,6 +299,7 @@ void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xf
 		/* disable (exporter default) hiding overlay in as_shown */
 		xform->omit_overlay = 0;
 		xform->add_gui_xform = 1;
+		xform->enable_silk_invis_clr = 1;
 	}
 
 	ctx.view = *bounds;
