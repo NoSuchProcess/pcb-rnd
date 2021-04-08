@@ -152,7 +152,7 @@ void pcb_board_remove(pcb_board_t *Ptr);
 void pcb_board_set_line_width(rnd_coord_t Size);
 
 /* sets a new via thickness */
-void pcb_board_set_via_size(rnd_coord_t Size, rnd_bool Force);
+void pcb_board_set_via_size(rnd_coord_t Size);
 
 /* sets a new via drilling hole */
 void pcb_board_set_via_drilling_hole(rnd_coord_t Size);
