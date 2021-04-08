@@ -329,8 +329,6 @@ static int fnc_obj_by_idpath(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv
 
 static int fnc_poly_is_valid(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
 {
-	pcb_board_t *pcb = ectx->pcb;
-	pcb_idpath_t *path;
 	pcb_any_obj_t *obj;
 
 	if ((argc != 1) || (argv[0].type != PCBQ_VT_OBJ))
