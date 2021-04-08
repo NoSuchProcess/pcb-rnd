@@ -199,7 +199,7 @@ static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx,
 
 static const rnd_export_opt_t gerber_options[] = {
 	{"", "WARNING",
-	 RND_HATT_BEGIN_VBOX, 0, 0, {0, 0, 0, 0, {0}, gerber_warning}, 0, 0},
+	 RND_HATT_BEGIN_VBOX, 0, 0, {0, 0, 0, 0, {0}, gerber_warning}, 0},
 #define HA_warning 0
 
 /* %start-doc options "90 Gerber Export"
@@ -210,7 +210,7 @@ Gerber output file prefix. Can include a path.
 %end-doc
 */
 	{"gerberfile", "Gerber output file base",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_gerberfile 1
 
 /* %start-doc options "90 Gerber Export"
@@ -221,7 +221,7 @@ Output contains all layers, even empty ones.
 %end-doc
 */
 	{"all-layers", "Output all layers, even empty ones",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_all_layers 2
 
 /* %start-doc options "90 Gerber Export"
@@ -232,25 +232,25 @@ Print file names and aperture counts on stdout.
 %end-doc
 */
 	{"verbose", "Print file names and aperture counts on stdout",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_verbose 3
 	{"copy-outline", "Copy outline onto other layers",
-	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, copy_outline_names, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, copy_outline_names},
 #define HA_copy_outline 4
 	{"cross-sect", "Export the cross section layer",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_cross_sect 5
 
 	{"coord-format", "Coordinate format (resolution)",
-	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names},
 #define HA_coord_format 6
 
 	{"aperture-per-file", "Restart aperture numbering in each new file",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_apeture_per_file 7
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_cam 8
 };
 

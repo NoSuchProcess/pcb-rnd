@@ -105,59 +105,59 @@ static int openems_ovr;
 
 static const rnd_export_opt_t openems_attribute_list[] = {
 	{"outfile", "Graphics output file",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_openemsfile 0
 
 	{"def-copper-thick", "Default copper thickness",
-	 RND_HATT_COORD, 0, THMAX, {0, 0, 0, RND_MM_TO_COORD(0.035)}, 0, 0},
+	 RND_HATT_COORD, 0, THMAX, {0, 0, 0, RND_MM_TO_COORD(0.035)}, 0},
 #define HA_def_copper_thick 1
 
 	{"def-substrate-thick", "Default substrate thickness",
-	 RND_HATT_COORD, 0, THMAX, {0, 0, 0, RND_MM_TO_COORD(0.8)}, 0, 0},
+	 RND_HATT_COORD, 0, THMAX, {0, 0, 0, RND_MM_TO_COORD(0.8)}, 0},
 #define HA_def_substrate_thick 2
 
 	{"def-copper-cond", "Default copper conductivity",
-	 RND_HATT_STRING, 0, 0, {0, "56e6", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "56e6", 0}, 0},
 #define HA_def_copper_cond 3
 
 	{"def-subst-epsilon", "Default substrate epsilon",
-	 RND_HATT_STRING, 0, 0, {0, "3.66", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "3.66", 0}, 0},
 #define HA_def_subst_epsilon 4
 
 	{"def-subst-mue", "Default substrate mue",
-	 RND_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "0", 0}, 0},
 #define HA_def_subst_mue 5
 
 	{"def-subst-kappa", "Default substrate kappa",
-	 RND_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "0", 0}, 0},
 #define HA_def_subst_kappa 6
 
 	{"def-subst-sigma", "Default substrate sigma",
-	 RND_HATT_STRING, 0, 0, {0, "0", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "0", 0}, 0},
 #define HA_def_subst_sigma 7
 
 	{"void-name", "Name of the void (sorrunding material)",
-	 RND_HATT_STRING, 0, 0, {0, "AIR", 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, "AIR", 0}, 0},
 #define HA_void_name 8
 
 	{"void-epsilon", "epsilon value for the void (sorrunding material)",
-	 RND_HATT_REAL, 0, 1000, {0, 0, 1}, 0, 0},
+	 RND_HATT_REAL, 0, 1000, {0, 0, 1}, 0},
 #define HA_void_epsilon 9
 
 	{"void-mue", "mue value for the void (sorrunding material)",
-	 RND_HATT_REAL, 0, 1000, {0, 0, 1}, 0, 0},
+	 RND_HATT_REAL, 0, 1000, {0, 0, 1}, 0},
 #define HA_void_mue 10
 
 	{"segments", "kludge: number of segments used to approximate round cap trace ends",
-	 RND_HATT_INTEGER, 0, 100, {10, 0, 0}, 0, 0},
+	 RND_HATT_INTEGER, 0, 100, {10, 0, 0}, 0},
 #define HA_segments 11
 
 	{"base-prio", "base priority: if the board displaces the chassis",
-	 RND_HATT_INTEGER, 0, 10, {0, 0, 0}, 0, 0},
+	 RND_HATT_INTEGER, 0, 10, {0, 0, 0}, 0},
 #define HA_base_prio 12
 
 	{"port-resistance", "default port resistance",
-	 RND_HATT_REAL, 0, 1000, {0, 0, 50}, 0, 0}
+	 RND_HATT_REAL, 0, 1000, {0, 0, 50}, 0}
 #define HA_def_port_res 13
 
 };

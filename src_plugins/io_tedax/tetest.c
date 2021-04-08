@@ -173,11 +173,11 @@ int tedax_etest_save(pcb_board_t *pcb, const char *etestid, const char *fn)
 
 static rnd_export_opt_t tedax_etest_options[] = {
 	{"outfile", "Name of the tedax etest output file",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_outfile 0
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_cam 1
 };
 

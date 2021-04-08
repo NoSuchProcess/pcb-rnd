@@ -57,7 +57,7 @@ Name of the XY output file.
 %end-doc
 */
 	{"xyfile", "Name of the XY output file",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_xyfile 0
 
 /* %start-doc options "8 XY Creation"
@@ -68,14 +68,14 @@ Unit of XY dimensions. Defaults to mil.
 %end-doc
 */
 	{"xy-unit", "XY units",
-	 RND_HATT_UNIT, 0, 0, {-1, 0, 0}, NULL, 0},
+	 RND_HATT_UNIT, 0, 0, {-1, 0, 0}, NULL},
 #define HA_unit 1
 	{"format", "file format (template)",
-	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, NULL, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, NULL},
 #define HA_format 2
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_cam 3
 
 };

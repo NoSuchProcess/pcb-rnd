@@ -174,27 +174,27 @@ excellon output file prefix. Can include a path.
 %end-doc
 */
 	{"filename", "excellon output file base - used to generate default plated and/or unplated file name in case they are not specified",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_excellonfile 0
 
 	{"filename-plated", "excellon output file name for plated features",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_excellonfile_plated 1
 
 	{"filename-unplated", "excellon output file name for unplated features",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_excellonfile_unplated 2
 
 	{"coord-format", "Coordinate format (resolution)",
-	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names, 0},
+	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, coord_format_names},
 #define HA_excellonfile_coordfmt 3
 
 	{"aperture-per-file", "Restart aperture numbering in each new file",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_apeture_per_file 4
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_cam 5
 };
 

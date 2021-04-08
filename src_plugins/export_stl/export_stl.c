@@ -52,39 +52,39 @@ const char *stl_cookie = "export_stl HID";
 
 static const rnd_export_opt_t stl_attribute_list[] = {
 	{"outfile", "STL output file",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_stlfile 0
 
 	{"models", "enable searching and inserting model files",
-	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
 #define HA_models 1
 
 	{"min-drill", "minimum circular hole diameter to render (smaller ones are not drawn)",
-	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0},
 #define HA_mindrill 2
 
 	{"min-slot-line", "minimum thickness of padstakc slots specified as lines (smaller ones are not drawn)",
-	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0},
 #define HA_minline 3
 
 	{"slot-poly", "draw cutouts for slots specified as padstack polygons",
-	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
 #define HA_slotpoly 4
 
 	{"cutouts", "draw cutouts drawn on 'route' layer groups (outline/slot mech layer groups)",
-	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
 #define HA_cutouts 5
 
 	{"override-thickness", "override calculated board thickness (when non-zero)",
-	 RND_HATT_COORD, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_COORD, 0, 0, {1, 0, 0}, 0},
 #define HA_ovrthick 6
 
 	{"z-center", "when true: z=0 is the center of board cross section, instead of being at the bottom side",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_zcent 7
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_cam 8
 };
 

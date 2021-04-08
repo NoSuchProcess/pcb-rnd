@@ -95,31 +95,31 @@ Name of the file to be exported to. Can contain a path.
 %end-doc
 */
 	{"outfile", "Graphics output file",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_openscadfile 0
 
 	{"copper", "enable exporting outer copper layers",
-	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
 #define HA_copper 1
 
 	{"silk", "enable exporting silk layers",
-	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
 #define HA_silk 2
 
 	{"mask", "enable exporting mask layers",
-	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
 #define HA_mask 3
 
 	{"models", "enable searching and inserting model files",
-	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
 #define HA_models 4
 
 	{"drill", "enable drilling holes",
-	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, 0, 0}, 0},
 #define HA_drill 5
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_cam 6
 
 };

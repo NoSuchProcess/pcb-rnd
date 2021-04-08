@@ -410,11 +410,11 @@ Name of the IPC-D-356 Netlist output file.
 	 "netlistfile",
 	 "Name of the IPC-D-356 Netlist output file",
 	 RND_HATT_STRING,
-	 0, 0, {0, 0, 0}, 0, 0},
+	 0, 0, {0, 0, 0}, 0},
 #define HA_ipcd356_filename 0
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_cam 1
 
 };

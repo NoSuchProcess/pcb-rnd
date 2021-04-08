@@ -26,11 +26,11 @@ const char *export_vfs_mc_cookie = "export_vfs_mc HID";
 
 static const rnd_export_opt_t export_vfs_mc_options[] = {
 	{"cmd", "mc command",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_export_vfs_mc_cmd 0
 
 	{"qpath", "query path",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_export_vfs_mc_qpath 1
 };
 

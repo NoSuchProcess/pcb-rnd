@@ -119,7 +119,7 @@ Name of the file to be exported to. Can contain a path.
 %end-doc
 */
 	{"outfile", "Graphics output file",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_dxffile 0
 
 /* %start-doc options "93 DXF Options"
@@ -130,7 +130,7 @@ Name of the lihata template file to be used instead of the default dxf template.
 %end-doc
 */
 	{"template", "DXF template (lihata file)",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_template 1
 
 /* %start-doc options "93 DXF Options"
@@ -141,7 +141,7 @@ Draw outline and drills with thin lines.
 %end-doc
 */
 	{"thin", "Draw outline and drill with thin lines",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_thin 2
 
 /* %start-doc options "93 DXF Options"
@@ -152,7 +152,7 @@ Fill polygons using hatch
 %end-doc
 */
 	{"poly-fill", "Fill polygons using hatch",
-	 RND_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0},
 #define HA_poly_fill 3
 
 /* %start-doc options "93 DXF Options"
@@ -163,7 +163,7 @@ Draw polygons contour with thin line
 %end-doc
 */
 	{"poly-contour", "Draw polygons contour with thin line",
-	 RND_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0},
 #define HA_poly_contour 4
 
 /* %start-doc options "93 DXF Options"
@@ -174,7 +174,7 @@ Fill drill (hole) circles using hatch
 %end-doc
 */
 	{"drill-fill", "Fill drill (hole) circles using hatch",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_drill_fill 5
 
 /* %start-doc options "93 DXF Options"
@@ -185,11 +185,11 @@ Draw drill contour with thin line
 %end-doc
 */
 	{"drill-contour", "Draw drill contour with thin line",
-	 RND_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {1, (void *)1, 1}, 0},
 #define HA_drill_contour 6
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_cam 7
 
 };

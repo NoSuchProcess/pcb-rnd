@@ -74,11 +74,11 @@ static const rnd_export_opt_t c_draw_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 	{"outfile", "Graphics output file",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_c_drawfile 0
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0}
 #define HA_cam 1
 };
 

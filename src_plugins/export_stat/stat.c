@@ -72,36 +72,36 @@ static const rnd_export_opt_t stat_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 	{"outfile", "Output file name",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_statfile 0
 
 	{"board_id", "Short name of the board so it can be identified for updates",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_board_id 1
 
 	{"orig", "This design started its life in pcb-rnd",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_orig 2
 
 	{"lht_built", "This design was already in lihata when real boards got built",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_lht_built 3
 
 
 	{"built", "how many actual/physical boards got built",
-	 RND_HATT_INTEGER, 0, 1000000, {0, 0, 0}, 0, 0},
+	 RND_HATT_INTEGER, 0, 1000000, {0, 0, 0}, 0},
 #define HA_built 4
 
 	{"first_ver", "the version of pcb-rnd you first used on this board",
-	 RND_HATT_STRING, 0, 0, {0, NULL, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, NULL, 0}, 0},
 #define HA_first_ver 5
 
 	{"license", "license of the design",
-	 RND_HATT_STRING, 0, 0, {0, NULL, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, NULL, 0}, 0},
 #define HA_license 6
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_cam 7
 
 };

@@ -61,19 +61,19 @@ static const char def_mech_script[]  = "setup_positive; trace_contour; fix_overc
 
 static const rnd_export_opt_t gcode_attribute_list[] = {
 	{"outfile", "file name prefix for non-cam",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_outfile 0
 
 	{"dias", "tool diameters",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_template 1
 
 	{"layer-script", "rendering script for layer graphics",
-	 RND_HATT_STRING, 0, 0, {0, def_layer_script, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, def_layer_script, 0}, 0},
 #define HA_layer_script 2
 
 	{"mech-script", "rendering script for boundary/mech/drill",
-	 RND_HATT_STRING, 0, 0, {0, def_mech_script, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, def_mech_script, 0}, 0},
 #define HA_mech_script 3
 
 	{"mill-depth", "Milling depth on layers",
@@ -93,7 +93,7 @@ static const rnd_export_opt_t gcode_attribute_list[] = {
 #define HA_safeZ 7
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_cam 8
 
 };

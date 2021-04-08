@@ -69,11 +69,11 @@ static const rnd_export_opt_t fidocadj_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
 
 	{"outfile", "Output file name",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_fidocadjfile 0
 
 	{"libfile", "path to PCB.fcl",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_libfile 1
 };
 

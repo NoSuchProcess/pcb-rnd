@@ -136,7 +136,7 @@ Name of the file to be exported to. Can contain a path.
 %end-doc
 */
 	{"outfile", "Graphics output file",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_svgfile 0
 
 /* %start-doc options "93 SVG Options"
@@ -148,7 +148,7 @@ Export a photo realistic image of the layout.
 %end-doc
 */
 	{"photo-mode", "Photo-realistic export mode",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_photo_mode 1
 
 /* %start-doc options "93 SVG Options"
@@ -160,7 +160,7 @@ Layer opacity
 %end-doc
 */
 	{"opacity", "Layer opacity",
-	 RND_HATT_INTEGER, 0, 100, {100, 0, 0}, 0, 0},
+	 RND_HATT_INTEGER, 0, 100, {100, 0, 0}, 0},
 #define HA_opacity 2
 
 /* %start-doc options "93 SVG Options"
@@ -172,19 +172,19 @@ Flip board, look at it from the bottom side
 %end-doc
 */
 	{"flip", "Flip board",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_flip 3
 
 	{"as-shown", "Render similar to as shown on screen (display overlays)",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_as_shown 4
 
 	{"true-size", "Attempt to preserve true size for printing",
-	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0, 0},
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_true_size 5
 
 	{"cam", "CAM instruction",
-	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0, 0}
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0}
 #define HA_cam 6
 };
 

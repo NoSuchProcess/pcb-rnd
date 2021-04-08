@@ -33,7 +33,7 @@ PDF output with a virtual PDF printer. Example: @*
 %end-doc
 */
 	{"lprcommand", "Command to use for printing",
-	 RND_HATT_STRING, 0, 0, {0, "lpr", 0}, 0, 0}
+	 RND_HATT_STRING, 0, 0, {0, "lpr", 0}, 0}
 #define HA_lprcommand 0
 };
 
