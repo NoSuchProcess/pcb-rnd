@@ -5,7 +5,6 @@
 - CLEANUP: ui layers: data parent cleanup: bug_files/uilayer.patch: ui layers should have a data parent in pcb_board_t and no global variables in layer_ui.[ch] (ui layers are board-specific) [report: Igor2]
 + CLEANUP: s390x test fail: remove rnd_export_opt_s->value and always use backup[] in rnd_hid_parse_command_line(); problem: HATT_INTEGER is (long *) in case of hidval backing but may be (int *) for raw backing; for enum types we don't even know! [report: Bdale]
 	- test openems export
-	- test loghid
 	- update camv-rnd
 - CLEANUP: rewrite ps_calibrate_1 to use DAD dialog and test
 - CLEANUP/FEATURE: lihata v8
