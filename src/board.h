@@ -155,7 +155,7 @@ void pcb_board_set_line_width(rnd_coord_t Size);
 void pcb_board_set_via_size(rnd_coord_t Size, rnd_bool Force);
 
 /* sets a new via drilling hole */
-void pcb_board_set_via_drilling_hole(rnd_coord_t Size, rnd_bool Force);
+void pcb_board_set_via_drilling_hole(rnd_coord_t Size);
 
 /* sets a clearance width */
 void pcb_board_set_clearance(rnd_coord_t Width);

@@ -562,7 +562,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			do_select:;
 			pcb_board_set_line_width(rts->Thick);
 			pcb_board_set_via_size(rts->Diameter, rnd_true);
-			pcb_board_set_via_drilling_hole(rts->Hole, rnd_true);
+			pcb_board_set_via_drilling_hole(rts->Hole);
 			pcb_board_set_clearance(rts->Clearance);
 			break;
 		case 'd': /* del */

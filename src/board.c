@@ -347,11 +347,9 @@ void pcb_board_set_via_size(rnd_coord_t Size, rnd_bool Force)
 }
 
 /* sets a new via drilling hole */
-void pcb_board_set_via_drilling_hole(rnd_coord_t Size, rnd_bool Force)
+void pcb_board_set_via_drilling_hole(rnd_coord_t Size)
 {
-	if (Force || (Size <= PCB_MAX_PINORVIASIZE && Size >= PCB_MIN_PINORVIAHOLE && Size <= conf_core.design.via_thickness - PCB_MIN_PINORVIACOPPER)) {
-		rnd_conf_set_design("design/via_drilling_hole", "%$mS", Size);
-	}
+	rnd_conf_set_design("design/via_drilling_hole", "%$mS", Size);
 }
 
 /* sets a clearance width */
