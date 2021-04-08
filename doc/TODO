@@ -3,7 +3,15 @@
 1. For the upcoming release ===============================================================================
 - ADMIN: install new keys (before 21 april)
 - CLEANUP: ui layers: data parent cleanup: bug_files/uilayer.patch: ui layers should have a data parent in pcb_board_t and no global variables in layer_ui.[ch] (ui layers are board-specific) [report: Igor2]
-- CLEANUP: s390x test fail: remove rnd_export_opt_s->value and always use backup[] in rnd_hid_parse_command_line(); problem: HATT_INTEGER is (long *) in case of hidval backing but may be (int *) for raw backing; for enum types we don't even know! [report: Bdale]
++ CLEANUP: s390x test fail: remove rnd_export_opt_s->value and always use backup[] in rnd_hid_parse_command_line(); problem: HATT_INTEGER is (long *) in case of hidval backing but may be (int *) for raw backing; for enum types we don't even know! [report: Bdale]
+	- test gtk command line args
+	- test dlg_export.c default_val.func part - it's not getting args[]
+	- test openems export
+	- test ps calibrate
+	- test ps export
+	- test loghid
+	- test gerber export GUI warning
+	- update camv-rnd
 - CLEANUP/FEATURE: lihata v8
 	- remove via geometry from route style
 - FEATURE: (TT) route style upgrade to prototypes - requires lihata v8:
