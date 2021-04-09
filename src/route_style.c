@@ -96,6 +96,7 @@ int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const cha
 		strcpy(routeStyle->name, Name);
 	if (!isdigit((int) *++s))
 		goto error;
+	routeStyle->fid = -1;
 	routeStyle->Thick = pcb_get_num(&s, default_unit);
 	while (*s && isspace((int) *s))
 		s++;
