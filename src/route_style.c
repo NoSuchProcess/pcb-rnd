@@ -169,6 +169,8 @@ void pcb_use_route_style(pcb_route_style_t * rst)
 	rnd_conf_set_design("design/text_thickness", "%$mS", rst->textt);
 	if (rst->fid != -1)
 		rnd_conf_set_design("design/text_font_id", "%ld", rst->fid);
+	if (rst->via_proto_set)
+		rnd_conf_set_design("design/via_proto", "%ld", (long)rst->via_proto);
 TODO("pstk #21:");
 	rnd_conf_set_design("design/via_thickness", "%$mS", rst->Diameter);
 	rnd_conf_set_design("design/via_drilling_hole", "%$mS", rst->Hole);
