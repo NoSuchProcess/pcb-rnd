@@ -359,17 +359,12 @@ static pcb_pstk_compshape_t get_old_shape(rnd_coord_t *dia, const pcb_pstk_shape
 	return PCB_PSTK_COMPAT_INVALID;
 }
 
-rnd_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t *drill_dia, rnd_coord_t *pad_dia, rnd_coord_t *clearance, rnd_coord_t *mask, pcb_pstk_compshape_t *cshape, rnd_bool *plated)
+rnd_bool pcb_pstk_export_compat_proto(pcb_pstk_proto_t *proto, rnd_coord_t *drill_dia, rnd_coord_t *pad_dia, rnd_coord_t *mask, pcb_pstk_compshape_t *cshape, rnd_bool *plated)
 {
-	pcb_pstk_proto_t *proto;
 	pcb_pstk_tshape_t *tshp;
 	int n, coppern = -1, maskn = -1;
 	pcb_pstk_compshape_t old_shape[5];
 	rnd_coord_t old_dia[5];
-
-	proto = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
-	if ((proto == NULL) || (proto->tr.used < 1))
-		return rnd_false;
 
 	tshp = &proto->tr.array[0];
 
@@ -421,21 +416,36 @@ rnd_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, rnd_coord_t *x, rnd_coord_t 
 	}
 
 	/* all went fine, collect and return data */
-	*x = ps->x;
-	*y = ps->y;
 	*drill_dia = proto->hdia;
 	*pad_dia = old_dia[coppern];
-	*clearance = ps->Clearance;
 	*mask = maskn >= 0 ? old_dia[maskn] : 0;
 	*cshape = old_shape[0];
 	*plated = proto->hplated;
 
-	/* clerance workaround for copper smaller than hole; inverse of r25735 */
-	if (*pad_dia < *drill_dia)
-		*clearance -= (*drill_dia - *pad_dia)/2;
-
 	return rnd_true;
 }
+
+rnd_bool pcb_pstk_export_compat_via(pcb_pstk_t *ps, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t *drill_dia, rnd_coord_t *pad_dia, rnd_coord_t *clearance, rnd_coord_t *mask, pcb_pstk_compshape_t *cshape, rnd_bool *plated)
+{
+	pcb_pstk_proto_t *proto;
+	rnd_bool res;
+
+	proto = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
+	if ((proto == NULL) || (proto->tr.used < 1))
+		return rnd_false;
+
+	res = pcb_pstk_export_compat_proto(proto, drill_dia, pad_dia, mask, cshape, plated);
+	if (res) {
+		*x = ps->x;
+		*y = ps->y;
+		*clearance = ps->Clearance;
+		/* clerance workaround for copper smaller than hole; inverse of r25735 */
+		if (*pad_dia < *drill_dia)
+			*clearance -= (*drill_dia - *pad_dia)/2;
+	}
+	return res;
+}
+
 
 /* emulate the old 'square flag' pad */
 static void pad_shape(pcb_pstk_poly_t *dst, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t thickness)
