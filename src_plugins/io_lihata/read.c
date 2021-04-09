@@ -2296,6 +2296,8 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 		pcb_route_style_t *s = vtroutestyle_alloc_append(styles, 1);
 		int name_len = strlen(stn->name);
 
+		s->fid = -1;
+
 		if (stn->type != LHT_HASH)
 			return iolht_error(stn, "route style entry must be a hash\n");
 		
