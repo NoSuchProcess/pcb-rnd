@@ -97,7 +97,13 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wclr, &hv);
 
 	if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
-	
+		if (rst->via_proto_set) {
+			sprintf(tmp, "#%ld", (long int)rst->via_proto);
+			hv.str = tmp;
+		}
+		else
+			hv.str = "<unset>";
+		rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wproto, &hv);
 	}
 	else {
 		hv.crd = rst->Hole;
@@ -223,6 +229,18 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 		rst_updated(rst);
 	}
 	else if (idx == rstdlg_ctx.wproto) {
+		fgw_error_t err;
+		fgw_arg_t res, args[3];
+		
+		args[1].type = FGW_STR;
+		args[1].val.cstr = "board";
+		args[2].type = FGW_STR;
+		args[2].val.cstr = "retpid";
+		err = rnd_actionv_bin(&PCB->hidlib, "pstklib", &res, 3, args);
+		if ((err == 0) && (res.type == FGW_LONG)) {
+			pcb_font_id_t tmp = res.val.nat_long;
+			pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, NULL, NULL, NULL, &tmp, 1);
+		}
 	}
 	else {
 		rnd_message(RND_MSG_ERROR, "Internal error: route style field does not exist");
