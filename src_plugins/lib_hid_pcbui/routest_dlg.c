@@ -80,8 +80,12 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	hv.crd = rst->textt;
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtth, &hv);
 
-	sprintf(tmp, "#%ld", (long int)rst->fid);
-	hv.str = tmp;
+	if (rst->fid != -1) {
+		sprintf(tmp, "#%ld", (long int)rst->fid);
+		hv.str = tmp;
+	}
+	else
+		hv.str = "<unset>";
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wfont, &hv);
 
 	hv.lng = rst->texts;
