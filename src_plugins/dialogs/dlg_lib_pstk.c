@@ -904,7 +904,6 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (modal) {
 			res->type = FGW_LONG;
 			res->val.nat_long = pid;
-printf("Returning pid=%ld\n", (long)pid);
 			return 0;
 		}
 		RND_ACT_IRES(0);
