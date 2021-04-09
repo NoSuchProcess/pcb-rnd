@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996,1997,1998,2005,2006 Thomas Nau
- *  Copyright (C) 2015, 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2015, 2018, 2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -70,6 +70,9 @@
 #include "funchash_core.h"
 #include "netlist.h"
 #include "plug_footprint.h"
+#include "obj_pstk_inlines.h"
+
+#include "brave.h"
 
 #include "src_plugins/lib_compat_help/layer_compat.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
@@ -304,10 +307,38 @@ static void WritePCBDataHeader(FILE * FP)
 	fputs("Styles[\"", FP);
 
 	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
-		for (group = 0; group < vtroutestyle_len(&PCB->RouteStyle) - 1; group++)
-			rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]:", PCB->RouteStyle.array[group].name,
-									PCB->RouteStyle.array[group].Thick,
-									PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
+		for (group = 0; group < vtroutestyle_len(&PCB->RouteStyle) - 1; group++) {
+			if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
+				rnd_coord_t drill_dia = RND_MM_TO_COORD(0.42), pad_dia = RND_MM_TO_COORD(4.2), mask = 0;
+
+				if (PCB->RouteStyle.array[group].via_proto_set) {
+					pcb_pstk_compshape_t cshape;
+					rnd_bool plated;
+					pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(PCB->Data, PCB->RouteStyle.array[group].via_proto);
+
+					if ((proto != NULL) && (proto->tr.used > 0)) {
+						if (pcb_pstk_export_compat_proto(proto, &drill_dia, &pad_dia, &mask, &cshape, &plated)) {
+							if ((drill_dia <= 0) || !plated || (mask > 0) || (cshape != PCB_PSTK_COMPAT_ROUND))
+								pcb_io_incompat_save(PCB->Data, NULL, "route-style", "Route style's via padstack proto is too complex for old via description", "Use a simpler via style: copper shapes only, on all copper layers, all circle and of the same size, plus a plated round hole - gEDA/pcb can't handle anything more complex.");
+						}
+						else
+							pcb_io_incompat_save(PCB->Data, NULL, "route-style", "Failed to convert route style's via padstack proto to old via description", "Use a simpler via style: copper shapes only, on all copper layers, all circle and of the same size, plus a plated round hole - gEDA/pcb can't handle anything more complex.");
+					}
+					else
+						pcb_io_incompat_save(PCB->Data, NULL, "route-style", "Invalid route style via prototype (does not exist)", "old gEDA/PCB format requires a via geometry - exporting a dummy one");
+				}
+				else
+					pcb_io_incompat_save(PCB->Data, NULL, "route-style", "Invalid route style: no via prototype", "old gEDA/PCB format requires a via geometry - exporting a dummy one");
+
+				rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]:", PCB->RouteStyle.array[group].name,
+					PCB->RouteStyle.array[group].Thick, PCB->RouteStyle.array[group].Diameter,
+					PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
+			}
+			else /* TODO("pstk #21: remove this branch") */
+				rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]:", PCB->RouteStyle.array[group].name,
+					PCB->RouteStyle.array[group].Thick, PCB->RouteStyle.array[group].Diameter,
+					PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
+		}
 		rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]\"]\n\n", PCB->RouteStyle.array[group].name,
 								PCB->RouteStyle.array[group].Thick,
 								PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
