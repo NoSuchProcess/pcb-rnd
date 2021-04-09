@@ -80,7 +80,7 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	hv.crd = rst->textt;
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtth, &hv);
 
-	sprintf(tmp, "%ld", (long int)rst->fid);
+	sprintf(tmp, "#%ld", (long int)rst->fid);
 	hv.str = tmp;
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wfont, &hv);
 
@@ -171,18 +171,18 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 			name_chg_cb(rstdlg_ctx.name_timer);
 	}
 	else if (idx == rstdlg_ctx.wlineth)
-		pcb_route_style_change(PCB, rstdlg_ctx.curr, &attr->val.crd, NULL, NULL, NULL, NULL, 1);
+		pcb_route_style_change(PCB, rstdlg_ctx.curr, &attr->val.crd, NULL, NULL, NULL, NULL, NULL, 1);
 	else if (idx == rstdlg_ctx.wtxtth)
-		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, &attr->val.crd, NULL, NULL, NULL, 1);
+		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, &attr->val.crd, NULL, NULL, NULL, NULL, 1);
 	else if (idx == rstdlg_ctx.wfont) {
 		printf("TODO: font change!\n");
 	}
 	else if (idx == rstdlg_ctx.wtxtscale) {
 		int tmp = attr->val.lng;
-		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, &tmp, NULL, NULL, 1);
+		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, &tmp, NULL, NULL, NULL, 1);
 	}
 	else if (idx == rstdlg_ctx.wclr)
-		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, NULL, &attr->val.crd, NULL, 1);
+		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, NULL, NULL, &attr->val.crd, NULL, 1);
 	else if (idx == rstdlg_ctx.wviahole) {
 		rst->Hole = attr->val.crd;
 		if (rst->Hole * 1.1 >= rstdlg_ctx.dlg[rstdlg_ctx.wviaring].val.crd) {

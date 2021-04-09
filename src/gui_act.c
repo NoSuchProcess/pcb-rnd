@@ -574,20 +574,20 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 			if (strcmp(sfield, "trace-thickness") == 0) {
 				RND_ACT_CONVARG(4, FGW_COORD, RouteStyle, c = fgw_coord(&argv[4]));
-				pcb_route_style_change(PCB, number-1, &c, NULL, NULL, NULL, NULL, 1);
+				pcb_route_style_change(PCB, number-1, &c, NULL, NULL, NULL, NULL, NULL, 1);
 			}
 			else if (strcmp(sfield, "text-thickness") == 0) {
 				RND_ACT_CONVARG(4, FGW_COORD, RouteStyle, c = fgw_coord(&argv[4]));
-				pcb_route_style_change(PCB, number-1, NULL, &c, NULL, NULL, NULL, 1);
+				pcb_route_style_change(PCB, number-1, NULL, &c, NULL, NULL, NULL, NULL, 1);
 			}
 			else if (strcmp(sfield, "text-scale") == 0) {
 				int sc;
 				RND_ACT_CONVARG(4, FGW_COORD, RouteStyle, sc = argv[4].val.nat_int);
-				pcb_route_style_change(PCB, number-1, NULL, NULL, &sc, NULL, NULL, 1);
+				pcb_route_style_change(PCB, number-1, NULL, NULL, &sc, NULL, NULL, NULL, 1);
 			}
 			else if (strcmp(sfield, "trace-clearance") == 0) {
 				RND_ACT_CONVARG(4, FGW_COORD, RouteStyle, c = fgw_coord(&argv[4]));
-				pcb_route_style_change(PCB, number-1, NULL, NULL, NULL, &c, NULL, 1);
+				pcb_route_style_change(PCB, number-1, NULL, NULL, NULL, &c, NULL, NULL, 1);
 			}
 			else if (strcmp(sfield, "name") == 0) {
 				const char *new_name;

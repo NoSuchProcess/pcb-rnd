@@ -597,6 +597,7 @@ static void pstklib_cpaste(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	/* redraw */
 	hv.str = NULL;
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wprev, &hv);
+	rnd_gui->invalidate_all(rnd_gui);
 }
 
 
