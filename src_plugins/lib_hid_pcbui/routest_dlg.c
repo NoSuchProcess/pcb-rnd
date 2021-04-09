@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2019,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	int curr;
-	int wname, wlineth, wclr, wtxtscale, wtxtth, wviahole, wviaring, wattr;
+	int wname, wlineth, wclr, wtxtscale, wtxtth, wfont, wviahole, wviaring, wattr;
 
 	rnd_hidval_t name_timer;
 
@@ -51,6 +51,7 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	rnd_hid_attribute_t *attr;
 	rnd_hid_tree_t *tree;
 	pcb_attribute_t *a;
+	char tmp[128];
 
 	if (!rstdlg_ctx.active)
 		return;
@@ -78,6 +79,10 @@ static void rstdlg_pcb2dlg(int rst_idx)
 
 	hv.crd = rst->textt;
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtth, &hv);
+
+	sprintf(tmp, "%ld", (long int)rst->fid);
+	hv.str = tmp;
+	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wfont, &hv);
 
 	hv.lng = rst->texts;
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wtxtscale, &hv);
@@ -169,6 +174,9 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 		pcb_route_style_change(PCB, rstdlg_ctx.curr, &attr->val.crd, NULL, NULL, NULL, NULL, 1);
 	else if (idx == rstdlg_ctx.wtxtth)
 		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, &attr->val.crd, NULL, NULL, NULL, 1);
+	else if (idx == rstdlg_ctx.wfont) {
+		printf("TODO: font change!\n");
+	}
 	else if (idx == rstdlg_ctx.wtxtscale) {
 		int tmp = attr->val.lng;
 		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, &tmp, NULL, NULL, 1);
@@ -340,6 +348,12 @@ static int pcb_dlg_rstdlg(int rst_idx)
 				rstdlg_ctx.wtxtth = RND_DAD_CURRENT(rstdlg_ctx.dlg);
 				RND_DAD_HELP(rstdlg_ctx.dlg, "Text stroke thickness;\nif 0 use the default heuristics that\ncalculates it from text scale");
 				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
+				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+
+			RND_DAD_LABEL(rstdlg_ctx.dlg, "Text font:");
+			RND_DAD_BUTTON(rstdlg_ctx.dlg, "<fid>");
+				rstdlg_ctx.wfont = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+				RND_DAD_HELP(rstdlg_ctx.dlg, "Text font ID (button invokes the font selector)");
 				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
 			RND_DAD_LABEL(rstdlg_ctx.dlg, "*Via hole:");
