@@ -110,13 +110,20 @@ typedef struct {
 font_coord_t font_coord[MAX_FONT];
 int font_coords;
 
-static void pcb_draw_font(rnd_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_text_t *txt)
+static void pcb_draw_font(rnd_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_text_t *txt, pcb_font_id_t *dst_fid)
 {
 	char buf[256];
 	pcb_text_t *t;
 	const char *nm;
 	int y_old = *y;
-	pcb_font_id_t target_fid = (txt == NULL) ? conf_core.design.text_font_id : txt->fid;
+	pcb_font_id_t target_fid;
+
+	if (dst_fid != NULL)
+		target_fid = *dst_fid;
+	else if (txt != NULL)
+		target_fid = txt->fid;
+	else
+	target_fid = conf_core.design.text_font_id;
 
 	nm = (f->name == NULL) ? "<anonymous>" : f->name;
 	rnd_snprintf(buf, sizeof(buf), "#%d [abc ABC 123] %s", f->id, nm);
@@ -138,17 +145,17 @@ static void pcb_draw_font(rnd_hid_gc_t gc, pcb_font_t *f, int x, int *y, pcb_tex
 }
 
 
-static void pcb_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt)
+static void pcb_draw_fontsel(rnd_hid_gc_t gc, const rnd_hid_expose_ctx_t *e, pcb_text_t *txt, pcb_font_id_t *dst_fid)
 {
 	int y = 0;
 
 	font_coords = 0;
-	pcb_draw_font(gc, &PCB->fontkit.dflt, 0, &y, txt);
+	pcb_draw_font(gc, &PCB->fontkit.dflt, 0, &y, txt, dst_fid);
 
 	if (PCB->fontkit.hash_inited) {
 		htip_entry_t *e;
 		for (e = htip_first(&PCB->fontkit.fonts); e; e = htip_next(&PCB->fontkit.fonts, e))
-			pcb_draw_font(gc, e->value, 0, &y, txt);
+			pcb_draw_font(gc, e->value, 0, &y, txt, dst_fid);
 	}
 }
 
@@ -162,7 +169,7 @@ static pcb_font_id_t lookup_fid_for_coord(int ymm)
 	return -1;
 }
 
-static rnd_bool pcb_mouse_fontsel(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt)
+static rnd_bool pcb_mouse_fontsel(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_coord_t y, pcb_text_t *txt, pcb_font_id_t *dst_fid)
 {
 	pcb_font_id_t fid;
 	int ymm;
@@ -173,9 +180,13 @@ static rnd_bool pcb_mouse_fontsel(rnd_hid_mouse_ev_t kind, rnd_coord_t x, rnd_co
 			fid = lookup_fid_for_coord(ymm);
 			if (fid >= 0) {
 				if (txt == NULL) {
-					char sval[128];
-					sprintf(sval, "%ld", fid);
-					rnd_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, sval, RND_POL_OVERWRITE);
+					if (dst_fid == NULL) {
+						char sval[128];
+						sprintf(sval, "%ld", fid);
+						rnd_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, sval, RND_POL_OVERWRITE);
+					}
+					else
+						*dst_fid = fid;
 				}
 				else {
 					switch(txt->type) {

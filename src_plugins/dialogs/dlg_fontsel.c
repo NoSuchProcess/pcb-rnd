@@ -45,6 +45,7 @@ typedef struct{
 	unsigned alloced:1;
 
 	pcb_idpath_t *txt_id;
+	pcb_font_id_t *dst_fid;
 	void *last_fobj;
 	pcb_font_id_t last_fid;
 	gdl_elem_t link;
@@ -78,12 +79,17 @@ void fontsel_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, rnd_
 	if (ctx->txt_id != NULL) {
 		pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj_in(ctx->pcb->Data, ctx->txt_id);
 		if (txt != NULL)
-			pcb_stub_draw_fontsel(gc, e, txt);
+			pcb_stub_draw_fontsel(gc, e, txt, NULL);
 		ctx->last_fobj = txt;
 		ctx->last_fid = txt->fid;
 	}
+	else if (ctx->dst_fid != NULL) {
+		pcb_stub_draw_fontsel(gc, e, NULL, ctx->dst_fid);
+		ctx->last_fobj = NULL;
+		ctx->last_fid = *ctx->dst_fid;
+	}
 	else {
-		pcb_stub_draw_fontsel(gc, e, NULL);
+		pcb_stub_draw_fontsel(gc, e, NULL, NULL);
 		ctx->last_fobj = NULL;
 	}
 }
@@ -96,9 +102,13 @@ rnd_bool fontsel_mouse_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, r
 		pcb_text_t *txt = (pcb_text_t *)pcb_idpath2obj_in(ctx->pcb->Data, ctx->txt_id);
 		if (txt == NULL)
 			return 0;
-		return pcb_stub_draw_fontsel_mouse_ev(kind, x, y, txt);
+		return pcb_stub_draw_fontsel_mouse_ev(kind, x, y, txt, NULL);
 	}
-	return pcb_stub_draw_fontsel_mouse_ev(kind, x, y, NULL);
+
+	if (ctx->dst_fid != NULL)
+		return pcb_stub_draw_fontsel_mouse_ev(kind, x, y, NULL, ctx->dst_fid);
+
+	return pcb_stub_draw_fontsel_mouse_ev(kind, x, y, NULL, NULL);
 }
 
 void fontsel_free_cb(rnd_hid_attribute_t *attrib, void *user_ctx, void *hid_ctx)
@@ -143,10 +153,11 @@ static void btn_remove_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 }
 
 
-static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t *txt_obj)
+static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t *txt_obj, pcb_font_id_t *dst_fid)
 {
 	rnd_box_t vbox = {0, 0, RND_MM_TO_COORD(55), RND_MM_TO_COORD(55)};
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
+	rnd_hid_dad_buttons_t clbtn_select[] = {{"Use selected", 1}, {"Cancel", 0}, {NULL, 0}};
 	fontsel_ctx_t *c, *ctx = NULL;
 
 	if (global) {
@@ -169,6 +180,7 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 	}
 
 	ctx->pcb = pcb;
+	ctx->dst_fid = dst_fid;
 	if (txt_obj != NULL)
 		ctx->txt_id = pcb_obj2idpath((pcb_any_obj_t *)txt_obj);
 	else
@@ -189,12 +201,22 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 			RND_DAD_CHANGE_CB(ctx->dlg, btn_remove_cb);
 			RND_DAD_HELP(ctx->dlg, "Remove currently selected font");
 		RND_DAD_END(ctx->dlg);
-		RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
+		if (modal && (dst_fid != NULL))
+			RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn_select);
+		else
+			RND_DAD_BUTTON_CLOSES(ctx->dlg, clbtn);
 	RND_DAD_END(ctx->dlg);
 
 	ctx->active = 1;
 	RND_DAD_DEFSIZE(ctx->dlg, 250, 200);
 	RND_DAD_NEW("fontsel", ctx->dlg, "Font selection", ctx, modal, fontsel_close_cb);
+
+	if (modal && (dst_fid != NULL)) {
+		if (RND_DAD_RUN(ctx->dlg) == 1)
+			printf("SAVE fid: %ld\n", *dst_fid);
+		else
+			*dst_fid = -1;
+	}
 }
 
 const char pcb_acts_Fontsel[] = "Fontsel()\n";
@@ -204,6 +226,7 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *op = NULL;
 	int modal = 0, global = 1;
 	pcb_text_t *txt_obj = NULL;
+	pcb_font_id_t fid, *dst_fid = NULL;
 
 	if (argc > 2)
 		RND_ACT_FAIL(Fontsel);
@@ -222,10 +245,19 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				global = 0;
 			}
 		}
+		if (rnd_strcasecmp(op, "fontid") == 0) {
+			modal = 1;
+			global = 0;
+			fid = -1;
+			dst_fid = &fid;
+		}
 		else
 			RND_ACT_FAIL(Fontsel);
 	}
-	pcb_dlg_fontsel(PCB, modal, global, txt_obj);
+	pcb_dlg_fontsel(PCB, modal, global, txt_obj, dst_fid);
+	if (modal && (dst_fid != NULL)) {
+		printf("fid: %ld\n", *dst_fid);
+	}
 	return 0;
 }
 
