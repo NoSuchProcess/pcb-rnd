@@ -505,7 +505,7 @@ static fgw_error_t pcb_act_MarkCrosshair(fgw_arg_t *res, int argc, fgw_arg_t *ar
 /* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_RouteStyle[] = 
-	"RouteStyle(style_id|style_name|@current, [set|get|del], [trace-thickness|trace-clearance|text-thickness|text-scale|name], [value]])\n"
+	"RouteStyle(style_id|style_name|@current, [set|get|del], [trace-thickness|trace-clearance|text-thickness|text-scale|font|name], [value]])\n"
 	"RouteStyle(new, [name])";
 static const char pcb_acth_RouteStyle[] = "Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.";
 /* DOC: routestyle.html */
@@ -584,6 +584,11 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				int sc;
 				RND_ACT_CONVARG(4, FGW_COORD, RouteStyle, sc = argv[4].val.nat_int);
 				pcb_route_style_change(PCB, number-1, NULL, NULL, &sc, NULL, NULL, NULL, 1);
+			}
+			else if (strcmp(sfield, "font") == 0) {
+				long l;
+				RND_ACT_CONVARG(4, FGW_LONG, RouteStyle, l = argv[4].val.nat_long);
+				pcb_route_style_change(PCB, number-1, NULL, NULL, NULL, &l, NULL, NULL, 1);
 			}
 			else if (strcmp(sfield, "trace-clearance") == 0) {
 				RND_ACT_CONVARG(4, FGW_COORD, RouteStyle, c = fgw_coord(&argv[4]));
