@@ -865,13 +865,20 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 	return 0;
 }
 
-const char pcb_acts_pstklib[] = "pstklib([board|subcid|object])\n";
+const char pcb_acts_pstklib[] = "pstklib([board|subcid|object], [retpid])\n";
 const char pcb_acth_pstklib[] = "Present the padstack library dialog on board padstacks or the padstacks of a subcircuit";
 fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	long id = -1;
-	const char *cmd = NULL;
+	long id = -1, pid;
+	const char *cmd = NULL, *opt = NULL;
+	int modal = rnd_false;
+
 	RND_ACT_MAY_CONVARG(1, FGW_STR, pstklib, cmd = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(2, FGW_STR, pstklib, opt = argv[2].val.str);
+
+	if ((opt != NULL) && (strcmp(opt, "retpid") == 0))
+		modal = 1;
+
 	if ((cmd != NULL) && (strcmp(cmd, "object") == 0)) {
 		rnd_coord_t x, y;
 		void *r1, *r2, *r3;
@@ -886,12 +893,25 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		sc = r2;
 		id = sc->ID;
 	}
+	else if ((cmd != NULL) && (strcmp(cmd, "board") == 0)) {
+		/* defaults are fine */
+	}
 	else
 		RND_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
-	if (pcb_dlg_pstklib(PCB, id, rnd_false, NULL) == PCB_PADSTACK_INVALID)
-		RND_ACT_IRES(-1);
-	else
+
+	pid = pcb_dlg_pstklib(PCB, id, modal, NULL);
+	if (pid != PCB_PADSTACK_INVALID) {
+		if (modal) {
+			res->type = FGW_LONG;
+			res->val.nat_long = pid;
+printf("Returning pid=%ld\n", (long)pid);
+			return 0;
+		}
 		RND_ACT_IRES(0);
+	}
+	else
+		RND_ACT_IRES(-1);
+
 	return 0;
 }
 
