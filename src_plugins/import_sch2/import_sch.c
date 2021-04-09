@@ -110,7 +110,7 @@ static int convert_attribs(void)
 static int do_import(void)
 {
 	const char **a = NULL;
-	int len, n, res;
+	int len, n, res, nonempty;
 	rnd_conf_listitem_t *ci;
 	const char *imp_name = conf_import_sch.plugins.import_sch.import_fmt;
 	pcb_plug_import_t *p;
@@ -139,6 +139,19 @@ static int do_import(void)
 	len = rnd_conflist_length((rnd_conflist_t *)&conf_import_sch.plugins.import_sch.args);
 	if ((p->single_arg) && (len > 1))
 		len = 1;
+
+	/* if all arguments are empty, the configuration is broken; this typically
+	   happens if the dialog was open and closed */
+	nonempty = 0;
+	for(n = 0, ci = rnd_conflist_first((rnd_conflist_t *)&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = rnd_conflist_next(ci), n++) {
+		if ((ci->val.string[0] != NULL) && (*ci->val.string[0] != '\0')) {
+			nonempty = 1;
+			break;
+		}
+	}
+	if (!nonempty)
+		return do_dialog();
+
 	a = malloc((len+1) * sizeof(char *));
 	for(n = 0, ci = rnd_conflist_first((rnd_conflist_t *)&conf_import_sch.plugins.import_sch.args); ci != NULL; ci = rnd_conflist_next(ci), n++)
 		a[n] = ci->val.string[0];
