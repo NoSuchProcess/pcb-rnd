@@ -107,6 +107,7 @@ ha:lht_tree_doc { ha:roots {
 						ha:diameter    { valtype=coord; ver={<=5} desc={old round via outer diameter; removed in favor of padstack prototype based vias, see via_proto}}
 						ha:hole        { valtype=coord; ver={<=5} desc={old round via hole diameter; removed in favor of padstack prototype based vias, see via_proto}}
 						ha:via_proto   { valtype=integer; ver={>5} desc={padstack prototype ID used for placing new vias}}
+						ha:fid         { valtype=integer; ver={>=8} desc={font ID used for placing new text objects; when not present, fall back to -1 (unset, do not change)}}
 						sy:attr@dup    {/lht_tree_doc/comm/attributes}
 					}
 				}
