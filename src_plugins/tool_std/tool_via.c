@@ -48,12 +48,15 @@
 
 #include "obj_pstk_draw.h"
 
-TODO("padstack: remove this when via is removed and the padstack is created from style directly")
+TODO("pstk #21: remove this when via is removed and the padstack is created from style directly")
 #include "src_plugins/lib_compat_help/pstk_compat.h"
+
+#include "brave.h"
 
 void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;
+	pcb_pstk_t *ps;
 
 	if (!pcb->pstk_on) {
 		rnd_message(RND_MSG_WARNING, "You must turn via visibility on before\nyou can place vias\n");
@@ -65,24 +68,30 @@ void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
 		return;
 	}
 
-TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
-	{
-		pcb_pstk_t *ps = pcb_pstk_new_compat_via(pcb->Data, -1, hl->tool_x, hl->tool_y,
+
+	if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
+		ps = pcb_pstk_new(pcb->Data, -1, conf_core.design.via_proto,
+			hl->tool_x, hl->tool_y, conf_core.design.clearance, pcb_flag_make(0));
+	}
+	else {
+TODO("pstk #21: remove this branch in favor of pstk protos - scconfig also has TODO #21, fix it there too")
+		ps = pcb_pstk_new_compat_via(pcb->Data, -1, hl->tool_x, hl->tool_y,
 			conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
 			0, PCB_PSTK_COMPAT_ROUND, rnd_true);
-		if (ps == NULL)
-			return;
-
-		pcb_obj_add_attribs((pcb_any_obj_t *)ps, pcb->pen_attr, NULL);
-		pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
-
-		if (rnd_gui->shift_is_pressed(rnd_gui))
-			pcb_tool_thermal_on_obj((pcb_any_obj_t *)ps, PCB_CURRLID(pcb));
-
-		pcb_undo_inc_serial();
-		pcb_pstk_invalidate_draw(ps);
-		pcb_draw();
 	}
+
+	if (ps == NULL)
+		return;
+
+	pcb_obj_add_attribs((pcb_any_obj_t *)ps, pcb->pen_attr, NULL);
+	pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
+
+	if (rnd_gui->shift_is_pressed(rnd_gui))
+		pcb_tool_thermal_on_obj((pcb_any_obj_t *)ps, PCB_CURRLID(pcb));
+
+	pcb_undo_inc_serial();
+	pcb_pstk_invalidate_draw(ps);
+	pcb_draw();
 }
 
 static void xor_draw_fake_via(rnd_coord_t x, rnd_coord_t y, rnd_coord_t dia, rnd_coord_t clearance)
