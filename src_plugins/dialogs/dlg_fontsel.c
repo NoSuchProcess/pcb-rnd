@@ -212,10 +212,8 @@ static void pcb_dlg_fontsel(pcb_board_t *pcb, int modal, int global, pcb_text_t 
 	RND_DAD_NEW("fontsel", ctx->dlg, "Font selection", ctx, modal, fontsel_close_cb);
 
 	if (modal && (dst_fid != NULL)) {
-		if (RND_DAD_RUN(ctx->dlg) == 1)
-			printf("SAVE fid: %ld\n", *dst_fid);
-		else
-			*dst_fid = -1;
+		if (RND_DAD_RUN(ctx->dlg) != 1)
+			*dst_fid = -1; /* cancel */
 	}
 }
 
@@ -256,7 +254,13 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	pcb_dlg_fontsel(PCB, modal, global, txt_obj, dst_fid);
 	if (modal && (dst_fid != NULL)) {
-		printf("fid: %ld\n", *dst_fid);
+		if (*dst_fid >= 0) {
+			res->type = FGW_LONG;
+			res->val.nat_long = *dst_fid;
+			return 0;
+		}
+		else
+			return FGW_ERR_UNKNOWN;
 	}
 	return 0;
 }
