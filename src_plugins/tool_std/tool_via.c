@@ -71,7 +71,7 @@ void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
 
 	if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
 		ps = pcb_pstk_new(pcb->Data, -1, conf_core.design.via_proto,
-			hl->tool_x, hl->tool_y, conf_core.design.clearance, pcb_flag_make(0));
+			hl->tool_x, hl->tool_y, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 	}
 	else {
 TODO("pstk #21: remove this branch in favor of pstk protos - scconfig also has TODO #21, fix it there too")
