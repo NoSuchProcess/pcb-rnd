@@ -659,6 +659,7 @@ static void set_same_(rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole,
 		/* unknown style, set properties */
 		if (Thick != -1)     { pcb_custom_route_style.Thick     = Thick;     rnd_conf_set_design("design/line_thickness", "%$mS", Thick); }
 		if (Clearance != -1) { pcb_custom_route_style.Clearance = Clearance; rnd_conf_set_design("design/clearance", "%$mS", Clearance); }
+TODO("pstk #21:");
 		if (Diameter != -1)  { pcb_custom_route_style.Diameter  = Diameter;  rnd_conf_set_design("design/via_thickness", "%$mS", Diameter); }
 		if (Hole != -1)      { pcb_custom_route_style.Hole      = Hole;      rnd_conf_set_design("design/via_drilling_hole", "%$mS", Hole); }
 		PCB->pen_attr = NULL;
