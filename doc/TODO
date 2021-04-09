@@ -12,6 +12,7 @@
 	- replace the route style dialog box's via part
 	- CLEANUP: remove pcb_board_set_via_size and board property for via geometry
 	- add text font, update the pool node text_edit [report: Igor2]
+	- CLEANUP: make sure pcb_route_style_lookup() and pcb_route_style_match() has the same API as pcb_route_style_change() [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: new breadboard
