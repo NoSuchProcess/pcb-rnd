@@ -166,6 +166,8 @@ void pcb_use_route_style(pcb_route_style_t * rst)
 	rnd_conf_set_design("design/line_thickness", "%$mS", rst->Thick);
 	rnd_conf_set_design("design/text_scale", "%d", rst->texts <= 0 ? 100 : rst->texts);
 	rnd_conf_set_design("design/text_thickness", "%$mS", rst->textt);
+	if (rst->fid != -1)
+		rnd_conf_set_design("design/text_font_id", "%ld", rst->fid);
 	rnd_conf_set_design("design/via_thickness", "%$mS", rst->Diameter);
 	rnd_conf_set_design("design/via_drilling_hole", "%$mS", rst->Hole);
 	rnd_conf_set_design("design/clearance", "%$mS", rst->Clearance);
