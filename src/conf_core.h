@@ -155,6 +155,9 @@ typedef struct {
 		RND_CFT_COORD line_thickness;
 		RND_CFT_COORD clearance;
 		RND_CFT_INTEGER via_proto;             /* prototype used for vias */
+		RND_CFT_INTEGER text_scale;            /* text scaling in % */
+		RND_CFT_COORD text_thickness;          /* override stroke font text thickness */
+		RND_CFT_INTEGER text_font_id;
 
 		/* limiting sizes (old DRC) settings */
 		RND_CFT_COORD bloat;                   /* core: size of box-style clearance around text objects; old plugins: gap between copper features on different nets */
@@ -173,9 +176,6 @@ typedef struct {
 			RND_CFT_BOOLEAN dummy;               /* placeholder, not used */
 		} drc_disable;
 
-		RND_CFT_INTEGER text_scale;            /* text scaling in % */
-		RND_CFT_COORD text_thickness;          /* override stroke font text thickness */
-		RND_CFT_INTEGER text_font_id;
 		RND_CFT_REAL poly_isle_area;           /* polygon min area */
 		RND_CFT_STRING fab_author;             /* Full name of author for FAB drawings */
 		RND_CFT_STRING initial_layer_stack;    /* deprecated. */
