@@ -28,11 +28,13 @@
 
 #include <librnd/core/hid_dad_tree.h>
 
+#include "brave.h"
+
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	int curr;
-	int wname, wlineth, wclr, wtxtscale, wtxtth, wfont, wviahole, wviaring, wattr;
+	int wname, wlineth, wclr, wtxtscale, wtxtth, wfont, wproto, wviahole, wviaring, wattr;
 
 	rnd_hidval_t name_timer;
 
@@ -94,11 +96,16 @@ static void rstdlg_pcb2dlg(int rst_idx)
 	hv.crd = rst->Clearance;
 	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wclr, &hv);
 
-	hv.crd = rst->Hole;
-	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviahole, &hv);
+	if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
+	
+	}
+	else {
+		hv.crd = rst->Hole;
+		rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviahole, &hv);
 
-	hv.crd = rst->Diameter;
-	rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
+		hv.crd = rst->Diameter;
+		rnd_gui->attr_dlg_set_value(rstdlg_ctx.dlg_hid_ctx, rstdlg_ctx.wviaring, &hv);
+	}
 
 	rnd_dad_tree_clear(tree);
 
@@ -214,6 +221,8 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 			rst->Hole = hv.crd;
 		}
 		rst_updated(rst);
+	}
+	else if (idx == rstdlg_ctx.wproto) {
 	}
 	else {
 		rnd_message(RND_MSG_ERROR, "Internal error: route style field does not exist");
@@ -370,19 +379,28 @@ static int pcb_dlg_rstdlg(int rst_idx)
 				RND_DAD_HELP(rstdlg_ctx.dlg, "Text font ID (button invokes the font selector)");
 				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
-			RND_DAD_LABEL(rstdlg_ctx.dlg, "*Via hole:");
-			RND_DAD_COORD(rstdlg_ctx.dlg);
-				rstdlg_ctx.wviahole = RND_DAD_CURRENT(rstdlg_ctx.dlg);
-				RND_DAD_HELP(rstdlg_ctx.dlg, "Via hole diameter\nwarning: will be replaced with the padstack selector");
-				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
-				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+			if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
+				RND_DAD_LABEL(rstdlg_ctx.dlg, "Via padstack:");
+				RND_DAD_BUTTON(rstdlg_ctx.dlg, "<pid>");
+					rstdlg_ctx.wproto = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+					RND_DAD_HELP(rstdlg_ctx.dlg, "Padstack prototype ID used for new vias with this style\n(button invokes the board padstack proto list dialog)");
+					RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+			}
+			else {
+				RND_DAD_LABEL(rstdlg_ctx.dlg, "*Via hole:");
+				RND_DAD_COORD(rstdlg_ctx.dlg);
+					rstdlg_ctx.wviahole = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+					RND_DAD_HELP(rstdlg_ctx.dlg, "Via hole diameter\nwarning: will be replaced with the padstack selector");
+					RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
+					RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
 
-			RND_DAD_LABEL(rstdlg_ctx.dlg, "*Via ring:");
-			RND_DAD_COORD(rstdlg_ctx.dlg);
-				rstdlg_ctx.wviaring = RND_DAD_CURRENT(rstdlg_ctx.dlg);
-				RND_DAD_HELP(rstdlg_ctx.dlg, "Via ring diameter\nwarning: will be replaced with the padstack selector");
-				RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
-				RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+				RND_DAD_LABEL(rstdlg_ctx.dlg, "*Via ring:");
+				RND_DAD_COORD(rstdlg_ctx.dlg);
+					rstdlg_ctx.wviaring = RND_DAD_CURRENT(rstdlg_ctx.dlg);
+					RND_DAD_HELP(rstdlg_ctx.dlg, "Via ring diameter\nwarning: will be replaced with the padstack selector");
+					RND_DAD_MINMAX(rstdlg_ctx.dlg, 1, RND_MAX_COORD);
+					RND_DAD_CHANGE_CB(rstdlg_ctx.dlg, rst_change_cb);
+			}
 
 		RND_DAD_END(rstdlg_ctx.dlg);
 		RND_DAD_TREE(rstdlg_ctx.dlg, 2, 0, attr_hdr);
