@@ -94,6 +94,7 @@ TODO("pstk #21: remove this branch in favor of pstk protos - scconfig also has T
 	pcb_draw();
 }
 
+TODO("pstk #21: remove this")
 static void xor_draw_fake_via(rnd_coord_t x, rnd_coord_t y, rnd_coord_t dia, rnd_coord_t clearance)
 {
 	rnd_coord_t r = (dia/2)+clearance;
@@ -103,13 +104,27 @@ static void xor_draw_fake_via(rnd_coord_t x, rnd_coord_t y, rnd_coord_t dia, rnd
 
 void pcb_tool_via_draw_attached(rnd_hidlib_t *hl)
 {
-TODO("pstk: replace this when route style has a prototype")
-	xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, 0);
-	if (conf_core.editor.show_drc) {
-		/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
-		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
-		xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, conf_core.design.clearance);
-		rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+	if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
+		static pcb_pstk_t ps; /* initialized to all-zero */
+
+		ps.parent.data = PCB->Data;
+		ps.parent_type = PCB_PARENT_DATA;
+		ps.proto = conf_core.design.via_proto;
+		ps.protoi = -1;
+		ps.x = pcb_crosshair.X;
+		ps.y = pcb_crosshair.Y;
+		ps.Clearance = conf_core.design.clearance;
+		pcb_pstk_thindraw(NULL, pcb_crosshair.GC, &ps);
+	}
+	else {
+TODO("pstk #21: remove this branch")
+		xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, 0);
+		if (conf_core.editor.show_drc) {
+			/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
+			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+			xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, conf_core.design.clearance);
+			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+		}
 	}
 }
 
