@@ -179,8 +179,17 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, &tmp, NULL, NULL, NULL, 1);
 	}
 	else if (idx == rstdlg_ctx.wfont) {
-		pcb_font_id_t tmp = attr->val.lng;
-		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, NULL, &tmp, NULL, NULL, 1);
+
+		fgw_error_t err;
+		fgw_arg_t res, args[2];
+		
+		args[1].type = FGW_STR;
+		args[1].val.cstr = "fontid";
+		err = rnd_actionv_bin(&PCB->hidlib, "fontsel", &res, 2, args);
+		if ((err == 0) && (res.type == FGW_LONG)) {
+			pcb_font_id_t tmp = res.val.nat_long;
+			pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, NULL, &tmp, NULL, NULL, 1);
+		}
 	}
 	else if (idx == rstdlg_ctx.wclr)
 		pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, NULL, NULL, &attr->val.crd, NULL, 1);
