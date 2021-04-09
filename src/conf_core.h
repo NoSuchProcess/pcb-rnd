@@ -149,10 +149,12 @@ typedef struct {
 	} rc;
 
 	const struct {                       /* design: defaults of a new layout */
-		RND_CFT_COORD via_thickness;
-		RND_CFT_COORD via_drilling_hole;
+		/* drawing pen */
+		RND_CFT_COORD via_thickness;           /* [OBSOLETE] used to be via gemoetry for the via tool; replaced by via padstack prototype */
+		RND_CFT_COORD via_drilling_hole;       /* [OBSOLETE] used to be via gemoetry for the via tool; replaced by via padstack prototype */
 		RND_CFT_COORD line_thickness;
 		RND_CFT_COORD clearance;
+		RND_CFT_INTEGER via_proto;             /* prototype used for vias */
 
 		/* limiting sizes (old DRC) settings */
 		RND_CFT_COORD bloat;                   /* core: size of box-style clearance around text objects; old plugins: gap between copper features on different nets */
