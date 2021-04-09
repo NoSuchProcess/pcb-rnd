@@ -1528,6 +1528,11 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 		else if (s->texts > 0)
 			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v6 did not support text scale in route style\n", "Either save in lihata v6+ or be aware of losing this information");
 
+		if ((wrver >= 8) && (s->fid != -1))
+			lht_dom_hash_put(sn, build_textf("fid", "%ld", s->fid));
+		else if (s->fid != -1)
+			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v8 did not support setting font from style\n", "Either save in lihata v8+ or be aware of losing this information");
+
 		lht_dom_hash_put(sn, build_attributes(&s->attr));
 	}
 	return stl;

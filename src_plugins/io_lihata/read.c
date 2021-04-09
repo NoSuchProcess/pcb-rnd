@@ -2356,6 +2356,15 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 					iolht_warn(rctx, vp, -1, "Route style %s references to non-existent prototype %ld\n", s->via_proto);
 			}
 		}
+		if (rctx->rdver >= 8) {
+			lht_node_t *fidn = lht_dom_hash_get(stn, "fid");
+			if (fidn != NULL) {
+				unsigned long fid;
+				if (parse_ulong(&fid, fidn) != 0)
+					return iolht_error(stn, "Invalid route style font ID\n");
+				s->fid = fid;
+			}
+		}
 	}
 	return 0;
 }
