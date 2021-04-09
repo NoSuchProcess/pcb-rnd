@@ -11,8 +11,9 @@
 	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
 	- replace the route style dialog box's via part
 	- CLEANUP: remove pcb_board_set_via_size and board property for via geometry
-	- add text font, update the pool node text_edit [report: Igor2]
+	- CLEANUP: search for TODO pstk #21 for more code removal
 	- CLEANUP: make sure pcb_route_style_lookup() and pcb_route_style_match() has the same API as pcb_route_style_change() [report: Igor2]
+	- ANNOUNCE: route style font id
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: new breadboard
