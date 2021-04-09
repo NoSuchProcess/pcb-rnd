@@ -51,8 +51,6 @@ typedef struct symbol_s {     /* a single symbol */
 	arclist_t arcs;
 } pcb_symbol_t;
 
-typedef long int pcb_font_id_t;      /* a font is referenced by a pcb_board_t:pcb_font_id_t pair */
-
 struct pcb_font_s {          /* complete set of symbols */
 	rnd_coord_t MaxHeight, MaxWidth; /* maximum cell width and height */
 	rnd_box_t DefaultSymbol;     /* the default symbol is a filled box */
