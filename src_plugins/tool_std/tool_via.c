@@ -115,6 +115,16 @@ void pcb_tool_via_draw_attached(rnd_hidlib_t *hl)
 		ps.y = pcb_crosshair.Y;
 		ps.Clearance = conf_core.design.clearance;
 		pcb_pstk_thindraw(NULL, pcb_crosshair.GC, &ps);
+
+		if (conf_core.editor.show_drc) {
+			static rnd_xform_t xform;
+			static pcb_draw_info_t info;
+			info.xform = &xform;
+			xform.bloat = conf_core.design.clearance*2;
+			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
+			pcb_pstk_thindraw(&info, pcb_crosshair.GC, &ps);
+			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
+		}
 	}
 	else {
 TODO("pstk #21: remove this branch")
