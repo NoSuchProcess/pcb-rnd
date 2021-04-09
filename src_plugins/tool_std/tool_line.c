@@ -56,7 +56,7 @@
 #include "obj_rat_draw.h"
 #include "route_draw.h"
 
-TODO("pstk: remove this when via is removed and the padstack is created from style directly")
+TODO("pstk #21: remove this when via is removed and the padstack is created from style directly")
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
 static pcb_layer_t *last_layer;

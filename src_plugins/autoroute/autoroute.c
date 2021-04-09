@@ -90,7 +90,7 @@
 #include "obj_pstk_draw.h"
 #include "obj_pstk_inlines.h"
 
-TODO("padstack: when style contains proto, remove this")
+TODO("pstk #21: when style contains proto, remove this")
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
 #define autoroute_therm_style 4
@@ -2913,7 +2913,7 @@ static void RD_DrawVia(routedata_t * rd, rnd_coord_t X, rnd_coord_t Y, rnd_coord
 	pcb_pstk_t *live_via = NULL;
 
 	if (conf_core.editor.live_routing) {
-TODO("padstack: when style contains proto, remove this")
+TODO("pstk #21: when style contains proto, remove this")
 		live_via = pcb_pstk_new_compat_via(PCB->Data, -1, X, Y, AutoRouteParameters.style->Hole, radius * 2, 2 * AutoRouteParameters.style->Clearance, 0, PCB_PSTK_COMPAT_ROUND, 1);
 		if (live_via != NULL)
 			pcb_pstk_invalidate_draw(live_via);
@@ -4545,7 +4545,7 @@ rnd_bool IronDownAllUnfixedPaths(routedata_t * rd)
 					if (pp->parent.via == NULL) {
 						assert(labs((b.X1 + radius) - (b.X2 - radius)) < 2);
 						assert(labs((b.Y1 + radius) - (b.Y2 - radius)) < 2);
-TODO("padstack: when style contains proto, remove this")
+TODO("pstk #21: when style contains proto, remove this")
 						pp->parent.via = pcb_pstk_new_compat_via(PCB->Data, -1,
 							b.X1 + radius, b.Y1 + radius, 
 							pp->style->Hole, pp->style->Diameter, 2 * pp->style->Clearance, 0, PCB_PSTK_COMPAT_ROUND, 1);
