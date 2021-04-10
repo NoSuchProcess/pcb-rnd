@@ -66,7 +66,7 @@ print_file()
 {
 	case "$1" in
 		*.crt) openssl x509 -in "$1" -text ;;
-		crl*.pem) openssl crl -in crl_repo.hu.pem -text ;;
+		crl*.pem) openssl crl -in "$1" -text ;;
 		*) echo "Don't know how to print that file" ;;
 	esac
 }
