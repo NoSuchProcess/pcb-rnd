@@ -31,6 +31,7 @@
 #include "pstk_compat.h"
 #include "obj_pstk_inlines.h"
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/rotate.h>
 #include <librnd/poly/polygon1_gen.h>
 
 #include "plug_io.h"
@@ -566,6 +567,7 @@ rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t
 	int n, coppern = -1, maskn = -1, pasten = -1;
 	pcb_layer_type_t side;
 	rnd_coord_t lx1[3], ly1[3], lx2[3], ly2[3], lt[3]; /* poly->line conversion cache */
+	double cs, sn, ang;
 
 	proto = pcb_pstk_get_proto_(ps->parent.data, ps->proto);
 	if ((proto == NULL) || (proto->tr.used < 1))
@@ -607,12 +609,16 @@ rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t
 	if ((coppern < 0) || (maskn < 0))
 		return rnd_false;
 
+	ang = ps->rot;
+	if (ps->xmirror)
+		ang = -ang;
+	cs = cos(ang / RND_RAD_TO_DEG);
+	sn = sin(ang / RND_RAD_TO_DEG);
+
 	/* if the shape is poly, convert to line to make the rest of the code simpler */
 	if (tshp->shape[0].shape == PCB_PSSH_POLY) {
 		for(n = 0; n < tshp->len; n++) {
-			rnd_coord_t w, h, x1, x2, y1, y2;
-			double stepd, step2;
-			int step;
+			double x0, y0, x1, y1, x2, y2, x3, y3, w, h, vx01, vy01, vx03, vy03, cx, cy;
 
 			if (tshp->shape[n].shape != PCB_PSSH_POLY)
 				continue;
@@ -620,37 +626,37 @@ rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t
 			if (tshp->shape[n].data.poly.len != 4)
 				return rnd_false;
 
-			stepd = ps->rot / 90.0;
-			step = stepd;
-			step2 = (double)step * 90.0;
-			if (fabs(ps->rot - step2) > 0.01)
-				return rnd_false;
+			x0 = tshp->shape[n].data.poly.x[0]; y0 = tshp->shape[n].data.poly.y[0];
+			x1 = tshp->shape[n].data.poly.x[1]; y1 = tshp->shape[n].data.poly.y[1];
+			x2 = tshp->shape[n].data.poly.x[2]; y2 = tshp->shape[n].data.poly.y[2];
+			x3 = tshp->shape[n].data.poly.x[3]; y3 = tshp->shape[n].data.poly.y[3];
+			w = rnd_distance(x0, y0, x1, y1);
+			h = rnd_distance(x0, y0, x3, y3);
+			vx01 = (x1 - x0) / w;
+			vy01 = (y1 - y0) / w;
+			vx03 = (x3 - x0) / h;
+			vy03 = (y3 - y0) / h;
 
-			x1 = tshp->shape[n].data.poly.x[0];
-			x2 = tshp->shape[n].data.poly.x[2];
-			if (x1 < x2) {
-				x2 = tshp->shape[n].data.poly.x[0];
-				x1 = tshp->shape[n].data.poly.x[2];
-			}
-			y1 = tshp->shape[n].data.poly.y[0];
-			y2 = tshp->shape[n].data.poly.y[2];
-			if (y1 < y2) {
-				y2 = tshp->shape[n].data.poly.y[0];
-				y1 = tshp->shape[n].data.poly.y[2];
-			}
-			if ((step % 2) == 1) {
-				h = x1 - x2;
-				w = y1 - y2;
+			cx = (x0+x1+x2+x3)/4.0;
+			cy = (y0+y1+y2+y3)/4.0;
+
+			if (w <= h) {
+				lt[n] = rnd_round(w);
+				lx1[n] = rnd_round(cx + h/2.0 * vx03 - w/2.0 * vx03);
+				ly1[n] = rnd_round(cy + h/2.0 * vy03 - w/2.0 * vy03);
+				lx2[n] = rnd_round(cx - h/2.0 * vx03 + w/2.0 * vx03);
+				ly2[n] = rnd_round(cy - h/2.0 * vy03 + w/2.0 * vy03);
 			}
 			else {
-				w = x1 - x2;
-				h = y1 - y2;
+				lt[n] = rnd_round(h);
+				lx1[n] = rnd_round(cx + w/2.0 * vx01 - h/2.0 * vx01);
+				ly1[n] = rnd_round(cy + w/2.0 * vy01 - h/2.0 * vy01);
+				lx2[n] = rnd_round(cx - w/2.0 * vx01 + h/2.0 * vx01);
+				ly2[n] = rnd_round(cy - w/2.0 * vy01 + h/2.0 * vy01);
 			}
-			lt[n] = (w < h) ? w : h;
-			lx1[n] = x2 + lt[n] / 2;
-			ly1[n] = y2 + lt[n] / 2;
-			lx2[n] = lx1[n] + (w - lt[n]);
-			ly2[n] = ly1[n] + (h - lt[n]);
+
+			rnd_rotate(&lx1[n], &ly1[n], cx, cy, cs, sn);
+			rnd_rotate(&lx2[n], &ly2[n], cx, cy, cs, sn);
 		}
 	}
 
