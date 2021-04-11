@@ -2148,7 +2148,7 @@ yyreduce:
   case 46:
 #line 474 "parse_y.y" /* yacc.c:1652  */
     {
-				if (pcb_route_string_parse((yyvsp[-1].string), &yyPCB->RouteStyle, "mil"))
+				if (pcb_route_string_parse(yyPCB->Data, (yyvsp[-1].string), &yyPCB->RouteStyle, "mil"))
 				{
 					rnd_message(RND_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;
@@ -2161,7 +2161,7 @@ yyreduce:
   case 47:
 #line 483 "parse_y.y" /* yacc.c:1652  */
     {
-				if (pcb_route_string_parse(((yyvsp[-1].string) == NULL ? "" : (yyvsp[-1].string)), &yyPCB->RouteStyle, "cmil"))
+				if (pcb_route_string_parse(yyPCB->Data, ((yyvsp[-1].string) == NULL ? "" : (yyvsp[-1].string)), &yyPCB->RouteStyle, "cmil"))
 				{
 					rnd_message(RND_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;

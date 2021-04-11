@@ -472,7 +472,7 @@ pcbgroups
 pcbstyles
 		: T_STYLES '(' STRING ')'
 			{
-				if (pcb_route_string_parse($3, &yyPCB->RouteStyle, "mil"))
+				if (pcb_route_string_parse(yyPCB->Data, $3, &yyPCB->RouteStyle, "mil"))
 				{
 					rnd_message(RND_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;
@@ -481,7 +481,7 @@ pcbstyles
 			}
 		| T_STYLES '[' STRING ']'
 			{
-				if (pcb_route_string_parse(($3 == NULL ? "" : $3), &yyPCB->RouteStyle, "cmil"))
+				if (pcb_route_string_parse(yyPCB->Data, ($3 == NULL ? "" : $3), &yyPCB->RouteStyle, "cmil"))
 				{
 					rnd_message(RND_MSG_ERROR, "illegal route-style string\n");
 					YYABORT;

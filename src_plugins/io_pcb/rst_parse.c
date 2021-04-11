@@ -27,6 +27,8 @@
  *
  */
 
+#include "brave.h"
+
 pcb_route_style_t pcb_custom_route_style;
 
 static const char rst_cookie[] = "core route style";
@@ -44,8 +46,9 @@ static rnd_coord_t pcb_get_num(char **s, const char *default_unit)
 /* parses the routes definition string which is a colon separated list of
    comma separated Name, Dimension, Dimension, Dimension, Dimension
    e.g. Signal,20,40,20,10:Power,40,60,28,10:... */
-int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const char *default_unit)
+int pcb_route_string_parse1(pcb_data_t *data, char **str, pcb_route_style_t *routeStyle, const char *default_unit)
 {
+	rnd_coord_t hole_dia = 0, pad_dia = 0, mask = 0;
 	char *s = *str;
 	char Name[256];
 	int i, len;
@@ -75,7 +78,7 @@ int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const cha
 		s++;
 	if (!isdigit((int) *s))
 		goto error;
-	routeStyle->Diameter = pcb_get_num(&s, default_unit);
+	pad_dia = pcb_get_num(&s, default_unit);
 	while (*s && isspace((int) *s))
 		s++;
 	if (*s++ != ',')
@@ -84,7 +87,7 @@ int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const cha
 		s++;
 	if (!isdigit((int) *s))
 		goto error;
-	routeStyle->Hole = pcb_get_num(&s, default_unit);
+	hole_dia = pcb_get_num(&s, default_unit);
 	/* for backwards-compatibility, we use a 10-mil default
 	   for styles which omit the clearance specification. */
 	if (*s != ',')
@@ -100,6 +103,16 @@ int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const cha
 			s++;
 	}
 
+	if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
+		if (pcb_compat_route_style_via_load(data, routeStyle, hole_dia, pad_dia, mask) != 0)
+			rnd_message(RND_MSG_WARNING, "Route style '%s': falied to create via padstack prototype\n", routeStyle->name);
+	}
+	else {
+TODO("pstk #21: remove this branch");
+		routeStyle->Diameter = pad_dia;
+		routeStyle->Hole = hole_dia;
+	}
+
 	*str = s;
 	return 0;
 	error:;
@@ -107,14 +120,14 @@ int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const cha
 		return -1;
 }
 
-int pcb_route_string_parse(char *s, vtroutestyle_t *styles, const char *default_unit)
+int pcb_route_string_parse(pcb_data_t *data, char *s, vtroutestyle_t *styles, const char *default_unit)
 {
 	int n;
 
 	vtroutestyle_truncate(styles, 0);
 	for(n = 0;;n++) {
 		vtroutestyle_enlarge(styles, n+1);
-		if (pcb_route_string_parse1(&s, &styles->array[n], default_unit) != 0) {
+		if (pcb_route_string_parse1(data, &s, &styles->array[n], default_unit) != 0) {
 			n--;
 			break;
 		}
