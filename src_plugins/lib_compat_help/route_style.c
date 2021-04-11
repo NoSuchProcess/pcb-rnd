@@ -53,3 +53,16 @@ int pcb_compat_route_style_via_save(pcb_data_t *data, const pcb_route_style_t *r
 
 	return 0;
 }
+
+int pcb_compat_route_style_via_load(pcb_data_t *data, pcb_route_style_t *rst, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t mask)
+{
+	rnd_cardinal_t pid = pcb_pstk_new_compat_via_proto(data, drill_dia, pad_dia, mask, PCB_PSTK_COMPAT_ROUND, 1, 0);
+
+	if (pid == -1)
+		return -1;
+
+	rst->via_proto = pid;
+	rst->via_proto_set = 1;
+
+	return 0;
+}
