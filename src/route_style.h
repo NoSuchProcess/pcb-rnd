@@ -4,7 +4,7 @@
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996, 2004 Thomas Nau
- *  Copyright (C) 2016 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,8 +28,6 @@
  */
 
 #include "vtroutestyle.h"
-
-char *pcb_route_string_make(vtroutestyle_t *styles);
 
 /* Set design configuration (the pen we draw with) to a given route style */
 void pcb_use_route_style(pcb_route_style_t *rst);

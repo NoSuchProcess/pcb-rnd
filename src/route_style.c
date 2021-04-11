@@ -44,23 +44,6 @@ pcb_route_style_t pcb_custom_route_style;
 
 static const char rst_cookie[] = "core route style";
 
-/* Serializes the route style list */
-char *pcb_route_string_make(vtroutestyle_t *styles)
-{
-	gds_t str;
-	int i;
-
-	gds_init(&str);
-	for (i = 0; i < vtroutestyle_len(styles); ++i) {
-		rnd_append_printf(&str, "%s,%mc,%mc,%mc,%mc", styles->array[i].name,
-																				 styles->array[i].Thick, styles->array[i].Diameter,
-																				 styles->array[i].Hole, styles->array[i].Clearance);
-		if (i > 0)
-			gds_append(&str, ':');
-	}
-	return str.array; /* this is the only allocation made, return this and don't uninit */
-}
-
 void pcb_use_route_style(pcb_route_style_t * rst)
 {
 	rnd_conf_set_design("design/line_thickness", "%$mS", rst->Thick);
