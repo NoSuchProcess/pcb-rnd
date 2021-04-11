@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016..2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016..2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@
 #include "../src_plugins/lib_compat_help/subc_help.h"
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/elem_rot.h"
+#include "../src_plugins/lib_compat_help/route_style.h"
 
 #include "brave.h"
 
@@ -2315,10 +2316,17 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 		s->Hole = 0;
 		s->Diameter = 0;
 		err |= parse_coord(&s->Thick,     hash_get(stn, "thickness", 0));
-		err |= parse_coord(&s->Diameter,  hash_get(stn, "diameter", 1));
-		err |= parse_coord(&s->Hole,      hash_get(stn, "hole", 1));
 		err |= parse_coord(&s->Clearance, hash_get(stn, "clearance", 0));
+
+		if (!(pcb_brave & PCB_BRAVE_LIHATA_V8)) {
+			TODO("pstk #21: remove this branch");
+			err |= parse_coord(&s->Diameter,  hash_get(stn, "diameter", 1));
+			err |= parse_coord(&s->Hole,      hash_get(stn, "hole", 1));
+		}
+
 		parse_attributes(&s->attr, lht_dom_hash_get(stn, "attributes"));
+
+
 
 		/* read text thickness */
 		{
@@ -2353,9 +2361,33 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 				s->via_proto = pid;
 				s->via_proto_set = 1;
 				if (pcb_pstk_get_proto_(dt, pid) == NULL)
-					iolht_warn(rctx, vp, -1, "Route style %s references to non-existent prototype %ld\n", s->via_proto);
+					iolht_warn(rctx, vp, -1, "Route style %s references to non-existent prototype %ld\n", s->name, s->via_proto);
 			}
 		}
+
+		if (pcb_brave & PCB_BRAVE_LIHATA_V8) { /* TODO("pstk #21: remove the condition, this branch should always run"); */
+		if (!s->via_proto_set && (rctx->rdver < 8)) {
+			rnd_coord_t drill_dia, pad_dia, mask = 0;
+			int err = 0;
+			lht_node_t *dn, *hn;
+
+			dn = hash_get(stn, "diameter", 1);
+			hn = hash_get(stn, "hole", 1);
+
+			if ((dn != NULL) || (hn != NULL)) {
+				/* import old, diameter based via geometry from old files */
+				err |= parse_coord(&pad_dia,   dn);
+				err |= parse_coord(&drill_dia, hn);
+				if (err == 0) {
+					if (pcb_compat_route_style_via_load(dt, s, drill_dia, pad_dia, mask) != 0)
+						iolht_warn(rctx, stn, -1, "Invalid route style via diameters in %s: can not create padstack proto\n", s->name);
+				}
+				else
+					return iolht_error(stn, "Invalid route style prototype via diameters\n");
+			}
+		}
+		}
+
 		if (rctx->rdver >= 8) {
 			lht_node_t *fidn = lht_dom_hash_get(stn, "fid");
 			if (fidn != NULL) {
