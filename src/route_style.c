@@ -263,7 +263,7 @@ int pcb_route_style_new(pcb_board_t *pcb, const char *name, rnd_bool undoable)
 	g->rst.Clearance = conf_core.design.clearance;
 	g->rst.Diameter = conf_core.design.via_thickness*2;
 	g->rst.Hole = conf_core.design.via_drilling_hole;
-	g->rst.fid = -1;
+	g->rst.fid = -1; /* leave font unset so saving in old lihata format won't trigger a warning */
 
 	undo_rst_swap(g);
 	if (undoable) pcb_undo_inc_serial();
