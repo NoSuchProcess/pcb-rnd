@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016..2019 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016..2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@
 #include <librnd/core/hid_dad.h>
 
 #include "src_plugins/lib_compat_help/pstk_compat.h"
+#include "src_plugins/lib_compat_help/route_style.h"
 
 #include "brave.h"
 
@@ -1491,7 +1492,7 @@ static lht_node_t *build_fontkit(pcb_fontkit_t *fk)
 }
 
 
-static lht_node_t *build_styles(vtroutestyle_t *styles)
+static lht_node_t *build_styles(pcb_data_t *data, vtroutestyle_t *styles)
 {
 	lht_node_t *stl, *sn;
 	int n;
@@ -1505,18 +1506,28 @@ static lht_node_t *build_styles(vtroutestyle_t *styles)
 		sn = lht_dom_node_alloc(LHT_HASH, s->name);
 		lht_dom_list_append(stl, sn);
 		lht_dom_hash_put(sn, build_textf("thickness", CFMT, s->Thick));
-		lht_dom_hash_put(sn, build_textf("diameter", CFMT, s->Diameter));
-		lht_dom_hash_put(sn, build_textf("hole", CFMT, s->Hole));
 		lht_dom_hash_put(sn, build_textf("clearance", CFMT, s->Clearance));
 
-		if (wrver >= 5) {
+		if (!(pcb_brave & PCB_BRAVE_LIHATA_V8)) {
+			TODO("pstk #21: remove this branch");
+			lht_dom_hash_put(sn, build_textf("diameter", CFMT, s->Diameter));
+			lht_dom_hash_put(sn, build_textf("hole", CFMT, s->Hole));
+		}
+
+		if (wrver >= 8) {
 			if (s->via_proto_set)
 				lht_dom_hash_put(sn, build_textf("via_proto", "%ld", (long int)s->via_proto));
 			else
 			lht_dom_hash_put(sn, dummy_text_node("via_proto"));
 		}
-		else
-			pcb_io_incompat_save(NULL, NULL, "route-style", "lihata boards before version v5 did not support padstack prototype in route style\n", "Either save in lihata v5+ or be aware of losing this information");
+		else {
+			rnd_coord_t drill_dia, pad_dia, mask;
+
+			pcb_compat_route_style_via_save(data, s, &drill_dia, &pad_dia, &mask);
+			lht_dom_hash_put(sn, build_textf("diameter", CFMT, drill_dia));
+			lht_dom_hash_put(sn, build_textf("hole", CFMT, pad_dia));
+			pcb_io_incompat_save(NULL, NULL, "route-style", "pcb-rnd for lihata boards before version v8 did not support padstack prototype in route style\n", "Either save in lihata v8+ or be aware of losing this information");
+		}
 
 		if (wrver >= 6)
 			lht_dom_hash_put(sn, build_textf("text_thick", CFMT, s->textt));
@@ -1728,7 +1739,7 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 	lht_dom_hash_put(brd->root, build_pxms());
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_fontkit(&pcb->fontkit));
-	lht_dom_hash_put(brd->root, build_styles(&pcb->RouteStyle));
+	lht_dom_hash_put(brd->root, build_styles(pcb->Data, &pcb->RouteStyle));
 	lht_dom_hash_put(brd->root, build_netlists(pcb, pcb->netlist, pcb->NetlistPatches, PCB_NUM_NETLISTS));
 	lht_dom_hash_put(brd->root, build_conf());
 	pxm_uninit();
