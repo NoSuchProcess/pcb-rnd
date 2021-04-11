@@ -8,7 +8,6 @@
 	- remove via geometry from route style
 - FEATURE: (TT) route style upgrade to prototypes - requires lihata v8:
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
-	- BUG: padstack doesn't show drc xor shape while moving - because the whole drawing is a cheat for old vias [report: igor2]
 	- CLEANUP: remove pcb_board_set_via_size and board property for via geometry
 	- CLEANUP: search for TODO pstk #21 for more code removal
 	- CLEANUP: make sure pcb_route_style_lookup() and pcb_route_style_match() has the same API as pcb_route_style_change() [report: Igor2]
