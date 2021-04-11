@@ -7400,7 +7400,8 @@
  vtpadstack.h obj_pstk_inlines.h thermal.h netlist.h \
  ../src_plugins/lib_compat_help/subc_help.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
- ../src_plugins/lib_compat_help/elem_rot.h brave.h
+ ../src_plugins/lib_compat_help/elem_rot.h \
+ ../src_plugins/lib_compat_help/route_style.h brave.h
 ../src_plugins/io_lihata/write.o: ../src_plugins/io_lihata/write.c \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/tree.h \
  ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
@@ -7476,7 +7477,8 @@
  ../src_3rd/librnd-local/src/librnd/core/hid_cfg.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_menu.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_dad_spin.h \
- ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h brave.h
+ ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
+ ../src_plugins/lib_compat_help/route_style.h brave.h
 ../src_plugins/io_lihata/write_style.o: \
  ../src_plugins/io_lihata/write_style.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h \
@@ -8020,7 +8022,7 @@
  flag_str.h obj_pinvia_therm.h rats_patch.h route_style.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h netlist.h \
- ../src_plugins/io_pcb/parse_y.h
+ ../src_plugins/io_pcb/rst_parse.c ../src_plugins/io_pcb/parse_y.h
 ../src_plugins/io_tedax/footprint.o: ../src_plugins/io_tedax/footprint.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
