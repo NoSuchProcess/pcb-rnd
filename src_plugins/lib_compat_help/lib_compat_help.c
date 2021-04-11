@@ -6,6 +6,7 @@
 #include "pstk_help.c"
 #include "subc_help.c"
 #include "elem_rot.c"
+#include "route_style.c"
 
 int pplg_check_ver_lib_compat_help(int ver_needed) { return 0; }
 
