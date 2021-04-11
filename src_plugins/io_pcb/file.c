@@ -253,6 +253,35 @@ static void conf_update_pcb_flag(pcb_flag_t *dest, const char *hash_path, int bi
 		PCB_FLAG_SET(binflag, tmp);
 }
 
+int pcb_compat_route_style_via_save(pcb_data_t *data, const pcb_route_style_t *rst, rnd_coord_t *drill_dia, rnd_coord_t *pad_dia, rnd_coord_t *mask)
+{
+	/* load defaults */
+	*drill_dia = RND_MM_TO_COORD(0.42);
+	*pad_dia = RND_MM_TO_COORD(4.2);
+	*mask = 0;
+
+				if (rst->via_proto_set) {
+					pcb_pstk_compshape_t cshape;
+					rnd_bool plated;
+					pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(data, rst->via_proto);
+
+					if ((proto != NULL) && (proto->tr.used > 0)) {
+						if (pcb_pstk_export_compat_proto(proto, drill_dia, pad_dia, mask, &cshape, &plated)) {
+							if ((*drill_dia <= 0) || !plated || (*mask > 0) || (cshape != PCB_PSTK_COMPAT_ROUND))
+								pcb_io_incompat_save(data, NULL, "route-style", "Route style's via padstack proto is too complex for old via description", "Use a simpler via style: copper shapes only, on all copper layers, all circle and of the same size, plus a plated round hole - gEDA/pcb can't handle anything more complex.");
+						}
+						else
+							return pcb_io_incompat_save(data, NULL, "route-style", "Failed to convert route style's via padstack proto to old via description", "Use a simpler via style: copper shapes only, on all copper layers, all circle and of the same size, plus a plated round hole - gEDA/pcb can't handle anything more complex.");
+					}
+					else
+						return pcb_io_incompat_save(data, NULL, "route-style", "Invalid route style via prototype (does not exist)", "old gEDA/PCB format requires a via geometry - exporting a dummy one");
+				}
+				else
+					return pcb_io_incompat_save(data, NULL, "route-style", "Invalid route style: no via prototype", "old gEDA/PCB format requires a via geometry - exporting a dummy one");
+
+	return 0;
+}
+
 /* data header: the name of the PCB, cursor location, zoom and grid
  * layergroups and some flags */
 static void WritePCBDataHeader(FILE * FP)
@@ -309,27 +338,8 @@ static void WritePCBDataHeader(FILE * FP)
 	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
 		for (group = 0; group < vtroutestyle_len(&PCB->RouteStyle) - 1; group++) {
 			if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
-				rnd_coord_t drill_dia = RND_MM_TO_COORD(0.42), pad_dia = RND_MM_TO_COORD(4.2), mask = 0;
-
-				if (PCB->RouteStyle.array[group].via_proto_set) {
-					pcb_pstk_compshape_t cshape;
-					rnd_bool plated;
-					pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(PCB->Data, PCB->RouteStyle.array[group].via_proto);
-
-					if ((proto != NULL) && (proto->tr.used > 0)) {
-						if (pcb_pstk_export_compat_proto(proto, &drill_dia, &pad_dia, &mask, &cshape, &plated)) {
-							if ((drill_dia <= 0) || !plated || (mask > 0) || (cshape != PCB_PSTK_COMPAT_ROUND))
-								pcb_io_incompat_save(PCB->Data, NULL, "route-style", "Route style's via padstack proto is too complex for old via description", "Use a simpler via style: copper shapes only, on all copper layers, all circle and of the same size, plus a plated round hole - gEDA/pcb can't handle anything more complex.");
-						}
-						else
-							pcb_io_incompat_save(PCB->Data, NULL, "route-style", "Failed to convert route style's via padstack proto to old via description", "Use a simpler via style: copper shapes only, on all copper layers, all circle and of the same size, plus a plated round hole - gEDA/pcb can't handle anything more complex.");
-					}
-					else
-						pcb_io_incompat_save(PCB->Data, NULL, "route-style", "Invalid route style via prototype (does not exist)", "old gEDA/PCB format requires a via geometry - exporting a dummy one");
-				}
-				else
-					pcb_io_incompat_save(PCB->Data, NULL, "route-style", "Invalid route style: no via prototype", "old gEDA/PCB format requires a via geometry - exporting a dummy one");
-
+				rnd_coord_t drill_dia, pad_dia, mask;
+				pcb_compat_route_style_via_save(PCB->Data, &PCB->RouteStyle.array[group], &drill_dia, &pad_dia, &mask);
 				rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]:", PCB->RouteStyle.array[group].name,
 					PCB->RouteStyle.array[group].Thick, PCB->RouteStyle.array[group].Diameter,
 					PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
