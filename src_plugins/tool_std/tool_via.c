@@ -63,10 +63,6 @@ void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
 		return;
 	}
 
-	if (conf_core.design.via_drilling_hole >= conf_core.design.via_thickness) {
-		rnd_message(RND_MSG_ERROR, "Can't place via: invalid via geometry (hole too large for via size)\n");
-		return;
-	}
 
 
 	if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
@@ -75,6 +71,11 @@ void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
 	}
 	else {
 TODO("pstk #21: remove this branch in favor of pstk protos - scconfig also has TODO #21, fix it there too")
+		if (conf_core.design.via_drilling_hole >= conf_core.design.via_thickness) {
+			rnd_message(RND_MSG_ERROR, "Can't place via: invalid via geometry (hole too large for via size)\n");
+			return;
+		}
+
 		ps = pcb_pstk_new_compat_via(pcb->Data, -1, hl->tool_x, hl->tool_y,
 			conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
 			0, PCB_PSTK_COMPAT_ROUND, rnd_true);
