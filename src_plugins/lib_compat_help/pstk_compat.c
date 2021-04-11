@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -138,7 +138,7 @@ static void compat_shape_free(pcb_pstk_shape_t *shp)
 		free(shp->data.poly.x);
 }
 
-static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t clearance, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, rnd_bool hole_clearance_hack)
+rnd_cardinal_t pcb_pstk_new_compat_via_proto(pcb_data_t *data, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, rnd_bool hole_clearance_hack)
 {
 	pcb_pstk_proto_t proto;
 	pcb_pstk_shape_t shape[5]; /* max number of shapes: 3 coppers, 2 masks */
@@ -147,20 +147,7 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_c
 	pcb_pstk_tshape_t tshp;
 	int n;
 
-	if (hole_clearance_hack && !plated) {
-		/* in PCB hole means unplated with clearance; emulate this by placing a
-		   zero diameter copper circle on all layers and set clearance large
-		   enough to cover the hole too */
-		clearance = rnd_round((double)clearance + (double)drill_dia/2.0);
-		pad_dia = 0.0;
-	}
-
-	/* for plated vias, positive pad is required */
-	if (plated && !hole_clearance_hack)
-		assert(pad_dia > drill_dia);
-
 	assert(drill_dia > 0);
-	assert(clearance >= 0);
 	assert(mask >= 0);
 
 	memset(&proto, 0, sizeof(proto));
@@ -177,7 +164,7 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_c
 
 		/* we need to generate the shape only once as it's the same on all */
 		if (compat_via_shape_gen(&copper_master, cshape, pad_dia) != 0)
-			return NULL;
+			return -1;
 
 		for(n = 0; n < 3; n++)
 			memcpy(&shape[n], &copper_master, sizeof(copper_master));
@@ -191,7 +178,7 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_c
 
 	if (mask > 0) {
 		if (compat_via_shape_gen(&mask_master, cshape, mask) != 0)
-			return NULL;
+			return -1;
 	
 		memcpy(&shape[tshp.len+0], &mask_master, sizeof(mask_master));
 		memcpy(&shape[tshp.len+1], &mask_master, sizeof(mask_master));
@@ -207,7 +194,7 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_c
 	pid = pcb_pstk_proto_insert_dup(data, &proto, 1, 0);
 	if (pid == PCB_PADSTACK_INVALID) {
 		compat_shape_free(&copper_master);
-		return NULL;
+		return -1;
 	}
 
 	compat_shape_free(&copper_master);
@@ -215,8 +202,33 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_c
 	if (mask > 0)
 		compat_shape_free(&mask_master);
 
+	return pid;
+}
+
+static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t clearance, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, rnd_bool hole_clearance_hack)
+{
+	rnd_cardinal_t pid;
+
+	assert(clearance >= 0);
+
+	if (hole_clearance_hack && !plated) {
+		/* in PCB hole means unplated with clearance; emulate this by placing a
+		   zero diameter copper circle on all layers and set clearance large
+		   enough to cover the hole too */
+		clearance = rnd_round((double)clearance + (double)drill_dia/2.0);
+		pad_dia = 0.0;
+	}
+
+	/* for plated vias, positive pad is required */
+	if (plated && !hole_clearance_hack)
+		assert(pad_dia > drill_dia);
+
+	pid = pcb_pstk_new_compat_via_proto(data, drill_dia, pad_dia, mask, cshape, plated, hole_clearance_hack);
+	if (pid == -1)
+		return NULL;
 	return pcb_pstk_new(data, -1, pid, x, y, clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
+
 
 pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t clearance, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated)
 {
