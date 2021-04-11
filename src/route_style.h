@@ -29,14 +29,6 @@
 
 #include "vtroutestyle.h"
 
-/* Parse a single route string into one pcb_route_style_t *slot. Returns 0 on success.  */
-int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const char *default_unit);
-
-/* Parse a ':' separated list of route strings into a styles vector
-   The vector is initialized before the call. On error the vector is left empty
-   (but still initialized). Returns 0 on success. */
-int pcb_route_string_parse(char *s, vtroutestyle_t *styles, const char *default_unit);
-
 char *pcb_route_string_make(vtroutestyle_t *styles);
 
 /* Set design configuration (the pen we draw with) to a given route style */

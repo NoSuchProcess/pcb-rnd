@@ -50,6 +50,8 @@
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "netlist.h"
 
+#include "rst_parse.c"
+
 /* frame between the groundplane and the copper or mask - noone seems
    to remember what these two are for; changing them may have unforeseen
    side effects. */

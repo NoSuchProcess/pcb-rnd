@@ -44,17 +44,6 @@ pcb_route_style_t pcb_custom_route_style;
 
 static const char rst_cookie[] = "core route style";
 
-static rnd_coord_t pcb_get_num(char **s, const char *default_unit)
-{
-	/* Read value */
-	rnd_coord_t ret_val = rnd_get_value_ex(*s, NULL, NULL, NULL, default_unit, NULL);
-	/* Advance pointer */
-	while (isalnum(**s) || **s == '.')
-		(*s)++;
-	return ret_val;
-}
-
-
 /* Serializes the route style list */
 char *pcb_route_string_make(vtroutestyle_t *styles)
 {
@@ -70,96 +59,6 @@ char *pcb_route_string_make(vtroutestyle_t *styles)
 			gds_append(&str, ':');
 	}
 	return str.array; /* this is the only allocation made, return this and don't uninit */
-}
-
-/* parses the routes definition string which is a colon separated list of
-   comma separated Name, Dimension, Dimension, Dimension, Dimension
-   e.g. Signal,20,40,20,10:Power,40,60,28,10:... */
-int pcb_route_string_parse1(char **str, pcb_route_style_t *routeStyle, const char *default_unit)
-{
-	char *s = *str;
-	char Name[256];
-	int i, len;
-
-	while (*s && isspace((int) *s))
-		s++;
-	for (i = 0; *s && *s != ','; i++)
-		Name[i] = *s++;
-	Name[i] = '\0';
-	len = strlen(Name);
-	if (len > sizeof(routeStyle->name)-1) {
-		memcpy(routeStyle->name, Name, sizeof(routeStyle->name)-1);
-		routeStyle->name[sizeof(routeStyle->name)-1] = '\0';
-		rnd_message(RND_MSG_WARNING, "Route style name '%s' too long, truncated to '%s'\n", Name, routeStyle->name);
-	}
-	else
-		strcpy(routeStyle->name, Name);
-	if (!isdigit((int) *++s))
-		goto error;
-	routeStyle->fid = -1;
-	routeStyle->Thick = pcb_get_num(&s, default_unit);
-	while (*s && isspace((int) *s))
-		s++;
-	if (*s++ != ',')
-		goto error;
-	while (*s && isspace((int) *s))
-		s++;
-	if (!isdigit((int) *s))
-		goto error;
-	routeStyle->Diameter = pcb_get_num(&s, default_unit);
-	while (*s && isspace((int) *s))
-		s++;
-	if (*s++ != ',')
-		goto error;
-	while (*s && isspace((int) *s))
-		s++;
-	if (!isdigit((int) *s))
-		goto error;
-	routeStyle->Hole = pcb_get_num(&s, default_unit);
-	/* for backwards-compatibility, we use a 10-mil default
-	   for styles which omit the clearance specification. */
-	if (*s != ',')
-		routeStyle->Clearance = RND_MIL_TO_COORD(10);
-	else {
-		s++;
-		while (*s && isspace((int) *s))
-			s++;
-		if (!isdigit((int) *s))
-			goto error;
-		routeStyle->Clearance = pcb_get_num(&s, default_unit);
-		while (*s && isspace((int) *s))
-			s++;
-	}
-
-	*str = s;
-	return 0;
-	error:;
-		*str = s;
-		return -1;
-}
-
-int pcb_route_string_parse(char *s, vtroutestyle_t *styles, const char *default_unit)
-{
-	int n;
-
-	vtroutestyle_truncate(styles, 0);
-	for(n = 0;;n++) {
-		vtroutestyle_enlarge(styles, n+1);
-		if (pcb_route_string_parse1(&s, &styles->array[n], default_unit) != 0) {
-			n--;
-			break;
-		}
-		while (*s && isspace((int) *s))
-			s++;
-		if (*s == '\0')
-			break;
-		if (*s++ != ':') {
-			vtroutestyle_truncate(styles, 0);
-			return -1;
-		}
-	}
-	vtroutestyle_truncate(styles, n+1);
-	return 0;
 }
 
 void pcb_use_route_style(pcb_route_style_t * rst)
