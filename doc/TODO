@@ -11,7 +11,6 @@
 	- CLEANUP: remove pcb_board_set_via_size and board property for via geometry
 	- CLEANUP: search for TODO pstk #21 for more code removal
 	- CLEANUP: make sure pcb_route_style_lookup() and pcb_route_style_match() has the same API as pcb_route_style_change() [report: Igor2]
-	- BUG: padstack lib dialog (board), delete grid string to empty under preview -> hang [report: Igor2]
 	- ANNOUNCE: route style font id
 
 2. For later releases ===============================================================================
