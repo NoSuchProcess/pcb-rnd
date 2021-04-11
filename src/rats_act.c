@@ -133,7 +133,12 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				fctx.flag_chg_undoable = 1;
 				fctx.consider_rats = !!conf_core.editor.conn_find_rat;
 				res = pcb_find_from_xy(&fctx, PCB->Data, x, y);
-				rnd_message(RND_MSG_INFO, "found %ld objects\n", res);
+				if (res == -1)
+					rnd_message(RND_MSG_INFO, "nothing found there\n");
+				else if (res == 1)
+					rnd_message(RND_MSG_INFO, "found 1 object\n");
+				else
+					rnd_message(RND_MSG_INFO, "found %ld objects\n", res);
 				pcb_find_free(&fctx);
 				break;
 			}
