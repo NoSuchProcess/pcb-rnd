@@ -1513,7 +1513,7 @@ static lht_node_t *build_styles(pcb_data_t *data, vtroutestyle_t *styles)
 			lht_dom_hash_put(sn, build_textf("diameter", CFMT, s->Diameter));
 			lht_dom_hash_put(sn, build_textf("hole", CFMT, s->Hole));
 		}
-
+		else {
 		if (wrver >= 8) {
 			if (s->via_proto_set)
 				lht_dom_hash_put(sn, build_textf("via_proto", "%ld", (long int)s->via_proto));
@@ -1522,11 +1522,10 @@ static lht_node_t *build_styles(pcb_data_t *data, vtroutestyle_t *styles)
 		}
 		else {
 			rnd_coord_t drill_dia, pad_dia, mask;
-
 			pcb_compat_route_style_via_save(data, s, &drill_dia, &pad_dia, &mask);
-			lht_dom_hash_put(sn, build_textf("diameter", CFMT, drill_dia));
-			lht_dom_hash_put(sn, build_textf("hole", CFMT, pad_dia));
-			pcb_io_incompat_save(NULL, NULL, "route-style", "pcb-rnd for lihata boards before version v8 did not support padstack prototype in route style\n", "Either save in lihata v8+ or be aware of losing this information");
+			lht_dom_hash_put(sn, build_textf("diameter", CFMT, pad_dia));
+			lht_dom_hash_put(sn, build_textf("hole", CFMT, drill_dia));
+		}
 		}
 
 		if (wrver >= 6)
