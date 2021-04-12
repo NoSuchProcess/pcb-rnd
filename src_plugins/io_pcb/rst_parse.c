@@ -27,6 +27,8 @@
  *
  */
 
+#include "../lib_compat_help/route_style.h"
+
 #include "brave.h"
 
 pcb_route_style_t pcb_custom_route_style;
