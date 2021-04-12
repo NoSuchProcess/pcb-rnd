@@ -564,9 +564,9 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		case '\0':
 			do_select:;
 			pcb_board_set_line_width(rts->Thick);
-			pcb_board_set_via_size(rts->Diameter);
-			pcb_board_set_via_drilling_hole(rts->Hole);
 			pcb_board_set_clearance(rts->Clearance);
+TODO("pstk #21: we are not setting the proto here?!");
+TODO("pstk #21: can't we just remove these from board property as they are in the config");
 			break;
 		case 'd': /* del */
 			res->type = FGW_INT;

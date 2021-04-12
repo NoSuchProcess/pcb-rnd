@@ -338,18 +338,6 @@ void pcb_board_set_line_width(rnd_coord_t Size)
 	}
 }
 
-/* sets a new via thickness */
-void pcb_board_set_via_size(rnd_coord_t Size)
-{
-	rnd_conf_set_design("design/via_thickness", "%$mS", Size);
-}
-
-/* sets a new via drilling hole */
-void pcb_board_set_via_drilling_hole(rnd_coord_t Size)
-{
-	rnd_conf_set_design("design/via_drilling_hole", "%$mS", Size);
-}
-
 /* sets a clearance width */
 void pcb_board_set_clearance(rnd_coord_t Width)
 {
