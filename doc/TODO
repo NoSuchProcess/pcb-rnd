@@ -15,6 +15,7 @@
 	- CLEANUP: update default board to lihata v8: use via protos, set all text fields explicitly
 	- ANNOUNCE: route style font id
 	- ANNOUNCE: setsame works on vias
+- FEATURE: inverse SetSame(): copy pen properties from conf_core to the current object [report: Majenko]
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: version 3.0.0:
