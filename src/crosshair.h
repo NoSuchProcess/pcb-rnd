@@ -80,7 +80,7 @@ typedef struct {                         /* holds crosshair, cursor and crosshai
 	} edit_poly_point_extra;
 
 	/* cached tool IDs */
-	int tool_arrow, tool_line, tool_move, tool_arc, tool_via, tool_poly, tool_poly_hole;
+	int tool_arrow, tool_line, tool_move, tool_arc, tool_via, tool_poly, tool_poly_hole, tool_text;
 } pcb_crosshair_t;
 
 typedef struct {

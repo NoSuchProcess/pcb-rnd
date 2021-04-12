@@ -74,7 +74,7 @@ int pplg_init_tool_std(void)
 	rnd_tool_reg(&pcb_tool_rectangle, pcb_tool_std_cookie);
 	rnd_tool_reg(&pcb_tool_remove, pcb_tool_std_cookie);
 	rnd_tool_reg(&pcb_tool_rotate, pcb_tool_std_cookie);
-	rnd_tool_reg(&pcb_tool_text, pcb_tool_std_cookie);
+	pcb_crosshair.tool_text = rnd_tool_reg(&pcb_tool_text, pcb_tool_std_cookie);
 	rnd_tool_reg(&pcb_tool_thermal, pcb_tool_std_cookie);
 	pcb_crosshair.tool_via = rnd_tool_reg(&pcb_tool_via, pcb_tool_std_cookie);
 
