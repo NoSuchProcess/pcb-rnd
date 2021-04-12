@@ -27,6 +27,7 @@
 /* included from routest.c - split for clarity */
 
 #include <librnd/core/hid_dad_tree.h>
+#include "route_style.h"
 
 #include "brave.h"
 
@@ -240,7 +241,7 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 		args[3].val.nat_long = rst->via_proto;
 		err = rnd_actionv_bin(&PCB->hidlib, "pstklib", &res, 4, args);
 		if ((err == 0) && (res.type == FGW_LONG)) {
-			pcb_font_id_t tmp = res.val.nat_long;
+			rnd_cardinal_t tmp = res.val.nat_long;
 			pcb_route_style_change(PCB, rstdlg_ctx.curr, NULL, NULL, NULL, NULL, NULL, &tmp, 1);
 		}
 	}
@@ -469,7 +470,7 @@ fgw_error_t pcb_act_AdjustStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	if (idx < 0) {
-		idx = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
+		idx = PCB_LOOKUP_ROUTE_STYLE_PEN(PCB);
 		if (idx < 0) {
 			rnd_message(RND_MSG_ERROR, "No style selected\n");
 			RND_ACT_IRES(-1);

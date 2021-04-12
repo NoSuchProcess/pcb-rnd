@@ -40,6 +40,8 @@
 #include "conf_core.h"
 #include "event.h"
 
+#include "brave.h"
+
 pcb_route_style_t pcb_custom_route_style;
 
 static const char rst_cookie[] = "core route style";
@@ -69,24 +71,36 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx)
 }
 
 #define cmp(a,b) (((a) != -1) && (coord_abs((a)-(b)) > 32))
+#define cmpi0(a,b) (((a) > 0) && ((b) > 0) && ((a) != (b)))
+#define cmpi(a,b) (((a) != -1) && ((b) != -1) && ((a) != (b)))
 #define cmps(a,b) (((a) != NULL) && (strcmp((a), (b)) != 0))
-int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, char *Name)
+int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	if (cmp(Thick, rst->Thick)) return 0;
-	if (cmp(Diameter, rst->Diameter)) return 0;
-	if (cmp(Hole, rst->Hole)) return 0;
+	if (cmp(textt, rst->textt)) return 0;
+	if (cmpi0(texts, rst->texts)) return 0;
+	if (cmpi(fid, rst->fid)) return 0;
+	if (!(pcb_brave & PCB_BRAVE_LIHATA_V8)) {
+		TODO("pstk #21: remove this branch");
+		if (cmp(Diameter, rst->Diameter)) return 0;
+		if (cmp(Hole, rst->Hole)) return 0;
+	}
+	else
+		if (cmpi(via_proto, rst->via_proto)) return 0;
 	if (cmp(Clearance, rst->Clearance)) return 0;
 	if (cmps(Name, rst->name)) return 0;
 	return 1;
 }
 #undef cmp
+#undef cmpi
+#undef cmpi0
 #undef cmps
 
-int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, char *Name)
+int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	int n;
 	for (n = 0; n < vtroutestyle_len(styles); n++)
-		if (pcb_route_style_match(&styles->array[n], Thick, Diameter, Hole, Clearance, Name))
+		if (pcb_route_style_match(&styles->array[n], Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name))
 			return n;
 	return -1;
 }

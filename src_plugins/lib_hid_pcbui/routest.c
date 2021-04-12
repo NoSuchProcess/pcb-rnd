@@ -98,7 +98,7 @@ static void rst_install_menu(void)
 /* Update the edit dialog and all checkboxes, but nothing else on the sub */
 static void rst_force_update_chk_and_dlg()
 {
-	int n, target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
+	int n, target = PCB_LOOKUP_ROUTE_STYLE_PEN(PCB);
 	rnd_hid_attr_val_t hv;
 
 	idx_changed();
@@ -133,7 +133,7 @@ static void rst_update(rnd_hidlib_t *hidlib)
 
 	if (rst.sub_inited) {
 		int n, target;
-		target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
+		target = PCB_LOOKUP_ROUTE_STYLE_PEN(PCB);
 		for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
 			rnd_hid_attr_val_t hv;
 
@@ -172,7 +172,7 @@ static void rst_select_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 
 static void rst_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	int target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
+	int target = PCB_LOOKUP_ROUTE_STYLE_PEN(PCB);
 	if (target >= 0)
 		pcb_dlg_rstdlg(target);
 }
@@ -186,7 +186,7 @@ static void rst_new_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 
 static void rst_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	int target = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL);
+	int target = PCB_LOOKUP_ROUTE_STYLE_PEN(PCB);
 	if (target >= 0) {
 		pcb_route_style_del(PCB, target, 1);
 		rst_updated(NULL);

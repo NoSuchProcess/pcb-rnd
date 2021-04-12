@@ -42,7 +42,7 @@ static const char pcb_acth_GetStyle[] = "Return integer index (>=0) of the curre
 fgw_error_t pcb_act_GetStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	pcb_board_t *pcb = PCB_ACT_BOARD;
-	RND_ACT_IRES(pcb_route_style_lookup(&pcb->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL));
+	RND_ACT_IRES(PCB_LOOKUP_ROUTE_STYLE_PEN(pcb));
 	return 0;
 }
 

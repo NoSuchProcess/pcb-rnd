@@ -39,11 +39,11 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx);
 /* Compare supplied parameters to each style in the vector and return the index
    of the first matching style. All non-(-1) parameters need to match to accept
    a style. Return -1 on no match. */
-int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, char *Name);
+int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
 
 /* Return 1 if rst matches the style in supplied args. Same matching rules as
    in pcb_route_style_lookup(). */
-int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, char *Name);
+int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
 
 extern pcb_route_style_t pcb_custom_route_style;
 
@@ -51,6 +51,29 @@ extern pcb_route_style_t pcb_custom_route_style;
    size_id: 0=main size; 1=2nd size (drill); 2=clearance */
 int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id);
 
+#define PCB_LOOKUP_ROUTE_STYLE_PEN(pcb) \
+	pcb_route_style_lookup(&pcb->RouteStyle,\
+		conf_core.design.line_thickness, \
+		conf_core.design.text_thickness, \
+		conf_core.design.text_scale, \
+		conf_core.design.text_font_id, \
+		conf_core.design.via_thickness, \
+		conf_core.design.via_drilling_hole, \
+		conf_core.design.clearance, \
+		conf_core.design.via_proto, \
+		NULL)
+
+#define PCB_MATCH_ROUTE_STYLE_PEN(rst) \
+	pcb_route_style_match(rst,\
+		conf_core.design.line_thickness, \
+		conf_core.design.text_thickness, \
+		conf_core.design.text_scale, \
+		conf_core.design.text_font_id, \
+		conf_core.design.via_thickness, \
+		conf_core.design.via_drilling_hole, \
+		conf_core.design.clearance, \
+		conf_core.design.via_proto, \
+		NULL)
 
 /*** Undoable changes to route styles ***/
 

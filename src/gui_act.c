@@ -65,6 +65,8 @@
 #include "route_style.h"
 #include "tool_logic.h"
 
+#include "brave.h"
+
 #define CLONE_TYPES PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY
 
 /* --------------------------------------------------------------------------- */
@@ -547,7 +549,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 	else
-		number = pcb_route_style_lookup(&PCB->RouteStyle, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL)+1;
+		number = PCB_LOOKUP_ROUTE_STYLE_PEN(PCB)+1;
 
 	if ((number <= 0) || (number > vtroutestyle_len(&PCB->RouteStyle))) {
 		rnd_message(RND_MSG_ERROR, "RouteStyle: invalid route style name or index\n");
@@ -651,17 +653,22 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_SetSame[] = "SetSame()";
 static const char pcb_acth_SetSame[] = "Sets current layer and sizes to match indicated item.";
 /* DOC: setsame.html */
-static void set_same_(rnd_coord_t Thick, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, char *Name)
+static void set_same_(rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	int known;
-	known = pcb_route_style_lookup(&PCB->RouteStyle, Thick, Diameter, Hole, Clearance, Name);
+	known = pcb_route_style_lookup(&PCB->RouteStyle, Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name);
 	if (known < 0) {
 		/* unknown style, set properties */
 		if (Thick != -1)     { pcb_custom_route_style.Thick     = Thick;     rnd_conf_set_design("design/line_thickness", "%$mS", Thick); }
 		if (Clearance != -1) { pcb_custom_route_style.Clearance = Clearance; rnd_conf_set_design("design/clearance", "%$mS", Clearance); }
-TODO("pstk #21:");
-		if (Diameter != -1)  { pcb_custom_route_style.Diameter  = Diameter;  rnd_conf_set_design("design/via_thickness", "%$mS", Diameter); }
-		if (Hole != -1)      { pcb_custom_route_style.Hole      = Hole;      rnd_conf_set_design("design/via_drilling_hole", "%$mS", Hole); }
+		if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
+			TODO("pstk #21: implement the new version");
+		}
+		else {
+			TODO("pstk #21: remove this branch");
+			if (Diameter != -1)  { pcb_custom_route_style.Diameter  = Diameter;  rnd_conf_set_design("design/via_thickness", "%$mS", Diameter); }
+			if (Hole != -1)      { pcb_custom_route_style.Hole      = Hole;      rnd_conf_set_design("design/via_drilling_hole", "%$mS", Hole); }
+		}
 		PCB->pen_attr = NULL;
 	}
 	else
@@ -682,7 +689,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch (type) {
 	case PCB_OBJ_LINE:
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
-		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, NULL);
+		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, -1, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, -1, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (rnd_conf.editor.mode != pcb_crosshair.tool_line)
 			rnd_tool_select_by_name(RND_ACT_HIDLIB, "line");
@@ -692,7 +699,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	case PCB_OBJ_ARC:
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
-		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, NULL);
+		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, -1, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, -1, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (rnd_conf.editor.mode != pcb_crosshair.tool_arc)
 			rnd_tool_select_by_name(RND_ACT_HIDLIB, "arc");
@@ -1500,7 +1507,7 @@ static fgw_error_t pcb_act_ChkRst(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if (rst == NULL)
 		RND_ACT_IRES(-1);
 	else
-		RND_ACT_IRES(pcb_route_style_match(rst, conf_core.design.line_thickness, conf_core.design.via_thickness, conf_core.design.via_drilling_hole, conf_core.design.clearance, NULL));
+		RND_ACT_IRES(PCB_MATCH_ROUTE_STYLE_PEN(rst));
 	return 0;
 }
 
