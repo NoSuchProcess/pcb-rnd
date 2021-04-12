@@ -26,9 +26,9 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-#define LID_EDIT 0
+#include "obj_pstk_inlines.h"
 
-#include "../src_plugins/lib_compat_help/pstk_compat.h"
+#define LID_EDIT 0
 
 typedef struct {
 	RND_DAD_DECL_NOINIT(dlg)
@@ -279,10 +279,16 @@ static pcb_subc_t *pcb_line_of_vias_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb
 	}
 
 	/* create the padstack prototype */
-TODO("pstk #21: do not work in comp mode, use a pstk proto + remove the plugin dependency when done")
-	pcb_pstk_new_compat_via(subc->data, -1, l->Point1.X, l->Point1.Y,
-		conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
-		0, PCB_PSTK_COMPAT_ROUND, rnd_true);
+	{
+		pcb_pstk_proto_t *bproto = pcb_pstk_get_proto_(PCB->Data, conf_core.design.via_proto);
+		if (bproto != NULL) {
+			long l = pcb_pstk_proto_insert_dup(subc->data, bproto, 0, 0);
+			if (l == -1)
+				rnd_message(RND_MSG_ERROR, "Line-of-vias: failed to copy via prototype into the extended object\n");
+		}
+		else
+			rnd_message(RND_MSG_ERROR, "Line-of-vias: no via prototype set (use a routing style with one!)\n");
+	}
 
 	line_of_vias_unpack(subc);
 	line_of_vias_gen(subc, NULL);
