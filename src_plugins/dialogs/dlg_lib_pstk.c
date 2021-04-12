@@ -621,7 +621,7 @@ static void pstklib_proto_switch(void *hid_ctx, void *caller_data, rnd_hid_attri
 		return;
 
 	from_pid = strtol(r->cell[0], NULL, 10);
-	to_pid = pcb_dlg_pstklib(ctx->pcb, ctx->subc_id, rnd_true, "Select a prototype to switch to");
+	to_pid = pcb_dlg_pstklib(ctx->pcb, ctx->subc_id, rnd_true, -1, "Select a prototype to switch to");
 	if ((to_pid == PCB_PADSTACK_INVALID) || (to_pid == from_pid))
 		return;
 
@@ -711,7 +711,7 @@ static void pstklib_del_unused(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	ctx->stat = NULL;
 }
 
-rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, const char *hint)
+rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, rnd_cardinal_t presel, const char *hint)
 {
 	static const char *hdr[] = {"ID", "name", "used", NULL};
 	pcb_subc_t *sc;
@@ -858,6 +858,21 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 	pstklib_data2dlg(ctx);
 	free(name);
 
+	/* set cursor if there's a row to preselect */
+	if (presel != PCB_PADSTACK_INVALID) {
+		rnd_hid_attr_val_t hv;
+		pcb_pstk_t ps;
+		char tmp[64];
+
+		ctx->proto_id = presel;
+		sprintf(tmp, "%ld", (long)presel);
+		hv.str = tmp;
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
+
+		pstklib_setps(&ps, data, ctx->proto_id);
+		pstklib_force_redraw(ctx, &ps);
+	}
+
 	if (modal) {
 		if (RND_DAD_RUN(ctx->dlg) != 0)
 			return PCB_PADSTACK_INVALID;
@@ -867,16 +882,17 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, c
 	return 0;
 }
 
-const char pcb_acts_pstklib[] = "pstklib([board|subcid|object], [retpid])\n";
+const char pcb_acts_pstklib[] = "pstklib([board|subcid|object], [retpid, [preselect]])\n";
 const char pcb_acth_pstklib[] = "Present the padstack library dialog on board padstacks or the padstacks of a subcircuit";
 fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	long id = -1, pid;
+	long id = -1, pid, presel = PCB_PADSTACK_INVALID;
 	const char *cmd = NULL, *opt = NULL;
 	int modal = rnd_false;
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, pstklib, cmd = argv[1].val.str);
 	RND_ACT_MAY_CONVARG(2, FGW_STR, pstklib, opt = argv[2].val.str);
+	RND_ACT_MAY_CONVARG(3, FGW_LONG, pstklib, presel = argv[3].val.nat_long);
 
 	if ((opt != NULL) && (strcmp(opt, "retpid") == 0))
 		modal = 1;
@@ -901,7 +917,7 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	else
 		RND_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
 
-	pid = pcb_dlg_pstklib(PCB, id, modal, NULL);
+	pid = pcb_dlg_pstklib(PCB, id, modal, presel, NULL);
 	if (pid != PCB_PADSTACK_INVALID) {
 		if (modal) {
 			res->type = FGW_LONG;
