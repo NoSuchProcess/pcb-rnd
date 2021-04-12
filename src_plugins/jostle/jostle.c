@@ -472,7 +472,8 @@ static fgw_error_t pcb_act_jostle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_coord_t x, y;
 	rnd_polyarea_t *expand;
-	float value = conf_core.design.via_thickness + (conf_core.design.bloat + 1) * 2 + 50;
+	rnd_coord_t via_dia = pcb_pstk_pen_dia(PCB);
+	float value = via_dia + (conf_core.design.bloat + 1) * 2 + 50;
 	struct info info;
 	int found;
 

@@ -254,6 +254,7 @@ TODO("subc-in-subc: subc as terminal")
 static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netmap_t *nmap)
 {
 	htpp_entry_t *e;
+	rnd_coord_t via_dia2 = pcb_pstk_pen_dia(PCB) / 2;
 
 	/* print dims */
 	rnd_fprintf(f, "(%d %d %d)\n", (int)(RND_COORD_TO_MM(pcb->hidlib.size_x)+0.5), (int)(RND_COORD_TO_MM(pcb->hidlib.size_y)+0.5), stack->maxlayer);
@@ -265,7 +266,7 @@ static int cpcb_save(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 		long id = htpi_get(&nmap->n2i, net);
 
 /*		rnd_fprintf(f, "# %s: %ld\n", net->Name, id);*/
-		rnd_fprintf(f, "(%ld %mm %mm %mm\n", id, conf_core.design.line_thickness/2, conf_core.design.via_thickness/2, conf_core.design.clearance);
+		rnd_fprintf(f, "(%ld %mm %mm %mm\n", id, via_dia2, conf_core.design.via_thickness/2, conf_core.design.clearance);
 
 		/* print pads (terminals) */
 		rnd_fprintf(f, "	(");
