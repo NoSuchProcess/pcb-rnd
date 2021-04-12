@@ -67,7 +67,7 @@
 
 #include "brave.h"
 
-#define CLONE_TYPES PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY
+#define CLONE_TYPES PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK
 
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */
@@ -662,7 +662,7 @@ static void set_same_(rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_
 		if (Thick != -1)     { pcb_custom_route_style.Thick     = Thick;     rnd_conf_set_design("design/line_thickness", "%$mS", Thick); }
 		if (Clearance != -1) { pcb_custom_route_style.Clearance = Clearance; rnd_conf_set_design("design/clearance", "%$mS", Clearance); }
 		if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
-			TODO("pstk #21: implement the new version");
+			if (via_proto != -1)  { pcb_custom_route_style.via_proto  = via_proto;  rnd_conf_set_design("design/via_proto", "%ld", (long)via_proto); }
 		}
 		else {
 			TODO("pstk #21: remove this branch");
@@ -709,6 +709,19 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	case PCB_OBJ_POLY:
 		layer = (pcb_layer_t *) ptr1;
+		break;
+
+	case PCB_OBJ_PSTK:
+		if (!(pcb_brave & PCB_BRAVE_LIHATA_V8)) {
+			TODO("pstk #21: remove this branch");
+			break;
+		}
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
+		set_same_(-1, -1, -1, -1, -1, -1, -1, ((pcb_pstk_t *)ptr2)->proto, NULL);
+		if (rnd_conf.editor.mode != pcb_crosshair.tool_via)
+			rnd_tool_select_by_name(RND_ACT_HIDLIB, "via");
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
 
 	default:
