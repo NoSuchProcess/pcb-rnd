@@ -8,7 +8,10 @@
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
 	- CLEANUP: remove pcb_board_set_via_size and board property for via geometry
 	- CLEANUP: search for TODO pstk #21 for more code removal
-	- CLEANUP: make sure pcb_route_style_lookup() and pcb_route_style_match() has the same API as pcb_route_style_change() [report: Igor2]
+	- CLEANUP: new code for pcb_get_style_size()
+	- CLEANUP: remove pad/hole dia from pcb_route_style_lookup(), pcb_route_style_match() and pcb_route_style_change() [report: Igor2]
+	- TEST: AdjustStyle() with no arg, GetStyle, route style menu
+	- CLEANUP: RouteStyle() argumens and doc
 	- CLEANUP: make lihata v8 the default version
 	- CLEANUP: update default board to lihata v8: use via protos
 	- ANNOUNCE: route style font id
