@@ -2362,6 +2362,9 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 				s->via_proto_set = 1;
 				if (pcb_pstk_get_proto_(dt, pid) == NULL)
 					iolht_warn(rctx, vp, -1, "Route style %s references to non-existent prototype %ld\n", s->name, s->via_proto);
+
+				if ((hash_get(stn, "diameter", 1) != &missing_ok) || (hash_get(stn, "hole", 1) != &missing_ok))
+					iolht_warn(rctx, stn, -1, "v8+ route style with via padstack proto shall not have diameters in %s: diametres are ignored, proto is used\n", s->name);
 			}
 		}
 
