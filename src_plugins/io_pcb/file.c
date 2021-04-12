@@ -309,17 +309,11 @@ static void WritePCBDataHeader(FILE * FP)
 
 	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
 		for (group = 0; group < vtroutestyle_len(&PCB->RouteStyle) - 1; group++) {
-			if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
-				rnd_coord_t drill_dia, pad_dia, mask;
-				pcb_compat_route_style_via_save(PCB->Data, &PCB->RouteStyle.array[group], &drill_dia, &pad_dia, &mask);
-				rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]:", PCB->RouteStyle.array[group].name,
-					PCB->RouteStyle.array[group].Thick, PCB->RouteStyle.array[group].Diameter,
-					PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
-			}
-			else /* TODO("pstk #21: remove this branch") */
-				rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]:", PCB->RouteStyle.array[group].name,
-					PCB->RouteStyle.array[group].Thick, PCB->RouteStyle.array[group].Diameter,
-					PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
+			rnd_coord_t drill_dia, pad_dia, mask;
+			pcb_compat_route_style_via_save(PCB->Data, &PCB->RouteStyle.array[group], &drill_dia, &pad_dia, &mask);
+			rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]:", PCB->RouteStyle.array[group].name,
+				PCB->RouteStyle.array[group].Thick, PCB->RouteStyle.array[group].Diameter,
+				PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
 		}
 		rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]\"]\n\n", PCB->RouteStyle.array[group].name,
 								PCB->RouteStyle.array[group].Thick,

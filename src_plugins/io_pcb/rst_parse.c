@@ -103,15 +103,8 @@ int pcb_route_string_parse1(pcb_data_t *data, char **str, pcb_route_style_t *rou
 			s++;
 	}
 
-	if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
-		if (pcb_compat_route_style_via_load(data, routeStyle, hole_dia, pad_dia, mask) != 0)
-			rnd_message(RND_MSG_WARNING, "Route style '%s': falied to create via padstack prototype\n", routeStyle->name);
-	}
-	else {
-TODO("pstk #21: remove this branch");
-		routeStyle->Diameter = pad_dia;
-		routeStyle->Hole = hole_dia;
-	}
+	if (pcb_compat_route_style_via_load(data, routeStyle, hole_dia, pad_dia, mask) != 0)
+		rnd_message(RND_MSG_WARNING, "Route style '%s': falied to create via padstack prototype\n", routeStyle->name);
 
 	*str = s;
 	return 0;
