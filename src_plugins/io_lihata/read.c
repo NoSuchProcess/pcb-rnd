@@ -2366,7 +2366,7 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 		}
 
 		if (pcb_brave & PCB_BRAVE_LIHATA_V8) { /* TODO("pstk #21: remove the condition, this branch should always run"); */
-		if (!s->via_proto_set && (rctx->rdver < 8)) {
+		if (!s->via_proto_set) {
 			rnd_coord_t drill_dia, pad_dia, mask = 0;
 			int err = 0;
 			lht_node_t *dn, *hn;
@@ -2375,6 +2375,9 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 			hn = hash_get(stn, "hole", 1);
 
 			if ((dn != NULL) || (hn != NULL)) {
+				if (rctx->rdver >= 8)
+					iolht_warn(rctx, stn, -1, "v8+ route style sould not have via diameters in %s: it should use via proto\n(Maybe it is a manually written file? Converting diameters to prototypes...)\n", s->name);
+
 				/* import old, diameter based via geometry from old files */
 				err |= parse_coord(&pad_dia,   dn);
 				err |= parse_coord(&drill_dia, hn);
