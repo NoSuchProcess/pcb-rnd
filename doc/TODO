@@ -9,7 +9,6 @@
 	- CLEANUP: check lib_compat_help plugin deps
 	- CLEANUP: check if anything special was done for lib_compat_help static linking for core
 	- BUG: create a new square via -> style and pen are not updated until style is re-selected manually
-	- TEST: AdjustStyle() with no arg, GetStyle, route style menu
 	- CLEANUP: make lihata v8 the default version
 	- CLEANUP: update default board to lihata v8: use via protos, set all text fields explicitly
 	- ANNOUNCE: v8, route style font id
