@@ -9,11 +9,7 @@
 	- CLEANUP: check lib_compat_help plugin deps
 	- CLEANUP: check if anything special was done for lib_compat_help static linking for core
 	- BUG: create a new square via -> style and pen are not updated until style is re-selected manually
-	- CLEANUP: make lihata v8 the default version
-	- CLEANUP: update default board to lihata v8: use via protos, set all text fields explicitly
-	- ANNOUNCE: v8, route style font id
-	- ANNOUNCE: setsame works on vias
-	- ANNOUNCE: route style via padstack proto
+	- CLEANUP: upgrade vendor drill plugin - a lot of direct hole access!
 - FEATURE: inverse SetSame(): copy pen properties from conf_core to the current object [report: Majenko]
 
 2. For later releases ===============================================================================
