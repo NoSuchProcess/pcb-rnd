@@ -338,14 +338,6 @@ void pcb_board_set_line_width(rnd_coord_t Size)
 	}
 }
 
-/* sets a clearance width */
-void pcb_board_set_clearance(rnd_coord_t Width)
-{
-	if (Width <= PCB_MAX_THICKNESS) {
-		rnd_conf_set_design("design/clearance", "%$mS", Width);
-	}
-}
-
 /* sets a text scaling */
 void pcb_board_set_text_scale(int Scale)
 {

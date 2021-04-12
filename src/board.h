@@ -151,9 +151,6 @@ void pcb_board_remove(pcb_board_t *Ptr);
 /* sets a new line thickness */
 void pcb_board_set_line_width(rnd_coord_t Size);
 
-/* sets a clearance width */
-void pcb_board_set_clearance(rnd_coord_t Width);
-
 /* sets a text scaling */
 void pcb_board_set_text_scale(int Scale);
 
