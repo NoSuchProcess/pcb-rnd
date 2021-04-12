@@ -64,7 +64,6 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	FILE *fi;
 	int c, c2;
 	rnd_coord_t x1, y1, x2, y2, r;
-	pcb_pstk_t *ps;
 
 	RND_ACT_MAY_CONVARG(1, FGW_STR, LoadMucsFrom, fname = argv[1].val.str);
 
@@ -123,8 +122,8 @@ fgw_error_t pcb_act_LoadMucsFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				y1 = (getc(fi) + (getc(fi) * 256));
 				r = (getc(fi) + (getc(fi) * 256));
 				rnd_trace("Via(%d %d 60 25 \"\" \" \")\n", x1, y1);
-				ps = pcb_pstk_new_compat_via(PCB->Data, -1, RND_MIL_TO_COORD(x1), RND_MIL_TO_COORD(y1), conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance, 0, PCB_PSTK_COMPAT_ROUND, 1);
-				PCB_FLAG_SET(PCB_FLAG_AUTO, ps);
+				pcb_pstk_new(PCB->Data, -1, conf_core.design.via_proto,
+					RND_MIL_TO_COORD(x1), RND_MIL_TO_COORD(y1), conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_AUTO));
 				break;
 			case 'n':
 				x1 = (getc(fi) + (getc(fi) * 256));
