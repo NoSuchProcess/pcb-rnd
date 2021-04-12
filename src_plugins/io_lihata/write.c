@@ -1508,12 +1508,6 @@ static lht_node_t *build_styles(pcb_data_t *data, vtroutestyle_t *styles)
 		lht_dom_hash_put(sn, build_textf("thickness", CFMT, s->Thick));
 		lht_dom_hash_put(sn, build_textf("clearance", CFMT, s->Clearance));
 
-		if (!(pcb_brave & PCB_BRAVE_LIHATA_V8)) {
-			TODO("pstk #21: remove this branch");
-			lht_dom_hash_put(sn, build_textf("diameter", CFMT, s->Diameter));
-			lht_dom_hash_put(sn, build_textf("hole", CFMT, s->Hole));
-		}
-		else {
 		if (wrver >= 8) {
 			if (s->via_proto_set)
 				lht_dom_hash_put(sn, build_textf("via_proto", "%ld", (long int)s->via_proto));
@@ -1525,7 +1519,6 @@ static lht_node_t *build_styles(pcb_data_t *data, vtroutestyle_t *styles)
 			pcb_compat_route_style_via_save(data, s, &drill_dia, &pad_dia, &mask);
 			lht_dom_hash_put(sn, build_textf("diameter", CFMT, pad_dia));
 			lht_dom_hash_put(sn, build_textf("hole", CFMT, drill_dia));
-		}
 		}
 
 		if (wrver >= 6)
@@ -1921,10 +1914,7 @@ int io_lihata_write_pcb_v7(pcb_plug_io_t *ctx, FILE * FP, const char *old_filena
 
 int io_lihata_write_pcb_v8(pcb_plug_io_t *ctx, FILE * FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
-	if (pcb_brave & PCB_BRAVE_LIHATA_V8)
-		return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 8);
-	rnd_message(RND_MSG_ERROR, "Can not write lihata v8: brave mode not enabled\n");
-	return -1;
+	return io_lihata_write_pcb(ctx, FP, old_filename, new_filename, emergency, 8);
 }
 
 int io_lihata_write_font(pcb_plug_io_t *ctx, pcb_font_t *font, const char *Filename)

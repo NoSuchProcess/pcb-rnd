@@ -2318,15 +2318,7 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 		err |= parse_coord(&s->Thick,     hash_get(stn, "thickness", 0));
 		err |= parse_coord(&s->Clearance, hash_get(stn, "clearance", 0));
 
-		if (!(pcb_brave & PCB_BRAVE_LIHATA_V8)) {
-			TODO("pstk #21: remove this branch");
-			err |= parse_coord(&s->Diameter,  hash_get(stn, "diameter", 1));
-			err |= parse_coord(&s->Hole,      hash_get(stn, "hole", 1));
-		}
-
 		parse_attributes(&s->attr, lht_dom_hash_get(stn, "attributes"));
-
-
 
 		/* read text thickness */
 		{
@@ -2368,7 +2360,6 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 			}
 		}
 
-		if (pcb_brave & PCB_BRAVE_LIHATA_V8) { /* TODO("pstk #21: remove the condition, this branch should always run"); */
 		if (!s->via_proto_set) {
 			rnd_coord_t drill_dia, pad_dia, mask = 0;
 			int err = 0;
@@ -2391,7 +2382,6 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 				else
 					return iolht_error(stn, "Invalid route style prototype via diameters\n");
 			}
-		}
 		}
 
 		if (rctx->rdver >= 8) {
@@ -2542,13 +2532,7 @@ static int parse_board(lht_read_t *rctx, pcb_board_t *pcb, lht_node_t *nd)
 		case 5: loader = &plug_io_lihata_v5; break;
 		case 6: loader = &plug_io_lihata_v6; break;
 		case 7: loader = &plug_io_lihata_v7; break;
-		case 8:
-			if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
-				loader = &plug_io_lihata_v8;
-				break;
-			}
-			rnd_message(RND_MSG_ERROR, "can not load lihata v8: brave mode not enabled\n");
-			/* fall through */
+		case 8: loader = &plug_io_lihata_v8; break;
 		default:
 			return iolht_error(nd, "Lihata board version %d not supported;\n"
 				"must be 1, 2, 3, 4, 5, 6 or 7.\n", rctx->rdver);
