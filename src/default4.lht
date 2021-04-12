@@ -1,29 +1,29 @@
 # pcb-rnd official 4-layer default board
 
-ha:pcb-rnd-board-v7 {
+ha:pcb-rnd-board-v8 {
  li:styles {
    ha:Signal {
-    diameter = 2mm
+    via_proto = 0
+    text_scale = 100
     thickness = 10.0mil
-    hole = 31.5mil
     clearance = 20.0mil
    }
    ha:Power {
-    diameter = 2.2mm
+    via_proto = 1
+    text_scale = 100
     thickness = 20.0mil
-    hole = 1mm
     clearance = 20.0mil
    }
    ha:Fat {
-    diameter = 137.8mil
+    via_proto = 2
+    text_scale = 100
     thickness = 80.0mil
-    hole = 47.24mil
     clearance = 25.0mil
    }
    ha:Sig-tight {
-    diameter = 64.0mil
+    via_proto = 3
+    text_scale = 100
     thickness = 10.0mil
-    hole = 31.5mil
     clearance = 12.0mil
    }
  }
@@ -42,6 +42,91 @@ ha:pcb-rnd-board-v7 {
  }
 
  ha:data {
+  li:padstack_prototypes {
+   ha:ps_proto_v6.0 {
+     hdia=0.8mm; hplated=1; htop=0; hbottom=0;
+     li:shape {
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=2.0mm; }
+        ha:layer_mask { copper = 1; top = 1; }
+        clearance=0.0
+       }
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=2.0mm; }
+        ha:layer_mask { copper = 1; bottom = 1; }
+        clearance=0.0
+       }
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=2.0mm; }
+        ha:layer_mask { copper = 1; intern = 1; }
+        clearance=0.0
+       }
+     }
+   }
+
+   ha:ps_proto_v6.1 {
+     hdia=1.0mm; hplated=1; htop=0; hbottom=0;
+     li:shape {
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=2.2mm; }
+        ha:layer_mask { copper = 1; top = 1; }
+        clearance=0.0
+       }
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=2.2mm; }
+        ha:layer_mask { copper = 1; bottom = 1; }
+        clearance=0.0
+       }
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=2.2mm; }
+        ha:layer_mask { copper = 1; intern = 1; }
+        clearance=0.0
+       }
+     }
+   }
+
+   ha:ps_proto_v6.2 {
+     hdia=1.2mm; hplated=1; htop=0; hbottom=0;
+     li:shape {
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=3.5mm; }
+        ha:layer_mask { copper = 1; top = 1; }
+        clearance=0.0
+       }
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=3.5mm; }
+        ha:layer_mask { copper = 1; bottom = 1; }
+        clearance=0.0
+       }
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=3.5mm; }
+        ha:layer_mask { copper = 1; intern = 1; }
+        clearance=0.0
+       }
+     }
+   }
+
+   ha:ps_proto_v6.3 {
+     hdia=0.8mm; hplated=1; htop=0; hbottom=0;
+     li:shape {
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=64mil; }
+        ha:layer_mask { copper = 1; top = 1; }
+        clearance=0.0
+       }
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=64mil; }
+        ha:layer_mask { copper = 1; bottom = 1; }
+        clearance=0.0
+       }
+       ha:ps_shape_v4 {
+        ha:ps_circ { x=0.0; y=0.0; dia=64mil; }
+        ha:layer_mask { copper = 1; intern = 1; }
+        clearance=0.0
+       }
+     }
+   }
+  }
    li:layers {
      ha:top-sig         { lid=0; group=3;  ha:attributes { {pcb-rnd::key::select}={<Key>l; <Key>t}; {pcb-rnd::key::vis}={<Key>l; Shift<Key>t} }}
      ha:bottom-sig      { lid=1; group=10; ha:attributes { {pcb-rnd::key::select}={<Key>l; <Key>b}; {pcb-rnd::key::vis}={<Key>l; Shift<Key>b} }}
