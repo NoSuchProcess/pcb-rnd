@@ -56,11 +56,7 @@
 #include "obj_rat_draw.h"
 #include "route_draw.h"
 
-TODO("pstk #21: remove this when via is removed and the padstack is created from style directly")
-#include "src_plugins/lib_compat_help/pstk_compat.h"
-
 static pcb_layer_t *last_layer;
-
 
 void pcb_tool_line_init(void)
 {
@@ -189,7 +185,6 @@ void pcb_tool_line_notify_mode(rnd_hidlib_t *hl)
 		/* place a via if vias are visible, the layer is
 			 in a new group since the last line and there
 			 isn't a pin already here */
-TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
 		if (conf_core.editor.auto_via && pcb->pstk_on
 				&& pcb_layer_get_group_(PCB_CURRLAYER(pcb)) != pcb_layer_get_group_(last_layer)
 				&& pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
@@ -200,11 +195,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 				&& (pcb_layer_flags_(PCB_CURRLAYER(pcb)) & PCB_LYT_COPPER)
 				&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
 				&& (!pcb->is_footprint)
-				&& ((ps = pcb_pstk_new_compat_via(pcb->Data, -1,
-															pcb_crosshair.AttachedLine.Point1.X,
-															pcb_crosshair.AttachedLine.Point1.Y,
-				conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
-			0, PCB_PSTK_COMPAT_ROUND, rnd_true)) != NULL)) {
+				&& ((ps = pcb_pstk_new(pcb->Data, -1, conf_core.design.via_proto, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE))) != NULL)) {
 					pcb_obj_add_attribs((pcb_any_obj_t *)ps, pcb->pen_attr, NULL);
 					pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 		}
@@ -282,7 +273,6 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 			/* place a via if vias are visible, the layer is
 				 in a new group since the last line and there
 				 isn't a pin already here */
-TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
 			if (pcb->pstk_on
 					&& pcb_layer_get_group_(PCB_CURRLAYER(pcb)) != pcb_layer_get_group_(last_layer) 
 					&& (pcb_layer_flags_(PCB_CURRLAYER(pcb)) & PCB_LYT_COPPER)
@@ -292,11 +282,7 @@ TODO("pstk #21: do not work in comp mode, use a pstk proto - scconfig also has T
 																 pcb_crosshair.AttachedLine.Point1.X,
 																 pcb_crosshair.AttachedLine.Point1.Y,
 																 conf_core.design.via_thickness / 2) == PCB_OBJ_VOID
-				&& ((ps = pcb_pstk_new_compat_via(pcb->Data, -1,
-															pcb_crosshair.AttachedLine.Point1.X,
-															pcb_crosshair.AttachedLine.Point1.Y,
-															conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
-															0, PCB_PSTK_COMPAT_ROUND, rnd_true)) != NULL)) {
+					&& ((ps = pcb_pstk_new(pcb->Data, -1, conf_core.design.via_proto, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE))) != NULL)) {
 				pcb_obj_add_attribs((pcb_any_obj_t *)ps, pcb->pen_attr, NULL);
 				pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 				pcb_pstk_invalidate_draw(ps);

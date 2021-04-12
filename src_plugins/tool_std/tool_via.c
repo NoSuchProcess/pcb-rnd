@@ -48,9 +48,6 @@
 
 #include "obj_pstk_draw.h"
 
-TODO("pstk #21: remove this when via is removed and the padstack is created from style directly")
-#include "src_plugins/lib_compat_help/pstk_compat.h"
-
 #include "brave.h"
 
 void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
@@ -63,23 +60,8 @@ void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
 		return;
 	}
 
-
-
-	if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
-		ps = pcb_pstk_new(pcb->Data, -1, conf_core.design.via_proto,
-			hl->tool_x, hl->tool_y, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
-	}
-	else {
-TODO("pstk #21: remove this branch in favor of pstk protos - scconfig also has TODO #21, fix it there too")
-		if (conf_core.design.via_drilling_hole >= conf_core.design.via_thickness) {
-			rnd_message(RND_MSG_ERROR, "Can't place via: invalid via geometry (hole too large for via size)\n");
-			return;
-		}
-
-		ps = pcb_pstk_new_compat_via(pcb->Data, -1, hl->tool_x, hl->tool_y,
-			conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance,
-			0, PCB_PSTK_COMPAT_ROUND, rnd_true);
-	}
+	ps = pcb_pstk_new(pcb->Data, -1, conf_core.design.via_proto,
+		hl->tool_x, hl->tool_y, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 
 	if (ps == NULL)
 		return;
@@ -95,17 +77,9 @@ TODO("pstk #21: remove this branch in favor of pstk protos - scconfig also has T
 	pcb_draw();
 }
 
-TODO("pstk #21: remove this")
-static void xor_draw_fake_via(rnd_coord_t x, rnd_coord_t y, rnd_coord_t dia, rnd_coord_t clearance)
-{
-	rnd_coord_t r = (dia/2)+clearance;
-	rnd_render->draw_arc(pcb_crosshair.GC, x, y, r, r, 0, 360);
-}
-
 
 void pcb_tool_via_draw_attached(rnd_hidlib_t *hl)
 {
-	if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
 		static pcb_pstk_t ps; /* initialized to all-zero */
 
 		ps.parent.data = PCB->Data;
@@ -126,17 +100,6 @@ void pcb_tool_via_draw_attached(rnd_hidlib_t *hl)
 			pcb_pstk_thindraw(&info, pcb_crosshair.GC, &ps);
 			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
 		}
-	}
-	else {
-TODO("pstk #21: remove this branch")
-		xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, 0);
-		if (conf_core.editor.show_drc) {
-			/* XXX: Naughty cheat - use the mask to draw DRC clearance! */
-			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.drc);
-			xor_draw_fake_via(pcb_crosshair.X, pcb_crosshair.Y, conf_core.design.via_thickness, conf_core.design.clearance);
-			rnd_render->set_color(pcb_crosshair.GC, &conf_core.appearance.color.attached);
-		}
-	}
 }
 
 /* XPM */
