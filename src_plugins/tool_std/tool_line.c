@@ -181,6 +181,7 @@ void pcb_tool_line_notify_mode(rnd_hidlib_t *hl)
 	else if(pcb_crosshair.Route.size > 0)
 	{
 		pcb_pstk_t *ps = NULL;
+		rnd_coord_t via_dia2 = pcb_pstk_pen_dia(PCB) / 2;
 
 		/* place a via if vias are visible, the layer is
 			 in a new group since the last line and there
@@ -190,7 +191,7 @@ void pcb_tool_line_notify_mode(rnd_hidlib_t *hl)
 				&& pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
 																			pcb_crosshair.AttachedLine.Point1.X,
 																			pcb_crosshair.AttachedLine.Point1.Y,
-																			conf_core.design.via_thickness / 2) ==
+																			via_dia2) ==
 																				PCB_OBJ_VOID
 				&& (pcb_layer_flags_(PCB_CURRLAYER(pcb)) & PCB_LYT_COPPER)
 				&& (pcb_layer_flags_(last_layer) & PCB_LYT_COPPER)
@@ -265,6 +266,7 @@ void pcb_tool_line_notify_mode(rnd_hidlib_t *hl)
 																	 pcb_flag_make(maybe_found_flag |
 																						 (conf_core.editor.clear_line ? PCB_FLAG_CLEARLINE : 0)))) != NULL) {
 			pcb_pstk_t *ps = NULL;
+			rnd_coord_t via_dia2 = pcb_pstk_pen_dia(PCB) / 2;
 
 			pcb_added_lines++;
 			pcb_obj_add_attribs((pcb_any_obj_t *)line, pcb->pen_attr, NULL);
@@ -281,7 +283,7 @@ void pcb_tool_line_notify_mode(rnd_hidlib_t *hl)
 					&& pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
 																 pcb_crosshair.AttachedLine.Point1.X,
 																 pcb_crosshair.AttachedLine.Point1.Y,
-																 conf_core.design.via_thickness / 2) == PCB_OBJ_VOID
+																 via_dia2) == PCB_OBJ_VOID
 					&& ((ps = pcb_pstk_new(pcb->Data, -1, conf_core.design.via_proto, pcb_crosshair.AttachedLine.Point1.X, pcb_crosshair.AttachedLine.Point1.Y, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE))) != NULL)) {
 				pcb_obj_add_attribs((pcb_any_obj_t *)ps, pcb->pen_attr, NULL);
 				pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
