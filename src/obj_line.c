@@ -1022,7 +1022,6 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 		return newone;
 
 	via_dia2 = pcb_pstk_pen_dia(PCB);
-rnd_printf("via_dia=%mm\n", via_dia2);
 	via_dia2 /= 2;
 
 	/* consider via at Point1 */
