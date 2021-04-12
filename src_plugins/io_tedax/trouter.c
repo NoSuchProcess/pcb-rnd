@@ -207,12 +207,15 @@ int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
 	int argc;
 	long cnt_add = 0, cnt_del = 0;
 	rnd_bool succ;
+	rnd_coord_t pen_hole;
 
 	if (tedax_seek_hdr(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
 
 	if (tedax_seek_block(fn, "route_res", "v1", blk_id, silent, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0])) < 0)
 		return -1;
+
+	pen_hole = pcb_pstk_pen_hole_dia(PCB);
 
 	while((argc = tedax_getline(fn, line, sizeof(line), argv, sizeof(argv)/sizeof(argv[0]))) >= 0) {
 		if ((argc > 5) && (strcmp(argv[0], "add") == 0)) {
@@ -230,7 +233,7 @@ int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
 				PARSE_COORD(th, argv[7]);
 				PARSE_COORD(clr, argv[8]);
 
-				hole = conf_core.design.via_drilling_hole;
+				hole = pen_hole;
 				if (hole > th*4/5)
 					hole = th*4/5;
 
