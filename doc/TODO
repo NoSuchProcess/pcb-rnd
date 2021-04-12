@@ -4,8 +4,6 @@
 - ADMIN: install new keys (before 21 april)
 - CLEANUP: ui layers: data parent cleanup: bug_files/uilayer.patch: ui layers should have a data parent in pcb_board_t and no global variables in layer_ui.[ch] (ui layers are board-specific) [report: Igor2]
 - CLEANUP: rewrite ps_calibrate_1 to use DAD dialog and test
-- CLEANUP/FEATURE: lihata v8
-	- remove via geometry from route style
 - FEATURE: (TT) route style upgrade to prototypes - requires lihata v8:
 	- BUG: when via proto is clicked in the route style selector, set the cursor to the right pid
 	- BUG: set same {e s s} doesn't work on padstacks [report: Igor2]
