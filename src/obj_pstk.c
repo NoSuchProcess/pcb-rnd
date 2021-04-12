@@ -156,16 +156,14 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 	PCB_SET_PARENT(ps, data, data);
 }
 
-static void pcb_pstk_bbox_(rnd_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
+static void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t *ts, rnd_coord_t ox, rnd_coord_t oy)
 {
 	int n, sn;
 	pcb_line_t line;
-	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
-	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
 	assert(proto != NULL);
 
-	dst->X1 = dst->X2 = ps->x;
-	dst->Y1 = dst->Y2 = ps->y;
+	dst->X1 = dst->X2 = ox;
+	dst->Y1 = dst->Y2 = oy;
 
 	if (ts != NULL)
 	for(sn = 0; sn < ts->len; sn++) {
@@ -173,13 +171,13 @@ static void pcb_pstk_bbox_(rnd_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
 		switch(shape->shape) {
 			case PCB_PSSH_POLY:
 				for(n = 0; n < shape->data.poly.len; n++)
-					rnd_box_bump_point(dst, shape->data.poly.x[n] + ps->x, shape->data.poly.y[n] + ps->y);
+					rnd_box_bump_point(dst, shape->data.poly.x[n] + ox, shape->data.poly.y[n] + oy);
 				break;
 			case PCB_PSSH_LINE:
-				line.Point1.X = shape->data.line.x1 + ps->x;
-				line.Point1.Y = shape->data.line.y1 + ps->y;
-				line.Point2.X = shape->data.line.x2 + ps->x;
-				line.Point2.Y = shape->data.line.y2 + ps->y;
+				line.Point1.X = shape->data.line.x1 + ox;
+				line.Point1.Y = shape->data.line.y1 + oy;
+				line.Point2.X = shape->data.line.x2 + ox;
+				line.Point2.Y = shape->data.line.y2 + oy;
 				line.Thickness = shape->data.line.thickness;
 				line.Clearance = 0;
 				line.Flags = pcb_flag_make(shape->data.line.square ? PCB_FLAG_SQUARE : 0);
@@ -187,13 +185,29 @@ static void pcb_pstk_bbox_(rnd_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
 				rnd_box_bump_box(dst, &line.BoundingBox);
 				break;
 			case PCB_PSSH_CIRC:
-				rnd_box_bump_point(dst, ps->x - shape->data.circ.dia/2, ps->y - shape->data.circ.dia/2);
-				rnd_box_bump_point(dst, ps->x + shape->data.circ.dia/2, ps->y + shape->data.circ.dia/2);
+				rnd_box_bump_point(dst, ox - shape->data.circ.dia/2, oy - shape->data.circ.dia/2);
+				rnd_box_bump_point(dst, ox + shape->data.circ.dia/2, oy + shape->data.circ.dia/2);
 				break;
 			case PCB_PSSH_HSHADOW:
 				break;
 		}
 	}
+
+	if (proto->hdia != 0) {
+		/* corner case: no copper around the hole all 360 deg - let the hole stick out */
+		rnd_box_bump_point(dst, ox - proto->hdia/2, oy - proto->hdia/2);
+		rnd_box_bump_point(dst, ox + proto->hdia/2, oy + proto->hdia/2);
+	}
+
+	rnd_close_box(dst);
+}
+
+static void pcb_pstk_bbox_(rnd_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
+{
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
+	pcb_pstk_tshape_t *ts = pcb_pstk_get_tshape(ps);
+
+	pcb_pstk_bbox_ts(dst, proto, ts, ps->x, ps->y);
 
 	if (!copper_only && PCB_NONPOLY_HAS_CLEARANCE(ps)) {
 		dst->X1 -= ps->Clearance;
@@ -201,15 +215,8 @@ static void pcb_pstk_bbox_(rnd_box_t *dst, pcb_pstk_t *ps, rnd_bool copper_only)
 		dst->X2 += ps->Clearance;
 		dst->Y2 += ps->Clearance;
 	}
-
-	if (proto->hdia != 0) {
-		/* corner case: no copper around the hole all 360 deg - let the hole stick out */
-		rnd_box_bump_point(dst, ps->x - proto->hdia/2, ps->y - proto->hdia/2);
-		rnd_box_bump_point(dst, ps->x + proto->hdia/2, ps->y + proto->hdia/2);
-	}
-
-	rnd_close_box(dst);
 }
+
 
 void pcb_pstk_bbox(pcb_pstk_t *ps)
 {
@@ -1585,3 +1592,4 @@ rnd_layer_id_t pcb_proto_board_layer_for(const pcb_data_t *data, pcb_layer_type_
 	}
 	return -1;
 }
+
