@@ -771,11 +771,13 @@ static const char pcb_acth_SetValue[] = "Change various board-wide values and si
 /* DOC: setvalue.html */
 static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	int fnc_id;
 	const char *val, *units = NULL;
 	rnd_bool absolute; /* flag for 'absolute' value */
 	double value;
 	int err = 0;
+	rnd_coord_t Size;
 
 	RND_ACT_CONVARG(1, FGW_KEYWORD, SetValue, fnc_id = fgw_keyword(&argv[1]));
 
@@ -790,14 +792,20 @@ static fgw_error_t pcb_act_SetValue(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(fnc_id) {
 		case F_LineSize:
 		case F_Line:
-			pcb_board_set_line_width(absolute ? value : value + conf_core.design.line_thickness);
-			rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+			Size = (absolute ? value : value + conf_core.design.line_thickness);
+			if (Size >= PCB_MIN_THICKNESS && Size <= PCB_MAX_THICKNESS) {
+				rnd_conf_set_design("design/line_thickness", "%$mS", Size);
+				if (conf_core.editor.auto_drc)
+					pcb_crosshair_grid_fit(pcb, pcb_crosshair.X, pcb_crosshair.Y);
+				rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+			}
 			break;
-
 		case F_Text:
 		case F_TextScale:
 			value = rnd_round(value / (double)PCB_FONT_CAPHEIGHT * 100.0);
-			pcb_board_set_text_scale(absolute ? value : (value + conf_core.design.text_scale));
+			value = absolute ? value : (value + conf_core.design.text_scale);
+			if ((value <= PCB_MAX_TEXTSCALE) && (value >= PCB_MIN_TEXTSCALE))
+				rnd_conf_set_design("design/text_scale", "%d", (int)value);
 			break;
 		default:
 			err = 1;

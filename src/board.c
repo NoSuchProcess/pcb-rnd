@@ -328,24 +328,6 @@ void pcb_board_remove(pcb_board_t *Ptr)
 	free(Ptr);
 }
 
-/* sets a new line thickness */
-void pcb_board_set_line_width(rnd_coord_t Size)
-{
-	if (Size >= PCB_MIN_THICKNESS && Size <= PCB_MAX_THICKNESS) {
-		rnd_conf_set_design("design/line_thickness", "%$mS", Size);
-		if (conf_core.editor.auto_drc)
-			pcb_crosshair_grid_fit(PCB, pcb_crosshair.X, pcb_crosshair.Y);
-	}
-}
-
-/* sets a text scaling */
-void pcb_board_set_text_scale(int Scale)
-{
-	if (Scale <= PCB_MAX_TEXTSCALE && Scale >= PCB_MIN_TEXTSCALE) {
-		rnd_conf_set_design("design/text_scale", "%d", Scale);
-	}
-}
-
 /* sets or resets changed flag and redraws status */
 void pcb_board_set_changed_flag(pcb_board_t *pcb, rnd_bool New)
 {

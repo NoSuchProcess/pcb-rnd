@@ -148,12 +148,6 @@ void pcb_board_resize(rnd_coord_t Width, rnd_coord_t Height, int undoable);
 /* free the board and remove its undo list */
 void pcb_board_remove(pcb_board_t *Ptr);
 
-/* sets a new line thickness */
-void pcb_board_set_line_width(rnd_coord_t Size);
-
-/* sets a text scaling */
-void pcb_board_set_text_scale(int Scale);
-
 /* make sure the data of the board fits the PCB (move it out from negative,
    make the board large enough); returns -1 on error, the number of changes on success */
 int pcb_board_normalize(pcb_board_t *pcb);
