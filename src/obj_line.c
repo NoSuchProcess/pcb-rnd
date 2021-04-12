@@ -983,10 +983,10 @@ struct via_info {
 static rnd_r_dir_t moveline_callback(const rnd_box_t * b, void *cl)
 {
 	struct via_info *i = (struct via_info *) cl;
-	pcb_pstk_t *ps;
+	pcb_pstk_t *ps = pcb_pstk_new(PCB->Data, -1, conf_core.design.via_proto,
+		i->X, i->Y, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 
-TODO("pstk TODO #21: do not work in comp mode, use a pstk proto - scconfig also has TODO #21, fix it there too")
-	if ((ps = pcb_pstk_new_compat_via(PCB->Data, -1, i->X, i->Y, conf_core.design.via_drilling_hole, conf_core.design.via_thickness, conf_core.design.clearance, 0, PCB_PSTK_COMPAT_ROUND, rnd_true)) != NULL) {
+	if (ps != NULL) {
 		pcb_undo_add_obj_to_create(PCB_OBJ_PSTK, ps, ps, ps);
 		pcb_pstk_invalidate_draw(ps);
 	}
