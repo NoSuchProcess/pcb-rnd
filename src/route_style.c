@@ -69,7 +69,7 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx)
 #define cmpi0(a,b) (((a) > 0) && (strict || ((b) > 0)) && ((a) != (b)))
 #define cmpi(a,b) (((a) != -1) && (strict || ((b) != -1)) && ((a) != (b)))
 #define cmps(a,b) (((a) != NULL) && (strcmp((a), (b)) != 0))
-RND_INLINE int pcb_route_style_match_(pcb_route_style_t *rst, int strict, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+RND_INLINE int pcb_route_style_match_(pcb_route_style_t *rst, int strict, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	if (cmp(Thick, rst->Thick)) return 0;
 	if (cmp(textt, rst->textt)) return 0;
@@ -81,9 +81,9 @@ RND_INLINE int pcb_route_style_match_(pcb_route_style_t *rst, int strict, rnd_co
 	return 1;
 }
 
-int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
-	return pcb_route_style_match_(rst, 0, Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name);
+	return pcb_route_style_match_(rst, 0, Thick, textt, texts, fid, Clearance, via_proto, Name);
 }
 
 #undef cmp
@@ -91,21 +91,21 @@ int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t
 #undef cmpi0
 #undef cmps
 
-int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	int n;
 	for (n = 0; n < vtroutestyle_len(styles); n++)
-		if (pcb_route_style_match_(&styles->array[n], 0, Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name))
+		if (pcb_route_style_match_(&styles->array[n], 0, Thick, textt, texts, fid, Clearance, via_proto, Name))
 			return n;
 	return -1;
 }
 
 
-int pcb_route_style_lookup_strict(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+int pcb_route_style_lookup_strict(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	int n;
 	for (n = 0; n < vtroutestyle_len(styles); n++)
-		if (pcb_route_style_match_(&styles->array[n], 1, Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name))
+		if (pcb_route_style_match_(&styles->array[n], 1, Thick, textt, texts, fid, Clearance, via_proto, Name))
 			return n;
 	return -1;
 }
@@ -137,10 +137,10 @@ int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id)
 	case F_SelectedObjects:
 	case F_Selected:
 	case F_SelectedElements:
-		if (size_id == 0)
-			*out = conf_core.design.via_thickness;
-		else if (size_id == 1)
-			*out = conf_core.design.via_drilling_hole;
+		if ((size_id == 0) || (size_id == 1)) {
+			rnd_message(RND_MSG_ERROR, "pcb_get_style_size(Selected*) for size_id %d is not supported (padstack prototypes don't have diameter)\n", size_id);
+			*out = 0;
+		}
 		else
 			*out = conf_core.design.clearance;
 		break;
@@ -286,8 +286,6 @@ int pcb_route_style_new(pcb_board_t *pcb, const char *name, rnd_bool undoable)
 	g->rst.textt = conf_core.design.text_thickness;
 	g->rst.texts = conf_core.design.text_scale;
 	g->rst.Clearance = conf_core.design.clearance;
-	g->rst.Diameter = conf_core.design.via_thickness*2;
-	g->rst.Hole = conf_core.design.via_drilling_hole;
 	g->rst.fid = -1; /* leave font unset so saving in old lihata format won't trigger a warning */
 
 	undo_rst_swap(g);

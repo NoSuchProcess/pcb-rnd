@@ -654,10 +654,10 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_SetSame[] = "SetSame()";
 static const char pcb_acth_SetSame[] = "Sets current layer and sizes to match indicated item.";
 /* DOC: setsame.html */
-static void set_same_(rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+static void set_same_(rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	int known;
-	known = pcb_route_style_lookup_strict(&PCB->RouteStyle, Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name);
+	known = pcb_route_style_lookup_strict(&PCB->RouteStyle, Thick, textt, texts, fid, Clearance, via_proto, Name);
 	if (known < 0) {
 		/* unknown style, set properties */
 		if (Thick != -1)     { rnd_conf_set_design("design/line_thickness", "%$mS", Thick); }
@@ -686,7 +686,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch (type) {
 	case PCB_OBJ_LINE:
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
-		set_same_(((pcb_line_t *) ptr2)->Thickness, -1, -1, -1, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, -1, NULL);
+		set_same_(((pcb_line_t *)ptr2)->Thickness, -1, -1, -1, ((pcb_line_t *) ptr2)->Clearance / 2, -1, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (rnd_conf.editor.mode != pcb_crosshair.tool_line)
 			rnd_tool_select_by_name(RND_ACT_HIDLIB, "line");
@@ -696,7 +696,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	case PCB_OBJ_ARC:
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
-		set_same_(((pcb_arc_t *) ptr2)->Thickness, -1, -1, -1, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, -1, NULL);
+		set_same_(((pcb_arc_t *)ptr2)->Thickness, -1, -1, -1, ((pcb_arc_t *) ptr2)->Clearance / 2, -1, NULL);
 		layer = (pcb_layer_t *) ptr1;
 		if (rnd_conf.editor.mode != pcb_crosshair.tool_arc)
 			rnd_tool_select_by_name(RND_ACT_HIDLIB, "arc");
@@ -710,7 +710,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	case PCB_OBJ_PSTK:
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
-		set_same_(-1, -1, -1, -1, -1, -1, -1, ((pcb_pstk_t *)ptr2)->proto, NULL);
+		set_same_(-1, -1, -1, -1, -1, ((pcb_pstk_t *)ptr2)->proto, NULL);
 		if (rnd_conf.editor.mode != pcb_crosshair.tool_via)
 			rnd_tool_select_by_name(RND_ACT_HIDLIB, "via");
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
@@ -721,7 +721,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	{
 		pcb_text_t *text = ptr2;
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
-		set_same_(-1, text->thickness, text->Scale, text->fid, -1, -1, -1, -1, NULL);
+		set_same_(-1, text->thickness, text->Scale, text->fid, -1, -1, NULL);
 		if (rnd_conf.editor.mode != pcb_crosshair.tool_text)
 			rnd_tool_select_by_name(RND_ACT_HIDLIB, "text");
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);

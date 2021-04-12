@@ -41,15 +41,15 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx);
    a style. Return -1 on no match. The strict version returns match only if
    the route style did set all values explicitly and not matching "wildcard" from
    the style's side */
-int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
-int pcb_route_style_lookup_strict(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
+int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
+int pcb_route_style_lookup_strict(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
 
 /* Return 1 if rst matches the style in supplied args. Same matching rules as
    in pcb_route_style_lookup(). */
-int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
+int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
 
 /* helper: get route style size for a function and selected object type.
-   size_id: 0=main size; 1=2nd size (drill); 2=clearance */
+   size_id: 0=main size; 1=2nd size (was drill); 2=clearance */
 int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id);
 
 #define PCB_LOOKUP_ROUTE_STYLE_PEN_(pcb, how) \
@@ -58,8 +58,6 @@ int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id);
 		conf_core.design.text_thickness, \
 		conf_core.design.text_scale, \
 		conf_core.design.text_font_id, \
-		conf_core.design.via_thickness, \
-		conf_core.design.via_drilling_hole, \
 		conf_core.design.clearance, \
 		conf_core.design.via_proto, \
 		NULL)
@@ -80,8 +78,6 @@ int pcb_lookup_route_style_pen_bestfit(pcb_board_t *pcb);
 		conf_core.design.text_thickness, \
 		conf_core.design.text_scale, \
 		conf_core.design.text_font_id, \
-		conf_core.design.via_thickness, \
-		conf_core.design.via_drilling_hole, \
 		conf_core.design.clearance, \
 		conf_core.design.via_proto, \
 		NULL)
