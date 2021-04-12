@@ -53,9 +53,6 @@ void pcb_use_route_style(pcb_route_style_t * rst)
 		rnd_conf_set_design("design/text_font_id", "%ld", rst->fid);
 	if (rst->via_proto_set)
 		rnd_conf_set_design("design/via_proto", "%ld", (long)rst->via_proto);
-TODO("pstk #21:");
-	rnd_conf_set_design("design/via_thickness", "%$mS", rst->Diameter);
-	rnd_conf_set_design("design/via_drilling_hole", "%$mS", rst->Hole);
 	rnd_conf_set_design("design/clearance", "%$mS", rst->Clearance);
 	PCB->pen_attr = &rst->attr;
 }
@@ -78,13 +75,7 @@ RND_INLINE int pcb_route_style_match_(pcb_route_style_t *rst, int strict, rnd_co
 	if (cmp(textt, rst->textt)) return 0;
 	if (cmpi0(texts, rst->texts)) return 0;
 	if (cmpi(fid, rst->fid)) return 0;
-	if (!(pcb_brave & PCB_BRAVE_LIHATA_V8)) {
-		TODO("pstk #21: remove this branch");
-		if (cmp(Diameter, rst->Diameter)) return 0;
-		if (cmp(Hole, rst->Hole)) return 0;
-	}
-	else
-		if (cmpi(via_proto, rst->via_proto)) return 0;
+	if (cmpi(via_proto, rst->via_proto)) return 0;
 	if (cmp(Clearance, rst->Clearance)) return 0;
 	if (cmps(Name, rst->name)) return 0;
 	return 1;
