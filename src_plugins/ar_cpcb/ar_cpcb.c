@@ -117,6 +117,7 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 	gsxl_dom_t dom;
 	gsxl_node_t *rn, *n;
 	int c;
+	rnd_coord_t pen_hole = pcb_pstk_pen_hole_dia(pcb);
 
 	/* low level s-expression parse */
 	gsxl_init(&dom, gsxl_node_t);
@@ -176,7 +177,7 @@ static int cpcb_load(pcb_board_t *pcb, FILE *f, cpcb_layers_t *stack, cpcb_netma
 							if (llidx != lidx) {
 								if ((lx == x) && (ly == y)) {
 									pcb_pstk_t *ps = pcb_pstk_new_compat_via(pcb->Data, -1, x, y,
-										conf_core.design.via_drilling_hole, via_dia, conf_core.design.clearance,
+										pen_hole, via_dia, conf_core.design.clearance,
 										0, PCB_PSTK_COMPAT_ROUND, rnd_true);
 								}
 								else
