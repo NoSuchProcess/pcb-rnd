@@ -8022,7 +8022,9 @@
  flag_str.h obj_pinvia_therm.h rats_patch.h route_style.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
  ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h netlist.h \
- ../src_plugins/io_pcb/rst_parse.c ../src_plugins/io_pcb/parse_y.h
+ ../src_plugins/io_pcb/rst_parse.c \
+ ../src_plugins/io_pcb/../lib_compat_help/route_style.h brave.h \
+ ../src_plugins/io_pcb/parse_y.h
 ../src_plugins/io_tedax/footprint.o: ../src_plugins/io_tedax/footprint.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -13506,7 +13508,7 @@ gui_act.o: gui_act.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/core/compat_misc.h event.h \
  ../src_3rd/librnd-local/src/librnd/core/event.h layer_ui.h layer_vis.h \
  ../src_3rd/librnd-local/src/librnd/core/hid_attrib.h operation.h \
- obj_subc_op.h route_style.h tool_logic.h
+ obj_subc_op.h route_style.h tool_logic.h brave.h
 hid_cam.o: hid_cam.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -15932,7 +15934,8 @@ route_style.o: route_style.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/core/hidlib.h undo.h \
  ../src_3rd/libuundo/uundo.h undo_old.h funchash_core.h \
  ../src_3rd/librnd-local/src/librnd/core/funchash.h funchash_core_list.h \
- conf_core.h event.h ../src_3rd/librnd-local/src/librnd/core/event.h
+ conf_core.h event.h ../src_3rd/librnd-local/src/librnd/core/event.h \
+ brave.h
 search.o: search.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h conf_core.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
