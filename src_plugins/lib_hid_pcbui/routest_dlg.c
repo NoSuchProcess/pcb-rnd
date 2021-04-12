@@ -330,8 +330,11 @@ static void rstdlg_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 	idx_changed(); /* flush pending timed changes */
 
-	{ /* can be safely removed when route style switches over to padstacks */
+	if (!(pcb_brave & PCB_BRAVE_LIHATA_V8)) {
 		pcb_route_style_t *rst = vtroutestyle_get(&PCB->RouteStyle, ctx->curr, 0);
+
+		TODO("pstk #21: remove this branch");
+
 		if (rst->Diameter <= rst->Hole) {
 			rnd_message(RND_MSG_ERROR, "had to increase the via ring diameter - can not be smaller than the hole");
 			rst->Diameter = rst->Hole+RND_MIL_TO_COORD(1);
