@@ -91,12 +91,12 @@ static void build_st_line1(void)
 static void build_st_line2(void)
 {
 	rnd_append_printf(&status.buf,
-		"%svia=%mS (%mS)  "
+		"%svia=#%ld  "
 		"clr=%mS  "
 		"text=%d%% %$mS "
 		"buff=#%d",
 		conf_core.appearance.compact ? "" : " ", /* "line" separator for single-line print */
-		conf_core.design.via_thickness, conf_core.design.via_drilling_hole,
+		(long)conf_core.design.via_proto,
 		conf_core.design.clearance,
 		conf_core.design.text_scale,
 		conf_core.design.text_thickness,
@@ -121,12 +121,12 @@ static void build_st_help(void)
 		"%m+"
 		"grid=%$mS  "
 		"line=%mS "
-		"via=%mS (%mS) "
+		"via=#%ld "
 		"clearance=%mS",
 		unit_inv->allow,
 		PCB->hidlib.grid,
 		conf_core.design.line_thickness,
-		conf_core.design.via_thickness, conf_core.design.via_drilling_hole, 
+		conf_core.design.via_proto,
 		conf_core.design.clearance);
 }
 
