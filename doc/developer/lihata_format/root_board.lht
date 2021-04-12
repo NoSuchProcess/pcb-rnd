@@ -104,9 +104,9 @@ ha:lht_tree_doc { ha:roots {
 						ha:text_thick  { valtype=coord; ver={>=6} desc={default text stroke thickness (0 means pick thickness automatically using the original algorithm)}}
 						ha:text_scale  { valtype=coord; ver={>=6} desc={default text scaling (0 means 100%, for backward compatibility)}}
 						ha:clearance   { valtype=coord; desc={default clearance (affects lines, arcs and polygons)}}
-						ha:diameter    { valtype=coord; ver={<=5} desc={old round via outer diameter; removed in favor of padstack prototype based vias, see via_proto}}
-						ha:hole        { valtype=coord; ver={<=5} desc={old round via hole diameter; removed in favor of padstack prototype based vias, see via_proto}}
-						ha:via_proto   { valtype=integer; ver={>5} desc={padstack prototype ID used for placing new vias}}
+						ha:diameter    { valtype=coord; ver={<=8} desc={old round via outer diameter; removed in favor of padstack prototype based vias, see via_proto}}
+						ha:hole        { valtype=coord; ver={<=8} desc={old round via hole diameter; removed in favor of padstack prototype based vias, see via_proto}}
+						ha:via_proto   { valtype=integer; ver={>5} desc={padstack prototype ID used for placing new vias; really should be used only >=v8}}
 						ha:fid         { valtype=integer; ver={>=8} desc={font ID used for placing new text objects; when not present, fall back to -1 (unset, do not change)}}
 						sy:attr@dup    {/lht_tree_doc/comm/attributes}
 					}
