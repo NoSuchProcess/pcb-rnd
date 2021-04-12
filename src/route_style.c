@@ -71,10 +71,10 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx)
 }
 
 #define cmp(a,b) (((a) != -1) && (coord_abs((a)-(b)) > 32))
-#define cmpi0(a,b) (((a) > 0) && ((b) > 0) && ((a) != (b)))
-#define cmpi(a,b) (((a) != -1) && ((b) != -1) && ((a) != (b)))
+#define cmpi0(a,b) (((a) > 0) && (strict || ((b) > 0)) && ((a) != (b)))
+#define cmpi(a,b) (((a) != -1) && (strict || ((b) != -1)) && ((a) != (b)))
 #define cmps(a,b) (((a) != NULL) && (strcmp((a), (b)) != 0))
-int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+RND_INLINE int pcb_route_style_match_(pcb_route_style_t *rst, int strict, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	if (cmp(Thick, rst->Thick)) return 0;
 	if (cmp(textt, rst->textt)) return 0;
@@ -91,6 +91,12 @@ int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t
 	if (cmps(Name, rst->name)) return 0;
 	return 1;
 }
+
+int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+{
+	return pcb_route_style_match_(rst, 0, Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name);
+}
+
 #undef cmp
 #undef cmpi
 #undef cmpi0
@@ -100,7 +106,17 @@ int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_
 {
 	int n;
 	for (n = 0; n < vtroutestyle_len(styles); n++)
-		if (pcb_route_style_match(&styles->array[n], Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name))
+		if (pcb_route_style_match_(&styles->array[n], 0, Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name))
+			return n;
+	return -1;
+}
+
+
+int pcb_route_style_lookup_strict(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+{
+	int n;
+	for (n = 0; n < vtroutestyle_len(styles); n++)
+		if (pcb_route_style_match_(&styles->array[n], 1, Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name))
 			return n;
 	return -1;
 }

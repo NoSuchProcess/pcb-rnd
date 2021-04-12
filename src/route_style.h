@@ -38,8 +38,11 @@ int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx);
 
 /* Compare supplied parameters to each style in the vector and return the index
    of the first matching style. All non-(-1) parameters need to match to accept
-   a style. Return -1 on no match. */
+   a style. Return -1 on no match. The strict version returns match only if
+   the route style did set all values explicitly and not matching "wildcard" from
+   the style's side */
 int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
+int pcb_route_style_lookup_strict(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
 
 /* Return 1 if rst matches the style in supplied args. Same matching rules as
    in pcb_route_style_lookup(). */
