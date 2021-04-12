@@ -67,7 +67,8 @@
 
 #include "brave.h"
 
-#define CLONE_TYPES PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK
+#define CLONE_TYPES \
+	PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK | PCB_OBJ_TEXT
 
 /* --------------------------------------------------------------------------- */
 /* Toggle actions are kept for compatibility; new code should use the conf system instead */
@@ -656,11 +657,15 @@ static const char pcb_acth_SetSame[] = "Sets current layer and sizes to match in
 static void set_same_(rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	int known;
-	known = pcb_route_style_lookup(&PCB->RouteStyle, Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name);
+	known = pcb_route_style_lookup_strict(&PCB->RouteStyle, Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name);
 	if (known < 0) {
 		/* unknown style, set properties */
 		if (Thick != -1)     { pcb_custom_route_style.Thick     = Thick;     rnd_conf_set_design("design/line_thickness", "%$mS", Thick); }
 		if (Clearance != -1) { pcb_custom_route_style.Clearance = Clearance; rnd_conf_set_design("design/clearance", "%$mS", Clearance); }
+		if (textt != -1)     { pcb_custom_route_style.textt     = textt;     rnd_conf_set_design("design/text_thickness", "%$mS", textt); }
+		if (texts != -1)     { pcb_custom_route_style.texts     = texts;     rnd_conf_set_design("design/text_scale", "%d", texts); }
+		if (fid != -1)       { pcb_custom_route_style.fid       = fid;       rnd_conf_set_design("design/text_font_id", "%ld", (long)fid); }
+
 		if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
 			if (via_proto != -1)  { pcb_custom_route_style.via_proto  = via_proto;  rnd_conf_set_design("design/via_proto", "%ld", (long)via_proto); }
 		}
@@ -723,6 +728,18 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
 		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 		break;
+
+	case PCB_OBJ_TEXT:
+	{
+		pcb_text_t *text = ptr2;
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
+		set_same_(-1, text->thickness, text->Scale, text->fid, -1, -1, -1, -1, NULL);
+		if (rnd_conf.editor.mode != pcb_crosshair.tool_text)
+			rnd_tool_select_by_name(RND_ACT_HIDLIB, "text");
+		rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_true);
+		rnd_event(RND_ACT_HIDLIB, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
+		break;
+	}
 
 	default:
 		RND_ACT_IRES(-1);
