@@ -272,6 +272,9 @@ void pcb_pstk_proto_del(pcb_data_t *data, rnd_cardinal_t proto_id);
    clal this for all transformed shapes! */
 int pcb_pstk_alloc_shape_idx(pcb_pstk_proto_t *proto, int tr_idx);
 
+/* estimate "via diameter": really return bounding box larger side; slow! */
+rnd_coord_t pcb_pstk_pen_dia(pcb_board_t *pcb);
+
 /*** layer info ***/
 typedef struct pcb_proto_layer_s {
 	const char *name;

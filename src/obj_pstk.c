@@ -1593,3 +1593,15 @@ rnd_layer_id_t pcb_proto_board_layer_for(const pcb_data_t *data, pcb_layer_type_
 	return -1;
 }
 
+rnd_coord_t pcb_pstk_pen_dia(pcb_board_t *pcb)
+{
+	rnd_box_t bb;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(pcb->Data, conf_core.design.via_proto);
+
+	if (proto == NULL)
+		return 0;
+
+	pcb_pstk_bbox_ts(&bb, proto, &proto->tr.array[0], 0, 0);
+
+	return RND_MAX(bb.X2 - bb.X1, bb.Y2 - bb.Y1);
+}
