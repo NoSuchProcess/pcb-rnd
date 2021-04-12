@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017,2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2018,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1605,3 +1605,14 @@ rnd_coord_t pcb_pstk_pen_dia(pcb_board_t *pcb)
 
 	return RND_MAX(bb.X2 - bb.X1, bb.Y2 - bb.Y1);
 }
+
+rnd_coord_t pcb_pstk_pen_hole_dia(pcb_board_t *pcb)
+{
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(pcb->Data, conf_core.design.via_proto);
+
+	if (proto == NULL)
+		return 0;
+
+	return proto->hdia;
+}
+

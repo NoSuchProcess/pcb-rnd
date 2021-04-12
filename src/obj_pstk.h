@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2017,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -274,6 +274,11 @@ int pcb_pstk_alloc_shape_idx(pcb_pstk_proto_t *proto, int tr_idx);
 
 /* estimate "via diameter": really return bounding box larger side; slow! */
 rnd_coord_t pcb_pstk_pen_dia(pcb_board_t *pcb);
+
+/* return the drilling hole diameter of pen's via pstk prototype; warning:
+   this will ignore "slot" */
+rnd_coord_t pcb_pstk_pen_hole_dia(pcb_board_t *pcb);
+
 
 /*** layer info ***/
 typedef struct pcb_proto_layer_s {
