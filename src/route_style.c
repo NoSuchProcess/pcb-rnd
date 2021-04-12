@@ -42,8 +42,6 @@
 
 #include "brave.h"
 
-pcb_route_style_t pcb_custom_route_style;
-
 static const char rst_cookie[] = "core route style";
 
 void pcb_use_route_style(pcb_route_style_t * rst)

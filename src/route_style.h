@@ -48,8 +48,6 @@ int pcb_route_style_lookup_strict(vtroutestyle_t *styles, rnd_coord_t Thick, rnd
    in pcb_route_style_lookup(). */
 int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Diameter, rnd_coord_t Hole, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
 
-extern pcb_route_style_t pcb_custom_route_style;
-
 /* helper: get route style size for a function and selected object type.
    size_id: 0=main size; 1=2nd size (drill); 2=clearance */
 int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id);

@@ -6,7 +6,6 @@
 - CLEANUP: rewrite ps_calibrate_1 to use DAD dialog and test
 - FEATURE: (TT) route style upgrade to prototypes - requires lihata v8:
 	- BUG: {m t +} or setsame() doesn't turn routing style off
-	- CLEANUP: remove pcb_custom_route_style
 	- ANNOUNCE: setsame works on text
 	- CLEANUP: remove pcb_board_set_via_size and board property for via geometry
 	- CLEANUP: search for TODO pstk #21 for more code removal

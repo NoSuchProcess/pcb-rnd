@@ -660,19 +660,19 @@ static void set_same_(rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_
 	known = pcb_route_style_lookup_strict(&PCB->RouteStyle, Thick, textt, texts, fid, Diameter, Hole, Clearance, via_proto, Name);
 	if (known < 0) {
 		/* unknown style, set properties */
-		if (Thick != -1)     { pcb_custom_route_style.Thick     = Thick;     rnd_conf_set_design("design/line_thickness", "%$mS", Thick); }
-		if (Clearance != -1) { pcb_custom_route_style.Clearance = Clearance; rnd_conf_set_design("design/clearance", "%$mS", Clearance); }
-		if (textt != -1)     { pcb_custom_route_style.textt     = textt;     rnd_conf_set_design("design/text_thickness", "%$mS", textt); }
-		if (texts != -1)     { pcb_custom_route_style.texts     = texts;     rnd_conf_set_design("design/text_scale", "%d", texts); }
-		if (fid != -1)       { pcb_custom_route_style.fid       = fid;       rnd_conf_set_design("design/text_font_id", "%ld", (long)fid); }
+		if (Thick != -1)     { rnd_conf_set_design("design/line_thickness", "%$mS", Thick); }
+		if (Clearance != -1) { rnd_conf_set_design("design/clearance", "%$mS", Clearance); }
+		if (textt != -1)     { rnd_conf_set_design("design/text_thickness", "%$mS", textt); }
+		if (texts != -1)     { rnd_conf_set_design("design/text_scale", "%d", texts); }
+		if (fid != -1)       { rnd_conf_set_design("design/text_font_id", "%ld", (long)fid); }
 
 		if (pcb_brave & PCB_BRAVE_LIHATA_V8) {
-			if (via_proto != -1)  { pcb_custom_route_style.via_proto  = via_proto;  rnd_conf_set_design("design/via_proto", "%ld", (long)via_proto); }
+			if (via_proto != -1)  { rnd_conf_set_design("design/via_proto", "%ld", (long)via_proto); }
 		}
 		else {
 			TODO("pstk #21: remove this branch");
-			if (Diameter != -1)  { pcb_custom_route_style.Diameter  = Diameter;  rnd_conf_set_design("design/via_thickness", "%$mS", Diameter); }
-			if (Hole != -1)      { pcb_custom_route_style.Hole      = Hole;      rnd_conf_set_design("design/via_drilling_hole", "%$mS", Hole); }
+			if (Diameter != -1)  { rnd_conf_set_design("design/via_thickness", "%$mS", Diameter); }
+			if (Hole != -1)      { rnd_conf_set_design("design/via_drilling_hole", "%$mS", Hole); }
 		}
 		PCB->pen_attr = NULL;
 	}

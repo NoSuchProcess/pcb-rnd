@@ -31,8 +31,6 @@
 
 #include "brave.h"
 
-pcb_route_style_t pcb_custom_route_style;
-
 static const char rst_cookie[] = "core route style";
 
 static rnd_coord_t pcb_get_num(char **s, const char *default_unit)
