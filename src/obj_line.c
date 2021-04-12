@@ -56,9 +56,6 @@
 #include "obj_rat_draw.h"
 #include "obj_pstk_draw.h"
 
-TODO("padstack: remove this when via is removed and the padstack is created from style directly")
-#include "src_plugins/lib_compat_help/pstk_compat.h"
-
 TODO("ui_layer parent fix: remove this")
 #include "layer_ui.h"
 
@@ -999,6 +996,7 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 	rnd_box_t sb;
 	pcb_line_t *newone;
 	void *ptr1, *ptr2, *ptr3;
+	rnd_coord_t via_dia2;
 
 	if (PCB_FLAG_TEST(PCB_FLAG_LOCK, Line)) {
 		rnd_message(RND_MSG_WARNING, "Sorry, line object is locked\n");
@@ -1022,14 +1020,19 @@ void *pcb_lineop_move_to_layer(pcb_opctx_t *ctx, pcb_layer_t * Layer, pcb_line_t
 			pcb_layer_get_group_(Layer) ==
 			pcb_layer_get_group_(ctx->move.dst_layer) || !(pcb_layer_flags(PCB, pcb_layer_id(PCB->Data, Layer)) & PCB_LYT_COPPER) || !(pcb_layer_flags_(ctx->move.dst_layer) & PCB_LYT_COPPER))
 		return newone;
+
+	via_dia2 = pcb_pstk_pen_dia(PCB);
+rnd_printf("via_dia=%mm\n", via_dia2);
+	via_dia2 /= 2;
+
 	/* consider via at Point1 */
 	sb.X1 = newone->Point1.X - newone->Thickness / 2;
 	sb.X2 = newone->Point1.X + newone->Thickness / 2;
 	sb.Y1 = newone->Point1.Y - newone->Thickness / 2;
 	sb.Y2 = newone->Point1.Y + newone->Thickness / 2;
-TODO("pstk #21:");
+
 	if ((pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
-															newone->Point1.X, newone->Point1.Y, conf_core.design.via_thickness / 2) == PCB_OBJ_VOID)) {
+															newone->Point1.X, newone->Point1.Y, via_dia2) == PCB_OBJ_VOID)) {
 		info.X = newone->Point1.X;
 		info.Y = newone->Point1.Y;
 		if (setjmp(info.env) == 0)
@@ -1040,9 +1043,9 @@ TODO("pstk #21:");
 	sb.X2 = newone->Point2.X + newone->Thickness / 2;
 	sb.Y1 = newone->Point2.Y - newone->Thickness / 2;
 	sb.Y2 = newone->Point2.Y + newone->Thickness / 2;
-TODO("pstk #21:");
+
 	if ((pcb_search_obj_by_location(PCB_OBJ_CLASS_PIN, &ptr1, &ptr2, &ptr3,
-															newone->Point2.X, newone->Point2.Y, conf_core.design.via_thickness / 2) == PCB_OBJ_VOID)) {
+															newone->Point2.X, newone->Point2.Y, via_dia2) == PCB_OBJ_VOID)) {
 		info.X = newone->Point2.X;
 		info.Y = newone->Point2.Y;
 		if (setjmp(info.env) == 0)
