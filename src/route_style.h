@@ -52,8 +52,8 @@ int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t
    size_id: 0=main size; 1=2nd size (drill); 2=clearance */
 int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id);
 
-#define PCB_LOOKUP_ROUTE_STYLE_PEN(pcb) \
-	pcb_route_style_lookup(&pcb->RouteStyle,\
+#define PCB_LOOKUP_ROUTE_STYLE_PEN_(pcb, how) \
+	pcb_route_style_ ## how(&pcb->RouteStyle,\
 		conf_core.design.line_thickness, \
 		conf_core.design.text_thickness, \
 		conf_core.design.text_scale, \
@@ -63,6 +63,16 @@ int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id);
 		conf_core.design.clearance, \
 		conf_core.design.via_proto, \
 		NULL)
+
+#define PCB_LOOKUP_ROUTE_STYLE_PEN(pcb) \
+	PCB_LOOKUP_ROUTE_STYLE_PEN_(pcb, lookup)
+
+#define PCB_LOOKUP_ROUTE_STYLE_PEN_STRICT(pcb) \
+	PCB_LOOKUP_ROUTE_STYLE_PEN_(pcb, lookup_strict)
+
+/* Tries strict first, if that fails, returns normal lookup */
+int pcb_lookup_route_style_pen_bestfit(pcb_board_t *pcb);
+
 
 #define PCB_MATCH_ROUTE_STYLE_PEN(rst) \
 	pcb_route_style_match(rst,\
@@ -75,6 +85,7 @@ int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id);
 		conf_core.design.clearance, \
 		conf_core.design.via_proto, \
 		NULL)
+
 
 /*** Undoable changes to route styles ***/
 

@@ -119,6 +119,12 @@ int pcb_route_style_lookup_strict(vtroutestyle_t *styles, rnd_coord_t Thick, rnd
 	return -1;
 }
 
+int pcb_lookup_route_style_pen_bestfit(pcb_board_t *pcb)
+{
+	int res = PCB_LOOKUP_ROUTE_STYLE_PEN_STRICT(pcb);
+	if (res == -1) res = PCB_LOOKUP_ROUTE_STYLE_PEN(pcb);
+	return res;
+}
 
 int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id)
 {

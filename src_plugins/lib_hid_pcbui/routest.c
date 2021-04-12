@@ -133,7 +133,7 @@ static void rst_update(rnd_hidlib_t *hidlib)
 
 	if (rst.sub_inited) {
 		int n, target;
-		target = PCB_LOOKUP_ROUTE_STYLE_PEN(PCB);
+		target = pcb_lookup_route_style_pen_bestfit(PCB);
 		for(n = 0; n < vtroutestyle_len(&PCB->RouteStyle); n++) {
 			rnd_hid_attr_val_t hv;
 
