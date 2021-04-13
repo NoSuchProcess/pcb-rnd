@@ -65,8 +65,6 @@
 #include "route_style.h"
 #include "tool_logic.h"
 
-#include "brave.h"
-
 #define CLONE_TYPES \
 	PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK | PCB_OBJ_TEXT
 

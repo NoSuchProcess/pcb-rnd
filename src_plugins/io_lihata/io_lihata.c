@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2016..2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2016..2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ pcb_plug_io_t plug_io_lihata_v1, plug_io_lihata_v2, plug_io_lihata_v3,
               plug_io_lihata_v7, plug_io_lihata_v8;
 conf_io_lihata_t conf_io_lihata;
 
-pcb_plug_io_t *plug_io_lihata_default = &plug_io_lihata_v7;
+pcb_plug_io_t *plug_io_lihata_default = &plug_io_lihata_v8;
 
 int io_lihata_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 {
@@ -106,7 +106,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v7.write_pcb = io_lihata_write_pcb_v7;
 	plug_io_lihata_v7.default_fmt = "lihata";
 	plug_io_lihata_v7.description = "lihata board v7";
-	plug_io_lihata_v7.save_preference_prio = 199;
+	plug_io_lihata_v7.save_preference_prio = 198;
 	plug_io_lihata_v7.default_extension = ".lht";
 	plug_io_lihata_v7.fp_extension = ".lht";
 	plug_io_lihata_v7.mime_type = "application/x-pcbrnd-board";
@@ -119,7 +119,7 @@ int pplg_init_io_lihata(void)
 	plug_io_lihata_v8 = plug_io_lihata_v7;
 	plug_io_lihata_v8.write_pcb = io_lihata_write_pcb_v8;
 	plug_io_lihata_v8.description = "lihata board v8";
-	plug_io_lihata_v8.save_preference_prio = 1;
+	plug_io_lihata_v8.save_preference_prio = 199;
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &plug_io_lihata_v8);
 
 

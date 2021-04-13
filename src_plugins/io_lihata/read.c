@@ -66,8 +66,6 @@
 #include "../src_plugins/lib_compat_help/elem_rot.h"
 #include "../src_plugins/lib_compat_help/route_style.h"
 
-#include "brave.h"
-
 typedef struct {
 	vtp0_t post_ids, post_thermal_old, post_thermal_heavy;
 	int rdver;

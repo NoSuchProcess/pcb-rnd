@@ -72,8 +72,6 @@
 #include "plug_footprint.h"
 #include "obj_pstk_inlines.h"
 
-#include "brave.h"
-
 #include "src_plugins/lib_compat_help/layer_compat.h"
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "src_plugins/lib_compat_help/subc_help.h"

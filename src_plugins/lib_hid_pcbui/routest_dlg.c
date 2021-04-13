@@ -29,8 +29,6 @@
 #include <librnd/core/hid_dad_tree.h>
 #include "route_style.h"
 
-#include "brave.h"
-
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */

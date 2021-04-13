@@ -48,8 +48,6 @@
 
 #include "obj_pstk_draw.h"
 
-#include "brave.h"
-
 void pcb_tool_via_notify_mode(rnd_hidlib_t *hl)
 {
 	pcb_board_t *pcb = (pcb_board_t *)hl;

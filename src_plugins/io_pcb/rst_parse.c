@@ -29,8 +29,6 @@
 
 #include "../lib_compat_help/route_style.h"
 
-#include "brave.h"
-
 static const char rst_cookie[] = "core route style";
 
 static rnd_coord_t pcb_get_num(char **s, const char *default_unit)
