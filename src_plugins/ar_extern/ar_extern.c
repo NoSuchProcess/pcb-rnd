@@ -41,7 +41,6 @@
 #include <librnd/core/hid_menu.h>
 #include "conf_core.h"
 #include "obj_pstk_inlines.h"
-#include "src_plugins/lib_compat_help/pstk_compat.h"
 #include "src_plugins/lib_netmap/netmap.h"
 #include "ar_extern_conf.h"
 

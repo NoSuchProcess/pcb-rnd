@@ -49,7 +49,6 @@
 #include <librnd/core/plugins.h>
 #include "layer.h"
 #include "conf_core.h"
-#include "src_plugins/lib_compat_help/pstk_compat.h"
 
 #include "menu_internal.c"
 
