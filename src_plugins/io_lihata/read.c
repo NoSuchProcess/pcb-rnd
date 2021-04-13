@@ -2311,8 +2311,6 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 
 		s->via_proto = 0;
 		s->via_proto_set = 0;
-		s->Hole = 0;
-		s->Diameter = 0;
 		err |= parse_coord(&s->Thick,     hash_get(stn, "thickness", 0));
 		err |= parse_coord(&s->Clearance, hash_get(stn, "clearance", 0));
 
