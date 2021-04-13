@@ -150,9 +150,6 @@ int hook_detect_target()
 	want_freetype2 = plug_is_enabled("import_ttf");
 	want_fuse = plug_is_enabled("export_vfs_fuse");
 
-/****** TODO #21: core depends on this plugin (yes, this is a bug) ******/
-	hook_custom_arg("buildin-lib_compat_help", NULL);
-
 	plugin_db_hidlib();
 
 	rnd_hook_detect_cc();
