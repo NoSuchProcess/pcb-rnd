@@ -90,9 +90,6 @@
 #include "obj_pstk_draw.h"
 #include "obj_pstk_inlines.h"
 
-TODO("pstk #21: when style contains proto, remove this")
-#include "src_plugins/lib_compat_help/pstk_compat.h"
-
 #define autoroute_therm_style 4
 
 /* #defines to enable some debugging output */
