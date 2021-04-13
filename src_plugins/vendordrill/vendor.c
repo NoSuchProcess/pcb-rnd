@@ -412,20 +412,34 @@ static void apply_vendor_map(void)
 		rnd_message(RND_MSG_INFO, "Updated %ld drill sizes out of %ld total\n", (long)changed, (long)tot);
 
 		/* Update the current Via */
-		if (conf_core.design.via_drilling_hole != vendorDrillMap(conf_core.design.via_drilling_hole)) {
-			changed++;
-			rnd_conf_setf(RND_CFR_DESIGN, "design/via_drilling_hole", -1, "%$mm", vendorDrillMap(conf_core.design.via_drilling_hole));
-			rnd_message(RND_MSG_INFO, "Adjusted active via hole size to be %ml mils\n", conf_core.design.via_drilling_hole);
+		{
+			pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(PCB->Data, conf_core.design.via_proto);
+			rnd_coord_t ndia = (proto != NULL) ? vendorDrillMap(proto->hdia) : 0;
+
+			if ((proto != NULL) && (proto->hdia != ndia)) {
+				changed++;
+				pcb_pstk_proto_change_hole(proto, NULL, &ndia, NULL, NULL);
+				rnd_conf_setf(RND_CFR_DESIGN, "design/via_drilling_hole", -1, "%$mm", ndia);
+				rnd_message(RND_MSG_INFO, "Adjusted pen via hole size to be %ml mils\n", ndia);
+			}
 		}
 
 		/* and update the vias for the various routing styles */
 		for (i = 0; i < vtroutestyle_len(&PCB->RouteStyle); i++) {
-			if (PCB->RouteStyle.array[i].Hole != vendorDrillMap(PCB->RouteStyle.array[i].Hole)) {
+			pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(PCB->Data, PCB->RouteStyle.array[i].via_proto);
+			rnd_coord_t ndia;
+
+			if (proto == NULL)
+				continue;
+
+			ndia = vendorDrillMap(proto->hdia);
+			if (proto->hdia != ndia) {
 				changed++;
-				PCB->RouteStyle.array[i].Hole = vendorDrillMap(PCB->RouteStyle.array[i].Hole);
+				pcb_pstk_proto_change_hole(proto, NULL, &ndia, NULL, NULL);
 				rnd_message(RND_MSG_INFO,
 					"Adjusted %s routing style hole size to be %ml mils\n",
-					PCB->RouteStyle.array[i].name, PCB->RouteStyle.array[i].Hole);
+					PCB->RouteStyle.array[i].name, ndia);
+TODO("pstk #21: rewrite for checking round shapes");
 				if (PCB->RouteStyle.array[i].Diameter < PCB->RouteStyle.array[i].Hole + conf_core.design.min_wid) {
 					PCB->RouteStyle.array[i].Diameter = PCB->RouteStyle.array[i].Hole + conf_core.design.min_wid;
 					rnd_message(RND_MSG_INFO,
