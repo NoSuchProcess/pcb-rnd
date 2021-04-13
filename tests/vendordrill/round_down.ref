@@ -14,7 +14,7 @@ Drill Diam. (mm)	# of Pins	# of Vias	# of Elements	# Unplated
 I: Loaded 3 vendor drills from round_down.lht
 I: Loaded 0 skips for 0 different attributes
 I: Updated 6 drill sizes out of 6 total
-I: Adjusted active via hole size to be 11.81 mils
+I: Adjusted pen via hole size to be 11.81 mils
 I: *** POST ***
 *** report 'Drill Report' begin ***
 There are 2 different drill sizes used in this layout, 6 holes total

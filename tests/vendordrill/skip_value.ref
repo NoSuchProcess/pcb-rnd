@@ -16,7 +16,7 @@ I: Loaded 1 skips for 1 different attributes
 I: Vendor mapping skipped because value = 1 matches ^1
 I: Vendor mapping skipped because value = 1 matches ^1
 I: Updated 4 drill sizes out of 4 total
-I: Adjusted active via hole size to be 11.81 mils
+I: Adjusted pen via hole size to be 11.81 mils
 I: *** POST ***
 *** report 'Drill Report' begin ***
 There are 3 different drill sizes used in this layout, 6 holes total
