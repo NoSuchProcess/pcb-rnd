@@ -156,7 +156,7 @@ void pcb_pstk_add(pcb_data_t *data, pcb_pstk_t *ps)
 	PCB_SET_PARENT(ps, data, data);
 }
 
-static void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t *ts, rnd_coord_t ox, rnd_coord_t oy)
+void pcb_pstk_bbox_ts(rnd_box_t *dst, pcb_pstk_proto_t *proto, pcb_pstk_tshape_t *ts, rnd_coord_t ox, rnd_coord_t oy)
 {
 	int n, sn;
 	pcb_line_t line;
