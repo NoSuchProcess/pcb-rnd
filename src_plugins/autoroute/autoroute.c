@@ -2942,7 +2942,7 @@ static void RD_DrawVia(routedata_t * rd, rnd_coord_t X, rnd_coord_t Y, routebox_
 	int ka = AutoRouteParameters.style->Clearance;
 	pcb_pstk_t *live_via = NULL;
 	rnd_cardinal_t via_proto = AutoRouteParameters.style->via_proto;
-	rnd_coord_t radius = AutoRouteParameters_via_dia();
+	rnd_coord_t radius = AutoRouteParameters_via_dia() / 2;
 
 	if (conf_core.editor.live_routing) {
 		live_via = pcb_pstk_new(PCB->Data, -1, via_proto, X, Y, 2*AutoRouteParameters.style->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
