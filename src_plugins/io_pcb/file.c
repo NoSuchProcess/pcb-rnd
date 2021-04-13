@@ -306,16 +306,17 @@ static void WritePCBDataHeader(FILE * FP)
 	fputs("Styles[\"", FP);
 
 	if (vtroutestyle_len(&PCB->RouteStyle) > 0) {
+		rnd_coord_t drill_dia, pad_dia, mask;
 		for (group = 0; group < vtroutestyle_len(&PCB->RouteStyle) - 1; group++) {
-			rnd_coord_t drill_dia, pad_dia, mask;
 			pcb_compat_route_style_via_save(PCB->Data, &PCB->RouteStyle.array[group], &drill_dia, &pad_dia, &mask);
 			rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]:", PCB->RouteStyle.array[group].name,
-				PCB->RouteStyle.array[group].Thick, PCB->RouteStyle.array[group].Diameter,
-				PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
+				PCB->RouteStyle.array[group].Thick, pad_dia,
+				drill_dia, PCB->RouteStyle.array[group].Clearance);
 		}
+		pcb_compat_route_style_via_save(PCB->Data, &PCB->RouteStyle.array[group], &drill_dia, &pad_dia, &mask);
 		rnd_fprintf(FP, "%s,%[0],%[0],%[0],%[0]\"]\n\n", PCB->RouteStyle.array[group].name,
-								PCB->RouteStyle.array[group].Thick,
-								PCB->RouteStyle.array[group].Diameter, PCB->RouteStyle.array[group].Hole, PCB->RouteStyle.array[group].Clearance);
+			PCB->RouteStyle.array[group].Thick, pad_dia,
+			drill_dia, PCB->RouteStyle.array[group].Clearance);
 	}
 	else {
 		pcb_io_incompat_save(PCB->Data, NULL, "route-style", "There are no routing styles - many versions of gEDA/PCB will segfault on loading the file", "Create exactly 4 routing styles.");
