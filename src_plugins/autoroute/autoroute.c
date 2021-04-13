@@ -291,6 +291,7 @@ struct routebox_s {
 	vector_t *conflicts_with;
 	/* route style of the net associated with this routebox */
 	pcb_route_style_t *style;
+	rnd_coord_t style_via_dia; /* cached style via diameter */
 	/* congestion values for the edges of an expansion box */
 	unsigned char n, e, s, w;
 	/* what pass this this track was laid down on */
@@ -348,6 +349,8 @@ typedef struct edge_struct_s {
 static struct AutoRouteParameters_s {
 	/* net style parameters */
 	pcb_route_style_t *style;
+	rnd_coord_t via_dia;
+
 	/* the present bloat */
 	rnd_coord_t bloat;
 	/* cost parameters */
@@ -2829,6 +2832,34 @@ static routebox_t *FindOneInBox(rnd_rtree_t * rtree, routebox_t * rb)
 	return foib.intersect;
 }
 
+static rnd_coord_t style_via_dia_(pcb_route_style_t *style)
+{
+	rnd_box_t bb;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto_(PCB->Data, style->via_proto);
+
+	if (proto == NULL)
+		return 0;
+
+	pcb_pstk_bbox_ts(&bb, proto, &proto->tr.array[0], 0, 0);
+
+	return RND_MAX(bb.X2 - bb.X1, bb.Y2 - bb.Y1);
+}
+
+static rnd_coord_t style_via_dia(routebox_t *rbox)
+{
+	if (rbox->style_via_dia <= 0)
+		rbox->style_via_dia = style_via_dia_(rbox->style);
+	return rbox->style_via_dia;
+}
+
+static rnd_coord_t AutoRouteParameters_via_dia(void)
+{
+	if (AutoRouteParameters.via_dia <= 0)
+		AutoRouteParameters.via_dia = style_via_dia_(AutoRouteParameters.style);
+	return AutoRouteParameters.via_dia;
+}
+
+
 struct therm_info {
 	routebox_t *plane;
 	rnd_box_t query;
@@ -2849,8 +2880,7 @@ static rnd_r_dir_t ftherm_rect_in_reg(const rnd_box_t * box, void *cl)
 	switch (rbox->type) {
 	case TERM:
 	case VIA_SHADOW:
-TODO("pstk #21: use proto");
-		sq = rnd_shrink_box(&ti->query, rbox->style->Diameter);
+		sq = rnd_shrink_box(&ti->query, style_via_dia(rbox));
 		if (!rnd_box_intersect(&sb, &sq))
 			return RND_R_DIR_NOT_FOUND;
 		sb.X1 = RND_BOX_CENTER_X(sb);
@@ -2905,16 +2935,18 @@ static void RD_DrawThermal(routedata_t * rd, rnd_coord_t X, rnd_coord_t Y, rnd_c
 	rb->flags.homeless = 0;
 }
 
-static void RD_DrawVia(routedata_t * rd, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t radius, routebox_t * subnet, rnd_bool is_bad)
+static void RD_DrawVia(routedata_t * rd, rnd_coord_t X, rnd_coord_t Y, routebox_t * subnet, rnd_bool is_bad)
 {
 	routebox_t *rb, *first_via = NULL;
 	int i;
 	int ka = AutoRouteParameters.style->Clearance;
 	pcb_pstk_t *live_via = NULL;
+	rnd_cardinal_t via_proto = AutoRouteParameters.style->via_proto;
+	rnd_coord_t radius = AutoRouteParameters_via_dia();
 
 	if (conf_core.editor.live_routing) {
-TODO("pstk #21: when style contains proto, remove this")
-		live_via = pcb_pstk_new_compat_via(PCB->Data, -1, X, Y, AutoRouteParameters.style->Hole, radius * 2, 2 * AutoRouteParameters.style->Clearance, 0, PCB_PSTK_COMPAT_ROUND, 1);
+		live_via = pcb_pstk_new(PCB->Data, -1, via_proto, X, Y, 2*AutoRouteParameters.style->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+
 		if (live_via != NULL)
 			pcb_pstk_invalidate_draw(live_via);
 	}
@@ -3172,8 +3204,6 @@ static void TracePath(routedata_t * rd, routebox_t * path, const routebox_t * ta
 {
 	rnd_bool last_x = rnd_false;
 	rnd_coord_t halfwidth = HALF_THICK(AutoRouteParameters.style->Thick);
-TODO("pstk #21: use proto")
-	rnd_coord_t radius = HALF_THICK(AutoRouteParameters.style->Diameter);
 	rnd_cheap_point_t lastpoint, nextpoint;
 	routebox_t *lastpath;
 	rnd_box_t b;
@@ -3275,7 +3305,7 @@ TODO("pstk #21: use proto")
 			printf(" (vias)");
 #endif
 			assert(rnd_point_in_box(&path->box, nextpoint.X, nextpoint.Y));
-			RD_DrawVia(rd, nextpoint.X, nextpoint.Y, radius, subnet, is_bad);
+			RD_DrawVia(rd, nextpoint.X, nextpoint.Y, subnet, is_bad);
 		}
 
 		assert(lastpath->flags.is_via || path->group == lastpath->group);
@@ -3416,8 +3446,7 @@ add_via_sites(routeone_state_t *s,
 	rnd_box_t region = shrink_routebox(within);
 	rnd_shrink_box(&region, shrink);
 
-TODO("pstk #21: use proto");
-	radius = HALF_THICK(AutoRouteParameters.style->Diameter);
+	radius = HALF_THICK(AutoRouteParameters_via_dia());
 	clearance = AutoRouteParameters.style->Clearance;
 	assert(AutoRouteParameters.use_vias);
 	/* XXX: need to clip 'within' to shrunk_pcb_bounds, because when
@@ -3444,8 +3473,7 @@ do_via_search(edge_t * search, routeone_state_t *s,
 	routebox_t *within;
 	conflict_t within_conflict_level;
 
-TODO("pstk #21: use proto");
-	radius = HALF_THICK(AutoRouteParameters.style->Diameter);
+	radius = HALF_THICK(AutoRouteParameters_via_dia());
 	clearance = AutoRouteParameters.style->Clearance;
 	work = mtspace_query_rect(mtspace, NULL, 0, 0,
 														search->work, vss->free_space_vec,
@@ -3819,8 +3847,7 @@ static routeone_status_t RouteOne(routedata_t * rd, routebox_t * from, routebox_
 					edge_t *ne = CreateEdge2(nrb, e->expand_dir, e, NULL,
 																	 e->minpcb_cost_target);
 					nrb->flags.is_thermal = 1;
-TODO("pstk #21: use proto");
-					add_via_sites(&s, &vss, rd->mtspace, nrb, NO_CONFLICT, ne, targets, e->rb->style->Diameter, rnd_true);
+					add_via_sites(&s, &vss, rd->mtspace, nrb, NO_CONFLICT, ne, targets, style_via_dia(e->rb), rnd_true);
 				}
 			}
 			goto dontexpand;					/* planes only connect via thermals */
@@ -4092,8 +4119,8 @@ static void InitAutoRouteParameters(int pass, pcb_route_style_t * style, rnd_boo
 	AutoRouteParameters.style = style;
 	AutoRouteParameters.bloat = style->Clearance + HALF_THICK(style->Thick);
 	/* costs */
-TODO("pstk #21: use proto");
-	AutoRouteParameters.ViaCost = RND_INCH_TO_COORD(3.5) + style->Diameter * (is_smoothing ? 80 : 30);
+
+	AutoRouteParameters.ViaCost = RND_INCH_TO_COORD(3.5) + style_via_dia_(style) * (is_smoothing ? 80 : 30);
 	AutoRouteParameters.LastConflictPenalty = (400 * pass / passes + 2) / (pass + 1);
 	AutoRouteParameters.ConflictPenalty = 4 * AutoRouteParameters.LastConflictPenalty;
 	AutoRouteParameters.JogPenalty = 1000 * (is_smoothing ? 20 : 4);
@@ -4543,18 +4570,17 @@ rnd_bool IronDownAllUnfixedPaths(routedata_t * rd)
 				}
 				else if (p->type == VIA || p->type == VIA_SHADOW) {
 					routebox_t *pp = (p->type == VIA_SHADOW) ? p->parent.via_shadow : p;
-TODO("pstk #21: use proto")
-					rnd_coord_t radius = HALF_THICK(pp->style->Diameter);
+					rnd_coord_t radius = HALF_THICK(style_via_dia(pp));
 					rnd_box_t b = shrink_routebox(p);
 					total_via_count++;
 					assert(pp->type == VIA);
 					if (pp->parent.via == NULL) {
 						assert(labs((b.X1 + radius) - (b.X2 - radius)) < 2);
 						assert(labs((b.Y1 + radius) - (b.Y2 - radius)) < 2);
-TODO("pstk #21: when style contains proto, remove this")
-						pp->parent.via = pcb_pstk_new_compat_via(PCB->Data, -1,
-							b.X1 + radius, b.Y1 + radius, 
-							pp->style->Hole, pp->style->Diameter, 2 * pp->style->Clearance, 0, PCB_PSTK_COMPAT_ROUND, 1);
+
+						pp->parent.via = pcb_pstk_new(PCB->Data, -1, pp->style->via_proto,
+							b.X1 + radius, b.Y1 + radius, 2 * pp->style->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+
 						assert(pp->parent.via);
 						PCB_FLAG_SET(PCB_FLAG_AUTO, pp->parent.via);
 						if (pp->parent.via) {
