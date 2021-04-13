@@ -17,8 +17,7 @@ typedef struct {
 	pcb_font_id_t fid;
 	rnd_coord_t Clearance;        /* min. separation from other nets */
 	rnd_cardinal_t via_proto;     /* via padstack prototype ID */
-	int via_proto_set;            /* 1 if via_proto is set/valid, 0 for old file formats */
-	rnd_coord_t Diameter, Hole;   /* OBSOLETE: via diameter and drill hole; kept for compatibility with old file formats (lihata board v1..v4) */
+	int via_proto_set;            /* 1 if via_proto is set/valid, 0 if no via is configured */
 	char name[PCB_RST_NAME_LEN];  /* fixed length name to save malloc/free */
 	pcb_attribute_list_t attr;
 } pcb_route_style_t;
