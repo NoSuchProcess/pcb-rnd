@@ -49,6 +49,7 @@
 #include "draw.h"
 #include "search.h"
 #include "find.h"
+#include "data_it.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/hid_init.h>
 #include <librnd/core/compat_misc.h>
@@ -827,15 +828,30 @@ static fgw_error_t pcb_act_ApplyPen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_coord_t x, y;
 	void *ptr1, *ptr2, *ptr3;
-	int type, changed = 0;
+	int op = F_Object, type, changed = 0;
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
 
-	rnd_hid_get_coords("Click on an object to change", &x, &y, 0);
+	RND_ACT_MAY_CONVARG(1, FGW_KEYWORD, ApplyPen, op = fgw_keyword(&argv[1]));
 
-	type = pcb_search_screen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
-	if (type != 0) {
-		pcb_undo_freeze_serial();
-		changed = apply_pen(PCB_ACT_BOARD, ptr2);
-		pcb_undo_unfreeze_serial();
+	switch(op) {
+		case F_Object:
+			rnd_hid_get_coords("Click on an object to change", &x, &y, 0);
+
+			type = pcb_search_screen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
+			if (type != 0) {
+				pcb_undo_freeze_serial();
+				changed = apply_pen(PCB_ACT_BOARD, ptr2);
+				pcb_undo_unfreeze_serial();
+			}
+			break;
+		case F_Selected:
+			pcb_undo_freeze_serial();
+			for(o = pcb_data_first(&it, PCB_ACT_BOARD->Data, CLONE_TYPES); o != NULL; o = pcb_data_next(&it))
+				if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
+					changed |= apply_pen(PCB_ACT_BOARD, o);
+			pcb_undo_unfreeze_serial();
+			break;
 	}
 
 	if (changed)
