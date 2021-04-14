@@ -279,20 +279,6 @@ void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_la
 	return result;
 }
 
-rnd_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target)
-{
-	rnd_bool changed;
-	pcb_opctx_t ctx;
-
-	ctx.move.pcb = PCB;
-	ctx.move.dst_layer = Target;
-	ctx.move.more_to_come = rnd_true;
-
-	changed = pcb_selected_operation(PCB, PCB->Data, &MoveToLayerFunctions, &ctx, rnd_true, PCB_OBJ_ANY, 0);
-	/* passing rnd_true to above operation causes Undoserial to auto-increment */
-	return changed;
-}
-
 void *pcb_copy_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t DX, rnd_coord_t DY)
 {
 	void *ptr;

@@ -48,7 +48,6 @@ void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, 
 /* undoably moves objects to a different layer. Doesn't bump
    the undo serial. Operation wrapper. */
 void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, rnd_bool enmasse);
-rnd_bool pcb_move_selected_objs_to_layer(pcb_layer_t *Target);
 
 
 /*** copy ***/
