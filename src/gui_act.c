@@ -824,6 +824,7 @@ static int apply_pen(pcb_board_t *pcb, pcb_any_obj_t *obj)
 
 static const char pcb_acts_ApplyPen[] = "ApplyPen([selected|object])";
 static const char pcb_acth_ApplyPen[] = "Set properties of the selected object or object under the cursor to match current drawing style (\"pen\"), e.g. thickness, clearance.";
+/* DOC: applypen.html */
 static fgw_error_t pcb_act_ApplyPen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_coord_t x, y;
