@@ -745,7 +745,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void apply_pen(pcb_board_t *pcb, pcb_any_obj_t *obj)
+static int apply_pen(pcb_board_t *pcb, pcb_any_obj_t *obj)
 {
 	pcb_layer_t *layer = pcb_layer_get_real(obj->parent.layer);
 	int changed = 0;
@@ -805,13 +805,9 @@ static void apply_pen(pcb_board_t *pcb, pcb_any_obj_t *obj)
 			}
 			break;
 
-
 		default:
 			break;
 	}
-	pcb_undo_unfreeze_serial();
-	if (changed)
-		pcb_undo_inc_serial();
 }
 
 static const char pcb_acts_ApplyPen[] = "ApplyPen([selected|object])";
@@ -820,14 +816,19 @@ static fgw_error_t pcb_act_ApplyPen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_coord_t x, y;
 	void *ptr1, *ptr2, *ptr3;
-	int type;
+	int type, changed = 0;
 
 	rnd_hid_get_coords("Click on an object to change", &x, &y, 0);
 
 	type = pcb_search_screen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
-	if (type != 0)
-		apply_pen(PCB_ACT_BOARD, ptr2);
+	if (type != 0) {
+		pcb_undo_freeze_serial();
+		changed = apply_pen(PCB_ACT_BOARD, ptr2);
+		pcb_undo_unfreeze_serial();
+	}
 
+	if (changed)
+		pcb_undo_inc_serial();
 	return 0;
 }
 
