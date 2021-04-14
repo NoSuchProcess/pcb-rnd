@@ -64,6 +64,7 @@
 #include <librnd/core/tool.h>
 #include "route_style.h"
 #include "tool_logic.h"
+#include "obj_text_op.h"
 
 #define CLONE_TYPES \
 	PCB_OBJ_LINE | PCB_OBJ_ARC | PCB_OBJ_POLY | PCB_OBJ_PSTK | PCB_OBJ_TEXT
