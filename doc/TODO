@@ -1,8 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- ADMIN: install new keys (before 21 april)
-- ADMIN: windows build
 - CLEANUP: ui layers: data parent cleanup: bug_files/uilayer.patch: ui layers should have a data parent in pcb_board_t and no global variables in layer_ui.[ch] (ui layers are board-specific) [report: Igor2]
 - CLEANUP: rewrite ps_calibrate_1 to use DAD dialog and test
 - FEATURE: inverse SetSame(): copy pen properties from conf_core to the current object [report: Majenko]
