@@ -48,6 +48,7 @@
 #include <librnd/core/funchash_core.h>
 
 #include "search.h"
+#include "data_it.h"
 #include "draw.h"
 #include "move.h"
 #include "remove.h"
@@ -272,6 +273,23 @@ void pcb_ui_move_obj_to_layer(pcb_board_t *pcb, pcb_any_obj_t *o, pcb_layer_t *t
 		pcb_board_set_changed_flag(pcb, rnd_true);
 }
 
+static void move_sel_obj2lay(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *target, int floater_only)
+{
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
+
+	for(o = pcb_data_first(&it, data, PCB_MOVETOLAYER_TYPES | PCB_OBJ_SUBC); o != NULL; o = pcb_data_next(&it)) {
+		if (o->type == PCB_OBJ_SUBC) {
+			move_sel_obj2lay(pcb, ((pcb_subc_t *)o)->data, target, 1);
+			continue;
+		}
+		if (floater_only && !PCB_FLAG_TEST(PCB_FLAG_FLOATER, o))
+			continue;
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
+			pcb_ui_move_obj_to_layer(pcb, o, target);
+	}
+}
+
 static const char pcb_acts_MoveToCurrentLayer[] = "MoveToCurrentLayer(Object|SelectedObjects)";
 static const char pcb_acth_MoveToCurrentLayer[] = "Moves objects to the current layer.";
 /* DOC: movetocurrentlayer.html */
@@ -299,8 +317,9 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 
 		case F_SelectedObjects:
 		case F_Selected:
-			if (pcb_move_selected_objs_to_layer(PCB_CURRLAYER(pcb)))
-				pcb_board_set_changed_flag(pcb, rnd_true);
+			pcb_undo_freeze_serial();
+			move_sel_obj2lay(pcb, PCB_ACT_BOARD->Data, PCB_CURRLAYER(pcb), 0);
+			pcb_undo_unfreeze_serial();
 			break;
 	}
 	return 0;
