@@ -46,7 +46,8 @@ void *pcb_move_obj(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t DX,
 void *pcb_move_obj_and_rubberband(int Type, void *Ptr1, void *Ptr2, void *Ptr3, rnd_coord_t DX, rnd_coord_t DY);
 
 /* undoably moves objects to a different layer. Doesn't bump
-   the undo serial. Operation wrapper. */
+   the undo serial. Operation wrapper. NOTE: this call is unsafe for
+   floaters. Use pcb_ui_move_obj_to_layer() */
 void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_layer_t *Target, rnd_bool enmasse);
 
 
