@@ -803,6 +803,17 @@ static int apply_pen(pcb_board_t *pcb, pcb_any_obj_t *obj)
 			}
 			break;
 
+		case PCB_OBJ_PSTK:
+			{
+				pcb_pstk_t *pstk = (pcb_pstk_t *)obj;
+
+				if ((pstk->proto != conf_core.design.via_proto) || (pstk->Clearance != conf_core.design.clearance)) {
+					rnd_cardinal_t pr = conf_core.design.via_proto;
+					if (pcb_pstk_change_instance(pstk, &pr, &conf_core.design.clearance, NULL, NULL, NULL) == 0)
+						changed = 1;
+				}
+			}
+
 		default:
 			break;
 	}
