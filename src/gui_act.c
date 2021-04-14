@@ -808,6 +808,8 @@ static int apply_pen(pcb_board_t *pcb, pcb_any_obj_t *obj)
 		default:
 			break;
 	}
+
+	return changed;
 }
 
 static const char pcb_acts_ApplyPen[] = "ApplyPen([selected|object])";
