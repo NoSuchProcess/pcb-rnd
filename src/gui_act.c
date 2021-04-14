@@ -745,7 +745,7 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-static void apply_pen(pcb_any_obj_t *obj)
+static void apply_pen(pcb_board_t *pcb, pcb_any_obj_t *obj)
 {
 	pcb_layer_t *layer = pcb_layer_get_real(obj->parent.layer);
 	int changed = 0;
@@ -788,6 +788,24 @@ static void apply_pen(pcb_any_obj_t *obj)
 				pcb_arc_post(arc);
 			}
 			break;
+
+		case PCB_OBJ_TEXT:
+			{
+				pcb_text_t src, *text = (pcb_text_t *)obj;
+				if ((text->fid != conf_core.design.text_font_id) || (text->Scale != conf_core.design.text_scale) || (text->thickness != conf_core.design.text_thickness)) {
+					pcb_text_pre(text);
+					src = *text;
+					src.fid = conf_core.design.text_font_id;
+					src.Scale = conf_core.design.text_scale;
+					src.thickness = conf_core.design.text_thickness;
+					pcb_text_chg_any(text, &src, 1);
+					pcb_text_bbox(pcb_font(pcb, text->fid, 1), text);
+					pcb_text_post(text);
+				}
+			}
+			break;
+
+
 		default:
 			break;
 	}
@@ -808,7 +826,7 @@ static fgw_error_t pcb_act_ApplyPen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	type = pcb_search_screen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
 	if (type != 0)
-		apply_pen(ptr2);
+		apply_pen(PCB_ACT_BOARD, ptr2);
 
 	return 0;
 }
