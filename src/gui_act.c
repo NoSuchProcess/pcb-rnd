@@ -751,7 +751,6 @@ static int apply_pen(pcb_board_t *pcb, pcb_any_obj_t *obj)
 	pcb_layer_t *layer = pcb_layer_get_real(obj->parent.layer);
 	int changed = 0;
 
-	pcb_undo_freeze_serial();
 	switch(obj->type) {
 		case PCB_OBJ_LINE:
 			{
