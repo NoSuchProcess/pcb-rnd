@@ -241,6 +241,37 @@ static fgw_error_t pcb_act_MoveObject(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+void pcb_ui_move_obj_to_layer(pcb_board_t *pcb, pcb_any_obj_t *o, pcb_layer_t *target)
+{
+	pcb_layer_t *ly;
+
+/* might be a bound layer; do not use the real layer as we don't want undo
+   to put the object back on the resolved layer instead of the original
+   bound layer */
+	if (o->parent_type != PCB_PARENT_LAYER)
+		return;
+	ly = o->parent.layer;
+
+	/* if object is part of a subc (must be a floater!), target layer
+	   shall be within the subc too else we would move out the object from
+	   under the subc to under the board as an unwanted side effect */
+	if ((o->parent_type == PCB_PARENT_LAYER) && (o->parent.layer->parent.data->parent_type == PCB_PARENT_SUBC)) {
+		pcb_subc_t *subc= o->parent.layer->parent.data->parent.subc;
+		pcb_layer_type_t lyt = pcb_layer_flags_(PCB_CURRLAYER(pcb));
+		int old_len = subc->data->LayerN;
+		target = pcb_subc_get_layer(subc, lyt, PCB_CURRLAYER(pcb)->comb, 1, PCB_CURRLAYER(pcb)->name, 0);
+		if (target == NULL) {
+			rnd_message(RND_MSG_ERROR, "Failed to find or allocate the matching subc layer\n");
+			return;
+		}
+		if (old_len != subc->data->LayerN)
+			pcb_subc_rebind(pcb, subc); /* had to alloc a new layer */
+	}
+
+	if (pcb_move_obj_to_layer(o->type, ly, o, o, target, rnd_false))
+		pcb_board_set_changed_flag(pcb, rnd_true);
+}
+
 static const char pcb_acts_MoveToCurrentLayer[] = "MoveToCurrentLayer(Object|SelectedObjects)";
 static const char pcb_acth_MoveToCurrentLayer[] = "Moves objects to the current layer.";
 /* DOC: movetocurrentlayer.html */
@@ -261,30 +292,7 @@ static fgw_error_t pcb_act_MoveToCurrentLayer(fgw_arg_t *res, int argc, fgw_arg_
 
 				rnd_hid_get_coords("Select an Object", &x, &y, 0);
 				if ((type = pcb_search_screen(x, y, PCB_MOVETOLAYER_TYPES | PCB_LOOSE_SUBC(pcb), &ptr1, &ptr2, &ptr3)) != PCB_OBJ_VOID) {
-					pcb_layer_t *target = PCB_CURRLAYER(pcb);
-					pcb_any_obj_t *o = ptr2;
-					pcb_layer_t *ly;
-
-					/* if object is part of a subc (must be a floater!), target layer
-					   shall be within the subc too else we would move out the object from
-					   under the subc to under the board as an unwanted side effect */
-					if ((o->parent_type == PCB_PARENT_LAYER) && (o->parent.layer->parent.data->parent_type == PCB_PARENT_SUBC)) {
-						pcb_subc_t *subc= o->parent.layer->parent.data->parent.subc;
-						pcb_layer_type_t lyt = pcb_layer_flags_(PCB_CURRLAYER(pcb));
-						int old_len = subc->data->LayerN;
-						target = pcb_subc_get_layer(subc, lyt, PCB_CURRLAYER(pcb)->comb, 1, PCB_CURRLAYER(pcb)->name, 0);
-						if (target == NULL) {
-							rnd_message(RND_MSG_ERROR, "Failed to find or allocate the matching subc layer\n");
-							break;
-						}
-						if (old_len != subc->data->LayerN)
-							pcb_subc_rebind(pcb, subc); /* had to alloc a new layer */
-					}
-					ly = ptr1;
-					if (((pcb_any_obj_t *)ptr2)->parent_type == PCB_PARENT_LAYER)
-						ly = ((pcb_any_obj_t *)ptr2)->parent.layer; /* might be a bound layer, and ptr1 is a resolved one; we don't want undo to put the object back on the resolved layer instead of the original bound layer */
-					if (pcb_move_obj_to_layer(type, ly, ptr2, ptr3, target, rnd_false))
-						pcb_board_set_changed_flag(pcb, rnd_true);
+					pcb_ui_move_obj_to_layer(pcb, ptr2, PCB_CURRLAYER(pcb));
 				}
 				break;
 			}
