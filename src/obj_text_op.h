@@ -56,3 +56,6 @@ void *pcb_textop_invalidate_label(pcb_opctx_t *ctx, pcb_layer_t *layer, pcb_text
 
 /* undoable scale_x and scale_y change */
 int pcb_text_chg_scale(pcb_text_t *text, double scx, rnd_bool absx, double scy, rnd_bool absy, rnd_bool undoable);
+
+/* undoable change of any field that differs compared to src */
+int pcb_text_chg_any(pcb_text_t *text, const pcb_text_t *src, rnd_bool undoable);

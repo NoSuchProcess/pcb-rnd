@@ -1208,6 +1208,29 @@ int pcb_text_chg_scale(pcb_text_t *text, double scx, rnd_bool absx, double scy, 
 	return 0;
 }
 
+int pcb_text_chg_any(pcb_text_t *text, const pcb_text_t *src, rnd_bool undoable)
+{
+	undo_text_geo_t gtmp, *g = &gtmp;
+
+	if (undoable) g = pcb_undo_alloc(pcb_data_get_top(text->parent.layer->parent.data), &undo_text_geo, sizeof(undo_text_geo_t));
+
+	g->text = text;
+	g->X = src->X;
+	g->Y = src->Y;
+	g->Scale = src->Scale;
+	g->scale_x = src->scale_x;
+	g->scale_y = src->scale_y;
+	g->thickness = src->thickness;
+	g->clearance = src->clearance;
+	g->rot = src->rot;
+	g->fid = src->fid;
+
+	undo_text_geo_swap(g);
+	if (undoable) pcb_undo_inc_serial();
+
+	return 0;
+}
+
 /*** draw ***/
 
 #define MAX_SIMPLE_POLY_POINTS 256
