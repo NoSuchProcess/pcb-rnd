@@ -5,8 +5,6 @@
 - ADMIN: windows build
 - CLEANUP: ui layers: data parent cleanup: bug_files/uilayer.patch: ui layers should have a data parent in pcb_board_t and no global variables in layer_ui.[ch] (ui layers are board-specific) [report: Igor2]
 - CLEANUP: rewrite ps_calibrate_1 to use DAD dialog and test
-- FEATURE: (TT) route style upgrade to prototypes - requires lihata v8:
-	- BUG: create a new square via -> style and pen are not updated until style is re-selected manually
 - FEATURE: inverse SetSame(): copy pen properties from conf_core to the current object [report: Majenko]
 
 2. For later releases ===============================================================================
