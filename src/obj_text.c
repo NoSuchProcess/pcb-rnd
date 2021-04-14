@@ -127,6 +127,7 @@ typedef struct {
 	rnd_coord_t thickness;
 	rnd_coord_t clearance;
 	double rot;
+	pcb_font_id_t fid;
 } undo_text_geo_t;
 
 static int undo_text_geo_swap(void *udata)
@@ -147,6 +148,7 @@ static int undo_text_geo_swap(void *udata)
 	rnd_swap(rnd_coord_t, g->thickness, g->text->thickness);
 	rnd_swap(rnd_coord_t, g->clearance, g->text->clearance);
 	rnd_swap(double, g->rot, g->text->rot);
+	rnd_swap(pcb_font_id_t, g->fid, g->text->fid);
 
 	if (pcb != NULL)
 		pcb_text_bbox(pcb_font(pcb, g->text->fid, 1), g->text);
@@ -1031,6 +1033,7 @@ void pcb_text_mirror_coords(pcb_text_t *text, rnd_coord_t y_offs, rnd_bool undoa
 	g->thickness = text->thickness;
 	g->clearance = text->clearance;
 	g->rot = text->rot;
+	g->fid = text->fid;
 
 	undo_text_geo_swap(g);
 	if (undoable) pcb_undo_inc_serial();
@@ -1197,6 +1200,7 @@ int pcb_text_chg_scale(pcb_text_t *text, double scx, rnd_bool absx, double scy, 
 	g->thickness = text->thickness;
 	g->clearance = text->clearance;
 	g->rot = text->rot;
+	g->fid = text->fid;
 
 	undo_text_geo_swap(g);
 	if (undoable) pcb_undo_inc_serial();
