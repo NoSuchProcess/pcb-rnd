@@ -131,6 +131,7 @@ ha:rnd-menu-v1 {
 				ha:Change object {
 					li:submenu {
 						ha:Set Same Style           = { a={<key>e; <key>s; <key>s}; action=SetSame() }
+						ha:Apply Pen to object      = { a={<key>e; <key>a; <key>p}; action=ApplyPen() }
 						ha:Flip Object              = { a={<key>e; <key>i}; action=Flip(Object) }
 						ha:Move to current layer    = { a={<key>e; <key>l}; action=MoveToCurrentLayer(Object) }
 						ha:ChangeJoin Object        = { a={<key>e; <key>j}; action=ChangeJoin(Object) }
@@ -434,6 +435,8 @@ ha:rnd-menu-v1 {
 						ha:Hole +10 mil      = { action=ChangeDrillSize(SelectedPadstacks,+10,mil) }
 						-
 						ha:Toggle join       = { action=ChangeJoin(SelectedObjects) }
+						-
+						ha:Apply Pen         = { a={<key>s; <key>a; <key>p}; action=ApplyPen(selected) }
 						-
 						ha:Edit properties   = { a={<key>s; <key>p}; action=propedit(selection) }
 					}
