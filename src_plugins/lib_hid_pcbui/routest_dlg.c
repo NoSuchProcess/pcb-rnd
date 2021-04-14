@@ -220,6 +220,9 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 		rnd_message(RND_MSG_ERROR, "Internal error: route style field does not exist");
 		return;
 	}
+
+	/* something got modified - re-select the current route style so "pen" is updated */
+	pcb_use_route_style(&(PCB->RouteStyle.array[rstdlg_ctx.curr]));
 }
 
 static int rst_edit_attr(char **key, char **val)
