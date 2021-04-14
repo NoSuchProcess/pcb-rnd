@@ -794,14 +794,12 @@ static int apply_pen(pcb_board_t *pcb, pcb_any_obj_t *obj)
 			{
 				pcb_text_t src, *text = (pcb_text_t *)obj;
 				if ((text->fid != conf_core.design.text_font_id) || (text->Scale != conf_core.design.text_scale) || (text->thickness != conf_core.design.text_thickness)) {
-					pcb_text_pre(text);
 					src = *text;
 					src.fid = conf_core.design.text_font_id;
 					src.Scale = conf_core.design.text_scale;
 					src.thickness = conf_core.design.text_thickness;
 					pcb_text_chg_any(text, &src, 1);
-					pcb_text_bbox(pcb_font(pcb, text->fid, 1), text);
-					pcb_text_post(text);
+					changed = 1;
 				}
 			}
 			break;
