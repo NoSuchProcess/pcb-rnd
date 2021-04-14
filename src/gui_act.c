@@ -745,6 +745,75 @@ static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static void apply_pen(pcb_any_obj_t *obj)
+{
+	pcb_layer_t *layer = pcb_layer_get_real(obj->parent.layer);
+	int changed = 0;
+
+	pcb_undo_freeze_serial();
+	switch(obj->type) {
+		case PCB_OBJ_LINE:
+			{
+				pcb_line_t *line = (pcb_line_t *)obj;
+				pcb_line_pre(line);
+				if (line->Thickness != conf_core.design.line_thickness) {
+					pcb_undo_add_obj_to_size(PCB_OBJ_LINE, layer, line, line);
+					line->Thickness = conf_core.design.line_thickness;
+					changed = 1;
+				}
+				if (line->Clearance != conf_core.design.clearance) {
+					pcb_undo_add_obj_to_clear_size(PCB_OBJ_LINE, layer, line, line);
+					line->Clearance = conf_core.design.clearance * 2;
+					changed = 1;
+				}
+				pcb_line_bbox(line);
+				pcb_line_post(line);
+			}
+			break;
+		case PCB_OBJ_ARC:
+			{
+				pcb_arc_t *arc = (pcb_arc_t *)obj;
+				pcb_arc_pre(arc);
+				if (arc->Thickness != conf_core.design.line_thickness) {
+					pcb_undo_add_obj_to_size(PCB_OBJ_ARC, layer, arc, arc);
+					arc->Thickness = conf_core.design.line_thickness;
+					changed = 1;
+				}
+				if (arc->Clearance != conf_core.design.clearance) {
+					pcb_undo_add_obj_to_clear_size(PCB_OBJ_ARC, layer, arc, arc);
+					arc->Clearance = conf_core.design.clearance * 2;
+					changed = 1;
+				}
+				pcb_arc_bbox(arc);
+				pcb_arc_post(arc);
+			}
+			break;
+		default:
+			break;
+	}
+	pcb_undo_unfreeze_serial();
+	if (changed)
+		pcb_undo_inc_serial();
+}
+
+static const char pcb_acts_ApplyPen[] = "ApplyPen([selected|object])";
+static const char pcb_acth_ApplyPen[] = "Set properties of the selected object or object under the cursor to match current drawing style (\"pen\"), e.g. thickness, clearance.";
+static fgw_error_t pcb_act_ApplyPen(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	rnd_coord_t x, y;
+	void *ptr1, *ptr2, *ptr3;
+	int type;
+
+	rnd_hid_get_coords("Click on an object to change", &x, &y, 0);
+
+	type = pcb_search_screen(x, y, CLONE_TYPES, &ptr1, &ptr2, &ptr3);
+	if (type != 0)
+		apply_pen(ptr2);
+
+	return 0;
+}
+
+
 static const char pcb_acts_EditLayer[] = "Editlayer([@layer], [name=text|auto=[0|1]|sub=[0|1])]\nEditlayer([@layer], attrib, key=value)";
 static const char pcb_acth_EditLayer[] = "Change a property or attribute of a layer. If the first argument starts with @, it is taken as the layer name to manipulate, else the action uses the current layer. Without arguments or if only a layer name is specified, interactive runs editing.";
 static fgw_error_t pcb_act_EditLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -1649,6 +1718,7 @@ static rnd_action_t gui_action_list[] = {
 	{"CycleDrag", pcb_act_CycleDrag, pcb_acth_CycleDrag, pcb_acts_CycleDrag},
 	{"MarkCrosshair", pcb_act_MarkCrosshair, pcb_acth_MarkCrosshair, pcb_acts_MarkCrosshair},
 	{"SetSame", pcb_act_SetSame, pcb_acth_SetSame, pcb_acts_SetSame},
+	{"ApplyPen", pcb_act_ApplyPen, pcb_acth_ApplyPen, pcb_acts_ApplyPen},
 	{"RouteStyle", pcb_act_RouteStyle, pcb_acth_RouteStyle, pcb_acts_RouteStyle},
 	{"SelectLayer", pcb_act_SelectLayer, pcb_acth_selectlayer, pcb_acts_selectlayer},
 	{"ChkLayer", pcb_act_ChkLayer, pcb_acth_chklayer, pcb_acts_chklayer},
