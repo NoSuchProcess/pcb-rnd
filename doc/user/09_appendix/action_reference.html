@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.3.1 (svn r34157) an interactive printed circuit board editor ,  Revision: 34223
+This is pcb-rnd 2.3.2 (svn r34389) an interactive printed circuit board editor ,  Revision: 34493
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -25,6 +25,7 @@ This is pcb-rnd 2.3.1 (svn r34157) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#align">align</a></td><td>Align objects</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td>aligntext</td><td>Align objects</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#anyload">AnyLoad</a></td><td>Load "anything" from path (or offer a file selectio dialog if no path specified)</td><td>AnyLoad([path])</td><td></td>
+<tr><td><a href="action_details.html#applypen">ApplyPen</a></td><td>Set properties of the selected object or object under the cursor to match current drawing style ("pen"), e.g. thickness, clearance.</td><td>ApplyPen([selected|object])</td><td></td>
 <tr><td><a href="action_details.html#applyvendor">ApplyVendor</a></td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
 <tr><td>asm</td><td>Interactive assembly assistant</td><td>asm()</td><td>asm plugin</td>
@@ -80,7 +81,7 @@ This is pcb-rnd 2.3.1 (svn r34157) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#connection">Connection</a></td><td>Searches connections of the object at the cursor position.</td><td>Connection(Find|ResetLinesAndPolygons|ResetPinsAndVias|Reset)</td><td></td>
 <tr><td>constraint</td><td>Configure or remove a drawing constraint</td><td>constraint(type, off)<br>constraint(type, value, [value...])</td><td>ddraft plugin</td>
 <tr><td>cpcb</td><td>Executed external autorouter cpcb to route the board or parts of the board</td><td>cpcb(board|selected, [command])</td><td>cpcb plugin</td>
-<tr><td>CreateMenu</td><td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td><td>CreateMenu(path)<br>CreateMenu(path, action, tooltip, cookie)</td><td></td>
+<tr><td>CreateMenu</td><td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td><td>CreateMenu(path)<br>CreateMenu(path, action, tooltip, cookie, [accel])</td><td></td>
 <tr><td>CreateText</td><td>Create a new text object</td><td>CreateText(layer, fontID, X, Y, direction, scale, text)</td><td></td>
 <tr><td><a href="action_details.html#cursor">Cursor</a></td><td>Move the cursor.</td><td>Cursor(Type,DeltaUp,DeltaRight,Units)</td><td></td>
 <tr><td><a href="action_details.html#cycledrag">CycleDrag</a></td><td>Cycle through which object is being dragged</td><td>CycleDrag()</td><td></td>
@@ -193,6 +194,7 @@ This is pcb-rnd 2.3.1 (svn r34157) an interactive printed circuit board editor ,
 <tr><td>InfoBarFileChanged</td><td>Present the "file changed" warning info bar with buttons to reload or cancel</td><td>InfoBarFileChanged(open|close)</td><td>dialogs plugin</td>
 <tr><td>integrity</td><td>perform integrirty check on the current board and generate errors if needed</td><td>integrity()</td><td>diag plugin</td>
 <tr><td>IntersectObjObj</td><td>Returns 1 if point x;y with radius r is on the arc addressed by idpath, 0 else.</td><td>IntersectObjObj(idpath, idpath)</td><td>act_read</td>
+<tr><td>InvalidateAll</td><td>Redraw the drawing area</td><td>InvalidateAll()</td><td>act_draw</td>
 <tr><td>IOIncompatList</td><td>Present the format incompatibilities of the last save to file operation.</td><td>IOIncompatList([list|simple])</td><td></td>
 <tr><td>IOIncompatListDialog</td><td>Present the format incompatibilities of the last save to file operation in a GUI dialog.</td><td>IOIncompatListDialog([list|simple])</td><td>dialogs plugin</td>
 <tr><td>irc</td><td>non-modal, single-instance, single-server, single-channel irc window for online support</td><td>irc()</td><td>irc plugin</td>
@@ -329,7 +331,7 @@ This is pcb-rnd 2.3.1 (svn r34157) an interactive printed circuit board editor ,
 <tr><td>propset</td><td>Change the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().</td><td>propset([scope], name, value)</td><td>propedit</td>
 <tr><td>proptoggle</td><td>Toggle the named property of scope or all selected objects, assuming the property is boolean. Scope is documented at PropEdit(). If create is true, non-existing attributes are created as true.</td><td>proptoggle([scope], name, [create])</td><td>propedit</td>
 <tr><td>pscalib</td><td></td><td></td><td>ps HID</td>
-<tr><td>pstklib</td><td>Present the padstack library dialog on board padstacks or the padstacks of a subcircuit</td><td>pstklib([board|subcid|object])</td><td>dialogs plugin</td>
+<tr><td>pstklib</td><td>Present the padstack library dialog on board padstacks or the padstacks of a subcircuit</td><td>pstklib([board|subcid|object], [retpid, [preselect]])</td><td>dialogs plugin</td>
 <tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the idpath of the new object or 0 on error.</td><td>PstkNew([noundo,] data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
 <tr><td>PstkProtoEdit</td><td>Edit a padstack prototype specified by its pointer.</td><td>PstkProto([noundo,] proto, remove, layer_type)<br>PstkProto([noundo,] proto, copy, dst_layer_type, src_layer_type)<br>PstkProto([noundo,] proto, hdia, dia)<br>PstkProto([noundo,] proto, shape:line, layer_type, x1, y1, x2, y2, th, [square])</td><td>act_draw</td>
 <tr><td>PstkProtoTmp</td><td>Allocate, insert or free a temporary padstack prototype</td><td>PstkProto([noundo,] new)<br>PstkProto([noundo,] dup, idpath)<br>PstkProto([noundo,] dup, data, src_proto_id)<br>PstkProto([noundo,] insert, idpath|data, proto)<br>PstkProto([noundo,] insert_dup, idpath|data, proto)<br>PstkProto([noundo,] free, proto)</td><td>act_draw</td>
@@ -364,7 +366,7 @@ This is pcb-rnd 2.3.1 (svn r34157) an interactive printed circuit board editor ,
 <tr><td>rnd_zoom</td><td>Change zoom level (relative, absolute, window, ...)</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(?)<br>Zoom(get)</td><td>lib_hid_common plugin</td>
 <tr><td><a href="action_details.html#rotate90">Rotate90</a></td><td>Rotates the object under the crosshair by 90 degree steps.</td><td>pcb_move_obj(steps)</td><td></td>
 <tr><td>roundrect</td><td>Generate a rectangle with round corners</td><td>roundrect([where,] width[;height] [,rx[;ry] [,rotation [,cornstyle [,roundness]]]])</td><td>shape plugin</td>
-<tr><td><a href="action_details.html#routestyle">RouteStyle</a></td><td>Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.</td><td>RouteStyle(style_id|style_name|@current, [set|get|del], [trace-thickness|trace-clearance|text-thickness|text-scale|name], [value]])<br>RouteStyle(new, [name])</td><td></td>
+<tr><td><a href="action_details.html#routestyle">RouteStyle</a></td><td>Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.</td><td>RouteStyle(style_id|style_name|@current, [set|get|del], [trace-thickness|trace-clearance|text-thickness|text-scale|font|via-proto|name], [value]])<br>RouteStyle(new, [name])</td><td></td>
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
 <tr><td>ruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>

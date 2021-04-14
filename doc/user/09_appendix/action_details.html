@@ -198,6 +198,24 @@ Loads an anyload.lht file or any lihata document that can be handled by the anyl
    
 </dd></dl>
 
+<h2 id="applypen">ApplyPen</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ApplyPen([selected|object])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Set properties of the selected object or object under the cursor to match current drawing style ("pen"), e.g. thickness, clearance.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Changes existing object(s) to look like as if it was (they were) drawn using the current "pen". For example ApplyPen on a line object will change the line thickness and line clearance values to the current line thickness and clearance values a new line is drawn with using the line tool. 
+<p>
+ This action is the inverse pair of the 
+<a href="#setsame">setsame</a>
+ action.   
+</dd></dl>
+
 <h2 id="applyvendor">ApplyVendor</h2>
 <dl><dd>
 <p>
@@ -3305,7 +3323,7 @@ Rotates the object under the mouse pointer by 90 degree
 <p>
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-RouteStyle(style_id|style_name|@current, [set|get|del], [trace-thickness|trace-clearance|text-thickness|text-scale|name], [value]])
+RouteStyle(style_id|style_name|@current, [set|get|del], [trace-thickness|trace-clearance|text-thickness|text-scale|font|via-proto|name], [value]])
 RouteStyle(new, [name])
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.
@@ -4045,7 +4063,7 @@ Selects the tool or changes tool related global states.
 <table border=0 cellspacing=10 class=actsum>
 <tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
 undo()
-undo(ClearList|FreezeSerial|UnfreezeSerial|IncSerial|GetSerial|Above)
+undo(ClearList|FreezeSerial|UnfreezeSerial|FreezeAdd|UnfreezeAdd|IncSerial|GetSerial|Above)
 <tr><th align=right class=actsum>Help text:<td align=left class=actsum>
 Undo recent changes.
 <tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
