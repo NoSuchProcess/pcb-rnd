@@ -126,32 +126,20 @@ typedef struct {
 	pcb_any_obj_t *other;					/* for exchange */
 } PerturbationType;
 
-TODO("cleanup: remove this and use genvect")
-#define STEP_POINT 100
+/* Vector of rnd boxes */
+#define GVT(x) vtbb_ ## x
+#define GVT_ELEM_TYPE rnd_box_t
+#define GVT_SIZE_TYPE size_t
+#define GVT_DOUBLING_THRS 256
+#define GVT_START_SIZE 32
+#define GVT_FUNC RND_INLINE
+#define GVT_SET_NEW_BYTES_TO 0
+#include <genvector/genvector_impl.h>
+#define GVT_REALLOC(vect, ptr, size)  realloc(ptr, size)
+#define GVT_FREE(vect, ptr)           free(ptr)
+#include <genvector/genvector_impl.c>
+#include <genvector/genvector_undef.h>
 
-/* get next slot for a box, allocates memory if necessary */
-static rnd_box_t *pcb_box_new(rnd_box_list_t *Boxes)
-{
-	rnd_box_t *box = Boxes->Box;
-
-	/* realloc new memory if necessary and clear it */
-	if (Boxes->BoxN >= Boxes->BoxMax) {
-		Boxes->BoxMax = STEP_POINT + (2 * Boxes->BoxMax);
-		box = (rnd_box_t *) realloc(box, Boxes->BoxMax * sizeof(rnd_box_t));
-		Boxes->Box = box;
-		memset(box + Boxes->BoxN, 0, (Boxes->BoxMax - Boxes->BoxN) * sizeof(rnd_box_t));
-	}
-	return (box + Boxes->BoxN++);
-}
-
-/* frees memory used by a box list */
-static void pcb_box_free(rnd_box_list_t *Boxlist)
-{
-	if (Boxlist) {
-		free(Boxlist->Box);
-		memset(Boxlist, 0, sizeof(rnd_box_list_t));
-	}
-}
 
 /* Return a terminal's preferred layer group ID or -1 on error */
 static rnd_layergrp_id_t obj_layergrp(const pcb_any_obj_t *obj)
@@ -201,7 +189,7 @@ static vtp0_t collectSelectedSubcircuits()
 
 #if 0														/* only for debugging box lists */
 /* makes a line on the solder layer surrounding all boxes in blist */
-static void showboxes(rnd_box_list_t *blist)
+static void showboxes(vtbb_t *blist)
 {
 	rnd_cardinal_t i;
 	pcb_layer_t *SLayer = &(PCB->Data->Layer[pcb_solder_silk_layer]);
@@ -321,9 +309,9 @@ static double ComputeCost(double T0, double T)
 	rnd_coord_t minx, maxx, miny, maxy;
 	rnd_bool allpads, allsameside;
 	rnd_cardinal_t thegroup;
-	rnd_box_list_t bounds = { 0, 0, NULL };	/* save bounding rectangles here */
-	rnd_box_list_t solderside = { 0, 0, NULL };	/* solder side component bounds */
-	rnd_box_list_t componentside = { 0, 0, NULL };	/* component side bounds */
+	vtbb_t bounds = { 0, 0, NULL };	/* save bounding rectangles here */
+	vtbb_t solderside = { 0, 0, NULL };	/* solder side component bounds */
+	vtbb_t componentside = { 0, 0, NULL };	/* component side bounds */
 
 
 	{
@@ -371,17 +359,17 @@ static double ComputeCost(double T0, double T)
 	/* now compute penalty function Wc which is proportional to
 	 * amount of overlap and congestion. */
 	/* delta1 is congestion penalty function */
-	delta1 = CostParameter.congestion_penalty * sqrt(fabs(rnd_intersect_box_box(bounds.Box, bounds.BoxN)));
+	delta1 = CostParameter.congestion_penalty * sqrt(fabs(rnd_intersect_box_box(bounds.array, bounds.used)));
 #if 0
-	printf("Wire Congestion Area: %f\n", rnd_intersect_box_box(bounds.Box, bounds.BoxN));
+	printf("Wire Congestion Area: %f\n", rnd_intersect_box_box(bounds.array, bounds.used));
 #endif
 	/* free bounding rectangles */
-	pcb_box_free(&bounds);
+	vtbb_uninit(&bounds);
 	/* now collect module areas (bounding rect of pins/pads) */
 	/* two lists for solder side / component side. */
 	PCB_SUBC_LOOP(PCB->Data);
 	{
-		rnd_box_list_t *thisside, *otherside;
+		vtbb_t *thisside, *otherside;
 		rnd_box_t *box, *lastbox = NULL;
 		rnd_coord_t clearance;
 		pcb_any_obj_t *o;
@@ -398,7 +386,7 @@ TODO("subc: this ignores the possibility of other-side pads; need to do this on 
 			thisside = &componentside;
 			otherside = &solderside;
 		}
-		box = pcb_box_new(thisside);
+		box = vtbb_alloc_append(thisside, 1);
 		/* initialize box so that it will take the dimensions of the first pin/pad outside of the normal bounding subc box */
 		*box = subc->BoundingBox;
 		for(o = pcb_data_first(&it, subc->data, PCB_TERM_OBJ_TYPES); o != NULL; o = pcb_data_next(&it)) {
@@ -427,7 +415,7 @@ TODO("subc: look up clearance")
 							MIN(labs(lastbox->Y1 - box2.Y2), labs(box2.Y1 - lastbox->Y2)) < clearance) ||
 							(lastbox->Y1 == box2.Y1 && lastbox->Y2 == box2.Y2 && MIN(labs(lastbox->X1 - box2.X2), labs(box2.X1 - lastbox->X2)) < clearance))) {
 					EXPANDRECT(lastbox, box);
-					otherside->BoxN--;
+					otherside->used--;
 				}
 				else
 					lastbox = box;
@@ -437,13 +425,13 @@ TODO("subc: look up clearance")
 	PCB_END_LOOP;
 
 	/* compute intersection area of module areas box list */
-	delta2 = sqrt(fabs(rnd_intersect_box_box(solderside.Box, solderside.BoxN) + rnd_intersect_box_box(componentside.Box, componentside.BoxN))) * (CostParameter.overlap_penalty_min + (1 - (T / T0)) * CostParameter.overlap_penalty_max);
+	delta2 = sqrt(fabs(rnd_intersect_box_box(solderside.array, solderside.used) + rnd_intersect_box_box(componentside.array, componentside.used))) * (CostParameter.overlap_penalty_min + (1 - (T / T0)) * CostParameter.overlap_penalty_max);
 #if 0
-	printf("Module Overlap Area (solder): %f\n", rnd_intersect_box_box(solderside.Box, solderside.BoxN));
-	printf("Module Overlap Area (component): %f\n", rnd_intersect_box_box(componentside.Box, componentside.BoxN));
+	printf("Module Overlap Area (solder): %f\n", rnd_intersect_box_box(solderside.array, solderside.used));
+	printf("Module Overlap Area (component): %f\n", rnd_intersect_box_box(componentside.array, componentside.used));
 #endif
-	pcb_box_free(&solderside);
-	pcb_box_free(&componentside);
+	vtbb_uninit(&solderside);
+	vtbb_uninit(&componentside);
 	/* reward pin/pad x/y alignment */
 	/* score higher if pins/pads belong to same *type* of component */
 	/* XXX: subkey should be *distance* from thing aligned with, so that
