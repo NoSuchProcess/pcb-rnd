@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- CLEANUP: ui layers: data parent cleanup: bug_files/uilayer.patch: ui layers should have a data parent in pcb_board_t and no global variables in layer_ui.[ch] (ui layers are board-specific) [report: Igor2]
 - CLEANUP: remove ps_calibrate_1 and/or rewrite as an user script?
 
 2. For later releases ===============================================================================
