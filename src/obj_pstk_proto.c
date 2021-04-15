@@ -215,6 +215,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 			if (has_slot) {
 				if (!quiet)
 					rnd_message(RND_MSG_ERROR, "Padstack conversion: multiple mechanical objects (slots) are not allowed\n");
+				ts->len = 0;
 				goto quit;
 			}
 			has_slot++;
@@ -231,6 +232,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				if (pstk != NULL) {
 					if (!quiet)
 						rnd_message(RND_MSG_ERROR, "Padstack conversion: multiple vias/padstacks\n");
+					ts->len = 0;
 					goto quit;
 				}
 				pstk = *(pcb_pstk_t **)o;
@@ -238,6 +240,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 				if (prt == NULL) {
 					if (!quiet)
 						rnd_message(RND_MSG_ERROR, "Padstack conversion: invalid input padstacks proto\n");
+					ts->len = 0;
 					goto quit;
 				}
 				if (prt->hdia > 0)
@@ -254,6 +257,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 			default:;
 				if (!quiet)
 					rnd_message(RND_MSG_ERROR, "Padstack conversion: invalid object type (%x) selected; must be via, padstack, line or polygon\n", (*o)->type);
+				ts->len = 0;
 				goto quit;
 		}
 	}
@@ -261,6 +265,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 	if ((vtp0_len(objs) - extra_obj) > data->LayerN) {
 		if (!quiet)
 			rnd_message(RND_MSG_ERROR, "Padstack conversion: too many objects selected\n");
+		ts->len = 0;
 		goto quit;
 	}
 
