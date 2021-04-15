@@ -61,6 +61,7 @@ void pcb_board_free(pcb_board_t * pcb)
 	free(pcb->PrintFilename);
 	pcb_ratspatch_destroy(pcb);
 	pcb_data_free(pcb->Data);
+	pcb_data_free(pcb->uilayer_data);
 
 	/* release font symbols */
 	pcb_fontkit_free(&pcb->fontkit);
@@ -84,6 +85,7 @@ pcb_board_t *pcb_board_new_(rnd_bool SetDefaultNames)
 	/* allocate memory, switch all layers on and copy resources */
 	ptr = calloc(1, sizeof(pcb_board_t));
 	ptr->Data = pcb_buffer_new(ptr);
+	ptr->uilayer_data = pcb_buffer_new(ptr);
 
 	for(i = 0; i < PCB_NUM_NETLISTS; i++)
 		pcb_netlist_init(&(ptr->netlist[i]));

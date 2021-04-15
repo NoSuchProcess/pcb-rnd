@@ -63,7 +63,7 @@ void pcb_gfx_reg(pcb_layer_t *layer, pcb_gfx_t *gfx)
 	PCB_SET_PARENT(gfx, layer, layer);
 
 	if (pcb_is_uilayer(layer))
-		pcb_obj_id_reg(pcb_uilayer_dummy_data, gfx);
+		pcb_obj_id_reg(layer->parent.data, gfx);
 	else if (layer->parent_type == PCB_PARENT_DATA)
 		pcb_obj_id_reg(layer->parent.data, gfx);
 }
@@ -74,7 +74,7 @@ void pcb_gfx_unreg(pcb_gfx_t *gfx)
 	assert(gfx->parent_type == PCB_PARENT_LAYER);
 	gfxlist_remove(gfx);
 	if (pcb_is_uilayer(layer)) {
-		pcb_obj_id_del(pcb_uilayer_dummy_data, gfx);
+		pcb_obj_id_del(layer->parent.data, gfx);
 	}
 	else {
 		assert(layer->parent_type == PCB_PARENT_DATA);

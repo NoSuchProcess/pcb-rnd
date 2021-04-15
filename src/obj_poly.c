@@ -70,7 +70,7 @@ void pcb_poly_reg(pcb_layer_t *layer, pcb_poly_t *poly)
 	PCB_SET_PARENT(poly, layer, layer);
 
 	if (pcb_is_uilayer(layer))
-		pcb_obj_id_reg(pcb_uilayer_dummy_data, poly);
+		pcb_obj_id_reg(layer->parent.data, poly);
 	else if (layer->parent_type == PCB_PARENT_DATA)
 		pcb_obj_id_reg(layer->parent.data, poly);
 }
@@ -83,7 +83,7 @@ void pcb_poly_unreg(pcb_poly_t *poly)
 	assert(poly->parent_type == PCB_PARENT_LAYER);
 	polylist_remove(poly);
 	if (pcb_is_uilayer(layer)) {
-		pcb_obj_id_del(pcb_uilayer_dummy_data, poly);
+		pcb_obj_id_del(layer->parent.data, poly);
 	}
 	else {
 		assert(layer->parent_type == PCB_PARENT_DATA);

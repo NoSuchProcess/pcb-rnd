@@ -66,7 +66,7 @@ static int idpath_map(pcb_idpath_t *idp, pcb_any_obj_t *obj, int level, int *num
 		case PCB_PARENT_LAYER:
 			assert(obj->parent.layer->parent_type = PCB_PARENT_DATA);
 			data = obj->parent.layer->parent.data;
-			if (data == NULL) { /* ui layer */
+			if (pcb_is_uilayer(obj->parent.layer)) {
 				long uilid = pcb_uilayer_get_id(obj->parent.layer);
 				if (uilid <= 0) {
 					if (idp != NULL)
@@ -248,7 +248,7 @@ pcb_any_obj_t *pcb_idpath2obj(pcb_board_t *pcb, const pcb_idpath_t *path)
 {
 	pcb_data_t *data;
 	if (path->uilayer_addr > 0) {
-		data = pcb_uilayer_dummy_data;
+		data = pcb->uilayer_data;
 	}
 	else if (path->data_addr == 1) {
 		if (pcb == NULL)

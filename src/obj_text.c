@@ -66,7 +66,7 @@ void pcb_text_reg(pcb_layer_t *layer, pcb_text_t *text)
 	PCB_SET_PARENT(text, layer, layer);
 
 	if (pcb_is_uilayer(layer))
-		pcb_obj_id_reg(pcb_uilayer_dummy_data, text);
+		pcb_obj_id_reg(layer->parent.data, text);
 	else if (layer->parent_type == PCB_PARENT_DATA)
 		pcb_obj_id_reg(layer->parent.data, text);
 }
@@ -77,7 +77,7 @@ void pcb_text_unreg(pcb_text_t *text)
 	assert(text->parent_type == PCB_PARENT_LAYER);
 	textlist_remove(text);
 	if (pcb_is_uilayer(layer)) {
-		pcb_obj_id_del(pcb_uilayer_dummy_data, text);
+		pcb_obj_id_del(layer->parent.data, text);
 	} else {
 		assert(layer->parent_type == PCB_PARENT_DATA);
 		pcb_obj_id_del(layer->parent.data, text);

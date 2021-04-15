@@ -98,6 +98,8 @@ struct pcb_board_s {
 	int line_mod_merge_inhibit;
 	struct vtp0_s *line_mod_merge;
 
+	pcb_data_t *uilayer_data;                       /* parent of all UI layers */
+
 	/* random */
 	unsigned suppress_warn_missing_font:1;          /* do not warn for missing font; useful for alien formats not having embedded font */
 };

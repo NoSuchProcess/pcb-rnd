@@ -63,7 +63,7 @@ void pcb_arc_reg(pcb_layer_t *layer, pcb_arc_t *arc)
 	PCB_SET_PARENT(arc, layer, layer);
 
 	if (pcb_is_uilayer(layer))
-		pcb_obj_id_reg(pcb_uilayer_dummy_data, arc);
+		pcb_obj_id_reg(layer->parent.data, arc);
 	else if (layer->parent_type == PCB_PARENT_DATA)
 		pcb_obj_id_reg(layer->parent.data, arc);
 }
@@ -74,7 +74,7 @@ void pcb_arc_unreg(pcb_arc_t *arc)
 	assert(arc->parent_type == PCB_PARENT_LAYER);
 	arclist_remove(arc);
 	if (pcb_is_uilayer(layer)) {
-		pcb_obj_id_del(pcb_uilayer_dummy_data, arc);
+		pcb_obj_id_del(layer->parent.data, arc);
 	}
 	else {
 		assert(layer->parent_type == PCB_PARENT_DATA);

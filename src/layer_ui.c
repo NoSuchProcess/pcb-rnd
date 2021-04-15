@@ -40,12 +40,11 @@
 #include "layer_ui.h"
 
 vtp0_t pcb_uilayers;
-pcb_data_t *pcb_uilayer_dummy_data;
-static pcb_data_t pcb_uilayer_dummy_data_;
 
 pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const rnd_color_t *color)
 {
 	int n;
+	pcb_board_t *pcb = PCB;
 	pcb_layer_t *l;
 	void **p;
 
@@ -70,8 +69,8 @@ found:;
 	l->name = rnd_strdup(name);
 	l->meta.real.vis = 1;
 	l->parent_type = PCB_PARENT_UI;
-	l->parent.any = NULL;
-	rnd_event(&PCB->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
+	l->parent.any = pcb->uilayer_data;
+	rnd_event(&pcb->hidlib, PCB_EVENT_LAYERS_CHANGED, NULL);
 	return l;
 }
 
@@ -108,14 +107,11 @@ void pcb_uilayer_free_all_cookie(const char *cookie)
 
 void pcb_uilayer_init(void)
 {
-	pcb_uilayer_dummy_data = &pcb_uilayer_dummy_data_;
-	htip_init(&pcb_uilayer_dummy_data->id2obj, longhash, longkeyeq);
 }
 
 void pcb_uilayer_uninit(void)
 {
 	vtp0_uninit(&pcb_uilayers);
-	htip_uninit(&pcb_uilayer_dummy_data->id2obj);
 }
 
 pcb_layer_t *pcb_uilayer_get(long ui_ly_id)

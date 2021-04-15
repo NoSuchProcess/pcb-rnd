@@ -36,10 +36,11 @@
 
 #include "genvector/vtp0.h"
 #include "genht/htip.h"
+#include "data.h"
+#include "board.h"
 
 /* list of all UI layers - each item is a persistent pointer to a layer struct */
 extern vtp0_t pcb_uilayers;
-extern pcb_data_t *pcb_uilayer_dummy_data;
 
 
 pcb_layer_t *pcb_uilayer_alloc(const char *cookie, const char *name, const rnd_color_t *color);
@@ -53,7 +54,16 @@ long pcb_uilayer_get_id(const pcb_layer_t *ly);
 
 RND_INLINE int pcb_is_uilayer(pcb_layer_t *layer)
 {
-	return (layer->parent_type == PCB_PARENT_UI) || (layer->parent.data == NULL);
+	if (layer->parent_type == PCB_PARENT_DATA) {
+		pcb_data_t *data = layer->parent.data;
+		if (data->parent_type == PCB_PARENT_BOARD) {
+			pcb_board_t *pcb = data->parent.board;
+			if (data == pcb->uilayer_data)
+				return 1;
+		}
+		return 0;
+	}
+	return (layer->parent_type == PCB_PARENT_UI);
 }
 
 #endif
