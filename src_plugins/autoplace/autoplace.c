@@ -371,9 +371,9 @@ static double ComputeCost(double T0, double T)
 	/* now compute penalty function Wc which is proportional to
 	 * amount of overlap and congestion. */
 	/* delta1 is congestion penalty function */
-	delta1 = CostParameter.congestion_penalty * sqrt(fabs(pcb_intersect_box_box(&bounds)));
+	delta1 = CostParameter.congestion_penalty * sqrt(fabs(pcb_intersect_box_box(bounds.Box, bounds.BoxN)));
 #if 0
-	printf("Wire Congestion Area: %f\n", pcb_intersect_box_box(&bounds));
+	printf("Wire Congestion Area: %f\n", pcb_intersect_box_box(bounds.Box, bounds.BoxN));
 #endif
 	/* free bounding rectangles */
 	pcb_box_free(&bounds);
@@ -437,10 +437,10 @@ TODO("subc: look up clearance")
 	PCB_END_LOOP;
 
 	/* compute intersection area of module areas box list */
-	delta2 = sqrt(fabs(pcb_intersect_box_box(&solderside) + pcb_intersect_box_box(&componentside))) * (CostParameter.overlap_penalty_min + (1 - (T / T0)) * CostParameter.overlap_penalty_max);
+	delta2 = sqrt(fabs(pcb_intersect_box_box(solderside.Box, solderside.BoxN) + pcb_intersect_box_box(componentside.Box, componentside.BoxN))) * (CostParameter.overlap_penalty_min + (1 - (T / T0)) * CostParameter.overlap_penalty_max);
 #if 0
-	printf("Module Overlap Area (solder): %f\n", pcb_intersect_box_box(&solderside));
-	printf("Module Overlap Area (component): %f\n", pcb_intersect_box_box(&componentside));
+	printf("Module Overlap Area (solder): %f\n", pcb_intersect_box_box(solderside.Box, solderside.BoxN));
+	printf("Module Overlap Area (component): %f\n", pcb_intersect_box_box(componentside.Box, componentside.BoxN));
 #endif
 	pcb_box_free(&solderside);
 	pcb_box_free(&componentside);

@@ -67,19 +67,19 @@ typedef struct {
 } LocationList;
 
 /* ---------------------------------------------------------------------------
- * Create a sorted list of unique y coords from a BoxList.
+ * Create a sorted list of unique y coords from an array of boxes.
  */
-static LocationList createSortedYList(rnd_box_list_t *boxlist)
+static LocationList createSortedYList(rnd_box_t *boxes, long len)
 {
 	LocationList yCoords;
 	rnd_coord_t last;
 	int i, n;
 	/* create sorted list of Y coordinates */
-	yCoords.size = 2 * boxlist->BoxN;
+	yCoords.size = 2 * len;
 	yCoords.p = (rnd_coord_t *) calloc(yCoords.size, sizeof(*yCoords.p));
-	for (i = 0; i < boxlist->BoxN; i++) {
-		yCoords.p[2 * i] = boxlist->Box[i].Y1;
-		yCoords.p[2 * i + 1] = boxlist->Box[i].Y2;
+	for (i = 0; i < len; i++) {
+		yCoords.p[2 * i] = boxes[i].Y1;
+		yCoords.p[2 * i + 1] = boxes[i].Y2;
 	}
 	qsort(yCoords.p, yCoords.size, sizeof(*yCoords.p), comparepos);
 	/* count uniq y coords */
@@ -164,22 +164,22 @@ void deleteSegment(SegmentTree * st, int n, rnd_coord_t Y1, rnd_coord_t Y2)
  * etc.).
  * Runs in O(N ln N) time.
  */
-double pcb_intersect_box_box(rnd_box_list_t *boxlist)
+double pcb_intersect_box_box(rnd_box_t *boxes, long len)
 {
 	rnd_cardinal_t i;
 	double area = 0.0;
 	/* first get the aggregate area. */
-	for (i = 0; i < boxlist->BoxN; i++)
-		area += (double) (boxlist->Box[i].X2 - boxlist->Box[i].X1) * (double) (boxlist->Box[i].Y2 - boxlist->Box[i].Y1);
+	for (i = 0; i < len; i++)
+		area += (double)(boxes[i].X2 - boxes[i].X1) * (double)(boxes[i].Y2 - boxes[i].Y1);
 	/* intersection area is aggregate - union. */
-	return area * 0.0001 - pcb_union_box_box(boxlist);
+	return area * 0.0001 - pcb_union_box_box(boxes, len);
 }
 
 /* ---------------------------------------------------------------------------
  * Compute the area of the union of the given rectangles.
  * O(N ln N) time.
  */
-double pcb_union_box_box(rnd_box_list_t *boxlist)
+double pcb_union_box_box(rnd_box_t *boxes, long len)
 {
 	rnd_box_t **rectLeft, **rectRight;
 	rnd_cardinal_t i, j;
@@ -188,30 +188,30 @@ double pcb_union_box_box(rnd_box_list_t *boxlist)
 	rnd_coord_t lastX;
 	double area = 0.0;
 
-	if (boxlist->BoxN == 0)
+	if (len == 0)
 		return 0.0;
 	/* create sorted list of Y coordinates */
-	yCoords = createSortedYList(boxlist);
+	yCoords = createSortedYList(boxes, len);
 	/* now create empty segment tree */
 	segtree = createSegmentTree(yCoords.p, yCoords.size);
 	free(yCoords.p);
 	/* create sorted list of left and right X coordinates of rectangles */
-	rectLeft = (rnd_box_t **) calloc(boxlist->BoxN, sizeof(*rectLeft));
-	rectRight = (rnd_box_t **) calloc(boxlist->BoxN, sizeof(*rectRight));
-	for (i = 0; i < boxlist->BoxN; i++) {
-		assert(boxlist->Box[i].X1 <= boxlist->Box[i].X2);
-		assert(boxlist->Box[i].Y1 <= boxlist->Box[i].Y2);
-		rectLeft[i] = rectRight[i] = &boxlist->Box[i];
+	rectLeft = (rnd_box_t **) calloc(len, sizeof(*rectLeft));
+	rectRight = (rnd_box_t **) calloc(len, sizeof(*rectRight));
+	for (i = 0; i < len; i++) {
+		assert(boxes[i].X1 <= boxes[i].X2);
+		assert(boxes[i].Y1 <= boxes[i].Y2);
+		rectLeft[i] = rectRight[i] = &boxes[i];
 	}
-	qsort(rectLeft, boxlist->BoxN, sizeof(*rectLeft), compareleft);
-	qsort(rectRight, boxlist->BoxN, sizeof(*rectRight), compareright);
+	qsort(rectLeft, len, sizeof(*rectLeft), compareleft);
+	qsort(rectRight, len, sizeof(*rectRight), compareright);
 	/* sweep through x segments from left to right */
 	i = j = 0;
 	lastX = rectLeft[0]->X1;
-	while (j < boxlist->BoxN) {
-		assert(i <= boxlist->BoxN);
+	while (j < len) {
+		assert(i <= len);
 		/* i will step through rectLeft, j will through rectRight */
-		if (i == boxlist->BoxN || rectRight[j]->X2 < rectLeft[i]->X1) {
+		if (i == len || rectRight[j]->X2 < rectLeft[i]->X1) {
 			/* right edge of rectangle */
 			rnd_box_t *b = rectRight[j++];
 			/* check lastX */
