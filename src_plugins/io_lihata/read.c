@@ -1551,7 +1551,6 @@ static int parse_element(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dt, lht
 	else
 		return iolht_error(obj, "invalid element: objects is not a list\n");
 
-TODO("subc: TextFlags")
 	txt = pcb_subc_add_refdes_text(subc, tx, ty, tdir, tscale, onsld);
 
 	pcb_subc_xy_rot_pnp(subc, ox, oy, onsld);
