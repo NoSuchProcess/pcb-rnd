@@ -54,24 +54,24 @@ typedef struct {
 	rnd_coord_t left, right;
 	int covered;
 	rnd_coord_t area;
-} SegmentTreeNode;
+} seg_tree_node_t;
 
 typedef struct {
-	SegmentTreeNode *nodes;
+	seg_tree_node_t *nodes;
 	int size;
-} SegmentTree;
+} seg_tree_t;
 
 typedef struct {
 	rnd_coord_t *p;
 	int size;
-} LocationList;
+} location_list_t;
 
 /* ---------------------------------------------------------------------------
  * Create a sorted list of unique y coords from an array of boxes.
  */
-static LocationList createSortedYList(rnd_box_t *boxes, long len)
+static location_list_t create_sorted_y_list(rnd_box_t *boxes, long len)
 {
-	LocationList yCoords;
+	location_list_t yCoords;
 	rnd_coord_t last;
 	int i, n;
 	/* create sorted list of Y coordinates */
@@ -94,13 +94,13 @@ static LocationList createSortedYList(rnd_box_t *boxes, long len)
 /* ---------------------------------------------------------------------------
  * Create an empty segment tree from the given sorted list of uniq y coords.
  */
-static SegmentTree createSegmentTree(rnd_coord_t * yCoords, int N)
+static seg_tree_t createseg_tree_t(rnd_coord_t * yCoords, int N)
 {
-	SegmentTree st;
+	seg_tree_t st;
 	int i;
 	/* size is twice the nearest larger power of 2 */
 	st.size = 2 * nextpwrof2(N);
-	st.nodes = (SegmentTreeNode *) calloc(st.size, sizeof(*st.nodes));
+	st.nodes = (seg_tree_node_t *) calloc(st.size, sizeof(*st.nodes));
 	/* initialize the rightmost leaf node */
 	st.nodes[st.size - 1].left = (N > 0) ? yCoords[--N] : 10;
 	st.nodes[st.size - 1].right = st.nodes[st.size - 1].left + 1;
@@ -118,7 +118,7 @@ static SegmentTree createSegmentTree(rnd_coord_t * yCoords, int N)
 	return st;
 }
 
-void insertSegment(SegmentTree * st, int n, rnd_coord_t Y1, rnd_coord_t Y2)
+void insertSegment(seg_tree_t * st, int n, rnd_coord_t Y1, rnd_coord_t Y2)
 {
 	rnd_coord_t discriminant;
 	if (st->nodes[n].left >= Y1 && st->nodes[n].right <= Y2) {
@@ -137,7 +137,7 @@ void insertSegment(SegmentTree * st, int n, rnd_coord_t Y1, rnd_coord_t Y2)
 		(st->nodes[n].right - st->nodes[n].left) : (n >= st->size / 2) ? 0 : st->nodes[n * 2].area + st->nodes[n * 2 + 1].area;
 }
 
-void deleteSegment(SegmentTree * st, int n, rnd_coord_t Y1, rnd_coord_t Y2)
+void deleteSegment(seg_tree_t * st, int n, rnd_coord_t Y1, rnd_coord_t Y2)
 {
 	rnd_coord_t discriminant;
 	if (st->nodes[n].left >= Y1 && st->nodes[n].right <= Y2) {
@@ -183,17 +183,17 @@ double pcb_union_box_box(rnd_box_t *boxes, long len)
 {
 	rnd_box_t **rectLeft, **rectRight;
 	rnd_cardinal_t i, j;
-	LocationList yCoords;
-	SegmentTree segtree;
+	location_list_t yCoords;
+	seg_tree_t segtree;
 	rnd_coord_t lastX;
 	double area = 0.0;
 
 	if (len == 0)
 		return 0.0;
 	/* create sorted list of Y coordinates */
-	yCoords = createSortedYList(boxes, len);
+	yCoords = create_sorted_y_list(boxes, len);
 	/* now create empty segment tree */
-	segtree = createSegmentTree(yCoords.p, yCoords.size);
+	segtree = createseg_tree_t(yCoords.p, yCoords.size);
 	free(yCoords.p);
 	/* create sorted list of left and right X coordinates of rectangles */
 	rectLeft = (rnd_box_t **) calloc(len, sizeof(*rectLeft));
