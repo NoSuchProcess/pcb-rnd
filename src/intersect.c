@@ -5,6 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 1994,1995,1996 Thomas Nau
  *  Copyright (C) 1998,1999,2000,2001 harry eaton
+ *  Copyright (C) 2021 Tibor 'Igor2' Palinkas
  *
  *  this file, intersect.c, was written and is
  *  Copyright (c) 2001 C. Scott Ananian
