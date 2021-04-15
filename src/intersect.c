@@ -35,8 +35,6 @@
  *
  */
 
-/* rectangle intersection/union routines. */
-
 #include "config.h"
 
 #include <assert.h>
@@ -66,9 +64,7 @@ typedef struct {
 	int size;
 } location_list_t;
 
-/* ---------------------------------------------------------------------------
- * Create a sorted list of unique y coords from an array of boxes.
- */
+/* Create a sorted list of unique y coords from an array of boxes. */
 static location_list_t create_sorted_y_list(rnd_box_t *boxes, long len)
 {
 	location_list_t yCoords;
@@ -91,9 +87,7 @@ static location_list_t create_sorted_y_list(rnd_box_t *boxes, long len)
 	return yCoords;
 }
 
-/* ---------------------------------------------------------------------------
- * Create an empty segment tree from the given sorted list of uniq y coords.
- */
+/* Create an empty segment tree from the given sorted list of uniq y coords. */
 static seg_tree_t createseg_tree_t(rnd_coord_t * yCoords, int N)
 {
 	seg_tree_t st;
@@ -157,8 +151,7 @@ void deleteSegment(seg_tree_t * st, int n, rnd_coord_t Y1, rnd_coord_t Y2)
 		(st->nodes[n].right - st->nodes[n].left) : (n >= st->size / 2) ? 0 : st->nodes[n * 2].area + st->nodes[n * 2 + 1].area;
 }
 
-/* ---------------------------------------------------------------------------
- * Compute the area of the intersection of the given rectangles; that is,
+/* Compute the area of the intersection of the given rectangles; that is,
  * the area covered by more than one rectangle (counted twice if the area is
  * covered by three rectangles, three times if covered by four rectangles,
  * etc.).
@@ -175,10 +168,7 @@ double pcb_intersect_box_box(rnd_box_t *boxes, long len)
 	return area * 0.0001 - pcb_union_box_box(boxes, len);
 }
 
-/* ---------------------------------------------------------------------------
- * Compute the area of the union of the given rectangles.
- * O(N ln N) time.
- */
+/* Compute the area of the union of the given rectangles. O(N ln N) time. */
 double pcb_union_box_box(rnd_box_t *boxes, long len)
 {
 	rnd_box_t **rectLeft, **rectRight;
