@@ -40,7 +40,10 @@
 #include <librnd/core/error.h>
 #include "meshgraph.h"
 
-static pcb_layer_t *ly;
+static const char *acompnet_cookie = "acompnet plugin";
+
+static pcb_layer_t *ly = NULL;
+static rnd_color_t ly_clr;
 
 typedef struct {
 	rnd_coord_t x, y;
@@ -177,6 +180,9 @@ static fgw_error_t pcb_act_acompnet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	pcb_meshgraph_t gr;
 	long int is, ie;
 
+	if (ly == NULL)
+		ly = pcb_uilayer_alloc(acompnet_cookie, "autocomp-net", &ly_clr);
+
 	pcb_msgr_init(&gr);
 	acompnet_mesh(&gr, PCB_CURRLAYER(PCB));
 
@@ -213,7 +219,6 @@ rnd_action_t acompnet_action_list[] = {
 	{"acompnet", pcb_act_acompnet, pcb_acth_acompnet, pcb_acts_acompnet},
 };
 
-static const char *acompnet_cookie = "acompnet plugin";
 
 int pplg_check_ver_acompnet(int ver_needed) { return 0; }
 
@@ -225,15 +230,13 @@ void pplg_uninit_acompnet(void)
 
 int pplg_init_acompnet(void)
 {
-	static rnd_color_t clr;
 
 	RND_API_CHK_VER;
 
-	if (clr.str[0] != '#')
-		rnd_color_load_str(&clr, "#c09920");
+	if (ly_clr.str[0] != '#')
+		rnd_color_load_str(&ly_clr, "#c09920");
 
 	RND_REGISTER_ACTIONS(acompnet_action_list, acompnet_cookie)
-	ly = pcb_uilayer_alloc(acompnet_cookie, "autocomp-net", &clr);
 
 	return 0;
 }
