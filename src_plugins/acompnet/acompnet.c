@@ -181,7 +181,7 @@ static fgw_error_t pcb_act_acompnet(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	long int is, ie;
 
 	if (ly == NULL)
-		ly = pcb_uilayer_alloc(acompnet_cookie, "autocomp-net", &ly_clr);
+		ly = pcb_uilayer_alloc(PCB_ACT_BOARD, acompnet_cookie, "autocomp-net", &ly_clr);
 
 	pcb_msgr_init(&gr);
 	acompnet_mesh(&gr, PCB_CURRLAYER(PCB));

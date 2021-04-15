@@ -961,7 +961,7 @@ int mesh_auto(pcb_mesh_t *mesh, pcb_mesh_dir_t dir)
 	return 0;
 }
 
-static void mesh_layer_reset()
+static void mesh_layer_reset(pcb_board_t *pcb)
 {
 	static rnd_color_t clr;
 
@@ -972,8 +972,8 @@ static void mesh_layer_reset()
 		pcb_uilayer_free(mesh.ui_layer_xy);
 	if (mesh.ui_layer_z != NULL)
 		pcb_uilayer_free(mesh.ui_layer_z);
-	mesh.ui_layer_xy = pcb_uilayer_alloc(mesh_ui_cookie, "mesh xy", &clr);
-	mesh.ui_layer_z = pcb_uilayer_alloc(mesh_ui_cookie, "mesh z", &clr);
+	mesh.ui_layer_xy = pcb_uilayer_alloc(pcb, mesh_ui_cookie, "mesh xy", &clr);
+	mesh.ui_layer_z = pcb_uilayer_alloc(pcb, mesh_ui_cookie, "mesh z", &clr);
 }
 
 static void ia_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
@@ -1063,7 +1063,7 @@ static void mesh_sort_uniq_all(pcb_mesh_t *mesh)
 
 static void ia_gen(void)
 {
-	mesh_layer_reset();
+	mesh_layer_reset(PCB);
 	mesh.layer = PCB_CURRLAYER(PCB);
 
 	if (ia.dlg[ia.hor].val.lng)

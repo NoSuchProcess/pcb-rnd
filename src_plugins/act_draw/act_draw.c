@@ -291,7 +291,7 @@ static fgw_error_t pcb_act_UILayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			if (rnd_color_load_str(&clr, color) != 0)
 				return FGW_ERR_ARG_CONV;
 
-			layer = pcb_uilayer_alloc(uilayer_cookie, name, &clr);
+			layer = pcb_uilayer_alloc(PCB_ACT_BOARD, uilayer_cookie, name, &clr);
 			if (layer == NULL)
 				return FGW_ERR_ARG_CONV;
 

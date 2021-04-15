@@ -192,13 +192,13 @@ static void setup_ui_layers(pcb_board_t *pcb, pcb_tlp_session_t *result, pcb_lay
 		rnd_color_load_str(&clr3, "#FFCC55");
 
 	if (result->res_ply == NULL)
-		result->res_ply = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remove", &clr1);
+		result->res_ply = pcb_uilayer_alloc(pcb, pcb_millpath_cookie, "mill remove", &clr1);
 
 	if (result->res_remply == NULL)
-		result->res_remply = pcb_uilayer_alloc(pcb_millpath_cookie, "mill remain", &clr3);
+		result->res_remply = pcb_uilayer_alloc(pcb, pcb_millpath_cookie, "mill remain", &clr3);
 
 	if (result->res_path == NULL)
-		result->res_path = pcb_uilayer_alloc(pcb_millpath_cookie, "mill toolpath", &clr2);
+		result->res_path = pcb_uilayer_alloc(pcb, pcb_millpath_cookie, "mill toolpath", &clr2);
 
 	if (result->fill != NULL)
 		pcb_polyop_destroy(NULL, result->res_ply, result->fill);

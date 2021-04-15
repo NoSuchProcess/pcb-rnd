@@ -918,7 +918,7 @@ static fgw_error_t pcb_act_NetLength(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* anything below needs the layer */
 
 	if (ly == NULL)
-		ly = pcb_uilayer_alloc("NetLength", "Net length", rnd_color_blue);
+		ly = pcb_uilayer_alloc(PCB_ACT_BOARD, "NetLength", "Net length", rnd_color_blue);
 
 	if (strcmp(cmd, "object") == 0) {
 		int type;
