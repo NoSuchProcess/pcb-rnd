@@ -87,14 +87,14 @@ void pcb_line_unreg(pcb_line_t *line)
 	linelist_remove(line);
 	if (pcb_is_uilayer(layer)) {
 		pcb_obj_id_del(layer->parent.data, line);
-		pcb_obj_id_del(layer->parent.data, &line->Point1);
-		pcb_obj_id_del(layer->parent.data, &line->Point2);
+/*		pcb_obj_id_del(layer->parent.data, &line->Point1);
+		pcb_obj_id_del(layer->parent.data, &line->Point2);*/
 	}
 	else {
 		assert(layer->parent_type == PCB_PARENT_DATA);
 		pcb_obj_id_del(layer->parent.data, line);
-		pcb_obj_id_del(layer->parent.data, &line->Point1);
-		pcb_obj_id_del(layer->parent.data, &line->Point2);
+/*		pcb_obj_id_del(layer->parent.data, &line->Point1);
+		pcb_obj_id_del(layer->parent.data, &line->Point2);*/
 	}
 	PCB_CLEAR_PARENT(line);
 }
