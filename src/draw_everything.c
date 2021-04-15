@@ -340,6 +340,7 @@ static int drw_virtual(pcb_draw_info_t *info, draw_everything_t *de)
 		xform_setup(info, &tmp, NULL);
 		draw_rats(info, info->drawn_area);
 		draw_pins_and_pads(info, de->component, de->solder);
+		info->xform = NULL; info->layer = NULL;
 	}
 
 	return 0;
