@@ -63,7 +63,6 @@ append /local/pcb/OBJS [@
 	ht_subc.o
 	idpath.o
 	insert.o
-	intersect.o
 	layer.o
 	layer_addr.o
 	layer_grp.o
