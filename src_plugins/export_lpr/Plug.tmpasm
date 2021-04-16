@@ -1,5 +1,6 @@
 put /local/pcb/mod {export_lpr}
 put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_lpr/lpr.o @]
+put /local/pcb/mod/CONF {$(PLUGDIR)/export_lpr/export_lpr_conf.h}
 
 switch /local/pcb/export_lpr/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;

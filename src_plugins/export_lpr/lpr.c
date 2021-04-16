@@ -18,8 +18,12 @@
 #include <librnd/core/hid_attrib.h>
 #include <librnd/core/actions.h>
 
+#include "export_lpr_conf.h"
 const char *lpr_cookie = "lpr HID";
 static rnd_hid_t lpr_hid;
+
+conf_export_lpr_t conf_export_lpr;
+
 
 static const rnd_export_opt_t base_lpr_options[] = {
 
@@ -44,6 +48,21 @@ static rnd_export_opt_t *lpr_options = 0;
 static int num_lpr_options = 0;
 static rnd_hid_attr_val_t lpr_values[NUM_OPTIONS];
 
+static void lpr_maybe_set_value(const char *name, double new_val)
+{
+	int n;
+
+	if (new_val <= 0)
+		return;
+
+	for(n = 0; n < num_lpr_options; n++) {
+		if (strcmp(name, lpr_options[n].name) == 0) {
+			lpr_values[n].dbl = new_val;
+			break;
+		}
+	}
+}
+
 static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 {
 	const char *val;
@@ -56,6 +75,9 @@ static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
 
 		rnd_hid_load_defaults(&lpr_hid, lpr_options, num_lpr_options);
+
+		lpr_maybe_set_value("xcalib", conf_export_lpr.plugins.export_lpr.default_xcalib);
+		lpr_maybe_set_value("ycalib", conf_export_lpr.plugins.export_lpr.default_ycalib);
 	}
 
 	/*
@@ -125,6 +147,7 @@ void pplg_uninit_export_lpr(void)
 {
 	rnd_remove_actions_by_cookie(lpr_cookie);
 	rnd_hid_remove_hid(&lpr_hid);
+	rnd_conf_unreg_fields("plugins/export_lpr/");
 }
 
 int pplg_init_export_lpr(void)
@@ -150,6 +173,10 @@ int pplg_init_export_lpr(void)
 
 	rnd_hid_register_hid(&lpr_hid);
 	rnd_hid_load_defaults(&lpr_hid, base_lpr_options, NUM_OPTIONS);
+
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	rnd_conf_reg_field(conf_export_lpr, field,isarray,type_name,cpath,cname,desc,flags);
+#include "export_lpr_conf_fields.h"
 
 	return 0;
 }

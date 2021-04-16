@@ -2974,7 +2974,7 @@
  ../src_3rd/librnd-local/src/../src_3rd/puplug/libs.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
  ../src_3rd/librnd-local/src/../src_3rd/puplug/error.h
-../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c \
+../src_plugins/export_lpr/lpr.o: ../src_plugins/export_lpr/lpr.c ../src_plugins/export_lpr/export_lpr_conf_fields.h \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h data.h \
  globalconst.h ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
