@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.3.2 (svn r34389) an interactive printed circuit board editor ,  Revision: 34493
+This is pcb-rnd 2.3.2 (svn r34511) an interactive printed circuit board editor ,  Revision: 34522
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -330,7 +330,6 @@ This is pcb-rnd 2.3.2 (svn r34389) an interactive printed circuit board editor ,
 <tr><td>propprint</td><td>Print a property map of objects matching the scope. Scope is documented at PropEdit().</td><td>PropPrint([scope])</td><td>propedit</td>
 <tr><td>propset</td><td>Change the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().</td><td>propset([scope], name, value)</td><td>propedit</td>
 <tr><td>proptoggle</td><td>Toggle the named property of scope or all selected objects, assuming the property is boolean. Scope is documented at PropEdit(). If create is true, non-existing attributes are created as true.</td><td>proptoggle([scope], name, [create])</td><td>propedit</td>
-<tr><td>pscalib</td><td></td><td></td><td>ps HID</td>
 <tr><td>pstklib</td><td>Present the padstack library dialog on board padstacks or the padstacks of a subcircuit</td><td>pstklib([board|subcid|object], [retpid, [preselect]])</td><td>dialogs plugin</td>
 <tr><td>PstkNew</td><td>Create a padstack. For now data must be "pcb". glob_clearance=0 turns off global clearance. Returns the idpath of the new object or 0 on error.</td><td>PstkNew([noundo,] data, protoID, x, y, glob_clearance, flags)</td><td>act_draw</td>
 <tr><td>PstkProtoEdit</td><td>Edit a padstack prototype specified by its pointer.</td><td>PstkProto([noundo,] proto, remove, layer_type)<br>PstkProto([noundo,] proto, copy, dst_layer_type, src_layer_type)<br>PstkProto([noundo,] proto, hdia, dia)<br>PstkProto([noundo,] proto, shape:line, layer_type, x1, y1, x2, y2, th, [square])</td><td>act_draw</td>
