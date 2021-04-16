@@ -1403,27 +1403,12 @@ void ps_calibrate_1(rnd_hid_t *hid, double xval, double yval, int use_command)
 	else
 		fclose(ps_cal_file);
 }
-
-static void ps_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	ps_calibrate_1(hid, xval, yval, 0);
-}
-
 static void ps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 
 rnd_hid_t ps_hid;
 
-static fgw_error_t pcb_act_PSCalib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
-{
-	ps_calibrate(&ps_hid, 0.0, 0.0);
-	return 0;
-}
-
-rnd_action_t hidps_action_list[] = {
-	{"pscalib", pcb_act_PSCalib, NULL, NULL}
-};
 
 static int ps_inited = 0;
 void ps_ps_init(rnd_hid_t * hid)
@@ -1450,10 +1435,8 @@ void ps_ps_init(rnd_hid_t * hid)
 	hid->fill_polygon_offs = ps_fill_polygon_offs;
 	hid->fill_polygon = ps_fill_polygon;
 	hid->fill_rect = ps_fill_rect;
-	hid->calibrate = ps_calibrate;
+	hid->calibrate = NULL;
 	hid->set_crosshair = ps_set_crosshair;
-
-	RND_REGISTER_ACTIONS(hidps_action_list, ps_cookie)
 
 	ps_inited = 1;
 }
