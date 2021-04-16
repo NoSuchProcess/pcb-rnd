@@ -993,11 +993,6 @@ static void gerber_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rn
 	gerber_fill_polygon(gc, 5, x, y);
 }
 
-static void gerber_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	CRASH("gerber_calibrate");
-}
-
 static int gerber_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\ngerber exporter command line arguments:\n\n");
@@ -1106,7 +1101,6 @@ int pplg_init_export_gerber(void)
 	gerber_hid.fill_polygon = gerber_fill_polygon;
 	gerber_hid.fill_polygon_offs = gerber_fill_polygon_offs;
 	gerber_hid.fill_rect = gerber_fill_rect;
-	gerber_hid.calibrate = gerber_calibrate;
 	gerber_hid.set_crosshair = gerber_set_crosshair;
 	gerber_hid.usage = gerber_usage;
 	gerber_hid.argument_array = gerber_values;

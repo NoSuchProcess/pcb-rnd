@@ -503,12 +503,6 @@ static void dxf_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	fix_rect_coords();
 }
 
-static void dxf_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	rnd_message(RND_MSG_ERROR, "dxf_calibrate() not implemented");
-	return;
-}
-
 static void dxf_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
@@ -560,7 +554,6 @@ int pplg_init_export_dxf(void)
 	dxf_hid.fill_polygon = dxf_fill_polygon;
 	dxf_hid.fill_polygon_offs = dxf_fill_polygon_offs;
 	dxf_hid.fill_rect = dxf_fill_rect;
-	dxf_hid.calibrate = dxf_calibrate;
 	dxf_hid.set_crosshair = dxf_set_crosshair;
 	dxf_hid.argument_array = dxf_values;
 

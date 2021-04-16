@@ -457,11 +457,6 @@ static void excellon_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, 
 	excellon_fill_polygon(gc, 0, NULL, NULL);
 }
 
-static void excellon_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	rnd_message(RND_MSG_ERROR, "Excellon internal error: can not calibrate()\n");
-}
-
 static int excellon_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nexcellon exporter command line arguments:\n\n");
@@ -525,7 +520,6 @@ int pplg_init_export_excellon(void)
 	excellon_hid.fill_polygon = excellon_fill_polygon;
 	excellon_hid.fill_polygon_offs = excellon_fill_polygon_offs;
 	excellon_hid.fill_rect = excellon_fill_rect;
-	excellon_hid.calibrate = excellon_calibrate;
 	excellon_hid.set_crosshair = excellon_set_crosshair;
 	excellon_hid.usage = excellon_usage;
 	excellon_hid.argument_array = excellon_values;

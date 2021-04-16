@@ -366,13 +366,6 @@ static void c_draw_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, r
 	poly_post();
 }
 
-
-static void c_draw_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	rnd_message(RND_MSG_ERROR, "c_draw_calibrate() not implemented");
-	return;
-}
-
 static void c_draw_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
@@ -424,7 +417,6 @@ int pplg_init_export_c_draw(void)
 	c_draw_hid.fill_polygon = c_draw_fill_polygon;
 	c_draw_hid.fill_polygon_offs = c_draw_fill_polygon_offs;
 	c_draw_hid.fill_rect = c_draw_fill_rect;
-	c_draw_hid.calibrate = c_draw_calibrate;
 	c_draw_hid.set_crosshair = c_draw_set_crosshair;
 	c_draw_hid.argument_array = c_draw_values;
 

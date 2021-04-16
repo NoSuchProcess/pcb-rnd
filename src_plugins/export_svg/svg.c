@@ -874,12 +874,6 @@ static void svg_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_
 }
 
 
-static void svg_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	rnd_message(RND_MSG_ERROR, "svg_calibrate() not implemented");
-	return;
-}
-
 static void svg_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
@@ -931,7 +925,6 @@ int pplg_init_export_svg(void)
 	svg_hid.fill_polygon = svg_fill_polygon;
 	svg_hid.fill_polygon_offs = svg_fill_polygon_offs;
 	svg_hid.fill_rect = svg_fill_rect;
-	svg_hid.calibrate = svg_calibrate;
 	svg_hid.set_crosshair = svg_set_crosshair;
 	svg_hid.argument_array = svg_values;
 

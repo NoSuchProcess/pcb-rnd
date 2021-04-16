@@ -888,13 +888,6 @@ static void openems_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, r
 	}
 }
 
-
-static void openems_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	rnd_message(RND_MSG_ERROR, "openems_calibrate() not implemented");
-	return;
-}
-
 static void openems_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
@@ -953,7 +946,6 @@ int pplg_init_export_openems(void)
 	openems_hid.fill_polygon = openems_fill_polygon;
 	openems_hid.fill_polygon_offs = openems_fill_polygon_offs;
 	openems_hid.fill_rect = openems_fill_rect;
-	openems_hid.calibrate = openems_calibrate;
 	openems_hid.set_crosshair = openems_set_crosshair;
 	openems_hid.argument_array = openems_values;
 

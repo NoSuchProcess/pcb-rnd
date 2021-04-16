@@ -635,11 +635,6 @@ static void eps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	rnd_fprintf(f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-static void eps_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	CRASH("eps_calibrate");
-}
-
 static void eps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
@@ -686,7 +681,6 @@ void hid_eps_init()
 	eps_hid.fill_polygon = eps_fill_polygon;
 	eps_hid.fill_polygon_offs = eps_fill_polygon_offs;
 	eps_hid.fill_rect = eps_fill_rect;
-	eps_hid.calibrate = eps_calibrate;
 	eps_hid.set_crosshair = eps_set_crosshair;
 	eps_hid.argument_array = eps_values;
 

@@ -1386,12 +1386,6 @@ static void png_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_
 	png_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
 }
 
-
-static void png_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	CRASH("png_calibrate");
-}
-
 static void png_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
@@ -1445,7 +1439,6 @@ int pplg_init_export_png(void)
 	png_hid.fill_polygon = png_fill_polygon;
 	png_hid.fill_polygon_offs = png_fill_polygon_offs;
 	png_hid.fill_rect = png_fill_rect;
-	png_hid.calibrate = png_calibrate;
 	png_hid.set_crosshair = png_set_crosshair;
 	png_hid.argument_array = png_values;
 
