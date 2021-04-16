@@ -19,6 +19,7 @@
 #include <librnd/core/actions.h>
 
 const char *lpr_cookie = "lpr HID";
+static rnd_hid_t lpr_hid;
 
 static const rnd_export_opt_t base_lpr_options[] = {
 
@@ -53,6 +54,8 @@ static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
 		lpr_options = calloc(num_lpr_options, sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
+
+		rnd_hid_load_defaults(&lpr_hid, lpr_options, num_lpr_options);
 	}
 
 	/*
@@ -107,7 +110,6 @@ static void lpr_calibrate(rnd_hid_t *hid, double xval, double yval)
 	ps_calibrate_1(hid, xval, yval, 1);
 }
 
-static rnd_hid_t lpr_hid;
 
 static int lpr_usage(rnd_hid_t *hid, const char *topic)
 {
