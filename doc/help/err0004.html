@@ -1,0 +1,58 @@
+<html>
+<body>
+
+<H1> Printer calibration </H1>
+<p>
+The printer calibration dialog was broken for long. In fact it was broken for
+longer than pcb-rnd even existed: the version of gEDA/PCB it was forked from
+already had a partly defunct calibration. (The bug is that after the calibration
+the print dialog does not remember any of the calibrated values).
+<p>
+The whole idea of printer calibration embedded in pcb-rnd is probably not that
+good. The lpr plugin is hard-wired to the ps export. The ps file format does
+have units, so the only reason anyone would need a calibration is working around
+printer bugs or paper shrink problems. But those problems are not related to
+pcb-rnd, thus the calibration should probably be done only once, independently
+of the software used.
+<p>
+Thus the calibration dialog box and code got removed from pcb-rnd. A new,
+optional config subtree is added for export_lpr where the user can save
+calibration values so that the lpr exporter remembers them. These
+preconfigured calibration values are used upon any print from pcb-rnd, if
+command line arguments or GUI export dialogs don't override them.
+<p>
+The recommended manual process for a printer calibration is:
+<ul>
+	<li> 1. draw a rectangle in pcb-rnd that is large enough for your printer and
+	        paper size; preferably use round sizes, e.g. on an A/4 paper,
+	        assuming portrait printing: 150*250 mm (this leaves enough margin);
+	        use thin lines
+	<li> 2. print it with pcb-rnd
+	<li> 3. measure width and height and calculate the calibration value per x
+	        (horizontal) and y (vertical) direction; the calibration value is:
+	        measured_size / drawn_size; the result should be close to 1.0.
+	<li> 4. final check: print again, but this time enter the calculated
+	        calibration values in the print dialog box xcalib and ycalib fields;
+	        the resulting printout should be very close to the exact size
+	<li> 5. save the calibration values in user config, either using the preferences
+	        window tree tab and looking for plugins/export_lpr or by writing
+	        a config file with a text editor (see below)
+</ul>
+<p>
+Hand written config file: create a file with a text editor, call it
+~/.pcb-rnd/lpr_printer_calib.conf and copy the following content in it:
+<pre>
+li:pcb-rnd-conf-v1 {
+	ha:overwrite {
+		ha:plugins {
+			ha:export_lpr {
+				default_xcalib = 1.0
+				default_ycalib = 1.0
+			}
+		}
+	}
+}
+</pre>
+<p>
+Modify the values of default_xcalib and default_ycalib to the ones calculated
+during the above calibration process.
