@@ -28,32 +28,13 @@
 
 #include <librnd/core/hid_init.h>
 
-static rnd_hid_attribute_t printer_calibrate_attrs[] = {
-	{"Enter Values here:", "",
-	 RND_HATT_LABEL, 0, 0, {0, 0, 0}, 0, 0},
-	{"x-calibration", "X scale for calibrating your printer",
-	 RND_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0},
-	{"y-calibration", "Y scale for calibrating your printer",
-	 RND_HATT_REAL, 0.5, 25, {0, 0, 1.00}, 0, 0}
-};
 
 const char pcb_acts_PrintCalibrate[] = "PrintCalibrate()";
-const char pcb_acth_PrintCalibrate[] = "Calibrate the printer.";
+const char pcb_acth_PrintCalibrate[] = "DEPRECATED: Calibrate the printer.";
 /* DOC: printcalibrate.html */
 fgw_error_t pcb_act_PrintCalibrate(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	rnd_hid_t *printer = rnd_hid_find_printer();
-
-	if (printer == NULL) {
-		rnd_message(RND_MSG_ERROR, "No printer available\n");
-		RND_ACT_IRES(1);
-		return 0;
-	}
-	printer->calibrate(printer, 0.0, 0.0);
-
-	if (rnd_attribute_dialog("printer_calibrate", printer_calibrate_attrs, 3, "Printer Calibration Values", NULL))
-		return 1;
-	printer->calibrate(printer, printer_calibrate_attrs[1].val.dbl, printer_calibrate_attrs[2].val.dbl);
-	RND_ACT_IRES(0);
+	rnd_message(RND_MSG_ERROR, "This function has been removed. Please refer to http://www.repo.hu/projects/pcb-rnd/help/err0004.html\n");
+	RND_ACT_IRES(1);
 	return 0;
 }
