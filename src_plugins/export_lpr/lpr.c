@@ -127,12 +127,6 @@ static int lpr_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	return rnd_hid_parse_command_line(argc, argv);
 }
 
-static void lpr_calibrate(rnd_hid_t *hid, double xval, double yval)
-{
-	ps_calibrate_1(hid, xval, yval, 1);
-}
-
-
 static int lpr_usage(rnd_hid_t *hid, const char *topic)
 {
 	fprintf(stderr, "\nlpr exporter command line arguments:\n\n");
@@ -166,7 +160,6 @@ int pplg_init_export_lpr(void)
 	lpr_hid.get_export_options = lpr_get_export_options;
 	lpr_hid.do_export = lpr_do_export;
 	lpr_hid.parse_arguments = lpr_parse_arguments;
-	lpr_hid.calibrate = lpr_calibrate;
 	lpr_hid.argument_array = lpr_values;
 
 	lpr_hid.usage = lpr_usage;
