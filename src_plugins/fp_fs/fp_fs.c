@@ -185,9 +185,10 @@ static int fp_fs_ignore_fn(const char *fn, int len)
 
 	rnd_conf_loop_list_str(&conf_fp_fs.plugins.fp_fs.ignore_prefix, ci, p, n) {
 		const char *s1, *s2;
-		for(s1 = fn, s2 = p; *s1 == *s2; s1++, s2++) {
+		for(s1 = fn, s2 = p; ; s1++, s2++) {
 			if (*s2 == '\0') return 1;
 			if (*s1 == '\0') break;
+			if (*s1 != *s2) break;
 		}
 	}
 
