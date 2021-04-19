@@ -7733,8 +7733,9 @@
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.h \
  ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
- ../src_3rd/librnd-local/src/librnd/core/compat_misc.h board.h \
- vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
+ ../src_3rd/librnd-local/src/librnd/core/rotate.h board.h vtroutestyle.h \
+ attrib.h global_typedefs.h layer.h globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/globalconst.h \
  ../src_3rd/librnd-local/src/librnd/core/color.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h \
