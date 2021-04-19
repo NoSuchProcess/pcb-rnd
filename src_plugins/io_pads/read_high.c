@@ -195,11 +195,17 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 	return 1;
 }
 
-static int pads_parse_piece_circle(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, int filled)
+static int pads_parse_piece_circle(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, long num_crds, int filled)
 {
-	rnd_coord_t x1, y1, x2, y2, cx, cy;
+	rnd_coord_t x1, y1, x2, y2, cx, cy, dummy;
 	pcb_dlcr_draw_t *arc;
-	int res;
+	int n, res;
+
+	if (num_crds < 2) {
+		PADS_ERROR((RND_MSG_ERROR, "A circle needs to have at least two coords\n"));
+		return -1;
+	}
+
 
 	if ((res = pads_read_coord(rctx, &x1)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &y1)) <= 0) return res;
@@ -207,6 +213,18 @@ static int pads_parse_piece_circle(pads_read_ctx_t *rctx, pads_line_piece_t *lpc
 	if ((res = pads_read_coord(rctx, &x2)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &y2)) <= 0) return res;
 	pads_eatup_till_nl(rctx);
+
+	num_crds -= 2;
+	if (num_crds > 0) {
+		PADS_ERROR((RND_MSG_ERROR, "Circle with more than two coords - ignored\n(please report this bug with the file!)\n"));
+		for(n = 0; n < num_crds; n++) {
+			if ((res = pads_read_coord(rctx, &dummy)) <= 0) return res;
+			if ((res = pads_read_coord(rctx, &dummy)) <= 0) return res;
+			pads_eatup_till_nl(rctx);
+		}
+		exit(1);
+	}
+
 
 	cx = rnd_round((x1+x2)/2.0 + lpc->xo);
 	cy = rnd_round((y1+y2)/2.0 + lpc->yo);
@@ -261,10 +279,10 @@ static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_c
 
 TODO("KEEPOUT objects are not handled");
 	if ((strcmp(ptype, "CIRCLE") == 0) || (strcmp(ptype, "BRDCIR") == 0)) {
-		if ((res = pads_parse_piece_circle(rctx, &lpc, 0)) <= 0) return res;
+		if ((res = pads_parse_piece_circle(rctx, &lpc, num_crds, 0)) <= 0) return res;
 	}
 	else if ((strcmp(ptype, "COPCCO") == 0) || (strcmp(ptype, "COPCIR") == 0) || (strcmp(ptype, "CIRCUR") == 0)) {
-		if ((res = pads_parse_piece_circle(rctx, &lpc, 1)) <= 0) return res;
+		if ((res = pads_parse_piece_circle(rctx, &lpc, num_crds, 1)) <= 0) return res;
 	}
 	else {
 		for(n = 0; n < num_crds; n++)
