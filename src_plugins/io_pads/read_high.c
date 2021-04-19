@@ -277,7 +277,7 @@ static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_c
 	lpc.xo = xo;
 	lpc.yo = yo;
 
-TODO("KEEPOUT objects are not handled");
+TODO("''KEEPOUT'' objects are not handled: CIRCUT and COPCUT and COPCIR are polygon holes");
 	if ((strcmp(ptype, "CIRCLE") == 0) || (strcmp(ptype, "BRDCIR") == 0)) {
 		if ((res = pads_parse_piece_circle(rctx, &lpc, num_crds, 0)) <= 0) return res;
 	}
