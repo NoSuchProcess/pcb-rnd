@@ -539,6 +539,9 @@ static pcb_subc_t *pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlc
 	nsc = pcb_subc_dup_at(pcb, pcb->Data, subc, dx, dy, 0, 0);
 	pcb_dlcr_fixup_pstk_proto_lyt(pcb, dlcr, nsc->data);
 
+	if (obj->val.subc_from_lib.rot != 0)
+		pcb_subc_rotate(nsc, dx, dy, cos(obj->val.subc_from_lib.rot / RND_RAD_TO_DEG), sin(obj->val.subc_from_lib.rot / RND_RAD_TO_DEG), obj->val.subc_from_lib.rot);
+
 	rnd_trace("  using name '%s' %p -> %p %mm;%mm\n", name, subc, nsc, dx, dy);
 
 	if (nsc == NULL)
