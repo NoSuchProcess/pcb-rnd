@@ -616,6 +616,13 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 			shp->data.poly.x[1] = +r1 + finoffs; shp->data.poly.y[1] = -r2;
 			shp->data.poly.x[2] = +r1 + finoffs; shp->data.poly.y[2] = +r2;
 			shp->data.poly.x[3] = -r1 + finoffs; shp->data.poly.y[3] = +r2;
+
+			if (rot != 0) {
+				double cs = cos(rot / RND_RAD_TO_DEG), sn = sin(rot / RND_RAD_TO_DEG);
+				int n;
+				for(n = 0; n < shp->data.poly.len; n++)
+					rnd_rotate(&shp->data.poly.x[n], &shp->data.poly.y[n], 0, 0, cs, sn);
+			}
 		}
 		else if ((shape[0] == 'O') && (shape[1] == 'F') && (shape[2] == '\0')) {
 			rnd_coord_t r1 = rnd_round(finlen / 2.0), r2 = rnd_round(size / 2.0);
@@ -623,6 +630,11 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 			shp->data.line.x1 = -r1 + r2 + finoffs; shp->data.line.y1 = 0;
 			shp->data.line.x2 = +r1 - r2 + finoffs; shp->data.line.y1 = 0;
 			shp->data.line.thickness = size;
+			if (rot != 0) {
+				double cs = cos(rot / RND_RAD_TO_DEG), sn = sin(rot / RND_RAD_TO_DEG);
+				rnd_rotate(&shp->data.line.x1, &shp->data.line.y1, 0, 0, cs, sn);
+				rnd_rotate(&shp->data.line.x2, &shp->data.line.y2, 0, 0, cs, sn);
+			}
 		}
 		else { /* final fallback so that we have a prototype to draw */
 TODO("Handle: O, CUCP#69\n");

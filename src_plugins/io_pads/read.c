@@ -39,6 +39,7 @@
 #include <librnd/core/error.h>
 #include <librnd/core/safe_fs.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/rotate.h>
 #include "board.h"
 #include "extobj.h"
 
