@@ -195,9 +195,9 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 	return 1;
 }
 
-static int pads_parse_piece_circle(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, int poly)
+static int pads_parse_piece_circle(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, int filled)
 {
-	rnd_coord_t x1, y1, x2, y2, cx, cy, r;
+	rnd_coord_t x1, y1, x2, y2, cx, cy;
 	pcb_dlcr_draw_t *arc;
 	int res;
 
@@ -210,13 +210,15 @@ static int pads_parse_piece_circle(pads_read_ctx_t *rctx, pads_line_piece_t *lpc
 
 	cx = rnd_round((x1+x2)/2.0 + lpc->xo);
 	cy = rnd_round((y1+y2)/2.0 + lpc->yo);
-	r = rnd_round(rnd_distance(x1, y1, x2, y2)/2.0);
 
-	TODO("draw polygon circle");
-/*	if (poly) {
-	
+	if (filled) {
+		double d = rnd_round(rnd_distance(x1, y1, x2, y2));
+		pcb_dlcr_draw_t *line = pcb_dlcr_line_new(&rctx->dlcr, cx, cy, cx, cy, d, 0);
+		line->val.obj.layer_id = lpc->level;
+		line->loc_line = rctx->line;
 	}
-	else*/ {
+	else {
+		double r = rnd_round(rnd_distance(x1, y1, x2, y2)/2.0);
 		arc = pcb_dlcr_arc_new(&rctx->dlcr, cx, cy, r, 0, 360, lpc->width, 0);
 		arc->val.obj.layer_id = lpc->level;
 		arc->loc_line = rctx->line;
