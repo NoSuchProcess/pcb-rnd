@@ -122,9 +122,9 @@ static int pads_parse_misc_layer(pads_read_ctx_t *rctx)
 		if (strcmp(val, "UNASSIGNED") == 0)         { rctx->layer->lyt = 0; }
 		else if (strcmp(val, "ROUTING") == 0)       { rctx->layer->lyt |= PCB_LYT_COPPER; }
 		else if (strcmp(val, "COMPONENT") == 0)     { rctx->layer->lyt |= PCB_LYT_COPPER; }
-		else if (strcmp(val, "SOLDER_MASK") == 0)   { rctx->layer->lyt |= PCB_LYT_MASK; }
-		else if (strcmp(val, "PASTE_MASK") == 0)    { rctx->layer->lyt |= PCB_LYT_PASTE; }
-		else if (strcmp(val, "SILK_SCREEN") == 0)   { rctx->layer->lyt |= PCB_LYT_SILK; }
+		else if (strcmp(val, "SOLDER_MASK") == 0)   { rctx->layer->lyt |= PCB_LYT_MASK; rctx->layer->comb =  PCB_LYC_SUB | PCB_LYC_AUTO; }
+		else if (strcmp(val, "PASTE_MASK") == 0)    { rctx->layer->lyt |= PCB_LYT_PASTE; rctx->layer->comb =  PCB_LYC_AUTO;}
+		else if (strcmp(val, "SILK_SCREEN") == 0)   { rctx->layer->lyt |= PCB_LYT_SILK; rctx->layer->comb =  PCB_LYC_AUTO; }
 		else if (strcmp(val, "DRILL") == 0)         { rctx->layer->lyt |= PCB_LYT_MECH; rctx->layer->purpose = "proute"; }
 		else if (strcmp(val, "ASSEMBLY") == 0)      { rctx->layer->lyt |= PCB_LYT_DOC; rctx->layer->purpose = "assy"; }
 		else {

@@ -88,6 +88,7 @@ static void pcb_dlcr_create_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_l
 	g->name = l->name; l->name = NULL;
 	lid = pcb_layer_create(pcb, g - pcb->LayerGroups.grp, g->name, 0);
 	l->ly = pcb_get_layer(pcb->Data, lid);
+	l->ly->comb = l->comb;
 }
 
 static void pcb_dlcr_create_lyt_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_layer_type_t lyt)

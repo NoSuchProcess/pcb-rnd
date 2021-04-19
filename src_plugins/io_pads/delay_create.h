@@ -12,6 +12,7 @@ typedef struct {
 	char *name;
 	long id;
 	pcb_layer_type_t lyt;
+	pcb_layer_combining_t comb;
 	const char *purpose;
 	int can_have_components;
 
