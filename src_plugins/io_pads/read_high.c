@@ -483,6 +483,15 @@ static void free_terms(pads_read_ctx_t *rctx, vtp0_t *terms, long defpid)
 	vtp0_uninit(terms);
 }
 
+static int pads_parse_pstk_optf(pads_read_ctx_t *rctx, int line, int has_arg)
+{
+	if (line == 0) return 1; /* first line must have all optional args */
+	return has_arg;
+}
+
+#define OPTF \
+	pads_parse_pstk_optf(rctx, n, pads_has_field(rctx))
+
 static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *defpid)
 {
 	pcb_pstk_proto_t *proto;
@@ -534,14 +543,14 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 		if ((res = pads_read_word(rctx, shape, sizeof(shape), 0)) <= 0) return res;
 
 		if (shape[0] == 'A') /* only annular pad has inner dia */
-			if ((res = pads_read_coord(rctx, &inner)) <= 0) return res;
+			if (OPTF) if ((res = (pads_read_coord(rctx, &inner))) <= 0) return res;
 
 		if (shape[1] != 'T') { /* normal pad (T is for thermal) */
 			is_thermal = 0;
 			if (shape[1] == 'F') { /* finger-type pads have rotation */
-				if ((res = pads_read_double(rctx, &rot)) <= 0) return res;
-				if ((res = pads_read_coord(rctx, &finlen)) <= 0) return res;
-				if ((res = pads_read_coord(rctx, &finoffs)) <= 0) return res;
+				if (OPTF) if ((res = pads_read_double(rctx, &rot)) <= 0) return res;
+				if (OPTF) if ((res = pads_read_coord(rctx, &finlen)) <= 0) return res;
+				if (OPTF) if ((res = pads_read_coord(rctx, &finoffs)) <= 0) return res;
 				if (pads_has_field(rctx) && (shape[0] == 'R')) /* RF=rectangular finger */
 					if ((res = pads_read_coord(rctx, &corner)) <= 0) return res;
 			}
@@ -565,17 +574,17 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 
 			/* optional slot */
 			if (pads_has_field(rctx)) {
-				if ((res = pads_read_double(rctx, &slotrot)) <= 0) return res;
-				if ((res = pads_read_coord(rctx, &slotlen)) <= 0) return res;
-				if ((res = pads_read_coord(rctx, &slotoffs)) <= 0) return res;
+				if (OPTF) if ((res = pads_read_double(rctx, &slotrot)) <= 0) return res;
+				if (OPTF) if ((res = pads_read_coord(rctx, &slotlen)) <= 0) return res;
+				if (OPTF) if ((res = pads_read_coord(rctx, &slotoffs)) <= 0) return res;
 			}
 		}
 		else { /* thermal */
 			is_thermal = 1;
-			if ((res = pads_read_double(rctx, &spokerot)) <= 0) return res;
-			if ((res = pads_read_coord(rctx, &spoke_outsize)) <= 0) return res;
-			if ((res = pads_read_coord(rctx, &spoke_width)) <= 0) return res;
-			if ((res = pads_read_long(rctx, &spoke_num)) <= 0) return res;
+			if (OPTF) if ((res = pads_read_double(rctx, &spokerot)) <= 0) return res;
+			if (OPTF) if ((res = pads_read_coord(rctx, &spoke_outsize)) <= 0) return res;
+			if (OPTF) if ((res = pads_read_coord(rctx, &spoke_width)) <= 0) return res;
+			if (OPTF) if ((res = pads_read_long(rctx, &spoke_num)) <= 0) return res;
 		}
 
 		if ((plated[0] == 'P') || (plated[0] == '\0'))
@@ -585,7 +594,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 		rnd_trace("  lev=%ld size=%mm/%mm shape=%s is_thermal=%d\n", level, size, inner, shape, is_thermal);
 
 		/* create the shape in shp */
-		if ((shape[0] == 'R') && (shape[1] == '\0')) {
+		if (((shape[0] == 'R') || (shape[0] == 'A')) && (shape[1] == '\0')) {
 			shp->shape = PCB_PSSH_CIRC;
 			shp->data.circ.x = shp->data.circ.y = 0;
 			shp->data.circ.dia = size;
@@ -600,7 +609,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 			shp->data.poly.x[3] = -r2; shp->data.poly.y[3] = +r2;
 		}
 		else { /* final fallback so that we have a prototype to draw */
-TODO("Handle: A, O, OF, RF CUCP#69\n");
+TODO("Handle: O, OF, RF CUCP#69\n");
 			shp->shape = PCB_PSSH_CIRC;
 			shp->data.circ.x = shp->data.circ.y = 0;
 			shp->data.circ.dia = RND_MM_TO_COORD(0.5);
@@ -636,6 +645,7 @@ TODO("pads-specific code in delay draw!!; see also: TODO#71");
 	}
 	return 1;
 }
+#undef OPTF
 
 static int pads_parse_via_pstk_proto(pads_read_ctx_t *rctx)
 {
