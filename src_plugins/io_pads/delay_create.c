@@ -512,11 +512,14 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 
 static void pcb_dlcr_fixup_pstk_proto_lyt(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_data_t *dst);
 
+void d1() {}
+
 static pcb_subc_t *pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
 	rnd_coord_t dx, dy, ox = 0, oy = 0;
 	pcb_subc_t *subc, *nsc;
 	char *name;
+	double rot = obj->val.subc_from_lib.rot;
 
 	rnd_trace("*** new from lib:\n");
 	for(name = obj->val.subc_from_lib.names; *name != '\0'; name = name + strlen(name) + 1) {
@@ -539,8 +542,16 @@ static pcb_subc_t *pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlc
 	nsc = pcb_subc_dup_at(pcb, pcb->Data, subc, dx, dy, 0, 0);
 	pcb_dlcr_fixup_pstk_proto_lyt(pcb, dlcr, nsc->data);
 
-	if (obj->val.subc_from_lib.rot != 0)
-		pcb_subc_rotate(nsc, dx, dy, cos(obj->val.subc_from_lib.rot / RND_RAD_TO_DEG), sin(obj->val.subc_from_lib.rot / RND_RAD_TO_DEG), obj->val.subc_from_lib.rot);
+	if (obj->val.subc_from_lib.on_bottom) {
+		rnd_coord_t cx = 0, cy = 0;
+		pcb_subc_get_origin(subc, &cx, &cy);
+		cy += obj->val.subc_from_lib.y;
+		pcb_subc_change_side(nsc, (pcb->hidlib.size_y - 2*cy));
+		rot = 180-rot;
+	}
+
+	if (rot != 0)
+		pcb_subc_rotate(nsc, dx, dy, cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 
 	rnd_trace("  using name '%s' %p -> %p %mm;%mm\n", name, subc, nsc, dx, dy);
 
@@ -681,7 +692,7 @@ void pcb_dlcr_create(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 {
 	pcb_dlcr_create_layers(pcb, dlcr);
 	pcb_dlcr_create_pstk_protos(pcb, dlcr, pcb->Data, &dlcr->pstks);
-	pcb_dlcr_create_drawings(pcb, dlcr);
 	pcb->hidlib.size_x = dlcr->board_bbox.X2;
 	pcb->hidlib.size_y = dlcr->board_bbox.Y2;
+	pcb_dlcr_create_drawings(pcb, dlcr);
 }
