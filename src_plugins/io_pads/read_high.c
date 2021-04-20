@@ -1225,7 +1225,7 @@ static int pads_parse_signal(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_net);
 }
 
-static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo)
+static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, pcb_dlcr_draw_t *poly, rnd_coord_t xo, rnd_coord_t yo)
 {
 	rnd_coord_t x, y;
 	double start, end;
@@ -1243,8 +1243,10 @@ static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_
 
 	if (isarc)
 		rnd_trace("  arc %mm;%mm %f..%f\n", x, y, start, end);
-	else
+	else {
 		rnd_trace("  line %mm;%mm\n", x, y);
+		pcb_dlcr_poly_lineto(&rctx->dlcr, poly, x+xo, y+yo);
+	}
 
 	return 1;
 }
@@ -1253,17 +1255,26 @@ static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_
 static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo)
 {
 	char type[64];
-	long n, num_corners, num_arcs;
+	long n, num_corners, num_arcs, level, loc = rctx->line;
 	int res;
+	rnd_coord_t width;
+	pcb_dlcr_draw_t *poly;
 
 	if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_corners)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_arcs)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &width)) <= 0) return res;
+	if ((res = pads_read_long(rctx, &level)) <= 0) return res;
 	pads_eatup_till_nl(rctx); /* ignore rest of the arguments */
 
 	rnd_trace(" %s:\n", type);
-	for(n = 0; n < num_corners + num_arcs; n++)
-		if ((res = pads_parse_pour_piece_crd(rctx, xo, yo)) <= 0) return res;
+	poly = pcb_dlcr_poly_new(&rctx->dlcr, 0, num_corners + num_arcs*8);
+	if (poly != NULL) {
+		for(n = 0; n < num_corners + num_arcs; n++)
+			if ((res = pads_parse_pour_piece_crd(rctx, poly, xo, yo)) <= 0) return res;
+		poly->val.obj.layer_id = level;
+		poly->loc_line = loc;
+	}
 
 	return 1;
 }
@@ -1289,10 +1300,10 @@ static int pads_parse_pour(pads_read_ctx_t *rctx)
 		for(n = 0; n < num_pieces; n++)
 			if ((res = pads_parse_pour_piece_polycnt(rctx, xo, yo)) <= 0) return res;
 	}
-	if (strcmp(type, "VOIDOUT") == 0) {
+	else if (strcmp(type, "VOIDOUT") == 0) {
 		TODO("poly cutout");
 	}
-	if (strcmp(type, "VIATHERM") == 0) {
+	else if (strcmp(type, "VIATHERM") == 0) {
 		TODO("poly via therm");
 	}
 	else
