@@ -273,8 +273,10 @@ pcb_dlcr_draw_t *pcb_dlcr_poly_new(pcb_dlcr_t *dlcr, int hole, long prealloc_len
 	obj->val.obj.obj.poly.type = PCB_OBJ_DLCR_POLY;
 
 	memset(&obj->val.obj.obj.poly.xy, 0, sizeof(vtc0_t));
-	if (prealloc_len > 0)
+	if (prealloc_len > 0) {
 		vtc0_enlarge(&obj->val.obj.obj.poly.xy, prealloc_len);
+		obj->val.obj.obj.poly.xy.used = 0;
+	}
 	return obj;
 }
 
@@ -282,6 +284,7 @@ pcb_dlcr_draw_t *pcb_dlcr_poly_lineto(pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *poly, r
 {
 	vtc0_append(&poly->val.obj.obj.poly.xy, x);
 	vtc0_append(&poly->val.obj.obj.poly.xy, y);
+
 	if (dlcr->subc_begin != NULL)
 		rnd_box_bump_point(&dlcr->subc_begin->val.subc_begin.subc->bbox_naked, x, y);
 	else
@@ -367,17 +370,20 @@ void pcb_dlcr_subc_end(pcb_dlcr_t *dlcr)
 
 static pcb_any_obj_t *pcb_dlcr_draw_free_poly(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_subc_t *subc, pcb_layer_t *ly, pcb_dlcr_draw_t *obj)
 {
+	long n, last;
 	pcb_poly_t *poly = pcb_poly_alloc(ly);
-	rnd_coord_t *cp;
-	long n;
+	rnd_coord_t *cp = obj->val.obj.obj.poly.xy.array;
+
+	/* Some callers will draw a closed polygon, repeating the first point as the
+	   last. In this case remove the last point to avoid self intersecting poly */
+	last = obj->val.obj.obj.poly.xy.used - 2;
+	if ((cp[0] == cp[last]) && (cp[1] == cp[last+1]))
+		obj->val.obj.obj.poly.xy.used -= 2;
 
 	/* preallocate for all points to save on reallocs */
-	poly->PointN = obj->val.obj.obj.poly.xy.used;
-	pcb_poly_point_alloc(poly);
-	poly->PointN = 0;
+	pcb_poly_point_prealloc(poly, obj->val.obj.obj.poly.xy.used);
 
 	/* add all points */
-	cp = obj->val.obj.obj.poly.xy.array;
 	for(n = 0; n < obj->val.obj.obj.poly.xy.used; n += 2, cp += 2)
 		pcb_poly_point_new(poly, CRDX(cp[0]), CRDY(cp[1]));
 
