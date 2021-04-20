@@ -1249,7 +1249,8 @@ static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx)
 	return 1;
 }
 
-static int pads_parse_pour_piece(pads_read_ctx_t *rctx)
+/* draw polygon contour from pieces */
+static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo)
 {
 	char type[64];
 	long n, num_corners, num_arcs;
@@ -1284,8 +1285,18 @@ static int pads_parse_pour(pads_read_ctx_t *rctx)
 	pads_eatup_till_nl(rctx); /* ignore rest of the arguments */
 
 	rnd_trace("pour '%s' type='%s' at %mm;%mm\n", name, type, xo, yo);
-	for(n = 0; n < num_pieces; n++)
-		if ((res = pads_parse_pour_piece(rctx)) <= 0) return res;
+	if ((strcmp(type, "POUROUT") == 0) || (strcmp(type, "HATOUT") == 0)) {
+		for(n = 0; n < num_pieces; n++)
+			if ((res = pads_parse_pour_piece_polycnt(rctx, xo, yo)) <= 0) return res;
+	}
+	if (strcmp(type, "VOIDOUT") == 0) {
+		TODO("poly cutout");
+	}
+	if (strcmp(type, "VIATHERM") == 0) {
+		TODO("poly via therm");
+	}
+	else
+		PADS_ERROR((RND_MSG_ERROR, "Unhandled pour type: '%s' - please report this bug\n", type));
 
 	return 1;
 }
