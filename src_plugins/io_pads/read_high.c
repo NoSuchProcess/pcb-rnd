@@ -1225,7 +1225,7 @@ static int pads_parse_signal(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_net);
 }
 
-static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx)
+static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo)
 {
 	rnd_coord_t x, y;
 	double start, end;
@@ -1263,7 +1263,7 @@ static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, rnd_coord_t xo, 
 
 	rnd_trace(" %s:\n", type);
 	for(n = 0; n < num_corners + num_arcs; n++)
-		if ((res = pads_parse_pour_piece_crd(rctx)) <= 0) return res;
+		if ((res = pads_parse_pour_piece_crd(rctx, xo, yo)) <= 0) return res;
 
 	return 1;
 }
