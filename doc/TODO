@@ -1,6 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- BUG: menu crash on startup: pcb-rnd p1.asc from mrg to .16 with ssh -X [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: version 3.0.0:
