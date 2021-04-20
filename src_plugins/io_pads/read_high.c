@@ -1278,6 +1278,8 @@ static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, rnd_coord_t xo, 
 		poly->loc_line = loc;
 	}
 
+TODO("bloat up the poly if width != 0");
+
 	return 1;
 }
 
