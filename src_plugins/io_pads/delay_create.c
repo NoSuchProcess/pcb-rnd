@@ -365,6 +365,29 @@ void pcb_dlcr_subc_end(pcb_dlcr_t *dlcr)
 	dlcr->subc_begin = NULL;
 }
 
+static pcb_any_obj_t *pcb_dlcr_draw_free_poly(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_subc_t *subc, pcb_layer_t *ly, pcb_dlcr_draw_t *obj)
+{
+	pcb_poly_t *poly = pcb_poly_alloc(ly);
+	rnd_coord_t *cp;
+	long n;
+
+	/* preallocate for all points to save on reallocs */
+	poly->PointN = obj->val.obj.obj.poly.xy.used;
+	pcb_poly_point_alloc(poly);
+	poly->PointN = 0;
+
+	/* add all points */
+	cp = obj->val.obj.obj.poly.xy.array;
+	for(n = 0; n < obj->val.obj.obj.poly.xy.used; n += 2, cp += 2)
+		pcb_poly_point_new(poly, CRDX(cp[0]), CRDY(cp[1]));
+
+	pcb_add_poly_on_layer(ly, poly);
+	if (subc == NULL)
+		pcb_poly_init_clip(pcb->Data, ly, poly);
+
+	return (pcb_any_obj_t *)poly;
+}
+
 /* Look up a board layer using object's layer id or layer name */
 static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj, int *specd)
 {
@@ -515,6 +538,9 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 			break;
 		case PCB_OBJ_PSTK:
 			r = (pcb_any_obj_t *)pcb_pstk_new(data, 0, p->proto, CRDX(p->x), CRDY(p->y), p->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			break;
+		case PCB_OBJ_DLCR_POLY:
+			r = pcb_dlcr_draw_free_poly(pcb, dlcr, subc, ly, obj);
 			break;
 		default:
 			break;
