@@ -1241,8 +1241,10 @@ static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, pcb_dlcr_draw_t *pol
 	}
 	pads_eatup_till_nl(rctx);
 
-	if (isarc)
+	if (isarc) {
+		TODO("poly arc");
 		rnd_trace("  arc %mm;%mm %f..%f\n", x, y, start, end);
+	}
 	else {
 		rnd_trace("  line %mm;%mm\n", x, y);
 		pcb_dlcr_poly_lineto(&rctx->dlcr, poly, x+xo, y+yo);
