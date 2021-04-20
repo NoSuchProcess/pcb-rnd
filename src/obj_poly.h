@@ -62,6 +62,10 @@ rnd_point_t *pcb_poly_point_alloc(pcb_poly_t *Polygon);
 rnd_cardinal_t *pcb_poly_holeidx_new(pcb_poly_t *Polygon);
 void pcb_poly_free_fields(pcb_poly_t * polygon);
 
+/* Enlarge memory allocation in one step to host num_pts */
+void pcb_poly_point_prealloc(pcb_poly_t *Polygon, long num_pt);
+
+
 void pcb_poly_reg(pcb_layer_t *layer, pcb_poly_t *poly);
 void pcb_poly_unreg(pcb_poly_t *poly);
 

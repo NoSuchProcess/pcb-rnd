@@ -122,19 +122,29 @@ void pcb_poly_free(pcb_poly_t *poly)
 	free(poly);
 }
 
+/* realloc new memory if necessary and clear it */
+RND_INLINE void pcb_poly_point_prealloc_(pcb_poly_t *Polygon, long num_pt, long step)
+{
+	if (num_pt >= Polygon->PointMax) {
+		long diff, old = Polygon->PointMax;
+
+		Polygon->PointMax = num_pt + step;
+		diff = Polygon->PointMax - old;
+		Polygon->Points = realloc(Polygon->Points, Polygon->PointMax * sizeof(rnd_point_t));
+		memset(Polygon->Points + old, 0, diff * sizeof(rnd_point_t));
+	}
+}
+
+void pcb_poly_point_prealloc(pcb_poly_t *Polygon, long num_pt)
+{
+	return pcb_poly_point_prealloc_(Polygon, num_pt, 0);
+}
+
 /* gets the next slot for a point in a polygon struct, allocates memory if necessary */
 rnd_point_t *pcb_poly_point_alloc(pcb_poly_t *Polygon)
 {
-	rnd_point_t *points = Polygon->Points;
-
-	/* realloc new memory if necessary and clear it */
-	if (Polygon->PointN >= Polygon->PointMax) {
-		Polygon->PointMax += STEP_POLYGONPOINT;
-		points = (rnd_point_t *) realloc(points, Polygon->PointMax * sizeof(rnd_point_t));
-		Polygon->Points = points;
-		memset(points + Polygon->PointN, 0, STEP_POLYGONPOINT * sizeof(rnd_point_t));
-	}
-	return (points + Polygon->PointN++);
+	pcb_poly_point_prealloc_(Polygon, Polygon->PointN, STEP_POLYGONPOINT);
+	return (Polygon->Points + Polygon->PointN++);
 }
 
 /* gets the next slot for a point in a polygon struct, allocates memory if necessary */
