@@ -267,6 +267,28 @@ TODO("why does this fail?");
 	return obj;
 }
 
+pcb_dlcr_draw_t *pcb_dlcr_poly_new(pcb_dlcr_t *dlcr, int hole, long prealloc_len)
+{
+	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_OBJ);
+	obj->val.obj.obj.poly.type = PCB_OBJ_DLCR_POLY;
+
+	memset(&obj->val.obj.obj.poly.xy, 0, sizeof(vtc0_t));
+	if (prealloc_len > 0)
+		vtc0_enlarge(&obj->val.obj.obj.poly.xy, prealloc_len);
+	return obj;
+}
+
+pcb_dlcr_draw_t *pcb_dlcr_poly_lineto(pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *poly, rnd_coord_t x, rnd_coord_t y)
+{
+	vtc0_append(&poly->val.obj.obj.poly.xy, x);
+	vtc0_append(&poly->val.obj.obj.poly.xy, y);
+	if (dlcr->subc_begin != NULL)
+		rnd_box_bump_point(&dlcr->subc_begin->val.subc_begin.subc->bbox_naked, x, y);
+	else
+		rnd_box_bump_point(&dlcr->board_bbox, x, y);
+	return poly;
+}
+
 pcb_dlcr_draw_t *pcb_dlcr_call_on(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx), void *rctx, void *callctx, int on_next)
 {
 	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_CALL);

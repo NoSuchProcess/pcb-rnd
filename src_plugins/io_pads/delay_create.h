@@ -1,6 +1,7 @@
 #include <genht/htsp.h>
 #include <genlist/gendlist.h>
 #include <genvector/vtp0.h>
+#include <librnd/core/vtc0.h>
 #include "board.h"
 
 #include "data.h"
@@ -42,6 +43,8 @@ typedef enum {
 } pcb_dlcr_type_t;
 
 
+#define PCB_OBJ_DLCR_POLY   0x0000801
+
 typedef struct {
 	pcb_dlcr_type_t type;
 	union {
@@ -52,6 +55,10 @@ typedef struct {
 				pcb_arc_t arc;
 				pcb_text_t text;
 				pcb_pstk_t pstk;
+				struct {
+					PCB_ANY_PRIMITIVE_FIELDS;
+					vtc0_t xy;
+				} poly;
 			} obj;
 			long layer_id;
 			pcb_layer_type_t lyt;
@@ -118,6 +125,8 @@ pcb_dlcr_draw_t *pcb_dlcr_line_new(pcb_dlcr_t *dlcr, rnd_coord_t x1, rnd_coord_t
 pcb_dlcr_draw_t *pcb_dlcr_arc_new(pcb_dlcr_t *dlcr, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, double start_deg, double delta_deg, rnd_coord_t width, rnd_coord_t clearance);
 pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, double rot, int scale, rnd_coord_t thickness, const char *str, long flags);
 pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, long id, const char *name);
+pcb_dlcr_draw_t *pcb_dlcr_poly_new(pcb_dlcr_t *dlcr, int hole, long prealloc_len);
+pcb_dlcr_draw_t *pcb_dlcr_poly_lineto(pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *poly, rnd_coord_t x, rnd_coord_t y);
 
 /* Call back cb() on the previous (last created) or next object after the
    object is created */
