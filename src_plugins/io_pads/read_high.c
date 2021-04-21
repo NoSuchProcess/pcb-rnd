@@ -1316,10 +1316,10 @@ static int pads_parse_pour(pads_read_ctx_t *rctx)
 		poty = PADS_POTY_CONTOUR;
 	}
 	else if (strcmp(type, "VOIDOUT") == 0) {
-		TODO("poly cutout");
+		TODO("poly cutout: needs 3rd party test files");
 	}
 	else if (strcmp(type, "VIATHERM") == 0) {
-		TODO("poly via therm");
+		TODO("poly via therm: needs 3rd party test files");
 	}
 	else
 		PADS_ERROR((RND_MSG_ERROR, "Unhandled pour type: '%s' - please report this bug\n", type));
