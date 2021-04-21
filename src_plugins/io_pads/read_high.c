@@ -1225,7 +1225,12 @@ static int pads_parse_signal(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_net);
 }
 
-static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, pcb_dlcr_draw_t *poly, rnd_coord_t xo, rnd_coord_t yo)
+typedef enum {
+	PADS_POTY_CONTOUR,
+	PADS_POTY_NOOP,
+} pads_poly_type_t;
+
+static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, pcb_dlcr_draw_t *poly, pads_poly_type_t poty, rnd_coord_t xo, rnd_coord_t yo)
 {
 	rnd_coord_t x, y;
 	double start, end;
@@ -1241,6 +1246,9 @@ static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, pcb_dlcr_draw_t *pol
 	}
 	pads_eatup_till_nl(rctx);
 
+	if (poty == PADS_POTY_NOOP)
+		return 1;
+
 	if (isarc) {
 		TODO("poly arc");
 		rnd_trace("  arc %mm;%mm %f..%f\n", x, y, start, end);
@@ -1254,28 +1262,31 @@ static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, pcb_dlcr_draw_t *pol
 }
 
 /* draw polygon contour from pieces */
-static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo)
+static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, pads_poly_type_t poty, rnd_coord_t xo, rnd_coord_t yo)
 {
 	char type[64];
 	long n, num_corners, num_arcs, level, loc = rctx->line;
 	int res;
 	rnd_coord_t width;
-	pcb_dlcr_draw_t *poly;
+	pcb_dlcr_draw_t *poly = NULL;
 
 	if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_corners)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_arcs)) <= 0) return res;
-	if ((res = pads_read_long(rctx, &width)) <= 0) return res;
+	if ((res = pads_read_coord(rctx, &width)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &level)) <= 0) return res;
 	pads_eatup_till_nl(rctx); /* ignore rest of the arguments */
 
 	rnd_trace(" %s:\n", type);
-	poly = pcb_dlcr_poly_new(&rctx->dlcr, 0, num_corners + num_arcs*8);
-	if (poly != NULL) {
+	if (poty != PADS_POTY_NOOP)
+		poly = pcb_dlcr_poly_new(&rctx->dlcr, 0, num_corners + num_arcs*8);
+	if ((poly != NULL) || (poty == PADS_POTY_NOOP)) {
 		for(n = 0; n < num_corners + num_arcs; n++)
-			if ((res = pads_parse_pour_piece_crd(rctx, poly, xo, yo)) <= 0) return res;
-		poly->val.obj.layer_id = level;
-		poly->loc_line = loc;
+			if ((res = pads_parse_pour_piece_crd(rctx, poly, poty, xo, yo)) <= 0) return res;
+		if (poly != NULL) {
+			poly->val.obj.layer_id = level;
+			poly->loc_line = loc;
+		}
 	}
 
 TODO("bloat up the poly if width != 0");
@@ -1291,6 +1302,7 @@ static int pads_parse_pour(pads_read_ctx_t *rctx)
 	rnd_coord_t xo, yo;
 	double rot;
 	int res;
+	pads_poly_type_t poty = PADS_POTY_NOOP;
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
@@ -1301,8 +1313,7 @@ static int pads_parse_pour(pads_read_ctx_t *rctx)
 
 	rnd_trace("pour '%s' type='%s' at %mm;%mm\n", name, type, xo, yo);
 	if ((strcmp(type, "POUROUT") == 0) || (strcmp(type, "HATOUT") == 0)) {
-		for(n = 0; n < num_pieces; n++)
-			if ((res = pads_parse_pour_piece_polycnt(rctx, xo, yo)) <= 0) return res;
+		poty = PADS_POTY_CONTOUR;
 	}
 	else if (strcmp(type, "VOIDOUT") == 0) {
 		TODO("poly cutout");
@@ -1312,6 +1323,9 @@ static int pads_parse_pour(pads_read_ctx_t *rctx)
 	}
 	else
 		PADS_ERROR((RND_MSG_ERROR, "Unhandled pour type: '%s' - please report this bug\n", type));
+
+	for(n = 0; n < num_pieces; n++)
+		if ((res = pads_parse_pour_piece_polycnt(rctx, poty, xo, yo)) <= 0) return res;
 
 	return 1;
 }
