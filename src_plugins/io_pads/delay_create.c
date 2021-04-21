@@ -80,7 +80,7 @@ void pcb_dlcr_layer_free(pcb_dlcr_layer_t *layer)
 	free(layer);
 }
 
-static void pcb_dlcr_create_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *l)
+static pcb_layer_t *pcb_dlcr_create_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_layer_t *l)
 {
 	rnd_layer_id_t lid;
 	pcb_layergrp_t *g = pcb_get_grp_new_raw(pcb, 0);
@@ -89,6 +89,7 @@ static void pcb_dlcr_create_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_dlcr_l
 	lid = pcb_layer_create(pcb, g - pcb->LayerGroups.grp, g->name, 0);
 	l->ly = pcb_get_layer(pcb->Data, lid);
 	l->ly->comb = l->comb;
+	return l->ly;
 }
 
 static void pcb_dlcr_create_lyt_layer(pcb_board_t *pcb, pcb_dlcr_t *dlcr, pcb_layer_type_t lyt)
@@ -414,7 +415,7 @@ static pcb_layer_t *pcb_dlcr_lookup_board_layer(pcb_board_t *pcb, pcb_dlcr_t *dl
 			dl->purpose = "unassigned";
 			pcb_dlcr_layer_reg(dlcr, dl);
 rnd_trace("Layer create: unassigned for %ld\n", obj->val.obj.layer_id);
-			pcb_dlcr_create_layer(pcb, dlcr, dl);
+			ly = pcb_dlcr_create_layer(pcb, dlcr, dl);
 		}
 		else
 			ly = (*dlp)->ly;
