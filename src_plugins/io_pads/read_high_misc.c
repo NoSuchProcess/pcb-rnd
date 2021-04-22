@@ -216,9 +216,10 @@ static int pads_parse_misc_design_rule_line(pads_read_ctx_t *rctx, int level)
 		char key[32];
 		int res = pads_read_word(rctx, key, sizeof(key), 0);
 		if (res > 0) {
-			if (strcmp(key, "COPPER_TO_TRACK") == 0) {
-				rnd_trace("ctt! level=%d\n", level);
-			}
+			if ((strcmp(key, "COPPER_TO_TRACK") == 0) && ((res = pads_read_coord(rctx, &rctx->clr[PCB_DLCL_TRACE])) <= 0)) return res;
+			if ((strcmp(key, "COPPER_TO_VIA") == 0) && ((res = pads_read_coord(rctx, &rctx->clr[PCB_DLCL_VIA])) <= 0)) return res;
+			if ((strcmp(key, "COPPER_TO_PAD") == 0) && ((res = pads_read_coord(rctx, &rctx->clr[PCB_DLCL_TRH_TERM])) <= 0)) return res;
+			if ((strcmp(key, "COPPER_TO_SMD") == 0) && ((res = pads_read_coord(rctx, &rctx->clr[PCB_DLCL_SMD_TERM])) <= 0)) return res;
 		}
 	}
 	return 1;

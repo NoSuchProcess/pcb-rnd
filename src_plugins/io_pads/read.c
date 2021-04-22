@@ -44,6 +44,7 @@
 #include "extobj.h"
 
 #include "delay_create.h"
+#include "delay_clearance.h"
 #include "read.h"
 
 /* Parser return value convention:
@@ -78,6 +79,7 @@ typedef struct pads_read_ctx_s {
 
 	/* cache */
 	const pcb_extobj_t *teardrop_eo;
+	rnd_coord_t clr[PCB_DLCL_max];
 	unsigned teardrop_warned:1;
 	unsigned got_design_rules:1;
 
