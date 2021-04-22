@@ -222,6 +222,8 @@ static pcb_subc_t *pcb_trdp_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 
 	/* use the layer of the first object */
 	layers[0].lyt = pcb_layer_flags_(l->parent.layer);
+	if (!(layers[0].lyt & PCB_LYT_COPPER))
+		return NULL;
 	pcb_layer_purpose_(l->parent.layer, &layers[0].purpose);
 
 	subc = pcb_exto_create(dst, "teardrop", layers, l->Point1.X, l->Point1.Y, 0, copy_from);
