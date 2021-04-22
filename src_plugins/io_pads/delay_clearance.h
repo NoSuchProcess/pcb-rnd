@@ -1,5 +1,5 @@
-#ifndef DELAY_CLEARANCE
-#define DELAY_CLEARANCE
+#ifndef PCB_DELAY_CLEARANCE
+#define PCB_DELAY_CLEARANCE
 
 #include "board.h"
 
