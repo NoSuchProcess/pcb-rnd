@@ -34,24 +34,16 @@
 #include "change.h"
 #include "obj_pstk_inlines.h"
 
-void pcb_dlcl_apply_(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max])
+static void pcb_dlcl_apply__(pcb_data_t *data, rnd_coord_t clr[PCB_DLCL_max], pcb_objtype_t mask)
 {
-	pcb_objtype_t mask = 0;
 	pcb_data_it_t it;
 	pcb_any_obj_t *o;
 
-	if (clr[PCB_DLCL_TRACE] > 0)    mask |= PCB_OBJ_ARC | PCB_OBJ_LINE;
-	if (clr[PCB_DLCL_SMD_TERM] > 0) mask |= PCB_OBJ_PSTK;
-	if (clr[PCB_DLCL_TRH_TERM] > 0) mask |= PCB_OBJ_PSTK;
-	if (clr[PCB_DLCL_VIA] > 0)      mask |= PCB_OBJ_PSTK;
-	if (clr[PCB_DLCL_POLY] > 0)     mask |= PCB_OBJ_POLY;
-
-
-	if (mask == 0)
-		return;
-
-	for(o = pcb_data_first(&it, pcb->Data, mask); o != NULL; o = pcb_data_next(&it)) {
+	for(o = pcb_data_first(&it, data, mask); o != NULL; o = pcb_data_next(&it)) {
 		switch(o->type) {
+			case PCB_OBJ_SUBC:
+				pcb_dlcl_apply__(((pcb_subc_t *)o)->data, clr, mask);
+				break;
 			case PCB_OBJ_ARC:
 			case PCB_OBJ_LINE:
 				pcb_chg_obj_clear_size(o->type, o->parent.layer, o, NULL, clr[PCB_DLCL_TRACE] * 2, 1);
@@ -79,6 +71,22 @@ void pcb_dlcl_apply_(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max])
 			default: break;
 		}
 	}
+}
+
+void pcb_dlcl_apply_(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max])
+{
+	pcb_objtype_t mask = PCB_OBJ_SUBC;
+
+	if (clr[PCB_DLCL_TRACE] > 0)    mask |= PCB_OBJ_ARC | PCB_OBJ_LINE;
+	if (clr[PCB_DLCL_SMD_TERM] > 0) mask |= PCB_OBJ_PSTK;
+	if (clr[PCB_DLCL_TRH_TERM] > 0) mask |= PCB_OBJ_PSTK;
+	if (clr[PCB_DLCL_VIA] > 0)      mask |= PCB_OBJ_PSTK;
+	if (clr[PCB_DLCL_POLY] > 0)     mask |= PCB_OBJ_POLY;
+
+	if (mask == 0)
+		return;
+
+	pcb_dlcl_apply__(pcb->Data, clr, mask);
 }
 
 
