@@ -375,6 +375,8 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_poly(pcb_board_t *pcb, pcb_dlcr_t *dlcr
 	pcb_poly_t *poly = pcb_poly_alloc(ly);
 	rnd_coord_t *cp = obj->val.obj.obj.poly.xy.array;
 
+	poly->Flags = pcb_flag_make(PCB_FLAG_CLEARPOLY);
+
 	/* Some callers will draw a closed polygon, repeating the first point as the
 	   last. In this case remove the last point to avoid self intersecting poly */
 	last = obj->val.obj.obj.poly.xy.used - 2;
