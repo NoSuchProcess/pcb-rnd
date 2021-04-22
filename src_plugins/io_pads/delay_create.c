@@ -537,7 +537,15 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 			r = (pcb_any_obj_t *)pcb_line_new(ly, CRDX(l->Point1.X), CRDY(l->Point1.Y), CRDX(l->Point2.X), CRDY(l->Point2.Y), l->Thickness, l->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
 			break;
 		case PCB_OBJ_ARC:
-			r = (pcb_any_obj_t *)pcb_arc_new(ly, CRDX(a->X), CRDY(a->Y), a->Width, a->Height, a->StartAngle, a->Delta, a->Thickness, a->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
+			{
+				double sa = a->StartAngle;
+				double da = a->Delta;
+				if (dlcr->flip_y) {
+					sa = RND_SWAP_ANGLE(sa);
+					da = RND_SWAP_DELTA(da);
+				}
+				r = (pcb_any_obj_t *)pcb_arc_new(ly, CRDX(a->X), CRDY(a->Y), a->Width, a->Height, sa, da, a->Thickness, a->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
+			}
 			break;
 		case PCB_OBJ_TEXT:
 			r = (pcb_any_obj_t *)pcb_text_new(ly, pcb_font(pcb, 0, 1), ox+CRDX(t->X), oy+CRDY(t->Y), t->rot, t->Scale, t->thickness, t->TextString, pcb_flag_make(PCB_FLAG_CLEARLINE | t->Flags.f));
