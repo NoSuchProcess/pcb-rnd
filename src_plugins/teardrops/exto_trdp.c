@@ -230,8 +230,15 @@ static pcb_subc_t *pcb_trdp_conv_objs(pcb_data_t *dst, vtp0_t *objs, pcb_subc_t 
 /*		pcb_attribute_put(&subc->Attributes, "extobj::pitch", "4mm");*/
 	}
 
-	/* create edit-objects */
+	/* finish layer binding: intern copper needs offset, use name for the rest */
 	ly = &subc->data->Layer[LID_EDIT];
+	if ((layers[0].lyt & PCB_LYT_INTERN) && (dst->parent_type == PCB_PARENT_BOARD)) {
+		pcb_layer_real2bound_offs(ly, dst->parent.board, l->parent.layer);
+		pcb_subc_rebind(dst->parent.board, subc);
+	}
+
+
+	/* create edit-objects */
 	l = pcb_line_dup(ly, objs->array[0]);
 	PCB_FLAG_SET(PCB_FLAG_FLOATER, l);
 	PCB_FLAG_CLEAR(PCB_FLAG_SELECTED, l);
