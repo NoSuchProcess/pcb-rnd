@@ -1142,7 +1142,6 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 			via->loc_line = loc_line;
 	}
 
-	TODO("process flags\n");
 	TODO("do not ignore the miter flag: 0x0e000: requires original powerpcb to check\n");
 
 	if (level == 65)
