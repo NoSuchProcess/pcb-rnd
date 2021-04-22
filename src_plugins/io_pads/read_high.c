@@ -993,14 +993,16 @@ static void get_arc_angles(rnd_coord_t r, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 		return;
 	}
 
-	s = atan2(y0 - cy, x0 - cx);
-	e = atan2(y1 - cy, x1 - cx);
+	/* pcb-rnd's own (unusual) arc representation */
+	s = atan2(y0 - cy, -(x0 - cx));
+	e = atan2(y1 - cy, -(x1 - cx));
 	d = e - s;
 
-	if ((d < 0) && (arcdir > 1))
+	/* flip arc dir upon mismatching CW or CCW */
+	if ((d < 0) && (arcdir < 0))
 		d = 2*M_PI + d;
-	else if ((d > 0) && (arcdir < 1))
-		d = 2*M_PI - d;
+	else if ((d > 0) && (arcdir > 0))
+		d = d - 2*M_PI;
 
 	*starta = s;
 	*deltaa = d;
