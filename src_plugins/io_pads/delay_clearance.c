@@ -28,7 +28,11 @@
  */
 
 #include "delay_clearance.h"
+#include "data.h"
 #include "data_it.h"
+#include "draw.h"
+#include "change.h"
+#include "obj_pstk_inlines.h"
 
 void pcb_dlcr_apply_(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max])
 {
@@ -60,7 +64,7 @@ void pcb_dlcr_apply_(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max])
 
 				if (proto == NULL) break;
 				
-				if (proto->hole > 0) {
+				if (proto->hdia > 0) {
 					if (ps->term == NULL)
 						nclr = clr[PCB_DLCL_VIA];
 					else
@@ -72,6 +76,7 @@ void pcb_dlcr_apply_(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max])
 				if (nclr > 0)
 					pcb_chg_obj_clear_size(o->type, o->parent.layer, o, NULL, nclr * 2, 1);
 			}
+			default: break;
 		}
 	}
 }
@@ -83,5 +88,5 @@ void pcb_dlcr_apply(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max])
 	pcb_draw_inhibit_inc();
 	pcb_dlcr_apply_(pcb, clr);
 	pcb_draw_inhibit_dec();
-	pcb_data_clip_inhibit_dec(pcb->Data);
+	pcb_data_clip_inhibit_dec(pcb->Data, 0);
 }
