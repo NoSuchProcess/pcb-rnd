@@ -30,7 +30,7 @@
 #include "delay_clearance.h"
 #include "data_it.h"
 
-void pcb_dlcr_apply(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max])
+void pcb_dlcr_apply_(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max])
 {
 	pcb_objtype_t mask = 0;
 	pcb_data_it_t it;
@@ -77,5 +77,11 @@ void pcb_dlcr_apply(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max])
 }
 
 
-
-
+void pcb_dlcr_apply(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max])
+{
+	pcb_data_clip_inhibit_inc(pcb->Data);
+	pcb_draw_inhibit_inc();
+	pcb_dlcr_apply_(pcb, clr);
+	pcb_draw_inhibit_dec();
+	pcb_data_clip_inhibit_dec(pcb->Data);
+}
