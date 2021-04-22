@@ -328,7 +328,7 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 
 	pads_assign_layers(&rctx);
 	pcb_dlcr_create(pcb, &rctx.dlcr);
-	pcb_dlcr_apply(pcb, rctx.clr);
+	pcb_dlcl_apply(pcb, rctx.clr);
 	pcb_dlcr_uninit(&rctx.dlcr);
 
 	genht_uninit_deep(htsp, &rctx.parts, {
