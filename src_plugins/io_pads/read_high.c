@@ -1143,7 +1143,7 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 	}
 
 	TODO("process flags\n");
-	TODO("do not ignore the miter flag: 0x0e000\n");
+	TODO("do not ignore the miter flag: 0x0e000: requires original powerpcb to check\n");
 
 	if (level == 65)
 		level = spc->lastlev;
@@ -1255,7 +1255,7 @@ static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, pcb_dlcr_draw_t *pol
 		return 1;
 
 	if (isarc) {
-		TODO("poly arc");
+		TODO("poly arc: requires powerpcb to check");
 		rnd_trace("  arc %mm;%mm %f..%f\n", x, y, start, end);
 	}
 	else {
@@ -1321,10 +1321,10 @@ static int pads_parse_pour(pads_read_ctx_t *rctx)
 		poty = PADS_POTY_CONTOUR;
 	}
 	else if (strcmp(type, "VOIDOUT") == 0) {
-		TODO("poly cutout: needs 3rd party test files");
+		TODO("poly cutout: needs powerpcb to test");
 	}
 	else if (strcmp(type, "VIATHERM") == 0) {
-		TODO("poly via therm: needs 3rd party test files");
+		TODO("poly via therm: needs powerpcb to test");
 	}
 	else
 		PADS_ERROR((RND_MSG_ERROR, "Unhandled pour type: '%s' - please report this bug\n", type));
