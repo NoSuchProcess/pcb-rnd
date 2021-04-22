@@ -29,23 +29,25 @@
 
 /*** high level: *MISC* has a different format than other sections ***/
 
-/* read everything till the closing of this block; recurse if more blocks are
-   open */
-static int pads_parse_misc_ignore_block(pads_read_ctx_t *rctx)
+/* read a {} block, call line_cb() at the start of each line (if not NULL),
+   then eat up the rest of the line */
+static int pads_parse_misc_lines(pads_read_ctx_t *rctx, int level, int (*line_cb)(pads_read_ctx_t *rctx, int level))
 {
 	pads_eatup_till_nl(rctx);
 
 	for(;;) {
 		int c, res;
-
 		pads_eatup_ws(rctx);
 		c = fgetc(rctx->f);
 		if (c == EOF)
 			return 0;
 		ungetc(c, rctx->f);
 		if (c == '{') {
-			if ((res = pads_parse_misc_ignore_block(rctx)) <= 0) return res;
+			if ((res = pads_parse_misc_lines(rctx, level+1, line_cb)) <= 0) return res;
 			continue;
+		}
+		if ((c != '}') && (line_cb != NULL)) {
+			if ((res = line_cb(rctx, level)) <= 0) return res;
 		}
 		pads_eatup_till_nl(rctx);
 		if (c == '}')
@@ -53,6 +55,14 @@ static int pads_parse_misc_ignore_block(pads_read_ctx_t *rctx)
 	}
 	return 1;
 }
+
+/* read everything till the closing of this block; recurse if more blocks are
+   open */
+static int pads_parse_misc_ignore_block(pads_read_ctx_t *rctx)
+{
+	return pads_parse_misc_lines(rctx, 0, NULL);
+}
+
 
 /* read everything till the closing of this block; recurse if more blocks are
    open */
@@ -200,6 +210,73 @@ static int pads_parse_misc_layers(pads_read_ctx_t *rctx)
 	return pads_parse_misc_generic(rctx, pads_parse_misc_layer_hdr);
 }
 
+static int pads_parse_misc_design_rule_line(pads_read_ctx_t *rctx, int level)
+{
+	if (level == 1) {
+		char key[32];
+		int res = pads_read_word(rctx, key, sizeof(key), 0);
+		if (res > 0) {
+			if (strcmp(key, "COPPER_TO_TRACK") == 0) {
+				rnd_trace("ctt! level=%d\n", level);
+			}
+		}
+	}
+	return 1;
+}
+
+
+static int pads_parse_misc_design_rules_hdr(pads_read_ctx_t *rctx)
+{
+	char rname[32];
+	int res;
+
+	if ((res = pads_read_word(rctx, rname, sizeof(rname), 0)) <= 0) return res;
+	pads_eatup_till_nl(rctx);
+
+	rnd_trace(" design rule name='%s' got:%d\n", rname, rctx->got_design_rules);
+	if (!rctx->got_design_rules) {
+		res = pads_parse_misc_lines(rctx, 0, pads_parse_misc_design_rule_line);
+		rctx->got_design_rules = 1;
+	}
+	else
+		res = pads_parse_misc_ignore_block(rctx);
+	return res;
+}
+
+static int pads_parse_misc_rules_hdr(pads_read_ctx_t *rctx)
+{
+	char key1[32], key2[32];
+	int res;
+
+	key2[0] = '\0';
+	if ((res = pads_read_word(rctx, key1, sizeof(key1), 0)) <= 0) return res;
+	if (pads_has_field(rctx)) pads_read_word(rctx, key2, sizeof(key2), 0);
+	pads_eatup_till_nl(rctx);
+
+	rnd_trace(" rules? key='%s' '%s'\n", key1, key2);
+	if ((strcmp(key1, "GROUP") == 0) && (strcmp(key2, "DATA") == 0)) {
+		key2[0] = '\0';
+		if ((res = pads_read_word(rctx, key1, sizeof(key1), 0)) <= 0) return res;
+		if (pads_has_field(rctx)) pads_read_word(rctx, key2, sizeof(key2), 0);
+		pads_eatup_till_nl(rctx);
+
+		if ((strcmp(key1, "DESIGN") == 0) && (strcmp(key2, "RULES") == 0))
+			res = pads_parse_misc_generic(rctx, pads_parse_misc_design_rules_hdr);
+		else
+			res = pads_parse_misc_ignore_block(rctx);
+	}
+	else
+		res = pads_parse_misc_ignore_block(rctx);
+	return res;
+}
+
+static int pads_parse_misc_rules(pads_read_ctx_t *rctx)
+{
+	pads_eatup_till_nl(rctx);
+	rnd_trace("rules:\n");
+	return pads_parse_misc_generic(rctx, pads_parse_misc_rules_hdr);
+}
+
 
 static int pads_parse_misc(pads_read_ctx_t *rctx)
 {
@@ -233,6 +310,7 @@ static int pads_parse_misc(pads_read_ctx_t *rctx)
 		if ((res = pads_read_word(rctx, key, sizeof(key), 0)) <= 0)
 			return res;
 		if (strcmp(key, "LAYER") == 0) res = pads_parse_misc_layers(rctx);
+		if (strcmp(key, "RULES_SECTION") == 0) res = pads_parse_misc_rules(rctx);
 		else if (*key != '\0') {
 			pads_eatup_till_nl(rctx);
 			res = 1;

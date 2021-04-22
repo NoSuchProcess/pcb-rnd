@@ -79,6 +79,7 @@ typedef struct pads_read_ctx_s {
 	/* cache */
 	const pcb_extobj_t *teardrop_eo;
 	unsigned teardrop_warned:1;
+	unsigned got_design_rules:1;
 
 } pads_read_ctx_t;
 
