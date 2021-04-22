@@ -12,6 +12,7 @@ typedef enum {
 	PCB_DLCL_max
 } pcb_dlcl_t;
 
+void pcb_dlcr_apply_(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max]);
 void pcb_dlcr_apply(pcb_board_t *pcb, rnd_coord_t clr[PCB_DLCL_max]);
 
 #endif
