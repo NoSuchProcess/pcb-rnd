@@ -998,9 +998,9 @@ static void get_arc_angles(rnd_coord_t r, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	d = e - s;
 
 	if ((d < 0) && (arcdir > 1))
-		d = 360+d;
+		d = 2*M_PI + d;
 	else if ((d > 0) && (arcdir < 1))
-		d = 360-d;
+		d = 2*M_PI - d;
 
 	*starta = s;
 	*deltaa = d;
