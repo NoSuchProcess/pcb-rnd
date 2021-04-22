@@ -1021,6 +1021,9 @@ static void add_teardrop(void *rctx_, pcb_any_obj_t *obj, void *call_ctx)
 	if (dt->parent_type != PCB_PARENT_BOARD)
 		return;
 
+	if (!(pcb_layer_flags_(ly) & PCB_LYT_COPPER)) /* teardrop makes sense on copper only */
+		return;
+
 	if ((rctx->teardrop_eo == NULL) && !rctx->teardrop_warned) {
 		pcb_extobj_t **eo = NULL;
 		int idx = pcb_extobj_lookup_idx("teardrop");
@@ -1069,7 +1072,6 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 	*vianame = '\0';
 	if (pads_has_field(rctx)) {
 		if ((res = pads_read_word(rctx, vianame, sizeof(vianame), 0)) <= 0) return res;
-
 		if (strcmp(vianame, "TEARDROP") == 0) {
 			*vianame = '\0';
 			goto teardrop;
@@ -1165,6 +1167,7 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 	}
 	else {
 		if (level != 0) {
+/*rnd_printf("*** line: %ld idx=%d omit=%d level=%d %mm %mm to %mm %mm\n", loc_line, idx, spc->omit, level, spc->x, spc->y, x, y);*/
 			if ((idx > 0) && (!spc->omit)) {
 				pcb_dlcr_draw_t *line = pcb_dlcr_line_new(&rctx->dlcr, spc->x, spc->y, x, y, width, 0);
 				if (line != NULL) {
