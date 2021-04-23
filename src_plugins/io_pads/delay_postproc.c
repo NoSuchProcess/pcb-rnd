@@ -28,8 +28,47 @@
  */
 
 #include "delay_postproc.h"
+#include "obj_pstk_inlines.h"
+#include "netlist.h"
 
-void pcb_dlcr_post_poly_thermal_netname(pcb_board_t *pcb, pcb_poly_t *poly, const char *netname, pcb_thermal_t *t)
+typedef struct {
+	pcb_board_t *pcb;
+	pcb_poly_t *poly;
+	const char *netname;
+	pcb_thermal_t t;
+	const char *(*obj_netname)(void *uctx, pcb_any_obj_t *obj);
+	void *uctx;
+} ppr_t;
+
+void pcb_dlcr_post_poly_thermal_obj(pcb_board_t *pcb, pcb_poly_t *poly, pcb_any_obj_t *obj, pcb_thermal_t t)
 {
+	printf("THERMAL!\n");
+}
 
+static rnd_r_dir_t ppr_poly_therm(const rnd_box_t *b, void *cl)
+{
+	ppr_t *ppr = cl;
+	pcb_any_obj_t *o = (pcb_any_obj_t *)b;
+	const char *vnn = ppr->obj_netname(ppr->uctx, o);
+
+	if ((vnn != NULL) && (strcmp(vnn, ppr->netname) == 0))
+		pcb_dlcr_post_poly_thermal_obj(ppr->pcb, ppr->poly, o, ppr->t);
+
+	return RND_R_DIR_FOUND_CONTINUE;
+}
+
+
+void pcb_dlcr_post_poly_thermal_netname(pcb_board_t *pcb, pcb_poly_t *poly, const char *netname, pcb_thermal_t t, const char *(*obj_netname)(void *uctx, pcb_any_obj_t *obj), void *uctx)
+{
+	ppr_t ppr;
+
+	ppr.pcb = pcb;
+	ppr.poly = poly;
+	ppr.t = t;
+	ppr.obj_netname = obj_netname;
+	ppr.uctx = uctx;
+
+	rnd_r_search(poly->parent.layer->line_tree, &poly->BoundingBox, NULL, ppr_poly_therm, &ppr, NULL);
+	rnd_r_search(poly->parent.layer->arc_tree,  &poly->BoundingBox, NULL, ppr_poly_therm, &ppr, NULL);
+	rnd_r_search(pcb->Data->padstack_tree,      &poly->BoundingBox, NULL, ppr_poly_therm, &ppr, NULL);
 }

@@ -46,6 +46,7 @@
 
 #include "delay_create.h"
 #include "delay_clearance.h"
+#include "delay_postproc.h"
 #include "read.h"
 
 /* Parser return value convention:
@@ -73,6 +74,7 @@ typedef struct pads_read_ctx_s {
 	pcb_dlcr_t dlcr;
 	pcb_dlcr_layer_t *layer;
 	htsp_t parts;       /* translate part to partdecal and swaps; key=partname value=(pads_read_part_t *) */
+	const char *signal_netname; /* netname of the signal currently being read */
 
 	/* location */
 	const char *fn;
@@ -295,16 +297,30 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 	return -1;
 }
 
+static const char *postproc_thermal_lookup(htpp_t *ht, pcb_any_obj_t *obj)
+{
+	return htpp_get(ht, obj);
+}
+
 static void postproc_thermal(pads_read_ctx_t *rctx)
 {
 	long n;
+	htpp_t obj2net;
+
+	htpp_init(&obj2net, ptrhash, ptrkeyeq);
+
+	for(n = 0; n < rctx->dlcr.netname_objs.used; n += 2)
+		htpp_insert(&obj2net, rctx->dlcr.netname_objs.array[n], rctx->dlcr.netname_objs.array[n+1]);
+
 
 	for(n = 0; n < rctx->dlcr.netname_objs.used; n += 2) {
 		pcb_any_obj_t *o = rctx->dlcr.netname_objs.array[n];
 		const char *netname = rctx->dlcr.netname_objs.array[n+1];
 		if (o->type == PCB_OBJ_POLY)
-			pcb_dlcr_post_poly_thermal_netname(rctx->pcb, o, netname, PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL | PCB_THERMAL_ON);
+			pcb_dlcr_post_poly_thermal_netname(rctx->pcb, o, netname, PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL | PCB_THERMAL_ON, NULL, NULL);
 	}
+
+	htpp_uninit(&obj2net);
 }
 
 int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)

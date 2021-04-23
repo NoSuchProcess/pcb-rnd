@@ -1140,7 +1140,7 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 		/* in this case level is the via's target level and our trace segment is
 		   really on the same level as the previous */
 		level = spc->lastlev;
-		via = pcb_dlcr_via_new(&rctx->dlcr, x, y, 0, -1, vianame, NULL);
+		via = pcb_dlcr_via_new(&rctx->dlcr, x, y, 0, -1, vianame, rctx->signal_netname);
 		if (via != NULL)
 			via->loc_line = loc_line;
 	}
@@ -1229,7 +1229,11 @@ static int pads_parse_signal(pads_read_ctx_t *rctx)
 	if ((res = pads_read_word(rctx, netname, sizeof(netname), 0)) <= 0) return res;
 
 	rnd_trace("signal: netname=%s\n", netname);
-	return pads_parse_list_sect(rctx, pads_parse_net);
+	rctx->signal_netname = netname;
+	res = pads_parse_list_sect(rctx, pads_parse_net);
+	rctx->signal_netname = NULL;
+
+	return res;
 }
 
 typedef enum {
