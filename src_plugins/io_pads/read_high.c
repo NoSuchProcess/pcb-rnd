@@ -1192,18 +1192,39 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 	return 1;
 }
 
+static void net_add_term(pads_read_ctx_t *rctx, pcb_net_t *net, char *pinname)
+{
+	char *refdes = pinname, *term = strchr(pinname, '.');
+
+	if (term == NULL) {
+		PADS_ERROR((RND_MSG_ERROR, "*SIGNAL* terminal name error: '%s' is not refdes.pin\nPlease report this bug!\n"));
+		return;
+	}
+
+	*term = '\0';
+	term++;
+
+	if (pcb_net_term_get(net, refdes, term, 1) == NULL)
+		PADS_ERROR((RND_MSG_ERROR, "*SIGNAL* failed to create terminal : '%s:%s'\nPlease report this bug!\n", refdes, term));
+}
+
 static int pads_parse_net(pads_read_ctx_t *rctx)
 {
 	char term1[128], term2[128];
 	long idx;
 	int c, res;
 	pads_sig_piece_t spc = {0};
+	pcb_net_t *net;
 
 	if ((res = pads_read_word(rctx, term1, sizeof(term1), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, term2, sizeof(term2), 0)) <= 0) return res;
 	pads_eatup_till_nl(rctx);
 
 	rnd_trace(" '%s' -> '%s'\n", term1, term2);
+
+	net = pcb_net_get(rctx->pcb, &rctx->pcb->netlist[PCB_NETLIST_INPUT], rctx->signal_netname, 1);
+	net_add_term(rctx, net, term1);
+	net_add_term(rctx, net, term2);
 
 	for(idx = 0; ;idx++) {
 		double tmp;
