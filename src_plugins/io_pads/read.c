@@ -43,6 +43,7 @@
 #include "board.h"
 #include "extobj.h"
 #include "thermal.h"
+#include "netlist.h"
 
 #include "delay_create.h"
 #include "delay_clearance.h"
@@ -344,7 +345,6 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 	pcb_dlcr_init(&rctx.dlcr);
 	rctx.dlcr.flip_y = 1;
 	rctx.dlcr.save_netname_objs = 1;
-	htsp_init(&rctx.parts, strhash, strkeyeq);
 
 	/* read the header */
 	if (pads_parse_header(&rctx) != 0) {
@@ -353,9 +353,9 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 		return -1;
 	}
 
-	
-	ret = (pads_parse_block(&rctx) == 1) ? 0 : -1;
+	htsp_init(&rctx.parts, strhash, strkeyeq);
 
+	ret = (pads_parse_block(&rctx) == 1) ? 0 : -1;
 
 	pads_assign_layers(&rctx);
 	pcb_dlcr_create(pcb, &rctx.dlcr);
