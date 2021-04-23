@@ -728,7 +728,7 @@ static int pads_parse_term(pads_read_ctx_t *rctx, long idx, vtp0_t *terms)
 		if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	}
 	else
-		sprintf(name, "%d", idx+1);
+		sprintf(name, "%ld", idx+1);
 
 	pads_eatup_till_nl(rctx);
 
