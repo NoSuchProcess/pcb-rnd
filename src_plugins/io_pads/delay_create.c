@@ -295,6 +295,16 @@ pcb_dlcr_draw_t *pcb_dlcr_poly_lineto(pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *poly, r
 	return poly;
 }
 
+void pcb_dlcr_set_net(pcb_dlcr_draw_t *obj, const char *netname)
+{
+	free(obj->netname);
+	if (netname != NULL)
+		obj->netname = rnd_strdup(netname);
+	else
+		obj->netname = NULL;
+}
+
+
 pcb_dlcr_draw_t *pcb_dlcr_call_on(pcb_dlcr_t *dlcr, void (*cb)(void *rctx, pcb_any_obj_t *obj, void *callctx), void *rctx, void *callctx, int on_next)
 {
 	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_CALL);

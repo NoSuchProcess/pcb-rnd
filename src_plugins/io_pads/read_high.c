@@ -1269,7 +1269,7 @@ static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, pcb_dlcr_draw_t *pol
 }
 
 /* draw polygon contour from pieces */
-static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, pads_poly_type_t poty, rnd_coord_t xo, rnd_coord_t yo)
+static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, pads_poly_type_t poty, rnd_coord_t xo, rnd_coord_t yo, const char *signame)
 {
 	char type[64];
 	long n, num_corners, num_arcs, level, loc = rctx->line;
@@ -1297,6 +1297,8 @@ static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, pads_poly_type_t
 	}
 
 TODO("bloat up the poly if width != 0");
+	if ((*signame != '\0') && (poly != NULL))
+		pcb_dlcr_set_net(poly, signame);
 
 	return 1;
 }
@@ -1337,7 +1339,7 @@ static int pads_parse_pour(pads_read_ctx_t *rctx)
 		PADS_ERROR((RND_MSG_ERROR, "Unhandled pour type: '%s' - please report this bug\n", type));
 
 	for(n = 0; n < num_pieces; n++)
-		if ((res = pads_parse_pour_piece_polycnt(rctx, poty, xo, yo)) <= 0) return res;
+		if ((res = pads_parse_pour_piece_polycnt(rctx, poty, xo, yo, signame)) <= 0) return res;
 
 	return 1;
 }

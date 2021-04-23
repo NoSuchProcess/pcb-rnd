@@ -83,7 +83,8 @@ typedef struct {
 			char *key, *val;
 		} attr;
 	} val;
-	char *name;
+	char *name;    /* for pstk: terminal name */
+	char *netname;
 	long loc_line; /* for debug */
 	gdl_elem_t link;
 	unsigned in_last_subc:1; /* create object within the last created subc instead of on the board */
@@ -128,6 +129,9 @@ pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t 
 pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, long proto_id, const char *proto_name, const char *term);
 pcb_dlcr_draw_t *pcb_dlcr_poly_new(pcb_dlcr_t *dlcr, int hole, long prealloc_len);
 pcb_dlcr_draw_t *pcb_dlcr_poly_lineto(pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *poly, rnd_coord_t x, rnd_coord_t y);
+
+/* attach a netname to an existing to-be-created object */
+void pcb_dlcr_set_net(pcb_dlcr_draw_t *obj, const char *netname);
 
 /* Call back cb() on the previous (last created) or next object after the
    object is created */
