@@ -1238,7 +1238,7 @@ static int pads_parse_signal(pads_read_ctx_t *rctx)
 
 typedef enum {
 	PADS_POTY_CONTOUR,
-	PADS_POTY_NOOP,
+	PADS_POTY_NOOP
 } pads_poly_type_t;
 
 static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, pcb_dlcr_draw_t *poly, pads_poly_type_t poty, rnd_coord_t xo, rnd_coord_t yo)
