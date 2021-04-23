@@ -666,8 +666,7 @@ TODO("Handle: O, CUCP#69\n");
 			PADS_ERROR((RND_MSG_ERROR, "failed to understand padstack shape '%s'; created dummy small circle\n", shape));
 		}
 
-TODO("pads-specific code in delay draw!!; see also: TODO#71");
-		shp->layer_mask = level; /* ugly hack: save the layer id for now */
+		shp->dlcr_psh_layer_id = level; /* ugly hack: save the layer id for now */
 	}
 	pcb_pstk_proto_update(proto);
 

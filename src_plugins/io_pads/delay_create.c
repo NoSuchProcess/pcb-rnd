@@ -658,7 +658,7 @@ static pcb_subc_t *pcb_dlcr_draw_subc_from_lib(pcb_board_t *pcb, pcb_dlcr_t *dlc
 
 static void proto_layer_lookup(pcb_dlcr_t *dlcr, pcb_pstk_shape_t *shp)
 {
-	int level = shp->layer_mask, std_lookup = 1;
+	int level = shp->dlcr_psh_layer_id, std_lookup = 1;
 
 	if (dlcr->proto_layer_lookup != NULL)
 		std_lookup = dlcr->proto_layer_lookup(dlcr, shp);

@@ -301,7 +301,7 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 
 static int pads_proto_layer_lookup(pcb_dlcr_t *dlcr, pcb_pstk_shape_t *shp)
 {
-	int level = shp->layer_mask;
+	int level = shp->dlcr_psh_layer_id;
 	switch(level) { /* set layer type on PADS-specific cases */
 		case -2: shp->layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; break;
 		case -1: shp->layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; break;

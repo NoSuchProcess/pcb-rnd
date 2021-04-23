@@ -9,6 +9,11 @@
 #include "obj_common.h"
 #include "obj_subc.h"
 
+/* When creating padstacks save integer layer ID in padstack shp->dlcr_psh_layer_id */
+#define dlcr_psh_layer_id layer_mask
+
+#define PCB_DLCR_INVALID_LAYER_ID -32768
+
 typedef struct {
 	char *name;
 	long id;
@@ -29,7 +34,6 @@ typedef struct {
 } pcb_dlcr_layer_t;
 
 
-#define PCB_DLCR_INVALID_LAYER_ID -32768
 
 typedef enum {
 	DLCR_OBJ,
@@ -95,7 +99,7 @@ typedef struct pcb_dlcr_s pcb_dlcr_t;
 
 struct pcb_dlcr_s {
 	/* caller provided config/callbacks */
-	int (*proto_layer_lookup)(pcb_dlcr_t *dlcr, pcb_pstk_shape_t *shp); /* optional: set shp's layer on special cases and return 0; return 1 for executing the standard layer lookup; required only if there are layer ID special cases, e.g. for -1 */
+	int (*proto_layer_lookup)(pcb_dlcr_t *dlcr, pcb_pstk_shape_t *shp); /* optional: set shp's layer on special cases and return 0; return 1 for executing the standard layer lookup; required only if there are layer ID special cases, e.g. for -1; layer id is in shp->dlcr_psh_layer_id */
 
 	/* layers */
 	htsp_t name2layer;
