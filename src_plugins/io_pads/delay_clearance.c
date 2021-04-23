@@ -62,8 +62,12 @@ static void pcb_dlcl_apply__(pcb_data_t *data, rnd_coord_t clr[PCB_DLCL_max], pc
 					else
 						nclr = clr[PCB_DLCL_TRH_TERM];
 				}
-				else if (ps->term != NULL)
-					nclr = clr[PCB_DLCL_SMD_TERM];
+				else {
+					if (ps->term == NULL)
+						nclr = clr[PCB_DLCL_VIA];
+					else if (ps->term != NULL)
+						nclr = clr[PCB_DLCL_SMD_TERM];
+				}
 
 				if (nclr > 0)
 					pcb_chg_obj_clear_size(o->type, o->parent.layer, o, NULL, nclr * 2, 1);
