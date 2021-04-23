@@ -708,7 +708,7 @@ static int pads_parse_vias(pads_read_ctx_t *rctx)
 static int pads_parse_term(pads_read_ctx_t *rctx, long idx, vtp0_t *terms)
 {
 	pads_term_t *t, **tp;
-	char name[10];
+	char name[32];
 	int c, res;
 	long loc_line = rctx->line;
 	rnd_coord_t x, y, nmx, nmy;
@@ -726,11 +726,11 @@ static int pads_parse_term(pads_read_ctx_t *rctx, long idx, vtp0_t *terms)
 		if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	}
 	else
-		*name = '\0';
+		sprintf(name, "%d", idx+1);
 
 	pads_eatup_till_nl(rctx);
 
-	rnd_trace("  terminal: %s at %mm;%mm IDX=%ld\n", name, x, y, idx+1);
+	rnd_trace("  terminal: '%s' at %mm;%mm IDX=%ld\n", name, x, y, idx+1);
 	tp = (pads_term_t **)vtp0_get(terms, idx+1, 0);
 	t = calloc(sizeof(pads_term_t), 1);
 	t->x = x;
