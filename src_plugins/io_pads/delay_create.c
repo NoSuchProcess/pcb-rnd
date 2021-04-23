@@ -508,7 +508,7 @@ static pcb_layer_t *pcb_dlcr_lookup_subc_layer(pcb_board_t *pcb, pcb_subc_t *sub
 
 static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
-	pcb_data_t *data; 
+	pcb_data_t *data;
 	pcb_any_obj_t *r;
 	pcb_line_t *l = &obj->val.obj.obj.line;
 	pcb_arc_t *a = &obj->val.obj.obj.arc;
