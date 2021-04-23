@@ -277,7 +277,7 @@ static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_c
 	lpc.xo = xo;
 	lpc.yo = yo;
 
-TODO("''KEEPOUT'' objects are not handled: CIRCUT and COPCUT and COPCIR are polygon holes");
+TODO("''KEEPOUT'' objects are not handled: CIRCUT and COPCUT and COPCIR are polygon holes; requires powerpcb to check");
 	if ((strcmp(ptype, "CIRCLE") == 0) || (strcmp(ptype, "BRDCIR") == 0)) {
 		if ((res = pads_parse_piece_circle(rctx, &lpc, num_crds, 0)) <= 0) return res;
 	}
@@ -383,7 +383,7 @@ TODO("w is really thickness");
 			case 1: text->val.obj.lyt = PCB_LYT_TOP | PCB_LYT_SILK; break;
 			case 2: text->val.obj.lyt = PCB_LYT_BOTTOM | PCB_LYT_SILK; break; TODO("need to check what happens on the bottom side, is it really LID 2?");
 			default:
-				TODO("Figure what does this mean");
+				TODO("Figure what does this mean; requires powerpcb to check");
 				PADS_ERROR((RND_MSG_ERROR, "invalid label level %ld\n", level));
 				text->val.obj.layer_id = level;
 				break;
@@ -659,7 +659,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 			}
 		}
 		else { /* final fallback so that we have a prototype to draw */
-TODO("Handle: O, CUCP#69\n");
+TODO("Handle: O: requires powerpcb to check\n");
 			shp->shape = PCB_PSSH_CIRC;
 			shp->data.circ.x = shp->data.circ.y = 0;
 			shp->data.circ.dia = RND_MM_TO_COORD(0.5);
