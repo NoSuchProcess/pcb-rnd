@@ -1313,7 +1313,6 @@ static int pads_parse_pour(pads_read_ctx_t *rctx)
 	char name[64], type[64], owner[64], signame[64];
 	long n, num_pieces, flags = 0;
 	rnd_coord_t xo, yo;
-	double rot;
 	int res;
 	pads_poly_type_t poty = PADS_POTY_NOOP;
 
