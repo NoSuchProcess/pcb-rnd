@@ -1304,21 +1304,26 @@ TODO("bloat up the poly if width != 0");
 
 static int pads_parse_pour(pads_read_ctx_t *rctx)
 {
-	char name[64], type[64];
-	long n, num_pieces;
+	char name[64], type[64], owner[64], signame[64];
+	long n, num_pieces, flags = 0;
 	rnd_coord_t xo, yo;
 	double rot;
 	int res;
 	pads_poly_type_t poty = PADS_POTY_NOOP;
+
+	owner[0] = signame[0] = '\0';
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, type, sizeof(type), 0)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &xo)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &yo)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &num_pieces)) <= 0) return res;
+	if ((pads_has_field(rctx)) && ((res = pads_read_long(rctx, &flags)) <= 0)) return res;
+	if ((pads_has_field(rctx)) && ((res = pads_read_word(rctx, owner, sizeof(owner), 0)) <= 0)) return res;
+	if ((pads_has_field(rctx)) && ((res = pads_read_word(rctx, signame, sizeof(signame), 0)) <= 0)) return res;
 	pads_eatup_till_nl(rctx); /* ignore rest of the arguments */
 
-	rnd_trace("pour '%s' type='%s' at %mm;%mm\n", name, type, xo, yo);
+	rnd_trace("pour '%s' type='%s' at %mm;%mm signame='%s'\n", name, type, xo, yo, signame);
 	if ((strcmp(type, "POUROUT") == 0) || (strcmp(type, "HATOUT") == 0)) {
 		poty = PADS_POTY_CONTOUR;
 	}
