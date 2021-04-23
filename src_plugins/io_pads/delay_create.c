@@ -49,6 +49,7 @@
 #define CRDY_BRD(y) (dlcr->flip_y ? ((dlcr->board_bbox.Y2 - (y))) : (y))
 
 #include "delay_clearance.c"
+#include "delay_postproc.c"
 
 void pcb_dlcr_init(pcb_dlcr_t *dlcr)
 {

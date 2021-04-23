@@ -42,6 +42,7 @@
 #include <librnd/core/rotate.h>
 #include "board.h"
 #include "extobj.h"
+#include "thermal.h"
 
 #include "delay_create.h"
 #include "delay_clearance.h"
@@ -294,6 +295,18 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 	return -1;
 }
 
+static void postproc_thermal(pads_read_ctx_t *rctx)
+{
+	long n;
+
+	for(n = 0; n < rctx->dlcr.netname_objs.used; n += 2) {
+		pcb_any_obj_t *o = rctx->dlcr.netname_objs.array[n];
+		const char *netname = rctx->dlcr.netname_objs.array[n+1];
+		if (o->type == PCB_OBJ_POLY)
+			pcb_dlcr_post_poly_thermal_netname(rctx->pcb, o, netname, PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL | PCB_THERMAL_ON);
+	}
+}
+
 int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
 {
 	rnd_hidlib_t *hl = &PCB->hidlib;
@@ -313,6 +326,7 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 
 	pcb_dlcr_init(&rctx.dlcr);
 	rctx.dlcr.flip_y = 1;
+	rctx.dlcr.save_netname_objs = 1;
 	htsp_init(&rctx.parts, strhash, strkeyeq);
 
 	/* read the header */
@@ -329,6 +343,7 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 	pads_assign_layers(&rctx);
 	pcb_dlcr_create(pcb, &rctx.dlcr);
 	pcb_dlcl_apply(pcb, rctx.clr);
+	postproc_thermal(&rctx);
 	pcb_dlcr_uninit(&rctx.dlcr);
 
 	genht_uninit_deep(htsp, &rctx.parts, {
