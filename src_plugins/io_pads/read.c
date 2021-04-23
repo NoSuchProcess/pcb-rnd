@@ -44,6 +44,7 @@
 #include "extobj.h"
 #include "thermal.h"
 #include "netlist.h"
+#include "obj_term.h"
 
 #include "delay_create.h"
 #include "delay_clearance.h"
@@ -308,11 +309,24 @@ static void postproc_thermal(pads_read_ctx_t *rctx)
 {
 	long n;
 	htpp_t obj2net;
+	htsp_entry_t *e;
 
 	htpp_init(&obj2net, ptrhash, ptrkeyeq);
 
+	/* add known objects */
 	for(n = 0; n < rctx->dlcr.netname_objs.used; n += 2)
 		htpp_insert(&obj2net, rctx->dlcr.netname_objs.array[n], rctx->dlcr.netname_objs.array[n+1]);
+
+	/* add netlisted terminals */
+	for(e = htsp_first(&rctx->pcb->netlist[PCB_NETLIST_INPUT]); e != NULL; e = htsp_next(&rctx->pcb->netlist[PCB_NETLIST_INPUT], e)) {
+		pcb_net_term_t *t;
+		pcb_net_t *net = e->value;
+		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
+			pcb_any_obj_t *o = pcb_term_find_name(rctx->pcb, rctx->pcb->Data, PCB_LYT_COPPER, t->refdes, t->term, NULL, NULL);
+			if (o != NULL)
+				htpp_insert(&obj2net, o, net->name);
+		}
+	}
 
 
 	for(n = 0; n < rctx->dlcr.netname_objs.used; n += 2) {

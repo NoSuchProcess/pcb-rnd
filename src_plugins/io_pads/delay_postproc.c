@@ -64,6 +64,7 @@ void pcb_dlcr_post_poly_thermal_netname(pcb_board_t *pcb, pcb_poly_t *poly, cons
 
 	ppr.pcb = pcb;
 	ppr.poly = poly;
+	ppr.netname = netname;
 	ppr.t = t;
 	ppr.obj_netname = obj_netname;
 	ppr.uctx = uctx;
