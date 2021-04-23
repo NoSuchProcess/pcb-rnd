@@ -224,7 +224,7 @@ pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t 
 	return obj;
 }
 
-pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, long id, const char *name)
+pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, long id, const char *name, const char *term)
 {
 	pcb_dlcr_draw_t *obj;
 	pcb_pstk_t *p;
@@ -257,6 +257,7 @@ pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y
 	p->y = y;
 	p->proto = pid;
 	p->Clearance = clearance;
+	obj->name = rnd_strdup(term);
 
 TODO("why does this fail?");
 #if 0
@@ -556,6 +557,8 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 			break;
 		case PCB_OBJ_PSTK:
 			r = (pcb_any_obj_t *)pcb_pstk_new(data, 0, p->proto, CRDX(p->x), CRDY(p->y), p->Clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
+			if (obj->name != NULL)
+				pcb_attrib_put(r, "term", obj->name);
 			break;
 		case PCB_OBJ_DLCR_POLY:
 			r = pcb_dlcr_draw_free_poly(pcb, dlcr, subc, ly, obj);

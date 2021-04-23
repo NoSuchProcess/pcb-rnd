@@ -472,12 +472,14 @@ static int pads_parse_lines(pads_read_ctx_t *rctx)
 	return pads_parse_list_sect(rctx, pads_parse_line);
 }
 
+#define PADS_TERM_NAME_LEN 32
 typedef struct pads_term_s pads_term_t;
 
 struct pads_term_s {
 	rnd_coord_t x, y;
 	long loc_line;
 	pads_term_t *next;
+	char name[PADS_TERM_NAME_LEN];
 };
 
 static void pads_create_pins(pads_read_ctx_t *rctx, pads_term_t *first, long pinidx, long pid)
@@ -485,7 +487,7 @@ static void pads_create_pins(pads_read_ctx_t *rctx, pads_term_t *first, long pin
 	pads_term_t *t, *tnext;
 rnd_trace("  pin create: %ld pid=%ld first=%p\n", pinidx, pid, first);
 	for(t = first; t != NULL; t = tnext) {
-		pcb_dlcr_draw_t *pin = pcb_dlcr_via_new(&rctx->dlcr, t->x, t->y, 0, pid, NULL);
+		pcb_dlcr_draw_t *pin = pcb_dlcr_via_new(&rctx->dlcr, t->x, t->y, 0, pid, NULL, t->name);
 		if (pin != NULL)
 			pin->loc_line = t->loc_line;
 rnd_trace("    %mm;%mm (%p) %p pid=%ld\n", t->x, t->y, t, pin, pid);
@@ -708,7 +710,7 @@ static int pads_parse_vias(pads_read_ctx_t *rctx)
 static int pads_parse_term(pads_read_ctx_t *rctx, long idx, vtp0_t *terms)
 {
 	pads_term_t *t, **tp;
-	char name[32];
+	char name[PADS_TERM_NAME_LEN];
 	int c, res;
 	long loc_line = rctx->line;
 	rnd_coord_t x, y, nmx, nmy;
@@ -735,6 +737,7 @@ static int pads_parse_term(pads_read_ctx_t *rctx, long idx, vtp0_t *terms)
 	t = calloc(sizeof(pads_term_t), 1);
 	t->x = x;
 	t->y = y;
+	strcpy(t->name, name);
 	t->loc_line = loc_line;
 	if (tp != NULL)
 		t->next = *tp;
@@ -1137,7 +1140,7 @@ static int pads_parse_signal_crd(pads_read_ctx_t *rctx, pads_sig_piece_t *spc, l
 		/* in this case level is the via's target level and our trace segment is
 		   really on the same level as the previous */
 		level = spc->lastlev;
-		via = pcb_dlcr_via_new(&rctx->dlcr, x, y, 0, -1, vianame);
+		via = pcb_dlcr_via_new(&rctx->dlcr, x, y, 0, -1, vianame, NULL);
 		if (via != NULL)
 			via->loc_line = loc_line;
 	}
