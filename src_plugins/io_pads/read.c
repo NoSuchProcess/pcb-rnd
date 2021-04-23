@@ -297,8 +297,9 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 	return -1;
 }
 
-static const char *postproc_thermal_lookup(htpp_t *ht, pcb_any_obj_t *obj)
+static const char *postproc_thermal_lookup(void *uctx, pcb_any_obj_t *obj)
 {
+	htpp_t *ht = uctx;
 	return htpp_get(ht, obj);
 }
 
@@ -317,7 +318,7 @@ static void postproc_thermal(pads_read_ctx_t *rctx)
 		pcb_any_obj_t *o = rctx->dlcr.netname_objs.array[n];
 		const char *netname = rctx->dlcr.netname_objs.array[n+1];
 		if (o->type == PCB_OBJ_POLY)
-			pcb_dlcr_post_poly_thermal_netname(rctx->pcb, o, netname, PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL | PCB_THERMAL_ON, postproc_thermal_lookup, &obj2net);
+			pcb_dlcr_post_poly_thermal_netname(rctx->pcb, (pcb_poly_t *)o, netname, PCB_THERMAL_ROUND | PCB_THERMAL_DIAGONAL | PCB_THERMAL_ON, postproc_thermal_lookup, &obj2net);
 	}
 
 	htpp_uninit(&obj2net);
