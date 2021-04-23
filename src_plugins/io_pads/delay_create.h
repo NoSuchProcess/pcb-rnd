@@ -110,8 +110,12 @@ typedef struct {
 	pcb_dlcr_draw_t *call_next;     /* for CALL next */
 	pcb_subc_t *last_subc_placed;   /* for adding objects in the last subc instead of board */
 
+	/* aux output */
+	vtp0_t netname_objs;            /* (pcb_any_obj_t *):(char *netname) pairs; filled in only if ->save_netname_objs is 1 */
+
 	/* config */
-	unsigned flip_y:1;   /* if 1, mirror y coordinates over the X axis */
+	unsigned flip_y:1;              /* if 1, mirror y coordinates over the X axis */
+	unsigned save_netname_objs:1;   /* if 1, save each object:netname pair in ->netname_objs */
 } pcb_dlcr_t;
 
 void pcb_dlcr_init(pcb_dlcr_t *dlcr);

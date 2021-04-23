@@ -59,6 +59,13 @@ void pcb_dlcr_init(pcb_dlcr_t *dlcr)
 
 void pcb_dlcr_uninit(pcb_dlcr_t *dlcr)
 {
+	long n;
+
+	/* free netnames */
+	for(n = 0; n < dlcr->netname_objs.used; n+=2)
+		free(dlcr->netname_objs.array[n+1]);
+	vtp0_uninit(&dlcr->netname_objs);
+
 	TODO("free everything");
 }
 
@@ -585,6 +592,15 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 	}
 #endif
 
+	/* remember obj:netname pairs if requested */
+	if (dlcr->save_netname_objs && (obj->netname != NULL)) {
+		vtp0_append(&dlcr->netname_objs, r);
+		vtp0_append(&dlcr->netname_objs, obj->netname);
+		obj->netname = NULL; /* do not free */
+	}
+
+	free(obj->netname);
+	free(obj->name);
 	free(obj->val.obj.layer_name);
 	free(obj);
 	return r;
