@@ -30,6 +30,7 @@
 #include "delay_postproc.h"
 #include "obj_pstk_inlines.h"
 #include "netlist.h"
+#include "find.h"
 
 typedef struct {
 	pcb_board_t *pcb;
@@ -42,7 +43,25 @@ typedef struct {
 
 void pcb_dlcr_post_poly_thermal_obj(pcb_board_t *pcb, pcb_poly_t *poly, pcb_any_obj_t *obj, pcb_thermal_t t)
 {
-	printf("THERMAL!\n");
+	pcb_find_t fctx = {0};
+	rnd_bool isc;
+
+	/* deal with objects that intersect */
+	fctx.ignore_clearance = 1;
+
+	/* the polygon already has a clearance cutout for the object, compensate this
+	   with bloating up the search */
+	switch(obj->type) {
+		case PCB_OBJ_PSTK: fctx.bloat = ((pcb_pstk_t *)obj)->Clearance*2 + 2; break;
+		case PCB_OBJ_LINE: fctx.bloat = ((pcb_line_t *)obj)->Clearance + 2; break;
+		case PCB_OBJ_ARC:  fctx.bloat = ((pcb_arc_t *)obj)->Clearance + 2; break;
+		default: return;
+	}
+	isc = pcb_intersect_obj_obj(&fctx, (pcb_any_obj_t *)poly, obj);
+	pcb_find_free(&fctx);
+	if (!isc) return;
+
+	pcb_chg_obj_thermal(obj->type, obj, obj, obj, t, pcb_layer2id(pcb->Data, poly->parent.layer));
 }
 
 static rnd_r_dir_t ppr_poly_therm(const rnd_box_t *b, void *cl)
