@@ -91,7 +91,12 @@ typedef struct {
 	unsigned subc_relative:1;/* coords are relative to the parent subc */
 } pcb_dlcr_draw_t;
 
-typedef struct {
+typedef struct pcb_dlcr_s pcb_dlcr_t;
+
+struct pcb_dlcr_s {
+	/* caller provided config/callbacks */
+	int (*proto_layer_lookup)(pcb_dlcr_t *dlcr, pcb_pstk_shape_t *shp); /* optional: set shp's layer on special cases and return 0; return 1 for executing the standard layer lookup; required only if there are layer ID special cases, e.g. for -1 */
+
 	/* layers */
 	htsp_t name2layer;
 	vtp0_t id2layer;     /* key=->id, val=(pcb_dlcr_layer_t *) */
@@ -116,7 +121,7 @@ typedef struct {
 	/* config */
 	unsigned flip_y:1;              /* if 1, mirror y coordinates over the X axis */
 	unsigned save_netname_objs:1;   /* if 1, save each object:netname pair in ->netname_objs */
-} pcb_dlcr_t;
+};
 
 void pcb_dlcr_init(pcb_dlcr_t *dlcr);
 void pcb_dlcr_uninit(pcb_dlcr_t *dlcr);

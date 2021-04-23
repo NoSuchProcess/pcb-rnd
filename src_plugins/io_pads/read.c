@@ -299,6 +299,20 @@ static int pads_parse_block(pads_read_ctx_t *rctx)
 	return -1;
 }
 
+static int pads_proto_layer_lookup(pcb_dlcr_t *dlcr, pcb_pstk_shape_t *shp)
+{
+	int level = shp->layer_mask;
+	switch(level) { /* set layer type on PADS-specific cases */
+		case -2: shp->layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; break;
+		case -1: shp->layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; break;
+		case  0: shp->layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; break;
+		default: return 1; /* run the default layer lookup */
+	}
+
+	return 0; /* handled here */
+}
+
+
 static const char *postproc_thermal_lookup(void *uctx, pcb_any_obj_t *obj)
 {
 	htpp_t *ht = uctx;
@@ -359,6 +373,7 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 	pcb_dlcr_init(&rctx.dlcr);
 	rctx.dlcr.flip_y = 1;
 	rctx.dlcr.save_netname_objs = 1;
+	rctx.dlcr.proto_layer_lookup = pads_proto_layer_lookup;
 
 	/* read the header */
 	if (pads_parse_header(&rctx) != 0) {
