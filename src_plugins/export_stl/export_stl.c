@@ -315,8 +315,12 @@ static long estimate_cutout_pts(pcb_board_t *pcb, vtp0_t *cutouts, pcb_dynf_t df
 		PCB_LINE_LOOP(layer) {
 			if (PCB_DFLAG_TEST(&line->Flags, df)) continue; /* object already found - either as outline or as a cutout */
 			poly = pcb_topoly_conn_with(pcb, (pcb_any_obj_t *)line, PCB_TOPOLY_FLOATING, df);
-			vtp0_append(cutouts, poly);
-			cnt += poly_len(poly);
+			if (poly != NULL) {
+				vtp0_append(cutouts, poly);
+				cnt += poly_len(poly);
+			}
+			else
+				rnd_message(RND_MSG_ERROR, "Cutout error: need closed loops; cutout omitted\n(Hint: use the wireframe draw mode to see broken connections; use a coarse grid and snap to fix them up!)\n");
 /*			rnd_trace(" line: %ld %d -> %p\n", line->ID, PCB_DFLAG_TEST(&line->Flags, df), poly);*/
 		} PCB_END_LOOP;
 		PCB_ARC_LOOP(layer) {
@@ -383,6 +387,12 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	df = pcb_dynflag_alloc("export_stl_map_contour");
 	pcb_data_dynflag_clear(PCB->Data, df);
 	brdpoly = pcb_topoly_1st_outline_with(PCB, PCB_TOPOLY_FLOATING, df);
+
+	if (brdpoly == NULL) {
+		rnd_message(RND_MSG_ERROR, "Contour/outline error: need closed loops\n(Hint: use the wireframe draw mode to see broken connections; use a coarse grid and snap to fix them up!)\n");
+		pcb_dynflag_free(df);
+		return -1;
+	}
 
 	pstk_points = estimate_hole_pts_pstk(PCB, toply, options);
 	cutout_points = estimate_cutout_pts(PCB, &cutouts, df, options);
