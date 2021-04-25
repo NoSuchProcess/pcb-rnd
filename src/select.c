@@ -488,7 +488,7 @@ long int *pcb_list_block(pcb_board_t *pcb, rnd_box_t *Box, int *len)
 int pcb_list_block_cb(pcb_board_t *pcb, rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
 {
 	int len = 0;
-	ListBlock_(pcb, Box, -1, PCB_LYT_ANYWHERE|PCB_LYT_ANYTHING, &len, cb, ctx, 1);
+	ListBlock_(pcb, Box, -1, PCB_LYT_ANYWHERE|PCB_LYT_ANYTHING, &len, cb, ctx, 0);
 	return len;
 }
 
