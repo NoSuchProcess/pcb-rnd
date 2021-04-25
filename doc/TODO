@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: menu crash on startup: pcb-rnd p1.asc from mrg to .16 with ssh -X [report: Igor2]
 - BUG: layer binding dialog: on the standard 4 layer board create a subc with a line on top copper; edit layer bindings of the subc; try to move it to each inner copper -> dialog box gets confused [report: Igor2]
 
 2. For later releases ===============================================================================
