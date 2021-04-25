@@ -106,7 +106,7 @@ static void click_timer_cb(rnd_hidval_t hv)
 			box.X2 = hl->tool_x - PCB_SLOP * rnd_pixel_slop;
 			box.Y1 = hl->tool_y + PCB_SLOP * rnd_pixel_slop;
 			box.Y2 = hl->tool_y - PCB_SLOP * rnd_pixel_slop;
-			pcb_crosshair.drags = pcb_list_block(pcb, &box, &pcb_crosshair.drags_len);
+			pcb_crosshair.drags = pcb_list_block(pcb, &box, &pcb_crosshair.drags_len, 0);
 			pcb_crosshair.drags_current = 0;
 			pcb_tool_attach_for_copy(hl, hl->tool_x, hl->tool_y, rnd_true);
 		}

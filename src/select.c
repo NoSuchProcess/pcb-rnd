@@ -480,9 +480,9 @@ rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool flag, rnd_b
 /* ----------------------------------------------------------------------
  * List all visible objects within the passed box
  */
-long int *pcb_list_block(pcb_board_t *pcb, rnd_box_t *Box, int *len)
+long int *pcb_list_block(pcb_board_t *pcb, rnd_box_t *Box, int *len, rnd_bool and_draw)
 {
-	return ListBlock_(pcb, Box, 1, PCB_LYT_ANYWHERE|PCB_LYT_ANYTHING, len, NULL, NULL, (len != NULL));
+	return ListBlock_(pcb, Box, 1, PCB_LYT_ANYWHERE|PCB_LYT_ANYTHING, len, NULL, NULL, and_draw);
 }
 
 int pcb_list_block_cb(pcb_board_t *pcb, rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)

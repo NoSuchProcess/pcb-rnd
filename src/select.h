@@ -39,8 +39,9 @@
 rnd_bool pcb_select_object(pcb_board_t *pcb);
 rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool flag, rnd_bool vis_only, rnd_bool invert);
 
-/* List visible objects on screen within a box; return a list of IDs */
-long int *pcb_list_block(pcb_board_t *pcb, rnd_box_t *Box, int *len);
+/* List visible objects on screen within a box; return a list of IDs; if and_draw is
+   true, also select the objects. */
+long int *pcb_list_block(pcb_board_t *pcb, rnd_box_t *Box, int *len, rnd_bool and_draw);
 
 /* List visible objects on screen within a box; return number of objects, call
    a callback on each object found. Always creates the return list (caller must
