@@ -137,7 +137,7 @@ RND_INLINE void pcb_poly_point_prealloc_(pcb_poly_t *Polygon, long num_pt, long 
 
 void pcb_poly_point_prealloc(pcb_poly_t *Polygon, long num_pt)
 {
-	return pcb_poly_point_prealloc_(Polygon, num_pt, 0);
+	pcb_poly_point_prealloc_(Polygon, num_pt, 0);
 }
 
 /* gets the next slot for a point in a polygon struct, allocates memory if necessary */
