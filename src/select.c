@@ -217,7 +217,7 @@ do { \
  * Always limit layer search to layer types matching lyt (and never limit globals)
  */
 TODO("cleanup: should be rewritten with generic ops and rtree")
-static long int *ListBlock_(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool Flag, pcb_layer_type_t lyt, int *len, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
+static long int *ListBlock_(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool Flag, pcb_layer_type_t lyt, int *len, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx, rnd_bool and_select)
 {
 	int changed = 0;
 	int used = 0, alloced = 0;
@@ -229,11 +229,11 @@ static long int *ListBlock_(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool Flag, pcb
 /* append an object to the return list OR set the flag if there's no list */
 #define append_list(undo_type, p1, obj) \
 do { \
-	if (len == NULL) { \
+	if (and_select) { \
 		pcb_undo_add_obj_to_flag(obj); \
 		PCB_FLAG_ASSIGN(PCB_FLAG_SELECTED, Flag, obj); \
 	} \
-	else { \
+	if (len != NULL) { \
 		if (used >= alloced) { \
 			alloced += 64; \
 			list = realloc(list, sizeof(*list) * alloced); \
@@ -265,7 +265,7 @@ do { \
 	{
 		if (PCB_LINE_NEAR_BOX((pcb_line_t *) line, Box) && !PCB_FLAG_TEST(PCB_FLAG_LOCK, line) && PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) != Flag) {
 			append(PCB_OBJ_RAT, line, line);
-			if (pcb->RatOn)
+			if (and_select && pcb->RatOn)
 				pcb_rat_invalidate_draw(line);
 		}
 	}
@@ -296,7 +296,7 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, line)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, line) != Flag) {
 				append(PCB_OBJ_LINE, layer, line);
-				if ((len != NULL) && layer->meta.real.vis)
+				if (and_select && layer->meta.real.vis)
 					pcb_line_invalidate_draw(layer, line);
 			}
 		}
@@ -307,7 +307,7 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, arc)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, arc) != Flag) {
 				append(PCB_OBJ_ARC, layer, arc);
-				if ((len != NULL) && layer->meta.real.vis)
+				if (and_select && layer->meta.real.vis)
 					pcb_arc_invalidate_draw(layer, arc);
 			}
 		}
@@ -319,7 +319,7 @@ do { \
 						&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, text)
 						&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, text) != Flag) {
 					append(PCB_OBJ_TEXT, layer, text);
-					if ((len != NULL) && pcb_text_is_visible(PCB, layer, text))
+					if (and_select && pcb_text_is_visible(PCB, layer, text))
 						pcb_text_invalidate_draw(layer, text);
 				}
 			}
@@ -331,7 +331,7 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, polygon)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, polygon) != Flag) {
 				append(PCB_OBJ_POLY, layer, polygon);
-				if ((len != NULL) && layer->meta.real.vis)
+				if (and_select && layer->meta.real.vis)
 					pcb_poly_invalidate_draw(layer, polygon);
 			}
 		}
@@ -342,7 +342,7 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, gfx)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, gfx) != Flag) {
 				append(PCB_OBJ_GFX, layer, gfx);
-				if ((len != NULL) && layer->meta.real.vis)
+				if (and_select && layer->meta.real.vis)
 					pcb_gfx_invalidate_draw(layer, gfx);
 			}
 		}
@@ -357,10 +357,10 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, subc)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, subc) != Flag) {
 
-				if (len == NULL) {
+				if (and_select) {
 					pcb_subc_select(PCB, subc, Flag, 1);
 				}
-				else {
+				if (len != NULL) {
 					if (used >= alloced) {
 						alloced += 64;
 						list = realloc(list, sizeof(*list) * alloced);
@@ -368,7 +368,7 @@ do { \
 					list[used] = subc->ID;
 					used++;
 				}
-				if (len != NULL) {
+				if (and_select) {
 					changed = 1;
 					DrawSubc(subc);
 				}
@@ -385,14 +385,14 @@ do { \
 					&& !PCB_FLAG_TEST(PCB_FLAG_LOCK, padstack)
 					&& PCB_FLAG_TEST(PCB_FLAG_SELECTED, padstack) != Flag) {
 				append(PCB_OBJ_PSTK, padstack, padstack);
-				if ((len != NULL) && pcb->pstk_on)
+				if (and_select && pcb->pstk_on)
 					pcb_pstk_invalidate_draw(padstack);
 			}
 		}
 		PCB_END_LOOP;
 	}
 
-	if ((len != NULL) && changed) {
+	if (and_select && changed) {
 		pcb_draw();
 		pcb_undo_inc_serial();
 	}
@@ -482,20 +482,20 @@ rnd_bool pcb_select_block(pcb_board_t *pcb, rnd_box_t *Box, rnd_bool flag, rnd_b
  */
 long int *pcb_list_block(pcb_board_t *pcb, rnd_box_t *Box, int *len)
 {
-	return ListBlock_(pcb, Box, 1, PCB_LYT_ANYWHERE|PCB_LYT_ANYTHING, len, NULL, NULL);
+	return ListBlock_(pcb, Box, 1, PCB_LYT_ANYWHERE|PCB_LYT_ANYTHING, len, NULL, NULL, (len != NULL));
 }
 
 int pcb_list_block_cb(pcb_board_t *pcb, rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
 {
 	int len = 0;
-	ListBlock_(pcb, Box, -1, PCB_LYT_ANYWHERE|PCB_LYT_ANYTHING, &len, cb, ctx);
+	ListBlock_(pcb, Box, -1, PCB_LYT_ANYWHERE|PCB_LYT_ANYTHING, &len, cb, ctx, 1);
 	return len;
 }
 
 int pcb_list_lyt_block_cb(pcb_board_t *pcb, pcb_layer_type_t lyt, rnd_box_t *Box, void *(cb)(void *ctx, pcb_any_obj_t *obj), void *ctx)
 {
 	int len = 0;
-	ListBlock_(pcb, Box, -1, lyt, ((cb == NULL) ? &len : NULL), cb, ctx);
+	ListBlock_(pcb, Box, -1, lyt, ((cb == NULL) ? &len : NULL), cb, ctx, 0);
 	return len;
 }
 
