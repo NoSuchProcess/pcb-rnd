@@ -207,6 +207,7 @@ ha:rnd-menu-v1 {
 							-
 							ha:Previous grid          = { li:a={{<key>g; <key>b};{<char>[};}; action=Grid(down) }
 							ha:Next grid              = { li:a={{<key>g; <key>f};{<char>]};}; action=Grid(up) }
+							ha:Custom grid            = { li:a={{<key>g; <key>c};}; action=Grid(ask) }
 							-
 							ha:Grid *2                = { a={<key>g; <key>d}; action=SetGrid(*2) }
 							ha:Grid /2                = { a={<key>g; <key>h}; action=SetGrid(/2) }
