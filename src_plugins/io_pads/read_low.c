@@ -36,7 +36,11 @@ static int ishspace(int c) { return ((c == ' ') || (c == '\t') || (c == '\r')); 
 static void pads_eatup_till_nl(pads_read_ctx_t *rctx)
 {
 	int c;
-	while((c = fgetc(rctx->f)) != '\n') pads_update_loc(rctx, c);
+	while((c = fgetc(rctx->f)) != '\n') {
+		if (c == -1)
+			return;
+		pads_update_loc(rctx, c);
+	}
 	pads_update_loc(rctx, c);
 }
 
