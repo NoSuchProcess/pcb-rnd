@@ -251,10 +251,12 @@ static int pads_parse_misc_rules_hdr(pads_read_ctx_t *rctx)
 
 	key2[0] = '\0';
 	if ((res = pads_read_word(rctx, key1, sizeof(key1), 0)) <= 0) return res;
+	if (*key1 == '\0')
+		return 1;
 	if (pads_has_field(rctx)) pads_read_word(rctx, key2, sizeof(key2), 0);
 	pads_eatup_till_nl(rctx);
 
-	rnd_trace(" rules? key='%s' '%s'\n", key1, key2);
+	rnd_trace(" rules? key='%s' '%s' line=%ld\n", key1, key2, rctx->line);
 	if ((strcmp(key1, "GROUP") == 0) && (strcmp(key2, "DATA") == 0)) {
 		key2[0] = '\0';
 		if ((res = pads_read_word(rctx, key1, sizeof(key1), 0)) <= 0) return res;
@@ -274,7 +276,7 @@ static int pads_parse_misc_rules_hdr(pads_read_ctx_t *rctx)
 static int pads_parse_misc_rules(pads_read_ctx_t *rctx)
 {
 	pads_eatup_till_nl(rctx);
-	rnd_trace("rules:\n");
+	rnd_trace("---------rules: %ld\n", rctx->line);
 	return pads_parse_misc_generic(rctx, pads_parse_misc_rules_hdr);
 }
 
@@ -311,7 +313,7 @@ static int pads_parse_misc(pads_read_ctx_t *rctx)
 		if ((res = pads_read_word(rctx, key, sizeof(key), 0)) <= 0)
 			return res;
 		if (strcmp(key, "LAYER") == 0) res = pads_parse_misc_layers(rctx);
-		if (strcmp(key, "RULES_SECTION") == 0) res = pads_parse_misc_rules(rctx);
+		else if (strcmp(key, "RULES_SECTION") == 0) res = pads_parse_misc_rules(rctx);
 		else if (*key != '\0') {
 			pads_eatup_till_nl(rctx);
 			res = 1;
