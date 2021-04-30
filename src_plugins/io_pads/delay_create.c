@@ -517,7 +517,7 @@ static pcb_layer_t *pcb_dlcr_lookup_subc_layer(pcb_board_t *pcb, pcb_subc_t *sub
 static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc, pcb_dlcr_t *dlcr, pcb_dlcr_draw_t *obj)
 {
 	pcb_data_t *data;
-	pcb_any_obj_t *r;
+	pcb_any_obj_t *r = NULL;
 	pcb_line_t *l = &obj->val.obj.obj.line;
 	pcb_arc_t *a = &obj->val.obj.obj.arc;
 	pcb_text_t *t = &obj->val.obj.obj.text;
@@ -586,7 +586,7 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 	}
 
 #ifdef DEBUG_LOC_ATTR
-	{
+	if (r != NULL) {
 		char tmp[32];
 		sprintf(tmp, "%ld", obj->loc_line);
 		pcb_attribute_set(pcb, &r->Attributes, "io_pads_loc_line", tmp, 0);
@@ -594,7 +594,7 @@ static pcb_any_obj_t *pcb_dlcr_draw_free_obj(pcb_board_t *pcb, pcb_subc_t *subc,
 #endif
 
 	/* remember obj:netname pairs if requested */
-	if (dlcr->save_netname_objs && (obj->netname != NULL)) {
+	if (dlcr->save_netname_objs && (obj->netname != NULL) && (r != NULL)) {
 		vtp0_append(&dlcr->netname_objs, r);
 		vtp0_append(&dlcr->netname_objs, obj->netname);
 		obj->netname = NULL; /* do not free */
