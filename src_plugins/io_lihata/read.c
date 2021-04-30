@@ -2370,12 +2370,17 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 				/* import old, diameter based via geometry from old files */
 				err |= parse_coord(&pad_dia,   dn);
 				err |= parse_coord(&drill_dia, hn);
-				if (err == 0) {
+
+				if ((err == 0) && ((drill_dia <= 0) || (pad_dia <= 0) || (pad_dia <= drill_dia))) {
+					iolht_error(stn, "Invalid route style prototype via diameters: copper or hole dia too small\n(Via ignored for routing style '%s')\n", s->name);
+					s->via_proto = -1;
+				}
+				else if ((err == 0) && (drill_dia > 0) && (pad_dia > 0) && (pad_dia > drill_dia)) {
 					if (pcb_compat_route_style_via_load(dt, s, drill_dia, pad_dia, mask) != 0)
 						iolht_warn(rctx, stn, -1, "Invalid route style via diameters in %s: can not create padstack proto\n", s->name);
 				}
 				else
-					return iolht_error(stn, "Invalid route style prototype via diameters\n");
+					return iolht_error(stn, "Invalid route style prototype via diameters: syntax error\n");
 			}
 		}
 
