@@ -385,6 +385,8 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 	htsp_init(&rctx.parts, strhash, strkeyeq);
 
 	ret = (pads_parse_block(&rctx) == 1) ? 0 : -1;
+	if (ret != 0) 
+		rnd_message(RND_MSG_INFO ,"io_pads: last line parsed: %ld\n", rctx.line);
 
 	pads_assign_layers(&rctx);
 	pcb_dlcr_create(pcb, &rctx.dlcr);
