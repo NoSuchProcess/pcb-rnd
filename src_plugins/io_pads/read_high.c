@@ -521,7 +521,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 	char name[256], shape[8], pinno[10];
 	rnd_coord_t drill = 0, size;
 	long sn, n, num_lines, level, start = 0, end = 0, pid;
-	int res;
+	int res, has_slot = 0;
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	if (terms != NULL) {
@@ -599,6 +599,9 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 				if (OPTF) if ((res = pads_read_double(rctx, &slotrot)) <= 0) return res;
 				if (OPTF) if ((res = pads_read_coord(rctx, &slotlen)) <= 0) return res;
 				if (OPTF) if ((res = pads_read_coord(rctx, &slotoffs)) <= 0) return res;
+
+				if (slotlen > 0)
+					has_slot= 1;
 			}
 		}
 		else { /* thermal */
@@ -684,6 +687,8 @@ TODO("Handle: O: requires powerpcb to check\n");
 	}
 	ts->len = sn;
 
+	if ((proto->hdia <= 0) && !has_slot)
+		proto->hplated = 0;
 	pcb_pstk_proto_update(proto);
 
 	if (terms != NULL) {
