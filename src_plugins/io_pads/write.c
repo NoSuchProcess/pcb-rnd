@@ -35,10 +35,10 @@
 
 typedef struct {
 	FILE *f;
-	int ver;
+	double ver;
 } write_ctx_t;
 
-static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency, int ver)
+static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency, double ver)
 {
 	write_ctx_t wctx;
 
@@ -50,5 +50,10 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 int io_pads_write_pcb_2005(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
 	return io_pads_write_pcb(ctx, f, old_filename, new_filename, emergency, 2005);
+}
+
+int io_pads_write_pcb_9_4(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency)
+{
+	return io_pads_write_pcb(ctx, f, old_filename, new_filename, emergency, 9.4);
 }
 

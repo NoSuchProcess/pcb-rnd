@@ -38,7 +38,7 @@
 #include "read.h"
 #include "write.h"
 
-static pcb_plug_io_t io_pads_2005;
+static pcb_plug_io_t io_pads_9_4, io_pads_2005;
 static const char *pads_cookie = "PADS IO";
 
 
@@ -60,8 +60,8 @@ int pplg_check_ver_io_pads(int ver_needed) { return 0; }
 
 void pplg_uninit_io_pads(void)
 {
-	rnd_remove_actions_by_cookie(pads_cookie);
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_2005);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_9_4);
 }
 
 int pplg_init_io_pads(void)
@@ -86,6 +86,12 @@ int pplg_init_io_pads(void)
 	io_pads_2005.multi_footprint = 1;
 
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_2005);
+
+	io_pads_9_4 = io_pads_2005;
+	io_pads_9_4.description = "PADS ASCII board (V9.4)";
+	io_pads_9_4.save_preference_prio = 63;
+	io_pads_9_4.write_pcb = io_pads_write_pcb_9_4;
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_9_4);
 
 	return 0;
 }
