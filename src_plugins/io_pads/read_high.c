@@ -381,7 +381,7 @@ TODO("w is really thickness; requires powerpcb to check");
 		text->val.obj.layer_id = PCB_DLCR_INVALID_LAYER_ID;
 		switch(level) {
 			case 1: text->val.obj.lyt = PCB_LYT_TOP | PCB_LYT_SILK; break;
-			case 2: text->val.obj.lyt = PCB_LYT_BOTTOM | PCB_LYT_SILK; break; TODO("need to check what happens on the bottom side, is it really LID 2?");
+			case 2: text->val.obj.lyt = PCB_LYT_BOTTOM | PCB_LYT_SILK; break; TODO("need to check what happens on the bottom side, is it really LID 2?; requires powerpcb to check");
 			default:
 				TODO("Figure what does this mean; requires powerpcb to check");
 				PADS_ERROR((RND_MSG_ERROR, "invalid label level %ld\n", level));
@@ -776,10 +776,12 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 		name, xo, yo, num_pieces, num_texts, num_labels, num_terms, num_stacks);
 
 	old_coord_scale = rctx->coord_scale;
-	if ((*unit == 'I') || (*unit == 'i'))
-		rctx->coord_scale = RND_MIL_TO_COORD(1);
-	else if ((*unit == 'M') || (*unit == 'm'))
-		rctx->coord_scale = RND_MM_TO_COORD(1.0);
+	if (rctx->coord_scale > 1) { /* it seems if the file is in BASIC mode, this field should be ignored because partdecals are in BASIC too */
+		if ((*unit == 'I') || (*unit == 'i'))
+			rctx->coord_scale = RND_MIL_TO_COORD(1);
+		else if ((*unit == 'M') || (*unit == 'm'))
+			rctx->coord_scale = RND_MM_TO_COORD(1.0);
+	}
 
 
 	subc = pcb_dlcr_subc_new_in_lib(&rctx->dlcr, name);
