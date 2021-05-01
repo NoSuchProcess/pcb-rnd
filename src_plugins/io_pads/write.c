@@ -41,9 +41,18 @@ typedef struct {
 static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency, double ver)
 {
 	write_ctx_t wctx;
+	char vers[16];
 
 	wctx.f = f;
 	wctx.ver = ver;
+
+	if (ver < 1000) /* V9.4 and alike */
+		sprintf(vers, "V%.1f", ver);
+	else /* V2005 and friends */
+		sprintf(vers, "V%d", (int)ver);
+
+	fprintf(f, "!PADS-POWERPCB-%s-METRIC! DESIGN DATABASE ASCII FILE 1.0\r\n", vers);
+
 	return -1;
 }
 
