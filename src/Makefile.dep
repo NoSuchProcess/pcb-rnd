@@ -7656,7 +7656,7 @@
  change.h obj_pstk_inlines.h thermal.h operation.h \
  ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
  ../src_plugins/io_pads/delay_postproc.c \
- ../src_plugins/io_pads/delay_postproc.h thermal.h
+ ../src_plugins/io_pads/delay_postproc.h thermal.h netlist.h find.h
 ../src_plugins/io_pads/io_pads.o: ../src_plugins/io_pads/io_pads.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/plugins.h \
@@ -7714,7 +7714,7 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/hash.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/io_pads/read.h
+ ../src_plugins/io_pads/read.h ../src_plugins/io_pads/write.h
 ../src_plugins/io_pads/read.o: ../src_plugins/io_pads/read.c ../config.h \
  ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
@@ -7766,13 +7766,14 @@
  ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  obj_subc_parent.h draw.h thermal.h operation.h \
- ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h \
- ../src_plugins/io_pads/delay_create.h \
+ ../src_3rd/librnd-local/src/librnd/poly/polygon1_gen.h netlist.h \
+ obj_term.h ../src_plugins/io_pads/delay_create.h \
  ../src_3rd/librnd-local/src/librnd/core/vtc0.h data.h layer.h \
  obj_common.h obj_subc.h ../src_plugins/io_pads/delay_clearance.h \
- ../src_plugins/io_pads/read.h plug_io.h \
- ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h plug_footprint.h \
- ../src_plugins/io_pads/read_low.c ../src_plugins/io_pads/read_high.c \
+ ../src_plugins/io_pads/delay_postproc.h ../src_plugins/io_pads/read.h \
+ plug_io.h ../src_3rd/librnd-local/src/../src_3rd/genvector/vts0.h \
+ plug_footprint.h ../src_plugins/io_pads/read_low.c \
+ ../src_plugins/io_pads/read_high.c \
  ../src_plugins/io_pads/read_high_misc.c
 ../src_plugins/io_pcb/attribs.o: ../src_plugins/io_pcb/attribs.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
