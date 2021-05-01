@@ -1333,7 +1333,7 @@ static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, pads_poly_type_t
 		}
 	}
 
-TODO("bloat up the poly if width != 0");
+TODO("bloat up the poly if width != 0; requires powerpcb to see if it's only the rounding radius or grows the poly");
 	if ((*signame != '\0') && (poly != NULL))
 		pcb_dlcr_set_net(poly, signame);
 
