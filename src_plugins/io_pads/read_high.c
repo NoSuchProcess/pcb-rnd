@@ -755,6 +755,7 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 	int res;
 	pcb_subc_t *subc;
 	vtp0_t terms = {0};
+	double old_coord_scale;
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, unit, sizeof(unit), 0)) <= 0) return res;
@@ -773,7 +774,14 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 
 	rnd_trace("part '%s', original %mm;%mm pcs=%ld texts=%ld labels=%ld terms=%ld stacks=%ld\n",
 		name, xo, yo, num_pieces, num_texts, num_labels, num_terms, num_stacks);
-TODO("set unit and origin");
+TODO("set origin");
+
+	old_coord_scale = rctx->coord_scale;
+	if ((*unit == 'I') || (*unit == 'i'))
+		rctx->coord_scale = RND_MIL_TO_COORD(1);
+	else if ((*unit == 'M') || (*unit == 'm'))
+		rctx->coord_scale = RND_MM_TO_COORD(1.0);
+
 
 	subc = pcb_dlcr_subc_new_in_lib(&rctx->dlcr, name);
 	pcb_dlcr_subc_begin(&rctx->dlcr, subc);
@@ -792,6 +800,8 @@ TODO("set unit and origin");
 	free_terms(rctx, &terms, defpid);
 
 	pcb_dlcr_subc_end(&rctx->dlcr);
+
+	rctx->coord_scale = old_coord_scale;
 
 	return 1;
 }
