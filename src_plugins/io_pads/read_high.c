@@ -600,8 +600,12 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 				if (OPTF) if ((res = pads_read_coord(rctx, &slotlen)) <= 0) return res;
 				if (OPTF) if ((res = pads_read_coord(rctx, &slotoffs)) <= 0) return res;
 
-				if (slotlen > 0)
-					has_slot= 1;
+				if (slotlen > 0) {
+					if (!has_slot) {
+						TODO("Create slot; requires powerpcb for testing");
+					}
+					has_slot = 1;
+				}
 			}
 		}
 		else { /* thermal */
