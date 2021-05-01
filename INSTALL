@@ -74,6 +74,11 @@ files appeared (useful for developers):
 
   make linstall
 
+Note: pcb-rnd depends on librnd, which is dynamically linked. If you
+install into non-standard path (e.g somewhere under /home or /opt), you need to
+make sure your system dl will search for librnd.so in the nonstandard place.
+Even in case of standard installation you may need to run ldconfig on some
+systems to update the system cache of .so files.
 
 5. Packaging
 
