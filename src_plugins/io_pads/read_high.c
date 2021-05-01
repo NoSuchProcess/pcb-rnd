@@ -322,7 +322,7 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 	if ((res = pads_read_coord(rctx, &h)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &w)) <= 0) return res;
 
-TODO("w is really thickness");
+TODO("w is really thickness; requires powerpcb to check");
 
 	/* next field is either mirror (M or N) or hjust */
 	if ((res = pads_read_word(rctx, hjust, sizeof(hjust), 0)) <= 0) return res;
@@ -354,7 +354,7 @@ TODO("w is really thickness");
 	else
 		rnd_trace("\n");
 
-	TODO("This should rather use font height");
+	TODO("This should rather use font height; requires powerpcb to check");
 	scale = (double)w/RND_MM_TO_COORD(1.0) * 100.0 * 8;
 
 	if (is_label) {
@@ -368,7 +368,7 @@ TODO("w is really thickness");
 		}
 	}
 
-	TODO("do not ignore text alignment");
+	TODO("do not ignore text alignment; requires powerpcb to check");
 	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo+w*9, rot, scale, 0, str, (is_label ? PCB_FLAG_FLOATER : 0) | flg);
 	text->loc_line = rctx->line;
 	if (in_subc) {
