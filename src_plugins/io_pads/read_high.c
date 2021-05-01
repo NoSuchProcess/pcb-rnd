@@ -774,7 +774,6 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 
 	rnd_trace("part '%s', original %mm;%mm pcs=%ld texts=%ld labels=%ld terms=%ld stacks=%ld\n",
 		name, xo, yo, num_pieces, num_texts, num_labels, num_terms, num_stacks);
-TODO("set origin");
 
 	old_coord_scale = rctx->coord_scale;
 	if ((*unit == 'I') || (*unit == 'i'))
