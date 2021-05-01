@@ -552,7 +552,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 
 	rnd_trace(" pstk_proto: %s drill=%mm [%ld..%ld] pr=%p ts=%p\n", name, drill, start, end, proto, ts);
 
-	for(sn = 0; n < num_lines; n++) {
+	for(n = sn = 0; n < num_lines; n++) {
 		double rot = 0, slotrot = 0, spokerot = 0;
 		char plated[8];
 		int c, is_thermal;
