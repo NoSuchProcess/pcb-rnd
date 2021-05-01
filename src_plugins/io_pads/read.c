@@ -384,6 +384,9 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 
 	htsp_init(&rctx.parts, strhash, strkeyeq);
 
+	pcb_layergrp_inhibit_inc();
+	pcb_data_clip_inhibit_inc(pcb->Data);
+
 	ret = (pads_parse_block(&rctx) == 1) ? 0 : -1;
 	if (ret != 0) 
 		rnd_message(RND_MSG_INFO ,"io_pads: last line parsed: %ld\n", rctx.line);
@@ -393,6 +396,10 @@ int io_pads_parse_pcb(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename
 	pcb_dlcl_apply(pcb, rctx.clr);
 	postproc_thermal(&rctx);
 	pcb_dlcr_uninit(&rctx.dlcr);
+
+	pcb_data_clip_inhibit_dec(pcb->Data, 1);
+	pcb_layergrp_inhibit_dec();
+
 
 	genht_uninit_deep(htsp, &rctx.parts, {
 		free(htent->key);
