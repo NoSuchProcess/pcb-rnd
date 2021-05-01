@@ -762,7 +762,7 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 		if (text->clearance != 0)
 			lht_dom_hash_put(obj, build_textf("clearance", CFMT, text->clearance));
 		else
-			lht_dom_hash_put(obj, dummy_text_node("clearance"));
+			lht_dom_hash_put(obj, dummy_node("clearance"));
 	}
 	else if (text->clearance != 0)
 		pcb_io_incompat_save(NULL, (pcb_any_obj_t *)text, "text-clearance", "file format does not support custom text clearance value", "do not use text clearance or save in lihata >=v8");
@@ -771,15 +771,15 @@ static lht_node_t *build_pcb_text(const char *role, pcb_text_t *text)
 		if (text->Scale != 0)
 			lht_dom_hash_put(obj, build_textf("scale", "%d", text->Scale));
 		else
-			lht_dom_hash_put(obj, dummy_text_node("scale"));
+			lht_dom_hash_put(obj, dummy_node("scale"));
 		if (text->scale_x != 0)
 			lht_dom_hash_put(obj, build_textf("scale_x", "%f", text->scale_x));
 		else
-			lht_dom_hash_put(obj, dummy_text_node("scale"));
+			lht_dom_hash_put(obj, dummy_node("scale_x"));
 		if (text->scale_y != 0)
 			lht_dom_hash_put(obj, build_textf("scale_y", "%f", text->scale_y));
 		else
-			lht_dom_hash_put(obj, dummy_text_node("scale"));
+			lht_dom_hash_put(obj, dummy_node("scale_y"));
 	}
 	else {
 		int scale;
