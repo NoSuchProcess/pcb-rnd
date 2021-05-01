@@ -1,3 +1,4 @@
+34633	configure	io_pads: PADS_ASCII write code
 34521	configure	export_lpr: configurable default scales
 34509	configure	librnd: moving box-box intersection code to librnd
 34375	configure	librnd: make sure the local .so symlinks are updated on make all so they don't point to old version .so's

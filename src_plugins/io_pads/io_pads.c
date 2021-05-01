@@ -36,6 +36,7 @@
 #include "plug_io.h"
 
 #include "read.h"
+#include "write.h"
 
 static pcb_plug_io_t io_pads;
 static const char *pads_cookie = "PADS IO";
@@ -75,7 +76,8 @@ int pplg_init_io_pads(void)
 	io_pads.map_footprint = io_pads_map_footprint;*/
 	io_pads.parse_font = NULL;
 	io_pads.write_buffer = NULL;
-	io_pads.write_pcb = NULL;
+	io_pads.write_pcb = io_pads_write_pcb_2005;
+	io_pads.save_preference_prio = 93;
 	io_pads.default_fmt = "pads";
 	io_pads.description = "pads board";
 	io_pads.save_preference_prio = 91;
