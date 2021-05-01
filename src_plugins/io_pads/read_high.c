@@ -520,7 +520,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 	pcb_pstk_tshape_t *ts;
 	char name[256], shape[8], pinno[10];
 	rnd_coord_t drill = 0, size;
-	long n, num_lines, level, start = 0, end = 0, pid;
+	long sn, n, num_lines, level, start = 0, end = 0, pid;
 	int res;
 
 	if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
@@ -552,13 +552,13 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 
 	rnd_trace(" pstk_proto: %s drill=%mm [%ld..%ld] pr=%p ts=%p\n", name, drill, start, end, proto, ts);
 
-	for(n = 0; n < num_lines; n++) {
+	for(sn = 0; n < num_lines; n++) {
 		double rot = 0, slotrot = 0, spokerot = 0;
 		char plated[8];
 		int c, is_thermal;
 		long spoke_num = 0;
 		rnd_coord_t finlen = 0, finoffs = 0, inner = 0, corner = 0, drill = 0, slotlen = 0, slotoffs = 0, spoke_outsize = 0, spoke_width = 0;
-		pcb_pstk_shape_t *shp = ts->shape + n;
+		pcb_pstk_shape_t *shp = ts->shape + sn;
 
 		if ((res = pads_read_long(rctx, &level)) <= 0) return res;
 		if ((res = pads_read_coord(rctx, &size)) <= 0) return res;
@@ -615,49 +615,58 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 		pads_eatup_till_nl(rctx);
 		rnd_trace("  lev=%ld size=%mm/%mm shape=%s is_thermal=%d\n", level, size, inner, shape, is_thermal);
 
+		shp->shape = -1;
+
 		/* create the shape in shp */
 		if (((shape[0] == 'R') || (shape[0] == 'A')) && (shape[1] == '\0')) {
-			shp->shape = PCB_PSSH_CIRC;
-			shp->data.circ.x = shp->data.circ.y = 0;
-			shp->data.circ.dia = size;
+			if (size != 0) {
+				shp->shape = PCB_PSSH_CIRC;
+				shp->data.circ.x = shp->data.circ.y = 0;
+				shp->data.circ.dia = size;
+			}
 		}
 		else if ((shape[0] == 'S') && (shape[1] == '\0')) {
 			rnd_coord_t r2 = rnd_round(size / 2.0);
-			shp->shape = PCB_PSSH_POLY;
-			pcb_pstk_shape_alloc_poly(&shp->data.poly, 4);
-			if (r2 == 0) r2 = 100;
-			shp->data.poly.x[0] = -r2; shp->data.poly.y[0] = -r2;
-			shp->data.poly.x[1] = +r2; shp->data.poly.y[1] = -r2;
-			shp->data.poly.x[2] = +r2; shp->data.poly.y[2] = +r2;
-			shp->data.poly.x[3] = -r2; shp->data.poly.y[3] = +r2;
+			if (r2 != 0) {
+				shp->shape = PCB_PSSH_POLY;
+				pcb_pstk_shape_alloc_poly(&shp->data.poly, 4);
+				shp->data.poly.x[0] = -r2; shp->data.poly.y[0] = -r2;
+				shp->data.poly.x[1] = +r2; shp->data.poly.y[1] = -r2;
+				shp->data.poly.x[2] = +r2; shp->data.poly.y[2] = +r2;
+				shp->data.poly.x[3] = -r2; shp->data.poly.y[3] = +r2;
+			}
 		}
 		else if ((shape[0] == 'R') && (shape[1] == 'F') && (shape[2] == '\0')) {
 			rnd_coord_t r1 = rnd_round(finlen / 2.0), r2 = rnd_round(size / 2.0);
-			shp->shape = PCB_PSSH_POLY;
-			pcb_pstk_shape_alloc_poly(&shp->data.poly, 4);
-			if (r2 == 0) r2 = 100;
-			shp->data.poly.x[0] = -r1 + finoffs; shp->data.poly.y[0] = -r2;
-			shp->data.poly.x[1] = +r1 + finoffs; shp->data.poly.y[1] = -r2;
-			shp->data.poly.x[2] = +r1 + finoffs; shp->data.poly.y[2] = +r2;
-			shp->data.poly.x[3] = -r1 + finoffs; shp->data.poly.y[3] = +r2;
+			if (r2 != 0) {
 
-			if (rot != 0) {
-				double cs = cos(rot / RND_RAD_TO_DEG), sn = sin(rot / RND_RAD_TO_DEG);
-				int n;
-				for(n = 0; n < shp->data.poly.len; n++)
-					rnd_rotate(&shp->data.poly.x[n], &shp->data.poly.y[n], 0, 0, cs, sn);
+				shp->shape = PCB_PSSH_POLY;
+				pcb_pstk_shape_alloc_poly(&shp->data.poly, 4);
+				shp->data.poly.x[0] = -r1 + finoffs; shp->data.poly.y[0] = -r2;
+				shp->data.poly.x[1] = +r1 + finoffs; shp->data.poly.y[1] = -r2;
+				shp->data.poly.x[2] = +r1 + finoffs; shp->data.poly.y[2] = +r2;
+				shp->data.poly.x[3] = -r1 + finoffs; shp->data.poly.y[3] = +r2;
+
+				if (rot != 0) {
+					double cs = cos(rot / RND_RAD_TO_DEG), sn = sin(rot / RND_RAD_TO_DEG);
+					int n;
+					for(n = 0; n < shp->data.poly.len; n++)
+						rnd_rotate(&shp->data.poly.x[n], &shp->data.poly.y[n], 0, 0, cs, sn);
+				}
 			}
 		}
 		else if ((shape[0] == 'O') && (shape[1] == 'F') && (shape[2] == '\0')) {
 			rnd_coord_t r1 = rnd_round(finlen / 2.0), r2 = rnd_round(size / 2.0);
-			shp->shape = PCB_PSSH_LINE;
-			shp->data.line.x1 = -r1 + r2 + finoffs; shp->data.line.y1 = 0;
-			shp->data.line.x2 = +r1 - r2 + finoffs; shp->data.line.y1 = 0;
-			shp->data.line.thickness = size;
-			if (rot != 0) {
-				double cs = cos(rot / RND_RAD_TO_DEG), sn = sin(rot / RND_RAD_TO_DEG);
-				rnd_rotate(&shp->data.line.x1, &shp->data.line.y1, 0, 0, cs, sn);
-				rnd_rotate(&shp->data.line.x2, &shp->data.line.y2, 0, 0, cs, sn);
+			if ((r1 != 0) && (r2 != 0)) {
+				shp->shape = PCB_PSSH_LINE;
+				shp->data.line.x1 = -r1 + r2 + finoffs; shp->data.line.y1 = 0;
+				shp->data.line.x2 = +r1 - r2 + finoffs; shp->data.line.y1 = 0;
+				shp->data.line.thickness = size;
+				if (rot != 0) {
+					double cs = cos(rot / RND_RAD_TO_DEG), sn = sin(rot / RND_RAD_TO_DEG);
+					rnd_rotate(&shp->data.line.x1, &shp->data.line.y1, 0, 0, cs, sn);
+					rnd_rotate(&shp->data.line.x2, &shp->data.line.y2, 0, 0, cs, sn);
+				}
 			}
 		}
 		else { /* final fallback so that we have a prototype to draw */
@@ -668,8 +677,13 @@ TODO("Handle: O: requires powerpcb to check\n");
 			PADS_ERROR((RND_MSG_ERROR, "failed to understand padstack shape '%s'; created dummy small circle\n", shape));
 		}
 
-		shp->dlcr_psh_layer_id = level; /* ugly hack: save the layer id for now */
+		if (shp->shape != -1) {
+			shp->dlcr_psh_layer_id = level; /* ugly hack: save the layer id for now */
+			sn++;
+		}
 	}
+	ts->len = sn;
+
 	pcb_pstk_proto_update(proto);
 
 	if (terms != NULL) {
