@@ -38,7 +38,7 @@
 #include "read.h"
 #include "write.h"
 
-static pcb_plug_io_t io_pads;
+static pcb_plug_io_t io_pads_2005;
 static const char *pads_cookie = "PADS IO";
 
 
@@ -50,8 +50,8 @@ int io_pads_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 	if (((typ & (~(PCB_IOT_FOOTPRINT))) != 0) && ((typ & (~(PCB_IOT_PCB))) != 0)) /* support only footprints */
 		return 0;
 
-	if (wr) /* no footprint write yet */
-		return 0;
+	if (wr)
+		return 93;
 
 	return 100;
 }
@@ -61,32 +61,31 @@ int pplg_check_ver_io_pads(int ver_needed) { return 0; }
 void pplg_uninit_io_pads(void)
 {
 	rnd_remove_actions_by_cookie(pads_cookie);
-	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_2005);
 }
 
 int pplg_init_io_pads(void)
 {
 	RND_API_CHK_VER;
 
-	io_pads.plugin_data = NULL;
-	io_pads.fmt_support_prio = io_pads_fmt;
-	io_pads.test_parse = io_pads_test_parse;
-	io_pads.parse_pcb = io_pads_parse_pcb;
-/*	io_pads.parse_footprint = io_pads_parse_footprint;
-	io_pads.map_footprint = io_pads_map_footprint;*/
-	io_pads.parse_font = NULL;
-	io_pads.write_buffer = NULL;
-	io_pads.write_pcb = io_pads_write_pcb_2005;
-	io_pads.save_preference_prio = 93;
-	io_pads.default_fmt = "pads";
-	io_pads.description = "pads board";
-	io_pads.save_preference_prio = 91;
-	io_pads.default_extension = ".asc";
-	io_pads.fp_extension = ".asc";
-	io_pads.mime_type = "application/x-pads";
-	io_pads.multi_footprint = 1;
+	io_pads_2005.plugin_data = NULL;
+	io_pads_2005.fmt_support_prio = io_pads_fmt;
+	io_pads_2005.test_parse = io_pads_test_parse;
+	io_pads_2005.parse_pcb = io_pads_parse_pcb;
+/*	io_pads_2005.parse_footprint = io_pads_parse_footprint;
+	io_pads_2005.map_footprint = io_pads_map_footprint;*/
+	io_pads_2005.parse_font = NULL;
+	io_pads_2005.write_buffer = NULL;
+	io_pads_2005.write_pcb = io_pads_write_pcb_2005;
+	io_pads_2005.default_fmt = "pads";
+	io_pads_2005.description = "PADS ASCII board (V2005)";
+	io_pads_2005.save_preference_prio = 61;
+	io_pads_2005.default_extension = ".asc";
+	io_pads_2005.fp_extension = ".asc";
+	io_pads_2005.mime_type = "application/x-pads";
+	io_pads_2005.multi_footprint = 1;
 
-	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_2005);
 
 	return 0;
 }
