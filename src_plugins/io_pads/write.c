@@ -45,7 +45,7 @@ typedef struct {
 
 #define CRD(c)   ((long)rnd_round(RND_COORD_TO_MM(c) * 10000))
 
-static int pads_write_pcb_block(write_ctx_t *wctx)
+static int pads_write_blk_pcb(write_ctx_t *wctx)
 {
 	int coplyn;
 	int gridu = 1; /* default to metric - it's 2021 after all... */
@@ -120,12 +120,29 @@ IDFSHAPELAY  0              IDF shapes layer
 TEARDROPDATA     90     90 
 #endif
 
-return 0;
+	return 0;
 }
+
+static int pads_write_blk_reuse(write_ctx_t *wctx)
+{
+	fprintf(wctx->f, "*REUSE*\r\n");
+	fprintf(wctx->f, "\r\n");
+	fprintf(wctx->f, "*REMARK* TYPE TYPENAME\r\n");
+	fprintf(wctx->f, "*REMARK* TIMESTAMP SECONDS\r\n");
+	fprintf(wctx->f, "*REMARK* PART NAMING PARTNAMING\r\n");
+	fprintf(wctx->f, "*REMARK* PART NAME\r\n");
+	fprintf(wctx->f, "*REMARK* NET NAMING NETNAMING\r\n");
+	fprintf(wctx->f, "*REMARK* NET MERGE NAME\r\n");
+	fprintf(wctx->f, "*REMARK* REUSE INSTANCENM PARTNAMING NETNAMING X Y ORI GLUED\r\n");
+	return 0;
+}
+
 
 static int pads_write_pcb_(write_ctx_t *wctx)
 {
-	if (pads_write_pcb_block(wctx) != 0) return -1;
+	if (pads_write_blk_pcb(wctx) != 0) return -1;
+	if (pads_write_blk_reuse(wctx) != 0) return -1;
+
 
 	return -1;
 }
