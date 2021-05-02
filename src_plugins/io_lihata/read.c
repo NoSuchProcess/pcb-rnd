@@ -120,7 +120,7 @@ static void iolht_warn(lht_read_t *rctx, lht_node_t *nd, int wbit, char *fmt, ..
 	gds_init(&str);
 	gds_append_str(&str, "io_lihata parse warning");
 	if (nd != NULL)
-		rnd_append_printf(&str, "at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
+		rnd_append_printf(&str, " at %s:%d.%d: ", nd->file_name, nd->line, nd->col);
 	else
 		gds_append_str(&str, ": ");
 
