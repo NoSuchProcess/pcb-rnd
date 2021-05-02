@@ -7775,6 +7775,43 @@
  plug_footprint.h ../src_plugins/io_pads/read_low.c \
  ../src_plugins/io_pads/read_high.c \
  ../src_plugins/io_pads/read_high_misc.c
+../src_plugins/io_pads/write.o: ../src_plugins/io_pads/write.c \
+ ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/vti0.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_impl.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/genvector_undef.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/vtp0.h \
+ ../src_3rd/librnd-local/src/librnd/core/unit.h \
+ ../src_3rd/librnd-local/src/librnd/core/global_typedefs.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_bool.h \
+ ../src_3rd/librnd-local/src/librnd/core/hidlib_conf.h \
+ ../src_3rd/librnd-local/src/librnd/core/conf.h \
+ ../src_3rd/librnd-local/src/librnd/core/rnd_printf.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genvector/gds_char.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/dom.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/lihata.h \
+ ../src_3rd/librnd-local/src/../src_3rd/liblihata/parser.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/htsp.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genht/ht.h \
+ ../src_3rd/librnd-local/src/librnd/core/list_conf.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_undef.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gentdlist_impl.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+ ../src_3rd/librnd-local/src/librnd/core/color.h board.h vtroutestyle.h \
+ attrib.h global_typedefs.h layer.h globalconst.h \
+ ../src_3rd/librnd-local/src/librnd/core/globalconst.h obj_common.h \
+ flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ ../src_3rd/librnd-local/src/../src_3rd/genlist/gendlist.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ ../src_3rd/librnd-local/src/librnd/poly/polyarea.h obj_text_list.h \
+ obj_text.h font.h ../src_3rd/librnd-local/src/../src_3rd/genht/htip.h \
+ ../src_3rd/librnd-local/src/librnd/core/box.h \
+ ../src_3rd/librnd-local/src/librnd/core/math_helper.h \
+ ../src_3rd/librnd-local/src/librnd/core/misc_util.h obj_gfx_list.h \
+ obj_gfx.h layer_grp.h rats_patch.h board.h \
+ ../src_3rd/librnd-local/src/librnd/core/hidlib.h conf_core.h \
+ ../src_plugins/io_pads/write_layer.c
 ../src_plugins/io_pcb/attribs.o: ../src_plugins/io_pcb/attribs.c \
  ../config.h ../src_3rd/librnd-local/src/librnd/config.h \
  ../src_3rd/librnd-local/src/librnd/core/conf.h \
