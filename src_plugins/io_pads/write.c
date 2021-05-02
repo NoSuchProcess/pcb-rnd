@@ -31,6 +31,8 @@
 
 #include <stdio.h>
 
+#include <genvector/vti0.h>
+#include <genvector/vtp0.h>
 #include <librnd/core/unit.h>
 #include <librnd/core/hidlib_conf.h>
 
@@ -41,9 +43,15 @@ typedef struct {
 	FILE *f;
 	pcb_board_t *pcb;
 	double ver;
+
+	/* layer mapping */
+	vti0_t gid2plid; /* group ID to pads layer ID */
+	vtp0_t plid2grp; /* pads layer ID to pcb-rnd group */
 } write_ctx_t;
 
 #define CRD(c)   ((long)rnd_round(RND_COORD_TO_MM(c) * 10000))
+
+#include "write_layer.c"
 
 static int pads_write_blk_pcb(write_ctx_t *wctx)
 {
@@ -149,7 +157,8 @@ static int pads_write_pcb_(write_ctx_t *wctx)
 
 static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency, double ver)
 {
-	write_ctx_t wctx;
+	write_ctx_t wctx = {0};
+	int res;
 
 	wctx.f = f;
 	wctx.pcb = PCB;
@@ -157,7 +166,11 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 
 	fprintf(f, "!PADS-POWERPCB-V%.1f-METRIC! DESIGN DATABASE ASCII FILE 1.0\r\n", ver);
 
-	return pads_write_pcb_(&wctx);
+	pads_map_layers(&wctx);
+	res = pads_write_pcb_(&wctx);
+	pads_free_layers(&wctx);
+
+	return res;
 }
 
 int io_pads_write_pcb_2005(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency)
