@@ -35,6 +35,7 @@
 #include <genvector/vtp0.h>
 #include <librnd/core/unit.h>
 #include <librnd/core/hidlib_conf.h>
+#include <librnd/core/compat_misc.h>
 
 #include "board.h"
 #include "conf_core.h"
@@ -50,7 +51,7 @@ typedef struct {
 	vtp0_t plid2grp; /* pads layer ID to pcb-rnd group */
 } write_ctx_t;
 
-#define CRD(c)   ((long)rnd_round(c * 3 / 2))
+#define CRD(c)   ((long)rnd_round((c) * 3 / 2))
 #define CRDX(c)  CRD(c)
 #define CRDY(c)  CRD(wctx->pcb->hidlib.size_y - (c))
 #define ROT(r)   (r)
@@ -202,6 +203,7 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 
 	for(lid = 0, ly = wctx->pcb->Data->Layer; lid < wctx->pcb->Data->LayerN; lid++,ly++) {
 		pcb_line_t *l;
+		pcb_arc_t *a;
 		int plid = pads_layer2plid(wctx, ly);
 
 		if (plid <= 0)
@@ -209,11 +211,32 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 
 		l = linelist_first(&ly->Line);
 		if (l != NULL) {
-			fprintf(wctx->f, "line_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)linelist_length(&ly->Line));
+			fprintf(wctx->f, "lines_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)linelist_length(&ly->Line));
 			for(; l != NULL; l = linelist_next(l)) {
 				fprintf(wctx->f, "OPEN 2   %ld %d\r\n", CRD(l->Thickness), plid);
 				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point1.X), CRDY(l->Point1.Y));
 				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point2.X), CRDY(l->Point2.Y));
+			}
+		}
+		a = arclist_first(&ly->Arc);
+		if (a != NULL) {
+			fprintf(wctx->f, "arcs_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)arclist_length(&ly->Arc));
+			for(; a != NULL; a = arclist_next(a)) {
+				double sa, da;
+				rnd_coord_t x1, y1, x2, y2;
+
+				pcb_arc_get_end(a, 0, &x1, &y1);
+				pcb_arc_get_end(a, 1, &x2, &y2);
+				sa = (a->StartAngle) - 180;
+				da = (a->Delta);
+
+				fprintf(wctx->f, "OPEN 2   %ld %d\r\n", CRD(a->Thickness), plid);
+				fprintf(wctx->f, "%ld %ld   %d %d    %ld %ld    %ld %ld\r\n",
+					CRDX(x1), CRDY(y1), (int)rnd_round(sa*10), (int)rnd_round(da*10),
+					CRDX(a->X - a->Width), CRDY(a->Y - a->Height),
+					CRDX(a->X + a->Width), CRDY(a->Y + a->Height));
+
+				fprintf(wctx->f, "%ld %ld\r\n", CRDX(x2), CRDY(y2));
 			}
 		}
 	}
