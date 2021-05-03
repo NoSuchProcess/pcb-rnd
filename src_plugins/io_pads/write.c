@@ -176,7 +176,7 @@ text string
 			rnd_coord_t hght = t->BoundingBox.Y2 - t->BoundingBox.Y1;
 			char mir = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? 'M' : 'N';
 
-			fprintf(wctx->f, "   % 6ld % 6ld %f %d % 6ld 10 %c RIGHT UP\r\n",
+			fprintf(wctx->f, "   % 6ld % 6ld %f %d % 6ld 10 %c LEFT UP\r\n",
 				CRDX(t->X), CRDY(t->Y), ROT(t->rot), plid, CRD(hght), mir);
 			fprintf(wctx->f, "Regular <Romansim Stroke Font>\r\n");
 			fprintf(wctx->f, "%s\r\n", t->TextString);
@@ -211,8 +211,8 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 			fprintf(wctx->f, "line_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)linelist_length(&ly->Line));
 			for(; l != NULL; l = linelist_next(l)) {
 				fprintf(wctx->f, "OPEN 2   %ld %d\r\n", CRD(l->Thickness), plid);
-				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point1.X), CRDX(l->Point1.Y));
-				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point2.X), CRDX(l->Point2.Y));
+				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point1.X), CRDY(l->Point1.Y));
+				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point2.X), CRDY(l->Point2.Y));
 			}
 		}
 	}
