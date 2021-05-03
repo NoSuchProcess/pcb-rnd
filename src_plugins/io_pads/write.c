@@ -50,7 +50,7 @@ typedef struct {
 	vtp0_t plid2grp; /* pads layer ID to pcb-rnd group */
 } write_ctx_t;
 
-#define CRD(c)   ((long)rnd_round(RND_COORD_TO_MM(c)))
+#define CRD(c)   ((long)rnd_round(c * 2 / 3))
 #define CRDX(c)  CRD(c)
 #define CRDY(c)  CRD(wctx->pcb->hidlib.size_y - (c))
 #define ROT(r)   (r)
@@ -205,7 +205,7 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 	wctx.pcb = PCB;
 	wctx.ver = ver;
 
-	fprintf(f, "!PADS-POWERPCB-V%.1f-METRIC! DESIGN DATABASE ASCII FILE 1.0\r\n", ver);
+	fprintf(f, "!PADS-POWERPCB-V%.1f-BASIC! DESIGN DATABASE ASCII FILE 1.0\r\n", ver);
 
 	pads_map_layers(&wctx);
 	res = pads_write_pcb_(&wctx);
