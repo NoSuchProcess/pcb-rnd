@@ -204,6 +204,7 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 	for(lid = 0, ly = wctx->pcb->Data->Layer; lid < wctx->pcb->Data->LayerN; lid++,ly++) {
 		pcb_line_t *l;
 		pcb_arc_t *a;
+		pcb_poly_t *p;
 		int plid = pads_layer2plid(wctx, ly);
 
 		if (plid <= 0)
@@ -237,6 +238,18 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 					CRDX(a->X + a->Width), CRDY(a->Y + a->Height));
 
 				fprintf(wctx->f, "%ld %ld\r\n", CRDX(x2), CRDY(y2));
+			}
+		}
+		p = polylist_first(&ly->Polygon);
+		if (p != NULL) {
+			fprintf(wctx->f, "polys_lid_%ld    COPPER   0      0      %ld\r\n", (long)lid, (long)polylist_length(&ly->Polygon));
+			for(; p != NULL; p = polylist_next(p)) {
+				long n;
+
+				fprintf(wctx->f, "COPCLS %ld   0 %d\r\n", (long)p->PointN+1, plid);
+				for(n = 0; n < p->PointN; n++)
+					fprintf(wctx->f, "%ld %ld\r\n", CRDX(p->Points[n].X), CRDY(p->Points[n].Y));
+				fprintf(wctx->f, "%ld %ld\r\n", CRDX(p->Points[0].X), CRDY(p->Points[0].Y));
 			}
 		}
 	}
