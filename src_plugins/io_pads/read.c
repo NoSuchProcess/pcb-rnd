@@ -151,7 +151,7 @@ static int pads_parse_header(pads_read_ctx_t *rctx)
 	else if (strncmp(s, "MILS", 4) == 0)
 		rctx->coord_scale = RND_MIL_TO_COORD(1);
 	else if (strncmp(s, "METRIC", 6) == 0)
-		rctx->coord_scale = RND_MM_TO_COORD(1.0/10000.0);
+		rctx->coord_scale = RND_MM_TO_COORD(1.0);
 	else if (strncmp(s, "INCHES", 6) == 0)
 		rctx->coord_scale = RND_INCH_TO_COORD(1.0/100000.0);
 	else {
