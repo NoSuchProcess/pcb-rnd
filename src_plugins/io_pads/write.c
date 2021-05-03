@@ -50,7 +50,7 @@ typedef struct {
 	vtp0_t plid2grp; /* pads layer ID to pcb-rnd group */
 } write_ctx_t;
 
-#define CRD(c)   ((long)rnd_round(c * 2 / 3))
+#define CRD(c)   ((long)rnd_round(c * 3 / 2))
 #define CRDX(c)  CRD(c)
 #define CRDY(c)  CRD(wctx->pcb->hidlib.size_y - (c))
 #define ROT(r)   (r)
