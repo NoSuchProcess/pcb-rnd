@@ -95,6 +95,32 @@ static int pads_layer2plid(const write_ctx_t *wctx, pcb_layer_t *l)
 	return pads_gid2plid(wctx, pcb_layer_get_group_(l));
 }
 
+
+static int pads_write_blk_misc_layer_assoc(write_ctx_t *wctx, const pcb_layergrp_t *g)
+{
+	pcb_layer_type_t loc = g->ltype & PCB_LYT_ANYWHERE;
+	rnd_layergrp_id_t agid;
+	const struct {
+		const char *assoc;
+		const char *purpose;
+		pcb_layer_type_t lyt;
+	} *a, tbl[] = {
+		{"ASSOCIATED_SILK_SCREEN", NULL,   PCB_LYT_SILK},
+		{"ASSOCIATED_PASTE_MASK",  NULL,   PCB_LYT_PASTE},
+		{"ASSOCIATED_SOLDER_MASK", NULL,   PCB_LYT_MASK},
+		{"ASSOCIATED_ASSEMBLY",    "assy", PCB_LYT_DOC},
+		{NULL, NULL, 0}
+	};
+
+	for(a = tbl; a->assoc != NULL; a++) {
+		if (pcb_layergrp_listp(wctx->pcb, a->lyt | loc, &agid, 1, -1, a->purpose) == 1) {
+			pcb_layergrp_t *g = pcb_get_layergrp(wctx->pcb, agid);
+			if (g != NULL)
+				fprintf(wctx->f, "%s %s\r\n", a->assoc, g->name);
+		}
+	}
+}
+
 static int pads_write_blk_misc_layers(write_ctx_t *wctx)
 {
 	int plid, max_plid;
@@ -135,10 +161,9 @@ static int pads_write_blk_misc_layers(write_ctx_t *wctx)
 			else if (g->ltype & PCB_LYT_PASTE) fprintf(wctx->f, "LAYER_TYPE PASTE_MASK\r\n");
 			else if (g->ltype & PCB_LYT_MASK) fprintf(wctx->f, "LAYER_TYPE SOLDER_MASK\r\n");
 			else goto unassigned;
-/*  ASSOCIATED_SILK_SCREEN Silkscreen Top
-  ASSOCIATED_PASTE_MASK Paste Mask Top
-  ASSOCIATED_SOLDER_MASK Solder Mask Top
-  ASSOCIATED_ASSEMBLY Assembly Drawing Top*/
+
+			if ((g->ltype & PCB_LYT_COPPER) && ((g->ltype & PCB_LYT_TOP) || (g->ltype & PCB_LYT_BOTTOM)))
+				pads_write_blk_misc_layer_assoc(wctx, g);
 		}
 		else {
 			fprintf(wctx->f, "LAYER_NAME Layer_%d\r\n", plid);
