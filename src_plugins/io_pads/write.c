@@ -38,6 +38,7 @@
 
 #include "board.h"
 #include "conf_core.h"
+#include "data.h"
 
 typedef struct {
 	FILE *f;
@@ -50,6 +51,9 @@ typedef struct {
 } write_ctx_t;
 
 #define CRD(c)   ((long)rnd_round(RND_COORD_TO_MM(c) * 10000))
+#define CRDX(c)  CRD(c)
+#define CRDY(c)  CRD(wctx->pcb->hidlib.size_y - (c))
+#define ROT(r)   (r)
 
 #include "write_layer.c"
 
@@ -149,19 +153,38 @@ static int pads_write_blk_reuse(write_ctx_t *wctx)
 
 static int pads_write_blk_text(write_ctx_t *wctx)
 {
-	
+	pcb_text_t *t;
+	int li;
+	pcb_layer_t *l;
+
 	fprintf(wctx->f, "*TEXT*       FREE TEXT\r\n\r\n");
 	fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST .REUSE. INSTANCENM\r\n");
 	fprintf(wctx->f, "*REMARK* FONTSTYLE FONTFACE\r\n\r\n");
 
-/*RIGHT UP*/
+/**/
 /*
        1234        5678  90.000 20          70          10 N   LEFT   DOWN
 Regular <Romansim Stroke Font>
 text string
 */
 
+	for(li = 0, l = wctx->pcb->Data->Layer; li < wctx->pcb->Data->LayerN; li++,l++) {
+		int plid = pads_layer2plid(wctx, l);
+		if (plid <= 0)
+			continue;
+		for(t = textlist_first(&l->Text); t != NULL; t = textlist_next(t)) {
+			rnd_coord_t hght = t->BoundingBox.Y2 - t->BoundingBox.Y1;
+			char mir = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? 'M' : 'N';
+
+			fprintf(wctx->f, "   % 6ld % 6ld %f %d % 6ld 10 %c RIGHT UP\r\n",
+				CRDX(t->X), CRDY(t->Y), ROT(t->rot), plid, CRD(hght), mir);
+			fprintf(wctx->f, "Regular <Romansim Stroke Font>\r\n");
+			fprintf(wctx->f, "%s\r\n", t->TextString);
+		}
+	}
+
 	fprintf(wctx->f, "\r\n");
+	return 0;
 }
 
 static int pads_write_pcb_(write_ctx_t *wctx)
