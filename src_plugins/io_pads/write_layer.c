@@ -61,6 +61,18 @@ static void pads_map_layers(write_ctx_t *wctx)
 	}
 }
 
+static int pads_gid2plid(const write_ctx_t *wctx, const rnd_layergrp_id_t gid)
+{
+	if ((gid == -1) || (gid >= wctx->gid2plid.used))
+		return -1;
+	return wctx->gid2plid.array[gid];
+}
+
+static int pads_layer2plid(const write_ctx_t *wctx, pcb_layer_t *l)
+{
+	return pads_gid2plid(wctx, pcb_layer_get_group_(l));
+}
+
 static void pads_free_layers(write_ctx_t *wctx)
 {
 	vti0_uninit(&wctx->gid2plid);
