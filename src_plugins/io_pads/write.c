@@ -174,10 +174,11 @@ text string
 			continue;
 		for(t = textlist_first(&l->Text); t != NULL; t = textlist_next(t)) {
 			rnd_coord_t hght = t->BoundingBox.Y2 - t->BoundingBox.Y1;
-			char mir = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? 'M' : 'N';
+			char mir  = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? 'M' : 'N';
+			char *alg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? "RIGHT DOWN" : "LEFT UP";
 
-			fprintf(wctx->f, "   % 6ld % 6ld %f %d % 6ld 10 %c LEFT UP\r\n",
-				CRDX(t->X), CRDY(t->Y), ROT(t->rot), plid, CRD(hght), mir);
+			fprintf(wctx->f, "   % 6ld % 6ld %f %d % 6ld 10 %c %s\r\n",
+				CRDX(t->X), CRDY(t->Y), ROT(t->rot), plid, CRD(hght), mir, alg);
 			fprintf(wctx->f, "Regular <Romansim Stroke Font>\r\n");
 			fprintf(wctx->f, "%s\r\n", t->TextString);
 		}
