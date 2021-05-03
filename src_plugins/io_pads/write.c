@@ -187,11 +187,47 @@ text string
 	return 0;
 }
 
+static int pads_write_blk_lines(write_ctx_t *wctx)
+{
+	rnd_layer_id_t lid;
+	pcb_layer_t *ly;
+
+	fprintf(wctx->f, "*LINES*      LINES ITEMS\r\n\r\n");
+	fprintf(wctx->f, "*REMARK* NAME TYPE XLOC YLOC PIECES TEXT SIGSTR\r\n");
+	fprintf(wctx->f, "*REMARK* .REUSE. INSTANCE RSIGNAL\r\n");
+	fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LINESTYLE LEVEL [RESTRICTIONS]\r\n");
+	fprintf(wctx->f, "*REMARK* XLOC YLOC BEGINANGLE DELTAANGLE\r\n");
+	fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST\r\n\r\n");
+
+	for(lid = 0, ly = wctx->pcb->Data->Layer; lid < wctx->pcb->Data->LayerN; lid++,ly++) {
+		pcb_line_t *l;
+		int plid = pads_layer2plid(wctx, ly);
+
+		if (plid <= 0)
+			continue;
+
+		l = linelist_first(&ly->Line);
+		if (l != NULL) {
+			fprintf(wctx->f, "line_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)linelist_length(&ly->Line));
+			for(; l != NULL; l = linelist_next(l)) {
+				fprintf(wctx->f, "OPEN 2   %ld %d\r\n", CRD(l->Thickness), plid);
+				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point1.X), CRDX(l->Point1.Y));
+				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point2.X), CRDX(l->Point2.Y));
+			}
+		}
+	}
+
+	fprintf(wctx->f, "\r\n");
+	return 0;
+}
+
+
 static int pads_write_pcb_(write_ctx_t *wctx)
 {
 	if (pads_write_blk_pcb(wctx) != 0) return -1;
 	if (pads_write_blk_reuse(wctx) != 0) return -1;
 	if (pads_write_blk_text(wctx) != 0) return -1;
+	if (pads_write_blk_lines(wctx) != 0) return -1;
 
 	if (pads_write_blk_misc_layers(wctx) != 0) return -1;
 	return -1;
