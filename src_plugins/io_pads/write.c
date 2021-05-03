@@ -128,6 +128,7 @@ IDFSHAPELAY  0              IDF shapes layer
 TEARDROPDATA     90     90 
 #endif
 
+	fprintf(wctx->f, "\r\n");
 	return 0;
 }
 
@@ -142,15 +143,32 @@ static int pads_write_blk_reuse(write_ctx_t *wctx)
 	fprintf(wctx->f, "*REMARK* NET NAMING NETNAMING\r\n");
 	fprintf(wctx->f, "*REMARK* NET MERGE NAME\r\n");
 	fprintf(wctx->f, "*REMARK* REUSE INSTANCENM PARTNAMING NETNAMING X Y ORI GLUED\r\n");
+	fprintf(wctx->f, "\r\n");
 	return 0;
 }
 
+static int pads_write_blk_text(write_ctx_t *wctx)
+{
+	
+	fprintf(wctx->f, "*TEXT*       FREE TEXT\r\n\r\n");
+	fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST .REUSE. INSTANCENM\r\n");
+	fprintf(wctx->f, "*REMARK* FONTSTYLE FONTFACE\r\n\r\n");
+
+/*RIGHT UP*/
+/*
+       1234        5678  90.000 20          70          10 N   LEFT   DOWN
+Regular <Romansim Stroke Font>
+text string
+*/
+
+	fprintf(wctx->f, "\r\n");
+}
 
 static int pads_write_pcb_(write_ctx_t *wctx)
 {
 	if (pads_write_blk_pcb(wctx) != 0) return -1;
 	if (pads_write_blk_reuse(wctx) != 0) return -1;
-
+	if (pads_write_blk_text(wctx) != 0) return -1;
 
 	return -1;
 }
