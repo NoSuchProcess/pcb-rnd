@@ -193,6 +193,7 @@ static int pads_write_pcb_(write_ctx_t *wctx)
 	if (pads_write_blk_reuse(wctx) != 0) return -1;
 	if (pads_write_blk_text(wctx) != 0) return -1;
 
+	if (pads_write_blk_misc_layers(wctx) != 0) return -1;
 	return -1;
 }
 
