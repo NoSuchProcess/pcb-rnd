@@ -144,7 +144,7 @@ static int pads_write_blk_misc_layers(write_ctx_t *wctx)
 
 	max_plid = pads_max_plid(wctx);
 
-	for(plid = 0; plid <= max_plid; plid++) {
+	for(plid = 1; plid <= max_plid; plid++) {
 		pcb_layergrp_t *g = NULL;
 		
 		if (plid < wctx->plid2grp.used)
