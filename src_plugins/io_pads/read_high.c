@@ -303,14 +303,16 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 {
 	pcb_dlcr_draw_t *text;
 	char name[16], hjust[16], vjust[16], font[128], str[1024];
-	rnd_coord_t x, y, thick, h;
-	double rot, scale;
+	rnd_coord_t x, y, thick, h, str_width;
+	double rot, anx = 0, any = 0;
 	long level, flg = 0;
 	int res, mirr = 0;
 	rnd_bool is_label = !!(how & TEXT_IS_LABEL);
 	rnd_bool in_subc  = !!(how & TEXT_IN_LAST_SUBC);
+	rnd_coord_t anchx, anchy;
+	pcb_text_mirror_t tmir = 0;
 
-	*font = *str = '\0';
+	*font = *str = *hjust = *vjust = '\0';
 
 	if (is_label)
 		if ((res = pads_read_word(rctx, name, sizeof(name), 0)) <= 0) return res;
@@ -327,10 +329,18 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 	if (*hjust == 'N') {
 		mirr = 0;
 		if ((res = pads_read_word(rctx, hjust, sizeof(hjust), 0)) <= 0) return res;
+		if (strcmp(hjust, "CENTER") == 0)     anx = 0.5;
+		else if (strcmp(hjust, "LEFT") == 0)  anx = 0.0;
+		else if (strcmp(hjust, "RIGHT") == 0) anx = 1.0;
+		else PADS_ERROR((RND_MSG_ERROR, "invalid text horizontal adjustment: %s\n", hjust));
 	}
 	else if (*hjust == 'M') {
 		mirr = 1;
 		if ((res = pads_read_word(rctx, hjust, sizeof(hjust), 0)) <= 0) return res;
+		if (strcmp(hjust, "CENTER") == 0)     any = 0.5;
+		else if (strcmp(hjust, "UP") == 0)    any = 0.0;
+		else if (strcmp(hjust, "DOWN") == 0)  any = 1.0;
+		else PADS_ERROR((RND_MSG_ERROR, "invalid text vertical adjustment: %s\n", vjust));
 	}
 
 	if ((res = pads_read_word(rctx, vjust, sizeof(vjust), 0)) <= 0) return res;
@@ -352,9 +362,6 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 	else
 		rnd_trace("\n");
 
-	TODO("Rewrite for bbox based");
-	scale = (double)h/RND_MM_TO_COORD(1.0) * 66.7;
-
 	if (is_label) {
 		if (strcmp(str, "Part Type") == 0)
 			goto skip;
@@ -367,7 +374,14 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 	}
 
 	TODO("do not ignore text alignment; requires powerpcb to check");
-	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo+h, rot, scale, 0, str, (is_label ? PCB_FLAG_FLOATER : 0) | flg);
+	str_width = rnd_round(h / 1.9 * strlen(str));
+	anchx = rnd_round(str_width * anx);
+	anchy = rnd_round(h * any);
+
+	text = pcb_dlcr_text_by_bbox_new(&rctx->dlcr, pcb_font(rctx->pcb, 0, 1),
+		x+xo, y+yo+h, str_width, h, anchx, anchy, 1, tmir, rot, thick, str,
+		(is_label ? PCB_FLAG_FLOATER : 0) | flg);
+
 	text->loc_line = rctx->line;
 	if (in_subc) {
 		text->in_last_subc = 1;
