@@ -253,6 +253,9 @@ pcb_dlcr_draw_t *pcb_dlcr_text_by_bbox_new(pcb_dlcr_t *dlcr, pcb_font_t *font, r
 	t->str = rnd_strdup(str);
 	t->flags = flags;
 
+	if (dlcr->flip_y)
+		t->anchy = anchy - bbh;
+
 	bbox.X1 = x - bbw;
 	bbox.Y1 = y - bbh;
 	bbox.X2 = x + 2*bbw;
