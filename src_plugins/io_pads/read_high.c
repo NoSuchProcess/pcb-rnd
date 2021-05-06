@@ -329,21 +329,22 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 	if (*hjust == 'N') {
 		mirr = 0;
 		if ((res = pads_read_word(rctx, hjust, sizeof(hjust), 0)) <= 0) return res;
-		if (strcmp(hjust, "CENTER") == 0)     anx = 0.5;
-		else if (strcmp(hjust, "LEFT") == 0)  anx = 0.0;
-		else if (strcmp(hjust, "RIGHT") == 0) anx = 1.0;
-		else PADS_ERROR((RND_MSG_ERROR, "invalid text horizontal adjustment: %s\n", hjust));
 	}
 	else if (*hjust == 'M') {
 		mirr = 1;
 		if ((res = pads_read_word(rctx, hjust, sizeof(hjust), 0)) <= 0) return res;
-		if (strcmp(hjust, "CENTER") == 0)     any = 0.5;
-		else if (strcmp(hjust, "UP") == 0)    any = 0.0;
-		else if (strcmp(hjust, "DOWN") == 0)  any = 1.0;
-		else PADS_ERROR((RND_MSG_ERROR, "invalid text vertical adjustment: %s\n", vjust));
 	}
 
+	if (strcmp(hjust, "CENTER") == 0)     anx = 0.5;
+	else if (strcmp(hjust, "LEFT") == 0)  anx = 0.0;
+	else if (strcmp(hjust, "RIGHT") == 0) anx = 1.0;
+	else PADS_ERROR((RND_MSG_ERROR, "invalid text horizontal adjustment: %s\n", hjust));
+
 	if ((res = pads_read_word(rctx, vjust, sizeof(vjust), 0)) <= 0) return res;
+	if (strcmp(vjust, "CENTER") == 0)     any = 0.5;
+	else if (strcmp(vjust, "UP") == 0)    any = 0.0;
+	else if (strcmp(vjust, "DOWN") == 0)  any = 1.0;
+	else PADS_ERROR((RND_MSG_ERROR, "invalid text vertical adjustment: %s\n", vjust));
 
 	/* fields ignored: ndim and .REUSE.*/
 	pads_eatup_till_nl(rctx);
