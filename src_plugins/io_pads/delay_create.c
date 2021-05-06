@@ -232,6 +232,41 @@ pcb_dlcr_draw_t *pcb_dlcr_text_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t 
 	return obj;
 }
 
+pcb_dlcr_draw_t *pcb_dlcr_text_by_bbox_new(pcb_dlcr_t *dlcr, pcb_font_t *font, rnd_coord_t x, rnd_coord_t y, rnd_coord_t bbw, rnd_coord_t bbh, rnd_coord_t anchx, rnd_coord_t anchy, double scxy, pcb_text_mirror_t mirror, double rot, rnd_coord_t thickness, const char *str, long flags)
+{
+	pcb_dlcr_draw_t *obj = dlcr_new(dlcr, DLCR_OBJ);
+	pcb_dlcr_text_by_bbox_t *t = &obj->val.obj.obj.text_by_bbox;
+	rnd_box_t bbox;
+
+	t->type = PCB_OBJ_DLCR_TEXT_BY_BBOX;
+	t->font = font;
+	t->x = x;
+	t->y = y;
+	t->bbw = bbw;
+	t->bbh = bbh;
+	t->anchx = anchx;
+	t->anchy = anchy;
+	t->scxy = scxy;
+	t->mirror = mirror;
+	t->rot = rot;
+	t->thickness = thickness;
+	t->str = rnd_strdup(str);
+	t->flags = flags;
+
+	bbox.X1 = x - bbw;
+	bbox.Y1 = y - bbh;
+	bbox.X2 = x + 2*bbw;
+	bbox.Y2 = y + 2*bbh;
+
+	if (dlcr->subc_begin != NULL) {
+		if (!(flags & PCB_FLAG_FLOATER))
+			rnd_box_bump_box(&dlcr->subc_begin->val.subc_begin.subc->bbox_naked, &bbox);
+	}
+	else
+		rnd_box_bump_box(&dlcr->board_bbox, &bbox);
+	return obj;
+}
+
 pcb_dlcr_draw_t *pcb_dlcr_via_new(pcb_dlcr_t *dlcr, rnd_coord_t x, rnd_coord_t y, rnd_coord_t clearance, long id, const char *name, const char *term)
 {
 	pcb_dlcr_draw_t *obj;

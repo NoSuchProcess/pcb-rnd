@@ -47,7 +47,19 @@ typedef enum {
 } pcb_dlcr_type_t;
 
 
-#define PCB_OBJ_DLCR_POLY   0x0000801
+#define PCB_OBJ_DLCR_POLY           0x0000801
+#define PCB_OBJ_DLCR_TEXT_BY_BBOX   0x0000802
+
+typedef struct {
+	PCB_ANY_PRIMITIVE_FIELDS;
+	pcb_font_t *font;
+	rnd_coord_t x, y, bbw, bbh, anchx, anchy;
+	double scxy, rot;
+	pcb_text_mirror_t mirror;
+	rnd_coord_t thickness;
+	const char *str;
+	long flags;
+} pcb_dlcr_text_by_bbox_t;
 
 typedef struct {
 	pcb_dlcr_type_t type;
@@ -63,6 +75,7 @@ typedef struct {
 					PCB_ANY_PRIMITIVE_FIELDS;
 					vtc0_t xy;
 				} poly;
+				pcb_dlcr_text_by_bbox_t text_by_bbox;
 			} obj;
 			long layer_id;
 			pcb_layer_type_t lyt;
