@@ -303,7 +303,7 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 {
 	pcb_dlcr_draw_t *text;
 	char name[16], hjust[16], vjust[16], font[128], str[1024];
-	rnd_coord_t x, y, w, h;
+	rnd_coord_t x, y, thick, h;
 	double rot, scale;
 	long level, flg = 0;
 	int res, mirr = 0;
@@ -320,9 +320,7 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 	if ((res = pads_read_double(rctx, &rot)) <= 0) return res;
 	if ((res = pads_read_long(rctx, &level)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &h)) <= 0) return res;
-	if ((res = pads_read_coord(rctx, &w)) <= 0) return res;
-
-TODO("w is really thickness; requires powerpcb to check");
+	if ((res = pads_read_coord(rctx, &thick)) <= 0) return res;
 
 	/* next field is either mirror (M or N) or hjust */
 	if ((res = pads_read_word(rctx, hjust, sizeof(hjust), 0)) <= 0) return res;
@@ -347,15 +345,15 @@ TODO("w is really thickness; requires powerpcb to check");
 
 	if ((res = pads_read_word_all(rctx, str, sizeof(str), 1)) <= 0) return res;
 
-	rnd_trace(" text: [%s] at %mm;%mm rot=%f size=%mm;%mm mirr=%d: '%s'",
-		font, x, y, rot, w, h, mirr, str);
+	rnd_trace(" text: [%s] at %mm;%mm rot=%f height=%mm thick=%mm mirr=%d: '%s'",
+		font, x, y, rot, h, thick, mirr, str);
 	if (is_label)
 		rnd_trace(" (%s)\n", name);
 	else
 		rnd_trace("\n");
 
-	TODO("This should rather use font height; requires powerpcb to check");
-	scale = (double)w/RND_MM_TO_COORD(1.0) * 100.0 * 8;
+	TODO("Rewrite for bbox based");
+	scale = (double)h/RND_MM_TO_COORD(1.0) * 66.7;
 
 	if (is_label) {
 		if (strcmp(str, "Part Type") == 0)
@@ -369,7 +367,7 @@ TODO("w is really thickness; requires powerpcb to check");
 	}
 
 	TODO("do not ignore text alignment; requires powerpcb to check");
-	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo+w*9, rot, scale, 0, str, (is_label ? PCB_FLAG_FLOATER : 0) | flg);
+	text = pcb_dlcr_text_new(&rctx->dlcr, x+xo, y+yo+h, rot, scale, 0, str, (is_label ? PCB_FLAG_FLOATER : 0) | flg);
 	text->loc_line = rctx->line;
 	if (in_subc) {
 		text->in_last_subc = 1;
