@@ -393,9 +393,9 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 		text->val.obj.layer_id = PCB_DLCR_INVALID_LAYER_ID;
 		switch(level) {
 			case 1: text->val.obj.lyt = PCB_LYT_TOP | PCB_LYT_SILK; break;
-			case 2: text->val.obj.lyt = PCB_LYT_BOTTOM | PCB_LYT_SILK; break; TODO("need to check what happens on the bottom side, is it really LID 2?; requires powerpcb to check");
+			case 2: text->val.obj.lyt = PCB_LYT_BOTTOM | PCB_LYT_SILK; break; TODO("need to check what happens on the bottom side, is it really LID 2?; requires powerpcb to check; llevel2.asc");
 			default:
-				TODO("Figure what does this mean; requires powerpcb to check");
+				TODO("Figure what does this mean; requires powerpcb to check; llevel3.asc");
 				PADS_ERROR((RND_MSG_ERROR, "invalid label level %ld\n", level));
 				text->val.obj.layer_id = level;
 				break;
@@ -614,7 +614,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 
 				if (slotlen > 0) {
 					if (!has_slot) {
-						TODO("Create slot; requires powerpcb for testing");
+						TODO("Create slot; requires powerpcb for testing; pstk_slot.asc");
 					}
 					has_slot = 1;
 				}
@@ -689,7 +689,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 			}
 		}
 		else { /* final fallback so that we have a prototype to draw */
-TODO("Handle: O: requires powerpcb to check\n");
+TODO("Handle: O: requires powerpcb to check; pstk_o.asc\n");
 			shp->shape = PCB_PSSH_CIRC;
 			shp->data.circ.x = shp->data.circ.y = 0;
 			shp->data.circ.dia = RND_MM_TO_COORD(0.5);
@@ -1329,7 +1329,7 @@ static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, pcb_dlcr_draw_t *pol
 		return 1;
 
 	if (isarc) {
-		TODO("poly arc: requires powerpcb to check");
+		TODO("poly arc: requires powerpcb to check; polyarc*.asc");
 		rnd_trace("  arc %mm;%mm %f..%f\n", x, y, start, end);
 	}
 	else {
@@ -1368,7 +1368,7 @@ static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, pads_poly_type_t
 		}
 	}
 
-TODO("bloat up the poly if width != 0; requires powerpcb to see if it's only the rounding radius or grows the poly");
+TODO("bloat up the poly if width != 0; requires powerpcb to see if it's only the rounding radius or grows the poly; poly_bloat*.asc");
 	if ((*signame != '\0') && (poly != NULL))
 		pcb_dlcr_set_net(poly, signame);
 
