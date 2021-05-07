@@ -374,7 +374,6 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 		}
 	}
 
-	TODO("do not ignore text alignment; requires powerpcb to check");
 	str_width = rnd_round(h / 1.9 * strlen(str));
 	anchx = rnd_round(str_width * anx);
 	anchy = rnd_round(h * any);
