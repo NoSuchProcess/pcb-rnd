@@ -75,7 +75,7 @@ switch /local/pcb/mod/BYACCIC
 				append /local/pcb/RULES [@
 # byaccic for @/local/pcb/mod@
 @/local/n@.c @/local/n@.h: @/local/n@.y
-	cd @/local/dn@ && byaccic -o @/local/bn@.c -H @/local/bn@.h -v @/local/bn@.desc @/local/bn@.y
+	byaccic -o ../src_plugins/@/local/pcb/mod@/@/local/bn@.c -H ../src_plugins/@/local/pcb/mod@/@/local/bn@.h -v ../src_plugins/@/local/pcb/mod@/@/local/bn@.desc ../src_plugins/@/local/pcb/mod@/@/local/bn@.y
 @]
 			else
 				append /local/pcb/RULES [@
