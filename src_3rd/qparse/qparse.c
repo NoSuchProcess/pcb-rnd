@@ -85,7 +85,7 @@ int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, 
 	char *buff;
 	size_t buff_len, buff_used;
 	char **argv;
-	int num_fparens = 0;
+	int num_fparens = 0, implicit_empty = 0;
 
 	if (argv_allocated == NULL) {
 		argv           = NULL;
@@ -121,6 +121,7 @@ int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, 
 				}
 				break;
 			case qp_normal:
+				implicit_empty = 0;
 				switch (*s) {
 					case '"':
 						if (flg & QPARSE_DOUBLE_QUOTE)
@@ -175,6 +176,7 @@ int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, 
 					case '\t':
 						if (flg & QPARSE_MULTISEP)
 							while(isspace(s[1])) s++;
+						implicit_empty = 1;
 						qnext();
 						break;
 					default:
@@ -237,6 +239,12 @@ int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, 
 	stop:;
 
 	qnext();
+
+	/* Corner case: input has stray whitespace at the end - that shouldn't be
+	   an extra empty argv; but if it's explicit (quoted or function syntax),
+	   keep it! */
+	if (implicit_empty)
+		argc--;
 
 	if (buffer == NULL) {
 		if (buff != NULL)
