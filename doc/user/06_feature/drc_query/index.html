@@ -123,6 +123,91 @@ Note: since drc errors are presented on a per type basis, and drc rules
 are executed each in its own, independent context, the order of rules does not
 matter.
 
+<h3 id="stock" autotoc="yes">Stock DRC scripts</h3>
+<p>
+The default drc_query config shipped with pcb-rnd contains a few stock DRC
+rules. These are the most essential rules that most boards will need. (Users
+are encouraged to
+<a href="http://www.repo.hu/cgi-bin/pool.cgi?project=pcb-rnd&cmd=show&node=Idrc"> download furhter scripts</a>
+to extend the DRC system.) This chapter documents the stock DRC scripts and
+the checks they perform.
+
+<h4 autotoc="yes"> hole_dia </h4>
+<p>
+Lists holes with diameter smaller than the board-global minimum (set in $min_drill).
+Note: only round holes (hole diameter) are checked, which are always in padstacks.
+Slots (in padstacks) or mech/boundary layer explicit object are <b>not</b> checked.
+
+<h4 autotoc="yes"> hole_overlap </h4>
+<p>
+Checks pairs of holes (as defined for hol_dia above) and list pairs that
+have any overlap between their drilled hole. (Some fabs may refuse to drill
+such holes because of increased risk of breaking drill bits.)
+
+<h4 autotoc="yes"> net_break </h4>
+<p>
+Check every overlapping pair of copper objects within known nets. Throw a
+DRC violation if the overlap offset is smaller than $min_copper_overlap.
+(Although not very likely with modern CAM and fab proecsses, but insufficient
+overlap may cause glitches or even broken net.)
+
+
+<h4 autotoc="yes"> net_short </h4>
+<p>
+Check every pair of copper objects within known nets. Throw a
+DRC violation if two objects of different nets have non-copper gap less
+than $min_copper_clearance.
+
+<h4 autotoc="yes"> min_copper_thickness </h4>
+<p>
+Check each copper object with thickness (arcs and lines) and throw a
+violation for those that are thicker than 0 but thinner than $min_copper_thickness.
+(The exception for 0 is provided for compatibility. Please use the noexport
+mechanism instead.)
+
+<h4 autotoc="yes"> min_silk_thickness </h4>
+<p>
+Same as min_copper_thickness but runs on silk objects and uses $min_silk_thickness.
+
+<h4 autotoc="yes"> beyond_drawing_area </h4>
+<p>
+List any object whose bounding box is fully beyond the drawing area in
+any direction. This is useful for detecting copy&amp;paste or object move
+leftovers, especially if the leftover is a small object.
+
+<h4 autotoc="yes"> min_ring </h4>
+<p>
+For each padstack calculate the neck size, which is the shortest straight line
+that can be drawn from the inner (hole/slot) contour and the outer (copper)
+contour of the padstack. If the neck size is below $min_ring, throw a violation.
+
+<h4 autotoc="yes"> fullpoly </h4>
+<p>
+Lists any polygon that has the FULLPOLY flag and indeed has multiple islands.
+The fullpoly feature is provided only for compatibility and should not be used:
+it may break the DRC and connection finding in some common cases.
+
+
+<h4 autotoc="yes"> ko_named </h4>
+<p>
+Courtyard/keepout: warn for pairs of objects that overlap on layer groups
+with purpose string starting with "ko.". The most common use is
+part mechanical courtyard. Please refer to the
+<a href="http://www.repo.hu/cgi-bin/pool.cgi?project=pcb-rnd&cmd=show&node=ko_id"> ko_id pool node</a>
+for detailed documentation.
+
+<h4 autotoc="yes"> invalid_polygons </h4>
+<p>
+The polygon lib of pcb-rnd requires that polygon contours to be not self
+intersecting. When pcb-rnd is configured with --debug, a lot of checks are
+ran runtime and the code asserts/aborts as early as possible when detecting
+invalid polygon contour. However, in production compilation these checks
+are disabled. The only way an user of a production pcb-rnd can find all
+invalid polygons on a board is running this test. Note: invalid polygons
+<b>will</b> eventually break something on the board: the on-screen render,
+an export render or polygon clipping.
+
+
 <h3 id="tutor" autotoc="yes">Tutorial</h3>
 
 <h4 autotoc="yes"> Single expression scripts </h4>
