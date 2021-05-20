@@ -73,12 +73,12 @@ A definition is a named hash subtree with the following fields:
 The definition in the above example creates config node <i>design/drc/min_drill</i>.
 This new config node is accessible through the config system normally, through
 the conf() action or the GUI (preferences dialog). From query(), it can
-be referenced using the shorthand <i>$min_dirll</i> form.
+be referenced using the shorthand <i>$min_drill</i> form.
 
 
 <h4 autotoc="yes"> Rules </h4>
 <p>
-Text fields type, tilte and desc are optional user readable strings
+Text fields type, title and desc are optional user readable strings
 that will be presented in the DRC report. The type::title pair serves
 as an unique identifier for the rule. If optional disable is 'yes' or
 'true' or a non-zero integer value, the rule is temporarily disabled.
@@ -93,7 +93,7 @@ Rules optionally can have a <i>source</i> field, which is a one word free form t
 indicating where the rule is coming from. User specified/configured rules
 should leave this field empty. Rules imported from the netlist (or schematics)
 should set this field to <i>netlist</i>. When present, the GUI will display rules from
-the same source groupped. But the real purpose of the source field is to make
+the same source grouped. But the real purpose of the source field is to make
 re-import of rules possible: when a new import from the same source is performed,
 the import code should remove all rules coming from the source and create
 new rules with the same source.
@@ -128,7 +128,7 @@ matter.
 The default drc_query config shipped with pcb-rnd contains a few stock DRC
 rules. These are the most essential rules that most boards will need. (Users
 are encouraged to
-<a href="http://www.repo.hu/cgi-bin/pool.cgi?project=pcb-rnd&cmd=show&node=Idrc"> download furhter scripts</a>
+<a href="http://www.repo.hu/cgi-bin/pool.cgi?project=pcb-rnd&cmd=show&node=Idrc"> download further scripts</a>
 to extend the DRC system.) This chapter documents the stock DRC scripts and
 the checks they perform.
 
@@ -140,7 +140,7 @@ Slots (in padstacks) or mech/boundary layer explicit object are <b>not</b> check
 
 <h4 autotoc="yes"> hole_overlap </h4>
 <p>
-Checks pairs of holes (as defined for hol_dia above) and list pairs that
+Checks pairs of holes (as defined for hole_dia above) and list pairs that
 have any overlap between their drilled hole. (Some fabs may refuse to drill
 such holes because of increased risk of breaking drill bits.)
 
@@ -148,7 +148,7 @@ such holes because of increased risk of breaking drill bits.)
 <p>
 Check every overlapping pair of copper objects within known nets. Throw a
 DRC violation if the overlap offset is smaller than $min_copper_overlap.
-(Although not very likely with modern CAM and fab proecsses, but insufficient
+(Although not very likely with modern CAM and fab processes, but insufficient
 overlap may cause glitches or even broken net.)
 
 
@@ -238,7 +238,7 @@ is needed because of the pcb-rnd data model: hole diameter zero means no hole
 <h4 autotoc="yes"> Rule scripts </h4>
 <p>
 However, in some situations a DRC violation depends on two or more objects,
-thus iterations need to be done on pairs (or tuplets) of objects. It is
+thus iterations need to be done on pairs (or tuples) of objects. It is
 done by:
 <ul>
 	<li> announcing a multi-statement <b>rule</b>
@@ -275,7 +275,7 @@ is present on both lists). For example if the board has three padstacks
 p1, p2 and p3, then <i>A</i> is [p1, p2, p3] and <i>B</i> is [p1, p2, p3]
 too. The first iteration will take the first item of <i>A</i> and the
 first item of <i>B</i>, so the pairing is p1 vs. p1. Avoiding such
-false checks is easy by starting the <b>assert</b> expession by (A != B),
+false checks is easy by starting the <b>assert</b> expression by (A != B),
 which will make the whole expression false for the virtual pair case.
 <p>
 Note: query has lazy evaluation so when the left side of an &amp;&amp; if
@@ -286,7 +286,7 @@ combinations to deal with as early as possible in the expression.
 With that, we would be checking the same pairs twice still: p1 vs. p2
 and then p2 vs. p1. The easiest way to avoid that is to consider
 that each object has an unique integer ID that can be compared, which
-allows us to write (A.ID > B.ID) instead od (A != B). This ensures
+allows us to write (A.ID > B.ID) instead of (A != B). This ensures
 only 'ordered pairs' are considered, at about the same low cost of
 check.
 <p>
@@ -303,7 +303,7 @@ a padstack means the x coordinate of the padstack placement.
 When both the left side and the right side of the &amp;&amp; evaluates to
 true, that means the pair is valid and unique and the holes overlap. At
 this point drc_query could already indicate the DRC violation, but it would
-use the last evaulated object for indicating the location. Which means
+use the last evaluated object for indicating the location. Which means
 the indication would mark only one of the two padstacks participating in the
 overlap.
 <p>
