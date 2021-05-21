@@ -136,8 +136,11 @@ int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, 
 							qpush(*s);
 						break;
 					case ')':
-						if ((flg & QPARSE_PAREN_FUNC) && (num_fparens == 1))
-							goto stop;
+						if ((flg & QPARSE_PAREN_FUNC) && (num_fparens == 1)) {
+							qnext();
+							s++;
+							goto stop2;
+						}
 						qpush(*s);  /* plain ')', don't care */
 						break;
 					case '(':
@@ -158,8 +161,11 @@ int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, 
 						break;
 
 					case ';':
-						if (flg & QPARSE_TERM_SEMICOLON)
-							goto stop;
+						if (flg & QPARSE_TERM_SEMICOLON) {
+							qnext();
+							s++;
+							goto stop2;
+						}
 						qpush(*s);  /* plain ';', don't care */
 						break;
 
@@ -239,6 +245,8 @@ int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, 
 	stop:;
 
 	qnext();
+
+	stop2:;
 
 	/* Corner case: input has stray whitespace at the end - that shouldn't be
 	   an extra empty argv; but if it's explicit (quoted or function syntax),
