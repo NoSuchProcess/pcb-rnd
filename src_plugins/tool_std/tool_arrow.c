@@ -72,16 +72,20 @@ static void click_timer_cb(rnd_hidval_t hv)
 		rnd_hid_notify_crosshair_change(&PCB->hidlib, rnd_false);
 		hl->tool_click = rnd_false;
 		if (pcb_crosshair_note.Moving && !rnd_gui->shift_is_pressed(rnd_gui)) {
-			hl->tool_grabbed.status = rnd_true;
-			pcb_crosshair_note.Buffer = conf_core.editor.buffer_number;
-			pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
-			pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
-			pcb_buffer_add_selected(pcb, PCB_PASTEBUFFER, hl->tool_x, hl->tool_y, rnd_true, rnd_true);
-			pcb_undo_save_serial();
-			pcb_remove_selected(PCB_OP_NO_SUBC_PART);
-			rnd_tool_save(hl);
-			rnd_tool_is_saved = rnd_true;
-			rnd_tool_select_by_name(hl, "buffer");
+			if (!pcb->RatDraw) {
+				hl->tool_grabbed.status = rnd_true;
+				pcb_crosshair_note.Buffer = conf_core.editor.buffer_number;
+				pcb_buffer_set_number(PCB_MAX_BUFFER - 1);
+				pcb_buffer_clear(pcb, PCB_PASTEBUFFER);
+				pcb_buffer_add_selected(pcb, PCB_PASTEBUFFER, hl->tool_x, hl->tool_y, rnd_true, rnd_true);
+				pcb_undo_save_serial();
+				pcb_remove_selected(PCB_OP_NO_SUBC_PART);
+				rnd_tool_save(hl);
+				rnd_tool_is_saved = rnd_true;
+				rnd_tool_select_by_name(hl, "buffer");
+			}
+			else
+				rnd_message(RND_MSG_WARNING, "Can not drag&drop move selected when the rats nest layer is active\n");
 		}
 		else if (hl->tool_hit && !rnd_gui->shift_is_pressed(rnd_gui)) {
 			rnd_box_t box;
