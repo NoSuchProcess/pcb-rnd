@@ -618,7 +618,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 
 				if (slotlen > 0) {
 					if (!has_slot) {
-						TODO("Create slot; requires powerpcb for testing; pstk_slot.asc");
+						TODO("Create slot; requires powerpcb for testing; pstk_slot.asc; need to redo that in batch4 with warnings fixed");
 					}
 					has_slot = 1;
 				}
@@ -693,11 +693,17 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 			}
 		}
 		else { /* final fallback so that we have a prototype to draw */
-TODO("Handle: O: requires powerpcb to check; pstk_o.asc\n");
 			shp->shape = PCB_PSSH_CIRC;
 			shp->data.circ.x = shp->data.circ.y = 0;
 			shp->data.circ.dia = RND_MM_TO_COORD(0.5);
-			PADS_ERROR((RND_MSG_ERROR, "failed to understand padstack shape '%s'; created dummy small circle\n", shape));
+			if ((shape[0] == 'O') && (shape[1] == '\0')) {
+				/* O: ring shape; see batch3/pstk_o.asc; our padstack model could capture
+				   this as an almost closed U shaped poly? But it's most probably never
+				   used outside of normal holed pin/via */
+				PADS_ERROR((RND_MSG_WARNING, "Padstack shape 'O' is not fully supported '%s'; used a circle assuming the hole will make it a ring\n", shape));
+			}
+			else
+				PADS_ERROR((RND_MSG_ERROR, "failed to understand padstack shape '%s'; created dummy small circle\n", shape));
 		}
 
 		if (shp->shape != -1) {
