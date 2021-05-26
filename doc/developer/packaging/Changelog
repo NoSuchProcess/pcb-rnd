@@ -1,10 +1,16 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=2.3.2
+  ver=2.4.0
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
+
+Packaging changes between 2.3.2 and 2.4.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TODO: check why plugin menu files are missing from the list
+TODO: check if plugin conf files are not missing from the list
 
 Packaging changes between 2.3.1 and 2.3.2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
