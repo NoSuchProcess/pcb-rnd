@@ -324,6 +324,12 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 	if ((res = pads_read_coord(rctx, &h)) <= 0) return res;
 	if ((res = pads_read_coord(rctx, &thick)) <= 0) return res;
 
+	TODO("make this configurable:");
+	if ((thick <= 0) || (thick >= h/4)) {
+		PADS_ERROR((RND_MSG_ERROR, "invalid text thickness: %mm (for height %mm) - adjusted\n", thick, h));
+		thick = h/16;
+	}
+
 	/* next field is either mirror (M or N) or hjust */
 	if ((res = pads_read_word(rctx, hjust, sizeof(hjust), 0)) <= 0) return res;
 	if (*hjust == 'N') {
