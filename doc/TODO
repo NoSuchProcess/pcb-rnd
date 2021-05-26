@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: layer binding dialog: on the standard 4 layer board create a subc with a line on top copper; edit layer bindings of the subc; try to move it to each inner copper -> dialog box gets confused [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: version 3.0.0:
@@ -30,6 +29,7 @@
 		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
 		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
 	- BUG: elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
+- BUG: layer binding dialog: on the standard 4 layer board create a subc with a line on top copper; edit layer bindings of the subc; try to move it to each inner copper -> dialog box gets confused [report: Igor2]
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: FONTS: second font indents incorrectly
