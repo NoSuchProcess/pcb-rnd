@@ -1,4 +1,4 @@
-pcb-rnd 2.4.0 (r34679/r?????)
+pcb-rnd 2.4.0 (r34679/r32625)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 pcb-rnd part:
@@ -226,6 +226,56 @@ pcb-rnd part:
 		-Del: remove via pad diameter tuning - vendor drill is about changing drill sizes only, finding thin copper is up to the DRC
 
 librnd part:
+
+	[build]
+		-Fix: make sure the local .so symlink is always updated so it never points to a previous, lower versioned .so build - matters for non-installed, from-source app compilation
+
+	[core]
+		-Split: export option (default val) to attrib copy code to a spearate function for reuse
+		-Split: code that loads all export attributes/values from the optiosn table for a hid into a public function so export plugin init code can call it
+		-Import: cleaned-up box-box intersection code from pcb-rnd
+		-Del: box list type: not generic enough plus no user left
+		-Add: Grid(ask) for setting custom grids
+
+	[dad]
+		-Add: macro to set up an export option using an external hid_attr value
+
+	[gtk]
+		-Fix: do not lose the "mouse entered drawing area" event after closing a popup when the command line is open; fixes the "command line -> popup -> scroll -> scroll-lockup" bug
+		-Fix: menu errors in message log should end in \n for a readable log
+		-Fix: color conversion: 1 LSB got lost on a color conversion round trip half of the cases
+		-Fix: win32 glue: wrong arguments to rnd_system() killed cache update on win32
+		-Fix: accept 'ungrab' type of drawing area entering as enter event to fix a pan lockup on mid mouse button 'dragged' from outside to inside the drawing area
+
+	[hid]
+		-Cleanup: API CHANGE: remove ->value field from export options; export options should be const and current values should be maintained in hid->argument_array; this will fix a bug caused by unknown sizeof(enum) vs. void *
+		-Cleanup: API CHANGE: read-only export option split: function callback option needs to get the value as well
+		-Fix: const correctness in handling export/hid options: they are read-only
+		-Fix: const correctness in taking hid options (read-only)
+		-Fix: const correctness: store export options only in const
+		-Fix: const correctness for the new API in hid_nogui
+		-Fix: const correcntess on export options in all core HIDs
+		-Fix: const correctness in the older export option registration call
+		-Fix: const correctness in DAD around read-only export options
+		-Del: API CHANGE: remove the old, NULL hid option registration call - it won't work with the read-only option table
+		-Del: remove the old ->value field of export options; since this struct is read-only in all export/hid plugins by now, it can not be written and the split _values[] array shall be used
+		-Del: API CHANGE: RND_DAD_DUP_EXPOPT() - unsafe for read-only option tables
+		-Del: the printer calibration hook, ->calibrate(): should be done outside of ringdove apps
+
+	[hid_lesstif]
+		-Update: export options ->value removal
+
+	[lesstif]
+		-Cleanup: argument handling; option table is read-only, follow the new API of split values
+		-Cleanup: remove old, commented out pcb_width and pcb_height - the code uses hidlib struct for long enough not to need to remind us
+
+	[loghid]
+		-Cleanup: switch over to read-only command line option table to follow librnd API change
+		-Cleanup: excess initialization of export opt ->value
+
+	[util]
+		-Add: sign verify: --print for human readable output
+		-Update: sign: repo.hu crl for another year
 
 
 pcb-rnd 2.3.2 (r34276/r32586)
