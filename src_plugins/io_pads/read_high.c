@@ -122,6 +122,7 @@ typedef struct {
 	rnd_coord_t x, y;
 	rnd_coord_t width;
 	pads_line_type_t ltype;
+	pcb_layer_type_t lyt;
 	long level;
 	rnd_coord_t xo, yo;
 } pads_line_piece_t;
@@ -140,6 +141,7 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 	if ((idx != 0) && ((lpc->x != x) || (lpc->y != y)))  {
 		pcb_dlcr_draw_t *line = pcb_dlcr_line_new(&rctx->dlcr, lpc->x, lpc->y, x, y, lpc->width, 0);
 		line->val.obj.layer_id = lpc->level;
+		line->val.obj.lyt = lpc->lyt;
 		line->loc_line = rctx->line;
 	}
 
@@ -165,6 +167,7 @@ static int pads_parse_piece_crd(pads_read_ctx_t *rctx, pads_line_piece_t *lpc, l
 		{
 			pcb_dlcr_draw_t *arc = pcb_dlcr_arc_new(&rctx->dlcr, cx, cy, r, starta, deltaa, lpc->width, 0);
 			arc->val.obj.layer_id = lpc->level;
+			arc->val.obj.lyt = lpc->lyt;
 			arc->loc_line = rctx->line;
 
 			/* need to determine the endpoint because of the incremental drawing;
@@ -233,19 +236,21 @@ static int pads_parse_piece_circle(pads_read_ctx_t *rctx, pads_line_piece_t *lpc
 		double d = rnd_round(rnd_distance(x1, y1, x2, y2));
 		pcb_dlcr_draw_t *line = pcb_dlcr_line_new(&rctx->dlcr, cx, cy, cx, cy, d, 0);
 		line->val.obj.layer_id = lpc->level;
+		line->val.obj.lyt = lpc->lyt;
 		line->loc_line = rctx->line;
 	}
 	else {
 		double r = rnd_round(rnd_distance(x1, y1, x2, y2)/2.0);
 		arc = pcb_dlcr_arc_new(&rctx->dlcr, cx, cy, r, 0, 360, lpc->width, 0);
 		arc->val.obj.layer_id = lpc->level;
+		arc->val.obj.lyt = lpc->lyt;
 		arc->loc_line = rctx->line;
 	}
 	return 1;
 }
 
 
-static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_coord_t xo, rnd_coord_t yo)
+static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_coord_t xo, rnd_coord_t yo, int in_partdecal)
 {
 	char ptype[32], rest[32];
 	long n, num_crds, layer = -100, lstyle;
@@ -274,8 +279,17 @@ static int pads_parse_piece(pads_read_ctx_t *rctx, pads_line_type_t ltype, rnd_c
 	lpc.width = width;
 	lpc.ltype = ltype;
 	lpc.level = ltype == PLTY_BOARD ? PADS_LID_BOARD : layer;
+	lpc.lyt = 0;
 	lpc.xo = xo;
 	lpc.yo = yo;
+
+	if (in_partdecal) {
+		/* in partdecals layer 1 and 2 are special: top and bottom silk */
+		switch(lpc.level) {
+			case 1: lpc.lyt = PCB_LYT_TOP | PCB_LYT_SILK; lpc.level = PCB_DLCR_INVALID_LAYER_ID; break;
+			case 2: lpc.lyt = PCB_LYT_BOTTOM | PCB_LYT_SILK; lpc.level = PCB_DLCR_INVALID_LAYER_ID; break;
+		}
+	}
 
 TODO("''KEEPOUT'' objects are not handled: CIRCUT and COPCUT and COPCIR are polygon holes; requires powerpcb to check");
 	if ((strcmp(ptype, "CIRCLE") == 0) || (strcmp(ptype, "BRDCIR") == 0)) {
@@ -482,7 +496,7 @@ static int pads_parse_line(pads_read_ctx_t *rctx)
 	}
 
 	for(n = 0; n < num_pcs; n++)
-		if ((res = pads_parse_piece(rctx, ltype, xo, yo)) <= 0) return res;
+		if ((res = pads_parse_piece(rctx, ltype, xo, yo, 0)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
 		if ((res = pads_parse_text(rctx, xo, yo, 0)) <= 0) return res;
 
@@ -839,7 +853,7 @@ static int pads_parse_partdecal(pads_read_ctx_t *rctx)
 	pcb_dlcr_subc_begin(&rctx->dlcr, subc);
 
 	for(n = 0; n < num_pieces; n++)
-		if ((res = pads_parse_piece(rctx, PLTY_LINES, xo, yo)) <= 0) return res;
+		if ((res = pads_parse_piece(rctx, PLTY_LINES, xo, yo, 1)) <= 0) return res;
 	for(n = 0; n < num_texts; n++)
 		if ((res = pads_parse_text(rctx, xo, yo, 0)) <= 0) return res;
 	for(n = 0; n < num_labels; n++)
