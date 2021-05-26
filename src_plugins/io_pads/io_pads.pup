@@ -4,6 +4,6 @@ $long load boards in the PADS ASCII format
 $state WIP
 $fmt-native no
 $fmt-feature-r PADS board
-#$package io-alien
+$package io-alien
 default buildin
 autoload 1

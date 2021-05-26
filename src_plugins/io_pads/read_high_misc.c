@@ -249,12 +249,17 @@ static int pads_parse_misc_rules_hdr(pads_read_ctx_t *rctx)
 	char key1[32], key2[32];
 	int res;
 
+	retry:;
+
 	key2[0] = '\0';
 	if ((res = pads_read_word(rctx, key1, sizeof(key1), 0)) <= 0) return res;
 	if (*key1 == '\0')
 		return 1;
 	if (pads_has_field(rctx)) pads_read_word(rctx, key2, sizeof(key2), 0);
 	pads_eatup_till_nl(rctx);
+
+	if ((strcmp(key1, "NET_CLASS") == 0) && (strcmp(key2, "DATA") == 0)) /* ignore */
+		goto retry;
 
 	rnd_trace(" rules? key='%s' '%s' line=%ld\n", key1, key2, rctx->line);
 	if ((strcmp(key1, "GROUP") == 0) && (strcmp(key2, "DATA") == 0)) {
