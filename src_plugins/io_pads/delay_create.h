@@ -57,7 +57,7 @@ typedef struct {
 	double scxy, rot;
 	pcb_text_mirror_t mirror;
 	rnd_coord_t thickness;
-	const char *str;
+	char *str;
 	long flags;
 } pcb_dlcr_text_by_bbox_t;
 
