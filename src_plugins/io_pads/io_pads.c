@@ -50,8 +50,13 @@ int io_pads_fmt(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, int wr, const char *fmt)
 	if (((typ & (~(PCB_IOT_FOOTPRINT))) != 0) && ((typ & (~(PCB_IOT_PCB))) != 0)) /* support only footprints */
 		return 0;
 
+#if 0
 	if (wr)
 		return 93;
+#endif
+	if (wr)
+		return 0;
+
 
 	return 100;
 }
@@ -76,7 +81,9 @@ int pplg_init_io_pads(void)
 	io_pads_2005.map_footprint = io_pads_map_footprint;*/
 	io_pads_2005.parse_font = NULL;
 	io_pads_2005.write_buffer = NULL;
+#if 0
 	io_pads_2005.write_pcb = io_pads_write_pcb_2005;
+#endif
 	io_pads_2005.default_fmt = "pads";
 	io_pads_2005.description = "PADS ASCII board (V2005)";
 	io_pads_2005.save_preference_prio = 61;
@@ -90,7 +97,9 @@ int pplg_init_io_pads(void)
 	io_pads_9_4 = io_pads_2005;
 	io_pads_9_4.description = "PADS ASCII board (V9.4)";
 	io_pads_9_4.save_preference_prio = 63;
+#if 0
 	io_pads_9_4.write_pcb = io_pads_write_pcb_9_4;
+#endif
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_9_4);
 
 	return 0;
