@@ -391,15 +391,19 @@ static int pads_parse_text(pads_read_ctx_t *rctx, rnd_coord_t xo, rnd_coord_t yo
 
 	if (is_label) {
 		text->val.obj.layer_id = PCB_DLCR_INVALID_LAYER_ID;
+#if 0
 		switch(level) {
 			case 1: text->val.obj.lyt = PCB_LYT_TOP | PCB_LYT_SILK; break;
-			case 2: text->val.obj.lyt = PCB_LYT_BOTTOM | PCB_LYT_SILK; break; TODO("need to check what happens on the bottom side, is it really LID 2?; requires powerpcb to check; llevel2.asc");
+			case 2: text->val.obj.lyt = PCB_LYT_BOTTOM | PCB_LYT_SILK; break;
 			default:
-				TODO("Figure what does this mean; requires powerpcb to check; llevel3.asc");
 				PADS_ERROR((RND_MSG_ERROR, "invalid label level %ld\n", level));
 				text->val.obj.layer_id = level;
 				break;
 		}
+#endif
+		/* batch3/llevel2 and batch3/llevel3 shows that a label on any level
+		   will end up on primary side silk. */
+		text->val.obj.lyt = PCB_LYT_TOP | PCB_LYT_SILK;
 	}
 	else
 		text->val.obj.layer_id = level;
