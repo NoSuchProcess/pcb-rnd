@@ -812,7 +812,11 @@ static void pcb_dlcr_create_drawings(pcb_board_t *pcb, pcb_dlcr_t *dlcr)
 			case DLCR_OBJ: new_obj = dlcr->prev_obj = pcb_dlcr_draw_free_obj(pcb, subc, dlcr, obj); break;
 			case DLCR_SUBC_BEGIN: subc = obj->val.subc_begin.subc; break;
 			case DLCR_SUBC_END: subc = NULL; break;
-			case DLCR_SUBC_FROM_LIB: new_obj = dlcr->prev_obj = dlcr->last_subc_placed = pcb_dlcr_draw_subc_from_lib(pcb, dlcr, obj); break;
+			case DLCR_SUBC_FROM_LIB:
+				dlcr->last_subc_placed = pcb_dlcr_draw_subc_from_lib(pcb, dlcr, obj);
+				dlcr->prev_obj = (pcb_any_obj_t *)dlcr->last_subc_placed;
+				new_obj = dlcr->prev_obj;
+				break;
 			case DLCR_CALL: pcb_dlcr_call(pcb, subc, dlcr, obj, NULL); break;
 			case DLCR_ATTR: pcb_dlcr_attr(pcb, subc, dlcr, obj); break;
 		}
