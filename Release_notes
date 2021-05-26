@@ -1,27 +1,26 @@
-pcb-rnd 2.3.2
+pcb-rnd 2.4.0
 ~~~~~~~~~~~~~
 
-This is mainly a bugfix release with secondary objective of going further
-in librnd separation: librnd is now linked with -l. NOTE: this changes how
-pcb-rnd is executed from the source tree, see file INSTALL, step 3. Because
-of the longer development cycle, there are still a few new features.
+This release is a major cleanup release, the final preparation for a major
+version change to 3.0.0 in the near future. As such, it finally replaces the
+old, diameter based via description in route styles (and tools) with padstack
+prototypes and introduces lihata v8 to be able to represent this change in
+the native file format.
 
 Feature highlight:
 
-1. Anyload files to ease sharing and importing user scripts, menu patches,
-   drc rules, vendor drill, custom configuration and other pcb-rnd addons.
-   http://repo.hu/cgi-bin/pool.cgi?project=pcb-rnd&cmd=show&node=anyload
+1. Route style switched over from 2-diameters via geoemtry to padstack
+   prototypes. Video tutorials about this change:
+   https://archive.org/details/pcb-rnd-via_pstk1
+   https://archive.org/details/pcb-rnd-octa-via
 
-2. Lihata board save as: denoise option that omits select/warn/found flags
-   and rat line objects from the save to reduce VCS noise.
+2. Route style can remember and set text font to use
 
-3. Per layer transformations option: per layer wireframe render option on
-   the GUI (right click context menu in the layer selector).
+3. New file format versions: lihata board v8 and lihata subcircuit v8;
+   new board version for the route style upgrades and more detailed
+   text object clearance; new subc version for more detailed text object
+   clearance.
 
-4. The propedit dialog has in-line help about which property means what
-   (top right region of the dialog box).
-
-5. Rewritten rendering code to get layer order from a configurable, domain
-   specific render script instead of hardwired C.
-
-6. Teardrop extended object.
+4. Removed the half-working, export-plugin-specific printer calibration code
+   in favor of a simpler, documented method the user can perform with any
+   export flow.
