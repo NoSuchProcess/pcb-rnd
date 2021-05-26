@@ -1339,7 +1339,7 @@ static int pads_parse_pour_piece_crd(pads_read_ctx_t *rctx, pcb_dlcr_draw_t *pol
 		return 1;
 
 	if (isarc) {
-		TODO("poly arc: requires powerpcb to check; polyarc*.asc");
+		TODO("poly arc: requires powerpcb to check; batch3/polyarc* ; resulted in errors");
 		rnd_trace("  arc %mm;%mm %f..%f\n", x, y, start, end);
 	}
 	else {
@@ -1378,7 +1378,7 @@ static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, pads_poly_type_t
 		}
 	}
 
-TODO("bloat up the poly if width != 0; requires powerpcb to see if it's only the rounding radius or grows the poly; poly_bloat*.asc");
+TODO("if width != 0: round corners as if poly was drawn with the line as thick as specified, with the line's _outer edge_ being the poly contour; because it probably affects not only as-drawn but clipped version too, this needs arc-in-poly support? batch3/poly_bloat*");
 	if ((*signame != '\0') && (poly != NULL))
 		pcb_dlcr_set_net(poly, signame);
 
