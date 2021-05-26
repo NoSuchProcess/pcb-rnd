@@ -3,6 +3,7 @@ $short calculate toolpath for milling
 $long Calculate and simulate toolpath for milling away opper
 $state WIP
 $package export
+dep ddraft
 default disable
 autoload 1
 dep lib_polyhelp
