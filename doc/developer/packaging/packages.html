@@ -23,7 +23,7 @@
 <tr><th>pcb-rnd-lib-gtk<td> pcb-rnd-core pcb-rnd-lib-gui<td> lib_gtk_common
 <tr><th>pcb-rnd-hid-lesstif<td> pcb-rnd-core pcb-rnd-lib-gui<td> hid_lesstif
 <tr><th>librnd2<td> pcb-rnd-core<td><i>n/a</i>
-<tr><th>pcb-rnd-io-alien<td> pcb-rnd-core pcb-rnd-lib-io<td> io_autotrax io_bxl io_dsn io_eagle io_hyp io_kicad io_kicad_legacy
+<tr><th>pcb-rnd-io-alien<td> pcb-rnd-core pcb-rnd-lib-io pcb-rnd-extra<td> io_autotrax io_bxl io_dsn io_eagle io_hyp io_kicad io_kicad_legacy io_pads
 <tr><th>pcb-rnd-cloud<td> wget pcb-rnd-core<td> fp_wget lib_wget
 <tr><th>pcb-rnd-export-extra<td> pcb-rnd-core pcb-rnd-export<td> export_fidocadj export_ipcd356 export_lpr export_oldconn export_stl
 <tr><th>pcb-rnd-hid-gtk2-gdk<td> pcb-rnd-core pcb-rnd-lib-gtk<td> hid_gtk2_gdk
@@ -50,7 +50,7 @@
 <tr><th>pcb-rnd-lib-gtk<td> $LP/lib_gtk_common.pup $LP/lib_gtk_common.so <i></i><td>	Support library for building the GUI with gtk.<td> 	Provides the common gtk code (e.g. dialog box engine, input handling) 	for any gtk based HID plugin.  
 <tr><th>pcb-rnd-hid-lesstif<td> $LP/hid_lesstif.pup $LP/hid_lesstif.so <i></i><td>	GUI: motif/lesstif, software render<td> 	Lightweight GUI and software rendering using the motif (lesstif) toolkit.  
 <tr><th>librnd2<td>$PREFIX/lib/*.so.* <i></i><td>	pcb-rnd library, binaries.<td>	 	HID, polygons, infrastructure for 3rd party applications.  
-<tr><th>pcb-rnd-io-alien<td> $P/io_autotrax.pup $P/io_autotrax.so $P/io_bxl.pup $P/io_bxl.so $P/io_dsn.pup $P/io_dsn.so $P/io_eagle.pup $P/io_eagle.so $P/io_hyp.pup $P/io_hyp.so $P/io_kicad.pup $P/io_kicad.so $P/io_kicad_legacy.pup $P/io_kicad_legacy.so $PREFIX/share/man/man1/txt2bxl.1 $PREFIX/share/man/man1/bxl2txt.1 $PREFIX/bin/txt2bxl $PREFIX/bin/bxl2txt <i></i><td>	File format compatibility with other PCB layout designers.<td> 	Load and/or save boards in file formats supported by other 	EDA tools, such as KiCAD, Eagle, protel/autotrax, etc.  
+<tr><th>pcb-rnd-io-alien<td> $P/io_autotrax.pup $P/io_autotrax.so $P/io_bxl.pup $P/io_bxl.so $P/io_dsn.pup $P/io_dsn.so $P/io_eagle.pup $P/io_eagle.so $P/io_hyp.pup $P/io_hyp.so $P/io_kicad.pup $P/io_kicad.so $P/io_kicad_legacy.pup $P/io_kicad_legacy.so $P/io_pads.pup $P/io_pads.so $PREFIX/share/man/man1/txt2bxl.1 $PREFIX/share/man/man1/bxl2txt.1 $PREFIX/bin/txt2bxl $PREFIX/bin/bxl2txt <i></i><td>	File format compatibility with other PCB layout designers.<td> 	Load and/or save boards in file formats supported by other 	EDA tools, such as KiCAD, Eagle, protel/autotrax, etc.  
 <tr><th>pcb-rnd-cloud<td> $P/fp_wget.pup $P/fp_wget.so $LP/lib_wget.pup $LP/lib_wget.so <i>$C/fp_wget.conf</i><td>	Networking plugins.<td> 	'Cloud' footprint access plugin that integrates edakrill and gedasymbols.org.  
 <tr><th>pcb-rnd-export-extra<td> $P/export_fidocadj.pup $P/export_fidocadj.so $P/export_ipcd356.pup $P/export_ipcd356.so $P/export_lpr.pup $P/export_lpr.so $P/export_oldconn.pup $P/export_oldconn.so $P/export_stl.pup $P/export_stl.so <i></i><td>	Export formats: special/extra<td> 	Less commonly used export formats: fidocadj, ipc-356-d, direct printing with lpr.  
 <tr><th>pcb-rnd-hid-gtk2-gdk<td> $LP/hid_gtk2_gdk.pup $LP/hid_gtk2_gdk.so <i></i><td>	GUI: gtk2, software render<td> 	Software rendering on gtk2, using the gdk API.  
@@ -118,6 +118,7 @@
 --plugin-lib_hid_pcbui
 --plugin-teardrops
 --plugin-shand_cmd
+--plugin-io_pads
 --plugin-import_tinycad
 --plugin-export_openems
 --plugin-import_orcad_net

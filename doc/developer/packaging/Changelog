@@ -9,8 +9,19 @@ How to get a release candidate tarball in /tmp:
 Packaging changes between 2.3.2 and 2.4.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TODO: check why plugin menu files are missing from the list
-TODO: check if plugin conf files are not missing from the list
+A. changes that probably don't need action
+
+1. New plugin in existing package:
+   io_pads in pcb-rnd-io-alien
+
+B. changes that probably DO need action
+
+1. Package description change: format list contains PADS board supported
+
+2. New dependency: pcb-rnd-io-alien depends on pcb-rnd-extra
+   (reason: PADS ASCII depends on teardrops)
+
+
 
 Packaging changes between 2.3.1 and 2.3.2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

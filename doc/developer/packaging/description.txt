@@ -29,6 +29,7 @@ File formats and compatibility:
     * hyperlynx board, version 2 and above
     * kicad board, version 3, 4 and 5 (s-expr)
     * lihata pcb-rnd board (any version)
+    * PADS board
     * gEDA/PCB .pcb board (any version up to 2017)
   - export board:
     * anonimized board statistics in lihata
