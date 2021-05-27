@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.3.2 (svn r34511) an interactive printed circuit board editor ,  Revision: 34522
+This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,  Revision: 34696
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -173,7 +173,7 @@ This is pcb-rnd 2.3.2 (svn r34511) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#getxy">GetXY</a></td><td>Get a coordinate. If x or y specified, the return value of the action is the x or y coordinate.</td><td>GetXY([message, [x|y]])</td><td></td>
 <tr><td><a href="action_details.html#gfxmod">GfxMod</a></td><td>Modify a gfx object: set transparent pixel on the pixmap or resize by measurement</td><td>GfxMod(transparent, [idpath, [#rrggbb]])<br>GfxMod(transparent, [idpath, [x, y]])<br>GfxMod(resize, [idpath, [pdx, pdy1, len]])</td><td></td>
 <tr><td>GlobalPuller</td><td>Pull all traces tight. With no argument it runs on the current layer.</td><td>pcb_act_GlobalPuller([Found|Selected])</td><td>puller plugin</td>
-<tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)<br>grid(get)</td><td></td>
+<tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)<br>grid(get)<br>grid(ask)</td><td></td>
 <tr><td>GroupPropGui</td><td>Change group flags and properties</td><td>GroupPropGui(groupid)</td><td>dialogs plugin</td>
 <tr><td>gui_FallbackColorPick</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
 <tr><td>gui_fpmap_choose</td><td>Internal call action for a dialog to select a footprint from a map.</td><td>gui_fpmap_choose(map)</td><td>dialogs plugin</td>
@@ -317,7 +317,7 @@ This is pcb-rnd 2.3.2 (svn r34511) an interactive printed circuit board editor ,
 <tr><td>Preferences</td><td>Present the preferences dialog, optionally opening the tab requested.</td><td>Preferences([tabname])</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#print">Print</a></td><td>Present the print export dialog for printing the layout from the GUI.</td><td>Print()</td><td></td>
 <tr><td>PrintActions</td><td>Print all actions available.</td><td>PrintActions()</td><td></td>
-<tr><td><a href="action_details.html#printcalibrate">PrintCalibrate</a></td><td>Calibrate the printer.</td><td>PrintCalibrate()</td><td>dialogs plugin</td>
+<tr><td><a href="action_details.html#printcalibrate">PrintCalibrate</a></td><td>DEPRECATED: Calibrate the printer.</td><td>PrintCalibrate()</td><td>dialogs plugin</td>
 <tr><td>PrintCopyright</td><td>Print copyright notice.</td><td>PrintCopyright()</td><td></td>
 <tr><td>PrintFiles</td><td>Print files currently loaded.</td><td>PrintFiles()</td><td></td>
 <tr><td>PrintGUI</td><td>Open the print dialog.</td><td>PrintGUI()</td><td>dialogs plugin</td>
@@ -383,7 +383,7 @@ This is pcb-rnd 2.3.2 (svn r34511) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#select">Select</a></td><td>Toggles or sets the selection.</td><td>Select(Object, [idpath])<br>Select(ToggleObject)<br>Select(All|Block|Connection|Invert)<br>Select(Convert)</td><td></td>
 <tr><td><a href="action_details.html#selectlayer">SelectLayer</a></td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
 <tr><td><a href="action_details.html#setflag">SetFlag</a></td><td>Sets flags on objects.</td><td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
-<tr><td>SetGrid</td><td>Change various board-wide values and sizes.</td><td>SetGrid(delta|*mult|/div, [unit])</td><td></td>
+<tr><td>SetGrid</td><td>Change grid size.</td><td>SetGrid(delta|*mult|/div, [unit])</td><td></td>
 <tr><td>SetOctagon</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#setsame">SetSame</a></td><td>Sets current layer and sizes to match indicated item.</td><td>SetSame()</td><td></td>
 <tr><td>SetSquare</td><td></td><td></td><td>oldactions plugin</td>
