@@ -1,6 +1,6 @@
             *io------------------------------------------------------------+
             |[kica    ]       [gpcb  ]    [hyp_]  [gsch]  [c_pcb] [dsn_ ]  |
-            |        [  tedax  ]    [ frt_ ]  [fido]  [prtl]  [eagl]       |
+            |        [  tedax  ]    [ frt_ ]  [fido]  [prtl]  [eagl] [pads]|
             +--------------------------------------------------------------+
 *inp----+                                                                        *hid--------+
 |[eesc ]|   *pcbrnd----------------------------------------------------------+   |[batch  ]  |
@@ -157,6 +157,9 @@ OA
 
 [dsn_]
 	label dsn\n(autorouting)
+
+[pads]
+	label PADS\nASCII
 
 
 
@@ -381,6 +384,9 @@ OA
 	label board
 
 <-> dsn_.s pcbrnd
+	label board
+
+-> pads.s pcbrnd
 	label board
 
 <-> pcbrnd batch.w
