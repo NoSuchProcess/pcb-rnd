@@ -62,4 +62,12 @@ Arguments:
 	<td> Returns the source file path the buffer is loaded from or nil if there
 	     is none. The return value is a string, usable from user scripts.
 
+	<tr><th> Push
+	<td> Push the index of the currently active paste buffer into an internal
+	     stack. The stack is not board-specifiec.
+
+	<tr><th> Pop
+	<td> Pop an index from the internal stack and set currently active paste
+	     buffer index accordingly.
+
 </table>
