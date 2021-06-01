@@ -103,7 +103,7 @@ pcb-rnd part:
 	[export_ps]
 		-Cleanup: do not rely on PCB_MIN_PINORVIAHOLE for drill helper minimum setting, just specify a small-enough number - PCB_MIN_PINORVIAHOLE is going to be removed from the API
 		-Fix: eps export: if CAM is active, do not omit the bottom silk when explicitly requested
-		-Fix: eps export: when exporting the bottom silk with CAM, --as-shown applies far-side inivisible-color
+		-Fix: eps export: when exporting the bottom silk with CAM, --as-shown applies far-side invisible-color
 		-Del: pscalib() action; also remove the calibration test page generator and calibration value guess code
 
 	[export_stl]
@@ -136,7 +136,7 @@ pcb-rnd part:
 
 	[io_lihata]
 		-Fix: more graceful handling of invalid via hole dia problems (than assert)
-		-Fix: write text scale and clearence dummies without creating empty nodes; also fixes typos in scale_x/scale_y dummies
+		-Fix: write text scale and clearance dummies without creating empty nodes; also fixes typos in scale_x/scale_y dummies
 		-Cleanup: remove route style old via diameters from internal API
 		-Add: concept of route style unset font id, for compatibility with old boards
 		-Add: v8 saves and loads route style fid (font ID) if it's not -1
@@ -148,7 +148,7 @@ pcb-rnd part:
 	[io_pcb]
 		-Cleanup: move old route style parser code from core to io_pcb - nothing else uses it (nothing else ever should!)
 		-Move: PCB_MIN_PINORVIACOPPER to geda/pcb loading - this value should be compatible with the hardwired value in geda/pcb
-		-Split: route style compabitility save into a separate function (io_lihata will need to reuse it)
+		-Split: route style compatibility save into a separate function (io_lihata will need to reuse it)
 		-Add: attempt to convert route style via padstack proto into old via description and throw io incompatibility error when this fails
 		-Add: code to create padstack prototype from route style diameters (on load)
 
@@ -164,9 +164,9 @@ pcb-rnd part:
 	[lib_compat_help]
 		-Fix: compat pad save: properly reverse engineer rectangular polygons into centerline with stroke width, even for 45 degree rotated case
 		-Add: route style compat API: helper for creating a via padstack proto from old via diameters (on load)
-		-Split: compatibility via data extractor into a low level one that works from a prototype and the original high level one that calls this function for a padstack instsnce
+		-Split: compatibility via data extractor into a low level one that works from a prototype and the original high level one that calls this function for a padstack instance
 		-Split: compat via pstk prototype generator from pstk generator into a separate function for reuse
-		-Move: compatibility rotue style via pstk proto -> diameters converter from io_pcb to lib_compat_help as it will need to be reused in io_lihata for pre-v8
+		-Move: compatibility route style via pstk proto -> diameters converter from io_pcb to lib_compat_help as it will need to be reused in io_lihata for pre-v8
 
 	[lib_hid_pcbui]
 		-Fix: find best fitting route style instead of first fit - because of wildcard text settings
@@ -187,7 +187,7 @@ pcb-rnd part:
 		-Cleanup: create local menu file for the puller plugin so its menus from the central menu file can be removed
 		-Update: librnd API change on export options ->value removal: update export plugins on librnd calls
 		-Update: export plugins: new way of loading default values for librnd API change
-		-Del: remove clibration hook from all export plugins - API is goignt o be removed from librnd
+		-Del: remove clibration hook from all export plugins - API is going to be removed from librnd
 
 	[puller]
 		-Add: local menu file
@@ -200,7 +200,7 @@ pcb-rnd part:
 		-Del: special buildin-hack for lib_compat_help: core doesn't depend on it anymore
 
 	[teardrops]
-		-Fix: exto: set up intern copper layer offset when converting line into teardrop exto so that the new obejct won't change layer
+		-Fix: exto: set up intern copper layer offset when converting line into teardrop exto so that the new object won't change layer
 		-Fix: exto: accept only copper layers for edit object
 
 	[tests]
@@ -216,11 +216,11 @@ pcb-rnd part:
 		-Add: cache via and text tool IDs
 
 	[util]
-		-Fix: sign verify typo: --print on crl should use the file name poassed on command line
+		-Fix: sign verify typo: --print on crl should use the file name passed on command line
 		-Update: repo.hu crl for another year
 
 	[vendor]
-		-Cleanup: remove PCB_MIN_PINORVIACOPPER, rather repend on conf node design/min_wid for fixing up invalid route styles
+		-Cleanup: remove PCB_MIN_PINORVIACOPPER, rather depend on conf node design/min_wid for fixing up invalid route styles
 		-Cleanup: remove DRC section from the example - DRC in vendor files are not supported
 		-Change: switch over from tuning the .Hole field of the routing style struct to deal with via padstack prototypes
 		-Del: remove via pad diameter tuning - vendor drill is about changing drill sizes only, finding thin copper is up to the DRC
@@ -231,8 +231,8 @@ librnd part:
 		-Fix: make sure the local .so symlink is always updated so it never points to a previous, lower versioned .so build - matters for non-installed, from-source app compilation
 
 	[core]
-		-Split: export option (default val) to attrib copy code to a spearate function for reuse
-		-Split: code that loads all export attributes/values from the optiosn table for a hid into a public function so export plugin init code can call it
+		-Split: export option (default val) to attrib copy code to a separate function for reuse
+		-Split: code that loads all export attributes/values from the options table for a hid into a public function so export plugin init code can call it
 		-Import: cleaned-up box-box intersection code from pcb-rnd
 		-Del: box list type: not generic enough plus no user left
 		-Add: Grid(ask) for setting custom grids
@@ -254,7 +254,7 @@ librnd part:
 		-Fix: const correctness in taking hid options (read-only)
 		-Fix: const correctness: store export options only in const
 		-Fix: const correctness for the new API in hid_nogui
-		-Fix: const correcntess on export options in all core HIDs
+		-Fix: const correctness on export options in all core HIDs
 		-Fix: const correctness in the older export option registration call
 		-Fix: const correctness in DAD around read-only export options
 		-Del: API CHANGE: remove the old, NULL hid option registration call - it won't work with the read-only option table
