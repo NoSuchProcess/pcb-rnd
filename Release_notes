@@ -9,7 +9,7 @@ the native file format.
 
 Feature highlight:
 
-1. Route style switched over from 2-diameters via geoemtry to padstack
+1. Route style switched over from 2-diameters via geometry to padstack
    prototypes. Video tutorials about this change:
    https://archive.org/details/pcb-rnd-via_pstk1
    https://archive.org/details/pcb-rnd-octa-via
