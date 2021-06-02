@@ -1,13 +1,15 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-
-2. For later releases ===============================================================================
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both
 	- finish up librnd separation, remove librnd extern
 	- get rid of RND_DAD_CFG_NOLABEL
+- FEATURE: asm(): a config node (maybe query script); if a subc matches, omit it from the list; this is for DNP or build options [report: Majenko]
+- BUG: layer binding dialog: on the standard 4 layer board create a subc with a line on top copper; edit layer bindings of the subc; try to move it to each inner copper -> dialog box gets confused [report: Igor2]
+
+2. For later releases ===============================================================================
 - CLEANUP/FEATURE: new breadboard
 	- FEATURE: gfx rotated pixmap scale -> uneven x/y scale can not be done while rendering; change the API so the x/y aspect change is done in software during the rotation (pcb_pixmap_alloc_insert_transformed) and only an even x/y scale is done during rendering (ghid_draw_pixmap)
 	- DOC: pool node on how to use pixmap for breadboading
@@ -19,7 +21,6 @@
 - CLEANUP: layer order from data
 	- build a list of layers rendered, in the order of rendering while drawing layer groups; maybe use gdl and move the group to the end and use a terminator item;  get pcb_search_obj_by_location_() to use this list for ordering
 	- BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
-- FEATURE: asm(): a config node (maybe query script); if a subc matches, omit it from the list; this is for DNP or build options [report: Majenko]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
@@ -29,7 +30,6 @@
 		- FEATURE: need to think over and check the spec for how to do this with no-hole padstacks
 		- RTT tests: thermal_layer.dsn, comp1.dsn, padstack.dsn
 	- BUG: elem_pads_ds: do not export line shape in padstacks as polygons, that kills round cap lines
-- BUG: layer binding dialog: on the standard 4 layer board create a subc with a line on top copper; edit layer bindings of the subc; try to move it to each inner copper -> dialog box gets confused [report: Igor2]
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: FONTS: second font indents incorrectly
