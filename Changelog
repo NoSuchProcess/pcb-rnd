@@ -146,6 +146,9 @@ pcb-rnd part:
 		-Add: altough lihata v8 doesn't have via dia and hole dia in route style, accept it with a big warning (may be useful for manually written files)
 		-Add: warn when v8+ board route style has diameters _and_ proto - only the proto is used
 
+	[io_pads]
+		-Add: enable the plugin to load various versions of PADS ASCII boards
+
 	[io_pcb]
 		-Cleanup: move old route style parser code from core to io_pcb - nothing else uses it (nothing else ever should!)
 		-Move: PCB_MIN_PINORVIACOPPER to geda/pcb loading - this value should be compatible with the hardwired value in geda/pcb
