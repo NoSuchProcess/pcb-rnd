@@ -80,6 +80,7 @@ pcb-rnd part:
 		-Add: note on ldconfig and non-standard-path installation vs. .so files
 		-Add: mention Solaris as a supported UNIX system
 		-Add: drc_query: document the stock rules
+		-Add: PasteBuffer()'s Push and Pop
 
 	[draw]
 		-Fix: explicit transformation enable_silk_invis_clr to enable the old "draw other-side silk with invisible object color" hack; on by default for the gui, off by default for export plugins
@@ -181,6 +182,9 @@ pcb-rnd part:
 		-Add: ApplyPen menu items for object and for selected
 		-Add: menu binding for interactive custom grid setting
 
+	[millpath]
+		-Fix: the plugin depends on ddraft for intersection calculation
+
 	[plugins]
 		-Fix: typo in various import plugins ("schamtics" -> "schematics")
 		-Cleanup: make sure all export plugins have their options as static const - it's private and should never change
@@ -231,6 +235,7 @@ librnd part:
 		-Fix: make sure the local .so symlink is always updated so it never points to a previous, lower versioned .so build - matters for non-installed, from-source app compilation
 
 	[core]
+		-Fix: wrong action description for SetGrid()
 		-Split: export option (default val) to attrib copy code to a separate function for reuse
 		-Split: code that loads all export attributes/values from the options table for a hid into a public function so export plugin init code can call it
 		-Import: cleaned-up box-box intersection code from pcb-rnd
@@ -246,6 +251,7 @@ librnd part:
 		-Fix: color conversion: 1 LSB got lost on a color conversion round trip half of the cases
 		-Fix: win32 glue: wrong arguments to rnd_system() killed cache update on win32
 		-Fix: accept 'ungrab' type of drawing area entering as enter event to fix a pan lockup on mid mouse button 'dragged' from outside to inside the drawing area
+		-Fix: don't crash on setting mouse cursor when no tool is loaded
 
 	[hid]
 		-Cleanup: API CHANGE: remove ->value field from export options; export options should be const and current values should be maintained in hid->argument_array; this will fix a bug caused by unknown sizeof(enum) vs. void *
