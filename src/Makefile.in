@@ -2,6 +2,7 @@ append /local/pcb/CFLAGS [@-I. -I.. -I@/local/pcb/librnd_prefix@/include/librnd/
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS cc/rdynamic
 append /local/pcb/LDFLAGS ?/local/pcb/cflags_profile
+append /local/pcb/LDFLAGS ?libs/script/fungw/ldflags
 put /local/pcb/DEPCFLAGS {}
 put /local/pcb/OBJS_3RDLIB {}
 
