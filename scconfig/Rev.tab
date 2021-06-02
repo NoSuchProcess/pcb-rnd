@@ -1,3 +1,4 @@
+34707	configure	new release version
 34691	configure	io_pads: disable write code but enable the plugin by default
 34633	configure	io_pads: PADS_ASCII write code
 34521	configure	export_lpr: configurable default scales
