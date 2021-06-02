@@ -13,16 +13,12 @@
 
 #define version "2.4.0"
 
-#define LIBRND_ROOT         "../src_3rd/librnd-local/src/librnd"
-#define LIBRND_PLUGIN_ROOT  "../src_3rd/librnd-local/src/librnd/plugins"
-#include "librnd-local/src_3rd/puplug/scconfig_hooks.h"
-#include "librnd-local/src_3rd/libfungw/scconfig_hooks.h"
-#include "librnd-local/src_3rd/libporty_net/hooks_net.c"
+#include <librnd/src_3rd/puplug/scconfig_hooks.h>
+#include <librnd/src_3rd/libfungw/scconfig_hooks.h>
 
-#include "librnd-local/src/librnd/scconfig/plugin_3state.h"
-#include "librnd-local/src/librnd/scconfig/hooks_common.h"
-#include "librnd-local/src/librnd/scconfig/hooks_gui.c"
-#include "librnd-local/src/librnd/scconfig/rnd_hook_detect.h"
+#include <librnd/scconfig/plugin_3state.h>
+#include <librnd/scconfig/hooks_common.h>
+#include <librnd/scconfig/rnd_hook_detect.h>
 
 const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtree they affect */
 	{"disable-gd",        "libs/gui/gd",                  arg_lib_nodes, "$do not use gd (many exporters need it)"},
@@ -44,6 +40,9 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 
 	{NULL, NULL, NULL, NULL}
 };
+
+#define TO_STR_(payload) #payload
+#define TO_STR(payload) TO_STR_(payload)
 
 static void help1(void)
 {
@@ -91,9 +90,7 @@ int hook_postinit()
 	put("/local/pcb/want_byaccic", sfalse);
 	put("/local/pcb/want_static", sfalse);
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
-
-	put("/local/pcb/librnd_is_local", strue);
-	put("/local/pcb/librnd_root", "src_3rd/librnd-local/src");
+	put("/local/pcb/librnd_prefix", TO_STR(LIBRND_PREFIX));
 	return 0;
 }
 
@@ -116,8 +113,7 @@ static void calc_dialog_deps(void)
 {
 	int buildin, plugin;
 
-	rnd_calc_dialog_deps(); /* remove after librnd separation */
-
+#warning TODO: get this from librnd
 	buildin = istrue(get("/target/librnd/dialogs/buildin"));
 	plugin = istrue(get("/target/librnd/dialogs/plugin"));
 
@@ -255,16 +251,8 @@ int hook_detect_target()
 		put("/local/pcb/want_parsgen_byaccic", sfalse);
 	}
 
-	libporty_net_detect_target();
-
 	/* plugin dependencies */
 	plugin_deps(1);
-
-	rnd_hook_detect_coord_bits(); /* remove this after the librnd split */
-
-	/* restore the original CFLAGS, without the effects of --debug, so Makefiles can decide when to use what cflag (c99 needs different ones) */
-	/* this should be removed after the librnd split */
-	put("/target/cc/cflags", get("/local/cc_flags_save"));
 
 	return 0;
 }
@@ -314,40 +302,6 @@ int hook_generate()
 	put("/local/apiver", apiver);
 
 	printf("\n");
-	if (istrue(get("/local/pcb/librnd_is_local"))) {
-		FILE *f;
-		put("/local/pup/sccbox", "../../../../scconfig/sccbox");
-
-		printf("Generating local librnd build files:\n");
-		printf("Generating librnd-local Makefile.conf (%d)\n", generr |= tmpasm("../src_3rd/librnd-local", "Makefile.conf.in", "Makefile.conf"));
-		printf("Generating librnd-local src/Makefile (%d)\n", generr |= tmpasm("../src_3rd/librnd-local/src", "Makefile.in", "Makefile"));
-
-		printf("Generating src_3rd/libporty_net/os_includes.h (%d)\n", generr |= generate("../src_3rd/librnd-local/src_3rd/libporty_net/os_includes.h.in", "../src_3rd/librnd-local/src_3rd/libporty_net/os_includes.h"));
-		printf("Generating src_3rd/libporty_net/pnet_config.h (%d)\n", generr |= generate("../src_3rd/librnd-local/src_3rd/libporty_net/pnet_config.h.in", "../src_3rd/librnd-local/src_3rd/libporty_net/pnet_config.h"));
-		printf("Generating src_3rd/libporty_net/phost_types.h (%d)\n", generr |= generate("../src_3rd/librnd-local/src_3rd/libporty_net/phost_types.h.in", "../src_3rd/librnd-local/src_3rd/libporty_net/phost_types.h"));
-
-		printf("Generating librnd config.h (%d)\n", generr |= tmpasm("../src_3rd/librnd-local", "config.h.in", "config.h"));
-
-		generr |= pup_hook_generate("../src_3rd/librnd-local/src_3rd/puplug");
-		if (!istrue(get("libs/script/fungw/presents")))
-			generr |= fungw_hook_generate("../src_3rd/librnd-local/src_3rd/libfungw");
-
-		f = fopen("../src_3rd/librnd-local/scconfig/revtest", "w");
-		fprintf(f, "#!/bin/sh\nexit 0\n\n");
-		fclose(f);
-		system("chmod 755 ../src_3rd/librnd-local/scconfig/revtest");
-
-		system("cd ../src_3rd/librnd-local/scconfig && make cquote && make sccbox");
-
-		printf("\n");
-
-		/* reset shared variables used in librnd, reused in pcb-rnd */
-		put("/local/pcb/buildin_pups", "");
-		put("/local/pcb/buildin_hidlib_pups", "");
-		put("/local/pcb/buildin_hidlib_pups_fullpath", "");
-		put("/local/pcb/SRCS", "");
-		put("/local/dep/SRCS", "");
-	}
 
 	put("/local/pup/sccbox", "../../scconfig/sccbox");
 
@@ -355,8 +309,6 @@ int hook_generate()
 	printf("Generating Makefile.conf (%d)\n", generr |= tmpasm("..", "Makefile.conf.in", "Makefile.conf"));
 
 	printf("Generating src/Makefile (%d)\n", generr |= tmpasm("../src", "Makefile.in", "Makefile"));
-
-	generr |= rnd_hook_generate();
 
 	printf("Generating util/gsch2pcb-rnd/Makefile (%d)\n", generr |= tmpasm("../util", "gsch2pcb-rnd/Makefile.in", "gsch2pcb-rnd/Makefile"));
 	printf("Generating util/bxl2txt/Makefile (%d)\n", generr |= tmpasm("../util", "bxl2txt/Makefile.in", "bxl2txt/Makefile"));
