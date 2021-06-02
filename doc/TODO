@@ -1,6 +1,10 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- librnd sep:
+	- librnd/config.h gets c99 inline for some reason
+	- gsch2pcb-rnd breaks in configure
+	- revise autobuild servers' scripts
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both
