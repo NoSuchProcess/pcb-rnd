@@ -5,7 +5,8 @@ This release is a major cleanup release, the final preparation for a major
 version change to 3.0.0 in the near future. As such, it finally replaces the
 old, diameter based via description in route styles (and tools) with padstack
 prototypes and introduces lihata v8 to be able to represent this change in
-the native file format.
+the native file format. It also has major code refactoring under the hood,
+especially in export options API.
 
 Feature highlight:
 
@@ -24,3 +25,6 @@ Feature highlight:
 4. Removed the half-working, export-plugin-specific printer calibration code
    in favor of a simpler, documented method the user can perform with any
    export flow.
+
+5. New alien file format: load PADS ASCII boards with the io_pads plugin.
+
