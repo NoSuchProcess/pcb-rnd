@@ -5,6 +5,30 @@ NOTE: If you are packaging pcb-rnd for an OS distribution, please read
       doc/developer/packaging.txt carefully and please try to follow the
       conventions documented in doc/developer/packaging/
 
+
+0. Dependencies
+
+Summary of dependencies:
+For users:
+ - mandatory: C compiler
+ - mandatory: make
+ - mandatory: librnd installed; see http://www.repo.hu/projects/librnd
+ - optional: imagemagick for running the pixmap export tests
+
+When configuring librnd:
+ - optional: glib and gtk2 if you are using the GTK GUI
+ - optional: gtkglext if you need opengl rendering
+ - optional: motif or lesstif if you are using the lesstif frontend
+ - optional: gdlib if you want to export/import to/from png, jpg or gif
+
+For developers, only in case grammar files are to be modified:
+ - flex
+ - bison
+
+NOTE: if you did not install any GUI lib dependency before configuring librnd,
+pcb-rnd will be compiled with command line interface only.
+
+
 1. Configure
 
 Run ./configure.
@@ -17,24 +41,6 @@ of lesstif or motif and/or gtk2.
 Read the summary table and the warnings at the end of ./configure output
 and decide if you need the features missing. If there was no error, only
 warnings, pcb-rnd cab be compiled, even if some dependencies were missing.
-
-Summary of dependencies:
-For users:
- - mandatory: C compiler
- - mandatory: make
- - optional: glib and gtk2 if you are using the GTK GUI
- - optional: gtkglext if you need opengl rendering
- - optional: motif or lesstif if you are using the lesstif frontend
- - optional: gdlib if you want to export/import to/from png, jpg or gif
- - optional: imagemagick for running the pixmap export tests
-
-For developers, only in case grammar files are to be modified:
- - flex
- - bison
-
-NOTE: if you did not install any GUI lib dependency, pcb-rnd will be
-compiled with command line interface only.
-
 ./configure will try to static link most plugins and disable ones that
 have missing dependencies. This process can be controlled using configure
 command line switches, see ./configure --help.
@@ -50,7 +56,6 @@ Optionally also run make test.
 3. Running from source
 
 cd src
-. ./pcb-rnd-src
 ./pcb-rnd
 
 Note: it is important to cd to src to run pcb-rnd from source; src/pcb-rnd
@@ -79,6 +84,7 @@ install into non-standard path (e.g somewhere under /home or /opt), you need to
 make sure your system dl will search for librnd.so in the nonstandard place.
 Even in case of standard installation you may need to run ldconfig on some
 systems to update the system cache of .so files.
+
 
 5. Packaging
 
