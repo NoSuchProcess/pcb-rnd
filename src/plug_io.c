@@ -606,7 +606,7 @@ static int real_load_pcb(const char *Filename, const char *fmt, rnd_bool revert,
 
 	switch(how & 0x0F) {
 		case 0: settings_dest = RND_CFR_DESIGN; break;
-		case 1: settings_dest = RND_CFR_DEFAULTPCB; break;
+		case 1: settings_dest = RND_CFR_DEFAULTDSG; break;
 		case 2: settings_dest = RND_CFR_invalid; break;
 		default: abort();
 	}
