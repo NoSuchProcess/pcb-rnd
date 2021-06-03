@@ -498,7 +498,8 @@ int main(int argc, char ** argv)
 
 	current_method->uninit();
 
-	rnd_conf_uninit();
+	conf_core_uninit_pre();
+	rnd_hidlib_uninit();
 
 	free_strlist(&schematics);
 	free_strlist(&extra_gnetlist_arg_list);
