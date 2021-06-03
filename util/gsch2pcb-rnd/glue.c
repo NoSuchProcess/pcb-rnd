@@ -38,3 +38,18 @@ const char *rnd_hidlib_default_embedded_menu = "";
 void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot) { }
 
 
+const char *rnd_app_version = PCB_VERSION;
+const char *rnd_app_url = "http://repo.hu/projects/pcb-rnd";
+
+void *rnd_hidlib_crosshair_suspend(rnd_hidlib_t *hl) { return NULL; }
+void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data) {}
+void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode) {}
+
+static const char pcb_conf_internal_arr[] = { 0 };
+const char *pcb_conf_internal = pcb_conf_internal_arr;
+
+void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e) {}
+
+void rnd_hidlib_adjust_attached_objects(rnd_hidlib_t *hl) {}
+void rnd_expose_main(rnd_hid_t * hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform_t *xform_caller) {}
+void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode) {}
