@@ -33,6 +33,6 @@ AIX libc header, this needs extra CFLAGS for configure:
 
  ./configure CFLAGS=-D_LINUX_SOURCE_COMPAT
 
-Without that, gtk is not detected becaus eof name clash between gtk and
+Without that, gtk is not detected becaus of name clash between gtk and
 AIX libc on func_data.
 
