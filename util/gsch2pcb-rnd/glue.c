@@ -45,8 +45,8 @@ void *rnd_hidlib_crosshair_suspend(rnd_hidlib_t *hl) { return NULL; }
 void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data) {}
 void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode) {}
 
-static const char pcb_conf_internal_arr[] = { 0 };
-const char *pcb_conf_internal = pcb_conf_internal_arr;
+static const char rnd_conf_internal_arr[] = { 0 };
+const char *rnd_conf_internal = rnd_conf_internal_arr;
 
 void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e) {}
 
