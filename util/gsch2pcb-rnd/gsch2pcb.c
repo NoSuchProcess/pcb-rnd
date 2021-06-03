@@ -57,7 +57,7 @@ static const char *want_method_default = "import";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
 const char *rnd_conf_userdir_path;
-const char *rnd_pcphl_conf_user_path;
+const char *rnd_conf_user_path;
 const char *rnd_conf_sysdir_path;
 const char *rnd_conf_sys_path;
 
@@ -394,7 +394,7 @@ int main(int argc, char ** argv)
 	method_import_register();
 
 	rnd_conf_userdir_path = CONF_USER_DIR;
-	rnd_pcphl_conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	rnd_conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
 	rnd_conf_sysdir_path = PCBCONFDIR;
 	rnd_conf_sys_path = rnd_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
 	rnd_menu_file_paths[0] = "./";

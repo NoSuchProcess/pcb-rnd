@@ -21,7 +21,7 @@ const char *rnd_app_package = "pcb-rnd";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
 const char *rnd_conf_userdir_path = CONF_USER_DIR;
-const char *rnd_pcphl_conf_user_path = CONF_USER_DIR "/pcb-conf.lht";
+const char *rnd_conf_user_path = CONF_USER_DIR "/pcb-conf.lht";
 const char *rnd_conf_sysdir_path = PCBSHAREDIR;
 const char *rnd_conf_sys_path = PCBSHAREDIR "/pcb-conf.lht";
 

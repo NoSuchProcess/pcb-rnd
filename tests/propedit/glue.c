@@ -10,7 +10,7 @@ const char *rnd_menu_file_paths[] = { "./", NULL };
 const char *rnd_menu_name_fmt = "menu.lht";
 
 const char *rnd_conf_userdir_path = "./";
-const char *rnd_pcphl_conf_user_path = "./conf.lht";
+const char *rnd_conf_user_path = "./conf.lht";
 
 /* hack for running from ./ without internal version of the conf */
 const char *rnd_conf_sysdir_path = "./";

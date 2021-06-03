@@ -90,7 +90,7 @@ const char *rnd_menu_file_paths[4];
 const char *rnd_menu_name_fmt = "pcb-menu-%s.lht";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
-const char *rnd_conf_userdir_path, *rnd_pcphl_conf_user_path;
+const char *rnd_conf_userdir_path, *rnd_conf_user_path;
 const char *rnd_conf_sysdir_path, *rnd_conf_sys_path;
 const char *rnd_app_package = PCB_PACKAGE;
 const char *rnd_app_version = PCB_VERSION;
@@ -207,7 +207,7 @@ static char *main_path_init(char *argv0)
 	rnd_menu_file_paths[3] = NULL;
 
 	rnd_conf_userdir_path = CONF_USER_DIR;
-	rnd_pcphl_conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	rnd_conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
 	rnd_conf_sysdir_path = PCBCONFDIR;
 	rnd_conf_sys_path = rnd_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
 
@@ -219,7 +219,7 @@ static void main_path_uninit(void)
 {
 	/* const for all other parts of the code, but we had to concat (alloc) it above */
 	free((char *)rnd_menu_file_paths[2]);
-	free((char *)rnd_pcphl_conf_user_path);
+	free((char *)rnd_conf_user_path);
 	free((char *)rnd_conf_sys_path);
 }
 
