@@ -11,7 +11,7 @@
 #include "util/arg_auto_set.h"
 #include "Rev.h"
 
-#define version "2.4.0"
+#define version "3.0.0-dev"
 
 #include <librnd/src_3rd/puplug/scconfig_hooks.h>
 #include <librnd/src_3rd/libfungw/scconfig_hooks.h>
