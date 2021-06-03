@@ -90,17 +90,17 @@ static void pref_win_user_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 
 static void pref_win_board_now_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_wplc_save_to_role(rnd_gui->get_dad_hidlib(hid_ctx), RND_CFR_USER);
+	rnd_wplc_save_to_role(rnd_gui->get_dad_hidlib(hid_ctx), RND_CFR_USER);
 }
 
 static void pref_win_project_now_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_wplc_save_to_role(rnd_gui->get_dad_hidlib(hid_ctx), RND_CFR_USER);
+	rnd_wplc_save_to_role(rnd_gui->get_dad_hidlib(hid_ctx), RND_CFR_USER);
 }
 
 static void pref_win_user_now_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pcb_wplc_save_to_role(rnd_gui->get_dad_hidlib(hid_ctx), RND_CFR_USER);
+	rnd_wplc_save_to_role(rnd_gui->get_dad_hidlib(hid_ctx), RND_CFR_USER);
 }
 
 static void pref_win_file_now_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -114,7 +114,7 @@ static void pref_win_file_now_cb(void *hid_ctx, void *caller_data, rnd_hid_attri
 	if (fname == NULL)
 		return;
 
-	if (pcb_wplc_save_to_file(rnd_gui->get_dad_hidlib(hid_ctx), fname) != 0)
+	if (rnd_wplc_save_to_file(rnd_gui->get_dad_hidlib(hid_ctx), fname) != 0)
 		rnd_message(RND_MSG_ERROR, "Error saving window geometry to '%s'\n", fname);
 }
 
