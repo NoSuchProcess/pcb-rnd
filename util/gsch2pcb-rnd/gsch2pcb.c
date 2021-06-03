@@ -384,6 +384,8 @@ void require_gnetlist_backend(const char *dir, const char *backend)
 
 const char *local_project_pcb_name = NULL;
 
+void gsch2pcb_conf_core_init(void) {}
+
 /************************ main ***********************/
 int main(int argc, char ** argv)
 {
@@ -400,10 +402,13 @@ int main(int argc, char ** argv)
 	rnd_menu_file_paths[2] = rnd_concat(PCBCONFDIR, "/", NULL);
 	rnd_menu_file_paths[3] = NULL;
 
+	rnd_hidlib_init1(gsch2pcb_conf_core_init);
+
 	rnd_file_loaded_init();
 	rnd_conf_init();
 	conf_core_init();
-	rnd_hidlib_conf_init();
+
+	rnd_conf_set(RND_CFR_CLI, "rc/dup_log_to_stderr", 0, "1", RND_POL_OVERWRITE);
 
 	gadl_list_init(&schematics, sizeof(char *), NULL, NULL);
 	gadl_list_init(&extra_gnetlist_arg_list, sizeof(char *), NULL, NULL);
