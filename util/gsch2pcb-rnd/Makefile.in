@@ -40,7 +40,7 @@ uniq /local/pcb/OBJS
 print [@
 
 
-FP_OBJS    = @/local/pcb/OBJS@ ../../src/plug_footprint.o
+FP_OBJS    = @/local/pcb/OBJS@ ../../src/plug_footprint.o ../../src/conf_core.o
 FP_LDFLAGS = @/local/pcb/LDFLAGS@
 FP_CFLAGS  = @/local/pcb/CFLAGS@
 OBJS = \
@@ -66,7 +66,7 @@ gsch2pcb.o: gsch2pcb.c ../../config.h
 
 # TODO: this should be the base lib only
 # run the Makefile in src for the common objects:
-$(QPARSE):
+$(FP_OBJS) $(QPARSE):
 	cd ../../src && $(MAKE) util_deps
 
 ##### module rules begin #####
