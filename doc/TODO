@@ -2,11 +2,14 @@
 
 1. For the upcoming release ===============================================================================
 - librnd sep:
-	- librnd/config.h gets c99 inline for some reason
-	- gsch2pcb-rnd breaks in configure
+	- librnd/config.h gets c99 inline; problem: librnd can be compiled without --debug while pcb-rnd with --debug
+	- test with /usr/local installation
+	- test with custom path installation
 	- test with and without fungw installed
 	- test with and without all plugins
 	- revise autobuild servers' scripts
+	- revise the API (see gsch2pcb-rnd glue)
+	- revise pcb-rnd tests and remove glue that's not needed anymore
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both
