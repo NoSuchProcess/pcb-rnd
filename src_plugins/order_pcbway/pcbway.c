@@ -64,7 +64,7 @@ typedef struct pcbway_form_s {
 	vts0_t country_codes;
 } pcbway_form_t;
 
-static int pcbway_cahce_update_(rnd_hidlib_t *hidlib, const char *url, const char *path, int update, pcb_wget_opts_t *wopts)
+static int pcbway_cahce_update_(rnd_hidlib_t *hidlib, const char *url, const char *path, int update, rnd_wget_opts_t *wopts)
 {
 	double mt, now = rnd_dtime();
 
@@ -76,7 +76,7 @@ static int pcbway_cahce_update_(rnd_hidlib_t *hidlib, const char *url, const cha
 			else
 				rnd_message(RND_MSG_INFO, "pcbway: stale '%s', updating it in the cache\n", path);
 		}
-		if (pcb_wget_disk(url, path, update, wopts) != 0) {
+		if (rnd_wget_disk(url, path, update, wopts) != 0) {
 			rnd_message(RND_MSG_ERROR, "pcbway: failed to download %s\n", url);
 			return -1;
 		}
@@ -90,7 +90,7 @@ static int pcbway_cahce_update_(rnd_hidlib_t *hidlib, const char *url, const cha
 static int pcbway_cache_update(rnd_hidlib_t *hidlib)
 {
 	char *hdr[5];
-	pcb_wget_opts_t wopts;
+	rnd_wget_opts_t wopts;
 	char *cachedir, *path;
 	int res = 0;
 
@@ -503,7 +503,7 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 
 	{
 		char *hdr[5];
-		pcb_wget_opts_t wopts;
+		rnd_wget_opts_t wopts;
 
 		wopts.header = (const char **)hdr;
 		hdr[0] = rnd_concat("api-key: ", CFG.api_key, NULL);
@@ -512,7 +512,7 @@ static void pcbway_quote_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 		hdr[3] = NULL;
 		wopts.post_file = tmpfn;
 
-		if (pcb_wget_disk(SERVER "/api/Pcb/PcbQuotation", respfn, 0, &wopts) != 0) {
+		if (rnd_wget_disk(SERVER "/api/Pcb/PcbQuotation", respfn, 0, &wopts) != 0) {
 			rnd_message(RND_MSG_ERROR, "pcbway: failed to get a quote from the server\n");
 			goto err;
 		}
