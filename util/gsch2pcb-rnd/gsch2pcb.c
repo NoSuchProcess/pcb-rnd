@@ -1,7 +1,7 @@
 /* gsch2pcb-rnd
  *
  *  Original version: Bill Wilson    billw@wt.net
- *  rnd-version: (C) 2015..2016,2020 Tibor 'Igor2' Palinkas
+ *  rnd-version: (C) 2015..2016,2020,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software which I release under the GNU General Public
  *  License. You may redistribute and/or modify this program under the terms
