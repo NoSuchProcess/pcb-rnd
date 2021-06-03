@@ -1,17 +1,18 @@
 put /local/pcb/CFLAGS cc/cflags
-append /local/pcb/CFLAGS [@-I../.. -I../../@/local/pcb/librnd_root@ -I../../@/local/pcb/librnd_root@/../src_3rd -I../../src_3rd -I../../src -I../../src_3rd/liblihata @]
+append /local/pcb/CFLAGS [@-I../.. -I@/local/pcb/librnd_prefix@/include/librnd/src_3rd -I../../src_3rd -I../../src -I../../src_3rd/liblihata @]
 append /local/pcb/CFLAGS {-DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS ?/target/libs/ldl
-include [@../@/local/pcb/librnd_root@/librnd/scconfig/template/debug.tmpasm@]
+include [@@/local/pcb/librnd_prefix@/lib/librnd/scconfig/template/debug.tmpasm@]
 
 print [@
 ROOT=../..
 PLUGDIR=../../src_plugins
-LIBRND=../../@/local/pcb/librnd_root@/librnd
-GENCONF=$(LIBRND)/scconfig/gen_conf.sh
+LIBRND_LIBDIR=@/local/pcb/librnd_prefix@/lib/librnd
+LIBRND_SHAREDIR=@/local/pcb/librnd_prefix@/share/librnd
+GENCONF=$(LIBRND_LIBDIR)/scconfig/gen_conf.sh
 
-include $(LIBRND)/core/librnd.mak
+include $(LIBRND_SHAREDIR)/librnd.mak
 
 CFLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@ $(CFLAGS_LIBRND_FUNGW)
 LDFLAGS=-lm @/local/pcb/LDFLAGS@ $(LDFLAGS_LIBRND_FUNGW)
@@ -43,7 +44,6 @@ print [@
 
 
 FP_OBJS    = @/local/pcb/OBJS@ ../../src/plug_footprint.o
-CONF_OBJS  = $(LIBRND)/core/compat_fs.o $(LIBRND)/core/paths.o $(LIBRND)/core/conf.o ../../src/conf_core.o $(LIBRND)/core/hid_cfg.o $(LIBRND)/core/hidlib_conf.o $(LIBRND)/core/misc_util.o $(LIBRND)/core/unit.o ../../src/conf_internal.o $(LIBRND)/core/list_conf.o $(LIBRND)/core/conf_hid.o $(LIBRND)/core/rnd_printf.o $(LIBRND)/core/compat_misc.o $(LIBRND)/core/safe_fs.o
 FP_LDFLAGS = @/local/pcb/LDFLAGS@
 FP_CFLAGS  = @/local/pcb/CFLAGS@
 OBJS = \
@@ -61,8 +61,8 @@ all:
 revcheck:
 	cd ../../scconfig && ./revtest Rev.stamp < Rev.tab
 
-gsch2pcb-rnd$(LIBRND_EXE): $(OBJS)  $(CONF_OBJS) $(HASHOBJ) $(LISTOBJ) $(QPARSE) $(FP_OBJS) $(LIB_HIDLIB)
-	$(CC) $(OBJS) $(CONF_OBJS)  $(FP_OBJS) $(HASHOBJ) $(LISTOBJ) $(QPARSE) $(LIB_HIDLIB) -o gsch2pcb-rnd$(LIBRND_EXE) $(LDFLAGS) $(FP_LDFLAGS)
+gsch2pcb-rnd$(LIBRND_EXE): $(OBJS)  $(HASHOBJ) $(LISTOBJ) $(QPARSE) $(FP_OBJS) $(LIB_HIDLIB)
+	$(CC) $(OBJS) $(FP_OBJS) $(HASHOBJ) $(LISTOBJ) $(QPARSE) $(LIB_HIDLIB) -o gsch2pcb-rnd$(LIBRND_EXE) $(LDFLAGS) $(FP_LDFLAGS)
 
 gsch2pcb.o: gsch2pcb.c ../../config.h
 	$(CC) -c $(CFLAGS) $(FP_CFLAGS) gsch2pcb.c -o gsch2pcb.o
@@ -87,7 +87,7 @@ $(ROOT)/src_3rd/librnd-local/src/librnd-3rd.a:
 
 # generate explicit rules for .c -> .o
 put /local/comp/OBJS /local/pcb/OBJS
-include [@../@/local/pcb/librnd_root@/librnd/scconfig/template/compile.tmpasm@]
+include [@@/local/pcb/librnd_prefix@/lib/librnd/scconfig/template/compile.tmpasm@]
 
 print [@
 
