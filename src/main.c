@@ -90,8 +90,6 @@ static const char *menu_file_paths[4];
 static const char *menu_name_fmt = "pcb-menu-%s.lht";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
-const char *rnd_conf_userdir_path, *rnd_conf_user_path;
-const char *rnd_conf_sysdir_path, *rnd_conf_sys_path;
 
 /* Figure out the canonical name of the executed program
    and fix up the defaults for various paths; returns exec prefix that
@@ -203,10 +201,10 @@ static char *main_path_init(char *argv0)
 	menu_file_paths[2] = rnd_concat(PCBCONFDIR, "/", NULL);
 	menu_file_paths[3] = NULL;
 
-	rnd_conf_userdir_path = CONF_USER_DIR;
-	rnd_conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
-	rnd_conf_sysdir_path = PCBCONFDIR;
-	rnd_conf_sys_path = rnd_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
+	rnd_app.conf_userdir_path = CONF_USER_DIR;
+	rnd_app.conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	rnd_app.conf_sysdir_path = PCBCONFDIR;
+	rnd_app.conf_sys_path = rnd_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
 
 	free(bindir);
 	return exec_prefix;
@@ -216,8 +214,8 @@ static void main_path_uninit(void)
 {
 	/* const for all other parts of the code, but we had to concat (alloc) it above */
 	free((char *)menu_file_paths[2]);
-	free((char *)rnd_conf_user_path);
-	free((char *)rnd_conf_sys_path);
+	free((char *)rnd_app.conf_user_path);
+	free((char *)rnd_app.conf_sys_path);
 }
 
 

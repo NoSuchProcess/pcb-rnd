@@ -56,10 +56,6 @@
 static const char *want_method_default = "import";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
-const char *rnd_conf_userdir_path;
-const char *rnd_conf_user_path;
-const char *rnd_conf_sysdir_path;
-const char *rnd_conf_sys_path;
 
 const char *rnd_app_package = "gsch2pcb-rnd";
 
@@ -393,10 +389,10 @@ int main(int argc, char ** argv)
 
 	method_import_register();
 
-	rnd_conf_userdir_path = CONF_USER_DIR;
-	rnd_conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
-	rnd_conf_sysdir_path = PCBCONFDIR;
-	rnd_conf_sys_path = rnd_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
+	rnd_app.conf_userdir_path = CONF_USER_DIR;
+	rnd_app.conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	rnd_app.conf_sysdir_path = PCBCONFDIR;
+	rnd_app.conf_sys_path = rnd_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
 
 	rnd_hidlib_init1(gsch2pcb_conf_core_init);
 

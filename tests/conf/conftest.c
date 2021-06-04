@@ -14,6 +14,8 @@ int lineno = 0;
 int global_notify = 0;
 rnd_conf_hid_id_t hid_id;
 const char *hid_cookie = "conftest cookie";
+
+TODO
 const char *rnd_hidlib_default_embedded_menu = "";
 const char *rnd_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
 const char *rnd_menu_name_fmt = "pcb-menu-%s.lht";
