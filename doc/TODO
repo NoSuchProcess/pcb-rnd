@@ -2,6 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - librnd sep:
+	- remove hidlib_pcb.[ch]
 	- test with /usr/local installation
 	- test with custom path installation
 	- test with and without fungw installed
