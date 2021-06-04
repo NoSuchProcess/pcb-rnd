@@ -1,4 +1,24 @@
 #!/bin/sh
+
+if test -z "$LIBRND_PREFIX"
+then
+	for P in /usr /usr/local /opt/librnd $HOME/usr
+	do
+		if test -e "$P/include/librnd/core/config.h"
+		then
+			LIBRND_PREFIX="$P"
+			break
+		fi
+	done
+fi
+
+if test -z "$LIBRND_PREFIX"
+then
+	echo "Can not find librnd - please set LIBRND_PREFIX to librnd installation prefix
+(e.g. export LIBRND_PREFIX=/usr/local) before running ./configure" >&2
+fi
+
+
 cd scconfig
-make
+make "LIBRND_PREFIX=$LIBRND_PREFIX"
 ./configure "$@"
