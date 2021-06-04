@@ -54,7 +54,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *pcb_acts_Zoom = pcb_acts_Zoom_;
 	rnd_acts_Zoom = pcb_acts_Zoom_;
 
-	PCB_GUI_NOGUI();
+	RND_GUI_NOGUI();
 
 	if (argc == 2) {
 		const char *vp;
@@ -95,7 +95,7 @@ fgw_error_t pcb_act_SwapSides(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	rnd_coord_t x, y;
 	double xcent, ycent, xoffs, yoffs;
 
-	PCB_GUI_NOGUI();
+	RND_GUI_NOGUI();
 
 	rnd_hid_get_coords("Click to center of flip", &x, &y, 0);
 
@@ -199,7 +199,7 @@ fgw_error_t pcb_act_Popup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		CTX_OBJ_TYPE
 	} ctx_sens = CTX_NONE;
 
-	PCB_GUI_NOGUI();
+	RND_GUI_NOGUI();
 
 	if (argc != 2 && argc != 3)
 		RND_ACT_FAIL(Popup);
