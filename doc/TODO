@@ -3,8 +3,8 @@
 1. For the upcoming release ===============================================================================
 - librnd sep:
 	- librnd/config.h gets c99 inline; problem: librnd can be compiled without --debug while pcb-rnd with --debug
-	- rename RND_CFR_DEFAULTPCB
 	- rename PCBCONFDIR, PCBSHAREDIR
+	- rename pcb_act*
 	- test with /usr/local installation
 	- test with custom path installation
 	- test with and without fungw installed
