@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - librnd sep:
-	- rename PCBCONFDIR, PCBSHAREDIR
 	- test with /usr/local installation
 	- test with custom path installation
 	- test with and without fungw installed
