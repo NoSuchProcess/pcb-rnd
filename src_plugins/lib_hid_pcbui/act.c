@@ -51,7 +51,9 @@ const char pcb_acth_Zoom[] = "GUI zoom";
 /* DOC: zoom.html */
 fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
-	pcb_acts_Zoom = pcb_acts_Zoom_;
+	const char *pcb_acts_Zoom = pcb_acts_Zoom_;
+	rnd_acts_Zoom = pcb_acts_Zoom_;
+
 	PCB_GUI_NOGUI();
 
 	if (argc == 2) {
