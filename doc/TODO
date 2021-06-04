@@ -7,9 +7,11 @@
 	- test with and without fungw installed
 	- test with and without all plugins
 	- revise autobuild servers' scripts
-	- revise the API (see gsch2pcb-rnd glue)
-	- revise pcb-rnd tests and remove glue that's not needed anymore
-	- librnd, irc.c, btn_sendver_cb(): need an app version API
+	- struct based librnd->app API
+		- revise the API (see gsch2pcb-rnd glue)
+		- check coord type and quit on mismatch
+		- revise pcb-rnd tests and remove glue that's not needed anymore
+		- librnd, irc.c, btn_sendver_cb(): need an app version API
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both
