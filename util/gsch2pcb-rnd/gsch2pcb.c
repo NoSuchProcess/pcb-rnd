@@ -397,10 +397,6 @@ int main(int argc, char ** argv)
 	rnd_conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
 	rnd_conf_sysdir_path = PCBCONFDIR;
 	rnd_conf_sys_path = rnd_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
-	rnd_menu_file_paths[0] = "./";
-	rnd_menu_file_paths[1] = "~/.pcb-rnd/";
-	rnd_menu_file_paths[2] = rnd_concat(PCBCONFDIR, "/", NULL);
-	rnd_menu_file_paths[3] = NULL;
 
 	rnd_hidlib_init1(gsch2pcb_conf_core_init);
 

@@ -86,8 +86,8 @@ TODO("librnd: remove this once librnd is not extern anymore")
 #include "buildin.c"
 #undef pup_buildins
 
-const char *rnd_menu_file_paths[4];
-const char *rnd_menu_name_fmt = "pcb-menu-%s.lht";
+static const char *menu_file_paths[4];
+static const char *menu_name_fmt = "pcb-menu-%s.lht";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
 const char *rnd_conf_userdir_path, *rnd_conf_user_path;
@@ -201,10 +201,10 @@ static char *main_path_init(char *argv0)
 	if (se != 0)
 		fprintf(stderr, "WARNING: setenv() failed - external commands such as parametric footprints may not have a proper environment\n");
 
-	rnd_menu_file_paths[0] = "./";
-	rnd_menu_file_paths[1] = "~/.pcb-rnd/";
-	rnd_menu_file_paths[2] = rnd_concat(PCBCONFDIR, "/", NULL);
-	rnd_menu_file_paths[3] = NULL;
+	menu_file_paths[0] = "./";
+	menu_file_paths[1] = "~/.pcb-rnd/";
+	menu_file_paths[2] = rnd_concat(PCBCONFDIR, "/", NULL);
+	menu_file_paths[3] = NULL;
 
 	rnd_conf_userdir_path = CONF_USER_DIR;
 	rnd_conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
@@ -218,7 +218,7 @@ static char *main_path_init(char *argv0)
 static void main_path_uninit(void)
 {
 	/* const for all other parts of the code, but we had to concat (alloc) it above */
-	free((char *)rnd_menu_file_paths[2]);
+	free((char *)menu_file_paths[2]);
 	free((char *)rnd_conf_user_path);
 	free((char *)rnd_conf_sys_path);
 }
@@ -409,12 +409,18 @@ static rnd_funchash_table_t Functions[] = {
 	{"F_END", F_END}
 };
 
+extern const char *rnd_hidlib_default_embedded_menu;
+
 int main(int argc, char *argv[])
 {
 	int n;
 	char *exec_prefix, *command_line_pcb = NULL;
 
 	rnd_main_args_t ga;
+
+	rnd_app.menu_file_paths = menu_file_paths;
+	rnd_app.menu_name_fmt   = menu_name_fmt;
+	rnd_app.default_embedded_menu = rnd_hidlib_default_embedded_menu;
 
 	rnd_conf_dot_dir = DOT_PCB_RND;
 	rnd_conf_lib_dir = PCBLIBDIR;
