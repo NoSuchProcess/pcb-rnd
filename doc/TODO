@@ -10,7 +10,6 @@
 	- revise the API (see gsch2pcb-rnd glue)
 	- revise pcb-rnd tests and remove glue that's not needed anymore
 	- librnd, irc.c, btn_sendver_cb(): need an app version API
-	- hid's do_export() should get hidlib (what to export); revise the rest of the hid API
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both
