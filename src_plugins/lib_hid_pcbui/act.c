@@ -45,7 +45,7 @@
 #include "act.h"
 
 const char pcb_acts_Zoom_[] =
-	pcb_gui_acts_zoom
+	rnd_gui_acts_zoom
 	"Zoom(found|selected)\n";
 const char pcb_acth_Zoom[] = "GUI zoom";
 /* DOC: zoom.html */
@@ -80,7 +80,7 @@ fgw_error_t pcb_act_Zoom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		}
 	}
 
-	return pcb_gui_act_zoom(res, argc, argv);
+	return rnd_gui_act_zoom(res, argc, argv);
 }
 
 const char pcb_acts_SwapSides[] = "SwapSides(|v|h|r, [S])";
