@@ -48,7 +48,6 @@ OBJS = \
  help.o \
  netlister.o \
  run.o \
- glue.o \
  method_import.o
 
 all:

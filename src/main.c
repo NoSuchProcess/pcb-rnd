@@ -406,6 +406,7 @@ static rnd_funchash_table_t Functions[] = {
 };
 
 extern const char *rnd_hidlib_default_embedded_menu;
+extern const char *rnd_conf_internal;
 
 int main(int argc, char *argv[])
 {
@@ -429,6 +430,7 @@ int main(int argc, char *argv[])
 	rnd_app.expose_main       = pcb_expose_main;
 	rnd_app.expose_preview    = pcb_expose_preview;
 
+	rnd_app.conf_internal = rnd_conf_internal;
 
 	rnd_conf_dot_dir = DOT_PCB_RND;
 	rnd_conf_lib_dir = PCBLIBDIR;

@@ -14,4 +14,3 @@ const char *rnd_conf_user_path;
 const char *rnd_conf_sysdir_path;
 const char *rnd_conf_sys_path;
 
-const char rnd_conf_internal_arr[] = {""}, *rnd_conf_internal = rnd_conf_internal_arr;

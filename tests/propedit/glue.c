@@ -7,7 +7,6 @@ TODO
 /*** hidlib glue ***/
 
 const char *rnd_hidlib_default_embedded_menu = "";
-const char *rnd_conf_internal = "";
 const char *rnd_menu_file_paths[] = { "./", NULL };
 const char *rnd_menu_name_fmt = "menu.lht";
 
