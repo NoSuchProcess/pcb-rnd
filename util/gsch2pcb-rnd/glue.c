@@ -30,12 +30,8 @@
 
 /* glue for pcb-rnd core */
 
-void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode) {}
-
 static const char rnd_conf_internal_arr[] = { 0 };
 const char *rnd_conf_internal = rnd_conf_internal_arr;
 
 void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e) {}
-
 void rnd_expose_main(rnd_hid_t * hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform_t *xform_caller) {}
-void rnd_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode) {}

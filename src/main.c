@@ -423,6 +423,8 @@ int main(int argc, char *argv[])
 	rnd_app.crosshair_suspend = pcb_crosshair_suspend;
 	rnd_app.crosshair_restore = pcb_crosshair_restore;
 	rnd_app.crosshair_move_to = pcb_hidlib_crosshair_move_to;
+	rnd_app.draw_marks        = pcb_crosshair_draw_marks;
+	rnd_app.draw_attached     = pcb_crosshair_draw_attached;
 
 
 

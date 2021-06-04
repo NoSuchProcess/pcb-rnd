@@ -126,5 +126,7 @@ void pcb_crosshair_attached_clean(rnd_hidlib_t *hidlib);
 void *pcb_crosshair_suspend(rnd_hidlib_t *hl);
 void pcb_crosshair_restore(rnd_hidlib_t *hl, void *susp_data);
 void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
+void pcb_crosshair_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
+void pcb_crosshair_draw_attached(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode);
 
 #endif
