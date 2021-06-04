@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - librnd sep:
-	- remove RND_DAD_CFG_NOLABEL (and update pcb-rnd)
 	- rename PCBCONFDIR, PCBSHAREDIR
 	- rename pcb_act*
 	- test with /usr/local installation
