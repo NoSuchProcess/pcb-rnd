@@ -984,7 +984,7 @@ void pcb_draw_setup_default_xform_info(rnd_hid_t *hid, pcb_draw_info_t *info)
 }
 
 int pcb_draw_stamp = 0;
-void rnd_expose_main(rnd_hid_t * hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform_t *xform_caller)
+void pcb_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform_t *xform_caller)
 {
 	if (!pcb_draw_inhibit) {
 		pcb_output_t save;
@@ -1005,7 +1005,7 @@ void rnd_expose_main(rnd_hid_t * hid, const rnd_hid_expose_ctx_t *ctx, rnd_xform
 	}
 }
 
-void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e)
+void pcb_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e)
 {
 	pcb_output_t save;
 	expose_begin(&save, hid);

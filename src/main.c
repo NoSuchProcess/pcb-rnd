@@ -76,6 +76,7 @@ static const char *EXPERIMENTAL = NULL;
 #include <librnd/core/compat_misc.h>
 #include "tool_logic.h"
 #include "pixmap_pcb.h"
+#include "draw.h"
 
 TODO("librnd: remove this once librnd is not extern anymore")
 #include <genregex/regex_se.h>
@@ -425,7 +426,8 @@ int main(int argc, char *argv[])
 	rnd_app.crosshair_move_to = pcb_hidlib_crosshair_move_to;
 	rnd_app.draw_marks        = pcb_crosshair_draw_marks;
 	rnd_app.draw_attached     = pcb_crosshair_draw_attached;
-
+	rnd_app.expose_main       = pcb_expose_main;
+	rnd_app.expose_preview    = pcb_expose_preview;
 
 
 	rnd_conf_dot_dir = DOT_PCB_RND;

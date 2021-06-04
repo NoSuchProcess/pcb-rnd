@@ -46,7 +46,7 @@ static void view_expose_cb(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *prv, 
 	/* draw the board */
 	memset(&xform, 0, sizeof(xform));
 	xform.layer_faded = 1;
-	rnd_expose_main(rnd_gui, e, &xform);
+	rnd_app.expose_main(rnd_gui, e, &xform);
 
 	/* restore object color */
 	obj->override_color = saved_color;

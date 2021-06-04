@@ -161,7 +161,7 @@ void openscad_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options)
 	rnd_conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 	openscad_options = options;
-	rnd_expose_main(&openscad_hid, &ctx, NULL);
+	rnd_app.expose_main(&openscad_hid, &ctx, NULL);
 	openscad_options = NULL;
 
 	rnd_conf_update(NULL, -1); /* restore forced sets */

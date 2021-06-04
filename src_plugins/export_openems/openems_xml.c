@@ -152,7 +152,7 @@ static int openems_wr_xml_layers(wctx_t *ctx)
 	ectx.view.X2 = ctx->pcb->hidlib.size_x;
 	ectx.view.Y2 = ctx->pcb->hidlib.size_y;
 
-	rnd_expose_main(&openems_hid, &ectx, NULL);
+	rnd_app.expose_main(&openems_hid, &ectx, NULL);
 	openems_wr_xml_layergrp_end(ctx);
 
 	/* export substrate bricks */

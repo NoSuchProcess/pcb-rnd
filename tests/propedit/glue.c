@@ -40,11 +40,3 @@ static const char *action_args[] = {
 void conf_core_init()
 {
 }
-
-void rnd_expose_main(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *region, rnd_xform_t *xform_caller)
-{
-}
-
-void rnd_expose_preview(rnd_hid_t *hid, const rnd_hid_expose_ctx_t *e)
-{
-}

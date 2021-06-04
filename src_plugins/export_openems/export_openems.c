@@ -651,7 +651,7 @@ static void openems_hid_export_to_file(const char *filename, FILE *the_file, FIL
 		openems_wr_m_outline(&wctx);
 
 		fprintf(wctx.f, "%%%%%% Copper objects\n");
-		rnd_expose_main(&openems_hid, &ctx, NULL);
+		rnd_app.expose_main(&openems_hid, &ctx, NULL);
 
 		fprintf(wctx.f, "%%%%%% Port(s) on terminals\n");
 		openems_wr_testpoints(&wctx, wctx.pcb->Data);

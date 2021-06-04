@@ -113,7 +113,7 @@ void c_draw_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rn
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
-	rnd_expose_main(&c_draw_hid, &ctx, xform);
+	rnd_app.expose_main(&c_draw_hid, &ctx, xform);
 
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
