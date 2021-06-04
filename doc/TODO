@@ -2,17 +2,16 @@
 
 1. For the upcoming release ===============================================================================
 - librnd sep:
-	- remove hidlib_pcb.[ch]
 	- test with /usr/local installation
 	- test with custom path installation
 	- test with and without fungw installed
 	- test with and without all plugins
 	- revise autobuild servers' scripts
 	- struct based librnd->app API
-		- revise the API (see gsch2pcb-rnd glue)
 		- check coord type and quit on mismatch
 		- revise pcb-rnd tests and remove glue that's not needed anymore
 		- librnd, irc.c, btn_sendver_cb(): need an app version API
+		- revise tests in both librnd and pcb-rnd
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both

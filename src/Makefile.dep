@@ -2826,11 +2826,6 @@ hid_cam.o: hid_cam.c ../config.h board.h vtroutestyle.h attrib.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  hid_cam.h layer_addr.h layer_vis.h plug_io.h plug_footprint.h
-hidlib_pcb.o: hidlib_pcb.c board.h ../config.h vtroutestyle.h attrib.h \
- global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
- data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
- obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
- obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h
 ht_subc.o: ht_subc.c ../config.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h obj_common.h flag.h globalconst.h \
  attrib.h global_typedefs.h data_parent.h layer.h obj_arc_list.h \

@@ -60,7 +60,6 @@ append /local/pcb/OBJS [@
 	flag_str.o
 	gui_act.o
 	hid_cam.o
-	hidlib_pcb.o
 	ht_subc.o
 	idpath.o
 	insert.o
