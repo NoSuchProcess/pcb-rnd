@@ -37,10 +37,6 @@ const char *pcb_board_get_name(void)
 	return "dummy_brd";
 }
 
-void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
-{
-}
-
 
 void watch_pre(rnd_conf_native_t *cfg, int idx)
 {

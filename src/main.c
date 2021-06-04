@@ -420,6 +420,12 @@ int main(int argc, char *argv[])
 	rnd_app.version = PCB_VERSION;
 	rnd_app.url = "http://repo.hu/projects/pcb-rnd";
 
+	rnd_app.crosshair_suspend = pcb_crosshair_suspend;
+	rnd_app.crosshair_restore = pcb_crosshair_restore;
+	rnd_app.crosshair_move_to = pcb_hidlib_crosshair_move_to;
+
+
+
 	rnd_conf_dot_dir = DOT_PCB_RND;
 	rnd_conf_lib_dir = PCBLIBDIR;
 

@@ -26,8 +26,3 @@
 
 #include "board.h"
 #include <librnd/core/tool.h>
-
-void rnd_hidlib_adjust_attached_objects(rnd_hidlib_t *hl)
-{
-	rnd_tool_adjust_attached(hl);
-}

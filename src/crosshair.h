@@ -123,4 +123,8 @@ void pcb_xordraw_insert_pt_obj(void);
 /* Always call this before changing the attached object of the crosshair */
 void pcb_crosshair_attached_clean(rnd_hidlib_t *hidlib);
 
+void *pcb_crosshair_suspend(rnd_hidlib_t *hl);
+void pcb_crosshair_restore(rnd_hidlib_t *hl, void *susp_data);
+void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot);
+
 #endif

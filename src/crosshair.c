@@ -1193,7 +1193,7 @@ typedef struct {
 	int obj, line, box;
 } old_crosshair_t;
 
-void *rnd_hidlib_crosshair_suspend(rnd_hidlib_t *hl)
+void *pcb_crosshair_suspend(rnd_hidlib_t *hl)
 {
 	old_crosshair_t *buf = malloc(sizeof(old_crosshair_t));
 
@@ -1208,7 +1208,7 @@ void *rnd_hidlib_crosshair_suspend(rnd_hidlib_t *hl)
 	return buf;
 }
 
-void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
+void pcb_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
 {
 	old_crosshair_t *buf = susp_data;
 
@@ -1222,7 +1222,7 @@ void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data)
 }
 
 
-void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
+void pcb_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot)
 {
 	if (!mouse_mot) {
 		rnd_hid_notify_crosshair_change(hl, rnd_false);
