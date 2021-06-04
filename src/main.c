@@ -92,9 +92,6 @@ static const char *menu_name_fmt = "pcb-menu-%s.lht";
 #define CONF_USER_DIR "~/" DOT_PCB_RND
 const char *rnd_conf_userdir_path, *rnd_conf_user_path;
 const char *rnd_conf_sysdir_path, *rnd_conf_sys_path;
-const char *rnd_app_package = PCB_PACKAGE;
-const char *rnd_app_version = PCB_VERSION;
-const char *rnd_app_url = "http://repo.hu/projects/pcb-rnd";
 
 /* Figure out the canonical name of the executed program
    and fix up the defaults for various paths; returns exec prefix that
@@ -421,6 +418,9 @@ int main(int argc, char *argv[])
 	rnd_app.menu_file_paths = menu_file_paths;
 	rnd_app.menu_name_fmt   = menu_name_fmt;
 	rnd_app.default_embedded_menu = rnd_hidlib_default_embedded_menu;
+	rnd_app.package = PCB_PACKAGE;
+	rnd_app.version = PCB_VERSION;
+	rnd_app.url = "http://repo.hu/projects/pcb-rnd";
 
 	rnd_conf_dot_dir = DOT_PCB_RND;
 	rnd_conf_lib_dir = PCBLIBDIR;

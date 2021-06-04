@@ -32,10 +32,6 @@
 
 void rnd_hidlib_crosshair_move_to(rnd_hidlib_t *hl, rnd_coord_t abs_x, rnd_coord_t abs_y, int mouse_mot) { }
 
-
-const char *rnd_app_version = PCB_VERSION;
-const char *rnd_app_url = "http://repo.hu/projects/pcb-rnd";
-
 void *rnd_hidlib_crosshair_suspend(rnd_hidlib_t *hl) { return NULL; }
 void rnd_hidlib_crosshair_restore(rnd_hidlib_t *hl, void *susp_data) {}
 void rnd_draw_marks(rnd_hidlib_t *hidlib, rnd_bool inhibit_drawing_mode) {}
