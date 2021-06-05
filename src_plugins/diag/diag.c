@@ -57,8 +57,8 @@ static const char pcb_acts_DumpConf[] =
 	;
 static const char pcb_acth_DumpConf[] = "Perform various operations on the configuration tree.";
 
-extern lht_doc_t *pcb_conf_main_root[];
-extern lht_doc_t *pcb_conf_plug_root[];
+extern lht_doc_t *rnd_conf_main_root[];
+extern lht_doc_t *rnd_conf_plug_root[];
 static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op;
@@ -87,13 +87,13 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			RND_ACT_IRES(1);
 			return 0;
 		}
-		if (pcb_conf_main_root[role] != NULL) {
+		if (rnd_conf_main_root[role] != NULL) {
 			printf("%s### main\n", prefix);
-			if (pcb_conf_main_root[role] != NULL)
-				lht_dom_export(pcb_conf_main_root[role]->root, stdout, prefix);
+			if (rnd_conf_main_root[role] != NULL)
+				lht_dom_export(rnd_conf_main_root[role]->root, stdout, prefix);
 			printf("%s### plugin\n", prefix);
-			if (pcb_conf_plug_root[role] != NULL)
-				lht_dom_export(pcb_conf_plug_root[role]->root, stdout, prefix);
+			if (rnd_conf_plug_root[role] != NULL)
+				lht_dom_export(rnd_conf_plug_root[role]->root, stdout, prefix);
 		}
 		else
 			printf("%s <empty>\n", prefix);
@@ -162,7 +162,7 @@ static fgw_error_t pcb_act_EvalConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 static const char pcb_acts_DumpLayers[] = "dumplayers([all])\n";
 static const char pcb_acth_DumpLayers[] = "Print info about each layer";
 
-extern lht_doc_t *pcb_conf_main_root[];
+extern lht_doc_t *rnd_conf_main_root[];
 static fgw_error_t pcb_act_DumpLayers(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	int op = -2, g, n, used;

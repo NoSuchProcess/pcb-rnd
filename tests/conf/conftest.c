@@ -52,7 +52,7 @@ rnd_conf_hid_callbacks_t watch_cbs = {watch_pre, watch_post, NULL, NULL};
 rnd_conf_hid_callbacks_t global_cbs = {notify_pre, notify_post, NULL, NULL};
 
 
-extern lht_doc_t *pcb_conf_main_root[];
+extern lht_doc_t *rnd_conf_main_root[];
 void cmd_dump(char *arg)
 {
 	if (arg == NULL) {
@@ -73,8 +73,8 @@ void cmd_dump(char *arg)
 			rnd_message(RND_MSG_ERROR, "Invalid role: '%s'", arg);
 			return;
 		}
-		if (pcb_conf_main_root[role] != NULL)
-			lht_dom_export(pcb_conf_main_root[role]->root, stdout, "");
+		if (rnd_conf_main_root[role] != NULL)
+			lht_dom_export(rnd_conf_main_root[role]->root, stdout, "");
 		else
 			printf("<empty>\n");
 	}

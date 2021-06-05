@@ -1678,7 +1678,7 @@ static lht_node_t *build_netlists(pcb_board_t *pcb, pcb_netlist_t *netlists, pcb
 	return nls;
 }
 
-extern lht_doc_t *pcb_conf_main_root[RND_CFR_max_alloc];
+extern lht_doc_t *rnd_conf_main_root[RND_CFR_max_alloc];
 static lht_node_t *build_conf()
 {
 	const char **s, *del_paths[] = { "editor/mode", NULL };
@@ -1687,10 +1687,10 @@ static lht_node_t *build_conf()
 	if (conf_io_lihata.plugins.io_lihata.omit_config)
 		return dummy_node("pcb-rnd-conf-v1");
 
-	if ((pcb_conf_main_root[RND_CFR_DESIGN] == NULL) || (pcb_conf_main_root[RND_CFR_DESIGN]->root == NULL) || (pcb_conf_main_root[RND_CFR_DESIGN]->root->type != LHT_LIST))
+	if ((rnd_conf_main_root[RND_CFR_DESIGN] == NULL) || (rnd_conf_main_root[RND_CFR_DESIGN]->root == NULL) || (rnd_conf_main_root[RND_CFR_DESIGN]->root->type != LHT_LIST))
 		return lht_dom_node_alloc(LHT_LIST, "pcb-rnd-conf-v1");
 
-	res = lht_dom_duptree(pcb_conf_main_root[RND_CFR_DESIGN]->root);
+	res = lht_dom_duptree(rnd_conf_main_root[RND_CFR_DESIGN]->root);
 
 	for(n = res->data.list.first; n != NULL; n = n->next) {
 		for(s = del_paths; *s != NULL; s++) {
