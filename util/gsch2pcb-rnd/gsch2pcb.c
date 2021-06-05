@@ -57,7 +57,6 @@ static const char *want_method_default = "import";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
 
-const char *rnd_app_package = "gsch2pcb-rnd";
 
 gdl_list_t pcb_element_list; /* initialized to 0 */
 gadl_list_t schematics, extra_gnetlist_arg_list, extra_gnetlist_list;
@@ -388,6 +387,10 @@ int main(int argc, char ** argv)
 	const char *want_method;
 
 	method_import_register();
+
+	rnd_app.package = "gsch2pcb-rnd";
+	rnd_app.version = PCB_VERSION;
+	rnd_app.revision = PCB_REVISION;
 
 	rnd_app.conf_userdir_path = CONF_USER_DIR;
 	rnd_app.conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
