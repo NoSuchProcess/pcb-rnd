@@ -1,8 +1,13 @@
-CFLAGS = -Wall -I. -I../../../src -I../../../src_3rd -I../../..
+ROOT=../../..
+include $(ROOT)/Makefile.conf
+include $(LIBRND_MAK)
+
+CFLAGS = -Wall -I. -I$(ROOT)/src -I$(ROOT)/src_3rd -I$(ROOT) -I$(LIBRND_INCDIR)/librnd/src_3rd
 LDFLAGS = -lm -ldl
-LIBRND = ../../../src/librnd-hid.a ../../../src/librnd-3rd.a
+LIBRND = -lrnd-hid -lrnd-3rd $(LDFLAGS_LIBRND_FUNGW)
 
-main: main.o $(LIBRND)
+main: main.o
+	$(CC) -o main main.o $(LDFLAGS) $(LIBRND)
 
-main.o: main.c ../impedance.c glue.c
+main.o: main.c ../impedance.c
 

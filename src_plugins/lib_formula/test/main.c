@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "glue.c"
 #include "../impedance.c"
 int main()
 {
