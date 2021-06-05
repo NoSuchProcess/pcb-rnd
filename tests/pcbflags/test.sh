@@ -6,6 +6,9 @@ pwd=`pwd`
 #TODO: remove this once librnd separation id finished
 export LD_LIBRARY_PATH=$pwd/$ROOT/src_3rd/librnd-local/src
 
+mkdir -p lib
+PCB_RND_CFG="-c rc/library_search_paths=lib -c rc/default_pcb_file={} -c rc/default_font_file={}"
+
 # $1 must be a .pcb file name
 run_pcb()
 {
@@ -19,7 +22,7 @@ run_pcb()
 		cd "$src_dir"
 		if test -z "$fn"
 		then
-			./pcb-rnd --gui batch "$@"
+			./pcb-rnd $PCB_RND_CFG --gui batch "$@"
 		else
 			./pcb-rnd --gui batch "$fn" "$@"
 		fi
@@ -101,3 +104,5 @@ test_flag "editor/local_ref" "true" "localref"
 test_flag "editor/check_planes" "true" "checkplanes"
 test_flag "editor/description" "true" "description"
 test_flag "editor/name_on_pcb" "true" "nameonpcb"
+
+rmdir lib
