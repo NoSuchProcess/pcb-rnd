@@ -8,7 +8,6 @@
 	- test with and without all plugins
 	- revise autobuild servers' scripts
 	- struct based librnd->app API
-		- check coord type and quit on mismatch
 		- revise pcb-rnd tests and remove glue that's not needed anymore
 		- librnd, irc.c, btn_sendver_cb(): need an app version API
 		- revise tests in both librnd and pcb-rnd
