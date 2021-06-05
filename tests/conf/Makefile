@@ -1,15 +1,12 @@
 ROOT=../..
 include $(ROOT)/Makefile.conf
 
-LIBRND_ROOT=$(ROOT)/src_3rd/librnd-local
-include $(LIBRND_ROOT)/src/librnd/core/librnd.mak
+include $(LIBRND_MAK)
 
 CFLAGS = $(PCB_RND_C89FLAGS) -I../.. -I../../src_3rd -I../../src $(CFLAGS_LIBRND_FUNGW) $(CFLAGS_LIBRND)
 LDLIBS = -lm $(LDFLAGS_LIBRND_FUNGW) $(LDFLAGS_LIBRND)
 
-LIB_HIDLIB=\
-	../../src_3rd/librnd-local/src/librnd-hid.a \
-	../../src_3rd/librnd-local/src/librnd-3rd.a
+LIB_HIDLIB=-lrnd-hid -lrnd-3rd
 
 LIB_PCBRND_OBJS=\
 	../../src_plugins/diag/diag_conf.o \
@@ -17,9 +14,9 @@ LIB_PCBRND_OBJS=\
 	../../src/conf_internal.o
 
 DEPH = \
-	../../src_3rd/librnd-local/src/librnd/core/conf.h \
-	../../src_3rd/librnd-local/src/librnd/core/conf_hid.h \
-	../../src_3rd/librnd-local/src/librnd/core/compat_misc.h \
+	$(LIBRND_INCDIR)/librnd/core/conf.h \
+	$(LIBRND_INCDIR)/librnd/core/conf_hid.h \
+	$(LIBRND_INCDIR)/librnd/core/compat_misc.h \
 	../../src/conf_core.h \
 	../../src_plugins/diag/diag_conf.h \
 
@@ -27,7 +24,7 @@ OBJS = conftest.o help.o
 
 all: conftest
 
-conftest: $(OBJS) $(LIB_HIDLIB) $(LIB_PCBRND_OBJS)
+conftest: $(OBJS) $(LIB_PCBRND_OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) $(LIB_PCBRND_OBJS) $(LIB_HIDLIB) $(LDLIBS) -o conftest
 
 conftest.o: conftest.c $(DEPH)

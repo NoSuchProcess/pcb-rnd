@@ -15,18 +15,6 @@ int global_notify = 0;
 rnd_conf_hid_id_t hid_id;
 const char *hid_cookie = "conftest cookie";
 
-TODO
-const char *rnd_hidlib_default_embedded_menu = "";
-const char *rnd_menu_file_paths[] = { "./", "~/.pcb-rnd/", PCBSHAREDIR "/", NULL };
-const char *rnd_menu_name_fmt = "pcb-menu-%s.lht";
-const char *rnd_app_package = "pcb-rnd";
-
-#define CONF_USER_DIR "~/" DOT_PCB_RND
-const char *rnd_conf_userdir_path = CONF_USER_DIR;
-const char *rnd_conf_user_path = CONF_USER_DIR "/pcb-conf.lht";
-const char *rnd_conf_sysdir_path = PCBSHAREDIR;
-const char *rnd_conf_sys_path = PCBSHAREDIR "/pcb-conf.lht";
-
 const char *pcb_board_get_filename(void)
 {
 	return "dummy_brd.lht";
