@@ -703,7 +703,7 @@ static int check_point_in_pstk(pcb_pstk_t *ps, pcb_layer_t *layer, int x, int y,
 		case PCB_PSSH_POLY:
 			if (shape->data.poly.pa == NULL)
 				pcb_pstk_shape_update_pa(&shape->data.poly);
-			return pcb_pline_embraces_circ(shape->data.poly.pa->contours, x - ps->x, y - ps->y, 1);
+			return rnd_pline_embraces_circ(shape->data.poly.pa->contours, x - ps->x, y - ps->y, 1);
 		case PCB_PSSH_LINE:
 		{
 			pcb_any_line_t tmp;

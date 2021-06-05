@@ -839,11 +839,11 @@ RND_INLINE rnd_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, rnd_pline_t *
 
 	/* single-point line - check only one circle*/
 	if ((x1 == x2) && (y1 == y2))
-		return pcb_pline_overlaps_circ(pl, x1, y1, thick/2);
+		return rnd_pline_overlaps_circ(pl, x1, y1, thick/2);
 
 	/* long line - check ends */
-	if (pcb_pline_overlaps_circ(pl, x1, y1, thick/2)) return rnd_true;
-	if (pcb_pline_overlaps_circ(pl, x2, y2, thick/2)) return rnd_true;
+	if (rnd_pline_overlaps_circ(pl, x1, y1, thick/2)) return rnd_true;
+	if (rnd_pline_overlaps_circ(pl, x2, y2, thick/2)) return rnd_true;
 
 	dx = x2 - x1;
 	dy = y2 - y1;
@@ -855,8 +855,8 @@ RND_INLINE rnd_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, rnd_pline_t *
 	vy = (double)dy / -l * ((double)Bloat/2.0);
 
 	/* long line - consider edge intersection */
-	if (pcb_pline_isect_line(pl, x1 + ox + vx, y1 + oy + vy, x2 + ox - vx, y2 + oy - vy, NULL, NULL)) return rnd_true;
-	if (pcb_pline_isect_line(pl, x1 - ox + vx, y1 - oy + vy, x2 - ox - vx, y2 - oy - vy, NULL, NULL)) return rnd_true;
+	if (rnd_pline_isect_line(pl, x1 + ox + vx, y1 + oy + vy, x2 + ox - vx, y2 + oy - vy, NULL, NULL)) return rnd_true;
+	if (rnd_pline_isect_line(pl, x1 - ox + vx, y1 - oy + vy, x2 - ox - vx, y2 - oy - vy, NULL, NULL)) return rnd_true;
 
 	/* A corner case is when the polyline is fully within the line. By now we
 	   are sure there's no contour intersection, so if any of the polyline points
@@ -869,7 +869,7 @@ RND_INLINE rnd_bool_t pcb_isc_line_polyline(const pcb_find_t *ctx, rnd_pline_t *
 		q[2][0] = x1 - ox; q[2][1] = y1 - oy;
 		q[3][0] = x2 - ox; q[3][1] = y2 - oy;
 
-		return pcb_is_point_in_convex_quad(pl->head->point, q);
+		return rnd_is_point_in_convex_quad(pl->head->point, q);
 	}
 }
 
