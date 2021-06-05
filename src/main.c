@@ -420,6 +420,7 @@ int main(int argc, char *argv[])
 	rnd_app.default_embedded_menu = rnd_hidlib_default_embedded_menu;
 	rnd_app.package = PCB_PACKAGE;
 	rnd_app.version = PCB_VERSION;
+	rnd_app.revision = PCB_REVISION;
 	rnd_app.url = "http://repo.hu/projects/pcb-rnd";
 
 	rnd_app.crosshair_suspend = pcb_crosshair_suspend;
