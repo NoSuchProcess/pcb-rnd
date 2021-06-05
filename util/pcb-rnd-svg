@@ -6,20 +6,6 @@ pcb_rnd()
 	then
 		pcb-rnd $PCB_RND_EXTRA_ARGS "$@"
 	else
-		if test -z "$LD_LIBRARY_PATH"
-		then
-			export LD_LIBRARY_PATH=$PCB_RND_TRUNK/src_3rd/librnd-local/src
-		else
-			export LD_LIBRARY_PATH=$PCB_RND_TRUNK/src_3rd/librnd-local/src:$LD_LIBRARY_PATH
-		fi
-
-		# this variant is for OSX
-		if test -z "$DYLD_LIBRARY_PATH"
-		then
-			export DYLD_LIBRARY_PATH=$PCB_RND_TRUNK/src_3rd/librnd-local/src
-		else
-			export DYLD_LIBRARY_PATH=$PCB_RND_TRUNK/src_3rd/librnd-local/src:$DYLD_LIBRARY_PATH
-		fi
 		$PCB_RND_TRUNK/src/pcb-rnd $PCB_RND_EXTRA_ARGS "$@"
 	fi
 }
