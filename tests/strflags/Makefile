@@ -1,21 +1,20 @@
-include ../../Makefile.conf
-
-TRUNK=../..
-IO=$(TRUNK)/src_plugins/io_pcb
-CFLAGS = $(PCB_RND_C89FLAGS) -O3 -I$(TRUNK) -I$(TRUNK)/src -I$(IO)  -I$(TRUNK)/src_3rd
-LDLIBS = -lm
-LIBRND_LIBS = $(TRUNK)/src_3rd/librnd-local/src/librnd-3rd.a
-
-all: tester
-
 ROOT=../..
 include $(ROOT)/Makefile.conf
+include $(LIBRND_MAK)
+
+
+IO=$(ROOT)/src_plugins/io_pcb
+CFLAGS = $(PCB_RND_C89FLAGS) -O3 -I$(ROOT) -I$(ROOT)/src -I$(IO)  -I$(ROOT)/src_3rd -I$(LIBRND_INCDIR)
+LDLIBS = -lm
+LIBRND_LIBS = -lrnd-3rd
+
+all: tester
 
 test: tester.diff
 	@echo "strflags:            *** QC PASS ***"
 	@rm tester.stdout
 
-tester: tester.o $(LIBRND_LIBS)
+tester: tester.o
 	$(CC) $(LDFLAGS) -o tester tester.o $(LIBRND_LIBS) $(LDLIBS)
 
 tester.o: tester.c

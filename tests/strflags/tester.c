@@ -36,7 +36,19 @@
 #define FLAG_TEST
 #include "flag_str.c"
 #include "flag.c"
-#include <librnd/core/compat_misc.c>
+
+char *rnd_strndup(const char *s, int len)
+{
+	int a, l = strlen(s);
+	char *o;
+
+	a = (len < l) ? len : l;
+	o = malloc(a+1);
+	memcpy(o, s, a);
+	o[a] = '\0';
+	return o;
+}
+
 
 static void dump_flag(pcb_flag_t * f)
 {
