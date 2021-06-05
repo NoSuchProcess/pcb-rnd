@@ -92,10 +92,10 @@ rnd_bool pcb_poly_is_point_in_p_ignore_holes(rnd_coord_t, rnd_coord_t, pcb_poly_
 rnd_bool_t rnd_is_point_in_convex_quad(rnd_vector_t p, rnd_vector_t *q);
 rnd_bool pcb_poly_is_rect_in_p(rnd_coord_t, rnd_coord_t, rnd_coord_t, rnd_coord_t, pcb_poly_t *);
 rnd_bool pcb_poly_isects_poly(rnd_polyarea_t *, pcb_poly_t *, rnd_bool);
-rnd_bool pcb_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy);
+rnd_bool rnd_pline_isect_line(rnd_pline_t *pl, rnd_coord_t lx1, rnd_coord_t ly1, rnd_coord_t lx2, rnd_coord_t ly2, rnd_coord_t *cx, rnd_coord_t *cy);
 rnd_bool pcb_pline_isect_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r); /* cirlce contour crosses polyline contour */
-rnd_bool pcb_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r); /* circle is within the polyline; caller must make sure they do not cross! */
-rnd_bool pcb_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r); /* circle is within or is crossing the polyline */
+rnd_bool rnd_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r); /* circle is within the polyline; caller must make sure they do not cross! */
+rnd_bool rnd_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r); /* circle is within or is crossing the polyline */
 rnd_bool pcb_poly_morph(pcb_layer_t *, pcb_poly_t *);
 void pcb_poly_no_holes_dicer(pcb_poly_t * p, const rnd_box_t * clip, void (*emit) (rnd_pline_t *, void *), void *user_data);
 void pcb_poly_to_polygons_on_layer(pcb_data_t *, pcb_layer_t *, rnd_polyarea_t *, pcb_flag_t);
