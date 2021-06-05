@@ -48,6 +48,8 @@ HL_INCDIR=$(Install_root)@/local/pcb/librnd_prefix@/include/librnd
 # install_root/DESTDIR removed)
 LIBDIR_INSTALLED=@/local/prefix@/lib/pcb-rnd
 
-# Where librnd is installed
+# Where librnd is installed, full path to the .mak file to auto-setup
 LIBRND_PREFIX=@/local/pcb/librnd_prefix@
+LIBRND_MAK=$(LIBRND_PREFIX)/share/librnd/librnd.mak
+
 @]
