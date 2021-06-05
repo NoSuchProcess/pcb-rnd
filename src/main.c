@@ -432,8 +432,8 @@ int main(int argc, char *argv[])
 
 	rnd_app.conf_internal = rnd_conf_internal;
 
-	rnd_conf_dot_dir = DOT_PCB_RND;
-	rnd_conf_lib_dir = PCBLIBDIR;
+	rnd_app.dot_dir = DOT_PCB_RND;
+	rnd_app.lib_dir = PCBLIBDIR;
 
 	rnd_fix_locale_and_env();
 	exec_prefix = main_path_init(argv[0]);
