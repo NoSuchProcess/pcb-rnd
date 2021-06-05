@@ -4,9 +4,6 @@ ROOT=../..
 SRC=$ROOT/src
 CFG="-c rc/library_search_paths=dummy_lib -c rc/quiet=1"
 
-#TODO: remove this once librnd separation id finished
-export LD_LIBRARY_PATH=`pwd`/$ROOT/src_3rd/librnd-local/src
-
 # call:
 # insert.lht 'MenuPatch(load, test, "insert.lht");'
 

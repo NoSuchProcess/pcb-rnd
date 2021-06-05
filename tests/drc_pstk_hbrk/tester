@@ -8,9 +8,6 @@ PWD=`pwd`
 
 verbose=0
 
-#TODO: remove this once librnd separation id finished
-export LD_LIBRARY_PATH=$PWD/$ROOT/src_3rd/librnd-local/src
-
 do_test()
 {
 local fn=$PWD/$1

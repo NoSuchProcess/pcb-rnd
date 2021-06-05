@@ -30,7 +30,6 @@ message(*** POST ***)
 Report(DrillReport)
 ') | (
 	cd $SRC
-	export LD_LIBRARY_PATH=../src_3rd/librnd-local/src
 	./pcb-rnd $GLOBARGS --gui batch $brd
 ) | awk '
 # remove full path filenames

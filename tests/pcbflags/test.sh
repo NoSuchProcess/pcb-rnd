@@ -3,9 +3,6 @@ ROOT=../..
 src_dir=$ROOT/src
 pwd=`pwd`
 
-#TODO: remove this once librnd separation id finished
-export LD_LIBRARY_PATH=$pwd/$ROOT/src_3rd/librnd-local/src
-
 mkdir -p lib
 PCB_RND_CFG="-c rc/library_search_paths=lib -c rc/default_pcb_file={} -c rc/default_font_file={}"
 
