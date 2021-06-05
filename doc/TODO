@@ -7,9 +7,8 @@
 	- test with and without fungw installed
 	- test with and without all plugins
 	- revise autobuild servers' scripts
-	- struct based librnd->app API
-		- revise pcb-rnd tests and remove glue that's not needed anymore
-		- revise tests in librnd, remove glue
+	- revise tests in librnd, remove glue
+	- update librnd doc starting from the central README
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both
