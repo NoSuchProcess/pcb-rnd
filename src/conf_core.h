@@ -249,4 +249,6 @@ void conf_core_uninit(void);
 void conf_core_uninit_pre(void);
 void pcb_conf_legacy(const char *dst_path, const char *legacy_path);
 
+void pcb_conf_core_postproc(void);
+
 #endif

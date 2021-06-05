@@ -432,6 +432,8 @@ int main(int argc, char *argv[])
 	rnd_app.expose_preview    = pcb_expose_preview;
 
 	rnd_app.conf_internal = rnd_conf_internal;
+	rnd_app.conf_core_postproc = pcb_conf_core_postproc;
+
 
 	rnd_app.dot_dir = DOT_PCB_RND;
 	rnd_app.lib_dir = PCBLIBDIR;
