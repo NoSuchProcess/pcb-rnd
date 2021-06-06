@@ -97,6 +97,7 @@ int hook_postinit()
 /* Runs after all arguments are read and parsed */
 int hook_postarg()
 {
+	import(TO_STR(LIBRND_PREFIX) "/share/librnd/plugin.state");
 	return rnd_hook_postarg();
 }
 
