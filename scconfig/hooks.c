@@ -33,9 +33,9 @@ const arg_auto_set_t disable_libs[] = { /* list of --disable-LIBs and the subtre
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) plugin3_args(name, desc)
+#define plugin_def(name, desc, default_, all_) plugin3_args(name, desc)
 #define plugin_header(sect)
-#define plugin_dep(plg, on, hidlib)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 
 	{NULL, NULL, NULL, NULL}
@@ -153,8 +153,6 @@ int hook_detect_target()
 	want_xml2   = plug_is_enabled("io_eagle") || plug_is_enabled("order_pcbway");
 	want_freetype2 = plug_is_enabled("import_ttf");
 	want_fuse = plug_is_enabled("export_vfs_fuse");
-
-	plugin_db_hidlib();
 
 	rnd_hook_detect_cc();
 	if (rnd_hook_detect_sys() != 0)
@@ -340,9 +338,9 @@ int hook_generate()
 #undef plugin_def
 #undef plugin_header
 #undef plugin_dep
-#define plugin_def(name, desc, default_, all_, hidlib_) plugin3_stat(name, desc)
+#define plugin_def(name, desc, default_, all_) plugin3_stat(name, desc)
 #define plugin_header(sect) printf(sect);
-#define plugin_dep(plg, on, hidlib)
+#define plugin_dep(plg, on)
 #include "plugins.h"
 
 	if (repeat != NULL) {
