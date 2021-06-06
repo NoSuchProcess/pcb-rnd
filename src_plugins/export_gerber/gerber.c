@@ -1018,6 +1018,7 @@ static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx,
 		"For more info please read:\n"
 		"http://repo.hu/cgi-bin/pool.cgi?cmd=show&node=cam_switch\n";
 	rnd_hid_export_opt_func_dad_t *dad = call_ctx;
+	const char *xpm = "";
 
 	switch(act) {
 		case RND_HIDEOF_USAGE:
@@ -1028,10 +1029,21 @@ static void gerber_warning(rnd_hid_export_opt_func_action_t act, void *call_ctx,
 			fprintf((FILE *)call_ctx, "******************************************************************************\n\n");
 			break;
 		case RND_HIDEOF_DAD:
+
+			{ /* fetch the xpm using the action API so the plugin doesn't start depending on GUI plugins */
+				fgw_arg_t res, args[2];
+				args[1].type = FGW_STR;
+				args[1].val.str = "warning";
+				if (rnd_actionv_bin(&PCB->hidlib, "rnd_dlg_xpm_by_name", &res, 2, args) == 0) {
+					if (res.type == FGW_PTR)
+						xpm = res.val.ptr_void;
+				}
+			}
+
 			RND_DAD_BEGIN_VBOX(dad->dlg);
 				RND_DAD_COMPFLAG(dad->dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
 				RND_DAD_BEGIN_HBOX(dad->dlg);
-					RND_DAD_PICTURE(dad->dlg, pcp_dlg_xpm_by_name("warning"));
+					RND_DAD_PICTURE(dad->dlg, xpm);
 					RND_DAD_BEGIN_VBOX(dad->dlg);
 						RND_DAD_LABEL(dad->dlg, warn_txt);
 						RND_DAD_BUTTON(dad->dlg, "Get me to the cam export dialog");
