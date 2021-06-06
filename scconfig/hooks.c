@@ -51,6 +51,12 @@ static void help1(void)
 	printf(" --dot_pcb_rnd=path         .pcb-rnd config path under $HOME/\n");
 }
 
+#define need_value(msg) \
+	if (value == NULL) { \
+		fprintf(stderr, "syntax error; %s\n", msg); \
+		exit(1); \
+	}
+
 /* Runs when a custom command line argument is found
  returns true if no further argument processing should be done */
 int hook_custom_arg(const char *key, const char *value)
@@ -58,6 +64,7 @@ int hook_custom_arg(const char *key, const char *value)
 	rnd_hook_custom_arg(key, value, disable_libs); /* call arg_auto_print_options() instead */
 
 	if (strcmp(key, "dot_pcb_rnd") == 0) {
+		need_value("use --dot_pcb_rnd=dir");
 		put("/local/pcb/dot_pcb_rnd", value);
 		return 1;
 	}
