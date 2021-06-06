@@ -282,7 +282,7 @@ static void btn_support_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 static void status_docked_create_rd()
 {
 	int n;
-	const char **support_icon = pcp_dlg_xpm_by_name("online_help");
+	const char **support_icon = rnd_dlg_xpm_by_name("online_help");
 
 	RND_DAD_BEGIN_HBOX(status.rdsub.dlg);
 		RND_DAD_COMPFLAG(status.rdsub.dlg, RND_HATF_TIGHT);

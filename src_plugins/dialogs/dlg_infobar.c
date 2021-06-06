@@ -68,7 +68,7 @@ fgw_error_t pcb_act_InfoBarFileChanged(fgw_arg_t *res, int argc, fgw_arg_t *argv
 			RND_DAD_BEGIN_HBOX(sub.dlg);
 				RND_DAD_COMPFLAG(sub.dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
 				RND_DAD_BEGIN_VBOX(sub.dlg);
-					RND_DAD_PICTURE(sub.dlg, pcp_dlg_xpm_by_name("warning"));
+					RND_DAD_PICTURE(sub.dlg, rnd_dlg_xpm_by_name("warning"));
 				RND_DAD_END(sub.dlg);
 				RND_DAD_BEGIN_VBOX(sub.dlg);
 					RND_DAD_COMPFLAG(sub.dlg, RND_HATF_EXPFILL);
