@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - librnd sep:
-	- pcb-rnd librnd-local refs: doc/developer/packaging, src_plugins/Plugin.tmpasm, src/main.c, src/Makefile.in
+	- pcb-rnd librnd-local refs: doc/developer/packaging, src/main.c, src/Makefile.in
 	- test with /usr/local installation
 	- test with custom path installation
 	- test with and without fungw installed
