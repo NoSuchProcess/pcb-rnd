@@ -371,14 +371,8 @@ linstall:
 uninstall:
 	$(MAKE) install_pcbrnd HOW="uninstall"
 
-# librnd-local TODO: 
-# Note: mv and grep are temporary, while ./configure is shared with librnd
-# but build is not: plugin list in tmpasm shouldn't include hidlib plugins
-# while scconfig's plugin list header needs to contain them
 map_plugins:
 	cd ../src_plugins && PUPLUG=$(PUPLUG) $(LIBRND_LIBDIR)/plugins/map_plugins.sh ../src_plugins
-	mv ../src_plugins/plugins_ALL.tmpasm ../src_plugins/plugins_ALL.tmp
-	grep -v "/librnd-local/" < ../src_plugins/plugins_ALL.tmp > ../src_plugins/plugins_ALL.tmpasm
 @]
 
 # generate explicit rules for .c -> .o
