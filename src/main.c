@@ -459,10 +459,6 @@ int main(int argc, char *argv[])
 
 	rnd_hidlib_init1(conf_core_init);
 
-
-TODO("librnd: remove this once librnd is not extern anymore");
-	rnd_plugin_add_dir("../src_3rd/librnd-local/src/plugins");
-
 	pcb_event_init_app();
 	rnd_conf_set(RND_CFR_INTERNAL, "rc/path/exec_prefix", -1, exec_prefix, RND_POL_OVERWRITE);
 	free(exec_prefix);
