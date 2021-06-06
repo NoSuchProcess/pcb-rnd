@@ -13,7 +13,6 @@ clean: FORCE
 	cd pcblib && $(MAKE) clean
 #	cd doc && $(MAKE) clean
 	cd tests && $(MAKE) clean
-	cd src_3rd/librnd-local && $(MAKE) clean
 	cd src_3rd/libminuid && $(MAKE) clean ; true
 	cd src_3rd/libuundo && $(MAKE) clean ; true
 
@@ -23,7 +22,6 @@ distclean: FORCE
 #	cd doc && $(MAKE) distclean
 	cd util && $(MAKE) distclean
 	cd src && $(MAKE) distclean
-	cd src_3rd/librnd-local && $(MAKE) distclean
 	cd src_3rd/genregex && $(MAKE) clean ; true
 	cd src_3rd/qparse && $(MAKE) clean ; true
 	cd scconfig && $(MAKE) distclean ; true
