@@ -28,3 +28,4 @@ esac
 cd scconfig
 make "LIBRND_PREFIX=$LIBRND_PREFIX" LIBRND_EXTRA_INCLUDE="-I$LIBRND_EXTRA_INCLUDE"
 ./configure "$@"
+
