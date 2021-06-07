@@ -5,6 +5,7 @@
 	- test with /usr/local installation
 	- test with lib64 libdir
 	- test with and without fungw installed
+	- test on IRIX
 	- revise autobuild servers' scripts
 	- update librnd doc starting from the central README
 	- test: pcb-rnd impedance script
