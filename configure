@@ -15,8 +15,17 @@ fi
 
 case "$LIBRND_PREFIX" in
 	"") 
-		echo "Can not find librnd - please set LIBRND_PREFIX to librnd installation prefix
-(e.g. export LIBRND_PREFIX=/usr/local) before running ./configure" >&2
+		echo "
+
+ERROR: Can not find librnd.
+
+If librnd is not installed, please read INSTALL for details.
+
+If librnd is installed at a non-standard prefix, please read
+doc/INSTALL.librnd.txt and set LIBRND_PREFIX accordingly
+(e.g. export LIBRND_PREFIX=/home/foo/sw/librnd) before running ./configure
+
+" >&2
 		exit 1
 		;;
 	/usr/include) ;;
