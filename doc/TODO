@@ -2,10 +2,11 @@
 
 1. For the upcoming release ===============================================================================
 - librnd sep:
-	- test with /usr/local installation
+	- BUG: all building in librnd broke: gtk is not compiled in
 	- test with lib64 libdir
 	- test with and without fungw installed
 	- test on IRIX
+	- test the windows cross compilation
 	- revise autobuild servers' scripts
 	- update librnd doc starting from the central README
 	- test: pcb-rnd impedance script
@@ -15,6 +16,7 @@
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both
 - FEATURE: asm(): a config node (maybe query script); if a subc matches, omit it from the list; this is for DNP or build options [report: Majenko]
 - BUG: layer binding dialog: on the standard 4 layer board create a subc with a line on top copper; edit layer bindings of the subc; try to move it to each inner copper -> dialog box gets confused [report: Igor2]
+- BUG: cuvoodoo's netlength bug: bug_files/netlen1.lht; run {n l o} on the horizontal lines; it breaks because a short line segment is fully under the via causing multiple touching objects [report: cuvoodoo] (report to the mailing list)
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: new breadboard
