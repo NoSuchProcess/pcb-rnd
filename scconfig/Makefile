@@ -6,7 +6,7 @@ SRC=src
 BIN=$(SRC)
 
 #  what cflags to use to compile scconfig
-USER_CFLAGS = -g -DGENCALL -I$(SRC) -I../src_3rd
+USER_CFLAGS = -g -DGENCALL -I$(SRC) -I../src_3rd $(LIBRND_EXTRA_INCLUDE)
 #USER_CFLAGS = -Wall -Wextra -g -DGENCALL -Isrc
 
 #  what ldflags to use to link scconfig

@@ -12,13 +12,19 @@ then
 	done
 fi
 
-if test -z "$LIBRND_PREFIX"
-then
-	echo "Can not find librnd - please set LIBRND_PREFIX to librnd installation prefix
+
+case "$LIBRND_PREFIX" in
+	"") 
+		echo "Can not find librnd - please set LIBRND_PREFIX to librnd installation prefix
 (e.g. export LIBRND_PREFIX=/usr/local) before running ./configure" >&2
-fi
+		exit 1
+		;;
+	/usr/include) ;;
+	/usr/local/include) ;;
+	*) LIBRND_EXTRA_INCLUDE="$LIBRND_PREFIX/include"
+esac
 
 
 cd scconfig
-make "LIBRND_PREFIX=$LIBRND_PREFIX"
+make "LIBRND_PREFIX=$LIBRND_PREFIX" LIBRND_EXTRA_INCLUDE="-I$LIBRND_EXTRA_INCLUDE"
 ./configure "$@"
