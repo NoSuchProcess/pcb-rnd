@@ -99,12 +99,6 @@ int hook_postinit()
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 	put("/local/pcb/librnd_prefix", TO_STR(LIBRND_PREFIX));
 
-	/* if librnd is installed at some custom path, we'll need to have a -I on CFLAGS */
-	if ((strncasecmp(TO_STR(LIBRND_PREFIX), "/usr/include", 12) != 0) && (strncasecmp(TO_STR(LIBRND_PREFIX), "/usr/local/include", 18) != 0)) {
-		put("/local/pcb/librnd_extra_inc", "-I" TO_STR(LIBRND_PREFIX) "/include");
-		put("/local/pcb/librnd_extra_ldf", "-L" TO_STR(LIBRND_PREFIX) "/lib");
-	}
-
 	return 0;
 }
 
@@ -112,8 +106,18 @@ int hook_postinit()
 int hook_postarg()
 {
 	char *tmp;
+	const char *libad;
+
 	put("/local/pcb/librnd_template", tmp = str_concat("", TO_STR(LIBRND_PREFIX), "/", get("/local/libarchdir"), "/librnd/scconfig/template", NULL));
 	free(tmp);
+
+	/* if librnd is installed at some custom path, we'll need to have a -I on CFLAGS and -L on LDFLAGS */
+	libad = get("/local/libarchdir");
+	if (((strncasecmp(TO_STR(LIBRND_PREFIX), "/usr/include", 12) != 0) && (strncasecmp(TO_STR(LIBRND_PREFIX), "/usr/local/include", 18) != 0)) || (strcmp(libad, "lib") != 0)) {
+		put("/local/pcb/librnd_extra_inc", "-I" TO_STR(LIBRND_PREFIX) "/include");
+		put("/local/pcb/librnd_extra_ldf", tmp = str_concat("", "-L" TO_STR(LIBRND_PREFIX) "/", libad, NULL));
+		free(tmp);
+	}
 
 	import(TO_STR(LIBRND_PREFIX) "/share/librnd/plugin.state");
 	return rnd_hook_postarg();
