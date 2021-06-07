@@ -9,7 +9,8 @@ LHT=$(ROOT)/src_3rd
 SRC=$(ROOT)/src
 SRC_3RD=$(ROOT)/src_3rd
 
-CFLAGS = $(PCB_RND_C89FLAGS) -I$(PED) -I$(LHT) -I$(SRC) -I$(ROOT) -I$(ROOT)/src_3rd -I$(LIBRND_INCDIR)/librnd/src_3rd
+CFLAGS = $(PCB_RND_C89FLAGS) $(CFLAGS_LIBRND) -I$(PED) -I$(LHT) -I$(SRC) -I$(ROOT) -I$(ROOT)/src_3rd -I$(LIBRND_INCDIR)/librnd/src_3rd
+LDFLAGS = $(LDFLAGS_LIBRND)
 LDLIBS = -lrnd-hid -lrnd-3rd  $(LDFLAGS_LIBRND) -lm
 
 OBJS = tester.o $(PED)/props.o

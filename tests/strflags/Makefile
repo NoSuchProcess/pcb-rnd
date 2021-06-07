@@ -5,6 +5,7 @@ include $(LIBRND_MAK)
 
 IO=$(ROOT)/src_plugins/io_pcb
 CFLAGS = $(PCB_RND_C89FLAGS) -O3 -I$(ROOT) -I$(ROOT)/src -I$(IO)  -I$(ROOT)/src_3rd -I$(LIBRND_INCDIR)
+LDFLAGS = $(LDFLAGS_LIBRND)
 LDLIBS = -lm
 LIBRND_LIBS = -lrnd-3rd
 
