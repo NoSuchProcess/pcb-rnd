@@ -3,7 +3,7 @@ append /local/pcb/CFLAGS [@-I../.. -I@/local/pcb/librnd_prefix@/include/librnd/s
 append /local/pcb/CFLAGS {-DSCMDIR="\\"$(LIBDIR_INSTALLED)\\""}
 append /local/pcb/LDFLAGS cc/ldflags
 append /local/pcb/LDFLAGS ?/target/libs/ldl
-include [@@/local/pcb/librnd_prefix@/lib/librnd/scconfig/template/debug.tmpasm@]
+include [@@/local/pcb/librnd_template@/debug.tmpasm@]
 
 print [@
 ROOT=../..
@@ -75,7 +75,7 @@ $(FP_OBJS) $(QPARSE):
 
 # generate explicit rules for .c -> .o
 put /local/comp/OBJS /local/pcb/OBJS
-include [@@/local/pcb/librnd_prefix@/lib/librnd/scconfig/template/compile.tmpasm@]
+include [@@/local/pcb/librnd_template@/compile.tmpasm@]
 
 print [@
 
