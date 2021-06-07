@@ -83,3 +83,15 @@ Non-standard librnd installation
     get ld read your changes.
 
 
+3. Other configure options that may matter
+
+3.1. ./configure --libarchdir
+
+  The default value of librachdir is "lib", which means the lib dir is
+  $(PREFIX)/lib. On some systems, e.g. x86_64, it may need to be changed
+  to "lib64".
+
+  The --libarchdir setting between librnd and pcb-rnd must match: 
+    - either not set
+    - or if set, it must be set explicitly to the same string in both librnd
+      and pcb-rnd ./configure.
