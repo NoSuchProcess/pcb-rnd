@@ -12,7 +12,10 @@ Summary of dependencies:
 For users:
  - mandatory: C compiler
  - mandatory: make
- - mandatory: librnd installed; see http://www.repo.hu/projects/librnd
+ - mandatory: librnd installed
+              Get it at: see http://www.repo.hu/projects/librnd
+              Standard: install librnd in /usr/local or /usr
+              Non-standard installation: doc/INSTALL.librnd.txt
  - optional: imagemagick for running the pixmap export tests
 
 When configuring librnd:
@@ -35,12 +38,9 @@ Run ./configure.
 
 For compile-time options run ./configure --help.
 
-Dependencies: almost none. For GUI, install the (-dev or -devel) libs
-of lesstif or motif and/or gtk2.
-
 Read the summary table and the warnings at the end of ./configure output
 and decide if you need the features missing. If there was no error, only
-warnings, pcb-rnd cab be compiled, even if some dependencies were missing.
+warnings, pcb-rnd can be compiled, even if some dependencies were missing.
 ./configure will try to static link most plugins and disable ones that
 have missing dependencies. This process can be controlled using configure
 command line switches, see ./configure --help.
