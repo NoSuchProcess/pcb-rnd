@@ -3,7 +3,7 @@
 1. For the upcoming release ===============================================================================
 - librnd sep:
 	- test with /usr/local installation
-	- test with custom path installation
+	- test with lib64 libdir
 	- test with and without fungw installed
 	- revise autobuild servers' scripts
 	- update librnd doc starting from the central README
