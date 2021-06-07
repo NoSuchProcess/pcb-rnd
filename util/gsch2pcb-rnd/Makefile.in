@@ -14,8 +14,8 @@ GENCONF=$(LIBRND_LIBDIR)/librnd/scconfig/gen_conf.sh
 
 include $(LIBRND_SHAREDIR)/librnd.mak
 
-CFLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@ $(CFLAGS_LIBRND_FUNGW)
-LDFLAGS=-lm @/local/pcb/LDFLAGS@ $(LDFLAGS_LIBRND_FUNGW)
+CFLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@ @?/local/pcb/librnd_extra_inc@ $(CFLAGS_LIBRND_FUNGW)
+LDFLAGS=-lm @?/local/pcb/librnd_extra_ldf@ @/local/pcb/LDFLAGS@ $(LDFLAGS_LIBRND_FUNGW)
 LDF_LIBRND=-lrnd-hid -lrnd-3rd
 CC=@cc/cc@
 @]
