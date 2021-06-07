@@ -113,7 +113,6 @@ int hook_postarg()
 {
 	char *tmp;
 	put("/local/pcb/librnd_template", tmp = str_concat("", TO_STR(LIBRND_PREFIX), "/", get("/local/libarchdir"), "/librnd/scconfig/template", NULL));
-printf("tmp='%s'\n", tmp); exit(1);
 	free(tmp);
 
 	import(TO_STR(LIBRND_PREFIX) "/share/librnd/plugin.state");
