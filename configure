@@ -2,7 +2,7 @@
 
 if test -z "$LIBRND_PREFIX"
 then
-	for P in /usr /usr/local /opt/librnd $HOME/usr
+	for P in /usr/local /opt/librnd /usr $HOME/usr
 	do
 		if test -e "$P/include/librnd/core/config.h"
 		then
