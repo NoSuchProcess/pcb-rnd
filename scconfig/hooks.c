@@ -88,7 +88,6 @@ int hook_preinit()
 /* Runs after initialization */
 int hook_postinit()
 {
-	char *tmp;
 	db_mkdir("/local");
 	db_mkdir("/local/pcb");
 
@@ -99,10 +98,6 @@ int hook_postinit()
 	put("/local/pcb/want_static", sfalse);
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 	put("/local/pcb/librnd_prefix", TO_STR(LIBRND_PREFIX));
-	put("/local/pcb/librnd_template", tmp = str_concat("", TO_STR(LIBRND_PREFIX), "/", get("/local/libarchdir"), "/librnd/scconfig/template", NULL));
-	free(tmp);
-
-
 
 	/* if librnd is installed at some custom path, we'll need to have a -I on CFLAGS */
 	if ((strncasecmp(TO_STR(LIBRND_PREFIX), "/usr/include", 12) != 0) && (strncasecmp(TO_STR(LIBRND_PREFIX), "/usr/local/include", 18) != 0)) {
@@ -116,6 +111,11 @@ int hook_postinit()
 /* Runs after all arguments are read and parsed */
 int hook_postarg()
 {
+	char *tmp;
+	put("/local/pcb/librnd_template", tmp = str_concat("", TO_STR(LIBRND_PREFIX), "/", get("/local/libarchdir"), "/librnd/scconfig/template", NULL));
+printf("tmp='%s'\n", tmp); exit(1);
+	free(tmp);
+
 	import(TO_STR(LIBRND_PREFIX) "/share/librnd/plugin.state");
 	return rnd_hook_postarg();
 }
