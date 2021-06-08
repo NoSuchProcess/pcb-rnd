@@ -68,7 +68,7 @@ If this doesn't work, please refer to doc/INSTALL*.
 
 4. Installation
 
-To install PCB after it has been built run:
+To install pcb-rnd after it has been built run:
 
   make install
 
