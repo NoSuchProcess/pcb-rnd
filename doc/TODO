@@ -2,8 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - librnd sep:
-	- BUG: all building in librnd broke: gtk is not compiled in
-	- test with lib64 libdir
 	- test with and without fungw installed
 	- test on IRIX
 	- test the windows cross compilation
