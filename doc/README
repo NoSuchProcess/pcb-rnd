@@ -3,7 +3,6 @@ pcb-rnd documentation: work in progress.
 Most notable subdirectories:
 	conf/               documentation of the configuration system
 	developer/          documentation for developers
-	devlog/             random thoughts and articles
 	man/                UNIX manual pages
 	resources/          logos, screenshots, artwork
 	security/           notifications about security-critical bugs
