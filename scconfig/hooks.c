@@ -197,7 +197,13 @@ int hook_detect_target()
 		}
 	}
 
-	rnd_hook_detect_hid(plug_is_enabled("puller"));
+	if (plug_is_enabled("puller")) {
+		rnd_hook_detect_glib(1);
+		if (plug_is_enabled("puller")) {
+			report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
+			hook_custom_arg("disable-puller", NULL);
+		}
+	}
 
 	if (want_xml2) {
 		require("libs/sul/libxml2/presents", 0, 0);
