@@ -22,7 +22,7 @@ pcb-rnd  ./configure       compile, -O0     compile -O3   system
 -----------------------------------------------------------------------------------
 1.1.2     1:55              7:40             14:27        IRIX 5.3, IP22 @ 100 MHz
 2.3.1     0:20              1:47             7:52         AIX 7, Power7
-
+3.0.0     3:25             28:20                          IRIX 5.3, IP22 @ 100 MHz (no GUI)
 
 3. per UNIX system notes
 
