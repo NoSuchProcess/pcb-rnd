@@ -79,7 +79,8 @@ typedef enum qp_state_e {
 
 int qparse4(const char *input, char **argv_ret[], unsigned int *argv_allocated, flags_t flg, size_t *consumed_out, char **buffer, size_t *buffer_alloced, const char **start, int start_len)
 {
-	int argc, allocated_;
+	int argc;
+	unsigned int allocated_;
 	qp_state_t state;
 	const char *s;
 	char *buff;
