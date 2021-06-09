@@ -11,6 +11,19 @@ if /local/pcb/want_static then
 	append /local/pcb/LDFLAGS { -static}
 end
 
+# static librd link: need to get all librnd ldlibs
+if /local/pcb/want_static_librnd
+then
+	put /local/pcb/librnd_extra_mak [@
+# static librd link: need to get all librnd ldlibs
+include $(LIBRND_PREFIX)/share/librnd/librnd.mak
+@]
+	put /local/pcb/librnd_extra_ldlibs {$(LDFLAGS_LIBRND)}
+else
+	put /local/pcb/librnd_extra_ldlibs {}
+	put /local/pcb/librnd_extra_mak {}
+end
+
 if /local/pcb/want_static_librnd then
 	put /local/pcb/SO {.a}
 else
@@ -228,9 +241,11 @@ ROOT=..
 
 # librnd installation
 LIBRND_PREFIX=@/local/pcb/librnd_prefix@
+@/local/pcb/librnd_extra_mak@
 LIBRND_LIBDIR=$(LIBRND_PREFIX)/@/local/libarchdir@/librnd
 LIBRND_L=$(LIBRND_PREFIX)/@/local/libarchdir@
 LIBRND_PLUGDIR=$(LIBRND_LIBDIR)/plugins
+
 
 # plugin source
 PLUGDIR=$(ROOT)/src_plugins
@@ -251,7 +266,7 @@ CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/C99CFLAGS@
 C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 LDFLAGS=@/local/pcb/LDFLAGS@
 LIBS_PRE=@/local/pcb/LIBS_PRE@
-LIBS=@/local/pcb/LIBS@ @libs/socket/socket/ldflags@ -lm @?/target/libs/ldl@
+LIBS=@/local/pcb/LIBS@ @libs/socket/socket/ldflags@ @/local/pcb/librnd_extra_ldlibs@ -lm @?/target/libs/ldl@
 LIBS_3RD=@/local/pcb/LIBS_3RD@
 EXEDEPS=@/local/pcb/EXEDEPS@
 CLEANFILES=@/local/pcb/CLEANFILES@
