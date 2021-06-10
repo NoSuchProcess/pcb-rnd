@@ -3,6 +3,11 @@ ROOT=../../..
 proot=$ROOT/src_plugins
 
 librnd_pkgs="hid-gtk2-gl cloud lib-gui hid-gtk2-gdk lib-gtk hid-lesstif lib-gl"
+librnd_plugins='
+lib_wget=librnd3-cloud
+lib_hid_common=librnd3-lib-gui
+'
+
 
 ### generate description.txt (file formats) ###
 
@@ -53,7 +58,7 @@ do
 	sed "s@^@$n @" < $n
 done
 cat extra.digest
-) | awk -v "meta_deps=$meta_deps" -v "librnd_pkgs=$librnd_pkgs" '
+) | awk -v "meta_deps=$meta_deps" -v "librnd_pkgs=$librnd_pkgs" -v "librnd_plugins=$librnd_plugins" '
 	BEGIN {
 		gsub(" ", " pcb-rnd-", meta_deps)
 		sub("^", "pcb-rnd-", meta_deps)
@@ -71,8 +76,10 @@ cat extra.digest
 		for(n = 1; n <= v; n++)
 			LIBRND_PKG[A[n]] = 1
 
-		PLUGIN["pcb-rnd-lib_wget"] = "librnd3-cloud"
-		PLUGIN["pcb-rnd-lib_hid_common"] = "librnd3-lib-gui"
+		v = split(librnd_plugins, A, "[ \t\r\n]+")
+		for(n = 1; n <= v; n++)
+			if (split(A[n], B, "=") == 2)
+				PLUGIN["pcb-rnd-" B[1]] = B[2]
 	}
 
 	function fix_dep(dep)
