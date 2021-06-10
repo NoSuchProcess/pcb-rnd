@@ -13,7 +13,7 @@ linstall:
 	$(MAKE) install_ CPC="$(LN)"
 
 uninstall:
-	$(RM) $(DOCDIR)/examples/tut1.pcb
+	echo "No installation script. Please contribute!"
 
 include ../Makefile.conf
 themedir=$(DATADIR)/icons/$(theme)
