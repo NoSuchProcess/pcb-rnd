@@ -10,14 +10,14 @@
 <tr><th>pcb-rnd-doc<td><td>&nbsp;
 <tr><th>pcb-rnd-export-sim<td> pcb-rnd-core<td> export_openems
 <tr><th>pcb-rnd-import-geo<td> pcb-rnd-core<td> import_hpgl import_pxm_gd import_pxm_pnm import_ttf
-<tr><th>pcb-rnd-import-net<td> pcb-rnd-core pcb-rnd-lib_gensexpr<td> import_accel_net import_calay import_edif import_fpcb_nl import_gnetlist import_ipcd356 import_ltspice import_mentor_sch import_net_action import_net_cmd import_netlist import_orcad_net import_pads_net import_protel_net import_sch2 import_tinycad
-<tr><th>pcb-rnd<td>pcb-rnd-core pcb-rnd-io-standard pcb-rnd-io-alien librnd3-hid-gtk2-gl librnd3-hid-gtk2-gdk pcb-rnd-export pcb-rnd-export-sim pcb-rnd-export-extra pcb-rnd-auto pcb-rnd-extra librnd3-cloud pcb-rnd-doc pcb-rnd-import-net<td>&lt;metapackage&gt;
-<tr><th>pcb-rnd-auto<td> pcb-rnd-core pcb-rnd-lib_gensexpr pcb-rnd-lib-io pcb-rnd-io-standard<td> ar_cpcb ar_extern asm autoplace autoroute export_dsn import_dsn import_mucs smartdisperse
+<tr><th>pcb-rnd-import-net<td> pcb-rnd-core librnd3<td> import_accel_net import_calay import_edif import_fpcb_nl import_gnetlist import_ipcd356 import_ltspice import_mentor_sch import_net_action import_net_cmd import_netlist import_orcad_net import_pads_net import_protel_net import_sch2 import_tinycad
+<tr><th>pcb-rnd<td>pcb-rnd-core pcb-rnd-io-standard pcb-rnd-io-alien pcb-rnd-hid-gtk2-gl pcb-rnd-hid-gtk2-gdk pcb-rnd-export pcb-rnd-export-sim pcb-rnd-export-extra pcb-rnd-auto pcb-rnd-extra pcb-rnd-cloud pcb-rnd-doc pcb-rnd-import-net<td>&lt;metapackage&gt;
+<tr><th>pcb-rnd-auto<td> pcb-rnd-core librnd3 pcb-rnd-lib-io pcb-rnd-io-standard<td> ar_cpcb ar_extern asm autoplace autoroute export_dsn import_dsn import_mucs smartdisperse
 <tr><th>pcb-rnd-lib-io<td> pcb-rnd-core<td> lib_netmap
 <tr><th>pcb-rnd-io-standard<td> pcb-rnd-core pcb-rnd-lib-io<td> io_pcb io_tedax
 <tr><th>pcb-rnd-lib-gui<td> pcb-rnd-core librnd3-lib-gui<td> dialogs draw_fontsel lib_hid_pcbui
 <tr><th>pcb-rnd-core<td> librnd3<td>(builtin:  act_draw act_read autocrop ch_editpoint ch_onpoint ddraft draw_csect draw_fab drc_query extedit exto_std fp_board fp_fs io_lihata lib_compat_help lib_formula lib_polyhelp mincut propedit query report rubberband_orig shape show_netnames tool_std)
-<tr><th>pcb-rnd-io-alien<td> pcb-rnd-core pcb-rnd-lib-io pcb-rnd-extra pcb-rnd-lib_gensexpr<td> io_autotrax io_bxl io_dsn io_eagle io_hyp io_kicad io_kicad_legacy io_pads
+<tr><th>pcb-rnd-io-alien<td> pcb-rnd-core pcb-rnd-lib-io pcb-rnd-extra librnd3<td> io_autotrax io_bxl io_dsn io_eagle io_hyp io_kicad io_kicad_legacy io_pads
 <tr><th>pcb-rnd-cloud<td> pcb-rnd-core librnd3-cloud<td> fp_wget
 <tr><th>pcb-rnd-export-extra<td> pcb-rnd-core pcb-rnd-export<td> export_fidocadj export_ipcd356 export_lpr export_oldconn export_stl
 <tr><th>pcb-rnd-extra<td> pcb-rnd-core<td> distalign djopt fontmode jostle polycombine polystitch puller renumber shand_cmd teardrops vendordrill
