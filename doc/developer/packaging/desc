@@ -71,18 +71,6 @@
 	Plugins for tEDAx footprint format and the gEDA/PCB file formats
 	(footprint and board).
 
-@pcb-rnd-lib-gl
-	Support library for rendering with opengl.
-
-	Provides plugins for driving an opengl output, rendering pcb-rnd
-	views on opengl.
-
-@pcb-rnd-lib-gtk
-	Support library for building the GUI with gtk.
-
-	Provides the common gtk code (e.g. dialog box engine, input handling)
-	for any gtk based HID plugin.
-
 @pcb-rnd-lib-gui
 	Support library for building the GUI.
 
