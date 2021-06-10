@@ -2,6 +2,7 @@
 ROOT=../../..
 proot=$ROOT/src_plugins
 
+librnd_pkgs="hid-gtk2-gl cloud lib-gui hid-gtk2-gdk lib-gtk hid-lesstif lib-gl"
 
 ### generate description.txt (file formats) ###
 
@@ -52,7 +53,7 @@ do
 	sed "s@^@$n @" < $n
 done
 cat extra.digest
-) | awk -v "meta_deps=$meta_deps"  '
+) | awk -v "meta_deps=$meta_deps" -v "librnd_pkgs=$librnd_pkgs" '
 	BEGIN {
 		gsub(" ", " pcb-rnd-", meta_deps)
 		sub("^", "pcb-rnd-", meta_deps)
@@ -65,7 +66,34 @@ cat extra.digest
 			}
 			LONG[pkg] = LONG[pkg] $0 " "
 		}
+
+		v = split(librnd_pkgs, A, "[ \t]+")
+		for(n = 1; n <= v; n++)
+			LIBRND_PKG[A[n]] = 1
+
+		PLUGIN["pcb-rnd-lib_wget"] = "librnd3-cloud"
 	}
+
+	function fix_dep(dep)
+	{
+		if ((dep == "") || (dep ~ "^librnd"))
+			return dep
+		sub("^pcb-rnd-", "", dep)
+		if (dep in LIBRND_PKG)
+			return "librnd3-" dep
+		return "pcb-rnd-" dep
+	}
+
+	function fix_deps(deps   ,A,n,s,v)
+	{
+		v = split(deps, A, "[ \t]+")
+		s = ""
+		for(n = 1; n <= v; n++)
+			s = s " " fix_dep(A[n])
+		sub("^ ", "", s)
+		return s;
+	}
+
 
 	{
 		if ($1 ~ "^[!]") {
@@ -173,7 +201,12 @@ print in_librnd, $1 > "L1"
 	}
 
 	END {
-	
+
+#		for(plg in PLUGIN_DEP)
+#			print "PLUGIN[" plg "] = " PLUGIN[plg] > "/dev/stderr"
+#		exit(1)
+
+
 		# everything depends on core
 		for(pkg in PKG)
 			add_dep(pkg, "pcb-rnd-core")
@@ -199,15 +232,16 @@ print in_librnd, $1 > "L1"
 		PKG["pcb-rnd-doc"] = "&nbsp;"
 		IFILES["pcb-rnd-doc"] = "/usr/share/doc/*"
 
+
 		print "<h3> Package summary and dependencies </h3>"
 		print "<table border=1>"
 		print "<tr><th> package <th> depends on (packages) <th> consists of (plugins)"
 
 		for(pkg in PKG) {
 			if (pkg == "pcb-rnd-core")
-				print "<tr><th>" pkg "<td>" PKG_DEP[pkg] "<td>(builtin: " PKG[pkg] ")"
+				print "<tr><th>" pkg "<td>" fix_deps(PKG_DEP[pkg]) "<td>(builtin: " PKG[pkg] ")"
 			else
-				print "<tr><th>" pkg "<td>" PKG_DEP[pkg] "<td>" PKG[pkg]
+				print "<tr><th>" pkg "<td>" fix_deps(PKG_DEP[pkg]) "<td>" PKG[pkg]
 			print strip(PKG_DEP[pkg]) >  "auto/" pkg ".deps"
 			print pkg > "auto/List"
 		}
