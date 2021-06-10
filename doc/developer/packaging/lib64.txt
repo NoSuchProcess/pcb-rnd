@@ -1,4 +1,4 @@
-Why pcb-rnd plusings are in /usr/lib/ and not /usr/lib64/
+Why pcb-rnd plugins are in /usr/lib/ and not /usr/lib64/
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 On a 64 bit system where both 32 bit and 64 bit software needs to be run
