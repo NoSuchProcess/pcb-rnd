@@ -1,7 +1,7 @@
 #!/bin/sh
 ROOT=../../..
 proot=$ROOT/src_plugins
-rnd_proot=$ROOT/src_3rd/librnd-local/src/librnd/plugins
+
 
 ### generate description.txt (file formats) ###
 
@@ -47,18 +47,9 @@ do
 	pkg=`basename $n`
 	sed "s/^/$pkg /" < $n
 done
-for n in $rnd_proot/*/*.pup
-do
-	pkg=`basename $n`
-	sed "s/^/!$pkg /" < $n
-done
 for n in $proot/*/*.tmpasm
 do
 	sed "s@^@$n @" < $n
-done
-for n in $rnd_proot/*/*.tmpasm
-do
-	sed "s@^@!$n @" < $n
 done
 cat extra.digest
 ) | awk -v "meta_deps=$meta_deps"  '
