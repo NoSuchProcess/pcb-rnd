@@ -72,6 +72,7 @@ cat extra.digest
 			LIBRND_PKG[A[n]] = 1
 
 		PLUGIN["pcb-rnd-lib_wget"] = "librnd3-cloud"
+		PLUGIN["pcb-rnd-lib_hid_common"] = "librnd3-lib-gui"
 	}
 
 	function fix_dep(dep)
