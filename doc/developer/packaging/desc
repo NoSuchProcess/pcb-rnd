@@ -59,6 +59,11 @@
 	Import netlist and footprint information from edif, ltspice, mentor graphics,
 	gschem and tinycad.
 
+@pcb-rnd-import-geo
+	Geometry import.
+
+	Plugins for importing pixmaps, fonts and vector graphics.
+
 @pcb-rnd-io-alien
 	File format compatibility with other PCB layout designers.
 
