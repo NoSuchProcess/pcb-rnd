@@ -199,9 +199,11 @@ int hook_detect_target()
 
 	if (plug_is_enabled("puller")) {
 		rnd_hook_detect_glib(1);
-		if (plug_is_enabled("puller")) {
-			report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
-			hook_custom_arg("disable-puller", NULL);
+		if (!istrue(get("libs/sul/glib/presents"))) {
+			if (plug_is_enabled("puller")) {
+				report_repeat("WARNING: Since GLIB is not found, disabling the puller...\n");
+				hook_custom_arg("disable-puller", NULL);
+			}
 		}
 	}
 
