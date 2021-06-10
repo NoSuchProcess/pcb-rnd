@@ -2,8 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 - librnd sep:
-	- test on IRIX; update doc/UNIX
-	- test the windows cross compilation
 	- revise autobuild servers' scripts
 	- update librnd doc starting from the central README
 	- update packaging doc; librnd-local ref: doc/developer/packaging
