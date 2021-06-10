@@ -1,5 +1,3 @@
-@files librnd-dev $PREFIX/include/librnd/*
-@files librnd2 $PREFIX/lib/*.so.*
 @appendfiles pcb-rnd-core $PREFIX/bin/pcb-rnd $PREFIX/share/man/man1/pcb-rnd.1
 @appendfiles pcb-rnd-core $C/pcb-conf.lht $C/pcb-menu-default.lht
 @appendfiles pcb-rnd-core $PREFIX/share/pcb-rnd/default2.lht $PREFIX/share/pcb-rnd/default4.lht $PREFIX/share/pcb-rnd/default_font
@@ -9,11 +7,4 @@
 @appendfiles pcb-rnd-io-alien $PREFIX/bin/txt2bxl $PREFIX/bin/bxl2txt
 @appendfiles pcb-rnd-export $PREFIX/bin/pcb-rnd-svg $PREFIX/share/man/man1/pcb-rnd-svg.1
 @appendfiles pcb-rnd-import-net $PREFIX/bin/gsch2pcb-rnd $PREFIX/lib/pcb-rnd/*.scm $PREFIX/share/man/man1/gsch2pcb-rnd.1
-@appendfiles librnd-dev $PREFIX/share/librnd/librnd.mak $PREFIX/lib/librnd/scconfig
-@appendfiles librnd-dev $PREFIX/lib/*.so
-@appendfiles librnd-dev $PREFIX/lib/librnd/puplug $PREFIX/lib/librnd/sphash
-@appendfiles librnd-dev $PREFIX/lib/librnd/plugins/map_plugins.sh
-@appendfiles librnd-dev $PREFIX/lib/librnd/scconfig
-@appenddeps librnd-dev librnd2
-@appenddeps pcb-rnd-cloud wget
-@appenddeps pcb-rnd-core librnd2
+@appenddeps pcb-rnd-core librnd3

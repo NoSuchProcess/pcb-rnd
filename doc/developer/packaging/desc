@@ -53,27 +53,6 @@
 	Align objects in grid, optimize tracks, font editor, combine polygons,
 	renumber subcircuits, apply vendor drill mapping.
 
-@pcb-rnd-hid-gtk2-gdk
-	GUI: gtk2, software render
-
-	Software rendering on gtk2, using the gdk API.
-
-@pcb-rnd-hid-gtk2-gl
-	GUI: gtk2, opengl
-
-	Hardware accelerated (opengl) rendering on gtk2.
-
-@pcb-rnd-hid-lesstif
-	GUI: motif/lesstif, software render
-
-	Lightweight GUI and software rendering using the motif (lesstif) toolkit.
-
-@pcb-rnd-import-geo
-	Geometry import plugins.
-
-	Import geometry from HPGL plots. HPGL can be produced (plotted) with
-	most mechanical cads.
-
 @pcb-rnd-import-net
 	Netlist/schematics import plugins.
 
@@ -116,12 +95,3 @@
 	Provides generic, low level parsers (such as s-expression
 	parser) for I/O plugins that need to deal with alien file formats.
 
-@librnd2
-	pcb-rnd library, binaries.
-	
-	HID, polygons, infrastructure for 3rd party applications.
-
-@librnd-dev
-	pcb-rnd library, headers.
-
-	HID, polygons, infrastructure for 3rd party applications.
