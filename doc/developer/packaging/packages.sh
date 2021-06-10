@@ -2,12 +2,15 @@
 ROOT=../../..
 proot=$ROOT/src_plugins
 
-librnd_pkgs="hid-gtk2-gl cloud lib-gui hid-gtk2-gdk lib-gtk hid-lesstif lib-gl"
-librnd_plugins='
-lib_wget=librnd3-cloud
-lib_hid_common=librnd3-lib-gui
-'
+LIBRND_ROOT=`make -f librnd_root.mk`
 
+if test -f $LIBRND_ROOT/share/librnd/librnd_packages.sh
+then
+	. $LIBRND_ROOT/share/librnd/librnd_packages.sh
+else
+	echo "librnd installation not found" >&2
+	exit 1
+fi
 
 ### generate description.txt (file formats) ###
 
