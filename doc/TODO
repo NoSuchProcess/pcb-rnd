@@ -4,7 +4,9 @@
 - librnd sep:
 	- revise autobuild servers' scripts
 	- update librnd doc starting from the central README
-	- update packaging doc; librnd-local ref: doc/developer/packaging
+	- update packaging doc
+		- librnd installed from deb, pcb-rnd from source with ./configure --debug: fp_wget is not a plugin!
+		- librnd's $PREFIX/share/librnd should have a version number? maybe /etc/librnd too?
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs; update README
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both
