@@ -7,6 +7,7 @@
 	- update packaging doc
 	- test user scripting with sys installed fungw and non-fawk
 	- librnd: make test on librnd test fails when compiled with all plugins
+	- update the ringdove repo
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs; update README
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both
