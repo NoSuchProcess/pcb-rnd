@@ -5,8 +5,6 @@
 	- revise autobuild servers' scripts
 	- update librnd doc starting from the central README
 	- update packaging doc
-		- librnd installed from deb, pcb-rnd from source with ./configure --debug: fp_wget is not a plugin!
-		- librnd's $PREFIX/share/librnd should have a version number? maybe /etc/librnd too?
 	- test user scripting with sys installed fungw and non-fawk
 	- librnd: make test on librnd test fails when compiled with all plugins
 - CLEANUP/FEATURE: version 3.0.0:
