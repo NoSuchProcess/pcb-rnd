@@ -16,7 +16,7 @@ if /local/pcb/want_static_librnd
 then
 	put /local/pcb/librnd_extra_mak [@
 # static librd link: need to get all librnd ldlibs
-include $(LIBRND_PREFIX)/share/librnd/librnd.mak
+include $(LIBRND_PREFIX)/share/librnd3/librnd.mak
 @]
 	put /local/pcb/librnd_extra_ldlibs {$(LDFLAGS_LIBRND)}
 else

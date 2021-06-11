@@ -4,9 +4,9 @@ proot=$ROOT/src_plugins
 
 LIBRND_ROOT=`make -f librnd_root.mk`
 
-if test -f $LIBRND_ROOT/share/librnd/librnd_packages.sh
+if test -f $LIBRND_ROOT/share/librnd3/librnd_packages.sh
 then
-	. $LIBRND_ROOT/share/librnd/librnd_packages.sh
+	. $LIBRND_ROOT/share/librnd3/librnd_packages.sh
 else
 	echo "librnd installation not found" >&2
 	exit 1
@@ -274,7 +274,7 @@ print in_librnd, $1 > "L1"
 		print "	<li> $P: pcb-rnd plugin install dir (e.g. /usr/lib/pcb-rnd/)"
 		print "	<li> $C: pcb-rnd conf dir (e.g. /usr/share/pcb-rnd/)"
 		print "	<li> $LP: librnd plugin install dir (e.g. /usr/lib/librnd/)"
-		print "	<li> $LC: librnd conf dir (e.g. /usr/share/librnd/)"
+		print "	<li> $LC: librnd conf dir (e.g. /usr/share/librnd3/)"
 		print "	<li> $PREFIX: installation prefix (e.g. /usr)"
 		print "</ul>"
 

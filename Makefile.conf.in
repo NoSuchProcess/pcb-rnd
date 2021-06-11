@@ -40,7 +40,7 @@ PCB_RND_C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 
 # hidlib installation directories
 HL_LIBDIR=$(Install_root)@/local/pcb/librnd_prefix@/@/local/libarchdir@
-HL_SHAREDIR=$(Install_root)@/local/pcb/librnd_prefix@/share/librnd
+HL_SHAREDIR=$(Install_root)@/local/pcb/librnd_prefix@/share/librnd3
 HL_INCDIR=$(Install_root)@/local/pcb/librnd_prefix@/include/librnd
 
 
@@ -50,6 +50,6 @@ LIBDIR_INSTALLED=@/local/prefix@/lib/pcb-rnd
 
 # Where librnd is installed, full path to the .mak file to auto-setup
 LIBRND_PREFIX=@/local/pcb/librnd_prefix@
-LIBRND_MAK=$(LIBRND_PREFIX)/share/librnd/librnd.mak
+LIBRND_MAK=$(LIBRND_PREFIX)/share/librnd3/librnd.mak
 
 @]
