@@ -10,7 +10,7 @@ ROOT=../..
 PLUGDIR=../../src_plugins
 LIBRND_LIBDIR=@/local/pcb/librnd_prefix@/lib/librnd
 LIBRND_SHAREDIR=@/local/pcb/librnd_prefix@/share/librnd3
-GENCONF=$(LIBRND_LIBDIR)/librnd/scconfig/gen_conf.sh
+GENCONF=$(LIBRND_LIBDIR)/librnd3/scconfig/gen_conf.sh
 
 include $(LIBRND_SHAREDIR)/librnd.mak
 

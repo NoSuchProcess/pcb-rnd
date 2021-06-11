@@ -108,7 +108,7 @@ int hook_postarg()
 	char *tmp;
 	const char *libad;
 
-	put("/local/pcb/librnd_template", tmp = str_concat("", TO_STR(LIBRND_PREFIX), "/", get("/local/libarchdir"), "/librnd/scconfig/template", NULL));
+	put("/local/pcb/librnd_template", tmp = str_concat("", TO_STR(LIBRND_PREFIX), "/", get("/local/libarchdir"), "/librnd3/scconfig/template", NULL));
 	free(tmp);
 
 	/* if librnd is installed at some custom path, we'll need to have a -I on CFLAGS and -L on LDFLAGS */

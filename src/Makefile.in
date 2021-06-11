@@ -242,7 +242,7 @@ ROOT=..
 # librnd installation
 LIBRND_PREFIX=@/local/pcb/librnd_prefix@
 @/local/pcb/librnd_extra_mak@
-LIBRND_LIBDIR=$(LIBRND_PREFIX)/@/local/libarchdir@/librnd
+LIBRND_LIBDIR=$(LIBRND_PREFIX)/@/local/libarchdir@/librnd3
 LIBRND_L=$(LIBRND_PREFIX)/@/local/libarchdir@
 LIBRND_PLUGDIR=$(LIBRND_LIBDIR)/plugins
 
