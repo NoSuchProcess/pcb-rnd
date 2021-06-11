@@ -4,8 +4,6 @@
 - librnd sep:
 	- revise autobuild servers' scripts
 	- update librnd doc starting from the central README
-	- update packaging doc
-	- librnd: make test on librnd test fails when compiled with all plugins
 	- update the ringdove repo
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs; update README
