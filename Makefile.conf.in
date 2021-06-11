@@ -38,12 +38,6 @@ PCB_RND_VER_MAJOR=@/local/version_major@
 PCB_RND_CFLAGS=@?cc/argstd/std_c99@ @/local/pcb/CFLAGS@
 PCB_RND_C89FLAGS=@/local/pcb/c89flags@ @/local/pcb/CFLAGS@
 
-# hidlib installation directories
-HL_LIBDIR=$(Install_root)@/local/pcb/librnd_prefix@/@/local/libarchdir@
-HL_SHAREDIR=$(Install_root)@/local/pcb/librnd_prefix@/share/librnd3
-HL_INCDIR=$(Install_root)@/local/pcb/librnd_prefix@/include/librnd
-
-
 # The installation directoried to be used from within binaries (with
 # install_root/DESTDIR removed)
 LIBDIR_INSTALLED=@/local/prefix@/lib/pcb-rnd
