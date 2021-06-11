@@ -119,8 +119,7 @@ int hook_postarg()
 		free(tmp);
 	}
 
-	import(TO_STR(LIBRND_PREFIX) "/share/librnd/plugin.state");
-	return rnd_hook_postarg();
+	return rnd_hook_postarg(TO_STR(LIBRND_PREFIX));
 }
 
 
