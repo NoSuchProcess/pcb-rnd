@@ -271,10 +271,8 @@ print in_librnd, $1 > "L1"
 		}
 		print "</table>"
 		print "<p>File prefixes:<ul>"
-		print "	<li> $P: pcb-rnd plugin install dir (e.g. /usr/lib/pcb-rnd/)"
-		print "	<li> $C: pcb-rnd conf dir (e.g. /usr/share/pcb-rnd/)"
-		print "	<li> $LP: librnd plugin install dir (e.g. /usr/lib/librnd/)"
-		print "	<li> $LC: librnd conf dir (e.g. /usr/share/librnd3/)"
+		print "	<li> $P: plugin install dir (e.g. /usr/lib/pcb-rnd/)"
+		print "	<li> $C: conf dir (e.g. /usr/share/pcb-rnd/)"
 		print "	<li> $PREFIX: installation prefix (e.g. /usr)"
 		print "</ul>"
 
