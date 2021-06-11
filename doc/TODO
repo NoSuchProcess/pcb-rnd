@@ -5,7 +5,6 @@
 	- revise autobuild servers' scripts
 	- update librnd doc starting from the central README
 	- update packaging doc
-	- test user scripting with sys installed fungw and non-fawk
 	- librnd: make test on librnd test fails when compiled with all plugins
 	- update the ringdove repo
 - CLEANUP/FEATURE: version 3.0.0:
