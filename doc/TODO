@@ -7,6 +7,8 @@
 	- update packaging doc
 		- librnd installed from deb, pcb-rnd from source with ./configure --debug: fp_wget is not a plugin!
 		- librnd's $PREFIX/share/librnd should have a version number? maybe /etc/librnd too?
+	- test user scripting with sys installed fungw and non-fawk
+	- librnd: make test on librnd test fails when compiled with all plugins
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs; update README
 	- ./configure --config should default to /etc - warning: librnd will have its own, different /etc path! Load both
