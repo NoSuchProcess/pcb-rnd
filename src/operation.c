@@ -36,9 +36,7 @@
 #include "undo.h"
 #include "extobj.h"
 
-/* ----------------------------------------------------------------------
- * performs several operations on the passed object
- */
+/* performs several operations on the passed object */
 void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
 	pcb_any_obj_t *res = NULL, *exto = NULL;
@@ -121,12 +119,10 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 	return res;
 }
 
-/* ----------------------------------------------------------------------
- * performs several operations on selected objects which are also visible
+/* performs several operations on selected objects which are also visible
  * The lowlevel procedures are passed together with additional information
  * resets the selected flag if requested
- * returns rnd_true if anything has changed
- */
+ * returns rnd_true if anything has changed */
 static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, pcb_op_mode_t mode, rnd_bool floater_only)
 {
 	rnd_bool changed = rnd_false;
