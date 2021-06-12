@@ -133,11 +133,17 @@ int hook_detect_host()
 	/* figure if we need the dialogs plugin */
 static void calc_dialog_deps(void)
 {
+	const char *control;
 	int buildin, plugin;
 
 #warning TODO: get this from librnd
-	buildin = istrue(get("/target/librnd/dialogs/buildin"));
-	plugin = istrue(get("/target/librnd/dialogs/plugin"));
+	control = get("/local/pcb/lib_hid_common/controls");
+	if (control == NULL) {
+		fprintf(stderr, "librnd configuration error: can't figure how lib_hid_common is configured\n(should be coming from plugin.state as /local/pcb/lib_hid_common/controls)\n");
+		exit(1);
+	}
+	buildin = strcmp(control, "buildin") == 0;
+	plugin = strcmp(control, "plugin") == 0;
 
 	if (buildin) {
 		hook_custom_arg("buildin-draw_csect", NULL);
