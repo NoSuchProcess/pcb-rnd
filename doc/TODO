@@ -3,7 +3,6 @@
 1. For the upcoming release ===============================================================================
 - librnd sep:
 	- update librnd doc starting from the central README
-	- update the ringdove repo
 	- CLEANUP: remove glib from puller (hash table for per object extra struct)
 - CLEANUP/FEATURE: version 3.0.0:
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs; update README
