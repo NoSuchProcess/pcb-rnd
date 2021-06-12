@@ -174,8 +174,6 @@ static fgw_error_t pcb_act_Connection(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
-
 static const char pcb_acts_DeleteRats[] = "DeleteRats(AllRats|Selected|SelectedRats)";
 static const char pcb_acth_DeleteRats[] = "Delete rat lines.";
 static fgw_error_t pcb_act_DeleteRats(fgw_arg_t *res, int argc, fgw_arg_t *argv)
