@@ -90,14 +90,10 @@ fgw_error_t pcb_act_Atomic(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_Undo[] = "undo()\n" "undo(ClearList|FreezeSerial|UnfreezeSerial|FreezeAdd|UnfreezeAdd|IncSerial|GetSerial|Above)";
-
 static const char pcb_acth_Undo[] = "Undo recent changes.";
-
 /* DOC: undo.html */
-
 fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *function = NULL;
@@ -144,14 +140,10 @@ fgw_error_t pcb_act_Undo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* --------------------------------------------------------------------------- */
 
 static const char pcb_acts_Redo[] = "redo()";
-
 static const char pcb_acth_Redo[] = "Redo recent \"undo\" operations.";
-
 /* DOC: redo.html */
-
 fgw_error_t pcb_act_Redo(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_hid_notify_crosshair_change(RND_ACT_HIDLIB, rnd_false);
