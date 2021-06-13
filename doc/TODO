@@ -8,6 +8,7 @@
 	- rename pcblib to footprint-rnd! rename pcblib/tru-hole to fix the typo; update configs; update README
 	- rename pcb-menu-default to menu-default
 	- rename pcb-conf.lht
+	- rename pcb-out* (default file name in some exporters)
 	- ./configure --config should default to /etc
 	- move data/ into doc/resources
 - FEATURE: asm(): a config node (maybe query script); if a subc matches, omit it from the list; this is for DNP or build options [report: Majenko]
