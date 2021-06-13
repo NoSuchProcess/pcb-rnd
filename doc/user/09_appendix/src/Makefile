@@ -5,11 +5,14 @@ CLEANFILES=../action_details.html ../action_reference.html ../formats.html ../br
 
 all: $(CLEANFILES)
 
-../action_details.html: ./action_compiler.sh ../action_src/*.html
-	./action_compiler.sh ../action_src/*.html > ../action_details.html
+../action_details.html: ./action_compiler.sh ../action_src/*.html librnd_acts
+	./action_compiler.sh ../action_src/*.html LIBRND librnd_acts/*.html > ../action_details.html
 
-../action_reference.html : ./dump_actions_to_html.sh $(PCBRND) ../action_details.html
+../action_reference.html : ./dump_actions_to_html.sh $(PCBRND) ../action_details.html librnd_acts
 	./dump_actions_to_html.sh > ../action_reference.html
+
+librnd_acts: FORCE
+	svn checkout svn://svn.repo.hu/librnd/trunk/doc/action librnd_acts
 
 ../bridges.svg: bridges.txt
 	aagraph -Tsvg bridges.txt > ../bridges.svg
@@ -20,5 +23,8 @@ all: $(CLEANFILES)
 ../dialogs.html: $(PCBRND) ./gen_dialogs.sh ./dialog_extra.awk
 	./gen_dialogs.sh > ../dialogs.html
 
+FORCE:
+
 clean:  
 	rm $(CLEANFILES)
+	-rm -rf librnd_acts

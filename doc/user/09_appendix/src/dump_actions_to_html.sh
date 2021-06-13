@@ -3,6 +3,7 @@
 # collates the pcb-rnd action table into a html doc page
 
 asrc="../action_src"
+lsrc="librnd_acts"
 
 cd ../../../../src
 pcb_rnd_ver=`./pcb-rnd --version`
@@ -82,7 +83,7 @@ function flush_sd()
 	next
 }
 
-' | sort -fu | awk -v "asrc=$asrc" '
+' | sort -fu | awk -v "asrc=$asrc" -v "lsrc=$lsrc" '
 # insert links around actions where applicable
 	BEGIN {
 		q = "\""
@@ -97,11 +98,15 @@ function flush_sd()
 		sub("</act>.*", "", act)
 		loact = tolower(act)
 		fn = asrc "/" loact ".html"
+		lfn = lsrc "/" loact ".html"
 		if ((getline < fn) == 1)
 			print pre "<td><a href=" q "action_details.html#" loact q ">" act "</a></td>" post
+		else if ((getline < lfn) == 1)
+			print pre "<td><a href=" q "action_details.html#" loact q ">" act "</a> <sup><a href=\"#ringdove\">(RND)</a></sup></td>" post
 		else
 			print pre "<td>" act "</td>" post
 		close(fn)
+		close(lfn)
 		next
 	}
 
@@ -109,6 +114,7 @@ function flush_sd()
 	
 	END {
 		print "</table>"
+		print "<p id=\"ringdove\">RND: this action comes from librnd and is common to all ringdove applications."
 		print "</body>"
 		print "</html>"
 	}

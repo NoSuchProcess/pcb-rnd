@@ -13,18 +13,18 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,  Revision: 34697
+This is pcb-rnd 3.0.0-dev (svn r34858) an interactive printed circuit board editor ,  Revision: 34885
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
 <tr><td>acompnet</td><td>Attempt to auto-complete the current network</td><td>acompnet()</td><td>acompnet plugin</td>
 <tr><td>ActionString</td><td>Execute a pcb-rnd action parsing a string; syntac: "action(arg,arg,arg)"</td><td>ActionString(action)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#addrats">AddRats</a></td><td>Add one or more rat lines to the board.</td><td>AddRats(AllRats|SelectedRats|Close, [manhattan])</td><td></td>
-<tr><td><a href="action_details.html#addtimer">AddTimer</a></td><td>Add a new timer</td><td>AddTimer(action, period, [repeat], [userdata])</td><td>script plugin</td>
+<tr><td><a href="action_details.html#addtimer">AddTimer</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Add a new timer</td><td>AddTimer(action, period, [repeat], [userdata])</td><td>script plugin</td>
 <tr><td><a href="action_details.html#adjuststyle">AdjustStyle</a></td><td>Open the dialog box for editing the route styles.</td><td>AdjustStyle([routestyle_idx])</td><td>lib_hid_pcbui/route_style</td>
 <tr><td><a href="action_details.html#align">align</a></td><td>Align objects</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td>aligntext</td><td>Align objects</td><td>Align(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks, [First/Last/pcb_crosshair/Average[, Gridless]]])</td><td>distalign plugin</td>
-<tr><td><a href="action_details.html#anyload">AnyLoad</a></td><td>Load "anything" from path (or offer a file selectio dialog if no path specified)</td><td>AnyLoad([path])</td><td></td>
+<tr><td><a href="action_details.html#anyload">AnyLoad</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Load "anything" from path (or offer a file selectio dialog if no path specified)</td><td>AnyLoad([path])</td><td></td>
 <tr><td><a href="action_details.html#applypen">ApplyPen</a></td><td>Set properties of the selected object or object under the cursor to match current drawing style ("pen"), e.g. thickness, clearance.</td><td>ApplyPen([selected|object])</td><td></td>
 <tr><td><a href="action_details.html#applyvendor">ApplyVendor</a></td><td>Applies the currently loaded vendor drill table to the current design.</td><td>ApplyVendor()</td><td>vendor drill mapping</td>
 <tr><td>ArcNew</td><td>Create a pcb arc segment on a layer. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>ArcNew([noundo,] data, layer, centx, centy, radiusx, radiusy, start_ang, delta_ang, thickness, clearance, flags)</td><td>act_draw</td>
@@ -34,16 +34,15 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>autocrop</td><td>Autocrops the board dimensions to (extants + a margin of 1 grid), keeping the move and board size grid aligned</td><td>autocrop()</td><td>autocrop plugin</td>
 <tr><td><a href="action_details.html#autoplaceselected">AutoPlaceSelected</a></td><td>Auto-place selected components.</td><td>AutoPlaceSelected()</td><td>autoplace plugin</td>
 <tr><td><a href="action_details.html#autoroute">AutoRoute</a></td><td>Auto-route some or all rat lines.</td><td>AutoRoute(AllRats|SelectedRats)</td><td>autoroute plugin</td>
-<tr><td>awk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>Backup</td><td>Backup the current layout - save using the same method that the timed backup function uses</td><td>Backup()</td><td></td>
 <tr><td>bas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>Bell</td><td>Attempt to produce audible notification (e.g. beep the speaker).</td><td>Bell()</td><td>oldactions plugin</td>
-<tr><td><a href="action_details.html#benchmark">Benchmark</a></td><td>Benchmark the GUI speed.</td><td>Benchmark()</td><td></td>
+<tr><td><a href="action_details.html#benchmark">Benchmark</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Benchmark the GUI speed.</td><td>Benchmark()</td><td></td>
 <tr><td><a href="action_details.html#boardflip">BoardFlip</a></td><td>Mirror the board over the x axis, optionally mirroring sides as well.</td><td>BoardFlip([sides])</td><td></td>
 <tr><td>Brave</td><td>Changes brave settings.</td><td>Brave()<br>Brave(setting, on|off)</td><td></td>
 <tr><td>BrowseScripts</td><td>Present a dialog box for browsing scripts</td><td>BrowseScripts()</td><td>script plugin</td>
 <tr><td>cam</td><td>Export jobs for feeding cam processes</td><td>cam(exec, script, [options])<br>cam(call, jobname, [options])<br>cam([gui])</td><td>cam exporter</td>
-<tr><td><a href="action_details.html#center">Center</a></td><td>Moves the pointer to the center of the window.</td><td>Center()</td><td>lib_hid_common plugin</td>
+<tr><td><a href="action_details.html#center">Center</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Moves the pointer to the center of the window.</td><td>Center()</td><td>lib_hid_common plugin</td>
 <tr><td>ChangeAngle</td><td>Changes the start angle, delta angle or both angles of an arc.</td><td>ChangeAngle(Object, start|delta|both, delta)<br>ChangeAngle(SelectedObjects|Selected, start|delta|both, delta)<br>ChangeAngle(SelectedArcs, start|delta|both, delta)</td><td></td>
 <tr><td><a href="action_details.html#changeclearsize">ChangeClearSize</a></td><td>Changes the clearance size of objects.</td><td>ChangeClearSize(Object, delta|style)<br>ChangeClearSize(SelectedPins|SelectedPads|SelectedVias, delta|style)<br>ChangeClearSize(SelectedLines|SelectedArcs, delta|style)<br>ChangeClearSize(Selected|SelectedObjects, delta|style)</td><td></td>
 <tr><td>ChangeDrillSize</td><td>Changes the drilling hole size of objects.</td><td>ChangeDrillSize(Object, delta|style)<br>ChangeDrillSize(SelectedPins|SelectedVias|Selected|SelectedObjects, delta|style)</td><td></td>
@@ -83,7 +82,7 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>cpcb</td><td>Executed external autorouter cpcb to route the board or parts of the board</td><td>cpcb(board|selected, [command])</td><td>cpcb plugin</td>
 <tr><td>CreateMenu</td><td>Creates a new menu, popup (only path specified) or submenu (at least path and action are specified)</td><td>CreateMenu(path)<br>CreateMenu(path, action, tooltip, cookie, [accel])</td><td></td>
 <tr><td>CreateText</td><td>Create a new text object</td><td>CreateText(layer, fontID, X, Y, direction, scale, text)</td><td></td>
-<tr><td><a href="action_details.html#cursor">Cursor</a></td><td>Move the cursor.</td><td>Cursor(Type,DeltaUp,DeltaRight,Units)</td><td></td>
+<tr><td><a href="action_details.html#cursor">Cursor</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Move the cursor.</td><td>Cursor(Type,DeltaUp,DeltaRight,Units)</td><td></td>
 <tr><td><a href="action_details.html#cycledrag">CycleDrag</a></td><td>Cycle through which object is being dragged</td><td>CycleDrag()</td><td></td>
 <tr><td>d1</td><td>debug action for development</td><td>d1()</td><td>diag plugin</td>
 <tr><td>dad</td><td>Manipulate Dynamic Attribute Dialogs</td><td>dad(dlgname, new) - create new dialog<br>dad(dlgname, label, text) - append a label widget<br>dad(dlgname, button, text) - append a button widget<br>dad(dlgname, button_closes, label, retval, ...) - standard close buttons<br>dad(dlgname, enum, choices) - append an enum (combo box) widget; choices is a tab separated list<br>dad(dlgname, bool) - append an checkbox widget (default off)<br>dad(dlgname, integer|real|coord, min, max) - append an input field<br>dad(dlgname, string) - append a single line text input field<br>dad(dlgname, default, val) - set the default value of a widet while creating the dialog<br>dad(dlgname, help, tooltip) - set the help (tooltip) text for the current widget<br>dad(dlgname, progress) - append a progress bar (set to 0)<br>dad(dlgname, preview, cb_act_prefix, minsize_x, minsize_y, [ctx]) - append a preview with a viewbox of 10*10mm, minsize in pixels<br>dad(dlgname, tree, cols, istree, [header]) - append tree-table widget; header is like enum values<br>dad(dlgname, tree_append, row, cells) - append after row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_append_under, row, cells) - append at the end of the list under row (0 means last item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, tree_insert, row, cells) - insert before row (0 means first item of the root); cells is like enum values; returns a row pointer<br>dad(dlgname, begin_hbox) - begin horizontal box<br>dad(dlgname, begin_vbox) - begin vertical box<br>dad(dlgname, begin_hpane) - begin horizontal paned box<br>dad(dlgname, begin_vpane) - begin vertical paned box<br>dad(dlgname, begin_table, cols) - begin table layout box<br>dad(dlgname, begin_tabbed, tabnames) - begin a view with tabs; tabnames are like choices in an enum; must have as many children widgets as many names it has<br>dad(dlgname, end) - end the last begin<br>dad(dlgname, flags, flg1, flg2, ...) - change the flags of the last created widget<br>dad(dlgname, onchange, action) - set the action to be called on widget change<br>dad(dlgname, run, title) - present dlgname as a non-modal dialog<br>dad(dlgname, run_modal, title) - present dlgname as a modal dialog<br>dad(dlgname, exists) - returns wheter the named dialog exists (0 or 1)<br>dad(dlgname, set, widgetID, val) - changes the value of a widget in a running dialog <br>dad(dlgname, get, widgetID, [unit]) - return the current value of a widget</td><td>lib_hid_common plugin</td>
@@ -115,7 +114,6 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>DrcQueryImport</td><td>Import a rule and related definitions from a file.</td><td>DrcQueryImport([filename])</td><td>drc_query</td>
 <tr><td>DrcQueryListRules</td><td>List all drc rules implemented in drc_query</td><td>DrcQueryListRules()</td><td>drc_query</td>
 <tr><td>DrcQueryRuleMod</td><td>Automated DRC rule editing (for scripting and import)</td><td>DrcQueryRuleMod(clear, source)<br>DrcQueryRuleMod(create, rule_name)<br>DrcQueryRuleMod(get, rule_name, field_name)<br>DrcQueryRuleMod(set, rule_name, field_name, value)</td><td>drc_query</td>
-<tr><td>duktape</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>DumpActions</td><td>Dump all actions available.</td><td>DumpActions()</td><td></td>
 <tr><td>dumpconf</td><td>Perform various operations on the configuration tree.</td><td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td><td>diag plugin</td>
 <tr><td>DumpCsect</td><td>Print the cross-section of the board (layer stack)</td><td>DumpCsect()</td><td>draw_csect</td>
@@ -137,7 +135,6 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#elementlist">ElementList</a></td><td>Adds the given element if it doesn't already exist.</td><td>ElementList(Start|Done|Need,<refdes>,<footprint>,<value>)</td><td></td>
 <tr><td><a href="action_details.html#elementsetattr">ElementSetAttr</a></td><td>Sets or clears an element-specific attribute.</td><td>ElementSetAttr(refdes,name[,value])</td><td></td>
 <tr><td>EnableVendor</td><td>Enables automatic drill size mapping.</td><td>EnableVendor()</td><td>oldactions plugin</td>
-<tr><td>estutter</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>EvalConf</td><td>Perform various operations on the configuration tree.</td><td>EvalConf(path) - evaluate a config path in different config sources to figure how it ended up in the native database</td><td>diag plugin</td>
 <tr><td>ExecCommand</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
 <tr><td><a href="action_details.html#executefile">ExecuteFile</a></td><td>Run actions from the given file.</td><td>ExecuteFile(filename)</td><td></td>
@@ -170,7 +167,7 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>GetParentData</td><td>Return the closest upstream pcb_data_t * parent of an object</td><td>GetParentData([root_data,] idpath)</td><td>act_read</td>
 <tr><td>GetStyle</td><td>Return integer index (>=0) of the currently active style or -1 if no style is selected (== custom style)</td><td>GetStyle()</td><td></td>
 <tr><td>GetValue</td><td>Convert a coordinate value. Returns an unitless double or FGW_ERR_ARG_CONV. The 3rd parameter controls whether to require relative coordinates (+- prefix). Wraps rnd_get_value_ex().</td><td>GetValue(input, units, relative, default_unit)</td><td>act_read</td>
-<tr><td><a href="action_details.html#getxy">GetXY</a></td><td>Get a coordinate. If x or y specified, the return value of the action is the x or y coordinate.</td><td>GetXY([message, [x|y]])</td><td></td>
+<tr><td><a href="action_details.html#getxy">GetXY</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Get a coordinate. If x or y specified, the return value of the action is the x or y coordinate.</td><td>GetXY([message, [x|y]])</td><td></td>
 <tr><td><a href="action_details.html#gfxmod">GfxMod</a></td><td>Modify a gfx object: set transparent pixel on the pixmap or resize by measurement</td><td>GfxMod(transparent, [idpath, [#rrggbb]])<br>GfxMod(transparent, [idpath, [x, y]])<br>GfxMod(resize, [idpath, [pdx, pdy1, len]])</td><td></td>
 <tr><td>GlobalPuller</td><td>Pull all traces tight. With no argument it runs on the current layer.</td><td>pcb_act_GlobalPuller([Found|Selected])</td><td>puller plugin</td>
 <tr><td>Grid</td><td>Set the grid.</td><td>grid(set, [name:]size[@offs][!unit])<br>grid(+|up)<br>grid(-|down)<br>grid(#N)<br>grid(idx, N)<br>grid(get)<br>grid(ask)</td><td></td>
@@ -200,9 +197,7 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>irc</td><td>non-modal, single-instance, single-server, single-channel irc window for online support</td><td>irc()</td><td>irc plugin</td>
 <tr><td>IsPointOnArc</td><td>Returns 1 if point x;y with radius r is on the arc addressed by idpath, 0 else.</td><td>IsPointOnArc(x, y, r, idpath)</td><td>act_read</td>
 <tr><td>IsPointOnLine</td><td>Returns 1 if point x;y with radius r is on the line addressed by idpath, 0 else.</td><td>IsPointOnLine(x, y, r, idpath)</td><td>act_read</td>
-<tr><td>javascript</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>jostle</td><td>Make room by moving wires away.</td><td>Jostle(diameter)</td><td>jostle plugin</td>
-<tr><td>js</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#l">l</a></td><td>Loads layout data.</td><td>l [name] [format]</td><td>shand_cmd plugin</td>
 <tr><td>LayerBinding</td><td>Change the layer binding.</td><td>LayerBinding(object)<br>LayerBinding(buffer)</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#layerbystack">LayerByStack</a></td><td>Layer operations based on physical layer stacking</td><td>LayerByStack(select, prev|next)</td><td></td>
@@ -216,8 +211,8 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>LibraryDialog</td><td>Open the library dialog.</td><td>libraryDialog()</td><td>dialogs plugin</td>
 <tr><td>LineNew</td><td>Create a pcb line segment on a layer. For now data must be "pcb". Returns the idpath of the new object or 0 on error.</td><td>LineNew([noundo,] data, layer, X1, Y1, X2, Y2, Thickness, Clearance, Flags)</td><td>act_draw</td>
 <tr><td>ListRotations</td><td></td><td></td><td>oldactions plugin</td>
-<tr><td><a href="action_details.html#listscripts">ListScripts</a></td><td>List fungw scripts, optionally filtered wiht regex pat.</td><td>ListScripts([pat])</td><td>script plugin</td>
-<tr><td><a href="action_details.html#livescript">LiveScript</a></td><td>Manage a live script</td><td>LiveScript([new], [name])<br>LiveScript(load|save, name, [filame])<br>LiveScript(run|stop|rerun|undo, name)</td><td>script plugin</td>
+<tr><td><a href="action_details.html#listscripts">ListScripts</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>List fungw scripts, optionally filtered wiht regex pat.</td><td>ListScripts([pat])</td><td>script plugin</td>
+<tr><td><a href="action_details.html#livescript">LiveScript</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Manage a live script</td><td>LiveScript([new], [name])<br>LiveScript(load|save, name, [filame])<br>LiveScript(run|stop|rerun|undo, name)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#load">Load</a></td><td>Load layout data from a user-selected file.</td><td>Load()<br>Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)</td><td>dialogs plugin</td>
 <tr><td>LoadAccelNetFrom</td><td>Loads the specified Accel EDA netlist file.</td><td>LoadAccelNetFrom(filename)</td><td>accel_net importer</td>
 <tr><td>LoadCalayFrom</td><td>Loads the specified calay netlist/component file pair.</td><td>LoadCalayFrom(filename)</td><td>calay importer</td>
@@ -237,7 +232,7 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>LoadPadsNetFrom</td><td>Loads the specified pads ascii netlist .asc file.</td><td>LoadPadsNetFrom(filename)</td><td>pads_net importer</td>
 <tr><td>LoadPixmap</td><td>Loads a pixmap image from disk and creates a gfx object in buffer.</td><td>LoadPixmap([filename])</td><td></td>
 <tr><td>LoadProtelNetFrom</td><td>Loads the specified protel netlist 2.0 file.</td><td>LoadProtelNetFrom(filename)</td><td>protel_net importer</td>
-<tr><td><a href="action_details.html#loadscript">LoadScript</a></td><td>Load a fungw script</td><td>LoadScript(id, filename, [language])</td><td>script plugin</td>
+<tr><td><a href="action_details.html#loadscript">LoadScript</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Load a fungw script</td><td>LoadScript(id, filename, [language])</td><td>script plugin</td>
 <tr><td>LoadTedaxFrom</td><td>Loads the specified block from a tedax file.</td><td>LoadTedaxFrom(netlist|board|footprint|stackup|layer|drc|drc_query|route_res, filename, [block_id, [silent, [src]]])</td><td>tEDAx IO</td>
 <tr><td>LoadTinycadFrom</td><td>Loads the specified tinycad .net file - the netlist must be tinycad netlist output.</td><td>LoadTinycadFrom(filename)</td><td>tinycad importer</td>
 <tr><td>LoadTtf</td><td>Presents a GUI dialog for interactively loading glyphs from from a ttf file</td><td>LoadTtf()</td><td>ttf importer</td>
@@ -245,15 +240,13 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#loadvendorfrom">LoadVendorFrom</a></td><td>Loads the specified vendor lihata file. If second argument is "yes" or "pure", load in pure mode without side effects: do not reset or apply, only incrementally load.</td><td>LoadVendorFrom(filename, [yes|no])</td><td>vendor drill mapping</td>
 <tr><td>Log</td><td>Manages the central, in-memory log.</td><td>Log(clear, [fromID, [toID])<br>Log(export, [filename, [text|lihata])</td><td></td>
 <tr><td>LogDialog</td><td>Open the log dialog.</td><td>LogDialog()</td><td>lib_hid_common plugin</td>
-<tr><td>lua</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#m">m</a></td><td>Loads a layout into the current buffer.</td><td>m [name]</td><td>shand_cmd plugin</td>
 <tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#markcrosshair">MarkCrosshair</a></td><td>Set/Reset the pcb_crosshair mark.</td><td>MarkCrosshair()<br>MarkCrosshair(Center)</td><td></td>
-<tr><td>mawk</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>MenuDebug</td><td>Menu debug helpers: save the merged menu in a file</td><td>MenuDebug(save, path)</td><td></td>
 <tr><td>MenuPatch</td><td>Manage menu patches</td><td>MenuPatch(load, cookie, path, desc)<br>MenuPatch(unload, cookie)<br>MenuPatch(list)<br>MenuPatch(InhibitInc|InhibitDec)</td><td></td>
 <tr><td>mesh</td><td>generate a mesh for simulation</td><td>mesh()</td><td>openems HID</td>
-<tr><td><a href="action_details.html#message">Message</a></td><td>Writes a message to the log window.</td><td>message([ERROR|WARNING|INFO|DEBUG,] message)</td><td></td>
+<tr><td><a href="action_details.html#message">Message</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Writes a message to the log window.</td><td>message([ERROR|WARNING|INFO|DEBUG,] message)</td><td></td>
 <tr><td>MessageBox</td><td>Open a modal message dialog box with title and label. If icon string is not empty, display the named icon on the left. Present one or more window close buttons with different text and return value.</td><td>MessageBox(icon, title, label, button_txt, button_retval, ...)</td><td></td>
 <tr><td>mill</td><td>Calculate toolpath for milling away copper</td><td>mill([script])</td><td>millpath plugin</td>
 <tr><td>MinClearGap</td><td>Ensures that polygons are a minimum distance from objects.</td><td>MinClearGap(delta)<br>MinClearGap(Selected, delta)</td><td>oldactions plugin</td>
@@ -264,7 +257,6 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#movelayer">MoveLayer</a></td><td>Moves/Creates/Deletes Layers.</td><td>MoveLayer(old,new)<br>MoveLayer(lid,group,gid)</td><td></td>
 <tr><td><a href="action_details.html#moveobject">MoveObject</a></td><td>Moves the object under the crosshair.</td><td>pcb_move_obj(X,Y,[units])</td><td></td>
 <tr><td><a href="action_details.html#movetocurrentlayer">MoveToCurrentLayer</a></td><td>Moves objects to the current layer.</td><td>MoveToCurrentLayer(Object|SelectedObjects)</td><td></td>
-<tr><td>mruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>net</td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)Net([rename|merge],srcnet,dstnet)</td><td></td>
 <tr><td>NetLength</td><td>Report physical network length</td><td>NetLength(clear)<br>NetLength(object)</td><td>report plugin</td>
 <tr><td><a href="action_details.html#netlist">netlist</a></td><td>Perform various actions on netlists.</td><td>Net(find|select|rats|norats||ripup|addrats|clear[,net[,pin]])<br>Net(freeze|thaw|forcethaw)<br>Net(swap)<br>Net(add,net,pin)Net([rename|merge],srcnet,dstnet)</td><td></td>
@@ -282,7 +274,7 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>PadstackConvert</td><td>Convert selection or current buffer to padstack</td><td>PadstackConvert(buffer|selected, [originx, originy])</td><td></td>
 <tr><td>PadstackEdit</td><td>interactive pad stack editor</td><td>PadstackEdit(object, [tab])</td><td>dialogs plugin</td>
 <tr><td>PadstackPlace</td><td>Place a pad stack (either proto_id, or if not specified, the default for style)</td><td>PadstackPlace([proto_id|default], [x, y])</td><td></td>
-<tr><td><a href="action_details.html#pan">Pan</a></td><td>Start or stop panning (Mode = 1 to start, 0 to stop)</td><td>Pan(Mode)</td><td>lib_hid_common plugin</td>
+<tr><td><a href="action_details.html#pan">Pan</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Start or stop panning (Mode = 1 to start, 0 to stop)</td><td>Pan(Mode)</td><td>lib_hid_common plugin</td>
 <tr><td>paral</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>pas</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#pastebuffer">PasteBuffer</a></td><td>Various operations on the paste buffer.</td><td>PasteBuffer(AddSelected|MoveSelected|Clear|1..PCB_MAX_BUFFER)<br>PasteBuffer(Rotate, 1..3)<br>PasteBuffer(Convert|Restore|Mirror)<br>PasteBuffer(ToLayout, X, Y, units)<br>PasteBuffer(ToLayout, crosshair)<br>PasteBuffer(Save, Filename, [format], [force])<br>PasteBuffer(SaveAll, Filename, [format])<br>PasteBuffer(LoadAll, Filename)<br>PasteBuffer(Push)<br>PasteBuffer(Pop)<br>PasteBuffer(GetSource, [1..PCB_MAX_BUFFER])</td><td></td>
@@ -299,7 +291,6 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>pcb_sqrt</td><td></td><td></td><td>script plugin</td>
 <tr><td>pcb_srand</td><td></td><td></td><td>script plugin</td>
 <tr><td>pcb_tan</td><td></td><td></td><td>script plugin</td>
-<tr><td>perl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>perp</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>Pinout</td><td>Present the subcircuit pinout box</td><td>Pinout()</td><td>dialogs plugin</td>
 <tr><td><a href="action_details.html#polybool">PolyBool</a></td><td>Perform polygon boolean operation on the clipped polygons referred. A poly is either and idpath, selected, found or object (for the object under the cursor). When not specified, two object polygons are used.</td><td>PstkProto([noundo,] unite|isect|sub, [poly1, poly2, [poly...]])</td><td>act_draw</td>
@@ -315,7 +306,7 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#polystitch">PolyStitch</a></td><td></td><td></td><td>polystitch plugin</td>
 <tr><td><a href="action_details.html#popup">Popup</a></td><td>Bring up the popup menu specified by MenuName, optionally modified with the object type under the cursor.</td><td>Popup(MenuName, [obj-type])</td><td>lib_hid_pcbui/actions</td>
 <tr><td>Preferences</td><td>Present the preferences dialog, optionally opening the tab requested.</td><td>Preferences([tabname])</td><td>dialogs plugin</td>
-<tr><td><a href="action_details.html#print">Print</a></td><td>Present the print export dialog for printing the layout from the GUI.</td><td>Print()</td><td></td>
+<tr><td><a href="action_details.html#print">Print</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Present the print export dialog for printing the layout from the GUI.</td><td>Print()</td><td></td>
 <tr><td>PrintActions</td><td>Print all actions available.</td><td>PrintActions()</td><td></td>
 <tr><td><a href="action_details.html#printcalibrate">PrintCalibrate</a></td><td>DEPRECATED: Calibrate the printer.</td><td>PrintCalibrate()</td><td>dialogs plugin</td>
 <tr><td>PrintCopyright</td><td>Print copyright notice.</td><td>PrintCopyright()</td><td></td>
@@ -324,7 +315,7 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>PrintPaths</td><td>Print full paths and search paths.</td><td>PrintPaths()</td><td></td>
 <tr><td>PrintUsage</td><td>Print command line arguments of pcb-rnd or a plugin loaded.</td><td>PrintUsage()<br>PrintUsage(plugin)</td><td></td>
 <tr><td>PrintVersion</td><td>Print version.</td><td>PrintVersion()</td><td></td>
-<tr><td><a href="action_details.html#promptfor">PromptFor</a></td><td>Prompt for a string. Returns the string (or NULL on cancel)</td><td>PromptFor([message[,default[,title]]])</td><td></td>
+<tr><td><a href="action_details.html#promptfor">PromptFor</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Prompt for a string. Returns the string (or NULL on cancel)</td><td>PromptFor([message[,default[,title]]])</td><td></td>
 <tr><td>propedit</td><td></td><td>propedit(object[:id]|layer[:id]|layergrp[:id]|pcb|subc|selection|selected)</td><td>propedit</td>
 <tr><td>propget</td><td>Return the named property of scope or all selected objects to/by value. Scope is documented at PropEdit().</td><td>propget([scope], name, [stattype])</td><td>propedit</td>
 <tr><td>propprint</td><td>Print a property map of objects matching the scope. Scope is documented at PropEdit().</td><td>PropPrint([scope])</td><td>propedit</td>
@@ -335,8 +326,6 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>PstkProtoEdit</td><td>Edit a padstack prototype specified by its pointer.</td><td>PstkProto([noundo,] proto, remove, layer_type)<br>PstkProto([noundo,] proto, copy, dst_layer_type, src_layer_type)<br>PstkProto([noundo,] proto, hdia, dia)<br>PstkProto([noundo,] proto, shape:line, layer_type, x1, y1, x2, y2, th, [square])</td><td>act_draw</td>
 <tr><td>PstkProtoTmp</td><td>Allocate, insert or free a temporary padstack prototype</td><td>PstkProto([noundo,] new)<br>PstkProto([noundo,] dup, idpath)<br>PstkProto([noundo,] dup, data, src_proto_id)<br>PstkProto([noundo,] insert, idpath|data, proto)<br>PstkProto([noundo,] insert_dup, idpath|data, proto)<br>PstkProto([noundo,] free, proto)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#puller">Puller</a></td><td>Pull an arc-line junction tight.</td><td>pcb_act_Puller()</td><td>puller plugin</td>
-<tr><td>py</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>python</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>q!</td><td>Quits the application without confirming.</td><td>q!</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#q">q</a></td><td>Quits the application after confirming.</td><td>q</td><td>shand_cmd plugin</td>
 <tr><td>query</td><td>Perform various queries on PCB data.</td><td>query(dump, expr) - dry run: compile and dump an expression<br>query(eval|evalidp, expr) - compile and evaluate an expression and print a list of results on stdout<br>query(count, expr) - compile and evaluate an expression and return the number of matched objects (-1 on error)<br>query(select|unselect|view, expr) - select or unselect or build a view of objects matching an expression<br>query(setflag:flag|unsetflag:flag, expr) - set or unset a named flag on objects matching an expression<br>query(append, idplist, expr) - compile and run expr and append the idpath of resulting objects on idplist</td><td>query plugin</td>
@@ -349,7 +338,7 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#redo">Redo</a></td><td>Redo recent "undo" operations.</td><td>redo()</td><td></td>
 <tr><td>Redraw</td><td>Redraw the entire screen</td><td>Redraw()</td><td></td>
 <tr><td>regpoly</td><td>Generate regular polygon. Where is x;y and radius is either r or rx;ry. Rotation is in degrees.</td><td>regpoly([where,] corners, radius [,rotation])</td><td>shape plugin</td>
-<tr><td><a href="action_details.html#reloadscript">ReloadScript</a></td><td>Reload a fungw script</td><td>ReloadScript(id)</td><td>script plugin</td>
+<tr><td><a href="action_details.html#reloadscript">ReloadScript</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Reload a fungw script</td><td>ReloadScript(id)</td><td>script plugin</td>
 <tr><td>RemoveMenu</td><td>Recursively removes a new menu, popup (only path specified) or submenu. </td><td>RemoveMenu(path, cookie)</td><td></td>
 <tr><td>RemoveSelected</td><td>Removes any selected objects.</td><td>pcb_remove_selected()</td><td></td>
 <tr><td>Renumber</td><td>Renumber all subcircuits.  The changes will be recorded to filename<br>for use in backannotating these changes to the schematic.</td><td>Renumber()<br>Renumber(filename)</td><td>renumber plugin</td>
@@ -360,6 +349,17 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>ReportObject</td><td>Report on the object under the crosshair</td><td>ReportObject()</td><td>report plugin</td>
 <tr><td><a href="action_details.html#ripup">RipUp</a></td><td>Ripup auto-routed tracks</td><td>RipUp(All|Selected|Element)</td><td></td>
 <tr><td><a href="action_details.html#rn">rn</a></td><td>Reads netlist.</td><td>rn [name]</td><td>shand_cmd plugin</td>
+<tr><td>rnd_acos</td><td></td><td></td><td>script plugin</td>
+<tr><td>rnd_asin</td><td></td><td></td><td>script plugin</td>
+<tr><td>rnd_atan2</td><td></td><td></td><td>script plugin</td>
+<tr><td>rnd_atan</td><td></td><td></td><td>script plugin</td>
+<tr><td>rnd_cos</td><td></td><td></td><td>script plugin</td>
+<tr><td>rnd_dlg_xpm_by_name</td><td>Intenal: GUI frontend action. Do not use directly.</td><td></td><td>lib_hid_common plugin</td>
+<tr><td>rnd_rand</td><td></td><td></td><td>script plugin</td>
+<tr><td>rnd_sin</td><td></td><td></td><td>script plugin</td>
+<tr><td>rnd_sqrt</td><td></td><td></td><td>script plugin</td>
+<tr><td>rnd_srand</td><td></td><td></td><td>script plugin</td>
+<tr><td>rnd_tan</td><td></td><td></td><td>script plugin</td>
 <tr><td>rnd_toolbar_init</td><td>For ringdove apps: initialize the toolbar.</td><td></td><td>lib_hid_common plugin</td>
 <tr><td>rnd_toolbar_uninit</td><td>For ringdove apps: uninitialize the toolbar.</td><td></td><td>lib_hid_common plugin</td>
 <tr><td>rnd_zoom</td><td>Change zoom level (relative, absolute, window, ...)</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(?)<br>Zoom(get)</td><td>lib_hid_common plugin</td>
@@ -367,7 +367,6 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>roundrect</td><td>Generate a rectangle with round corners</td><td>roundrect([where,] width[;height] [,rx[;ry] [,rotation [,cornstyle [,roundness]]]])</td><td>shape plugin</td>
 <tr><td><a href="action_details.html#routestyle">RouteStyle</a></td><td>Without second argument: copies the indicated routing style into the current pen; with second argument sets or gets a field of the routing style.</td><td>RouteStyle(style_id|style_name|@current, [set|get|del], [trace-thickness|trace-clearance|text-thickness|text-scale|font|via-proto|name], [value]])<br>RouteStyle(new, [name])</td><td></td>
 <tr><td>RouteStylesChanged</td><td>Tells the GUI that the routing styles have changed.</td><td>RouteStylesChanged()</td><td>oldactions plugin</td>
-<tr><td>ruby</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td><a href="action_details.html#s">s</a></td><td>Saves layout data.</td><td>s [name]<br>w [name]</td><td>shand_cmd plugin</td>
 <tr><td><a href="action_details.html#save">Save</a></td><td>Save layout data to a user-selected file.</td><td>Save()<br>Save(Layout|LayoutAs)<br>Save(AllConnections|AllUnusedPins|ElementConnections)<br>Save(PasteBuffer)<br>Save(DialogByPattern, pcb|footprint|font|buffer, none|board|fp, prompt, [default_pattern])</td><td>dialogs plugin</td>
 <tr><td>SaveFontTo</td><td>Save PCB font to a file</td><td>SaveFontTo([file, id])</td><td></td>
@@ -376,9 +375,9 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td>SaveTedax</td><td>Saves the specific type of data in a tEDAx file.</td><td>SaveTedax(netlist|board-footprints|stackup|layer|board|drc|etest, filename)<br>SaveTedax(drc_query, filename, [rule_name])SaveTedax(route_req, filename, [confkey=value, confkey=value, ...])</td><td>tEDAx IO</td>
 <tr><td><a href="action_details.html#saveto">SaveTo</a></td><td>Saves data to a file.</td><td>SaveTo(Layout|LayoutAs,filename,[fmt])<br>SaveTo(PasteBuffer,filename,[fmt])</td><td></td>
 <tr><td>ScaleBuffer</td><td>Scales the buffer by multiplying all coordinates by a floating point number.<br>If only x is given, it is also used for y and thickness too. If subc is not<br>empty, subcircuits are also scaled</td><td>ScaleBuffer(x [,y [,thickness [,subc]]])</td><td></td>
-<tr><td><a href="action_details.html#scriptcookie">ScriptCookie</a></td><td>Return a cookie specific to the current script instance during script initialization</td><td>ScriptCookie()</td><td>script plugin</td>
-<tr><td><a href="action_details.html#scriptpersistency">ScriptPersistency</a></td><td>Read or remove script persistency data savd on preunload</td><td>ScriptPersistency(read|remove)</td><td>script plugin</td>
-<tr><td><a href="action_details.html#scroll">Scroll</a></td><td>Scroll the viewport.</td><td>Scroll(up|down|left|right, [pixels])</td><td>lib_hid_common plugin</td>
+<tr><td><a href="action_details.html#scriptcookie">ScriptCookie</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Return a cookie specific to the current script instance during script initialization</td><td>ScriptCookie()</td><td>script plugin</td>
+<tr><td><a href="action_details.html#scriptpersistency">ScriptPersistency</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Read or remove script persistency data savd on preunload</td><td>ScriptPersistency(read|remove)</td><td>script plugin</td>
+<tr><td><a href="action_details.html#scroll">Scroll</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Scroll the viewport.</td><td>Scroll(up|down|left|right, [pixels])</td><td>lib_hid_common plugin</td>
 <tr><td>SearchDialog</td><td>Open the log dialog.</td><td>SearchDialog()</td><td>query plugin</td>
 <tr><td><a href="action_details.html#select">Select</a></td><td>Toggles or sets the selection.</td><td>Select(Object, [idpath])<br>Select(ToggleObject)<br>Select(All|Block|Connection|Invert)<br>Select(Convert)</td><td></td>
 <tr><td><a href="action_details.html#selectlayer">SelectLayer</a></td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
@@ -388,32 +387,30 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#setsame">SetSame</a></td><td>Sets current layer and sizes to match indicated item.</td><td>SetSame()</td><td></td>
 <tr><td>SetSquare</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#setthermal">SetThermal</a></td><td>Set the thermal (on the current layer) of padstacks to the given style. Style is one of:<br>0: means no thermal.<br>1: horizontal/vertical, round.<br>2: horizontal/vertical, sharp.<br>3: is a solid connection to the polygon.<br>4: (invalid).<br>5: diagonal, round.<br>6: diagonal, sharp.<br>noshape: no copper shape on layer</td><td>SetThermal(Object|SelectedPins|SelectedVias|Selected, Style)</td><td></td>
-<tr><td><a href="action_details.html#setunits">SetUnits</a></td><td>Set the default measurement units.</td><td>SetUnits(mm|mil)</td><td></td>
+<tr><td><a href="action_details.html#setunits">SetUnits</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Set the default measurement units.</td><td>SetUnits(mm|mil)</td><td></td>
 <tr><td><a href="action_details.html#setvalue">SetValue</a></td><td>Change various board-wide values and sizes.</td><td>SetValue(Grid|Line|LineSize|Text|TextScale, delta)</td><td></td>
 <tr><td>shape</td><td>Interactive shape generator.</td><td>shape()</td><td>shape plugin</td>
 <tr><td><a href="action_details.html#smartdisperse">smartdisperse</a></td><td>Disperse subcircuits into clusters, by netlist connections</td><td>SmartDisperse([All|Selected])</td><td>smartdisperse plugin</td>
 <tr><td>split</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
 <tr><td>StatusSetText</td><td>Replace status printout with text temporarily; turn status printout back on if text is not provided.</td><td>StatusSetText([text])</td><td>lib_hid_pcbui/status</td>
 <tr><td>stroke</td><td>Various gesture recognition related functions</td><td>stroke(gesture, seq)</td><td>stroke plugin</td>
-<tr><td>stt</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>subc</td><td>Various operations on subc</td><td>subc(hash, [board|selected])<br>subc(loose, on|off|toggle|check)</td><td></td>
 <tr><td><a href="action_details.html#swapsides">SwapSides</a></td><td>Swaps the side of the board you're looking at.</td><td>SwapSides(|v|h|r, [S])</td><td>lib_hid_pcbui/actions</td>
 <tr><td>System</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
 <tr><td>tang</td><td>Draw a line to be tangential to a circle</td><td>tang()</td><td>ddraft plugin</td>
-<tr><td>tcl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>Teardrops</td><td></td><td></td><td>teardrops plugin</td>
 <tr><td>TedaxTestParse</td><td>Returns 1 if the file looks like tEDAx (0 if not)</td><td>TedaxTestParse(filename|FILE*)</td><td>tEDAx IO</td>
 <tr><td>TextNew</td><td>Create a pcb text on a layer. For now data must be "pcb". Font id 0 is the default font. Thickness 0 means default, calculated thickness. Scale=100 is the original font size. Returns the idpath of the new object or 0 on error.</td><td>TextNew([noundo,] data, layer, fontID, x, y, rot, scale, thickness, text_string, flags)</td><td>act_draw</td>
 <tr><td>ToggleHideName</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td>ToggleVendor</td><td>Toggles the state of automatic drill size mapping.</td><td>ToggleVendor()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#toggleview">ToggleView</a></td><td>Toggle the visibility of the specified layer or layer group.</td><td>ToggleView(1..MAXLAYER)<br>ToggleView(layername)<br>ToggleView(Silk|Rats|Pins|Vias|BackSide)<br>ToggleView(All, Open|Vis, Set|Clear|Toggle)</td><td></td>
-<tr><td><a href="action_details.html#tool">Tool</a></td><td>Change or use the tool mode.</td><td>Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Tool(Press|Release|Cancel|Stroke)<br>Tool(Save|Restore)</td><td></td>
+<tr><td><a href="action_details.html#tool">Tool</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Change or use the tool mode.</td><td>Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)<br>Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)<br>Tool(Press|Release|Cancel|Stroke)<br>Tool(Save|Restore)</td><td></td>
 <tr><td>ToPoly</td><td>convert a closed loop of lines and arcs into a polygon</td><td>ToPoly()<br>ToPoly(outline)</td><td>lib_polyhelp</td>
 <tr><td>trim</td><td>Use one or more objects as cutting edge and trim or split other objects. First argument is the cutting edge</td><td>trim([selected|found|object], [selected|found|object])<br>split([selected|found|object], [selected|found|object])</td><td>ddraft plugin</td>
 <tr><td>UILayer</td><td>Create or free UI layers. 'New' returns a layer ID that cna be used for addressing.</td><td>UILayer(new, name, color)<br>UILayer(free, layer)</td><td>act_draw</td>
 <tr><td><a href="action_details.html#undo">Undo</a></td><td>Undo recent changes.</td><td>undo()<br>undo(ClearList|FreezeSerial|UnfreezeSerial|FreezeAdd|UnfreezeAdd|IncSerial|GetSerial|Above)</td><td></td>
 <tr><td>UndoDialog</td><td>Open the undo dialog.</td><td>UndoDialog()</td><td>dialogs plugin</td>
-<tr><td><a href="action_details.html#unloadscript">UnloadScript</a></td><td>Unload a fungw script</td><td>UnloadScript(id)</td><td>script plugin</td>
+<tr><td><a href="action_details.html#unloadscript">UnloadScript</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Unload a fungw script</td><td>UnloadScript(id)</td><td>script plugin</td>
 <tr><td>UnloadVendor</td><td>Unloads the current vendor drill mapping table.</td><td>UnloadVendor()</td><td>vendor drill mapping</td>
 <tr><td><a href="action_details.html#unselect">Unselect</a></td><td>Unselects the object at the pointer location or the specified objects.</td><td>Unselect(All|Block|Connection)</td><td></td>
 <tr><td>ViewList</td><td>Present a new empty view list</td><td>viewlist([name, [winid, [listptr]]])</td><td>dialogs plugin</td>
@@ -422,5 +419,6 @@ This is pcb-rnd 2.3.2 (svn r34678) an interactive printed circuit board editor ,
 <tr><td><a href="action_details.html#zoom">Zoom</a></td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found|selected)</td><td>lib_hid_pcbui/actions</td>
 <tr><td>ZoomTo</td><td>GUI zoom</td><td>Zoom()<br>Zoom([+|-|=]factor)<br>Zoom(x1, y1, x2, y2)<br>Zoom(?)<br>Zoom(get)<br>Zoom(found|selected)</td><td>lib_hid_pcbui/actions</td>
 </table>
+<p id="ringdove">RND: this action comes from librnd and is common to all ringdove applications.
 </body>
 </html>

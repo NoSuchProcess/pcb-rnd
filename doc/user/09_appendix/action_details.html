@@ -51,59 +51,6 @@ First argument:
  The second argument is temporary and optional, for a workaround of a bug in the old (to be removed) autorouter. If the value of the second argument is "manhattan", non-axis-aligned lines are ignored when looking for rat anchor points.  
 </dd></dl>
 
-<h2 id="addtimer">AddTimer</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-AddTimer(action, period, [repeat], [userdata])
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Add a new timer
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-script plugin
-</table>
-<p>
-This action is intended for scripts to create async timers. 
-<b>
-Note:
-</b>
- timers do not work with the batch HID (no callback issued ever). 
-<p>
- Creates a timer that executes an 
-<i>action</i>
- (by name) periodically. 
-<i>Period</i>
- is a real number specified in seconds. Internal timer resolution is in the order of 0.1 second. 
-<p>
- If 
-<i>repeat</i>
- is not specified or is less than 1, the timer is repeated indefinitely. If the optional 
-<i>userdata</i>
- string is specified, it is also passed to the action. 
-<p>
- The 
-<i>action</i>
- is specified only by a name, call arguments are always the following: 
-<ul>
-  
-<li>
- now: the current UNIX time in a floating point number  
-<li>
- integer: count back remaining number of calls, including the current call; 1 means this was the last call; 0 means infinite number of calls will follow  
-<li>
- 
-<i>userdata</i>
- or empty string 
-</ul>
- 
-<p>
- 
-<i>Action</i>
- shall return integer 0 on success. If the action does not exist or returns anything else, the timer is uninstalled. 
-<p>
- There can be any number of timers in parallel. 
-</dd></dl>
-
 <h2 id="adjuststyle">AdjustStyle</h2>
 <dl><dd>
 <p>
@@ -174,28 +121,6 @@ Select which axis will move, other is untouched.
  Defaults are Marks, First. 
 <p>
  For non-subcircuit objects: using Marks is not recommended, using Gridless is recommended.  
-</dd></dl>
-
-<h2 id="anyload">AnyLoad</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-AnyLoad([path])
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Load "anything" from path (or offer a file selectio dialog if no path specified)
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-Loads an anyload.lht file or any lihata document that can be handled by the anyload system (mostly settings and setting-like states, e.g. config, vendor drill map, DRC and user scripts). 
-<p>
- When called without arguments a file selection dialog is popped up for selecting the file to load. 
-<p>
- More info on this mechanism in the 
-<a href="repo.hu/cgi-bin/pool.cgi?project=pcb-rnd&cmd=show&node=anyload">
- knowledge pool node of anyload.
-</a>
-   
 </dd></dl>
 
 <h2 id="applypen">ApplyPen</h2>
@@ -374,20 +299,6 @@ Before autorouting, it's important to set up a few things.  First, make sure any
  
 </dd></dl>
 
-<h2 id="benchmark">Benchmark</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Benchmark()
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Benchmark the GUI speed.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-This action is used to speed-test the GUI rendering.  It redraws the current screen as many times as possible in ten seconds. It reports the amount of time needed to draw the screen once, in average. 
-</dd></dl>
-
 <h2 id="boardflip">BoardFlip</h2>
 <dl><dd>
 <p>
@@ -408,21 +319,6 @@ All objects on the board are up-down flipped (mirrored over the x axis).
  
 <p>
  To flip the board physically, use BoardFlip(sides) 
-</dd></dl>
-
-<h2 id="center">Center</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Center()
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Moves the pointer to the center of the window.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-lib_hid_common plugin
-</table>
-<p>
-Move the pointer to the center of the window, but only if it's currently within the window already. 
 </dd></dl>
 
 <h2 id="changeclearsize">ChangeClearSize</h2>
@@ -760,86 +656,6 @@ Connections found with this action will be highlighted in the "connected-color" 
  Obsolate, misleading name for ResetPadstacks. Do not use.  
 </table>
   
-</dd></dl>
-
-<h2 id="cursor">Cursor</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Cursor(Type,DeltaUp,DeltaRight,Units)
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Move the cursor.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-This action moves the mouse cursor.  Unlike other actions which take coordinates, this action's coordinates are always relative to the user's view of the board.  Thus, a positive 
-<i>DeltaUp</i>
- may move the cursor away from the board origin if the board is inverted (flipped, looked from the bottom). 
-<p>
- 
-<i>Type</i>
- is one of 
-<i>
-Pan
-</i>
- or 
-<i>
-Warp
-</i>
-. 
-<i>
-Pan
-</i>
- causes the viewport to move such that the crosshair is under the mouse cursor. 
-<i>
-Warp
-</i>
- causes the mouse cursor to move to be above the crosshair. 
-<p>
- 
-<i>Units</i>
- can be one of the following: 
-<p>
- 
-<table border=1 cellspacing=0>
-  
-<tr>
-
-<td>
-mil
-<br>
-mm  
-<td>
-The cursor is moved by that amount, in board units.   
-<tr>
-
-<td>
-grid  
-<td>
-The cursor is moved by that many grid points.   
-<tr>
-
-<td>
-view  
-<td>
-The values are percentages of the viewport's view. Thus, a pan of      
-<i>
-100
-</i>
- would scroll the viewport by exactly the width of the current view.    
-<tr>
-
-<td>
-board  
-<td>
- The values are percentages of the board size. Thus, a move of       
-<i>
-50,50
-</i>
- moves you halfway across the board.  
-</table>
- 
 </dd></dl>
 
 <h2 id="cycledrag">CycleDrag</h2>
@@ -1201,80 +1017,6 @@ The different types of optimizations change your board in order to reduce the to
  
 </dd></dl>
 
-<h2 id="dowindows">dowindows</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-Argument: 
-<p>
- 
-<table border=1 cellspacing=0>
-  
-<tr>
-
-<th>
- 1 
-<br>
- Layout  
-<td>
- Open the layout window.  Since the layout window is always shown anyway, this has no effect.   
-<tr>
-
-<th>
- 2 
-<br>
- Library  
-<td>
- Open the library window.   
-<tr>
-
-<th>
- 3 
-<br>
- Log  
-<td>
- Open the log window.   
-<tr>
-
-<th>
- 4 
-<br>
- Netlist  
-<td>
- Open the netlist window.   
-<tr>
-
-<th>
- 5 
-<br>
- Preferences  
-<td>
- Open the preferences window.   
-<tr>
-
-<th>
- 6 
-<br>
- DRC  
-<td>
- Open the DRC violations window.   
-<tr>
-
-<th>
- 7 
-<br>
- Search  
-<td>
- Open the advanced search window.  
-</table>
-   
-</dd></dl>
-
 <h2 id="drc">DRC</h2>
 <dl><dd>
 <p>
@@ -1560,20 +1302,6 @@ for one.
 Rotates the contents of the pastebuffer by an arbitrary angle.  If no angle is given, the user is prompted for one. 
 </dd></dl>
 
-<h2 id="getxy">GetXY</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-GetXY([message, [x|y]])
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Get a coordinate. If x or y specified, the return value of the action is the x or y coordinate.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-Prompts the user for a coordinate, if one is not already selected. 
-</dd></dl>
-
 <h2 id="gfxmod">GfxMod</h2>
 <dl><dd>
 <p>
@@ -1770,130 +1498,6 @@ The
  is passed to the footprint loader.  If no filename is specified a file select box will popup. 
 </dd></dl>
 
-<h2 id="listscripts">ListScripts</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-ListScripts([pat])
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-List fungw scripts, optionally filtered wiht regex pat.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-script plugin
-</table>
-<p>
-Print one line in the log for each currently loaded script. If 
-<i>pat</i>
- is specified, filter the list using 
-<i>pat</i>
- as a case sensitive  
-<a href="http://www.repo.hu/projects/genregex/genregex.7.html">
-extended regex
-</a>
- on script ID, file name and language (list only scripts that match with any of these fields).  
-</dd></dl>
-
-<h2 id="livescript">LiveScript</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-LiveScript([new], [name])
-LiveScript(load|save, name, [filame])
-LiveScript(run|stop|rerun|undo, name)
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Manage a live script
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-script plugin
-</table>
-<p>
-The first argument determines what operation the action performs and how subsequent arguments are interpreted: 
-<p>
- 
-<table border=1 cellspacing=0>
-  
-<tr>
-
-<th>
- new, [name]  
-<td>
- Create a new live script and open a new live script dialog. 
-<i>
-name
-</i>
-       is an unique live script name that identifies the window. If not       specified, "default" is used"   
-<tr>
-
-<th>
- load, name, [filename]  
-<td>
- Replace the script source in the LiveScript window identified by       
-<i>
-name
-</i>
- with the content loaded from a file. If 
-<i>
-filename
-</i>
-       is not specified, open a file selector dialog.   
-<tr>
-
-<th>
- save, name, [filename]  
-<td>
- Save the script source in the LiveScript window identified by       
-<i>
-name
-</i>
- to a file. If 
-<i>
-filename
-</i>
- is not specified, open a       file selector dialog.   
-<tr>
-
-<th>
- run, name  
-<td>
- Run the script in the LiveScript window identified by       
-<i>
-name
-</i>
-.   
-<tr>
-
-<th>
- stop, name  
-<td>
- Stop the script in the LiveScript window identified by       
-<i>
-name
-</i>
-, if ti is running in persistent mode.   
-<tr>
-
-<th>
- undo, name  
-<td>
- Undo the "init changes" of the script in the LiveScript window       identified by 
-<i>
-name
-</i>
-. Init changes are those board changes       the script has done while running its initialization section.       Live script undo is possible only if there was no user edit after       the script finished.   
-<tr>
-
-<th>
- rerun, name  
-<td>
- Stop, undo and run the script in the LiveScript window identified by       
-<i>
-name
-</i>
-.  
-</table>
-  
-</dd></dl>
-
 <h2 id="load">Load</h2>
 <dl><dd>
 <p>
@@ -1982,37 +1586,6 @@ This action assumes you know what the filename is.  The various GUIs should have
  Re-loads the current layout from its disk file, reverting any changes       you may have made.  
 </table>
   
-</dd></dl>
-
-<h2 id="loadscript">LoadScript</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-LoadScript(id, filename, [language])
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Load a fungw script
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-script plugin
-</table>
-<p>
-
-<i>id</i>
- is an arbitrary string assigned by the user. 
-<i>id</i>
- must be unique per pcb-rnd session per script and may contain alphanumeric characters and undescrore. 
-<p>
- 
-<i>fn</i>
- is the file name of the script, which is a path. Pcb-rnd does not do any search, it only opens the path as specified. 
-<p>
- 
-<i>lang</i>
- is the scripting language, as in  
-<a href="http://repo.hu/projects/fungw/lang.html">
-fungw plugin name
-</a>
-. When not specified, the code makes a guess (based on the file name). 
 </dd></dl>
 
 <h2 id="loadttfglyphs">LoadTtfGlyphs</h2>
@@ -2147,58 +1720,6 @@ The "mark" is a small X-shaped target on the display which is treated like a sec
  If no argument is given, the mark is toggled - disabled if it was enabled, or enabled at the current cursor position of disabled.  If the 
 <i>Center</i>
  argument is given, the mark is moved to the current cursor location. 
-</dd></dl>
-
-<h2 id="message">Message</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-message([ERROR|WARNING|INFO|DEBUG,] message)
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Writes a message to the log window.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-This action displays a message to the log window.  This action is primarily provided for use by scripts and external programs which may interface with pcb-rnd. If multiple arguments are given, each one is sent to the log window followed by a newline. 
-<p>
- If there are 2 or more arguments and the first argument matches, in a case sensitive manner, one of the below keywords, the message is registered on the specified error level. Else the PCB_MSG_INFO error level is used. 
-<p>
- 
-<table border=1>
- 
-<tr>
-
-<th>
-first argument
-<th>
-erro level 
-<tr>
-
-<td>
-ERROR         
-<td>
- PCB_MSG_ERROR 
-<tr>
-
-<td>
-WARNING       
-<td>
- PCB_MSG_WARNING 
-<tr>
-
-<td>
-INFO          
-<td>
- PCB_MSG_INFO 
-<tr>
-
-<td>
-DEBUG         
-<td>
- PCB_MSG_DEBUG 
-</table>
-  
 </dd></dl>
 
 <h2 id="mode">Mode</h2>
@@ -2538,70 +2059,6 @@ Starts a new layout.
 If a name is not given, one is prompted for. 
 </dd></dl>
 
-<h2 id="onliner">onliner</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-The 
-<a href="#oneliner">oneliner</a>
- action is designed for quick execution of short, trivial scripts, such as a for loop for repeating an action. It supports any scripting language currently availabel through fungw. Each oneliner is an independent script context - variables, functions and other global states do not persist. 
-<p>
- This group of actions offers three forms: 
-<ul>
-  
-<li>
- 
-<a href="#oneliner">oneliner</a>
-(
-<i>lang</i>
-, 
-<i>script</i>
-) - execute the script in the language specified  
-<li>
- lang(script) - shorthand for the above  
-<li>
- lang - switch the command line interpreter to execute one-liners in the given language, until /exit 
-</ul>
- 
-<p>
- For example, a simple calculation using awk can be done in three ways: 
-<ul>
-  
-<li>
- 
-<i>
-oneliner(awk, 'print 42*3')
-</i>
-  
-<li>
- 
-<i>
-awk('print 42*3')
-</i>
-  
-<li>
- 
-<i>
-awk
-</i>
-, then 
-<i>
-print 42*3
-</i>
-, then 
-<i>
-/exit
-</i>
- 
-</ul>
- 
-</dd></dl>
-
 <h2 id="openemsexcitation">OpenemsExcitation</h2>
 <dl><dd>
 <p>
@@ -2642,21 +2099,6 @@ When invoked without argument or with
  argument is mandatory. 
 <p>
  Note: the code remembers all settings for all excitements, not only the  excitement that is currently selected. The selection and all parameters are saved as board attributes.
-</dd></dl>
-
-<h2 id="pan">Pan</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Pan(Mode)
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Start or stop panning (Mode = 1 to start, 0 to stop)
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-lib_hid_common plugin
-</table>
-<p>
-Start or stop panning.  To start call with Mode = 1, to stop call with Mode = 0.  
 </dd></dl>
 
 <h2 id="pastebuffer">PasteBuffer</h2>
@@ -2987,22 +2429,6 @@ It should never be called by the user or other code or other actions.
  
 </dd></dl>
 
-<h2 id="print">Print</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Print()
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Present the print export dialog for printing the layout from the GUI.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-Open an export dialog listing all printing plugins, prompt the user for their options, and print the layout. 
-<p>
- Available only with GUI HIDs: it's merely a graphical shorthand that in turn calls the export plugin for printing.    
-</dd></dl>
-
 <h2 id="printcalibrate">PrintCalibrate</h2>
 <dl><dd>
 <p>
@@ -3020,20 +2446,6 @@ Used to help with printer calibrataion, but did not really work properly for at 
 manual calibration method.
 </a>
  
-</dd></dl>
-
-<h2 id="promptfor">PromptFor</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-PromptFor([message[,default[,title]]])
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Prompt for a string. Returns the string (or NULL on cancel)
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-UI-independent way of asking the user for a string. When GUI is available, it is a dialog box, else it's console input. Return value, unlike with other actions, is a string. The return value is NULL on cancel.   
 </dd></dl>
 
 <h2 id="puller">Puller</h2>
@@ -3096,27 +2508,6 @@ Redo recent "undo" operations.
 The 
 <a href="#redo">redo</a>
  action allows you to recover from the last undo command. You might want to do this if you thought that undo was going to revert something other than what it actually did (in case you are confused about which operations are un-doable), or if you have been backing up through a long undo list and over-shoot your stopping point.  Any change that is made since the undo in question will trim the redo list.  For example if you add ten lines, then undo three of them you could use redo to put them back, but if you move a line on the board before performing the redo, you will lose the ability to "redo" the three "undone" lines. 
-</dd></dl>
-
-<h2 id="reloadscript">ReloadScript</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-ReloadScript(id)
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Reload a fungw script
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-script plugin
-</table>
-<p>
-
-<i>id</i>
- is the same that was specified for 
-<a href="#loadscript">loadscript</a>
-. If loading the new verison of the script fails, 
-<i>id</i>
- is released (can be reused for a new LoadScript).  
 </dd></dl>
 
 <h2 id="renumberblock">RenumberBlock</h2>
@@ -3519,103 +2910,6 @@ Arguments:
  
 </dd></dl>
 
-<h2 id="scriptcookie">ScriptCookie</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-ScriptCookie()
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Return a cookie specific to the current script instance during script initialization
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-script plugin
-</table>
-<p>
-The script: 
-<ul>
-  
-<li>
- may call ScriptCookie() 
-<b>
-during script initialization
-</b>
- and save the resulting cookie string  
-<li>
- may use the cookie string to register to core pcb-rnd infrastructure that requires cookie, such as 
-<a href="#createmenu">createmenu</a>
-  
-<li>
- can depend on pcb-rnd to call any unregistering associated with this specific cookie atomatically after script unload (
-<a href="#preunload">preunload</a>
-). 
-</ul>
- 
-<p>
- The function can not be called outside of script initialization. The cookie string can be used any time between script load and script unload. 
-</dd></dl>
-
-<h2 id="scriptpersistency">ScriptPersistency</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-ScriptPersistency(read|remove)
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Read or remove script persistency data savd on preunload
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-script plugin
-</table>
-<p>
-When a script is unloaded, its action 
-<a href="#preunload">preunload</a>
- is called. The return value is saved as script persistent data. When the script is loaded again later, it can use 
-<a href="#scriptpersistency">scriptpersistency</a>
-(
-<i>read</i>
-) to read the data saved. 
-<p>
- 
-<a href="#scriptpersistency">scriptpersistency</a>
-(
-<i>remove</i>
-) deletes the data from disk. 
-<p>
- Note: the data is per script id, not per script file name. 
-</dd></dl>
-
-<h2 id="scroll">Scroll</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Scroll(up|down|left|right, [pixels])
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Scroll the viewport.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-lib_hid_common plugin
-</table>
-<p>
-Arguments: 
-<p>
- 
-<table border=1 cellspacing=0>
-   
-<tr>
-
-<th>
- up|down|left|right  
-<td>
- Specifies the direction to scroll   
-<tr>
-
-<th>
- pix  
-<td>
- Optional.  Specifies how many pixels to scroll by. If not specified:       default pix is 100. 
-</table>
-  
-</dd></dl>
-
 <h2 id="select">Select</h2>
 <dl><dd>
 <p>
@@ -3809,36 +3103,6 @@ noshape
  Padstacks may have thermals whether or not there is a polygon available to connect with. However, they will have no visible effect until a polygon is drawn around the padstack.  
 </dd></dl>
 
-<h2 id="setunits">SetUnits</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-SetUnits(mm|mil)
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Set the default measurement units.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-
-<table border=1 cellspacing=0>
-  
-<tr>
-
-<th>
- mil  
-<td>
- Sets the display units to mils (1/1000 inch).   
-<tr>
-
-<th>
- mm  
-<td>
- Sets the display units to millimeters. 
-</table>
- 
-</dd></dl>
-
 <h2 id="setvalue">SetValue</h2>
 <dl><dd>
 <p>
@@ -3968,111 +3232,6 @@ If you pass an integer, that layer is specified by index (the first layer is
  If you pass a special layer name, the visibility of those components (silk, rats, etc) is toggled.  Note that if you have a layer named the same as a special layer, the layer is chosen over the special layer. 
 </dd></dl>
 
-<h2 id="tool">Tool</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)
-Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)
-Tool(Press|Release|Cancel|Stroke)
-Tool(Save|Restore)
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Change or use the tool mode.
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
-</table>
-<p>
-Selects the tool or changes tool related global states. 
-<p>
- 
-<table border=1 cellspacing=0>
-  
-<tr>
-
-<th>
- Arc 
-<br>
- Arrow 
-<br>
- Copy 
-<br>
- InsertPoint 
-<br>
- Line 
-<br>
- Lock           
-<br>
- Move 
-<br>
- None 
-<br>
- PasteBuffer 
-<br>
- Poly 
-<br>
- PolyHole 
-<br>
- Rectangle           
-<br>
- Remove 
-<br>
- Rotate 
-<br>
- Text 
-<br>
- Thermal 
-<br>
- Via 
-<br>
- ...  
-<td>
- Select the indicated tool.   
-<tr>
-
-<th>
- Press  
-<td>
- Called when you press the mouse button, or move the mouse.   
-<tr>
-
-<th>
- Release  
-<td>
- Called when you release the mouse button.   
-<tr>
-
-<th>
- Cancel  
-<td>
- Cancels any pending tool activity, allowing you to restart elsewhere.       For example, this allows you to start a new line rather than attach a       line to the previous line.   
-<tr>
-
-<th>
- Escape  
-<td>
- Similar to Cancel but calling this action a second time will return       to the Arrow tool.   
-<tr>
-
-<th>
- Stroke  
-<td>
- If pcb-rnd was built with libstroke, this invokes the stroke       input method.  If not, this will restart a drawing mode if you were       drawing, else it will select objects.   
-<tr>
-
-<th>
- Save  
-<td>
- Remembers the current tool.   
-<tr>
-
-<th>
- Restore  
-<td>
- Restores the tool to the last saved tool.  
-</table>
- 
-</dd></dl>
-
 <h2 id="undo">Undo</h2>
 <dl><dd>
 <p>
@@ -4120,27 +3279,6 @@ The unlimited undo feature of pcb-rnd allows you to recover from most operations
  Above, sernum: perform undo of all operations with serial number higher than sernum 
 </ul>
  
-</dd></dl>
-
-<h2 id="unloadscript">UnloadScript</h2>
-<dl><dd>
-<p>
-<table border=0 cellspacing=10 class=actsum>
-<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
-UnloadScript(id)
-<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
-Unload a fungw script
-<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
-script plugin
-</table>
-<p>
-
-<i>id</i>
- is the same that was specified for 
-<a href="#loadscript">loadscript</a>
-. After the call 
-<i>id</i>
- is released (can be reused for a new LoadScript). 
 </dd></dl>
 
 <h2 id="unselect">Unselect</h2>
@@ -4346,6 +3484,871 @@ found
  
 <p>
  Note that zoom factors of zero are silently ignored.  
+</dd></dl>
+<h1> librnd actions (common to Ringdove)</h1>
+
+</dd></dl>
+
+<h2 id="addtimer">AddTimer</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+AddTimer(action, period, [repeat], [userdata])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Add a new timer
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+This action is intended for scripts to create async timers. 
+<b>
+Note:
+</b>
+ timers do not work with the batch HID (no callback issued ever). 
+<p>
+ Creates a timer that executes an 
+<i>action</i>
+ (by name) periodically. 
+<i>Period</i>
+ is a real number specified in seconds. Internal timer resolution is in the order of 0.1 second. 
+<p>
+ If 
+<i>repeat</i>
+ is not specified or is less than 1, the timer is repeated indefinitely. If the optional 
+<i>userdata</i>
+ string is specified, it is also passed to the action. 
+<p>
+ The 
+<i>action</i>
+ is specified only by a name, call arguments are always the following: 
+<ul>
+  
+<li>
+ now: the current UNIX time in a floating point number  
+<li>
+ integer: count back remaining number of calls, including the current call; 1 means this was the last call; 0 means infinite number of calls will follow  
+<li>
+ 
+<i>userdata</i>
+ or empty string 
+</ul>
+ 
+<p>
+ 
+<i>Action</i>
+ shall return integer 0 on success. If the action does not exist or returns anything else, the timer is uninstalled. 
+<p>
+ There can be any number of timers in parallel. 
+</dd></dl>
+
+<h2 id="anyload">AnyLoad</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+AnyLoad([path])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Load "anything" from path (or offer a file selectio dialog if no path specified)
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Loads an anyload.lht file or any lihata document that can be handled by the anyload system (mostly settings and setting-like states, e.g. config, vendor drill map, DRC and user scripts). 
+<p>
+ When called without arguments a file selection dialog is popped up for selecting the file to load. 
+<p>
+ More info on this mechanism in the 
+<a href="repo.hu/cgi-bin/pool.cgi?project=pcb-rnd&cmd=show&node=anyload">
+ knowledge pool node of anyload.
+</a>
+   
+</dd></dl>
+
+<h2 id="benchmark">Benchmark</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Benchmark()
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Benchmark the GUI speed.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+This action is used to speed-test the GUI rendering.  It redraws the current screen as many times as possible in ten seconds. It reports the amount of time needed to draw the screen once, in average. 
+</dd></dl>
+
+<h2 id="center">Center</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Center()
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Moves the pointer to the center of the window.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+lib_hid_common plugin
+</table>
+<p>
+Move the pointer to the center of the window, but only if it's currently within the window already. 
+</dd></dl>
+
+<h2 id="cursor">Cursor</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Cursor(Type,DeltaUp,DeltaRight,Units)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Move the cursor.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+This action moves the mouse cursor.  Unlike other actions which take coordinates, this action's coordinates are always relative to the user's view of the board.  Thus, a positive 
+<i>DeltaUp</i>
+ may move the cursor away from the board origin if the board is inverted (flipped, looked from the bottom). 
+<p>
+ 
+<i>Type</i>
+ is one of 
+<i>
+Pan
+</i>
+ or 
+<i>
+Warp
+</i>
+. 
+<i>
+Pan
+</i>
+ causes the viewport to move such that the crosshair is under the mouse cursor. 
+<i>
+Warp
+</i>
+ causes the mouse cursor to move to be above the crosshair. 
+<p>
+ 
+<i>Units</i>
+ can be one of the following: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<td>
+mil
+<br>
+mm  
+<td>
+The cursor is moved by that amount, in board units.   
+<tr>
+
+<td>
+grid  
+<td>
+The cursor is moved by that many grid points.   
+<tr>
+
+<td>
+view  
+<td>
+The values are percentages of the viewport's view. Thus, a pan of      
+<i>
+100
+</i>
+ would scroll the viewport by exactly the width of the current view.    
+<tr>
+
+<td>
+board  
+<td>
+ The values are percentages of the board size. Thus, a move of       
+<i>
+50,50
+</i>
+ moves you halfway across the board.  
+</table>
+ 
+</dd></dl>
+
+<h2 id="dowindows">dowindows</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Argument: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ 1 
+<br>
+ Layout  
+<td>
+ Open the layout window.  Since the layout window is always shown anyway, this has no effect.   
+<tr>
+
+<th>
+ 2 
+<br>
+ Library  
+<td>
+ Open the library window.   
+<tr>
+
+<th>
+ 3 
+<br>
+ Log  
+<td>
+ Open the log window.   
+<tr>
+
+<th>
+ 4 
+<br>
+ Netlist  
+<td>
+ Open the netlist window.   
+<tr>
+
+<th>
+ 5 
+<br>
+ Preferences  
+<td>
+ Open the preferences window.   
+<tr>
+
+<th>
+ 6 
+<br>
+ DRC  
+<td>
+ Open the DRC violations window.   
+<tr>
+
+<th>
+ 7 
+<br>
+ Search  
+<td>
+ Open the advanced search window.  
+</table>
+   
+</dd></dl>
+
+<h2 id="getxy">GetXY</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+GetXY([message, [x|y]])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Get a coordinate. If x or y specified, the return value of the action is the x or y coordinate.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Prompts the user for a coordinate, if one is not already selected. 
+</dd></dl>
+
+<h2 id="listscripts">ListScripts</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ListScripts([pat])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+List fungw scripts, optionally filtered wiht regex pat.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+Print one line in the log for each currently loaded script. If 
+<i>pat</i>
+ is specified, filter the list using 
+<i>pat</i>
+ as a case sensitive  
+<a href="http://www.repo.hu/projects/genregex/genregex.7.html">
+extended regex
+</a>
+ on script ID, file name and language (list only scripts that match with any of these fields).  
+</dd></dl>
+
+<h2 id="livescript">LiveScript</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+LiveScript([new], [name])
+LiveScript(load|save, name, [filame])
+LiveScript(run|stop|rerun|undo, name)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Manage a live script
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+The first argument determines what operation the action performs and how subsequent arguments are interpreted: 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ new, [name]  
+<td>
+ Create a new live script and open a new live script dialog. 
+<i>
+name
+</i>
+       is an unique live script name that identifies the window. If not       specified, "default" is used"   
+<tr>
+
+<th>
+ load, name, [filename]  
+<td>
+ Replace the script source in the LiveScript window identified by       
+<i>
+name
+</i>
+ with the content loaded from a file. If 
+<i>
+filename
+</i>
+       is not specified, open a file selector dialog.   
+<tr>
+
+<th>
+ save, name, [filename]  
+<td>
+ Save the script source in the LiveScript window identified by       
+<i>
+name
+</i>
+ to a file. If 
+<i>
+filename
+</i>
+ is not specified, open a       file selector dialog.   
+<tr>
+
+<th>
+ run, name  
+<td>
+ Run the script in the LiveScript window identified by       
+<i>
+name
+</i>
+.   
+<tr>
+
+<th>
+ stop, name  
+<td>
+ Stop the script in the LiveScript window identified by       
+<i>
+name
+</i>
+, if ti is running in persistent mode.   
+<tr>
+
+<th>
+ undo, name  
+<td>
+ Undo the "init changes" of the script in the LiveScript window       identified by 
+<i>
+name
+</i>
+. Init changes are those board changes       the script has done while running its initialization section.       Live script undo is possible only if there was no user edit after       the script finished.   
+<tr>
+
+<th>
+ rerun, name  
+<td>
+ Stop, undo and run the script in the LiveScript window identified by       
+<i>
+name
+</i>
+.  
+</table>
+  
+</dd></dl>
+
+<h2 id="loadscript">LoadScript</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+LoadScript(id, filename, [language])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Load a fungw script
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+
+<i>id</i>
+ is an arbitrary string assigned by the user. 
+<i>id</i>
+ must be unique per pcb-rnd session per script and may contain alphanumeric characters and undescrore. 
+<p>
+ 
+<i>fn</i>
+ is the file name of the script, which is a path. Pcb-rnd does not do any search, it only opens the path as specified. 
+<p>
+ 
+<i>lang</i>
+ is the scripting language, as in  
+<a href="http://repo.hu/projects/fungw/lang.html">
+fungw plugin name
+</a>
+. When not specified, the code makes a guess (based on the file name). 
+</dd></dl>
+
+<h2 id="message">Message</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+message([ERROR|WARNING|INFO|DEBUG,] message)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Writes a message to the log window.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+This action displays a message to the log window.  This action is primarily provided for use by scripts and external programs which may interface with pcb-rnd. If multiple arguments are given, each one is sent to the log window followed by a newline. 
+<p>
+ If there are 2 or more arguments and the first argument matches, in a case sensitive manner, one of the below keywords, the message is registered on the specified error level. Else the PCB_MSG_INFO error level is used. 
+<p>
+ 
+<table border=1>
+ 
+<tr>
+
+<th>
+first argument
+<th>
+erro level 
+<tr>
+
+<td>
+ERROR         
+<td>
+ PCB_MSG_ERROR 
+<tr>
+
+<td>
+WARNING       
+<td>
+ PCB_MSG_WARNING 
+<tr>
+
+<td>
+INFO          
+<td>
+ PCB_MSG_INFO 
+<tr>
+
+<td>
+DEBUG         
+<td>
+ PCB_MSG_DEBUG 
+</table>
+  
+</dd></dl>
+
+<h2 id="onliner">onliner</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>n/a
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+The 
+<a href="#oneliner">oneliner</a>
+ action is designed for quick execution of short, trivial scripts, such as a for loop for repeating an action. It supports any scripting language currently availabel through fungw. Each oneliner is an independent script context - variables, functions and other global states do not persist. 
+<p>
+ This group of actions offers three forms: 
+<ul>
+  
+<li>
+ 
+<a href="#oneliner">oneliner</a>
+(
+<i>lang</i>
+, 
+<i>script</i>
+) - execute the script in the language specified  
+<li>
+ lang(script) - shorthand for the above  
+<li>
+ lang - switch the command line interpreter to execute one-liners in the given language, until /exit 
+</ul>
+ 
+<p>
+ For example, a simple calculation using awk can be done in three ways: 
+<ul>
+  
+<li>
+ 
+<i>
+oneliner(awk, 'print 42*3')
+</i>
+  
+<li>
+ 
+<i>
+awk('print 42*3')
+</i>
+  
+<li>
+ 
+<i>
+awk
+</i>
+, then 
+<i>
+print 42*3
+</i>
+, then 
+<i>
+/exit
+</i>
+ 
+</ul>
+ 
+</dd></dl>
+
+<h2 id="pan">Pan</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Pan(Mode)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Start or stop panning (Mode = 1 to start, 0 to stop)
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+lib_hid_common plugin
+</table>
+<p>
+Start or stop panning.  To start call with Mode = 1, to stop call with Mode = 0.  
+</dd></dl>
+
+<h2 id="print">Print</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Print()
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Present the print export dialog for printing the layout from the GUI.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Open an export dialog listing all printing plugins, prompt the user for their options, and print the layout. 
+<p>
+ Available only with GUI HIDs: it's merely a graphical shorthand that in turn calls the export plugin for printing.    
+</dd></dl>
+
+<h2 id="promptfor">PromptFor</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+PromptFor([message[,default[,title]]])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Prompt for a string. Returns the string (or NULL on cancel)
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+UI-independent way of asking the user for a string. When GUI is available, it is a dialog box, else it's console input. Return value, unlike with other actions, is a string. The return value is NULL on cancel.   
+</dd></dl>
+
+<h2 id="reloadscript">ReloadScript</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ReloadScript(id)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Reload a fungw script
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+
+<i>id</i>
+ is the same that was specified for 
+<a href="#loadscript">loadscript</a>
+. If loading the new verison of the script fails, 
+<i>id</i>
+ is released (can be reused for a new LoadScript).  
+</dd></dl>
+
+<h2 id="scriptcookie">ScriptCookie</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ScriptCookie()
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Return a cookie specific to the current script instance during script initialization
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+The script: 
+<ul>
+  
+<li>
+ may call ScriptCookie() 
+<b>
+during script initialization
+</b>
+ and save the resulting cookie string  
+<li>
+ may use the cookie string to register to core pcb-rnd infrastructure that requires cookie, such as 
+<a href="#createmenu">createmenu</a>
+  
+<li>
+ can depend on pcb-rnd to call any unregistering associated with this specific cookie atomatically after script unload (
+<a href="#preunload">preunload</a>
+). 
+</ul>
+ 
+<p>
+ The function can not be called outside of script initialization. The cookie string can be used any time between script load and script unload. 
+</dd></dl>
+
+<h2 id="scriptpersistency">ScriptPersistency</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+ScriptPersistency(read|remove)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Read or remove script persistency data savd on preunload
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+When a script is unloaded, its action 
+<a href="#preunload">preunload</a>
+ is called. The return value is saved as script persistent data. When the script is loaded again later, it can use 
+<a href="#scriptpersistency">scriptpersistency</a>
+(
+<i>read</i>
+) to read the data saved. 
+<p>
+ 
+<a href="#scriptpersistency">scriptpersistency</a>
+(
+<i>remove</i>
+) deletes the data from disk. 
+<p>
+ Note: the data is per script id, not per script file name. 
+</dd></dl>
+
+<h2 id="scroll">Scroll</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Scroll(up|down|left|right, [pixels])
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Scroll the viewport.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+lib_hid_common plugin
+</table>
+<p>
+Arguments: 
+<p>
+ 
+<table border=1 cellspacing=0>
+   
+<tr>
+
+<th>
+ up|down|left|right  
+<td>
+ Specifies the direction to scroll   
+<tr>
+
+<th>
+ pix  
+<td>
+ Optional.  Specifies how many pixels to scroll by. If not specified:       default pix is 100. 
+</table>
+  
+</dd></dl>
+
+<h2 id="setunits">SetUnits</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+SetUnits(mm|mil)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Set the default measurement units.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ mil  
+<td>
+ Sets the display units to mils (1/1000 inch).   
+<tr>
+
+<th>
+ mm  
+<td>
+ Sets the display units to millimeters. 
+</table>
+ 
+</dd></dl>
+
+<h2 id="tool">Tool</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+Tool(Arc|Arrow|Copy|InsertPoint|Line|Lock|Move|None|PasteBuffer)
+Tool(Poly|Rectangle|Remove|Rotate|Text|Thermal|Via)
+Tool(Press|Release|Cancel|Stroke)
+Tool(Save|Restore)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Change or use the tool mode.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Selects the tool or changes tool related global states. 
+<p>
+ 
+<table border=1 cellspacing=0>
+  
+<tr>
+
+<th>
+ Arc 
+<br>
+ Arrow 
+<br>
+ Copy 
+<br>
+ InsertPoint 
+<br>
+ Line 
+<br>
+ Lock           
+<br>
+ Move 
+<br>
+ None 
+<br>
+ PasteBuffer 
+<br>
+ Poly 
+<br>
+ PolyHole 
+<br>
+ Rectangle           
+<br>
+ Remove 
+<br>
+ Rotate 
+<br>
+ Text 
+<br>
+ Thermal 
+<br>
+ Via 
+<br>
+ ...  
+<td>
+ Select the indicated tool.   
+<tr>
+
+<th>
+ Press  
+<td>
+ Called when you press the mouse button, or move the mouse.   
+<tr>
+
+<th>
+ Release  
+<td>
+ Called when you release the mouse button.   
+<tr>
+
+<th>
+ Cancel  
+<td>
+ Cancels any pending tool activity, allowing you to restart elsewhere.       For example, this allows you to start a new line rather than attach a       line to the previous line.   
+<tr>
+
+<th>
+ Escape  
+<td>
+ Similar to Cancel but calling this action a second time will return       to the Arrow tool.   
+<tr>
+
+<th>
+ Stroke  
+<td>
+ If pcb-rnd was built with libstroke, this invokes the stroke       input method.  If not, this will restart a drawing mode if you were       drawing, else it will select objects.   
+<tr>
+
+<th>
+ Save  
+<td>
+ Remembers the current tool.   
+<tr>
+
+<th>
+ Restore  
+<td>
+ Restores the tool to the last saved tool.  
+</table>
+ 
+</dd></dl>
+
+<h2 id="unloadscript">UnloadScript</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+UnloadScript(id)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Unload a fungw script
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>
+script plugin
+</table>
+<p>
+
+<i>id</i>
+ is the same that was specified for 
+<a href="#loadscript">loadscript</a>
+. After the call 
+<i>id</i>
+ is released (can be reused for a new LoadScript). 
 </dd></dl>
 
 </body>

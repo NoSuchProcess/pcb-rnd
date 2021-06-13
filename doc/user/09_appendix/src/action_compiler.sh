@@ -1,13 +1,15 @@
 #!/bin/sh
 
 SEP="<@@@@>"
+SEPH="<@@H@@>"
 
 compile()
 {
-	awk -v "SEP=$SEP" '
+	awk -v "SEP=$SEP" -v "SEPH=$SEPH" '
 	BEGIN {
 		q="\""
 		SEP="^" SEP
+		SEPH="^" SEPH
 	}
 
 	function strip(s) {
@@ -60,6 +62,16 @@ compile()
 		print "<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>"  notav(COOKIE[current])
 		print "</table>"
 		print "<p>"
+		next
+	}
+
+
+	($0 ~ SEPH) {
+		end_act()
+		action = ""
+		$1=""
+		print "<h1>" $0 "</h1>"
+		aname=""
 		next
 	}
 
@@ -150,9 +162,15 @@ echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www
 	)
 	for fn in "$@"
 	do
-		echo ""
-		echo "$SEP $fn"
-		tr "\n\r\t" "   " < $fn | sed "s@<@\n<@g;s@>@>\n@g;"
+		if test "$fn" = "LIBRND"
+		then
+			echo ""
+			echo "$SEPH librnd actions (common to Ringdove)"
+		else
+			echo ""
+			echo "$SEP $fn"
+			tr "\n\r\t" "   " < $fn | sed "s@<@\n<@g;s@>@>\n@g;"
+		fi
 	done
 ) |  compile
 
