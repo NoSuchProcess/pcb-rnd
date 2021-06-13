@@ -118,7 +118,7 @@ any time, using the SetValue() action or using the menu.
 The menu system is loaded and merged from multiple menu files and is dynamic
 (can be changed while pcb-rnd is running). There is a base menu file
 (file name is partially configured by conf node rc/menu_file), typically
-/usr/share/pcb-menu-default.lht. This is file is loaded first, with priority 0.
+/usr/share/menu-default.lht. This is file is loaded first, with priority 0.
 Then pcb-rnd loads further menu files and menu file patches, for feature plugins,
 scripts or user addons at higher priority.
 <p>
@@ -131,7 +131,7 @@ The following menu file/patch sources are supported:
 <p>
 <table border=1>
 	<tr><th> source            <th> usual prio    <th> description
-	<tr><td> base              <td> 0             <td> factory menu file, normally /usr/share/pcb-menu-default.lht
+	<tr><td> base              <td> 0             <td> factory menu file, normally /usr/share/menu-default.lht
 	<tr><td> plugins (static)  <td> 100..199      <td> menu files embedded in feature plugins (e.g. to create import menus per format)
 	<tr><td> user              <td> 300..400      <td> menu files/patches loaded upon user request (conf node: rc/menu_patches)
 	<tr><td> action (scripts)  <td> 500           <td> using the CreateMenu() action

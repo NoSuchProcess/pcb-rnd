@@ -88,7 +88,7 @@ TODO("librnd: remove this once librnd is not extern anymore")
 #undef pup_buildins
 
 static const char *menu_file_paths[4];
-static const char *menu_name_fmt = "pcb-menu-%s.lht";
+static const char *menu_name_fmt = "menu-%s.lht";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
 

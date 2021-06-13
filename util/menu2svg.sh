@@ -21,7 +21,7 @@
 fn="$1"
 if test -z $fn
 then
-	fn="../src/pcb-menu-gtk.lht"
+	fn="../src/menu-default.lht"
 fi
 
 lhtflat < $fn  | tee LHT | awk -F "[\t]" '

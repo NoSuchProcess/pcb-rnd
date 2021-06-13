@@ -321,14 +321,14 @@ print [@
 ##### module rules end #####
 
 ### default menu embed
-pcb_menu_default.c: pcb-menu-default.lht $(CQUOTE)
-	$(CQUOTE) -n rnd_hidlib_default_embedded_menu <pcb-menu-default.lht > pcb_menu_default.c
+pcb_menu_default.c: menu-default.lht $(CQUOTE)
+	$(CQUOTE) -n rnd_hidlib_default_embedded_menu <menu-default.lht > pcb_menu_default.c
 
 pcblib_DATA= \
 	default_font \
 	default2.lht \
 	default4.lht \
-	pcb-menu-default.lht
+	menu-default.lht
 
 EXTRA_DIST= \
 	default_font \
@@ -371,7 +371,7 @@ install_pcbrnd:
 	$(SCCBOX) mkdir -p "$(BINDIR)" "$(DATADIR)" "$(LIBDIR)" "$(LIBDIR)/plugins" "$(CONFDIR)"
 	$(SCCBOX) $(HOW) "pcb-rnd$(EXE)" "$(BINDIR)/pcb-rnd$(EXE)"
 	$(SCCBOX) $(HOW) "pcb-conf.lht" "$(CONFDIR)/pcb-conf.lht"
-	$(SCCBOX) $(HOW) "pcb-menu-default.lht" "$(CONFDIR)/pcb-menu-default.lht"
+	$(SCCBOX) $(HOW) "menu-default.lht" "$(CONFDIR)/menu-default.lht"
 	$(SCCBOX) $(HOW) "default2.lht" "$(DATADIR)/default2.lht"
 	$(SCCBOX) $(HOW) "default4.lht" "$(DATADIR)/default4.lht"
 	$(SCCBOX) $(HOW) "default_font" "$(DATADIR)/default_font"@/local/pcb/rules/install_@

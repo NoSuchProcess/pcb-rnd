@@ -1,4 +1,4 @@
-MENU_RES=../src/pcb-menu-default.lht
+MENU_RES=../src/menu-default.lht
 KEYLIST=../util/keylist.sh
 DEBLIST=../util/devhelpers/deblist.sh
 ROOT=..
