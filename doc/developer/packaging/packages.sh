@@ -2,13 +2,26 @@
 ROOT=../../..
 proot=$ROOT/src_plugins
 
-LIBRND_ROOT=`make -f librnd_root.mk`
+if test -f $ROOT/Makefile.conf
+then
+	LIBRND_ROOT=`make -f librnd_root.mk`
+fi
+
+if test -z "$LIBRND_ROOT"
+then
+	if test -f /usr/local/share/librnd3/librnd_packages.sh
+	then
+		LIBRND_ROOT=/usr/local
+	else
+		LIBRND_ROOT=/usr
+	fi
+fi
 
 if test -f $LIBRND_ROOT/share/librnd3/librnd_packages.sh
 then
 	. $LIBRND_ROOT/share/librnd3/librnd_packages.sh
 else
-	echo "librnd installation not found" >&2
+	echo "librnd installation not found - try to configure this checkout first or install librnd in /usr or /usr/local" >&2
 	exit 1
 fi
 
