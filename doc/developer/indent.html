@@ -1,36 +1,5 @@
 <html>
 <body>
-<h1> pcb-rnd - indentation </h1>
-
-As of r1022 all old code is converted using indent(1). Our preferred
-coding style is close to what the following command line produces, using
-our patched version of indent(1):
-<pre>
-indent --line-length256 -brs -br -nce --tab-size2 -ut -npsl  -npcs -hnl -cli2 -nsaf -sai -nsaw -ncs -c0 -cd0 -cp0
-</pre>
-<p>
-Contributors are kindly asked to follow this style or run the above
-commandline on their <b>new</b> code before sending a patch or committing
-to svn. The style of existing code lines should <b>not</b> be changed,
-not even the "surrounding" lines to a largish patch, especially not in the
-same patch/commit with actual code changes.
-<p>
-We do not put space between the pointer-asterisk and name; indent(1)
-unfortunately does this in function declaration:
-<table border=1>
-<tr><th>right <th>wrong
-<tr>
-	<td><code>int&nbsp;foo(char&nbsp;*bar);</code>
-	<td><code>int&nbsp;foo(char&nbsp;*&nbsp;bar);</code>
-</table>
-<p>
-We have a <a href="indent_fdecl.patch">patch</a> against indent 2.2.11 to
-fix this.
-<p>
-We do not use tabs for aligning code in columns; we use tabs exclusively
-to indicate levels logical alignment. indent(1) attempts to align the
-right-side comments using tabs. We have a <a href="indent_cmt.patch">patch</a>
-against indent 2.2.11 to change this when column is set to 0.
-
+Moved to <a href="http://www.repo.hu/projects/librnd/developer/indent.html">librnd</a>
 </body>
 </html>
