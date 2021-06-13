@@ -5,6 +5,7 @@
  *  (this file is based on PCB, interactive printed circuit board design)
  *  Copyright (C) 2006 DJ Delorie
  *  Copyright (C) 2011 PCB Contributers (See ChangeLog for details)
+ *  Copyright (C) 2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -58,7 +59,9 @@
 #include <memory.h>
 #include <limits.h>
 #include <setjmp.h>
-#include <glib.h>
+#include <genht/htpp.h>
+#include <genht/hash.h>
+#include <genht/ht_utils.h>
 
 #include "board.h"
 #include "data.h"
@@ -533,8 +536,8 @@ typedef struct Extra {
 } Extra;
 
 static Extra multi_next;
-static GHashTable *lines;
-static GHashTable *arcs;
+static htpp_t lines;
+static htpp_t arcs;
 static int did_something;
 static int current_is_component, current_is_solder;
 
@@ -546,8 +549,8 @@ static void trace_paths();
 #endif
 static void mark_line_for_deletion(pcb_line_t *);
 
-#define LINE2EXTRA(l)    ((Extra *)g_hash_table_lookup (lines, l))
-#define ARC2EXTRA(a)     ((Extra *)g_hash_table_lookup (arcs, a))
+#define LINE2EXTRA(l)    ((Extra *)htpp_get(&lines, l))
+#define ARC2EXTRA(a)     ((Extra *)htpp_get(&arcs, a))
 #define EXTRA2LINE(e)    (e->parent.line)
 #define EXTRA2ARC(e)     (e->parent.arc)
 #define EXTRA_IS_LINE(e) (e->type == PCB_OBJ_LINE)
@@ -577,15 +580,19 @@ static void unlink_end(Extra * x, Extra ** e)
 
 #if TRACE1
 
-static void clear_found_cb(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
-{
-	extra->found = 0;
-}
-
 static void clear_found()
 {
-	g_hash_table_foreach(lines, (GHFunc) clear_found_cb, NULL);
-	g_hash_table_foreach(arcs, (GHFunc) clear_found_cb, NULL);
+	htpp_entry_t *en;
+
+	for(en = htpp_first(&lines); en != NULL; en = htpp_next(&lines, en)) {
+		Extra *extra = en->value;
+		extra->found = 0;
+	}
+
+	for(en = htpp_first(&arcs); en != NULL; en = htpp_next(&arcs, en)) {
+		Extra *extra = en->value;
+		extra->found = 0;
+	}
 }
 #endif
 
@@ -752,7 +759,7 @@ static rnd_r_dir_t find_pair_pstkline_callback(const rnd_box_t *b, void *cl)
 	   lines so they can be pulled independently. */
 	if (pcb_isc_pstk_line(pcb_find0, pin, line, rnd_false)) {
 #if TRACE1
-		rnd_printf("splitting line %#mD-%#mD because it passes through pin %#mD\n",
+		rnd_printf("splitting line %#mD-%#mD because it passes through pin %#mD \n",
 							 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, pin->x, pin->y);
 #endif
 		unlink_end(e, &e->start.next);
@@ -774,7 +781,7 @@ static rnd_r_dir_t find_pair_pstkarc_callback(const rnd_box_t *b, void *cl)
 	return RND_R_DIR_NOT_FOUND;
 }
 
-static void null_multi_next_ends(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
+static void null_multi_next_ends(Extra *extra)
 {
 	if (extra->start.next == &multi_next)
 		extra->start.next = NULL;
@@ -785,8 +792,8 @@ static void null_multi_next_ends(pcb_any_obj_t * ptr, Extra * extra, void *userd
 
 static Extra *new_line_extra(pcb_line_t * line)
 {
-	Extra *extra = g_slice_new0(Extra);
-	g_hash_table_insert(lines, line, extra);
+	Extra *extra = calloc(sizeof(Extra), 1);
+	htpp_set(&lines, line, extra);
 	extra->parent.line = line;
 	extra->type = PCB_OBJ_LINE;
 	return extra;
@@ -794,8 +801,8 @@ static Extra *new_line_extra(pcb_line_t * line)
 
 static Extra *new_arc_extra(pcb_arc_t * arc)
 {
-	Extra *extra = g_slice_new0(Extra);
-	g_hash_table_insert(arcs, arc, extra);
+	Extra *extra = calloc(sizeof(Extra), 1);
+	htpp_set(&arcs, arc, extra);
 	extra->parent.arc = arc;
 	extra->type = PCB_OBJ_ARC;
 	return extra;
@@ -823,6 +830,8 @@ static void find_pairs_subc_pstk(pcb_data_t *data)
 
 static void find_pairs()
 {
+	htpp_entry_t *en;
+
 	PCB_ARC_LOOP(PCB_CURRLAYER(PCB)); {
 		Extra *e = new_arc_extra(arc);
 		fix_arc_extra(arc, e);
@@ -853,8 +862,12 @@ static void find_pairs()
 	find_pairs_pstk(PCB->Data);
 	find_pairs_subc_pstk(PCB->Data);
 
-	g_hash_table_foreach(lines, (GHFunc) null_multi_next_ends, NULL);
-	g_hash_table_foreach(arcs, (GHFunc) null_multi_next_ends, NULL);
+
+	for(en = htpp_first(&lines); en != NULL; en = htpp_next(&lines, en))
+		null_multi_next_ends(en->value);
+
+	for(en = htpp_first(&arcs); en != NULL; en = htpp_next(&arcs, en))
+		null_multi_next_ends(en->value);
 }
 
 #define PROP_NEXT(e,n,f) 		\
@@ -891,11 +904,11 @@ static void propogate_end_pin(Extra * e, End * near, End * far)
 	}
 }
 
-static void propogate_end_step1_cb(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
+static void propogate_end_step1_cb(pcb_line_t *line, Extra *extra)
 {
 	if (extra->start.next != NULL && extra->start.next == extra->end.next) {
 		extra->end.next = NULL;
-		mark_line_for_deletion((pcb_line_t *) ptr);
+		mark_line_for_deletion(line);
 	}
 
 	if (extra->start.at_pin)
@@ -905,7 +918,7 @@ static void propogate_end_step1_cb(pcb_any_obj_t * ptr, Extra * extra, void *use
 		propogate_ends_at(extra, &extra->end, &extra->start);
 }
 
-static void propogate_end_step2_cb(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
+static void propogate_end_step2_cb(Extra *extra)
 {
 	if (extra->start.in_pin) {
 #if TRACE1
@@ -921,7 +934,7 @@ static void propogate_end_step2_cb(pcb_any_obj_t * ptr, Extra * extra, void *use
 	}
 }
 
-static void propogate_end_step3_cb(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
+static void propogate_end_step3_cb(Extra *extra)
 {
 	if (extra->start.next)
 		propogate_end_pin(extra, &extra->end, &extra->start);
@@ -931,15 +944,20 @@ static void propogate_end_step3_cb(pcb_any_obj_t * ptr, Extra * extra, void *use
 
 static void propogate_ends()
 {
+	htpp_entry_t *en;
+
 	/* First, shut of "in pin" when we have an "at pin".  We also clean
 	   up zero-length lines.  */
-	g_hash_table_foreach(lines, (GHFunc) propogate_end_step1_cb, NULL);
+	for(en = htpp_first(&lines); en != NULL; en = htpp_next(&lines, en))
+		propogate_end_step1_cb(en->key, en->value);
 
 	/* Now end all paths at pins/pads.  */
-	g_hash_table_foreach(lines, (GHFunc) propogate_end_step2_cb, NULL);
+	for(en = htpp_first(&lines); en != NULL; en = htpp_next(&lines, en))
+		propogate_end_step2_cb(en->value);
 
 	/* Now, propogate the pin/pad/vias along paths.  */
-	g_hash_table_foreach(lines, (GHFunc) propogate_end_step3_cb, NULL);
+	for(en = htpp_first(&lines); en != NULL; en = htpp_next(&lines, en))
+		propogate_end_step3_cb(en->value);
 }
 
 static Extra *last_pextra = 0;
@@ -1988,7 +2006,7 @@ static void maybe_pull_1(pcb_line_t *line)
 #if TRACE0
 	printf("\033[35mdid_something: recursing\033[0m\n");
 	{
-		int i = /*rnd_gui->confirm_dialog("recurse?", 0)*/ 1;
+		int i = /*rnd_gui->confirm_dialog("recurse?", 0)*/1;
 		printf("confirm = %d\n", i);
 		if (i == 0)
 			return;
@@ -2034,7 +2052,7 @@ static void validate_pair(Extra * e, End * end)
 	abort();
 }
 
-static void validate_pair_cb(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
+static void validate_pair_cb(Extra * extra)
 {
 	validate_pair(extra, &extra->start);
 	validate_pair(extra, &extra->end);
@@ -2042,16 +2060,15 @@ static void validate_pair_cb(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
 
 static void validate_pairs()
 {
-	g_hash_table_foreach(lines, (GHFunc) validate_pair_cb, NULL);
+	htpp_entry_t *en;
+
+	for(en = htpp_first(&lines); en != NULL; en = htpp_next(&lines, en))
+		validate_pair_cb(en->value);
 #if TRACE1
 	printf("\narcs\n");
 #endif
-	g_hash_table_foreach(arcs, (GHFunc) validate_pair_cb, NULL);
-}
-
-static void FreeExtra(Extra * extra)
-{
-	g_slice_free(Extra, extra);
+	for(en = htpp_first(&arcs); en != NULL; en = htpp_next(&arcs, en))
+		validate_pair_cb(en->value);
 }
 
 static void mark_ends_pending(pcb_line_t * line, Extra * extra, void *userdata)
@@ -2064,7 +2081,7 @@ static void mark_ends_pending(pcb_line_t * line, Extra * extra, void *userdata)
 }
 
 #if TRACE1
-static void trace_print_extra(pcb_any_obj_t * ptr, Extra * extra, void *userdata)
+static void trace_print_extra(Extra *extra)
 {
 	last_pextra = (Extra *) 1;
 	print_extra(extra, 0);
@@ -2072,11 +2089,15 @@ static void trace_print_extra(pcb_any_obj_t * ptr, Extra * extra, void *userdata
 
 static void trace_print_lines_arcs(void)
 {
+	htpp_entry_t *en;
+
 	printf("\nlines\n");
-	g_hash_table_foreach(lines, (GHFunc) trace_print_extra, NULL);
+	for(en = htpp_first(&lines); en != NULL; en = htpp_next(&lines, en))
+		trace_print_extra(en->value);
 
 	printf("\narcs\n");
-	g_hash_table_foreach(arcs, (GHFunc) trace_print_extra, NULL);
+	for(en = htpp_first(&arcs); en != NULL; en = htpp_next(&arcs, en))
+		trace_print_extra(en->value);
 
 	printf("\n");
 }
@@ -2086,6 +2107,7 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 {
 	int op = -2, select_flags = 0;
 	unsigned int cflg;
+	htpp_entry_t *en;
 
 	setbuf(stdout, 0);
 	nloops = 0;
@@ -2108,14 +2130,16 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	current_is_solder = (cflg & PCB_LYT_BOTTOM);
 	current_is_component = (cflg & PCB_LYT_TOP);
 
-	lines = g_hash_table_new_full(NULL, NULL, NULL, (GDestroyNotify) FreeExtra);
-	arcs = g_hash_table_new_full(NULL, NULL, NULL, (GDestroyNotify) FreeExtra);
+	htpp_init(&lines, ptrhash, ptrkeyeq);
+	htpp_init(&arcs, ptrhash, ptrkeyeq);
+
 
 	printf("pairing...\n");
 	find_pairs();
 	validate_pairs();
 
-	g_hash_table_foreach(lines, (GHFunc) mark_ends_pending, &select_flags);
+	for(en = htpp_first(&lines); en != NULL; en = htpp_next(&lines, en))
+		mark_ends_pending(en->key, en->value, &select_flags);
 
 #if TRACE1
 	trace_print_lines_arcs();
@@ -2168,9 +2192,11 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 
 #if TRACE0
 	printf("\nlines\n");
-	g_hash_table_foreach(lines, (GHFunc) trace_print_extra, NULL);
+	for(en = htpp_first(&lines); en != NULL; en = htpp_next(&lines, en))
+		trace_print_extra(en->value);
 	printf("\narcs\n");
-	g_hash_table_foreach(arcs, (GHFunc) trace_print_extra, NULL);
+	for(en = htpp_first(&arcs); en != NULL; en = htpp_next(&arcs, en))
+		trace_print_extra(en->value);
 	printf("\n");
 	printf("\nlines\n");
 #endif
@@ -2189,8 +2215,12 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 	}
 	PCB_END_LOOP;
 
-	g_hash_table_unref(lines);
-	g_hash_table_unref(arcs);
+	genht_uninit_deep(htpp, &lines, {
+		free(htent->value);
+	});
+	genht_uninit_deep(htpp, &arcs, {
+		free(htent->value);
+	});
 
 	pcb_undo_inc_serial();
 	RND_ACT_IRES(0);
