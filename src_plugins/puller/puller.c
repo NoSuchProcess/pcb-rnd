@@ -752,8 +752,8 @@ static rnd_r_dir_t find_pair_pstkline_callback(const rnd_box_t *b, void *cl)
 	   lines so they can be pulled independently. */
 	if (pcb_isc_pstk_line(pcb_find0, pin, line, rnd_false)) {
 #if TRACE1
-		rnd_printf("splitting line %#mD-%#mD because it passes through pin %#mD r%d\n",
-							 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, pin->x, pin->y, pin->Thickness / 2);
+		rnd_printf("splitting line %#mD-%#mD because it passes through pin %#mD\n",
+							 line->Point1.X, line->Point1.Y, line->Point2.X, line->Point2.Y, pin->x, pin->y);
 #endif
 		unlink_end(e, &e->start.next);
 		unlink_end(e, &e->end.next);
@@ -1988,7 +1988,7 @@ static void maybe_pull_1(pcb_line_t *line)
 #if TRACE0
 	printf("\033[35mdid_something: recursing\033[0m\n");
 	{
-		int i = rnd_gui->confirm_dialog("recurse?", 0);
+		int i = /*rnd_gui->confirm_dialog("recurse?", 0)*/ 1;
 		printf("confirm = %d\n", i);
 		if (i == 0)
 			return;
@@ -2152,10 +2152,12 @@ static fgw_error_t pcb_act_GlobalPuller(fgw_arg_t *res, int argc, fgw_arg_t *arg
 				if (did_something != old_did_something) {
 					pcb_undo_inc_serial();
 					old_did_something = did_something;
+/*
 					if (rnd_gui->confirm_dialog("more?", 0) == 0) {
 						did_something = 0;
 						break;
 					}
+*/
 				}
 #endif
 				/*rnd_gui->progress(0,0,0); */
