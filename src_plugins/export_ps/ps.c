@@ -621,7 +621,7 @@ static void ps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	global.filename = options[HA_psfile].str;
 	if (!global.filename)
-		global.filename = "pcb-out.ps";
+		global.filename = "pcb-rnd-out.ps";
 
 	/* cam mode shall result in a single file, no matter what other attributes say */
 	if (ps_cam.active) {

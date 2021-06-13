@@ -233,7 +233,7 @@ static void bom_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	bom_filename = options[HA_bomfile].str;
 	if (!bom_filename)
-		bom_filename = "pcb-out.bom";
+		bom_filename = "pcb-rnd-out.bom";
 
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &bom_filename);
 

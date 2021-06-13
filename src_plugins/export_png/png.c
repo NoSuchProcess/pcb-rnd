@@ -628,7 +628,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	filename = options[HA_pngfile].str;
 	if (!filename)
-		filename = "pcb-out.png";
+		filename = "pcb-rnd-out.png";
 
 	/* figure out width and height of the board */
 	if (options[HA_only_visible].lng) {

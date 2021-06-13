@@ -810,7 +810,7 @@ static void xy_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	xy_filename = options[HA_xyfile].str;
 	if (!xy_filename)
-		xy_filename = "pcb-out.xy";
+		xy_filename = "pcb-rnd-out.xy";
 
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &xy_filename);
 

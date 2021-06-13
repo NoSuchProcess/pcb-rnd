@@ -326,7 +326,7 @@ static void eps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	filename = options[HA_psfile].str;
 	if (!filename)
-		filename = "pcb-out.eps";
+		filename = "pcb-rnd-out.eps";
 
 	if (eps_cam.fn_template == NULL) {
 		f = rnd_fopen_askovr(&PCB->hidlib, eps_cam.active ? eps_cam.fn : filename, "w", NULL);

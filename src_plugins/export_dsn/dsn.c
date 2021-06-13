@@ -580,7 +580,7 @@ static void dsn_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	}
 	dsn_filename = options[HA_dsnfile].str;
 	if (!dsn_filename)
-		dsn_filename = "pcb-out.dsn";
+		dsn_filename = "pcb-rnd-out.dsn";
 
 	pcb_cam_begin_nolayer(PCB, &cam, NULL, options[HA_cam].str, &dsn_filename);
 

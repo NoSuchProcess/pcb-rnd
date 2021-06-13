@@ -235,7 +235,7 @@ static void excellon_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	fnbase = options[HA_excellonfile].str;
 	if (!fnbase)
-		fnbase = "pcb-out";
+		fnbase = "pcb-rnd-out";
 
 	i = strlen(fnbase);
 	filename = (char *) realloc(filename, i + SUFF_LEN);

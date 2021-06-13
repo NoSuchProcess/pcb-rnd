@@ -342,7 +342,7 @@ static void gerber_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	fnbase = options[HA_gerberfile].str;
 	if (!fnbase)
-		fnbase = "pcb-out";
+		fnbase = "pcb-rnd-out";
 
 	verbose = options[HA_verbose].lng || rnd_conf.rc.verbose;
 	all_layers = options[HA_all_layers].lng;
