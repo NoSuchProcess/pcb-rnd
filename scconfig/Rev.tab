@@ -1,3 +1,4 @@
+34899	configure	remove glib from puller
 34891	configure	renames for 3.0.0
 34772	configure	version bump to 3.0.0-dev and related API changes in librnd
 34707	configure	new release version
