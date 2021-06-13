@@ -9,7 +9,7 @@ CFG="-c rc/library_search_paths=dummy_lib -c rc/quiet=1"
 
 rm d0.lht d1.lht >/dev/null 2>&1
 
-cp pcb-menu-base.lht $1 $SRC
+cp menu-base.lht $1 $SRC
 (
 cd $SRC
 mkdir dummy_lib
@@ -24,7 +24,7 @@ rmdir dummy_lib
 
 mv $SRC/d0.lht .
 mv $SRC/d1.lht .
-rm $SRC/pcb-menu-base.lht $SRC/$1
+rm $SRC/menu-base.lht $SRC/$1
 
 diff -U1 d0.lht d1.lht | grep "^[ +-][^+-]"
 
