@@ -101,12 +101,12 @@ static char *conf_fn_compat(const char *dir, const char *old_name, const char *n
 
 	/* new exists: use it */
 	new_path = rnd_concat(dir, new_name, NULL);
-	if (rnd_file_readable(new_path))
+	if (rnd_file_readable(NULL, new_path))
 		return new_path;
 
 	/* new doesn't exist, old does; use the old and warn the user */
 	old_path = rnd_concat(dir, old_name, NULL);
-	if (rnd_file_readable(old_path)) {
+	if (rnd_file_readable(NULL, old_path)) {
 		rnd_message(RND_MSG_ERROR, "Using old (pre-3.0.0) config file name for compatibility\nPlease quit and rename %s to %s\n", old_path, new_path);
 		free(new_path);
 		return old_path;

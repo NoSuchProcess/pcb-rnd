@@ -242,7 +242,7 @@ static FILE *pcb_check_and_open_file(const char *Filename)
 		char message[RND_PATH_MAX + 80];
 		int response;
 
-		if (rnd_file_readable(Filename)) {
+		if (rnd_file_readable(&PCB->hidlib, Filename)) {
 			sprintf(message, "File '%s' exists, use anyway?", Filename);
 			response = rnd_hid_message_box(&PCB->hidlib, "warning", "Overwrite file", message, "cancel", 0, "ok", 1, NULL);
 			if (response != 1)

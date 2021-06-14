@@ -371,7 +371,7 @@ void free_strlist(gadl_list_t *lst)
 void require_gnetlist_backend(const char *dir, const char *backend)
 {
 	char *path = rnd_strdup_printf("%s/gnet-%s.scm", dir, backend);
-	if (!rnd_file_readable(path))
+	if (!rnd_file_readable_(path))
 		rnd_message(RND_MSG_WARNING, "WARNING: %s is not found, gnetlist will probably fail; please check your pcb-rnd installation!\n", path);
 	free(path);
 }
@@ -422,7 +422,7 @@ int main(int argc, char ** argv)
 	rnd_conf_update(NULL, -1); /* because of CLI changes */
 
 	if (!have_cli_project_file && !have_cli_schematics) {
-		if (!rnd_file_readable(LOCAL_PROJECT_FILE)) {
+		if (!rnd_file_readable_(LOCAL_PROJECT_FILE)) {
 			rnd_message(RND_MSG_ERROR, "Don't know what to do: no project or schematics given, no local project file %s found. Try %s --help\n", LOCAL_PROJECT_FILE, argv[0]);
 			exit(1);
 		}

@@ -978,7 +978,7 @@ int pcb_write_pcb_file(const char *Filename, rnd_bool thePcb, const char *fmt, r
 
 	/* for askovr, do not make a backup copy - if the user explicitly says overwrite, just overwrite */
 	if (!askovr)
-		overwrite = rnd_file_readable(Filename);
+		overwrite = rnd_file_readable(NULL, Filename);
 
 	if (overwrite) {
 		int len = strlen(Filename);
