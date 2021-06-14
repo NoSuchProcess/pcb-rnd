@@ -119,7 +119,7 @@ int hook_postarg()
 		free(tmp);
 	}
 
-	return rnd_hook_postarg(TO_STR(LIBRND_PREFIX));
+	return rnd_hook_postarg(TO_STR(LIBRND_PREFIX), "pcb-rnd");
 }
 
 
