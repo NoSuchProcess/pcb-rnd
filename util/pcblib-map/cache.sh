@@ -38,7 +38,7 @@ digest()
 }
 
 (
-cd ../../pcblib
+cd ../../footprint
 for n in `find .`
 do
 	case $n in

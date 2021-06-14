@@ -90,9 +90,11 @@ li:pcb-rnd-conf-v1 {
 			backup_format = {lihata}
 
 			li:library_search_paths = {
-				?../pcblib
-				?~/pcblib/
-				$(rc.path.share)/pcblib
+				?../footprint
+				?$(rc.path.design)/footprint
+				?~/.pcb-rnd/footprint/
+				?~/pcblib
+				$(rc.path.share)/footprint
 			}
 
 			keep_save_backups = false

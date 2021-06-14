@@ -1,7 +1,7 @@
 all: FORCE
 	cd src && $(MAKE)
 	cd util && $(MAKE)
-	cd pcblib && $(MAKE)
+	cd footprint && $(MAKE)
 #	cd doc && $(MAKE)
 
 test: FORCE
@@ -10,7 +10,7 @@ test: FORCE
 clean: FORCE
 	cd src && $(MAKE) clean
 	cd util && $(MAKE) clean
-	cd pcblib && $(MAKE) clean
+	cd footprint && $(MAKE) clean
 #	cd doc && $(MAKE) clean
 	cd tests && $(MAKE) clean
 	cd src_3rd/libminuid && $(MAKE) clean ; true
@@ -30,19 +30,19 @@ distclean: FORCE
 install: FORCE
 	cd src && $(MAKE) install
 	cd util && $(MAKE) install
-	cd pcblib && $(MAKE) install
+	cd footprint && $(MAKE) install
 	cd doc && $(MAKE) install
 
 linstall: FORCE
 	cd src && $(MAKE) linstall
 	cd util && $(MAKE) linstall
-	cd pcblib && $(MAKE) linstall
+	cd footprint && $(MAKE) linstall
 	cd doc && $(MAKE) linstall
 
 uninstall: FORCE
 	cd src && $(MAKE) uninstall
 	cd util && $(MAKE) uninstall
-	cd pcblib && $(MAKE) uninstall
+	cd footprint && $(MAKE) uninstall
 	cd doc && $(MAKE) uninstall
 
 include Makefile.conf

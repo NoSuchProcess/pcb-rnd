@@ -16,9 +16,9 @@ li:pcb-rnd-conf-v1 {
   }
   ha:rc {
    li:library_search_paths {
-    ?../pcblib
-    ?~/pcblib/
-    $(rc.path.share)/pcblib
+    ?../footprint
+    ?~/.pcb-rnd/footprint/
+    $(rc.path.share)/footprint
    }
    backup_interval = {  60  }
   }

@@ -169,18 +169,19 @@ why do I need it in the default library?!"</i>
 <h3> pcblib </h3>
 <p>
 The default library in <a href="http://repo.hu/projects/pcb-rnd">pcb-rnd</a>
-is called the "pcblib" (lib and newlib are already used by vanilla pcb).
-Pcblib content consists of 
+was called the "pcblib" (lib and newlib are already used by vanilla pcb) and
+is called footprint/ from 3.0.0.
+This footprint library content consists of 
 <a href="http://igor2.repo.hu/cgi-bin/pcblib-param.cgi">parametric (generated) footprints</a>
 and static footprints ("file elements"). This page queries static footprints.
 <p>
-The goal of pcblib is to ship a minimalistic library of the real essential
-parts, targeting small projects and hobbysts. Pcblib assumes users can
+The goal of this lib is to ship a minimalistic library of the real essential
+parts, targeting small projects and hobbysts. This assumes users can
 grow their own library by downloading footprints from various online sources
 (e.g. <a href="http://gedasymbols.org"> gedasymbols</a>) or draw their own
 as needed. Thus instead of trying to be a complete collection of footprints
 ever drawn, it tries to collect the common base so that it is likely that 90%
-of pcblib users will use 90% of the footprints in their projects.
+of users will use 90% of the footprints of this lib in their projects.
 
 <td> &nbsp;&nbsp;&nbsp;
 <td valign=top bgcolor="#eefeee">

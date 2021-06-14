@@ -20,7 +20,7 @@ Contact:
 pcb-rnd source distribution is organized into:
   doc/            documentation
   font/           stock vector font files that can be used on a PCB
-  pcblib/         a basic footprint library
+  footprint/      a basic footprint library
   scconfig/       ./configure implementation
   src/            a core program that deals with all of the internal
                   database procedures

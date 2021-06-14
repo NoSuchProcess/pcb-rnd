@@ -235,10 +235,11 @@ static char *main_path_init(char *argv0)
 	sprintf(exec_prefix, "%s%s%s", bindir, RND_DIR_SEPARATOR_S, BINDIR_TO_EXECPREFIX);
 
 	/* export the most important paths and data for child processes (e.g. parametric footprints) */
-	tmp = rnd_concat(PCBSHAREDIR, "/pcblib", NULL);
+	tmp = rnd_concat(PCBSHAREDIR, "/footprint", NULL);
 	se |= rnd_setenv("PCB_RND_VERSION",     PCB_VERSION,           1);
 	se |= rnd_setenv("PCB_RND_REVISION",    PCB_REVISION,          1);
-	se |= rnd_setenv("PCB_RND_PCBLIB",      tmp,                   1);
+	se |= rnd_setenv("PCB_RND_PCBLIB",      tmp,                   1); /* for backward compatibility - do not use */
+	se |= rnd_setenv("PCB_RND_FOOTPRINT",   tmp,                   1);
 	se |= rnd_setenv("PCB_RND_SHARE",       PCBSHAREDIR,           1);
 	se |= rnd_setenv("PCB_RND_LIB",         PCBLIBDIR,             1);
 	se |= rnd_setenv("PCB_RND_EXEC_PREFIX", exec_prefix,           1);
