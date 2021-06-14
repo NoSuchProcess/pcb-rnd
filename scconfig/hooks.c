@@ -351,6 +351,8 @@ int hook_generate()
 	print_sum_setting("/local/pcb/want_parsgen",   "Regenerating languages with bison & flex");
 	print_sum_setting("/local/pcb/debug",          "Compilation for debugging");
 	print_sum_setting_or("/local/pcb/symbols",     "Include debug symbols", istrue(get("/local/pcb/debug")));
+	print_sum_cfg_val("/local/prefix",             "installation prefix (--prefix)");
+	print_sum_cfg_val("/local/confdir",            "configuration directory (--confdir)");
 	print_sum_cfg_val("/local/pcb/dot_pcb_rnd",    ".pcb_rnd config dir under $HOME");
 
 #undef plugin_def
