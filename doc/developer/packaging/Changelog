@@ -1,19 +1,60 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=2.4.0
+  ver=3.0.0
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
-
-TODO: librnd-dev: new file sharedir/plugin.state
-TODO: removed $LC and $LP (we are not installing any librnd related file)
-TODO: menu file rename
-TODO: --confdir change; conf file renamed to conf_core.lht
-TODO: pcblib/ to footprint/ rename
 
 Packaging changes between 2.4.0 and 3.0.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A. changes that probably don't need action
 
+(nothing; all changes will require action)
+
 B. changes that probably DO need action
+
+1. Configuration changes
+   - please copy the new ./configure line for the new plugin mix
+   - default of confdir changed; please revise your --confdir
+     (we used to have the config files in $PREFIX/share/pcb-rnd by default,
+     new default is /etc/pcb-rnd)
+   - existing config file got renamed: $C/pcb-conf.lht to $C/conf_core.lht;
+     on upgrade we may want to keep user's modifications, if possible
+   - librnd3 needs to be packaged first, as pcb-rnd build depends on it
+
+2. Packages removed (they became librnd plugins):
+   - pcb-rnd-hid-gtk2-gdk
+   - pcb-rnd-hid-gtk2-gl
+   - pcb-rnd-hid-gtk2-lesstif
+   - librnd2
+   - librnd-dev
+
+3. New dependencies
+   - building the package depends on librnd3-dev (but it does not depend on
+     gtk, lesstif or glib, because all that code got moved to librnd!)
+   - pcb-rnd-core depends on librnd3
+   - pcb-rnd-import-net, pcb-rnd-auto depend, pcb-rnd-io-alien on librnd3
+   - pcb-rnd-lib-gui depends on librnd3-lib-gui
+   - pcb-rnd-cloud depends on librnd3-cloud
+
+4. Simplificaiton in installed paths
+   There is no $LP or $LC anymore as we are not installing librnd. Only
+   $P and $C remains, for pcb-rnd files. Please make sure your pcb-rnd
+   packaged don't include any librnd installed path.
+
+5. Plugin removed from package (moved to librnd): .so+.pup file removals
+   - pcb-rnd-lib-io doesn't contain plugin lib_gensexpr
+   - pcb-rnd-core doesn't contain plugins hid_batch, lib_portynet and script
+   - pcb-rnd-cloud doesn't contain plugin lib_wget
+   - pcb-rnd-lib-gui doesn't contain plugin irc and lib_hid_common
+
+6. File name changes in existing packages
+   - pcb-rnd-core:
+     - $C/pcb-conf.lht  ->  $C/conf_core.lht
+     - $C/pcb-menu-default.lht  ->  $C/menu-default.lht
+     - $PREFIX/share/pcb-rnd/pcblib/  ->  $PREFIX/share/pcb-rnd/footprint/
+
+7. Change of package description:
+   - pcb-rnd-lib-gui
+   - pcb-rnd-import-geo
