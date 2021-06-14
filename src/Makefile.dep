@@ -261,7 +261,6 @@
  plug_footprint.h plug_io.h plug_footprint.h \
  ../src_plugins/dialogs/dlg_obj_list.c \
  ../src_plugins/dialogs/dlg_netlist.c \
- ../src_plugins/dialogs/dlg_plugins.c \
  ../src_plugins/dialogs/dlg_printcalib.c \
  ../src_plugins/dialogs/dlg_view.h ../src_plugins/dialogs/dlg_pref.h \
  ../src_plugins/dialogs/dlg_pref_sizes.h \

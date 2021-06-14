@@ -57,7 +57,6 @@ extern conf_dialogs_t dialogs_conf;
 #include "dlg_fpmap.c"
 #include "dlg_obj_list.c"
 #include "dlg_netlist.c"
-#include "dlg_plugins.c"
 #include "dlg_printcalib.c"
 
 #include "dlg_view.h"
@@ -89,7 +88,6 @@ rnd_action_t dialogs_action_list[] = {
 	{"pstklib", pcb_act_pstklib, pcb_acth_pstklib, pcb_acts_pstklib},
 	{"UndoDialog", pcb_act_UndoDialog, pcb_acth_UndoDialog, pcb_acts_UndoDialog},
 	{"NetlistDialog", pcb_act_NetlistDialog, pcb_acth_NetlistDialog, pcb_acts_NetlistDialog},
-	{"ManagePlugins", pcb_act_ManagePlugins, pcb_acth_ManagePlugins, pcb_acts_ManagePlugins},
 	{"DrcDialog", pcb_act_DrcDialog, pcb_acth_DrcDialog, pcb_acts_DrcDialog},
 	{"IOIncompatListDialog", pcb_act_IOIncompatListDialog, pcb_acth_IOIncompatListDialog, pcb_acts_IOIncompatListDialog},
 	{"ViewList", pcb_act_ViewList, pcb_acth_ViewList, pcb_acts_ViewList},
