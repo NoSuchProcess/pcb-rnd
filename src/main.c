@@ -41,6 +41,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "brave.h"
 #include "data.h"
 #include <librnd/core/error.h>
+#include <librnd/core/compat_fs.h>
 #include "plug_io.h"
 #include "buffer.h"
 #include "crosshair.h"
@@ -91,6 +92,30 @@ static const char *menu_file_paths[4];
 static const char *menu_name_fmt = "menu-%s.lht";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
+
+/* try to use new (3.x.x) config file name with a fallback to pre-3.0.0 in
+   case the old exists but the new doesn't */
+static char *conf_fn_compat(const char *dir, const char *old_name, const char *new_name)
+{
+	char *old_path, *new_path;
+
+	/* new exists: use it */
+	new_path = rnd_concat(dir, new_name, NULL);
+	if (rnd_file_readable(new_path))
+		return new_path;
+
+	/* new doesn't exist, old does; use the old and warn the user */
+	old_path = rnd_concat(dir, old_name, NULL);
+	if (rnd_file_readable(old_path)) {
+		rnd_message(RND_MSG_ERROR, "Using old (pre-3.0.0) config file name for compatibility\nPlease quit and rename %s to %s\n", old_path, new_path);
+		free(new_path);
+		return old_path;
+	}
+
+	/* neither files exist; stick with the new path in case we need to create it */
+	free(old_path);
+	return new_path;
+}
 
 /* Figure out the canonical name of the executed program
    and fix up the defaults for various paths; returns exec prefix that
@@ -202,10 +227,12 @@ static char *main_path_init(char *argv0)
 	menu_file_paths[2] = rnd_concat(PCBCONFDIR, "/", NULL);
 	menu_file_paths[3] = NULL;
 
+	rnd_pcbhl_conf_postproc(); /* get ~ (home dir) set */
+
 	rnd_app.conf_userdir_path = CONF_USER_DIR;
-	rnd_app.conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	rnd_app.conf_user_path = conf_fn_compat(CONF_USER_DIR, "/pcb-conf.lht", "/conf_core.lht");
 	rnd_app.conf_sysdir_path = PCBCONFDIR;
-	rnd_app.conf_sys_path = rnd_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
+	rnd_app.conf_sys_path = conf_fn_compat(PCBCONFDIR, "/pcb-conf.lht", "/conf_core.lht");
 
 	free(bindir);
 	return exec_prefix;

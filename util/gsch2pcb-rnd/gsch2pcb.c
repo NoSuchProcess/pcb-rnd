@@ -393,9 +393,9 @@ int main(int argc, char ** argv)
 	rnd_app.revision = PCB_REVISION;
 
 	rnd_app.conf_userdir_path = CONF_USER_DIR;
-	rnd_app.conf_user_path = rnd_concat(CONF_USER_DIR, "/pcb-conf.lht", NULL);
+	rnd_app.conf_user_path = rnd_concat(CONF_USER_DIR, "/conf_core.lht", NULL);
 	rnd_app.conf_sysdir_path = PCBCONFDIR;
-	rnd_app.conf_sys_path = rnd_concat(PCBCONFDIR, "/pcb-conf.lht", NULL);
+	rnd_app.conf_sys_path = rnd_concat(PCBCONFDIR, "/conf_core.lht", NULL);
 
 	rnd_hidlib_init1(gsch2pcb_conf_core_init);
 

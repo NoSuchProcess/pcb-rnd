@@ -60,10 +60,10 @@ digraph g {
 	subgraph cluster_files {
 		label="config files"
 		bgcolor=grey
-		lht_system        [label="/usr/share/pcb-rnd/pcb-conf.lht" shape=hexagon]
+		lht_system        [label="/usr/share/pcb-rnd/conf_core.lht" shape=hexagon]
 		pcb_default       [label="default board, e.g.\n/usr/share/pcb-rnd/default4.lht" shape=hexagon]
 		project           [label="./project.lht" shape=hexagon]
-		lht_user          [label="~/.pcb-rnd/pcb-conf.lht" shape=hexagon]
+		lht_user          [label="~/.pcb-rnd/conf_core.lht" shape=hexagon]
 	}
 
 	subgraph cluster_exec_env {
