@@ -93,6 +93,31 @@ static const char *menu_name_fmt = "menu-%s.lht";
 
 #define CONF_USER_DIR "~/" DOT_PCB_RND
 
+/* for security reasons ignore these nodes when coming from a board or project file */
+static rnd_conf_ignore_t conf_board_ignores[] = {
+	{"rc/action_string", 16, 0},
+	{"rc/library_shell", 16, 0},
+	{"rc/file_command", 15, 0},
+	{"rc/font_command", 15, 0},
+	{"rc/save_command", 15, 0},
+	{"rc/rat_command", 14, 0},
+	{NULL, 0, 0}
+};
+
+static rnd_conf_ignore_t conf_ignores[] = {
+	/* old config paths - safe to ignore */
+	{"editor/show_mask", 16, 0},
+	{"editor/show_paste", 17, 0},
+	{"editor/increments", 17, 0},
+	{"design/max_width", 16, 0},
+	{"design/max_height", 17, 0},
+	{"design/groups", 13, 1},
+	{"design/default_layer_name", 25, 1},
+
+	{NULL, 0, 0}
+};
+
+
 /* try to use new (3.x.x) config file name with a fallback to pre-3.0.0 in
    case the old exists but the new doesn't */
 static char *conf_fn_compat(const char *dir, const char *old_name, const char *new_name)
@@ -460,6 +485,8 @@ int main(int argc, char *argv[])
 
 	rnd_app.conf_internal = rnd_conf_internal;
 	rnd_app.conf_core_postproc = pcb_conf_core_postproc;
+	rnd_app.conf_board_ignores = conf_board_ignores;
+	rnd_app.conf_ignores = conf_ignores;
 
 
 	rnd_app.dot_dir = DOT_PCB_RND;
