@@ -76,7 +76,7 @@ static const char pcb_acts_Display[] =
 	"Display(SubcID, template)\n"
 	"Display(Grid|Redraw|Pinout|PinOrPadName)\n"
 	"Display(CycleClip|ToggleAllDirections|ToggleStartDirection)\n"
-	"Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)\n"
+	"Display(RealignGrid|ToggleRubberBandMode|ToggleUniqueNames)\n"
 	"Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)\n"
 	"Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)\n"
 	"Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)\n"
@@ -268,7 +268,8 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			break;
 
 			/* shift grid alignment */
-		case F_ToggleGrid:
+		case F_RealignGrid:
+		case F_ToggleGrid: /* for compatibility */
 			{
 				rnd_coord_t old_grid = rnd_conf.editor.grid, x, y;
 
@@ -345,6 +346,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 	else if (str_dir) {
 		switch(id) {
+		case F_RealignGrid:
 		case F_ToggleGrid:
 			if (argc > 3) {
 				if (fgw_arg_conv(&rnd_fgw, &argv[3], FGW_KEYWORD) != 0) {
