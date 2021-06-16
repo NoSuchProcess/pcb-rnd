@@ -7,7 +7,7 @@
 - BUG: cuvoodoo's netlength bug: bug_files/netlen1.lht; run {n l o} on the horizontal lines; it breaks because a short line segment is fully under the via causing multiple touching objects [report: cuvoodoo] (report to the mailing list)
 - BUG: create new route style; can't switch to it and the editor is open on the wrong style (probably doesn't set pstk proto?) [report: Keantoken]
 - FEATURE: realign 'reset' grid to the upper left corner (to 0;0) [report: Keantoken]
-- BUG: realign grid: snapping to line endpoints doesn't work [report: Keantoken]
++ BUG: realign grid: snapping to line endpoints doesn't work [report: Keantoken]
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: new breadboard
