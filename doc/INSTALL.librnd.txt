@@ -14,6 +14,8 @@ Non-standard librnd installation
   need to be passed to pcb-rnd ./configure, it will automatically find
   librnd (with a preference for source install).
 
+  On some systems ldconfig needs to be ran after the installation so that
+  the dynamic linker leanrs about the new .so files available.
 
 2. Installing librnd in a non-standard prefix
 

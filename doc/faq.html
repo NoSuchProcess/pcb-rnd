@@ -111,5 +111,18 @@ Use the per subcircuit layer bindings to map them on a board silk layer.
 The DSN format does not specify solder mask or paste. Please use the padstack
 editor on the affected padstacks.
 
+<h2 id="slots"> 5. build/install </h2>
+
+<h3> 5.1. Error while loading shared libraries </h3>
+<p>
+If the above error message appears and lists librnd-* libs when executing
+pcb-rnd, that means your operating system's dynamic loader is unable to
+find  There are trhee common reasons for this:
+<ul>
+	<li> pcb-rnd is installed from binary and librnd is not installed. Install librnd.
+	<li> librnd is installed from source to standard installation prefix (/usr or /usr/local); on some systems ldconfig needs to be run after installing new libs from source so that the system's dynamic loader can find the new .so files
+	<li> librnd is installed from source to a non-standard installation prefix, e.g. installation in home directory or /opt; see <a href="INSTALL.librnd.txt">INSTALL.librnd.txt</a> for the extra steps this setup requires
+</ul>
+
 </body>
 </html>
