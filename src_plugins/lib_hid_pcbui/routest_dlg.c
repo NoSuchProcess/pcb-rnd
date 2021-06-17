@@ -118,7 +118,7 @@ static void rstdlg_pcb2dlg(int rst_idx)
 static void rst_updated(pcb_route_style_t *rst)
 {
 	if (rst != NULL)
-		pcb_use_route_style(rst);
+		pcb_use_route_style_(rst);
 	rnd_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	pcb_board_set_changed_flag(PCB, 1);
 }
@@ -222,7 +222,7 @@ static void rst_change_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	}
 
 	/* something got modified - re-select the current route style so "pen" is updated */
-	pcb_use_route_style(&(PCB->RouteStyle.array[rstdlg_ctx.curr]));
+	pcb_use_route_style_idx(PCB, rstdlg_ctx.curr);
 }
 
 static int rst_edit_attr(char **key, char **val)

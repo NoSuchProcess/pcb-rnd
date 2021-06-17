@@ -565,7 +565,7 @@ static fgw_error_t pcb_act_RouteStyle(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	switch(*cmd) {
 		case '\0':
 			do_select:;
-			pcb_use_route_style(rts);
+			pcb_use_route_style_idx(PCB, number - 1);
 			break;
 		case 'd': /* del */
 			res->type = FGW_INT;
@@ -665,7 +665,7 @@ static const char pcb_acth_SetSame[] = "Sets current layer and sizes to match in
 static void set_same_(rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
 	int known;
-	known = pcb_route_style_lookup_strict(&PCB->RouteStyle, Thick, textt, texts, fid, Clearance, via_proto, Name);
+	known = pcb_route_style_lookup_strict(&PCB->RouteStyle, PCB->route_style_last, Thick, textt, texts, fid, Clearance, via_proto, Name);
 	if (known < 0) {
 		/* unknown style, set properties */
 		if (Thick != -1)     { rnd_conf_set_design("design/line_thickness", "%$mS", Thick); }
@@ -677,7 +677,7 @@ static void set_same_(rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_
 		PCB->pen_attr = NULL;
 	}
 	else
-		pcb_use_route_style_idx(&PCB->RouteStyle, known);
+		pcb_use_route_style_idx(PCB, known);
 }
 
 static fgw_error_t pcb_act_SetSame(fgw_arg_t *res, int argc, fgw_arg_t *argv)

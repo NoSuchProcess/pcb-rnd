@@ -166,7 +166,7 @@ static void rst_select_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t 
 	}
 	if (ridx < 0)
 		return;
-	pcb_use_route_style(&(PCB->RouteStyle.array[ridx]));
+	pcb_use_route_style_idx(PCB, ridx);
 	rst_force_update_chk_and_dlg();
 }
 
@@ -180,7 +180,7 @@ static void rst_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 static void rst_new_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	int target = pcb_route_style_new(PCB, "new style", 1);
-	pcb_use_route_style(&(PCB->RouteStyle.array[target]));
+	pcb_use_route_style_idx(PCB, target);
 	pcb_dlg_rstdlg(target);
 }
 

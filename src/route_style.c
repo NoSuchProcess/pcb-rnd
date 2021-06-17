@@ -42,7 +42,7 @@
 
 static const char rst_cookie[] = "core route style";
 
-void pcb_use_route_style(pcb_route_style_t * rst)
+void pcb_use_route_style_(pcb_route_style_t * rst)
 {
 	rnd_conf_set_design("design/line_thickness", "%$mS", rst->Thick);
 	rnd_conf_set_design("design/text_scale", "%d", rst->texts <= 0 ? 100 : rst->texts);
@@ -55,11 +55,11 @@ void pcb_use_route_style(pcb_route_style_t * rst)
 	PCB->pen_attr = &rst->attr;
 }
 
-int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx)
+int pcb_use_route_style_idx_(vtroutestyle_t *styles, int idx)
 {
 	if ((idx < 0) || (idx >= vtroutestyle_len(styles)))
 		return -1;
-	pcb_use_route_style(styles->array+idx);
+	pcb_use_route_style_(styles->array+idx);
 	return 0;
 }
 
@@ -89,22 +89,34 @@ int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t
 #undef cmpi0
 #undef cmps
 
-int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+int pcb_route_style_lookup(vtroutestyle_t *styles, int hint, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
-	int n;
-	for (n = 0; n < vtroutestyle_len(styles); n++)
+	int n, len = vtroutestyle_len(styles);
+
+	if ((hint >= 0) && (hint <len))
+		if (pcb_route_style_match_(&styles->array[hint], 0, Thick, textt, texts, fid, Clearance, via_proto, Name))
+			return hint;
+
+	for (n = 0; n < len; n++)
 		if (pcb_route_style_match_(&styles->array[n], 0, Thick, textt, texts, fid, Clearance, via_proto, Name))
 			return n;
+
 	return -1;
 }
 
 
-int pcb_route_style_lookup_strict(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
+int pcb_route_style_lookup_strict(vtroutestyle_t *styles, int hint, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name)
 {
-	int n;
+	int n, len = vtroutestyle_len(styles);
+
+	if ((hint >= 0) && (hint <len))
+		if (pcb_route_style_match_(&styles->array[hint], 1, Thick, textt, texts, fid, Clearance, via_proto, Name))
+			return hint;
+
 	for (n = 0; n < vtroutestyle_len(styles); n++)
 		if (pcb_route_style_match_(&styles->array[n], 1, Thick, textt, texts, fid, Clearance, via_proto, Name))
 			return n;
+
 	return -1;
 }
 

@@ -80,6 +80,7 @@ struct pcb_board_s {
 	pcb_fontkit_t fontkit;
 	pcb_layer_stack_t LayerGroups;
 	vtroutestyle_t RouteStyle;
+	int route_style_last; /* last selected route style; GUI: check this first for match with the "pen" when deciding which route style is active; fixes the bug with multiple matching route styles */
 	pcb_netlist_t netlist[PCB_NUM_NETLISTS];
 	/* htsp_t netlist_subc[PCB_NUM_NETLISTS]; hierarchic netlists */
 	pcb_ratspatch_line_t *NetlistPatches, *NetlistPatchLast;

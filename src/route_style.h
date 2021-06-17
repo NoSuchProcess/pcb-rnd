@@ -29,20 +29,33 @@
 
 #include "vtroutestyle.h"
 
-/* Set design configuration (the pen we draw with) to a given route style */
-void pcb_use_route_style(pcb_route_style_t *rst);
+/* Set design configuration (the pen we draw with) to a given route style
+   (Do not call directly, use the macro below) */
+void pcb_use_route_style_(pcb_route_style_t *rst);
 
 /* Same as pcb_use_route_style() but uses one of the styles in a vector;
-   returns -1 if idx is out of bounds, 0 on success. */
-int pcb_use_route_style_idx(vtroutestyle_t *styles, int idx);
+   returns -1 if idx is out of bounds, 0 on success.
+   (Do not call directly, use the macro below) */
+int pcb_use_route_style_idx_(vtroutestyle_t *styles, int idx);
+
+/* Macros for the same thing: these also set the last selected route style idx
+   in the pcb struct which is necessary because multiple route styles can
+   have the same parameters so looking at the parameters only it is not possible
+   to decide which one was last selected */
+#define pcb_use_route_style_idx(pcb, idx) \
+	do { \
+		if (pcb_use_route_style_idx_(&pcb->RouteStyle, idx) == 0) \
+			pcb->route_style_last = idx; \
+	} while(0)
 
 /* Compare supplied parameters to each style in the vector and return the index
    of the first matching style. All non-(-1) parameters need to match to accept
    a style. Return -1 on no match. The strict version returns match only if
    the route style did set all values explicitly and not matching "wildcard" from
-   the style's side */
-int pcb_route_style_lookup(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
-int pcb_route_style_lookup_strict(vtroutestyle_t *styles, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
+   the style's side. If hint >= 0, check that index first, out-of-order; this
+   is useful for finding the last selected route style over the first match */
+int pcb_route_style_lookup(vtroutestyle_t *styles, int hint, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
+int pcb_route_style_lookup_strict(vtroutestyle_t *styles, int hint, rnd_coord_t Thick, rnd_coord_t textt, int texts, pcb_font_id_t fid, rnd_coord_t Clearance, rnd_cardinal_t via_proto, char *Name);
 
 /* Return 1 if rst matches the style in supplied args. Same matching rules as
    in pcb_route_style_lookup(). */
@@ -53,7 +66,7 @@ int pcb_route_style_match(pcb_route_style_t *rst, rnd_coord_t Thick, rnd_coord_t
 int pcb_get_style_size(int funcid, rnd_coord_t * out, int type, int size_id);
 
 #define PCB_LOOKUP_ROUTE_STYLE_PEN_(pcb, how) \
-	pcb_route_style_ ## how(&pcb->RouteStyle,\
+	pcb_route_style_ ## how(&pcb->RouteStyle, pcb->route_style_last, \
 		conf_core.design.line_thickness, \
 		conf_core.design.text_thickness, \
 		conf_core.design.text_scale, \
