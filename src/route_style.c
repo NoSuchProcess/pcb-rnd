@@ -73,7 +73,8 @@ RND_INLINE int pcb_route_style_match_(pcb_route_style_t *rst, int strict, rnd_co
 	if (cmp(textt, rst->textt)) return 0;
 	if (cmpi0(texts, rst->texts)) return 0;
 	if (cmpi(fid, rst->fid)) return 0;
-	if (cmpi(via_proto, rst->via_proto)) return 0;
+	if (strict || rst->via_proto_set)
+		if (cmpi(via_proto, rst->via_proto)) return 0;
 	if (cmp(Clearance, rst->Clearance)) return 0;
 	if (cmps(Name, rst->name)) return 0;
 	return 1;
