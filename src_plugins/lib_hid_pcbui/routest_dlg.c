@@ -44,6 +44,14 @@ typedef struct{
 rstdlg_ctx_t rstdlg_ctx;
 
 
+int rstdlg_lookup_route_style_pen_bestfit(pcb_board_t *pcb)
+{
+	if (rstdlg_ctx.active)
+		return rstdlg_ctx.curr;
+	return pcb_lookup_route_style_pen_bestfit(PCB);
+}
+
+
 static void rstdlg_pcb2dlg(int rst_idx)
 {
 	int n;
