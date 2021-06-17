@@ -14,8 +14,8 @@ install_:
 	$(CPC) "`pwd`/parametric"/* "$(DATADIR)/footprint/parametric"
 	$(MKDIR) "$(DATADIR)/footprint/smd"
 	$(CPC) "`pwd`/smd"/* "$(DATADIR)/footprint/smd"
-	$(MKDIR) "$(DATADIR)/footprint/tru-hole"
-	$(CPC) "`pwd`/tru-hole"/* "$(DATADIR)/footprint/tru-hole"
+	$(MKDIR) "$(DATADIR)/footprint/thru-hole"
+	$(CPC) "`pwd`/thru-hole"/* "$(DATADIR)/footprint/thru-hole"
 
 install:
 	$(MAKE) install_ CPC="$(CP)"
