@@ -182,6 +182,7 @@ static void rst_new_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *at
 	int target = pcb_route_style_new(PCB, "new style", 1);
 	pcb_use_route_style_idx(PCB, target);
 	pcb_dlg_rstdlg(target);
+	rst_updated(NULL); /* get the new style selected in the route style selector */
 }
 
 static void rst_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
