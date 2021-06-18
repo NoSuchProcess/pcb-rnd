@@ -761,24 +761,6 @@ int pcb_layer_recomb(pcb_layer_t *Layer, pcb_layer_combining_t comb, rnd_bool un
 
 #undef APPEND
 
-static int is_last_top_copper_layer(pcb_board_t *pcb, int layer)
-{
-	rnd_layergrp_id_t cgroup = pcb_layer_get_group(pcb, pcb->LayerGroups.len + PCB_COMPONENT_SIDE);
-	rnd_layergrp_id_t lgroup = pcb_layer_get_group(pcb, layer);
-	if (cgroup == lgroup && pcb->LayerGroups.grp[lgroup].len == 1)
-		return 1;
-	return 0;
-}
-
-static int is_last_bottom_copper_layer(pcb_board_t *pcb, int layer)
-{
-	int sgroup = pcb_layer_get_group(pcb, pcb->LayerGroups.len + PCB_SOLDER_SIDE);
-	int lgroup = pcb_layer_get_group(pcb, layer);
-	if (sgroup == lgroup && pcb->LayerGroups.grp[lgroup].len == 1)
-		return 1;
-	return 0;
-}
-
 /* Safe move of a layer within a layer array, updating all fields (list->parents) */
 void pcb_layer_move_(pcb_layer_t *dst, pcb_layer_t *src)
 {
@@ -1132,17 +1114,6 @@ int pcb_layer_move(pcb_board_t *pcb, rnd_layer_id_t old_index, rnd_layer_id_t ne
 		rnd_message(RND_MSG_ERROR, "Invalid new layer %d for move: must be -1..%d\n", new_index, pcb->Data->LayerN);
 		return 1;
 	}
-
-	if (new_index == -1 && is_last_top_copper_layer(pcb, old_index)) {
-		rnd_hid_message_box(&pcb->hidlib, "warning", "Layer delete", "You can't delete the last top-side layer\n", "cancel", 0, NULL);
-		return 1;
-	}
-
-	if (new_index == -1 && is_last_bottom_copper_layer(pcb, old_index)) {
-		rnd_hid_message_box(&pcb->hidlib, "warning", "Layer delete", "You can't delete the last bottom-side layer\n", "cancel", 0, NULL);
-		return 1;
-	}
-
 
 	if (old_index == -1) /* append new layer at the end of the logical layer list, put it in the current group */
 		return pcb_layer_move_append(pcb, new_index, new_in_grp, undoable);
