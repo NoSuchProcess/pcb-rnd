@@ -26,12 +26,15 @@
 
 #include "board.h"
 
+#include <genht/htpp.h>
+
 typedef enum { /* bits */
 	PCB_2NETMAPCTRL_RATS = 1      /* include rat lines */
 } pcb_2netmap_control_t;
 
 typedef struct pcb_2netmap_s {
 	pcb_2netmap_control_t ctrl;
+	htpp_t o2n;   /* of (pcb_2netmap_net_t *); tells the net for an object */
 } pcb_2netmap_t;
 
 
