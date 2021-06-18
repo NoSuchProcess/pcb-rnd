@@ -59,8 +59,8 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	if (htpp_get(&map->o2n, obj) != NULL) /* object already found */
 		return;
 
-	seg = pcb_qry_parent_net_len_mapseg(pcb, obj);
-	printf("seg=%p\n", (void *)seg);
+	seg = pcb_qry_parent_net_len_mapseg(map->ec, obj);
+	printf("seg=%p (%ld %p)\n", (void *)seg, seg->objs.used, seg->objs.array);
 	for(n = 0, o = (pcb_any_obj_t **)seg->objs.array; n < seg->objs.used; n++,o++) {
 		if (*o == NULL) {
 			printf("  NULL\n");
@@ -95,6 +95,12 @@ static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 
 int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control_t how)
 {
+	pcb_qry_exec_t ec;
+
+	pcb_qry_init(&ec, pcb, NULL, 0);
+
+	map->ec = &ec;
+
 	htpp_init(&map->o2n, ptrhash, ptrkeyeq);
 
 	pcb_loop_all(PCB, map,
@@ -107,6 +113,8 @@ int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control
 		NULL, /* subc */
 		list_pstk_cb
 	);
+
+	pcb_qry_uninit(&ec);
 
 	return -1;
 }

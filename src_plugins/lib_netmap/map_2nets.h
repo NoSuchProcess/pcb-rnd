@@ -35,6 +35,9 @@ typedef enum { /* bits */
 typedef struct pcb_2netmap_s {
 	pcb_2netmap_control_t ctrl;
 	htpp_t o2n;   /* of (pcb_2netmap_net_t *); tells the net for an object */
+
+	/* internal */
+	void *ec;
 } pcb_2netmap_t;
 
 

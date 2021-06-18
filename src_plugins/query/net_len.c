@@ -490,19 +490,10 @@ void pcb_qry_lenseg_free_fields(pcb_qry_netseg_len_t *ns)
 	vtp0_uninit(&ns->objs);
 }
 
-pcb_qry_netseg_len_t *pcb_qry_parent_net_len_mapseg(pcb_board_t *pcb, pcb_any_obj_t *from)
+pcb_qry_netseg_len_t *pcb_qry_parent_net_len_mapseg(pcb_qry_exec_t *ec, pcb_any_obj_t *from)
 {
-	pcb_qry_netseg_len_t *res;
-	pcb_qry_exec_t ec = {0};
-
-	ec.pcb = pcb;
-	pcb_qry_parent_net_lenseg_init(&ec);
-
-	res = pcb_qry_parent_net_lenseg_(&ec, from);
-
-	pcb_qry_uninit(&ec);
-
-	return res;
+	pcb_qry_parent_net_lenseg_init(ec);
+	return pcb_qry_parent_net_lenseg_(ec, from);
 }
 
 const char pcb_acts_QueryCalcNetLen[] = "QueryCalcNetLen(netname)";
