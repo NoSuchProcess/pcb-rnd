@@ -3,4 +3,5 @@ $short map nets and objects
 $long create disposable cross-reference maps between all objects and all nets
 $state works
 $package lib-io
+dep query
 default disable-all
