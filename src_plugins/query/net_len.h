@@ -12,6 +12,9 @@ typedef struct {
 
 pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg(pcb_qry_exec_t *ec, pcb_any_obj_t *from);
 
+/* Return a segment (up to the first junction) starting from an object */
+pcb_qry_netseg_len_t *pcb_qry_parent_net_len_mapseg(pcb_board_t *pcb, pcb_any_obj_t *from);
+
 
 void pcb_qry_lenseg_free_fields(pcb_qry_netseg_len_t *ns);
 

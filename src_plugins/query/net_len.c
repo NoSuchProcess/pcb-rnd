@@ -455,22 +455,27 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 	return ctx.seglen;
 }
 
+/* returns 1 if newly inited */
+RND_INLINE int pcb_qry_parent_net_lenseg_init(pcb_qry_exec_t *ec)
+{
+	if (ec->obj2lenseg_inited)
+		return 0;
+
+	htpp_init(&ec->obj2lenseg, ptrhash, ptrkeyeq);
+	htpi_init(&ec->obj2lenseg_cc, ptrhash, ptrkeyeq);
+	vtp0_init(&ec->obj2lenseg_free);
+	ec->obj2lenseg_inited = 1;
+	return 1;
+}
 
 pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg(pcb_qry_exec_t *ec, pcb_any_obj_t *from)
 {
-	pcb_qry_netseg_len_t *res;
+	pcb_qry_netseg_len_t *res = NULL;
 
 	if ((from->type != PCB_OBJ_LINE) && (from->type != PCB_OBJ_ARC) && (from->type != PCB_OBJ_PSTK))
 		return NULL;
 
-	if (!ec->obj2lenseg_inited) {
-		htpp_init(&ec->obj2lenseg, ptrhash, ptrkeyeq);
-		htpi_init(&ec->obj2lenseg_cc, ptrhash, ptrkeyeq);
-		vtp0_init(&ec->obj2lenseg_free);
-		ec->obj2lenseg_inited = 1;
-		res = NULL;
-	}
-	else
+	if (!pcb_qry_parent_net_lenseg_init(ec))
 		res = htpp_get(&ec->obj2lenseg, from);
 
 	if (res == NULL)
@@ -483,6 +488,21 @@ pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg(pcb_qry_exec_t *ec, pcb_any_obj_
 void pcb_qry_lenseg_free_fields(pcb_qry_netseg_len_t *ns)
 {
 	vtp0_uninit(&ns->objs);
+}
+
+pcb_qry_netseg_len_t *pcb_qry_parent_net_len_mapseg(pcb_board_t *pcb, pcb_any_obj_t *from)
+{
+	pcb_qry_netseg_len_t *res;
+	pcb_qry_exec_t ec = {0};
+
+	ec.pcb = pcb;
+	pcb_qry_parent_net_lenseg_init(&ec);
+
+	res = pcb_qry_parent_net_lenseg_(&ec, from);
+
+	pcb_qry_uninit(&ec);
+
+	return res;
 }
 
 const char pcb_acts_QueryCalcNetLen[] = "QueryCalcNetLen(netname)";
