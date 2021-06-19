@@ -54,7 +54,9 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	if (seg == NULL)
 		return;
 
-	ns = malloc(sizeof(pcb_2netmap_iseg_t));
+	ns = calloc(sizeof(pcb_2netmap_iseg_t), 1);
+	ns->next = map->isegs;
+	map->isegs = ns;
 	ns->seg = seg;
 	ns->net = NULL;
 
@@ -98,6 +100,21 @@ static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	list_obj(ctx, pcb, NULL, (pcb_any_obj_t *)ps);
 }
 
+static pcb_2netmap_oseg_t *oseg_new(pcb_2netmap_t *map, pcb_net_t *net)
+{
+	pcb_2netmap_oseg_t *os;
+	os = calloc(sizeof(pcb_2netmap_iseg_t), 1);
+	os->next = map->isegs;
+	map->isegs = os;
+	os->net = net;
+	return os;
+}
+
+static void map_segs(pcb_2netmap_t *map)
+{
+	
+}
+
 int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control_t how)
 {
 	pcb_qry_exec_t ec;
@@ -122,6 +139,7 @@ int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control
 
 	/* the result is really a graph because of junctions; search random paths
 	   from terminal to terminal (junctions resolved into overlaps) */
+	map_segs(map);
 
 	pcb_qry_uninit(&ec);
 

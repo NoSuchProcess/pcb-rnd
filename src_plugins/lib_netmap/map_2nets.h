@@ -34,29 +34,35 @@ typedef enum { /* bits */
 	PCB_2NETMAPCTRL_RATS = 1      /* include rat lines */
 } pcb_2netmap_control_t;
 
-typedef struct pcb_2netmap_iseg_s {
+typedef struct pcb_2netmap_iseg_s pcb_2netmap_iseg_t;
+struct pcb_2netmap_iseg_s {
 	pcb_qry_netseg_len_t *seg;
 	pcb_net_t *net;
 	unsigned shorted:1; /* set if the segment connects two different nets */
 	unsigned used:1;    /* already part of an output segment */
-} pcb_2netmap_iseg_t;
+	pcb_2netmap_iseg_t *next;
+};
 
 typedef union pcb_2netmap_obj_s {
 	pcb_arc_t arc;
 	pcb_line_t line;
 } pcb_2netmap_obj_t;
 
-typedef struct pcb_2netmap_oseg_s {
+typedef struct pcb_2netmap_oseg_s pcb_2netmap_oseg_t;
+struct pcb_2netmap_oseg_s {
 	vtp0_t *objs; /* of pcb_2netmap_obj_t ; these are not real board objects, they are just copies for the fields */
 	pcb_net_t *net;
 	unsigned shorted:1; /* set if the segment connects two different nets */
-} pcb_2netmap_oseg_t;
+	pcb_2netmap_oseg_t *next;
+};
 
 typedef struct pcb_2netmap_s {
 	pcb_2netmap_control_t ctrl;
-	htpp_t o2n;   /* of (pcb_2netmap_iseg_t *); tells the net for an object */
+	pcb_2netmap_iseg_t *osegs; /* output: head of a singly linked list */
 
 	/* internal */
+	htpp_t o2n;   /* of (pcb_2netmap_iseg_t *); tells the net for an object */
+	pcb_2netmap_iseg_t *isegs; /* head of a singly linked list */
 	pcb_qry_exec_t *ec;
 } pcb_2netmap_t;
 
