@@ -45,7 +45,7 @@ typedef struct pcb_2netmap_s {
 	htpp_t o2n;   /* of (pcb_2netmap_seg_t *); tells the net for an object */
 
 	/* internal */
-	void *ec;
+	pcb_qry_exec_t *ec;
 } pcb_2netmap_t;
 
 
