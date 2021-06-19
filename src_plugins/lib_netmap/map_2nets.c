@@ -41,7 +41,7 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	pcb_qry_netseg_len_t *seg;
 	pcb_any_obj_t **o;
 	long n;
-	pcb_2netmap_seg_t *ns;
+	pcb_2netmap_iseg_t *ns;
 
 
 	if ((layer != NULL) && (pcb_layer_flags_(layer) & PCB_LYT_COPPER) == 0)
@@ -54,7 +54,7 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	if (seg == NULL)
 		return;
 
-	ns = malloc(sizeof(pcb_2netmap_seg_t));
+	ns = malloc(sizeof(pcb_2netmap_iseg_t));
 	ns->seg = seg;
 	ns->net = NULL;
 
@@ -108,6 +108,7 @@ int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control
 
 	htpp_init(&map->o2n, ptrhash, ptrkeyeq);
 
+	/* map segments using query's netlen mapper */
 	pcb_loop_all(PCB, map,
 		NULL, /* layer */
 		list_line_cb,
@@ -118,6 +119,9 @@ int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control
 		NULL, /* subc */
 		list_pstk_cb
 	);
+
+	/* the result is really a graph because of junctions; search random paths
+	   from terminal to terminal (junctions resolved into overlaps) */
 
 	pcb_qry_uninit(&ec);
 
