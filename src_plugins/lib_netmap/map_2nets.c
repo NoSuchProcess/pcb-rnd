@@ -34,7 +34,6 @@
 #include "netlist.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
-#include "../src_plugins/query/net_len.h"
 
 static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_obj_t *obj)
 {
@@ -42,16 +41,8 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	pcb_qry_netseg_len_t *seg;
 	pcb_any_obj_t **o;
 	long n;
+	pcb_2netmap_seg_t *ns;
 
-#if 0
-	map->curr_net = NULL;
-	if (obj->term != NULL) {
-		pcb_net_term_t *t = pcb_net_find_by_obj(&pcb->netlist[PCB_NETLIST_EDITED], obj);
-		if (t != NULL) {
-			/*t->parent.net;*/
-		}
-	}
-#endif
 
 	if ((layer != NULL) && (pcb_layer_flags_(layer) & PCB_LYT_COPPER) == 0)
 		return;
@@ -60,17 +51,31 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 		return;
 
 	seg = pcb_qry_parent_net_len_mapseg(map->ec, obj);
+	if (seg == NULL)
+		return;
+
+	ns = malloc(sizeof(pcb_2netmap_seg_t));
+	ns->seg = seg;
+	ns->net = NULL;
+
 	printf("seg=%p (%ld %p)\n", (void *)seg, seg->objs.used, seg->objs.array);
 	for(n = 0, o = (pcb_any_obj_t **)seg->objs.array; n < seg->objs.used; n++,o++) {
 		if (*o == NULL) {
 			printf("  NULL\n");
+			continue;
 		}
-		else {
-			htpp_set(&map->o2n, *o, seg);
-			printf("  #%ld\n", (*o)->ID);
+		htpp_set(&map->o2n, *o, ns);
+		printf("  #%ld\n", (*o)->ID);
+
+		if ((*o)->term != NULL) {
+			pcb_net_term_t *t = pcb_net_find_by_obj(&pcb->netlist[PCB_NETLIST_EDITED], *o);
+			if ((t != NULL) && (t->parent.net != NULL)) {
+				if ((ns->net != NULL) && (ns->net != t->parent.net))
+					ns->shorted = 1;
+				ns->net = t->parent.net;
+			}
 		}
 	}
-
 }
 
 static void list_line_cb(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_line_t *line)

@@ -27,14 +27,22 @@
 #include "board.h"
 
 #include <genht/htpp.h>
+#include "../src_plugins/query/net_len.h"
+
 
 typedef enum { /* bits */
 	PCB_2NETMAPCTRL_RATS = 1      /* include rat lines */
 } pcb_2netmap_control_t;
 
+typedef struct pcb_2netmap_seg_s {
+	pcb_qry_netseg_len_t *seg;
+	pcb_net_t *net;
+	unsigned shorted:1; /* set if the segment connects two different nets */
+} pcb_2netmap_seg_t;
+
 typedef struct pcb_2netmap_s {
 	pcb_2netmap_control_t ctrl;
-	htpp_t o2n;   /* of (pcb_2netmap_net_t *); tells the net for an object */
+	htpp_t o2n;   /* of (pcb_2netmap_seg_t *); tells the net for an object */
 
 	/* internal */
 	void *ec;
