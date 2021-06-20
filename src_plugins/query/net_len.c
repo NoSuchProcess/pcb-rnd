@@ -256,14 +256,17 @@ static void add_junction(parent_net_len_t *ctx, pcb_any_obj_t *junct, pcb_any_ob
 
 /*	rnd_trace(" junction: obj=#%ld at end #%ld\n", junct->ID, seg_end->ID);*/
 
-	/* do not add the same thing twice */
-	if ((ctx->seglen->junction[0] == junct) || (ctx->seglen->junction[1] == junct))
-		return;
-
-	if (ctx->seglen->junction[i] != NULL) i++;
-	if (ctx->seglen->junction[i] != NULL) {
-		ctx->seglen->hub = 1;
-		return;
+	/* do not add the same thing twice: keep only one junct object per seg end */
+	if ((ctx->seglen->junc_at[0] == seg_end) || (ctx->seglen->junc_at[1] == seg_end)) {
+		/* keep it as spare */
+		i = 2;
+	}
+	else {
+		if (ctx->seglen->junction[i] != NULL) i++;
+		if (ctx->seglen->junction[i] != NULL) {
+			ctx->seglen->hub = 1;
+			return;
+		}
 	}
 
 	ctx->seglen->junction[i] = junct;
@@ -480,6 +483,20 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 	if (ctx.seglen->junc_at[0] != ctx.seglen->objs.array[0]) {
 		rnd_swap(pcb_any_obj_t *, ctx.seglen->junc_at[0], ctx.seglen->junc_at[1]);
 		rnd_swap(pcb_any_obj_t *, ctx.seglen->junction[0], ctx.seglen->junction[1]);
+	}
+
+	/* a hub segment is a single object with junction (sometimes in the spare field) */
+	if ((ctx.seglen->objs.used == 1) && (ctx.seglen->junc_at[2] != NULL)) {
+		ctx.seglen->hub = 1;
+		/* recycle spare if possible */
+		if (ctx.seglen->junc_at[0] == NULL) {
+			ctx.seglen->junc_at[0] = ctx.seglen->junc_at[2];
+			ctx.seglen->junction[0] = ctx.seglen->junction[2];
+		}
+		else if (ctx.seglen->junc_at[1] == NULL) {
+			ctx.seglen->junc_at[1] = ctx.seglen->junc_at[2];
+			ctx.seglen->junction[1] = ctx.seglen->junction[2];
+		}
 	}
 
 	ec->tmplst.used = 0;

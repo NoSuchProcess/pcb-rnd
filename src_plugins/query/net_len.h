@@ -4,8 +4,8 @@ typedef struct {
 	vtp0_t objs;
 	unsigned has_junction:1;
 	unsigned has_nontrace:1;
-	pcb_any_obj_t *junction[2]; /* object with a junction on it before and after the list */
-	pcb_any_obj_t *junc_at[2];  /* our last object (part of the seg) that faces the given junction */
+	pcb_any_obj_t *junction[3]; /* object with a junction on it before and after the list; 0..1 are ordered as objs; 2 is a spare field for internal use */
+	pcb_any_obj_t *junc_at[3];  /* our last object (part of the seg) that faces the given junction */
 	unsigned hub:1;             /* when set, this segment is a junction hub with more than 2 connected segments */
 	rnd_coord_t len;
 	int num_vias; /* number of functional vias, a.k.a. layer group changes */
