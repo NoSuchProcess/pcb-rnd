@@ -35,6 +35,8 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 
+#define OID(o) ((o == NULL) ? 0 : o->ID)
+
 static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_obj_t *obj)
 {
 	pcb_2netmap_t *map = ctx;
@@ -60,7 +62,7 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	ns->seg = seg;
 	ns->net = NULL;
 
-	printf("seg=%p (%ld %p)\n", (void *)seg, seg->objs.used, seg->objs.array);
+	printf("seg=%p junc: %ld %ld\n", (void *)seg, OID(seg->junction[0]), OID(seg->junction[1]));
 	for(n = 0, o = (pcb_any_obj_t **)seg->objs.array; n < seg->objs.used; n++,o++) {
 		if (*o == NULL) {
 			printf("  NULL\n");
