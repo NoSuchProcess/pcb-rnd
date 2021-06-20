@@ -62,10 +62,7 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	ns->seg = seg;
 	ns->net = NULL;
 
-	if (seg->hub)
-		printf("seg=%p HUB\n", (void *)seg);
-	else
-		printf("seg=%p junc: %ld %ld\n", (void *)seg, OID(seg->junction[0]), OID(seg->junction[1]));
+	printf("seg=%p %s junc: %ld %ld\n", (void *)seg, (seg->hub ? "HUB" : ""), OID(seg->junction[0]), OID(seg->junction[1]));
 
 	for(n = 0, o = (pcb_any_obj_t **)seg->objs.array; n < seg->objs.used; n++,o++) {
 		if (*o == NULL) {
