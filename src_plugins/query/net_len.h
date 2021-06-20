@@ -5,7 +5,8 @@ typedef struct {
 	unsigned has_junction:1;
 	unsigned has_nontrace:1;
 	pcb_any_obj_t *junction[2]; /* object with a junction on it before and after the list */
-	rnd_coord_t ex[2], ey[2]; /* extend from the first and last object to the junction point */
+	pcb_any_obj_t *junc_at[2];  /* our last object (part of the seg) that faces the given junction */
+	unsigned hub:1;             /* when set, this segment is a junction hub with more than 2 connected segments */
 	rnd_coord_t len;
 	int num_vias; /* number of functional vias, a.k.a. layer group changes */
 } pcb_qry_netseg_len_t;

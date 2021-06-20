@@ -203,8 +203,9 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 	}
 
 	if (conns == 0) {
-		if (dist == NULL)
+		if (dist == NULL) {
 			rnd_trace("NSL: junction at: middle of #%ld vs. #%ld\n", new_obj->ID, arrived_from->ID);
+		}
 		return -2;
 	}
 	if (conns > 1) {
@@ -249,6 +250,25 @@ static void remove_offender_from_closed(pcb_find_t *fctx, pcb_any_obj_t *offende
 	}
 }
 
+static void add_junction(parent_net_len_t *ctx, pcb_any_obj_t *junct, pcb_any_obj_t *seg_end)
+{
+	int i = 0;
+
+/*	rnd_trace(" junction: obj=#%ld at end #%ld\n", junct->ID, seg_end->ID);*/
+
+	/* do not add the same thing twice */
+	if ((ctx->seglen->junction[0] == junct) || (ctx->seglen->junction[1] == junct))
+		return;
+
+	if (ctx->seglen->junction[i] != NULL) i++;
+	if (ctx->seglen->junction[i] != NULL) {
+		ctx->seglen->hub = 1;
+		return;
+	}
+
+	ctx->seglen->junction[i] = junct;
+	ctx->seglen->junc_at[i] = seg_end;
+}
 
 static int parent_net_len_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
@@ -268,6 +288,7 @@ rnd_trace("from: #%ld to #%ld\n", arrived_from == NULL ? 0 : arrived_from->ID, n
 				   of it is affected*/
 				remove_offender_from_open(fctx, new_obj);
 				remove_offender_from_closed(fctx, new_obj, arrived_from);
+				add_junction(ctx, new_obj, arrived_from);
 			}
 			else if (coll == -2) {
 				long n;
@@ -300,9 +321,14 @@ rnd_trace("from: #%ld to #%ld\n", arrived_from == NULL ? 0 : arrived_from->ID, n
 							vtp0_remove(&ctx->ec->tmplst, n, 1);
 							n--;
 						}
+						else {
+							if (o != arrived_from)
+								add_junction(ctx, arrived_from, o);
+							else
+								add_junction(ctx, new_obj, o);
+						}
 					}
 				}
-
 			}
 			return PCB_FIND_DROP_THREAD;
 		}
@@ -450,6 +476,11 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 		lg = g;
 	}
 
+	/* make sure junctions are ordered the same way as the object array */
+	if (ctx.seglen->junc_at[0] != ctx.seglen->objs.array[0]) {
+		rnd_swap(pcb_any_obj_t *, ctx.seglen->junc_at[0], ctx.seglen->junc_at[1]);
+		rnd_swap(pcb_any_obj_t *, ctx.seglen->junction[0], ctx.seglen->junction[1]);
+	}
 
 	ec->tmplst.used = 0;
 	return ctx.seglen;
