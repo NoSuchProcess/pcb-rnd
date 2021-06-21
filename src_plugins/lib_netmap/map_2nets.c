@@ -34,6 +34,10 @@
 #include "netlist.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
+#include "../src_3rd/genprique/fibheap.h"
+#include "../src_3rd/genprique/fibheap.c"
+#include "../src_3rd/libusearch/a_star_api.h"
+#include "../src_3rd/libusearch/a_star_impl.h"
 
 #define OID(o) ((o == NULL) ? 0 : o->ID)
 
@@ -150,11 +154,132 @@ static void map_seg_out_copy(pcb_2netmap_t *map, pcb_2netmap_oseg_t *o, pcb_2net
 	}
 }
 
-static void map_seg_out(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg, int start_side)
+static void map_seg_out(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
 {
 	pcb_2netmap_oseg_t *oseg = oseg_new(map, iseg->net, iseg->shorted);
-	map_seg_out_copy(map, oseg, iseg, start_side);
-	TODO("jump to the next seg");
+	int start_side = iseg->term[0] ? 0 : 1;
+
+	while(iseg != NULL) {
+		map_seg_out_copy(map, oseg, iseg, start_side);
+		iseg = iseg->path_next;
+TODO("set start side");
+	}
+}
+
+/*** Search a path from a starting segment to any terminal using the A* algorithm ***/
+
+typedef struct ast_ctx_s {
+	pcb_2netmap_t *map;
+	pcb_2netmap_iseg_t *start;
+} ast_ctx_t;
+
+static long heur(usrch_a_star_t *ctx, void *node_)
+{
+	ast_ctx_t *actx = ctx->user_data;
+	pcb_2netmap_iseg_t *node = node_;
+	long score = node->seg->objs.used;
+
+	/* avoid shorts: overlaps should happen on legit segs */
+	if (node->net != actx->start->net) score += 1000;
+
+	/* try to use new segment: least overlap */
+	if (node->used) score += 300;
+
+	/* avoid bridge segments: go for paths with less junctions */
+	if (!node->term[0] && !node->term[1]) score += 200;
+
+	return score;
+}
+
+
+static long cost(usrch_a_star_t *ctx, void *from, void *to_)
+{
+	return heur(ctx, to_);
+}
+
+static void *neighbor_pre(usrch_a_star_t *ctx, void *curr)
+{
+	static int count;
+	count = 0;
+	return &count;
+}
+
+static void *neighbor(usrch_a_star_t *ctx, void *curr_, void *nctx)
+{
+	ast_ctx_t *actx = ctx->user_data;
+	pcb_2netmap_iseg_t  *curr = curr_;
+	pcb_any_obj_t *obj = NULL;
+	void *res;
+	int *count = nctx;
+
+	for(;;) {
+		if (*count == 2)
+			return NULL;
+
+		obj = curr->seg->junction[*count];
+		(*count)++;
+		if (obj != NULL) {
+			res = htpp_get(&actx->map->o2n, obj);
+			if (res != NULL)
+				break;
+		}
+	}
+
+	return res;
+}
+
+static int is_target(usrch_a_star_t *ctx, void *curr_)
+{
+	ast_ctx_t *actx = ctx->user_data;
+	pcb_2netmap_iseg_t *curr = curr_;
+	return ((curr != actx->start) && (curr->term[0] || curr->term[1]));
+}
+
+static void set_mark(usrch_a_star_t *ctx, void *node, usrch_a_star_node_t *mark)
+{
+	pcb_2netmap_iseg_t *seg = node;
+	seg->mark = mark;
+}
+
+static usrch_a_star_node_t *get_mark(usrch_a_star_t *ctx, void *node)
+{
+	pcb_2netmap_iseg_t *seg = node;
+	return seg->mark;
+}
+
+static void map_seg_search(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
+{
+	usrch_a_star_node_t *it;
+	usrch_a_star_t a = {0};
+	ast_ctx_t actx;
+	pcb_2netmap_iseg_t *n, *prev, *first;
+
+	actx.map = map;
+	actx.start = iseg;
+
+	a.heuristic = heur;
+	a.cost = cost;
+	a.is_target = is_target;
+	a.neighbor_pre = neighbor_pre;
+	a.neighbor = neighbor;
+	a.set_mark = set_mark;
+	a.get_mark = get_mark;
+	a.user_data = &actx;
+
+	usrch_a_star_search(&a, iseg, NULL);
+
+	/* pick up the the results and build a path using ->path_next and render the output net */
+	prev = NULL;
+	for(first = n = usrch_a_star_path_first(&a, &it); n != NULL; n = usrch_a_star_path_next(&a, &it)) {
+		n->path_next = 0;
+		if (prev != NULL)
+			prev->path_next = n;
+		prev = n;
+		n->used = 1;
+	}
+	map_seg_out(map, first);
+
+	usrch_a_star_uninit(&a);
 }
 
 static void map_segs(pcb_2netmap_t *map)
@@ -163,12 +288,15 @@ static void map_segs(pcb_2netmap_t *map)
 
 	/* search nets that start or end in a terminal */
 	for(i = map->isegs; i != NULL; i = i->next) {
-		if (i->term[0] && i->term[1]) { /* spinlest case: terminal-to-terminal */
-			map_seg_out(map, i, 0);
-			continue;
-		}
+		if (i->used) continue;
+		if (i->term[0] && i->term[1]) /* spinlest case: terminal-to-terminal */
+			map_seg_out(map, i);
+		else if (i->term[0] || i->term[1])
+			map_seg_search(map, i);
 	}
 }
+
+/*** API functions ***/
 
 int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control_t how)
 {
