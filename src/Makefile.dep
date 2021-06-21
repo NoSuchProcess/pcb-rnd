@@ -1884,7 +1884,13 @@
  obj_common.h layer.h flag_str.h data.h crosshair.h route.h buffer.h \
  obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h find.h netlist.h
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h find.h netlist.h \
+ search.h ../src_3rd/genprique/fibheap.h ../src_3rd/genprique/fibheap.c \
+ ../src_3rd/genprique/fibheap.h ../src_3rd/libusearch/a_star_api.h \
+ ../src_3rd/genprique/fibheap.h ../src_3rd/libusearch/common.h \
+ ../src_3rd/libusearch/a_star_impl.h ../src_3rd/libusearch/a_star_api.h \
+ ../src_plugins/lib_netmap/map_2nets_geo.c \
+ ../src_plugins/lib_netmap/map_2nets_map.c
 ../src_plugins/lib_netmap/netmap.o: ../src_plugins/lib_netmap/netmap.c \
  ../config.h ../src_plugins/lib_netmap/netmap.h board.h vtroutestyle.h \
  attrib.h global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
