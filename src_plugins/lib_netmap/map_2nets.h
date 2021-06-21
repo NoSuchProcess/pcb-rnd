@@ -41,7 +41,8 @@ struct pcb_2netmap_iseg_s {
 	unsigned shorted:1; /* set if the segment connects two different nets */
 	unsigned used:1;    /* already part of an output segment */
 	char term[2];       /* 1 if ->seg's corresponding end is a terminal */
-	pcb_2netmap_iseg_t *next;
+	pcb_2netmap_iseg_t *next; /* in map */
+	pcb_2netmap_iseg_t *path_next; /* in a temporary path while building oseg */
 };
 
 typedef union pcb_2netmap_obj_s {
@@ -51,7 +52,7 @@ typedef union pcb_2netmap_obj_s {
 
 typedef struct pcb_2netmap_oseg_s pcb_2netmap_oseg_t;
 struct pcb_2netmap_oseg_s {
-	vtp0_t *objs; /* of pcb_2netmap_obj_t ; these are not real board objects, they are just copies for the fields */
+	vtp0_t objs;        /* of pcb_2netmap_obj_t ; these are not real board objects, they are just copies for the fields */
 	pcb_net_t *net;
 	unsigned shorted:1; /* set if the segment connects two different nets */
 	pcb_2netmap_oseg_t *next;
@@ -59,7 +60,7 @@ struct pcb_2netmap_oseg_s {
 
 typedef struct pcb_2netmap_s {
 	pcb_2netmap_control_t ctrl;
-	pcb_2netmap_iseg_t *osegs; /* output: head of a singly linked list */
+	pcb_2netmap_oseg_t *osegs; /* output: head of a singly linked list */
 
 	/* internal */
 	htpp_t o2n;   /* of (pcb_2netmap_iseg_t *); tells the net for an object */

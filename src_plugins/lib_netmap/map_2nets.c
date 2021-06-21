@@ -108,19 +108,63 @@ static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	list_obj(ctx, pcb, NULL, (pcb_any_obj_t *)ps);
 }
 
-static pcb_2netmap_oseg_t *oseg_new(pcb_2netmap_t *map, pcb_net_t *net)
+static pcb_2netmap_oseg_t *oseg_new(pcb_2netmap_t *map, pcb_net_t *net, int shorted)
 {
 	pcb_2netmap_oseg_t *os;
-	os = calloc(sizeof(pcb_2netmap_iseg_t), 1);
-	os->next = map->isegs;
-	map->isegs = os;
+	os = calloc(sizeof(pcb_2netmap_oseg_t), 1);
+	os->next = map->osegs;
+	map->osegs = os;
 	os->net = net;
+	os->shorted = shorted;
 	return os;
+}
+
+static pcb_2netmap_obj_t *map_seg_out_obj(pcb_2netmap_t *map, pcb_any_obj_t *obj)
+{
+	pcb_2netmap_obj_t *res = malloc(sizeof(pcb_2netmap_obj_t));
+
+	/* copy the object but reset some fields as this object is not part of any layer list */
+	switch(obj->type) {
+		case PCB_OBJ_LINE: memcpy(res, obj, sizeof(res->line)); memset(&res->line.link, 0, sizeof(gdl_elem_t)); break;
+		case PCB_OBJ_ARC:  memcpy(res, obj, sizeof(res->arc));  memset(&res->arc.link,  0, sizeof(gdl_elem_t)); break;
+		default:;
+	}
+
+	return res;
+}
+
+/* copy all objects of i->seg to o, starting from start_side */
+static void map_seg_out_copy(pcb_2netmap_t *map, pcb_2netmap_oseg_t *o, pcb_2netmap_iseg_t *i, int start_side)
+{
+	long n;
+	if (start_side == 0) {
+		for(n = 0; n < i->seg->objs.used; n++)
+			vtp0_append(&o->objs, map_seg_out_obj(map, i->seg->objs.array[n]));
+	}
+	else {
+		for(n = i->seg->objs.used-1; n > 0; n--)
+			vtp0_append(&o->objs, map_seg_out_obj(map, i->seg->objs.array[n]));
+	}
+}
+
+static void map_seg_out(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg, int start_side)
+{
+	pcb_2netmap_oseg_t *oseg = oseg_new(map, iseg->net, iseg->shorted);
+	map_seg_out_copy(map, oseg, iseg, start_side);
+	TODO("jump to the next seg");
 }
 
 static void map_segs(pcb_2netmap_t *map)
 {
-	
+	pcb_2netmap_iseg_t *i;
+
+	/* search nets that start or end in a terminal */
+	for(i = map->isegs; i != NULL; i = i->next) {
+		if (i->term[0] && i->term[1]) { /* spinlest case: terminal-to-terminal */
+			map_seg_out(map, i, 0);
+			continue;
+		}
+	}
 }
 
 int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control_t how)
