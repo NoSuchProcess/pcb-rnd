@@ -48,6 +48,9 @@ struct pcb_2netmap_iseg_s {
 typedef union pcb_2netmap_obj_s {
 	pcb_arc_t arc;
 	pcb_line_t line;
+	pcb_line_t pstk;
+	pcb_line_t poly;
+	pcb_line_t text;
 } pcb_2netmap_obj_t;
 
 typedef struct pcb_2netmap_oseg_s pcb_2netmap_oseg_t;

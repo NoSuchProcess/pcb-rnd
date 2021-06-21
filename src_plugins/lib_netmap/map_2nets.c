@@ -127,6 +127,9 @@ static pcb_2netmap_obj_t *map_seg_out_obj(pcb_2netmap_t *map, pcb_any_obj_t *obj
 	switch(obj->type) {
 		case PCB_OBJ_LINE: memcpy(res, obj, sizeof(res->line)); memset(&res->line.link, 0, sizeof(gdl_elem_t)); break;
 		case PCB_OBJ_ARC:  memcpy(res, obj, sizeof(res->arc));  memset(&res->arc.link,  0, sizeof(gdl_elem_t)); break;
+		case PCB_OBJ_PSTK: memcpy(res, obj, sizeof(res->pstk)); memset(&res->pstk.link,  0, sizeof(gdl_elem_t)); break;
+		case PCB_OBJ_POLY: memcpy(res, obj, sizeof(res->poly)); memset(&res->poly.link,  0, sizeof(gdl_elem_t)); break;
+		case PCB_OBJ_TEXT: memcpy(res, obj, sizeof(res->text)); memset(&res->text.link,  0, sizeof(gdl_elem_t)); break;
 		default:;
 	}
 
