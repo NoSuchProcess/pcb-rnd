@@ -912,11 +912,16 @@ void *pcb_arcop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *Arc)
 	return Arc;
 }
 
+rnd_angle_t pcb_arc_get_angle(pcb_arc_t *arc, rnd_coord_t x, rnd_coord_t y)
+{
+	return atan2(-(y - arc->Y), (x - arc->X)) * 180.0 / M_PI + 180.0;
+}
+
 void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc)
 {
 	rnd_angle_t end_ang = arc->StartAngle + arc->Delta;
 	rnd_coord_t x = pcb_crosshair.X, y = pcb_crosshair.Y;
-	rnd_angle_t angle = atan2(-(y - arc->Y), (x - arc->X)) * 180.0 / M_PI + 180.0;
+	rnd_angle_t angle = pcb_arc_get_angle(arc, x, y);
 	pcb_arc_t *new_arc;
 
 	if (end_ang > 360.0)

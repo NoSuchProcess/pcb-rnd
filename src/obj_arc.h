@@ -80,6 +80,10 @@ unsigned int pcb_arc_hash(const pcb_host_trans_t *tr, const pcb_arc_t *a);
 void pcb_arc_get_end(pcb_arc_t *Arc, int which, rnd_coord_t *x, rnd_coord_t *y);
 void pcb_arc_middle(const pcb_arc_t *arc, rnd_coord_t *x, rnd_coord_t *y);
 
+/* Convert an x;y coord assumed to be on the arc into arc angle */
+rnd_angle_t pcb_arc_get_angle(pcb_arc_t *arc, rnd_coord_t x, rnd_coord_t y);
+
+
 /* Call cb() with coords of approximation for an arc from start to end, or
    end to start (if reverse is true). Resolution is set by res: if it is positive,
    it is an angle in degrees; if negative, it's an edge length in rnd_coord_t; if
