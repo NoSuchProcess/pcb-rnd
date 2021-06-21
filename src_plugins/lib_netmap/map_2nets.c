@@ -32,6 +32,7 @@
 #include "data.h"
 #include "find.h"
 #include "netlist.h"
+#include "search.h"
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include "../src_3rd/genprique/fibheap.h"
@@ -156,6 +157,51 @@ static pcb_any_obj_t *map_seg_out_copy(pcb_2netmap_t *map, pcb_2netmap_oseg_t *o
 	return i->seg->objs.array[0];
 }
 
+/* Returns coords of endpoint of obj that is on 'on' */
+static int map_seg_get_end_line_line(pcb_line_t *obj, pcb_line_t *on, rnd_coord_t *ox, rnd_coord_t *oy)
+{
+	rnd_coord_t r = obj->Thickness/2;
+	if (pcb_is_point_on_line(obj->Point1.X, obj->Point1.Y, r, on)) {
+		*ox = obj->Point1.X; *oy = obj->Point1.Y;
+		return 0;
+	}
+	if (pcb_is_point_on_line(obj->Point2.X, obj->Point2.Y, r, on)) {
+		*ox = obj->Point2.X; *oy = obj->Point2.Y;
+		return 0;
+	}
+	return -1;
+}
+
+/* Returns coords of endpoint of obj that is on 'on' */
+static int map_seg_get_end_arc_line(pcb_arc_t *obj, pcb_line_t *on, rnd_coord_t *ox, rnd_coord_t *oy)
+{
+	rnd_coord_t r = obj->Thickness/2, ex, ey;
+	int n;
+
+	for(n = 0; n < 2; n++) {
+		pcb_arc_get_end(obj, n, &ex, &ey);
+		if (pcb_is_point_on_line(ex, ey, r, on)) {
+			*ox = ex; *oy = ey;
+			return 0;
+		}
+	}
+	return -1;
+}
+
+/* check which endpoint of obj falls on hub line and return the
+   centerline x;y coords of that point */
+static int map_seg_get_end_coords_on_line(pcb_any_obj_t *obj, pcb_line_t *hub, rnd_coord_t *ox, rnd_coord_t *oy)
+{
+	switch(obj->type) {
+		case PCB_OBJ_LINE: return map_seg_get_end_line_line((pcb_line_t *)obj, hub, ox, oy);
+		case PCB_OBJ_ARC:  return map_seg_get_end_arc_line((pcb_arc_t *)obj, hub, ox, oy);
+		default:
+			*ox = *oy = 0;
+			return -1;
+	}
+	return 0;
+}
+
 /* replace a hub object with a dummy object that acts as a bridge between 'from'
    object and the starting object of to_iseg */
 static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb_any_obj_t *from,  pcb_any_obj_t *hub_obj, pcb_2netmap_iseg_t *to_iseg, int to_start_side)
@@ -169,9 +215,21 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 	else
 		to = to_iseg->seg->objs.array[to_iseg->seg->objs.used - 1];
 
-	tmp->line.type = hub_obj->type;
+	switch(hub_obj->type) {
+		case PCB_OBJ_LINE:
+			tmp->line.type = hub_obj->type;
+			map_seg_get_end_coords_on_line(from, (pcb_line_t *)hub_obj, &tmp->line.Point1.X, &tmp->line.Point1.Y);
+			map_seg_get_end_coords_on_line(to,   (pcb_line_t *)hub_obj, &tmp->line.Point2.X, &tmp->line.Point2.Y);
+			break;
+		case PCB_OBJ_ARC:
+			TODO("implement arc hub");
+		case PCB_OBJ_PSTK:
+			TODO("implement via hub");
+		default:;
+			tmp->line.type = PCB_OBJ_VOID;
+			break;
+	}
 	vtp0_append(&oseg->objs, tmp);
-	TODO("calculate coords of the bridge object")
 }
 
 static void map_seg_out(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
