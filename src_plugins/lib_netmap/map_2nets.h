@@ -40,6 +40,7 @@ struct pcb_2netmap_iseg_s {
 	pcb_net_t *net;
 	unsigned shorted:1; /* set if the segment connects two different nets */
 	unsigned used:1;    /* already part of an output segment */
+	char term[2];       /* 1 if ->seg's corresponding end is a terminal */
 	pcb_2netmap_iseg_t *next;
 };
 
