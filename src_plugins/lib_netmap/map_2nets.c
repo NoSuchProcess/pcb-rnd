@@ -140,29 +140,89 @@ static pcb_2netmap_obj_t *map_seg_out_obj(pcb_2netmap_t *map, pcb_any_obj_t *obj
 	return res;
 }
 
-/* copy all objects of i->seg to o, starting from start_side */
-static void map_seg_out_copy(pcb_2netmap_t *map, pcb_2netmap_oseg_t *o, pcb_2netmap_iseg_t *i, int start_side)
+/* copy all objects of i->seg to o, starting from start_side; returns last
+   object copied */
+static pcb_any_obj_t *map_seg_out_copy(pcb_2netmap_t *map, pcb_2netmap_oseg_t *o, pcb_2netmap_iseg_t *i, int start_side)
 {
 	long n;
 	if (start_side == 0) {
 		for(n = 0; n < i->seg->objs.used; n++)
 			vtp0_append(&o->objs, map_seg_out_obj(map, i->seg->objs.array[n]));
+		return i->seg->objs.array[i->seg->objs.used-1];
 	}
-	else {
-		for(n = i->seg->objs.used-1; n > 0; n--)
-			vtp0_append(&o->objs, map_seg_out_obj(map, i->seg->objs.array[n]));
-	}
+
+	for(n = i->seg->objs.used-1; n >= 0; n--)
+		vtp0_append(&o->objs, map_seg_out_obj(map, i->seg->objs.array[n]));
+	return i->seg->objs.array[0];
+}
+
+/* replace a hub object with a dummy object that acts as a bridge between 'from'
+   object and the starting object of to_iseg */
+static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb_any_obj_t *from,  pcb_any_obj_t *hub_obj, pcb_2netmap_iseg_t *to_iseg, int to_start_side)
+{
+	pcb_any_obj_t *to;
+	pcb_2netmap_obj_t *tmp = calloc(sizeof(pcb_2netmap_obj_t), 1);
+
+	assert(to_iseg->seg->objs.used > 0);
+	if (to_start_side == 0)
+		to = to_iseg->seg->objs.array[0];
+	else
+		to = to_iseg->seg->objs.array[to_iseg->seg->objs.used - 1];
+
+	tmp->line.type = hub_obj->type;
+	vtp0_append(&oseg->objs, tmp);
+	TODO("calculate coords of the bridge object")
 }
 
 static void map_seg_out(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
 {
+	pcb_2netmap_iseg_t *prev, *es;
 	pcb_2netmap_oseg_t *oseg = oseg_new(map, iseg->net, iseg->shorted);
-	int start_side = iseg->term[0] ? 0 : 1;
+	int n, start_side = iseg->term[0] ? 0 : 1; /* assumes we are starting from a terminal */
+	pcb_any_obj_t *end_obj, *hub_last_obj = NULL, *last_obj = NULL, *hub_obj;
 
-	while(iseg != NULL) {
-		map_seg_out_copy(map, oseg, iseg, start_side);
+	for(;;) {
+		/* copy current iseg */
+printf("* iseg: %p %d\n", iseg, start_side);
+		if (iseg->seg->hub) {
+			hub_last_obj = last_obj;
+			hub_obj = iseg->seg->objs.array[0];
+		}
+		else {
+			if (hub_last_obj != NULL) {
+				map_seg_add_bridge(map, oseg, hub_last_obj, hub_obj, iseg, start_side);
+				hub_last_obj = NULL;
+			}
+			last_obj = map_seg_out_copy(map, oseg, iseg, start_side);
+		}
+
+		prev = iseg;
 		iseg = iseg->path_next;
-TODO("set start side");
+		if (iseg == NULL)
+			break;
+
+		end_obj = NULL;
+
+printf("* prev term: %d %d\n", prev->term[0], prev->term[1]);
+
+		/* figure the common object and determine start_side for the new iseg */
+		end_obj = NULL;
+		for(n = 0; n < 2; n++) {
+			printf("* junc: %d %p\n", n, prev->seg->junction[n]);
+			if (prev->seg->junction[n] != NULL) {
+				es = htpp_get(&map->o2n, prev->seg->junction[n]);
+				if (es == iseg) {
+					end_obj = prev->seg->junction[n];
+					break;
+				}
+			}
+		}
+
+		assert(end_obj != NULL);
+		if (iseg->seg->objs.array[0] == end_obj)
+			start_side = 0;
+		else 
+			start_side = 1;
 	}
 }
 
@@ -252,7 +312,7 @@ static void map_seg_search(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
 	usrch_a_star_node_t *it;
 	usrch_a_star_t a = {0};
 	ast_ctx_t actx;
-	pcb_2netmap_iseg_t *n, *prev, *first;
+	pcb_2netmap_iseg_t *n, *prev, *first, *last;
 
 	actx.map = map;
 	actx.start = iseg;
@@ -268,16 +328,17 @@ static void map_seg_search(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
 
 	usrch_a_star_search(&a, iseg, NULL);
 
+printf("-------------------\n");
+
 	/* pick up the the results and build a path using ->path_next and render the output net */
-	prev = NULL;
-	for(first = n = usrch_a_star_path_first(&a, &it); n != NULL; n = usrch_a_star_path_next(&a, &it)) {
-		n->path_next = 0;
-		if (prev != NULL)
-			prev->path_next = n;
-		prev = n;
+	last = NULL;
+	for(n = usrch_a_star_path_first(&a, &it); n != NULL; n = usrch_a_star_path_next(&a, &it)) {
+printf(" + %p\n", n);
+		n->path_next = last;
+		last = n;
 		n->used = 1;
 	}
-	map_seg_out(map, first);
+	map_seg_out(map, last);
 
 	usrch_a_star_uninit(&a);
 }
