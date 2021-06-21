@@ -69,3 +69,50 @@ static int map_seg_get_end_coords_on_line(pcb_any_obj_t *obj, pcb_line_t *hub, r
 	return 0;
 }
 
+/* Returns coords of endpoint of obj that is on 'on' */
+static int map_seg_get_end_line_arc(pcb_line_t *obj, pcb_arc_t *on, rnd_angle_t *isc)
+{
+	rnd_coord_t r = obj->Thickness/2;
+	if (pcb_is_point_on_arc(obj->Point1.X, obj->Point1.Y, r, on)) {
+		*isc = pcb_arc_get_angle(on, obj->Point1.X, obj->Point1.Y);
+		return 0;
+	}
+	if (pcb_is_point_on_arc(obj->Point2.X, obj->Point2.Y, r, on)) {
+		*isc = pcb_arc_get_angle(on, obj->Point2.X, obj->Point2.Y);
+		return 0;
+	}
+	return -1;
+}
+
+
+/* Returns angle (in second arc) of endpoint of obj that is on 'on' */
+static int map_seg_get_end_arc_arc(pcb_arc_t *obj, pcb_arc_t *on, rnd_angle_t *isc)
+{
+	rnd_coord_t r = obj->Thickness/2, ex, ey;
+	int n;
+
+	for(n = 0; n < 2; n++) {
+		pcb_arc_get_end(obj, n, &ex, &ey);
+		if (pcb_is_point_on_arc(ex, ey, r, on)) {
+			*isc = pcb_arc_get_angle(on, ex, ey);
+			return 0;
+		}
+	}
+	return -1;
+}
+
+
+/* check which endpoint of obj falls on hub arc and return the
+   angle of that point */
+static int map_seg_get_end_coords_on_arc(pcb_any_obj_t *obj, pcb_arc_t *hub, rnd_angle_t *isc)
+{
+	switch(obj->type) {
+		case PCB_OBJ_LINE: return map_seg_get_end_line_arc((pcb_line_t *)obj, hub, isc);
+		case PCB_OBJ_ARC:  return map_seg_get_end_arc_arc((pcb_arc_t *)obj, hub, isc);
+		default:
+			*isc = 0;
+			return -1;
+	}
+	return 0;
+}
+

@@ -88,7 +88,13 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 			map_seg_get_end_coords_on_line(to,   (pcb_line_t *)hub_obj, &tmp->line.Point2.X, &tmp->line.Point2.Y);
 			break;
 		case PCB_OBJ_ARC:
+			{
+				double sa, ea, mid;
+				map_seg_get_end_coords_on_arc(from, (pcb_line_t *)hub_obj, &sa);
+				map_seg_get_end_coords_on_arc(to,   (pcb_line_t *)hub_obj, &ea);
 			TODO("implement arc hub");
+			}
+			break;
 		case PCB_OBJ_PSTK:
 			TODO("implement via hub");
 		default:;
