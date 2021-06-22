@@ -267,6 +267,7 @@ fgw_error_t pcb_act_DumpObjFlags(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+/* Note: this can not be in librnd because of the app-specific setenvs */
 static const char pcb_acts_System[] = "System(shell_cmd)";
 static const char pcb_acth_System[] = "Run shell command";
 fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
@@ -287,6 +288,7 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+/* Note: this can not be in librnd because of the wrong (historical) action name */
 static const char pcb_acts_ExecuteFile[] = "ExecuteFile(filename)";
 static const char pcb_acth_ExecuteFile[] = "Run actions from the given file.";
 /* DOC: executefile.html */
