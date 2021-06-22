@@ -288,7 +288,10 @@ fgw_error_t pcb_act_System(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-/* Note: this can not be in librnd because of the wrong (historical) action name */
+/* Note: this can not be in librnd because:
+   - wrong (historical) action name 
+   - app-specific side effects in pcb_act_execute_file
+*/
 static const char pcb_acts_ExecuteFile[] = "ExecuteFile(filename)";
 static const char pcb_acth_ExecuteFile[] = "Run actions from the given file.";
 /* DOC: executefile.html */
