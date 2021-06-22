@@ -313,7 +313,8 @@ static rnd_action_t main_action_list[] = {
 	{"DumpObjFlags", pcb_act_DumpObjFlags, pcb_acth_DumpObjFlags, pcb_acts_DumpObjFlags},
 	{"System", pcb_act_System, pcb_acth_System, pcb_acts_System},
 	{"ExecCommand", pcb_act_System, pcb_acth_System, pcb_acts_System},
-	{"ExecuteFile", pcb_act_ExecuteFile, pcb_acth_ExecuteFile, pcb_acts_ExecuteFile}
+	{"ExecuteFile", pcb_act_ExecuteFile, pcb_acth_ExecuteFile, pcb_acts_ExecuteFile},
+	{"ExecActionFile", pcb_act_ExecuteFile, pcb_acth_ExecuteFile, pcb_acts_ExecuteFile}
 };
 
 void pcb_main_act_init2(void)
