@@ -84,7 +84,7 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 
 	switch(hub_obj->type) {
 		case PCB_OBJ_LINE:
-			tmp->line.type = hub_obj->type;
+			tmp->line = *(pcb_line_t *)hub_obj;
 			map_seg_get_end_coords_on_line(from, (pcb_line_t *)hub_obj, &tmp->line.Point1.X, &tmp->line.Point1.Y);
 			map_seg_get_end_coords_on_line(to,   (pcb_line_t *)hub_obj, &tmp->line.Point2.X, &tmp->line.Point2.Y);
 			break;
