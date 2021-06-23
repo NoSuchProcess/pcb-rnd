@@ -243,6 +243,7 @@ static void map_seg_search(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
 	usrch_a_star_t a = {0};
 	ast_ctx_t actx;
 	pcb_2netmap_iseg_t *n, *prev, *first, *last;
+	usrch_res_t sr;
 
 	actx.map = map;
 	actx.start = iseg;
@@ -256,17 +257,24 @@ static void map_seg_search(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
 	a.get_mark = get_mark;
 	a.user_data = &actx;
 
-	usrch_a_star_search(&a, iseg, NULL);
+	sr = usrch_a_star_search(&a, iseg, NULL);
 
 printf("-------------------\n");
 
-	/* pick up the the results and build a path using ->path_next and render the output net */
-	last = NULL;
-	for(n = usrch_a_star_path_first(&a, &it); n != NULL; n = usrch_a_star_path_next(&a, &it)) {
+	if (sr == USRCH_RES_FOUND) {
+		/* pick up the the results and build a path using ->path_next and render the output net */
+		last = NULL;
+		for(n = usrch_a_star_path_first(&a, &it); n != NULL; n = usrch_a_star_path_next(&a, &it)) {
 printf(" + %p\n", n);
-		n->path_next = last;
-		last = n;
-		n->used = 1;
+			n->path_next = last;
+			last = n;
+			n->used = 1;
+		}
+	}
+	else {
+		/* didn't find any connection, iseg is an unfinished net */
+		last = iseg;
+		last->path_next = NULL;
 	}
 	map_seg_out(map, last);
 
