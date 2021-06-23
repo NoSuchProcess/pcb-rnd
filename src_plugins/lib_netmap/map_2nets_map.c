@@ -112,7 +112,9 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 			}
 			break;
 		case PCB_OBJ_PSTK:
-			TODO("implement via hub");
+			tmp->pstk = *(pcb_pstk_t *)hub_obj;
+			break;
+
 		default:;
 			tmp->line.type = PCB_OBJ_VOID;
 			break;
