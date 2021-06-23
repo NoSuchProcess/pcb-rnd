@@ -232,7 +232,7 @@ static void remove_offender_from_open(pcb_find_t *fctx, pcb_any_obj_t *offender)
 {
 	long n;
 
-	/* remove anything from the open list has contect with the offending object,
+	/* remove anything from the open list that has contact with the offending object,
 	   so we are not going to follow a thread that is also affected */
 	for(n = 0; n < fctx->open.used; n++) {
 		pcb_any_obj_t *o = fctx->open.array[n];
