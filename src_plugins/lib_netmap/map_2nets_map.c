@@ -42,6 +42,7 @@ static pcb_2netmap_obj_t *map_seg_out_obj(pcb_2netmap_t *map, pcb_any_obj_t *obj
 	/* copy the object but reset some fields as this object is not part of any layer list */
 	switch(obj->type) {
 		case PCB_OBJ_LINE: memcpy(res, obj, sizeof(res->line)); memset(&res->line.link, 0, sizeof(gdl_elem_t)); break;
+		case PCB_OBJ_RAT:  memcpy(res, obj, sizeof(res->rat));  memset(&res->rat.link, 0, sizeof(gdl_elem_t)); break;
 		case PCB_OBJ_ARC:  memcpy(res, obj, sizeof(res->arc));  memset(&res->arc.link,  0, sizeof(gdl_elem_t)); break;
 		case PCB_OBJ_PSTK: memcpy(res, obj, sizeof(res->pstk)); memset(&res->pstk.link,  0, sizeof(gdl_elem_t)); break;
 		case PCB_OBJ_POLY: memcpy(res, obj, sizeof(res->poly)); memset(&res->poly.link,  0, sizeof(gdl_elem_t)); break;
@@ -87,6 +88,8 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 			map_seg_get_end_coords_on_line(from, (pcb_line_t *)hub_obj, &tmp->line.Point1.X, &tmp->line.Point1.Y);
 			map_seg_get_end_coords_on_line(to,   (pcb_line_t *)hub_obj, &tmp->line.Point2.X, &tmp->line.Point2.Y);
 			break;
+		case PCB_OBJ_RAT:
+			abort();
 		case PCB_OBJ_ARC:
 			{
 				double sa, ea, mid;

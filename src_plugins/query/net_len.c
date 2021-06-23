@@ -115,6 +115,13 @@ static int obj_ends(pcb_any_obj_t *o, rnd_coord_t ends[4], rnd_coord_t *thick)
 			*thick = l->Thickness;
 			return 0;
 
+		case PCB_OBJ_RAT:
+			/* not called if find was not configured so */
+			ends[0] = l->Point1.X; ends[1] = l->Point1.Y;
+			ends[2] = l->Point2.X; ends[3] = l->Point2.Y;
+			*thick = 100; /* will be very close to the center but becauese of *4/5 it can't be 0 or 1 */
+			return 0;
+
 		case PCB_OBJ_PSTK:
 			ends[0] = p->x; ends[1]  = p->y;
 			ends[2] = ends[3] = RND_COORD_MAX;
@@ -124,7 +131,7 @@ static int obj_ends(pcb_any_obj_t *o, rnd_coord_t ends[4], rnd_coord_t *thick)
 
 		/* netlen segment breaking objects */
 		case PCB_OBJ_VOID: case PCB_OBJ_POLY: case PCB_OBJ_TEXT: case PCB_OBJ_SUBC:
-		case PCB_OBJ_RAT: case PCB_OBJ_GFX: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM:
+		case PCB_OBJ_GFX: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM:
 		case PCB_OBJ_LAYER: case PCB_OBJ_LAYERGRP:
 			return -1;
 	}
@@ -138,9 +145,13 @@ static rnd_coord_t obj_len(pcb_any_obj_t *o)
 		case PCB_OBJ_LINE: return pcb_line_length((pcb_line_t *)o);
 		case PCB_OBJ_PSTK: return 0;
 
+		case PCB_OBJ_RAT:
+		/* not called if find was not configured so */
+			return pcb_line_length((pcb_rat_t *)o);
+
 		/* netlen segment breaking objects */
 		case PCB_OBJ_VOID: case PCB_OBJ_POLY: case PCB_OBJ_TEXT: case PCB_OBJ_SUBC:
-		case PCB_OBJ_RAT: case PCB_OBJ_GFX: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM:
+		case PCB_OBJ_GFX: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM:
 		case PCB_OBJ_LAYER: case PCB_OBJ_LAYERGRP:
 			return -1;
 	}
@@ -391,7 +402,7 @@ static pcb_layergrp_t *get_obj_grp(pcb_board_t *pcb, pcb_any_obj_t *o)
 	return NULL;
 }
 
-RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, pcb_any_obj_t *from)
+RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, pcb_any_obj_t *from, int find_rats)
 {
 	pcb_find_t fctx;
 	parent_net_len_t ctx;
@@ -409,6 +420,7 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 	memset(&fctx, 0, sizeof(fctx));
 	fctx.user_data = &ctx;
 	fctx.found_cb = parent_net_len_found_cb;
+	fctx.consider_rats = find_rats;
 	pcb_find_from_obj(&fctx, ec->pcb->Data, from);
 	pcb_find_free(&fctx);
 
@@ -527,7 +539,7 @@ pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg(pcb_qry_exec_t *ec, pcb_any_obj_
 		res = htpp_get(&ec->obj2lenseg, from);
 
 	if (res == NULL)
-		res = pcb_qry_parent_net_lenseg_(ec, from);
+		res = pcb_qry_parent_net_lenseg_(ec, from, 0);
 
 	return res;
 }
@@ -538,10 +550,10 @@ void pcb_qry_lenseg_free_fields(pcb_qry_netseg_len_t *ns)
 	vtp0_uninit(&ns->objs);
 }
 
-pcb_qry_netseg_len_t *pcb_qry_parent_net_len_mapseg(pcb_qry_exec_t *ec, pcb_any_obj_t *from)
+pcb_qry_netseg_len_t *pcb_qry_parent_net_len_mapseg(pcb_qry_exec_t *ec, pcb_any_obj_t *from, int find_rats)
 {
 	pcb_qry_parent_net_lenseg_init(ec);
-	return pcb_qry_parent_net_lenseg_(ec, from);
+	return pcb_qry_parent_net_lenseg_(ec, from, find_rats);
 }
 
 const char pcb_acts_QueryCalcNetLen[] = "QueryCalcNetLen(netname)";

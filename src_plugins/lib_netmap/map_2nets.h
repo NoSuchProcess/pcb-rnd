@@ -26,6 +26,10 @@
 
 #include "board.h"
 
+#include "obj_rat.h"
+#include "obj_poly.h"
+#include "obj_pstk.h"
+
 #include <genht/htpp.h>
 #include "../src_plugins/query/net_len.h"
 
@@ -49,9 +53,10 @@ struct pcb_2netmap_iseg_s {
 typedef union pcb_2netmap_obj_s {
 	pcb_arc_t arc;
 	pcb_line_t line;
-	pcb_line_t pstk;
-	pcb_line_t poly;
-	pcb_line_t text;
+	pcb_rat_t rat;
+	pcb_pstk_t pstk;
+	pcb_poly_t poly;
+	pcb_text_t text;
 } pcb_2netmap_obj_t;
 
 typedef struct pcb_2netmap_oseg_s pcb_2netmap_oseg_t;
@@ -65,6 +70,7 @@ struct pcb_2netmap_oseg_s {
 typedef struct pcb_2netmap_s {
 	pcb_2netmap_control_t ctrl;
 	pcb_2netmap_oseg_t *osegs; /* output: head of a singly linked list */
+	unsigned find_rats:1;      /* config: set to 1 if rats shall be included */
 
 	/* internal */
 	htpp_t o2n;   /* of (pcb_2netmap_iseg_t *); tells the net for an object */

@@ -57,7 +57,7 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	if (htpp_get(&map->o2n, obj) != NULL) /* object already found */
 		return;
 
-	seg = pcb_qry_parent_net_len_mapseg(map->ec, obj);
+	seg = pcb_qry_parent_net_len_mapseg(map->ec, obj, map->find_rats);
 	if (seg == NULL)
 		return;
 
