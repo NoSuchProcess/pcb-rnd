@@ -238,7 +238,7 @@ static void remove_offender_from_open(pcb_find_t *fctx, pcb_any_obj_t *offender)
 		pcb_any_obj_t *o = fctx->open.array[n];
 
 		if (pcb_intersect_obj_obj(fctx, offender, o)) {
-			rnd_trace(" REMOVE1: #%ld\n", o->ID);
+			rnd_trace(" REMOVE1: #%ld (because of offender #%ld)\n", o->ID, offender->ID);
 			vtp0_remove(&fctx->open, n, 1);
 			n--;
 		}
@@ -335,6 +335,7 @@ rnd_trace("from: #%ld to #%ld\n", arrived_from == NULL ? 0 : arrived_from->ID, n
 					if (pcb_intersect_obj_obj(fctx, o, arrived_from)) {
 						cnt++;
 						if (cnt > 1) {
+							rnd_trace(" REMOVE4: #%ld (from #%ld)\n", ((pcb_any_obj_t *)(ctx->ec->tmplst.array[n]))->ID, new_obj->ID);
 							vtp0_remove(&ctx->ec->tmplst, n, 1);
 							n--;
 						}
