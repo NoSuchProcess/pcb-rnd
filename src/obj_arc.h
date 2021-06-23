@@ -84,6 +84,13 @@ void pcb_arc_middle(const pcb_arc_t *arc, rnd_coord_t *x, rnd_coord_t *y);
 rnd_angle_t pcb_arc_get_angle(pcb_arc_t *arc, rnd_coord_t x, rnd_coord_t y);
 
 
+/* Returns whether ang is within an arc (specified by start and delta angle) */
+int pcb_angle_in_arc_(double arc_sa, double arc_da, double ang, int inclusive);
+#define pcb_angle_in_arc(arc, ang, inclusive) \
+	pcb_angle_in_arc_(arc->StartAngle, arc->Delta, ang, inclusive)
+
+
+
 /* Call cb() with coords of approximation for an arc from start to end, or
    end to start (if reverse is true). Resolution is set by res: if it is positive,
    it is an angle in degrees; if negative, it's an edge length in rnd_coord_t; if

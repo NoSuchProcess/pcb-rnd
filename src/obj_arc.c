@@ -184,6 +184,54 @@ void pcb_arc_get_end(pcb_arc_t *arc, int which, rnd_coord_t *x, rnd_coord_t *y)
 	rnd_arc_get_endpt(arc->X, arc->Y, arc->Width, arc->Height, arc->StartAngle, arc->Delta, which, x, y);
 }
 
+int pcb_angle_in_arc_(double arc_sa, double arc_da, double ang, int inclusive)
+{
+	double arc_ea;
+
+	/* make sure angle is always positive */
+	if (ang < 0)
+		ang += 360.0;
+
+	if (arc_da < 0) { /* swap endpoints so da is always positive */
+		arc_sa = arc_sa + arc_da;
+		arc_da = -arc_da;
+	}
+	if (arc_sa < 0)
+		arc_sa += 360.0;
+
+	arc_ea = arc_sa + arc_da;
+
+	/* if arc spans from some high value through zero, the end angle has
+	   to be larger than 360; if ang is under both start and end, that may
+	   be the case so add a full circle to ang, last chance to get it in
+	   range */
+	if ((arc_sa > ang) && (arc_ea > ang))
+		ang += 360.0;
+
+	if (inclusive) {
+		if ((ang >= arc_sa) && (ang <= arc_ea))
+			return 1;
+	}
+	else {
+		if ((ang > arc_sa) && (ang < arc_ea))
+			return 1;
+	}
+
+	if (arc_ea > 360.0) {
+		ang += 360.0;
+		if (inclusive) {
+			if ((ang >= arc_sa) && (ang <= arc_ea))
+				return 1;
+		}
+		else {
+			if ((ang > arc_sa) && (ang < arc_ea))
+				return 1;
+		}
+	}
+
+	return 0;
+}
+
 
 void pcb_arc_set_angles(pcb_layer_t *Layer, pcb_arc_t *a, rnd_angle_t new_sa, rnd_angle_t new_da)
 {
