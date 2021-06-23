@@ -309,7 +309,7 @@ static void map_segs(pcb_2netmap_t *map)
 	/* search nets that start or end in a terminal */
 	for(i = map->isegs; i != NULL; i = i->next) {
 		if (i->used) continue;
-		if (i->term[0] && i->term[1]) /* spinlest case: terminal-to-terminal */
+		if (i->term[0] && i->term[1]) /* simplest case: terminal-to-terminal */
 			map_seg_out(map, i);
 		else if (i->term[0] || i->term[1])
 			map_seg_search(map, i);
