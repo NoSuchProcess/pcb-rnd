@@ -313,6 +313,8 @@ rnd_trace("from: #%ld to #%ld\n", arrived_from == NULL ? 0 : arrived_from->ID, n
 				remove_offender_from_closed(fctx, new_obj, arrived_from);
 
 
+/* disabled: this seems to remove not the hub but the next, legit object */
+#if 0
 				/* plus remove the hub itself from found if it's not the startin object  */
 				if (arrived_from != ctx->start) {
 					for(n = 0; n < ctx->ec->tmplst.used; n++) {
@@ -323,6 +325,7 @@ rnd_trace("from: #%ld to #%ld\n", arrived_from == NULL ? 0 : arrived_from->ID, n
 						}
 					}
 				}
+#endif
 
 				/* plus remove anything but the first object that is in contact with it
 				   (this removes started outgoing threads but not the object we once
