@@ -87,6 +87,7 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 			tmp->line = *(pcb_line_t *)hub_obj;
 			map_seg_get_end_coords_on_line(from, (pcb_line_t *)hub_obj, &tmp->line.Point1.X, &tmp->line.Point1.Y);
 			map_seg_get_end_coords_on_line(to,   (pcb_line_t *)hub_obj, &tmp->line.Point2.X, &tmp->line.Point2.Y);
+			memset(&tmp->line.link, 0, sizeof(tmp->line.link));
 			break;
 		case PCB_OBJ_RAT:
 			abort();
@@ -109,10 +110,12 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 					tmp->arc.StartAngle = ea;
 					tmp->arc.Delta = 360-(ea - sa);
 				}
+				memset(&tmp->arc.link, 0, sizeof(tmp->arc.link));
 			}
 			break;
 		case PCB_OBJ_PSTK:
 			tmp->pstk = *(pcb_pstk_t *)hub_obj;
+			memset(&tmp->pstk.link, 0, sizeof(tmp->pstk.link));
 			break;
 
 		default:;
