@@ -92,10 +92,23 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 			abort();
 		case PCB_OBJ_ARC:
 			{
-				double sa, ea, mid;
-				map_seg_get_end_coords_on_arc(from, (pcb_line_t *)hub_obj, &sa);
-				map_seg_get_end_coords_on_arc(to,   (pcb_line_t *)hub_obj, &ea);
-			TODO("implement arc hub");
+				double sa, ea;
+				pcb_arc_t *hub_arc = (pcb_arc_t *)hub_obj;
+				map_seg_get_end_coords_on_arc(from, hub_arc, &sa);
+				map_seg_get_end_coords_on_arc(to,   hub_arc, &ea);
+				tmp->arc = *hub_arc;
+
+				/* check in which direction middle of the new arc would still fall
+				   onto the original arc; this decides the angle range so the
+				   new arc curves the right direction */
+				if (pcb_angle_in_arc(hub_arc, sa+(ea-sa)/2, 1)) {
+					tmp->arc.StartAngle = sa;
+					tmp->arc.Delta = ea - sa;
+				}
+				else {
+					tmp->arc.StartAngle = ea;
+					tmp->arc.Delta = 360-(ea - sa);
+				}
 			}
 			break;
 		case PCB_OBJ_PSTK:
