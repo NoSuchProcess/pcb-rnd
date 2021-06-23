@@ -1888,6 +1888,11 @@ void *pcb_subcop_destroy(pcb_opctx_t *ctx, pcb_subc_t *sc)
 
 void *pcb_subcop_remove(pcb_opctx_t *ctx, pcb_subc_t *sc)
 {
+	if (ctx->remove.pcb->is_footprint) {
+		rnd_message(RND_MSG_WARNING, "Can not remove the subcircuit being edited in the footprint edit mode\n");
+		return NULL;
+	}
+
 	EraseSubc(sc);
 	pcb_undo_move_obj_to_remove(PCB_OBJ_SUBC, sc, sc, sc);
 	return NULL;
