@@ -154,7 +154,7 @@ static rnd_coord_t obj_len(pcb_any_obj_t *o)
 
 		case PCB_OBJ_RAT:
 		/* not called if find was not configured so */
-			return pcb_line_length((pcb_rat_t *)o);
+			return pcb_line_length((pcb_line_t *)o);
 
 		/* netlen segment breaking objects */
 		case PCB_OBJ_VOID: case PCB_OBJ_POLY: case PCB_OBJ_TEXT: case PCB_OBJ_SUBC:
