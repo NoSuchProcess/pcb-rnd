@@ -42,6 +42,7 @@ static const char *EXPERIMENTAL = NULL;
 #include "data.h"
 #include <librnd/core/error.h>
 #include <librnd/core/compat_fs.h>
+#include <librnd/core/safe_fs.h>
 #include "plug_io.h"
 #include "buffer.h"
 #include "crosshair.h"
