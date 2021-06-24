@@ -245,7 +245,6 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_reference.html $(USERDIR)/09_appendix/action_reference.html
 	$(SCCBOX) mkdir -p $(USERDIR)/09_appendix/action_src
 	$(SCCBOX) $(HOW) 09_appendix/action_src/addrats.html $(USERDIR)/09_appendix/action_src/addrats.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/addtimer.html $(USERDIR)/09_appendix/action_src/addtimer.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/adjuststyle.html $(USERDIR)/09_appendix/action_src/adjuststyle.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/align.html $(USERDIR)/09_appendix/action_src/align.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/applyvendor.html $(USERDIR)/09_appendix/action_src/applyvendor.html
@@ -253,9 +252,7 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_src/attributes.html $(USERDIR)/09_appendix/action_src/attributes.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/autoplaceselected.html $(USERDIR)/09_appendix/action_src/autoplaceselected.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/autoroute.html $(USERDIR)/09_appendix/action_src/autoroute.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/benchmark.html $(USERDIR)/09_appendix/action_src/benchmark.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/boardflip.html $(USERDIR)/09_appendix/action_src/boardflip.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/center.html $(USERDIR)/09_appendix/action_src/center.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/changeclearsize.html $(USERDIR)/09_appendix/action_src/changeclearsize.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/changeflag.html $(USERDIR)/09_appendix/action_src/changeflag.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/changejoin.html $(USERDIR)/09_appendix/action_src/changejoin.html
@@ -270,13 +267,11 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_src/clrflag.html $(USERDIR)/09_appendix/action_src/clrflag.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/command.html $(USERDIR)/09_appendix/action_src/command.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/connection.html $(USERDIR)/09_appendix/action_src/connection.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/cursor.html $(USERDIR)/09_appendix/action_src/cursor.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/cycledrag.html $(USERDIR)/09_appendix/action_src/cycledrag.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/disperseelements.html $(USERDIR)/09_appendix/action_src/disperseelements.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/display.html $(USERDIR)/09_appendix/action_src/display.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/distribute.html $(USERDIR)/09_appendix/action_src/distribute.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/djopt.html $(USERDIR)/09_appendix/action_src/djopt.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/dowindows.html $(USERDIR)/09_appendix/action_src/dowindows.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/drc.html $(USERDIR)/09_appendix/action_src/drc.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/elementlist.html $(USERDIR)/09_appendix/action_src/elementlist.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/elementsetattr.html $(USERDIR)/09_appendix/action_src/elementsetattr.html
@@ -284,23 +279,18 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_src/exportoldconn.html $(USERDIR)/09_appendix/action_src/exportoldconn.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/flip.html $(USERDIR)/09_appendix/action_src/flip.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/freerotatebuffer.html $(USERDIR)/09_appendix/action_src/freerotatebuffer.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/getxy.html $(USERDIR)/09_appendix/action_src/getxy.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/import.html $(USERDIR)/09_appendix/action_src/import.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/importgui.html $(USERDIR)/09_appendix/action_src/importgui.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/importsch.html $(USERDIR)/09_appendix/action_src/importsch.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/l.html $(USERDIR)/09_appendix/action_src/l.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/layerbystack.html $(USERDIR)/09_appendix/action_src/layerbystack.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/le.html $(USERDIR)/09_appendix/action_src/le.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/listscripts.html $(USERDIR)/09_appendix/action_src/listscripts.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/livescript.html $(USERDIR)/09_appendix/action_src/livescript.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/load.html $(USERDIR)/09_appendix/action_src/load.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/loadfootprint.html $(USERDIR)/09_appendix/action_src/loadfootprint.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/loadfrom.html $(USERDIR)/09_appendix/action_src/loadfrom.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/loadscript.html $(USERDIR)/09_appendix/action_src/loadscript.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/loadvendorfrom.html $(USERDIR)/09_appendix/action_src/loadvendorfrom.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/m.html $(USERDIR)/09_appendix/action_src/m.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/markcrosshair.html $(USERDIR)/09_appendix/action_src/markcrosshair.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/message.html $(USERDIR)/09_appendix/action_src/message.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/mode.html $(USERDIR)/09_appendix/action_src/mode.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/morphpolygon.html $(USERDIR)/09_appendix/action_src/morphpolygon.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/movelayer.html $(USERDIR)/09_appendix/action_src/movelayer.html
@@ -308,23 +298,18 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_src/movetocurrentlayer.html $(USERDIR)/09_appendix/action_src/movetocurrentlayer.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/netlist.html $(USERDIR)/09_appendix/action_src/netlist.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/new.html $(USERDIR)/09_appendix/action_src/new.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/onliner.html $(USERDIR)/09_appendix/action_src/onliner.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/openemsexcitation.html $(USERDIR)/09_appendix/action_src/openemsexcitation.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/pan.html $(USERDIR)/09_appendix/action_src/pan.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/pastebuffer.html $(USERDIR)/09_appendix/action_src/pastebuffer.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/polycombine.html $(USERDIR)/09_appendix/action_src/polycombine.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/polygon.html $(USERDIR)/09_appendix/action_src/polygon.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/polystitch.html $(USERDIR)/09_appendix/action_src/polystitch.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/popup.html $(USERDIR)/09_appendix/action_src/popup.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/preunload.html $(USERDIR)/09_appendix/action_src/preunload.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/print.html $(USERDIR)/09_appendix/action_src/print.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/printcalibrate.html $(USERDIR)/09_appendix/action_src/printcalibrate.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/promptfor.html $(USERDIR)/09_appendix/action_src/promptfor.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/puller.html $(USERDIR)/09_appendix/action_src/puller.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/q.html $(USERDIR)/09_appendix/action_src/q.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/quit.html $(USERDIR)/09_appendix/action_src/quit.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/redo.html $(USERDIR)/09_appendix/action_src/redo.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/reloadscript.html $(USERDIR)/09_appendix/action_src/reloadscript.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/renumberblock.html $(USERDIR)/09_appendix/action_src/renumberblock.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/renumberbuffer.html $(USERDIR)/09_appendix/action_src/renumberbuffer.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/replacefootprint.html $(USERDIR)/09_appendix/action_src/replacefootprint.html
@@ -337,22 +322,16 @@ install_all:
 	$(SCCBOX) $(HOW) 09_appendix/action_src/save.html $(USERDIR)/09_appendix/action_src/save.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/savelib.html $(USERDIR)/09_appendix/action_src/savelib.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/saveto.html $(USERDIR)/09_appendix/action_src/saveto.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/scriptcookie.html $(USERDIR)/09_appendix/action_src/scriptcookie.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/scriptpersistency.html $(USERDIR)/09_appendix/action_src/scriptpersistency.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/scroll.html $(USERDIR)/09_appendix/action_src/scroll.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/select.html $(USERDIR)/09_appendix/action_src/select.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/selectlayer.html $(USERDIR)/09_appendix/action_src/selectlayer.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/setflag.html $(USERDIR)/09_appendix/action_src/setflag.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/setsame.html $(USERDIR)/09_appendix/action_src/setsame.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/setthermal.html $(USERDIR)/09_appendix/action_src/setthermal.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/setunits.html $(USERDIR)/09_appendix/action_src/setunits.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/setvalue.html $(USERDIR)/09_appendix/action_src/setvalue.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/smartdisperse.html $(USERDIR)/09_appendix/action_src/smartdisperse.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/swapsides.html $(USERDIR)/09_appendix/action_src/swapsides.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/toggleview.html $(USERDIR)/09_appendix/action_src/toggleview.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/tool.html $(USERDIR)/09_appendix/action_src/tool.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/undo.html $(USERDIR)/09_appendix/action_src/undo.html
-	$(SCCBOX) $(HOW) 09_appendix/action_src/unloadscript.html $(USERDIR)/09_appendix/action_src/unloadscript.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/unselect.html $(USERDIR)/09_appendix/action_src/unselect.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/w.html $(USERDIR)/09_appendix/action_src/w.html
 	$(SCCBOX) $(HOW) 09_appendix/action_src/wq.html $(USERDIR)/09_appendix/action_src/wq.html
