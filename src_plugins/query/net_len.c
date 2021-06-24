@@ -230,7 +230,7 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 	if (conns == 0) {
 		if (dist == NULL) {
 			pcb_any_obj_t *hub = junction_hub(new_obj, new_end, arrived_from, old_end, thr);
-			rnd_trace("NSL: junction at: middle of #%ld (#%ld vs. #%ld)\n", hub->ID, new_obj->ID, arrived_from->ID);
+			rnd_trace("NSL: junction at: middle of #%ld (#%ld vs. #%ld)\n", hub==NULL ? 0 : hub->ID, new_obj->ID, arrived_from->ID);
 			*hub_out = hub;
 		}
 		return -2;
@@ -327,7 +327,13 @@ rnd_trace("from: #%ld to #%ld\n", arrived_from == NULL ? 0 : arrived_from->ID, n
 				int cnt;
 
 				/* remove from arrived_from: removes the hub object */
-				remove_offender_from_open(fctx, arrived_from);
+				if (hub_obj == NULL) {
+					remove_offender_from_open(fctx, arrived_from);
+					ctx->seglen->has_invalid_hub = 1;
+				}
+				else
+					remove_offender_from_open(fctx, hub_obj);
+
 				remove_offender_from_closed(fctx, new_obj, arrived_from);
 
 
@@ -348,9 +354,10 @@ rnd_trace("from: #%ld to #%ld\n", arrived_from == NULL ? 0 : arrived_from->ID, n
 				/* plus remove anything but the first object that is in contact with it
 				   (this removes started outgoing threads but not the object we once
 				   came from to reach arrived_from) */
+				if (hub_obj != NULL)
 				for(n = 0, cnt = 0; n < ctx->ec->tmplst.used; n++) {
 					pcb_any_obj_t *o = ctx->ec->tmplst.array[n];
-					if (pcb_intersect_obj_obj(fctx, o, arrived_from)) {
+					if (pcb_intersect_obj_obj(fctx, o, hub_obj)) {
 						cnt++;
 						if (cnt > 1) {
 							rnd_trace(" REMOVE4: #%ld (from #%ld)\n", ((pcb_any_obj_t *)(ctx->ec->tmplst.array[n]))->ID, new_obj->ID);

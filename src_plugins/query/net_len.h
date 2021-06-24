@@ -4,6 +4,7 @@ typedef struct {
 	vtp0_t objs;
 	unsigned has_junction:1;
 	unsigned has_nontrace:1;
+	unsigned has_invalid_hub:1;
 	pcb_any_obj_t *junction[3]; /* object with a junction on it before and after the list; 0..1 are ordered as objs; 2 is a spare field for internal use */
 	pcb_any_obj_t *junc_at[3];  /* our last object (part of the seg) that faces the given junction */
 	unsigned hub:1;             /* when set, this segment is a junction hub with more than 2 connected segments */
