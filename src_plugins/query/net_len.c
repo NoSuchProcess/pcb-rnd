@@ -579,7 +579,7 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 	}
 
 	/* make sure junctions are ordered the same way as the object array */
-	if (ctx.seglen->junc_at[0] != ctx.seglen->objs.array[0]) {
+	if ((ctx.seglen->objs.used > 0) && (ctx.seglen->junc_at[0] != ctx.seglen->objs.array[0])) {
 		rnd_swap(pcb_any_obj_t *, ctx.seglen->junc_at[0], ctx.seglen->junc_at[1]);
 		rnd_swap(pcb_any_obj_t *, ctx.seglen->junction[0], ctx.seglen->junction[1]);
 	}
