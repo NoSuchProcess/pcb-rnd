@@ -134,7 +134,7 @@ static void map_seg_out(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
 
 	for(;;) {
 		/* copy current iseg */
-printf("* iseg: %p %d\n", iseg, start_side);
+printf("* iseg: %p %d\n", (void *)iseg, start_side);
 		if (iseg->seg->hub) {
 			hub_last_obj = last_obj;
 			hub_obj = iseg->seg->objs.array[0];
@@ -159,7 +159,7 @@ printf("* prev term: %d %d\n", prev->term[0], prev->term[1]);
 		/* figure the common object and determine start_side for the new iseg */
 		end_obj = NULL;
 		for(n = 0; n < 2; n++) {
-			printf("* junc: %d %p\n", n, prev->seg->junction[n]);
+			printf("* junc: %d %p\n", n, (void *)prev->seg->junction[n]);
 			if (prev->seg->junction[n] != NULL) {
 				es = htpp_get(&map->o2n, prev->seg->junction[n]);
 				if (es == iseg) {
@@ -286,7 +286,7 @@ printf("-------------------\n");
 		/* pick up the the results and build a path using ->path_next and render the output net */
 		last = NULL;
 		for(n = usrch_a_star_path_first(&a, &it); n != NULL; n = usrch_a_star_path_next(&a, &it)) {
-printf(" + %p\n", n);
+printf(" + %p\n", (void *)n);
 			n->path_next = last;
 			last = n;
 			n->used = 1;
