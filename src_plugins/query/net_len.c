@@ -34,6 +34,7 @@
 #include <assert.h>
 
 #include "board.h"
+#include "data.h"
 #include "find.h"
 #include "netlist.h"
 #include "query_exec.h"
@@ -71,6 +72,8 @@ typedef struct {
 	pcb_qry_netseg_len_t *seglen;
 } parent_net_len_t;
 
+#define CC_IGNORE -1024
+
 /* set a cc bit for an object; returns 0 on success, 1 if the bit was already set */
 static int set_cc(parent_net_len_t *ctx, pcb_any_obj_t *o, int val)
 {
@@ -82,6 +85,9 @@ rnd_trace("set_cc: #%ld %d pstk: %d\n", o->ID, val, (o->type == PCB_OBJ_PSTK));
 		htpi_set(&ctx->ec->obj2lenseg_cc, o, val);
 		return 0;
 	}
+
+	if (e->value == CC_IGNORE)
+		return 0;
 
 	if (o->type == PCB_OBJ_PSTK) { /* padstacks have only one end */
 		e->value++;
@@ -166,13 +172,13 @@ static int fully_under_padstack(pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_f
 	rnd_coord_t te[4], th;
 
 	/* figure who is who, ignore non-pstk cases */
-	if (new_obj->type == PCB_OBJ_PSTK) {
-		pstk = new_obj;
-		trace = arrived_from;
-	}
-	else if (arrived_from->type == PCB_OBJ_PSTK) {
+	if (arrived_from->type == PCB_OBJ_PSTK) {
 		pstk = arrived_from;
 		trace = new_obj;
+	}
+	else if (new_obj->type == PCB_OBJ_PSTK) {
+		pstk = new_obj;
+		trace = arrived_from;
 	}
 	else
 		return 0;
@@ -335,8 +341,14 @@ static int parent_net_len_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb
 {
 	parent_net_len_t *ctx = fctx->user_data;
 	pcb_any_obj_t *hub_obj;
+	htpi_entry_t *e = htpi_getentry(&ctx->ec->obj2lenseg_cc, new_obj);
 
 rnd_trace("from: #%ld to #%ld\n", arrived_from == NULL ? 0 : arrived_from->ID, new_obj->ID);
+
+	if ((e != NULL) && (e->value == CC_IGNORE)) {
+		rnd_trace(" -> ignore object\n");
+		return PCB_FIND_DROP_THREAD;
+	}
 
 	if (arrived_from != NULL) {
 		int coll = endp_match(ctx, new_obj, arrived_from, NULL, &hub_obj);
@@ -576,9 +588,29 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 	return ctx.seglen;
 }
 
+static int mark_ps_overlap(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+{
+	pcb_any_obj_t *trace_obj;
+	pcb_qry_exec_t *ec = fctx->user_data;
+
+	if (arrived_from == NULL) /* the starting ps */
+		return 0;
+
+	if (fully_under_padstack(new_obj, arrived_from, &trace_obj, NULL)) {
+		rnd_trace("*** OVERLAP: #%ld\n", trace_obj->ID);
+		htpi_set(&ec->obj2lenseg_cc, trace_obj, CC_IGNORE);
+	}
+	return PCB_FIND_DROP_THREAD;
+}
+
 /* returns 1 if newly inited */
 RND_INLINE int pcb_qry_parent_net_lenseg_init(pcb_qry_exec_t *ec)
 {
+	rnd_rtree_it_t it;
+	pcb_any_obj_t *ps;
+	pcb_find_t fctx = {0};
+	rnd_rtree_box_t b;
+
 	if (ec->obj2lenseg_inited)
 		return 0;
 
@@ -586,6 +618,18 @@ RND_INLINE int pcb_qry_parent_net_lenseg_init(pcb_qry_exec_t *ec)
 	htpi_init(&ec->obj2lenseg_cc, ptrhash, ptrkeyeq);
 	vtp0_init(&ec->obj2lenseg_free);
 	ec->obj2lenseg_inited = 1;
+
+	/* find all fully overlapping padstack-trace combinations - the overlapping
+	   trace objects need to be marked */
+	fctx.found_cb = mark_ps_overlap;
+	fctx.user_data = ec;
+	b.x1 = b.y1 = -RND_COORD_MAX;
+	b.x2 = b.y2 = +RND_COORD_MAX;
+	for(ps = rnd_rtree_first(&it, ec->pcb->Data->padstack_tree, &b); ps != NULL; ps = rnd_rtree_next(&it)) {
+		pcb_find_from_obj(&fctx, ec->pcb->Data, ps);
+		pcb_find_free(&fctx);
+	}
+
 	return 1;
 }
 
