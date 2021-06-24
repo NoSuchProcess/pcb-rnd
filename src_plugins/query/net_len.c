@@ -38,6 +38,7 @@
 #include "netlist.h"
 #include "query_exec.h"
 #include "net_len.h"
+#include "search.h"
 #include "obj_arc.h"
 #include "obj_line.h"
 #include "obj_pstk.h"
@@ -158,11 +159,24 @@ static rnd_coord_t obj_len(pcb_any_obj_t *o)
 	return -1;
 }
 
-static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, double *dist)
+/* Return the object (either oa or ob) which has the junction on it: that is,
+   one endpoint of the other object falls on it. Returns NULL on error */
+static pcb_any_obj_t *junction_hub(pcb_any_obj_t *oa, rnd_coord_t ea[4], pcb_any_obj_t *ob, rnd_coord_t eb[4], double radius)
+{
+	if (pcb_is_point_on_obj(ea[0], ea[1], radius, ob)) return ob;
+	if (pcb_is_point_on_obj(ea[2], ea[3], radius, ob)) return ob;
+	if (pcb_is_point_on_obj(eb[0], eb[1], radius, oa)) return oa;
+	if (pcb_is_point_on_obj(eb[2], eb[3], radius, oa)) return oa;
+	return NULL;
+}
+
+static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, double *dist, pcb_any_obj_t **hub_out)
 {
 	rnd_coord_t new_end[4], new_th, old_end[4], old_th;
-	double th, d2;
+	double thr, th, d2;
 	int n, conns = 0, bad = 0;
+
+	*hub_out = NULL;
 
 	if (obj_ends(new_obj, new_end, &new_th) != 0) {
 		ctx->seglen->has_nontrace = 1;
@@ -170,8 +184,8 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 		return -1;
 	}
 	obj_ends(arrived_from, old_end, &old_th);
-	th = RND_MIN(new_th, old_th) * 4 / 5;
-	th = th * th;
+	thr = RND_MIN(new_th, old_th) * 4 / 5;
+	th = thr * thr;
 
 	for(n = 0; n < 4; n+=2) {
 		d2 = rnd_distance2(old_end[0], old_end[1], new_end[0+n], new_end[1+n]);
@@ -215,13 +229,16 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 
 	if (conns == 0) {
 		if (dist == NULL) {
-			rnd_trace("NSL: junction at: middle of #%ld vs. #%ld\n", new_obj->ID, arrived_from->ID);
+			pcb_any_obj_t *hub = junction_hub(new_obj, new_end, arrived_from, old_end, thr);
+			rnd_trace("NSL: junction at: middle of #%ld (#%ld vs. #%ld)\n", hub->ID, new_obj->ID, arrived_from->ID);
+			*hub_out = hub;
 		}
 		return -2;
 	}
 	if (conns > 1) {
 		if (dist == NULL)
 			rnd_trace("NSL: junction at: #%ld overlap with #%ld\n", new_obj->ID, arrived_from->ID);
+		*hub_out = new_obj;
 		return -2;
 	}
 
@@ -287,11 +304,12 @@ static void add_junction(parent_net_len_t *ctx, pcb_any_obj_t *junct, pcb_any_ob
 static int parent_net_len_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
 	parent_net_len_t *ctx = fctx->user_data;
+	pcb_any_obj_t *hub_obj;
 
 rnd_trace("from: #%ld to #%ld\n", arrived_from == NULL ? 0 : arrived_from->ID, new_obj->ID);
 
 	if (arrived_from != NULL) {
-		int coll = endp_match(ctx, new_obj, arrived_from, NULL);
+		int coll = endp_match(ctx, new_obj, arrived_from, NULL, &hub_obj);
 		if (coll != 0) {
 			ctx->seglen->has_junction = 1;
 /*rnd_trace("BUMP new=#%ld from=#%ld last=#%ld coll=%d\n", new_obj->ID, arrived_from->ID, ((pcb_any_obj_t *)ctx->ec->tmplst.array[ctx->ec->tmplst.used-1])->ID, coll);*/
@@ -437,7 +455,9 @@ RND_INLINE pcb_qry_netseg_len_t *pcb_qry_parent_net_lenseg_(pcb_qry_exec_t *ec, 
 
 		if (n > 0) {
 			double offs = 0;
-			if (endp_match(&ctx, o, (pcb_any_obj_t *)ec->tmplst.array[n-1], &offs) < 0) {
+			pcb_any_obj_t *hub_obj;
+
+			if (endp_match(&ctx, o, (pcb_any_obj_t *)ec->tmplst.array[n-1], &offs, &hub_obj) < 0) {
 				/* remember the first place in the list where endpoints don't meet - this
 				   must be the place where the search started in the other direction from
 				   the starting object - see below at "reversing" */
