@@ -1878,17 +1878,18 @@
  global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
- obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h \
+ obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h obj_rat.h \
+ idpath.h obj_poly.h obj_pstk.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/query/net_len.h ../src_plugins/query/query_exec.h \
  ../src_plugins/query/query.h ../src_plugins/query/fields_sphash.h \
  obj_common.h layer.h flag_str.h data.h crosshair.h route.h buffer.h \
- obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
+ obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h find.h netlist.h \
- search.h ../src_3rd/genprique/fibheap.h ../src_3rd/genprique/fibheap.c \
- ../src_3rd/genprique/fibheap.h ../src_3rd/libusearch/a_star_api.h \
- ../src_3rd/genprique/fibheap.h ../src_3rd/libusearch/common.h \
- ../src_3rd/libusearch/a_star_impl.h ../src_3rd/libusearch/a_star_api.h \
+ vtpadstack.h find.h netlist.h search.h ../src_3rd/genprique/fibheap.h \
+ ../src_3rd/genprique/fibheap.c ../src_3rd/genprique/fibheap.h \
+ ../src_3rd/libusearch/a_star_api.h ../src_3rd/genprique/fibheap.h \
+ ../src_3rd/libusearch/common.h ../src_3rd/libusearch/a_star_impl.h \
+ ../src_3rd/libusearch/a_star_api.h \
  ../src_plugins/lib_netmap/map_2nets_geo.c \
  ../src_plugins/lib_netmap/map_2nets_map.c
 ../src_plugins/lib_netmap/netmap.o: ../src_plugins/lib_netmap/netmap.c \
@@ -2160,10 +2161,13 @@
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
  obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
- board.h find.h netlist.h ../src_plugins/query/query_exec.h \
- ../src_plugins/query/query.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h flag_str.h ../src_plugins/query/net_len.h obj_arc.h \
- obj_line.h obj_pstk.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
+ board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
+ idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
+ ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
+ polygon.h vtpadstack_t.h find.h netlist.h \
+ ../src_plugins/query/query_exec.h ../src_plugins/query/query.h \
+ ../src_plugins/query/fields_sphash.h obj_common.h layer.h flag_str.h \
+ ../src_plugins/query/net_len.h search.h obj_arc.h obj_line.h obj_pstk.h \
  obj_term.h
 ../src_plugins/query/query.o: ../src_plugins/query/query.c ../config.h \
  data.h globalconst.h layer.h attrib.h global_typedefs.h obj_common.h \
