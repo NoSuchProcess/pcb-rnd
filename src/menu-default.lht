@@ -135,6 +135,7 @@ ha:rnd-menu-v1 {
 						ha:Move to current layer    = { a={<key>e; <key>l}; action=MoveToCurrentLayer(Object) }
 						ha:ChangeJoin Object        = { a={<key>e; <key>j}; action=ChangeJoin(Object) }
 						ha:Convert to extended object... = { a={<key>e; <key>s; <key>x}; action=ExtobjConvFrom(Object, @gui) }
+						ha:Edit text or terminal ID... = { li:a={{<key>e;<key>t};};  action=ChangeName(Object) }
 						ha:Geometry {
 							li:submenu {
 								ha:Clearance +2 mil             = { a={<key>e; <key>g; <key>c}; action=ChangeClearSize(Object,+2,mil) }
@@ -711,7 +712,7 @@ ha:rnd-menu-v1 {
 			li:submenu {
 				ha:Edit properties        { action=propedit(object) }
 				ha:Edit flags...          { action=FlagEdit() }
-				ha:Edit text...           { li:a={{<key>e;<key>t};};  action=ChangeName(Object) }
+				ha:Edit text...           { action=ChangeName(Object) }
 				ha:Set Same Style         { action=SetSame() }
 				ha:Convert to extended object... = { action=ExtobjConvFrom(Object, @gui) }
 				ha:Change font...         { li:a={{<key>e;<key>o};}   action=FontSel(Object) }
