@@ -210,7 +210,7 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 {
 	rnd_coord_t new_end[4], new_th, old_end[4], old_th;
 	double thr, th, d2;
-	int n, conns = 0, bad = 0;
+	int n, conns = 0, bad = 0, has_pstk = 0;
 
 	*hub_out = NULL;
 
@@ -220,7 +220,21 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 		return -1;
 	}
 	obj_ends(arrived_from, old_end, &old_th);
-	thr = RND_MIN(new_th, old_th) * 4 / 5;
+	thr = RND_MIN(new_th, old_th);
+
+	/* special case: a padstack should accept anything that it touches because
+	   of fully overlapping short doglegs are ignored */
+	if (arrived_from->type == PCB_OBJ_PSTK) {
+		has_pstk = 1;
+		thr = RND_MAX(thr, old_th);
+	}
+	if (new_obj->type == PCB_OBJ_PSTK) {
+		has_pstk = 1;
+		thr = RND_MAX(thr, new_th);
+	}
+
+	if (!has_pstk)
+		thr = thr * 4 / 5;
 	th = thr * thr;
 
 	for(n = 0; n < 4; n+=2) {
