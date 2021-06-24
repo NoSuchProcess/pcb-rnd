@@ -41,6 +41,22 @@ switch sys/class
 		end;
 end;
 
+print {/* Temporary: will be removed if export_png is moved to librnd */\n}
+print {\n\n/* Define to 1 if you have the <gd.h> header file. */\n}
+print_ternary ?libs/gui/gd/presents {#define PCB_HAVE_GD_H 1} {/* #undef PCB_HAVE_GD_H */}
+
+print {\n\n/* Define to 1 if you have the `gdImageGif' function. */\n}
+print_ternary ?libs/gui/gd/gdImageGif/presents {#define PCB_HAVE_GDIMAGEGIF 1} {/* #undef PCB_HAVE_GDIMAGEGIF */}
+
+print {\n\n/* Define to 1 if you have the `gdImageJpeg' function. */\n}
+print_ternary ?libs/gui/gd/gdImageJpeg/presents {#define PCB_HAVE_GDIMAGEJPEG 1} {/* #undef PCB_HAVE_GDIMAGEJPEG */}
+
+print {\n\n/* Define to 1 if you have the `gdImagePng' function. */\n}
+print_ternary ?libs/gui/gd/gdImagePng/presents {#define PCB_HAVE_GDIMAGEPNG 1} {/* #undef PCB_HAVE_GDIMAGEPNG */}
+
+print {\n\n/* Define to 1 if you have the `gdImageSetResolution' function. */\n}
+print_ternary ?libs/gui/gd/gdImageSetResolution/presents {#define PCB_HAVE_GD_RESOLUTION 1} {/* #undef PCB_HAVE_GD_RESOLUTION */}
+
 print [@
 
 /* Relative path from bindir to exec_prefix */
@@ -56,3 +72,4 @@ print [@
 
 #endif
 @]
+
