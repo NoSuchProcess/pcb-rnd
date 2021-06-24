@@ -61,9 +61,12 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	if (seg == NULL)
 		return;
 
+
 	ns = calloc(sizeof(pcb_2netmap_iseg_t), 1);
-	ns->next = map->isegs;
-	map->isegs = ns;
+	if (!seg->has_invalid_hub) {
+		ns->next = map->isegs;
+		map->isegs = ns;
+	}
 	ns->seg = seg;
 	ns->net = NULL;
 
@@ -79,7 +82,8 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 			printf("  NULL\n");
 			continue;
 		}
-		htpp_set(&map->o2n, *o, ns);
+		if (!seg->has_invalid_hub)
+			htpp_set(&map->o2n, *o, ns);
 		printf("  #%ld\n", (*o)->ID);
 
 		if ((*o)->term != NULL) {
@@ -90,6 +94,13 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 				ns->net = t->parent.net;
 			}
 		}
+	}
+
+	if (seg->has_invalid_hub) {
+		rnd_message(RND_MSG_ERROR, "Network %s can not be included in the net map due to invalid junction\n", ns->net->name);
+		pcb_qry_lenseg_free_fields(seg);
+		free(ns);
+		return;
 	}
 }
 
