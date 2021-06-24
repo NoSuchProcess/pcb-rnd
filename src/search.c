@@ -1236,6 +1236,35 @@ rnd_bool pcb_is_point_in_gfx(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, p
 }
 
 
+rnd_bool pcb_is_point_on_obj(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_any_obj_t *obj)
+{
+	switch(obj->type) {
+		case PCB_OBJ_ARC:  return pcb_is_point_on_arc(X, Y, Radius, (pcb_arc_t *)obj);
+		case PCB_OBJ_LINE: return pcb_is_point_on_line(X, Y, Radius, (pcb_line_t *)obj);
+		case PCB_OBJ_POLY: return pcb_poly_is_point_in_p(X, Y, Radius, (pcb_poly_t *)obj);
+		case PCB_OBJ_GFX:  return pcb_is_point_in_gfx(X, Y, Radius, (pcb_gfx_t *)obj);
+		case PCB_OBJ_RAT:
+			{
+				pcb_rat_t *rat = (pcb_rat_t *)obj;
+				return ((rat->Point1.X == X) && (rat->Point1.Y == Y)) || ((rat->Point2.X == X) && (rat->Point2.Y == Y));
+			}
+		case PCB_OBJ_PSTK:
+			{
+				pcb_line_t l = {0};
+				static const pcb_find_t ctx = {0};
+				l.Point1.X = l.Point2.X = X;
+				l.Point1.Y = l.Point2.Y = Y;
+				l.Thickness = Radius;
+				return pcb_isc_pstk_line(&ctx, (pcb_pstk_t *)obj, &l, 1);
+			}
+		case PCB_OBJ_TEXT:
+		case PCB_OBJ_SUBC: case PCB_OBJ_VOID: case PCB_OBJ_NET: case PCB_OBJ_NET_TERM: case PCB_OBJ_LAYER: case PCB_OBJ_LAYERGRP: return 0;
+	}
+
+	return 0;
+}
+
+
 pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, rnd_coord_t x, rnd_coord_t y, rnd_angle_t *ang, rnd_bool no_subc_part, rnd_bool no_term)
 {
 	rnd_rtree_it_t it;

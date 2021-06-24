@@ -177,6 +177,7 @@ rnd_bool pcb_is_point_on_thinline( rnd_coord_t X, rnd_coord_t Y, rnd_coord_t X1,
 rnd_bool pcb_is_point_on_line_end(rnd_coord_t X, rnd_coord_t Y, pcb_rat_t *Line);
 rnd_bool pcb_is_point_on_arc(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_arc_t *Arc);
 rnd_bool pcb_is_point_in_gfx(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_gfx_t *gfx);
+rnd_bool pcb_is_point_on_obj(rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Radius, pcb_any_obj_t *obj);
 rnd_bool pcb_is_line_in_rectangle(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, pcb_line_t *Line);
 rnd_bool pcb_is_line_in_quadrangle(rnd_point_t p[4], pcb_line_t *Line);
 rnd_bool pcb_is_arc_in_rectangle(rnd_coord_t X1, rnd_coord_t Y1, rnd_coord_t X2, rnd_coord_t Y2, pcb_arc_t *Arc);
