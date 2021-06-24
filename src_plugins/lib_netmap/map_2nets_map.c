@@ -263,7 +263,7 @@ static void map_seg_search(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
 	usrch_a_star_node_t *it;
 	usrch_a_star_t a = {0};
 	ast_ctx_t actx;
-	pcb_2netmap_iseg_t *n, *prev, *first, *last;
+	pcb_2netmap_iseg_t *n, *last;
 	usrch_res_t sr;
 
 	actx.map = map;
