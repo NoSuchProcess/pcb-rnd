@@ -159,6 +159,36 @@ static rnd_coord_t obj_len(pcb_any_obj_t *o)
 	return -1;
 }
 
+/* Returns whether two objects are a fully overlapping padstack-trace combination */
+static int fully_under_padstack(pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_any_obj_t **trace_out, pcb_any_obj_t **pstk_out)
+{
+	pcb_any_obj_t *pstk, *trace;
+	rnd_coord_t te[4], th;
+
+	/* figure who is who, ignore non-pstk cases */
+	if (new_obj->type == PCB_OBJ_PSTK) {
+		pstk = new_obj;
+		trace = arrived_from;
+	}
+	else if (arrived_from->type == PCB_OBJ_PSTK) {
+		pstk = arrived_from;
+		trace = new_obj;
+	}
+	else
+		return 0;
+
+	if (obj_ends(trace, te, &th) != 0)
+		return 0;
+
+	if (trace_out != NULL)
+		*trace_out = trace;
+	if (pstk_out != NULL)
+		*pstk_out = pstk;
+
+	/* fully under if both endpoints are under */
+	return pcb_is_point_on_obj(te[0], te[1], th/4, pstk) && pcb_is_point_on_obj(te[2], te[3], th/4, pstk);
+}
+
 /* Return the object (either oa or ob) which has the junction on it: that is,
    one endpoint of the other object falls on it. Returns NULL on error */
 static pcb_any_obj_t *junction_hub(pcb_any_obj_t *oa, rnd_coord_t ea[4], pcb_any_obj_t *ob, rnd_coord_t eb[4], double radius)
