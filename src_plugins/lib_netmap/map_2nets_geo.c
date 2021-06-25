@@ -116,7 +116,8 @@ static int map_seg_get_end_coords_on_arc(pcb_any_obj_t *obj, pcb_arc_t *hub, rnd
 	return 0;
 }
 
-
+TODO("maybe remove this")
+#if 0
 /* Loads ox and oy with the coordinate of the intersection between trace objects
    a and b. Also loads enda and endb with the endpoint bit (1 or 2 for ends; 0
    for middle) */
@@ -147,3 +148,4 @@ static int map_seg_get_isc_coords(pcb_any_obj_t *a, pcb_any_obj_t *b, rnd_coord_
 	return -1;
 }
 
+#endif

@@ -140,33 +140,73 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 	vtp0_append(&oseg->objs, tmp);
 }
 
+/* Arrived at curr from last point px;py. Look at the two ends of trace object
+   curr and load the one that's closer to px;py into npx;npy and the futher
+   one into nx;ny. Return the distance^2 from px;py to npx;npy. */
+static double oseg_map_get_ends(pcb_2netmap_obj_t *curr, rnd_coord_t px, rnd_coord_t py, rnd_coord_t *npx, rnd_coord_t *npy, rnd_coord_t *nx, rnd_coord_t *ny)
+{
+	rnd_coord_t ex[2], ey[2];
+	double d[2];
+	int n;
+
+	switch(curr->o.any.type) {
+		case PCB_OBJ_LINE:
+			ex[0] = curr->o.line.Point1.X;
+			ey[0] = curr->o.line.Point1.Y;
+			ex[1] = curr->o.line.Point2.X;
+			ey[1] = curr->o.line.Point2.Y;
+			break;
+		case PCB_OBJ_ARC:
+			for(n = 0; n < 2; n++)
+				pcb_arc_get_end(&curr->o.arc, n, &ex[n], &ey[n]);
+			break;
+		case PCB_OBJ_PSTK:
+		default:
+			pcb_obj_center(&curr->o.any, nx, ny);
+			*npx = *nx;
+			*npy = *ny;
+			return rnd_distance2(px, py, *npx, *npy);
+	}
+
+	for(n = 0; n < 2; n++)
+		d[n] = rnd_distance2(px, py, ex[n], ey[n]);
+
+	if (d[0] < d[1]) {
+		*npx = ex[0]; *npy = ey[0];
+		*nx  = ex[1]; *ny  = ey[1];
+		return d[0];
+	}
+
+	*npx = ex[1]; *npy = ey[1];
+	*nx  = ex[0]; *ny  = ey[0];
+	return d[1];
+}
+
 static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 {
 	long n;
 	pcb_2netmap_obj_t *curr, *prev = NULL;
-	rnd_coord_t px, py;
+	rnd_coord_t px, py, npx, npy, nx, ny;
+	double d2;
 
-	curr = oseg->objs.array[0];
-	pcb_obj_center(&curr->o.any, &px, &py);
-	curr->x = px;
-	curr->y = py;
+	prev = oseg->objs.array[0];
+	pcb_obj_center(&prev->o.any, &px, &py);
+	prev->x = px;
+	prev->y = py;
 
 	/* find connected endpoints */
-	for(n = 0; n < oseg->objs.used; n++) {
+	for(n = 1; n < oseg->objs.used; n++) {
 		curr = oseg->objs.array[n];
-		if (prev != NULL) {
-			if (prev->o.any.type == PCB_OBJ_PSTK) {
-				
-			}
-			else if (curr->o.any.type == PCB_OBJ_PSTK) {
-				
-			}
-			else if (map_seg_get_isc_coords(&prev->o.any, &curr->o.any, &curr->x, &curr->y) != 0)
-				printf("map coords fail %ld (prev=#%ld/%d curr=#%ld/%d)\n", n, prev->o.any.ID, prev->o.any.type, curr->o.any.ID, curr->o.any.type);
+		d2 = oseg_map_get_ends(curr, px, py, &npx, &npy, &nx, &ny);
+		if (d2 > RND_MM_TO_COORD(0.01)) {
+			TODO("insert line segment");
 		}
+printf("ddddd2: %f\n", d2);
+		curr->x = nx;
+		curr->y = ny;
 		prev = curr;
-		px = prev->x;
-		py = prev->y;
+		px = nx;
+		py = ny;
 	}
 }
 
