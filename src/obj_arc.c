@@ -965,6 +965,18 @@ rnd_angle_t pcb_arc_get_angle(pcb_arc_t *arc, rnd_coord_t x, rnd_coord_t y)
 	return atan2(-(y - arc->Y), (x - arc->X)) * 180.0 / M_PI + 180.0;
 }
 
+int pcb_arc_get_xy(pcb_arc_t *arc, rnd_angle_t ang, rnd_coord_t *x, rnd_coord_t *y)
+{
+	if (!pcb_angle_in_arc(arc, ang, 1))
+		return -1;
+
+	*x = rnd_round((double)arc->X - (double)arc->Width * cos(ang * RND_M180));
+	*y = rnd_round((double)arc->Y + (double)arc->Height * sin(ang * RND_M180));
+
+	return 0;
+}
+
+
 void *pcb_arc_insert_point(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_arc_t *arc)
 {
 	rnd_angle_t end_ang = arc->StartAngle + arc->Delta;

@@ -83,6 +83,10 @@ void pcb_arc_middle(const pcb_arc_t *arc, rnd_coord_t *x, rnd_coord_t *y);
 /* Convert an x;y coord assumed to be on the arc into arc angle */
 rnd_angle_t pcb_arc_get_angle(pcb_arc_t *arc, rnd_coord_t x, rnd_coord_t y);
 
+/* Convert an arc angle to x;y coords; returns 0 on success, -1 on error
+   (angle out of range) */
+int pcb_arc_get_xy(pcb_arc_t *arc, rnd_angle_t ang, rnd_coord_t *x, rnd_coord_t *y);
+
 
 /* Returns whether ang is within an arc (specified by start and delta angle) */
 int pcb_angle_in_arc_(double arc_sa, double arc_da, double ang, int inclusive);
