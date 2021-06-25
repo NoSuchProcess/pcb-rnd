@@ -144,14 +144,29 @@ static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 {
 	long n;
 	pcb_2netmap_obj_t *curr, *prev = NULL;
+	rnd_coord_t px, py;
+
+	curr = oseg->objs.array[0];
+	pcb_obj_center(&curr->o.any, &px, &py);
+	curr->x = px;
+	curr->y = py;
 
 	/* find connected endpoints */
 	for(n = 0; n < oseg->objs.used; n++) {
 		curr = oseg->objs.array[n];
 		if (prev != NULL) {
-			
+			if (prev->o.any.type == PCB_OBJ_PSTK) {
+				
+			}
+			else if (curr->o.any.type == PCB_OBJ_PSTK) {
+				
+			}
+			else if (map_seg_get_isc_coords(&prev->o.any, &curr->o.any, &curr->x, &curr->y) != 0)
+				printf("map coords fail %ld (prev=#%ld/%d curr=#%ld/%d)\n", n, prev->o.any.ID, prev->o.any.type, curr->o.any.ID, curr->o.any.type);
 		}
 		prev = curr;
+		px = prev->x;
+		py = prev->y;
 	}
 }
 

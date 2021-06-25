@@ -59,6 +59,7 @@ typedef struct pcb_2netmap_obj_s {
 		pcb_pstk_t pstk;
 		pcb_poly_t poly;
 		pcb_text_t text;
+		pcb_any_obj_t any;
 	} o;
 
 	/* internal/cache */
