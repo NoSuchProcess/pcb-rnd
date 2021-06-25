@@ -41,12 +41,12 @@ static pcb_2netmap_obj_t *map_seg_out_obj(pcb_2netmap_t *map, pcb_any_obj_t *obj
 
 	/* copy the object but reset some fields as this object is not part of any layer list */
 	switch(obj->type) {
-		case PCB_OBJ_LINE: memcpy(res, obj, sizeof(res->line)); memset(&res->line.link, 0, sizeof(gdl_elem_t)); break;
-		case PCB_OBJ_RAT:  memcpy(res, obj, sizeof(res->rat));  memset(&res->rat.link, 0, sizeof(gdl_elem_t)); break;
-		case PCB_OBJ_ARC:  memcpy(res, obj, sizeof(res->arc));  memset(&res->arc.link,  0, sizeof(gdl_elem_t)); break;
-		case PCB_OBJ_PSTK: memcpy(res, obj, sizeof(res->pstk)); memset(&res->pstk.link,  0, sizeof(gdl_elem_t)); break;
-		case PCB_OBJ_POLY: memcpy(res, obj, sizeof(res->poly)); memset(&res->poly.link,  0, sizeof(gdl_elem_t)); break;
-		case PCB_OBJ_TEXT: memcpy(res, obj, sizeof(res->text)); memset(&res->text.link,  0, sizeof(gdl_elem_t)); break;
+		case PCB_OBJ_LINE: memcpy(&res->o, obj, sizeof(res->o.line)); memset(&res->o.line.link, 0, sizeof(gdl_elem_t)); break;
+		case PCB_OBJ_RAT:  memcpy(&res->o, obj, sizeof(res->o.rat));  memset(&res->o.rat.link, 0, sizeof(gdl_elem_t)); break;
+		case PCB_OBJ_ARC:  memcpy(&res->o, obj, sizeof(res->o.arc));  memset(&res->o.arc.link,  0, sizeof(gdl_elem_t)); break;
+		case PCB_OBJ_PSTK: memcpy(&res->o, obj, sizeof(res->o.pstk)); memset(&res->o.pstk.link,  0, sizeof(gdl_elem_t)); break;
+		case PCB_OBJ_POLY: memcpy(&res->o, obj, sizeof(res->o.poly)); memset(&res->o.poly.link,  0, sizeof(gdl_elem_t)); break;
+		case PCB_OBJ_TEXT: memcpy(&res->o, obj, sizeof(res->o.text)); memset(&res->o.text.link,  0, sizeof(gdl_elem_t)); break;
 		default:;
 	}
 
@@ -84,10 +84,10 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 
 	switch(hub_obj->type) {
 		case PCB_OBJ_LINE:
-			tmp->line = *(pcb_line_t *)hub_obj;
-			map_seg_get_end_coords_on_line(from, (pcb_line_t *)hub_obj, &tmp->line.Point1.X, &tmp->line.Point1.Y);
-			map_seg_get_end_coords_on_line(to,   (pcb_line_t *)hub_obj, &tmp->line.Point2.X, &tmp->line.Point2.Y);
-			memset(&tmp->line.link, 0, sizeof(tmp->line.link));
+			tmp->o.line = *(pcb_line_t *)hub_obj;
+			map_seg_get_end_coords_on_line(from, (pcb_line_t *)hub_obj, &tmp->o.line.Point1.X, &tmp->o.line.Point1.Y);
+			map_seg_get_end_coords_on_line(to,   (pcb_line_t *)hub_obj, &tmp->o.line.Point2.X, &tmp->o.line.Point2.Y);
+			memset(&tmp->o.line.link, 0, sizeof(tmp->o.line.link));
 			break;
 		case PCB_OBJ_RAT:
 			abort();
@@ -97,29 +97,29 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 				pcb_arc_t *hub_arc = (pcb_arc_t *)hub_obj;
 				map_seg_get_end_coords_on_arc(from, hub_arc, &sa);
 				map_seg_get_end_coords_on_arc(to,   hub_arc, &ea);
-				tmp->arc = *hub_arc;
+				tmp->o.arc = *hub_arc;
 
 				/* check in which direction middle of the new arc would still fall
 				   onto the original arc; this decides the angle range so the
 				   new arc curves the right direction */
 				if (pcb_angle_in_arc(hub_arc, sa+(ea-sa)/2, 1)) {
-					tmp->arc.StartAngle = sa;
-					tmp->arc.Delta = ea - sa;
+					tmp->o.arc.StartAngle = sa;
+					tmp->o.arc.Delta = ea - sa;
 				}
 				else {
-					tmp->arc.StartAngle = ea;
-					tmp->arc.Delta = 360-(ea - sa);
+					tmp->o.arc.StartAngle = ea;
+					tmp->o.arc.Delta = 360-(ea - sa);
 				}
-				memset(&tmp->arc.link, 0, sizeof(tmp->arc.link));
+				memset(&tmp->o.arc.link, 0, sizeof(tmp->o.arc.link));
 			}
 			break;
 		case PCB_OBJ_PSTK:
-			tmp->pstk = *(pcb_pstk_t *)hub_obj;
-			memset(&tmp->pstk.link, 0, sizeof(tmp->pstk.link));
+			tmp->o.pstk = *(pcb_pstk_t *)hub_obj;
+			memset(&tmp->o.pstk.link, 0, sizeof(tmp->o.pstk.link));
 			break;
 
 		default:;
-			tmp->line.type = PCB_OBJ_VOID;
+			tmp->o.line.type = PCB_OBJ_VOID;
 			break;
 	}
 	vtp0_append(&oseg->objs, tmp);

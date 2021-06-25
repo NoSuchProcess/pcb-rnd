@@ -50,13 +50,16 @@ struct pcb_2netmap_iseg_s {
 	pcb_2netmap_iseg_t *path_next; /* in a temporary path while building oseg */
 };
 
-typedef union pcb_2netmap_obj_s {
-	pcb_arc_t arc;
-	pcb_line_t line;
-	pcb_rat_t rat;
-	pcb_pstk_t pstk;
-	pcb_poly_t poly;
-	pcb_text_t text;
+typedef struct pcb_2netmap_obj_s {
+	rnd_coord_t x, y;   /* starting point coords */
+	union {
+		pcb_arc_t arc;
+		pcb_line_t line;
+		pcb_rat_t rat;
+		pcb_pstk_t pstk;
+		pcb_poly_t poly;
+		pcb_text_t text;
+	} o;
 } pcb_2netmap_obj_t;
 
 typedef struct pcb_2netmap_oseg_s pcb_2netmap_oseg_t;
