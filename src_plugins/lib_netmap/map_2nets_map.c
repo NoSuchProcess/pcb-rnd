@@ -69,6 +69,21 @@ static pcb_any_obj_t *map_seg_out_copy(pcb_2netmap_t *map, pcb_2netmap_oseg_t *o
 	return i->seg->objs.array[0];
 }
 
+
+static pcb_any_obj_t *map_seg_out_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *o, pcb_2netmap_iseg_t *i, int start_side)
+{
+	long n;
+	if (start_side == 0) {
+		for(n = 0; n < i->seg->objs.used; n++)
+			vtp0_append(&o->objs, map_seg_out_obj(map, i->seg->objs.array[n]));
+		return i->seg->objs.array[i->seg->objs.used-1];
+	}
+
+	for(n = i->seg->objs.used-1; n >= 0; n--)
+		vtp0_append(&o->objs, map_seg_out_obj(map, i->seg->objs.array[n]));
+	return i->seg->objs.array[0];
+}
+
 /* replace a hub object with a dummy object that acts as a bridge between 'from'
    object and the starting object of to_iseg */
 static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb_any_obj_t *from,  pcb_any_obj_t *hub_obj, pcb_2netmap_iseg_t *to_iseg, int to_start_side)
@@ -125,6 +140,21 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 	vtp0_append(&oseg->objs, tmp);
 }
 
+static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
+{
+	long n;
+	pcb_2netmap_obj_t *curr, *prev = NULL;
+
+	/* find connected endpoints */
+	for(n = 0; n < oseg->objs.used; n++) {
+		curr = oseg->objs.array[n];
+		if (prev != NULL) {
+			
+		}
+		prev = curr;
+	}
+}
+
 static void map_seg_out(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
 {
 	pcb_2netmap_iseg_t *prev, *es;
@@ -175,6 +205,8 @@ printf("* prev term: %d %d\n", prev->term[0], prev->term[1]);
 		else 
 			start_side = 1;
 	}
+
+	oseg_map_coords(map, oseg);
 }
 
 /*** Search a path from a starting segment to any terminal using the A* algorithm ***/

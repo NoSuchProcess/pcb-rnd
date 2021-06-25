@@ -60,6 +60,9 @@ typedef struct pcb_2netmap_obj_s {
 		pcb_poly_t poly;
 		pcb_text_t text;
 	} o;
+
+	/* internal/cache */
+	unsigned char cc; /* ends used for connection */
 } pcb_2netmap_obj_t;
 
 typedef struct pcb_2netmap_oseg_s pcb_2netmap_oseg_t;

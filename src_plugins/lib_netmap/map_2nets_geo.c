@@ -116,3 +116,37 @@ static int map_seg_get_end_coords_on_arc(pcb_any_obj_t *obj, pcb_arc_t *hub, rnd
 	return 0;
 }
 
+
+/* Loads ox and oy with the coordinate of the intersection between trace objects
+   a and b. Also loads enda and endb with the endpoint bit (1 or 2 for ends; 0
+   for middle) */
+static int map_seg_get_isc_coords(pcb_any_obj_t *a, pcb_any_obj_t *b, int *enda, int *endb, rnd_coord_t *ox, rnd_coord_t *oy)
+{
+	rnd_angle_t ang;
+
+	if ((a->type == PCB_OBJ_LINE) && (map_seg_get_end_coords_on_line(b, (pcb_line_t *)a, ox, oy) == 0)) {
+		return 0;
+	}
+
+	if ((b->type == PCB_OBJ_LINE) && (map_seg_get_end_coords_on_line(a, (pcb_line_t *)b, ox, oy) == 0)) {
+		return 0;
+	}
+
+
+	if ((a->type == PCB_OBJ_ARC) && (map_seg_get_end_coords_on_arc(b, (pcb_arc_t *)a, &ang) == 0)) {
+		if (pcb_arc_get_xy((pcb_arc_t *)a, ang, ox, oy) != 0)
+			return -1;
+
+		return 0;
+	}
+
+	if ((b->type == PCB_OBJ_ARC) && (map_seg_get_end_coords_on_arc(a, (pcb_arc_t *)b, &ang) == 0)) {
+		if (pcb_arc_get_xy((pcb_arc_t *)b, ang, ox, oy) != 0)
+			return -1;
+
+		return 0;
+	}
+
+	return -1;
+}
+
