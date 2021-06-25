@@ -127,8 +127,9 @@ static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 
 static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
 {
-	pcb_board_t tmp = {0};
+	pcb_board_t tmp;
 
+	tmp = *pcb;
 	tmp.Data = subc->data;
 	pcb_loop_all(&tmp, ctx,
 		NULL, /* layer */
