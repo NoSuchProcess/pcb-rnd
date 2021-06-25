@@ -50,6 +50,8 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	long n;
 	pcb_2netmap_iseg_t *ns;
 
+	if (!map->nonterminals && (obj->term == NULL))
+		return;
 
 	if ((layer != NULL) && (pcb_layer_flags_(layer) & PCB_LYT_COPPER) == 0)
 		return;
@@ -60,7 +62,6 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	seg = pcb_qry_parent_net_len_mapseg(map->ec, obj, map->find_rats);
 	if (seg == NULL)
 		return;
-
 
 	ns = calloc(sizeof(pcb_2netmap_iseg_t), 1);
 	if (!seg->has_invalid_hub) {
@@ -124,6 +125,25 @@ static void list_pstk_cb(void *ctx, pcb_board_t *pcb, pcb_pstk_t *ps)
 	list_obj(ctx, pcb, NULL, (pcb_any_obj_t *)ps);
 }
 
+static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter)
+{
+	pcb_board_t tmp = {0};
+
+	tmp.Data = subc->data;
+	pcb_loop_all(&tmp, ctx,
+		NULL, /* layer */
+		list_line_cb,
+		list_arc_cb,
+		NULL, /* text */
+		list_poly_cb,
+		NULL, /* gfx */
+		list_subc_cb, /* subc */
+		list_pstk_cb
+	);
+	return 0;
+}
+
+
 #include "map_2nets_geo.c"
 #include "map_2nets_map.c"
 
@@ -140,17 +160,21 @@ int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control
 
 	htpp_init(&map->o2n, ptrhash, ptrkeyeq);
 
-	/* map segments using query's netlen mapper */
-	pcb_loop_all(PCB, map,
-		NULL, /* layer */
-		list_line_cb,
-		list_arc_cb,
-		NULL, /* text */
-		list_poly_cb,
-		NULL, /* gfx */
-		NULL, /* subc */
-		list_pstk_cb
-	);
+	/* map segments using query's netlen mapper; first from terminals then
+	   from non-terminals; this way some corner cases can be avoided by
+	   picking out objects forming real nets, starting from terminals */
+	for(map->nonterminals = 0; map->nonterminals < 2; map->nonterminals++) {
+		pcb_loop_all(PCB, map,
+			NULL, /* layer */
+			list_line_cb,
+			list_arc_cb,
+			NULL, /* text */
+			list_poly_cb,
+			NULL, /* gfx */
+			list_subc_cb, /* subc */
+			list_pstk_cb
+		);
+	}
 
 	/* the result is really a graph because of junctions; search random paths
 	   from terminal to terminal (junctions resolved into overlaps) */

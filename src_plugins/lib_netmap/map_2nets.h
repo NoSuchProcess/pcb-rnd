@@ -83,6 +83,7 @@ typedef struct pcb_2netmap_s {
 	htpp_t o2n;   /* of (pcb_2netmap_iseg_t *); tells the net for an object */
 	pcb_2netmap_iseg_t *isegs; /* head of a singly linked list */
 	pcb_qry_exec_t *ec;
+	unsigned char nonterminals;
 } pcb_2netmap_t;
 
 
