@@ -1,3 +1,4 @@
+35020	configure	io_pads: enable the experimental write code
 34995	configure	fix png export missing formats
 34937	configure	lib_netmap: 2net mapping code placeholder (for io_pads)
 34912	configure	renames for 3.0.0

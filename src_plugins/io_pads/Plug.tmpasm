@@ -2,6 +2,7 @@ put /local/pcb/mod {io_pads}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_pads/io_pads.o
 	$(PLUGDIR)/io_pads/read.o
+	$(PLUGDIR)/io_pads/write.o
 	$(PLUGDIR)/io_pads/delay_create.o
 @]
 
