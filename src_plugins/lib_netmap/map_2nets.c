@@ -188,7 +188,12 @@ int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control
 
 int pcb_map_2nets_uninit(pcb_2netmap_t *map)
 {
-
+	pcb_2netmap_oseg_t *oseg, *next;
+	for(oseg = map->osegs; oseg != NULL; oseg = next) {
+		next = oseg->next;
+		vtp0_uninit(&oseg->objs);
+		free(oseg);
+	}
 	htpp_uninit(&map->o2n);
 	return -1;
 }
