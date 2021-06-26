@@ -51,7 +51,7 @@ struct pcb_2netmap_iseg_s {
 };
 
 typedef struct pcb_2netmap_obj_s {
-	rnd_coord_t x, y;   /* starting point coords */
+	rnd_coord_t x, y;   /* endpoint coords of the current object (this is where the cursor ends up after drawing the object */
 	union {
 		pcb_arc_t arc;
 		pcb_line_t line;
