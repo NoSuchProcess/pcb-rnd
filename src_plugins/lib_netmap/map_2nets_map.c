@@ -142,8 +142,9 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 
 /* Arrived at curr from last point px;py. Look at the two ends of trace object
    curr and load the one that's closer to px;py into npx;npy and the futher
-   one into nx;ny. Return the distance^2 from px;py to npx;npy. */
-static double oseg_map_get_ends(pcb_2netmap_obj_t *curr, rnd_coord_t px, rnd_coord_t py, rnd_coord_t *npx, rnd_coord_t *npy, rnd_coord_t *nx, rnd_coord_t *ny)
+   one into nx;ny. Return the distance^2 from px;py to npx;npy. *endi is either
+   0 or 1 depending on start/end index choosen for npx;npy */
+static double oseg_map_get_ends(pcb_2netmap_obj_t *curr, rnd_coord_t px, rnd_coord_t py, rnd_coord_t *npx, rnd_coord_t *npy, rnd_coord_t *nx, rnd_coord_t *ny, int *endi)
 {
 	rnd_coord_t ex[2], ey[2];
 	double d[2];
@@ -165,6 +166,7 @@ static double oseg_map_get_ends(pcb_2netmap_obj_t *curr, rnd_coord_t px, rnd_coo
 			pcb_obj_center(&curr->o.any, nx, ny);
 			*npx = *nx;
 			*npy = *ny;
+			*endi = 0;
 			return rnd_distance2(px, py, *npx, *npy);
 	}
 
@@ -174,11 +176,13 @@ static double oseg_map_get_ends(pcb_2netmap_obj_t *curr, rnd_coord_t px, rnd_coo
 	if (d[0] < d[1]) {
 		*npx = ex[0]; *npy = ey[0];
 		*nx  = ex[1]; *ny  = ey[1];
+		*endi = 0;
 		return d[0];
 	}
 
 	*npx = ex[1]; *npy = ey[1];
 	*nx  = ex[0]; *ny  = ey[0];
+	*endi = 1;
 	return d[1];
 }
 
@@ -188,6 +192,7 @@ static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 	pcb_2netmap_obj_t *curr, *prev = NULL;
 	rnd_coord_t px, py, npx, npy, nx, ny, th = 1, cl = 1;
 	double d2;
+	int endi;
 
 	prev = oseg->objs.array[0];
 	pcb_obj_center(&prev->o.any, &px, &py);
@@ -208,7 +213,7 @@ static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 		/* check endpoint matching; px;py is the last object's end, npx;npy is
 		   the current object's start (the new px;py if they don't match) and
 		   nx;ny is the "next" x;y, the new cursor position (end of curr) */
-		d2 = oseg_map_get_ends(curr, px, py, &npx, &npy, &nx, &ny);
+		d2 = oseg_map_get_ends(curr, px, py, &npx, &npy, &nx, &ny, &endi);
 
 		/* if endpoints are not properly connected, insert a dummy bridge line */
 		if (d2 > RND_MM_TO_COORD(0.01)) {
@@ -222,8 +227,20 @@ static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 			vtp0_insert_len(&oseg->objs, n, &tmp, 1);
 			n++;
 		}
+
 		curr->x = nx;
 		curr->y = ny;
+		if (curr->o.any.type == PCB_OBJ_ARC) {
+			if (endi == 0) { /* the arc object is in the right direction, just copy */
+				curr->sa = curr->o.arc.StartAngle;
+				curr->da = curr->o.arc.Delta;
+			}
+			else { /* need to reverse arc */
+				curr->sa = curr->o.arc.StartAngle + curr->o.arc.Delta;
+				curr->da = -curr->o.arc.Delta;
+			}
+		}
+
 		prev = curr;
 		px = nx;
 		py = ny;
