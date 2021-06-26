@@ -37,6 +37,8 @@
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/compat_misc.h>
 
+#include "../src_plugins/lib_netmap/map_2nets.h"
+
 #include "board.h"
 #include "conf_core.h"
 #include "data.h"
