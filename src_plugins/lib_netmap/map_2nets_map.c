@@ -204,7 +204,13 @@ static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 			case PCB_OBJ_ARC:  th = curr->o.arc.Thickness;  cl = curr->o.arc.Clearance; break;
 			default:;
 		}
+		
+		/* check endpoint matching; px;py is the last object's end, npx;npy is
+		   the current object's start (the new px;py if they don't match) and
+		   nx;ny is the "next" x;y, the new cursor position (end of curr) */
 		d2 = oseg_map_get_ends(curr, px, py, &npx, &npy, &nx, &ny);
+
+		/* if endpoints are not properly connected, insert a dummy bridge line */
 		if (d2 > RND_MM_TO_COORD(0.01)) {
 			pcb_2netmap_obj_t *tmp = calloc(sizeof(pcb_2netmap_obj_t), 1);
 			tmp->o.line.type = PCB_OBJ_LINE;
