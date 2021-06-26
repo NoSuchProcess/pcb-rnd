@@ -186,7 +186,7 @@ static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 {
 	long n;
 	pcb_2netmap_obj_t *curr, *prev = NULL;
-	rnd_coord_t px, py, npx, npy, nx, ny;
+	rnd_coord_t px, py, npx, npy, nx, ny, th = 1, cl = 1;
 	double d2;
 
 	prev = oseg->objs.array[0];
@@ -197,11 +197,25 @@ static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 	/* find connected endpoints */
 	for(n = 1; n < oseg->objs.used; n++) {
 		curr = oseg->objs.array[n];
+
+		/* remember last known trace geometry just in case we need to insert dummies */
+		switch(curr->o.any.type) {
+			case PCB_OBJ_LINE: th = curr->o.line.Thickness; cl = curr->o.line.Clearance; break;
+			case PCB_OBJ_ARC:  th = curr->o.arc.Thickness;  cl = curr->o.arc.Clearance; break;
+			default:;
+		}
 		d2 = oseg_map_get_ends(curr, px, py, &npx, &npy, &nx, &ny);
 		if (d2 > RND_MM_TO_COORD(0.01)) {
-			TODO("insert line segment");
+			pcb_2netmap_obj_t *tmp = calloc(sizeof(pcb_2netmap_obj_t), 1);
+			tmp->o.line.type = PCB_OBJ_LINE;
+			tmp->o.line.ID = 0;
+			tmp->o.line.Point1.X = px; tmp->o.line.Point1.Y = py;
+			tmp->o.line.Point2.X = npx; tmp->o.line.Point2.Y = npy;
+			tmp->o.line.Thickness = th; tmp->o.line.Clearance = cl;
+			tmp->x = npx; tmp->y = npy;
+			vtp0_insert_len(&oseg->objs, n, &tmp, 1);
+			n++;
 		}
-printf("ddddd2: %f\n", d2);
 		curr->x = nx;
 		curr->y = ny;
 		prev = curr;
