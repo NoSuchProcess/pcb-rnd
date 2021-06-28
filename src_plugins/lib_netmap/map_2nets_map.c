@@ -194,6 +194,9 @@ static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 	double d2;
 	int endi;
 
+	if (oseg->objs.used < 1)
+		return;
+
 	prev = oseg->objs.array[0];
 	pcb_obj_center(&prev->o.any, &px, &py);
 	prev->x = px;
