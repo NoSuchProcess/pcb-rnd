@@ -365,7 +365,7 @@ static int pads_write_blk_vias(write_ctx_t *wctx)
 
 	fprintf(wctx->f, "*VIA*  ITEMS\r\n\r\n");
 	fprintf(wctx->f, "*REMARK* NAME  DRILL STACKLINES [DRILL START] [DRILL END]\r\n");
-	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE [INNER DIAMETER]\r\n");
+	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE [INNER DIAMETER]\r\n\r\n");
 
 	for(n = 0; n < wctx->pcb->Data->ps_protos.used; n++) {
 		if (pads_write_blk_pstk_proto(wctx, n, &wctx->pcb->Data->ps_protos.array[n]) != 0)
