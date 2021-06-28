@@ -406,6 +406,8 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 	res = pads_write_pcb_(&wctx);
 	pads_free_layers(&wctx);
 
+	fprintf(f, "\r\n*END*     OF ASCII OUTPUT FILE\r\n");
+
 	return res;
 }
 
