@@ -382,9 +382,22 @@ static int pads_write_blk_vias(write_ctx_t *wctx)
 	return res;
 }
 
+#define SUBC_ID_ATTR "io_pads::__decal__id__"
+
+static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const char *id)
+{
+	long num_pcs = 0, num_terms = 0, num_stacks = 0, num_texts = 0, num_labels = 0;
+
+	fprintf(wctx->f, "\r\n%-16s M 1000 1000  %ld %ld %ld %ld %ld\r\n", id, num_pcs, num_terms, num_stacks, num_texts, num_labels);
+
+	fprintf(wctx->f, "\r\n");
+	return 0;
+}
+
 static int pads_write_blk_partdecals(write_ctx_t *wctx)
 {
-	int res = 0;
+	int res = 0, cnt = 0;
+	htscp_entry_t *e;
 
 	fprintf(wctx->f, "*PARTDECAL*  ITEMS\r\n\r\n");
 	fprintf(wctx->f, "*REMARK* NAME UNITS ORIX ORIY PIECES TERMINALS STACKS TEXT LABELS\r\n");
@@ -397,8 +410,16 @@ static int pads_write_blk_partdecals(write_ctx_t *wctx)
 	fprintf(wctx->f, "*REMARK* T XLOC YLOC NMXLOC NMYLOC PINNUMBER\r\n");
 	fprintf(wctx->f, "*REMARK* PAD PIN STACKLINES\r\n");
 	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE IDIA DRILL [PLATED]\r\n");
-	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE FINORI FINLENGTH FINOFFSET DRILL [PLATED]\r\n\r\n");
+	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE FINORI FINLENGTH FINOFFSET DRILL [PLATED]\r\n");
 
+	for(e = htscp_first(&wctx->footprints.subcs); e != NULL; e = htscp_next(&wctx->footprints.subcs, e)) {
+		char tmp[128];
+		pcb_subc_t *proto = e->value;
+		sprintf(tmp, "subc_%d", cnt++);
+		pcb_attribute_put(&proto->Attributes, SUBC_ID_ATTR, tmp);
+		if (pads_write_blk_partdecal(wctx, proto, tmp) != 0)
+			res = -1;
+	}
 
 	fprintf(wctx->f, "\r\n");
 	return res;
