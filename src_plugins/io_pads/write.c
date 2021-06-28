@@ -218,7 +218,7 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 		if (l != NULL) {
 			fprintf(wctx->f, "lines_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)linelist_length(&ly->Line));
 			for(; l != NULL; l = linelist_next(l)) {
-				fprintf(wctx->f, "OPEN 2   %ld %d\r\n", CRD(l->Thickness), plid);
+				fprintf(wctx->f, "OPEN 2   %ld 0 %d\r\n", CRD(l->Thickness), plid);
 				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point1.X), CRDY(l->Point1.Y));
 				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point2.X), CRDY(l->Point2.Y));
 			}
