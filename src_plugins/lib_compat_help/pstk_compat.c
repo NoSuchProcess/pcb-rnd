@@ -571,6 +571,46 @@ pcb_pstk_t *pcb_pstk_new_compat_pad(pcb_data_t *data, long int id, rnd_coord_t x
 	return pcb_pstk_new(data, id, pid, cx, cy, clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
 }
 
+rnd_bool pcb_pstk_shape2rect(const pcb_pstk_shape_t *shape, double *w_out, double *h_out, double *cx_out, double *cy_out, double *rot_out, double *vx01_out, double *vy01_out, double *vx03_out, double *vy03_out)
+{
+	double x0, y0, x1, y1, x2, y2, x3, y3, w, h, cx, cy;
+
+	if (shape->shape != PCB_PSSH_POLY)
+		return rnd_false;
+
+	if (shape->data.poly.len != 4)
+		return rnd_false;
+
+	x0 = shape->data.poly.x[0]; y0 = shape->data.poly.y[0];
+	x1 = shape->data.poly.x[1]; y1 = shape->data.poly.y[1];
+	x2 = shape->data.poly.x[2]; y2 = shape->data.poly.y[2];
+	x3 = shape->data.poly.x[3]; y3 = shape->data.poly.y[3];
+	w = rnd_distance(x0, y0, x1, y1);
+	h = rnd_distance(x0, y0, x3, y3);
+
+	if ((cx_out != NULL) || (cy_out != NULL) || (rot_out != NULL)) {
+		cx = (x0+x1+x2+x3)/4.0;
+		cy = (y0+y1+y2+y3)/4.0;
+	}
+
+	if (cx_out != NULL) *cx_out = cx;
+	if (cy_out != NULL) *cy_out = cy;
+	if (w_out != NULL) *w_out = w;
+	if (h_out != NULL) *h_out = h;
+	if (vx01_out != NULL) *vx01_out = (x1 - x0) / w;
+	if (vy01_out != NULL) *vy01_out = (y1 - y0) / w;
+	if (vx03_out != NULL) *vx03_out = (x3 - x0) / h;
+	if (vy03_out != NULL) *vy03_out = (y3 - y0) / h;
+
+	if (rot_out != NULL) {
+		double mx = (x0 + x3) / 2;
+		double my = (y0 + y3) / 2;
+		*rot_out = atan2(my - cy, mx - cx);
+	}
+
+	return rnd_true;
+}
+
 
 rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t *y1, rnd_coord_t *x2, rnd_coord_t *y2, rnd_coord_t *thickness, rnd_coord_t *clearance, rnd_coord_t *mask, rnd_bool *square, rnd_bool *nopaste)
 {
@@ -630,27 +670,13 @@ rnd_bool pcb_pstk_export_compat_pad(pcb_pstk_t *ps, rnd_coord_t *x1, rnd_coord_t
 	/* if the shape is poly, convert to line to make the rest of the code simpler */
 	if (tshp->shape[0].shape == PCB_PSSH_POLY) {
 		for(n = 0; n < tshp->len; n++) {
-			double x0, y0, x1, y1, x2, y2, x3, y3, w, h, vx01, vy01, vx03, vy03, cx, cy;
+			double w, h, cx, cy, vx01, vy01, vx03, vy03;
 
 			if (tshp->shape[n].shape != PCB_PSSH_POLY)
 				continue;
 
-			if (tshp->shape[n].data.poly.len != 4)
+			if (!pcb_pstk_shape2rect(&tshp->shape[n], &w, &h, &cx, &cy, NULL, &vx01, &vy01, &vx03, &vy03))
 				return rnd_false;
-
-			x0 = tshp->shape[n].data.poly.x[0]; y0 = tshp->shape[n].data.poly.y[0];
-			x1 = tshp->shape[n].data.poly.x[1]; y1 = tshp->shape[n].data.poly.y[1];
-			x2 = tshp->shape[n].data.poly.x[2]; y2 = tshp->shape[n].data.poly.y[2];
-			x3 = tshp->shape[n].data.poly.x[3]; y3 = tshp->shape[n].data.poly.y[3];
-			w = rnd_distance(x0, y0, x1, y1);
-			h = rnd_distance(x0, y0, x3, y3);
-			vx01 = (x1 - x0) / w;
-			vy01 = (y1 - y0) / w;
-			vx03 = (x3 - x0) / h;
-			vy03 = (y3 - y0) / h;
-
-			cx = (x0+x1+x2+x3)/4.0;
-			cy = (y0+y1+y2+y3)/4.0;
 
 			if (w <= h) {
 				lt[n] = rnd_round(w);

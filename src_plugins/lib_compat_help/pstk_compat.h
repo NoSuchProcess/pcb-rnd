@@ -46,4 +46,12 @@ pcb_flag_t pcb_pstk_compat_pinvia_flag(pcb_pstk_t *ps, pcb_pstk_compshape_t csha
    Should not be used anywhere but io_pcb and io_lihata. */
 pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, rnd_coord_t DrillingHole, const char *Name, pcb_flag_t Flags);
 
+
+
+/*** low level ***/
+
+/* Extract rectangle geometry from a polygon shape. Return true if it is
+   a rectangle and fill in any non-NULL _out field. rot_out is in radians */
+rnd_bool pcb_pstk_shape2rect(const pcb_pstk_shape_t *shape, double *w_out, double *h_out, double *cx_out, double *cy_out, double *rot_out, double *vx01_out, double *vy01_out, double *vx03_out, double *vy03_out);
+
 #endif
