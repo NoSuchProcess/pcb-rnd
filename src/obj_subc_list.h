@@ -29,7 +29,7 @@
 
 #include "obj_subc.h"
 
-/* List of Elements */
+/* List of subcircuits */
 #define TDL(x)      pcb_subclist_ ## x
 #define TDL_LIST_T  pcb_subclist_t
 #define TDL_ITEM_T  pcb_subc_t
