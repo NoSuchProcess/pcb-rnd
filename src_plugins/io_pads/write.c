@@ -414,7 +414,7 @@ static int pads_write_pcb_(write_ctx_t *wctx)
 	if (pads_write_blk_partdecals(wctx) != 0) return -1;
 
 	if (pads_write_blk_misc_layers(wctx) != 0) return -1;
-	return -1;
+	return 0;
 }
 
 static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filename, const char *new_filename, rnd_bool emergency, double ver)
