@@ -59,7 +59,7 @@ typedef struct {
 	pcb_placement_t footprints;
 } write_ctx_t;
 
-#define CRD(c)   ((long)rnd_round((c) * 3 / 2))
+#define CRD(c)   (c)
 #define CRDX(c)  CRD(c)
 #define CRDY(c)  CRD(wctx->pcb->hidlib.size_y - (c))
 #define ROT(r)   (r)
@@ -83,26 +83,26 @@ static int pads_write_blk_pcb(write_ctx_t *wctx)
 
 	coplyn = pcb_layergrp_list(wctx->pcb, PCB_LYT_COPPER, NULL, 0);
 
-	fprintf(wctx->f, "*PCB*        GENERAL PARAMETERS OF THE PCB DESIGN\r\n\r\n");
-	fprintf(wctx->f, "UNITS             %d              2=Inches 1=Metric 0=Mils\r\n", gridu);
-	fprintf(wctx->f, "USERGRID     % 6ld  % 6ld      Space between USER grid points\r\n", CRD(rnd_conf.editor.grid), CRD(rnd_conf.editor.grid));
-	fprintf(wctx->f, "MAXIMUMLAYER     % 2d              Maximum routing layer\r\n", coplyn);
-	fprintf(wctx->f, "WORKLEVEL         0              Level items will be created on\r\n");
-	fprintf(wctx->f, "DISPLAYLEVEL      1              toggle for displaying working level last\r\n");
-	fprintf(wctx->f, "LAYERPAIR         1       2      Layer pair used to route connection\r\n");
-	fprintf(wctx->f, "VIAMODE           T              Type of via to use when routing between layers\r\n");
-	fprintf(wctx->f, "LINEWIDTH    % 6ld              Width items will be created with\r\n", CRD(conf_core.design.line_thickness));
-	fprintf(wctx->f, "TEXTSIZE     % 6ld  % 6ld      Height and LineWidth text will be created with\r\n", CRD(conf_core.design.text_scale), CRD(conf_core.design.text_thickness));
-	fprintf(wctx->f, "JOBTIME           0              Amount of time spent on this PCB design\r\n");
-	fprintf(wctx->f, "DOTGRID      % 6ld  % 6ld      Space between graphic dots\r\n", CRD(rnd_conf.editor.grid), CRD(rnd_conf.editor.grid));
-	fprintf(wctx->f, "SCALE        10.000              Scale of window expansion\r\n");
-	fprintf(wctx->f, "ORIGIN       % 6ld  % 6ld      User defined origin location\r\n", CRD(wctx->pcb->hidlib.grid_ox), CRD(wctx->pcb->hidlib.grid_oy));
-	fprintf(wctx->f, "WINDOWCENTER % 6ld % 6ld     Point defining the center of the window\r\n", CRD(wctx->pcb->hidlib.size_x/2.0), CRD(wctx->pcb->hidlib.size_y/2.0));
-	fprintf(wctx->f, "BACKUPTIME       20              Number of minutes between database backups\r\n");
-	fprintf(wctx->f, "REAL WIDTH        2              Widths greater then this are displayed real size\r\n");
-	fprintf(wctx->f, "ALLSIGONOFF       1              All signal nets displayed on/off\r\n");
-	fprintf(wctx->f, "REFNAMESIZE  % 6ld  % 6ld      Height and LineWidth used by part ref. names\r\n", CRD(conf_core.design.text_scale), CRD(conf_core.design.text_thickness));
-	fprintf(wctx->f, "HIGHLIGHT         0              Highlight nets flag\r\n");
+	rnd_fprintf(wctx->f, "*PCB*        GENERAL PARAMETERS OF THE PCB DESIGN\r\n\r\n");
+	rnd_fprintf(wctx->f, "UNITS             %d              2=Inches 1=Metric 0=Mils\r\n", gridu);
+	rnd_fprintf(wctx->f, "USERGRID     %[4]  %[4]      Space between USER grid points\r\n", CRD(rnd_conf.editor.grid), CRD(rnd_conf.editor.grid));
+	rnd_fprintf(wctx->f, "MAXIMUMLAYER     % 2d              Maximum routing layer\r\n", coplyn);
+	rnd_fprintf(wctx->f, "WORKLEVEL         0              Level items will be created on\r\n");
+	rnd_fprintf(wctx->f, "DISPLAYLEVEL      1              toggle for displaying working level last\r\n");
+	rnd_fprintf(wctx->f, "LAYERPAIR         1       2      Layer pair used to route connection\r\n");
+	rnd_fprintf(wctx->f, "VIAMODE           T              Type of via to use when routing between layers\r\n");
+	rnd_fprintf(wctx->f, "LINEWIDTH    %[4]              Width items will be created with\r\n", CRD(conf_core.design.line_thickness));
+	rnd_fprintf(wctx->f, "TEXTSIZE     %[4]  %[4]      Height and LineWidth text will be created with\r\n", CRD(conf_core.design.text_scale), CRD(conf_core.design.text_thickness));
+	rnd_fprintf(wctx->f, "JOBTIME           0              Amount of time spent on this PCB design\r\n");
+	rnd_fprintf(wctx->f, "DOTGRID      %[4]  %[4]      Space between graphic dots\r\n", CRD(rnd_conf.editor.grid), CRD(rnd_conf.editor.grid));
+	rnd_fprintf(wctx->f, "SCALE        10.000              Scale of window expansion\r\n");
+	rnd_fprintf(wctx->f, "ORIGIN       %[4]  %[4]      User defined origin location\r\n", CRD(wctx->pcb->hidlib.grid_ox), CRD(wctx->pcb->hidlib.grid_oy));
+	rnd_fprintf(wctx->f, "WINDOWCENTER %[4] %[4]     Point defining the center of the window\r\n", CRD(wctx->pcb->hidlib.size_x/2.0), CRD(wctx->pcb->hidlib.size_y/2.0));
+	rnd_fprintf(wctx->f, "BACKUPTIME       20              Number of minutes between database backups\r\n");
+	rnd_fprintf(wctx->f, "REAL WIDTH        2              Widths greater then this are displayed real size\r\n");
+	rnd_fprintf(wctx->f, "ALLSIGONOFF       1              All signal nets displayed on/off\r\n");
+	rnd_fprintf(wctx->f, "REFNAMESIZE  %[4]  %[4]      Height and LineWidth used by part ref. names\r\n", CRD(conf_core.design.text_scale), CRD(conf_core.design.text_thickness));
+	rnd_fprintf(wctx->f, "HIGHLIGHT         0              Highlight nets flag\r\n");
 
 #if 0
 these are not yet exported - need to check if we need them:
@@ -141,22 +141,22 @@ IDFSHAPELAY  0              IDF shapes layer
 TEARDROPDATA     90     90 
 #endif
 
-	fprintf(wctx->f, "\r\n");
+	rnd_fprintf(wctx->f, "\r\n");
 	return 0;
 }
 
 static int pads_write_blk_reuse(write_ctx_t *wctx)
 {
-	fprintf(wctx->f, "*REUSE*\r\n");
-	fprintf(wctx->f, "\r\n");
-	fprintf(wctx->f, "*REMARK* TYPE TYPENAME\r\n");
-	fprintf(wctx->f, "*REMARK* TIMESTAMP SECONDS\r\n");
-	fprintf(wctx->f, "*REMARK* PART NAMING PARTNAMING\r\n");
-	fprintf(wctx->f, "*REMARK* PART NAME\r\n");
-	fprintf(wctx->f, "*REMARK* NET NAMING NETNAMING\r\n");
-	fprintf(wctx->f, "*REMARK* NET MERGE NAME\r\n");
-	fprintf(wctx->f, "*REMARK* REUSE INSTANCENM PARTNAMING NETNAMING X Y ORI GLUED\r\n");
-	fprintf(wctx->f, "\r\n");
+	rnd_fprintf(wctx->f, "*REUSE*\r\n");
+	rnd_fprintf(wctx->f, "\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* TYPE TYPENAME\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* TIMESTAMP SECONDS\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* PART NAMING PARTNAMING\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* PART NAME\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* NET NAMING NETNAMING\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* NET MERGE NAME\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* REUSE INSTANCENM PARTNAMING NETNAMING X Y ORI GLUED\r\n");
+	rnd_fprintf(wctx->f, "\r\n");
 	return 0;
 }
 
@@ -166,9 +166,9 @@ static int pads_write_blk_text(write_ctx_t *wctx)
 	int li;
 	pcb_layer_t *l;
 
-	fprintf(wctx->f, "*TEXT*       FREE TEXT\r\n\r\n");
-	fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST .REUSE. INSTANCENM\r\n");
-	fprintf(wctx->f, "*REMARK* FONTSTYLE FONTFACE\r\n\r\n");
+	rnd_fprintf(wctx->f, "*TEXT*       FREE TEXT\r\n\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST .REUSE. INSTANCENM\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* FONTSTYLE FONTFACE\r\n\r\n");
 
 /**/
 /*
@@ -186,14 +186,14 @@ text string
 			char mir  = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? 'M' : 'N';
 			char *alg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? "RIGHT DOWN" : "LEFT UP";
 
-			fprintf(wctx->f, "   % 6ld % 6ld %f %d % 6ld 10 %c %s\r\n",
-				CRDX(t->X), CRDY(t->Y), ROT(t->rot), plid, CRD(hght), mir, alg);
-			fprintf(wctx->f, "Regular <Romansim Stroke Font>\r\n");
-			fprintf(wctx->f, "%s\r\n", t->TextString);
+			rnd_fprintf(wctx->f, "   %[4] %[4] %f %d %[4] %[4] %c %s\r\n",
+				CRDX(t->X), CRDY(t->Y), ROT(t->rot), plid, CRD(hght), (rnd_coord_t)RND_MM_TO_COORD(0.1), mir, alg);
+			rnd_fprintf(wctx->f, "Regular <Romansim Stroke Font>\r\n");
+			rnd_fprintf(wctx->f, "%s\r\n", t->TextString);
 		}
 	}
 
-	fprintf(wctx->f, "\r\n");
+	rnd_fprintf(wctx->f, "\r\n");
 	return 0;
 }
 
@@ -202,12 +202,12 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 	rnd_layer_id_t lid;
 	pcb_layer_t *ly;
 
-	fprintf(wctx->f, "*LINES*      LINES ITEMS\r\n\r\n");
-	fprintf(wctx->f, "*REMARK* NAME TYPE XLOC YLOC PIECES TEXT SIGSTR\r\n");
-	fprintf(wctx->f, "*REMARK* .REUSE. INSTANCE RSIGNAL\r\n");
-	fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LINESTYLE LEVEL [RESTRICTIONS]\r\n");
-	fprintf(wctx->f, "*REMARK* XLOC YLOC BEGINANGLE DELTAANGLE\r\n");
-	fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST\r\n\r\n");
+	rnd_fprintf(wctx->f, "*LINES*      LINES ITEMS\r\n\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* NAME TYPE XLOC YLOC PIECES TEXT SIGSTR\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* .REUSE. INSTANCE RSIGNAL\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LINESTYLE LEVEL [RESTRICTIONS]\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* XLOC YLOC BEGINANGLE DELTAANGLE\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST\r\n\r\n");
 
 	for(lid = 0, ly = wctx->pcb->Data->Layer; lid < wctx->pcb->Data->LayerN; lid++,ly++) {
 		pcb_line_t *l;
@@ -220,16 +220,16 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 
 		l = linelist_first(&ly->Line);
 		if (l != NULL) {
-			fprintf(wctx->f, "lines_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)linelist_length(&ly->Line));
+			rnd_fprintf(wctx->f, "lines_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)linelist_length(&ly->Line));
 			for(; l != NULL; l = linelist_next(l)) {
-				fprintf(wctx->f, "OPEN 2   %ld 0 %d\r\n", CRD(l->Thickness), plid);
-				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point1.X), CRDY(l->Point1.Y));
-				fprintf(wctx->f, "%ld   %ld\r\n", CRDX(l->Point2.X), CRDY(l->Point2.Y));
+				rnd_fprintf(wctx->f, "OPEN 2   %[4] 0 %d\r\n", CRD(l->Thickness), plid);
+				rnd_fprintf(wctx->f, "%[4]   %[4]\r\n", CRDX(l->Point1.X), CRDY(l->Point1.Y));
+				rnd_fprintf(wctx->f, "%[4]   %[4]\r\n", CRDX(l->Point2.X), CRDY(l->Point2.Y));
 			}
 		}
 		a = arclist_first(&ly->Arc);
 		if (a != NULL) {
-			fprintf(wctx->f, "arcs_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)arclist_length(&ly->Arc));
+			rnd_fprintf(wctx->f, "arcs_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)arclist_length(&ly->Arc));
 			for(; a != NULL; a = arclist_next(a)) {
 				double sa, da;
 				rnd_coord_t x1, y1, x2, y2;
@@ -239,30 +239,30 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 				sa = (a->StartAngle) - 180;
 				da = (a->Delta);
 
-				fprintf(wctx->f, "OPEN 2   %ld %d\r\n", CRD(a->Thickness), plid);
-				fprintf(wctx->f, "%ld %ld   %d %d    %ld %ld    %ld %ld\r\n",
+				rnd_fprintf(wctx->f, "OPEN 2   %[4] %d\r\n", CRD(a->Thickness), plid);
+				rnd_fprintf(wctx->f, "%[4] %[4]   %d %d    %[4] %[4]    %[4] %[4]\r\n",
 					CRDX(x1), CRDY(y1), (int)rnd_round(sa*10), (int)rnd_round(da*10),
 					CRDX(a->X - a->Width), CRDY(a->Y - a->Height),
 					CRDX(a->X + a->Width), CRDY(a->Y + a->Height));
 
-				fprintf(wctx->f, "%ld %ld\r\n", CRDX(x2), CRDY(y2));
+				rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(x2), CRDY(y2));
 			}
 		}
 		p = polylist_first(&ly->Polygon);
 		if (p != NULL) {
-			fprintf(wctx->f, "polys_lid_%ld    COPPER   0      0      %ld\r\n", (long)lid, (long)polylist_length(&ly->Polygon));
+			rnd_fprintf(wctx->f, "polys_lid_%ld    COPPER   0      0      %ld\r\n", (long)lid, (long)polylist_length(&ly->Polygon));
 			for(; p != NULL; p = polylist_next(p)) {
 				long n;
 
-				fprintf(wctx->f, "COPCLS %ld   0 %d\r\n", (long)p->PointN+1, plid);
+				rnd_fprintf(wctx->f, "COPCLS %ld   0 %d\r\n", (long)p->PointN+1, plid);
 				for(n = 0; n < p->PointN; n++)
-					fprintf(wctx->f, "%ld %ld\r\n", CRDX(p->Points[n].X), CRDY(p->Points[n].Y));
-				fprintf(wctx->f, "%ld %ld\r\n", CRDX(p->Points[0].X), CRDY(p->Points[0].Y));
+					rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(p->Points[n].X), CRDY(p->Points[n].Y));
+				rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(p->Points[0].X), CRDY(p->Points[0].Y));
 			}
 		}
 	}
 
-	fprintf(wctx->f, "\r\n");
+	rnd_fprintf(wctx->f, "\r\n");
 	return 0;
 }
 
@@ -274,7 +274,7 @@ static int pads_write_blk_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_p
 	if (!proto->in_use)
 		return 0;
 
-	fprintf(wctx->f, "PSPOTO_%ld     %ld %d\n", pid, CRD(proto->hdia), ts->len);
+	rnd_fprintf(wctx->f, "PSPOTO_%ld     %[4] %d\n", pid, CRD(proto->hdia), ts->len);
 	for(n = 0; n < ts->len; n++) {
 		const pcb_pstk_shape_t *shape = &ts->shape[n];
 		int level = -3333;
@@ -303,14 +303,14 @@ static int pads_write_blk_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_p
 					pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape will not appear properly. Fix the padstack prototype to use concentric circles only.");
 					free(tmp);
 				}
-				fprintf(wctx->f, "%d %ld R\r\n", level, CRD(shape->data.circ.dia));
+				rnd_fprintf(wctx->f, "%d %[4] R\r\n", level, CRD(shape->data.circ.dia));
 				break;
 			case PCB_PSSH_LINE:
 				{
 					double ang1 = atan2(shape->data.line.y1, shape->data.line.x1), ang2 = atan2(shape->data.line.y2, shape->data.line.x2);
 					rnd_coord_t len = rnd_distance(shape->data.line.y1, shape->data.line.x1, shape->data.line.y2, shape->data.line.x2);
 					rnd_coord_t offs = (len/2) - rnd_distance(0, 0, shape->data.line.y1, shape->data.line.x1);
-					fprintf(wctx->f, "%d %ld OF %.3f %ld %ld\r\n", level, CRD(shape->data.line.thickness), ang1 * RND_RAD_TO_DEG, CRD(len), CRD(offs));
+					rnd_fprintf(wctx->f, "%d %[4] OF %.3f %[4] %[4]\r\n", level, CRD(shape->data.line.thickness), ang1 * RND_RAD_TO_DEG, CRD(len), CRD(offs));
 					{
 						char *tmp = rnd_strdup_printf("padstack proto #%ld, shape #%d uses line (\"oval finger\" in PADS ASCII)\n", pid, n);
 						pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape is untested and may export incorrectly.");
@@ -324,9 +324,9 @@ static int pads_write_blk_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_p
 					rnd_bool is_rect = pcb_pstk_shape2rect(shape, &w, &h, &cx, &cy, &rot, NULL, NULL, NULL, NULL);
 					if (is_rect) {
 						if (cy == 0)
-							fprintf(wctx->f, "%d %ld RF %.3f %ld %ld\r\n", level, CRD(h), rot * RND_RAD_TO_DEG, CRD(w), CRD(cx));
+							rnd_fprintf(wctx->f, "%d %[4] RF %.3f %[4] %[4]\r\n", level, CRD(h), rot * RND_RAD_TO_DEG, CRD(w), CRD(cx));
 						else if (cx == 0)
-							fprintf(wctx->f, "%d %ld RF %.3f %ld %ld\r\n", level, CRD(w), rot * RND_RAD_TO_DEG + 90.0, CRD(h), CRD(cy));
+							rnd_fprintf(wctx->f, "%d %[4] RF %.3f %[4] %[4]\r\n", level, CRD(w), rot * RND_RAD_TO_DEG + 90.0, CRD(h), CRD(cy));
 						else {
 							char *tmp = rnd_strdup_printf("padstack proto #%ld, shape #%d is non-centered rectangular polygon\n", pid, n);
 							pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape will not appear properly. A rectangle can be uncentered only along one axis.");
@@ -339,13 +339,13 @@ static int pads_write_blk_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_p
 						pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape will not appear properly. Use circle, line or rectangular polygon shape only.");
 						free(tmp);
 						write_dummy:;
-						fprintf(wctx->f, "%d %ld R\r\n", level, CRD(proto->hdia*2));
+						rnd_fprintf(wctx->f, "%d %[4] R\r\n", level, CRD(proto->hdia*2));
 					}
 				}
 				break;
 
 			case PCB_PSSH_HSHADOW:
-				fprintf(wctx->f, "%d %ld R\r\n", level, CRD(proto->hdia));
+				rnd_fprintf(wctx->f, "%d %[4] R\r\n", level, CRD(proto->hdia));
 				break;
 
 			default:
@@ -354,7 +354,7 @@ static int pads_write_blk_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_p
 					pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape will not appear properly. Fix the padstack prototype to use simpler shapes.");
 					free(tmp);
 				}
-				fprintf(wctx->f, "%d %ld R\r\n", level, CRD(proto->hdia * 1.1));
+				rnd_fprintf(wctx->f, "%d %[4] R\r\n", level, CRD(proto->hdia * 1.1));
 
 		}
 	}
@@ -367,17 +367,17 @@ static int pads_write_blk_vias(write_ctx_t *wctx)
 	long n;
 	int res = 0;
 
-	fprintf(wctx->f, "*VIA*  ITEMS\r\n\r\n");
-	fprintf(wctx->f, "*REMARK* NAME  DRILL STACKLINES [DRILL START] [DRILL END]\r\n");
-	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE [INNER DIAMETER]\r\n\r\n");
+	rnd_fprintf(wctx->f, "*VIA*  ITEMS\r\n\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* NAME  DRILL STACKLINES [DRILL START] [DRILL END]\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE [INNER DIAMETER]\r\n\r\n");
 
 	for(n = 0; n < wctx->pcb->Data->ps_protos.used; n++) {
 		if (pads_write_blk_pstk_proto(wctx, n, &wctx->pcb->Data->ps_protos.array[n]) != 0)
 			res = -1;
-		fprintf(wctx->f, "\r\n");
+		rnd_fprintf(wctx->f, "\r\n");
 	}
 
-	fprintf(wctx->f, "\r\n");
+	rnd_fprintf(wctx->f, "\r\n");
 
 	return res;
 }
@@ -388,9 +388,9 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 {
 	long num_pcs = 0, num_terms = 0, num_stacks = 0, num_texts = 0, num_labels = 0;
 
-	fprintf(wctx->f, "\r\n%-16s M 1000 1000  %ld %ld %ld %ld %ld\r\n", id, num_pcs, num_terms, num_stacks, num_texts, num_labels);
+	rnd_fprintf(wctx->f, "\r\n%-16s M 1000 1000  %ld %ld %ld %ld %ld\r\n", id, num_pcs, num_terms, num_stacks, num_texts, num_labels);
 
-	fprintf(wctx->f, "\r\n");
+	rnd_fprintf(wctx->f, "\r\n");
 	return 0;
 }
 
@@ -399,18 +399,18 @@ static int pads_write_blk_partdecals(write_ctx_t *wctx)
 	int res = 0, cnt = 0;
 	htscp_entry_t *e;
 
-	fprintf(wctx->f, "*PARTDECAL*  ITEMS\r\n\r\n");
-	fprintf(wctx->f, "*REMARK* NAME UNITS ORIX ORIY PIECES TERMINALS STACKS TEXT LABELS\r\n");
-	fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LEVEL RESTRICTIONS\r\n");
-	fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTH LEVEL PINNUM\r\n");
-	fprintf(wctx->f, "*REMARK* XLOC YLOC BEGINANGLE DELTAANGLE\r\n");
-	fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST\r\n");
-	fprintf(wctx->f, "*REMARK* VISIBLE XLOC YLOC ORI LEVEL HEIGTH WIDTH MIRRORED HJUST VJUST RIGHTREADING\r\n");
-	fprintf(wctx->f, "*REMARK* FONTSTYLE FONTFACE\r\n");
-	fprintf(wctx->f, "*REMARK* T XLOC YLOC NMXLOC NMYLOC PINNUMBER\r\n");
-	fprintf(wctx->f, "*REMARK* PAD PIN STACKLINES\r\n");
-	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE IDIA DRILL [PLATED]\r\n");
-	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE FINORI FINLENGTH FINOFFSET DRILL [PLATED]\r\n");
+	rnd_fprintf(wctx->f, "*PARTDECAL*  ITEMS\r\n\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* NAME UNITS ORIX ORIY PIECES TERMINALS STACKS TEXT LABELS\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LEVEL RESTRICTIONS\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTH LEVEL PINNUM\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* XLOC YLOC BEGINANGLE DELTAANGLE\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* VISIBLE XLOC YLOC ORI LEVEL HEIGTH WIDTH MIRRORED HJUST VJUST RIGHTREADING\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* FONTSTYLE FONTFACE\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* T XLOC YLOC NMXLOC NMYLOC PINNUMBER\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* PAD PIN STACKLINES\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE IDIA DRILL [PLATED]\r\n");
+	rnd_fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE FINORI FINLENGTH FINOFFSET DRILL [PLATED]\r\n");
 
 	for(e = htscp_first(&wctx->footprints.subcs); e != NULL; e = htscp_next(&wctx->footprints.subcs, e)) {
 		char tmp[128];
@@ -421,7 +421,7 @@ static int pads_write_blk_partdecals(write_ctx_t *wctx)
 			res = -1;
 	}
 
-	fprintf(wctx->f, "\r\n");
+	rnd_fprintf(wctx->f, "\r\n");
 	return res;
 }
 
@@ -447,7 +447,11 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 	wctx.pcb = PCB;
 	wctx.ver = ver;
 
-	fprintf(f, "!PADS-POWERPCB-V%.1f-BASIC! DESIGN DATABASE ASCII FILE 1.0\r\n", ver);
+	rnd_fprintf(f, "!PADS-POWERPCB-V%.1f-METRIC! DESIGN DATABASE ASCII FILE 1.0\r\n", ver);
+
+	/* We need to use mm because PARTDECAL can't use BASIC */
+	rnd_printf_slot[4] = "%04mm";
+
 
 	pads_map_layers(&wctx);
 	pcb_placement_init(&wctx.footprints, wctx.pcb);
@@ -458,7 +462,7 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 	pcb_placement_uninit(&wctx.footprints);
 	pads_free_layers(&wctx);
 
-	fprintf(f, "\r\n*END*     OF ASCII OUTPUT FILE\r\n");
+	rnd_fprintf(f, "\r\n*END*     OF ASCII OUTPUT FILE\r\n");
 
 	return res;
 }
