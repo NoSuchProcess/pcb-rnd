@@ -42,6 +42,7 @@
 #include "board.h"
 #include "conf_core.h"
 #include "data.h"
+#include "plug_io.h"
 
 typedef struct {
 	FILE *f;
@@ -260,6 +261,61 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 	return 0;
 }
 
+static int pads_write_blk_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_proto_t *proto)
+{
+	int n;
+	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
+
+	if (!proto->in_use)
+		return 0;
+
+	fprintf(wctx->f, "PSPOTO_%ld     %ld %d\n", pid, CRD(proto->hdia), ts->len);
+	for(n = 0; n < ts->len; n++) {
+		const pcb_pstk_shape_t *shape = &ts->shape[n];
+		int level = -3333;
+
+		if (shape->layer_mask & PCB_LYT_COPPER) {
+			if (shape->layer_mask & PCB_LYT_TOP) level = -2;
+			else if (shape->layer_mask & PCB_LYT_INTERN) level = -1;
+			else if (shape->layer_mask & PCB_LYT_BOTTOM) level = 0;
+		}
+		else {
+			int lvl = pads_lyt2plid(wctx, shape->layer_mask, NULL);
+			if (lvl != 0)
+				level = lvl;
+		}
+
+		if (level <= -3333) {
+			char *tmp = rnd_strdup_printf("padstack proto #%ld, shape #%d uses invalid layer\n", pid, n);
+			pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape will not appear properly. Fix the padstack prototype to use standard layers only.");
+			free(tmp);
+		}
+		fprintf(wctx->f, "%d size shp?\r\n", level);
+	}
+	return 0;
+}
+
+
+static int pads_write_blk_vias(write_ctx_t *wctx)
+{
+	long n;
+	int res = 0;
+
+	fprintf(wctx->f, "*VIA*  ITEMS\r\n\r\n");
+	fprintf(wctx->f, "*REMARK* NAME  DRILL STACKLINES [DRILL START] [DRILL END]\r\n");
+	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE [INNER DIAMETER]\r\n");
+
+	for(n = 0; n < wctx->pcb->Data->ps_protos.used; n++) {
+		if (pads_write_blk_pstk_proto(wctx, n, &wctx->pcb->Data->ps_protos.array[n]) != 0)
+			res = -1;
+		fprintf(wctx->f, "\r\n");
+	}
+
+	fprintf(wctx->f, "\r\n");
+
+	return res;
+}
+
 
 static int pads_write_pcb_(write_ctx_t *wctx)
 {
@@ -267,6 +323,7 @@ static int pads_write_pcb_(write_ctx_t *wctx)
 	if (pads_write_blk_reuse(wctx) != 0) return -1;
 	if (pads_write_blk_text(wctx) != 0) return -1;
 	if (pads_write_blk_lines(wctx) != 0) return -1;
+	if (pads_write_blk_vias(wctx) != 0) return -1;
 
 	if (pads_write_blk_misc_layers(wctx) != 0) return -1;
 	return -1;
