@@ -382,6 +382,27 @@ static int pads_write_blk_vias(write_ctx_t *wctx)
 	return res;
 }
 
+static int pads_write_blk_partdecals(write_ctx_t *wctx)
+{
+	int res = 0;
+
+	fprintf(wctx->f, "*PARTDECAL*  ITEMS\r\n\r\n");
+	fprintf(wctx->f, "*REMARK* NAME UNITS ORIX ORIY PIECES TERMINALS STACKS TEXT LABELS\r\n");
+	fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LEVEL RESTRICTIONS\r\n");
+	fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTH LEVEL PINNUM\r\n");
+	fprintf(wctx->f, "*REMARK* XLOC YLOC BEGINANGLE DELTAANGLE\r\n");
+	fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST\r\n");
+	fprintf(wctx->f, "*REMARK* VISIBLE XLOC YLOC ORI LEVEL HEIGTH WIDTH MIRRORED HJUST VJUST RIGHTREADING\r\n");
+	fprintf(wctx->f, "*REMARK* FONTSTYLE FONTFACE\r\n");
+	fprintf(wctx->f, "*REMARK* T XLOC YLOC NMXLOC NMYLOC PINNUMBER\r\n");
+	fprintf(wctx->f, "*REMARK* PAD PIN STACKLINES\r\n");
+	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE IDIA DRILL [PLATED]\r\n");
+	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE FINORI FINLENGTH FINOFFSET DRILL [PLATED]\r\n\r\n");
+
+
+	fprintf(wctx->f, "\r\n");
+	return res;
+}
 
 static int pads_write_pcb_(write_ctx_t *wctx)
 {
@@ -390,6 +411,7 @@ static int pads_write_pcb_(write_ctx_t *wctx)
 	if (pads_write_blk_text(wctx) != 0) return -1;
 	if (pads_write_blk_lines(wctx) != 0) return -1;
 	if (pads_write_blk_vias(wctx) != 0) return -1;
+	if (pads_write_blk_partdecals(wctx) != 0) return -1;
 
 	if (pads_write_blk_misc_layers(wctx) != 0) return -1;
 	return -1;
