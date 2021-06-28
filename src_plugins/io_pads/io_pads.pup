@@ -7,5 +7,6 @@ $fmt-feature-r PADS board
 $package io-alien
 dep teardrops
 dep lib_netmap
+dep lib_compat_help
 default buildin
 autoload 1
