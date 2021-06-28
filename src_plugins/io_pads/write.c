@@ -39,6 +39,7 @@
 
 #include "../src_plugins/lib_netmap/map_2nets.h"
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
+#include "../src_plugins/lib_netmap/placement.h"
 
 #include "board.h"
 #include "conf_core.h"
@@ -53,6 +54,9 @@ typedef struct {
 	/* layer mapping */
 	vti0_t gid2plid; /* group ID to pads layer ID */
 	vtp0_t plid2grp; /* pads layer ID to pcb-rnd group */
+
+	/* internal caches */
+	pcb_placement_t footprints;
 } write_ctx_t;
 
 #define CRD(c)   ((long)rnd_round((c) * 3 / 2))
@@ -403,7 +407,12 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 	fprintf(f, "!PADS-POWERPCB-V%.1f-BASIC! DESIGN DATABASE ASCII FILE 1.0\r\n", ver);
 
 	pads_map_layers(&wctx);
+	pcb_placement_init(&wctx.footprints, wctx.pcb);
+	pcb_placement_build(&wctx.footprints, wctx.pcb->Data);
+
 	res = pads_write_pcb_(&wctx);
+
+	pcb_placement_uninit(&wctx.footprints);
 	pads_free_layers(&wctx);
 
 	fprintf(f, "\r\n*END*     OF ASCII OUTPUT FILE\r\n");
