@@ -95,6 +95,26 @@ static int pads_layer2plid(const write_ctx_t *wctx, pcb_layer_t *l)
 	return pads_gid2plid(wctx, pcb_layer_get_group_(l));
 }
 
+/* returns 0 on error; doesn't handle copper yet */
+static int pads_lyt2plid(const write_ctx_t *wctx, pcb_layer_type_t lyt, const char *purpose)
+{
+	const pads_lyt_map_t *m;
+	for(m = pads_lyt_map; m->plid != 0; m++) {
+		if (lyt == m->lyt) {
+			if (purpose == NULL) {
+				if ((m->purpose != NULL) && (strcmp(purpose, m->purpose) == 0))
+					return m->plid;
+			}
+			else {
+				if (m->purpose == NULL)
+					return m->plid;
+			}
+		}
+	}
+
+	return 0;
+}
+
 
 static int pads_write_blk_misc_layer_assoc(write_ctx_t *wctx, const pcb_layergrp_t *g)
 {
