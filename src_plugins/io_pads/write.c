@@ -404,10 +404,15 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 	pcb_any_obj_t *o;
 	pcb_pstk_t *ps;
 	int w_heavy = 0, w_poly = 0, w_via = 0; /* warnings */
+	vti0_t psstat = {0}; /* how many times each proto is used */
+	int best;
+	int ps0; /* which proto to use for default "terminal 0" */
 
 	/* count number of pieces, terminals, labels, etc. */
 	pcb_subc_cache_find_aux(proto);
 	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		int *stat;
+
 		if (o->parent.layer == proto->aux_layer)
 			continue;
 		switch(o->type) {
@@ -445,6 +450,13 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 				}
 				else
 					num_terms++;
+
+				/* calculate statistics of proto usage */
+				ps = (pcb_pstk_t *)o;
+				stat = vti0_get(&psstat, ps->proto, 1);
+				if (stat != NULL)
+					(*stat)++;
+
 				break;
 			case PCB_OBJ_SUBC:
 				TODO("subc-in-subc");
@@ -459,9 +471,16 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 	}
 
 	/* count number of padstack prototypes in use */
-	for(n = 0; n < proto->data->ps_protos.used; n++)
-		if (proto->data->ps_protos.array[n].in_use)
+	best = 0;
+	for(n = 0; n < psstat.used; n++) {
+		if (psstat.array[n] > 0) {
 			num_stacks++;
+			if (psstat.array[n] > best) {
+				best = psstat.array[n];
+				ps0 = n;
+			}
+		}
+	}
 
 	rnd_fprintf(wctx->f, "\r\n%-16s M 1000 1000  %ld %ld %ld %ld %ld\r\n", id, num_pcs, num_terms, num_stacks, num_texts, num_labels);
 
@@ -496,8 +515,17 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 			CRDX(ps->x), CRDX(ps->y), CRDX(ps->x), CRDX(ps->y), ps->term);
 	}
 
+	TODO("write ps0");
+	rnd_fprintf(wctx->f, "* ps default: Proto#%d\r\n", ps0);
+	for(ps = padstacklist_first(&proto->data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
+		if (ps->proto != ps0) {
+			rnd_fprintf(wctx->f, "* ps: Proto#%d for term %s\r\n", ps->proto, ps->term);
+			TODO("write term's ps");
+		}
+	}
 
 	rnd_fprintf(wctx->f, "\r\n");
+	vti0_uninit(&psstat);
 	return 0;
 }
 
