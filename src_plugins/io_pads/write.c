@@ -44,6 +44,7 @@
 #include "board.h"
 #include "conf_core.h"
 #include "data.h"
+#include "data_it.h"
 #include "plug_io.h"
 
 typedef struct {
@@ -386,7 +387,68 @@ static int pads_write_blk_vias(write_ctx_t *wctx)
 
 static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const char *id)
 {
-	long num_pcs = 0, num_terms = 0, num_stacks = 0, num_texts = 0, num_labels = 0;
+	long n, num_pcs = 0, num_terms = 0, num_stacks = 0, num_texts = 0, num_labels = 0;
+	pcb_data_it_t it;
+	pcb_any_obj_t *o;
+	int w_heavy = 0, w_poly = 0, w_via = 0; /* warnings */
+
+	/* count number of pieces, terminals, labels, etc. */
+	pcb_subc_cache_find_aux(proto);
+	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		if (o->parent.layer == proto->aux_layer)
+			continue;
+		switch(o->type) {
+			case PCB_OBJ_ARC:
+			case PCB_OBJ_LINE:
+				if ((o->term != NULL) && !w_heavy) {
+					char *tmp = rnd_strdup_printf("Footprint of subcircuit %s contains heavy terminal\n", proto->refdes);
+					pcb_io_incompat_save(wctx->pcb->Data, NULL, "subc-proto", tmp, "Convert to padstack, PADS ASCII requires padstacks for pins/pads.");
+					free(tmp);
+					w_heavy = 1;
+				}
+				num_pcs++;
+				break;
+			case PCB_OBJ_POLY:
+				if (!w_poly) {
+					char *tmp = rnd_strdup_printf("Footprint of subcircuit %s contains polygon object\n", proto->refdes);
+					pcb_io_incompat_save(wctx->pcb->Data, NULL, "subc-proto", tmp, "Can not write polygons in footprints in PADS ASCII");
+					free(tmp);
+					w_poly = 1;
+				}
+				break;
+			case PCB_OBJ_TEXT:
+				if (PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, o))
+					num_labels++;
+				else
+					num_texts++;
+				break;
+
+			case PCB_OBJ_PSTK:
+				if ((o->term == NULL) && !w_via) {
+					char *tmp = rnd_strdup_printf("Footprint of subcircuit %s contains non-terminal padstack\n", proto->refdes);
+					pcb_io_incompat_save(wctx->pcb->Data, NULL, "subc-proto", tmp, "Omitted from output. Assign dummy terminal ID or convert to objects.");
+					free(tmp);
+					w_via = 1;
+				}
+				else
+					num_terms++;
+				break;
+			case PCB_OBJ_SUBC:
+				TODO("subc-in-subc");
+			default:
+				{
+					char *tmp = rnd_strdup_printf("Footprint of subcircuit %s contains unsupported object\n", proto->refdes);
+					pcb_io_incompat_save(wctx->pcb->Data, NULL, "subc-proto", tmp, "only padstack, text, line and arc can go in footprints in PADS ASCII");
+					free(tmp);
+				}
+				break;
+		}
+	}
+
+	/* count number of padstack prototypes in use */
+	for(n = 0; n < proto->data->ps_protos.used; n++)
+		if (proto->data->ps_protos.array[n].in_use)
+			num_stacks++;
 
 	rnd_fprintf(wctx->f, "\r\n%-16s M 1000 1000  %ld %ld %ld %ld %ld\r\n", id, num_pcs, num_terms, num_stacks, num_texts, num_labels);
 
