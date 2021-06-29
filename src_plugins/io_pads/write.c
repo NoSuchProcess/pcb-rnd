@@ -279,7 +279,7 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 	return 0;
 }
 
-static int pads_write_blk_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_proto_t *proto)
+static int pads_write_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_proto_t *proto, const char *termid)
 {
 	int n;
 	pcb_pstk_tshape_t *ts = &proto->tr.array[0];
@@ -287,7 +287,11 @@ static int pads_write_blk_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_p
 	if (!proto->in_use)
 		return 0;
 
-	rnd_fprintf(wctx->f, "PSPOTO_%ld     %[4] %d\n", pid, CRD(proto->hdia), ts->len);
+	if (termid == NULL) /* board context */
+		rnd_fprintf(wctx->f, "PSPOTO_%ld     %[4] %d\n", pid, CRD(proto->hdia), ts->len);
+	else /* partdecal context */
+		rnd_fprintf(wctx->f, "PAD %s %d\n", termid, ts->len);
+
 	for(n = 0; n < ts->len; n++) {
 		const pcb_pstk_shape_t *shape = &ts->shape[n];
 		int level = -3333;
@@ -374,6 +378,11 @@ static int pads_write_blk_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_p
 	return 0;
 }
 
+static int pads_write_blk_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_proto_t *proto)
+{
+	return pads_write_pstk_proto(wctx, pid, proto, NULL);
+}
+
 
 static int pads_write_blk_vias(write_ctx_t *wctx)
 {
@@ -397,6 +406,30 @@ static int pads_write_blk_vias(write_ctx_t *wctx)
 
 #define SUBC_ID_ATTR "io_pads::__decal__id__"
 
+static int invalid_proto(write_ctx_t *wctx, pcb_subc_t *proto)
+{
+	char *tmp = rnd_strdup_printf("Footprint of subcircuit %s contains invalid/undefined padstack prototype\n", proto->refdes);
+	pcb_io_incompat_save(wctx->pcb->Data, NULL, "subc-proto", tmp, "Output will be invalid/unloadable PADS ASCII.");
+	free(tmp);
+	return -1;
+}
+
+static void partdecal_psproto(write_ctx_t *wctx, pcb_subc_t *proto, int protoid, const char *termid, int *res)
+{
+	if ((protoid >= 0) && (protoid < proto->data->ps_protos.used)) {
+		pcb_pstk_proto_t *psp = &proto->data->ps_protos.array[protoid];
+		if (psp->in_use) {
+			if (pads_write_pstk_proto(wctx, 0, psp, termid) != 0)
+				*res = -1;
+		}
+		else
+			*res = invalid_proto(wctx, proto);
+	}
+	else
+		*res = invalid_proto(wctx, proto);
+}
+
+
 static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const char *id)
 {
 	long n, num_pcs = 0, num_terms = 0, num_stacks = 0, num_texts = 0, num_labels = 0;
@@ -405,7 +438,7 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 	pcb_pstk_t *ps;
 	int w_heavy = 0, w_poly = 0, w_via = 0; /* warnings */
 	vti0_t psstat = {0}; /* how many times each proto is used */
-	int best;
+	int best, res = 0;
 	int ps0; /* which proto to use for default "terminal 0" */
 
 	/* count number of pieces, terminals, labels, etc. */
@@ -515,18 +548,15 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 			CRDX(ps->x), CRDX(ps->y), CRDX(ps->x), CRDX(ps->y), ps->term);
 	}
 
-	TODO("write ps0");
-	rnd_fprintf(wctx->f, "* ps default: Proto#%d\r\n", ps0);
-	for(ps = padstacklist_first(&proto->data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
-		if (ps->proto != ps0) {
-			rnd_fprintf(wctx->f, "* ps: Proto#%d for term %s\r\n", ps->proto, ps->term);
-			TODO("write term's ps");
-		}
-	}
+	/* write padstack prototypes for all pins */
+	partdecal_psproto(wctx, proto, ps0, "0", &res); /* default */
+	for(ps = padstacklist_first(&proto->data->padstack); ps != NULL; ps = padstacklist_next(ps))
+		if (ps->proto != ps0)
+			partdecal_psproto(wctx, proto, ps->proto, ps->term, &res); /* special */
 
 	rnd_fprintf(wctx->f, "\r\n");
 	vti0_uninit(&psstat);
-	return 0;
+	return res;
 }
 
 static int pads_write_blk_partdecals(write_ctx_t *wctx)
