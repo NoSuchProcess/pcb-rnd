@@ -139,6 +139,8 @@ static int pads_write_blk_misc_layer_assoc(write_ctx_t *wctx, const pcb_layergrp
 				fprintf(wctx->f, "%s %s\r\n", a->assoc, g->name);
 		}
 	}
+
+	return 0;
 }
 
 static int pads_write_blk_misc_layers(write_ctx_t *wctx)
