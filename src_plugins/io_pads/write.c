@@ -464,6 +464,28 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 
 	rnd_fprintf(wctx->f, "\r\n%-16s M 1000 1000  %ld %ld %ld %ld %ld\r\n", id, num_pcs, num_terms, num_stacks, num_texts, num_labels);
 
+	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		if (o->parent.layer == proto->aux_layer)
+			continue;
+		if ((o->type == PCB_OBJ_ARC) || (o->type == PCB_OBJ_LINE)) {
+			pcb_layer_type_t lyt = pcb_layer_flags_(o->parent.layer);
+			int plid = 0;
+
+			if (lyt & PCB_LYT_TOP) plid = 1;
+			else if (lyt & PCB_LYT_TOP) plid = 2;
+			if (!(lyt & PCB_LYT_SILK) || (plid == 0)) {
+				char *tmp = rnd_strdup_printf("Footprint of subcircuit %s contains lines/arcs not on top or bottom silk\n", proto->refdes);
+				pcb_io_incompat_save(wctx->pcb->Data, NULL, "subc-proto", tmp, "Moved to top silk.");
+					free(tmp);
+				plid = 1;
+			}
+			if (o->type == PCB_OBJ_ARC)
+				pads_write_piece_arc(wctx, (pcb_arc_t *)o, plid);
+			else if (o->type == PCB_OBJ_LINE)
+				pads_write_piece_line(wctx, (pcb_line_t *)o, plid);
+		}
+	}
+
 	rnd_fprintf(wctx->f, "\r\n");
 	return 0;
 }
