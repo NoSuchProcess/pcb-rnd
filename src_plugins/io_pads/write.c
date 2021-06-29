@@ -198,6 +198,42 @@ text string
 	return 0;
 }
 
+static void pads_write_piece_line(write_ctx_t *wctx, pcb_line_t *l, int plid)
+{
+	rnd_fprintf(wctx->f, "OPEN 2   %[4] 0 %d\r\n", CRD(l->Thickness), plid);
+	rnd_fprintf(wctx->f, "%[4]   %[4]\r\n", CRDX(l->Point1.X), CRDY(l->Point1.Y));
+	rnd_fprintf(wctx->f, "%[4]   %[4]\r\n", CRDX(l->Point2.X), CRDY(l->Point2.Y));
+}
+
+static void pads_write_piece_arc(write_ctx_t *wctx, pcb_arc_t *a, int plid)
+{
+	double sa, da;
+	rnd_coord_t x1, y1, x2, y2;
+
+	pcb_arc_get_end(a, 0, &x1, &y1);
+	pcb_arc_get_end(a, 1, &x2, &y2);
+	sa = (a->StartAngle) - 180;
+	da = (a->Delta);
+
+	rnd_fprintf(wctx->f, "OPEN 2   %[4] %d\r\n", CRD(a->Thickness), plid);
+	rnd_fprintf(wctx->f, "%[4] %[4]   %d %d    %[4] %[4]    %[4] %[4]\r\n",
+		CRDX(x1), CRDY(y1), (int)rnd_round(sa*10), (int)rnd_round(da*10),
+		CRDX(a->X - a->Width), CRDY(a->Y - a->Height),
+		CRDX(a->X + a->Width), CRDY(a->Y + a->Height));
+
+	rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(x2), CRDY(y2));
+}
+
+static void pads_write_piece_cop_poly(write_ctx_t *wctx, pcb_poly_t *p, int plid)
+{
+	long n;
+
+	rnd_fprintf(wctx->f, "COPCLS %ld   0 %d\r\n", (long)p->PointN+1, plid);
+	for(n = 0; n < p->PointN; n++)
+		rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(p->Points[n].X), CRDY(p->Points[n].Y));
+	rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(p->Points[0].X), CRDY(p->Points[0].Y));
+}
+
 static int pads_write_blk_lines(write_ctx_t *wctx)
 {
 	rnd_layer_id_t lid;
@@ -222,44 +258,20 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 		l = linelist_first(&ly->Line);
 		if (l != NULL) {
 			rnd_fprintf(wctx->f, "lines_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)linelist_length(&ly->Line));
-			for(; l != NULL; l = linelist_next(l)) {
-				rnd_fprintf(wctx->f, "OPEN 2   %[4] 0 %d\r\n", CRD(l->Thickness), plid);
-				rnd_fprintf(wctx->f, "%[4]   %[4]\r\n", CRDX(l->Point1.X), CRDY(l->Point1.Y));
-				rnd_fprintf(wctx->f, "%[4]   %[4]\r\n", CRDX(l->Point2.X), CRDY(l->Point2.Y));
-			}
+			for(; l != NULL; l = linelist_next(l))
+				pads_write_piece_line(wctx, l, plid);
 		}
 		a = arclist_first(&ly->Arc);
 		if (a != NULL) {
 			rnd_fprintf(wctx->f, "arcs_lid_%ld    LINES    0      0      %ld\r\n", (long)lid, (long)arclist_length(&ly->Arc));
-			for(; a != NULL; a = arclist_next(a)) {
-				double sa, da;
-				rnd_coord_t x1, y1, x2, y2;
-
-				pcb_arc_get_end(a, 0, &x1, &y1);
-				pcb_arc_get_end(a, 1, &x2, &y2);
-				sa = (a->StartAngle) - 180;
-				da = (a->Delta);
-
-				rnd_fprintf(wctx->f, "OPEN 2   %[4] %d\r\n", CRD(a->Thickness), plid);
-				rnd_fprintf(wctx->f, "%[4] %[4]   %d %d    %[4] %[4]    %[4] %[4]\r\n",
-					CRDX(x1), CRDY(y1), (int)rnd_round(sa*10), (int)rnd_round(da*10),
-					CRDX(a->X - a->Width), CRDY(a->Y - a->Height),
-					CRDX(a->X + a->Width), CRDY(a->Y + a->Height));
-
-				rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(x2), CRDY(y2));
-			}
+			for(; a != NULL; a = arclist_next(a))
+				pads_write_piece_arc(wctx, a, plid);
 		}
 		p = polylist_first(&ly->Polygon);
 		if (p != NULL) {
 			rnd_fprintf(wctx->f, "polys_lid_%ld    COPPER   0      0      %ld\r\n", (long)lid, (long)polylist_length(&ly->Polygon));
-			for(; p != NULL; p = polylist_next(p)) {
-				long n;
-
-				rnd_fprintf(wctx->f, "COPCLS %ld   0 %d\r\n", (long)p->PointN+1, plid);
-				for(n = 0; n < p->PointN; n++)
-					rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(p->Points[n].X), CRDY(p->Points[n].Y));
-				rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(p->Points[0].X), CRDY(p->Points[0].Y));
-			}
+			for(; p != NULL; p = polylist_next(p))
+				pads_write_piece_cop_poly(wctx, p, plid);
 		}
 	}
 
