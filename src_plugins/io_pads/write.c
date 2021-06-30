@@ -695,7 +695,7 @@ static int pads_write_blk_part(write_ctx_t *wctx)
 	fprintf(wctx->f, "*REMARK* REFNM PTYPENM X Y ORI GLUE MIRROR ALT CLSTID CLSTATTR BROTHERID LABELS\r\n");
 	fprintf(wctx->f, "*REMARK* .REUSE. INSTANCE RPART\r\n");
 	fprintf(wctx->f, "*REMARK* VISIBLE XLOC YLOC ORI LEVEL HEIGTH WIDTH MIRRORED HJUST VJUST RIGHTREADING\r\n");
-	fprintf(wctx->f, "*REMARK* FONTSTYLE FONTFACE\r\n");
+	fprintf(wctx->f, "*REMARK* FONTSTYLE FONTFACE\r\n\r\n");
 
 	PCB_SUBC_LOOP(wctx->pcb->Data) {
 		res |= pads_write_part(wctx, subc);
