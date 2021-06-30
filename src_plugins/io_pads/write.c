@@ -432,6 +432,27 @@ static void partdecal_psproto(write_ctx_t *wctx, pcb_subc_t *proto, int protoid,
 		*res = invalid_proto(wctx, proto);
 }
 
+static int partdecal_plid(write_ctx_t *wctx, pcb_subc_t *proto, pcb_any_obj_t *o, const char *where)
+{
+	int plid = 0;
+	pcb_layer_type_t lyt;
+
+	if (o->parent.layer == proto->aux_layer)
+		return -3333;
+
+	lyt = pcb_layer_flags_(o->parent.layer);
+
+	if (lyt & PCB_LYT_TOP) plid = 1;
+	else if (lyt & PCB_LYT_TOP) plid = 2;
+	if (!(lyt & PCB_LYT_SILK) || (plid == 0)) {
+		char *tmp = rnd_strdup_printf("Footprint of subcircuit %s contains %s not on top or bottom silk\n", proto->refdes, where);
+		pcb_io_incompat_save(wctx->pcb->Data, NULL, "subc-proto", tmp, "Moved to top silk.");
+			free(tmp);
+		plid = 1;
+	}
+
+	return plid;
+}
 
 static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const char *id)
 {
@@ -522,27 +543,13 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 
 	/* write pieces */
 	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_ARC | PCB_OBJ_LINE); o != NULL; o = pcb_data_next(&it)) {
-		int plid = 0;
-		pcb_layer_type_t lyt;
-
-		if (o->parent.layer == proto->aux_layer)
-			continue;
-
-		lyt = pcb_layer_flags_(o->parent.layer);
-
-
-		if (lyt & PCB_LYT_TOP) plid = 1;
-		else if (lyt & PCB_LYT_TOP) plid = 2;
-		if (!(lyt & PCB_LYT_SILK) || (plid == 0)) {
-			char *tmp = rnd_strdup_printf("Footprint of subcircuit %s contains lines/arcs not on top or bottom silk\n", proto->refdes);
-			pcb_io_incompat_save(wctx->pcb->Data, NULL, "subc-proto", tmp, "Moved to top silk.");
-				free(tmp);
-			plid = 1;
+		int plid = partdecal_plid(wctx, proto, o, "arc/line");
+		if (plid > -3333) {
+			if (o->type == PCB_OBJ_ARC)
+				pads_write_piece_arc(wctx, (pcb_arc_t *)o, plid);
+			else if (o->type == PCB_OBJ_LINE)
+				pads_write_piece_line(wctx, (pcb_line_t *)o, plid);
 		}
-		if (o->type == PCB_OBJ_ARC)
-			pads_write_piece_arc(wctx, (pcb_arc_t *)o, plid);
-		else if (o->type == PCB_OBJ_LINE)
-			pads_write_piece_line(wctx, (pcb_line_t *)o, plid);
 	}
 
 	/* write non-label text */
