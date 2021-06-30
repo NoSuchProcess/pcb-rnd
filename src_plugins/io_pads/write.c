@@ -554,12 +554,16 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 
 	/* write non-label text */
 	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_TEXT); o != NULL; o = pcb_data_next(&it)) {
-TODO("text");
+		int plid = partdecal_plid(wctx, proto, o, "text");
+		if (plid > -3333)
+			pads_write_text(wctx, (pcb_text_t *)o, plid);
 	}
 
 	/* write labels */
 	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_TEXT); o != NULL; o = pcb_data_next(&it)) {
-TODO("lab");
+		int plid = partdecal_plid(wctx, proto, o, "text");
+		if (plid > -3333)
+			pads_write_text(wctx, (pcb_text_t *)o, plid);
 	}
 
 	/* write terminals */
