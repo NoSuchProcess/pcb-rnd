@@ -584,7 +584,7 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 
 	/* write terminals */
 	for(ps = padstacklist_first(&proto->data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
-		rnd_fprintf(wctx->f, "T %[4] %[4] %[4] %[4] %s\r\n",
+		rnd_fprintf(wctx->f, "T%[4] %[4] %[4] %[4] %s\r\n",
 			CRDX(ps->x), CRDY(ps->y), CRDX(ps->x), CRDY(ps->y), ps->term);
 	}
 
