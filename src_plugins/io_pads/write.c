@@ -161,16 +161,28 @@ static int pads_write_blk_reuse(write_ctx_t *wctx)
 	return 0;
 }
 
-static void pads_write_text(write_ctx_t *wctx, const pcb_text_t *t, int plid)
+static void pads_write_text(write_ctx_t *wctx, const pcb_text_t *t, int plid, int is_label)
 {
 	rnd_coord_t hght = t->BoundingBox.Y2 - t->BoundingBox.Y1;
 	char mir  = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? 'M' : 'N';
 	char *alg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? "RIGHT DOWN" : "LEFT UP";
 
-	rnd_fprintf(wctx->f, "   %[4] %[4] %f %d %[4] %[4] %c %s\r\n",
+	if (is_label)
+		rnd_fprintf(wctx->f, "VALUE ");
+	else
+		rnd_fprintf(wctx->f, "      ");
+
+	rnd_fprintf(wctx->f, "%[4] %[4] %f %d %[4] %[4] %c %s\r\n",
 		CRDX(t->X), CRDY(t->Y), ROT(t->rot), plid, CRD(hght), (rnd_coord_t)RND_MM_TO_COORD(0.1), mir, alg);
 	rnd_fprintf(wctx->f, "Regular <Romansim Stroke Font>\r\n");
-	rnd_fprintf(wctx->f, "%s\r\n", t->TextString);
+
+	if (is_label) {
+		if (strstr(t->TextString, "%a.parent.refdes%") != 0) fprintf(wctx->f, "Ref.Des.\r\n");
+		else if (strstr(t->TextString, "%a.parent.footprint%") != 0) fprintf(wctx->f, "Part Type\r\n");
+		else fprintf(wctx->f, "%s\r\n", t->TextString);
+	}
+	else
+		fprintf(wctx->f, "%s\r\n", t->TextString);
 }
 
 static int pads_write_blk_text(write_ctx_t *wctx)
@@ -194,7 +206,7 @@ text string
 		if (plid <= 0)
 			continue;
 		for(t = textlist_first(&l->Text); t != NULL; t = textlist_next(t))
-			pads_write_text(wctx, t, plid);
+			pads_write_text(wctx, t, plid, 0);
 	}
 
 	rnd_fprintf(wctx->f, "\r\n");
@@ -555,15 +567,15 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 	/* write non-label text */
 	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_TEXT); o != NULL; o = pcb_data_next(&it)) {
 		int plid = partdecal_plid(wctx, proto, o, "text");
-		if (plid > -3333)
-			pads_write_text(wctx, (pcb_text_t *)o, plid);
+		if ((plid > -3333) && (!PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, o)))
+			pads_write_text(wctx, (pcb_text_t *)o, plid, 0);
 	}
 
 	/* write labels */
 	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_TEXT); o != NULL; o = pcb_data_next(&it)) {
 		int plid = partdecal_plid(wctx, proto, o, "text");
-		if (plid > -3333)
-			pads_write_text(wctx, (pcb_text_t *)o, plid);
+		if ((plid > -3333) && (PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, o)))
+			pads_write_text(wctx, (pcb_text_t *)o, plid, 1);
 	}
 
 	/* write terminals */
