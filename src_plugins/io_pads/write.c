@@ -675,7 +675,7 @@ static int pads_write_part(write_ctx_t *wctx, pcb_subc_t *subc)
 
 	rnd_fprintf(wctx->f, "%-16s              %s %[4] %[4] %.3f U %c 0 -1 0 -1 %d\r\n",
 		((subc->refdes == NULL) || (*subc->refdes == '\0')) ? "unknown" : subc->refdes,
-		id, x, y, rot, (on_bottom ? 'Y' : 'N'), numlab);
+		id, CRDX(x), CRDY(y), rot, (on_bottom ? 'Y' : 'N'), numlab);
 
 	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_TEXT); o != NULL; o = pcb_data_next(&it)) {
 		if (PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, o)) {
