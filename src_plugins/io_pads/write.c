@@ -650,6 +650,57 @@ static int pads_write_blk_parttype(write_ctx_t *wctx)
 	return res;
 }
 
+static int pads_write_part(write_ctx_t *wctx, pcb_subc_t *subc)
+{
+	pcb_data_it_t it;
+	pcb_any_obj_t *o;
+	int numlab = 0, on_bottom;
+	pcb_subc_t *proto;
+	const char *id;
+	rnd_angle_t rot = 0;
+	rnd_coord_t x = 0, y = 0;
+
+	proto = htscp_get(&wctx->footprints.subcs, subc);
+	assert(proto != NULL);
+
+	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_TEXT); o != NULL; o = pcb_data_next(&it))
+		if (PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, o))
+			numlab++;
+
+	id = pcb_attribute_get(&proto->Attributes, SUBC_ID_ATTR);
+
+	pcb_subc_get_origin(subc, &x, &y);
+	pcb_subc_get_side(subc, &on_bottom);
+
+
+	rnd_fprintf(wctx->f, "%-16s              %s %[4] %[4] %f U %c 0 -1 0 -1 %d\r\n",
+		((subc->refdes == NULL) || (*subc->refdes == '\0')) ? "unknown" : subc->refdes,
+		id, x, y, rot, (on_bottom ? 'Y' : 'N'), numlab);
+
+	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_TEXT); o != NULL; o = pcb_data_next(&it))
+		if (PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, o))
+			fprintf(wctx->f, "**** LAB\r\n");
+}
+
+static int pads_write_blk_part(write_ctx_t *wctx)
+{
+	int res = 0;
+
+	fprintf(wctx->f, "*PART*       ITEMS\r\n\r\n");
+
+	fprintf(wctx->f, "*REMARK* REFNM PTYPENM X Y ORI GLUE MIRROR ALT CLSTID CLSTATTR BROTHERID LABELS\r\n");
+	fprintf(wctx->f, "*REMARK* .REUSE. INSTANCE RPART\r\n");
+	fprintf(wctx->f, "*REMARK* VISIBLE XLOC YLOC ORI LEVEL HEIGTH WIDTH MIRRORED HJUST VJUST RIGHTREADING\r\n");
+	fprintf(wctx->f, "*REMARK* FONTSTYLE FONTFACE\r\n");
+
+	PCB_SUBC_LOOP(wctx->pcb->Data) {
+		res |= pads_write_part(wctx, subc);
+	}
+	PCB_END_LOOP;
+
+	fprintf(wctx->f, "\r\n");
+	return res;
+}
 
 static int pads_write_pcb_(write_ctx_t *wctx)
 {
@@ -660,6 +711,7 @@ static int pads_write_pcb_(write_ctx_t *wctx)
 	if (pads_write_blk_vias(wctx) != 0) return -1;
 	if (pads_write_blk_partdecals(wctx) != 0) return -1;
 	if (pads_write_blk_parttype(wctx) != 0) return -1;
+	if (pads_write_blk_part(wctx) != 0) return -1;
 
 	if (pads_write_blk_misc_layers(wctx) != 0) return -1;
 	return 0;
