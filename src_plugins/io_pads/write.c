@@ -51,6 +51,7 @@ typedef struct {
 	FILE *f;
 	pcb_board_t *pcb;
 	double ver;
+	pcb_subc_t *writing_partdecal;
 
 	/* layer mapping */
 	vti0_t gid2plid; /* group ID to pads layer ID */
@@ -62,7 +63,7 @@ typedef struct {
 
 #define CRD(c)   (c)
 #define CRDX(c)  CRD(c)
-#define CRDY(c)  CRD(wctx->pcb->hidlib.size_y - (c))
+#define CRDY(c)  CRD((wctx->writing_partdecal ? 0 : wctx->pcb->hidlib.size_y) - (c))
 #define ROT(r)   (r)
 
 #include "write_layer.c"
@@ -472,6 +473,7 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 	pcb_data_it_t it;
 	pcb_any_obj_t *o;
 	pcb_pstk_t *ps;
+	pcb_subc_t *old_wrpd;
 	int w_heavy = 0, w_poly = 0, w_via = 0; /* warnings */
 	vti0_t psstat = {0}; /* how many times each proto is used */
 	int best, res = 0;
@@ -551,6 +553,8 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 		}
 	}
 
+	old_wrpd = wctx->writing_partdecal;
+	wctx->writing_partdecal = proto;
 	fprintf(wctx->f, "\r\n%-16s M 1000 1000  %ld %ld %ld %ld %ld\r\n", id, num_pcs, num_terms, num_stacks, num_texts, num_labels);
 
 	/* write pieces */
@@ -592,6 +596,7 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 
 	fprintf(wctx->f, "\r\n");
 	vti0_uninit(&psstat);
+	wctx->writing_partdecal = old_wrpd;
 	return res;
 }
 
