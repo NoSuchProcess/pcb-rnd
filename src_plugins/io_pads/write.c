@@ -626,6 +626,31 @@ static int pads_write_blk_partdecals(write_ctx_t *wctx)
 	return res;
 }
 
+static int pads_write_blk_parttype(write_ctx_t *wctx)
+{
+	int res = 0;
+	htscp_entry_t *e;
+
+	fprintf(wctx->f, "*PARTTYPE*   ITEMS\r\n");
+
+	fprintf(wctx->f, "*REMARK* NAME DECALNM TYPE GATES SIGPINS UNUSEDPINNMS FLAGS ECO\r\n");
+	fprintf(wctx->f, "*REMARK* G/S SWAPTYPE PINS\r\n");
+	fprintf(wctx->f, "*REMARK* PINNUMBER SWAPTYPE.PINTYPE\r\n");
+	fprintf(wctx->f, "*REMARK* SIGPIN PINNUMBER SIGNAME\r\n");
+	fprintf(wctx->f, "*REMARK* PINNUMBER\r\n\r\n");
+
+
+	for(e = htscp_first(&wctx->footprints.subcs); e != NULL; e = htscp_next(&wctx->footprints.subcs, e)) {
+		pcb_subc_t *proto = e->value;
+		const char *id = pcb_attribute_get(&proto->Attributes, SUBC_ID_ATTR);
+		fprintf(wctx->f, "%s %s UND  0   0   0     0 Y\r\n\r\n", id, id);
+	}
+
+	rnd_fprintf(wctx->f, "\r\n");
+	return res;
+}
+
+
 static int pads_write_pcb_(write_ctx_t *wctx)
 {
 	if (pads_write_blk_pcb(wctx) != 0) return -1;
@@ -634,6 +659,7 @@ static int pads_write_pcb_(write_ctx_t *wctx)
 	if (pads_write_blk_lines(wctx) != 0) return -1;
 	if (pads_write_blk_vias(wctx) != 0) return -1;
 	if (pads_write_blk_partdecals(wctx) != 0) return -1;
+	if (pads_write_blk_parttype(wctx) != 0) return -1;
 
 	if (pads_write_blk_misc_layers(wctx) != 0) return -1;
 	return 0;
