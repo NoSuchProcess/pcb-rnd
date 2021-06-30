@@ -673,7 +673,7 @@ static int pads_write_part(write_ctx_t *wctx, pcb_subc_t *subc)
 	pcb_subc_get_side(subc, &on_bottom);
 
 
-	rnd_fprintf(wctx->f, "%-16s              %s %[4] %[4] %f U %c 0 -1 0 -1 %d\r\n",
+	rnd_fprintf(wctx->f, "%-16s              %s %[4] %[4] %.3f U %c 0 -1 0 -1 %d\r\n",
 		((subc->refdes == NULL) || (*subc->refdes == '\0')) ? "unknown" : subc->refdes,
 		id, x, y, rot, (on_bottom ? 'Y' : 'N'), numlab);
 
