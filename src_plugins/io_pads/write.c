@@ -357,9 +357,9 @@ static int pads_write_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_proto
 					rnd_bool is_rect = pcb_pstk_shape2rect(shape, &w, &h, &cx, &cy, &rot, NULL, NULL, NULL, NULL);
 					if (is_rect) {
 						if (cy == 0)
-							rnd_fprintf(wctx->f, "%d %[4] RF %.3f %[4] %[4]\r\n", level, CRD(h), rot * RND_RAD_TO_DEG, CRD(w), CRD(cx));
+							rnd_fprintf(wctx->f, "%d %[4] RF %.3f %[4] %[4]\r\n", level, (rnd_coord_t)CRD(h), rot * RND_RAD_TO_DEG, (rnd_coord_t)CRD(w), (rnd_coord_t)CRD(cx));
 						else if (cx == 0)
-							rnd_fprintf(wctx->f, "%d %[4] RF %.3f %[4] %[4]\r\n", level, CRD(w), rot * RND_RAD_TO_DEG + 90.0, CRD(h), CRD(cy));
+							rnd_fprintf(wctx->f, "%d %[4] RF %.3f %[4] %[4]\r\n", level, (rnd_coord_t)CRD(w), rot * RND_RAD_TO_DEG + 90.0, (rnd_coord_t)CRD(h), (rnd_coord_t)CRD(cy));
 						else {
 							char *tmp = rnd_strdup_printf("padstack proto #%ld, shape #%d is non-centered rectangular polygon\n", pid, n);
 							pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape will not appear properly. A rectangle can be uncentered only along one axis.");
