@@ -677,9 +677,13 @@ static int pads_write_part(write_ctx_t *wctx, pcb_subc_t *subc)
 		((subc->refdes == NULL) || (*subc->refdes == '\0')) ? "unknown" : subc->refdes,
 		id, x, y, rot, (on_bottom ? 'Y' : 'N'), numlab);
 
-	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_TEXT); o != NULL; o = pcb_data_next(&it))
-		if (PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, o))
-			fprintf(wctx->f, "**** LAB\r\n");
+	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_TEXT); o != NULL; o = pcb_data_next(&it)) {
+		if (PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, o)) {
+			int plid = partdecal_plid(wctx, proto, o, "text");
+			if ((plid > -3333) && (PCB_FLAG_TEST(PCB_FLAG_DYNTEXT, o)))
+				pads_write_text(wctx, (pcb_text_t *)o, plid, 1);
+		}
+	}
 }
 
 static int pads_write_blk_part(write_ctx_t *wctx)
