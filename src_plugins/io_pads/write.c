@@ -555,7 +555,7 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 
 	old_wrpd = wctx->writing_partdecal;
 	wctx->writing_partdecal = proto;
-	fprintf(wctx->f, "\r\n%-16s M 1000 1000  %ld %ld %ld %ld %ld\r\n", id, num_pcs, num_terms, num_stacks, num_texts, num_labels);
+	fprintf(wctx->f, "%-16s M 1000 1000  %ld %ld %ld %ld %ld\r\n", id, num_pcs, num_terms, num_stacks, num_texts, num_labels);
 
 	/* write pieces */
 	for(o = pcb_data_first(&it, proto->data, PCB_OBJ_ARC | PCB_OBJ_LINE); o != NULL; o = pcb_data_next(&it)) {
@@ -616,7 +616,7 @@ static int pads_write_blk_partdecals(write_ctx_t *wctx)
 	fprintf(wctx->f, "*REMARK* T XLOC YLOC NMXLOC NMYLOC PINNUMBER\r\n");
 	fprintf(wctx->f, "*REMARK* PAD PIN STACKLINES\r\n");
 	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE IDIA DRILL [PLATED]\r\n");
-	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE FINORI FINLENGTH FINOFFSET DRILL [PLATED]\r\n");
+	fprintf(wctx->f, "*REMARK* LEVEL SIZE SHAPE FINORI FINLENGTH FINOFFSET DRILL [PLATED]\r\n\r\n");
 
 	for(e = htscp_first(&wctx->footprints.subcs); e != NULL; e = htscp_next(&wctx->footprints.subcs, e)) {
 		char tmp[128];
@@ -627,7 +627,6 @@ static int pads_write_blk_partdecals(write_ctx_t *wctx)
 			res = -1;
 	}
 
-	fprintf(wctx->f, "\r\n");
 	return res;
 }
 
