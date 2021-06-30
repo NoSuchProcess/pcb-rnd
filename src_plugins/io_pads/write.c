@@ -161,6 +161,18 @@ static int pads_write_blk_reuse(write_ctx_t *wctx)
 	return 0;
 }
 
+static void pads_write_text(write_ctx_t *wctx, const pcb_text_t *t, int plid)
+{
+	rnd_coord_t hght = t->BoundingBox.Y2 - t->BoundingBox.Y1;
+	char mir  = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? 'M' : 'N';
+	char *alg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? "RIGHT DOWN" : "LEFT UP";
+
+	rnd_fprintf(wctx->f, "   %[4] %[4] %f %d %[4] %[4] %c %s\r\n",
+		CRDX(t->X), CRDY(t->Y), ROT(t->rot), plid, CRD(hght), (rnd_coord_t)RND_MM_TO_COORD(0.1), mir, alg);
+	rnd_fprintf(wctx->f, "Regular <Romansim Stroke Font>\r\n");
+	rnd_fprintf(wctx->f, "%s\r\n", t->TextString);
+}
+
 static int pads_write_blk_text(write_ctx_t *wctx)
 {
 	pcb_text_t *t;
@@ -171,7 +183,6 @@ static int pads_write_blk_text(write_ctx_t *wctx)
 	rnd_fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST .REUSE. INSTANCENM\r\n");
 	rnd_fprintf(wctx->f, "*REMARK* FONTSTYLE FONTFACE\r\n\r\n");
 
-/**/
 /*
        1234        5678  90.000 20          70          10 N   LEFT   DOWN
 Regular <Romansim Stroke Font>
@@ -182,16 +193,8 @@ text string
 		int plid = pads_layer2plid(wctx, l);
 		if (plid <= 0)
 			continue;
-		for(t = textlist_first(&l->Text); t != NULL; t = textlist_next(t)) {
-			rnd_coord_t hght = t->BoundingBox.Y2 - t->BoundingBox.Y1;
-			char mir  = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? 'M' : 'N';
-			char *alg = PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, t) ? "RIGHT DOWN" : "LEFT UP";
-
-			rnd_fprintf(wctx->f, "   %[4] %[4] %f %d %[4] %[4] %c %s\r\n",
-				CRDX(t->X), CRDY(t->Y), ROT(t->rot), plid, CRD(hght), (rnd_coord_t)RND_MM_TO_COORD(0.1), mir, alg);
-			rnd_fprintf(wctx->f, "Regular <Romansim Stroke Font>\r\n");
-			rnd_fprintf(wctx->f, "%s\r\n", t->TextString);
-		}
+		for(t = textlist_first(&l->Text); t != NULL; t = textlist_next(t))
+			pads_write_text(wctx, t, plid);
 	}
 
 	rnd_fprintf(wctx->f, "\r\n");
