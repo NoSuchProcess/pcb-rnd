@@ -102,7 +102,9 @@ static int pads_lyt2plid(const write_ctx_t *wctx, pcb_layer_type_t lyt, const ch
 	for(m = pads_lyt_map; m->plid != 0; m++) {
 		if (lyt == m->lyt) {
 			if (purpose == NULL) {
-				if ((m->purpose != NULL) && (strcmp(purpose, m->purpose) == 0))
+				if (m->purpose == NULL)
+					return m->plid;
+				if (strcmp(purpose, m->purpose) == 0)
 					return m->plid;
 			}
 			else {
