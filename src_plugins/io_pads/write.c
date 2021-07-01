@@ -62,6 +62,7 @@ typedef struct {
 
 	/* internal caches */
 	pcb_placement_t footprints;
+	pcb_2netmap_t tnets;
 } write_ctx_t;
 
 #define CRD(c)   (c)
@@ -754,8 +755,13 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 	pcb_placement_init(&wctx.footprints, wctx.pcb);
 	pcb_placement_build(&wctx.footprints, wctx.pcb->Data);
 
+	if (!conf_io_pads.plugins.io_pads.save_trace_indep)
+		pcb_map_2nets_init(&wctx.tnets, wctx.pcb, PCB_2NETMAPCTRL_RATS);
+
 	res = pads_write_pcb_(&wctx);
 
+	if (!conf_io_pads.plugins.io_pads.save_trace_indep)
+		pcb_map_2nets_uninit(&wctx.tnets);
 	pcb_placement_uninit(&wctx.footprints);
 	pads_free_layers(&wctx);
 
