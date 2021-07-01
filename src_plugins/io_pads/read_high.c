@@ -1103,6 +1103,9 @@ static void add_teardrop(void *rctx_, pcb_any_obj_t *obj, void *call_ctx)
 	pcb_layer_t *ly;
 	pcb_data_t *dt;
 
+	if (!conf_io_pads.plugins.io_pads.load_teardrops)
+		return;
+
 	if (obj->parent_type != PCB_PARENT_LAYER)
 		return;
 
