@@ -1545,9 +1545,10 @@
  crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h layer_grp.h \
  idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
- polygon.h vtpadstack_t.h ../src_plugins/io_pads/read.h \
+ polygon.h vtpadstack_t.h ../src_plugins/io_pads/io_pads_conf.h \
+ ../src_plugins/io_pads/conf_internal.c ../src_plugins/io_pads/read.h \
  ../src_plugins/io_pads/write.h \
- ../src_plugins/io_pads/io_pads_conf_fields.h ../src_plugins/io_pads/conf_internal.c
+ ../src_plugins/io_pads/io_pads_conf_fields.h
 ../src_plugins/io_pads/read.o: ../src_plugins/io_pads/read.c ../config.h \
  board.h vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
  obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -1561,8 +1562,8 @@
  ../src_plugins/io_pads/delay_create.h data.h layer.h obj_common.h \
  obj_subc.h ../src_plugins/io_pads/delay_clearance.h \
  ../src_plugins/io_pads/delay_postproc.h ../src_plugins/io_pads/read.h \
- plug_io.h plug_footprint.h ../src_plugins/io_pads/read_low.c \
- ../src_plugins/io_pads/read_high.c \
+ plug_io.h plug_footprint.h ../src_plugins/io_pads/io_pads_conf.h \
+ ../src_plugins/io_pads/read_low.c ../src_plugins/io_pads/read_high.c \
  ../src_plugins/io_pads/read_high_misc.c
 ../src_plugins/io_pads/write.o: ../src_plugins/io_pads/write.c \
  ../config.h ../src_plugins/lib_netmap/map_2nets.h board.h vtroutestyle.h \
@@ -1573,10 +1574,14 @@
  idpath.h obj_poly.h obj_pstk.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/query/net_len.h ../src_plugins/query/query_exec.h \
  ../src_plugins/query/query.h ../src_plugins/query/fields_sphash.h \
- obj_common.h layer.h flag_str.h conf_core.h data.h crosshair.h route.h \
+ obj_common.h layer.h flag_str.h \
+ ../src_plugins/lib_compat_help/pstk_compat.h \
+ ../src_plugins/lib_netmap/placement.h data.h crosshair.h route.h \
  buffer.h obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h ../src_plugins/io_pads/write_layer.c
+ vtpadstack.h ht_subc.h conf_core.h data_it.h data.h plug_io.h \
+ plug_footprint.h ../src_plugins/io_pads/io_pads_conf.h \
+ ../src_plugins/io_pads/write_layer.c
 ../src_plugins/io_pcb/attribs.o: ../src_plugins/io_pcb/attribs.c \
  ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
