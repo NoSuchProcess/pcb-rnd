@@ -273,8 +273,16 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 		pcb_line_t *l;
 		pcb_arc_t *a;
 		pcb_poly_t *p;
-		int plid = pads_layer2plid(wctx, ly);
+		int plid;
 
+		/* if traces are to be written as singal routes, skip any copper layer in this print-all-objects loop */
+		if (!conf_io_pads.plugins.io_pads.save_trace_indep) {
+			pcb_layer_type_t lyt = pcb_layer_flags_(ly);
+			if (lyt & PCB_LYT_COPPER)
+				continue;
+		}
+
+		plid = pads_layer2plid(wctx, ly);
 		if (plid <= 0)
 			continue;
 
