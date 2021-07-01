@@ -50,6 +50,9 @@
 #include "delay_clearance.h"
 #include "delay_postproc.h"
 #include "read.h"
+#include "io_pads_conf.h"
+
+extern conf_io_pads_t conf_io_pads;
 
 /* Parser return value convention:
 	1      = succesfully read a block or *section* or line

@@ -34,6 +34,10 @@
 #include <librnd/core/hid.h>
 #include <librnd/core/compat_misc.h>
 #include "plug_io.h"
+#include "io_pads_conf.h"
+#include "../src_plugins/io_pads/conf_internal.c"
+
+conf_io_pads_t conf_io_pads;
 
 #include "read.h"
 #include "write.h"
@@ -65,6 +69,8 @@ void pplg_uninit_io_pads(void)
 {
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_2005);
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_9_4);
+	rnd_conf_unreg_intern(io_pads_conf_internal);
+	rnd_conf_unreg_fields("plugins/io_pads/");
 }
 
 int pplg_init_io_pads(void)
@@ -95,6 +101,11 @@ int pplg_init_io_pads(void)
 	io_pads_9_4.save_preference_prio = 63;
 	io_pads_9_4.write_pcb = io_pads_write_pcb_9_4;
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pads_9_4);
+
+	rnd_conf_reg_intern(io_pads_conf_internal);
+#define conf_reg(field,isarray,type_name,cpath,cname,desc,flags) \
+	rnd_conf_reg_field(conf_io_pads, field,isarray,type_name,cpath,cname,desc,flags);
+#include "io_pads_conf_fields.h"
 
 	return 0;
 }

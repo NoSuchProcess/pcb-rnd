@@ -46,6 +46,9 @@
 #include "data.h"
 #include "data_it.h"
 #include "plug_io.h"
+#include "io_pads_conf.h"
+
+extern conf_io_pads_t conf_io_pads;
 
 typedef struct {
 	FILE *f;

@@ -1,4 +1,9 @@
 put /local/pcb/mod {io_pads}
+put /local/pcb/mod/CONF {$(PLUGDIR)/io_pads/io_pads_conf.h}
+put /local/pcb/mod/CONFFILE {io_pads.conf}
+put /local/pcb/mod/CONFVAR {io_pads_conf_internal}
+
+
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_pads/io_pads.o
 	$(PLUGDIR)/io_pads/read.o

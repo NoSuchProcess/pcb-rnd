@@ -1546,7 +1546,8 @@
  idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
  polygon.h vtpadstack_t.h ../src_plugins/io_pads/read.h \
- ../src_plugins/io_pads/write.h
+ ../src_plugins/io_pads/write.h \
+ ../src_plugins/io_pads/io_pads_conf_fields.h ../src_plugins/io_pads/conf_internal.c
 ../src_plugins/io_pads/read.o: ../src_plugins/io_pads/read.c ../config.h \
  board.h vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
  obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
