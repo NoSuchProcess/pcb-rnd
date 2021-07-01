@@ -46,6 +46,9 @@
 #include "data.h"
 #include "data_it.h"
 #include "plug_io.h"
+#include "obj_subc_parent.h"
+#include "netlist.h"
+
 #include "io_pads_conf.h"
 
 extern conf_io_pads_t conf_io_pads;
@@ -721,6 +724,85 @@ static int pads_write_blk_part(write_ctx_t *wctx)
 	return res;
 }
 
+static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
+{
+	long n;
+	pcb_2netmap_obj_t *first, *last;
+	pcb_subc_t *fsc, *lsc;
+
+	if (n < 2)
+		return 0;
+
+	first = (pcb_2netmap_obj_t *)oseg->objs.array[0];
+	last = (pcb_2netmap_obj_t *)oseg->objs.array[oseg->objs.used-1];
+
+	if ((first->o.any.term == NULL) || (last->o.any.term == NULL))
+		return 0;
+
+	fsc = pcb_obj_parent_subc(&first->o.any);
+	lsc = pcb_obj_parent_subc(&last->o.any);
+	if ((fsc == NULL) || (lsc == NULL) || (fsc->refdes == NULL) || (lsc->refdes == NULL))
+		return 0;
+
+	fprintf(wctx->f, "%s.%s     %s.%s\n", fsc->refdes, first->o.any.term, lsc->refdes, last->o.any.term);
+
+	for(n = 1; n < oseg->objs.used; n++) {
+		pcb_2netmap_obj_t *no = (pcb_2netmap_obj_t *)oseg->objs.array[n];
+		pcb_2netmap_obj_t *prev = (pcb_2netmap_obj_t *)oseg->objs.array[n-1];
+		pcb_2netmap_obj_t *next = NULL;
+
+		if (n < oseg->objs.used - 1)
+			next = (pcb_2netmap_obj_t *)oseg->objs.array[n+1];
+	
+		switch(no->o.line.type) {
+			case PCB_OBJ_LINE:
+			case PCB_OBJ_RAT:
+				if (prev != NULL)
+/*					pcb_line_new(dc, prev->x, prev->y, no->x, no->y,
+						RND_MIL_TO_COORD(3), 0, pcb_no_flags());*/
+				break;
+			case PCB_OBJ_ARC:
+/*				pcb_arc_new(dc, no->o.arc.X, no->o.arc.Y, no->o.arc.Width, no->o.arc.Height,
+					no->sa, no->da, RND_MIL_TO_COORD(3), 0, pcb_no_flags(), 0);*/
+				break;
+			default:;
+		}
+
+		if ((next != NULL) && (next->o.any.type == PCB_OBJ_PSTK)) {
+			fprintf(wctx->f, " VIA!\r\n");
+		}
+		else
+			fprintf(wctx->f, "\r\n");
+
+	}
+	fprintf(wctx->f, "\r\n");
+	return 0;
+}
+
+static int pads_write_blk_route(write_ctx_t *wctx)
+{
+	fprintf(wctx->f, "*ROUTE*\r\n\r\n");
+	fprintf(wctx->f, "*REMARK* *SIGNAL* SIGNAME SIGFLAG COLOR\r\n");
+	fprintf(wctx->f, "*REMARK* REFNM.PIN .REUSE. INSTANCE RSIG REFNM.PIN .REUSE. INSTANCE RSIG\r\n");
+	fprintf(wctx->f, "*REMARK* XLOC YLOC LAYER SEGMENTWIDTH FLAGS [ARCDIR/VIANAME] [TEARDROP [P WID LEN [FLAGS]] [N WID LEN [FLAGS]]] [JMPNM JMPFLAG] REUSE INST RSIG\r\n\r\n");
+
+	if (!conf_io_pads.plugins.io_pads.save_trace_indep) {
+		pcb_net_it_t it;
+		pcb_net_t *net;
+		for(net = pcb_net_first(&it, &wctx->pcb->netlist[PCB_NETLIST_EDITED]); net != NULL; net = pcb_net_next(&it)) {
+			pcb_2netmap_oseg_t *o;
+
+			fprintf(wctx->f, "*SIGNAL* %s 0 -2\r\n");
+			for(o = wctx->tnets.osegs; o != NULL; o = o->next)
+				if (o->net == net)
+					pads_write_signal(wctx, o);
+		}
+	}
+
+	fprintf(wctx->f, "\r\n");
+	return 0;
+}
+
 static int pads_write_pcb_(write_ctx_t *wctx)
 {
 	if (pads_write_blk_pcb(wctx) != 0) return -1;
@@ -731,7 +813,7 @@ static int pads_write_pcb_(write_ctx_t *wctx)
 	if (pads_write_blk_partdecals(wctx) != 0) return -1;
 	if (pads_write_blk_parttype(wctx) != 0) return -1;
 	if (pads_write_blk_part(wctx) != 0) return -1;
-
+/*	if (pads_write_blk_route(wctx) != 0) return -1;*/
 	if (pads_write_blk_misc_layers(wctx) != 0) return -1;
 	return 0;
 }
