@@ -734,7 +734,7 @@ static int pads_write_blk_part(write_ctx_t *wctx)
 
 static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 {
-	long n;
+	long n, m;
 	pcb_2netmap_obj_t *first, *last, *no;
 	pcb_subc_t *fsc, *lsc;
 	rnd_coord_t thick;
@@ -768,15 +768,31 @@ static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 	for(n = 1; n < oseg->objs.used-1; n++) {
 		pcb_2netmap_obj_t *no = (pcb_2netmap_obj_t *)oseg->objs.array[n];
 		pcb_2netmap_obj_t *prev = (pcb_2netmap_obj_t *)oseg->objs.array[n-1];
-		pcb_2netmap_obj_t *next = (pcb_2netmap_obj_t *)oseg->objs.array[n+1];
+		pcb_2netmap_obj_t *next = (pcb_2netmap_obj_t *)oseg->objs.array[n+1], *nextt;
 		int plid;
+
+		/* nextt should be the next trace object; either directly the next object
+		   or if next object is a via, the object after the via. Nextt is used for
+		   setting the layer for the current trace since it really has to be
+		   the layer of the next trace */
+		nextt = next;
+		m = n+2;
+		while((nextt->o.any.type == PCB_OBJ_PSTK) || (nextt->o.any.type == PCB_OBJ_RAT)) {
+			if (m >= oseg->objs.used-1) {
+				nextt = no;
+				break;
+			}
+			nextt = (pcb_2netmap_obj_t *)oseg->objs.array[m];
+			m++;
+		}
+		plid = pads_layer2plid(wctx, nextt->o.any.parent.layer);
+
 
 		thick = 0;
 /* XLOC YLOC LAYER SEGMENTWIDTH FLAGS [ARCDIR/VIANAME] [TEARDROP [P WID LEN [FLAGS]] [N WID LEN [FLAGS]]] [JMPNM JMPFLAG] REUSE INST RSIG */
 		switch(no->o.line.type) {
 			case PCB_OBJ_LINE:
 				thick = no->o.line.Thickness;
-				plid = pads_layer2plid(wctx, no->o.any.parent.layer);
 				goto draw_line;
 			case PCB_OBJ_RAT:
 				plid = 65;
@@ -786,7 +802,6 @@ static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 				break;
 			case PCB_OBJ_ARC:
 				thick = no->o.arc.Thickness;
-				plid = pads_layer2plid(wctx, no->o.any.parent.layer);
 				rnd_fprintf(wctx->f, "%[4] %[4] %d %[4] %d %s",
 					CRDX(no->o.arc.X), CRDY(no->o.arc.X), plid, CRD(thick),
 					0x1000, /* arc center flag */
