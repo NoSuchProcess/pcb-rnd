@@ -304,7 +304,7 @@ static int pads_write_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_proto
 		return 0;
 
 	if (termid == NULL) /* board context */
-		rnd_fprintf(wctx->f, "PSPOTO_%ld     %[4] %d\n", pid, CRD(proto->hdia), ts->len);
+		rnd_fprintf(wctx->f, "PSPROTO_%ld     %[4] %d\n", pid, CRD(proto->hdia), ts->len);
 	else /* partdecal context */
 		fprintf(wctx->f, "PAD %s %d\n", termid, ts->len);
 
