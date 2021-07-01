@@ -661,7 +661,7 @@ static int pads_write_part(write_ctx_t *wctx, pcb_subc_t *subc)
 	int numlab = 0, on_bottom;
 	pcb_subc_t *proto;
 	const char *id;
-	rnd_angle_t rot = 0;
+	double rot = 0;
 	rnd_coord_t x = 0, y = 0;
 
 	proto = htscp_get(&wctx->footprints.subcs, subc);
@@ -674,6 +674,7 @@ static int pads_write_part(write_ctx_t *wctx, pcb_subc_t *subc)
 	id = pcb_attribute_get(&proto->Attributes, SUBC_ID_ATTR);
 
 	pcb_subc_get_origin(subc, &x, &y);
+	pcb_subc_get_rotation(subc, &rot);
 	pcb_subc_get_side(subc, &on_bottom);
 
 
