@@ -591,7 +591,7 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 	for(n = sn = 0; n < num_lines; n++) {
 		double rot = 0, slotrot = 0, spokerot = 0;
 		char plated[8];
-		int c, is_thermal;
+		int c, is_thermal, has_corner = 0;
 		long spoke_num = 0;
 		rnd_coord_t finlen = 0, finoffs = 0, inner = 0, corner = 0, drill = 0, slotlen = 0, slotoffs = 0, spoke_outsize = 0, spoke_width = 0;
 		pcb_pstk_shape_t *shp = ts->shape + sn;
@@ -609,11 +609,14 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 				if (OPTF) if ((res = pads_read_double(rctx, &rot)) <= 0) return res;
 				if (OPTF) if ((res = pads_read_coord(rctx, &finlen)) <= 0) return res;
 				if (OPTF) if ((res = pads_read_coord(rctx, &finoffs)) <= 0) return res;
-				if (pads_has_field(rctx) && (shape[0] == 'R')) /* RF=rectangular finger */
+				if (pads_has_field(rctx) && (shape[0] == 'R')) { /* RF=rectangular finger */
 					if ((res = pads_read_coord(rctx, &corner)) <= 0) return res;
+					has_corner = 1;
+				}
 			}
 			else if (pads_has_field(rctx) && shape[0] == 'S') { /* S=square */
 				if ((res = pads_read_coord(rctx, &corner)) <= 0) return res;
+				has_corner = 1;
 			}
 
 			/* next word is either drill diameter or P/N for plated-or-not */
@@ -626,6 +629,12 @@ static int pads_parse_pstk_proto(pads_read_ctx_t *rctx, vtp0_t *terms, long *def
 				if ((res = pads_read_coord(rctx, &drill)) <= 0) return res;
 				proto->hdia = drill;
 			}
+			else if (has_corner) {
+				/* special case: for Square and RF: if corner is not followed by drill, corner must be the drill instead (corner is optional) */
+				proto->hdia = corner;
+				corner = 0;
+			}
+
 			plated[0] = '\0';
 			if (pads_has_field(rctx))
 				if ((res = pads_read_word(rctx, plated, sizeof(plated), 0)) <= 0) return res;
