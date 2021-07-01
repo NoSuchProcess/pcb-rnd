@@ -735,10 +735,12 @@ static int pads_write_blk_part(write_ctx_t *wctx)
 static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 {
 	long n;
-	pcb_2netmap_obj_t *first, *last;
+	pcb_2netmap_obj_t *first, *last, *no;
 	pcb_subc_t *fsc, *lsc;
+	rnd_coord_t thick;
+	int plid;
 
-	if (n < 2)
+	if (n <= 2)
 		return 0;
 
 	first = (pcb_2netmap_obj_t *)oseg->objs.array[0];
@@ -754,35 +756,59 @@ static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 
 	fprintf(wctx->f, "%s.%s     %s.%s\n", fsc->refdes, first->o.any.term, lsc->refdes, last->o.any.term);
 
-	for(n = 1; n < oseg->objs.used; n++) {
+	/* print starting coord */
+	no = (pcb_2netmap_obj_t *)oseg->objs.array[1];
+	if (no->o.any.type == PCB_OBJ_LINE) thick = no->o.line.Thickness;
+	else if (no->o.any.type == PCB_OBJ_ARC) thick = no->o.arc.Thickness;
+	else thick = RND_MM_TO_COORD(0.01);
+	plid = pads_layer2plid(wctx, no->o.any.parent.layer);
+	rnd_fprintf(wctx->f, "%[4] %[4] %d %[4] 0\r\n", CRDX(first->x), CRDY(first->y), plid, CRD(thick));
+
+	/* print all objects in the seg */
+	for(n = 1; n < oseg->objs.used-1; n++) {
 		pcb_2netmap_obj_t *no = (pcb_2netmap_obj_t *)oseg->objs.array[n];
 		pcb_2netmap_obj_t *prev = (pcb_2netmap_obj_t *)oseg->objs.array[n-1];
-		pcb_2netmap_obj_t *next = NULL;
+		pcb_2netmap_obj_t *next = (pcb_2netmap_obj_t *)oseg->objs.array[n+1];
+		int plid;
 
-		if (n < oseg->objs.used - 1)
-			next = (pcb_2netmap_obj_t *)oseg->objs.array[n+1];
-	
+		thick = 0;
+/* XLOC YLOC LAYER SEGMENTWIDTH FLAGS [ARCDIR/VIANAME] [TEARDROP [P WID LEN [FLAGS]] [N WID LEN [FLAGS]]] [JMPNM JMPFLAG] REUSE INST RSIG */
 		switch(no->o.line.type) {
 			case PCB_OBJ_LINE:
+				thick = no->o.line.Thickness;
+				plid = pads_layer2plid(wctx, no->o.any.parent.layer);
+				goto draw_line;
 			case PCB_OBJ_RAT:
-				if (prev != NULL)
-/*					pcb_line_new(dc, prev->x, prev->y, no->x, no->y,
-						RND_MIL_TO_COORD(3), 0, pcb_no_flags());*/
+				plid = 65;
+				draw_line:;
+				rnd_fprintf(wctx->f, "%[4] %[4] %d %[4] 0",
+					CRDX(no->x), CRDY(no->y), plid, CRD(thick));
 				break;
 			case PCB_OBJ_ARC:
-/*				pcb_arc_new(dc, no->o.arc.X, no->o.arc.Y, no->o.arc.Width, no->o.arc.Height,
-					no->sa, no->da, RND_MIL_TO_COORD(3), 0, pcb_no_flags(), 0);*/
+				thick = no->o.arc.Thickness;
+				plid = pads_layer2plid(wctx, no->o.any.parent.layer);
+				rnd_fprintf(wctx->f, "%[4] %[4] %d %[4] %d %s",
+					CRDX(no->o.arc.X), CRDY(no->o.arc.X), plid, CRD(thick),
+					0x1000, /* arc center flag */
+					no->da > 0 ? "CW" : "CCW");
 				break;
 			default:;
 		}
 
-		if ((next != NULL) && (next->o.any.type == PCB_OBJ_PSTK)) {
-			fprintf(wctx->f, " VIA!\r\n");
+		if ((next != NULL) && (next->o.any.type == PCB_OBJ_PSTK) && (next->o.any.term == NULL)) {
+			fprintf(wctx->f, " PSPROTO_%d\r\n", next->o.pstk.proto);
+			n++;
 		}
 		else
 			fprintf(wctx->f, "\r\n");
-
 	}
+
+	/* print end coord */
+	no = (pcb_2netmap_obj_t *)oseg->objs.array[oseg->objs.used-1];
+	plid = pads_layer2plid(wctx, no->o.any.parent.layer);
+	rnd_fprintf(wctx->f, "%[4] %[4] 65 %[4] 0\r\n", CRDX(last->x), CRDY(last->y), CRD(thick));
+
+
 	fprintf(wctx->f, "\r\n");
 	return 0;
 }
@@ -800,7 +826,7 @@ static int pads_write_blk_route(write_ctx_t *wctx)
 		for(net = pcb_net_first(&it, &wctx->pcb->netlist[PCB_NETLIST_EDITED]); net != NULL; net = pcb_net_next(&it)) {
 			pcb_2netmap_oseg_t *o;
 
-			fprintf(wctx->f, "*SIGNAL* %s 0 -2\r\n");
+			fprintf(wctx->f, "*SIGNAL* %s 0 -2\r\n", net->name);
 			for(o = wctx->tnets.osegs; o != NULL; o = o->next)
 				if (o->net == net)
 					pads_write_signal(wctx, o);
@@ -821,7 +847,7 @@ static int pads_write_pcb_(write_ctx_t *wctx)
 	if (pads_write_blk_partdecals(wctx) != 0) return -1;
 	if (pads_write_blk_parttype(wctx) != 0) return -1;
 	if (pads_write_blk_part(wctx) != 0) return -1;
-/*	if (pads_write_blk_route(wctx) != 0) return -1;*/
+	if (pads_write_blk_route(wctx) != 0) return -1;
 	if (pads_write_blk_misc_layers(wctx) != 0) return -1;
 	return 0;
 }
