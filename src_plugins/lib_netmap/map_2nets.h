@@ -63,6 +63,8 @@ typedef struct pcb_2netmap_obj_s {
 		pcb_any_obj_t any;
 	} o;
 
+	pcb_any_obj_t *orig;
+
 	/* internal/cache */
 	unsigned char cc; /* ends used for connection */
 } pcb_2netmap_obj_t;

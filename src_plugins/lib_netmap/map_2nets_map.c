@@ -49,6 +49,7 @@ static pcb_2netmap_obj_t *map_seg_out_obj(pcb_2netmap_t *map, pcb_any_obj_t *obj
 		case PCB_OBJ_TEXT: memcpy(&res->o, obj, sizeof(res->o.text)); memset(&res->o.text.link,  0, sizeof(gdl_elem_t)); break;
 		default:;
 	}
+	res->orig = obj;
 
 	return res;
 }
