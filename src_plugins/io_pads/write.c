@@ -336,14 +336,14 @@ static int pads_write_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_proto
 					pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape will not appear properly. Fix the padstack prototype to use concentric circles only.");
 					free(tmp);
 				}
-				rnd_fprintf(wctx->f, "%d %[4] R\r\n", level, CRD(shape->data.circ.dia));
+				rnd_fprintf(wctx->f, "%d %[4] R", level, CRD(shape->data.circ.dia));
 				break;
 			case PCB_PSSH_LINE:
 				{
 					double ang1 = atan2(shape->data.line.y1, shape->data.line.x1), ang2 = atan2(shape->data.line.y2, shape->data.line.x2);
 					rnd_coord_t len = rnd_distance(shape->data.line.y1, shape->data.line.x1, shape->data.line.y2, shape->data.line.x2);
 					rnd_coord_t offs = (len/2) - rnd_distance(0, 0, shape->data.line.y1, shape->data.line.x1);
-					rnd_fprintf(wctx->f, "%d %[4] OF %.3f %[4] %[4]\r\n", level, CRD(shape->data.line.thickness), ang1 * RND_RAD_TO_DEG, CRD(len), CRD(offs));
+					rnd_fprintf(wctx->f, "%d %[4] OF %.3f %[4] %[4]", level, CRD(shape->data.line.thickness), ang1 * RND_RAD_TO_DEG, CRD(len), CRD(offs));
 					{
 						char *tmp = rnd_strdup_printf("padstack proto #%ld, shape #%d uses line (\"oval finger\" in PADS ASCII)\n", pid, n);
 						pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape is untested and may export incorrectly.");
@@ -357,9 +357,9 @@ static int pads_write_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_proto
 					rnd_bool is_rect = pcb_pstk_shape2rect(shape, &w, &h, &cx, &cy, &rot, NULL, NULL, NULL, NULL);
 					if (is_rect) {
 						if (cy == 0)
-							rnd_fprintf(wctx->f, "%d %[4] RF %.3f %[4] %[4]\r\n", level, (rnd_coord_t)CRD(h), rot * RND_RAD_TO_DEG, (rnd_coord_t)CRD(w), (rnd_coord_t)CRD(cx));
+							rnd_fprintf(wctx->f, "%d %[4] RF %.3f %[4] %[4]", level, (rnd_coord_t)CRD(h), rot * RND_RAD_TO_DEG, (rnd_coord_t)CRD(w), (rnd_coord_t)CRD(cx));
 						else if (cx == 0)
-							rnd_fprintf(wctx->f, "%d %[4] RF %.3f %[4] %[4]\r\n", level, (rnd_coord_t)CRD(w), rot * RND_RAD_TO_DEG + 90.0, (rnd_coord_t)CRD(h), (rnd_coord_t)CRD(cy));
+							rnd_fprintf(wctx->f, "%d %[4] RF %.3f %[4] %[4]", level, (rnd_coord_t)CRD(w), rot * RND_RAD_TO_DEG + 90.0, (rnd_coord_t)CRD(h), (rnd_coord_t)CRD(cy));
 						else {
 							char *tmp = rnd_strdup_printf("padstack proto #%ld, shape #%d is non-centered rectangular polygon\n", pid, n);
 							pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape will not appear properly. A rectangle can be uncentered only along one axis.");
@@ -372,13 +372,13 @@ static int pads_write_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_proto
 						pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape will not appear properly. Use circle, line or rectangular polygon shape only.");
 						free(tmp);
 						write_dummy:;
-						rnd_fprintf(wctx->f, "%d %[4] R\r\n", level, CRD(proto->hdia*2));
+						rnd_fprintf(wctx->f, "%d %[4] R", level, CRD(proto->hdia*2));
 					}
 				}
 				break;
 
 			case PCB_PSSH_HSHADOW:
-				rnd_fprintf(wctx->f, "%d %[4] R\r\n", level, CRD(proto->hdia));
+				rnd_fprintf(wctx->f, "%d %[4] R", level, CRD(proto->hdia));
 				break;
 
 			default:
@@ -387,9 +387,15 @@ static int pads_write_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_proto
 					pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape will not appear properly. Fix the padstack prototype to use simpler shapes.");
 					free(tmp);
 				}
-				rnd_fprintf(wctx->f, "%d %[4] R\r\n", level, CRD(proto->hdia * 1.1));
+				rnd_fprintf(wctx->f, "%d %[4] R", level, CRD(proto->hdia * 1.1));
 
 		}
+		if ((termid != NULL) && (n == 0)) {
+			/* in partdecal the first shape needs to define hole diameter */
+			rnd_fprintf(wctx->f, " %[4]\r\n", proto->hdia);
+		}
+		else
+			fprintf(wctx->f, "\r\n");
 	}
 	return 0;
 }
