@@ -1398,6 +1398,12 @@ static int pads_parse_pour_piece_polycnt(pads_read_ctx_t *rctx, pads_poly_type_t
 	if ((res = pads_read_long(rctx, &level)) <= 0) return res;
 	pads_eatup_till_nl(rctx); /* ignore rest of the arguments */
 
+	if (!conf_io_pads.plugins.io_pads.load_polygons) {
+		for(n = 0; n < num_corners + num_arcs; n++)
+			if ((res = pads_parse_pour_piece_crd(rctx, NULL, PADS_POTY_NOOP, xo, yo)) <= 0) return res;
+		return 1;
+	}
+
 	rnd_trace(" %s:\n", type);
 	if (poty != PADS_POTY_NOOP)
 		poly = pcb_dlcr_poly_new(&rctx->dlcr, 0, num_corners + num_arcs*8);
