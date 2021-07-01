@@ -16,3 +16,6 @@ void pcb_placement_uninit(pcb_placement_t *ctx);
 
 /* Iterate all subcircuits in data and build ctx->subcs hash */
 void pcb_placement_build(pcb_placement_t *ctx, pcb_data_t *data);
+
+/* return subc's prototype or NULL */
+#define pcb_placement_get(ctx, subc)    htscp_get((ctx)->subcs, (subc))
