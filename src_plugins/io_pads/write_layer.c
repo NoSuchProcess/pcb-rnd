@@ -11,6 +11,7 @@ static const pads_lyt_map_t pads_lyt_map[] = {
 	/*{24, NULL,       PCB_LYT_FAB},*/
 	{26, NULL,       PCB_LYT_TOP | PCB_LYT_SILK},
 	{27, "assy",     PCB_LYT_TOP | PCB_LYT_DOC},
+	{27, NULL,       PCB_LYT_BOUNDARY},
 	{28, NULL,       PCB_LYT_BOTTOM | PCB_LYT_MASK},
 	{29, NULL,       PCB_LYT_BOTTOM | PCB_LYT_SILK},
 	{30, "assy",     PCB_LYT_BOTTOM | PCB_LYT_DOC},
