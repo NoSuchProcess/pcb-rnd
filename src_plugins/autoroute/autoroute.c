@@ -614,10 +614,10 @@ static routebox_t *AddTerm_(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_r
 	(*rbpp)->group = layergroup;
 	clr = pcb_obj_clearance_at(PCB, term, layer);
 	init_const_box(*rbpp,
-								 /*X1 */ term->BoundingBox.X1 + clr,
-								 /*Y1 */ term->BoundingBox.Y1 + clr,
-								 /*X2 */ term->BoundingBox.X2 - clr,
-								 /*Y2 */ term->BoundingBox.Y2 - clr,
+								 /*X1 */ term->bbox_naked.X1,
+								 /*Y1 */ term->bbox_naked.Y1,
+								 /*X2 */ term->bbox_naked.X2,
+								 /*Y2 */ term->bbox_naked.Y2,
 								 style->Clearance);
 	/* kludge for non-manhattan pads (which are not allowed at present) */
 TODO("term:")
