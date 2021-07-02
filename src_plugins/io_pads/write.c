@@ -832,7 +832,7 @@ static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 /* XLOC YLOC LAYER SEGMENTWIDTH FLAGS [ARCDIR/VIANAME] [TEARDROP [P WID LEN [FLAGS]] [N WID LEN [FLAGS]]] [JMPNM JMPFLAG] REUSE INST RSIG */
 		switch(no->o.line.type) {
 			case PCB_OBJ_LINE:
-				thick = no->o.line.Thickness;
+				thick = nextt->o.line.Thickness;
 				goto draw_line;
 			case PCB_OBJ_RAT:
 				plid = 65;
@@ -841,7 +841,7 @@ static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 					CRDX(no->x), CRDY(no->y), plid, CRD(thick));
 				break;
 			case PCB_OBJ_ARC:
-				thick = no->o.arc.Thickness;
+				thick = nextt->o.arc.Thickness;
 				rnd_fprintf(wctx->f, "%[4] %[4] %d %[4] %d %s",
 					CRDX(no->o.arc.X), CRDY(no->o.arc.X), plid, CRD(thick),
 					0x1000, /* arc center flag */
