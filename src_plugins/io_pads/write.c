@@ -711,7 +711,10 @@ static int pads_write_blk_parttype(write_ctx_t *wctx)
 	for(e = htscp_first(&wctx->footprints.subcs); e != NULL; e = htscp_next(&wctx->footprints.subcs, e)) {
 		pcb_subc_t *proto = e->value;
 		const char *id = pcb_attribute_get(&proto->Attributes, SUBC_ID_ATTR);
-		fprintf(wctx->f, "%s %s UND  0   0   0     0 Y\r\n\r\n", id, id);
+		if ((floor(wctx->ver) == 2005) || (wctx->ver < 6.0)) /* 4.0 and 5.0 both have an extra unit field */
+			fprintf(wctx->f, "%s %s I UND  0   0   0     0 Y\r\n\r\n", id, id);
+		else
+			fprintf(wctx->f, "%s %s UND  0   0   0     0 Y\r\n\r\n", id, id);
 	}
 
 	fprintf(wctx->f, "\r\n");
