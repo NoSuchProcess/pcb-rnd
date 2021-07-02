@@ -66,6 +66,7 @@ typedef struct {
 	/* internal caches */
 	pcb_placement_t footprints;
 	pcb_2netmap_t tnets;
+	vtp0_t term_sort;
 } write_ctx_t;
 
 #define CRD(c)   (c)
@@ -488,6 +489,36 @@ static int partdecal_plid(write_ctx_t *wctx, pcb_subc_t *proto, pcb_any_obj_t *o
 	return plid;
 }
 
+static int term_sort(const void *A, const void *B)
+{
+	const pcb_pstk_t **a = A, **b = B;
+	long an, bn;
+	char *end;
+	int res;
+
+	if ((*a)->term == NULL)
+		return -1;
+	if ((*b)->term == NULL)
+		return +1;
+
+	an = strtol((*a)->term, &end, 10);
+	if (*end != '\0')
+		goto strs;
+	bn = strtol((*b)->term, &end, 10);
+	if (*end != '\0')
+		goto strs;
+
+	if (an < bn)
+		return -1;
+
+	return +1;
+
+	strs:;
+	res = strcmp((*a)->term, (*b)->term);
+	if (res == 0)
+		return -1;
+}
+
 static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const char *id)
 {
 	long n, num_pcs = 0, num_terms = 0, num_stacks = 0, num_texts = 0, num_labels = 0;
@@ -603,11 +634,20 @@ static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const 
 			pads_write_text(wctx, (pcb_text_t *)o, plid, 1);
 	}
 
-	/* write terminals */
-	for(ps = padstacklist_first(&proto->data->padstack); ps != NULL; ps = padstacklist_next(ps)) {
+	/* write terminals: collect them in a vector first because they have the be
+	   sorted (some readers are simply broken) */
+	wctx->term_sort.used = 0;
+	for(ps = padstacklist_first(&proto->data->padstack); ps != NULL; ps = padstacklist_next(ps))
+		vtp0_append(&wctx->term_sort, ps);
+
+	qsort(wctx->term_sort.array, wctx->term_sort.used, sizeof(void *), term_sort);
+
+	for(n = 0; n < wctx->term_sort.used; n++) {
+		ps = wctx->term_sort.array[n];
 		rnd_fprintf(wctx->f, "T%[4] %[4] %[4] %[4] %s\r\n",
 			CRDX(ps->x), CRDY(ps->y), CRDX(ps->x), CRDY(ps->y), ps->term);
 	}
+
 
 	/* write padstack prototypes for all pins */
 	partdecal_psproto(wctx, proto, ps0, "0", &res); /* default */
@@ -895,6 +935,7 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 		pcb_map_2nets_uninit(&wctx.tnets);
 	pcb_placement_uninit(&wctx.footprints);
 	pads_free_layers(&wctx);
+	vtp0_uninit(&wctx.term_sort);
 
 	fprintf(f, "\r\n*END*     OF ASCII OUTPUT FILE\r\n");
 
