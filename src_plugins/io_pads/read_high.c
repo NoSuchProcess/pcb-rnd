@@ -1314,6 +1314,8 @@ static int pads_parse_net(pads_read_ctx_t *rctx)
 	pads_sig_piece_t spc = {0};
 	pcb_net_t *net;
 
+	next_trace:;
+
 	if ((res = pads_read_word(rctx, term1, sizeof(term1), 0)) <= 0) return res;
 	if ((res = pads_read_word(rctx, term2, sizeof(term2), 0)) <= 0) return res;
 	pads_eatup_till_nl(rctx);
@@ -1327,9 +1329,22 @@ static int pads_parse_net(pads_read_ctx_t *rctx)
 	for(idx = 0; ;idx++) {
 		double tmp;
 
-		pads_eatup_ws(rctx);
-		c = fgetc(rctx->f);
+		/* look ahead for the first non-whitespace, non-newline character; it's
+		   either the next coord, or the next trace in the same net (refdes),
+		   or the next section ('*') */
+		while(!(feof(rctx->f))) {
+			pads_eatup_ws(rctx);
+			c = fgetc(rctx->f);
+			if ((c == '\r') || (c == '\n'))
+				pads_update_loc(rctx, c);
+			else
+				break;
+		}
 		ungetc(c, rctx->f);
+		if (c == '*')
+			return -4;
+		if (!isspace(c) && !isdigit(c)) /* if the line starts with a refdes, it's the next trace for the same net */
+			goto next_trace;
 
 		if (pads_maybe_read_double(rctx, pads_saved_word, sizeof(pads_saved_word), &tmp) == 1)
 			break; /* when next word is a string; also save the next word so it is returned in the next read */
