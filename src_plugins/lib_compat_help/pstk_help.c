@@ -159,7 +159,12 @@ int pcb_pstk_vect2pstk_thr(pcb_data_t *data, vtp0_t *objs, rnd_bool_t quiet)
 					if (!pcb_is_point_in_line(cx, cy, r, (pcb_any_line_t *)c)) continue;
 					break;
 				case PCB_OBJ_POLY:
-					if (!pcb_poly_is_point_in_p(cx, cy, r, (pcb_poly_t *)c)) continue;
+					{
+						pcb_poly_t *poly = (pcb_poly_t *)c;
+						if (poly->Clipped == NULL) /* clip inhibit may have kept this for later - but we need it now for determining if the point is inside */
+							pcb_poly_init_clip(poly->parent.layer->parent.data, poly->parent.layer, poly);
+						if (!pcb_poly_is_point_in_p(cx, cy, r, poly)) continue;
+					}
 					break;
 				default: continue; /* this type can not be used */
 			}
