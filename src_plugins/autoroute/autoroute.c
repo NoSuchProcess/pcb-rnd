@@ -1086,7 +1086,8 @@ static void CreateRouteData_nets(routedata_t *rd, vtp0_t *layergroupboxes)
 
 		if (last_net && last_in_net)
 			MergeNets(last_net, last_in_net, DIFFERENT_NET);
-		last_net = last_in_net;
+		if (last_in_net != NULL)
+			last_net = last_in_net;
 	}
 	rd->first_net = last_net;
 
