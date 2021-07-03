@@ -786,7 +786,7 @@ static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 	rnd_coord_t thick;
 	int plid;
 
-	if (n <= 2)
+	if (oseg->objs.used <= 2)
 		return 0;
 
 	first = (pcb_2netmap_obj_t *)oseg->objs.array[0];
