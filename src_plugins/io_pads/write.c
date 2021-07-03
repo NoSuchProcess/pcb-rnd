@@ -848,10 +848,13 @@ static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 				break;
 			case PCB_OBJ_ARC:
 				thick = nextt->o.arc.Thickness;
-				rnd_fprintf(wctx->f, "%[4] %[4] %d %[4] %d %s\r\n",
-					CRDX(no->o.arc.X), CRDY(no->o.arc.X), plid, CRD(thick),
-					0x1000, /* arc center flag */
-					no->da > 0 ? "CW" : "CCW");
+				{
+					pcb_arc_t *arc = no->orig;
+					rnd_fprintf(wctx->f, "%[4] %[4] %d %[4] %d %s\r\n",
+						CRDX(arc->X), CRDY(arc->Y), plid, CRD(thick),
+						0x1000, /* arc center flag */
+						arc->Delta > 0 ? "CW" : "CCW");
+				}
 				rnd_fprintf(wctx->f, "%[4] %[4] %d %[4] 0", CRDX(no->x), CRDY(no->y), plid, CRD(thick));
 				break;
 			default:;
