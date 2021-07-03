@@ -46,6 +46,15 @@ static int pads_parse_ignore_sect(pads_read_ctx_t *rctx)
 		ungetc(c, rctx->f);
 
 		res = pads_read_word(rctx, word, sizeof(word), 0);
+
+		/* special case: we ignored an empty section, the first thing we see
+		   is a *SECT* that is not *REMARK*. Return success before this next
+		   *SECT* is read */
+		c = fgetc(rctx->f);
+		ungetc(c, rctx->f);
+		if (c == '*')
+			return 1;
+
 		if (res <= 0)
 			return res;
 		pads_eatup_till_nl(rctx);
