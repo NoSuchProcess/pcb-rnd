@@ -850,7 +850,7 @@ static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 			case PCB_OBJ_ARC:
 				thick = nextt->o.arc.Thickness;
 				{
-					pcb_arc_t *arc = no->orig;
+					pcb_arc_t *arc = (pcb_arc_t *)no->orig;
 					rnd_fprintf(wctx->f, "%[4] %[4] %d %[4] %d %s\r\n",
 						CRDX(arc->X), CRDY(arc->Y), plid, CRD(thick),
 						0x1000, /* arc center flag */
@@ -967,7 +967,7 @@ static int pads_write_blk_pour(write_ctx_t *wctx)
 				fprintf(wctx->f, "POUR_%ld POUROUT 0 0 1 32\r\n", p->ID);
 			fprintf(wctx->f, "POLY %ld 0 0 %d\r\n", p->PointN+1, plid);
 			if (p->HoleIndexN != 0)
-				pcb_io_incompat_save(wctx->pcb->Data, p, "poly-hole", "File format does not support explicit polygon holes.", "Holes are not exported. Split up the polygon into multiple, hole-free ones.");
+				pcb_io_incompat_save(wctx->pcb->Data, (pcb_any_obj_t *)p, "poly-hole", "File format does not support explicit polygon holes.", "Holes are not exported. Split up the polygon into multiple, hole-free ones.");
 			for(n = 0; n < p->PointN; n++)
 				rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(p->Points[n].X), CRDY(p->Points[n].Y));
 			rnd_fprintf(wctx->f, "%[4] %[4]\r\n\r\n", CRDX(p->Points[0].X), CRDY(p->Points[0].Y));
