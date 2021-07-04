@@ -311,7 +311,8 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 		}
 	}
 
-	fprintf(wctx->f, "\r\n");
+	/* this one shouldn't write the separator newlines because a non-signal-trace
+	   set may follow */
 	return 0;
 }
 
@@ -915,6 +916,65 @@ static int pads_write_blk_route(write_ctx_t *wctx)
 	return 0;
 }
 
+static int pads_write_non_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
+{
+	pcb_2netmap_obj_t *first, *last;
+	pcb_subc_t *fsc, *lsc;
+	long n;
+
+	if (pads_seg_is_signal(wctx, oseg, &first, &last, &fsc, &lsc))
+		return 0;
+
+
+	for(n = 0; n < oseg->objs.used; n++) {
+		pcb_2netmap_obj_t *no = (pcb_2netmap_obj_t *)oseg->objs.array[n];
+		int plid;
+
+		if (pcb_obj_parent_subc(no->orig) != NULL)
+			continue; /* do not duplicate objects already copied from partdecals */
+
+		switch(no->o.any.type) {
+			case PCB_OBJ_ARC:
+				plid = pads_layer2plid(wctx, no->o.any.parent.layer);
+				pads_write_piece_arc(wctx, (pcb_arc_t *)no->orig, plid);
+				break;
+
+			case PCB_OBJ_LINE:
+				plid = pads_layer2plid(wctx, no->o.any.parent.layer);
+				pads_write_piece_line(wctx, (pcb_line_t *)no->orig, plid);
+				break;
+
+			case PCB_OBJ_PSTK:
+				pcb_io_incompat_save(wctx->pcb->Data, no->orig, "via-no-net", "via not connected to a valid trace", "Can not export via that is not part of an end-to-end trace");
+				break;
+
+			default:;
+		}
+	}
+	return 0;
+}
+
+/* write free standing copper traces as independent traces within the
+   *LINES* section */
+static int pads_write_non_route(write_ctx_t *wctx)
+{
+	int res = 0;
+	pcb_2netmap_oseg_t *o;
+
+	if (conf_io_pads.plugins.io_pads.save_trace_indep) {
+		fprintf(wctx->f, "\r\n");
+		return 0; /* nothing to do if we have written all traces as independent objects */
+	}
+
+	/* write any segment that is not a valid signal trace */
+	for(o = wctx->tnets.osegs; o != NULL; o = o->next)
+		res |= pads_write_non_signal(wctx, o);
+
+	fprintf(wctx->f, "\r\n");
+	return 0;
+}
+
+
 static int lookup_net_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
 	pcb_net_term_t *term;
@@ -995,6 +1055,7 @@ static int pads_write_pcb_(write_ctx_t *wctx)
 	if (pads_write_blk_reuse(wctx) != 0) return -1;
 	if (pads_write_blk_text(wctx) != 0) return -1;
 	if (pads_write_blk_lines(wctx) != 0) return -1;
+	if (pads_write_non_route(wctx) != 0) return -1; /* really part of *LINES* */
 	if (pads_write_blk_vias(wctx) != 0) return -1;
 	if (pads_write_blk_partdecals(wctx) != 0) return -1;
 	if (pads_write_blk_parttype(wctx) != 0) return -1;
