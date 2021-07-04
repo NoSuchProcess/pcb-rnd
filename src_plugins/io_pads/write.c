@@ -784,6 +784,25 @@ static int pads_write_blk_part(write_ctx_t *wctx)
 	return res;
 }
 
+static int pads_seg_is_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg, pcb_2netmap_obj_t **first, pcb_2netmap_obj_t **last, pcb_subc_t **fsc, pcb_subc_t **lsc)
+{
+	if (oseg->objs.used <= 2)
+		return 0;
+
+	*first = (pcb_2netmap_obj_t *)oseg->objs.array[0];
+	*last = (pcb_2netmap_obj_t *)oseg->objs.array[oseg->objs.used-1];
+
+	if (((*first)->o.any.term == NULL) || ((*last)->o.any.term == NULL))
+		return 0;
+
+	*fsc = pcb_obj_parent_subc(&(*first)->o.any);
+	*lsc = pcb_obj_parent_subc(&(*last)->o.any);
+	if ((*fsc == NULL) || (*lsc == NULL) || ((*fsc)->refdes == NULL) || ((*lsc)->refdes == NULL))
+		return 0;
+
+	return 1;
+}
+
 static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 {
 	long n, m;
@@ -792,18 +811,7 @@ static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 	rnd_coord_t thick;
 	int plid;
 
-	if (oseg->objs.used <= 2)
-		return 0;
-
-	first = (pcb_2netmap_obj_t *)oseg->objs.array[0];
-	last = (pcb_2netmap_obj_t *)oseg->objs.array[oseg->objs.used-1];
-
-	if ((first->o.any.term == NULL) || (last->o.any.term == NULL))
-		return 0;
-
-	fsc = pcb_obj_parent_subc(&first->o.any);
-	lsc = pcb_obj_parent_subc(&last->o.any);
-	if ((fsc == NULL) || (lsc == NULL) || (fsc->refdes == NULL) || (lsc->refdes == NULL))
+	if (!pads_seg_is_signal(wctx, oseg, &first, &last, &fsc, &lsc))
 		return 0;
 
 	fprintf(wctx->f, "%s.%s     %s.%s\n", fsc->refdes, first->o.any.term, lsc->refdes, last->o.any.term);
