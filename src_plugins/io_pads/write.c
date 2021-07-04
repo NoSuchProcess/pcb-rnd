@@ -45,6 +45,7 @@
 #include "conf_core.h"
 #include "data.h"
 #include "data_it.h"
+#include "find.h"
 #include "plug_io.h"
 #include "obj_subc_parent.h"
 #include "netlist.h"
@@ -902,6 +903,80 @@ static int pads_write_blk_route(write_ctx_t *wctx)
 	return 0;
 }
 
+static int lookup_net_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
+{
+	pcb_net_term_t *term;
+
+	if (new_obj->term == NULL)
+		return 0;
+
+	term = pcb_net_find_by_obj(&fctx->pcb->netlist[PCB_NETLIST_EDITED], new_obj);
+	if ((term == NULL) || (term->parent.net == NULL) || (term->parent.net->name == NULL))
+		return 0;
+
+	fctx->user_data = term->parent.net->name;
+
+	return 1;
+}
+
+
+/* return the netname of an object doing a quick find() on it to the first
+   terminal */
+static const char *lookup_net(write_ctx_t *wctx, pcb_any_obj_t *from)
+{
+	pcb_find_t fctx = {0};
+
+	fctx.found_cb = lookup_net_found_cb;
+	fctx.pcb = wctx->pcb;
+
+	pcb_find_from_obj(&fctx, wctx->pcb->Data, from);
+	pcb_find_free(&fctx);
+
+	return fctx.user_data;
+}
+
+static int pads_write_blk_pour(write_ctx_t *wctx)
+{
+	rnd_layer_id_t lid;
+	pcb_layer_t *ly;
+
+	fprintf(wctx->f, "*POUR*       POUR ITEMS\r\n\r\n");
+	fprintf(wctx->f, "*REMARK* NAME TYPE XLOC YLOC PIECES FLAGS [OWNERNAME SIGNAME [HATCHGRID HATCHRAD [PRIORITY]]]\r\n");
+	fprintf(wctx->f, "*REMARK* PIECETYPE  CORNERS ARCS WIDTH LEVEL\r\n");
+	fprintf(wctx->f, "*REMARK* XLOC YLOC BEGINANGLE DELTAANGLE\r\n\r\n");
+
+	for(lid = 0, ly = wctx->pcb->Data->Layer; lid < wctx->pcb->Data->LayerN; lid++,ly++) {
+		pcb_layer_type_t lyt = pcb_layer_flags_(ly);
+		pcb_poly_t *p;
+		int plid;
+
+		/* write only known copper layer polygons as POURs */
+		if (!(lyt & PCB_LYT_COPPER))
+			continue;
+		plid = pads_layer2plid(wctx, ly);
+		if (plid <= 0)
+			continue;
+
+		for(p = polylist_first(&ly->Polygon); p != NULL; p = polylist_next(p)) {
+			long n;
+			const char *netname = lookup_net(wctx, (pcb_any_obj_t *)p);
+
+			if (netname != NULL)
+				fprintf(wctx->f, "POUR_%ld POUROUT 0 0 1 32 POUR_%ld %s\r\n", p->ID, p->ID, netname);
+			else
+				fprintf(wctx->f, "POUR_%ld POUROUT 0 0 1 32\r\n", p->ID);
+			fprintf(wctx->f, "POLY %ld 0 0 %d\r\n", p->PointN+1, plid);
+			if (p->HoleIndexN != 0)
+				pcb_io_incompat_save(wctx->pcb->Data, p, "poly-hole", "File format does not support explicit polygon holes.", "Holes are not exported. Split up the polygon into multiple, hole-free ones.");
+			for(n = 0; n < p->PointN; n++)
+				rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(p->Points[n].X), CRDY(p->Points[n].Y));
+			rnd_fprintf(wctx->f, "%[4] %[4]\r\n\r\n", CRDX(p->Points[0].X), CRDY(p->Points[0].Y));
+		}
+	}
+	
+	return 0;
+}
+
 static int pads_write_pcb_(write_ctx_t *wctx)
 {
 	if (pads_write_blk_pcb(wctx) != 0) return -1;
@@ -913,6 +988,7 @@ static int pads_write_pcb_(write_ctx_t *wctx)
 	if (pads_write_blk_parttype(wctx) != 0) return -1;
 	if (pads_write_blk_part(wctx) != 0) return -1;
 	if (pads_write_blk_route(wctx) != 0) return -1;
+	if (pads_write_blk_pour(wctx) != 0) return -1;
 	if (pads_write_blk_misc_layers(wctx) != 0) return -1;
 	return 0;
 }
