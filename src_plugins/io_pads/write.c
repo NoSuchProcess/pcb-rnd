@@ -521,6 +521,8 @@ static int term_sort(const void *A, const void *B)
 	res = strcmp((*a)->term, (*b)->term);
 	if (res == 0)
 		return -1;
+
+	return res;
 }
 
 static int pads_write_blk_partdecal(write_ctx_t *wctx, pcb_subc_t *proto, const char *id)
@@ -757,6 +759,8 @@ static int pads_write_part(write_ctx_t *wctx, pcb_subc_t *subc)
 				pads_write_text(wctx, (pcb_text_t *)o, plid, 1);
 		}
 	}
+
+	return 0;
 }
 
 static int pads_write_blk_part(write_ctx_t *wctx)
