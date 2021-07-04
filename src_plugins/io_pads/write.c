@@ -969,7 +969,7 @@ static int pads_write_blk_pour(write_ctx_t *wctx)
 				fprintf(wctx->f, "POUR_%ld POUROUT 0 0 1 32 POUR_%ld %s\r\n", p->ID, p->ID, netname);
 			else
 				fprintf(wctx->f, "POUR_%ld POUROUT 0 0 1 32\r\n", p->ID);
-			fprintf(wctx->f, "POLY %ld 0 0 %d\r\n", p->PointN+1, plid);
+			fprintf(wctx->f, "POLY %d 0 0 %d\r\n", p->PointN+1, plid);
 			if (p->HoleIndexN != 0)
 				pcb_io_incompat_save(wctx->pcb->Data, (pcb_any_obj_t *)p, "poly-hole", "File format does not support explicit polygon holes.", "Holes are not exported. Split up the polygon into multiple, hole-free ones.");
 			for(n = 0; n < p->PointN; n++)
