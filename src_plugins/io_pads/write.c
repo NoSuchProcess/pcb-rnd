@@ -819,7 +819,6 @@ static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 	/* print all objects in the seg */
 	for(n = 1; n < oseg->objs.used-1; n++) {
 		pcb_2netmap_obj_t *no = (pcb_2netmap_obj_t *)oseg->objs.array[n];
-		pcb_2netmap_obj_t *prev = (pcb_2netmap_obj_t *)oseg->objs.array[n-1];
 		pcb_2netmap_obj_t *next = (pcb_2netmap_obj_t *)oseg->objs.array[n+1], *nextt;
 		int plid;
 
