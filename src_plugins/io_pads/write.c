@@ -495,7 +495,8 @@ static int partdecal_plid(write_ctx_t *wctx, pcb_subc_t *proto, pcb_any_obj_t *o
 
 static int term_sort(const void *A, const void *B)
 {
-	const pcb_pstk_t **a = A, **b = B;
+	const pcb_pstk_t * const *a = A;
+	const pcb_pstk_t * const *b = B;
 	long an, bn;
 	char *end;
 	int res;
