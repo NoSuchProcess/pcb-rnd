@@ -364,9 +364,9 @@ static int pads_write_pstk_proto(write_ctx_t *wctx, long int pid, pcb_pstk_proto
 					rnd_coord_t len = rnd_distance(shape->data.line.y1, shape->data.line.x1, shape->data.line.y2, shape->data.line.x2);
 					rnd_coord_t offs = (len/2) - rnd_distance(0, 0, shape->data.line.y1, shape->data.line.x1);
 					rnd_fprintf(wctx->f, "%d %[4] OF %.3f %[4] %[4]", level, CRD(shape->data.line.thickness), ang1 * RND_RAD_TO_DEG, CRD(len), CRD(offs));
-					{
-						char *tmp = rnd_strdup_printf("padstack proto #%ld, shape #%d uses line (\"oval finger\" in PADS ASCII)\n", pid, n);
-						pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-layer", tmp, "This shape is untested and may export incorrectly.");
+					if (termid == NULL) { /* board context */
+						char *tmp = rnd_strdup_printf("padstack proto #%ld, shape #%d uses line (\"oval finger\" in PADS ASCII) in via context\n", pid, n);
+						pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-proto-via", tmp, "Some readers will choke on this in board context. Solution: do not use such vias and remove the prototype from the board padstack prototypes.");
 						free(tmp);
 					}
 				}
