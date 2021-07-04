@@ -1579,8 +1579,9 @@
  ../src_plugins/lib_netmap/placement.h data.h crosshair.h route.h \
  buffer.h obj_rat_list.h obj_rat.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h ht_subc.h conf_core.h data_it.h data.h plug_io.h \
- plug_footprint.h ../src_plugins/io_pads/io_pads_conf.h \
+ vtpadstack.h ht_subc.h conf_core.h data_it.h data.h find.h plug_io.h \
+ plug_footprint.h obj_subc_parent.h netlist.h \
+ ../src_plugins/io_pads/io_pads_conf.h \
  ../src_plugins/io_pads/write_layer.c
 ../src_plugins/io_pcb/attribs.o: ../src_plugins/io_pcb/attribs.c \
  ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
