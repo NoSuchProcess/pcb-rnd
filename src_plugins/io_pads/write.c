@@ -262,22 +262,17 @@ static void pads_write_piece_cop_poly(write_ctx_t *wctx, pcb_poly_t *p, int plid
 	rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(p->Points[0].X), CRDY(p->Points[0].Y));
 }
 
-static void pads_write_lines_hdr(write_ctx_t *wctx)
+static int pads_write_blk_lines(write_ctx_t *wctx)
 {
+	rnd_layer_id_t lid;
+	pcb_layer_t *ly;
+
 	fprintf(wctx->f, "*LINES*      LINES ITEMS\r\n\r\n");
 	fprintf(wctx->f, "*REMARK* NAME TYPE XLOC YLOC PIECES TEXT SIGSTR\r\n");
 	fprintf(wctx->f, "*REMARK* .REUSE. INSTANCE RSIGNAL\r\n");
 	fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LINESTYLE LEVEL [RESTRICTIONS]\r\n");
 	fprintf(wctx->f, "*REMARK* XLOC YLOC BEGINANGLE DELTAANGLE\r\n");
 	fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST\r\n\r\n");
-}
-
-static int pads_write_blk_lines(write_ctx_t *wctx)
-{
-	rnd_layer_id_t lid;
-	pcb_layer_t *ly;
-
-	pads_write_lines_hdr(wctx);
 
 	for(lid = 0, ly = wctx->pcb->Data->Layer; lid < wctx->pcb->Data->LayerN; lid++,ly++) {
 		pcb_line_t *l;
