@@ -270,7 +270,10 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 	fprintf(wctx->f, "*LINES*      LINES ITEMS\r\n\r\n");
 	fprintf(wctx->f, "*REMARK* NAME TYPE XLOC YLOC PIECES TEXT SIGSTR\r\n");
 	fprintf(wctx->f, "*REMARK* .REUSE. INSTANCE RSIGNAL\r\n");
-	fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LINESTYLE LEVEL [RESTRICTIONS]\r\n");
+	if (((wctx->ver >= 9.4) && (wctx->ver < 1000)) || (floor(wctx->ver) > 2007))
+		fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LINESTYLE LEVEL [RESTRICTIONS]\r\n");
+	else
+		fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LEVEL RESTRICTIONS\r\n");
 	fprintf(wctx->f, "*REMARK* XLOC YLOC BEGINANGLE DELTAANGLE\r\n");
 	fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST\r\n\r\n");
 
@@ -676,7 +679,10 @@ static int pads_write_blk_partdecals(write_ctx_t *wctx)
 
 	fprintf(wctx->f, "*PARTDECAL*  ITEMS\r\n\r\n");
 	fprintf(wctx->f, "*REMARK* NAME UNITS ORIX ORIY PIECES TERMINALS STACKS TEXT LABELS\r\n");
-	fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LEVEL RESTRICTIONS\r\n");
+	if (((wctx->ver >= 9.4) && (wctx->ver < 1000)) || (floor(wctx->ver) > 2007))
+		fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LINESTYLE LEVEL [RESTRICTIONS]\r\n");
+	else
+		fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTHHGHT LEVEL RESTRICTIONS\r\n");
 	fprintf(wctx->f, "*REMARK* PIECETYPE CORNERS WIDTH LEVEL PINNUM\r\n");
 	fprintf(wctx->f, "*REMARK* XLOC YLOC BEGINANGLE DELTAANGLE\r\n");
 	fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST\r\n");
@@ -706,7 +712,10 @@ static int pads_write_blk_parttype(write_ctx_t *wctx)
 
 	fprintf(wctx->f, "*PARTTYPE*   ITEMS\r\n");
 
-	fprintf(wctx->f, "*REMARK* NAME DECALNM TYPE GATES SIGPINS UNUSEDPINNMS FLAGS ECO\r\n");
+	if ((floor(wctx->ver) == 2005) || (wctx->ver < 6.0)) /* 4.0 and 5.0 both have an extra unit field */
+		fprintf(wctx->f, "*REMARK* NAME DECALNM UNITS TYPE GATES SIGPINS UNUSEDPINNMS FLAGS ECO\r\n");
+	else
+		fprintf(wctx->f, "*REMARK* NAME DECALNM TYPE GATES SIGPINS UNUSEDPINNMS FLAGS ECO\r\n");
 	fprintf(wctx->f, "*REMARK* G/S SWAPTYPE PINS\r\n");
 	fprintf(wctx->f, "*REMARK* PINNUMBER SWAPTYPE.PINTYPE\r\n");
 	fprintf(wctx->f, "*REMARK* SIGPIN PINNUMBER SIGNAME\r\n");
