@@ -258,6 +258,8 @@ static void map_seg_out(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
 	int n, start_side = iseg->term[0] ? 0 : 1; /* assumes we are starting from a terminal */
 	pcb_any_obj_t *end_obj, *hub_last_obj = NULL, *last_obj = NULL, *hub_obj;
 
+	iseg->used = 1;
+
 	for(;;) {
 		/* copy current iseg */
 printf("* iseg: %p %d\n", (void *)iseg, start_side);
@@ -386,7 +388,7 @@ static usrch_a_star_node_t *get_mark(usrch_a_star_t *ctx, void *node)
 	return seg->mark;
 }
 
-static void map_seg_search(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg)
+static void map_seg_search(pcb_2netmap_t *map, pcb_2netmap_iseg_t *iseg, int only_unused)
 {
 	usrch_a_star_node_t *it;
 	usrch_a_star_t a = {0};
@@ -414,6 +416,8 @@ printf("-------------------\n");
 		/* pick up the the results and build a path using ->path_next and render the output net */
 		last = NULL;
 		for(n = usrch_a_star_path_first(&a, &it); n != NULL; n = usrch_a_star_path_next(&a, &it)) {
+			if (only_unused && n->used)
+				continue;
 printf(" + %p\n", (void *)n);
 			n->path_next = last;
 			last = n;
@@ -430,6 +434,8 @@ printf(" + %p\n", (void *)n);
 	usrch_a_star_uninit(&a);
 }
 
+void d1() {}
+
 static void map_segs(pcb_2netmap_t *map)
 {
 	pcb_2netmap_iseg_t *i;
@@ -440,8 +446,13 @@ static void map_segs(pcb_2netmap_t *map)
 		if (i->term[0] && i->term[1]) /* simplest case: terminal-to-terminal */
 			map_seg_out(map, i);
 		else if (i->term[0] || i->term[1]) /* at least one end has termianl */
-			map_seg_search(map, i);
-		else if (map->find_floating) /* caller wants to see free floating nets */
-			map_seg_search(map, i);
+			map_seg_search(map, i, 0);
 	}
+
+
+	/* caller wants to see free floating nets; pick up any leftover */
+	if (map->find_floating)
+		for(i = map->isegs; i != NULL; i = i->next)
+			if (!i->used)
+				map_seg_search(map, i, 1);
 }
