@@ -434,8 +434,6 @@ printf(" + %p\n", (void *)n);
 	usrch_a_star_uninit(&a);
 }
 
-void d1() {}
-
 static void map_segs(pcb_2netmap_t *map)
 {
 	pcb_2netmap_iseg_t *i;
