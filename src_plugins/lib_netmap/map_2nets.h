@@ -33,11 +33,6 @@
 #include <genht/htpp.h>
 #include "../src_plugins/query/net_len.h"
 
-
-typedef enum { /* bits */
-	PCB_2NETMAPCTRL_RATS = 1      /* include rat lines */
-} pcb_2netmap_control_t;
-
 typedef struct pcb_2netmap_iseg_s pcb_2netmap_iseg_t;
 struct pcb_2netmap_iseg_s {
 	pcb_qry_netseg_len_t *seg;
@@ -78,7 +73,6 @@ struct pcb_2netmap_oseg_s {
 };
 
 typedef struct pcb_2netmap_s {
-	pcb_2netmap_control_t ctrl;
 	pcb_2netmap_oseg_t *osegs; /* output: head of a singly linked list */
 	unsigned find_rats:1;      /* config: set to 1 if rats shall be included */
 	unsigned find_floating:1;  /* include free floating nets that are not connected to any terminal */
@@ -91,5 +85,5 @@ typedef struct pcb_2netmap_s {
 } pcb_2netmap_t;
 
 
-int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control_t how);
+int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb);
 int pcb_map_2nets_uninit(pcb_2netmap_t *map);

@@ -151,7 +151,7 @@ static int list_subc_cb(void *ctx, pcb_board_t *pcb, pcb_subc_t *subc, int enter
 
 /*** API functions ***/
 
-int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb, pcb_2netmap_control_t how)
+int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb)
 {
 	pcb_qry_exec_t ec;
 
