@@ -439,7 +439,9 @@ static void map_segs(pcb_2netmap_t *map)
 		if (i->used) continue;
 		if (i->term[0] && i->term[1]) /* simplest case: terminal-to-terminal */
 			map_seg_out(map, i);
-		else if (i->term[0] || i->term[1])
+		else if (i->term[0] || i->term[1]) /* at least one end has termianl */
+			map_seg_search(map, i);
+		else if (map->find_floating) /* caller wants to see free floating nets */
 			map_seg_search(map, i);
 	}
 }

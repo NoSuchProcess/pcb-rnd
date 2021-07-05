@@ -81,6 +81,7 @@ typedef struct pcb_2netmap_s {
 	pcb_2netmap_control_t ctrl;
 	pcb_2netmap_oseg_t *osegs; /* output: head of a singly linked list */
 	unsigned find_rats:1;      /* config: set to 1 if rats shall be included */
+	unsigned find_floating:1;  /* include free floating nets that are not connected to any terminal */
 
 	/* internal */
 	htpp_t o2n;   /* of (pcb_2netmap_iseg_t *); tells the net for an object */
