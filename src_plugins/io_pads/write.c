@@ -958,6 +958,7 @@ static int pads_write_non_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
    *LINES* section */
 static int pads_write_non_route(write_ctx_t *wctx)
 {
+	long cnt = 0;
 	int res = 0;
 	pcb_2netmap_oseg_t *o;
 
@@ -966,7 +967,17 @@ static int pads_write_non_route(write_ctx_t *wctx)
 		return 0; /* nothing to do if we have written all traces as independent objects */
 	}
 
+
+	/* count non-signals */
+	for(o = wctx->tnets.osegs; o != NULL; o = o->next) {
+		pcb_2netmap_obj_t *first, *last;
+		pcb_subc_t *fsc, *lsc;
+		if (!pads_seg_is_signal(wctx, o, &first, &last, &fsc, &lsc))
+			cnt++;
+	}
+
 	/* write any segment that is not a valid signal trace */
+	fprintf(wctx->f, "lines_nonsignal    LINES    0      0      %ld\r\n", cnt);
 	for(o = wctx->tnets.osegs; o != NULL; o = o->next)
 		res |= pads_write_non_signal(wctx, o);
 
@@ -1087,7 +1098,7 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 
 	if (!conf_io_pads.plugins.io_pads.save_trace_indep) {
 		wctx.tnets.find_rats = 1;
-/*		wctx.tnets.find_floating = 1;*/
+		wctx.tnets.find_floating = 1;
 		pcb_map_2nets_init(&wctx.tnets, wctx.pcb);
 	}
 
