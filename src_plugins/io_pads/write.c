@@ -497,6 +497,8 @@ static int partdecal_plid(write_ctx_t *wctx, pcb_subc_t *proto, pcb_any_obj_t *o
 	return plid;
 }
 
+/* qsort() comparator for sorting terminals of a partdecal (some readers
+   are sensitive to unsorted terminals) */
 static int term_sort(const void *A, const void *B)
 {
 	const pcb_pstk_t * const *a = A;
@@ -794,6 +796,7 @@ static int pads_write_blk_part(write_ctx_t *wctx)
 	return res;
 }
 
+/* Decide if a 2net is a route/signal in the PADS sense (returns 0 or 1) */
 static int pads_seg_is_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg, pcb_2netmap_obj_t **first, pcb_2netmap_obj_t **last, pcb_subc_t **fsc, pcb_subc_t **lsc)
 {
 	if (oseg->objs.used <= 2)
@@ -925,6 +928,7 @@ static int pads_write_blk_route(write_ctx_t *wctx)
 	return 0;
 }
 
+/* Write 2nets that are not ending in terminals in the *LINES* section */
 static int pads_write_non_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 {
 	pcb_2netmap_obj_t *first, *last;
@@ -994,7 +998,7 @@ static int pads_write_non_route(write_ctx_t *wctx)
 	return 0;
 }
 
-
+/* remember net name from the first object that is a terminal on a net */
 static int lookup_net_found_cb(pcb_find_t *fctx, pcb_any_obj_t *new_obj, pcb_any_obj_t *arrived_from, pcb_found_conn_type_t ctype)
 {
 	pcb_net_term_t *term;
@@ -1105,6 +1109,7 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 	pcb_placement_init(&wctx.footprints, wctx.pcb);
 	pcb_placement_build(&wctx.footprints, wctx.pcb->Data);
 
+	/* map 2nets if we are to write route/signals instead of free objects */
 	if (!conf_io_pads.plugins.io_pads.save_trace_indep) {
 		wctx.tnets.find_rats = 1;
 		wctx.tnets.find_floating = 1;
