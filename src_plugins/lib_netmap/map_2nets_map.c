@@ -300,7 +300,7 @@ printf("* prev term: %d %d\n", prev->term[0], prev->term[1]);
 		assert(end_obj != NULL);
 		if (iseg->seg->objs.array[0] == end_obj)
 			start_side = 0;
-		else 
+		else
 			start_side = 1;
 	}
 
