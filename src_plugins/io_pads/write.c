@@ -1085,8 +1085,11 @@ static int io_pads_write_pcb(pcb_plug_io_t *ctx, FILE *f, const char *old_filena
 	pcb_placement_init(&wctx.footprints, wctx.pcb);
 	pcb_placement_build(&wctx.footprints, wctx.pcb->Data);
 
-	if (!conf_io_pads.plugins.io_pads.save_trace_indep)
-		pcb_map_2nets_init(&wctx.tnets, wctx.pcb, PCB_2NETMAPCTRL_RATS);
+	if (!conf_io_pads.plugins.io_pads.save_trace_indep) {
+		wctx.tnets.find_rats = 1;
+/*		wctx.tnets.find_floating = 1;*/
+		pcb_map_2nets_init(&wctx.tnets, wctx.pcb);
+	}
 
 	res = pads_write_pcb_(&wctx);
 
