@@ -141,6 +141,33 @@ static void map_seg_add_bridge(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg, pcb
 	vtp0_append(&oseg->objs, tmp);
 }
 
+/* Return end coords of trace object; returns 0 on plain trace object, -1 on
+   strange object. On strange object sets object center as ex;ey */
+static int oseg_map_get_ends_(pcb_2netmap_obj_t *curr, rnd_coord_t ex[2], rnd_coord_t ey[2])
+{
+	int n;
+
+	switch(curr->o.any.type) {
+		case PCB_OBJ_LINE:
+			ex[0] = curr->o.line.Point1.X;
+			ey[0] = curr->o.line.Point1.Y;
+			ex[1] = curr->o.line.Point2.X;
+			ey[1] = curr->o.line.Point2.Y;
+			return 0;
+		case PCB_OBJ_ARC:
+			for(n = 0; n < 2; n++)
+				pcb_arc_get_end(&curr->o.arc, n, &ex[n], &ey[n]);
+			return 0;
+		case PCB_OBJ_PSTK:
+		default:
+			pcb_obj_center(&curr->o.any, &ex[0], &ey[0]);
+			ex[1] = ex[0];
+			ey[1] = ey[0];
+			break;
+	}
+	return -1;
+}
+
 /* Arrived at curr from last point px;py. Look at the two ends of trace object
    curr and load the one that's closer to px;py into npx;npy and the futher
    one into nx;ny. Return the distance^2 from px;py to npx;npy. *endi is either
@@ -151,24 +178,11 @@ static double oseg_map_get_ends(pcb_2netmap_obj_t *curr, rnd_coord_t px, rnd_coo
 	double d[2];
 	int n;
 
-	switch(curr->o.any.type) {
-		case PCB_OBJ_LINE:
-			ex[0] = curr->o.line.Point1.X;
-			ey[0] = curr->o.line.Point1.Y;
-			ex[1] = curr->o.line.Point2.X;
-			ey[1] = curr->o.line.Point2.Y;
-			break;
-		case PCB_OBJ_ARC:
-			for(n = 0; n < 2; n++)
-				pcb_arc_get_end(&curr->o.arc, n, &ex[n], &ey[n]);
-			break;
-		case PCB_OBJ_PSTK:
-		default:
-			pcb_obj_center(&curr->o.any, nx, ny);
-			*npx = *nx;
-			*npy = *ny;
-			*endi = 0;
-			return rnd_distance2(px, py, *npx, *npy);
+	if (oseg_map_get_ends_(curr, ex, ey) != 0) {
+		*npx = *nx = ex[0];
+		*npy = *ny = ey[0];
+		*endi = 0;
+		return rnd_distance2(px, py, *npx, *npy);
 	}
 
 	for(n = 0; n < 2; n++)
@@ -199,9 +213,31 @@ static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 		return;
 
 	prev = oseg->objs.array[0];
-	pcb_obj_center(&prev->o.any, &px, &py);
-	prev->x = px;
-	prev->y = py;
+	if ((prev->orig->term != NULL) || (prev->orig->type == PCB_OBJ_PSTK)) {
+		pcb_obj_center(&prev->o.any, &px, &py);
+		prev->x = px;
+		prev->y = py;
+	}
+	else if (oseg->objs.used > 1) { /* starting from a non-padstack, non-terminal object - have to sort out which end is the common end with the second object */
+		rnd_coord_t pex[2], pey[2], nex[2], ney[2];
+		int pi, ni;
+		double d, best = RND_COORD_MAX;
+
+		curr = oseg->objs.array[1];
+		oseg_map_get_ends_(prev, pex, pey);
+		oseg_map_get_ends_(curr, nex, ney);
+
+		for(pi = 0; pi < 2; pi++) {
+			for(ni = 0; ni < 2; ni++) {
+				d = rnd_distance2(pex[pi], pey[pi], nex[ni], ney[ni]);
+				if (d < best) {
+					best = d;
+					px = pex[pi];
+					py = pey[pi];
+				}
+			}
+		}
+	}
 
 	/* find connected endpoints */
 	for(n = 1; n < oseg->objs.used; n++) {
