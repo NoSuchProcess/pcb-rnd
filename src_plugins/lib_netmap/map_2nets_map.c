@@ -228,7 +228,7 @@ static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 			tmp->o.line.Point2.X = npx; tmp->o.line.Point2.Y = npy;
 			tmp->o.line.Thickness = th; tmp->o.line.Clearance = cl;
 			tmp->x = npx; tmp->y = npy;
-			vtp0_insert_len(&oseg->objs, n, &tmp, 1);
+			vtp0_insert_len(&oseg->objs, n, (void **)&tmp, 1);
 			n++;
 		}
 
