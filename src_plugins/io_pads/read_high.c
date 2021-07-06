@@ -307,7 +307,12 @@ TODO("''KEEPOUT'' objects are not handled: CIRCUT and COPCUT and COPCIR are poly
 	else if ((strcmp(ptype, "COPCCO") == 0) || (strcmp(ptype, "COPCIR") == 0) || (strcmp(ptype, "CIRCUR") == 0)) {
 		if ((res = pads_parse_piece_circle(rctx, &lpc, num_crds, 1)) <= 0) return res;
 	}
+	else if ((strcmp(ptype, "COPCLS") == 0) || (strcmp(ptype, "CLOSED") == 0)) {
+TODO("read COPCLS here in another branch of the else if - should be poly");
+		goto todo1;
+	}
 	else {
+		todo1:;
 		for(n = 0; n < num_crds; n++)
 			if ((res = pads_parse_piece_crd(rctx, &lpc, n)) <= 0) return res;
 	}
