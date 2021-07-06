@@ -243,7 +243,11 @@ static void pads_write_piece_arc(write_ctx_t *wctx, pcb_arc_t *a, int plid)
 	sa = (a->StartAngle) - 180;
 	da = (a->Delta);
 
-	rnd_fprintf(wctx->f, "OPEN 2   %[4] 0 %d\r\n", CRD(a->Thickness), plid);
+	if (((wctx->ver >= 9.4) && (wctx->ver < 1000)) || (floor(wctx->ver) > 2007))
+		rnd_fprintf(wctx->f, "OPEN 2   %[4] 0 %d\r\n", CRD(a->Thickness), plid);
+	else
+		rnd_fprintf(wctx->f, "OPEN 2   %[4] %d\r\n", CRD(a->Thickness), plid);
+
 	rnd_fprintf(wctx->f, "%[4] %[4]   %d %d    %[4] %[4]    %[4] %[4]\r\n",
 		CRDX(x1), CRDY(y1), (int)rnd_round(sa*10), (int)rnd_round(da*10),
 		CRDX(a->X - a->Width), CRDY(a->Y - a->Height),
