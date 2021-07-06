@@ -266,6 +266,15 @@ static void pads_write_piece_cop_poly(write_ctx_t *wctx, pcb_poly_t *p, int plid
 	rnd_fprintf(wctx->f, "%[4] %[4]\r\n", CRDX(p->Points[0].X), CRDY(p->Points[0].Y));
 }
 
+static void pads_write_piece_poly(write_ctx_t *wctx, pcb_poly_t *p, int plid, int is_copper)
+{
+	if (is_copper || conf_io_pads.plugins.io_pads.save_abuse_copcls)
+		pads_write_piece_cop_poly(wctx, p, plid);
+	else
+		pcb_io_incompat_save(wctx->pcb->Data, p, "non-copper-poly", "Only copper polygons are supported officially", "Either enable plugins/io_pads/save_abuse_copcls (some readers support COPCLS on non-copper) or redraw your non-copper polygon with lines (e.g. using the PolyHatch() action).");
+}
+
+
 static int pads_write_blk_lines(write_ctx_t *wctx)
 {
 	rnd_layer_id_t lid;
@@ -282,17 +291,15 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 	fprintf(wctx->f, "*REMARK* XLOC YLOC ORI LEVEL HEIGHT WIDTH MIRRORED HJUST VJUST\r\n\r\n");
 
 	for(lid = 0, ly = wctx->pcb->Data->Layer; lid < wctx->pcb->Data->LayerN; lid++,ly++) {
+		pcb_layer_type_t lyt = pcb_layer_flags_(ly);
 		pcb_line_t *l;
 		pcb_arc_t *a;
 		pcb_poly_t *p;
 		int plid;
 
 		/* if traces are to be written as singal routes, skip any copper layer in this print-all-objects loop */
-		if (!conf_io_pads.plugins.io_pads.save_trace_indep) {
-			pcb_layer_type_t lyt = pcb_layer_flags_(ly);
-			if (lyt & PCB_LYT_COPPER)
-				continue;
-		}
+		if ((!conf_io_pads.plugins.io_pads.save_trace_indep) && (lyt & PCB_LYT_COPPER))
+			continue;
 
 		plid = pads_layer2plid(wctx, ly);
 		if (plid <= 0)
@@ -312,9 +319,10 @@ static int pads_write_blk_lines(write_ctx_t *wctx)
 		}
 		p = polylist_first(&ly->Polygon);
 		if (p != NULL) {
-			fprintf(wctx->f, "polys_lid_%ld    COPPER   0      0      %ld\r\n", (long)lid, (long)polylist_length(&ly->Polygon));
+			if ((lyt & PCB_LYT_COPPER) || conf_io_pads.plugins.io_pads.save_abuse_copcls)
+				fprintf(wctx->f, "polys_lid_%ld    COPPER   0      0      %ld\r\n", (long)lid, (long)polylist_length(&ly->Polygon));
 			for(; p != NULL; p = polylist_next(p))
-				pads_write_piece_cop_poly(wctx, p, plid);
+				pads_write_piece_poly(wctx, p, plid, (lyt & PCB_LYT_COPPER));
 		}
 	}
 
