@@ -56,7 +56,7 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	if ((layer != NULL) && (pcb_layer_flags_(layer) & PCB_LYT_COPPER) == 0)
 		return;
 
-	if (htpp_get(&map->o2n, obj) != NULL) /* object already found */
+	if ((obj->term == NULL) && (htpp_get(&map->o2n, obj) != NULL)) /* object already found */
 		return;
 
 	seg = pcb_qry_parent_net_len_mapseg(map->ec, obj, map->find_rats);
@@ -78,6 +78,19 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 
 	printf("seg=%p %s junc: %ld %ld term: %d %d\n", (void *)seg, (seg->hub ? "HUB" : ""), OID(seg->junction[0]), OID(seg->junction[1]), ns->term[0], ns->term[1]);
 
+	/* insert end terminals if they are junctions */
+	if ((seg->junction[1] != NULL) && (seg->junction[1]->term != NULL) && (seg->objs.used > 1)) {
+		pcb_any_obj_t *o = seg->objs.array[seg->objs.used-1];
+		if (o->term == NULL) /* insert only if the first object is not a terminal already - we want terminal-terminal 2nets */
+			vtp0_append(&seg->objs, &seg->junction[1]);
+	}
+	if ((seg->junction[0] != NULL) && (seg->junction[0]->term != NULL)) {
+		pcb_any_obj_t *o = seg->objs.array[0];
+		if (o->term == NULL) /* insert only if the first object is not a terminal already - we want terminal-terminal 2nets */
+			vtp0_insert_len(&seg->objs, 0, &seg->junction[0], 1);
+	}
+
+	/* figure the net by looking at terminals along this segment */
 	for(n = 0, o = (pcb_any_obj_t **)seg->objs.array; n < seg->objs.used; n++,o++) {
 		if (*o == NULL) {
 			printf("  NULL\n");
@@ -156,6 +169,8 @@ int pcb_map_2nets_init(pcb_2netmap_t *map, pcb_board_t *pcb)
 	pcb_qry_exec_t ec;
 
 	pcb_qry_init(&ec, pcb, NULL, 0);
+
+	ec.cfg_prefer_term = 1;
 
 	map->ec = &ec;
 
