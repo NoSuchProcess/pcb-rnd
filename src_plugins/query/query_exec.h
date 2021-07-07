@@ -42,6 +42,7 @@ struct pcb_qry_exec_s {
 	pcb_qry_val_t all;       /* a list of all objects */
 	pcb_query_iter_t *iter;  /* current iterator */
 	vtp0_t autofree;
+	unsigned cfg_prefer_term:1; /* prefer ending in terminal */
 
 	int (*progress_cb)(pcb_qry_exec_t *ec, long at, long total);
 	void *progress_ctx;

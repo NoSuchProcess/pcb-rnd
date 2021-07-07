@@ -297,12 +297,16 @@ static int endp_match(parent_net_len_t *ctx, pcb_any_obj_t *new_obj, pcb_any_obj
 
 static void remove_offender_from_open(pcb_find_t *fctx, pcb_any_obj_t *offender)
 {
+	parent_net_len_t *ctx = fctx->user_data;
 	long n;
 
 	/* remove anything from the open list that has contact with the offending object,
 	   so we are not going to follow a thread that is also affected */
 	for(n = 0; n < fctx->open.used; n++) {
 		pcb_any_obj_t *o = fctx->open.array[n];
+
+		if (ctx->ec->cfg_prefer_term && (o->term != NULL))
+			continue;
 
 		if (pcb_intersect_obj_obj(fctx, offender, o)) {
 			rnd_trace(" REMOVE1: #%ld (because of offender #%ld)\n", o->ID, offender->ID);
@@ -320,6 +324,8 @@ static void remove_offender_from_closed(pcb_find_t *fctx, pcb_any_obj_t *offende
 
 	for(n = 0; n < ctx->ec->tmplst.used; n++) {
 		pcb_any_obj_t *o = ctx->ec->tmplst.array[n];
+		if (ctx->ec->cfg_prefer_term && (o->term != NULL))
+			continue;
 		if ((o != dont_remove) && (pcb_intersect_obj_obj(fctx, offender, o))) {
 			rnd_trace(" REMOVE2: #%ld\n", o->ID);
 			vtp0_remove(&ctx->ec->tmplst, n, 1);
