@@ -67,6 +67,9 @@ static pcb_any_obj_t *map_seg_out_copy(pcb_2netmap_t *map, pcb_2netmap_oseg_t *o
 
 	for(n = i->seg->objs.used-1; n >= 0; n--)
 		vtp0_append(&o->objs, map_seg_out_obj(map, i->seg->objs.array[n]));
+
+	if (i->seg->objs.used == 0)
+		return NULL;
 	return i->seg->objs.array[0];
 }
 
