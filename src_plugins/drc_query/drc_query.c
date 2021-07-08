@@ -633,6 +633,25 @@ static int pcb_drc_query_set(rnd_hidlib_t *hidlib, int is_rule, const char *rule
 	return 0;
 }
 
+static int pcb_drc_query_remove(rnd_hidlib_t *hidlib, int is_rule, const char *name)
+{
+	lht_node_t *nd;
+	const rnd_conflist_t *l = DRC_QUERY_RULE_OR_DEF(is_rule);
+	gdl_iterator_t it;
+	rnd_conf_listitem_t *i;
+
+	rnd_conflist_foreach(l, &it, i) {
+		lht_node_t *rule = i->prop.src;
+		if ((rule != NULL) && (strcmp(rule->name, name) == 0)) {
+			rnd_conflist_remove(i);
+			lht_tree_del(rule);
+			return 0;
+		}
+	}
+
+	return -1;
+}
+
 static int pcb_drc_query_get(rnd_hidlib_t *hidlib, int is_rule, const char *rule, const char *key, fgw_arg_t *res)
 {
 	lht_node_t *nd;
@@ -683,7 +702,8 @@ static const char pcb_acts_DrcQueryRuleMod[] = \
 	"DrcQueryRuleMod(clear, source)\n"
 	"DrcQueryRuleMod(create, rule_name)\n"
 	"DrcQueryRuleMod(get, rule_name, field_name)\n"
-	"DrcQueryRuleMod(set, rule_name, field_name, value)\n";
+	"DrcQueryRuleMod(set, rule_name, field_name, value)\n"
+	"DrcQueryRuleMod(remove, rule_name)\n";
 static const char pcb_acth_DrcQueryRuleMod[] = "Automated DRC rule editing (for scripting and import)";
 static fgw_error_t pcb_act_DrcQueryRuleMod(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -699,6 +719,7 @@ static fgw_error_t pcb_act_DrcQueryRuleMod(fgw_arg_t *res, int argc, fgw_arg_t *
 	if (strcmp(cmd, "clear") == 0) resi = pcb_drc_query_clear(hl, 1, target);
 	else if (strcmp(cmd, "create") == 0) resi = pcb_drc_query_create(hl, 1, target);
 	else if (strcmp(cmd, "set") == 0) resi = pcb_drc_query_set(hl, 1, target, key, val);
+	else if (strcmp(cmd, "remove") == 0) resi = pcb_drc_query_remove(hl, 1, target);
 	else if (strcmp(cmd, "get") == 0) {
 		if (strcmp(key, "defs") == 0)
 			return pcb_drc_query_get_rule_defs(hl, target, res);
