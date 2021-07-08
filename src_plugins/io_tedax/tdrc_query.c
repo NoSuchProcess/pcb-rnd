@@ -205,6 +205,8 @@ static void print_multiline(FILE *f, const char *prefix, const char *text)
 			while(*next == '\n') next++;
 			if (*next == '\0') next = NULL;
 		}
+		else if (*curr != '\0') /* corner case: last line without \n */
+			fprintf(f, "%s %s\n", prefix, curr);
 	}
 }
 
