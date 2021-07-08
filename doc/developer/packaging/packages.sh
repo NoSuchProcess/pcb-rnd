@@ -2,6 +2,9 @@
 ROOT=../../..
 proot=$ROOT/src_plugins
 
+# major version of librnd
+RNDV=3
+
 if test -f $ROOT/Makefile.conf
 then
 	LIBRND_ROOT=`make -f librnd_root.mk`
@@ -9,7 +12,7 @@ fi
 
 if test -z "$LIBRND_ROOT"
 then
-	if test -f /usr/local/share/librnd3/librnd_packages.sh
+	if test -f /usr/local/share/librnd${RNDV}/librnd_packages.sh
 	then
 		LIBRND_ROOT=/usr/local
 	else
@@ -17,15 +20,17 @@ then
 	fi
 fi
 
-if test -f $LIBRND_ROOT/share/librnd3/librnd_packages.sh
+if test -f $LIBRND_ROOT/share/librnd${RNDV}/librnd_packages.sh
 then
-	. $LIBRND_ROOT/share/librnd3/librnd_packages.sh
+	. $LIBRND_ROOT/share/librnd${RNDV}/librnd_packages.sh
 else
 	echo "librnd installation not found - try to configure this checkout first or install librnd in /usr or /usr/local" >&2
 	exit 1
 fi
 
 ### generate description.txt (file formats) ###
+
+echo "$RNDV" > auto/ver_librnd_major
 
 . $ROOT/util/devhelpers/awk_on_formats.sh
 
@@ -56,7 +61,7 @@ function out(dir, type  ,n,v,A,tmp)
 
 ### generate packages.html and auto/ ###
 
-meta_deps="core io-standard io-alien lib-gui librnd3-hid-gtk2-gl librnd3-hid-gtk2-gdk export export-sim export-extra auto extra cloud doc import-net"
+meta_deps="core io-standard io-alien lib-gui librnd${RNDV}-hid-gtk2-gl librnd${RNDV}-hid-gtk2-gdk export export-sim export-extra auto extra cloud doc import-net"
 
 (echo '
 <html>
@@ -74,7 +79,7 @@ do
 	sed "s@^@$n @" < $n
 done
 cat extra.digest
-) | awk -v "meta_deps=$meta_deps" -v "librnd_pkgs=$librnd_pkgs" -v "librnd_plugins=$librnd_plugins" '
+) | awk -v "meta_deps=$meta_deps" -v "librnd_pkgs=$librnd_pkgs" -v "librnd_plugins=$librnd_plugins" -v "RNDV=$RNDV" '
 	BEGIN {
 		v = split(meta_deps, A, "[ \t]")
 		meta_deps = ""
@@ -115,7 +120,7 @@ cat extra.digest
 			return dep
 		sub("^pcb-rnd-", "", dep)
 		if (dep in LIBRND_PKG)
-			return "librnd3-" dep
+			return "librnd" RNDV "-" dep
 		return "pcb-rnd-" dep
 	}
 
