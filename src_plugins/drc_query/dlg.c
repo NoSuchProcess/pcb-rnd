@@ -258,7 +258,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 
 	role = save_rolee[ri];
 	nd = rule_src_node(ctx->rule);
-	if (nd == NULL) {
+	if ((nd == NULL) || rnd_conf_is_read_only(ctx->role)) {
 		MKDIR_RULE_ROOT(nd, role, RND_POL_OVERWRITE, return);
 		MKDIR_RULES(nd, return);
 		if ((nd->data.list.first == NULL) && (role != RND_CFR_USER)) {
