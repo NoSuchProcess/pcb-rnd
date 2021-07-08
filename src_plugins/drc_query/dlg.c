@@ -897,7 +897,7 @@ static void pcb_dlg_drc_rlist_rules(int *wpane)
 					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_edit_cb);
 				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Toggle disable");
 					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_toggle_cb);
-				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Remove...");
+				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Remove");
 					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_remove_cb);
 				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Export...");
 					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_export_cb);
