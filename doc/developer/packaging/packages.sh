@@ -56,7 +56,7 @@ function out(dir, type  ,n,v,A,tmp)
 
 ### generate packages.html and auto/ ###
 
-meta_deps="core io-standard io-alien hid-gtk2-gl hid-gtk2-gdk export export-sim export-extra auto extra cloud doc import-net"
+meta_deps="core io-standard io-alien librnd3-hid-gtk2-gl librnd3-hid-gtk2-gdk export export-sim export-extra auto extra cloud doc import-net"
 
 (echo '
 <html>
@@ -76,8 +76,19 @@ done
 cat extra.digest
 ) | awk -v "meta_deps=$meta_deps" -v "librnd_pkgs=$librnd_pkgs" -v "librnd_plugins=$librnd_plugins" '
 	BEGIN {
-		gsub(" ", " pcb-rnd-", meta_deps)
-		sub("^", "pcb-rnd-", meta_deps)
+		v = split(meta_deps, A, "[ \t]")
+		meta_deps = ""
+		for(n = 1; n <= v; n++) {
+			if (A[n] == "")
+				continue
+			if ((!(A[n] ~ "^pcb-rnd")) && (!(A[n] ~ "^librnd")))
+				A[n] = "pcb-rnd-" A[n]
+			if (meta_deps == "")
+				meta_deps = A[n]
+			else
+				meta_deps = meta_deps " " A[n]
+		}
+
 		while((getline < "desc") == 1) {
 			if ($0 ~ "^@") {
 				pkg=$0
