@@ -149,6 +149,7 @@ void pcb_tool_attach_for_copy(rnd_hidlib_t *hl, rnd_coord_t PlaceX, rnd_coord_t 
 		memset(&fctx, 0, sizeof(fctx));
 		fctx.flag_set = PCB_FLAG_FOUND;
 		fctx.flag_chg_undoable = 1;
+		fctx.consider_rats = 1;
 		pcb_find_from_xy(&fctx, pcb->Data, PlaceX, PlaceY);
 		pcb_find_free(&fctx);
 

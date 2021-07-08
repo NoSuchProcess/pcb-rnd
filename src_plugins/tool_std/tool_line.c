@@ -120,6 +120,7 @@ static void notify_line(rnd_hidlib_t *hl)
 			memset(&fctx, 0, sizeof(fctx));
 			fctx.flag_set = PCB_FLAG_FOUND;
 			fctx.flag_chg_undoable = 1;
+				fctx.consider_rats = 1;
 			pcb_find_from_xy(&fctx, pcb->Data, pcb_crosshair.X, pcb_crosshair.Y);
 			pcb_find_free(&fctx);
 		}

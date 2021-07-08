@@ -237,6 +237,7 @@ static fgw_error_t pcb_act_Display(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 					pcb_find_t fctx;
 					memset(&fctx, 0, sizeof(fctx));
 					fctx.flag_set = PCB_FLAG_FOUND;
+					fctx.consider_rats = 1;
 					fctx.flag_chg_undoable = 1;
 					pcb_find_from_xy(&fctx, PCB->Data, pcb_crosshair.X, pcb_crosshair.Y);
 					pcb_find_free(&fctx);
