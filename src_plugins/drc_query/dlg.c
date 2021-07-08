@@ -4,7 +4,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *  (this file is based on PCB, interactive printed circuit board design)
- *  Copyright (C) 2020 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2020,2021 Tibor 'Igor2' Palinkas
  *  (Supported by NLnet NGI0 PET Fund in 2020)
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -538,6 +538,31 @@ static void rlist_btn_toggle_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 	drc_rlist_pcb2dlg();
 }
 
+static void rlist_btn_remove_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
+{
+	drc_rlist_ctx_t *ctx = caller_data;
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wrlist]));
+	pcb_board_t *pcb = (pcb_board_t *)rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_conf_role_t role;
+
+	if (row == NULL) {
+		rnd_message(RND_MSG_ERROR, "Select a rule first!\n");
+		return;
+	}
+
+	role = rnd_conf_lookup_role(row->cell[0]);
+	if (rnd_conf_is_read_only(role)) {
+		rnd_message(RND_MSG_ERROR, "Can't remove rule on config role %s\n", row->cell[1]);
+		return;
+	}
+
+	/* problem: we don't know what definitions to remove */
+	rnd_actionva(&pcb->hidlib, "DrcQueryRuleMod", "remove", row->cell[0], NULL);
+
+	drc_rlist_pcb2dlg();
+}
+
+
 #define rlist_fetch() \
 do { \
 	if (row == NULL) { \
@@ -872,6 +897,8 @@ static void pcb_dlg_drc_rlist_rules(int *wpane)
 					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_edit_cb);
 				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Toggle disable");
 					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_toggle_cb);
+				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Remove...");
+					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_remove_cb);
 				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Export...");
 					RND_DAD_CHANGE_CB(drc_rlist_ctx.dlg, rlist_btn_export_cb);
 				RND_DAD_BUTTON(drc_rlist_ctx.dlg, "Import...");
