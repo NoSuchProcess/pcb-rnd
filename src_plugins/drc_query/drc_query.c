@@ -67,10 +67,12 @@ static const char *drc_query_cookie = "drc_query";
 
 extern conf_drc_query_t conf_drc_query;
 
+#define DRC_CONF_PATH_RULES_NODE "plugins/drc_query/rules"
+
 #define DRC_CONF_PATH_PLUGIN "plugins/drc_query/"
 #define DRC_CONF_PATH_DISABLE "design/drc_disable/"
 #define DRC_CONF_PATH_CONST "design/drc/"
-#define DRC_CONF_PATH_RULES "plugins/drc_query/rules/"
+#define DRC_CONF_PATH_RULES DRC_CONF_PATH_RULES_NODE "/"
 #define DRC_CONF_PATH_DEFS "plugins/drc_query/definitions/"
 
 typedef struct {

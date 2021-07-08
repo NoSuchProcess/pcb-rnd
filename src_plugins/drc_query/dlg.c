@@ -35,6 +35,20 @@
 
 #define PCB dont_use
 
+/* Return the lihata node that describes a rule source */
+static lht_node_t *rule_src_node(const char *name)
+{
+	gdl_iterator_t it;
+	rnd_conf_listitem_t *i;
+
+	rnd_conflist_foreach(&conf_drc_query.plugins.drc_query.rules, &it, i) {
+		lht_node_t *rule = i->prop.src;
+		if (strcmp(rule->name, name) == 0)
+			return rule;
+	}
+	return NULL;
+}
+
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	drc_query_prog_t *prog;
@@ -146,7 +160,7 @@ static void drc_dlist_pcb2dlg(void);
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	rnd_conf_role_t role;
-	char *rule, *path;
+	char *rule;
 	int wtype, wtitle, wsource, wdisable, wdesc, wquery, wsave, wsaveroles;
 	gdl_elem_t link;
 } rule_edit_ctx_t;
@@ -163,7 +177,6 @@ static void rule_edit_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 
 	gdl_remove(&rule_edit_dialogs, ctx, link);
 
-	free(ctx->path);
 	free(ctx->rule);
 	RND_DAD_FREE(ctx->dlg);
 	free(ctx);
@@ -172,7 +185,7 @@ static void rule_edit_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 static void drc_rule_pcb2dlg(rule_edit_ctx_t *ctx)
 {
 	rnd_dad_retovr_t retovr;
-	lht_node_t *nd = rnd_conf_lht_get_at_mainplug(ctx->role, ctx->path, 1, 0);
+	lht_node_t *nd = rule_src_node(ctx->rule);
 	if (nd != NULL) {
 		rnd_hid_attribute_t *atxt = &ctx->dlg[ctx->wquery];
 		rnd_hid_text_t *txt = atxt->wdata;
@@ -244,7 +257,7 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	}
 
 	role = save_rolee[ri];
-	nd = rnd_conf_lht_get_at_mainplug(role, ctx->path, 1, 0);
+	nd = rule_src_node(ctx->rule);
 	if (nd == NULL) {
 		MKDIR_RULE_ROOT(nd, role, RND_POL_OVERWRITE, return);
 		MKDIR_RULES(nd, return);
@@ -273,12 +286,14 @@ static void rule_btn_save_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	drc_rlist_pcb2dlg();
 }
 
+
 static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	char *info, *path;
+	char *info;
 	rule_edit_ctx_t *ctx;
-	lht_node_t *nd;
+	rnd_conf_native_t *nat;
+	lht_node_t *nd = NULL;
 	int n, srolei = save_role_defaulti;
 
 	for(ctx = gdl_first(&rule_edit_dialogs); ctx != NULL; ctx = gdl_next(&rule_edit_dialogs, ctx))
@@ -289,8 +304,7 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 		}
 	}
 
-	path = rnd_concat(DRC_CONF_PATH_RULES, rule, ":0", NULL);
-	nd = rnd_conf_lht_get_at_mainplug(role, path, 1, 0);
+	nd = rule_src_node(rule);
 	if (nd == NULL) {
 		rnd_message(RND_MSG_ERROR, "Rule %s not found on this role.\n", rule);
 		return -1;
@@ -299,7 +313,6 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 	ctx = calloc(sizeof(rule_edit_ctx_t), 1);
 	ctx->role = role;
 	ctx->rule = rnd_strdup(rule);
-	ctx->path = path;
 
 	gdl_insert(&rule_edit_dialogs, ctx, link);
 
