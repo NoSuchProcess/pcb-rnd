@@ -47,6 +47,8 @@
 #include "select.h"
 #include "asm_conf.h"
 #include "../src_plugins/asm/conf_internal.c"
+#include "../src_plugins/query/query.h"
+#include "../src_plugins/query/query_exec.h"
 #include "menu_internal.c"
 
 conf_asm_t conf_asm;
@@ -214,12 +216,61 @@ static void part_append(group_t *g, char *sortstr, long int id)
 	vtp0_append(&g->parts, p);
 }
 
+static pcb_qry_node_t *asm_extract_exclude_init(pcb_board_t *pcb, pcb_qry_exec_t *ec, pcb_query_iter_t *it)
+{
+	pcb_qry_node_t *qn;
+
+	if ((conf_asm.plugins.asm1.exclude_query == NULL) || (*conf_asm.plugins.asm1.exclude_query == '\0'))
+		return NULL;
+
+	qn = pcb_query_compile(conf_asm.plugins.asm1.exclude_query);
+	if (qn == NULL) {
+		rnd_message(RND_MSG_ERROR, "Failed to compile exclude_query\n");
+		return NULL;
+	}
+	memset(ec, 0, sizeof(pcb_qry_exec_t));
+	memset(it, 0, sizeof(pcb_query_iter_t));
+	pcb_qry_setup(ec, pcb, qn);
+	pcb_qry_iter_init(it);
+	ec->iter = it;
+	ec->all.type = PCBQ_VT_LST;
+	vtp0_append(&ec->all.data.lst, NULL);
+	return qn;
+}
+
+/*void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)*/
+
+static int asm_extract_exclude(pcb_qry_exec_t *ec, pcb_qry_node_t *qn, pcb_query_iter_t *it, pcb_data_t *data, pcb_subc_t *subc)
+{
+	pcb_qry_val_t res = {0};
+	int r, t;
+
+	ec->all.data.lst.array[0] = subc;
+	pcb_qry_it_reset(ec, qn);
+	r = pcb_qry_eval(ec, qn, &res, NULL, NULL);
+	t = pcb_qry_is_true(&res);
+	printf("EXCL: #%ld -> %d %d\n", subc->ID, r, t);
+
+	pcb_qry_val_free_fields(&res);
+	return (r == 0) ? t : 0;
+}
+
+static void asm_extract_exclude_uninit(pcb_qry_exec_t *ec, pcb_qry_node_t *qn, pcb_query_iter_t *it)
+{
+	if (qn != NULL)
+		pcb_qry_uninit(ec);
+}
+
+
 /* Extract the part list from data */
 static void asm_extract(vtp0_t *dst, pcb_data_t *data, const char *group_template, const char *sort_template)
 {
 	gdl_list_t cgroup, csort;
 	char *tmp_group, *tmp_sort;
 	htsp_t gh;
+	pcb_qry_exec_t ec;
+	pcb_qry_node_t *qn;
+	pcb_query_iter_t qit;
 
 	memset(&cgroup, 0, sizeof(cgroup));
 	memset(&csort, 0, sizeof(csort));
@@ -228,10 +279,15 @@ static void asm_extract(vtp0_t *dst, pcb_data_t *data, const char *group_templat
 
 	htsp_init(&gh, strhash, strkeyeq);
 
+	qn = asm_extract_exclude_init(PCB, &ec, &qit);
+
 	PCB_SUBC_LOOP(data);
 	{
 		char *grp, *srt;
 		group_t *g;
+
+		if ((qn != NULL) && asm_extract_exclude(&ec, qn, &qit, data, subc))
+			continue;
 
 		grp = templ_exec(subc, &cgroup);
 		srt = templ_exec(subc, &csort);
@@ -241,6 +297,7 @@ static void asm_extract(vtp0_t *dst, pcb_data_t *data, const char *group_templat
 	}
 	PCB_END_LOOP;
 
+	asm_extract_exclude_uninit(&ec, qn, &qit);
 	htsp_uninit(&gh);
 	templ_free(tmp_group, &cgroup);
 	templ_free(tmp_sort, &csort);
