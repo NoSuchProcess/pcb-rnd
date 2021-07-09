@@ -80,9 +80,14 @@ attribute, a comma and the asm::group attribute. This will typically result
 in something like "1206,100nF,". The resulting group string is then used for
 grouping and sorting the groups alphabetically.
 
-
-
-
+<h3> Exclude </h3>
+<p>
+If the config node at /plugins/asm1/exclude_query is not empty, the value
+is interpreted as a query expression which is evaluated for each
+subcircuit (being the @ variable in the expression). When the expression
+evaluates to true, the subcircuit is omitted from the build schedule.
+<p>
+This feature can be used to implement DNP (do not populate) or optional builds.
 
 
 </body>
