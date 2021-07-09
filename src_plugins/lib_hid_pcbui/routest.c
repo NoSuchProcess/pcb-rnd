@@ -55,7 +55,7 @@ static rst_ctx_t rst;
 static void rst_install_menu(void)
 {
 	rnd_menu_prop_t props;
-	char act[256], chk[256], *path, *end;
+	char act[256], chk[256], accel[256], *path, *end, *acc;
 	int idx;
 	size_t len = 0;
 
@@ -71,8 +71,12 @@ static void rst_install_menu(void)
 	memset(&props, 0,sizeof(props));
 	props.action = act;
 	props.checked = chk;
+	props.accel = accel;
 	props.update_on = "";
 	props.cookie = "lib_hid_pcbui route styles";
+
+	strcpy(accel, "<key>r;<key>.");
+	acc = accel + 12;
 
 	/* prepare for appending the strings at the end of the path, "under" the anchor */
 	*end = '/';
@@ -85,6 +89,12 @@ static void rst_install_menu(void)
 		char *sep;
 		sprintf(act, "RouteStyle(%d)", idx+1); /* for historical reasons this action counts from 1 */
 		sprintf(chk, "ChkRst(%d)", idx);
+		if (idx < 9) {
+			*acc = '1' + idx;
+			props.accel = accel;
+		}
+		else
+			props.accel = NULL;
 		strcpy(end, PCB->RouteStyle.array[idx].name);
 		for(sep = end; *sep !='\0'; sep++) /* do not allow '/' in layer name, that would kill the menu system */
 			if (*sep == '/')
