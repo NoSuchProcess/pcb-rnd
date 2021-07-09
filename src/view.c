@@ -46,6 +46,7 @@
 #include <librnd/core/rnd_printf.h>
 
 #include "conf_core.h"
+#include "netlist.h"
 
 static unsigned long int pcb_view_next_uid = 0;
 
@@ -55,6 +56,8 @@ void pcb_view_free(pcb_view_t *item)
 	pcb_idpath_list_clear(&item->objs[0]);
 	pcb_idpath_list_clear(&item->objs[1]);
 	free(item->title);
+	free(item->netname[0]);
+	free(item->netname[1]);
 
 	if (item->long_desc.used == 0)
 		free(item->description);
@@ -159,6 +162,9 @@ void pcb_view_append_obj(pcb_view_t *view, int grp, pcb_any_obj_t *obj)
 				rnd_message(RND_MSG_ERROR, "Internal error in pcb_drc_append_obj: can not resolve object id path\n");
 			else
 				pcb_idpath_list_append(&view->objs[grp], idp);
+			break;
+		case PCB_OBJ_NET:
+			view->netname[grp] = rnd_strdup(((pcb_net_t *)obj)->name);
 			break;
 		default:
 			rnd_message(RND_MSG_ERROR, "Internal error in pcb_drc_append_obj: unknown object type %i\n", obj->type);
@@ -268,6 +274,11 @@ void pcb_view_save(pcb_view_t *v, gds_t *dst, const char *prefix)
 			rnd_append_printf(dst, "%s  }\n", prefix);
 		}
 	}
+
+	if (v->netname[0] != NULL)
+		rnd_append_printf(dst, "%s  netname.0 = {%s}\n", prefix, v->netname[0]);
+	if (v->netname[1] != NULL)
+		rnd_append_printf(dst, "%s  netname.0 = {%s}\n", prefix, v->netname[1]);
 
 	switch(v->data_type) {
 		case PCB_VIEW_PLAIN:
@@ -534,6 +545,17 @@ pcb_view_t *pcb_view_load_next(void *load_ctx, pcb_view_t *dst)
 	n = lht_dom_hash_get(ctx->next, "objs.1");
 	if ((n != NULL) && (n->type == LHT_LIST))
 		pcb_view_load_objs(dst, 1, n);
+
+	n = lht_dom_hash_get(ctx->next, "netname.0");
+	if ((n != NULL) && (n->type == LHT_TEXT)) {
+		dst->netname[0] = n->data.text.value;
+		n->data.text.value = NULL;
+	}
+	n = lht_dom_hash_get(ctx->next, "netname.1");
+	if ((n != NULL) && (n->type == LHT_TEXT)) {
+		dst->netname[1] = n->data.text.value;
+		n->data.text.value = NULL;
+	}
 
 	switch(dst->data_type) {
 		case PCB_VIEW_PLAIN: break;

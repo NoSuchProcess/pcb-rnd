@@ -63,6 +63,7 @@ struct pcb_view_s {
 
 	rnd_coord_t x, y;             /* optional: a coord to mark on the preview  */
 	pcb_idpath_list_t objs[2];    /* optional: two groups of objects to highlight on preview */
+	char *netname[2];             /* optional: two net names (when either group is a net) */
 
 	gds_t long_desc;              /* optional: if non-empty, description shall point to long_desc.array */
 
