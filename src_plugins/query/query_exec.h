@@ -89,6 +89,7 @@ int pcb_qry_it_reset(pcb_qry_exec_t *ctx, pcb_qry_node_t *node);
 int pcb_qry_it_next(pcb_qry_exec_t *ctx);
 
 
+void pcb_qry_val_free_fields(pcb_qry_val_t *val);
 
 /* Helper macros: load value o and return 0 */
 #define PCB_QRY_RET_INT_SRC(o, value, node) \

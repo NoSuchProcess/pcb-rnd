@@ -122,6 +122,11 @@ static void val_free_fields(pcb_qry_val_t *val)
 	}
 }
 
+void pcb_qry_val_free_fields(pcb_qry_val_t *val)
+{
+	val_free_fields(val);
+}
+
 static int pcb_qry_run_(pcb_qry_exec_t *ec, pcb_qry_node_t *prg, pcb_qry_val_t *res, int it_reset, int eval_list, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx)
 {
 	pcb_qry_val_t restmp;
