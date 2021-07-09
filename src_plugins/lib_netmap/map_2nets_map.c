@@ -204,8 +204,18 @@ static double oseg_map_get_ends(pcb_2netmap_obj_t *curr, rnd_coord_t px, rnd_coo
 	return d[1];
 }
 
+static pcb_layer_t *get_random_copper_layer(pcb_board_t *pcb)
+{
+	rnd_layer_id_t lid;
+	if (pcb_layer_list(pcb, PCB_LYT_COPPER, &lid, 1) < 1)
+		return NULL;
+
+	return pcb_get_layer(pcb->Data, lid);
+}
+
 static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 {
+	pcb_board_t *pcb = map->ec->pcb;
 	long n;
 	pcb_2netmap_obj_t *curr, *prev = NULL;
 	rnd_coord_t px, py, npx, npy, nx, ny, th = 1, cl = 1;
@@ -260,15 +270,28 @@ static void oseg_map_coords(pcb_2netmap_t *map, pcb_2netmap_oseg_t *oseg)
 
 		/* if endpoints are not properly connected, insert a dummy bridge line */
 		if (d2 > RND_MM_TO_COORD(0.01)) {
-			pcb_2netmap_obj_t *tmp = calloc(sizeof(pcb_2netmap_obj_t), 1);
-			tmp->o.line.type = PCB_OBJ_LINE;
-			tmp->o.line.ID = 0;
-			tmp->o.line.Point1.X = px; tmp->o.line.Point1.Y = py;
-			tmp->o.line.Point2.X = npx; tmp->o.line.Point2.Y = npy;
-			tmp->o.line.Thickness = th; tmp->o.line.Clearance = cl;
-			tmp->x = npx; tmp->y = npy;
-			vtp0_insert_len(&oseg->objs, n, (void **)&tmp, 1);
-			n++;
+			pcb_layer_t *ply = NULL;
+
+			if (curr->o.any.parent_type == PCB_PARENT_LAYER)
+				ply = curr->o.any.parent.layer;
+			if (prev->o.any.parent_type == PCB_PARENT_LAYER)
+				ply = prev->o.any.parent.layer;
+			else
+				ply = get_random_copper_layer(pcb); /* corner case: curr and prev are both padstacks */
+
+			if (ply != NULL) {
+				pcb_2netmap_obj_t *tmp = calloc(sizeof(pcb_2netmap_obj_t), 1);
+				tmp->o.line.type = PCB_OBJ_LINE;
+				tmp->o.line.ID = 0;
+				tmp->o.line.Point1.X = px; tmp->o.line.Point1.Y = py;
+				tmp->o.line.Point2.X = npx; tmp->o.line.Point2.Y = npy;
+				tmp->o.line.Thickness = th; tmp->o.line.Clearance = cl;
+				tmp->x = npx; tmp->y = npy;
+				tmp->o.line.parent_type = PCB_PARENT_LAYER;
+				tmp->o.line.parent.layer = ply;
+				vtp0_insert_len(&oseg->objs, n, (void **)&tmp, 1);
+				n++;
+			}
 		}
 
 		curr->x = nx;
