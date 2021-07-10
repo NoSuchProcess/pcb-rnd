@@ -261,6 +261,7 @@ static void asm_extract_exclude_uninit(pcb_qry_exec_t *ec, pcb_qry_node_t *qn, p
 {
 	if (qn != NULL) {
 		ec->iter = NULL;
+		pcb_qry_n_free(qn);
 		pcb_qry_iter_free_fields(it);
 		pcb_qry_uninit(ec);
 	}
