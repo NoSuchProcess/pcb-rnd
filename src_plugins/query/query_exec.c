@@ -180,7 +180,6 @@ static void let_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 		vtp0_append(lctx->vt, current);
 }
 
-static int pcb_qry_it_reset_(pcb_qry_exec_t *ctx);
 static void pcb_qry_let(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 {
 	let_ctx_t lctx;
@@ -195,7 +194,7 @@ static void pcb_qry_let(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 	lctx.vt = &ctx->iter->lst[vi].data.lst;
 
 	/* evaluate 'let' the expression, filling up the list */
-	pcb_qry_it_reset_(lctx.ctx);
+	pcb_qry_it_reset_(lctx.ctx, 0);
 	ctx->iter->it_active = node->precomp.it_active;
 	pcb_qry_run_(lctx.ctx, expr, NULL, 0, 1,let_cb, &lctx);
 	ctx->iter->it_active = NULL;
@@ -483,11 +482,13 @@ static int pcb_qry_it_active(pcb_query_iter_t *iter, int i)
 	return iter->it_active->array[i];
 }
 
-static int pcb_qry_it_reset_(pcb_qry_exec_t *ctx)
+int pcb_qry_it_reset_(pcb_qry_exec_t *ctx, int persistent)
 {
 	int n;
 
-	pcb_qry_iter_init(ctx->iter);
+	if (!persistent)
+		pcb_qry_iter_init(ctx->iter);
+
 	for(n = 0; n < ctx->iter->num_vars; n++) {
 		if (strcmp(ctx->iter->vn[n], "@") == 0) {
 			setup_iter_list(ctx, n, &ctx->all);
@@ -510,7 +511,7 @@ int pcb_qry_it_reset(pcb_qry_exec_t *ctx, pcb_qry_node_t *node)
 	if (ctx->iter == NULL)
 		return -1;
 
-	return pcb_qry_it_reset_(ctx);
+	return pcb_qry_it_reset_(ctx, 0);
 }
 
 
@@ -638,6 +639,7 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res, 
 					load_strings_null();
 					if (s1 == s2)
 						PCB_QRY_RET_INT(res, 1);
+					printf("seq: '%s' == '%s'\n", s1, s2);
 					if ((s1 == NULL) || (s2 == NULL))
 						PCB_QRY_RET_INT(res, 0);
 					PCB_QRY_RET_INT(res, strcmp(s1, s2) == 0);

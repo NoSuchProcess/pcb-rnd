@@ -84,6 +84,7 @@ int pcb_qry_is_true(pcb_qry_val_t *val);
 int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res, void (*cb)(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current), void *user_ctx);
 
 int pcb_qry_it_reset(pcb_qry_exec_t *ctx, pcb_qry_node_t *node);
+int pcb_qry_it_reset_(pcb_qry_exec_t *ctx, int persistent);
 
 /* Returns 1 if context iterator is valid, 0 if the loop is over */
 int pcb_qry_it_next(pcb_qry_exec_t *ctx);
