@@ -230,9 +230,10 @@ static pcb_qry_node_t *asm_extract_exclude_init(pcb_board_t *pcb, pcb_qry_exec_t
 	}
 	memset(ec, 0, sizeof(pcb_qry_exec_t));
 	memset(it, 0, sizeof(pcb_query_iter_t));
+	it->num_vars = 1;
 	pcb_qry_setup(ec, pcb, qn);
 	pcb_qry_iter_init(it);
-	ec->iter = it;
+	it->vn[0] = "@";
 	ec->all.type = PCBQ_VT_LST;
 	vtp0_append(&ec->all.data.lst, NULL);
 	return qn;
@@ -246,8 +247,9 @@ static int asm_extract_exclude(pcb_qry_exec_t *ec, pcb_qry_node_t *qn, pcb_query
 	int r, t;
 
 	ec->all.data.lst.array[0] = subc;
-	pcb_qry_it_reset(ec, qn);
-	r = pcb_qry_eval(ec, qn, &res, NULL, NULL);
+	ec->iter = it;
+	pcb_qry_it_reset_(ec, 1);
+	r = pcb_qry_eval(ec, qn->data.children->next, &res, NULL, NULL);
 	t = pcb_qry_is_true(&res);
 	printf("EXCL: #%ld -> %d %d\n", subc->ID, r, t);
 
@@ -257,8 +259,11 @@ static int asm_extract_exclude(pcb_qry_exec_t *ec, pcb_qry_node_t *qn, pcb_query
 
 static void asm_extract_exclude_uninit(pcb_qry_exec_t *ec, pcb_qry_node_t *qn, pcb_query_iter_t *it)
 {
-	if (qn != NULL)
+	if (qn != NULL) {
+		ec->iter = NULL;
+		pcb_qry_iter_free_fields(it);
 		pcb_qry_uninit(ec);
+	}
 }
 
 
