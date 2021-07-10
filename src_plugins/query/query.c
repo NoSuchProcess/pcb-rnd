@@ -330,7 +330,7 @@ pcb_query_iter_t *pcb_qry_iter_alloc(void)
 	return it;
 }
 
-void pcb_qry_iter_free(pcb_query_iter_t *it)
+void pcb_qry_iter_free_fields(pcb_query_iter_t *it)
 {
 	htsi_entry_t *e;
 	for(e = htsi_first(&it->names); e != NULL; e = htsi_next(&it->names, e))
@@ -340,6 +340,11 @@ void pcb_qry_iter_free(pcb_query_iter_t *it)
 	free(it->idx);
 	free(it->lst);
 	free(it->vn);
+}
+
+void pcb_qry_iter_free(pcb_query_iter_t *it)
+{
+	pcb_qry_iter_free_fields(it);
 	free(it);
 }
 
