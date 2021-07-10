@@ -326,6 +326,17 @@ static void svg_footer(void)
 		group_open--;
 	}
 
+	/* blend some noise on top to make it a bit more artificial */
+	if (photo_mode) {
+		fprintf(f, "<filter id=\"noise\">\n");
+		fprintf(f, "	<feTurbulence type=\"fractalNoise\" baseFrequency=\"30\" result=\"noisy\" />\n");
+		fprintf(f, "</filter>\n");
+		fprintf(f, "<g opacity=\"0.25\">\n");
+		rnd_fprintf(f, "	<rect filter=\"url(#noise)\" x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"none\" stroke=\"none\"/>\n",
+			0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
+		fprintf(f, "</g>\n");
+	}
+
 	fprintf(f, "</svg>\n");
 }
 
