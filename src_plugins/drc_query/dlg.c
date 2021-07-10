@@ -550,7 +550,7 @@ static void rlist_btn_remove_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 		return;
 	}
 
-	role = rnd_conf_lookup_role(row->cell[0]);
+	role = rnd_conf_role_parse(row->cell[1]);
 	if (rnd_conf_is_read_only(role)) {
 		rnd_message(RND_MSG_ERROR, "Can't remove rule on config role %s\n", row->cell[1]);
 		return;
