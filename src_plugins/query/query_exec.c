@@ -639,7 +639,6 @@ int pcb_qry_eval(pcb_qry_exec_t *ctx, pcb_qry_node_t *node, pcb_qry_val_t *res, 
 					load_strings_null();
 					if (s1 == s2)
 						PCB_QRY_RET_INT(res, 1);
-					printf("seq: '%s' == '%s'\n", s1, s2);
 					if ((s1 == NULL) || (s2 == NULL))
 						PCB_QRY_RET_INT(res, 0);
 					PCB_QRY_RET_INT(res, strcmp(s1, s2) == 0);
