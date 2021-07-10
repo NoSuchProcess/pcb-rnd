@@ -251,7 +251,7 @@ static int asm_extract_exclude(pcb_qry_exec_t *ec, pcb_qry_node_t *qn, pcb_query
 	pcb_qry_it_reset_(ec, 1);
 	r = pcb_qry_eval(ec, qn->data.children->next, &res, NULL, NULL);
 	t = pcb_qry_is_true(&res);
-	printf("EXCL: #%ld -> %d %d\n", subc->ID, r, t);
+/*	rnd_trace("EXCL: #%ld -> %d %d\n", subc->ID, r, t);*/
 
 	pcb_qry_val_free_fields(&res);
 	return (r == 0) ? t : 0;
