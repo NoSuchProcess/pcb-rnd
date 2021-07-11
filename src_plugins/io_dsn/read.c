@@ -848,9 +848,12 @@ static int dsn_parse_img_via(dsn_read_t *ctx, gsxl_node_t *pn, pcb_subc_t *subc)
 		rnd_coord_t crd[2];
 		rnd_cardinal_t pid;
 
-		DSN_LOAD_COORDS_FMT(crd, ncoord, "XY", goto err_coord);
-		pid = pcb_pstk_proto_insert_dup(subc->data, proto, 1, 0);
-		pcb_pstk_new(subc->data, -1, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		if (ncoord->str == NULL) continue;
+		if (isdigit(*ncoord->str) || (*ncoord->str == '+') || (*ncoord->str == '-') || (*ncoord->str == '.')) {
+			DSN_LOAD_COORDS_FMT(crd, ncoord, "XY", goto err_coord);
+			pid = pcb_pstk_proto_insert_dup(subc->data, proto, 1, 0);
+			pcb_pstk_new(subc->data, -1, pid, crd[0], crd[1], conf_core.design.clearance/2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		}
 	}
 
 	return 0;
