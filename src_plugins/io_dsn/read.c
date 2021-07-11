@@ -230,9 +230,11 @@ static int dsn_parse_rule(dsn_read_t *ctx, gsxl_node_t *rule)
 {
 	if ((rule == NULL) || (rule->str == NULL))
 		return 0;
-TODO("map drc rule: clearance (kevin2.dsn)");
+
 	if (rnd_strcasecmp(rule->str, "width") == 0)
-		rnd_conf_set_design("design/min_wid", "%$mS", COORD(ctx, rule->children));
+		rnd_conf_set_design("design/drc/min_copper_thickness", "%$mS", COORD(ctx, rule->children));
+	else if (rnd_strcasecmp(rule->str, "clearance") == 0)
+		rnd_conf_set_design("design/drc/min_copper_clearance", "%$mS", COORD(ctx, rule->children));
 	/* the rest of the rules do not have a direct mapping in the current DRC code */
 	return 0;
 }
