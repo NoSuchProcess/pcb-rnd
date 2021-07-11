@@ -373,14 +373,14 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 	rnd_layergrp_id_t gid;
 	const rnd_unit_t *old_unit;
 	const pcb_dflgmap_t doclayers[] = {
-		{"top_outline",         PCB_LYT_TOP | PCB_LYT_DOC,    "outline", PCB_LYC_AUTO, 0},
-		{"bot_outline",         PCB_LYT_BOTTOM | PCB_LYT_DOC, "outline", PCB_LYC_AUTO, 0},
-		{"top_all_keepout",     PCB_LYT_TOP | PCB_LYT_DOC,    "all_keepout", PCB_LYC_AUTO, 0},
-		{"bot_all_keepout",     PCB_LYT_BOTTOM | PCB_LYT_DOC, "all_keepout", PCB_LYC_AUTO, 0},
-		{"top_copper_keepout",  PCB_LYT_TOP | PCB_LYT_DOC,    "copper_keepout", PCB_LYC_AUTO, 0},
-		{"bot_copper_keepout",  PCB_LYT_BOTTOM | PCB_LYT_DOC, "copper_keepout", PCB_LYC_AUTO, 0},
-		{"top_subc_keepout",    PCB_LYT_TOP | PCB_LYT_DOC,    "subc_keepout", PCB_LYC_AUTO, 0},
-		{"bot_subc_keepout",    PCB_LYT_BOTTOM | PCB_LYT_DOC, "subc_keepout", PCB_LYC_AUTO, 0},
+		{"top_outline",         PCB_LYT_TOP | PCB_LYT_DOC,    "ko.courtyard", PCB_LYC_AUTO, 0},
+		{"bot_outline",         PCB_LYT_BOTTOM | PCB_LYT_DOC, "ko.courtyard", PCB_LYC_AUTO, 0},
+		{"top_all_keepout",     PCB_LYT_TOP | PCB_LYT_DOC,    "ko.top", PCB_LYC_AUTO, 0},
+		{"bot_all_keepout",     PCB_LYT_BOTTOM | PCB_LYT_DOC, "ko.bottom", PCB_LYC_AUTO, 0},
+		{"top_copper_keepout",  PCB_LYT_TOP | PCB_LYT_DOC,    "ko.top-copper", PCB_LYC_AUTO, 0},
+		{"bot_copper_keepout",  PCB_LYT_BOTTOM | PCB_LYT_DOC, "ko.bottom-copper", PCB_LYC_AUTO, 0},
+		{"top_subc_keepout",    PCB_LYT_TOP | PCB_LYT_DOC,    "ko.courtyard", PCB_LYC_AUTO, 0},
+		{"bot_subc_keepout",    PCB_LYT_BOTTOM | PCB_LYT_DOC, "ko.courtyard", PCB_LYC_AUTO, 0},
 		{"top_via_keepout",     PCB_LYT_TOP | PCB_LYT_DOC,    "via_keepout", PCB_LYC_AUTO, 0},
 		{"bot_via_keepout",     PCB_LYT_BOTTOM | PCB_LYT_DOC, "via_keepout", PCB_LYC_AUTO, 0},
 		{NULL, 0}
