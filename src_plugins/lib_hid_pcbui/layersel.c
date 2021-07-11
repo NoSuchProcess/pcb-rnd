@@ -439,7 +439,7 @@ static void ensure_visible_current(pcb_board_t *pcb, layersel_ctx_t *ls)
 	if (lys != 0)
 		locked_layersel(lys->ls, lys->wlab, lys->wunsel_closed, lys->wsel_closed);
 	else
-		locked_layersel(lys->ls, 0, 0, 0);
+		locked_layersel(ls, 0, 0, 0);
 }
 
 
