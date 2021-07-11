@@ -695,6 +695,7 @@ rnd_r_dir_t pcb_pstk_draw_hole_callback(const rnd_box_t *b, void *cl)
 		r -= r/8; /* +12.5% */
 		rnd_render->set_color(pcb_draw_out.fgGC, PCB_FLAG_TEST(PCB_FLAG_SELECTED, ps) ? &conf_core.appearance.color.selected : &conf_core.appearance.color.subc);
 		rnd_hid_set_line_width(pcb_draw_out.fgGC, 0);
+		rnd_hid_set_line_cap(pcb_draw_out.fgGC, rnd_cap_round);
 		rnd_render->draw_arc(pcb_draw_out.fgGC, ps->x, ps->y, r, r, 20, 290);
 	}
 
