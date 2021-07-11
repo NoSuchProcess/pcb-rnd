@@ -1018,19 +1018,19 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 				return -1;
 		}
 		else if (rnd_strcasecmp(imr->str, "keepout") == 0) {
-			if (dsn_parse_img_keepout(ctx, imr, "all", subc) != 0)
+			if (dsn_parse_img_keepout(ctx, imr, "all_keepout", subc) != 0)
 				return -1;
 		}
 		else if (rnd_strcasecmp(imr->str, "wire_keepout") == 0) {
-			if (dsn_parse_img_keepout(ctx, imr, "copper", subc) != 0)
+			if (dsn_parse_img_keepout(ctx, imr, "copper_keepout", subc) != 0)
 				return -1;
 		}
 		else if (rnd_strcasecmp(imr->str, "place_keepout") == 0) {
-			if (dsn_parse_img_keepout(ctx, imr, "subc", subc) != 0)
+			if (dsn_parse_img_keepout(ctx, imr, "subc_keepout", subc) != 0)
 				return -1;
 		}
 		else if (rnd_strcasecmp(imr->str, "via_keepout") == 0) {
-			if (dsn_parse_img_keepout(ctx, imr, "via", subc) != 0)
+			if (dsn_parse_img_keepout(ctx, imr, "via_keepout", subc) != 0)
 				return -1;
 		}
 		else if (rnd_strcasecmp(imr->str, "property") == 0) {
