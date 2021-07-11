@@ -1157,7 +1157,7 @@ static int dsn_parse_wire_poly(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 		return -1;
 	}
 
-	if (aper != 0) {
+	if (aper > 10) {
 		double dv;
 		long n;
 		rnd_polo_t *p;
