@@ -66,3 +66,15 @@ void pcb_pstklib_build_data(pcb_pstklib_t *ctx, pcb_data_t *data)
 	}
 }
 
+void pcb_pstklib_build_pcb(pcb_pstklib_t *ctx, int recurse_subc)
+{
+	pcb_pstklib_build_data(ctx, ctx->pcb->Data);
+	if (!recurse_subc)
+		return;
+	
+	PCB_SUBC_LOOP(ctx->pcb->Data);
+	{
+		pcb_pstklib_build_data(ctx, subc->data);
+	}
+	PCB_END_LOOP;
+}
