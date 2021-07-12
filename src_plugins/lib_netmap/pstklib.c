@@ -52,9 +52,17 @@ void pcb_pstklib_build_data(pcb_pstklib_t *ctx, pcb_data_t *data)
 	long n;
 	for(n = 0; n < data->ps_protos.used; n++) {
 		pcb_pstk_proto_t *proto = &data->ps_protos.array[n];
+		pcb_pstklib_entry_t *pe;
 
 		if (!proto->in_use) continue;
+		if (htprp_has(&ctx->protos, proto)) continue;
 
+		pe = calloc(sizeof(pcb_pstklib_entry_t) + ctx->extra_size, 1);
+		pcb_pstk_proto_copy(&pe->proto, proto);
+		pe->id = ctx->next_id++;
+		htprp_set(&ctx->protos, proto, pe);
+		if (ctx->on_new_entry != NULL)
+			ctx->on_new_entry(ctx, pe);
 	}
 }
 

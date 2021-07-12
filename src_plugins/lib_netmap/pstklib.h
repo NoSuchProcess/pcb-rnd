@@ -9,6 +9,7 @@ typedef struct {
 	pcb_pstk_proto_t proto;  /* copy of a proto */
 	long id;                 /* unique ID counted from 1 by pcb_pstklib_build */
 	void *user_data;
+	char extra[1];           /* as big as ctx->extra_size */
 } pcb_pstklib_entry_t;
 
 typedef struct pcb_pstklib_s pcb_pstklib_t;
@@ -17,8 +18,11 @@ struct pcb_pstklib_s {
 	pcb_board_t *pcb;
 	long next_id;
 
+	/* user configuration */
+	void (*on_new_entry)(pcb_pstklib_t *ctx, pcb_pstklib_entry_t *pe); /* optional: if set, called after a new entry is inserted */
 	void (*on_free_entry)(pcb_pstklib_t *ctx, pcb_pstklib_entry_t *pe); /* optional: if set, called before freeing an entry on uninit */
 	void *user_data;
+	int extra_size;
 };
 
 void pcb_pstklib_init(pcb_pstklib_t *ctx, pcb_board_t *pcb);
