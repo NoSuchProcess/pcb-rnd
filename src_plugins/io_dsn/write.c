@@ -39,6 +39,7 @@
 #include "write.h"
 
 #include "../src_plugins/lib_netmap/netmap.h"
+#include "../src_plugins/lib_polyhelp/topoly.h"
 
 typedef struct {
 	FILE *f;
@@ -67,6 +68,57 @@ static void group_name(char *dst, const char *src, rnd_layergrp_id_t gid)
 
 #define COORDX(x) (x)
 #define COORDY(y) (PCB->hidlib.size_y - (y))
+#define LINELEN 72
+
+#define line_brk(wctx, linelen, indent, sep) \
+do { \
+		if (linelen > LINELEN-8) { \
+			linelen = fprintf(wctx->f, "\n%s", indent); \
+			sep = ""; \
+		} \
+		else \
+			sep = " "; \
+} while(0)
+
+static void dsn_write_poly_coords(dsn_write_t *wctx, pcb_poly_t *poly, int *linelen_, const char *indent)
+{
+	long n;
+	int linelen = *linelen_;
+	char *sep;
+
+	for(n = 0; n < poly->PointN; n++) {
+		line_brk(wctx, linelen, indent, sep);
+		linelen += rnd_fprintf(wctx->f, "%s%[4]", sep, COORDX(poly->Points[n].X));
+		line_brk(wctx, linelen, indent, sep);
+		linelen += rnd_fprintf(wctx->f, "%s%[4]", sep, COORDY(poly->Points[n].Y));
+	}
+
+	line_brk(wctx, linelen, indent, sep);
+	linelen += rnd_fprintf(wctx->f, "%s%[4]", sep, COORDX(poly->Points[0].X));
+	line_brk(wctx, linelen, indent, sep);
+	linelen += rnd_fprintf(wctx->f, "%s%[4]", sep, COORDY(poly->Points[0].Y));
+
+	*linelen_ = linelen;
+}
+
+/* Write the (boundary) subtrees in a (structure) */
+static void dsn_write_boundary(dsn_write_t *wctx)
+{
+	pcb_poly_t *bp;
+
+	rnd_fprintf(wctx->f, "    (boundary (rect pcb %[4] %[4] %[4] %[4]))\n", 0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
+
+	bp = pcb_topoly_1st_outline(wctx->pcb, PCB_TOPOLY_KEEP_ORIG | PCB_TOPOLY_FLOATING);
+	if (bp != NULL) {
+		int linelen = fprintf(wctx->f, "    (boundary (path signal 0");
+		dsn_write_poly_coords(wctx, bp, &linelen, "      ");
+		if (linelen > LINELEN-2)
+			fprintf(wctx->f, "\n      ))");
+		else
+			fprintf(wctx->f, "))\n");
+		pcb_poly_free(bp);
+	}
+}
 
 static int dsn_write_structure(dsn_write_t *wctx)
 {
@@ -74,8 +126,17 @@ static int dsn_write_structure(dsn_write_t *wctx)
 	pcb_layergrp_t *lg;
 
 	fprintf(wctx->f, "  (structure\n");
+	dsn_write_boundary(wctx);
+
+
+
 	for(gid = 0, lg = wctx->pcb->LayerGroups.grp; gid < wctx->pcb->LayerGroups.len; gid++,lg++) {
 		char gname[GNAME_MAX];
+
+		if (lg->ltype & PCB_LYT_BOUNDARY) {
+			continue;
+		}
+
 		if (!(lg->ltype & PCB_LYT_COPPER))
 			continue;
 		group_name(gname, lg->name, gid);
