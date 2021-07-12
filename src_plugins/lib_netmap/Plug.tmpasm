@@ -3,6 +3,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/lib_netmap/netmap.o
 	$(PLUGDIR)/lib_netmap/map_2nets.o
 	$(PLUGDIR)/lib_netmap/placement.o
+	$(PLUGDIR)/lib_netmap/pstklib.o
 @]
 
 switch /local/pcb/lib_netmap/controls
