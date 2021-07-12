@@ -75,6 +75,7 @@ append /local/pcb/OBJS [@
 	flag_str.o
 	gui_act.o
 	hid_cam.o
+	ht_pstk.o
 	ht_subc.o
 	idpath.o
 	insert.o
