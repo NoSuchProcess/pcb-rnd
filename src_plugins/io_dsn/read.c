@@ -4,7 +4,8 @@
  *  pcb-rnd, interactive printed circuit board design
  *
  *  dsn IO plugin - file format read, parser
- *  pcb-rnd Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  pcb-rnd Copyright (C) 2018,2021 Tibor 'Igor2' Palinkas
+ *  (Supported by NLnet NGI0 PET Fund in 2021)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
