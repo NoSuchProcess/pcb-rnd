@@ -40,12 +40,14 @@
 #include "write.h"
 
 #include "../src_plugins/lib_netmap/netmap.h"
+#include "../src_plugins/lib_netmap/pstklib.h"
 #include "../src_plugins/lib_polyhelp/topoly.h"
 
 typedef struct {
 	FILE *f;
 	pcb_board_t *pcb;
 	pcb_netmap_t nmap;
+	pcb_pstklib_t protolib;
 } dsn_write_t;
 
 #define GNAME_MAX 64
@@ -199,6 +201,9 @@ static int dsn_write_board(dsn_write_t *wctx)
 		return -1;
 	}
 
+	pcb_pstklib_init(&wctx->protolib, wctx->pcb);
+	pcb_pstklib_build_pcb(&wctx->protolib, 1);
+
 	fprintf(wctx->f, "(pcb ");
 	if ((wctx->pcb->hidlib.name != NULL) && (*wctx->pcb->hidlib.name != '\0')) {
 		for(s = wctx->pcb->hidlib.name; *s != '\0'; s++) {
@@ -229,6 +234,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 
 	fprintf(wctx->f, ")\n");
 
+	pcb_pstklib_uninit(&wctx->protolib);
 	pcb_netmap_uninit(&wctx->nmap);
 	return res;
 }
@@ -236,7 +242,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 
 int io_dsn_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
-	dsn_write_t wctx;
+	dsn_write_t wctx = {0};
 
 	wctx.f = FP;
 	wctx.pcb = PCB;
