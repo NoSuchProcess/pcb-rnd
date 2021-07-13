@@ -166,6 +166,18 @@ static int dsn_write_library_pstk_shape(dsn_write_t *wctx, pcb_pstk_shape_t *shp
 			}
 			break;
 		case PCB_PSSH_POLY:
+			{
+				int n, linelen;
+				const char *indent = "         ", *sep = " ";
+				linelen = fprintf(wctx->f, "      (shape (poly %s 0", lyn);
+				for(n = 0; n < shp->data.poly.len; n++) {
+					line_brk(wctx, linelen, indent, sep);
+					linelen += rnd_fprintf(wctx->f, "%s%[4]", sep, COORDX(shp->data.poly.x[n]));
+					line_brk(wctx, linelen, indent, sep);
+					linelen += rnd_fprintf(wctx->f, "%s%[4]", sep, COORDY(shp->data.poly.y[n]));
+				}
+				fprintf(wctx->f, "))\n");
+			}
 			break;
 		case PCB_PSSH_HSHADOW:
 			{
