@@ -37,4 +37,4 @@ void pcb_pstklib_build_pcb(pcb_pstklib_t *ctx, int recurse_subc);
 
 
 /* return proto's prototype or NULL */
-#define pcb_pstklib_get(ctx, proto)    htprp_get((ctx)->protos, (proto))
+#define pcb_pstklib_get(ctx, proto)    htprp_get(&(ctx)->protos, (proto))
