@@ -159,6 +159,11 @@ static int dsn_write_library_pstk_shape(dsn_write_t *wctx, pcb_pstk_shape_t *shp
 			rnd_fprintf(wctx->f, "      (shape (circle %s %[4]))\n", lyn, shp->data.circ.dia);
 			break;
 		case PCB_PSSH_LINE:
+			{
+				const char *aperture = shp->data.line.square ? " (aperture_type square)" : "";
+				rnd_fprintf(wctx->f, "      (shape (path %s %[4] %[4] %[4] %[4] %[4]%s))\n", lyn, shp->data.line.thickness, shp->data.line.x1, shp->data.line.y1, shp->data.line.x2, shp->data.line.y2, aperture);
+			}
+			break;
 		case PCB_PSSH_POLY:
 		case PCB_PSSH_HSHADOW:
 			break;
