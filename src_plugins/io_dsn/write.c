@@ -43,14 +43,17 @@
 #include "../src_plugins/lib_netmap/pstklib.h"
 #include "../src_plugins/lib_polyhelp/topoly.h"
 
+#define GNAME_MAX 64
+typedef char grp_name_t[GNAME_MAX];
+
 typedef struct {
 	FILE *f;
 	pcb_board_t *pcb;
 	pcb_netmap_t nmap;
 	pcb_pstklib_t protolib;
+	grp_name_t grp_name[PCB_MAX_LAYERGRP];
 } dsn_write_t;
 
-#define GNAME_MAX 64
 
 static void group_name(char *dst, const char *src, rnd_layergrp_id_t gid)
 {
@@ -134,16 +137,14 @@ static int dsn_write_structure(dsn_write_t *wctx)
 
 
 	for(gid = 0, lg = wctx->pcb->LayerGroups.grp; gid < wctx->pcb->LayerGroups.len; gid++,lg++) {
-		char gname[GNAME_MAX];
-
 		if (lg->ltype & PCB_LYT_BOUNDARY) {
 			continue;
 		}
 
 		if (!(lg->ltype & PCB_LYT_COPPER))
 			continue;
-		group_name(gname, lg->name, gid);
-		fprintf(wctx->f, "    (layer \"%s\" (type signal))\n", gname);
+		group_name(wctx->grp_name[gid], lg->name, gid);
+		fprintf(wctx->f, "    (layer \"%s\" (type signal))\n", wctx->grp_name[gid]);
 	}
 	fprintf(wctx->f, "  )\n");
 
