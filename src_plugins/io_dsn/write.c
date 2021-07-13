@@ -155,8 +155,9 @@ static int dsn_write_library_pstk_shape(dsn_write_t *wctx, pcb_pstk_shape_t *shp
 	switch(shp->shape) {
 		case PCB_PSSH_CIRC:
 			if ((shp->data.circ.x != 0) || (shp->data.circ.y != 0))
-				pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-circ", "circle shape not centered", "some circle shaped padstacks will look differently becuse the format supports only centered circle shape");
-			rnd_fprintf(wctx->f, "      (shape (circle %s %[4]))\n", lyn, shp->data.circ.dia);
+				rnd_fprintf(wctx->f, "      (shape (path %s %[4] %[4] %[4] %[4] %[4]))\n", lyn, shp->data.circ.dia, shp->data.circ.dia, shp->data.circ.dia, shp->data.circ.dia, shp->data.circ.dia);
+			else
+				rnd_fprintf(wctx->f, "      (shape (circle %s %[4]))\n", lyn, shp->data.circ.dia);
 			break;
 		case PCB_PSSH_LINE:
 			{
