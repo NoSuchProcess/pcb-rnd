@@ -209,7 +209,17 @@ static int dsn_write_library_pstk_protos(dsn_write_t *wctx)
 		}
 
 		for(n = 0; n < ts->len; n++) {
-			dsn_write_library_pstk_shape(wctx, &ts->shape[n], "lyn", slotshp, pe->proto.hdia);
+			pcb_layergrp_t *lg;
+			rnd_layergrp_id_t gid;
+			pcb_layer_type_t lyt = ts->shape[n].layer_mask;
+
+			if (!(lyt & PCB_LYT_COPPER))
+				continue;
+
+			for(gid = 0, lg = wctx->pcb->LayerGroups.grp; gid < wctx->pcb->LayerGroups.len; gid++,lg++) {
+				if ((lg->ltype & lyt) == lyt)
+					dsn_write_library_pstk_shape(wctx, &ts->shape[n], wctx->grp_name[gid], slotshp, pe->proto.hdia);
+			}
 		}
 		fprintf(wctx->f, "      (attach off)\n"); /* no via placed under smd pads */
 		fprintf(wctx->f, "    )\n");
