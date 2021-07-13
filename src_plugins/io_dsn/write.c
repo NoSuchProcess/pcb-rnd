@@ -150,6 +150,52 @@ static int dsn_write_structure(dsn_write_t *wctx)
 	return 0;
 }
 
+static int dsn_write_library_pstk_shape(dsn_write_t *wctx, pcb_pstk_shape_t *shp, const char *lyn)
+{
+	switch(shp->shape) {
+		case PCB_PSSH_CIRC:
+			if ((shp->data.circ.x != 0) || (shp->data.circ.y != 0))
+				pcb_io_incompat_save(wctx->pcb->Data, NULL, "pstk-circ", "circle shape not centered", "some circle shaped padstacks will look differently becuse the format supports only centered circle shape");
+			rnd_fprintf(wctx->f, "      (shape (circle %s %[4]))\n", lyn, shp->data.circ.dia);
+			break;
+		case PCB_PSSH_LINE:
+		case PCB_PSSH_POLY:
+		case PCB_PSSH_HSHADOW:
+			break;
+	}
+}
+
+static int dsn_write_library_pstk_protos(dsn_write_t *wctx)
+{
+	htprp_entry_t *e;
+	for(e = htprp_first(&wctx->protolib.protos); e != NULL; e = htprp_next(&wctx->protolib.protos, e)) {
+		pcb_pstklib_entry_t *pe = (pcb_pstklib_entry_t *)e->value;
+		pcb_pstk_tshape_t *ts = &pe->proto.tr.array[0];
+		int n;
+
+		fprintf(wctx->f, "    (padstack pstk_%ld\n", pe->id);
+		for(n = 0; n < ts->len; n++) {
+			dsn_write_library_pstk_shape(wctx, &ts->shape[n], "lyn");
+		}
+		fprintf(wctx->f, "      (attach off)\n"); /* no via placed under smd pads */
+		fprintf(wctx->f, "    )\n");
+	}
+
+	return 0;
+}
+
+static int dsn_write_library(dsn_write_t *wctx)
+{
+	int res = 0;
+
+	fprintf(wctx->f, "  (library\n");
+	res |= dsn_write_library_pstk_protos(wctx);
+	fprintf(wctx->f, "  )\n");
+
+	return res;
+}
+
+
 static int dsn_write_wiring(dsn_write_t *wctx)
 {
 	rnd_layer_id_t lid;
@@ -230,6 +276,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 	rnd_printf_slot[4] = "%.07mm";
 
 	res |= dsn_write_structure(wctx);
+	res |= dsn_write_library(wctx);
 	res |= dsn_write_wiring(wctx);
 
 	fprintf(wctx->f, ")\n");
