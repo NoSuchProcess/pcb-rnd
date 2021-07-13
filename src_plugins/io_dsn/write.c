@@ -150,7 +150,7 @@ static int dsn_write_structure(dsn_write_t *wctx)
 	return 0;
 }
 
-static int dsn_write_library_pstk_shape(dsn_write_t *wctx, pcb_pstk_shape_t *shp, const char *lyn)
+static int dsn_write_library_pstk_shape(dsn_write_t *wctx, pcb_pstk_shape_t *shp, const char *lyn, pcb_pstk_shape_t *slotshp, rnd_coord_t hdia)
 {
 	switch(shp->shape) {
 		case PCB_PSSH_CIRC:
@@ -166,7 +166,14 @@ static int dsn_write_library_pstk_shape(dsn_write_t *wctx, pcb_pstk_shape_t *shp
 			}
 			break;
 		case PCB_PSSH_POLY:
+			break;
 		case PCB_PSSH_HSHADOW:
+			{
+				if (slotshp != NULL)
+					dsn_write_library_pstk_shape(wctx, slotshp, lyn, NULL, hdia);
+				else
+					rnd_fprintf(wctx->f, "      (shape (circle %s %[4]))\n", lyn, hdia);
+			}
 			break;
 	}
 }
@@ -177,11 +184,19 @@ static int dsn_write_library_pstk_protos(dsn_write_t *wctx)
 	for(e = htprp_first(&wctx->protolib.protos); e != NULL; e = htprp_next(&wctx->protolib.protos, e)) {
 		pcb_pstklib_entry_t *pe = (pcb_pstklib_entry_t *)e->value;
 		pcb_pstk_tshape_t *ts = &pe->proto.tr.array[0];
+		pcb_pstk_shape_t *slotshp = NULL;
 		int n;
 
 		fprintf(wctx->f, "    (padstack pstk_%ld\n", pe->id);
 		for(n = 0; n < ts->len; n++) {
-			dsn_write_library_pstk_shape(wctx, &ts->shape[n], "lyn");
+			if (ts->shape[n].layer_mask & PCB_LYT_MECH) {
+				slotshp = &ts->shape[n];
+				break;
+			}
+		}
+
+		for(n = 0; n < ts->len; n++) {
+			dsn_write_library_pstk_shape(wctx, &ts->shape[n], "lyn", slotshp, pe->proto.hdia);
 		}
 		fprintf(wctx->f, "      (attach off)\n"); /* no via placed under smd pads */
 		fprintf(wctx->f, "    )\n");
