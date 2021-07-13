@@ -36,6 +36,7 @@
 #include "data.h"
 #include "layer.h"
 #include "layer_grp.h"
+#include "obj_pstk_inlines.h"
 
 #include "write.h"
 
@@ -246,6 +247,26 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 	pcb_layer_t *ly;
 
 	fprintf(wctx->f, "  (wiring\n");
+
+	PCB_PADSTACK_LOOP(wctx->pcb->Data);
+	{
+		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
+		pcb_pstklib_entry_t *pe;
+
+		if (proto == NULL) {
+			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "pstk-inv-proto", "invalid padstack prototype", "Failed to look up padstack prototype (board context)");
+			continue;
+		}
+		pe = pcb_pstklib_get(&wctx->protolib, proto);
+		if (pe == NULL) {
+			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "pstk-inv-proto", "invalid padstack prototype", "Failed to look up padstack prototype (padstack hash)");
+			continue;
+		}
+		rnd_fprintf(wctx->f, "    (via pstk_%ld %[4] %[4])\n", pe->id, COORDX(padstack->x), COORDY(padstack->y));
+	}
+	PCB_END_LOOP;
+
+
 	for(ly = wctx->pcb->Data->Layer, lid = 0; lid < wctx->pcb->Data->LayerN; lid++,ly++) {
 		char gname[GNAME_MAX];
 		rnd_layergrp_id_t gid = pcb_layer_get_group_(ly);
@@ -274,6 +295,7 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 			fprintf(wctx->f, "(type protect))\n");
 		}
 		PCB_END_LOOP;
+
 
 	}
 	fprintf(wctx->f, "  )\n");
