@@ -1563,6 +1563,8 @@ rnd_coord_t obj_pstk_get_clearance(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t
 		return ps->Clearance;
 
 	shp = pcb_pstk_shape_at(pcb, ps, layer);
+	if (shp == NULL)
+		return 0;
 	return shp->clearance;
 }
 
