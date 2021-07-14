@@ -206,7 +206,7 @@ static int dsn_write_library_pstk_protos(dsn_write_t *wctx)
 		pcb_pstklib_entry_t *pe = (pcb_pstklib_entry_t *)e->value;
 		pcb_pstk_tshape_t *ts = &pe->proto.tr.array[0];
 		pcb_pstk_shape_t *slotshp = NULL;
-		int n;
+		int n, has_hole;
 
 		fprintf(wctx->f, "    (padstack pstk_%ld\n", pe->id);
 		for(n = 0; n < ts->len; n++) {
@@ -219,11 +219,18 @@ static int dsn_write_library_pstk_protos(dsn_write_t *wctx)
 		if ((pe->proto.hdia > 0) && (slotshp == NULL)) {
 			rnd_fprintf(wctx->f, "      (hole (circle signal %[4] 0 0))\n", LCOORD(pe->proto.hdia));
 			rnd_fprintf(wctx->f, "      (hole (circle power %[4] 0 0))\n", LCOORD(pe->proto.hdia));
+			has_hole = 1;
 		}
 		else if (slotshp != NULL) {
 			dsn_write_library_pstk_shape(wctx, "hole", slotshp, "signal", slotshp, pe->proto.hdia);
 			dsn_write_library_pstk_shape(wctx, "hole", slotshp, "power", slotshp, pe->proto.hdia);
+			has_hole = 1;
 		}
+		else
+			has_hole = 0;
+
+		if (has_hole)
+			fprintf(wctx->f, "      (plating %s)\n", (pe->proto.hplated ? "plated" : "nonplated"));
 
 		for(n = 0; n < ts->len; n++) {
 			pcb_layergrp_t *lg;
