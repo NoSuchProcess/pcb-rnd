@@ -156,10 +156,7 @@ static int dsn_write_library_pstk_shape(dsn_write_t *wctx, const char *kw, pcb_p
 {
 	switch(shp->shape) {
 		case PCB_PSSH_CIRC:
-			if ((shp->data.circ.x != 0) || (shp->data.circ.y != 0))
-				rnd_fprintf(wctx->f, "      (%s (path %s %[4] %[4] %[4] %[4] %[4]))\n", kw, lyn, shp->data.circ.dia, shp->data.circ.dia, shp->data.circ.dia, shp->data.circ.dia, shp->data.circ.dia);
-			else
-				rnd_fprintf(wctx->f, "      (%s (circle %s %[4]))\n", kw, lyn, shp->data.circ.dia);
+			rnd_fprintf(wctx->f, "      (%s (circle %s %[4] %[4] %[4]))\n", kw, lyn, shp->data.circ.dia, shp->data.circ.x, shp->data.circ.y);
 			break;
 		case PCB_PSSH_LINE:
 			{
