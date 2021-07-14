@@ -291,8 +291,8 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 				COORDX(line->Point1.X), COORDY(line->Point1.Y),
 				COORDX(line->Point2.X), COORDY(line->Point2.Y));
 			if (net != NULL)
-				fprintf(wctx->f, "(net \"%s\")", net->name);
-			fprintf(wctx->f, "(type protect))\n");
+				fprintf(wctx->f, " (net \"%s\")", net->name);
+			fprintf(wctx->f, " (type protect))\n");
 		}
 		PCB_END_LOOP;
 
