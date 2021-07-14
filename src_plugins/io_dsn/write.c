@@ -73,8 +73,18 @@ static void group_name(char *dst, const char *src, rnd_layergrp_id_t gid)
 	*d = '\0';
 }
 
+/* Board coords */
+#define COORD(c)  (c)
 #define COORDX(x) (x)
 #define COORDY(y) (PCB->hidlib.size_y - (y))
+
+/* local coords (subc or padstack context) */
+#define LCOORD(c)  (c)
+#define LCOORDX(x) (x)
+#define LCOORDY(y) (-(y))
+
+
+
 #define LINELEN 72
 
 #define line_brk(wctx, linelen, indent, sep) \
@@ -156,12 +166,12 @@ static int dsn_write_library_pstk_shape(dsn_write_t *wctx, const char *kw, pcb_p
 {
 	switch(shp->shape) {
 		case PCB_PSSH_CIRC:
-			rnd_fprintf(wctx->f, "      (%s (circle %s %[4] %[4] %[4]))\n", kw, lyn, shp->data.circ.dia, shp->data.circ.x, shp->data.circ.y);
+			rnd_fprintf(wctx->f, "      (%s (circle %s %[4] %[4] %[4]))\n", kw, lyn, LCOORD(shp->data.circ.dia), LCOORDX(shp->data.circ.x), LCOORDY(shp->data.circ.y));
 			break;
 		case PCB_PSSH_LINE:
 			{
 				const char *aperture = shp->data.line.square ? " (aperture_type square)" : "";
-				rnd_fprintf(wctx->f, "      (%s (path %s %[4] %[4] %[4] %[4] %[4]%s))\n", kw, lyn, shp->data.line.thickness, shp->data.line.x1, shp->data.line.y1, shp->data.line.x2, shp->data.line.y2, aperture);
+				rnd_fprintf(wctx->f, "      (%s (path %s %[4] %[4] %[4] %[4] %[4]%s))\n", kw, lyn, LCOORD(shp->data.line.thickness), LCOORDX(shp->data.line.x1), LCOORDY(shp->data.line.y1), LCOORDX(shp->data.line.x2), LCOORDY(shp->data.line.y2), aperture);
 			}
 			break;
 		case PCB_PSSH_POLY:
@@ -171,9 +181,9 @@ static int dsn_write_library_pstk_shape(dsn_write_t *wctx, const char *kw, pcb_p
 				linelen = fprintf(wctx->f, "      (%s (poly %s 0", kw, lyn);
 				for(n = 0; n < shp->data.poly.len; n++) {
 					line_brk(wctx, linelen, indent, sep);
-					linelen += rnd_fprintf(wctx->f, "%s%[4]", sep, COORDX(shp->data.poly.x[n]));
+					linelen += rnd_fprintf(wctx->f, "%s%[4]", sep, LCOORDX(shp->data.poly.x[n]));
 					line_brk(wctx, linelen, indent, sep);
-					linelen += rnd_fprintf(wctx->f, "%s%[4]", sep, COORDY(shp->data.poly.y[n]));
+					linelen += rnd_fprintf(wctx->f, "%s%[4]", sep, LCOORDY(shp->data.poly.y[n]));
 				}
 				fprintf(wctx->f, "))\n");
 			}
@@ -183,7 +193,7 @@ static int dsn_write_library_pstk_shape(dsn_write_t *wctx, const char *kw, pcb_p
 				if (slotshp != NULL)
 					dsn_write_library_pstk_shape(wctx, kw, slotshp, lyn, NULL, hdia);
 				else
-					rnd_fprintf(wctx->f, "      (%s (circle %s %[4]))\n", kw, lyn, hdia);
+					rnd_fprintf(wctx->f, "      (%s (circle %s %[4]))\n", kw, lyn, LCOORD(hdia));
 			}
 			break;
 	}
@@ -207,8 +217,8 @@ static int dsn_write_library_pstk_protos(dsn_write_t *wctx)
 		}
 
 		if ((pe->proto.hdia > 0) && (slotshp == NULL)) {
-			rnd_fprintf(wctx->f, "      (hole (circle signal %[4] 0 0))\n", pe->proto.hdia);
-			rnd_fprintf(wctx->f, "      (hole (circle power %[4] 0 0))\n", pe->proto.hdia);
+			rnd_fprintf(wctx->f, "      (hole (circle signal %[4] 0 0))\n", LCOORD(pe->proto.hdia));
+			rnd_fprintf(wctx->f, "      (hole (circle power %[4] 0 0))\n", LCOORD(pe->proto.hdia));
 		}
 		else if (slotshp != NULL) {
 			dsn_write_library_pstk_shape(wctx, "hole", slotshp, "signal", slotshp, pe->proto.hdia);
