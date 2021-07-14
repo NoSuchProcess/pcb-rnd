@@ -285,6 +285,10 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "pstk-inv-proto", "invalid padstack prototype", "Failed to look up padstack prototype (padstack hash)");
 			continue;
 		}
+		if (padstack->rot != 0)      pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "via-rot", "rotated via not supported", "padstack will be saved with 0 rotation due to file format limitations");
+		if (padstack->xmirror != 0)  pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "via-xmirror", "geo-mirrored via not supported", "padstack will be saved unmirrored due to file format limitations");
+		if (padstack->smirror != 0)  pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "via-smirror", "side-mirrored via not supported", "padstack will be saved unmirrored due to file format limitations");
+
 		rnd_fprintf(wctx->f, "    (via pstk_%ld %[4] %[4])\n", pe->id, COORDX(padstack->x), COORDY(padstack->y));
 	}
 	PCB_END_LOOP;
