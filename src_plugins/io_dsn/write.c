@@ -33,6 +33,7 @@
 #include <librnd/core/error.h>
 #include <librnd/core/rnd_bool.h>
 #include "board.h"
+#include "conf_core.h"
 #include "data.h"
 #include "layer.h"
 #include "layer_grp.h"
@@ -422,11 +423,12 @@ static int dsn_write_network(dsn_write_t *wctx)
 {
 	htsp_entry_t *e;
 	htsp_t *nl = &wctx->pcb->netlist[PCB_NETLIST_EDITED];
+	char *sep;
+	int linelen;
+
 	fprintf(wctx->f, "  (network\n");
 	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
 		pcb_net_t *net = e->value;
-		char *sep;
-		int linelen;
 		pcb_net_term_t *t;
 
 		fprintf(wctx->f, "    (net %s\n", net->name);
@@ -440,6 +442,23 @@ static int dsn_write_network(dsn_write_t *wctx)
 		linelen += rnd_fprintf(wctx->f, ")\n");
 		fprintf(wctx->f, "    )\n");
 	}
+
+	linelen = fprintf(wctx->f, "    (class pcb_rnd_default ");
+	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
+		pcb_net_t *net = e->value;
+		line_brk(wctx, linelen, "      ", sep);
+		linelen += fprintf(wctx->f, "%s%s", sep, net->name);
+	}
+	fprintf(wctx->f, "\n");
+
+	fprintf(wctx->f, "      (circuit\n");
+	fprintf(wctx->f, "        (use_via pstk_%ld)\n", conf_core.design.via_proto);
+	fprintf(wctx->f, "      )\n");
+	fprintf(wctx->f, "      (rule\n");
+	rnd_fprintf(wctx->f, "        (width %[4])\n", conf_core.design.line_thickness);
+	rnd_fprintf(wctx->f, "        (clearance %[4])\n", conf_core.design.clearance);
+	fprintf(wctx->f, "      )\n");
+	fprintf(wctx->f, "    )\n");
 	fprintf(wctx->f, "  )\n");
 	return 0;
 }
