@@ -102,11 +102,11 @@ do { \
 
 static void dsn_write_poly_coords(dsn_write_t *wctx, pcb_poly_t *poly, int *linelen_, const char *indent)
 {
-	long n;
 	int linelen = *linelen_;
 	char *sep;
+	long n, end = (poly->HoleIndexN > 0) ? poly->HoleIndex[0] : poly->PointN;
 
-	for(n = 0; n < poly->PointN; n++) {
+	for(n = 0; n < end; n++) {
 		line_brk(wctx, linelen, indent, sep);
 		linelen += rnd_fprintf(wctx->f, "%s%[4]", sep, COORDX(poly->Points[n].X));
 		line_brk(wctx, linelen, indent, sep);
