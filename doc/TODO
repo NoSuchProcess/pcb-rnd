@@ -5,6 +5,7 @@
 - BUG: layer binding dialog: on the standard 4 layer board create a subc with a line on top copper; edit layer bindings of the subc; try to move it to each inner copper -> dialog box gets confused [report: Igor2]
 + BUG: svg photo mode export: doesn't seem to use the palette from the code so the output uses layer colors [report: cuvoodoo]
 - BUG: LoV crash: bug_files/lov.lht; {s l} to move the selected edit line to top copper ->crash [report: cuvoodoo]
+- BUG: poly clipping bug: load bug_files/clipbug.lht, clearances are not shown. There's a line hiding under the poly on the right side. Move it and clearances appear. [report: cuvoodoo]
 
 2. For later releases ===============================================================================
 - CLEANUP/FEATURE: new breadboard
