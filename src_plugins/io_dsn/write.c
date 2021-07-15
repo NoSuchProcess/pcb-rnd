@@ -254,9 +254,50 @@ static int dsn_write_library_pstk_protos(dsn_write_t *wctx)
 	return 0;
 }
 
+static int dsn_write_pin_via(dsn_write_t *wctx, pcb_pstk_t *padstack, int is_pin)
+{
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
+	pcb_pstklib_entry_t *pe;
+
+	if (proto == NULL) {
+		pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "pstk-inv-proto", "invalid padstack prototype", "Failed to look up padstack prototype (board context)");
+		return 0;
+	}
+	pe = pcb_pstklib_get(&wctx->protolib, proto);
+	if (pe == NULL) {
+		pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "pstk-inv-proto", "invalid padstack prototype", "Failed to look up padstack prototype (padstack hash)");
+		return 0;
+	}
+
+	if (is_pin) {
+		const char *termid = padstack->term;
+		if ((termid == NULL) || (*termid == '\0'))
+			termid = "anon";
+		rnd_fprintf(wctx->f, "      (pin pstk_%ld %s %[4] %[4]", pe->id, termid, LCOORDX(padstack->x), LCOORDY(padstack->y));
+		if (padstack->rot != 0) fprintf(wctx->f, " (rotate %f)", padstack->rot);
+/*		if (padstack->xmirror != 0)  pcb_io_incompat_save(PCB->Data, NULL, "pin-xmirror", "geo-mirrored pin not supported", "padstack will be saved unmirrored due to file format limitations"); - this usually happens for subc proto on bottom side */
+		if (padstack->smirror != 0)  pcb_io_incompat_save(PCB->Data, NULL, "pin-smirror", "side-mirrored pin not supported", "padstack will be saved unmirrored due to file format limitations");
+
+		fprintf(wctx->f, ")\n");
+	}
+	else {
+		if (padstack->rot != 0)      pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "via-rot", "rotated via not supported", "padstack will be saved with 0 rotation due to file format limitations");
+		if (padstack->xmirror != 0)  pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "via-xmirror", "geo-mirrored via not supported", "padstack will be saved unmirrored due to file format limitations");
+		if (padstack->smirror != 0)  pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "via-smirror", "side-mirrored via not supported", "padstack will be saved unmirrored due to file format limitations");
+
+		rnd_fprintf(wctx->f, "    (via pstk_%ld %[4] %[4])\n", pe->id, COORDX(padstack->x), COORDY(padstack->y));
+	}
+	return 0;
+}
+
 static int dsn_write_library_subc(dsn_write_t *wctx, pcb_subc_t *subc)
 {
 	fprintf(wctx->f, "    (image subc_%ld\n", subc->ID);
+	PCB_PADSTACK_LOOP(subc->data);
+	{
+		dsn_write_pin_via(wctx, padstack, 1);
+	}
+	PCB_END_LOOP;
 	fprintf(wctx->f, "    )\n");
 	return 0;
 }
@@ -264,7 +305,7 @@ static int dsn_write_library_subc(dsn_write_t *wctx, pcb_subc_t *subc)
 static int dsn_write_library_subcs(dsn_write_t *wctx)
 {
 	htscp_entry_t *e;
-	for(e = htscp_first(&wctx->footprints); e != NULL; e = htscp_next(&wctx->footprints, e))
+	for(e = htscp_first(&wctx->footprints.subcs); e != NULL; e = htscp_next(&wctx->footprints.subcs, e))
 		if (dsn_write_library_subc(wctx, e->value) != 0)
 			return -1;
 	return 0;
@@ -292,23 +333,7 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 
 	PCB_PADSTACK_LOOP(wctx->pcb->Data);
 	{
-		pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
-		pcb_pstklib_entry_t *pe;
-
-		if (proto == NULL) {
-			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "pstk-inv-proto", "invalid padstack prototype", "Failed to look up padstack prototype (board context)");
-			continue;
-		}
-		pe = pcb_pstklib_get(&wctx->protolib, proto);
-		if (pe == NULL) {
-			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "pstk-inv-proto", "invalid padstack prototype", "Failed to look up padstack prototype (padstack hash)");
-			continue;
-		}
-		if (padstack->rot != 0)      pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "via-rot", "rotated via not supported", "padstack will be saved with 0 rotation due to file format limitations");
-		if (padstack->xmirror != 0)  pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "via-xmirror", "geo-mirrored via not supported", "padstack will be saved unmirrored due to file format limitations");
-		if (padstack->smirror != 0)  pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "via-smirror", "side-mirrored via not supported", "padstack will be saved unmirrored due to file format limitations");
-
-		rnd_fprintf(wctx->f, "    (via pstk_%ld %[4] %[4])\n", pe->id, COORDX(padstack->x), COORDY(padstack->y));
+		dsn_write_pin_via(wctx, padstack, 0);
 	}
 	PCB_END_LOOP;
 
