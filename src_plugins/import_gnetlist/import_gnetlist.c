@@ -142,8 +142,10 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 			if (rs.val.nat_int == 1)
 				goto execerr;
 		}
-		else
-			rnd_actionva(&PCB->hidlib, "LoadTedaxFrom", "Netlist", tmpfn, NULL);
+		else {
+			if (rnd_actionva(&PCB->hidlib, "LoadTedaxFrom", "Netlist", tmpfn, NULL) != 0)
+				goto execerr;
+		}
 	}
 	else {
 		execerr:;
