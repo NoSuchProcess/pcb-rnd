@@ -1252,8 +1252,11 @@
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
  obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h board.h vtroutestyle.h rats_patch.h board.h data.h \
- layer.h layer_grp.h ../src_plugins/io_dsn/write.h \
- ../src_plugins/lib_netmap/netmap.h netlist.h
+ layer.h layer_grp.h obj_pstk_inlines.h thermal.h operation.h \
+ ../src_plugins/io_dsn/write.h ../src_plugins/lib_netmap/netmap.h \
+ netlist.h ../src_plugins/lib_netmap/placement.h ht_subc.h \
+ ../src_plugins/lib_netmap/pstklib.h ht_pstk.h \
+ ../src_plugins/lib_polyhelp/topoly.h obj_common.h
 ../src_plugins/io_eagle/eagle_bin.o: ../src_plugins/io_eagle/eagle_bin.c \
  ../config.h ../src_plugins/io_eagle/eagle_bin.h \
  ../src_plugins/io_eagle/egb_tree.h
