@@ -259,6 +259,7 @@ static int dsn_write_pin_via(dsn_write_t *wctx, pcb_pstk_t *padstack, int is_pin
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
 	pcb_pstklib_entry_t *pe;
+	pcb_net_t *net = htpp_get(&wctx->nmap.o2n, (pcb_any_obj_t *)padstack);
 
 	if (proto == NULL) {
 		pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "pstk-inv-proto", "invalid padstack prototype", "Failed to look up padstack prototype (board context)");
@@ -286,7 +287,10 @@ static int dsn_write_pin_via(dsn_write_t *wctx, pcb_pstk_t *padstack, int is_pin
 		if (padstack->xmirror != 0)  pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "via-xmirror", "geo-mirrored via not supported", "padstack will be saved unmirrored due to file format limitations");
 		if (padstack->smirror != 0)  pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "via-smirror", "side-mirrored via not supported", "padstack will be saved unmirrored due to file format limitations");
 
-		rnd_fprintf(wctx->f, "    (via pstk_%ld %[4] %[4])\n", pe->id, COORDX(padstack->x), COORDY(padstack->y));
+		rnd_fprintf(wctx->f, "    (via pstk_%ld %[4] %[4]", pe->id, COORDX(padstack->x), COORDY(padstack->y));
+		if (net != NULL)
+			fprintf(wctx->f, " (net \"%s\")", net->name);
+		fprintf(wctx->f, ")\n");
 	}
 	return 0;
 }
