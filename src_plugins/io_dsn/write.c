@@ -274,7 +274,7 @@ static int dsn_write_pin_via(dsn_write_t *wctx, pcb_pstk_t *padstack, int is_pin
 		if ((termid == NULL) || (*termid == '\0'))
 			termid = "anon";
 		rnd_fprintf(wctx->f, "      (pin pstk_%ld %s %[4] %[4]", pe->id, termid, LCOORDX(padstack->x), LCOORDY(padstack->y));
-		if (padstack->rot != 0) fprintf(wctx->f, " (rotate %f)", padstack->rot);
+		if (padstack->rot != 0) fprintf(wctx->f, " (rotate %d)", (int)padstack->rot);
 /*		if (padstack->xmirror != 0)  pcb_io_incompat_save(PCB->Data, NULL, "pin-xmirror", "geo-mirrored pin not supported", "padstack will be saved unmirrored due to file format limitations"); - this usually happens for subc proto on bottom side */
 		if (padstack->smirror != 0)  pcb_io_incompat_save(PCB->Data, NULL, "pin-smirror", "side-mirrored pin not supported", "padstack will be saved unmirrored due to file format limitations");
 
@@ -405,8 +405,8 @@ static int dsn_write_placement(dsn_write_t *wctx)
 		value = pcb_attrib_get(subc, "value");
 
 		fprintf(wctx->f, "    (component subc_%ld\n", proto->ID);
-		rnd_fprintf(wctx->f, "      (place %s %[4] %[4] %s %f",
-			refdes, COORDX(x), COORDY(y), (on_bottom ? "back" : "front"), rot);
+		rnd_fprintf(wctx->f, "      (place %s %[4] %[4] %s %d",
+			refdes, COORDX(x), COORDY(y), (on_bottom ? "back" : "front"), (int)rot);
 		if (value != NULL)
 			fprintf(wctx->f, " (property (value '%s'))", value);
 		fprintf(wctx->f, ")\n");
