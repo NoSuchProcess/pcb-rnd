@@ -138,9 +138,20 @@ static int gnetlist_import(pcb_plug_import_t *ctx, unsigned int aspects, const c
 			fgw_uvcall(&rnd_fgw, &PCB->hidlib, &rs, "executefile", FGW_STR, tmpfn, 0);
 			pcb_undo_unfreeze_serial();
 			pcb_undo_inc_serial();
+			fgw_arg_conv(&rnd_fgw, &rs, FGW_INT);
+			if (rs.val.nat_int == 1)
+				goto execerr;
 		}
 		else
 			rnd_actionva(&PCB->hidlib, "LoadTedaxFrom", "Netlist", tmpfn, NULL);
+	}
+	else {
+		execerr:;
+		rnd_message(RND_MSG_ERROR, "Netlist failed to produce usable output. Refer to stderr for details\n");
+		rnd_message(RND_MSG_ERROR, "Command line was:");
+		for(n = 0; n < numfns+8; n++)
+			rnd_message(RND_MSG_ERROR, " %s", cmd[n]);
+		rnd_message(RND_MSG_ERROR, "\n");
 	}
 	for(n = 0; n < numfns; n++)
 		free(cmd[n+8]);
