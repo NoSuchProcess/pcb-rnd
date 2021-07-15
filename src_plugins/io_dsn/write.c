@@ -418,6 +418,31 @@ static int dsn_write_placement(dsn_write_t *wctx)
 	return 0;
 }
 
+static int dsn_write_network(dsn_write_t *wctx)
+{
+	htsp_entry_t *e;
+	htsp_t *nl = &wctx->pcb->netlist[PCB_NETLIST_EDITED];
+	fprintf(wctx->f, "  (network\n");
+	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
+		pcb_net_t *net = e->value;
+		char *sep;
+		int linelen;
+		pcb_net_term_t *t;
+
+		fprintf(wctx->f, "    (net %s\n", net->name);
+		linelen = fprintf(wctx->f, "      (pins");
+
+		for(t = pcb_termlist_first(&net->conns); t != NULL; t = pcb_termlist_next(t)) {
+			line_brk(wctx, linelen, "      ", sep);
+			linelen += rnd_fprintf(wctx->f, " %s%s-%s", sep, t->refdes, t->term);
+		}
+		line_brk(wctx, linelen, "      ", sep);
+		linelen += rnd_fprintf(wctx->f, ")\n");
+		fprintf(wctx->f, "    )\n");
+	}
+	fprintf(wctx->f, "  )\n");
+	return 0;
+}
 
 static int dsn_write_board(dsn_write_t *wctx)
 {
@@ -463,6 +488,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 	res |= dsn_write_library(wctx);
 	res |= dsn_write_wiring(wctx);
 	res |= dsn_write_placement(wctx);
+	res |= dsn_write_network(wctx);
 
 	fprintf(wctx->f, ")\n");
 
@@ -471,7 +497,6 @@ static int dsn_write_board(dsn_write_t *wctx)
 	pcb_netmap_uninit(&wctx->nmap);
 	return res;
 }
-
 
 int io_dsn_write_pcb(pcb_plug_io_t *ctx, FILE *FP, const char *old_filename, const char *new_filename, rnd_bool emergency)
 {
