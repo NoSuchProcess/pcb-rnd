@@ -373,6 +373,51 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 	return 0;
 }
 
+static int dsn_write_placement(dsn_write_t *wctx)
+{
+	fprintf(wctx->f, "  (placement\n");
+	fprintf(wctx->f, "    (place_control (flip_style mirror_first))\n");
+
+	PCB_SUBC_LOOP(wctx->pcb->Data);
+	{
+		pcb_subc_t *proto = pcb_placement_get(&wctx->footprints, subc);
+		rnd_coord_t x, y;
+		double rot;
+		int on_bottom;
+		const char *refdes = subc->refdes, *value;
+
+		if (pcb_subc_get_origin(subc, &x, &y) != 0) {
+			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)subc, "subc-placement", "can't get subc coords", "Failed to determine subcircuit coordinates - subc is missing from the output");
+			continue;
+		}
+		if (pcb_subc_get_rotation(subc, &rot) != 0) {
+			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)subc, "subc-placement", "can't get subc rotation", "Failed to determine subcircuit rotation - subc is missing from the output");
+			continue;
+		}
+		if (pcb_subc_get_side(subc, &on_bottom) != 0) {
+			pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)subc, "subc-placement", "can't get subc side", "Failed to determine subcircuit board side - subc is missing from the output");
+			continue;
+		}
+
+		if ((refdes == NULL) || (*refdes == '\0'))
+			refdes = "anon";
+
+		value = pcb_attrib_get(subc, "value");
+
+		fprintf(wctx->f, "    (component subc_%ld\n", proto->ID);
+		rnd_fprintf(wctx->f, "      (place %s %[4] %[4] %s %f",
+			refdes, COORDX(x), COORDY(y), (on_bottom ? "back" : "front"), rot);
+		if (value != NULL)
+			fprintf(wctx->f, " (property (value '%s'))", value);
+		fprintf(wctx->f, ")\n");
+		fprintf(wctx->f, "    )\n");
+	}
+	PCB_END_LOOP;
+
+	fprintf(wctx->f, "  )\n");
+	return 0;
+}
+
 
 static int dsn_write_board(dsn_write_t *wctx)
 {
@@ -417,6 +462,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 	res |= dsn_write_structure(wctx);
 	res |= dsn_write_library(wctx);
 	res |= dsn_write_wiring(wctx);
+	res |= dsn_write_placement(wctx);
 
 	fprintf(wctx->f, ")\n");
 
