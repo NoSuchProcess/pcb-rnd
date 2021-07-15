@@ -368,6 +368,17 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 		}
 		PCB_END_LOOP;
 
+		PCB_POLY_LOOP(ly);
+		{
+			int linelen;
+			net = htpp_get(&wctx->nmap.o2n, (pcb_any_obj_t *)polygon);
+			linelen = rnd_fprintf(wctx->f,"    (wire (polygon \"%s\" 0", gname);
+			dsn_write_poly_coords(wctx, polygon, &linelen, "      ");
+			if (net != NULL)
+				fprintf(wctx->f, " (net \"%s\")", net->name);
+			fprintf(wctx->f, " (type protect)))\n");
+		}
+		PCB_END_LOOP;
 
 	}
 	fprintf(wctx->f, "  )\n");
