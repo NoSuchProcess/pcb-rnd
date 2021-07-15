@@ -41,6 +41,7 @@
 #include "write.h"
 
 #include "../src_plugins/lib_netmap/netmap.h"
+#include "../src_plugins/lib_netmap/placement.h"
 #include "../src_plugins/lib_netmap/pstklib.h"
 #include "../src_plugins/lib_polyhelp/topoly.h"
 
@@ -52,6 +53,7 @@ typedef struct {
 	pcb_board_t *pcb;
 	pcb_netmap_t nmap;
 	pcb_pstklib_t protolib;
+	pcb_placement_t footprints;
 	grp_name_t grp_name[PCB_MAX_LAYERGRP];
 } dsn_write_t;
 
@@ -252,12 +254,29 @@ static int dsn_write_library_pstk_protos(dsn_write_t *wctx)
 	return 0;
 }
 
+static int dsn_write_library_subc(dsn_write_t *wctx, pcb_subc_t *subc)
+{
+	fprintf(wctx->f, "    (image subc_%ld\n", subc->ID);
+	fprintf(wctx->f, "    )\n");
+	return 0;
+}
+
+static int dsn_write_library_subcs(dsn_write_t *wctx)
+{
+	htscp_entry_t *e;
+	for(e = htscp_first(&wctx->footprints); e != NULL; e = htscp_next(&wctx->footprints, e))
+		if (dsn_write_library_subc(wctx, e->value) != 0)
+			return -1;
+	return 0;
+}
+
 static int dsn_write_library(dsn_write_t *wctx)
 {
 	int res = 0;
 
 	fprintf(wctx->f, "  (library\n");
 	res |= dsn_write_library_pstk_protos(wctx);
+	res |= dsn_write_library_subcs(wctx);
 	fprintf(wctx->f, "  )\n");
 
 	return res;
@@ -342,6 +361,8 @@ static int dsn_write_board(dsn_write_t *wctx)
 
 	pcb_pstklib_init(&wctx->protolib, wctx->pcb);
 	pcb_pstklib_build_pcb(&wctx->protolib, 1);
+	pcb_placement_init(&wctx->footprints, wctx->pcb);
+	pcb_placement_build(&wctx->footprints, wctx->pcb->Data);
 
 	fprintf(wctx->f, "(pcb ");
 	if ((wctx->pcb->hidlib.name != NULL) && (*wctx->pcb->hidlib.name != '\0')) {
@@ -374,6 +395,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 
 	fprintf(wctx->f, ")\n");
 
+	pcb_placement_uninit(&wctx->footprints);
 	pcb_pstklib_uninit(&wctx->protolib);
 	pcb_netmap_uninit(&wctx->nmap);
 	return res;
