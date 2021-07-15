@@ -377,6 +377,9 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 			if (net != NULL)
 				fprintf(wctx->f, " (net \"%s\")", net->name);
 			fprintf(wctx->f, " (type protect)))\n");
+
+			if (polygon->HoleIndexN > 0)
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)polygon, "poly-hole", "Polygon holes are not supported", "Saving the polygon without hole.");
 		}
 		PCB_END_LOOP;
 
