@@ -283,7 +283,7 @@
 	</g>
 	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1216" y1="252" x2="1312" y2="252" stroke="#000000"/>
 	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1216" y1="324" x2="1312" y2="324" stroke="#000000"/>
-	<line  marker-end="url(#ahe)"  x1="1136" y1="86.4" x2="1136" y2="165.6" stroke="#000000"/>
+	<line  marker-end="url(#ahe)" marker-start="url(#ahs)"  x1="1136" y1="86.4" x2="1136" y2="165.6" stroke="#000000"/>
 	<g transform="rotate(-90 1136 126)">
 	<text fill="#000000" text-anchor="middle" x="1136" y="126" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">board</tspan></text>
 	</g>

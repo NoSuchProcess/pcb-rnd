@@ -386,7 +386,7 @@ OA
 <-> dsn_.s pcbrnd
 	label board
 
--> pads.s pcbrnd
+<-> pads.s pcbrnd
 	label board
 
 <-> pcbrnd batch.w
