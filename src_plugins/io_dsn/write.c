@@ -58,6 +58,15 @@ typedef struct {
 	grp_name_t grp_name[PCB_MAX_LAYERGRP];
 } dsn_write_t;
 
+/* Return the parent net of the object if it is not anon */
+static pcb_net_t *get_net(dsn_write_t *wctx, pcb_any_obj_t *obj)
+{
+	pcb_net_t *net = htpp_get(&wctx->nmap.o2n, obj);
+
+	if ((net == NULL) || (net->name == NULL)) return NULL;
+	if ((*net->name == 'n') && (strncmp(net->name, "netmap_anon_", 12) == 0)) return NULL;
+	return net;
+}
 
 static void group_name(char *dst, const char *src, rnd_layergrp_id_t gid)
 {
@@ -259,7 +268,7 @@ static int dsn_write_pin_via(dsn_write_t *wctx, pcb_pstk_t *padstack, int is_pin
 {
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(padstack);
 	pcb_pstklib_entry_t *pe;
-	pcb_net_t *net = htpp_get(&wctx->nmap.o2n, (pcb_any_obj_t *)padstack);
+	pcb_net_t *net = get_net(wctx, (pcb_any_obj_t *)padstack);
 
 	if (proto == NULL) {
 		pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)padstack, "pstk-inv-proto", "invalid padstack prototype", "Failed to look up padstack prototype (board context)");
@@ -362,7 +371,7 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 
 		PCB_LINE_LOOP(ly);
 		{
-			net = htpp_get(&wctx->nmap.o2n, (pcb_any_obj_t *)line);
+			net = get_net(wctx, (pcb_any_obj_t *)line);
 			rnd_fprintf(wctx->f,"    (wire (path \"%s\" %[4] %[4] %[4] %[4] %[4])", gname, line->Thickness,
 				COORDX(line->Point1.X), COORDY(line->Point1.Y),
 				COORDX(line->Point2.X), COORDY(line->Point2.Y));
@@ -387,7 +396,7 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 				continue;
 			}
 
-			net = htpp_get(&wctx->nmap.o2n, (pcb_any_obj_t *)arc);
+			net = get_net(wctx, (pcb_any_obj_t *)arc);
 			pcb_arc_get_end(arc, 0, &e1x, &e1y);
 			pcb_arc_get_end(arc, 1, &e2x, &e2y);
 
@@ -404,7 +413,7 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 		PCB_POLY_LOOP(ly);
 		{
 			int linelen;
-			net = htpp_get(&wctx->nmap.o2n, (pcb_any_obj_t *)polygon);
+			net = get_net(wctx, (pcb_any_obj_t *)polygon);
 			linelen = rnd_fprintf(wctx->f,"    (wire (polygon \"%s\" 0", gname);
 			dsn_write_poly_coords(wctx, polygon, &linelen, "      ");
 			if (net != NULL)
