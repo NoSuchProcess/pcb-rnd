@@ -3,8 +3,8 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  Specctra .dsn import HID
- *  Copyright (C) 2017 Tibor 'Igor2' Palinkas
+ *  Specctra dsn .ses import HID
+ *  Copyright (C) 2017,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -225,9 +225,9 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = rnd_gui->fileselect(rnd_gui,
 			"Load a routed dsn or ses file...",
-			"Select dsn or ses file to load.\nThe file could be generated using the tool downloaded from freeroute.net\n",
+			"Select ses (or dsn) file to load.\nThe file could be generated using external autorouters (e.g. freeroute.net)\n",
 			NULL, /* default file name */
-			".dsn", NULL, "dsn", RND_HID_FSD_READ, NULL);
+			".ses", NULL, "ses", RND_HID_FSD_READ, NULL);
 		if (fname == NULL)
 			return 1;
 	}
