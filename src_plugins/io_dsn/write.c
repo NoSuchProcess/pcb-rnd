@@ -497,6 +497,7 @@ static int dsn_write_network(dsn_write_t *wctx)
 	htsp_t *nl = &wctx->pcb->netlist[PCB_NETLIST_EDITED];
 	char *sep;
 	int linelen;
+	pcb_pstklib_entry_t *pe = NULL;
 
 	fprintf(wctx->f, "  (network\n");
 	for(e = htsp_first(nl); e != NULL; e = htsp_next(nl, e)) {
@@ -523,9 +524,18 @@ static int dsn_write_network(dsn_write_t *wctx)
 	}
 	fprintf(wctx->f, "\n");
 
-	fprintf(wctx->f, "      (circuit\n");
-	fprintf(wctx->f, "        (use_via pstk_%ld)\n", conf_core.design.via_proto);
-	fprintf(wctx->f, "      )\n");
+
+	if ((conf_core.design.via_proto >= 0) && (conf_core.design.via_proto < wctx->pcb->Data->ps_protos.used))
+		pe = pcb_pstklib_get(&wctx->protolib, &wctx->pcb->Data->ps_protos.array[conf_core.design.via_proto]);
+
+	if (pe != NULL) {
+		fprintf(wctx->f, "      (circuit\n");
+		fprintf(wctx->f, "        (use_via pstk_%ld)\n", pe->id);
+		fprintf(wctx->f, "      )\n");
+	}
+	else
+		pcb_io_incompat_save(PCB->Data, NULL, "via-proto", "invalid padstack prototype for new vias", "The padstack prototype ID specified for autorouter-placed vias is invalid.");
+
 	fprintf(wctx->f, "      (rule\n");
 	rnd_fprintf(wctx->f, "        (width %[4])\n", conf_core.design.line_thickness);
 	rnd_fprintf(wctx->f, "        (clearance %[4])\n", conf_core.design.clearance);
