@@ -474,6 +474,9 @@ static int dsn_write_placement(dsn_write_t *wctx)
 
 		value = pcb_attrib_get(subc, "value");
 
+		if (on_bottom)
+			rot = 180-rot;
+
 		fprintf(wctx->f, "    (component subc_%ld\n", proto->ID);
 		rnd_fprintf(wctx->f, "      (place %s %[4] %[4] %s %d",
 			refdes, COORDX(x), COORDY(y), (on_bottom ? "back" : "front"), (int)rot);

@@ -1571,6 +1571,9 @@ static int dsn_parse_place_component(dsn_read_t *ctx, gsxl_node_t *plr, int mirr
 			return -1;
 		}
 
+		if (need_mirror)
+			rot = 180-rot;
+
 		nsc = pcb_subc_dup_at(ctx->pcb, ctx->pcb->Data, subc, crd[0], crd[1], 0, rnd_false);
 		pcb_attribute_put(&nsc->Attributes, "refdes", refdes);
 
