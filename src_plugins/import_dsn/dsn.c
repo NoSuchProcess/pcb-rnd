@@ -146,7 +146,7 @@ static void parse_wire(long int *nlines, rnd_coord_t clear, const gsxl_node_t *w
 {
 	const gsxl_node_t *n;
 	for(n = wire->children; n != NULL; n = n->next) {
-		if ((type == TYPE_PCB) && (strcmp(n->str, "polyline_path") == 0))
+		if ((type == TYPE_PCB) && ((strcmp(n->str, "polyline_path") == 0) || (strcmp(n->str, "path") == 0)))
 			parse_polyline(nlines, clear, n, "mm", 1);
 		else if ((type == TYPE_SESSION) && (strcmp(n->str, "path") == 0))
 			parse_polyline(nlines, clear, n, "nm", 0);
