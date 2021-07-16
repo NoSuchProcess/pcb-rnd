@@ -696,7 +696,7 @@ Normally this is used when starting a board, by selecting all subcircuits and th
 Display(SubcID, template)
 Display(Grid|Redraw|Pinout|PinOrPadName)
 Display(CycleClip|ToggleAllDirections|ToggleStartDirection)
-Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)
+Display(RealignGrid|ToggleRubberBandMode|ToggleUniqueNames)
 Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)
 Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)
 Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)
@@ -4193,6 +4193,24 @@ Arguments:
  Optional.  Specifies how many pixels to scroll by. If not specified:       default pix is 100. 
 </table>
   
+</dd></dl>
+
+<h2 id="setgridoffs">SetGridOffs</h2>
+<dl><dd>
+<p>
+<table border=0 cellspacing=10 class=actsum>
+<tr><th align=right class=actsum>Syntax summary:<td align=left class=actsum>
+SetGridOffs(x_offs, y_offs)
+<tr><th align=right class=actsum>Help text:<td align=left class=actsum>
+Change grid offset (alignment) to x_offs and y_offs. Offsets should be specified with units.
+<tr><th align=right class=actsum>Registered&nbsp;by:<td align=left class=actsum>n/a
+</table>
+<p>
+Changes the grid offset to relative or absolute x_offs and y_offs. For non-zero values always use units, e.g. SetGrifOffs(0.5mm, 0.1mm). 
+<p>
+ The final grid offset alues will be scaled down so they are always between 0 and the current grid size. For example with a 25 mil grid, a value of 7mil will be taken as 7mil offset, but a value of 27 mil will be taken as a 2mil offset. 
+<p>
+ If an offset starts with + or -, it is taken as relative, which means it is added to the current offset value.   
 </dd></dl>
 
 <h2 id="setunits">SetUnits</h2>

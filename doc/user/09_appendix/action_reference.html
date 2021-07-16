@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.0.0-dev (svn r34858) an interactive printed circuit board editor ,  Revision: 34885
+This is pcb-rnd 3.0.0-dev (svn r35236) an interactive printed circuit board editor ,  Revision: 35241
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -95,7 +95,7 @@ This is pcb-rnd 3.0.0-dev (svn r34858) an interactive printed circuit board edit
 <tr><td>DescribeLocation</td><td>Return a string constant (valud until the next call) containing a short description at x;y (object, net, etc.)</td><td>DescribeLocation(x, y)</td><td>lib_hid_pcbui/status</td>
 <tr><td>DisableVendor</td><td>Disables automatic drill size mapping.</td><td>DisableVendor()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#disperseelements">DisperseElements</a></td><td>Disperses subcircuits.</td><td>DisperseElements(All|Selected)</td><td></td>
-<tr><td><a href="action_details.html#display">Display</a></td><td>Several display-related actions.</td><td>Display(SubcID, template)<br>Display(Grid|Redraw|Pinout|PinOrPadName)<br>Display(CycleClip|ToggleAllDirections|ToggleStartDirection)<br>Display(ToggleGrid|ToggleRubberBandMode|ToggleUniqueNames)<br>Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)<br>Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)<br>Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)<br>Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</td><td></td>
+<tr><td><a href="action_details.html#display">Display</a></td><td>Several display-related actions.</td><td>Display(SubcID, template)<br>Display(Grid|Redraw|Pinout|PinOrPadName)<br>Display(CycleClip|ToggleAllDirections|ToggleStartDirection)<br>Display(RealignGrid|ToggleRubberBandMode|ToggleUniqueNames)<br>Display(ToggleName|ToggleClearLine|ToggleFullPoly|ToggleSnapPin)<br>Display(ToggleSnapOffGridLine|ToggleHighlightOnPoint|ToggleCheckPlanes)<br>Display(ToggleThindraw|ToggleThindrawPoly|ToggleOrthoMove|ToggleLocalRef)<br>Display(ToggleLiveRoute|ToggleShowDRC|ToggleAutoDRC|LockNames|OnlyNames)</td><td></td>
 <tr><td><a href="action_details.html#distribute">distribute</a></td><td>Distribute objects</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td>distributetext</td><td>Distribute objects</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#djopt">djopt</a></td><td>Perform various optimizations on the current board.</td><td>djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)<br>djopt(auto) - all of the above<br>djopt(miter)</td><td>djopt</td>
@@ -113,7 +113,7 @@ This is pcb-rnd 3.0.0-dev (svn r34858) an interactive printed circuit board edit
 <tr><td>DrcQueryExport</td><td>Export a rule and related definitions to a file.</td><td>DrcQueryExport(ruleID, [filename], [format])</td><td>drc_query</td>
 <tr><td>DrcQueryImport</td><td>Import a rule and related definitions from a file.</td><td>DrcQueryImport([filename])</td><td>drc_query</td>
 <tr><td>DrcQueryListRules</td><td>List all drc rules implemented in drc_query</td><td>DrcQueryListRules()</td><td>drc_query</td>
-<tr><td>DrcQueryRuleMod</td><td>Automated DRC rule editing (for scripting and import)</td><td>DrcQueryRuleMod(clear, source)<br>DrcQueryRuleMod(create, rule_name)<br>DrcQueryRuleMod(get, rule_name, field_name)<br>DrcQueryRuleMod(set, rule_name, field_name, value)</td><td>drc_query</td>
+<tr><td>DrcQueryRuleMod</td><td>Automated DRC rule editing (for scripting and import)</td><td>DrcQueryRuleMod(clear, source)<br>DrcQueryRuleMod(create, rule_name)<br>DrcQueryRuleMod(get, rule_name, field_name)<br>DrcQueryRuleMod(set, rule_name, field_name, value)<br>DrcQueryRuleMod(remove, rule_name)</td><td>drc_query</td>
 <tr><td>DumpActions</td><td>Dump all actions available.</td><td>DumpActions()</td><td></td>
 <tr><td>dumpconf</td><td>Perform various operations on the configuration tree.</td><td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td><td>diag plugin</td>
 <tr><td>DumpCsect</td><td>Print the cross-section of the board (layer stack)</td><td>DumpCsect()</td><td>draw_csect</td>
@@ -136,6 +136,7 @@ This is pcb-rnd 3.0.0-dev (svn r34858) an interactive printed circuit board edit
 <tr><td><a href="action_details.html#elementsetattr">ElementSetAttr</a></td><td>Sets or clears an element-specific attribute.</td><td>ElementSetAttr(refdes,name[,value])</td><td></td>
 <tr><td>EnableVendor</td><td>Enables automatic drill size mapping.</td><td>EnableVendor()</td><td>oldactions plugin</td>
 <tr><td>EvalConf</td><td>Perform various operations on the configuration tree.</td><td>EvalConf(path) - evaluate a config path in different config sources to figure how it ended up in the native database</td><td>diag plugin</td>
+<tr><td>ExecActionFile</td><td>Run actions from the given file.</td><td>ExecuteFile(filename)</td><td></td>
 <tr><td>ExecCommand</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
 <tr><td><a href="action_details.html#executefile">ExecuteFile</a></td><td>Run actions from the given file.</td><td>ExecuteFile(filename)</td><td></td>
 <tr><td>ExpFeatTmp</td><td>Experimental Feature Template.</td><td>ExpFeatTmp(...)</td><td>experimental features plugin</td>
@@ -187,6 +188,7 @@ This is pcb-rnd 3.0.0-dev (svn r34858) an interactive printed circuit board edit
 <tr><td>ImportcpcbFrom</td><td>Loads the auto-routed tracks from the specified c-pcb output.</td><td>ImportcpcbFrom(filename)</td><td>cpcb plugin</td>
 <tr><td><a href="action_details.html#importgui">ImportGUI</a></td><td>Asks user which schematics to import into PCB.</td><td>ImportGUI()</td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#importsch">ImportSch</a></td><td>Import schematics/netlist.</td><td>ImportSch()<br>ImportSch(reimport)<br>ImportSch(setup, importer, [args...])</td><td>import_sch2 plugin</td>
+<tr><td>ImportSes</td><td>Loads the specified routed dsn file.</td><td>ImportSes(filename)</td><td>dsn importer/ses</td>
 <tr><td>Info</td><td></td><td></td><td>report plugin</td>
 <tr><td>InfoBarFileChanged</td><td>Present the "file changed" warning info bar with buttons to reload or cancel</td><td>InfoBarFileChanged(open|close)</td><td>dialogs plugin</td>
 <tr><td>integrity</td><td>perform integrirty check on the current board and generate errors if needed</td><td>integrity()</td><td>diag plugin</td>
@@ -216,7 +218,7 @@ This is pcb-rnd 3.0.0-dev (svn r34858) an interactive printed circuit board edit
 <tr><td><a href="action_details.html#load">Load</a></td><td>Load layout data from a user-selected file.</td><td>Load()<br>Load(Layout|LayoutToBuffer|ElementToBuffer|Netlist|Revert)</td><td>dialogs plugin</td>
 <tr><td>LoadAccelNetFrom</td><td>Loads the specified Accel EDA netlist file.</td><td>LoadAccelNetFrom(filename)</td><td>accel_net importer</td>
 <tr><td>LoadCalayFrom</td><td>Loads the specified calay netlist/component file pair.</td><td>LoadCalayFrom(filename)</td><td>calay importer</td>
-<tr><td>LoadDsnFrom</td><td>Loads the specified routed dsn file.</td><td>LoadDsnFrom(filename)</td><td>dsn importer</td>
+<tr><td>LoadDsnFrom</td><td>LoadDsnFrom() is a legacy action provided for compatibility and will be removed later.<br>Please use ImportSes() instead!</td><td>LoadDsnFrom(filename)</td><td>dsn importer/ses</td>
 <tr><td>LoadEeschemaFrom</td><td>Loads the specified eeschema .net file - the netlist must be an s-expression.</td><td>LoadEeschemaFrom(filename)</td><td>kicad plugin</td>
 <tr><td>LoadFontFrom</td><td>Load PCB font from a file</td><td>LoadFontFrom([file, id])</td><td></td>
 <tr><td><a href="action_details.html#loadfootprint">LoadFootprint</a></td><td>Loads a single footprint by name.</td><td>LoadFootprint(filename[,refdes,value])</td><td></td>
@@ -241,7 +243,7 @@ This is pcb-rnd 3.0.0-dev (svn r34858) an interactive printed circuit board edit
 <tr><td>Log</td><td>Manages the central, in-memory log.</td><td>Log(clear, [fromID, [toID])<br>Log(export, [filename, [text|lihata])</td><td></td>
 <tr><td>LogDialog</td><td>Open the log dialog.</td><td>LogDialog()</td><td>lib_hid_common plugin</td>
 <tr><td><a href="action_details.html#m">m</a></td><td>Loads a layout into the current buffer.</td><td>m [name]</td><td>shand_cmd plugin</td>
-<tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td>dialogs plugin</td>
+<tr><td>ManagePlugins</td><td>Manage plugins dialog.</td><td>ManagePlugins()</td><td>lib_hid_common plugin</td>
 <tr><td><a href="action_details.html#markcrosshair">MarkCrosshair</a></td><td>Set/Reset the pcb_crosshair mark.</td><td>MarkCrosshair()<br>MarkCrosshair(Center)</td><td></td>
 <tr><td>MenuDebug</td><td>Menu debug helpers: save the merged menu in a file</td><td>MenuDebug(save, path)</td><td></td>
 <tr><td>MenuPatch</td><td>Manage menu patches</td><td>MenuPatch(load, cookie, path, desc)<br>MenuPatch(unload, cookie)<br>MenuPatch(list)<br>MenuPatch(InhibitInc|InhibitDec)</td><td></td>
@@ -383,6 +385,7 @@ This is pcb-rnd 3.0.0-dev (svn r34858) an interactive printed circuit board edit
 <tr><td><a href="action_details.html#selectlayer">SelectLayer</a></td><td>Select which layer is the current layer.</td><td>SelectLayer(1..MAXLAYER|Silk|Rats)</td><td></td>
 <tr><td><a href="action_details.html#setflag">SetFlag</a></td><td>Sets flags on objects.</td><td>SetFlag(Object|Selected|SelectedObjects, flag)<br>SetFlag(SelectedLines|SelectedPins|SelectedVias, flag)<br>SetFlag(SelectedPads|SelectedTexts|SelectedNames, flag)<br>SetFlag(SelectedElements, flag)<br>flag = thermal | join</td><td></td>
 <tr><td>SetGrid</td><td>Change grid size.</td><td>SetGrid(delta|*mult|/div, [unit])</td><td></td>
+<tr><td><a href="action_details.html#setgridoffs">SetGridOffs</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Change grid offset (alignment) to x_offs and y_offs. Offsets should be specified with units.</td><td>SetGridOffs(x_offs, y_offs)</td><td></td>
 <tr><td>SetOctagon</td><td></td><td></td><td>oldactions plugin</td>
 <tr><td><a href="action_details.html#setsame">SetSame</a></td><td>Sets current layer and sizes to match indicated item.</td><td>SetSame()</td><td></td>
 <tr><td>SetSquare</td><td></td><td></td><td>oldactions plugin</td>
