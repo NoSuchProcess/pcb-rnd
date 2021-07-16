@@ -68,6 +68,12 @@ static pcb_net_t *get_net(dsn_write_t *wctx, pcb_any_obj_t *obj)
 	return net;
 }
 
+static pcb_net_t *is_protected(dsn_write_t *wctx, pcb_any_obj_t *obj)
+{
+	return PCB_FLAG_TEST(PCB_FLAG_LOCK, obj);
+}
+
+
 static void group_name(char *dst, const char *src, rnd_layergrp_id_t gid)
 {
 	int n;
@@ -377,7 +383,9 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 				COORDX(line->Point2.X), COORDY(line->Point2.Y));
 			if (net != NULL)
 				fprintf(wctx->f, " (net \"%s\")", net->name);
-			fprintf(wctx->f, " (type protect))\n");
+			if (is_protected(wctx, (pcb_any_obj_t *)line))
+				fprintf(wctx->f, " (type protect)");
+			fprintf(wctx->f, ")\n");
 		}
 		PCB_END_LOOP;
 
@@ -406,7 +414,9 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 				COORDX(arc->X), COORDY(arc->Y));
 			if (net != NULL)
 				fprintf(wctx->f, " (net \"%s\")", net->name);
-			fprintf(wctx->f, " (type protect))\n");
+			if (is_protected(wctx, (pcb_any_obj_t *)arc))
+				fprintf(wctx->f, " (type protect)");
+			fprintf(wctx->f, ")\n");
 		}
 		PCB_END_LOOP;
 
@@ -418,7 +428,9 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 			dsn_write_poly_coords(wctx, polygon, &linelen, "      ");
 			if (net != NULL)
 				fprintf(wctx->f, " (net \"%s\")", net->name);
-			fprintf(wctx->f, " (type protect)))\n");
+			if (is_protected(wctx, (pcb_any_obj_t *)polygon))
+				fprintf(wctx->f, " (type protect)");
+			fprintf(wctx->f, "))\n");
 
 			if (polygon->HoleIndexN > 0)
 				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)polygon, "poly-hole", "Polygon holes are not supported", "Saving the polygon without hole.");
