@@ -6,6 +6,7 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_dsn/read.o
 	$(PLUGDIR)/io_dsn/write.o
 	$(PLUGDIR)/io_dsn/ses.o
+	$(PLUGDIR)/io_dsn/export.o
 @]
 
 switch /local/pcb/io_dsn/controls
