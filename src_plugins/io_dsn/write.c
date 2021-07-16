@@ -372,6 +372,35 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 		}
 		PCB_END_LOOP;
 
+		PCB_ARC_LOOP(ly);
+		{
+			rnd_coord_t e1x, e1y, e2x, e2y;
+			double sa = fabs(arc->StartAngle);
+
+			if ((arc->Delta != 90) && (arc->Delta != -90)) {
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)arc, "arc-delta-angle", "invalid arc delta (span) angle", "DSN supports only 90 degree arcs. This object is omitted from the output");
+				continue;
+			}
+
+			if ((sa != 0) && (sa != 90) && (sa != 180) && (sa != 270) && (sa != 360)) {
+				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)arc, "arc-start-angle", "invalid arc start angle", "DSN supports only \"axis aligned\" arcs, that is start angle must be integer*90. This object is omitted from the output");
+				continue;
+			}
+
+			net = htpp_get(&wctx->nmap.o2n, (pcb_any_obj_t *)arc);
+			pcb_arc_get_end(arc, 0, &e1x, &e1y);
+			pcb_arc_get_end(arc, 1, &e2x, &e2y);
+
+			rnd_fprintf(wctx->f,"    (wire (qarc \"%s\" %[4] %[4] %[4] %[4] %[4] %[4] %[4])", gname, arc->Thickness,
+				COORDX(e1x), COORDY(e1y),
+				COORDX(e2x), COORDY(e2y),
+				COORDX(arc->X), COORDY(arc->Y));
+			if (net != NULL)
+				fprintf(wctx->f, " (net \"%s\")", net->name);
+			fprintf(wctx->f, " (type protect))\n");
+		}
+		PCB_END_LOOP;
+
 		PCB_POLY_LOOP(ly);
 		{
 			int linelen;
