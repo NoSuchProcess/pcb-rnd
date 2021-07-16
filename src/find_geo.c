@@ -919,7 +919,11 @@ rnd_bool_t pcb_isc_pstk_line_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_line
 			if (!proto->hplated)
 				return 0;
 
-			slshape = pcb_pstk_shape_mech_or_hole_at(PCB, ps, line->parent.layer, &sltmp);
+			if (line->parent.layer != NULL)
+				slshape = pcb_pstk_shape_mech_or_hole_at(PCB, ps, line->parent.layer, &sltmp);
+			else
+				slshape = pcb_pstk_shape_mech_or_hole_(ps, proto, &sltmp); /* this happens when called from a line shaped padstack - there's no known layer ID, assume anylayer */
+			
 			if (slshape == NULL)
 				return rnd_false;
 			return pcb_isc_pstk_line_shp(ctx, ps, line, slshape);
