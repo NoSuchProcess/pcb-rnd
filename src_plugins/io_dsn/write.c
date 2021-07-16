@@ -426,11 +426,12 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 			net = get_net(wctx, (pcb_any_obj_t *)polygon);
 			linelen = rnd_fprintf(wctx->f,"    (wire (polygon \"%s\" 0", gname);
 			dsn_write_poly_coords(wctx, polygon, &linelen, "      ");
+			fprintf(wctx->f, ")");
 			if (net != NULL)
 				fprintf(wctx->f, " (net \"%s\")", net->name);
 			if (is_protected(wctx, (pcb_any_obj_t *)polygon))
 				fprintf(wctx->f, " (type protect)");
-			fprintf(wctx->f, "))\n");
+			fprintf(wctx->f, ")\n");
 
 			if (polygon->HoleIndexN > 0)
 				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)polygon, "poly-hole", "Polygon holes are not supported", "Saving the polygon without hole.");
