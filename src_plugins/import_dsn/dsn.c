@@ -265,7 +265,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	/* parse the tree: find wiring */
 	if (PCB->RouteStyle.used > 0)
 		clear = PCB->RouteStyle.array[0].Clearance * 2;
-	if (strcmp(dom.root->str, "PCB") == 0)
+	if (rnd_strcasecmp(dom.root->str, "pcb") == 0)
 		type = TYPE_PCB;
 	else if (strcmp(dom.root->str, "session") == 0)
 		type = TYPE_SESSION;
