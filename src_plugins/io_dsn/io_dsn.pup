@@ -6,7 +6,7 @@ $fmt-native no
 $fmt-feature-r dsn board
 $fmt-feature-r specctra .dsn (route result: wires and vias)
 $fmt-feature-r specctra .ses (route result: wires and vias)
-$fmt-feature-w dsn board
+$fmt-feature-w specctra dsn board
 $package io-alien
 dep lib_gensexpr
 dep lib_netmap
