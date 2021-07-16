@@ -1,12 +1,15 @@
 $class io
 $short specctra .dsn
-$long Load and save specctra DSN files
+$long Load and save specctra DSN files, import SES
 $state works
 $fmt-native no
 $fmt-feature-r dsn board
+$fmt-feature-r specctra .dsn (route result: wires and vias)
+$fmt-feature-r specctra .ses (route result: wires and vias)
 $fmt-feature-w dsn board
 $package io-alien
 dep lib_gensexpr
 dep lib_netmap
+dep lib_compat_help
 default disable
 autoload 1

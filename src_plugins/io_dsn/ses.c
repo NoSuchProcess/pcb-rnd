@@ -51,7 +51,7 @@
 #include "menu_internal.c"
 
 
-static const char *dsn_cookie = "dsn importer";
+static const char *dsn_cookie = "dsn importer/ses";
 
 typedef enum {
 	TYPE_PCB,
@@ -209,7 +209,7 @@ static void parse_via(rnd_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 static const char pcb_acts_ImportSes[] = "ImportSes(filename)";
 static const char pcb_acth_ImportSes[] = "Loads the specified routed dsn file.";
 
-fgw_error_t pcb_act_ImportSes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t pcb_act_ImportSes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL;
 	rnd_coord_t clear;
@@ -342,30 +342,26 @@ fgw_error_t pcb_act_ImportSes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 static const char pcb_acts_LoadDsnFrom[] = "LoadDsnFrom(filename)";
 static const char pcb_acth_LoadDsnFrom[] = "LoadDsnFrom() is a legacy action provided for compatibility and will be removed later.\nPlease use ImportSes() instead!\n";
-fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+static fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	rnd_message(RND_MSG_ERROR, pcb_acth_LoadDsnFrom);
 	return pcb_act_ImportSes(res, argc, argv);
 }
 
-rnd_action_t dsn_action_list[] = {
+static rnd_action_t dsn_action_list[] = {
 	{"LoadDsnFrom", pcb_act_LoadDsnFrom, pcb_acth_LoadDsnFrom, pcb_acts_LoadDsnFrom},
 	{"ImportSes", pcb_act_ImportSes, pcb_acth_ImportSes, pcb_acts_ImportSes}
 };
 
-int pplg_check_ver_import_dsn(int ver_needed) { return 0; }
-
-void pplg_uninit_import_dsn(void)
+void pcb_dsn_ses_uninit(void)
 {
 	rnd_remove_actions_by_cookie(dsn_cookie);
 	rnd_hid_menu_unload(rnd_gui, dsn_cookie);
 }
 
-int pplg_init_import_dsn(void)
+void pcb_dsn_ses_init(void)
 {
-	RND_API_CHK_VER;
 	RND_REGISTER_ACTIONS(dsn_action_list, dsn_cookie)
 	rnd_hid_menu_load(rnd_gui, NULL, dsn_cookie, 190, NULL, 0, dsn_menu, "plugin: import_dsn");
-	return 0;
 }
 

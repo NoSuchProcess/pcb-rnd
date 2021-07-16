@@ -40,6 +40,9 @@
 #include "plug_io.h"
 #include <librnd/core/plugins.h>
 
+void pcb_dsn_ses_uninit(void);
+void pcb_dsn_ses_init(void);
+
 
 static const char *dsn_cookie = "dsn IO";
 static pcb_plug_io_t io_dsn;
@@ -63,6 +66,7 @@ int pplg_check_ver_io_dsn(int ver_needed) { return 0; }
 
 void pplg_uninit_io_dsn(void)
 {
+	pcb_dsn_ses_uninit();
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_dsn);
 }
 
@@ -88,6 +92,8 @@ int pplg_init_io_dsn(void)
 	io_dsn.mime_type = "application/dsn";
 
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_dsn);
+
+	pcb_dsn_ses_init();
 
 	return 0;
 }

@@ -50,7 +50,6 @@ include {../src_plugins/fp_fs/Plug.tmpasm}
 include {../src_plugins/fp_wget/Plug.tmpasm}
 include {../src_plugins/import_accel_net/Plug.tmpasm}
 include {../src_plugins/import_calay/Plug.tmpasm}
-include {../src_plugins/import_dsn/Plug.tmpasm}
 include {../src_plugins/import_edif/Plug.tmpasm}
 include {../src_plugins/import_fpcb_nl/Plug.tmpasm}
 include {../src_plugins/import_gnetlist/Plug.tmpasm}

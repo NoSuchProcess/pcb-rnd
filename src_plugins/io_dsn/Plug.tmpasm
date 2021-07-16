@@ -1,8 +1,11 @@
 put /local/pcb/mod {io_dsn}
+put /local/pcb/mod/MENUFILE {dsn-menu.lht}
+put /local/pcb/mod/MENUVAR {dsn_menu}
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_dsn/io_dsn.o
 	$(PLUGDIR)/io_dsn/read.o
 	$(PLUGDIR)/io_dsn/write.o
+	$(PLUGDIR)/io_dsn/ses.o
 @]
 
 switch /local/pcb/io_dsn/controls

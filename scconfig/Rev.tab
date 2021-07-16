@@ -1,4 +1,5 @@
-25181	configure	io_dsn: padstack proto hash
+35232	cnfigure	io_dsn: merge import_dsn (as ses import)
+35181	configure	io_dsn: padstack proto hash
 35076	configure	io_pads: plugin configuration
 35020	configure	io_pads: enable the experimental write code
 34995	configure	fix png export missing formats
