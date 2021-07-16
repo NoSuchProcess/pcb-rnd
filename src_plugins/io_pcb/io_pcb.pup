@@ -4,7 +4,7 @@ $long Load and save the design and footprints in the original gEDA/PCB text form
 $state works
 $fmt-native no
 $fmt-feature-r gEDA/PCB .pcb board (any version up to 2017)
-$fmt-feature-w gEDA/PCB .pcb board (various version up to 2017 )
+$fmt-feature-w gEDA/PCB .pcb board (various version up to 2017)
 $fmt-feature-r gEDA/PCB .fp footprints
 $fmt-feature-w gEDA/PCB .fp footprints
 $fmt-feature-r gEDA/PCB font
