@@ -1347,6 +1347,9 @@ static int dsn_parse_wire_qarc(dsn_read_t *ctx, gsxl_node_t *wrr, pcb_subc_t *su
 		return -1;
 	}
 
+	if (sa < ea)
+		sa += 360;
+
 	pcb_arc_new(ly, crd[4], crd[5], r1, r1, sa, ea-sa, aper, conf_core.design.clearance, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
 
 	return 0;
