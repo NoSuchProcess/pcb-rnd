@@ -36,6 +36,7 @@
 #include <gensexpr/gsxl.h>
 
 #include "board.h"
+#include "conf_core.h"
 #include "data.h"
 #include "polygon.h"
 #include <librnd/core/safe_fs.h>
@@ -263,8 +264,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 
 	/* parse the tree: find wiring */
-	if (PCB->RouteStyle.used > 0)
-		clear = PCB->RouteStyle.array[0].Clearance * 2;
+	clear = conf_core.design.clearance * 2;
 	if (rnd_strcasecmp(dom.root->str, "pcb") == 0)
 		type = TYPE_PCB;
 	else if (strcmp(dom.root->str, "session") == 0)
