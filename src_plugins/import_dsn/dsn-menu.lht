@@ -2,7 +2,7 @@ ha:rnd-menu-v1 {
 	li:anchored {
 		ha:@import_geo {
 			li:submenu {
-				ha:Load routed dsn or ses file       = { action=LoadDsnFrom() }
+				ha:Import autorouted dsn/ses file       = { action=ImportSes() }
 			}
 		}
 	}

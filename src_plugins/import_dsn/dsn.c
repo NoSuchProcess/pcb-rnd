@@ -206,10 +206,10 @@ static void parse_via(rnd_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 	}
 }
 
-static const char pcb_acts_LoadDsnFrom[] = "LoadDsnFrom(filename)";
-static const char pcb_acth_LoadDsnFrom[] = "Loads the specified routed dsn file.";
+static const char pcb_acts_ImportSes[] = "ImportSes(filename)";
+static const char pcb_acth_ImportSes[] = "Loads the specified routed dsn file.";
 
-fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+fgw_error_t pcb_act_ImportSes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
 	const char *fname = NULL;
 	rnd_coord_t clear;
@@ -221,7 +221,7 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	gsxl_node_t *wiring, *w, *routes, *nout, *n;
 	dsn_type_t type;
 
-	RND_ACT_MAY_CONVARG(1, FGW_STR, LoadDsnFrom, fname = argv[1].val.str);
+	RND_ACT_MAY_CONVARG(1, FGW_STR, ImportSes, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
 		fname = rnd_gui->fileselect(rnd_gui,
@@ -340,8 +340,17 @@ fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
+static const char pcb_acts_LoadDsnFrom[] = "LoadDsnFrom(filename)";
+static const char pcb_acth_LoadDsnFrom[] = "LoadDsnFrom() is a legacy action provided for compatibility and will be removed later.\nPlease use ImportSes() instead!\n";
+fgw_error_t pcb_act_LoadDsnFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
+{
+	rnd_message(RND_MSG_ERROR, pcb_acth_LoadDsnFrom);
+	return pcb_act_ImportSes(res, argc, argv);
+}
+
 rnd_action_t dsn_action_list[] = {
-	{"LoadDsnFrom", pcb_act_LoadDsnFrom, pcb_acth_LoadDsnFrom, pcb_acts_LoadDsnFrom}
+	{"LoadDsnFrom", pcb_act_LoadDsnFrom, pcb_acth_LoadDsnFrom, pcb_acts_LoadDsnFrom},
+	{"ImportSes", pcb_act_ImportSes, pcb_acth_ImportSes, pcb_acts_ImportSes}
 };
 
 int pplg_check_ver_import_dsn(int ver_needed) { return 0; }
