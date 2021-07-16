@@ -3,7 +3,8 @@ $short PADS board
 $long load boards in the PADS ASCII format
 $state WIP
 $fmt-native no
-$fmt-feature-r PADS board
+$fmt-feature-r PADS ASCII board
+$fmt-feature-w PADS ASCII board
 $package io-alien
 dep teardrops
 dep lib_netmap
