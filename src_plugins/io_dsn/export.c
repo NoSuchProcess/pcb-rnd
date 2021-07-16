@@ -35,6 +35,7 @@
 #include <librnd/core/safe_fs.h>
 
 #include "board.h"
+#include "conf_core.h"
 #include "hid_cam.h"
 #include "plug_io.h"
 
@@ -49,6 +50,15 @@ static const rnd_export_opt_t dsn_options[] = {
 	{"dsnfile", "SPECCTRA DSN file",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_dsnfile 0
+	{"trackwidth", "track width in mils (0=use pen's)",
+	 RND_HATT_COORD, RND_MIL_TO_COORD(0), RND_MIL_TO_COORD(100), {0, 0, 0, 0}, 0},
+#define HA_trackwidth 1
+	{"clearance", "clearance in mils (0=use pen's)",
+	 RND_HATT_COORD, RND_MIL_TO_COORD(0), RND_MIL_TO_COORD(100), {0, 0, 0, 0}, 0},
+#define HA_clearance 2
+	{"viaproto", "via prototype override (-1=use pen's)",
+	 RND_HATT_INTEGER, RND_MIL_TO_COORD(0), 100000, {-1, 0, 0, -1}, 0},
+#define HA_viaproto 3
 };
 
 #define NUM_OPTIONS (sizeof(dsn_options)/sizeof(dsn_options[0]))
@@ -67,9 +77,14 @@ static const rnd_export_opt_t *dsn_get_export_options(rnd_hid_t *hid, int *n)
 	return dsn_options;
 }
 
+#define rnd_conf_force_set_coord(var, val) *((RND_CFT_COORD *)(&var)) = val
+#define rnd_conf_force_set_int(var, val) *((RND_CFT_INTEGER *)(&var)) = val
+
+
 static void dsn_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	FILE *f;
+	int restore_conf = 0;
 
 	if (!options) {
 		dsn_get_export_options(hid, 0);
@@ -84,7 +99,25 @@ static void dsn_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		rnd_message(RND_MSG_ERROR, "dsn export: can not open '%s' for write\n", dsn_filename);
 		return;
 	}
+
+	if (options[HA_trackwidth].crd > 0) {
+		rnd_conf_force_set_coord(conf_core.design.line_thickness, options[HA_trackwidth].crd);
+		restore_conf = 1;
+	}
+	if (options[HA_clearance].crd > 0) {
+		rnd_conf_force_set_coord(conf_core.design.clearance, options[HA_clearance].crd);
+		restore_conf = 1;
+	}
+	if (options[HA_viaproto].lng >= 0) {
+		rnd_conf_force_set_coord(conf_core.design.via_proto, options[HA_viaproto].lng);
+		restore_conf = 1;
+	}
+
 	io_dsn_write_pcb(NULL, f, NULL, dsn_filename, 0);
+
+	if (restore_conf)
+		rnd_conf_update(NULL, -1);
+
 	fclose(f);
 }
 
