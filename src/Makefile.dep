@@ -908,19 +908,6 @@
  ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
  polygon.h vtpadstack_t.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  plug_import.h ../src_plugins/import_calay/menu_internal.c
-../src_plugins/import_dsn/dsn.o: ../src_plugins/import_dsn/dsn.c \
- ../config.h ../src_3rd/gensexpr/gsxl.h \
- ../src_3rd/gensexpr/gensexpr_impl.h ../src_3rd/gensexpr/gsx_parse.h \
- board.h vtroutestyle.h attrib.h global_typedefs.h layer.h globalconst.h \
- obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
- obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
- obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
- board.h data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h \
- idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
- ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
- polygon.h vtpadstack_t.h polygon.h \
- ../src_plugins/lib_compat_help/pstk_compat.h obj_pstk.h \
- ../src_plugins/import_dsn/menu_internal.c
 ../src_plugins/import_edif/edif.o: ../src_plugins/import_edif/edif.c \
  board.h ../config.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -1230,7 +1217,7 @@
  obj_rat.h layer_grp.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/io_dsn/write.h ../src_plugins/io_dsn/menu_internal.c
+ ../src_plugins/io_dsn/write.h
 ../src_plugins/io_dsn/read.o: ../src_plugins/io_dsn/read.c ../config.h \
  ../src_3rd/gensexpr/gsxl.h ../src_3rd/gensexpr/gensexpr_impl.h \
  ../src_3rd/gensexpr/gsx_parse.h board.h vtroutestyle.h attrib.h \
@@ -1243,6 +1230,18 @@
  obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h plug_io.h plug_footprint.h data.h layer_grp.h conf_core.h \
  netlist.h ../src_plugins/io_dsn/read.h
+../src_plugins/io_dsn/ses.o: ../src_plugins/io_dsn/ses.c ../config.h \
+ ../src_3rd/gensexpr/gsxl.h ../src_3rd/gensexpr/gensexpr_impl.h \
+ ../src_3rd/gensexpr/gsx_parse.h board.h vtroutestyle.h attrib.h \
+ global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
+ data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
+ obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h conf_core.h \
+ data.h crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h idpath.h \
+ obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
+ obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
+ vtpadstack_t.h polygon.h ../src_plugins/lib_compat_help/pstk_compat.h \
+ obj_pstk.h ../src_plugins/io_dsn/menu_internal.c
 ../src_plugins/io_dsn/write.o: ../src_plugins/io_dsn/write.c ../config.h \
  plug_io.h global_typedefs.h plug_footprint.h data.h globalconst.h \
  layer.h attrib.h obj_common.h flag.h data_parent.h obj_arc_list.h \
@@ -1251,8 +1250,8 @@
  route.h buffer.h obj_rat_list.h obj_rat.h layer_grp.h idpath.h \
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
  obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
- vtpadstack_t.h board.h vtroutestyle.h rats_patch.h board.h data.h \
- layer.h layer_grp.h obj_pstk_inlines.h thermal.h operation.h \
+ vtpadstack_t.h board.h vtroutestyle.h rats_patch.h board.h conf_core.h \
+ data.h layer.h layer_grp.h obj_pstk_inlines.h thermal.h operation.h \
  ../src_plugins/io_dsn/write.h ../src_plugins/lib_netmap/netmap.h \
  netlist.h ../src_plugins/lib_netmap/placement.h ht_subc.h \
  ../src_plugins/lib_netmap/pstklib.h ht_pstk.h \
@@ -1939,6 +1938,16 @@
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
  obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
  vtpadstack_t.h ht_subc.h
+../src_plugins/lib_netmap/pstklib.o: ../src_plugins/lib_netmap/pstklib.c \
+ ../config.h ../src_plugins/lib_netmap/pstklib.h board.h vtroutestyle.h \
+ attrib.h global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
+ data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
+ obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
+ obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h data.h \
+ crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h idpath.h \
+ obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
+ obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
+ vtpadstack_t.h ht_pstk.h
 ../src_plugins/lib_polyhelp/polyhelp.o: \
  ../src_plugins/lib_polyhelp/polyhelp.c ../config.h \
  ../src_plugins/lib_polyhelp/polyhelp.h obj_poly.h obj_common.h flag.h \
@@ -2874,6 +2883,11 @@ hid_cam.o: hid_cam.c ../config.h board.h vtroutestyle.h attrib.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  hid_cam.h layer_addr.h layer_vis.h plug_io.h plug_footprint.h
+ht_pstk.o: ht_pstk.c ../config.h ht_pstk.h obj_pstk.h obj_common.h flag.h \
+ globalconst.h attrib.h global_typedefs.h data_parent.h layer.h \
+ obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h \
+ obj_poly.h obj_text_list.h obj_text.h font.h obj_gfx_list.h obj_gfx.h \
+ obj_pstk_shape.h polygon.h vtpadstack_t.h
 ht_subc.o: ht_subc.c ../config.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h obj_common.h flag.h globalconst.h \
  attrib.h global_typedefs.h data_parent.h layer.h obj_arc_list.h \
