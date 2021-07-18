@@ -292,6 +292,20 @@ static rnd_coord_t eagle_get_attrcu(read_state_t *st, trnode_t *nd, const char *
 	return c;
 }
 
+
+#include "layertab.c"
+
+static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_loc_t loc, void *obj);
+
+	/* create layers that are always required */
+static void eagle_setup_layers_auto(read_state_t *st)
+{
+	const int *elid;
+
+	for(elid = eagle_layer_always; *elid != 0; elid++)
+		eagle_layer_get(st, *elid, ON_BOARD, NULL);
+}
+
 static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int type)
 {
 	trnode_t *n;
@@ -365,12 +379,11 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 		}
 	}
 	pcb_layer_group_setup_silks(st->pcb);
+	eagle_setup_layers_auto(st);
 	pcb_layer_auto_fixup(st->pcb);
 	pcb_layergrp_inhibit_dec();
 	return 0;
 }
-
-#include "layertab.c"
 
 static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_loc_t loc, void *obj)
 {
@@ -1805,7 +1818,6 @@ static int post_process_polyholes(read_state_t *st)
 	}
 	return 0;
 }
-
 
 int io_eagle_read_pcb_xml(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *Filename, rnd_conf_role_t settings_dest)
 {

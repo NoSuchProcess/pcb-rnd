@@ -92,3 +92,6 @@ static const eagle_layertab_t eagle_layertab[] = {
 
 	{0}
 };
+
+/* These layers from the above table should be created on all boards */
+static const int eagle_layer_always[] = { 29, 30, 31, 32, 0 };
