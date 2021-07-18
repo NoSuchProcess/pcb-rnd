@@ -94,7 +94,7 @@ static const char *CAPS(rnd_cap_style_t cap)
 
 static FILE *f = NULL;
 static int group_open = 0;
-static int opacity = 100, drawing_mask, drawing_hole, photo_mode, flip;
+static int opacity = 100, drawing_mask, drawing_hole, photo_mode, photo_noise, flip;
 
 static gds_t sbright, sdark, snormal, sclip;
 static rnd_composite_op_t drawing_mode;
@@ -183,9 +183,13 @@ Flip board, look at it from the bottom side
 	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
 #define HA_true_size 5
 
+	{"photo-noise", "Add noise in photo mode to make the output more realistic",
+	 RND_HATT_BOOL, 0, 0, {0, 0, 0}, 0},
+#define HA_photo_noise 6
+
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0}
-#define HA_cam 6
+#define HA_cam 7
 };
 
 #define NUM_OPTIONS (sizeof(svg_attribute_list)/sizeof(svg_attribute_list[0]))
@@ -234,6 +238,11 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 		}
 		else
 			photo_mode = 0;
+
+		if (options[HA_photo_noise].lng)
+			photo_noise = 1;
+		else
+			photo_noise = 0;
 
 		if (options[HA_flip].lng) {
 			flip = 1;
@@ -327,7 +336,7 @@ static void svg_footer(void)
 	}
 
 	/* blend some noise on top to make it a bit more artificial */
-	if (photo_mode) {
+	if (photo_mode && photo_noise) {
 		fprintf(f, "<filter id=\"noise\">\n");
 		fprintf(f, "	<feTurbulence type=\"fractalNoise\" baseFrequency=\"30\" result=\"noisy\" />\n");
 		fprintf(f, "</filter>\n");
