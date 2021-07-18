@@ -41,6 +41,7 @@
 #include "event.h"
 #include <librnd/core/actions.h>
 #include <librnd/core/compat_misc.h>
+#include "extobj.h"
 #include "obj_arc_op.h"
 #include "obj_line_op.h"
 #include "obj_text_op.h"
@@ -269,6 +270,11 @@ void *pcb_move_obj_to_layer(int Type, void *Ptr1, void *Ptr2, void *Ptr3, pcb_la
 {
 	void *result;
 	pcb_opctx_t ctx;
+
+	if (pcb_extobj_get_floater_subc(Ptr2) != NULL) {
+		rnd_message(RND_MSG_ERROR, "Can not move extended object floater to a different layer\nRather edit the layer bindings of the extended object to redirect the parent layer of the object.\n");
+		return NULL;
+	}
 
 	ctx.move.pcb = PCB;
 	ctx.move.dst_layer = Target;
