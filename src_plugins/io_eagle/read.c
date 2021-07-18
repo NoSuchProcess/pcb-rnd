@@ -406,6 +406,10 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 				gid = grp - st->pcb->LayerGroups.grp;
 			}
 			ly->lid = pcb_layer_create(st->pcb, gid, ly->name, 0);
+			if (ly->lid >= 0) {
+				pcb_layer_t *lay = pcb_get_layer(st->pcb->Data, ly->lid);
+				lay->comb = t->comb;
+			}
 		}
 		else
 			return NULL; /* not found and not supported */
