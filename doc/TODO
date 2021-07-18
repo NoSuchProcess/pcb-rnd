@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 + FEATURE: asm(): a config node (maybe query script); if a subc matches, omit it from the list; this is for DNP or build options [report: Majenko]
-+ FEATURE: export_dsn/new io_dsn (with King Kevin and celem) (NGI0):
++ FEATURE: export_dsn/new io_dsn (with King Kevin and celem) (NGI0)
 - BUG: layer binding dialog: on the standard 4 layer board create a subc with a line on top copper; edit layer bindings of the subc; try to move it to each inner copper -> dialog box gets confused [report: Igor2]
 + BUG: svg photo mode export: doesn't seem to use the palette from the code so the output uses layer colors [report: cuvoodoo]
 - BUG: LoV crash: bug_files/lov.lht; {s l} to move the selected edit line to top copper ->crash [report: cuvoodoo]
