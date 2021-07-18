@@ -460,6 +460,11 @@ static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 			return 0;
 	}
 
+	if (photo_mode && (group < 0)) {
+		drawing_hole = PCB_LAYER_IS_DRILL(flags, purpi);
+		return 1; /* photo mode drill: do not create a separate group */
+	}
+
 	while(group_open) {
 		group_close();
 		group_open--;
