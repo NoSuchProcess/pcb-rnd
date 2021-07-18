@@ -690,6 +690,16 @@ static void rlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row
 	rnd_conf_role_t role;
 	pcb_drcq_stat_t *st;
 
+	if (row == NULL) {
+		hv.str = "-";
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wrule, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtype, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wtitle, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdesc, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wstat, &hv);
+		return;
+	}
+
 	rlist_fetch();
 	rlist_fetch_nd();
 
@@ -826,6 +836,16 @@ static void dlist_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row
 	rnd_conf_role_t role;
 	gds_t tmp;
 	rnd_conf_native_t *nat;
+
+	if (row == NULL) {
+		hv.str = "-";
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdef, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdtype, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wddesc, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wdefault, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wvalue, &hv);
+		return;
+	}
 
 	dlist_fetch();
 	dlist_fetch_nd();
