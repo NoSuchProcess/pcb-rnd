@@ -166,10 +166,9 @@ static void calc_dialog_deps(void)
 /* Runs when things should be detected for the target system */
 int hook_detect_target()
 {
-	int want_gd, want_stroke, want_xml2, want_freetype2, want_fuse;
+	int want_gd, want_xml2, want_freetype2, want_fuse;
 
 	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("import_pxm_gd");
-	want_stroke = plug_is_enabled("stroke");
 	want_xml2   = plug_is_enabled("io_eagle") || plug_is_enabled("order_pcbway");
 	want_freetype2 = plug_is_enabled("import_ttf");
 	want_fuse = plug_is_enabled("export_vfs_fuse");
@@ -183,14 +182,6 @@ int hook_detect_target()
 		if (!istrue(get("libs/sul/fuse/presents"))) {
 			report_repeat("WARNING: Since there's no fuse found, disabling export_vfs_fuse plugin...\n");
 			hook_custom_arg("disable-export_vfs_fuse", NULL);
-		}
-	}
-
-	if (want_stroke) {
-		require("libs/gui/libstroke/presents", 0, 0);
-		if (!istrue(get("libs/gui/libstroke/presents"))) {
-			report_repeat("WARNING: Since there's no libstroke found, disabling the stroke plugin...\n");
-			hook_custom_arg("disable-stroke", NULL);
 		}
 	}
 
