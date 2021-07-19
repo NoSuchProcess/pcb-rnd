@@ -869,6 +869,10 @@ static int pads_write_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 			nextt = (pcb_2netmap_obj_t *)oseg->objs.array[m];
 			m++;
 		}
+
+/*		if (nextt->o.any.parent.layer == NULL)
+			continue;*/
+
 		plid = pads_layer2plid(wctx, nextt->o.any.parent.layer);
 
 
@@ -955,18 +959,18 @@ static int pads_write_non_signal(write_ctx_t *wctx, pcb_2netmap_oseg_t *oseg)
 		pcb_2netmap_obj_t *no = (pcb_2netmap_obj_t *)oseg->objs.array[n];
 		int plid;
 
-		if (pcb_obj_parent_subc(no->orig) != NULL)
+		if ((no->orig != NULL) && (pcb_obj_parent_subc(no->orig) != NULL))
 			continue; /* do not duplicate objects already copied from partdecals */
 
 		switch(no->o.any.type) {
 			case PCB_OBJ_ARC:
 				plid = pads_layer2plid(wctx, no->o.any.parent.layer);
-				pads_write_piece_arc(wctx, (pcb_arc_t *)no->orig, plid);
+				pads_write_piece_arc(wctx, &no->o.arc, plid);
 				break;
 
 			case PCB_OBJ_LINE:
 				plid = pads_layer2plid(wctx, no->o.any.parent.layer);
-				pads_write_piece_line(wctx, (pcb_line_t *)no->orig, plid);
+				pads_write_piece_line(wctx, &no->o.line, plid);
 				break;
 
 			case PCB_OBJ_PSTK:
