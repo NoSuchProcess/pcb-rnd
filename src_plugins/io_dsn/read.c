@@ -1755,7 +1755,7 @@ static int dsn_parse_pcb(dsn_read_t *ctx, gsxl_node_t *root)
 int io_dsn_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
 	char line[1024], *s;
-	int phc = 0, in_pcb = 0, lineno = 0;
+	int phc = 0, in_pcb = 0, lineno = 0, hint = 0;
 
 	if (typ != PCB_IOT_PCB)
 		return 0;
@@ -1771,12 +1771,25 @@ int io_dsn_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filena
 				in_pcb = 1;
 			if ((phc > 0) && (strstr(s, "PCB") != 0))
 				in_pcb = 1;
+
+			/* these are so special that we can assume dsn */
 			if ((phc > 2) && in_pcb && (strstr(s, "space_in_quoted_tokens") != 0))
 				return 1;
 			if ((phc > 2) && in_pcb && (strstr(s, "host_cad") != 0))
 				return 1;
 			if ((phc > 2) && in_pcb && (strstr(s, "host_version") != 0))
 				return 1;
+
+			/* these are only hints */
+			if ((phc > 1) && in_pcb && (strstr(s, "resolution") != 0))
+				hint++;
+			if ((phc > 1) && in_pcb && (strstr(s, "structure") != 0))
+				hint++;
+
+			if (hint >= 2) {
+				/* if we had enough hints, accept it */
+				return 1;
+			}
 		}
 	}
 
