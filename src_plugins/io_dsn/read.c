@@ -1802,7 +1802,7 @@ static int dsn_parse_file(dsn_read_t *rdctx, const char *fn)
 	int c, blen = -1;
 	gsx_parse_res_t res;
 	FILE *f;
-	char buff[12];
+	char buff[13];
 	long q_offs = -1, offs;
 
 
