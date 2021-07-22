@@ -34,6 +34,8 @@
 #include <librnd/core/compat_misc.h>
 #include "plug_io.h"
 
+#include "pcbdoc_ascii.h"
+#include "pcbdoc.h"
 
 static pcb_plug_io_t io_pcbdoc_ascii;
 static const char *altium_cookie = "Altium IO";
@@ -66,8 +68,8 @@ int pplg_init_io_altium(void)
 
 	io_pcbdoc_ascii.plugin_data = NULL;
 	io_pcbdoc_ascii.fmt_support_prio = io_altium_fmt;
-/*	io_pcbdoc_ascii.test_parse = io_altium_test_parse;
-	io_pcbdoc_ascii.parse_pcb = io_altium_parse_pcb;*/
+	io_pcbdoc_ascii.test_parse = pcbdoc_ascii_test_parse;
+	io_pcbdoc_ascii.parse_pcb = io_altium_parse_pcbdoc_ascii;
 /*	io_pcbdoc_ascii.parse_footprint = io_altium_parse_footprint;
 	io_pcbdoc_ascii.map_footprint = io_altium_map_footprint;*/
 	io_pcbdoc_ascii.parse_font = NULL;

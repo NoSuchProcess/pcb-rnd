@@ -246,7 +246,7 @@ int pcbdoc_ascii_parse_file(rnd_hidlib_t *hidlib, altium_tree_t *tree, const cha
 	if (filesize <= 0)
 		return -1;
 
-	f = fopen(fn, "rb");
+	f = rnd_fopen(hidlib, fn, "rb");
 	if (f == NULL)
 		return -1;
 

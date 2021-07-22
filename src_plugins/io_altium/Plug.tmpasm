@@ -5,6 +5,9 @@ put /local/pcb/mod/SPHASH_ARGS  {--multi -i}
 
 put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_altium/io_altium.o
+	$(PLUGDIR)/io_altium/pcbdoc.o
+	$(PLUGDIR)/io_altium/pcbdoc_ascii.o
+	$(PLUGDIR)/io_altium/altium_kw.o
 @]
 
 switch /local/pcb/io_altium/controls
