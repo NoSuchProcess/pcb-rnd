@@ -206,7 +206,6 @@ static int altium_parse_via(rctx_t *rctx)
 
 int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
 {
-	FILE *f;
 	rctx_t rctx = {0};
 	int res = 0;
 
@@ -225,8 +224,6 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	res |= altium_parse_board(&rctx);
 	res |= altium_parse_track(&rctx);
 	res |= altium_parse_via(&rctx);
-
-printf("parse done\n");
 
 	altium_tree_free(&rctx.tree);
 	return res;
