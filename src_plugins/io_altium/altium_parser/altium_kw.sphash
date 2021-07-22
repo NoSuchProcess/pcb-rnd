@@ -1,0 +1,16 @@
+record
+ misc
+ board
+ class
+ net
+ component
+ polygon
+ arc
+ pad
+ via
+ track
+ text
+ componentbody
+field
+ layer
+ locked
