@@ -1,6 +1,6 @@
 #include "plug_io.h"
 #include <genlist/gendlist.h>
-#include "altium_kw.h"
+#include "altium_kw_sphash.h"
 
 typedef struct altium_field_s {
 	altium_kw_field_keys_t type; /* derived from ->key */
