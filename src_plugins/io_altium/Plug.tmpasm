@@ -1,6 +1,6 @@
 put /local/pcb/mod {io_altium}
 put /local/pcb/mod/SPHASH       {$(PLUGDIR)/io_altium/altium_kw.sphash}
-put /local/pcb/mod/SPHASH_ARGS  {--multi -i}
+put /local/pcb/mod/SPHASH_ARGS  {--prefix altium_kw --multi -i}
 
 
 put /local/pcb/mod/OBJS [@
