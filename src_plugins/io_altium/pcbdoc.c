@@ -32,10 +32,15 @@
 
 #include "pcbdoc_ascii.h"
 
+#define LY_CACHE_MAX 64
+
 typedef struct {
 	altium_tree_t tree;
 	pcb_board_t *pcb;
 	const char *filename;
+
+	/* caches */
+	pcb_layer_t *lych[LY_CACHE_MAX];
 } rctx_t;
 
 static rnd_coord_t conv_coord_field(altium_field_t *field)
@@ -49,6 +54,51 @@ static rnd_coord_t conv_coord_field(altium_field_t *field)
 		return 0;
 	}
 	return res;
+}
+
+static pcb_layer_t *conv_layer_(rctx_t *rctx, int cache_idx, pcb_layer_type_t lyt, const char *purpose)
+{
+	rnd_layer_id_t lid;
+	pcb_layer_t *ly;
+
+	if ((cache_idx >= 0) && (cache_idx < LY_CACHE_MAX) && (rctx->lych[cache_idx] != NULL))
+		return rctx->lych[cache_idx];
+	
+	if (pcb_layer_listp(rctx->pcb, lyt, &lid, 1, -1, purpose) != 1)
+		return NULL;
+
+	ly = pcb_get_layer(rctx->pcb->Data, lid);
+	if (ly == NULL)
+		return NULL;
+
+	if ((cache_idx >= 0) && (cache_idx < LY_CACHE_MAX))
+		rctx->lych[cache_idx] = ly;
+
+	return ly;
+}
+
+static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
+{
+	int kw = altium_kw_sphash(field->val);
+
+	switch(kw) {
+		case altium_kw_layers_top:           return conv_layer_(rctx, 0,  PCB_LYT_COPPER | PCB_LYT_TOP, NULL);
+		case altium_kw_layers_bottom:        return conv_layer_(rctx, 1,  PCB_LYT_COPPER | PCB_LYT_BOTTOM, NULL);
+		case altium_kw_layers_topoverlay:    return conv_layer_(rctx, 2,  PCB_LYT_SILK | PCB_LYT_TOP, NULL);
+		case altium_kw_layers_bottomoverlay: return conv_layer_(rctx, 3,  PCB_LYT_SILK | PCB_LYT_BOTTOM, NULL);
+		case altium_kw_layers_toppaste:      return conv_layer_(rctx, 4,  PCB_LYT_PASTE | PCB_LYT_TOP, NULL);
+		case altium_kw_layers_bottompaste:   return conv_layer_(rctx, 5,  PCB_LYT_PASTE | PCB_LYT_BOTTOM, NULL);
+		case altium_kw_layers_topsolder:     return conv_layer_(rctx, 6,  PCB_LYT_MASK | PCB_LYT_TOP, NULL);
+		case altium_kw_layers_bottomsolder:  return conv_layer_(rctx, 7,  PCB_LYT_MASK | PCB_LYT_BOTTOM, NULL);
+		case altium_kw_layers_drillguide:    return conv_layer_(rctx, 8,  PCB_LYT_DOC, "drill_guide");
+		case altium_kw_layers_keepout:       return conv_layer_(rctx, 9,  PCB_LYT_DOC, "keepout");
+		case altium_kw_layers_drilldrawing:  return conv_layer_(rctx, 10, PCB_LYT_DOC, "drill");
+		case altium_kw_layers_multilayer:    return conv_layer_(rctx, 11, PCB_LYT_DOC, "multilayer");
+	}
+TODO("MID1...MID16: look up or create new intern copper; use cache index from 15+mid");
+TODO("PLANE1...PLANE16: look up or create new intern copper; use cache index from 15+16+plane");
+TODO("MECHANICAL1...MECHANICAL16: look up or create new doc?; use cache index from 15+16+16+mechanical");
+	return NULL;
 }
 
 static int altium_parse_board(rctx_t *rctx)
@@ -81,7 +131,7 @@ static int altium_parse_track(rctx_t *rctx)
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
-				case altium_kw_field_layer: break;
+				case altium_kw_field_layer: ly = conv_layer_field(rctx, field); break;
 				case altium_kw_field_x1:    x1 = conv_coord_field(field); break;
 				case altium_kw_field_y1:    y1 = conv_coord_field(field); break;
 				case altium_kw_field_x2:    x2 = conv_coord_field(field); break;

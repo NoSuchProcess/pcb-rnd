@@ -21,3 +21,16 @@ field
  x2
  y2
  width
+layers
+ top
+ bottom
+ topoverlay
+ bottomoverlay
+ toppaste
+ bottompaste
+ topsolder
+ bottomsolder
+ drillguide
+ keepout
+ drilldrawing
+ multilayer
