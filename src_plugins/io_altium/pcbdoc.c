@@ -98,6 +98,7 @@ static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 TODO("MID1...MID16: look up or create new intern copper; use cache index from 15+mid");
 TODO("PLANE1...PLANE16: look up or create new intern copper; use cache index from 15+16+plane");
 TODO("MECHANICAL1...MECHANICAL16: look up or create new doc?; use cache index from 15+16+16+mechanical");
+	rnd_message(RND_MSG_ERROR, "Layer not found: '%s'\n", field->val);
 	return NULL;
 }
 
@@ -128,6 +129,8 @@ static int altium_parse_track(rctx_t *rctx)
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_track]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_track], rec)) {
 		pcb_layer_t *ly = NULL;
 		rnd_coord_t x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
+		rnd_coord_t cl = 0;
+		TODO("figure clearance for cl");
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
@@ -149,7 +152,7 @@ static int altium_parse_track(rctx_t *rctx)
 			rnd_message(RND_MSG_ERROR, "Invalid track object: no valid layer (line not created)\n");
 			continue;
 		}
-		TODO("create the line here");
+		pcb_line_new(ly, x1, y1, x2, y2, w, cl, pcb_flag_make(PCB_FLAG_CLEARLINE));
 	}
 
 	return 0;
