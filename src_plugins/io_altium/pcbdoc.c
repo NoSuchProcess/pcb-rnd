@@ -185,6 +185,8 @@ static int altium_parse_via(rctx_t *rctx)
 				case altium_kw_field_y:        y = conv_coordy_field(rctx, field); break;
 				case altium_kw_field_diameter: dia = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_holesize: hole = conv_coordy_field(rctx, field); break;
+TODO("TENTINGTOP and TENTINGBOTTOM");
+TODO("STARTLAYER and ENDLAYER (for bbvias)");
 				default: break;
 			}
 		}
