@@ -22,6 +22,8 @@ field
  y1
  x2
  y2
+ xsize
+ ysize
  width
  diameter
  holesize
@@ -29,6 +31,10 @@ field
  rotation
  sourcedesignator
  footprintdescription
+ shape
+ component
+ plated
+ name
 layers
  top
  bottom

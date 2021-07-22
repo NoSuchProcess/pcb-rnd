@@ -34,6 +34,7 @@
 #include "board.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
+#include "../src_plugins/lib_compat_help/pstk_help.h"
 
 #include "pcbdoc_ascii.h"
 
@@ -92,6 +93,14 @@ static long conv_long_field(altium_field_t *field)
 		return 0;
 	}
 	return res;
+}
+
+static int conv_bool_field(altium_field_t *field)
+{
+	if (rnd_strcasecmp(field->val, "true") == 0) return 1;
+	if (rnd_strcasecmp(field->val, "false") == 0) return 0;
+	rnd_message(RND_MSG_ERROR, "failed to convert bool value '%s'\n", field->val);
+	return 0;
 }
 
 static pcb_layer_t *conv_layer_(rctx_t *rctx, int cache_idx, pcb_layer_type_t lyt, const char *purpose)
@@ -217,6 +226,131 @@ static int altium_parse_components(rctx_t *rctx)
 	return 0;
 }
 
+static int altium_parse_pad(rctx_t *rctx)
+{
+	altium_record_t *rec;
+	altium_field_t *field;
+
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_pad]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_pad], rec)) {
+		pcb_pstk_t *ps;
+		pcb_subc_t *sc = NULL;
+		altium_field_t *ly = NULL, *term = NULL, *shapename = NULL;
+		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, xsize = RND_COORD_MAX, ysize = RND_COORD_MAX, hole = 0;
+		pcb_pstk_shape_t shape[8], master_shape, mask_shape;
+		long compid = -1;
+		int on_all = 0, on_bottom = 0, plated = 0;
+		double rot = 0;
+		rnd_coord_t cl = 0, mask = 0;
+		TODO("figure clearance for cl");
+
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			switch(field->type) {
+				case altium_kw_field_name:      term = field; break;
+				case altium_kw_field_layer:     ly = field; break;
+				case altium_kw_field_shape:     shapename = field; break;
+				case altium_kw_field_x:         x = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_y:         y = conv_coordy_field(rctx, field); break;
+				case altium_kw_field_xsize:     xsize = conv_coord_field(field); break;
+				case altium_kw_field_ysize:     ysize = conv_coord_field(field); break;
+				case altium_kw_field_holesize:  hole = conv_coord_field(field); break;
+				case altium_kw_field_rotation:  rot = conv_double_field(field); break;
+				case altium_kw_field_component: compid = conv_long_field(field); break;
+				case altium_kw_field_plated:    plated = conv_bool_field(field); break;
+TODO("HOLEWIDTH, HOLEROTATION");
+TODO("STARTLAYER and ENDLAYER (for bbvias)");
+				default: break;
+			}
+		}
+		if ((x == RND_COORD_MAX) || (y == RND_COORD_MAX)) {
+			rnd_message(RND_MSG_ERROR, "Invalid pad object: missing coordinate (pad not created)\n");
+			continue;
+		}
+		if ((xsize == RND_COORD_MAX) || (ysize == RND_COORD_MAX)) {
+			rnd_message(RND_MSG_ERROR, "Invalid pad object: missing size (pad not created)\n");
+			continue;
+		}
+		if (shapename == NULL) {
+			rnd_message(RND_MSG_ERROR, "Invalid pad object: missing shape (pad not created)\n");
+			continue;
+		}
+
+		if (compid >= 0)
+			sc = htip_get(&rctx->comps, compid);
+		if (sc == NULL) {
+			rnd_message(RND_MSG_ERROR, "Invalid pad object: can't find parent component (pad not created)\n");
+			continue;
+		}
+
+		if (rnd_strcasecmp(ly->val, "bottom") == 0) on_bottom = 1;
+		else if (rnd_strcasecmp(ly->val, "top") == 0) on_bottom = 0;
+		else if (rnd_strcasecmp(ly->val, "multilayer") == 0) on_all = 1;
+		else {
+			rnd_message(RND_MSG_ERROR, "Invalid pad object: invalid layer '%s' (should be top or bottom or multilayer; pad not created)\n", ly->val);
+			continue;
+		}
+
+		if ((rnd_strcasecmp(shapename->val, "rectangle") == 0) || (rnd_strcasecmp(shapename->val, "roundedrectangle") == 0)) {
+			pcb_shape_rect(&master_shape, xsize, ysize);
+			pcb_shape_rect(&mask_shape, xsize + 2*PCB_PROTO_MASK_BLOAT, ysize + 2*PCB_PROTO_MASK_BLOAT);
+		}
+		else if (rnd_strcasecmp(shapename->val, "round") == 0) {
+			if (xsize == ysize) {
+				master_shape.shape = mask_shape.shape = PCB_PSSH_CIRC;
+				master_shape.data.circ.x = master_shape.data.circ.y = 0;
+				master_shape.data.circ.dia = xsize;
+				mask_shape.data.circ.x = mask_shape.data.circ.y = 0;
+				mask_shape.data.circ.dia = xsize + 2*PCB_PROTO_MASK_BLOAT;
+			}
+			else {
+				master_shape.shape = mask_shape.shape = PCB_PSSH_LINE;
+				if (xsize > ysize) {
+					master_shape.data.line.x1 = mask_shape.data.line.x1 = -xsize/2 + ysize/2;
+					master_shape.data.line.x2 = mask_shape.data.line.x2 = +xsize/2 - ysize/2;
+					master_shape.data.line.y1 = mask_shape.data.line.y1 = master_shape.data.line.y2 = mask_shape.data.line.y2 = 0;
+					master_shape.data.line.thickness = ysize;
+					mask_shape.data.line.thickness = ysize + 2*PCB_PROTO_MASK_BLOAT;
+				}
+				else {
+					master_shape.data.line.y1 = mask_shape.data.line.y1 = -ysize/2 + xsize/2;
+					master_shape.data.line.y2 = mask_shape.data.line.y2 = +ysize/2 - xsize/2;
+					master_shape.data.line.x1 = mask_shape.data.line.x1 = master_shape.data.line.x2 = mask_shape.data.line.x2 = 0;
+					master_shape.data.line.thickness = xsize;
+					mask_shape.data.line.thickness = xsize + 2*PCB_PROTO_MASK_BLOAT;
+				}
+			}
+		}
+		else {
+			rnd_message(RND_MSG_ERROR, "Invalid pad object: invalid shape '%s' (pad not created)\n", shapename->val);
+			continue;
+		}
+
+
+		if (on_all) {
+			shape[0] = master_shape; shape[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+			shape[1] = master_shape; shape[1].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
+			shape[2] = master_shape; shape[2].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
+			shape[3] = mask_shape;   shape[3].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
+			shape[4] = mask_shape;   shape[4].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
+			shape[5].layer_mask = 0;
+		}
+		else {
+			pcb_layer_type_t side = on_bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
+			shape[0] = master_shape; shape[0].layer_mask = side | PCB_LYT_COPPER;
+			shape[1] = mask_shape;   shape[1].layer_mask = side | PCB_LYT_MASK;
+			shape[2] = master_shape; shape[2].layer_mask = side | PCB_LYT_PASTE;
+			shape[3].layer_mask = 0;
+		}
+
+		ps = pcb_pstk_new_from_shape(sc->data, x, y, 0, plated, cl, shape);
+		if (rot != 0)
+			pcb_pstk_rotate(ps, x, y, cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
+		if (term != NULL)
+			pcb_attribute_put(&ps->Attributes, "term", term->val);
+	}
+
+	return 0;
+}
+
 static int altium_finalize_subcs(rctx_t *rctx)
 {
 	htip_entry_t *e;
@@ -326,6 +460,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 
 	res |= altium_parse_board(&rctx);
 	res |= altium_parse_components(&rctx);
+	res |= altium_parse_pad(&rctx);
 	res |= altium_parse_track(&rctx);
 	res |= altium_parse_via(&rctx);
 
