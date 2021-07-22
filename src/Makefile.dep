@@ -1114,6 +1114,15 @@
  ../src_plugins/import_ttf/ttf_load.h ../config.h font.h obj_poly.h \
  obj_common.h flag.h globalconst.h attrib.h global_typedefs.h \
  data_parent.h obj_poly_list.h obj_arc.h obj_arc_list.h
+../src_plugins/io_altium/io_altium.o: \
+ ../src_plugins/io_altium/io_altium.c ../config.h plug_io.h \
+ global_typedefs.h plug_footprint.h data.h globalconst.h layer.h attrib.h \
+ obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
+ obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
+ obj_text.h font.h obj_gfx_list.h obj_gfx.h crosshair.h route.h buffer.h \
+ obj_rat_list.h obj_rat.h layer_grp.h idpath.h obj_subc_list.h obj_subc.h \
+ ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
+ vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h
 ../src_plugins/io_autotrax/io_autotrax.o: \
  ../src_plugins/io_autotrax/io_autotrax.c ../config.h plug_io.h \
  global_typedefs.h plug_footprint.h data.h globalconst.h layer.h attrib.h \
@@ -1202,11 +1211,11 @@
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
  obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h obj_text_list.h \
  obj_text.h font.h obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h \
- board.h hid_cam.h plug_io.h plug_footprint.h data.h crosshair.h route.h \
- buffer.h obj_rat_list.h obj_rat.h idpath.h obj_subc_list.h obj_subc.h \
- ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
- vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/io_dsn/write.h
+ board.h conf_core.h hid_cam.h plug_io.h plug_footprint.h data.h \
+ crosshair.h route.h buffer.h obj_rat_list.h obj_rat.h idpath.h \
+ obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
+ obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
+ vtpadstack_t.h ../src_plugins/io_dsn/write.h
 ../src_plugins/io_dsn/io_dsn.o: ../src_plugins/io_dsn/io_dsn.c \
  ../config.h ../src_plugins/io_dsn/read.h plug_io.h global_typedefs.h \
  plug_footprint.h data.h globalconst.h layer.h attrib.h obj_common.h \
@@ -2988,8 +2997,9 @@ move.o: move.c ../config.h conf_core.h globalconst.h board.h \
  obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h \
  obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h draw.h \
  move.h select.h operation.h undo.h ../src_3rd/libuundo/uundo.h \
- undo_old.h event.h obj_arc_op.h obj_line_op.h obj_text_op.h \
- obj_subc_op.h obj_poly_op.h obj_pstk_op.h obj_rat_op.h obj_gfx_op.h
+ undo_old.h event.h extobj.h obj_subc_parent.h obj_arc_op.h obj_line_op.h \
+ obj_text_op.h obj_subc_op.h obj_poly_op.h obj_pstk_op.h obj_rat_op.h \
+ obj_gfx_op.h
 netlist.o: netlist.c ../config.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
