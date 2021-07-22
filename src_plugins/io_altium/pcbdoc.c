@@ -56,6 +56,17 @@ static rnd_coord_t conv_coord_field(altium_field_t *field)
 	return res;
 }
 
+static rnd_coord_t conv_coordx_field(rctx_t *rctx, altium_field_t *field)
+{
+	return conv_coord_field(field);
+}
+
+static rnd_coord_t conv_coordy_field(rctx_t *rctx, altium_field_t *field)
+{
+	return rctx->pcb->hidlib.size_y - conv_coord_field(field);
+}
+
+
 static pcb_layer_t *conv_layer_(rctx_t *rctx, int cache_idx, pcb_layer_type_t lyt, const char *purpose)
 {
 	rnd_layer_id_t lid;
@@ -135,10 +146,10 @@ static int altium_parse_track(rctx_t *rctx)
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
 				case altium_kw_field_layer: ly = conv_layer_field(rctx, field); break;
-				case altium_kw_field_x1:    x1 = conv_coord_field(field); break;
-				case altium_kw_field_y1:    y1 = conv_coord_field(field); break;
-				case altium_kw_field_x2:    x2 = conv_coord_field(field); break;
-				case altium_kw_field_y2:    y2 = conv_coord_field(field); break;
+				case altium_kw_field_x1:    x1 = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_y1:    y1 = conv_coordy_field(rctx, field); break;
+				case altium_kw_field_x2:    x2 = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_y2:    y2 = conv_coordy_field(rctx, field); break;
 				case altium_kw_field_width: w = conv_coord_field(field); break;
 					break;
 				default: break;
