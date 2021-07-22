@@ -28,6 +28,9 @@
 
 #include "config.h"
 
+#include <genht/htip.h>
+#include <genht/hash.h>
+
 #include "board.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
@@ -43,6 +46,7 @@ typedef struct {
 
 	/* caches */
 	pcb_layer_t *lych[LY_CACHE_MAX];
+	htip_t comps;
 } rctx_t;
 
 static rnd_coord_t conv_coord_field(altium_field_t *field)
@@ -161,6 +165,7 @@ static int altium_parse_components(rctx_t *rctx)
 	altium_field_t *field;
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_component]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_component], rec)) {
+		pcb_subc_t *sc;
 		altium_field_t *ly = NULL, *refdes = NULL, *footprint = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX;
 		double rot = 0;
@@ -197,10 +202,34 @@ static int altium_parse_components(rctx_t *rctx)
 			rnd_message(RND_MSG_ERROR, "Invalid component object: invalid layer '%s' (should be top or bottom; component not created)\n", ly->val);
 			continue;
 		}
-		TODO("create subc here, cache ");
+
+		sc = pcb_subc_alloc();
+		pcb_subc_create_aux(sc, x, y, rot, on_bottom);
+		if (refdes != NULL)
+			pcb_attribute_put(&sc->Attributes, "refdes", refdes->val);
+		if (footprint != NULL)
+			pcb_attribute_put(&sc->Attributes, "footprint", footprint->val);
+		pcb_subc_reg(rctx->pcb->Data, sc);
+		pcb_subc_bind_globals(rctx->pcb, sc);
+		htip_set(&rctx->comps, id, sc);
 	}
 
 	return 0;
+}
+
+static int altium_finalize_subcs(rctx_t *rctx)
+{
+	htip_entry_t *e;
+
+	if (rctx->pcb->Data->subc_tree == NULL)
+		rctx->pcb->Data->subc_tree = rnd_r_create_tree();
+
+	for(e = htip_first(&rctx->comps); e != NULL; e = htip_next(&rctx->comps, e)) {
+		pcb_subc_t *sc = e->value;
+		pcb_subc_bbox(sc);
+		rnd_r_insert_entry(rctx->pcb->Data->subc_tree, (rnd_box_t *)sc);
+		pcb_subc_rebind(rctx->pcb, sc);
+	}
 }
 
 
@@ -290,6 +319,8 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 		return -1;
 	}
 
+	htip_init(&rctx.comps, longhash, longkeyeq);
+
 	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap);
 	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap_doc);
 
@@ -298,6 +329,9 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	res |= altium_parse_track(&rctx);
 	res |= altium_parse_via(&rctx);
 
+	altium_finalize_subcs(&rctx);
+
+	htip_uninit(&rctx.comps);
 	altium_tree_free(&rctx.tree);
 	return res;
 }
