@@ -1,0 +1,10 @@
+$class io
+$short Altium board
+$long load boards in the altium PcbDoc format
+$state WIP
+$fmt-native no
+$fmt-feature-r Altium PcbDoc ASCII board
+#$fmt-feature-w Altium PcbDoc ASCII board
+#$package io-alien
+default disable-all
+autoload 1

@@ -113,6 +113,7 @@ plugin_def("export_vfs_mc",    "GNU mc VFS server",               sdisable, 1)
 plugin_def("export_xy",        "xy (centroid) pcb_exporter",      sbuildin, 1)
 
 plugin_header("\nIO plugins (file formats):\n")
+plugin_def("io_altium",        "Altium board",                    sdisable, 0)
 plugin_def("io_autotrax",      "autotrax (freeware PCB CAD)",     sbuildin, 1)
 plugin_def("io_bxl",           "BXL footprint",                   sbuildin, 1)
 plugin_def("io_dsn",           "specctra .dsn",                   sbuildin, 1)
