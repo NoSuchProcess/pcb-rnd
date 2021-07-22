@@ -30,6 +30,8 @@
 
 #include "board.h"
 
+#include "../src_plugins/lib_compat_help/pstk_compat.h"
+
 #include "pcbdoc_ascii.h"
 
 #define LY_CACHE_MAX 64
@@ -176,15 +178,15 @@ static int altium_parse_via(rctx_t *rctx)
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_via]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_via], rec)) {
 		pcb_layer_t *ly = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, dia = RND_COORD_MAX, hole = RND_COORD_MAX;
-		rnd_coord_t cl = 0;
+		rnd_coord_t cl = 0, mask = 0;
 		TODO("figure clearance for cl");
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
 				case altium_kw_field_x:        x = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_y:        y = conv_coordy_field(rctx, field); break;
-				case altium_kw_field_diameter: dia = conv_coordx_field(rctx, field); break;
-				case altium_kw_field_holesize: hole = conv_coordy_field(rctx, field); break;
+				case altium_kw_field_diameter: dia = conv_coord_field(field); break;
+				case altium_kw_field_holesize: hole = conv_coord_field(field); break;
 TODO("TENTINGTOP and TENTINGBOTTOM");
 TODO("STARTLAYER and ENDLAYER (for bbvias)");
 				default: break;
@@ -198,7 +200,7 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			rnd_message(RND_MSG_ERROR, "Invalid via object: missing geometry (via not created)\n");
 			continue;
 		}
-		TODO("create poly here");
+		pcb_old_via_new(rctx->pcb->Data, -1, x, y, dia, cl, mask, hole, NULL, pcb_flag_make(PCB_FLAG_CLEARLINE));
 	}
 
 	return 0;
