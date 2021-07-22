@@ -151,7 +151,6 @@ static int altium_parse_track(rctx_t *rctx)
 				case altium_kw_field_x2:    x2 = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_y2:    y2 = conv_coordy_field(rctx, field); break;
 				case altium_kw_field_width: w = conv_coord_field(field); break;
-					break;
 				default: break;
 			}
 		}
@@ -186,7 +185,6 @@ static int altium_parse_via(rctx_t *rctx)
 				case altium_kw_field_y:        y = conv_coordy_field(rctx, field); break;
 				case altium_kw_field_diameter: dia = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_holesize: hole = conv_coordy_field(rctx, field); break;
-					break;
 				default: break;
 			}
 		}
