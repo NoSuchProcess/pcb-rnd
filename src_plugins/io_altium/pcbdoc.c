@@ -169,6 +169,41 @@ static int altium_parse_track(rctx_t *rctx)
 	return 0;
 }
 
+static int altium_parse_via(rctx_t *rctx)
+{
+	altium_record_t *rec;
+	altium_field_t *field;
+
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_via]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_via], rec)) {
+		pcb_layer_t *ly = NULL;
+		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, dia = RND_COORD_MAX, hole = RND_COORD_MAX;
+		rnd_coord_t cl = 0;
+		TODO("figure clearance for cl");
+
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			switch(field->type) {
+				case altium_kw_field_x:        x = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_y:        y = conv_coordy_field(rctx, field); break;
+				case altium_kw_field_diameter: dia = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_holesize: hole = conv_coordy_field(rctx, field); break;
+					break;
+				default: break;
+			}
+		}
+		if ((x == RND_COORD_MAX) || (y == RND_COORD_MAX)) {
+			rnd_message(RND_MSG_ERROR, "Invalid via object: missing coordinate (via not created)\n");
+			continue;
+		}
+		if ((dia == RND_COORD_MAX) || (hole == RND_COORD_MAX)) {
+			rnd_message(RND_MSG_ERROR, "Invalid via object: missing geometry (via not created)\n");
+			continue;
+		}
+		TODO("create poly here");
+	}
+
+	return 0;
+}
+
 int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
 {
 	FILE *f;
@@ -189,6 +224,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 
 	res |= altium_parse_board(&rctx);
 	res |= altium_parse_track(&rctx);
+	res |= altium_parse_via(&rctx);
 
 printf("parse done\n");
 

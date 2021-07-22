@@ -16,11 +16,15 @@ field
  locked
  sheetwidth
  sheetheight
+ x
+ y
  x1
  y1
  x2
  y2
  width
+ diameter
+ holesize
 layers
  top
  bottom
