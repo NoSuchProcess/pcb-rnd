@@ -1,5 +1,6 @@
 #include "plug_io.h"
 #include <genlist/gendlist.h>
+#include <librnd/core/hidlib.h>
 #include "altium_kw_sphash.h"
 
 typedef struct altium_field_s {

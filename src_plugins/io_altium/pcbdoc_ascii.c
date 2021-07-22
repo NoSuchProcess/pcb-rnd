@@ -31,6 +31,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <librnd/core/safe_fs.h>
+
 #include "pcbdoc_ascii.h"
 
 #define block_size 65536L

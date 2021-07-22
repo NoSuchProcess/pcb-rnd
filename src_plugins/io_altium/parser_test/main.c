@@ -2,6 +2,7 @@
 #include <string.h>
 #include "pcbdoc_ascii.h"
 
+#undef fopen
 FILE *rnd_fopen(rnd_hidlib_t *hidlib, const char *fn, const char *mode)
 {
 	return fopen(fn, mode);

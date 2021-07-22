@@ -7,17 +7,10 @@
 
 typedef struct {
 	int dummy;
-} rnd_hidlib_t;
-
-typedef struct {
-	int dummy;
 } pcb_plug_io_t;
 
 typedef enum {
 	pcb_plug_iot_dummy
 } pcb_plug_iot_t;
-
-long rnd_file_size(rnd_hidlib_t *hidlib, const char *path);
-FILE *rnd_fopen(rnd_hidlib_t *hidlib, const char *fn, const char *mode);
 
 #endif

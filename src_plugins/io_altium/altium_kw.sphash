@@ -14,3 +14,5 @@ record
 field
  layer
  locked
+ sheetwidth
+ sheetheight
