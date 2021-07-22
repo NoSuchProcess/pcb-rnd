@@ -1,5 +1,6 @@
 #ifndef PLUG_IO_H
 #define PLUG_IO_H
+#include <stdio.h>
 #include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -25,5 +26,7 @@ static inline long rnd_file_size(rnd_hidlib_t *hidlib, const char *path)
 		return -1;
 	return st.st_size;
 }
+
+FILE *rnd_fopen(rnd_hidlib_t *hidlib, const char *fn, const char *mode);
 
 #endif

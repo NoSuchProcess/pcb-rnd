@@ -2,6 +2,11 @@
 #include <string.h>
 #include "pcbdoc_ascii.h"
 
+FILE *rnd_fopen(rnd_hidlib_t *hidlib, const char *fn, const char *mode)
+{
+	return fopen(fn, mode);
+}
+
 static void dump_tree(altium_tree_t *tree)
 {
 	altium_record_t *rec;
