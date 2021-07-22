@@ -68,6 +68,27 @@ static rnd_coord_t conv_coordy_field(rctx_t *rctx, altium_field_t *field)
 	return rctx->pcb->hidlib.size_y - conv_coord_field(field);
 }
 
+static double conv_double_field(altium_field_t *field)
+{
+	char *end;
+	double res = strtod(field->val, &end);
+	if (*end != '\0') {
+		rnd_message(RND_MSG_ERROR, "failed to convert floating point value '%s'\n", field->val);
+		return 0;
+	}
+	return res;
+}
+
+static long conv_long_field(altium_field_t *field)
+{
+	char *end;
+	long res = strtol(field->val, &end, 10);
+	if (*end != '\0') {
+		rnd_message(RND_MSG_ERROR, "failed to convert integer value '%s'\n", field->val);
+		return 0;
+	}
+	return res;
+}
 
 static pcb_layer_t *conv_layer_(rctx_t *rctx, int cache_idx, pcb_layer_type_t lyt, const char *purpose)
 {
@@ -133,6 +154,55 @@ static int altium_parse_board(rctx_t *rctx)
 
 	return 0;
 }
+
+static int altium_parse_components(rctx_t *rctx)
+{
+	altium_record_t *rec;
+	altium_field_t *field;
+
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_component]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_component], rec)) {
+		altium_field_t *ly = NULL, *refdes = NULL, *footprint = NULL;
+		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX;
+		double rot = 0;
+		int on_bottom;
+		long id = -1;
+
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			switch(field->type) {
+				case altium_kw_field_layer:                ly = field; break;
+				case altium_kw_field_x:                    x = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_y:                    y = conv_coordy_field(rctx, field); break;
+				case altium_kw_field_rotation:             rot = conv_double_field(field); break;
+				case altium_kw_field_id:                   id = conv_long_field(field); break;
+				case altium_kw_field_sourcedesignator:     refdes = field; break;
+				case altium_kw_field_footprintdescription: footprint = field; break;
+				default: break;
+			}
+		}
+		if ((x == RND_COORD_MAX) || (y == RND_COORD_MAX)) {
+			rnd_message(RND_MSG_ERROR, "Invalid component object: missing coordinate (component not created)\n");
+			continue;
+		}
+		if (id < 0) {
+			rnd_message(RND_MSG_ERROR, "Invalid component object: missing ID (component not created)\n");
+			continue;
+		}
+		if (ly == NULL) {
+			rnd_message(RND_MSG_ERROR, "Invalid component object: missing layer (component not created)\n");
+			continue;
+		}
+		if (rnd_strcasecmp(ly->val, "bottom") == 0) on_bottom = 1;
+		else if (rnd_strcasecmp(ly->val, "top") == 0) on_bottom = 0;
+		else {
+			rnd_message(RND_MSG_ERROR, "Invalid component object: invalid layer '%s' (should be top or bottom; component not created)\n", ly->val);
+			continue;
+		}
+		TODO("create subc here, cache ");
+	}
+
+	return 0;
+}
+
 
 static int altium_parse_track(rctx_t *rctx)
 {
@@ -224,6 +294,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap_doc);
 
 	res |= altium_parse_board(&rctx);
+	res |= altium_parse_components(&rctx);
 	res |= altium_parse_track(&rctx);
 	res |= altium_parse_via(&rctx);
 

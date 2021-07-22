@@ -25,6 +25,10 @@ field
  width
  diameter
  holesize
+ id
+ rotation
+ sourcedesignator
+ footprintdescription
 layers
  top
  bottom
