@@ -70,6 +70,41 @@ static int altium_parse_board(rctx_t *rctx)
 	return 0;
 }
 
+static int altium_parse_track(rctx_t *rctx)
+{
+	altium_record_t *rec;
+	altium_field_t *field;
+
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_track]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_track], rec)) {
+		pcb_layer_t *ly = NULL;
+		rnd_coord_t x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
+
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			switch(field->type) {
+				case altium_kw_field_layer: break;
+				case altium_kw_field_x1:    x1 = conv_coord_field(field); break;
+				case altium_kw_field_y1:    y1 = conv_coord_field(field); break;
+				case altium_kw_field_x2:    x2 = conv_coord_field(field); break;
+				case altium_kw_field_y2:    y2 = conv_coord_field(field); break;
+				case altium_kw_field_width: w = conv_coord_field(field); break;
+					break;
+				default: break;
+			}
+		}
+		if ((x1 == RND_COORD_MAX) || (y1 == RND_COORD_MAX) || (x2 == RND_COORD_MAX) || (y2 == RND_COORD_MAX) || (w == RND_COORD_MAX)) {
+			rnd_message(RND_MSG_ERROR, "Invalid track object: missing coordinate or width (line not created)\n");
+			continue;
+		}
+		if (ly == NULL) {
+			rnd_message(RND_MSG_ERROR, "Invalid track object: no valid layer (line not created)\n");
+			continue;
+		}
+		TODO("create the line here");
+	}
+
+	return 0;
+}
+
 int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
 {
 	FILE *f;
@@ -89,6 +124,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap_doc);
 
 	res |= altium_parse_board(&rctx);
+	res |= altium_parse_track(&rctx);
 
 printf("parse done\n");
 
