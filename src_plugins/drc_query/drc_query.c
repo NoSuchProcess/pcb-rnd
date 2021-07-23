@@ -129,6 +129,8 @@ void drc_qry_exec_cb(void *user_ctx, pcb_qry_val_t *res, pcb_any_obj_t *current)
 		bv = res->data.lng != 0;
 	else if (res->type == PCBQ_VT_LST)
 		bv = res->data.lst.used > 0;
+	else if (res->type == PCBQ_VT_OBJ)
+		bv = res->data.obj != NULL;
 	else
 		return;
 
