@@ -41,6 +41,7 @@
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 
 #include "pcbdoc_ascii.h"
+#include "htic.h"
 
 #define LY_CACHE_MAX 64
 
@@ -53,6 +54,7 @@ typedef struct {
 	pcb_layer_t *lych[LY_CACHE_MAX];
 	htip_t comps;
 	htip_t nets;
+	htic_t net_clr;
 } rctx_t;
 
 static rnd_coord_t conv_coord_field(altium_field_t *field)
@@ -798,6 +800,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 
 	htip_init(&rctx.comps, longhash, longkeyeq);
 	htip_init(&rctx.nets, longhash, longkeyeq);
+	htic_init(&rctx.net_clr, longhash, longkeyeq);
 	pcb_data_clip_inhibit_inc(rctx.pcb->Data);
 
 	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap);
@@ -817,6 +820,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	altium_finalize_subcs(&rctx);
 
 	pcb_data_clip_inhibit_dec(rctx.pcb->Data, 1);
+	htic_uninit(&rctx.net_clr);
 	htip_uninit(&rctx.nets);
 	htip_uninit(&rctx.comps);
 	altium_tree_free(&rctx.tree);
