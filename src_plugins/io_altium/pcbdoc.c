@@ -612,6 +612,17 @@ static int altium_parse_text(rctx_t *rctx)
 		if ((ly = altium_comp_layer(rctx, ly, compid, "text")) == NULL)
 			continue;
 
+		if (x2 < x1) {
+			rnd_coord_t tmp = x2;
+			x2 = x1;
+			x1 = tmp;
+		}
+		if (y2 < y1) {
+			rnd_coord_t tmp = y2;
+			y2 = y1;
+			y1 = tmp;
+		}
+
 		t = pcb_text_new_by_bbox(ly, pcb_font(rctx->pcb, 1, 1), x1, y1, x2-x1, y2-y1, 0, 0, 1.0, mir, rot, w, (designator ? "%a.parent.refdes%" : text->val), pcb_flag_make(PCB_FLAG_CLEARLINE | (designator ? PCB_FLAG_DYNTEXT|PCB_FLAG_FLOATER : 0)));
 	}
 
