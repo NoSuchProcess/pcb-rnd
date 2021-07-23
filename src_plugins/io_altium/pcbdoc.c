@@ -436,6 +436,31 @@ static int altium_finalize_subcs(rctx_t *rctx)
 	return 0;
 }
 
+static pcb_layer_t *altium_comp_layer(rctx_t *rctx, pcb_layer_t *ly, long compid, const char *otype)
+{
+	rnd_layer_id_t lid;
+	pcb_subc_t *sc;
+
+	if (ly == NULL) {
+		rnd_message(RND_MSG_ERROR, "Invalid %s object: no/unknown layer (%s not created)\n", otype, otype);
+		return NULL;
+	}
+
+	if (compid < 0)
+		return ly;
+
+	sc = htip_get(&rctx->comps, compid);
+
+	if (sc == NULL) {
+		rnd_message(RND_MSG_ERROR, "Invalid track object: invalid parent subc (line not created)\n");
+		return NULL;
+	}
+
+	lid = pcb_layer_by_name(sc->data, ly->name);
+	if (lid < 0)
+		return pcb_subc_alloc_layer_like(sc, ly);
+	return &sc->data->Layer[lid];
+}
 
 static int altium_parse_track(rctx_t *rctx)
 {
@@ -465,26 +490,8 @@ static int altium_parse_track(rctx_t *rctx)
 			rnd_message(RND_MSG_ERROR, "Invalid track object: missing coordinate or width (line not created)\n");
 			continue;
 		}
-		if (ly == NULL) {
-			rnd_message(RND_MSG_ERROR, "Invalid track object: no valid layer (line not created)\n");
+		if ((ly = altium_comp_layer(rctx, ly, compid, "line")) == NULL)
 			continue;
-		}
-
-		if (compid >= 0) {
-			rnd_layer_id_t lid;
-			pcb_subc_t *sc = htip_get(&rctx->comps, compid);
-
-			if (sc == NULL) {
-				rnd_message(RND_MSG_ERROR, "Invalid track object: invalid parent subc (line not created)\n");
-				continue;
-			}
-
-			lid = pcb_layer_by_name(sc->data, ly->name);
-			if (lid < 0)
-				ly = pcb_subc_alloc_layer_like(sc, ly);
-			else
-				ly = &sc->data->Layer[lid];
-		}
 
 		pcb_line_new(ly, x1, y1, x2, y2, w, cl, pcb_flag_make(PCB_FLAG_CLEARLINE));
 	}
@@ -526,26 +533,9 @@ static int altium_parse_arc(rctx_t *rctx)
 			rnd_message(RND_MSG_ERROR, "Invalid arc object: missing angles (arc not created)\n");
 			continue;
 		}
-		if (ly == NULL) {
-			rnd_message(RND_MSG_ERROR, "Invalid arc object: no/unknown layer (arc not created)\n");
+
+		if ((ly = altium_comp_layer(rctx, ly, compid, "arc")) == NULL)
 			continue;
-		}
-
-		if (compid >= 0) {
-			rnd_layer_id_t lid;
-			pcb_subc_t *sc = htip_get(&rctx->comps, compid);
-
-			if (sc == NULL) {
-				rnd_message(RND_MSG_ERROR, "Invalid track object: invalid parent subc (line not created)\n");
-				continue;
-			}
-
-			lid = pcb_layer_by_name(sc->data, ly->name);
-			if (lid < 0)
-				ly = pcb_subc_alloc_layer_like(sc, ly);
-			else
-				ly = &sc->data->Layer[lid];
-		}
 
 		/* convert to pcb-rnd coord system */
 		sa = sa - 180;
