@@ -373,8 +373,10 @@ static int altium_parse_track(rctx_t *rctx)
 	altium_field_t *field;
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_track]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_track], rec)) {
+		pcb_subc_t *sc;
 		pcb_layer_t *ly = NULL;
 		rnd_coord_t x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
+		long compid;
 		rnd_coord_t cl = 0;
 		TODO("figure clearance for cl");
 
@@ -386,6 +388,7 @@ static int altium_parse_track(rctx_t *rctx)
 				case altium_kw_field_x2:    x2 = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_y2:    y2 = conv_coordy_field(rctx, field); break;
 				case altium_kw_field_width: w = conv_coord_field(field); break;
+				case altium_kw_field_component: compid = conv_long_field(field); break;
 				default: break;
 			}
 		}
@@ -397,6 +400,23 @@ static int altium_parse_track(rctx_t *rctx)
 			rnd_message(RND_MSG_ERROR, "Invalid track object: no valid layer (line not created)\n");
 			continue;
 		}
+
+		if (compid >= 0) {
+			rnd_layer_id_t lid;
+			pcb_subc_t *sc = htip_get(&rctx->comps, compid);
+
+			if (sc == NULL) {
+				rnd_message(RND_MSG_ERROR, "Invalid track object: invalid parent subc (line not created)\n");
+				continue;
+			}
+
+			lid = pcb_layer_by_name(sc->data, ly->name);
+			if (lid < 0)
+				ly = pcb_subc_alloc_layer_like(sc, ly);
+			else
+				ly = &sc->data->Layer[lid];
+		}
+
 		pcb_line_new(ly, x1, y1, x2, y2, w, cl, pcb_flag_make(PCB_FLAG_CLEARLINE));
 	}
 
