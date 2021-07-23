@@ -246,6 +246,43 @@ static int altium_parse_net(rctx_t *rctx)
 	return 0;
 }
 
+static int altium_parse_class(rctx_t *rctx)
+{
+	altium_record_t *rec;
+	altium_field_t *field;
+
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_class]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_class], rec)) {
+		const char *name = NULL;
+		pcb_net_t *net;
+		long id = -1;
+
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			switch(field->type) {
+				case altium_kw_field_name: name = field->val; break;
+				default: break;
+			}
+		}
+		if (name == NULL) {
+			rnd_message(RND_MSG_ERROR, "Invalid class: missing name\n");
+			continue;
+		}
+
+		/* look up each net referenced from M[0-9]* fields and set class */
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			if ((tolower(field->key[0]) == 'm') && isdigit(field->key[1])) {
+				pcb_net_t *net = pcb_net_get(rctx->pcb, &rctx->pcb->netlist[PCB_NETLIST_INPUT], field->val, 0);
+				if (net == NULL) {
+					rnd_message(RND_MSG_ERROR, "Class %s references non-existing net %s\n", name, field->val);
+					continue;
+				}
+				pcb_attribute_put(&net->Attributes, "class", name);
+			}
+		}
+	}
+
+	return 0;
+}
+
 static int altium_parse_rule(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -827,6 +864,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 
 	res |= altium_parse_board(&rctx);
 	res |= altium_parse_net(&rctx);
+	res |= altium_parse_class(&rctx);
 	res |= altium_parse_rule(&rctx);
 	res |= altium_parse_components(&rctx);
 	res |= altium_parse_pad(&rctx);
