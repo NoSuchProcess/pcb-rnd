@@ -376,7 +376,7 @@ static int altium_parse_track(rctx_t *rctx)
 		pcb_subc_t *sc;
 		pcb_layer_t *ly = NULL;
 		rnd_coord_t x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
-		long compid;
+		long compid = -1;
 		rnd_coord_t cl = 0;
 		TODO("figure clearance for cl");
 
