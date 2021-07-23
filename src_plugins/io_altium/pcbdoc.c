@@ -56,8 +56,14 @@ static rnd_coord_t conv_coord_field(altium_field_t *field)
 {
 	double res;
 	rnd_bool succ;
+	char *s, *unit = NULL;
 
-	res = rnd_get_value(field->val, NULL, NULL, &succ);
+	/* look for unit (anything non-numeric) */
+	for(s = field->val; *s != '\0' && !isalpha(*s); s++) ;
+	if (*s == '\0')
+		unit = "mil";
+
+	res = rnd_get_value(field->val, unit, NULL, &succ);
 	if (!succ) {
 		rnd_message(RND_MSG_ERROR, "failed to convert coord value '%s'\n", field->val);
 		return 0;
