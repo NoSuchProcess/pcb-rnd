@@ -343,7 +343,7 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			shape[3].layer_mask = 0;
 		}
 
-		ps = pcb_pstk_new_from_shape(sc->data, x, y, 0, plated, cl, shape);
+		ps = pcb_pstk_new_from_shape(sc->data, x, y, hole, plated, cl, shape);
 		if (rot != 0)
 			pcb_pstk_rotate(ps, x, y, cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 		if (term != NULL)
