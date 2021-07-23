@@ -157,6 +157,8 @@ TODO("MECHANICAL1...MECHANICAL16: look up or create new doc?; use cache index fr
 	return NULL;
 }
 
+#define BUMP_COORD(dst, src) do { if (src > dst) dst = src; } while(0)
+
 static int altium_parse_board(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -167,8 +169,15 @@ static int altium_parse_board(rctx_t *rctx)
 			switch(field->type) {
 				case altium_kw_field_sheetheight: rctx->pcb->hidlib.size_x = conv_coord_field(field); break;
 				case altium_kw_field_sheetwidth:  rctx->pcb->hidlib.size_y = conv_coord_field(field); break;
-					break;
-				default: break;
+				default:
+					/* vx[0-4] and vy[0-4] */
+					if ((tolower(field->key[0]) == 'v') && isdigit(field->key[2]) && (field->key[3] == 0)) {
+						if (tolower(field->key[1]) == 'x')
+							BUMP_COORD(rctx->pcb->hidlib.size_x, conv_coord_field(field));
+						if (tolower(field->key[1]) == 'y')
+							BUMP_COORD(rctx->pcb->hidlib.size_y, conv_coord_field(field));
+					}
+				break;
 			}
 		}
 	}
