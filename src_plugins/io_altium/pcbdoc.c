@@ -31,6 +31,8 @@
 #include <genht/htip.h>
 #include <genht/hash.h>
 
+#include <librnd/core/compat_misc.h>
+
 #include "board.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
