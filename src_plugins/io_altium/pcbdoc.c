@@ -242,7 +242,7 @@ static int altium_parse_pad(rctx_t *rctx)
 		long compid = -1;
 		int on_all = 0, on_bottom = 0, plated = 0;
 		double rot = 0;
-		rnd_coord_t cl = 0, mask = 0;
+		rnd_coord_t cl = 0;
 		TODO("figure clearance for cl");
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
@@ -375,7 +375,6 @@ static int altium_parse_track(rctx_t *rctx)
 	altium_field_t *field;
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_track]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_track], rec)) {
-		pcb_subc_t *sc;
 		pcb_layer_t *ly = NULL;
 		rnd_coord_t x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
 		long compid = -1;
@@ -431,7 +430,6 @@ static int altium_parse_via(rctx_t *rctx)
 	altium_field_t *field;
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_via]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_via], rec)) {
-		pcb_layer_t *ly = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, dia = RND_COORD_MAX, hole = RND_COORD_MAX;
 		rnd_coord_t cl = 0, mask = 0;
 		TODO("figure clearance for cl");
