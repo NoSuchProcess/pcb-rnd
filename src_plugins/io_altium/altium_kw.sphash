@@ -36,6 +36,11 @@ field
  plated
  name
  net
+ location.x
+ location.y
+ radius
+ startangle
+ endangle
 layers
  top
  bottom

@@ -492,6 +492,71 @@ static int altium_parse_track(rctx_t *rctx)
 	return 0;
 }
 
+static int altium_parse_arc(rctx_t *rctx)
+{
+	altium_record_t *rec;
+	altium_field_t *field;
+
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_arc]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_arc], rec)) {
+		pcb_layer_t *ly = NULL;
+		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, r = RND_COORD_MAX, w = RND_COORD_MAX;
+		double sa = -10000, ea = -10000;
+		long compid = -1;
+		rnd_coord_t cl = 0;
+		TODO("figure clearance for cl");
+
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			switch(field->type) {
+				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
+				case altium_kw_field_location_x:  x = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_location_y:  y = conv_coordy_field(rctx, field); break;
+				case altium_kw_field_width:       w = conv_coord_field(field); break;
+				case altium_kw_field_radius:      r = conv_coord_field(field); break;
+				case altium_kw_field_startangle:  sa = conv_double_field(field); break;
+				case altium_kw_field_endangle:    ea = conv_double_field(field); break;
+				case altium_kw_field_component:   compid = conv_long_field(field); break;
+				default: break;
+			}
+		}
+		if ((x == RND_COORD_MAX) || (y == RND_COORD_MAX) || (r == RND_COORD_MAX) || (w == RND_COORD_MAX)) {
+			rnd_message(RND_MSG_ERROR, "Invalid arc object: missing coordinate or radius or width (arc not created)\n");
+			continue;
+		}
+		if ((sa <= -10000) || (ea <= -10000)) {
+			rnd_message(RND_MSG_ERROR, "Invalid arc object: missing angles (arc not created)\n");
+			continue;
+		}
+		if (ly == NULL) {
+			rnd_message(RND_MSG_ERROR, "Invalid arc object: no/unknown layer (arc not created)\n");
+			continue;
+		}
+
+		if (compid >= 0) {
+			rnd_layer_id_t lid;
+			pcb_subc_t *sc = htip_get(&rctx->comps, compid);
+
+			if (sc == NULL) {
+				rnd_message(RND_MSG_ERROR, "Invalid track object: invalid parent subc (line not created)\n");
+				continue;
+			}
+
+			lid = pcb_layer_by_name(sc->data, ly->name);
+			if (lid < 0)
+				ly = pcb_subc_alloc_layer_like(sc, ly);
+			else
+				ly = &sc->data->Layer[lid];
+		}
+
+		/* convert to pcb-rnd coord system */
+		sa = sa - 180;
+		ea = ea - 180;
+
+		pcb_arc_new(ly, x, y, r, r, sa, ea-sa, w, cl, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
+	}
+
+	return 0;
+}
+
 static int altium_parse_via(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -552,6 +617,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	res |= altium_parse_components(&rctx);
 	res |= altium_parse_pad(&rctx);
 	res |= altium_parse_track(&rctx);
+	res |= altium_parse_arc(&rctx);
 	res |= altium_parse_via(&rctx);
 
 	altium_finalize_subcs(&rctx);
