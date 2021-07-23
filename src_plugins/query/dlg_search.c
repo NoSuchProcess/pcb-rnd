@@ -309,7 +309,7 @@ static int search_decompile_(search_ctx_t *ctx, pcb_qry_node_t *nd, int dry, int
 	gds_append_str(&e, qopt);
 	gds_append(&e, '\n');
 	right = e.array + e.used;
-	res |= search_decompile_op(&e, nd->data.children->next, (w->rtype == RIGHT_COORD));
+	res |= search_decompile_op(&e, nd->data.children->next, ((w != NULL) && (w->rtype == RIGHT_COORD)));
 
 	if (res == 0) {
 		rnd_hid_attr_val_t hv;
