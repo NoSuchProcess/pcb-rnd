@@ -633,7 +633,7 @@ static int altium_parse_text(rctx_t *rctx)
 do { \
 	char *end; \
 	rnd_coord_t c; \
-	long idx = strtol(field->val+2, &end, 10); \
+	long idx = strtol(field->key+2, &end, 10); \
 	if ((*end != '\0') || (idx < 0)) \
 		break; \
 	c = conv(rctx, field); \
@@ -658,13 +658,14 @@ static int altium_parse_poly(rctx_t *rctx)
 				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
 				case altium_kw_field_component:   compid = conv_long_field(field); break;
 				default:
-					if (tolower(field->val[0]) == 'v') {
-						if (field->val[1] == 'x') POLY_VERT(field, &vx, conv_coordx_field);
-						if (field->val[1] == 'y') POLY_VERT(field, &vy, conv_coordy_field);
+					if (tolower(field->key[0]) == 'v') {
+						if (tolower(field->key[1]) == 'x') POLY_VERT(field, &vx, conv_coordx_field);
+						if (tolower(field->key[1]) == 'y') POLY_VERT(field, &vy, conv_coordy_field);
 					}
 					break;
 			}
 		}
+
 		if ((vx.used < 3) || (vy.used < 3) || (vx.used != vy.used)) {
 			rnd_message(RND_MSG_ERROR, "Invalid polygon object: wrong number of vertices (polygon not created)\n");
 			continue;
