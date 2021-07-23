@@ -152,9 +152,15 @@ static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 		case altium_kw_layers_drilldrawing:  return conv_layer_(rctx, 10, PCB_LYT_DOC, "drill");
 		case altium_kw_layers_multilayer:    return conv_layer_(rctx, 11, PCB_LYT_DOC, "multilayer");
 	}
+
+	if ((rnd_strcasecmp(field->val, "MECHANICAL1") == 0))
+		return conv_layer_(rctx, 12, PCB_LYT_BOUNDARY, NULL);
+	if ((rnd_strcasecmp(field->val, "MECHANICAL15") == 0))
+		return conv_layer_(rctx, 13, PCB_LYT_BOTTOM | PCB_LYT_DOC , "assy");
+
 TODO("MID1...MID16: look up or create new intern copper; use cache index from 15+mid");
 TODO("PLANE1...PLANE16: look up or create new intern copper; use cache index from 15+16+plane");
-TODO("MECHANICAL1...MECHANICAL16: look up or create new doc?; use cache index from 15+16+16+mechanical");
+TODO("MECHANICAL2...MECHANICAL14: look up or create new doc?; use cache index from 15+16+16+mechanical");
 	rnd_message(RND_MSG_ERROR, "Layer not found: '%s'\n", field->val);
 	return NULL;
 }
