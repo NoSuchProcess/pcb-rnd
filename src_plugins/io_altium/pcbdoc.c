@@ -432,6 +432,8 @@ static int altium_finalize_subcs(rctx_t *rctx)
 		rnd_r_insert_entry(rctx->pcb->Data->subc_tree, (rnd_box_t *)sc);
 		pcb_subc_rebind(rctx->pcb, sc);
 	}
+
+	return 0;
 }
 
 
