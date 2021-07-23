@@ -134,6 +134,16 @@ static pcb_layer_t *conv_layer_(rctx_t *rctx, int cache_idx, pcb_layer_type_t ly
 	return ly;
 }
 
+#define LYCH_ASSY_BOT 13
+#define LYCH_ASSY_TOP 14
+
+static pcb_layer_t *conv_layer_assy(rctx_t *rctx, int on_bottom)
+{
+	if (on_bottom)
+		return conv_layer_(rctx, LYCH_ASSY_BOT, PCB_LYT_BOTTOM | PCB_LYT_DOC , "assy");
+	return conv_layer_(rctx, LYCH_ASSY_TOP, PCB_LYT_TOP | PCB_LYT_DOC , "assy");
+}
+
 static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 {
 	int kw = altium_kw_sphash(field->val);
@@ -156,7 +166,7 @@ static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 	if ((rnd_strcasecmp(field->val, "MECHANICAL1") == 0))
 		return conv_layer_(rctx, 12, PCB_LYT_BOUNDARY, NULL);
 	if ((rnd_strcasecmp(field->val, "MECHANICAL15") == 0))
-		return conv_layer_(rctx, 13, PCB_LYT_BOTTOM | PCB_LYT_DOC , "assy");
+		return conv_layer_(rctx, LYCH_ASSY_BOT, PCB_LYT_BOTTOM | PCB_LYT_DOC , "assy");
 
 TODO("MID1...MID16: look up or create new intern copper; use cache index from 15+mid");
 TODO("PLANE1...PLANE16: look up or create new intern copper; use cache index from 15+16+plane");
@@ -564,7 +574,7 @@ static int altium_parse_text(rctx_t *rctx)
 		pcb_text_t *t;
 		rnd_coord_t x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
 		double rot = 0;
-		int mir = 0, designator = 0;
+		int mir = 0, designator = 0, comment = 0;
 		long compid = -1;
 		rnd_coord_t cl = 0;
 		TODO("figure clearance for cl");
@@ -582,6 +592,7 @@ static int altium_parse_text(rctx_t *rctx)
 				case altium_kw_field_rotation:    rot = conv_double_field(field); break;
 				case altium_kw_field_component:   compid = conv_long_field(field); break;
 				case altium_kw_field_designator:  designator = conv_bool_field(field); break;
+				case altium_kw_field_comment:     comment = conv_bool_field(field); break;
 				default: break;
 			}
 		}
@@ -593,6 +604,9 @@ static int altium_parse_text(rctx_t *rctx)
 			rnd_message(RND_MSG_ERROR, "Invalid text object: missing text string (text not created)\n");
 			continue;
 		}
+
+		if (comment && (ly != NULL)) /* move comments to assy */
+			ly = conv_layer_assy(rctx, pcb_layer_flags_(ly) & PCB_LYT_BOTTOM);
 
 		if ((ly = altium_comp_layer(rctx, ly, compid, "text")) == NULL)
 			continue;
