@@ -32,6 +32,7 @@
 #include <genht/hash.h>
 
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/vtc0.h>
 
 #include "board.h"
 #include "netlist.h"
@@ -617,6 +618,62 @@ static int altium_parse_text(rctx_t *rctx)
 	return 0;
 }
 
+#define POLY_VERT(field, dst, conv) \
+do { \
+	char *end; \
+	rnd_coord_t c; \
+	long idx = strtol(field->val+2, &end, 10); \
+	if ((*end != '\0') || (idx < 0)) \
+		break; \
+	c = conv(rctx, field); \
+	vtc0_set(dst, idx, c); \
+} while(0)
+
+static int altium_parse_poly(rctx_t *rctx)
+{
+	altium_record_t *rec;
+	altium_field_t *field;
+	vtc0_t vx = {0}, vy = {0};
+
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_polygon]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_polygon], rec)) {
+		pcb_layer_t *ly = NULL;
+		long compid = -1;
+		rnd_coord_t cl = 0;
+		TODO("figure clearance for cl");
+
+		vx.used = vy.used = 0;
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			switch(field->type) {
+				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
+				case altium_kw_field_component:   compid = conv_long_field(field); break;
+				default:
+					if (tolower(field->val[0]) == 'v') {
+						if (field->val[1] == 'x') POLY_VERT(field, &vx, conv_coordx_field);
+						if (field->val[1] == 'y') POLY_VERT(field, &vy, conv_coordy_field);
+					}
+					break;
+			}
+		}
+		if ((vx.used < 3) || (vy.used < 3) || (vx.used != vy.used)) {
+			rnd_message(RND_MSG_ERROR, "Invalid polygon object: wrong number of vertices (polygon not created)\n");
+			continue;
+		}
+
+		if (ly != NULL) /* move comments to assy */
+			ly = conv_layer_assy(rctx, pcb_layer_flags_(ly) & PCB_LYT_BOTTOM);
+
+		if ((ly = altium_comp_layer(rctx, ly, compid, "polygon")) == NULL)
+			continue;
+
+TODO("Create the polygon here");
+	}
+
+	vtc0_uninit(&vx);
+	vtc0_uninit(&vy);
+
+	return 0;
+}
+
 static int altium_parse_via(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -680,6 +737,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	res |= altium_parse_arc(&rctx);
 	res |= altium_parse_text(&rctx);
 	res |= altium_parse_via(&rctx);
+	res |= altium_parse_poly(&rctx);
 
 	altium_finalize_subcs(&rctx);
 
