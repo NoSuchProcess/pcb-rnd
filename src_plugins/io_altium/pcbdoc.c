@@ -60,6 +60,14 @@ typedef struct {
 
 static rnd_coord_t altium_clearance(rctx_t *rctx, long netid)
 {
+	/* check if the net has its own */
+	if (netid >= 0) {
+		rnd_coord_t gap = htic_get(&rctx->net_clr, netid);
+		if (gap > 0)
+			return gap;
+	}
+
+	/* else fall back to global */
 	return rctx->global_clr;
 }
 
@@ -272,7 +280,7 @@ static int altium_parse_class(rctx_t *rctx)
 			if ((tolower(field->key[0]) == 'm') && isdigit(field->key[1])) {
 				pcb_net_t *net = pcb_net_get(rctx->pcb, &rctx->pcb->netlist[PCB_NETLIST_INPUT], field->val, 0);
 				if (net == NULL) {
-					rnd_message(RND_MSG_ERROR, "Class %s references non-existing net %s\n", name, field->val);
+/*					rnd_message(RND_MSG_ERROR, "Class %s references non-existing net %s\n", name, field->val);*/
 					continue;
 				}
 				pcb_attribute_put(&net->Attributes, "class", name);
@@ -335,15 +343,27 @@ static int altium_parse_rule(rctx_t *rctx)
 			continue;
 		}
 
-		rnd_printf("RULE %s sctype=%s scval=%s (%s %s) gap=%mm\n", name,
+/*		rnd_printf("RULE %s sctype=%s scval=%s (%s %s) gap=%mm\n", name,
 			((sckind == altium_kw_field_net) ? "net" : ((sckind == altium_kw_field_board) ? "board" : "class")),
 			scval->val, scope_val[0]->val, scope_val[1]->val, gap);
+*/
 
 		switch(sckind) {
 			case altium_kw_field_board:
 				rctx->global_clr = gap;
 				break;
-			case altium_kw_field_class:
+			case altium_kw_field_netclass:
+				{
+					htip_entry_t *e;
+					for(e = htip_first(&rctx->nets); e != NULL; e = htip_next(&rctx->nets, e)) {
+						pcb_net_t *net = e->value;
+						const char *nclass = pcb_attribute_get(&net->Attributes, "class");
+						if ((nclass != NULL) && (strcmp(nclass, scval->val) == 0)) {
+							long netid = e->key;
+							htic_set(&rctx->net_clr, netid, gap);
+						}
+					}
+				}
 				break;
 			case altium_kw_field_net:
 				break;
