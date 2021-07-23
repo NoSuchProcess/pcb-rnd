@@ -55,7 +55,13 @@ typedef struct {
 	htip_t comps;
 	htip_t nets;
 	htic_t net_clr;
+	rnd_coord_t global_clr;
 } rctx_t;
+
+static rnd_coord_t altium_clearance(rctx_t *rctx, long netid)
+{
+	return rctx->global_clr;
+}
 
 static rnd_coord_t conv_coord_field(altium_field_t *field)
 {
@@ -295,6 +301,16 @@ static int altium_parse_rule(rctx_t *rctx)
 		rnd_printf("RULE %s sctype=%s scval=%s (%s %s) gap=%mm\n", name,
 			((sckind == altium_kw_field_net) ? "net" : ((sckind == altium_kw_field_board) ? "board" : "class")),
 			scval->val, scope_val[0]->val, scope_val[1]->val, gap);
+
+		switch(sckind) {
+			case altium_kw_field_board:
+				rctx->global_clr = gap;
+				break;
+			case altium_kw_field_class:
+				break;
+			case altium_kw_field_net:
+				break;
+		}
 	}
 
 	return 0;
@@ -372,8 +388,7 @@ static int altium_parse_pad(rctx_t *rctx)
 		long compid = -1, netid = -1;
 		int on_all = 0, on_bottom = 0, plated = 0;
 		double rot = 0;
-		rnd_coord_t cl = 0;
-		TODO("figure clearance for cl");
+		rnd_coord_t cl;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
@@ -474,7 +489,8 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			shape[3].layer_mask = 0;
 		}
 
-		ps = pcb_pstk_new_from_shape(sc->data, x, y, hole, plated, cl, shape);
+		cl = altium_clearance(rctx, -1);
+		ps = pcb_pstk_new_from_shape(sc->data, x, y, hole, plated, cl * 2, shape);
 		if (rot != 0)
 			pcb_pstk_rotate(ps, x, y, cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 		if (term != NULL)
@@ -550,8 +566,7 @@ static int altium_parse_track(rctx_t *rctx)
 		pcb_layer_t *ly = NULL;
 		rnd_coord_t x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
 		long compid = -1;
-		rnd_coord_t cl = 0;
-		TODO("figure clearance for cl");
+		rnd_coord_t cl;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
@@ -572,7 +587,8 @@ static int altium_parse_track(rctx_t *rctx)
 		if ((ly = altium_comp_layer(rctx, ly, compid, "line")) == NULL)
 			continue;
 
-		pcb_line_new(ly, x1, y1, x2, y2, w, cl, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		cl = altium_clearance(rctx, -1);
+		pcb_line_new(ly, x1, y1, x2, y2, w, cl * 2, pcb_flag_make(PCB_FLAG_CLEARLINE));
 	}
 
 	return 0;
@@ -588,8 +604,7 @@ static int altium_parse_arc(rctx_t *rctx)
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, r = RND_COORD_MAX, w = RND_COORD_MAX;
 		double sa = -10000, ea = -10000;
 		long compid = -1;
-		rnd_coord_t cl = 0;
-		TODO("figure clearance for cl");
+		rnd_coord_t cl;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
@@ -620,7 +635,8 @@ static int altium_parse_arc(rctx_t *rctx)
 		sa = sa - 180;
 		ea = ea - 180;
 
-		pcb_arc_new(ly, x, y, r, r, sa, ea-sa, w, cl, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
+		cl = altium_clearance(rctx, -1);
+		pcb_arc_new(ly, x, y, r, r, sa, ea-sa, w, cl * 2, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
 	}
 
 	return 0;
@@ -639,8 +655,6 @@ static int altium_parse_text(rctx_t *rctx)
 		double rot = 0;
 		int mir = 0, designator = 0, comment = 0;
 		long compid = -1;
-		rnd_coord_t cl = 0;
-		TODO("figure clearance for cl");
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
@@ -712,8 +726,7 @@ static int altium_parse_poly(rctx_t *rctx)
 		pcb_poly_t *poly;
 		pcb_layer_t *ly = NULL;
 		long compid = -1, n;
-		rnd_coord_t cl = 0;
-		TODO("figure clearance for cl");
+		rnd_coord_t cl;
 
 		vx.used = vy.used = 0;
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
@@ -737,7 +750,8 @@ static int altium_parse_poly(rctx_t *rctx)
 		if ((ly = altium_comp_layer(rctx, ly, compid, "polygon")) == NULL)
 			continue;
 
-		poly = pcb_poly_new(ly, cl, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY | PCB_FLAG_CLEARPOLY));
+		cl = altium_clearance(rctx, -1);
+		poly = pcb_poly_new(ly, cl * 2, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY | PCB_FLAG_CLEARPOLY));
 		for(n = 0; n < vx.used; n++)
 			pcb_poly_point_new(poly, vx.array[n], vy.array[n]);
 		pcb_add_poly_on_layer(ly, poly);
@@ -756,8 +770,7 @@ static int altium_parse_via(rctx_t *rctx)
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_via]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_via], rec)) {
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, dia = RND_COORD_MAX, hole = RND_COORD_MAX;
-		rnd_coord_t cl = 0, mask = 0;
-		TODO("figure clearance for cl");
+		rnd_coord_t cl, mask = 0;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
@@ -778,7 +791,8 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			rnd_message(RND_MSG_ERROR, "Invalid via object: missing geometry (via not created)\n");
 			continue;
 		}
-		pcb_old_via_new(rctx->pcb->Data, -1, x, y, dia, cl, mask, hole, NULL, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		cl = altium_clearance(rctx, -1);
+		pcb_old_via_new(rctx->pcb->Data, -1, x, y, dia, cl * 2, mask, hole, NULL, pcb_flag_make(PCB_FLAG_CLEARLINE));
 	}
 
 	return 0;
