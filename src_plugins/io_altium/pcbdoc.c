@@ -553,6 +553,56 @@ static int altium_parse_arc(rctx_t *rctx)
 	return 0;
 }
 
+static int altium_parse_text(rctx_t *rctx)
+{
+	altium_record_t *rec;
+	altium_field_t *field;
+
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_text]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_text], rec)) {
+		pcb_layer_t *ly = NULL;
+		altium_field_t *text = NULL;
+		pcb_text_t *t;
+		rnd_coord_t x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
+		double rot = 0;
+		int mir = 0, designator = 0;
+		long compid = -1;
+		rnd_coord_t cl = 0;
+		TODO("figure clearance for cl");
+
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			switch(field->type) {
+				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
+				case altium_kw_field_text:        text = field; break;
+				case altium_kw_field_x1:          x1 = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_y1:          y1 = conv_coordy_field(rctx, field); break;
+				case altium_kw_field_x2:          x2 = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_y2:          y2 = conv_coordy_field(rctx, field); break;
+				case altium_kw_field_width:       w = conv_coord_field(field); break;
+				case altium_kw_field_mirror:      mir = conv_bool_field(field); break;
+				case altium_kw_field_rotation:    rot = conv_double_field(field); break;
+				case altium_kw_field_component:   compid = conv_long_field(field); break;
+				case altium_kw_field_designator:  designator = conv_bool_field(field); break;
+				default: break;
+			}
+		}
+		if ((x1 == RND_COORD_MAX) || (y1 == RND_COORD_MAX) || (x2 == RND_COORD_MAX) || (y2 == RND_COORD_MAX) || (w == RND_COORD_MAX)) {
+			rnd_message(RND_MSG_ERROR, "Invalid text object: missing coordinate or width (text not created)\n");
+			continue;
+		}
+		if (!designator && (text == NULL)) {
+			rnd_message(RND_MSG_ERROR, "Invalid text object: missing text string (text not created)\n");
+			continue;
+		}
+
+		if ((ly = altium_comp_layer(rctx, ly, compid, "text")) == NULL)
+			continue;
+
+		t = pcb_text_new_by_bbox(ly, pcb_font(rctx->pcb, 1, 1), x1, y1, x2-x1, y2-y1, 0, 0, 1.0, mir, rot, w, (designator ? "%a.parent.refdes%" : text->val), pcb_flag_make(PCB_FLAG_CLEARLINE | (designator ? PCB_FLAG_DYNTEXT|PCB_FLAG_FLOATER : 0)));
+	}
+
+	return 0;
+}
+
 static int altium_parse_via(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -614,6 +664,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	res |= altium_parse_pad(&rctx);
 	res |= altium_parse_track(&rctx);
 	res |= altium_parse_arc(&rctx);
+	res |= altium_parse_text(&rctx);
 	res |= altium_parse_via(&rctx);
 
 	altium_finalize_subcs(&rctx);

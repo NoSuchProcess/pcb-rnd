@@ -41,6 +41,10 @@ field
  radius
  startangle
  endangle
+ text
+ mirror
+ designator
+ comment
 layers
  top
  bottom
