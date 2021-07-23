@@ -865,7 +865,19 @@ pcb_layer_t *pcb_subc_alloc_layer_like(pcb_subc_t *subc, const pcb_layer_t *sl)
 	dl = &subc->data->Layer[subc->data->LayerN++];
 	dl->is_bound = 1;
 	dl->type = PCB_OBJ_LAYER;
-	memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
+	if (!sl->is_bound) {
+		pcb_layer_t tmply;
+
+		memset(&dl->meta.bound, 0, sizeof(sl->meta.bound));
+		pcb_layer_real2bound(&tmply, sl, 0);
+
+		dl->meta.bound.type = tmply.meta.bound.type;
+		dl->meta.bound.stack_offs = tmply.meta.bound.stack_offs;
+		dl->meta.bound.purpose = tmply.meta.bound.purpose;
+	}
+	else
+		memcpy(&dl->meta.bound, &sl->meta.bound, sizeof(sl->meta.bound));
+
 	dl->name = rnd_strdup(sl->name);
 	dl->comb = sl->comb;
 	if (dl->meta.bound.real != NULL)
