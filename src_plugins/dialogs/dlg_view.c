@@ -750,7 +750,7 @@ void drc_extra_buttons(view_ctx_t *ctx)
 }
 
 static view_ctx_t drc_gui_ctx = {0};
-const char pcb_acts_DrcDialog[] = "DrcDialog([list|simple]\n";
+const char pcb_acts_DrcDialog[] = "DrcDialog([list|simple])\n";
 const char pcb_acth_DrcDialog[] = "Execute drc checks and invoke a view list dialog box for presenting the results";
 fgw_error_t pcb_act_DrcDialog(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
