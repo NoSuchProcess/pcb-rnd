@@ -238,6 +238,66 @@ static int altium_parse_net(rctx_t *rctx)
 	return 0;
 }
 
+static int altium_parse_rule(rctx_t *rctx)
+{
+	altium_record_t *rec;
+	altium_field_t *field;
+
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_rule]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_rule], rec)) {
+		altium_field_t *scope_val[2] = {NULL, NULL}, *scval;
+		const char *name = "";
+		int kind = -1, netscope = -1, layerkind = -1, scope_kind[2] = {-1, -1}, sckind, enabled = 1;
+		rnd_coord_t gap = RND_COORD_MAX;
+
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			switch(field->type) {
+				case altium_kw_field_name:           name = field->val; break;
+				case altium_kw_field_rulekind:       kind = altium_kw_sphash(field->val); break;
+				case altium_kw_field_netscope:       netscope = altium_kw_sphash(field->val); break;
+				case altium_kw_field_layerkind:      layerkind = altium_kw_sphash(field->val); break;
+				case altium_kw_field_scope1_0_kind:  scope_kind[0] = altium_kw_sphash(field->val); break;
+				case altium_kw_field_scope2_0_kind:  scope_kind[1] = altium_kw_sphash(field->val); break;
+				case altium_kw_field_scope1_0_value: scope_val[0] = field; break;
+				case altium_kw_field_scope2_0_value: scope_val[1] = field; break;
+				case altium_kw_field_gap:            gap = conv_coord_field(field); break;
+				case altium_kw_field_enabled:        enabled = conv_bool_field(field); break;
+				default: break;
+			}
+		}
+
+		/* deal with samke layer net clearances only */
+		if (!enabled) continue;
+		if (kind != altium_kw_field_clearance) continue;
+		if ((netscope != altium_kw_field_differentnets) && (netscope != altium_kw_field_anynet)) continue;
+		if (layerkind != altium_kw_field_samelayer) continue;
+
+		/* one of the scopes must be board */
+		if (scope_kind[0] == altium_kw_field_board) {
+			sckind = scope_kind[1];
+			scval = scope_val[1];
+		}
+		else if (scope_kind[1] == altium_kw_field_board) {
+			sckind = scope_kind[0];
+			scval = scope_val[0];
+		}
+		else
+			continue;
+
+		/* one scope is board, the other is sckind:scval */
+
+		if (gap == RND_COORD_MAX) {
+			rnd_message(RND_MSG_ERROR, "Invalid clearance rule %s: no gap defined (ignoring rule)\n", name);
+			continue;
+		}
+
+		rnd_printf("RULE %s sctype=%s scval=%s (%s %s) gap=%mm\n", name,
+			((sckind == altium_kw_field_net) ? "net" : ((sckind == altium_kw_field_board) ? "board" : "class")),
+			scval->val, scope_val[0]->val, scope_val[1]->val, gap);
+	}
+
+	return 0;
+}
+
 static int altium_parse_components(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -745,6 +805,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 
 	res |= altium_parse_board(&rctx);
 	res |= altium_parse_net(&rctx);
+	res |= altium_parse_rule(&rctx);
 	res |= altium_parse_components(&rctx);
 	res |= altium_parse_pad(&rctx);
 	res |= altium_parse_track(&rctx);

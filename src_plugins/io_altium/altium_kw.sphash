@@ -11,6 +11,7 @@ record
  track
  text
  componentbody
+ rule
 field
  layer
  locked
@@ -45,6 +46,20 @@ field
  mirror
  designator
  comment
+ rulekind
+ netscope
+ layerkind
+ enabled
+ clearance
+ differentnets
+ anynet
+ samelayer
+ scope1_0_kind
+ scope1_0_value
+ scope2_0_kind
+ scope2_0_value
+ board
+ gap
 layers
  top
  bottom
