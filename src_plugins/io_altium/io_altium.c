@@ -76,7 +76,7 @@ int pplg_init_io_altium(void)
 	io_pcbdoc_ascii.write_buffer = NULL;
 	io_pcbdoc_ascii.write_pcb = NULL;
 	io_pcbdoc_ascii.default_fmt = "altium";
-	io_pcbdoc_ascii.description = "Altium PcbDoc ASCII board";
+	io_pcbdoc_ascii.description = "Protel/Altium PcbDoc ASCII board";
 	io_pcbdoc_ascii.save_preference_prio = 1;
 	io_pcbdoc_ascii.default_extension = ".PcbDoc";
 	io_pcbdoc_ascii.fp_extension = NULL;
