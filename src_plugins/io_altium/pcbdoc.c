@@ -672,9 +672,6 @@ static int altium_parse_poly(rctx_t *rctx)
 			continue;
 		}
 
-		if (ly != NULL) /* move comments to assy */
-			ly = conv_layer_assy(rctx, pcb_layer_flags_(ly) & PCB_LYT_BOTTOM);
-
 		if ((ly = altium_comp_layer(rctx, ly, compid, "polygon")) == NULL)
 			continue;
 
