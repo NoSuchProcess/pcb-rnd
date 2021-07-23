@@ -34,6 +34,7 @@
 #include <librnd/core/compat_misc.h>
 
 #include "board.h"
+#include "netlist.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/pstk_help.h"
@@ -50,6 +51,7 @@ typedef struct {
 	/* caches */
 	pcb_layer_t *lych[LY_CACHE_MAX];
 	htip_t comps;
+	htip_t nets;
 } rctx_t;
 
 static rnd_coord_t conv_coord_field(altium_field_t *field)
@@ -185,6 +187,40 @@ static int altium_parse_board(rctx_t *rctx)
 	return 0;
 }
 
+static int altium_parse_net(rctx_t *rctx)
+{
+	altium_record_t *rec;
+	altium_field_t *field;
+
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_net]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_net], rec)) {
+		altium_field_t *name = NULL;
+		pcb_net_t *net;
+		long id = -1;
+
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			switch(field->type) {
+				case altium_kw_field_name: name = field; break;
+				case altium_kw_field_id:   id = conv_long_field(field); break;
+
+				default: break;
+			}
+		}
+		if (id < 0) {
+			rnd_message(RND_MSG_ERROR, "Invalid net object: missing ID (net not created)\n");
+			continue;
+		}
+		if (name == NULL) {
+			rnd_message(RND_MSG_ERROR, "Invalid net object: missing name (net not created)\n");
+			continue;
+		}
+
+		net = pcb_net_get(rctx->pcb, &rctx->pcb->netlist[PCB_NETLIST_INPUT], name->val, PCB_NETA_ALLOC);
+		htip_set(&rctx->nets, id, net);
+	}
+
+	return 0;
+}
+
 static int altium_parse_components(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -254,7 +290,7 @@ static int altium_parse_pad(rctx_t *rctx)
 		altium_field_t *ly = NULL, *term = NULL, *shapename = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, xsize = RND_COORD_MAX, ysize = RND_COORD_MAX, hole = 0;
 		pcb_pstk_shape_t shape[8], master_shape, mask_shape;
-		long compid = -1;
+		long compid = -1, netid = -1;
 		int on_all = 0, on_bottom = 0, plated = 0;
 		double rot = 0;
 		rnd_coord_t cl = 0;
@@ -272,6 +308,7 @@ static int altium_parse_pad(rctx_t *rctx)
 				case altium_kw_field_holesize:  hole = conv_coord_field(field); break;
 				case altium_kw_field_rotation:  rot = conv_double_field(field); break;
 				case altium_kw_field_component: compid = conv_long_field(field); break;
+				case altium_kw_field_net:       netid = conv_long_field(field); break;
 				case altium_kw_field_plated:    plated = conv_bool_field(field); break;
 TODO("HOLEWIDTH, HOLEROTATION");
 TODO("STARTLAYER and ENDLAYER (for bbvias)");
@@ -363,6 +400,20 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			pcb_pstk_rotate(ps, x, y, cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 		if (term != NULL)
 			pcb_attribute_put(&ps->Attributes, "term", term->val);
+
+		if (netid >= 0) {
+			pcb_net_t *net = htip_get(&rctx->nets, netid);
+			if (net != NULL) {
+				if (sc->refdes == NULL)
+					rnd_message(RND_MSG_ERROR, "Can't add pad to net %ld because parent subcircuit doesn't have a refdes (pad not assigned to net)\n", netid);
+				else if (term == NULL)
+					rnd_message(RND_MSG_ERROR, "Can't add pad to net %ld because it doesn't have a name (pad not assigned to net)\n", netid);
+				else if (pcb_net_term_get(net, sc->refdes, term->val, PCB_NETA_ALLOC) == NULL)
+					rnd_message(RND_MSG_ERROR, "Failed to add pad to net %ld (pad not assigned to net)\n", netid);
+			}
+			else
+				rnd_message(RND_MSG_ERROR, "Invalid pad net ID: %ld (pad not assigned to net)\n", netid);
+		}
 	}
 
 	return 0;
@@ -489,11 +540,13 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	}
 
 	htip_init(&rctx.comps, longhash, longkeyeq);
+	htip_init(&rctx.nets, longhash, longkeyeq);
 
 	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap);
 	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap_doc);
 
 	res |= altium_parse_board(&rctx);
+	res |= altium_parse_net(&rctx);
 	res |= altium_parse_components(&rctx);
 	res |= altium_parse_pad(&rctx);
 	res |= altium_parse_track(&rctx);
@@ -501,6 +554,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 
 	altium_finalize_subcs(&rctx);
 
+	htip_uninit(&rctx.nets);
 	htip_uninit(&rctx.comps);
 	altium_tree_free(&rctx.tree);
 	return res;

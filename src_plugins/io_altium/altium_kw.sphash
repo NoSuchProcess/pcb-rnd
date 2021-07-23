@@ -35,6 +35,7 @@ field
  component
  plated
  name
+ net
 layers
  top
  bottom
