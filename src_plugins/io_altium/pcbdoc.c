@@ -289,7 +289,7 @@ static int altium_parse_pad(rctx_t *rctx)
 		pcb_subc_t *sc = NULL;
 		altium_field_t *ly = NULL, *term = NULL, *shapename = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, xsize = RND_COORD_MAX, ysize = RND_COORD_MAX, hole = 0;
-		pcb_pstk_shape_t shape[8], master_shape, mask_shape;
+		pcb_pstk_shape_t shape[8], master_shape = {0}, mask_shape = {0};
 		long compid = -1, netid = -1;
 		int on_all = 0, on_bottom = 0, plated = 0;
 		double rot = 0;
