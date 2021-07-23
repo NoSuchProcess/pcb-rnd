@@ -647,8 +647,9 @@ static int altium_parse_poly(rctx_t *rctx)
 	vtc0_t vx = {0}, vy = {0};
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_polygon]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_polygon], rec)) {
+		pcb_poly_t *poly;
 		pcb_layer_t *ly = NULL;
-		long compid = -1;
+		long compid = -1, n;
 		rnd_coord_t cl = 0;
 		TODO("figure clearance for cl");
 
@@ -677,7 +678,10 @@ static int altium_parse_poly(rctx_t *rctx)
 		if ((ly = altium_comp_layer(rctx, ly, compid, "polygon")) == NULL)
 			continue;
 
-TODO("Create the polygon here");
+		poly = pcb_poly_new(ly, cl, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
+		for(n = 0; n < vx.used; n++)
+			pcb_poly_point_new(poly, vx.array[n], vy.array[n]);
+		pcb_add_poly_on_layer(ly, poly);
 	}
 
 	vtc0_uninit(&vx);
