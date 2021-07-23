@@ -675,7 +675,7 @@ static int altium_parse_poly(rctx_t *rctx)
 		if ((ly = altium_comp_layer(rctx, ly, compid, "polygon")) == NULL)
 			continue;
 
-		poly = pcb_poly_new(ly, cl, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY));
+		poly = pcb_poly_new(ly, cl, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY | PCB_FLAG_CLEARPOLY));
 		for(n = 0; n < vx.used; n++)
 			pcb_poly_point_new(poly, vx.array[n], vy.array[n]);
 		pcb_add_poly_on_layer(ly, poly);
