@@ -738,6 +738,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 
 	htip_init(&rctx.comps, longhash, longkeyeq);
 	htip_init(&rctx.nets, longhash, longkeyeq);
+	pcb_data_clip_inhibit_inc(rctx.pcb->Data);
 
 	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap);
 	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap_doc);
@@ -754,6 +755,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 
 	altium_finalize_subcs(&rctx);
 
+	pcb_data_clip_inhibit_dec(rctx.pcb->Data, 1);
 	htip_uninit(&rctx.nets);
 	htip_uninit(&rctx.comps);
 	altium_tree_free(&rctx.tree);
