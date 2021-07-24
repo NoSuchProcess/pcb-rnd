@@ -194,10 +194,19 @@ TODO("MECHANICAL2...MECHANICAL14: look up or create new doc?; use cache index fr
 
 #define BUMP_COORD(dst, src) do { if (src > dst) dst = src; } while(0)
 
+typedef struct {
+	const char *name;
+	int prev, next;
+} altium_layer_t;
+
 static int altium_parse_board(rctx_t *rctx)
 {
 	altium_record_t *rec;
 	altium_field_t *field;
+	altium_layer_t layers[128] = {0};
+	int timeout, n, first;
+
+#define LAYERS_MAX (sizeof(layers)/sizeof(layers[0]))
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_board]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_board], rec)) {
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
@@ -212,9 +221,50 @@ static int altium_parse_board(rctx_t *rctx)
 						if (tolower(field->key[1]) == 'y')
 							BUMP_COORD(rctx->pcb->hidlib.size_y, conv_coord_field(field));
 					}
+					if (rnd_strncasecmp(field->key, "layer", 5) == 0) {
+						char *end;
+						long idx = strtol(field->key+5, &end, 10);
+						int fid;
+
+						if ((idx < 0) || (idx > LAYERS_MAX))
+							break;
+						fid = altium_kw_sphash(end);
+						switch(fid) {
+							case altium_kw_field_name: layers[idx].name = field->val; break;
+							case altium_kw_field_prev: layers[idx].prev = atoi(field->val); break;
+							case altium_kw_field_next: layers[idx].next = atoi(field->val); break;
+						}
+					}
 				break;
 			}
 		}
+	}
+
+	/*** create the layer stack (copper only) ***/
+
+	/* figure the first (top) layer: prev == 0, next != 0 */
+	first = -1;
+	for(n = 1; n < LAYERS_MAX; n++) {
+		if ((layers[n].prev == 0) && (layers[n].next != 0)) {
+			if (first < 0)
+				first = n;
+			else
+				rnd_message(RND_MSG_ERROR, "Broken layer stack: multiple top layers\n");
+		}
+	}
+
+	if (first < 0) {
+		rnd_message(RND_MSG_ERROR, "Broken layer stack: no top layers (falling back to stock 2 layer board)\n");
+		return;
+	}
+
+printf("Layer stack:\n");
+	n = first;
+	for(timeout = 0; timeout < LAYERS_MAX; timeout++) {
+printf(" [%d] %s\n", n, layers[n].name);
+		n = layers[n].next;
+		if (n == 0)
+			break;
 	}
 
 	return 0;

@@ -36,6 +36,8 @@ field
  component
  plated
  name
+ prev
+ next
  net
  location.x
  location.y
