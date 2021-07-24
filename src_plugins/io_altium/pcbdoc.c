@@ -199,18 +199,39 @@ typedef struct {
 	int prev, next, seen;
 } altium_layer_t;
 
-static void altium_layer_list(rctx_t *rctx, altium_layer_t *layers, int layers_max, int first)
+static int altium_layer_list(rctx_t *rctx, altium_layer_t *layers, int layers_max, int first)
 {
-	int timeout, n = first;
+	int timeout, cop = 0, n = first;
 
 printf(" list:\n");
 	for(timeout = 0; timeout < layers_max; timeout++) {
+		char *type;
 		if ((n <= 0) || (n >= layers_max) || layers[n].seen)
 			break;
-printf("  [%d] %s\n", n, layers[n].name);
+		type = strchr(layers[n].name, ' ');
+		if (type != NULL) {
+			*type = '\0';
+			type++;
+		}
+		else
+			type = "";
+
+printf("  [%d] %s (type=%s)\n", n, layers[n].name, type);
+
+		if (rnd_strcasecmp(type, "Layer") == 0) {
+			cop = 1;
+			if ((rnd_strncasecmp(layers[n].name, "top", 3) == 0) || (rnd_strncasecmp(layers[n].name, "bottom", 6) == 0)) {
+				/* do not do anything - top and bottom are already created */
+			}
+			else {
+				TODO("create internal copper layer");
+			}
+		}
+
 		layers[n].seen = 1;
 		n = layers[n].next;
 	}
+	return cop;
 }
 
 static int altium_parse_board(rctx_t *rctx)
@@ -218,7 +239,7 @@ static int altium_parse_board(rctx_t *rctx)
 	altium_record_t *rec;
 	altium_field_t *field;
 	altium_layer_t layers[128] = {0};
-	int n, layers_max = (sizeof(layers)/sizeof(layers[0]));
+	int seen_cop = 0, n, layers_max = (sizeof(layers)/sizeof(layers[0]));
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_board]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_board], rec)) {
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
@@ -259,16 +280,10 @@ printf("Layer stack:\n");
 	/* figure the first (top) layer: prev == 0, next != 0 */
 	for(n = 1; n < layers_max; n++)
 		if ((layers[n].prev == 0) && (layers[n].next != 0))
-			altium_layer_list(rctx, layers, layers_max, n);
+			seen_cop |= altium_layer_list(rctx, layers, layers_max, n);
 
-TODO("detect missing copper");
-/*
-	if (first < 0) {
-		rnd_message(RND_MSG_ERROR, "Broken layer stack: no top layers (falling back to stock 2 layer board)\n");
-		return;
-	}
-*/
-
+	if (!seen_cop)
+		rnd_message(RND_MSG_ERROR, "Broken layer stack: no copper layers (falling back to stock 2 layer board)\n");
 
 	return 0;
 }
