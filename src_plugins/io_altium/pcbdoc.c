@@ -196,17 +196,29 @@ TODO("MECHANICAL2...MECHANICAL14: look up or create new doc?; use cache index fr
 
 typedef struct {
 	const char *name;
-	int prev, next;
+	int prev, next, seen;
 } altium_layer_t;
+
+static void altium_layer_list(rctx_t *rctx, altium_layer_t *layers, int layers_max, int first)
+{
+	int timeout, n = first;
+
+printf(" list:\n");
+	for(timeout = 0; timeout < layers_max; timeout++) {
+		if ((n <= 0) || (n >= layers_max) || layers[n].seen)
+			break;
+printf("  [%d] %s\n", n, layers[n].name);
+		layers[n].seen = 1;
+		n = layers[n].next;
+	}
+}
 
 static int altium_parse_board(rctx_t *rctx)
 {
 	altium_record_t *rec;
 	altium_field_t *field;
 	altium_layer_t layers[128] = {0};
-	int timeout, n, first;
-
-#define LAYERS_MAX (sizeof(layers)/sizeof(layers[0]))
+	int n, layers_max = (sizeof(layers)/sizeof(layers[0]));
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_board]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_board], rec)) {
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
@@ -226,7 +238,7 @@ static int altium_parse_board(rctx_t *rctx)
 						long idx = strtol(field->key+5, &end, 10);
 						int fid;
 
-						if ((idx < 0) || (idx > LAYERS_MAX))
+						if ((idx < 0) || (idx > layers_max))
 							break;
 						fid = altium_kw_sphash(end);
 						switch(fid) {
@@ -242,30 +254,21 @@ static int altium_parse_board(rctx_t *rctx)
 
 	/*** create the layer stack (copper only) ***/
 
-	/* figure the first (top) layer: prev == 0, next != 0 */
-	first = -1;
-	for(n = 1; n < LAYERS_MAX; n++) {
-		if ((layers[n].prev == 0) && (layers[n].next != 0)) {
-			if (first < 0)
-				first = n;
-			else
-				rnd_message(RND_MSG_ERROR, "Broken layer stack: multiple top layers\n");
-		}
-	}
+printf("Layer stack:\n");
 
+	/* figure the first (top) layer: prev == 0, next != 0 */
+	for(n = 1; n < layers_max; n++)
+		if ((layers[n].prev == 0) && (layers[n].next != 0))
+			altium_layer_list(rctx, layers, layers_max, n);
+
+TODO("detect missing copper");
+/*
 	if (first < 0) {
 		rnd_message(RND_MSG_ERROR, "Broken layer stack: no top layers (falling back to stock 2 layer board)\n");
 		return;
 	}
+*/
 
-printf("Layer stack:\n");
-	n = first;
-	for(timeout = 0; timeout < LAYERS_MAX; timeout++) {
-printf(" [%d] %s\n", n, layers[n].name);
-		n = layers[n].next;
-		if (n == 0)
-			break;
-	}
 
 	return 0;
 }
