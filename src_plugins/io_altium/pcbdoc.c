@@ -176,7 +176,7 @@ static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 		case altium_kw_layers_topsolder:     return conv_layer_(rctx, 6,  PCB_LYT_MASK | PCB_LYT_TOP, NULL);
 		case altium_kw_layers_bottomsolder:  return conv_layer_(rctx, 7,  PCB_LYT_MASK | PCB_LYT_BOTTOM, NULL);
 		case altium_kw_layers_drillguide:    return conv_layer_(rctx, 8,  PCB_LYT_DOC, "drill_guide");
-		case altium_kw_layers_keepout:       return conv_layer_(rctx, 9,  PCB_LYT_DOC, "keepout");
+		case altium_kw_layers_keepout:       return conv_layer_(rctx, 9,  PCB_LYT_DOC, "altium.keepout");
 		case altium_kw_layers_drilldrawing:  return conv_layer_(rctx, 10, PCB_LYT_DOC, "drill");
 		case altium_kw_layers_multilayer:    return conv_layer_(rctx, 11, PCB_LYT_DOC, "multilayer");
 	}
@@ -1076,6 +1076,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 		{"outline",             PCB_LYT_BOUNDARY,                "uroute", 0, 0},
 		{"pmech",               PCB_LYT_MECH,                    "proute", PCB_LYC_AUTO, 0},
 		{"umech",               PCB_LYT_MECH,                    "uroute", PCB_LYC_AUTO, 0},
+		{"keepout",             PCB_LYT_DOC,                     "altium.keepout", 0, 0},
 
 		{NULL, 0}
 	};
