@@ -927,6 +927,13 @@ do { \
 	vtd0_set(dst, idx, d); \
 } while(0)
 
+static int add_poly_point_cb(void *uctx, rnd_coord_t x, rnd_coord_t y)
+{
+	pcb_poly_t *poly = uctx;
+	pcb_poly_point_new(poly, x, y);
+	return 0;
+}
+
 static int altium_parse_poly(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -976,8 +983,30 @@ TODO("load arc-in-poly");
 		for(n = 0; n < vx.used; n++) {
 			if ((sa.array[n] > 0) || (ea.array[n] > 0)) { /* arc - approximate with line */
 				double r = rnd_distance(vx.array[n], vy.array[n], cx.array[n], cy.array[n]);
-				
+				double sa_tmp = sa.array[n], ea_tmp = ea.array[n];
+				rnd_coord_t ex0, ey0, ex1, ey1;
+				int rev;
+				pcb_arc_t arc;
+
+				/* create a dummy arc for the approximator */
+				ARC_CONV_ANGLES(sa_tmp, ea_tmp);
+				arc.X = cx.array[n];
+				arc.Y = cy.array[n];
+				arc.Width = arc.Height = r;
+				arc.StartAngle = sa_tmp;
+				arc.Delta = ea_tmp - sa_tmp;
+				if (arc.Delta < 0)
+					arc.Delta = 360+arc.Delta;
+
+				/* figure which end matches our target and set 'reverse' approximation accordingly */
+				pcb_arc_get_end(&arc, 0, &ex0, &ey0);
+				pcb_arc_get_end(&arc, 1, &ex1, &ey1);
+				rev = rnd_distance2(vx.array[n], vy.array[n], ex0, ey0) > rnd_distance2(vx.array[n], vy.array[n], ex1, ey1);
+
+				/*printf(" angles: %f -> %f (%f %d)\n", sa_tmp, ea_tmp, arc.Delta, rev);*/
+				pcb_arc_approx(&arc, -RND_MM_TO_COORD(0.2), rev, poly, add_poly_point_cb);
 			}
+
 			/* else plain line segment to [n]; in either case go to [n] exactly */
 			pcb_poly_point_new(poly, vx.array[n], vy.array[n]);
 		}
