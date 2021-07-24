@@ -512,7 +512,7 @@ static int altium_parse_pad(rctx_t *rctx)
 		rnd_coord_t mask_man = RND_COORD_MAX, paste_man = RND_COORD_MAX, mask_fin = PCB_PROTO_MASK_BLOAT, paste_fin = 0;
 		pcb_pstk_shape_t shape[8] = {0}, copper_shape = {0}, mask_shape = {0}, paste_shape = {0};
 		long compid = -1, netid = -1;
-		int on_all = 0, on_bottom = 0, plated = 0, mask_mode = -1, paste_mode = -1;
+		int on_all = 0, on_bottom = 0, plated = 0, mask_mode = -1, paste_mode = -1, copper_valid = 0, mask_valid = 0, paste_valid = 0, n;
 		double rot = 0;
 		rnd_coord_t cl;
 
@@ -586,18 +586,28 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		/* create the abstract shapes */
 		if ((rnd_strcasecmp(shapename->val, "rectangle") == 0) || (rnd_strcasecmp(shapename->val, "roundedrectangle") == 0)) {
 			pcb_shape_rect(&copper_shape, xsize, ysize);
-			pcb_shape_rect(&mask_shape, xsize + mask_fin*2, ysize + mask_fin*2);
-			pcb_shape_rect(&paste_shape, xsize + paste_fin*2, ysize + paste_fin*2);
+			copper_valid = 1;
+			if (((xsize + mask_fin*2) > 0) && ((ysize + mask_fin*2) > 0)) {
+				pcb_shape_rect(&mask_shape, xsize + mask_fin*2, ysize + mask_fin*2);
+				mask_valid = 1;
+			}
+			if (((xsize + paste_fin*2) > 0) && ((ysize + paste_fin*2) > 0)) {
+				pcb_shape_rect(&paste_shape, xsize + paste_fin*2, ysize + paste_fin*2);
+				paste_valid = 1;
+			}
 		}
 		else if (rnd_strcasecmp(shapename->val, "round") == 0) {
 			if (xsize == ysize) {
 				copper_shape.shape = mask_shape.shape = PCB_PSSH_CIRC;
 				copper_shape.data.circ.x = copper_shape.data.circ.y = 0;
 				copper_shape.data.circ.dia = xsize;
+				copper_valid = 1;
 				mask_shape.data.circ.x = mask_shape.data.circ.y = 0;
 				mask_shape.data.circ.dia = xsize + mask_fin*2;
+				mask_valid = (mask_shape.data.circ.dia > 0);
 				paste_shape = copper_shape;
 				paste_shape.data.circ.dia += paste_fin*2;
+				paste_valid = (paste_shape.data.circ.dia > 0);
 			}
 			else {
 				copper_shape.shape = mask_shape.shape = PCB_PSSH_LINE;
@@ -606,18 +616,24 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 					copper_shape.data.line.x2 = mask_shape.data.line.x2 = +xsize/2 - ysize/2;
 					copper_shape.data.line.y1 = mask_shape.data.line.y1 = copper_shape.data.line.y2 = mask_shape.data.line.y2 = 0;
 					copper_shape.data.line.thickness = ysize;
+					copper_valid = 1;
 					mask_shape.data.line.thickness = ysize + mask_fin*2;
+					mask_valid = (mask_shape.data.line.thickness > 0);
 					paste_shape = copper_shape;
 					paste_shape.data.line.thickness += paste_fin*2;
+					paste_valid = (paste_shape.data.line.thickness > 0);
 				}
 				else {
 					copper_shape.data.line.y1 = mask_shape.data.line.y1 = -ysize/2 + xsize/2;
 					copper_shape.data.line.y2 = mask_shape.data.line.y2 = +ysize/2 - xsize/2;
 					copper_shape.data.line.x1 = mask_shape.data.line.x1 = copper_shape.data.line.x2 = mask_shape.data.line.x2 = 0;
 					copper_shape.data.line.thickness = xsize;
+					copper_valid = 1;
 					mask_shape.data.line.thickness = xsize + mask_fin*2;
+					mask_valid = (mask_shape.data.line.thickness > 0);;
 					paste_shape = copper_shape;
 					paste_shape.data.line.thickness += paste_fin*2;
+					paste_valid = (paste_shape.data.line.thickness > 0);
 				}
 			}
 		}
@@ -626,21 +642,32 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			continue;
 		}
 
-
+		/* create shape stackup in shape[] */
+		n = 0;
 		if (on_all) {
-			pcb_pstk_shape_copy(&shape[0], &copper_shape); shape[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
-			pcb_pstk_shape_copy(&shape[1], &copper_shape); shape[1].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
-			pcb_pstk_shape_copy(&shape[2], &copper_shape); shape[2].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
-			pcb_pstk_shape_copy(&shape[3], &mask_shape);   shape[3].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; shape[3].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
-			pcb_pstk_shape_copy(&shape[4], &mask_shape);   shape[4].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; shape[4].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
-			shape[5].layer_mask = 0;
+			if (copper_valid) {
+				pcb_pstk_shape_copy(&shape[n], &copper_shape); shape[n].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; n++;
+				pcb_pstk_shape_copy(&shape[n], &copper_shape); shape[n].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; n++;
+				pcb_pstk_shape_copy(&shape[n], &copper_shape); shape[n].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; n++;
+			}
+			if (mask_valid) {
+				pcb_pstk_shape_copy(&shape[n], &mask_shape);   shape[n].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; shape[n].comb = PCB_LYC_AUTO | PCB_LYC_SUB; n++;
+				pcb_pstk_shape_copy(&shape[n], &mask_shape);   shape[n].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; shape[n].comb = PCB_LYC_AUTO | PCB_LYC_SUB; n++;
+			}
+			shape[n].layer_mask = 0;
 		}
 		else {
 			pcb_layer_type_t side = on_bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
-			pcb_pstk_shape_copy(&shape[0], &copper_shape); shape[0].layer_mask = side | PCB_LYT_COPPER;
-			pcb_pstk_shape_copy(&shape[1], &mask_shape);   shape[1].layer_mask = side | PCB_LYT_MASK; shape[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
-			pcb_pstk_shape_copy(&shape[2], &paste_shape);  shape[2].layer_mask = side | PCB_LYT_PASTE; shape[2].comb = PCB_LYC_AUTO;
-			shape[3].layer_mask = 0;
+			if (copper_valid) {
+				pcb_pstk_shape_copy(&shape[n], &copper_shape); shape[n].layer_mask = side | PCB_LYT_COPPER; n++;
+			}
+			if (mask_valid) {
+				pcb_pstk_shape_copy(&shape[n], &mask_shape);   shape[n].layer_mask = side | PCB_LYT_MASK; shape[n].comb = PCB_LYC_AUTO | PCB_LYC_SUB; n++;
+			}
+			if (paste_valid) {
+				pcb_pstk_shape_copy(&shape[n], &paste_shape);  shape[n].layer_mask = side | PCB_LYT_PASTE; shape[n].comb = PCB_LYC_AUTO; n++;
+			}
+			shape[n].layer_mask = 0;
 		}
 
 		/* create the padstack */
@@ -655,11 +682,8 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		pcb_pstk_shape_free(&copper_shape);
 		pcb_pstk_shape_free(&mask_shape);
 		pcb_pstk_shape_free(&paste_shape);
-		{
-			int n;
-			for(n = 0; n < sizeof(shape)/sizeof(shape[0]); n++)
-				pcb_pstk_shape_free(&shape[n]);
-		}
+		for(n = 0; n < sizeof(shape)/sizeof(shape[0]); n++)
+			pcb_pstk_shape_free(&shape[n]);
 
 		/* assign net (netlist is stored on pad struct side) */
 		if (netid >= 0) {
