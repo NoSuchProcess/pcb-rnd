@@ -422,6 +422,7 @@ static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 		rnd_message(RND_MSG_INFO, "Padstack saved to %s.\n", proto_save_fn);
 	else
 		rnd_message(RND_MSG_ERROR, "Padstack not saved to %s.\n", proto_save_fn);
+	fclose(f);
 }
 
 static void pstklib_load(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
