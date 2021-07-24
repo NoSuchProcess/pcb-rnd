@@ -510,7 +510,7 @@ static int altium_parse_pad(rctx_t *rctx)
 		altium_field_t *ly = NULL, *term = NULL, *shapename = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, xsize = RND_COORD_MAX, ysize = RND_COORD_MAX, hole = 0;
 		rnd_coord_t mask_man = RND_COORD_MAX, paste_man = RND_COORD_MAX, mask_fin = PCB_PROTO_MASK_BLOAT, paste_fin = 0;
-		pcb_pstk_shape_t shape[8], copper_shape = {0}, mask_shape = {0}, paste_shape = {0};
+		pcb_pstk_shape_t shape[8] = {0}, copper_shape = {0}, mask_shape = {0}, paste_shape = {0};
 		long compid = -1, netid = -1;
 		int on_all = 0, on_bottom = 0, plated = 0, mask_mode = -1, paste_mode = -1;
 		double rot = 0;
@@ -628,21 +628,22 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 
 
 		if (on_all) {
-			shape[0] = copper_shape; shape[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
-			shape[1] = copper_shape; shape[1].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
-			shape[2] = copper_shape; shape[2].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
-			shape[3] = mask_shape;   shape[3].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; shape[3].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
-			shape[4] = mask_shape;   shape[4].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; shape[4].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+			pcb_pstk_shape_copy(&shape[0], &copper_shape); shape[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+			pcb_pstk_shape_copy(&shape[1], &copper_shape); shape[1].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
+			pcb_pstk_shape_copy(&shape[2], &copper_shape); shape[2].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
+			pcb_pstk_shape_copy(&shape[3], &mask_shape);   shape[3].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; shape[3].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+			pcb_pstk_shape_copy(&shape[4], &mask_shape);   shape[4].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; shape[4].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
 			shape[5].layer_mask = 0;
 		}
 		else {
 			pcb_layer_type_t side = on_bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
-			shape[0] = copper_shape; shape[0].layer_mask = side | PCB_LYT_COPPER;
-			shape[1] = mask_shape;   shape[1].layer_mask = side | PCB_LYT_MASK; shape[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
-			shape[2] = paste_shape;  shape[2].layer_mask = side | PCB_LYT_PASTE; shape[2].comb = PCB_LYC_AUTO;
+			pcb_pstk_shape_copy(&shape[0], &copper_shape); shape[0].layer_mask = side | PCB_LYT_COPPER;
+			pcb_pstk_shape_copy(&shape[1], &mask_shape);   shape[1].layer_mask = side | PCB_LYT_MASK; shape[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+			pcb_pstk_shape_copy(&shape[2], &paste_shape);  shape[2].layer_mask = side | PCB_LYT_PASTE; shape[2].comb = PCB_LYC_AUTO;
 			shape[3].layer_mask = 0;
 		}
 
+		/* create the padstack */
 		cl = altium_clearance(rctx, netid);
 		ps = pcb_pstk_new_from_shape(sc->data, x, y, hole, plated, cl * 2, shape);
 		if (rot != 0)
@@ -650,8 +651,17 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		if (term != NULL)
 			pcb_attribute_put(&ps->Attributes, "term", term->val);
 
-TODO("memleak: free master shapes");
+		/* free temporary pad shapes */
+		pcb_pstk_shape_free(&copper_shape);
+		pcb_pstk_shape_free(&mask_shape);
+		pcb_pstk_shape_free(&paste_shape);
+		{
+			int n;
+			for(n = 0; n < sizeof(shape)/sizeof(shape[0]); n++)
+				pcb_pstk_shape_free(&shape[n]);
+		}
 
+		/* assign net (netlist is stored on pad struct side) */
 		if (netid >= 0) {
 			pcb_net_t *net = htip_get(&rctx->nets, netid);
 			if (net != NULL) {
