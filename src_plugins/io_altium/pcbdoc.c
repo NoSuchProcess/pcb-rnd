@@ -966,7 +966,6 @@ static int altium_parse_poly(rctx_t *rctx)
 					if ((tolower(field->key[0]) == 's') && (tolower(field->key[1]) == 'a')) POLY_ANG(field, &sa);
 					if ((tolower(field->key[0]) == 'e') && (tolower(field->key[1]) == 'a')) POLY_ANG(field, &ea);
 					break;
-TODO("load arc-in-poly");
 			}
 		}
 
