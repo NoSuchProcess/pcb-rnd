@@ -18,7 +18,6 @@ A rule consists of three parts:
 	<li> the <i>rule</i> keyword; syntax: <b>rule NAME</b>, where NAME is an arbitrary string
 	<li> build variables (lists) using search statements, using the <i>let</i> keyword
 	<li> state assertions about those lists, using the <i>assert</i> keyword
-	<li> comments, empty lines
 </ul>
 <p>
 A simpler variant of a rule is a single expression, without any <i>rule</i> or
@@ -27,6 +26,11 @@ A simpler variant of a rule is a single expression, without any <i>rule</i> or
 Various parts of pcb-rnd, including the <i>advanced search feature</i> and
 the <i>query()</i> action, runs a DRC rule (typically the simplified,
 single-expression variant) to find/select/list drawing objects.
+<p>
+(Note: the language does not support comments, but the files scripts are loaded
+from usually do. Please refer to the file format specification of those files,
+typically lihata or tEDAx. This also means such comments are not loaded into
+memory and can not be seen or edited on the GUI.)
 
 <h3 autotoc="yes"> Variables (lists) </h3>
 <p>
