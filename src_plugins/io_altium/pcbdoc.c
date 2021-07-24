@@ -799,6 +799,7 @@ static int altium_parse_poly(rctx_t *rctx)
 						if (tolower(field->key[1]) == 'y') POLY_VERT(field, &vy, conv_coordy_field);
 					}
 					break;
+TODO("load arc-in-poly");
 			}
 		}
 
