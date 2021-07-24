@@ -967,8 +967,14 @@ TODO("load arc-in-poly");
 
 		cl = altium_clearance(rctx, netid);
 		poly = pcb_poly_new(ly, cl * 2, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY | PCB_FLAG_CLEARPOLY));
-		for(n = 0; n < vx.used; n++)
+		for(n = 0; n < vx.used; n++) {
+			if ((sa.array[n] > 0) || (ea.array[n] > 0)) { /* arc - approximate with line */
+				double r = rnd_distance(vx.array[n], vy.array[n], cx.array[n], cy.array[n]);
+				
+			}
+			/* else plain line segment to [n]; in either case go to [n] exactly */
 			pcb_poly_point_new(poly, vx.array[n], vy.array[n]);
+		}
 		pcb_add_poly_on_layer(ly, poly);
 	}
 
