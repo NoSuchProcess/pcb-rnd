@@ -883,7 +883,7 @@ rnd_cardinal_t pcb_dlg_pstklib(pcb_board_t *pcb, long subc_id, rnd_bool modal, r
 	return 0;
 }
 
-const char pcb_acts_pstklib[] = "pstklib([board|subcid|object], [retpid, [preselect]])\n";
+const char pcb_acts_pstklib[] = "pstklib([auto|board|subcid|object], [retpid, [preselect]])\n";
 const char pcb_acth_pstklib[] = "Present the padstack library dialog on board padstacks or the padstacks of a subcircuit";
 fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
@@ -912,11 +912,21 @@ fgw_error_t pcb_act_pstklib(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		sc = r2;
 		id = sc->ID;
 	}
+	else if ((cmd != NULL) && (strcmp(cmd, "auto") == 0)) {
+		auto_fp:;
+		if (PCB->is_footprint) {
+			pcb_subc_t *sc = pcb_subclist_first(&PCB->Data->subc);
+			if (sc != NULL)
+				id = sc->ID;
+		}
+	}
 	else if ((cmd != NULL) && (strcmp(cmd, "board") == 0)) {
 		/* defaults are fine */
 	}
-	else
+	else {
 		RND_ACT_MAY_CONVARG(1, FGW_LONG, pstklib, id = argv[1].val.nat_long);
+		goto auto_fp;
+	}
 
 	pid = pcb_dlg_pstklib(PCB, id, modal, presel, NULL);
 	if (pid != PCB_PADSTACK_INVALID) {
