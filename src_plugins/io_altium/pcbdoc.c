@@ -602,15 +602,15 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			shape[0] = master_shape; shape[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
 			shape[1] = master_shape; shape[1].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
 			shape[2] = master_shape; shape[2].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
-			shape[3] = mask_shape;   shape[3].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK;
-			shape[4] = mask_shape;   shape[4].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK;
+			shape[3] = mask_shape;   shape[3].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; shape[3].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+			shape[4] = mask_shape;   shape[4].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; shape[4].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
 			shape[5].layer_mask = 0;
 		}
 		else {
 			pcb_layer_type_t side = on_bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
 			shape[0] = master_shape; shape[0].layer_mask = side | PCB_LYT_COPPER;
-			shape[1] = mask_shape;   shape[1].layer_mask = side | PCB_LYT_MASK;
-			shape[2] = master_shape; shape[2].layer_mask = side | PCB_LYT_PASTE;
+			shape[1] = mask_shape;   shape[1].layer_mask = side | PCB_LYT_MASK; shape[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
+			shape[2] = master_shape; shape[2].layer_mask = side | PCB_LYT_PASTE; shape[2].comb = PCB_LYC_AUTO;
 			shape[3].layer_mask = 0;
 		}
 
