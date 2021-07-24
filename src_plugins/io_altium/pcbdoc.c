@@ -554,11 +554,12 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			continue;
 		}
 
-		if (compid >= 0)
+		if (compid >= 0) {
 			sc = htip_get(&rctx->comps, compid);
-		if (sc == NULL) {
-			rnd_message(RND_MSG_ERROR, "Invalid pad object: can't find parent component (pad not created)\n");
-			continue;
+			if (sc == NULL) {
+				rnd_message(RND_MSG_ERROR, "Invalid pad object: can't find parent component (%ld) on term %s (pad not created)\n", compid, (term == NULL ? "<unspecified>" : term->val));
+				continue;
+			}
 		}
 
 		if (rnd_strcasecmp(ly->val, "bottom") == 0) on_bottom = 1;
@@ -672,7 +673,7 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 
 		/* create the padstack */
 		cl = altium_clearance(rctx, netid);
-		ps = pcb_pstk_new_from_shape(sc->data, x, y, hole, plated, cl * 2, shape);
+		ps = pcb_pstk_new_from_shape(((sc == NULL) ? rctx->pcb->Data : sc->data), x, y, hole, plated, cl * 2, shape);
 		if (rot != 0)
 			pcb_pstk_rotate(ps, x, y, cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 		if (term != NULL)
@@ -686,7 +687,7 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			pcb_pstk_shape_free(&shape[n]);
 
 		/* assign net (netlist is stored on pad struct side) */
-		if (netid >= 0) {
+		if ((netid >= 0) && (sc != NULL)) {
 			pcb_net_t *net = htip_get(&rctx->nets, netid);
 			if (net != NULL) {
 				if (sc->refdes == NULL)
