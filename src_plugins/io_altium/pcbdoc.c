@@ -934,6 +934,24 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	rctx_t rctx = {0};
 	int res = 0;
 
+	static const pcb_dflgmap_t altium_dflgmap[] = {
+		{"top_paste",           PCB_LYT_TOP | PCB_LYT_PASTE,     NULL, PCB_LYC_AUTO, 0},
+		{"top_silk",            PCB_LYT_TOP | PCB_LYT_SILK,      NULL, PCB_LYC_AUTO, 0},
+		{"top_mask",            PCB_LYT_TOP | PCB_LYT_MASK,      NULL, PCB_LYC_SUB | PCB_LYC_AUTO, 0},
+		{"top_copper",          PCB_LYT_TOP | PCB_LYT_COPPER,    NULL, 0, 0},
+		{"bottom_copper",       PCB_LYT_BOTTOM | PCB_LYT_COPPER, NULL, 0, 0},
+		{"bottom_mask",         PCB_LYT_BOTTOM | PCB_LYT_MASK,   NULL, PCB_LYC_SUB | PCB_LYC_AUTO, PCB_DFLGMAP_FORCE_END},
+		{"bottom_silk",         PCB_LYT_BOTTOM | PCB_LYT_SILK,   NULL, PCB_LYC_AUTO, PCB_DFLGMAP_FORCE_END},
+		{"bottom_paste",        PCB_LYT_BOTTOM | PCB_LYT_PASTE,  NULL, PCB_LYC_AUTO, PCB_DFLGMAP_FORCE_END},
+
+		{"outline",             PCB_LYT_BOUNDARY,                "uroute", 0, 0},
+		{"pmech",               PCB_LYT_MECH,                    "proute", PCB_LYC_AUTO, 0},
+		{"umech",               PCB_LYT_MECH,                    "uroute", PCB_LYC_AUTO, 0},
+
+		{NULL, 0}
+	};
+
+
 	rctx.pcb = pcb;
 	rctx.filename = filename;
 
@@ -948,7 +966,7 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	htic_init(&rctx.net_clr, longhash, longkeyeq);
 	pcb_data_clip_inhibit_inc(rctx.pcb->Data);
 
-	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap);
+	pcb_layergrp_upgrade_by_map(pcb, altium_dflgmap);
 	pcb_layergrp_upgrade_by_map(pcb, pcb_dflgmap_doc);
 
 	res |= altium_parse_board(&rctx);
