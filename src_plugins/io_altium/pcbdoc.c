@@ -509,9 +509,10 @@ static int altium_parse_pad(rctx_t *rctx)
 		pcb_subc_t *sc = NULL;
 		altium_field_t *ly = NULL, *term = NULL, *shapename = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, xsize = RND_COORD_MAX, ysize = RND_COORD_MAX, hole = 0;
-		pcb_pstk_shape_t shape[8], master_shape = {0}, mask_shape = {0};
+		rnd_coord_t mask_man = RND_COORD_MAX, paste_man = RND_COORD_MAX, mask_fin = PCB_PROTO_MASK_BLOAT, paste_fin = 0;
+		pcb_pstk_shape_t shape[8], copper_shape = {0}, mask_shape = {0}, paste_shape = {0};
 		long compid = -1, netid = -1;
-		int on_all = 0, on_bottom = 0, plated = 0;
+		int on_all = 0, on_bottom = 0, plated = 0, mask_mode = -1, paste_mode = -1;
 		double rot = 0;
 		rnd_coord_t cl;
 
@@ -529,6 +530,12 @@ static int altium_parse_pad(rctx_t *rctx)
 				case altium_kw_field_component: compid = conv_long_field(field); break;
 				case altium_kw_field_net:       netid = conv_long_field(field); break;
 				case altium_kw_field_plated:    plated = conv_bool_field(field); break;
+
+				case altium_kw_field_pastemaskexpansionmode:     paste_mode = altium_kw_sphash(field->val); break;
+				case altium_kw_field_soldermaskexpansionmode:    mask_mode = altium_kw_sphash(field->val); break;
+				case altium_kw_field_pastemaskexpansion_manual:  paste_man = conv_coord_field(field); break;
+				case altium_kw_field_soldermaskexpansion_manual: mask_man = conv_coord_field(field); break;
+
 TODO("HOLEWIDTH, HOLEROTATION");
 TODO("STARTLAYER and ENDLAYER (for bbvias)");
 				default: break;
@@ -562,33 +569,55 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			continue;
 		}
 
+		/* set final mask and paste offsets */
+		if (mask_mode == altium_kw_field_manual) {
+			if (mask_man != RND_COORD_MAX)
+				mask_fin = mask_man;
+			else
+				rnd_message(RND_MSG_ERROR, "Invalid pad mask manual: no value (using default mask offset)\n");
+		}
+		if (paste_mode == altium_kw_field_manual) {
+			if (paste_man != RND_COORD_MAX)
+				paste_fin = paste_man;
+			else
+				rnd_message(RND_MSG_ERROR, "Invalid pad paste manual: no value (using default paste offset)\n");
+		}
+
+		/* create the abstract shapes */
 		if ((rnd_strcasecmp(shapename->val, "rectangle") == 0) || (rnd_strcasecmp(shapename->val, "roundedrectangle") == 0)) {
-			pcb_shape_rect(&master_shape, xsize, ysize);
-			pcb_shape_rect(&mask_shape, xsize + 2*PCB_PROTO_MASK_BLOAT, ysize + 2*PCB_PROTO_MASK_BLOAT);
+			pcb_shape_rect(&copper_shape, xsize, ysize);
+			pcb_shape_rect(&mask_shape, xsize + mask_fin*2, ysize + mask_fin*2);
+			pcb_shape_rect(&paste_shape, xsize + paste_fin*2, ysize + paste_fin*2);
 		}
 		else if (rnd_strcasecmp(shapename->val, "round") == 0) {
 			if (xsize == ysize) {
-				master_shape.shape = mask_shape.shape = PCB_PSSH_CIRC;
-				master_shape.data.circ.x = master_shape.data.circ.y = 0;
-				master_shape.data.circ.dia = xsize;
+				copper_shape.shape = mask_shape.shape = PCB_PSSH_CIRC;
+				copper_shape.data.circ.x = copper_shape.data.circ.y = 0;
+				copper_shape.data.circ.dia = xsize;
 				mask_shape.data.circ.x = mask_shape.data.circ.y = 0;
-				mask_shape.data.circ.dia = xsize + 2*PCB_PROTO_MASK_BLOAT;
+				mask_shape.data.circ.dia = xsize + mask_fin*2;
+				paste_shape = copper_shape;
+				paste_shape.data.circ.dia += paste_fin*2;
 			}
 			else {
-				master_shape.shape = mask_shape.shape = PCB_PSSH_LINE;
+				copper_shape.shape = mask_shape.shape = PCB_PSSH_LINE;
 				if (xsize > ysize) {
-					master_shape.data.line.x1 = mask_shape.data.line.x1 = -xsize/2 + ysize/2;
-					master_shape.data.line.x2 = mask_shape.data.line.x2 = +xsize/2 - ysize/2;
-					master_shape.data.line.y1 = mask_shape.data.line.y1 = master_shape.data.line.y2 = mask_shape.data.line.y2 = 0;
-					master_shape.data.line.thickness = ysize;
-					mask_shape.data.line.thickness = ysize + 2*PCB_PROTO_MASK_BLOAT;
+					copper_shape.data.line.x1 = mask_shape.data.line.x1 = -xsize/2 + ysize/2;
+					copper_shape.data.line.x2 = mask_shape.data.line.x2 = +xsize/2 - ysize/2;
+					copper_shape.data.line.y1 = mask_shape.data.line.y1 = copper_shape.data.line.y2 = mask_shape.data.line.y2 = 0;
+					copper_shape.data.line.thickness = ysize;
+					mask_shape.data.line.thickness = ysize + mask_fin*2;
+					paste_shape = copper_shape;
+					paste_shape.data.line.thickness += paste_fin*2;
 				}
 				else {
-					master_shape.data.line.y1 = mask_shape.data.line.y1 = -ysize/2 + xsize/2;
-					master_shape.data.line.y2 = mask_shape.data.line.y2 = +ysize/2 - xsize/2;
-					master_shape.data.line.x1 = mask_shape.data.line.x1 = master_shape.data.line.x2 = mask_shape.data.line.x2 = 0;
-					master_shape.data.line.thickness = xsize;
-					mask_shape.data.line.thickness = xsize + 2*PCB_PROTO_MASK_BLOAT;
+					copper_shape.data.line.y1 = mask_shape.data.line.y1 = -ysize/2 + xsize/2;
+					copper_shape.data.line.y2 = mask_shape.data.line.y2 = +ysize/2 - xsize/2;
+					copper_shape.data.line.x1 = mask_shape.data.line.x1 = copper_shape.data.line.x2 = mask_shape.data.line.x2 = 0;
+					copper_shape.data.line.thickness = xsize;
+					mask_shape.data.line.thickness = xsize + mask_fin*2;
+					paste_shape = copper_shape;
+					paste_shape.data.line.thickness += paste_fin*2;
 				}
 			}
 		}
@@ -599,18 +628,18 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 
 
 		if (on_all) {
-			shape[0] = master_shape; shape[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
-			shape[1] = master_shape; shape[1].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
-			shape[2] = master_shape; shape[2].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
+			shape[0] = copper_shape; shape[0].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER;
+			shape[1] = copper_shape; shape[1].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER;
+			shape[2] = copper_shape; shape[2].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER;
 			shape[3] = mask_shape;   shape[3].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; shape[3].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
 			shape[4] = mask_shape;   shape[4].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; shape[4].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
 			shape[5].layer_mask = 0;
 		}
 		else {
 			pcb_layer_type_t side = on_bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
-			shape[0] = master_shape; shape[0].layer_mask = side | PCB_LYT_COPPER;
+			shape[0] = copper_shape; shape[0].layer_mask = side | PCB_LYT_COPPER;
 			shape[1] = mask_shape;   shape[1].layer_mask = side | PCB_LYT_MASK; shape[1].comb = PCB_LYC_AUTO | PCB_LYC_SUB;
-			shape[2] = master_shape; shape[2].layer_mask = side | PCB_LYT_PASTE; shape[2].comb = PCB_LYC_AUTO;
+			shape[2] = paste_shape;  shape[2].layer_mask = side | PCB_LYT_PASTE; shape[2].comb = PCB_LYC_AUTO;
 			shape[3].layer_mask = 0;
 		}
 
@@ -620,6 +649,8 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			pcb_pstk_rotate(ps, x, y, cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
 		if (term != NULL)
 			pcb_attribute_put(&ps->Attributes, "term", term->val);
+
+TODO("memleak: free master shapes");
 
 		if (netid >= 0) {
 			pcb_net_t *net = htip_get(&rctx->nets, netid);

@@ -63,6 +63,13 @@ field
  board
  netclass
  gap
+ pastemaskexpansionmode
+ soldermaskexpansionmode
+ pastemaskexpansion_manual
+ soldermaskexpansion_manual
+ manual
+ none
+ rule
 layers
  top
  bottom
