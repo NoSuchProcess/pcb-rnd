@@ -787,6 +787,14 @@ static int altium_parse_track(rctx_t *rctx)
 	return 0;
 }
 
+		/* convert arc start and end angles to pcb-rnd coord system */
+#define ARC_CONV_ANGLES(sa, ea) \
+	do { \
+		sa = sa - 180; \
+		ea = ea - 180; \
+	} while(0)
+
+
 static int altium_parse_arc(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -825,9 +833,7 @@ static int altium_parse_arc(rctx_t *rctx)
 		if ((ly = altium_comp_layer(rctx, ly, compid, "arc")) == NULL)
 			continue;
 
-		/* convert to pcb-rnd coord system */
-		sa = sa - 180;
-		ea = ea - 180;
+		ARC_CONV_ANGLES(sa, ea);
 
 		cl = altium_clearance(rctx, netid);
 		pcb_arc_new(ly, x, y, r, r, sa, ea-sa, w, cl * 2, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
