@@ -30,6 +30,7 @@
 
 #include <genht/htip.h>
 #include <genht/hash.h>
+#include <genvector/vtd0.h>
 
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/vtc0.h>
@@ -909,11 +910,23 @@ do { \
 	vtc0_set(dst, idx, c); \
 } while(0)
 
+#define POLY_ANG(field, dst) \
+do { \
+	char *end; \
+	double d; \
+	long idx = strtol(field->key+2, &end, 10); \
+	if ((*end != '\0') || (idx < 0)) \
+		break; \
+	d = conv_double_field(field); \
+	vtd0_set(dst, idx, d); \
+} while(0)
+
 static int altium_parse_poly(rctx_t *rctx)
 {
 	altium_record_t *rec;
 	altium_field_t *field;
-	vtc0_t vx = {0}, vy = {0};
+	vtc0_t vx = {0}, vy = {0}, cx = {0}, cy = {0};
+	vtd0_t sa = {0}, ea = {0};
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_polygon]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_polygon], rec)) {
 		pcb_poly_t *poly;
@@ -921,7 +934,8 @@ static int altium_parse_poly(rctx_t *rctx)
 		long compid = -1, netid = -1, n;
 		rnd_coord_t cl;
 
-		vx.used = vy.used = 0;
+		vx.used = vy.used = cx.used = cy.used = 0;
+		sa.used = ea.used = 0;
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
 				case altium_kw_field_net:         netid = conv_long_field(field); break;
@@ -932,6 +946,12 @@ static int altium_parse_poly(rctx_t *rctx)
 						if (tolower(field->key[1]) == 'x') POLY_VERT(field, &vx, conv_coordx_field);
 						if (tolower(field->key[1]) == 'y') POLY_VERT(field, &vy, conv_coordy_field);
 					}
+					if (tolower(field->key[0]) == 'c') {
+						if (tolower(field->key[1]) == 'x') POLY_VERT(field, &cx, conv_coordx_field);
+						if (tolower(field->key[1]) == 'y') POLY_VERT(field, &cy, conv_coordy_field);
+					}
+					if ((tolower(field->key[0]) == 's') && (tolower(field->key[1]) == 'a')) POLY_ANG(field, &sa);
+					if ((tolower(field->key[0]) == 'e') && (tolower(field->key[1]) == 'a')) POLY_ANG(field, &ea);
 					break;
 TODO("load arc-in-poly");
 			}
@@ -954,7 +974,10 @@ TODO("load arc-in-poly");
 
 	vtc0_uninit(&vx);
 	vtc0_uninit(&vy);
-
+	vtc0_uninit(&cx);
+	vtc0_uninit(&cy);
+	vtd0_uninit(&sa);
+	vtd0_uninit(&ea);
 	return 0;
 }
 
