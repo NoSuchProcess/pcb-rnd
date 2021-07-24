@@ -894,6 +894,8 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	res |= altium_parse_via(&rctx);
 	res |= altium_parse_poly(&rctx);
 
+	/* componentbody is not loaded: looks like 3d model with a floorplan, height and texture */
+
 	altium_finalize_subcs(&rctx);
 
 	pcb_data_clip_inhibit_dec(rctx.pcb->Data, 1);
