@@ -206,23 +206,20 @@ static int altium_layer_list(rctx_t *rctx, altium_layer_t *layers, int layers_ma
 
 printf(" list:\n");
 	for(timeout = 0; timeout < layers_max; timeout++) {
-		char *type;
 		if ((n <= 0) || (n >= layers_max) || layers[n].seen)
 			break;
-		type = strchr(layers[n].name, ' ');
-		if (type != NULL) {
-			*type = '\0';
-			type++;
-		}
-		else
-			type = "";
 
-printf("  [%d] %s (type=%s)\n", n, layers[n].name, type);
+printf("  [%d] %s (idx=%d)\n", n, layers[n].name, n);
 
-		if (rnd_strcasecmp(type, "Layer") == 0) {
+		/* The format uses hardwired layer indices; layer names are unreliable and there is no layer type */
+		if ((n >= 1) && (n <= 32)) { /* plain copper signal layers */
 			cop = 1;
-			if ((rnd_strncasecmp(layers[n].name, "top", 3) == 0) || (rnd_strncasecmp(layers[n].name, "bottom", 6) == 0)) {
+			if ((n == 1) || (n == 32)) {
 				/* do not do anything - top and bottom are already created */
+			}
+			else if ((n >= 39) || (n <= 54)) {
+				/* do not do anything - internal panel plane layers, should be just mapped to MID* until we see an example */
+				TODO("find an example");
 			}
 			else {
 				TODO("create internal copper layer");
