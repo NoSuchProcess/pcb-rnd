@@ -892,10 +892,12 @@ static void svg_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 	const char *clip_color = svg_clip_color(gc);
 	svg_drawn_objs++;
 	if (photo_mode) {
-		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
-		if (photo_offs != 0) {
-			draw_poly(&sbright, gc, n_coords, x, y, dx-photo_offs, dy-photo_offs, photo_palette[photo_color].bright);
-			draw_poly(&sdark, gc, n_coords, x, y, dx+photo_offs, dy+photo_offs, photo_palette[photo_color].dark);
+		rnd_coord_t photo_offs_x = photo_palette[photo_color].offs, photo_offs_y = photo_palette[photo_color].offs;
+		if (photo_offs_x != 0) {
+			if (flip)
+				photo_offs_y = -photo_offs_y;
+			draw_poly(&sbright, gc, n_coords, x, y, dx-photo_offs_x, dy-photo_offs_y, photo_palette[photo_color].bright);
+			draw_poly(&sdark, gc, n_coords, x, y, dx+photo_offs_x, dy+photo_offs_y, photo_palette[photo_color].dark);
 		}
 		draw_poly(&snormal, gc, n_coords, x, y, dx, dy, photo_palette[photo_color].normal);
 	}
