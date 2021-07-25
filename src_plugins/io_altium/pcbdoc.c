@@ -217,13 +217,15 @@ printf("  [%d] %s (idx=%d)\n", n, layers[n].name, n);
 			if ((n == 1) || (n == 32)) {
 				/* do not do anything - top and bottom are already created */
 			}
-			else if ((n >= 39) || (n <= 54)) {
-				/* do not do anything - internal panel plane layers, should be just mapped to MID* until we see an example */
-				TODO("find an example");
-			}
 			else {
-				TODO("create internal copper layer");
+				/* internal copper layers for signals */
+				pcb_layergrp_t *g = pcb_get_grp_new_intern(rctx->pcb, n-2);
+				pcb_layer_create(rctx->pcb, g - rctx->pcb->LayerGroups.grp, layers[n].name, 0);
 			}
+		}
+		else if ((n >= 39) || (n <= 54)) {
+			/* do not do anything - internal panel plane layers, should be just mapped to MID* until we see an example */
+			TODO("find an example");
 		}
 
 		layers[n].seen = 1;
