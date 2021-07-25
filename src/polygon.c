@@ -570,7 +570,7 @@ static rnd_r_dir_t padstack_sub_callback(const rnd_box_t *b, void *cl)
 
 	np = pcb_thermal_area_pstk(pcb_data_get_top(info->data), ps, i, polygon);
 	if (np == 0)
-			return RND_R_DIR_FOUND_CONTINUE;
+		return RND_R_DIR_FOUND_CONTINUE;
 
 	info->batch_size++;
 	POLY_CLIP_PROG();
@@ -601,7 +601,7 @@ static rnd_r_dir_t arc_sub_callback(const rnd_box_t * b, void *cl)
 	polygon = info->polygon;
 
 	if (SubtractArc(arc, polygon) < 0)
-		longjmp(info->env, 1);
+		return RND_R_DIR_NOT_FOUND;
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
@@ -766,7 +766,7 @@ static rnd_r_dir_t poly_sub_callback(const rnd_box_t *b, void *cl)
 	POLY_CLIP_PROG();
 
 	if (SubtractPolyPoly(subpoly, polygon) < 0)
-		longjmp(info->env, 1);
+		return RND_R_DIR_NOT_FOUND;
 
 	return RND_R_DIR_FOUND_CONTINUE;
 }
@@ -790,7 +790,7 @@ static rnd_r_dir_t line_sub_callback(const rnd_box_t * b, void *cl)
 
 	np = line_clearance_poly(-1, NULL, line, polygon);
 	if (!np)
-		longjmp(info->env, 1);
+		return RND_R_DIR_NOT_FOUND;
 
 	rnd_polyarea_boolean_free(info->accumulate, np, &merged, RND_PBO_UNITE);
 	info->accumulate = merged;
@@ -818,7 +818,7 @@ static rnd_r_dir_t text_sub_callback(const rnd_box_t * b, void *cl)
 
 	polygon = info->polygon;
 	if (SubtractText(text, polygon) < 0)
-		longjmp(info->env, 1);
+		return RND_R_DIR_NOT_FOUND;
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
