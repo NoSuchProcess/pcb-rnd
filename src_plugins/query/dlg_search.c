@@ -333,7 +333,7 @@ static int search_decompile_(search_ctx_t *ctx, pcb_qry_node_t *nd, int dry, int
 	return res;
 }
 
-static void search_decompile(search_ctx_t *ctx)
+static int search_decompile(search_ctx_t *ctx)
 {
 	const char *script = ctx->dlg[ctx->wexpr_str].val.str;
 	pcb_qry_node_t *root;
@@ -345,13 +345,13 @@ static void search_decompile(search_ctx_t *ctx)
 
 	root = pcb_query_compile(script);
 	if (root == NULL) {
-		rnd_message(RND_MSG_ERROR, "Syntax error compiling the script\nThe GUI will not be filled in by the script\n");
-		return;
+		rnd_message(RND_MSG_ERROR, "Syntax error compiling the script.\nPlease edit or remove the expression before enabling the GUI wizard.\n");
+		return -1;
 	}
 
 	if (search_decompile_(ctx, root, 1, 0, 0) != 0) {
-		rnd_message(RND_MSG_ERROR, "The script is too complex for the GUI\nThe GUI will not be filled in by the script\n");
-		return;
+		rnd_message(RND_MSG_ERROR, "The script is too complex for the GUI\nPlease edit or remove the expression before enabling the GUI wizard.\n");
+		return -1;
 	}
 
 	for(row = 0; row < MAX_ROW; row++) {
@@ -363,6 +363,7 @@ static void search_decompile(search_ctx_t *ctx)
 
 	search_decompile_(ctx, root, 0, 0, 0);
 	update_vis(ctx);
+	return 0;
 }
 
 static void search_del_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -407,8 +408,14 @@ static void search_enable_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 {
 	search_ctx_t *ctx = caller_data;
 	if (WIZ(ctx)) {
-		search_decompile(ctx); /* fills in the GUI from the expression, if possible */
-		search_recompile(ctx); /* overwrite the edit box just in case the user had something custom in it */
+		if (search_decompile(ctx) != 0) {/* fills in the GUI from the expression, if possible */
+			/* disable the wizard on failure */
+			rnd_hid_attr_val_t hv;
+			hv.lng = 0;
+			rnd_gui->attr_dlg_set_value(hid_ctx, ctx->wwizard, &hv);
+		}
+		else
+			search_recompile(ctx); /* overwrite the edit box just in case the user had something custom in it */
 	}
 
 	update_vis(ctx);
