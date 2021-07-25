@@ -880,9 +880,9 @@ static void draw_poly(gds_t *s, rnd_hid_gc_t gc, int n_coords, rnd_coord_t * x, 
 	indent(s);
 	gds_append_str(s, "<polygon points=\"");
 	for (i = 0; i < n_coords; i++) {
-		rnd_coord_t px = x[i], py = y[i];
+		rnd_coord_t px = x[i] + dx, py = y[i] + dy;
 		TRX(px); TRY(py);
-		rnd_append_printf(s, "%mm,%mm ", px+dx, py+dy);
+		rnd_append_printf(s, "%mm,%mm ", px, py);
 	}
 	rnd_append_printf(s, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, clr, clr);
 }
