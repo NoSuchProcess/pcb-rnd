@@ -398,7 +398,7 @@ static void append_obj_desc(pcb_board_t *pcb, gds_t *dst, pcb_any_obj_t *obj, rn
 	if (grp != NULL) {
 		gds_append_str(dst, " on");
 		gds_append_str(dst, prefix);
-		gds_append_str(dst, grp->name);
+		gds_append_str(dst, (grp->name == NULL ? "<anon layer group>" : grp->name));
 	}
 
 }
