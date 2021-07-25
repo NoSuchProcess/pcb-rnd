@@ -57,6 +57,7 @@ typedef struct {
 	htip_t nets;
 	htic_t net_clr;
 	rnd_coord_t global_clr;
+	pcb_layer_t *midly[31];
 } rctx_t;
 
 static rnd_coord_t altium_clearance(rctx_t *rctx, long netid)
@@ -186,7 +187,17 @@ static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 	if ((rnd_strcasecmp(field->val, "MECHANICAL15") == 0))
 		return conv_layer_(rctx, LYCH_ASSY_BOT, PCB_LYT_BOTTOM | PCB_LYT_DOC , "assy");
 
-TODO("MID1...MID16: look up or create new intern copper; use cache index from 15+mid");
+	if (rnd_strncasecmp(field->val, "MID", 3) == 0) { /* mid 1..30: intern copper signal */
+		char *end;
+		int idx = strtol(field->val+3, &end, 10);
+		if (*end != '\0') {
+			rnd_message(RND_MSG_ERROR, "Layer not found: '%s' - invalid integer for MID layer\n", field->val);
+			return NULL;
+		}
+		return rctx->midly[idx-1];
+	}
+
+
 TODO("PLANE1...PLANE16: look up or create new intern copper; use cache index from 15+16+plane");
 TODO("MECHANICAL2...MECHANICAL14: look up or create new doc?; use cache index from 15+16+16+mechanical");
 	rnd_message(RND_MSG_ERROR, "Layer not found: '%s'\n", field->val);
@@ -220,7 +231,8 @@ printf("  [%d] %s (idx=%d)\n", n, layers[n].name, n);
 			else {
 				/* internal copper layers for signals */
 				pcb_layergrp_t *g = pcb_get_grp_new_intern(rctx->pcb, n-2);
-				pcb_layer_create(rctx->pcb, g - rctx->pcb->LayerGroups.grp, layers[n].name, 0);
+				rnd_layer_id_t lid = pcb_layer_create(rctx->pcb, g - rctx->pcb->LayerGroups.grp, layers[n].name, 0);
+				rctx->midly[n-2] = pcb_get_layer(rctx->pcb->Data, lid);
 			}
 		}
 		else if ((n >= 39) || (n <= 54)) {
