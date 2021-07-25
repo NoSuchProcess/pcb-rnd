@@ -743,10 +743,14 @@ static int altium_finalize_subcs(rctx_t *rctx)
 	return 0;
 }
 
-static pcb_layer_t *altium_comp_layer(rctx_t *rctx, pcb_layer_t *ly, long compid, const char *otype)
+static pcb_layer_t *altium_comp_layer(rctx_t *rctx, pcb_layer_t *ly, long compid, const char *otype, pcb_subc_t **sc_out)
 {
 	rnd_layer_id_t lid;
 	pcb_subc_t *sc;
+
+	sc = htip_get(&rctx->comps, compid);
+	if (sc_out != NULL)
+		*sc_out = sc;
 
 	if (ly == NULL) {
 		rnd_message(RND_MSG_ERROR, "Invalid %s object: no/unknown layer (%s not created)\n", otype, otype);
@@ -755,8 +759,6 @@ static pcb_layer_t *altium_comp_layer(rctx_t *rctx, pcb_layer_t *ly, long compid
 
 	if (compid < 0)
 		return ly;
-
-	sc = htip_get(&rctx->comps, compid);
 
 	if (sc == NULL) {
 		rnd_message(RND_MSG_ERROR, "Invalid track object: invalid parent subc (line not created)\n");
@@ -797,7 +799,7 @@ static int altium_parse_track(rctx_t *rctx)
 			rnd_message(RND_MSG_ERROR, "Invalid track object: missing coordinate or width (line not created)\n");
 			continue;
 		}
-		if ((ly = altium_comp_layer(rctx, ly, compid, "line")) == NULL)
+		if ((ly = altium_comp_layer(rctx, ly, compid, "line", NULL)) == NULL)
 			continue;
 
 		cl = altium_clearance(rctx, netid);
@@ -850,7 +852,7 @@ static int altium_parse_arc(rctx_t *rctx)
 			continue;
 		}
 
-		if ((ly = altium_comp_layer(rctx, ly, compid, "arc")) == NULL)
+		if ((ly = altium_comp_layer(rctx, ly, compid, "arc", NULL)) == NULL)
 			continue;
 
 		ARC_CONV_ANGLES(sa, ea);
@@ -869,6 +871,7 @@ static int altium_parse_text(rctx_t *rctx)
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_text]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_text], rec)) {
 		pcb_layer_t *ly = NULL;
+		pcb_subc_t *sc;
 		altium_field_t *text = NULL;
 		pcb_text_t *t;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
@@ -914,11 +917,17 @@ static int altium_parse_text(rctx_t *rctx)
 			continue;
 		}
 
+
 		if (comment && (ly != NULL)) /* move comments to assy */
 			ly = conv_layer_assy(rctx, pcb_layer_flags_(ly) & PCB_LYT_BOTTOM);
 
-		if ((ly = altium_comp_layer(rctx, ly, compid, "text")) == NULL)
+		if ((ly = altium_comp_layer(rctx, ly, compid, "text", &sc)) == NULL)
 			continue;
+
+		if (designator && (text != NULL) && (sc != NULL) && (sc->refdes == NULL)) {
+			/* special case: component name (refdes) is specified by designator text object (happens in protel99) */
+			pcb_attribute_put(&sc->Attributes, "refdes", text->val);
+		}
 
 		if (x2 < x1) {
 			rnd_coord_t tmp = x2;
@@ -1006,7 +1015,7 @@ static int altium_parse_poly(rctx_t *rctx)
 			continue;
 		}
 
-		if ((ly = altium_comp_layer(rctx, ly, compid, "polygon")) == NULL)
+		if ((ly = altium_comp_layer(rctx, ly, compid, "polygon", NULL)) == NULL)
 			continue;
 
 		cl = altium_clearance(rctx, netid);
@@ -1136,10 +1145,10 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	res |= altium_parse_class(&rctx);
 	res |= altium_parse_rule(&rctx);
 	res |= altium_parse_components(&rctx);
+	res |= altium_parse_text(&rctx); /* have to read text right after components because designator may be coming from text objects */
 	res |= altium_parse_pad(&rctx);
 	res |= altium_parse_track(&rctx);
 	res |= altium_parse_arc(&rctx);
-	res |= altium_parse_text(&rctx);
 	res |= altium_parse_via(&rctx);
 	res |= altium_parse_poly(&rctx);
 
