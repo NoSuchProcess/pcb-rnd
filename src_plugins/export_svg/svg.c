@@ -42,6 +42,7 @@
 #include <genvector/gds_char.h>
 
 #include <librnd/core/math_helper.h>
+#include <librnd/core/hidlib_conf.h>
 #include "board.h"
 #include "data.h"
 #include "draw.h"
@@ -245,8 +246,17 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 			photo_noise = 0;
 
 		if (options[HA_flip].lng) {
+			rnd_layer_id_t topcop[32];
+			int n, v;
+
 			flip = 1;
 			rnd_conf_force_set_bool(conf_core.editor.show_solder_side, 1);
+
+			/* make sure bottom side copper is top on visibility so it is rendered last */
+			pcb_layervis_save_stack();
+			v = pcb_layer_list(PCB, PCB_LYT_BOTTOM | PCB_LYT_COPPER, topcop, sizeof(topcop)/sizeof(topcop[0]));
+			for(n = 0; n < v; n++)
+				pcb_layervis_change_group_vis(&PCB->hidlib, topcop[n], 1, 1);
 		}
 		else
 			flip = 0;
@@ -274,6 +284,8 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 
 	rnd_app.expose_main(&svg_hid, &ctx, xform);
 
+	if (flip)
+		pcb_layervis_restore_stack();
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
 
@@ -439,6 +451,8 @@ static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 		svg_header();
 	}
 
+printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
+
 	if (!svg_cam.active) {
 		if (flags & PCB_LYT_INVIS)
 			return 0;
@@ -501,7 +515,6 @@ static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 	}
 
 	drawing_hole = PCB_LAYER_IS_DRILL(flags, purpi);
-
 	return 1;
 }
 
