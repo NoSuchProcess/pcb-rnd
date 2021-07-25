@@ -51,6 +51,8 @@ typedef struct {
 	pcb_board_t *pcb;
 	const char *filename;
 
+	int has_bnd;  /* set to 3 after altium_parse_board() if board bbox picked up */
+
 	/* caches */
 	pcb_layer_t *lych[LY_CACHE_MAX];
 	htip_t comps;
@@ -261,10 +263,14 @@ static int altium_parse_board(rctx_t *rctx)
 				default:
 					/* vx[0-4] and vy[0-4] */
 					if ((tolower(field->key[0]) == 'v') && isdigit(field->key[2]) && (field->key[3] == 0)) {
-						if (tolower(field->key[1]) == 'x')
+						if (tolower(field->key[1]) == 'x') {
 							BUMP_COORD(rctx->pcb->hidlib.size_x, conv_coord_field(field));
-						if (tolower(field->key[1]) == 'y')
+							rctx->has_bnd |= 1;
+						}
+						if (tolower(field->key[1]) == 'y') {
 							BUMP_COORD(rctx->pcb->hidlib.size_y, conv_coord_field(field));
+							rctx->has_bnd |= 2;
+						}
 					}
 					if (rnd_strncasecmp(field->key, "layer", 5) == 0) {
 						char *end;
@@ -284,6 +290,9 @@ static int altium_parse_board(rctx_t *rctx)
 			}
 		}
 	}
+
+	if (rctx->has_bnd != 3)
+		rctx->pcb->hidlib.size_x = rctx->pcb->hidlib.size_y = 0;
 
 	/*** create the layer stack (copper only) ***/
 
@@ -1125,6 +1134,16 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	/* componentbody is not loaded: looks like 3d model with a floorplan, height and texture */
 
 	altium_finalize_subcs(&rctx);
+
+	/* if the board subtree didn't specify a board body polygon: use the bbox of all data read */
+	if (rctx.has_bnd != 3) {
+		rnd_box_t b;
+		pcb_data_bbox(&b, rctx.pcb->Data, 0);
+		rctx.pcb->hidlib.size_x = b.X2-b.X1;
+		rctx.pcb->hidlib.size_y = b.Y2-b.Y1;
+		pcb_data_move(rctx.pcb->Data, -b.X1, -b.Y1, 0);
+		rnd_message(RND_MSG_ERROR, "Board without contour or body - can not determine real size\n");
+	}
 
 	pcb_data_clip_inhibit_dec(rctx.pcb->Data, 1);
 	htic_uninit(&rctx.net_clr);
