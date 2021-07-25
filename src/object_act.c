@@ -275,10 +275,11 @@ void pcb_ui_move_obj_to_layer(pcb_board_t *pcb, pcb_any_obj_t *o, pcb_layer_t *t
 
 static void move_sel_obj2lay(pcb_board_t *pcb, pcb_data_t *data, pcb_layer_t *target, int floater_only)
 {
-	pcb_any_obj_t *o;
+	pcb_any_obj_t *o, *next;
 	pcb_data_it_t it;
 
-	for(o = pcb_data_first(&it, data, PCB_MOVETOLAYER_TYPES | PCB_OBJ_SUBC); o != NULL; o = pcb_data_next(&it)) {
+	for(o = pcb_data_first(&it, data, PCB_MOVETOLAYER_TYPES | PCB_OBJ_SUBC); o != NULL; o = next) {
+		next = pcb_data_next(&it);
 		if (o->type == PCB_OBJ_SUBC) {
 			move_sel_obj2lay(pcb, ((pcb_subc_t *)o)->data, target, 1);
 			continue;
