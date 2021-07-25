@@ -871,7 +871,7 @@ static int altium_parse_text(rctx_t *rctx)
 		pcb_layer_t *ly = NULL;
 		altium_field_t *text = NULL;
 		pcb_text_t *t;
-		rnd_coord_t x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
+		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
 		double rot = 0;
 		int mir = 0, designator = 0, comment = 0;
 		long compid = -1;
@@ -880,6 +880,8 @@ static int altium_parse_text(rctx_t *rctx)
 			switch(field->type) {
 				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
 				case altium_kw_field_text:        text = field; break;
+				case altium_kw_field_x:           x = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_y:           y = conv_coordy_field(rctx, field); break;
 				case altium_kw_field_x1:          x1 = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_y1:          y1 = conv_coordy_field(rctx, field); break;
 				case altium_kw_field_x2:          x2 = conv_coordx_field(rctx, field); break;
@@ -894,8 +896,18 @@ static int altium_parse_text(rctx_t *rctx)
 			}
 		}
 		if ((x1 == RND_COORD_MAX) || (y1 == RND_COORD_MAX) || (x2 == RND_COORD_MAX) || (y2 == RND_COORD_MAX) || (w == RND_COORD_MAX)) {
-			rnd_message(RND_MSG_ERROR, "Invalid text object: missing coordinate or width (text not created)\n");
-			continue;
+			if ((x == RND_COORD_MAX) || (y == RND_COORD_MAX)) {
+				rnd_message(RND_MSG_ERROR, "Invalid text object: missing coordinate or width (text not created)\n");
+				continue;
+			}
+			else {
+				TODO("estimate text size");
+				x1 = x; y1 = y;
+				if (text != NULL) {
+					x2 = x + strlen(text->val) * RND_MM_TO_COORD(3);
+					y2 = y + RND_MM_TO_COORD(5);
+				}
+			}
 		}
 		if (!designator && (text == NULL)) {
 			rnd_message(RND_MSG_ERROR, "Invalid text object: missing text string (text not created)\n");
