@@ -59,7 +59,7 @@ typedef struct {
 	htip_t nets;
 	htic_t net_clr;
 	rnd_coord_t global_clr;
-	pcb_layer_t *midly[31];
+	pcb_layer_t *midly[64];
 } rctx_t;
 
 static rnd_coord_t altium_clearance(rctx_t *rctx, long netid)
@@ -199,8 +199,10 @@ static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 		return rctx->midly[idx-1];
 	}
 
-
-TODO("PLANE1...PLANE16: look up or create new intern copper; use cache index from 15+16+plane");
+	if (rnd_strncasecmp(field->val, "PLANE", 5) == 0) {
+		rnd_message(RND_MSG_ERROR, "Drawing on PLANE layer %s is not supported\n", field->val);
+		return NULL;
+	}
 TODO("MECHANICAL2...MECHANICAL14: look up or create new doc?; use cache index from 15+16+16+mechanical");
 	rnd_message(RND_MSG_ERROR, "Layer not found: '%s'\n", field->val);
 	return NULL;
@@ -225,7 +227,7 @@ printf(" list:\n");
 printf("  [%d] %s (idx=%d)\n", n, layers[n].name, n);
 
 		/* The format uses hardwired layer indices; layer names are unreliable and there is no layer type */
-		if ((n >= 1) && (n <= 32)) { /* plain copper signal layers */
+		if ((n >= 1) && (n <= 54)) { /* plain copper signal layers */
 			cop = 1;
 			if ((n == 1) || (n == 32)) {
 				/* do not do anything - top and bottom are already created */
@@ -235,11 +237,11 @@ printf("  [%d] %s (idx=%d)\n", n, layers[n].name, n);
 				pcb_layergrp_t *g = pcb_get_grp_new_intern(rctx->pcb, n-2);
 				rnd_layer_id_t lid = pcb_layer_create(rctx->pcb, g - rctx->pcb->LayerGroups.grp, layers[n].name, 0);
 				rctx->midly[n-2] = pcb_get_layer(rctx->pcb->Data, lid);
+				if ((n >= 39) || (n <= 54)) {
+					/* internal plane layer - draw a poly at the end */
+					pcb_attribute_put(&(rctx->midly[n-2]->Attributes), "altium::plane", "1");
+				}
 			}
-		}
-		else if ((n >= 39) || (n <= 54)) {
-			/* do not do anything - internal panel plane layers, should be just mapped to MID* until we see an example */
-			TODO("find an example");
 		}
 
 		layers[n].seen = 1;
@@ -907,8 +909,8 @@ static int altium_parse_text(rctx_t *rctx)
 				TODO("estimate text size");
 				x1 = x; y1 = y;
 				if (text != NULL) {
-					x2 = x + strlen(text->val) * RND_MM_TO_COORD(3);
-					y2 = y + RND_MM_TO_COORD(5);
+					x2 = x + strlen(text->val) * RND_MM_TO_COORD(1.2);
+					y2 = y + RND_MM_TO_COORD(1.8);
 				}
 			}
 		}
