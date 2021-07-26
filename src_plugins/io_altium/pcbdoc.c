@@ -250,6 +250,24 @@ printf("  [%d] %s (idx=%d)\n", n, layers[n].name, n);
 	return cop;
 }
 
+/* Apply layer stack side effects */
+static void altium_finalize_layers(rctx_t *rctx)
+{
+	int n;
+
+	/* create "plane" polygons */
+	for(n = 37; n <= 52; n++) {
+		if (rctx->midly[n] != NULL) {
+			pcb_poly_t *poly = pcb_poly_new(rctx->midly[n], 0, pcb_flag_make(PCB_FLAG_CLEARPOLY));
+			pcb_poly_point_new(poly, 0, 0);
+			pcb_poly_point_new(poly, rctx->pcb->hidlib.size_x, 0);
+			pcb_poly_point_new(poly, rctx->pcb->hidlib.size_x, rctx->pcb->hidlib.size_y);
+			pcb_poly_point_new(poly, 0, rctx->pcb->hidlib.size_y);
+			pcb_add_poly_on_layer(rctx->midly[n], poly);
+		}
+	}
+}
+
 static int altium_parse_board(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -1167,6 +1185,8 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 		pcb_data_move(rctx.pcb->Data, -b.X1, -b.Y1, 0);
 		rnd_message(RND_MSG_ERROR, "Board without contour or body - can not determine real size\n");
 	}
+
+	altium_finalize_layers(&rctx); /* depends on board size figured */
 
 	pcb_data_clip_inhibit_dec(rctx.pcb->Data, 1);
 	htic_uninit(&rctx.net_clr);
