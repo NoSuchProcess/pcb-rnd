@@ -254,6 +254,9 @@ printf("  [%d] %s (idx=%d)\n", n, layers[n].name, n);
 static void altium_finalize_layers(rctx_t *rctx)
 {
 	int n;
+	pcb_poly_t *plane[16];
+	altium_record_t *rec;
+	altium_field_t *field;
 
 	/* create "plane" polygons */
 	for(n = 37; n <= 52; n++) {
@@ -264,6 +267,21 @@ static void altium_finalize_layers(rctx_t *rctx)
 			pcb_poly_point_new(poly, rctx->pcb->hidlib.size_x, rctx->pcb->hidlib.size_y);
 			pcb_poly_point_new(poly, 0, rctx->pcb->hidlib.size_y);
 			pcb_add_poly_on_layer(rctx->midly[n], poly);
+			plane[n-37] = poly;
+		}
+	}
+
+	/* pick up plane net associativity */
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_board]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_board], rec)) {
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			if ((rnd_strncasecmp(field->key, "plane", 5) == 0) && (*field->val != '(')) {
+				char *end;
+				long idx = strtol(field->key+5, &end, 10), midx = idx-2+37+1;
+				if ((rnd_strcasecmp(end, "netname") == 0) && (rctx->midly[midx] != NULL)) {
+					pcb_attribute_put(&(rctx->midly[midx]->Attributes), "altium::net", field->val);
+					TODO("make thermals on pcb_poly_t plane[idx-1] vs. any via on the same net");
+				}
+			}
 		}
 	}
 }
