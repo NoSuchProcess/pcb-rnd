@@ -46,7 +46,7 @@ PDF output with a virtual PDF printer. Example: @*
 
 static rnd_export_opt_t *lpr_options = 0;
 static int num_lpr_options = 0;
-static rnd_hid_attr_val_t lpr_values[NUM_OPTIONS];
+static rnd_hid_attr_val_t *lpr_values;
 
 static void lpr_maybe_set_value(const char *name, double new_val)
 {
@@ -63,22 +63,30 @@ static void lpr_maybe_set_value(const char *name, double new_val)
 	}
 }
 
-static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
+static void lpr_ps_init()
 {
-	const char *val;
-
-
 	if (lpr_options == 0) {
 		const rnd_export_opt_t *ps_opts = ps_hid.get_export_options(&ps_hid, &num_lpr_options);
 		lpr_options = calloc(num_lpr_options, sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, ps_opts, num_lpr_options * sizeof(rnd_hid_attribute_t));
 		memcpy(lpr_options, base_lpr_options, sizeof(base_lpr_options));
+		if (lpr_hid.argument_array == NULL) {
+			lpr_values = calloc(num_lpr_options, sizeof(rnd_hid_attr_val_t));
+			lpr_hid.argument_array = lpr_values;
+		}
 
 		rnd_hid_load_defaults(&lpr_hid, lpr_options, num_lpr_options);
 
 		lpr_maybe_set_value("xcalib", conf_export_lpr.plugins.export_lpr.default_xcalib);
 		lpr_maybe_set_value("ycalib", conf_export_lpr.plugins.export_lpr.default_ycalib);
 	}
+}
+
+static const rnd_export_opt_t *lpr_get_export_options(rnd_hid_t *hid, int *n)
+{
+	const char *val;
+
+
 
 	/*
 	 * We initialize the default value in this manner because the GUI
@@ -142,6 +150,8 @@ void pplg_uninit_export_lpr(void)
 	rnd_remove_actions_by_cookie(lpr_cookie);
 	rnd_hid_remove_hid(&lpr_hid);
 	rnd_conf_unreg_fields("plugins/export_lpr/");
+	free(lpr_hid.argument_array);
+	lpr_hid.argument_array = NULL;
 }
 
 int pplg_init_export_lpr(void)
@@ -160,9 +170,11 @@ int pplg_init_export_lpr(void)
 	lpr_hid.get_export_options = lpr_get_export_options;
 	lpr_hid.do_export = lpr_do_export;
 	lpr_hid.parse_arguments = lpr_parse_arguments;
-	lpr_hid.argument_array = lpr_values;
+	lpr_hid.argument_array = NULL;
 
 	lpr_hid.usage = lpr_usage;
+
+	lpr_ps_init();
 
 	rnd_hid_register_hid(&lpr_hid);
 	rnd_hid_load_defaults(&lpr_hid, base_lpr_options, NUM_OPTIONS);
