@@ -505,7 +505,7 @@ void pcb_draw_layer(pcb_draw_info_t *info, const pcb_layer_t *Layer_)
 {
 	unsigned int lflg = 0;
 	int may_have_delayed = 0, restore_color = 0, current_grp;
-	rnd_xform_t xform;
+	rnd_xform_t xform = {0};
 	rnd_color_t orig_color;
 	pcb_layer_t *Layer = (pcb_layer_t *)Layer_; /* ugly hack until layer color is moved into info */
 
