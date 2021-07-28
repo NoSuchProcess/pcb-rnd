@@ -1,7 +1,11 @@
-- ascii read
-	- thermal conn (net based poly conns)
-	- 4 layer test board: layer stack and MID layers (worked with protel)
-	- stanard text test
+- ascii read, to test:
+	- thermal conn (net based poly conns; altium testing engaged)
+	+ 4 layer test board: layer stack and MID layers (worked with protel)
+	- standard text test
 	- slot (TODO)
 	- bbvia (TODO)
 	- viatenting (TODO)
+
+- conclusions on ascii read:
+	- plane layers: can't host wires but can be split
+	- mech layers: all the same; can be marked to be copied on all gerber files
