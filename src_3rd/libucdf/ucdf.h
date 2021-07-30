@@ -88,4 +88,9 @@ int ucdf_fopen(ucdf_ctx_t *ctx, ucdf_file_t *fp, ucdf_direntry_t *de);
    ends short, returns less than len. If stream is already at EOF, returns 0 */
 long ucdf_fread(ucdf_file_t *fp, char *dst, long len);
 
+/* Seek to a given byte offset from the beginning of the stream. Returns 0
+   on success or -1 on error (in which case no seek is done). At the moment
+   only long files are supported. */
+int ucdf_fseek(ucdf_file_t *fp, long offs);
+
 

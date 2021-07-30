@@ -43,6 +43,21 @@ static int dump_file(ucdf_ctx_t *ctx, ucdf_direntry_t *de)
 	return 0;
 }
 
+static int print_file_at(ucdf_ctx_t *ctx, ucdf_direntry_t *de, long offs, long len)
+{
+	ucdf_file_t fp;
+	char tmp[1024];
+
+	if (ucdf_fopen(ctx, &fp, de) != 0)
+		return -1;
+
+	printf(" seek to %ld: %d\n", offs, ucdf_fseek(&fp, offs));
+	printf(" read %ld: %ld\n", len, ucdf_fread(&fp, tmp, len));
+	fwrite(tmp, len, 1, stdout);
+	printf("\n");
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
 	char *fn = "A.PcbDoc";
@@ -68,6 +83,11 @@ int main(int argc, char *argv[])
 		print_dir(&ctx, de, 0);
 		printf("==\n");
 		dump_file(&ctx, de);
+		printf("==\n");
+		print_file_at(&ctx, de, 39384, 10);
+		print_file_at(&ctx, de, 39385, 10);
+		print_file_at(&ctx, de, 39386, 10);
+		print_file_at(&ctx, de, 39387, 10);
 	}
 
 	ucdf_close(&ctx);

@@ -480,3 +480,50 @@ long ucdf_fread(ucdf_file_t *fp, char *dst, long len)
 	return ucdf_fread_long(fp, dst, len);
 }
 
+
+int ucdf_fseek(ucdf_file_t *fp, long offs)
+{
+	ucdf_ctx_t *ctx = fp->ctx;
+	long sect_min, sect_max;
+	long sect_idx, sect_offs, sect_id, n;
+
+	if (fp->de->is_short)
+		return -1;
+
+	if (offs == fp->stream_offs)
+		return 0; /* no need to move */
+
+	if ((offs < 0) || (offs >= fp->de->size))
+		return -1; /* do not seek out of the file */
+
+	/* fast lane: check if seek is within the current sector */
+	sect_min = fp->stream_offs - fp->sect_offs;
+	sect_max = sect_min + ctx->sect_size;
+	if ((offs >= sect_min) && (offs < sect_max)) {
+		long delta = offs - fp->stream_offs;
+		fp->stream_offs += delta;
+		fp->sect_offs += delta;
+		return 0;
+	}
+
+	/* seeking to another sector; since SAT is a singly linked list, we need
+	   to recalculate this sector by sector */
+	sect_idx = offs / ctx->sect_size;
+	sect_offs = offs % ctx->sect_size;
+
+	sect_id = fp->de->first;
+	for(n = 0; n < sect_idx; n++) {
+		if (sect_id < 0)
+			return -1;
+		sect_id = ctx->sat[sect_id];
+	}
+
+	if (sect_id < 0)
+		return -1;
+
+	fp->stream_offs += offs;
+	fp->sect_offs += sect_offs;
+	fp->sect_id = sect_id;
+	return 0;
+}
+
