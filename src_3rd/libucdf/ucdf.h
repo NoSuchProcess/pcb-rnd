@@ -4,7 +4,7 @@ typedef enum {
 	UCDF_SECT_FREE = -1,
 	UCDF_SECT_EOC  = -2, /* end of chain */
 	UCDF_SECT_SAT  = -3, /* sector allocation table */
-	UCDF_SECT_MSAT = -4, /* master sector allocation table */
+	UCDF_SECT_MSAT = -4  /* master sector allocation table */
 } ucdf_spec_sect_id_t;
 
 typedef enum {
