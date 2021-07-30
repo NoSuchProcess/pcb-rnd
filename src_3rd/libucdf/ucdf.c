@@ -420,3 +420,69 @@ void ucdf_close(ucdf_ctx_t *ctx)
 	}
 }
 
+int ucdf_fopen(ucdf_ctx_t *ctx, ucdf_file_t *fp, ucdf_direntry_t *de)
+{
+	if (de->type != UCDF_DE_FILE)
+		return -1;
+	if (de->is_short) {
+		fprintf(stderr, "Can't open short streams yet\n");
+		return -1;
+	}
+
+	memset(fp, 0, sizeof(ucdf_file_t));
+	fp->ctx = ctx;
+	fp->de = de;
+
+	/* long file */
+	fp->sect_id = de->first;
+
+	return 0;
+}
+
+long ucdf_fread_short(ucdf_file_t *fp, char *dst, long len)
+{
+	abort();
+}
+
+long ucdf_fread_long(ucdf_file_t *fp, char *dst, long len)
+{
+	ucdf_ctx_t *ctx = fp->ctx;
+	long got = 0;
+
+
+	while(len > 0) {
+		long l, sect_remaining, file_remaining;
+
+		if ((fp->sect_id < 0) || (fp->stream_offs >= fp->de->size))
+			break;
+
+		/* read chunk from current sector */
+		sect_remaining = ctx->sect_size - fp->sect_offs;
+		file_remaining = fp->de->size - fp->stream_offs;
+		l = (len < sect_remaining) ? len : sect_remaining;
+		l = (l < file_remaining) ? l : file_remaining;
+		safe_seek(sect_id2offs(ctx, fp->sect_id) + fp->sect_offs);
+		safe_read(dst, l);
+		got += l;
+		dst += l;
+		len -= l;
+		fp->sect_offs += l;
+		fp->stream_offs += l;
+
+		/* move to next sector if needed */
+		if (fp->sect_offs == ctx->sect_size) {
+			fp->sect_offs = 0;
+			fp->sect_id = ctx->sat[fp->sect_id];
+		}
+	}
+
+	return got;
+}
+
+
+long ucdf_fread(ucdf_file_t *fp, char *dst, long len)
+{
+	if (fp->de->is_short) return ucdf_fread_short(fp, dst, len);
+	return ucdf_fread_long(fp, dst, len);
+}
+

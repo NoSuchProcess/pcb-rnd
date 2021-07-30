@@ -28,9 +28,19 @@ static ucdf_direntry_t *de_find(ucdf_ctx_t *ctx, const char *name)
 	return NULL;
 }
 
-static void dump_file(ucdf_ctx_t *ctx, ucdf_direntry_t *d)
+static int dump_file(ucdf_ctx_t *ctx, ucdf_direntry_t *de)
 {
-	
+	ucdf_file_t fp;
+	char tmp[1024];
+	long len;
+
+	if (ucdf_fopen(ctx, &fp, de) != 0)
+		return -1;
+
+	while((len = ucdf_fread(&fp, tmp, sizeof(tmp))) > 0)
+		fwrite(tmp, len, 1, stdout);
+
+	return 0;
 }
 
 int main(int argc, char *argv[])

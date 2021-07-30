@@ -70,7 +70,22 @@ typedef struct {
 	long *ssat;                /* the whole Short-SAT assembled and read into memory */
 } ucdf_ctx_t;
 
+typedef struct {
+	ucdf_ctx_t *ctx;
+	ucdf_direntry_t *de;
+	long stream_offs;          /* byte offset within the file */
+	long sect_id;              /* long: the sector id (absolute sector address) we are in */
+	long sect_offs;            /* byte offset within the sector */
+} ucdf_file_t;
+
 int ucdf_open(ucdf_ctx_t *ctx, const char *path);
 void ucdf_close(ucdf_ctx_t *ctx);
+
+/* Open a file for read; returns 0 on success */
+int ucdf_fopen(ucdf_ctx_t *ctx, ucdf_file_t *fp, ucdf_direntry_t *de);
+
+/* Read at most len bytes from dst. Returns number of bytes read. If stream
+   ends short, returns less than len. If stream is already at EOF, returns 0 */
+long ucdf_fread(ucdf_file_t *fp, char *dst, long len);
 
 
