@@ -34,3 +34,16 @@ Usage
 Note: ucdf_fseek() does _not_ work on short files, and any file may be
 a short file (see directory entry's ->is_short).
 
+
+Sources
+~~~~~~~
+
+The main source for the code was OpenOffice's specification on CDF:
+http://www.openoffice.org/sc/compdocfileformat.pdf
+
+There is a perl script, unpack.pl, that can read and unpack a CDF file into
+a set of native directories and files:
+https://github.com/thesourcerer8/altium2kicad
+
+There is a not very useful overview on wikipedia:
+https://en.wikipedia.org/wiki/Compound_File_Binary_Format
