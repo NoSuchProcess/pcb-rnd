@@ -360,6 +360,27 @@ static int ucdf_read_dirs(ucdf_ctx_t *ctx)
 	return res;
 }
 
+/* Set up the virtual long file that holds short sector data */
+static int ucdf_setup_ssd(ucdf_ctx_t *ctx)
+{
+	long id_per_sect = ctx->sect_size >> 2;
+
+	if (ctx->root->type != UCDF_DE_ROOT)
+		error(UCDF_ERR_BAD_DIRCHAIN);
+
+	strcpy(ctx->ssd_de.name, "__short_sector_data__");
+	ctx->ssd_de.type = UCDF_DE_FILE;
+	ctx->ssd_de.size = ctx->ssat_len * id_per_sect;
+	ctx->ssd_de.is_short = 0;
+	ctx->ssd_de.first = ctx->root->first;
+	ctx->ssd_de.parent = ctx->ssd_de.next = ctx->ssd_de.children = NULL;
+
+	ctx->ssd_f.ctx = ctx;
+	ctx->ssd_f.de = &ctx->ssd_de;
+	ctx->ssd_f.stream_offs = ctx->ssd_f.sect_id = ctx->ssd_f.sect_offs = 0;
+	return 0;
+}
+
 int ucdf_open(ucdf_ctx_t *ctx, const char *path)
 {
 	ctx->f = fopen(path, "rb");
@@ -375,6 +396,9 @@ int ucdf_open(ucdf_ctx_t *ctx, const char *path)
 		goto error;
 
 	if (ucdf_read_dirs(ctx) != 0)
+		goto error;
+
+	if (ucdf_setup_ssd(ctx) != 0)
 		goto error;
 
 	return 0;

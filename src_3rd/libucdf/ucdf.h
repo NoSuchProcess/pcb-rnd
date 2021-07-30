@@ -78,6 +78,10 @@ struct ucdf_ctx_s {
 	long *msat;                /* the master SAT read into memory */
 	long *sat;                 /* the whole SAT assembled and read into memory; entries are indexed by sector ID and contain the next sector ID within the chain */
 	long *ssat;                /* the whole Short-SAT assembled and read into memory */
+
+	/* short sector data is really stored in a long stream; keep a file open on it */
+	ucdf_direntry_t ssd_de;
+	ucdf_file_t ssd_f;
 };
 
 
