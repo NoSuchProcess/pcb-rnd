@@ -42,6 +42,8 @@ struct ucdf_direntry_s {
 	ucdf_direntry_t *parent;
 	ucdf_direntry_t *children;
 	ucdf_direntry_t *next; /* within children */
+
+	void *user_data;
 };
 
 typedef struct {
@@ -51,6 +53,8 @@ typedef struct {
 	unsigned litend:1;  /* set if file is little endian */
 
 	ucdf_direntry_t *root;
+
+	void *user_data;
 
 	/* cache/interanl */
 	FILE *f; /* the file we are reading from */
