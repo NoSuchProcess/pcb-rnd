@@ -244,16 +244,20 @@ static int ucdf_read_msat(ucdf_file_t *ctx)
 	}
 
 	/* load and build the short sat */
-	ctx->ssat = malloc(sizeof(long) * ctx->ssat_len * id_per_sect);
+	ctx->ssat = calloc(sizeof(long) * ctx->ssat_len * id_per_sect, 1);
+	next = ctx->ssat_first;
 	idx = 0;
 	for(n = 0; n < ctx->ssat_len; n++) {
-		next = ctx->msat[n];
-		if (next < 0)
-			error(UCDF_ERR_BAD_SSAT);
+/*		printf("ssat next=%ld seek=%ld\n", next, sect_id2offs(ctx, next));*/
 		safe_seek(sect_id2offs(ctx, next));
 		if (ucdf_load_any_sat(ctx, ctx->ssat, &idx) != 0)
 			return -1;
+		next = ctx->sat[next];
 	}
+	if (next != UCDF_SECT_EOC)
+		error(UCDF_ERR_BAD_SSAT);
+
+
 
 	return 0;
 }
