@@ -7,12 +7,17 @@ this document.
 	4 bytes of record length
 	$length bytes of data
 
-[l2b]: length encoded bin records
-	2 byte of record length
+[ilb]: ID+length encoded bin records
+	2 bytes of record ID
+	4 bytes of record length
+	$length bytes of data
+
+[l4b]: length encoded bin records
+	4 byte of record length
 	$length bytes of data
 
 Board6/Data:
-	[l2b]
+	[l4b]
 		Same text format as in the protel/ASCII file's BOARD records
 
 Tracks6/Data:
@@ -42,3 +47,14 @@ Vias6/Data:
 		@25, len=4: hole dia
 		@40, len=1: CAGV, CCSV, CENV ?
 		@70, len=1: unionindex ?
+
+Rules6/Data:
+	[ilb]
+		Same text format as in the protel/ASCII file's BOARD records
+
+Classes6/Data:
+	[l4b]
+		Same text format as in the protel/ASCII file's BOARD records
+
+Models/Data: 3d, don't care
+UniqueIDPrimitiveInformation/Data: 3d, don't care ?
