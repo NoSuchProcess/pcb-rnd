@@ -31,7 +31,9 @@ typedef enum {
 	UCDF_DE_ROOT = 5
 } ucdf_detype_t;
 
+typedef struct ucdf_ctx_s ucdf_ctx_t;
 typedef struct ucdf_direntry_s ucdf_direntry_t;
+typedef struct ucdf_file_s ucdf_file_t;
 
 struct ucdf_direntry_s {
 	char name[32];         /* converted to ASCII */
@@ -46,7 +48,15 @@ struct ucdf_direntry_s {
 	void *user_data;
 };
 
-typedef struct {
+struct ucdf_file_s {
+	ucdf_ctx_t *ctx;
+	ucdf_direntry_t *de;
+	long stream_offs;          /* byte offset within the file */
+	long sect_id;              /* long: the sector id (absolute sector address) we are in */
+	long sect_offs;            /* byte offset within the sector */
+};
+
+struct ucdf_ctx_s {
 	ucdf_error_t error; /* last error experienced in parsing */
 	int file_ver, file_rev, sect_size, short_sect_size;
 
@@ -68,15 +78,8 @@ typedef struct {
 	long *msat;                /* the master SAT read into memory */
 	long *sat;                 /* the whole SAT assembled and read into memory; entries are indexed by sector ID and contain the next sector ID within the chain */
 	long *ssat;                /* the whole Short-SAT assembled and read into memory */
-} ucdf_ctx_t;
+};
 
-typedef struct {
-	ucdf_ctx_t *ctx;
-	ucdf_direntry_t *de;
-	long stream_offs;          /* byte offset within the file */
-	long sect_id;              /* long: the sector id (absolute sector address) we are in */
-	long sect_offs;            /* byte offset within the sector */
-} ucdf_file_t;
 
 int ucdf_open(ucdf_ctx_t *ctx, const char *path);
 void ucdf_close(ucdf_ctx_t *ctx);

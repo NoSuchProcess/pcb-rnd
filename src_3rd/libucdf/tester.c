@@ -90,6 +90,14 @@ int main(int argc, char *argv[])
 		print_file_at(&ctx, de, 39387, 10);
 	}
 
+	printf("--Arcs:\n");
+	{
+		ucdf_direntry_t *de = de_find(&ctx, "Arcs6");
+		print_dir(&ctx, de, 0);
+		printf("==\n");
+		dump_file(&ctx, de);
+	}
+
 	ucdf_close(&ctx);
 	return 0;
 }
