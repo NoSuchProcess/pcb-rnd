@@ -2,10 +2,18 @@ The container format is CDF, which can be parsed using libucdf. The result is
 named binary streams. The structure of these binary streams are discussed in
 this document.
 
-[tlb]: type+length encoded bin fields
+[tlb]: type+length encoded bin records
 	1 byte of record type
 	4 bytes of record length
 	$length bytes of data
+
+[l2b]: length encoded bin records
+	2 byte of record length
+	$length bytes of data
+
+Board6/Data:
+	[l2b]
+		Same text format as in the protel/ASCII file's BOARD records
 
 Tracks6/Data:
 	[tlb] record type:  0x04; typical record length: 45
