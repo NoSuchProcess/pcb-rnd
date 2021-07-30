@@ -63,6 +63,7 @@ typedef struct {
 	long dir_first;            /* first sector ID of the directory stream */
 	long ssat_len, ssat_first; /* short allocation table */
 	long msat_len, msat_first; /* master allocation table */
+	long long_stream_min_size;
 
 	long *msat;                /* the master SAT read into memory */
 	long *sat;                 /* the whole SAT assembled and read into memory; entries are indexed by sector ID and contain the next sector ID within the chain */

@@ -6,7 +6,7 @@ static void print_dir(ucdf_ctx_t *ctx, ucdf_direntry_t *dir, int level)
 	ucdf_direntry_t *d;
 
 	for(n = 0; n < level; n++) putc(' ', stdout);
-	printf("%s [%d] %ld @%ld\n", dir->name, dir->type, dir->size, dir->first);
+	printf("%s [%d] %c%ld @%ld\n", dir->name, dir->type, (dir->is_short ? 'S' : 'L'), dir->size, dir->first);
 	for(d = dir->children; d != NULL; d = d->next)
 		print_dir(ctx, d, level+1);
 }

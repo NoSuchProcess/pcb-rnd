@@ -144,7 +144,9 @@ static int ucdf_read_hdr(ucdf_ctx_t *ctx)
 	safe_read(buff, 4);
 	ctx->dir_first = load_int(ctx, buff, 4);
 
-	safe_seek(60);
+	safe_seek(56);
+	safe_read(buff, 4);
+	ctx->long_stream_min_size = load_int(ctx, buff, 4);
 	safe_read(buff, 4);
 	ctx->ssat_first = load_int(ctx, buff, 4);
 	safe_read(buff, 4);
@@ -290,6 +292,7 @@ static int ucdf_read_dir(ucdf_ctx_t *ctx, dir_ctx_t *dctx, long dirid, ucdf_dire
 
 	utf16_to_ascii(de->name, sizeof(de->name), buf);
 	de->size  = load_int(ctx, buf+120, 4);
+	de->is_short = de->size < ctx->long_stream_min_size;
 	leftid  = load_int(ctx, buf+68, 4);
 	rightid = load_int(ctx, buf+72, 4);
 	rootid = load_int(ctx, buf+76, 4);
