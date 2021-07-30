@@ -20,7 +20,7 @@ typedef enum {
 	UCDF_ERR_BAD_MALLOC
 } ucdf_error_t;
 
-extern const char *ucdf_error_str[]; /* indexed by ucdf_error_t */
+extern const char *ucdf_error_str[]; /* indexed by ucdf_error_t (typically ctx->error) */
 
 typedef enum {
 	UCDF_DE_EMPTY = 0,
@@ -84,8 +84,10 @@ struct ucdf_ctx_s {
 	ucdf_file_t ssd_f;
 };
 
-
+/* Open and map a CDF file. Returns -1 on error, error code is in ctx->error */
 int ucdf_open(ucdf_ctx_t *ctx, const char *path);
+
+/* Free all memory used by ctx */
 void ucdf_close(ucdf_ctx_t *ctx);
 
 /* Open a file for read; returns 0 on success */

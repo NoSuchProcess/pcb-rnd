@@ -52,8 +52,10 @@ const char *ucdf_error_str[] = {
 	NULL
 };
 
+/* master file header that identifies the file format */
 static const unsigned char hdr_id[8] = { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 };
 
+/* read len bytes to dst from ctx->f; set and return error on failure */
 #define safe_read(dst, len) \
 	do { \
 		if (fread(dst, 1, len, ctx->f) != len) { \
@@ -62,6 +64,7 @@ static const unsigned char hdr_id[8] = { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1
 		} \
 	} while(0)
 
+/* seek to offs in ctx->f; set and return error on failure */
 #define safe_seek(offs) \
 	do { \
 		if (fseek(ctx->f, offs, SEEK_SET) != 0) { \
@@ -70,17 +73,20 @@ static const unsigned char hdr_id[8] = { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1
 		} \
 	} while(0)
 
+/* shorthand: set and return error */
 #define error(code) \
 	do { \
 		ctx->error = code; \
 		return -1; \
 	} while(0)
 
+/* convert a sector ID to offset in ctx->f (long sectors) */
 static long sect_id2offs(ucdf_ctx_t *ctx, long id)
 {
 	return 512L + (id << ctx->ssz);
 }
 
+/* convert a file integer (len bytes wide) into a native integer */
 static long load_int(ucdf_ctx_t *ctx, unsigned const char *src, int len)
 {
 	int n, sh;
@@ -107,10 +113,12 @@ static long load_int(ucdf_ctx_t *ctx, unsigned const char *src, int len)
 	return res;
 }
 
+/* Load the main file header. Return 0 on success. */
 static int ucdf_read_hdr(ucdf_ctx_t *ctx)
 {
 	unsigned char buff[16];
 
+	/* refuse the file on main header ID mismatch */
 	safe_read(buff, sizeof(hdr_id));
 	if (memcmp(buff, hdr_id, sizeof(hdr_id)) != 0)
 		error(UCDF_ERR_BAD_ID);
@@ -167,6 +175,8 @@ static int ucdf_read_hdr(ucdf_ctx_t *ctx)
 	return 0;
 }
 
+/* Load a sector allocation table chunk from ctx->f into dst; the chunk is
+   one sector long; dst[] is indexed with *idx. Return 0 on success. */
 static int ucdf_load_any_sat(ucdf_ctx_t *ctx, long *dst, long *idx)
 {
 	int n;
@@ -182,6 +192,9 @@ static int ucdf_load_any_sat(ucdf_ctx_t *ctx, long *dst, long *idx)
 	return 0;
 }
 
+/* Load a master sector allocation table chunk from ctx->f into dst, total
+   num_ids slots. Store the result in ctx->msat[], indexed with *idx.
+   Return 0 on success. */
 static int ucdf_load_msat_(ucdf_ctx_t *ctx, long num_ids, long *idx)
 {
 	int n;
@@ -196,6 +209,8 @@ static int ucdf_load_msat_(ucdf_ctx_t *ctx, long num_ids, long *idx)
 	return 0;
 }
 
+/* Load the next sector of msat; return next sector ID or -2 (UCDF_SECT_EOC)
+   on end. */
 static long ucdf_load_msat(ucdf_ctx_t *ctx, long num_ids, long *idx)
 {
 	unsigned char buff[4];
@@ -213,6 +228,7 @@ static long ucdf_load_msat(ucdf_ctx_t *ctx, long num_ids, long *idx)
 	return next;
 }
 
+/* Load and build all sector allocation tables. Return 0 on succss. */
 static int ucdf_read_sats(ucdf_ctx_t *ctx)
 {
 	long next, n, idx = 0, id_per_sect = ctx->sect_size >> 2;
@@ -264,6 +280,7 @@ static int ucdf_read_sats(ucdf_ctx_t *ctx)
 	return 0;
 }
 
+/* Lazy convert utf16 to ASCII, keeping the low byte */
 static void utf16_to_ascii(char *dst, int dstlen, const unsigned char *src)
 {
 	for(dstlen--; (*src != '\0') && (dstlen > 0); dstlen--, dst++, src+=2)
@@ -271,25 +288,30 @@ static void utf16_to_ascii(char *dst, int dstlen, const unsigned char *src)
 	*dst = '\0';
 }
 
+/* context used for directory mapping */
 typedef struct {
 	long num_dirsects, dirs_per_sect;
 	long *diroffs;
 } dir_ctx_t;
 
+/* Read a raw directory entry from ctx->f and allocate and link in a
+   digested directory entry somewhere under ctx->root. Return 0 on success. */
 static int ucdf_read_dir(ucdf_ctx_t *ctx, dir_ctx_t *dctx, long dirid, ucdf_direntry_t *parent, ucdf_direntry_t **de_out)
 {
 	long page = dirid / dctx->dirs_per_sect;
 	long offs = dirid % dctx->dirs_per_sect;
 	long leftid, rightid, rootid;
 	unsigned char buf[128];
-	ucdf_direntry_t *de = malloc(sizeof(ucdf_direntry_t));
+	ucdf_direntry_t *de;
 
+	/* navigate to the record */
 	if ((page < 0) || (page >= dctx->num_dirsects))
 		error(UCDF_ERR_BAD_DIRCHAIN);
-
 	safe_seek(dctx->diroffs[page] + offs * 128);
 	safe_read(buf, 128);
 
+	/* read and parse */
+	de = malloc(sizeof(ucdf_direntry_t));
 	utf16_to_ascii(de->name, sizeof(de->name), buf);
 	de->size  = load_int(ctx, buf+120, 4);
 	de->is_short = de->size < ctx->long_stream_min_size;
@@ -301,6 +323,7 @@ static int ucdf_read_dir(ucdf_ctx_t *ctx, dir_ctx_t *dctx, long dirid, ucdf_dire
 	de->parent = parent;
 	de->children = NULL;
 
+	/* link in */
 	if (parent != NULL) {
 		de->next = parent->children;
 		parent->children = de;
@@ -313,6 +336,7 @@ static int ucdf_read_dir(ucdf_ctx_t *ctx, dir_ctx_t *dctx, long dirid, ucdf_dire
 
 /*	printf("dir: %d:'%s' (%ld %ld r=%ld) sec=%ld\n", de->type, de->name, leftid, rightid, rootid, de->first);*/
 
+	/* read children */
 	if (leftid >= 0)
 		ucdf_read_dir(ctx, dctx, leftid, de->parent, NULL);
 	if (rightid >= 0)
@@ -323,6 +347,7 @@ static int ucdf_read_dir(ucdf_ctx_t *ctx, dir_ctx_t *dctx, long dirid, ucdf_dire
 	return 0;
 }
 
+/* Read the directory tree; return 0 on success */
 static int ucdf_read_dirs(ucdf_ctx_t *ctx)
 {
 	int res;
@@ -457,7 +482,8 @@ int ucdf_fopen(ucdf_ctx_t *ctx, ucdf_file_t *fp, ucdf_direntry_t *de)
 	return 0;
 }
 
-long ucdf_fread_short(ucdf_file_t *fp, char *dst, long len)
+/* Read a chunk from a short file. Returns bytes read or 0 on EOF or -1 on error. */
+static long ucdf_fread_short(ucdf_file_t *fp, char *dst, long len)
 {
 	ucdf_ctx_t *ctx = fp->ctx;
 	long got = 0;
@@ -495,10 +521,9 @@ long ucdf_fread_short(ucdf_file_t *fp, char *dst, long len)
 	}
 
 	return got;
-
 }
 
-
+/* Read a chunk from a long file. Returns bytes read or 0 on EOF or -1 on error. */
 long ucdf_fread_long(ucdf_file_t *fp, char *dst, long len)
 {
 	ucdf_ctx_t *ctx = fp->ctx;
