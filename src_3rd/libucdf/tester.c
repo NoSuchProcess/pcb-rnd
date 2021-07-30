@@ -1,6 +1,6 @@
 #include "ucdf.h"
 
-static void print_dir(ucdf_file_t *ctx, ucdf_direntry_t *dir, int level)
+static void print_dir(ucdf_ctx_t *ctx, ucdf_direntry_t *dir, int level)
 {
 	int n;
 	ucdf_direntry_t *d;
@@ -14,7 +14,7 @@ static void print_dir(ucdf_file_t *ctx, ucdf_direntry_t *dir, int level)
 int main(int argc, char *argv[])
 {
 	char *fn = "A.PcbDoc";
-	ucdf_file_t ctx = {0};
+	ucdf_ctx_t ctx = {0};
 
 	if (argc > 1)
 		fn = argv[1];

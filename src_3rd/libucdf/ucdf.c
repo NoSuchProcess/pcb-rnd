@@ -76,12 +76,12 @@ static const unsigned char hdr_id[8] = { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1
 		return -1; \
 	} while(0)
 
-static long sect_id2offs(ucdf_file_t *ctx, long id)
+static long sect_id2offs(ucdf_ctx_t *ctx, long id)
 {
 	return 512L + (id << ctx->ssz);
 }
 
-static long load_int(ucdf_file_t *ctx, unsigned const char *src, int len)
+static long load_int(ucdf_ctx_t *ctx, unsigned const char *src, int len)
 {
 	int n, sh;
 	long tmp, res = 0;
@@ -107,7 +107,7 @@ static long load_int(ucdf_file_t *ctx, unsigned const char *src, int len)
 	return res;
 }
 
-static int ucdf_read_hdr(ucdf_file_t *ctx)
+static int ucdf_read_hdr(ucdf_ctx_t *ctx)
 {
 	unsigned char buff[16];
 
@@ -165,7 +165,7 @@ static int ucdf_read_hdr(ucdf_file_t *ctx)
 	return 0;
 }
 
-static int ucdf_load_any_sat(ucdf_file_t *ctx, long *dst, long *idx)
+static int ucdf_load_any_sat(ucdf_ctx_t *ctx, long *dst, long *idx)
 {
 	int n;
 	long id_per_sect = ctx->sect_size >> 2;
@@ -180,7 +180,7 @@ static int ucdf_load_any_sat(ucdf_file_t *ctx, long *dst, long *idx)
 	return 0;
 }
 
-static int ucdf_load_msat_(ucdf_file_t *ctx, long num_ids, long *idx)
+static int ucdf_load_msat_(ucdf_ctx_t *ctx, long num_ids, long *idx)
 {
 	int n;
 	unsigned char buff[4];
@@ -194,7 +194,7 @@ static int ucdf_load_msat_(ucdf_file_t *ctx, long num_ids, long *idx)
 	return 0;
 }
 
-static long ucdf_load_msat(ucdf_file_t *ctx, long num_ids, long *idx)
+static long ucdf_load_msat(ucdf_ctx_t *ctx, long num_ids, long *idx)
 {
 	unsigned char buff[4];
 	long next;
@@ -211,7 +211,7 @@ static long ucdf_load_msat(ucdf_file_t *ctx, long num_ids, long *idx)
 	return next;
 }
 
-static int ucdf_read_sats(ucdf_file_t *ctx)
+static int ucdf_read_sats(ucdf_ctx_t *ctx)
 {
 	long next, n, idx = 0, id_per_sect = ctx->sect_size >> 2;
 
@@ -274,7 +274,7 @@ typedef struct {
 	long *diroffs;
 } dir_ctx_t;
 
-static int ucdf_read_dir(ucdf_file_t *ctx, dir_ctx_t *dctx, long dirid, ucdf_direntry_t *parent, ucdf_direntry_t **de_out)
+static int ucdf_read_dir(ucdf_ctx_t *ctx, dir_ctx_t *dctx, long dirid, ucdf_direntry_t *parent, ucdf_direntry_t **de_out)
 {
 	long page = dirid / dctx->dirs_per_sect;
 	long offs = dirid % dctx->dirs_per_sect;
@@ -319,7 +319,7 @@ static int ucdf_read_dir(ucdf_file_t *ctx, dir_ctx_t *dctx, long dirid, ucdf_dir
 	return 0;
 }
 
-static int ucdf_read_dirs(ucdf_file_t *ctx)
+static int ucdf_read_dirs(ucdf_ctx_t *ctx)
 {
 	int res;
 	long n, next;
@@ -356,7 +356,7 @@ static int ucdf_read_dirs(ucdf_file_t *ctx)
 	return res;
 }
 
-int ucdf_open(ucdf_file_t *ctx, const char *path)
+int ucdf_open(ucdf_ctx_t *ctx, const char *path)
 {
 	ctx->f = fopen(path, "rb");
 	if (ctx->f == NULL) {

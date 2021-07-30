@@ -63,7 +63,7 @@ typedef struct {
 	long *msat;                /* the master SAT read into memory */
 	long *sat;                 /* the whole SAT assembled and read into memory; entries are indexed by sector ID and contain the next sector ID within the chain */
 	long *ssat;                /* the whole Short-SAT assembled and read into memory */
-} ucdf_file_t;
+} ucdf_ctx_t;
 
-int ucdf_open(ucdf_file_t *ctx, const char *path);
+int ucdf_open(ucdf_ctx_t *ctx, const char *path);
 
