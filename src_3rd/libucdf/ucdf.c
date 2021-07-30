@@ -1,6 +1,6 @@
 /*
 
-ucdf - microlib for reading Composite Document Format files
+ucdf - microlib for reading Compound Document Format files
 
 Copyright (c) 2021 Tibor 'Igor2' Palinkas
 All rights reserved.
@@ -34,6 +34,7 @@ Contact the author: http://igor2.repo.hu/contact.html
 
 */
 
+#include <stdlib.h>
 #include <string.h>
 #include "ucdf.h"
 
@@ -43,6 +44,7 @@ const char *ucdf_error_str[] = {
 	"failed to read",
 	"wrong file ID",
 	"broken file header",
+	"broken MSAT chain",
 	NULL
 };
 
@@ -70,15 +72,20 @@ static const unsigned char hdr_id[8] = { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1
 		return -1; \
 	} while(0)
 
+static long sect_id2offs(ucdf_file_t *ctx, long id)
+{
+	return 512L + (id << ctx->ssz);
+}
+
 static long load_int(ucdf_file_t *ctx, unsigned const char *src, int len)
 {
-	int n;
+	int n, sh;
 	long tmp, res = 0;
 
 	if (ctx->litend) {
-		for(n = 0; n < len; n++,src++) {
+		for(sh = n = 0; n < len; n++,sh += 8,src++) {
 			tmp = *src;
-			tmp >>= n;
+			tmp = (tmp << sh);
 			res |= tmp;
 		}
 	}
@@ -88,6 +95,11 @@ static long load_int(ucdf_file_t *ctx, unsigned const char *src, int len)
 			res |= *src;
 		}
 	}
+
+	/* "sign extend" */
+	if (res >= (1UL << (len*8-1)))
+		res = -((1UL << (len*8)) - res);
+
 	return res;
 }
 
@@ -149,6 +161,60 @@ static int ucdf_read_hdr(ucdf_file_t *ctx)
 	return 0;
 }
 
+static int ucdf_load_sat_(ucdf_file_t *ctx, long num_ids, long *idx)
+{
+	int n;
+	unsigned char buff[4];
+
+	for(n = 0; n < num_ids; n++) {
+		safe_read(buff, 4);
+		ctx->msat[*idx] = load_int(ctx, buff, 4);
+/*		printf(" [%ld]: sect %ld (%02x %02x %02x %02x)\n", *idx, ctx->msat[*idx], buff[0], buff[1], buff[2], buff[3]);*/
+		(*idx)++;
+	}
+	return 0;
+}
+
+static long ucdf_load_msat(ucdf_file_t *ctx, long num_ids, long *idx)
+{
+	unsigned char buff[4];
+	long next;
+
+	/* load content */
+	if (ucdf_load_sat_(ctx, num_ids-1, idx) != 0)
+		return -1;
+
+	/* load next sector address in the chain */
+	safe_read(buff, 4);
+	next = load_int(ctx, buff, 4);
+
+	printf("next sect: %ld\n", next);
+	return next;
+}
+
+static int ucdf_read_msat(ucdf_file_t *ctx)
+{
+	long next, n, idx = 0, id_per_sect = ctx->sect_size >> 2;
+	ctx->msat = malloc(sizeof(long) * ctx->sat_len * id_per_sect + 109);
+
+	/* load first block of msat from the header @ 76*/
+	safe_seek(76);
+	ucdf_load_sat_(ctx, 109, &idx);
+
+	next = ctx->msat_first;
+	for(n = 0; n < ctx->msat_len; n++) {
+		safe_seek(sect_id2offs(ctx, next));
+		next = ucdf_load_msat(ctx, id_per_sect, &idx);
+		if (next < 0)
+			break;
+	}
+
+	if ((n != ctx->msat_len) || (next != UCDF_SECT_EOC))
+		error(UCDF_ERR_BAD_MSAT);
+
+
+	return 0;
+}
 
 int ucdf_open(ucdf_file_t *ctx, const char *path)
 {
@@ -159,6 +225,9 @@ int ucdf_open(ucdf_file_t *ctx, const char *path)
 	}
 
 	if (ucdf_read_hdr(ctx) != 0)
+		goto error;
+
+	if (ucdf_read_msat(ctx) != 0)
 		goto error;
 
 	return 0;
