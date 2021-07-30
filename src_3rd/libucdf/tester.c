@@ -66,6 +66,12 @@ int main(int argc, char *argv[])
 	if (argc > 1)
 		fn = argv[1];
 
+	if (ucdf_test_parse(fn) != 0) {
+		printf("%s doesn't look like a CDF file\n", fn);
+		return -1;
+	}
+
+
 	if (ucdf_open(&ctx, fn) != 0) {
 		printf("error reading %s: %d (%s)\n", fn, ctx.error, ucdf_error_str[ctx.error]);
 		return -1;

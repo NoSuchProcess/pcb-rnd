@@ -406,7 +406,7 @@ static int ucdf_setup_ssd(ucdf_ctx_t *ctx)
 	return 0;
 }
 
-int ucdf_open(ucdf_ctx_t *ctx, const char *path)
+static int ucdf_open_(ucdf_ctx_t *ctx, const char *path)
 {
 	ctx->f = fopen(path, "rb");
 	if (ctx->f == NULL) {
@@ -414,8 +414,27 @@ int ucdf_open(ucdf_ctx_t *ctx, const char *path)
 		return -1;
 	}
 
-	if (ucdf_read_hdr(ctx) != 0)
-		goto error;
+	if (ucdf_read_hdr(ctx) != 0) {
+		fclose(ctx->f);
+		return -1;
+	}
+	return 0;
+}
+
+int ucdf_test_parse(const char *path)
+{
+	ucdf_ctx_t ctx;
+	if (ucdf_open_(&ctx, path) == 0) {
+		fclose(ctx.f);
+		return 0;
+	}
+	return -1;
+}
+
+int ucdf_open(ucdf_ctx_t *ctx, const char *path)
+{
+	if (ucdf_open_(ctx, path) != 0)
+		return -1;
 
 	if (ucdf_read_sats(ctx) != 0)
 		goto error;

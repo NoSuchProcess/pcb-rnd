@@ -84,6 +84,10 @@ struct ucdf_ctx_s {
 	ucdf_file_t ssd_f;
 };
 
+/* Look at a file, try to read some headers (cheap) to decide if path is a
+   valid CDF file. Returns 0 on no error (file is CDF), -1 on error. */
+int ucdf_test_parse(const char *path);
+
 /* Open and map a CDF file. Returns -1 on error, error code is in ctx->error */
 int ucdf_open(ucdf_ctx_t *ctx, const char *path);
 
