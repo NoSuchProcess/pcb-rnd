@@ -7,6 +7,21 @@ this document.
 	4 bytes of record length
 	$length bytes of data
 
+Tracks6/Data:
+	[tlb] record type:  0x04; typical record length: 45
+		@0,  len=1: layer
+		@2,  len=1: keepout?
+		@3,  len=2: net (ID?)
+		@5,  len=2: polygon?
+		@7,  len=2: component (ID?)
+		@13, len=4: x1 coord in bmil
+		@17, len=4: y1 coord in bmil
+		@21, len=4: x1 coord in bmil
+		@25, len=4: y1 coord in bmil
+		@29, len=4: y1 coord in bmil
+		@36, len=1: unionindex ?
+		@44, len=1: user routed ?
+
 
 Vias6/Data:
 	[tlb] record type:  0x03; typical record length: 209
