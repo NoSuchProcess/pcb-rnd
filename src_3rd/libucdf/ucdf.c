@@ -138,7 +138,7 @@ static int ucdf_read_hdr(ucdf_file_t *ctx)
 	safe_read(buff, 4);
 	ctx->sat_len = load_int(ctx, buff, 4);
 	safe_read(buff, 4);
-	ctx->sat_first = load_int(ctx, buff, 4);
+	ctx->dir_first = load_int(ctx, buff, 4);
 
 	safe_seek(60);
 	safe_read(buff, 4);

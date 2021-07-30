@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
 	printf("CDF header:\n");
 	printf("  ver=%04x rev=%04x %s-endian sect_size=%d,%d\n", ctx.file_ver, ctx.file_rev, ctx.litend ? "little" : "big", ctx.sect_size, ctx.short_sect_size);
-	printf("  sat: %ld+%ld ssat=%ld+%ld msat=%ld+%ld\n", ctx.sat_first, ctx.sat_len, ctx.ssat_first, ctx.ssat_len, ctx.msat_first, ctx.msat_len);
+	printf("  sat_len: %ld; dir1=%ld ssat=%ld+%ld msat=%ld+%ld\n", ctx.sat_len, ctx.dir_first, ctx.ssat_first, ctx.ssat_len, ctx.msat_first, ctx.msat_len);
 
 	return 0;
 }

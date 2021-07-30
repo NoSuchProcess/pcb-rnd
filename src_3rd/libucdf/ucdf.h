@@ -27,7 +27,8 @@ typedef struct {
 	/* cache/interanl */
 	FILE *f; /* the file we are reading from */
 	int ssz, sssz;
-	long sat_len, sat_first;
+	long sat_len;
+	long dir_first;            /* first sector ID of the directory stream */
 	long ssat_len, ssat_first; /* short allocation table */
 	long msat_len, msat_first; /* master allocation table */
 
