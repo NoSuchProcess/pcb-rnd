@@ -2,13 +2,16 @@ libucdf
 ~~~~~~~
 
 This micro-library is a Compound Document File parser. It allows the
-caller to open (and map) a CDF file and then: 
+caller to open (and map) a CDF file and then:
   - explore the "file system", reding directory ("user storage") and
     file ("stream") names and sizes
   - read file content sequentially
   - reentrancy: allows multiple streams to be open and read in parallel
   - reentrancy: allows multiple CDF files open in parallel
   - keeps only the directory tree and Sector Allocation Tables in memory
+
+Libucdf is implemented in plain portable c89, with no system dependent
+parts or external dependencies.
 
 CDF is also called Compound File Binary Format and Composute Document File V2.
 
