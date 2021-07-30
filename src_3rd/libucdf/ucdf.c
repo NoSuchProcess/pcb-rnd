@@ -209,7 +209,7 @@ static long ucdf_load_msat(ucdf_file_t *ctx, long num_ids, long *idx)
 	return next;
 }
 
-static int ucdf_read_msat(ucdf_file_t *ctx)
+static int ucdf_read_sats(ucdf_file_t *ctx)
 {
 	long next, n, idx = 0, id_per_sect = ctx->sect_size >> 2;
 
@@ -273,7 +273,7 @@ int ucdf_open(ucdf_file_t *ctx, const char *path)
 	if (ucdf_read_hdr(ctx) != 0)
 		goto error;
 
-	if (ucdf_read_msat(ctx) != 0)
+	if (ucdf_read_sats(ctx) != 0)
 		goto error;
 
 	return 0;
