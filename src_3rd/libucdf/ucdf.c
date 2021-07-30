@@ -45,6 +45,8 @@ const char *ucdf_error_str[] = {
 	"wrong file ID",
 	"broken file header",
 	"broken MSAT chain",
+	"broken SAT chain",
+	"broken short SAT chain",
 	NULL
 };
 
@@ -161,7 +163,7 @@ static int ucdf_read_hdr(ucdf_file_t *ctx)
 	return 0;
 }
 
-static int ucdf_load_sat(ucdf_file_t *ctx, long *idx)
+static int ucdf_load_any_sat(ucdf_file_t *ctx, long *dst, long *idx)
 {
 	int n;
 	long id_per_sect = ctx->sect_size >> 2;
@@ -169,7 +171,7 @@ static int ucdf_load_sat(ucdf_file_t *ctx, long *idx)
 
 	for(n = 0; n < id_per_sect; n++) {
 		safe_read(buff, 4);
-		ctx->sat[*idx] = load_int(ctx, buff, 4);
+		dst[*idx] = load_int(ctx, buff, 4);
 /*		printf(" [%ld]: sect %ld (%02x %02x %02x %02x)\n", *idx, ctx->msat[*idx], buff[0], buff[1], buff[2], buff[3]);*/
 		(*idx)++;
 	}
@@ -235,9 +237,21 @@ static int ucdf_read_msat(ucdf_file_t *ctx)
 	for(n = 0; n < ctx->sat_len; n++) {
 		next = ctx->msat[n];
 		if (next < 0)
-			error(UCDF_ERR_BAD_MSAT);
+			error(UCDF_ERR_BAD_SAT);
 		safe_seek(sect_id2offs(ctx, next));
-		if (ucdf_load_sat(ctx, &idx) != 0)
+		if (ucdf_load_any_sat(ctx, ctx->sat, &idx) != 0)
+			return -1;
+	}
+
+	/* load and build the short sat */
+	ctx->ssat = malloc(sizeof(long) * ctx->ssat_len * id_per_sect);
+	idx = 0;
+	for(n = 0; n < ctx->ssat_len; n++) {
+		next = ctx->msat[n];
+		if (next < 0)
+			error(UCDF_ERR_BAD_SSAT);
+		safe_seek(sect_id2offs(ctx, next));
+		if (ucdf_load_any_sat(ctx, ctx->ssat, &idx) != 0)
 			return -1;
 	}
 

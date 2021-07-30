@@ -14,6 +14,8 @@ typedef enum {
 	UCDF_ERR_BAD_ID,
 	UCDF_ERR_BAD_HDR,
 	UCDF_ERR_BAD_MSAT,
+	UCDF_ERR_BAD_SAT,
+	UCDF_ERR_BAD_SSAT,
 } ucdf_error_t;
 
 extern const char *ucdf_error_str[]; /* indexed by ucdf_error_t */
@@ -34,6 +36,7 @@ typedef struct {
 
 	long *msat;                /* the master SAT read into memory */
 	long *sat;                 /* the whole SAT assembled and read into memory */
+	long *ssat;                /* the whole Short-SAT assembled and read into memory */
 } ucdf_file_t;
 
 int ucdf_open(ucdf_file_t *ctx, const char *path);
