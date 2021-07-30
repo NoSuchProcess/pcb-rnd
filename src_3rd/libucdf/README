@@ -1,0 +1,36 @@
+libucdf
+~~~~~~~
+
+This micro-library is a Compound Document File parser. It allows the
+caller to open (and map) a CDF file and then: 
+  - explore the "file system", reding directory ("user storage") and
+    file ("stream") names and sizes
+  - read file content sequentially
+  - reentrancy: allows multiple streams to be open and read in parallel
+  - reentrancy: allows multiple CDF files open in parallel
+  - keeps only the directory tree and Sector Allocation Tables in memory
+
+CDF is also called Compound File Binary Format and Composute Document File V2.
+
+Altium uses CDF as container format for binary PcbDoc and SchDoc.
+
+
+Usage
+~~~~~
+
+1. Create a ucdf_ctx_t context (can be on stack)
+2. Call ucdf_open() on the context with the path to a CDF file
+3. Figure which stream to open, exploring the directory structure
+   starting from ctx->root. Each directory entry has ->children that
+   is a singly linked list (using ->next) of child directory entries.
+   Plus ->parent is provided for convenience.
+4. Once the stream is found, use its directory entry in ucdf_fopen() to
+   open the stream. The handle is ucdf_file_t, can be on stack. There is
+   no ucdf_fclose() because ucdf_fopen() doesn't allocate or change ctx
+   states.
+5. With an ucdf_file_t, use ucdf_fread() to read the file sequentially.
+6. Call ucdf_close() to free all memory used for the maps and SATs in ctx.
+
+Note: ucdf_fseek() does _not_ work on short files, and any file may be
+a short file (see directory entry's ->is_short).
+
