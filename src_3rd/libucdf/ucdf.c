@@ -47,6 +47,8 @@ const char *ucdf_error_str[] = {
 	"broken MSAT chain",
 	"broken SAT chain",
 	"broken short SAT chain",
+	"broken direcotry chain",
+	"failed to allocate memory",
 	NULL
 };
 
@@ -257,9 +259,101 @@ static int ucdf_read_sats(ucdf_file_t *ctx)
 	if (next != UCDF_SECT_EOC)
 		error(UCDF_ERR_BAD_SSAT);
 
+	return 0;
+}
 
+static void utf16_to_ascii(char *dst, int dstlen, const unsigned char *src)
+{
+	for(dstlen--; (*src != '\0') && (dstlen > 0); dstlen--, dst++, src+=2)
+		*dst = *src;
+	*dst = '\0';
+}
+
+typedef struct {
+	long num_dirsects, dirs_per_sect;
+	long *diroffs;
+} dir_ctx_t;
+
+static int ucdf_read_dir(ucdf_file_t *ctx, dir_ctx_t *dctx, long dirid, ucdf_direntry_t *parent, ucdf_direntry_t **de_out)
+{
+	long page = dirid / dctx->dirs_per_sect;
+	long offs = dirid % dctx->dirs_per_sect;
+	long leftid, rightid, rootid;
+	unsigned char buf[128];
+	ucdf_direntry_t *de = malloc(sizeof(ucdf_direntry_t));
+
+	if ((page < 0) || (page >= dctx->num_dirsects))
+		error(UCDF_ERR_BAD_DIRCHAIN);
+
+	safe_seek(dctx->diroffs[page] + offs * 128);
+	safe_read(buf, 128);
+
+	utf16_to_ascii(de->name, sizeof(de->name), buf);
+	de->size  = load_int(ctx, buf+120, 4);
+	leftid  = load_int(ctx, buf+68, 4);
+	rightid = load_int(ctx, buf+72, 4);
+	rootid = load_int(ctx, buf+76, 4);
+	de->first = load_int(ctx, buf+116, 4);
+	de->type = buf[66];
+	de->parent = parent;
+
+	if (parent != NULL) {
+		de->next = parent->children;
+		parent->children = de;
+	}
+	else
+		de->next = NULL;
+
+	if (de_out != NULL)
+		*de_out = de;
+
+/*	printf("dir: %d:'%s' (%ld %ld r=%ld) sec=%ld\n", de->type, de->name, leftid, rightid, rootid, de->first);*/
+
+	if (leftid >= 0)
+		ucdf_read_dir(ctx, dctx, leftid, de->parent, NULL);
+	if (rightid >= 0)
+		ucdf_read_dir(ctx, dctx, rightid, de->parent, NULL);
+	if (rootid >= 0)
+		ucdf_read_dir(ctx, dctx, rootid, de, NULL);
 
 	return 0;
+}
+
+static int ucdf_read_dirs(ucdf_file_t *ctx)
+{
+	int res;
+	long n, next;
+	dir_ctx_t dctx;
+
+	/* count directory sectors */
+	next = ctx->dir_first;
+	dctx.num_dirsects = 0;
+	dctx.dirs_per_sect = ctx->sect_size >> 7;
+	while(next >= 0) {
+		next = ctx->sat[next];
+		dctx.num_dirsects++;
+	}
+	if (next != UCDF_SECT_EOC)
+		error(UCDF_ERR_BAD_DIRCHAIN);
+
+	/* build a temporary offset list of dir pages */
+	dctx.diroffs = malloc(sizeof(long) * dctx.num_dirsects);
+	if (dctx.diroffs == NULL)
+		error(UCDF_ERR_BAD_MALLOC);
+
+	next = ctx->dir_first;
+	n = 0;
+	while(next >= 0) {
+		dctx.diroffs[n] = sect_id2offs(ctx, next);
+		next = ctx->sat[next];
+		n++;
+	}
+
+	/* start reading from the root dir */
+	res = ucdf_read_dir(ctx, &dctx, 0, NULL, &ctx->root);
+
+	free(dctx.diroffs);
+	return res;
 }
 
 int ucdf_open(ucdf_file_t *ctx, const char *path)
@@ -274,6 +368,9 @@ int ucdf_open(ucdf_file_t *ctx, const char *path)
 		goto error;
 
 	if (ucdf_read_sats(ctx) != 0)
+		goto error;
+
+	if (ucdf_read_dirs(ctx) != 0)
 		goto error;
 
 	return 0;
