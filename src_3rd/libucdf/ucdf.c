@@ -626,8 +626,8 @@ int ucdf_fseek(ucdf_file_t *fp, long offs)
 	if (sect_id < 0)
 		return -1;
 
-	fp->stream_offs += offs;
-	fp->sect_offs += sect_offs;
+	fp->stream_offs = offs;
+	fp->sect_offs = sect_offs;
 	fp->sect_id = sect_id;
 	return 0;
 }
