@@ -1,0 +1,21 @@
+The container format is CDF, which can be parsed using libucdf. The result is
+named binary streams. The structure of these binary streams are discussed in
+this document.
+
+[tlb]: type+length encoded bin fields
+	1 byte of record type
+	4 bytes of record length
+	$length bytes of data
+
+
+Vias6/Data:
+	[tlb] record type:  0x03; typical record length: 209
+		@0,  len=1: bbvia top end layer
+		@1,  len=1: bbvia bottom end layer
+		@3,  len=2: net (ID?)
+		@13, len=4: x coord in bmil
+		@17, len=4: y coord in bmil
+		@21, len=4: copper dia
+		@25, len=4: hole dia
+		@40, len=1: CAGV, CCSV, CENV ?
+		@70, len=1: unionindex ?
