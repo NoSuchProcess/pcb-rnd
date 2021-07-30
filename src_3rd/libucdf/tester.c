@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include "ucdf.h"
 
@@ -12,6 +13,26 @@ static void print_dir(ucdf_ctx_t *ctx, ucdf_direntry_t *dir, int level)
 		print_dir(ctx, d, level+1);
 }
 
+
+static int dump_file(FILE *fout, ucdf_ctx_t *ctx, ucdf_direntry_t *de, const char *path)
+{
+	ucdf_file_t fp = {0};
+	char tmp[1024];
+	long len;
+
+	if (ucdf_fopen(ctx, &fp, de) != 0)
+		return -1;
+
+	while((len = ucdf_fread(&fp, tmp, sizeof(tmp))) > 0)
+		if (fwrite(tmp, len, 1, fout) != 1)
+			printf("  writte error in file %s\n", path);
+
+	return 0;
+}
+
+
+/* These are unused now; they serve as example code */
+#if 0
 /* return the direntry for /name/Data */
 static ucdf_direntry_t *de_find(ucdf_ctx_t *ctx, const char *name)
 {
@@ -28,21 +49,6 @@ static ucdf_direntry_t *de_find(ucdf_ctx_t *ctx, const char *name)
 	return NULL;
 }
 
-static int dump_file(ucdf_ctx_t *ctx, ucdf_direntry_t *de)
-{
-	ucdf_file_t fp;
-	char tmp[1024];
-	long len;
-
-	if (ucdf_fopen(ctx, &fp, de) != 0)
-		return -1;
-
-	while((len = ucdf_fread(&fp, tmp, sizeof(tmp))) > 0)
-		fwrite(tmp, len, 1, stdout);
-
-	return 0;
-}
-
 static int print_file_at(ucdf_ctx_t *ctx, ucdf_direntry_t *de, long offs, long len)
 {
 	ucdf_file_t fp;
@@ -56,6 +62,62 @@ static int print_file_at(ucdf_ctx_t *ctx, ucdf_direntry_t *de, long offs, long l
 	fwrite(tmp, len, 1, stdout);
 	printf("\n");
 	return 0;
+}
+#endif
+
+static void dump_all_files(ucdf_ctx_t *ctx, ucdf_direntry_t *de, const char *parent_path)
+{
+	char cmd[2048], *path, *end;
+	int plen = strlen(parent_path);
+
+	strcpy(cmd, "mkdir \"");
+	path = cmd+7;
+
+	if (plen > sizeof(cmd)-42) {
+		fprintf(stderr, "path too long\n");
+		exit(1);
+	}
+
+	memcpy(path, parent_path, plen);
+	end = path + plen;
+	*end = '/';
+	end++;
+	strcpy(end, de->name);
+
+	switch(de->type) {
+		case UCDF_DE_FILE:
+			{
+				FILE *fout = fopen(path, "w");
+				printf("dump: '%s' %p\n", path, fout);
+				if (fout != NULL)
+					if (dump_file(fout, ctx, de, path) != 0)
+						printf(" -> failed: %s\n", ucdf_error_str[ctx->error]);
+				fclose(fout);
+			}
+			break;
+		case UCDF_DE_ROOT:
+		case UCDF_DE_DIR:
+			{
+				ucdf_direntry_t *d;
+				char *clq;
+
+				/* create the directory */
+				clq = end + strlen(end);
+				clq[0] = '"';
+				clq[1] = '\0';
+				printf("cmd: '%s'\n", cmd);
+				system(cmd);
+				clq[0] = '\0';
+				
+				/* recruse to all children */
+				for(d = de->children; d != NULL; d = d->next)
+					dump_all_files(ctx, d, path);
+			}
+			break;
+		default:
+			/* do nothing */
+			break;
+	}
 }
 
 int main(int argc, char *argv[])
@@ -83,26 +145,8 @@ int main(int argc, char *argv[])
 
 	print_dir(&ctx, ctx.root, 0);
 
-	printf("--NETS:\n");
-	{
-		ucdf_direntry_t *de = de_find(&ctx, "Nets6");
-		print_dir(&ctx, de, 0);
-		printf("==\n");
-		dump_file(&ctx, de);
-		printf("==\n");
-		print_file_at(&ctx, de, 39384, 10);
-		print_file_at(&ctx, de, 39385, 10);
-		print_file_at(&ctx, de, 39386, 10);
-		print_file_at(&ctx, de, 39387, 10);
-	}
-
-	printf("--Arcs:\n");
-	{
-		ucdf_direntry_t *de = de_find(&ctx, "Arcs6");
-		print_dir(&ctx, de, 0);
-		printf("==\n");
-		dump_file(&ctx, de);
-	}
+	system("mkdir unpacked");
+	dump_all_files(&ctx, ctx.root, "unpacked");
 
 	ucdf_close(&ctx);
 	return 0;
