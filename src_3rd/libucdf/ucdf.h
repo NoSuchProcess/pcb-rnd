@@ -32,7 +32,8 @@ typedef struct {
 	long ssat_len, ssat_first; /* short allocation table */
 	long msat_len, msat_first; /* master allocation table */
 
-	long *msat;                /* the whole master SAT read into memory */
+	long *msat;                /* the master SAT read into memory */
+	long *sat;                 /* the whole SAT assembled and read into memory */
 } ucdf_file_t;
 
 int ucdf_open(ucdf_file_t *ctx, const char *path);

@@ -161,7 +161,22 @@ static int ucdf_read_hdr(ucdf_file_t *ctx)
 	return 0;
 }
 
-static int ucdf_load_sat_(ucdf_file_t *ctx, long num_ids, long *idx)
+static int ucdf_load_sat(ucdf_file_t *ctx, long *idx)
+{
+	int n;
+	long id_per_sect = ctx->sect_size >> 2;
+	unsigned char buff[4];
+
+	for(n = 0; n < id_per_sect; n++) {
+		safe_read(buff, 4);
+		ctx->sat[*idx] = load_int(ctx, buff, 4);
+/*		printf(" [%ld]: sect %ld (%02x %02x %02x %02x)\n", *idx, ctx->msat[*idx], buff[0], buff[1], buff[2], buff[3]);*/
+		(*idx)++;
+	}
+	return 0;
+}
+
+static int ucdf_load_msat_(ucdf_file_t *ctx, long num_ids, long *idx)
 {
 	int n;
 	unsigned char buff[4];
@@ -181,7 +196,7 @@ static long ucdf_load_msat(ucdf_file_t *ctx, long num_ids, long *idx)
 	long next;
 
 	/* load content */
-	if (ucdf_load_sat_(ctx, num_ids-1, idx) != 0)
+	if (ucdf_load_msat_(ctx, num_ids-1, idx) != 0)
 		return -1;
 
 	/* load next sector address in the chain */
@@ -195,12 +210,14 @@ static long ucdf_load_msat(ucdf_file_t *ctx, long num_ids, long *idx)
 static int ucdf_read_msat(ucdf_file_t *ctx)
 {
 	long next, n, idx = 0, id_per_sect = ctx->sect_size >> 2;
-	ctx->msat = malloc(sizeof(long) * ctx->sat_len * id_per_sect + 109);
+
+	ctx->msat = malloc(sizeof(long) * (ctx->msat_len * id_per_sect + 109));
 
 	/* load first block of msat from the header @ 76*/
 	safe_seek(76);
-	ucdf_load_sat_(ctx, 109, &idx);
+	ucdf_load_msat_(ctx, 109, &idx);
 
+	/* load further msat blocks */
 	next = ctx->msat_first;
 	for(n = 0; n < ctx->msat_len; n++) {
 		safe_seek(sect_id2offs(ctx, next));
@@ -212,6 +229,17 @@ static int ucdf_read_msat(ucdf_file_t *ctx)
 	if ((n != ctx->msat_len) || (next != UCDF_SECT_EOC))
 		error(UCDF_ERR_BAD_MSAT);
 
+	/* load and build the sat */
+	ctx->sat = malloc(sizeof(long) * ctx->sat_len * id_per_sect);
+	idx = 0;
+	for(n = 0; n < ctx->sat_len; n++) {
+		next = ctx->msat[n];
+		if (next < 0)
+			error(UCDF_ERR_BAD_MSAT);
+		safe_seek(sect_id2offs(ctx, next));
+		if (ucdf_load_sat(ctx, &idx) != 0)
+			return -1;
+	}
 
 	return 0;
 }
