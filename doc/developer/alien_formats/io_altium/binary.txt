@@ -56,5 +56,68 @@ Classes6/Data:
 	[l4b]
 		Same text format as in the protel/ASCII file's BOARD records
 
+Nets6/Data:
+	[l4b]
+		Same text format as in the protel/ASCII file's BOARD records
+
+Pads6/Data:
+	1 byte record type
+	4 bytes len
+	$len bytes snippet
+
+	Record type:
+		1=arc
+		4=track (line)
+		6=fill
+
+	@5, len=1: name_len
+	@6, len=$name_len bytes: name
+	<then jump over something? see perl line 1255 and 1283? modified pos, so @ is from new>
+
+	@23, len=1: altlayer
+	@26, len=2: net ID
+	@30, len=2: component ID
+	@36, len=4: X, bmil
+	@40, len=4: Y, bmil
+	@44, len=4: sx, bmil
+	@48, len=4: sy, bmil
+	@52, len=4: mid-sx, bmil
+	@56, len=4: mid-sy, bmil
+	@60, len=4: bottom-sx, bmil
+	@64, len=4: bottom-sy, bmil
+	@68, len=4: hole size
+	@72, len=1: top type
+	@73, len=1: mid type
+	@74, len=1: bottom type
+	@75, len=8: pad rotation, double?
+	@83, len=1: plated
+	@85, len=1: padmode 0=simple, 1=top-middle-bottom, 2=full-stack
+	@91, len=4: CCW?
+	@95, len=1: CEN?
+	@97, len=4: CAG?
+	@101, len=4: CPR?
+	@105, len=4: CPC?
+	@109, len=4: CPE: paste expansion manual
+	@113, len=4: CSE: mask expansion manual?
+	@117, len=1: CPL?
+	@124, len=1: CPEV: paste expansion mode
+	@125, len=1: CSEV: mask expansion mode
+	@129, len=8: hole rotation, double?
+	@144, len=1: hole type?
+
+	types:
+		1=circle or round
+		2=rect
+		3=oval or octagon
+		4=(thermal)
+		6=(point)
+		7=(point)
+		9=roundrect
+
+Components6/Data
+	[l4b]
+		Same text format as in the protel/ASCII file's BOARD records
+
+
 Models/Data: 3d, don't care
 UniqueIDPrimitiveInformation/Data: 3d, don't care ?
