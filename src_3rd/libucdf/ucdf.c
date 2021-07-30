@@ -424,16 +424,10 @@ int ucdf_fopen(ucdf_ctx_t *ctx, ucdf_file_t *fp, ucdf_direntry_t *de)
 {
 	if (de->type != UCDF_DE_FILE)
 		return -1;
-	if (de->is_short) {
-		fprintf(stderr, "Can't open short streams yet\n");
-		return -1;
-	}
 
 	memset(fp, 0, sizeof(ucdf_file_t));
 	fp->ctx = ctx;
 	fp->de = de;
-
-	/* long file */
 	fp->sect_id = de->first;
 
 	return 0;
