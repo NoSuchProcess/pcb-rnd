@@ -118,6 +118,16 @@ Components6/Data
 	[l4b]
 		Same text format as in the protel/ASCII file's BOARD records
 
+ComponentsBodies6/Data
+	skip 23 bytes of header
+	[l4b]
+		Same text format as in the protel/ASCII file's BOARD records
+	at the end nskip=16 (??? perl line 405):
+		read 4 bytes skiplen
+		skip $nskip*$skiplen
+		skip 4 more bytes for whatever
+		go back and repeat (including skipping 23 bytes)
+
 
 Models/Data: 3d, don't care
 UniqueIDPrimitiveInformation/Data: 3d, don't care ?
