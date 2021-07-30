@@ -370,7 +370,7 @@ static int ucdf_setup_ssd(ucdf_ctx_t *ctx)
 
 	strcpy(ctx->ssd_de.name, "__short_sector_data__");
 	ctx->ssd_de.type = UCDF_DE_FILE;
-	ctx->ssd_de.size = ctx->ssat_len * id_per_sect;
+	ctx->ssd_de.size = ctx->ssat_len * id_per_sect * ctx->short_sect_size;
 	ctx->ssd_de.is_short = 0;
 	ctx->ssd_de.first = ctx->root->first;
 	ctx->ssd_de.parent = ctx->ssd_de.next = ctx->ssd_de.children = NULL;
@@ -459,8 +459,45 @@ int ucdf_fopen(ucdf_ctx_t *ctx, ucdf_file_t *fp, ucdf_direntry_t *de)
 
 long ucdf_fread_short(ucdf_file_t *fp, char *dst, long len)
 {
-	abort();
+	ucdf_ctx_t *ctx = fp->ctx;
+	long got = 0;
+
+
+	while(len > 0) {
+		long l, sect_remaining, file_remaining;
+
+		if ((fp->sect_id < 0) || (fp->stream_offs >= fp->de->size))
+			break;
+
+		/* read chunk from current short sector */
+		sect_remaining = ctx->short_sect_size - fp->sect_offs;
+		file_remaining = fp->de->size - fp->stream_offs;
+		l = (len < sect_remaining) ? len : sect_remaining;
+		l = (l < file_remaining) ? l : file_remaining;
+		
+		if (ucdf_fseek(&ctx->ssd_f, fp->sect_id * ctx->short_sect_size + fp->sect_offs) != 0)
+			return -1;
+
+		if (ucdf_fread(&ctx->ssd_f, dst, l) != l)
+			return -1;
+
+		got += l;
+		dst += l;
+		len -= l;
+		fp->sect_offs += l;
+		fp->stream_offs += l;
+
+		/* move to next sector if needed */
+		if (fp->sect_offs == ctx->short_sect_size) {
+			fp->sect_offs = 0;
+			fp->sect_id = ctx->ssat[fp->sect_id];
+		}
+	}
+
+	return got;
+
 }
+
 
 long ucdf_fread_long(ucdf_file_t *fp, char *dst, long len)
 {
