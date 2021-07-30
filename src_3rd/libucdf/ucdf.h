@@ -35,7 +35,7 @@ typedef struct {
 	long msat_len, msat_first; /* master allocation table */
 
 	long *msat;                /* the master SAT read into memory */
-	long *sat;                 /* the whole SAT assembled and read into memory */
+	long *sat;                 /* the whole SAT assembled and read into memory; entries are indexed by sector ID and contain the next sector ID within the chain */
 	long *ssat;                /* the whole Short-SAT assembled and read into memory */
 } ucdf_file_t;
 
