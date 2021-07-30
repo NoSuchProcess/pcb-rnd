@@ -299,6 +299,7 @@ static int ucdf_read_dir(ucdf_ctx_t *ctx, dir_ctx_t *dctx, long dirid, ucdf_dire
 	de->first = load_int(ctx, buf+116, 4);
 	de->type = buf[66];
 	de->parent = parent;
+	de->children = NULL;
 
 	if (parent != NULL) {
 		de->next = parent->children;
@@ -383,3 +384,39 @@ int ucdf_open(ucdf_ctx_t *ctx, const char *path)
 	ctx->f = NULL;
 	return -1;
 }
+
+static void ucdf_free_dir(ucdf_direntry_t *dir)
+{
+	ucdf_direntry_t *d, *next;
+
+	for(d = dir->children; d != NULL; d = next) {
+		next = d->next;
+		ucdf_free_dir(d);
+	}
+	free(dir);
+}
+
+void ucdf_close(ucdf_ctx_t *ctx)
+{
+	if (ctx->root != NULL) {
+		ucdf_free_dir(ctx->root);
+		ctx->root = NULL;
+	}
+	if (ctx->f != NULL) {
+		fclose(ctx->f);
+		ctx->f = NULL;
+	}
+	if (ctx->msat != NULL) {
+		free(ctx->msat);
+		ctx->msat = NULL;
+	}
+	if (ctx->sat != NULL) {
+		free(ctx->sat);
+		ctx->sat = NULL;
+	}
+	if (ctx->ssat != NULL) {
+		free(ctx->ssat);
+		ctx->ssat = NULL;
+	}
+}
+

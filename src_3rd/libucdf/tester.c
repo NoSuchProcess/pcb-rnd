@@ -30,5 +30,6 @@ int main(int argc, char *argv[])
 
 	print_dir(&ctx, ctx.root, 0);
 
+	ucdf_close(&ctx);
 	return 0;
 }

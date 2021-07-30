@@ -71,4 +71,6 @@ typedef struct {
 } ucdf_ctx_t;
 
 int ucdf_open(ucdf_ctx_t *ctx, const char *path);
+void ucdf_close(ucdf_ctx_t *ctx);
+
 
