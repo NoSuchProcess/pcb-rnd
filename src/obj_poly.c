@@ -32,6 +32,8 @@
 
 #include "config.h"
 
+#include <genvector/vtp0.h>
+
 #include "board.h"
 #include "data.h"
 #include "undo.h"
@@ -221,23 +223,18 @@ void pcb_poly_rotate(pcb_layer_t *layer, pcb_poly_t *polygon, rnd_coord_t X, rnd
 		rnd_r_insert_entry(layer->polygon_tree, (rnd_box_t *) polygon);
 }
 
-int pcb_poly_is_valid(pcb_poly_t *p)
+static rnd_polyarea_t *pcb_poly_is_valid_build(pcb_poly_t *p, int start, int end)
 {
 	rnd_pline_t *contour = NULL;
-	rnd_polyarea_t *np1 = NULL, *np = NULL;
+	rnd_polyarea_t *np1 = NULL;
 	rnd_cardinal_t n;
 	rnd_vector_t v;
-	int res = 1;
 
-	np1 = np = rnd_polyarea_create();
-	if (np == NULL)
-		return 0;
+	np1 = rnd_polyarea_create();
+	if (np1 == NULL)
+		return NULL;
 
-	/* first make initial polygon contour */
-	for (n = 0; n < p->PointN; n++) {
-		/* No current contour? Make a new one starting at point */
-		/*   (or) Add point to existing contour */
-
+	for (n = start; n < end; n++) {
 		v[0] = p->Points[n].X;
 		v[1] = p->Points[n].Y;
 		if (contour == NULL) {
@@ -249,7 +246,7 @@ int pcb_poly_is_valid(pcb_poly_t *p)
 		}
 
 		/* Is current point last in contour? If so process it. */
-		if (n == p->PointN - 1) {
+		if (n == end - 1) {
 			rnd_poly_contour_pre(contour, rnd_true);
 
 			if (contour->Count == 0) {
@@ -276,21 +273,76 @@ int pcb_poly_is_valid(pcb_poly_t *p)
 				rnd_poly_contour_inv(contour);
 			}
 
-			rnd_polyarea_contour_include(np, contour);
+			rnd_polyarea_contour_include(np1, contour);
 			if (contour->Count == 0)
 				goto err;
 			contour = NULL;
 
-			if (!rnd_poly_valid(np))
-				res = 0;
+			if (!rnd_poly_valid(np1))
+				goto err;
 		}
 	}
-	rnd_polyarea_free(&np1);
-	return res;
+	return np1;
 
 	err:;
 	rnd_polyarea_free(&np1);
-	return 0;
+	return NULL;
+}
+
+int pcb_poly_is_valid(pcb_poly_t *p)
+{
+	rnd_polyarea_t *np, *hp, *hp2;
+	int valid = 1;
+
+	/* first make initial polygon contour */
+	np = pcb_poly_is_valid_build(p, 0, (p->HoleIndexN > 0) ? p->HoleIndex[0] : p->PointN);
+	if (np == NULL) {
+		rnd_polyarea_free(&np);
+		return 0;
+	}
+
+	if (p->HoleIndexN > 0) {
+		vtp0_t holes = {0};
+		long h, n;
+
+		/* build each hole and check if it is a valid contour alone */
+		vtp0_enlarge(&holes, p->HoleIndexN);
+		for(h = 0; h < p->HoleIndexN; h++) {
+			hp = pcb_poly_is_valid_build(p, p->HoleIndex[h], (h == p->HoleIndexN-1) ? p->PointN : p->HoleIndex[h+1]);
+			vtp0_append(&holes, hp);
+			if (hp == NULL)
+				valid = 0;
+		}
+
+		/* check if holes do not cross anything */
+		for(h = 1; h < p->HoleIndexN; h++) {
+			hp = holes.array[h];
+			if (rnd_polyarea_touching(hp, np)) {
+				valid = 0;
+				goto bad;
+			}
+			for(n = 1; n < h; n++) {
+				hp2 = holes.array[n];
+				if (rnd_polyarea_touching(hp, hp2)) {
+					valid = 0;
+					goto bad;
+				}
+			}
+		}
+
+		bad:;
+
+		/* free all holes */
+		for(h = 0; h < p->HoleIndexN; h++) {
+			hp = holes.array[h];
+			if (hp != NULL)
+				rnd_polyarea_free(&hp);
+		}
+		vtp0_uninit(&holes);
+	}
+
+	rnd_polyarea_free(&np);
+	return valid;
 }
 
 /*** undoable mirror ***/
