@@ -61,10 +61,8 @@ Texts6/Data:
 		@40, len=1: is comment
 		@41, len=1: is designator
 		@46, len=64: font name
-		??? text len (per line 3242)
-		??? text
-
-	[tlb] record type:  0x01; typical length: 2
+	[l4b] text string
+		pascal string (first byte is net length)
 
 Fills6/Data: TODO
 	[tlb] record type:  0x06; typical record length: 46
