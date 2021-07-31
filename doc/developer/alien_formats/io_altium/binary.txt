@@ -35,6 +35,27 @@ Tracks6/Data:
 		@36, len=1: unionindex ?
 		@44, len=1: user routed ?
 
+Arcs6/Data:
+	[tlb] record type:  0x01; typical record length: 56
+		@0,  len=1: layer
+		@3,  len=2: net (ID?)
+		@7,  len=2: component (ID?)
+		@13, len=4: x coord in bmil
+		@17, len=4: y coord in bmil
+		@21, len=4: radius in bmil
+		@25, len=8: start angle (double?)
+		@33, len=8: end angle (double?)
+		@41, len=4: width bmil
+		@48, len=1: unionindex ?
+		@55, len=1: user routed ?
+
+
+
+Texts6/Data: TODO
+
+Fills6/Data: TODO
+
+
 
 Vias6/Data:
 	[tlb] record type:  0x03; typical record length: 209
