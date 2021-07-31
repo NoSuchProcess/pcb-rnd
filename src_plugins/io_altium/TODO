@@ -6,6 +6,7 @@
 	- bbvia (TODO)
 	- viatenting (TODO)
 	- multiline text
+	- put via in component
 
 - conclusions on ascii read:
 	- plane layers: can't host wires but can be split
