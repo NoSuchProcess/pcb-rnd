@@ -67,7 +67,17 @@ Texts6/Data:
 	[tlb] record type:  0x01; typical length: 2
 
 Fills6/Data: TODO
-
+	[tlb] record type:  0x06; typical record length: 46
+		@0,  len=1: layer
+		@3,  len=2: net (ID?)
+		@7,  len=2: component (ID?)
+		@13, len=4: x1 coord in bmil
+		@17, len=4: y1 coord in bmil
+		@21, len=4: x2 coord in bmil
+		@25, len=4: y2 coord in bmil
+		@29, len=8: rotation (double?)
+		@38, len=8: dir2 ??? (double?)
+		@45, len=1: user routed ?
 
 
 Vias6/Data:
