@@ -94,7 +94,10 @@ void pcb_pstk_proto_update(pcb_pstk_proto_t *dst)
 			if (hole == &ts->shape[n])
 				ts->shape[n].hconn = 1;
 			else if (hole != NULL) {
-				ts->shape[n].hconn = pcb_pstk_shape_intersect(&dummy_ps, &ts->shape[n], &dummy_ps, hole);
+				if (ts->shape[n].shape == PCB_PSSH_HSHADOW)
+					ts->shape[n].hconn = 1;
+				else
+					ts->shape[n].hconn = pcb_pstk_shape_intersect(&dummy_ps, &ts->shape[n], &dummy_ps, hole);
 				if ((ts->shape[n].layer_mask & PCB_LYT_COPPER) && !ts->shape[n].hconn)
 					dst->all_copper_connd = 0;
 			}
