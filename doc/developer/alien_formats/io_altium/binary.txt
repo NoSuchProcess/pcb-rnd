@@ -29,9 +29,9 @@ Tracks6/Data:
 		@7,  len=2: component (ID?)
 		@13, len=4: x1 coord in bmil
 		@17, len=4: y1 coord in bmil
-		@21, len=4: x1 coord in bmil
-		@25, len=4: y1 coord in bmil
-		@29, len=4: y1 coord in bmil
+		@21, len=4: x2 coord in bmil
+		@25, len=4: y2 coord in bmil
+		@29, len=4: width coord in bmil
 		@36, len=1: unionindex ?
 		@44, len=1: user routed ?
 
