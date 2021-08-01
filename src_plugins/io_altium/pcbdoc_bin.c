@@ -236,28 +236,37 @@ static int pcbdoc_bin_parse_any_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree,
 	return 0;
 }
 
-#define FIELD_STR(rec, key, val_str) \
+#define FIELD_STR_(rec, key, val_str) \
 	pcbdoc_ascii_new_field(tree, rec, #key, altium_kw_field_ ## key, val_str)
+
+#define FIELD_STR(rec, key, val_str) \
+	do { \
+		FIELD_STR_(rec, key, val_str) \
+		tprintf("  field: crd " #key "='%s'\n", val_str); \
+	} while(0)
 
 #define FIELD_CRD(rec, key, val_mil) \
 	do { \
-		altium_field_t *fld = FIELD_STR(rec, key, NULL); \
+		altium_field_t *fld = FIELD_STR_(rec, key, NULL); \
 		fld->val.crd = RND_MIL_TO_COORD(val_mil); \
 		fld->val_type = ALTIUM_FT_CRD; \
+		tprintf("  field: crd " #key "=%.2f\n", (double)val_mil); \
 	} while(0)
 
 #define FIELD_DBL(rec, key, val_dbl) \
 	do { \
-		altium_field_t *fld = FIELD_STR(rec, key, NULL); \
+		altium_field_t *fld = FIELD_STR_(rec, key, NULL); \
 		fld->val.dbl = val_dbl; \
 		fld->val_type = ALTIUM_FT_DBL; \
+		tprintf("  field: dbl " #key "=%.3f\n", (double)val_dbl); \
 	} while(0)
 
 #define FIELD_LNG(rec, key, val_lng) \
 	do { \
-		altium_field_t *fld = FIELD_STR(rec, key, NULL); \
+		altium_field_t *fld = FIELD_STR_(rec, key, NULL); \
 		fld->val.lng = val_lng; \
 		fld->val_type = ALTIUM_FT_LNG; \
+		tprintf("  field: lng " #key "=%ld\n", (long)val_lng); \
 	} while(0)
 
 /*** file/field parsers ***/
@@ -327,10 +336,11 @@ int pcbdoc_bin_parse_tracks6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_fil
 
 		d = tmp->data;
 
-		printf("line: layer=%d ko=%d net=%ld poly=%ld comp=%ld width=%.2f uu=%d%d\n",
-		d[0], d[1], load_int(d+3, 2), load_int(d+5, 2), load_int(d+7, 2), bmil(d+29), d[36], d[40]);
-		printf("  x1=%.2f y1=%.2f x2=%.2f y2=%.2f\n", bmil(d+13), bmil(d+17), bmil(d+21), bmil(d+25));
-
+/*
+		tprintf("line: layer=%d ko=%d net=%ld poly=%ld comp=%ld width=%.2f uu=%d%d\n",
+			d[0], d[1], load_int(d+3, 2), load_int(d+5, 2), load_int(d+7, 2), bmil(d+29), d[36], d[40]);
+		tprintf("  x1=%.2f y1=%.2f x2=%.2f y2=%.2f\n", bmil(d+13), bmil(d+17), bmil(d+21), bmil(d+25));
+*/
 
 		rec = pcbdoc_ascii_new_rec(tree, "Track", altium_kw_record_track);
 		FIELD_LNG(rec, layer, d[0]);
