@@ -466,7 +466,7 @@ int pcbdoc_bin_parse_texts6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 		FIELD_LNG(rec, designator, d[41]);
 
 TODO("find the field");
-		FIELD_CRD(rec, width, 10);
+		FIELD_CRD(rec, width, 10); /* bmil(d+111) ? */
 
 	}
 	return 0;
