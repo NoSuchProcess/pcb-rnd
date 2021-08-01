@@ -42,6 +42,7 @@
 #include "../src_plugins/lib_compat_help/pstk_help.h"
 
 #include "pcbdoc_ascii.h"
+#include "pcbdoc_bin.h"
 #include "htic.h"
 
 #define LY_CACHE_MAX 64
