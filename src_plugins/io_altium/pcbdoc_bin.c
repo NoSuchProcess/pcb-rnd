@@ -483,3 +483,8 @@ int pcbdoc_bin_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *fi
 	return (ucdf_test_parse(file_name) == 0);
 }
 
+int pcbdoc_bin_parse_file(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *fn)
+{
+	return -1;
+}
+

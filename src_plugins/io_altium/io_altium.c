@@ -35,9 +35,11 @@
 #include "plug_io.h"
 
 #include "pcbdoc_ascii.h"
+#include "pcbdoc_bin.h"
 #include "pcbdoc.h"
 
 static pcb_plug_io_t io_pcbdoc_ascii;
+static pcb_plug_io_t io_pcbdoc_bin;
 static const char *altium_cookie = "Altium IO";
 
 
@@ -82,6 +84,11 @@ int pplg_init_io_altium(void)
 	io_pcbdoc_ascii.fp_extension = NULL;
 	io_pcbdoc_ascii.mime_type = "application/x-altium";
 	io_pcbdoc_ascii.multi_footprint = 0;
+
+	io_pcbdoc_bin = io_pcbdoc_ascii;
+	io_pcbdoc_bin.description = "Altium PcbDoc binary board (v6)";
+	io_pcbdoc_ascii.test_parse = pcbdoc_bin_test_parse;
+	io_pcbdoc_ascii.parse_pcb = io_altium_parse_pcbdoc_bin;
 
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pcbdoc_ascii);
 

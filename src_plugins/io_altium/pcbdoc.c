@@ -1138,7 +1138,7 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 	return 0;
 }
 
-int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
+static int io_altium_parse_pcbdoc_any(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest, int is_bin)
 {
 	rctx_t rctx = {0};
 	int res = 0;
@@ -1165,9 +1165,14 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	rctx.pcb = pcb;
 	rctx.filename = filename;
 
-	if (pcbdoc_ascii_parse_file(&pcb->hidlib, &rctx.tree, filename) != 0) {
+	if (is_bin)
+		res = pcbdoc_bin_parse_file(&pcb->hidlib, &rctx.tree, filename);
+	else
+		res = pcbdoc_ascii_parse_file(&pcb->hidlib, &rctx.tree, filename);
+
+	if (res != 0) {
 		altium_tree_free(&rctx.tree);
-		rnd_message(RND_MSG_ERROR, "failed to parse '%s'\n", filename);
+		rnd_message(RND_MSG_ERROR, "failed to parse '%s' (%s mode)\n", (filename, is_bin ? "binary" : "ASCII"));
 		return -1;
 	}
 
@@ -1213,5 +1218,15 @@ int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const cha
 	htip_uninit(&rctx.comps);
 	altium_tree_free(&rctx.tree);
 	return res;
+}
+
+int io_altium_parse_pcbdoc_ascii(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
+{
+	return io_altium_parse_pcbdoc_any(ctx, pcb, filename, settings_dest, 0);
+}
+
+int io_altium_parse_pcbdoc_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest)
+{
+	return io_altium_parse_pcbdoc_any(ctx, pcb, filename, settings_dest, 1);
 }
 
