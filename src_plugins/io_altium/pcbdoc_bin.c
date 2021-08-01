@@ -200,11 +200,15 @@ static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, con
 	memset(&blk->link, 0, sizeof(blk->link));
 	blk->size = len;
 	memcpy(blk->raw, tmp->data, len);
+	gdl_append(&tree->blocks, blk, link);
+
+	/* need to terminate text data with a \n to emulate the text file for the ascii parser */
 	end = blk->raw + len;
 	end[-1] = '\n';
 	end[0] = '\0';
-	gdl_append(&tree->blocks, blk, link);
 
+
+	/* create the record and parse fields under it */
 	rec = pcbdoc_ascii_new_rec(tree, record, kw);
 	for(curr = blk->raw; curr < end;) {
 		while((*curr == '\r') || (*curr == '\n') || (*curr == '|')) curr++;
