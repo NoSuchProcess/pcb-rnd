@@ -326,11 +326,15 @@ int pcbdoc_bin_parse_tracks6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_fil
 
 		rec = pcbdoc_ascii_new_rec(tree, "Track", altium_kw_record_track);
 		FIELD_LNG(rec, layer, d[0]);
+		TODO("keepout is not used by the high level code; find an example");
+		FIELD_LNG(rec, net, load_int(d+3, 2));
+		TODO("poly is not used by the high level code; find an example");
 		FIELD_CRD(rec, x1, bmil(d+13));
 		FIELD_CRD(rec, y1, bmil(d+17));
 		FIELD_CRD(rec, x2, bmil(d+21));
 		FIELD_CRD(rec, y2, bmil(d+25));
 		FIELD_CRD(rec, width, bmil(d+29));
+		TODO("uu is not used by the high level code; find an example");
 	}
 	return 0;
 }
