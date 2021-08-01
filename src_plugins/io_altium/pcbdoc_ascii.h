@@ -32,6 +32,13 @@ int pcbdoc_ascii_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *
 int pcbdoc_ascii_parse_file(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *fn);
 
 #define altium_kw_AUTO (-2)
+altium_record_t *pcbdoc_ascii_new_rec(altium_tree_t *tree, const char *type_s, int type);
+altium_field_t *pcbdoc_ascii_new_field(altium_tree_t *tree, altium_record_t *rec, const char *key, int kw, const char *val);
+
+/* Parse '|' separated fields and allocate new altium_field_t's for them and
+   put them under rec. Return 0 on success. Stop at \n, 'fields' points to
+   the next char after the \n */
+int pcbdoc_ascii_parse_fields(altium_tree_t *tree, altium_record_t *rec, const char *fn, long line, char **fields);
 
 
 void altium_tree_free(altium_tree_t *tree);
