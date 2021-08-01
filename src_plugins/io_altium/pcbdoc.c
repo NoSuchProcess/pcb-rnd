@@ -1172,7 +1172,7 @@ static int io_altium_parse_pcbdoc_any(pcb_plug_io_t *ctx, pcb_board_t *pcb, cons
 
 	if (res != 0) {
 		altium_tree_free(&rctx.tree);
-		rnd_message(RND_MSG_ERROR, "failed to parse '%s' (%s mode)\n", (filename, is_bin ? "binary" : "ASCII"));
+		rnd_message(RND_MSG_ERROR, "failed to parse '%s' (%s mode)\n", filename, (is_bin ? "binary" : "ASCII"));
 		return -1;
 	}
 
