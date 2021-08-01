@@ -574,8 +574,9 @@ static int altium_parse_components(rctx_t *rctx)
 {
 	altium_record_t *rec;
 	altium_field_t *field;
+	long auto_id = 0;
 
-	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_component]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_component], rec)) {
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_component]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_component], rec), auto_id++) {
 		pcb_subc_t *sc;
 		altium_field_t *ly = NULL, *refdes = NULL, *footprint = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX;
@@ -599,10 +600,8 @@ static int altium_parse_components(rctx_t *rctx)
 			rnd_message(RND_MSG_ERROR, "Invalid component object: missing coordinate (component not created)\n");
 			continue;
 		}
-		if (id < 0) {
-			rnd_message(RND_MSG_ERROR, "Invalid component object: missing ID (component not created)\n");
-			continue;
-		}
+		if (id < 0)
+			id = auto_id;
 		if (ly == NULL) {
 			rnd_message(RND_MSG_ERROR, "Invalid component object: missing layer (component not created)\n");
 			continue;
