@@ -1129,7 +1129,7 @@
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
  ../src_plugins/io_altium/pcbdoc_ascii.h \
  ../src_plugins/io_altium/altium_kw_sphash.h \
- ../src_plugins/io_altium/pcbdoc.h
+ ../src_plugins/io_altium/pcbdoc_bin.h ../src_plugins/io_altium/pcbdoc.h
 ../src_plugins/io_altium/pcbdoc.o: ../src_plugins/io_altium/pcbdoc.c \
  ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -1143,7 +1143,7 @@
  obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
  obj_pstk_list.h obj_pstk.h vtpadstack.h \
  ../src_plugins/io_altium/altium_kw_sphash.h \
- ../src_plugins/io_altium/htic.h
+ ../src_plugins/io_altium/pcbdoc_bin.h ../src_plugins/io_altium/htic.h
 ../src_plugins/io_altium/pcbdoc_ascii.o: \
  ../src_plugins/io_altium/pcbdoc_ascii.c ../config.h \
  ../src_plugins/io_altium/pcbdoc_ascii.h plug_io.h global_typedefs.h \
@@ -1154,7 +1154,20 @@
  obj_rat.h layer_grp.h idpath.h obj_subc_list.h obj_subc.h \
  ../src_3rd/libminuid/libminuid.h ht_subc.h obj_pstk_list.h obj_pstk.h \
  vtpadstack.h obj_pstk_shape.h polygon.h vtpadstack_t.h \
- ../src_plugins/io_altium/altium_kw_sphash.h
+ ../src_plugins/io_altium/altium_kw_sphash.h \
+ ../src_plugins/io_altium/pcbdoc_bin.h
+../src_plugins/io_altium/pcbdoc_bin.o: \
+ ../src_plugins/io_altium/pcbdoc_bin.c ../config.h \
+ ../src_3rd/libucdf/ucdf.h ../src_plugins/io_altium/pcbdoc_ascii.h \
+ plug_io.h global_typedefs.h plug_footprint.h data.h globalconst.h \
+ layer.h attrib.h obj_common.h flag.h data_parent.h obj_arc_list.h \
+ obj_arc.h obj_line_list.h obj_line.h obj_poly_list.h obj_poly.h \
+ obj_text_list.h obj_text.h font.h obj_gfx_list.h obj_gfx.h crosshair.h \
+ route.h buffer.h obj_rat_list.h obj_rat.h layer_grp.h idpath.h \
+ obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h ht_subc.h \
+ obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h polygon.h \
+ vtpadstack_t.h ../src_plugins/io_altium/altium_kw_sphash.h \
+ ../src_plugins/io_altium/pcbdoc_bin.h
 ../src_plugins/io_autotrax/io_autotrax.o: \
  ../src_plugins/io_autotrax/io_autotrax.c ../config.h plug_io.h \
  global_typedefs.h plug_footprint.h data.h globalconst.h layer.h attrib.h \
@@ -2707,6 +2720,8 @@
 ../src_3rd/libuhpgl/parse.o: ../src_3rd/libuhpgl/parse.c \
  ../src_3rd/libuhpgl/uhpgl_math.h ../src_3rd/libuhpgl/libuhpgl.h \
  ../src_3rd/libuhpgl/parse.h ../src_3rd/libuhpgl/arc_iterate.h
+../src_3rd/libucdf/ucdf.o: ../src_3rd/libucdf/ucdf.c \
+ ../src_3rd/libucdf/ucdf.h
 ../src_3rd/libuundo/uundo.o: ../src_3rd/libuundo/uundo.c \
  ../src_3rd/libuundo/uundo.h
 ../src_3rd/libuundo/uundo_debug.o: ../src_3rd/libuundo/uundo_debug.c \
