@@ -11,6 +11,7 @@
 
 - ascii code:
 	- support text height
+	- fill is not supported
 
 - bin:
 	- figure which field is text width
