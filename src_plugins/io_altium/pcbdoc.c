@@ -201,6 +201,37 @@ static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 {
 	int kw;
 
+	if (field->val_type == ALTIUM_FT_LNG) {
+		if ((field->val.lng >= 0) && (field->val.lng <= 82)) {
+			switch(field->val.lng) {
+				case 1:  return conv_layer_(rctx, 0,  PCB_LYT_COPPER | PCB_LYT_TOP, NULL);
+				case 32: return conv_layer_(rctx, 1,  PCB_LYT_COPPER | PCB_LYT_BOTTOM, NULL);
+				case 33: return conv_layer_(rctx, 2,  PCB_LYT_SILK | PCB_LYT_TOP, NULL);
+				case 34: return conv_layer_(rctx, 3,  PCB_LYT_SILK | PCB_LYT_BOTTOM, NULL);
+				case 35: return conv_layer_(rctx, 4,  PCB_LYT_PASTE | PCB_LYT_TOP, NULL);
+				case 36: return conv_layer_(rctx, 5,  PCB_LYT_PASTE | PCB_LYT_BOTTOM, NULL);
+				case 37: return conv_layer_(rctx, 6,  PCB_LYT_MASK | PCB_LYT_TOP, NULL);
+				case 38: return conv_layer_(rctx, 7,  PCB_LYT_MASK | PCB_LYT_BOTTOM, NULL);
+				case 55: return conv_layer_(rctx, 8,  PCB_LYT_DOC, "drill_guide");
+				case 56: return conv_layer_(rctx, 9,  PCB_LYT_DOC, "altium.keepout");
+				case 73: return conv_layer_(rctx, 10, PCB_LYT_DOC, "drill");
+				case 74: return conv_layer_(rctx, 11, PCB_LYT_DOC, "multilayer");
+				case 72: return conv_layer_(rctx, LYCH_ASSY_BOT, PCB_LYT_BOTTOM | PCB_LYT_DOC , "assy");
+			}
+
+			/* signal layer */
+			if ((field->val.lng > 1) && (field->val.lng < 32))
+				return rctx->midly[field->val.lng-2];
+
+			/* mechanicals */
+			if ((field->val.lng >= 57) && (field->val.lng < 72))
+				return conv_layer_(rctx, 12, PCB_LYT_BOUNDARY, NULL);
+
+			rnd_message(RND_MSG_ERROR, "Uknown binary layer ID: %ld\n", field->val.lng);
+		}
+		return NULL;
+	}
+
 	if (field->val_type != ALTIUM_FT_STR)
 		return NULL;
 
