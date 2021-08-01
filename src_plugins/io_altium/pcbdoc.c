@@ -82,15 +82,21 @@ static rnd_coord_t conv_coord_field(altium_field_t *field)
 	rnd_bool succ;
 	const char *s, *unit = NULL;
 
-	/* look for unit (anything non-numeric) */
-	for(s = field->val; *s != '\0' && !isalpha(*s); s++) ;
-	if (*s == '\0')
-		unit = "mil";
+	switch(field->val_type) {
+		case ALTIUM_FT_DBL: return RND_MIL_TO_COORD(field->val.dbl);
+		case ALTIUM_FT_CRD: return field->val.crd;
+		case ALTIUM_FT_STR:
+			/* look for unit (anything non-numeric) */
+			for(s = field->val.str; *s != '\0' && !isalpha(*s); s++) ;
+			if (*s == '\0')
+				unit = "mil";
 
-	res = rnd_get_value(field->val, unit, NULL, &succ);
-	if (!succ) {
-		rnd_message(RND_MSG_ERROR, "failed to convert coord value '%s'\n", field->val);
-		return 0;
+			res = rnd_get_value(field->val.str, unit, NULL, &succ);
+			if (!succ) {
+				rnd_message(RND_MSG_ERROR, "failed to convert coord value '%s'\n", field->val);
+				return 0;
+			}
+			break;
 	}
 	return res;
 }
@@ -108,31 +114,53 @@ static rnd_coord_t conv_coordy_field(rctx_t *rctx, altium_field_t *field)
 static double conv_double_field(altium_field_t *field)
 {
 	char *end;
-	double res = strtod(field->val, &end);
-	if (*end != '\0') {
-		rnd_message(RND_MSG_ERROR, "failed to convert floating point value '%s'\n", field->val);
-		return 0;
+	double res;
+
+	switch(field->val_type) {
+		case ALTIUM_FT_DBL: return field->val.dbl;
+		case ALTIUM_FT_CRD: return field->val.crd;
+		case ALTIUM_FT_STR:
+			res = strtod(field->val.str, &end);
+			if (*end != '\0') {
+				rnd_message(RND_MSG_ERROR, "failed to convert floating point value '%s'\n", field->val);
+				return 0;
+			}
+			return res;
 	}
-	return res;
+	abort();
 }
 
 static long conv_long_field(altium_field_t *field)
 {
 	char *end;
-	long res = strtol(field->val, &end, 10);
-	if (*end != '\0') {
-		rnd_message(RND_MSG_ERROR, "failed to convert integer value '%s'\n", field->val);
-		return 0;
+	long res;
+
+	switch(field->val_type) {
+		case ALTIUM_FT_DBL: return field->val.dbl;
+		case ALTIUM_FT_CRD: return field->val.crd;
+		case ALTIUM_FT_STR:
+			res = strtol(field->val.str, &end, 10);
+			if (*end != '\0') {
+				rnd_message(RND_MSG_ERROR, "failed to convert integer value '%s'\n", field->val.str);
+				return 0;
+			}
+			return res;
 	}
-	return res;
+	abort();
 }
 
 static int conv_bool_field(altium_field_t *field)
 {
-	if (rnd_strcasecmp(field->val, "true") == 0) return 1;
-	if (rnd_strcasecmp(field->val, "false") == 0) return 0;
-	rnd_message(RND_MSG_ERROR, "failed to convert bool value '%s'\n", field->val);
-	return 0;
+	switch(field->val_type) {
+		case ALTIUM_FT_CRD: return !!field->val.crd;
+		case ALTIUM_FT_STR:
+			if (rnd_strcasecmp(field->val.str, "true") == 0) return 1;
+			if (rnd_strcasecmp(field->val.str, "false") == 0) return 0;
+			rnd_message(RND_MSG_ERROR, "failed to convert bool value '%s'\n", field->val);
+			return 0;
+	}
+
+	abort();
 }
 
 static pcb_layer_t *conv_layer_(rctx_t *rctx, int cache_idx, pcb_layer_type_t lyt, const char *purpose)
@@ -168,8 +196,12 @@ static pcb_layer_t *conv_layer_assy(rctx_t *rctx, int on_bottom)
 
 static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 {
-	int kw = altium_kw_sphash(field->val);
+	int kw;
 
+	if (field->val_type != ALTIUM_FT_STR)
+		return NULL;
+
+	kw = altium_kw_sphash(field->val.str);
 	switch(kw) {
 		case altium_kw_layers_top:           return conv_layer_(rctx, 0,  PCB_LYT_COPPER | PCB_LYT_TOP, NULL);
 		case altium_kw_layers_bottom:        return conv_layer_(rctx, 1,  PCB_LYT_COPPER | PCB_LYT_BOTTOM, NULL);
@@ -185,27 +217,27 @@ static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 		case altium_kw_layers_multilayer:    return conv_layer_(rctx, 11, PCB_LYT_DOC, "multilayer");
 	}
 
-	if ((rnd_strcasecmp(field->val, "MECHANICAL1") == 0))
+	if ((rnd_strcasecmp(field->val.str, "MECHANICAL1") == 0))
 		return conv_layer_(rctx, 12, PCB_LYT_BOUNDARY, NULL);
-	if ((rnd_strcasecmp(field->val, "MECHANICAL15") == 0))
+	if ((rnd_strcasecmp(field->val.str, "MECHANICAL15") == 0))
 		return conv_layer_(rctx, LYCH_ASSY_BOT, PCB_LYT_BOTTOM | PCB_LYT_DOC , "assy");
 
-	if (rnd_strncasecmp(field->val, "MID", 3) == 0) { /* mid 1..30: intern copper signal */
+	if (rnd_strncasecmp(field->val.str, "MID", 3) == 0) { /* mid 1..30: intern copper signal */
 		char *end;
-		int idx = strtol(field->val+3, &end, 10);
+		int idx = strtol(field->val.str+3, &end, 10);
 		if (*end != '\0') {
-			rnd_message(RND_MSG_ERROR, "Layer not found: '%s' - invalid integer for MID layer\n", field->val);
+			rnd_message(RND_MSG_ERROR, "Layer not found: '%s' - invalid integer for MID layer\n", field->val.str);
 			return NULL;
 		}
 		return rctx->midly[idx-1];
 	}
 
-	if (rnd_strncasecmp(field->val, "PLANE", 5) == 0) {
-		rnd_message(RND_MSG_ERROR, "Drawing on PLANE layer %s is not supported\n", field->val);
+	if (rnd_strncasecmp(field->val.str, "PLANE", 5) == 0) {
+		rnd_message(RND_MSG_ERROR, "Drawing on PLANE layer %s is not supported\n", field->val.str);
 		return NULL;
 	}
 TODO("MECHANICAL2...MECHANICAL14: look up or create new doc?; use cache index from 15+16+16+mechanical");
-	rnd_message(RND_MSG_ERROR, "Layer not found: '%s'\n", field->val);
+	rnd_message(RND_MSG_ERROR, "Layer not found: '%s'\n", field->val.str);
 	return NULL;
 }
 
@@ -275,11 +307,12 @@ static void altium_finalize_layers(rctx_t *rctx)
 	/* pick up plane net associativity */
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_board]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_board], rec)) {
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
-			if ((rnd_strncasecmp(field->key, "plane", 5) == 0) && (*field->val != '(')) {
+			assert(field->val_type == ALTIUM_FT_STR);
+			if ((rnd_strncasecmp(field->key, "plane", 5) == 0) && (*field->val.str != '(')) {
 				char *end;
 				long idx = strtol(field->key+5, &end, 10), midx = idx-2+37+1;
 				if ((rnd_strcasecmp(end, "netname") == 0) && (rctx->midly[midx] != NULL)) {
-					pcb_attribute_put(&(rctx->midly[midx]->Attributes), "altium::net", field->val);
+					pcb_attribute_put(&(rctx->midly[midx]->Attributes), "altium::net", field->val.str);
 					TODO("make thermals on pcb_poly_t plane[idx-1] vs. any via on the same net");
 				}
 			}
@@ -319,10 +352,11 @@ static int altium_parse_board(rctx_t *rctx)
 						if ((idx < 0) || (idx > layers_max))
 							break;
 						fid = altium_kw_sphash(end);
+						assert(field->val_type == ALTIUM_FT_STR);
 						switch(fid) {
-							case altium_kw_field_name: layers[idx].name = field->val; break;
-							case altium_kw_field_prev: layers[idx].prev = atoi(field->val); break;
-							case altium_kw_field_next: layers[idx].next = atoi(field->val); break;
+							case altium_kw_field_name: layers[idx].name = field->val.str; break;
+							case altium_kw_field_prev: layers[idx].prev = atoi(field->val.str); break;
+							case altium_kw_field_next: layers[idx].next = atoi(field->val.str); break;
 						}
 					}
 				break;
@@ -375,7 +409,8 @@ static int altium_parse_net(rctx_t *rctx)
 			continue;
 		}
 
-		net = pcb_net_get(rctx->pcb, &rctx->pcb->netlist[PCB_NETLIST_INPUT], name->val, PCB_NETA_ALLOC);
+		assert(name->val_type == ALTIUM_FT_STR);
+		net = pcb_net_get(rctx->pcb, &rctx->pcb->netlist[PCB_NETLIST_INPUT], name->val.str, PCB_NETA_ALLOC);
 		htip_set(&rctx->nets, id, net);
 	}
 
@@ -394,7 +429,7 @@ static int altium_parse_class(rctx_t *rctx)
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
-				case altium_kw_field_name: name = field->val; break;
+				case altium_kw_field_name: assert(field->val_type == ALTIUM_FT_STR); name = field->val.str; break;
 				default: break;
 			}
 		}
@@ -405,10 +440,10 @@ static int altium_parse_class(rctx_t *rctx)
 
 		/* look up each net referenced from M[0-9]* fields and set class */
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
-			if ((tolower(field->key[0]) == 'm') && isdigit(field->key[1])) {
-				pcb_net_t *net = pcb_net_get(rctx->pcb, &rctx->pcb->netlist[PCB_NETLIST_INPUT], field->val, 0);
+			if ((field->val_type == ALTIUM_FT_STR) && (tolower(field->key[0]) == 'm') && isdigit(field->key[1])) {
+				pcb_net_t *net = pcb_net_get(rctx->pcb, &rctx->pcb->netlist[PCB_NETLIST_INPUT], field->val.str, 0);
 				if (net == NULL) {
-/*					rnd_message(RND_MSG_ERROR, "Class %s references non-existing net %s\n", name, field->val);*/
+/*					rnd_message(RND_MSG_ERROR, "Class %s references non-existing net %s\n", name, field->val.str);*/
 					continue;
 				}
 				pcb_attribute_put(&net->Attributes, "class", name);
@@ -431,13 +466,14 @@ static int altium_parse_rule(rctx_t *rctx)
 		rnd_coord_t gap = RND_COORD_MAX;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			assert(field->val_type == ALTIUM_FT_STR);
 			switch(field->type) {
-				case altium_kw_field_name:           name = field->val; break;
-				case altium_kw_field_rulekind:       kind = altium_kw_sphash(field->val); break;
-				case altium_kw_field_netscope:       netscope = altium_kw_sphash(field->val); break;
-				case altium_kw_field_layerkind:      layerkind = altium_kw_sphash(field->val); break;
-				case altium_kw_field_scope1_0_kind:  scope_kind[0] = altium_kw_sphash(field->val); break;
-				case altium_kw_field_scope2_0_kind:  scope_kind[1] = altium_kw_sphash(field->val); break;
+				case altium_kw_field_name:           name = field->val.str; break;
+				case altium_kw_field_rulekind:       kind = altium_kw_sphash(field->val.str); break;
+				case altium_kw_field_netscope:       netscope = altium_kw_sphash(field->val.str); break;
+				case altium_kw_field_layerkind:      layerkind = altium_kw_sphash(field->val.str); break;
+				case altium_kw_field_scope1_0_kind:  assert(field->val_type == ALTIUM_FT_STR); scope_kind[0] = altium_kw_sphash(field->val.str); break;
+				case altium_kw_field_scope2_0_kind:  assert(field->val_type == ALTIUM_FT_STR); scope_kind[1] = altium_kw_sphash(field->val.str); break;
 				case altium_kw_field_scope1_0_value: scope_val[0] = field; break;
 				case altium_kw_field_scope2_0_value: scope_val[1] = field; break;
 				case altium_kw_field_gap:            gap = conv_coord_field(field); break;
@@ -464,8 +500,9 @@ static int altium_parse_rule(rctx_t *rctx)
 		else
 			continue;
 
-		/* one scope is board, the other is sckind:scval */
+		assert(scval->val_type == ALTIUM_FT_STR);
 
+		/* one scope is board, the other is sckind:scval */
 		if (gap == RND_COORD_MAX) {
 			rnd_message(RND_MSG_ERROR, "Invalid clearance rule %s: no gap defined (ignoring rule)\n", name);
 			continue;
@@ -473,7 +510,7 @@ static int altium_parse_rule(rctx_t *rctx)
 
 /*		rnd_printf("RULE %s sctype=%s scval=%s (%s %s) gap=%mm\n", name,
 			((sckind == altium_kw_field_net) ? "net" : ((sckind == altium_kw_field_board) ? "board" : "class")),
-			scval->val, scope_val[0]->val, scope_val[1]->val, gap);
+			scval->val.str, scope_val[0]->val.str, scope_val[1]->val.str, gap);
 */
 
 		switch(sckind) {
@@ -486,7 +523,7 @@ static int altium_parse_rule(rctx_t *rctx)
 					for(e = htip_first(&rctx->nets); e != NULL; e = htip_next(&rctx->nets, e)) {
 						pcb_net_t *net = e->value;
 						const char *nclass = pcb_attribute_get(&net->Attributes, "class");
-						if ((nclass != NULL) && (strcmp(nclass, scval->val) == 0)) {
+						if ((nclass != NULL) && (strcmp(nclass, scval->val.str) == 0)) {
 							long netid = e->key;
 							htic_set(&rctx->net_clr, netid, gap);
 						}
@@ -538,19 +575,24 @@ static int altium_parse_components(rctx_t *rctx)
 			rnd_message(RND_MSG_ERROR, "Invalid component object: missing layer (component not created)\n");
 			continue;
 		}
-		if (rnd_strcasecmp(ly->val, "bottom") == 0) on_bottom = 1;
-		else if (rnd_strcasecmp(ly->val, "top") == 0) on_bottom = 0;
+		assert(ly->val_type == ALTIUM_FT_STR);
+		if (rnd_strcasecmp(ly->val.str, "bottom") == 0) on_bottom = 1;
+		else if (rnd_strcasecmp(ly->val.str, "top") == 0) on_bottom = 0;
 		else {
-			rnd_message(RND_MSG_ERROR, "Invalid component object: invalid layer '%s' (should be top or bottom; component not created)\n", ly->val);
+			rnd_message(RND_MSG_ERROR, "Invalid component object: invalid layer '%s' (should be top or bottom; component not created)\n", ly->val.str);
 			continue;
 		}
 
 		sc = pcb_subc_alloc();
 		pcb_subc_create_aux(sc, x, y, rot, on_bottom);
-		if (refdes != NULL)
-			pcb_attribute_put(&sc->Attributes, "refdes", refdes->val);
-		if (footprint != NULL)
-			pcb_attribute_put(&sc->Attributes, "footprint", footprint->val);
+		if (refdes != NULL) {
+			assert(refdes->val_type == ALTIUM_FT_STR);
+			pcb_attribute_put(&sc->Attributes, "refdes", refdes->val.str);
+		}
+		if (footprint != NULL) {
+			assert(footprint->val_type == ALTIUM_FT_STR);
+			pcb_attribute_put(&sc->Attributes, "footprint", footprint->val.str);
+		}
 		pcb_subc_reg(rctx->pcb->Data, sc);
 		pcb_subc_bind_globals(rctx->pcb, sc);
 		htip_set(&rctx->comps, id, sc);
@@ -591,8 +633,8 @@ static int altium_parse_pad(rctx_t *rctx)
 				case altium_kw_field_net:       netid = conv_long_field(field); break;
 				case altium_kw_field_plated:    plated = conv_bool_field(field); break;
 
-				case altium_kw_field_pastemaskexpansionmode:     paste_mode = altium_kw_sphash(field->val); break;
-				case altium_kw_field_soldermaskexpansionmode:    mask_mode = altium_kw_sphash(field->val); break;
+				case altium_kw_field_pastemaskexpansionmode:     assert(field->val_type == ALTIUM_FT_STR); paste_mode = altium_kw_sphash(field->val.str); break;
+				case altium_kw_field_soldermaskexpansionmode:    assert(field->val_type == ALTIUM_FT_STR); mask_mode = altium_kw_sphash(field->val.str); break;
 				case altium_kw_field_pastemaskexpansion_manual:  paste_man = conv_coord_field(field); break;
 				case altium_kw_field_soldermaskexpansion_manual: mask_man = conv_coord_field(field); break;
 
@@ -617,16 +659,19 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		if (compid >= 0) {
 			sc = htip_get(&rctx->comps, compid);
 			if (sc == NULL) {
-				rnd_message(RND_MSG_ERROR, "Invalid pad object: can't find parent component (%ld) on term %s (pad not created)\n", compid, (term == NULL ? "<unspecified>" : term->val));
+				if (term != NULL)
+					assert(term->val_type == ALTIUM_FT_STR);
+				rnd_message(RND_MSG_ERROR, "Invalid pad object: can't find parent component (%ld) on term %s (pad not created)\n", compid, (term == NULL ? "<unspecified>" : term->val.str));
 				continue;
 			}
 		}
 
-		if (rnd_strcasecmp(ly->val, "bottom") == 0) on_bottom = 1;
-		else if (rnd_strcasecmp(ly->val, "top") == 0) on_bottom = 0;
-		else if (rnd_strcasecmp(ly->val, "multilayer") == 0) on_all = 1;
+		assert(ly->val_type == ALTIUM_FT_STR);
+		if (rnd_strcasecmp(ly->val.str, "bottom") == 0) on_bottom = 1;
+		else if (rnd_strcasecmp(ly->val.str, "top") == 0) on_bottom = 0;
+		else if (rnd_strcasecmp(ly->val.str, "multilayer") == 0) on_all = 1;
 		else {
-			rnd_message(RND_MSG_ERROR, "Invalid pad object: invalid layer '%s' (should be top or bottom or multilayer; pad not created)\n", ly->val);
+			rnd_message(RND_MSG_ERROR, "Invalid pad object: invalid layer '%s' (should be top or bottom or multilayer; pad not created)\n", ly->val.str);
 			continue;
 		}
 
@@ -645,7 +690,8 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		}
 
 		/* create the abstract shapes */
-		if ((rnd_strcasecmp(shapename->val, "rectangle") == 0) || (rnd_strcasecmp(shapename->val, "roundedrectangle") == 0)) {
+		assert(shapename->val_type == ALTIUM_FT_STR);
+		if ((rnd_strcasecmp(shapename->val.str, "rectangle") == 0) || (rnd_strcasecmp(shapename->val.str, "roundedrectangle") == 0)) {
 			pcb_shape_rect(&copper_shape, xsize, ysize);
 			copper_valid = 1;
 			if (((xsize + mask_fin*2) > 0) && ((ysize + mask_fin*2) > 0)) {
@@ -657,7 +703,7 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 				paste_valid = 1;
 			}
 		}
-		else if (rnd_strcasecmp(shapename->val, "round") == 0) {
+		else if (rnd_strcasecmp(shapename->val.str, "round") == 0) {
 			if (xsize == ysize) {
 				copper_shape.shape = mask_shape.shape = PCB_PSSH_CIRC;
 				copper_shape.data.circ.x = copper_shape.data.circ.y = 0;
@@ -699,7 +745,7 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			}
 		}
 		else {
-			rnd_message(RND_MSG_ERROR, "Invalid pad object: invalid shape '%s' (pad not created)\n", shapename->val);
+			rnd_message(RND_MSG_ERROR, "Invalid pad object: invalid shape '%s' (pad not created)\n", shapename->val.str);
 			continue;
 		}
 
@@ -736,8 +782,10 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		ps = pcb_pstk_new_from_shape(((sc == NULL) ? rctx->pcb->Data : sc->data), x, y, hole, plated, cl * 2, shape);
 		if (rot != 0)
 			pcb_pstk_rotate(ps, x, y, cos(rot / RND_RAD_TO_DEG), sin(rot / RND_RAD_TO_DEG), rot);
-		if (term != NULL)
-			pcb_attribute_put(&ps->Attributes, "term", term->val);
+		if (term != NULL) {
+			assert(term->val_type == ALTIUM_FT_STR);
+			pcb_attribute_put(&ps->Attributes, "term", term->val.str);
+		}
 
 		/* free temporary pad shapes */
 		pcb_pstk_shape_free(&copper_shape);
@@ -754,7 +802,7 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 					rnd_message(RND_MSG_ERROR, "Can't add pad to net %ld because parent subcircuit doesn't have a refdes (pad not assigned to net)\n", netid);
 				else if (term == NULL)
 					rnd_message(RND_MSG_ERROR, "Can't add pad to net %ld because it doesn't have a name (pad not assigned to net)\n", netid);
-				else if (pcb_net_term_get(net, sc->refdes, term->val, PCB_NETA_ALLOC) == NULL)
+				else if (pcb_net_term_get(net, sc->refdes, term->val.str, PCB_NETA_ALLOC) == NULL)
 					rnd_message(RND_MSG_ERROR, "Failed to add pad to net %ld (pad not assigned to net)\n", netid);
 			}
 			else
@@ -946,7 +994,8 @@ static int altium_parse_text(rctx_t *rctx)
 				TODO("estimate text size");
 				x1 = x; y1 = y;
 				if (text != NULL) {
-					x2 = x + strlen(text->val) * RND_MM_TO_COORD(1.2);
+					assert(text->val_type == ALTIUM_FT_STR);
+					x2 = x + strlen(text->val.str) * RND_MM_TO_COORD(1.2);
 					y2 = y + RND_MM_TO_COORD(1.8);
 				}
 			}
@@ -965,7 +1014,8 @@ static int altium_parse_text(rctx_t *rctx)
 
 		if (designator && (text != NULL) && (sc != NULL) && (sc->refdes == NULL)) {
 			/* special case: component name (refdes) is specified by designator text object (happens in protel99) */
-			pcb_attribute_put(&sc->Attributes, "refdes", text->val);
+			assert(text->val_type == ALTIUM_FT_STR);
+			pcb_attribute_put(&sc->Attributes, "refdes", text->val.str);
 		}
 
 		if (x2 < x1) {
@@ -979,7 +1029,8 @@ static int altium_parse_text(rctx_t *rctx)
 			y1 = tmp;
 		}
 
-		t = pcb_text_new_by_bbox(ly, pcb_font(rctx->pcb, 1, 1), x1, y1, x2-x1, y2-y1, 0, 0, 1.0, mir, rot, w, (designator ? "%a.parent.refdes%" : text->val), pcb_flag_make(PCB_FLAG_CLEARLINE | (designator ? PCB_FLAG_DYNTEXT|PCB_FLAG_FLOATER : 0)));
+		assert(text->val_type == ALTIUM_FT_STR);
+		t = pcb_text_new_by_bbox(ly, pcb_font(rctx->pcb, 1, 1), x1, y1, x2-x1, y2-y1, 0, 0, 1.0, mir, rot, w, (designator ? "%a.parent.refdes%" : text->val.str), pcb_flag_make(PCB_FLAG_CLEARLINE | (designator ? PCB_FLAG_DYNTEXT|PCB_FLAG_FLOATER : 0)));
 	}
 
 	return 0;

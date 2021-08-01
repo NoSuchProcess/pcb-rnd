@@ -159,7 +159,8 @@ altium_field_t *pcbdoc_ascii_new_field(altium_tree_t *tree, altium_record_t *rec
 
 	field->type = kw;
 	field->key  = key;
-	field->val  = val;
+	field->val_type = ALTIUM_FT_STR;
+	field->val.str  = val;
 
 	gdl_append(&rec->fields, field, link);
 
