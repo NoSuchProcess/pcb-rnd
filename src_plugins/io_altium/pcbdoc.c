@@ -420,8 +420,9 @@ static int altium_parse_net(rctx_t *rctx)
 {
 	altium_record_t *rec;
 	altium_field_t *field;
+	long auto_id = 0;
 
-	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_net]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_net], rec)) {
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_net]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_net], rec), auto_id++) {
 		altium_field_t *name = NULL;
 		pcb_net_t *net;
 		long id = -1;
@@ -430,14 +431,11 @@ static int altium_parse_net(rctx_t *rctx)
 			switch(field->type) {
 				case altium_kw_field_name: name = field; break;
 				case altium_kw_field_id:   id = conv_long_field(field); break;
-
 				default: break;
 			}
 		}
-		if (id < 0) {
-			rnd_message(RND_MSG_ERROR, "Invalid net object: missing ID (net not created)\n");
-			continue;
-		}
+		if (id < 0)
+			id = auto_id;
 		if (name == NULL) {
 			rnd_message(RND_MSG_ERROR, "Invalid net object: missing name (net not created)\n");
 			continue;
