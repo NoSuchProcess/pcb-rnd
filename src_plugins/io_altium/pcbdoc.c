@@ -84,6 +84,7 @@ static rnd_coord_t conv_coord_field(altium_field_t *field)
 
 	switch(field->val_type) {
 		case ALTIUM_FT_DBL: return RND_MIL_TO_COORD(field->val.dbl);
+		case ALTIUM_FT_LNG: return RND_MIL_TO_COORD(field->val.lng);
 		case ALTIUM_FT_CRD: return field->val.crd;
 		case ALTIUM_FT_STR:
 			/* look for unit (anything non-numeric) */
@@ -118,6 +119,7 @@ static double conv_double_field(altium_field_t *field)
 
 	switch(field->val_type) {
 		case ALTIUM_FT_DBL: return field->val.dbl;
+		case ALTIUM_FT_LNG: return field->val.lng;
 		case ALTIUM_FT_CRD: return field->val.crd;
 		case ALTIUM_FT_STR:
 			res = strtod(field->val.str, &end);
@@ -137,6 +139,7 @@ static long conv_long_field(altium_field_t *field)
 
 	switch(field->val_type) {
 		case ALTIUM_FT_DBL: return field->val.dbl;
+		case ALTIUM_FT_LNG: return field->val.lng;
 		case ALTIUM_FT_CRD: return field->val.crd;
 		case ALTIUM_FT_STR:
 			res = strtol(field->val.str, &end, 10);

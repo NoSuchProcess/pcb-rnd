@@ -6,11 +6,12 @@
 typedef struct altium_field_s {
 	altium_kw_field_keys_t type; /* derived from ->key */
 	const char *key;
-	enum { ALTIUM_FT_STR, ALTIUM_FT_CRD, ALTIUM_FT_DBL } val_type;
+	enum { ALTIUM_FT_STR, ALTIUM_FT_CRD, ALTIUM_FT_DBL, ALTIUM_FT_LNG } val_type;
 	union {
 		const char *str;
-		const rnd_coord_t crd;
+		rnd_coord_t crd;
 		double dbl;
+		long lng;                  /* also used for bool */
 	} val;
 	gdl_elem_t link;             /* in parent record */
 } altium_field_t;
