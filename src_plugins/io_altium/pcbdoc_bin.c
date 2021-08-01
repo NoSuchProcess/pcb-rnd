@@ -346,6 +346,7 @@ int pcbdoc_bin_parse_tracks6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_fil
 		FIELD_LNG(rec, layer, d[0]);
 		TODO("keepout is not used by the high level code; find an example");
 		FIELD_LNG(rec, net, load_int(d+3, 2));
+		FIELD_LNG(rec, component, load_int(d+7, 2));
 		TODO("poly is not used by the high level code; find an example");
 		FIELD_CRD(rec, x1, bmil(d+13));
 		FIELD_CRD(rec, y1, bmil(d+17));
@@ -364,7 +365,7 @@ int pcbdoc_bin_parse_arcs6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 		unsigned char *d;
 		int rectype;
 		long len;
-		
+		altium_record_t *rec;
 		
 		len = read_rec_tlb(fp, tmp, &rectype);
 		if (len <= 0)
@@ -382,6 +383,21 @@ int pcbdoc_bin_parse_arcs6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 
 		printf("arc: layer=%d ko=%d net=%ld poly=%ld comp=%ld width=%.2f uu=%d%d\n", d[0], d[1], load_int(d+3, 2), load_int(d+5, 2), load_int(d+7, 2), bmil(d+41), d[48], d[55]);
 		printf("  cx=%.2f cy=%.2f r=%.2f sa=%.3f ea=%.3f\n", bmil(d+13), bmil(d+17), bmil(d+21), load_dbl(d+25), load_dbl(d+33));
+
+		rec = pcbdoc_ascii_new_rec(tree, "Arc", altium_kw_record_arc);
+		FIELD_LNG(rec, layer, d[0]);
+		TODO("keepout is not used by the high level code; find an example");
+		FIELD_LNG(rec, net, load_int(d+3, 2));
+		FIELD_LNG(rec, component, load_int(d+7, 2));
+		TODO("poly is not used by the high level code; find an example");
+		FIELD_CRD(rec, location_x, bmil(d+13));
+		FIELD_CRD(rec, location_y, bmil(d+17));
+		FIELD_CRD(rec, radius, bmil(d+21));
+		FIELD_CRD(rec, startangle, load_dbl(d+25));
+		FIELD_CRD(rec, endangle, load_dbl(d+33));
+		FIELD_CRD(rec, width, bmil(d+41));
+		TODO("uu is not used by the high level code; find an example");
+
 	}
 	return 0;
 }
