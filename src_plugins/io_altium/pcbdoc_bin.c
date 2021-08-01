@@ -181,12 +181,15 @@ static long read_rec_ilb(ucdf_file_t *fp, altium_buf_t *tmp, int *id)
 	return read_rec_l4b(fp, tmp);
 }
 
-static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *record, int kw, altium_buf_t *tmp, long len)
+static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *record, int kw, altium_buf_t *tmp, long len, altium_record_t **rec_out)
 {
 	altium_block_t *blk;
 	altium_record_t *rec;
 	char *curr, *end;
 	int res = 0;
+
+	if (rec_out != NULL)
+		*rec_out = NULL;
 
 	if (len == 0)
 		return 0;
@@ -215,6 +218,9 @@ static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, con
 		res |= pcbdoc_ascii_parse_fields(tree, rec, "<binary>", 1, &curr);
 	}
 
+	if (rec_out != NULL)
+		*rec_out = rec;
+
 	return res;
 }
 
@@ -224,7 +230,7 @@ static int pcbdoc_bin_parse_any_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree,
 		long len = read_rec_l4b(fp, tmp);
 		if (len <= 0)
 			return len;
-		if (pcbdoc_bin_parse_ascii(hidlib, tree, recname, kw, tmp, len) != 0)
+		if (pcbdoc_bin_parse_ascii(hidlib, tree, recname, kw, tmp, len, NULL) != 0)
 			return -1;
 	}
 	return 0;
@@ -285,13 +291,15 @@ int pcbdoc_bin_parse_rules6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 {
 	for(;;) {
 		int id;
+		altium_record_t *rec;
 		long len = read_rec_ilb(fp, tmp, &id);
 		if (len <= 0)
 			return len;
 		TODO("Do we need the id?");
 		printf("id=%d\n", id);
-		if (pcbdoc_bin_parse_ascii(hidlib, tree, "Rule", altium_kw_record_rule, tmp, len) != 0)
+		if (pcbdoc_bin_parse_ascii(hidlib, tree, "Rule", altium_kw_record_rule, tmp, len, &rec) != 0)
 			return -1;
+/*		FIELD_LNG(rec, id, id);*/
 	}
 	return 0;
 }
