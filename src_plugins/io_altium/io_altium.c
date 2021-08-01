@@ -91,6 +91,7 @@ int pplg_init_io_altium(void)
 	io_pcbdoc_bin.parse_pcb = io_altium_parse_pcbdoc_bin;
 
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pcbdoc_ascii);
+	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pcbdoc_bin);
 
 	return 0;
 }
