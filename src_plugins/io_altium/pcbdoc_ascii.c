@@ -172,39 +172,38 @@ int pcbdoc_ascii_parse_fields(altium_tree_t *tree, altium_record_t *rec, const c
 
 	s = *fields;
 
-			for(;;) {
+	for(;;) {
+		/* ignore leading seps and newlines, exit if ran out of the string */
+		while(*s == '|') s++;
+		if (*s == '\0')
+			break;
 
-				/* ignore leading seps and newlines, exit if ran out of the string */
-				while(*s == '|') s++;
-				if (*s == '\0')
-					break;
+		/* find sep */
+		end = strpbrk(s, "|\r\n");
+		if (end == NULL) {
+			fprintf(stderr, "Unterminated field in %s:%ld\n", fn, line);
+			*fields = s;
+			return -1;
+		}
+		if (*end != '|')
+			nl = 1;
+		*end = '\0';
 
-				/* find sep */
-				end = strpbrk(s, "|\r\n");
-				if (end == NULL) {
-					fprintf(stderr, "Unterminated field in %s:%ld\n", fn, line);
-					*fields = s;
-					return -1;
-				}
-				if (*end != '|')
-					nl = 1;
-				*end = '\0';
-
-				key = s;
-				val = strchr(s, '=');
-				if (val != NULL) {
-					*val = '\0';
-					val++;
-				}
-				else
-					val = end;
-				
-				tprintf("  %s=%s\n", key, val);
-				pcbdoc_ascii_new_field(tree, rec, key, altium_kw_AUTO, val);
-				s = end+1;
-				if (nl)
-					break;
-			}
+		key = s;
+		val = strchr(s, '=');
+		if (val != NULL) {
+			*val = '\0';
+			val++;
+		}
+		else
+			val = end;
+		
+		tprintf("  %s=%s\n", key, val);
+		pcbdoc_ascii_new_field(tree, rec, key, altium_kw_AUTO, val);
+		s = end+1;
+		if (nl)
+			break;
+	}
 
 	*fields = s;
 	return 0;
