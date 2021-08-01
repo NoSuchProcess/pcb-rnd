@@ -187,64 +187,41 @@ static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, con
 	return 0;
 }
 
-int pcbdoc_bin_parse_board6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+static int pcbdoc_bin_parse_any_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp, const char *recname)
 {
 	for(;;) {
 		long len = read_rec_l4b(fp, tmp);
 		if (len <= 0)
 			return len;
-		if (pcbdoc_bin_parse_ascii(hidlib, tree, "Board", tmp) != 0)
+		if (pcbdoc_bin_parse_ascii(hidlib, tree, recname, tmp) != 0)
 			return -1;
 	}
 	return 0;
+}
+
+int pcbdoc_bin_parse_board6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
+{
+	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Board");
 }
 
 int pcbdoc_bin_parse_polygons6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
-	for(;;) {
-		long len = read_rec_l4b(fp, tmp);
-		if (len <= 0)
-			return len;
-		if (pcbdoc_bin_parse_ascii(hidlib, tree, "Polygon", tmp) != 0)
-			return -1;
-	}
-	return 0;
+	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Polygon");
 }
 
 int pcbdoc_bin_parse_classes6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
-	for(;;) {
-		long len = read_rec_l4b(fp, tmp);
-		if (len <= 0)
-			return len;
-		if (pcbdoc_bin_parse_ascii(hidlib, tree, "Class", tmp) != 0)
-			return -1;
-	}
-	return 0;
+	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Class");
 }
 
 int pcbdoc_bin_parse_nets6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
-	for(;;) {
-		long len = read_rec_l4b(fp, tmp);
-		if (len <= 0)
-			return len;
-		if (pcbdoc_bin_parse_ascii(hidlib, tree, "Net", tmp) != 0)
-			return -1;
-	}
-	return 0;
+	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Net");
 }
 
 int pcbdoc_bin_parse_components6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
-	for(;;) {
-		long len = read_rec_l4b(fp, tmp);
-		if (len <= 0)
-			return len;
-		if (pcbdoc_bin_parse_ascii(hidlib, tree, "Component", tmp) != 0)
-			return -1;
-	}
-	return 0;
+	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Component");
 }
 
 int pcbdoc_bin_parse_rules6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
