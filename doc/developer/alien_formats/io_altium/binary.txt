@@ -18,7 +18,11 @@ this document.
 
 Board6/Data:
 	[l4b]
-		Same text format as in the protel/ASCII file's BOARD records
+		Same text format as in the protel/ASCII file's RECORD=Board records
+
+Polygons6/Data:
+	[l4b]
+		Same text format as in the protel/ASCII file's RECORD=Polygon records
 
 Tracks6/Data:
 	[tlb] record type:  0x04; typical record length: 45
@@ -92,15 +96,15 @@ Vias6/Data:
 
 Rules6/Data:
 	[ilb]
-		Same text format as in the protel/ASCII file's BOARD records
+		Same text format as in the protel/ASCII file's RECORD=Rule records
 
 Classes6/Data:
 	[l4b]
-		Same text format as in the protel/ASCII file's BOARD records
+		Same text format as in the protel/ASCII file's RECORD=Class records
 
 Nets6/Data:
 	[l4b]
-		Same text format as in the protel/ASCII file's BOARD records
+		Same text format as in the protel/ASCII file's RECORD=Net records
 
 Pads6/Data:
 	1 byte record type
@@ -170,12 +174,12 @@ Pads6/Data:
 
 Components6/Data
 	[l4b]
-		Same text format as in the protel/ASCII file's BOARD records
+		Same text format as in the protel/ASCII file's RECORD=Component records
 
-ComponentsBodies6/Data
+ComponentsBodies6/Data (3d model?)
 	skip 23 bytes of header
 	[l4b]
-		Same text format as in the protel/ASCII file's BOARD records
+		Same text format as in the protel/ASCII file's RECORD=CompontentBody records
 	at the end nskip=16 (??? perl line 405):
 		read 4 bytes skiplen
 		skip $nskip*$skiplen
