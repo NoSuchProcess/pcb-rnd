@@ -480,6 +480,6 @@ int pcbdoc_bin_parse_pads6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 
 int pcbdoc_bin_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *file_name, FILE *f)
 {
-	return ucdf_test_parse(file_name);
+	return (ucdf_test_parse(file_name) == 0);
 }
 
