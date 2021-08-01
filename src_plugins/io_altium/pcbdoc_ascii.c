@@ -127,31 +127,34 @@ static int pcbdoc_ascii_load_blocks(altium_tree_t *tree, FILE *f, long max)
 	return 0;
 }
 
-
 TODO("these two 'new' functions should use stack-slabs from umalloc")
-static altium_record_t *pcbdoc_ascii_new_rec(altium_tree_t *tree, const char *type_s)
+static altium_record_t *pcbdoc_ascii_new_rec(altium_tree_t *tree, const char *type_s, int type)
 {
 	altium_record_t *rec = calloc(sizeof(altium_record_t), 1);
-	int kw = altium_kw_sphash(type_s);
 
-	if ((kw < altium_kw_record_SPHASH_MINVAL) || (kw > altium_kw_record_SPHASH_MAXVAL))
-		kw = altium_kw_record_misc;
+	if (type == altium_kw_AUTO) {
+		type = altium_kw_sphash(type_s);
+		if ((type < altium_kw_record_SPHASH_MINVAL) || (type > altium_kw_record_SPHASH_MAXVAL))
+			type = altium_kw_record_misc;
+	}
 
-	rec->type = kw;
+	rec->type = type;
 	rec->type_s = type_s;
 
-	gdl_append(&tree->rec[kw], rec, link);
+	gdl_append(&tree->rec[type], rec, link);
 
 	return rec;
 }
 
-static altium_field_t *pcbdoc_ascii_new_field(altium_tree_t *tree, altium_record_t *rec, const char *key, const char *val)
+static altium_field_t *pcbdoc_ascii_new_field(altium_tree_t *tree, altium_record_t *rec, const char *key, int kw, const char *val)
 {
 	altium_field_t *field = calloc(sizeof(altium_field_t), 1);
-	int kw = altium_kw_sphash(key);
 
-	if ((kw < altium_kw_field_SPHASH_MINVAL) || (kw > altium_kw_field_SPHASH_MAXVAL))
-		kw = altium_kw_record_SPHASH_INVALID;
+	if (kw == altium_kw_AUTO) {
+		kw = altium_kw_sphash(key);
+		if ((kw < altium_kw_field_SPHASH_MINVAL) || (kw > altium_kw_field_SPHASH_MAXVAL))
+			kw = altium_kw_record_SPHASH_INVALID;
+	}
 
 	field->type = kw;
 	field->key  = key;
@@ -194,7 +197,7 @@ static int pcbdoc_ascii_parse_blocks(altium_tree_t *tree, const char *fn)
 			}
 			*end = '\0';
 			tprintf("rec='%s'\n", s);
-			rec = pcbdoc_ascii_new_rec(tree, s);
+			rec = pcbdoc_ascii_new_rec(tree, s, altium_kw_AUTO);
 			s = end+1;
 
 
@@ -227,7 +230,7 @@ static int pcbdoc_ascii_parse_blocks(altium_tree_t *tree, const char *fn)
 					val = end;
 				
 				tprintf("  %s=%s\n", key, val);
-				pcbdoc_ascii_new_field(tree, rec, key, val);
+				pcbdoc_ascii_new_field(tree, rec, key, altium_kw_AUTO, val);
 				s = end+1;
 				if (nl)
 					break;
