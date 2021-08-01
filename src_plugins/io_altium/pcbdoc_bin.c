@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <libucdf/ucdf.h>
 #include "pcbdoc_ascii.h"
 #include "pcbdoc_bin.h"
 

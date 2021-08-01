@@ -7,8 +7,10 @@ put /local/pcb/mod/OBJS [@
 	$(PLUGDIR)/io_altium/io_altium.o
 	$(PLUGDIR)/io_altium/pcbdoc.o
 	$(PLUGDIR)/io_altium/pcbdoc_ascii.o
+	$(PLUGDIR)/io_altium/pcbdoc_bin.o
 	$(PLUGDIR)/io_altium/altium_kw_sphash.o
 	$(PLUGDIR)/io_altium/htic.o
+	../src_3rd/libucdf/ucdf.o
 @]
 
 switch /local/pcb/io_altium/controls
