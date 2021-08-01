@@ -181,9 +181,36 @@ static long read_rec_ilb(ucdf_file_t *fp, altium_buf_t *tmp, int *id)
 	return read_rec_l4b(fp, tmp);
 }
 
-static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *record, int kw, altium_buf_t *tmp, long len, altium_record_t **rec_out)
+/* allocate a persistent block and copy raw data from tmp */
+static char *make_blk_(altium_tree_t *tree, const void *str, long len, char **end_out)
 {
 	altium_block_t *blk;
+	char *end;
+
+	blk = malloc(sizeof(altium_block_t) + len + 1);
+	if (blk == NULL) {
+		fprintf(stderr, "pcbdoc_bin_parse_ascii: failed to alloc memory\n");
+		return NULL;
+	}
+	memset(&blk->link, 0, sizeof(blk->link));
+	blk->size = len;
+	memcpy(blk->raw, str, len);
+	gdl_append(&tree->blocks, blk, link);
+
+	end = blk->raw + len;
+	end[0] = '\0';
+	*end_out = end;
+	return blk->raw;
+}
+
+static char *make_blk(altium_tree_t *tree, const void *str, long len)
+{
+	char *dummy;
+	return make_blk_(tree, str, len, &dummy);
+}
+
+static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *record, int kw, altium_buf_t *tmp, long len, altium_record_t **rec_out)
+{
 	altium_record_t *rec;
 	char *curr, *end;
 	int res = 0;
@@ -194,26 +221,17 @@ static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, con
 	if (len == 0)
 		return 0;
 
-	/* allocate a persistent block and copy raw data from tmp */
-	blk = malloc(sizeof(altium_block_t) + len + 1);
-	if (blk == NULL) {
-		fprintf(stderr, "pcbdoc_bin_parse_ascii: failed to alloc memory\n");
+	curr = make_blk_(tree, tmp->data, len, &end);
+	if (curr == NULL)
 		return -1;
-	}
-	memset(&blk->link, 0, sizeof(blk->link));
-	blk->size = len;
-	memcpy(blk->raw, tmp->data, len);
-	gdl_append(&tree->blocks, blk, link);
 
 	/* need to terminate text data with a \n to emulate the text file for the ascii parser */
-	end = blk->raw + len;
 	end[-1] = '\n';
 	end[0] = '\0';
 
-
 	/* create the record and parse fields under it */
 	rec = pcbdoc_ascii_new_rec(tree, record, kw);
-	for(curr = blk->raw; curr < end;) {
+	while(curr < end) {
 		while((*curr == '\r') || (*curr == '\n') || (*curr == '|')) curr++;
 		res |= pcbdoc_ascii_parse_fields(tree, rec, "<binary>", 1, &curr);
 	}
@@ -241,7 +259,7 @@ static int pcbdoc_bin_parse_any_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree,
 
 #define FIELD_STR(rec, key, val_str) \
 	do { \
-		FIELD_STR_(rec, key, val_str) \
+		FIELD_STR_(rec, key, val_str); \
 		tprintf("  field: crd " #key "='%s'\n", val_str); \
 	} while(0)
 
@@ -381,8 +399,10 @@ int pcbdoc_bin_parse_arcs6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 
 		d = tmp->data;
 
+/*
 		printf("arc: layer=%d ko=%d net=%ld poly=%ld comp=%ld width=%.2f uu=%d%d\n", d[0], d[1], load_int(d+3, 2), load_int(d+5, 2), load_int(d+7, 2), bmil(d+41), d[48], d[55]);
 		printf("  cx=%.2f cy=%.2f r=%.2f sa=%.3f ea=%.3f\n", bmil(d+13), bmil(d+17), bmil(d+21), load_dbl(d+25), load_dbl(d+33));
+*/
 
 		rec = pcbdoc_ascii_new_rec(tree, "Arc", altium_kw_record_arc);
 		FIELD_LNG(rec, layer, d[0]);
@@ -409,6 +429,7 @@ int pcbdoc_bin_parse_texts6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 		unsigned char *d;
 		int rectype;
 		long len;
+		altium_record_t *rec;
 
 		len = read_rec_tlb(fp, tmp, &rectype);
 		if (len <= 0)
@@ -429,6 +450,23 @@ int pcbdoc_bin_parse_texts6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 
 		len = read_rec_l4b(fp, tmp);
 		printf("  string='%s'\n", tmp->data+1);
+
+		rec = pcbdoc_ascii_new_rec(tree, "Text", altium_kw_record_text);
+		FIELD_LNG(rec, layer, d[0]+31);
+		FIELD_LNG(rec, net, load_int(d+3, 2));
+		FIELD_LNG(rec, component, load_int(d+7, 2));
+		TODO("poly is not used by the high level code; find an example");
+		FIELD_CRD(rec, x, bmil(d+13));
+		FIELD_CRD(rec, y, bmil(d+17));
+		FIELD_CRD(rec, height, bmil(d+21));
+		FIELD_CRD(rec, rotation, load_dbl(d+27));
+		FIELD_LNG(rec, mirror, d[35]);
+		FIELD_STR(rec, text, make_blk(tree, tmp->data+1, len-1));
+		FIELD_LNG(rec, comment, d[40]);
+		FIELD_LNG(rec, designator, d[41]);
+
+TODO("find the field");
+		FIELD_CRD(rec, width, 10);
 
 	}
 	return 0;

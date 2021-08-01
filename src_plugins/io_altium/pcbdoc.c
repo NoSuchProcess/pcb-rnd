@@ -155,7 +155,7 @@ static long conv_long_field(altium_field_t *field)
 static int conv_bool_field(altium_field_t *field)
 {
 	switch(field->val_type) {
-		case ALTIUM_FT_CRD: return !!field->val.crd;
+		case ALTIUM_FT_LNG: return !!field->val.crd;
 		case ALTIUM_FT_STR:
 			if (rnd_strcasecmp(field->val.str, "true") == 0) return 1;
 			if (rnd_strcasecmp(field->val.str, "false") == 0) return 0;

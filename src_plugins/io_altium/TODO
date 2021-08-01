@@ -7,6 +7,13 @@
 	- viatenting (TODO)
 	- multiline text
 	- put via in component
+	- text-on-all-layers (4 layer board); also in footprint?
+
+- ascii code:
+	- support text height
+
+- bin:
+	- figure which field is text width
 
 - conclusions on ascii read:
 	- plane layers: can't host wires but can be split

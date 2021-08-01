@@ -26,6 +26,7 @@ field
  xsize
  ysize
  width
+ height
  diameter
  holesize
  id
