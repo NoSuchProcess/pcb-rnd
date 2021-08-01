@@ -181,19 +181,46 @@ static long read_rec_ilb(ucdf_file_t *fp, altium_buf_t *tmp, int *id)
 	return read_rec_l4b(fp, tmp);
 }
 
-static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *record, altium_buf_t *tmp)
+static int pcbdoc_bin_parse_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *record, int kw, altium_buf_t *tmp, long len)
 {
-	TODO("take over tmps buff and make it a block");
-	return 0;
+	altium_block_t *blk;
+	altium_record_t *rec;
+	char *curr, *end;
+	int res = 0;
+
+	if (len == 0)
+		return 0;
+
+	/* allocate a persistent block and copy raw data from tmp */
+	blk = malloc(sizeof(altium_block_t) + len + 1);
+	if (blk == NULL) {
+		fprintf(stderr, "pcbdoc_bin_parse_ascii: failed to alloc memory\n");
+		return -1;
+	}
+	memset(&blk->link, 0, sizeof(blk->link));
+	blk->size = len;
+	memcpy(blk->raw, tmp->data, len);
+	end = blk->raw + len;
+	end[-1] = '\n';
+	end[0] = '\0';
+	gdl_append(&tree->blocks, blk, link);
+
+	rec = pcbdoc_ascii_new_rec(tree, record, kw);
+	for(curr = blk->raw; curr < end;) {
+		while((*curr == '\r') || (*curr == '\n') || (*curr == '|')) curr++;
+		res |= pcbdoc_ascii_parse_fields(tree, rec, "<binary>", 1, &curr);
+	}
+
+	return res;
 }
 
-static int pcbdoc_bin_parse_any_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp, const char *recname)
+static int pcbdoc_bin_parse_any_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp, const char *recname, int kw)
 {
 	for(;;) {
 		long len = read_rec_l4b(fp, tmp);
 		if (len <= 0)
 			return len;
-		if (pcbdoc_bin_parse_ascii(hidlib, tree, recname, tmp) != 0)
+		if (pcbdoc_bin_parse_ascii(hidlib, tree, recname, kw, tmp, len) != 0)
 			return -1;
 	}
 	return 0;
@@ -201,27 +228,27 @@ static int pcbdoc_bin_parse_any_ascii(rnd_hidlib_t *hidlib, altium_tree_t *tree,
 
 int pcbdoc_bin_parse_board6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
-	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Board");
+	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Board", altium_kw_record_board);
 }
 
 int pcbdoc_bin_parse_polygons6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
-	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Polygon");
+	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Polygon", altium_kw_record_polygon);
 }
 
 int pcbdoc_bin_parse_classes6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
-	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Class");
+	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Class", altium_kw_record_class);
 }
 
 int pcbdoc_bin_parse_nets6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
-	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Net");
+	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Net", altium_kw_record_net);
 }
 
 int pcbdoc_bin_parse_components6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
-	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Component");
+	return pcbdoc_bin_parse_any_ascii(hidlib, tree, fp, tmp, "Component", altium_kw_record_component);
 }
 
 int pcbdoc_bin_parse_rules6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
@@ -233,7 +260,7 @@ int pcbdoc_bin_parse_rules6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 			return len;
 		TODO("Do we need the id?");
 		printf("id=%d\n", id);
-		if (pcbdoc_bin_parse_ascii(hidlib, tree, "Rule", tmp) != 0)
+		if (pcbdoc_bin_parse_ascii(hidlib, tree, "Rule", altium_kw_record_rule, tmp, len) != 0)
 			return -1;
 	}
 	return 0;
