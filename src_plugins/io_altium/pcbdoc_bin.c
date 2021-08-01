@@ -33,11 +33,19 @@
 #include <string.h>
 #include <assert.h>
 #include <libucdf/ucdf.h>
+#include <librnd/core/compat_misc.h>
 #include "pcbdoc_ascii.h"
 #include "pcbdoc_bin.h"
 
 TODO("remove:")
 #include <stdio.h>
+
+/* optional trace */
+#if 1
+#	define tprintf printf
+#else
+	static int tprintf(const char *fmt, ...) { return 0; }
+#endif
 
 #define MAX_REC_LEN (1UL << 20)
 
@@ -483,8 +491,81 @@ int pcbdoc_bin_test_parse(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *fi
 	return (ucdf_test_parse(file_name) == 0);
 }
 
+/* Look up the Data child of de and return it if it is a file; return NULL
+   on error */
+static ucdf_direntry_t *get_data_de(ucdf_direntry_t *de)
+{
+	ucdf_direntry_t *ded;
+
+	for(ded = de->children; ded != NULL; ded = ded->next) {
+		if (rnd_strcasecmp(ded->name, "Data") == 0) {
+			if (ded->type == UCDF_DE_FILE)
+				return ded;
+			return NULL;
+		}
+	}
+
+	return NULL;
+}
+
+/* Take the Data child of de, open it and parse it using 'call' */
+#define load_stream(de, call) \
+	do { \
+		ded = get_data_de(de); \
+		if (ded == NULL) {\
+			tprintf(" bin parse: " #call ": no data\n"); \
+			break; \
+		} \
+		res = ucdf_fopen(&uctx, &fp, ded); \
+		if (res != 0) {\
+			tprintf(" bin parse: " #call ": failed to open\n"); \
+			break; \
+		} \
+		tprintf(" bin parse: "  #call "\n"); \
+		res = call(hidlib, tree, &fp, &tmp); \
+		if (res != 0) { \
+			rnd_message(RND_MSG_ERROR, "(PcbDoc bin: abort parsing due to errro in " #call ")\n"); \
+			goto error; \
+		} \
+	} while(0)
+
 int pcbdoc_bin_parse_file(rnd_hidlib_t *hidlib, altium_tree_t *tree, const char *fn)
 {
+	int res;
+	ucdf_ctx_t uctx = {0};
+	ucdf_file_t fp;
+	ucdf_direntry_t *de, *ded;
+	altium_buf_t tmp = {0};
+
+	res = ucdf_open(&uctx, fn);
+	tprintf("ucdf open: %d\n", res);
+	if (res != 0)
+		return -1;
+
+	/* look at each main directory and see if we can parse them */
+	for(de = uctx.root->children; de != NULL; de = de->next) {
+		int kw = altium_kw_sphash(de->name);
+		switch(kw) {
+			case altium_kw_bin_names_arcs6:           load_stream(de, pcbdoc_bin_parse_arcs6); break;
+			case altium_kw_bin_names_board6:          load_stream(de, pcbdoc_bin_parse_board6); break;
+			case altium_kw_bin_names_classes6:        load_stream(de, pcbdoc_bin_parse_classes6); break;
+			case altium_kw_bin_names_components6:     load_stream(de, pcbdoc_bin_parse_components6); break;
+			case altium_kw_bin_names_fills6:          load_stream(de, pcbdoc_bin_parse_fills6); break;
+			case altium_kw_bin_names_nets6:           load_stream(de, pcbdoc_bin_parse_nets6); break;
+			case altium_kw_bin_names_pads6:           load_stream(de, pcbdoc_bin_parse_pads6); break;
+			case altium_kw_bin_names_polygons6:       load_stream(de, pcbdoc_bin_parse_polygons6); break;
+			case altium_kw_bin_names_rules6:          load_stream(de, pcbdoc_bin_parse_rules6); break;
+			case altium_kw_bin_names_texts6:          load_stream(de, pcbdoc_bin_parse_texts6); break;
+			case altium_kw_bin_names_tracks6:         load_stream(de, pcbdoc_bin_parse_tracks6); break;
+			case altium_kw_bin_names_vias6:           load_stream(de, pcbdoc_bin_parse_vias6); break;
+		}
+	}
+
+	ucdf_close(&uctx);
+	return 0;
+	error:;
+	tprintf("-> failed to parse binary PcbDoc\n");
+	ucdf_close(&uctx);
 	return -1;
 }
 

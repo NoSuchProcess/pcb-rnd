@@ -83,3 +83,16 @@ layers
  keepout
  drilldrawing
  multilayer
+bin_names
+ arcs6
+ board6
+ classes6
+ components6
+ fills6
+ nets6
+ pads6
+ polygons6
+ rules6
+ texts6
+ tracks6
+ vias6
