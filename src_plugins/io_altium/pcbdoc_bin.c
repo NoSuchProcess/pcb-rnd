@@ -36,6 +36,7 @@
 #include <librnd/core/compat_misc.h>
 #include "pcbdoc_ascii.h"
 #include "pcbdoc_bin.h"
+#include "altium_kw_sphash.h"
 
 TODO("remove:")
 #include <stdio.h>
