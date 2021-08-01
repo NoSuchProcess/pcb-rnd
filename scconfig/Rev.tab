@@ -1,4 +1,4 @@
-35240	cnfigure	io_dsn: merge import_dsn (as ses import) and export_dsn
+35240	configure	io_dsn: merge import_dsn (as ses import) and export_dsn
 35181	configure	io_dsn: padstack proto hash
 35076	configure	io_pads: plugin configuration
 35020	configure	io_pads: enable the experimental write code
