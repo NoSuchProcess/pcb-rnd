@@ -508,6 +508,7 @@ int pcbdoc_bin_parse_vias6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 		unsigned char *d;
 		int rectype;
 		long len;
+		altium_record_t *rec;
 
 		len = read_rec_tlb(fp, tmp, &rectype);
 		if (len <= 0)
@@ -523,8 +524,27 @@ int pcbdoc_bin_parse_vias6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 
 		d = tmp->data;
 
+/*
 		printf("via: layer=%d..%d net=%ld (comp=%ld) u=%d C*=%d\n", d[0], d[1], load_int(d+3, 2), load_int(d+7, 2), d[70], d[40]);
 		printf("  x=%.2f y=%.2f copperD=%.2f holD=%.2f\n", bmil(d+13), bmil(d+17), bmil(d+21), bmil(d+25));
+*/
+
+		rec = pcbdoc_ascii_new_rec(tree, "Via", altium_kw_record_via);
+
+		TODO("high level doesn't handle layers yet");
+		/*
+		FIELD_LNG(rec, layer, d[0]);
+		FIELD_LNG(rec, layer, d[1]);
+		*/
+
+		FIELD_LNG(rec, net, load_int(d+3, 2));
+		FIELD_LNG(rec, component, load_int(d+7, 2));
+
+		FIELD_CRD(rec, x, bmil(d+13));
+		FIELD_CRD(rec, y, bmil(d+17));
+		FIELD_CRD(rec, diameter, bmil(d+21));
+		FIELD_CRD(rec, holesize, bmil(d+25));
+		TODO("uu is not used by the high level code; find an example");
 	}
 	return 0;
 }
