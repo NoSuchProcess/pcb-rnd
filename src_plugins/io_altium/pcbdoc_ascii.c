@@ -3,7 +3,7 @@
  *
  *  pcb-rnd, interactive printed circuit board design
  *
- *  altium pcbdoc ASCII plugin - low level read: parse into a tree in mem
+ *  altium plugin - pcbdoc low level read: parse ASCII into a tree in mem
  *  pcb-rnd Copyright (C) 2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
