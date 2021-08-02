@@ -534,7 +534,7 @@ printf("Layer stack:\n");
 		if ((layers[n].prev == 0) && (layers[n].next != 0))
 			seen_cop |= altium_layer_list(rctx, layers, layers_max, n);
 
-	if (!seen_cop)
+	if (!seen_cop && (rctx->lytoggle_len == 0))
 		rnd_message(RND_MSG_ERROR, "Broken layer stack: no copper layers (falling back to stock 2 layer board)\n");
 
 	return 0;
