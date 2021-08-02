@@ -1,4 +1,5 @@
 - ascii read, to test:
+	- via _can_ be part of a component!
 	- thermal conn (net based poly conns; altium testing engaged)
 	- standard text test
 	- slot (TODO)
