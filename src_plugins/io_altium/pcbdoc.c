@@ -685,7 +685,9 @@ static altium_pad_shape_t get_shape(altium_field_t *field)
 
 static int gen_pad_shape(pcb_pstk_shape_t *copper_shape, int *copper_valid, pcb_pstk_shape_t *mask_shape, int *mask_valid, pcb_pstk_shape_t *paste_shape, int *paste_valid, altium_field_t *shapename, rnd_coord_t xsize, rnd_coord_t ysize, rnd_coord_t mask_fin, rnd_coord_t paste_fin)
 {
-	*mask_valid = *mask_valid = *paste_valid = 0;
+	*mask_valid = 0;
+	*mask_valid = 0;
+	*paste_valid = 0;
 
 	switch(get_shape(shapename)) {
 		case ALTIUM_SHAPE_RECTANGLE:
@@ -749,7 +751,8 @@ static int gen_pad_shape(pcb_pstk_shape_t *copper_shape, int *copper_valid, pcb_
 	return 0;
 }
 
-static int has_shape_for(int level, rnd_coord_t *xsize, rnd_coord_t *ysize, altium_field_t *shapename) {
+static int has_shape_for(int level, altium_field_t **shapename, rnd_coord_t *xsize, rnd_coord_t *ysize)
+{
 	if ((xsize[level] == RND_COORD_MAX) || (ysize[level] == RND_COORD_MAX) || (shapename[level] == NULL))
 		return 0;
 	return 1;
@@ -768,9 +771,9 @@ static int altium_parse_pad(rctx_t *rctx)
 		altium_field_t *shapename[3] = {NULL, NULL, NULL}; /* top, mid, bottom */
 		rnd_coord_t xsize[3] = {RND_COORD_MAX, RND_COORD_MAX, RND_COORD_MAX}, ysize[3] = {RND_COORD_MAX, RND_COORD_MAX, RND_COORD_MAX}; /* top, mid, bottom */
 		rnd_coord_t mask_man = RND_COORD_MAX, paste_man = RND_COORD_MAX, mask_fin = PCB_PROTO_MASK_BLOAT, paste_fin = 0;
-		pcb_pstk_shape_t shape[8] = {0}, copper_shape = {0}, mask_shape = {0}, paste_shape = {0};
+		pcb_pstk_shape_t shape[8] = {0}, copper_shape[3] = {0}, mask_shape[3] = {0}, paste_shape[3] = {0};
 		long compid = -1, netid = -1;
-		int on_all = 0, on_bottom = 0, plated = 0, mask_mode = -1, paste_mode = -1, copper_valid, mask_valid, paste_valid, n;
+		int on_all = 0, on_bottom = 0, plated = 0, mask_mode = -1, paste_mode = -1, copper_valid[3], mask_valid[3], paste_valid[3], n;
 		double rot = 0;
 		rnd_coord_t cl;
 
@@ -861,33 +864,33 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		}
 
 		/* create the abstract shapes */
-		if (gen_pad_shape(&copper_shape, &copper_valid, &mask_shape, &mask_valid, &paste_shape, &paste_valid, shapename[0], xsize[0], ysize[0], mask_fin, paste_fin) != 0)
+		if (gen_pad_shape(&copper_shape[0], &copper_valid[0], &mask_shape[0], &mask_valid[0], &paste_shape[0], &paste_valid[0], shapename[0], xsize[0], ysize[0], mask_fin, paste_fin) != 0)
 			continue;
 
 		/* create shape stackup in shape[] */
 		n = 0;
 		if (on_all) {
-			if (copper_valid) {
-				pcb_pstk_shape_copy(&shape[n], &copper_shape); shape[n].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; n++;
-				pcb_pstk_shape_copy(&shape[n], &copper_shape); shape[n].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; n++;
-				pcb_pstk_shape_copy(&shape[n], &copper_shape); shape[n].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; n++;
+			if (copper_valid[0]) {
+				pcb_pstk_shape_copy(&shape[n], &copper_shape[0]); shape[n].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; n++;
+				pcb_pstk_shape_copy(&shape[n], &copper_shape[0]); shape[n].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; n++;
+				pcb_pstk_shape_copy(&shape[n], &copper_shape[0]); shape[n].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; n++;
 			}
-			if (mask_valid) {
-				pcb_pstk_shape_copy(&shape[n], &mask_shape);   shape[n].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; shape[n].comb = PCB_LYC_AUTO | PCB_LYC_SUB; n++;
-				pcb_pstk_shape_copy(&shape[n], &mask_shape);   shape[n].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; shape[n].comb = PCB_LYC_AUTO | PCB_LYC_SUB; n++;
+			if (mask_valid[0]) {
+				pcb_pstk_shape_copy(&shape[n], &mask_shape[0]);   shape[n].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; shape[n].comb = PCB_LYC_AUTO | PCB_LYC_SUB; n++;
+				pcb_pstk_shape_copy(&shape[n], &mask_shape[0]);   shape[n].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; shape[n].comb = PCB_LYC_AUTO | PCB_LYC_SUB; n++;
 			}
 			shape[n].layer_mask = 0;
 		}
 		else {
 			pcb_layer_type_t side = on_bottom ? PCB_LYT_BOTTOM : PCB_LYT_TOP;
-			if (copper_valid) {
-				pcb_pstk_shape_copy(&shape[n], &copper_shape); shape[n].layer_mask = side | PCB_LYT_COPPER; n++;
+			if (copper_valid[0]) {
+				pcb_pstk_shape_copy(&shape[n], &copper_shape[0]); shape[n].layer_mask = side | PCB_LYT_COPPER; n++;
 			}
-			if (mask_valid) {
-				pcb_pstk_shape_copy(&shape[n], &mask_shape);   shape[n].layer_mask = side | PCB_LYT_MASK; shape[n].comb = PCB_LYC_AUTO | PCB_LYC_SUB; n++;
+			if (mask_valid[0]) {
+				pcb_pstk_shape_copy(&shape[n], &mask_shape[0]);   shape[n].layer_mask = side | PCB_LYT_MASK; shape[n].comb = PCB_LYC_AUTO | PCB_LYC_SUB; n++;
 			}
-			if (paste_valid) {
-				pcb_pstk_shape_copy(&shape[n], &paste_shape);  shape[n].layer_mask = side | PCB_LYT_PASTE; shape[n].comb = PCB_LYC_AUTO; n++;
+			if (paste_valid[0]) {
+				pcb_pstk_shape_copy(&shape[n], &paste_shape[0]);  shape[n].layer_mask = side | PCB_LYT_PASTE; shape[n].comb = PCB_LYC_AUTO; n++;
 			}
 			shape[n].layer_mask = 0;
 		}
@@ -903,9 +906,11 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		}
 
 		/* free temporary pad shapes */
-		pcb_pstk_shape_free(&copper_shape);
-		pcb_pstk_shape_free(&mask_shape);
-		pcb_pstk_shape_free(&paste_shape);
+		for(n = 0; n < 3; n++) {
+			pcb_pstk_shape_free(&copper_shape[n]);
+			pcb_pstk_shape_free(&mask_shape[n]);
+			pcb_pstk_shape_free(&paste_shape[n]);
+		}
 		for(n = 0; n < sizeof(shape)/sizeof(shape[0]); n++)
 			pcb_pstk_shape_free(&shape[n]);
 
