@@ -36,8 +36,8 @@ Tracks6/Data:
 		@21, len=4: x2 coord in bmil
 		@25, len=4: y2 coord in bmil
 		@29, len=4: width coord in bmil
-		@36, len=1: unionindex ?
-		@44, len=1: user routed ?
+		@36, len=1: unionindex
+		@44, len=1: user routed
 
 Arcs6/Data:
 	[tlb] record type:  0x01; typical record length: 56
@@ -50,8 +50,8 @@ Arcs6/Data:
 		@25, len=8: start angle (double?)
 		@33, len=8: end angle (double?)
 		@41, len=4: width bmil
-		@48, len=1: unionindex ?
-		@55, len=1: user routed ?
+		@48, len=1: unionindex
+		@55, len=1: user routed
 
 Texts6/Data:
 	[tlb] record type:  0x05; typical length: 230
@@ -92,7 +92,7 @@ Vias6/Data:
 		@21, len=4: copper dia
 		@25, len=4: hole dia
 		@40, len=1: CAGV, CCSV, CENV ?
-		@70, len=1: unionindex ?
+		@70, len=1: unionindex
 
 Rules6/Data:
 	[ilb]
