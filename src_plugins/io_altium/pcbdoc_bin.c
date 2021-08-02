@@ -481,6 +481,7 @@ int pcbdoc_bin_parse_fills6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 		unsigned char *d;
 		int rectype;
 		long len;
+		altium_record_t *rec;
 
 		len = read_rec_tlb(fp, tmp, &rectype);
 		if (len <= 0)
@@ -496,9 +497,19 @@ int pcbdoc_bin_parse_fills6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 
 		d = tmp->data;
 
-		printf("fill: layer=%d ko=%d net=%ld comp=%ld u=%d\n", d[0], d[1], load_int(d+3, 2), load_int(d+7, 2), d[45]);
-		printf("  x1=%.2f y1=%.2f x2=%.2f y2=%.2f rot=%.3f dir2=%.3f\n", bmil(d+13), bmil(d+17), bmil(d+21), bmil(d+25), load_dbl(d+29), load_dbl(d+38));
-		TODO("what to do with fills? no high level support?");
+/*		printf("fill: layer=%d ko=%d net=%ld comp=%ld u=%d\n", d[0], d[1], load_int(d+3, 2), load_int(d+7, 2), d[45]);
+		printf("  x1=%.2f y1=%.2f x2=%.2f y2=%.2f rot=%.3f dir2=%.3f\n", bmil(d+13), bmil(d+17), bmil(d+21), bmil(d+25), load_dbl(d+29), load_dbl(d+38));*/
+
+		rec = pcbdoc_ascii_new_rec(tree, "Fill", altium_kw_record_fill);
+		FIELD_LNG(rec, layer, d[0]+31);
+		FIELD_LNG(rec, net, load_int(d+3, 2));
+		FIELD_LNG(rec, component, load_int(d+7, 2));
+
+		FIELD_CRD(rec, x1, bmil(d+13));
+		FIELD_CRD(rec, y1, bmil(d+17));
+		FIELD_CRD(rec, x2, bmil(d+21));
+		FIELD_CRD(rec, y2, bmil(d+26));
+		FIELD_CRD(rec, rotation, load_dbl(d+29));
 	}
 	return 0;
 }
