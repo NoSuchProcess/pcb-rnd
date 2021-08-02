@@ -749,6 +749,12 @@ static int gen_pad_shape(pcb_pstk_shape_t *copper_shape, int *copper_valid, pcb_
 	return 0;
 }
 
+static int has_shape_for(int level, rnd_coord_t *xsize, rnd_coord_t *ysize, altium_field_t *shapename) {
+	if ((xsize[level] == RND_COORD_MAX) || (ysize[level] == RND_COORD_MAX) || (shapename[level] == NULL))
+		return 0;
+	return 1;
+}
+
 static int altium_parse_pad(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -804,12 +810,9 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			rnd_message(RND_MSG_ERROR, "Invalid pad object: missing coordinate (pad not created)\n");
 			continue;
 		}
-		if ((xsize[0] == RND_COORD_MAX) || (ysize[0] == RND_COORD_MAX)) {
-			rnd_message(RND_MSG_ERROR, "Invalid pad object: missing size (pad not created)\n");
-			continue;
-		}
-		if (shapename[0] == NULL) {
-			rnd_message(RND_MSG_ERROR, "Invalid pad object: missing top shape (pad not created)\n");
+
+		if (!has_shape_for(0, shapename, xsize, ysize)) {
+			rnd_message(RND_MSG_ERROR, "Invalid pad object: missing top shape or size (pad not created)\n");
 			continue;
 		}
 
