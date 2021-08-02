@@ -166,6 +166,17 @@ static int conv_bool_field(altium_field_t *field)
 	abort();
 }
 
+/* If te user routed field exists and is explicitly set to false, mark the
+   object autorouted */
+#define set_user_routed(obj, ur_field) \
+do { \
+	if ((obj != NULL) && (ur_field != NULL)) { \
+		int __ur__ = conv_bool_field(ur_field); \
+		if (!__ur__) \
+			PCB_FLAG_SET(PCB_FLAG_AUTO, obj); \
+	} \
+} while(0)
+
 static pcb_layer_t *conv_layer_(rctx_t *rctx, int cache_idx, pcb_layer_type_t lyt, const char *purpose)
 {
 	rnd_layer_id_t lid;
@@ -798,7 +809,7 @@ static int altium_parse_pad(rctx_t *rctx)
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_pad]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_pad], rec)) {
 		pcb_pstk_t *ps;
 		pcb_subc_t *sc = NULL;
-		altium_field_t *ly = NULL, *term = NULL;
+		altium_field_t *ly = NULL, *term = NULL, *ur = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, hole = 0;
 		altium_field_t *shapename[3] = {NULL, NULL, NULL}; /* top, mid, bottom */
 		rnd_coord_t xsize[3] = {RND_COORD_MAX, RND_COORD_MAX, RND_COORD_MAX}, ysize[3] = {RND_COORD_MAX, RND_COORD_MAX, RND_COORD_MAX}; /* top, mid, bottom */
@@ -811,6 +822,7 @@ static int altium_parse_pad(rctx_t *rctx)
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
+				case altium_kw_field_userrouted:ur = field; break;
 				case altium_kw_field_name:      term = field; break;
 				case altium_kw_field_layer:     ly = field; break;
 				case altium_kw_field_x:         x = conv_coordx_field(rctx, field); break;
@@ -958,6 +970,8 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			pcb_attribute_put(&ps->Attributes, "term", term->val.str);
 		}
 
+		set_user_routed(ps, ur);
+
 		/* free temporary pad shapes */
 		for(n = 0; n < 3; n++) {
 			pcb_pstk_shape_free(&copper_shape[n]);
@@ -1037,13 +1051,16 @@ static int altium_parse_track(rctx_t *rctx)
 	altium_field_t *field;
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_track]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_track], rec)) {
+		altium_field_t *ur = NULL;
 		pcb_layer_t *ly = NULL;
 		rnd_coord_t x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
 		long compid = -1, netid = -1;
 		rnd_coord_t cl;
+		pcb_line_t *line;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
+				case altium_kw_field_userrouted: ur = field; break;
 				case altium_kw_field_net:   netid = conv_long_field(field); break;
 				case altium_kw_field_layer: ly = conv_layer_field(rctx, field); break;
 				case altium_kw_field_x1:    x1 = conv_coordx_field(rctx, field); break;
@@ -1063,7 +1080,8 @@ static int altium_parse_track(rctx_t *rctx)
 			continue;
 
 		cl = altium_clearance(rctx, netid);
-		pcb_line_new(ly, x1, y1, x2, y2, w, cl * 2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		line = pcb_line_new(ly, x1, y1, x2, y2, w, cl * 2, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		set_user_routed(line, ur);
 	}
 
 	return 0;
@@ -1083,14 +1101,17 @@ static int altium_parse_arc(rctx_t *rctx)
 	altium_field_t *field;
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_arc]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_arc], rec)) {
+		altium_field_t *ur = NULL;
 		pcb_layer_t *ly = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, r = RND_COORD_MAX, w = RND_COORD_MAX;
 		double sa = -10000, ea = -10000;
 		long compid = -1, netid = -1;
 		rnd_coord_t cl;
+		pcb_arc_t *arc;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
+				case altium_kw_field_userrouted:ur = field; break;
 				case altium_kw_field_net:         netid = conv_long_field(field); break;
 				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
 				case altium_kw_field_location_x:  x = conv_coordx_field(rctx, field); break;
@@ -1118,7 +1139,8 @@ static int altium_parse_arc(rctx_t *rctx)
 		ARC_CONV_ANGLES(sa, ea);
 
 		cl = altium_clearance(rctx, netid);
-		pcb_arc_new(ly, x, y, r, r, sa, ea-sa, w, cl * 2, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
+		arc = pcb_arc_new(ly, x, y, r, r, sa, ea-sa, w, cl * 2, pcb_flag_make(PCB_FLAG_CLEARLINE), 0);
+		set_user_routed(arc, ur);
 	}
 
 	return 0;
@@ -1130,6 +1152,7 @@ static int altium_parse_text(rctx_t *rctx)
 	altium_field_t *field;
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_text]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_text], rec)) {
+		altium_field_t *ur = NULL;
 		pcb_layer_t *ly = NULL;
 		pcb_subc_t *sc;
 		altium_field_t *text = NULL;
@@ -1141,6 +1164,7 @@ static int altium_parse_text(rctx_t *rctx)
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
+				case altium_kw_field_userrouted:ur = field; break;
 				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
 				case altium_kw_field_text:        text = field; break;
 				case altium_kw_field_x:           x = conv_coordx_field(rctx, field); break;
@@ -1205,6 +1229,7 @@ static int altium_parse_text(rctx_t *rctx)
 		if (text != NULL) {
 			assert(text->val_type == ALTIUM_FT_STR);
 			t = pcb_text_new_by_bbox(ly, pcb_font(rctx->pcb, 1, 1), x1, y1, x2-x1, y2-y1, 0, 0, 1.0, mir, rot, w, (designator ? "%a.parent.refdes%" : text->val.str), pcb_flag_make(PCB_FLAG_CLEARLINE | (designator ? PCB_FLAG_DYNTEXT|PCB_FLAG_FLOATER : 0)));
+			set_user_routed(t, ur);
 		}
 	}
 
@@ -1248,6 +1273,7 @@ static int altium_parse_poly(rctx_t *rctx)
 	vtd0_t sa = {0}, ea = {0};
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_polygon]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_polygon], rec)) {
+		altium_field_t *ur = NULL;
 		pcb_poly_t *poly;
 		pcb_layer_t *ly = NULL;
 		long compid = -1, netid = -1, n;
@@ -1257,6 +1283,7 @@ static int altium_parse_poly(rctx_t *rctx)
 		sa.used = ea.used = 0;
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
+				case altium_kw_field_userrouted:  ur = field; break;
 				case altium_kw_field_net:         netid = conv_long_field(field); break;
 				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
 				case altium_kw_field_component:   compid = conv_long_field(field); break;
@@ -1316,6 +1343,7 @@ static int altium_parse_poly(rctx_t *rctx)
 			pcb_poly_point_new(poly, vx.array[n], vy.array[n]);
 		}
 		pcb_add_poly_on_layer(ly, poly);
+		set_user_routed(poly, ur);
 	}
 
 	vtc0_uninit(&vx);
@@ -1333,6 +1361,7 @@ static int altium_parse_fill(rctx_t *rctx)
 	altium_field_t *field;
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_fill]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_fill], rec)) {
+		altium_field_t *ur = NULL;
 		pcb_poly_t *poly;
 		pcb_layer_t *ly = NULL;
 		long compid = -1, netid = -1;
@@ -1341,6 +1370,7 @@ static int altium_parse_fill(rctx_t *rctx)
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
+				case altium_kw_field_userrouted:  ur = field; break;
 				case altium_kw_field_net:         netid = conv_long_field(field); break;
 				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
 				case altium_kw_field_component:   compid = conv_long_field(field); break;
@@ -1370,6 +1400,7 @@ static int altium_parse_fill(rctx_t *rctx)
 		pcb_poly_point_new(poly, x2, y2);
 		pcb_poly_point_new(poly, x1, y2);
 		pcb_add_poly_on_layer(ly, poly);
+		set_user_routed(poly, ur);
 	}
 	return 0;
 }
@@ -1380,12 +1411,15 @@ static int altium_parse_via(rctx_t *rctx)
 	altium_field_t *field;
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_via]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_via], rec)) {
+		altium_field_t *ur = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, dia = RND_COORD_MAX, hole = RND_COORD_MAX;
 		rnd_coord_t cl, mask = 0;
 		long netid = -1;
+		pcb_pstk_t *ps;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
+				case altium_kw_field_userrouted:ur = field; break;
 				case altium_kw_field_net:      netid = conv_long_field(field); break;
 				case altium_kw_field_x:        x = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_y:        y = conv_coordy_field(rctx, field); break;
@@ -1405,7 +1439,8 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			continue;
 		}
 		cl = altium_clearance(rctx, netid);
-		pcb_old_via_new(rctx->pcb->Data, -1, x, y, dia, cl * 2, mask, hole, NULL, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		ps = pcb_old_via_new(rctx->pcb->Data, -1, x, y, dia, cl * 2, mask, hole, NULL, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		set_user_routed(ps, ur);
 	}
 
 	return 0;
