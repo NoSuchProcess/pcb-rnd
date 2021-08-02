@@ -211,7 +211,7 @@ static pcb_layer_t *conv_layer_assy(rctx_t *rctx, int on_bottom)
 	return conv_layer_(rctx, LYCH_ASSY_TOP, PCB_LYT_TOP | PCB_LYT_DOC , "assy");
 }
 
-static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
+static pcb_layer_t *conv_layer_field_(rctx_t *rctx, altium_field_t *field, int deny_plane)
 {
 	int kw;
 
@@ -281,12 +281,30 @@ static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 	}
 
 	if (rnd_strncasecmp(field->val.str, "PLANE", 5) == 0) {
-		rnd_message(RND_MSG_ERROR, "Drawing on PLANE layer %s is not supported\n", field->val.str);
-		return NULL;
+		char *end;
+		int idx;
+
+		if (deny_plane) {
+			rnd_message(RND_MSG_ERROR, "Drawing on PLANE layer %s is not supported\n", field->val.str);
+			return NULL;
+		}
+
+		idx = strtol(field->val.str+5, &end, 10);
+		if (*end != '\0') {
+			rnd_message(RND_MSG_ERROR, "Layer not found: '%s' - invalid integer for MID layer\n", field->val.str);
+			return NULL;
+		}
+printf("PLANELY get: %d %p\n", idx-1+16+23, rctx->midly[idx-1+16+23]);
+		return rctx->midly[idx-1+16+23];
 	}
 TODO("MECHANICAL2...MECHANICAL14: look up or create new doc?; use cache index from 15+16+16+mechanical");
 	rnd_message(RND_MSG_ERROR, "Layer not found: '%s'\n", field->val.str);
 	return NULL;
+}
+
+static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
+{
+	return conv_layer_field_(rctx, field, 1);
 }
 
 #define BUMP_COORD(dst, src) do { if (src > dst) dst = src; } while(0)
@@ -353,8 +371,10 @@ static void altium_finalize_layers(rctx_t *rctx)
 
 		/* internal planes start at 22 */
 		for(n = 22; (n < rctx->lytoggle_len) && (n < 27); n++) {
-			if (rctx->lytoggle[n] == '1')
+			if (rctx->lytoggle[n] == '1') {
+printf("PLANELY set: %d\n", n-22+39);
 				make_int_cop(rctx, NULL, n-22+39);
+			}
 		}
 	}
 
@@ -1407,7 +1427,7 @@ static int altium_parse_fill(rctx_t *rctx)
 			switch(field->type) {
 				case altium_kw_field_userrouted:  ur = field; break;
 				case altium_kw_field_net:         netid = conv_long_field(field); break;
-				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
+				case altium_kw_field_layer:       ly = conv_layer_field_(rctx, field, 0); break;
 				case altium_kw_field_component:   compid = conv_long_field(field); break;
 				case altium_kw_field_x1:          x1 = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_y1:          y1 = conv_coordy_field(rctx, field); break;
