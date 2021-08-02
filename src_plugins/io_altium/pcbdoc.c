@@ -376,7 +376,7 @@ printf("  [%d] %s (idx=%d)\n", n, layers[n].name, n);
 
 static void poly_hole_from_rect(rctx_t *rctx, postpone_hole_t *ph)
 {
-	pcb_poly_t *poly = polylist_first(&ph->ly->Polygon);
+	pcb_poly_t *poly = polylist_first(&ph->ly->Polygon), *npoly;
 	rnd_polyarea_t *original, *new_hole, *result;
 
 	if (poly == NULL) {
@@ -397,7 +397,9 @@ static void poly_hole_from_rect(rctx_t *rctx, postpone_hole_t *ph)
 
 	rnd_polyarea_boolean_free(original, new_hole, &result, RND_PBO_SUB);
 
-	pcb_poly_to_polygons_on_layer(PCB->Data, ph->ly, result, poly->Flags);
+	npoly = pcb_poly_to_polygons_on_layer(PCB->Data, ph->ly, result, poly->Flags);
+	memcpy(&npoly->Attributes, &poly->Attributes, sizeof(poly->Attributes));
+	memset(&poly->Attributes, 0, sizeof(poly->Attributes));
 	pcb_remove_object(PCB_OBJ_POLY, ph->ly, poly, poly);
 }
 
