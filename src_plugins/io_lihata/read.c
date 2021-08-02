@@ -2756,6 +2756,7 @@ int io_lihata_parse_padstack(pcb_plug_io_t *ctx, pcb_pstk_proto_t *proto, const 
 
 	if ((doc->root->type == LHT_HASH) && (strncmp(doc->root->name, "pcb-rnd-padstack-v", 18) == 0)) {
 		lht_node_t *datand = lht_dom_hash_get(doc->root, "ps_proto_v6.0");
+		rctx.rdver = 6;
 		if (datand == NULL) {
 			iolht_error(doc->root, "Error loading '%s': padstack has no ps_proto_v6\n", filename);
 			res = -1;
