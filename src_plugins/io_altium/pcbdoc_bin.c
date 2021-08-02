@@ -323,7 +323,7 @@ int pcbdoc_bin_parse_rules6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 		if (len <= 0)
 			return len;
 		TODO("Do we need the id?");
-		printf("id=%d\n", id);
+		tprintf("rule id=%d\n", id);
 		if (pcbdoc_bin_parse_ascii(hidlib, tree, "Rule", altium_kw_record_rule, tmp, len, &rec) != 0)
 			return -1;
 /*		FIELD_LNG(rec, id, id);*/
@@ -445,11 +445,13 @@ int pcbdoc_bin_parse_texts6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 
 		d = tmp->data;
 
+/*
 		printf("text: layer=%d comp=%ld height=%.2f comment=%d designator=%d\n", d[0], load_int(d+7, 2), bmil(d+21), d[40], d[41]);
 		printf("  x=%.2f y=%.2f h=%.2f rot=%.3f mirr=%d\n", bmil(d+13), bmil(d+17), bmil(d+21), load_dbl(d+27), d[35]);
+*/
 
 		len = read_rec_l4b(fp, tmp);
-		printf("  string='%s'\n", tmp->data+1);
+/*		printf("  string='%s'\n", tmp->data+1);*/
 
 		rec = pcbdoc_ascii_new_rec(tree, "Text", altium_kw_record_text);
 		FIELD_LNG(rec, layer, d[0]+31);
@@ -496,7 +498,7 @@ int pcbdoc_bin_parse_fills6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 
 		printf("fill: layer=%d ko=%d net=%ld comp=%ld u=%d\n", d[0], d[1], load_int(d+3, 2), load_int(d+7, 2), d[45]);
 		printf("  x1=%.2f y1=%.2f x2=%.2f y2=%.2f rot=%.3f dir2=%.3f\n", bmil(d+13), bmil(d+17), bmil(d+21), bmil(d+25), load_dbl(d+29), load_dbl(d+38));
-
+		TODO("what to do with fills? no high level support?");
 	}
 	return 0;
 }
@@ -642,7 +644,7 @@ int pcbdoc_bin_parse_pads6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 		else { /* not a pad */
 			long len;
 
-			fprintf(stderr, "non-pad object in padstack!\n");
+			rnd_message(RND_MSG_ERROR, "non-pad object in padstack!\n");
 			len = read_rec_l4b(fp, tmp);
 			if (len <= 0)
 				return len;
