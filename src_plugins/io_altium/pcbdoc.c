@@ -38,6 +38,7 @@
 
 #include "board.h"
 #include "netlist.h"
+#include "remove.h"
 
 #include "../src_plugins/lib_compat_help/pstk_compat.h"
 #include "../src_plugins/lib_compat_help/pstk_help.h"
@@ -373,15 +374,10 @@ printf("  [%d] %s (idx=%d)\n", n, layers[n].name, n);
 	return cop;
 }
 
-
-TODO("remove these once code dup is resolved below:");
-#include "remove.h"
-
 static void poly_hole_from_rect(rctx_t *rctx, postpone_hole_t *ph)
 {
 	pcb_poly_t *poly = polylist_first(&ph->ly->Polygon);
 	rnd_polyarea_t *original, *new_hole, *result;
-	pcb_flag_t Flags;
 
 	if (poly == NULL) {
 		rnd_message(RND_MSG_ERROR, "Internal error: can't find plane polygon for placing the fill within\n");
@@ -399,17 +395,10 @@ static void poly_hole_from_rect(rctx_t *rctx, postpone_hole_t *ph)
 	original = pcb_poly_from_poly(poly);
 	new_hole = rnd_poly_from_rect(ph->x1, ph->x2, ph->y1, ph->y2);
 
-
-	TODO("code dup with pcb_polygon_hole_create_from_attached(): ALSO REMOVE THE INCLUDE ABOVE");
-
 	rnd_polyarea_boolean_free(original, new_hole, &result, RND_PBO_SUB);
 
-	/* Convert the resulting polygon(s) into a new set of nodes
-	 * and place them on the page. Delete the original polygon. */
-	Flags = poly->Flags;
-	pcb_poly_to_polygons_on_layer(PCB->Data, ph->ly, result, Flags);
+	pcb_poly_to_polygons_on_layer(PCB->Data, ph->ly, result, poly->Flags);
 	pcb_remove_object(PCB_OBJ_POLY, ph->ly, poly, poly);
-
 }
 
 /* Apply postponed poly holes */
