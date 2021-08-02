@@ -139,11 +139,11 @@ Pads6/Data:
 		@52, len=8: pad rotation, double?
 		@60, len=1: plated
 		@62, len=1: padmode 0=simple, 1=top-middle-bottom, 2=full-stack
-		@68, len=4: CCW?
-		@72, len=1: CEN?
-		@74, len=4: CAG?
-		@78, len=4: CPR?
-		@82, len=4: CPC?
+		@68, len=4: CCW bmil: thermal geo (Conductor Width?)
+		@72, len=1: CEN: thermal geo (number?)
+		@74, len=4: CAG bmil: thermal geo (gap?)
+		@78, len=4: CPR bmil: Plane thermal something
+		@82, len=4: CPC bmil: Plane Clearance
 		@86, len=4: CPE: paste expansion manual
 		@90, len=4: CSE: mask expansion manual?
 		@94, len=1: CPL?
@@ -151,6 +151,8 @@ Pads6/Data:
 		@102, len=1: CSEV: mask expansion mode
 		@106, len=8: hole rotation, double?
 		(@121, len=1: hole type?)
+
+		TODO: CSS would be the thermal style
 
 	[l4b]*
 		Read more blocks until a zero length block is read
