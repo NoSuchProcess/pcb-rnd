@@ -1,2 +1,3 @@
 union index: placement grouping, mainly for components
 user routed: when explicitly false, the object is placed by the autorouter
+fill object on plane layer is poly hole; no other drawing objects on planes
