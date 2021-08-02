@@ -1302,6 +1302,7 @@ void pcb_polygon_close_hole(void)
  */
 void pcb_polygon_hole_create_from_attached(void)
 {
+	pcb_poly_t *opoly, *npoly;
 	rnd_polyarea_t *original, *new_hole, *result;
 	pcb_flag_t Flags;
 	
@@ -1318,7 +1319,10 @@ void pcb_polygon_hole_create_from_attached(void)
 	 */
 	pcb_undo_save_serial();
 	Flags = ((pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2)->Flags;
-	pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) pcb_crosshair.AttachedObject.Ptr1, result, Flags);
+	npoly = pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) pcb_crosshair.AttachedObject.Ptr1, result, Flags);
+	opoly = pcb_crosshair.AttachedObject.Ptr2;
+	memcpy(&npoly->Attributes, &opoly->Attributes, sizeof(opoly->Attributes));
+	memset(&opoly->Attributes, 0, sizeof(opoly->Attributes));
 	pcb_remove_object(PCB_OBJ_POLY,
 							 pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
 	pcb_undo_restore_serial();
