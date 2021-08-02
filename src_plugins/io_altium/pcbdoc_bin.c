@@ -553,12 +553,45 @@ int pcbdoc_bin_parse_vias6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 static int pcbdoc_bin_parse_pads6_fields(rnd_hidlib_t *hidlib, altium_tree_t *tree, altium_buf_t *tmp, const char *name)
 {
 	unsigned char *d = tmp->data;
+	altium_record_t *rec;
 
-	/* if layer[0] is 74 (multilayer), use all shapes, else use only top on the specified layer */
-
+/*
 	printf("pad: layer=%d..%d net=%ld (comp=%ld) '%s'\n", d[0], d[1], load_int(d+3, 2), load_int(d+7, 2), name);
 	printf("  x=%.2f y=%.2f hole=%.2f plated=%d mode=%d rot=%.3f\n", bmil(d+13), bmil(d+17), bmil(d+45), d[60], d[62], load_dbl(d+52));
 	printf("  top: %d sx=%.2f sy=%.2f; mid: %d sx=%.2f sy=%.2f; bot: %d sx=%.2f mid-sy=%.2f\n", d[49], bmil(d+21), bmil(d+25), d[50], bmil(d+29), bmil(d+33), d[51], bmil(d+37), bmil(d+41));
+*/
+
+	rec = pcbdoc_ascii_new_rec(tree, "Pad", altium_kw_record_pad);
+	FIELD_LNG(rec, layer, d[0]);
+	TODO("keepout is not used by the high level code; find an example");
+	FIELD_LNG(rec, net, load_int(d+3, 2));
+	FIELD_LNG(rec, component, load_int(d+7, 2));
+
+	FIELD_CRD(rec, x, bmil(d+13));
+	FIELD_CRD(rec, y, bmil(d+17));
+	FIELD_CRD(rec, holesize, bmil(d+45));
+	FIELD_LNG(rec, plated, d[60]);
+	FIELD_DBL(rec, rotation, load_dbl(d+52));
+
+	FIELD_LNG(rec, shape, d[49]);
+	FIELD_CRD(rec, xsize, bmil(d+21));
+	FIELD_CRD(rec, ysize, bmil(d+25));
+
+	if (d[0] == 74) { /* if layer[0] is 74 (multilayer), use all shapes, else use only top on the specified layer */
+		FIELD_LNG(rec, _bin_mid_shape, d[50]);
+		FIELD_CRD(rec, _bin_mid_xsize, bmil(d+29));
+		FIELD_CRD(rec, _bin_mid_ysize, bmil(d+33));
+		FIELD_LNG(rec, _bin_bottom_shape, d[51]);
+		FIELD_CRD(rec, _bin_bottom_xsize, bmil(d+37));
+		FIELD_CRD(rec, _bin_bottom_ysize, bmil(d+41));
+	}
+
+	FIELD_CRD(rec, pastemaskexpansion_manual, bmil(d+86));
+	FIELD_CRD(rec, soldermaskexpansion_manual, bmil(d+90));
+	FIELD_LNG(rec, pastemaskexpansionmode, d[101]);
+	FIELD_LNG(rec, soldermaskexpansionmode, d[102]);
+
+	FIELD_STR(rec, name, make_blk(tree, name, strlen(name)));
 	return 0;
 }
 

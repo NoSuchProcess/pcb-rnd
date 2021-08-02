@@ -632,6 +632,57 @@ static int altium_parse_components(rctx_t *rctx)
 	return 0;
 }
 
+/* Decode expansion mode from text string or binary values and return a
+   field keyword (or -1) */
+static int get_expansion_mode(altium_field_t *field)
+{
+	switch(field->val_type) {
+		case ALTIUM_FT_STR: return altium_kw_sphash(field->val.str);
+		case ALTIUM_FT_LNG:
+			switch(field->val.lng) {
+				case 1: return altium_kw_field_rule;
+				case 2: return altium_kw_field_manual;
+				default:
+					rnd_message(RND_MSG_ERROR, "internal error: io_altium get_expansion_mode(): unknown binary mode %d\n", field->val.lng);
+			}
+			break;
+		default:
+			rnd_message(RND_MSG_ERROR, "internal error: io_altium get_expansion_mode(): invalid field type %d\n", field->val_type);
+	}
+	return -1;
+}
+
+typedef enum {
+	ALTIUM_SHAPE_RECTANGLE,
+	ALTIUM_SHAPE_ROUND_RECTANGLE,
+	ALTIUM_SHAPE_ROUND
+} altium_pad_shape_t;
+
+static altium_pad_shape_t get_shape(altium_field_t *field)
+{
+	switch(field->val_type) {
+		case ALTIUM_FT_STR:
+			if (rnd_strcasecmp(field->val.str, "rectangle") == 0) return ALTIUM_SHAPE_RECTANGLE;
+			if (rnd_strcasecmp(field->val.str, "roundedrectangle") == 0) return ALTIUM_SHAPE_ROUND_RECTANGLE;
+			if (rnd_strcasecmp(field->val.str, "round") == 0) return ALTIUM_SHAPE_ROUND;
+			rnd_message(RND_MSG_ERROR, "io_altium get_shape(): invalid shape name '%s'\n", field->val.str);
+			break;
+		case ALTIUM_FT_LNG:
+			switch(field->val.lng) {
+				case 1: return ALTIUM_SHAPE_ROUND;
+				case 2: return ALTIUM_SHAPE_RECTANGLE;
+/*				case 3: return ALTIUM_SHAPE_OVAL?;*/
+				case 9: return ALTIUM_SHAPE_ROUND_RECTANGLE;
+				default:
+					rnd_message(RND_MSG_ERROR, "io_altium get_shape(): invalid shape ID %ld\n", field->val.lng);
+			}
+			break;
+		default:
+			rnd_message(RND_MSG_ERROR, "internal error: io_altium get_shape(): invalid field type %d\n", field->val_type);
+	}
+	return -1;
+}
+
 static int altium_parse_pad(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -664,8 +715,8 @@ static int altium_parse_pad(rctx_t *rctx)
 				case altium_kw_field_net:       netid = conv_long_field(field); break;
 				case altium_kw_field_plated:    plated = conv_bool_field(field); break;
 
-				case altium_kw_field_pastemaskexpansionmode:     assert(field->val_type == ALTIUM_FT_STR); paste_mode = altium_kw_sphash(field->val.str); break;
-				case altium_kw_field_soldermaskexpansionmode:    assert(field->val_type == ALTIUM_FT_STR); mask_mode = altium_kw_sphash(field->val.str); break;
+				case altium_kw_field_pastemaskexpansionmode:     paste_mode = get_expansion_mode(field); break;
+				case altium_kw_field_soldermaskexpansionmode:    mask_mode = get_expansion_mode(field); break;
 				case altium_kw_field_pastemaskexpansion_manual:  paste_man = conv_coord_field(field); break;
 				case altium_kw_field_soldermaskexpansion_manual: mask_man = conv_coord_field(field); break;
 
@@ -697,13 +748,24 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			}
 		}
 
-		assert(ly->val_type == ALTIUM_FT_STR);
-		if (rnd_strcasecmp(ly->val.str, "bottom") == 0) on_bottom = 1;
-		else if (rnd_strcasecmp(ly->val.str, "top") == 0) on_bottom = 0;
-		else if (rnd_strcasecmp(ly->val.str, "multilayer") == 0) on_all = 1;
-		else {
-			rnd_message(RND_MSG_ERROR, "Invalid pad object: invalid layer '%s' (should be top or bottom or multilayer; pad not created)\n", ly->val.str);
-			continue;
+		if (ly->val_type == ALTIUM_FT_STR) {
+			if (rnd_strcasecmp(ly->val.str, "bottom") == 0) on_bottom = 1;
+			else if (rnd_strcasecmp(ly->val.str, "top") == 0) on_bottom = 0;
+			else if (rnd_strcasecmp(ly->val.str, "multilayer") == 0) on_all = 1;
+			else {
+				rnd_message(RND_MSG_ERROR, "Invalid object: invalid pad layer '%s' (should be top or bottom or multilayer; pad not created)\n", ly->val.str);
+				continue;
+			}
+		}
+		else if (ly->val_type == ALTIUM_FT_LNG) {
+			switch(ly->val.lng) {
+				case 1:  on_bottom = 0; break;
+				case 32: on_bottom = 1; break;
+				case 74: on_all = 1; break;
+				default:
+					rnd_message(RND_MSG_ERROR, "Invalid object: invalid pad layer %ld (should be 1=top or 32=bottom or 74=multilayer; pad not created)\n", ly->val.lng);
+					continue;
+			}
 		}
 
 		/* set final mask and paste offsets */
@@ -721,63 +783,64 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		}
 
 		/* create the abstract shapes */
-		assert(shapename->val_type == ALTIUM_FT_STR);
-		if ((rnd_strcasecmp(shapename->val.str, "rectangle") == 0) || (rnd_strcasecmp(shapename->val.str, "roundedrectangle") == 0)) {
-			pcb_shape_rect(&copper_shape, xsize, ysize);
-			copper_valid = 1;
-			if (((xsize + mask_fin*2) > 0) && ((ysize + mask_fin*2) > 0)) {
-				pcb_shape_rect(&mask_shape, xsize + mask_fin*2, ysize + mask_fin*2);
-				mask_valid = 1;
-			}
-			if (((xsize + paste_fin*2) > 0) && ((ysize + paste_fin*2) > 0)) {
-				pcb_shape_rect(&paste_shape, xsize + paste_fin*2, ysize + paste_fin*2);
-				paste_valid = 1;
-			}
-		}
-		else if (rnd_strcasecmp(shapename->val.str, "round") == 0) {
-			if (xsize == ysize) {
-				copper_shape.shape = mask_shape.shape = PCB_PSSH_CIRC;
-				copper_shape.data.circ.x = copper_shape.data.circ.y = 0;
-				copper_shape.data.circ.dia = xsize;
+		switch(get_shape(shapename)) {
+			case ALTIUM_SHAPE_RECTANGLE:
+			case ALTIUM_SHAPE_ROUND_RECTANGLE:
+				pcb_shape_rect(&copper_shape, xsize, ysize);
 				copper_valid = 1;
-				mask_shape.data.circ.x = mask_shape.data.circ.y = 0;
-				mask_shape.data.circ.dia = xsize + mask_fin*2;
-				mask_valid = (mask_shape.data.circ.dia > 0);
-				paste_shape = copper_shape;
-				paste_shape.data.circ.dia += paste_fin*2;
-				paste_valid = (paste_shape.data.circ.dia > 0);
-			}
-			else {
-				copper_shape.shape = mask_shape.shape = PCB_PSSH_LINE;
-				if (xsize > ysize) {
-					copper_shape.data.line.x1 = mask_shape.data.line.x1 = -xsize/2 + ysize/2;
-					copper_shape.data.line.x2 = mask_shape.data.line.x2 = +xsize/2 - ysize/2;
-					copper_shape.data.line.y1 = mask_shape.data.line.y1 = copper_shape.data.line.y2 = mask_shape.data.line.y2 = 0;
-					copper_shape.data.line.thickness = ysize;
+				if (((xsize + mask_fin*2) > 0) && ((ysize + mask_fin*2) > 0)) {
+					pcb_shape_rect(&mask_shape, xsize + mask_fin*2, ysize + mask_fin*2);
+					mask_valid = 1;
+				}
+				if (((xsize + paste_fin*2) > 0) && ((ysize + paste_fin*2) > 0)) {
+					pcb_shape_rect(&paste_shape, xsize + paste_fin*2, ysize + paste_fin*2);
+					paste_valid = 1;
+				}
+				break;
+			case ALTIUM_SHAPE_ROUND:
+				if (xsize == ysize) {
+					copper_shape.shape = mask_shape.shape = PCB_PSSH_CIRC;
+					copper_shape.data.circ.x = copper_shape.data.circ.y = 0;
+					copper_shape.data.circ.dia = xsize;
 					copper_valid = 1;
-					mask_shape.data.line.thickness = ysize + mask_fin*2;
-					mask_valid = (mask_shape.data.line.thickness > 0);
+					mask_shape.data.circ.x = mask_shape.data.circ.y = 0;
+					mask_shape.data.circ.dia = xsize + mask_fin*2;
+					mask_valid = (mask_shape.data.circ.dia > 0);
 					paste_shape = copper_shape;
-					paste_shape.data.line.thickness += paste_fin*2;
-					paste_valid = (paste_shape.data.line.thickness > 0);
+					paste_shape.data.circ.dia += paste_fin*2;
+					paste_valid = (paste_shape.data.circ.dia > 0);
 				}
 				else {
-					copper_shape.data.line.y1 = mask_shape.data.line.y1 = -ysize/2 + xsize/2;
-					copper_shape.data.line.y2 = mask_shape.data.line.y2 = +ysize/2 - xsize/2;
-					copper_shape.data.line.x1 = mask_shape.data.line.x1 = copper_shape.data.line.x2 = mask_shape.data.line.x2 = 0;
-					copper_shape.data.line.thickness = xsize;
-					copper_valid = 1;
-					mask_shape.data.line.thickness = xsize + mask_fin*2;
-					mask_valid = (mask_shape.data.line.thickness > 0);;
-					paste_shape = copper_shape;
-					paste_shape.data.line.thickness += paste_fin*2;
-					paste_valid = (paste_shape.data.line.thickness > 0);
+					copper_shape.shape = mask_shape.shape = PCB_PSSH_LINE;
+					if (xsize > ysize) {
+						copper_shape.data.line.x1 = mask_shape.data.line.x1 = -xsize/2 + ysize/2;
+						copper_shape.data.line.x2 = mask_shape.data.line.x2 = +xsize/2 - ysize/2;
+						copper_shape.data.line.y1 = mask_shape.data.line.y1 = copper_shape.data.line.y2 = mask_shape.data.line.y2 = 0;
+						copper_shape.data.line.thickness = ysize;
+						copper_valid = 1;
+						mask_shape.data.line.thickness = ysize + mask_fin*2;
+						mask_valid = (mask_shape.data.line.thickness > 0);
+						paste_shape = copper_shape;
+						paste_shape.data.line.thickness += paste_fin*2;
+						paste_valid = (paste_shape.data.line.thickness > 0);
+					}
+					else {
+						copper_shape.data.line.y1 = mask_shape.data.line.y1 = -ysize/2 + xsize/2;
+						copper_shape.data.line.y2 = mask_shape.data.line.y2 = +ysize/2 - xsize/2;
+						copper_shape.data.line.x1 = mask_shape.data.line.x1 = copper_shape.data.line.x2 = mask_shape.data.line.x2 = 0;
+						copper_shape.data.line.thickness = xsize;
+						copper_valid = 1;
+						mask_shape.data.line.thickness = xsize + mask_fin*2;
+						mask_valid = (mask_shape.data.line.thickness > 0);;
+						paste_shape = copper_shape;
+						paste_shape.data.line.thickness += paste_fin*2;
+						paste_valid = (paste_shape.data.line.thickness > 0);
+					}
 				}
-			}
-		}
-		else {
-			rnd_message(RND_MSG_ERROR, "Invalid pad object: invalid shape '%s' (pad not created)\n", shapename->val.str);
-			continue;
+				break;
+			default:
+				rnd_message(RND_MSG_ERROR, "Invalid pad object: invalid shape (pad not created)\n");
+				continue;
 		}
 
 		/* create shape stackup in shape[] */

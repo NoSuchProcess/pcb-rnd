@@ -71,6 +71,12 @@ field
  manual
  none
  rule
+ _bin_mid_shape
+ _bin_bottom_shape
+ _bin_mid_xsize
+ _bin_mid_ysize
+ _bin_bottom_xsize
+ _bin_bottom_ysize
 layers
  top
  bottom
