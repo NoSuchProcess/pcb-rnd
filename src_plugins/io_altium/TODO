@@ -1,6 +1,5 @@
 - ascii read, to test:
 	- thermal conn (net based poly conns; altium testing engaged)
-	+ 4 layer test board: layer stack and MID layers (worked with protel)
 	- standard text test
 	- slot (TODO)
 	- bbvia (TODO)
@@ -11,7 +10,6 @@
 
 - ascii code:
 	- support text height
-	- fill is not supported
 
 - bin:
 	- figure which field is text width
