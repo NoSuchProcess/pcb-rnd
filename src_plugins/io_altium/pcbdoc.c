@@ -658,6 +658,7 @@ typedef enum {
 	ALTIUM_SHAPE_ROUND
 } altium_pad_shape_t;
 
+/* Return shape type of a field (text name from ASCII, long from bin) */
 static altium_pad_shape_t get_shape(altium_field_t *field)
 {
 	switch(field->val_type) {
@@ -683,6 +684,7 @@ static altium_pad_shape_t get_shape(altium_field_t *field)
 	return -1;
 }
 
+/* Generate copper, mask and paste shapes for a given geometry */
 static int gen_pad_shape(pcb_pstk_shape_t *copper_shape, int *copper_valid, pcb_pstk_shape_t *mask_shape, int *mask_valid, pcb_pstk_shape_t *paste_shape, int *paste_valid, altium_field_t *shapename, rnd_coord_t xsize, rnd_coord_t ysize, rnd_coord_t mask_fin, rnd_coord_t paste_fin)
 {
 	*mask_valid = 0;
@@ -754,6 +756,8 @@ TODO("check if mask is needed for paste:");
 	return 0;
 }
 
+/* copy copper/mask/paste shapes from level 0 (top) to level dst; this is done
+   for multi-level padstacks where only top shape is specified (common in ASCII) */
 static void copy_pad_shape0(int dst, pcb_pstk_shape_t *copper_shape, int *copper_valid, pcb_pstk_shape_t *mask_shape, int *mask_valid, pcb_pstk_shape_t *paste_shape, int *paste_valid)
 {
 	if (copper_valid[0]) {
@@ -778,7 +782,7 @@ static void copy_pad_shape0(int dst, pcb_pstk_shape_t *copper_shape, int *copper
 		paste_valid[dst] = 0;
 }
 
-
+/* Returns whether level (0..2) has a valid shape definition */
 static int has_shape_for(int level, altium_field_t **shapename, rnd_coord_t *xsize, rnd_coord_t *ysize)
 {
 	if ((xsize[level] == RND_COORD_MAX) || (ysize[level] == RND_COORD_MAX) || (shapename[level] == NULL))
