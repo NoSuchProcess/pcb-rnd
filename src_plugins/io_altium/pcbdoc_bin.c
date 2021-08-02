@@ -38,11 +38,9 @@
 #include "pcbdoc_bin.h"
 #include "altium_kw_sphash.h"
 
-TODO("remove:")
-#include <stdio.h>
-
 /* optional trace */
 #if 1
+#	include <stdio.h>
 #	define tprintf printf
 #else
 	static int tprintf(const char *fmt, ...) { return 0; }
