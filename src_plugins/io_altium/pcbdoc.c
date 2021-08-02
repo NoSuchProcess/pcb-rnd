@@ -683,6 +683,72 @@ static altium_pad_shape_t get_shape(altium_field_t *field)
 	return -1;
 }
 
+static int gen_pad_shape(pcb_pstk_shape_t *copper_shape, int *copper_valid, pcb_pstk_shape_t *mask_shape, int *mask_valid, pcb_pstk_shape_t *paste_shape, int *paste_valid, altium_field_t *shapename, rnd_coord_t xsize, rnd_coord_t ysize, rnd_coord_t mask_fin, rnd_coord_t paste_fin)
+{
+	*mask_valid = *mask_valid = *paste_valid = 0;
+
+	switch(get_shape(shapename)) {
+		case ALTIUM_SHAPE_RECTANGLE:
+		case ALTIUM_SHAPE_ROUND_RECTANGLE:
+			pcb_shape_rect(copper_shape, xsize, ysize);
+			*copper_valid = 1;
+			if (((xsize + mask_fin*2) > 0) && ((ysize + mask_fin*2) > 0)) {
+				pcb_shape_rect(mask_shape, xsize + mask_fin*2, ysize + mask_fin*2);
+				*mask_valid = 1;
+			}
+			if (((xsize + paste_fin*2) > 0) && ((ysize + paste_fin*2) > 0)) {
+				pcb_shape_rect(paste_shape, xsize + paste_fin*2, ysize + paste_fin*2);
+				*paste_valid = 1;
+			}
+			break;
+		case ALTIUM_SHAPE_ROUND:
+			if (xsize == ysize) {
+				copper_shape->shape = mask_shape->shape = PCB_PSSH_CIRC;
+				copper_shape->data.circ.x = copper_shape->data.circ.y = 0;
+				copper_shape->data.circ.dia = xsize;
+				*copper_valid = 1;
+				mask_shape->data.circ.x = mask_shape->data.circ.y = 0;
+				mask_shape->data.circ.dia = xsize + mask_fin*2;
+				*mask_valid = (mask_shape->data.circ.dia > 0);
+				paste_shape = copper_shape;
+				paste_shape->data.circ.dia += paste_fin*2;
+				*paste_valid = (paste_shape->data.circ.dia > 0);
+			}
+			else {
+				copper_shape->shape = mask_shape->shape = PCB_PSSH_LINE;
+				if (xsize > ysize) {
+					copper_shape->data.line.x1 = mask_shape->data.line.x1 = -xsize/2 + ysize/2;
+					copper_shape->data.line.x2 = mask_shape->data.line.x2 = +xsize/2 - ysize/2;
+					copper_shape->data.line.y1 = mask_shape->data.line.y1 = copper_shape->data.line.y2 = mask_shape->data.line.y2 = 0;
+					copper_shape->data.line.thickness = ysize;
+					*copper_valid = 1;
+					mask_shape->data.line.thickness = ysize + mask_fin*2;
+					*mask_valid = (mask_shape->data.line.thickness > 0);
+					paste_shape = copper_shape;
+					paste_shape->data.line.thickness += paste_fin*2;
+					*paste_valid = (paste_shape->data.line.thickness > 0);
+				}
+				else {
+					copper_shape->data.line.y1 = mask_shape->data.line.y1 = -ysize/2 + xsize/2;
+					copper_shape->data.line.y2 = mask_shape->data.line.y2 = +ysize/2 - xsize/2;
+					copper_shape->data.line.x1 = mask_shape->data.line.x1 = copper_shape->data.line.x2 = mask_shape->data.line.x2 = 0;
+					copper_shape->data.line.thickness = xsize;
+					*copper_valid = 1;
+					mask_shape->data.line.thickness = xsize + mask_fin*2;
+					*mask_valid = (mask_shape->data.line.thickness > 0);;
+					paste_shape = copper_shape;
+					paste_shape->data.line.thickness += paste_fin*2;
+					*paste_valid = (paste_shape->data.line.thickness > 0);
+				}
+			}
+			break;
+		default:
+			rnd_message(RND_MSG_ERROR, "Invalid pad object: invalid shape (pad not created)\n");
+			return -1;
+	}
+	return 0;
+}
+
 static int altium_parse_pad(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -698,7 +764,7 @@ static int altium_parse_pad(rctx_t *rctx)
 		rnd_coord_t mask_man = RND_COORD_MAX, paste_man = RND_COORD_MAX, mask_fin = PCB_PROTO_MASK_BLOAT, paste_fin = 0;
 		pcb_pstk_shape_t shape[8] = {0}, copper_shape = {0}, mask_shape = {0}, paste_shape = {0};
 		long compid = -1, netid = -1;
-		int on_all = 0, on_bottom = 0, plated = 0, mask_mode = -1, paste_mode = -1, copper_valid = 0, mask_valid = 0, paste_valid = 0, n;
+		int on_all = 0, on_bottom = 0, plated = 0, mask_mode = -1, paste_mode = -1, copper_valid, mask_valid, paste_valid, n;
 		double rot = 0;
 		rnd_coord_t cl;
 
@@ -792,65 +858,8 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		}
 
 		/* create the abstract shapes */
-		switch(get_shape(shapename[0])) {
-			case ALTIUM_SHAPE_RECTANGLE:
-			case ALTIUM_SHAPE_ROUND_RECTANGLE:
-				pcb_shape_rect(&copper_shape, xsize[0], ysize[0]);
-				copper_valid = 1;
-				if (((xsize[0] + mask_fin*2) > 0) && ((ysize[0] + mask_fin*2) > 0)) {
-					pcb_shape_rect(&mask_shape, xsize[0] + mask_fin*2, ysize[0] + mask_fin*2);
-					mask_valid = 1;
-				}
-				if (((xsize[0] + paste_fin*2) > 0) && ((ysize[0] + paste_fin*2) > 0)) {
-					pcb_shape_rect(&paste_shape, xsize[0] + paste_fin*2, ysize[0] + paste_fin*2);
-					paste_valid = 1;
-				}
-				break;
-			case ALTIUM_SHAPE_ROUND:
-				if (xsize[0] == ysize[0]) {
-					copper_shape.shape = mask_shape.shape = PCB_PSSH_CIRC;
-					copper_shape.data.circ.x = copper_shape.data.circ.y = 0;
-					copper_shape.data.circ.dia = xsize[0];
-					copper_valid = 1;
-					mask_shape.data.circ.x = mask_shape.data.circ.y = 0;
-					mask_shape.data.circ.dia = xsize[0] + mask_fin*2;
-					mask_valid = (mask_shape.data.circ.dia > 0);
-					paste_shape = copper_shape;
-					paste_shape.data.circ.dia += paste_fin*2;
-					paste_valid = (paste_shape.data.circ.dia > 0);
-				}
-				else {
-					copper_shape.shape = mask_shape.shape = PCB_PSSH_LINE;
-					if (xsize[0] > ysize[0]) {
-						copper_shape.data.line.x1 = mask_shape.data.line.x1 = -xsize[0]/2 + ysize[0]/2;
-						copper_shape.data.line.x2 = mask_shape.data.line.x2 = +xsize[0]/2 - ysize[0]/2;
-						copper_shape.data.line.y1 = mask_shape.data.line.y1 = copper_shape.data.line.y2 = mask_shape.data.line.y2 = 0;
-						copper_shape.data.line.thickness = ysize[0];
-						copper_valid = 1;
-						mask_shape.data.line.thickness = ysize[0] + mask_fin*2;
-						mask_valid = (mask_shape.data.line.thickness > 0);
-						paste_shape = copper_shape;
-						paste_shape.data.line.thickness += paste_fin*2;
-						paste_valid = (paste_shape.data.line.thickness > 0);
-					}
-					else {
-						copper_shape.data.line.y1 = mask_shape.data.line.y1 = -ysize[0]/2 + xsize[0]/2;
-						copper_shape.data.line.y2 = mask_shape.data.line.y2 = +ysize[0]/2 - xsize[0]/2;
-						copper_shape.data.line.x1 = mask_shape.data.line.x1 = copper_shape.data.line.x2 = mask_shape.data.line.x2 = 0;
-						copper_shape.data.line.thickness = xsize[0];
-						copper_valid = 1;
-						mask_shape.data.line.thickness = xsize[0] + mask_fin*2;
-						mask_valid = (mask_shape.data.line.thickness > 0);;
-						paste_shape = copper_shape;
-						paste_shape.data.line.thickness += paste_fin*2;
-						paste_valid = (paste_shape.data.line.thickness > 0);
-					}
-				}
-				break;
-			default:
-				rnd_message(RND_MSG_ERROR, "Invalid pad object: invalid shape (pad not created)\n");
-				continue;
-		}
+		if (gen_pad_shape(&copper_shape, &copper_valid, &mask_shape, &mask_valid, &paste_shape, &paste_valid, shapename[0], xsize[0], ysize[0], mask_fin, paste_fin) != 0)
+			continue;
 
 		/* create shape stackup in shape[] */
 		n = 0;
