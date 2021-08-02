@@ -5,6 +5,7 @@ record
  net
  component
  polygon
+ fill
  arc
  pad
  via

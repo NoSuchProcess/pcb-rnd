@@ -1323,6 +1323,53 @@ static int altium_parse_poly(rctx_t *rctx)
 	return 0;
 }
 
+static int altium_parse_fill(rctx_t *rctx)
+{
+	altium_record_t *rec;
+	altium_field_t *field;
+
+	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_fill]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_fill], rec)) {
+		pcb_poly_t *poly;
+		pcb_layer_t *ly = NULL;
+		long compid = -1, netid = -1;
+		rnd_coord_t cl, x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX;
+		double rot = 0;
+
+		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
+			switch(field->type) {
+				case altium_kw_field_net:         netid = conv_long_field(field); break;
+				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
+				case altium_kw_field_component:   compid = conv_long_field(field); break;
+				case altium_kw_field_x1:          x1 = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_y1:          y1 = conv_coordy_field(rctx, field); break;
+				case altium_kw_field_x2:          x2 = conv_coordx_field(rctx, field); break;
+				case altium_kw_field_y2:          y2 = conv_coordy_field(rctx, field); break;
+				case altium_kw_field_rotation:    rot = conv_double_field(field); break;
+				default:
+					break;
+			}
+		}
+
+		if ((x1 == RND_COORD_MAX) || (y1 == RND_COORD_MAX) || (x2 == RND_COORD_MAX) || (y2 == RND_COORD_MAX)) {
+			rnd_message(RND_MSG_ERROR, "Invalid fill object: missing coordinates (fill not created)\n");
+			continue;
+		}
+
+		if ((ly = altium_comp_layer(rctx, ly, compid, "fill", NULL)) == NULL)
+			continue;
+
+
+		cl = altium_clearance(rctx, netid);
+		poly = pcb_poly_new(ly, cl * 2, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY | PCB_FLAG_CLEARPOLY));
+		pcb_poly_point_new(poly, x1, y1);
+		pcb_poly_point_new(poly, x2, y1);
+		pcb_poly_point_new(poly, x2, y2);
+		pcb_poly_point_new(poly, x1, y2);
+		pcb_add_poly_on_layer(ly, poly);
+	}
+	return 0;
+}
+
 static int altium_parse_via(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -1417,6 +1464,7 @@ static int io_altium_parse_pcbdoc_any(pcb_plug_io_t *ctx, pcb_board_t *pcb, cons
 	res |= altium_parse_arc(&rctx);
 	res |= altium_parse_via(&rctx);
 	res |= altium_parse_poly(&rctx);
+	res |= altium_parse_fill(&rctx);
 
 	/* componentbody is not loaded: looks like 3d model with a floorplan, height and texture */
 
