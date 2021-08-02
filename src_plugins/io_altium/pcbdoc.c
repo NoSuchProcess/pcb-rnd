@@ -1198,8 +1198,10 @@ static int altium_parse_text(rctx_t *rctx)
 			y1 = tmp;
 		}
 
-		assert(text->val_type == ALTIUM_FT_STR);
-		t = pcb_text_new_by_bbox(ly, pcb_font(rctx->pcb, 1, 1), x1, y1, x2-x1, y2-y1, 0, 0, 1.0, mir, rot, w, (designator ? "%a.parent.refdes%" : text->val.str), pcb_flag_make(PCB_FLAG_CLEARLINE | (designator ? PCB_FLAG_DYNTEXT|PCB_FLAG_FLOATER : 0)));
+		if (text != NULL) {
+			assert(text->val_type == ALTIUM_FT_STR);
+			t = pcb_text_new_by_bbox(ly, pcb_font(rctx->pcb, 1, 1), x1, y1, x2-x1, y2-y1, 0, 0, 1.0, mir, rot, w, (designator ? "%a.parent.refdes%" : text->val.str), pcb_flag_make(PCB_FLAG_CLEARLINE | (designator ? PCB_FLAG_DYNTEXT|PCB_FLAG_FLOATER : 0)));
+		}
 	}
 
 	return 0;
