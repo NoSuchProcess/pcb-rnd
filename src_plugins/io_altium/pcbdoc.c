@@ -433,6 +433,7 @@ static void altium_finalize_layers(rctx_t *rctx)
 			pcb_poly_point_new(poly, 0, rctx->pcb->hidlib.size_y);
 			pcb_add_poly_on_layer(rctx->midly[n], poly);
 			plane[n-37] = poly;
+			pcb_attribute_put(&(poly->Attributes), "altium::plane", "yes");
 		}
 	}
 
