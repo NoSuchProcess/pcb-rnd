@@ -56,6 +56,9 @@ typedef struct {
 
 	/* caches */
 	pcb_layer_t *lych[LY_CACHE_MAX];
+	char lytoggle[128];
+	int lytoggle_len;
+	int ly_stack_new; /* 1 if we have the new layer stack model; the old one uses lytoggle */
 	htip_t comps;
 	htip_t nets;
 	htic_t net_clr;
@@ -293,6 +296,20 @@ typedef struct {
 	int prev, next, seen;
 } altium_layer_t;
 
+static void make_int_cop(rctx_t *rctx, altium_layer_t *layers, int n)
+{
+	pcb_layergrp_t *g = pcb_get_grp_new_intern(rctx->pcb, n-2);
+	const char *lyname = (layers == NULL) ? "anon" : layers[n].name;
+	rnd_layer_id_t lid = pcb_layer_create(rctx->pcb, g - rctx->pcb->LayerGroups.grp, lyname, 0);
+
+	rctx->midly[n-2] = pcb_get_layer(rctx->pcb->Data, lid);
+	if ((n >= 39) || (n <= 54)) {
+		/* internal plane layer - draw a poly at the end */
+		pcb_attribute_put(&(rctx->midly[n-2]->Attributes), "altium::plane", "1");
+	}
+
+}
+
 static int altium_layer_list(rctx_t *rctx, altium_layer_t *layers, int layers_max, int first)
 {
 	int timeout, cop = 0, n = first;
@@ -312,13 +329,7 @@ printf("  [%d] %s (idx=%d)\n", n, layers[n].name, n);
 			}
 			else {
 				/* internal copper layers for signals */
-				pcb_layergrp_t *g = pcb_get_grp_new_intern(rctx->pcb, n-2);
-				rnd_layer_id_t lid = pcb_layer_create(rctx->pcb, g - rctx->pcb->LayerGroups.grp, layers[n].name, 0);
-				rctx->midly[n-2] = pcb_get_layer(rctx->pcb->Data, lid);
-				if ((n >= 39) || (n <= 54)) {
-					/* internal plane layer - draw a poly at the end */
-					pcb_attribute_put(&(rctx->midly[n-2]->Attributes), "altium::plane", "1");
-				}
+				make_int_cop(rctx, layers, n);
 			}
 		}
 
@@ -335,6 +346,17 @@ static void altium_finalize_layers(rctx_t *rctx)
 	pcb_poly_t *plane[16];
 	altium_record_t *rec;
 	altium_field_t *field;
+
+	if (!rctx->ly_stack_new) {
+		int n;
+		rnd_message(RND_MSG_WARNING, "Old pre-protel99 layer stack header detected;\nthe layer stack loaded may be broken\n");
+
+		/* internal planes start at 22 */
+		for(n = 22; (n < rctx->lytoggle_len) && (n < 27); n++) {
+			if (rctx->lytoggle[n] == '1')
+				make_int_cop(rctx, NULL, n-22+39);
+		}
+	}
 
 	/* create "plane" polygons */
 	for(n = 37; n <= 52; n++) {
@@ -377,6 +399,18 @@ static int altium_parse_board(rctx_t *rctx)
 			switch(field->type) {
 				case altium_kw_field_sheetheight: rctx->pcb->hidlib.size_x = conv_coord_field(field); break;
 				case altium_kw_field_sheetwidth:  rctx->pcb->hidlib.size_y = conv_coord_field(field); break;
+				case altium_kw_field_togglelayers:
+					{
+						int len;
+						assert(field->val_type == ALTIUM_FT_STR);
+						len = strlen(field->val.str);
+						if (len > sizeof(rctx->lytoggle)-1)
+							len = sizeof(rctx->lytoggle)-1;
+						memcpy(rctx->lytoggle, field->val.str, len);
+						rctx->lytoggle[len] = '\0';
+						rctx->lytoggle_len = len;
+					}
+					break;
 				default:
 					/* vx[0-4] and vy[0-4] */
 					if ((tolower(field->key[0]) == 'v') && isdigit(field->key[2]) && (field->key[3] == 0)) {
@@ -396,6 +430,7 @@ static int altium_parse_board(rctx_t *rctx)
 
 						if ((idx < 0) || (idx > layers_max))
 							break;
+						rctx->ly_stack_new = 1;
 						fid = altium_kw_sphash(end);
 						assert(field->val_type == ALTIUM_FT_STR);
 						switch(fid) {

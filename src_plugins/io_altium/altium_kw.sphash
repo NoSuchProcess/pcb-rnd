@@ -73,6 +73,7 @@ field
  none
  rule
  userrouted
+ togglelayers
  _bin_mid_shape
  _bin_bottom_shape
  _bin_mid_xsize
