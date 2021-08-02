@@ -691,8 +691,10 @@ static int altium_parse_pad(rctx_t *rctx)
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_pad]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_pad], rec)) {
 		pcb_pstk_t *ps;
 		pcb_subc_t *sc = NULL;
-		altium_field_t *ly = NULL, *term = NULL, *shapename = NULL;
-		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, xsize = RND_COORD_MAX, ysize = RND_COORD_MAX, hole = 0;
+		altium_field_t *ly = NULL, *term = NULL;
+		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, hole = 0;
+		altium_field_t *shapename[3] = {NULL, NULL, NULL}; /* top, mid, bottom */
+		rnd_coord_t xsize[3] = {RND_COORD_MAX, RND_COORD_MAX, RND_COORD_MAX}, ysize[3] = {RND_COORD_MAX, RND_COORD_MAX, RND_COORD_MAX}; /* top, mid, bottom */
 		rnd_coord_t mask_man = RND_COORD_MAX, paste_man = RND_COORD_MAX, mask_fin = PCB_PROTO_MASK_BLOAT, paste_fin = 0;
 		pcb_pstk_shape_t shape[8] = {0}, copper_shape = {0}, mask_shape = {0}, paste_shape = {0};
 		long compid = -1, netid = -1;
@@ -704,16 +706,23 @@ static int altium_parse_pad(rctx_t *rctx)
 			switch(field->type) {
 				case altium_kw_field_name:      term = field; break;
 				case altium_kw_field_layer:     ly = field; break;
-				case altium_kw_field_shape:     shapename = field; break;
 				case altium_kw_field_x:         x = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_y:         y = conv_coordy_field(rctx, field); break;
-				case altium_kw_field_xsize:     xsize = conv_coord_field(field); break;
-				case altium_kw_field_ysize:     ysize = conv_coord_field(field); break;
 				case altium_kw_field_holesize:  hole = conv_coord_field(field); break;
 				case altium_kw_field_rotation:  rot = conv_double_field(field); break;
 				case altium_kw_field_component: compid = conv_long_field(field); break;
 				case altium_kw_field_net:       netid = conv_long_field(field); break;
 				case altium_kw_field_plated:    plated = conv_bool_field(field); break;
+
+				case altium_kw_field_shape:              shapename[0] = field; break;
+				case altium_kw_field_xsize:              xsize[0] = conv_coord_field(field); break;
+				case altium_kw_field_ysize:              ysize[0] = conv_coord_field(field); break;
+				case altium_kw_field__bin_mid_shape:     shapename[1] = field; break;
+				case altium_kw_field__bin_mid_xsize:     xsize[1] = conv_coord_field(field); break;
+				case altium_kw_field__bin_mid_ysize:     ysize[1] = conv_coord_field(field); break;
+				case altium_kw_field__bin_bottom_shape:  shapename[2] = field; break;
+				case altium_kw_field__bin_bottom_xsize:  xsize[2] = conv_coord_field(field); break;
+				case altium_kw_field__bin_bottom_ysize:  ysize[2] = conv_coord_field(field); break;
 
 				case altium_kw_field_pastemaskexpansionmode:     paste_mode = get_expansion_mode(field); break;
 				case altium_kw_field_soldermaskexpansionmode:    mask_mode = get_expansion_mode(field); break;
@@ -729,12 +738,12 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			rnd_message(RND_MSG_ERROR, "Invalid pad object: missing coordinate (pad not created)\n");
 			continue;
 		}
-		if ((xsize == RND_COORD_MAX) || (ysize == RND_COORD_MAX)) {
+		if ((xsize[0] == RND_COORD_MAX) || (ysize[0] == RND_COORD_MAX)) {
 			rnd_message(RND_MSG_ERROR, "Invalid pad object: missing size (pad not created)\n");
 			continue;
 		}
-		if (shapename == NULL) {
-			rnd_message(RND_MSG_ERROR, "Invalid pad object: missing shape (pad not created)\n");
+		if (shapename[0] == NULL) {
+			rnd_message(RND_MSG_ERROR, "Invalid pad object: missing top shape (pad not created)\n");
 			continue;
 		}
 
@@ -783,28 +792,28 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		}
 
 		/* create the abstract shapes */
-		switch(get_shape(shapename)) {
+		switch(get_shape(shapename[0])) {
 			case ALTIUM_SHAPE_RECTANGLE:
 			case ALTIUM_SHAPE_ROUND_RECTANGLE:
-				pcb_shape_rect(&copper_shape, xsize, ysize);
+				pcb_shape_rect(&copper_shape, xsize[0], ysize[0]);
 				copper_valid = 1;
-				if (((xsize + mask_fin*2) > 0) && ((ysize + mask_fin*2) > 0)) {
-					pcb_shape_rect(&mask_shape, xsize + mask_fin*2, ysize + mask_fin*2);
+				if (((xsize[0] + mask_fin*2) > 0) && ((ysize[0] + mask_fin*2) > 0)) {
+					pcb_shape_rect(&mask_shape, xsize[0] + mask_fin*2, ysize[0] + mask_fin*2);
 					mask_valid = 1;
 				}
-				if (((xsize + paste_fin*2) > 0) && ((ysize + paste_fin*2) > 0)) {
-					pcb_shape_rect(&paste_shape, xsize + paste_fin*2, ysize + paste_fin*2);
+				if (((xsize[0] + paste_fin*2) > 0) && ((ysize[0] + paste_fin*2) > 0)) {
+					pcb_shape_rect(&paste_shape, xsize[0] + paste_fin*2, ysize[0] + paste_fin*2);
 					paste_valid = 1;
 				}
 				break;
 			case ALTIUM_SHAPE_ROUND:
-				if (xsize == ysize) {
+				if (xsize[0] == ysize[0]) {
 					copper_shape.shape = mask_shape.shape = PCB_PSSH_CIRC;
 					copper_shape.data.circ.x = copper_shape.data.circ.y = 0;
-					copper_shape.data.circ.dia = xsize;
+					copper_shape.data.circ.dia = xsize[0];
 					copper_valid = 1;
 					mask_shape.data.circ.x = mask_shape.data.circ.y = 0;
-					mask_shape.data.circ.dia = xsize + mask_fin*2;
+					mask_shape.data.circ.dia = xsize[0] + mask_fin*2;
 					mask_valid = (mask_shape.data.circ.dia > 0);
 					paste_shape = copper_shape;
 					paste_shape.data.circ.dia += paste_fin*2;
@@ -812,25 +821,25 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 				}
 				else {
 					copper_shape.shape = mask_shape.shape = PCB_PSSH_LINE;
-					if (xsize > ysize) {
-						copper_shape.data.line.x1 = mask_shape.data.line.x1 = -xsize/2 + ysize/2;
-						copper_shape.data.line.x2 = mask_shape.data.line.x2 = +xsize/2 - ysize/2;
+					if (xsize[0] > ysize[0]) {
+						copper_shape.data.line.x1 = mask_shape.data.line.x1 = -xsize[0]/2 + ysize[0]/2;
+						copper_shape.data.line.x2 = mask_shape.data.line.x2 = +xsize[0]/2 - ysize[0]/2;
 						copper_shape.data.line.y1 = mask_shape.data.line.y1 = copper_shape.data.line.y2 = mask_shape.data.line.y2 = 0;
-						copper_shape.data.line.thickness = ysize;
+						copper_shape.data.line.thickness = ysize[0];
 						copper_valid = 1;
-						mask_shape.data.line.thickness = ysize + mask_fin*2;
+						mask_shape.data.line.thickness = ysize[0] + mask_fin*2;
 						mask_valid = (mask_shape.data.line.thickness > 0);
 						paste_shape = copper_shape;
 						paste_shape.data.line.thickness += paste_fin*2;
 						paste_valid = (paste_shape.data.line.thickness > 0);
 					}
 					else {
-						copper_shape.data.line.y1 = mask_shape.data.line.y1 = -ysize/2 + xsize/2;
-						copper_shape.data.line.y2 = mask_shape.data.line.y2 = +ysize/2 - xsize/2;
+						copper_shape.data.line.y1 = mask_shape.data.line.y1 = -ysize[0]/2 + xsize[0]/2;
+						copper_shape.data.line.y2 = mask_shape.data.line.y2 = +ysize[0]/2 - xsize[0]/2;
 						copper_shape.data.line.x1 = mask_shape.data.line.x1 = copper_shape.data.line.x2 = mask_shape.data.line.x2 = 0;
-						copper_shape.data.line.thickness = xsize;
+						copper_shape.data.line.thickness = xsize[0];
 						copper_valid = 1;
-						mask_shape.data.line.thickness = xsize + mask_fin*2;
+						mask_shape.data.line.thickness = xsize[0] + mask_fin*2;
 						mask_valid = (mask_shape.data.line.thickness > 0);;
 						paste_shape = copper_shape;
 						paste_shape.data.line.thickness += paste_fin*2;
