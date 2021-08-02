@@ -1539,13 +1539,15 @@ static int altium_parse_via(rctx_t *rctx)
 		altium_field_t *ur = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, dia = RND_COORD_MAX, hole = RND_COORD_MAX;
 		rnd_coord_t cl, mask = 0;
-		long netid = -1;
+		long netid = -1, compid = -1;
 		pcb_pstk_t *ps;
+		pcb_subc_t *sc;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
 				case altium_kw_field_userrouted:ur = field; break;
 				case altium_kw_field_net:      netid = conv_long_field(field); break;
+				case altium_kw_field_component:compid = conv_long_field(field); break;
 				case altium_kw_field_x:        x = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_y:        y = conv_coordy_field(rctx, field); break;
 				case altium_kw_field_diameter: dia = conv_coord_field(field); break;
@@ -1563,8 +1565,15 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			rnd_message(RND_MSG_ERROR, "Invalid via object: missing geometry (via not created)\n");
 			continue;
 		}
+
+		if (compid >= 0) {
+			sc = htip_get(&rctx->comps, compid);
+			if (sc == NULL)
+				rnd_message(RND_MSG_ERROR, "Invalid via object: can't find parent component (%ld); (via not created in subc but in board context)\n", compid);
+		}
+
 		cl = altium_clearance(rctx, netid);
-		ps = pcb_old_via_new(rctx->pcb->Data, -1, x, y, dia, cl * 2, mask, hole, NULL, pcb_flag_make(PCB_FLAG_CLEARLINE));
+		ps = pcb_old_via_new(((sc == NULL) ? rctx->pcb->Data : sc->data), -1, x, y, dia, cl * 2, mask, hole, NULL, pcb_flag_make(PCB_FLAG_CLEARLINE));
 		set_user_routed(ps, ur);
 	}
 
