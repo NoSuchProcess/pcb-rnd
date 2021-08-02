@@ -48,6 +48,14 @@
 
 #define LY_CACHE_MAX 64
 
+typedef struct postpone_hole_s postpone_hole_t;
+
+struct postpone_hole_s {
+	pcb_layer_t *ly;
+	rnd_coord_t x1, y1, x2, y2;
+	postpone_hole_t *next;
+};
+
 typedef struct {
 	altium_tree_t tree;
 	pcb_board_t *pcb;
@@ -65,6 +73,8 @@ typedef struct {
 	htic_t net_clr;
 	rnd_coord_t global_clr;
 	pcb_layer_t *midly[64];
+	postpone_hole_t *postholes;
+	rnd_coord_t moved_x, moved_y; /* how much all objects got moved while normalizing the board */
 } rctx_t;
 
 static rnd_coord_t altium_clearance(rctx_t *rctx, long netid)
@@ -363,6 +373,56 @@ printf("  [%d] %s (idx=%d)\n", n, layers[n].name, n);
 	return cop;
 }
 
+
+TODO("remove these once code dup is resolved below:");
+#include "remove.h"
+
+static void poly_hole_from_rect(rctx_t *rctx, postpone_hole_t *ph)
+{
+	pcb_poly_t *poly = polylist_first(&ph->ly->Polygon);
+	rnd_polyarea_t *original, *new_hole, *result;
+	pcb_flag_t Flags;
+
+	if (poly == NULL) {
+		rnd_message(RND_MSG_ERROR, "Internal error: can't find plane polygon for placing the fill within\n");
+		return;
+	}
+
+
+	/* need to move the hole to compensate for board normalizaiton done earlier in postproc */
+	ph->x1 += rctx->moved_x;
+	ph->x2 += rctx->moved_x;
+	ph->y1 += rctx->moved_y;
+	ph->y2 += rctx->moved_y;
+
+
+	original = pcb_poly_from_poly(poly);
+	new_hole = rnd_poly_from_rect(ph->x1, ph->x2, ph->y1, ph->y2);
+
+
+	TODO("code dup with pcb_polygon_hole_create_from_attached(): ALSO REMOVE THE INCLUDE ABOVE");
+
+	rnd_polyarea_boolean_free(original, new_hole, &result, RND_PBO_SUB);
+
+	/* Convert the resulting polygon(s) into a new set of nodes
+	 * and place them on the page. Delete the original polygon. */
+	Flags = poly->Flags;
+	pcb_poly_to_polygons_on_layer(PCB->Data, ph->ly, result, Flags);
+	pcb_remove_object(PCB_OBJ_POLY, ph->ly, poly, poly);
+
+}
+
+/* Apply postponed poly holes */
+static void altium_finalize_plane_holes(rctx_t *rctx)
+{
+	postpone_hole_t *ph, *next;
+	for(ph = rctx->postholes; ph != NULL; ph = next) {
+		next = ph->next;
+		poly_hole_from_rect(rctx, ph);
+		free(ph);
+	}
+}
+
 /* Apply layer stack side effects */
 static void altium_finalize_layers(rctx_t *rctx)
 {
@@ -399,6 +459,8 @@ static void altium_finalize_layers(rctx_t *rctx)
 			}
 		}
 	}
+
+	altium_finalize_plane_holes(rctx);
 }
 
 static int altium_parse_board(rctx_t *rctx)
@@ -1417,34 +1479,6 @@ static int altium_parse_poly(rctx_t *rctx)
 	return 0;
 }
 
-TODO("remove these once code dup is resolved below:");
-#include "undo.h"
-#include "remove.h"
-
-static void poly_hole_from_rect(pcb_poly_t *poly, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
-{
-	rnd_polyarea_t *original, *new_hole, *result;
-	pcb_flag_t Flags;
-	
-	original = pcb_poly_from_poly(poly);
-	new_hole = rnd_poly_from_rect(x1, x2, y1, y2);
-
-	TODO("code dup with pcb_polygon_hole_create_from_attached(): ALSO REMOVE THE INCLUDE ABOVE");
-
-	/* Subtract the hole from the original polygon shape */
-	rnd_polyarea_boolean_free(original, new_hole, &result, RND_PBO_SUB);
-
-	/* Convert the resulting polygon(s) into a new set of nodes
-	 * and place them on the page. Delete the original polygon.
-	 */
-/*	pcb_undo_save_serial();*/
-	Flags = ((pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2)->Flags;
-	pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) pcb_crosshair.AttachedObject.Ptr1, result, Flags);
-	pcb_remove_object(PCB_OBJ_POLY,
-							 pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
-/*	pcb_undo_restore_serial();
-	pcb_undo_inc_serial();*/
-}
 
 
 static int altium_parse_fill(rctx_t *rctx)
@@ -1486,13 +1520,15 @@ static int altium_parse_fill(rctx_t *rctx)
 			continue;
 
 
-		if (is_plane) {
-			poly = polylist_first(&ly->Polygon);
-			if (poly == NULL) {
-				rnd_message(RND_MSG_ERROR, "Internal error: can't find plane polygon for placing the fill within\n");
-				continue;
-			}
-			poly_hole_from_rect(poly, x1, y1, x2, y2);
+		if (is_plane) { /* remember this as the plane hole doesn't yet exist */
+			postpone_hole_t *ph = malloc(sizeof(postpone_hole_t));
+
+			ph->ly = ly;
+			ph->x1 = x1; ph->y1 = y2;
+			ph->x2 = x2; ph->y2 = y1;
+rnd_printf("pph: %mm %mm %mm %mm\n", ph->x1, ph->y1, ph->x2, ph->y2);
+			ph->next = rctx->postholes;
+			rctx->postholes = ph;
 		}
 		else {
 			cl = altium_clearance(rctx, netid);
@@ -1619,6 +1655,8 @@ static int io_altium_parse_pcbdoc_any(pcb_plug_io_t *ctx, pcb_board_t *pcb, cons
 		rctx.pcb->hidlib.size_x = b.X2-b.X1;
 		rctx.pcb->hidlib.size_y = b.Y2-b.Y1;
 		pcb_data_move(rctx.pcb->Data, -b.X1, -b.Y1, 0);
+		rctx.moved_x = -b.X1;
+		rctx.moved_y = -b.Y1;
 		rnd_message(RND_MSG_ERROR, "Board without contour or body - can not determine real size\n");
 	}
 
