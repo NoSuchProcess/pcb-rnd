@@ -34,6 +34,7 @@
 
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/vtc0.h>
+#include <librnd/poly/polygon1_gen.h>
 
 #include "board.h"
 #include "netlist.h"
@@ -211,9 +212,11 @@ static pcb_layer_t *conv_layer_assy(rctx_t *rctx, int on_bottom)
 	return conv_layer_(rctx, LYCH_ASSY_TOP, PCB_LYT_TOP | PCB_LYT_DOC , "assy");
 }
 
-static pcb_layer_t *conv_layer_field_(rctx_t *rctx, altium_field_t *field, int deny_plane)
+static pcb_layer_t *conv_layer_field_(rctx_t *rctx, altium_field_t *field, int deny_plane, int *is_plane)
 {
 	int kw;
+
+	*is_plane = 0;
 
 	if (field->val_type == ALTIUM_FT_LNG) {
 		if ((field->val.lng >= 0) && (field->val.lng <= 82)) {
@@ -284,6 +287,8 @@ static pcb_layer_t *conv_layer_field_(rctx_t *rctx, altium_field_t *field, int d
 		char *end;
 		int idx;
 
+		*is_plane = 1;
+
 		if (deny_plane) {
 			rnd_message(RND_MSG_ERROR, "Drawing on PLANE layer %s is not supported\n", field->val.str);
 			return NULL;
@@ -294,8 +299,8 @@ static pcb_layer_t *conv_layer_field_(rctx_t *rctx, altium_field_t *field, int d
 			rnd_message(RND_MSG_ERROR, "Layer not found: '%s' - invalid integer for MID layer\n", field->val.str);
 			return NULL;
 		}
-printf("PLANELY get: %d %p\n", idx-1+16+23, rctx->midly[idx-1+16+23]);
-		return rctx->midly[idx-1+16+23];
+printf("PLANELY get: %d %p\n", idx-1+16+21, rctx->midly[idx-1+16+21]);
+		return rctx->midly[idx-1+16+21];
 	}
 TODO("MECHANICAL2...MECHANICAL14: look up or create new doc?; use cache index from 15+16+16+mechanical");
 	rnd_message(RND_MSG_ERROR, "Layer not found: '%s'\n", field->val.str);
@@ -304,7 +309,8 @@ TODO("MECHANICAL2...MECHANICAL14: look up or create new doc?; use cache index fr
 
 static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 {
-	return conv_layer_field_(rctx, field, 1);
+	int dummy;
+	return conv_layer_field_(rctx, field, 1, &dummy);
 }
 
 #define BUMP_COORD(dst, src) do { if (src > dst) dst = src; } while(0)
@@ -365,18 +371,6 @@ static void altium_finalize_layers(rctx_t *rctx)
 	altium_record_t *rec;
 	altium_field_t *field;
 
-	if (!rctx->ly_stack_new) {
-		int n;
-		rnd_message(RND_MSG_WARNING, "Old pre-protel99 layer stack header detected;\nthe layer stack loaded may be broken\n");
-
-		/* internal planes start at 22 */
-		for(n = 22; (n < rctx->lytoggle_len) && (n < 27); n++) {
-			if (rctx->lytoggle[n] == '1') {
-printf("PLANELY set: %d\n", n-22+39);
-				make_int_cop(rctx, NULL, n-22+39);
-			}
-		}
-	}
 
 	/* create "plane" polygons */
 	for(n = 37; n <= 52; n++) {
@@ -468,6 +462,19 @@ static int altium_parse_board(rctx_t *rctx)
 		rctx->pcb->hidlib.size_x = rctx->pcb->hidlib.size_y = 0;
 
 	/*** create the layer stack (copper only) ***/
+
+	if (!rctx->ly_stack_new) {
+		int n;
+		rnd_message(RND_MSG_WARNING, "Old pre-protel99 layer stack header detected;\nthe layer stack loaded may be broken\n");
+
+		/* internal planes start at 22 */
+		for(n = 22; (n < rctx->lytoggle_len) && (n < 27); n++) {
+			if (rctx->lytoggle[n] == '1') {
+printf("PLANELY set: %d\n", n-22+39-2);
+				make_int_cop(rctx, NULL, n-22+39);
+			}
+		}
+	}
 
 printf("Layer stack:\n");
 
@@ -1410,6 +1417,36 @@ static int altium_parse_poly(rctx_t *rctx)
 	return 0;
 }
 
+TODO("remove these once code dup is resolved below:");
+#include "undo.h"
+#include "remove.h"
+
+static void poly_hole_from_rect(pcb_poly_t *poly, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	rnd_polyarea_t *original, *new_hole, *result;
+	pcb_flag_t Flags;
+	
+	original = pcb_poly_from_poly(poly);
+	new_hole = rnd_poly_from_rect(x1, x2, y1, y2);
+
+	TODO("code dup with pcb_polygon_hole_create_from_attached(): ALSO REMOVE THE INCLUDE ABOVE");
+
+	/* Subtract the hole from the original polygon shape */
+	rnd_polyarea_boolean_free(original, new_hole, &result, RND_PBO_SUB);
+
+	/* Convert the resulting polygon(s) into a new set of nodes
+	 * and place them on the page. Delete the original polygon.
+	 */
+/*	pcb_undo_save_serial();*/
+	Flags = ((pcb_poly_t *) pcb_crosshair.AttachedObject.Ptr2)->Flags;
+	pcb_poly_to_polygons_on_layer(PCB->Data, (pcb_layer_t *) pcb_crosshair.AttachedObject.Ptr1, result, Flags);
+	pcb_remove_object(PCB_OBJ_POLY,
+							 pcb_crosshair.AttachedObject.Ptr1, pcb_crosshair.AttachedObject.Ptr2, pcb_crosshair.AttachedObject.Ptr3);
+/*	pcb_undo_restore_serial();
+	pcb_undo_inc_serial();*/
+}
+
+
 static int altium_parse_fill(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -1422,12 +1459,13 @@ static int altium_parse_fill(rctx_t *rctx)
 		long compid = -1, netid = -1;
 		rnd_coord_t cl, x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX;
 		double rot = 0;
+		int is_plane = 0;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
 				case altium_kw_field_userrouted:  ur = field; break;
 				case altium_kw_field_net:         netid = conv_long_field(field); break;
-				case altium_kw_field_layer:       ly = conv_layer_field_(rctx, field, 0); break;
+				case altium_kw_field_layer:       ly = conv_layer_field_(rctx, field, 0, &is_plane); break;
 				case altium_kw_field_component:   compid = conv_long_field(field); break;
 				case altium_kw_field_x1:          x1 = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_y1:          y1 = conv_coordy_field(rctx, field); break;
@@ -1448,14 +1486,24 @@ static int altium_parse_fill(rctx_t *rctx)
 			continue;
 
 
-		cl = altium_clearance(rctx, netid);
-		poly = pcb_poly_new(ly, cl * 2, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY | PCB_FLAG_CLEARPOLY));
-		pcb_poly_point_new(poly, x1, y1);
-		pcb_poly_point_new(poly, x2, y1);
-		pcb_poly_point_new(poly, x2, y2);
-		pcb_poly_point_new(poly, x1, y2);
-		pcb_add_poly_on_layer(ly, poly);
-		set_user_routed(poly, ur);
+		if (is_plane) {
+			poly = polylist_first(&ly->Polygon);
+			if (poly == NULL) {
+				rnd_message(RND_MSG_ERROR, "Internal error: can't find plane polygon for placing the fill within\n");
+				continue;
+			}
+			poly_hole_from_rect(poly, x1, y1, x2, y2);
+		}
+		else {
+			cl = altium_clearance(rctx, netid);
+			poly = pcb_poly_new(ly, cl * 2, pcb_flag_make(PCB_FLAG_CLEARPOLYPOLY | PCB_FLAG_CLEARPOLY));
+			pcb_poly_point_new(poly, x1, y1);
+			pcb_poly_point_new(poly, x2, y1);
+			pcb_poly_point_new(poly, x2, y2);
+			pcb_poly_point_new(poly, x1, y2);
+			pcb_add_poly_on_layer(ly, poly);
+			set_user_routed(poly, ur);
+		}
 	}
 	return 0;
 }
