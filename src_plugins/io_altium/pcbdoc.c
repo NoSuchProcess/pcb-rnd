@@ -908,20 +908,25 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			else
 				copy_pad_shape0(2, copper_shape, copper_valid, mask_shape, mask_valid, paste_shape, paste_valid);
 
-			if (copper_valid[0])
+			if (copper_valid[0]) {
 				pcb_pstk_shape_copy(&shape[n], &copper_shape[0]); shape[n].layer_mask = PCB_LYT_TOP | PCB_LYT_COPPER; n++;
+			}
 
-			if (copper_valid[1])
+			if (copper_valid[1]) {
 				pcb_pstk_shape_copy(&shape[n], &copper_shape[0]); shape[n].layer_mask = PCB_LYT_INTERN | PCB_LYT_COPPER; n++;
+			}
 
-			if (copper_valid[2])
+			if (copper_valid[2]) {
 				pcb_pstk_shape_copy(&shape[n], &copper_shape[0]); shape[n].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_COPPER; n++;
+			}
 
-			if (mask_valid[0])
+			if (mask_valid[0]) {
 				pcb_pstk_shape_copy(&shape[n], &mask_shape[0]);   shape[n].layer_mask = PCB_LYT_TOP | PCB_LYT_MASK; shape[n].comb = PCB_LYC_AUTO | PCB_LYC_SUB; n++;
+			}
 
-			if (mask_valid[1])
+			if (mask_valid[1]) {
 				pcb_pstk_shape_copy(&shape[n], &mask_shape[0]);   shape[n].layer_mask = PCB_LYT_BOTTOM | PCB_LYT_MASK; shape[n].comb = PCB_LYC_AUTO | PCB_LYC_SUB; n++;
+			}
 
 			shape[n].layer_mask = 0;
 		}
