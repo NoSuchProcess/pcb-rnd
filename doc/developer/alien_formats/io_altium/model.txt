@@ -1,0 +1,2 @@
+union index: placement grouping, mainly for components
+user routed: when explicitly false, the object is placed by the autorouter
