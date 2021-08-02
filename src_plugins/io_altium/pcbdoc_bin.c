@@ -354,7 +354,7 @@ int pcbdoc_bin_parse_tracks6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_fil
 
 /*
 		tprintf("line: layer=%d ko=%d net=%ld poly=%ld comp=%ld width=%.2f uu=%d%d\n",
-			d[0], d[1], load_int(d+3, 2), load_int(d+5, 2), load_int(d+7, 2), bmil(d+29), d[36], d[40]);
+			d[0], d[1], load_int(d+3, 2), load_int(d+5, 2), load_int(d+7, 2), bmil(d+29), d[36], d[44]);
 		tprintf("  x1=%.2f y1=%.2f x2=%.2f y2=%.2f\n", bmil(d+13), bmil(d+17), bmil(d+21), bmil(d+25));
 */
 
@@ -369,7 +369,7 @@ int pcbdoc_bin_parse_tracks6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_fil
 		FIELD_CRD(rec, x2, bmil(d+21));
 		FIELD_CRD(rec, y2, bmil(d+25));
 		FIELD_CRD(rec, width, bmil(d+29));
-		TODO("uu is not used by the high level code; find an example");
+		FIELD_LNG(rec, userrouted, d[44]);
 	}
 	return 0;
 }
@@ -414,8 +414,7 @@ int pcbdoc_bin_parse_arcs6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 		FIELD_CRD(rec, startangle, load_dbl(d+25));
 		FIELD_CRD(rec, endangle, load_dbl(d+33));
 		FIELD_CRD(rec, width, bmil(d+41));
-		TODO("uu is not used by the high level code; find an example");
-
+		FIELD_LNG(rec, userrouted, d[55]);
 	}
 	return 0;
 }
@@ -508,6 +507,7 @@ int pcbdoc_bin_parse_fills6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 		FIELD_CRD(rec, x2, bmil(d+21));
 		FIELD_CRD(rec, y2, bmil(d+26));
 		FIELD_CRD(rec, rotation, load_dbl(d+29));
+		FIELD_LNG(rec, userrouted, d[45]);
 	}
 	return 0;
 }
@@ -555,7 +555,8 @@ int pcbdoc_bin_parse_vias6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 		FIELD_CRD(rec, y, bmil(d+17));
 		FIELD_CRD(rec, diameter, bmil(d+21));
 		FIELD_CRD(rec, holesize, bmil(d+25));
-		TODO("uu is not used by the high level code; find an example");
+TODO("Figure the user routed but pos");
+/*		FIELD_LNG(rec, userrouted, d[??]);*/
 	}
 	return 0;
 }
@@ -603,6 +604,9 @@ static int pcbdoc_bin_parse_pads6_fields(rnd_hidlib_t *hidlib, altium_tree_t *tr
 	FIELD_LNG(rec, soldermaskexpansionmode, d[102]);
 
 	FIELD_STR(rec, name, make_blk(tree, name, strlen(name)));
+
+	TODO("figure the user routed flag");
+/*	FIELD_LNG(rec, userrouted, d[??]);*/
 	return 0;
 }
 
