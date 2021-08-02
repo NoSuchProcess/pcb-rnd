@@ -5,7 +5,6 @@
 - BUG/admin: repo.hu tarball signing broke  [report: cuvoodoo]
 - BUG: layer binding dialog: on the standard 4 layer board create a subc with a line on top copper; edit layer bindings of the subc; try to move it to each inner copper -> dialog box gets confused [report: Igor2]
 + BUG: poly clipping bug: load bug_files/TODO/clipbug.lht, clearances are not shown. There's a line hiding under the poly on the right side. Move it and clearances appear. [report: cuvoodoo]
-+ BUG: false alarm: invalid poly (bug_files/TODO/invpoly.lht) [report: cuvoodoo]
 
 2. For later releases ===============================================================================
 - CLEANUP: rewrite query's parent_net_len_found_cb() to collect objects in a tree (from->to objects, at most 2 'to' objects from a single 'from'); use slab allocation for tree elems; see bug_files/revp.lht: {n l o} on the long horizontal line causes zig-zagging map that a single segment reverse won't fix; also revise pads ascii write with this [report: cuvoodoo]
