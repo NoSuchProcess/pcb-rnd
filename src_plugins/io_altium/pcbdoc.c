@@ -310,7 +310,6 @@ static pcb_layer_t *conv_layer_field_(rctx_t *rctx, altium_field_t *field, int d
 			rnd_message(RND_MSG_ERROR, "Layer not found: '%s' - invalid integer for MID layer\n", field->val.str);
 			return NULL;
 		}
-printf("PLANELY get: %d %p\n", idx-1+16+21, rctx->midly[idx-1+16+21]);
 		return rctx->midly[idx-1+16+21];
 	}
 TODO("MECHANICAL2...MECHANICAL14: look up or create new doc?; use cache index from 15+16+16+mechanical");
@@ -523,10 +522,8 @@ static int altium_parse_board(rctx_t *rctx)
 
 		/* internal planes start at 22 */
 		for(n = 22; (n < rctx->lytoggle_len) && (n < 27); n++) {
-			if (rctx->lytoggle[n] == '1') {
-printf("PLANELY set: %d\n", n-22+39-2);
+			if (rctx->lytoggle[n] == '1')
 				make_int_cop(rctx, NULL, n-22+39);
-			}
 		}
 	}
 
@@ -1471,8 +1468,6 @@ static int altium_parse_poly(rctx_t *rctx)
 	return 0;
 }
 
-
-
 static int altium_parse_fill(rctx_t *rctx)
 {
 	altium_record_t *rec;
@@ -1518,7 +1513,6 @@ static int altium_parse_fill(rctx_t *rctx)
 			ph->ly = ly;
 			ph->x1 = x1; ph->y1 = y2;
 			ph->x2 = x2; ph->y2 = y1;
-rnd_printf("pph: %mm %mm %mm %mm\n", ph->x1, ph->y1, ph->x2, ph->y2);
 			ph->next = rctx->postholes;
 			rctx->postholes = ph;
 		}
