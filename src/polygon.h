@@ -98,7 +98,7 @@ rnd_bool rnd_pline_embraces_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy
 rnd_bool rnd_pline_overlaps_circ(rnd_pline_t *pl, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r); /* circle is within or is crossing the polyline */
 rnd_bool pcb_poly_morph(pcb_layer_t *, pcb_poly_t *);
 void pcb_poly_no_holes_dicer(pcb_poly_t * p, const rnd_box_t * clip, void (*emit) (rnd_pline_t *, void *), void *user_data);
-void pcb_poly_to_polygons_on_layer(pcb_data_t *, pcb_layer_t *, rnd_polyarea_t *, pcb_flag_t);
+pcb_poly_t *pcb_poly_to_polygons_on_layer(pcb_data_t *, pcb_layer_t *, rnd_polyarea_t *, pcb_flag_t);
 
 rnd_bool pcb_pline_is_rectangle(rnd_pline_t *pl);
 

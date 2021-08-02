@@ -1731,7 +1731,7 @@ void debug_polygon(pcb_poly_t * p)
 /* Convert a rnd_polyarea_t (and all linked rnd_polyarea_t) to
  * raw PCB polygons on the given layer.
  */
-void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer, rnd_polyarea_t * Input, pcb_flag_t Flags)
+pcb_poly_t *pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer, rnd_polyarea_t * Input, pcb_flag_t Flags)
 {
 	pcb_poly_t *Polygon;
 	rnd_polyarea_t *pa;
@@ -1740,7 +1740,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 	rnd_bool outer;
 
 	if (Input == NULL)
-		return;
+		return NULL;
 
 	pa = Input;
 	do {
@@ -1776,6 +1776,7 @@ void pcb_poly_to_polygons_on_layer(pcb_data_t * Destination, pcb_layer_t * Layer
 	while ((pa = pa->f) != Input);
 
 	pcb_board_set_changed_flag(PCB, rnd_true);
+	return Polygon;
 }
 
 rnd_bool pcb_pline_is_rectangle(rnd_pline_t *pl)
