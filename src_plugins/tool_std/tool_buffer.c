@@ -152,7 +152,7 @@ rnd_tool_t pcb_tool_buffer = {
 
 /* This invisible tool is provided for compatibility with old scripts that use Mode(PasteBuffer) */
 rnd_tool_t pcb_tool_pastebuffer = {
-	"pastebuffer", NULL, NULL, 1000, NULL, RND_TOOL_CURSOR_NAMED("hand"), 0,
+	"PasteBuffer", NULL, NULL, 1000, NULL, RND_TOOL_CURSOR_NAMED("hand"), 0,
 	pcb_tool_buffer_init,
 	pcb_tool_buffer_uninit,
 	pcb_tool_buffer_notify_mode,
