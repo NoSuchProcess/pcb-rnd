@@ -12,7 +12,3 @@
 
 - bin:
 	- 10/15 text width test: layer 35 seems to be top paste, not top overlay
-
-- conclusions on ascii read:
-	- plane layers: can't host wires but can be split
-	- mech layers: all the same; can be marked to be copied on all gerber files
