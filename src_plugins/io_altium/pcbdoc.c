@@ -1541,7 +1541,7 @@ static int altium_parse_via(rctx_t *rctx)
 		rnd_coord_t cl, mask = 0;
 		long netid = -1, compid = -1;
 		pcb_pstk_t *ps;
-		pcb_subc_t *sc;
+		pcb_subc_t *sc = NULL;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
