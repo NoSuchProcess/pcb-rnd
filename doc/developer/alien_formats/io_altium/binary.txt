@@ -62,6 +62,7 @@ Texts6/Data:
 		@21, len=4: height
 		@27, len=8: rotation (double)
 		@35, len=1: is mirrored
+		@36, len=4: stroke width bmil
 		@40, len=1: is comment
 		@41, len=1: is designator
 		@46, len=64: font name
