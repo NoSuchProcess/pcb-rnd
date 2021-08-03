@@ -83,10 +83,18 @@ static pcb_layer_type_t int2side(int i)
 	return 0;
 }
 
-static int side2int(pcb_layer_type_t s)
+static int side2int(pcb_layer_type_t s, int offs)
 {
 	if (s & PCB_LYT_TOP) return 0;
 	if (s & PCB_LYT_BOTTOM) return 1;
+
+	if ((s & PCB_LYT_COPPER) && (s & PCB_LYT_INTERN)) { /* copper internal layers are addressed from top or bottom */
+		if (offs > 0)
+			return 0;
+		else
+			return 1;
+	}
+
 	return 2;
 }
 
@@ -169,7 +177,7 @@ static void lb_data2dialog(void *hid_ctx, lb_ctx_t *ctx)
 		/* disable side for non-sided */
 		if (PCB_LAYER_SIDED(layer->meta.bound.type)) {
 			/* side & offset */
-			RND_DAD_SET_VALUE(hid_ctx, w->side, lng, side2int(layer->meta.bound.type));
+			RND_DAD_SET_VALUE(hid_ctx, w->side, lng, side2int(layer->meta.bound.type, layer->meta.bound.stack_offs));
 			rnd_gui->attr_dlg_widget_state(hid_ctx, w->side, 1);
 		}
 		else
