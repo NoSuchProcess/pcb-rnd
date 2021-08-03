@@ -258,12 +258,6 @@ rnd_trace("l2r!\n");
 	lb_data2dialog(hid_ctx, ctx); /* update disables */
 }
 
-static void lb_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
-{
-	if (attr->user_data == NULL) /* do not handle widgets globally if they have data - they then have a local callback too */
-		lb_update_left2right(hid_ctx, caller_data);
-}
-
 static void lb_attr_layer_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	lb_ctx_t *ctx = caller_data;
@@ -304,6 +298,12 @@ static void lb_attr_layer_chg(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 	skip:;
 	lb_update_left2right(hid_ctx, ctx);
+}
+
+static void lb_attr_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
+{
+	if (attr->change_cb != lb_attr_layer_chg) /* this one is handled by the widget */
+		lb_update_left2right(hid_ctx, caller_data);
 }
 
 const char pcb_acts_LayerBinding[] = "LayerBinding(object)\nLayerBinding(buffer)\n";
