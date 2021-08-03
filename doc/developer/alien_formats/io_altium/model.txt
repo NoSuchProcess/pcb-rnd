@@ -3,3 +3,4 @@
 - fill object on plane layer is poly hole; no other drawing objects on planes
 - mech layers: there are normally 4, the format has 16; they should all be
   boundary; protel users can set if a mech layer is copied to all layers
+- altium 13.x won't do multiline text or non-uniform pstk
