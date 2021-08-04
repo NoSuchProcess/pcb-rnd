@@ -29,17 +29,18 @@ File formats and compatibility:
     * hyperlynx board, version 2 and above
     * kicad board, version 3, 4 and 5 (s-expr)
     * lihata pcb-rnd board (any version)
-    * PADS board
+    * PADS ASCII board
     * gEDA/PCB .pcb board (any version up to 2017)
   - export board:
     * anonimized board statistics in lihata
     * autotrax PCB board, version 4
-    * dsn board
+    * specctra dsn board
     * hyperlynx board, version 2.0
     * kicad board, version 3 (s-expr)
     * kicad pcbnew-board, version 1 (legacy plain text format)
     * lihata pcb-rnd board (any version)
-    * gEDA/PCB .pcb board (various version up to 2017 )
+    * PADS ASCII board
+    * gEDA/PCB .pcb board (various version up to 2017)
   - import footprint:
     * BXL footprints
     * eagle xml footprint lib
@@ -85,10 +86,11 @@ File formats and compatibility:
     * render black&white or color embedded postscript (single file)
     * svg (Scalable Vector Graphics)
   - import misc:
-    * specctra .dsn (wires and vias)
     * HPGL plot (lines, arcs, polygons)
     * MUCS unixplot .pl (lines and vias)
     * ttf font
+    * specctra .dsn (route result: wires and vias)
+    * specctra .ses (route result: wires and vias)
     * eagle DRU (design rules)
     * lihata pcb-rnd font (any version)
     * gEDA/PCB font
@@ -96,7 +98,6 @@ File formats and compatibility:
     * tEDAx pcb-rnd drc script
   - export misc:
     * bom (Bill of Materials, text)
-    * specctra .dsn (padstacks and subcircuits, works with freerouting.net)
     * .dxf (2D drawing for mech CADs)
     * excellon drill/cnc (for PCB fabbing)
     * fidocad .fcd (partial export)

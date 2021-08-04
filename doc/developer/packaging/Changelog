@@ -48,6 +48,7 @@ B. changes that probably DO need action
    - pcb-rnd-core doesn't contain plugins hid_batch, lib_portynet and script
    - pcb-rnd-cloud doesn't contain plugin lib_wget
    - pcb-rnd-lib-gui doesn't contain plugin irc and lib_hid_common
+   - pcb-rnd-auto doesn't contain plugins export_dsn, import_dsn
 
 6. File name changes in existing packages
    - pcb-rnd-core:
