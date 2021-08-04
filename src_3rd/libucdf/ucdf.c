@@ -224,7 +224,7 @@ static long ucdf_load_msat(ucdf_ctx_t *ctx, long num_ids, long *idx)
 	safe_read(buff, 4);
 	next = load_int(ctx, buff, 4);
 
-	printf("next sect: %ld\n", next);
+/*	printf("msat next sect: %ld\n", next);*/
 	return next;
 }
 
