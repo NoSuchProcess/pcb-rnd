@@ -244,8 +244,10 @@ static int ucdf_read_sats(ucdf_ctx_t *ctx)
 	for(n = 0; n < ctx->msat_len; n++) {
 		safe_seek(sect_id2offs(ctx, next));
 		next = ucdf_load_msat(ctx, id_per_sect, &idx);
-		if (next < 0)
+		if (next < 0) {
+			n++; /* acknowledge this block of msat readed */
 			break;
+		}
 	}
 
 	if ((n != ctx->msat_len) || (next != UCDF_SECT_EOC))
