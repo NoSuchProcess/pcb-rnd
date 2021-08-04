@@ -710,7 +710,7 @@ static ucdf_direntry_t *get_data_de(ucdf_direntry_t *de)
 		tprintf(" bin parse: "  #call "\n"); \
 		res = call(hidlib, tree, &fp, &tmp); \
 		if (res != 0) { \
-			rnd_message(RND_MSG_ERROR, "(PcbDoc bin: abort parsing due to errro in " #call ")\n"); \
+			rnd_message(RND_MSG_ERROR, "(PcbDoc bin: abort parsing due to error in " #call ")\n"); \
 			goto error; \
 		} \
 	} while(0)
