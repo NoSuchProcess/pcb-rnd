@@ -76,7 +76,7 @@ Texts6/Data:
 		- for copper layers (@228=0), check offs (@226):
 			- 1 is top copper
 			- -1 is bottom copper
-			- anything from 2 is intern copper, offset is 
+			- anything from 2 is intern copper, offset is offs-1 from top copper
 		- for non-copper layers (@228=3), check offs (@226):
 			6 = top silk
 			7 = bottom silk
