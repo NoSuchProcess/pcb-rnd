@@ -1169,7 +1169,7 @@ static pcb_layer_t *altium_comp_layer(rctx_t *rctx, pcb_layer_t *ly, long compid
 		return ly;
 
 	if (sc == NULL) {
-		rnd_message(RND_MSG_ERROR, "Invalid track object: invalid parent subc (line not created)\n");
+		rnd_message(RND_MSG_ERROR, "Invalid %s object: invalid parent subc (%s not created)\n", otype, otype);
 		return NULL;
 	}
 
