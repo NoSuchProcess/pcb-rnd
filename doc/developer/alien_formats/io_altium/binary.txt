@@ -2,6 +2,8 @@ The container format is CDF, which can be parsed using libucdf. The result is
 named binary streams. The structure of these binary streams are discussed in
 this document.
 
+bmil: 32 bit signed int in 1/10000 mil
+
 [tlb]: type+length encoded bin records
 	1 byte of record type
 	4 bytes of record length
