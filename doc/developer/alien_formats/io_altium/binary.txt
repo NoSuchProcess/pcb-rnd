@@ -55,8 +55,8 @@ Arcs6/Data:
 
 Texts6/Data:
 	[tlb] record type:  0x05; typical length: 230
-		@0,  len=1: layer
-		@7,  len=2: component (ID?)
+		@0,  len=1: layer class
+		@7,  len=2: component (ID?), only if layer class is 2 or 5
 		@13, len=4: x coord in bmil
 		@17, len=4: y coord in bmil
 		@21, len=4: height
@@ -66,8 +66,24 @@ Texts6/Data:
 		@40, len=1: is comment
 		@41, len=1: is designator
 		@46, len=64: font name
+		@115, len=1: text ID?
+		@226, len=2: text-specific layer ID
+		@228, len=1: text-specific layer type: 0=copper, 3=non-copper
 	[l4b] text string
 		pascal string (first byte is net length)
+
+	Figuring the layer is somewhat complicated:
+		- for copper layers (@228=0), check offs (@226):
+			- 1 is top copper
+			- -1 is bottom copper
+			- anything from 2 is intern copper, offset is 
+		- for non-copper layers (@228=3), check offs (@226):
+			6 = top silk
+			7 = bottom silk
+			8 = top paste
+			9 = bottom paste
+			10 = top mask
+			11 = bottom mask
 
 Fills6/Data: TODO
 	[tlb] record type:  0x06; typical record length: 46
