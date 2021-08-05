@@ -323,6 +323,27 @@ static pcb_layer_t *conv_layer_field(rctx_t *rctx, altium_field_t *field)
 	return conv_layer_field_(rctx, field, 1, &dummy);
 }
 
+static pcb_layer_t *bin_layer(rctx_t *rctx, long lyt, long offs)
+{
+	rnd_layer_id_t lid, lids[PCB_MAX_LAYER];
+
+	if ((lyt & PCB_LYT_COPPER) && (lyt & PCB_LYT_INTERN)) {
+		int len;
+
+		len = pcb_layer_list(rctx->pcb, lyt, lids, PCB_MAX_LAYER);
+		offs = offs - 1;
+		if ((offs < 0) || (offs >= len))
+			return NULL;
+		lid = lids[offs];
+	}
+	else {
+		if (pcb_layer_list(rctx->pcb, lyt, &lid, 1) != 1)
+			return NULL;
+	}
+
+	return &rctx->pcb->Data->Layer[lid];
+}
+
 #define BUMP_COORD(dst, src) do { if (src > dst) dst = src; } while(0)
 
 typedef struct {
@@ -1268,17 +1289,20 @@ static int altium_parse_text(rctx_t *rctx)
 		altium_field_t *ur = NULL;
 		pcb_layer_t *ly = NULL;
 		pcb_subc_t *sc;
-		altium_field_t *text = NULL;
+		altium_field_t *ly_ascii = NULL, *text = NULL;
 		pcb_text_t *t;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, x1 = RND_COORD_MAX, y1 = RND_COORD_MAX, x2 = RND_COORD_MAX, y2 = RND_COORD_MAX, w = RND_COORD_MAX;
 		double rot = 0;
 		int mir = 0, designator = 0, comment = 0;
 		long compid = -1;
+		long binly_lyt = 0, binly_offs = 0;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
 				case altium_kw_field_userrouted:ur = field; break;
-				case altium_kw_field_layer:       ly = conv_layer_field(rctx, field); break;
+				case altium_kw_field__bin_layer_offs: binly_offs = conv_long_field(field); break;
+				case altium_kw_field__bin_layer_type: binly_lyt = conv_long_field(field); break;
+				case altium_kw_field_layer:       ly_ascii = field; break;
 				case altium_kw_field_text:        text = field; break;
 				case altium_kw_field_x:           x = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_y:           y = conv_coordy_field(rctx, field); break;
@@ -1295,6 +1319,16 @@ static int altium_parse_text(rctx_t *rctx)
 				default: break;
 			}
 		}
+
+		if (binly_lyt != 0)
+			ly = bin_layer(rctx, binly_lyt, binly_offs);
+		else if (ly_ascii != NULL)
+			ly = conv_layer_field(rctx, ly_ascii);
+		else {
+			rnd_message(RND_MSG_ERROR, "Invalid text object: missing layer field (text not created)\n");
+			continue;
+		}
+
 		if ((x1 == RND_COORD_MAX) || (y1 == RND_COORD_MAX) || (x2 == RND_COORD_MAX) || (y2 == RND_COORD_MAX) || (w == RND_COORD_MAX)) {
 			if ((x == RND_COORD_MAX) || (y == RND_COORD_MAX)) {
 				rnd_message(RND_MSG_ERROR, "Invalid text object: missing coordinate or width (text not created)\n");

@@ -80,6 +80,8 @@ field
  _bin_mid_ysize
  _bin_bottom_xsize
  _bin_bottom_ysize
+ _bin_layer_offs
+ _bin_layer_type
 layers
  top
  bottom

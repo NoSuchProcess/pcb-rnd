@@ -419,12 +419,47 @@ int pcbdoc_bin_parse_arcs6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 	return 0;
 }
 
+/* For whatever reason, layer assigment for text doesn't really depend on
+   the layer field in d[0] (a.k.a. ly1 here), but has some sort of
+   type:offs pair of fields near the end of the record. Translate the
+   type:offs pair to pcb-rnd layer types and return offset in ly1 */
+static long altium_bin_text_layer(int *ly1, int offs, int type)
+{
+	int orig_ly1 = *ly1;
+
+/*	printf("aux=%d,%d,%d\n", *ly1, offs, type);*/
+
+	*ly1 = 0;
+	switch(type) {
+		case 0: /* copper */
+			if (offs == -1) return PCB_LYT_BOTTOM | PCB_LYT_COPPER;
+			if (offs == 1) return PCB_LYT_TOP | PCB_LYT_COPPER;
+			if ((offs > 1) && (offs < 18)) {
+				*ly1 = offs - 1;
+				return PCB_LYT_INTERN | PCB_LYT_COPPER;
+			}
+			rnd_message(RND_MSG_ERROR, "Invalid text copper layer: %d:%d:%d\n", orig_ly1, offs, type);
+			return 0;
+		case 3: /* non-copper */
+			if (offs == 6) return PCB_LYT_TOP | PCB_LYT_SILK;
+			if (offs == 7) return PCB_LYT_BOTTOM | PCB_LYT_SILK;
+			if (offs == 8) return PCB_LYT_TOP | PCB_LYT_PASTE;
+			if (offs == 9) return PCB_LYT_BOTTOM | PCB_LYT_PASTE;
+			if (offs == 10) return PCB_LYT_TOP | PCB_LYT_MASK;
+			if (offs == 11) return PCB_LYT_BOTTOM | PCB_LYT_MASK;
+			rnd_message(RND_MSG_ERROR, "Invalid text non-copper layer: %d:%d:%d\n", orig_ly1, offs, type);
+			return 0;
+	}
+
+	rnd_message(RND_MSG_ERROR, "Unknown text layer: %d:%d:%d\n", orig_ly1, offs, type);
+	return 0;
+}
 
 int pcbdoc_bin_parse_texts6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_t *fp, altium_buf_t *tmp)
 {
 	for(;;) {
 		unsigned char *d;
-		int rectype;
+		int rectype, lyt, lyoffs;
 		long len;
 		altium_record_t *rec;
 
@@ -451,9 +486,23 @@ int pcbdoc_bin_parse_texts6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file
 /*		printf("  string='%s'\n", tmp->data+1);*/
 
 		rec = pcbdoc_ascii_new_rec(tree, "Text", altium_kw_record_text);
-		FIELD_LNG(rec, layer, d[0]+31);
-		FIELD_LNG(rec, net, load_int(d+3, 2));
-		FIELD_LNG(rec, component, load_int(d+7, 2));
+
+
+		lyoffs = d[0];
+		lyt = altium_bin_text_layer(&lyoffs, load_int(d+226, 2), d[228]);
+		FIELD_LNG(rec, _bin_layer_offs, lyoffs);
+		FIELD_LNG(rec, _bin_layer_type, lyt);
+
+/*		{
+			int n;
+			printf("aux=");
+			for(n = 226; n < 230; n++)
+				printf("%d ", d[n]);
+			printf("\n");
+		}*/
+
+		if ((d[0] == 2) || (d[0] == 5))
+			FIELD_LNG(rec, component, load_int(d+7, 2));
 		TODO("poly is not used by the high level code; find an example");
 		FIELD_CRD(rec, x, bmil(d+13));
 		FIELD_CRD(rec, y, bmil(d+17));
