@@ -1,4 +1,288 @@
-pcb-rnd 3.0.0 (rxxxxx)
+pcb-rnd 3.0.0 (r35601)
 ~~~~~~~~~~~~~~~~~~~~~~
-(last: r34705)
+	[asm]
+		-Add: exclude_query config node for handling all the optional builds and DNP
+
+	[autoroute]
+		-Fix: do not generate invalid bounding box for terminals with certain copper/clearance ratio
+		-Fix: do not ruin the head of the netlist with NULL while trying to remember the last valid net
+
+	[conf]
+		-Change: rename pcb-conf.lht to conf_core.lht for clarity
+
+	[core]
+		-Fix: Display(RealignGrid): do not force a new click; when invoked by hotkey or action, just use the current position of the crosshair; this allows the user to take advantage of a coarse grid and object snap
+		-Fix: remove obsolete checks and restrictions on last copper layer(group) removal
+		-Fix: don't let the One Subcircuit removed by the operation code in footprint edit mode
+		-Fix: obj hashing: coord neq comparison should apply the same 4 nanometer tolerance as hash calculation to overcome rounding problems in rotation/mirroring
+		-Fix: enfroce clearance: enable find-through-rats so disjunct same-net objects can be connected
+		-Fix: pstk rendering: always set cap style for the unplated sign else the GUI will assert when the drawing contains only unplated holes (e.g. all other layers are turned off)
+		-Fix: pstk: get clearance at layer: do not crash if the padstack does not have a global clearance and there's no shape on the given layer
+		-Fix: find.c: corner case on any-layer pstk line shape ISC check on mech (hole/slot) - the layer of the line shape is not known, query mech shape on any layer
+		-Fix: extobj: do not let extobj floaters be moved to another layer (would break edit objects being edit objects in most extobj implementation) - rather ask the user to change layer bindings instead
+		-Fix: pcb_subc_alloc_layer_like() should do the layer binding properly when source layer is not a subc (bound) layer but a real board layer
+		-Fix: polygon clipping: when an object can not be cleared from a polygon, don't abort the whole clearing process, only abort clearing that specific object (fixes a bug with one non-clearing line blocking other objects to clear)
+		-Fix: 'move selected to current layer': do not stop after the first object moved
+		-Fix: draw: local default xform uninitialized memory when input xform is NULL
+		-Fix: hshadow of a padstack is always connected to the plated hole of the padstack (shape can not be off-center)
+		-Fix: poly validity check low level: check outer countour then holes separately, then check each hole against other holes and the outer contour for intersection
+		-Fix: adding a hole in a polygon shouldn't remove polygon attributes
+		-Optimize: find: intersection between pstk and poly: skip expensive polygon calculation if there's a clearance (and no thermal)
+		-Import: is-angle-in-arc function from libgrbs
+		-Add: alternative (main) name for Display(ToggleGrid): Display(RealignGrid) for clarity
+		-Add: pcb_arc_get_angle() that calculates the angle for an x;y - it's more than just an atan2() because of the broken coordinate system we use
+		-Add: ExecActionFile() alias for ExecuteFile() - this one should be the same in all Ringdove apps
+		-Add: generic point-on-object utility function
+		-Add: pcb_arc_get_xy() because of the strange coordinate system we use
+		-Add: view: remember netnames when the view is about a net
+		-Add: pcb_poly_to_polygons_on_layer() should return the newly created polygon, the hole-destroys-attribute bugfix will depend on it
+
+	[data]
+		-Cleanup: remove /data; move the stock desktop file and file(1) magic to doc/resources/
+
+	[dialogs]
+		-Del: manage plugins dialog: moved to librnd
+		-Fix: typo in DrcDialog() syntax text
+		-Fix: close file after writing padstack
+		-Fix: padstack proto lib dialog action: no-argument call should default to the new 'auto' mode, which selects either the board (in board edit mode) or the first subc (in footprint edit mode) as target; fixes the bug thta in fp edit mode it popped up an irrelevant context
+		-Fix: layer binding dialog crash on empty name
+		-Fix: layer binding: when figuring intern copper layer offset for the dialog box, set it from top or bottom, never from global
+		-Fix: layer binding: react on changing layer offset (it is a spin widget, compound, so the original test falesly thought it was already handled)
+
+	[doc]
+		-Fix: packager's auto gen script: if the checkout is not configured, try /usr or /usr/local
+		-Fix: pcb-rnd.1: the full name of the hid is gtk2_gdk
+		-Fix: packager's doc generator: $C hint is /etc/pcb-rnd as the default has changed
+		-Fix: packager's doc: HID plugins are prefixed with librnd3-, not pcb-rnd-
+		-Fix: packager's doc: meta pkg needs to depend on the gui lib so the default install works with gui
+		-Fix: bridges: dsn net is unidirectional
+		-Fix: broken link: we don't really have a prop list in query yet
+		-Fix: query: mklist() explanation (copy&paste error)
+		-Fix: query lang has no native comment, only the file format that contains the script may have comments
+		-Cleanup: remove reference to devlog/, it got moved out to the knowledge pool long ago
+		-Update: ircnet is no longer available for support
+		-Update: INSTALL for the separate librnd dependency
+		-Update: bridges: dsn board and pads ascii board are both bidirectional
+		-Update: action ref for "SetGridOffs" and dsn related changes
+		-Change: rnd is ringdove; link all other ringdove projects, add the logo
+		-Add: list and explain all directories in README
+		-Add: test compilation result on IRIX
+		-Add: missing description for pcb-rnd-import-geo
+		-Add: packager's changelog for 3.0.0
+		-Add: faq entry and INSTALL.librnd.txt mention of ldconfig
+		-Add: packager's doc: export major version of librnd in auto/
+		-Add: start documenting the altium binary file format, as figured from the kicad converter perl script
+
+	[drc_query]
+		-Fix: dialog: look up rule source lihata node by working back from the native config node, because it may be in an append subtree
+		-Fix: dialog: copy all rules to design when a read-only-role rule is edited and saved
+		-Fix: when cursor is lost in the rule or def list, don't throw an error, just fill in all '-' on the right side
+		-Fix: violation callback: non-null objects are considered true
+		-Add: dialog: DrcQueryRuleMod(remove) to remove rules
+		-Add: dialog: remove button for rules in the rule list dialog
+
+	[export_dsn]
+		-Del: reimplemented in io_dsn
+
+	[export_gerber]
+		-Fix: don't hardwire lib_hid_common dependency by C call (on xpm name resolution), rather use an action - GUI is not mandatory for gerber exporting
+
+	[export_lpr]
+		-Fix: dynamic allocate values[] on start, querying export_ps option list len (fixes a buffer overrun)
+
+	[export_svg]
+		-Fix: photo mode: did not work due to a fix went wrong years ago on compositing layers
+		-Fix: photo mode: missing holes
+		-Fix: photo mode: flipped export: move bottom copper layers on top of the visibility stack for proper coloring
+		-Fix: offseted polygon vertex coordinate transformation applied y-flip before the offseting which catapulted polygons out of their intended location in flip-mode renders
+		-Add: photo mode: blend noise on top to make the result look less artificial (optional)
+
+	[footprint]
+		-Fix: tru-hole -> thru-hole rename in make install
+
+	[import_dsn]
+		-Del: session import (moved to io_dsn)
+
+	[import_gnetlist]
+		-Add: direct the user to stderr if external netlister failed (also print the command line for easier manual testing)
+		-Add: error handling on non-gnetlist (tedax) import failure
+
+	[io_dsn]
+		-Fix: read: subc keepout layer names shall include "keepout" on parse, else the lookup in predefined layer list won't work
+		-Fix: read: do not perform polygon offset if offset value is in a few nanometer range
+		-Fix: read: use the pcb-rnd convention for keepout layer group purpose strings
+		-Fix: read: attempt to read only numerics as via coords in image
+		-Fix: read: qarc angle corner case - always go from start to end
+		-Fix: read: fix buffer overflow in dsn_parse_file() that smashed the stack
+		-Import: session import code from import_dsn
+		-Cleanup: rename LoadDsnFrom() to ImportSes() (keep a redirection action on the old name with a bold error message for a while)
+		-Add: register dsn export for backward compatibility that calls the plugin's save code
+		-Add: read: parse rule/clearance and set the new drc width and clearance nodes in the conf tree
+		-Add: provision for enabling no-space-before-parenthesis parsing when librnd 3.1.0 is out
+		-Add: write: structure/boundary (both drawing area (board extents) and the first outline from the boundary layer)
+		-Add: write: create a padstack library mapping board and all subcircuit padstacks - this lib will be written out in the (library) section later on
+		-Add: write: write (library) with (padstack) nodes
+		-Add: write: export line shape in padstack proto
+		-Add: write: export off-center circle shape as zero-length line (path) in padstacks
+		-Add: write: support for hshadow padstack shape
+		-Add: write: polygon padstack shape
+		-Add: write: remember layer group names when generating (structure)
+		-Add: write: print a matching padstack shape for every copper layer but omit anything else (e.g. mask and paste)
+		-Add: write: put all board level padstacks as vias in wiring
+		-Add: write: export hole/slot in padstack protos
+		-Add: write: padstack proto: plated/nonplated
+		-Add: write: throw io incompatibility errors on rotated vias - the file format does not support that
+		-Add: write: write footprints in the local lib
+		-Add: write (pin) subtrees n (library (image)) subtrees
+		-Add: write: (placement) subtree
+		-Add: write: build the netlist in the (network) tree
+		-Add: write: net class with default via geo and trace geo copied from the "pen"
+		-Add: write: export wire polygons
+		-Add: write: io_incompat for poly holes
+		-Add: write: (via) should have a (net) subtree too
+		-Add: write: support for wire (qarc)
+		-Add: write: "protect" only locked objects for now
+		-Add: write: export options for router trace width, clearance and via pstk proto override (for compatibility and for easier access from the CLI)
+		-Add: read: hint based "fuzzy" logics for test-parse: some CADs export dsn without filling in the quote char or any CAD identification field
+		-Change: enable the plugin by default
+		-Change: refine write format with 'specctra' just in case dsn doesn't ring a bell
+
+	[io_eagle]
+		-Fix: mask and paste should be created with the right comb bits (auto for both, also sub for mask)
+		-Fix: read: make sure mask and paste layers are always created
+
+	[io_lihata]
+		-Fix: when loading a padstack v6, set read context version to 6 so that the padstack proto loader function understands the context
+
+	[io_pads]
+		-Fix: read: corner case when reading hole in rectangular/square pads
+		-Fix: read: ignore section logic: if it was ignoring an empty section, it accidentally ignored the whole next section as well
+		-Fix: read: be able to read multiple 2nets per net
+		-Add: write (save) board capability
+		-Add: plugin configuration
+		-Add: read: don't load teardrops when disabled
+		-Add: read: don't load polygons when disabled
+		-Fix: read: "CLOSED" piece is not a filled polygon
+
+	[io_tedax]
+		-Fix: handle the corner case of last line not having a newline termination, when saving a drc_query rule
+
+	[lib_compat_help]
+		-Split: padstack shape to rectange converter into a reusable API function
+		-Fix: make sure polygon terminals are clipped before trying to build a padstack of them
+
+	[lib_hid_pcbui]
+		-Fix: wrong make target for shorthand build
+		-Fix: layersel: don't use lys fields when it is NULL for enforced layer visibility
+		-Fix: do not crash in term tootlip popup when rat target layer group is NULL
+		-Del: online-help xpm (moved to librnd for 3.0.0)
+		-Add: bind route styles to hotkey {r N} where N is 1..9
+
+	[lib_netmap]
+		-Add: map_2nets API (for io_pads write)
+		-Add: padstack library API: map pcb_data_t * and store all new padstack prototypes in a padstack proto lib
+
+	[librnd separation]
+		-Fix: link to fungw if a system installed one is available
+		-Fix: API CHANGE: typo in public symbol prefix (rnd_pcphl_*)
+		-Fix: typo in conf gen tool path for gsch2pcb-rnd
+		-Fix: scconfig hooks.c: need to set scconfig template dir in post-arg hook so that libarchdir is already set
+		-Fix: scconfig: set -L and -I for non-standard librnd installation only after figuring libarchdir
+		-Fix: gsch2pcb-rnd uses the safe scconfig template path with libarchdir embedded
+		-Fix: plugin compilation's tmpasm uses safe librnd scconfig template dir with archlibdir embedded
+		-Fix: use the right librnd scconfig node to figure if gui is available
+		-Fix: use system installed fungw's -l from librnd's scconfig node
+		-Fix: gd detection for export_png needs to happen locally because librnd doesn't yet support it in practice
+		-Del: local svn extern of librnd from src_3rd - pcb-rnd is going to depend on independently installed librnd
+		-Del: LD_PRELOAD hack from pcb-rnd-src; replace it with an echo that prints a note on the external librnd dep we have from now on
+		-Del: remove plugins that got split out to librnd from scconfig plugins table
+		-Del: ./configure --coord; this is set in librnd, pcb-rnd passively follows what's set there
+		-Del: 'make map_plugins' librnd/hidlib specific hack for the all-plugin list is not needed anymore
+		-Del: generating buildin list doesn't need to do anything with librnd plugins anymore
+		-Del: doc: action detail source files for actions moved to librnd
+		-Cleanup: gsch2pcb-rnd uses -l for linking librnd
+		-Cleanup: proper librnd uninit sequence in gsch2pcb-rnd
+		-Cleanup: remove hidlib pup list - it's empty since librnd is not in source tree
+		-Cleanup: remove unused RND_DAD_CFG_NOLABEL
+		-Cleanup: remove HL_* from the build - these were relevant to librnd
+		-Cleanup: remove $LC and $LP from packager's doc - we are not installing anything librnd anymore
+		-Cleanup: doc: replace developer doc that got moved to librnd with placeholders with links to the new place
+		-Change: switch over central build and scconfig detections to exclusively use installed librnd instead of depending on a local svn extern
+		-Update: util makefiles for separate librnd install (affects gsch2pcb-rnd and bxl2txt)
+		-Update: follow librnd API changes for 3.0.0 
+		-Update: make local tests compile and run with librnd3
+		-Update: packaging doc: deps for the external librnd3 package names
+		-Add: temporary glue code in gsch2pcb-rnd for -l linking of librnd-hid
+		-Add: specify host app revision
+		-Add: set LIBRND_PREFIX in Makefile.conf (for tests)
+		-Add: Makefile.conf delivers the full path to librnd.mak to simplify test Makefiles
+		-Add: gsch2pcb-rnd sets rnd_app package, version and revision
+		-Add: import librnd's plugin state list before calculating plugin deps
+		-Add: document using non-standard prefix librnd installation
+		-Add: scconfig hooks.c should create a dedicated variable with the full path to librnd scconfig templates, and that shouldn't hardwire /lib but should use arch specific libdir (e.g. lib64 if the user specified that)
+		-Add: document --libarchdir match requirement
+		-Add: static link librnd option: also use librnd.mak for the -L's and -l's
+		-Add: doc: do an svn checkout from librnd action doc and include librnd actions in the action reference (in a separate details section; marked as RND on the list)
+
+
+	[menu]
+		-Add: dedicated text/terminal ID edit submenu for {e t} in the edit menu
+
+	[pcblib]
+		-Rename: pcblib to footprint; by the default config footprints are loaded from: footprint/ from the board file's directory (for existing board files); user dir ~/.pcb-rnd/footprint (and ~/pcblib for compatibility); ../footprint (for running from source); $SHARE/pcb-rnd/footprint (system installed)
+
+	[plugins]
+		-Cleanup: rename ultimate fallback export basename from pcb-out to pcb-rnd-out in all export plugins
+
+	[puller]
+		-Cleanup: remove glib's hash table, use genht's htpp
+		-Cleanup: remove glib dependency from compilation
+
+	[query]
+		-Fix: advanced search fialog: do not crash on converting invalid query expression back to gui
+		-Fix: advanced search dialog: don't ruin user's expression on compilation error
+		-Fix: net_len: net seg len API needs to get query context else it can not return the segment struct, which depends on the context
+		-Fix: net_len: properly mark HUB segments and remember at least two connected objects
+		-Fix: net_len: disable one of the hub removal heuristics because it never removed the hub but the next object
+		-Fix: net_len: special casing padstack <-> traceobject connection: it is common that trace object only slightly overlaps with the padstack (e.g. via) because of a (now ignored) dog leg connection
+		-Add: net_len: public API call for accessing low level net segment mapper
+		-Add: net_len: remember junction hubs and set junction glue fields
+		-Add: net_len: optional rat inclusion (useful for net mappers)
+		-Add: net_len: decide and return which of the two objects is a hub object in a T junction
+		-Add: net_len: detect invalid junction (X-junction, e.g. when two lines intersect in the middle)
+		-Add: net_len: helper function to decide if an object pair is a padstack and a trace object fully overlapping with the padstack
+		-Add: net_len: pre-map trace objects fully overlapping with padstacks so they can be ignored later
+		-Add: net_len: internal API config option for 'stop at terminal' preference
+		-Add: expose val_free_fields for callers handling query results
+		-Add: expose low level iterator reset and upgrade it to work with persistent iterators as well
+		-Add: expose a low level free() for iterator fields
+
+	[route_style]
+		-Fix: use the new 'last route style selected' cache to get the right style selected when when multiple route styles match
+		-Fix: non-strict route style match: if a route style doesn't have via proto set, it matches any pen via proto
+		-Fix: do a route style update after creating a new style to make sure the GUI shows the right style
+		-Fix: when editing a route style using the dialog box, never jump target to a different style only because of matching fields
+
+	[scconfig]
+		-Fix: never use -ansi in the c99 compilation: recent gcc generates an error on the ((unused)) attribute for that
+		-Fix: do not crash when value is missing for --key=value custom args
+		-Fix: don't run configure program if it failed to compile
+		-Add: ./configure needs to figure LIBRND_PREFIX before compiling scconfig as parts of the final ./configure binary is coming from librnd
+		-Add: be able to compile local scconfig with librnd installed to non-standard prefix
+		-Add: print --prefix and --confdir in configuration summary
+		-Del: local computation of the final conf dir: librnd3 does that in an unified way and /local/confdir has the final value
+
+	[svg]
+		-Fix: photo mode export in flip mode: invert photo offset Y on polygons so that the shadow is on the right corner
+
+	[tests]
+		-Fix: uniq_name doesn't depend on system installed genht
+		-Optimize: speed up pcbflags test by removing library search and default font using command line config
+
+	[tool_std]
+		-Fix: some old scripts depend on action Mode(PasteBuffer) while our tool is called "buffer" only; add an invisible alternative tool called PasteBuffer so old scripts work
+
+	[util]
+		-Fix: typo (excess $ROOT for librnd paths) in Makefile template
+
 
