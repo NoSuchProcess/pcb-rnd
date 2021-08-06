@@ -1,30 +1,28 @@
-pcb-rnd 2.4.0
+pcb-rnd 3.0.0
 ~~~~~~~~~~~~~
 
-This release is a major cleanup release, the final preparation for a major
-version change to 3.0.0 in the near future. As such, it finally replaces the
-old, diameter based via description in route styles (and tools) with padstack
-prototypes and introduces lihata v8 to be able to represent this change in
-the native file format. It also has major code refactoring under the hood,
-especially in export options API.
+This milestone release makes the last step to librnd separation: pcb-rnd 
+./configure now depends on librnd installed. 
 
 Feature highlight:
 
-1. Route style switched over from 2-diameters via geometry to padstack
-   prototypes. Video tutorials about this change:
-   https://archive.org/details/pcb-rnd-via_pstk1
-   https://archive.org/details/pcb-rnd-octa-via
+1. New dependency: librnd (>=3.0.0) ext dep
 
-2. Route style can remember and set text font to use
+2. Renames:
+   - pcblib/ to footprint/
+   - pcblib/tru-hole to footprint/thru-hole
+   - config file from pcb-conf.lht to conf_core.lht (user config is affected)
+   - new standard user footprint path: ~/.pcb-rnd/footprint; ~/pcblib is still
+     on the default search path but users are encouraged to move the lib
 
-3. New file format versions: lihata board v8 and lihata subcircuit v8;
-   new board version for the route style upgrades and more detailed
-   text object clearance; new subc version for more detailed text object
-   clearance.
+2. Better specctra DSN support: io_dsn can load and save the whole board
+   (at least copper and nets). Besides driving external autorouters, this
+   may be used as a last-resort import path from proprietary CAD systems.
 
-4. Removed the half-working, export-plugin-specific printer calibration code
-   in favor of a simpler, documented method the user can perform with any
-   export flow.
+3. PADS write: boards can be written in the PADS ASCII format
 
-5. New alien file format: load PADS ASCII boards with the io_pads plugin.
+4. Removed glib dependency from the puller plugin; this makes pcb-rnd
+   free of glib. The only indirect way pcb-rnd could still depend on glib
+   is through librnd when a gtk HID is loaded.
+
 
