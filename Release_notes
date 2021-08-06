@@ -6,7 +6,9 @@ This milestone release makes the last step to librnd separation: pcb-rnd
 
 Feature highlight:
 
-1. New dependency: librnd (>=3.0.0) ext dep
+1. New external dependency: librnd (>=3.0.0); this includes all HIDs.
+   For more information about where to get it, how to install it
+   (including no-root installation), please refer to the file called INSTALL.
 
 2. Renames:
    - pcblib/ to footprint/
@@ -23,6 +25,6 @@ Feature highlight:
 
 4. Removed glib dependency from the puller plugin; this makes pcb-rnd
    free of glib. The only indirect way pcb-rnd could still depend on glib
-   is through librnd when a gtk HID is loaded.
+   is through librnd when a GTK HID is loaded.
 
 
