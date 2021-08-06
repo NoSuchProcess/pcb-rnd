@@ -982,7 +982,7 @@ static int altium_parse_pad(rctx_t *rctx)
 				case altium_kw_field_pastemaskexpansion_manual:  paste_man = conv_coord_field(field); break;
 				case altium_kw_field_soldermaskexpansion_manual: mask_man = conv_coord_field(field); break;
 
-TODO("HOLEWIDTH, HOLEROTATION");
+TODO("HOLEWIDTH, HOLEROTATION, HOLETYPE");
 TODO("STARTLAYER and ENDLAYER (for bbvias)");
 				default: break;
 			}

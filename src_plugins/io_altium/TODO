@@ -1,14 +1,12 @@
-- ascii read, to test:
-	- thermal conn (net based poly conns; altium testing engaged)
-	- standard text test
-	- slot (TODO)
-	- bbvia (TODO)
-	- viatenting (TODO)
-	- multiline text: only from version 15.1
-	- text-on-all-layers (4 layer board); also in footprint?
+- data model, ascii read, to test:
+	- thermal conn (net based poly conns; got test files)
+	- standard text test (TODO)
+	- slot (+TODO)
+	- bbvia (+TODO)
+	- viatenting (+TODO)
+	/ multiline text: only from version 15.1
+	- text-on-all-layers, in footprint (+TODO)
+	- sample5 has non-uniform pstk template: TOPSHAPE, BOTSHAPE
 
 - ascii code:
 	- support text height
-
-- bin:
-	- 10/15 text width test: layer 35 seems to be top paste, not top overlay
