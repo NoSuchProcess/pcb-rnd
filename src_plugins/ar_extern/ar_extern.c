@@ -63,8 +63,9 @@ typedef struct {
 } ext_router_t;
 
 #include "e_route-rnd.c"
+#include "e_freerouting.c"
 
-static const ext_router_t *routers[] = { &route_rnd, NULL };
+static const ext_router_t *routers[] = { &route_rnd, &freerouting, NULL };
 
 static const ext_router_t *find_router(const char *name)
 {
