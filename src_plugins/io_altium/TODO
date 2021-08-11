@@ -1,7 +1,7 @@
 - data model, ascii read, to test:
 	- thermal conn (net based poly conns; got test files)
 	- standard text test (+TODO)
-	- slot (TODO, test file)
+	- slot (TODO, test file fails)
 	- viatenting via_mask (TODO, test file fails)
 	/ multiline text: only from version 15.1
 	- text-on-all-layers (+TODO)
