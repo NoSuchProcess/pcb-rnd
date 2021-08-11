@@ -4,7 +4,7 @@
 	- slot (TODO, test file fails)
 	- viatenting via_mask (TODO, test file fails)
 	/ multiline text: only from version 15.1
-	- text-on-all-layers (+TODO)
+	- text-on-all-layers (TODO - need 8 layers)
 	- sample5 has non-uniform pstk template: TOPSHAPE, BOTSHAPE
 
 - ascii code:
