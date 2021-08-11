@@ -17,13 +17,13 @@ Feature highlight:
    - new standard user footprint path: ~/.pcb-rnd/footprint; ~/pcblib is still
      on the default search path but users are encouraged to move the lib
 
-2. Better specctra DSN support: io_dsn can load and save the whole board
+3. Better specctra DSN support: io_dsn can load and save the whole board
    (at least copper and nets). Besides driving external autorouters, this
    may be used as a last-resort import path from proprietary CAD systems.
 
-3. PADS write: boards can be written in the PADS ASCII format
+4. PADS write: boards can be written in the PADS ASCII format
 
-4. Removed glib dependency from the puller plugin; this makes pcb-rnd
+5. Removed glib dependency from the puller plugin; this makes pcb-rnd
    free of glib. The only indirect way pcb-rnd could still depend on glib
    is through librnd when a GTK HID is loaded.
 
