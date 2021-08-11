@@ -3,7 +3,7 @@
 	- standard text test (+TODO)
 	- slot (TODO, test file)
 	- bbvia (TODO, test file)
-	- viatenting via_mask (TODO, test file)
+	- viatenting via_mask (TODO, test file fails)
 	/ multiline text: only from version 15.1
 	- text-on-all-layers (+TODO)
 	- sample5 has non-uniform pstk template: TOPSHAPE, BOTSHAPE
