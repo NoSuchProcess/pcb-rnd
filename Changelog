@@ -1,4 +1,4 @@
-pcb-rnd 3.0.0 (r35601)
+pcb-rnd 3.0.0 (r35609)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[asm]
 		-Add: exclude_query config node for handling all the optional builds and DNP
