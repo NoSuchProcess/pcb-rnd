@@ -339,9 +339,9 @@ static int search_decompile(search_ctx_t *ctx)
 	pcb_qry_node_t *root;
 	int row, col;
 
-	if (script == NULL) return;
+	if (script == NULL) return 0;
 	while(isspace(*script)) script++;
-	if (*script == '\0') return;
+	if (*script == '\0') return 0;
 
 	root = pcb_query_compile(script);
 	if (root == NULL) {
