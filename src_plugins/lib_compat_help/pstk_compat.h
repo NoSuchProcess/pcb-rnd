@@ -15,6 +15,7 @@ typedef enum {
 /* Create a padstack that emulates an old-style via - register proto as needed
    if id <= 0, allocate a new id automatically */
 pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t clearance, rnd_coord_t mask, pcb_pstk_compshape_t shp, rnd_bool plated);
+pcb_pstk_t *pcb_pstk_new_compat_bbvia(pcb_data_t *data, long int id, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t clearance, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, int bb_top, int bb_bottom);
 
 /* Create/register a padstack prototype that emulates an old-style via */
 rnd_cardinal_t pcb_pstk_new_compat_via_proto(pcb_data_t *data, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, rnd_bool hole_clearance_hack);

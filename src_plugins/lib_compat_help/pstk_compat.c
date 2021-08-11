@@ -138,7 +138,7 @@ static void compat_shape_free(pcb_pstk_shape_t *shp)
 		free(shp->data.poly.x);
 }
 
-rnd_cardinal_t pcb_pstk_new_compat_via_proto(pcb_data_t *data, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, rnd_bool hole_clearance_hack)
+static rnd_cardinal_t pcb_pstk_new_compat_via_proto_(pcb_data_t *data, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, rnd_bool hole_clearance_hack, int bb_top, int bb_bottom)
 {
 	pcb_pstk_proto_t proto;
 	pcb_pstk_shape_t shape[5]; /* max number of shapes: 3 coppers, 2 masks */
@@ -158,6 +158,8 @@ rnd_cardinal_t pcb_pstk_new_compat_via_proto(pcb_data_t *data, rnd_coord_t drill
 	tshp.shape = shape;
 	proto.tr.alloced = proto.tr.used = 1; /* has the canonical form only */
 	proto.tr.array = &tshp;
+	proto.htop = bb_top;
+	proto.hbottom = bb_bottom;
 
 	if (plated || hole_clearance_hack) {
 		tshp.len = 3 + (mask > 0 ? 2 : 0);
@@ -205,7 +207,12 @@ rnd_cardinal_t pcb_pstk_new_compat_via_proto(pcb_data_t *data, rnd_coord_t drill
 	return pid;
 }
 
-static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t clearance, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, rnd_bool hole_clearance_hack)
+rnd_cardinal_t pcb_pstk_new_compat_via_proto(pcb_data_t *data, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, rnd_bool hole_clearance_hack)
+{
+	return pcb_pstk_new_compat_via_proto_(data, drill_dia, pad_dia, mask, cshape, plated, hole_clearance_hack, 0, 0);
+}
+
+static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t clearance, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, rnd_bool hole_clearance_hack, int bb_top, int bb_bottom)
 {
 	rnd_cardinal_t pid;
 
@@ -223,7 +230,7 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_c
 	if (plated && !hole_clearance_hack)
 		assert(pad_dia > drill_dia);
 
-	pid = pcb_pstk_new_compat_via_proto(data, drill_dia, pad_dia, mask, cshape, plated, hole_clearance_hack);
+	pid = pcb_pstk_new_compat_via_proto_(data, drill_dia, pad_dia, mask, cshape, plated, hole_clearance_hack, bb_top, bb_bottom);
 	if (pid == -1)
 		return NULL;
 	return pcb_pstk_new(data, -1, pid, x, y, clearance, pcb_flag_make(PCB_FLAG_CLEARLINE));
@@ -232,9 +239,13 @@ static pcb_pstk_t *pcb_pstk_new_compat_via_(pcb_data_t *data, long int id, rnd_c
 
 pcb_pstk_t *pcb_pstk_new_compat_via(pcb_data_t *data, long int id, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t clearance, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated)
 {
-	return pcb_pstk_new_compat_via_(data, id, x, y, drill_dia, pad_dia, clearance, mask, cshape, plated, 0);
+	return pcb_pstk_new_compat_via_(data, id, x, y, drill_dia, pad_dia, clearance, mask, cshape, plated, 0, 0, 0);
 }
 
+pcb_pstk_t *pcb_pstk_new_compat_bbvia(pcb_data_t *data, long int id, rnd_coord_t x, rnd_coord_t y, rnd_coord_t drill_dia, rnd_coord_t pad_dia, rnd_coord_t clearance, rnd_coord_t mask, pcb_pstk_compshape_t cshape, rnd_bool plated, int bb_top, int bb_bottom)
+{
+	return pcb_pstk_new_compat_via_(data, id, x, y, drill_dia, pad_dia, clearance, mask, cshape, plated, 0, bb_top, bb_bottom);
+}
 
 static pcb_pstk_compshape_t get_old_shape_square(rnd_coord_t *dia, const pcb_pstk_shape_t *shp)
 {
@@ -839,7 +850,7 @@ pcb_pstk_t *pcb_old_via_new(pcb_data_t *data, long int id, rnd_coord_t X, rnd_co
 	else
 		shp = PCB_PSTK_COMPAT_ROUND;
 
-	p = pcb_pstk_new_compat_via_(data, id, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE), 1);
+	p = pcb_pstk_new_compat_via_(data, id, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE), 1, 0, 0);
 	p->Flags.f |= Flags.f & PCB_PSTK_VIA_COMPAT_FLAGS;
 	for(n = 0; n < sizeof(Flags.t) / sizeof(Flags.t[0]); n++) {
 		int nt = PCB_THERMAL_ON, t = ((Flags.t[n/2] >> (4 * (n % 2))) & 0xf);
