@@ -76,6 +76,7 @@ typedef struct {
 	pcb_layer_t *midly[64];
 	postpone_hole_t *postholes;
 	rnd_coord_t moved_x, moved_y; /* how much all objects got moved while normalizing the board */
+	int bbvia_cache;
 } rctx_t;
 
 static rnd_coord_t altium_clearance(rctx_t *rctx, long netid)
@@ -943,7 +944,7 @@ static int altium_parse_pad(rctx_t *rctx)
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_pad]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_pad], rec)) {
 		pcb_pstk_t *ps;
 		pcb_subc_t *sc = NULL;
-		altium_field_t *ly = NULL, *term = NULL, *ur = NULL;
+		altium_field_t *ly = NULL, *term = NULL, *ur = NULL, *startly = NULL, *endly = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, hole = 0;
 		altium_field_t *shapename[3] = {NULL, NULL, NULL}; /* top, mid, bottom */
 		rnd_coord_t xsize[3] = {RND_COORD_MAX, RND_COORD_MAX, RND_COORD_MAX}, ysize[3] = {RND_COORD_MAX, RND_COORD_MAX, RND_COORD_MAX}; /* top, mid, bottom */
@@ -959,6 +960,8 @@ static int altium_parse_pad(rctx_t *rctx)
 				case altium_kw_field_userrouted:ur = field; break;
 				case altium_kw_field_name:      term = field; break;
 				case altium_kw_field_layer:     ly = field; break;
+				case altium_kw_field_startlayer:startly = field; break;
+				case altium_kw_field_endlayer:  endly = field; break;
 				case altium_kw_field_x:         x = conv_coordx_field(rctx, field); break;
 				case altium_kw_field_y:         y = conv_coordy_field(rctx, field); break;
 				case altium_kw_field_holesize:  hole = conv_coord_field(field); break;
@@ -983,7 +986,6 @@ static int altium_parse_pad(rctx_t *rctx)
 				case altium_kw_field_soldermaskexpansion_manual: mask_man = conv_coord_field(field); break;
 
 TODO("HOLEWIDTH, HOLEROTATION, HOLETYPE");
-TODO("STARTLAYER and ENDLAYER (for bbvias)");
 				default: break;
 			}
 		}
@@ -1093,6 +1095,10 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 			}
 			shape[n].layer_mask = 0;
 		}
+
+		/* bbvia: start and end layers */
+		if ((startly != NULL) || (endly != NULL))
+			rnd_message(RND_MSG_ERROR, "Invalid pad: pads can't be blind or buried, making thru-hole\nIf you think you really have a blind/buried pad (not via), report this bug!");
 
 		/* create the padstack */
 		cl = altium_clearance(rctx, netid);
@@ -1564,12 +1570,57 @@ static int altium_parse_fill(rctx_t *rctx)
 	return 0;
 }
 
+static pcb_pstk_t *bb_via_new(rctx_t *rctx,pcb_data_t *data, long int id, rnd_coord_t X, rnd_coord_t Y, rnd_coord_t Thickness, rnd_coord_t Clearance, rnd_coord_t Mask, rnd_coord_t DrillingHole, pcb_flag_t Flags, altium_field_t *startly, altium_field_t *endly)
+{
+	pcb_pstk_t *p;
+	pcb_pstk_compshape_t shp = PCB_PSTK_COMPAT_ROUND;
+	int bb_top, bb_bottom, dummy;
+	static rnd_layergrp_id_t top, bottom;
+	rnd_layergrp_id_t bb_top_gid, bb_bottom_gid;
+	pcb_layer_t *ly;
+
+	/* resolve top and bottom copper for reference; cache them */
+	if (rctx->bbvia_cache == 0) {
+		if (pcb_layergrp_list(rctx->pcb, PCB_LYT_COPPER | PCB_LYT_TOP, &top, 1) != 1)
+			return NULL;
+
+		if (pcb_layergrp_list(rctx->pcb, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &bottom, 1) != 1)
+			return NULL;
+
+		rctx->bbvia_cache = 1;
+	}
+
+	/* resolve layer group id of hole top and bottom */
+	ly = conv_layer_field_(rctx, startly, 0, &dummy);
+	if (ly == NULL)
+		return NULL;
+	bb_top_gid = pcb_layer_get_group_(ly);
+
+	ly = conv_layer_field_(rctx, endly, 0, &dummy);
+	if (ly == NULL)
+		return NULL;
+	bb_bottom_gid = pcb_layer_get_group_(ly);
+
+	/* calc hole distances from top and bottom */
+	if (pcb_layergrp_dist(rctx->pcb, bb_top_gid, top, PCB_LYT_COPPER, &bb_top) != 0)
+		return NULL;
+	if (pcb_layergrp_dist(rctx->pcb, bottom, bb_bottom_gid, PCB_LYT_COPPER, &bb_bottom) != 0)
+		return NULL;
+
+	p = pcb_pstk_new_compat_bbvia(data, id, X, Y, DrillingHole, Thickness, Clearance/2, Mask, shp, !(Flags.f & PCB_FLAG_HOLE), bb_top, bb_bottom);
+	p->Flags.f |= Flags.f & PCB_PSTK_VIA_COMPAT_FLAGS;
+
+	return p;
+}
+
+
 static int altium_parse_via(rctx_t *rctx)
 {
 	altium_record_t *rec;
 	altium_field_t *field;
 
 	for(rec = gdl_first(&rctx->tree.rec[altium_kw_record_via]); rec != NULL; rec = gdl_next(&rctx->tree.rec[altium_kw_record_via], rec)) {
+		altium_field_t *startly = NULL, *endly = NULL;
 		altium_field_t *ur = NULL;
 		rnd_coord_t x = RND_COORD_MAX, y = RND_COORD_MAX, dia = RND_COORD_MAX, hole = RND_COORD_MAX;
 		rnd_coord_t cl, mask = 0;
@@ -1579,6 +1630,8 @@ static int altium_parse_via(rctx_t *rctx)
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
+				case altium_kw_field_startlayer:startly = field; break;
+				case altium_kw_field_endlayer:  endly = field; break;
 				case altium_kw_field_userrouted:ur = field; break;
 				case altium_kw_field_net:      netid = conv_long_field(field); break;
 				case altium_kw_field_component:compid = conv_long_field(field); break;
@@ -1587,7 +1640,6 @@ static int altium_parse_via(rctx_t *rctx)
 				case altium_kw_field_diameter: dia = conv_coord_field(field); break;
 				case altium_kw_field_holesize: hole = conv_coord_field(field); break;
 TODO("TENTINGTOP and TENTINGBOTTOM");
-TODO("STARTLAYER and ENDLAYER (for bbvias)");
 				default: break;
 			}
 		}
@@ -1607,7 +1659,21 @@ TODO("STARTLAYER and ENDLAYER (for bbvias)");
 		}
 
 		cl = altium_clearance(rctx, netid);
-		ps = pcb_old_via_new(((sc == NULL) ? rctx->pcb->Data : sc->data), -1, x, y, dia, cl * 2, mask, hole, NULL, pcb_flag_make(PCB_FLAG_CLEARLINE));
+
+		if ((startly != NULL) || (endly != NULL)) { /* bbvia */
+			if ((startly == NULL) || (endly == NULL)) {
+				rnd_message(RND_MSG_ERROR, "Invalid via: both start and end layer is required for bbvias - via is omitted\n");
+				continue;
+			}
+			ps = bb_via_new(rctx, ((sc == NULL) ? rctx->pcb->Data : sc->data), -1, x, y, dia, cl * 2, mask, hole, pcb_flag_make(PCB_FLAG_CLEARLINE), startly, endly);
+			if (ps == NULL) {
+				rnd_message(RND_MSG_ERROR, "Internal error: failed to create bbvia\n");
+				continue;
+			}
+		}
+		else /* normal thru-hole via */
+			ps = pcb_old_via_new(((sc == NULL) ? rctx->pcb->Data : sc->data), -1, x, y, dia, cl * 2, mask, hole, NULL, pcb_flag_make(PCB_FLAG_CLEARLINE));
+
 		set_user_routed(ps, ur);
 	}
 
