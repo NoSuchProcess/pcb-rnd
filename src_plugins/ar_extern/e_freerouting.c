@@ -28,9 +28,14 @@
 
 #include <librnd/core/compat_fs.h>
 
+#define PROG_STAGES 5.0
+
 static void freert_track_progress(pcb_board_t *pcb, FILE *f, int debug)
 {
-	char line[1024], *s;
+	char line[1024], *s, *end;
+	double stage = 0, prg, p1 = 0, p2 = 0;
+	long curr, max;
+	int type;
 
 	while((s = fgets(line, sizeof(line), f)) != NULL) {
 		if (debug)
@@ -38,6 +43,69 @@ static void freert_track_progress(pcb_board_t *pcb, FILE *f, int debug)
 		if (strncmp(s, "--FRCLI--", 9) != 0)
 			continue;
 		s += 9;
+
+		/* we could process non-progress reports here */
+
+		if (strncmp(s, "PROGRESS--", 10) != 0)
+			continue;
+		s += 10;
+
+		type = 0;
+		if (strncmp(s, "fanout_board", 12) == 0) {
+			stage = 1;
+			s += 12;
+			type = 1;
+		}
+		else if (strncmp(s, "autoroute", 9) == 0) {
+			if (stage == 1)
+				stage = 2;
+			type = 2;
+			s += 9;
+		}
+		else if (strncmp(s, "post_route", 10) == 0) {
+			if (stage < 3)
+				p2 = 0;
+			stage = 3;
+			s += 10;
+			type = 3;
+		}
+		else
+			continue;
+
+		while((*s == ':') || isspace(*s)) s++;
+		if (!isdigit(*s))
+			continue;
+
+		curr = strtol(s, &end, 10);
+		if (*end != '/')
+			continue;
+		s = end+1;
+		max = strtol(s, &end, 10);
+		if ((max > 0) && (curr > 0) && (curr <= max))
+			prg = (double)curr/(double)max;
+		else
+			prg = 0;
+
+		switch(type) {
+			case 1: /* fanout */
+				p1 = prg;
+				p2 = 0;
+				break;
+			case 2: /* autoroute */
+				if (stage == 2) { /* main autorouting */
+					p1 = prg;
+					p2 = 0;
+				}
+				else /* postprocess routing */
+					p2 = prg;
+				break;
+			case 3: /* postproc */
+				p1 = prg;
+				break;
+		}
+
+		if (pcb_ar_extern_progress(stage/PROG_STAGES, p1, p2) != 0)
+			break; /* cancel */
 	}
 
 }
@@ -125,6 +193,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	rv = 0; /* success! */
 
 	exit:;
+	pcb_ar_extern_progress(1, 1, 1);
 	if (!debug) {
 		rnd_unlink(hl, route_res);
 		rnd_tempfile_unlink(route_req);
