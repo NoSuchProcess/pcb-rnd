@@ -79,7 +79,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	/* export */
 	r = rnd_actionva(hl, "export", "dsn", "--dsnfile", route_req, NULL);
 	if (r != 0) {
-		rnd_message(RND_MSG_ERROR, "route-rnd: failed to export the routing request in DSN;\nis the io_dsn plugin available?\n");
+		rnd_message(RND_MSG_ERROR, "freerouting: failed to export the routing request in DSN;\nis the io_dsn plugin available?\n");
 		goto exit;
 	}
 
@@ -92,7 +92,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 
 	r = rnd_system(hl, cmd);
 	if (r != 0) {
-		rnd_message(RND_MSG_ERROR, "freerouting.cli: failed to execute the router: '%s'\n", cmd);
+		rnd_message(RND_MSG_ERROR, "freerouting: failed to execute the router: '%s'\n", cmd);
 		free(cmd);
 		goto exit;
 	}
@@ -101,7 +101,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	/* read and apply the result of the routing */
 	r = rnd_actionva(hl, "ImportSes", route_res, NULL);
 	if (r != 0) {
-		rnd_message(RND_MSG_ERROR, "freerouting.cli: failed to import the route result from tEDAx\n");
+		rnd_message(RND_MSG_ERROR, "freerouting: failed to import the route result from tEDAx\n");
 		goto exit;
 	}
 
