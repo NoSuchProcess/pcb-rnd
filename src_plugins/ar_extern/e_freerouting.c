@@ -26,9 +26,11 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <librnd/core/compat_fs.h>
+
 static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv)
 {
-	const char *route_req = "/tmp/freert.dsn", *route_res = "/tmp/freert.ses";
+	char *route_req, *route_res, *end;
 	rnd_hidlib_t *hl = &pcb->hidlib;
 	char *cmd;
 	int n, r, sargc, rv = 1, mp = 12, debug;
@@ -58,6 +60,21 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 		debug = conf_ar_extern.plugins.ar_extern.freerouting_net.debug;
 		opts = "";
 	}
+
+	/* generate temp file names */
+	route_req = rnd_tempfile_name_new("freert.dsn");
+	if (route_req == NULL) {
+		rnd_message(RND_MSG_ERROR, "freerouting: can't create temporary file name\n");
+		return -1;
+	}
+	route_res = rnd_strdup(route_req);
+	if (route_res == NULL) {
+		rnd_message(RND_MSG_ERROR, "freerouting: can't create temporary file name (out of memory)\n");
+		return -1;
+	}
+	end = route_res + strlen(route_res);
+	end -= 3;
+	strcpy(end, "ses");
 
 	/* export */
 	r = rnd_actionva(hl, "export", "dsn", "--dsnfile", route_req, NULL);
@@ -92,9 +109,14 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 
 	exit:;
 	if (!debug) {
-		rnd_unlink(hl, route_req);
 		rnd_unlink(hl, route_res);
+		rnd_tempfile_unlink(route_req);
 	}
+	else
+		rnd_message(RND_MSG_INFO, "freerouting: debug: session files are left behind as %s and %s\n", route_req, route_res);
+
+	free(route_req);
+	free(route_res);
 	return rv;
 }
 
