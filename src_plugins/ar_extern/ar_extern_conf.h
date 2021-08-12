@@ -11,11 +11,13 @@ typedef struct {
 				RND_CFT_BOOLEAN debug;
 			} route_rnd;
 			const struct freerouting_cli {
-				RND_CFT_STRING exe;
+				RND_CFT_STRING installation;  /* path to the installation directory (normally has bin/ and lib/) */
+				RND_CFT_STRING exe;           /* relative path from the installation dir to the Freerouting executable */
 				RND_CFT_BOOLEAN debug;
 			} freerouting_cli;
 			const struct freerouting_net {
-				RND_CFT_STRING exe;
+				RND_CFT_STRING installation;  /* path to the installation directory (normally has bin/ and lib/) */
+				RND_CFT_STRING exe;           /* relative path from the installation dir to the Freerouting executable */
 				RND_CFT_BOOLEAN debug;
 			} freerouting_net;
 		} ar_extern;
