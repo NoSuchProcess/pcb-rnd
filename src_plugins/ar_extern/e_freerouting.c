@@ -232,6 +232,8 @@ static rnd_export_opt_t *freert_list_conf(rnd_hidlib_t *hl, const char *method)
 	rv[0].help_text = rnd_strdup("Maximum number of postroute optimization steps");
 	rv[0].type = RND_HATT_INTEGER;
 	rv[0].default_val.lng = 12;
+	rv[0].min_val = 0;
+	rv[0].max_val = 1000;
 
 	return rv;
 }
