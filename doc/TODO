@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG/admin: repo.hu tarball signing broke  [report: cuvoodoo]
 
 2. For later releases ===============================================================================
 - CLEANUP: rewrite query's parent_net_len_found_cb() to collect objects in a tree (from->to objects, at most 2 'to' objects from a single 'from'); use slab allocation for tree elems; see bug_files/revp.lht: {n l o} on the long horizontal line causes zig-zagging map that a single segment reverse won't fix; also revise pads ascii write with this [report: cuvoodoo]
