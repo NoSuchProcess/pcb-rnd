@@ -28,7 +28,7 @@
 
 static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv)
 {
-	const char *route_req = "freert.dsn", *route_res = "freert.ses";
+	const char *route_req = "/tmp/freert.dsn", *route_res = "/tmp/freert.ses";
 	rnd_hidlib_t *hl = &pcb->hidlib;
 	char *cmd;
 	int n, r, sargc, rv = 1, mp = 12, debug;
@@ -58,7 +58,12 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	}
 
 	/* export */
-	TODO("call the exporter");
+	r = rnd_actionva(hl, "export", "dsn", "--dsnfile", route_req, NULL);
+	if (r != 0) {
+		rnd_message(RND_MSG_ERROR, "route-rnd: failed to export the routing request in DSN;\nis the io_dsn plugin available?\n");
+		goto exit;
+	}
+
 
 	/* run the router */
 	if ((installation != NULL) && (*installation != '\0'))
