@@ -30,12 +30,13 @@
 
 static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv)
 {
-	char *route_req, *route_res, *end;
+	char *route_req, *route_res, *end, line[1024], *s;
 	rnd_hidlib_t *hl = &pcb->hidlib;
 	char *cmd;
 	int n, r, sargc, rv = 1, mp = 12, debug;
 	fgw_arg_t sres = {0}, *sargv;
 	const char *exe, *installation, *opts;
+	FILE *f;
 
 	sargc = argc + 3;
 	sargv = calloc(sizeof(fgw_arg_t), sargc);
@@ -90,13 +91,17 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	else
 		cmd = rnd_strdup_printf("%s %s -de '%s' -do '%s' -mp %d", exe, opts, route_req, route_res, mp);
 
-	r = rnd_system(hl, cmd);
-	if (r != 0) {
+	f = rnd_popen(hl, cmd, "r");
+	if (f == NULL) {
 		rnd_message(RND_MSG_ERROR, "freerouting: failed to execute the router: '%s'\n", cmd);
 		free(cmd);
 		goto exit;
 	}
 	free(cmd);
+
+	while((s = fgets(line, sizeof(line), f)) != NULL) {
+		printf("|Fr| %s\n", s);
+	}
 
 	/* read and apply the result of the routing */
 	r = rnd_actionva(hl, "ImportSes", route_res, NULL);
