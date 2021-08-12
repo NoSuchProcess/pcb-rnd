@@ -62,6 +62,8 @@ typedef struct {
 	rnd_export_opt_t *(*list_conf)(rnd_hidlib_t *hl, const char *method);
 } ext_router_t;
 
+int pcb_ar_extern_progress(double p_total, double p1, double p2);
+
 #include "e_route-rnd.c"
 #include "e_freerouting.c"
 

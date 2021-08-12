@@ -33,7 +33,7 @@ typedef struct {
 	RND_DAD_DECL_NOINIT(dlg)
 	int active; /* already open - allow only one instance */
 	vts0_t tabs;
-	int wtabs;
+	int wtabs, wprog[3];
 } ar_ctx_t;
 
 static ar_ctx_t ar_ctx;
@@ -329,6 +329,24 @@ static void ar_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	memset(ctx, 0, sizeof(ar_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
 }
 
+int pcb_ar_extern_progress(double p_total, double p1, double p2)
+{
+	rnd_hid_attr_val_t hv;
+
+	if (!ar_ctx.active)
+		return 0;
+
+	hv.dbl = p_total;
+	rnd_gui->attr_dlg_set_value(ar_ctx.dlg_hid_ctx, ar_ctx.wprog[0], &hv);
+	hv.dbl = p1;
+	rnd_gui->attr_dlg_set_value(ar_ctx.dlg_hid_ctx, ar_ctx.wprog[1], &hv);
+	hv.dbl = p2;
+	rnd_gui->attr_dlg_set_value(ar_ctx.dlg_hid_ctx, ar_ctx.wprog[2], &hv);
+
+	rnd_hid_iterate(rnd_gui);
+	return 0;
+}
+
 static void extroute_gui(pcb_board_t *pcb)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -421,7 +439,17 @@ static void extroute_gui(pcb_board_t *pcb)
 				RND_DAD_CHANGE_CB(ar_ctx.dlg, load_conf_cb);
 			RND_DAD_BEGIN_HBOX(ar_ctx.dlg);
 				RND_DAD_COMPFLAG(ar_ctx.dlg, RND_HATF_EXPFILL);
-				RND_DAD_PROGRESS(ar_ctx.dlg);
+				RND_DAD_BEGIN_VBOX(ar_ctx.dlg);
+					RND_DAD_COMPFLAG(ar_ctx.dlg, RND_HATF_EXPFILL);
+					RND_DAD_PROGRESS(ar_ctx.dlg);
+						ar_ctx.wprog[0] = RND_DAD_CURRENT(ar_ctx.dlg);
+					RND_DAD_BEGIN_HBOX(ar_ctx.dlg);
+						RND_DAD_PROGRESS(ar_ctx.dlg);
+							ar_ctx.wprog[1] = RND_DAD_CURRENT(ar_ctx.dlg);
+						RND_DAD_PROGRESS(ar_ctx.dlg);
+							ar_ctx.wprog[2] = RND_DAD_CURRENT(ar_ctx.dlg);
+					RND_DAD_END(ar_ctx.dlg);
+				RND_DAD_END(ar_ctx.dlg);
 			RND_DAD_END(ar_ctx.dlg);
 			RND_DAD_BUTTON_CLOSES(ar_ctx.dlg, clbtn);
 		RND_DAD_END(ar_ctx.dlg);
