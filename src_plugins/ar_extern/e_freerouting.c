@@ -28,9 +28,23 @@
 
 #include <librnd/core/compat_fs.h>
 
+static void freert_track_progress(pcb_board_t *pcb, FILE *f, int debug)
+{
+	char line[1024], *s;
+
+	while((s = fgets(line, sizeof(line), f)) != NULL) {
+		if (debug)
+			rnd_message(RND_MSG_DEBUG, "freerouting: %s", s);
+		if (strncmp(s, "--FRCLI--", 9) != 0)
+			continue;
+		s += 9;
+	}
+
+}
+
 static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *method, int argc, fgw_arg_t *argv)
 {
-	char *route_req, *route_res, *end, line[1024], *s;
+	char *route_req, *route_res, *end;
 	rnd_hidlib_t *hl = &pcb->hidlib;
 	char *cmd;
 	int n, r, sargc, rv = 1, mp = 12, debug;
@@ -99,9 +113,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	}
 	free(cmd);
 
-	while((s = fgets(line, sizeof(line), f)) != NULL) {
-		printf("|Fr| %s\n", s);
-	}
+	freert_track_progress(pcb, f, debug);
 
 	/* read and apply the result of the routing */
 	r = rnd_actionva(hl, "ImportSes", route_res, NULL);
