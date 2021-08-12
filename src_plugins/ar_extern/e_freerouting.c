@@ -33,7 +33,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	char *cmd;
 	int n, r, sargc, rv = 1, mp = 12, debug;
 	fgw_arg_t sres = {0}, *sargv;
-	const char *exe, *installation;
+	const char *exe, *installation, *opts;
 
 	sargc = argc + 3;
 	sargv = calloc(sizeof(fgw_arg_t), sargc);
@@ -50,11 +50,13 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 		exe = conf_ar_extern.plugins.ar_extern.freerouting_cli.exe;
 		installation = conf_ar_extern.plugins.ar_extern.freerouting_cli.installation;
 		debug = conf_ar_extern.plugins.ar_extern.freerouting_cli.debug;
+		opts = "-cli";
 	}
 	else if (strcmp(method, "freerouting.net") == 0) {
 		exe = conf_ar_extern.plugins.ar_extern.freerouting_net.exe;
 		installation = conf_ar_extern.plugins.ar_extern.freerouting_net.installation;
 		debug = conf_ar_extern.plugins.ar_extern.freerouting_net.debug;
+		opts = "";
 	}
 
 	/* export */
@@ -67,9 +69,9 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 
 	/* run the router */
 	if ((installation != NULL) && (*installation != '\0'))
-		cmd = rnd_strdup_printf("cd \"%s\"; %s -cli -de '%s' -do '%s' -mp %d", installation, exe, route_req, route_res, mp);
+		cmd = rnd_strdup_printf("cd \"%s\"; %s %s -de '%s' -do '%s' -mp %d", installation, exe, opts, route_req, route_res, mp);
 	else
-		cmd = rnd_strdup_printf("%s -cli -de '%s' -do '%s' -mp %d", exe, route_req, route_res, mp);
+		cmd = rnd_strdup_printf("%s %s -de '%s' -do '%s' -mp %d", exe, opts, route_req, route_res, mp);
 
 	r = rnd_system(hl, cmd);
 	if (r != 0) {
