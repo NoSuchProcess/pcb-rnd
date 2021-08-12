@@ -46,9 +46,16 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 		sargv[n+3].type &= ~FGW_DYN;
 	}
 
-	exe = conf_ar_extern.plugins.ar_extern.freerouting_cli.exe;
-	installation = conf_ar_extern.plugins.ar_extern.freerouting_cli.installation;
-	debug = conf_ar_extern.plugins.ar_extern.freerouting_cli.debug;
+	if (strcmp(method, "freerouting.cli") == 0) {
+		exe = conf_ar_extern.plugins.ar_extern.freerouting_cli.exe;
+		installation = conf_ar_extern.plugins.ar_extern.freerouting_cli.installation;
+		debug = conf_ar_extern.plugins.ar_extern.freerouting_cli.debug;
+	}
+	else if (strcmp(method, "freerouting.net") == 0) {
+		exe = conf_ar_extern.plugins.ar_extern.freerouting_net.exe;
+		installation = conf_ar_extern.plugins.ar_extern.freerouting_net.installation;
+		debug = conf_ar_extern.plugins.ar_extern.freerouting_net.debug;
+	}
 
 	/* export */
 	TODO("call the exporter");
