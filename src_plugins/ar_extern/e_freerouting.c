@@ -119,6 +119,24 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	const char *exe, *installation, *opts;
 	FILE *f;
 
+	for(n = 0; n < argc; n++) {
+		char *key, *end;
+		if ((argv[n].type & FGW_STR) != FGW_STR)
+			continue;
+		key = argv[n].val.str;
+		if (strncmp(key, "postroute_optimization=", 23) == 0) {
+			mp = strtol(key+23, &end, 10);
+			if (*end != '\0') {
+				rnd_message(RND_MSG_ERROR, "freerouting: postroute_optimization needs to be an integer ('%s')\n", key);
+				return -1;
+			}
+		}
+		else {
+			rnd_message(RND_MSG_ERROR, "freerouting: unknown parameter ('%s')\n", key);
+			return -1;
+		}
+	}
+
 	if (strcmp(method, "freerouting.cli") == 0) {
 		exe = conf_ar_extern.plugins.ar_extern.freerouting_cli.exe;
 		installation = conf_ar_extern.plugins.ar_extern.freerouting_cli.installation;
@@ -210,7 +228,7 @@ static rnd_export_opt_t *freert_list_conf(rnd_hidlib_t *hl, const char *method)
 {
 	rnd_export_opt_t *rv = calloc(sizeof(rnd_export_opt_t), 1+1);
 
-	rv[0].name = rnd_strdup("postroute optimization");
+	rv[0].name = rnd_strdup("postroute_optimization");
 	rv[0].help_text = rnd_strdup("Maximum number of postroute optimization steps");
 	rv[0].type = RND_HATT_INTEGER;
 	rv[0].default_val.lng = 12;
