@@ -115,21 +115,9 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	char *route_req, *route_res, *end;
 	rnd_hidlib_t *hl = &pcb->hidlib;
 	char *cmd;
-	int n, r, sargc, rv = 1, mp = 12, debug;
-	fgw_arg_t sres = {0}, *sargv;
+	int n, r, rv = 1, mp = 12, debug;
 	const char *exe, *installation, *opts;
 	FILE *f;
-
-	sargc = argc + 3;
-	sargv = calloc(sizeof(fgw_arg_t), sargc);
-	sargv[1].type = FGW_STR; sargv[1].val.cstr = "route_req";
-	sargv[2].type = FGW_STR; sargv[2].val.cstr = route_req;
-
-	/* copy the rest of the conf arguments */
-	for(n = 0; n < argc; n++) {
-		sargv[n+3] = argv[n];
-		sargv[n+3].type &= ~FGW_DYN;
-	}
 
 	if (strcmp(method, "freerouting.cli") == 0) {
 		exe = conf_ar_extern.plugins.ar_extern.freerouting_cli.exe;
