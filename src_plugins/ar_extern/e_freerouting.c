@@ -112,10 +112,11 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 		rnd_unlink(hl, route_res);
 		rnd_tempfile_unlink(route_req);
 	}
-	else
+	else {
 		rnd_message(RND_MSG_INFO, "freerouting: debug: session files are left behind as %s and %s\n", route_req, route_res);
+		free(route_req);
+	}
 
-	free(route_req);
 	free(route_res);
 	return rv;
 }
