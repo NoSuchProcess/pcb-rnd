@@ -62,6 +62,7 @@ int pplg_check_ver_io_altium(int ver_needed) { return 0; }
 void pplg_uninit_io_altium(void)
 {
 	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pcbdoc_ascii);
+	RND_HOOK_UNREGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_pcbdoc_bin);
 }
 
 int pplg_init_io_altium(void)
