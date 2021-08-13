@@ -1,6 +1,8 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- FEATURE: io_atium [report: Igor2]
+- FEATURE: ar_extern: freerouting.cli support [report: Igor2]
 - FEATURE: bug_files/TODO/hole_xor.lht: placing a hole-only or slot-only padstack is not xor-drawn; always xor-draw mech on the current layer;  [report: cuvoodoo]
 - FEATURE: query() and propedit should have a subtree for per layer thermals for padstack refs [report: cuvoodoo]
 - BUG: bug_files/TODO/hole_xor.lht: slot not visible in pstk editor [report: Igor2]
