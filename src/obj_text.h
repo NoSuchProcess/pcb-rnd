@@ -125,6 +125,9 @@ rnd_bool pcb_text_old_direction(int *dir_out, double rot);
 /* Return the minimum width the text object needs to have on a specific layer */
 rnd_coord_t pcb_text_min_thickness(const pcb_layer_t *layer);
 
+/* Return the number of invalid characters (with the given font) the text contains */
+int pcb_text_invalid_chars(pcb_board_t *pcb, pcb_font_t *FontPtr, pcb_text_t *Text);
+
 /* hash and eq */
 int pcb_text_eq(const pcb_host_trans_t *tr1, const pcb_text_t *t1, const pcb_host_trans_t *tr2, const pcb_text_t *t2);
 unsigned int pcb_text_hash(const pcb_host_trans_t *tr, const pcb_text_t *t);

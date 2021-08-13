@@ -1332,6 +1332,30 @@ rnd_coord_t pcb_text_height(pcb_font_t *font, double scy, const unsigned char *s
 	return rnd_round((double)h * scy);
 }
 
+int pcb_text_invalid_chars(pcb_board_t *pcb, pcb_font_t *FontPtr, pcb_text_t *Text)
+{
+	unsigned char *s, *rendered;
+	int ctr = 0;
+	pcb_symbol_t *symbol;
+
+	if (FontPtr == NULL)
+		FontPtr = pcb_font(pcb, Text->fid, 1);
+
+	symbol = FontPtr->Symbol;
+
+	rendered = pcb_text_render_str(Text);
+	if (rendered == NULL)
+		return 0;
+
+	for(s = rendered; *s != '\0'; s++)
+		if ((*s > PCB_MAX_FONTPOSITION) || (!symbol[*s].Valid))
+			ctr++;
+
+	pcb_text_free_str(Text, rendered);
+
+	return ctr;
+}
+
 
 RND_INLINE void cheap_text_line(rnd_hid_gc_t gc, pcb_xform_mx_t mx, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t xordx, rnd_coord_t xordy)
 {
