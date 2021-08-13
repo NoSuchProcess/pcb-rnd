@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include <genht/htip.h>
+#include <genht/htpi.h>
 #include <genht/hash.h>
 #include <genvector/vtd0.h>
 
@@ -72,6 +73,7 @@ typedef struct {
 	htip_t comps;
 	htip_t nets;
 	htic_t net_clr;
+	htpi_t obj2netid;
 	rnd_coord_t global_clr;
 	pcb_layer_t *midly[64];
 	postpone_hole_t *postholes;
@@ -1135,6 +1137,9 @@ TODO("HOLEWIDTH, HOLEROTATION, HOLETYPE");
 			else
 				rnd_message(RND_MSG_ERROR, "Invalid pad net ID: %ld (pad not assigned to net)\n", netid);
 		}
+
+		if (netid >= 0)
+			htpi_set(&rctx->obj2netid, ps, netid);
 	}
 
 	return 0;
@@ -1680,9 +1685,21 @@ TODO("TENTINGTOP and TENTINGBOTTOM");
 			ps = pcb_old_via_new(((sc == NULL) ? rctx->pcb->Data : sc->data), -1, x, y, dia, cl * 2, mask, hole, NULL, pcb_flag_make(PCB_FLAG_CLEARLINE));
 
 		set_user_routed(ps, ur);
+		if (netid >= 0)
+			htpi_set(&rctx->obj2netid, ps, netid);
 	}
 
 	return 0;
+}
+
+long io_altium_obj2netid(void *ctx, void *obj)
+{
+	rctx_t *rctx = ctx;
+	htpi_entry_t *e = htpi_getentry(&rctx->obj2netid, obj);
+
+	if (e == NULL)
+		return -1;
+	return e->value;
 }
 
 static int io_altium_parse_pcbdoc_any(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest, int is_bin)
@@ -1726,6 +1743,7 @@ static int io_altium_parse_pcbdoc_any(pcb_plug_io_t *ctx, pcb_board_t *pcb, cons
 	htip_init(&rctx.comps, longhash, longkeyeq);
 	htip_init(&rctx.nets, longhash, longkeyeq);
 	htic_init(&rctx.net_clr, longhash, longkeyeq);
+	htpi_init(&rctx.obj2netid, ptrhash, ptrkeyeq);
 	pcb_data_clip_inhibit_inc(rctx.pcb->Data);
 
 	pcb_layergrp_upgrade_by_map(pcb, altium_dflgmap);
@@ -1763,6 +1781,7 @@ static int io_altium_parse_pcbdoc_any(pcb_plug_io_t *ctx, pcb_board_t *pcb, cons
 	altium_finalize_layers(&rctx); /* depends on board size figured */
 
 	pcb_data_clip_inhibit_dec(rctx.pcb->Data, 1);
+	htpi_uninit(&rctx.obj2netid);
 	htic_uninit(&rctx.net_clr);
 	htip_uninit(&rctx.nets);
 	htip_uninit(&rctx.comps);
