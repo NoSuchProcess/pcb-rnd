@@ -265,6 +265,19 @@ Functions listed below can be called from a query expression.
 	<p>
 	Return value: 0 or 1 indicating the validity of the polygon.
 
+	<h4 autotoc="yes"> text_invalid_chars(obj) </h4>
+	<p>
+	Returns the number of invalid characters of a text object. An invalid
+	character is not rendering with the current font of the text (it is out of
+	range or the font does not have a symbol for the character).
+	<p>
+	Arguments:
+	<ul>
+		<li> obj is a text object
+	</ul>
+	<p>
+	Return value: a positive integer; 0 means all characters would render properly
+
 <h3 autotoc="yes"> Advanced layer access </h3>
 
 	<h4 autotoc="yes"> layer_setup(obj, directive [, res]) </h4>
