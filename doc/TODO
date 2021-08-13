@@ -1,6 +1,9 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
+- FEATURE: bug_files/TODO/hole_xor.lht: placing a hole-only or slot-only padstack is not xor-drawn; always xor-draw mech on the current layer;  [report: cuvoodoo]
+- FEATURE: query() and propedit should have a subtree for per layer thermals for padstack refs [report: cuvoodoo]
+- BUG: bug_files/TODO/hole_xor.lht: slot not visible in pstk editor [report: Igor2]
 
 2. For later releases ===============================================================================
 - CLEANUP: rewrite query's parent_net_len_found_cb() to collect objects in a tree (from->to objects, at most 2 'to' objects from a single 'from'); use slab allocation for tree elems; see bug_files/revp.lht: {n l o} on the long horizontal line causes zig-zagging map that a single segment reverse won't fix; also revise pads ascii write with this [report: cuvoodoo]
@@ -15,10 +18,7 @@
 - CLEANUP: layer order from data
 	- build a list of layers rendered, in the order of rendering while drawing layer groups; maybe use gdl and move the group to the end and use a terminator item;  get pcb_search_obj_by_location_() to use this list for ordering
 	- BUG?: Far-side silk text can be selected and moved when the mouse is over front-side subcircuit. (but this is what we had with elements too! -> rewrite search.c to be a 'script' config) bug_files/farsilk.lht [report: Ade]
-- FEATURE: bug_files/TODO/hole_xor.lht: placing a hole-only or slot-only padstack is not xor-drawn; always xor-draw mech on the current layer;  [report: cuvoodoo]
-- BUG: bug_files/TODO/hole_xor.lht: slot not visible in pstk editor [report: Igor2]
 - FEATURE: library window: allow long tags and long location text to split: rich text widget
-- FEATURE: query() and propedit should have a subtree for per layer thermals for padstack refs [report: cuvoodoo]
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
 	- example of nonetlist: 1206 jumpers and logos
