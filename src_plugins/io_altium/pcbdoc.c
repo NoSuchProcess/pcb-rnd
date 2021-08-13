@@ -1509,6 +1509,8 @@ static int altium_parse_poly(rctx_t *rctx)
 		}
 		pcb_add_poly_on_layer(ly, poly);
 		set_user_routed(poly, ur);
+		if (netid >= 0)
+			htpi_set(&rctx->obj2netid, poly, netid);
 	}
 
 	vtc0_uninit(&vx);
@@ -1578,6 +1580,8 @@ static int altium_parse_fill(rctx_t *rctx)
 			pcb_add_poly_on_layer(ly, poly);
 			set_user_routed(poly, ur);
 		}
+		if (netid >= 0)
+			htpi_set(&rctx->obj2netid, poly, netid);
 	}
 	return 0;
 }
@@ -1704,6 +1708,18 @@ long io_altium_obj2netid(void *ctx, void *obj)
 	return e->value;
 }
 
+static void altium_postproc(rctx_t *rctx)
+{
+	PCB_POLY_COPPER_LOOP(rctx->pcb->Data) {
+		long netid = io_altium_obj2netid(rctx, polygon);
+		if (netid < 0)
+			continue;
+		altium_post_poly_thermal_netname(rctx, rctx->pcb, polygon, netid, PCB_THERMAL_ROUND | PCB_THERMAL_ON, NULL);
+	}
+	PCB_ENDALL_LOOP;
+
+}
+
 static int io_altium_parse_pcbdoc_any(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *filename, rnd_conf_role_t settings_dest, int is_bin)
 {
 	rctx_t rctx = {0};
@@ -1783,6 +1799,9 @@ static int io_altium_parse_pcbdoc_any(pcb_plug_io_t *ctx, pcb_board_t *pcb, cons
 	altium_finalize_layers(&rctx); /* depends on board size figured */
 
 	pcb_data_clip_inhibit_dec(rctx.pcb->Data, 1);
+
+	altium_postproc(&rctx);
+
 	htpi_uninit(&rctx.obj2netid);
 	htic_uninit(&rctx.net_clr);
 	htip_uninit(&rctx.nets);

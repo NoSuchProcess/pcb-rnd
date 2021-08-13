@@ -57,7 +57,7 @@ static void altium_post_poly_thermal_obj(pcb_board_t *pcb, pcb_poly_t *poly, pcb
 	/* the polygon already has a clearance cutout for the object, compensate this
 	   with bloating up the search */
 	switch(obj->type) {
-		case PCB_OBJ_PSTK: fctx.bloat = ((pcb_pstk_t *)obj)->Clearance*2 + 2; break;
+		case PCB_OBJ_PSTK: fctx.bloat = ((pcb_pstk_t *)obj)->Clearance + 2; break;
 		case PCB_OBJ_LINE: fctx.bloat = ((pcb_line_t *)obj)->Clearance + 2; break;
 		case PCB_OBJ_ARC:  fctx.bloat = ((pcb_arc_t *)obj)->Clearance + 2; break;
 		default: return;
