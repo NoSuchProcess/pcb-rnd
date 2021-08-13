@@ -1162,7 +1162,7 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, p
 		PCB_ISC_PSTK_ANYLAYER(ps, pcb_isc_pstk_poly_shp(ctx, ps, poly, &tshp->shape[n]));
 
 	if (PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, poly) && PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps)) {
-		/* optimization: if thre's a clearance between the padstack and the poly, no
+		/* optimization: if there's a clearance between the padstack and the poly, no
 		   need to calculate anything */
 		clr = pcb_obj_clearance_at(PCB, (pcb_any_obj_t *)ps, poly->parent.layer);
 		if (clr > 0) {
