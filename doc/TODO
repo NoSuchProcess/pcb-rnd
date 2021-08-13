@@ -6,6 +6,8 @@
 - FEATURE: bug_files/TODO/hole_xor.lht: placing a hole-only or slot-only padstack is not xor-drawn; always xor-draw mech on the current layer;  [report: cuvoodoo]
 - FEATURE: query() and propedit should have a subtree for per layer thermals for padstack refs [report: cuvoodoo]
 - BUG: bug_files/TODO/hole_xor.lht: slot not visible in pstk editor [report: Igor2]
+- BUG: lesstif: press | for thin draw -> no redraw
+- BUG: lesstif: popup on padstack fails: doesn't remember the object
 
 2. For later releases ===============================================================================
 - CLEANUP: rewrite query's parent_net_len_found_cb() to collect objects in a tree (from->to objects, at most 2 'to' objects from a single 'from'); use slab allocation for tree elems; see bug_files/revp.lht: {n l o} on the long horizontal line causes zig-zagging map that a single segment reverse won't fix; also revise pads ascii write with this [report: cuvoodoo]
