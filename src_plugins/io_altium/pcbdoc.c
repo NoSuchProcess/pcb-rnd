@@ -48,6 +48,8 @@
 #include "pcbdoc_bin.h"
 #include "htic.h"
 
+#include "delay_postproc.c"
+
 #define LY_CACHE_MAX 64
 
 typedef struct postpone_hole_s postpone_hole_t;
