@@ -8,7 +8,7 @@ GLOBARGS=-c rc/library_search_paths=../tests/RTT/lib -c rc/quiet=1 -c editor/drc
 
 TESTS = \
 thickness.diff overlap.diff netint.diff dwg_area.diff fullpoly.diff \
-zone_clr.diff
+zone_clr.diff invchar.diff
 
 test: $(TESTS)
 
@@ -49,6 +49,12 @@ zone_clr.diff: zone_clr.out
 
 zone_clr.out: FORCE
 	@cd $(SRC) && echo "drc()" | $(PCBRND) $(GLOBARGS) $(TDIR)/zone_clr.lht --gui batch | $(FLT) > $(TDIR)/zone_clr.out
+
+invchar.diff: invchar.out
+	@diff -u invchar.ref invchar.out && rm invchar.out
+
+invchar.out: FORCE
+	@cd $(SRC) && echo "drc()" | $(PCBRND) $(GLOBARGS) $(TDIR)/invchar.lht --gui batch | $(FLT) > $(TDIR)/invchar.out
 
 clean:
 	@echo "a" > dummy.out
