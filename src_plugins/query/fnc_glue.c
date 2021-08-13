@@ -340,3 +340,17 @@ static int fnc_poly_is_valid(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv
 
 	PCB_QRY_RET_INT(res, !!pcb_poly_is_valid((pcb_poly_t *)obj));
 }
+
+static int fnc_text_invalid_chars(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_qry_val_t *res)
+{
+	pcb_any_obj_t *obj;
+
+	if ((argc != 1) || (argv[0].type != PCBQ_VT_OBJ))
+		return -1;
+
+	obj = argv[0].data.obj;
+	if (obj->type != PCB_OBJ_TEXT)
+		return -1;
+
+	PCB_QRY_RET_INT(res, pcb_text_invalid_chars(ectx->pcb, NULL, ((pcb_text_t *)obj)));
+}
