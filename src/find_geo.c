@@ -1165,7 +1165,7 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_poly(const pcb_find_t *ctx, pcb_pstk_t *ps, p
 		/* optimization: if there's a clearance between the padstack and the poly, no
 		   need to calculate anything */
 		clr = pcb_obj_clearance_at(PCB, (pcb_any_obj_t *)ps, poly->parent.layer);
-		if (clr > 0) {
+		if ((clr > 0) && (ctx->bloat == 0)) {
 			unsigned char *thr = pcb_pstk_get_thermal(ps, pcb_layer2id(PCB->Data, poly->parent.layer), 0);
 
 			/* but only if there's no thermal that'd connect it through the clearance */
