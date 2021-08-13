@@ -3,7 +3,7 @@ User requested (accepted):
 	+ zone poly based short/broken test; ml=3926 [Vuokko]
 
 Cheap tests, need custom func:
-	- text containing non-render chars
+	+ text containing non-render chars
 
 Possible tests (old):
 	- non-pstk paste object over mask or silk
