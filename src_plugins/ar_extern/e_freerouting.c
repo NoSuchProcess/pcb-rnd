@@ -141,7 +141,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 		exe = conf_ar_extern.plugins.ar_extern.freerouting_cli.exe;
 		installation = conf_ar_extern.plugins.ar_extern.freerouting_cli.installation;
 		debug = conf_ar_extern.plugins.ar_extern.freerouting_cli.debug;
-		opts = "-cli";
+		opts = "";
 	}
 	else if (strcmp(method, "freerouting.net") == 0) {
 		exe = conf_ar_extern.plugins.ar_extern.freerouting_net.exe;
