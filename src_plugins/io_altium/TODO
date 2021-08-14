@@ -1,5 +1,8 @@
 - data model, ascii read, to test:
-	- thermal conn (net based poly conns; got test files)
+	- net based poly-pstk conn:
+		- run multiple passes
+		- connect lines/arcs too
+		- convert thermal style (on polygon side, remember it in a poly attribute?)
 	- standard text test (+TODO)
 	- slot (TODO, test file fails)
 	- viatenting via_mask (TODO, test file fails)
