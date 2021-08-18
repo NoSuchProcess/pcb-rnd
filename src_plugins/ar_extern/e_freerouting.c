@@ -151,7 +151,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 		}
 	}
 
-	if (strcmp(method, "freerouting.cli") == 0) {
+	if (strcmp(method, "freerouting_cli") == 0) {
 		exe = conf_ar_extern.plugins.ar_extern.freerouting_cli.exe;
 		installation = conf_ar_extern.plugins.ar_extern.freerouting_cli.installation;
 		debug = conf_ar_extern.plugins.ar_extern.freerouting_cli.debug;
@@ -241,7 +241,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 
 static int freert_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
 {
-	vts0_append(dst, rnd_strdup("freerouting.cli"));
+	vts0_append(dst, rnd_strdup("freerouting_cli"));
 	vts0_append(dst, rnd_strdup("Erich's minimzed CLI-only fork"));
 	vts0_append(dst, rnd_strdup("freerouting.net"));
 	vts0_append(dst, rnd_strdup("The original variant with GUI support"));
