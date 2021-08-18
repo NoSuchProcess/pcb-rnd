@@ -115,8 +115,8 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	char *route_req, *route_res, *end;
 	rnd_hidlib_t *hl = &pcb->hidlib;
 	char *cmd;
-	int n, r, rv = 1, mp = 12, debug;
-	const char *exe, *installation, *opts;
+	int n, r, rv = 1, ap = 2, pp = 12, fo=0, debug, rich;
+	const char *exe, *installation;
 	FILE *f;
 
 	for(n = 0; n < argc; n++) {
@@ -125,9 +125,23 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 			continue;
 		key = argv[n].val.str;
 		if (strncmp(key, "postroute_optimization=", 23) == 0) {
-			mp = strtol(key+23, &end, 10);
+			pp = strtol(key+23, &end, 10);
 			if (*end != '\0') {
 				rnd_message(RND_MSG_ERROR, "freerouting: postroute_optimization needs to be an integer ('%s')\n", key);
+				return -1;
+			}
+		}
+		if (strncmp(key, "preroute_fanout=", 16) == 0) {
+			fo = strtol(key+16, &end, 10);
+			if (*end != '\0') {
+				rnd_message(RND_MSG_ERROR, "preroute_fanout needs to be 0 or 1 ('%s')\n", key);
+				return -1;
+			}
+		}
+		if (strncmp(key, "batch_passes=", 13) == 0) {
+			ap = strtol(key+13, &end, 10);
+			if (*end != '\0') {
+				rnd_message(RND_MSG_ERROR, "batch_passes needs to be an integer ('%s')\n", key);
 				return -1;
 			}
 		}
@@ -141,13 +155,17 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 		exe = conf_ar_extern.plugins.ar_extern.freerouting_cli.exe;
 		installation = conf_ar_extern.plugins.ar_extern.freerouting_cli.installation;
 		debug = conf_ar_extern.plugins.ar_extern.freerouting_cli.debug;
-		opts = "";
+		rich = 1;
 	}
 	else if (strcmp(method, "freerouting.net") == 0) {
 		exe = conf_ar_extern.plugins.ar_extern.freerouting_net.exe;
 		installation = conf_ar_extern.plugins.ar_extern.freerouting_net.installation;
 		debug = conf_ar_extern.plugins.ar_extern.freerouting_net.debug;
-		opts = "";
+		rich = 0;
+	}
+	else {
+		rnd_message(RND_MSG_ERROR, "freerouting: unsupprted method '%s'\n", method);
+		return -1;
 	}
 
 	/* generate temp file names */
@@ -174,10 +192,18 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 
 
 	/* run the router */
-	if ((installation != NULL) && (*installation != '\0'))
-		cmd = rnd_strdup_printf("cd \"%s\"; %s %s -de '%s' -do '%s' -mp %d", installation, exe, opts, route_req, route_res, mp);
-	else
-		cmd = rnd_strdup_printf("%s %s -de '%s' -do '%s' -mp %d", exe, opts, route_req, route_res, mp);
+	if (rich) { /* the cli version */
+		if ((installation != NULL) && (*installation != '\0'))
+			cmd = rnd_strdup_printf("cd \"%s\"; %s -de '%s' -do '%s' -pp %d -ap %d -fo %d", installation, exe, route_req, route_res, pp, ap, fo);
+		else
+			cmd = rnd_strdup_printf("%s -de '%s' -do '%s' -pp %d -ap %d -fo %d", exe, route_req, route_res, pp, ap, fo);
+	}
+	else { /* the original version */
+		if ((installation != NULL) && (*installation != '\0'))
+			cmd = rnd_strdup_printf("cd \"%s\"; %s -de '%s' -do '%s'", installation, exe, route_req, route_res);
+		else
+			cmd = rnd_strdup_printf("%s -de '%s' -do '%s'", exe, route_req, route_res);
+	}
 
 	f = rnd_popen(hl, cmd, "r");
 	if (f == NULL) {
@@ -234,6 +260,18 @@ static rnd_export_opt_t *freert_list_conf(rnd_hidlib_t *hl, const char *method)
 	rv[0].default_val.lng = 12;
 	rv[0].min_val = 0;
 	rv[0].max_val = 1000;
+
+	rv[1].name = rnd_strdup("batch_passes");
+	rv[1].help_text = rnd_strdup("Maximum number of batch autorouter passes\n");
+	rv[1].type = RND_HATT_INTEGER;
+	rv[1].default_val.lng = 2;
+	rv[1].min_val = 1;
+	rv[1].max_val = 1000;
+
+	rv[2].name = rnd_strdup("preroute_fanout");
+	rv[2].help_text = rnd_strdup("Preroute fanout");
+	rv[2].type = RND_HATT_BOOL;
+	rv[2].default_val.lng = 0;
 
 	return rv;
 }
