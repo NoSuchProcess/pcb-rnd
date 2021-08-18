@@ -252,7 +252,7 @@ static int freert_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
 
 static rnd_export_opt_t *freert_list_conf(rnd_hidlib_t *hl, const char *method)
 {
-	rnd_export_opt_t *rv = calloc(sizeof(rnd_export_opt_t), 1+1);
+	rnd_export_opt_t *rv = calloc(sizeof(rnd_export_opt_t), 3+1);
 
 	rv[0].name = rnd_strdup("postroute_optimization");
 	rv[0].help_text = rnd_strdup("Maximum number of postroute optimization steps");
