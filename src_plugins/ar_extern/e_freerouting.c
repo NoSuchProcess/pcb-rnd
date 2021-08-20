@@ -261,17 +261,19 @@ static rnd_export_opt_t *freert_list_conf(rnd_hidlib_t *hl, const char *method)
 	rv[0].min_val = 0;
 	rv[0].max_val = 1000;
 
-	rv[1].name = rnd_strdup("batch_passes");
-	rv[1].help_text = rnd_strdup("Maximum number of batch autorouter passes\n");
-	rv[1].type = RND_HATT_INTEGER;
-	rv[1].default_val.lng = 2;
-	rv[1].min_val = 1;
-	rv[1].max_val = 1000;
+	if (strcmp(method, "freerouting_cli") == 0) {
+		rv[1].name = rnd_strdup("batch_passes");
+		rv[1].help_text = rnd_strdup("Maximum number of batch autorouter passes\n");
+		rv[1].type = RND_HATT_INTEGER;
+		rv[1].default_val.lng = 2;
+		rv[1].min_val = 1;
+		rv[1].max_val = 1000;
 
-	rv[2].name = rnd_strdup("preroute_fanout");
-	rv[2].help_text = rnd_strdup("Preroute fanout");
-	rv[2].type = RND_HATT_BOOL;
-	rv[2].default_val.lng = 0;
+		rv[2].name = rnd_strdup("preroute_fanout");
+		rv[2].help_text = rnd_strdup("Preroute fanout");
+		rv[2].type = RND_HATT_BOOL;
+		rv[2].default_val.lng = 0;
+	}
 
 	return rv;
 }
