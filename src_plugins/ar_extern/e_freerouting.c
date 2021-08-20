@@ -249,7 +249,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 static int freert_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
 {
 	vts0_append(dst, rnd_strdup("freerouting_cli"));
-	vts0_append(dst, rnd_strdup("Erich's minimzed CLI-only fork"));
+	vts0_append(dst, rnd_strdup("Erich's minimized CLI-only fork"));
 	vts0_append(dst, rnd_strdup("freerouting.net"));
 	vts0_append(dst, rnd_strdup("The original variant with GUI support"));
 
