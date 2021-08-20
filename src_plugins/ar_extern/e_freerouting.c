@@ -131,21 +131,21 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 				return -1;
 			}
 		}
-		if (strncmp(key, "preroute_fanout=", 16) == 0) {
+		else if (strncmp(key, "preroute_fanout=", 16) == 0) {
 			fo = strtol(key+16, &end, 10);
 			if (*end != '\0') {
 				rnd_message(RND_MSG_ERROR, "preroute_fanout needs to be 0 or 1 ('%s')\n", key);
 				return -1;
 			}
 		}
-		if (strncmp(key, "batch_passes=", 13) == 0) {
+		else if (strncmp(key, "batch_passes=", 13) == 0) {
 			ap = strtol(key+13, &end, 10);
 			if (*end != '\0') {
 				rnd_message(RND_MSG_ERROR, "batch_passes needs to be an integer ('%s')\n", key);
 				return -1;
 			}
 		}
-		if (strncmp(key, "test=", 5) == 0) {
+		else if (strncmp(key, "test=", 5) == 0) {
 			test = strtol(key+5, &end, 10);
 			if (*end != '\0') {
 				rnd_message(RND_MSG_ERROR, "test needs to be 0 or 1 ('%s')\n", key);
