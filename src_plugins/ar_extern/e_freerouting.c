@@ -115,7 +115,7 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	char *route_req, *route_res, *end;
 	rnd_hidlib_t *hl = &pcb->hidlib;
 	char *cmd;
-	int n, r, rv = 1, ap = 2, pp = 12, fo=0, debug, rich;
+	int n, r, rv = 1, ap = 2, pp = 12, fo=0, test = 0, debug, rich;
 	const char *exe, *installation;
 	FILE *f;
 
@@ -142,6 +142,13 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 			ap = strtol(key+13, &end, 10);
 			if (*end != '\0') {
 				rnd_message(RND_MSG_ERROR, "batch_passes needs to be an integer ('%s')\n", key);
+				return -1;
+			}
+		}
+		if (strncmp(key, "test=", 5) == 0) {
+			test = strtol(key+5, &end, 10);
+			if (*end != '\0') {
+				rnd_message(RND_MSG_ERROR, "test needs to be 0 or 1 ('%s')\n", key);
 				return -1;
 			}
 		}
@@ -194,9 +201,9 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	/* run the router */
 	if (rich) { /* the cli version */
 		if ((installation != NULL) && (*installation != '\0'))
-			cmd = rnd_strdup_printf("cd \"%s\"; %s -de '%s' -do '%s' -pp %d -ap %d -fo %d", installation, exe, route_req, route_res, pp, ap, fo);
+			cmd = rnd_strdup_printf("cd \"%s\"; %s -de '%s' -do '%s' -pp %d -ap %d%s%s", installation, exe, route_req, route_res, pp, ap, (fo ? " -fo" : ""), (test ? " -test" : ""));
 		else
-			cmd = rnd_strdup_printf("%s -de '%s' -do '%s' -pp %d -ap %d -fo %d", exe, route_req, route_res, pp, ap, fo);
+			cmd = rnd_strdup_printf("%s -de '%s' -do '%s' -pp %d -ap %d%s%s", exe, route_req, route_res, pp, ap, (fo ? " -fo" : ""), (test ? " -test" : ""));
 	}
 	else { /* the original version */
 		if ((installation != NULL) && (*installation != '\0'))
@@ -252,7 +259,7 @@ static int freert_list_methods(rnd_hidlib_t *hl, vts0_t *dst)
 
 static rnd_export_opt_t *freert_list_conf(rnd_hidlib_t *hl, const char *method)
 {
-	rnd_export_opt_t *rv = calloc(sizeof(rnd_export_opt_t), 3+1);
+	rnd_export_opt_t *rv = calloc(sizeof(rnd_export_opt_t), 4+1);
 
 	rv[0].name = rnd_strdup("postroute_optimization");
 	rv[0].help_text = rnd_strdup("Maximum number of postroute optimization steps");
@@ -273,6 +280,11 @@ static rnd_export_opt_t *freert_list_conf(rnd_hidlib_t *hl, const char *method)
 		rv[2].help_text = rnd_strdup("Preroute fanout");
 		rv[2].type = RND_HATT_BOOL;
 		rv[2].default_val.lng = 0;
+
+		rv[3].name = rnd_strdup("test");
+		rv[3].help_text = rnd_strdup("Test/experimental features");
+		rv[3].type = RND_HATT_BOOL;
+		rv[3].default_val.lng = 0;
 	}
 
 	return rv;
