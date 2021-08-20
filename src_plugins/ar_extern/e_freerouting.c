@@ -200,9 +200,9 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 	}
 	else { /* the original version */
 		if ((installation != NULL) && (*installation != '\0'))
-			cmd = rnd_strdup_printf("cd \"%s\"; %s -de '%s' -do '%s'", installation, exe, route_req, route_res);
+			cmd = rnd_strdup_printf("cd \"%s\"; %s -de '%s' -do '%s' -mp %d", installation, exe, route_req, route_res, pp);
 		else
-			cmd = rnd_strdup_printf("%s -de '%s' -do '%s'", exe, route_req, route_res);
+			cmd = rnd_strdup_printf("%s -de '%s' -do '%s' -mp %d", exe, route_req, route_res, pp);
 	}
 
 	f = rnd_popen(hl, cmd, "r");
