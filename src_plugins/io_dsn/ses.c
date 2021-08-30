@@ -45,6 +45,7 @@
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_menu.h>
 #include <librnd/core/plugins.h>
+#include <librnd/core/compat_misc.h>
 
 #include "src_plugins/lib_compat_help/pstk_compat.h"
 
