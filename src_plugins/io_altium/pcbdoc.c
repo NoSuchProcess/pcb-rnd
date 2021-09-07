@@ -35,6 +35,7 @@
 
 #include <librnd/core/compat_misc.h>
 #include <librnd/core/vtc0.h>
+#include <librnd/core/rotate.h>
 #include <librnd/poly/polygon1_gen.h>
 
 #include "board.h"
@@ -953,11 +954,11 @@ static int altium_parse_pad(rctx_t *rctx)
 		altium_field_t *shapename[3] = {NULL, NULL, NULL}; /* top, mid, bottom */
 		rnd_coord_t xsize[3] = {RND_COORD_MAX, RND_COORD_MAX, RND_COORD_MAX}, ysize[3] = {RND_COORD_MAX, RND_COORD_MAX, RND_COORD_MAX}; /* top, mid, bottom */
 		rnd_coord_t mask_man = RND_COORD_MAX, paste_man = RND_COORD_MAX, mask_fin = PCB_PROTO_MASK_BLOAT, paste_fin = 0;
-		pcb_pstk_shape_t shape[8] = {0}, copper_shape[3] = {0}, mask_shape[3] = {0}, paste_shape[3] = {0};
+		pcb_pstk_shape_t shape[9] = {0}, copper_shape[3] = {0}, mask_shape[3] = {0}, paste_shape[3] = {0};
 		long compid = -1, netid = -1;
 		int on_all = 0, on_bottom = 0, plated = 0, mask_mode = -1, paste_mode = -1, copper_valid[3], mask_valid[3], paste_valid[3], n;
-		double rot = 0;
-		rnd_coord_t cl;
+		double rot = 0, holerot = 0;
+		rnd_coord_t cl, holewidth = -1;
 
 		for(field = gdl_first(&rec->fields); field != NULL; field = gdl_next(&rec->fields, field)) {
 			switch(field->type) {
@@ -989,7 +990,9 @@ static int altium_parse_pad(rctx_t *rctx)
 				case altium_kw_field_pastemaskexpansion_manual:  paste_man = conv_coord_field(field); break;
 				case altium_kw_field_soldermaskexpansion_manual: mask_man = conv_coord_field(field); break;
 
-TODO("HOLEWIDTH, HOLEROTATION, HOLETYPE");
+				case altium_kw_field_holewidth:          holewidth = conv_coord_field(field); break;
+				case altium_kw_field_holerotation:       holerot = conv_double_field(field); break;
+TODO("HOLETYPE: 2 for slot?");
 				default: break;
 			}
 		}
@@ -1098,6 +1101,37 @@ TODO("HOLEWIDTH, HOLEROTATION, HOLETYPE");
 				pcb_pstk_shape_copy(&shape[n], &paste_shape[0]);  shape[n].layer_mask = side | PCB_LYT_PASTE; shape[n].comb = PCB_LYC_AUTO; n++;
 			}
 			shape[n].layer_mask = 0;
+		}
+
+		if ((holewidth > 0) && (hole != holewidth)) {
+			double xsize = holewidth, ysize = hole;
+			rnd_printf("SLOT %mm %mm!\n", hole, holewidth);
+
+			shape[n].shape = PCB_PSSH_LINE;
+			shape[n].layer_mask = PCB_LYT_MECH;
+			shape[n].comb = PCB_LYC_AUTO;
+			if (xsize > ysize) {
+				shape[n].data.line.x1 = -xsize/2 + ysize/2;
+				shape[n].data.line.x2 = +xsize/2 - ysize/2;
+				shape[n].data.line.y1 = shape[n].data.line.y2 = 0;
+				shape[n].data.line.thickness = ysize;
+			}
+			else {
+				shape[n].data.line.y1 = -ysize/2 + xsize/2;
+				shape[n].data.line.y2 = +ysize/2 - xsize/2;
+				shape[n].data.line.x1 = shape[n].data.line.x2 = 0;
+				shape[n].data.line.thickness = xsize;
+			}
+
+			if (holerot != 0) {
+				double hrot = holerot / RND_RAD_TO_DEG, cosa = cos(hrot), sina = sin(hrot);
+printf("ROT: %f -> %f\n", holerot, hrot);
+				rnd_rotate(&shape[n].data.line.x1, &shape[n].data.line.y1, 0, 0, cosa, sina);
+				rnd_rotate(&shape[n].data.line.x2, &shape[n].data.line.y2, 0, 0, cosa, sina);
+			}
+
+			n++;
+			hole = 0; /* turn off the orgiginal hole as slot will take over */
 		}
 
 		/* bbvia: start and end layers */

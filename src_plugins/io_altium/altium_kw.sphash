@@ -30,6 +30,8 @@ field
  height
  diameter
  holesize
+ holewidth
+ holerotation
  id
  rotation
  sourcedesignator
