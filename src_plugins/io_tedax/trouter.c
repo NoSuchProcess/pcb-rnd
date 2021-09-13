@@ -200,6 +200,17 @@ int tedax_route_req_save(pcb_board_t *pcb, const char *fn, int cfg_argc, fgw_arg
 		continue; \
 	}
 
+
+#define PARSE_DOUBLE(dst, src) \
+	do { \
+		char *end; \
+		dst = strtod(src, &end); \
+		if (*end != '\0') { \
+			rnd_message(RND_MSG_ERROR, "External autorouter: invalid decimal '%s'\n", src); \
+			continue; \
+		} \
+	} while(0)
+
 int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
 {
 	char line[520];
@@ -274,6 +285,21 @@ int tedax_route_res_fload(FILE *fn, const char *blk_id, int silent)
 				line = pcb_line_new_merge(ly, x1, y1, x2, y2, th, cl, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_AUTO));
 				if (line != NULL)
 					pcb_undo_add_obj_to_create(PCB_OBJ_LINE, ly, line, line);
+			}
+			else if ((argc == 16) && (strcmp(argv[2], "arc") == 0)) {
+				rnd_coord_t cx, cy, r, th, cl;
+				double sa, da;
+				pcb_arc_t *arc;
+				PARSE_COORD(cx, argv[5]);
+				PARSE_COORD(cy, argv[6]);
+				PARSE_COORD(r, argv[7]);
+				PARSE_DOUBLE(sa, argv[8]);
+				PARSE_DOUBLE(da, argv[9]);
+				PARSE_COORD(th, argv[10]);
+				PARSE_COORD(cl, argv[11]);
+				arc = pcb_arc_new(ly, cx, cy, r, r, sa, da, th, cl, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_AUTO), 1);
+				if (arc != NULL)
+					pcb_undo_add_obj_to_create(PCB_OBJ_ARC, ly, arc, arc);
 			}
 			else
 				rnd_message(RND_MSG_ERROR, "External autorouter: can't add object type '%s' with %d args\n", argv[2], argc);
