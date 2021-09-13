@@ -411,8 +411,8 @@ int pcbdoc_bin_parse_arcs6(rnd_hidlib_t *hidlib, altium_tree_t *tree, ucdf_file_
 		FIELD_CRD(rec, location_x, bmil(d+13));
 		FIELD_CRD(rec, location_y, bmil(d+17));
 		FIELD_CRD(rec, radius, bmil(d+21));
-		FIELD_CRD(rec, startangle, load_dbl(d+25));
-		FIELD_CRD(rec, endangle, load_dbl(d+33));
+		FIELD_DBL(rec, startangle, load_dbl(d+25));
+		FIELD_DBL(rec, endangle, load_dbl(d+33));
 		FIELD_CRD(rec, width, bmil(d+41));
 		FIELD_LNG(rec, userrouted, d[55]);
 	}
