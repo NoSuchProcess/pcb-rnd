@@ -4,7 +4,7 @@
 		- connect lines/arcs too
 		- convert thermal style (on polygon side, remember it in a poly attribute?)
 	- standard text test (+TODO)
-	- slot (TODO, test file fails)
+	- slot (bin load fails)
 	- viatenting via_mask (TODO, test file fails)
 	/ multiline text: only from version 15.1
 	- text-on-all-layers (TODO - need 8 layers)
