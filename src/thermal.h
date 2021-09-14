@@ -61,6 +61,7 @@ const char *pcb_thermal_bits2str(pcb_thermal_t *bits);
    chars2bits() is the inverse transformation; returns 0 on success
 */
 void pcb_thermal_bits2chars(char dst[3], pcb_thermal_t bits);
+const char *pcb_thermal_bits2chars_const(pcb_thermal_t bits);
 int pcb_thermal_chars2bits(pcb_thermal_t *dst, const char *src);
 
 

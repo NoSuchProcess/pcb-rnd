@@ -132,6 +132,19 @@ void pcb_thermal_bits2chars(char dst[3], pcb_thermal_t bits)
 	*end++ = '\0';
 }
 
+const char *pcb_thermal_bits2chars_const(pcb_thermal_t bits)
+{
+	if (bits & PCB_THERMAL_ON) {
+		switch(bits & 3) {
+			case PCB_THERMAL_NOSHAPE: return "n";
+			case PCB_THERMAL_ROUND:   return (bits & PCB_THERMAL_DIAGONAL) ? "od" : "o";
+			case PCB_THERMAL_SHARP:   return (bits & PCB_THERMAL_DIAGONAL) ? "xd" : "o";
+			case PCB_THERMAL_SOLID:   return "@";
+		}
+	}
+	return "";
+}
+
 int pcb_thermal_chars2bits(pcb_thermal_t *dst, const char *src)
 {
 	pcb_thermal_t res = 0;
