@@ -58,8 +58,11 @@ const char *pcb_thermal_bits2str(pcb_thermal_t *bits);
    - empty if there is no thermal
    - starts with n, o, x or @ for no-shape, round, sharp or solid
    - ends in d if diagonal
+   chars2bits() is the inverse transformation; returns 0 on success
 */
 void pcb_thermal_bits2chars(char dst[3], pcb_thermal_t bits);
+int pcb_thermal_chars2bits(pcb_thermal_t *dst, const char *src);
+
 
 
 rnd_polyarea_t *pcb_thermal_area(pcb_board_t *p, pcb_any_obj_t *obj, rnd_layer_id_t lid, pcb_poly_t *in_poly);
