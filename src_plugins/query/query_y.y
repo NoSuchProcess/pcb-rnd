@@ -302,6 +302,8 @@ maybe_unit:
 fields:
 	  T_STR                  { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; $$->precomp.fld = query_fields_sphash($1); }
 	| T_STR '.' fields       { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = $1; $$->precomp.fld = query_fields_sphash($1); $$->next = $3; }
+	| '(' T_INT ')'            { $$ = pcb_qry_n_alloc(PCBQ_DATA_CONST); $$->precomp.iconst =$2; }
+	| '(' T_INT ')' '.' fields { $$ = pcb_qry_n_alloc(PCBQ_DATA_CONST); $$->precomp.iconst = $2; $$->next = $5; }
 	| T_FLD_P fields         { $$ = $2; /* just ignore .p. */ }
 	| T_FLD_P T_FLD_FLAG T_STR { $$ = make_flag_free($3); }
 	| T_FLD_A attribs        { $$ = pcb_qry_n_alloc(PCBQ_FIELD); $$->data.str = rnd_strdup("a"); $$->precomp.fld = query_fields_sphash("a"); $$->next = $2; }
