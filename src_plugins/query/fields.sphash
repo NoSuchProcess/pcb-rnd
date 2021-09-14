@@ -56,3 +56,5 @@ proto
 netname
 netseg
 net
+lyt
+thermal

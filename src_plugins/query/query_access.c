@@ -830,7 +830,8 @@ static int field_pstk(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 {
 	pcb_pstk_t *p = (pcb_pstk_t *)obj;
 	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(p);
-	query_fields_keys_t fh1;
+	pcb_qry_node_t *f3;
+	query_fields_keys_t fh1, fh2;
 
 	fld2hash_req(fh1, fld, 0);
 
@@ -863,9 +864,32 @@ static int field_pstk(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 
 	NETNAME_FIELDS(ec);
 
+	/* two or more fh's */
+	switch(fh1) {
+		case query_fields_thermal:
+			fld2hash_req(fh2, fld, 1);
+			if (fh2 != query_fields_lyt)
+				PCB_QRY_RET_INV(res);
+
+			fld_nth_req(f3, fld, 2);
+			if ((f3->type != PCBQ_DATA_CONST) || (f3->precomp.iconst < 0))
+				PCB_QRY_RET_INV(res);
+			{
+				int th;
+				char val[8];
+
+				rnd_layer_id_t lid = f3->precomp.iconst;
+				th = lid < p->thermals.used ? p->thermals.shape[lid] : 0;
+				PCB_QRY_RET_STR(res, pcb_thermal_bits2chars_const(th));
+			}
+			break;
+		default:;
+	}
+
 	if (fld->next != NULL)
 		PCB_QRY_RET_INV(res);
 
+	/* only fh1 */
 	switch(fh1) {
 		case query_fields_x:         PCB_QRY_RET_COORD(res, p->x);
 		case query_fields_y:         PCB_QRY_RET_COORD(res, p->y);

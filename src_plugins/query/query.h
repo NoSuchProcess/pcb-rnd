@@ -142,6 +142,7 @@ struct pcb_qry_node_s {
 		pcb_qry_val_t result;       /* of pure functions and subtrees and constant values converted e.g. to coord */
 		re_se_t *regex;
 		long cnst;                  /* named constant */
+		long iconst;                /* integer constant */
 		pcb_any_obj_t *obj;
 		const pcb_flag_bits_t *flg;
 		vti0_t *it_active;
