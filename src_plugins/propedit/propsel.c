@@ -245,6 +245,7 @@ static void map_poly(pcb_propedit_t *ctx, pcb_poly_t *poly)
 static void map_pstk(pcb_propedit_t *ctx, pcb_pstk_t *ps)
 {
 	pcb_pstk_proto_t *proto;
+	rnd_layergrp_id_t gid;
 
 	map_add_prop(ctx, "p/padstack/xmirror", rnd_coord_t, ps->xmirror);
 	map_add_prop(ctx, "p/padstack/smirror", rnd_coord_t, ps->smirror);
@@ -265,6 +266,26 @@ static void map_pstk(pcb_propedit_t *ctx, pcb_pstk_t *ps)
 		map_add_prop(ctx, "p/padstack/x", rnd_coord_t, ps->x);
 		map_add_prop(ctx, "p/padstack/y", rnd_coord_t, ps->y);
 	}
+
+
+	for(gid = 0; gid < ctx->pcb->LayerGroups.len; gid++) {
+		int n;
+		pcb_layergrp_t *g = &ctx->pcb->LayerGroups.grp[gid];
+
+		if (!(g->ltype & PCB_LYT_COPPER))
+			continue;
+		for(n = 0; n < g->len; n++) {
+			rnd_layer_id_t lid = g->lid[n];
+			int th = lid < ps->thermals.used ? ps->thermals.shape[lid] : 0;
+			char tmp[256], val[8];
+
+			sprintf(tmp, "p/padstack/thermal/lid/%ld", lid);
+			pcb_thermal_bits2chars(val, th);
+			map_add_prop(ctx, tmp, String, rnd_strdup(val));
+		}
+	}
+
+
 }
 
 static void map_subc(pcb_propedit_t *ctx, pcb_subc_t *msubc)
@@ -823,6 +844,24 @@ static void set_poly(pcb_propset_ctx_t *st, pcb_poly_t *poly)
 	}
 }
 
+static void set_pstk_thermal(pcb_propset_ctx_t *st, pcb_pstk_t *ps, const char *pn)
+{
+	rnd_layer_id_t lid;
+	char *end;
+	pcb_thermal_t t;
+
+	if (strncmp(pn, "lid/", 4) != 0) return;
+	pn+=4;
+
+	lid = strtol(pn, &end, 10);
+	if (*end != '\0') return;
+
+	if (pcb_thermal_chars2bits(&t, st->s) != 0) return;
+
+	pcb_pstk_set_thermal(ps, lid, t, 1);
+	DONE;
+}
+
 static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 {
 	const char *pn = st->name + 11;
@@ -847,6 +886,10 @@ static void set_pstk(pcb_propset_ctx_t *st, pcb_pstk_t *ps)
 	if (strncmp(st->name, "p/padstack/", 11) == 0) {
 		pcb_opctx_t op;
 
+		if (strncmp(pn, "thermal/", 8) == 0) {
+			set_pstk_thermal(st, ps, pn+8);
+			return;
+		}
 		if (st->c_valid && (strcmp(pn, "clearance") == 0) &&
 		    pcb_chg_obj_clear_size(PCB_OBJ_PSTK, ps, ps, NULL, st->c*2, st->c_absolute)) DONE;
 		if (st->d_valid && (strcmp(pn, "rotation") == 0)) {
