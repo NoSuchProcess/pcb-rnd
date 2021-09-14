@@ -868,7 +868,7 @@ static int field_pstk(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 	switch(fh1) {
 		case query_fields_thermal:
 			fld2hash_req(fh2, fld, 1);
-			if (fh2 != query_fields_lyt)
+			if (fh2 != query_fields_lid)
 				PCB_QRY_RET_INV(res);
 
 			fld_nth_req(f3, fld, 2);
