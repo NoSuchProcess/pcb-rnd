@@ -759,6 +759,7 @@ rnd_r_dir_t pcb_pstk_draw_slot_callback(const rnd_box_t *b, void *cl)
 void pcb_pstk_thindraw(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps)
 {
 	pcb_pstk_shape_t *shape = NULL;
+	pcb_pstk_proto_t *proto = pcb_pstk_get_proto(ps);
 	pcb_board_t *pcb;
 	rnd_layergrp_id_t gid = PCB_CURRLAYER(PCB)->meta.real.grp;
 
@@ -776,6 +777,15 @@ void pcb_pstk_thindraw(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps)
 
 	if (shape != NULL)
 		pcb_pstk_draw_shape_thin(info, gc, ps, shape);
+
+	if (proto->hdia > 0) {
+		rnd_render->draw_arc(gc, ps->x, ps->y, proto->hdia/2, proto->hdia/2, 0, 360);
+	}
+	else {
+		shape = pcb_pstk_shape(ps, PCB_LYT_MECH, PCB_LYC_AUTO);
+		if (shape != NULL)
+			pcb_pstk_draw_shape_thin(info, gc, ps, shape);
+	}
 }
 
 void pcb_pstk_draw_label(pcb_draw_info_t *info, pcb_pstk_t *ps, rnd_bool vis_side)
