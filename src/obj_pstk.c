@@ -870,6 +870,7 @@ void pcb_pstk_draw_preview(pcb_board_t *pcb, const pcb_pstk_t *ps, char *layers,
 		info.objcb.pstk.shape_mask = PCB_LYT_MECH;
 		info.objcb.pstk.is_current = (draw_hole > 1);
 		pcb_pstk_draw_hole_callback((rnd_box_t *)ps, &info);
+		pcb_pstk_draw_slot_callback((rnd_box_t *)ps, &info);
 	}
 
 	if (mark)
