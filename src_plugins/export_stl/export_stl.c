@@ -60,11 +60,11 @@ static const rnd_export_opt_t stl_attribute_list[] = {
 #define HA_models 1
 
 	{"min-drill", "minimum circular hole diameter to render (smaller ones are not drawn)",
-	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0},
+	 RND_HATT_COORD, 0, RND_COORD_MAX, {0, 0, 0}, 0},
 #define HA_mindrill 2
 
 	{"min-slot-line", "minimum thickness of padstakc slots specified as lines (smaller ones are not drawn)",
-	 RND_HATT_COORD, 0, 0, {0, 0, 0}, 0},
+	 RND_HATT_COORD, 0, RND_COORD_MAX, {0, 0, 0}, 0},
 #define HA_minline 3
 
 	{"slot-poly", "draw cutouts for slots specified as padstack polygons",
