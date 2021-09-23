@@ -76,7 +76,7 @@ static const rnd_export_opt_t stl_attribute_list[] = {
 #define HA_cutouts 5
 
 	{"override-thickness", "override calculated board thickness (when non-zero)",
-	 RND_HATT_COORD, 0, 0, {1, 0, 0}, 0},
+	 RND_HATT_COORD, 0, RND_COORD_MAX, {1, 0, 0}, 0},
 #define HA_ovrthick 6
 
 	{"z-center", "when true: z=0 is the center of board cross section, instead of being at the bottom side",
