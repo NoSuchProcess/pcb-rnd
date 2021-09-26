@@ -416,6 +416,8 @@ void *tedax_route_conf_keys_fload(FILE *fn, const char *blk_id, int silent)
 				case RND_HATT_COORD:
 					LOAD_MINMAX(argv[3]);
 					cfg->default_val.crd = RND_MM_TO_COORD(v);
+					cfg->min_val = RND_MM_TO_COORD(cfg->min_val);
+					cfg->max_val = RND_MM_TO_COORD(cfg->max_val);
 					break;
 				case RND_HATT_STRING:
 					cfg->default_val.str = rnd_strdup(argv[3]);
