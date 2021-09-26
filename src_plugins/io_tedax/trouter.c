@@ -357,9 +357,9 @@ do { \
 	cfg->min_val = -HUGE_VAL; cfg->max_val = HUGE_VAL; \
 	v = strtod(s, &end); \
 	if (*end == ':') { \
-		cfg->min_val = strtod(s, &end); \
+		cfg->min_val = strtod(end+1, &end); \
 		if (*end == ':') \
-			cfg->max_val = strtod(s, &end); \
+			cfg->max_val = strtod(end+1, &end); \
 	} \
 } while(0)
 
