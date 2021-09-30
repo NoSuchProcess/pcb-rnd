@@ -457,13 +457,22 @@ static void plc_place(placer_t *plc, rnd_coord_t *ox,  rnd_coord_t *oy)
 				rnd_coord_t max = (plc->side % 2) ? plc->pcb->hidlib.size_y : plc->pcb->hidlib.size_x;
 				rnd_coord_t mdim = (plc->side % 2) ? by : bx;
 				rnd_coord_t adim = (plc->side % 2) ? bx : by;
+				pcb_subc_t *sc;
+				rnd_coord_t xo2 = xo, yo2 = yo;
+
+				sc = pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc);
+				if (sc != NULL)
+					pcb_subc_get_origin(sc, &xo2, &yo2);
+
+/*rnd_printf(" admin=%mm  bb %mm %mm %d; yo %mm %mm -> %mm %mm BB: %mm %mm %mm %mm\n", adim, bx, by, plc->side % 2, xo, yo, xo2, yo2, bbx.X1, bbx.Y1, bbx.X2, bbx.Y2);
+plc->side=3;*/
 
 				plc->c += (double)mdim * 0.6;
 				switch(plc->side) {
-					case 0: px = xo + plc->c; py = yo - (double)(adim) * 0.6; break; /* top */
-					case 1: py = yo + plc->c; px = xo + plc->pcb->hidlib.size_x + (double)(adim) * 0.6; break; /* right */
-					case 2: px = xo + plc->pcb->hidlib.size_x - plc->c; py = yo + plc->pcb->hidlib.size_y + (double)(adim) * 0.6; break; /* bottom, from right to left */
-					case 3: py = yo + plc->pcb->hidlib.size_y - plc->c; px = xo - (double)(adim) * 0.6; break; /* left, from bottom to top */
+					case 0: px = xo + plc->c; py = yo2 - bbx.Y2; break; /* top */
+					case 1: py = yo + plc->c; px = xo2 - bbx.X1 + plc->pcb->hidlib.size_x; break; /* right */
+					case 2: px = xo + plc->pcb->hidlib.size_x - plc->c; py = yo2 - bbx.Y1 + plc->pcb->hidlib.size_y; break; /* bottom, from right to left */
+					case 3: py = yo + plc->pcb->hidlib.size_y - plc->c; px = xo2 - bbx.X2; break; /* left, from bottom to top */
 				}
 
 				plc->c += (double)mdim * 0.6;
