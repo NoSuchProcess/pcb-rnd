@@ -451,12 +451,13 @@ static void plc_place(placer_t *plc, rnd_coord_t *ox,  rnd_coord_t *oy)
 			break;
 		case PLC_FRAME:
 			pcb_data_bbox(&bbx, PCB_PASTEBUFFER->Data, 0);
+
 			{
 				rnd_coord_t bx = bbx.X2 - bbx.X1, by = bbx.Y2 - bbx.Y1;
 				rnd_coord_t xo = PCB_PASTEBUFFER->X/2, yo = PCB_PASTEBUFFER->Y/2;
 				rnd_coord_t max = (plc->side % 2) ? plc->pcb->hidlib.size_y : plc->pcb->hidlib.size_x;
 				rnd_coord_t mdim = (plc->side % 2) ? by : bx;
-				rnd_coord_t adim = (plc->side % 2) ? bx : by;
+/*				rnd_coord_t adim = (plc->side % 2) ? bx : by;*/
 				pcb_subc_t *sc;
 				rnd_coord_t xo2 = xo, yo2 = yo;
 
@@ -464,18 +465,16 @@ static void plc_place(placer_t *plc, rnd_coord_t *ox,  rnd_coord_t *oy)
 				if (sc != NULL)
 					pcb_subc_get_origin(sc, &xo2, &yo2);
 
-/*rnd_printf(" admin=%mm  bb %mm %mm %d; yo %mm %mm -> %mm %mm BB: %mm %mm %mm %mm\n", adim, bx, by, plc->side % 2, xo, yo, xo2, yo2, bbx.X1, bbx.Y1, bbx.X2, bbx.Y2);
-plc->side=3;*/
+/*rnd_printf(" mdmin=%mm  bb %mm %mm %d; yo %mm %mm -> %mm %mm BB: %mm %mm %mm %mm\n", mdim, bx, by, plc->side % 2, xo, yo, xo2, yo2, bbx.X1, bbx.Y1, bbx.X2, bbx.Y2);*/
 
-				plc->c += (double)mdim * 0.6;
 				switch(plc->side) {
-					case 0: px = xo + plc->c; py = yo2 - bbx.Y2; break; /* top */
-					case 1: py = yo + plc->c; px = xo2 - bbx.X1 + plc->pcb->hidlib.size_x; break; /* right */
-					case 2: px = xo + plc->pcb->hidlib.size_x - plc->c; py = yo2 - bbx.Y1 + plc->pcb->hidlib.size_y; break; /* bottom, from right to left */
-					case 3: py = yo + plc->pcb->hidlib.size_y - plc->c; px = xo2 - bbx.X2; break; /* left, from bottom to top */
+					case 0: px = xo2 - bbx.X1 + plc->c; py = yo2 - bbx.Y2; break; /* top */
+					case 1: py = yo2 - bbx.Y1 + plc->c; px = xo2 - bbx.X1 + plc->pcb->hidlib.size_x; break; /* right */
+					case 2: px = plc->pcb->hidlib.size_x - (bbx.X2 - xo2 + plc->c); py = yo2 - bbx.Y1 + plc->pcb->hidlib.size_y; break; /* bottom, from right to left */
+					case 3: py = plc->pcb->hidlib.size_y - (bbx.Y2 - yo2 + plc->c); px = xo2 - bbx.X2; break; /* left, from bottom to top */
 				}
 
-				plc->c += (double)mdim * 0.6;
+				plc->c += (double)mdim + RND_MM_TO_COORD(1);
 				if (plc->c > max) {
 					plc->side++;
 					if (plc->side > 3)
