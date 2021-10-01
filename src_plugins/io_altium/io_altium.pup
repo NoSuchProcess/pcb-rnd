@@ -7,5 +7,5 @@ $fmt-feature-r Altium PcbDoc ASCII board
 #$fmt-feature-w Altium PcbDoc ASCII board
 #$package io-alien
 dep lib_compat_help
-default buildin
+default disable
 autoload 1
