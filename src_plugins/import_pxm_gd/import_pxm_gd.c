@@ -87,7 +87,7 @@ static int gd_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn, gdIm
 	return (gdi == NULL);
 }
 
-#ifdef RND_HAVE_GDIMAGEPNG
+#ifdef PCB_HAVE_GDIMAGEPNG
 static int gd_png_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 {
 	return gd_load(hidlib, pxm, fn, gdImageCreateFromPng);
@@ -99,7 +99,7 @@ static const rnd_pixmap_import_t pxm_gd_png_imp = {
 };
 #endif
 
-#ifdef RND_HAVE_GDIMAGEJPEG
+#ifdef PCB_HAVE_GDIMAGEJPEG
 static int gd_jpg_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 {
 	return gd_load(hidlib, pxm, fn, gdImageCreateFromJpeg);
@@ -111,7 +111,7 @@ static const rnd_pixmap_import_t pxm_gd_jpg_imp = {
 };
 #endif
 
-#ifdef RND_HAVE_GDIMAGEGIF
+#ifdef PCB_HAVE_GDIMAGEGIF
 static int gd_gif_load(rnd_hidlib_t *hidlib, rnd_pixmap_t *pxm, const char *fn)
 {
 	return gd_load(hidlib, pxm, fn, gdImageCreateFromGif);
@@ -134,13 +134,13 @@ int pplg_init_import_pxm_gd(void)
 {
 	RND_API_CHK_VER;
 
-#ifdef RND_HAVE_GDIMAGEPNG
+#ifdef PCB_HAVE_GDIMAGEPNG
 	rnd_pixmap_reg_import(&pxm_gd_png_imp, import_pxm_gd_cookie);
 #endif
-#ifdef RND_HAVE_GDIMAGEJPEG
+#ifdef PCB_HAVE_GDIMAGEJPEG
 	rnd_pixmap_reg_import(&pxm_gd_jpg_imp, import_pxm_gd_cookie);
 #endif
-#ifdef RND_HAVE_GDIMAGEGIF
+#ifdef PCB_HAVE_GDIMAGEGIF
 	rnd_pixmap_reg_import(&pxm_gd_gif_imp, import_pxm_gd_cookie);
 #endif
 	return 0;
