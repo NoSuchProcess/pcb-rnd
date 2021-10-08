@@ -347,13 +347,13 @@ ha:rnd-menu-v1 {
 				ha:Drawing {
 					li:submenu {
 						@indications
-						ha:Show autorouter trials           = { a={<key>m; <key>d; <key>a}; checked=editor/live_routing; action=conf(toggle, editor/live_routing, design) }
-						ha:Highlighting on line, arc points = { a={<key>m; <key>d; <key>h}; checked=editor/highlight_on_point; action=conf(toggle, editor/highlight_on_point, design) }
-						ha:Wireframe draw                   = { li:a={{<key>m; <key>d; <key>w}; {<char>|};}; checked=editor/wireframe_draw; action=conf(toggle, editor/wireframe_draw, design) }
-						ha:Thin draw                        = { a={<key>m; <key>d; <key>t}; checked=editor/thin_draw;  action=conf(toggle, editor/thin_draw, design) }
-						ha:Thin draw poly                   = { a={<key>m; <key>d; <key>p}; checked=editor/thin_draw_poly; action=conf(toggle, editor/thin_draw_poly, design); update_on={editor/thin_draw_poly} }
-						ha:poly as-drawn frame annotation   = { a={<key>m; <key>d; <key>d}; checked=editor/as_drawn_poly; action=conf(toggle, editor/as_drawn_poly, design); update_on={editor/as_drawn_poly} }
-						ha:Check polygons                   = { a={<key>m; <key>d; <key>c}; checked=editor/check_planes; action=conf(toggle, editor/check_planes, design) }
+						ha:Show autorouter trials           = { a={<key>m; <key>d; <key>a}; checked=editor/live_routing; li:action={ conf(toggle, editor/live_routing, design); Display(Redraw); } }
+						ha:Highlighting on line, arc points = { a={<key>m; <key>d; <key>h}; checked=editor/highlight_on_point; li:action={ conf(toggle, editor/highlight_on_point, design); Display(Redraw); } }
+						ha:Wireframe draw                   = { li:a={{<key>m; <key>d; <key>w}; {<char>|};}; checked=editor/wireframe_draw; li:action={ conf(toggle, editor/wireframe_draw, design); Display(Redraw); } }
+						ha:Thin draw                        = { a={<key>m; <key>d; <key>t}; checked=editor/thin_draw;  li:action={ conf(toggle, editor/thin_draw, design); Display(Redraw); } }
+						ha:Thin draw poly                   = { a={<key>m; <key>d; <key>p}; checked=editor/thin_draw_poly; li:action={ conf(toggle, editor/thin_draw_poly, design); Display(Redraw); }; update_on={editor/thin_draw_poly} }
+						ha:poly as-drawn frame annotation   = { a={<key>m; <key>d; <key>d}; checked=editor/as_drawn_poly; li:action={ conf(toggle, editor/as_drawn_poly, design); Display(Redraw); }; update_on={editor/as_drawn_poly} }
+						ha:Check polygons                   = { a={<key>m; <key>d; <key>c}; checked=editor/check_planes; li:action={ conf(toggle, editor/check_planes, design); Display(Redraw); } }
 						ha:Object list popup                = { a={<key>m; <key>d; <key>o}; checked=editor/click_objlist; action=conf(toggle, editor/click_objlist, design); tip={If there are multiple objects under the cursor when executing an action, present a popup dialog to select which object to operate on} }
 						-
 						ha:Lock floaters                    = { a={<key>m; <key>f; <key>l}; checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }
@@ -951,6 +951,7 @@ ha:rnd-menu-v1 {
 			conf(set, editor/hide_names, 0, design);
 			conf(set, appearance/invis_other_groups, 0, design);
 			conf(set, appearance/black_current_group, 0, design);
+			Display(Redraw);
 		}
 
 		# set all visibility related states to safe defaults that makes sure
@@ -979,6 +980,7 @@ ha:rnd-menu-v1 {
 			conf(set, editor/highlight_on_point, 0, design);
 			subc(loose, off);
 			Tool(arrow);
+			Display(Redraw);
 		}
 	}
 } # root
