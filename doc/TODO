@@ -2,7 +2,6 @@
 
 1. For the upcoming release ===============================================================================
 + FEATURE: bug_files/TODO/hole_xor.lht: placing a hole-only or slot-only padstack is not xor-drawn; always xor-draw mech on the current layer;  [report: cuvoodoo]
-- BUG: lesstif: popup on padstack fails: doesn't remember the object
 
 2. For later releases ===============================================================================
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
