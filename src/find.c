@@ -467,7 +467,16 @@ static unsigned long pcb_find_exec(pcb_find_t *ctx)
 		{ /* search unmkared connections: iterative approach */
 			rnd_rtree_it_t it;
 			rnd_box_t *n;
-			rnd_rtree_box_t *sb = (rnd_rtree_box_t *)&curr->bbox_naked;
+			rnd_rtree_box_t *sb, tmpsb;
+
+			if (ctx->bloat > 0) { /* for a bloated search bloat up the search box so it won't miss anything */
+				tmpsb = *((rnd_rtree_box_t *)&curr->bbox_naked);
+				tmpsb.x1 -= ctx->bloat; tmpsb.y1 -= ctx->bloat;
+				tmpsb.x2 += ctx->bloat; tmpsb.y2 += ctx->bloat;
+				sb = &tmpsb;
+			}
+			else
+				sb = (rnd_rtree_box_t *)&curr->bbox_naked;
 
 			if (PCB->Data->padstack_tree != NULL)
 				for(n = rnd_rtree_first(&it, PCB->Data->padstack_tree, sb); n != NULL; n = rnd_rtree_next(&it))
