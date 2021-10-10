@@ -726,31 +726,31 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 {
 	rnd_pline_t *c;
 
-				if (!((c1->xmin - Bloat <= c2->xmax) && (c2->xmin <= c1->xmax + Bloat) &&
-					  (c1->ymin - Bloat <= c2->ymax) && (c2->ymin <= c1->ymax + Bloat))) return rnd_false;
+	if (!((c1->xmin - Bloat <= c2->xmax) && (c2->xmin <= c1->xmax + Bloat) && (c1->ymin - Bloat <= c2->ymax) && (c2->ymin <= c1->ymax + Bloat)))
+		return rnd_false;
 
-				for (c = c1; c; c = c->next) {
-					pcb_line_t line;
-					rnd_vnode_t *v = c->head;
-					if (c->xmin - Bloat <= c2->xmax && c->xmax + Bloat >= c2->xmin &&
-							c->ymin - Bloat <= c2->ymax && c->ymax + Bloat >= c2->ymin) {
+	for (c = c1; c; c = c->next) {
+		pcb_line_t line;
+		rnd_vnode_t *v = c->head;
+		if (c->xmin - Bloat <= c2->xmax && c->xmax + Bloat >= c2->xmin &&
+				c->ymin - Bloat <= c2->ymax && c->ymax + Bloat >= c2->ymin) {
 
-						line.Point1.X = v->point[0];
-						line.Point1.Y = v->point[1];
-						line.Thickness = 2 * Bloat;
-						line.Clearance = 0;
-						line.Flags = pcb_no_flags();
-						for (v = v->next; v != c->head; v = v->next) {
-							line.Point2.X = v->point[0];
-							line.Point2.Y = v->point[1];
-							pcb_line_bbox(&line);
-							if (pcb_isc_line_poly(ctx, &line, P2))
-								return rnd_true;
-							line.Point1.X = line.Point2.X;
-							line.Point1.Y = line.Point2.Y;
-						}
-					}
-				}
+			line.Point1.X = v->point[0];
+			line.Point1.Y = v->point[1];
+			line.Thickness = 2 * Bloat;
+			line.Clearance = 0;
+			line.Flags = pcb_no_flags();
+			for (v = v->next; v != c->head; v = v->next) {
+				line.Point2.X = v->point[0];
+				line.Point2.Y = v->point[1];
+				pcb_line_bbox(&line);
+				if (pcb_isc_line_poly(ctx, &line, P2))
+					return rnd_true;
+				line.Point1.X = line.Point2.X;
+				line.Point1.Y = line.Point2.Y;
+			}
+		}
+	}
 
 	return rnd_false;
 }
