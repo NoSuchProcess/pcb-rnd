@@ -243,7 +243,7 @@ fgw_error_t pcb_act_Fontsel(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				global = 0;
 			}
 		}
-		if (rnd_strcasecmp(op, "fontid") == 0) {
+		else if (rnd_strcasecmp(op, "fontid") == 0) {
 			modal = 1;
 			global = 0;
 			fid = -1;
