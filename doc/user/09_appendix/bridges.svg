@@ -76,8 +76,12 @@
 	<text fill="#000000" text-anchor="middle" x="56" y="612" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">hkp</tspan><tspan x="56" dy="1em">(mentor)</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="16,777.6 96,777.6  96,806.4 16,806.4"/>
 	<text fill="#000000" text-anchor="middle" x="56" y="792" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">Protel</tspan><tspan x="56" dy="1em">(netlist)</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="16,813.6 96,813.6  96,842.4 16,842.4"/>
+	<text fill="#000000" text-anchor="middle" x="56" y="828" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">Mentor grp.</tspan><tspan x="56" dy="1em">(netlist)</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="16,705.6 96,705.6  96,734.4 16,734.4"/>
 	<text fill="#000000" text-anchor="middle" x="56" y="720" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">Orcad</tspan><tspan x="56" dy="1em">(netlist)</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="16,849.6 96,849.6  96,878.4 16,878.4"/>
+	<text fill="#000000" text-anchor="middle" x="56" y="864" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">BXL</tspan><tspan x="56" dy="1em">(footprint)</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="16,669.6 96,669.6  96,698.4 16,698.4"/>
 	<text fill="#000000" text-anchor="middle" x="56" y="684" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">PADS ASCII</tspan><tspan x="56" dy="1em">(netlist)</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="800,21.6 864,21.6  864,50.4 800,50.4"/>
@@ -110,22 +114,18 @@
 	<text fill="#000000" text-anchor="middle" x="1104" y="972" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">OpenEMS</tspan><tspan x="1104" dy="1em">(sim)</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="816,957.6 880,957.6  880,986.4 816,986.4"/>
 	<text fill="#000000" text-anchor="middle" x="848" y="972" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">lpr</tspan><tspan x="848" dy="1em">(print)</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="16,813.6 80,813.6  80,842.4 16,842.4"/>
-	<text fill="#000000" text-anchor="middle" x="48" y="828" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">Mentor grp.</tspan><tspan x="48" dy="1em">(netlist)</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="688,957.6 752,957.6  752,986.4 688,986.4"/>
 	<text fill="#000000" text-anchor="middle" x="720" y="972" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">ipcd356</tspan><tspan x="720" dy="1em">e-tester</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="624,993.6 688,993.6  688,1022.4 624,1022.4"/>
 	<text fill="#000000" text-anchor="middle" x="656" y="1008" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">png</tspan><tspan x="656" dy="1em">jpg, bmp</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="368,993.6 432,993.6  432,1022.4 368,1022.4"/>
-	<text fill="#000000" text-anchor="middle" x="400" y="1008" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">ps</tspan><tspan x="400" dy="1em">postscript</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="304,957.6 368,957.6  368,986.4 304,986.4"/>
 	<text fill="#000000" text-anchor="middle" x="336" y="972" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">BOM</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="1008,993.6 1072,993.6  1072,1022.4 1008,1022.4"/>
 	<text fill="#000000" text-anchor="middle" x="1040" y="1008" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">g-code</tspan><tspan x="1040" dy="1em">(mill)</tspan></text>
+	<polygon fill="none" stroke="#000000"  points="368,993.6 432,993.6  432,1022.4 368,1022.4"/>
+	<text fill="#000000" text-anchor="middle" x="400" y="1008" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">ps</tspan><tspan x="400" dy="1em">postscript</tspan></text>
 	<polygon fill="none" stroke="#000000"  points="240,993.6 304,993.6  304,1022.4 240,1022.4"/>
 	<text fill="#000000" text-anchor="middle" x="272" y="1008" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">stat</tspan><tspan x="272" dy="1em">statistics</tspan></text>
-	<polygon fill="none" stroke="#000000"  points="16,849.6 64,849.6  64,878.4 16,878.4"/>
-	<text fill="#000000" text-anchor="middle" x="40" y="864" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">BXL</tspan><tspan x="40" dy="1em">(footprint)</tspan></text>
 	<line  marker-end="url(#ahe)"  x1="96" y1="468" x2="192" y2="468" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="144" y="468" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="144" dy="1em">schematics</tspan></text>
 	<line  marker-end="url(#ahe)"  x1="96" y1="576" x2="192" y2="576" stroke="#000000"/>
@@ -166,8 +166,8 @@
 	<g transform="rotate(-90 1360 684)">
 	<text fill="#000000" text-anchor="middle" x="1360" y="684" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">TCP/IP</tspan></text>
 	</g>
-	<line  marker-end="url(#ahe)"  x1="80" y1="828" x2="192" y2="828" stroke="#000000"/>
-	<text fill="#000000" text-anchor="middle" x="136" y="828" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="136" dy="1em">netlist</tspan></text>
+	<line  marker-end="url(#ahe)"  x1="96" y1="828" x2="192" y2="828" stroke="#000000"/>
+	<text fill="#000000" text-anchor="middle" x="144" y="828" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="144" dy="1em">netlist</tspan></text>
 	<line  marker-end="url(#ahe)"  x1="976" y1="878.4" x2="976" y2="957.6" stroke="#000000"/>
 	<line  marker-end="url(#ahe)"  x1="96" y1="756" x2="192" y2="756" stroke="#000000"/>
 	<text fill="#000000" text-anchor="middle" x="144" y="756" font-family="Times,serif" font-size="14.00"><tspan dy="-0.2em">import</tspan><tspan x="144" dy="1em">schematics</tspan></text>
