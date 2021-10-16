@@ -380,9 +380,6 @@ OA
 	label DRC\nspec
 
 
-<-> frt_.s pcbrnd
-	label board
-
 <-> fido.s pcbrnd
 	label board
 
