@@ -25,7 +25,7 @@
 |[bxl  ]|   +----------------------------------------------------------------+   +-----------+
 +-------+
           *out----------------------------------------------------------------+
-          |        [bom_]  [xy__]  [gerb]  [opcd]  [lpr_]  [scad]  [oems]     |    [web     ]
+          |        [bom_]  [xy__]  [gerb]  [opcd]  [lpr_]  [scad]  [oems]     |
           |    [stat]  [ps__]  [svg_]  [png_]  [stl_]  [dxf_]  [gcod]  [exce] |
           +-------------------------------------------------------------------+
 %%
@@ -228,10 +228,6 @@ OA
 [remote]
 	label remote\n(network)
 
-[web]
-	label web client\n(javascript)
-	linecolor #aaaaaa
-	textcolor #aaaaaa
 
 
 -> pcbrnd bom_.n
@@ -403,6 +399,3 @@ OA
 <-> pcbrnd lesstif.w
 
 <-> pcbrnd remote.w
-
-<-> remote.s web
-	label TCP/IP
