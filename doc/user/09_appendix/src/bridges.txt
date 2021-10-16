@@ -1,7 +1,7 @@
-              *io----------------------------------------------------------+
-              |[kica    ]       [gpcb  ]    [hyp_]  [gsch]  [c_pcb] [dsn_ ]|
-              |        [  tedax  ]     [pads]    [fido]  [prtl]  [eagl]    |
-              +------------------------------------------------------------+
+                *io------------------------------------------------------+
+                |[kica    ]       [gpcb  ]    [hyp_]  [gsch]   [dsn_ ]   |
+                |        [  tedax  ]     [pads]    [fido]  [prtl]  [eagl]|
+                +--------------------------------------------------------+
 *inp----+                                                                        *hid--------+
 |[eesc ]|   *pcbrnd----------------------------------------------------------+   |[batch  ]  |
 |[mucs ]|   |                                                                |   |           |
@@ -11,14 +11,14 @@
 |[edif ]|   |                                                                |   |           |
 |[netl ]|   |                                                                |   |[remote]   |
 |[ipcd ]|   |                                                                |   |           |
-|[easy ]|   |                                                                |   |           |
-|[xsch ]|   |                                                                |   |           |
-|[caly ]|   |                                                                |   |           |
-|[hpgl ]|   |                                                                |   |           |
+|[easy ]|   |                                                                |   +-----------+
+|[xsch ]|   |                                                                |
+|[caly ]|   |                                                                |   *autor------+
+|[hpgl ]|   |                                                                |   |[route_rnd]|
 |[hkp_ ]|   |                                                                |   |           |
-|[fpcb ]|   |                                                                |   |           |
+|[fpcb ]|   |                                                                |   |[freert]   |
 |[padsn]|   |                                                                |   |           |
-|[orcdn]|   |                                                                |   |           |
+|[orcdn]|   |                                                                |   |[c_pcb]    |
 |[accln]|   |                                                                |   |           |
 |[prtln]|   |                                                                |   |           |
 |[msch ]|   |                                                                |   |           |
@@ -60,6 +60,14 @@ OA
 	bgcolor #cccccc
 	textcolor #884433
 	label HID (GUI)
+	valign top
+
+
+[autor]
+	linecolor #cccccc
+	bgcolor #cccccc
+	textcolor #884433
+	label External autorouters
 	valign top
 
 
@@ -156,9 +164,6 @@ OA
 [eagl]
 	label Eagle\n(board)
 
-[c_pcb]
-	label c-pcb\n(autorouting)
-
 [dsn_]
 	label dsn\n(autorouting)
 
@@ -228,7 +233,14 @@ OA
 [remote]
 	label remote\n(network)
 
+[route_rnd]
+	label route-rnd\n(multiple algorithms)
 
+[freert]
+	label freerouting.net\nfreerouting.cli
+
+[c_pcb]
+	label c-pcb
 
 -> pcbrnd bom_.n
 	label text
@@ -383,8 +395,6 @@ OA
 -> eagl.s+0.2 pcbrnd
 	label DRU
 
-<-> c_pcb.s pcbrnd
-	label board
 
 <-> dsn_.s pcbrnd
 	label board
@@ -399,3 +409,12 @@ OA
 <-> pcbrnd lesstif.w
 
 <-> pcbrnd remote.w
+
+<-> pcbrnd route_rnd.w
+	label tEDAx\nroute*
+
+<-> pcbrnd freert.w
+	label DSN
+
+<-> pcbrnd c_pcb.w
+
