@@ -1,30 +1,21 @@
-pcb-rnd 3.0.0
+pcb-rnd 3.0.1
 ~~~~~~~~~~~~~
 
-This milestone release makes the last step to librnd separation: pcb-rnd 
-./configure now depends on librnd installed. 
+This is mainly a bugfix release with a few minor features on external
+autorouter and propedit/query/drc side.
 
-Feature highlight:
+Bugfix and feature highlight:
 
-1. New external dependency: librnd (>=3.0.0); this includes all HIDs.
-   For more information about where to get it, how to install it
-   (including no-root installation), please refer to the file called INSTALL.
+1. support for freerouting_cli and freerouting.net integration in
+   ar_extern.
 
-2. Renames:
-   - pcblib/ to footprint/
-   - pcblib/tru-hole to footprint/thru-hole
-   - config file from pcb-conf.lht to conf_core.lht (user config is affected)
-   - new standard user footprint path: ~/.pcb-rnd/footprint; ~/pcblib is still
-     on the default search path but users are encouraged to move the lib
+2. Xor-drawing of a padstack (while placing or moving) renders the hole/slot
+   too. This makes it easier to position the object. In some cases it
+   makes the object visible (hole-only padstack, e.g. mounting-hole).
 
-3. Better specctra DSN support: io_dsn can load and save the whole board
-   (at least copper and nets). Besides driving external autorouters, this
-   may be used as a last-resort import path from proprietary CAD systems.
+3. The property editor and query() have access to thermal bits per layer ID
+   via a new subtree padstack/thermal/lid/. This makes mass-editing thermals
+   and scripting thermals easier.
 
-4. PADS write: boards can be written in the PADS ASCII format
-
-5. Removed glib dependency from the puller plugin; this makes pcb-rnd
-   free of glib. The only indirect way pcb-rnd could still depend on glib
-   is through librnd when a GTK HID is loaded.
-
+4. DRC test for invalid character in text object.
 

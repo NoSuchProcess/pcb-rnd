@@ -1,3 +1,58 @@
+pcb-rnd 3.0.1 (r35718)
+~~~~~~~~~~~~~~~~~~~~~~
+	[ar_extern]
+		-Add: run freerouting.cli and freerouting.net
+		-Add: provide 3 progress bars for more detailed progress report
+
+	[core]
+		-Fix: padstack preview draw should draw slot shapes when hole drawing is enabled so slots are not invisible
+		-Fix: footprint mass-import (ElementList()), frame placer: line up new subcircuits close to the frame even if the subcircuit origin is far off from 0
+		-Fix: footprint mass-import (ElementList()), frame placer: space subcircuits at a fixed distance, accurately along the frame
+		-Fix: menu actions: when switching drawing mode conf, also force a redraw to make sure the new settings take effect on screen (fixes lesstif no refresh bug)
+		-Fix: find.c: poly padstack shape vs. polygon intersection check does not ignore bloat anymore (fixes: poly padstack vs. poly clearance vilation missed in drc checks)
+		-Fix: find.c: poly-poly bloated isc failed to find some matches because of search box was not bloated up (affected axis aligned rectangles mostly)
+		-Fix: find.c: don't run the padstack thermal optimization if bloat is non-zero - bloat may be a game changer in whether the padstack touches the sorrunding poly
+		-Add: when xor-drawing padstacks, draw hole or slot; this helps positioning vias but also acts as the only indication for a copperless mounting hole
+		-Add: utility function to check if a text object has invalid chars in a font
+		-Add: pcb_thermal_chars2bits() that can convert the 2 byte text representation of per layer thermals back from text to bin (used in query and later in propedit)
+		-Add: a variant of the therm bits to chars conv function that returns const char * to simplify memory management in query
+
+	[dialogs]
+		-Fix: fontsel: missing else made per object fontsel unavailable
+
+	[doc]
+		-Del: web client from the bridges drawing - won't be finished any time soon
+		-Add: document the new query function for invalid characters in text
+		-Add: BXL in bridges
+		-Add: bridges: separate group for external autorouters
+
+	[drc_query]
+		-Add: DRC rule for finding text with invalid chars
+
+	[export_stl]
+		-Fix: coord range to let the GUI enable user to set anything positive for min hole and slot size
+		-Fix: coord range for override-thickness so the gui lets the user set anything positive
+
+	[import_pxm_gd]
+		-Fix: used the wrong feature macros for deciding if formats are available (librnd separation related bug)
+
+	[io_dsn]
+		-Fix: implicit declaration on rnd_strcasecmp()
+
+	[io_tedax]
+		-Fix: autorouter config import: use the right fields for default value and max value
+		-Fix: autorouter config import: convert coord values from mm to internal
+		-Add: implement loading arcs from route result
+
+	[propedit]
+		-Add: padstack/thermal/lid/ subtree
+
+	[query]
+		-Add: glue function for counting invalid characters in a text
+		-Add: allow integers in parenthesis as part of field name path
+		-Add: support the thermal/lid subtree (same as in propedit)
+
+
 pcb-rnd 3.0.0 (r35609)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[asm]
