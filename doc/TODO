@@ -22,6 +22,7 @@
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
 	- example of nonetlist: 1206 jumpers and logos
+- BUG: pcb-rnd propedit propdlg:784 (right side) DAD_TREE depends on CHANGED_CB which is not well defined; use selected cb instead [report: Igor2]
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: FONTS: second font indents incorrectly
