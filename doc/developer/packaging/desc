@@ -33,7 +33,8 @@
 @pcb-rnd-export-extra
 	Export formats: special/extra
 
-	Less commonly used export formats: fidocadj, ipc-356-d, direct printing with lpr.
+	Less commonly used export formats: fidocadj, ipc-356-d, stl,
+	old geda connection list format, direct printing with lpr.
 
 @pcb-rnd-export-sim
 	Export plugins to simulators
