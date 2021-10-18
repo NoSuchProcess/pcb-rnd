@@ -8,7 +8,15 @@ How to get a release candidate tarball in /tmp:
 Packaging changes between 3.0.0 and 3.0.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-TODO: fix https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=968285
+A. changes that probably don't need action
+
+(nothing; all changes will require action)
+
+B. changes that probably DO need action
+
+1. Description of package pcb-rnd-export-extra mentions
+   two more export formats.
+   Fixes https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=968285
 
 Packaging changes between 2.4.0 and 3.0.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
