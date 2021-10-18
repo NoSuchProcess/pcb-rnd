@@ -23,6 +23,7 @@
 - FEATURE: DOC: new examples
 	- blinking led with parametric footprints
 	- example of nonetlist: 1206 jumpers and logos
+- BUG: io_kicad can't load empty string properly: bug_files/TODO/empty_str.kicad_mod [report: cuvoodoo]
 - BUG: Lihata persistent save:
 	- flag compatibility: save unknown, string-flags as loaded by io_pcb
 	- ind: FONTS: second font indents incorrectly
