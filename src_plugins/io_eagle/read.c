@@ -87,6 +87,7 @@ typedef struct eagle_library_s {
 typedef struct read_state_s {
 	trparse_t parser;
 	pcb_board_t *pcb;
+	pcb_data_t *fp_data; /* if pcb==NULL then fp_data is not NULL and we are reading a footprint (bound layers) */
 
 	htip_t layers;
 	htsp_t libs;
@@ -444,18 +445,24 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 			ly->fill    = 1;
 			ly->visible = 0;
 			ly->active  = 1;
-			if (pcb_layergrp_listp(st->pcb, typ, &gid, 1, -1, t->purp) != 1) {
-				pcb_layergrp_t *grp = pcb_get_grp_new_misc(st->pcb);
-				grp->name = rnd_strdup(ly->name);
-				grp->ltype = typ;
-				if (t->purp != NULL)
-					pcb_layergrp_set_purpose(grp, t->purp, 0);
-				gid = grp - st->pcb->LayerGroups.grp;
+			if (st->pcb != NULL) {
+				if (pcb_layergrp_listp(st->pcb, typ, &gid, 1, -1, t->purp) != 1) {
+					pcb_layergrp_t *grp = pcb_get_grp_new_misc(st->pcb);
+					grp->name = rnd_strdup(ly->name);
+					grp->ltype = typ;
+					if (t->purp != NULL)
+						pcb_layergrp_set_purpose(grp, t->purp, 0);
+					gid = grp - st->pcb->LayerGroups.grp;
+				}
+				ly->lid = pcb_layer_create(st->pcb, gid, ly->name, 0);
+				if (ly->lid >= 0) {
+					pcb_layer_t *lay = pcb_get_layer(st->pcb->Data, ly->lid);
+					lay->comb = t->comb;
+				}
 			}
-			ly->lid = pcb_layer_create(st->pcb, gid, ly->name, 0);
-			if (ly->lid >= 0) {
-				pcb_layer_t *lay = pcb_get_layer(st->pcb->Data, ly->lid);
-				lay->comb = t->comb;
+			else {
+				pcb_layer_t *l = pcb_layer_new_bound(st->fp_data, typ, ly->name, t->purp);
+				ly->lid = l - st->fp_data->Layer;
 			}
 		}
 		else
@@ -464,7 +471,9 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 
 	switch(loc) {
 		case ON_BOARD:
-			return &st->pcb->Data->Layer[ly->lid];
+			if (st->pcb != NULL)
+				return &st->pcb->Data->Layer[ly->lid];
+			return &st->fp_data->Layer[ly->lid];
 		case IN_SUBC:
 			/* check if the layer already exists (by name) */
 			lid = pcb_layer_by_name(subc->data, ly->name);
@@ -2033,6 +2042,7 @@ int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const cha
 		goto error;
 	}
 
+	st->fp_data = data;
 	st_init(st);
 
 	if (eagle_read_layers_(st, data, nlayers, NULL, -1) != 0) {
