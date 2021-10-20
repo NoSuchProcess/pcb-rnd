@@ -486,9 +486,14 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 				comb = 0;
 				return pcb_subc_get_layer(subc, lyt, comb, 1, ly->name, rnd_true);
 			}
-			lyt = pcb_layer_flags(st->pcb, ly->lid);
-			comb = 0;
-			return pcb_subc_get_layer(subc, lyt, comb, 1, ly->name, rnd_true);
+			if (st->pcb != NULL) {
+				lyt = pcb_layer_flags(st->pcb, ly->lid);
+				comb = 0;
+				return pcb_subc_get_layer(subc, lyt, comb, 1, ly->name, rnd_true);
+			}
+			if ((ly->lid < 0) || (ly->lid >= subc->data->LayerN))
+				return NULL;
+			return &subc->data->Layer[ly->lid];
 	}
 	return NULL;
 }
@@ -1205,8 +1210,16 @@ static int eagle_read_pkg_txt(read_state_t *st, trnode_t *subtree, void *obj, in
 
 	/* figure if target layer is on top or bottom */
 	ely = htip_get(&st->layers, layer);
-	if (ely != NULL)
-		lyt = pcb_layer_flags(st->pcb, ely->lid);
+	if (ely != NULL) {
+		if (st->pcb == NULL) {
+			if ((ely->lid < 0) || (ely->lid >= st->fp_data->LayerN))
+				lyt = 0;
+			else
+				lyt = st->fp_data->Layer[ely->lid].meta.bound.type;
+		}
+		else
+			lyt = pcb_layer_flags(st->pcb, ely->lid);
+	}
 	else
 		lyt = 0; /* unknown - at least not bottom */
 
@@ -1356,7 +1369,8 @@ TODO("revise rotation and flip")
 	}
 #endif
 
-	size_bump(st, subc->BoundingBox.X2, subc->BoundingBox.Y2);
+	if (st->pcb != NULL)
+		size_bump(st, subc->BoundingBox.X2, subc->BoundingBox.Y2);
 	return 0;
 }
 
