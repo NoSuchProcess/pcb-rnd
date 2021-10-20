@@ -312,11 +312,12 @@ static void eagle_setup_layers_auto(read_state_t *st)
 		eagle_layer_get(st, *elid, ON_BOARD, NULL);
 }
 
-static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int type)
+static int eagle_read_layers_(read_state_t *st, pcb_data_t *data, trnode_t *subtree, void *obj, int type)
 {
 	trnode_t *n;
 
-	pcb_layergrp_inhibit_inc();
+	if (data == NULL)
+		pcb_layergrp_inhibit_inc();
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
 		if (STRCMP(NODENAME(n), "layer") == 0) {
@@ -364,31 +365,48 @@ static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int
 					typ = PCB_LYT_SILK | PCB_LYT_BOTTOM;
 					break;
 				case 20: /*199:   20 is dimension, 199 is contour */
-					grp = pcb_get_grp_new_intern(st->pcb, -1);
-					ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name, 0);
-					pcb_layergrp_fix_turn_to_outline(grp);
+					if (data == NULL) { /* pcb context: new layer */
+						grp = pcb_get_grp_new_intern(st->pcb, -1);
+						ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name, 0);
+						pcb_layergrp_fix_turn_to_outline(grp);
+					}
 					break;
 
 				default:
 					if ((id > 1) && (id < 16)) {
-						/* new internal layer */
-						grp = pcb_get_grp_new_intern(st->pcb, -1);
-						ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name, 0);
+						if (data == NULL) { /* pcb context: new layer */
+							/* new internal layer */
+							grp = pcb_get_grp_new_intern(st->pcb, -1);
+							ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name, 0);
+						}
 					}
 			}
 			if (typ != 0) {
-				if (reuse)
-					pcb_layer_list(st->pcb, typ, &ly->lid, 1);
-				if ((ly->lid < 0) && (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0))
-					ly->lid = pcb_layer_create(st->pcb, gid, ly->name, 0);
+				if (data == NULL) { /* pcb context: maybe new layer */
+					if (reuse)
+						pcb_layer_list(st->pcb, typ, &ly->lid, 1);
+					if ((ly->lid < 0) && (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0))
+						ly->lid = pcb_layer_create(st->pcb, gid, ly->name, 0);
+				}
 			}
 		}
 	}
-	pcb_layer_group_setup_silks(st->pcb);
+
+	if (data == NULL)
+		pcb_layer_group_setup_silks(st->pcb);
+
 	eagle_setup_layers_auto(st);
-	pcb_layer_auto_fixup(st->pcb);
-	pcb_layergrp_inhibit_dec();
+
+	if (data == NULL) {
+		pcb_layer_auto_fixup(st->pcb);
+		pcb_layergrp_inhibit_dec();
+	}
 	return 0;
+}
+
+static int eagle_read_layers(read_state_t *st, trnode_t *subtree, void *obj, int type)
+{
+	return eagle_read_layers_(st, NULL, subtree, obj, type);
 }
 
 static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_loc_t loc, void *obj)
@@ -1982,8 +2000,34 @@ pcb_plug_fp_map_t *io_eagle_map_footprint_xml(pcb_plug_io_t *ctx, FILE *f, const
 }
 
 
-int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename, const char *subfpname)
+int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fn, const char *subfpname)
 {
-	rnd_trace("eagle xml parse fp: %s\n", filename);
-	return -1;
+	int res = -1;
+	read_state_t st_tmp = {0}, *st = &st_tmp;
+	trnode_t *nlayers, *npkgs;
+
+
+	/* have not read design rules section yet but need this for rectangle parsing */
+	st->ms_width = RND_MIL_TO_COORD(10); /* default minimum feature width */
+	st->parser.calls = &trparse_xml_calls;
+
+	if (st->parser.calls->load(&st->parser, fn) != 0)
+		return -1;
+
+	npkgs = eagle_trpath(st, st->parser.root, "drawing", "library", "packages", NULL);
+	nlayers = eagle_trpath(st, st->parser.root, "drawing", "layers", NULL);
+	if ((npkgs == NULL) || (nlayers == NULL)) {
+		rnd_message(RND_MSG_ERROR, "io_eagle: missing layers (or packages) subtree\n");
+		goto error;
+	}
+
+	if (eagle_read_layers_(st, data, nlayers, NULL, -1) != 0) {
+		rnd_message(RND_MSG_ERROR, "io_eagle: failed to parse or create layers\n");
+		goto error;
+	}
+
+
+	error:;
+	st_uninit(st);
+	return res;
 }
