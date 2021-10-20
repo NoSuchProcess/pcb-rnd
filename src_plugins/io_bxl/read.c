@@ -673,7 +673,6 @@ int io_bxl_parse_footprint(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fil
 	pcb_subc_reg(data, bctx.subc);
 
 	error:;
-	pcb_bxl_parse(&yyctx, &bctx, 0, &lval);
 	pcb_bxl_uninit(&bctx);
 	fclose(f);
 	return ret;
