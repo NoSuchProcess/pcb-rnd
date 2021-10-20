@@ -1790,7 +1790,8 @@ static void st_init(read_state_t *st)
 {
 	htip_init(&st->layers, longhash, longkeyeq);
 	htsp_init(&st->libs, strhash, strkeyeq);
-	pcb_layer_group_setup_default(st->pcb);
+	if (st->pcb != NULL)
+		pcb_layer_group_setup_default(st->pcb);
 }
 
 static void st_uninit(read_state_t *st)
@@ -2018,7 +2019,6 @@ int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const cha
 	read_state_t st_tmp = {0}, *st = &st_tmp;
 	trnode_t *nlayers, *npkgs, *n, *npkg = NULL;
 
-
 	/* have not read design rules section yet but need this for rectangle parsing */
 	st->ms_width = RND_MIL_TO_COORD(10); /* default minimum feature width */
 	st->parser.calls = &trparse_xml_calls;
@@ -2032,6 +2032,8 @@ int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const cha
 		rnd_message(RND_MSG_ERROR, "io_eagle: missing layers (or packages) subtree\n");
 		goto error;
 	}
+
+	st_init(st);
 
 	if (eagle_read_layers_(st, data, nlayers, NULL, -1) != 0) {
 		rnd_message(RND_MSG_ERROR, "io_eagle: failed to parse or create layers\n");
