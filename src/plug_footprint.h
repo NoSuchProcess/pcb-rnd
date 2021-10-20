@@ -43,6 +43,7 @@ struct pcb_fplibrary_s {
 			   locally allocated but values are stored in a central hash and
 			   must be allocated by pcb_fp_tag() and never free'd manually */
 			void **tags;
+			char *fmt; /* format found while mapping (may be NULL) */
 		} fp;
 	} data;
 } ;
@@ -123,8 +124,8 @@ pcb_fplibrary_t *pcb_fp_mkdir_p(const char *path);
 pcb_fplibrary_t *pcb_fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int name_len);
 pcb_fplibrary_t *pcb_fp_lib_search(pcb_fplibrary_t *dir, const char *name);
 
-/* Append a menu entry in the tree */
-pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[], rnd_bool dup_tags);
+/* Append a menu entry in the tree; fmt is optional (may be NULL) */
+pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[], rnd_bool dup_tags, const char *fmt);
 
 /* walk through all lib paths and build the library menu */
 int pcb_fp_read_lib_all(void);

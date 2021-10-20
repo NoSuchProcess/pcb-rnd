@@ -109,7 +109,7 @@ static void krill_flush(pcb_plug_fp_t *ctx, gds_t *vpath, int base_len)
 		l = pcb_fp_mkdir_p(vpath->array);
 		if (krill.tags != NULL)
 			tag_add_(NULL);
-		l = pcb_fp_append_entry(l, fn, PCB_FP_FILE, krill.tags, 0);
+		l = pcb_fp_append_entry(l, fn, PCB_FP_FILE, krill.tags, 0, NULL);
 		fn[-1] = '/';
 		l->data.fp.loc_info = rnd_strdup(vpath->array);
 		

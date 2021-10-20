@@ -156,6 +156,7 @@ static int pcb_test_parse_all(FILE *ft, const char *Filename, const char *fmt, p
 			void (*f)();
 			switch(type) {
 				case PCB_IOT_PCB: f = (void (*)())available[n].plug->parse_pcb; break;
+				case PCB_IOT_FOOTPRINT: f = (void (*)())available[n].plug->parse_footprint; break;
 				default: assert(!"internal error: pcb_test_parse_all: wrong type"); f = NULL;
 			}
 			if (f != NULL) {
@@ -1085,7 +1086,7 @@ rnd_cardinal_t pcb_io_incompat_save(pcb_data_t *data, pcb_any_obj_t *obj, const 
 	return 0;
 }
 
-pcb_plug_fp_map_t *pcb_io_map_footprint_file(rnd_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+pcb_plug_fp_map_t *pcb_io_map_footprint_file(rnd_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags, const char **fmt)
 {
 	FILE *f = rnd_fopen(hl, fn, "r");
 	pcb_plug_fp_map_t *res = NULL;
@@ -1104,8 +1105,11 @@ pcb_plug_fp_map_t *pcb_io_map_footprint_file(rnd_hidlib_t *hl, const char *fn, p
 		head->libtype = PCB_LIB_FOOTPRINT;
 		res = plug->map_footprint(NULL, f, fn, head, need_tags);
 		if (res == NULL) continue;
-		if (res->type != PCB_FP_INVALID)
+		if (res->type != PCB_FP_INVALID) {
+			if (fmt != NULL)
+				*fmt = plug->default_fmt;
 			break; /* success */
+		}
 		vts0_uninit(&res->tags);
 	}
 

@@ -158,7 +158,7 @@ int pcb_write_footprint_data(FILE *f, pcb_data_t *e, const char *fmt, long subc_
 int pcb_write_font(pcb_font_t *Ptr, const char *Filename, const char *fmt);
 
 /* map a footprint file: always returns head with 0 or 1 or more mapping results */
-pcb_plug_fp_map_t *pcb_io_map_footprint_file(rnd_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags);
+pcb_plug_fp_map_t *pcb_io_map_footprint_file(rnd_hidlib_t *hl, const char *fn, pcb_plug_fp_map_t *head, int need_tags, const char **fmt);
 
 /* Append a file name to the footprint map at tail; the first item is appended
    assuming there would be only one footprint in the file; from the second item

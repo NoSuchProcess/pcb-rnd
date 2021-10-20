@@ -198,7 +198,7 @@ static void **pcb_fp_dup_tags(void *tags[])
 	return res;
 }
 
-pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[], rnd_bool dup_tags)
+pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, pcb_fptype_t type, void *tags[], rnd_bool dup_tags, const char *fmt)
 {
 	pcb_fplibrary_t *entry;   /* Pointer to individual menu entry */
 
@@ -223,6 +223,11 @@ pcb_fplibrary_t *pcb_fp_append_entry(pcb_fplibrary_t *parent, const char *name, 
 	entry->data.fp.tags = dup_tags ? pcb_fp_dup_tags(tags) : tags;
 	entry->data.fp.loc_info = NULL;
 	entry->data.fp.backend_data = NULL;
+	if (fmt != NULL)
+		entry->data.fp.fmt = rnd_strdup(fmt);
+	else
+		entry->data.fp.fmt = NULL;
+
 	return entry;
 }
 
@@ -354,6 +359,7 @@ void fp_free_entry(pcb_fplibrary_t *l)
 				free(l->data.fp.loc_info);
 			if (l->data.fp.tags != NULL)
 				free(l->data.fp.tags);
+			free(l->data.fp.fmt);
 			break;
 		case PCB_LIB_INVALID: break; /* suppress compiler warning */
 	}

@@ -362,7 +362,7 @@ static void library_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_r
 				}
 			}
 			else {
-				if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, l->data.fp.loc_info, NULL)) {
+				if (pcb_buffer_load_footprint(PCB_PASTEBUFFER, l->data.fp.loc_info, l->data.fp.fmt)) {
 					rnd_tool_select_by_name(&PCB->hidlib, "buffer");
 					if (pcb_subclist_length(&PCB_PASTEBUFFER->Data->subc) != 0)
 						library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);

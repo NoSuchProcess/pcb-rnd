@@ -60,7 +60,7 @@ static int fp_board_load_dir(pcb_plug_fp_t *ctx, const char *path, int force)
 			ename = subc->refdes;
 		if (ename == NULL)
 			ename = "anonymous";
-		e = pcb_fp_append_entry(l, ename, PCB_FP_FILE, NULL, 0);
+		e = pcb_fp_append_entry(l, ename, PCB_FP_FILE, NULL, 0, NULL);
 
 		/* remember location by ID - because of the dedup search by name is unsafe */
 		if (e != NULL)
