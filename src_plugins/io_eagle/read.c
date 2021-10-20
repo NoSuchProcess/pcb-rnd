@@ -189,7 +189,7 @@ static int eagle_read_nop(read_state_t *st, trnode_t *subtree, void *obj, int ty
 
 int io_eagle_test_parse_xml(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *Filename, FILE *f)
 {
-	char line[1024];
+	char *s, line[1024];
 	int found = 0, lineno = 0;
 
 	/* look for <!DOCTYPE.*eagle.dtd in the first 32 lines, not assuming it is in a single line */
@@ -198,6 +198,12 @@ int io_eagle_test_parse_xml(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *
 			found = 1;
 		if ((found == 1) && (strstr(line, "eagle.dtd")))
 			return 1;
+		if (s = strstr(line, "<eagle")) { /* in footprints doctype and the dtd are often omitted */
+			s += 6;
+			while(isspace(*s)) s++;
+			if (strncmp(s, "version=", 8) == 0)
+				return 1;
+		}
 		lineno++;
 		if (lineno > 32)
 			break;
@@ -1764,7 +1770,8 @@ static void st_uninit(read_state_t *st)
 	htip_entry_t *ei;
 	htsp_entry_t *es;
 
-	pcb_layergrp_fix_old_outline(st->pcb);
+	if (st->pcb != NULL)
+		pcb_layergrp_fix_old_outline(st->pcb);
 
 	for (ei = htip_first(&st->layers); ei; ei = htip_next(&st->layers, ei))
 		free(ei->value);
@@ -1942,8 +1949,9 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 pcb_plug_fp_map_t *io_eagle_map_footprint_xml(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
 {
-	int res;
-	read_state_t st = {0};
+	read_state_t st_tmp = {0}, *st = &st_tmp;
+	trnode_t *n, *ndrw = NULL, *nlib = NULL, *npkgs = NULL;
+	pcb_plug_fp_map_t *res = NULL, *tail = head;
 
 	if (!io_eagle_test_parse_xml(ctx, PCB_IOT_FOOTPRINT, fn, f))
 		return NULL;
@@ -1951,20 +1959,52 @@ pcb_plug_fp_map_t *io_eagle_map_footprint_xml(pcb_plug_io_t *ctx, FILE *f, const
 	rewind(f);
 
 	/* have not read design rules section yet but need this for rectangle parsing */
-	st.ms_width = RND_MIL_TO_COORD(10); /* default minimum feature width */
-	st.parser.calls = &trparse_xml_calls;
+	st->ms_width = RND_MIL_TO_COORD(10); /* default minimum feature width */
+	st->parser.calls = &trparse_xml_calls;
 
-	rnd_trace("eagle xml map fp: %s\n", fn);
-
-	if (st.parser.calls->load(&st.parser, fn) != 0)
+	if (st->parser.calls->load(&st->parser, fn) != 0)
 		return NULL;
 
+	for(n = CHILDREN(st->parser.root); n != NULL; n = NEXT(n)) {
+		if (strcmp(NODENAME(n), "drawing") == 0) {
+			ndrw = n;
+			break;
+		}
+	}
 
-	st_uninit(&st);
-	return head;
+	if (ndrw != NULL) {
+		for(n = CHILDREN(ndrw); n != NULL; n = NEXT(n)) {
+			if (strcmp(NODENAME(n), "library") == 0) {
+				nlib = n;
+				break;
+			}
+		}
+	}
+
+	if (nlib != NULL) {
+		for(n = CHILDREN(nlib); n != NULL; n = NEXT(n)) {
+			if (strcmp(NODENAME(n), "packages") == 0) {
+				npkgs = n;
+				break;
+			}
+		}
+	}
+
+	if (npkgs != NULL) {
+		for(n = CHILDREN(npkgs); n != NULL; n = NEXT(n)) {
+			if (strcmp(NODENAME(n), "package") == 0) {
+				const char *name = GET_PROP(n, "name");
+				res = head;
+				pcb_io_fp_map_append(&tail, head, fn, name);
+			}
+		}
+	}
+
+
+	st_uninit(st);
+	return res;
 }
 
-/*	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp, NULL, 0);*/
 
 int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename, const char *subfpname)
 {
