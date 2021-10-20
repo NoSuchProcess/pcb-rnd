@@ -198,7 +198,7 @@ int io_eagle_test_parse_xml(pcb_plug_io_t *ctx, pcb_plug_iot_t typ, const char *
 			found = 1;
 		if ((found == 1) && (strstr(line, "eagle.dtd")))
 			return 1;
-		if (s = strstr(line, "<eagle")) { /* in footprints doctype and the dtd are often omitted */
+		if ((s = strstr(line, "<eagle")) != NULL) { /* in footprints doctype and the dtd are often omitted */
 			s += 6;
 			while(isspace(*s)) s++;
 			if (strncmp(s, "version=", 8) == 0)
