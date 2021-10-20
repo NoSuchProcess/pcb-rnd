@@ -11,4 +11,5 @@ release check list
 6. svn tag using URLs (use svn copy --pin-externals)
 7. update the timeline, events and doc/news.html
 8. update locally built binaries: windows
+9. modify scconfig version to -dev
 
