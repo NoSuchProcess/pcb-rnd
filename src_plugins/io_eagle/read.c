@@ -1315,44 +1315,44 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_subc_t *subc)
 
 static int eagle_read_package(read_state_t *st, trnode_t *n)
 {
-			pcb_subc_t *subc;
+	pcb_subc_t *subc;
 
-			subc = pcb_subc_alloc();
-			pcb_attribute_put(&subc->Attributes, "refdes", "K1");
-			pcb_subc_reg(st->pcb->Data, subc);
-			pcb_subc_bind_globals(st->pcb, subc);
-			eagle_read_pkg(st, n, subc);
-			if (pcb_data_is_empty(subc->data)) {
-				pcb_subc_free(subc);
-				rnd_message(RND_MSG_WARNING, "Ignoring empty package in library\n");
-				return 0;
-			}
+	subc = pcb_subc_alloc();
+	pcb_attribute_put(&subc->Attributes, "refdes", "K1");
+	pcb_subc_reg(st->pcb->Data, subc);
+	pcb_subc_bind_globals(st->pcb, subc);
+	eagle_read_pkg(st, n, subc);
+	if (pcb_data_is_empty(subc->data)) {
+		pcb_subc_free(subc);
+		rnd_message(RND_MSG_WARNING, "Ignoring empty package in library\n");
+		return 0;
+	}
 
-			pcb_attribute_put(&subc->Attributes, "refdes", eagle_get_attrs(st, n, "name", NULL));
-			pcb_attribute_put(&subc->Attributes, "value", eagle_get_attrs(st, n, "value", NULL));
-			pcb_attribute_put(&subc->Attributes, "footprint", eagle_get_attrs(st, n, "package", NULL));
+	pcb_attribute_put(&subc->Attributes, "refdes", eagle_get_attrs(st, n, "name", NULL));
+	pcb_attribute_put(&subc->Attributes, "value", eagle_get_attrs(st, n, "value", NULL));
+	pcb_attribute_put(&subc->Attributes, "footprint", eagle_get_attrs(st, n, "package", NULL));
 
-			pcb_subc_bbox(subc);
+	pcb_subc_bbox(subc);
 TODO("subc: revise this: are we loading an instance here? do we need to place it? do not even bump if not!")
-			if (st->pcb->Data->subc_tree == NULL)
-				st->pcb->Data->subc_tree = rnd_r_create_tree();
-			rnd_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)subc);
-			pcb_subc_rebind(st->pcb, subc);
+	if (st->pcb->Data->subc_tree == NULL)
+		st->pcb->Data->subc_tree = rnd_r_create_tree();
+	rnd_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)subc);
+	pcb_subc_rebind(st->pcb, subc);
 
 TODO("revise rotation and flip")
 #if 0
-			if ((moduleRotation == 90) || (moduleRotation == 180) || (moduleRotation == 270)) {
-				/* lossles module rotation for round steps */
-				moduleRotation = moduleRotation / 90;
-				pcb_subc_rotate90(subc, moduleX, moduleY, moduleRotation);
-			}
-			else if (moduleRotation != 0) {
-				double rot = moduleRotation;
-				pcb_subc_rotate(subc, moduleX, moduleY, cos(rot/RND_RAD_TO_DEG), sin(rot/RND_RAD_TO_DEG), rot);
-			}
+	if ((moduleRotation == 90) || (moduleRotation == 180) || (moduleRotation == 270)) {
+		/* lossles module rotation for round steps */
+		moduleRotation = moduleRotation / 90;
+		pcb_subc_rotate90(subc, moduleX, moduleY, moduleRotation);
+	}
+	else if (moduleRotation != 0) {
+		double rot = moduleRotation;
+		pcb_subc_rotate(subc, moduleX, moduleY, cos(rot/RND_RAD_TO_DEG), sin(rot/RND_RAD_TO_DEG), rot);
+	}
 #endif
 
-			size_bump(st, subc->BoundingBox.X2, subc->BoundingBox.Y2);
+	size_bump(st, subc->BoundingBox.X2, subc->BoundingBox.Y2);
 	return 0;
 }
 
@@ -1361,7 +1361,7 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 	trnode_t *n;
 
 	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
-		rnd_trace("looking at child %s of packages node\n", NODENAME(n)); 
+		rnd_trace("looking at child %s of packages node\n", NODENAME(n));
 		if (STRCMP(NODENAME(n), "package") == 0) 
 			eagle_read_package(st, n);
 	}
