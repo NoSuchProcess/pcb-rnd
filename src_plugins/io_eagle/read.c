@@ -370,6 +370,10 @@ static int eagle_read_layers_(read_state_t *st, pcb_data_t *data, trnode_t *subt
 						ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name, 0);
 						pcb_layergrp_fix_turn_to_outline(grp);
 					}
+					else {
+						pcb_layer_t *l = pcb_layer_new_bound(data, PCB_LYT_BOUNDARY, ly->name, "uroute");
+						ly->lid = l - data->Layer;
+					}
 					break;
 
 				default:
@@ -379,6 +383,8 @@ static int eagle_read_layers_(read_state_t *st, pcb_data_t *data, trnode_t *subt
 							grp = pcb_get_grp_new_intern(st->pcb, -1);
 							ly->lid = pcb_layer_create(st->pcb, grp - st->pcb->LayerGroups.grp, ly->name, 0);
 						}
+						else
+							typ = PCB_LYT_COPPER & PCB_LYT_INTERN;
 					}
 			}
 			if (typ != 0) {
@@ -387,6 +393,10 @@ static int eagle_read_layers_(read_state_t *st, pcb_data_t *data, trnode_t *subt
 						pcb_layer_list(st->pcb, typ, &ly->lid, 1);
 					if ((ly->lid < 0) && (pcb_layergrp_list(st->pcb, typ, &gid, 1) > 0))
 						ly->lid = pcb_layer_create(st->pcb, gid, ly->name, 0);
+				}
+				else {
+					pcb_layer_t *l = pcb_layer_new_bound(data, typ, ly->name, NULL);
+					ly->lid = l - data->Layer;
 				}
 			}
 		}
