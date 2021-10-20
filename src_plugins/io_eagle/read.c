@@ -1300,7 +1300,9 @@ TODO("bin: can remove the following if dealt with in post processor for binary t
 	}
 
 	pcb_add_poly_on_layer(ly, poly);
-	pcb_poly_init_clip(st->pcb->Data, ly, poly);
+
+	if (st->pcb != NULL)
+		pcb_poly_init_clip(st->pcb->Data, ly, poly);
 
 	return 0;
 }
@@ -1336,12 +1338,20 @@ static int eagle_read_package(read_state_t *st, trnode_t *n)
 		st->fp_data = subc->data;
 
 	pcb_attribute_put(&subc->Attributes, "refdes", "K1");
+
 	if (st->pcb != NULL) {
+		/* subc part of a board */
 		pcb_subc_reg(st->pcb->Data, subc);
 		pcb_subc_bind_globals(st->pcb, subc);
 	}
-	else
+	else {
+		rnd_layer_id_t lid;
+
+		/* subc being loaded from a footprint file: create all parent layers with matching IDs */
 		pcb_subc_reg(st->fp_parent_data, subc);
+		for(lid = 0; lid < st->fp_parent_data->LayerN; lid++)
+			pcb_subc_alloc_layer_like(subc, &st->fp_parent_data->Layer[lid]);
+	}
 
 	eagle_read_pkg(st, n, subc);
 	if (pcb_data_is_empty(subc->data)) {
