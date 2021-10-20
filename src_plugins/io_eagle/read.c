@@ -1319,8 +1319,10 @@ static int eagle_read_package(read_state_t *st, trnode_t *n)
 
 	subc = pcb_subc_alloc();
 	pcb_attribute_put(&subc->Attributes, "refdes", "K1");
-	pcb_subc_reg(st->pcb->Data, subc);
-	pcb_subc_bind_globals(st->pcb, subc);
+	if (st->pcb != NULL) {
+		pcb_subc_reg(st->pcb->Data, subc);
+		pcb_subc_bind_globals(st->pcb, subc);
+	}
 	eagle_read_pkg(st, n, subc);
 	if (pcb_data_is_empty(subc->data)) {
 		pcb_subc_free(subc);
@@ -1334,10 +1336,12 @@ static int eagle_read_package(read_state_t *st, trnode_t *n)
 
 	pcb_subc_bbox(subc);
 TODO("subc: revise this: are we loading an instance here? do we need to place it? do not even bump if not!")
-	if (st->pcb->Data->subc_tree == NULL)
-		st->pcb->Data->subc_tree = rnd_r_create_tree();
-	rnd_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)subc);
-	pcb_subc_rebind(st->pcb, subc);
+	if (st->pcb != NULL) {
+		if (st->pcb->Data->subc_tree == NULL)
+			st->pcb->Data->subc_tree = rnd_r_create_tree();
+		rnd_r_insert_entry(st->pcb->Data->subc_tree, (rnd_box_t *)subc);
+		pcb_subc_rebind(st->pcb, subc);
+	}
 
 TODO("revise rotation and flip")
 #if 0
@@ -2066,9 +2070,8 @@ int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const cha
 		}
 	}
 
-	if (npkg != NULL) {
-		TODO("Read the actual package here");
-	}
+	if (npkg != NULL)
+		res = eagle_read_package(st, npkg);
 
 	error:;
 	st_uninit(st);
