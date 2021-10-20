@@ -1938,3 +1938,36 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 	return pp_res;
 }
 
+
+
+pcb_plug_fp_map_t *io_eagle_map_footprint_xml(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+{
+	int res;
+	read_state_t st = {0};
+
+	if (!io_eagle_test_parse_xml(ctx, PCB_IOT_FOOTPRINT, fn, f))
+		return NULL;
+
+	rewind(f);
+
+	/* have not read design rules section yet but need this for rectangle parsing */
+	st.ms_width = RND_MIL_TO_COORD(10); /* default minimum feature width */
+	st.parser.calls = &trparse_xml_calls;
+
+	rnd_trace("eagle xml map fp: %s\n", fn);
+
+	if (st.parser.calls->load(&st.parser, fn) != 0)
+		return NULL;
+
+
+	st_uninit(&st);
+	return head;
+}
+
+/*	res = eagle_foreach_dispatch(&st, st.parser.calls->children(&st.parser, st.parser.root), disp, NULL, 0);*/
+
+int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const char *filename, const char *subfpname)
+{
+	rnd_trace("eagle xml parse fp: %s\n", filename);
+	return -1;
+}
