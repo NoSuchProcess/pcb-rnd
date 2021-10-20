@@ -1998,8 +1998,10 @@ pcb_plug_fp_map_t *io_eagle_map_footprint_xml(pcb_plug_io_t *ctx, FILE *f, const
 		for(n = CHILDREN(npkgs); n != NULL; n = NEXT(n)) {
 			if (strcmp(NODENAME(n), "package") == 0) {
 				const char *name = GET_PROP(n, "name");
-				res = head;
-				pcb_io_fp_map_append(&tail, head, fn, name);
+				if (name != NULL) {
+					res = head;
+					pcb_io_fp_map_append(&tail, head, fn, name);
+				}
 			}
 		}
 	}
@@ -2014,7 +2016,7 @@ int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const cha
 {
 	int res = -1;
 	read_state_t st_tmp = {0}, *st = &st_tmp;
-	trnode_t *nlayers, *npkgs;
+	trnode_t *nlayers, *npkgs, *n, *npkg = NULL;
 
 
 	/* have not read design rules section yet but need this for rectangle parsing */
@@ -2036,6 +2038,20 @@ int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const cha
 		goto error;
 	}
 
+
+	for(n = CHILDREN(npkgs); n != NULL; n = NEXT(n)) {
+		if (strcmp(NODENAME(n), "package") == 0) {
+			const char *name = GET_PROP(n, "name");
+			if ((subfpname == NULL) || ((name != NULL) && (strcmp(name, subfpname) == 0))) {
+				npkg = n;
+				break;
+			}
+		}
+	}
+
+	if (npkg != NULL) {
+		TODO("Read the actual package here");
+	}
 
 	error:;
 	st_uninit(st);
