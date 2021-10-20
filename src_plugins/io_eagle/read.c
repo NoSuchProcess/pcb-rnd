@@ -2070,6 +2070,7 @@ int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const cha
 
 	/* have not read design rules section yet but need this for rectangle parsing */
 	st->ms_width = RND_MIL_TO_COORD(10); /* default minimum feature width */
+	st->default_unit = "mm";
 	st->parser.calls = &trparse_xml_calls;
 
 	if (st->parser.calls->load(&st->parser, fn) != 0)
