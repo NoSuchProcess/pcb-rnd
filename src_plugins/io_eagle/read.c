@@ -1950,7 +1950,7 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 pcb_plug_fp_map_t *io_eagle_map_footprint_xml(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
 {
 	read_state_t st_tmp = {0}, *st = &st_tmp;
-	trnode_t *n, *ndrw = NULL, *nlib = NULL, *npkgs = NULL;
+	trnode_t *n, *npkgs;
 	pcb_plug_fp_map_t *res = NULL, *tail = head;
 
 	if (!io_eagle_test_parse_xml(ctx, PCB_IOT_FOOTPRINT, fn, f))
@@ -1965,31 +1965,7 @@ pcb_plug_fp_map_t *io_eagle_map_footprint_xml(pcb_plug_io_t *ctx, FILE *f, const
 	if (st->parser.calls->load(&st->parser, fn) != 0)
 		return NULL;
 
-	for(n = CHILDREN(st->parser.root); n != NULL; n = NEXT(n)) {
-		if (strcmp(NODENAME(n), "drawing") == 0) {
-			ndrw = n;
-			break;
-		}
-	}
-
-	if (ndrw != NULL) {
-		for(n = CHILDREN(ndrw); n != NULL; n = NEXT(n)) {
-			if (strcmp(NODENAME(n), "library") == 0) {
-				nlib = n;
-				break;
-			}
-		}
-	}
-
-	if (nlib != NULL) {
-		for(n = CHILDREN(nlib); n != NULL; n = NEXT(n)) {
-			if (strcmp(NODENAME(n), "packages") == 0) {
-				npkgs = n;
-				break;
-			}
-		}
-	}
-
+	npkgs = eagle_trpath(st, st->parser.root, "drawing", "library", "packages", NULL);
 	if (npkgs != NULL) {
 		for(n = CHILDREN(npkgs); n != NULL; n = NEXT(n)) {
 			if (strcmp(NODENAME(n), "package") == 0) {
