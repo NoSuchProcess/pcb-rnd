@@ -1313,13 +1313,8 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_subc_t *subc)
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, subc, IN_SUBC);
 }
 
-static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, void *obj, int type)
+static int eagle_read_package(read_state_t *st, trnode_t *n)
 {
-	trnode_t *n;
-
-	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
-		rnd_trace("looking at child %s of packages node\n", NODENAME(n)); 
-		if (STRCMP(NODENAME(n), "package") == 0) {
 			pcb_subc_t *subc;
 
 			subc = pcb_subc_alloc();
@@ -1330,7 +1325,7 @@ static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, voi
 			if (pcb_data_is_empty(subc->data)) {
 				pcb_subc_free(subc);
 				rnd_message(RND_MSG_WARNING, "Ignoring empty package in library\n");
-				continue;
+				return 0;
 			}
 
 			pcb_attribute_put(&subc->Attributes, "refdes", eagle_get_attrs(st, n, "name", NULL));
@@ -1358,7 +1353,17 @@ TODO("revise rotation and flip")
 #endif
 
 			size_bump(st, subc->BoundingBox.X2, subc->BoundingBox.Y2);
-		}
+	return 0;
+}
+
+static int eagle_read_library_file_pkgs(read_state_t *st, trnode_t *subtree, void *obj, int type)
+{
+	trnode_t *n;
+
+	for(n = CHILDREN(subtree); n != NULL; n = NEXT(n)) {
+		rnd_trace("looking at child %s of packages node\n", NODENAME(n)); 
+		if (STRCMP(NODENAME(n), "package") == 0) 
+			eagle_read_package(st, n);
 	}
 	return 0;
 }
