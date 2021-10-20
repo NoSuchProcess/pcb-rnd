@@ -87,7 +87,8 @@ typedef struct eagle_library_s {
 typedef struct read_state_s {
 	trparse_t parser;
 	pcb_board_t *pcb;
-	pcb_data_t *fp_data; /* if pcb==NULL then fp_data is not NULL and we are reading a footprint (bound layers) */
+	pcb_data_t *fp_data;        /* if pcb==NULL then fp_data points to the subcircuit's data and we are reading a footprint (bound layers) */
+	pcb_data_t *fp_parent_data; /* if pcb==NULL then fp_parent_data the data (usually buffer) where the subc is created */
 
 	htip_t layers;
 	htsp_t libs;
@@ -461,8 +462,8 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 				}
 			}
 			else {
-				pcb_layer_t *l = pcb_layer_new_bound(st->fp_data, typ, ly->name, t->purp);
-				ly->lid = l - st->fp_data->Layer;
+				pcb_layer_t *l = pcb_layer_new_bound(st->fp_parent_data, typ, ly->name, t->purp);
+				ly->lid = l - st->fp_parent_data->Layer;
 			}
 		}
 		else
@@ -1331,11 +1332,17 @@ static int eagle_read_package(read_state_t *st, trnode_t *n)
 	pcb_subc_t *subc;
 
 	subc = pcb_subc_alloc();
+	if (st->pcb == NULL)
+		st->fp_data = subc->data;
+
 	pcb_attribute_put(&subc->Attributes, "refdes", "K1");
 	if (st->pcb != NULL) {
 		pcb_subc_reg(st->pcb->Data, subc);
 		pcb_subc_bind_globals(st->pcb, subc);
 	}
+	else
+		pcb_subc_reg(st->fp_parent_data, subc);
+
 	eagle_read_pkg(st, n, subc);
 	if (pcb_data_is_empty(subc->data)) {
 		pcb_subc_free(subc);
@@ -2065,7 +2072,7 @@ int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const cha
 		goto error;
 	}
 
-	st->fp_data = data;
+	st->fp_parent_data = data;
 	st_init(st);
 
 	if (eagle_read_layers_(st, data, nlayers, NULL, -1) != 0) {
