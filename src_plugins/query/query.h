@@ -64,10 +64,6 @@ struct pcb_qry_val_s {
 		double dbl;
 		long lng;
 		const char *str;
-		struct {
-			const char *str;
-			char tmp[4];
-		} local_str;
 	} data;
 	void *source; /* TODO: for the cache */
 };
