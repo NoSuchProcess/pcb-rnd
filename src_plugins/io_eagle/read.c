@@ -1318,13 +1318,13 @@ static int eagle_read_pkg(read_state_t *st, trnode_t *subtree, pcb_subc_t *subc)
 		{"smd",         eagle_read_smd},
 		{"pad",         eagle_read_pad},
 		{"text",        eagle_read_pkg_txt},
-		{"polygon",     eagle_read_poly}, /* TODO: check this to handle subc */
+		{"polygon",     eagle_read_poly},
 		{"rectangle",   eagle_read_rect},
 		{"@text",       eagle_read_nop},
 		{NULL, NULL}
 	};
 
-	TODO("^^^ can polygon be in footprints?");
+	TODO("^^^ can polygon be in footprints? YES, see USB4056-03-A.lbr; verify eagle_read_poly to handle it");
 
 	return eagle_foreach_dispatch(st, CHILDREN(subtree), disp, subc, IN_SUBC);
 }
