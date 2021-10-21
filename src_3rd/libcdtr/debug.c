@@ -70,7 +70,7 @@ void dump_trianglelist(trianglelist_node_t *list)
 	TRIANGLELIST_FOREACH_END();
 }
 
-static void circumcircle(const triangle_t *t, pos_t *p, int *r)
+static void circumcircle(const triangle_t *t, pos_t *p, coord_t *r)
 {
 	double x1 = t->p[0]->pos.x, x2 = t->p[1]->pos.x, x3 = t->p[2]->pos.x;
 	double y1 = t->p[0]->pos.y, y2 = t->p[1]->pos.y, y3 = t->p[2]->pos.y;
@@ -133,7 +133,7 @@ void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t 
 	fprintf(f, "color green\n");
 	VTTRIANGLE_FOREACH(triangle, &cdt->triangles)
 		pos_t pos;
-		int r;
+		coord_t r;
 		if (show_circles) {
 			circumcircle(triangle, &pos, &r);
 			fprintf(f, "circle %f %f %f 50\n", (double)pos.x, (double)pos.y, (double)r);
@@ -150,7 +150,7 @@ void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t 
 	fprintf(f, "color red\n");
 	if (point_violations) {
 		POINTLIST_FOREACH(p, point_violations)
-			fprintf(f, "circle %f %f 50 10\n", (double)p->pos.x, (double)p->pos.y);
+			fprintf(f, "circle %f %f 0.1 10\n", (double)p->pos.x, (double)p->pos.y);
 		POINTLIST_FOREACH_END();
 	}
 
@@ -158,7 +158,7 @@ void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t 
 	if (triangle_violations) {
 		TRIANGLELIST_FOREACH(t, triangle_violations)
 			pos_t pos;
-			int r;
+			coord_t r;
 			circumcircle(t, &pos, &r);
 			fprintf(f, "circle %f %f %f 50\n", (double)pos.x, (double)pos.y, (double)r);
 		TRIANGLELIST_FOREACH_END();
