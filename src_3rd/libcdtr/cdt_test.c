@@ -286,8 +286,39 @@ static void cmd_raw_triangle(char *args)
 		fprintf(stderr, "raw_triangle failed\n");
 }
 
+static void cmd_triangulate_poly(char *args)
+{
+	int num = 0;
+	char *sep = strtok(args, " \t\r\n");
+	pointlist_node_t *poly = NULL;
+	
+	while (sep != NULL) {
+		long pi;
+		
+		if (sscanf(sep, "P%ld", &pi) != 1) {
+			fprintf(stderr, "syntax error: triangulate_poly needs Px arguments (with raw point indices; ordered adjacently): %s\n", sep);
+			pointlist_free(poly);
+			return;
+		}
+		
+		poly = pointlist_prepend(poly, &cdt.points.array[pi]);
+		num++;
+		
+		sep = strtok(NULL, " \t");
+	}
+	
+	if (num < 3) {
+		fprintf(stderr, "syntax error: at least 3 points required\n");
+		pointlist_free(poly);
+		return;
+	}
+	
+	cdt_triangulate_polygon(&cdt, poly);
+	pointlist_free(poly);
+}
 
-static void cmd_dump(char *args, int anim)
+
+static void cmd_dump(char *args, int anim, int show_violations)
 {
 	FILE *f;
 	char *end = strpbrk(args, " \t\r\n");
@@ -300,9 +331,20 @@ static void cmd_dump(char *args, int anim)
 		fprintf(stderr, "dump_anim: failed to open '%s' for write\n", args);
 		return;
 	}
-
-	if (anim)
-		cdt_fdump_animator(f, &cdt, 0, NULL, NULL);
+	
+	if (anim) {
+		pointlist_node_t *p_violations = NULL;
+		trianglelist_node_t *t_violations = NULL;
+		
+		if (show_violations) { 
+			printf("delaunay = %d", cdt_check_delaunay(&cdt, &p_violations, &t_violations));
+			printf(", violations = %lu\n", pointlist_length(p_violations));
+		}
+		cdt_fdump_animator(f, &cdt, 1, p_violations, t_violations);
+		
+		pointlist_free(p_violations);
+		trianglelist_free(t_violations);
+	}
 	else
 		cdt_fdump(f, &cdt);
 
@@ -450,8 +492,10 @@ static int parse(FILE *f)
 		else if (strcmp(cmd, "del_cedge") == 0) cmd_del_cedge(args);
 		else if (strcmp(cmd, "raw_edge") == 0) cmd_raw_edge(args);
 		else if (strcmp(cmd, "raw_triangle") == 0) cmd_raw_triangle(args);
-		else if (strcmp(cmd, "dump") == 0) cmd_dump(args, 0);
-		else if (strcmp(cmd, "dump_anim") == 0) cmd_dump(args, 1);
+		else if (strcmp(cmd, "triangulate_poly") == 0) cmd_triangulate_poly(args);
+		else if (strcmp(cmd, "dump") == 0) cmd_dump(args, 0, 0);
+		else if (strcmp(cmd, "dump_anim") == 0) cmd_dump(args, 1, 0);
+		else if (strcmp(cmd, "dump_anim_violations") == 0) cmd_dump(args, 1, 1);
 		else if (strcmp(cmd, "dump_triangles_anim") == 0) cmd_dump_triangles(args, 1);
 		else if (strcmp(cmd, "print") == 0) cmd_print(args);
 		else if (strcmp(cmd, "print_events") == 0) cmd_print_events(args);
