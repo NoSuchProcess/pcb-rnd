@@ -1,0 +1,23 @@
+raw_init
+
+raw_point 62.941827 31.064827
+raw_point 64.719827 31.064827
+raw_point 64.199063 30.302827
+raw_point 63.462591 30.302827
+
+raw_edge P0 P1 1
+raw_edge P1 P2 0
+raw_edge P2 P3 1
+raw_edge P3 P0 0
+
+#raw_edge P0 P2 0
+#raw_edge P1 P3 0
+
+#raw_triangle P0 P1 P2
+#raw_triangle P1 P2 P3
+#raw_triangle P2 P3 P0
+#raw_triangle P3 P0 P1
+
+triangulate_poly P3 P2 P1 P0
+
+dump_anim_violations poly_only_triangulate.anim
