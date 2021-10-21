@@ -361,7 +361,7 @@ static pointlist_node_t *order_edges_adjacently(edgelist_node_t *edges)
 	return plist_ordered;
 }
 
-static void triangulate_polygon(cdt_t *cdt, pointlist_node_t *polygon)
+void cdt_triangulate_polygon(cdt_t *cdt, pointlist_node_t *polygon)
 {
 	pointlist_node_t *current_point_node;
 	point_t *p[3];
@@ -589,7 +589,7 @@ next_i:
 	}
 
 	polygon_points = order_edges_adjacently(polygon_edges);
-	triangulate_polygon(cdt, polygon_points);
+	cdt_triangulate_polygon(cdt, polygon_points);
 }
 
 static trianglelist_node_t *triangles_intersecting_line(point_t *p1, point_t *p2)
@@ -692,8 +692,8 @@ edge_t *cdt_insert_constrained_edge(cdt_t *cdt, point_t *p1, point_t *p2)
 	e = new_edge(cdt, p1, p2, 1);
 
 	/* triangulate the created polygons */
-	triangulate_polygon(cdt, left_polygon);
-	triangulate_polygon(cdt, right_polygon);
+	cdt_triangulate_polygon(cdt, left_polygon);
+	cdt_triangulate_polygon(cdt, right_polygon);
 
 	return e;
 }
@@ -785,7 +785,7 @@ next_edge:
 
 	/* triangulate the resultant polygon */
 	polygon = order_edges_adjacently(border_edges);
-	triangulate_polygon(cdt, polygon);
+	cdt_triangulate_polygon(cdt, polygon);
 
 	/* reattach isolated points and constrained edges */
 	POINTLIST_FOREACH(p, isolated_points)
@@ -797,8 +797,8 @@ next_edge:
 		insert_constrained_edge_(cdt, e->endp[0], e->endp[1], &left_polygon, &right_polygon);
 		for (i = 0; i < 2; i++)
 			e->endp[i]->adj_edges = edgelist_prepend(e->endp[i]->adj_edges, &e); /* reattach the edge to the endpoints */
-		triangulate_polygon(cdt, left_polygon);
-		triangulate_polygon(cdt, right_polygon);
+		cdt_triangulate_polygon(cdt, left_polygon);
+		cdt_triangulate_polygon(cdt, right_polygon);
 	EDGELIST_FOREACH_END();
 	edgelist_free(constrained_edges_within_scope);
 }
