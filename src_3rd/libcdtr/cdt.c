@@ -229,7 +229,7 @@ int cdt_is_point_in_circumcircle(point_t *p, triangle_t *t)
 	d3 = (n1 * x2) + (n2 * x3) + (n3 * x1) - (n3 * x2) - (n1 * x3) - (n2 * x1);
 	d4 = (n1 * x2 * y3) + (n2 * x3 * y1) + (n3 * x1 * y2) - (n3 * x2 * y1) - (n1 * x3 * y2) - (n2 * x1 * y3);
 
-	return d1 * ( (px * (px*d1 - d2)) + (py * (py*d1 + d3)) - d4 ) < 0 ? 1 : 0;
+	return CROUND(d1 * ( (px * (px*d1 - d2)) + (py * (py*d1 + d3)) - d4 )) < 0 ? 1 : 0;
 }
 
 static void init_bbox(cdt_t *cdt, coord_t bbox_x1, coord_t bbox_y1, coord_t bbox_x2, coord_t bbox_y2)
