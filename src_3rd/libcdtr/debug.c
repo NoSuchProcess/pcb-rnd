@@ -117,6 +117,12 @@ void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t 
 {
 	int last_c = 0;
 	int triangle_num = 0;
+	double pt_r, dx = cdt->bbox_br.x - cdt->bbox_tl.x, dy = cdt->bbox_br.y - cdt->bbox_tl.y;
+
+	/* calculate a point violation circle radius that scales with drawing size */
+	pt_r = dx > dy ? dx : dy;
+	pt_r = pt_r / 500.0;
+
 	fprintf(f, "frame\n");
 	fprintf(f, "scale 0.9\n");
 	fprintf(f, "viewport %f %f - %f %f\n", (double)cdt->bbox_tl.x - 1.0, (double)cdt->bbox_tl.y - 1.0, (double)cdt->bbox_br.x + 1.0, (double)cdt->bbox_br.y  + 1.0);
@@ -150,7 +156,7 @@ void cdt_fdump_animator(FILE *f, cdt_t *cdt, int show_circles, pointlist_node_t 
 	fprintf(f, "color red\n");
 	if (point_violations) {
 		POINTLIST_FOREACH(p, point_violations)
-			fprintf(f, "circle %f %f 0.1 10\n", (double)p->pos.x, (double)p->pos.y);
+			fprintf(f, "circle %f %f %f 10\n", (double)p->pos.x, (double)p->pos.y, pt_r);
 		POINTLIST_FOREACH_END();
 	}
 
