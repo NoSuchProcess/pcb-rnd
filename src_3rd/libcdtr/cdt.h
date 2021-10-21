@@ -90,6 +90,8 @@ int cdt_is_point_in_circumcircle(point_t *p, triangle_t *t);
 void cdt_init_(cdt_t *cdt); /* does not create the bbox in constrained edges */
 edge_t *cdt_new_edge_(cdt_t *cdt, point_t *p1, point_t *p2, int constrain);
 triangle_t *cdt_new_triangle_(cdt_t *cdt, point_t *p1, point_t *p2, point_t *p3);
+
+/* Internal for testing/debugging, production code shall not call this */
 void cdt_triangulate_polygon(cdt_t *cdt, pointlist_node_t *polygon);
 
 
