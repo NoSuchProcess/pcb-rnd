@@ -162,7 +162,7 @@ OA
 	label Protel\nAutotrax
 
 [eagl]
-	label Eagle\n(board)
+	label Eagle\n(board,lib)
 
 [dsn_]
 	label dsn\n(autorouting)
@@ -386,12 +386,14 @@ OA
 <-> prtl.s pcbrnd
 	label board
 
--> eagl.s-0.2 pcbrnd
+-> eagl.s-0.3 pcbrnd
 	label board
 
--> eagl.s+0.2 pcbrnd
+-> eagl.s pcbrnd
 	label DRU
 
+-> eagl.s+0.3 pcbrnd
+	label xml\n.lbr
 
 <-> dsn_.s pcbrnd
 	label board
