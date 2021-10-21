@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - BUG: io_kicad can't load empty string properly: bug_files/TODO/empty_str.kicad_mod [report: cuvoodoo]
-- FEATUER: io_eagle: load libraires (footprints) [report: cuvoodoo]
++ FEATUER: io_eagle: load libraires (footprints) [report: cuvoodoo]
 
 2. For later releases ===============================================================================
 - depends on librnd 3.1.0:
