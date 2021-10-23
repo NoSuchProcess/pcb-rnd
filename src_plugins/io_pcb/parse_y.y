@@ -750,6 +750,10 @@ text_hi_format
 			/* x, y, direction, scale, text, flags */
 		: T_TEXT '[' measure measure number number STRING flags ']'
 			{
+				if ($7 == NULL) {
+					rnd_message(RND_MSG_ERROR, "Empty string in text object - not loading this text object to avoid invisible objects\n");
+				}
+				else {
 				/* FIXME: shouldn't know about .f */
 				/* I don't think this matters because anything with hi_format
 				 * will have the silk on its own layer in the file rather
@@ -767,6 +771,7 @@ text_hi_format
 				else
 					pcb_text_new(Layer, yyFont, NU ($3), NU ($4), $5 * 90.0, $6, 0, $7, $8);
 				free ($7);
+			}
 			}
 		;
 
