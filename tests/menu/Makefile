@@ -1,4 +1,4 @@
-GFLT=../pupfilter.sh
+GFLT=../pupfilter.sh ws
 
 all:
 
