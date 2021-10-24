@@ -5,7 +5,7 @@
 
 exec awk -v "how=$1" '
 	BEGIN {
-		ws = "ws" ~ how;
+		ws = how ~ "ws";
 	}
 	/^E: Some of the dynamic/ { next }
 	/^E: puplug:/ { next}
