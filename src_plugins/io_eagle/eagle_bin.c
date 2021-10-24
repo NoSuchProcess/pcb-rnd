@@ -1768,7 +1768,7 @@ static int postprocess_wires(void *ctx, egb_node_t *root)
 	htss_entry_t *e;
 	egb_node_t *n;
 	int line_type = -1;
-	long half_width = 0; 
+	long half_width = 0;
 	char tmp[32];
 
 	if (root->id == PCB_EGKW_SECT_LINE) {
