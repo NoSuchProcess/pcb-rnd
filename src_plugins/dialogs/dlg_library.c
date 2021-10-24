@@ -589,7 +589,7 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	}
 
 	if ((name == NULL) || (*name == '\0')) {
-		rnd_message(RND_MSG_ERROR, "Filed to figure the name of the parametric footprint\n");
+		rnd_message(RND_MSG_ERROR, "Failed to figure the name of the parametric footprint\n");
 		return;
 	}
 	namelen = strlen(name);
