@@ -463,6 +463,7 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 			}
 			else {
 				pcb_layer_t *l = pcb_layer_new_bound(st->fp_parent_data, typ, ly->name, t->purp);
+				l->comb = t->comb;
 				ly->lid = l - st->fp_parent_data->Layer;
 			}
 		}
