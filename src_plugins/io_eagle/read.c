@@ -441,6 +441,12 @@ static pcb_layer_t *eagle_layer_get(read_state_t *st, eagle_layerid_t id, eagle_
 				/* create docu on the first reference */
 			pcb_layer_type_t typ = t->lyt;
 			rnd_layergrp_id_t gid;
+
+			if (ly == NULL) {
+				ly = calloc(sizeof(eagle_layer_t), 1);
+				htip_set(&st->layers, id, ly);
+			}
+
 			ly->name    = t->name;
 			ly->color   = t->color;
 			ly->fill    = 1;
