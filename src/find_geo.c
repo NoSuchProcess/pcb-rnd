@@ -50,6 +50,15 @@
 
 #define Bloat ctx->bloat
 
+/* For clearance vs. object because clearance doesn't really touch the object
+   so a few nanometers of overlap is required */
+#define THERMAL_EXTRA_BLOAT 2
+
+/* When object has clearance to a given polygon, shrink it a few nanometers to
+   avoid false positives in drc-kind lookups, e.g. when requirement is 10mil
+   clearance and clearance is exactly 10mil */
+#define CLEARANCE_EXTRA_BLOAT -4
+
 /* This is required for fullpoly: whether an object bbox intersects a poly
    bbox can't be determined by a single contour check because there might be
    multiple contours. Returns 1 if obj bbox intersects any island's bbox */
@@ -722,22 +731,23 @@ rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *
 
 /* Bloated pline-pline intersection test: trace c1 using thick lines to see if
    it ever touches c2 */
-rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_pline_t *c2, pcb_poly_t *P2)
+rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_pline_t *c2, pcb_poly_t *P2, rnd_coord_t extra_bloat)
 {
 	rnd_pline_t *c;
+	rnd_coord_t bloat = Bloat + extra_bloat;
 
-	if (!((c1->xmin - Bloat <= c2->xmax) && (c2->xmin <= c1->xmax + Bloat) && (c1->ymin - Bloat <= c2->ymax) && (c2->ymin <= c1->ymax + Bloat)))
+	if (!((c1->xmin - bloat <= c2->xmax) && (c2->xmin <= c1->xmax + bloat) && (c1->ymin - bloat <= c2->ymax) && (c2->ymin <= c1->ymax + bloat)))
 		return rnd_false;
 
 	for (c = c1; c; c = c->next) {
 		pcb_line_t line;
 		rnd_vnode_t *v = c->head;
-		if (c->xmin - Bloat <= c2->xmax && c->xmax + Bloat >= c2->xmin &&
-				c->ymin - Bloat <= c2->ymax && c->ymax + Bloat >= c2->ymin) {
+		if (c->xmin - bloat <= c2->xmax && c->xmax + bloat >= c2->xmin &&
+				c->ymin - bloat <= c2->ymax && c->ymax + bloat >= c2->ymin) {
 
 			line.Point1.X = v->point[0];
 			line.Point1.Y = v->point[1];
-			line.Thickness = 2 * Bloat;
+			line.Thickness = bloat;
 			line.Clearance = 0;
 			line.Flags = pcb_no_flags();
 			for (v = v->next; v != c->head; v = v->next) {
@@ -753,6 +763,31 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 	}
 
 	return rnd_false;
+}
+
+static rnd_coord_t get_extra_bloat(pcb_any_obj_t *ps, pcb_poly_t *poly)
+{
+	rnd_layer_id_t poly_lid = pcb_layer2id(poly->parent.layer->parent.data, poly->parent.layer);
+	unsigned char *thr;
+
+	if (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, poly))
+		return 0; /* poly is not clearing: no thermal or clearance possible, use true sizes */
+
+ /*if  obj is not clearing: no thermal or clearance possible, use true sizes */
+	if (ps->type == PCB_OBJ_POLY) {
+		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARPOLYPOLY, ps))
+			return 0;
+	}
+	else {
+		if (!PCB_FLAG_TEST(PCB_FLAG_CLEARLINE, ps))
+			return 0;
+	}
+
+	thr = pcb_obj_common_get_thermal(ps, poly_lid, 0);
+	if ((thr != NULL) && (*thr & PCB_THERMAL_ON) && ((*thr & 0x07) != 0))
+		return THERMAL_EXTRA_BLOAT;
+
+	return CLEARANCE_EXTRA_BLOAT;
 }
 
 
@@ -827,7 +862,8 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 			rnd_pline_t *c1 = pcb_poly_contour(&it1);
 			for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
 				rnd_pline_t *c2 = pcb_poly_contour(&it2);
-				if (pcb_isc_poly_poly_bloated(ctx, c1, c2, P2))
+				rnd_coord_t extra_bloat = get_extra_bloat(P1, P2);
+				if (pcb_isc_poly_poly_bloated(ctx, c1, c2, P2, extra_bloat))
 					return rnd_true;
 
 				if (!PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, P2))
@@ -1077,7 +1113,8 @@ RND_INLINE rnd_polyarea_t *pcb_pstk_shp_poly2area(pcb_pstk_t *ps, pcb_pstk_shape
 	return shp;
 }
 
-RND_INLINE rnd_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly, pcb_pstk_shape_t *shape)
+
+RND_INLINE rnd_bool_t pcb_isc_pstk_poly_shp(pcb_find_t *ctx, pcb_pstk_t *ps, pcb_poly_t *poly, pcb_pstk_shape_t *shape)
 {
 	if (shape == NULL) goto noshape;
 
@@ -1090,10 +1127,11 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *p
 			rnd_polyarea_t *pa2;
 			rnd_polyarea_t *shp = pcb_pstk_shp_poly2area(ps, shape);
 			rnd_pline_t *c1 = shp->contours;
+			rnd_coord_t extra_bloat = get_extra_bloat(ps, poly);
 
 			for(pa2 = pcb_poly_island_first(poly, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
 				rnd_pline_t *c2 = pcb_poly_contour(&it2);
-				if (pcb_isc_poly_poly_bloated(ctx, c1, c2, poly))
+				if (pcb_isc_poly_poly_bloated(ctx, c1, c2, poly, extra_bloat))
 					res = rnd_true;
 			}
 			rnd_polyarea_free(&shp);
