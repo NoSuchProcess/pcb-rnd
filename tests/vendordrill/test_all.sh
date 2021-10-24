@@ -2,6 +2,8 @@
 
 ROOT="../.."
 SRC="$ROOT/src"
+TDIR="../tests/vendordrill"
+GFLT="../pupfilter.sh"
 PCBRND="./pcb-rnd"
 GLOBARGS="-c rc/library_search_paths=../tests/RTT/lib -c rc/quiet=1"
 
@@ -30,8 +32,8 @@ message(*** POST ***)
 Report(DrillReport)
 ') | (
 	cd $SRC
-	./pcb-rnd $GLOBARGS --gui batch $brd
-) | awk '
+	$PCBRND $GLOBARGS --gui batch $brd
+) | $GFLT | awk '
 # remove full path filenames
 /Loaded.*from/ {
 	line=$0
