@@ -882,7 +882,7 @@ static int eagle_read_wire(read_state_t * st, trnode_t * subtree, void *obj, int
 
 	ly = eagle_layer_get(st, ln, loc, obj);
 	if (ly == NULL) {
-		rnd_message(RND_MSG_ERROR, "Failed to allocate wire layer 'ly' to ln:%d in eagle_read_wire()\n");
+		rnd_message(RND_MSG_ERROR, "Failed to allocate wire layer 'ly' to ln:%d in eagle_read_wire()\n", ln);
 		return 0;
 	}
 
