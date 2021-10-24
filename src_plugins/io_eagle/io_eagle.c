@@ -92,9 +92,9 @@ int pplg_init_io_eagle(void)
 	io_eagle_bin.fmt_support_prio = io_eagle_fmt;
 	io_eagle_bin.test_parse = io_eagle_test_parse_bin;
 	io_eagle_bin.parse_pcb = io_eagle_read_pcb_bin;
-/*	io_eagle_bin.parse_footprint = NULL;
-	io_eagle_bin.map_footprint = NULL;
-	io_eagle_bin.parse_font = NULL;
+	io_eagle_bin.parse_footprint = io_eagle_parse_footprint_bin;
+	io_eagle_bin.map_footprint = io_eagle_map_footprint_bin;
+/*	io_eagle_bin.parse_font = NULL;
 	io_eagle_bin.write_buffer = io_eagle_write_buffer;
 	io_eagle_bin.write_pcb = io_eagle_write_pcb;*/
 	io_eagle_bin.default_fmt = "eagle";

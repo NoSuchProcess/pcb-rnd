@@ -2027,20 +2027,13 @@ int io_eagle_read_pcb_bin(pcb_plug_io_t *ctx, pcb_board_t *pcb, const char *File
 
 
 
-pcb_plug_fp_map_t *io_eagle_map_footprint_xml(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+static pcb_plug_fp_map_t *io_eagle_map_footprint_any(read_state_t *st, pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
 {
-	read_state_t st_tmp = {0}, *st = &st_tmp;
 	trnode_t *n, *npkgs;
 	pcb_plug_fp_map_t *res = NULL, *tail = head;
 
-	if (!io_eagle_test_parse_xml(ctx, PCB_IOT_FOOTPRINT, fn, f))
-		return NULL;
-
-	rewind(f);
-
 	/* have not read design rules section yet but need this for rectangle parsing */
 	st->ms_width = RND_MIL_TO_COORD(10); /* default minimum feature width */
-	st->parser.calls = &trparse_xml_calls;
 
 	if (st->parser.calls->load(&st->parser, fn) != 0)
 		return NULL;
@@ -2063,24 +2056,47 @@ pcb_plug_fp_map_t *io_eagle_map_footprint_xml(pcb_plug_io_t *ctx, FILE *f, const
 	return res;
 }
 
+pcb_plug_fp_map_t *io_eagle_map_footprint_xml(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+{
+	read_state_t st_tmp = {0}, *st = &st_tmp;
 
-int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fn, const char *subfpname)
+	if (!io_eagle_test_parse_xml(ctx, PCB_IOT_FOOTPRINT, fn, f))
+		return NULL;
+
+	rewind(f);
+
+	st->parser.calls = &trparse_xml_calls;
+	return io_eagle_map_footprint_any(st, ctx, f, fn, head, need_tags);
+}
+
+pcb_plug_fp_map_t *io_eagle_map_footprint_bin(pcb_plug_io_t *ctx, FILE *f, const char *fn, pcb_plug_fp_map_t *head, int need_tags)
+{
+	read_state_t st_tmp = {0}, *st = &st_tmp;
+
+	if (!io_eagle_test_parse_bin(ctx, PCB_IOT_FOOTPRINT, fn, f))
+		return NULL;
+
+	rewind(f);
+
+	st->parser.calls = &trparse_bin_calls;
+	return io_eagle_map_footprint_any(st, ctx, f, fn, head, need_tags);
+}
+
+
+static int io_eagle_parse_footprint_any(read_state_t *st, pcb_plug_io_t *ctx, pcb_data_t *data, const char *fn, const char *subfpname, int tolerant)
 {
 	int res = -1;
-	read_state_t st_tmp = {0}, *st = &st_tmp;
 	trnode_t *nlayers, *npkgs, *n, *npkg = NULL;
 
 	/* have not read design rules section yet but need this for rectangle parsing */
 	st->ms_width = RND_MIL_TO_COORD(10); /* default minimum feature width */
-	st->default_unit = "mm";
-	st->parser.calls = &trparse_xml_calls;
 
 	if (st->parser.calls->load(&st->parser, fn) != 0)
 		return -1;
 
 	npkgs = eagle_trpath(st, st->parser.root, "drawing", "library", "packages", NULL);
 	nlayers = eagle_trpath(st, st->parser.root, "drawing", "layers", NULL);
-	if ((npkgs == NULL) || (nlayers == NULL)) {
+	if ((npkgs == NULL) || (!tolerant && (nlayers == NULL))) {
 		rnd_message(RND_MSG_ERROR, "io_eagle: missing layers (or packages) subtree\n");
 		goto error;
 	}
@@ -2088,9 +2104,11 @@ int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const cha
 	st->fp_parent_data = data;
 	st_init(st);
 
-	if (eagle_read_layers_(st, data, nlayers, NULL, -1) != 0) {
-		rnd_message(RND_MSG_ERROR, "io_eagle: failed to parse or create layers\n");
-		goto error;
+	if (nlayers != NULL) {
+		if (eagle_read_layers_(st, data, nlayers, NULL, -1) != 0) {
+			rnd_message(RND_MSG_ERROR, "io_eagle: failed to parse or create layers\n");
+			goto error;
+		}
 	}
 
 
@@ -2110,4 +2128,20 @@ int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const cha
 	error:;
 	st_uninit(st);
 	return res;
+}
+
+int io_eagle_parse_footprint_xml(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fn, const char *subfpname)
+{
+	read_state_t st_tmp = {0}, *st = &st_tmp;
+	st->parser.calls = &trparse_xml_calls;
+	st->default_unit = "mm";
+	return io_eagle_parse_footprint_any(st, ctx, data, fn, subfpname, 0);
+}
+
+int io_eagle_parse_footprint_bin(pcb_plug_io_t *ctx, pcb_data_t *data, const char *fn, const char *subfpname)
+{
+	read_state_t st_tmp = {0}, *st = &st_tmp;
+	st->parser.calls = &trparse_bin_calls;
+	st->default_unit = "du";
+	return io_eagle_parse_footprint_any(st, ctx, data, fn, subfpname, 1);
 }
