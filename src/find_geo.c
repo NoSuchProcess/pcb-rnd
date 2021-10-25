@@ -736,6 +736,9 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 	rnd_pline_t *c;
 	rnd_coord_t bloat = Bloat + extra_bloat;
 
+	/* this won't work with negative bloat: we can't draw a line with negative thickness */
+	if (bloat < 0) bloat = 2;
+
 	if (!((c1->xmin - bloat <= c2->xmax) && (c2->xmin <= c1->xmax + bloat) && (c1->ymin - bloat <= c2->ymax) && (c2->ymin <= c1->ymax + bloat)))
 		return rnd_false;
 
