@@ -701,18 +701,18 @@ rnd_bool pcb_isc_arc_polyarea(const pcb_find_t *ctx, pcb_arc_t *Arc, rnd_polyare
  * - check the two end points of the line. If none of them matches
  * - check all segments of the polygon against the line.
  */
-rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *Polygon)
+static rnd_bool pcb_isc_line_poly_blt(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *Polygon, rnd_coord_t bloat)
 {
 	rnd_box_t *Box = (rnd_box_t *) Line;
 	rnd_polyarea_t *lp;
 
 	/* lines with clearance never touch polygons */
-	if ((Bloat == 0) && !ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Line))
+	if ((bloat == 0) && !ctx->ignore_clearance && PCB_FLAG_TEST(PCB_FLAG_CLEARPOLY, Polygon) && PCB_OBJ_HAS_CLEARANCE(Line))
 		return rnd_false;
 	if (!Polygon->Clipped)
 		return rnd_false;
 	if (PCB_FLAG_TEST(PCB_FLAG_SQUARE, Line) && (Line->Point1.X == Line->Point2.X || Line->Point1.Y == Line->Point2.Y)) {
-		rnd_coord_t wid = (Line->Thickness + Bloat + 1) / 2;
+		rnd_coord_t wid = (Line->Thickness + bloat + 1) / 2;
 		rnd_coord_t x1, x2, y1, y2;
 
 		x1 = MIN(Line->Point1.X, Line->Point2.X) - wid;
@@ -722,12 +722,18 @@ rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *
 		return pcb_poly_is_rect_in_p(x1, y1, x2, y2, Polygon);
 	}
 	if (box_isc_poly_any_island_bbox(ctx, Box, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon))) {
-		if (!(lp = pcb_poly_from_pcb_line(Line, Line->Thickness + Bloat)))
+		if (!(lp = pcb_poly_from_pcb_line(Line, Line->Thickness + bloat)))
 			return rnd_false;							/* error */
 		return box_isc_poly_any_island_free(lp, Polygon, !PCB_FLAG_TEST(PCB_FLAG_FULLPOLY, Polygon));
 	}
 	return rnd_false;
 }
+
+rnd_bool pcb_isc_line_poly(const pcb_find_t *ctx, pcb_line_t *Line, pcb_poly_t *Polygon)
+{
+	return pcb_isc_line_poly_blt(ctx, Line, Polygon, Bloat);
+}
+
 
 /* Bloated pline-pline intersection test: trace c1 using thick lines to see if
    it ever touches c2 */
@@ -743,7 +749,7 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 		return rnd_false;
 
 	for (c = c1; c; c = c->next) {
-		pcb_line_t line;
+		pcb_line_t line = {0};
 		rnd_vnode_t *v = c->head;
 		if (c->xmin - bloat <= c2->xmax && c->xmax + bloat >= c2->xmin &&
 				c->ymin - bloat <= c2->ymax && c->ymax + bloat >= c2->ymin) {
@@ -757,7 +763,7 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 				line.Point2.X = v->point[0];
 				line.Point2.Y = v->point[1];
 				pcb_line_bbox(&line);
-				if (pcb_isc_line_poly(ctx, &line, P2))
+				if (pcb_isc_line_poly_blt(ctx, &line, P2, bloat))
 					return rnd_true;
 				line.Point1.X = line.Point2.X;
 				line.Point1.Y = line.Point2.Y;
