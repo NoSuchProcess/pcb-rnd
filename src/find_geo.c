@@ -763,6 +763,7 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 				line.Point2.X = v->point[0];
 				line.Point2.Y = v->point[1];
 				pcb_line_bbox(&line);
+TODO("This is very expensive: we could use something cheaper here that checks the two offseted thin line edges and one of the end cap circles");
 				if (pcb_isc_line_poly_blt(ctx, &line, P2, bloat))
 					return rnd_true;
 				line.Point1.X = line.Point2.X;
