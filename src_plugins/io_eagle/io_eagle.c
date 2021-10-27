@@ -84,6 +84,7 @@ int pplg_init_io_eagle(void)
 	io_eagle_xml.default_extension = ".eagle_pcb";
 	io_eagle_xml.fp_extension = ".eagle_mod";
 	io_eagle_xml.mime_type = "application/x-eagle-pcb";
+	io_eagle_xml.multi_footprint = 1;
 
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_xml);
 
@@ -103,6 +104,7 @@ int pplg_init_io_eagle(void)
 	io_eagle_bin.default_extension = ".brd";
 	io_eagle_bin.fp_extension = ".???";
 	io_eagle_bin.mime_type = "application/x-eagle-pcb";
+	io_eagle_bin.multi_footprint = 1;
 
 	RND_HOOK_REGISTER(pcb_plug_io_t, pcb_plug_io_chain, &io_eagle_bin);
 
