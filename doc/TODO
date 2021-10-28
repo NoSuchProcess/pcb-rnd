@@ -1,7 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- BUG: io_kicad can't load empty string properly: bug_files/TODO/empty_str.kicad_mod [report: cuvoodoo]
++ BUG: io_kicad can't load empty string properly: bug_files/TODO/empty_str.kicad_mod [report: cuvoodoo]
 + FEATURE: io_eagle: load libraires (footprints) [report: cuvoodoo]
 
 2. For later releases ===============================================================================
