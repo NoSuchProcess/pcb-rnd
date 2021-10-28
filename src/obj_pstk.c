@@ -778,7 +778,7 @@ void pcb_pstk_thindraw(pcb_draw_info_t *info, rnd_hid_gc_t gc, pcb_pstk_t *ps)
 	if (shape != NULL)
 		pcb_pstk_draw_shape_thin(info, gc, ps, shape);
 
-	if (proto->hdia > 0) {
+	if ((proto != NULL) && (proto->hdia > 0)) {
 		rnd_render->draw_arc(gc, ps->x, ps->y, proto->hdia/2, proto->hdia/2, 0, 360);
 	}
 	else {
