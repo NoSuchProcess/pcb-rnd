@@ -726,6 +726,9 @@ rnd_r_dir_t pcb_pstk_draw_slot_callback(const rnd_box_t *b, void *cl)
 	else
 		proto = pcb_pstk_get_proto(ps);
 
+	if (proto == NULL)
+		return RND_R_DIR_NOT_FOUND;
+
 	/* No slot at all */
 	if (proto->mech_idx < 0)
 		return RND_R_DIR_NOT_FOUND;
