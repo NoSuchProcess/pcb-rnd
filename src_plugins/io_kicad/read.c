@@ -819,6 +819,11 @@ static int kicad_parse_any_text(read_state_t *st, gsxl_node_t *subtree, char *te
 	if (subc != NULL)
 		text = fp_text_subst(text, &flg, is_refdes);
 
+	if ((text == NULL) || (*text == '\0')) {
+		kicad_error(subtree, "empty text object (non-fatal error; object not created)");
+		return 0; /* not fatal */
+	}
+
 	for(n = subtree, i = 0; n != NULL; n = n->next, i++) {
 		if (n->str == NULL)
 			return kicad_error(n, "empty text node");
