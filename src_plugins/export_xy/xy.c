@@ -73,10 +73,13 @@ Unit of XY dimensions. Defaults to mil.
 	{"format", "file format (template)",
 	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, NULL},
 #define HA_format 2
+	{"vendor", "vendor specific suffix used in attribute names",
+	 RND_HATT_STRING, 0, 0, {0, 0, 0}, NULL},
+#define HA_vendor 3
 
 	{"cam", "CAM instruction",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
-#define HA_cam 3
+#define HA_cam 4
 
 };
 
@@ -667,13 +670,13 @@ static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *x, rnd_coord_t *y)
 
 static const char *xy_xform_get_attr(subst_ctx_t *ctx, pcb_subc_t *subc, const char *key)
 {
-	const char *sval;
-
 	ctx->tmp.used = 0;
 	gds_append_str(&ctx->tmp, "xy::");
 
-TODO("append fab suffix here");
-	ctx->tmp.used = 4;
+	if ((xy_values[HA_vendor].str != NULL) && (*xy_values[HA_vendor].str != '\0')) {
+		gds_append_str(&ctx->tmp, xy_values[HA_vendor].str);
+		gds_append_str(&ctx->tmp, "::");
+	}
 
 	gds_append_str(&ctx->tmp, key);
 	return pcb_attribute_get(&subc->Attributes, ctx->tmp.array);
