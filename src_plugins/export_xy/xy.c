@@ -714,7 +714,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		ctx.theta = -ctx.theta;
 		if (ctx.theta == -0)
 			ctx.theta = 0;
-	
+
 		xy_translate(&ctx, &ctx.x, &ctx.y);
 
 		ctx.subc = subc;
