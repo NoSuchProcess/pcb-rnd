@@ -73,7 +73,7 @@ Unit of XY dimensions. Defaults to mil.
 	{"format", "file format (template)",
 	 RND_HATT_ENUM, 0, 0, {0, 0, 0}, NULL},
 #define HA_format 2
-	{"vendor", "vendor specific suffix used in attribute names",
+	{"vendor", "vendor specific ID used for xy::VENDOR::rotate and xy::VENDOR::translate",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, NULL},
 #define HA_vendor 3
 
