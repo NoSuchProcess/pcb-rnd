@@ -87,3 +87,28 @@ context.
 <p>
 <i>Cleaned</i> means any character that is non-alphanumeric, not "." and not "-"
 and not "+" is replaced with "_".
+
+<h4> 7.3.2.3. Vendor specific rotation and translation </h4>
+<p>
+Some vendors (pick-and-place fabs) require the XY match their idea of the
+footprint with the same name. This especially affects rotation. A way to
+work this around is using xy::translate and xy::rotate attributes in a
+subcircuit. Values should be set on a per footprint name basis to
+compensate the mismatch between vendor's footprint orientation/origin and
+the subcircuit's.
+<p>
+When xy::rotate is present, it is specified in degrees and it is added to
+the original rotation of the subcircuit.
+<p>
+When xy::translate is present, it is specified as a pair of coordinates with
+units, for x and y offset. The pair is separated with whitespace or comma
+or semicolon. There must not be whitespace between the number and unit
+suffix in the coordinates. The x and y values are added to the origin of
+the subcircuit.
+<p>
+Different vendors may require different translations. To overcome this
+problem xy_export offers an optional --vendor argument. When specified,
+it is inserted in the attribute name, e.g. for <i>--vendor foo</i> the
+attribute names xy::foo::translate and xy::foo::rotate are used instead
+of the plain xy::translate and xy::rotate.
+
