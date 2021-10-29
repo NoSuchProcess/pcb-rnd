@@ -179,6 +179,7 @@ typedef struct {
 	int origin_score;
 	char *origin_tmp;
 	rnd_bool front;
+	gds_t tmp;
 } subst_ctx_t;
 
 /* Find the pick and place 0;0 mark, if there is any */
@@ -664,6 +665,63 @@ static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *x, rnd_coord_t *y)
 		*y = PCB->hidlib.size_y - *y;
 }
 
+static const char *xy_xform_get_attr(subst_ctx_t *ctx, pcb_subc_t *subc, const char *key)
+{
+	const char *sval;
+
+	ctx->tmp.used = 0;
+	gds_append_str(&ctx->tmp, "xy::");
+
+TODO("append fab suffix here");
+	ctx->tmp.used = 4;
+
+	gds_append_str(&ctx->tmp, key);
+	return pcb_attribute_get(&subc->Attributes, ctx->tmp.array);
+}
+
+static void xy_xform_by_subc_attrs(subst_ctx_t *ctx, pcb_subc_t *subc)
+{
+	const char *sval, *sx, *sy;
+	char *end;
+
+	sval = xy_xform_get_attr(ctx, subc, "rotate");
+	if (sval != NULL) {
+		double r = strtod(sval, &end);
+		while(isspace(*end)) end++;
+		if (*end != '\0')
+			rnd_message(RND_MSG_ERROR, "xy: invalid subc rotate (%s) on subc '%s'\n", sval, ((subc->refdes == NULL) ? "" : subc->refdes));
+		else
+			ctx->theta += r;
+	}
+
+	sval = xy_xform_get_attr(ctx, subc, "translate");
+	if (sval != NULL) {
+		double x, y;
+		rnd_bool succ;
+
+		sx = sval;
+		sy = strpbrk(sx, " \t,;");
+		if (sy == NULL) {
+			rnd_message(RND_MSG_ERROR, "xy: invalid subc translate (%s) on subc '%s': need both x and y\n", sval, ((subc->refdes == NULL) ? "" : subc->refdes));
+			return;
+		}
+		sy++;
+
+		x = rnd_get_value_ex(sx, NULL, NULL, NULL, "mm", &succ);
+		if (!succ) {
+			rnd_message(RND_MSG_ERROR, "xy: invalid subc translate (%s) on subc '%s': error in X coord\n", sval, ((subc->refdes == NULL) ? "" : subc->refdes));
+			return;
+		}
+		y = rnd_get_value_ex(sy, NULL, NULL, NULL, "mm", &succ);
+		if (!succ) {
+			rnd_message(RND_MSG_ERROR, "xy: invalid subc translate (%s) on subc '%s': error in Y coord\n", sval, ((subc->refdes == NULL) ? "" : subc->refdes));
+			return;
+		}
+		ctx->x += x;
+		ctx->y += y;
+	}
+}
+
 typedef struct {
 	const char *hdr, *subc, *term, *foot;
 } template_t;
@@ -681,6 +739,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 	}
 
 	ctx.count = 0;
+	gds_init(&ctx.tmp);
 
 	rnd_print_utc(ctx.utcTime, sizeof(ctx.utcTime), 0);
 
@@ -710,6 +769,8 @@ static int PrintXY(const template_t *templ, const char *format_name)
 
 		if (pcb_subc_get_rotation(subc, &ctx.theta) != 0) rnd_message(RND_MSG_ERROR, "xy: can't get subc rotation for %s\n", ctx.name);
 		if (pcb_subc_get_side(subc, &bott) != 0) rnd_message(RND_MSG_ERROR, "xy: can't get subc side for %s\n", ctx.name);
+
+		xy_xform_by_subc_attrs(&ctx, subc);
 
 		ctx.theta = -ctx.theta;
 		if (ctx.theta == -0)
@@ -751,6 +812,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 	fprintf_templ(fp, &ctx, templ->foot);
 
 	fclose(fp);
+	gds_uninit(&ctx.tmp);
 
 	return 0;
 }
