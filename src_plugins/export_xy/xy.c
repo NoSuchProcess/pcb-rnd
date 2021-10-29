@@ -654,14 +654,14 @@ static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 
 static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *x, rnd_coord_t *y)
 {
-		/* translate the xy coords using explicit or implicit origin; implicit origin
-		   is lower left corner (looking from top) of board extents */
-		if (ctx->origin_score > 0) {
-			*y = ctx->oy - *y;
-			*x = *x - ctx->ox;
-		}
-		else
-			*y = PCB->hidlib.size_y - *y;
+	/* translate the xy coords using explicit or implicit origin; implicit origin
+	   is lower left corner (looking from top) of board extents */
+	if (ctx->origin_score > 0) {
+		*y = ctx->oy - *y;
+		*x = *x - ctx->ox;
+	}
+	else
+		*y = PCB->hidlib.size_y - *y;
 }
 
 typedef struct {
