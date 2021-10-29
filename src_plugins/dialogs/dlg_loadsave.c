@@ -105,7 +105,7 @@ typedef struct {
 	void **fmt_plug_data;
 	int tabs; /* number of option tabs, including the dummy 0th tab */
 	int wfmt, wguess, wguess_err, wopts;
-	int pick, num_fmts;
+	int pick, num_fmts, init_fmt_known;
 	rnd_hidval_t timer;
 	char last_ext[32];
 	unsigned fmt_chg_lock:1;
@@ -197,6 +197,14 @@ static void guess_chg(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *att
 static void save_guess_format(save_t *save, const char *ext)
 {
 	int n;
+
+	if (save->init_fmt_known) {
+		/* special case: initial format was set when creating the dialog; just
+		   hide the guess format warning */
+		save->init_fmt_known = 0;
+		rnd_gui->attr_dlg_widget_hide(save->fmtsub->dlg_hid_ctx, save->wguess_err, 1);
+		return;
+	}
 
 	if (strcmp(ext, save->last_ext) == 0)
 		return;
@@ -398,7 +406,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	const char *default_pattern = NULL;
 	pcb_plug_iot_t list_iot;
 	pcb_io_list_ext_t list_ext;
-	int dialog_by_pattern = 0, is_dialog;
+	int dialog_by_pattern = 0, is_dialog, init_fmt_known = 0;
 
 	if (cwd == NULL) cwd = dup_cwd();
 
@@ -484,6 +492,8 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 						rnd_message(RND_MSG_WARNING, "Could not find an io_ plugin for the preferred footprint save format (configured in rc/save_fp_fmt): '%s'\n", default_pattern);
 					warned = 1;
 				}
+				else
+					init_fmt_known = 1;
 			}
 
 			fmtsub = &fmtsub_local;
@@ -516,6 +526,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				}
 			}
 			fmtsub = &fmtsub_local;
+			init_fmt_known = 1; /* worst case it's the fallback to 0 */
 		}
 		else {
 			rnd_message(RND_MSG_ERROR, "Error: no IO plugin avaialble for saving a buffer.");
@@ -552,6 +563,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		end = strrchr(name_in, '.');
 		if (end != NULL)
 			strncpy(save.last_ext, end, sizeof(save.last_ext));
+		save.init_fmt_known = init_fmt_known;
 	}
 	
 	timer_ctx.ptr = &save;
