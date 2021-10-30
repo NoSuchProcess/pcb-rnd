@@ -2257,7 +2257,7 @@ static void subc_prev_draw_pstk_lyt(const pcb_subc_t *sc, const rnd_box_t *drawn
 void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 {
 	int n;
-	pcb_draw_info_t info;
+	pcb_draw_info_t info = {0};
 	rnd_rtree_it_t it;
 	pcb_any_obj_t *o;
 	rnd_xform_t xf = {0};
