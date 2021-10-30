@@ -1,7 +1,7 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-- FEATURE: library window preview: have checkboxes for showing layers by generic type: copper, silk, mech, doc so a big keepout poly doesn't overcast everytrhing else [report: cuvoodoo]
++ FEATURE: library window preview: have checkboxes for showing layers by generic type: copper, silk, mech, doc so a big keepout poly doesn't overcast everytrhing else [report: cuvoodoo]
 
 2. For later releases ===============================================================================
 - depends on librnd 3.1.0:
