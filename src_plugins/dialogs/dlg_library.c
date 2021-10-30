@@ -832,12 +832,14 @@ static void pcb_dlg_library(void)
 
 	RND_DAD_NEW("library", library_ctx.dlg, "pcb-rnd Footprint Library", &library_ctx, rnd_false, library_close_cb);
 
-	TODO("set these from config");
-	hv.lng = 1;
+	/* get default visibility from the config */
+	hv.lng = adialogs_conf.plugins.dialogs.library.preview_vis_cpr;
 	rnd_gui->attr_dlg_set_value(library_ctx.dlg_hid_ctx, library_ctx.wvis_cpr, &hv);
+	hv.lng = adialogs_conf.plugins.dialogs.library.preview_vis_slk;
 	rnd_gui->attr_dlg_set_value(library_ctx.dlg_hid_ctx, library_ctx.wvis_slk, &hv);
-	hv.lng = 0;
+	hv.lng = adialogs_conf.plugins.dialogs.library.preview_vis_mnp;
 	rnd_gui->attr_dlg_set_value(library_ctx.dlg_hid_ctx, library_ctx.wvis_mnp, &hv);
+	hv.lng = adialogs_conf.plugins.dialogs.library.preview_vis_doc;
 	rnd_gui->attr_dlg_set_value(library_ctx.dlg_hid_ctx, library_ctx.wvis_doc, &hv);
 
 	library_lib2dlg(&library_ctx);
