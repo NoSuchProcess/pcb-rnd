@@ -2249,6 +2249,7 @@ static void subc_prev_draw_pstk_lyt(const pcb_subc_t *sc, const rnd_box_t *drawn
 		if (((lyt & lyt_mask) == lyt_mask) && subc_prev_layer_vis(layer)) {
 			info->objcb.pstk.shape_mask = lyt;
 			info->objcb.pstk.comb = comb;
+			info->objcb.pstk.layer1 = layer;
 			subc_prev_draw_pstk(sc, drawn_area, info);
 		}
 	}
