@@ -2238,6 +2238,23 @@ static void subc_prev_draw_pstk(const pcb_subc_t *sc, const rnd_box_t *drawn_are
 	}
 }
 
+static void subc_prev_draw_pstk_lyt(const pcb_subc_t *sc, const rnd_box_t *drawn_area, pcb_draw_info_t *info, pcb_layer_type_t lyt_mask, pcb_layer_combining_t comb)
+{
+	int n;
+
+	for(n = 0; n < sc->parent.data->LayerN; n++) {
+		pcb_layer_t *layer = &sc->parent.data->Layer[n];
+		pcb_layer_type_t lyt = pcb_layer_flags_(layer);
+
+printf(" %d %d\n", ((lyt & lyt_mask) == lyt_mask), subc_prev_layer_vis(layer));
+		if (((lyt & lyt_mask) == lyt_mask) && subc_prev_layer_vis(layer)) {
+			info->objcb.pstk.shape_mask = lyt;
+			info->objcb.pstk.comb = comb;
+			subc_prev_draw_pstk(sc, drawn_area, info);
+		}
+	}
+}
+
 void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 {
 	int n;
@@ -2255,17 +2272,21 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 	info.objcb.pstk.gid = -1;
 	info.objcb.pstk.is_current = 1;
 	info.objcb.pstk.comb = 0;
-	info.objcb.pstk.shape_mask = PCB_LYT_COPPER | PCB_LYT_TOP;
 	info.objcb.pstk.holetype = PCB_PHOLE_UNPLATED | PCB_PHOLE_PLATED;
+
+	subc_prev_draw_pstk_lyt(sc, drawn_area, &info, PCB_LYT_MASK | PCB_LYT_TOP, PCB_LYC_AUTO | PCB_LYC_SUB);
 
 	/* draw copper only first - order doesn't matter */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *layer = &sc->data->Layer[n];
-		if ((layer->meta.bound.type & PCB_LYT_COPPER) && subc_prev_layer_vis(layer))
+		if ((layer->meta.bound.type & PCB_LYT_COPPER) && subc_prev_layer_vis(layer)) {
 			pcb_draw_layer_under(PCB, layer, drawn_area, sc->data, &xf);
+		}
 	}
+	subc_prev_draw_pstk_lyt(sc, drawn_area, &info, PCB_LYT_COPPER, 0);
+printf("paste:\n");
+	subc_prev_draw_pstk_lyt(sc, drawn_area, &info, PCB_LYT_PASTE | PCB_LYT_TOP, PCB_LYC_AUTO);
 
-	subc_prev_draw_pstk(sc, drawn_area, &info);
 
 	/* draw silk and mech and doc layers, above padstacks */
 	for(n = 0; n < sc->data->LayerN; n++) {
