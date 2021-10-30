@@ -60,6 +60,7 @@ static const char *library_cookie = "dlg_library";
 typedef struct{
 	RND_DAD_DECL_NOINIT(dlg)
 	int wtree, wpreview, wtags, wfilt, wpend, wnopend, wedit;
+	int wvis_cpr, wvis_slk, wvis_mnp, wvis_doc;
 
 	int active; /* already open - allow only one instance */
 
@@ -648,6 +649,48 @@ static rnd_bool library_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *pr
 	return rnd_false;
 }
 
+/* Set the visibility of a layer group and all its layers (no side effect) */
+static void set_grp_vis(library_ctx_t *ctx, pcb_layergrp_t *g, int vis)
+{
+	int n;
+	pcb_board_t *pcb = ctx->prev_pcb;
+
+	g->vis = vis;
+	for(n = 0; n < g->len; n++) {
+		rnd_layer_id_t layer = g->lid[n];
+		if (layer < pcb_max_layer(pcb))
+			pcb->Data->Layer[layer].meta.real.vis = vis;
+	}
+}
+
+/* set layer group and layer visibility for the preview, copying checkbox values */
+static void library_update_vis(library_ctx_t *ctx)
+{
+	int vcpr = !!ctx->dlg[ctx->wvis_cpr].val.lng, vslk = !!ctx->dlg[ctx->wvis_slk].val.lng;
+	int vmnp = !!ctx->dlg[ctx->wvis_mnp].val.lng, vdoc = !!ctx->dlg[ctx->wvis_doc].val.lng;
+	int n;
+
+	for(n = 0; n < library_ctx.prev_pcb->LayerGroups.len; n++) {
+		pcb_layergrp_t *g = &library_ctx.prev_pcb->LayerGroups.grp[n];
+		if (g->ltype & PCB_LYT_COPPER) set_grp_vis(ctx, g, vcpr);
+		if (g->ltype & PCB_LYT_SILK)   set_grp_vis(ctx, g, vslk);
+		if (g->ltype & PCB_LYT_MASK)   set_grp_vis(ctx, g, vmnp);
+		if (g->ltype & PCB_LYT_PASTE)  set_grp_vis(ctx, g, vmnp);
+		if (g->ltype & PCB_LYT_DOC)    set_grp_vis(ctx, g, vdoc);
+	}
+}
+
+static void library_vis_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
+{
+	library_ctx_t *ctx = caller_data;
+	rnd_hid_row_t *row = rnd_dad_tree_get_selected(&(ctx->dlg[ctx->wtree]));
+	pcb_fplibrary_t *l = row == NULL ? NULL : row->user_data;
+
+	library_update_vis(ctx);
+	library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);
+}
+
+
 /* Need to create a few extra fallback layers that subcircuits would have
    but the default map may not: doc layer for every location to pick up
    keepout/courtyard/etc layers */
@@ -658,10 +701,13 @@ static const pcb_dflgmap_t fp_extra_lg[] = {
 	{NULL, 0}
 };
 
+#define VISHLP " layers are visible in the preview"
+
 static void pcb_dlg_library(void)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	const pcb_dflgmap_t *g;
+	rnd_hid_attr_val_t hv;
 	int n;
 
 	if (library_ctx.active)
@@ -706,9 +752,39 @@ static void pcb_dlg_library(void)
 			/* right */
 			RND_DAD_BEGIN_VPANE(library_ctx.dlg);
 				RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_FRAME);
-				/* right top */
-				RND_DAD_PREVIEW(library_ctx.dlg, library_expose, library_mouse, NULL, NULL, NULL, 100, 100, &library_ctx);
-					library_ctx.wpreview = RND_DAD_CURRENT(library_ctx.dlg);
+				RND_DAD_BEGIN_VBOX(library_ctx.dlg);
+					/* right top: preview */
+					RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_EXPFILL | RND_HATF_TIGHT);
+					RND_DAD_PREVIEW(library_ctx.dlg, library_expose, library_mouse, NULL, NULL, NULL, 100, 100, &library_ctx);
+						library_ctx.wpreview = RND_DAD_CURRENT(library_ctx.dlg);
+					RND_DAD_BEGIN_HBOX(library_ctx.dlg);
+						RND_DAD_COMPFLAG(library_ctx.dlg, RND_HATF_TIGHT);
+						RND_DAD_LABEL(library_ctx.dlg, "cpr");
+							RND_DAD_HELP(library_ctx.dlg, "Copper" VISHLP);
+						RND_DAD_BOOL(library_ctx.dlg);
+							RND_DAD_HELP(library_ctx.dlg, "Copper" VISHLP);
+							library_ctx.wvis_cpr = RND_DAD_CURRENT(library_ctx.dlg);
+							RND_DAD_CHANGE_CB(library_ctx.dlg, library_vis_cb);
+						RND_DAD_LABEL(library_ctx.dlg, "  slk");
+							RND_DAD_HELP(library_ctx.dlg, "Silk" VISHLP);
+						RND_DAD_BOOL(library_ctx.dlg);
+							RND_DAD_HELP(library_ctx.dlg, "Silk" VISHLP);
+							library_ctx.wvis_slk = RND_DAD_CURRENT(library_ctx.dlg);
+							RND_DAD_CHANGE_CB(library_ctx.dlg, library_vis_cb);
+						RND_DAD_LABEL(library_ctx.dlg, "  m&p");
+							RND_DAD_HELP(library_ctx.dlg, "Mask and paste" VISHLP);
+						RND_DAD_BOOL(library_ctx.dlg);
+							RND_DAD_HELP(library_ctx.dlg, "Mask and paste" VISHLP);
+							library_ctx.wvis_mnp = RND_DAD_CURRENT(library_ctx.dlg);
+							RND_DAD_CHANGE_CB(library_ctx.dlg, library_vis_cb);
+						RND_DAD_LABEL(library_ctx.dlg, "  doc");
+							RND_DAD_HELP(library_ctx.dlg, "Doc" VISHLP);
+						RND_DAD_BOOL(library_ctx.dlg);
+							RND_DAD_HELP(library_ctx.dlg, "Doc" VISHLP);
+							library_ctx.wvis_doc = RND_DAD_CURRENT(library_ctx.dlg);
+							RND_DAD_CHANGE_CB(library_ctx.dlg, library_vis_cb);
+					RND_DAD_END(library_ctx.dlg);
+				RND_DAD_END(library_ctx.dlg);
 
 				/* right bottom */
 				RND_DAD_BEGIN_VBOX(library_ctx.dlg);
@@ -734,7 +810,16 @@ static void pcb_dlg_library(void)
 
 	RND_DAD_NEW("library", library_ctx.dlg, "pcb-rnd Footprint Library", &library_ctx, rnd_false, library_close_cb);
 
+	TODO("set these from config");
+	hv.lng = 1;
+	rnd_gui->attr_dlg_set_value(library_ctx.dlg_hid_ctx, library_ctx.wvis_cpr, &hv);
+	rnd_gui->attr_dlg_set_value(library_ctx.dlg_hid_ctx, library_ctx.wvis_slk, &hv);
+	hv.lng = 0;
+	rnd_gui->attr_dlg_set_value(library_ctx.dlg_hid_ctx, library_ctx.wvis_mnp, &hv);
+	rnd_gui->attr_dlg_set_value(library_ctx.dlg_hid_ctx, library_ctx.wvis_doc, &hv);
+
 	library_lib2dlg(&library_ctx);
+	library_update_vis(&library_ctx);
 	rnd_gui->attr_dlg_widget_state(library_ctx.dlg_hid_ctx, library_ctx.wedit, 0);
 }
 
