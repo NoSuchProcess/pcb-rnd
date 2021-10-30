@@ -690,6 +690,24 @@ static void library_vis_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	library_update_preview(ctx, pcb_subclist_first(&PCB_PASTEBUFFER->Data->subc), l);
 }
 
+/* Attempt to set the color of the first layer copying the first matching
+   layer's from the current board */
+static void library_set_ly_color(library_ctx_t *ctx, pcb_layergrp_t *g)
+{
+	pcb_board_t *pcb = ctx->prev_pcb;
+	pcb_layer_t *layer = pcb_get_layer(pcb->Data, g->lid[0]), *brdly = NULL;
+	rnd_layer_id_t brdlid;
+
+	if (layer == NULL)
+		return;
+
+	if (pcb_layer_list(PCB, g->ltype, &brdlid, 1) == 1)
+		brdly = pcb_get_layer(PCB->Data, brdlid);
+
+	if (brdly != NULL)
+		layer->meta.real.color = brdly->meta.real.color;
+/*	else do not call pcb_layer_default_color() because the layer was already set up like that */
+}
 
 /* Need to create a few extra fallback layers that subcircuits would have
    but the default map may not: doc layer for every location to pick up
@@ -715,10 +733,14 @@ static void pcb_dlg_library(void)
 
 	library_ctx.prev_pcb = pcb_board_new_(1);
 
-	for(g = pcb_dflgmap, n = 0; g->name != NULL; g++,n++)
+	for(g = pcb_dflgmap, n = 0; g->name != NULL; g++,n++) {
 		pcb_layergrp_set_dflgly(library_ctx.prev_pcb, &(library_ctx.prev_pcb->LayerGroups.grp[n]), g, g->name, g->name);
-	for(g = fp_extra_lg; g->name != NULL; g++,n++)
+		library_set_ly_color(&library_ctx, &(library_ctx.prev_pcb->LayerGroups.grp[n]));
+	}
+	for(g = fp_extra_lg; g->name != NULL; g++,n++) {
 		pcb_layergrp_set_dflgly(library_ctx.prev_pcb, &(library_ctx.prev_pcb->LayerGroups.grp[n]), g, g->name, g->name);
+		library_set_ly_color(&library_ctx, &(library_ctx.prev_pcb->LayerGroups.grp[n]));
+	}
 
 	library_ctx.prev_pcb->LayerGroups.len = n;
 
