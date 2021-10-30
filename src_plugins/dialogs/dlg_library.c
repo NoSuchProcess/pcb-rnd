@@ -648,6 +648,16 @@ static rnd_bool library_mouse(rnd_hid_attribute_t *attrib, rnd_hid_preview_t *pr
 	return rnd_false;
 }
 
+/* Need to create a few extra fallback layers that subcircuits would have
+   but the default map may not: doc layer for every location to pick up
+   keepout/courtyard/etc layers */
+static const pcb_dflgmap_t fp_extra_lg[] = {
+	{"top_doc",             PCB_LYT_TOP | PCB_LYT_DOC,       0, 0},
+	{"bottom_doc",          PCB_LYT_BOTTOM | PCB_LYT_DOC,    0, 0},
+	{"global_doc",          PCB_LYT_DOC,                     0, 0},
+	{NULL, 0}
+};
+
 static void pcb_dlg_library(void)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
@@ -661,6 +671,9 @@ static void pcb_dlg_library(void)
 
 	for(g = pcb_dflgmap, n = 0; g->name != NULL; g++,n++)
 		pcb_layergrp_set_dflgly(library_ctx.prev_pcb, &(library_ctx.prev_pcb->LayerGroups.grp[n]), g, g->name, g->name);
+	for(g = fp_extra_lg; g->name != NULL; g++,n++)
+		pcb_layergrp_set_dflgly(library_ctx.prev_pcb, &(library_ctx.prev_pcb->LayerGroups.grp[n]), g, g->name, g->name);
+
 	library_ctx.prev_pcb->LayerGroups.len = n;
 
 	RND_DAD_BEGIN_VBOX(library_ctx.dlg);
