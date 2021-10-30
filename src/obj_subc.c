@@ -2213,6 +2213,14 @@ rnd_r_dir_t draw_subc_label_callback(const rnd_box_t *b, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
+static int subc_prev_layer_vis(pcb_layer_t *layer)
+{
+	pcb_layer_t *real = pcb_layer_get_real(layer);
+	if (real == NULL)
+		return 1;
+	return real->meta.real.vis;
+}
+
 void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 {
 	int n;
@@ -2225,7 +2233,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 	/* draw copper only first - order doesn't matter */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *layer = &sc->data->Layer[n];
-		if (layer->meta.bound.type & PCB_LYT_COPPER)
+		if ((layer->meta.bound.type & PCB_LYT_COPPER) && subc_prev_layer_vis(layer))
 			pcb_draw_layer_under(PCB, layer, drawn_area, sc->data, &xf);
 	}
 
@@ -2252,7 +2260,7 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 	/* draw silk and mech and doc layers, above padstacks */
 	for(n = 0; n < sc->data->LayerN; n++) {
 		pcb_layer_t *layer = &sc->data->Layer[n];
-		if (layer->meta.bound.type & (PCB_LYT_SILK | PCB_LYT_BOUNDARY | PCB_LYT_MECH | PCB_LYT_DOC))
+		if (((layer->meta.bound.type & (PCB_LYT_SILK | PCB_LYT_BOUNDARY | PCB_LYT_MECH | PCB_LYT_DOC)) && subc_prev_layer_vis(layer)))
 			pcb_draw_layer_under(PCB, layer, drawn_area, sc->data, &xf);
 	}
 
