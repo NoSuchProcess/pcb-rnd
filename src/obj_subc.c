@@ -2246,7 +2246,6 @@ static void subc_prev_draw_pstk_lyt(const pcb_subc_t *sc, const rnd_box_t *drawn
 		pcb_layer_t *layer = &sc->parent.data->Layer[n];
 		pcb_layer_type_t lyt = pcb_layer_flags_(layer);
 
-printf(" %d %d\n", ((lyt & lyt_mask) == lyt_mask), subc_prev_layer_vis(layer));
 		if (((lyt & lyt_mask) == lyt_mask) && subc_prev_layer_vis(layer)) {
 			info->objcb.pstk.shape_mask = lyt;
 			info->objcb.pstk.comb = comb;
@@ -2284,7 +2283,6 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 		}
 	}
 	subc_prev_draw_pstk_lyt(sc, drawn_area, &info, PCB_LYT_COPPER, 0);
-printf("paste:\n");
 	subc_prev_draw_pstk_lyt(sc, drawn_area, &info, PCB_LYT_PASTE | PCB_LYT_TOP, PCB_LYC_AUTO);
 
 
