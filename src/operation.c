@@ -46,7 +46,7 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 			return NULL;
 	}
 
-	if (!F->extobj_inhibit_regen)
+	if ((!F->extobj_inhibit_regen) && (Ptr2 != NULL))
 		exto = pcb_extobj_float_pre(Ptr2);
 
 	switch (Type) {
