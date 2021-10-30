@@ -138,7 +138,8 @@ void pcb_set_design_dir(const char *fn)
 
 static int pcb_test_parse_all(FILE *ft, const char *Filename, const char *fmt, pcb_plug_iot_t type, pcb_find_io_t *available, int *accepts, int *accept_total, int maxav, int ignore_missing, int gen_event)
 {
-	int len, n;
+	int len, n, diff_parsers = 0;
+	void (*first_f)() = NULL;
 
 	if (ft == NULL) {
 		if (!ignore_missing)
@@ -162,6 +163,12 @@ static int pcb_test_parse_all(FILE *ft, const char *Filename, const char *fmt, p
 			if (f != NULL) {
 				accepts[n] = 1; /* force-accept - if it can handle the format, and the user explicitly wanted this format, let's try it */
 				(*accept_total)++;
+				if (first_f != NULL) {
+					if (f != first_f)
+						diff_parsers = 1;
+				}
+				else
+					first_f = f;
 			}
 		}
 
@@ -170,7 +177,7 @@ static int pcb_test_parse_all(FILE *ft, const char *Filename, const char *fmt, p
 			return -1;
 		}
 
-		if (*accept_total > 1) {
+		if ((*accept_total > 1) && diff_parsers) {
 			rnd_message(RND_MSG_INFO, "multiple IO_ plugins can handle format %s - I'm going to try them all, but you may want to be more specific next time; formats found:\n", fmt);
 			for(n = 0; n < len; n++)
 				rnd_message(RND_MSG_INFO, "    %s\n", available[n].plug->description);
