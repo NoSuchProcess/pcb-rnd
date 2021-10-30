@@ -2221,6 +2221,23 @@ static int subc_prev_layer_vis(pcb_layer_t *layer)
 	return real->meta.real.vis;
 }
 
+static void subc_prev_draw_pstk(const pcb_subc_t *sc, const rnd_box_t *drawn_area, pcb_draw_info_t *info)
+{
+	rnd_rtree_it_t it;
+	pcb_any_obj_t *o;
+
+	if (sc->data->padstack_tree == NULL)
+		return;
+
+	for(o = rnd_rtree_first(&it, sc->data->padstack_tree, (rnd_rtree_box_t *)drawn_area); o != NULL; o = rnd_rtree_next(&it)) {
+		if (pcb_obj_is_under(o, sc->data)) {
+			pcb_pstk_draw_callback((rnd_box_t *)o, info);
+			if (PCB->hole_on)
+				pcb_pstk_draw_hole_callback((rnd_box_t *)o, info);
+		}
+	}
+}
+
 void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 {
 	int n;
@@ -2229,13 +2246,6 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 	pcb_any_obj_t *o;
 	rnd_xform_t xf = {0};
 	pcb_draw_setup_default_gui_xform(&xf);
-
-	/* draw copper only first - order doesn't matter */
-	for(n = 0; n < sc->data->LayerN; n++) {
-		pcb_layer_t *layer = &sc->data->Layer[n];
-		if ((layer->meta.bound.type & PCB_LYT_COPPER) && subc_prev_layer_vis(layer))
-			pcb_draw_layer_under(PCB, layer, drawn_area, sc->data, &xf);
-	}
 
 	/* draw padstacks */
 	info.pcb = PCB;
@@ -2248,14 +2258,14 @@ void pcb_subc_draw_preview(const pcb_subc_t *sc, const rnd_box_t *drawn_area)
 	info.objcb.pstk.shape_mask = PCB_LYT_COPPER | PCB_LYT_TOP;
 	info.objcb.pstk.holetype = PCB_PHOLE_UNPLATED | PCB_PHOLE_PLATED;
 
-	if (sc->data->padstack_tree != NULL)
-	for(o = rnd_rtree_first(&it, sc->data->padstack_tree, (rnd_rtree_box_t *)drawn_area); o != NULL; o = rnd_rtree_next(&it)) {
-		if (pcb_obj_is_under(o, sc->data)) {
-			pcb_pstk_draw_callback((rnd_box_t *)o, &info);
-			if (PCB->hole_on)
-				pcb_pstk_draw_hole_callback((rnd_box_t *)o, &info);
-		}
+	/* draw copper only first - order doesn't matter */
+	for(n = 0; n < sc->data->LayerN; n++) {
+		pcb_layer_t *layer = &sc->data->Layer[n];
+		if ((layer->meta.bound.type & PCB_LYT_COPPER) && subc_prev_layer_vis(layer))
+			pcb_draw_layer_under(PCB, layer, drawn_area, sc->data, &xf);
 	}
+
+	subc_prev_draw_pstk(sc, drawn_area, &info);
 
 	/* draw silk and mech and doc layers, above padstacks */
 	for(n = 0; n < sc->data->LayerN; n++) {
