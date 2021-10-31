@@ -292,7 +292,6 @@ static int pcb_dlg_rule_edit(rnd_conf_role_t role, const char *rule)
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	char *info;
 	rule_edit_ctx_t *ctx;
-	rnd_conf_native_t *nat;
 	lht_node_t *nd = NULL;
 	int n, srolei = save_role_defaulti;
 

@@ -637,7 +637,6 @@ static int pcb_drc_query_set(rnd_hidlib_t *hidlib, int is_rule, const char *rule
 
 static int pcb_drc_query_remove(rnd_hidlib_t *hidlib, int is_rule, const char *name)
 {
-	lht_node_t *nd;
 	const rnd_conflist_t *l = DRC_QUERY_RULE_OR_DEF(is_rule);
 	gdl_iterator_t it;
 	rnd_conf_listitem_t *i;
