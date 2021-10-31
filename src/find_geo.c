@@ -872,7 +872,7 @@ rnd_bool pcb_isc_poly_poly(const pcb_find_t *ctx, pcb_poly_t *P1, pcb_poly_t *P2
 			rnd_pline_t *c1 = pcb_poly_contour(&it1);
 			for(pa2 = pcb_poly_island_first(P2, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
 				rnd_pline_t *c2 = pcb_poly_contour(&it2);
-				rnd_coord_t extra_bloat = get_extra_bloat(P1, P2);
+				rnd_coord_t extra_bloat = get_extra_bloat((pcb_any_obj_t *)P1, P2);
 				if (pcb_isc_poly_poly_bloated(ctx, c1, c2, P2, extra_bloat))
 					return rnd_true;
 
@@ -1137,7 +1137,7 @@ RND_INLINE rnd_bool_t pcb_isc_pstk_poly_shp(const pcb_find_t *ctx, pcb_pstk_t *p
 			rnd_polyarea_t *pa2;
 			rnd_polyarea_t *shp = pcb_pstk_shp_poly2area(ps, shape);
 			rnd_pline_t *c1 = shp->contours;
-			rnd_coord_t extra_bloat = get_extra_bloat(ps, poly);
+			rnd_coord_t extra_bloat = get_extra_bloat((pcb_any_obj_t *)ps, poly);
 
 			for(pa2 = pcb_poly_island_first(poly, &it2); pa2 != NULL; pa2 = pcb_poly_island_next(&it2)) {
 				rnd_pline_t *c2 = pcb_poly_contour(&it2);
