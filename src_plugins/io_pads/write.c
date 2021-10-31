@@ -271,7 +271,7 @@ static void pads_write_piece_poly(write_ctx_t *wctx, pcb_poly_t *p, int plid, in
 	if (is_copper || conf_io_pads.plugins.io_pads.save_abuse_copcls)
 		pads_write_piece_cop_poly(wctx, p, plid);
 	else
-		pcb_io_incompat_save(wctx->pcb->Data, p, "non-copper-poly", "Only copper polygons are supported officially", "Either enable plugins/io_pads/save_abuse_copcls (some readers support COPCLS on non-copper) or redraw your non-copper polygon with lines (e.g. using the PolyHatch() action).");
+		pcb_io_incompat_save(wctx->pcb->Data, (pcb_any_obj_t *)p, "non-copper-poly", "Only copper polygons are supported officially", "Either enable plugins/io_pads/save_abuse_copcls (some readers support COPCLS on non-copper) or redraw your non-copper polygon with lines (e.g. using the PolyHatch() action).");
 }
 
 
