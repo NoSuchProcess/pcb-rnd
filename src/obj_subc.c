@@ -855,7 +855,7 @@ TODO(": The wireframe arc drawing code cannot draw ellipses yet so draw the elli
 	pcb_subc_draw_origin(pcb_crosshair.GC, sc, DX, DY);
 }
 
-pcb_layer_t *pcb_subc_alloc_layer_like(pcb_subc_t *subc, const pcb_layer_t *sl)
+pcb_layer_t *pcb_subc_alloc_layer_like(pcb_subc_t *subc, pcb_layer_t *sl)
 {
 	pcb_layer_t *dl;
 

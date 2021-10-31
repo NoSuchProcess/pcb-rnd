@@ -177,7 +177,7 @@ void pcb_subc_dup_layer_objs(pcb_subc_t *dst_sc, pcb_layer_t *dl, pcb_layer_t *s
 
 /* Allocate and return a new layer in subc, copying binding and basic
    properties from another subc layer (potentially from another subc) from sl */
-pcb_layer_t *pcb_subc_alloc_layer_like(pcb_subc_t *subc, const pcb_layer_t *sl);
+pcb_layer_t *pcb_subc_alloc_layer_like(pcb_subc_t *subc, pcb_layer_t *sl);
 
 /*** subc creation helpers ***/
 
