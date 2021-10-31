@@ -213,7 +213,7 @@ static void lb_dialog2data(void *hid_ctx, lb_ctx_t *ctx)
 		pcb_layer_t *layer = ctx->data->Layer + n;
 
 		if (layer_name_mismatch(w, layer)) {
-			char *dlg_name = ctx->attrs[w->name].val.str;
+			const char *dlg_name = ctx->attrs[w->name].val.str;
 			free((char *)layer->name);
 			layer->name = rnd_strdup(dlg_name == NULL ? "" : dlg_name);
 		}
