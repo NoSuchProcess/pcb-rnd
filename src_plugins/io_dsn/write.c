@@ -68,7 +68,7 @@ static pcb_net_t *get_net(dsn_write_t *wctx, pcb_any_obj_t *obj)
 	return net;
 }
 
-static pcb_net_t *is_protected(dsn_write_t *wctx, pcb_any_obj_t *obj)
+static int is_protected(dsn_write_t *wctx, pcb_any_obj_t *obj)
 {
 	return PCB_FLAG_TEST(PCB_FLAG_LOCK, obj);
 }
