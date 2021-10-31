@@ -87,7 +87,7 @@ static void list_obj(void *ctx, pcb_board_t *pcb, pcb_layer_t *layer, pcb_any_ob
 	if ((seg->junction[0] != NULL) && (seg->junction[0]->term != NULL)) {
 		pcb_any_obj_t *o = seg->objs.array[0];
 		if (o->term == NULL) /* insert only if the first object is not a terminal already - we want terminal-terminal 2nets */
-			vtp0_insert_len(&seg->objs, 0, &seg->junction[0], 1);
+			vtp0_insert_len(&seg->objs, 0, (void **)(&seg->junction[0]), 1);
 	}
 
 	/* figure the net by looking at terminals along this segment */
