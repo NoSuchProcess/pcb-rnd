@@ -675,7 +675,7 @@ static int field_arc(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld
 static int field_gfx(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fld, pcb_qry_val_t *res)
 {
 	pcb_gfx_t *g = (pcb_gfx_t *)obj;
-	query_fields_keys_t fh1, fh2;
+	query_fields_keys_t fh1;
 
 	fld2hash_req(fh1, fld, 0);
 
@@ -876,9 +876,8 @@ static int field_pstk(pcb_qry_exec_t *ec, pcb_any_obj_t *obj, pcb_qry_node_t *fl
 				PCB_QRY_RET_INV(res);
 			{
 				int th;
-				char val[8];
-
 				rnd_layer_id_t lid = f3->precomp.iconst;
+
 				th = lid < p->thermals.used ? p->thermals.shape[lid] : 0;
 				PCB_QRY_RET_STR(res, pcb_thermal_bits2chars_const(th));
 			}
