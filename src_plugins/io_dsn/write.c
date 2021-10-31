@@ -180,7 +180,7 @@ static int dsn_write_structure(dsn_write_t *wctx)
 	return 0;
 }
 
-static int dsn_write_library_pstk_shape(dsn_write_t *wctx, const char *kw, pcb_pstk_shape_t *shp, const char *lyn, pcb_pstk_shape_t *slotshp, rnd_coord_t hdia)
+static void dsn_write_library_pstk_shape(dsn_write_t *wctx, const char *kw, pcb_pstk_shape_t *shp, const char *lyn, pcb_pstk_shape_t *slotshp, rnd_coord_t hdia)
 {
 	switch(shp->shape) {
 		case PCB_PSSH_CIRC:
