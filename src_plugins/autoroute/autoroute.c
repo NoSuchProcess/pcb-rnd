@@ -590,7 +590,6 @@ static routebox_t *AddTerm_(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_r
 	routebox_t **rbpp;
 	pcb_layer_type_t lyt;
 	int layergroup = -1;
-	rnd_coord_t clr;
 
 	lyt = pcb_layer_flags_(layer);
 	if (!(lyt & PCB_LYT_COPPER))
@@ -612,7 +611,7 @@ static routebox_t *AddTerm_(vtp0_t layergroupboxes[], pcb_any_obj_t *term, pcb_r
 	*rbpp = (routebox_t *)calloc(sizeof(**rbpp), 1);
 	assert(*rbpp);
 	(*rbpp)->group = layergroup;
-	clr = pcb_obj_clearance_at(PCB, term, layer);
+/*	clr = pcb_obj_clearance_at(PCB, term, layer);*/
 	init_const_box(*rbpp,
 								 /*X1 */ term->bbox_naked.X1,
 								 /*Y1 */ term->bbox_naked.Y1,
