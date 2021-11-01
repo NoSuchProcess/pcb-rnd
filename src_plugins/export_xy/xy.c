@@ -18,6 +18,7 @@
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/rotate.h>
 #include "obj_pstk_inlines.h"
 #include "obj_subc_op.h"
 #include "layer.h"
@@ -171,6 +172,7 @@ typedef struct {
 	char *name, *descr, *value;
 	const char *pad_netname;
 	rnd_coord_t x, y;
+	rnd_coord_t tx, ty;   /* translate x and y (xy::translate attr) */
 	double theta, xray_theta;
 	pcb_subc_t *subc;
 	rnd_coord_t pad_cx, pad_cy;
@@ -656,16 +658,32 @@ static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 	}
 }
 
-static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *x, rnd_coord_t *y)
+static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty, int arot)
 {
+	rnd_coord_t x = *dstx, y = *dsty, tx = 0, ty = 0;
+
+	/* apply attribute translation (affected by the final rotation of the part
+	   because the p&p machine will rotate around this pont while the subc was
+	   rotated around it's pcb-rnd-origin) */
+	if (arot && ((ctx->tx != 0) || (ctx->ty != 0)) && (ctx->theta != 0)) {
+		double trad = (90.0-ctx->theta) / RND_RAD_TO_DEG;
+		tx = ctx->tx;
+		ty = ctx->ty;
+		rnd_rotate(&tx, &ty, 0, 0, cos(trad), sin(trad));
+	}
+	x += tx;
+	y += ty;
+
 	/* translate the xy coords using explicit or implicit origin; implicit origin
 	   is lower left corner (looking from top) of board extents */
 	if (ctx->origin_score > 0) {
-		*y = ctx->oy - *y;
-		*x = *x - ctx->ox;
+		*dstx = x - ctx->ox;
+		*dsty = ctx->oy - y;
 	}
-	else
-		*y = PCB->hidlib.size_y - *y;
+	else {
+		*dstx = x;
+		*dsty = PCB->hidlib.size_y - y;
+	}
 }
 
 static const char *xy_xform_get_attr(subst_ctx_t *ctx, pcb_subc_t *subc, const char *key)
@@ -686,6 +704,8 @@ static void xy_xform_by_subc_attrs(subst_ctx_t *ctx, pcb_subc_t *subc)
 {
 	const char *sval, *sx, *sy;
 	char *end;
+
+	ctx->tx = ctx->ty = 0;
 
 	sval = xy_xform_get_attr(ctx, subc, "rotate");
 	if (sval != NULL) {
@@ -720,8 +740,8 @@ static void xy_xform_by_subc_attrs(subst_ctx_t *ctx, pcb_subc_t *subc)
 			rnd_message(RND_MSG_ERROR, "xy: invalid subc translate (%s) on subc '%s': error in Y coord\n", sval, ((subc->refdes == NULL) ? "" : subc->refdes));
 			return;
 		}
-		ctx->x += x;
-		ctx->y += y;
+		ctx->tx += x;
+		ctx->ty += y;
 	}
 }
 
@@ -779,14 +799,14 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		if (ctx.theta == -0)
 			ctx.theta = 0;
 
-		xy_translate(&ctx, &ctx.x, &ctx.y);
+		xy_translate(&ctx, &ctx.x, &ctx.y, 1);
 
 		ctx.subc = subc;
 		ctx.front = !bott;
 
 		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h, &ctx.pad_cx, &ctx.pad_cy);
 		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.prpad_cx, &ctx.prpad_cy);
-		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy);
+		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy, 0);
 
 		fprintf_templ(fp, &ctx, templ->subc);
 
