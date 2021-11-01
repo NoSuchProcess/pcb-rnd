@@ -62,6 +62,8 @@ void Rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab) { }
 		PREF_INIT_FUNC(ctx, PREF_TAB-1); \
 	} while(0)
 
+#define PREF_TABDATA(ctx)   (ctx->tab[PREF_TAB].tabdata)
+
 /* application tabs */
 #undef  PREF_TAB
 #define PREF_TAB 0

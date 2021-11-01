@@ -32,20 +32,37 @@
 #include "conf_core.h"
 #include <librnd/core/paths.h>
 
+typedef struct pref_libhelp_ctx_s {
+	RND_DAD_DECL_NOINIT(dlg)
+	int active; /* already open - allow only one instance */
+} pref_libhelp_ctx_t;
+
+typedef struct {
+	int wlist, whsbutton, wmoveup, wmovedown, wedit, wremove;
+	int lock; /* a change in on the dialog box causes a change on the board but this shouldn't in turn casue a changein the dialog */
+	char *cursor_path;
+	pref_libhelp_ctx_t help;
+} pref_lib_t;
+
+#undef DEF_TABDATA
+#define DEF_TABDATA pref_lib_t *tabdata = PREF_TABDATA(ctx)
+
 static const char *SRC_BRD = "<board file>";
 
 static void libhelp_btn(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
 static void pref_lib_update_buttons(void)
 {
-	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	pref_ctx_t *ctx = &pref_ctx;
+	DEF_TABDATA;
+	rnd_hid_attribute_t *attr = &ctx->dlg[tabdata->wlist];
 	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
 	int en = (r != NULL);
 
-	rnd_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wedit, en);
-	rnd_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wremove, en);
-	rnd_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wmoveup, en);
-	rnd_gui->attr_dlg_widget_state(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wmovedown, en);
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, tabdata->wedit, en);
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, tabdata->wremove, en);
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, tabdata->wmoveup, en);
+	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, tabdata->wmovedown, en);
 }
 
 static void pref_lib_select_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
@@ -65,20 +82,22 @@ static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hi
    the widget first */
 static void pref_lib_conf2dlg_pre(rnd_conf_native_t *cfg, int arr_idx)
 {
+	pref_ctx_t *ctx = &pref_ctx;
+	DEF_TABDATA;
 	rnd_hid_attribute_t *attr;
 	rnd_hid_tree_t *tree;
 	rnd_hid_row_t *r;
 
-	if ((pref_ctx.lib.lock) || (!pref_ctx.active))
+	if ((tabdata->lock) || (!ctx->active))
 		return;
 
-	attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	attr = &ctx->dlg[tabdata->wlist];
 	tree = attr->wdata;
 
 	r = rnd_dad_tree_get_selected(attr);
 	if (r != NULL) {
-		free(pref_ctx.lib.cursor_path);
-		pref_ctx.lib.cursor_path = rnd_strdup(r->cell[0]);
+		free(tabdata->cursor_path);
+		tabdata->cursor_path = rnd_strdup(r->cell[0]);
 	}
 
 	/* remove all existing entries */
@@ -98,6 +117,8 @@ static const char *pref_node_src(lht_node_t *nd)
    in all widget rows from the conf */
 static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 {
+	pref_ctx_t *ctx = &pref_ctx;
+	DEF_TABDATA;
 	rnd_conf_listitem_t *i;
 	int idx;
 	const char *s;
@@ -105,10 +126,10 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 	rnd_hid_attribute_t *attr;
 	rnd_hid_attr_val_t hv;
 
-	if ((pref_ctx.lib.lock) || (!pref_ctx.active))
+	if ((tabdata->lock) || (!ctx->active))
 		return;
 
-	attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	attr = &ctx->dlg[tabdata->wlist];
 
 	/* copy everything from the config tree to the dialog */
 	rnd_conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
@@ -121,10 +142,10 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 		rnd_dad_tree_append(attr, NULL, cell);
 	}
 
-	hv.str = pref_ctx.lib.cursor_path;
-	if (rnd_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv) == 0) {
-		free(pref_ctx.lib.cursor_path);
-		pref_ctx.lib.cursor_path = NULL;
+	hv.str = tabdata->cursor_path;
+	if (rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, tabdata->wlist, &hv) == 0) {
+		free(tabdata->cursor_path);
+		tabdata->cursor_path = NULL;
 	}
 	pref_lib_update_buttons();
 }
@@ -133,6 +154,7 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
+	DEF_TABDATA;
 	rnd_hid_tree_t *tree = attr->wdata;
 	lht_node_t *m, *lst, *nd;
 	rnd_hid_row_t *r;
@@ -142,7 +164,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	if (m == NULL)
 		return;
 
-	ctx->lib.lock++;
+	tabdata->lock++;
 	/* get the list and clean it */
 
 	lst = lht_tree_path_(m->doc, m, "rc/library_search_paths", 1, 0, NULL);
@@ -166,12 +188,14 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 	pref_dlg2conf_post(ctx);
 
-	ctx->lib.lock--;
+	tabdata->lock--;
 }
 
 static void lib_btn_remove(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *btn_attr)
 {
-	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	pref_ctx_t *ctx = caller_data;
+	DEF_TABDATA;
+	rnd_hid_attribute_t *attr = &ctx->dlg[tabdata->wlist];
 	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
 
 	if (r == NULL)
@@ -185,7 +209,9 @@ static void lib_btn_remove(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 static void lib_btn_up(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *btn_attr)
 {
-	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	pref_ctx_t *ctx = caller_data;
+	DEF_TABDATA;
+	rnd_hid_attribute_t *attr = &ctx->dlg[tabdata->wlist];
 	rnd_hid_row_t *prev, *r = rnd_dad_tree_get_selected(attr);
 	rnd_hid_tree_t *tree = attr->wdata;
 	char *cell[4];
@@ -206,13 +232,15 @@ static void lib_btn_up(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *bt
 		rnd_dad_tree_insert(attr, prev, cell);
 		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
 		hv.str = cell[0];
-		rnd_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, tabdata->wlist, &hv);
 	}
 }
 
 static void lib_btn_down(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *btn_attr)
 {
-	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	pref_ctx_t *ctx = caller_data;
+	DEF_TABDATA;
+	rnd_hid_attribute_t *attr = &ctx->dlg[tabdata->wlist];
 	rnd_hid_row_t *next, *r = rnd_dad_tree_get_selected(attr);
 	rnd_hid_tree_t *tree = attr->wdata;
 	char *cell[4];
@@ -233,7 +261,7 @@ static void lib_btn_down(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 		rnd_dad_tree_append(attr, next, cell);
 		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
 		hv.str = cell[0];
-		rnd_gui->attr_dlg_set_value(pref_ctx.dlg_hid_ctx, pref_ctx.lib.wlist, &hv);
+		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, tabdata->wlist, &hv);
 	}
 }
 
@@ -299,7 +327,8 @@ static int lib_cell_edit(pref_ctx_t *pctx, char **cell)
 static void lib_btn_insert(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *btn_attr, int pos)
 {
 	pref_ctx_t *ctx = caller_data;
-	rnd_hid_attribute_t *attr = &pref_ctx.dlg[pref_ctx.lib.wlist];
+	DEF_TABDATA;
+	rnd_hid_attribute_t *attr = &ctx->dlg[tabdata->wlist];
 	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
 	char *cell[4];
 
@@ -372,8 +401,9 @@ static void lib_btn_edit(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 void pcb_dlg_pref_lib_close(pref_ctx_t *ctx)
 {
-	if (ctx->lib.help.active)
-		RND_DAD_FREE(ctx->lib.help.dlg);
+	DEF_TABDATA;
+	if (tabdata->help.active)
+		RND_DAD_FREE(tabdata->help.dlg);
 }
 
 static void pref_libhelp_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
@@ -415,11 +445,14 @@ static void pref_libhelp_open(pref_libhelp_ctx_t *ctx)
 
 static void libhelp_btn(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	pref_libhelp_open(&pref_ctx.lib.help);
+	pref_ctx_t *ctx = caller_data;
+	DEF_TABDATA;
+	pref_libhelp_open(&tabdata->help);
 }
 
 void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 {
+	DEF_TABDATA;
 	static const char *hdr[] = {"configured path", "actual path on the filesystem", "config source", NULL};
 	rnd_hid_tree_t *tree;
 
@@ -431,8 +464,8 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_SCROLL | RND_HATF_EXPFILL);
 		RND_DAD_TREE(ctx->dlg, 3, 0, hdr);
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
-			ctx->lib.wlist = RND_DAD_CURRENT(ctx->dlg);
-			tree = ctx->dlg[ctx->lib.wlist].wdata;
+			tabdata->wlist = RND_DAD_CURRENT(ctx->dlg);
+			tree = ctx->dlg[tabdata->wlist].wdata;
 			tree->user_free_cb = pref_lib_row_free;
 			RND_DAD_TREE_SET_CB(ctx->dlg, selected_cb, pref_lib_select_cb);
 	RND_DAD_END(ctx->dlg);
@@ -440,22 +473,22 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 	RND_DAD_BEGIN_HBOX(ctx->dlg);
 		RND_DAD_BUTTON(ctx->dlg, "Move up");
 			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_up);
-			ctx->lib.wmoveup = RND_DAD_CURRENT(ctx->dlg);
+			tabdata->wmoveup = RND_DAD_CURRENT(ctx->dlg);
 		RND_DAD_BUTTON(ctx->dlg, "Move down");
 			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_down);
-			ctx->lib.wmovedown = RND_DAD_CURRENT(ctx->dlg);
+			tabdata->wmovedown = RND_DAD_CURRENT(ctx->dlg);
 		RND_DAD_BUTTON(ctx->dlg, "Insert before");
 			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_insert_before);
 		RND_DAD_BUTTON(ctx->dlg, "Insert after");
 			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_insert_after);
 		RND_DAD_BUTTON(ctx->dlg, "Remove");
 			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_remove);
-			ctx->lib.wremove = RND_DAD_CURRENT(ctx->dlg);
+			tabdata->wremove = RND_DAD_CURRENT(ctx->dlg);
 		RND_DAD_BUTTON(ctx->dlg, "Edit...");
 			RND_DAD_CHANGE_CB(ctx->dlg, lib_btn_edit);
-			ctx->lib.wedit = RND_DAD_CURRENT(ctx->dlg);
+			tabdata->wedit = RND_DAD_CURRENT(ctx->dlg);
 		RND_DAD_BUTTON(ctx->dlg, "Help...");
-			ctx->lib.whsbutton = RND_DAD_CURRENT(ctx->dlg);
+			tabdata->whsbutton = RND_DAD_CURRENT(ctx->dlg);
 			RND_DAD_CHANGE_CB(ctx->dlg, libhelp_btn);
 	RND_DAD_END(ctx->dlg);
 
@@ -480,6 +513,8 @@ void pcb_dlg_pref_lib_init(pref_ctx_t *ctx, int tab)
 	rnd_conf_native_t *cn = rnd_conf_get_field("rc/library_search_paths");
 
 	PREF_INIT(ctx, &pref_lib);
+	PREF_TABDATA(ctx) = calloc(sizeof(pref_lib_t), 1);
+
 	rnd_trace("INIT pref lib tab %d\n", tab);
 
 	if (cn != NULL) {

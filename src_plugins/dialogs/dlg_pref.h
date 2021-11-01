@@ -59,11 +59,7 @@ struct pref_ctx_s {
 	int tabs;       /* number of app-specific tabs used */
 	int tabs_total; /* number of tabs used (app-specific and built-in combined) */
 
-	pref_sizes_t sizes;
-	pref_board_t board;
-	pref_general_t general;
-	pref_lib_t lib;
-	pref_color_t color;
+	/* builtin tabs */
 	pref_win_t win;
 	pref_key_t key;
 	pref_menu_t menu;

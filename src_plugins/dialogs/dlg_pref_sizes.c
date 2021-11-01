@@ -32,24 +32,36 @@
 #include "conf_core.h"
 #include "drc.h"
 
+typedef struct {
+	int wwidth, wheight;
+	int wisle;
+	int lock; /* a change in on the dialog box causes a change on the board but this shouldn't in turn casue a changein the dialog */
+} pref_sizes_t;
+
+#undef DEF_TABDATA
+#define DEF_TABDATA pref_sizes_t *tabdata = PREF_TABDATA(ctx)
+
 /* Actual board size to dialog box */
 static void pref_sizes_brd2dlg(pref_ctx_t *ctx)
 {
-	if (ctx->sizes.lock)
+	DEF_TABDATA;
+
+	if (tabdata->lock)
 		return;
-	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wwidth, crd, PCB->hidlib.size_x);
-	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->sizes.wheight, crd, PCB->hidlib.size_y);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wwidth, crd, PCB->hidlib.size_x);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wheight, crd, PCB->hidlib.size_y);
 }
 
 /* Dialog box to actual board size */
 static void pref_sizes_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
+	DEF_TABDATA;
 
-	ctx->sizes.lock++;
-	if ((PCB->hidlib.size_x != ctx->dlg[ctx->sizes.wwidth].val.crd) || (PCB->hidlib.size_y != ctx->dlg[ctx->sizes.wheight].val.crd))
-		pcb_board_resize(ctx->dlg[ctx->sizes.wwidth].val.crd, ctx->dlg[ctx->sizes.wheight].val.crd, 0);
-	ctx->sizes.lock--;
+	tabdata->lock++;
+	if ((PCB->hidlib.size_x != ctx->dlg[tabdata->wwidth].val.crd) || (PCB->hidlib.size_y != ctx->dlg[tabdata->wheight].val.crd))
+		pcb_board_resize(ctx->dlg[tabdata->wwidth].val.crd, ctx->dlg[tabdata->wheight].val.crd, 0);
+	tabdata->lock--;
 }
 
 static void drc_rules_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -78,19 +90,23 @@ static void pref_sizes_limit_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_
 
 static void pref_isle_brd2dlg(rnd_conf_native_t *cfg, int arr_idx)
 {
-	if ((pref_ctx.sizes.lock) || (!pref_ctx.active))
+	pref_ctx_t *ctx = &pref_ctx;
+	DEF_TABDATA;
+	
+	if ((tabdata->lock) || (!ctx->active))
 		return;
-	RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.sizes.wisle, dbl, conf_core.design.poly_isle_area / 1000000.0);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wisle, dbl, conf_core.design.poly_isle_area / 1000000.0);
 }
 
 static void pref_isle_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	double v = ctx->dlg[ctx->sizes.wisle].val.dbl * 1000000.0;
+	DEF_TABDATA;
+	double v = ctx->dlg[tabdata->wisle].val.dbl * 1000000.0;
 
-	ctx->sizes.lock++;
+	tabdata->lock++;
 	rnd_conf_setf(ctx->role, "design/poly_isle_area", -1, "%f", v);
-	ctx->sizes.lock--;
+	tabdata->lock--;
 }
 
 void pcb_dlg_pref_sizes_close(pref_ctx_t *ctx)
@@ -100,6 +116,7 @@ void pcb_dlg_pref_sizes_close(pref_ctx_t *ctx)
 
 void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 {
+	DEF_TABDATA;
 	pcb_drc_impl_t *di;
 	int drcs;
 
@@ -109,13 +126,13 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 		RND_DAD_BEGIN_HBOX(ctx->dlg);
 			RND_DAD_LABEL(ctx->dlg, "Width=");
 			RND_DAD_COORD(ctx->dlg);
-				ctx->sizes.wwidth = RND_DAD_CURRENT(ctx->dlg);
+				tabdata->wwidth = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, RND_MM_TO_COORD(1), RND_MAX_COORD);
 				RND_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_x);
 				RND_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
 			RND_DAD_LABEL(ctx->dlg, "Height=");
 			RND_DAD_COORD(ctx->dlg);
-				ctx->sizes.wheight = RND_DAD_CURRENT(ctx->dlg);
+				tabdata->wheight = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, RND_MM_TO_COORD(1), RND_MAX_COORD);
 				RND_DAD_DEFAULT_NUM(ctx->dlg, PCB->hidlib.size_y);
 				RND_DAD_CHANGE_CB(ctx->dlg, pref_sizes_dlg2brd);
@@ -133,9 +150,9 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 			RND_DAD_LABEL(ctx->dlg, "polygon isle minimum size\n[square um]");
 			RND_DAD_REAL(ctx->dlg);
-				ctx->sizes.wisle = RND_DAD_CURRENT(ctx->dlg);
+				tabdata->wisle = RND_DAD_CURRENT(ctx->dlg);
 				RND_DAD_MINMAX(ctx->dlg, 0, RND_MAX_COORD);
-				ctx->dlg[ctx->sizes.wisle].val.dbl = (conf_core.design.poly_isle_area / 1000000.0);
+				ctx->dlg[tabdata->wisle].val.dbl = (conf_core.design.poly_isle_area / 1000000.0);
 				RND_DAD_CHANGE_CB(ctx->dlg, pref_isle_dlg2brd);
 		RND_DAD_END(ctx->dlg);
 
@@ -170,6 +187,8 @@ static void pcb_dlg_pref_sizes_init(pref_ctx_t *ctx, int tab)
 	rnd_conf_native_t *cn = rnd_conf_get_field("design/poly_isle_area");
 
 	PREF_INIT(ctx, &pref_sizes);
+	PREF_TABDATA(ctx) = calloc(sizeof(pref_sizes_t), 1);
+
 	rnd_trace("INIT pref sizes tab %d\n", tab);
 
 	if (cn != NULL) {

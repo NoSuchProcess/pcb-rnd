@@ -30,19 +30,28 @@
 #include <librnd/core/conf.h>
 #include "conf_core.h"
 
+typedef struct {
+	int *wgen, *wlayer;
+	int ngen;
+} pref_color_t;
+
+#undef DEF_TABDATA
+#define DEF_TABDATA pref_color_t *tabdata = PREF_TABDATA(ctx)
+
 static void pref_color_brd2dlg(pref_ctx_t *ctx)
 {
+	DEF_TABDATA;
 	rnd_conf_native_t *nat;
 	int n;
 
-	if (ctx->color.wlayer != NULL) {
+	if (tabdata->wlayer != NULL) {
 		nat = rnd_conf_get_field("appearance/color/layer");
 		for (n = 0; n < nat->used; n++)
-			RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, ctx->color.wlayer[n], clr, nat->val.color[n]);
+			RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wlayer[n], clr, nat->val.color[n]);
 	}
 
-	for(n = 0; n < ctx->color.ngen; n++) {
-		int w = ctx->color.wgen[n];
+	for(n = 0; n < tabdata->ngen; n++) {
+		int w = tabdata->wgen[n];
 		const char *path = ctx->dlg[w].user_data;
 		nat = rnd_conf_get_field(path);
 		if (nat != NULL)
@@ -58,15 +67,16 @@ void pcb_dlg_pref_color_open(pref_ctx_t *ctx)
 
 void pcb_dlg_pref_color_close(pref_ctx_t *ctx)
 {
+	DEF_TABDATA;
 	int n;
 
-	for(n = 0; n < ctx->color.ngen; n++) {
-		int w = ctx->color.wgen[n];
+	for(n = 0; n < tabdata->ngen; n++) {
+		int w = tabdata->wgen[n];
 		free(ctx->dlg[w].user_data);
 	}
 
-	free(ctx->color.wgen);
-	free(ctx->color.wlayer);
+	free(tabdata->wgen);
+	free(tabdata->wlayer);
 }
 
 static void pref_color_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
@@ -87,7 +97,8 @@ static void pref_color_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 static void pref_color_layer_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
 	pref_ctx_t *ctx = caller_data;
-	int idx = (int *)attr->user_data - ctx->color.wlayer;
+	DEF_TABDATA;
+	int idx = (int *)attr->user_data - tabdata->wlayer;
 
 	if (pref_dlg2conf_pre(ctx) == NULL)
 		return;
@@ -105,6 +116,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 	htsp_entry_t *e;
 	int n, pl, w;
 	const char *path_prefix = "appearance/color";
+	DEF_TABDATA;
 
 
 	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
@@ -115,13 +127,13 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			pl = strlen(path_prefix);
 
-			ctx->color.ngen = 0;
+			tabdata->ngen = 0;
 			rnd_conf_fields_foreach(e) {
 				nat = e->value;
 				if ((strncmp(e->key, path_prefix, pl) == 0) && (nat->type == RND_CFN_COLOR) && (nat->array_size == 1))
-					ctx->color.ngen++;
+					tabdata->ngen++;
 			}
-			ctx->color.wgen = calloc(sizeof(int), ctx->color.ngen);
+			tabdata->wgen = calloc(sizeof(int), tabdata->ngen);
 
 			n = 0;
 			rnd_conf_fields_foreach(e) {
@@ -130,7 +142,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 					RND_DAD_BEGIN_HBOX(ctx->dlg);
 						RND_DAD_BEGIN_VBOX(ctx->dlg);
 							RND_DAD_COLOR(ctx->dlg);
-								ctx->color.wgen[n] = w = RND_DAD_CURRENT(ctx->dlg);
+								tabdata->wgen[n] = w = RND_DAD_CURRENT(ctx->dlg);
 								ctx->dlg[w].user_data = rnd_strdup(e->key);
 								RND_DAD_CHANGE_CB(ctx->dlg, pref_color_gen_cb);
 						RND_DAD_END(ctx->dlg);
@@ -146,13 +158,13 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 			nat = rnd_conf_get_field("appearance/color/layer");
 			if (nat->type == RND_CFN_COLOR) {
 				RND_DAD_LABEL(ctx->dlg, "NOTE: these colors are used only\nwhen creating new layers.");
-				ctx->color.wlayer = calloc(sizeof(int), nat->used);
+				tabdata->wlayer = calloc(sizeof(int), nat->used);
 				RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 				for (n = 0; n < nat->used; n++) {
 					char tmp[32];
 						RND_DAD_COLOR(ctx->dlg);
-							ctx->color.wlayer[n] = w = RND_DAD_CURRENT(ctx->dlg);
-							ctx->dlg[w].user_data = &ctx->color.wlayer[n];
+							tabdata->wlayer[n] = w = RND_DAD_CURRENT(ctx->dlg);
+							ctx->dlg[w].user_data = &tabdata->wlayer[n];
 							RND_DAD_CHANGE_CB(ctx->dlg, pref_color_layer_cb);
 						sprintf(tmp, "Layer %d", n);
 						RND_DAD_LABEL(ctx->dlg, tmp);
@@ -160,7 +172,7 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 				RND_DAD_END(ctx->dlg);
 			}
 			else {
-				ctx->color.wlayer = NULL;
+				tabdata->wlayer = NULL;
 				RND_DAD_LABEL(ctx->dlg, "Broken internal configuration:\nno layer colors");
 			}
 		RND_DAD_END(ctx->dlg);
@@ -178,6 +190,7 @@ static const Rnd_pref_tab_hook_t pref_color = {
 static void pcb_dlg_pref_color_init(pref_ctx_t *ctx, int tab)
 {
 	PREF_INIT(ctx, &pref_color);
+	PREF_TABDATA(ctx) = calloc(sizeof(pref_color_t), 1);
 	rnd_trace("INIT pref color tab %d\n", tab);
 }
 #undef PREF_INIT_FUNC
