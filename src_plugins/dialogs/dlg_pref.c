@@ -49,12 +49,13 @@ static const int pref_tab_cfgs[PREF_TABS] = {    1,        0,           1,      
 static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx);
 static void pref_dlg2conf_post(pref_ctx_t *ctx);
 
-#include "dlg_pref_sizes.c"
-#include "dlg_pref_board.c"
 #include "dlg_pref_general.c"
+#include "dlg_pref_board.c"
+#include "dlg_pref_sizes.c"
 #include "dlg_pref_lib.c"
 #include "dlg_pref_layer.c"
 #include "dlg_pref_color.c"
+
 #include "dlg_pref_win.c"
 #include "dlg_pref_key.c"
 #include "dlg_pref_menu.c"
