@@ -1,4 +1,0 @@
-#ifndef PCB_DLG_PREF_GENERAL_H
-#define PCB_DLG_PREF_GENERAL_H
-
-#endif

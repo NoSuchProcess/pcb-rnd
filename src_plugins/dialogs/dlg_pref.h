@@ -5,11 +5,6 @@ typedef struct pref_ctx_s pref_ctx_t;
 
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
-#include "dlg_pref_sizes.h"
-#include "dlg_pref_board.h"
-#include "dlg_pref_general.h"
-#include "dlg_pref_lib.h"
-#include "dlg_pref_color.h"
 #include "dlg_pref_win.h"
 #include "dlg_pref_key.h"
 #include "dlg_pref_menu.h"
