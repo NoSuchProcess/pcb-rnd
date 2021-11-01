@@ -23,8 +23,8 @@ struct pref_conflist_s {
 	pref_confitem_t *cnext; /* linked list for conf callback - should be NULL initially */
 };
 
-typedef enum Rnd_pref_tab_flag_e {
-	Rnd_PREFTAB_NEEDS_ROLE
+typedef enum Rnd_pref_tab_flag_e { /* bitfield */
+	Rnd_PREFTAB_NEEDS_ROLE = 1
 } Rnd_pref_tab_flag_t;
 
 typedef struct Rnd_pref_tab_hook_s Rnd_pref_tab_hook_t;
@@ -55,7 +55,8 @@ struct pref_ctx_s {
 		const Rnd_pref_tab_hook_t *hooks;
 		void *tabdata;
 	} tab[Rnd_PREF_MAX_TAB];
-	int tabs; /* number of tabs used */
+	int tabs;       /* number of app-specific tabs used */
+	int tabs_total; /* number of tabs used (app-specific and built-in combined) */
 
 	pref_sizes_t sizes;
 	pref_board_t board;

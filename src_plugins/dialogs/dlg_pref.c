@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,9 +42,11 @@
 
 #include "dlg_pref.h"
 
-#define PREF_TABS 10
-static const char *pref_tabs[PREF_TABS+1] = { "General", "Board meta", "Sizes & DRC",  "Library", "Layers", "Colors", "Window", "Key", "Menu", "Config tree", NULL };
-static const int pref_tab_cfgs[PREF_TABS] = {    1,        0,           1,               1,        0,        1,        1,        0,     0,          0      };
+static const char *pref_tabs[Rnd_PREF_MAX_TAB];
+static int pref_tab_cfgs[Rnd_PREF_MAX_TAB];
+
+static const char *bi_pref_tabs[]   = { "Window", "Key", "Menu", "Config tree", NULL };
+static const int bi_pref_tab_cfgs[] = {  1,        0,     0,          0      };
 
 static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx);
 static void pref_dlg2conf_post(pref_ctx_t *ctx);
@@ -325,7 +327,9 @@ static void pref_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	vtp0_uninit(&ctx->auto_free);
 
 	RND_DAD_FREE(ctx->dlg);
-	memset(ctx, 0, sizeof(pref_ctx_t)); /* reset all states to the initial - includes ctx->active = 0; */
+
+	ctx->active = 0;
+	ctx->pcb_conf_lock = NULL;
 }
 
 /* Compare inp to fixed in case insensitive manner; accept full length match
@@ -427,8 +431,8 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 	pcb_dlg_pref_win_open(&pref_ctx);
 	pcb_dlg_pref_key_open(&pref_ctx);
 	pcb_dlg_pref_menu_open(&pref_ctx);
-	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == PREF_TABS - 2) ? tabarg : NULL);
-	if ((target_tab >= 0) && (target_tab < PREF_TABS)) {
+	pcb_dlg_pref_conf_open(&pref_ctx, (target_tab == pref_ctx.tabs_total - 1) ? tabarg : NULL);
+	if ((target_tab >= 0) && (target_tab < pref_ctx.tabs_total)) {
 		RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wtab, lng, target_tab);
 		pref_tab_chosen(&pref_ctx, target_tab);
 	}
@@ -478,6 +482,8 @@ void pref_conf_changed(rnd_conf_native_t *cfg, int arr_idx)
 static rnd_conf_hid_callbacks_t pref_conf_cb;
 void pcb_dlg_pref_init(void)
 {
+	int i, t;
+
 	pref_conf_cb.val_change_post = pref_conf_changed;
 	rnd_event_bind(RND_EVENT_BOARD_CHANGED, pref_ev_board_changed, &pref_ctx, pref_cookie);
 	rnd_event_bind(RND_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
@@ -485,6 +491,16 @@ void pcb_dlg_pref_init(void)
 	pref_hid = rnd_conf_hid_reg(pref_cookie, &pref_conf_cb);
 	PREF_INIT_FUNC(&pref_ctx, PREF_TAB);
 	pref_ctx.tabs = PREF_TAB+1;
+
+	for(t = 0; t < pref_ctx.tabs; t++) {
+		pref_tabs[t] = pref_ctx.tab[t].hooks->tab_label;
+		pref_tab_cfgs[t] = !!(pref_ctx.tab[t].hooks->flags & Rnd_PREFTAB_NEEDS_ROLE);
+	}
+	for(i = 0; bi_pref_tabs[i] != NULL; i++,t++) {
+		pref_tabs[t] = bi_pref_tabs[i];
+		pref_tab_cfgs[t] = bi_pref_tab_cfgs[i];
+	}
+	pref_ctx.tabs_total = t;
 }
 
 void pcb_dlg_pref_uninit(void)
