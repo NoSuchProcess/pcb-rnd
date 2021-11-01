@@ -76,7 +76,6 @@ static void pref_board_edit_attr(void *hid_ctx, void *caller_data, rnd_hid_attri
 
 void pcb_dlg_pref_board_close(pref_ctx_t *ctx)
 {
-	pcb_pref_conflist_remove(ctx, limit_sizes);
 }
 
 void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
