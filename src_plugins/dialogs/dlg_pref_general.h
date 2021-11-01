@@ -5,8 +5,5 @@ typedef struct {
 	int dummy;
 } pref_general_t;
 
-void pcb_dlg_pref_general_close(pref_ctx_t *ctx);
-void pcb_dlg_pref_general_create(pref_ctx_t *ctx);
-
 
 #endif

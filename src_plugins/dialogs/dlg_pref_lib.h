@@ -13,9 +13,4 @@ typedef struct {
 	pref_libhelp_ctx_t help;
 } pref_lib_t;
 
-void pcb_dlg_pref_lib_close(pref_ctx_t *ctx);
-void pcb_dlg_pref_lib_create(pref_ctx_t *ctx);
-void pcb_dlg_pref_lib_open(pref_ctx_t *ctx);
-
-
 #endif

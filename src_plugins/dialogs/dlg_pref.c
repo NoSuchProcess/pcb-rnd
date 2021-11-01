@@ -91,6 +91,14 @@ void Rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab) { }
 #include "dlg_pref_menu.c"
 #include "dlg_pref_conf.c"
 
+#define call_hook(pctx, HOOK) \
+	do { \
+		int t; \
+		for(t = 0; t < (pctx)->tabs; t++) \
+			if ((pctx)->tab[t].hooks->HOOK != NULL) \
+				(pctx)->tab[t].hooks->HOOK(pctx); \
+	} while(0)
+
 pref_ctx_t pref_ctx;
 static const char *pref_cookie = "preferences dialog";
 rnd_conf_hid_id_t pref_hid;
@@ -307,10 +315,8 @@ static void pref_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	long n;
 	pref_ctx_t *ctx = caller_data;
 
-	pcb_dlg_pref_sizes_close(ctx);
-	pcb_dlg_pref_general_close(ctx);
-	pcb_dlg_pref_lib_close(ctx);
-	pcb_dlg_pref_color_close(ctx);
+	call_hook(ctx, close_cb);
+
 	pcb_dlg_pref_win_close(ctx);
 	pcb_dlg_pref_menu_close(ctx);
 
@@ -339,7 +345,7 @@ static int pref_strcmp(const char *fixed, const char *inp)
 static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
-	int target_tab = -1;
+	int target_tab = -1, t;
 
 	if ((target_tab_str != NULL) && (*target_tab_str != '\0')) {
 		const char **t;
@@ -366,30 +372,16 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 			pref_ctx.wtab = RND_DAD_CURRENT(pref_ctx.dlg);
 			RND_DAD_CHANGE_CB(pref_ctx.dlg, pref_tab_cb);
 
-			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* General */
-				pcb_dlg_pref_general_create(&pref_ctx);
-			RND_DAD_END(pref_ctx.dlg);
+			/* create application tabs */
+			for(t = 0; t < pref_ctx.tabs; t++) {
+				if (pref_ctx.tab[t].hooks->create_cb != NULL) {
+					RND_DAD_BEGIN_VBOX(pref_ctx.dlg);
+						pref_ctx.tab[t].hooks->create_cb(&pref_ctx);
+					RND_DAD_END(pref_ctx.dlg);
+				}
+			}
 
-			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Board meta */
-				pcb_dlg_pref_board_create(&pref_ctx);
-			RND_DAD_END(pref_ctx.dlg);
-
-			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Sizes & DRC */
-				pcb_dlg_pref_sizes_create(&pref_ctx);
-			RND_DAD_END(pref_ctx.dlg);
-
-			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Library */
-				pcb_dlg_pref_lib_create(&pref_ctx);
-			RND_DAD_END(pref_ctx.dlg);
-
-			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Layers */
-				pcb_dlg_pref_layer_create(&pref_ctx);
-			RND_DAD_END(pref_ctx.dlg);
-
-			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Colors */
-				pcb_dlg_pref_color_create(&pref_ctx);
-			RND_DAD_END(pref_ctx.dlg);
-
+			/* create rnd built-in tabs */
 			RND_DAD_BEGIN_VBOX(pref_ctx.dlg); /* Window */
 				pcb_dlg_pref_win_create(&pref_ctx);
 			RND_DAD_END(pref_ctx.dlg);
@@ -430,8 +422,8 @@ static void pcb_dlg_pref(const char *target_tab_str, const char *tabarg)
 	RND_DAD_SET_VALUE(pref_ctx.dlg_hid_ctx, pref_ctx.wrole, lng, 2);
 	pref_ctx.role = RND_CFR_DESIGN;
 
-	pcb_dlg_pref_lib_open(&pref_ctx);
-	pcb_dlg_pref_color_open(&pref_ctx);
+	call_hook(&pref_ctx, open_cb);
+
 	pcb_dlg_pref_win_open(&pref_ctx);
 	pcb_dlg_pref_key_open(&pref_ctx);
 	pcb_dlg_pref_menu_open(&pref_ctx);

@@ -6,6 +6,4 @@ typedef struct {
 	int ngen;
 } pref_color_t;
 
-void pcb_dlg_pref_color_create(pref_ctx_t *ctx);
-
 #endif
