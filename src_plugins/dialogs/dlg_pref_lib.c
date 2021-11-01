@@ -516,8 +516,6 @@ void pcb_dlg_pref_lib_init(pref_ctx_t *ctx, int tab)
 	PREF_INIT(ctx, &pref_lib);
 	PREF_TABDATA(ctx) = calloc(sizeof(pref_lib_t), 1);
 
-	rnd_trace("INIT pref lib tab %d\n", tab);
-
 	if (cn != NULL) {
 		memset(&cbs_spth, 0, sizeof(rnd_conf_hid_callbacks_t));
 		cbs_spth.val_change_pre = pref_lib_conf2dlg_pre;

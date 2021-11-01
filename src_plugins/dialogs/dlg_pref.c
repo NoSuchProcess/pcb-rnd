@@ -271,7 +271,6 @@ static void pref_role_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 
 static void pref_tab_chosen(pref_ctx_t *ctx, int tab)
 {
-	rnd_trace("tab: %d %d\n", tab, pref_tab_cfgs[tab]);
 	rnd_gui->attr_dlg_widget_hide(ctx->dlg_hid_ctx, ctx->wrolebox, !pref_tab_cfgs[tab]);
 }
 

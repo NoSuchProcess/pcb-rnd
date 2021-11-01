@@ -191,7 +191,6 @@ static void pcb_dlg_pref_color_init(pref_ctx_t *ctx, int tab)
 {
 	PREF_INIT(ctx, &pref_color);
 	PREF_TABDATA(ctx) = calloc(sizeof(pref_color_t), 1);
-	rnd_trace("INIT pref color tab %d\n", tab);
 }
 #undef PREF_INIT_FUNC
 #define PREF_INIT_FUNC pcb_dlg_pref_color_init

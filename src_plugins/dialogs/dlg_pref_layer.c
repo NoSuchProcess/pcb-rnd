@@ -70,7 +70,6 @@ static const Rnd_pref_tab_hook_t pref_layer = {
 static void pcb_dlg_pref_layer_init(pref_ctx_t *ctx, int tab)
 {
 	PREF_INIT(ctx, &pref_layer);
-	rnd_trace("INIT pref layer tab %d\n", tab);
 }
 #undef PREF_INIT_FUNC
 #define PREF_INIT_FUNC pcb_dlg_pref_layer_init

@@ -124,8 +124,6 @@ static void pcb_dlg_pref_board_init(pref_ctx_t *ctx, int tab)
 {
 	PREF_INIT(ctx, &pref_board);
 	PREF_TABDATA(ctx) = calloc(sizeof(pref_board_t), 1);
-
-	rnd_trace("INIT pref board tab %d\n", tab);
 }
 #undef PREF_INIT_FUNC
 #define PREF_INIT_FUNC pcb_dlg_pref_board_init

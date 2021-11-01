@@ -189,8 +189,6 @@ static void pcb_dlg_pref_sizes_init(pref_ctx_t *ctx, int tab)
 	PREF_INIT(ctx, &pref_sizes);
 	PREF_TABDATA(ctx) = calloc(sizeof(pref_sizes_t), 1);
 
-	rnd_trace("INIT pref sizes tab %d\n", tab);
-
 	if (cn != NULL) {
 		memset(&cbs_isle, 0, sizeof(rnd_conf_hid_callbacks_t));
 		cbs_isle.val_change_post = pref_isle_brd2dlg;
