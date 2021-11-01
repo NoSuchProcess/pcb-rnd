@@ -90,7 +90,7 @@ static void pref_sizes_limit_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_
 
 static void pref_isle_brd2dlg(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pref_ctx_t *ctx = &pref_ctx;
+	pref_ctx_t *ctx = Rnd_pref_get_ctx(&PCB->hidlib);
 	DEF_TABDATA;
 	
 	if ((tabdata->lock) || (!ctx->active))

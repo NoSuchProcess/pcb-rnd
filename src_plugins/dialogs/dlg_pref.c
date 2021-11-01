@@ -110,6 +110,11 @@ rnd_conf_hid_id_t pref_hid;
 static const char *role_names[] =  { "user",   "project",   "design",   "cli", NULL };
 static const rnd_conf_role_t roles[] = { RND_CFR_USER, RND_CFR_PROJECT, RND_CFR_DESIGN, RND_CFR_CLI, 0 };
 
+pref_ctx_t *Rnd_pref_get_ctx(rnd_hidlib_t *hidlib)
+{
+	return &pref_ctx;
+}
+
 static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx)
 {
 	lht_node_t *m;

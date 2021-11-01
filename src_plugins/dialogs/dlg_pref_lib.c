@@ -53,7 +53,7 @@ static void libhelp_btn(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 
 static void pref_lib_update_buttons(void)
 {
-	pref_ctx_t *ctx = &pref_ctx;
+	pref_ctx_t *ctx = Rnd_pref_get_ctx(&PCB->hidlib);
 	DEF_TABDATA;
 	rnd_hid_attribute_t *attr = &ctx->dlg[tabdata->wlist];
 	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
@@ -82,7 +82,7 @@ static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hi
    the widget first */
 static void pref_lib_conf2dlg_pre(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pref_ctx_t *ctx = &pref_ctx;
+	pref_ctx_t *ctx = Rnd_pref_get_ctx(&PCB->hidlib);
 	DEF_TABDATA;
 	rnd_hid_attribute_t *attr;
 	rnd_hid_tree_t *tree;
@@ -117,7 +117,7 @@ static const char *pref_node_src(lht_node_t *nd)
    in all widget rows from the conf */
 static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pref_ctx_t *ctx = &pref_ctx;
+	pref_ctx_t *ctx = Rnd_pref_get_ctx(&PCB->hidlib);
 	DEF_TABDATA;
 	rnd_conf_listitem_t *i;
 	int idx;

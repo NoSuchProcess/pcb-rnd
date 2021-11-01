@@ -92,4 +92,8 @@ extern const char pcb_acts_Preferences[];
 extern const char pcb_acth_Preferences[];
 fgw_error_t pcb_act_Preferences(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
+/* In event callbacks no context is available; return context baed on hidlib */
+pref_ctx_t *Rnd_pref_get_ctx(rnd_hidlib_t *hidlib);
+
+
 #endif
