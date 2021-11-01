@@ -48,46 +48,8 @@ static int pref_tab_cfgs[Rnd_PREF_MAX_TAB];
 static const char *bi_pref_tabs[]   = { "Window", "Key", "Menu", "Config tree", NULL };
 static const int bi_pref_tab_cfgs[] = {  1,        0,     0,          0      };
 
-static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx);
-static void pref_dlg2conf_post(pref_ctx_t *ctx);
-
 
 void Rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab) { }
-
-#define PREF_INIT_FUNC Rnd_pref_init_func_dummy
-
-#define PREF_INIT(ctx, hooks_) \
-	do { \
-		ctx->tab[PREF_TAB].hooks = hooks_; \
-		PREF_INIT_FUNC(ctx, PREF_TAB-1); \
-	} while(0)
-
-#define PREF_TABDATA(ctx)   (ctx->tab[PREF_TAB].tabdata)
-
-/* application tabs */
-#undef  PREF_TAB
-#define PREF_TAB 0
-#include "dlg_pref_general.c"
-
-#undef  PREF_TAB
-#define PREF_TAB 1
-#include "dlg_pref_board.c"
-
-#undef  PREF_TAB
-#define PREF_TAB 2
-#include "dlg_pref_sizes.c"
-
-#undef  PREF_TAB
-#define PREF_TAB 3
-#include "dlg_pref_lib.c"
-
-#undef  PREF_TAB
-#define PREF_TAB 4
-#include "dlg_pref_layer.c"
-
-#undef  PREF_TAB
-#define PREF_TAB 5
-#include "dlg_pref_color.c"
 
 /* built-in tabs */
 #include "dlg_pref_win.c"
@@ -115,7 +77,7 @@ pref_ctx_t *Rnd_pref_get_ctx(rnd_hidlib_t *hidlib)
 	return &pref_ctx;
 }
 
-static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx)
+lht_node_t *Rnd_pref_dlg2conf_pre(pref_ctx_t *ctx)
 {
 	lht_node_t *m;
 
@@ -147,7 +109,7 @@ static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx)
 	return m;
 }
 
-static void pref_dlg2conf_post(pref_ctx_t *ctx)
+void Rnd_pref_dlg2conf_post(pref_ctx_t *ctx)
 {
 	if ((ctx->role == RND_CFR_USER) || (ctx->role == RND_CFR_PROJECT))
 		rnd_conf_save_file(&PCB->hidlib, NULL, (PCB == NULL ? NULL : PCB->hidlib.filename), ctx->role, NULL);
@@ -487,7 +449,7 @@ void pref_conf_changed(rnd_conf_native_t *cfg, int arr_idx)
 }
 
 static rnd_conf_hid_callbacks_t pref_conf_cb;
-void pcb_dlg_pref_init(void)
+void pcb_dlg_pref_init(int pref_tab, void (*first_init)(pref_ctx_t *ctx, int tab))
 {
 	int i, t;
 
@@ -496,8 +458,10 @@ void pcb_dlg_pref_init(void)
 	rnd_event_bind(RND_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
 	rnd_event_bind(RND_EVENT_MENU_CHANGED, pref_ev_menu_changed, &pref_ctx, pref_cookie);
 	pref_hid = rnd_conf_hid_reg(pref_cookie, &pref_conf_cb);
-	PREF_INIT_FUNC(&pref_ctx, PREF_TAB);
-	pref_ctx.tabs = PREF_TAB+1;
+	if (first_init != NULL) {
+		first_init(&pref_ctx, pref_tab);
+		pref_ctx.tabs = pref_tab+1;
+	}
 
 	for(t = 0; t < pref_ctx.tabs; t++) {
 		pref_tabs[t] = pref_ctx.tab[t].hooks->tab_label;

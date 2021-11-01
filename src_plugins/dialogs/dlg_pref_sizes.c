@@ -80,12 +80,12 @@ static void pref_sizes_limit_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_
 {
 	pref_ctx_t *ctx = caller_data;
 
-	if (pref_dlg2conf_pre(ctx) == NULL)
+	if (Rnd_pref_dlg2conf_pre(ctx) == NULL)
 		return;
 
 	pcb_pref_dlg2conf_table(ctx, limit_sizes, attr);
 
-	pref_dlg2conf_post(ctx);
+	Rnd_pref_dlg2conf_post(ctx);
 }
 
 static void pref_isle_brd2dlg(rnd_conf_native_t *cfg, int arr_idx)

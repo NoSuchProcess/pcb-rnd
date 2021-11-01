@@ -28,6 +28,9 @@
 
 #include <librnd/core/hid_dad_unit.h>
 
+TODO("This should be removed before the librnd move")
+#include "board.h"
+
 #define is_read_only(ctx)   rnd_conf_is_read_only(ctx->role)
 
 typedef struct {

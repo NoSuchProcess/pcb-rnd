@@ -1,3 +1,4 @@
+35849	configure	preferences dialog generalization
 35621	configure	ar_extern: new module for freerouting.cli
 35240	configure	io_dsn: merge import_dsn (as ses import) and export_dsn
 35181	configure	io_dsn: padstack proto hash

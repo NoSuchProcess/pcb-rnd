@@ -120,6 +120,9 @@ void pplg_uninit_dialogs(void)
 	rnd_conf_unreg_fields("plugins/dialogs/");
 }
 
+extern int pcb_dlg_pref_tab;
+extern void (*pcb_dlg_pref_first_init)(pref_ctx_t *ctx, int tab);
+
 int pplg_init_dialogs(void)
 {
 	RND_API_CHK_VER;
@@ -131,7 +134,7 @@ int pplg_init_dialogs(void)
 	rnd_conf_reg_intern(adialogs_conf_internal);
 
 	RND_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
-	pcb_dlg_pref_init();
+	pcb_dlg_pref_init(pcb_dlg_pref_tab, pcb_dlg_pref_first_init);
 	pcb_dlg_pstklib_init();
 	pcb_dlg_undo_init();
 	pcb_dlg_netlist_init();

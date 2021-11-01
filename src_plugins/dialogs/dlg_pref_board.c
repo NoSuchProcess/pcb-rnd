@@ -28,7 +28,9 @@
 
 #include "dlg_pref.h"
 #include <librnd/core/conf.h>
+#include <librnd/core/actions.h>
 #include "board.h"
+#include "event.h"
 #include "conf_core.h"
 
 typedef struct {

@@ -48,14 +48,14 @@ static void pref_general_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attr
 {
 	pref_ctx_t *ctx = caller_data;
 
-	if (pref_dlg2conf_pre(ctx) == NULL)
+	if (Rnd_pref_dlg2conf_pre(ctx) == NULL)
 		return;
 
 	pcb_pref_dlg2conf_table(ctx, perf_topwin, attr);
 	pcb_pref_dlg2conf_table(ctx, perf_backup, attr);
 	pcb_pref_dlg2conf_table(ctx, perf_cli, attr);
 
-	pref_dlg2conf_post(ctx);
+	Rnd_pref_dlg2conf_post(ctx);
 }
 
 void pcb_dlg_pref_general_close(pref_ctx_t *ctx)

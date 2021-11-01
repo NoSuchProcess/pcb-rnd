@@ -31,6 +31,7 @@
 #include <librnd/core/conf.h>
 #include "conf_core.h"
 #include <librnd/core/paths.h>
+#include <librnd/core/hid_dad_tree.h>
 
 typedef struct pref_libhelp_ctx_s {
 	RND_DAD_DECL_NOINIT(dlg)
@@ -160,7 +161,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	rnd_hid_row_t *r;
 
 
-	m = pref_dlg2conf_pre(ctx);
+	m = Rnd_pref_dlg2conf_pre(ctx);
 	if (m == NULL)
 		return;
 
@@ -186,7 +187,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	rnd_conf_update("rc/library_search_paths", -1);
 	rnd_conf_makedirty(ctx->role); /* low level lht_dom_node_alloc() wouldn't make user config to be saved! */
 
-	pref_dlg2conf_post(ctx);
+	Rnd_pref_dlg2conf_post(ctx);
 
 	tabdata->lock--;
 }

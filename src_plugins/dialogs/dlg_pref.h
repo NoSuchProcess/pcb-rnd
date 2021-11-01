@@ -5,6 +5,7 @@ typedef struct pref_ctx_s pref_ctx_t;
 
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
+#include <librnd/core/hid_dad.h>
 #include "dlg_pref_win.h"
 #include "dlg_pref_key.h"
 #include "dlg_pref_menu.h"
@@ -85,15 +86,31 @@ void pcb_pref_conflist_remove(pref_ctx_t *ctx, pref_confitem_t *list);
 extern rnd_conf_hid_id_t pref_hid;
 
 /*** pulbic API for the caller ***/
-void pcb_dlg_pref_init(void);
+void pcb_dlg_pref_init(int pref_tab, void (*first_init)(pref_ctx_t *ctx, int tab));
 void pcb_dlg_pref_uninit(void);
 
 extern const char pcb_acts_Preferences[];
 extern const char pcb_acth_Preferences[];
 fgw_error_t pcb_act_Preferences(fgw_arg_t *res, int argc, fgw_arg_t *argv);
 
+lht_node_t *Rnd_pref_dlg2conf_pre(pref_ctx_t *ctx);
+void Rnd_pref_dlg2conf_post(pref_ctx_t *ctx);
+
+void Rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab);
+
+
 /* In event callbacks no context is available; return context baed on hidlib */
 pref_ctx_t *Rnd_pref_get_ctx(rnd_hidlib_t *hidlib);
+
+#define PREF_INIT_FUNC Rnd_pref_init_func_dummy
+
+#define PREF_INIT(ctx, hooks_) \
+	do { \
+		ctx->tab[PREF_TAB].hooks = hooks_; \
+		PREF_INIT_FUNC(ctx, PREF_TAB-1); \
+	} while(0)
+
+#define PREF_TABDATA(ctx)   (ctx->tab[PREF_TAB].tabdata)
 
 
 #endif

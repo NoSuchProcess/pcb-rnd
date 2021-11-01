@@ -31,6 +31,7 @@
 #include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/hid_cfg_input.h>
+#include <liblihata/tree.h>
 
 static void pref_key_brd2dlg(pref_ctx_t *ctx)
 {
@@ -85,7 +86,7 @@ static lht_node_t *pref_key_mod_pre(pref_ctx_t *ctx)
 
 	save = ctx->role;
 	ctx->role = RND_CFR_USER;
-	m = pref_dlg2conf_pre(ctx);
+	m = Rnd_pref_dlg2conf_pre(ctx);
 	if (m == NULL) {
 		ctx->role = save;
 		return NULL;
@@ -116,7 +117,7 @@ static void pref_key_mod_post(pref_ctx_t *ctx)
 	rnd_conf_update("editor/translate_key", -1);
 	rnd_conf_makedirty(ctx->role); /* low level lht_dom_node_alloc() wouldn't make user config to be saved! */
 
-	pref_dlg2conf_post(ctx);
+	Rnd_pref_dlg2conf_post(ctx);
 
 	ctx->role = save;
 	ctx->key.lock--;

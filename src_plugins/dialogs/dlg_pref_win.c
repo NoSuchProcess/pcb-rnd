@@ -70,12 +70,12 @@ static void pref_win_project_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 {
 	pref_ctx_t *ctx = caller_data;
 
-	if (pref_dlg2conf_pre(ctx) == NULL)
+	if (Rnd_pref_dlg2conf_pre(ctx) == NULL)
 		return;
 
 	rnd_conf_setf(ctx->role, "plugins/dialogs/auto_save_window_geometry/to_project", -1, "%d", attr->val.lng);
 
-	pref_dlg2conf_post(ctx);
+	Rnd_pref_dlg2conf_post(ctx);
 
 	pref_win_brd2dlg(ctx);
 }
