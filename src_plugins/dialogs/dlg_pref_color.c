@@ -171,7 +171,8 @@ void pcb_dlg_pref_color_create(pref_ctx_t *ctx)
 static const Rnd_pref_tab_hook_t pref_color = {
 	"Colors",
 	pcb_dlg_pref_color_open, pcb_dlg_pref_color_close,
-	pcb_dlg_pref_color_create
+	pcb_dlg_pref_color_create,
+	pref_color_brd2dlg, pref_color_brd2dlg  /* board change, meta change */
 };
 
 static void pcb_dlg_pref_color_init(pref_ctx_t *ctx, int tab)

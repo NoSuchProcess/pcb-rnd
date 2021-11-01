@@ -442,9 +442,7 @@ static void pref_ev_board_changed(rnd_hidlib_t *hidlib, void *user_data, int arg
 	if (!pref_ctx.active)
 		return;
 
-	pref_sizes_brd2dlg(ctx);
-	pref_board_brd2dlg(ctx);
-	pref_color_brd2dlg(ctx);
+	call_hook(ctx, board_changed_cb);
 	pref_win_brd2dlg(ctx);
 }
 
@@ -454,9 +452,7 @@ static void pref_ev_board_meta_changed(rnd_hidlib_t *hidlib, void *user_data, in
 	if (!pref_ctx.active)
 		return;
 
-	pref_sizes_brd2dlg(ctx);
-	pref_board_brd2dlg(ctx);
-	pref_color_brd2dlg(ctx);
+	call_hook(ctx, meta_changed_cb);
 	pref_win_brd2dlg(ctx);
 }
 

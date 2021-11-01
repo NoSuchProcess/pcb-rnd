@@ -470,7 +470,8 @@ void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
 static const Rnd_pref_tab_hook_t pref_lib = {
 	"Library",
 	pcb_dlg_pref_lib_open, pcb_dlg_pref_lib_close,
-	pcb_dlg_pref_lib_create
+	pcb_dlg_pref_lib_create,
+	NULL, NULL
 };
 
 void pcb_dlg_pref_lib_init(pref_ctx_t *ctx, int tab)

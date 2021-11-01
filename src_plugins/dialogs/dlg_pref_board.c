@@ -102,7 +102,8 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 static const Rnd_pref_tab_hook_t pref_board = {
 	"Board meta",
 	NULL, NULL,
-	pcb_dlg_pref_board_create
+	pcb_dlg_pref_board_create,
+	pref_board_brd2dlg, pref_board_brd2dlg  /* board change, meta change */
 };
 
 static void pcb_dlg_pref_board_init(pref_ctx_t *ctx, int tab)
