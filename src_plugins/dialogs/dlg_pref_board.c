@@ -28,6 +28,7 @@
 
 #include "dlg_pref.h"
 #include <librnd/core/conf.h>
+#include "board.h"
 #include "conf_core.h"
 
 #define RND_EMPTY(a)           ((a) ? (a) : "")
