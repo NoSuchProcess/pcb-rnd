@@ -42,8 +42,10 @@ void *pcb_pstkop_change_thermal(pcb_opctx_t *ctx, pcb_pstk_t *ps);
 
 void *pcb_pstkop_change_flag(pcb_opctx_t *ctx, pcb_pstk_t *ps);
 
-void *pcb_pstkop_rotate90(pcb_opctx_t *ctx, pcb_pstk_t *ps);
-void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps);
+void *pcb_pstkop_rotate90(pcb_opctx_t *ctx, pcb_pstk_t *ps); /* side effect: may also make an undoable move */
+void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps); /* side effect: may also make an undoable move */
+void *pcb_pstkop_rotate_(pcb_opctx_t *ctx, pcb_pstk_t *ps, rnd_bool undoable);
+
 
 void *pcb_pstkop_change_size(pcb_opctx_t *ctx, pcb_pstk_t *ps);
 void *pcb_pstkop_change_clear_size(pcb_opctx_t *ctx, pcb_pstk_t *ps); /* changes the global clearance */

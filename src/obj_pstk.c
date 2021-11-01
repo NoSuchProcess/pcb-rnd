@@ -1563,7 +1563,7 @@ void pcb_pstk_rotate(pcb_pstk_t *pstk, rnd_coord_t cx, rnd_coord_t cy, double co
 	ctx.rotate.angle = angle;
 	ctx.rotate.cosa = cosa;
 	ctx.rotate.sina = sina;
-	pcb_pstkop_rotate(&ctx, pstk);
+	pcb_pstkop_rotate_(&ctx, pstk, 0);
 }
 
 rnd_coord_t obj_pstk_get_clearance(pcb_board_t *pcb, pcb_pstk_t *ps, pcb_layer_t *layer)

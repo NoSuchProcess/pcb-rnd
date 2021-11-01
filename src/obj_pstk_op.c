@@ -175,7 +175,7 @@ void *pcb_pstkop_change_flag(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 }
 
 
-void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
+void *pcb_pstkop_rotate_(pcb_opctx_t *ctx, pcb_pstk_t *ps, rnd_bool undoable)
 {
 	double rot = ps->rot;
 
@@ -193,6 +193,9 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 	if ((rot == 360.0) || (rot == -360.0))
 		rot = 0;
 
+	if (undoable)
+		pcb_undo_freeze_serial(); /* so that the potential move is bundled with the change instance slot */
+
 	if (pcb_pstk_change_instance(ps, NULL, NULL, &rot, NULL, NULL) == 0) {
 		rnd_coord_t nx = ps->x, ny = ps->y;
 
@@ -202,9 +205,15 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		if (ps->parent.data->padstack_tree != NULL)
 			rnd_r_delete_entry(ps->parent.data->padstack_tree, (rnd_box_t *)ps);
 
+
 		rnd_rotate(&nx, &ny, ctx->rotate.center_x, ctx->rotate.center_y, ctx->rotate.cosa, ctx->rotate.sina);
-		if ((nx != ps->x) || (ny != ps->y))
+
+		if ((nx != ps->x) || (ny != ps->y)) {
+			if (undoable) {
+				pcb_undo_add_obj_to_move(PCB_OBJ_PSTK, ps->parent.data, ps, ps, nx - ps->x, ny - ps->y);
+			}
 			pcb_pstk_move_(ps, nx - ps->x, ny - ps->y);
+		}
 
 		pcb_pstk_bbox(ps);
 		if (ps->parent.data->padstack_tree != NULL)
@@ -212,11 +221,24 @@ void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 		pcb_poly_clear_from_poly(ps->parent.data, PCB_OBJ_PSTK, NULL, ps);
 		pcb_pstk_invalidate_draw(ps);
 
+		if (undoable)
+			pcb_undo_unfreeze_serial();
+
 		pcb_subc_part_changed(ps);
 		return ps;
 	}
+
+	if (undoable)
+		pcb_undo_unfreeze_serial();
+
 	return NULL;
 }
+
+void *pcb_pstkop_rotate(pcb_opctx_t *ctx, pcb_pstk_t *ps)
+{
+	return pcb_pstkop_rotate_(ctx, ps, 1);
+}
+
 
 void *pcb_pstkop_rotate90(pcb_opctx_t *ctx, pcb_pstk_t *ps)
 {
