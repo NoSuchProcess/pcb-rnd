@@ -33,7 +33,7 @@
 #include <librnd/core/actions.h>
 #include <librnd/core/rnd_printf.h>
 #include <librnd/core/error.h>
-#include "event.h"
+#include <librnd/core/event.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/hid_dad.h>
