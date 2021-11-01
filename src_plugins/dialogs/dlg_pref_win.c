@@ -28,7 +28,6 @@
 
 #include "dlg_pref.h"
 #include <librnd/core/conf.h>
-#include "conf_core.h"
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/plugins/lib_hid_common/dialogs_conf.h>
 #include <librnd/plugins/lib_hid_common/place.h>

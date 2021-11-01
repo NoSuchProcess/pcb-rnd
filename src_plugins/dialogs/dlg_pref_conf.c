@@ -28,7 +28,6 @@
 
 #include "dlg_pref.h"
 #include <librnd/core/conf.h>
-#include "conf_core.h"
 #include <librnd/core/misc_util.h>
 
 static const char *pref_conf_get_val(const lht_node_t *nd, const rnd_conf_native_t *nat, int idx);
