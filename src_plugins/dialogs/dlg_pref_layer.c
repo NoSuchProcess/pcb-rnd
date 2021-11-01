@@ -61,7 +61,7 @@ void pcb_dlg_pref_layer_create(pref_ctx_t *ctx)
 }
 
 static const Rnd_pref_tab_hook_t pref_layer = {
-	"Layers", 0,
+	"Layers", Rnd_PREFTAB_AUTO_FREE_DATA,
 	NULL, NULL,
 	pcb_dlg_pref_layer_create,
 	NULL, NULL

@@ -505,8 +505,17 @@ void pcb_dlg_pref_init(void)
 
 void pcb_dlg_pref_uninit(void)
 {
+	int t;
+
 	rnd_event_unbind_allcookie(pref_cookie);
 	rnd_conf_hid_unreg(pref_cookie);
+
+	for(t = 0; t < pref_ctx.tabs; t++) {
+		if (pref_ctx.tab[t].hooks->flags & Rnd_PREFTAB_AUTO_FREE_DATA) {
+			free(pref_ctx.tab[t].tabdata);
+			pref_ctx.tab[t].tabdata = NULL;
+		}
+	}
 }
 
 const char pcb_acts_Preferences[] = "Preferences([tabname])\n";

@@ -468,7 +468,7 @@ void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
 }
 
 static const Rnd_pref_tab_hook_t pref_lib = {
-	"Library", Rnd_PREFTAB_NEEDS_ROLE,
+	"Library", Rnd_PREFTAB_AUTO_FREE_DATA | Rnd_PREFTAB_NEEDS_ROLE,
 	pcb_dlg_pref_lib_open, pcb_dlg_pref_lib_close,
 	pcb_dlg_pref_lib_create,
 	NULL, NULL

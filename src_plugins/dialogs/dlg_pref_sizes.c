@@ -158,7 +158,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 }
 
 static const Rnd_pref_tab_hook_t pref_sizes = {
-	"Sizes & DRC", Rnd_PREFTAB_NEEDS_ROLE,
+	"Sizes & DRC", Rnd_PREFTAB_AUTO_FREE_DATA | Rnd_PREFTAB_NEEDS_ROLE,
 	NULL, pcb_dlg_pref_sizes_close,
 	pcb_dlg_pref_sizes_create,
 	pref_sizes_brd2dlg, pref_sizes_brd2dlg  /* board change, meta change */

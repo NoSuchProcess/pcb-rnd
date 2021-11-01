@@ -24,7 +24,8 @@ struct pref_conflist_s {
 };
 
 typedef enum Rnd_pref_tab_flag_e { /* bitfield */
-	Rnd_PREFTAB_NEEDS_ROLE = 1
+	Rnd_PREFTAB_NEEDS_ROLE = 1,
+	Rnd_PREFTAB_AUTO_FREE_DATA = 2       /* free tab data when plugin is unloaded */
 } Rnd_pref_tab_flag_t;
 
 typedef struct Rnd_pref_tab_hook_s Rnd_pref_tab_hook_t;
