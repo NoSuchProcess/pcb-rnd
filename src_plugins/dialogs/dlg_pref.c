@@ -54,8 +54,11 @@ void Rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab) { }
 
 #define PREF_INIT_FUNC Rnd_pref_init_func_dummy
 
-#define PREF_INIT(ctx) \
-	PREF_INIT_FUNC(ctx, PREF_TAB-1);
+#define PREF_INIT(ctx, hooks_) \
+	do { \
+		ctx->tab[PREF_TAB].hooks = hooks_; \
+		PREF_INIT_FUNC(ctx, PREF_TAB-1); \
+	} while(0)
 
 /* application tabs */
 #undef  PREF_TAB
@@ -305,7 +308,6 @@ static void pref_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 	pref_ctx_t *ctx = caller_data;
 
 	pcb_dlg_pref_sizes_close(ctx);
-	pcb_dlg_pref_board_close(ctx);
 	pcb_dlg_pref_general_close(ctx);
 	pcb_dlg_pref_lib_close(ctx);
 	pcb_dlg_pref_color_close(ctx);
@@ -493,8 +495,8 @@ void pcb_dlg_pref_init(void)
 	rnd_event_bind(RND_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
 	rnd_event_bind(RND_EVENT_MENU_CHANGED, pref_ev_menu_changed, &pref_ctx, pref_cookie);
 	pref_hid = rnd_conf_hid_reg(pref_cookie, &pref_conf_cb);
-
 	PREF_INIT_FUNC(&pref_ctx, PREF_TAB);
+	pref_ctx.tabs = PREF_TAB+1;
 }
 
 void pcb_dlg_pref_uninit(void)

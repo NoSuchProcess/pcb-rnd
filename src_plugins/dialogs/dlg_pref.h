@@ -23,10 +23,31 @@ struct pref_conflist_s {
 	pref_confitem_t *cnext; /* linked list for conf callback - should be NULL initially */
 };
 
+typedef struct Rnd_pref_tab_hook_s Rnd_pref_tab_hook_t;
+struct Rnd_pref_tab_hook_s {
+	const char *tab_label;
+
+	void (*open_cb)(pref_ctx_t *ctx);   /* called right after the dialog box is created */
+	void (*close_cb)(pref_ctx_t *ctx);  /* called from the dialog box is close_cb event */
+	void (*create_cb)(pref_ctx_t *ctx); /* called while the dialog box is being created: create widgets in current tab */
+
+	void (*spare_f1)(); void (*spare_f2)(); void (*spare_f3)(); void (*spare_f4)();
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+};
+
+#define Rnd_PREF_MAX_TAB 32
+
 struct pref_ctx_s {
 	RND_DAD_DECL_NOINIT(dlg)
 	int wtab, wrole, wrolebox;
 	int active; /* already open - allow only one instance */
+
+	struct {
+		const Rnd_pref_tab_hook_t *hooks;
+		void *tabdata;
+	} tab[Rnd_PREF_MAX_TAB];
+	int tabs; /* number of tabs used */
 
 	pref_sizes_t sizes;
 	pref_board_t board;

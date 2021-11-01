@@ -92,9 +92,15 @@ void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
 	RND_DAD_END(ctx->dlg);
 }
 
+static const Rnd_pref_tab_hook_t pref_general = {
+	"General",
+	NULL, pcb_dlg_pref_general_close,
+	pcb_dlg_pref_general_create
+};
+
 static void pcb_dlg_pref_general_init(pref_ctx_t *ctx, int tab)
 {
-	PREF_INIT(ctx);
+	PREF_INIT(ctx, &pref_general);
 	rnd_trace("INIT pref general tab %d\n", tab);
 }
 #undef PREF_INIT_FUNC

@@ -74,11 +74,6 @@ static void pref_board_edit_attr(void *hid_ctx, void *caller_data, rnd_hid_attri
 	rnd_actionva(&PCB->hidlib, "Propedit", "board", NULL);
 }
 
-
-void pcb_dlg_pref_board_close(pref_ctx_t *ctx)
-{
-}
-
 void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 {
 	RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
@@ -104,9 +99,15 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		RND_DAD_END(ctx->dlg);
 }
 
+static const Rnd_pref_tab_hook_t pref_board = {
+	"Board meta",
+	NULL, NULL,
+	pcb_dlg_pref_board_create
+};
+
 static void pcb_dlg_pref_board_init(pref_ctx_t *ctx, int tab)
 {
-	PREF_INIT(ctx);
+	PREF_INIT(ctx, &pref_board);
 	rnd_trace("INIT pref board tab %d\n", tab);
 }
 #undef PREF_INIT_FUNC

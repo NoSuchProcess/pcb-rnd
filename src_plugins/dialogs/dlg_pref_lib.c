@@ -467,12 +467,18 @@ void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
 	pref_lib_conf2dlg_post(cn, -1);
 }
 
+static const Rnd_pref_tab_hook_t pref_lib = {
+	"Library",
+	pcb_dlg_pref_lib_open, pcb_dlg_pref_lib_close,
+	pcb_dlg_pref_lib_create
+};
+
 void pcb_dlg_pref_lib_init(pref_ctx_t *ctx, int tab)
 {
 	static rnd_conf_hid_callbacks_t cbs_spth;
 	rnd_conf_native_t *cn = rnd_conf_get_field("rc/library_search_paths");
 
-	PREF_INIT(ctx);
+	PREF_INIT(ctx, &pref_lib);
 	rnd_trace("INIT pref lib tab %d\n", tab);
 
 	if (cn != NULL) {

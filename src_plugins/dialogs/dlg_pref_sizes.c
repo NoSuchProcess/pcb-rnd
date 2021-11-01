@@ -157,12 +157,18 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 	RND_DAD_END(ctx->dlg);
 }
 
+static const Rnd_pref_tab_hook_t pref_sizes = {
+	"Sizes & DRC",
+	NULL, pcb_dlg_pref_sizes_close,
+	pcb_dlg_pref_sizes_create
+};
+
 static void pcb_dlg_pref_sizes_init(pref_ctx_t *ctx, int tab)
 {
 	static rnd_conf_hid_callbacks_t cbs_isle;
 	rnd_conf_native_t *cn = rnd_conf_get_field("design/poly_isle_area");
 
-	PREF_INIT(ctx);
+	PREF_INIT(ctx, &pref_sizes);
 	rnd_trace("INIT pref sizes tab %d\n", tab);
 
 	if (cn != NULL) {
