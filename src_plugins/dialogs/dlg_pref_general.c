@@ -93,7 +93,7 @@ void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
 }
 
 static const Rnd_pref_tab_hook_t pref_general = {
-	"General",
+	"General", Rnd_PREFTAB_NEEDS_ROLE,
 	NULL, pcb_dlg_pref_general_close,
 	pcb_dlg_pref_general_create,
 	NULL, NULL

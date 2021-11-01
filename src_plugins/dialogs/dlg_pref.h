@@ -23,9 +23,14 @@ struct pref_conflist_s {
 	pref_confitem_t *cnext; /* linked list for conf callback - should be NULL initially */
 };
 
+typedef enum Rnd_pref_tab_flag_e {
+	Rnd_PREFTAB_NEEDS_ROLE
+} Rnd_pref_tab_flag_t;
+
 typedef struct Rnd_pref_tab_hook_s Rnd_pref_tab_hook_t;
 struct Rnd_pref_tab_hook_s {
 	const char *tab_label;
+	unsigned long flags;                /* bitfield of Rnd_pref_tab_flag_t */
 
 	void (*open_cb)(pref_ctx_t *ctx);   /* called right after the dialog box is created */
 	void (*close_cb)(pref_ctx_t *ctx);  /* called from the dialog box is close_cb event */
