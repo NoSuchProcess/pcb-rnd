@@ -9,7 +9,6 @@ typedef struct {
 
 void pcb_dlg_pref_sizes_close(pref_ctx_t *ctx);
 void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx);
-void pcb_dlg_pref_sizes_init(pref_ctx_t *ctx);
 
 
 #endif

@@ -2,7 +2,7 @@
  *                            COPYRIGHT
  *
  *  pcb-rnd, interactive printed circuit board design
- *  Copyright (C) 2018 Tibor 'Igor2' Palinkas
+ *  Copyright (C) 2018,2021 Tibor 'Igor2' Palinkas
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -467,10 +467,13 @@ void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
 	pref_lib_conf2dlg_post(cn, -1);
 }
 
-void pcb_dlg_pref_lib_init(pref_ctx_t *ctx)
+void pcb_dlg_pref_lib_init(pref_ctx_t *ctx, int tab)
 {
 	static rnd_conf_hid_callbacks_t cbs_spth;
 	rnd_conf_native_t *cn = rnd_conf_get_field("rc/library_search_paths");
+
+	PREF_INIT(ctx);
+	rnd_trace("INIT pref lib tab %d\n", tab);
 
 	if (cn != NULL) {
 		memset(&cbs_spth, 0, sizeof(rnd_conf_hid_callbacks_t));
@@ -479,3 +482,6 @@ void pcb_dlg_pref_lib_init(pref_ctx_t *ctx)
 		rnd_conf_hid_set_cb(cn, pref_hid, &cbs_spth);
 	}
 }
+
+#undef PREF_INIT_FUNC
+#define PREF_INIT_FUNC pcb_dlg_pref_lib_init

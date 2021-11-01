@@ -49,13 +49,40 @@ static const int pref_tab_cfgs[PREF_TABS] = {    1,        0,           1,      
 static lht_node_t *pref_dlg2conf_pre(pref_ctx_t *ctx);
 static void pref_dlg2conf_post(pref_ctx_t *ctx);
 
+
+void Rnd_pref_init_func_dummy(pref_ctx_t *ctx, int tab) { }
+
+#define PREF_INIT_FUNC Rnd_pref_init_func_dummy
+
+#define PREF_INIT(ctx) \
+	PREF_INIT_FUNC(ctx, PREF_TAB-1);
+
+/* application tabs */
+#undef  PREF_TAB
+#define PREF_TAB 0
 #include "dlg_pref_general.c"
+
+#undef  PREF_TAB
+#define PREF_TAB 1
 #include "dlg_pref_board.c"
+
+#undef  PREF_TAB
+#define PREF_TAB 2
 #include "dlg_pref_sizes.c"
+
+#undef  PREF_TAB
+#define PREF_TAB 3
 #include "dlg_pref_lib.c"
+
+#undef  PREF_TAB
+#define PREF_TAB 4
 #include "dlg_pref_layer.c"
+
+#undef  PREF_TAB
+#define PREF_TAB 5
 #include "dlg_pref_color.c"
 
+/* built-in tabs */
 #include "dlg_pref_win.c"
 #include "dlg_pref_key.c"
 #include "dlg_pref_menu.c"
@@ -466,8 +493,8 @@ void pcb_dlg_pref_init(void)
 	rnd_event_bind(RND_EVENT_BOARD_META_CHANGED, pref_ev_board_meta_changed, &pref_ctx, pref_cookie);
 	rnd_event_bind(RND_EVENT_MENU_CHANGED, pref_ev_menu_changed, &pref_ctx, pref_cookie);
 	pref_hid = rnd_conf_hid_reg(pref_cookie, &pref_conf_cb);
-	pcb_dlg_pref_sizes_init(&pref_ctx);
-	pcb_dlg_pref_lib_init(&pref_ctx);
+
+	PREF_INIT_FUNC(&pref_ctx, PREF_TAB);
 }
 
 void pcb_dlg_pref_uninit(void)
