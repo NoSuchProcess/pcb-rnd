@@ -658,17 +658,20 @@ static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 	}
 }
 
-static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty, int arot)
+static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty, int atrans)
 {
 	rnd_coord_t x = *dstx, y = *dsty, tx = 0, ty = 0;
+
+	if (atrans) { /* apply attribute translation */
+		tx = ctx->tx;
+		ty = ctx->ty;
+	}
 
 	/* apply attribute translation (affected by the final rotation of the part
 	   because the p&p machine will rotate around this pont while the subc was
 	   rotated around it's pcb-rnd-origin) */
-	if (arot && ((ctx->tx != 0) || (ctx->ty != 0)) && (ctx->theta != 0)) {
+	if (atrans && ((ctx->tx != 0) || (ctx->ty != 0)) && (ctx->theta != 0)) {
 		double trad = (90.0-ctx->theta) / RND_RAD_TO_DEG;
-		tx = ctx->tx;
-		ty = ctx->ty;
 		rnd_rotate(&tx, &ty, 0, 0, cos(trad), sin(trad));
 	}
 	x += tx;
