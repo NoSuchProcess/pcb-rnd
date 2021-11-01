@@ -6,6 +6,7 @@ typedef struct pref_ctx_s pref_ctx_t;
 #include <librnd/core/conf.h>
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/hid_dad.h>
+#include <librnd/core/actions.h>
 #include "dlg_pref_win.h"
 #include "dlg_pref_key.h"
 #include "dlg_pref_menu.h"
