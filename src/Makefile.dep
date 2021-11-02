@@ -227,8 +227,6 @@
  plug_footprint.h plug_io.h plug_footprint.h funchash_core.h \
  funchash_core_list.h conf_core.h find.h \
  ../src_plugins/diag/diag_conf_fields.h
-../src_plugins/diag/diag_conf.o: ../src_plugins/diag/diag_conf.c \
- ../config.h
 ../src_plugins/diag/integrity.o: ../src_plugins/diag/integrity.c \
  ../config.h board.h vtroutestyle.h attrib.h global_typedefs.h layer.h \
  globalconst.h obj_common.h flag.h data_parent.h obj_arc_list.h obj_arc.h \
@@ -238,6 +236,8 @@
  idpath.h obj_subc_list.h obj_subc.h ../src_3rd/libminuid/libminuid.h \
  ht_subc.h obj_pstk_list.h obj_pstk.h vtpadstack.h obj_pstk_shape.h \
  polygon.h vtpadstack_t.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h
+../src_plugins/diag/rnd_diag.o: ../src_plugins/diag/rnd_diag.c \
+ ../config.h
 ../src_plugins/dialogs/dialogs.o: ../src_plugins/dialogs/dialogs.c \
  ../config.h funchash_core.h funchash_core_list.h \
  ../src_plugins/dialogs/dlg_test.c board.h vtroutestyle.h attrib.h \
