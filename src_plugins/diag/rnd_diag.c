@@ -33,10 +33,7 @@
 #include <librnd/core/plugins.h>
 #include <librnd/core/conf.h>
 #include <librnd/core/error.h>
-#include <librnd/core/event.h>
-#include <librnd/core/hid.h>
-#include <librnd/core/hid_attrib.h>
-#include <librnd/core/hid_dad.h>
+#include <librnd/core/compat_misc.h>
 
 static void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefix)
 {
