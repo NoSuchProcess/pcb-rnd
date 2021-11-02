@@ -1,7 +1,7 @@
 put /local/pcb/mod {diag}
 put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/diag/diag.o
- $(PLUGDIR)/diag/diag_conf.o
+ $(PLUGDIR)/diag/rnd_diag.o
  $(PLUGDIR)/diag/integrity.o
 @]
 put /local/pcb/mod/CONF {$(PLUGDIR)/diag/diag_conf.h}
