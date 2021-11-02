@@ -104,7 +104,10 @@ When xy::translate is present, it is specified as a pair of coordinates with
 units, for x and y offset. The pair is separated with whitespace or comma
 or semicolon. There must not be whitespace between the number and unit
 suffix in the coordinates. The x and y values are added to the origin of
-the subcircuit.
+the subcircuit, in unrotated subc coordinate system. In other words it
+describes anoffset from the "pcb-rnd origin" of the subc to the pick-and-place
+origin of the subc when the subc is in neutral (non-rotated, non-mirrored)
+state.
 <p>
 Different vendors may require different translations. To overcome this
 problem xy_export offers an optional --vendor argument. When specified,
