@@ -62,7 +62,7 @@ void cmd_dump(char *arg)
 	if (strncmp(arg, "native", 6) == 0) {
 		arg+=7;
 		while(isspace(*arg)) arg++;
-		conf_dump(stdout, "", 1, arg);
+		rnd_diag_conf_dump(stdout, "", 1, arg);
 	}
 	else if (strncmp(arg, "lihata", 6) == 0) {
 		rnd_conf_role_t role;

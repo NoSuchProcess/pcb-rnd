@@ -35,7 +35,7 @@
 #include <librnd/core/error.h>
 #include <librnd/core/compat_misc.h>
 
-static void conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefix)
+void rnd_diag_conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefix)
 {
 	htsp_entry_t *e;
 	int pl;
@@ -73,7 +73,7 @@ static fgw_error_t pcb_act_DumpConf(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 			const char *prefix = "";
 			RND_ACT_MAY_CONVARG(2, FGW_INT, DumpConf, verbose = argv[2].val.nat_int);
 			RND_ACT_MAY_CONVARG(3, FGW_STR, DumpConf, prefix = argv[3].val.str);
-			conf_dump(stdout, prefix, verbose, NULL);
+			rnd_diag_conf_dump(stdout, prefix, verbose, NULL);
 	}
 	else if (rnd_strcasecmp(op, "lihata") == 0) {
 		rnd_conf_role_t role;
