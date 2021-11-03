@@ -241,7 +241,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	pcb_layergrp_inhibit_dec();
 
 
-	if ((res == 0) && (load_settings)) {
+	if ((res == 0) && (load_settings != RND_CFR_invalid)) {
 		if (design_root_cnt == rnd_conf_main_root_replace_cnt[RND_CFR_DESIGN]) /* the newly loaded board did not bring a design root */
 			rnd_conf_reset(RND_CFR_DESIGN, "<pcb_parse_pcb>");
 		rnd_conf_load_project(NULL, Filename);
@@ -250,7 +250,7 @@ int pcb_parse_pcb(pcb_board_t *Ptr, const char *Filename, const char *fmt, int l
 	if (res == 0)
 		pcb_set_design_dir(Filename);
 
-	if (load_settings)
+	if (load_settings != RND_CFR_invalid)
 		rnd_event(&PCB->hidlib, RND_EVENT_LOAD_POST, "si", Filename, res);
 	rnd_event(&PCB->hidlib, PCB_EVENT_ROUTE_STYLES_CHANGED, NULL);
 	rnd_conf_set(RND_CFR_DESIGN, "design/text_font_id", 0, "0", RND_POL_OVERWRITE); /* we have only one font now, make sure it is selected */
