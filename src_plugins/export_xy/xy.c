@@ -187,18 +187,15 @@ typedef struct {
 } subst_ctx_t;
 
 /* Find the pick and place 0;0 mark, if there is any */
-static void find_origin_(const char *format_name, const char *prefix, int *origin_score, rnd_coord_t *ox, rnd_coord_t *oy)
+static void find_origin_(const char *format_name, const char *prefix, rnd_coord_t *ox, rnd_coord_t *oy)
 {
 	char tmp[128];
 	pcb_data_it_t it;
 	pcb_any_obj_t *obj;
-	char *origin_tmp;
+	char *origin_tmp = tmp;
+	int origin_score = 0;
 
 	rnd_snprintf(tmp, sizeof(tmp), "%spnp-origin-%s", prefix, format_name);
-
-	*origin_score = 0;
-	*ox = *oy = 0;
-	origin_tmp = tmp;
 
 	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it)) {
 		int score;
@@ -210,8 +207,8 @@ static void find_origin_(const char *format_name, const char *prefix, int *origi
 		else
 			continue;
 
-		if (score > *origin_score) {
-			*origin_score = score;
+		if (score > origin_score) {
+			origin_score = score;
 			pcb_obj_center(obj, ox, oy);
 		}
 	}
@@ -220,7 +217,13 @@ static void find_origin_(const char *format_name, const char *prefix, int *origi
 /* Find the pick and place 0;0 mark, if there is any */
 static void find_origin(subst_ctx_t *ctx, const char *format_name)
 {
-	find_origin_(format_name, "", &ctx->origin_score, &ctx->ox, &ctx->oy);
+	/* default: bottom left of the drawing area */
+	ctx->ox = 0;
+	ctx->oy = PCB->hidlib.size_y;
+
+	find_origin_(format_name, "", &ctx->ox, &ctx->oy);
+
+rnd_trace("d2 score=%d %ml %ml\n", ctx->origin_score, ctx->ox, ctx->oy);
 }
 
 
@@ -684,16 +687,9 @@ static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty,
 	x += tx;
 	y += ty;
 
-	/* translate the xy coords using explicit or implicit origin; implicit origin
-	   is lower left corner (looking from top) of board extents */
-	if (ctx->origin_score > 0) {
-		*dstx = x - ctx->ox;
-		*dsty = ctx->oy - y;
-	}
-	else {
-		*dstx = x;
-		*dsty = PCB->hidlib.size_y - y;
-	}
+	/* translate the xy coords using origin */
+	*dstx = x - ctx->ox;
+	*dsty = ctx->oy - y;
 }
 
 static const char *xy_xform_get_attr(subst_ctx_t *ctx, pcb_subc_t *subc, const char *key)
