@@ -576,6 +576,11 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			rnd_append_printf(s, "%g", ctx->front ? -ctx->theta : ctx->theta);
 			return 0;
 		}
+		if (strncmp(*input, "side-negrot180%", 15) == 0) {
+			*input += 15;
+			rnd_append_printf(s, "%g", (ctx->front ? -ctx->theta : ctx->theta) + 180);
+			return 0;
+		}
 		if (strncmp(*input, "270-rot%", 8) == 0) {
 			*input += 8;
 			rnd_append_printf(s, "%g", (270-ctx->theta));
