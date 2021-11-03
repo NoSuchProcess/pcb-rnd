@@ -171,16 +171,16 @@ typedef struct {
 	char utcTime[64];
 	char *name, *descr, *value;
 	const char *pad_netname;
-	rnd_coord_t x, y;
+	rnd_coord_t x, y, bottom_x, bottom_y;
 	rnd_coord_t tx, ty;   /* translate x and y (xy::translate attr) */
 	double theta, xray_theta;
 	pcb_subc_t *subc;
-	rnd_coord_t pad_cx, pad_cy;
+	rnd_coord_t pad_cx, pad_cy, bottom_pad_cx, bottom_pad_cy;
 	rnd_coord_t pad_w, pad_h;
 	rnd_coord_t prpad_cx, prpad_cy;
 	rnd_coord_t prpad_w, prpad_h;
 	rnd_cardinal_t count;
-	rnd_coord_t ox, oy;
+	rnd_coord_t ox, oy, bottom_ox, bottom_oy;
 	int origin_score;
 	rnd_bool front;
 	gds_t tmp;
@@ -220,10 +220,11 @@ static void find_origin(subst_ctx_t *ctx, const char *format_name)
 	/* default: bottom left of the drawing area */
 	ctx->ox = 0;
 	ctx->oy = PCB->hidlib.size_y;
+	ctx->bottom_ox = PCB->hidlib.size_x;
+	ctx->bottom_oy = PCB->hidlib.size_y;
 
 	find_origin_(format_name, "", &ctx->ox, &ctx->oy);
-
-rnd_trace("d2 score=%d %ml %ml\n", ctx->origin_score, ctx->ox, ctx->oy);
+	find_origin_(format_name, "bottom-", &ctx->bottom_ox, &ctx->bottom_oy);
 }
 
 
@@ -505,9 +506,19 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->x);
 			return 0;
 		}
+		if (strncmp(*input, "side-x%", 7) == 0) {
+			*input += 2;
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->front ? ctx->x : ctx->bottom_x);
+			return 0;
+		}
 		if (strncmp(*input, "y%", 2) == 0) {
 			*input += 2;
 			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->y);
+			return 0;
+		}
+		if (strncmp(*input, "side-y%", 7) == 0) {
+			*input += 2;
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->front ? ctx->y : ctx->bottom_y);
 			return 0;
 		}
 		if (strncmp(*input, "padcx%", 6) == 0) {
@@ -515,9 +526,19 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_cx);
 			return 0;
 		}
+		if (strncmp(*input, "side-padcx%", 11) == 0) {
+			*input += 6;
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->front ? ctx->pad_cx : ctx->bottom_pad_cx);
+			return 0;
+		}
 		if (strncmp(*input, "padcy%", 6) == 0) {
 			*input += 6;
 			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->pad_cy);
+			return 0;
+		}
+		if (strncmp(*input, "side-padcy%", 11) == 0) {
+			*input += 6;
+			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->front ? ctx->pad_cy : ctx->bottom_pad_cy);
 			return 0;
 		}
 		if (strncmp(*input, "padcx_prerot%", 13) == 0) {
@@ -668,7 +689,7 @@ static void fprintf_templ(FILE *f, subst_ctx_t *ctx, const char *templ)
 	}
 }
 
-static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty, int atrans)
+static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty, rnd_coord_t *bottom_dstx, rnd_coord_t *bottom_dsty, int atrans)
 {
 	rnd_coord_t x = *dstx, y = *dsty, tx = 0, ty = 0;
 
@@ -690,6 +711,8 @@ static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty,
 	/* translate the xy coords using origin */
 	*dstx = x - ctx->ox;
 	*dsty = ctx->oy - y;
+	*bottom_dstx = x - ctx->bottom_ox;
+	*bottom_dsty = ctx->bottom_oy - y;
 }
 
 static const char *xy_xform_get_attr(subst_ctx_t *ctx, pcb_subc_t *subc, const char *key)
@@ -805,14 +828,14 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		if (ctx.theta == -0)
 			ctx.theta = 0;
 
-		xy_translate(&ctx, &ctx.x, &ctx.y, 1);
+		xy_translate(&ctx, &ctx.x, &ctx.y, &ctx.bottom_x, &ctx.bottom_y, 1);
 
 		ctx.subc = subc;
 		ctx.front = !bott;
 
 		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h, &ctx.pad_cx, &ctx.pad_cy);
 		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.prpad_cx, &ctx.prpad_cy);
-		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy, 0);
+		xy_translate(&ctx, &ctx.pad_cx, &ctx.pad_cy, &ctx.bottom_pad_cx, &ctx.bottom_pad_cy, 0);
 
 		fprintf_templ(fp, &ctx, templ->subc);
 
