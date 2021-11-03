@@ -507,7 +507,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			return 0;
 		}
 		if (strncmp(*input, "side-x%", 7) == 0) {
-			*input += 2;
+			*input += 7;
 			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->front ? ctx->x : ctx->bottom_x);
 			return 0;
 		}
@@ -517,7 +517,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			return 0;
 		}
 		if (strncmp(*input, "side-y%", 7) == 0) {
-			*input += 2;
+			*input += 7;
 			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->front ? ctx->y : ctx->bottom_y);
 			return 0;
 		}
@@ -527,7 +527,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			return 0;
 		}
 		if (strncmp(*input, "side-padcx%", 11) == 0) {
-			*input += 6;
+			*input += 11;
 			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->front ? ctx->pad_cx : ctx->bottom_pad_cx);
 			return 0;
 		}
@@ -537,7 +537,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			return 0;
 		}
 		if (strncmp(*input, "side-padcy%", 11) == 0) {
-			*input += 6;
+			*input += 11;
 			rnd_append_printf(s, "%m+%mN", xy_unit->allow, ctx->front ? ctx->pad_cy : ctx->bottom_pad_cy);
 			return 0;
 		}
