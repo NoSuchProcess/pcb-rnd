@@ -65,16 +65,23 @@ context.
 	<tr><td> %subc.value_%             <td> print the cleaned value of the current subcircuit
 	<tr><td> %subc.x%                  <td> print the X coordinate of the origin of the subcircuit (coord with unit suffix)
 	<tr><td> %subc.y%                  <td> print the Y coordinate of the origin of the subcircuit (coord with unit suffix)
-	<tr><td> %subc.padx%               <td> print the X coordinate calculated from padstacks of the subcircuit (coord with unit suffix)
-	<tr><td> %subc.pady%               <td> print the Y coordinate calculated from padstacks of the subcircuit (coord with unit suffix)
+	<tr><td> %subc.side-x%             <td> same as %subc.x% but on the bottom side use bottom-pnp-origin
+	<tr><td> %subc.side-y%             <td> same as %subc.y% but on the bottom side use bottom-pnp-origin
+	<tr><td> %subc.padcx%              <td> print the X coordinate calculated from padstacks of the subcircuit (coord with unit suffix)
+	<tr><td> %subc.padcy%              <td> print the Y coordinate calculated from padstacks of the subcircuit (coord with unit suffix)
+	<tr><td> %subc.side-cx%            <td> same as %subc.padcx% but on the bottom side use bottom-pnp-origin
+	<tr><td> %subc.side-cy%            <td> same as %subc.padcy% but on the bottom side use bottom-pnp-origin
 	<tr><td> %subc.pad_width%          <td> print the total width calculated from padstacks of the subcircuit (coord with unit suffix)
 	<tr><td> %subc.pad_height%         <td> print the total height calculated from padstacks of the subcircuit (coord with unit suffix)
 	<tr><td> %subc.pad_width_prerot%   <td> print the total width calculated from padstacks of the subcircuit, before applying rotation (coord with unit suffix)
 	<tr><td> %subc.pad_height_prerot%  <td> print the total height calculated from padstacks of the subcircuit, before applying rotation (coord with unit suffix)
 	<tr><td> %subc.rot%                <td> print the subc rotation value in degrees
-	<tr><td> %subc.siderot%            <td> print the subc rotation value in degrees, always looking from the top side, "x-ray mode" (relative to side)
+	<tr><td> %subc.negrot%             <td> print the subc -1 * rotation value in degrees
+	<tr><td> %subc.side-rot%           <td> TODO
+	<tr><td> %subc.side-negrot%        <td> TODO
+	<tr><td> %subc.siderot%            <td> broken, do not use
 	<tr><td> %subc.270-rot%            <td> print the subc rotation value in degrees, subtracted from 270
-	<tr><td> %subc.side270-rot%        <td> print the subc rotation value in degrees, always looking from the top side, "x-ray mode", subtracted from 270 (relative to side)
+	<tr><td> %subc.side270-rot%        <td> broken, do not use
 	<tr><td> %subc.side%               <td> "top" or "bottom" (determined by subc placement, the subc aux layer)
 	<tr><td> %subc.num-side%           <td> "1" for top or "2" for bottom (determined by subc placement, the subc aux layer)
 	<tr><td> %subc.count%              <td> integer value, incremented by one before processing each subcircuit
