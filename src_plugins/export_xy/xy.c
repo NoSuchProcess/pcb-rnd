@@ -173,7 +173,7 @@ typedef struct {
 	const char *pad_netname;
 	rnd_coord_t x, y, bottom_x, bottom_y;
 	rnd_coord_t tx, ty;   /* translate x and y (xy::translate attr) */
-	double theta, xray_theta;
+	double theta;
 	pcb_subc_t *subc;
 	rnd_coord_t pad_cx, pad_cy, bottom_pad_cx, bottom_pad_cy;
 	rnd_coord_t pad_w, pad_h;
@@ -563,7 +563,7 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 		}
 		if (strncmp(*input, "siderot%", 8) == 0) {
 			*input += 8;
-			rnd_append_printf(s, "%g", ctx->xray_theta);
+			rnd_append_printf(s, "%g", ctx->theta);
 			return 0;
 		}
 		if (strncmp(*input, "270-rot%", 8) == 0) {
@@ -808,7 +808,7 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		ctx.count++;
 
 		ctx.pad_w = ctx.pad_h = 0;
-		ctx.theta = ctx.xray_theta = 0.0;
+		ctx.theta = 0.0;
 
 		ctx.name = pcb_bom_clean_str((char *) RND_UNKNOWN(pcb_attribute_get(&subc->Attributes, "refdes")));
 		ctx.descr = pcb_bom_clean_str((char *) RND_UNKNOWN(pcb_subc_name(subc, "export_xy::footprint")));
