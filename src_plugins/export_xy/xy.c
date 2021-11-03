@@ -192,7 +192,6 @@ static void find_origin_(const char *format_name, const char *prefix, rnd_coord_
 	char tmp[128], tmp2[128];
 	pcb_data_it_t it;
 	pcb_any_obj_t *obj;
-	char *origin_tmp = tmp;
 	int origin_score = 0;
 
 	rnd_snprintf(tmp, sizeof(tmp), "%spnp-origin-%s", prefix, format_name);
@@ -201,7 +200,7 @@ static void find_origin_(const char *format_name, const char *prefix, rnd_coord_
 	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it)) {
 		int score;
 
-		if (pcb_attribute_get(&obj->Attributes, origin_tmp) != NULL)
+		if (pcb_attribute_get(&obj->Attributes, tmp) != NULL)
 			score = 2; /* first look for the format-specific attribute */
 		else if (pcb_attribute_get(&obj->Attributes, tmp2) != NULL)
 			score = 1; /* then for the generic pnp-specific attribute */
