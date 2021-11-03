@@ -1183,7 +1183,12 @@ static int parse_data_layer(lht_read_t *rctx, pcb_board_t *pcb, pcb_data_t *dt, 
 	ly->parent_type = PCB_PARENT_DATA;
 	ly->type = PCB_OBJ_LAYER;
 
-	parse_attributes(&ly->Attributes, lht_dom_hash_get(grp, "attributes"));
+	/* Layer attributes are not loaded if config is not to be loaded; this
+	   happens when the board is loaded withotu side effects (e.g. into buffer)
+	   so that layer keys do not need to be updated. In such situation losing
+	   other layer attributes is not a big deal either, for now. */
+	if (rctx->cfg_dest != RND_CFR_invalid)
+		parse_attributes(&ly->Attributes, lht_dom_hash_get(grp, "attributes"));
 
 	ncmb = lht_dom_hash_get(grp, "combining");
 	if (ncmb != NULL) {
