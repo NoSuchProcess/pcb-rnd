@@ -182,40 +182,47 @@ typedef struct {
 	rnd_cardinal_t count;
 	rnd_coord_t ox, oy;
 	int origin_score;
-	char *origin_tmp;
 	rnd_bool front;
 	gds_t tmp;
 } subst_ctx_t;
 
 /* Find the pick and place 0;0 mark, if there is any */
-static void find_origin(subst_ctx_t *ctx, const char *format_name)
+static void find_origin_(const char *format_name, const char *prefix, int *origin_score, rnd_coord_t *ox, rnd_coord_t *oy)
 {
 	char tmp[128];
 	pcb_data_it_t it;
 	pcb_any_obj_t *obj;
+	char *origin_tmp;
 
-	rnd_snprintf(tmp, sizeof(tmp), "pnp-origin-%s", format_name);
+	rnd_snprintf(tmp, sizeof(tmp), "%spnp-origin-%s", prefix, format_name);
 
-	ctx->origin_score = 0;
-	ctx->ox = ctx->oy = 0;
-	ctx->origin_tmp = tmp;
+	*origin_score = 0;
+	*ox = *oy = 0;
+	origin_tmp = tmp;
 
 	for(obj = pcb_data_first(&it, PCB->Data, PCB_OBJ_CLASS_REAL); obj != NULL; obj = pcb_data_next(&it)) {
 		int score;
 
-		if (pcb_attribute_get(&obj->Attributes, ctx->origin_tmp) != NULL)
+		if (pcb_attribute_get(&obj->Attributes, origin_tmp) != NULL)
 			score = 2; /* first look for the format-specific attribute */
 		else if (pcb_attribute_get(&obj->Attributes, "pnp-origin") != NULL)
 			score = 1; /* then for the generic pnp-specific attribute */
 		else
 			continue;
 
-		if (score > ctx->origin_score) {
-			ctx->origin_score = score;
-			pcb_obj_center(obj, &ctx->ox, &ctx->oy);
+		if (score > *origin_score) {
+			*origin_score = score;
+			pcb_obj_center(obj, ox, oy);
 		}
 	}
 }
+
+/* Find the pick and place 0;0 mark, if there is any */
+static void find_origin(subst_ctx_t *ctx, const char *format_name)
+{
+	find_origin_(format_name, "", &ctx->origin_score, &ctx->ox, &ctx->oy);
+}
+
 
 /* Calculate the bounding box of the subc as the bounding box of all terminals
    ("pads", bot heavy and light) */
