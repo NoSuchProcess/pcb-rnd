@@ -561,9 +561,19 @@ static int subst_cb(void *ctx_, gds_t *s, const char **input)
 			rnd_append_printf(s, "%g", -ctx->theta);
 			return 0;
 		}
-		if (strncmp(*input, "siderot%", 8) == 0) {
+		if (strncmp(*input, "siderot%", 8) == 0) { /* old, broken, kept for compatibility */
 			*input += 8;
 			rnd_append_printf(s, "%g", ctx->theta);
+			return 0;
+		}
+		if (strncmp(*input, "side-rot%", 9) == 0) {
+			*input += 9;
+			rnd_append_printf(s, "%g", ctx->front ? ctx->theta : -ctx->theta);
+			return 0;
+		}
+		if (strncmp(*input, "side-negrot%", 12) == 0) {
+			*input += 12;
+			rnd_append_printf(s, "%g", ctx->front ? -ctx->theta : ctx->theta);
 			return 0;
 		}
 		if (strncmp(*input, "270-rot%", 8) == 0) {
