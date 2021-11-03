@@ -711,7 +711,7 @@ static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty,
 	/* translate the xy coords using origin */
 	*dstx = x - ctx->ox;
 	*dsty = ctx->oy - y;
-	*bottom_dstx = x - ctx->bottom_ox;
+	*bottom_dstx = ctx->bottom_ox - x;
 	*bottom_dsty = ctx->bottom_oy - y;
 }
 
