@@ -996,7 +996,7 @@ void *pcb_textop_rotate(pcb_opctx_t *ctx, pcb_layer_t *Layer, pcb_text_t *Text)
 	pcb_text_bbox(NULL, Text);
 
 	if (Text->rot < 0)
-		Text->rot = fmod(360 - Text->rot, 360);
+		Text->rot = fmod(360 + Text->rot, 360);
 	if (Text->rot > 360)
 		Text->rot = fmod(Text->rot - 360, 360);
 
