@@ -468,7 +468,7 @@ void pcb_buffer_rotate(pcb_buffer_t *Buffer, rnd_angle_t angle)
 	PCB_ENDALL_LOOP;
 	PCB_TEXT_ALL_LOOP(Buffer->Data);
 	{
-		pcb_text_rotate(text, Buffer->X, Buffer->Y, cosa, sina, angle);
+		pcb_text_rotate(text, Buffer->X, Buffer->Y, cosa, sina, (PCB_FLAG_TEST(PCB_FLAG_ONSOLDER, text) ? -angle : angle));
 	}
 	PCB_ENDALL_LOOP;
 	PCB_POLY_ALL_LOOP(Buffer->Data);
