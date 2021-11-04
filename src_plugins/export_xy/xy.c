@@ -714,7 +714,7 @@ static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty,
 	}
 
 	/* apply attribute translation (affected by the final rotation of the part
-	   because the p&p machine will rotate around this pont while the subc was
+	   because the p&p machine will rotate around this point while the subc was
 	   rotated around it's pcb-rnd-origin) */
 	if (atrans && ((ctx->tx != 0) || (ctx->ty != 0)) && (ctx->theta != 0)) {
 		double trad = (-ctx->theta) / RND_RAD_TO_DEG;
