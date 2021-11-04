@@ -185,8 +185,8 @@ li:pcb-rnd-conf-v1 {
 				drw_layers global doc
 				drw_layers this_side silk
 				drw_layers this_side doc
-				drw_hole
 				drw_paste
+				drw_hole
 				drw_boundary_mech
 				drw_virtual
 				drw_ui_layers
