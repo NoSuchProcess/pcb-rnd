@@ -386,7 +386,7 @@ do { \
 static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 {
 	const pcb_dflgmap_t *m;
-	gsxl_node_t *n, *i;
+	gsxl_node_t *n, *i, *r;
 	pcb_layergrp_t *topcop = NULL, *botcop = NULL, *grp;
 	rnd_layergrp_id_t gid;
 	const rnd_unit_t *old_unit;
@@ -497,8 +497,9 @@ static int dsn_parse_structure(dsn_read_t *ctx, gsxl_node_t *str)
 				return -1;
 		}
 		else if (rnd_strcasecmp(n->str, "rule") == 0) {
-			if (dsn_parse_rule(ctx, n->children) != 0)
-				return -1;
+			for(r = n->children; r != NULL; r = r->next)
+				if (dsn_parse_rule(ctx, r) != 0)
+					return -1;
 		}
 	}
 
