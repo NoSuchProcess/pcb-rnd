@@ -680,12 +680,23 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 		if (strcmp(conf_core.editor.subc_conv_refdes, "<?>") != 0)
 			pcb_attribute_put(&sc->Attributes, "refdes", conf_core.editor.subc_conv_refdes);
 		if (!has_refdes_text) {
-			if (dst_top_silk == NULL)
-				dst_top_silk = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_SILK, "top-silk", NULL);
-			if (dst_top_silk != NULL)
-				pcb_text_new(dst_top_silk, pcb_font(PCB, 0, 0), buffer->X, buffer->Y, 0, 100, 0, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER));
+			pcb_layer_t *dstly;
+			int botflg = 0;
+
+			if (!buffer->from_bottom_side) {
+				if (dst_top_silk == NULL)
+					dst_top_silk = pcb_layer_new_bound(sc->data, PCB_LYT_TOP | PCB_LYT_SILK, "top-silk", NULL);
+				dstly = dst_top_silk;
+			}
+			else {
+				dstly = pcb_layer_new_bound(sc->data, PCB_LYT_BOTTOM | PCB_LYT_SILK, "bottom-silk", NULL);
+				botflg = PCB_FLAG_ONSOLDER;
+			}
+
+			if (dstly != NULL)
+				pcb_text_new(dstly, pcb_font(PCB, 0, 0), buffer->X, buffer->Y, 0, 100, 0, "%a.parent.refdes%", pcb_flag_make(PCB_FLAG_DYNTEXT | PCB_FLAG_FLOATER | botflg));
 			else
-				rnd_message(RND_MSG_ERROR, "Error: can't create top silk layer in subc for placing the refdes\n");
+				rnd_message(RND_MSG_ERROR, "Error: can't create primary silk layer in subc for placing the refdes\n");
 		}
 	}
 
