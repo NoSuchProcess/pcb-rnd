@@ -71,6 +71,7 @@ typedef struct {
 	int rdver;
 	unsigned long warned, old_model_warned;
 	rnd_conf_role_t cfg_dest;
+	unsigned conf_root_replaced:1;
 } lht_read_t;
 
 static pcb_data_t DUMMY_BUFFER_SUBC;
@@ -405,8 +406,16 @@ static int parse_coord_conf(lht_read_t *rctx, const char *path, lht_node_t *nd)
 	if (parse_coord(&tmp, nd) != 0)
 		return -1;
 
-	if (rctx->cfg_dest != RND_CFR_invalid)
+	if (rctx->cfg_dest != RND_CFR_invalid) {
+		if ((rctx->cfg_dest == RND_CFR_DESIGN) && !rctx->conf_root_replaced) {
+			/* special case: old versions of the format did not have a config subtree;
+			   we have to emulate one if we are setting CFR_DESIGN, else the
+			   caller (plug_io) will drop the new conf */
+			rctx->conf_root_replaced = 1;
+			rnd_conf_main_root_replace_cnt[RND_CFR_DESIGN]++;
+		}
 		rnd_conf_set(rctx->cfg_dest, path, -1, nd->data.text.value, RND_POL_OVERWRITE);
+	}
 	return 0;
 }
 
