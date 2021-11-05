@@ -2,6 +2,8 @@
 
 1. For the upcoming release ===============================================================================
 
+- BUG: draw and convert a footprint while being on the bottom side, using bottom side silk objects; new board, place the footprint; subc-aux is on the top side, objects are on the bottom side, which is a desync [report: Erich]
+
 2. For later releases ===============================================================================
 - depends on librnd 3.1.0:
 	- CLEANUP: replace layersel.c all_open_xpm and all_closed_xpm with librnd named xpm plus and minus
