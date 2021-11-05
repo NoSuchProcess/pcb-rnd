@@ -183,6 +183,7 @@ static void pcb_buffer_clear_(pcb_board_t *pcb, pcb_buffer_t *Buffer, rnd_bool b
 			pcb_data_bind_board_layers(pcb, Buffer->Data, 0);
 	}
 	Buffer->from_outside = 0;
+	Buffer->from_bottom_side = 0;
 	free(Buffer->source_path); Buffer->source_path = NULL;
 	Buffer->X = Buffer->Y = 0;
 }
@@ -224,6 +225,7 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 		Buffer->Y = pcb_crosshair.Y;
 	}
 	Buffer->from_outside = 0;
+	Buffer->from_bottom_side = (pcb_layer_flags(pcb, PCB_CURRLID(pcb)) & PCB_LYT_BOTTOM);
 	free(Buffer->source_path); Buffer->source_path = NULL;
 	rnd_hid_notify_crosshair_change(hidlib, rnd_true);
 }
@@ -352,6 +354,7 @@ rnd_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 		pcb_board_free(newPCB);
 		free(newPCB);
 		Buffer->from_outside = 0; /* always place matching top-to-top, don't swap sides only because the user is viewing the board from the bottom */
+		Buffer->from_bottom_side = 0;
 		free(Buffer->source_path); Buffer->source_path = rnd_strdup(Filename);
 		PCB = orig;
 		pcb_layergrp_inhibit_dec();
@@ -366,6 +369,7 @@ rnd_bool pcb_buffer_load_layout(pcb_board_t *pcb, pcb_buffer_t *Buffer, const ch
 	PCB = orig;
 	pcb_layergrp_inhibit_dec();
 	Buffer->from_outside = 0;
+	Buffer->from_bottom_side = 0;
 	free(Buffer->source_path); Buffer->source_path = NULL;
 	return rnd_false;
 }
@@ -959,6 +963,7 @@ rnd_bool pcb_buffer_load_footprint(pcb_buffer_t *Buffer, const char *Name, const
 		Buffer->X = 0;
 		Buffer->Y = 0;
 		Buffer->from_outside = 1;
+		Buffer->from_bottom_side = 0;
 		free(Buffer->source_path); Buffer->source_path = rnd_strdup(Name);
 
 		if (pcb_subclist_length(&Buffer->Data->subc)) {

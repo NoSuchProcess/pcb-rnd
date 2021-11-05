@@ -673,7 +673,7 @@ int pcb_subc_convert_from_buffer(pcb_buffer_t *buffer)
 	vtp0_uninit(&mask_pads);
 	vtp0_uninit(&paste_pads);
 
-	pcb_subc_create_aux(sc, buffer->X, buffer->Y, 0.0, rnd_false);
+	pcb_subc_create_aux(sc, buffer->X, buffer->Y, 0.0, !!buffer->from_bottom_side);
 
 	/* Add refdes */
 	if ((conf_core.editor.subc_conv_refdes != NULL) && (*conf_core.editor.subc_conv_refdes != '\0')) {
