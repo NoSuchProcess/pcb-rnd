@@ -61,6 +61,7 @@ typedef struct {
 	rnd_cardinal_t testpoint;
 	unsigned has_pcb_boundary:1;
 	unsigned has_testpoint:1;
+	unsigned conf_root_replaced:1;
 } dsn_read_t;
 
 static char *STR(gsxl_node_t *node)
@@ -229,14 +230,28 @@ static int dsn_parse_rect(dsn_read_t *ctx, rnd_box_t *dst, gsxl_node_t *src, int
 
 static int dsn_parse_rule(dsn_read_t *ctx, gsxl_node_t *rule)
 {
+	int changed = 0;
+
 	if ((rule == NULL) || (rule->str == NULL))
 		return 0;
 
-	if (rnd_strcasecmp(rule->str, "width") == 0)
+	if (rnd_strcasecmp(rule->str, "width") == 0) {
 		rnd_conf_set_design("design/drc/min_copper_thickness", "%$mS", COORD(ctx, rule->children));
-	else if (rnd_strcasecmp(rule->str, "clearance") == 0)
+		changed = 1;
+	}
+	else if (rnd_strcasecmp(rule->str, "clearance") == 0) {
 		rnd_conf_set_design("design/drc/min_copper_clearance", "%$mS", COORD(ctx, rule->children));
+		changed = 1;
+	}
 	/* the rest of the rules do not have a direct mapping in the current DRC code */
+
+	if (changed && !ctx->conf_root_replaced) {
+		/* we do not have a config subtree; we have to emulate one if we are
+		   setting CFR_DESIGN, else the caller (plug_io) will drop the new conf */
+		ctx->conf_root_replaced = 1;
+		rnd_conf_main_root_replace_cnt[RND_CFR_DESIGN]++;
+	}
+
 	return 0;
 }
 
