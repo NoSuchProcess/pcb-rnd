@@ -725,3 +725,12 @@ lhtpers_rule_t io_lihata_out_coords[] = {
 	{NULL, NULL, NULL}
 };
 
+
+static const char *cpat_arc_astart[]    = {"te:astart", "ha:arc.*", "*", NULL};
+static const char *cpat_arc_adelta[]    = {"te:adelta", "ha:arc.*", "*", NULL};
+
+lhtpers_rule_t io_lihata_out_doubles[] = {
+	{cpat_arc_astart,  NULL, NULL},
+	{cpat_arc_adelta,  NULL, NULL},
+	{NULL, NULL, NULL}
+};

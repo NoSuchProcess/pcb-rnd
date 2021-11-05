@@ -1749,7 +1749,7 @@ static lhtpers_ev_res_t check_text(void *ev_ctx, lht_perstyle_t *style, lht_node
 		rnd_coord_t v1, v2;
 		rnd_bool success1, success2;
 
-/*		rnd_trace("SMART %s d='%s' m='%s'\n", inmem_node->name, ondisk_value, inmem_node->data.text.value);*/
+/*		rnd_trace("SMART crd %s d='%s' m='%s'\n", inmem_node->name, ondisk_value, inmem_node->data.text.value);*/
 
 		v1 = rnd_get_value_ex(ondisk_value, NULL, NULL, NULL, NULL, &success1);
 		v2 = rnd_get_value_ex(inmem_node->data.text.value, NULL, NULL, NULL, NULL, &success2);
@@ -1761,8 +1761,24 @@ static lhtpers_ev_res_t check_text(void *ev_ctx, lht_perstyle_t *style, lht_node
 			else
 				return LHTPERS_MEM;
 		}
-		/* else fall back to the string compare below */
 	}
+	else if (lhtpers_rule_find(io_lihata_out_doubles, inmem_node) != NULL) {
+		double d1, d2;
+		char *end1, *end2;
+
+		rnd_trace("SMART dbl %s d='%s' m='%s'\n", inmem_node->name, ondisk_value, inmem_node->data.text.value);
+
+		d1 = strtod(ondisk_value, &end1);
+		d2 = strtod(inmem_node->data.text.value, &end2);
+		if ((*end1 == '\0') && (*end2 == '\0')) {
+			/* smart: if values are the same, keep the on-disk version */
+			if (d1 == d2)
+				return LHTPERS_DISK;
+			else
+				return LHTPERS_MEM;
+		}
+	}
+	/* else fall back to the string compare below */
 
 	if (inmem_node->data.text.value == NULL)
 		return LHTPERS_INHIBIT;
