@@ -225,7 +225,7 @@ static void pcb_buffer_toss_selected(pcb_opfunc_t *fnc, pcb_board_t *pcb, pcb_bu
 		Buffer->Y = pcb_crosshair.Y;
 	}
 	Buffer->from_outside = 0;
-	Buffer->from_bottom_side = (pcb_layer_flags(pcb, PCB_CURRLID(pcb)) & PCB_LYT_BOTTOM);
+	Buffer->from_bottom_side = (PCB_LYT_VISIBLE_SIDE() == PCB_LYT_BOTTOM);
 	free(Buffer->source_path); Buffer->source_path = NULL;
 	rnd_hid_notify_crosshair_change(hidlib, rnd_true);
 }
