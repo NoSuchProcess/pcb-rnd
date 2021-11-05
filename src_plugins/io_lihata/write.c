@@ -1726,7 +1726,8 @@ static lht_doc_t *build_board(pcb_board_t *pcb)
 		goto error;
 
 	lht_dom_hash_put(brd->root, ntmp);
-	lht_dom_hash_put(brd->root, build_pxms());
+	if (wrver >= 7)
+		lht_dom_hash_put(brd->root, build_pxms());
 	lht_dom_hash_put(brd->root, build_attributes(&pcb->Attributes));
 	lht_dom_hash_put(brd->root, build_fontkit(&pcb->fontkit));
 	lht_dom_hash_put(brd->root, build_styles(pcb->Data, &pcb->RouteStyle));
