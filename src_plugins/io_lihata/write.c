@@ -1766,7 +1766,7 @@ static lhtpers_ev_res_t check_text(void *ev_ctx, lht_perstyle_t *style, lht_node
 		double d1, d2;
 		char *end1, *end2;
 
-		rnd_trace("SMART dbl %s d='%s' m='%s'\n", inmem_node->name, ondisk_value, inmem_node->data.text.value);
+/*		rnd_trace("SMART dbl %s d='%s' m='%s'\n", inmem_node->name, ondisk_value, inmem_node->data.text.value);*/
 
 		d1 = strtod(ondisk_value, &end1);
 		d2 = strtod(inmem_node->data.text.value, &end2);
