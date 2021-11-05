@@ -29,7 +29,6 @@
 	- ind: indentation bug in inline struct therm: closing } is preceded by indentation whitespace for some reason
 	- keep numeric format: test all
 	- keep unknown subtrees
-	- doc/user/02_model/src/obj_arc.lht: Open/Save : Font section is embedded. Once manually removed, the file shows many diffs w.r.t original. Lihata V1 file.
 	- BUG: lhtpers indentation: bug_files/lhtpers_ins/; breakpoint in pers_table.c:34 and debug why the newline is getting in [report: Igor2]
 - BUG: I/O bugs:
 	- eagle:
