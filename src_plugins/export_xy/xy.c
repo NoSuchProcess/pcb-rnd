@@ -717,8 +717,11 @@ static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty,
 	   because the p&p machine will rotate around this point while the subc was
 	   rotated around it's pcb-rnd-origin) */
 	if (atrans && ((ctx->tx != 0) || (ctx->ty != 0)) && (ctx->theta != 0)) {
-		double trad = (-ctx->theta) / RND_RAD_TO_DEG;
+		double tdeg = ctx->front ? -ctx->theta : ctx->theta;
+		double trad = tdeg / RND_RAD_TO_DEG;
 		rnd_rotate(&tx, &ty, 0, 0, cos(trad), sin(trad));
+		if (!ctx->front)
+			ty = -ty;
 	}
 	x += tx;
 	y += ty;
@@ -843,10 +846,10 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		if (ctx.theta == -0)
 			ctx.theta = 0;
 
-		xy_translate(&ctx, &ctx.x, &ctx.y, &ctx.bottom_x, &ctx.bottom_y, 1);
-
 		ctx.subc = subc;
 		ctx.front = !bott;
+
+		xy_translate(&ctx, &ctx.x, &ctx.y, &ctx.bottom_x, &ctx.bottom_y, 1);
 
 		calc_pad_bbox(&ctx, 0, &ctx.pad_w, &ctx.pad_h, &ctx.pad_cx, &ctx.pad_cy);
 		calc_pad_bbox(&ctx, 1, &ctx.prpad_w, &ctx.prpad_h, &ctx.prpad_cx, &ctx.prpad_cy);
