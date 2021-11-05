@@ -477,7 +477,7 @@ static void get_aux_layer(pcb_subc_t *sc, int alloc)
 void pcb_subc_create_aux(pcb_subc_t *sc, rnd_coord_t ox, rnd_coord_t oy, double rot, rnd_bool bottom)
 {
 	double unit = PCB_SUBC_AUX_UNIT;
-	double cs, sn;
+	double cs, sn, ydir = 1;
 
 	get_aux_layer(sc, 1);
 
@@ -494,12 +494,12 @@ void pcb_subc_create_aux(pcb_subc_t *sc, rnd_coord_t ox, rnd_coord_t oy, double 
 		assert(sc->aux_layer->is_bound);
 		sc->aux_layer->meta.bound.type &= ~PCB_LYT_TOP;
 		sc->aux_layer->meta.bound.type |= PCB_LYT_BOTTOM;
-		cs = -cs;
+		ydir = -1;
 	}
 
 	add_aux_line(sc->aux_layer, "subc-role", "origin", ox, oy, ox, oy);
 	add_aux_line(sc->aux_layer, "subc-role", "x", ox, oy, rnd_round((double)ox + cs*unit), rnd_round((double)oy + sn*unit));
-	add_aux_line(sc->aux_layer, "subc-role", "y", ox, oy, rnd_round((double)ox + sn*unit), rnd_round((double)oy + cs*unit));
+	add_aux_line(sc->aux_layer, "subc-role", "y", ox, oy, rnd_round((double)ox + ydir*sn*unit), rnd_round((double)oy + ydir*cs*unit));
 }
 
 void pcb_subc_create_aux_point(pcb_subc_t *sc, rnd_coord_t x, rnd_coord_t y, const char *role)
