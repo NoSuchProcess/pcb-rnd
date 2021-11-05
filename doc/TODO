@@ -3,6 +3,7 @@
 1. For the upcoming release ===============================================================================
 
 - BUG: draw and convert a footprint while being on the bottom side, using bottom side silk objects; new board, place the footprint; subc-aux is on the top side, objects are on the bottom side, which is a desync [report: Erich]
+- BUG: io_dsn bottom side subc rotation and/or y-mirror bug [report: Erich]
 
 2. For later releases ===============================================================================
 - depends on librnd 3.1.0:
