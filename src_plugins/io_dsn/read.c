@@ -1061,6 +1061,8 @@ static int dsn_parse_lib_image(dsn_read_t *ctx, gsxl_node_t *imr)
 		}
 	}
 
+	pcb_subc_create_aux(subc, 0, 0, 0, 0);
+
 	pcb_attribute_put(&subc->Attributes, "footprint", id);
 	id = pcb_attribute_get(&subc->Attributes, "footprint");
 	htsp_set(&ctx->subcs, id, subc);
