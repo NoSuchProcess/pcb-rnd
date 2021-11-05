@@ -7,4 +7,4 @@
 # X,Y in mil.  rotation in degrees.
 # --------------------------------------------
 R1,"Standard SMT resistor, capacitor etc","1206",225.00,375.00,0,top
-R2,"Standard SMT resistor, capacitor etc","1206",225.00,150.00,180,bottom
+R2,"Standard SMT resistor, capacitor etc","1206",225.00,150.00,0,bottom
