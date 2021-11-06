@@ -9,6 +9,7 @@ typedef struct {
 	htscp_t subcs;   /* value is a normalized subc prototype */
 	pcb_board_t *pcb;
 	pcb_data_t data; /* temp buffer to place prototype subcs in */
+	unsigned fix_ymirr;
 } pcb_placement_t;
 
 void pcb_placement_init(pcb_placement_t *ctx, pcb_board_t *pcb);
