@@ -446,7 +446,7 @@ static int dsn_write_wiring(dsn_write_t *wctx)
 static int dsn_write_placement(dsn_write_t *wctx)
 {
 	fprintf(wctx->f, "  (placement\n");
-	fprintf(wctx->f, "    (place_control (flip_style mirror_first))\n");
+	fprintf(wctx->f, "    (place_control (flip_style rotate_first))\n");
 
 	PCB_SUBC_LOOP(wctx->pcb->Data);
 	{
