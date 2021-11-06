@@ -558,6 +558,7 @@ static int dsn_write_board(dsn_write_t *wctx)
 	pcb_pstklib_init(&wctx->protolib, wctx->pcb);
 	pcb_pstklib_build_pcb(&wctx->protolib, 1);
 	pcb_placement_init(&wctx->footprints, wctx->pcb);
+	wctx->footprints.fix_ymirr = 1;
 	pcb_placement_build(&wctx->footprints, wctx->pcb->Data);
 
 	fprintf(wctx->f, "(pcb ");
