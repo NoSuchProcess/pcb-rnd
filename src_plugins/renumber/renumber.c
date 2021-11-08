@@ -270,7 +270,7 @@ static fgw_error_t pcb_act_Renumber(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 				pcb_undo_add_obj_to_change_name(PCB_OBJ_SUBC, NULL, NULL, subc_list[i], (char *)or_empty(subc_list[i]->refdes));
 
-				pcb_chg_obj_name(PCB_OBJ_SUBC, subc_list[i], NULL, NULL, tmps);
+				pcb_chg_obj_name(PCB_OBJ_SUBC, subc_list[i], subc_list[i], NULL, tmps);
 				changed = rnd_true;
 
 				/* we don't free tmps in this case because it is used */
