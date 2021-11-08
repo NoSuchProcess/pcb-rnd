@@ -121,19 +121,19 @@ static void elarc90(pcb_poly_t *p, rnd_coord_t ccx, rnd_coord_t ccy, rnd_coord_t
 
 
 	if (style == PCB_CORN_ROUND) {
-	/* add approximated ellipse points */
-	segs -= 2;
-	for(n = 0,sa+=da; n < segs; n++,sa+=da) {
-		rnd_coord_t x, y;
-		x = rnd_round((double)cx + cos(sa) * (double)rx);
-		y = rnd_round((double)cy - sin(sa) * (double)ry);
-		if (need_rot)
-			rnd_rotate(&x, &y, rotcx, rotcy, cosra, sinra);
-		if ((x != lx) || (y != ly))
-			pcb_poly_point_new(p, x, y);
-		lx = x;
-		ly = y;
-	}
+		/* add approximated ellipse points */
+		segs -= 2;
+		for(n = 0,sa+=da; n < segs; n++,sa+=da) {
+			rnd_coord_t x, y;
+			x = rnd_round((double)cx + cos(sa) * (double)rx);
+			y = rnd_round((double)cy - sin(sa) * (double)ry);
+			if (need_rot)
+				rnd_rotate(&x, &y, rotcx, rotcy, cosra, sinra);
+			if ((x != lx) || (y != ly))
+				pcb_poly_point_new(p, x, y);
+			lx = x;
+			ly = y;
+		}
 	}
 
 	/* add exact end point */
