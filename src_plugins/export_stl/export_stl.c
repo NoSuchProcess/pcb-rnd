@@ -216,12 +216,22 @@ static int pstk_points(pcb_board_t *pcb, pcb_pstk_t *pstk, pcb_layer_t *layer, f
 			case PCB_PSSH_POLY:
 				{
 					int n;
+					rnd_coord_t px, py;
+
 					for(n = 0; n < shp->data.poly.len; n++) {
-						fp2t_point_t *pt = fp2t_push_point(tri);
-						pt->X = pstk->x + shp->data.poly.x[n];
-						pt->Y = maxy - (pstk->y + shp->data.poly.y[n]);
+						rnd_coord_t x = pstk->x + shp->data.poly.x[n], y = maxy - (pstk->y + shp->data.poly.y[n]);
+						fp2t_point_t *pt;
+						
+						if ((n > 0) && (px == x) && (py == y))
+							continue;
+
+						pt = fp2t_push_point(tri);
+						pt->X = x;
+						pt->Y = y;
 						vtd0_append(contours, pt->X);
 						vtd0_append(contours, pt->Y);
+						px = x;
+						py = y;
 					}
 					fp2t_add_hole(tri);
 					vtd0_append(contours, HUGE_VAL);
