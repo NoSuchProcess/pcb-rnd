@@ -1854,8 +1854,7 @@ static int dsn_parse_file(dsn_read_t *rdctx, const char *fn)
 
 	gsxl_init(&rdctx->dom, gsxl_node_t);
 	rdctx->dom.parse.line_comment_char = '#';
-TODO("enable this when librnd 3.1.0 is out - this is required for eagle and diptrace exports as they omit space before parenthesis");
-/*	rdctx->dom.parse.allow_nospace_open = 1;*/
+	rdctx->dom.parse.allow_nospace_open = 1;
 	offs = 0;
 	do {
 		c = fgetc(f);
