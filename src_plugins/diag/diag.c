@@ -491,6 +491,5 @@ int pplg_init_diag(void)
 
 	rnd_event_bind(RND_EVENT_USER_INPUT_POST, ev_ui_post, NULL, diag_cookie);
 	RND_REGISTER_ACTIONS(diag_action_list, diag_cookie)
-	Rnd_diag_init(diag_cookie);
 	return 0;
 }
