@@ -410,6 +410,7 @@ void pcb_main_uninit(void)
 	}
 	PCB = NULL;
 
+	pcb_board_uninit();
 	pcb_extobj_uninit();
 
 	rnd_hidlib_uninit(); /* plugin unload */
@@ -432,7 +433,7 @@ void pcb_main_uninit(void)
 	rnd_log_uninit();
 	main_path_uninit();
 	conf_core_uninit();
-	pcb_board_uninit();
+
 }
 
 /* action table number of columns for a single action */
