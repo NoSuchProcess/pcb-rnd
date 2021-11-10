@@ -16,6 +16,9 @@
 #define REQ_LIBRND_MAJOR 3
 #define REQ_LIBRND_MINOR 1
 
+#define TOSTR_(x) #x
+#define TOSTR(x) TOSTR_(x)
+
 #include <librnd/src_3rd/puplug/scconfig_hooks.h>
 #include <librnd/src_3rd/libfungw/scconfig_hooks.h>
 
@@ -320,6 +323,8 @@ int hook_generate()
 	put("/local/version",  version);
 	put("/local/version_major",  version_major);
 	put("/local/apiver", apiver);
+	put("/local/librnd_ver_req_major", TOSTR(REQ_LIBRND_MAJOR));
+	put("/local/librnd_ver_req_minor", TOSTR(REQ_LIBRND_MINOR));
 
 	printf("\n");
 

@@ -469,6 +469,15 @@ int main(int argc, char *argv[])
 
 	rnd_main_args_t ga;
 
+	if (((rnd_api_ver & 0xFF0000) >> 16) != PCB_LIBRND_VER_REQ_MAJOR) {
+		fprintf(stderr, "librnd version problem: need %d.x.x but installed version is %d.x.x (major version mismatch)\n", PCB_LIBRND_VER_REQ_MAJOR, (int)(rnd_api_ver & 0xFF0000) >> 16);
+		exit(1);
+	}
+	if (((rnd_api_ver & 0x00FF00) >> 8) < PCB_LIBRND_VER_REQ_MINOR) {
+		fprintf(stderr, "librnd version problem: need >=%d.%d.x but installed version is %d.%d.x (minor version mismatch)\n", PCB_LIBRND_VER_REQ_MAJOR, PCB_LIBRND_VER_REQ_MINOR, (int)(rnd_api_ver & 0xFF0000) >> 16, (int)(rnd_api_ver & 0x00FF00) >> 8);
+		exit(1);
+	}
+
 	rnd_app.menu_file_paths = menu_file_paths;
 	rnd_app.menu_name_fmt   = menu_name_fmt;
 	rnd_app.default_embedded_menu = rnd_hidlib_default_embedded_menu;

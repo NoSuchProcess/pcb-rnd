@@ -70,6 +70,9 @@ print [@
    as ~/DOT_PCB_RND/ */
 #define DOT_PCB_RND "@/local/pcb/dot_pcb_rnd@"
 
+#define PCB_LIBRND_VER_REQ_MAJOR @/local/librnd_ver_req_major@
+#define PCB_LIBRND_VER_REQ_MINOR @/local/librnd_ver_req_minor@
+
 #endif
 @]
 
