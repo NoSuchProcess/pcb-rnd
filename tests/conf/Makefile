@@ -9,7 +9,6 @@ LDLIBS = -lm $(LDFLAGS_LIBRND_FUNGW) $(LDFLAGS_LIBRND)
 LIB_HIDLIB=-lrnd-hid -lrnd-3rd
 
 LIB_PCBRND_OBJS=\
-	../../src_plugins/diag/rnd_diag.o \
 	../../src/conf_core.o \
 	../../src/conf_internal.o
 
