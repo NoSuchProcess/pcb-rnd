@@ -66,7 +66,7 @@ char *pcb_get_info_program(void)
 	if (first_time) {
 		first_time = 0;
 		gds_init(&info);
-		gds_append_str(&info, "This is pcb-rnd " PCB_VERSION " (" PCB_REVISION ")" "\n an interactive ");
+		gds_append_str(&info, "This is pcb-rnd " PCB_VERSION " (" PCB_REVISION ")" "\nan interactive ");
 		gds_append_str(&info, "printed circuit board editor from\nthe Ringdove EDA suite\n");
 	}
 	return info.array;
