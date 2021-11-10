@@ -80,17 +80,17 @@ static void pref_sizes_limit_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_
 {
 	pref_ctx_t *ctx = caller_data;
 
-	if (Rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx) == NULL)
+	if (rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx) == NULL)
 		return;
 
 	rnd_pref_dlg2conf_table(ctx, limit_sizes, attr);
 
-	Rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
+	rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
 }
 
 static void pref_isle_brd2dlg(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pref_ctx_t *ctx = Rnd_pref_get_ctx(&PCB->hidlib);
+	pref_ctx_t *ctx = rnd_pref_get_ctx(&PCB->hidlib);
 	DEF_TABDATA;
 	
 	if ((tabdata->lock) || (!ctx->active))
@@ -174,8 +174,8 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 	RND_DAD_END(ctx->dlg);
 }
 
-static const Rnd_pref_tab_hook_t pref_sizes = {
-	"Sizes & DRC", Rnd_PREFTAB_AUTO_FREE_DATA | Rnd_PREFTAB_NEEDS_ROLE,
+static const rnd_pref_tab_hook_t pref_sizes = {
+	"Sizes & DRC", RND_PREFTAB_AUTO_FREE_DATA | RND_PREFTAB_NEEDS_ROLE,
 	NULL, pcb_dlg_pref_sizes_close,
 	pcb_dlg_pref_sizes_create,
 	pref_sizes_brd2dlg, pref_sizes_brd2dlg  /* board change, meta change */

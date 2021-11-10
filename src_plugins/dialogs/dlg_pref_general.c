@@ -49,14 +49,14 @@ static void pref_general_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attr
 {
 	pref_ctx_t *ctx = caller_data;
 
-	if (Rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx) == NULL)
+	if (rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx) == NULL)
 		return;
 
 	rnd_pref_dlg2conf_table(ctx, perf_topwin, attr);
 	rnd_pref_dlg2conf_table(ctx, perf_backup, attr);
 	rnd_pref_dlg2conf_table(ctx, perf_cli, attr);
 
-	Rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
+	rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
 }
 
 void pcb_dlg_pref_general_close(pref_ctx_t *ctx)
@@ -93,8 +93,8 @@ void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
 	RND_DAD_END(ctx->dlg);
 }
 
-static const Rnd_pref_tab_hook_t pref_general = {
-	"General", Rnd_PREFTAB_AUTO_FREE_DATA | Rnd_PREFTAB_NEEDS_ROLE,
+static const rnd_pref_tab_hook_t pref_general = {
+	"General", RND_PREFTAB_AUTO_FREE_DATA | RND_PREFTAB_NEEDS_ROLE,
 	NULL, pcb_dlg_pref_general_close,
 	pcb_dlg_pref_general_create,
 	NULL, NULL

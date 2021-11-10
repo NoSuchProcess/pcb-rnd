@@ -54,7 +54,7 @@ static void libhelp_btn(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *a
 
 static void pref_lib_update_buttons(void)
 {
-	pref_ctx_t *ctx = Rnd_pref_get_ctx(&PCB->hidlib);
+	pref_ctx_t *ctx = rnd_pref_get_ctx(&PCB->hidlib);
 	DEF_TABDATA;
 	rnd_hid_attribute_t *attr = &ctx->dlg[tabdata->wlist];
 	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
@@ -83,7 +83,7 @@ static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hi
    the widget first */
 static void pref_lib_conf2dlg_pre(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pref_ctx_t *ctx = Rnd_pref_get_ctx(&PCB->hidlib);
+	pref_ctx_t *ctx = rnd_pref_get_ctx(&PCB->hidlib);
 	DEF_TABDATA;
 	rnd_hid_attribute_t *attr;
 	rnd_hid_tree_t *tree;
@@ -118,7 +118,7 @@ static const char *pref_node_src(lht_node_t *nd)
    in all widget rows from the conf */
 static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pref_ctx_t *ctx = Rnd_pref_get_ctx(&PCB->hidlib);
+	pref_ctx_t *ctx = rnd_pref_get_ctx(&PCB->hidlib);
 	DEF_TABDATA;
 	rnd_conf_listitem_t *i;
 	int idx;
@@ -161,7 +161,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	rnd_hid_row_t *r;
 
 
-	m = Rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx);
+	m = rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx);
 	if (m == NULL)
 		return;
 
@@ -187,7 +187,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	rnd_conf_update("rc/library_search_paths", -1);
 	rnd_conf_makedirty(ctx->role); /* low level lht_dom_node_alloc() wouldn't make user config to be saved! */
 
-	Rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
+	rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
 
 	tabdata->lock--;
 }
@@ -501,8 +501,8 @@ void pcb_dlg_pref_lib_open(pref_ctx_t *ctx)
 	pref_lib_conf2dlg_post(cn, -1);
 }
 
-static const Rnd_pref_tab_hook_t pref_lib = {
-	"Library", Rnd_PREFTAB_AUTO_FREE_DATA | Rnd_PREFTAB_NEEDS_ROLE,
+static const rnd_pref_tab_hook_t pref_lib = {
+	"Library", RND_PREFTAB_AUTO_FREE_DATA | RND_PREFTAB_NEEDS_ROLE,
 	pcb_dlg_pref_lib_open, pcb_dlg_pref_lib_close,
 	pcb_dlg_pref_lib_create,
 	NULL, NULL

@@ -113,8 +113,8 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		RND_DAD_END(ctx->dlg);
 }
 
-static const Rnd_pref_tab_hook_t pref_board = {
-	"Board meta", Rnd_PREFTAB_AUTO_FREE_DATA,
+static const rnd_pref_tab_hook_t pref_board = {
+	"Board meta", RND_PREFTAB_AUTO_FREE_DATA,
 	NULL, NULL,
 	pcb_dlg_pref_board_create,
 	pref_board_brd2dlg, pref_board_brd2dlg  /* board change, meta change */
