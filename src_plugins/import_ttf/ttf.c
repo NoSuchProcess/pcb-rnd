@@ -502,7 +502,7 @@ static void font_browse_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 	ttfgui_ctx_t *ctx = caller_data;
 		rnd_hid_attr_val_t hv;
 
-	fn = rnd_gui->fileselect(rnd_gui, "Import ttf file", "Select a ttf file (or other font file that libfreetype can load) for importing glyphs from",
+	fn = rnd_hid_fileselect(rnd_gui, "Import ttf file", "Select a ttf file (or other font file that libfreetype can load) for importing glyphs from",
 		NULL, "ttf", NULL, "import_ttf", RND_HID_FSD_READ, NULL);
 
 	if (fn == NULL)

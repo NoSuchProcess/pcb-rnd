@@ -225,7 +225,7 @@ static fgw_error_t pcb_act_ImportSes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(1, FGW_STR, ImportSes, fname = argv[1].val.str);
 
 	if ((fname == NULL) || (*fname == '\0')) {
-		fname = rnd_gui->fileselect(rnd_gui,
+		fname = rnd_hid_fileselect(rnd_gui,
 			"Load a routed dsn or ses file...",
 			"Select ses (or dsn) file to load.\nThe file could be generated using external autorouters (e.g. freeroute.net)\n",
 			NULL, /* default file name */

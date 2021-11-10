@@ -194,7 +194,7 @@ static void save_conf_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	char *fname;
 	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 
-	fname = rnd_gui->fileselect(rnd_gui, "Save autoroute settings to...",
+	fname = rnd_hid_fileselect(rnd_gui, "Save autoroute settings to...",
 		"Pick a file for saving autoroute settings to.\n",
 		"autoroute.cfg.lht", ".lht", NULL, "ar_extern", RND_HID_FSD_MAY_NOT_EXIST, NULL);
 
@@ -218,7 +218,7 @@ static void load_conf_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	char *fname;
 	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 
-	fname = rnd_gui->fileselect(rnd_gui, "Load autoroute settings from...",
+	fname = rnd_hid_fileselect(rnd_gui, "Load autoroute settings from...",
 		"Pick a file for loading autoroute settings from.\n",
 		"autoroute.cfg.lht", ".lht", NULL, "ar_extern", 0, NULL);
 

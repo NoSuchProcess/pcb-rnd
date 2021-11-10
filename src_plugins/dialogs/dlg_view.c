@@ -441,7 +441,7 @@ static void view_save_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	char *fn;
 	FILE *f;
 
-	fn = rnd_gui->fileselect(rnd_gui, "Save view list", "Save all views from the list", "view.lht", "lht", NULL, "view", 0, NULL);
+	fn = rnd_hid_fileselect(rnd_gui, "Save view list", "Save all views from the list", "view.lht", "lht", NULL, "view", 0, NULL);
 	if (fn == NULL)
 		return;
 
@@ -470,7 +470,7 @@ static void view_load_btn_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	FILE *f;
 	void *load_ctx;
 
-	fn = rnd_gui->fileselect(rnd_gui, "Load view list", "Load all views from the list", "view.lht", "lht", NULL, "view", RND_HID_FSD_READ, NULL);
+	fn = rnd_hid_fileselect(rnd_gui, "Load view list", "Load all views from the list", "view.lht", "lht", NULL, "view", RND_HID_FSD_READ, NULL);
 	if (fn == NULL)
 		return;
 

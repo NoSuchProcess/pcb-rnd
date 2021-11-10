@@ -342,7 +342,7 @@ static int save_fmt_dialog(const char *title, const char *descr, char **default_
 		printf("RES2: '%s' '%s'\n", *name_out, *fmt_out);
 	}
 	else { /* fallback to simpler fileselect */
-		char *name = rnd_gui->fileselect(rnd_gui, title, descr, *default_file, "", NULL, history_tag, flags, NULL);
+		char *name = rnd_hid_fileselect(rnd_gui, title, descr, *default_file, "", NULL, history_tag, flags, NULL);
 
 		*name_out = name;
 		if (name == NULL)

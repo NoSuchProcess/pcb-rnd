@@ -142,7 +142,7 @@ static void menu_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_
 
 static void pref_menu_load(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	char *fn = rnd_gui->fileselect(rnd_gui, "menu patch load", "Load a menu patch to file", "menu_patch.lht", "lht", NULL, "menu_patch_load", RND_HID_FSD_READ, NULL);
+	char *fn = rnd_hid_fileselect(rnd_gui, "menu patch load", "Load a menu patch to file", "menu_patch.lht", "lht", NULL, "menu_patch_load", RND_HID_FSD_READ, NULL);
 	if (fn == NULL)
 		return;
 	if (rnd_hid_menu_load(rnd_gui, NULL, "preferences", 300, fn, 1, NULL, "User reuqested load through the preferences dialog") == NULL)
@@ -176,7 +176,7 @@ static void pref_menu_export(void *hid_ctx, void *caller_data, rnd_hid_attribute
 	char *fn;
 	GET_ROW_AND_MENU(caller_data);
 
-	fn = rnd_gui->fileselect(rnd_gui, "menu patch export", "Export a menu patch to file for debugging", "menu_patch.lht", "lht", NULL, "menu_patch_export", RND_HID_FSD_MAY_NOT_EXIST, NULL);
+	fn = rnd_hid_fileselect(rnd_gui, "menu patch export", "Export a menu patch to file for debugging", "menu_patch.lht", "lht", NULL, "menu_patch_export", RND_HID_FSD_MAY_NOT_EXIST, NULL);
 	if (fn == NULL)
 		return;
 

@@ -796,7 +796,7 @@ static fgw_error_t pcb_act_DrcQueryExport(fgw_arg_t *res, int argc, fgw_arg_t *a
 		const char *ext = ".tdx", *sep;
 		char *fnid = rnd_concat(id, ext, NULL);
 TODO("cleanup: fix format selection: generalize dlg_loadsave.c's subfmt code");
-		fn = autofree = rnd_gui->fileselect(rnd_gui, "drc_query_rule", "Export a drc_query rule and related definitions",
+		fn = autofree = rnd_hid_fileselect(rnd_gui, "drc_query_rule", "Export a drc_query rule and related definitions",
 			fnid, ext, flt, "drc_query", 0, NULL);
 		free(fnid);
 		if (fn == NULL)
@@ -839,7 +839,7 @@ static fgw_error_t pcb_act_DrcQueryImport(fgw_arg_t *res, int argc, fgw_arg_t *a
 
 	if (fn == NULL) {
 		const char *ext = ".tdx";
-		fn = autofree = rnd_gui->fileselect(rnd_gui, "drc_query_rule", "Import a drc_query rule and related definitions",
+		fn = autofree = rnd_hid_fileselect(rnd_gui, "drc_query_rule", "Import a drc_query rule and related definitions",
 			NULL, ext, flt, "drc_query", RND_HID_FSD_READ, NULL);
 		if (fn == NULL)
 			return -1;

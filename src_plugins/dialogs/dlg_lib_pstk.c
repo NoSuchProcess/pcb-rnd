@@ -407,7 +407,7 @@ static void pstklib_save(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	if (proto_save_fn == NULL)
 		proto_save_fn = rnd_strdup("padstack.lht");
 	old_fn = proto_save_fn;
-	proto_save_fn = rnd_gui->fileselect(rnd_gui, "Save padstack", "Select a file the padstack prototype is saved to", old_fn, ".lht", NULL, "padstack", 0, NULL);
+	proto_save_fn = rnd_hid_fileselect(rnd_gui, "Save padstack", "Select a file the padstack prototype is saved to", old_fn, ".lht", NULL, "padstack", 0, NULL);
 	if (proto_save_fn == NULL)
 		return; /* cancel */
 	free(old_fn);
@@ -449,7 +449,7 @@ static void pstklib_load(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *
 	if (proto_load_fn == NULL)
 		proto_load_fn = rnd_strdup("padstack.lht");
 	old_fn = proto_load_fn;
-	proto_load_fn = rnd_gui->fileselect(rnd_gui, "Save padstack", "Select a file the padstack prototype is loaded from", old_fn, ".lht", NULL, "padstack", RND_HID_FSD_READ, NULL);
+	proto_load_fn = rnd_hid_fileselect(rnd_gui, "Save padstack", "Select a file the padstack prototype is loaded from", old_fn, ".lht", NULL, "padstack", RND_HID_FSD_READ, NULL);
 	if (proto_load_fn == NULL)
 		return; /* cancel */
 	free(old_fn);

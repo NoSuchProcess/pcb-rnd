@@ -71,13 +71,13 @@ fgw_error_t pcb_act_Load(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(1, FGW_STR, Load, function = argv[1].val.str);
 
 	if (rnd_strcasecmp(function, "Netlist") == 0)
-		name = rnd_gui->fileselect(rnd_gui, "Load netlist file", "Import netlist from file", last_netlist, ".net", NULL, "netlist", RND_HID_FSD_READ, NULL);
+		name = rnd_hid_fileselect(rnd_gui, "Load netlist file", "Import netlist from file", last_netlist, ".net", NULL, "netlist", RND_HID_FSD_READ, NULL);
 	else if ((rnd_strcasecmp(function, "FootprintToBuffer") == 0) || (rnd_strcasecmp(function, "ElementToBuffer") == 0))
-		name = rnd_gui->fileselect(rnd_gui, "Load footprint to buffer", "Import footprint from file", last_footprint, NULL, NULL, "footprint", RND_HID_FSD_READ, NULL);
+		name = rnd_hid_fileselect(rnd_gui, "Load footprint to buffer", "Import footprint from file", last_footprint, NULL, NULL, "footprint", RND_HID_FSD_READ, NULL);
 	else if (rnd_strcasecmp(function, "LayoutToBuffer") == 0)
-		name = rnd_gui->fileselect(rnd_gui, "Load layout to buffer", "load layout (board) to buffer", last_layout, NULL, NULL, "board", RND_HID_FSD_READ, NULL);
+		name = rnd_hid_fileselect(rnd_gui, "Load layout to buffer", "load layout (board) to buffer", last_layout, NULL, NULL, "board", RND_HID_FSD_READ, NULL);
 	else if (rnd_strcasecmp(function, "Layout") == 0)
-		name = rnd_gui->fileselect(rnd_gui, "Load layout file", "load layout (board) as board to edit", last_layout, NULL, NULL, "board", RND_HID_FSD_READ, NULL);
+		name = rnd_hid_fileselect(rnd_gui, "Load layout file", "load layout (board) as board to edit", last_layout, NULL, NULL, "board", RND_HID_FSD_READ, NULL);
 	else {
 		rnd_message(RND_MSG_ERROR, "Invalid subcommand for Load(): '%s'\n", function);
 		RND_ACT_IRES(1);
@@ -569,7 +569,7 @@ fgw_error_t pcb_act_Save(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	timer_ctx.ptr = &save;
 	save.timer_active = 1;
 	save.timer = rnd_gui->add_timer(rnd_gui, save_timer, 300, timer_ctx); /* the timer needs to run at least once, to get some initialization done that can be done only after fmtsub got created */
-	final_name = rnd_gui->fileselect(rnd_gui, prompt, NULL, name_in, NULL, NULL, "board", RND_HID_FSD_MAY_NOT_EXIST, fmtsub);
+	final_name = rnd_hid_fileselect(rnd_gui, prompt, NULL, name_in, NULL, NULL, "board", RND_HID_FSD_MAY_NOT_EXIST, fmtsub);
 	if (save.timer_active)
 		rnd_gui->stop_timer(rnd_gui, save.timer);
 	free(name_in);

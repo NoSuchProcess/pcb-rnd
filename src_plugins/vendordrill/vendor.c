@@ -306,7 +306,7 @@ fgw_error_t pcb_act_LoadVendorFrom(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	RND_ACT_MAY_CONVARG(2, FGW_STR, LoadVendorFrom, spure = argv[2].val.str);
 
 	if (!fname || !*fname) {
-		fname = rnd_gui->fileselect(rnd_gui, "Load Vendor Resource File...",
+		fname = rnd_hid_fileselect(rnd_gui, "Load Vendor Resource File...",
 			"Picks a vendor resource file to load.\n"
 			"This file contains a list of\n"
 			"predefined drills which are allowed.", default_file, ".res",
