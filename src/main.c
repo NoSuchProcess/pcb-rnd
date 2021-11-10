@@ -80,11 +80,6 @@ static const char *EXPERIMENTAL = NULL;
 #include "pixmap_pcb.h"
 #include "draw.h"
 
-TODO("librnd: remove this once librnd is not extern anymore")
-#include <genregex/regex_se.h>
-#include <puplug/util.h>
-#include <genvector/vtl0.h>
-
 #define pup_buildins pcb_rnd_buildins
 #include "buildin.c"
 #undef pup_buildins
