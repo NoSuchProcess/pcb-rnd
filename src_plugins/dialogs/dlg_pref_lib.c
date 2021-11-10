@@ -462,10 +462,9 @@ void pcb_dlg_pref_lib_create(pref_ctx_t *ctx)
 	RND_DAD_LABEL(ctx->dlg, "Ordered list of footprint library search directories.");
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
-TODO("TODO#72: don't scroll the box when the tree is scrolled");
-		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_SCROLL | RND_HATF_EXPFILL);
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_EXPFILL);
 		RND_DAD_TREE(ctx->dlg, 3, 0, hdr);
-			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			tabdata->wlist = RND_DAD_CURRENT(ctx->dlg);
 			tree = ctx->dlg[tabdata->wlist].wdata;
 			tree->user_free_cb = pref_lib_row_free;

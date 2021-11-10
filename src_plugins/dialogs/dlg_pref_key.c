@@ -244,10 +244,9 @@ void pcb_dlg_pref_key_create(pref_ctx_t *ctx)
 	RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
 
 	RND_DAD_BEGIN_VBOX(ctx->dlg);
-		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_SCROLL | RND_HATF_EXPFILL);
-TODO("TODO#72: don't scroll the box when the tree is scrolled, scroll the tree instead")
+		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME | RND_HATF_EXPFILL);
 		RND_DAD_TREE(ctx->dlg, 3, 0, hdr);
-			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL);
+			RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_EXPFILL | RND_HATF_SCROLL);
 			ctx->key.wlist = RND_DAD_CURRENT(ctx->dlg);
 	RND_DAD_END(ctx->dlg);
 
