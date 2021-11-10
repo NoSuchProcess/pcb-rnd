@@ -1,4 +1,4 @@
-35938	configure	moving generic part of diag to librnd 3.1.0
+35941	configure	moving generic part of diag and preferences dialog to librnd 3.1.0
 35866	configure	diag plugin generalization for librnd move
 35849	configure	preferences dialog generalization
 35621	configure	ar_extern: new module for freerouting.cli

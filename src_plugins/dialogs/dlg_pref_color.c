@@ -26,8 +26,8 @@
 
 /* Preferences dialog, color tab */
 
-#include "dlg_pref.h"
 #include <librnd/core/conf.h>
+#include <librnd/plugins/lib_hid_common/dlg_pref.h>
 #include "conf_core.h"
 
 typedef struct {
@@ -84,12 +84,12 @@ static void pref_color_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	pref_ctx_t *ctx = caller_data;
 	const char *path = attr->user_data;
 
-	if (Rnd_pref_dlg2conf_pre(ctx) == NULL)
+	if (Rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx) == NULL)
 		return;
 
 	rnd_conf_setf(ctx->role, path, -1, "%s", attr->val.clr.str);
 
-	Rnd_pref_dlg2conf_post(ctx);
+	Rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
 
 	rnd_gui->invalidate_all(rnd_gui);
 }
@@ -100,12 +100,12 @@ static void pref_color_layer_cb(void *hid_ctx, void *caller_data, rnd_hid_attrib
 	DEF_TABDATA;
 	int idx = (int *)attr->user_data - tabdata->wlayer;
 
-	if (Rnd_pref_dlg2conf_pre(ctx) == NULL)
+	if (Rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx) == NULL)
 		return;
 
 	rnd_conf_setf(ctx->role, "appearance/color/layer", idx, "%s", attr->val.clr.str);
 
-	Rnd_pref_dlg2conf_post(ctx);
+	Rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
 }
 
 

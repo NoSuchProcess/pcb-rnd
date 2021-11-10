@@ -428,3 +428,13 @@ rnd_coord_t pcb_board_thickness(pcb_board_t *pcb, const char *namespace, pcb_boa
 {
 	return pcb_stack_thickness(pcb, namespace, flags, 0, rnd_true, pcb->LayerGroups.len-1, rnd_true, PCB_LYT_COPPER | PCB_LYT_SUBSTRATE);
 }
+
+void pcb_board_changed_lib_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, rnd_event_arg_t argv[])
+{
+	pcb_board_changed(1);
+}
+
+void pcb_board_init(void)
+{
+	rnd_event_bind(RND_EVENT_DESIGN_META_CHANGED_LIB, pcb_board_changed_lib_ev, NULL, NULL);
+}

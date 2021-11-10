@@ -266,11 +266,7 @@
  ../src_plugins/dialogs/dlg_obj_list.c \
  ../src_plugins/dialogs/dlg_netlist.c \
  ../src_plugins/dialogs/dlg_printcalib.c \
- ../src_plugins/dialogs/dlg_view.h ../src_plugins/dialogs/dlg_pref.h \
- ../src_plugins/dialogs/dlg_pref_win.h \
- ../src_plugins/dialogs/dlg_pref_key.h \
- ../src_plugins/dialogs/dlg_pref_menu.h \
- ../src_plugins/dialogs/dlg_pref_conf.h \
+ ../src_plugins/dialogs/dlg_view.h \
  ../src_plugins/dialogs/adialogs_conf.h \
  ../src_plugins/dialogs/conf_internal.c \
  ../src_plugins/dialogs/adialogs_conf_fields.h
@@ -386,15 +382,7 @@
  ../src_plugins/dialogs/dlg_lib_pstk.h \
  ../src_plugins/dialogs/dlg_padstack.h
 ../src_plugins/dialogs/dlg_pref.o: ../src_plugins/dialogs/dlg_pref.c \
- ../config.h ../src_plugins/dialogs/dlg_pref.h \
- ../src_plugins/dialogs/dlg_pref_win.h \
- ../src_plugins/dialogs/dlg_pref_key.h \
- ../src_plugins/dialogs/dlg_pref_menu.h \
- ../src_plugins/dialogs/dlg_pref_conf.h \
- ../src_plugins/dialogs/dlg_pref_win.c \
- ../src_plugins/dialogs/dlg_pref_key.c \
- ../src_plugins/dialogs/dlg_pref_menu.c \
- ../src_plugins/dialogs/dlg_pref_conf.c \
+ ../config.h \
  ../src_plugins/dialogs/dlg_pref_confedit.c board.h vtroutestyle.h \
  attrib.h global_typedefs.h layer.h globalconst.h obj_common.h flag.h \
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
@@ -402,10 +390,6 @@
  obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h
 ../src_plugins/dialogs/dlg_pref_apptab.o: \
  ../src_plugins/dialogs/dlg_pref_apptab.c ../config.h \
- ../src_plugins/dialogs/dlg_pref.h ../src_plugins/dialogs/dlg_pref_win.h \
- ../src_plugins/dialogs/dlg_pref_key.h \
- ../src_plugins/dialogs/dlg_pref_menu.h \
- ../src_plugins/dialogs/dlg_pref_conf.h \
  ../src_plugins/dialogs/dlg_pref_general.c \
  ../src_plugins/dialogs/dlg_pref_board.c board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h globalconst.h obj_common.h flag.h \

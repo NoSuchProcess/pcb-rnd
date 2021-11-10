@@ -26,8 +26,8 @@
 
 /* Preferences dialog, board tab */
 
-#include "dlg_pref.h"
 #include <librnd/core/conf.h>
+#include <librnd/plugins/lib_hid_common/dlg_pref.h>
 #include "conf_core.h"
 #include "stub_draw.h"
 

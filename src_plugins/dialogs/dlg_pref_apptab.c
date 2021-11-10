@@ -28,7 +28,7 @@
 
 #include "config.h"
 
-#include "dlg_pref.h"
+#include <librnd/plugins/lib_hid_common/dlg_pref.h>
 
 /* application tabs */
 #undef  PREF_TAB

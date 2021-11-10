@@ -347,6 +347,7 @@ extern void pcb_select_act_init2(void);
 extern void pcb_undo_act_init2(void);
 extern void pcb_draw_init(void);
 extern void pcb_draw_uninit(void);
+extern void pcb_board_init(void);
 
 void pcb_main_init_actions(void)
 {
@@ -381,6 +382,7 @@ void pcb_main_uninit(void)
 
 	conf_core_uninit_pre();
 
+	pcb_board_init();
 	pcb_draw_uninit();
 	pcb_brave_uninit();
 	pcb_polygon_uninit();

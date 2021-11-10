@@ -27,8 +27,8 @@
 /* Preferences dialog, sizes tab */
 
 #include "board.h"
-#include "dlg_pref.h"
 #include <librnd/core/conf.h>
+#include <librnd/plugins/lib_hid_common/dlg_pref.h>
 #include "conf_core.h"
 #include "drc.h"
 
@@ -80,12 +80,12 @@ static void pref_sizes_limit_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_
 {
 	pref_ctx_t *ctx = caller_data;
 
-	if (Rnd_pref_dlg2conf_pre(ctx) == NULL)
+	if (Rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx) == NULL)
 		return;
 
-	pcb_pref_dlg2conf_table(ctx, limit_sizes, attr);
+	rnd_pref_dlg2conf_table(ctx, limit_sizes, attr);
 
-	Rnd_pref_dlg2conf_post(ctx);
+	Rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
 }
 
 static void pref_isle_brd2dlg(rnd_conf_native_t *cfg, int arr_idx)
@@ -111,7 +111,7 @@ static void pref_isle_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribut
 
 void pcb_dlg_pref_sizes_close(pref_ctx_t *ctx)
 {
-	pcb_pref_conflist_remove(ctx, limit_sizes);
+	rnd_pref_conflist_remove(ctx, limit_sizes);
 }
 
 void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
@@ -144,7 +144,7 @@ void pcb_dlg_pref_sizes_create(pref_ctx_t *ctx)
 		RND_DAD_LABEL(ctx->dlg, "Limiting sizes (not DRC)");
 		RND_DAD_LABEL(ctx->dlg, "(Used when the code needs to figure the absolute global smallest value)");
 		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
-			pcb_pref_create_conftable(ctx, limit_sizes, pref_sizes_limit_dlg2conf);
+			rnd_pref_create_conftable(ctx, limit_sizes, pref_sizes_limit_dlg2conf);
 		RND_DAD_END(ctx->dlg);
 
 		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);

@@ -26,9 +26,9 @@
 
 /* Preferences dialog, board tab */
 
-#include "dlg_pref.h"
 #include <librnd/core/conf.h>
 #include <librnd/core/actions.h>
+#include <librnd/plugins/lib_hid_common/dlg_pref.h>
 #include "board.h"
 #include "event.h"
 #include "conf_core.h"

@@ -35,6 +35,7 @@
 #include <librnd/core/plugins.h>
 #include "funchash_core.h"
 #include <librnd/plugins/lib_hid_common/dialogs_conf.h>
+#include <librnd/plugins/lib_hid_common/dlg_pref.h>
 
 /* from lib_hid_common */
 extern conf_dialogs_t dialogs_conf;
@@ -60,21 +61,14 @@ extern conf_dialogs_t dialogs_conf;
 #include "dlg_printcalib.c"
 
 #include "dlg_view.h"
-#include "dlg_pref.h"
 
 #include "adialogs_conf.h"
 #include "conf_internal.c"
 
 conf_adialogs_t adialogs_conf;
 
-extern const char pcb_acts_dlg_confval_edit[];
-extern const char pcb_acth_dlg_confval_edit[];
-extern fgw_error_t pcb_act_dlg_confval_edit(fgw_arg_t *res, int argc, fgw_arg_t *argv);
-
-
 rnd_action_t dialogs_action_list[] = {
 	{"dlg_test", pcb_act_dlg_test, dlg_test_help, dlg_test_syntax},
-	{"dlg_confval_edit", pcb_act_dlg_confval_edit, pcb_acth_dlg_confval_edit, pcb_acts_dlg_confval_edit},
 	{"LayerBinding", pcb_act_LayerBinding, pcb_acth_LayerBinding, pcb_acts_LayerBinding},
 	{"FlagEdit", pcb_act_FlagEdit, pcb_acth_FlagEdit, pcb_acts_FlagEdit},
 	{"PadstackEdit", pcb_act_PadstackEdit, pcb_acth_PadstackEdit, pcb_acts_PadstackEdit},
@@ -84,7 +78,6 @@ rnd_action_t dialogs_action_list[] = {
 	{"PrintGUI", pcb_act_PrintGUI, pcb_acth_PrintGUI, pcb_acts_PrintGUI},
 	{"GroupPropGui", pcb_act_GroupPropGui, pcb_acth_GroupPropGui, pcb_acts_GroupPropGui},
 	{"LayerPropGui", pcb_act_LayerPropGui, pcb_acth_LayerPropGui, pcb_acts_LayerPropGui},
-	{"Preferences", pcb_act_Preferences, pcb_acth_Preferences, pcb_acts_Preferences},
 	{"pstklib", pcb_act_pstklib, pcb_acth_pstklib, pcb_acts_pstklib},
 	{"UndoDialog", pcb_act_UndoDialog, pcb_acth_UndoDialog, pcb_acts_UndoDialog},
 	{"NetlistDialog", pcb_act_NetlistDialog, pcb_acth_NetlistDialog, pcb_acts_NetlistDialog},
@@ -111,7 +104,7 @@ void pplg_uninit_dialogs(void)
 	pcb_dlg_netlist_uninit();
 	pcb_dlg_undo_uninit();
 	pcb_dlg_pstklib_uninit();
-	pcb_dlg_pref_uninit();
+	rnd_dlg_pref_uninit();
 	rnd_remove_actions_by_cookie(dialogs_cookie);
 	pcb_view_dlg_uninit();
 	pcb_dlg_fontsel_uninit();
@@ -134,7 +127,7 @@ int pplg_init_dialogs(void)
 	rnd_conf_reg_intern(adialogs_conf_internal);
 
 	RND_REGISTER_ACTIONS(dialogs_action_list, dialogs_cookie)
-	pcb_dlg_pref_init(pcb_dlg_pref_tab, pcb_dlg_pref_first_init);
+	rnd_dlg_pref_init(pcb_dlg_pref_tab, pcb_dlg_pref_first_init);
 	pcb_dlg_pstklib_init();
 	pcb_dlg_undo_init();
 	pcb_dlg_netlist_init();

@@ -26,7 +26,8 @@
 
 /* Preferences dialog, general tab */
 
-#include "dlg_pref.h"
+#include <librnd/plugins/lib_hid_common/dlg_pref.h>
+#include "board.h"
 
 static pref_confitem_t perf_topwin[] = {
 	{"Alternate window layout to\nallow smaller size", "appearance/compact", 0, NULL},
@@ -48,21 +49,21 @@ static void pref_general_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attr
 {
 	pref_ctx_t *ctx = caller_data;
 
-	if (Rnd_pref_dlg2conf_pre(ctx) == NULL)
+	if (Rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx) == NULL)
 		return;
 
-	pcb_pref_dlg2conf_table(ctx, perf_topwin, attr);
-	pcb_pref_dlg2conf_table(ctx, perf_backup, attr);
-	pcb_pref_dlg2conf_table(ctx, perf_cli, attr);
+	rnd_pref_dlg2conf_table(ctx, perf_topwin, attr);
+	rnd_pref_dlg2conf_table(ctx, perf_backup, attr);
+	rnd_pref_dlg2conf_table(ctx, perf_cli, attr);
 
-	Rnd_pref_dlg2conf_post(ctx);
+	Rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
 }
 
 void pcb_dlg_pref_general_close(pref_ctx_t *ctx)
 {
-	pcb_pref_conflist_remove(ctx, perf_topwin);
-	pcb_pref_conflist_remove(ctx, perf_backup);
-	pcb_pref_conflist_remove(ctx, perf_cli);
+	rnd_pref_conflist_remove(ctx, perf_topwin);
+	rnd_pref_conflist_remove(ctx, perf_backup);
+	rnd_pref_conflist_remove(ctx, perf_cli);
 }
 
 void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
@@ -71,7 +72,7 @@ void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		RND_DAD_LABEL(ctx->dlg, "Top window layout");
 		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
-			pcb_pref_create_conftable(ctx, perf_topwin, pref_general_dlg2conf);
+			rnd_pref_create_conftable(ctx, perf_topwin, pref_general_dlg2conf);
 		RND_DAD_END(ctx->dlg);
 	RND_DAD_END(ctx->dlg);
 
@@ -79,7 +80,7 @@ void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		RND_DAD_LABEL(ctx->dlg, "Backup");
 		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
-			pcb_pref_create_conftable(ctx, perf_backup, pref_general_dlg2conf);
+			rnd_pref_create_conftable(ctx, perf_backup, pref_general_dlg2conf);
 		RND_DAD_END(ctx->dlg);
 	RND_DAD_END(ctx->dlg);
 
@@ -87,7 +88,7 @@ void pcb_dlg_pref_general_create(pref_ctx_t *ctx)
 		RND_DAD_COMPFLAG(ctx->dlg, RND_HATF_FRAME);
 		RND_DAD_LABEL(ctx->dlg, "Command line entry");
 		RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
-			pcb_pref_create_conftable(ctx, perf_cli, pref_general_dlg2conf);
+			rnd_pref_create_conftable(ctx, perf_cli, pref_general_dlg2conf);
 		RND_DAD_END(ctx->dlg);
 	RND_DAD_END(ctx->dlg);
 }

@@ -12,7 +12,6 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/dialogs/dlg_library.o
  $(PLUGDIR)/dialogs/dlg_loadsave.o
  $(PLUGDIR)/dialogs/dlg_padstack.o
- $(PLUGDIR)/dialogs/dlg_pref.o
  $(PLUGDIR)/dialogs/dlg_pref_apptab.o
  $(PLUGDIR)/dialogs/dlg_view.o
 @]
