@@ -765,6 +765,8 @@ static void xy_xform_by_subc_attrs(subst_ctx_t *ctx, pcb_subc_t *subc)
 	if (sval != NULL) {
 		double r = strtod(sval, &end);
 		while(isspace(*end)) end++;
+		if (!ctx->front) /* rotation is mirrored on bottom */
+			r = -r;
 		if (*end != '\0')
 			rnd_message(RND_MSG_ERROR, "xy: invalid subc rotate (%s) on subc '%s'\n", sval, ((subc->refdes == NULL) ? "" : subc->refdes));
 		else
@@ -847,14 +849,14 @@ static int PrintXY(const template_t *templ, const char *format_name)
 		if (pcb_subc_get_rotation(subc, &ctx.theta) != 0) rnd_message(RND_MSG_ERROR, "xy: can't get subc rotation for %s\n", ctx.name);
 		if (pcb_subc_get_side(subc, &bott) != 0) rnd_message(RND_MSG_ERROR, "xy: can't get subc side for %s\n", ctx.name);
 
+		ctx.subc = subc;
+		ctx.front = !bott;
+
 		xy_xform_by_subc_attrs(&ctx, subc);
 
 		ctx.theta = -ctx.theta;
 		if (ctx.theta == -0)
 			ctx.theta = 0;
-
-		ctx.subc = subc;
-		ctx.front = !bott;
 
 		xy_translate(&ctx, &ctx.x, &ctx.y, &ctx.bottom_x, &ctx.bottom_y, 1);
 
