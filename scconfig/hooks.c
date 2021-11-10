@@ -13,6 +13,9 @@
 
 #define version "3.0.2-dev"
 
+#define REQ_LIBRND_MAJOR 3
+#define REQ_LIBRND_MINOR 1
+
 #include <librnd/src_3rd/puplug/scconfig_hooks.h>
 #include <librnd/src_3rd/libfungw/scconfig_hooks.h>
 
@@ -98,6 +101,8 @@ int hook_postinit()
 	put("/local/pcb/want_static", sfalse);
 	put("/local/pcb/dot_pcb_rnd", ".pcb-rnd");
 	put("/local/pcb/librnd_prefix", TO_STR(LIBRND_PREFIX));
+
+	librnd_ver_req_min(REQ_LIBRND_MAJOR, REQ_LIBRND_MINOR);
 
 	return 0;
 }
