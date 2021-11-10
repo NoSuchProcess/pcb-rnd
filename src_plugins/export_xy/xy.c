@@ -721,10 +721,12 @@ static void xy_translate(subst_ctx_t *ctx, rnd_coord_t *dstx, rnd_coord_t *dsty,
 	/* apply attribute translation (affected by the final rotation of the part
 	   because the p&p machine will rotate around this point while the subc was
 	   rotated around it's pcb-rnd-origin) */
-	if (atrans && ((ctx->tx != 0) || (ctx->ty != 0)) && (ctx->theta != 0)) {
-		double tdeg = ctx->front ? -ctx->theta : ctx->theta;
-		double trad = tdeg / RND_RAD_TO_DEG;
-		rnd_rotate(&tx, &ty, 0, 0, cos(trad), sin(trad));
+	if (atrans && ((ctx->tx != 0) || (ctx->ty != 0))) {
+		if (ctx->theta != 0) {
+			double tdeg = ctx->front ? -ctx->theta : ctx->theta;
+			double trad = tdeg / RND_RAD_TO_DEG;
+			rnd_rotate(&tx, &ty, 0, 0, cos(trad), sin(trad));
+		}
 		if (!ctx->front)
 			ty = -ty;
 	}
