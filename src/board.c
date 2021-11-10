@@ -436,5 +436,10 @@ void pcb_board_changed_lib_ev(rnd_hidlib_t *hidlib, void *user_data, int argc, r
 
 void pcb_board_init(void)
 {
-	rnd_event_bind(RND_EVENT_DESIGN_META_CHANGED_LIB, pcb_board_changed_lib_ev, NULL, NULL);
+	rnd_event_bind(RND_EVENT_DESIGN_META_CHANGED_LIB, pcb_board_changed_lib_ev, NULL, core_board_cookie);
+}
+
+void pcb_board_uninit(void)
+{
+	rnd_event_unbind_allcookie(core_board_cookie);
 }

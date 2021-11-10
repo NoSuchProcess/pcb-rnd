@@ -348,6 +348,7 @@ extern void pcb_undo_act_init2(void);
 extern void pcb_draw_init(void);
 extern void pcb_draw_uninit(void);
 extern void pcb_board_init(void);
+extern void pcb_board_uninit(void);
 
 void pcb_main_init_actions(void)
 {
@@ -431,6 +432,7 @@ void pcb_main_uninit(void)
 	rnd_log_uninit();
 	main_path_uninit();
 	conf_core_uninit();
+	pcb_board_uninit();
 }
 
 /* action table number of columns for a single action */
