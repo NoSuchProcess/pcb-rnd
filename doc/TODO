@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ BUG: io_dsn bottom side subc rotation and/or y-mirror bug [report: Erich]
 
 2. For later releases ===============================================================================
 - depends on librnd 3.1.0:
