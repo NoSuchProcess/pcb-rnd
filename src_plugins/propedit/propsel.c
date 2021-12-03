@@ -326,10 +326,25 @@ static void map_subc(pcb_propedit_t *ctx, pcb_subc_t *msubc)
 	}
 }
 
-static void map_any(pcb_propedit_t *ctx, pcb_any_obj_t *o)
+static long pcb_propsel_do(pcb_data_t *data, void *ctx, long (*cb)(void *ctx, pcb_any_obj_t *o, const void *udata), const void *udata)
 {
+	pcb_any_obj_t *o;
+	pcb_data_it_t it;
+	long res = 0;
+
+	TODO("TODO#28: should be rtree based for recursion");
+	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
+		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
+			res += cb(ctx, o, udata);
+
+	return res;
+}
+
+static long map_any(void *ctx_, pcb_any_obj_t *o, const void *udata)
+{
+	pcb_propedit_t *ctx = ctx_;
 	if (o == NULL)
-		return;
+		return 0;
 	switch(o->type) {
 		case PCB_OBJ_ARC:  map_arc(ctx, (pcb_arc_t *)o); break;
 		case PCB_OBJ_GFX:  map_gfx(ctx, (pcb_gfx_t *)o); break;
@@ -338,8 +353,9 @@ static void map_any(pcb_propedit_t *ctx, pcb_any_obj_t *o)
 		case PCB_OBJ_TEXT: map_text(ctx, (pcb_text_t *)o); break;
 		case PCB_OBJ_SUBC: map_subc(ctx, (pcb_subc_t *)o); break;
 		case PCB_OBJ_PSTK: map_pstk(ctx, (pcb_pstk_t *)o); break;
-		default: break;
+		default: return 0;
 	}
+	return 1;
 }
 
 void pcb_propsel_map_core(pcb_propedit_t *ctx)
@@ -354,7 +370,7 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 		map_layergrp(ctx, pcb_get_layergrp(ctx->pcb, ctx->layergrps.array[n]));
 
 	for(idp = pcb_idpath_list_first(&ctx->objs); idp != NULL; idp = pcb_idpath_list_next(idp))
-		map_any(ctx, pcb_idpath2obj_in(ctx->data, idp));
+		map_any(ctx, pcb_idpath2obj_in(ctx->data, idp), NULL);
 
 	if (ctx->nets_inited) {
 		htsp_entry_t *e;
@@ -362,14 +378,8 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 			map_net(ctx, e->key);
 	}
 
-	if (ctx->selection) {
-		pcb_any_obj_t *o;
-		pcb_data_it_t it;
-		TODO("TODO#28: should be rtree based for recursion");
-		for(o = pcb_data_first(&it, ctx->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
-				map_any(ctx, o);
-	}
+	if (ctx->selection)
+		pcb_propsel_do(ctx->data, ctx, map_any, NULL);
 
 	if (ctx->board)
 		map_board(ctx, ctx->pcb);
@@ -997,10 +1007,11 @@ static void set_subc(pcb_propset_ctx_t *st, pcb_subc_t *ssubc)
 	}
 }
 
-static void set_any(pcb_propset_ctx_t *ctx, pcb_any_obj_t *o)
+static long set_any(void *ctx_, pcb_any_obj_t *o, const void *udata)
 {
+	pcb_propset_ctx_t *ctx = ctx_;
 	if (o == NULL)
-		return;
+		return 0;
 	switch(o->type) {
 		case PCB_OBJ_ARC:  set_arc(ctx, (pcb_arc_t *)o); break;
 		case PCB_OBJ_GFX:  set_gfx(ctx, (pcb_gfx_t *)o); break;
@@ -1009,8 +1020,9 @@ static void set_any(pcb_propset_ctx_t *ctx, pcb_any_obj_t *o)
 		case PCB_OBJ_TEXT: set_text(ctx, (pcb_text_t *)o); break;
 		case PCB_OBJ_SUBC: set_subc(ctx, (pcb_subc_t *)o); break;
 		case PCB_OBJ_PSTK: set_pstk(ctx, (pcb_pstk_t *)o); break;
-		default: break;
+		default: return 0;
 	}
+	return 1;
 }
 
 int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sctx)
@@ -1036,7 +1048,7 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 		pcb_any_obj_t *obj = pcb_idpath2obj_in(ctx->data, idp);
 		if (obj == NULL) /* workaround: idp sometimes points into the buffer */
 			obj = pcb_idpath2obj(PCB, idp);
-		set_any(sctx, obj);
+		set_any(sctx, obj, NULL);
 	}
 
 	if (ctx->nets_inited) {
@@ -1048,14 +1060,8 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 			pcb_ratspatch_make_edited(sctx->pcb);
 	}
 
-	if (ctx->selection) {
-		pcb_any_obj_t *o;
-		pcb_data_it_t it;
-		TODO("TODO#28: should be rtree based for recursion");
-		for(o = pcb_data_first(&it, ctx->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
-				set_any(sctx, o);
-	}
+	if (ctx->selection)
+		pcb_propsel_do(ctx->data, sctx, set_any, NULL);
 
 	if (ctx->board)
 		set_board(sctx, ctx->pcb);
@@ -1148,7 +1154,7 @@ static long del_net(pcb_propedit_t *ctx, const char *netname, const char *key)
 	return 1;
 }
 
-static long del_any(void *ctx, pcb_any_obj_t *o, const char *key)
+static long del_any(void *ctx, pcb_any_obj_t *o, const void *key)
 {
 	return del_attr(ctx, &o->Attributes, key);
 }
@@ -1187,14 +1193,8 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 			pcb_ratspatch_make_edited(ctx->pcb);
 	}
 
-	if (ctx->selection) {
-		pcb_any_obj_t *o;
-		pcb_data_it_t it;
-		TODO("TODO#28: should be rtree based for recursion");
-		for(o = pcb_data_first(&it, ctx->data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
-			if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
-				del_cnt += del_any(ctx, o, key);
-	}
+	if (ctx->selection)
+		del_cnt += pcb_propsel_do(ctx->data, ctx, del_any, key);
 
 	if (ctx->board)
 		del_cnt += del_board(&ctx, ctx->pcb, key);
