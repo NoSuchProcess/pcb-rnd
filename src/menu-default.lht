@@ -356,8 +356,8 @@ ha:rnd-menu-v1 {
 						ha:Check polygons                   = { a={<key>m; <key>d; <key>c}; checked=editor/check_planes; li:action={ conf(toggle, editor/check_planes, design); Display(Redraw); } }
 						ha:Object list popup                = { a={<key>m; <key>d; <key>o}; checked=editor/click_objlist; action=conf(toggle, editor/click_objlist, design); tip={If there are multiple objects under the cursor when executing an action, present a popup dialog to select which object to operate on} }
 						-
-						ha:Lock floaters                    = { a={<key>m; <key>f; <key>l}; checked=editor/lock_names; action=conf(toggle, editor/lock_names, design) }
-						ha:Only floaters                    = { a={<key>m; <key>f; <key>o}; checked=editor/only_names; action=conf(toggle, editor/only_names, design) }
+						ha:Lock floaters                    = { a={<key>m; <key>f; <key>l}; checked=editor/lock_names; action=display(togglelocknames) }
+						ha:Only floaters                    = { a={<key>m; <key>f; <key>o}; checked=editor/only_names; action=display(toggleonlynames) }
 						ha:Hide floaters                    = { a={<key>m; <key>f; <key>h}; checked=editor/hide_names; action=conf(toggle, editor/hide_names, design) }
 						-
 						ha:Line Tool size +5 mil            = { a={<key>m; <key>l; <char>+}; action=SetValue(LineSize,+5,mil) }
