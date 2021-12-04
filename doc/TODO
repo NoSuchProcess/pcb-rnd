@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-	- BUG: select a bunch of refdes texts, propedit(selection) -> empty [report: Igor2]
 
 2. For later releases ===============================================================================
 - depends on librnd 3.1.0:
