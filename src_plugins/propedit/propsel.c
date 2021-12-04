@@ -326,16 +326,28 @@ static void map_subc(pcb_propedit_t *ctx, pcb_subc_t *msubc)
 	}
 }
 
-static long pcb_propsel_do(pcb_data_t *data, void *ctx, long (*cb)(void *ctx, pcb_any_obj_t *o, const void *udata), const void *udata)
+static long pcb_propsel_do(pcb_board_t *pcb, pcb_data_t *data, int data_in_subc, void *ctx, long (*cb)(void *ctx, pcb_any_obj_t *o, const void *udata), const void *udata)
 {
 	pcb_any_obj_t *o;
 	pcb_data_it_t it;
 	long res = 0;
 
 	TODO("TODO#28: should be rtree based for recursion");
-	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it))
+	for(o = pcb_data_first(&it, data, PCB_OBJ_CLASS_REAL); o != NULL; o = pcb_data_next(&it)) {
+		if (data_in_subc) {
+			if (!pcb_subc_part_editable(pcb, o))
+				continue; /* subc lock: skip any selected object within a subc */
+		}
+		else {
+			if (o->type == PCB_OBJ_SUBC) {
+				pcb_subc_t *subc = (pcb_subc_t *)o;
+				res += pcb_propsel_do(pcb, subc->data, 1, ctx, cb, udata); /* recurse to subcircuits on the first (board) level */
+			}
+		}
+
 		if (PCB_FLAG_TEST(PCB_FLAG_SELECTED, o))
 			res += cb(ctx, o, udata);
+	}
 
 	return res;
 }
@@ -379,7 +391,7 @@ void pcb_propsel_map_core(pcb_propedit_t *ctx)
 	}
 
 	if (ctx->selection)
-		pcb_propsel_do(ctx->data, ctx, map_any, NULL);
+		pcb_propsel_do(ctx->pcb, ctx->data, 0, ctx, map_any, NULL);
 
 	if (ctx->board)
 		map_board(ctx, ctx->pcb);
@@ -1061,7 +1073,7 @@ int pcb_propsel_set(pcb_propedit_t *ctx, const char *prop, pcb_propset_ctx_t *sc
 	}
 
 	if (ctx->selection)
-		pcb_propsel_do(ctx->data, sctx, set_any, NULL);
+		pcb_propsel_do(ctx->pcb, ctx->data, 0, sctx, set_any, NULL);
 
 	if (ctx->board)
 		set_board(sctx, ctx->pcb);
@@ -1194,7 +1206,7 @@ int pcb_propsel_del(pcb_propedit_t *ctx, const char *key)
 	}
 
 	if (ctx->selection)
-		del_cnt += pcb_propsel_do(ctx->data, ctx, del_any, key);
+		del_cnt += pcb_propsel_do(ctx->pcb, ctx->data, 0, ctx, del_any, key);
 
 	if (ctx->board)
 		del_cnt += del_board(&ctx, ctx->pcb, key);
