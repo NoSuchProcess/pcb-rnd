@@ -275,7 +275,8 @@ static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const 
 		else
 			rnd_message(RND_MSG_ERROR, "STL model not found: %s\n", name);
 		free(full_path);
-		fclose(f);
+		if (f != NULL)
+			fclose(f);
 		htsp_set(models, rnd_strdup(name), head);
 	}
 	else
