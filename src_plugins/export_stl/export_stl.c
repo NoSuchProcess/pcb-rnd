@@ -352,6 +352,8 @@ static const rnd_export_opt_t *stl_get_export_options_(rnd_hid_t *hid, int *n, c
 #include "exp_fmt_stl.c"
 #include "exp_fmt_amf.c"
 #include "stl_models.c"
+#include "model_load_stl.c"
+#include "model_load_amf.c"
 
 static const rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n)
 {

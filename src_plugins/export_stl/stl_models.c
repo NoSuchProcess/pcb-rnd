@@ -157,9 +157,6 @@ static void parse_utrans(double dst[3], const char *src)
 
 static stl_facet_t stl_format_not_supported;
 
-#include "model_load_stl.c"
-#include "model_load_amf.c"
-
 static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const char *name, rnd_coord_t ox, rnd_coord_t oy, double rotdeg, int on_bottom, const char *user_xlate, const char *user_rot, double maxy, rnd_coord_t z0, rnd_coord_t z1, const stl_fmt_t *ifmt, const stl_fmt_t *ofmt)
 {
 	stl_facet_t *head = NULL;
