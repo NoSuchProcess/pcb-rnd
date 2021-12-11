@@ -211,6 +211,7 @@ void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0,
 	htsp_t models;
 	const char *mod;
 	htsp_entry_t *e;
+	int first = 1;
 
 	htsp_init(&models, strhash, strkeyeq);
 
@@ -235,6 +236,14 @@ void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0,
 			srot = pcb_attribute_get(&subc->Attributes, "stl::rotate");
 			if (srot == NULL)
 				srot = pcb_attribute_get(&subc->Attributes, "stl-rotate");
+
+			if (first) {
+				if (fmt_amf)
+					amf_new_obj(0, 0, 0);
+				else
+					stl_new_obj(0, 0, 0);
+				first = 0;
+			}
 
 			stl_model_place(&pcb->hidlib, outf, &models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy, z0, z1, fmt_amf);
 		}

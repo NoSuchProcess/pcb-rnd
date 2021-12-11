@@ -73,6 +73,11 @@ static void amf_print_facet(FILE *f, stl_facet_t *head, double mx[16], double mx
 	verthash_add_triangle(&verthash, vert[0], vert[1], vert[2]);
 }
 
+static void amf_new_obj(float r, float g, float b)
+{
+	verthash_new_obj(&verthash, r, g, b);
+}
+
 static void amf_print_header(FILE *f)
 {
 	fprintf(f, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -94,13 +99,31 @@ static void amf_print_footer(FILE *f)
 		rnd_fprintf(f, "    <vertex><coordinates> <x>%.09mm</x>\t<y>%.09mm</y>\t<z>%.09mm</z> </coordinates></vertex>\n", c[0], c[1], c[2]);
 	fprintf(f, "   </vertices>\n");
 
-	fprintf(f, "   <volume>\n");
-	for(n = 0, vx = verthash.triangles.array; n < verthash.triangles.used; n += 3, vx += 3)
+	for(n = 0, vx = verthash.triangles.array; n < verthash.triangles.used; n += 3, vx += 3) {
+		if (vx[0] < 0) {
+			if (n != 0)
+				fprintf(f, "   </volume>\n");
+			fprintf(f, "   <volume materialid=\"%ld\">\n", (long)-vx[0]);
+			vx++;
+			n++;
+			continue; /* shift colors */
+		}
 		rnd_fprintf(f, "    <triangle> <v1>%ld</v1>\t<v2>%ld</v2>\t<v3>%ld</v3> </triangle>\n", vx[0], vx[1], vx[2]);
+	}
 	fprintf(f, "   </volume>\n");
-
 	fprintf(f, "  </mesh>\n");
 	fprintf(f, " </object>\n");
+
+	for(n = 0, vx = verthash.triangles.array; n < verthash.triangles.used; n += 3, vx += 3) {
+		if (vx[0] < 0) {
+			fprintf(f, "  <material id=\"%ld\">\n", (long)-vx[0]);
+			vx++;
+			n++;
+			fprintf(f, "    <color><r>%.6f</r><g>%.6f</g><b>%.6f</b></color>\n", (double)vx[0]/1000000, (double)vx[1]/1000000, (double)vx[2]/1000000);
+			fprintf(f, "  </material>\n");
+		}
+	}
+
 	fprintf(f, "</amf>\n");
 
 	verthash_uninit(&verthash);

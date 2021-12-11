@@ -18,6 +18,7 @@ typedef struct {
 	vtc0_t vxcoords;
 	vtl0_t triangles;
 	long next_id;
+	long next_obj;
 } verthash_t;
 
 
@@ -37,6 +38,7 @@ static void verthash_init(verthash_t *vh)
 	vtc0_init(&vh->vxcoords);
 	vtl0_init(&vh->triangles);
 	vh->next_id = 0;
+	vh->next_obj = 2;
 }
 
 static void verthash_uninit(verthash_t *vh)
@@ -80,4 +82,14 @@ static void verthash_add_triangle_coord(verthash_t *vh, rnd_coord_t x1, rnd_coor
 	v2 = verthash_add_vertex(vh, x2, y2, z2);
 	v3 = verthash_add_vertex(vh, x3, y3, z3);
 	verthash_add_triangle(vh, v1, v2, v3);
+}
+
+static void verthash_new_obj(verthash_t *vh, float r, float g, float b)
+{
+	vtl0_append(&vh->triangles, -vh->next_obj);
+	vh->next_obj++;
+
+	vtl0_append(&vh->triangles, rnd_round(r*1000000));
+	vtl0_append(&vh->triangles, rnd_round(g*1000000));
+	vtl0_append(&vh->triangles, rnd_round(b*1000000));
 }

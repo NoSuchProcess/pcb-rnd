@@ -88,6 +88,10 @@ static void stl_print_facet(FILE *f, stl_facet_t *head, double mx[16], double mx
 	fprintf(f, " endfacet\n");
 }
 
+static void stl_new_obj(float r, float g, float b)
+{
+}
+
 static void stl_print_header(FILE *f)
 {
 	fprintf(f, "solid pcb\n");
