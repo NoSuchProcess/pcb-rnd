@@ -206,8 +206,8 @@ static int stl_model_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_
 	int on_bottom = 0;
 	const char *srot, *sxlate;
 
-	mod = pcb_attribute_get(&subc->Attributes, "stl");
-	if (mod != NULL)
+	mod = pcb_attribute_get(&subc->Attributes, ifmt->attr_model_name);
+	if (mod == NULL)
 		return -1;
 
 	if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
@@ -217,12 +217,12 @@ static int stl_model_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_
 	pcb_subc_get_rotation(subc, &rot);
 	pcb_subc_get_side(subc, &on_bottom);
 
-	sxlate = pcb_attribute_get(&subc->Attributes, "stl::translate");
-	if (sxlate == NULL)
-		sxlate = pcb_attribute_get(&subc->Attributes, "stl-translate");
-	srot = pcb_attribute_get(&subc->Attributes, "stl::rotate");
-	if (srot == NULL)
-		srot = pcb_attribute_get(&subc->Attributes, "stl-rotate");
+	sxlate = pcb_attribute_get(&subc->Attributes, ifmt->attr_xlate);
+	if ((sxlate == NULL) && (ifmt->attr_xlate_old != NULL))
+		sxlate = pcb_attribute_get(&subc->Attributes, ifmt->attr_xlate_old);
+	srot = pcb_attribute_get(&subc->Attributes, ifmt->attr_rotate);
+	if ((srot == NULL)  && (ifmt->attr_rotate_old != NULL))
+		srot = pcb_attribute_get(&subc->Attributes, ifmt->attr_rotate_old);
 
 	if (*first) {
 		ofmt->new_obj(0, 0, 0);

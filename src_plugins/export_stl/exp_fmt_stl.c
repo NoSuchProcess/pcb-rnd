@@ -115,5 +115,8 @@ static const stl_fmt_t fmt_stl = {
 	stl_print_footer,
 
 	/* model load */
+	"stl",
+	"stl::translate", "stl-translate",
+	"stl::rotate", "stl-rotate",
 	stl_solid_fload
 };

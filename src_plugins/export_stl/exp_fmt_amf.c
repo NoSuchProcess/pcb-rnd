@@ -146,5 +146,8 @@ static const stl_fmt_t fmt_amf = {
 	amf_print_footer,
 
 	/* model load */
+	"amf",
+	"amf::translate", NULL,
+	"amf::rotate", NULL,
 	amf_solid_fload
 };
