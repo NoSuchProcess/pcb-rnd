@@ -83,25 +83,6 @@ static void amf_load_vertices(vtd0_t *dst, xmlNode *vertices)
 	}
 }
 
-static void stl_triangle_normal(stl_facet_t *t)
-{
-	double x1 = t->vx[0], y1 = t->vy[0], z1 = t->vz[0];
-	double x2 = t->vx[1], y2 = t->vy[1], z2 = t->vz[1];
-	double x3 = t->vx[2], y3 = t->vy[2], z3 = t->vz[2];
-	double len;
-
-	t->n[0] = (y2-y1)*(z3-z1) - (y3-y1)*(z2-z1);
-	t->n[1] = (z2-z1)*(x3-x1) - (x2-x1)*(z3-z1);
-	t->n[2] = (x2-x1)*(y3-y1) - (x3-x1)*(y2-y1);
-
-	len = sqrt(t->n[0] * t->n[0] + t->n[1] * t->n[1] + t->n[2] * t->n[2]);
-	if (len == 0) return;
-
-	t->n[0] /= len;
-	t->n[1] /= len;
-	t->n[2] /= len;
-}
-
 static stl_facet_t *amf_load_volume(vtd0_t *verts, xmlNode *volume)
 {
 	xmlNode *n, *m;
@@ -135,7 +116,7 @@ static stl_facet_t *amf_load_volume(vtd0_t *verts, xmlNode *volume)
 				t->vy[i] = crd[1];
 				t->vz[i] = crd[2];
 			}
-			stl_triangle_normal(t);
+			stl_facet_normal(t);
 
 			if (tail != NULL) {
 				tail->next = t;

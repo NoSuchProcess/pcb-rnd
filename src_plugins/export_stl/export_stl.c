@@ -318,6 +318,32 @@ struct stl_facet_s {
 };
 RND_INLINE void v_transform(double dst[3], double src[3], double mx[16]);
 
+static void stl_triangle_normal(double *dx, double *dy, double *dz, double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3)
+{
+	double len;
+
+	*dx = (y2-y1)*(z3-z1) - (y3-y1)*(z2-z1);
+	*dy = (z2-z1)*(x3-x1) - (x2-x1)*(z3-z1);
+	*dz = (x2-x1)*(y3-y1) - (x3-x1)*(y2-y1);
+
+	len = sqrt((*dx) * (*dx) + (*dy) * (*dy) + (*dz) * (*dz));
+	if (len == 0) return;
+
+	*dx /= len;
+	*dy /= len;
+	*dz /= len;
+}
+
+static void stl_facet_normal(stl_facet_t *t)
+{
+	stl_triangle_normal(
+		&t->n[0], &t->n[1], &t->n[2],
+		t->vx[0], t->vy[0], t->vz[0],
+		t->vx[1], t->vy[1], t->vz[1],
+		t->vx[2], t->vy[2], t->vz[2]
+		);
+}
+
 #include "verthash.c"
 
 typedef struct {
