@@ -129,19 +129,21 @@ static stl_facet_t *amf_load_volume(vtd0_t *verts, xmlNode *volume)
 
 static stl_facet_t *amf_load_mesh(xmlNode *mesh)
 {
-	xmlNode *n;
+	xmlNode *n, *m;
 	vtd0_t verts = {0};
 	stl_facet_t *t, *head = NULL, *tail = NULL;
 
 	/* load vertices */
 	for(n = mesh->children; n != NULL; n = n->next)
 		if (xmlStrcmp(n->name, (xmlChar *)"vertices") == 0)
-			amf_load_vertices(&verts, n);
+			for(m = n->children; m != NULL; m = m->next)
+				if (xmlStrcmp(m->name, (xmlChar *)"vertex") == 0)
+					amf_load_vertices(&verts, m);
 
 	if (verts.used == 0)
 		return NULL;
 
-	/* load vertices */
+	/* load volumes */
 	for(n = mesh->children; n != NULL; n = n->next) {
 		if (xmlStrcmp(n->name, (xmlChar *)"volume") == 0) {
 			t = amf_load_volume(&verts, n);
