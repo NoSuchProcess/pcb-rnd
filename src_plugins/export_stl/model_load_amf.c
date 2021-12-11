@@ -30,8 +30,47 @@
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
+static void amf_load_material(xmlNode *material)
+{
+	rnd_trace("amf material\n");
+}
+
+static void amf_load_mesh(xmlNode *mesh)
+{
+	rnd_trace("amf mesh\n");
+}
+
 stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
 {
+	xmlDoc *doc;
+	xmlNode *root, *n, *m;
+
+	doc = xmlReadFile(fn, NULL, 0);
+	if (doc == NULL) {
+		rnd_message(RND_MSG_ERROR, "amf xml parsing error on file %s\n", fn);
+		return NULL;
+	}
+
+	root = xmlDocGetRootElement(doc);
+	if (xmlStrcmp(root->name, (xmlChar *)"amf") != 0) {
+		rnd_message(RND_MSG_ERROR, "amf xml error on file %s: root is not <amf>\n", fn);
+		xmlFreeDoc(doc);
+		return NULL;
+	}
+
+	/* read all materials */
+	for(n = root->children; n != NULL; n = n->next)
+		if (xmlStrcmp(n->name, (xmlChar *)"material") != 0)
+			amf_load_material(n);
+
+	/* read all volumes */
+	for(n = root->children; n != NULL; n = n->next)
+		if (xmlStrcmp(n->name, (xmlChar *)"object") != 0)
+			for(m = root->children; m != NULL; m = m->next)
+				if (xmlStrcmp(m->name, (xmlChar *)"mesh") != 0)
+					amf_load_mesh(n);
+
+	xmlFreeDoc(doc);
 	return NULL;
 }
 
