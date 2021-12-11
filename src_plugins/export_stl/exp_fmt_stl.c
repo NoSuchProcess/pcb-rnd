@@ -71,6 +71,23 @@ static void stl_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coor
 	fprintf(f, "	endfacet\n");
 }
 
+static void stl_print_facet(FILE *f, stl_facet_t *head, double mx[16], double mxn[16])
+{
+	double v[3], p[3];
+	int n;
+
+	v_transform(v, head->n, mxn);
+	fprintf(f, " facet normal %f %f %f\n", v[0], -v[1], v[2]);
+	fprintf(f, "  outer loop\n");
+	for(n = 0; n < 3; n++) {
+		p[0] = head->vx[n]; p[1] = head->vy[n]; p[2] = head->vz[n];
+		v_transform(v, p, mx);
+		fprintf(f, "   vertex %f %f %f\n", v[0], v[1], v[2]);
+	}
+	fprintf(f, "  endloop\n");
+	fprintf(f, " endfacet\n");
+}
+
 static void stl_print_header(FILE *f)
 {
 	fprintf(f, "solid pcb\n");

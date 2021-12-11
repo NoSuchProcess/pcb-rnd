@@ -322,8 +322,17 @@ static void add_holes_cutout(fp2t_t *tri, pcb_board_t *pcb, rnd_coord_t maxy, vt
 	}
 }
 
-#include "stl_models.c"
+typedef struct stl_facet_s stl_facet_t;
+
+struct stl_facet_s {
+	double n[3];
+	double vx[3], vy[3], vz[3];
+	stl_facet_t *next;
+};
+RND_INLINE void v_transform(double dst[3], double src[3], double mx[16]);
+
 #include "exp_fmt_stl.c"
+#include "stl_models.c"
 
 int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
 {

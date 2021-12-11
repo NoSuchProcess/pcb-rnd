@@ -31,14 +31,6 @@
 #include <string.h>
 #include <math.h>
 
-typedef struct stl_facet_s stl_facet_t;
-
-struct stl_facet_s {
-	double n[3];
-	double vx[3], vy[3], vz[3];
-	stl_facet_t *next;
-};
-
 static char *stl_getline(char *line, int linelen, FILE *f)
 {
 	char *cmd;
@@ -134,20 +126,8 @@ void stl_solid_print_facets(FILE *f, stl_facet_t *head, double rotx, double roty
 		memcpy(mx, tmp2, sizeof(tmp2));
 	}
 
-	for(; head != NULL; head = head->next) {
-		double v[3], p[3];
-		int n;
-		v_transform(v, head->n, mxn);
-		fprintf(f, " facet normal %f %f %f\n", v[0], -v[1], v[2]);
-		fprintf(f, "  outer loop\n");
-		for(n = 0; n < 3; n++) {
-			p[0] = head->vx[n]; p[1] = head->vy[n]; p[2] = head->vz[n];
-			v_transform(v, p, mx);
-			fprintf(f, "   vertex %f %f %f\n", v[0], v[1], v[2]);
-		}
-		fprintf(f, "  endloop\n");
-		fprintf(f, " endfacet\n");
-	}
+	for(; head != NULL; head = head->next)
+		stl_print_facet(f, head, mx, mxn);
 }
 
 #ifndef STL_TESTER
