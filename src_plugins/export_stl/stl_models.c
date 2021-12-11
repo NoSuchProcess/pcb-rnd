@@ -242,7 +242,23 @@ void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0,
 	htsp_init(&models, strhash, strkeyeq);
 
 	PCB_SUBC_LOOP(PCB->Data); {
-		stl_model_print(pcb, outf, maxy, z0, z1, &models, subc, &first, fmt, fmt);
+		int good = 0;
+
+		if (stl_model_print(pcb, outf, maxy, z0, z1, &models, subc, &first, fmt, fmt) != 0) {
+			const stl_fmt_t **n; /* fallback: try all other formats */
+			for(n = fmt_all; *n != NULL; n++) {
+				if (*n == fmt) continue; /* already tried */
+				if (stl_model_print(pcb, outf, maxy, z0, z1, &models, subc, &first, *n, fmt) == 0) {
+					good = 1;
+					break;
+				}
+			}
+		}
+		else
+			good = 1;
+
+		if (!good)
+			pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)subc, "subc-place", "Missing 3d model", "Could not load 3d surface model - component missing from the output");
 	} PCB_END_LOOP;
 
 	for (e = htsp_first(&models); e; e = htsp_next(&models, e)) {
