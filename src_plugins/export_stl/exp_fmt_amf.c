@@ -120,11 +120,11 @@ static void amf_print_footer(FILE *f)
 
 	for(n = 0, vx = verthash.triangles.array; n < verthash.triangles.used; n += 3, vx += 3) {
 		if (vx[0] < 0) {
-			fprintf(f, "  <material id=\"%ld\">\n", (long)-vx[0]);
+			fprintf(f, " <material id=\"%ld\">\n", (long)-vx[0]);
 			vx++;
 			n++;
-			fprintf(f, "    <color><r>%.6f</r><g>%.6f</g><b>%.6f</b></color>\n", (double)vx[0]/1000000, (double)vx[1]/1000000, (double)vx[2]/1000000);
-			fprintf(f, "  </material>\n");
+			fprintf(f, "   <color><r>%.6f</r><g>%.6f</g><b>%.6f</b></color>\n", (double)vx[0]/1000000, (double)vx[1]/1000000, (double)vx[2]/1000000);
+			fprintf(f, " </material>\n");
 		}
 	}
 
