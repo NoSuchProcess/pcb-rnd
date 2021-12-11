@@ -145,6 +145,7 @@ static stl_facet_t *amf_load_mesh(xmlNode *mesh)
 	for(n = mesh->children; n != NULL; n = n->next) {
 		if (xmlStrcmp(n->name, (xmlChar *)"volume") == 0) {
 			t = amf_load_volume(&verts, n);
+			if (t == NULL) continue;
 			if (tail != NULL) {
 				tail->next = t;
 				tail = t;
@@ -187,6 +188,7 @@ static stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
 			for(m = n->children; m != NULL; m = m->next) {
 				if (xmlStrcmp(m->name, (xmlChar *)"mesh") == 0) {
 					t = amf_load_mesh(m);
+					if (t == NULL) continue;
 					if (tail != NULL) {
 						tail->next = t;
 						tail = t;
