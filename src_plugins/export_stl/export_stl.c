@@ -342,6 +342,10 @@ struct stl_facet_s {
 };
 RND_INLINE void v_transform(double dst[3], double src[3], double mx[16]);
 
+#include "verthash.c"
+
+static verthash_t verthash;
+
 #include "exp_fmt_stl.c"
 #include "exp_fmt_amf.c"
 #include "stl_models.c"

@@ -704,7 +704,8 @@
  ../src_plugins/export_stl/exp_fmt_amf.c \
  ../src_plugins/export_stl/stl_models.c \
  ../src_plugins/export_stl/model_load_stl.c \
- ../src_plugins/export_stl/model_load_amf.c
+ ../src_plugins/export_stl/model_load_amf.c \
+ ../src_plugins/export_stl/verthash.c
 ../src_plugins/export_svg/svg.o: ../src_plugins/export_svg/svg.c \
  ../config.h conf_core.h globalconst.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h obj_common.h flag.h data_parent.h \
