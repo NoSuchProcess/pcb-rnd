@@ -59,10 +59,10 @@ static void proj_print_footer(FILE *f)
 static const stl_fmt_t fmt_proj = {
 	/* output */
 	".pro",
-	amf_print_horiz_tri,
-	amf_print_vert_tri,
-	amf_print_facet,
-	amf_new_obj,
+	vhs_print_horiz_tri,
+	vhs_print_vert_tri,
+	vhs_print_facet,
+	vhs_new_obj,
 	proj_print_header,
 	proj_print_footer,
 

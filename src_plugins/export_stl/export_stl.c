@@ -320,8 +320,6 @@ RND_INLINE void v_transform(double dst[3], double src[3], double mx[16]);
 
 #include "verthash.c"
 
-static verthash_t verthash;
-
 typedef struct {
 	/* output */
 	const char *suffix;

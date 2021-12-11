@@ -24,64 +24,6 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-static void amf_print_horiz_tri(FILE *f, fp2t_triangle_t *t, int up, rnd_coord_t z)
-{
-	if (up) {
-		verthash_add_triangle_coord(&verthash,
-			t->Points[0]->X, t->Points[0]->Y, z,
-			t->Points[1]->X, t->Points[1]->Y, z,
-			t->Points[2]->X, t->Points[2]->Y, z
-			);
-	}
-	else {
-		verthash_add_triangle_coord(&verthash,
-			t->Points[2]->X, (rnd_coord_t)t->Points[2]->Y, z,
-			t->Points[1]->X, (rnd_coord_t)t->Points[1]->Y, z,
-			t->Points[0]->X, (rnd_coord_t)t->Points[0]->Y, z
-			);
-	}
-}
-
-static void amf_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t z0, rnd_coord_t z1)
-{
-	verthash_add_triangle_coord(&verthash,
-		x2, y2, z1,
-		x1, y1, z1,
-		x1, y1, z0
-		);
-
-	verthash_add_triangle_coord(&verthash,
-		x2, y2, z1,
-		x1, y1, z0,
-		x2, y2, z0
-		);
-}
-
-
-static void amf_print_facet(FILE *f, stl_facet_t *head, double mx[16], double mxn[16])
-{
-	double v[3], p[3];
-	long vert[3];
-	int n;
-
-	for(n = 0; n < 3; n++) {
-		p[0] = head->vx[n]; p[1] = head->vy[n]; p[2] = head->vz[n];
-		v_transform(v, p, mx);
-		vert[n] = verthash_add_vertex(&verthash,
-			(rnd_coord_t)RND_MM_TO_COORD(v[0]),
-			(rnd_coord_t)RND_MM_TO_COORD(v[1]),
-			(rnd_coord_t)RND_MM_TO_COORD(v[2])
-			);
-	}
-
-	verthash_add_triangle(&verthash, vert[0], vert[1], vert[2]);
-}
-
-static void amf_new_obj(float r, float g, float b)
-{
-	verthash_new_obj(&verthash, r, g, b);
-}
-
 static void amf_print_header(FILE *f)
 {
 	fprintf(f, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -138,10 +80,10 @@ static stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn);
 static const stl_fmt_t fmt_amf = {
 	/* output */
 	".amf",
-	amf_print_horiz_tri,
-	amf_print_vert_tri,
-	amf_print_facet,
-	amf_new_obj,
+	vhs_print_horiz_tri,
+	vhs_print_vert_tri,
+	vhs_print_facet,
+	vhs_new_obj,
 	amf_print_header,
 	amf_print_footer,
 
