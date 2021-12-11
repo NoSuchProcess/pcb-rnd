@@ -47,11 +47,11 @@
 #include "../lib_polyhelp/topoly.h"
 #include "../lib_polyhelp/triangulate.h"
 
-static rnd_hid_t stl_hid;
+static rnd_hid_t stl_hid, amf_hid;
 const char *stl_cookie = "export_stl HID";
 
 static const rnd_export_opt_t stl_attribute_list[] = {
-	{"outfile", "STL output file",
+	{"outfile", "STL/AMF output file",
 	 RND_HATT_STRING, 0, 0, {0, 0, 0}, 0},
 #define HA_stlfile 0
 
@@ -92,9 +92,9 @@ static const rnd_export_opt_t stl_attribute_list[] = {
 
 static rnd_hid_attr_val_t stl_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n)
+static const rnd_export_opt_t *stl_get_export_options_(rnd_hid_t *hid, int *n, int fmt_amf)
 {
-	const char *suffix = ".stl";
+	const char *suffix = fmt_amf ? ".amf" : ".stl";
 	const char *val = stl_values[HA_stlfile].str;
 
 	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
@@ -104,6 +104,17 @@ static const rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n)
 		*n = NUM_OPTIONS;
 	return stl_attribute_list;
 }
+
+static const rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n)
+{
+	return stl_get_export_options_(hid, n, 0);
+}
+
+static const rnd_export_opt_t *amf_get_export_options(rnd_hid_t *hid, int *n)
+{
+	return stl_get_export_options_(hid, n, 1);
+}
+
 
 static long pa_len(const rnd_polyarea_t *pa)
 {
@@ -473,7 +484,7 @@ static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, int fmt_
 	rnd_coord_t thick;
 
 	if (!options) {
-		stl_get_export_options(hid, 0);
+		stl_get_export_options_(hid, 0, fmt_amf);
 		options = stl_values;
 	}
 
@@ -538,6 +549,7 @@ void pplg_uninit_export_stl(void)
 {
 	rnd_remove_actions_by_cookie(stl_cookie);
 	rnd_hid_remove_hid(&stl_hid);
+	rnd_hid_remove_hid(&amf_hid);
 }
 
 int pplg_init_export_stl(void)
@@ -562,6 +574,15 @@ int pplg_init_export_stl(void)
 
 	rnd_hid_register_hid(&stl_hid);
 	rnd_hid_load_defaults(&stl_hid, stl_attribute_list, NUM_OPTIONS);
+
+	memcpy(&amf_hid, &stl_hid, sizeof(rnd_hid_t));
+	amf_hid.name = "amf";
+	amf_hid.description = "export board outline in 3-dimensional AMF";
+	stl_hid.get_export_options = amf_get_export_options;
+	amf_hid.do_export = amf_do_export;
+
+	rnd_hid_register_hid(&amf_hid);
+	rnd_hid_load_defaults(&amf_hid, stl_attribute_list, NUM_OPTIONS);
 
 	return 0;
 }
