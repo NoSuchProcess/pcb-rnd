@@ -459,7 +459,7 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 	}
 
 	if (options[HA_models].lng)
-		stl_models_print(PCB, f, maxy, z0, z1);
+		stl_models_print(PCB, f, maxy, z0, z1, fmt_amf);
 
 	if (fmt_amf)
 		amf_print_footer(f);
