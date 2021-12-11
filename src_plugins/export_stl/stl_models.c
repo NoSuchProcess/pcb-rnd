@@ -160,7 +160,7 @@ static stl_facet_t stl_format_not_supported;
 #include "model_load_stl.c"
 #include "model_load_amf.c"
 
-static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const char *name, rnd_coord_t ox, rnd_coord_t oy, double rotdeg, int on_bottom, const char *user_xlate, const char *user_rot, double maxy, rnd_coord_t z0, rnd_coord_t z1, const stl_fmt_t *fmt)
+static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const char *name, rnd_coord_t ox, rnd_coord_t oy, double rotdeg, int on_bottom, const char *user_xlate, const char *user_rot, double maxy, rnd_coord_t z0, rnd_coord_t z1, const stl_fmt_t *ifmt, const stl_fmt_t *ofmt)
 {
 	stl_facet_t *head = NULL;
 	double uxlate[3] = {0,0,0}, xlate[3], urot[3] = {0,0,0}, rot[3];
@@ -169,14 +169,14 @@ static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const 
 		char *full_path;
 		FILE *f = rnd_fopen_first(&PCB->hidlib, &conf_core.rc.library_search_paths, name, "r", &full_path, rnd_true);
 		if (f != NULL) {
-			head = fmt->model_load(hl, f, full_path);
+			head = ifmt->model_load(hl, f, full_path);
 			if (head == NULL)
-				rnd_message(RND_MSG_ERROR, "STL model failed to load: %s\n", full_path);
+				rnd_message(RND_MSG_ERROR, "export_stl model failed to load: %s\n", full_path);
 			else if (head == &stl_format_not_supported)
 				head = NULL;
 		}
 		else
-			rnd_message(RND_MSG_ERROR, "STL model not found: %s\n", name);
+			rnd_message(RND_MSG_ERROR, "export_stl model not found: %s\n", name);
 		free(full_path);
 		if (f != NULL)
 			fclose(f);
@@ -198,7 +198,7 @@ static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const 
 	rot[1] = (on_bottom ? M_PI : 0) + urot[1] / RND_RAD_TO_DEG;
 	rot[2] = rotdeg / RND_RAD_TO_DEG + urot[2] / RND_RAD_TO_DEG;
 
-	stl_solid_print_facets(outf, head, rot[0], rot[1], rot[2], xlate[0], xlate[1], xlate[2], fmt);
+	stl_solid_print_facets(outf, head, rot[0], rot[1], rot[2], xlate[0], xlate[1], xlate[2], ofmt);
 }
 
 
@@ -238,7 +238,7 @@ void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0,
 				first = 0;
 			}
 
-			stl_model_place(&pcb->hidlib, outf, &models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy, z0, z1, fmt);
+			stl_model_place(&pcb->hidlib, outf, &models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy, z0, z1, fmt, fmt);
 		}
 	} PCB_END_LOOP;
 
