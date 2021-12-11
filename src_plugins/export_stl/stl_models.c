@@ -210,26 +210,26 @@ static int stl_model_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_
 	if (mod != NULL)
 		return -1;
 
-		if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
-			pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
-			return -1;
-		}
-		pcb_subc_get_rotation(subc, &rot);
-		pcb_subc_get_side(subc, &on_bottom);
+	if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
+		pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
+		return -1;
+	}
+	pcb_subc_get_rotation(subc, &rot);
+	pcb_subc_get_side(subc, &on_bottom);
 
-		sxlate = pcb_attribute_get(&subc->Attributes, "stl::translate");
-		if (sxlate == NULL)
-			sxlate = pcb_attribute_get(&subc->Attributes, "stl-translate");
-		srot = pcb_attribute_get(&subc->Attributes, "stl::rotate");
-		if (srot == NULL)
-			srot = pcb_attribute_get(&subc->Attributes, "stl-rotate");
+	sxlate = pcb_attribute_get(&subc->Attributes, "stl::translate");
+	if (sxlate == NULL)
+		sxlate = pcb_attribute_get(&subc->Attributes, "stl-translate");
+	srot = pcb_attribute_get(&subc->Attributes, "stl::rotate");
+	if (srot == NULL)
+		srot = pcb_attribute_get(&subc->Attributes, "stl-rotate");
 
-		if (*first) {
-			ofmt->new_obj(0, 0, 0);
-			*first = 0;
-		}
+	if (*first) {
+		ofmt->new_obj(0, 0, 0);
+		*first = 0;
+	}
 
-			stl_model_place(&pcb->hidlib, outf, models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy, z0, z1, ifmt, ofmt);
+	stl_model_place(&pcb->hidlib, outf, models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy, z0, z1, ifmt, ofmt);
 	return 0;
 }
 
