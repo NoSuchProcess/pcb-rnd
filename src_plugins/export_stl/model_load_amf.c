@@ -27,13 +27,22 @@
 #include <stdio.h>
 
 #ifdef PCB_HAVE_LIBXML2
-stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f)
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+
+stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
 {
 	return NULL;
 }
+
+
+
 #else
-stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f)
+
+/* Fallback: still provide a dummy if libxml is not available */
+stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
 {
 	return &stl_format_not_supported;
 }
+
 #endif

@@ -24,7 +24,7 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
-stl_facet_t *stl_solid_fload(rnd_hidlib_t *hl, FILE *f)
+stl_facet_t *stl_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
 {
 	stl_facet_t *head = NULL, *tail = NULL, *t;
 	char *cmd, line[512];
@@ -32,7 +32,7 @@ stl_facet_t *stl_solid_fload(rnd_hidlib_t *hl, FILE *f)
 	/* find the 'solid' header */
 	cmd = stl_getline(line, sizeof(line), f);
 	if ((cmd == NULL) || (strncmp(cmd, "solid", 5) != 0)) {
-		rnd_message(RND_MSG_ERROR, "Invalid stl file: first line is not a 'solid'\n");
+		rnd_message(RND_MSG_ERROR, "Invalid stl file %s: first line is not a 'solid'\n", fn);
 		return NULL;
 	}
 
@@ -41,14 +41,14 @@ stl_facet_t *stl_solid_fload(rnd_hidlib_t *hl, FILE *f)
 
 		cmd = stl_getline(line, sizeof(line), f);
 		if (cmd == NULL) {
-			rnd_message(RND_MSG_ERROR, "Invalid stl file: premature end of file in solid\n");
+			rnd_message(RND_MSG_ERROR, "Invalid stl file %s: premature end of file in solid\n", fn);
 			goto error;
 		}
 		if (strncmp(cmd, "endsolid", 8) == 0)
 			break; /* normal end of file */
 
 		if (strncmp(cmd, "facet normal", 12) != 0) {
-			rnd_message(RND_MSG_ERROR, "Invalid stl file: expected facet, got %s\n", cmd);
+			rnd_message(RND_MSG_ERROR, "Invalid stl file %s: expected facet, got %s\n", fn, cmd);
 			goto error;
 		}
 
@@ -63,38 +63,38 @@ stl_facet_t *stl_solid_fload(rnd_hidlib_t *hl, FILE *f)
 
 		cmd += 12;
 		if (sscanf(cmd, "%lf %lf %lf", &t->n[0], &t->n[1], &t->n[2]) != 3) {
-			rnd_message(RND_MSG_ERROR, "Invalid stl file: wrong facet normals '%s'\n", cmd);
+			rnd_message(RND_MSG_ERROR, "Invalid stl file %s: wrong facet normals '%s'\n", fn, cmd);
 			goto error;
 		}
 
 		cmd = stl_getline(line, sizeof(line), f);
 		if (strncmp(cmd, "outer loop", 10) != 0) {
-			rnd_message(RND_MSG_ERROR, "Invalid stl file: expected outer loop, got %s\n", cmd);
+			rnd_message(RND_MSG_ERROR, "Invalid stl file %s: expected outer loop, got %s\n", fn, cmd);
 			goto error;
 		}
 
 		for(n = 0; n < 3; n++) {
 			cmd = stl_getline(line, sizeof(line), f);
 			if (strncmp(cmd, "vertex", 6) != 0) {
-				rnd_message(RND_MSG_ERROR, "Invalid stl file: expected vertex, got %s\n", cmd);
+				rnd_message(RND_MSG_ERROR, "Invalid stl file %s: expected vertex, got %s\n", fn, cmd);
 				goto error;
 			}
 			cmd+=6;
 			if (sscanf(cmd, "%lf %lf %lf", &t->vx[n], &t->vy[n], &t->vz[n]) != 3) {
-				rnd_message(RND_MSG_ERROR, "Invalid stl file: wrong facet vertex '%s'\n", cmd);
+				rnd_message(RND_MSG_ERROR, "Invalid stl file: %s wrong facet vertex '%s'\n", fn, cmd);
 				goto error;
 			}
 		}
 
 		cmd = stl_getline(line, sizeof(line), f);
 		if (strncmp(cmd, "endloop", 7) != 0) {
-			rnd_message(RND_MSG_ERROR, "Invalid stl file: expected endloop, got %s\n", cmd);
+			rnd_message(RND_MSG_ERROR, "Invalid stl file %s: expected endloop, got %s\n", fn, cmd);
 			goto error;
 		}
 
 		cmd = stl_getline(line, sizeof(line), f);
 		if (strncmp(cmd, "endfacet", 8) != 0) {
-			rnd_message(RND_MSG_ERROR, "Invalid stl file: expected endfacet, got %s\n", cmd);
+			rnd_message(RND_MSG_ERROR, "Invalid stl file %s: expected endfacet, got %s\n", fn, cmd);
 			goto error;
 		}
 	}

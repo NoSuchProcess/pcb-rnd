@@ -169,7 +169,7 @@ static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const 
 		char *full_path;
 		FILE *f = rnd_fopen_first(&PCB->hidlib, &conf_core.rc.library_search_paths, name, "r", &full_path, rnd_true);
 		if (f != NULL) {
-			head = stl_solid_fload(hl, f);
+			head = stl_solid_fload(hl, f, full_path);
 			if (head == NULL)
 				rnd_message(RND_MSG_ERROR, "STL model failed to load: %s\n", full_path);
 			else if (head == &stl_format_not_supported)
