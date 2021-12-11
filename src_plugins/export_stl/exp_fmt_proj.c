@@ -24,12 +24,15 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+static vtl0_t edges;
+
 static void proj_print_header(FILE *f)
 {
 	fprintf(f, "obj \"board\"\n");
 	fprintf(f, "	realempty\n");
 
 	verthash_init(&verthash);
+	vtl0_init(&edges);
 }
 
 static void proj_print_footer(FILE *f)
@@ -51,16 +54,39 @@ static void proj_print_footer(FILE *f)
 		}
 		rnd_fprintf(f, "		tri :%ld :%ld :%ld\n", vx[0], vx[1], vx[2]);
 	}
+
+	fprintf(f, "	color 0.0 0.40 0.0\n");
+	for(n = 0, vx = edges.array; n < edges.used; n += 2, vx += 2)
+		fprintf(f, "		lines\n			:%ld :%ld\n", vx[0], vx[1]);
+
 	fprintf(f, "	normals\n");
 
 	verthash_uninit(&verthash);
+	vtl0_uninit(&edges);
+}
+
+static void proj_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t z0, rnd_coord_t z1)
+{
+	long v1, v2;
+	vhs_print_vert_tri(f, x1, y1, x2, y2, z0, z1);
+
+	v1 = verthash_add_vertex(&verthash, x1, y1, z0);
+	v2 = verthash_add_vertex(&verthash, x2, y2, z0);
+	vtl0_append(&edges, v1);
+	vtl0_append(&edges, v2);
+
+	v1 = verthash_add_vertex(&verthash, x1, y1, z1);
+	v2 = verthash_add_vertex(&verthash, x2, y2, z1);
+	vtl0_append(&edges, v1);
+	vtl0_append(&edges, v2);
+
 }
 
 static const stl_fmt_t fmt_proj = {
 	/* output */
 	".pro",
 	vhs_print_horiz_tri,
-	vhs_print_vert_tri,
+	proj_print_vert_tri,
 	vhs_print_facet,
 	vhs_new_obj,
 	proj_print_header,
