@@ -102,12 +102,18 @@ static void stl_print_footer(FILE *f)
 	fprintf(f, "endsolid\n");
 }
 
+static stl_facet_t *stl_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn);
+
 static const stl_fmt_t fmt_stl = {
+	/* output */
 	".stl",
 	stl_print_horiz_tri,
 	stl_print_vert_tri,
 	stl_print_facet,
 	stl_new_obj,
 	stl_print_header,
-	stl_print_footer
+	stl_print_footer,
+
+	/* model load */
+	stl_solid_fload
 };

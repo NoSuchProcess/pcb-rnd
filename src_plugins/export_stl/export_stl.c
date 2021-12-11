@@ -323,6 +323,7 @@ RND_INLINE void v_transform(double dst[3], double src[3], double mx[16]);
 static verthash_t verthash;
 
 typedef struct {
+	/* output */
 	const char *suffix;
 	void (*print_horiz_tri)(FILE *f, fp2t_triangle_t *t, int up, rnd_coord_t z);
 	void (*print_vert_tri)(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t z0, rnd_coord_t z1);
@@ -330,6 +331,9 @@ typedef struct {
 	void (*new_obj)(float r, float g, float b);
 	void (*print_header)(FILE *f);
 	void (*print_footer)(FILE *f);
+
+	/* model load */
+	stl_facet_t *(*model_load)(rnd_hidlib_t *hl, FILE *f, const char *fn);
 } stl_fmt_t;
 
 static const rnd_export_opt_t *stl_get_export_options_(rnd_hid_t *hid, int *n, const stl_fmt_t *fmt)

@@ -133,12 +133,18 @@ static void amf_print_footer(FILE *f)
 	verthash_uninit(&verthash);
 }
 
+static stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn);
+
 static const stl_fmt_t fmt_amf = {
+	/* output */
 	".amf",
 	amf_print_horiz_tri,
 	amf_print_vert_tri,
 	amf_print_facet,
 	amf_new_obj,
 	amf_print_header,
-	amf_print_footer
+	amf_print_footer,
+
+	/* model load */
+	amf_solid_fload
 };
