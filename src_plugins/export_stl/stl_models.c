@@ -201,35 +201,35 @@ static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const 
 static int stl_model_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0, rnd_coord_t z1, htsp_t *models, pcb_subc_t *subc, int *first, const stl_fmt_t *ifmt, const stl_fmt_t *ofmt)
 {
 	const char *mod;
+	rnd_coord_t ox, oy;
+	double rot = 0;
+	int on_bottom = 0;
+	const char *srot, *sxlate;
 
-		mod = pcb_attribute_get(&subc->Attributes, "stl");
-		if (mod != NULL) {
-			rnd_coord_t ox, oy;
-			double rot = 0;
-			int on_bottom = 0;
-			const char *srot, *sxlate;
-			
-			if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
-				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
-				return -1;
-			}
-			pcb_subc_get_rotation(subc, &rot);
-			pcb_subc_get_side(subc, &on_bottom);
+	mod = pcb_attribute_get(&subc->Attributes, "stl");
+	if (mod != NULL)
+		return -1;
 
-			sxlate = pcb_attribute_get(&subc->Attributes, "stl::translate");
-			if (sxlate == NULL)
-				sxlate = pcb_attribute_get(&subc->Attributes, "stl-translate");
-			srot = pcb_attribute_get(&subc->Attributes, "stl::rotate");
-			if (srot == NULL)
-				srot = pcb_attribute_get(&subc->Attributes, "stl-rotate");
+		if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
+			pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
+			return -1;
+		}
+		pcb_subc_get_rotation(subc, &rot);
+		pcb_subc_get_side(subc, &on_bottom);
 
-			if (first) {
-				ofmt->new_obj(0, 0, 0);
-				first = 0;
-			}
+		sxlate = pcb_attribute_get(&subc->Attributes, "stl::translate");
+		if (sxlate == NULL)
+			sxlate = pcb_attribute_get(&subc->Attributes, "stl-translate");
+		srot = pcb_attribute_get(&subc->Attributes, "stl::rotate");
+		if (srot == NULL)
+			srot = pcb_attribute_get(&subc->Attributes, "stl-rotate");
+
+		if (first) {
+			ofmt->new_obj(0, 0, 0);
+			first = 0;
+		}
 
 			stl_model_place(&pcb->hidlib, outf, models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy, z0, z1, ifmt, ofmt);
-	}
 	return 0;
 }
 
