@@ -35,9 +35,51 @@ static void amf_load_material(xmlNode *material)
 	rnd_trace("amf material\n");
 }
 
+static int amf_load_double(double *dst, xmlNode *node)
+{
+	xmlNode *n;
+	for(n = node->children; n != NULL; n = n->next) {
+		if (n->type == XML_TEXT_NODE) {
+			char *end;
+			*dst = strtod((char *)n->content, &end);
+			return (*end == '\0') ? 0 : -1;
+		}
+	}
+	return -1;
+}
+
+static void amf_load_vertices(vtd0_t *dst, xmlNode *vertices)
+{
+	xmlNode *n, *m;
+	for(n = vertices->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"coordinates") == 0) {
+			double x = 0, y = 0, z = 0;
+			for(m = n->children; m != NULL; m = m->next) {
+				if (m->name[1] == '\0') {
+					switch(m->name[0]) {
+						case 'x': amf_load_double(&x, m); break;
+						case 'y': amf_load_double(&y, m); break;
+						case 'z': amf_load_double(&z, m); break;
+					}
+				}
+			}
+		}
+	}
+}
+
 static void amf_load_mesh(xmlNode *mesh)
 {
-	rnd_trace("amf mesh\n");
+	xmlNode *n;
+	vtd0_t verts = {0};
+
+	/* load vertices */
+	for(n = mesh->children; n != NULL; n = n->next)
+		if (xmlStrcmp(n->name, (xmlChar *)"vertices") == 0)
+			amf_load_vertices(&verts, n);
+
+	if (verts.used == 0)
+		return;
+
 }
 
 static stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
@@ -60,15 +102,15 @@ static stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
 
 	/* read all materials */
 	for(n = root->children; n != NULL; n = n->next)
-		if (xmlStrcmp(n->name, (xmlChar *)"material") != 0)
+		if (xmlStrcmp(n->name, (xmlChar *)"material") == 0)
 			amf_load_material(n);
 
 	/* read all volumes */
 	for(n = root->children; n != NULL; n = n->next)
-		if (xmlStrcmp(n->name, (xmlChar *)"object") != 0)
-			for(m = root->children; m != NULL; m = m->next)
-				if (xmlStrcmp(m->name, (xmlChar *)"mesh") != 0)
-					amf_load_mesh(n);
+		if (xmlStrcmp(n->name, (xmlChar *)"object") == 0)
+			for(m = n->children; m != NULL; m = m->next)
+				if (xmlStrcmp(m->name, (xmlChar *)"mesh") == 0)
+					amf_load_mesh(m);
 
 	xmlFreeDoc(doc);
 	return NULL;
