@@ -702,6 +702,7 @@
  ../src_3rd/fast89-poly2tri/fast89_poly2tri.h \
  ../src_plugins/export_stl/exp_fmt_stl.c \
  ../src_plugins/export_stl/exp_fmt_amf.c \
+ ../src_plugins/export_stl/exp_fmt_proj.c \
  ../src_plugins/export_stl/stl_models.c \
  ../src_plugins/export_stl/model_load_stl.c \
  ../src_plugins/export_stl/model_load_amf.c \

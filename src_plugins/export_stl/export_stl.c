@@ -47,7 +47,7 @@
 #include "../lib_polyhelp/topoly.h"
 #include "../lib_polyhelp/triangulate.h"
 
-static rnd_hid_t stl_hid, amf_hid;
+static rnd_hid_t stl_hid, amf_hid, proj_hid;
 const char *stl_cookie = "export_stl HID";
 
 static const rnd_export_opt_t stl_attribute_list[] = {
@@ -354,8 +354,9 @@ static const rnd_export_opt_t *stl_get_export_options_(rnd_hid_t *hid, int *n, c
 
 #include "exp_fmt_stl.c"
 #include "exp_fmt_amf.c"
+#include "exp_fmt_proj.c"
 
-static const stl_fmt_t *fmt_all[] = {&fmt_amf, &fmt_stl, NULL};
+static const stl_fmt_t *fmt_all[] = {&fmt_amf, &fmt_stl, &fmt_proj, NULL};
 
 #include "stl_models.c"
 #include "model_load_stl.c"
@@ -370,6 +371,11 @@ static const rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n)
 static const rnd_export_opt_t *amf_get_export_options(rnd_hid_t *hid, int *n)
 {
 	return stl_get_export_options_(hid, n, &fmt_amf);
+}
+
+static const rnd_export_opt_t *proj_get_export_options(rnd_hid_t *hid, int *n)
+{
+	return stl_get_export_options_(hid, n, &fmt_proj);
 }
 
 static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1, const stl_fmt_t *fmt)
@@ -539,6 +545,11 @@ static void amf_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	stl_do_export_(hid, options, &fmt_amf);
 }
 
+static void proj_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
+{
+	stl_do_export_(hid, options, &fmt_proj);
+}
+
 static int stl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 {
 	rnd_export_register_opts2(hid, stl_attribute_list, sizeof(stl_attribute_list) / sizeof(stl_attribute_list[0]), stl_cookie, 0);
@@ -587,14 +598,25 @@ int pplg_init_export_stl(void)
 	rnd_hid_register_hid(&stl_hid);
 	rnd_hid_load_defaults(&stl_hid, stl_attribute_list, NUM_OPTIONS);
 
+
 	memcpy(&amf_hid, &stl_hid, sizeof(rnd_hid_t));
 	amf_hid.name = "amf";
 	amf_hid.description = "export board outline in 3-dimensional AMF";
-	stl_hid.get_export_options = amf_get_export_options;
+	amf_hid.get_export_options = amf_get_export_options;
 	amf_hid.do_export = amf_do_export;
 
 	rnd_hid_register_hid(&amf_hid);
 	rnd_hid_load_defaults(&amf_hid, stl_attribute_list, NUM_OPTIONS);
+
+
+	memcpy(&proj_hid, &stl_hid, sizeof(rnd_hid_t));
+	proj_hid.name = "projector";
+	proj_hid.description = "export board outline as a projector(1) object for 3d rendering";
+	proj_hid.get_export_options = proj_get_export_options;
+	proj_hid.do_export = proj_do_export;
+
+	rnd_hid_register_hid(&proj_hid);
+	rnd_hid_load_defaults(&proj_hid, stl_attribute_list, NUM_OPTIONS);
 
 	return 0;
 }
