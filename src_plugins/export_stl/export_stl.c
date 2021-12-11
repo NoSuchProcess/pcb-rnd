@@ -417,6 +417,7 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 	long contlen;
 	rnd_vnode_t *vn;
 	rnd_pline_t *pl;
+	int first_vert = 1;
 
 	if ((pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_TOP, &lid, 1) != 1) && (pcb_layer_list(PCB, PCB_LYT_COPPER | PCB_LYT_BOTTOM, &lid, 1) != 1)) {
 		rnd_message(RND_MSG_ERROR, "A top or bottom copper layer is required for stl export\n");
@@ -488,7 +489,6 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 		if (contours.array[cn] == HUGE_VAL) {
 			double cx, cy, px, py;
 			long n, pn;
-/*			rnd_trace("contour: %ld..%ld\n", cn_start, cn);*/
 			for(n = cn-2; n >= cn_start; n-=2) {
 				pn = n-2;
 				if (pn < cn_start)
@@ -496,10 +496,14 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 				px = contours.array[pn], py = contours.array[pn+1];
 				cx = contours.array[n], cy = contours.array[n+1];
 /*				rnd_trace(" [%ld <- %ld] c:%f;%f p:%f;%f\n", n, pn, cx/1000000.0, cy/1000000.0, px/1000000.0, py/1000000.0);*/
-				fmt->print_vert_tri(f, cx, cy, px, py, z0, z1);
+				if (first_vert)
+					fmt->print_vert_tri(f, cx, cy, px, py, z0, z1);
+				else
+					fmt->print_vert_tri(f, cx, cy, px, py, z1, z0);
 			}
 			cn += 2;
 			cn_start = cn;
+			first_vert = 0;
 		}
 	}
 
