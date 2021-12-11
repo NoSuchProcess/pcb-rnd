@@ -247,7 +247,7 @@ void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0,
 		if (stl_model_print(pcb, outf, maxy, z0, z1, &models, subc, &first, fmt, fmt) != 0) {
 			const stl_fmt_t **n; /* fallback: try all other formats */
 			for(n = fmt_all; *n != NULL; n++) {
-				if (*n == fmt) continue; /* already tried */
+				if ((*n == fmt) || ((*n)->model_load == NULL)) continue; /* already tried or can't load model */
 				if (stl_model_print(pcb, outf, maxy, z0, z1, &models, subc, &first, *n, fmt) == 0) {
 					good = 1;
 					break;
