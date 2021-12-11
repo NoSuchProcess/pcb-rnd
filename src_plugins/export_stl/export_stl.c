@@ -105,53 +105,6 @@ static const rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n)
 	return stl_attribute_list;
 }
 
-static void stl_print_horiz_tri(FILE *f, fp2t_triangle_t *t, int up, rnd_coord_t z)
-{
-	fprintf(f, "	facet normal 0 0 %d\n", up ? 1 : -1);
-	fprintf(f, "		outer loop\n");
-
-	if (up) {
-		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[0]->X, (rnd_coord_t)t->Points[0]->Y, z);
-		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[1]->X, (rnd_coord_t)t->Points[1]->Y, z);
-		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[2]->X, (rnd_coord_t)t->Points[2]->Y, z);
-	}
-	else {
-		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[2]->X, (rnd_coord_t)t->Points[2]->Y, z);
-		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[1]->X, (rnd_coord_t)t->Points[1]->Y, z);
-		rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", (rnd_coord_t)t->Points[0]->X, (rnd_coord_t)t->Points[0]->Y, z);
-	}
-
-	fprintf(f, "		endloop\n");
-	fprintf(f, "	endfacet\n");
-}
-
-static void stl_print_vert_tri(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t z0, rnd_coord_t z1)
-{
-	double vx, vy, nx, ny, len;
-
-	vx = x2 - x1; vy = y2 - y1;
-	len = sqrt(vx*vx + vy*vy);
-	if (len == 0) return;
-	vx /= len; vy /= len;
-	nx = -vy; ny = vx;
-
-	fprintf(f, "	facet normal %f %f 0\n", nx, ny);
-	fprintf(f, "		outer loop\n");
-	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z1);
-	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z1);
-	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z0);
-	fprintf(f, "		endloop\n");
-	fprintf(f, "	endfacet\n");
-
-	fprintf(f, "	facet normal %f %f 0\n", nx, ny);
-	fprintf(f, "		outer loop\n");
-	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z1);
-	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x1, y1, z0);
-	rnd_fprintf(f, "			vertex %.09mm %.09mm %.09mm\n", x2, y2, z0);
-	fprintf(f, "		endloop\n");
-	fprintf(f, "	endfacet\n");
-}
-
 static long pa_len(const rnd_polyarea_t *pa)
 {
 	rnd_pline_t *pl;
@@ -370,6 +323,7 @@ static void add_holes_cutout(fp2t_t *tri, pcb_board_t *pcb, rnd_coord_t maxy, vt
 }
 
 #include "stl_models.c"
+#include "exp_fmt_stl.c"
 
 int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1)
 {
@@ -443,7 +397,7 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 
 	fp2t_triangulate(&tri);
 
-	fprintf(f, "solid pcb\n");
+	stl_print_header(f);
 
 	/* write the top and bottom plane */
 	for(n = 0; n < tri.TriangleCount; n++) {
@@ -474,7 +428,7 @@ int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t max
 	if (options[HA_models].lng)
 		stl_models_print(PCB, f, maxy, z0, z1);
 
-	fprintf(f, "endsolid\n");
+	stl_print_footer(f);
 
 	vtp0_uninit(&cutouts);
 	for(n = 0; n < cutouts.used; n++)
