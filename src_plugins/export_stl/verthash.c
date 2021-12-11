@@ -1,4 +1,5 @@
 #include <genvector/vtl0.h>
+#include <librnd/core/vtc0.h>
 
 typedef struct {
 	rnd_coord_t x, y, z;
@@ -14,6 +15,7 @@ typedef long int htvx_value_t;
 
 typedef struct {
 	htvx_t vxhash;
+	vtc0_t vxcoords;
 	vtl0_t triangles;
 	long next_id;
 } verthash_t;
@@ -32,6 +34,7 @@ int vxkeyeq(const vertex_t a, const vertex_t b)
 static void verthash_init(verthash_t *vh)
 {
 	htvx_init(&vh->vxhash, vxkeyhash, vxkeyeq);
+	vtc0_init(&vh->vxcoords);
 	vtl0_init(&vh->triangles);
 	vh->next_id = 0;
 }
@@ -39,6 +42,7 @@ static void verthash_init(verthash_t *vh)
 static void verthash_uninit(verthash_t *vh)
 {
 	vtl0_uninit(&vh->triangles);
+	vtc0_uninit(&vh->vxcoords);
 	htvx_uninit(&vh->vxhash);
 }
 
@@ -56,6 +60,9 @@ static long verthash_add_vertex(verthash_t *vh, rnd_coord_t x, rnd_coord_t y, rn
 	id = vh->next_id;
 	vh->next_id++;
 	htvx_set(&vh->vxhash, vx, id);
+	vtc0_append(&vh->vxcoords, x);
+	vtc0_append(&vh->vxcoords, y);
+	vtc0_append(&vh->vxcoords, z);
 	return id;
 }
 
