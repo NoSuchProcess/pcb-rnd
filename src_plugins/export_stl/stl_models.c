@@ -224,9 +224,9 @@ static int stl_model_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_
 		if (srot == NULL)
 			srot = pcb_attribute_get(&subc->Attributes, "stl-rotate");
 
-		if (first) {
+		if (*first) {
 			ofmt->new_obj(0, 0, 0);
-			first = 0;
+			*first = 0;
 		}
 
 			stl_model_place(&pcb->hidlib, outf, models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy, z0, z1, ifmt, ofmt);
