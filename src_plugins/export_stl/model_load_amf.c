@@ -48,6 +48,19 @@ static int amf_load_double(double *dst, xmlNode *node)
 	return -1;
 }
 
+static int amf_load_long(long *dst, xmlNode *node)
+{
+	xmlNode *n;
+	for(n = node->children; n != NULL; n = n->next) {
+		if (n->type == XML_TEXT_NODE) {
+			char *end;
+			*dst = strtol((char *)n->content, &end, 10);
+			return (*end == '\0') ? 0 : -1;
+		}
+	}
+	return -1;
+}
+
 static void amf_load_vertices(vtd0_t *dst, xmlNode *vertices)
 {
 	xmlNode *n, *m;
@@ -63,14 +76,62 @@ static void amf_load_vertices(vtd0_t *dst, xmlNode *vertices)
 					}
 				}
 			}
+			vtd0_append(dst, x);
+			vtd0_append(dst, y);
+			vtd0_append(dst, z);
 		}
 	}
 }
 
-static void amf_load_mesh(xmlNode *mesh)
+static stl_facet_t *amf_load_volume(vtd0_t *verts, xmlNode *volume)
+{
+	xmlNode *n, *m;
+	stl_facet_t *t, *head = NULL, *tail = NULL;
+
+	for(n = volume->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"triangle") == 0) {
+			long v[3] = {-1, -1, -1};
+			int i, good;
+
+			for(m = n->children; m != NULL; m = m->next) {
+				if ((m->name[0] == 'v') && (m->name[2] == '\0')) {
+					int idx = m->name[1] - '1';
+					if ((idx >= 0) && (idx < 3))
+						amf_load_long(&v[idx], m);
+				}
+			}
+
+			for(i = 0, good = 1; i < 3; i++)
+				if ((v[i] < 0) || (v[i]*3 >= verts->used))
+					good = 0;
+
+			if (!good)
+				continue;
+
+			t = malloc(sizeof(stl_facet_t));
+			for(i = 0, good = 1; i < 3; i++) {
+				double *crd = verts->array + v[i] * 3;
+				t->vx[i] = crd[0];
+				t->vy[i] = crd[1];
+				t->vz[i] = crd[2];
+			}
+
+			if (tail != NULL) {
+				tail->next = t;
+				tail = t;
+			}
+			else
+				head = tail = t;
+		}
+	}
+	return head;
+}
+
+static stl_facet_t *amf_load_mesh(xmlNode *mesh)
 {
 	xmlNode *n;
 	vtd0_t verts = {0};
+	stl_facet_t *t, *head = NULL, *tail = NULL;
 
 	/* load vertices */
 	for(n = mesh->children; n != NULL; n = n->next)
@@ -78,14 +139,29 @@ static void amf_load_mesh(xmlNode *mesh)
 			amf_load_vertices(&verts, n);
 
 	if (verts.used == 0)
-		return;
+		return NULL;
 
+	/* load vertices */
+	for(n = mesh->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"volume") == 0) {
+			t = amf_load_volume(&verts, n);
+			if (tail != NULL) {
+				tail->next = t;
+				tail = t;
+			}
+			else
+				head = tail = t;
+		}
+	}
+
+	return head;
 }
 
 static stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
 {
 	xmlDoc *doc;
 	xmlNode *root, *n, *m;
+	stl_facet_t *t, *head = NULL, *tail = NULL;
 
 	doc = xmlReadFile(fn, NULL, 0);
 	if (doc == NULL) {
@@ -106,14 +182,24 @@ static stl_facet_t *amf_solid_fload(rnd_hidlib_t *hl, FILE *f, const char *fn)
 			amf_load_material(n);
 
 	/* read all volumes */
-	for(n = root->children; n != NULL; n = n->next)
-		if (xmlStrcmp(n->name, (xmlChar *)"object") == 0)
-			for(m = n->children; m != NULL; m = m->next)
-				if (xmlStrcmp(m->name, (xmlChar *)"mesh") == 0)
-					amf_load_mesh(m);
+	for(n = root->children; n != NULL; n = n->next) {
+		if (xmlStrcmp(n->name, (xmlChar *)"object") == 0) {
+			for(m = n->children; m != NULL; m = m->next) {
+				if (xmlStrcmp(m->name, (xmlChar *)"mesh") == 0) {
+					t = amf_load_mesh(m);
+					if (tail != NULL) {
+						tail->next = t;
+						tail = t;
+					}
+					else
+						head = tail = t;
+				}
+			}
+		}
+	}
 
 	xmlFreeDoc(doc);
-	return NULL;
+	return head;
 }
 
 
