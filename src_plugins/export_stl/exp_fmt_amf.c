@@ -67,7 +67,11 @@ static void amf_print_facet(FILE *f, stl_facet_t *head, double mx[16], double mx
 	for(n = 0; n < 3; n++) {
 		p[0] = head->vx[n]; p[1] = head->vy[n]; p[2] = head->vz[n];
 		v_transform(v, p, mx);
-		vert[n] = verthash_add_vertex(&verthash, p[0], p[1], p[2]);
+		vert[n] = verthash_add_vertex(&verthash,
+			(rnd_coord_t)RND_MM_TO_COORD(v[0]),
+			(rnd_coord_t)RND_MM_TO_COORD(v[1]),
+			(rnd_coord_t)RND_MM_TO_COORD(v[2])
+			);
 	}
 
 	verthash_add_triangle(&verthash, vert[0], vert[1], vert[2]);
