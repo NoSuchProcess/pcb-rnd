@@ -225,7 +225,7 @@ static int stl_model_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_
 		srot = pcb_attribute_get(&subc->Attributes, ifmt->attr_rotate_old);
 
 	if (*first) {
-		ofmt->new_obj(0, 0, 0);
+		ofmt->new_obj(0.5, 0.5, 0.5);
 		*first = 0;
 	}
 

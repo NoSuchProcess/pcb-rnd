@@ -476,7 +476,7 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 	fp2t_triangulate(&tri);
 
 	fmt->print_header(f);
-	fmt->new_obj(0, 0.3, 0);
+	fmt->new_obj(0, 0.4, 0);
 
 	/* write the top and bottom plane */
 	for(n = 0; n < tri.TriangleCount; n++) {
