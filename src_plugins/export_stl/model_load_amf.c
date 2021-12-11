@@ -109,6 +109,7 @@ static stl_facet_t *amf_load_volume(vtd0_t *verts, xmlNode *volume)
 				continue;
 
 			t = malloc(sizeof(stl_facet_t));
+			t->next = NULL;
 			for(i = 0, good = 1; i < 3; i++) {
 				double *crd = verts->array + v[i] * 3;
 				t->vx[i] = crd[0];
