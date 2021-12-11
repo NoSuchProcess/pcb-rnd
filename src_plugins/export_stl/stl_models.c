@@ -190,6 +190,9 @@ static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const 
 	xlate[1] = RND_COORD_TO_MM(maxy - (oy)) + uxlate[1];
 	xlate[2] = RND_COORD_TO_MM((on_bottom ? z0 : z1)) + uxlate[3];
 
+	if (on_bottom)
+		rotdeg = -rotdeg;
+
 	parse_utrans(urot, user_rot);
 	rot[0] = 0 + urot[0] / RND_RAD_TO_DEG;
 	rot[1] = (on_bottom ? M_PI : 0) + urot[1] / RND_RAD_TO_DEG;
