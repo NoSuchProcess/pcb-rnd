@@ -92,30 +92,6 @@ static const rnd_export_opt_t stl_attribute_list[] = {
 
 static rnd_hid_attr_val_t stl_values[NUM_OPTIONS];
 
-static const rnd_export_opt_t *stl_get_export_options_(rnd_hid_t *hid, int *n, int fmt_amf)
-{
-	const char *suffix = fmt_amf ? ".amf" : ".stl";
-	const char *val = stl_values[HA_stlfile].str;
-
-	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
-		pcb_derive_default_filename(PCB->hidlib.filename, &stl_values[HA_stlfile], suffix);
-
-	if (n)
-		*n = NUM_OPTIONS;
-	return stl_attribute_list;
-}
-
-static const rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n)
-{
-	return stl_get_export_options_(hid, n, 0);
-}
-
-static const rnd_export_opt_t *amf_get_export_options(rnd_hid_t *hid, int *n)
-{
-	return stl_get_export_options_(hid, n, 1);
-}
-
-
 static long pa_len(const rnd_polyarea_t *pa)
 {
 	rnd_pline_t *pl;
@@ -346,11 +322,44 @@ RND_INLINE void v_transform(double dst[3], double src[3], double mx[16]);
 
 static verthash_t verthash;
 
+typedef struct {
+	const char *suffix;
+	void (*print_horiz_tri)(FILE *f, fp2t_triangle_t *t, int up, rnd_coord_t z);
+	void (*print_vert_tri)(FILE *f, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t z0, rnd_coord_t z1);
+	void (*print_facet)(FILE *f, stl_facet_t *head, double mx[16], double mxn[16]);
+	void (*new_obj)(float r, float g, float b);
+	void (*print_header)(FILE *f);
+	void (*print_footer)(FILE *f);
+} stl_fmt_t;
+
+static const rnd_export_opt_t *stl_get_export_options_(rnd_hid_t *hid, int *n, const stl_fmt_t *fmt)
+{
+	const char *suffix = fmt->suffix;
+	const char *val = stl_values[HA_stlfile].str;
+
+	if ((PCB != NULL) && ((val == NULL) || (*val == '\0')))
+		pcb_derive_default_filename(PCB->hidlib.filename, &stl_values[HA_stlfile], suffix);
+
+	if (n)
+		*n = NUM_OPTIONS;
+	return stl_attribute_list;
+}
+
 #include "exp_fmt_stl.c"
 #include "exp_fmt_amf.c"
 #include "stl_models.c"
 
-static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1, int fmt_amf)
+static const rnd_export_opt_t *stl_get_export_options(rnd_hid_t *hid, int *n)
+{
+	return stl_get_export_options_(hid, n, &fmt_stl);
+}
+
+static const rnd_export_opt_t *amf_get_export_options(rnd_hid_t *hid, int *n)
+{
+	return stl_get_export_options_(hid, n, &fmt_amf);
+}
+
+static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coord_t maxy, rnd_coord_t z0, rnd_coord_t z1, const stl_fmt_t *fmt)
 {
 	pcb_dynf_t df;
 	pcb_poly_t *brdpoly;
@@ -422,25 +431,13 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 
 	fp2t_triangulate(&tri);
 
-	if (fmt_amf) {
-		amf_print_header(f);
-		amf_new_obj(0, 0.3, 0);
-	}
-	else {
-		stl_print_header(f);
-		stl_new_obj(0, 0.3, 0);
-	}
+	fmt->print_header(f);
+	fmt->new_obj(0, 0.3, 0);
 
 	/* write the top and bottom plane */
 	for(n = 0; n < tri.TriangleCount; n++) {
-		if (fmt_amf) {
-			amf_print_horiz_tri(f, tri.Triangles[n], 0, z0);
-			amf_print_horiz_tri(f, tri.Triangles[n], 1, z1);
-		}
-		else {
-			stl_print_horiz_tri(f, tri.Triangles[n], 0, z0);
-			stl_print_horiz_tri(f, tri.Triangles[n], 1, z1);
-		}
+		fmt->print_horiz_tri(f, tri.Triangles[n], 0, z0);
+		fmt->print_horiz_tri(f, tri.Triangles[n], 1, z1);
 	}
 
 	/* write the vertical side */
@@ -456,10 +453,7 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 				px = contours.array[pn], py = contours.array[pn+1];
 				cx = contours.array[n], cy = contours.array[n+1];
 /*				rnd_trace(" [%ld <- %ld] c:%f;%f p:%f;%f\n", n, pn, cx/1000000.0, cy/1000000.0, px/1000000.0, py/1000000.0);*/
-				if (fmt_amf)
-					amf_print_vert_tri(f, cx, cy, px, py, z0, z1);
-				else
-					stl_print_vert_tri(f, cx, cy, px, py, z0, z1);
+				fmt->print_vert_tri(f, cx, cy, px, py, z0, z1);
 			}
 			cn += 2;
 			cn_start = cn;
@@ -467,12 +461,9 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 	}
 
 	if (options[HA_models].lng)
-		stl_models_print(PCB, f, maxy, z0, z1, fmt_amf);
+		stl_models_print(PCB, f, maxy, z0, z1, fmt);
 
-	if (fmt_amf)
-		amf_print_footer(f);
-	else
-		stl_print_footer(f);
+	fmt->print_footer(f);
 
 	vtp0_uninit(&cutouts);
 	for(n = 0; n < cutouts.used; n++)
@@ -484,7 +475,7 @@ static int stl_hid_export_to_file(FILE *f, rnd_hid_attr_val_t *options, rnd_coor
 	return 0;
 }
 
-static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, int fmt_amf)
+static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, const stl_fmt_t *fmt)
 {
 	const char *filename;
 	pcb_cam_t cam;
@@ -492,7 +483,7 @@ static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, int fmt_
 	rnd_coord_t thick;
 
 	if (!options) {
-		stl_get_export_options_(hid, 0, fmt_amf);
+		stl_get_export_options_(hid, 0, fmt);
 		options = stl_values;
 	}
 
@@ -517,9 +508,9 @@ static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, int fmt_
 	}
 
 	if (options[HA_zcent].lng)
-		stl_hid_export_to_file(f, options, PCB->hidlib.size_y, -thick/2, +thick/2, fmt_amf);
+		stl_hid_export_to_file(f, options, PCB->hidlib.size_y, -thick/2, +thick/2, fmt);
 	else
-		stl_hid_export_to_file(f, options, PCB->hidlib.size_y, 0, thick, fmt_amf);
+		stl_hid_export_to_file(f, options, PCB->hidlib.size_y, 0, thick, fmt);
 
 	fclose(f);
 	pcb_cam_end(&cam);
@@ -527,12 +518,12 @@ static void stl_do_export_(rnd_hid_t *hid, rnd_hid_attr_val_t *options, int fmt_
 
 static void stl_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
-	stl_do_export_(hid, options, 0);
+	stl_do_export_(hid, options, &fmt_stl);
 }
 
 static void amf_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
-	stl_do_export_(hid, options, 1);
+	stl_do_export_(hid, options, &fmt_amf);
 }
 
 static int stl_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)

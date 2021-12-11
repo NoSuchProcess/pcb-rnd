@@ -132,3 +132,13 @@ static void amf_print_footer(FILE *f)
 
 	verthash_uninit(&verthash);
 }
+
+static const stl_fmt_t fmt_amf = {
+	".amf",
+	amf_print_horiz_tri,
+	amf_print_vert_tri,
+	amf_print_facet,
+	amf_new_obj,
+	amf_print_header,
+	amf_print_footer
+};
