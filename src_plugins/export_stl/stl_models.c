@@ -198,17 +198,10 @@ static void stl_model_place(rnd_hidlib_t *hl, FILE *outf, htsp_t *models, const 
 	stl_solid_print_facets(outf, head, rot[0], rot[1], rot[2], xlate[0], xlate[1], xlate[2], ofmt);
 }
 
-
-void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0, rnd_coord_t z1, const stl_fmt_t *fmt)
+static int stl_model_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0, rnd_coord_t z1, htsp_t *models, pcb_subc_t *subc, int *first, const stl_fmt_t *ifmt, const stl_fmt_t *ofmt)
 {
-	htsp_t models;
 	const char *mod;
-	htsp_entry_t *e;
-	int first = 1;
 
-	htsp_init(&models, strhash, strkeyeq);
-
-	PCB_SUBC_LOOP(PCB->Data); {
 		mod = pcb_attribute_get(&subc->Attributes, "stl");
 		if (mod != NULL) {
 			rnd_coord_t ox, oy;
@@ -217,8 +210,8 @@ void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0,
 			const char *srot, *sxlate;
 			
 			if (pcb_subc_get_origin(subc, &ox, &oy) != 0) {
-				pcb_io_incompat_save(PCB->Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
-				continue;
+				pcb_io_incompat_save(pcb->Data, (pcb_any_obj_t *)subc, "subc-place", "Failed to get origin of subcircuit", "fix the missing subc-aux layer");
+				return -1;
 			}
 			pcb_subc_get_rotation(subc, &rot);
 			pcb_subc_get_side(subc, &on_bottom);
@@ -231,12 +224,25 @@ void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0,
 				srot = pcb_attribute_get(&subc->Attributes, "stl-rotate");
 
 			if (first) {
-				fmt->new_obj(0, 0, 0);
+				ofmt->new_obj(0, 0, 0);
 				first = 0;
 			}
 
-			stl_model_place(&pcb->hidlib, outf, &models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy, z0, z1, fmt, fmt);
-		}
+			stl_model_place(&pcb->hidlib, outf, models, mod, ox, oy, rot, on_bottom, sxlate, srot, maxy, z0, z1, ifmt, ofmt);
+	}
+	return 0;
+}
+
+void stl_models_print(pcb_board_t *pcb, FILE *outf, double maxy, rnd_coord_t z0, rnd_coord_t z1, const stl_fmt_t *fmt)
+{
+	htsp_t models;
+	htsp_entry_t *e;
+	int first = 1;
+
+	htsp_init(&models, strhash, strkeyeq);
+
+	PCB_SUBC_LOOP(PCB->Data); {
+		stl_model_print(pcb, outf, maxy, z0, z1, &models, subc, &first, fmt, fmt);
 	} PCB_END_LOOP;
 
 	for (e = htsp_first(&models); e; e = htsp_next(&models, e)) {
