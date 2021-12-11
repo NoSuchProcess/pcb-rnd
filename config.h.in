@@ -57,6 +57,10 @@ print_ternary ?libs/gui/gd/gdImagePng/presents {#define PCB_HAVE_GDIMAGEPNG 1} {
 print {\n\n/* Define to 1 if you have the `gdImageSetResolution' function. */\n}
 print_ternary ?libs/gui/gd/gdImageSetResolution/presents {#define PCB_HAVE_GD_RESOLUTION 1} {/* #undef PCB_HAVE_GD_RESOLUTION */}
 
+print {\n\n/* Define to 1 if you have libxml2 installed. */\n}
+print_ternary ?libs/sul/libxml2/presents {#define PCB_HAVE_LIBXML2 1} {/* #undef PCB_HAVE_LIBXML2 */}
+
+
 print [@
 
 /* Relative path from bindir to exec_prefix */
