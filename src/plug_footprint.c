@@ -426,13 +426,12 @@ void fp_dump()
 }
 
 /* This function loads the newlib footprints into the Library.
- * It examines all directories pointed to by the search paths
- * (usually from conf node rc/library_search_paths)
- * In each directory specified there, it looks both in that directory,
- * as well as *one* level down.  It calls the subfunction
- * fp_fs_load_dir to put the footprints into PCB's internal
- * datastructures.
- */
+   It examines all directories pointed to by the search paths
+   (usually from conf node rc/library_search_paths)
+   In each directory specified there, it looks both in that directory,
+   as well as *one* level down.  It calls the subfunction
+   fp_fs_load_dir to put the footprints into PCB's internal
+   datastructures. */
 static int fp_read_lib_all_(const rnd_conflist_t *searchpath)
 {
 	rnd_conf_listitem_t *ci;
@@ -489,9 +488,7 @@ int pcb_fp_read_lib_all(void)
 {
 	FILE *resultFP = NULL;
 
-	/* List all footprint libraries.  Then sort the whole
-	 * library.
-	 */
+	/* List all footprint libraries. Then sort the whole library. */
 	if (fp_read_lib_all_(&conf_core.rc.library_search_paths) > 0 || resultFP != NULL) {
 		pcb_fp_sort_children(&pcb_library);
 		return 0;
