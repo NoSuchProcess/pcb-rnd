@@ -347,6 +347,16 @@ void pcb_fp_sort_children(pcb_fplibrary_t *parent)
 		pcb_fp_sort_children(v->array[n]);
 }
 
+/* Sort each children but keep configured order of roots. */
+void pcb_fp_sort_lib(void)
+{
+	int n;
+	vtp0_t *v = &pcb_library.data.dir.children;
+
+	for(n = 0; n < vtp0_len(v); n++)
+		pcb_fp_sort_children(v->array[n]);
+}
+
 void fp_free_entry(pcb_fplibrary_t *l)
 {
 	switch(l->type) {
@@ -488,9 +498,10 @@ int pcb_fp_read_lib_all(void)
 {
 	FILE *resultFP = NULL;
 
-	/* List all footprint libraries. Then sort the whole library. */
+	/* List all footprint libraries. Sort each children but keep configured
+	   order of roots. */
 	if (fp_read_lib_all_(&conf_core.rc.library_search_paths) > 0 || resultFP != NULL) {
-		pcb_fp_sort_children(&pcb_library);
+		pcb_fp_sort_lib();
 		return 0;
 	}
 
@@ -519,7 +530,7 @@ int pcb_fp_rehash(rnd_hidlib_t *hidlib, pcb_fplibrary_t *l)
 	path = rnd_strdup(l->name);
 	pcb_fp_rmdir(l);
 	res = be->load_dir(be, path, 1);
-	pcb_fp_sort_children(&pcb_library);
+	pcb_fp_sort_lib();
 	free(path);
 
 	if (res >= 0) {

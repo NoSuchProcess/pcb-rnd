@@ -118,7 +118,7 @@ extern pcb_plug_fp_t *pcb_plug_fp_chain;
 extern pcb_fplibrary_t pcb_library; /* the footprint library */
 
 void pcb_fp_free_children(pcb_fplibrary_t *parent);
-void pcb_fp_sort_children(pcb_fplibrary_t *parent);
+void pcb_fp_sort_lib(void);
 void pcb_fp_rmdir(pcb_fplibrary_t *dir);
 pcb_fplibrary_t *pcb_fp_mkdir_p(const char *path);
 pcb_fplibrary_t *pcb_fp_mkdir_len(pcb_fplibrary_t *parent, const char *name, int name_len);
