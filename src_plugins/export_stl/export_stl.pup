@@ -1,9 +1,11 @@
 $class export
-$short 3d export: STL
-$long Export stl (triangulated surface)
+$short 3d export: STL/amf/pro
+$long Export triangulated surface model
 $state WIP
 $fmt-native no
 $fmt-feature-w stl (3d triangulated surface model)
+$fmt-feature-w amf (Additive Manufacturing File, surface model)
+$fmt-feature-w pro (projector: 3d rendering)
 $package export-extra
 default buildin
 autoload 1
