@@ -13,7 +13,7 @@
 <table border=1>
 <caption>
  <b>
-This is pcb-rnd 3.0.2-dev (svn r35731) an interactive printed circuit board editor ,  Revision: 35757
+This is pcb-rnd 3.0.3-dev (svn r35940) an interactive printed circuit board editor from the Ringdove EDA suite using librnd version 3.1.0-rc1 ,  Revision: 36005
 </b>
 <th> Action <th> Description <th> Syntax <th> Plugin
 <tr><td>About</td><td>Present the about box</td><td>About()</td><td>dialogs plugin</td>
@@ -100,7 +100,7 @@ This is pcb-rnd 3.0.2-dev (svn r35731) an interactive printed circuit board edit
 <tr><td><a href="action_details.html#distribute">distribute</a></td><td>Distribute objects</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td>distributetext</td><td>Distribute objects</td><td>Distribute(X/Y, [Lefts/Rights/Tops/Bottoms/Centers/Marks/Gaps, [First/Last/pcb_crosshair, First/Last/pcb_crosshair[, Gridless]]])</td><td>distalign plugin</td>
 <tr><td><a href="action_details.html#djopt">djopt</a></td><td>Perform various optimizations on the current board.</td><td>djopt(debumpify|unjaggy|simple|vianudge|viatrim|orthopull)<br>djopt(auto) - all of the above<br>djopt(miter)</td><td>djopt</td>
-<tr><td>dlg_confval_edit</td><td>Present a dialog box for editing the value of a conf node at path.</td><td>dlg_confval_edit(path, idx, role, [modal])</td><td>dialogs plugin</td>
+<tr><td>dlg_confval_edit</td><td>Present a dialog box for editing the value of a conf node at path.</td><td>dlg_confval_edit(path, idx, role, [modal])</td><td>lib_hid_common plugin</td>
 <tr><td>dlg_obj_list</td><td>Let the user select an object from a list of objects</td><td>dlg_obj_list()</td><td>dialogs plugin</td>
 <tr><td>dlg_test</td><td>test the attribute dialog</td><td>dlg_test()</td><td>dialogs plugin</td>
 <tr><td>DrawColor</td><td>Set pen color in of a gc.</td><td>DrawColor(gc, colorstr)</td><td>act_draw</td>
@@ -117,7 +117,7 @@ This is pcb-rnd 3.0.2-dev (svn r35731) an interactive printed circuit board edit
 <tr><td>DrcQueryRuleMod</td><td>Automated DRC rule editing (for scripting and import)</td><td>DrcQueryRuleMod(clear, source)<br>DrcQueryRuleMod(create, rule_name)<br>DrcQueryRuleMod(get, rule_name, field_name)<br>DrcQueryRuleMod(set, rule_name, field_name, value)<br>DrcQueryRuleMod(remove, rule_name)</td><td>drc_query</td>
 <tr><td>duktape</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>DumpActions</td><td>Dump all actions available.</td><td>DumpActions()</td><td></td>
-<tr><td>dumpconf</td><td>Perform various operations on the configuration tree.</td><td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td><td>diag plugin</td>
+<tr><td>dumpconf</td><td>Perform various operations on the configuration tree.</td><td>dumpconf(native, [verbose], [prefix]) - dump the native (binary) config tree to stdout<br>dumpconf(lihata, role, [prefix]) - dump in-memory lihata representation of a config tree</td><td>diag_rnd</td>
 <tr><td>DumpCsect</td><td>Print the cross-section of the board (layer stack)</td><td>DumpCsect()</td><td>draw_csect</td>
 <tr><td>dumpdata</td><td>Dump an aspect of the data</td><td>dumpdata()</td><td>diag plugin</td>
 <tr><td>dumpflags</td><td>dump flags, optionally using the format string provided by the user</td><td>dumpflags([fmt])</td><td>diag plugin</td>
@@ -138,7 +138,7 @@ This is pcb-rnd 3.0.2-dev (svn r35731) an interactive printed circuit board edit
 <tr><td><a href="action_details.html#elementsetattr">ElementSetAttr</a></td><td>Sets or clears an element-specific attribute.</td><td>ElementSetAttr(refdes,name[,value])</td><td></td>
 <tr><td>EnableVendor</td><td>Enables automatic drill size mapping.</td><td>EnableVendor()</td><td>oldactions plugin</td>
 <tr><td>estutter</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
-<tr><td>EvalConf</td><td>Perform various operations on the configuration tree.</td><td>EvalConf(path) - evaluate a config path in different config sources to figure how it ended up in the native database</td><td>diag plugin</td>
+<tr><td>EvalConf</td><td>Perform various operations on the configuration tree.</td><td>EvalConf(path) - evaluate a config path in different config sources to figure how it ended up in the native database</td><td>diag_rnd</td>
 <tr><td>ExecActionFile</td><td>Run actions from the given file.</td><td>ExecuteFile(filename)</td><td></td>
 <tr><td>ExecCommand</td><td>Run shell command</td><td>System(shell_cmd)</td><td></td>
 <tr><td><a href="action_details.html#executefile">ExecuteFile</a></td><td>Run actions from the given file.</td><td>ExecuteFile(filename)</td><td></td>
@@ -305,7 +305,7 @@ This is pcb-rnd 3.0.2-dev (svn r35731) an interactive printed circuit board edit
 <tr><td>perl</td><td>Execute a script one-liner using a specific language</td><td>Oneliner(lang, script)</td><td>script plugin</td>
 <tr><td>perp</td><td>Draw a line perpendicular to another line</td><td>perp()</td><td>ddraft plugin</td>
 <tr><td>Pinout</td><td>Present the subcircuit pinout box</td><td>Pinout()</td><td>dialogs plugin</td>
-<tr><td><a href="action_details.html#polybool">PolyBool</a></td><td>Perform polygon boolean operation on the clipped polygons referred. A poly is either and idpath, selected, found or object (for the object under the cursor). When not specified, two object polygons are used.</td><td>PstkProto([noundo,] unite|isect|sub, [poly1, poly2, [poly...]])</td><td>act_draw</td>
+<tr><td><a href="action_details.html#polybool">PolyBool</a></td><td>Perform polygon boolean operation on the clipped polygons referred. A poly is either and idpath, selected, found or object (for the object under the cursor). When not specified, two object polygons are used.</td><td>PolyBool([noundo,] unite|isect|sub, [poly1, poly2, [poly...]])</td><td>act_draw</td>
 <tr><td><a href="action_details.html#polycombine">PolyCombine</a></td><td></td><td></td><td>polycombine plugin</td>
 <tr><td><a href="action_details.html#polygon">Polygon</a></td><td>Some polygon related stuff.</td><td>Polygon(Close|CloseHole|PreviousPoint)</td><td></td>
 <tr><td>PolyHatch</td><td>hatch the selected polygon(s) with lines of the current style; lines are drawn on the current layer; flags are h:horizontal, v:vertical, c:contour, p:poly</td><td>PolyHatch([spacing], [hvcp])<br>PolyHatch(interactive)</td><td>lib_polyhelp</td>
@@ -317,7 +317,7 @@ This is pcb-rnd 3.0.2-dev (svn r35731) an interactive printed circuit board edit
 <tr><td>PolyOffs</td><td>replicate the outer contour of the selected polygon(s) with growing or shrinking them by offset; the new polygon is drawn on the current layer</td><td>PolyOffs(offset)</td><td>lib_polyhelp</td>
 <tr><td><a href="action_details.html#polystitch">PolyStitch</a></td><td></td><td></td><td>polystitch plugin</td>
 <tr><td><a href="action_details.html#popup">Popup</a></td><td>Bring up the popup menu specified by MenuName, optionally modified with the object type under the cursor.</td><td>Popup(MenuName, [obj-type])</td><td>lib_hid_pcbui/actions</td>
-<tr><td>Preferences</td><td>Present the preferences dialog, optionally opening the tab requested.</td><td>Preferences([tabname])</td><td>dialogs plugin</td>
+<tr><td>Preferences</td><td>Present the preferences dialog, optionally opening the tab requested.</td><td>Preferences([tabname])</td><td>lib_hid_common plugin</td>
 <tr><td><a href="action_details.html#print">Print</a> <sup><a href="#ringdove">(RND)</a></sup></td><td>Present the print export dialog for printing the layout from the GUI.</td><td>Print()</td><td></td>
 <tr><td>PrintActions</td><td>Print all actions available.</td><td>PrintActions()</td><td></td>
 <tr><td><a href="action_details.html#printcalibrate">PrintCalibrate</a></td><td>DEPRECATED: Calibrate the printer.</td><td>PrintCalibrate()</td><td>dialogs plugin</td>
