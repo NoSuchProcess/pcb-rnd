@@ -1,7 +1,7 @@
-                *io------------------------------------------------------+
-                |[kica    ]       [gpcb  ]    [hyp_]  [gsch]   [dsn_ ]   |
-                |        [  tedax  ]     [pads]    [fido]  [prtl]  [eagl]|
-                +--------------------------------------------------------+
+               *io--------------------------------------------------------+
+               |[kica    ]        [gpcb  ] [hyp_]  [gsch] [ alti ] [dsn_ ]|
+               |         [  tedax  ]   [pads]  [fido]  [prtl]   [eagl]    |
+               +----------------------------------------------------------+
 *inp----+                                                                        *hid--------+
 |[eesc ]|   *pcbrnd----------------------------------------------------------+   |[batch  ]  |
 |[mucs ]|   |                                                                |   |           |
@@ -25,8 +25,8 @@
 |[bxl  ]|   +----------------------------------------------------------------+   +-----------+
 +-------+
           *out----------------------------------------------------------------+
-          |        [bom_]  [xy__]  [gerb]  [opcd]  [lpr_]  [scad]  [oems]     |
-          |    [stat]  [ps__]  [svg_]  [png_]  [stl_]  [dxf_]  [gcod]  [exce] |
+          |[stl_] [proj]  [xy__]  [bom_]  [opcd]  [lpr_]  [scad] [oems] [gerb]|
+          |    [amf_] [ps__]  [svg_]  [png_]  [stat]  [dxf_]  [gcod] [exce]   |
           +-------------------------------------------------------------------+
 %%
 OA
@@ -161,6 +161,9 @@ OA
 [prtl]
 	label Protel\nAutotrax
 
+[alti]
+	label Altium and\nprotel 98/99
+
 [eagl]
 	label Eagle\n(board,lib)
 
@@ -186,6 +189,12 @@ OA
 
 [stl_]
 	label STL\n(3d)
+
+[amf_]
+	label amf\n(3d)
+
+[proj]
+	label pro\n(3d)
 
 [lpr_]
 	label lpr\n(print)
@@ -259,6 +268,12 @@ OA
 
 -> pcbrnd stl_.n
 	label stl
+
+-> pcbrnd amf_.n
+	label amf
+
+-> pcbrnd proj.n
+	label projector
 
 -> pcbrnd lpr_.n
 	label ps
@@ -385,6 +400,12 @@ OA
 
 <-> prtl.s pcbrnd
 	label board
+
+-> alti.s-0.1 pcbrnd
+	label ASCII board
+
+-> alti.s+0.1 pcbrnd
+	label bin board
 
 -> eagl.s-0.3 pcbrnd
 	label board
