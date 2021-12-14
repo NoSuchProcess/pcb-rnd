@@ -205,7 +205,7 @@ int hook_detect_target()
 		require("libs/sul/libxml2/presents", 0, 0);
 		if (!istrue(get("libs/sul/libxml2/presents"))) {
 			report("libxml2 is not available, disabling io_eagle...\n");
-			report_repeat("WARNING: Since there's no libxml2 found, disabling the Eagle IO and pcbway order plugins...\n");
+			report_repeat("WARNING: Since there's no libxml2 found, disabling the Eagle IO, amf 3d models and pcbway order plugins...\n");
 			hook_custom_arg("disable-io_eagle", NULL);
 			hook_custom_arg("disable-order_pcbway", NULL);
 		}
