@@ -1,7 +1,7 @@
 $class io
 $short PADS board
 $long load boards in the PADS ASCII format
-$state WIP
+$state works
 $fmt-native no
 $fmt-feature-r PADS ASCII board
 $fmt-feature-w PADS ASCII board

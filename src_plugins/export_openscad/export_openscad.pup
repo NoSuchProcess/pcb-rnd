@@ -1,7 +1,7 @@
 $class export
 $short openscad pcb_exporter
 $long Export openscad
-$state WIP
+$state works
 $fmt-native no
 $fmt-feature-w openscad script (colored 3D model)
 $package export

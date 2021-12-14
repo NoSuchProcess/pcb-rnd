@@ -1,7 +1,7 @@
 $class import
 $short import ttf glyphs
 $long Import outline ttf glyphs into the current font, either as polygons or lines
-$state WIP
+$state works
 $fmt-native no
 $fmt-feature-r ttf font
 $package import-geo

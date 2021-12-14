@@ -1,7 +1,7 @@
 $class io
 $short BXL footprint
 $long load footprints from the BXL format.
-$state WIP
+$state works
 $fmt-native no
 $fmt-feature-r BXL footprints
 $package io-alien

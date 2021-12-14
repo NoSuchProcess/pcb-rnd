@@ -1,7 +1,7 @@
 $class import
 $short import sch v2
 $long Imports footprints and netlist data from the schematics (or some other source).
-$state WIP
+$state works
 $fmt-native no
 $package import-net
 default buildin

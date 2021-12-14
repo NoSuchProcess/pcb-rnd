@@ -1,7 +1,7 @@
 $class export
 $short 3d export: STL/amf/pro
 $long Export triangulated surface model
-$state WIP
+$state works
 $fmt-native no
 $fmt-feature-w stl (3d triangulated surface model)
 $fmt-feature-w amf (Additive Manufacturing File, surface model)
