@@ -10,7 +10,7 @@
 <p>
 When an action or configuration file requires a <i>layer</i> or
 <i>layer group</i> to be specified, it is usually done using the <i>layer
-address</i> or <i>layer group address</i> sytax specified below.
+address</i> or <i>layer group address</i> syntax specified below.
 <p>
 However, some old actions still require the raw id or name of
 a layer or layer group; in that case, the addressing syntax will not work
@@ -167,13 +167,13 @@ Avoid addressing by user assigned name (the @ syntax): that scheme is
 fragile and unique names are not guaranteed.
 <p>
 When addressing a layer for the first time, it is best to use the
-group-type/#count syntax (e.g. top-copper/1 fir the first layer of the
+group-type/#count syntax (e.g. top-copper/#1 for the first layer of the
 top copper group).
 <p>
 If a lot of accesses to the same layer is required (and the layer stack
 is not changed during the operation) the best strategy is to resolve the
-layer once , using e.g. the group-type/#count, then remember its layer id
-and use the faster #id addressing for subsequent access.
+layer once , using e.g. the group-type/#count, then remember its layer idx
+and use the faster #idx addressing for subsequent access.
 
 </body>
 </html>
