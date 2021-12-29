@@ -61,8 +61,6 @@ static void proj_print_footer(FILE *f)
 	for(n = 0, vx = edges.array; n < edges.used; n += 2, vx += 2)
 		fprintf(f, "		lines\n			:%ld :%ld\n", vx[0], vx[1]);
 
-	fprintf(f, "	normals\n");
-
 	verthash_uninit(&verthash);
 	vtl0_uninit(&edges);
 }
