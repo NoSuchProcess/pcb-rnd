@@ -31,7 +31,7 @@ static void proj_print_header(FILE *f)
 	fprintf(f, "obj \"board\"\n");
 	fprintf(f, "	realempty\n");
 	fprintf(f, "	ambient 0.9\n");
-	fprintf(f, "	diffuse 0.7\n");
+	fprintf(f, "	diffuse 0.9\n");
 
 	verthash_init(&verthash);
 	vtl0_init(&edges);
@@ -57,9 +57,11 @@ static void proj_print_footer(FILE *f)
 		rnd_fprintf(f, "		tri :%ld :%ld :%ld\n", vx[0], vx[1], vx[2]);
 	}
 
+#if 0
 	fprintf(f, "	color 0.0 0.46 0.0\n");
 	for(n = 0, vx = edges.array; n < edges.used; n += 2, vx += 2)
 		fprintf(f, "		lines\n			:%ld :%ld\n", vx[0], vx[1]);
+#endif
 
 	verthash_uninit(&verthash);
 	vtl0_uninit(&edges);
