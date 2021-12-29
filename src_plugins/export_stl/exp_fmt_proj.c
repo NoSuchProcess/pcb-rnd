@@ -31,7 +31,7 @@ static void proj_print_header(FILE *f)
 	fprintf(f, "obj \"board\"\n");
 	fprintf(f, "	realempty\n");
 	fprintf(f, "	ambient 0.9\n");
-	fprintf(f, "	diffuse 0.1\n");
+	fprintf(f, "	diffuse 0.7\n");
 
 	verthash_init(&verthash);
 	vtl0_init(&edges);
