@@ -182,6 +182,9 @@ static int conv_bool_field(altium_field_t *field)
 			if (rnd_strcasecmp(field->val.str, "false") == 0) return 0;
 			rnd_message(RND_MSG_ERROR, "failed to convert bool value '%s'\n", field->val);
 			return 0;
+		default:;
+			rnd_message(RND_MSG_ERROR, "failed to convert bool value from invalid type %d\n", field->val_type);
+			return 0;
 	}
 
 	abort();
