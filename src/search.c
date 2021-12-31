@@ -1271,7 +1271,8 @@ pcb_line_t *pcb_line_center_cross_point(pcb_layer_t *layer, rnd_coord_t x, rnd_c
 	rnd_rtree_box_t pt;
 	pcb_line_t *l;
 
-/* TODO: set pt coords to x and y */
+	pt.x1 = x; pt.y1 = y;
+	pt.x2 = x+1; pt.y2 = y+1;
 
 	for(l = rnd_rtree_first(&it, layer->line_tree, &pt); l != NULL; l = rnd_rtree_next(&it)) {
 		/* check if line needs to be ignored and "continue;" if so:
