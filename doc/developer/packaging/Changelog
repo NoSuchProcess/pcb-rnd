@@ -1,9 +1,25 @@
 How to get a release candidate tarball in /tmp:
 
-  ver=3.0.1
+  ver=3.0.3
   cd /tmp
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
+
+Packaging changes between 3.0.3 and 3.0.1/3.0.2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A. changes that probably don't need action
+
+(nothing; all changes will require action)
+
+B. changes that probably DO need action
+
+1. Description change in pcb-rnd: the long description listing all
+   file formats supported got some refinement (eagle footprint
+   alternative loading) and some new formats (Altium board,
+   amf export, projector export). Please use the new version
+   of description.txt!
+
 
 Packaging changes between 3.0.0 and 3.0.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
