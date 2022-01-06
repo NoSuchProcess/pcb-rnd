@@ -25,6 +25,11 @@ B. changes that probably DO need action
    From now on auto/librnd_min_ver contains the version number, after
    running packages.sh.
 
+Packaging changes between 3.0.2 and 3.0.1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This version is the same as 3.0.1, plus a single bugfix.
+
 
 Packaging changes between 3.0.0 and 3.0.1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
