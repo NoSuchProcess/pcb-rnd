@@ -1,21 +1,22 @@
-pcb-rnd 3.0.1
+pcb-rnd 3.0.3
 ~~~~~~~~~~~~~
 
-This is mainly a bugfix release with a few minor features on external
-autorouter and propedit/query/drc side.
+This is a minor feature release
 
-Bugfix and feature highlight:
+Feature highlight:
 
-1. support for freerouting_cli and freerouting.net integration in
-   ar_extern.
+1. Dependency on librnd bumped to 3.1.0; the generic half of the preferences
+   window tabs are moved from pcb-rnd to librnd.
 
-2. Xor-drawing of a padstack (while placing or moving) renders the hole/slot
-   too. This makes it easier to position the object. In some cases it
-   makes the object visible (hole-only padstack, e.g. mounting-hole).
+2. New board format to load: altium, protel 98/99
 
-3. The property editor and query() have access to thermal bits per layer ID
-   via a new subtree padstack/thermal/lid/. This makes mass-editing thermals
-   and scripting thermals easier.
+3. New export 3d formats: amf and projector
 
-4. DRC test for invalid character in text object.
+4. io_eagle can load footprints from eagle libs directly
+
+5. export_xy: more template variables for generating different rotations
+
+6. export_xy: optional subcircuit attributes for per-vendor (per-fab)
+   rotation and translation so that a footprint lib can be adjusted
+   to work with multiple p&p fabs with contradicting origin requirements
 

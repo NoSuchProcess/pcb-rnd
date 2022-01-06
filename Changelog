@@ -1,3 +1,186 @@
+pcb-rnd 3.0.1 (r36028)
+~~~~~~~~~~~~~~~~~~~~~~
+	[act_draw]
+		-Fix: typo in PolyBool help/syntax text (wrong action name)
+
+	[build]
+		-Add: check for librnd version, require 3.1.0
+		-Add: config.h has a #define for libxml2 presence so that plugins with partial libxml2 dependency can enable/disable parts of their code
+		-Add: when libxml2 not found, mention that amf model loading is also disabled
+
+	[core]
+		-Fix: don't attempt to xor-draw hole of a padstack if the prototype is missing
+		-Fix: do not attempt to draw slot if proto is NULL
+		-Fix: don't call extobj float pre if there's no valid object
+		-Fix: plug_io warns for underspecified format only if the format yields multiple yields of _different_ loader functions
+		-Fix: undo bug: when rotating a padstack off-center so that the padstack's coords also change (move), undo did not move it back, only rotated it back
+		-Fix: buffer: make sure to not load config when importing a board into paste buffer
+		-Fix: buffer: when loading a board into buffer, skip side effects such as design dir setting and routing style updates
+		-Fix: text rotatation: wrong clamp on negative rotation angles resulted in inverted angle
+		-Fix: buffer rotation: set bottom side text rotation to negative angle so it rotates the same way as top side text
+		-Fix: change default rendering order so that paste is cut through not only by mech (slots) but holes too
+		-Fix: remember when picking up buffer from the bottom side and when converted to subc, put subc-aux on the bottom side too
+		-Fix: convert-to-subc: subc aux layer creation: broken x/y vectors on the bottom side
+		-Fix: convert-to-subc: when converting a subc on the bottom side and have to create refdes text, place that on bottom side as well as that's the primary side for this subc
+		-Fix: unbind board.c events on exit
+		-Fix: wrong uninit sequence caused inf loop on exit
+		-Fix: lock-floaters and only-floaters are exclusive settings; the menu shall use the display() action instead of the more generic conf() action so that the xor logic is executed
+		-Fix: library sorting: keep configured order of roots to reflect search order in the library window
+		-Fix: subc preview draw: reset info to all 0 because there may be fields with side effects in pstk draw that we don't explicitly set
+		-Split: subc preview draw: padstack draw code into a separate function as it will need to be called multiple times for various layers
+		-Add: subc preview draw: render only visible layers
+		-Add: subc preview draw: draw mask & paste of padstacks when visible
+		-Add: subc preview draw: pass on host layers for coloring padstack to match user preference (current board)
+		-Add: subc preview draw: draw on-padstack objects too on top mask and top paste
+		-Add: footprint lib code: make it possible to remember format for footprint entries so loading from the lib doesn't need to try different formats again if they were tested during mapping already
+		-Add: check for librnd minimum version runtime - just in case the executable was compiled with a different version than installed runtime
+		-Add: include librnd full version string in program ID (CLI: --version; GUI: about box)
+		-Add: if gtk2 HID is not available, also try gtk4 HID as fallback
+
+	[diag]
+		-Del: conf diagnostic actions - they got moved to librnd 3.1.0
+
+	[dialogs]
+		-Fix: 'save as' initial format guess hides the guess failure message initially (format is surely known) with both the old and the new fsd
+		-Fix: create doc layer groups on top, bottom and global for the library window footprint preview to serve as a fallback for any courtyard, keepoiut or custom layer (in modern footprints)
+		-Fix: scroll the tree table widget, not parent box; it's possible from librnd 3.1.0 and fixes scoll-with-arrow-key
+		-Add: library dialog: subc preview layer visibility control checkboxes so that unwanted layers can be hidden from the preview
+		-Add: library dialog: get default preview checkbox settings from config
+		-Add: library preview: copy layer colors from the current board
+		-Add: preferences: modular tab system; moved generic tabs from pcb-rnd to librnd
+
+	[doc]
+		-Update: bridges and format list: eagle xml .lbr load
+		-Update: datasheet for altium boards and protel 98/99 boards, export_stl's amf
+		-Update: action reference: moved some action between plugins
+		-Add: tutorials link in the "menu" with cuvoodoo's 'getting started' video is the main tutorial now
+		-Add: specify minimum librnd version requirement in INSTALL (3.1.0)
+		-Add: altium board load, protel 98/99 board load, amf export and projector export on the bridges drawing
+		-Add: appendix file format list: amf and projector exports
+
+	[export_stl]
+		-Fix: don't pass repeated poly corners in padstack shapes to the triangulation lib
+		-Fix: don't segfault when stl model not found
+		-Fix: reverse coords on cutout vertical walls so triangle normals always point out
+		-Fix: subc rotation is negative on the bottom side
+		-Add: abstraction layer for different formats; be able to load multiple model formats, independently of export format
+		-Add: support for the amf format (model load and export)
+		-Add: vertex hash for amf and later projector
+		-Add: model load fallback mechanism: try model format matching the output format first then fall back to other model formats
+		-Add: output-only format: projector(1)
+
+	[export_xy]
+		-Fix: pick up bottom-pnp-origin (without suffix)
+		-Cleanup: get rid of xray_theta (always 0)
+		-Add: support for optional xy::rotate and xy::translate attributes
+		-Add: --vendor argument so multiple rotate and translate can be used
+		-Add: xy::translate needs to be rotated around the pcb-rnd origin of the subc because the p&p machine will rotate around the translated point while pcb-rnd rotates around the pcb-rnd origin
+		-Add: generalize board level pnp-origin function so it will be reusable for multiple origins
+		-Add: new substs: side-x, side-y, side-padcx, side-padcy that use the bottom-pnp-origin(-*) for reference
+		-Add: %side-rot% and %side-negrot% substs
+		-Add: %side-negrot180% subst
+		-Add: %subc.side-rot180% subst that reproduces original gEDA/pcb behavior
+
+	[find.c]
+		-Fix: bloated poly vs. poly jump got "too accurate": a thermal doesn't really overlap with the object so it didn't find connection; cheat with a few nanometers of extra bloat
+		-Fix: poly-poly bloated intersect: don't attempt to use negaive thickness in intersect tester line
+		-Fix: bloat override on "line vs. polygon" check so that the bloat adjustment used to overcome numeric precision problems can be applied
+		-Fix: use minimum line thickness 4 nanometer instead of 2 for line-to-poly to avoid self intersecting lines
+		-Fix: padstack zero-thickness line edge should be taken as 4 nanometer so the line intersection test is actually done
+		-Cleanup: const correctness on find context and missing cast to any-obj
+		-Add: TODO on making bloated poly-poly test cheaper
+
+	[footprint]
+		-Add: stl models for 1206 and SOT23
+
+	[fp_fs]
+		-Add: remember format for footprints bundling in multi-footprint file libs
+
+	[io_altium]
+		-Fix: handle all types without aborting on bool conversion (broken user input shouldn't abort)
+		-Change: plgin enabled by default, now that we depend on librnd 3.1.0
+
+	[io_bxl]
+		-Fix: don't run an extra round of parsing on error
+
+	[io_dsn]
+		-Fix: wrong return value for boolean func is_protected()
+		-Fix: loading a board: this format doesn't have a design conf tree in the file, still some config nodes are loaded from other fields; make sure plug_io won't reset the subtree
+		-Fix: read all rules, not only the first one from structure/rule
+		-Fix: when loading a board, make sure subcircuits have the sub-aux objets so that subc orientation and side are correct
+		-Fix: activate bottom side mirror fix in the placement lib so that bottom side rotation+mirror is done right
+		-Fix: for proper bottom side rotation we need the rotate_first placement strategy, not the mirror_first
+		-Fix: enable the "space omitted before opening brace" fix for reading eagle produced dsns now that librnd 3.1.0 has the required API
+		-Cleanup: function with no return value should be void
+
+	[io_eagle]
+		-Fix: wire layer allocation fail should print the actual layer number not a random number
+		-Split: function that reads a single package from library read code so it can be reused for loading a single footprint for a lbr file
+		-Add: set default units to mm for footprint/lib files
+		-Add: footprint map implementation (somewhat slow as it requires xml parsing)
+		-Add: layers subtree parse: create bound layers when data is not NULL (for footprint file parsing)
+		-Add: get_layer() handles footprint context if pcb is not available (when we are reading a footprint file)
+		-Add: parse the package subtree when laoding a footprint file
+		-Add: tolerate missing pcb on package parsing for layers and extents (for loading footprints)
+		-Add: support for loading binary libs
+		-Add: create layers on get_layer even if they were not in the layer subtree (some binary libs do not have a layer subtree)
+
+	[io_kicad]
+		-Fix: do not attempt to create empty text objects while loading a board or footprint
+
+	[io_lihata]
+		-Fix: do not load layer attributes when loading a board into buffer (it's a side effect that would affect menus)
+		-Fix: loading a pre-v5 board won't have a design conf tree in the file, still some config nodes are loaded from other fields; make sure plug_io won't reset the subtree
+		-Fix: pre-v7 did not have pixmap support, do no write the pixmap subtree
+		-Cleanup: use rnd_trace for persistence format preservation debug
+		-Add: persistent write: preserve numeric format of arc angles (as double)
+
+	[io_pcb]
+		-Fix: print an error and skip empty text objects while loading (would result in an object that's extremely hard to handle on the GUI)
+
+	[lib_netmap]
+		-Add: option for alternate y mirroring on bottom side footprints (for io_dsn fix)
+
+	[libcdtr]
+		-Fix: debug draw should use coords and not rely on int
+		-Fix: don't hardwire point violation circle radius in debug draw, calculate it from drawing size
+		-Add: tester command for polygon triangulation
+		-Add: tester command to draw violations in animator
+		-Add: Wojciech's fix for floating point precision caused inifinite looping on poly triangulation
+		-Add: regression tests for the lib compiled with doubles
+
+	[librnd]
+		-Cleanup: use rnd_hid_fileselect() instead of direct call to hid->fileselect for easier forward porting at version bmp librnd 4.0.0
+
+	[plugins]
+		-Update: change plugin state from "WIP" to "works" on plugins that got enough mileage of testing: export_openscad, export_stl, import_sch2, import_ttf, io_bxl, io_pads
+
+	[propedit]
+		-Fix: recurse to editable subcircuit objects on the first level of subcircuits (floaters, padstacks) when dealing with selection
+		-Cleanup: reduce code duplication in executing set/del/map on selected objects, so that there is only one TODO#28 to make sure it's always handled the same
+
+	[query]
+		-Cleanup: remove local_str in favor of const string return from thermal API
+
+	[renumber]
+		-Fix: do not ask for overwrite permission twice
+		-Fix: pass on subc to change name on as ptr2 as callee expects that (fixes a crash)
+
+	[shape]
+		-Fix: make "last point" coords persistent while drawing a rounded rect so in "Majenko's round corner case" when two rounding arcs meets exactly there won't be coord duplication making the resulting poly invalid
+
+	[tests]
+		-Fix: don't try to directly compile the diag plugin code into the tester but depend on librnd
+		-Fix: ignore empty lines printed as part of error messages for the menu test
+		-Fix: fitler out pup loading error messages from the output in tests doing output comparison: some unrelated plugins may be broken
+		-Update: bottom side subc rotation error in xy due to loading from pcb format was broken
+
+
+pcb-rnd 3.0.2
+~~~~~~~~~~~~~
+
+Out-of-order bugfix release: 3.0.1 + a single bugfix
+
 pcb-rnd 3.0.1 (r35718)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[ar_extern]
