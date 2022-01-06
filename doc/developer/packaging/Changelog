@@ -5,8 +5,8 @@ How to get a release candidate tarball in /tmp:
   svn export svn://repo.hu/pcb-rnd/trunk pcb-rnd-$ver
   tar -cf pcb-rnd-$ver.tar pcb-rnd-$ver
 
-Packaging changes between 3.0.3 and 3.0.1/3.0.2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Packaging changes between 3.0.3 and 3.0.2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A. changes that probably don't need action
 
@@ -19,6 +19,11 @@ B. changes that probably DO need action
    alternative loading) and some new formats (Altium board,
    amf export, projector export). Please use the new version
    of description.txt!
+
+2. librnd minimum version is 3.1.0
+   From now on the first line of packages.html contains this information.
+   From now on auto/librnd_min_ver contains the version number, after
+   running packages.sh.
 
 
 Packaging changes between 3.0.0 and 3.0.1

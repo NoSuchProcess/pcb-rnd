@@ -2,8 +2,32 @@
 ROOT=../../..
 proot=$ROOT/src_plugins
 
+# Get librnd requirement from INSTALL so it doesn't need to be maintained
+# multiple locations
+librnd_min_ver()
+{
+	awk -v "which=$1" '
+		/librnd >=/ {
+			ver=$0
+			sub("^.*>=", "", ver)
+			sub("[ \t].*$", "", ver)
+			split(ver, V, "[.]")
+			if (which == "major")
+				print V[1]
+			else if (which == "minor")
+				print V[2]
+			else if (which == "patch")
+				print V[3]
+			else
+				print ver
+		}
+	' < $ROOT/INSTALL
+}
+
+
 # major version of librnd
-RNDV=3
+RNDV=`librnd_min_ver major`
+RNDVER=`librnd_min_ver`
 
 if test -f $ROOT/Makefile.conf
 then
@@ -79,7 +103,7 @@ do
 	sed "s@^@$n @" < $n
 done
 cat extra.digest
-) | awk -v "meta_deps=$meta_deps" -v "librnd_pkgs=$librnd_pkgs" -v "librnd_plugins=$librnd_plugins" -v "RNDV=$RNDV" '
+) | awk -v "meta_deps=$meta_deps" -v "librnd_pkgs=$librnd_pkgs" -v "librnd_plugins=$librnd_plugins" -v "RNDV=$RNDV" -v "RNDVER=$RNDVER" '
 	BEGIN {
 		v = split(meta_deps, A, "[ \t]")
 		meta_deps = ""
@@ -272,8 +296,11 @@ print in_librnd, $1 > "L1"
 		PKG["pcb-rnd-doc"] = "&nbsp;"
 		IFILES["pcb-rnd-doc"] = "/usr/share/doc/*"
 
+		print "<h3> Librnd minimum version: " RNDVER "</h3>"
+		print RNDVER >  "auto/librnd_min_ver"
 
 		print "<h3> Package summary and dependencies </h3>"
+		print "<p>"
 		print "<table border=1>"
 		print "<tr><th> package <th> depends on (packages) <th> consists of (plugins)"
 
