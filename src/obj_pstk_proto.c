@@ -278,7 +278,7 @@ int pcb_pstk_proto_conv(pcb_data_t *data, pcb_pstk_proto_t *dst, int quiet, vtp0
 		goto quit;
 	}
 
-	ts->shape = malloc(ts->len * sizeof(pcb_pstk_shape_t));
+	ts->shape = calloc(ts->len * sizeof(pcb_pstk_shape_t), 1); /* use calloc so aborted allocation will have all fields 0 and pstk free won't try to free non-existing polygons */
 
 	/* convert local (line/poly) objects */
 	for(i = 0, n = -1, o = (pcb_any_obj_t **)objs->array; i < vtp0_len(objs); o++,i++) {
