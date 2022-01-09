@@ -1,4 +1,4 @@
-pcb-rnd 3.0.3 (r36028)
+pcb-rnd 3.0.3 (r36037)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]
 		-Fix: typo in PolyBool help/syntax text (wrong action name)
@@ -27,6 +27,7 @@ pcb-rnd 3.0.3 (r36028)
 		-Fix: lock-floaters and only-floaters are exclusive settings; the menu shall use the display() action instead of the more generic conf() action so that the xor logic is executed
 		-Fix: library sorting: keep configured order of roots to reflect search order in the library window
 		-Fix: subc preview draw: reset info to all 0 because there may be fields with side effects in pstk draw that we don't explicitly set
+		-Fix: do not crash on failed pstk conversion (freeing shapes from uninitialized memory)
 		-Split: subc preview draw: padstack draw code into a separate function as it will need to be called multiple times for various layers
 		-Add: subc preview draw: render only visible layers
 		-Add: subc preview draw: draw mask & paste of padstacks when visible
