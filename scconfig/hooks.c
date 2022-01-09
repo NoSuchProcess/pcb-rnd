@@ -177,7 +177,7 @@ int hook_detect_target()
 	int want_gd, want_xml2, want_freetype2, want_fuse;
 
 	want_gd     = plug_is_enabled("export_png") || plug_is_enabled("import_pxm_gd");
-	want_xml2   = plug_is_enabled("io_eagle") || plug_is_enabled("order_pcbway");
+	want_xml2   = plug_is_enabled("io_eagle") || plug_is_enabled("order_pcbway") || plug_is_enabled("stl_export");
 	want_freetype2 = plug_is_enabled("import_ttf");
 	want_fuse = plug_is_enabled("export_vfs_fuse");
 
