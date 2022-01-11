@@ -90,6 +90,9 @@ RNDHOOKS=$(LIBRNDSCC)/plugin_3state.h $(LIBRNDSCC)/hooks_common.h
 
 hooks.o: hooks.c $(RNDHOOKS) plugins.h Rev.h $(LIBRND_PREFIX)/include/librnd/scconfig
 
+librnd_ver.o: librnd_ver.c
+	$(CC) -c $(CFLAGS) -o librnd_ver.o librnd_ver.c
+
 $(BIN)/util/arg_auto_set.o: $(SRC)/util/arg_auto_set.c $(SRC)/util/arg_auto_set.h
 	$(CC) -c $(CFLAGS) -o $(BIN)/util/arg_auto_set.o $(SRC)/util/arg_auto_set.c
 
