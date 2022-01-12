@@ -1,3 +1,4 @@
+36040	configure	version bump: 3.0.3
 35941	configure	moving generic part of diag and preferences dialog to librnd 3.1.0
 35866	configure	diag plugin generalization for librnd move
 35849	configure	preferences dialog generalization
