@@ -1,4 +1,4 @@
-pcb-rnd 3.0.3 (r36037)
+pcb-rnd 3.0.3 (r36039)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]
 		-Fix: typo in PolyBool help/syntax text (wrong action name)
