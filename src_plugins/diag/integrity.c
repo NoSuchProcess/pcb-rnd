@@ -77,20 +77,20 @@ static void chk_term(const char *whose, pcb_any_obj_t *obj)
 	const char *s_intconn = pcb_attribute_get(&obj->Attributes, "intconn");
 
 	if (pcb_obj_id_invalid(aterm))
-		rnd_message(RND_MSG_ERROR, CHK "%s %ld has term attribute '%s' with invalid characters\n", whose, obj->ID, aterm);
+		rnd_message(RND_MSG_ERROR, CHK "%s obj #%ld has term attribute '%s' with invalid characters\n", whose, obj->ID, aterm);
 
 	if ((aterm == NULL) && (obj->term == NULL))
 		return;
 	if (obj->term == NULL) {
-		rnd_message(RND_MSG_ERROR, CHK "%s %ld has term attribute '%s' but no ->term set\n", whose, obj->ID, aterm);
+		rnd_message(RND_MSG_ERROR, CHK "%s obj #%ld has term attribute '%s' but no ->term set\n", whose, obj->ID, aterm);
 		return;
 	}
 	if (aterm == NULL) {
-		rnd_message(RND_MSG_ERROR, CHK "%s %ld has ->term '%s' but no attribute term set\n", whose, obj->ID, obj->term);
+		rnd_message(RND_MSG_ERROR, CHK "%s obj #%ld has ->term '%s' but no attribute term set\n", whose, obj->ID, obj->term);
 		return;
 	}
 	if (aterm != obj->term) {
-		rnd_message(RND_MSG_ERROR, CHK "%s %ld has mismatching pointer of ->term ('%s') and attribute term ('%s')\n", whose, obj->ID, obj->term, aterm);
+		rnd_message(RND_MSG_ERROR, CHK "%s obj #%ld has mismatching pointer of ->term ('%s') and attribute term ('%s')\n", whose, obj->ID, obj->term, aterm);
 		return;
 	}
 
@@ -99,7 +99,7 @@ static void chk_term(const char *whose, pcb_any_obj_t *obj)
 		long intconn = strtol(s_intconn, &end, 10);
 		if (*end == '\0') {
 			if (intconn != obj->intconn) {
-				rnd_message(RND_MSG_ERROR, CHK "%s %ld has mismatching intconn: cached is %d, attribute is '%s'\n", whose, obj->ID, obj->intconn, s_intconn);
+				rnd_message(RND_MSG_ERROR, CHK "%s obj #%ld has mismatching intconn: cached is %d, attribute is '%s'\n", whose, obj->ID, obj->intconn, s_intconn);
 				return;
 			}
 		}
@@ -111,26 +111,26 @@ static void chk_subc_cache(pcb_subc_t *subc)
 	const char *arefdes = pcb_attribute_get(&subc->Attributes, "refdes");
 
 	if (pcb_obj_id_invalid(arefdes))
-		rnd_message(RND_MSG_ERROR, CHK "subc %ld has refdes attribute '%s' with invalid characters\n", subc->ID, arefdes);
+		rnd_message(RND_MSG_ERROR, CHK "subc #%ld has refdes attribute '%s' with invalid characters\n", subc->ID, arefdes);
 
 	if ((subc->BoundingBox.X2 < 0) || (subc->BoundingBox.Y2 < 0))
-		rnd_message(RND_MSG_ERROR, CHK "subc %ld is on negative coordinates; its bottom right corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X2, subc->BoundingBox.Y2);
+		rnd_message(RND_MSG_ERROR, CHK "subc #%ld is on negative coordinates; its bottom right corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X2, subc->BoundingBox.Y2);
 
 	if ((subc->BoundingBox.X1 > PCB->hidlib.size_x) || (subc->BoundingBox.Y1 > PCB->hidlib.size_y))
-		rnd_message(RND_MSG_ERROR, CHK "subc %ld is olost beyond board extents; its top left corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X1, subc->BoundingBox.Y1);
+		rnd_message(RND_MSG_ERROR, CHK "subc #%ld is olost beyond board extents; its top left corner is %$mm;%$mm\n", subc->ID, subc->BoundingBox.X1, subc->BoundingBox.Y1);
 
 	if ((arefdes == NULL) && (subc->refdes == NULL))
 		return;
 	if (subc->refdes == NULL) {
-		rnd_message(RND_MSG_ERROR, CHK "subc %ld has refdes attribute '%s' but no ->refdes set\n", subc->ID, arefdes);
+		rnd_message(RND_MSG_ERROR, CHK "subc #%ld has refdes attribute '%s' but no ->refdes set\n", subc->ID, arefdes);
 		return;
 	}
 	if (arefdes == NULL) {
-		rnd_message(RND_MSG_ERROR, CHK "subc %ld has ->refdes '%s' but no attribute refdes set\n", subc->ID, subc->refdes);
+		rnd_message(RND_MSG_ERROR, CHK "subc #%ld has ->refdes '%s' but no attribute refdes set\n", subc->ID, subc->refdes);
 		return;
 	}
 	if (arefdes != subc->refdes) {
-		rnd_message(RND_MSG_ERROR, CHK "subc %ld has mismatching pointer of ->refdes ('%s') and attribute refdes ('%s')\n", subc->ID, subc->refdes, arefdes);
+		rnd_message(RND_MSG_ERROR, CHK "subc #%ld has mismatching pointer of ->refdes ('%s') and attribute refdes ('%s')\n", subc->ID, subc->refdes, arefdes);
 		return;
 	}
 }
@@ -147,11 +147,11 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 	chk_subc_cache(subc);
 
 	if (pcb_subc_get_origin(subc, &dummy, &dummy) != 0)
-		rnd_message(RND_MSG_ERROR, CHK "%s %ld: can not determine subc origin\n", whose, subc->ID);
+		rnd_message(RND_MSG_ERROR, CHK "%s subc #%ld: can not determine subc origin\n", whose, subc->ID);
 	if (pcb_subc_get_rotation(subc, &dummy2) != 0)
-		rnd_message(RND_MSG_ERROR, CHK "%s %ld: can not determine subc rotation\n", whose, subc->ID);
+		rnd_message(RND_MSG_ERROR, CHK "%s subc #%ld: can not determine subc rotation\n", whose, subc->ID);
 	if (pcb_subc_get_side(subc, &dummy) != 0)
-		rnd_message(RND_MSG_ERROR, CHK "%s %ld: can not determine subc side\n", whose, subc->ID);
+		rnd_message(RND_MSG_ERROR, CHK "%s subc #%ld: can not determine subc side\n", whose, subc->ID);
 
 	/* check term chaches */
 	for(ps = padstacklist_first(&subc->data->padstack); ps != NULL; ps = padstacklist_next(ps))
@@ -165,7 +165,7 @@ static void chk_subc(const char *whose, pcb_subc_t *subc)
 		pcb_poly_t *pol;
 
 		if (!ly->is_bound)
-			rnd_message(RND_MSG_ERROR, CHK "%ld subc layer %ld is not a bound layer\n", subc->ID, n);
+			rnd_message(RND_MSG_ERROR, CHK "#%ld subc layer %ld is not a bound layer\n", subc->ID, n);
 
 		for(lin = linelist_first(&ly->Line); lin != NULL; lin = linelist_next(lin))
 			chk_term("line", (pcb_any_obj_t *)lin);
