@@ -138,73 +138,73 @@ static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpos
 		doing_outline = 0;
 
 	is_photo_drill = (PCB_LAYER_IS_DRILL(flags, purpi) || ((flags & PCB_LYT_MECH) && PCB_LAYER_IS_ROUTE(flags, purpi)));
-		if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_TOP)) {
-			if (photo_flip)
-				return 0;
-			photo_im = &photo_silk;
+	if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_TOP)) {
+		if (photo_flip)
+			return 0;
+		photo_im = &photo_silk;
+	}
+	else if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_BOTTOM)) {
+		if (!photo_flip)
+			return 0;
+		photo_im = &photo_silk;
+	}
+	else if ((flags & PCB_LYT_MASK) && (flags & PCB_LYT_TOP)) {
+		if (photo_flip)
+			return 0;
+		photo_im = &photo_mask;
+	}
+	else if ((flags & PCB_LYT_MASK) && (flags & PCB_LYT_BOTTOM)) {
+		if (!photo_flip)
+			return 0;
+		photo_im = &photo_mask;
+	}
+	else if (is_photo_drill) {
+		photo_im = &photo_drill;
+	}
+	else {
+		if (PCB_LAYER_IS_OUTLINE(flags, purpi)) {
+			doing_outline = 1;
+			have_outline = 0;
+			photo_im = &photo_outline;
 		}
-		else if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_BOTTOM)) {
-			if (!photo_flip)
-				return 0;
-			photo_im = &photo_silk;
+		else if (flags & PCB_LYT_COPPER) {
+			photo_im = photo_copper + group;
 		}
-		else if ((flags & PCB_LYT_MASK) && (flags & PCB_LYT_TOP)) {
-			if (photo_flip)
-				return 0;
-			photo_im = &photo_mask;
-		}
-		else if ((flags & PCB_LYT_MASK) && (flags & PCB_LYT_BOTTOM)) {
-			if (!photo_flip)
-				return 0;
-			photo_im = &photo_mask;
-		}
-		else if (is_photo_drill) {
-			photo_im = &photo_drill;
-		}
-		else {
-			if (PCB_LAYER_IS_OUTLINE(flags, purpi)) {
-				doing_outline = 1;
-				have_outline = 0;
-				photo_im = &photo_outline;
-			}
-			else if (flags & PCB_LYT_COPPER) {
-				photo_im = photo_copper + group;
-			}
-			else
-				return 0;
+		else
+			return 0;
+	}
+
+	if (!*photo_im) {
+		static color_struct *black = NULL, *white = NULL;
+		*photo_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
+		if (photo_im == NULL) {
+			rnd_message(RND_MSG_ERROR, "png_set_layer():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", gdImageSX(im), gdImageSY(im));
+			return 0;
 		}
 
-		if (!*photo_im) {
-			static color_struct *black = NULL, *white = NULL;
-			*photo_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
-			if (photo_im == NULL) {
-				rnd_message(RND_MSG_ERROR, "png_set_layer():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", gdImageSX(im), gdImageSY(im));
-				return 0;
-			}
 
-
-			white = (color_struct *) malloc(sizeof(color_struct));
-			white->r = white->g = white->b = 255;
-			white->a = 0;
-			white->c = gdImageColorAllocate(*photo_im, white->r, white->g, white->b);
-			if (white->c == BADC) {
-				rnd_message(RND_MSG_ERROR, "png_set_layer():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
-				return 0;
-			}
-
-			black = (color_struct *) malloc(sizeof(color_struct));
-			black->r = black->g = black->b = black->a = 0;
-			black->c = gdImageColorAllocate(*photo_im, black->r, black->g, black->b);
-			if (black->c == BADC) {
-				rnd_message(RND_MSG_ERROR, "png_set_layer(): gdImageColorAllocate() returned NULL.  Aborting export.\n");
-				return 0;
-			}
-
-			if (is_photo_drill)
-				gdImageFilledRectangle(*photo_im, 0, 0, gdImageSX(im), gdImageSY(im), black->c);
+		white = (color_struct *) malloc(sizeof(color_struct));
+		white->r = white->g = white->b = 255;
+		white->a = 0;
+		white->c = gdImageColorAllocate(*photo_im, white->r, white->g, white->b);
+		if (white->c == BADC) {
+			rnd_message(RND_MSG_ERROR, "png_set_layer():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
+			return 0;
 		}
-		im = *photo_im;
-		return 1;
+
+		black = (color_struct *) malloc(sizeof(color_struct));
+		black->r = black->g = black->b = black->a = 0;
+		black->c = gdImageColorAllocate(*photo_im, black->r, black->g, black->b);
+		if (black->c == BADC) {
+			rnd_message(RND_MSG_ERROR, "png_set_layer(): gdImageColorAllocate() returned NULL.  Aborting export.\n");
+			return 0;
+		}
+
+		if (is_photo_drill)
+			gdImageFilledRectangle(*photo_im, 0, 0, gdImageSX(im), gdImageSY(im), black->c);
+	}
+	im = *photo_im;
+	return 1;
 }
 
 static void png_photo_head(void)
