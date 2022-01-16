@@ -807,6 +807,8 @@ static int png_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 	if (flags & PCB_LYT_UI)
 		return 0;
 
+	is_photo_drill = is_photo_mech = 0;
+
 	pcb_cam_set_layer_group(&png_cam, group, purpose, purpi, flags, xform);
 	if (png_cam.fn_changed) {
 		if (f != NULL) {
@@ -950,7 +952,7 @@ static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	if (color == NULL)
 		color = rnd_color_red;
 
-	if (rnd_color_is_drill(color)) {
+	if (rnd_color_is_drill(color) || is_photo_mech) {
 		gc->color = white;
 		gc->is_erase = 1;
 		return;
