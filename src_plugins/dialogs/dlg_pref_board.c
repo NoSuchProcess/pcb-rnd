@@ -45,16 +45,21 @@ typedef struct {
 /* Actual board meta to dialog box */
 static void pref_board_brd2dlg(pref_ctx_t *ctx)
 {
+	TODO("should be coming from arg")
+	rnd_hidlib_t *hl = &PCB->hidlib;
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 	DEF_TABDATA;
 
-	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wname, str, RND_EMPTY(PCB->hidlib.name));
-	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wthermscale, dbl, PCB->ThermScale);
-	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wtype, str, (PCB->is_footprint ? "footprint" : "PCB board"));
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wname, str, RND_EMPTY(hl->name));
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wthermscale, dbl, pcb->ThermScale);
+	RND_DAD_SET_VALUE(ctx->dlg_hid_ctx, tabdata->wtype, str, (pcb->is_footprint ? "footprint" : "PCB board"));
 }
 
 /* Dialog box to actual board meta */
 static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 	int changed = 0;
 	const char *newname, *oldname;
 	double newtherm;
@@ -62,50 +67,54 @@ static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	DEF_TABDATA;
 
 	newname = RND_EMPTY(ctx->dlg[tabdata->wname].val.str);
-	oldname = RND_EMPTY(PCB->hidlib.name);
+	oldname = RND_EMPTY(hl->name);
 	if (strcmp(oldname, newname) != 0) {
-		free(PCB->hidlib.name);
-		PCB->hidlib.name = rnd_strdup(newname);
+		free(hl->name);
+		hl->name = rnd_strdup(newname);
 		changed = 1;
 	}
 
 	newtherm = ctx->dlg[tabdata->wthermscale].val.dbl;
-	if (PCB->ThermScale != newtherm) {
-		PCB->ThermScale = newtherm;
+	if (pcb->ThermScale != newtherm) {
+		pcb->ThermScale = newtherm;
 		changed = 1;
 	}
 
 	if (changed) {
-		PCB->Changed = 1;
-		rnd_event(&PCB->hidlib, RND_EVENT_BOARD_META_CHANGED, NULL); /* always generate the event to make sure visible changes are flushed */
+		pcb->Changed = 1;
+		rnd_event(hl, RND_EVENT_BOARD_META_CHANGED, NULL); /* always generate the event to make sure visible changes are flushed */
 	}
 }
 
 static void pref_board_edit_attr(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
-	rnd_actionva(&PCB->hidlib, "Propedit", "board", NULL);
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
+	rnd_actionva(hl, "Propedit", "board", NULL);
 }
 
 void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 {
+	TODO("should be coming from arg")
+	rnd_hidlib_t *hl = &PCB->hidlib;
+	pcb_board_t *pcb = (pcb_board_t *)hl;
 	DEF_TABDATA;
 
 	RND_DAD_BEGIN_TABLE(ctx->dlg, 2);
 		RND_DAD_LABEL(ctx->dlg, "Board name");
 		RND_DAD_STRING(ctx->dlg);
 			tabdata->wname = RND_DAD_CURRENT(ctx->dlg);
-			ctx->dlg[tabdata->wname].val.str = rnd_strdup(RND_EMPTY(PCB->hidlib.name));
+			ctx->dlg[tabdata->wname].val.str = rnd_strdup(RND_EMPTY(hl->name));
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		RND_DAD_LABEL(ctx->dlg, "Thermal scale");
 		RND_DAD_REAL(ctx->dlg);
 			tabdata->wthermscale = RND_DAD_CURRENT(ctx->dlg);
 			RND_DAD_MINMAX(ctx->dlg, 0.01, 100);
-			ctx->dlg[tabdata->wthermscale].val.dbl = PCB->ThermScale;
+			ctx->dlg[tabdata->wthermscale].val.dbl = pcb->ThermScale;
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		RND_DAD_LABEL(ctx->dlg, "Type");
 		RND_DAD_LABEL(ctx->dlg, "");
 			tabdata->wtype = RND_DAD_CURRENT(ctx->dlg);
-			ctx->dlg[tabdata->wtype].name = rnd_strdup((PCB->is_footprint ? "footprint" : "PCB board"));
+			ctx->dlg[tabdata->wtype].name = rnd_strdup((pcb->is_footprint ? "footprint" : "PCB board"));
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		RND_DAD_LABEL(ctx->dlg, "Board attributes");
 		RND_DAD_BUTTON(ctx->dlg, "Edit...");
