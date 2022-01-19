@@ -45,7 +45,7 @@ typedef struct {
 	pref_libhelp_ctx_t help;
 } pref_lib_t;
 
-TODO("get this from arg once the API is fixed up");
+TODO("get this from arg once the API is fixed up")
 extern pref_ctx_t pref_ctx;
 #define PREFCTX &pref_ctx
 
