@@ -45,6 +45,11 @@ typedef struct {
 	pref_libhelp_ctx_t help;
 } pref_lib_t;
 
+TODO("get this from arg once the API is fixed up");
+extern pref_ctx_t pref_ctx;
+#define PREFCTX &pref_ctx
+
+
 #undef DEF_TABDATA
 #define DEF_TABDATA pref_lib_t *tabdata = PREF_TABDATA(ctx)
 
@@ -52,9 +57,9 @@ static const char *SRC_BRD = "<board file>";
 
 static void libhelp_btn(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr);
 
-static void pref_lib_update_buttons(void)
+static void pref_lib_update_buttons(rnd_hidlib_t *hl)
 {
-	pref_ctx_t *ctx = rnd_pref_get_ctx(&PCB->hidlib);
+	pref_ctx_t *ctx = rnd_pref_get_ctx(hl);
 	DEF_TABDATA;
 	rnd_hid_attribute_t *attr = &ctx->dlg[tabdata->wlist];
 	rnd_hid_row_t *r = rnd_dad_tree_get_selected(attr);
@@ -68,7 +73,7 @@ static void pref_lib_update_buttons(void)
 
 static void pref_lib_select_cb(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
 {
-	pref_lib_update_buttons();
+	pref_lib_update_buttons(rnd_gui->get_dad_hidlib(hid_ctx));
 }
 
 static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_row_t *row)
@@ -83,7 +88,7 @@ static void pref_lib_row_free(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hi
    the widget first */
 static void pref_lib_conf2dlg_pre(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pref_ctx_t *ctx = rnd_pref_get_ctx(&PCB->hidlib);
+	pref_ctx_t *ctx = PREFCTX;
 	DEF_TABDATA;
 	rnd_hid_attribute_t *attr;
 	rnd_hid_tree_t *tree;
@@ -118,7 +123,8 @@ static const char *pref_node_src(lht_node_t *nd)
    in all widget rows from the conf */
 static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 {
-	pref_ctx_t *ctx = rnd_pref_get_ctx(&PCB->hidlib);
+	pref_ctx_t *ctx = PREFCTX;
+	rnd_hidlib_t *hl;
 	DEF_TABDATA;
 	rnd_conf_listitem_t *i;
 	int idx;
@@ -130,13 +136,14 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 	if ((tabdata->lock) || (!ctx->active))
 		return;
 
+	hl = rnd_gui->get_dad_hidlib(ctx->dlg_hid_ctx);
 	attr = &ctx->dlg[tabdata->wlist];
 
 	/* copy everything from the config tree to the dialog */
 	rnd_conf_loop_list_str(&conf_core.rc.library_search_paths, i, s, idx) {
 		char *tmp;
 		cell[0] = rnd_strdup(i->payload);
-		rnd_path_resolve(&PCB->hidlib, cell[0], &tmp, 0, rnd_false);
+		rnd_path_resolve(hl, cell[0], &tmp, 0, rnd_false);
 		cell[1] = rnd_strdup(tmp == NULL ? "" : tmp);
 		cell[2] = rnd_strdup(pref_node_src(i->prop.src));
 		cell[3] = NULL;
@@ -148,12 +155,13 @@ static void pref_lib_conf2dlg_post(rnd_conf_native_t *cfg, int arr_idx)
 		free(tabdata->cursor_path);
 		tabdata->cursor_path = NULL;
 	}
-	pref_lib_update_buttons();
+	pref_lib_update_buttons(hl);
 }
 
 /* Dialog box to current libraries in config */
 static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	pref_ctx_t *ctx = caller_data;
 	DEF_TABDATA;
 	rnd_hid_tree_t *tree = attr->wdata;
@@ -161,7 +169,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	rnd_hid_row_t *r;
 
 
-	m = rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx);
+	m = rnd_pref_dlg2conf_pre(hl, ctx);
 	if (m == NULL)
 		return;
 
@@ -187,7 +195,7 @@ static void pref_lib_dlg2conf(void *hid_ctx, void *caller_data, rnd_hid_attribut
 	rnd_conf_update("rc/library_search_paths", -1);
 	rnd_conf_makedirty(ctx->role); /* low level lht_dom_node_alloc() wouldn't make user config to be saved! */
 
-	rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
+	rnd_pref_dlg2conf_post(hl, ctx);
 
 	tabdata->lock--;
 }
@@ -204,7 +212,7 @@ static void lib_btn_remove(void *hid_ctx, void *caller_data, rnd_hid_attribute_t
 
 	if (rnd_dad_tree_remove(attr, r) == 0) {
 		pref_lib_dlg2conf(hid_ctx, caller_data, attr);
-		pref_lib_update_buttons();
+		pref_lib_update_buttons(rnd_gui->get_dad_hidlib(hid_ctx));
 	}
 }
 
@@ -274,10 +282,11 @@ typedef struct {
 
 static void lib_cell_edit_update(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *btn_attr)
 {
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	cell_edit_ctx_t *ctx = caller_data;
 	char *tmp;
 
-	rnd_path_resolve(&PCB->hidlib, ctx->dlg[ctx->wpath].val.str, &tmp, 0, rnd_true);
+	rnd_path_resolve(hl, ctx->dlg[ctx->wpath].val.str, &tmp, 0, rnd_true);
 	if (tmp != NULL)
 		RND_DAD_SET_VALUE(hid_ctx, ctx->wexp, str, tmp);
 }
