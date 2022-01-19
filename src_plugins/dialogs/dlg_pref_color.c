@@ -81,31 +81,33 @@ void pcb_dlg_pref_color_close(pref_ctx_t *ctx)
 
 static void pref_color_gen_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	pref_ctx_t *ctx = caller_data;
 	const char *path = attr->user_data;
 
-	if (rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx) == NULL)
+	if (rnd_pref_dlg2conf_pre(hl, ctx) == NULL)
 		return;
 
 	rnd_conf_setf(ctx->role, path, -1, "%s", attr->val.clr.str);
 
-	rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
+	rnd_pref_dlg2conf_post(hl, ctx);
 
 	rnd_gui->invalidate_all(rnd_gui);
 }
 
 static void pref_color_layer_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 {
+	rnd_hidlib_t *hl = rnd_gui->get_dad_hidlib(hid_ctx);
 	pref_ctx_t *ctx = caller_data;
 	DEF_TABDATA;
 	int idx = (int *)attr->user_data - tabdata->wlayer;
 
-	if (rnd_pref_dlg2conf_pre(&PCB->hidlib, ctx) == NULL)
+	if (rnd_pref_dlg2conf_pre(hl, ctx) == NULL)
 		return;
 
 	rnd_conf_setf(ctx->role, "appearance/color/layer", idx, "%s", attr->val.clr.str);
 
-	rnd_pref_dlg2conf_post(&PCB->hidlib, ctx);
+	rnd_pref_dlg2conf_post(hl, ctx);
 }
 
 
