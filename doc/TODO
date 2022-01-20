@@ -4,6 +4,7 @@
 - CLEANUP: replace layersel.c all_open_xpm and all_closed_xpm with librnd named xpm plus and minus
 - FEATURE: "polygon cleared out of existence" message should have the #id and layer; maybe query() support? [report: Vuokko]
 - FEATURE: propedit board, e.g. {i c p} board tab attributes, should include thermal scale [report: Igor2]
+- BUG: if ./configure was compiled with an old version of librnd, but now requires a newer version, ./configure it doesn't recompile it enough - missing dep? [report: Erich]
 
 2. For later releases ===============================================================================
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
