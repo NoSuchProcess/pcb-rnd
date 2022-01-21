@@ -21,6 +21,7 @@ For users:
 When configuring librnd:
  - optional: glib and gtk2 if you are using the GTK GUI
  - optional: gtkglext if you need opengl rendering with gtk2
+ - optional: libepoxy if you need gtk4
  - optional: motif or lesstif if you are using the lesstif frontend
  - optional: gdlib if you want to export/import to/from png, jpg or gif
 
