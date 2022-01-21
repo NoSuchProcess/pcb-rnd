@@ -60,9 +60,7 @@ cd src
 ./pcb-rnd
 
 Note: it is important to cd to src to run pcb-rnd from source; src/pcb-rnd
-won't work unless pcb-rnd is installed. For versions between 2.3.2 and 3.0.0
-the pcb-rnd-src script needs to be sourced (not executed) if librnd is
-not installed system-wide.
+won't work unless pcb-rnd is installed.
 
 If this doesn't work, please refer to doc/INSTALL*.
 
