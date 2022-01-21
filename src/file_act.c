@@ -542,7 +542,7 @@ static fgw_error_t pcb_act_Backup(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	return 0;
 }
 
-rnd_action_t file_action_list[] = {
+static rnd_action_t file_action_list[] = {
 	{"Backup", pcb_act_Backup, pcb_acth_Backup, pcb_acts_Backup},
 	{"Export", pcb_act_Export, pcb_acth_Export, pcb_acts_Export},
 	{"LoadFrom", pcb_act_LoadFrom, pcb_acth_LoadFrom, pcb_acts_LoadFrom},
