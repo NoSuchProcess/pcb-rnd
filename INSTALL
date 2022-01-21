@@ -30,7 +30,7 @@ For developers, only in case grammar files are to be modified:
  - bison
 
 NOTE: if you did not install any GUI lib dependency before configuring librnd,
-pcb-rnd will be compiled with command line interface only.
+pcb-rnd will run with command line interface only.
 
 
 1. Configure
