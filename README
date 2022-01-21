@@ -1,7 +1,7 @@
 pcb-rnd is a modular PCB layout editor.
 
-It is hosted at http://repo.hu/projects/pcb-rnd
-Source code: svn://repo.hu/pcb-rnd/trunk
+It is hosted at http://www.repo.hu/projects/pcb-rnd
+Source code: svn://svn.repo.hu/pcb-rnd/trunk
 
 ** THERE IS NO GIT SUPPORT ** - do not make pull requests, don't
 send git URLs. pcb-rnd is hosted in svn on repo.hu and
@@ -13,8 +13,8 @@ For additional information read the manual (doc/user/index.html)
 If you are updating you may wish to read the Changelog
 
 Contact:
-	email: http://repo.hu/projects/pcb-rnd/contact.html
-	chat & IRC:  http://repo.hu/projects/pcb-rnd/irc.html
+	email: http://www.repo.hu/projects/pcb-rnd/contact.html
+	chat & IRC:  http://www.repo.hu/projects/pcb-rnd/irc.html
 
 
 pcb-rnd source distribution is organized into:
