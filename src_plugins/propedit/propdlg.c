@@ -42,6 +42,8 @@
 #include "props.h"
 #include "propsel.h"
 
+#define PCB don't use
+
 extern const char *pcb_propedit_cookie;
 
 typedef struct{
@@ -810,10 +812,11 @@ const char pcb_acts_propedit[] = "propedit(object[:id]|layer[:id]|layergrp[:id]|
 const char pcb_acth_propedit[] = "";
 fgw_error_t pcb_act_propedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 {
+	pcb_board_t *pcb = PCB_ACT_BOARD;
 	propdlg_t *ctx = calloc(sizeof(propdlg_t), 1);
 	int a, r;
 
-	pcb_props_init(&ctx->pe, PCB);
+	pcb_props_init(&ctx->pe, pcb);
 
 	if (argc > 1) {
 		for(a = 1; a < argc; a++) {
