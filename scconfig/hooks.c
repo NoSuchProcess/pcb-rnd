@@ -91,6 +91,8 @@ int hook_preinit()
 	return 0;
 }
 
+void librnd_ver_req_min(int exact_major, int min_minor);
+
 /* Runs after initialization */
 int hook_postinit()
 {
