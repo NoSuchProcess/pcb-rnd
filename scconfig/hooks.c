@@ -146,7 +146,7 @@ static void calc_dialog_deps(void)
 	const char *control;
 	int buildin, plugin;
 
-#warning TODO: get this from librnd
+	/* TODO: get this from librnd */
 	control = get("/local/pcb/lib_hid_common/controls");
 	if (control == NULL) {
 		fprintf(stderr, "librnd configuration error: can't figure how lib_hid_common is configured\n(should be coming from plugin.state as /local/pcb/lib_hid_common/controls)\n");
