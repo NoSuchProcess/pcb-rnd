@@ -32,6 +32,7 @@
 #include <librnd/core/hid.h>
 #include <librnd/core/hid_cfg.h>
 #include <librnd/core/hid_dad.h>
+#include <librnd/plugins/lib_hid_common/xpm.h>
 
 #include <librnd/core/actions.h>
 #include "board.h"
@@ -91,40 +92,6 @@ static const char *closed_grp_layer_nosel[] = { /* layer unselected icon in a cl
 	"..........",
 	"..........",
 	".........."
-};
-
-static const char *all_open_xpm[] = {
-"10 10 3 1",
-" 	c None",
-"@	c #6EA5D7",
-"+	c #000000",
-"   ++++   ",
-"   +@@+   ",
-"   +@@+   ",
-"++++@@++++",
-"+@@@@@@@@+",
-"+@@@@@@@@+",
-"++++@@++++",
-"   +@@+   ",
-"   +@@+   ",
-"   ++++   ",
-};
-
-static const char *all_closed_xpm[] = {
-"10 10 3 1",
-" 	c None",
-"@	c #6EA5D7",
-"+	c #000000",
-"          ",
-"          ",
-"          ",
-"++++++++++",
-"+@@@@@@@@+",
-"+@@@@@@@@+",
-"++++++++++",
-"          ",
-"          ",
-"          ",
 };
 
 static const char *all_vis_xpm[] = {
@@ -813,10 +780,10 @@ static void layersel_docked_create(layersel_ctx_t *ls, pcb_board_t *pcb)
 		layersel_create_ui(&layersel, pcb);
 		layersel_add_grpsep(ls);
 		RND_DAD_BEGIN_HBOX(ls->sub.dlg);
-			RND_DAD_PICBUTTON(ls->sub.dlg, all_open_xpm);
+			RND_DAD_PICBUTTON(ls->sub.dlg, rnd_dlg_xpm_by_name("plus"));
 				RND_DAD_HELP(ls->sub.dlg, "expand/open all layer groups\nso that layer names are\ndisplayed, one layer per row");
 				RND_DAD_CHANGE_CB(ls->sub.dlg, all_open_cb);
-			RND_DAD_PICBUTTON(ls->sub.dlg, all_closed_xpm);
+			RND_DAD_PICBUTTON(ls->sub.dlg, rnd_dlg_xpm_by_name("minus"));
 				RND_DAD_HELP(ls->sub.dlg, "collapse/close all layer groups\nso that layer names are\nnot displayed,\neach row is a layer group");
 				RND_DAD_CHANGE_CB(ls->sub.dlg, all_close_cb);
 			RND_DAD_PICBUTTON(ls->sub.dlg, all_vis_xpm);
