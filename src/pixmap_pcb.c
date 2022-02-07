@@ -190,38 +190,6 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 #endif
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#if 0
-	ip = ipm->p;
-	for(y = 0; y < ipm->sy; y++) {
-		iy = y - ipm->sy/2;
-		for(x = 0; x < ipm->sx; x++, ip+=3) {
-			ix = x - ipm->sx/2;
-			ox = pcb_xform_x(mx, ix, iy) + pm->sx/2;
-			oy = pcb_xform_y(mx, ix, iy) + pm->sy/2;
-			if ((ox < 0) || (ox >= pm->sx) || (oy < 0) || (oy >= pm->sy))
-				continue;
-			op = pm->p + (oy * pm->sx + ox) * 3;
-			op[0] = ip[0];
-			op[1] = ip[1];
-			op[2] = ip[2];
-		}
-	}
-#endif
-
 TODO("create the transformed version if not in the cache already (by headers)");
 
 	return opm;
