@@ -93,6 +93,7 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 {
 	rnd_pixmap_t *opm;
 	pcb_xform_mx_t mx = PCB_XFORM_MX_IDENT;
+	pcb_xform_mx_t mxr = PCB_XFORM_MX_IDENT;
 	long n, len, icx, icy, ocx, ocy, xo, yo, end;
 	unsigned char *o, *i;
 	double cs, sn, rotr;
@@ -119,6 +120,7 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 
 	TODO("gfx: apply mirrors");
 	pcb_xform_mx_rotate(mx, rot);
+	pcb_xform_mx_rotate(mxr, -rot);
 
 	opm->sx = pcb_xform_x(mx, (ipm->sx/2)+1, (ipm->sy/2)+1) * 2;
 	opm->sy = pcb_xform_y(mx, -(ipm->sx/2)-1, (ipm->sy/2)-1) * 2;
@@ -151,11 +153,11 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 		double XO = xo - ocx, YO = yo - ocy, XI, YI;
 
 		/* rotate */
-		XI = icx + (cs * XO - sn * YO);
-		YI = icy + (sn * XO + cs * YO);
+		XI = icx + pcb_xform_x(mxr, XO, YO);
+		YI = icy + pcb_xform_y(mxr, XO, YO);
 
 		/* get final input pixel address, clamp */
-		ixi = rnd_round(XI); iyi = rnd_round(ipm->sy - YI);
+		ixi = rnd_round(XI); iyi = rnd_round(YI);
 		if ((ixi < 0) || (iyi < 0) || (ixi >= ipm->sx) || (iyi >= ipm->sy))
 			oor = 1;
 		else
