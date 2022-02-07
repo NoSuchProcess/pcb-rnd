@@ -96,7 +96,6 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 	pcb_xform_mx_t mxr = PCB_XFORM_MX_IDENT;
 	long n, len, icx, icy, ocx, ocy, xo, yo, end;
 	unsigned char *o, *i;
-	double cs, sn, rotr;
 
 	if ((rot == 0) && !xmirror && !ymirror)
 		return ipm; /* xformed == neutral */
@@ -140,10 +139,6 @@ rnd_pixmap_t *pcb_pixmap_alloc_insert_transformed(pcb_pixmap_hash_t *pmhash, rnd
 	icy = ipm->sy/2;
 	ocx = opm->sx/2;
 	ocy = opm->sy/2;
-
-	rotr = rot / RND_RAD_TO_DEG;
-	cs = cos(rotr);
-	sn = sin(rotr);
 
 	end = opm->sx * opm->sy;
 
