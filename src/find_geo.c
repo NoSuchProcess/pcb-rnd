@@ -758,7 +758,7 @@ rnd_bool pcb_isc_poly_poly_bloated(const pcb_find_t *ctx, rnd_pline_t *c1, rnd_p
 			line.Point1.Y = v->point[1];
 			line.Thickness = bloat;
 			line.Clearance = 0;
-			line.Flags = pcb_no_flags();
+			line.Flags = pcb_flag_make(PCB_FLAG_SQUARE);
 			for (v = v->next; v != c->head; v = v->next) {
 				line.Point2.X = v->point[0];
 				line.Point2.Y = v->point[1];
