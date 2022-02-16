@@ -19,9 +19,9 @@ Requirements:
  3. download and install fungw - svn://repo.hu/fungw/trunk
  4. fungw should be installed as root, into /usr/local/ or /usr/
     during configuration, make sure all relevant scripting languages are found
- 5. (re)configure and (re)compile pcb-rnd so that it uses the system-installed
-    version of fungw instead of the local, no-script version; make sure the
+ 5. (re)configure and (re)compile librnd so that it uses the system-installed
+    version of fungw instead of the local, libfawk-only version; make sure the
     "script" plugin is compiled (as builtin or plugin)
  6. later on if a new scripting language is required, reconfigure,
-    recompile and reinstall fungw - no pcb-rnd recompilation is needed as
-    long as the system-installed fungw version is not upgraded
+    recompile and reinstall fungw - no pcb-rnd or librnd recompilation is
+    needed as long as the system-installed fungw version is not upgraded
