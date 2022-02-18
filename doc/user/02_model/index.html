@@ -71,6 +71,9 @@ layer before this one', pcb-rnd replaces the virtual mask layer with an explicit
 mask layer group. The mask layer group can contain one to many pcb-rnd layers
 each with individual settings to control implicit generation, and additive or
 subtractive behavior when adding objects to the layers. 
+<p>
+In CLI (e.g. action arguments), layers are referenced using
+<a href="../09_appendix/layer_addr.html">layer addressing.</a>
 
 <h3> 2.3. Layer Groups </h3>
 <p>
@@ -176,6 +179,8 @@ Layer group attributes interpreted by pcb-rnd core:
 	<tr><td> dielectric                 <td> Relative dielectric constant, typically for substrate layer groups, Er (unitless)
 </table>
 <p>
+In CLI (e.g. action arguments), layers groups are referenced using
+<a href="../09_appendix/layer_addr.html">layer group addressing.</a>
 
 <h3 id="objects"> 2.4. Basic Drawing Objects </h3>
 <p>
