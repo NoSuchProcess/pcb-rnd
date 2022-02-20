@@ -450,7 +450,7 @@ static void copy_font(pcb_font_t *dst, pcb_font_t *src)
 		memset(&dst->Symbol[i].arcs, 0, sizeof(arclist_t));
 		for(a_src = arclist_first(&src->Symbol[i].arcs); a_src != NULL; a_src = arclist_next(a_src)) {
 			pcb_font_new_arc_in_sym(&dst->Symbol[i], a_src->X, a_src->Y, a_src->Width,
-															a_src->StartAngle, a_src->Delta, a_src->Thickness);
+				a_src->StartAngle, a_src->Delta, a_src->Thickness);
 		}
 	}
 	if (src->name != NULL)
