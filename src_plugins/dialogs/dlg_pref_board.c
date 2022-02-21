@@ -72,6 +72,8 @@ static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribu
 		free(hl->name);
 		hl->name = rnd_strdup(newname);
 		changed = 1;
+		rnd_event(hl, RND_EVENT_BOARD_FN_CHANGED, NULL); /* forces title update even if board ->Changed doesn't change */
+
 	}
 
 	newtherm = ctx->dlg[tabdata->wthermscale].val.dbl;
