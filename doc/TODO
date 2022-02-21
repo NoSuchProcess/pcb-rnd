@@ -3,7 +3,7 @@
 1. For the upcoming release ===============================================================================
 + FEATURE: "polygon cleared out of existence" message should have the #id and layer; maybe query() support? [report: Vuokko]
 + BUG: if ./configure was compiled with an old version of librnd, but now requires a newer version, ./configure it doesn't recompile it enough - missing dep? [report: Erich]
-- BUG: load board, save as under different name -> window title shows old name [report: barjac]
++ BUG: load board, save as under different name -> window title shows old name [report: barjac]
 
 2. For later releases ===============================================================================
 - DEL: remove c-pcb support in favor of the more generic external autorouter plugin
