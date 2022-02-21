@@ -110,7 +110,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		RND_DAD_REAL(ctx->dlg);
 			tabdata->wthermscale = RND_DAD_CURRENT(ctx->dlg);
 			RND_DAD_MINMAX(ctx->dlg, 0.01, 100);
-			ctx->dlg[tabdata->wthermscale].val.dbl = pcb->ThermScale;
+			ctx->dlg[tabdata->wthermscale].val.dbl = -1;
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		RND_DAD_LABEL(ctx->dlg, "Type");
 		RND_DAD_LABEL(ctx->dlg, "");
@@ -123,9 +123,14 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		RND_DAD_END(ctx->dlg);
 }
 
+static void pref_board_open(pref_ctx_t *ctx)
+{
+	pref_board_brd2dlg(ctx);
+}
+
 static const rnd_pref_tab_hook_t pref_board = {
 	"Board meta", RND_PREFTAB_AUTO_FREE_DATA,
-	NULL, NULL,
+	pref_board_open, NULL,
 	pcb_dlg_pref_board_create,
 	pref_board_brd2dlg, pref_board_brd2dlg  /* board change, meta change */
 };
