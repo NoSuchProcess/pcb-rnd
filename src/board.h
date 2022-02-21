@@ -147,6 +147,9 @@ rnd_bool pcb_board_change_name(char *Name);
  * and adjusts the cursor confinement box */
 void pcb_board_resize(rnd_coord_t Width, rnd_coord_t Height, int undoable);
 
+/* change the thermal scale of the board, update the GUI */
+void pcb_board_chg_thermal_scale(double thermal_scale, int undoable);
+
 
 /* free the board and remove its undo list */
 void pcb_board_remove(pcb_board_t *Ptr);

@@ -280,22 +280,33 @@ static void pcb_board_resize_(pcb_board_t *pcb, rnd_coord_t Width, rnd_coord_t H
 typedef struct {
 	pcb_board_t *pcb;
 	rnd_coord_t w, h;
+	double thermal_scale;
 } undo_board_size_t;
 
 static int undo_board_size_swap(void *udata)
 {
 	undo_board_size_t *s = udata;
-	rnd_coord_t oldw = s->pcb->hidlib.size_x, oldh = s->pcb->hidlib.size_y;
-	pcb_board_resize_(s->pcb, s->w, s->h);
-	s->w = oldw;
-	s->h = oldh;
+
+	if ((s->w != s->pcb->hidlib.size_x) || (s->w != s->pcb->hidlib.size_y)) {
+		rnd_coord_t oldw = s->pcb->hidlib.size_x, oldh = s->pcb->hidlib.size_y;
+		pcb_board_resize_(s->pcb, s->w, s->h);
+		s->w = oldw;
+		s->h = oldh;
+	}
+	if (s->thermal_scale != s->pcb->ThermScale) {
+		rnd_swap(double, s->thermal_scale, s->pcb->ThermScale);
+rnd_trace("Th chg!\n");
+	}
 	return 0;
 }
 
 static void undo_board_size_print(void *udata, char *dst, size_t dst_len)
 {
 	undo_board_size_t *s = udata;
-	rnd_snprintf(dst, dst_len, "board_size: %mmx%mm", s->w, s->h);
+	if ((s->w != s->pcb->hidlib.size_x) || (s->w != s->pcb->hidlib.size_y))
+		rnd_snprintf(dst, dst_len, "board_size: %mmx%mm ", s->w, s->h);
+	if (s->thermal_scale != s->pcb->ThermScale)
+		rnd_snprintf(dst, dst_len, "thermal scale: %f", s->thermal_scale);
 }
 
 static const uundo_oper_t undo_board_size = {
@@ -319,6 +330,25 @@ void pcb_board_resize(rnd_coord_t width, rnd_coord_t height, int undoable)
 	s->pcb = PCB;
 	s->w = width;
 	s->h = height;
+	s->thermal_scale = PCB->ThermScale;
+	undo_board_size_swap(s);
+}
+
+void pcb_board_chg_thermal_scale(double thermal_scale, int undoable)
+{
+	undo_board_size_t *s;
+
+	if (!undoable) {
+		PCB->ThermScale = thermal_scale;
+TODO("update!\n");
+		return;
+	}
+
+	s = pcb_undo_alloc(PCB, &undo_board_size, sizeof(undo_board_size_t));
+	s->pcb = PCB;
+	s->w = PCB->hidlib.size_x;
+	s->h = PCB->hidlib.size_y;
+	s->thermal_scale = thermal_scale;
 	undo_board_size_swap(s);
 }
 
