@@ -295,7 +295,8 @@ static int undo_board_size_swap(void *udata)
 	}
 	if (s->thermal_scale != s->pcb->ThermScale) {
 		rnd_swap(double, s->thermal_scale, s->pcb->ThermScale);
-rnd_trace("Th chg!\n");
+		pcb_data_clip_polys(s->pcb->Data);
+		rnd_gui->invalidate_all(rnd_gui);
 	}
 	return 0;
 }
@@ -340,7 +341,8 @@ void pcb_board_chg_thermal_scale(double thermal_scale, int undoable)
 
 	if (!undoable) {
 		PCB->ThermScale = thermal_scale;
-TODO("update!\n");
+		pcb_data_clip_polys(PCB->Data);
+		rnd_gui->invalidate_all(rnd_gui);
 		return;
 	}
 
