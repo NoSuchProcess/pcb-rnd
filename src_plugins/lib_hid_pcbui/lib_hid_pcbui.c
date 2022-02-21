@@ -148,6 +148,7 @@ int pplg_init_lib_hid_pcbui(void)
 	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_infobar_gui_init_ev, NULL, infobar_cookie);
 	rnd_event_bind(RND_EVENT_GUI_INIT, pcb_title_gui_init_ev, NULL, title_cookie);
 	rnd_event_bind(RND_EVENT_BOARD_CHANGED, pcb_title_board_changed_ev, NULL, title_cookie);
+	rnd_event_bind(RND_EVENT_BOARD_FN_CHANGED, pcb_title_board_changed_ev, NULL, title_cookie);
 	rnd_event_bind(RND_EVENT_BOARD_META_CHANGED, pcb_title_meta_changed_ev, NULL, title_cookie);
 	rnd_event_bind(RND_EVENT_GUI_BATCH_TIMER, pcb_layer_menu_batch_timer_ev, NULL, layer_cookie);
 	rnd_event_bind(RND_EVENT_GUI_BATCH_TIMER, pcb_rst_menu_batch_timer_ev, NULL, rst_cookie);
