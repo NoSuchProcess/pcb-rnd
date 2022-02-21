@@ -109,7 +109,7 @@ void pcb_dlg_pref_board_create(pref_ctx_t *ctx)
 		RND_DAD_LABEL(ctx->dlg, "Thermal scale");
 		RND_DAD_REAL(ctx->dlg);
 			tabdata->wthermscale = RND_DAD_CURRENT(ctx->dlg);
-			RND_DAD_MINMAX(ctx->dlg, 0.01, 100);
+			RND_DAD_MINMAX(ctx->dlg, 0.01, 1.5);
 			ctx->dlg[tabdata->wthermscale].val.dbl = -1;
 			RND_DAD_CHANGE_CB(ctx->dlg, pref_board_dlg2brd);
 		RND_DAD_LABEL(ctx->dlg, "Type");
