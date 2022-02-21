@@ -76,7 +76,8 @@ static void pref_board_dlg2brd(void *hid_ctx, void *caller_data, rnd_hid_attribu
 
 	newtherm = ctx->dlg[tabdata->wthermscale].val.dbl;
 	if (pcb->ThermScale != newtherm) {
-		pcb->ThermScale = newtherm;
+		pcb_board_chg_thermal_scale(newtherm, 1);
+		pcb_undo_inc_serial();
 		changed = 1;
 	}
 
