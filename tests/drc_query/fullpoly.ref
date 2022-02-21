@@ -1,5 +1,7 @@
 W: Polygon #111 cleared out of existence near (2.2225 mm, 8.5725 mm)
+W: You can propedit it using action: propedit(object:111) or turn on poly as drawn frame and look around the above coords
 W: Polygon #116 cleared out of existence near (8.5725 mm, 8.5725 mm)
+W: You can propedit it using action: propedit(object:116) or turn on poly as drawn frame and look around the above coords
 x: fullpoly: Multi-island polygon with the fullpoly flag
 within (259.38, 9.38, 415.63, 165.63) mil
 Polygon with the fullpoly flag set is cut into multiple islands
