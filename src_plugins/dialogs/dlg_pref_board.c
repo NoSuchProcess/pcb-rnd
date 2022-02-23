@@ -31,6 +31,7 @@
 #include <librnd/plugins/lib_hid_common/dlg_pref.h>
 #include "board.h"
 #include "event.h"
+#include "undo.h"
 #include "conf_core.h"
 
 typedef struct {
