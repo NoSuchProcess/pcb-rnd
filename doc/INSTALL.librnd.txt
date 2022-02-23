@@ -75,8 +75,19 @@ Non-standard librnd installation
      export LD_LIBRARY_PATH=/foo/librnd/lib
      pcb-rnd <usual_arguments>
 
-  - OSX: same options as above, but use DYLD_LIBRARY_PATH instead of
+  - old OSX: same options as above, but use DYLD_LIBRARY_PATH instead of
     LD_LIBRARY_PATH
+
+  - recent OSX: they have ruined DYLD_LIBRARY_PATH; for interactice usage 
+    simple exporting DYLD_LIBRARY_PATH as above will work. For make test to
+    pass, you'll need to:
+    + create a file in your home directory called .zshenv
+    + add in ~/zshenv: export DYLD_LIBRARY_PATH=/foo/librnd/lib
+    + after ./configure in pcb-rnd, add this line at the end of Makefile.conf:
+      SHELL=zsh
+    + create a file src/pcb-rnd.wrap, enter:
+      #!/bin/zsh
+      exec ./pcb-rnd "$@"
 
   - GNU/Linux; permanent solution:
 
