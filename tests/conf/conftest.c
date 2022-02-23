@@ -7,6 +7,7 @@
 #include <librnd/core/conf_hid.h>
 #include <librnd/core/hidlib_conf.h>
 #include <librnd/core/compat_misc.h>
+#include <librnd/core/file_loaded.h>
 #include "conf_core.h"
 #include "src_plugins/diag/diag_conf.h"
 
@@ -53,6 +54,7 @@ rnd_conf_hid_callbacks_t global_cbs = {notify_pre, notify_post, NULL, NULL};
 
 
 extern lht_doc_t *rnd_conf_main_root[];
+extern void rnd_diag_conf_dump(FILE *f, const char *prefix, int verbose, const char *match_prefix);
 void cmd_dump(char *arg)
 {
 	if (arg == NULL) {
