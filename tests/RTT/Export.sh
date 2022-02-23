@@ -17,6 +17,13 @@ then
 # running from source
 	pcb_rnd_cd="$TRUNK/src"
 	pcb_rnd_bin="./pcb-rnd"
+
+	if test -x $TRUNK/src/pcb-rnd.wrap
+	then
+		pcb_rnd_bin="./pcb-rnd.wrap"
+	else
+		pcb_rnd_bin="./pcb-rnd"
+	fi
 fi
 
 fmt_args=""

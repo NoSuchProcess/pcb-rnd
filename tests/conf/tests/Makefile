@@ -1,3 +1,6 @@
+ROOT=../../..
+include $(ROOT)/Makefile.conf
+
 TESTS =  \
 	list_merge.diff \
 	list_set.diff \

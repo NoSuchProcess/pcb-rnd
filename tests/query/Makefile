@@ -1,4 +1,5 @@
 ROOT=../..
+include $(ROOT)/Makefile.conf
 
 SRC=$(ROOT)/src
 TDIR=../tests/query

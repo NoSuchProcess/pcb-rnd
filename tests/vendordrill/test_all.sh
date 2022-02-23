@@ -4,8 +4,14 @@ ROOT="../.."
 SRC="$ROOT/src"
 TDIR="../tests/vendordrill"
 GFLT="../pupfilter.sh"
-PCBRND="./pcb-rnd"
 GLOBARGS="-c rc/library_search_paths=../tests/RTT/lib -c rc/quiet=1"
+
+if test -x $SRC/pcb-rnd.wrap
+then
+	PCBRND=./pcb-rnd.wrap
+else
+	PCBRND=./pcb-rnd
+fi
 
 
 run_pcb_rnd() {

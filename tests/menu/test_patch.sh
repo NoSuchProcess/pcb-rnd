@@ -4,6 +4,14 @@ ROOT=../..
 SRC=$ROOT/src
 CFG="-c rc/library_search_paths=dummy_lib -c rc/quiet=1"
 
+if test -x $SRC/pcb-rnd.wrap
+then
+	PCB_RND=./pcb-rnd.wrap
+else
+	PCB_RND=./pcb-rnd
+fi
+
+
 # call:
 # insert.lht 'MenuPatch(load, test, "insert.lht");'
 
@@ -18,7 +26,7 @@ echo '
 	MenuDebug(save, "d0.lht");
 '$2'
 	MenuDebug(save, "d1.lht");
-' | ./pcb-rnd $CFG -c rc/menu_file=base --gui batch 2>&1 | grep -v "^menu debug"
+' | $PCB_RND $CFG -c rc/menu_file=base --gui batch 2>&1 | grep -v "^menu debug"
 rmdir dummy_lib
 )
 

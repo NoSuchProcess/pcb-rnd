@@ -5,9 +5,18 @@ ROOT=../..
 TESTS="grp_name type offs"
 PWD=`pwd`
 
+SRC=$ROOT/src
+if test -x $SRC/pcb-rnd.wrap
+then
+	PCB_RND=./pcb-rnd.wrap
+else
+	PCB_RND=./pcb-rnd
+fi
+
+
 run_pcb_rnd()
 {
-	(cd $ROOT/src && $DBG ./pcb-rnd "$@") 2>&1 | awk '
+	(cd $ROOT/src && $DBG $PCB_RND "$@") 2>&1 | awk '
 		/^[*][*][*] Exporting:/ { next }
 		/Warning: footprint library list error on/ { next }
 		/^[ \t]*$/ { next }
