@@ -120,9 +120,9 @@ void *pcb_object_operation(pcb_opfunc_t *F, pcb_opctx_t *ctx, int Type, void *Pt
 }
 
 /* performs several operations on selected objects which are also visible
- * The lowlevel procedures are passed together with additional information
- * resets the selected flag if requested
- * returns rnd_true if anything has changed */
+   The lowlevel procedures are passed together with additional information
+   resets the selected flag if requested
+   returns rnd_true if anything has changed */
 static rnd_bool pcb_selected_operation_(pcb_board_t *pcb, pcb_data_t *data, pcb_opfunc_t *F, pcb_opctx_t *ctx, rnd_bool Reset, int type, pcb_op_mode_t mode, rnd_bool floater_only)
 {
 	rnd_bool changed = rnd_false;
