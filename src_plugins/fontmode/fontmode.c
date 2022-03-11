@@ -277,8 +277,8 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	/* pack arcs */
 	arclist_foreach(&lfont->Arc, &it, a) {
-		int cx = a->X;
-		int cy = a->Y;
+		int cx = (a->BoundingBox.X1 + a->BoundingBox.X2)/2;
+		int cy = (a->BoundingBox.Y1 + a->BoundingBox.Y2)/2;
 		int ox, oy, s;
 
 		s = XYtoSym(cx, cy);
