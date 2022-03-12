@@ -293,8 +293,6 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		if (symbol->Width < a->BoundingBox.X2 - ox)
 			symbol->Width = a->BoundingBox.X2 - ox;
 
-		if (symbol->Width < a->BoundingBox.X2)
-			symbol->Width = a->BoundingBox.X2;
 		symbol->Valid = 1;
 
 		pcb_font_new_arc_in_sym(symbol, cx, cy, a->Width, a->StartAngle, a->Delta, a->Thickness);
