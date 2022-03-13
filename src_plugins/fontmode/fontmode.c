@@ -290,8 +290,8 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		cy -= oy;
 
 		pcb_arc_bbox(a);
-		if (symbol->Width < a->BoundingBox.X2 - ox)
-			symbol->Width = a->BoundingBox.X2 - ox;
+		if (symbol->Width < a->bbox_naked.X2 - ox)
+			symbol->Width = a->bbox_naked.X2 - ox;
 
 		symbol->Valid = 1;
 
