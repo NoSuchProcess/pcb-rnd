@@ -121,7 +121,7 @@ int pplg_init_lib_hid_pcbui(void)
 	static rnd_conf_hid_callbacks_t rcb[sizeof(rpaths)/sizeof(rpaths[0])];
 	static rnd_conf_hid_callbacks_t stcb[sizeof(stpaths)/sizeof(stpaths[0])];
 	static rnd_conf_hid_callbacks_t rdcb[sizeof(rdpaths)/sizeof(rdpaths[0])];
-	static rnd_conf_hid_callbacks_t ibcb[sizeof(rdpaths)/sizeof(ibpaths[0])];
+	static rnd_conf_hid_callbacks_t ibcb[sizeof(ibpaths)/sizeof(ibpaths[0])];
 
 	RND_API_CHK_VER;
 
