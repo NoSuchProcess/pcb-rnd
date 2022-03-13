@@ -1374,7 +1374,7 @@ static fgw_error_t pcb_act_ChkLayer(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 				RND_ACT_IRES(-1);
 			return 0;
 		}
-		rnd_message(RND_MSG_ERROR, "pcb_act_ChkLayer: '%s' is not a valid layer ID - check your menu file!\n", argv[0]);
+		rnd_message(RND_MSG_ERROR, "pcb_act_ChkLayer: '%s' is not a valid layer ID - check your menu file!\n", name);
 		RND_ACT_IRES(-1);
 		return 0;
 	}
