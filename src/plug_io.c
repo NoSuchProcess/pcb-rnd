@@ -891,6 +891,35 @@ void pcb_print_quoted_string(FILE *FP, const char *S)
 	fputc('"', FP);
 }
 
+static const char *valid_emergency_name(void)
+{
+	static const char *stock = "PCB.%ld.save";
+	const char *s;
+	int lds = 0;
+
+	for(s = conf_core.rc.emergency_name; *s != '\0'; s++) {
+		if (*s == '%') {
+			s++;
+			while(isdigit(*s)) s++;
+			if ((s[0] == 'l') && (s[1] == 'd')) {
+				lds++;
+				s++;
+			}
+			else {
+				fprintf(stderr, "Invalid conf_core.rc.emergency_name: format string other than %%ld\n");
+				return stock;
+			}
+		}
+	}
+
+	if (lds > 1) {
+		fprintf(stderr, "Invalid conf_core.rc.emergency_name: more than one %%ld's \n");
+		return stock;
+	}
+
+	return conf_core.rc.emergency_name;
+}
+
 /* this is used for fatal errors and does not call the program specified in
    'saveCommand' for safety reasons */
 void pcb_save_in_tmp(void)
@@ -900,7 +929,7 @@ void pcb_save_in_tmp(void)
 	/* memory might have been released before this function is called */
 	if (PCB && PCB->Changed && (conf_core.rc.emergency_name != NULL) && (*conf_core.rc.emergency_name != '\0')) {
 		const char *fmt = conf_core.rc.emergency_format == NULL ? DEFAULT_EMERGENCY_FMT : conf_core.rc.emergency_format;
-		sprintf(filename, conf_core.rc.emergency_name, (long int)rnd_getpid());
+		sprintf(filename, valid_emergency_name(), (long int)rnd_getpid());
 		rnd_message(RND_MSG_INFO, "Trying to save your layout in '%s'\n", filename);
 		pcb_write_pcb_file(filename, rnd_true, fmt, rnd_true, rnd_false, -1, 0);
 	}
