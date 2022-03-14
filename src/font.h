@@ -82,6 +82,11 @@ void pcb_font_free(pcb_font_t *f);
 /* Free all drawing primitives of a symbol, leaving it empty */
 void pcb_font_free_symbol(pcb_symbol_t *s);
 
+/* Remove all content (primitives and geometry, except for ->Height) of
+   the symbol and mark it invalid */
+void pcb_font_clear_symbol(pcb_symbol_t *s);
+
+
 /*** font kit handling ***/
 void pcb_fontkit_free(pcb_fontkit_t *fk);
 pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name);

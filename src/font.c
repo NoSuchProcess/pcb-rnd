@@ -345,12 +345,17 @@ pcb_font_t *pcb_new_font(pcb_fontkit_t *fk, pcb_font_id_t id, const char *name)
 	return f;
 }
 
-void pcb_font_free_symbol(pcb_symbol_t *s)
+void pcb_font_clear_symbol(pcb_symbol_t *s)
 {
 	pcb_poly_t *p;
 	pcb_arc_t *a;
 
-	free(s->Line);
+
+	s->Valid = 0;
+	s->Width = 0;
+	s->Delta = 0;
+
+	s->LineN = 0;
 
 	for(p = polylist_first(&s->polys); p != NULL; p = polylist_first(&s->polys)) {
 		polylist_remove(p);
@@ -363,6 +368,14 @@ void pcb_font_free_symbol(pcb_symbol_t *s)
 		free(a);
 	}
 
+}
+
+void pcb_font_free_symbol(pcb_symbol_t *s)
+{
+
+	pcb_font_clear_symbol(s);
+
+	free(s->Line);
 	memset (s, 0, sizeof(pcb_symbol_t));
 }
 
