@@ -295,7 +295,7 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 		symbol->Valid = 1;
 
-		pcb_font_new_arc_in_sym(symbol, cx, cy, a->Width, a->StartAngle, a->Delta, a->Thickness);
+		pcb_font_new_arc_in_sym(symbol, a->X - ox, a->Y - oy, a->Width, a->StartAngle, a->Delta, a->Thickness);
 	}
 
 	/* pack polygons */
