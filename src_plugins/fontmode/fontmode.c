@@ -242,11 +242,8 @@ static fgw_error_t pcb_act_FontSave(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	lfont = PCB->Data->Layer + 0;
 	lwidth = PCB->Data->Layer + 2;
 
-	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++) {
-		font->Symbol[i].LineN = 0;
-		font->Symbol[i].Valid = 0;
-		font->Symbol[i].Width = 0;
-	}
+	for (i = 0; i <= PCB_MAX_FONTPOSITION; i++)
+		pcb_font_clear_symbol(&font->Symbol[i]);
 
 	/* pack lines */
 	linelist_foreach(&lfont->Line, &it, l) {
