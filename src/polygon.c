@@ -334,9 +334,15 @@ static int Subtract(rnd_polyarea_t * np1, pcb_poly_t * p, rnd_bool fnp)
 	p->Clipped = biggest(merged);
 	assert(!p->Clipped || rnd_poly_valid(p->Clipped));
 	if (!p->Clipped) {
-		rnd_message(RND_MSG_WARNING, "Polygon #%ld cleared out of existence near (%m+%$mS, %$mS)\n",
+		const char *lname = "<unknown layer>";
+
+		if ((p->parent.layer != NULL) && (p->parent.layer->name != NULL))
+			lname = p->parent.layer->name;
+
+		rnd_message(RND_MSG_WARNING, "Polygon #%ld cleared out of existence near (%m+%$mS, %$mS) on %s\n",
 			p->ID, rnd_conf.editor.grid_unit->allow,
-			(p->BoundingBox.X1 + p->BoundingBox.X2) / 2, (p->BoundingBox.Y1 + p->BoundingBox.Y2) / 2);
+			(p->BoundingBox.X1 + p->BoundingBox.X2) / 2, (p->BoundingBox.Y1 + p->BoundingBox.Y2) / 2,
+			lname);
 		rnd_message(RND_MSG_WARNING, "You can propedit it using action: propedit(object:%ld) or turn on poly as drawn frame and look around the above coords\n", p->ID);
 	}
 	return 1;
