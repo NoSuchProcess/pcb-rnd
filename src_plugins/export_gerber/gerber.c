@@ -574,10 +574,15 @@ static int gerber_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const
 
 		for (search = aptr_list->data; search; search = search->next)
 			fprint_aperture(f, search);
-		if (aptr_list->count == 0)
+		if (aptr_list->count == 0) {
 			/* We need to put *something* in the file to make it be parsed
-			   as RS-274X instead of RS-274D. */
-			fprintf(f, "%%ADD11C,0.0100*%%\r\n");
+			   as RS-274X instead of RS-274D. Need to register an aperture
+			   so aperture number is unique */
+			aperture_t *aptr = find_aperture(curr_aptr_list, 0.0100, ROUND);
+			if (aptr == NULL)
+				aptr = add_aperture(curr_aptr_list, 0.0100, ROUND);
+			rnd_fprintf(f, "%%ADD%dC,%[5]*%%\r\n", aptr->dCode, aptr->width);
+		}
 	}
 
 emit_outline:
