@@ -1,7 +1,6 @@
 0. old, still waiting for ack
 
 1. For the upcoming release ===============================================================================
-+ FEATURE: "polygon cleared out of existence" message should have the #id and layer; maybe query() support? [report: Vuokko]
 + BUG: if ./configure was compiled with an old version of librnd, but now requires a newer version, ./configure it doesn't recompile it enough - missing dep? [report: Erich]
 
 2. For later releases ===============================================================================
