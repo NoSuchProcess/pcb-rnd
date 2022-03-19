@@ -177,24 +177,24 @@ static void parse_via(rnd_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 	const char *unit = (type == TYPE_PCB) ? "mm" : "nm";
 
 	if (strncmp(name, "pstk_", 5) != 0) {
-		rnd_message(RND_MSG_ERROR, "import_dsn: skipping via with invalid name (prefix): %s\n", name);
+		rnd_message(RND_MSG_ERROR, "import_ses: skipping via with invalid name (prefix): %s\n", name);
 		return;
 	}
 
 	name += 5;
 	if (sscanf(name, "%ld", &l1) != 1) {
-		rnd_message(RND_MSG_ERROR, "import_dsn: skipping via with invalid name (diameters): %s\n", name);
+		rnd_message(RND_MSG_ERROR, "import_ses: skipping via with invalid name (diameters): %s\n", name);
 		return;
 	}
 
 	x = rnd_get_value(sx, unit, NULL, &succ);
 	if (!succ) {
-		rnd_message(RND_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sx);
+		rnd_message(RND_MSG_ERROR, "import_ses: skipping via segment because x coord is invalid: %s\n", sx);
 		return;
 	}
 	y = rnd_get_value(sy, unit, NULL, &succ);
 	if (!succ) {
-		rnd_message(RND_MSG_ERROR, "import_dsn: skipping via segment because x coord is invalid: %s\n", sy);
+		rnd_message(RND_MSG_ERROR, "import_ses: skipping via segment because x coord is invalid: %s\n", sy);
 		return;
 	}
 
