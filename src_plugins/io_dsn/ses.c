@@ -327,6 +327,7 @@ static fgw_error_t pcb_act_ImportSes(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 	}
 
 	rnd_message(RND_MSG_INFO, "import_dsn: loaded %ld wires and %ld vias\n", nlines, nvias);
+	pcb_data_clip_polys(PCB->Data);
 
 	gsxl_uninit(&dom);
 	RND_ACT_IRES(0);
