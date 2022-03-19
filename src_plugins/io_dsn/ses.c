@@ -172,23 +172,20 @@ static void parse_via(rnd_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 	const char *sx = c->str;
 	const char *sy = c->next->str;
 	rnd_bool succ;
-	rnd_coord_t x, y, dia, drill;
-	long l1, l2;
+	rnd_coord_t x, y;
+	long l1;
 	const char *unit = (type == TYPE_PCB) ? "mm" : "nm";
 
-	if (strncmp(name, "via_", 4) != 0) {
+	if (strncmp(name, "pstk_", 5) != 0) {
 		rnd_message(RND_MSG_ERROR, "import_dsn: skipping via with invalid name (prefix): %s\n", name);
 		return;
 	}
 
-	name += 4;
-	if (sscanf(name, "%ld_%ld", &l1, &l2) != 2) {
+	name += 5;
+	if (sscanf(name, "%ld", &l1) != 1) {
 		rnd_message(RND_MSG_ERROR, "import_dsn: skipping via with invalid name (diameters): %s\n", name);
 		return;
 	}
-
-	dia = l1;
-	drill = l2;
 
 	x = rnd_get_value(sx, unit, NULL, &succ);
 	if (!succ) {
@@ -202,8 +199,9 @@ static void parse_via(rnd_coord_t clear, const gsxl_node_t *via, dsn_type_t type
 	}
 
 	{
-		pcb_pstk_t *ps = pcb_pstk_new_compat_via(PCB->Data, -1, x, PCB->hidlib.size_y - y, drill, dia, clear, 0, PCB_PSTK_COMPAT_ROUND, 1);
-		PCB_FLAG_SET(PCB_FLAG_AUTO, ps);
+		pcb_pstk_t *ps = pcb_pstk_new(PCB->Data, -1, l1, x, PCB->hidlib.size_y - y, clear, pcb_flag_make(PCB_FLAG_CLEARLINE | PCB_FLAG_AUTO));
+		if (ps == NULL)
+			rnd_message(RND_MSG_ERROR, "import_ses: failed to create via at %$mm;%$mm with prototype %ld\n", x, PCB->hidlib.size_y - y, l1);
 	}
 }
 
