@@ -61,7 +61,7 @@ BEGIN {
 				nx = x
 			if (y > ny)
 				ny = y
-			print x,y,A[n] > "/dev/stderr"
+#			print x,y,A[n] > "/dev/stderr"
 			MAP[x, y] = A[n]
 			x++
 		}
