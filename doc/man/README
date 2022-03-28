@@ -4,7 +4,14 @@ manual and html using mml. Do not edit the generated manual or html pages.
 The generated files are commited in the repository so dependencies are not
 required for casual users to build the project.
 
-The required tools and dependencies are:
- svn://repo.hu/libmawk/trunk
- svn://repo.hu/web3.0/trunk
- svn://repo.hu/shscripts/trunk/manmarkup
+The required tools and dependencies is the fawkml project's manmarkup util:
+  svn://svn.repo.hu/fawkml/trunk
+
+Installation procedure:
+
+1. svn checkout svn://svn.repo.hu/fawkml/trunk fawkml/trunk
+
+2. ./configure; optionally edit Makefile.conf; make; make install
+
+3. make install in trunk/util/manmarkup
+
