@@ -796,7 +796,7 @@ static void pse_gen(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr)
 	pcb_pstk_proto_update(&proto);
 	if (pse->gen_shape_in_place) {
 		if (pcb_pstk_proto_replace(pse->data, pse->ps->proto, &proto) == PCB_PADSTACK_INVALID)
-			rnd_message(RND_MSG_ERROR, "Internal error: pse_gen() failed to raplace padstack prototype\n");
+			rnd_message(RND_MSG_ERROR, "Internal error: pse_gen() failed to replace padstack prototype\n");
 	}
 	else {
 		pid = pcb_pstk_proto_insert_dup(pse->data, &proto, 1, 1);
