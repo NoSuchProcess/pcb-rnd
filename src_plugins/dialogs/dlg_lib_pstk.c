@@ -341,6 +341,7 @@ static void pstklib_proto_new_(void *hid_ctx, void *caller_data, rnd_hid_attribu
 	rnd_hid_attr_val_t hv;
 	char tmp[64];
 	int tab;
+	long target_id;
 
 	if (data == NULL)
 		return;
@@ -350,19 +351,21 @@ static void pstklib_proto_new_(void *hid_ctx, void *caller_data, rnd_hid_attribu
 		if (row == NULL)
 			return;
 		proto = pcb_pstk_get_proto_(data, strtol(row->cell[0], NULL, 10));
-		ctx->proto_id = pcb_pstk_proto_insert_forcedup(data, proto, 0, (pcb_data_get_top(data) == ctx->pcb));
+		target_id = pcb_pstk_proto_insert_forcedup(data, proto, 0, (pcb_data_get_top(data) == ctx->pcb));
 		tab = 1;
 	}
 	else {
 		memset(&proto_, 0, sizeof(proto_));
 		pcb_pstk_proto_update(&proto_);
 		proto = &proto_;
-		ctx->proto_id = pcb_pstk_proto_insert_dup(data, proto, 1, (pcb_data_get_top(data) == ctx->pcb));
+		target_id = pcb_pstk_proto_insert_dup(data, proto, 1, (pcb_data_get_top(data) == ctx->pcb));
 		tab = 2;
 	}
 
 	/* make sure the new item appears in the list and is selected */
-	pstklib_data2dlg(ctx);
+	pstklib_data2dlg(ctx); /* this may change ctx->proto_id */
+
+	ctx->proto_id = target_id;
 	sprintf(tmp, "%u", ctx->proto_id);
 	hv.str = tmp;
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wlist, &hv);
