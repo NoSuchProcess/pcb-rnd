@@ -189,6 +189,11 @@ static fgw_error_t pcb_act_extedit(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 		rnd_hid_get_coords("Click on object to edit", &x, &y, 0);
 		type = pcb_search_screen(x, y, EXTEDIT_TYPES, &ptr1, &ptr2, &ptr3);
 
+		if (type != PCB_OBJ_SUBC) {
+			rnd_message(RND_MSG_ERROR, "Not a subcircuit (under the cursor)\n");
+			goto quit0;
+		}
+
 		pcb_buffer_set_number(bn);
 		pcb_buffer_clear(PCB, PCB_PASTEBUFFER);
 		if (pcb_copy_obj_to_buffer(PCB, pcb_buffers[bn].Data, PCB->Data, type, ptr1, ptr2, ptr3) == NULL) {
