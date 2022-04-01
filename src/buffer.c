@@ -766,7 +766,7 @@ void pcb_buffers_flip_side(pcb_board_t *pcb)
 
 void *pcb_move_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	pcb_opctx_t ctx;
+	pcb_opctx_t ctx = {0};
 
 	/* setup local identifiers used by move operations */
 	ctx.buffer.pcb = pcb;
@@ -778,7 +778,7 @@ void *pcb_move_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data
 
 void *pcb_copy_obj_to_buffer(pcb_board_t *pcb, pcb_data_t *Destination, pcb_data_t *Src, int Type, void *Ptr1, void *Ptr2, void *Ptr3)
 {
-	pcb_opctx_t ctx;
+	pcb_opctx_t ctx = {0};
 
 	ctx.buffer.pcb = pcb;
 	ctx.buffer.dst = Destination;
