@@ -2,6 +2,8 @@
 
 1. For the upcoming release ===============================================================================
 + BUG: if ./configure was compiled with an old version of librnd, but now requires a newer version, ./configure it doesn't recompile it enough - missing dep? [report: Erich]
+- BUG: parametric generates 9*9: bga(nx=8, ny=8, map=a1:a2:a3:a4:a5:a6:a7:a8:#:b1:b2:b3:b4:b5:b6:b7:b8:#:c1:c2:!:!:!:!:c7:c8:#:d1:d2:!:!:!:!:d7:d8:#:e1:e2:!:!:!:!:e7:e8:#:f1:f2:!:!:!:!:f7:f8:#:g1:g2:g3:g4:g5:g6:g7:g8:#:h1:h2:h3:h4:h5:h6:h7:h8) [report: Bdale]
+
 
 2. For later releases ===============================================================================
 - CLEANUP: sch-rnd CRITICAL: split out library parameter editor GUI for reuse
