@@ -2377,7 +2377,7 @@ static int parse_styles(lht_read_t *rctx, pcb_data_t *dt, vtroutestyle_t *styles
 			dn = hash_get(stn, "diameter", 1);
 			hn = hash_get(stn, "hole", 1);
 
-			if ((dn != NULL) || (hn != NULL)) {
+			if ((dn != &missing_ok) || (hn != &missing_ok)) {
 				if (rctx->rdver >= 8)
 					iolht_warn(rctx, stn, -1, "v8+ route style sould not have via diameters in %s: it should use via proto\n(Maybe it is a manually written file? Converting diameters to prototypes...)\n", s->name);
 
