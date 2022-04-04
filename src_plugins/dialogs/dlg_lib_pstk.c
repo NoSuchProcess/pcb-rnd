@@ -331,6 +331,7 @@ static void pstklib_proto_edit(void *hid_ctx, void *caller_data, rnd_hid_attribu
 		return;
 
 	pstklib_proto_edit_common(ctx, data, strtol(row->cell[0], NULL, 10), 1);
+	pstklib_data2dlg(ctx); /* proto name may have been changed */
 }
 
 static void pstklib_proto_new_(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr, int dup)
