@@ -641,8 +641,8 @@ function subc_proto_create_pad_circle(dia, mask_dia, paste_dia    ,proto)
 	mask_dia = either(mask_dia, DEFAULT["pad_mask_dia"])
 	subc_pstk_add_shape_circ(proto, "top-mask", 0, 0, mask_dia)
 
-	paste_dia = either(mask_dia, DEFAULT["pad_paste_dia"])
-	subc_pstk_add_shape_circ(proto, "top-mask", 0, 0, paste_dia)
+	paste_dia = either(paste_dia, DEFAULT["pad_paste_dia"])
+	subc_pstk_add_shape_circ(proto, "top-paste", 0, 0, paste_dia)
 
 	PROTO[proto] = PROTO[proto] "     }" NL
 	return proto
