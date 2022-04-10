@@ -57,16 +57,19 @@ BEGIN {
 				y++
 				continue;
 			}
-			if (x > nx)
-				nx = x
-			if (y > ny)
-				ny = y
+			if (x >= nnx)
+				nnx = x+1
+			if (y >= nny)
+				nny = y+1
 #			print x,y,A[n] > "/dev/stderr"
 			MAP[x, y] = A[n]
 			x++
 		}
-		ny++;
-		nx++;
+#print "n:" nx, ny, "nn:", nnx, nny > "/dev/stderr"
+		if (nnx > nx)
+			nx = nnx;
+		if (nny > ny)
+			ny = nny;
 	}
 	else {
 		if ((nx == "") || (ny == ""))
