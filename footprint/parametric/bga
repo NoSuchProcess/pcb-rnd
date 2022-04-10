@@ -8,7 +8,7 @@
 
 #@@desc Generate a grid of circular pads for BGA chips
 
-#@@params nx,ny,spacing,balldia,silkmark,map,width,height,automap,automap2
+#@@params nx,ny,spacing,balldia,silkmark,map,width,height,automap,automap2,alphabet,ballmask,ballpaste
 
 #@@param:nx number of pins in the X direction
 #@@optional:nx
@@ -24,7 +24,15 @@
 
 #@@param:balldia diameter of a ball
 #@@dim:balldia
-#@@default:spacing 0.35 mm
+#@@default:balldia 0.35 mm
+
+#@@param:ballmask diameter of the mask cutout
+#@@dim:ballmask
+#@@default:ballmask 0.45 mm
+
+#@@param:ballpaste diameter of the paste circle
+#@@dim:ballpaste
+#@@default:ballpaste 0.30 mm
 
 #@@include silkmark.help
 #@@optional:silkmark

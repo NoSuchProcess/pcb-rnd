@@ -33,7 +33,7 @@ BEGIN {
 	set_arg(P, "?balldia", "0.35mm")
 	set_arg(P, "?silkmark", "arc")
 
-	proc_args(P, "nx,ny,spacing,balldia,silkmark,map,width,height,automap,automap2,alphabet", "")
+	proc_args(P, "nx,ny,spacing,balldia,silkmark,map,width,height,automap,automap2,alphabet,ballmask,ballpaste", "")
 
 	step = parse_dim(P["spacing"])
 
@@ -83,6 +83,17 @@ BEGIN {
 	}
 
 	balldia = parse_dim(P["balldia"])
+
+# safe defaults on ball mask and paste
+	if (P["ballmask"] == "")
+		ballmask = balldia * 1.2
+	else
+		ballmask = parse_dim(P["ballmask"])
+	if (P["ballpaste"] == "")
+		ballpaste = balldia * 0.8
+	else
+		ballpaste = parse_dim(P["ballpaste"])
+
 	bw  = parse_dim(P["width"])
 	bh  = parse_dim(P["height"])
 
@@ -96,7 +107,7 @@ BEGIN {
 
 	subc_begin(nx "*" ny, "U1", 0, -bh)
 
-	proto = subc_proto_create_pad_circle(balldia)
+	proto = subc_proto_create_pad_circle(balldia, ballmask, ballpaste)
 
 	for(x = 0; x < nx; x++) {
 		for(y = 0; y < ny; y++) {
