@@ -163,7 +163,10 @@ static void append_expr(gds_t *dst, search_expr_t *e, int sepchar)
 	gds_append(dst, sepchar);
 	gds_append_str(dst, e->op);
 	gds_append(dst, sepchar);
-	gds_append_str(dst, e->right);
+	if (e->right != NULL)
+		gds_append_str(dst, e->right);
+	else
+		gds_append_str(dst, "\"\"");
 }
 
 static void redraw_expr(search_ctx_t *ctx, int row, int col)
