@@ -161,7 +161,17 @@ static void srch_expr_fill_in_right(srchedit_ctx_t *ctx, const search_expr_t *s)
 
 	switch(s->expr->rtype) {
 		case RIGHT_STR:
-			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+			if (*hv.str == '"') { /* remove string syntax double quotes for the GUI */
+				long len = strlen(hv.str);
+				char *tmp = malloc(len);
+				memcpy(tmp, hv.str+1, len-2);
+				tmp[len-2] = '\0';
+				hv.str = tmp;
+				rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
+				free(tmp);
+			}
+			else
+				rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wright[s->expr->rtype], &hv);
 			break;
 		case RIGHT_INT:
 			hv.lng = strtol(hv.str, NULL, 10);
