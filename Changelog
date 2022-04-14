@@ -1,3 +1,96 @@
+pcb-rnd 3.0.4 (r36153)
+~~~~~~~~~~~~~~~~~~~~~~
+	[core]
+		-Change: disable auto_via by default, there are too many corner cases lurking
+		-Fix: find.c poly-poly isc: when conveting contour lines to polygons, use square cap so tiny round caps are not generated (they are prone to self-intersect in this range)
+		-Fix: pixmap rendering: calculate rotation not from the input forward, but from the output back to get every pixel filled in
+		-Fix: ChkLayer() invalid layer ID error message printed the wrong layer name field
+		-Fix: verify that emergency file name template contains at most one %ld and no other format string
+		-Fix: "polygon cleared out of existnece" error message uses current grid units, not mm hardwired for reporting bbox center
+		-Fix: make sure all internal parameters of buffer operations are initialized
+		-Cleanup: file_act's action list should be static as it is local (namespace pollution)
+		-Cleanup: use matrix transformation instead of manual cos/sin in pixmap rotation
+		-Add: hint on what the user could do on "poly cleared out of exitence" warning
+		-Add: "poly cleared out of existence" error message also prints layer name
+
+	[diag]
+		-Add: integrity check errors: name offending thing (obj or subc) and use # prefix for id so it's easier to understand the message
+
+	[dialogs]
+		-Fix: preferences: make thermal scale and board size changes undoable
+		-Fix: fill in thermal scale initially on board meta tab
+		-Fix: don't let thermal scale go above 1.5, to avoid self-intersecting polygons
+		-Fix: preferences: board name change should trigger the appropriate name change event so that the title is updated
+		-Fix: padstack proto lib: 'new' button: save don't let tree update change the target ID we are going to edit
+		-Fix: padstack proto lib: refresh the tree after padstack edit, because the name of the edited padstack may have changed
+		-Cleanup: preferences dialog: remove dependcy on global PCB
+
+	[doc]
+		-Fix: installation: pcb-rnd is not compiled with or without gui, it merely runs with or without gui
+		-Fix: missing www. before repo.hu (DNS stability)
+		-Fix: scripting install doc: it's librnd that needs to be reconfigured when switching to system-fungw
+		-Del: installation: remove the pre-3.0.0 run-from-source script that was required for librnd separation
+		-Add: arc tutorial video
+		-Add: installation: gtkglext is needed only for gtk2's opengl; gtk4 needs libepoxy
+		-Add: user manual model doc: link layer addressing
+		-Add: document how to work around OSX library path block
+		-Update: new version of manmarkup is in fawkml
+
+	[export_gerber]
+		-Fix: allocate empty-layer dummy aperture instead of hardwiring aperutre 11 - in cam export this results in duplicate apertures
+
+	[export_png]
+		-Fix: objects drawn on a mech layer should always use the drill color in photo mode so that plain lines on mech layer cut through the board
+
+	[extedit]
+		-Fix: make sure a subc is picked for extedit, refuse to use any other object type or no-object
+
+	[fontmode]
+		-Fix: when packign arc for font save, use arc bbox center instead of arc center point; if the arc has a large radius and a small delta, e.g. it's a "parenthesis", the center point falls into a different font cell than the actual graphics of the arc (always consider the graphics, not the invisible arc center)
+		-Fix: char width calculation should use arc naked bbox X2 instead of cx because of "small delta, big radius" arcs
+		-Fix: when packing arcs on save, use arc center for new arc center, compensated with ox and oy, instead of bbox center
+		-Fix: clear all content of symbols before rendering them again for a save
+
+	[footprint]
+		-Fix: remove bga() stale debug printout
+		-Fix: bga: when both nx;ny and map are specified, take the larger and do not add 1 row/col (fixes the bug of excess row/col when both specified)
+		-Fix: common subc awk: subc_proto_create_pad_circle() used the wrong arguments and layer for creating the paste shape
+		-Add: bga() support for ballmask and ballpaste; calcualte "safe values" from balldia when missing
+
+	[io_dsn]
+		-Fix: ses import: expect via name as pstk_ID instead of the old via_dia_dia description
+		-Fix: report ses import errors with a ses prefix, we are not importing dsn
+		-Fix: re-clip all polygons after ses import for correct clearances
+
+	[io_lihata]
+		-Fix: typo causing false alarm on unset route style padstack proto
+
+	[lib_hid_pcbui]
+		-Fix: refresh window title after save as (file name change)
+		-Fix: typo: wrong number of conf paths for infobar watch
+		-Cleanup: do not specify the + and - icons locally, use librnd named xpms (these icons are available since 3.1.0 there and pcb-rnd already depends on 3.1.x)
+
+	[lib_netmap]
+		-Fix: create temporary placement subcircuits on a NULL board instead of the live pcb so that the live pcb's rtree is not polluted
+
+	[propedit]
+		-Cleanup: remove global PCB dependency from dialog code
+
+	[query]
+		-Fix: advanced search dialog: when filling strings back in the dialog on a subsequent edit, remove double quotes required by the syntax but not required in the GUI
+		-Fix: advanced search dialog: don't crash on empty string on the right side
+
+	[scconfig]
+		-Fix: librnd_ver.o depends on installed librnd config.h so it gets recompiled on librnd version change
+		-Fix: implicit declaration of librnd ver req min
+		-Fix: remove #warning, it's not portable
+
+	[tests]
+		-Fix: conftest implicit declarations made OSX fail to compile
+		-Fix: conf test: list overwrite sets the higher prio on the subtree that's actually used for the overwrite
+		-Update: drc_query fullpoly test for more detailed cleared-out-of-existence message
+		-Add: OSX library path workaround: be able to inject SHELL in Makefiles and use pcb-rnd.wrap in shell scripts (when wrapper is available)
+
 pcb-rnd 3.0.3 (r36039)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[act_draw]

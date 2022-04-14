@@ -1,22 +1,15 @@
-pcb-rnd 3.0.3
+pcb-rnd 3.0.4
 ~~~~~~~~~~~~~
 
-This is a minor feature release
+This is a minor bugfix release with focus on fixing various bugs reported
+(see the Changelog for detaisl).
 
-Feature highlight:
+Other than the bugfixes, changeset highlights are:
 
-1. Dependency on librnd bumped to 3.1.0; the generic half of the preferences
-   window tabs are moved from pcb-rnd to librnd.
+1. 'auto place via' is now disabled by default; this means if you are drawing
+   a trace with the line tool and switch layer, via is not automatically
+   placed. Can be re-enabled from the preferences dialog config tree tab.
 
-2. New board format to load: altium, protel 98/99
+2. changing the thermal scale in the preferences dialog is now undoable
 
-3. New export 3d formats: amf and projector
-
-4. io_eagle can load footprints from eagle libs directly
-
-5. export_xy: more template variables for generating different rotations
-
-6. export_xy: optional subcircuit attributes for per-vendor (per-fab)
-   rotation and translation so that a footprint lib can be adjusted
-   to work with multiple p&p fabs with contradicting origin requirements
-
+3. configurable mask/paste generation in the bga() footprint
