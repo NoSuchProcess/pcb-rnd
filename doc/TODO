@@ -6,6 +6,7 @@
 + BUG: bga() doesn't have mask and paste [report: Bdale]
 
 2. For later releases ===============================================================================
+- BUG: extroute(board, freerouting) segfaults (wrong router name) [report: Erich]
 - BUG: pcb-rnd -x svg --photo-mode --flip --outfile A.svg bug_files/TODO/svg_arc.lht -> arc rendered at the wrong coord [report: cuvoodoo]
 - BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
 - BUG: DRC: always insufficient overlap on poly-poly embed: bug_files/TODO/drc2.lht [report: cuvoodoo]
