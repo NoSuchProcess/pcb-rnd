@@ -220,8 +220,8 @@ fgw_error_t pcb_act_extroute(fgw_arg_t *res, int argc, fgw_arg_t *argv)
 
 	r = find_router(router);
 	if (r == NULL) {
+		rnd_message(RND_MSG_ERROR, "Invalid router: '%s'\n", router);
 		free(router);
-		rnd_message(RND_MSG_ERROR, "Invalid router: '%s'\n", scope);
 		return FGW_ERR_ARG_CONV;
 	}
 
