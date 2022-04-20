@@ -122,6 +122,7 @@ static int fnc_overlap(pcb_qry_exec_t *ectx, int argc, pcb_qry_val_t *argv, pcb_
 {
 	static pcb_find_t fctx = {0};
 
+	fctx.bloat = 0;
 	fctx.ignore_clearance = 1;
 	fctx.allow_noncopper_pstk = 1;
 	fctx.pstk_anylayer = 1;
