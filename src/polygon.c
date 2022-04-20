@@ -832,6 +832,20 @@ static rnd_r_dir_t text_sub_callback(const rnd_box_t * b, void *cl)
 	return RND_R_DIR_FOUND_CONTINUE;
 }
 
+/* To avoid re-clipping the whole poly when an object is removed:
+
+1. make a bounding box of the object + clearance you are removing
+
+2. put back copper covering our object-being-removed's whole clearance,
+without caring any other object's clearance
+
+3. then search all objects that may have clearance intersecting this
+rectangular area and subtract their clearance from the poly
+
+Step 3 is the trick implemented in this function. Where those other
+objects already cleared the poly, it won't make any diff, but where
+we have put back our clearance in step  2, it will remove some copper.
+*/
 static rnd_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t *polygon, const rnd_box_t *here, rnd_coord_t expand, int noop)
 {
 	rnd_cardinal_t r = 0;
