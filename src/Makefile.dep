@@ -352,8 +352,8 @@
  data.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  ../src_plugins/dialogs/dlg_library.h \
  ../src_plugins/dialogs/adialogs_conf.h \
- ../src_plugins/dialogs/dlg_library_param.h \
- ../src_plugins/dialogs/dlg_library_param.c
+ ../src_3rd/rnd_inclib/dialogs/dlg_library_param.h \
+ ../src_3rd/rnd_inclib/dialogs/dlg_library_param.c
 ../src_plugins/dialogs/dlg_loadsave.o: \
  ../src_plugins/dialogs/dlg_loadsave.c ../config.h board.h vtroutestyle.h \
  attrib.h global_typedefs.h layer.h globalconst.h obj_common.h flag.h \

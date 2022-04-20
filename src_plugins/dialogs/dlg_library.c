@@ -60,7 +60,7 @@ static const char *library_cookie = "dlg_library";
 typedef struct library_ctx_s library_ctx_t;
 typedef pcb_fplibrary_t library_ent_t;
 
-#include "dlg_library_param.h"
+#include "../../src_3rd/rnd_inclib/dialogs/dlg_library_param.h"
 
 struct library_ctx_s {
 	RND_DAD_DECL_NOINIT(dlg)
@@ -248,7 +248,7 @@ static void library_set_filter(library_ctx_t *ctx, const char *text)
 
 static const char *library_get_ent_name(library_ent_t *e) { return e->name; }
 
-#include "dlg_library_param.c"
+#include "../../src_3rd/rnd_inclib/dialogs/dlg_library_param.c"
 
 static void library_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
