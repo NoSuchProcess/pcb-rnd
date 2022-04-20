@@ -247,6 +247,7 @@ static void library_set_filter(library_ctx_t *ctx, const char *text)
 }
 
 static const char *library_get_ent_name(library_ent_t *e) { return e->name; }
+static const char *library_ent_path(library_ent_t *e) { return e->data.fp.loc_info; }
 
 #include "../../src_3rd/rnd_inclib/dialogs/dlg_library_param.c"
 

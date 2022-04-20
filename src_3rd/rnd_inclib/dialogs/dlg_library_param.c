@@ -565,18 +565,18 @@ static FILE *library_param_get_help(library_param_ctx_t *ctx, library_ent_t *l)
 #ifdef __WIN32__
 	{
 		char *s;
-		cmd = rnd_strdup_printf("%s/sh -c \"%s --help\"", rnd_w32_bindir, l->data.fp.loc_info);
+		cmd = rnd_strdup_printf("%s/sh -c \"%s --help\"", rnd_w32_bindir, library_ent_path(l));
 		for(s = cmd; *s != '\0'; s++)
 			if (*s == '\\')
 				*s = '/';
 	}
 #else
-	cmd = rnd_strdup_printf("%s --help", l->data.fp.loc_info);
+	cmd = rnd_strdup_printf("%s --help", library_ent_path(l));
 #endif
 	f = rnd_popen(NULL, cmd, "r");
 	free(cmd);
 	if (f == NULL) {
-		rnd_message(RND_MSG_ERROR, "Can not execute parametric footprint %s\n", l->data.fp.loc_info);
+		rnd_message(RND_MSG_ERROR, "Can not execute parametric footprint %s\n", library_ent_path(l));
 		return NULL;
 	}
 
