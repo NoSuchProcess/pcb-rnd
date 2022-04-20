@@ -177,7 +177,7 @@ do { \
 	post_append(); \
 } while(0)
 
-static int library_param_build(library_param_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
+static int library_param_build(library_param_ctx_t *ctx, library_ent_t *l, FILE *f)
 {
 	char line[1024];
 	char *name = NULL, *help = NULL, *help_def = NULL;
@@ -292,7 +292,7 @@ static char *gen_cmd(library_param_ctx_t *ctx)
 
 	memset(&sres, 0, sizeof(sres));
 
-	gds_append_str(&sres, ctx->last_l->name);
+	gds_append_str(&sres, library_get_ent_name(ctx->last_l));
 
 	/* cut original name at "(" */
 	tmp = strchr(sres.array, '(');
@@ -472,19 +472,19 @@ static void load_params(library_param_ctx_t *ctx, char *user_params)
 	free(parahlp);
 }
 
-int pcb_library_param_fillin(library_param_ctx_t *ctx, pcb_fplibrary_t *l, const char *filter_txt)
+int pcb_library_param_fillin(library_param_ctx_t *ctx, library_ent_t *l, const char *filter_txt)
 {
 	rnd_hid_attr_val_t hv;
 
 	if (filter_txt != NULL) {
 		char *sep;
 		int len;
-		sep = strchr(l->name, '(');
+		sep = strchr(library_get_ent_name(l), '(');
 		if (sep != NULL)
-			len = sep - l->name;
+			len = sep - library_get_ent_name(l);
 		else
-			len = strlen(l->name);
-		if (strncmp(filter_txt, l->name, len) != 0) {
+			len = strlen(library_get_ent_name(l));
+		if (strncmp(filter_txt, library_get_ent_name(l), len) != 0) {
 			/* clicked away from the previous parametric, but the filter text is still for that one; replace it */
 			filter_txt = NULL;
 		}
@@ -512,7 +512,7 @@ int pcb_library_param_fillin(library_param_ctx_t *ctx, pcb_fplibrary_t *l, const
 		/* do not load parameters from the comamnd of a differently named
 		   footprint to avoid invalid mixing of similar named parameters; in
 		   that case rather fill in the dialog with the example */
-		for(n1 = filter_txt, n2 = l->name;; n1++, n2++) {
+		for(n1 = filter_txt, n2 = library_get_ent_name(l);; n1++, n2++) {
 			if (*n1 != *n2) {
 				prm = ctx->example;
 				if (prm == NULL)
@@ -536,7 +536,7 @@ int pcb_library_param_fillin(library_param_ctx_t *ctx, pcb_fplibrary_t *l, const
 	return 0;
 }
 
-static int library_param_open(library_param_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
+static int library_param_open(library_param_ctx_t *ctx, library_ent_t *l, FILE *f)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	int w, oversized = 0;
@@ -558,7 +558,7 @@ static int library_param_open(library_param_ctx_t *ctx, pcb_fplibrary_t *l, FILE
 	return oversized;
 }
 
-static FILE *library_param_get_help(library_param_ctx_t *ctx, pcb_fplibrary_t *l)
+static FILE *library_param_get_help(library_param_ctx_t *ctx, library_ent_t *l)
 {
 	FILE *f;
 	char *cmd;
@@ -584,7 +584,7 @@ static FILE *library_param_get_help(library_param_ctx_t *ctx, pcb_fplibrary_t *l
 	return f;
 }
 
-static void library_param_dialog(library_param_ctx_t *ctx, pcb_fplibrary_t *l, const char *filter_txt)
+static void library_param_dialog(library_param_ctx_t *ctx, library_ent_t *l, const char *filter_txt)
 {
 	FILE *f;
 

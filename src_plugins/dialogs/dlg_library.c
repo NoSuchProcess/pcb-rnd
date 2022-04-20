@@ -58,12 +58,13 @@ static const char *library_cookie = "dlg_library";
 #define MAX_PARAMS 128
 
 typedef struct library_ctx_s library_ctx_t;
+typedef pcb_fplibrary_t library_ent_t;
 
 typedef struct {
 	int pactive; /* already open - allow only one instance */
 	int pwdesc;
 	RND_DAD_DECL_NOINIT(pdlg)
-	pcb_fplibrary_t *last_l;
+	library_ent_t *last_l;
 	char *example, *help_params;
 	htsi_t param_names;     /* param_name -> param_idx */
 	int pwid[MAX_PARAMS];   /* param_idx -> widget_idx (for the input field widget) */
@@ -256,6 +257,8 @@ static void library_set_filter(library_ctx_t *ctx, const char *text)
 	hv.str = text;
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
 }
+
+static const char *library_get_ent_name(library_ent_t *e) { return e->name; }
 
 #include "dlg_library_param.c"
 
