@@ -534,7 +534,7 @@ static int dsn_write_network(dsn_write_t *wctx)
 		fprintf(wctx->f, "      )\n");
 	}
 	else
-		pcb_io_incompat_save(PCB->Data, NULL, "via-proto", "invalid padstack prototype for new vias", "The padstack prototype ID specified for autorouter-placed vias is invalid.");
+		pcb_io_incompat_save(PCB->Data, NULL, "via-proto", "invalid padstack prototype for new vias", "The padstack prototype ID specified for autorouter-placed vias is invalid.\nPlease make sure the padstack prototype the pen uses does exist in board context.\n");
 
 	fprintf(wctx->f, "      (rule\n");
 	rnd_fprintf(wctx->f, "        (width %[4])\n", conf_core.design.line_thickness);
