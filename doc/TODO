@@ -2,7 +2,7 @@
 
 1. For the upcoming release ===============================================================================
 - CLEANUP: sch-rnd CRITICAL: split out library parameter editor GUI for reuse
-- BUG: extroute(board, freerouting) segfaults (wrong router name) [report: Erich]
++ BUG: extroute(board, freerouting) segfaults (wrong router name) [report: Erich]
 + BUG: pcb-rnd -x svg --photo-mode --flip --outfile A.svg bug_files/TODO/svg_arc.lht -> arc rendered at the wrong coord [report: cuvoodoo]
 - BUG: DRC: always insufficient overlap on poly-poly touch: bug_files/TODO/drc1.* [report: cuvoodoo]
 - BUG: DRC: always insufficient overlap on poly-poly embed: bug_files/TODO/drc2.lht [report: cuvoodoo]
