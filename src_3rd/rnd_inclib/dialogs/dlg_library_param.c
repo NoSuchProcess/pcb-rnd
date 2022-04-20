@@ -24,6 +24,8 @@
  *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
  */
 
+#include <genht/htsi.h>
+
 #include <librnd/core/safe_fs.h>
 
 static void library_param_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
