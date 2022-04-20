@@ -1,3 +1,5 @@
+#include <genht/htsi.h>
+
 typedef struct {
 	int pactive; /* already open - allow only one instance */
 	int pwdesc;
