@@ -352,6 +352,7 @@
  data.h undo.h ../src_3rd/libuundo/uundo.h undo_old.h \
  ../src_plugins/dialogs/dlg_library.h \
  ../src_plugins/dialogs/adialogs_conf.h \
+ ../src_plugins/dialogs/dlg_library_param.h \
  ../src_plugins/dialogs/dlg_library_param.c
 ../src_plugins/dialogs/dlg_loadsave.o: \
  ../src_plugins/dialogs/dlg_loadsave.c ../config.h board.h vtroutestyle.h \
@@ -385,7 +386,8 @@
  data_parent.h obj_arc_list.h obj_arc.h obj_line_list.h obj_line.h \
  obj_poly_list.h obj_poly.h obj_text_list.h obj_text.h font.h \
  obj_gfx_list.h obj_gfx.h layer_grp.h rats_patch.h board.h \
- ../src_plugins/dialogs/dlg_pref_board.c event.h conf_core.h \
+ ../src_plugins/dialogs/dlg_pref_board.c event.h undo.h \
+ ../src_3rd/libuundo/uundo.h undo_old.h conf_core.h \
  ../src_plugins/dialogs/dlg_pref_sizes.c drc.h view.h idpath.h \
  ../src_plugins/dialogs/dlg_pref_lib.c \
  ../src_plugins/dialogs/dlg_pref_layer.c stub_draw.h draw.h \
@@ -700,13 +702,13 @@
  conf_core.h ../src_plugins/export_stl/../lib_polyhelp/topoly.h board.h \
  obj_common.h ../src_plugins/export_stl/../lib_polyhelp/triangulate.h \
  ../src_3rd/fast89-poly2tri/fast89_poly2tri.h \
+ ../src_plugins/export_stl/verthash.c \
  ../src_plugins/export_stl/exp_fmt_stl.c \
  ../src_plugins/export_stl/exp_fmt_amf.c \
  ../src_plugins/export_stl/exp_fmt_proj.c \
  ../src_plugins/export_stl/stl_models.c \
  ../src_plugins/export_stl/model_load_stl.c \
- ../src_plugins/export_stl/model_load_amf.c \
- ../src_plugins/export_stl/verthash.c
+ ../src_plugins/export_stl/model_load_amf.c
 ../src_plugins/export_svg/svg.o: ../src_plugins/export_svg/svg.c \
  ../config.h conf_core.h globalconst.h board.h vtroutestyle.h attrib.h \
  global_typedefs.h layer.h obj_common.h flag.h data_parent.h \
