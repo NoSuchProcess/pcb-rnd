@@ -1,4 +1,4 @@
-pcb-rnd 3.0.4 (r36153)
+pcb-rnd 3.0.4 (r36160)
 ~~~~~~~~~~~~~~~~~~~~~~
 	[core]
 		-Change: disable auto_via by default, there are too many corner cases lurking
