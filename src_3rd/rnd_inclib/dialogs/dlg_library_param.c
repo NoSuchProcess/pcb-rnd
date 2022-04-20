@@ -583,6 +583,34 @@ static FILE *library_param_get_help(library_param_ctx_t *ctx, library_ent_t *l)
 	return f;
 }
 
+static void library_select_show_param_example(library_ctx_t *ctx, library_ent_t *l)
+{
+	char line[1024], *arg, *cmd, *end;
+	FILE *f = library_param_get_help(&ctx->param, l);
+	while(fgets(line, sizeof(line), f) != NULL) {
+		cmd = strchr(line, '@');
+		if ((cmd == NULL) || (cmd[1] != '@'))
+			continue;
+		cmd+=2;
+		arg = strpbrk(cmd, " \t\r\n");
+		if (arg != NULL) {
+			*arg = '\0';
+			arg++;
+			while(isspace(*arg)) arg++;
+		}
+		if (strcmp(cmd, "example") == 0) {
+			if ((arg != NULL) && (*arg != '\0')) {
+				end = strpbrk(arg, "\r\n");
+				if (end != NULL)
+					*end = '\0';
+				timed_update_preview_(ctx, arg);
+				break;
+			}
+		}
+	}
+	rnd_pclose(f);
+}
+
 static void library_param_dialog(library_param_ctx_t *ctx, library_ent_t *l, const char *filter_txt)
 {
 	FILE *f;
