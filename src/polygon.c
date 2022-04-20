@@ -873,6 +873,10 @@ static rnd_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t
 		r = 0;
 		info.accumulate = NULL;
 		info.batch_size = 0;
+
+		rnd_r_search(Data->padstack_tree, &region, NULL, padstack_sub_callback, &info, &seen);
+		r += seen;
+
 		PCB_COPPER_GROUP_LOOP(Data, group);
 		{
 			rnd_r_search(layer->line_tree, &region, NULL, line_sub_callback, &info, &seen);
