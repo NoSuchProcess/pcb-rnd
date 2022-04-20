@@ -875,6 +875,7 @@ static rnd_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t
 		info.batch_size = 0;
 
 		rnd_r_search(Data->padstack_tree, &region, NULL, padstack_sub_callback, &info, &seen);
+		subtract_accumulated(&info, polygon);
 		r += seen;
 
 		PCB_COPPER_GROUP_LOOP(Data, group);
@@ -890,8 +891,6 @@ static rnd_cardinal_t clearPoly(pcb_data_t *Data, pcb_layer_t *Layer, pcb_poly_t
 			r += seen;
 		}
 		PCB_END_LOOP;
-		rnd_r_search(Data->padstack_tree, &region, NULL, padstack_sub_callback, &info, &seen);
-		r += seen;
 		subtract_accumulated(&info, polygon);
 	}
 	if (!noop)
