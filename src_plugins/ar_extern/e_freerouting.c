@@ -158,7 +158,11 @@ static int freert_route(pcb_board_t *pcb, ext_route_scope_t scope, const char *m
 		}
 	}
 
-	if (strcmp(method, "freerouting_cli") == 0) {
+	if (method == NULL) {
+		rnd_message(RND_MSG_ERROR, "freerouting: need a method; instead of just freerouting, try\nfreerouting/freerouting_cli or freerouting/freerouting.net\n");
+		return -1;
+	}
+	else if (strcmp(method, "freerouting_cli") == 0) {
 		exe = conf_ar_extern.plugins.ar_extern.freerouting_cli.exe;
 		installation = conf_ar_extern.plugins.ar_extern.freerouting_cli.installation;
 		debug = conf_ar_extern.plugins.ar_extern.freerouting_cli.debug;
