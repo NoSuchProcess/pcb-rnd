@@ -581,19 +581,20 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	rnd_hid_attribute_t *attr;
 	rnd_hid_row_t *r, *rnew;
 	const char *otext = ctx->dlg[ctx->wfilt].val.str;
-	char *name, *sep;
+	char *name = NULL, *sep;
 	int namelen;
 
 	attr = &ctx->dlg[ctx->wtree];
 	r = rnd_dad_tree_get_selected(attr);
 
 	if (!ctx->last_clicked && (otext != NULL)) {
+		get_from_filt:;
 		name = rnd_strdup(otext);
 		sep = strchr(name, '(');
 		if (sep != NULL)
 			*sep = '\0';
 	}
-	else {
+	else if (r != NULL) {
 		pcb_fplibrary_t *l = r->user_data;
 		name = rnd_strdup(l->name);
 		if (name != NULL) {
@@ -602,6 +603,8 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 			rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
 		}
 	}
+	else if (otext != NULL)
+		goto get_from_filt;
 
 	if ((name == NULL) || (*name == '\0')) {
 		rnd_message(RND_MSG_ERROR, "Failed to figure the name of the parametric footprint\n");
