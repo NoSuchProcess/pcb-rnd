@@ -31,7 +31,7 @@
 
 static void library_param_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
-	library_ctx_t *ctx = caller_data;
+	library_param_ctx_t *ctx = caller_data;
 	htsi_entry_t *e;
 
 	gds_uninit(&ctx->descr);
@@ -45,7 +45,7 @@ static void library_param_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 		ctx->pactive = 0;
 		RND_DAD_FREE(ctx->pdlg);
 	}
-	update_edit_button(ctx);
+	update_edit_button(ctx->lib_ctx);
 }
 
 #define colsplit() \
@@ -57,7 +57,7 @@ do { \
 	} \
 } while(0)
 
-static void set_attr(library_ctx_t *ctx, int pidx, char *val)
+static void set_attr(library_param_ctx_t *ctx, int pidx, char *val)
 {
 	rnd_hid_attr_val_t hv;
 	rnd_hid_attribute_t *a = &ctx->pdlg[ctx->pwid[pidx]];
@@ -141,43 +141,43 @@ do { \
 	if (curr_type == RND_HATT_END) \
 		break; \
 	pre_append(); \
-	RND_DAD_LABEL(library_ctx.pdlg, name); \
-		RND_DAD_HELP(library_ctx.pdlg, rnd_strdup(help)); \
+	RND_DAD_LABEL(ctx->pdlg, name); \
+		RND_DAD_HELP(ctx->pdlg, rnd_strdup(help)); \
 	switch(curr_type) { \
 		case RND_HATT_COORD: \
 		case RND_HATT_END: \
-			RND_DAD_COORD(library_ctx.pdlg); \
-				ctx->pwid[curr] = RND_DAD_CURRENT(library_ctx.pdlg); \
-				RND_DAD_MINMAX(library_ctx.pdlg, 0, RND_MM_TO_COORD(512)); \
-				RND_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
+			RND_DAD_COORD(ctx->pdlg); \
+				ctx->pwid[curr] = RND_DAD_CURRENT(ctx->pdlg); \
+				RND_DAD_MINMAX(ctx->pdlg, 0, RND_MM_TO_COORD(512)); \
+				RND_DAD_CHANGE_CB(ctx->pdlg, library_param_cb); \
 			break; \
 		case RND_HATT_STRING: \
-			RND_DAD_STRING(library_ctx.pdlg); \
-				ctx->pwid[curr] = RND_DAD_CURRENT(library_ctx.pdlg); \
-				RND_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
+			RND_DAD_STRING(ctx->pdlg); \
+				ctx->pwid[curr] = RND_DAD_CURRENT(ctx->pdlg); \
+				RND_DAD_CHANGE_CB(ctx->pdlg, library_param_cb); \
 			break; \
 		case RND_HATT_BOOL: \
-			RND_DAD_BOOL(library_ctx.pdlg); \
-				ctx->pwid[curr] = RND_DAD_CURRENT(library_ctx.pdlg); \
-				RND_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
+			RND_DAD_BOOL(ctx->pdlg); \
+				ctx->pwid[curr] = RND_DAD_CURRENT(ctx->pdlg); \
+				RND_DAD_CHANGE_CB(ctx->pdlg, library_param_cb); \
 			break; \
 		case RND_HATT_ENUM: \
-			RND_DAD_ENUM(library_ctx.pdlg, (const char **)curr_enum.array); \
-				ctx->pwid[curr] = RND_DAD_CURRENT(library_ctx.pdlg); \
-				RND_DAD_CHANGE_CB(library_ctx.pdlg, library_param_cb); \
+			RND_DAD_ENUM(ctx->pdlg, (const char **)curr_enum.array); \
+				ctx->pwid[curr] = RND_DAD_CURRENT(ctx->pdlg); \
+				RND_DAD_CHANGE_CB(ctx->pdlg, library_param_cb); \
 				vtp0_init(&curr_enum); \
 				vtp0_append(&curr_enum, rnd_strdup("")); \
 			break; \
 		default: \
-			RND_DAD_LABEL(library_ctx.pdlg, "internal error: invalid type"); \
+			RND_DAD_LABEL(ctx->pdlg, "internal error: invalid type"); \
 	} \
-	RND_DAD_HELP(library_ctx.pdlg, rnd_strdup(help)); \
+	RND_DAD_HELP(ctx->pdlg, rnd_strdup(help)); \
 	ctx->pnames[curr] = rnd_strdup(name); \
 	htsi_set(&ctx->param_names, ctx->pnames[curr], curr); \
 	post_append(); \
 } while(0)
 
-static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
+static int library_param_build(library_param_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 {
 	char line[1024];
 	char *name = NULL, *help = NULL, *help_def = NULL;
@@ -284,7 +284,7 @@ static int library_param_build(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 	return numrows;
 }
 
-static char *gen_cmd(library_ctx_t *ctx)
+static char *gen_cmd(library_param_ctx_t *ctx)
 {
 	int n, pushed = 0;
 	gds_t sres;
@@ -360,14 +360,12 @@ static char *gen_cmd(library_ctx_t *ctx)
 
 static void library_param_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_t *attr_inp)
 {
-	library_ctx_t *ctx = caller_data;
+	library_param_ctx_t *ctx = caller_data;
 	char *cmd = gen_cmd(ctx);
-	rnd_hid_attr_val_t hv;
 
-	hv.str = cmd;
-	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
+	library_set_filter(ctx->lib_ctx, cmd);
 	free(cmd);
-	timed_update_preview(ctx, 1);
+	timed_update_preview(ctx->lib_ctx, 1);
 }
 
 static int param_split(char *buf, char *argv[], int amax)
@@ -401,7 +399,7 @@ static int param_split(char *buf, char *argv[], int amax)
 	return -1;
 }
 
-static void load_params(library_ctx_t *ctx, char *user_params)
+static void load_params(library_param_ctx_t *ctx, char *user_params)
 {
 	char *parain;
 	char *parahlp;
@@ -474,10 +472,9 @@ static void load_params(library_ctx_t *ctx, char *user_params)
 	free(parahlp);
 }
 
-int pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
+int pcb_library_param_fillin(library_param_ctx_t *ctx, pcb_fplibrary_t *l, const char *filter_txt)
 {
 	rnd_hid_attr_val_t hv;
-	const char *filter_txt = ctx->dlg[ctx->wfilt].val.str;
 
 	if (filter_txt != NULL) {
 		char *sep;
@@ -495,11 +492,8 @@ int pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 
 
 	if (filter_txt == NULL) {
-
 		filter_txt = ctx->example;
-
-		hv.str = filter_txt;
-		rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
+		library_set_filter(ctx->lib_ctx, filter_txt);
 	}
 
 	if (filter_txt != NULL) {
@@ -510,8 +504,7 @@ int pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 		if ((prm == NULL) || (prm[1] == ')')) {
 			if (ctx->example != NULL) {
 				filter_txt = ctx->example;
-				hv.str = filter_txt;
-				rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
+				library_set_filter(ctx->lib_ctx, filter_txt);
 				prm = strchr(filter_txt, '(');
 			}
 		}
@@ -539,33 +532,33 @@ int pcb_library_param_fillin(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	if (hv.str == NULL)
 		hv.str = "";
 	rnd_gui->attr_dlg_set_value(ctx->pdlg_hid_ctx, ctx->pwdesc, &hv);
-	timed_update_preview(ctx, 1);
+	timed_update_preview(ctx->lib_ctx, 1);
 	return 0;
 }
 
-static int library_param_open(library_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
+static int library_param_open(library_param_ctx_t *ctx, pcb_fplibrary_t *l, FILE *f)
 {
 	rnd_hid_dad_buttons_t clbtn[] = {{"Close", 0}, {NULL, 0}};
 	int w, oversized = 0;
 
-	RND_DAD_BEGIN_VBOX(library_ctx.pdlg);
-		RND_DAD_COMPFLAG(library_ctx.pdlg, RND_HATF_EXPFILL);
-		RND_DAD_LABEL(library_ctx.pdlg, "n/a");
-			ctx->pwdesc = RND_DAD_CURRENT(library_ctx.pdlg);
-		RND_DAD_BEGIN_TABLE(library_ctx.pdlg, 2);
-			RND_DAD_COMPFLAG(library_ctx.pdlg, RND_HATF_EXPFILL);
-			w = RND_DAD_CURRENT(library_ctx.pdlg);
+	RND_DAD_BEGIN_VBOX(ctx->pdlg);
+		RND_DAD_COMPFLAG(ctx->pdlg, RND_HATF_EXPFILL);
+		RND_DAD_LABEL(ctx->pdlg, "n/a");
+			ctx->pwdesc = RND_DAD_CURRENT(ctx->pdlg);
+		RND_DAD_BEGIN_TABLE(ctx->pdlg, 2);
+			RND_DAD_COMPFLAG(ctx->pdlg, RND_HATF_EXPFILL);
+			w = RND_DAD_CURRENT(ctx->pdlg);
 			if (library_param_build(ctx, l, f) > 16) {
-				library_ctx.pdlg[w].rnd_hatt_flags |= RND_HATF_SCROLL;
+				ctx->pdlg[w].rnd_hatt_flags |= RND_HATF_SCROLL;
 				oversized = 1;
 			}
-		RND_DAD_END(library_ctx.pdlg);
-		RND_DAD_BUTTON_CLOSES(library_ctx.pdlg, clbtn);
-	RND_DAD_END(library_ctx.pdlg);
+		RND_DAD_END(ctx->pdlg);
+		RND_DAD_BUTTON_CLOSES(ctx->pdlg, clbtn);
+	RND_DAD_END(ctx->pdlg);
 	return oversized;
 }
 
-static FILE *library_param_get_help(library_ctx_t *ctx, pcb_fplibrary_t *l)
+static FILE *library_param_get_help(library_param_ctx_t *ctx, pcb_fplibrary_t *l)
 {
 	FILE *f;
 	char *cmd;
@@ -591,7 +584,7 @@ static FILE *library_param_get_help(library_ctx_t *ctx, pcb_fplibrary_t *l)
 	return f;
 }
 
-static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
+static void library_param_dialog(library_param_ctx_t *ctx, pcb_fplibrary_t *l, const char *filter_txt)
 {
 	FILE *f;
 
@@ -600,7 +593,7 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 			ctx->pactive = 0;
 			RND_DAD_FREE(ctx->pdlg);
 		}
-		update_edit_button(ctx);
+		update_edit_button(ctx->lib_ctx);
 	}
 	else if (ctx->pactive) /* reopening the same -> nop */
 		return;
@@ -624,13 +617,21 @@ static void library_param_dialog(library_ctx_t *ctx, pcb_fplibrary_t *l)
 		/* oversized dialog got the scroll bar, which would make it small;
 		   set preferred size so it opens in reasonable area even when win size
 		   not persistent (window palcement code) */
-		RND_DAD_DEFSIZE(library_ctx.pdlg, 700, 500);
+		RND_DAD_DEFSIZE(ctx->pdlg, 700, 500);
 	}
 	rnd_pclose(f);
 
-	RND_DAD_NEW("lib_param", library_ctx.pdlg, "pcb-rnd parametric footprint", ctx, rnd_false, library_param_close_cb);
+	RND_DAD_NEW("lib_param", ctx->pdlg, "pcb-rnd parametric footprint", ctx, rnd_false, library_param_close_cb);
 
-	update_edit_button(ctx);
-	pcb_library_param_fillin(ctx, l);
+	update_edit_button(ctx->lib_ctx);
+	pcb_library_param_fillin(ctx, l, filter_txt);
+}
+
+static void library_param_dialog_close(library_param_ctx_t *ctx)
+{
+	if (ctx->pactive) {
+		ctx->pactive = 0;
+		RND_DAD_FREE(ctx->pdlg);
+	}
 }
 

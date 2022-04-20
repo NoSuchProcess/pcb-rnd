@@ -57,7 +57,23 @@ static const char *library_cookie = "dlg_library";
 
 #define MAX_PARAMS 128
 
-typedef struct{
+typedef struct library_ctx_s library_ctx_t;
+
+typedef struct {
+	int pactive; /* already open - allow only one instance */
+	int pwdesc;
+	RND_DAD_DECL_NOINIT(pdlg)
+	pcb_fplibrary_t *last_l;
+	char *example, *help_params;
+	htsi_t param_names;     /* param_name -> param_idx */
+	int pwid[MAX_PARAMS];   /* param_idx -> widget_idx (for the input field widget) */
+	char *pnames[MAX_PARAMS]; /* param_idx -> parameter_name (also key stored in the param_names hash */
+	int num_params, first_optional;
+	gds_t descr;
+	library_ctx_t *lib_ctx;
+} library_param_ctx_t;
+
+struct library_ctx_s {
 	RND_DAD_DECL_NOINIT(dlg)
 	int wtree, wpreview, wtags, wfilt, wpend, wnopend, wedit;
 	int wvis_cpr, wvis_slk, wvis_mnp, wvis_doc;
@@ -70,19 +86,10 @@ typedef struct{
 	rnd_hidval_t timer;
 	int timer_active;
 
- /* for the parametric */
-	int pactive; /* already open - allow only one instance */
-	int pwdesc;
-	RND_DAD_DECL_NOINIT(pdlg)
-	pcb_fplibrary_t *last_l;
-	char *example, *help_params;
-	htsi_t param_names;     /* param_name -> param_idx */
-	int pwid[MAX_PARAMS];   /* param_idx -> widget_idx (for the input field widget) */
-	char *pnames[MAX_PARAMS]; /* param_idx -> parameter_name (also key stored in the param_names hash */
-	int num_params, first_optional;
+	library_param_ctx_t param; /* for the parametric */
+
 	unsigned last_clicked:1; /* 1 if the last user action was a click in the tree, 0 if it was an edit of the filter text */
-	gds_t descr;
-} library_ctx_t;
+};
 
 library_ctx_t library_ctx;
 
@@ -237,9 +244,17 @@ static void update_edit_button(library_ctx_t *ctx)
 		param_selected = (l != NULL) && (l->type == PCB_LIB_FOOTPRINT) && (l->data.fp.type == PCB_FP_PARAMETRIC);
 	}
 
-	param_entered = !ctx->pactive && (otext != NULL) && (strchr(otext, '(') != NULL);
+	param_entered = !ctx->param.pactive && (otext != NULL) && (strchr(otext, '(') != NULL);
 
 	rnd_gui->attr_dlg_widget_state(ctx->dlg_hid_ctx, ctx->wedit, param_selected || param_entered);
+}
+
+static void library_set_filter(library_ctx_t *ctx, const char *text)
+{
+	rnd_hid_attr_val_t hv;
+
+	hv.str = text;
+	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wfilt, &hv);
 }
 
 #include "dlg_library_param.c"
@@ -248,11 +263,7 @@ static void library_close_cb(void *caller_data, rnd_hid_attr_ev_t ev)
 {
 	library_ctx_t *ctx = caller_data;
 
-	if (ctx->pactive) {
-		ctx->pactive = 0;
-		RND_DAD_FREE(ctx->pdlg);
-	}
-
+	library_param_dialog_close(&ctx->param);
 	timed_update_preview(ctx, 0);
 	pcb_board_free(ctx->prev_pcb);
 	RND_DAD_FREE(ctx->dlg);
@@ -311,7 +322,7 @@ static void library_lib2dlg(library_ctx_t *ctx)
 static void library_select_show_param_example(library_ctx_t *ctx, pcb_fplibrary_t *l)
 {
 	char line[1024], *arg, *cmd, *end;
-	FILE *f = library_param_get_help(ctx, l);
+	FILE *f = library_param_get_help(&ctx->param, l);
 	while(fgets(line, sizeof(line), f) != NULL) {
 		cmd = strchr(line, '@');
 		if ((cmd == NULL) || (cmd[1] != '@'))
@@ -358,7 +369,8 @@ static void library_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_r
 					update_edit_button(ctx);
 				}
 				else { /* second click */
-					library_param_dialog(ctx, l);
+					ctx->param.lib_ctx = ctx;
+					library_param_dialog(&ctx->param, l, ctx->dlg[ctx->wfilt].val.str);
 					close_param = 0;
 				}
 			}
@@ -375,8 +387,10 @@ static void library_select(rnd_hid_attribute_t *attrib, void *hid_ctx, rnd_hid_r
 		last = l;
 	}
 
-	if (close_param)
-		library_param_dialog(ctx, NULL);
+	if (close_param) {
+		ctx->param.lib_ctx = ctx;
+		library_param_dialog(&ctx->param, NULL, NULL);
+	}
 
 	hv.str = NULL;
 	rnd_gui->attr_dlg_set_value(ctx->dlg_hid_ctx, ctx->wpreview, &hv);
@@ -605,7 +619,8 @@ static void library_edit_cb(void *hid_ctx, void *caller_data, rnd_hid_attribute_
 	if (rnew != NULL) {
 		if (r != rnew)
 			rnd_dad_tree_jumpto(attr, rnew);
-		library_param_dialog(ctx, rnew->user_data);
+		ctx->param.lib_ctx = ctx;
+		library_param_dialog(&ctx->param, rnew->user_data, ctx->dlg[ctx->wfilt].val.str);
 	}
 	else
 		rnd_message(RND_MSG_ERROR, "No such parametric footprint: '%s'\n", name);
