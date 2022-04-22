@@ -28,10 +28,10 @@
 
 #include <librnd/core/color_cache.h>
 
-typedef struct color_struct {
+typedef struct rnd_png_color_struct_s {
 	int c;                   /* the descriptor used by the gd library */
 	unsigned int r, g, b, a; /* so I can figure out what rgb value c refers to */
-} color_struct;
+} rnd_png_color_struct_t;
 
 #ifndef FROM_DRAW_PNG_C
 typedef struct gdImage_s gdImage;
@@ -55,7 +55,7 @@ typedef struct rnd_png_s {
 	int brush_cache_inited;
 	int w, h; /* in pixels */
 	int dpi, xmax, ymax;
-	color_struct *black, *white;
+	rnd_png_color_struct_t *black, *white;
 	gdImage *im, *master_im, *comp_im, *erase_im;
 	int last_color_r, last_color_g, last_color_b, last_cap;
 	gdImage *lastbrush;
@@ -65,9 +65,9 @@ typedef struct rnd_png_s {
 	int photo_mode, is_photo_drill, is_photo_mech, doing_outline, have_outline;
 } rnd_png_t;
 
-#define FMT_gif "GIF"
-#define FMT_jpg "JPEG"
-#define FMT_png "PNG"
+#define RND_PNG_FMT_gif "GIF"
+#define RND_PNG_FMT_jpg "JPEG"
+#define RND_PNG_FMT_png "PNG"
 
 void rnd_png_init(rnd_png_t *pctx, rnd_hidlib_t *hidlib);
 void rnd_png_uninit(rnd_png_t *pctx);

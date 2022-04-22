@@ -78,7 +78,7 @@ typedef struct rnd_hid_gc_s {
 	void *me_pointer;
 	rnd_cap_style_t cap;
 	int width, r, g, b;
-	color_struct *color;
+	rnd_png_color_struct_t *color;
 	gdImagePtr brush;
 	int is_erase;
 } hid_gc_t;
@@ -117,19 +117,19 @@ void rnd_png_finish(rnd_png_t *pctx, FILE *f, const char *fmt)
 
 	if (fmt == NULL)
 		format_error = rnd_true;
-	else if (strcmp(fmt, FMT_gif) == 0)
+	else if (strcmp(fmt, RND_PNG_FMT_gif) == 0)
 #ifdef PCB_HAVE_GDIMAGEGIF
 		gdImageGif(pctx->im, f);
 #else
 		format_error = rnd_true;
 #endif
-	else if (strcmp(fmt, FMT_jpg) == 0)
+	else if (strcmp(fmt, RND_PNG_FMT_jpg) == 0)
 #ifdef PCB_HAVE_GDIMAGEJPEG
 		gdImageJpeg(pctx->im, f, -1);
 #else
 		format_error = rnd_true;
 #endif
-	else if (strcmp(fmt, FMT_png) == 0)
+	else if (strcmp(fmt, RND_PNG_FMT_png) == 0)
 #ifdef PCB_HAVE_GDIMAGEPNG
 		gdImagePng(pctx->im, f);
 #else
@@ -258,7 +258,7 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 	pctx->master_im = pctx->im;
 
 	/* Allocate white and black; the first color allocated becomes the background color */
-	pctx->white = (color_struct *)malloc(sizeof(color_struct));
+	pctx->white = (rnd_png_color_struct_t *)malloc(sizeof(rnd_png_color_struct_t));
 	pctx->white->r = pctx->white->g = pctx->white->b = 255;
 	if (use_alpha)
 		pctx->white->a = 127;
@@ -271,7 +271,7 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 	}
 
 
-	pctx->black = (color_struct *)malloc(sizeof(color_struct));
+	pctx->black = (rnd_png_color_struct_t *)malloc(sizeof(rnd_png_color_struct_t));
 	pctx->black->r = pctx->black->g = pctx->black->b = pctx->black->a = 0;
 	pctx->black->c = gdImageColorAllocate(pctx->im, pctx->black->r, pctx->black->g, pctx->black->b);
 	if (pctx->black->c == RND_PNG_BADC) {
@@ -289,7 +289,7 @@ rnd_hid_gc_t rnd_png_make_gc(rnd_hid_t *hid)
 	rv->me_pointer = &rnd_png_me;
 	rv->cap = rnd_cap_round;
 	rv->width = 1;
-	rv->color = (color_struct *) malloc(sizeof(color_struct));
+	rv->color = (rnd_png_color_struct_t *) malloc(sizeof(rnd_png_color_struct_t));
 	rv->color->r = rv->color->g = rv->color->b = rv->color->a = 0;
 	rv->color->c = 0;
 	rv->is_erase = 0;
@@ -364,7 +364,7 @@ void rnd_png_set_drawing_mode(rnd_png_t *pctx, rnd_hid_t *hid, rnd_composite_op_
 
 void rnd_png_set_color(rnd_png_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *color)
 {
-	color_struct *cc;
+	rnd_png_color_struct_t *cc;
 
 	if (pctx->im == NULL)
 		return;
@@ -385,7 +385,7 @@ void rnd_png_set_color(rnd_png_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *colo
 	}
 
 	if (!pctx->color_cache_inited) {
-		rnd_clrcache_init(&pctx->color_cache, sizeof(color_struct), NULL);
+		rnd_clrcache_init(&pctx->color_cache, sizeof(rnd_png_color_struct_t), NULL);
 		pctx->color_cache_inited = 1;
 	}
 

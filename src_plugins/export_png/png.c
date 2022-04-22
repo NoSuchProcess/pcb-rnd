@@ -86,17 +86,17 @@ static rnd_png_t pctx_, *pctx = &pctx_;
 
 static const char *filetypes[] = {
 #ifdef PCB_HAVE_GDIMAGEPNG
-	FMT_png,
+	RND_PNG_FMT_png,
 #define HAVE_SOME_FORMAT 1
 #endif
 
 #ifdef PCB_HAVE_GDIMAGEGIF
-	FMT_gif,
+	RND_PNG_FMT_gif,
 #define HAVE_SOME_FORMAT 1
 #endif
 
 #ifdef PCB_HAVE_GDIMAGEJPEG
-	FMT_jpg,
+	RND_PNG_FMT_jpg,
 #define HAVE_SOME_FORMAT 1
 #endif
 
@@ -326,11 +326,11 @@ static const char *get_file_suffix(void)
 	fmt = filetypes[png_values[HA_filetype].lng];
 
 	if (fmt == NULL) { /* Do nothing */ }
-	else if (strcmp(fmt, FMT_gif) == 0)
+	else if (strcmp(fmt, RND_PNG_FMT_gif) == 0)
 		result = ".gif";
-	else if (strcmp(fmt, FMT_jpg) == 0)
+	else if (strcmp(fmt, RND_PNG_FMT_jpg) == 0)
 		result = ".jpg";
-	else if (strcmp(fmt, FMT_png) == 0)
+	else if (strcmp(fmt, RND_PNG_FMT_png) == 0)
 		result = ".png";
 
 	if (result == NULL) {
