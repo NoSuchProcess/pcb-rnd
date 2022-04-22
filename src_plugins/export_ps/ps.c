@@ -297,13 +297,8 @@ Diameter of the small hole when drill-helper is on
 
 /* All file-scope data is in global struct */
 static struct {
-	double calibration_x, calibration_y;
-
 	rnd_ps_t ps;
 
-	int pagecount;
-	rnd_coord_t linewidth;
-	double fade_ratio;
 	rnd_bool multi_file;
 	rnd_bool multi_file_cam;
 	rnd_coord_t media_width, media_height, ps_width, ps_height;
@@ -311,14 +306,13 @@ static struct {
 	const char *filename;
 	rnd_bool drill_helper;
 	rnd_coord_t drill_helper_size;
-	rnd_bool align_marks;
+
 	rnd_bool outline;
 	rnd_bool mirror;
 	rnd_bool fillpage;
 	rnd_bool automirror;
 	rnd_bool incolor;
 	rnd_bool doing_toc;
-	rnd_bool invert;
 	int media_idx;
 	rnd_bool drillcopper;
 	rnd_bool legend;
@@ -487,7 +481,7 @@ void rnd_ps_end_file(rnd_ps_t *pctx)
 	 * %%Pages was deferred until the end of the document via the
 	 * (atend) mentioned, in the General Header section.
 	 */
-	fprintf(f, "%%%%Pages: %d\n", global.pagecount);
+	fprintf(f, "%%%%Pages: %d\n", pctx->pagecount);
 
 	/*
 	 * %%EOF DCS signifies the end of the document. When the document
@@ -540,22 +534,22 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 
 	global.drill_helper = options[HA_drillhelper].lng;
 	global.drill_helper_size = options[HA_drillhelpersize].crd;
-	global.align_marks = options[HA_alignmarks].lng;
+	global.ps.align_marks = options[HA_alignmarks].lng;
 	global.outline = options[HA_outline].lng;
 	global.mirror = options[HA_mirror].lng;
 	global.fillpage = options[HA_fillpage].lng;
 	global.automirror = options[HA_automirror].lng;
 	global.incolor = options[HA_color].lng;
-	global.invert = options[HA_psinvert].lng;
-	global.fade_ratio = RND_CLAMP(options[HA_psfade].dbl, 0, 1);
+	global.ps.invert = options[HA_psinvert].lng;
+	global.ps.fade_ratio = RND_CLAMP(options[HA_psfade].dbl, 0, 1);
 	global.media_idx = options[HA_media].lng;
 	global.media_width = pcb_media_data[global.media_idx].width;
 	global.media_height = pcb_media_data[global.media_idx].height;
 	global.ps_width = global.media_width - 2.0 * pcb_media_data[global.media_idx].margin_x;
 	global.ps_height = global.media_height - 2.0 * pcb_media_data[global.media_idx].margin_y;
 	global.scale_factor = options[HA_scale].dbl;
-	global.calibration_x = options[HA_xcalib].dbl;
-	global.calibration_y = options[HA_ycalib].dbl;
+	global.ps.calibration_x = options[HA_xcalib].dbl;
+	global.ps.calibration_y = options[HA_ycalib].dbl;
 	global.drillcopper = options[HA_drillcopper].lng;
 	global.legend = options[HA_legend].lng;
 	global.single_page = options[HA_single_page].lng;
@@ -580,7 +574,7 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);
 
-	global.linewidth = -1;
+	global.ps.linewidth = -1;
 	/* reset static vars */
 	ps_set_layer_group(rnd_render, -1, NULL, -1, -1, 0, -1, NULL);
 	use_gc(&global.ps, NULL);
@@ -599,11 +593,11 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 		fprintf(the_file, "/tocp { /y y 12 sub def 90 y moveto rightshow } bind def\n");
 
 		global.doing_toc = 1;
-		global.pagecount = 1;				/* 'pagecount' is modified by rnd_app.expose_main() call */
+		global.ps.pagecount = 1; /* 'pagecount' is modified by rnd_app.expose_main() call */
 		rnd_app.expose_main(&ps_hid, &global.exps, xform);
 	}
 
-	global.pagecount = 1;					/* Reset 'pagecount' if single file */
+	global.ps.pagecount = 1; /* Reset 'pagecount' if single file */
 	global.doing_toc = 0;
 	ps_set_layer_group(rnd_render, -1, NULL, -1, -1, 0, -1, NULL); /* reset static vars */
 	rnd_app.expose_main(&ps_hid, &global.exps, xform);
@@ -761,20 +755,20 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 
 	if (global.doing_toc) {
 		if (group < 0 || group != lastgroup) {
-			if (global.pagecount == 1) {
+			if (global.ps.pagecount == 1) {
 				currenttime = time(NULL);
 				fprintf(global.ps.outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(PCB->hidlib.filename));
 
-				fprintf(global.ps.outf, "(%d.) tocp\n", global.pagecount);
+				fprintf(global.ps.outf, "(%d.) tocp\n", global.ps.pagecount);
 				fprintf(global.ps.outf, "(Table of Contents \\(This Page\\)) toc\n");
 
 				fprintf(global.ps.outf, "(Created on %s) toc\n", asctime(localtime(&currenttime)));
 				fprintf(global.ps.outf, "( ) tocp\n");
 			}
 
-			global.pagecount++;
+			global.ps.pagecount++;
 			lastgroup = group;
-			fprintf(global.ps.outf, "(%d.) tocp\n", global.single_page ? 2 : global.pagecount);
+			fprintf(global.ps.outf, "(%d.) tocp\n", global.single_page ? 2 : global.ps.pagecount);
 			fprintf(global.ps.outf, "(%s) toc\n", name);
 		}
 		gds_uninit(&tmp_ln);
@@ -782,10 +776,10 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 	}
 
 	if (ps_cam.active)
-		newpage = ps_cam.fn_changed || (global.pagecount == 1);
+		newpage = ps_cam.fn_changed || (global.ps.pagecount == 1);
 	else
 		newpage = (group < 0 || group != lastgroup);
-	if ((global.pagecount > 1) && global.single_page)
+	if ((global.ps.pagecount > 1) && global.single_page)
 		newpage = 0;
 
 	if (newpage) {
@@ -793,10 +787,10 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		int mirror_this = 0;
 		lastgroup = group;
 
-		if ((!ps_cam.active) && (global.pagecount != 0)) {
+		if ((!ps_cam.active) && (global.ps.pagecount != 0)) {
 			rnd_fprintf(global.ps.outf, "showpage\n");
 		}
-		global.pagecount++;
+		global.ps.pagecount++;
 		if ((!ps_cam.active && global.multi_file) || (ps_cam.active && ps_cam.fn_changed)) {
 			const char *fn;
 			gds_t tmp;
@@ -830,7 +824,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		{
 			gds_t tmp;
 			gds_init(&tmp);
-			fprintf(global.ps.outf, "%%%%Page: %s %d\n", pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed), global.pagecount);
+			fprintf(global.ps.outf, "%%%%Page: %s %d\n", pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed), global.ps.pagecount);
 			gds_uninit(&tmp);
 		}
 
@@ -867,10 +861,10 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		if (PCB->hidlib.size_x > PCB->hidlib.size_y) {
 			fprintf(global.ps.outf, "90 rotate\n");
 			boffset = global.media_width / 2;
-			fprintf(global.ps.outf, "%g %g scale %% calibration\n", global.calibration_y, global.calibration_x);
+			fprintf(global.ps.outf, "%g %g scale %% calibration\n", global.ps.calibration_y, global.ps.calibration_x);
 		}
 		else
-			fprintf(global.ps.outf, "%g %g scale %% calibration\n", global.calibration_x, global.calibration_y);
+			fprintf(global.ps.outf, "%g %g scale %% calibration\n", global.ps.calibration_x, global.ps.calibration_y);
 
 		if (mirror_this)
 			fprintf(global.ps.outf, "1 -1 scale\n");
@@ -890,7 +884,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 				rnd_fprintf(global.ps.outf, "0 %mi translate\n", needed - natural);
 		}
 
-		if (global.invert) {
+		if (global.ps.invert) {
 			fprintf(global.ps.outf, "/gray { 1 exch sub setgray } bind def\n");
 			fprintf(global.ps.outf, "/rgb { 1 1 3 { pop 1 exch sub 3 1 roll } for setrgbcolor } bind def\n");
 		}
@@ -899,24 +893,24 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 			fprintf(global.ps.outf, "/rgb { setrgbcolor } bind def\n");
 		}
 
-		if (!global.has_outline || global.invert) {
+		if (!global.has_outline || global.ps.invert) {
 			if ((PCB_LAYER_IS_ROUTE(flags, purpi)) || (global.outline)) {
 				rnd_fprintf(global.ps.outf,
 									"0 setgray %mi setlinewidth 0 0 moveto 0 "
 									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
 									conf_core.design.min_wid,
-									PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, global.invert ? "fill" : "stroke");
+									PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, global.ps.invert ? "fill" : "stroke");
 			}
 		}
 
-		if (global.align_marks) {
+		if (global.ps.align_marks) {
 			corner(global.ps.outf, 0, 0, -1, -1);
 			corner(global.ps.outf, PCB->hidlib.size_x, 0, 1, -1);
 			corner(global.ps.outf, PCB->hidlib.size_x, PCB->hidlib.size_y, 1, 1);
 			corner(global.ps.outf, 0, PCB->hidlib.size_y, -1, 1);
 		}
 
-		global.linewidth = -1;
+		global.ps.linewidth = -1;
 		use_gc(&global.ps, NULL);  /* reset static vars */
 
 		fprintf(global.ps.outf,
@@ -1035,9 +1029,9 @@ static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc)
 		fprintf(stderr, "Fatal: GC from another HID passed to ps HID\n");
 		abort();
 	}
-	if (global.linewidth != gc->width) {
+	if (pctx->linewidth != gc->width) {
 		rnd_fprintf(pctx->outf, "%mi setlinewidth\n", gc->width);
-		global.linewidth = gc->width;
+		pctx->linewidth = gc->width;
 	}
 	if (lastcap != gc->cap) {
 		int c;
@@ -1067,9 +1061,9 @@ static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc)
 			g = gc->g;
 			b = gc->b;
 			if (gc->faded) {
-				r = (1 - global.fade_ratio) *255 + global.fade_ratio * r;
-				g = (1 - global.fade_ratio) *255 + global.fade_ratio * g;
-				b = (1 - global.fade_ratio) *255 + global.fade_ratio * b;
+				r = (1 - pctx->fade_ratio) *255 + pctx->fade_ratio * r;
+				g = (1 - pctx->fade_ratio) *255 + pctx->fade_ratio * g;
+				b = (1 - pctx->fade_ratio) *255 + pctx->fade_ratio * b;
 			}
 			if (gc->r == gc->g && gc->g == gc->b)
 				fprintf(pctx->outf, "%g gray\n", r / 255.0);
@@ -1140,7 +1134,7 @@ void rnd_ps_draw_arc(rnd_ps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_
 	if (w == 0) /* make sure not to div by zero; this hack will have very similar effect */
 		w = 0.0001;
 	rnd_fprintf(pctx->outf, "%ma %ma %mi %mi %mi %mi %f a\n",
-		sa, ea, -width, height, cx, cy, (double)(global.linewidth) / w);
+		sa, ea, -width, height, cx, cy, (double)(pctx->linewidth) / w);
 }
 
 static void ps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)

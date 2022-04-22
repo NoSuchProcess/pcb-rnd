@@ -1,5 +1,17 @@
 typedef struct rnd_ps_s {
+	/* public: config */
 	FILE *outf;
+	double calibration_x, calibration_y;
+	double fade_ratio;
+	rnd_bool invert;
+	rnd_bool align_marks;
+
+	/* public: result */
+	int pagecount;
+
+	/* private: cache */
+	rnd_coord_t linewidth;
+
 } rnd_ps_t;
 
 void rnd_ps_init(rnd_ps_t *pctx, FILE *f);
