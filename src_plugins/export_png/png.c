@@ -113,6 +113,7 @@ typedef struct {
 	gdImagePtr im, master_im, comp_im, erase_im;
 	int last_color_r, last_color_g, last_color_b, last_cap;
 	gdImagePtr lastbrush;
+	int linewidth;
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -123,6 +124,7 @@ void rnd_png_init(rnd_png_t *pctx, rnd_hidlib_t *hidlib)
 	pctx->hidlib = hidlib;
 	pctx->scale = 1;
 	pctx->lastbrush = (gdImagePtr)((void *)-1);
+	pctx->linewidth = -1;
 }
 
 
@@ -147,9 +149,6 @@ typedef struct rnd_hid_gc_s {
 	gdImagePtr brush;
 	int is_erase;
 } hid_gc_t;
-
-static int linewidth = -1;
-
 
 #define FMT_gif "GIF"
 #define FMT_jpg "JPEG"
@@ -496,7 +495,7 @@ static rnd_hid_attr_val_t *png_options;
 
 static void png_head(void)
 {
-	linewidth = -1;
+	pctx->linewidth = -1;
 	pctx->lastbrush = (gdImagePtr)((void *)-1);
 	png_photo_head();
 	pctx->show_solder_side = conf_core.editor.show_solder_side;
@@ -1094,13 +1093,13 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 		abort();
 	}
 
-	if (linewidth != agc->width) {
+	if (pctx->linewidth != agc->width) {
 		/* Make sure the scaling doesn't erase lines completely */
 		if (SCALE(agc->width) == 0 && agc->width > 0)
 			gdImageSetThickness(im, 1);
 		else
 			gdImageSetThickness(im, SCALE(agc->width + 2 * pctx->bloat));
-		linewidth = agc->width;
+		pctx->linewidth = agc->width;
 		need_brush = 1;
 	}
 
@@ -1184,7 +1183,7 @@ static void png_fill_rect_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 {
 	use_gc(im, gc);
 	gdImageSetThickness(im, 0);
-	linewidth = 0;
+	pctx->linewidth = 0;
 
 	if (x1 > x2) {
 		rnd_coord_t t = x1;
@@ -1245,7 +1244,7 @@ static void png_draw_line_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 	}
 
 	gdImageSetThickness(im, 0);
-	linewidth = 0;
+	pctx->linewidth = 0;
 	if (gc->cap != rnd_cap_square || x1 == x2 || y1 == y2) {
 		gdImageLine(im, SCALE_X(x1) + x1o, SCALE_Y(y1) + y1o, SCALE_X(x2) + x2o, SCALE_Y(y2) + y2o, gdBrushed);
 	}
@@ -1302,7 +1301,7 @@ static void png_draw_arc_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_co
 
 	use_gc(im, gc);
 	gdImageSetThickness(im, 0);
-	linewidth = 0;
+	pctx->linewidth = 0;
 
 	/* zero angle arcs need special handling as gd will output either
 	   nothing at all or a full circle when passed delta angle of 0 or 360. */
@@ -1378,7 +1377,7 @@ static void png_fill_circle_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd
 	have_outline |= doing_outline;
 
 	gdImageSetThickness(im, 0);
-	linewidth = 0;
+	pctx->linewidth = 0;
 	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), unerase_override ? pctx->white->c : gc->color->c);
 }
 
@@ -1412,7 +1411,7 @@ static void png_fill_polygon_offs_(gdImagePtr im, rnd_hid_gc_t gc, int n_coords,
 		points[i].y = SCALE_Y(y[i]+dy);
 	}
 	gdImageSetThickness(im, 0);
-	linewidth = 0;
+	pctx->linewidth = 0;
 	gdImageFilledPolygon(im, points, n_coords, unerase_override ? pctx->white->c : gc->color->c);
 	free(points);
 }
