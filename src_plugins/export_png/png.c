@@ -618,7 +618,7 @@ void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xfo
 }
 
 
-static void png_free_cache(void)
+void rnd_png_uninit(rnd_png_t *pctx)
 {
 	if (pctx->color_cache_inited) {
 		rnd_clrcache_uninit(&pctx->color_cache);
@@ -792,7 +792,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		bbox = NULL;
 
 	if (rnd_png_set_size(pctx, bbox, options[HA_dpi].lng, options[HA_xmax].lng, options[HA_ymax].lng, options[HA_xymax].lng) != 0) {
-		png_free_cache();
+		rnd_png_uninit(pctx);
 		return;
 	}
 
@@ -800,7 +800,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	if (rnd_png_create(pctx, options[HA_use_alpha].lng) != 0) {
 		rnd_message(RND_MSG_ERROR, "png_do_export():  Failed to create bitmap of %d * %d returned NULL.  Aborting export.\n", pctx->w, pctx->h);
-		png_free_cache();
+		rnd_png_uninit(pctx);
 		return;
 	}
 
@@ -808,7 +808,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		f = rnd_fopen_askovr(&PCB->hidlib, png_cam.active ? png_cam.fn : filename, "wb", NULL);
 		if (!f) {
 			perror(filename);
-			png_free_cache();
+			rnd_png_uninit(pctx);
 			return;
 		}
 	}
@@ -831,7 +831,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 
 	png_photo_post_export();
-	png_free_cache();
+	rnd_png_uninit(pctx);
 
 	if (!png_cam.active) png_cam.okempty_content = 1; /* never warn in direct export */
 
