@@ -7,14 +7,20 @@ typedef struct rnd_ps_s {
 	rnd_bool align_marks;
 	rnd_bool fillpage;
 	rnd_bool incolor;
+	int media_idx;
+	rnd_bool legend;
+	rnd_bool single_page;
 
 	/* public: result */
 	int pagecount;
+	long drawn_objs;
 
 	/* private: cache */
 	rnd_coord_t linewidth;
 	rnd_coord_t ps_width, ps_height;
 	double scale_factor;
+	rnd_coord_t media_width, media_height;
+	rnd_composite_op_t drawing_mode;
 
 } rnd_ps_t;
 

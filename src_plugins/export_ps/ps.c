@@ -301,7 +301,6 @@ static struct {
 
 	rnd_bool multi_file;
 	rnd_bool multi_file_cam;
-	rnd_coord_t media_width, media_height;
 
 	const char *filename;
 	rnd_bool drill_helper;
@@ -309,13 +308,8 @@ static struct {
 	rnd_bool outline;
 	rnd_bool mirror;
 	rnd_bool automirror;
-
 	rnd_bool doing_toc;
-	int media_idx;
 	rnd_bool drillcopper;
-	rnd_bool legend;
-	rnd_bool single_page;
-
 	int has_outline;
 
 	rnd_hid_expose_ctx_t exps;
@@ -328,9 +322,7 @@ static struct {
 	rnd_bool is_copper;
 	rnd_bool is_paste;
 
-	rnd_composite_op_t drawing_mode;
 	int ovr_all;
-	long drawn_objs;
 } global;
 
 static const rnd_export_opt_t *ps_get_export_options(rnd_hid_t *hid, int *n)
@@ -442,10 +434,10 @@ void rnd_ps_start_file(rnd_ps_t *pctx, const char *swver)
 	 * Media sizes are in PCB units
 	 */
 	rnd_fprintf(f, "%%%%DocumentMedia: %s %f %f 0 \"\" \"\"\n",
-							pcb_media_data[global.media_idx].name,
-							72 * RND_COORD_TO_INCH(pcb_media_data[global.media_idx].width),
-							72 * RND_COORD_TO_INCH(pcb_media_data[global.media_idx].height));
-	rnd_fprintf(f, "%%%%DocumentPaperSizes: %s\n", pcb_media_data[global.media_idx].name);
+							pcb_media_data[global.ps.media_idx].name,
+							72 * RND_COORD_TO_INCH(pcb_media_data[global.ps.media_idx].width),
+							72 * RND_COORD_TO_INCH(pcb_media_data[global.ps.media_idx].height));
+	rnd_fprintf(f, "%%%%DocumentPaperSizes: %s\n", pcb_media_data[global.ps.media_idx].name);
 
 	/* End General Header Comments. */
 
@@ -539,17 +531,19 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	global.ps.incolor = options[HA_color].lng;
 	global.ps.invert = options[HA_psinvert].lng;
 	global.ps.fade_ratio = RND_CLAMP(options[HA_psfade].dbl, 0, 1);
-	global.media_idx = options[HA_media].lng;
-	global.media_width = pcb_media_data[global.media_idx].width;
-	global.media_height = pcb_media_data[global.media_idx].height;
-	global.ps.ps_width = global.media_width - 2.0 * pcb_media_data[global.media_idx].margin_x;
-	global.ps.ps_height = global.media_height - 2.0 * pcb_media_data[global.media_idx].margin_y;
+
+	global.ps.media_idx = options[HA_media].lng;
+	global.ps.media_width = pcb_media_data[global.ps.media_idx].width;
+	global.ps.media_height = pcb_media_data[global.ps.media_idx].height;
+	global.ps.ps_width = global.ps.media_width - 2.0 * pcb_media_data[global.ps.media_idx].margin_x;
+	global.ps.ps_height = global.ps.media_height - 2.0 * pcb_media_data[global.ps.media_idx].margin_y;
 	global.ps.scale_factor = options[HA_scale].dbl;
+
 	global.ps.calibration_x = options[HA_xcalib].dbl;
 	global.ps.calibration_y = options[HA_ycalib].dbl;
 	global.drillcopper = options[HA_drillcopper].lng;
-	global.legend = options[HA_legend].lng;
-	global.single_page = options[HA_single_page].lng;
+	global.ps.legend = options[HA_legend].lng;
+	global.ps.single_page = options[HA_single_page].lng;
 
 	if (the_file)
 		rnd_ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
@@ -618,7 +612,7 @@ static void ps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		options = global.ps_values;
 	}
 
-	global.drawn_objs = 0;
+	global.ps.drawn_objs = 0;
 	pcb_cam_begin(PCB, &ps_cam, &xform, options[HA_cam].str, ps_attribute_list, NUM_OPTIONS, options);
 
 	global.filename = options[HA_psfile].str;
@@ -664,7 +658,7 @@ static void ps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		if (!ps_cam.okempty_group)
 			rnd_message(RND_MSG_ERROR, "ps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
-	else if (global.drawn_objs == 0) {
+	else if (global.ps.drawn_objs == 0) {
 		if (!ps_cam.okempty_content)
 			rnd_message(RND_MSG_ERROR, "ps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
@@ -765,7 +759,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 
 			global.ps.pagecount++;
 			lastgroup = group;
-			fprintf(global.ps.outf, "(%d.) tocp\n", global.single_page ? 2 : global.ps.pagecount);
+			fprintf(global.ps.outf, "(%d.) tocp\n", global.ps.single_page ? 2 : global.ps.pagecount);
 			fprintf(global.ps.outf, "(%s) toc\n", name);
 		}
 		gds_uninit(&tmp_ln);
@@ -776,7 +770,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		newpage = ps_cam.fn_changed || (global.ps.pagecount == 1);
 	else
 		newpage = (group < 0 || group != lastgroup);
-	if ((global.ps.pagecount > 1) && global.single_page)
+	if ((global.ps.pagecount > 1) && global.ps.single_page)
 		newpage = 0;
 
 	if (newpage) {
@@ -831,7 +825,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 			mirror_this = !mirror_this;
 
 		fprintf(global.ps.outf, "/Helvetica findfont 10 scalefont setfont\n");
-		if (global.legend) {
+		if (global.ps.legend) {
 			gds_t tmp;
 			fprintf(global.ps.outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(PCB->hidlib.filename));
 
@@ -852,12 +846,12 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		}
 		fprintf(global.ps.outf, "newpath\n");
 
-		rnd_fprintf(global.ps.outf, "72 72 scale %mi %mi translate\n", global.media_width / 2, global.media_height / 2);
+		rnd_fprintf(global.ps.outf, "72 72 scale %mi %mi translate\n", global.ps.media_width / 2, global.ps.media_height / 2);
 
-		boffset = global.media_height / 2;
+		boffset = global.ps.media_height / 2;
 		if (PCB->hidlib.size_x > PCB->hidlib.size_y) {
 			fprintf(global.ps.outf, "90 rotate\n");
-			boffset = global.media_width / 2;
+			boffset = global.ps.media_width / 2;
 			fprintf(global.ps.outf, "%g %g scale %% calibration\n", global.ps.calibration_y, global.ps.calibration_x);
 		}
 		else
@@ -964,15 +958,20 @@ static void ps_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
+void rnd_ps_set_drawing_mode(rnd_ps_t *pctx, rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+{
+	pctx->drawing_mode = op;
+}
+
 static void ps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
-	global.drawing_mode = op;
+	rnd_ps_set_drawing_mode(&global.ps, hid, op, direct, screen);
 }
 
 
 void rnd_ps_set_color(rnd_ps_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *color)
 {
-	if (global.drawing_mode == RND_HID_COMP_NEGATIVE) {
+	if (pctx->drawing_mode == RND_HID_COMP_NEGATIVE) {
 		gc->r = gc->g = gc->b = 255;
 		gc->erase = 0;
 	}
@@ -1023,7 +1022,7 @@ static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc)
 	static int lastcap = -1;
 	static int lastcolor = -1;
 
-	global.drawn_objs++;
+	pctx->drawn_objs++;
 	if (gc == NULL) {
 		lastcap = lastcolor = -1;
 		return;
