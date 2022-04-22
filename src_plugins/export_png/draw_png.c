@@ -32,7 +32,6 @@
 #include "conf_core.h"
 
 #include <genht/htpp.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -139,7 +138,7 @@ void rnd_png_finish(rnd_png_t *pctx, FILE *f, const char *fmt)
 		format_error = rnd_true;
 
 	if (format_error)
-		fprintf(stderr, "Error:  Invalid graphic file format." "  This is a bug.  Please report it.\n");
+		rnd_message(RND_MSG_ERROR, "Invalid graphic file format. This is a bug. Please report it.\n");
 }
 
 void rnd_png_uninit(rnd_png_t *pctx)
@@ -192,7 +191,7 @@ int rnd_png_set_size(rnd_png_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_in, 
 	if (dpi_in != 0) {
 		pctx->dpi = dpi_in;
 		if (pctx->dpi < 0) {
-			fprintf(stderr, "ERROR:  dpi may not be < 0\n");
+			rnd_message(RND_MSG_ERROR, "dpi may not be < 0\n");
 			return -1;
 		}
 	}
@@ -216,7 +215,7 @@ int rnd_png_set_size(rnd_png_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_in, 
 	}
 
 	if (pctx->xmax < 0 || pctx->ymax < 0) {
-		fprintf(stderr, "ERROR:  xmax and ymax may not be < 0\n");
+		rnd_message(RND_MSG_ERROR, "xmax and ymax may not be < 0\n");
 		return -1;
 	}
 
@@ -233,7 +232,7 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 		pctx->h = rnd_round(pctx->h / pctx->scale) - PNG_SCALE_HACK1;
 	}
 	else if (pctx->xmax == 0 && pctx->ymax == 0) {
-		fprintf(stderr, "ERROR:  You may not set both xmax, ymax, and xy-max to zero\n");
+		rnd_message(RND_MSG_ERROR, "You may not set both xmax, ymax, and xy-max to zero\n");
 		return -1;
 	}
 	else {
@@ -405,7 +404,7 @@ void rnd_png_set_color(rnd_png_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *colo
 		}
 	}
 	else {
-		fprintf(stderr, "WE SHOULD NOT BE HERE!!!\n");
+		rnd_message(RND_MSG_ERROR, "WE SHOULD NOT BE HERE!!!\n");
 		gc->color = pctx->black;
 	}
 }
@@ -463,7 +462,7 @@ static void use_gc(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc)
 	}
 
 	if (agc->me_pointer != &rnd_png_me) {
-		fprintf(stderr, "Fatal: GC from another HID passed to draw_png\n");
+		rnd_message(RND_MSG_ERROR, "GC from another HID passed to draw_png\n");
 		abort();
 	}
 
@@ -764,8 +763,8 @@ static void png_fill_polygon_offs_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t 
 
 	points = (gdPoint *) malloc(n_coords * sizeof(gdPoint));
 	if (points == NULL) {
-		fprintf(stderr, "ERROR:  png_fill_polygon():  malloc failed\n");
-		exit(1);
+		rnd_message(RND_MSG_ERROR, "png_fill_polygon(): malloc failed\n");
+		abort();
 	}
 
 	use_gc(pctx, im, gc);
