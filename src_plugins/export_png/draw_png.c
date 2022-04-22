@@ -29,6 +29,7 @@
 /* Heavily based on the geda/pcb ps HID written by DJ Delorie */
 
 #include "config.h"
+TODO("^ replace this with librnd config.h, but that needs PCB_HAVE_GDIMAGE* there")
 
 #include <genht/htpp.h>
 #include <stdlib.h>
