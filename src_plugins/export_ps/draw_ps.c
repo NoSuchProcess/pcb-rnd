@@ -48,73 +48,54 @@ void rnd_ps_start_file(rnd_ps_t *pctx, const char *swver)
 
 	/* Start General Header Comments: */
 
-	/*
-	 * %%Title DCS provides text title for the document that is useful
-	 * for printing banner pages.
-	 */
+	/* %%Title DCS provides text title for the document that is useful
+	   for printing banner pages. */
 	fprintf(f, "%%%%Title: %s\n", rnd_hid_export_fn(pctx->hidlib->filename));
 
-	/*
-	 * %%CreationDate DCS indicates the date and time the document was
-	 * created. Neither the date nor time need be in any standard
-	 * format. This comment is meant to be used purely for informational
-	 * purposes, such as printing on banner pages.
-	 */
+	/* %%CreationDate DCS indicates the date and time the document was
+	   created. Neither the date nor time need be in any standard
+	   format. This comment is meant to be used purely for informational
+	   purposes, such as printing on banner pages. */
 	fprintf(f, "%%%%CreationDate: %s", asctime(localtime(&currenttime)));
 
-	/*
-	 * %%Creator DCS indicates the document creator, usually the name of
-	 * the document composition software.
-	 */
+	/* %%Creator DCS indicates the document creator, usually the name of
+	   the document composition software. */
 	fprintf(f, "%%%%Creator: %s\n", swver);
 
-	/*
-	 * %%Version DCS comment can be used to note the version and
-	 * revision number of a document or resource. A document manager may
-	 * wish to provide version control services, or allow substitution
-	 * of compatible versions/revisions of a resource or document.
-	 *
-	 * The format should be in the form of 'procname':
-	 *  <procname>::= < name> < version> < revision>
-	 *  < name> ::= < text>
-	 *  < version> ::= < real>
-	 *  < revision> ::= < uint>
-	 *
-	 * If a version numbering scheme is not used, these fields should
-	 * still be filled with a dummy value of 0.
-	 *
-	 * There is currently no code in PCB to manage this revision number.
-	 *
-	 */
+	/* %%Version DCS comment can be used to note the version and
+	   revision number of a document or resource. A document manager may
+	   wish to provide version control services, or allow substitution
+	   of compatible versions/revisions of a resource or document.
+	
+	   The format should be in the form of 'procname':
+	    <procname>::= < name> < version> < revision>
+	    < name> ::= < text>
+	    < version> ::= < real>
+	    < revision> ::= < uint>
+	
+	   If a version numbering scheme is not used, these fields should
+	   still be filled with a dummy value of 0.
+	
+	   There is currently no code in PCB to manage this revision number. */
 	fprintf(f, "%%%%Version: (%s) 0.0 0\n", swver);
 
-
-	/*
-	 * %%PageOrder DCS is intended to help document managers determine
-	 * the order of pages in the document file, which in turn enables a
-	 * document manager optionally to reorder the pages.  'Ascend'-The
-	 * pages are in ascending order for example, 1-2-3-4-5-6.
-	 */
+	/* %%PageOrder DCS is intended to help document managers determine
+	   the order of pages in the document file, which in turn enables a
+	   document manager optionally to reorder the pages.  'Ascend'-The
+	   pages are in ascending order for example, 1-2-3-4-5-6. */
 	fprintf(f, "%%%%PageOrder: Ascend\n");
 
-	/*
-	 * %%Pages: < numpages> | (atend) < numpages> ::= < uint> (Total
-	 * %%number of pages)
-	 *
-	 * %%Pages DCS defines the number of virtual pages that a document
-	 * will image.  (atend) defers the count until the end of the file,
-	 * which is useful for dynamically generated contents.
-	 */
+	/* %%Pages: < numpages> | (atend) < numpages> ::= < uint> (Total
+	   %%number of pages)
+	
+	   %%Pages DCS defines the number of virtual pages that a document
+	   will image.  (atend) defers the count until the end of the file,
+	   which is useful for dynamically generated contents. */
 	fprintf(f, "%%%%Pages: (atend)\n");
 
-	/*
-	 * %%DocumentMedia: <name> <width> <height> <weight> <color> <type>
-	 *
-	 * Substitute 0 or "" for N/A.  Width and height are in points
-	 * (1/72").
-	 *
-	 * Media sizes are in PCB units
-	 */
+	/* %%DocumentMedia: <name> <width> <height> <weight> <color> <type>
+	   Substitute 0 or "" for N/A.  Width and height are in points (1/72").
+	   Media sizes are in PCB units */
 	rnd_fprintf(f, "%%%%DocumentMedia: %s %f %f 0 \"\" \"\"\n",
 							pcb_media_data[pctx->media_idx].name,
 							72 * RND_COORD_TO_INCH(pcb_media_data[pctx->media_idx].width),
@@ -125,11 +106,9 @@ void rnd_ps_start_file(rnd_ps_t *pctx, const char *swver)
 
 	/* General Body Comments go here. Currently there are none. */
 
-	/*
-	 * %%EndComments DCS indicates an explicit end to the header
-	 * comments of the document.  All global DCS's must preceded
-	 * this.  A blank line gives an implicit end to the comments.
-	 */
+	/* %%EndComments DCS indicates an explicit end to the header
+	   comments of the document.  All global DCS's must preceded
+	   this.  A blank line gives an implicit end to the comments. */
 	fprintf(f, "%%%%EndComments\n\n");
 }
 
@@ -137,30 +116,24 @@ void rnd_ps_end_file(rnd_ps_t *pctx)
 {
 	FILE *f = pctx->outf;
 
-	/*
-	 * %%Trailer DCS must only occur once at the end of the document
-	 * script.  Any post-processing or cleanup should be contained in
-	 * the trailer of the document, which is anything that follows the
-	 * %%Trailer comment. Any of the document level structure comments
-	 * that were deferred by using the (atend) convention must be
-	 * mentioned in the trailer of the document after the %%Trailer
-	 * comment.
-	 */
+	/* %%Trailer DCS must only occur once at the end of the document
+	   script.  Any post-processing or cleanup should be contained in
+	   the trailer of the document, which is anything that follows the
+	   %%Trailer comment. Any of the document level structure comments
+	   that were deferred by using the (atend) convention must be
+	   mentioned in the trailer of the document after the %%Trailer
+	   comment. */
 	fprintf(f, "%%%%Trailer\n");
 
-	/*
-	 * %%Pages was deferred until the end of the document via the
-	 * (atend) mentioned, in the General Header section.
-	 */
+	/* %%Pages was deferred until the end of the document via the
+	   (atend) mentioned, in the General Header section. */
 	fprintf(f, "%%%%Pages: %d\n", pctx->pagecount);
 
-	/*
-	 * %%EOF DCS signifies the end of the document. When the document
-	 * manager sees this comment, it issues an end-of-file signal to the
-	 * PostScript interpreter.  This is done so system-dependent file
-	 * endings, such as Control-D and end-of-file packets, do not
-	 * confuse the PostScript interpreter.
-	 */
+	/* %%EOF DCS signifies the end of the document. When the document
+	   manager sees this comment, it issues an end-of-file signal to the
+	   PostScript interpreter.  This is done so system-dependent file
+	   endings, such as Control-D and end-of-file packets, do not
+	   confuse the PostScript interpreter. */
 	fprintf(f, "%%%%EOF\n");
 }
 
@@ -235,14 +208,13 @@ static void corner(FILE * fh, rnd_coord_t x, rnd_coord_t y, int dx, int dy)
 	rnd_coord_t len = RND_MIL_TO_COORD(2000);
 	rnd_coord_t len2 = RND_MIL_TO_COORD(200);
 	rnd_coord_t thick = 0;
-	/*
-	 * Originally 'thick' used thicker lines.  Currently is uses
-	 * Postscript's "device thin" line - i.e. zero width means one
-	 * device pixel.  The code remains in case you want to make them
-	 * thicker - it needs to offset everything so that the *edge* of the
-	 * thick line lines up with the edge of the board, not the *center*
-	 * of the thick line.
-	 */
+
+	/* Originally 'thick' used thicker lines.  Currently is uses
+	   Postscript's "device thin" line - i.e. zero width means one
+	   device pixel.  The code remains in case you want to make them
+	   thicker - it needs to offset everything so that the *edge* of the
+	   thick line lines up with the edge of the board, not the *center*
+	   of the thick line. */
 
 	rnd_fprintf(fh, "gsave %mi setlinewidth %mi %mi translate %d %d scale\n", thick * 2, x, y, dx, dy);
 	rnd_fprintf(fh, "%mi %mi moveto %mi %mi %mi 0 90 arc %mi %mi lineto\n", len, thick, thick, thick, len2 + thick, thick, len);

@@ -589,9 +589,9 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		}
 
 		/* Keep the drill list from falling off the left edge of the paper,
-		 * even if it means some of the board falls off the right edge.
-		 * If users don't want to make smaller boards, or use fewer drill
-		 * sizes, they can always ignore this sheet. */
+		   even if it means some of the board falls off the right edge.
+		   If users don't want to make smaller boards, or use fewer drill
+		   sizes, they can always ignore this sheet. */
 		if (PCB_LAYER_IS_FAB(flags, purpi)) {
 			rnd_coord_t natural = boffset - RND_MIL_TO_COORD(500) - PCB->hidlib.size_y / 2;
 			rnd_coord_t needed = pcb_stub_draw_fab_overhang();
@@ -612,7 +612,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 	}
 #if 0
 	/* Try to outsmart ps2pdf's heuristics for page rotation, by putting
-	 * text on all pages -- even if that text is blank */
+	   text on all pages -- even if that text is blank */
 	if (!(PCB_LAYER_IS_FAB(flags, purpi)))
 		fprintf(global.ps.outf, "gsave tx ty translate 1 -1 scale 0 0 moveto (Layer %s) show grestore newpath /ty ty ts sub def\n", name);
 	else
@@ -621,7 +621,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 
 	/* If we're printing a layer other than an outline layer, and
 	   we want to "print outlines", and we have an outline layer,
-	   print the outline layer on this layer also.  */
+	   print the outline layer on this layer also. */
 	if (global.outline &&
 			global.has_outline &&
 			!(PCB_LAYER_IS_ROUTE(flags, purpi))) {
