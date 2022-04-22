@@ -780,6 +780,66 @@ int rnd_ps_new_file(rnd_ps_t *pctx, FILE *new_f)
 	return 0;
 }
 
+double rnd_ps_page_frame(rnd_ps_t *pctx, int mirror_this, const char *layer_fn, int noscale)
+{
+	double boffset;
+
+		/* %%Page DSC comment marks the beginning of the PostScript
+		   language instructions that describe a particular
+		   page. %%Page: requires two arguments: a page label and a
+		   sequential page number. The label may be anything, but the
+		   ordinal page number must reflect the position of that page in
+		   the body of the PostScript file and must start with 1, not 0. */
+		{
+			gds_t tmp;
+			gds_init(&tmp);
+			fprintf(global.ps.outf, "%%%%Page: %s %d\n", layer_fn, global.ps.pagecount);
+			gds_uninit(&tmp);
+		}
+
+		fprintf(global.ps.outf, "/Helvetica findfont 10 scalefont setfont\n");
+		if (pctx->legend) {
+			gds_t tmp;
+			fprintf(pctx->outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(pctx->hidlib->filename));
+
+			gds_init(&tmp);
+			if (pctx->hidlib->name)
+				fprintf(pctx->outf, "30 41 moveto (%s, %s) show\n", pctx->hidlib->name, layer_fn);
+			else
+				fprintf(pctx->outf, "30 41 moveto (%s) show\n", layer_fn);
+			gds_uninit(&tmp);
+
+			if (mirror_this)
+				fprintf(pctx->outf, "( \\(mirrored\\)) show\n");
+
+			if (global.ps.fillpage)
+				fprintf(pctx->outf, "(, not to scale) show\n");
+			else
+				fprintf(pctx->outf, "(, scale = 1:%.3f) show\n", pctx->scale_factor);
+		}
+		fprintf(pctx->outf, "newpath\n");
+
+		rnd_fprintf(pctx->outf, "72 72 scale %mi %mi translate\n", pctx->media_width / 2, pctx->media_height / 2);
+
+		boffset = pctx->media_height / 2;
+		if (pctx->hidlib->size_x > pctx->hidlib->size_y) {
+			fprintf(pctx->outf, "90 rotate\n");
+			boffset = pctx->media_width / 2;
+			fprintf(pctx->outf, "%g %g scale %% calibration\n", pctx->calibration_y, pctx->calibration_x);
+		}
+		else
+			fprintf(global.ps.outf, "%g %g scale %% calibration\n", pctx->calibration_x, pctx->calibration_y);
+
+		if (mirror_this)
+			fprintf(pctx->outf, "1 -1 scale\n");
+
+
+		fprintf(pctx->outf, "%g dup neg scale\n", noscale ? 1.0 : global.ps.scale_factor);
+		rnd_fprintf(pctx->outf, "%mi %mi translate\n", -pctx->hidlib->size_x / 2, -pctx->hidlib->size_y / 2);
+
+	return boffset;
+}
+
 static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	gds_t tmp_ln;
@@ -856,62 +916,18 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 			rnd_ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
 		}
 
-		/* %%Page DSC comment marks the beginning of the PostScript
-		   language instructions that describe a particular
-		   page. %%Page: requires two arguments: a page label and a
-		   sequential page number. The label may be anything, but the
-		   ordinal page number must reflect the position of that page in
-		   the body of the PostScript file and must start with 1, not 0. */
-		{
-			gds_t tmp;
-			gds_init(&tmp);
-			fprintf(global.ps.outf, "%%%%Page: %s %d\n", pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed), global.ps.pagecount);
-			gds_uninit(&tmp);
-		}
-
 		if (global.mirror)
 			mirror_this = !mirror_this;
 		if (global.automirror && (flags & PCB_LYT_BOTTOM))
 			mirror_this = !mirror_this;
 
-		fprintf(global.ps.outf, "/Helvetica findfont 10 scalefont setfont\n");
-		if (global.ps.legend) {
-			gds_t tmp;
-			fprintf(global.ps.outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(PCB->hidlib.filename));
-
-			gds_init(&tmp);
-			if (PCB->hidlib.name)
-				fprintf(global.ps.outf, "30 41 moveto (%s, %s) show\n", PCB->hidlib.name, pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed));
-			else
-				fprintf(global.ps.outf, "30 41 moveto (%s) show\n", pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed));
+		{
+			gds_t tmp = {0};
+			const char *layer_fn = pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed);
+			int noscale = PCB_LAYER_IS_FAB(flags, purpi);
+			boffset = rnd_ps_page_frame(&global.ps, mirror_this, layer_fn, noscale);
 			gds_uninit(&tmp);
-
-			if (mirror_this)
-				fprintf(global.ps.outf, "( \\(mirrored\\)) show\n");
-
-			if (global.ps.fillpage)
-				fprintf(global.ps.outf, "(, not to scale) show\n");
-			else
-				fprintf(global.ps.outf, "(, scale = 1:%.3f) show\n", global.ps.scale_factor);
 		}
-		fprintf(global.ps.outf, "newpath\n");
-
-		rnd_fprintf(global.ps.outf, "72 72 scale %mi %mi translate\n", global.ps.media_width / 2, global.ps.media_height / 2);
-
-		boffset = global.ps.media_height / 2;
-		if (PCB->hidlib.size_x > PCB->hidlib.size_y) {
-			fprintf(global.ps.outf, "90 rotate\n");
-			boffset = global.ps.media_width / 2;
-			fprintf(global.ps.outf, "%g %g scale %% calibration\n", global.ps.calibration_y, global.ps.calibration_x);
-		}
-		else
-			fprintf(global.ps.outf, "%g %g scale %% calibration\n", global.ps.calibration_x, global.ps.calibration_y);
-
-		if (mirror_this)
-			fprintf(global.ps.outf, "1 -1 scale\n");
-
-		fprintf(global.ps.outf, "%g dup neg scale\n", PCB_LAYER_IS_FAB(flags, purpi) ? 1.0 : global.ps.scale_factor);
-		rnd_fprintf(global.ps.outf, "%mi %mi translate\n", -PCB->hidlib.size_x / 2, -PCB->hidlib.size_y / 2);
 
 		/* Keep the drill list from falling off the left edge of the paper,
 		 * even if it means some of the board falls off the right edge.
