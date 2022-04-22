@@ -467,7 +467,7 @@ static const char *filename;
 static rnd_box_t *bounds;
 static int in_mono, as_shown;
 
-static void parse_bloat(rnd_png_t *pctx, const char *str)
+void rnd_png_parse_bloat(rnd_png_t *pctx, const char *str)
 {
 	int n;
 	rnd_unit_list_t extra_units = {
@@ -493,16 +493,23 @@ static rnd_hid_attr_val_t *png_options;
 
 #include "png_photo2.c"
 
-static void png_head(void)
+void rnd_png_start(rnd_png_t *pctx)
 {
 	pctx->linewidth = -1;
 	pctx->lastbrush = (gdImagePtr)((void *)-1);
-	png_photo_head();
 	pctx->show_solder_side = conf_core.editor.show_solder_side;
 	pctx->last_color_r = pctx->last_color_g = pctx->last_color_b = pctx->last_cap = -1;
 
 	gdImageFilledRectangle(pctx->im, 0, 0, gdImageSX(pctx->im), gdImageSY(pctx->im), pctx->white->c);
 }
+
+static void png_head(void)
+{
+	rnd_png_start(pctx);
+	png_photo_head();
+}
+
+
 
 void rnd_png_finish(FILE *f)
 {
@@ -789,7 +796,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		return;
 	}
 
-	parse_bloat(pctx, options[HA_bloat].str);
+	rnd_png_parse_bloat(pctx, options[HA_bloat].str);
 
 	if (rnd_png_create(pctx, options[HA_use_alpha].lng) != 0) {
 		rnd_message(RND_MSG_ERROR, "png_do_export():  Failed to create bitmap of %d * %d returned NULL.  Aborting export.\n", pctx->w, pctx->h);
