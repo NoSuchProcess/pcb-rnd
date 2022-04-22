@@ -94,6 +94,7 @@ typedef struct {
 	int color_cache_inited;
 	htpp_t brush_cache;
 	int brush_cache_inited;
+	int w, h; /* in pixels */
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -618,11 +619,63 @@ static void png_free_cache(void)
 	}
 }
 
+void rnd_png_set_bbox(rnd_png_t *pctx, rnd_box_t *bbox)
+{
+	if (bbox != NULL) {
+		pctx->x_shift = bbox->X1;
+		pctx->y_shift = bbox->Y1;
+		pctx->h = bbox->Y2 - bbox->Y1;
+		pctx->w = bbox->X2 - bbox->X1;
+	}
+	else {
+		pctx->x_shift = 0;
+		pctx->y_shift = 0;
+		pctx->h = PCB->hidlib.size_y;
+		pctx->w = PCB->hidlib.size_x;
+	}
+}
+
+int rnd_png_create(rnd_png_t *pctx, int dpi, int xmax, int ymax)
+{
+	if (dpi > 0) {
+		/* a scale of 1  means 1 pixel is 1 inch
+		   a scale of 10 means 1 pixel is 10 inches */
+		pctx->scale = RND_INCH_TO_COORD(1) / dpi;
+		pctx->w = rnd_round(pctx->w / pctx->scale) - PNG_SCALE_HACK1;
+		pctx->h = rnd_round(pctx->h / pctx->scale) - PNG_SCALE_HACK1;
+	}
+	else if (xmax == 0 && ymax == 0) {
+		fprintf(stderr, "ERROR:  You may not set both xmax, ymax, and xy-max to zero\n");
+		return -1;
+	}
+	else {
+		if (ymax == 0 || ((xmax > 0) && ((pctx->w / xmax) > (pctx->h / ymax)))) {
+			pctx->h = (pctx->h * xmax) / pctx->w;
+			pctx->scale = pctx->w / xmax;
+			pctx->w = xmax;
+		}
+		else {
+			pctx->w = (pctx->w * ymax) / pctx->h;
+			pctx->scale = pctx->h / ymax;
+			pctx->h = ymax;
+		}
+	}
+
+	im = gdImageCreate(pctx->w, pctx->h);
+
+#ifdef PCB_HAVE_GD_RESOLUTION
+	gdImageSetResolution(im, dpi, dpi);
+#endif
+
+	master_im = im;
+
+	return 0;
+}
+
 static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int save_ons[PCB_MAX_LAYER];
 	rnd_box_t tmp, *bbox;
-	int w, h;
 	int xmax, ymax, dpi;
 	rnd_xform_t xform;
 
@@ -651,17 +704,10 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	/* figure out width and height of the board */
 	if (options[HA_only_visible].lng) {
 		bbox = pcb_data_bbox(&tmp, PCB->Data, rnd_false);
-		pctx->x_shift = bbox->X1;
-		pctx->y_shift = bbox->Y1;
-		h = bbox->Y2 - bbox->Y1;
-		w = bbox->X2 - bbox->X1;
+		rnd_png_set_bbox(pctx, bbox);
 	}
-	else {
-		pctx->x_shift = 0;
-		pctx->y_shift = 0;
-		h = PCB->hidlib.size_y;
-		w = PCB->hidlib.size_x;
-	}
+	else
+		rnd_png_set_bbox(pctx, NULL);
 
 	/* figure out the scale factor to fit in the specified PNG file size */
 	xmax = ymax = dpi = 0;
@@ -696,45 +742,12 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		return;
 	}
 
-	TODO("move this to rnd (pctx init)");
-	if (dpi > 0) {
-		/* a scale of 1  means 1 pixel is 1 inch
-		   a scale of 10 means 1 pixel is 10 inches */
-		pctx->scale = RND_INCH_TO_COORD(1) / dpi;
-		w = rnd_round(w / pctx->scale) - PNG_SCALE_HACK1;
-		h = rnd_round(h / pctx->scale) - PNG_SCALE_HACK1;
-	}
-	else if (xmax == 0 && ymax == 0) {
-		fprintf(stderr, "ERROR:  You may not set both xmax, ymax," "and xy-max to zero\n");
-		return;
-	}
-	else {
-		if (ymax == 0 || ((xmax > 0)
-											&& ((w / xmax) > (h / ymax)))) {
-			h = (h * xmax) / w;
-			pctx->scale = w / xmax;
-			w = xmax;
-		}
-		else {
-			w = (w * ymax) / h;
-			pctx->scale = h / ymax;
-			h = ymax;
-		}
-	}
-
-	im = gdImageCreate(w, h);
-	if (im == NULL) {
-		rnd_message(RND_MSG_ERROR, "png_do_export():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", w, h);
-		return;
-	}
-
-#ifdef PCB_HAVE_GD_RESOLUTION
-	gdImageSetResolution(im, dpi, dpi);
-#endif
-
-	master_im = im;
-
 	parse_bloat(pctx, options[HA_bloat].str);
+
+	if (rnd_png_create(pctx, dpi, xmax, ymax) != 0) {
+		rnd_message(RND_MSG_ERROR, "png_do_export():  Failed to create bitmap of %d * %d returned NULL.  Aborting export.\n", pctx->w, pctx->h);
+		return;
+	}
 
 	/* Allocate white and black; the first color allocated becomes the background color */
 	white = (color_struct *) malloc(sizeof(color_struct));
