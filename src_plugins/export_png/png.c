@@ -33,7 +33,6 @@
 #include "config.h"
 #include "conf_core.h"
 
-#include <genht/htpp.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>

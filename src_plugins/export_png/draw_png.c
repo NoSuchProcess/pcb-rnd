@@ -33,10 +33,8 @@
 
 #include <genht/htpp.h>
 #include <stdio.h>
-#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <math.h>
 
 #include "board.h"
