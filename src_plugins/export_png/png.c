@@ -111,6 +111,7 @@ typedef struct {
 	int dpi, xmax, ymax;
 	color_struct *black, *white;
 	gdImagePtr im, master_im, comp_im, erase_im;
+	int last_color_r, last_color_g, last_color_b, last_cap;
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -147,7 +148,6 @@ typedef struct rnd_hid_gc_s {
 
 static int linewidth = -1;
 static gdImagePtr lastbrush = (gdImagePtr) ((void *) -1);
-static int last_color_r, last_color_g, last_color_b, last_cap;
 
 #define FMT_gif "GIF"
 #define FMT_jpg "JPEG"
@@ -498,7 +498,7 @@ static void png_head(void)
 	lastbrush = (gdImagePtr) ((void *) -1);
 	png_photo_head();
 	pctx->show_solder_side = conf_core.editor.show_solder_side;
-	last_color_r = last_color_g = last_color_b = last_cap = -1;
+	pctx->last_color_r = pctx->last_color_g = pctx->last_color_b = pctx->last_cap = -1;
 
 	gdImageFilledRectangle(pctx->im, 0, 0, gdImageSX(pctx->im), gdImageSY(pctx->im), pctx->white->c);
 }
@@ -1102,7 +1102,7 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 		need_brush = 1;
 	}
 
-	need_brush |= (agc->r != last_color_r) || (agc->g != last_color_g) || (agc->b != last_color_b) || (agc->cap != last_cap);
+	need_brush |= (agc->r != pctx->last_color_r) || (agc->g != pctx->last_color_g) || (agc->b != pctx->last_color_b) || (agc->cap != pctx->last_cap);
 
 	if (lastbrush != agc->brush || need_brush) {
 		int r;
@@ -1116,10 +1116,10 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 		if (r == 0)
 			r = 1;
 
-		last_color_r = agc->r;
-		last_color_g = agc->g;
-		last_color_b = agc->b;
-		last_cap = agc->cap;
+		pctx->last_color_r = agc->r;
+		pctx->last_color_g = agc->g;
+		pctx->last_color_b = agc->b;
+		pctx->last_cap = agc->cap;
 
 		if (!pctx->brush_cache_inited) {
 			htpp_init(&pctx->brush_cache, brush_hash, brush_keyeq);
