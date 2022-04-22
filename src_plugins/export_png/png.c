@@ -1084,7 +1084,7 @@ static int brush_keyeq(const void *av, const void *bv)
 	return 1;
 }
 
-static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
+static void use_gc(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc)
 {
 	int need_brush = 0;
 	rnd_hid_gc_t agc;
@@ -1197,7 +1197,7 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 
 static void png_fill_rect_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	use_gc(im, gc);
+	use_gc(pctx, im, gc);
 	gdImageSetThickness(im, 0);
 	pctx->linewidth = 0;
 
@@ -1241,7 +1241,7 @@ static void png_draw_line_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 			png_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		return;
 	}
-	use_gc(im, gc);
+	use_gc(pctx, im, gc);
 
 	if (NOT_EDGE(x1, y1) || NOT_EDGE(x2, y2))
 		have_outline |= doing_outline;
@@ -1315,7 +1315,7 @@ static void png_draw_arc_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_co
 {
 	rnd_angle_t sa, ea;
 
-	use_gc(im, gc);
+	use_gc(pctx, im, gc);
 	gdImageSetThickness(im, 0);
 	pctx->linewidth = 0;
 
@@ -1383,7 +1383,7 @@ static void png_fill_circle_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd
 {
 	rnd_coord_t my_bloat;
 
-	use_gc(im, gc);
+	use_gc(pctx, im, gc);
 
 	if (gc->is_erase)
 		my_bloat = -2 * pctx->bloat;
@@ -1419,7 +1419,7 @@ static void png_fill_polygon_offs_(gdImagePtr im, rnd_hid_gc_t gc, int n_coords,
 		exit(1);
 	}
 
-	use_gc(im, gc);
+	use_gc(pctx, im, gc);
 	for (i = 0; i < n_coords; i++) {
 		if (NOT_EDGE(x[i], y[i]))
 			have_outline |= doing_outline;
