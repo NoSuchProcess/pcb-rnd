@@ -554,6 +554,7 @@ void rnd_ps_begin_toc(rnd_ps_t *pctx)
 
 	pctx->doing_toc = 1;
 	pctx->pagecount = 1;
+	pctx->lastgroup = -1;
 }
 
 void rnd_ps_end_toc(rnd_ps_t *pctx)
@@ -564,6 +565,7 @@ void rnd_ps_begin_pages(rnd_ps_t *pctx)
 {
 	pctx->doing_toc = 0;
 	pctx->pagecount = 1; /* Reset 'pagecount' if single file */
+	pctx->lastgroup = -1;
 }
 
 void rnd_ps_end_pages(rnd_ps_t *pctx)
@@ -606,7 +608,6 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);
 
 	/* reset static vars */
-	ps_set_layer_group(rnd_render, -1, NULL, -1, -1, 0, -1, NULL);
 	use_gc(&global.ps, NULL);
 
 	global.exps.view.X1 = 0;
@@ -623,7 +624,6 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 
 	/* print page(s) */
 	rnd_ps_begin_pages(&global.ps);
-	ps_set_layer_group(rnd_render, -1, NULL, -1, -1, 0, -1, NULL); /* reset static vars */
 	rnd_app.expose_main(&ps_hid, &global.exps, xform);
 	rnd_ps_end_pages(&global.ps);
 
@@ -723,19 +723,36 @@ static void corner(FILE * fh, rnd_coord_t x, rnd_coord_t y, int dx, int dy)
 	fprintf(fh, "stroke grestore\n");
 }
 
+int rnd_ps_printed_toc(rnd_ps_t *pctx, int group, const char *name)
+{
+	if (pctx->doing_toc) {
+		if ((group < 0) || (group != pctx->lastgroup)) {
+			if (pctx->pagecount == 1) {
+				time_t currenttime = time(NULL);
+				fprintf(pctx->outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(PCB->hidlib.filename));
+
+				fprintf(pctx->outf, "(%d.) tocp\n", pctx->pagecount);
+				fprintf(pctx->outf, "(Table of Contents \\(This Page\\)) toc\n");
+
+				fprintf(pctx->outf, "(Created on %s) toc\n", asctime(localtime(&currenttime)));
+				fprintf(pctx->outf, "( ) tocp\n");
+			}
+
+			pctx->pagecount++;
+			pctx->lastgroup = group;
+			fprintf(pctx->outf, "(%d.) tocp\n", pctx->single_page ? 2 : pctx->pagecount);
+			fprintf(pctx->outf, "(%s) toc\n", name);
+		}
+		return 1;
+	}
+	return 0;
+}
+
 static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	gds_t tmp_ln;
-	static int lastgroup = -1;
-	time_t currenttime;
 	const char *name;
 	int newpage;
-
-	if (is_empty == -1) {
-		lastgroup = -1;
-		return 0;
-	}
-
 
 	if (flags & PCB_LYT_UI)
 		return 0;
@@ -775,39 +792,23 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 	printf("Layer %s group %d drill %d mask %d\n", name, group, global.is_drill, global.is_mask);
 #endif
 
-	if (global.ps.doing_toc) {
-		if (group < 0 || group != lastgroup) {
-			if (global.ps.pagecount == 1) {
-				currenttime = time(NULL);
-				fprintf(global.ps.outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(PCB->hidlib.filename));
-
-				fprintf(global.ps.outf, "(%d.) tocp\n", global.ps.pagecount);
-				fprintf(global.ps.outf, "(Table of Contents \\(This Page\\)) toc\n");
-
-				fprintf(global.ps.outf, "(Created on %s) toc\n", asctime(localtime(&currenttime)));
-				fprintf(global.ps.outf, "( ) tocp\n");
-			}
-
-			global.ps.pagecount++;
-			lastgroup = group;
-			fprintf(global.ps.outf, "(%d.) tocp\n", global.ps.single_page ? 2 : global.ps.pagecount);
-			fprintf(global.ps.outf, "(%s) toc\n", name);
-		}
+	if (rnd_ps_printed_toc(&global.ps, group, name)) {
 		gds_uninit(&tmp_ln);
 		return 0;
 	}
 
+
 	if (ps_cam.active)
 		newpage = ps_cam.fn_changed || (global.ps.pagecount == 1);
 	else
-		newpage = (group < 0 || group != lastgroup);
+		newpage = ((group < 0) || (group != global.ps.lastgroup));
 	if ((global.ps.pagecount > 1) && global.ps.single_page)
 		newpage = 0;
 
 	if (newpage) {
 		double boffset;
 		int mirror_this = 0;
-		lastgroup = group;
+		global.ps.lastgroup = group;
 
 		if ((!ps_cam.active) && (global.ps.pagecount != 0)) {
 			rnd_fprintf(global.ps.outf, "showpage\n");
