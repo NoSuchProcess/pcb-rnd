@@ -1,5 +1,10 @@
 put /local/pcb/mod {export_ps}
-put /local/pcb/mod/OBJS [@ $(PLUGDIR)/export_ps/ps.o  $(PLUGDIR)/export_ps/eps.o  @]
+put /local/pcb/mod/OBJS [@
+ $(PLUGDIR)/export_ps/ps.o
+ $(PLUGDIR)/export_ps/eps.o
+
+ $(PLUGDIR)/export_ps/draw_ps.o
+@]
 
 switch /local/pcb/export_ps/controls
 	case {buildin}   include /local/pcb/tmpasm/buildin; end;
