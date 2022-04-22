@@ -372,7 +372,7 @@ static int layer_sort(const void *va, const void *vb)
 	return b - a;
 }
 
-void ps_start_file(rnd_ps_t *pctx, const char *swver)
+void rnd_ps_start_file(rnd_ps_t *pctx, const char *swver)
 {
 	FILE *f = pctx->outf;
 	time_t currenttime = time(NULL);
@@ -468,7 +468,7 @@ void ps_start_file(rnd_ps_t *pctx, const char *swver)
 	fprintf(f, "%%%%EndComments\n\n");
 }
 
-void ps_end_file(rnd_ps_t *pctx)
+void rnd_ps_end_file(rnd_ps_t *pctx)
 {
 	FILE *f = pctx->outf;
 
@@ -561,7 +561,7 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	global.single_page = options[HA_single_page].lng;
 
 	if (the_file)
-		ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
+		rnd_ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
 
 	if (global.fillpage) {
 		double zx, zy;
@@ -663,7 +663,7 @@ static void ps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	global.multi_file = 0;
 	if (fh) {
-		ps_end_file(&global.ps);
+		rnd_ps_end_file(&global.ps);
 		fclose(fh);
 	}
 
@@ -804,7 +804,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 			gds_init(&tmp);
 			fn = ps_cam.active ? ps_cam.fn : pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed);
 			if (global.ps.outf) {
-				ps_end_file(&global.ps);
+				rnd_ps_end_file(&global.ps);
 				fclose(global.ps.outf);
 			}
 			global.ps.outf = psopen(ps_cam.active ? fn : global.filename, fn);
@@ -816,7 +816,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 				return 0;
 			}
 
-			ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
+			rnd_ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
 		}
 
 		/*

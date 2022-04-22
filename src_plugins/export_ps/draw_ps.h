@@ -4,8 +4,8 @@ typedef struct rnd_ps_s {
 
 void rnd_ps_init(rnd_ps_t *pctx, FILE *f);
 
-void ps_start_file(rnd_ps_t *pctx, const char *swver);
-void ps_end_file(rnd_ps_t *pctx);
+void rnd_ps_start_file(rnd_ps_t *pctx, const char *swver);
+void rnd_ps_end_file(rnd_ps_t *pctx);
 
 
 void rnd_ps_draw_rect(rnd_ps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
