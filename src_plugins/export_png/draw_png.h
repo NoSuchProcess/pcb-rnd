@@ -63,6 +63,12 @@ typedef struct rnd_png_s {
 
 	/* private: leftovers from pcb-rnd photo mode */
 	int photo_mode, is_photo_drill, is_photo_mech, doing_outline, have_outline;
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_png_t;
 
 #define RND_PNG_FMT_gif "GIF"
