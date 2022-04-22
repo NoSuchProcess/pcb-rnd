@@ -110,7 +110,7 @@ typedef struct {
 	int w, h; /* in pixels */
 	int dpi, xmax, ymax;
 	color_struct *black, *white;
-	gdImagePtr erase_im;
+	gdImagePtr comp_im, erase_im;
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -145,7 +145,7 @@ typedef struct rnd_hid_gc_s {
 	int is_erase;
 } hid_gc_t;
 
-static gdImagePtr im = NULL, master_im, comp_im = NULL;
+static gdImagePtr im = NULL, master_im;
 static FILE *f = 0;
 static int linewidth = -1;
 static int lastgroup = -1;
@@ -628,9 +628,9 @@ static void png_free_cache(void)
 		gdImageDestroy(master_im);
 		master_im = NULL;
 	}
-	if (comp_im != NULL) {
-		gdImageDestroy(comp_im);
-		comp_im = NULL;
+	if (pctx->comp_im != NULL) {
+		gdImageDestroy(pctx->comp_im);
+		pctx->comp_im = NULL;
 	}
 	if (pctx->erase_im != NULL) {
 		gdImageDestroy(pctx->erase_im);
@@ -930,10 +930,10 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 		case RND_HID_COMP_RESET:
 
 			/* the main pixel buffer; drawn with color */
-			if (comp_im == NULL) {
-				comp_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
-				if (!comp_im) {
-					rnd_message(RND_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on comp_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
+			if (pctx->comp_im == NULL) {
+				pctx->comp_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
+				if (!pctx->comp_im) {
+					rnd_message(RND_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on pctx->comp_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
 					return;
 				}
 			}
@@ -948,9 +948,9 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 					return;
 				}
 			}
-			gdImagePaletteCopy(comp_im, im);
+			gdImagePaletteCopy(pctx->comp_im, im);
 			dst_im = im;
-			gdImageFilledRectangle(comp_im, 0, 0, gdImageSX(comp_im), gdImageSY(comp_im), pctx->white->c);
+			gdImageFilledRectangle(pctx->comp_im, 0, 0, gdImageSX(pctx->comp_im), gdImageSY(pctx->comp_im), pctx->white->c);
 
 			gdImagePaletteCopy(pctx->erase_im, im);
 			gdImageFilledRectangle(pctx->erase_im, 0, 0, gdImageSX(pctx->erase_im), gdImageSY(pctx->erase_im), pctx->black->c);
@@ -958,7 +958,7 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 
 		case RND_HID_COMP_POSITIVE:
 		case RND_HID_COMP_POSITIVE_XOR:
-			im = comp_im;
+			im = pctx->comp_im;
 			break;
 		case RND_HID_COMP_NEGATIVE:
 			im = pctx->erase_im;
@@ -968,11 +968,11 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 		{
 			int x, y, c, e;
 			im = dst_im;
-			gdImagePaletteCopy(im, comp_im);
+			gdImagePaletteCopy(im, pctx->comp_im);
 			for (x = 0; x < gdImageSX(im); x++) {
 				for (y = 0; y < gdImageSY(im); y++) {
 					e = gdImageGetPixel(pctx->erase_im, x, y);
-					c = gdImageGetPixel(comp_im, x, y);
+					c = gdImageGetPixel(pctx->comp_im, x, y);
 					if ((e == pctx->white->c) && (c))
 						gdImageSetPixel(im, x, y, c);
 				}
