@@ -1080,27 +1080,6 @@ static void ps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_
 
 static void ps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-#if 0
-	/* If you're etching your own paste mask, this will reduce the
-	   amount of brass you need to etch by drawing outlines for large
-	   pads.  See also ps_fill_rect.  */
-	if (is_paste && gc->width > 2500 && gc->cap == rnd_cap_square && (x1 == x2 || y1 == y2)) {
-		rnd_coord_t t, w;
-		if (x1 > x2) {
-			t = x1;
-			x1 = x2;
-			x2 = t;
-		}
-		if (y1 > y2) {
-			t = y1;
-			y1 = y2;
-			y2 = t;
-		}
-		w = gc->width / 2;
-		ps_fill_rect(gc, x1 - w, y1 - w, x2 + w, y2 + w);
-		return;
-	}
-#endif
 	if (x1 == x2 && y1 == y2) {
 		rnd_coord_t w = gc->width / 2;
 		if (gc->cap == rnd_cap_square)
@@ -1233,18 +1212,6 @@ static void ps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 		y1 = y2;
 		y2 = t;
 	}
-#if 0
-	/* See comment in ps_draw_line.  */
-	if (is_paste && (x2 - x1) > 2500 && (y2 - y1) > 2500) {
-		linewidth = 1000;
-		lastcap = rnd_cap_round;
-		fprintf(f, "1000 setlinewidth 1 setlinecap 1 setlinejoin\n");
-		fprintf(f, "%d %d moveto %d %d lineto %d %d lineto %d %d lineto closepath stroke\n",
-						x1 + 500 - bloat, y1 + 500 - bloat,
-						x1 + 500 - bloat, y2 - 500 + bloat, x2 - 500 + bloat, y2 - 500 + bloat, x2 - 500 + bloat, y1 + 500 - bloat);
-		return;
-	}
-#endif
 	rnd_fprintf(global.f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
