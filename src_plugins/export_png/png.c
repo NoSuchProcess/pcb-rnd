@@ -635,7 +635,7 @@ void rnd_png_set_bbox(rnd_png_t *pctx, rnd_box_t *bbox)
 	}
 }
 
-int rnd_png_create(rnd_png_t *pctx, int dpi, int xmax, int ymax)
+int rnd_png_create(rnd_png_t *pctx, int dpi, int xmax, int ymax, int use_alpha)
 {
 	if (dpi > 0) {
 		/* a scale of 1  means 1 pixel is 1 inch
@@ -668,6 +668,28 @@ int rnd_png_create(rnd_png_t *pctx, int dpi, int xmax, int ymax)
 #endif
 
 	master_im = im;
+
+	/* Allocate white and black; the first color allocated becomes the background color */
+	white = (color_struct *) malloc(sizeof(color_struct));
+	white->r = white->g = white->b = 255;
+	if (use_alpha)
+		white->a = 127;
+	else
+		white->a = 0;
+	white->c = gdImageColorAllocateAlpha(im, white->r, white->g, white->b, white->a);
+	if (white->c == BADC) {
+		rnd_message(RND_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
+		return -1;
+	}
+
+
+	black = (color_struct *) malloc(sizeof(color_struct));
+	black->r = black->g = black->b = black->a = 0;
+	black->c = gdImageColorAllocate(im, black->r, black->g, black->b);
+	if (black->c == BADC) {
+		rnd_message(RND_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
+		return -1;
+	}
 
 	return 0;
 }
@@ -744,30 +766,8 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	parse_bloat(pctx, options[HA_bloat].str);
 
-	if (rnd_png_create(pctx, dpi, xmax, ymax) != 0) {
+	if (rnd_png_create(pctx, dpi, xmax, ymax, options[HA_use_alpha].lng) != 0) {
 		rnd_message(RND_MSG_ERROR, "png_do_export():  Failed to create bitmap of %d * %d returned NULL.  Aborting export.\n", pctx->w, pctx->h);
-		return;
-	}
-
-	/* Allocate white and black; the first color allocated becomes the background color */
-	white = (color_struct *) malloc(sizeof(color_struct));
-	white->r = white->g = white->b = 255;
-	if (options[HA_use_alpha].lng)
-		white->a = 127;
-	else
-		white->a = 0;
-	white->c = gdImageColorAllocateAlpha(im, white->r, white->g, white->b, white->a);
-	if (white->c == BADC) {
-		rnd_message(RND_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
-		return;
-	}
-
-
-	black = (color_struct *) malloc(sizeof(color_struct));
-	black->r = black->g = black->b = black->a = 0;
-	black->c = gdImageColorAllocate(im, black->r, black->g, black->b);
-	if (black->c == BADC) {
-		rnd_message(RND_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
 		return;
 	}
 
