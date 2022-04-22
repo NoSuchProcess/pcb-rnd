@@ -78,22 +78,22 @@ const char *png_cookie = "png HID";
 
 static pcb_cam_t png_cam;
 
-static rnd_clrcache_t color_cache;
-static int color_cache_inited = 0;
-static htpp_t brush_cache;
-static int brush_cache_inited = 0;
-
-static long png_drawn_objs = 0;
-
 typedef struct {
-	/* public */
+	/* public: config */
 	rnd_hidlib_t *hidlib;
 	double scale; /* should be 1 by default */
 	double bloat;
 	rnd_coord_t x_shift, y_shift;
 	int show_solder_side;
 
+	/* public: result */
+	long png_drawn_objs;
+
 	/* private */
+	rnd_clrcache_t color_cache;
+	int color_cache_inited;
+	htpp_t brush_cache;
+	int brush_cache_inited;
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -605,16 +605,16 @@ void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xfo
 
 static void png_free_cache(void)
 {
-	if (color_cache_inited) {
-		rnd_clrcache_uninit(&color_cache);
-		color_cache_inited = 0;
+	if (pctx->color_cache_inited) {
+		rnd_clrcache_uninit(&pctx->color_cache);
+		pctx->color_cache_inited = 0;
 	}
-	if (brush_cache_inited) {
+	if (pctx->brush_cache_inited) {
 		htpp_entry_t *e;
-		for(e = htpp_first(&brush_cache); e != NULL; e = htpp_next(&brush_cache, e))
+		for(e = htpp_first(&pctx->brush_cache); e != NULL; e = htpp_next(&pctx->brush_cache, e))
 			gdImageDestroy(e->value);
-		htpp_uninit(&brush_cache);
-		brush_cache_inited = 0;
+		htpp_uninit(&pctx->brush_cache);
+		pctx->brush_cache_inited = 0;
 	}
 }
 
@@ -635,7 +635,6 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		options = png_values;
 	}
 
-	png_drawn_objs = 0;
 	pcb_cam_begin(PCB, &png_cam, &xform, options[HA_cam].str, png_attribute_list, NUM_OPTIONS, options);
 
 	if (options[HA_photo_mode].lng) {
@@ -807,7 +806,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		if (!png_cam.okempty_group)
 			rnd_message(RND_MSG_ERROR, "png cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
-	else if (png_drawn_objs == 0) {
+	else if (pctx->png_drawn_objs == 0) {
 		if (!png_cam.okempty_content)
 			rnd_message(RND_MSG_ERROR, "png cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
@@ -984,16 +983,16 @@ static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 		return;
 	}
 
-	if (!color_cache_inited) {
-		rnd_clrcache_init(&color_cache, sizeof(color_struct), NULL);
-		color_cache_inited = 1;
+	if (!pctx->color_cache_inited) {
+		rnd_clrcache_init(&pctx->color_cache, sizeof(color_struct), NULL);
+		pctx->color_cache_inited = 1;
 	}
 
-	if ((cc = rnd_clrcache_get(&color_cache, color, 0)) != NULL) {
+	if ((cc = rnd_clrcache_get(&pctx->color_cache, color, 0)) != NULL) {
 		gc->color = cc;
 	}
 	else if (color->str[0] == '#') {
-		cc = rnd_clrcache_get(&color_cache, color, 1);
+		cc = rnd_clrcache_get(&pctx->color_cache, color, 1);
 		gc->color = cc;
 		gc->color->r = color->r;
 		gc->color->g = color->g;
@@ -1049,7 +1048,7 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 	rnd_hid_gc_t agc;
 	gdImagePtr brp;
 
-	png_drawn_objs++;
+	pctx->png_drawn_objs++;
 
 	agc = gc;
 	if (unerase_override) {
@@ -1097,12 +1096,12 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 		last_color_b = agc->b;
 		last_cap = agc->cap;
 
-		if (!brush_cache_inited) {
-			htpp_init(&brush_cache, brush_hash, brush_keyeq);
-			brush_cache_inited = 1;
+		if (!pctx->brush_cache_inited) {
+			htpp_init(&pctx->brush_cache, brush_hash, brush_keyeq);
+			pctx->brush_cache_inited = 1;
 		}
 
-		if ((brp = htpp_get(&brush_cache, agc)) != NULL) {
+		if ((brp = htpp_get(&pctx->brush_cache, agc)) != NULL) {
 			agc->brush = brp;
 		}
 		else {
@@ -1145,7 +1144,7 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 					gdImageFilledRectangle(agc->brush, 0, 0, r - 1, r - 1, fg);
 			}
 			brp = agc->brush;
-			htpp_set(&brush_cache, agc, brp);
+			htpp_set(&pctx->brush_cache, agc, brp);
 		}
 
 		gdImageSetBrush(im, agc->brush);
