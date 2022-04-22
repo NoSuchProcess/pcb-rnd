@@ -145,7 +145,6 @@ typedef struct rnd_hid_gc_s {
 	int is_erase;
 } hid_gc_t;
 
-static FILE *f = 0;
 static int linewidth = -1;
 static int lastgroup = -1;
 static gdImagePtr lastbrush = (gdImagePtr) ((void *) -1);
@@ -184,6 +183,8 @@ static const char *filetypes[] = {
 };
 
 #include "png_photo1.c"
+
+static FILE *png_f;
 
 static const rnd_export_opt_t png_attribute_list[] = {
 /* other HIDs expect this to be first.  */
@@ -506,13 +507,11 @@ static void png_head(void)
 	gdImageFilledRectangle(pctx->im, 0, 0, gdImageSX(pctx->im), gdImageSY(pctx->im), pctx->white->c);
 }
 
-static void png_foot(void)
+void rnd_png_finish(FILE *f)
 {
 	const char *fmt;
 	rnd_bool format_error = rnd_false;
 
-	if (photo_mode)
-		png_photo_foot();
 
 	/* actually write out the image */
 	fmt = filetypes[png_options[HA_filetype].lng];
@@ -544,13 +543,22 @@ static void png_foot(void)
 		fprintf(stderr, "Error:  Invalid graphic file format." "  This is a bug.  Please report it.\n");
 }
 
+static void png_finish(FILE *f)
+{
+	if (photo_mode)
+		png_photo_foot();
+
+	rnd_png_finish(f);
+}
+
+
 void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 	rnd_box_t tmp, region;
 	rnd_hid_expose_ctx_t ctx;
 
-	f = the_file;
+	png_f = the_file;
 
 	region.X1 = 0;
 	region.Y1 = 0;
@@ -751,6 +759,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	int save_ons[PCB_MAX_LAYER];
 	rnd_box_t tmp, *bbox;
 	rnd_xform_t xform;
+	FILE *f;
 
 	rnd_png_init(pctx, &PCB->hidlib);
 
@@ -812,7 +821,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	if ((!png_cam.active) && (!options[HA_as_shown].lng))
 		pcb_hid_restore_layer_ons(save_ons);
 
-	png_foot();
+	png_finish(f);
 	if (f != NULL)
 		fclose(f);
 
@@ -850,12 +859,12 @@ static int png_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 
 	pcb_cam_set_layer_group(&png_cam, group, purpose, purpi, flags, xform);
 	if (png_cam.fn_changed) {
-		if (f != NULL) {
-			png_foot();
-			fclose(f);
+		if (png_f != NULL) {
+			png_finish(png_f);
+			fclose(png_f);
 		}
-		f = rnd_fopen_askovr(&PCB->hidlib, png_cam.fn, "wb", NULL);
-		if (!f) {
+		png_f = rnd_fopen_askovr(&PCB->hidlib, png_cam.fn, "wb", NULL);
+		if (!png_f) {
 			perror(filename);
 			return 0;
 		}
