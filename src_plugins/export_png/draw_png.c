@@ -42,15 +42,12 @@
 #include <librnd/core/error.h>
 #include <librnd/core/plugins.h>
 #include <librnd/core/hid.h>
+#include <librnd/core/compat_misc.h>
 
 #include <gd.h>
 
 #define FROM_DRAW_PNG_C
 #include "draw_png.h"
-
-#define PNG_SCALE_HACK1 0
-#include <librnd/core/compat_misc.h>
-#define pcb_hack_round(d) rnd_round(d)
 
 void rnd_png_init(rnd_png_t *pctx, rnd_hidlib_t *hidlib)
 {
@@ -63,8 +60,8 @@ void rnd_png_init(rnd_png_t *pctx, rnd_hidlib_t *hidlib)
 
 
 #define SCALE(w)   ((int)rnd_round((w)/pctx->scale))
-#define SCALE_X(x) ((int)pcb_hack_round(((x) - pctx->x_shift)/pctx->scale))
-#define SCALE_Y(y) ((int)pcb_hack_round(((pctx->show_solder_side ? (pctx->hidlib->size_y-(y)) : (y)) - pctx->y_shift)/pctx->scale))
+#define SCALE_X(x) ((int)rnd_round(((x) - pctx->x_shift)/pctx->scale))
+#define SCALE_Y(y) ((int)rnd_round(((pctx->show_solder_side ? (pctx->hidlib->size_y-(y)) : (y)) - pctx->y_shift)/pctx->scale))
 #define SWAP_IF_SOLDER(a,b) do { int c; if (pctx->show_solder_side) { c=a; a=b; b=c; }} while (0)
 
 /* Used to detect non-trivial outlines */
@@ -228,8 +225,8 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 		/* a scale of 1  means 1 pixel is 1 inch
 		   a scale of 10 means 1 pixel is 10 inches */
 		pctx->scale = RND_INCH_TO_COORD(1) / pctx->dpi;
-		pctx->w = rnd_round(pctx->w / pctx->scale) - PNG_SCALE_HACK1;
-		pctx->h = rnd_round(pctx->h / pctx->scale) - PNG_SCALE_HACK1;
+		pctx->w = rnd_round(pctx->w / pctx->scale);
+		pctx->h = rnd_round(pctx->h / pctx->scale);
 	}
 	else if (pctx->xmax == 0 && pctx->ymax == 0) {
 		rnd_message(RND_MSG_ERROR, "rnd_png_create(): you may not set both xmax, ymax, and xy-max to zero\n");
