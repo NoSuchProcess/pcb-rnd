@@ -112,6 +112,7 @@ typedef struct {
 	color_struct *black, *white;
 	gdImagePtr im, master_im, comp_im, erase_im;
 	int last_color_r, last_color_g, last_color_b, last_cap;
+	gdImagePtr lastbrush;
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -121,6 +122,7 @@ void rnd_png_init(rnd_png_t *pctx, rnd_hidlib_t *hidlib)
 	memset(pctx, 0, sizeof(rnd_png_t));
 	pctx->hidlib = hidlib;
 	pctx->scale = 1;
+	pctx->lastbrush = (gdImagePtr)((void *)-1);
 }
 
 
@@ -147,7 +149,7 @@ typedef struct rnd_hid_gc_s {
 } hid_gc_t;
 
 static int linewidth = -1;
-static gdImagePtr lastbrush = (gdImagePtr) ((void *) -1);
+
 
 #define FMT_gif "GIF"
 #define FMT_jpg "JPEG"
@@ -495,7 +497,7 @@ static rnd_hid_attr_val_t *png_options;
 static void png_head(void)
 {
 	linewidth = -1;
-	lastbrush = (gdImagePtr) ((void *) -1);
+	pctx->lastbrush = (gdImagePtr)((void *)-1);
 	png_photo_head();
 	pctx->show_solder_side = conf_core.editor.show_solder_side;
 	pctx->last_color_r = pctx->last_color_g = pctx->last_color_b = pctx->last_cap = -1;
@@ -1104,7 +1106,7 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 
 	need_brush |= (agc->r != pctx->last_color_r) || (agc->g != pctx->last_color_g) || (agc->b != pctx->last_color_b) || (agc->cap != pctx->last_cap);
 
-	if (lastbrush != agc->brush || need_brush) {
+	if (pctx->lastbrush != agc->brush || need_brush) {
 		int r;
 
 		if (agc->width)
@@ -1173,8 +1175,7 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 		}
 
 		gdImageSetBrush(im, agc->brush);
-		lastbrush = agc->brush;
-
+		pctx->lastbrush = agc->brush;
 	}
 }
 
