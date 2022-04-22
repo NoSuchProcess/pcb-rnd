@@ -30,6 +30,13 @@
  *  Heavily based on the ps HID written by DJ Delorie
  */
 
+static void rgb(color_struct *dest, int r, int g, int b)
+{
+	dest->r = r;
+	dest->g = g;
+	dest->b = b;
+}
+
 
 /* For photo-mode we need the following layers as monochrome masks:
 

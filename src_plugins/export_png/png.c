@@ -392,13 +392,6 @@ static const char *filename;
 static rnd_box_t *bounds;
 static int as_shown;
 
-static void rgb(color_struct *dest, int r, int g, int b)
-{
-	dest->r = r;
-	dest->g = g;
-	dest->b = b;
-}
-
 static rnd_hid_attr_val_t *png_options;
 
 #include "png_photo2.c"
