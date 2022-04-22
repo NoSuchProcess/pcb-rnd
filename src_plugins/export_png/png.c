@@ -146,12 +146,8 @@ typedef struct rnd_hid_gc_s {
 } hid_gc_t;
 
 static int linewidth = -1;
-static int lastgroup = -1;
 static gdImagePtr lastbrush = (gdImagePtr) ((void *) -1);
-static int lastcap = -1;
 static int last_color_r, last_color_g, last_color_b, last_cap;
-
-static int doing_outline, have_outline;
 
 #define FMT_gif "GIF"
 #define FMT_jpg "JPEG"
@@ -183,6 +179,8 @@ static const char *filetypes[] = {
 };
 
 #include "png_photo1.c"
+
+static int doing_outline, have_outline;
 
 static FILE *png_f;
 
@@ -498,8 +496,6 @@ static void png_head(void)
 {
 	linewidth = -1;
 	lastbrush = (gdImagePtr) ((void *) -1);
-	lastcap = -1;
-	lastgroup = -1;
 	png_photo_head();
 	pctx->show_solder_side = conf_core.editor.show_solder_side;
 	last_color_r = last_color_g = last_color_b = last_cap = -1;
