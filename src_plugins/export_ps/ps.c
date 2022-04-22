@@ -840,6 +840,49 @@ double rnd_ps_page_frame(rnd_ps_t *pctx, int mirror_this, const char *layer_fn, 
 	return boffset;
 }
 
+void rnd_ps_page_background(rnd_ps_t *pctx, int has_outline, int page_is_route)
+{
+		if (pctx->invert) {
+			fprintf(pctx->outf, "/gray { 1 exch sub setgray } bind def\n");
+			fprintf(pctx->outf, "/rgb { 1 1 3 { pop 1 exch sub 3 1 roll } for setrgbcolor } bind def\n");
+		}
+		else {
+			fprintf(pctx->outf, "/gray { setgray } bind def\n");
+			fprintf(pctx->outf, "/rgb { setrgbcolor } bind def\n");
+		}
+
+		if (!has_outline || pctx->invert) {
+			if (page_is_route) {
+				rnd_fprintf(pctx->outf,
+									"0 setgray %mi setlinewidth 0 0 moveto 0 "
+									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
+									conf_core.design.min_wid,
+									pctx->hidlib->size_y, pctx->hidlib->size_x, pctx->hidlib->size_y, pctx->hidlib->size_x, pctx->invert ? "fill" : "stroke");
+			}
+		}
+
+		if (pctx->align_marks) {
+			corner(pctx->outf, 0, 0, -1, -1);
+			corner(pctx->outf, pctx->hidlib->size_x, 0, 1, -1);
+			corner(pctx->outf, pctx->hidlib->size_x, pctx->hidlib->size_y, 1, 1);
+			corner(pctx->outf, 0, pctx->hidlib->size_y, -1, 1);
+		}
+
+		pctx->linewidth = -1;
+		use_gc(pctx, NULL);  /* reset static vars */
+
+		fprintf(pctx->outf,
+						"/ts 1 def\n"
+						"/ty ts neg def /tx 0 def /Helvetica findfont ts scalefont setfont\n"
+						"/t { moveto lineto stroke } bind def\n"
+						"/dr { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
+						"      x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath stroke } bind def\n");
+		fprintf(pctx->outf,"/r { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
+						"     x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath fill } bind def\n"
+						"/c { 0 360 arc fill } bind def\n"
+						"/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
+}
+
 static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	gds_t tmp_ln;
@@ -941,45 +984,8 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 				rnd_fprintf(global.ps.outf, "0 %mi translate\n", needed - natural);
 		}
 
-		if (global.ps.invert) {
-			fprintf(global.ps.outf, "/gray { 1 exch sub setgray } bind def\n");
-			fprintf(global.ps.outf, "/rgb { 1 1 3 { pop 1 exch sub 3 1 roll } for setrgbcolor } bind def\n");
-		}
-		else {
-			fprintf(global.ps.outf, "/gray { setgray } bind def\n");
-			fprintf(global.ps.outf, "/rgb { setrgbcolor } bind def\n");
-		}
+		rnd_ps_page_background(&global.ps, global.has_outline, ((PCB_LAYER_IS_ROUTE(flags, purpi)) || (global.outline)));
 
-		if (!global.has_outline || global.ps.invert) {
-			if ((PCB_LAYER_IS_ROUTE(flags, purpi)) || (global.outline)) {
-				rnd_fprintf(global.ps.outf,
-									"0 setgray %mi setlinewidth 0 0 moveto 0 "
-									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
-									conf_core.design.min_wid,
-									PCB->hidlib.size_y, PCB->hidlib.size_x, PCB->hidlib.size_y, PCB->hidlib.size_x, global.ps.invert ? "fill" : "stroke");
-			}
-		}
-
-		if (global.ps.align_marks) {
-			corner(global.ps.outf, 0, 0, -1, -1);
-			corner(global.ps.outf, PCB->hidlib.size_x, 0, 1, -1);
-			corner(global.ps.outf, PCB->hidlib.size_x, PCB->hidlib.size_y, 1, 1);
-			corner(global.ps.outf, 0, PCB->hidlib.size_y, -1, 1);
-		}
-
-		global.ps.linewidth = -1;
-		use_gc(&global.ps, NULL);  /* reset static vars */
-
-		fprintf(global.ps.outf,
-						"/ts 1 def\n"
-						"/ty ts neg def /tx 0 def /Helvetica findfont ts scalefont setfont\n"
-						"/t { moveto lineto stroke } bind def\n"
-						"/dr { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
-						"      x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath stroke } bind def\n");
-		fprintf(global.ps.outf,"/r { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
-						"     x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath fill } bind def\n"
-						"/c { 0 360 arc fill } bind def\n"
-						"/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
 		if (global.drill_helper)
 			rnd_fprintf(global.ps.outf,
 									"/dh { gsave %mi setlinewidth 0 gray %mi 0 360 arc stroke grestore} bind def\n",
