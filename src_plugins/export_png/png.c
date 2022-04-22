@@ -78,6 +78,19 @@ const char *png_cookie = "png HID";
 
 static pcb_cam_t png_cam;
 
+/* The result of a failed gdImageColorAllocate() call */
+#define BADC -1
+
+typedef struct color_struct {
+	/* the descriptor used by the gd library */
+	int c;
+
+	/* so I can figure out what rgb value c refers to */
+	unsigned int r, g, b, a;
+
+} color_struct;
+
+
 typedef struct {
 	/* public: config */
 	rnd_hidlib_t *hidlib;
@@ -96,6 +109,7 @@ typedef struct {
 	int brush_cache_inited;
 	int w, h; /* in pixels */
 	int dpi, xmax, ymax;
+	color_struct *black, *white;
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -120,18 +134,6 @@ void rnd_png_init(rnd_png_t *pctx, rnd_hidlib_t *hidlib)
 
 static void png_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 
-/* The result of a failed gdImageColorAllocate() call */
-#define BADC -1
-
-typedef struct color_struct {
-	/* the descriptor used by the gd library */
-	int c;
-
-	/* so I can figure out what rgb value c refers to */
-	unsigned int r, g, b, a;
-
-} color_struct;
-
 typedef struct rnd_hid_gc_s {
 	rnd_core_gc_t core_gc;
 	rnd_hid_t *me_pointer;
@@ -142,7 +144,6 @@ typedef struct rnd_hid_gc_s {
 	int is_erase;
 } hid_gc_t;
 
-static color_struct *black = NULL, *white = NULL;
 static gdImagePtr im = NULL, master_im, comp_im = NULL, erase_im = NULL;
 static FILE *f = 0;
 static int linewidth = -1;
@@ -502,7 +503,7 @@ static void png_head(void)
 	pctx->show_solder_side = conf_core.editor.show_solder_side;
 	last_color_r = last_color_g = last_color_b = last_cap = -1;
 
-	gdImageFilledRectangle(im, 0, 0, gdImageSX(im), gdImageSY(im), white->c);
+	gdImageFilledRectangle(im, 0, 0, gdImageSX(im), gdImageSY(im), pctx->white->c);
 }
 
 static void png_foot(void)
@@ -619,6 +620,8 @@ static void png_free_cache(void)
 		pctx->brush_cache_inited = 0;
 	}
 
+	free(pctx->white);
+	free(pctx->black);
 
 	if (master_im != NULL) {
 		gdImageDestroy(master_im);
@@ -719,23 +722,23 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 	master_im = im;
 
 	/* Allocate white and black; the first color allocated becomes the background color */
-	white = (color_struct *) malloc(sizeof(color_struct));
-	white->r = white->g = white->b = 255;
+	pctx->white = (color_struct *)malloc(sizeof(color_struct));
+	pctx->white->r = pctx->white->g = pctx->white->b = 255;
 	if (use_alpha)
-		white->a = 127;
+		pctx->white->a = 127;
 	else
-		white->a = 0;
-	white->c = gdImageColorAllocateAlpha(im, white->r, white->g, white->b, white->a);
-	if (white->c == BADC) {
+		pctx->white->a = 0;
+	pctx->white->c = gdImageColorAllocateAlpha(im, pctx->white->r, pctx->white->g, pctx->white->b, pctx->white->a);
+	if (pctx->white->c == BADC) {
 		rnd_message(RND_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
 		return -1;
 	}
 
 
-	black = (color_struct *) malloc(sizeof(color_struct));
-	black->r = black->g = black->b = black->a = 0;
-	black->c = gdImageColorAllocate(im, black->r, black->g, black->b);
-	if (black->c == BADC) {
+	pctx->black = (color_struct *)malloc(sizeof(color_struct));
+	pctx->black->r = pctx->black->g = pctx->black->b = pctx->black->a = 0;
+	pctx->black->c = gdImageColorAllocate(im, pctx->black->r, pctx->black->g, pctx->black->b);
+	if (pctx->black->c == BADC) {
 		rnd_message(RND_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
 		return -1;
 	}
@@ -816,8 +819,6 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	png_photo_post_export();
 	png_free_cache();
-	free(white);
-	free(black);
 
 	if (!png_cam.active) png_cam.okempty_content = 1; /* never warn in direct export */
 
@@ -948,10 +949,10 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 			}
 			gdImagePaletteCopy(comp_im, im);
 			dst_im = im;
-			gdImageFilledRectangle(comp_im, 0, 0, gdImageSX(comp_im), gdImageSY(comp_im), white->c);
+			gdImageFilledRectangle(comp_im, 0, 0, gdImageSX(comp_im), gdImageSY(comp_im), pctx->white->c);
 
 			gdImagePaletteCopy(erase_im, im);
-			gdImageFilledRectangle(erase_im, 0, 0, gdImageSX(erase_im), gdImageSY(erase_im), black->c);
+			gdImageFilledRectangle(erase_im, 0, 0, gdImageSX(erase_im), gdImageSY(erase_im), pctx->black->c);
 			break;
 
 		case RND_HID_COMP_POSITIVE:
@@ -971,7 +972,7 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 				for (y = 0; y < gdImageSY(im); y++) {
 					e = gdImageGetPixel(erase_im, x, y);
 					c = gdImageGetPixel(comp_im, x, y);
-					if ((e == white->c) && (c))
+					if ((e == pctx->white->c) && (c))
 						gdImageSetPixel(im, x, y, c);
 				}
 			}
@@ -991,14 +992,14 @@ static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 		color = rnd_color_red;
 
 	if (rnd_color_is_drill(color) || is_photo_mech) {
-		gc->color = white;
+		gc->color = pctx->white;
 		gc->is_erase = 1;
 		return;
 	}
 	gc->is_erase = 0;
 
 	if (in_mono || (color->packed == 0)) {
-		gc->color = black;
+		gc->color = pctx->black;
 		return;
 	}
 
@@ -1024,7 +1025,7 @@ static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	}
 	else {
 		fprintf(stderr, "WE SHOULD NOT BE HERE!!!\n");
-		gc->color = black;
+		gc->color = pctx->black;
 	}
 }
 
@@ -1193,7 +1194,7 @@ static void png_fill_rect_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 	y2 += pctx->bloat;
 	SWAP_IF_SOLDER(y1, y2);
 
-	gdImageFilledRectangle(im, SCALE_X(x1 - pctx->bloat), SCALE_Y(y1), SCALE_X(x2 + pctx->bloat) - 1, SCALE_Y(y2) - 1, unerase_override ? white->c : gc->color->c);
+	gdImageFilledRectangle(im, SCALE_X(x1 - pctx->bloat), SCALE_Y(y1), SCALE_X(x2 + pctx->bloat) - 1, SCALE_Y(y2) - 1, unerase_override ? pctx->white->c : gc->color->c);
 	have_outline |= doing_outline;
 }
 
@@ -1372,7 +1373,7 @@ static void png_fill_circle_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd
 
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
-	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), unerase_override ? white->c : gc->color->c);
+	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), unerase_override ? pctx->white->c : gc->color->c);
 }
 
 static void png_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
@@ -1406,7 +1407,7 @@ static void png_fill_polygon_offs_(gdImagePtr im, rnd_hid_gc_t gc, int n_coords,
 	}
 	gdImageSetThickness(im, 0);
 	linewidth = 0;
-	gdImageFilledPolygon(im, points, n_coords, unerase_override ? white->c : gc->color->c);
+	gdImageFilledPolygon(im, points, n_coords, unerase_override ? pctx->white->c : gc->color->c);
 	free(points);
 }
 
