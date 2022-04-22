@@ -913,7 +913,7 @@ static int png_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 }
 
 
-static rnd_hid_gc_t png_make_gc(rnd_hid_t *hid)
+static rnd_hid_gc_t rnd_png_make_gc(rnd_hid_t *hid)
 {
 	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(sizeof(hid_gc_t), 1);
 	rv->me_pointer = &png_hid;
@@ -926,7 +926,7 @@ static rnd_hid_gc_t png_make_gc(rnd_hid_t *hid)
 	return rv;
 }
 
-static void png_destroy_gc(rnd_hid_gc_t gc)
+static void rnd_png_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
@@ -1478,8 +1478,8 @@ int pplg_init_export_png(void)
 	png_hid.do_export = png_do_export;
 	png_hid.parse_arguments = png_parse_arguments;
 	png_hid.set_layer_group = png_set_layer_group;
-	png_hid.make_gc = png_make_gc;
-	png_hid.destroy_gc = png_destroy_gc;
+	png_hid.make_gc = rnd_png_make_gc;
+	png_hid.destroy_gc = rnd_png_destroy_gc;
 	png_hid.set_drawing_mode = png_set_drawing_mode;
 	png_hid.set_color = png_set_color;
 	png_hid.set_line_cap = png_set_line_cap;
