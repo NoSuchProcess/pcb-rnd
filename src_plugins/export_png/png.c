@@ -95,6 +95,7 @@ typedef struct {
 	htpp_t brush_cache;
 	int brush_cache_inited;
 	int w, h; /* in pixels */
+	int dpi, xmax, ymax;
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -649,36 +650,73 @@ void rnd_png_set_bbox(rnd_png_t *pctx, rnd_box_t *bbox)
 	}
 }
 
-int rnd_png_create(rnd_png_t *pctx, int dpi, int xmax, int ymax, int use_alpha)
+int rnd_png_set_size(rnd_png_t *pctx, int dpi_in, int xmax_in, int ymax_in, int xymax_in)
 {
-	if (dpi > 0) {
+	/* figure out the scale factor to fit in the specified PNG file size */
+	if (dpi_in != 0) {
+		pctx->dpi = dpi_in;
+		if (pctx->dpi < 0) {
+			fprintf(stderr, "ERROR:  dpi may not be < 0\n");
+			return -1;
+		}
+	}
+
+	if (xmax_in > 0) {
+		pctx->xmax = xmax_in;
+		pctx->dpi = 0;
+	}
+
+	if (ymax_in > 0) {
+		pctx->ymax = ymax_in;
+		pctx->dpi = 0;
+	}
+
+	if (xymax_in > 0) {
+		pctx->dpi = 0;
+		if (xymax_in < pctx->xmax || pctx->xmax == 0)
+			pctx->xmax = xymax_in;
+		if (xymax_in < pctx->ymax || pctx->ymax == 0)
+			pctx->ymax = xymax_in;
+	}
+
+	if (pctx->xmax < 0 || pctx->ymax < 0) {
+		fprintf(stderr, "ERROR:  xmax and ymax may not be < 0\n");
+		return -1;
+	}
+
+	return 0;
+}
+
+int rnd_png_create(rnd_png_t *pctx, int use_alpha)
+{
+	if (pctx->dpi > 0) {
 		/* a scale of 1  means 1 pixel is 1 inch
 		   a scale of 10 means 1 pixel is 10 inches */
-		pctx->scale = RND_INCH_TO_COORD(1) / dpi;
+		pctx->scale = RND_INCH_TO_COORD(1) / pctx->dpi;
 		pctx->w = rnd_round(pctx->w / pctx->scale) - PNG_SCALE_HACK1;
 		pctx->h = rnd_round(pctx->h / pctx->scale) - PNG_SCALE_HACK1;
 	}
-	else if (xmax == 0 && ymax == 0) {
+	else if (pctx->xmax == 0 && pctx->ymax == 0) {
 		fprintf(stderr, "ERROR:  You may not set both xmax, ymax, and xy-max to zero\n");
 		return -1;
 	}
 	else {
-		if (ymax == 0 || ((xmax > 0) && ((pctx->w / xmax) > (pctx->h / ymax)))) {
-			pctx->h = (pctx->h * xmax) / pctx->w;
-			pctx->scale = pctx->w / xmax;
-			pctx->w = xmax;
+		if (pctx->ymax == 0 || ((pctx->xmax > 0) && ((pctx->w / pctx->xmax) > (pctx->h / pctx->ymax)))) {
+			pctx->h = (pctx->h * pctx->xmax) / pctx->w;
+			pctx->scale = pctx->w / pctx->xmax;
+			pctx->w = pctx->xmax;
 		}
 		else {
-			pctx->w = (pctx->w * ymax) / pctx->h;
-			pctx->scale = pctx->h / ymax;
-			pctx->h = ymax;
+			pctx->w = (pctx->w * pctx->ymax) / pctx->h;
+			pctx->scale = pctx->h / pctx->ymax;
+			pctx->h = pctx->ymax;
 		}
 	}
 
 	im = gdImageCreate(pctx->w, pctx->h);
 
 #ifdef PCB_HAVE_GD_RESOLUTION
-	gdImageSetResolution(im, dpi, dpi);
+	gdImageSetResolution(im, pctx->dpi, pctx->dpi);
 #endif
 
 	master_im = im;
@@ -712,7 +750,6 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 {
 	int save_ons[PCB_MAX_LAYER];
 	rnd_box_t tmp, *bbox;
-	int xmax, ymax, dpi;
 	rnd_xform_t xform;
 
 	rnd_png_init(pctx, &PCB->hidlib);
@@ -744,44 +781,14 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	else
 		rnd_png_set_bbox(pctx, NULL);
 
-	/* figure out the scale factor to fit in the specified PNG file size */
-	xmax = ymax = dpi = 0;
-	if (options[HA_dpi].lng != 0) {
-		dpi = options[HA_dpi].lng;
-		if (dpi < 0) {
-			fprintf(stderr, "ERROR:  dpi may not be < 0\n");
-			png_free_cache();
-			return;
-		}
-	}
-
-	if (options[HA_xmax].lng > 0) {
-		xmax = options[HA_xmax].lng;
-		dpi = 0;
-	}
-
-	if (options[HA_ymax].lng > 0) {
-		ymax = options[HA_ymax].lng;
-		dpi = 0;
-	}
-
-	if (options[HA_xymax].lng > 0) {
-		dpi = 0;
-		if (options[HA_xymax].lng < xmax || xmax == 0)
-			xmax = options[HA_xymax].lng;
-		if (options[HA_xymax].lng < ymax || ymax == 0)
-			ymax = options[HA_xymax].lng;
-	}
-
-	if (xmax < 0 || ymax < 0) {
-		fprintf(stderr, "ERROR:  xmax and ymax may not be < 0\n");
+	if (rnd_png_set_size(pctx, options[HA_dpi].lng, options[HA_xmax].lng, options[HA_ymax].lng, options[HA_xymax].lng) != 0) {
 		png_free_cache();
 		return;
 	}
 
 	parse_bloat(pctx, options[HA_bloat].str);
 
-	if (rnd_png_create(pctx, dpi, xmax, ymax, options[HA_use_alpha].lng) != 0) {
+	if (rnd_png_create(pctx, options[HA_use_alpha].lng) != 0) {
 		rnd_message(RND_MSG_ERROR, "png_do_export():  Failed to create bitmap of %d * %d returned NULL.  Aborting export.\n", pctx->w, pctx->h);
 		png_free_cache();
 		return;
