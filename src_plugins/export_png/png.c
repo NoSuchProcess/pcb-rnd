@@ -83,20 +83,37 @@ static int color_cache_inited = 0;
 static htpp_t brush_cache;
 static int brush_cache_inited = 0;
 
-static double bloat = 0;
-static double scale = 1;
-static rnd_coord_t x_shift = 0;
-static rnd_coord_t y_shift = 0;
-static int show_solder_side;
 static long png_drawn_objs = 0;
-#define SCALE(w)   ((int)rnd_round((w)/scale))
-#define SCALE_X(x) ((int)pcb_hack_round(((x) - x_shift)/scale))
-#define SCALE_Y(y) ((int)pcb_hack_round(((show_solder_side ? (PCB->hidlib.size_y-(y)) : (y)) - y_shift)/scale))
-#define SWAP_IF_SOLDER(a,b) do { int c; if (show_solder_side) { c=a; a=b; b=c; }} while (0)
+
+typedef struct {
+	/* public */
+	rnd_hidlib_t *hidlib;
+	double scale; /* should be 1 by default */
+	double bloat;
+	rnd_coord_t x_shift, y_shift;
+	int show_solder_side;
+
+	/* private */
+} rnd_png_t;
+
+static rnd_png_t pctx_, *pctx = &pctx_;
+
+void rnd_png_init(rnd_png_t *pctx, rnd_hidlib_t *hidlib)
+{
+	memset(pctx, 0, sizeof(rnd_png_t));
+	pctx->hidlib = hidlib;
+	pctx->scale = 1;
+}
+
+
+#define SCALE(w)   ((int)rnd_round((w)/pctx->scale))
+#define SCALE_X(x) ((int)pcb_hack_round(((x) - pctx->x_shift)/pctx->scale))
+#define SCALE_Y(y) ((int)pcb_hack_round(((pctx->show_solder_side ? (pctx->hidlib->size_y-(y)) : (y)) - pctx->y_shift)/pctx->scale))
+#define SWAP_IF_SOLDER(a,b) do { int c; if (pctx->show_solder_side) { c=a; a=b; b=c; }} while (0)
 
 /* Used to detect non-trivial outlines */
-#define NOT_EDGE_X(x) ((x) != 0 && (x) != PCB->hidlib.size_x)
-#define NOT_EDGE_Y(y) ((y) != 0 && (y) != PCB->hidlib.size_y)
+#define NOT_EDGE_X(x) ((x) != 0 && (x) != pctx->hidlib->size_x)
+#define NOT_EDGE_Y(y) ((y) != 0 && (y) != pctx->hidlib->size_y)
 #define NOT_EDGE(x,y) (NOT_EDGE_X(x) || NOT_EDGE_Y(y))
 
 static void png_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
@@ -447,7 +464,7 @@ static const char *filename;
 static rnd_box_t *bounds;
 static int in_mono, as_shown;
 
-static void parse_bloat(const char *str)
+static void parse_bloat(rnd_png_t *pctx, const char *str)
 {
 	int n;
 	rnd_unit_list_t extra_units = {
@@ -456,10 +473,10 @@ static void parse_bloat(const char *str)
 		{"", 0, 0}
 	};
 	for(n = 0; n < (sizeof(extra_units)/sizeof(extra_units[0]))-1; n++)
-		extra_units[n].scale = scale;
+		extra_units[n].scale = pctx->scale;
 	if (str == NULL)
 		return;
-	bloat = rnd_get_value_ex(str, NULL, NULL, extra_units, "", NULL);
+	pctx->bloat = rnd_get_value_ex(str, NULL, NULL, extra_units, "", NULL);
 }
 
 static void rgb(color_struct *dest, int r, int g, int b)
@@ -480,7 +497,7 @@ static void png_head(void)
 	lastcap = -1;
 	lastgroup = -1;
 	png_photo_head();
-	show_solder_side = conf_core.editor.show_solder_side;
+	pctx->show_solder_side = conf_core.editor.show_solder_side;
 	last_color_r = last_color_g = last_color_b = last_cap = -1;
 
 	gdImageFilledRectangle(im, 0, 0, gdImageSX(im), gdImageSY(im), white->c);
@@ -609,6 +626,8 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	int xmax, ymax, dpi;
 	rnd_xform_t xform;
 
+	rnd_png_init(pctx, &PCB->hidlib);
+
 	png_free_cache();
 
 	if (!options) {
@@ -633,14 +652,14 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	/* figure out width and height of the board */
 	if (options[HA_only_visible].lng) {
 		bbox = pcb_data_bbox(&tmp, PCB->Data, rnd_false);
-		x_shift = bbox->X1;
-		y_shift = bbox->Y1;
+		pctx->x_shift = bbox->X1;
+		pctx->y_shift = bbox->Y1;
 		h = bbox->Y2 - bbox->Y1;
 		w = bbox->X2 - bbox->X1;
 	}
 	else {
-		x_shift = 0;
-		y_shift = 0;
+		pctx->x_shift = 0;
+		pctx->y_shift = 0;
 		h = PCB->hidlib.size_y;
 		w = PCB->hidlib.size_x;
 	}
@@ -678,12 +697,13 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		return;
 	}
 
+	TODO("move this to rnd (pctx init)");
 	if (dpi > 0) {
 		/* a scale of 1  means 1 pixel is 1 inch
 		   a scale of 10 means 1 pixel is 10 inches */
-		scale = RND_INCH_TO_COORD(1) / dpi;
-		w = rnd_round(w / scale) - PNG_SCALE_HACK1;
-		h = rnd_round(h / scale) - PNG_SCALE_HACK1;
+		pctx->scale = RND_INCH_TO_COORD(1) / dpi;
+		w = rnd_round(w / pctx->scale) - PNG_SCALE_HACK1;
+		h = rnd_round(h / pctx->scale) - PNG_SCALE_HACK1;
 	}
 	else if (xmax == 0 && ymax == 0) {
 		fprintf(stderr, "ERROR:  You may not set both xmax, ymax," "and xy-max to zero\n");
@@ -693,12 +713,12 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		if (ymax == 0 || ((xmax > 0)
 											&& ((w / xmax) > (h / ymax)))) {
 			h = (h * xmax) / w;
-			scale = w / xmax;
+			pctx->scale = w / xmax;
 			w = xmax;
 		}
 		else {
 			w = (w * ymax) / h;
-			scale = h / ymax;
+			pctx->scale = h / ymax;
 			h = ymax;
 		}
 	}
@@ -715,7 +735,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	master_im = im;
 
-	parse_bloat(options[HA_bloat].str);
+	parse_bloat(pctx, options[HA_bloat].str);
 
 	/* Allocate white and black; the first color allocated becomes the background color */
 	white = (color_struct *) malloc(sizeof(color_struct));
@@ -1053,7 +1073,7 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 		if (SCALE(agc->width) == 0 && agc->width > 0)
 			gdImageSetThickness(im, 1);
 		else
-			gdImageSetThickness(im, SCALE(agc->width + 2 * bloat));
+			gdImageSetThickness(im, SCALE(agc->width + 2 * pctx->bloat));
 		linewidth = agc->width;
 		need_brush = 1;
 	}
@@ -1064,7 +1084,7 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 		int r;
 
 		if (agc->width)
-			r = SCALE(agc->width + 2 * bloat);
+			r = SCALE(agc->width + 2 * pctx->bloat);
 		else
 			r = 1;
 
@@ -1151,11 +1171,11 @@ static void png_fill_rect_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 		y2 = y2;
 		y2 = t;
 	}
-	y1 -= bloat;
-	y2 += bloat;
+	y1 -= pctx->bloat;
+	y2 += pctx->bloat;
 	SWAP_IF_SOLDER(y1, y2);
 
-	gdImageFilledRectangle(im, SCALE_X(x1 - bloat), SCALE_Y(y1), SCALE_X(x2 + bloat) - 1, SCALE_Y(y2) - 1, unerase_override ? white->c : gc->color->c);
+	gdImageFilledRectangle(im, SCALE_X(x1 - pctx->bloat), SCALE_Y(y1), SCALE_X(x2 + pctx->bloat) - 1, SCALE_Y(y2) - 1, unerase_override ? white->c : gc->color->c);
 	have_outline |= doing_outline;
 }
 
@@ -1217,7 +1237,7 @@ static void png_draw_line_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 		else
 			fg = gdImageColorResolve(im, gc->color->r, gc->color->g, gc->color->b);
 
-		w += 2 * bloat;
+		w += 2 * pctx->bloat;
 		dwx = -w / l * dy;
 		dwy = w / l * dx;
 		p[0].x = SCALE_X(x1 + dwx - dwy);
@@ -1280,7 +1300,7 @@ static void png_draw_arc_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_co
 		   in pcb, 0 degrees is to the left and +90 degrees is down */
 		start_angle = 180 - start_angle;
 		delta_angle = -delta_angle;
-		if (show_solder_side) {
+		if (pctx->show_solder_side) {
 			start_angle = -start_angle;
 			delta_angle = -delta_angle;
 		}
@@ -1326,9 +1346,9 @@ static void png_fill_circle_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd
 	use_gc(im, gc);
 
 	if (gc->is_erase)
-		my_bloat = -2 * bloat;
+		my_bloat = -2 * pctx->bloat;
 	else
-		my_bloat = 2 * bloat;
+		my_bloat = 2 * pctx->bloat;
 
 	have_outline |= doing_outline;
 
