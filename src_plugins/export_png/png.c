@@ -931,11 +931,9 @@ static void rnd_png_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static rnd_composite_op_t drawing_mode;
 static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	static gdImagePtr dst_im;
-	drawing_mode = op;
 	if ((direct) || (is_photo_drill)) /* photo drill is a special layer, no copositing on that */
 		return;
 	switch(op) {
