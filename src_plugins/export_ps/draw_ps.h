@@ -24,7 +24,7 @@ typedef struct rnd_ps_s {
 	double scale_factor;
 	rnd_coord_t media_width, media_height;
 	rnd_composite_op_t drawing_mode;
-
+	int lastcap, lastcolor;
 } rnd_ps_t;
 
 void rnd_ps_init(rnd_ps_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int media_idx, int fillpage, double scale_factor);

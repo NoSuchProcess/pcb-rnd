@@ -540,6 +540,8 @@ void rnd_ps_init(rnd_ps_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int media_idx, i
 	/* cache */
 	pctx->linewidth = -1;
 	pctx->pagecount = 1;
+	pctx->lastcap = -1;
+	pctx->lastcolor = -1;
 }
 
 /* This is used by other HIDs that use a postscript format, like lpr or eps.  */
@@ -1026,12 +1028,9 @@ static void ps_set_draw_faded(rnd_hid_gc_t gc, int faded)
 
 static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc)
 {
-	static int lastcap = -1;
-	static int lastcolor = -1;
-
 	pctx->drawn_objs++;
 	if (gc == NULL) {
-		lastcap = lastcolor = -1;
+		pctx->lastcap = pctx->lastcolor = -1;
 		return;
 	}
 	if (gc->me_pointer != &ps_hid) {
@@ -1042,7 +1041,7 @@ static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc)
 		rnd_fprintf(pctx->outf, "%mi setlinewidth\n", gc->width);
 		pctx->linewidth = gc->width;
 	}
-	if (lastcap != gc->cap) {
+	if (pctx->lastcap != gc->cap) {
 		int c;
 		switch (gc->cap) {
 		case rnd_cap_round:
@@ -1056,13 +1055,13 @@ static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc)
 			c = 1;
 		}
 		fprintf(pctx->outf, "%d setlinecap %d setlinejoin\n", c, c);
-		lastcap = gc->cap;
+		pctx->lastcap = gc->cap;
 	}
 #define CBLEND(gc) (((gc->r)<<24)|((gc->g)<<16)|((gc->b)<<8)|(gc->faded))
-	if (lastcolor != CBLEND(gc)) {
+	if (pctx->lastcolor != CBLEND(gc)) {
 		if (global.is_drill || global.is_mask) {
 			fprintf(pctx->outf, "%d gray\n", (gc->erase || global.is_mask) ? 0 : 1);
-			lastcolor = 0;
+			pctx->lastcolor = 0;
 		}
 		else {
 			double r, g, b;
@@ -1078,7 +1077,7 @@ static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc)
 				fprintf(pctx->outf, "%g gray\n", r / 255.0);
 			else
 				fprintf(pctx->outf, "%g %g %g rgb\n", r / 255.0, g / 255.0, b / 255.0);
-			lastcolor = CBLEND(gc);
+			pctx->lastcolor = CBLEND(gc);
 		}
 	}
 }
