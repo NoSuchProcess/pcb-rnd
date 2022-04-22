@@ -931,7 +931,7 @@ static void rnd_png_destroy_gc(rnd_hid_gc_t gc)
 	free(gc);
 }
 
-static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+void rnd_png_set_drawing_mode(rnd_png_t *pctx, rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	static gdImagePtr dst_im;
 	if ((direct) || (is_photo_drill)) /* photo drill is a special layer, no copositing on that */
@@ -992,7 +992,13 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 	}
 }
 
-static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
+static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+{
+	rnd_png_set_drawing_mode(pctx, hid, op, direct, screen);
+}
+
+
+void rnd_png_set_color(rnd_png_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	color_struct *cc;
 
@@ -1040,17 +1046,23 @@ static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	}
 }
 
-static void png_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
+static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
+{
+	rnd_png_set_color(pctx, gc, color);
+}
+
+
+static void rnd_png_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void png_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
+static void rnd_png_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
-static void png_set_draw_xor(rnd_hid_gc_t gc, int xor_)
+static void rnd_png_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
 }
@@ -1480,9 +1492,9 @@ int pplg_init_export_png(void)
 	png_hid.destroy_gc = rnd_png_destroy_gc;
 	png_hid.set_drawing_mode = png_set_drawing_mode;
 	png_hid.set_color = png_set_color;
-	png_hid.set_line_cap = png_set_line_cap;
-	png_hid.set_line_width = png_set_line_width;
-	png_hid.set_draw_xor = png_set_draw_xor;
+	png_hid.set_line_cap = rnd_png_set_line_cap;
+	png_hid.set_line_width = rnd_png_set_line_width;
+	png_hid.set_draw_xor = rnd_png_set_draw_xor;
 	png_hid.draw_line = png_draw_line;
 	png_hid.draw_arc = png_draw_arc;
 	png_hid.draw_rect = png_draw_rect;
