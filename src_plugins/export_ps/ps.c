@@ -30,6 +30,8 @@
 #include "stub_draw.h"
 #include "../src_plugins/lib_compat_help/media.h"
 
+#include "draw_ps.h"
+
 const char *ps_cookie = "ps HID";
 
 static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform);
@@ -466,7 +468,7 @@ void ps_start_file(rnd_ps_t *pctx, const char *swver)
 	fprintf(f, "%%%%EndComments\n\n");
 }
 
-static void ps_end_file(rnd_ps_t *pctx)
+void ps_end_file(rnd_ps_t *pctx)
 {
 	FILE *f = pctx->outf;
 
