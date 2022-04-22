@@ -177,9 +177,9 @@ static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpos
 
 	if (!*photo_im) {
 		static color_struct *black = NULL, *white = NULL;
-		*photo_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
+		*photo_im = gdImageCreate(gdImageSX(pctx->im), gdImageSY(pctx->im));
 		if (photo_im == NULL) {
-			rnd_message(RND_MSG_ERROR, "png_set_layer():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", gdImageSX(im), gdImageSY(im));
+			rnd_message(RND_MSG_ERROR, "png_set_layer():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", gdImageSX(pctx->im), gdImageSY(pctx->im));
 			return 0;
 		}
 
@@ -202,9 +202,9 @@ static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpos
 		}
 
 		if (is_photo_drill)
-			gdImageFilledRectangle(*photo_im, 0, 0, gdImageSX(im), gdImageSY(im), black->c);
+			gdImageFilledRectangle(*photo_im, 0, 0, gdImageSX(pctx->im), gdImageSY(pctx->im), black->c);
 	}
-	im = *photo_im;
+	pctx->im = *photo_im;
 	return 1;
 }
 
@@ -222,7 +222,7 @@ static void png_photo_foot(void)
 	rgb(&black, 0, 0, 0);
 	rgb(&fr4, 70, 70, 70);
 
-	im = pctx->master_im;
+	pctx->im = pctx->master_im;
 
 	ts_bs(photo_copper[photo_groups[0]]);
 	if (photo_silk != NULL)
@@ -234,20 +234,20 @@ static void png_photo_foot(void)
 		int black = gdImageColorResolve(photo_outline, 0x00, 0x00, 0x00);
 
 		/* go all the way around the image, trying to fill the outline */
-		for (x = 0; x < gdImageSX(im); x++) {
+		for (x = 0; x < gdImageSX(pctx->im); x++) {
 			gdImageFillToBorder(photo_outline, x, 0, black, black);
-			gdImageFillToBorder(photo_outline, x, gdImageSY(im) - 1, black, black);
+			gdImageFillToBorder(photo_outline, x, gdImageSY(pctx->im) - 1, black, black);
 		}
-		for (y = 1; y < gdImageSY(im) - 1; y++) {
+		for (y = 1; y < gdImageSY(pctx->im) - 1; y++) {
 			gdImageFillToBorder(photo_outline, 0, y, black, black);
-			gdImageFillToBorder(photo_outline, gdImageSX(im) - 1, y, black, black);
+			gdImageFillToBorder(photo_outline, gdImageSX(pctx->im) - 1, y, black, black);
 
 		}
 	}
 
 
-	for (x = 0; x < gdImageSX(im); x++) {
-		for (y = 0; y < gdImageSY(im); y++) {
+	for (x = 0; x < gdImageSX(pctx->im); x++) {
+		for (y = 0; y < gdImageSY(pctx->im); y++) {
 			color_struct p, cop;
 			color_struct mask_colour, silk_colour;
 			int cc, mask, silk;
@@ -366,16 +366,16 @@ static void png_photo_foot(void)
 				p = cop;
 
 			if (png_options[HA_use_alpha].lng)
-				cc = (transparent) ? gdImageColorResolveAlpha(im, 0, 0, 0, 127) : gdImageColorResolveAlpha(im, p.r, p.g, p.b, 0);
+				cc = (transparent) ? gdImageColorResolveAlpha(pctx->im, 0, 0, 0, 127) : gdImageColorResolveAlpha(pctx->im, p.r, p.g, p.b, 0);
 			else
-				cc = (transparent) ? gdImageColorResolve(im, 0, 0, 0) : gdImageColorResolve(im, p.r, p.g, p.b);
+				cc = (transparent) ? gdImageColorResolve(pctx->im, 0, 0, 0) : gdImageColorResolve(pctx->im, p.r, p.g, p.b);
 
 			if (photo_flip == PHOTO_FLIP_X)
-				gdImageSetPixel(im, gdImageSX(im) - x - 1, y, cc);
+				gdImageSetPixel(pctx->im, gdImageSX(pctx->im) - x - 1, y, cc);
 			else if (photo_flip == PHOTO_FLIP_Y)
-				gdImageSetPixel(im, x, gdImageSY(im) - y - 1, cc);
+				gdImageSetPixel(pctx->im, x, gdImageSY(pctx->im) - y - 1, cc);
 			else
-				gdImageSetPixel(im, x, y, cc);
+				gdImageSetPixel(pctx->im, x, y, cc);
 		}
 	}
 }

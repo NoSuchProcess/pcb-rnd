@@ -110,7 +110,7 @@ typedef struct {
 	int w, h; /* in pixels */
 	int dpi, xmax, ymax;
 	color_struct *black, *white;
-	gdImagePtr master_im, comp_im, erase_im;
+	gdImagePtr im, master_im, comp_im, erase_im;
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -145,7 +145,6 @@ typedef struct rnd_hid_gc_s {
 	int is_erase;
 } hid_gc_t;
 
-static gdImagePtr im = NULL;
 static FILE *f = 0;
 static int linewidth = -1;
 static int lastgroup = -1;
@@ -504,7 +503,7 @@ static void png_head(void)
 	pctx->show_solder_side = conf_core.editor.show_solder_side;
 	last_color_r = last_color_g = last_color_b = last_cap = -1;
 
-	gdImageFilledRectangle(im, 0, 0, gdImageSX(im), gdImageSY(im), pctx->white->c);
+	gdImageFilledRectangle(pctx->im, 0, 0, gdImageSX(pctx->im), gdImageSY(pctx->im), pctx->white->c);
 }
 
 static void png_foot(void)
@@ -522,19 +521,19 @@ static void png_foot(void)
 		format_error = rnd_true;
 	else if (strcmp(fmt, FMT_gif) == 0)
 #ifdef PCB_HAVE_GDIMAGEGIF
-		gdImageGif(im, f);
+		gdImageGif(pctx->im, f);
 #else
 		format_error = rnd_true;
 #endif
 	else if (strcmp(fmt, FMT_jpg) == 0)
 #ifdef PCB_HAVE_GDIMAGEJPEG
-		gdImageJpeg(im, f, -1);
+		gdImageJpeg(pctx->im, f, -1);
 #else
 		format_error = rnd_true;
 #endif
 	else if (strcmp(fmt, FMT_png) == 0)
 #ifdef PCB_HAVE_GDIMAGEPNG
-		gdImagePng(im, f);
+		gdImagePng(pctx->im, f);
 #else
 		format_error = rnd_true;
 #endif
@@ -714,13 +713,13 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 		}
 	}
 
-	im = gdImageCreate(pctx->w, pctx->h);
+	pctx->im = gdImageCreate(pctx->w, pctx->h);
 
 #ifdef PCB_HAVE_GD_RESOLUTION
-	gdImageSetResolution(im, pctx->dpi, pctx->dpi);
+	gdImageSetResolution(pctx->im, pctx->dpi, pctx->dpi);
 #endif
 
-	pctx->master_im = im;
+	pctx->master_im = pctx->im;
 
 	/* Allocate white and black; the first color allocated becomes the background color */
 	pctx->white = (color_struct *)malloc(sizeof(color_struct));
@@ -729,7 +728,7 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 		pctx->white->a = 127;
 	else
 		pctx->white->a = 0;
-	pctx->white->c = gdImageColorAllocateAlpha(im, pctx->white->r, pctx->white->g, pctx->white->b, pctx->white->a);
+	pctx->white->c = gdImageColorAllocateAlpha(pctx->im, pctx->white->r, pctx->white->g, pctx->white->b, pctx->white->a);
 	if (pctx->white->c == BADC) {
 		rnd_message(RND_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
 		return -1;
@@ -738,7 +737,7 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 
 	pctx->black = (color_struct *)malloc(sizeof(color_struct));
 	pctx->black->r = pctx->black->g = pctx->black->b = pctx->black->a = 0;
-	pctx->black->c = gdImageColorAllocate(im, pctx->black->r, pctx->black->g, pctx->black->b);
+	pctx->black->c = gdImageColorAllocate(pctx->im, pctx->black->r, pctx->black->g, pctx->black->b);
 	if (pctx->black->c == BADC) {
 		rnd_message(RND_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
 		return -1;
@@ -931,9 +930,9 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 
 			/* the main pixel buffer; drawn with color */
 			if (pctx->comp_im == NULL) {
-				pctx->comp_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
+				pctx->comp_im = gdImageCreate(gdImageSX(pctx->im), gdImageSY(pctx->im));
 				if (!pctx->comp_im) {
-					rnd_message(RND_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on pctx->comp_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
+					rnd_message(RND_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on pctx->comp_im.  Corrupt export!\n", gdImageSY(pctx->im), gdImageSY(pctx->im));
 					return;
 				}
 			}
@@ -942,39 +941,39 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 			   should be combined back to the master image; white means combine back,
 			   anything else means cut-out/forget/ignore that pixel */
 			if (pctx->erase_im == NULL) {
-				pctx->erase_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
+				pctx->erase_im = gdImageCreate(gdImageSX(pctx->im), gdImageSY(pctx->im));
 				if (!pctx->erase_im) {
-					rnd_message(RND_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on pctx->erase_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
+					rnd_message(RND_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on pctx->erase_im.  Corrupt export!\n", gdImageSY(pctx->im), gdImageSY(pctx->im));
 					return;
 				}
 			}
-			gdImagePaletteCopy(pctx->comp_im, im);
-			dst_im = im;
+			gdImagePaletteCopy(pctx->comp_im, pctx->im);
+			dst_im = pctx->im;
 			gdImageFilledRectangle(pctx->comp_im, 0, 0, gdImageSX(pctx->comp_im), gdImageSY(pctx->comp_im), pctx->white->c);
 
-			gdImagePaletteCopy(pctx->erase_im, im);
+			gdImagePaletteCopy(pctx->erase_im, pctx->im);
 			gdImageFilledRectangle(pctx->erase_im, 0, 0, gdImageSX(pctx->erase_im), gdImageSY(pctx->erase_im), pctx->black->c);
 			break;
 
 		case RND_HID_COMP_POSITIVE:
 		case RND_HID_COMP_POSITIVE_XOR:
-			im = pctx->comp_im;
+			pctx->im = pctx->comp_im;
 			break;
 		case RND_HID_COMP_NEGATIVE:
-			im = pctx->erase_im;
+			pctx->im = pctx->erase_im;
 			break;
 
 		case RND_HID_COMP_FLUSH:
 		{
 			int x, y, c, e;
-			im = dst_im;
-			gdImagePaletteCopy(im, pctx->comp_im);
-			for (x = 0; x < gdImageSX(im); x++) {
-				for (y = 0; y < gdImageSY(im); y++) {
+			pctx->im = dst_im;
+			gdImagePaletteCopy(pctx->im, pctx->comp_im);
+			for (x = 0; x < gdImageSX(pctx->im); x++) {
+				for (y = 0; y < gdImageSY(pctx->im); y++) {
 					e = gdImageGetPixel(pctx->erase_im, x, y);
 					c = gdImageGetPixel(pctx->comp_im, x, y);
 					if ((e == pctx->white->c) && (c))
-						gdImageSetPixel(im, x, y, c);
+						gdImageSetPixel(pctx->im, x, y, c);
 				}
 			}
 			break;
@@ -986,7 +985,7 @@ static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	color_struct *cc;
 
-	if (im == NULL)
+	if (pctx->im == NULL)
 		return;
 
 	if (color == NULL)
@@ -1018,7 +1017,7 @@ static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 		gc->color->r = color->r;
 		gc->color->g = color->g;
 		gc->color->b = color->b;
-		gc->color->c = gdImageColorAllocate(im, gc->color->r, gc->color->g, gc->color->b);
+		gc->color->c = gdImageColorAllocate(pctx->im, gc->color->r, gc->color->g, gc->color->b);
 		if (gc->color->c == BADC) {
 			rnd_message(RND_MSG_ERROR, "png_set_color():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 			return;
@@ -1201,8 +1200,8 @@ static void png_fill_rect_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 
 static void png_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	png_fill_rect_(im, gc, x1, y1, x2, y2);
-	if ((im != pctx->erase_im) && (pctx->erase_im != NULL)) {
+	png_fill_rect_(pctx->im, gc, x1, y1, x2, y2);
+	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
 		unerase_override = 1;
 		png_fill_rect_(pctx->erase_im, gc, x1, y1, x2, y2);
 		unerase_override = 0;
@@ -1274,8 +1273,8 @@ static void png_draw_line_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 
 static void png_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	png_draw_line_(im, gc, x1, y1, x2, y2);
-	if ((im != pctx->erase_im) && (pctx->erase_im != NULL)) {
+	png_draw_line_(pctx->im, gc, x1, y1, x2, y2);
+	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
 		unerase_override = 1;
 		png_draw_line_(pctx->erase_im, gc, x1, y1, x2, y2);
 		unerase_override = 0;
@@ -1351,8 +1350,8 @@ static void png_draw_arc_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_co
 
 static void png_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
-	png_draw_arc_(im, gc, cx, cy, width, height, start_angle, delta_angle);
-	if ((im != pctx->erase_im) && (pctx->erase_im != NULL)) {
+	png_draw_arc_(pctx->im, gc, cx, cy, width, height, start_angle, delta_angle);
+	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
 		unerase_override = 1;
 		png_draw_arc_(pctx->erase_im, gc, cx, cy, width, height, start_angle, delta_angle);
 		unerase_override = 0;
@@ -1379,8 +1378,8 @@ static void png_fill_circle_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd
 
 static void png_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
-	png_fill_circle_(im, gc, cx, cy, radius);
-	if ((im != pctx->erase_im) && (pctx->erase_im != NULL)) {
+	png_fill_circle_(pctx->im, gc, cx, cy, radius);
+	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
 		unerase_override = 1;
 		png_fill_circle_(pctx->erase_im, gc, cx, cy, radius);
 		unerase_override = 0;
@@ -1414,8 +1413,8 @@ static void png_fill_polygon_offs_(gdImagePtr im, rnd_hid_gc_t gc, int n_coords,
 
 static void png_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
-	png_fill_polygon_offs_(im, gc, n_coords, x, y, dx, dy);
-	if ((im != pctx->erase_im) && (pctx->erase_im != NULL)) {
+	png_fill_polygon_offs_(pctx->im, gc, n_coords, x, y, dx, dy);
+	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
 		unerase_override = 1;
 		png_fill_polygon_offs_(pctx->erase_im, gc, n_coords, x, y, dx, dy);
 		unerase_override = 0;
