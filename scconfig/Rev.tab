@@ -1,3 +1,4 @@
+36219	configure	export plugin generaliztion for librnd
 36043	configure	version bump: 3.0.4-dev
 35941	configure	moving generic part of diag and preferences dialog to librnd 3.1.0
 35866	configure	diag plugin generalization for librnd move

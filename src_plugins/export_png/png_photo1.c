@@ -29,14 +29,13 @@
 #define PHOTO_FLIP_X 1
 #define PHOTO_FLIP_Y 2
 
-static int photo_mode, photo_flip;
+static int photo_flip;
 static gdImagePtr photo_copper[PCB_MAX_LAYER];
 static gdImagePtr photo_silk, photo_mask, photo_drill, *photo_im;
 static gdImagePtr photo_outline;
 static int photo_groups[PCB_MAX_LAYERGRP + 2], photo_ngroups;
 static int photo_has_inners;
 static rnd_layergrp_id_t photo_last_grp;
-static int is_photo_drill, is_photo_mech;
 
 static const char *mask_colour_names[] = {
 	"green",

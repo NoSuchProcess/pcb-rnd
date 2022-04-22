@@ -131,14 +131,14 @@ static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpos
 	photo_last_grp = group;
 
 	if (PCB_LAYER_IS_OUTLINE(flags, purpi)) {
-		doing_outline = 1;
-		have_outline = 0;
+		pctx->doing_outline = 1;
+		pctx->have_outline = 0;
 	}
 	else
-		doing_outline = 0;
+		pctx->doing_outline = 0;
 
-	is_photo_mech = ((flags & PCB_LYT_MECH) && PCB_LAYER_IS_ROUTE(flags, purpi));
-	is_photo_drill = (PCB_LAYER_IS_DRILL(flags, purpi) || is_photo_mech);
+	pctx->is_photo_mech = ((flags & PCB_LYT_MECH) && PCB_LAYER_IS_ROUTE(flags, purpi));
+	pctx->is_photo_drill = (PCB_LAYER_IS_DRILL(flags, purpi) || pctx->is_photo_mech);
 	if (((flags & PCB_LYT_ANYTHING) == PCB_LYT_SILK) && (flags & PCB_LYT_TOP)) {
 		if (photo_flip)
 			return 0;
@@ -159,13 +159,13 @@ static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpos
 			return 0;
 		photo_im = &photo_mask;
 	}
-	else if (is_photo_drill) {
+	else if (pctx->is_photo_drill) {
 		photo_im = &photo_drill;
 	}
 	else {
 		if (PCB_LAYER_IS_OUTLINE(flags, purpi)) {
-			doing_outline = 1;
-			have_outline = 0;
+			pctx->doing_outline = 1;
+			pctx->have_outline = 0;
 			photo_im = &photo_outline;
 		}
 		else if (flags & PCB_LYT_COPPER) {
@@ -188,7 +188,7 @@ static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpos
 		white->r = white->g = white->b = 255;
 		white->a = 0;
 		white->c = gdImageColorAllocate(*photo_im, white->r, white->g, white->b);
-		if (white->c == BADC) {
+		if (white->c == RND_PNG_BADC) {
 			rnd_message(RND_MSG_ERROR, "png_set_layer():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 			return 0;
 		}
@@ -196,12 +196,12 @@ static int png_set_layer_group_photo(rnd_layergrp_id_t group, const char *purpos
 		black = (color_struct *) malloc(sizeof(color_struct));
 		black->r = black->g = black->b = black->a = 0;
 		black->c = gdImageColorAllocate(*photo_im, black->r, black->g, black->b);
-		if (black->c == BADC) {
+		if (black->c == RND_PNG_BADC) {
 			rnd_message(RND_MSG_ERROR, "png_set_layer(): gdImageColorAllocate() returned NULL.  Aborting export.\n");
 			return 0;
 		}
 
-		if (is_photo_drill)
+		if (pctx->is_photo_drill)
 			gdImageFilledRectangle(*photo_im, 0, 0, gdImageSX(pctx->im), gdImageSY(pctx->im), black->c);
 	}
 	pctx->im = *photo_im;
@@ -230,7 +230,7 @@ static void png_photo_foot(void)
 	if (photo_mask != NULL)
 		ts_bs_sm(photo_mask);
 
-	if (photo_outline && have_outline) {
+	if (photo_outline && pctx->have_outline) {
 		int black = gdImageColorResolve(photo_outline, 0x00, 0x00, 0x00);
 
 		/* go all the way around the image, trying to fill the outline */
@@ -253,7 +253,7 @@ static void png_photo_foot(void)
 			int cc, mask, silk;
 			int transparent;
 
-			if (photo_outline && have_outline) {
+			if (photo_outline && pctx->have_outline) {
 				transparent = gdImageGetPixel(photo_outline, x, y);
 			}
 			else {
