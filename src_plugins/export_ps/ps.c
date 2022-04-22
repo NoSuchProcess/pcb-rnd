@@ -509,9 +509,37 @@ static FILE *psopen(const char *base, const char *which)
 	return ps_open_file;
 }
 
-void rnd_ps_init(rnd_ps_t *pctx, FILE *f)
+void rnd_ps_init(rnd_ps_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int media_idx, int fillpage, double scale_factor)
 {
+	memset(pctx, 0, sizeof(rnd_ps_t));
+
+	pctx->hidlib = hidlib;
 	pctx->outf = f;
+
+	pctx->media_idx = media_idx;
+	pctx->media_width = pcb_media_data[media_idx].width;
+	pctx->media_height = pcb_media_data[media_idx].height;
+	pctx->ps_width = pctx->media_width - 2.0 * pcb_media_data[media_idx].margin_x;
+	pctx->ps_height = pctx->media_height - 2.0 * pcb_media_data[media_idx].margin_y;
+
+	pctx->fillpage = fillpage;
+	pctx->scale_factor = scale_factor;
+	if (pctx->fillpage) {
+		double zx, zy;
+		if (hidlib->size_x > hidlib->size_y) {
+			zx = pctx->ps_height / hidlib->size_x;
+			zy = pctx->ps_width / hidlib->size_y;
+		}
+		else {
+			zx = pctx->ps_height / hidlib->size_y;
+			zy = pctx->ps_width / hidlib->size_x;
+		}
+		pctx->scale_factor *= MIN(zx, zy);
+	}
+
+	/* cache */
+	pctx->linewidth = -1;
+	pctx->pagecount = 1;
 }
 
 /* This is used by other HIDs that use a postscript format, like lpr or eps.  */
@@ -519,53 +547,32 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 
-	rnd_ps_init(&global.ps, the_file);
+	rnd_ps_init(&global.ps, &PCB->hidlib, the_file, options[HA_media].lng, options[HA_fillpage].lng, options[HA_scale].dbl);
 
 	global.drill_helper = options[HA_drillhelper].lng;
 	global.drill_helper_size = options[HA_drillhelpersize].crd;
-	global.ps.align_marks = options[HA_alignmarks].lng;
 	global.outline = options[HA_outline].lng;
 	global.mirror = options[HA_mirror].lng;
-	global.ps.fillpage = options[HA_fillpage].lng;
 	global.automirror = options[HA_automirror].lng;
+	global.drillcopper = options[HA_drillcopper].lng;
+
+	global.ps.align_marks = options[HA_alignmarks].lng;
 	global.ps.incolor = options[HA_color].lng;
 	global.ps.invert = options[HA_psinvert].lng;
 	global.ps.fade_ratio = RND_CLAMP(options[HA_psfade].dbl, 0, 1);
-
-	global.ps.media_idx = options[HA_media].lng;
-	global.ps.media_width = pcb_media_data[global.ps.media_idx].width;
-	global.ps.media_height = pcb_media_data[global.ps.media_idx].height;
-	global.ps.ps_width = global.ps.media_width - 2.0 * pcb_media_data[global.ps.media_idx].margin_x;
-	global.ps.ps_height = global.ps.media_height - 2.0 * pcb_media_data[global.ps.media_idx].margin_y;
-	global.ps.scale_factor = options[HA_scale].dbl;
-
 	global.ps.calibration_x = options[HA_xcalib].dbl;
 	global.ps.calibration_y = options[HA_ycalib].dbl;
-	global.drillcopper = options[HA_drillcopper].lng;
 	global.ps.legend = options[HA_legend].lng;
 	global.ps.single_page = options[HA_single_page].lng;
 
+
 	if (the_file)
 		rnd_ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
-
-	if (global.ps.fillpage) {
-		double zx, zy;
-		if (PCB->hidlib.size_x > PCB->hidlib.size_y) {
-			zx = global.ps.ps_height / PCB->hidlib.size_x;
-			zy = global.ps.ps_width / PCB->hidlib.size_y;
-		}
-		else {
-			zx = global.ps.ps_height / PCB->hidlib.size_y;
-			zy = global.ps.ps_width / PCB->hidlib.size_x;
-		}
-		global.ps.scale_factor *= MIN(zx, zy);
-	}
 
 	global.has_outline = pcb_has_explicit_outline(PCB);
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 	qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);
 
-	global.ps.linewidth = -1;
 	/* reset static vars */
 	ps_set_layer_group(rnd_render, -1, NULL, -1, -1, 0, -1, NULL);
 	use_gc(&global.ps, NULL);

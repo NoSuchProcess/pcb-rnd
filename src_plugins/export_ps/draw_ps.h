@@ -1,5 +1,8 @@
+#include <librnd/core/hidlib.h>
 typedef struct rnd_ps_s {
+
 	/* public: config */
+	rnd_hidlib_t *hidlib;
 	FILE *outf;
 	double calibration_x, calibration_y;
 	double fade_ratio;
@@ -24,7 +27,7 @@ typedef struct rnd_ps_s {
 
 } rnd_ps_t;
 
-void rnd_ps_init(rnd_ps_t *pctx, FILE *f);
+void rnd_ps_init(rnd_ps_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int media_idx, int fillpage, double scale_factor);
 
 void rnd_ps_start_file(rnd_ps_t *pctx, const char *swver);
 void rnd_ps_end_file(rnd_ps_t *pctx);
