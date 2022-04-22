@@ -113,7 +113,7 @@ typedef struct {
 	gdImagePtr im, master_im, comp_im, erase_im;
 	int last_color_r, last_color_g, last_color_b, last_cap;
 	gdImagePtr lastbrush;
-	int linewidth;
+	int linewidth, unerase_override;
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -1084,7 +1084,6 @@ static int brush_keyeq(const void *av, const void *bv)
 	return 1;
 }
 
-static int unerase_override = 0;
 static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 {
 	int need_brush = 0;
@@ -1094,7 +1093,7 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 	pctx->png_drawn_objs++;
 
 	agc = gc;
-	if (unerase_override) {
+	if (pctx->unerase_override) {
 		agc->r = -1;
 		agc->g = -1;
 		agc->b = -1;
@@ -1160,7 +1159,7 @@ static void use_gc(gdImagePtr im, rnd_hid_gc_t gc)
 				rnd_message(RND_MSG_ERROR, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
 				return;
 			}
-			if (unerase_override)
+			if (pctx->unerase_override)
 				fg = gdImageColorAllocateAlpha(agc->brush, 255, 255, 255, 0);
 			else
 				fg = gdImageColorAllocateAlpha(agc->brush, agc->r, agc->g, agc->b, 0);
@@ -1216,7 +1215,7 @@ static void png_fill_rect_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 	y2 += pctx->bloat;
 	SWAP_IF_SOLDER(y1, y2);
 
-	gdImageFilledRectangle(im, SCALE_X(x1 - pctx->bloat), SCALE_Y(y1), SCALE_X(x2 + pctx->bloat) - 1, SCALE_Y(y2) - 1, unerase_override ? pctx->white->c : gc->color->c);
+	gdImageFilledRectangle(im, SCALE_X(x1 - pctx->bloat), SCALE_Y(y1), SCALE_X(x2 + pctx->bloat) - 1, SCALE_Y(y2) - 1, pctx->unerase_override ? pctx->white->c : gc->color->c);
 	have_outline |= doing_outline;
 }
 
@@ -1224,9 +1223,9 @@ static void png_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 {
 	png_fill_rect_(pctx->im, gc, x1, y1, x2, y2);
 	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
-		unerase_override = 1;
+		pctx->unerase_override = 1;
 		png_fill_rect_(pctx->erase_im, gc, x1, y1, x2, y2);
-		unerase_override = 0;
+		pctx->unerase_override = 0;
 	}
 }
 
@@ -1273,7 +1272,7 @@ static void png_draw_line_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 		gdPoint p[4];
 		double l = sqrt((double)dx * (double)dx + (double)dy * (double)dy) * 2.0;
 
-		if (unerase_override)
+		if (pctx->unerase_override)
 			fg = gdImageColorResolve(im, 255, 255, 255);
 		else
 			fg = gdImageColorResolve(im, gc->color->r, gc->color->g, gc->color->b);
@@ -1297,9 +1296,9 @@ static void png_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 {
 	png_draw_line_(pctx->im, gc, x1, y1, x2, y2);
 	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
-		unerase_override = 1;
+		pctx->unerase_override = 1;
 		png_draw_line_(pctx->erase_im, gc, x1, y1, x2, y2);
-		unerase_override = 0;
+		pctx->unerase_override = 0;
 	}
 }
 
@@ -1374,9 +1373,9 @@ static void png_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 {
 	png_draw_arc_(pctx->im, gc, cx, cy, width, height, start_angle, delta_angle);
 	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
-		unerase_override = 1;
+		pctx->unerase_override = 1;
 		png_draw_arc_(pctx->erase_im, gc, cx, cy, width, height, start_angle, delta_angle);
-		unerase_override = 0;
+		pctx->unerase_override = 0;
 	}
 }
 
@@ -1395,16 +1394,16 @@ static void png_fill_circle_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd
 
 	gdImageSetThickness(im, 0);
 	pctx->linewidth = 0;
-	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), unerase_override ? pctx->white->c : gc->color->c);
+	gdImageFilledEllipse(im, SCALE_X(cx), SCALE_Y(cy), SCALE(2 * radius + my_bloat), SCALE(2 * radius + my_bloat), pctx->unerase_override ? pctx->white->c : gc->color->c);
 }
 
 static void png_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	png_fill_circle_(pctx->im, gc, cx, cy, radius);
 	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
-		unerase_override = 1;
+		pctx->unerase_override = 1;
 		png_fill_circle_(pctx->erase_im, gc, cx, cy, radius);
-		unerase_override = 0;
+		pctx->unerase_override = 0;
 	}
 }
 
@@ -1429,7 +1428,7 @@ static void png_fill_polygon_offs_(gdImagePtr im, rnd_hid_gc_t gc, int n_coords,
 	}
 	gdImageSetThickness(im, 0);
 	pctx->linewidth = 0;
-	gdImageFilledPolygon(im, points, n_coords, unerase_override ? pctx->white->c : gc->color->c);
+	gdImageFilledPolygon(im, points, n_coords, pctx->unerase_override ? pctx->white->c : gc->color->c);
 	free(points);
 }
 
@@ -1437,9 +1436,9 @@ static void png_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 {
 	png_fill_polygon_offs_(pctx->im, gc, n_coords, x, y, dx, dy);
 	if ((pctx->im != pctx->erase_im) && (pctx->erase_im != NULL)) {
-		unerase_override = 1;
+		pctx->unerase_override = 1;
 		png_fill_polygon_offs_(pctx->erase_im, gc, n_coords, x, y, dx, dy);
-		unerase_override = 0;
+		pctx->unerase_override = 0;
 	}
 }
 
