@@ -765,6 +765,21 @@ int rnd_ps_is_new_page(rnd_ps_t *pctx, int group)
 	return newpage;
 }
 
+int rnd_ps_new_file(rnd_ps_t *pctx, FILE *new_f)
+{
+	if (pctx->outf != NULL) {
+		rnd_ps_end_file(pctx);
+		fclose(pctx->outf);
+	}
+	pctx->outf = new_f;
+	if (pctx->outf == NULL) {
+		TODO("use rnd_message() and strerror instead");
+		perror(global.filename);
+		return -1;
+	}
+	return 0;
+}
+
 static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	gds_t tmp_ln;
@@ -827,23 +842,16 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 			rnd_fprintf(global.ps.outf, "showpage\n");
 		}
 		if ((!ps_cam.active && global.multi_file) || (ps_cam.active && ps_cam.fn_changed)) {
+			int nr;
 			const char *fn;
 			gds_t tmp;
 
 			gds_init(&tmp);
 			fn = ps_cam.active ? ps_cam.fn : pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed);
-			if (global.ps.outf) {
-				rnd_ps_end_file(&global.ps);
-				fclose(global.ps.outf);
-			}
-			global.ps.outf = psopen(ps_cam.active ? fn : global.filename, fn);
+			nr = rnd_ps_new_file(&global.ps, psopen(ps_cam.active ? fn : global.filename, fn));
 			gds_uninit(&tmp);
-
-			if (!global.ps.outf) {
-				perror(global.filename);
-				gds_uninit(&tmp_ln);
+			if (nr != 0)
 				return 0;
-			}
 
 			rnd_ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
 		}
