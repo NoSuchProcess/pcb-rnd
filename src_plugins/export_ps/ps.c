@@ -301,17 +301,15 @@ static struct {
 
 	rnd_bool multi_file;
 	rnd_bool multi_file_cam;
-	rnd_coord_t media_width, media_height, ps_width, ps_height;
+	rnd_coord_t media_width, media_height;
 
 	const char *filename;
 	rnd_bool drill_helper;
 	rnd_coord_t drill_helper_size;
-
 	rnd_bool outline;
 	rnd_bool mirror;
-	rnd_bool fillpage;
 	rnd_bool automirror;
-	rnd_bool incolor;
+
 	rnd_bool doing_toc;
 	int media_idx;
 	rnd_bool drillcopper;
@@ -319,7 +317,6 @@ static struct {
 	rnd_bool single_page;
 
 	int has_outline;
-	double scale_factor;
 
 	rnd_hid_expose_ctx_t exps;
 
@@ -537,17 +534,17 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	global.ps.align_marks = options[HA_alignmarks].lng;
 	global.outline = options[HA_outline].lng;
 	global.mirror = options[HA_mirror].lng;
-	global.fillpage = options[HA_fillpage].lng;
+	global.ps.fillpage = options[HA_fillpage].lng;
 	global.automirror = options[HA_automirror].lng;
-	global.incolor = options[HA_color].lng;
+	global.ps.incolor = options[HA_color].lng;
 	global.ps.invert = options[HA_psinvert].lng;
 	global.ps.fade_ratio = RND_CLAMP(options[HA_psfade].dbl, 0, 1);
 	global.media_idx = options[HA_media].lng;
 	global.media_width = pcb_media_data[global.media_idx].width;
 	global.media_height = pcb_media_data[global.media_idx].height;
-	global.ps_width = global.media_width - 2.0 * pcb_media_data[global.media_idx].margin_x;
-	global.ps_height = global.media_height - 2.0 * pcb_media_data[global.media_idx].margin_y;
-	global.scale_factor = options[HA_scale].dbl;
+	global.ps.ps_width = global.media_width - 2.0 * pcb_media_data[global.media_idx].margin_x;
+	global.ps.ps_height = global.media_height - 2.0 * pcb_media_data[global.media_idx].margin_y;
+	global.ps.scale_factor = options[HA_scale].dbl;
 	global.ps.calibration_x = options[HA_xcalib].dbl;
 	global.ps.calibration_y = options[HA_ycalib].dbl;
 	global.drillcopper = options[HA_drillcopper].lng;
@@ -557,17 +554,17 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	if (the_file)
 		rnd_ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
 
-	if (global.fillpage) {
+	if (global.ps.fillpage) {
 		double zx, zy;
 		if (PCB->hidlib.size_x > PCB->hidlib.size_y) {
-			zx = global.ps_height / PCB->hidlib.size_x;
-			zy = global.ps_width / PCB->hidlib.size_y;
+			zx = global.ps.ps_height / PCB->hidlib.size_x;
+			zy = global.ps.ps_width / PCB->hidlib.size_y;
 		}
 		else {
-			zx = global.ps_height / PCB->hidlib.size_y;
-			zy = global.ps_width / PCB->hidlib.size_x;
+			zx = global.ps.ps_height / PCB->hidlib.size_y;
+			zy = global.ps.ps_width / PCB->hidlib.size_x;
 		}
-		global.scale_factor *= MIN(zx, zy);
+		global.ps.scale_factor *= MIN(zx, zy);
 	}
 
 	global.has_outline = pcb_has_explicit_outline(PCB);
@@ -848,10 +845,10 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 			if (mirror_this)
 				fprintf(global.ps.outf, "( \\(mirrored\\)) show\n");
 
-			if (global.fillpage)
+			if (global.ps.fillpage)
 				fprintf(global.ps.outf, "(, not to scale) show\n");
 			else
-				fprintf(global.ps.outf, "(, scale = 1:%.3f) show\n", global.scale_factor);
+				fprintf(global.ps.outf, "(, scale = 1:%.3f) show\n", global.ps.scale_factor);
 		}
 		fprintf(global.ps.outf, "newpath\n");
 
@@ -869,7 +866,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		if (mirror_this)
 			fprintf(global.ps.outf, "1 -1 scale\n");
 
-		fprintf(global.ps.outf, "%g dup neg scale\n", PCB_LAYER_IS_FAB(flags, purpi) ? 1.0 : global.scale_factor);
+		fprintf(global.ps.outf, "%g dup neg scale\n", PCB_LAYER_IS_FAB(flags, purpi) ? 1.0 : global.ps.scale_factor);
 		rnd_fprintf(global.ps.outf, "%mi %mi translate\n", -PCB->hidlib.size_x / 2, -PCB->hidlib.size_y / 2);
 
 		/* Keep the drill list from falling off the left edge of the paper,
@@ -973,7 +970,7 @@ static void ps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool 
 }
 
 
-static void ps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
+void rnd_ps_set_color(rnd_ps_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	if (global.drawing_mode == RND_HID_COMP_NEGATIVE) {
 		gc->r = gc->g = gc->b = 255;
@@ -983,7 +980,7 @@ static void ps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 		gc->r = gc->g = gc->b = 255;
 		gc->erase = 1;
 	}
-	else if (global.incolor) {
+	else if (pctx->incolor) {
 		gc->r = color->r;
 		gc->g = color->g;
 		gc->b = color->b;
@@ -993,6 +990,12 @@ static void ps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 		gc->r = gc->g = gc->b = 0;
 		gc->erase = 0;
 	}
+}
+
+
+static void ps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
+{
+	rnd_ps_set_color(&global.ps, gc, color);
 }
 
 static void ps_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
