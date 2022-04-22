@@ -110,6 +110,7 @@ typedef struct {
 	int w, h; /* in pixels */
 	int dpi, xmax, ymax;
 	color_struct *black, *white;
+	gdImagePtr erase_im;
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -144,7 +145,7 @@ typedef struct rnd_hid_gc_s {
 	int is_erase;
 } hid_gc_t;
 
-static gdImagePtr im = NULL, master_im, comp_im = NULL, erase_im = NULL;
+static gdImagePtr im = NULL, master_im, comp_im = NULL;
 static FILE *f = 0;
 static int linewidth = -1;
 static int lastgroup = -1;
@@ -631,9 +632,9 @@ static void png_free_cache(void)
 		gdImageDestroy(comp_im);
 		comp_im = NULL;
 	}
-	if (erase_im != NULL) {
-		gdImageDestroy(erase_im);
-		erase_im = NULL;
+	if (pctx->erase_im != NULL) {
+		gdImageDestroy(pctx->erase_im);
+		pctx->erase_im = NULL;
 	}
 }
 
@@ -940,10 +941,10 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 			/* erase mask: for composite layers, tells whether the color pixel
 			   should be combined back to the master image; white means combine back,
 			   anything else means cut-out/forget/ignore that pixel */
-			if (erase_im == NULL) {
-				erase_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
-				if (!erase_im) {
-					rnd_message(RND_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on erase_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
+			if (pctx->erase_im == NULL) {
+				pctx->erase_im = gdImageCreate(gdImageSX(im), gdImageSY(im));
+				if (!pctx->erase_im) {
+					rnd_message(RND_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on pctx->erase_im.  Corrupt export!\n", gdImageSY(im), gdImageSY(im));
 					return;
 				}
 			}
@@ -951,8 +952,8 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 			dst_im = im;
 			gdImageFilledRectangle(comp_im, 0, 0, gdImageSX(comp_im), gdImageSY(comp_im), pctx->white->c);
 
-			gdImagePaletteCopy(erase_im, im);
-			gdImageFilledRectangle(erase_im, 0, 0, gdImageSX(erase_im), gdImageSY(erase_im), pctx->black->c);
+			gdImagePaletteCopy(pctx->erase_im, im);
+			gdImageFilledRectangle(pctx->erase_im, 0, 0, gdImageSX(pctx->erase_im), gdImageSY(pctx->erase_im), pctx->black->c);
 			break;
 
 		case RND_HID_COMP_POSITIVE:
@@ -960,7 +961,7 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 			im = comp_im;
 			break;
 		case RND_HID_COMP_NEGATIVE:
-			im = erase_im;
+			im = pctx->erase_im;
 			break;
 
 		case RND_HID_COMP_FLUSH:
@@ -970,7 +971,7 @@ static void png_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 			gdImagePaletteCopy(im, comp_im);
 			for (x = 0; x < gdImageSX(im); x++) {
 				for (y = 0; y < gdImageSY(im); y++) {
-					e = gdImageGetPixel(erase_im, x, y);
+					e = gdImageGetPixel(pctx->erase_im, x, y);
 					c = gdImageGetPixel(comp_im, x, y);
 					if ((e == pctx->white->c) && (c))
 						gdImageSetPixel(im, x, y, c);
@@ -1201,9 +1202,9 @@ static void png_fill_rect_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 static void png_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	png_fill_rect_(im, gc, x1, y1, x2, y2);
-	if ((im != erase_im) && (erase_im != NULL)) {
+	if ((im != pctx->erase_im) && (pctx->erase_im != NULL)) {
 		unerase_override = 1;
-		png_fill_rect_(erase_im, gc, x1, y1, x2, y2);
+		png_fill_rect_(pctx->erase_im, gc, x1, y1, x2, y2);
 		unerase_override = 0;
 	}
 }
@@ -1274,9 +1275,9 @@ static void png_draw_line_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_c
 static void png_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	png_draw_line_(im, gc, x1, y1, x2, y2);
-	if ((im != erase_im) && (erase_im != NULL)) {
+	if ((im != pctx->erase_im) && (pctx->erase_im != NULL)) {
 		unerase_override = 1;
-		png_draw_line_(erase_im, gc, x1, y1, x2, y2);
+		png_draw_line_(pctx->erase_im, gc, x1, y1, x2, y2);
 		unerase_override = 0;
 	}
 }
@@ -1351,9 +1352,9 @@ static void png_draw_arc_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_co
 static void png_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	png_draw_arc_(im, gc, cx, cy, width, height, start_angle, delta_angle);
-	if ((im != erase_im) && (erase_im != NULL)) {
+	if ((im != pctx->erase_im) && (pctx->erase_im != NULL)) {
 		unerase_override = 1;
-		png_draw_arc_(erase_im, gc, cx, cy, width, height, start_angle, delta_angle);
+		png_draw_arc_(pctx->erase_im, gc, cx, cy, width, height, start_angle, delta_angle);
 		unerase_override = 0;
 	}
 }
@@ -1379,9 +1380,9 @@ static void png_fill_circle_(gdImagePtr im, rnd_hid_gc_t gc, rnd_coord_t cx, rnd
 static void png_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	png_fill_circle_(im, gc, cx, cy, radius);
-	if ((im != erase_im) && (erase_im != NULL)) {
+	if ((im != pctx->erase_im) && (pctx->erase_im != NULL)) {
 		unerase_override = 1;
-		png_fill_circle_(erase_im, gc, cx, cy, radius);
+		png_fill_circle_(pctx->erase_im, gc, cx, cy, radius);
 		unerase_override = 0;
 	}
 }
@@ -1414,9 +1415,9 @@ static void png_fill_polygon_offs_(gdImagePtr im, rnd_hid_gc_t gc, int n_coords,
 static void png_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	png_fill_polygon_offs_(im, gc, n_coords, x, y, dx, dy);
-	if ((im != erase_im) && (erase_im != NULL)) {
+	if ((im != pctx->erase_im) && (pctx->erase_im != NULL)) {
 		unerase_override = 1;
-		png_fill_polygon_offs_(erase_im, gc, n_coords, x, y, dx, dy);
+		png_fill_polygon_offs_(pctx->erase_im, gc, n_coords, x, y, dx, dy);
 		unerase_override = 0;
 	}
 }
