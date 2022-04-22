@@ -37,7 +37,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "board.h"
+#include <librnd/core/hidlib.h>
 #include <librnd/core/color.h>
 #include <librnd/core/color_cache.h>
 #include <librnd/core/error.h>
@@ -189,8 +189,8 @@ int rnd_png_set_size(rnd_png_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_in, 
 	else {
 		pctx->x_shift = 0;
 		pctx->y_shift = 0;
-		pctx->h = PCB->hidlib.size_y;
-		pctx->w = PCB->hidlib.size_x;
+		pctx->h = pctx->hidlib->size_y;
+		pctx->w = pctx->hidlib->size_x;
 	}
 
 	/* figure out the scale factor to fit in the specified PNG file size */
@@ -612,11 +612,11 @@ static void png_draw_line_(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc, rnd_
 		   need to be brought in by a pixel to make sure they are not clipped
 		   by libgd - even tho they should be visible because of thickness, they
 		   would not be because the center line is off the image */
-	if (x1 == PCB->hidlib.size_x && x2 == PCB->hidlib.size_x) {
+	if (x1 == pctx->hidlib->size_x && x2 == pctx->hidlib->size_x) {
 		x1o = -1;
 		x2o = -1;
 	}
-	if (y1 == PCB->hidlib.size_y && y2 == PCB->hidlib.size_y) {
+	if (y1 == pctx->hidlib->size_y && y2 == pctx->hidlib->size_y) {
 		y1o = -1;
 		y2o = -1;
 	}
