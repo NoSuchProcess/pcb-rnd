@@ -634,7 +634,7 @@ static void png_free_cache(void)
 	}
 }
 
-void rnd_png_set_bbox(rnd_png_t *pctx, rnd_box_t *bbox)
+int rnd_png_set_size(rnd_png_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_in, int ymax_in, int xymax_in)
 {
 	if (bbox != NULL) {
 		pctx->x_shift = bbox->X1;
@@ -648,10 +648,7 @@ void rnd_png_set_bbox(rnd_png_t *pctx, rnd_box_t *bbox)
 		pctx->h = PCB->hidlib.size_y;
 		pctx->w = PCB->hidlib.size_x;
 	}
-}
 
-int rnd_png_set_size(rnd_png_t *pctx, int dpi_in, int xmax_in, int ymax_in, int xymax_in)
-{
 	/* figure out the scale factor to fit in the specified PNG file size */
 	if (dpi_in != 0) {
 		pctx->dpi = dpi_in;
@@ -754,7 +751,6 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	rnd_png_init(pctx, &PCB->hidlib);
 
-
 	if (!options) {
 		png_get_export_options(hid, 0);
 		options = png_values;
@@ -774,14 +770,12 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		filename = "pcb-rnd-out.png";
 
 	/* figure out width and height of the board */
-	if (options[HA_only_visible].lng) {
+	if (options[HA_only_visible].lng)
 		bbox = pcb_data_bbox(&tmp, PCB->Data, rnd_false);
-		rnd_png_set_bbox(pctx, bbox);
-	}
 	else
-		rnd_png_set_bbox(pctx, NULL);
+		bbox = NULL;
 
-	if (rnd_png_set_size(pctx, options[HA_dpi].lng, options[HA_xmax].lng, options[HA_ymax].lng, options[HA_xymax].lng) != 0) {
+	if (rnd_png_set_size(pctx, bbox, options[HA_dpi].lng, options[HA_xmax].lng, options[HA_ymax].lng, options[HA_xymax].lng) != 0) {
 		png_free_cache();
 		return;
 	}
