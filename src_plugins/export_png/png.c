@@ -81,8 +81,6 @@ static pcb_cam_t png_cam;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
 
-static void png_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
-
 /* If this table has no elements in it, then we have no reason to
    register this HID and will refrain from doing so at the end of this
    file.  */
