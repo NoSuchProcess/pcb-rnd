@@ -26,6 +26,8 @@
   *    mailing list: pcb-rnd (at) list.repo.hu (send "subscribe")
   */
 
+#include <librnd/core/color_cache.h>
+
 typedef struct color_struct {
 	int c;                   /* the descriptor used by the gd library */
 	unsigned int r, g, b, a; /* so I can figure out what rgb value c refers to */

@@ -41,13 +41,8 @@
 #include <librnd/core/color.h>
 #include <librnd/core/color_cache.h>
 #include <librnd/core/error.h>
-#include <librnd/core/misc_util.h>
-#include <librnd/core/compat_misc.h>
 #include <librnd/core/plugins.h>
-#include <librnd/core/safe_fs.h>
-
 #include <librnd/core/hid.h>
-#include <librnd/core/hid_nogui.h>
 
 #include <gd.h>
 

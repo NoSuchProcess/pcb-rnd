@@ -41,8 +41,6 @@
 #include <math.h>
 
 #include "board.h"
-#include <librnd/core/color.h>
-#include <librnd/core/color_cache.h>
 #include "data.h"
 #include "draw.h"
 #include <librnd/core/error.h>
