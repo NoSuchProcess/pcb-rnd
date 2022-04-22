@@ -97,9 +97,9 @@ void rnd_ps_start_file(rnd_ps_t *pctx, const char *swver)
 	   Substitute 0 or "" for N/A.  Width and height are in points (1/72").
 	   Media sizes are in PCB units */
 	rnd_fprintf(f, "%%%%DocumentMedia: %s %f %f 0 \"\" \"\"\n",
-							pcb_media_data[pctx->media_idx].name,
-							72 * RND_COORD_TO_INCH(pcb_media_data[pctx->media_idx].width),
-							72 * RND_COORD_TO_INCH(pcb_media_data[pctx->media_idx].height));
+		pcb_media_data[pctx->media_idx].name,
+		72 * RND_COORD_TO_INCH(pcb_media_data[pctx->media_idx].width),
+		72 * RND_COORD_TO_INCH(pcb_media_data[pctx->media_idx].height));
 	rnd_fprintf(f, "%%%%DocumentPaperSizes: %s\n", pcb_media_data[pctx->media_idx].name);
 
 	/* End General Header Comments. */
@@ -284,103 +284,103 @@ double rnd_ps_page_frame(rnd_ps_t *pctx, int mirror_this, const char *layer_fn, 
 {
 	double boffset;
 
-		/* %%Page DSC comment marks the beginning of the PostScript
-		   language instructions that describe a particular
-		   page. %%Page: requires two arguments: a page label and a
-		   sequential page number. The label may be anything, but the
-		   ordinal page number must reflect the position of that page in
-		   the body of the PostScript file and must start with 1, not 0. */
-		{
-			gds_t tmp;
-			gds_init(&tmp);
-			fprintf(pctx->outf, "%%%%Page: %s %d\n", layer_fn, pctx->pagecount);
-			gds_uninit(&tmp);
-		}
+	/* %%Page DSC comment marks the beginning of the PostScript
+	   language instructions that describe a particular
+	   page. %%Page: requires two arguments: a page label and a
+	   sequential page number. The label may be anything, but the
+	   ordinal page number must reflect the position of that page in
+	   the body of the PostScript file and must start with 1, not 0. */
+	{
+		gds_t tmp;
+		gds_init(&tmp);
+		fprintf(pctx->outf, "%%%%Page: %s %d\n", layer_fn, pctx->pagecount);
+		gds_uninit(&tmp);
+	}
 
-		fprintf(pctx->outf, "/Helvetica findfont 10 scalefont setfont\n");
-		if (pctx->legend) {
-			gds_t tmp;
-			fprintf(pctx->outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(pctx->hidlib->filename));
+	fprintf(pctx->outf, "/Helvetica findfont 10 scalefont setfont\n");
+	if (pctx->legend) {
+		gds_t tmp;
+		fprintf(pctx->outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(pctx->hidlib->filename));
 
-			gds_init(&tmp);
-			if (pctx->hidlib->name)
-				fprintf(pctx->outf, "30 41 moveto (%s, %s) show\n", pctx->hidlib->name, layer_fn);
-			else
-				fprintf(pctx->outf, "30 41 moveto (%s) show\n", layer_fn);
-			gds_uninit(&tmp);
-
-			if (mirror_this)
-				fprintf(pctx->outf, "( \\(mirrored\\)) show\n");
-
-			if (pctx->fillpage)
-				fprintf(pctx->outf, "(, not to scale) show\n");
-			else
-				fprintf(pctx->outf, "(, scale = 1:%.3f) show\n", pctx->scale_factor);
-		}
-		fprintf(pctx->outf, "newpath\n");
-
-		rnd_fprintf(pctx->outf, "72 72 scale %mi %mi translate\n", pctx->media_width / 2, pctx->media_height / 2);
-
-		boffset = pctx->media_height / 2;
-		if (pctx->hidlib->size_x > pctx->hidlib->size_y) {
-			fprintf(pctx->outf, "90 rotate\n");
-			boffset = pctx->media_width / 2;
-			fprintf(pctx->outf, "%g %g scale %% calibration\n", pctx->calibration_y, pctx->calibration_x);
-		}
+		gds_init(&tmp);
+		if (pctx->hidlib->name)
+			fprintf(pctx->outf, "30 41 moveto (%s, %s) show\n", pctx->hidlib->name, layer_fn);
 		else
-			fprintf(pctx->outf, "%g %g scale %% calibration\n", pctx->calibration_x, pctx->calibration_y);
+			fprintf(pctx->outf, "30 41 moveto (%s) show\n", layer_fn);
+		gds_uninit(&tmp);
 
 		if (mirror_this)
-			fprintf(pctx->outf, "1 -1 scale\n");
+			fprintf(pctx->outf, "( \\(mirrored\\)) show\n");
+
+		if (pctx->fillpage)
+			fprintf(pctx->outf, "(, not to scale) show\n");
+		else
+			fprintf(pctx->outf, "(, scale = 1:%.3f) show\n", pctx->scale_factor);
+	}
+	fprintf(pctx->outf, "newpath\n");
+
+	rnd_fprintf(pctx->outf, "72 72 scale %mi %mi translate\n", pctx->media_width / 2, pctx->media_height / 2);
+
+	boffset = pctx->media_height / 2;
+	if (pctx->hidlib->size_x > pctx->hidlib->size_y) {
+		fprintf(pctx->outf, "90 rotate\n");
+		boffset = pctx->media_width / 2;
+		fprintf(pctx->outf, "%g %g scale %% calibration\n", pctx->calibration_y, pctx->calibration_x);
+	}
+	else
+		fprintf(pctx->outf, "%g %g scale %% calibration\n", pctx->calibration_x, pctx->calibration_y);
+
+	if (mirror_this)
+		fprintf(pctx->outf, "1 -1 scale\n");
 
 
-		fprintf(pctx->outf, "%g dup neg scale\n", noscale ? 1.0 : pctx->scale_factor);
-		rnd_fprintf(pctx->outf, "%mi %mi translate\n", -pctx->hidlib->size_x / 2, -pctx->hidlib->size_y / 2);
+	fprintf(pctx->outf, "%g dup neg scale\n", noscale ? 1.0 : pctx->scale_factor);
+	rnd_fprintf(pctx->outf, "%mi %mi translate\n", -pctx->hidlib->size_x / 2, -pctx->hidlib->size_y / 2);
 
 	return boffset;
 }
 
 void rnd_ps_page_background(rnd_ps_t *pctx, int has_outline, int page_is_route, rnd_coord_t min_wid)
 {
-		if (pctx->invert) {
-			fprintf(pctx->outf, "/gray { 1 exch sub setgray } bind def\n");
-			fprintf(pctx->outf, "/rgb { 1 1 3 { pop 1 exch sub 3 1 roll } for setrgbcolor } bind def\n");
-		}
-		else {
-			fprintf(pctx->outf, "/gray { setgray } bind def\n");
-			fprintf(pctx->outf, "/rgb { setrgbcolor } bind def\n");
-		}
+	if (pctx->invert) {
+		fprintf(pctx->outf, "/gray { 1 exch sub setgray } bind def\n");
+		fprintf(pctx->outf, "/rgb { 1 1 3 { pop 1 exch sub 3 1 roll } for setrgbcolor } bind def\n");
+	}
+	else {
+		fprintf(pctx->outf, "/gray { setgray } bind def\n");
+		fprintf(pctx->outf, "/rgb { setrgbcolor } bind def\n");
+	}
 
-		if (!has_outline || pctx->invert) {
-			if (page_is_route) {
-				rnd_fprintf(pctx->outf,
-									"0 setgray %mi setlinewidth 0 0 moveto 0 "
-									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
-									min_wid,
-									pctx->hidlib->size_y, pctx->hidlib->size_x, pctx->hidlib->size_y, pctx->hidlib->size_x, pctx->invert ? "fill" : "stroke");
-			}
+	if (!has_outline || pctx->invert) {
+		if (page_is_route) {
+			rnd_fprintf(pctx->outf,
+								"0 setgray %mi setlinewidth 0 0 moveto 0 "
+								"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
+								min_wid,
+								pctx->hidlib->size_y, pctx->hidlib->size_x, pctx->hidlib->size_y, pctx->hidlib->size_x, pctx->invert ? "fill" : "stroke");
 		}
+	}
 
-		if (pctx->align_marks) {
-			corner(pctx->outf, 0, 0, -1, -1);
-			corner(pctx->outf, pctx->hidlib->size_x, 0, 1, -1);
-			corner(pctx->outf, pctx->hidlib->size_x, pctx->hidlib->size_y, 1, 1);
-			corner(pctx->outf, 0, pctx->hidlib->size_y, -1, 1);
-		}
+	if (pctx->align_marks) {
+		corner(pctx->outf, 0, 0, -1, -1);
+		corner(pctx->outf, pctx->hidlib->size_x, 0, 1, -1);
+		corner(pctx->outf, pctx->hidlib->size_x, pctx->hidlib->size_y, 1, 1);
+		corner(pctx->outf, 0, pctx->hidlib->size_y, -1, 1);
+	}
 
-		pctx->linewidth = -1;
-		use_gc(pctx, NULL);  /* reset static vars */
+	pctx->linewidth = -1;
+	use_gc(pctx, NULL);  /* reset static vars */
 
-		fprintf(pctx->outf,
-						"/ts 1 def\n"
-						"/ty ts neg def /tx 0 def /Helvetica findfont ts scalefont setfont\n"
-						"/t { moveto lineto stroke } bind def\n"
-						"/dr { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
-						"      x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath stroke } bind def\n");
-		fprintf(pctx->outf,"/r { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
-						"     x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath fill } bind def\n"
-						"/c { 0 360 arc fill } bind def\n"
-						"/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
+	fprintf(pctx->outf,
+					"/ts 1 def\n"
+					"/ty ts neg def /tx 0 def /Helvetica findfont ts scalefont setfont\n"
+					"/t { moveto lineto stroke } bind def\n"
+					"/dr { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
+					"      x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath stroke } bind def\n");
+	fprintf(pctx->outf,"/r { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
+					"     x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath fill } bind def\n"
+					"/c { 0 360 arc fill } bind def\n"
+					"/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
 }
 
 static int rnd_ps_me;
