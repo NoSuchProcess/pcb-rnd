@@ -110,7 +110,7 @@ typedef struct {
 	int w, h; /* in pixels */
 	int dpi, xmax, ymax;
 	color_struct *black, *white;
-	gdImagePtr comp_im, erase_im;
+	gdImagePtr master_im, comp_im, erase_im;
 } rnd_png_t;
 
 static rnd_png_t pctx_, *pctx = &pctx_;
@@ -145,7 +145,7 @@ typedef struct rnd_hid_gc_s {
 	int is_erase;
 } hid_gc_t;
 
-static gdImagePtr im = NULL, master_im;
+static gdImagePtr im = NULL;
 static FILE *f = 0;
 static int linewidth = -1;
 static int lastgroup = -1;
@@ -624,9 +624,9 @@ static void png_free_cache(void)
 	free(pctx->white);
 	free(pctx->black);
 
-	if (master_im != NULL) {
-		gdImageDestroy(master_im);
-		master_im = NULL;
+	if (pctx->master_im != NULL) {
+		gdImageDestroy(pctx->master_im);
+		pctx->master_im = NULL;
 	}
 	if (pctx->comp_im != NULL) {
 		gdImageDestroy(pctx->comp_im);
@@ -720,7 +720,7 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 	gdImageSetResolution(im, pctx->dpi, pctx->dpi);
 #endif
 
-	master_im = im;
+	pctx->master_im = im;
 
 	/* Allocate white and black; the first color allocated becomes the background color */
 	pctx->white = (color_struct *)malloc(sizeof(color_struct));

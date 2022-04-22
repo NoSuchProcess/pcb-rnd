@@ -222,7 +222,7 @@ static void png_photo_foot(void)
 	rgb(&black, 0, 0, 0);
 	rgb(&fr4, 70, 70, 70);
 
-	im = master_im;
+	im = pctx->master_im;
 
 	ts_bs(photo_copper[photo_groups[0]]);
 	if (photo_silk != NULL)
