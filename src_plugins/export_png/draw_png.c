@@ -29,7 +29,6 @@
 /* Heavily based on the geda/pcb ps HID written by DJ Delorie */
 
 #include "config.h"
-#include "conf_core.h"
 
 #include <genht/htpp.h>
 #include <stdlib.h>
@@ -99,7 +98,6 @@ void rnd_png_start(rnd_png_t *pctx)
 {
 	pctx->linewidth = -1;
 	pctx->lastbrush = (gdImagePtr)((void *)-1);
-	pctx->show_solder_side = conf_core.editor.show_solder_side;
 	pctx->last_color_r = pctx->last_color_g = pctx->last_color_b = pctx->last_cap = -1;
 
 	gdImageFilledRectangle(pctx->im, 0, 0, gdImageSX(pctx->im), gdImageSY(pctx->im), pctx->white->c);
