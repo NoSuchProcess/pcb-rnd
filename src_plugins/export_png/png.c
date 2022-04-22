@@ -617,6 +617,20 @@ static void png_free_cache(void)
 		htpp_uninit(&pctx->brush_cache);
 		pctx->brush_cache_inited = 0;
 	}
+
+
+	if (master_im != NULL) {
+		gdImageDestroy(master_im);
+		master_im = NULL;
+	}
+	if (comp_im != NULL) {
+		gdImageDestroy(comp_im);
+		comp_im = NULL;
+	}
+	if (erase_im != NULL) {
+		gdImageDestroy(erase_im);
+		erase_im = NULL;
+	}
 }
 
 void rnd_png_set_bbox(rnd_png_t *pctx, rnd_box_t *bbox)
@@ -703,7 +717,6 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	rnd_png_init(pctx, &PCB->hidlib);
 
-	png_free_cache();
 
 	if (!options) {
 		png_get_export_options(hid, 0);
@@ -737,6 +750,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		dpi = options[HA_dpi].lng;
 		if (dpi < 0) {
 			fprintf(stderr, "ERROR:  dpi may not be < 0\n");
+			png_free_cache();
 			return;
 		}
 	}
@@ -761,6 +775,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	if (xmax < 0 || ymax < 0) {
 		fprintf(stderr, "ERROR:  xmax and ymax may not be < 0\n");
+		png_free_cache();
 		return;
 	}
 
@@ -768,6 +783,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	if (rnd_png_create(pctx, dpi, xmax, ymax, options[HA_use_alpha].lng) != 0) {
 		rnd_message(RND_MSG_ERROR, "png_do_export():  Failed to create bitmap of %d * %d returned NULL.  Aborting export.\n", pctx->w, pctx->h);
+		png_free_cache();
 		return;
 	}
 
@@ -775,6 +791,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		f = rnd_fopen_askovr(&PCB->hidlib, png_cam.active ? png_cam.fn : filename, "wb", NULL);
 		if (!f) {
 			perror(filename);
+			png_free_cache();
 			return;
 		}
 	}
@@ -795,19 +812,7 @@ static void png_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 	if (f != NULL)
 		fclose(f);
 
-	if (master_im != NULL) {
-		gdImageDestroy(master_im);
-		master_im = NULL;
-	}
-	if (comp_im != NULL) {
-		gdImageDestroy(comp_im);
-		comp_im = NULL;
-	}
-	if (erase_im != NULL) {
-		gdImageDestroy(erase_im);
-		erase_im = NULL;
-	}
-	
+
 	png_photo_post_export();
 	png_free_cache();
 	free(white);
