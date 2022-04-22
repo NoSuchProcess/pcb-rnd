@@ -308,7 +308,6 @@ static struct {
 	rnd_bool outline;
 	rnd_bool mirror;
 	rnd_bool automirror;
-	rnd_bool doing_toc;
 	rnd_bool drillcopper;
 	int has_outline;
 
@@ -544,6 +543,35 @@ void rnd_ps_init(rnd_ps_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int media_idx, i
 	pctx->lastcolor = -1;
 }
 
+void rnd_ps_begin_toc(rnd_ps_t *pctx)
+{
+	/* %%Page DSC requires both a label and an ordinal */
+	fprintf(pctx->outf, "%%%%Page: TableOfContents 1\n");
+	fprintf(pctx->outf, "/Times-Roman findfont 24 scalefont setfont\n");
+	fprintf(pctx->outf, "/rightshow { /s exch def s stringwidth pop -1 mul 0 rmoveto s show } def\n");
+	fprintf(pctx->outf, "/y 72 9 mul def /toc { 100 y moveto show /y y 24 sub def } bind def\n");
+	fprintf(pctx->outf, "/tocp { /y y 12 sub def 90 y moveto rightshow } bind def\n");
+
+	pctx->doing_toc = 1;
+	pctx->pagecount = 1;
+}
+
+void rnd_ps_end_toc(rnd_ps_t *pctx)
+{
+}
+
+void rnd_ps_begin_pages(rnd_ps_t *pctx)
+{
+	pctx->doing_toc = 0;
+	pctx->pagecount = 1; /* Reset 'pagecount' if single file */
+}
+
+void rnd_ps_end_pages(rnd_ps_t *pctx)
+{
+	if (pctx->outf != NULL)
+		fprintf(pctx->outf, "showpage\n");
+}
+
 /* This is used by other HIDs that use a postscript format, like lpr or eps.  */
 void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
 {
@@ -551,6 +579,7 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 
 	rnd_ps_init(&global.ps, &PCB->hidlib, the_file, options[HA_media].lng, options[HA_fillpage].lng, options[HA_scale].dbl);
 
+	/* pcb-rnd-specific config from export params */
 	global.drill_helper = options[HA_drillhelper].lng;
 	global.drill_helper_size = options[HA_drillhelpersize].crd;
 	global.outline = options[HA_outline].lng;
@@ -558,6 +587,7 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	global.automirror = options[HA_automirror].lng;
 	global.drillcopper = options[HA_drillcopper].lng;
 
+	/* generic ps config: extra conf from export params */
 	global.ps.align_marks = options[HA_alignmarks].lng;
 	global.ps.incolor = options[HA_color].lng;
 	global.ps.invert = options[HA_psinvert].lng;
@@ -584,26 +614,18 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	global.exps.view.X2 = PCB->hidlib.size_x;
 	global.exps.view.Y2 = PCB->hidlib.size_y;
 
+	/* print ToC */
 	if ((!global.multi_file && !global.multi_file_cam) && (options[HA_toc].lng)) {
-		/* %%Page DSC requires both a label and an ordinal */
-		fprintf(the_file, "%%%%Page: TableOfContents 1\n");
-		fprintf(the_file, "/Times-Roman findfont 24 scalefont setfont\n");
-		fprintf(the_file, "/rightshow { /s exch def s stringwidth pop -1 mul 0 rmoveto s show } def\n");
-		fprintf(the_file, "/y 72 9 mul def /toc { 100 y moveto show /y y 24 sub def } bind def\n");
-		fprintf(the_file, "/tocp { /y y 12 sub def 90 y moveto rightshow } bind def\n");
-
-		global.doing_toc = 1;
-		global.ps.pagecount = 1; /* 'pagecount' is modified by rnd_app.expose_main() call */
+		rnd_ps_begin_toc(&global.ps);
 		rnd_app.expose_main(&ps_hid, &global.exps, xform);
+		rnd_ps_end_toc(&global.ps);
 	}
 
-	global.ps.pagecount = 1; /* Reset 'pagecount' if single file */
-	global.doing_toc = 0;
+	/* print page(s) */
+	rnd_ps_begin_pages(&global.ps);
 	ps_set_layer_group(rnd_render, -1, NULL, -1, -1, 0, -1, NULL); /* reset static vars */
 	rnd_app.expose_main(&ps_hid, &global.exps, xform);
-
-	if (the_file)
-		fprintf(the_file, "showpage\n");
+	rnd_ps_end_pages(&global.ps);
 
 	memcpy(pcb_layer_stack, saved_layer_stack, sizeof(pcb_layer_stack));
 }
@@ -753,7 +775,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 	printf("Layer %s group %d drill %d mask %d\n", name, group, global.is_drill, global.is_mask);
 #endif
 
-	if (global.doing_toc) {
+	if (global.ps.doing_toc) {
 		if (group < 0 || group != lastgroup) {
 			if (global.ps.pagecount == 1) {
 				currenttime = time(NULL);
