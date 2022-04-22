@@ -138,7 +138,7 @@ void rnd_png_finish(rnd_png_t *pctx, FILE *f, const char *fmt)
 		format_error = rnd_true;
 
 	if (format_error)
-		rnd_message(RND_MSG_ERROR, "Invalid graphic file format. This is a bug. Please report it.\n");
+		rnd_message(RND_MSG_ERROR, "rnd_png_finish(): Invalid graphic file format. This is a bug. Please report it.\n");
 }
 
 void rnd_png_uninit(rnd_png_t *pctx)
@@ -191,7 +191,7 @@ int rnd_png_set_size(rnd_png_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_in, 
 	if (dpi_in != 0) {
 		pctx->dpi = dpi_in;
 		if (pctx->dpi < 0) {
-			rnd_message(RND_MSG_ERROR, "dpi may not be < 0\n");
+			rnd_message(RND_MSG_ERROR, "rnd_png_set_size(): dpi may not be < 0\n");
 			return -1;
 		}
 	}
@@ -215,7 +215,7 @@ int rnd_png_set_size(rnd_png_t *pctx, rnd_box_t *bbox, int dpi_in, int xmax_in, 
 	}
 
 	if (pctx->xmax < 0 || pctx->ymax < 0) {
-		rnd_message(RND_MSG_ERROR, "xmax and ymax may not be < 0\n");
+		rnd_message(RND_MSG_ERROR, "rnd_png_set_size(): xmax and ymax may not be < 0\n");
 		return -1;
 	}
 
@@ -232,7 +232,7 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 		pctx->h = rnd_round(pctx->h / pctx->scale) - PNG_SCALE_HACK1;
 	}
 	else if (pctx->xmax == 0 && pctx->ymax == 0) {
-		rnd_message(RND_MSG_ERROR, "You may not set both xmax, ymax, and xy-max to zero\n");
+		rnd_message(RND_MSG_ERROR, "rnd_png_create(): you may not set both xmax, ymax, and xy-max to zero\n");
 		return -1;
 	}
 	else {
@@ -265,7 +265,7 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 		pctx->white->a = 0;
 	pctx->white->c = gdImageColorAllocateAlpha(pctx->im, pctx->white->r, pctx->white->g, pctx->white->b, pctx->white->a);
 	if (pctx->white->c == RND_PNG_BADC) {
-		rnd_message(RND_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
+		rnd_message(RND_MSG_ERROR, "rnd_png_create(): gdImageColorAllocateAlpha() returned NULL. Aborting export.\n");
 		return -1;
 	}
 
@@ -274,7 +274,7 @@ int rnd_png_create(rnd_png_t *pctx, int use_alpha)
 	pctx->black->r = pctx->black->g = pctx->black->b = pctx->black->a = 0;
 	pctx->black->c = gdImageColorAllocate(pctx->im, pctx->black->r, pctx->black->g, pctx->black->b);
 	if (pctx->black->c == RND_PNG_BADC) {
-		rnd_message(RND_MSG_ERROR, "png_do_export():  gdImageColorAllocateAlpha() returned NULL.  Aborting export.\n");
+		rnd_message(RND_MSG_ERROR, "rnd_png_create(): gdImageColorAllocateAlpha() returned NULL. Aborting export.\n");
 		return -1;
 	}
 
@@ -312,7 +312,7 @@ void rnd_png_set_drawing_mode(rnd_png_t *pctx, rnd_hid_t *hid, rnd_composite_op_
 			if (pctx->comp_im == NULL) {
 				pctx->comp_im = gdImageCreate(gdImageSX(pctx->im), gdImageSY(pctx->im));
 				if (!pctx->comp_im) {
-					rnd_message(RND_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on pctx->comp_im.  Corrupt export!\n", gdImageSY(pctx->im), gdImageSY(pctx->im));
+					rnd_message(RND_MSG_ERROR, "rnd_png_set_drawing_mode(): gdImageCreate(%d, %d) returned NULL on pctx->comp_im. Corrupt export!\n", gdImageSY(pctx->im), gdImageSY(pctx->im));
 					return;
 				}
 			}
@@ -323,7 +323,7 @@ void rnd_png_set_drawing_mode(rnd_png_t *pctx, rnd_hid_t *hid, rnd_composite_op_
 			if (pctx->erase_im == NULL) {
 				pctx->erase_im = gdImageCreate(gdImageSX(pctx->im), gdImageSY(pctx->im));
 				if (!pctx->erase_im) {
-					rnd_message(RND_MSG_ERROR, "png_set_drawing_mode():  gdImageCreate(%d, %d) returned NULL on pctx->erase_im.  Corrupt export!\n", gdImageSY(pctx->im), gdImageSY(pctx->im));
+					rnd_message(RND_MSG_ERROR, "rnd_png_set_drawing_mode(): gdImageCreate(%d, %d) returned NULL on pctx->erase_im. Corrupt export!\n", gdImageSY(pctx->im), gdImageSY(pctx->im));
 					return;
 				}
 			}
@@ -399,12 +399,12 @@ void rnd_png_set_color(rnd_png_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *colo
 		gc->color->b = color->b;
 		gc->color->c = gdImageColorAllocate(pctx->im, gc->color->r, gc->color->g, gc->color->b);
 		if (gc->color->c == RND_PNG_BADC) {
-			rnd_message(RND_MSG_ERROR, "png_set_color():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
+			rnd_message(RND_MSG_ERROR, "rnd_png_set_color(): gdImageColorAllocate() returned NULL. Aborting export.\n");
 			return;
 		}
 	}
 	else {
-		rnd_message(RND_MSG_ERROR, "WE SHOULD NOT BE HERE!!!\n");
+		rnd_message(RND_MSG_ERROR, "rnd_png_set_color(): WE SHOULD NOT BE HERE!!!\n");
 		gc->color = pctx->black;
 	}
 }
@@ -462,7 +462,7 @@ static void use_gc(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc)
 	}
 
 	if (agc->me_pointer != &rnd_png_me) {
-		rnd_message(RND_MSG_ERROR, "GC from another HID passed to draw_png\n");
+		rnd_message(RND_MSG_ERROR, "rnd_png use_gc(): GC from another HID passed to draw_png\n");
 		abort();
 	}
 
@@ -507,13 +507,13 @@ static void use_gc(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc)
 			int bg, fg;
 			agc->brush = gdImageCreate(r, r);
 			if (agc->brush == NULL) {
-				rnd_message(RND_MSG_ERROR, "use_gc():  gdImageCreate(%d, %d) returned NULL.  Aborting export.\n", r, r);
+				rnd_message(RND_MSG_ERROR, "rnd_png use_gc(): gdImageCreate(%d, %d) returned NULL. Aborting export.\n", r, r);
 				return;
 			}
 
 			bg = gdImageColorAllocate(agc->brush, 255, 255, 255);
 			if (bg == RND_PNG_BADC) {
-				rnd_message(RND_MSG_ERROR, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
+				rnd_message(RND_MSG_ERROR, "rnd png use_gc(): gdImageColorAllocate() returned NULL. Aborting export.\n");
 				return;
 			}
 			if (pctx->unerase_override)
@@ -521,7 +521,7 @@ static void use_gc(rnd_png_t *pctx, gdImagePtr im, rnd_hid_gc_t gc)
 			else
 				fg = gdImageColorAllocateAlpha(agc->brush, agc->r, agc->g, agc->b, 0);
 			if (fg == RND_PNG_BADC) {
-				rnd_message(RND_MSG_ERROR, "use_gc():  gdImageColorAllocate() returned NULL.  Aborting export.\n");
+				rnd_message(RND_MSG_ERROR, "rnd_png use_gc(): gdImageColorAllocate() returned NULL. Aborting export.\n");
 				return;
 			}
 			gdImageColorTransparent(agc->brush, bg);
