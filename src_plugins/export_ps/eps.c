@@ -1,3 +1,9 @@
+/*
+   This file is part of pcb-rnd and was part of gEDA/PCB but lacked proper
+   copyright banner at the fork. It probably has the same copyright as
+   gEDA/PCB as a whole in 2011.
+*/
+
 #include "config.h"
 #include "conf_core.h"
 
