@@ -856,14 +856,12 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 			rnd_ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
 		}
 
-		/*
-		 * %%Page DSC comment marks the beginning of the PostScript
-		 * language instructions that describe a particular
-		 * page. %%Page: requires two arguments: a page label and a
-		 * sequential page number. The label may be anything, but the
-		 * ordinal page number must reflect the position of that page in
-		 * the body of the PostScript file and must start with 1, not 0.
-		 */
+		/* %%Page DSC comment marks the beginning of the PostScript
+		   language instructions that describe a particular
+		   page. %%Page: requires two arguments: a page label and a
+		   sequential page number. The label may be anything, but the
+		   ordinal page number must reflect the position of that page in
+		   the body of the PostScript file and must start with 1, not 0. */
 		{
 			gds_t tmp;
 			gds_init(&tmp);
