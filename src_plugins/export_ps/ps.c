@@ -748,6 +748,23 @@ int rnd_ps_printed_toc(rnd_ps_t *pctx, int group, const char *name)
 	return 0;
 }
 
+int rnd_ps_is_new_page(rnd_ps_t *pctx, int group)
+{
+	int newpage = 0;
+
+	if ((group < 0) || (group != pctx->lastgroup))
+		newpage = 1;
+	if ((pctx->pagecount > 1) && pctx->single_page)
+		newpage = 0;
+
+	if (newpage) {
+		pctx->lastgroup = group;
+		pctx->pagecount++;
+	}
+
+	return newpage;
+}
+
 static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	gds_t tmp_ln;
@@ -797,23 +814,18 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		return 0;
 	}
 
-
 	if (ps_cam.active)
 		newpage = ps_cam.fn_changed || (global.ps.pagecount == 1);
 	else
-		newpage = ((group < 0) || (group != global.ps.lastgroup));
-	if ((global.ps.pagecount > 1) && global.ps.single_page)
-		newpage = 0;
+		newpage = rnd_ps_is_new_page(&global.ps, group);
 
 	if (newpage) {
 		double boffset;
 		int mirror_this = 0;
-		global.ps.lastgroup = group;
 
 		if ((!ps_cam.active) && (global.ps.pagecount != 0)) {
 			rnd_fprintf(global.ps.outf, "showpage\n");
 		}
-		global.ps.pagecount++;
 		if ((!ps_cam.active && global.multi_file) || (ps_cam.active && ps_cam.fn_changed)) {
 			const char *fn;
 			gds_t tmp;
