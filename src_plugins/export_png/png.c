@@ -97,7 +97,7 @@ typedef struct {
 	double scale; /* should be 1 by default */
 	double bloat;
 	rnd_coord_t x_shift, y_shift;
-	int show_solder_side;
+	int show_solder_side, in_mono;
 
 	/* public: result */
 	long png_drawn_objs;
@@ -465,7 +465,7 @@ static int layer_sort(const void *va, const void *vb)
 
 static const char *filename;
 static rnd_box_t *bounds;
-static int in_mono, as_shown;
+static int as_shown;
 
 void rnd_png_parse_bloat(rnd_png_t *pctx, const char *str)
 {
@@ -589,7 +589,7 @@ void png_hid_export_to_file(FILE *the_file, rnd_hid_attr_val_t *options, rnd_xfo
 			png_photo_as_shown();
 	}
 
-	in_mono = options[HA_mono].lng;
+	pctx->in_mono = options[HA_mono].lng;
 	png_head();
 
 	if (!photo_mode && conf_core.editor.show_solder_side) {
@@ -1011,7 +1011,7 @@ static void png_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	}
 	gc->is_erase = 0;
 
-	if (in_mono || (color->packed == 0)) {
+	if (pctx->in_mono || (color->packed == 0)) {
 		gc->color = pctx->black;
 		return;
 	}
