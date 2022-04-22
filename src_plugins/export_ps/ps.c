@@ -33,7 +33,7 @@
 const char *ps_cookie = "ps HID";
 
 static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform);
-static void use_gc(rnd_hid_gc_t gc);
+static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc);
 
 typedef struct rnd_hid_gc_s {
 	rnd_core_gc_t core_gc;
@@ -297,7 +297,8 @@ Diameter of the small hole when drill-helper is on
 static struct {
 	double calibration_x, calibration_y;
 
-	FILE *f;
+	rnd_ps_t ps;
+
 	int pagecount;
 	rnd_coord_t linewidth;
 	double fade_ratio;
@@ -369,8 +370,9 @@ static int layer_sort(const void *va, const void *vb)
 	return b - a;
 }
 
-void ps_start_file(FILE * f)
+void ps_start_file(rnd_ps_t *pctx, const char *swver)
 {
+	FILE *f = pctx->outf;
 	time_t currenttime = time(NULL);
 
 	fprintf(f, "%%!PS-Adobe-3.0\n");
@@ -397,7 +399,7 @@ void ps_start_file(FILE * f)
 	 * %%Creator DCS indicates the document creator, usually the name of
 	 * the document composition software.
 	 */
-	fprintf(f, "%%%%Creator: PCB release: pcb-rnd " PCB_VERSION "\n");
+	fprintf(f, "%%%%Creator: %s\n", swver);
 
 	/*
 	 * %%Version DCS comment can be used to note the version and
@@ -417,7 +419,7 @@ void ps_start_file(FILE * f)
 	 * There is currently no code in PCB to manage this revision number.
 	 *
 	 */
-	fprintf(f, "%%%%Version: (PCB pcb-rnd " PCB_VERSION ") 0.0 0\n");
+	fprintf(f, "%%%%Version: (%s) 0.0 0\n", swver);
 
 
 	/*
@@ -464,8 +466,10 @@ void ps_start_file(FILE * f)
 	fprintf(f, "%%%%EndComments\n\n");
 }
 
-static void ps_end_file(FILE * f)
+static void ps_end_file(rnd_ps_t *pctx)
 {
+	FILE *f = pctx->outf;
+
 	/*
 	 * %%Trailer DCS must only occur once at the end of the document
 	 * script.  Any post-processing or cleanup should be contained in
@@ -520,13 +524,18 @@ static FILE *psopen(const char *base, const char *which)
 	return ps_open_file;
 }
 
-/* This is used by other HIDs that use a postscript format, like lpr
-   or eps.  */
+void rnd_ps_init(rnd_ps_t *pctx, FILE *f)
+{
+	pctx->outf = f;
+}
+
+/* This is used by other HIDs that use a postscript format, like lpr or eps.  */
 void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xform_t *xform)
 {
 	static int saved_layer_stack[PCB_MAX_LAYER];
 
-	global.f = the_file;
+	rnd_ps_init(&global.ps, the_file);
+
 	global.drill_helper = options[HA_drillhelper].lng;
 	global.drill_helper_size = options[HA_drillhelpersize].crd;
 	global.align_marks = options[HA_alignmarks].lng;
@@ -550,7 +559,7 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	global.single_page = options[HA_single_page].lng;
 
 	if (the_file)
-		ps_start_file(the_file);
+		ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
 
 	if (global.fillpage) {
 		double zx, zy;
@@ -572,7 +581,7 @@ void ps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_xf
 	global.linewidth = -1;
 	/* reset static vars */
 	ps_set_layer_group(rnd_render, -1, NULL, -1, -1, 0, -1, NULL);
-	use_gc(NULL);
+	use_gc(&global.ps, NULL);
 
 	global.exps.view.X1 = 0;
 	global.exps.view.Y1 = 0;
@@ -652,7 +661,7 @@ static void ps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 
 	global.multi_file = 0;
 	if (fh) {
-		ps_end_file(fh);
+		ps_end_file(&global.ps);
 		fclose(fh);
 	}
 
@@ -752,19 +761,19 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		if (group < 0 || group != lastgroup) {
 			if (global.pagecount == 1) {
 				currenttime = time(NULL);
-				fprintf(global.f, "30 30 moveto (%s) show\n", rnd_hid_export_fn(PCB->hidlib.filename));
+				fprintf(global.ps.outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(PCB->hidlib.filename));
 
-				fprintf(global.f, "(%d.) tocp\n", global.pagecount);
-				fprintf(global.f, "(Table of Contents \\(This Page\\)) toc\n");
+				fprintf(global.ps.outf, "(%d.) tocp\n", global.pagecount);
+				fprintf(global.ps.outf, "(Table of Contents \\(This Page\\)) toc\n");
 
-				fprintf(global.f, "(Created on %s) toc\n", asctime(localtime(&currenttime)));
-				fprintf(global.f, "( ) tocp\n");
+				fprintf(global.ps.outf, "(Created on %s) toc\n", asctime(localtime(&currenttime)));
+				fprintf(global.ps.outf, "( ) tocp\n");
 			}
 
 			global.pagecount++;
 			lastgroup = group;
-			fprintf(global.f, "(%d.) tocp\n", global.single_page ? 2 : global.pagecount);
-			fprintf(global.f, "(%s) toc\n", name);
+			fprintf(global.ps.outf, "(%d.) tocp\n", global.single_page ? 2 : global.pagecount);
+			fprintf(global.ps.outf, "(%s) toc\n", name);
 		}
 		gds_uninit(&tmp_ln);
 		return 0;
@@ -783,7 +792,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		lastgroup = group;
 
 		if ((!ps_cam.active) && (global.pagecount != 0)) {
-			rnd_fprintf(global.f, "showpage\n");
+			rnd_fprintf(global.ps.outf, "showpage\n");
 		}
 		global.pagecount++;
 		if ((!ps_cam.active && global.multi_file) || (ps_cam.active && ps_cam.fn_changed)) {
@@ -792,20 +801,20 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 
 			gds_init(&tmp);
 			fn = ps_cam.active ? ps_cam.fn : pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed);
-			if (global.f) {
-				ps_end_file(global.f);
-				fclose(global.f);
+			if (global.ps.outf) {
+				ps_end_file(&global.ps);
+				fclose(global.ps.outf);
 			}
-			global.f = psopen(ps_cam.active ? fn : global.filename, fn);
+			global.ps.outf = psopen(ps_cam.active ? fn : global.filename, fn);
 			gds_uninit(&tmp);
 
-			if (!global.f) {
+			if (!global.ps.outf) {
 				perror(global.filename);
 				gds_uninit(&tmp_ln);
 				return 0;
 			}
 
-			ps_start_file(global.f);
+			ps_start_file(&global.ps, "PCB release: pcb-rnd " PCB_VERSION);
 		}
 
 		/*
@@ -819,7 +828,7 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		{
 			gds_t tmp;
 			gds_init(&tmp);
-			fprintf(global.f, "%%%%Page: %s %d\n", pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed), global.pagecount);
+			fprintf(global.ps.outf, "%%%%Page: %s %d\n", pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed), global.pagecount);
 			gds_uninit(&tmp);
 		}
 
@@ -828,44 +837,44 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		if (global.automirror && (flags & PCB_LYT_BOTTOM))
 			mirror_this = !mirror_this;
 
-		fprintf(global.f, "/Helvetica findfont 10 scalefont setfont\n");
+		fprintf(global.ps.outf, "/Helvetica findfont 10 scalefont setfont\n");
 		if (global.legend) {
 			gds_t tmp;
-			fprintf(global.f, "30 30 moveto (%s) show\n", rnd_hid_export_fn(PCB->hidlib.filename));
+			fprintf(global.ps.outf, "30 30 moveto (%s) show\n", rnd_hid_export_fn(PCB->hidlib.filename));
 
 			gds_init(&tmp);
 			if (PCB->hidlib.name)
-				fprintf(global.f, "30 41 moveto (%s, %s) show\n", PCB->hidlib.name, pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed));
+				fprintf(global.ps.outf, "30 41 moveto (%s, %s) show\n", PCB->hidlib.name, pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed));
 			else
-				fprintf(global.f, "30 41 moveto (%s) show\n", pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed));
+				fprintf(global.ps.outf, "30 41 moveto (%s) show\n", pcb_layer_to_file_name(&tmp, layer, flags, purpose, purpi, PCB_FNS_fixed));
 			gds_uninit(&tmp);
 
 			if (mirror_this)
-				fprintf(global.f, "( \\(mirrored\\)) show\n");
+				fprintf(global.ps.outf, "( \\(mirrored\\)) show\n");
 
 			if (global.fillpage)
-				fprintf(global.f, "(, not to scale) show\n");
+				fprintf(global.ps.outf, "(, not to scale) show\n");
 			else
-				fprintf(global.f, "(, scale = 1:%.3f) show\n", global.scale_factor);
+				fprintf(global.ps.outf, "(, scale = 1:%.3f) show\n", global.scale_factor);
 		}
-		fprintf(global.f, "newpath\n");
+		fprintf(global.ps.outf, "newpath\n");
 
-		rnd_fprintf(global.f, "72 72 scale %mi %mi translate\n", global.media_width / 2, global.media_height / 2);
+		rnd_fprintf(global.ps.outf, "72 72 scale %mi %mi translate\n", global.media_width / 2, global.media_height / 2);
 
 		boffset = global.media_height / 2;
 		if (PCB->hidlib.size_x > PCB->hidlib.size_y) {
-			fprintf(global.f, "90 rotate\n");
+			fprintf(global.ps.outf, "90 rotate\n");
 			boffset = global.media_width / 2;
-			fprintf(global.f, "%g %g scale %% calibration\n", global.calibration_y, global.calibration_x);
+			fprintf(global.ps.outf, "%g %g scale %% calibration\n", global.calibration_y, global.calibration_x);
 		}
 		else
-			fprintf(global.f, "%g %g scale %% calibration\n", global.calibration_x, global.calibration_y);
+			fprintf(global.ps.outf, "%g %g scale %% calibration\n", global.calibration_x, global.calibration_y);
 
 		if (mirror_this)
-			fprintf(global.f, "1 -1 scale\n");
+			fprintf(global.ps.outf, "1 -1 scale\n");
 
-		fprintf(global.f, "%g dup neg scale\n", PCB_LAYER_IS_FAB(flags, purpi) ? 1.0 : global.scale_factor);
-		rnd_fprintf(global.f, "%mi %mi translate\n", -PCB->hidlib.size_x / 2, -PCB->hidlib.size_y / 2);
+		fprintf(global.ps.outf, "%g dup neg scale\n", PCB_LAYER_IS_FAB(flags, purpi) ? 1.0 : global.scale_factor);
+		rnd_fprintf(global.ps.outf, "%mi %mi translate\n", -PCB->hidlib.size_x / 2, -PCB->hidlib.size_y / 2);
 
 		/* Keep the drill list from falling off the left edge of the paper,
 		 * even if it means some of the board falls off the right edge.
@@ -874,23 +883,23 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		if (PCB_LAYER_IS_FAB(flags, purpi)) {
 			rnd_coord_t natural = boffset - RND_MIL_TO_COORD(500) - PCB->hidlib.size_y / 2;
 			rnd_coord_t needed = pcb_stub_draw_fab_overhang();
-			rnd_fprintf(global.f, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
+			rnd_fprintf(global.ps.outf, "%% PrintFab overhang natural %mi, needed %mi\n", natural, needed);
 			if (needed > natural)
-				rnd_fprintf(global.f, "0 %mi translate\n", needed - natural);
+				rnd_fprintf(global.ps.outf, "0 %mi translate\n", needed - natural);
 		}
 
 		if (global.invert) {
-			fprintf(global.f, "/gray { 1 exch sub setgray } bind def\n");
-			fprintf(global.f, "/rgb { 1 1 3 { pop 1 exch sub 3 1 roll } for setrgbcolor } bind def\n");
+			fprintf(global.ps.outf, "/gray { 1 exch sub setgray } bind def\n");
+			fprintf(global.ps.outf, "/rgb { 1 1 3 { pop 1 exch sub 3 1 roll } for setrgbcolor } bind def\n");
 		}
 		else {
-			fprintf(global.f, "/gray { setgray } bind def\n");
-			fprintf(global.f, "/rgb { setrgbcolor } bind def\n");
+			fprintf(global.ps.outf, "/gray { setgray } bind def\n");
+			fprintf(global.ps.outf, "/rgb { setrgbcolor } bind def\n");
 		}
 
 		if (!global.has_outline || global.invert) {
 			if ((PCB_LAYER_IS_ROUTE(flags, purpi)) || (global.outline)) {
-				rnd_fprintf(global.f,
+				rnd_fprintf(global.ps.outf,
 									"0 setgray %mi setlinewidth 0 0 moveto 0 "
 									"%mi lineto %mi %mi lineto %mi 0 lineto closepath %s\n",
 									conf_core.design.min_wid,
@@ -899,27 +908,27 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 		}
 
 		if (global.align_marks) {
-			corner(global.f, 0, 0, -1, -1);
-			corner(global.f, PCB->hidlib.size_x, 0, 1, -1);
-			corner(global.f, PCB->hidlib.size_x, PCB->hidlib.size_y, 1, 1);
-			corner(global.f, 0, PCB->hidlib.size_y, -1, 1);
+			corner(global.ps.outf, 0, 0, -1, -1);
+			corner(global.ps.outf, PCB->hidlib.size_x, 0, 1, -1);
+			corner(global.ps.outf, PCB->hidlib.size_x, PCB->hidlib.size_y, 1, 1);
+			corner(global.ps.outf, 0, PCB->hidlib.size_y, -1, 1);
 		}
 
 		global.linewidth = -1;
-		use_gc(NULL);								/* reset static vars */
+		use_gc(&global.ps, NULL);  /* reset static vars */
 
-		fprintf(global.f,
+		fprintf(global.ps.outf,
 						"/ts 1 def\n"
 						"/ty ts neg def /tx 0 def /Helvetica findfont ts scalefont setfont\n"
 						"/t { moveto lineto stroke } bind def\n"
 						"/dr { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
 						"      x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath stroke } bind def\n");
-		fprintf(global.f,"/r { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
+		fprintf(global.ps.outf,"/r { /y2 exch def /x2 exch def /y1 exch def /x1 exch def\n"
 						"     x1 y1 moveto x1 y2 lineto x2 y2 lineto x2 y1 lineto closepath fill } bind def\n"
 						"/c { 0 360 arc fill } bind def\n"
 						"/a { gsave setlinewidth translate scale 0 0 1 5 3 roll arc stroke grestore} bind def\n");
 		if (global.drill_helper)
-			rnd_fprintf(global.f,
+			rnd_fprintf(global.ps.outf,
 									"/dh { gsave %mi setlinewidth 0 gray %mi 0 360 arc stroke grestore} bind def\n",
 									(rnd_coord_t) global.drill_helper_size, (rnd_coord_t) (global.drill_helper_size * 3 / 2));
 	}
@@ -927,9 +936,9 @@ static int ps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const cha
 	/* Try to outsmart ps2pdf's heuristics for page rotation, by putting
 	 * text on all pages -- even if that text is blank */
 	if (!(PCB_LAYER_IS_FAB(flags, purpi)))
-		fprintf(global.f, "gsave tx ty translate 1 -1 scale 0 0 moveto (Layer %s) show grestore newpath /ty ty ts sub def\n", name);
+		fprintf(global.ps.outf, "gsave tx ty translate 1 -1 scale 0 0 moveto (Layer %s) show grestore newpath /ty ty ts sub def\n", name);
 	else
-		fprintf(global.f, "gsave tx ty translate 1 -1 scale 0 0 moveto ( ) show grestore newpath /ty ty ts sub def\n");
+		fprintf(global.ps.outf, "gsave tx ty translate 1 -1 scale 0 0 moveto ( ) show grestore newpath /ty ty ts sub def\n");
 #endif
 
 	/* If we're printing a layer other than an outline layer, and
@@ -1010,7 +1019,7 @@ static void ps_set_draw_faded(rnd_hid_gc_t gc, int faded)
 	gc->faded = faded;
 }
 
-static void use_gc(rnd_hid_gc_t gc)
+static void use_gc(rnd_ps_t *pctx, rnd_hid_gc_t gc)
 {
 	static int lastcap = -1;
 	static int lastcolor = -1;
@@ -1025,7 +1034,7 @@ static void use_gc(rnd_hid_gc_t gc)
 		abort();
 	}
 	if (global.linewidth != gc->width) {
-		rnd_fprintf(global.f, "%mi setlinewidth\n", gc->width);
+		rnd_fprintf(pctx->outf, "%mi setlinewidth\n", gc->width);
 		global.linewidth = gc->width;
 	}
 	if (lastcap != gc->cap) {
@@ -1041,13 +1050,13 @@ static void use_gc(rnd_hid_gc_t gc)
 			assert(!"unhandled cap");
 			c = 1;
 		}
-		fprintf(global.f, "%d setlinecap %d setlinejoin\n", c, c);
+		fprintf(pctx->outf, "%d setlinecap %d setlinejoin\n", c, c);
 		lastcap = gc->cap;
 	}
 #define CBLEND(gc) (((gc->r)<<24)|((gc->g)<<16)|((gc->b)<<8)|(gc->faded))
 	if (lastcolor != CBLEND(gc)) {
 		if (global.is_drill || global.is_mask) {
-			fprintf(global.f, "%d gray\n", (gc->erase || global.is_mask) ? 0 : 1);
+			fprintf(pctx->outf, "%d gray\n", (gc->erase || global.is_mask) ? 0 : 1);
 			lastcolor = 0;
 		}
 		else {
@@ -1061,38 +1070,48 @@ static void use_gc(rnd_hid_gc_t gc)
 				b = (1 - global.fade_ratio) *255 + global.fade_ratio * b;
 			}
 			if (gc->r == gc->g && gc->g == gc->b)
-				fprintf(global.f, "%g gray\n", r / 255.0);
+				fprintf(pctx->outf, "%g gray\n", r / 255.0);
 			else
-				fprintf(global.f, "%g %g %g rgb\n", r / 255.0, g / 255.0, b / 255.0);
+				fprintf(pctx->outf, "%g %g %g rgb\n", r / 255.0, g / 255.0, b / 255.0);
 			lastcolor = CBLEND(gc);
 		}
 	}
 }
 
-static void ps_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+
+void rnd_ps_draw_rect(rnd_ps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	use_gc(gc);
-	rnd_fprintf(global.f, "%mi %mi %mi %mi dr\n", x1, y1, x2, y2);
+	use_gc(pctx, gc);
+	rnd_fprintf(pctx->outf, "%mi %mi %mi %mi dr\n", x1, y1, x2, y2);
 }
 
-static void ps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
-static void ps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
+static void ps_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	rnd_ps_draw_rect(&global.ps, gc, x1, y1, x2, y2);
+}
 
-static void ps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+
+void rnd_ps_draw_line(rnd_ps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	if (x1 == x2 && y1 == y2) {
 		rnd_coord_t w = gc->width / 2;
 		if (gc->cap == rnd_cap_square)
-			ps_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
+			rnd_ps_fill_rect(pctx, gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		else
-			ps_fill_circle(gc, x1, y1, w);
+			rnd_ps_fill_circle(pctx, gc, x1, y1, w);
 		return;
 	}
-	use_gc(gc);
-	rnd_fprintf(global.f, "%mi %mi %mi %mi t\n", x1, y1, x2, y2);
+	use_gc(pctx, gc);
+	rnd_fprintf(pctx->outf, "%mi %mi %mi %mi t\n", x1, y1, x2, y2);
 }
 
-static void ps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void ps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	rnd_ps_draw_line(&global.ps, gc, x1, y1, x2, y2);
+}
+
+
+void rnd_ps_draw_arc(rnd_ps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_angle_t sa, ea;
 	double w;
@@ -1114,35 +1133,52 @@ static void ps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coo
 #if 0
 	printf("draw_arc %d,%d %dx%d %d..%d %d..%d\n", cx, cy, width, height, start_angle, delta_angle, sa, ea);
 #endif
-	use_gc(gc);
+	use_gc(pctx, gc);
 	w = width;
 	if (w == 0) /* make sure not to div by zero; this hack will have very similar effect */
 		w = 0.0001;
-	rnd_fprintf(global.f, "%ma %ma %mi %mi %mi %mi %f a\n",
-							sa, ea, -width, height, cx, cy, (double)(global.linewidth) / w);
+	rnd_fprintf(pctx->outf, "%ma %ma %mi %mi %mi %mi %f a\n",
+		sa, ea, -width, height, cx, cy, (double)(global.linewidth) / w);
+}
+
+static void ps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+{
+	rnd_ps_draw_arc(&global.ps, gc, cx, cy, width, height, start_angle, delta_angle);
+}
+
+
+void rnd_ps_fill_circle(rnd_ps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+{
+	use_gc(pctx, gc);
+	rnd_fprintf(pctx->outf, "%mi %mi %mi c\n", cx, cy, radius);
 }
 
 static void ps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
-	use_gc(gc);
 	if (!gc->erase || !global.is_copper || global.drillcopper) {
 		if (gc->erase && global.is_copper && global.drill_helper && radius >= global.drill_helper_size)
 			radius = global.drill_helper_size;
-		rnd_fprintf(global.f, "%mi %mi %mi c\n", cx, cy, radius);
+		rnd_ps_fill_circle(&global.ps, gc, cx, cy, radius);
 	}
+}
+
+void rnd_ps_fill_polygon_offs(rnd_ps_t *pctx, rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+{
+	int i;
+	const char *op = "moveto";
+	use_gc(pctx, gc);
+	for (i = 0; i < n_coords; i++) {
+		rnd_fprintf(pctx->outf, "%mi %mi %s\n", x[i]+dx, y[i]+dy, op);
+		op = "lineto";
+	}
+	fprintf(pctx->outf, "fill\n");
 }
 
 static void ps_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
-	int i;
-	const char *op = "moveto";
-	use_gc(gc);
-	for (i = 0; i < n_coords; i++) {
-		rnd_fprintf(global.f, "%mi %mi %s\n", x[i]+dx, y[i]+dy, op);
-		op = "lineto";
-	}
-	fprintf(global.f, "fill\n");
+	rnd_ps_fill_polygon_offs(&global.ps, gc, n_coords, x, y, dx, dy);
 }
+
 
 static void ps_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
@@ -1199,9 +1235,9 @@ int coord_comp(const void *c1_, const void *c2_)
 	return *c1 < *c2;
 }
 
-static void ps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+void rnd_ps_fill_rect(rnd_ps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	use_gc(gc);
+	use_gc(pctx, gc);
 	if (x1 > x2) {
 		rnd_coord_t t = x1;
 		x1 = x2;
@@ -1212,8 +1248,14 @@ static void ps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 		y1 = y2;
 		y2 = t;
 	}
-	rnd_fprintf(global.f, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
+	rnd_fprintf(pctx->outf, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
+
+static void ps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	rnd_ps_fill_rect(&global.ps, gc, x1, y1, x2, y2);
+}
+
 
 static void ps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
