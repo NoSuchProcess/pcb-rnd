@@ -45,19 +45,24 @@ typedef struct rnd_hid_gc_s {
 static rnd_hid_t eps_hid;
 
 typedef struct {
+	/* public: config */
 	FILE *outf;
+	int in_mono, as_shown;
+
+	/* public: result */
+	long drawn_objs;
+
+	/* private: cache */
+	rnd_coord_t linewidth;
+	int lastcap;
+	int lastcolor;
 } rnd_eps_t;
 
 static rnd_eps_t pctx_, *pctx = &pctx_;
-
-static rnd_coord_t linewidth = -1;
-static int lastcap = -1;
-static int lastcolor = -1;
 static int print_group[PCB_MAX_LAYERGRP];
 static int print_layer[PCB_MAX_LAYER];
 static int fast_erase = -1;
 static rnd_composite_op_t drawing_mode;
-static long eps_drawn_objs;
 
 static const rnd_export_opt_t eps_attribute_list[] = {
 	/* other HIDs expect this to be first.  */
@@ -173,14 +178,15 @@ static int layer_sort(const void *va, const void *vb)
 
 static const char *filename;
 static rnd_box_t *bounds;
-static int in_mono, as_shown;
+
 
 static rnd_hid_attr_val_t *options_;
 void rnd_eps_print_header(rnd_eps_t *pctx, const char *outfn)
 {
-	linewidth = -1;
-	lastcap = -1;
-	lastcolor = -1;
+	pctx->linewidth = -1;
+	pctx->lastcap = -1;
+	pctx->lastcolor = -1;
+	pctx->drawn_objs = 0;
 
 	fprintf(pctx->outf, "%%!PS-Adobe-3.0 EPSF-3.0\n");
 
@@ -198,7 +204,7 @@ void rnd_eps_print_header(rnd_eps_t *pctx, const char *outfn)
 	fprintf(pctx->outf, "1 dup neg scale\n");
 	fprintf(pctx->outf, "%g dup scale\n", options_[HA_scale].dbl);
 	rnd_fprintf(pctx->outf, "%mi %mi translate\n", -bounds->X1, -bounds->Y2);
-	if (options_[HA_as_shown].lng && conf_core.editor.show_solder_side)
+	if (pctx->as_shown && conf_core.editor.show_solder_side)
 		rnd_fprintf(pctx->outf, "-1 1 scale %mi 0 translate\n", bounds->X1 - bounds->X2);
 
 #define Q (rnd_coord_t) RND_MIL_TO_COORD(10)
@@ -224,6 +230,16 @@ void rnd_eps_print_footer(rnd_eps_t *pctx)
 	fprintf(pctx->outf, "%%%%Trailer\n");
 	fprintf(pctx->outf, "cleartomark countdictstack exch sub { end } repeat restore\n");
 	fprintf(pctx->outf, "%%%%EOF\n");
+}
+
+void rnd_eps_init(rnd_eps_t *pctx, int in_mono, int as_shown)
+{
+	pctx->linewidth = -1;
+	pctx->lastcap = -1;
+	pctx->lastcolor = -1;
+	pctx->in_mono = in_mono;
+	pctx->as_shown = as_shown;
+	pctx->drawn_objs = 0;
 }
 
 void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xform_t *xform)
@@ -291,22 +307,18 @@ void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xf
 	}
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
-	as_shown = options[HA_as_shown].lng;
 	if (options[HA_as_shown].lng)
 		pcb_draw_setup_default_gui_xform(xform);
 	if (!options[HA_as_shown].lng) {
 		qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);
 	}
-	linewidth = -1;
-	lastcap = -1;
-	lastcolor = -1;
 
-	in_mono = options[HA_mono].lng;
+	rnd_eps_init(pctx, options[HA_mono].lng, options[HA_as_shown].lng);
 
 	if (pctx->outf != NULL)
 		rnd_eps_print_header(pctx, rnd_hid_export_fn(filename));
 
-	if (as_shown) {
+	if (pctx->as_shown) {
 		/* disable (exporter default) hiding overlay in as_shown */
 		xform->omit_overlay = 0;
 		xform->add_gui_xform = 1;
@@ -332,7 +344,7 @@ static void eps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		options = eps_values;
 	}
 
-	eps_drawn_objs = 0;
+	
 	pcb_cam_begin(PCB, &eps_cam, &xform, options[HA_cam].str, eps_attribute_list, NUM_OPTIONS, options);
 
 	filename = options[HA_psfile].str;
@@ -363,7 +375,7 @@ static void eps_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		if (!eps_cam.okempty_group)
 			rnd_message(RND_MSG_ERROR, "eps cam export for '%s' failed to produce any content (layer group missing)\n", options[HA_cam].str);
 	}
-	else if (eps_drawn_objs == 0) {
+	else if (pctx->drawn_objs == 0) {
 		if (!eps_cam.okempty_content)
 			rnd_message(RND_MSG_ERROR, "eps cam export for '%s' failed to produce any content (no objects)\n", options[HA_cam].str);
 	}
@@ -428,7 +440,7 @@ static int eps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 	if (eps_cam.active) /* CAM has decided already */
 		return 1;
 
-	if (as_shown) {
+	if (pctx->as_shown) {
 		if (PCB_LAYERFLG_ON_VISIBLE_SIDE(flags))
 			return pcb_silk_on(PCB);
 		else
@@ -475,7 +487,7 @@ static void eps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 
 		case RND_HID_COMP_FLUSH:
 			fprintf(pctx->outf, "grestore\n");
-			lastcolor = -1;
+			pctx->lastcolor = -1;
 			break;
 	}
 }
@@ -494,7 +506,7 @@ static void eps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 		return;
 	}
 	gc->erase = 0;
-	if (in_mono)
+	if (pctx->in_mono)
 		gc->color = 0;
 	else if (color->str[0] == '#')
 		gc->color = (color->r << 16) + (color->g << 8) + color->b;
@@ -517,14 +529,14 @@ static void eps_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 	;
 }
 
-static void use_gc(rnd_hid_gc_t gc)
+static void use_gc(rnd_eps_t *pctx, rnd_hid_gc_t gc)
 {
-	eps_drawn_objs++;
-	if (linewidth != gc->width) {
+	pctx->drawn_objs++;
+	if (pctx->linewidth != gc->width) {
 		rnd_fprintf(pctx->outf, "%mi setlinewidth\n", gc->width);
-		linewidth = gc->width;
+		pctx->linewidth = gc->width;
 	}
-	if (lastcap != gc->cap) {
+	if (pctx->lastcap != gc->cap) {
 		int c;
 		switch (gc->cap) {
 		case rnd_cap_round:
@@ -538,13 +550,13 @@ static void use_gc(rnd_hid_gc_t gc)
 			c = 1;
 		}
 		fprintf(pctx->outf, "%d setlinecap\n", c);
-		lastcap = gc->cap;
+		pctx->lastcap = gc->cap;
 	}
-	if (lastcolor != gc->color) {
+	if (pctx->lastcolor != gc->color) {
 		int c = gc->color;
 #define CV(x,b) (((x>>b)&0xff)/255.0)
 		fprintf(pctx->outf, "%g %g %g setrgbcolor\n", CV(c, 16), CV(c, 8), CV(c, 0));
-		lastcolor = gc->color;
+		pctx->lastcolor = gc->color;
 	}
 }
 
@@ -553,7 +565,7 @@ static void eps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd
 
 static void eps_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	use_gc(gc);
+	use_gc(pctx, gc);
 	rnd_fprintf(pctx->outf, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
@@ -567,7 +579,7 @@ static void eps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 			eps_fill_circle(gc, x1, y1, w);
 		return;
 	}
-	use_gc(gc);
+	use_gc(pctx, gc);
 	if (gc->erase && gc->cap != rnd_cap_square) {
 		double ang = atan2(y2 - y1, x2 - x1);
 		double dx = w * sin(ang);
@@ -608,16 +620,16 @@ static void eps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 #if 0
 	printf("draw_arc %d,%d %dx%d %d..%d %d..%d\n", cx, cy, width, height, start_angle, delta_angle, sa, ea);
 #endif
-	use_gc(gc);
+	use_gc(pctx, gc);
 	w = width;
 	if (w == 0) /* make sure not to div by zero; this hack will have very similar effect */
 		w = 0.0001;
-	rnd_fprintf(pctx->outf, "%ma %ma %mi %mi %mi %mi %f a\n", sa, ea, -width, height, cx, cy, (double) linewidth / w);
+	rnd_fprintf(pctx->outf, "%ma %ma %mi %mi %mi %mi %f a\n", sa, ea, -width, height, cx, cy, (double)pctx->linewidth / w);
 }
 
 static void eps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
-	use_gc(gc);
+	use_gc(pctx,gc);
 	rnd_fprintf(pctx->outf, "%mi %mi %mi %s\n", cx, cy, radius, gc->erase ? "cc" : "c");
 }
 
@@ -625,7 +637,7 @@ static void eps_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 {
 	int i;
 	const char *op = "moveto";
-	use_gc(gc);
+	use_gc(pctx, gc);
 	for (i = 0; i < n_coords; i++) {
 		rnd_fprintf(pctx->outf, "%mi %mi %s\n", x[i] + dx, y[i] + dy, op);
 		op = "lineto";
@@ -642,7 +654,7 @@ static void eps_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_
 
 static void eps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
-	use_gc(gc);
+	use_gc(pctx, gc);
 	rnd_fprintf(pctx->outf, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
