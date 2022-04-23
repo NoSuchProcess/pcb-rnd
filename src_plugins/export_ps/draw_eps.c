@@ -83,6 +83,7 @@ void rnd_eps_print_footer(rnd_eps_t *pctx)
 
 void rnd_eps_init(rnd_eps_t *pctx, FILE *f, rnd_box_t bounds, double scale, int in_mono, int as_shown)
 {
+	memset(pctx, 0, sizeof(rnd_eps_t));
 	pctx->outf = f;
 	pctx->linewidth = -1;
 	pctx->lastcap = -1;
