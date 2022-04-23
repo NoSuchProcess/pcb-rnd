@@ -30,6 +30,12 @@ typedef struct rnd_ps_s {
 	/* private: pcb-rnd leftover */
 	rnd_bool is_mask;
 	rnd_bool is_drill;
+
+	/* Spare: see doc/developer/spare.txt */
+	void (*spare_f1)(void), (*spare_f2)(void);
+	long spare_l1, spare_l2, spare_l3, spare_l4;
+	void *spare_p1, *spare_p2, *spare_p3, *spare_p4;
+	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_ps_t;
 
 void rnd_ps_init(rnd_ps_t *pctx, rnd_hidlib_t *hidlib, FILE *f, int media_idx, int fillpage, double scale_factor);
