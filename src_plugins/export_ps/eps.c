@@ -166,8 +166,6 @@ void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xf
 
 	options_ = options;
 
-	pctx->outf = the_file;
-
 	region.X1 = 0;
 	region.Y1 = 0;
 	region.X2 = PCB->hidlib.size_x;
@@ -228,7 +226,7 @@ void eps_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t *options, rnd_xf
 		qsort(pcb_layer_stack, pcb_max_layer(PCB), sizeof(pcb_layer_stack[0]), layer_sort);
 	}
 
-	rnd_eps_init(pctx, *bnds, options_[HA_scale].dbl, options[HA_mono].lng, options[HA_as_shown].lng);
+	rnd_eps_init(pctx, the_file, *bnds, options_[HA_scale].dbl, options[HA_mono].lng, options[HA_as_shown].lng);
 
 	if (pctx->outf != NULL)
 		rnd_eps_print_header(pctx, rnd_hid_export_fn(filename), pctx->as_shown && conf_core.editor.show_solder_side);

@@ -21,8 +21,8 @@ typedef struct {
 	double spare_d1, spare_d2, spare_d3, spare_d4;
 } rnd_eps_t;
 
-/* Set up context before the file is open */
-void rnd_eps_init(rnd_eps_t *pctx, rnd_box_t bounds, double scale, int in_mono, int as_shown);
+/* Set up context for a file */
+void rnd_eps_init(rnd_eps_t *pctx, FILE *f, rnd_box_t bounds, double scale, int in_mono, int as_shown);
 
 /* Set up output file and print header before export, footer after export */
 void rnd_eps_print_header(rnd_eps_t *pctx, const char *outfn, int ymirror);
