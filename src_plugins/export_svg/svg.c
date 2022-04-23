@@ -92,13 +92,16 @@ static const char *CAPS(rnd_cap_style_t cap)
 }
 
 typedef struct {
+	/* public: config */
 	FILE *outf;
 	gds_t sbright, sdark, snormal, sclip; /* accumulators for various groups generated parallel */
+
+	/* private: cache */
+	int group_open;
 } rnd_svg_t;
 
 static rnd_svg_t pctx_, *pctx = &pctx_;
 
-static int group_open = 0;
 static int opacity = 100, drawing_mask, drawing_hole, photo_mode, photo_noise, flip;
 
 static rnd_composite_op_t drawing_mode;
@@ -304,7 +307,7 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 
 static void group_close(rnd_svg_t *pctx)
 {
-	if (group_open == 1) {
+	if (pctx->group_open == 1) {
 		if (gds_len(&pctx->sdark) > 0) {
 			fprintf(pctx->outf, "<!--dark-->\n");
 			fprintf(pctx->outf, "%s", pctx->sdark.array);
@@ -355,9 +358,9 @@ static void svg_header(rnd_svg_t *pctx)
 
 static void svg_footer(rnd_svg_t *pctx)
 {
-	while(group_open) {
+	while(pctx->group_open) {
 		group_close(pctx);
-		group_open--;
+		pctx->group_open--;
 	}
 
 	/* blend some noise on top to make it a bit more artificial */
@@ -500,9 +503,9 @@ printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 		return 1; /* photo mode drill: do not create a separate group */
 	}
 
-	while(group_open) {
+	while(pctx->group_open) {
 		group_close(pctx);
-		group_open--;
+		pctx->group_open--;
 	}
 
 	{
@@ -520,7 +523,7 @@ printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 	if (opa != 100)
 		fprintf(pctx->outf, " opacity=\"%.2f\"", ((float)opa) / 100.0);
 	fprintf(pctx->outf, ">\n");
-	group_open = 1;
+	pctx->group_open = 1;
 
 	if (photo_mode) {
 		if (is_our_silk)
@@ -635,16 +638,16 @@ static void svg_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 	gc->width = width < RND_MM_TO_COORD(0.01) ? RND_MM_TO_COORD(0.01) : width;
 }
 
-static void indent(gds_t *s)
+static void indent(rnd_svg_t *pctx, gds_t *s)
 {
 	static char ind[] = "                                                                              ";
-	if (group_open < sizeof(ind)-1) {
-		ind[group_open] = '\0';
+	if (pctx->group_open < sizeof(ind)-1) {
+		ind[pctx->group_open] = '\0';
 		if (s == NULL)
 			rnd_fprintf(pctx->outf, ind);
 		else
 			rnd_append_printf(s, ind);
-		ind[group_open] = ' ';
+		ind[pctx->group_open] = ' ';
 		return;
 	}
 
@@ -675,11 +678,11 @@ static void draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord
 {
 	const char *clip_color = svg_clip_color(gc);
 
-	indent(&pctx->snormal);
+	indent(pctx, &pctx->snormal);
 	rnd_append_printf(&pctx->snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 		x1, y1, w, h, stroke, svg_color(gc), CAPS(gc->cap));
 	if (clip_color != NULL) {
-		indent(&pctx->sclip);
+		indent(pctx, &pctx->sclip);
 		rnd_append_printf(&pctx->sclip, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 			x1, y1, w, h, stroke, clip_color, CAPS(gc->cap));
 	}
@@ -698,19 +701,19 @@ static void draw_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_
 	if (photo_mode) {
 		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
-			indent(&pctx->sdark);
+			indent(pctx, &pctx->sdark);
 			rnd_append_printf(&pctx->sdark, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				x1+photo_offs, y1+photo_offs, w, h, photo_palette[photo_color].dark);
-			indent(&pctx->sbright);
+			indent(pctx, &pctx->sbright);
 			rnd_append_printf(&pctx->sbright, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				x1-photo_offs, y1-photo_offs, w, h, photo_palette[photo_color].bright);
 		}
-		indent(&pctx->snormal);
+		indent(pctx, &pctx->snormal);
 		rnd_append_printf(&pctx->snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			x1, y1, w, h, photo_palette[photo_color].normal);
 	}
 	else {
-		indent(&pctx->snormal);
+		indent(pctx, &pctx->snormal);
 		rnd_append_printf(&pctx->snormal, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			x1, y1, w, h, svg_color(gc));
 	}
@@ -733,19 +736,19 @@ static void pcb_line_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	if (photo_mode) {
 		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
-			indent(&pctx->sbright);
+			indent(pctx, &pctx->sbright);
 			rnd_append_printf(&pctx->sbright, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 				x1-photo_offs, y1-photo_offs, x2-photo_offs, y2-photo_offs, gc->width, photo_palette[photo_color].bright, CAPS(gc->cap));
-			indent(&pctx->sdark);
+			indent(pctx, &pctx->sdark);
 			rnd_append_printf(&pctx->sdark, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 				x1+photo_offs, y1+photo_offs, x2+photo_offs, y2+photo_offs, gc->width, photo_palette[photo_color].dark, CAPS(gc->cap));
 		}
-		indent(&pctx->snormal);
+		indent(pctx, &pctx->snormal);
 		rnd_append_printf(&pctx->snormal, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 			x1, y1, x2, y2, gc->width, photo_palette[photo_color].normal, CAPS(gc->cap));
 	}
 	else {
-		indent(&pctx->snormal);
+		indent(pctx, &pctx->snormal);
 		rnd_append_printf(&pctx->snormal, "<line x1=\"%mm\" y1=\"%mm\" x2=\"%mm\" y2=\"%mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\"/>\n",
 			x1, y1, x2, y2, gc->width, svg_color(gc), CAPS(gc->cap));
 	}
@@ -769,19 +772,19 @@ static void pcb_arc_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 	if (photo_mode) {
 		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
-			indent(&pctx->sbright);
+			indent(pctx, &pctx->sbright);
 			rnd_append_printf(&pctx->sbright, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 				x1-photo_offs, y1-photo_offs, r, r, large, sweep, x2-photo_offs, y2-photo_offs, gc->width, photo_palette[photo_color].bright, CAPS(gc->cap));
-			indent(&pctx->sdark);
+			indent(pctx, &pctx->sdark);
 			rnd_append_printf(&pctx->sdark, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 				x1+photo_offs, y1+photo_offs, r, r, large, sweep, x2+photo_offs, y2+photo_offs, gc->width, photo_palette[photo_color].dark, CAPS(gc->cap));
 		}
-		indent(&pctx->snormal);
+		indent(pctx, &pctx->snormal);
 		rnd_append_printf(&pctx->snormal, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 			x1, y1, r, r, large, sweep, x2, y2, gc->width, photo_palette[photo_color].normal, CAPS(gc->cap));
 	}
 	else {
-		indent(&pctx->snormal);
+		indent(pctx, &pctx->snormal);
 		rnd_append_printf(&pctx->snormal, "<path d=\"M %.8mm %.8mm A %mm %mm 0 %d %d %mm %mm\" stroke-width=\"%mm\" stroke=\"%s\" stroke-linecap=\"%s\" fill=\"none\"/>\n",
 			x1, y1, r, r, large, sweep, x2, y2, gc->width, svg_color(gc), CAPS(gc->cap));
 	}
@@ -859,26 +862,26 @@ static void draw_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 		if (!drawing_hole) {
 			rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 			if ((!gc->drill) && (photo_offs != 0)) {
-				indent(&pctx->sbright);
+				indent(pctx, &pctx->sbright);
 				rnd_append_printf(&pctx->sbright, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 					cx-photo_offs, cy-photo_offs, r, stroke, photo_palette[photo_color].bright);
 
-				indent(&pctx->sdark);
+				indent(pctx, &pctx->sdark);
 				rnd_append_printf(&pctx->sdark, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 					cx+photo_offs, cy+photo_offs, r, stroke, photo_palette[photo_color].dark);
 			}
-			indent(&pctx->snormal);
+			indent(pctx, &pctx->snormal);
 			rnd_append_printf(&pctx->snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				cx, cy, r, stroke, photo_palette[photo_color].normal);
 		}
 		else {
-			indent(&pctx->snormal);
+			indent(pctx, &pctx->snormal);
 			rnd_append_printf(&pctx->snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 				cx, cy, r, stroke, "#000000");
 		}
 	}
 	else{
-		indent(&pctx->snormal);
+		indent(pctx, &pctx->snormal);
 		rnd_append_printf(&pctx->snormal, "<circle cx=\"%mm\" cy=\"%mm\" r=\"%mm\" stroke-width=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			cx, cy, r, stroke, svg_color(gc));
 	}
@@ -899,7 +902,7 @@ static void draw_poly(gds_t *s, rnd_hid_gc_t gc, int n_coords, rnd_coord_t * x, 
 	int i;
 	float poly_bloat = 0.01;
 
-	indent(s);
+	indent(pctx, s);
 	gds_append_str(s, "<polygon points=\"");
 	for (i = 0; i < n_coords; i++) {
 		rnd_coord_t px = x[i] + dx, py = y[i] + dy;
