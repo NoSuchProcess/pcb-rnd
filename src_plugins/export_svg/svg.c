@@ -91,7 +91,12 @@ static const char *CAPS(rnd_cap_style_t cap)
 	return "";
 }
 
-static FILE *f = NULL;
+typedef struct {
+	FILE *outf;
+} rnd_svg_t;
+
+static rnd_svg_t pctx_, *pctx = &pctx_;
+
 static int group_open = 0;
 static int opacity = 100, drawing_mask, drawing_hole, photo_mode, photo_noise, flip;
 
@@ -225,7 +230,7 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 	ctx.view.X2 = PCB->hidlib.size_x;
 	ctx.view.Y2 = PCB->hidlib.size_y;
 
-	f = the_file;
+	pctx->outf = the_file;
 
 	memcpy(saved_layer_stack, pcb_layer_stack, sizeof(pcb_layer_stack));
 
@@ -261,7 +266,7 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 	}
 
 	if (photo_mode) {
-		rnd_fprintf(f, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
+		rnd_fprintf(pctx->outf, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, board_color);
 	}
 
@@ -287,36 +292,36 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 	rnd_conf_update(NULL, -1); /* restore forced sets */
 }
 
-static void group_close()
+static void group_close(rnd_svg_t *pctx)
 {
 	if (group_open == 1) {
 		if (gds_len(&sdark) > 0) {
-			fprintf(f, "<!--dark-->\n");
-			fprintf(f, "%s", sdark.array);
+			fprintf(pctx->outf, "<!--dark-->\n");
+			fprintf(pctx->outf, "%s", sdark.array);
 			gds_truncate(&sdark, 0);
 		}
 
 		if (gds_len(&sbright) > 0) {
-			fprintf(f, "<!--bright-->\n");
-			fprintf(f, "%s", sbright.array);
+			fprintf(pctx->outf, "<!--bright-->\n");
+			fprintf(pctx->outf, "%s", sbright.array);
 			gds_truncate(&sbright, 0);
 		}
 
 		if (gds_len(&snormal) > 0) {
-			fprintf(f, "<!--normal-->\n");
-			fprintf(f, "%s", snormal.array);
+			fprintf(pctx->outf, "<!--normal-->\n");
+			fprintf(pctx->outf, "%s", snormal.array);
 			gds_truncate(&snormal, 0);
 		}
 
 	}
-	fprintf(f, "</g>\n");
+	fprintf(pctx->outf, "</g>\n");
 }
 
-static void svg_header()
+static void svg_header(rnd_svg_t *pctx)
 {
 	rnd_coord_t w, h, x1, y1, x2, y2;
 
-	fprintf(f, "<?xml version=\"1.0\"?>\n");
+	fprintf(pctx->outf, "<?xml version=\"1.0\"?>\n");
 	w = PCB->hidlib.size_x;
 	h = PCB->hidlib.size_y;
 	while((w < RND_MM_TO_COORD(1024)) && (h < RND_MM_TO_COORD(1024))) {
@@ -327,36 +332,36 @@ static void svg_header()
 	x2 = PCB->hidlib.size_x;
 	y2 = PCB->hidlib.size_y;
 	if (svg_true_size) {
-		rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"0 0 %mm %mm\">\n", x2, y2, x2, y2);
+		rnd_fprintf(pctx->outf, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%$$mm\" height=\"%$$mm\" viewBox=\"0 0 %mm %mm\">\n", x2, y2, x2, y2);
 	}
 	else {
 		x1 = RND_MM_TO_COORD(2);
 		y1 = RND_MM_TO_COORD(2);
 		x2 += RND_MM_TO_COORD(5);
 		y2 += RND_MM_TO_COORD(5);
-		rnd_fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
+		rnd_fprintf(pctx->outf, "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.0\" width=\"%mm\" height=\"%mm\" viewBox=\"-%mm -%mm %mm %mm\">\n", w, h, x1, y1, x2, y2);
 	}
 }
 
-static void svg_footer(void)
+static void svg_footer(rnd_svg_t *pctx)
 {
 	while(group_open) {
-		group_close();
+		group_close(pctx);
 		group_open--;
 	}
 
 	/* blend some noise on top to make it a bit more artificial */
 	if (photo_mode && photo_noise) {
-		fprintf(f, "<filter id=\"noise\">\n");
-		fprintf(f, "	<feTurbulence type=\"fractalNoise\" baseFrequency=\"30\" result=\"noisy\" />\n");
-		fprintf(f, "</filter>\n");
-		fprintf(f, "<g opacity=\"0.25\">\n");
-		rnd_fprintf(f, "	<rect filter=\"url(#noise)\" x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"none\" stroke=\"none\"/>\n",
+		fprintf(pctx->outf, "<filter id=\"noise\">\n");
+		fprintf(pctx->outf, "	<feTurbulence type=\"fractalNoise\" baseFrequency=\"30\" result=\"noisy\" />\n");
+		fprintf(pctx->outf, "</filter>\n");
+		fprintf(pctx->outf, "<g opacity=\"0.25\">\n");
+		rnd_fprintf(pctx->outf, "	<rect filter=\"url(#noise)\" x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"none\" stroke=\"none\"/>\n",
 			0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y);
-		fprintf(f, "</g>\n");
+		fprintf(pctx->outf, "</g>\n");
 	}
 
-	fprintf(f, "</svg>\n");
+	fprintf(pctx->outf, "</svg>\n");
 }
 
 static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
@@ -381,29 +386,30 @@ static void svg_do_export(rnd_hid_t *hid, rnd_hid_attr_val_t *options)
 		if (!filename)
 			filename = "pcb.svg";
 
-		f = rnd_fopen_askovr(&PCB->hidlib, svg_cam.active ? svg_cam.fn : filename, "wb", NULL);
-		if (!f) {
+		pctx->outf = rnd_fopen_askovr(&PCB->hidlib, svg_cam.active ? svg_cam.fn : filename, "wb", NULL);
+		if (pctx->outf == NULL) {
+			TODO("copy error handling from ps");
 			perror(filename);
 			return;
 		}
-		svg_header();
+		svg_header(pctx);
 	}
 	else
-		f = NULL;
+		pctx->outf = NULL;
 
 	if (!svg_cam.active)
 		pcb_hid_save_and_show_layer_ons(save_ons);
 
-	svg_hid_export_to_file(f, options, &xform);
+	svg_hid_export_to_file(pctx->outf, options, &xform);
 
 	if (!svg_cam.active)
 		pcb_hid_restore_layer_ons(save_ons);
 
-	if (f != NULL) {
-		svg_footer();
-		fclose(f);
+	if (pctx->outf != NULL) {
+		svg_footer(pctx);
+		fclose(pctx->outf);
 	}
-	f = NULL;
+	pctx->outf = NULL;
 
 	if (!svg_cam.active) svg_cam.okempty_content = 1; /* never warn in direct export */
 
@@ -435,18 +441,18 @@ static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 
 	pcb_cam_set_layer_group(&svg_cam, group, purpose, purpi, flags, xform);
 
-	if (svg_cam.fn_changed || (f == NULL)) {
-		if (f != NULL) {
-			svg_footer();
-			fclose(f);
+	if (svg_cam.fn_changed || (pctx->outf == NULL)) {
+		if (pctx->outf != NULL) {
+			svg_footer(pctx);
+			fclose(pctx->outf);
 		}
 
-		f = rnd_fopen_askovr(&PCB->hidlib, svg_cam.fn, "wb", NULL);
-		if (f == NULL) {
+		pctx->outf = rnd_fopen_askovr(&PCB->hidlib, svg_cam.fn, "wb", NULL);
+		if (pctx->outf == NULL) {
 			perror(svg_cam.fn);
 			return 0;
 		}
-		svg_header();
+		svg_header(pctx);
 	}
 
 printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
@@ -478,7 +484,7 @@ printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 	}
 
 	while(group_open) {
-		group_close();
+		group_close(pctx);
 		group_open--;
 	}
 
@@ -487,7 +493,7 @@ printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 		const char *name;
 		gds_init(&tmp_ln);
 		name = pcb_layer_to_file_name(&tmp_ln, layer, flags, purpose, purpi, PCB_FNS_fixed);
-		fprintf(f, "<g id=\"layer_%ld_%s\"", group, name);
+		fprintf(pctx->outf, "<g id=\"layer_%ld_%s\"", group, name);
 		gds_uninit(&tmp_ln);
 	}
 
@@ -495,8 +501,8 @@ printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 	if (is_our_mask)
 		opa *= mask_opacity_factor;
 	if (opa != 100)
-		fprintf(f, " opacity=\"%.2f\"", ((float)opa) / 100.0);
-	fprintf(f, ">\n");
+		fprintf(pctx->outf, " opacity=\"%.2f\"", ((float)opa) / 100.0);
+	fprintf(pctx->outf, ">\n");
 	group_open = 1;
 
 	if (photo_mode) {
@@ -618,7 +624,7 @@ static void indent(gds_t *s)
 	if (group_open < sizeof(ind)-1) {
 		ind[group_open] = '\0';
 		if (s == NULL)
-			rnd_fprintf(f, ind);
+			rnd_fprintf(pctx->outf, ind);
 		else
 			rnd_append_printf(s, ind);
 		ind[group_open] = ' ';
@@ -626,7 +632,7 @@ static void indent(gds_t *s)
 	}
 
 	if (s == NULL)
-		rnd_fprintf(f, ind);
+		rnd_fprintf(pctx->outf, ind);
 	else
 		rnd_append_printf(s, ind);
 }
