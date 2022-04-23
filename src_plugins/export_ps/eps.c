@@ -456,7 +456,7 @@ static int eps_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 	return 1;
 }
 
-static rnd_hid_gc_t eps_make_gc(rnd_hid_t *hid)
+rnd_hid_gc_t rnd_eps_make_gc(rnd_hid_t *hid)
 {
 	rnd_hid_gc_t rv = (rnd_hid_gc_t) malloc(sizeof(rnd_hid_gc_s));
 	rv->cap = rnd_cap_round;
@@ -465,12 +465,12 @@ static rnd_hid_gc_t eps_make_gc(rnd_hid_t *hid)
 	return rv;
 }
 
-static void eps_destroy_gc(rnd_hid_gc_t gc)
+void rnd_eps_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-static void eps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+void rnd_eps_set_drawing_mode(rnd_eps_t *pctx, rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	if (direct)
 		return;
@@ -492,8 +492,13 @@ static void eps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 	}
 }
 
+static void eps_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+{
+	rnd_eps_set_drawing_mode(pctx, hid, op, direct, screen);
+}
 
-static void eps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
+
+void rnd_eps_set_color(rnd_eps_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	if (pctx->drawing_mode == RND_HID_COMP_NEGATIVE) {
 		gc->color = 0xffffff;
@@ -514,17 +519,22 @@ static void eps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 		gc->color = 0;
 }
 
-static void eps_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
+static void eps_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
+{
+	rnd_eps_set_color(pctx, gc, color);
+}
+
+void rnd_eps_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void eps_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
+void rnd_eps_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width;
 }
 
-static void eps_set_draw_xor(rnd_hid_gc_t gc, int xor_)
+void rnd_eps_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 {
 	;
 }
@@ -560,23 +570,29 @@ static void use_gc(rnd_eps_t *pctx, rnd_hid_gc_t gc)
 	}
 }
 
-static void eps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
-static void eps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
+void rnd_eps_fill_rect(rnd_eps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2);
+void rnd_eps_fill_circle(rnd_eps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius);
 
-static void eps_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+void rnd_eps_draw_rect(rnd_eps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(pctx, gc);
 	rnd_fprintf(pctx->outf, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-static void eps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void eps_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	rnd_eps_draw_rect(pctx, gc, x1, y1, x2, y2);
+}
+
+
+void rnd_eps_draw_line(rnd_eps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	rnd_coord_t w = gc->width / 2;
 	if (x1 == x2 && y1 == y2) {
 		if (gc->cap == rnd_cap_square)
-			eps_fill_rect(gc, x1 - w, y1 - w, x1 + w, y1 + w);
+			rnd_eps_fill_rect(pctx, gc, x1 - w, y1 - w, x1 + w, y1 + w);
 		else
-			eps_fill_circle(gc, x1, y1, w);
+			rnd_eps_fill_circle(pctx, gc, x1, y1, w);
 		return;
 	}
 	use_gc(pctx, gc);
@@ -598,7 +614,12 @@ static void eps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	rnd_fprintf(pctx->outf, "%mi %mi %mi %mi %s\n", x1, y1, x2, y2, gc->erase ? "tc" : "t");
 }
 
-static void eps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+static void eps_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	rnd_eps_draw_line(pctx, gc, x1, y1, x2, y2);
+}
+
+void rnd_eps_draw_arc(rnd_eps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_angle_t sa, ea;
 	double w;
@@ -627,13 +648,24 @@ static void eps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	rnd_fprintf(pctx->outf, "%ma %ma %mi %mi %mi %mi %f a\n", sa, ea, -width, height, cx, cy, (double)pctx->linewidth / w);
 }
 
-static void eps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+static void eps_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+{
+	rnd_eps_draw_arc(pctx, gc, cx, cy, width, height, start_angle, delta_angle);
+}
+
+void rnd_eps_fill_circle(rnd_eps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	use_gc(pctx,gc);
 	rnd_fprintf(pctx->outf, "%mi %mi %mi %s\n", cx, cy, radius, gc->erase ? "cc" : "c");
 }
 
-static void eps_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+static void eps_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+{
+	rnd_eps_fill_circle(pctx, gc, cx, cy, radius);
+}
+
+
+void rnd_eps_fill_polygon_offs(rnd_eps_t *pctx, rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	int i;
 	const char *op = "moveto";
@@ -646,19 +678,30 @@ static void eps_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 	fprintf(pctx->outf, "fill\n");
 }
 
+static void eps_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+{
+	rnd_eps_fill_polygon_offs(pctx, gc, n_coords, x, y, dx, dy);
+}
+
 static void eps_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
-	eps_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
+	rnd_eps_fill_polygon_offs(pctx, gc, n_coords, x, y, 0, 0);
 }
 
 
-static void eps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+void rnd_eps_fill_rect(rnd_eps_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	use_gc(pctx, gc);
 	rnd_fprintf(pctx->outf, "%mi %mi %mi %mi r\n", x1, y1, x2, y2);
 }
 
-static void eps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
+static void eps_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	rnd_eps_fill_rect(pctx, gc, x1, y1, x2, y2);
+}
+
+
+void rnd_eps_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int action)
 {
 }
 
@@ -690,13 +733,13 @@ void hid_eps_init()
 	eps_hid.do_export = eps_do_export;
 	eps_hid.parse_arguments = eps_parse_arguments;
 	eps_hid.set_layer_group = eps_set_layer_group;
-	eps_hid.make_gc = eps_make_gc;
-	eps_hid.destroy_gc = eps_destroy_gc;
+	eps_hid.make_gc = rnd_eps_make_gc;
+	eps_hid.destroy_gc = rnd_eps_destroy_gc;
 	eps_hid.set_drawing_mode = eps_set_drawing_mode;
 	eps_hid.set_color = eps_set_color;
-	eps_hid.set_line_cap = eps_set_line_cap;
-	eps_hid.set_line_width = eps_set_line_width;
-	eps_hid.set_draw_xor = eps_set_draw_xor;
+	eps_hid.set_line_cap = rnd_eps_set_line_cap;
+	eps_hid.set_line_width = rnd_eps_set_line_width;
+	eps_hid.set_draw_xor = rnd_eps_set_draw_xor;
 	eps_hid.draw_line = eps_draw_line;
 	eps_hid.draw_arc = eps_draw_arc;
 	eps_hid.draw_rect = eps_draw_rect;
@@ -704,7 +747,7 @@ void hid_eps_init()
 	eps_hid.fill_polygon = eps_fill_polygon;
 	eps_hid.fill_polygon_offs = eps_fill_polygon_offs;
 	eps_hid.fill_rect = eps_fill_rect;
-	eps_hid.set_crosshair = eps_set_crosshair;
+	eps_hid.set_crosshair = rnd_eps_set_crosshair;
 	eps_hid.argument_array = eps_values;
 
 	eps_hid.usage = eps_usage;
