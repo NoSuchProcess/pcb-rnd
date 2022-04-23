@@ -98,14 +98,17 @@ typedef struct {
 	int opacity;
 
 	/* private: cache */
-	int group_open;
+	int group_open, drawing_mask, drawing_hole;
+	rnd_composite_op_t drawing_mode;
+
+	/* private: pcb-rnd leftover */
+	int photo_mode, photo_noise;
 } rnd_svg_t;
 
 static rnd_svg_t pctx_, *pctx = &pctx_;
 
-static int drawing_mask, drawing_hole, photo_mode, photo_noise, flip;
+static int flip;
 
-static rnd_composite_op_t drawing_mode;
 static int comp_cnt, svg_true_size = 0;
 static long svg_drawn_objs;
 
@@ -257,15 +260,15 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 		rnd_conf_force_set_bool(conf_core.editor.show_solder_side, 0);
 
 		if (options[HA_photo_mode].lng) {
-			photo_mode = 1;
+			pctx->photo_mode = 1;
 		}
 		else
-			photo_mode = 0;
+			pctx->photo_mode = 0;
 
 		if (options[HA_photo_noise].lng)
-			photo_noise = 1;
+			pctx->photo_noise = 1;
 		else
-			photo_noise = 0;
+			pctx->photo_noise = 0;
 
 		if (options[HA_flip].lng) {
 			rnd_layer_id_t topcop[32];
@@ -284,7 +287,7 @@ void svg_hid_export_to_file(FILE * the_file, rnd_hid_attr_val_t * options, rnd_x
 			flip = 0;
 	}
 
-	if (photo_mode) {
+	if (pctx->photo_mode) {
 		rnd_fprintf(pctx->outf, "<rect x=\"%mm\" y=\"%mm\" width=\"%mm\" height=\"%mm\" fill=\"%s\" stroke=\"none\"/>\n",
 			0, 0, PCB->hidlib.size_x, PCB->hidlib.size_y, board_color);
 	}
@@ -364,7 +367,7 @@ static void svg_footer(rnd_svg_t *pctx)
 	}
 
 	/* blend some noise on top to make it a bit more artificial */
-	if (photo_mode && photo_noise) {
+	if (pctx->photo_mode && pctx->photo_noise) {
 		fprintf(pctx->outf, "<filter id=\"noise\">\n");
 		fprintf(pctx->outf, "	<feTurbulence type=\"fractalNoise\" baseFrequency=\"30\" result=\"noisy\" />\n");
 		fprintf(pctx->outf, "</filter>\n");
@@ -482,7 +485,7 @@ printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 			return 0;
 
 		if (flags & PCB_LYT_MASK) {
-			if ((!photo_mode) && (!PCB->LayerGroups.grp[group].vis))
+			if ((!pctx->photo_mode) && (!PCB->LayerGroups.grp[group].vis))
 				return 0; /* not in photo mode or not visible */
 		}
 	}
@@ -498,8 +501,8 @@ printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 			return 0;
 	}
 
-	if (photo_mode && (group < 0)) {
-		drawing_hole = PCB_LAYER_IS_DRILL(flags, purpi);
+	if (pctx->photo_mode && (group < 0)) {
+		pctx->drawing_hole = PCB_LAYER_IS_DRILL(flags, purpi);
 		return 1; /* photo mode drill: do not create a separate group */
 	}
 
@@ -525,7 +528,7 @@ printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 	fprintf(pctx->outf, ">\n");
 	pctx->group_open = 1;
 
-	if (photo_mode) {
+	if (pctx->photo_mode) {
 		if (is_our_silk)
 			photo_color = PHOTO_SILK;
 		else if (is_our_mask)
@@ -538,7 +541,7 @@ printf("GRP: '%s'\n", PCB->LayerGroups.grp[group].name);
 		}
 	}
 
-	drawing_hole = PCB_LAYER_IS_DRILL(flags, purpi);
+	pctx->drawing_hole = PCB_LAYER_IS_DRILL(flags, purpi);
 	return 1;
 }
 
@@ -560,7 +563,7 @@ static void svg_destroy_gc(rnd_hid_gc_t gc)
 
 static void svg_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
-	drawing_mode = op;
+	pctx->drawing_mode = op;
 
 	if (direct)
 		return;
@@ -599,9 +602,9 @@ static const char *svg_color(rnd_hid_gc_t gc)
 
 static const char *svg_clip_color(rnd_hid_gc_t gc)
 {
-	if ((drawing_mode == RND_HID_COMP_POSITIVE) || (drawing_mode == RND_HID_COMP_POSITIVE_XOR))
+	if ((pctx->drawing_mode == RND_HID_COMP_POSITIVE) || (pctx->drawing_mode == RND_HID_COMP_POSITIVE_XOR))
 		return "#FFFFFF";
-	if (drawing_mode == RND_HID_COMP_NEGATIVE)
+	if (pctx->drawing_mode == RND_HID_COMP_NEGATIVE)
 		return "#000000";
 	return NULL;
 }
@@ -620,7 +623,7 @@ static void svg_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 		name = "#ffffff";
 		gc->drill = 1;
 	}
-	if (drawing_mask)
+	if (pctx->drawing_mask)
 		name = mask_color;
 	if ((gc->color != NULL) && (strcmp(gc->color, name) == 0))
 		return;
@@ -698,7 +701,7 @@ static void svg_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 static void draw_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t w, rnd_coord_t h)
 {
 	const char *clip_color = svg_clip_color(gc);
-	if (photo_mode) {
+	if (pctx->photo_mode) {
 		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(pctx, &pctx->sdark);
@@ -733,7 +736,7 @@ static void svg_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 static void pcb_line_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	const char *clip_color = svg_clip_color(gc);
-	if (photo_mode) {
+	if (pctx->photo_mode) {
 		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(pctx, &pctx->sbright);
@@ -769,7 +772,7 @@ static void pcb_arc_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 {
 	const char *clip_color = svg_clip_color(gc);
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
-	if (photo_mode) {
+	if (pctx->photo_mode) {
 		rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 		if (photo_offs != 0) {
 			indent(pctx, &pctx->sbright);
@@ -858,8 +861,8 @@ static void draw_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 
 	svg_drawn_objs++;
 
-	if (photo_mode) {
-		if (!drawing_hole) {
+	if (pctx->photo_mode) {
+		if (!pctx->drawing_hole) {
 			rnd_coord_t photo_offs = photo_palette[photo_color].offs;
 			if ((!gc->drill) && (photo_offs != 0)) {
 				indent(pctx, &pctx->sbright);
@@ -916,7 +919,7 @@ static void svg_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 {
 	const char *clip_color = svg_clip_color(gc);
 	svg_drawn_objs++;
-	if (photo_mode) {
+	if (pctx->photo_mode) {
 		rnd_coord_t photo_offs_x = photo_palette[photo_color].offs, photo_offs_y = photo_palette[photo_color].offs;
 		if (photo_offs_x != 0) {
 			if (flip)
