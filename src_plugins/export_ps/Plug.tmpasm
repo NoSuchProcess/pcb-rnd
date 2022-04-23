@@ -4,6 +4,7 @@ put /local/pcb/mod/OBJS [@
  $(PLUGDIR)/export_ps/eps.o
 
  $(PLUGDIR)/export_ps/draw_ps.o
+ $(PLUGDIR)/export_ps/draw_eps.o
 @]
 
 switch /local/pcb/export_ps/controls
