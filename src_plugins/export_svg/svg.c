@@ -566,7 +566,7 @@ static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 }
 
 
-static rnd_hid_gc_t svg_make_gc(rnd_hid_t *hid)
+rnd_hid_gc_t rnd_svg_make_gc(rnd_hid_t *hid)
 {
 	rnd_hid_gc_t rv = (rnd_hid_gc_t) calloc(sizeof(rnd_hid_gc_s), 1);
 	rv->me_pointer = &svg_hid;
@@ -576,12 +576,12 @@ static rnd_hid_gc_t svg_make_gc(rnd_hid_t *hid)
 	return rv;
 }
 
-static void svg_destroy_gc(rnd_hid_gc_t gc)
+void rnd_svg_destroy_gc(rnd_hid_gc_t gc)
 {
 	free(gc);
 }
 
-static void svg_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+void rnd_svg_set_drawing_mode(rnd_svg_t *pctx, rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
 {
 	pctx->drawing_mode = op;
 
@@ -615,6 +615,11 @@ static void svg_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool
 	}
 }
 
+static void svg_set_drawing_mode(rnd_hid_t *hid, rnd_composite_op_t op, rnd_bool direct, const rnd_box_t *screen)
+{
+	rnd_svg_set_drawing_mode(pctx, hid, op, direct, screen);
+}
+
 static const char *svg_color(rnd_hid_gc_t gc)
 {
 	return gc->color;
@@ -629,7 +634,7 @@ static const char *svg_clip_color(rnd_hid_gc_t gc)
 	return NULL;
 }
 
-static void svg_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
+void rnd_svg_set_color(rnd_svg_t *pctx, rnd_hid_gc_t gc, const rnd_color_t *color)
 {
 	const char *name;
 	gc->drill = 0;
@@ -651,14 +656,25 @@ static void svg_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
 	gc->color = rnd_strdup(name);
 }
 
-static void svg_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
+static void svg_set_color(rnd_hid_gc_t gc, const rnd_color_t *color)
+{
+	rnd_svg_set_color(pctx, gc, color);
+}
+
+
+void rnd_svg_set_line_cap(rnd_hid_gc_t gc, rnd_cap_style_t style)
 {
 	gc->cap = style;
 }
 
-static void svg_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
+void rnd_svg_set_line_width(rnd_hid_gc_t gc, rnd_coord_t width)
 {
 	gc->width = width < RND_MM_TO_COORD(0.01) ? RND_MM_TO_COORD(0.01) : width;
+}
+
+void rnd_svg_set_draw_xor(rnd_hid_gc_t gc, int xor_)
+{
+	;
 }
 
 static void indent(rnd_svg_t *pctx, gds_t *s)
@@ -680,10 +696,6 @@ static void indent(rnd_svg_t *pctx, gds_t *s)
 		rnd_append_printf(s, ind);
 }
 
-static void svg_set_draw_xor(rnd_hid_gc_t gc, int xor_)
-{
-	;
-}
 
 #define fix_rect_coords() \
 	if (x1 > x2) {\
@@ -697,7 +709,7 @@ static void svg_set_draw_xor(rnd_hid_gc_t gc, int xor_)
 		y2 = t; \
 	}
 
-static void draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t w, rnd_coord_t h, rnd_coord_t stroke)
+void draw_rect(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t w, rnd_coord_t h, rnd_coord_t stroke)
 {
 	const char *clip_color = svg_clip_color(gc);
 
@@ -711,14 +723,19 @@ static void draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord
 	}
 }
 
-static void svg_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+void rnd_svg_draw_rect(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pctx->drawn_objs++;
 	fix_rect_coords();
-	draw_rect(gc, x1, y1, x2-x1, y2-y1, gc->width);
+	draw_rect(pctx, gc, x1, y1, x2-x1, y2-y1, gc->width);
 }
 
-static void draw_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t w, rnd_coord_t h)
+static void svg_draw_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	rnd_svg_draw_rect(pctx, gc, x1, y1, x2, y2);
+}
+
+static void draw_fill_rect(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t w, rnd_coord_t h)
 {
 	const char *clip_color = svg_clip_color(gc);
 	if (pctx->photo_mode) {
@@ -745,15 +762,20 @@ static void draw_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_
 			x1, y1, w, h, clip_color);
 }
 
-static void svg_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+void rnd_svg_fill_rect(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pctx->drawn_objs++;
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
 	fix_rect_coords();
-	draw_fill_rect(gc, x1, y1, x2-x1, y2-y1);
+	draw_fill_rect(pctx, gc, x1, y1, x2-x1, y2-y1);
 }
 
-static void pcb_line_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+static void svg_fill_rect(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	rnd_svg_fill_rect(pctx, gc, x1, y1, x2, y2);
+}
+
+static void pcb_line_draw(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	const char *clip_color = svg_clip_color(gc);
 	if (pctx->photo_mode) {
@@ -781,14 +803,19 @@ static void pcb_line_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_c
 	}
 }
 
-static void svg_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+void rnd_svg_draw_line(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
 {
 	pctx->drawn_objs++;
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
-	pcb_line_draw(gc, x1, y1, x2, y2);
+	pcb_line_draw(pctx, gc, x1, y1, x2, y2);
 }
 
-static void pcb_arc_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t r, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t stroke, int large, int sweep)
+static void svg_draw_line(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t x2, rnd_coord_t y2)
+{
+	rnd_svg_draw_line(pctx, gc, x1, y1, x2, y2);
+}
+
+static void pcb_arc_draw(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_coord_t r, rnd_coord_t x2, rnd_coord_t y2, rnd_coord_t stroke, int large, int sweep)
 {
 	const char *clip_color = svg_clip_color(gc);
 	TRX(x1); TRY(y1); TRX(x2); TRY(y2);
@@ -816,7 +843,7 @@ static void pcb_arc_draw(rnd_hid_gc_t gc, rnd_coord_t x1, rnd_coord_t y1, rnd_co
 			x1, y1, r, r, large, sweep, x2, y2, gc->width, clip_color, CAPS(gc->cap));
 }
 
-static void svg_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+void rnd_svg_draw_arc(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
 {
 	rnd_coord_t x1, y1, x2, y2, diff = 0, diff2, maxdiff;
 	rnd_angle_t sa, ea;
@@ -825,7 +852,7 @@ static void svg_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 
  /* degenerate case: r=0 means a single dot */
 	if ((width == 0) && (height == 0)) {
-		pcb_line_draw(gc, cx, cy, cx, cy);
+		pcb_line_draw(pctx, gc, cx, cy, cx, cy);
 		return;
 	}
 
@@ -856,8 +883,8 @@ static void svg_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 
 	/* workaround for near-360 deg rendering bugs */
 	if ((delta_angle >= +360.0) || (delta_angle <= -360.0)) {
-		svg_draw_arc(gc, cx, cy, width, height, 0, 180);
-		svg_draw_arc(gc, cx, cy, width, height, 180, 180);
+		rnd_svg_draw_arc(pctx, gc, cx, cy, width, height, 0, 180);
+		rnd_svg_draw_arc(pctx, gc, cx, cy, width, height, 180, 180);
 		return;
 	}
 
@@ -872,10 +899,16 @@ static void svg_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_co
 	x1 = rnd_round((double)cx + ((double)width * cos(ea * M_PI / 180))+diff);
 	y1 = rnd_round((double)cy + ((double)width * sin(ea * M_PI / 180))+diff);
 
-	pcb_arc_draw(gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
+	pcb_arc_draw(pctx, gc, x1, y1, width, x2, y2, gc->width, (fabs(delta_angle) > 180), (delta_angle < 0.0));
 }
 
-static void draw_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, rnd_coord_t stroke)
+static void svg_draw_arc(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t width, rnd_coord_t height, rnd_angle_t start_angle, rnd_angle_t delta_angle)
+{
+	rnd_svg_draw_arc(pctx, gc, cx, cy, width, height, start_angle, delta_angle);
+}
+
+
+static void draw_fill_circle(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t r, rnd_coord_t stroke)
 {
 	const char *clip_color = svg_clip_color(gc);
 
@@ -913,14 +946,19 @@ static void draw_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rn
 			cx, cy, r, stroke, clip_color);
 }
 
-static void svg_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+void rnd_svg_fill_circle(rnd_svg_t *pctx, rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
 {
 	pctx->drawn_objs++;
 	TRX(cx); TRY(cy);
-	draw_fill_circle(gc, cx, cy, radius, 0);
+	draw_fill_circle(pctx, gc, cx, cy, radius, 0);
 }
 
-static void draw_poly(gds_t *s, rnd_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t dx, rnd_coord_t dy, const char *clr)
+static void svg_fill_circle(rnd_hid_gc_t gc, rnd_coord_t cx, rnd_coord_t cy, rnd_coord_t radius)
+{
+	rnd_svg_fill_circle(pctx, gc, cx, cy, radius);
+}
+
+static void draw_poly(rnd_svg_t *pctx, gds_t *s, rnd_hid_gc_t gc, int n_coords, rnd_coord_t * x, rnd_coord_t * y, rnd_coord_t dx, rnd_coord_t dy, const char *clr)
 {
 	int i;
 	float poly_bloat = 0.01;
@@ -935,7 +973,7 @@ static void draw_poly(gds_t *s, rnd_hid_gc_t gc, int n_coords, rnd_coord_t * x, 
 	rnd_append_printf(s, "\" stroke-width=\"%.3f\" stroke=\"%s\" fill=\"%s\"/>\n", poly_bloat, clr, clr);
 }
 
-static void svg_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+void rnd_svg_fill_polygon_offs(rnd_svg_t *pctx, rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
 {
 	const char *clip_color = svg_clip_color(gc);
 	pctx->drawn_objs++;
@@ -944,25 +982,29 @@ static void svg_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x,
 		if (photo_offs_x != 0) {
 			if (pctx->flip)
 				photo_offs_y = -photo_offs_y;
-			draw_poly(&pctx->sbright, gc, n_coords, x, y, dx-photo_offs_x, dy-photo_offs_y, photo_palette[photo_color].bright);
-			draw_poly(&pctx->sdark, gc, n_coords, x, y, dx+photo_offs_x, dy+photo_offs_y, photo_palette[photo_color].dark);
+			draw_poly(pctx, &pctx->sbright, gc, n_coords, x, y, dx-photo_offs_x, dy-photo_offs_y, photo_palette[photo_color].bright);
+			draw_poly(pctx, &pctx->sdark, gc, n_coords, x, y, dx+photo_offs_x, dy+photo_offs_y, photo_palette[photo_color].dark);
 		}
-		draw_poly(&pctx->snormal, gc, n_coords, x, y, dx, dy, photo_palette[photo_color].normal);
+		draw_poly(pctx, &pctx->snormal, gc, n_coords, x, y, dx, dy, photo_palette[photo_color].normal);
 	}
 	else
-		draw_poly(&pctx->snormal, gc, n_coords, x, y, dx, dy, svg_color(gc));
+		draw_poly(pctx, &pctx->snormal, gc, n_coords, x, y, dx, dy, svg_color(gc));
 
 	if (clip_color != NULL)
-		draw_poly(&pctx->sclip, gc, n_coords, x, y, dx, dy, clip_color);
+		draw_poly(pctx, &pctx->sclip, gc, n_coords, x, y, dx, dy, clip_color);
+}
+
+static void svg_fill_polygon_offs(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y, rnd_coord_t dx, rnd_coord_t dy)
+{
+	rnd_svg_fill_polygon_offs(pctx, gc, n_coords, x, y, dx, dy);
 }
 
 static void svg_fill_polygon(rnd_hid_gc_t gc, int n_coords, rnd_coord_t *x, rnd_coord_t *y)
 {
-	svg_fill_polygon_offs(gc, n_coords, x, y, 0, 0);
+	rnd_svg_fill_polygon_offs(pctx, gc, n_coords, x, y, 0, 0);
 }
 
-
-static void svg_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
+void rnd_svg_set_crosshair(rnd_hid_t *hid, rnd_coord_t x, rnd_coord_t y, int a)
 {
 }
 
@@ -999,13 +1041,13 @@ int pplg_init_export_svg(void)
 	svg_hid.do_export = svg_do_export;
 	svg_hid.parse_arguments = svg_parse_arguments;
 	svg_hid.set_layer_group = svg_set_layer_group;
-	svg_hid.make_gc = svg_make_gc;
-	svg_hid.destroy_gc = svg_destroy_gc;
+	svg_hid.make_gc = rnd_svg_make_gc;
+	svg_hid.destroy_gc = rnd_svg_destroy_gc;
 	svg_hid.set_drawing_mode = svg_set_drawing_mode;
 	svg_hid.set_color = svg_set_color;
-	svg_hid.set_line_cap = svg_set_line_cap;
-	svg_hid.set_line_width = svg_set_line_width;
-	svg_hid.set_draw_xor = svg_set_draw_xor;
+	svg_hid.set_line_cap = rnd_svg_set_line_cap;
+	svg_hid.set_line_width = rnd_svg_set_line_width;
+	svg_hid.set_draw_xor = rnd_svg_set_draw_xor;
 	svg_hid.draw_line = svg_draw_line;
 	svg_hid.draw_arc = svg_draw_arc;
 	svg_hid.draw_rect = svg_draw_rect;
@@ -1013,7 +1055,7 @@ int pplg_init_export_svg(void)
 	svg_hid.fill_polygon = svg_fill_polygon;
 	svg_hid.fill_polygon_offs = svg_fill_polygon_offs;
 	svg_hid.fill_rect = svg_fill_rect;
-	svg_hid.set_crosshair = svg_set_crosshair;
+	svg_hid.set_crosshair = rnd_svg_set_crosshair;
 	svg_hid.argument_array = svg_values;
 
 	svg_hid.usage = svg_usage;
