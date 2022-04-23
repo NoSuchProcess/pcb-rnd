@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <errno.h>
 #include <math.h>
 #include <genvector/gds_char.h>
 
@@ -452,6 +453,25 @@ static int svg_parse_arguments(rnd_hid_t *hid, int *argc, char ***argv)
 	return rnd_hid_parse_command_line(argc, argv);
 }
 
+int rnd_svg_new_file(rnd_svg_t *pctx, FILE *f, const char *fn)
+{
+	int ern = errno;
+
+	if (pctx->outf != NULL) {
+		rnd_svg_footer(pctx);
+		fclose(pctx->outf);
+	}
+
+	if (f == NULL) {
+		TODO("copy error print from ps");
+		perror(fn);
+		return -1;
+	}
+
+	pctx->outf = f;
+	return 0;
+}
+
 static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const char *purpose, int purpi, rnd_layer_id_t layer, unsigned int flags, int is_empty, rnd_xform_t **xform)
 {
 	int opa, is_our_mask = 0, is_our_silk = 0;
@@ -465,16 +485,10 @@ static int svg_set_layer_group(rnd_hid_t *hid, rnd_layergrp_id_t group, const ch
 	pcb_cam_set_layer_group(&svg_cam, group, purpose, purpi, flags, xform);
 
 	if (svg_cam.fn_changed || (pctx->outf == NULL)) {
-		if (pctx->outf != NULL) {
-			rnd_svg_footer(pctx);
-			fclose(pctx->outf);
-		}
+		FILE *f = rnd_fopen_askovr(&PCB->hidlib, svg_cam.fn, "wb", NULL);
 
-		pctx->outf = rnd_fopen_askovr(&PCB->hidlib, svg_cam.fn, "wb", NULL);
-		if (pctx->outf == NULL) {
-			perror(svg_cam.fn);
+		if (rnd_svg_new_file(pctx, f, svg_cam.fn) != 0)
 			return 0;
-		}
 		rnd_svg_header(pctx);
 	}
 
